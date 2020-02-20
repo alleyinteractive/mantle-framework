@@ -1,0 +1,12 @@
+{
+    "name": "alleyinteractive/mantle",
+    "type": "library",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Alley",
+            "email": "info@alley.co"
+        }
+    ],
+    "require": {}
+}
