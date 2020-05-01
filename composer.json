@@ -8,5 +8,13 @@
             "email": "info@alley.co"
         }
     ],
-    "require": {}
+    "require": {
+        "illuminate/support": "^7.9"
+    },
+    "require-dev": {
+        "fzaninotto/faker": "^1.9"
+    },
+    "autoload": {
+        "psr-4": { "": "src/" }
+    }
 }

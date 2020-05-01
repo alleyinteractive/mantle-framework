@@ -11,3 +11,11 @@
  *
  * @package Mantle
  */
+
+namespace Mantle;
+
+use Mantle\Framework\Database\Console\SeedCommand;
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+new SeedCommand();
