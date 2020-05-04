@@ -55,4 +55,55 @@ abstract class Command {
 	 * Callback for the command.
 	 */
 	abstract public function handle();
+
+	/**
+	 * Write to the console log.
+	 *
+	 * @param string $message Message to log.
+	 */
+	public function log( string $message ): void {
+		\WP_CLI::log( $message );
+	}
+
+	/**
+	 * Ask the user for input.
+	 *
+	 * @param string $question Question to prompt.
+	 * @return string
+	 */
+	public function input( string $question ): string {
+		if ( function_exists( 'readline' ) ) {
+			return readline( $question );
+		}
+
+		echo $question; // phpcs:ignore
+
+		$ret = stream_get_line( STDIN, 1024, "\n" );
+		if ( \WP_Utils\Utils\is_windows() && "\r" === substr( $ret, -1 ) ) {
+			$ret = substr( $ret, 0, -1 );
+		}
+
+		return $ret;
+	}
+
+	/**
+	 * Prompt a user for input.
+	 *
+	 * Response is expected to be in a boolean format (yes/no).
+	 *
+	 * @param string $question Question to prompt.
+	 * @param bool $default Default value.
+	 * @return bool
+	 */
+	public function prompt( string $question, bool $default = false ): bool {
+		$question .= ' [Y/n] ';
+
+		$answer = strtolower( $this->input( $question ) );
+
+		if ( empty( $answer ) ) {
+			return $default;
+		}
+
+		return 'y' === $answer || 'yes' === $answer;
+	}
 }
