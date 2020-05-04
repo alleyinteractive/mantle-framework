@@ -23,9 +23,6 @@
         "alley/alley-coding-standards": "dev-master",
         "mockery/mockery": "^1.3"
     },
-    "autoload": {
-        "psr-4": { "": "src/" }
-    },
     "scripts": {
         "phpcs" : "phpcs --standard=./phpcs.xml ."
     }
