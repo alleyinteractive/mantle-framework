@@ -28,13 +28,6 @@ abstract class Command {
 	protected $name;
 
 	/**
-	 * The console command description.
-	 *
-	 * @var string
-	 */
-	protected $description;
-
-	/**
 	 * Register the command with wp-cli.
 	 *
 	 * @throws InvalidCommandException Thrown for a command without a name, incorrectly.
