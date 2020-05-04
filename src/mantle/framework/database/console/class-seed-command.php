@@ -1,4 +1,10 @@
 <?php
+/**
+ * Seed_Command class file.
+ *
+ * @package Mantle
+ */
+
 namespace Mantle\Framework\Database\Console;
 
 use Mantle\Framework\Console\Command;

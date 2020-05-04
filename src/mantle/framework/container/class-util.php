@@ -1,9 +1,17 @@
 <?php
+/**
+ * Util class file.
+ *
+ * @package Mantle
+ */
 
 namespace Mantle\Framework\Container;
 
 use Closure;
 
+/**
+ * Container Utilities
+ */
 class Util {
 
 	/**

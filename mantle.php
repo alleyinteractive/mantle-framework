@@ -14,9 +14,7 @@
 
 namespace Mantle;
 
-/**
- * @todo Move this all to mantle-site.
- */
+// @todo Move this all to mantle-site.
 
 define( 'MANTLE_BASE_DIR', __DIR__ );
 

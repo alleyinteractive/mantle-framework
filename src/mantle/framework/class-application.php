@@ -107,7 +107,6 @@ class Application extends Container\Container implements Application_Contract {
 		$provider_name = is_string( $provider ) ? $provider : get_class( $provider );
 
 		if ( ! empty( $this->service_providers[ $provider_name ] ) ) {
-			var_dump('already registered');
 			return $this;
 		}
 
