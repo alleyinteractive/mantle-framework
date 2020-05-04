@@ -35,23 +35,20 @@ abstract class Command {
 	protected $description;
 
 	/**
-	 * Constructor.
+	 * Register the command with wp-cli.
 	 *
-	 * @throws InvalidCommandException Thrown for a command without a name.
+	 * @throws InvalidCommandException Thrown for a command without a name, incorrectly.
 	 */
-	public function __construct() {
+	public function register() {
 		if ( empty( $this->name ) ) {
 			throw new InvalidCommandException( 'Command missing name.' );
 		}
-	}
 
-	/**
-	 * Register the command with wp-cli.
-	 */
-	public function register() {
-		if ( defined( 'WP_CLI' ) && WP_CLI ) {
-			WP_CLI::add_command( static::PREFIX . ' ' . $this->name, [ $this, 'handle' ] );
+		if ( ! defined( 'WP_CLI' ) || ! WP_CLI ) {
+			throw new InvalidCommandException( 'Cannot register wp-cli command when not in wp-cli mode.' );
 		}
+
+		WP_CLI::add_command( static::PREFIX . ' ' . $this->name, [ $this, 'handle' ] );
 	}
 
 	/**

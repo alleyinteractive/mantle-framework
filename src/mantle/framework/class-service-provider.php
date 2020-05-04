@@ -24,7 +24,7 @@ abstract class Service_Provider {
 	 * Commands to register.
 	 * Register commands through `Service_Provider::add_command()`.
 	 *
-	 * @var array
+	 * @var \Mantle\Framework\Console\Command[]
 	 */
 	protected $commands;
 
@@ -50,10 +50,14 @@ abstract class Service_Provider {
 	/**
 	 * Register a wp-cli command.
 	 *
-	 * @param Command $command Command to register.
+	 * @param Command|string $command Command instance or class name to register.
 	 */
-	public function add_command( Command $command ) {
-		$this->commands[] = $command;
+	public function add_command( $command ) {
+		if ( $command instanceof Command ) {
+			$this->commands[] = $command;
+		} else {
+			$this->commands[] = $this->app->make( $command );
+		}
 	}
 
 	/**

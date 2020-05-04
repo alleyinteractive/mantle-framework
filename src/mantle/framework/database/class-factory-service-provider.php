@@ -19,6 +19,6 @@ class Factory_Service_Provider extends Service_Provider {
 	 * Register any application services.
 	 */
 	public function register() {
-		$this->add_command( new Console\Seed_Command() );
+		$this->add_command( Console\Seed_Command::class );
 	}
 }
