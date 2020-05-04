@@ -1,22 +1,12 @@
 <?xml version="1.0"?>
-<phpunit
-	bootstrap="tests/bootstrap.php"
-	backupGlobals="false"
-	colors="true"
-	convertErrorsToExceptions="true"
-	convertNoticesToExceptions="true"
-	convertWarningsToExceptions="true"
->
-
-	<rule ref="vendor/alley/alley-coding-standards">
-		<exclude name="Squiz.Commenting.FileComment.Missing" />
-		<exclude name="WordPress.NamingConventions.ValidPostTypeSlug.NotStringLiteral" />
-	</rule>
+<ruleset>
+	<description>alleyinteractive/mantle-framework</description>
 
 	<arg value="ps" />
-	<arg name="severity" value="1" />
 
 	<exclude-pattern>tests/</exclude-pattern>
+
+	<rule ref="vendor/alley/alley-coding-standards" />
 
 	<rule ref="WordPress">
 		<exclude name="WordPress.NamingConventions.ValidPostTypeSlug.NotStringLiteral" />
@@ -29,4 +19,4 @@
 			</property>
 		</properties>
 	</rule>
-</phpunit>
+</ruleset>

@@ -48,4 +48,4 @@ script:
       composer run phpcs
     fi
   - |
-    # phpunit
+    phpunit

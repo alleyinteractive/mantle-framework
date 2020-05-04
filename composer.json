@@ -9,11 +9,11 @@
         }
     ],
     "repositories": [
-      {
-          "type": "git",
-          "url": "https://github.com/alleyinteractive/Alley-Coding-Standards"
-      }
-  ],
+        {
+            "type": "git",
+            "url": "https://github.com/alleyinteractive/Alley-Coding-Standards"
+        }
+    ],
     "require": {
         "illuminate/support": "^7.9",
         "psr/container": "^1.0"
