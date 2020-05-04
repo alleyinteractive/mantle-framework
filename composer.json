@@ -8,13 +8,24 @@
             "email": "info@alley.co"
         }
     ],
+    "repositories": [
+      {
+          "type": "git",
+          "url": "https://github.com/alleyinteractive/Alley-Coding-Standards"
+      }
+  ],
     "require": {
-        "illuminate/support": "^7.9"
+        "illuminate/support": "^7.9",
+        "psr/container": "^1.0"
     },
     "require-dev": {
-        "fzaninotto/faker": "^1.9"
+        "fzaninotto/faker": "^1.9",
+        "alley/alley-coding-standards": "dev-master"
     },
     "autoload": {
         "psr-4": { "": "src/" }
+    },
+    "scripts": {
+        "phpcs" : "phpcs --standard=./phpcs.xml ."
     }
 }
