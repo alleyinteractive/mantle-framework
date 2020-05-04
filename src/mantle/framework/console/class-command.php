@@ -92,7 +92,7 @@ abstract class Command {
 	 * Response is expected to be in a boolean format (yes/no).
 	 *
 	 * @param string $question Question to prompt.
-	 * @param bool $default Default value.
+	 * @param bool   $default Default value.
 	 * @return bool
 	 */
 	public function prompt( string $question, bool $default = false ): bool {
