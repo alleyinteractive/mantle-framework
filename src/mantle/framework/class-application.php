@@ -101,12 +101,14 @@ class Application extends Container\Container implements Application_Contract {
 	 * Register a Service Provider
 	 *
 	 * @param Service_Provider|string $provider Provider instance or class name to register.
+	 * @return Application
 	 */
-	public function register( $provider ) {
+	public function register( $provider ): Application {
 		$provider_name = is_string( $provider ) ? $provider : get_class( $provider );
 
 		if ( ! empty( $this->service_providers[ $provider_name ] ) ) {
-			return;
+			var_dump('already registered');
+			return $this;
 		}
 
 		if ( is_string( $provider ) ) {
@@ -119,6 +121,7 @@ class Application extends Container\Container implements Application_Contract {
 
 		$provider->register();
 		$this->service_providers[ $provider_name ] = $provider;
+		return $this;
 	}
 
 	/**
@@ -132,10 +135,12 @@ class Application extends Container\Container implements Application_Contract {
 
 	/**
 	 * Boot the application's service providers.
+	 *
+	 * @return Application
 	 */
-	public function boot() {
+	public function boot(): Application {
 		if ( $this->is_booted() ) {
-			return;
+			return $this;
 		}
 
 		foreach ( $this->service_providers as $provider ) {
@@ -143,5 +148,6 @@ class Application extends Container\Container implements Application_Contract {
 		}
 
 		$this->booted = true;
+		return $this;
 	}
 }

@@ -51,21 +51,28 @@ abstract class Service_Provider {
 	 * Register a wp-cli command.
 	 *
 	 * @param Command|string $command Command instance or class name to register.
+	 * @return Service_Provider
 	 */
-	public function add_command( $command ) {
+	public function add_command( $command ): Service_Provider {
 		if ( $command instanceof Command ) {
 			$this->commands[] = $command;
 		} else {
 			$this->commands[] = $this->app->make( $command );
 		}
+
+		return $this;
 	}
 
 	/**
 	 * Register the wp-cli commands for a service provider.
+	 *
+	 * @return Service_Provider
 	 */
-	public function register_commands() {
+	public function register_commands(): Service_Provider {
 		foreach ( $this->commands as $command ) {
 			$command->register();
 		}
+
+		return $this;
 	}
 }
