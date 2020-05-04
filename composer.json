@@ -2,6 +2,7 @@
     "name": "alleyinteractive/mantle",
     "type": "library",
     "license": "GPL-2.0-or-later",
+    "description": "A framework for powerful WordPress development",
     "authors": [
         {
             "name": "Alley",
