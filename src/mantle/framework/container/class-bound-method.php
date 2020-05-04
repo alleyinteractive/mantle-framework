@@ -3,37 +3,36 @@
 namespace Mantle\Framework\Container;
 
 use Closure;
-use Illuminate\Contracts\Container\BindingResolutionException;
 use InvalidArgumentException;
 use ReflectionFunction;
 use ReflectionMethod;
 
-class BoundMethod {
+class Bound_Method {
 
 	/**
 	 * Call the given Closure / class@method and inject its dependencies.
 	 *
-	 * @param  \Illuminate\Container\Container $container
+	 * @param  Container $container
 	 * @param  callable|string                 $callback
 	 * @param  array                           $parameters
-	 * @param  string|null                     $defaultMethod
+	 * @param  string|null                     $default_method
 	 * @return mixed
 	 *
 	 * @throws \ReflectionException
 	 * @throws \InvalidArgumentException
 	 */
-	public static function call( $container, $callback, array $parameters = [], $defaultMethod = null ) {
-		if ( static::isCallableWithAtSign( $callback ) || $defaultMethod ) {
-				return static::callClass( $container, $callback, $parameters, $defaultMethod );
+	public static function call( $container, $callback, array $parameters = [], $default_method = null ) {
+		if ( static::is_callable_with_at_sign( $callback ) || $default_method ) {
+				return static::call_class( $container, $callback, $parameters, $default_method );
 		}
 
-			return static::callBoundMethod(
+			return static::call_bound_method(
 				$container,
 				$callback,
 				function () use ( $container, $callback, $parameters ) {
 					return call_user_func_array(
 						$callback,
-						static::getMethodDependencies( $container, $callback, $parameters )
+						static::get_method_dependencies( $container, $callback, $parameters )
 					);
 				}
 			);
@@ -42,7 +41,7 @@ class BoundMethod {
 	/**
 	 * Call a string reference to a class using Class@method syntax.
 	 *
-	 * @param  \Illuminate\Container\Container $container
+	 * @param  Container $container
 	 * @param  string                          $target
 	 * @param  array                           $parameters
 	 * @param  string|null                     $defaultMethod
@@ -50,7 +49,7 @@ class BoundMethod {
 	 *
 	 * @throws \InvalidArgumentException
 	 */
-	protected static function callClass( $container, $target, array $parameters = [], $defaultMethod = null ) {
+	protected static function call_class( $container, $target, array $parameters = [], $defaultMethod = null ) {
 			$segments = explode( '@', $target );
 
 			// We will assume an @ sign is used to delimit the class name from the method
@@ -73,26 +72,26 @@ class BoundMethod {
 	/**
 	 * Call a method that has been bound to the container.
 	 *
-	 * @param  \Illuminate\Container\Container $container
+	 * @param  Container $container
 	 * @param  callable                        $callback
 	 * @param  mixed                           $default
 	 * @return mixed
 	 */
-	protected static function callBoundMethod( $container, $callback, $default ) {
+	protected static function call_bound_method( $container, $callback, $default ) {
 		if ( ! is_array( $callback ) ) {
-				return Util::unwrapIfClosure( $default );
+				return Util::unwrap_if_closure( $default );
 		}
 
 			// Here we need to turn the array callable into a Class@method string we can use to
 			// examine the container and see if there are any method bindings for this given
 			// method. If there are, we can call this method binding callback immediately.
-			$method = static::normalizeMethod( $callback );
+			$method = static::normalize_method( $callback );
 
-		if ( $container->hasMethodBinding( $method ) ) {
-				return $container->callMethodBinding( $method, $callback[0] );
+		if ( $container->has_method_binding( $method ) ) {
+				return $container->call_method_binding( $method, $callback[0] );
 		}
 
-			return Util::unwrapIfClosure( $default );
+			return Util::unwrap_if_closure( $default );
 	}
 
 	/**
@@ -101,7 +100,7 @@ class BoundMethod {
 	 * @param  callable $callback
 	 * @return string
 	 */
-	protected static function normalizeMethod( $callback ) {
+	protected static function normalize_method( $callback ) {
 			$class = is_string( $callback[0] ) ? $callback[0] : get_class( $callback[0] );
 
 			return "{$class}@{$callback[1]}";
@@ -110,18 +109,18 @@ class BoundMethod {
 	/**
 	 * Get all dependencies for a given method.
 	 *
-	 * @param  \Illuminate\Container\Container $container
+	 * @param  Container $container
 	 * @param  callable|string                 $callback
 	 * @param  array                           $parameters
 	 * @return array
 	 *
 	 * @throws \ReflectionException
 	 */
-	protected static function getMethodDependencies( $container, $callback, array $parameters = [] ) {
+	protected static function get_method_dependencies( $container, $callback, array $parameters = [] ) {
 			$dependencies = [];
 
-		foreach ( static::getCallReflector( $callback )->getParameters() as $parameter ) {
-				static::addDependencyForCallParameter( $container, $parameter, $parameters, $dependencies );
+		foreach ( static::get_call_reflector( $callback )->getParameters() as $parameter ) {
+				static::add_dependency_for_call_parameter( $container, $parameter, $parameters, $dependencies );
 		}
 
 			return array_merge( $dependencies, $parameters );
@@ -135,28 +134,28 @@ class BoundMethod {
 	 *
 	 * @throws \ReflectionException
 	 */
-	protected static function getCallReflector( $callback ) {
+	protected static function get_call_reflector( $callback ) {
 		if ( is_string( $callback ) && strpos( $callback, '::' ) !== false ) {
 				$callback = explode( '::', $callback );
 		} elseif ( is_object( $callback ) && ! $callback instanceof Closure ) {
 				$callback = [ $callback, '__invoke' ];
 		}
 
-			return is_array( $callback )
-											? new ReflectionMethod( $callback[0], $callback[1] )
-											: new ReflectionFunction( $callback );
+		return is_array( $callback )
+			? new ReflectionMethod( $callback[0], $callback[1] )
+			: new ReflectionFunction( $callback );
 	}
 
 	/**
 	 * Get the dependency for the given call parameter.
 	 *
-	 * @param  \Illuminate\Container\Container $container
+	 * @param  Container $container
 	 * @param  \ReflectionParameter            $parameter
 	 * @param  array                           $parameters
 	 * @param  array                           $dependencies
 	 * @return void
 	 */
-	protected static function addDependencyForCallParameter( $container, $parameter,
+	protected static function add_dependency_for_call_parameter( $container, $parameter,
 																													array &$parameters, &$dependencies ) {
 		if ( array_key_exists( $parameter->name, $parameters ) ) {
 				$dependencies[] = $parameters[ $parameter->name ];
@@ -173,7 +172,7 @@ class BoundMethod {
 		} elseif ( ! $parameter->isOptional() && ! array_key_exists( $parameter->name, $parameters ) ) {
 				$message = "Unable to resolve dependency [{$parameter}] in class {$parameter->getDeclaringClass()->getName()}";
 
-				throw new BindingResolutionException( $message );
+				throw new Binding_Resolution_Exception( $message );
 		}
 	}
 
@@ -183,7 +182,7 @@ class BoundMethod {
 	 * @param  mixed $callback
 	 * @return bool
 	 */
-	protected static function isCallableWithAtSign( $callback ) {
+	protected static function is_callable_with_at_sign( $callback ) {
 		return is_string( $callback ) && strpos( $callback, '@' ) !== false;
 	}
 }

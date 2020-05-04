@@ -507,7 +507,7 @@ class Container implements ArrayAccess, Container_Contract {
 	 * @throws \InvalidArgumentException Throw for invalid arguments.
 	 */
 	public function call( $callback, array $parameters = [], $default_method = null ) {
-		return BoundMethod::call( $this, $callback, $parameters, $default_method );
+		return Bound_Method::call( $this, $callback, $parameters, $default_method );
 	}
 
 	/**
