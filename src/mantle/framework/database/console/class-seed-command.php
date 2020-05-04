@@ -8,13 +8,13 @@
 namespace Mantle\Framework\Database\Console;
 
 use Mantle\Framework\Console\Command;
-use Mantle\Framework\Console\Conformable;
+use Mantle\Framework\Console\Confirmable;
 
 /**
  * Database Seed Command
  */
 class Seed_Command extends Command {
-	use Conformable;
+	use Confirmable;
 
 	/**
 	 * The console command name.

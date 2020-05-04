@@ -13,7 +13,7 @@ namespace Mantle\Framework\Console;
  * Useful to allow dangerous commands to gut-check if they should be
  * run on production environments.
  */
-trait Conformable {
+trait Confirmable {
 	/**
 	 * Confirm before proceeding with the action.
 	 * This method only asks for confirmation in production.
