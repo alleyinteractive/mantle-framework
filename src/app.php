@@ -15,11 +15,9 @@ $mantle_app->singleton(
 	Mantle\Framework\Console\Kernel::class,
 );
 
-// todo: setup http kernel.
-
-// $mantle_app->singleton(
-// 	Mantle\Framework\Contracts\Http\Kernel::class,
-// 	// Http class.
-// );
+$mantle_app->singleton(
+	Mantle\Framework\Contracts\Http\Kernel::class,
+	Mantle\Framework\Http\Kernel::class,
+);
 
 return $mantle_app;

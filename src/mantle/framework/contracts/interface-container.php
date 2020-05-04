@@ -60,7 +60,7 @@ interface Container extends ContainerInterface {
 	 * Register a shared binding if it hasn't already been registered.
 	 *
 	 * @param string               $abstract Abstract name.
-	 * @param \Closure|string|null $concrete
+	 * @param \Closure|string|null $concrete Concrete name.
 	 */
 	public function singleton_if( $abstract, $concrete = null );
 
@@ -68,7 +68,7 @@ interface Container extends ContainerInterface {
 	 * "Extend" an abstract type in the container.
 	 *
 	 * @param string   $abstract Abstract name.
-	 * @param \Closure $closure
+	 * @param \Closure $closure Closure callback.
 	 */
 	public function extend( $abstract, Closure $closure);
 

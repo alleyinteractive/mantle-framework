@@ -39,4 +39,9 @@ if ( defined( 'WP_CLI' ) && \WP_CLI ) {
 	$mantle_app
 		->make( Framework\Console\Kernel::class )
 		->handle();
+} else {
+	// Boot up the HTTP Kernel.
+	$mantle_app
+		->make( Framework\Contracts\Http\Kernel::class )
+		->handle();
 }
