@@ -16,7 +16,6 @@
         }
     ],
     "require": {
-        "illuminate/support": "^7.9",
         "psr/container": "^1.0"
     },
     "require-dev": {
