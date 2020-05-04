@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<ruleset>
+	<description>alleyinteractive/mantle-framework</description>
+
+	<arg value="ps" />
+
+	<exclude-pattern>tests/</exclude-pattern>
+
+	<rule ref="vendor/alley/alley-coding-standards" />
+
+	<rule ref="WordPress">
+		<exclude name="WordPress.NamingConventions.ValidPostTypeSlug.NotStringLiteral" />
+	</rule>
+
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="AI_Logger"/>
+			</property>
+		</properties>
+	</rule>
+</ruleset>
