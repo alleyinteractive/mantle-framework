@@ -14,6 +14,10 @@
 
 namespace Mantle;
 
+/**
+ * @todo Move this all to mantle-site.
+ */
+
 define( 'MANTLE_BASE_DIR', __DIR__ );
 
 require_once __DIR__ . '/vendor/autoload.php';
