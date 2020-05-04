@@ -149,4 +149,21 @@ class Application extends Container\Container implements Application_Contract {
 		$this->booted = true;
 		return $this;
 	}
+
+	/**
+	 * Get the Application's Environment
+	 *
+	 * @return string
+	 */
+	public function environment(): string {
+		if ( defined( 'VIP_GO_APP_ENVIRONMENT' ) && ! empty( VIP_GO_APP_ENVIRONMENT ) ) {
+			return (string) VIP_GO_APP_ENVIRONMENT;
+		}
+
+		if ( ! empty( $_SERVER['PANTHEON_ENVIRONMENT'] ) ) {
+			return (string) $_SERVER['PANTHEON_ENVIRONMENT']; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		}
+
+		return $_ENV['env'] ?? 'local';
+	}
 }
