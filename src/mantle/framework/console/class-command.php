@@ -62,7 +62,7 @@ abstract class Command {
 	 * Write an error to the console log.
 	 *
 	 * @param string $message Message to prompt.
-	 * @param bool $exit Flag to exit the script, defaults to false.
+	 * @param bool   $exit Flag to exit the script, defaults to false.
 	 */
 	public function error( string $message, bool $exit = false ) {
 		WP_CLI::error( $message, $exit );
