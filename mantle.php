@@ -19,17 +19,6 @@ namespace Mantle;
 define( 'MANTLE_BASE_DIR', __DIR__ );
 
 require_once __DIR__ . '/vendor/autoload.php';
-require_once __DIR__ . '/src/autoload.php';
-require_once __DIR__ . '/src/mantle/framework/helpers.php';
-
-// Generate the autoloader.
-try {
-	spl_autoload_register(
-		generate_wp_autoloader( __NAMESPACE__, __DIR__ . '/src/mantle' )
-	);
-} catch ( \Exception $e ) {
-	\wp_die( $e->getMessage() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-}
 
 /**
  * Setup the Application
