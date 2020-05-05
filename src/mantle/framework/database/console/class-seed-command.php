@@ -31,6 +31,6 @@ class Seed_Command extends Command {
 			return;
 		}
 
-		\WP_CLI::log( 'Handle..' );
+		$this->log( 'Handle...' );
 	}
 }

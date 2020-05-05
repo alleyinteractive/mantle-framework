@@ -55,7 +55,17 @@ abstract class Command {
 	 * @param string $message Message to log.
 	 */
 	public function log( string $message ): void {
-		\WP_CLI::log( $message );
+		WP_CLI::log( $message );
+	}
+
+	/**
+	 * Write an error to the console log.
+	 *
+	 * @param string $message Message to prompt.
+	 * @param bool $exit Flag to exit the script, defaults to false.
+	 */
+	public function error( string $message, bool $exit = false ) {
+		WP_CLI::error( $message, $exit );
 	}
 
 	/**
@@ -64,7 +74,7 @@ abstract class Command {
 	 * @param string $question Question to prompt.
 	 * @return string
 	 */
-	public function input( string $question ): string {
+	public function input( string $question = '' ): string {
 		if ( function_exists( 'readline' ) ) {
 			return readline( $question );
 		}
@@ -98,5 +108,23 @@ abstract class Command {
 		}
 
 		return 'y' === $answer || 'yes' === $answer;
+	}
+
+	/**
+	 * Prompt the user for input but hide the answer from the console.
+	 *
+	 * @param string $question Question to ask.
+	 * @param bool   $default Default value.
+	 * @return mixed
+	 */
+	public function secret( string $question, $default = null ) {
+		$this->log( $question );
+
+		// Black text on black background.
+		echo "\033[30;40m";
+		$input = $this->input();
+		echo "\033[0m";
+
+		return $input ?? $default;
 	}
 }
