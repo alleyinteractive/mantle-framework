@@ -81,12 +81,7 @@ abstract class Command {
 
 		echo $question; // phpcs:ignore
 
-		$ret = stream_get_line( STDIN, 1024, "\n" );
-		if ( \WP_Utils\Utils\is_windows() && "\r" === substr( $ret, -1 ) ) {
-			$ret = substr( $ret, 0, -1 );
-		}
-
-		return $ret;
+		return (string) stream_get_line( STDIN, 1024, "\n" );
 	}
 
 	/**
