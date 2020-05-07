@@ -85,7 +85,7 @@ class Application extends Container\Container implements Application_Contract {
 		// todo: replace with config class file.
 		$config = include MANTLE_BASE_DIR . '/config/app.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant
 
-		array_map( [ $this, 'register' ], $config['providers'] );
+		array_map( [ $this, 'register' ], $config['providers'] ?? [] );
 	}
 
 	/**
