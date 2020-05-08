@@ -7,4 +7,5 @@
 
 namespace Mantle\Framework\Helpers;
 
-require_once __DIR__ . '/nullable-core-objects.php';
+require_once __DIR__ . '/helpers-core-objects.php';
+require_once __DIR__ . '/helpers-array.php';
