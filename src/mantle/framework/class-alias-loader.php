@@ -122,7 +122,7 @@ class Alias_Loader {
 	 * @return void
 	 */
 	public function set_aliases( array $aliases ) {
-			$this->aliases = $aliases;
+		$this->aliases = $aliases;
 	}
 
 	/**
@@ -131,7 +131,7 @@ class Alias_Loader {
 	 * @return bool
 	 */
 	public function is_registered() {
-			return $this->registered;
+		return $this->registered;
 	}
 
 	/**
