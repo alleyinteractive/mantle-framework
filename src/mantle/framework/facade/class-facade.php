@@ -35,8 +35,6 @@ abstract class Facade {
 	/**
 	 * Get the name of the Facade Accessor
 	 *
-	 * Not marked as abstract to allow static calls to the class
-	 *
 	 * @return string
 	 */
 	abstract protected static function get_facade_accessor(): string;
