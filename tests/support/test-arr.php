@@ -992,13 +992,6 @@ class SupportArrTest extends TestCase {
 		$this->assertSame( [ 'products' => [ 'desk' => [ 'price' => 300 ] ] ], $array );
 	}
 
-	public function testShuffleWithSeed() {
-		$this->assertEquals(
-			Arr::shuffle( range( 0, 100, 10 ), 1234 ),
-			Arr::shuffle( range( 0, 100, 10 ), 1234 )
-		);
-	}
-
 	/**
 	 * Disabled until Collections is available.
 	 */
