@@ -31,19 +31,19 @@ class Bound_Method {
 	 */
 	public static function call( $container, $callback, array $parameters = [], $default_method = null ) {
 		if ( static::is_callable_with_at_sign( $callback ) || $default_method ) {
-				return static::call_class( $container, $callback, $parameters, $default_method );
+			return static::call_class( $container, $callback, $parameters, $default_method );
 		}
 
-			return static::call_bound_method(
-				$container,
-				$callback,
-				function () use ( $container, $callback, $parameters ) {
-					return call_user_func_array(
-						$callback,
-						static::get_method_dependencies( $container, $callback, $parameters )
-					);
-				}
-			);
+		return static::call_bound_method(
+			$container,
+			$callback,
+			function () use ( $container, $callback, $parameters ) {
+				return call_user_func_array(
+					$callback,
+					static::get_method_dependencies( $container, $callback, $parameters )
+				);
+			}
+		);
 	}
 
 	/**
@@ -164,24 +164,28 @@ class Bound_Method {
 	 *
 	 * @throws Binding_Resolution_Exception Thrown for invalid binding resolution.
 	 */
-	protected static function add_dependency_for_call_parameter( $container, $parameter,
-																													array &$parameters, &$dependencies ) {
+	protected static function add_dependency_for_call_parameter(
+		$container,
+		$parameter,
+		array &$parameters,
+		&$dependencies
+	) {
 		if ( array_key_exists( $parameter->name, $parameters ) ) {
-				$dependencies[] = $parameters[ $parameter->name ];
+			$dependencies[] = $parameters[ $parameter->name ];
 
-				unset( $parameters[ $parameter->name ] );
+			unset( $parameters[ $parameter->name ] );
 		} elseif ( $parameter->getClass() && array_key_exists( $parameter->getClass()->name, $parameters ) ) {
-				$dependencies[] = $parameters[ $parameter->getClass()->name ];
+			$dependencies[] = $parameters[ $parameter->getClass()->name ];
 
-				unset( $parameters[ $parameter->getClass()->name ] );
+			unset( $parameters[ $parameter->getClass()->name ] );
 		} elseif ( $parameter->getClass() ) {
-				$dependencies[] = $container->make( $parameter->getClass()->name );
+			$dependencies[] = $container->make( $parameter->getClass()->name );
 		} elseif ( $parameter->isDefaultValueAvailable() ) {
-				$dependencies[] = $parameter->getDefaultValue();
+			$dependencies[] = $parameter->getDefaultValue();
 		} elseif ( ! $parameter->isOptional() && ! array_key_exists( $parameter->name, $parameters ) ) {
-				$message = "Unable to resolve dependency [{$parameter}] in class {$parameter->getDeclaringClass()->getName()}";
+			$message = "Unable to resolve dependency [{$parameter}] in class {$parameter->getDeclaringClass()->getName()}";
 
-				throw new Binding_Resolution_Exception( $message );
+			throw new Binding_Resolution_Exception( $message );
 		}
 	}
 
