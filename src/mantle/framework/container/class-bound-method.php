@@ -29,7 +29,7 @@ class Bound_Method {
 	 * @throws \ReflectionException Throw on invalid arguments.
 	 * @throws \InvalidArgumentException Throw on invalid arguments.
 	 */
-	public static function call( $container, $callback, array $parameters = array(), $default_method = null ) {
+	public static function call( $container, $callback, array $parameters = [], $default_method = null ) {
 		if ( static::is_callable_with_at_sign( $callback ) || $default_method ) {
 				return static::call_class( $container, $callback, $parameters, $default_method );
 		}
@@ -57,7 +57,7 @@ class Bound_Method {
 	 *
 	 * @throws \InvalidArgumentException Throw on invalid arguments.
 	 */
-	protected static function call_class( $container, $target, array $parameters = array(), $default_method = null ) {
+	protected static function call_class( $container, $target, array $parameters = [], $default_method = null ) {
 			$segments = explode( '@', $target );
 
 			// We will assume an @ sign is used to delimit the class name from the method
@@ -72,7 +72,7 @@ class Bound_Method {
 
 			return static::call(
 				$container,
-				array( $container->make( $segments[0] ), $method ),
+				[ $container->make( $segments[0] ), $method ],
 				$parameters
 			);
 	}
@@ -96,7 +96,7 @@ class Bound_Method {
 		$method = static::normalize_method( $callback );
 
 		if ( $container->has_method_binding( $method ) ) {
-				return $container->call_method_binding( $method, $callback[0] );
+			return $container->call_method_binding( $method, $callback[0] );
 		}
 
 		return Util::unwrap_if_closure( $default );
@@ -124,13 +124,13 @@ class Bound_Method {
 	 * @throws \ReflectionException Throw on invalid arguments.
 	 */
 	protected static function get_method_dependencies( $container, $callback, array $parameters = array() ) {
-			$dependencies = array();
+		$dependencies = [];
 
 		foreach ( static::get_call_reflector( $callback )->getParameters() as $parameter ) {
-				static::add_dependency_for_call_parameter( $container, $parameter, $parameters, $dependencies );
+			static::add_dependency_for_call_parameter( $container, $parameter, $parameters, $dependencies );
 		}
 
-			return array_merge( $dependencies, $parameters );
+		return array_merge( $dependencies, $parameters );
 	}
 
 	/**
@@ -143,9 +143,9 @@ class Bound_Method {
 	 */
 	protected static function get_call_reflector( $callback ) {
 		if ( is_string( $callback ) && strpos( $callback, '::' ) !== false ) {
-				$callback = explode( '::', $callback );
+			$callback = explode( '::', $callback );
 		} elseif ( is_object( $callback ) && ! $callback instanceof Closure ) {
-				$callback = array( $callback, '__invoke' );
+			$callback = array( $callback, '__invoke' );
 		}
 
 		return is_array( $callback )

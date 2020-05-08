@@ -1,6 +1,6 @@
 <?php
 /**
- * Conformable trait file.
+ * Confirmable trait file.
  *
  * @package Mantle
  */

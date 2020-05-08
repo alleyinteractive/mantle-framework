@@ -101,6 +101,7 @@ interface Container extends ContainerInterface {
 	 * @return mixed
 	 */
 	public function make( $abstract, array $parameters = [] );
+
 	/**
 	 * Determine if the given abstract type has been resolved.
 	 *

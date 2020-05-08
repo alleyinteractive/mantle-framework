@@ -14,7 +14,7 @@ use Mantle\Framework\Application;
  */
 interface Bootstrapable {
 	/**
-	 * BOotstrap method.
+	 * Bootstrap method.
 	 *
 	 * @param Application $app Application instance.
 	 */
