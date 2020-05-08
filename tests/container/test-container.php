@@ -196,7 +196,7 @@ class Test_Container extends TestCase {
 			}
 		);
 		$container->alias( 'foo', 'baz' );
-		$this->assertEquals( array( 1, 2, 3 ), $container->make( 'baz', array( 1, 2, 3 ) ) );
+		$this->assertEquals( [ 1, 2, 3 ], $container->make( 'baz', [ 1, 2, 3 ] ) );
 	}
 
 	public function testBindingsCanBeOverridden() {
@@ -319,7 +319,7 @@ class Test_Container extends TestCase {
 		$this->expectExceptionMessage( 'Unresolvable dependency resolving [Parameter #0 [ <required> $first ]] in class Mantle\Tests\Container\ContainerMixedPrimitiveStub' );
 
 		$container = new Container();
-		$container->make( ContainerMixedPrimitiveStub::class, array() );
+		$container->make( ContainerMixedPrimitiveStub::class, [] );
 	}
 
 	public function testBindingResolutionExceptionMessage() {
@@ -327,7 +327,7 @@ class Test_Container extends TestCase {
 		$this->expectExceptionMessage( 'Target [Mantle\Tests\Container\IContainerContractStub] is not instantiable.' );
 
 		$container = new Container();
-		$container->make( IContainerContractStub::class, array() );
+		$container->make( IContainerContractStub::class, [] );
 	}
 
 	public function testBindingResolutionExceptionMessageIncludesBuildStack() {
@@ -335,7 +335,7 @@ class Test_Container extends TestCase {
 		$this->expectExceptionMessage( 'Target [Mantle\Tests\Container\IContainerContractStub] is not instantiable while building [Mantle\Tests\Container\ContainerDependentStub].' );
 
 		$container = new Container();
-		$container->make( ContainerDependentStub::class, array() );
+		$container->make( ContainerDependentStub::class, [] );
 	}
 
 	public function testBindingResolutionExceptionMessageWhenClassDoesNotExist() {
@@ -443,22 +443,22 @@ class Test_Container extends TestCase {
 
 	public function testMakeWithMethodIsAnAliasForMakeMethod() {
 		$mock = $this->getMockBuilder( Container::class )
-			->setMethods( array( 'make' ) )
+			->setMethods( [ 'make' ] )
 			->getMock();
 
 		$mock->expects( $this->once() )
 					->method( 'make' )
-					->with( ContainerDefaultValueStub::class, array( 'default' => 'laurence' ) )
+					->with( ContainerDefaultValueStub::class, [ 'default' => 'laurence' ] )
 					->willReturn( new stdClass() );
 
-		$result = $mock->make_with( ContainerDefaultValueStub::class, array( 'default' => 'laurence' ) );
+		$result = $mock->make_with( ContainerDefaultValueStub::class, [ 'default' => 'laurence' ] );
 
 		$this->assertInstanceOf( stdClass::class, $result );
 	}
 
 	public function testResolvingWithArrayOfParameters() {
 		$container  = new Container();
-		$instance = $container->make( ContainerDefaultValueStub::class, array( 'default' => 'adam' ) );
+		$instance = $container->make( ContainerDefaultValueStub::class, [ 'default' => 'adam' ] );
 		$this->assertSame( 'adam', $instance->default );
 
 		$instance = $container->make( ContainerDefaultValueStub::class );
@@ -471,13 +471,13 @@ class Test_Container extends TestCase {
 			}
 		);
 
-		$this->assertEquals( array( 1, 2, 3 ), $container->make( 'foo', array( 1, 2, 3 ) ) );
+		$this->assertEquals( [ 1, 2, 3 ], $container->make( 'foo', [ 1, 2, 3 ] ) );
 	}
 
 	public function testResolvingWithUsingAnInterface() {
 		$container = new Container();
 		$container->bind( IContainerContractStub::class, ContainerInjectVariableStubWithInterfaceImplementation::class );
-		$instance = $container->make( IContainerContractStub::class, array( 'something' => 'laurence' ) );
+		$instance = $container->make( IContainerContractStub::class, [ 'something' => 'laurence' ] );
 		$this->assertSame( 'laurence', $instance->something );
 	}
 
@@ -486,7 +486,7 @@ class Test_Container extends TestCase {
 		$container->bind(
 			'foo',
 			function ( $app, $config ) {
-					return $app->make( 'bar', array( 'name' => 'Taylor' ) );
+					return $app->make( 'bar', [ 'name' => 'Taylor' ] );
 			}
 		);
 		$container->bind(
@@ -496,7 +496,7 @@ class Test_Container extends TestCase {
 			}
 		);
 
-		$this->assertEquals( array( 'name' => 'Taylor' ), $container->make( 'foo', array( 'something' ) ) );
+		$this->assertEquals( [ 'name' => 'Taylor' ], $container->make( 'foo', [ 'something' ] ) );
 	}
 
 	public function testNestedParametersAreResetForFreshMake() {
@@ -516,7 +516,7 @@ class Test_Container extends TestCase {
 			}
 		);
 
-		$this->assertEquals( array(), $container->make( 'foo', array( 'something' ) ) );
+		$this->assertEquals( [], $container->make( 'foo', [ 'something' ] ) );
 	}
 
 	public function testSingletonBindingsNotRespectedWithMakeParameters() {
@@ -529,8 +529,8 @@ class Test_Container extends TestCase {
 			}
 		);
 
-		$this->assertEquals( array( 'name' => 'taylor' ), $container->make( 'foo', array( 'name' => 'taylor' ) ) );
-		$this->assertEquals( array( 'name' => 'abigail' ), $container->make( 'foo', array( 'name' => 'abigail' ) ) );
+		$this->assertEquals( [ 'name' => 'taylor' ], $container->make( 'foo', [ 'name' => 'taylor' ] ) );
+		$this->assertEquals( [ 'name' => 'abigail' ], $container->make( 'foo', [ 'name' => 'abigail' ] ) );
 	}
 
 	public function testCanBuildWithoutParameterStackWithNoConstructors() {
