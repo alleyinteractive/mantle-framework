@@ -29,6 +29,7 @@ class Kernel implements Kernel_Contract {
 	 */
 	protected $bootstrappers = [
 		\Mantle\Framework\Bootstrap\Load_Configuration::class,
+		\Mantle\Framework\Bootstrap\Register_Facades::class,
 		\Mantle\Framework\Bootstrap\Register_Providers::class,
 		\Mantle\Framework\Bootstrap\Boot_Providers::class,
 		\Mantle\Framework\Bootstrap\Register_Cli_Commands::class,
