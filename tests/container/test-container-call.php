@@ -22,7 +22,7 @@ class Test_Container_Call extends TestCase {
 	public function testCallWithAtSignBasedClassReferences() {
 		$container = new Container();
 		$result    = $container->call( ContainerTestCallStub::class . '@work', array( 'foo', 'bar' ) );
-		$this->assertEquals( array( 'foo', 'bar' ), $result );
+		$this->assertEquals( [ 'foo', 'bar' ], $result );
 
 		$container = new Container();
 		$result    = $container->call( ContainerTestCallStub::class . '@inject' );
@@ -30,20 +30,20 @@ class Test_Container_Call extends TestCase {
 		$this->assertSame( 'taylor', $result[1] );
 
 		$container = new Container();
-		$result    = $container->call( ContainerTestCallStub::class . '@inject', array( 'default' => 'foo' ) );
+		$result    = $container->call( ContainerTestCallStub::class . '@inject', [ 'default' => 'foo' ] );
 		$this->assertInstanceOf( ContainerCallConcreteStub::class, $result[0] );
 		$this->assertSame( 'foo', $result[1] );
 
 		$container = new Container();
-		$result    = $container->call( ContainerTestCallStub::class, array( 'foo', 'bar' ), 'work' );
-		$this->assertEquals( array( 'foo', 'bar' ), $result );
+		$result    = $container->call( ContainerTestCallStub::class, [ 'foo', 'bar' ], 'work' );
+		$this->assertEquals( [ 'foo', 'bar' ], $result );
 	}
 
 	public function testCallWithCallableArray() {
 		$container = new Container();
 		$stub      = new ContainerTestCallStub();
-		$result    = $container->call( array( $stub, 'work' ), array( 'foo', 'bar' ) );
-		$this->assertEquals( array( 'foo', 'bar' ), $result );
+		$result    = $container->call( array( $stub, 'work' ), [ 'foo', 'bar' ] );
+		$this->assertEquals( [ 'foo', 'bar' ], $result );
 	}
 
 	public function testCallWithStaticMethodNameString() {
@@ -69,7 +69,7 @@ class Test_Container_Call extends TestCase {
 			}
 		);
 		$result = $container->call( ContainerTestCallStub::class . '@unresolvable' );
-		$this->assertEquals( array( 'foo', 'bar' ), $result );
+		$this->assertEquals( [ 'foo', 'bar' ], $result );
 
 		$container = new Container();
 		$container->bind_method(
@@ -83,17 +83,17 @@ class Test_Container_Call extends TestCase {
 
 		$container = new Container();
 		$result    = $container->call(
-			array( new ContainerTestCallStub(), 'inject' ),
-			array(
+			[ new ContainerTestCallStub(), 'inject' ],
+			[
 				'_stub'   => 'foo',
 				'default' => 'bar',
-			)
+			]
 		);
 		$this->assertInstanceOf( ContainerCallConcreteStub::class, $result[0] );
 		$this->assertSame( 'bar', $result[1] );
 
 		$container = new Container();
-		$result    = $container->call( array( new ContainerTestCallStub(), 'inject' ), array( '_stub' => 'foo' ) );
+		$result    = $container->call( [ new ContainerTestCallStub(), 'inject' ], [ '_stub' => 'foo' ] );
 		$this->assertInstanceOf( ContainerCallConcreteStub::class, $result[0] );
 		$this->assertSame( 'taylor', $result[1] );
 	}
@@ -101,23 +101,23 @@ class Test_Container_Call extends TestCase {
 	public function testBindMethodAcceptsAnArray() {
 		$container = new Container();
 		$container->bind_method(
-			array( ContainerTestCallStub::class, 'unresolvable' ),
+			[ ContainerTestCallStub::class, 'unresolvable' ],
 			function ( $stub ) {
 				return $stub->unresolvable( 'foo', 'bar' );
 			}
 		);
 		$result = $container->call( ContainerTestCallStub::class . '@unresolvable' );
-		$this->assertEquals( array( 'foo', 'bar' ), $result );
+		$this->assertEquals( [ 'foo', 'bar' ], $result );
 
 		$container = new Container();
 		$container->bind_method(
-			array( ContainerTestCallStub::class, 'unresolvable' ),
+			[ ContainerTestCallStub::class, 'unresolvable' ],
 			function ( $stub ) {
 				return $stub->unresolvable( 'foo', 'bar' );
 			}
 		);
 		$result = $container->call( array( new ContainerTestCallStub(), 'unresolvable' ) );
-		$this->assertEquals( array( 'foo', 'bar' ), $result );
+		$this->assertEquals( [ 'foo', 'bar' ], $result );
 	}
 
 	public function testClosureCallWithInjectedDependency() {
@@ -125,35 +125,35 @@ class Test_Container_Call extends TestCase {
 		$container->call(
 			function ( ContainerCallConcreteStub $stub ) {
 			},
-			array( 'foo' => 'bar' )
+			[ 'foo' => 'bar' ]
 		);
 
 		$container->call(
 			function ( ContainerCallConcreteStub $stub ) {
 			},
-			array(
+			[
 				'foo'  => 'bar',
 				'stub' => new ContainerCallConcreteStub(),
-			)
+			]
 		);
 	}
 
 	public function testCallWithDependencies() {
 		$container = new Container();
 		$result    = $container->call(
-			function ( stdClass $foo, $bar = array() ) {
+			function ( stdClass $foo, $bar = [] ) {
 				return func_get_args();
 			}
 		);
 
 		$this->assertInstanceOf( stdClass::class, $result[0] );
-		$this->assertEquals( array(), $result[1] );
+		$this->assertEquals( [], $result[1] );
 
 		$result = $container->call(
-			function ( stdClass $foo, $bar = array() ) {
+			function ( stdClass $foo, $bar = [] ) {
 				return func_get_args();
 			},
-			array( 'bar' => 'taylor' )
+			[ 'bar' => 'taylor' ]
 		);
 
 		$this->assertInstanceOf( stdClass::class, $result[0] );
@@ -164,7 +164,7 @@ class Test_Container_Call extends TestCase {
 			function ( stdClass $foo, ContainerCallConcreteStub $bar ) {
 				return func_get_args();
 			},
-			array( ContainerCallConcreteStub::class => $stub )
+			[ ContainerCallConcreteStub::class => $stub ]
 		);
 
 		$this->assertInstanceOf( stdClass::class, $result[0] );
@@ -174,10 +174,10 @@ class Test_Container_Call extends TestCase {
 		 * Wrap a function...
 		 */
 		$result = $container->wrap(
-			function ( stdClass $foo, $bar = array() ) {
+			function ( stdClass $foo, $bar = [] ) {
 				return func_get_args();
 			},
-			array( 'bar' => 'taylor' )
+			[ 'bar' => 'taylor' ]
 		);
 
 		$this->assertInstanceOf( Closure::class, $result );
