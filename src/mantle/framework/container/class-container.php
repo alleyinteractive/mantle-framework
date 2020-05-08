@@ -34,112 +34,112 @@ class Container implements ArrayAccess, Container_Contract {
 	 *
 	 * @var bool[]
 	 */
-	protected $resolved = array();
+	protected $resolved = [];
 
 	/**
 	 * The container's bindings.
 	 *
 	 * @var array[]
 	 */
-	protected $bindings = array();
+	protected $bindings = [];
 
 	/**
 	 * The container's method bindings.
 	 *
 	 * @var \Closure[]
 	 */
-	protected $method_bindings = array();
+	protected $method_bindings = [];
 
 	/**
 	 * The container's shared instances.
 	 *
 	 * @var object[]
 	 */
-	protected $instances = array();
+	protected $instances = [];
 
 	/**
 	 * The registered type aliases.
 	 *
 	 * @var string[]
 	 */
-	protected $aliases = array();
+	protected $aliases = [];
 
 	/**
 	 * The registered aliases keyed by the abstract name.
 	 *
 	 * @var array[]
 	 */
-	protected $abstract_aliases = array();
+	protected $abstract_aliases = [];
 
 	/**
 	 * The extension closures for services.
 	 *
 	 * @var array[]
 	 */
-	protected $extenders = array();
+	protected $extenders = [];
 
 	/**
 	 * All of the registered tags.
 	 *
 	 * @var array[]
 	 */
-	protected $tags = array();
+	protected $tags = [];
 
 	/**
 	 * The stack of concretions currently being built.
 	 *
 	 * @var array[]
 	 */
-	protected $build_stack = array();
+	protected $build_stack = [];
 
 	/**
 	 * The parameter override stack.
 	 *
 	 * @var array[]
 	 */
-	protected $with = array();
+	protected $with = [];
 
 	/**
 	 * The contextual binding map.
 	 *
 	 * @var array[]
 	 */
-	public $contextual = array();
+	public $contextual = [];
 
 	/**
 	 * All of the registered rebound callbacks.
 	 *
 	 * @var array[]
 	 */
-	protected $rebound_callbacks = array();
+	protected $rebound_callbacks = [];
 
 	/**
 	 * All of the global resolving callbacks.
 	 *
 	 * @var \Closure[]
 	 */
-	protected $global_resolving_callbacks = array();
+	protected $global_resolving_callbacks = [];
 
 	/**
 	 * All of the global after resolving callbacks.
 	 *
 	 * @var \Closure[]
 	 */
-	protected $global_after_resolving_callbacks = array();
+	protected $global_after_resolving_callbacks = [];
 
 	/**
 	 * All of the resolving callbacks by class type.
 	 *
 	 * @var array[]
 	 */
-	protected $resolving_callbacks = array();
+	protected $resolving_callbacks = [];
 
 	/**
 	 * All of the after resolving callbacks by class type.
 	 *
 	 * @var array[]
 	 */
-	protected $after_resolving_callbacks = array();
+	protected $after_resolving_callbacks = [];
 
 	/**
 	 * Determine if the given abstract type has been bound.
@@ -240,7 +240,7 @@ class Container implements ArrayAccess, Container_Contract {
 	 * @return \Closure
 	 */
 	protected function get_closure( $abstract, $concrete ) {
-		return function ( $container, $parameters = array() ) use ( $abstract, $concrete ) {
+		return function ( $container, $parameters = [] ) use ( $abstract, $concrete ) {
 			if ( $abstract == $concrete ) {
 				return $container->build( $concrete );
 			}
@@ -480,7 +480,7 @@ class Container implements ArrayAccess, Container_Contract {
 	 * @return array
 	 */
 	protected function getReboundCallbacks( $abstract ) {
-		return $this->rebound_callbacks[ $abstract ] ?? array();
+		return $this->rebound_callbacks[ $abstract ] ?? [];
 	}
 
 	/**
@@ -490,7 +490,7 @@ class Container implements ArrayAccess, Container_Contract {
 	 * @param  array    $parameters
 	 * @return \Closure
 	 */
-	public function wrap( Closure $callback, array $parameters = array() ) {
+	public function wrap( Closure $callback, array $parameters = [] ) {
 		return function () use ( $callback, $parameters ) {
 				return $this->call( $callback, $parameters );
 		};
@@ -506,7 +506,7 @@ class Container implements ArrayAccess, Container_Contract {
 	 *
 	 * @throws \InvalidArgumentException Throw for invalid arguments.
 	 */
-	public function call( $callback, array $parameters = array(), $default_method = null ) {
+	public function call( $callback, array $parameters = [], $default_method = null ) {
 		return Bound_Method::call( $this, $callback, $parameters, $default_method );
 	}
 
@@ -529,7 +529,7 @@ class Container implements ArrayAccess, Container_Contract {
 	 * @param  array  $parameters
 	 * @return mixed
 	 */
-	public function make_with( $abstract, array $parameters = array() ) {
+	public function make_with( $abstract, array $parameters = [] ) {
 		return $this->make( $abstract, $parameters );
 	}
 
@@ -542,7 +542,7 @@ class Container implements ArrayAccess, Container_Contract {
 	 *
 	 * @throws Binding_Resolution_Exception Thrown on missing resolution.
 	 */
-	public function make( $abstract, array $parameters = array() ) {
+	public function make( $abstract, array $parameters = [] ) {
 		return $this->resolve( $abstract, $parameters );
 	}
 
@@ -574,7 +574,7 @@ class Container implements ArrayAccess, Container_Contract {
 	 *
 	 * @throws Binding_Resolution_Exception Thrown on missing resolution.
 	 */
-	protected function resolve( $abstract, $parameters = array(), $raise_events = true ) {
+	protected function resolve( $abstract, $parameters = [], $raise_events = true ) {
 		$abstract = $this->get_alias( $abstract );
 
 		$needs_contextual_build = ! empty( $parameters ) || ! is_null(
@@ -765,7 +765,7 @@ class Container implements ArrayAccess, Container_Contract {
 	 * @throws Binding_Resolution_Exception Thrown on missing resolution.
 	 */
 	protected function resolve_dependencies( array $dependencies ) {
-		$results = array();
+		$results = [];
 
 		foreach ( $dependencies as $dependency ) {
 			// If this dependency has a override for this particular build we will use
@@ -817,7 +817,7 @@ class Container implements ArrayAccess, Container_Contract {
 	 * @return array
 	 */
 	protected function get_last_parameter_override() {
-			return count( $this->with ) ? end( $this->with ) : array();
+			return count( $this->with ) ? end( $this->with ) : [];
 	}
 
 	/**
@@ -979,7 +979,7 @@ class Container implements ArrayAccess, Container_Contract {
 	 * @return array
 	 */
 	protected function get_callbacks_for_type( $abstract, $object, array $callbacks_per_type ) {
-			$results = array();
+			$results = [];
 
 		foreach ( $callbacks_per_type as $type => $callbacks ) {
 			if ( $type === $abstract || $object instanceof $type ) {
@@ -1035,7 +1035,7 @@ class Container implements ArrayAccess, Container_Contract {
 	protected function get_extenders( $abstract ) {
 			$abstract = $this->get_alias( $abstract );
 
-			return $this->extenders[ $abstract ] ?? array();
+			return $this->extenders[ $abstract ] ?? [];
 	}
 
 	/**
@@ -1074,7 +1074,7 @@ class Container implements ArrayAccess, Container_Contract {
 	 * @return void
 	 */
 	public function forget_instances() {
-			$this->instances = array();
+			$this->instances = [];
 	}
 
 	/**

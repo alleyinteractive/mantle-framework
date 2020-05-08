@@ -123,7 +123,7 @@ class Bound_Method {
 	 *
 	 * @throws \ReflectionException Throw on invalid arguments.
 	 */
-	protected static function get_method_dependencies( $container, $callback, array $parameters = array() ) {
+	protected static function get_method_dependencies( $container, $callback, array $parameters = [] ) {
 		$dependencies = [];
 
 		foreach ( static::get_call_reflector( $callback )->getParameters() as $parameter ) {
@@ -145,7 +145,7 @@ class Bound_Method {
 		if ( is_string( $callback ) && strpos( $callback, '::' ) !== false ) {
 			$callback = explode( '::', $callback );
 		} elseif ( is_object( $callback ) && ! $callback instanceof Closure ) {
-			$callback = array( $callback, '__invoke' );
+			$callback = [ $callback, '__invoke' ];
 		}
 
 		return is_array( $callback )

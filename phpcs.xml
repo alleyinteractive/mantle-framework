@@ -8,6 +8,8 @@
 
 	<rule ref="vendor/alley/alley-coding-standards" />
 
+	<rule ref="Generic.Arrays.DisallowLongArraySyntax" />
+
 	<rule ref="WordPress">
 		<exclude name="WordPress.NamingConventions.ValidPostTypeSlug.NotStringLiteral" />
 	</rule>

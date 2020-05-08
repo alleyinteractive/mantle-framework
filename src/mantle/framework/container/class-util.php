@@ -24,7 +24,7 @@ class Util {
 	 */
 	public static function array_wrap( $value ) {
 		if ( is_null( $value ) ) {
-			return array();
+			return [];
 		}
 
 		return is_array( $value ) ? $value : [ $value ];
