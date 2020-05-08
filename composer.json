@@ -16,6 +16,7 @@
         }
     ],
     "require": {
+        "nesbot/carbon": "^2.33",
         "psr/container": "^1.0"
     },
     "require-dev": {

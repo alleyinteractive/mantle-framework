@@ -2,6 +2,9 @@
 /**
  * Mantle Framework Helpers
  *
+ * Intentionally not Namespaced to allow for root-level access to
+ * framework methods.
+ *
  * @package Mantle
  */
 
@@ -20,4 +23,19 @@ function mantle_app( string $abstract = null, array $parameters = [] ) {
 	}
 
 	return Application::getInstance()->make( $abstract, $parameters );
+}
+
+/**
+ * Get a configuration value from the Configuration Repository.
+ *
+ * @param string $key Key to retrieve.
+ * @param mixed  $default Default configuration value.
+ * @return mixed
+ */
+function mantle_config( string $key = null, $default = null ) {
+	if ( is_null( $key ) ) {
+		return mantle_app( 'config' );
+	}
+
+	return mantle_app( 'config' )->get( $key, $default );
 }
