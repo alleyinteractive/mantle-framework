@@ -8,6 +8,8 @@
 
 	<rule ref="vendor/alley/alley-coding-standards" />
 
+	<rule ref="Generic.Arrays.DisallowLongArraySyntax" />
+
 	<rule ref="WordPress">
 		<exclude name="WordPress.NamingConventions.ValidPostTypeSlug.NotStringLiteral" />
 	</rule>
@@ -18,5 +20,13 @@
 				<element value="Mantle"/>
 			</property>
 		</properties>
+	</rule>
+
+	<rule ref="Squiz.Commenting.FunctionComment">
+		<exclude-pattern>src/mantle/framework/container/class-container.php</exclude-pattern>
+	</rule>
+
+	<rule ref="Squiz.PHP.DisallowMultipleAssignments">
+		<exclude-pattern>src/mantle/framework/container/class-container.php</exclude-pattern>
 	</rule>
 </ruleset>

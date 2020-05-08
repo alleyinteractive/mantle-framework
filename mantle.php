@@ -12,4 +12,4 @@
  * @package Mantle
  */
 
-// To come.
+namespace Mantle;
