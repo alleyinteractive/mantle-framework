@@ -1,6 +1,6 @@
 <?php
 
-namespace Illuminate\Tests\Foundation;
+namespace Mantle\Tests;
 
 use Mantle\Framework\Alias_Loader;
 use PHPUnit\Framework\TestCase;
