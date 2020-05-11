@@ -9,8 +9,8 @@ use WP_UnitTestCase;
  */
 class Test_Comment_Object extends WP_UnitTestCase {
 	public function test_comment_object() {
-		$comment   = $this->factory->comment->create_and_get();
-		$object = Comment::find( $comment );
+		$comment = $this->factory->comment->create_and_get();
+		$object  = Comment::find( $comment );
 
 		$this->assertEquals( $object->id(), $comment->comment_ID );
 		$this->assertEquals( $object->name(), $comment->comment_author );
@@ -22,8 +22,8 @@ class Test_Comment_Object extends WP_UnitTestCase {
 	}
 
 	public function test_comment_object_parent() {
-		$parent_id = $this->factory->comment->create();
-		$comment_id   = $this->factory->comment->create( [ 'comment_parent' => $parent_id ] );
+		$parent_id  = $this->factory->comment->create();
+		$comment_id = $this->factory->comment->create( [ 'comment_parent' => $parent_id ] );
 
 		$object = Comment::find( $comment_id );
 

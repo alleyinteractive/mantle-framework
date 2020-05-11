@@ -50,7 +50,7 @@ abstract class Model implements ArrayAccess {
 	abstract public static function find( $object_id );
 
 	/**
-	 * Get am attribute model.
+	 * Get an attribute model.
 	 *
 	 * @param string $attribute Attribute name.
 	 * @return mixed
@@ -136,7 +136,7 @@ abstract class Model implements ArrayAccess {
 	}
 
 	/**
-	 * Magic Method for Attributes
+	 * Magic Method to get Attributes
 	 *
 	 * @param string $offset Attribute to get.
 	 */
