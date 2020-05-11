@@ -100,7 +100,7 @@ class Repository implements ArrayAccess, Config_Contract {
 	/**
 	 * Set an offset.
 	 *
-	 * @param mixed $offset Offset to retrieve.
+	 * @param mixed $offset Offset to set.
 	 * @param mixed $value Value to set.
 	 */
 	public function offsetSet( $offset, $value ) {

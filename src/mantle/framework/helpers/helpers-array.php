@@ -77,7 +77,7 @@ function data_get( $target, $key, $default = null ) {
  *
  * @param  mixed        $target Array to update.
  * @param  string|array $key Key to set.
- * @param  mixed        $value Value top set.
+ * @param  mixed        $value Value to set.
  * @param  bool         $overwrite Flag to overwrite the existing value.
  * @return mixed
  */
