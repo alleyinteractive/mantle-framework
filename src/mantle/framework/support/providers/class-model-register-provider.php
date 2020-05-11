@@ -13,7 +13,7 @@ use Mantle\Framework\Service_Provider;
 /**
  * Model Register Service Provider
  */
-class Model_Register extends Service_Provider {
+class Model_Register_Provider extends Service_Provider {
 	/**
 	 * Models to register for the application.
 	 *
@@ -25,7 +25,7 @@ class Model_Register extends Service_Provider {
 	 * Register the service provider.
 	 */
 	public function register() {
-		$this->set_models_to_register();
+		$this->set_models_to_register( $this->app['config']->get( 'models.register' ) );
 	}
 
 	/**
@@ -49,8 +49,10 @@ class Model_Register extends Service_Provider {
 
 	/**
 	 * Set the models to register.
+	 *
+	 * @param string[] $models Models to register.
 	 */
-	protected function set_models_to_register() {
-		$this->models = $this->app['config']->get( 'models.register' );
+	protected function set_models_to_register( array $models ) {
+		$this->models = $models;
 	}
 }
