@@ -15,4 +15,9 @@ interface Kernel {
 	 * Run the console application.
 	 */
 	public function handle();
+
+	/**
+	 * Register the application's commands.
+	 */
+	public function register_commands();
 }

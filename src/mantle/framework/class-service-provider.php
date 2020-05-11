@@ -69,7 +69,7 @@ abstract class Service_Provider {
 	 * @return Service_Provider
 	 */
 	public function register_commands(): Service_Provider {
-		foreach ( $this->commands as $command ) {
+		foreach ( (array) $this->commands as $command ) {
 			$command->register();
 		}
 
