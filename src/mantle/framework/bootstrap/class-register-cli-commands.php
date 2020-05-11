@@ -18,7 +18,7 @@ class Register_Cli_Commands {
 	/**
 	 * Register any CLI Commands from the Service Providers
 	 *
-	 * @param Application     $app Application instance.
+	 * @param Application     $app    Application instance.
 	 * @param Kernel_Contract $kernel Kernel instance.
 	 */
 	public function bootstrap( Application $app, Kernel_Contract $kernel ) {
