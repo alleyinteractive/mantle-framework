@@ -53,7 +53,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 		try {
 			$this->bootstrap();
 		} catch ( Exception $e ) {
-			\wp_die( 'Error booting console: ' . $e->getMessage() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			\wp_die( 'Error booting HTTP Kernel: ' . $e->getMessage() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 	}
 
