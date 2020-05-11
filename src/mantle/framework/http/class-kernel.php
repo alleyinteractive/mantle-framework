@@ -9,12 +9,13 @@ namespace Mantle\Framework\Http;
 
 use Mantle\Framework\Application;
 use Mantle\Framework\Contracts\Http\Kernel as Kernel_Contract;
+use Mantle\Framework\Contracts\Kernel as Core_Kernel_Contract;
 use Exception;
 
 /**
  * HTTP Kernel
  */
-class Kernel implements Kernel_Contract {
+class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	/**
 	 * The application implementation.
 	 *
@@ -60,7 +61,7 @@ class Kernel implements Kernel_Contract {
 	 * Bootstrap the console.
 	 */
 	public function bootstrap() {
-		$this->app->bootstrap_with( $this->bootstrappers() );
+		$this->app->bootstrap_with( $this->bootstrappers(), $this );
 	}
 
 	/**

@@ -8,6 +8,7 @@
 namespace Mantle\Framework;
 
 use Mantle\Framework\Contracts\Application as Application_Contract;
+use Mantle\Framework\Contracts\Kernel as Kernel_Contract;
 
 /**
  * Mantle Application
@@ -126,13 +127,14 @@ class Application extends Container\Container implements Application_Contract {
 	 *
 	 * Bootstrap classes should implement `Mantle\Framework\Contracts\Bootstrapable`.
 	 *
-	 * @param string[] $bootstrappers Class names of packages to boot.
+	 * @param string[]        $bootstrappers Class names of packages to boot.
+	 * @param Kernel_Contract $kernel Kernel instance.
 	 */
-	public function bootstrap_with( array $bootstrappers ) {
+	public function bootstrap_with( array $bootstrappers, Kernel_Contract $kernel ) {
 		$this->has_been_bootstrapped = true;
 
 		foreach ( $bootstrappers as $bootstrapper ) {
-			$this->make( $bootstrapper )->bootstrap( $this );
+			$this->make( $bootstrapper )->bootstrap( $this, $kernel );
 		}
 	}
 
