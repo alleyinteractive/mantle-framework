@@ -8,13 +8,15 @@
 namespace Mantle\Framework\Database\Model;
 
 use Mantle\Framework\Contracts;
-use Mantle\Framework\Database\Model\Meta\Model_Meta as Model_With_Meta;
 use Mantle\Framework\Helpers;
 
 /**
  * Comment Model
  */
-class Comment extends Model_With_Meta implements Contracts\Database\Core_Object, Contracts\Database\Updatable {
+class Comment extends Model implements Contracts\Database\Core_Object, Contracts\Database\Updatable {
+	use Meta\Model_Meta,
+		Meta\Comment_Meta;
+
 	/**
 	 * Attributes for the model from the object
 	 *

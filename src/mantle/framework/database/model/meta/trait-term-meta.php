@@ -10,7 +10,7 @@ namespace Mantle\Framework\Database\Model\Meta;
 /**
  * Term Model Meta
  */
-class Term_Meta {
+trait Term_Meta {
 	/**
 	 * Get the meta type for the object.
 	 *

@@ -9,18 +9,12 @@ namespace Mantle\Framework\Database\Model\Meta;
 
 use Mantle\Framework\Contracts\Database\Core_Object;
 use Mantle\Framework\Database\Model\Model;
+use Mantle\Framework\Database\Model\Model_Exception;
 
 /**
  * Interface for interfacing with a model's meta.
  */
-abstract class Model_Meta extends Model implements Core_Object {
-	/**
-	 * Get the meta type for the object.
-	 *
-	 * @return string
-	 */
-	abstract public function get_meta_type(): string;
-
+trait Model_Meta {
 	/**
 	 * Retrieve meta data for the object.
 	 *

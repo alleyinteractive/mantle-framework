@@ -9,13 +9,15 @@ namespace Mantle\Framework\Database\Model;
 
 use Mantle\Framework\Contracts\Database\Core_Object;
 use Mantle\Framework\Contracts\Database\Updatable;
-use Mantle\Framework\Database\Model\Meta\Model_Meta as Model_With_Meta;
 use Mantle\Framework\Helpers;
 
 /**
  * Term Model
  */
-class Term extends Model_With_Meta implements Core_Object, Updatable {
+class Term extends Model implements Core_Object, Updatable {
+	use Meta\Model_Meta,
+		Meta\Term_Meta;
+
 	/**
 	 * Attributes for the model from the object
 	 *

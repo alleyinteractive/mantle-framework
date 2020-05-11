@@ -10,7 +10,7 @@ namespace Mantle\Framework\Database\Model\Meta;
 /**
  * Post Model Meta
  */
-class Post_Meta {
+trait Post_Meta {
 	/**
 	 * Get the meta type for the object.
 	 *

@@ -10,7 +10,7 @@ namespace Mantle\Framework\Database\Model\Meta;
 /**
  * Comment Model Meta
  */
-class Comment_Meta {
+trait Comment_Meta {
 	/**
 	 * Get the meta type for the object.
 	 *

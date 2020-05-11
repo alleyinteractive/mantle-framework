@@ -8,13 +8,15 @@
 namespace Mantle\Framework\Database\Model;
 
 use Mantle\Framework\Contracts;
-use Mantle\Framework\Database\Model\Meta\Model_Meta as Model_With_Meta;
 use Mantle\Framework\Helpers;
 
 /**
  * Post Model
  */
-class Post extends Model_With_Meta implements Contracts\Database\Core_Object, Contracts\Database\Updatable {
+class Post extends Model implements Contracts\Database\Core_Object, Contracts\Database\Updatable {
+	use Meta\Model_Meta,
+		Meta\Post_Meta;
+
 	/**
 	 * Attributes for the model from the object
 	 *
