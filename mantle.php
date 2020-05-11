@@ -13,3 +13,5 @@
  *
  * @package Mantle
  */
+
+namespace Mantle;
