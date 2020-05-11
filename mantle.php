@@ -9,5 +9,7 @@
  * Domain Path: /languages
  * Version:     0.1
  *
+ * Mantle is a derivative work of Laravel by Taylor Otwell (licensed MIT).
+ *
  * @package Mantle
  */
