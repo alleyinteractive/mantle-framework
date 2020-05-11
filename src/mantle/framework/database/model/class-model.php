@@ -25,12 +25,20 @@ abstract class Model implements ArrayAccess {
 	protected static $aliases = [];
 
 	/**
+	 * The array of booted models.
+	 *
+	 * @var array
+	 */
+	protected static $booted = [];
+
+	/**
 	 * Constructor.
 	 *
 	 * @param mixed $object Model object.
 	 */
 	public function __construct( $object = [] ) {
 		$this->set_attributes( (array) $object );
+		static::boot_if_not_booted();
 	}
 
 	/**
@@ -68,6 +76,25 @@ abstract class Model implements ArrayAccess {
 
 		$this->set_attribute( $attribute, $value );
 	}
+
+	/**
+	 * Check if the model needs to be booted and if so, do it.
+	 *
+	 * @return void
+	 */
+	protected function boot_if_not_booted() {
+		if ( ! isset( static::$booted[ static::class ] ) ) {
+			static::boot();
+			static::$booted[ static::class ] = true;
+		}
+	}
+
+	/**
+	 * Bootstrap the model.
+	 *
+	 * Model booting is performed the first time a model is used in a request.
+	 */
+	protected static function boot() { }
 
 	/**
 	 * Check if an offset exists.
