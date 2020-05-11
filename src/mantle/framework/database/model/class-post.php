@@ -9,6 +9,7 @@ namespace Mantle\Framework\Database\Model;
 
 use Mantle\Framework\Contracts;
 use Mantle\Framework\Database\Model\Meta\Model_Meta as Model_With_Meta;
+use Mantle\Framework\Helpers;
 
 /**
  * Post Model
@@ -52,7 +53,7 @@ class Post extends Model_With_Meta implements Contracts\Database\Core_Object, Co
 	 * @return Post|null
 	 */
 	public static function find( $object_id ) {
-		$post = \get_post( $object_id );
+		$post = Helpers\get_post_object( $object_id );
 		return $post ? new static( $post ) : null;
 	}
 
@@ -101,6 +102,8 @@ class Post extends Model_With_Meta implements Contracts\Database\Core_Object, Co
 		if ( ! empty( $this->attributes['post_parent'] ) ) {
 			return static::find( (int) $this->attributes['post_parent'] );
 		}
+
+		return null;
 	}
 
 	/**

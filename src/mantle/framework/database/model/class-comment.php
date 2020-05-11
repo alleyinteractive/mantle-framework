@@ -1,28 +1,30 @@
 <?php
 /**
- * Term class file.
+ * Comment class file.
  *
  * @package Mantle
  */
 
 namespace Mantle\Framework\Database\Model;
 
-use Mantle\Framework\Contracts\Database\Core_Object;
-use Mantle\Framework\Contracts\Database\Updatable;
+use Mantle\Framework\Contracts;
 use Mantle\Framework\Database\Model\Meta\Model_Meta as Model_With_Meta;
 use Mantle\Framework\Helpers;
 
 /**
- * Term Model
+ * Comment Model
  */
-class Term extends Model_With_Meta implements Core_Object, Updatable {
+class Comment extends Model_With_Meta implements Contracts\Database\Core_Object, Contracts\Database\Updatable {
 	/**
 	 * Attributes for the model from the object
 	 *
 	 * @var array
 	 */
 	protected static $aliases = [
-		'id' => 'term_id',
+		'description' => 'comment_content',
+		'id'          => 'comment_ID',
+		'name'        => 'comment_author',
+		'title'       => 'comment_author',
 	];
 
 	/**
@@ -31,7 +33,7 @@ class Term extends Model_With_Meta implements Core_Object, Updatable {
 	 * @var array
 	 */
 	protected $guarded_attributes = [
-		'term_id',
+		'comment_ID',
 	];
 
 	/**
@@ -44,22 +46,13 @@ class Term extends Model_With_Meta implements Core_Object, Updatable {
 	}
 
 	/**
-	 * Taxonomy of the term.
-	 *
-	 * @return string
-	 */
-	public function taxonomy(): string {
-		return $this->get( 'taxonomy' );
-	}
-
-	/**
 	 * Find a model by Object ID.
 	 *
 	 * @param int $object_id Object ID.
-	 * @return Term|null
+	 * @return Comment|null
 	 */
 	public static function find( $object_id ) {
-		$post = Helpers\get_term_object( $object_id );
+		$post = Helpers\get_comment_object( $object_id );
 		return $post ? new static( $post ) : null;
 	}
 
@@ -69,7 +62,7 @@ class Term extends Model_With_Meta implements Core_Object, Updatable {
 	 * @return string
 	 */
 	public function get_meta_type(): string {
-		return 'term';
+		return 'comment';
 	}
 
 	/**
@@ -96,17 +89,19 @@ class Term extends Model_With_Meta implements Core_Object, Updatable {
 	 * @return string
 	 */
 	public function slug(): string {
-		return (string) $this->get( 'slug' );
+		return (string) $this->get( 'name' );
 	}
 
 	/**
 	 * Getter for Parent Object (if any)
 	 *
-	 * @return Core_Object|null
+	 * @return Contracts\Database\Core_Object|null
 	 */
-	public function parent(): ?Core_Object {
-		if ( ! empty( $this->attributes['parent'] ) ) {
-			return static::find( (int) $this->attributes['parent'] );
+	public function parent(): ?Contracts\Database\Core_Object {
+		$parent = $this->get_attribute( 'comment_parent' );
+
+		if ( ! empty( $parent ) ) {
+			return static::find( (int) $parent );
 		}
 
 		return null;
@@ -127,8 +122,7 @@ class Term extends Model_With_Meta implements Core_Object, Updatable {
 	 * @return string|null
 	 */
 	public function permalink(): ?string {
-		$term_link = \get_term_link( $this->id() );
-		return \is_wp_error( $term_link ) ? (string) $term_link : null;
+		return (string) \get_comment_link( $this->id() );
 	}
 
 	/**
@@ -143,16 +137,15 @@ class Term extends Model_With_Meta implements Core_Object, Updatable {
 		$id = $this->id();
 
 		if ( empty( $id ) ) {
-			$save = \wp_insert_term(
-				$this->name(),
-				$this->taxonomy(),
-				$this->get_attributes()
-			);
+			$save = \wp_insert_comment( $this->get_attributes() );
 		} else {
-			$save = \wp_update_term(
-				$this->id(),
-				$this->taxonomy(),
-				$this->get_modified_attributes()
+			$save = \wp_update_comment(
+				array_merge(
+					$this->get_modified_attributes(),
+					[
+						'comment_ID' => $id,
+					]
+				)
 			);
 		}
 
@@ -168,9 +161,9 @@ class Term extends Model_With_Meta implements Core_Object, Updatable {
 	/**
 	 * Delete the model.
 	 *
-	 * @param bool $force Force delete the mode, not used.
+	 * @param bool $force Force delete the mode.
 	 */
 	public function delete( bool $force = false ) {
-		\wp_delete_term( $this->id(), $this->taxonomy() );
+		\wp_delete_comment( $this->id(), $force );
 	}
 }
