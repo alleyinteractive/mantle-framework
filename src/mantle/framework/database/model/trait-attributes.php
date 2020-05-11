@@ -35,7 +35,7 @@ trait Attributes {
 	protected $casts = [];
 
 	/**
-	 * The built-in, primitive cast types supported by Eloquent.
+	 * The built-in, primitive cast types supported by the model.
 	 *
 	 * @var array
 	 */
