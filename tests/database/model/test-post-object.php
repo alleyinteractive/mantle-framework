@@ -54,4 +54,67 @@ class Test_Post_Object extends WP_UnitTestCase {
 		$object->delete_meta( 'meta_key_to_set' );
 		$this->assertEmpty( $object->get_meta( 'meta_key_to_set' ) );
 	}
+
+	public function test_updating_post() {
+		$post   = $this->factory->post->create_and_get();
+		$object = Post::find( $post );
+
+		$object->post_content = 'Updated Content';
+		$object->save();
+
+		$this->assertEquals( 'Updated Content', $object->post_content );
+
+		$post = \get_post( $post->ID );
+		$this->assertEquals( 'Updated Content', $post->post_content );
+	}
+
+	public function test_updating_with_alias() {
+		$post   = $this->factory->post->create_and_get();
+		$object = Post::find( $post );
+
+		$object->name = 'Updated Title';
+		$object->save();
+
+		$this->assertEquals( 'Updated Title', $object->name );
+
+		$post = \get_post( $post->ID );
+		$this->assertEquals( 'Updated Title', $post->post_title );
+	}
+
+	public function test_updating_only_save_method() {
+		$post   = $this->factory->post->create_and_get();
+		$object = Post::find( $post );
+
+		$object->save(
+			[
+				'name' => 'Saved Through Attribute',
+			]
+		);
+
+		$this->assertEquals( 'Saved Through Attribute', $object->name );
+
+		$post = \get_post( $post->ID );
+		$this->assertEquals( 'Saved Through Attribute', $post->post_title );
+	}
+
+	public function test_delete_post() {
+		$post   = $this->factory->post->create_and_get();
+		$object = Post::find( $post );
+
+		$this->assertInstanceOf( Post::class, $object );
+
+		// Test trashing a post.
+		$object->delete( false );
+
+		$post = \get_post( $post->ID );
+		$this->assertInstanceOf( Post::class, $object );
+		$this->assertEquals( 'trash', $post->post_status );
+
+		// Delete the post for good.
+		$object->delete( true );
+
+		$post = \get_post( $post->ID );
+
+		$this->assertEmpty( $post );
+	}
 }

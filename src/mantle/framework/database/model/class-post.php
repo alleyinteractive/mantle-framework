@@ -7,13 +7,13 @@
 
 namespace Mantle\Framework\Database\Model;
 
-use Mantle\Framework\Contracts\Database\Core_Object;
+use Mantle\Framework\Contracts;
 use Mantle\Framework\Database\Model\Meta\Model_Meta as Model_With_Meta;
 
 /**
  * Post Model
  */
-class Post extends Model_With_Meta implements Core_Object {
+class Post extends Model_With_Meta implements Contracts\Database\Core_Object, Contracts\Database\Updatable {
 	/**
 	 * Attributes for the model from the object
 	 *
@@ -86,9 +86,9 @@ class Post extends Model_With_Meta implements Core_Object {
 	/**
 	 * Getter for Parent Object (if any)
 	 *
-	 * @return Core_Object|null
+	 * @return Contracts\Database\Core_Object|null
 	 */
-	public function parent(): ?Core_Object {
+	public function parent(): ?Contracts\Database\Core_Object {
 		if ( ! empty( $this->attributes['post_parent'] ) ) {
 			return static::find( (int) $this->attributes['post_parent'] );
 		}
@@ -119,5 +119,45 @@ class Post extends Model_With_Meta implements Core_Object {
 	 */
 	public function permalink(): ?string {
 		return (string) \get_permalink( $this->id() );
+	}
+
+	/**
+	 * Save the model.
+	 *
+	 * @param array $attributes Attributes to save.
+	 * @throws Model_Exception Thrown on error saving.
+	 */
+	public function save( array $attributes = [] ) {
+		$this->set_attributes( $attributes );
+
+		$id = $this->id();
+
+		if ( empty( $id ) ) {
+			$save = \wp_insert_post( $attributes );
+		} else {
+			$save = \wp_update_post(
+				array_merge(
+					$this->attributes,
+					[
+						'ID' => $id,
+					]
+				)
+			);
+		}
+
+		if ( \is_wp_error( $save ) ) {
+			throw new Model_Exception( 'Error saving model: ' . $save->get_error_message() );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Delete the model.
+	 *
+	 * @param bool $force Force delete the mode.
+	 */
+	public function delete( bool $force = false ) {
+		\wp_delete_post( $this->id(), $force );
 	}
 }

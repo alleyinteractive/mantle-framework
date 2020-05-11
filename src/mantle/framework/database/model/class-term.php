@@ -8,12 +8,13 @@
 namespace Mantle\Framework\Database\Model;
 
 use Mantle\Framework\Contracts\Database\Core_Object;
+use Mantle\Framework\Contracts\Database\Updatable;
 use Mantle\Framework\Database\Model\Meta\Model_Meta as Model_With_Meta;
 
 /**
  * Term Model
  */
-class Term extends Model_With_Meta implements Core_Object {
+class Term extends Model_With_Meta implements Core_Object, Updatable {
 	/**
 	 * Attributes for the model from the object
 	 *
@@ -30,6 +31,15 @@ class Term extends Model_With_Meta implements Core_Object {
 	 */
 	public function __construct( $object ) {
 		$this->attributes = (array) $object;
+	}
+
+	/**
+	 * Taxonomy of the term.
+	 *
+	 * @return string
+	 */
+	public function taxonomy(): string {
+		return $this->get( 'taxonomy' );
 	}
 
 	/**
@@ -107,5 +117,46 @@ class Term extends Model_With_Meta implements Core_Object {
 	public function permalink(): ?string {
 		$term_link = \get_term_link( $this->id() );
 		return \is_wp_error( $term_link ) ? (string) $term_link : null;
+	}
+
+	/**
+	 * Save the model.
+	 *
+	 * @param array $attributes Attributes to save.
+	 * @throws Model_Exception Thrown on error saving.
+	 */
+	public function save( array $attributes = [] ) {
+		$this->set_attributes( $attributes );
+
+		$id = $this->id();
+
+		if ( empty( $id ) ) {
+			$save = \wp_insert_term(
+				$this->name(),
+				$this->taxonomy(),
+				$this->$attributes
+			);
+		} else {
+			$save = \wp_update_term(
+				$this->id(),
+				$this->taxonomy(),
+				$this->attributes
+			);
+		}
+
+		if ( \is_wp_error( $save ) ) {
+			throw new Model_Exception( 'Error saving model: ' . $save->get_error_message() );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Delete the model.
+	 *
+	 * @param bool $force Force delete the mode, not used.
+	 */
+	public function delete( bool $force = false ) {
+		\wp_delete_term( $this->id() );
 	}
 }

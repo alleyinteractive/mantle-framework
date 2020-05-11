@@ -44,4 +44,17 @@ class Test_Term_Object extends WP_UnitTestCase {
 		$this->assertEquals( 'meta_value_to_set', $object->get_meta( 'meta_key_to_set' ) );
 		$this->assertEquals( 'meta_value_to_set', \get_term_meta( $term->term_id, 'meta_key_to_set', true ) );
 	}
+
+	public function test_updating_term() {
+		$term   = $this->factory->term->create_and_get();
+		$object = Term::find( $term );
+
+		$object->name = 'Updated Content';
+		$object->save();
+
+		$this->assertEquals( 'Updated Content', $object->name );
+
+		$term = \get_term( $term->term_id, $term->taxonomy );
+		$this->assertEquals( 'Updated Content', $term->name );
+	}
 }

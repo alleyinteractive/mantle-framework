@@ -70,6 +70,17 @@ abstract class Model implements ArrayAccess {
 	}
 
 	/**
+	 * Set an array of attributes.
+	 *
+	 * @param array $attributes Attributes to set.
+	 */
+	public function set_attributes( array $attributes ) {
+		foreach ( $attributes as $key => $value ) {
+			$this->set( $key, $value );
+		}
+	}
+
+	/**
 	 * Check if an offset exists.
 	 *
 	 * @param string $offset Array offset.
