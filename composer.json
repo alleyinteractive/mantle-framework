@@ -1,18 +1,12 @@
 {
     "name": "alleyinteractive/mantle-framework",
     "type": "library",
-    "license": "GPL-2.0-or-later",
     "description": "A framework for powerful WordPress development",
+    "license": "GPL-2.0-or-later",
     "authors": [
         {
             "name": "Alley",
             "email": "info@alley.co"
-        }
-    ],
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/alleyinteractive/Alley-Coding-Standards"
         }
     ],
     "require": {
@@ -21,23 +15,29 @@
         "symfony/finder": "^5.0"
     },
     "require-dev": {
-        "fzaninotto/faker": "^1.9",
         "alley/alley-coding-standards": "dev-master",
+        "fzaninotto/faker": "^1.9",
         "mockery/mockery": "^1.3"
     },
-    "autoload": {
-      "files": [
-        "src/autoload.php",
-        "src/mantle/framework/helpers.php",
-        "src/mantle/framework/helpers/helpers.php"
-      ]
-    },
-    "scripts": {
-        "phpcs" : "phpcs --standard=./phpcs.xml ."
-    },
     "config": {
-      "apcu-autoloader": true,
-      "optimize-autoloader": true,
-      "sort-packages": true
+        "apcu-autoloader": true,
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "autoload": {
+        "files": [
+            "src/autoload.php",
+            "src/mantle/framework/helpers.php",
+            "src/mantle/framework/helpers/helpers.php"
+        ]
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/alleyinteractive/Alley-Coding-Standards"
+        }
+    ],
+    "scripts": {
+        "phpcs": "phpcs --standard=./phpcs.xml ."
     }
 }
