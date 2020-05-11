@@ -14,6 +14,13 @@ use Mantle\Framework\Contracts\Application as Application_Contract;
  */
 class Application extends Container\Container implements Application_Contract {
 	/**
+	 * Base path of the application.
+	 *
+	 * @var string
+	 */
+	protected $base_path;
+
+	/**
 	 * Indicates if the application has been bootstrapped before.
 	 *
 	 * @var bool
@@ -36,9 +43,44 @@ class Application extends Container\Container implements Application_Contract {
 
 	/**
 	 * Constructor.
+	 *
+	 * @param string $base_path Base path to set.
 	 */
-	public function __construct() {
+	public function __construct( string $base_path = '' ) {
+		if ( empty( $base_path ) && defined( 'MANTLE_BASE_DIR' ) ) {
+			$base_path = \MANTLE_BASE_DIR;
+		}
+
+		$this->set_base_path( $base_path );
 		$this->register_base_bindings();
+		$this->register_core_aliases();
+	}
+
+	/**
+	 * Set the base path of the application.
+	 *
+	 * @param string $path Path to set.
+	 */
+	public function set_base_path( string $path ) {
+		$this->base_path = $path;
+	}
+
+	/**
+	 * Getter for the base path.
+	 *
+	 * @return string
+	 */
+	public function get_base_path(): string {
+		return $this->base_path;
+	}
+
+	/**
+	 * Get the path to the application configuration files.
+	 *
+	 * @return string
+	 */
+	public function get_config_path(): string {
+		return $this->base_path . '/config';
 	}
 
 	/**
@@ -64,6 +106,22 @@ class Application extends Container\Container implements Application_Contract {
 	}
 
 	/**
+	 * Register the core aliases.
+	 */
+	protected function register_core_aliases() {
+		$core_aliases = [
+			'app'    => [ static::class, \Mantle\Framework\Contracts\Application::class ],
+			'config' => [ \Mantle\Framework\Config\Repository::class, \Mantle\Framework\Contracts\Config\Repository::class ],
+		];
+
+		foreach ( $core_aliases as $key => $aliases ) {
+			foreach ( $aliases as $alias ) {
+				$this->alias( $key, $alias );
+			}
+		}
+	}
+
+	/**
 	 * Run the given array of bootstrap classes.
 	 *
 	 * Bootstrap classes should implement `Mantle\Framework\Contracts\Bootstrapable`.
@@ -82,10 +140,8 @@ class Application extends Container\Container implements Application_Contract {
 	 * Register all of the configured providers.
 	 */
 	public function register_configured_providers() {
-		// todo: replace with config class file.
-		$config = include MANTLE_BASE_DIR . '/config/app.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant
-
-		array_map( [ $this, 'register' ], $config['providers'] ?? [] );
+		$providers = $this->config->get( 'app.providers', [] );
+		array_map( [ $this, 'register' ], (array) $providers );
 	}
 
 	/**
@@ -165,5 +221,15 @@ class Application extends Container\Container implements Application_Contract {
 		}
 
 		return $_ENV['env'] ?? 'local';
+	}
+
+	/**
+	 * Check if the Application's Environment matches a list.
+	 *
+	 * @param string|array ...$environments Environments to check.
+	 * @return bool
+	 */
+	public function is_environment( ...$environments ): bool {
+		return in_array( $this->environment(), (array) $environments, true );
 	}
 }

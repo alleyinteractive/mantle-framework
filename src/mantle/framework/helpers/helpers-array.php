@@ -71,3 +71,63 @@ function data_get( $target, $key, $default = null ) {
 
 	return $target;
 }
+
+/**
+ * Set an item on an array or object using dot notation.
+ *
+ * @param  mixed        $target Array to update.
+ * @param  string|array $key Key to set.
+ * @param  mixed        $value Value to set.
+ * @param  bool         $overwrite Flag to overwrite the existing value.
+ * @return mixed
+ */
+function data_set( &$target, $key, $value, $overwrite = true ) {
+	$segments = is_array( $key ) ? $key : explode( '.', $key );
+	$segment  = array_shift( $segments );
+
+	if ( '*' === $segment ) {
+		if ( ! Support\Arr::accessible( $target ) ) {
+			$target = [];
+		}
+
+		if ( $segments ) {
+			foreach ( $target as &$inner ) {
+				data_set( $inner, $segments, $value, $overwrite );
+			}
+		} elseif ( $overwrite ) {
+			foreach ( $target as &$inner ) {
+				$inner = $value;
+			}
+		}
+	} elseif ( Support\Arr::accessible( $target ) ) {
+		if ( $segments ) {
+			if ( ! Support\Arr::exists( $target, $segment ) ) {
+				$target[ $segment ] = [];
+			}
+
+			data_set( $target[ $segment ], $segments, $value, $overwrite );
+		} elseif ( $overwrite || ! Support\Arr::exists( $target, $segment ) ) {
+			$target[ $segment ] = $value;
+		}
+	} elseif ( is_object( $target ) ) {
+		if ( $segments ) {
+			if ( ! isset( $target->{$segment} ) ) {
+				$target->{$segment} = [];
+			}
+
+			data_set( $target->{$segment}, $segments, $value, $overwrite );
+		} elseif ( $overwrite || ! isset( $target->{$segment} ) ) {
+			$target->{$segment} = $value;
+		}
+	} else {
+		$target = [];
+
+		if ( $segments ) {
+			data_set( $target[ $segment ], $segments, $value, $overwrite );
+		} elseif ( $overwrite ) {
+			$target[ $segment ] = $value;
+		}
+	}
+
+	return $target;
+}
