@@ -228,7 +228,7 @@ trait Attributes {
 	}
 
 	/**
-	 * Get the set  mutator method name for an attribute.
+	 * Get the set mutator method name for an attribute.
 	 *
 	 * @param string $attribute Attribute name.
 	 * @return string
