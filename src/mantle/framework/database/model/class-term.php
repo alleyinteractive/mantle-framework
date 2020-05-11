@@ -25,6 +25,15 @@ class Term extends Model_With_Meta implements Core_Object, Updatable {
 	];
 
 	/**
+	 * Attributes that are guarded.
+	 *
+	 * @var array
+	 */
+	protected $guarded_attributes = [
+		'term_id',
+	];
+
+	/**
 	 * Constructor.
 	 *
 	 * @param mixed $object Model object.
@@ -46,9 +55,9 @@ class Term extends Model_With_Meta implements Core_Object, Updatable {
 	 * Find a model by Object ID.
 	 *
 	 * @param int $object_id Object ID.
-	 * @return Model|null
+	 * @return Term|null
 	 */
-	public static function find( $object_id ): ?Model {
+	public static function find( $object_id ) {
 		$post = \get_term( $object_id );
 		return $post ? new static( $post ) : null;
 	}
@@ -134,19 +143,21 @@ class Term extends Model_With_Meta implements Core_Object, Updatable {
 			$save = \wp_insert_term(
 				$this->name(),
 				$this->taxonomy(),
-				$this->$attributes
+				$this->get_attributes()
 			);
 		} else {
 			$save = \wp_update_term(
 				$this->id(),
 				$this->taxonomy(),
-				$this->attributes
+				$this->get_modified_attributes()
 			);
 		}
 
 		if ( \is_wp_error( $save ) ) {
 			throw new Model_Exception( 'Error saving model: ' . $save->get_error_message() );
 		}
+
+		$this->reset_modified_attributes();
 
 		return true;
 	}
@@ -157,6 +168,6 @@ class Term extends Model_With_Meta implements Core_Object, Updatable {
 	 * @param bool $force Force delete the mode, not used.
 	 */
 	public function delete( bool $force = false ) {
-		\wp_delete_term( $this->id() );
+		\wp_delete_term( $this->id(), $this->taxonomy() );
 	}
 }

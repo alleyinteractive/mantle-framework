@@ -1,6 +1,7 @@
 <?php
 namespace Mantle\Tests\Database\Model;
 
+use Mantle\Framework\Database\Model\Model_Exception;
 use Mantle\Framework\Database\Model\Post;
 use WP_UnitTestCase;
 
@@ -116,5 +117,15 @@ class Test_Post_Object extends WP_UnitTestCase {
 		$post = \get_post( $post->ID );
 
 		$this->assertEmpty( $post );
+	}
+
+	public function test_setting_id() {
+		$this->expectException( Model_Exception::class );
+
+		$post   = $this->factory->post->create_and_get();
+		$object = Post::find( $post );
+
+		$object->id = 12345;
+		$object->save();
 	}
 }

@@ -29,8 +29,8 @@ abstract class Model implements ArrayAccess {
 	 *
 	 * @param mixed $object Model object.
 	 */
-	public function __construct( $object ) {
-		$this->attributes = (array) $object;
+	public function __construct( $object = [] ) {
+		$this->set_attributes( (array) $object );
 	}
 
 	/**
@@ -39,7 +39,7 @@ abstract class Model implements ArrayAccess {
 	 * @param int $object_id Object ID.
 	 * @return Model|null
 	 */
-	abstract public static function find( $object_id ): ?Model;
+	abstract public static function find( $object_id );
 
 	/**
 	 * Get am attribute model.
@@ -67,17 +67,6 @@ abstract class Model implements ArrayAccess {
 		}
 
 		$this->set_attribute( $attribute, $value );
-	}
-
-	/**
-	 * Set an array of attributes.
-	 *
-	 * @param array $attributes Attributes to set.
-	 */
-	public function set_attributes( array $attributes ) {
-		foreach ( $attributes as $key => $value ) {
-			$this->set( $key, $value );
-		}
 	}
 
 	/**

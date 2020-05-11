@@ -28,6 +28,15 @@ class Post extends Model_With_Meta implements Contracts\Database\Core_Object, Co
 	];
 
 	/**
+	 * Attributes that are guarded.
+	 *
+	 * @var array
+	 */
+	protected $guarded_attributes = [
+		'ID',
+	];
+
+	/**
 	 * Constructor.
 	 *
 	 * @param mixed $object Model object.
@@ -40,9 +49,9 @@ class Post extends Model_With_Meta implements Contracts\Database\Core_Object, Co
 	 * Find a model by Object ID.
 	 *
 	 * @param int $object_id Object ID.
-	 * @return Model|null
+	 * @return Post|null
 	 */
-	public static function find( $object_id ): ?Model {
+	public static function find( $object_id ) {
 		$post = \get_post( $object_id );
 		return $post ? new static( $post ) : null;
 	}
@@ -133,11 +142,11 @@ class Post extends Model_With_Meta implements Contracts\Database\Core_Object, Co
 		$id = $this->id();
 
 		if ( empty( $id ) ) {
-			$save = \wp_insert_post( $attributes );
+			$save = \wp_insert_post( $this->get_attributes() );
 		} else {
 			$save = \wp_update_post(
 				array_merge(
-					$this->attributes,
+					$this->get_modified_attributes(),
 					[
 						'ID' => $id,
 					]
@@ -148,6 +157,8 @@ class Post extends Model_With_Meta implements Contracts\Database\Core_Object, Co
 		if ( \is_wp_error( $save ) ) {
 			throw new Model_Exception( 'Error saving model: ' . $save->get_error_message() );
 		}
+
+		$this->reset_modified_attributes();
 
 		return true;
 	}

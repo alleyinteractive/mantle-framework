@@ -1,6 +1,7 @@
 <?php
 namespace Mantle\Tests\Database\Model;
 
+use Mantle\Framework\Database\Model\Model_Exception;
 use Mantle\Framework\Database\Model\Term;
 use WP_UnitTestCase;
 
@@ -56,5 +57,23 @@ class Test_Term_Object extends WP_UnitTestCase {
 
 		$term = \get_term( $term->term_id, $term->taxonomy );
 		$this->assertEquals( 'Updated Content', $term->name );
+	}
+
+	public function test_setting_id() {
+		$this->expectException( Model_Exception::class );
+
+		$term   = $this->factory->term->create_and_get();
+		$object = Term::find( $term );
+
+		$object->term_id = 12345;
+		$object->save();
+	}
+
+	public function test_deleting_term() {
+		$term   = $this->factory->term->create_and_get();
+		$object = Term::find( $term );
+		$object->delete();
+
+		$this->assertEmpty( get_term( $term->term_id, $term->taxonomy ) );
 	}
 }

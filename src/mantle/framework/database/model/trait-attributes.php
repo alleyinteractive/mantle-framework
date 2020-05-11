@@ -11,12 +11,21 @@ namespace Mantle\Framework\Database\Model;
  * Model Attributes
  */
 trait Attributes {
+	use Guarded_Attributes;
+
 	/**
 	 * Attributes for the model from the object
 	 *
 	 * @var array
 	 */
 	protected $attributes = [];
+
+	/**
+	 * Keep track of attributes that have been modified.
+	 *
+	 * @var array
+	 */
+	protected $modified_attributes = [];
 
 	/**
 	 * The attributes that should be cast.
@@ -75,13 +84,64 @@ trait Attributes {
 	 *
 	 * @param string $attribute Attribute name.
 	 * @param mixed  $value Value to set.
+	 *
+	 * @throws Model_Exception Thrown when trying to set 'id'.
 	 */
 	public function set_attribute( string $attribute, $value ) {
+		if ( $this->is_guarded( $attribute ) ) {
+			throw new Model_Exception( 'Unable to set "id" on model.' );
+		}
+
 		if ( $this->has_set_mutator( $attribute ) ) {
 			$value = $this->mutate_set_attribute( $attribute, $value );
 		}
 
 		$this->attributes[ $attribute ] = $value;
+		$this->modified_attributes[]    = $attribute;
+	}
+
+	/**
+	 * Get all model attributes.
+	 *
+	 * @return array
+	 */
+	public function get_attributes(): array {
+		return $this->attributes;
+	}
+
+	/**
+	 * Get all modified attributes.
+	 *
+	 * @return array
+	 */
+	public function get_modified_attributes(): array {
+		if ( empty( $this->modified_attributes ) ) {
+			return [];
+		}
+
+		$attributes = [];
+		foreach ( array_unique( $this->modified_attributes ) as $attribute ) {
+			$attributes[ $attribute ] = $this->attributes[ $attribute ] ?? null;
+		}
+
+		return $attributes;
+	}
+	/**
+	 * Set an array of attributes.
+	 *
+	 * @param array $attributes Attributes to set.
+	 */
+	public function set_attributes( array $attributes ) {
+		foreach ( $attributes as $key => $value ) {
+			$this->set( $key, $value );
+		}
+	}
+
+	/**
+	 * Reset the modified attributes.
+	 */
+	protected function reset_modified_attributes() {
+		$this->modified_attributes = [];
 	}
 
 	/**
