@@ -1,5 +1,5 @@
 <?php
-namespace Mantle\Tests\Objects;
+namespace Mantle\Tests\Database\Model;
 
 use Mantle\Framework\Database\Model\Comment;
 use WP_UnitTestCase;

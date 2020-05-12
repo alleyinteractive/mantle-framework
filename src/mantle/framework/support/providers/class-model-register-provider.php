@@ -52,7 +52,7 @@ class Model_Register_Provider extends Service_Provider {
 	 *
 	 * @param string[] $models Models to register.
 	 */
-	protected function set_models_to_register( array $models ) {
+	public function set_models_to_register( array $models ) {
 		$this->models = $models;
 	}
 }
