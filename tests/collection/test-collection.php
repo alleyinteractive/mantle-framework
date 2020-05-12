@@ -112,6 +112,15 @@ class Test_Collection extends TestCase {
 		});
 		$this->assertEquals(['first' => 'first-rolyat', 'last' => 'last-llewto'], $data->all());
 	}
+
+	/**
+	 * @dataProvider collectionClassProvider
+	 */
+	public function testGet($collection) {
+		$c = new $collection(['foo' => 1, 'bar' => 2]);
+		$this->assertSame(2, $c->get('bar'));
+	}
+
 	/**
 	 * Provides each collection class, respectively.
 	 *

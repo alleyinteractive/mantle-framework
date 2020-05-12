@@ -85,6 +85,22 @@ class Collection implements ArrayAccess {
 	}
 
 	/**
+	 * Get an item from the collection by key.
+	 *
+	 * @param	 mixed	$key
+	 * @param	 mixed	$default
+	 * @return mixed
+	 */
+	public function get($key, $default = null)
+	{
+		if ($this->offsetExists($key)) {
+			return $this->items[$key];
+		}
+
+		return value($default);
+	}
+
+	/**
 	 * Reset the keys on the underlying array.
 	 *
 	 * @return static
