@@ -18,6 +18,8 @@ tests_add_filter( 'muplugins_loaded', __NAMESPACE__  . '\_manually_load_plugin' 
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+define( 'MANTLE_PHPUNIT_INCLUDES_PATH', __DIR__ . '/includes' );
+
 try {
 	spl_autoload_register(
 		\Mantle\Framework\generate_wp_autoloader( __NAMESPACE__, __DIR__ )

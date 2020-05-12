@@ -2,7 +2,7 @@
 /**
  * Class file for Nullable_Term_Objects_Test_Case
  *
- * @package SML
+ * @package Mantle
  */
 
 namespace Mantle\Tests\Framework\Helpers;
