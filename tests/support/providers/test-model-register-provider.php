@@ -58,7 +58,6 @@ class Test_Model_Register_Provider extends TestCase {
 			]
 		);
 
-
 		$provider = new Model_Register_Provider( $app );
 		$provider->register();
 		$provider->boot();

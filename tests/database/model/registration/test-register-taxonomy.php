@@ -6,7 +6,6 @@ use Mantle\Framework\Database\Model\Registration\Register_Taxonomy;
 use WP_UnitTestCase;
 use Mockery as m;
 
-
 class Test_Register_Taxonomy extends WP_UnitTestCase {
 	public function tearDown() {
 		parent::tearDown();
