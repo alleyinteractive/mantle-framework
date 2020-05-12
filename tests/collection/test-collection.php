@@ -122,6 +122,28 @@ class Test_Collection extends TestCase {
 	}
 
 	/**
+	 * @dataProvider collectionClassProvider
+	 */
+	public function testEach($collection) {
+		$c = new $collection($original = [1, 2, 'foo' => 'bar', 'bam' => 'baz']);
+
+		$result = [];
+		$c->each(function ($item, $key) use (&$result) {
+			$result[$key] = $item;
+		});
+		$this->assertEquals($original, $result);
+
+		$result = [];
+		$c->each(function ($item, $key) use (&$result) {
+			$result[$key] = $item;
+			if (is_string($key)) {
+				return false;
+			}
+		});
+		$this->assertEquals([1, 2, 'foo' => 'bar'], $result);
+	}
+
+	/**
 	 * Provides each collection class, respectively.
 	 *
 	 * @return array
