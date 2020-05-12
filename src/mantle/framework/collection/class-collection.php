@@ -83,6 +83,7 @@ class Collection implements ArrayAccess {
 
 		return $this;
 	}
+
 	/**
 	 * Reset the keys on the underlying array.
 	 *
