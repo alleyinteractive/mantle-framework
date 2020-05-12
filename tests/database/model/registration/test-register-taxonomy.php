@@ -27,7 +27,7 @@ class Test_Register_Taxonomy extends WP_UnitTestCase {
 
 		$mock->register();
 
-		// Allow the post type to be registered.
+		// Allow the taxonomy to be registered.
 		do_action( 'init' );
 
 		$this->assertTrue( taxonomy_exists( $taxonomy ) );
@@ -50,7 +50,7 @@ class Test_Register_Taxonomy extends WP_UnitTestCase {
 
 		$mock->register();
 
-		// Allow the post type to be registered.
+		// Allow the taxonomy to be registered.
 		do_action( 'init' );
 
 		$this->assertTrue( taxonomy_exists( $taxonomy ) );
