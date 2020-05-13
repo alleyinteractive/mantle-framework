@@ -102,11 +102,10 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	public function median( $key = null ) {
 		$values = ( isset( $key ) ? $this->pluck( $key ) : $this )
-																	->filter(
-																		function ( $item ) {
-																			return ! is_null( $item );
-																		}
-																	)->sort()->values();
+				->filter( function ( $item ) {
+					return ! is_null( $item );
+				} )->sort()->values();
+
 
 		$count = $values->count();
 
