@@ -1,12 +1,12 @@
 <?php
 
-namespace Mantle\Tests\Support\Providers;
+namespace Mantle\Tests\Providers;
 
 use Mantle\Framework\Application;
 use Mantle\Framework\Config\Repository;
-use Mantle\Framework\Support\Providers\Model_Register_Provider;
+use Mantle\Framework\Providers\Model_Register_Provider;
 use Mantle\Framework\Contracts\Database\Registrable as Registrable_Contract;
-use Mantle\Framework\Support\Providers\Provider_Exception;
+use Mantle\Framework\Providers\Provider_Exception;
 use PHPUnit\Framework\TestCase;
 use Mockery as m;
 
