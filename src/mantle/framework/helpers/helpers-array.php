@@ -1,6 +1,6 @@
 <?php
 /**
- * Array helpers.
+ * Array helpers
  *
  * @package Mantle
  */
@@ -130,4 +130,36 @@ function data_set( &$target, $key, $value, $overwrite = true ) {
 	}
 
 	return $target;
+}
+
+/**
+ * Fill in data where it's missing.
+ *
+ * @param mixed        $target Subject to fill into.
+ * @param string|array $key    Key(s) to fill.
+ * @param mixed        $value  Value with which to fill.
+ * @return mixed
+ */
+function data_fill( &$target, $key, $value ) {
+	return data_set( $target, $key, $value, false );
+}
+
+/**
+ * Get the first element of an array. Useful for method chaining.
+ *
+ * @param array $array Array from which to get first element.
+ * @return mixed
+ */
+function head( $array ) {
+	return reset( $array );
+}
+
+/**
+ * Get the last element from an array.
+ *
+ * @param array $array Array from which to get last element.
+ * @return mixed
+ */
+function last( $array ) {
+	return end( $array );
 }
