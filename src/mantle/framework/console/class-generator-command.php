@@ -155,6 +155,11 @@ abstract class Generator_Command extends Command {
 	 */
 	protected function set_stub( string $stub ) {
 		$this->stub = $stub;
+
+		if ( empty( $this->stub ) ) {
+			$this->error( 'Empty stub generated.', true );
+		}
+
 		return $this;
 	}
 
