@@ -133,6 +133,18 @@ function data_set( &$target, $key, $value, $overwrite = true ) {
 }
 
 /**
+ * Fill in data where it's missing.
+ *
+ * @param mixed        $target
+ * @param string|array $key
+ * @param mixed        $value
+ * @return mixed
+ */
+function data_fill( &$target, $key, $value ) {
+	return data_set( $target, $key, $value, false );
+}
+
+/**
  * Get the first element of an array. Useful for method chaining.
  *
  * @param array $array Array from which to get first element.

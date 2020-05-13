@@ -80,18 +80,6 @@ function collect( $value = null ) {
 }
 
 /**
- * Fill in data where it's missing.
- *
- * @param mixed        $target
- * @param string|array $key
- * @param mixed        $value
- * @return mixed
- */
-function data_fill( &$target, $key, $value ) {
-	return data_set( $target, $key, $value, false );
-}
-
-/**
  * Determine if a value is "filled".
  *
  * @param mixed $value

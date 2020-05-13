@@ -6,6 +6,7 @@
  */
 
 namespace Mantle\Framework\Support;
+use voku\helper\ASCII;
 
 /**
  * String helpers.
@@ -53,6 +54,17 @@ class Str {
 		}
 
 		return substr( $subject, $position + strlen( $search ) );
+	}
+
+	/**
+	 * Transliterate a UTF-8 value to ASCII.
+	 *
+	 * @param string $value
+	 * @param string $language
+	 * @return string
+	 */
+	public static function ascii( $value, $language = 'en' ) {
+		return ASCII::to_ascii( (string) $value, $language );
 	}
 
 	/**
@@ -258,6 +270,16 @@ class Str {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Determine if a given string is 7 bit ASCII.
+	 *
+	 * @param string $value
+	 * @return bool
+	 */
+	public static function is_ascii( $value ) {
+		return ASCII::is_ascii( (string) $value );
 	}
 
 	/**
