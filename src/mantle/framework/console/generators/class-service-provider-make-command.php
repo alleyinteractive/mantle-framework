@@ -42,4 +42,24 @@ class Service_Provider_Make_Command extends Generator_Command {
 	public function get_file_stub(): string {
 		return __DIR__ . '/stubs/provider.stub';
 	}
+
+	/**
+	 * Service Provider Generator Command.
+	 *
+	 * @param array $args Command Arguments.
+	 * @param array $assoc_args Command flags.
+	 */
+	public function handle( array $args, array $assoc_args = [] ) {
+		parent::handle( $args, $assoc_args );
+
+		list( $name ) = $args;
+
+		$this->log( '' );
+		$this->log(
+			sprintf(
+				'You can use this service provider by adding "%s::class" to the "providers" in "config/app.php".',
+				$this->get_namespace( $name ) . '\\' . $this->get_class_name( $name )
+			)
+		);
+	}
 }

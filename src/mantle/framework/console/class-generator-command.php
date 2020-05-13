@@ -9,6 +9,7 @@ namespace Mantle\Framework\Console;
 
 use Mantle\Framework\Contracts\Application as Application_Contract;
 use Mantle\Framework\Providers\Provider_Exception;
+use Mantle\Framework\Support\String_Replacements;
 
 /**
  * Generator Command
@@ -43,6 +44,13 @@ abstract class Generator_Command extends Command {
 	protected $type;
 
 	/**
+	 * Stub variables String Replacement instance.
+	 *
+	 * @var String_Replacements
+	 */
+	protected $replacements;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Application_Contract $app Application contract.
@@ -54,6 +62,8 @@ abstract class Generator_Command extends Command {
 		if ( empty( $this->type ) ) {
 			throw new Provider_Exception( 'Generator needs a "type" set: ' . get_class( $this ) );
 		}
+
+		$this->replacements = new String_Replacements();
 	}
 
 	/**
@@ -65,11 +75,6 @@ abstract class Generator_Command extends Command {
 
 	/**
 	 * Generator Command.
-	 *
-	 * ## OPTIONS
-	 *
-	 * <name>
-	 * : The name to use.
 	 *
 	 * @todo Replace with a filesystem abstraction.
 	 *
@@ -88,29 +93,40 @@ abstract class Generator_Command extends Command {
 
 		list( $name ) = $args;
 
-		$folder_path = $this->get_folder_path( $name );
+		$path = $this->get_folder_path( $name );
 
-		// Ensure the folder exists.
-		if ( ! is_dir( $folder_path ) && ! mkdir( $folder_path, 0700, true ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.directory_mkdir
-			$this->error( 'Error creating folder: ' . $folder_path );
+		// Ensure the folder path exists.
+		if ( ! is_dir( $path ) && ! mkdir( $path, 0700, true ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.directory_mkdir
+			$this->error( 'Error creating folder: ' . $path );
 		}
 
-		$file = $this->get_file_path( $name );
-
-		if ( file_exists( $file ) ) {
-			$this->error( $this->type . ' already exists: ' . $file, true );
+		$file_path = $this->get_file_path( $name );
+		if ( file_exists( $file_path ) ) {
+			$this->error( $this->type . ' already exists: ' . $file_path, true );
 		}
 
-		$this
-			->set_stub( file_get_contents( $this->get_file_stub() ) )
-			->replace_stub_variable( 'class', $this->get_class_name( $name ) )
-			->replace_stub_variable( 'namespace', $this->get_namespace( $name ) );
+		// Build the stub file and apply replacements.
+		$this->build_stub( $name );
+		$this->set_stub( $this->replacements->replace( $this->stub ) );
 
-		if ( false === file_put_contents( $file, $this->stub ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents
-			$this->error( 'Error writing to ' . $file );
+		if ( false === file_put_contents( $file_path, $this->stub ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents
+			$this->error( 'Error writing to ' . $file_path );
 		}
 
-		$this->log( $this->type . ' created successfully: ' . $file );
+		$this->log( $this->type . ' created successfully: ' . $file_path );
+	}
+
+	/**
+	 * Build the generated file.
+	 *
+	 * @param string $name Class name to generate.
+	 */
+	protected function build_stub( string $name ) {
+		$this->set_stub( file_get_contents( $this->get_file_stub() ) ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
+
+		// Register replacements for the stub file.
+		$this->replacements->add( '{{ class }}', $this->get_class_name( $name ) );
+		$this->replacements->add( '{{ namespace }}', $this->get_namespace( $name ) );
 	}
 
 	/**
@@ -148,18 +164,26 @@ abstract class Generator_Command extends Command {
 	}
 
 	/**
-	 * Get the application's namespace.
+	 * Get the class' namespace.
 	 *
 	 * @param string $name Name to use.
 	 * @return string
 	 */
 	public function get_namespace( string $name ): string {
+		$parts = [];
+
 		// Remove the class name and get the namespace.
 		$name = explode( '\\', $name );
 		array_pop( $name );
 
-		$root_namespace = (string) $this->app->config->get( 'app.namespace', 'App' );
-		return $root_namespace . '\\' . $this->type . '\\' . implode( '\\', $name );
+		$parts[] = (string) $this->app->config->get( 'app.namespace', 'App' );
+		$parts[] = $this->type;
+
+		if ( ! empty( $name ) ) {
+			$parts = array_merge( $parts, $name );
+		}
+
+		return implode( '\\', $parts );
 	}
 
 	/**
@@ -179,9 +203,7 @@ abstract class Generator_Command extends Command {
 			$parts = '';
 		}
 
-		return $this->app->get_base_path()
-			. '/app/' . strtolower( $this->type ) . '/'
-			. $parts;
+		return untrailingslashit( $this->app->get_base_path() . '/app/' . strtolower( $this->type ) . '/' . $parts );
 	}
 
 	/**
@@ -191,11 +213,10 @@ abstract class Generator_Command extends Command {
 	 * @return string
 	 */
 	public function get_file_path( string $name ): string {
-		$parts = explode( '\\', $name );
-
+		$parts    = explode( '\\', $name );
 		$filename = array_pop( $parts );
-		$filename = strtolower( str_replace( '_', '-', $filename ) );
+		$filename = sanitize_title_with_dashes( str_replace( '_', '-', $filename ) );
 
-		return $this->get_folder_path( $name ) . 'class-' . strtolower( $filename ) . '.php';
+		return $this->get_folder_path( $name ) . '/class-' . $filename . '.php';
 	}
 }
