@@ -131,3 +131,23 @@ function data_set( &$target, $key, $value, $overwrite = true ) {
 
 	return $target;
 }
+
+/**
+ * Get the first element of an array. Useful for method chaining.
+ *
+ * @param array $array Array from which to get first element.
+ * @return mixed
+ */
+function head( $array ) {
+	return reset( $array );
+}
+
+/**
+ * Get the last element from an array.
+ *
+ * @param array $array Array from which to get last element.
+ * @return mixed
+ */
+function last( $array ) {
+	return end( $array );
+}
