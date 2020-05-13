@@ -10,7 +10,10 @@ namespace Mantle\Framework\Console\Generators;
 use Mantle\Framework\Console\Generator_Command;
 
 /**
- * Model  Generator
+ * Model Generator
+ *
+ * @todo Add support for generating a controller, migration, and seed
+ *       in addition to the model.
  */
 class Model_Make_Command extends Generator_Command {
 	/**
@@ -112,14 +115,16 @@ class Model_Make_Command extends Generator_Command {
 			$this->get_flag( 'object_name', $this->get_default_object_name() )
 		);
 
+		$default_label = $this->get_default_label();
+
 		$this->replacements->add(
 			'{{ label_singular }}',
-			$this->get_flag( 'label_singular', $this->get_label_singular() )
+			$this->get_flag( 'label_singular', $default_label )
 		);
 
 		$this->replacements->add(
 			'{{ label_plural }}',
-			$this->get_flag( 'label_plural', $this->get_label_plural() )
+			$this->get_flag( 'label_plural', $default_label )
 		);
 
 		return __DIR__ . '/stubs/' . $filename;
@@ -136,23 +141,13 @@ class Model_Make_Command extends Generator_Command {
 	}
 
 	/**
-	 * Get the singular label.
+	 * Get the default label.
 	 *
 	 * @return string
 	 */
-	protected function get_label_singular(): string {
-		$class_name = $this->get_class_name( $this->get_arg( 0 ) );
-		return $class_name;
-	}
-
-	/**
-	 * Get the plural label.
-	 *
-	 * @return string
-	 */
-	protected function get_label_plural(): string {
-		$class_name = $this->get_class_name( $this->get_arg( 0 ) );
-		return $class_name;
+	protected function get_default_label(): string {
+		$class_name = str_replace( [ '_', '-' ], ' ', $this->get_class_name( $this->get_arg( 0 ) ) );
+		return ucwords( $class_name );
 	}
 
 	/**
