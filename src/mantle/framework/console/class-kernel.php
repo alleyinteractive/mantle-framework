@@ -68,7 +68,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 		try {
 			$this->bootstrap();
 		} catch ( Exception $e ) {
-			\WP_CLI::error( 'Error booting console: ' . $e->getMessage() );
+			\WP_CLI::error( 'Error booting Console Kernel: ' . $e->getMessage() );
 		}
 	}
 
