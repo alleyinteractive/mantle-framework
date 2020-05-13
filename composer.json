@@ -13,7 +13,8 @@
         "filp/whoops": "^2.7",
         "nesbot/carbon": "^2.33",
         "psr/container": "^1.0",
-        "symfony/finder": "^5.0"
+        "symfony/finder": "^5.0",
+        "symfony/var-dumper": "^5.0"
     },
     "require-dev": {
         "alley/alley-coding-standards": "dev-master",
