@@ -12,6 +12,7 @@ use Mantle\Framework\Contracts\Support\Jsonable;
 use Mantle\Framework\Support\Collection;
 use Mantle\Framework\Support\HtmlString;
 use Mantle\Framework\Support\LazyCollection;
+use function Mantle\Framework\Helpers\collect;
 use InvalidArgumentException;
 use JsonSerializable;
 use Mockery as m;
