@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Support\Providers;
+namespace Mantle\Framework\Providers;
 
 use Exception;
 

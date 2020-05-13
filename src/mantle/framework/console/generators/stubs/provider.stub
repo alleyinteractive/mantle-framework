@@ -1,0 +1,30 @@
+<?php
+/**
+ * {{ class }} class file.
+ *
+ * @package {{ namespace }}
+ */
+
+namespace {{ namespace }};
+
+use Mantle\Framework\Service_Provider;
+
+/**
+ * {{ class }} Service Provider
+ */
+class {{ class }} extends Service_Provider {
+
+	/**
+	 * Register the service provider.
+	 */
+	public function register() {
+		// Register the provider.
+	}
+
+	/**
+	 * Boot the service provider.
+	 */
+	public function boot() {
+		// Boot the provider.
+	}
+}

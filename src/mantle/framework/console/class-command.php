@@ -28,12 +28,35 @@ abstract class Command {
 	protected $name;
 
 	/**
+	 * Command Short Description.
+	 *
+	 * @var string
+	 */
+	protected $short_description = '';
+
+	/**
+	 * Command Description.
+	 *
+	 * @var string
+	 */
+	protected $description = '';
+
+	/**
+	 * Command synopsis.
+	 *
+	 * @var string|array
+	 */
+	protected $synopsis = '';
+
+	/**
 	 * Register the command with wp-cli.
 	 *
 	 * @throws InvalidCommandException Thrown for a command without a name, incorrectly.
 	 */
 	public function register() {
-		if ( empty( $this->name ) ) {
+		$name = $this->get_name();
+
+		if ( empty( $name ) ) {
 			throw new InvalidCommandException( 'Command missing name.' );
 		}
 
@@ -41,13 +64,42 @@ abstract class Command {
 			throw new InvalidCommandException( 'Cannot register wp-cli command when not in wp-cli mode.' );
 		}
 
-		WP_CLI::add_command( static::PREFIX . ' ' . $this->name, [ $this, 'handle' ] );
+		WP_CLI::add_command(
+			static::PREFIX . ' ' . $name,
+			[ $this, 'handle' ],
+			static::get_command_args()
+		);
+	}
+
+	/**
+	 * Getter for the command name.
+	 *
+	 * @return string
+	 */
+	protected function get_name(): string {
+		return $this->name;
+	}
+
+	/**
+	 * Get command arguments.
+	 *
+	 * @return array
+	 */
+	protected function get_command_args(): array {
+		return [
+			'longdesc'  => $this->description,
+			'shortdesc' => $this->short_description ? $this->short_description : $this->description,
+			'synopsis'  => $this->synopsis,
+		];
 	}
 
 	/**
 	 * Callback for the command.
+	 *
+	 * @param array $args Command Arguments.
+	 * @param array $assoc_args Command flags.
 	 */
-	abstract public function handle();
+	abstract public function handle( array $args, array $assoc_args );
 
 	/**
 	 * Write to the console log.
