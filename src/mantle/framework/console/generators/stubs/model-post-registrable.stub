@@ -43,10 +43,10 @@ class {{ class }} extends Post implements Registrable {
 	public static function get_registration_args(): array {
 		return [
 			'public'                => true,
+			'rest_base'             => '{{ object_name }}',
+			'show_in_rest'          => true,
 			'supports'              => [ 'author', 'title', 'editor', 'revisions', 'thumbnail', 'custom-fields', 'excerpt' ],
 			'taxonomies'            => [ 'category', 'post_tag' ],
-			'show_in_rest'          => true,
-			'rest_base'             => '{{ object_name }}',
 			'labels'                => [
 				'name'                     => __( '{{ label_plural }}', 'mantle' ),
 				'singular_name'            => __( '{{ label_singular }}', 'mantle' ),

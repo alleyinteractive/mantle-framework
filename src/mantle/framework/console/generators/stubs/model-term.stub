@@ -1,0 +1,25 @@
+<?php
+/**
+ * {{ class }} class file.
+ *
+ * @package {{ namespace }}
+ */
+
+namespace App\Models;
+
+use Mantle\Framework\Database\Model\Term;
+
+/**
+ * {{ class }} Model.
+ */
+class {{ class }} extends Term {
+
+	/**
+	 * Taxonomy for the model.
+	 *
+	 * @return string
+	 */
+	public static function get_taxonomy(): string {
+		return '{{ object_name }}';
+	}
+}
