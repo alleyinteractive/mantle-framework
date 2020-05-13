@@ -74,6 +74,14 @@ abstract class Generator_Command extends Command {
 	abstract public function get_file_stub(): string;
 
 	/**
+	 * Command synopsis.
+	 * Provides information to the user about how to use the generated file.
+	 *
+	 * @param string $name Class name.
+	 */
+	public function synopsis( string $name ) { }
+
+	/**
 	 * Generator Command.
 	 *
 	 * @todo Replace with a filesystem abstraction.
@@ -107,13 +115,14 @@ abstract class Generator_Command extends Command {
 
 		// Build the stub file and apply replacements.
 		$this->build_stub( $name );
-		$this->set_stub( $this->replacements->replace( $this->stub ) );
+		$this->set_stub( $this->replacements->replace( $this->get_stub() ) );
 
-		if ( false === file_put_contents( $file_path, $this->stub ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents
+		if ( false === file_put_contents( $file_path, $this->get_stub() ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents
 			$this->error( 'Error writing to ' . $file_path );
 		}
 
 		$this->log( $this->type . ' created successfully: ' . $file_path );
+		$this->synopsis( $name );
 	}
 
 	/**
@@ -130,6 +139,15 @@ abstract class Generator_Command extends Command {
 	}
 
 	/**
+	 * Get the file stub.
+	 *
+	 * @return string
+	 */
+	protected function get_stub(): string {
+		return $this->stub;
+	}
+
+	/**
 	 * Set the file stub.
 	 *
 	 * @param string $stub File stub contents.
@@ -141,24 +159,12 @@ abstract class Generator_Command extends Command {
 	}
 
 	/**
-	 * Replace a variable in the stub.
-	 *
-	 * @param string $variable Variable to replace.
-	 * @param string $value Value to replace with.
-	 * @return static
-	 */
-	protected function replace_stub_variable( string $variable, string $value ) {
-		$this->stub = str_replace( '{{ ' . $variable . ' }}', $value, $this->stub );
-		return $this;
-	}
-
-	/**
 	 * Get the class name to use.
 	 *
 	 * @param string $name Inputted name.
 	 * @return string
 	 */
-	public function get_class_name( string $name ): string {
+	protected function get_class_name( string $name ): string {
 		$parts = explode( '\\', $name );
 		return array_pop( $parts );
 	}
@@ -169,7 +175,7 @@ abstract class Generator_Command extends Command {
 	 * @param string $name Name to use.
 	 * @return string
 	 */
-	public function get_namespace( string $name ): string {
+	protected function get_namespace( string $name ): string {
 		$parts = [];
 
 		// Remove the class name and get the namespace.
@@ -192,7 +198,7 @@ abstract class Generator_Command extends Command {
 	 * @param string $name Name to use.
 	 * @return string
 	 */
-	public function get_folder_path( string $name ): string {
+	protected function get_folder_path( string $name ): string {
 		$parts = explode( '\\', $name );
 
 		array_pop( $parts );
@@ -212,7 +218,7 @@ abstract class Generator_Command extends Command {
 	 * @param string $name Name to use.
 	 * @return string
 	 */
-	public function get_file_path( string $name ): string {
+	protected function get_file_path( string $name ): string {
 		$parts    = explode( '\\', $name );
 		$filename = array_pop( $parts );
 		$filename = sanitize_title_with_dashes( str_replace( '_', '-', $filename ) );
