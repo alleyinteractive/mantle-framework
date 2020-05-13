@@ -49,6 +49,20 @@ abstract class Command {
 	protected $synopsis = '';
 
 	/**
+	 * Command Arguments (generated at run-time).
+	 *
+	 * @var array
+	 */
+	protected $command_args;
+
+	/**
+	 * Command Flags (generated at run-time).
+	 *
+	 * @var array
+	 */
+	protected $command_flags;
+
+	/**
 	 * Register the command with wp-cli.
 	 *
 	 * @throws InvalidCommandException Thrown for a command without a name, incorrectly.
@@ -66,8 +80,8 @@ abstract class Command {
 
 		WP_CLI::add_command(
 			static::PREFIX . ' ' . $name,
-			[ $this, 'handle' ],
-			static::get_command_args()
+			[ $this, 'callback' ],
+			static::get_wp_cli_command_args()
 		);
 	}
 
@@ -85,12 +99,43 @@ abstract class Command {
 	 *
 	 * @return array
 	 */
-	protected function get_command_args(): array {
+	protected function get_wp_cli_command_args(): array {
 		return [
 			'longdesc'  => $this->description,
 			'shortdesc' => $this->short_description ? $this->short_description : $this->description,
 			'synopsis'  => $this->synopsis,
 		];
+	}
+
+	/**
+	 * Set the command's arguments.
+	 *
+	 * @param array $args Arguments for the command.
+	 */
+	protected function set_command_args( array $args ) {
+		$this->command_args = $args;
+	}
+
+	/**
+	 * Set the command's flags.
+	 *
+	 * @param array $flags Flags for the command.
+	 */
+	protected function set_command_flags( array $flags ) {
+		$this->command_flags = $flags;
+	}
+
+	/**
+	 * Callback for the command.
+	 *
+	 * @param array $args Command Arguments.
+	 * @param array $assoc_args Command flags.
+	 */
+	public function callback( array $args, array $assoc_args ) {
+		$this->set_command_args( $args );
+		$this->set_command_flags( $assoc_args );
+
+		$this->handle( $args, $assoc_args );
 	}
 
 	/**
@@ -173,5 +218,27 @@ abstract class Command {
 		echo "\033[0m";
 
 		return $input ?? $default;
+	}
+
+	/**
+	 * Get a command argument.
+	 *
+	 * @param int   $position Argument position.
+	 * @param mixed $default_value Default value.
+	 * @return mixed
+	 */
+	public function get_arg( int $position, $default_value = null ) {
+		return $this->command_args[ $position ] ?? $default_value;
+	}
+
+	/**
+	 * Get a flag value for the command.
+	 *
+	 * @param string $flag Flag to get.
+	 * @param mixed  $default_value Default value.
+	 * @return mixed
+	 */
+	public function get_flag( string $flag, $default_value = null ) {
+		return $this->command_flags[ $flag ] ?? $default_value;
 	}
 }
