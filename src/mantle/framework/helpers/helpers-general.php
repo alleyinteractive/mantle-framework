@@ -1,9 +1,9 @@
 <?php
 /**
-* This file contains assorted helpers
-*
-* @package Mantle
-*/
+ * This file contains assorted helpers
+ *
+ * @package Mantle
+ */
 
 namespace Mantle\Framework\Helpers;
 
@@ -14,7 +14,7 @@ use Mantle\Framework\Support\Higher_Order_Tap_Proxy;
 /**
  * Determine if the given value is "blank".
  *
- * @param mixed $value
+ * @param mixed $value Value to check.
  * @return bool
  */
 function blank( $value ) {
@@ -40,7 +40,7 @@ function blank( $value ) {
 /**
  * Get the class "basename" of the given object / class.
  *
- * @param string|object $class
+ * @param string|object $class Class or object to basename.
  * @return string
  */
 function class_basename( $class ) {
@@ -52,7 +52,7 @@ function class_basename( $class ) {
 /**
  * Returns all traits used by a class, its parent classes and trait of their traits.
  *
- * @param object|string $class
+ * @param object|string $class Class or object to analyze.
  * @return array
  */
 function class_uses_recursive( $class ) {
@@ -72,7 +72,7 @@ function class_uses_recursive( $class ) {
 /**
  * Create a collection from the given value.
  *
- * @param mixed $value
+ * @param mixed $value Value to collect.
  * @return \Mantle\Framework\Support\Collection
  */
 function collect( $value = null ) {
@@ -82,7 +82,7 @@ function collect( $value = null ) {
 /**
  * Determine if a value is "filled".
  *
- * @param mixed $value
+ * @param mixed $value Value to check.
  * @return bool
  */
 function filled( $value ) {
@@ -92,9 +92,9 @@ function filled( $value ) {
 /**
  * Get an item from an object using "dot" notation.
  *
- * @param object      $object
- * @param string|null $key
- * @param mixed       $default
+ * @param object      $object  Object from which to get an item.
+ * @param string|null $key     Key path at which to get the value.
+ * @param mixed       $default Default value to return on failure.
  * @return mixed
  */
 function object_get( $object, $key, $default = null ) {
@@ -116,33 +116,41 @@ function object_get( $object, $key, $default = null ) {
 /**
  * Replace a given pattern with each value in the array in sequentially.
  *
- * @param string $pattern
- * @param array  $replacements
- * @param string $subject
+ * @param string $pattern      Pattern for which to search.
+ * @param array  $replacements Strings in which to replace sequentially.
+ * @param string $subject      Subject in which to search/replace.
  * @return string
  */
 function preg_replace_array( $pattern, array $replacements, $subject ) {
-	return preg_replace_callback( $pattern, function () use ( &$replacements ) {
-		foreach ( $replacements as $key => $value ) {
-			return array_shift( $replacements );
-		}
-	}, $subject );
+	return preg_replace_callback(
+		$pattern,
+		function () use ( &$replacements ) {
+			foreach ( $replacements as $key => $value ) {
+				return array_shift( $replacements );
+			}
+		},
+		$subject
+	);
 }
 
 /**
  * Retry an operation a given number of times.
  *
- * @param int           $times
- * @param callable      $callback
- * @param int           $sleep
- * @param callable|null $when
- * @return mixed
+ * @throws \Exception If the callable throws an exception, it is rethrown when
+ *                    the retry limit is hit or when `$when` says so.
  *
- * @throws \Exception
+ * @param int           $times    Number of times to retry.
+ * @param callable      $callback Callable to try.
+ * @param int           $sleep    Number of milliseconds to sleep between tries.
+ * @param callable|null $when     Callable against which to check the thrown
+ *                                exception to determine if a retry should not
+ *                                occur.
+ * @return mixed
  */
 function retry( $times, callable $callback, $sleep = 0, $when = null ) {
 	$attempts = 0;
 
+	// phpcs:ignore Generic.PHP.DiscourageGoto.Found
 	beginning:
 	$attempts ++;
 	$times --;
@@ -158,6 +166,7 @@ function retry( $times, callable $callback, $sleep = 0, $when = null ) {
 			usleep( $sleep * 1000 );
 		}
 
+		// phpcs:ignore Generic.PHP.DiscourageGoto.Found
 		goto beginning;
 	}
 }
@@ -165,8 +174,8 @@ function retry( $times, callable $callback, $sleep = 0, $when = null ) {
 /**
  * Call the given Closure with the given value then return the value.
  *
- * @param mixed         $value
- * @param callable|null $callback
+ * @param mixed         $value    Value to provide to the callback and return.
+ * @param callable|null $callback Callable to tap.
  * @return mixed
  */
 function tap( $value, $callback = null ) {
@@ -182,12 +191,13 @@ function tap( $value, $callback = null ) {
 /**
  * Throw the given exception if the given condition is true.
  *
- * @param mixed             $condition
- * @param \Throwable|string $exception
- * @param array             ...$parameters
- * @return mixed
+ * @throws \Throwable `$exception` is thrown if `$condition` is not met.
  *
- * @throws \Throwable
+ * @param mixed             $condition     Condition to check.
+ * @param \Throwable|string $exception     Exception to throw.
+ * @param array             ...$parameters Params to pass to a new $exception if
+ *                                         $exception is a string (classname).
+ * @return mixed
  */
 function throw_if( $condition, $exception, ...$parameters ) {
 	if ( $condition ) {
@@ -200,12 +210,13 @@ function throw_if( $condition, $exception, ...$parameters ) {
 /**
  * Throw the given exception unless the given condition is true.
  *
- * @param mixed             $condition
- * @param \Throwable|string $exception
- * @param array             ...$parameters
- * @return mixed
+ * @throws \Throwable `$exception` is thrown unless `$condition` is not met.
  *
- * @throws \Throwable
+ * @param mixed             $condition     Condition to check.
+ * @param \Throwable|string $exception     Exception to throw.
+ * @param array             ...$parameters Params to pass to a new $exception if
+ *                                         $exception is a string (classname).
+ * @return mixed
  */
 function throw_unless( $condition, $exception, ...$parameters ) {
 	if ( ! $condition ) {
@@ -218,7 +229,7 @@ function throw_unless( $condition, $exception, ...$parameters ) {
 /**
  * Returns all traits used by a trait and its traits.
  *
- * @param string $trait
+ * @param string $trait Trait to check.
  * @return array
  */
 function trait_uses_recursive( $trait ) {
@@ -234,9 +245,11 @@ function trait_uses_recursive( $trait ) {
 /**
  * Transform the given value if it is present.
  *
- * @param mixed    $value
- * @param callable $callback
- * @param mixed    $default
+ * @param mixed    $value    Value to check.
+ * @param callable $callback Callable to pass `$value`.
+ * @param mixed    $default  Fallback if `$value` is not filled. May be a
+ *                           callable which accepts `$value`, or it may be any
+ *                           other value which is returned directly.
  * @return mixed|null
  */
 function transform( $value, callable $callback, $default = null ) {
@@ -254,8 +267,8 @@ function transform( $value, callable $callback, $default = null ) {
 /**
  * Return the given value, optionally passed through the given callback.
  *
- * @param mixed         $value
- * @param callable|null $callback
+ * @param mixed         $value    Value to return.
+ * @param callable|null $callback Callable to pass `$value` through.
  * @return mixed
  */
 function with( $value, callable $callback = null ) {

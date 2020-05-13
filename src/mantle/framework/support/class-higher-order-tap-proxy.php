@@ -21,8 +21,7 @@ class Higher_Order_Tap_Proxy {
 	/**
 	 * Create a new tap proxy instance.
 	 *
-	 * @param mixed $target
-	 * @return void
+	 * @param mixed $target Object against which to call a method.
 	 */
 	public function __construct( $target ) {
 		$this->target = $target;
@@ -31,8 +30,8 @@ class Higher_Order_Tap_Proxy {
 	/**
 	 * Dynamically pass method calls to the target.
 	 *
-	 * @param string $method
-	 * @param array  $parameters
+	 * @param string $method     Method to call.
+	 * @param array  $parameters Params to provide to the method.
 	 * @return mixed
 	 */
 	public function __call( $method, $parameters ) {

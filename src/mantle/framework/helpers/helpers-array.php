@@ -1,6 +1,6 @@
 <?php
 /**
- * Array helpers.
+ * Array helpers
  *
  * @package Mantle
  */
@@ -135,9 +135,9 @@ function data_set( &$target, $key, $value, $overwrite = true ) {
 /**
  * Fill in data where it's missing.
  *
- * @param mixed        $target
- * @param string|array $key
- * @param mixed        $value
+ * @param mixed        $target Subject to fill into.
+ * @param string|array $key    Key(s) to fill.
+ * @param mixed        $value  Value with which to fill.
  * @return mixed
  */
 function data_fill( &$target, $key, $value ) {
