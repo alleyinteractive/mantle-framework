@@ -1,13 +1,13 @@
 <?php
 
-	namespace Mantle\Framework\Contracts\Support;
+namespace Mantle\Framework\Contracts\Support;
 
-	interface Htmlable
-	{
-    /**
-     * Get content as a string of HTML.
-     *
-     * @return string
-     */
-    public function toHtml();
-	}
+interface Htmlable {
+
+	/**
+	 * Get content as a string of HTML.
+	 *
+	 * @return string
+	 */
+	public function toHtml();
+}
