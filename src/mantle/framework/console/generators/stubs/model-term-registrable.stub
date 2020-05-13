@@ -1,0 +1,81 @@
+<?php
+/**
+ * {{ class }} class file.
+ *
+ * @package {{ namespace }}
+ */
+
+namespace App\Models;
+
+use Mantle\Framework\Contracts\Database\Registrable;
+use Mantle\Framework\Database\Model\Term;
+use Mantle\Framework\Database\Model\Registration\Register_Taxonomy;
+
+/**
+ * {{ class }} Model.
+ */
+class {{ class }} extends Term implements Registrable {
+	use Register_Taxonomy;
+
+	/**
+	 * Object Types for the model.
+	 *
+	 * @var string[]
+	 */
+	protected static $object_types = [ 'post' ];
+
+	/**
+	 * Taxonomy for the model.
+	 *
+	 * @return string
+	 */
+	public static function get_taxonomy(): string {
+		return '{{ object_name }}';
+	}
+
+	/**
+	 * Registration name for the model (post type, taxonomy name, etc.)
+	 *
+	 * @return string
+	 */
+	public static function get_registration_name(): string {
+		return '{{ object_name }}';
+	}
+
+	/**
+	 * Arguments to register the model with.
+	 *
+	 * @return array
+	 */
+	public static function get_registration_args(): array {
+		return [
+			'hierarchical'          => true,
+			'public'                => true,
+			'rest_base'             => '{{ object_name }}',
+			'show_in_rest'          => true,
+			'labels'                => [
+				'name'                  => __( '{{ label_plural }}', 'nbc' ),
+				'singular_name'         => __( '{{ label_singular }}', 'nbc' ),
+				'search_items'          => __( 'Search {{ label_plural }}', 'nbc' ),
+				'popular_items'         => __( 'Popular {{ label_plural }}', 'nbc' ),
+				'all_items'             => __( 'All {{ label_plural }}', 'nbc' ),
+				'parent_item'           => __( 'Parent {{ label_singular }}', 'nbc' ),
+				'parent_item_colon'     => __( 'Parent {{ label_singular }}:', 'nbc' ),
+				'edit_item'             => __( 'Edit {{ label_singular }}', 'nbc' ),
+				'view_item'             => __( 'View {{ label_singular }}', 'nbc' ),
+				'update_item'           => __( 'Update {{ label_singular }}', 'nbc' ),
+				'add_new_item'          => __( 'Add New {{ label_singular }}', 'nbc' ),
+				'new_item_name'         => __( 'New {{ label_singular }} Name', 'nbc' ),
+				'add_or_remove_items'   => __( 'Add or remove {{ label_plural }}', 'nbc' ),
+				'choose_from_most_used' => __( 'Choose from the most used {{ label_plural }}', 'nbc' ),
+				'not_found'             => __( 'No {{ label_plural }} found', 'nbc' ),
+				'no_terms'              => __( 'No {{ label_plural }}', 'nbc' ),
+				'items_list_navigation' => __( '{{ label_plural }} list navigation', 'nbc' ),
+				'items_list'            => __( '{{ label_plural }} list', 'nbc' ),
+				'back_to_items'         => __( '&larr; Back to {{ label_plural }}', 'nbc' ),
+				'menu_name'             => __( '{{ label_plural }}', 'nbc' ),
+				'name_admin_bar'        => __( '{{ label_plural }}', 'nbc' ),
+			],
+		];
+	}
+}

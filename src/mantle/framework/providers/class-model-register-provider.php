@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Support\Providers;
+namespace Mantle\Framework\Providers;
 
 use Mantle\Framework\Contracts\Database\Registrable as Registrable_Contract;
 use Mantle\Framework\Service_Provider;

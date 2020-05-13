@@ -1,0 +1,25 @@
+<?php
+/**
+ * {{ class }} class file.
+ *
+ * @package {{ namespace }}
+ */
+
+namespace App\Models;
+
+use Mantle\Framework\Database\Model\Post;
+
+/**
+ * {{ class }} Model.
+ */
+class {{ class }} extends Post {
+
+	/**
+	 * Post type for the model.
+	 *
+	 * @return string
+	 */
+	public static function get_post_type(): string {
+		return '{{ object_name }}';
+	}
+}
