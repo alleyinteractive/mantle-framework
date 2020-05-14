@@ -140,15 +140,15 @@ class Log_Manager {
 	 * @return AbstractHandler
 	 */
 	protected function create_custom_handler( array $config ): AbstractHandler {
-		if ( ! empty( $config['handler'] ) ) {
+		if ( empty( $config['handler'] ) ) {
+			throw new InvalidArgumentException( 'Custom handler missing "handler" attribute.' );
+		}
+
+		if ( $config['handler'] instanceof AbstractHandler ) {
 			return $config['handler'];
 		}
 
-		if ( empty( $config['via'] ) ) {
-			throw new InvalidArgumentException( 'Custom handler missing "via" attribute.' );
-		}
-
-		return new $config['via']( $this->level( $config ) );
+		return new $config['handler']( $this->level( $config ) );
 	}
 
 	/**

@@ -43,8 +43,8 @@ class Test_Log_Manager extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 							'handler' => $this->handler,
 						],
 						'another_channel' => [
-							'driver' => 'custom',
-							'via'    => new TestHandler(),
+							'driver'  => 'custom',
+							'handler' => new TestHandler(),
 						],
 						'stack' => [
 							'driver'   => 'stack',
