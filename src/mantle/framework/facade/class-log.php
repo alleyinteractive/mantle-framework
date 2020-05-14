@@ -1,6 +1,6 @@
 <?php
 /**
- * Config Facade class file.
+ * Log Facade class file.
  *
  * @package Mantle
  */
