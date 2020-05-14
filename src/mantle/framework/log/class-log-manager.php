@@ -9,6 +9,7 @@ namespace Mantle\Framework\Log;
 
 use InvalidArgumentException;
 use Mantle\Framework\Contracts\Application;
+use Monolog\Handler\AbstractHandler;
 use Monolog\Handler\ErrorLogHandler;
 use Monolog\Handler\GroupHandler;
 use Monolog\Handler\Handler;
@@ -128,6 +129,26 @@ class Log_Manager {
 			$config['bubble'] ?? true,
 			$config['exclude_fields'] ?? []
 		);
+	}
+
+	/**
+	 * Create a custom handler.
+	 *
+	 * @throws InvalidArgumentException Thrown on invalid configuration.
+	 *
+	 * @param array $config Handler configuration.
+	 * @return AbstractHandler
+	 */
+	protected function create_custom_handler( array $config ): AbstractHandler {
+		if ( ! empty( $config['handler'] ) ) {
+			return $config['handler'];
+		}
+
+		if ( empty( $config['via'] ) ) {
+			throw new InvalidArgumentException( 'Custom handler missing "via" attribute.' );
+		}
+
+		return new $config['via']( $this->level( $config ) );
 	}
 
 	/**
