@@ -5,10 +5,13 @@
  * @package Mantle
  */
 
-namespace Mantle\Framekwork\Testing\Concerns;
+namespace Mantle\Framework\Testing\Concerns;
 
 use Mantle\Framework\Support\Str;
 use Mantle\Framework\Testing\Test_Response;
+use Mantle\Framework\Testing\Utils;
+use WP;
+use WP_Query;
 
 /**
  * Trait for Test_Case classes which want to make http-like requests against
@@ -166,6 +169,86 @@ trait Makes_Http_Requests {
 		$response_status  = 200;
 		$response_headers = [];
 		return new Test_Response( $response_content, $response_status, $response_headers );
+	}
+
+	/**
+	 * Sets the global state to as if a given URL has been requested.
+	 *
+	 * This sets:
+	 * - The super globals.
+	 * - The globals.
+	 * - The query variables.
+	 * - The main query.
+	 *
+	 * @since 3.5.0
+	 *
+	 * @param string $url The URL for the request.
+	 */
+	public function go_to( $url ) {
+		/*
+		 * Note: the WP and WP_Query classes like to silently fetch parameters
+		 * from all over the place (globals, GET, etc), which makes it tricky
+		 * to run them more than once without very carefully clearing everything.
+		 */
+		$_GET  = [];
+		$_POST = [];
+		foreach (
+			[
+				'query_string',
+				'id',
+				'postdata',
+				'authordata',
+				'day',
+				'currentmonth',
+				'page',
+				'pages',
+				'multipage',
+				'more',
+				'numpages',
+				'pagenow',
+				'current_screen',
+			] as $v
+		) {
+			if ( isset( $GLOBALS[ $v ] ) ) {
+				unset( $GLOBALS[ $v ] );
+			}
+		}
+		$parts = wp_parse_url( $url );
+		if ( isset( $parts['scheme'] ) ) {
+			$req = isset( $parts['path'] ) ? $parts['path'] : '';
+			if ( isset( $parts['query'] ) ) {
+				$req .= '?' . $parts['query'];
+				// Parse the URL query vars into $_GET.
+				parse_str( $parts['query'], $_GET ); // phpcs:ignore WordPress.Security.NonceVerification
+			}
+		} else {
+			$req = $url;
+		}
+		if ( ! isset( $parts['query'] ) ) {
+			$parts['query'] = '';
+		}
+
+		$_SERVER['REQUEST_URI'] = $req;
+		unset( $_SERVER['PATH_INFO'] );
+
+		self::flush_cache();
+
+		// phpcs:disable WordPress.WP.GlobalVariablesOverride
+		unset( $GLOBALS['wp_query'], $GLOBALS['wp_the_query'] );
+		$GLOBALS['wp_the_query'] = new WP_Query();
+		$GLOBALS['wp_query']     = $GLOBALS['wp_the_query'];
+
+		$public_query_vars  = $GLOBALS['wp']->public_query_vars;
+		$private_query_vars = $GLOBALS['wp']->private_query_vars;
+
+		$GLOBALS['wp']                     = new WP();
+		$GLOBALS['wp']->public_query_vars  = $public_query_vars;
+		$GLOBALS['wp']->private_query_vars = $private_query_vars;
+
+		Utils::cleanup_query_vars();
+
+		$GLOBALS['wp']->main( $parts['query'] );
+		// phpcs:enable WordPress.WP.GlobalVariablesOverride
 	}
 
 	/**
