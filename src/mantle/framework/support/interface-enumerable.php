@@ -5,8 +5,6 @@
  * @package Mantle
  */
 
-// phpcs:disable WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase
-
 // phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment
 
 // phpcs:disable Squiz.Commenting.ClassComment.Missing
@@ -436,19 +434,19 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	/**
 	 * Group an associative array by a field or using a callback.
 	 *
-	 * @param  array|callable|string $groupBy
-	 * @param  bool                  $preserveKeys
+	 * @param  array|callable|string $group_by
+	 * @param  bool                  $preserve_keys
 	 * @return static
 	 */
-	public function groupBy( $groupBy, $preserveKeys = false);
+	public function groupBy( $group_by, $preserve_keys = false);
 
 	/**
 	 * Key an associative array by a field or using a callback.
 	 *
-	 * @param  callable|string $keyBy
+	 * @param  callable|string $key_by
 	 * @return static
 	 */
-	public function keyBy( $keyBy);
+	public function keyBy( $key_by);
 
 	/**
 	 * Determine if an item exists in the collection by key.
@@ -501,10 +499,10 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * Join all items from the collection using a string. The final items can use a separate glue string.
 	 *
 	 * @param  string $glue
-	 * @param  string $finalGlue
+	 * @param  string $final_glue
 	 * @return string
 	 */
-	public function join( $glue, $finalGlue = '');
+	public function join( $glue, $final_glue = '');
 
 	/**
 	 * Get the keys of the collection items.
@@ -653,10 +651,10 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * "Paginate" the collection by slicing it into a smaller collection.
 	 *
 	 * @param  int $page
-	 * @param  int $perPage
+	 * @param  int $per_page
 	 * @return static
 	 */
-	public function for_page( $page, $perPage);
+	public function for_page( $page, $per_page);
 
 	/**
 	 * Partition the collection into two arrays using the given callback or key.
@@ -755,10 +753,10 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	/**
 	 * Split a collection into a certain number of groups.
 	 *
-	 * @param  int $numberOfGroups
+	 * @param  int $number_of_groups
 	 * @return static
 	 */
-	public function split( $numberOfGroups);
+	public function split( $number_of_groups);
 
 	/**
 	 * Chunk the collection into chunks of the given size.

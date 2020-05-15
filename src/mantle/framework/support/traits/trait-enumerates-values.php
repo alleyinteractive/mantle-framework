@@ -5,8 +5,6 @@
  * @package mantle
  */
 
-// phpcs:disable WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase
-
 // phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment
 
 // phpcs:disable Squiz.Commenting.ClassComment.Missing
@@ -42,17 +40,17 @@ use Traversable;
  * @property-read HigherOrderCollectionProxy $every
  * @property-read HigherOrderCollectionProxy $filter
  * @property-read HigherOrderCollectionProxy $first
- * @property-read HigherOrderCollectionProxy $flatMap
- * @property-read HigherOrderCollectionProxy $groupBy
- * @property-read HigherOrderCollectionProxy $keyBy
+ * @property-read HigherOrderCollectionProxy $flat_map
+ * @property-read HigherOrderCollectionProxy $group_by
+ * @property-read HigherOrderCollectionProxy $key_by
  * @property-read HigherOrderCollectionProxy $map
  * @property-read HigherOrderCollectionProxy $max
  * @property-read HigherOrderCollectionProxy $min
  * @property-read HigherOrderCollectionProxy $partition
  * @property-read HigherOrderCollectionProxy $reject
  * @property-read HigherOrderCollectionProxy $some
- * @property-read HigherOrderCollectionProxy $sortBy
- * @property-read HigherOrderCollectionProxy $sortByDesc
+ * @property-read HigherOrderCollectionProxy $sort_by
+ * @property-read HigherOrderCollectionProxy $sort_by_desc
  * @property-read HigherOrderCollectionProxy $sum
  * @property-read HigherOrderCollectionProxy $unique
  * @property-read HigherOrderCollectionProxy $until
@@ -384,13 +382,13 @@ trait Enumerates_Values {
 	 * "Paginate" the collection by slicing it into a smaller collection.
 	 *
 	 * @param  int $page
-	 * @param  int $perPage
+	 * @param  int $per_page
 	 * @return static
 	 */
-	public function for_page( $page, $perPage ) {
-		$offset = max( 0, ( $page - 1 ) * $perPage );
+	public function for_page( $page, $per_page ) {
+		$offset = max( 0, ( $page - 1 ) * $per_page );
 
-		return $this->slice( $offset, $perPage );
+		return $this->slice( $offset, $per_page );
 	}
 
 	/**
@@ -691,11 +689,11 @@ trait Enumerates_Values {
 	 * @return static
 	 */
 	public function reject( $callback = true ) {
-		$useAsCallable = $this->use_as_callable( $callback );
+		$use_as_callable = $this->use_as_callable( $callback );
 
 		return $this->filter(
-			function ( $value, $key ) use ( $callback, $useAsCallable ) {
-				return $useAsCallable
+			function ( $value, $key ) use ( $callback, $use_as_callable ) {
+				return $use_as_callable
 				? ! $callback( $value, $key )
 				: $value != $callback;
 			}
