@@ -43,18 +43,78 @@ class Test_Comment_Object extends WP_UnitTestCase {
 		$this->assertEquals( 'post-to-find', $first->slug() );
 	}
 
-	// public function test_post_by_post_name() {
-	// 	$post_name = 'example-post-name-to-search';
-	// 	$post = static::factory()->post->create( [ 'post_name' => $post_name ] );
+	public function test_post__in() {
+		$post_ids = static::factory()->post->create_many( 10 );
 
-	// 	$first = Builder::create( Testable_Post::class )
-	// 		->wherePostName( $post_name )
-	// 		->first();
+		// Shuffle to get a random order
+		shuffle( $post_ids );
 
-	// 	$this->assertInstanceOf( Testable_Post::class, $first );
-	// 	$this->assertEquals( $post_name, $first->slug() );
-	// 	$this->assertEquals( $post->ID, $first->id() );
-	// }
+		$results = Builder::create( Testable_Post::class )
+			->whereIn( 'id', $post_ids )
+			->orderByPostIn( 'asc' )
+			->get();
+
+		$this->assertNotEmpty( $results );
+
+		// Ensure the order matches.
+		foreach ( $post_ids as $i => $post_id ) {
+			$this->assertEquals( $post_id, $results[ $i ]->id() );
+		}
+	}
+
+	public function test_where_array() {
+		$post = static::factory()->post->create_and_get( [ 'post_name' => 'another-post-to-find' ] );
+		$result = Builder::create( Testable_Post::class )
+			->where(
+				[
+					'name' => $post->name,
+				]
+			)
+			->first();
+
+		$this->assertEquals( $post->ID, $result->id() );
+	}
+
+	public function test_post_meta() {
+		$post_id = $this->get_random_post_id();
+		update_post_meta( $post_id, 'meta-key', 'the-meta-value' );
+
+		$first = Builder::create( Testable_Post::class )
+			->whereMeta( 'meta-key', 'the-meta-value' )
+			->first();
+
+		$this->assertEquals( $post_id, $first->id() );
+	}
+
+	public function test_post_meta_or() {
+		$post_id = $this->get_random_post_id();
+		update_post_meta( $post_id, 'meta-key', 'the-meta-value' );
+
+		$first = Builder::create( Testable_Post::class )
+			->whereMeta( 'something', 'different' )
+			->orWhereMeta( 'meta-key', 'the-meta-value' )
+			->first();
+
+		$this->assertEquals( $post_id, $first->id() );
+	}
+
+	public function test_post_meta_and() {
+		$post_id = $this->get_random_post_id();
+		update_post_meta( $post_id, 'meta-key', 'the-meta-value' );
+		update_post_meta( $post_id, 'another-meta-key', 'another-meta-value' );
+
+		$first = Builder::create( Testable_Post::class )
+			->whereMeta( 'meta-key', 'the-meta-value' )
+			->andWhereMeta( 'another-meta-key', 'another-meta-value' )
+			->first();
+
+		$this->assertEquals( $post_id, $first->id() );
+	}
+
+	protected function get_random_post_id(): int {
+		$post_ids = static::factory()->post->create_many( 10 );
+		return $post_ids[ array_rand( $post_ids ) ];
+	}
 }
 
 class Testable_Post extends Post {
