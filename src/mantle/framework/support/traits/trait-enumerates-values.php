@@ -5,17 +5,9 @@
  * @package mantle
  */
 
-// phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment
-
-// phpcs:disable Squiz.Commenting.ClassComment.Missing
-
 // phpcs:disable Squiz.Commenting.FunctionComment.ParamNameNoMatch
 
 // phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag
-
-// phpcs:disable Squiz.Commenting.FunctionComment.EmptyThrows
-
-// phpcs:disable Generic.Commenting.DocComment.MissingShort
 
 namespace Mantle\Framework\Support\Traits;
 
@@ -33,6 +25,8 @@ use Symfony\Component\VarDumper\VarDumper;
 use Traversable;
 
 /**
+ * Enumerate_Values trait.
+ *
  * @property-read HigherOrderCollectionProxy $average
  * @property-read HigherOrderCollectionProxy $avg
  * @property-read HigherOrderCollectionProxy $contains
@@ -859,7 +853,7 @@ trait Enumerates_Values {
 	 * @param  string $key
 	 * @return mixed
 	 *
-	 * @throws \Exception
+	 * @throws \Exception Throw on nonexistent property keys.
 	 */
 	public function __get( $key ) {
 		if ( ! in_array( $key, static::$proxies ) ) { // phpcs:ignore WordPressVIPMinimum.Variables.VariableAnalysis.StaticOutsideClass
