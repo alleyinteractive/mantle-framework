@@ -1,4 +1,21 @@
 <?php
+/**
+ * Enumerable interface file.
+ *
+ * @package Mantle
+ */
+
+// phpcs:disable WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase
+
+// phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment
+
+// phpcs:disable Squiz.Commenting.ClassComment.Missing
+
+// phpcs:disable Squiz.Commenting.FunctionComment.ParamNameNoMatch
+
+// phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag
+
+// phpcs:disable Squiz.Commenting.FunctionComment.EmptyThrows
 
 namespace Mantle\Framework\Support;
 
