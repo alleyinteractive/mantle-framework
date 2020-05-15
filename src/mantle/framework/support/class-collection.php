@@ -5,8 +5,6 @@
  * @package Mantle
  */
 
-// phpcs:disable WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase
-
 // phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment
 
 // phpcs:disable Squiz.Commenting.ClassComment.Missing
@@ -165,11 +163,11 @@ class Collection implements ArrayAccess, Enumerable {
 
 		$sorted = $counts->sort();
 
-		$highestValue = $sorted->last();
+		$highest_value = $sorted->last();
 
 		return $sorted->filter(
-			function ( $value ) use ( $highestValue ) {
-				return $value == $highestValue;
+			function ( $value ) use ( $highest_value ) {
+				return $value == $highest_value;
 			}
 		)->sort()->keys()->all();
 	}
@@ -293,15 +291,15 @@ class Collection implements ArrayAccess, Enumerable {
 	public function duplicates( $callback = null, $strict = false ) {
 		$items = $this->map( $this->value_retriever( $callback ) );
 
-		$uniqueItems = $items->unique( null, $strict );
+		$unique_items = $items->unique( null, $strict );
 
 		$compare = $this->duplicateComparator( $strict );
 
 		$duplicates = new static();
 
 		foreach ( $items as $key => $value ) {
-			if ( $uniqueItems->is_not_empty() && $compare( $value, $uniqueItems->first() ) ) {
-				$uniqueItems->shift();
+			if ( $unique_items->is_not_empty() && $compare( $value, $unique_items->first() ) ) {
+				$unique_items->shift();
 			} else {
 				$duplicates[ $key ] = $value;
 			}
@@ -430,43 +428,43 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Group an associative array by a field or using a callback.
 	 *
-	 * @param    array|callable|string $groupBy
-	 * @param    bool                  $preserveKeys
+	 * @param    array|callable|string $group_by
+	 * @param    bool                  $preserve_keys
 	 * @return static
 	 */
-	public function groupBy( $groupBy, $preserveKeys = false ) {
-		if ( ! $this->use_as_callable( $groupBy ) && is_array( $groupBy ) ) {
-			$nextGroups = $groupBy;
+	public function groupBy( $group_by, $preserve_keys = false ) {
+		if ( ! $this->use_as_callable( $group_by ) && is_array( $group_by ) ) {
+			$next_groups = $group_by;
 
-			$groupBy = array_shift( $nextGroups );
+			$group_by = array_shift( $next_groups );
 		}
 
-		$groupBy = $this->value_retriever( $groupBy );
+		$group_by = $this->value_retriever( $group_by );
 
 		$results = [];
 
 		foreach ( $this->items as $key => $value ) {
-			$groupKeys = $groupBy( $value, $key );
+			$group_keys = $group_by( $value, $key );
 
-			if ( ! is_array( $groupKeys ) ) {
-				$groupKeys = [ $groupKeys ];
+			if ( ! is_array( $group_keys ) ) {
+				$group_keys = [ $group_keys ];
 			}
 
-			foreach ( $groupKeys as $groupKey ) {
-				$groupKey = is_bool( $groupKey ) ? (int) $groupKey : $groupKey;
+			foreach ( $group_keys as $group_key ) {
+				$group_key = is_bool( $group_key ) ? (int) $group_key : $group_key;
 
-				if ( ! array_key_exists( $groupKey, $results ) ) {
-					$results[ $groupKey ] = new static();
+				if ( ! array_key_exists( $group_key, $results ) ) {
+					$results[ $group_key ] = new static();
 				}
 
-				$results[ $groupKey ]->offsetSet( $preserveKeys ? $key : null, $value );
+				$results[ $group_key ]->offsetSet( $preserve_keys ? $key : null, $value );
 			}
 		}
 
 		$result = new static( $results );
 
-		if ( ! empty( $nextGroups ) ) {
-			return $result->map->groupBy( $nextGroups, $preserveKeys );
+		if ( ! empty( $next_groups ) ) {
+			return $result->map->groupBy( $next_groups, $preserve_keys );
 		}
 
 		return $result;
@@ -475,22 +473,22 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Key an associative array by a field or using a callback.
 	 *
-	 * @param    callable|string $keyBy
+	 * @param    callable|string $key_by
 	 * @return static
 	 */
-	public function keyBy( $keyBy ) {
-		$keyBy = $this->value_retriever( $keyBy );
+	public function keyBy( $key_by ) {
+		$key_by = $this->value_retriever( $key_by );
 
 		$results = [];
 
 		foreach ( $this->items as $key => $item ) {
-			$resolvedKey = $keyBy( $item, $key );
+			$resolved_key = $key_by( $item, $key );
 
-			if ( is_object( $resolvedKey ) ) {
-				$resolvedKey = (string) $resolvedKey;
+			if ( is_object( $resolved_key ) ) {
+				$resolved_key = (string) $resolved_key;
 			}
 
-			$results[ $resolvedKey ] = $item;
+			$results[ $resolved_key ] = $item;
 		}
 
 		return new static( $results );
@@ -569,11 +567,11 @@ class Collection implements ArrayAccess, Enumerable {
 	 * Join all items from the collection using a string. The final items can use a separate glue string.
 	 *
 	 * @param    string $glue
-	 * @param    string $finalGlue
+	 * @param    string $final_glue
 	 * @return string
 	 */
-	public function join( $glue, $finalGlue = '' ) {
-		if ( '' === $finalGlue ) {
+	public function join( $glue, $final_glue = '' ) {
+		if ( '' === $final_glue ) {
 			return $this->implode( $glue );
 		}
 
@@ -589,9 +587,9 @@ class Collection implements ArrayAccess, Enumerable {
 
 		$collection = new static( $this->items );
 
-		$finalItem = $collection->pop();
+		$final_item = $collection->pop();
 
-		return $collection->implode( $glue ) . $finalGlue . $finalItem;
+		return $collection->implode( $glue ) . $final_glue . $final_item;
 	}
 
 	/**
@@ -681,8 +679,8 @@ class Collection implements ArrayAccess, Enumerable {
 		foreach ( $this->items as $key => $value ) {
 			$assoc = $callback( $value, $key );
 
-			foreach ( $assoc as $mapKey => $mapValue ) {
-				$result[ $mapKey ] = $mapValue;
+			foreach ( $assoc as $map_key => $map_value ) {
+				$result[ $map_key ] = $map_value;
 			}
 		}
 
@@ -988,24 +986,24 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Split a collection into a certain number of groups.
 	 *
-	 * @param    int $numberOfGroups
+	 * @param    int $number_of_groups
 	 * @return static
 	 */
-	public function split( $numberOfGroups ) {
+	public function split( $number_of_groups ) {
 		if ( $this->isEmpty() ) {
 			return new static();
 		}
 
 		$groups = new static();
 
-		$groupSize = floor( $this->count() / $numberOfGroups );
+		$group_size = floor( $this->count() / $number_of_groups );
 
-		$remain = $this->count() % $numberOfGroups;
+		$remain = $this->count() % $number_of_groups;
 
 		$start = 0;
 
-		for ( $i = 0; $i < $numberOfGroups; $i++ ) {
-			$size = $groupSize;
+		for ( $i = 0; $i < $number_of_groups; $i++ ) {
+			$size = $group_size;
 
 			if ( $i < $remain ) {
 				$size++;
@@ -1221,7 +1219,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static
 	 */
 	public function zip( $items ) {
-		$arrayableItems = array_map(
+		$arrayable_items = array_map(
 			function ( $items ) {
 				return $this->get_arrayable_items( $items );
 			},
@@ -1235,7 +1233,7 @@ class Collection implements ArrayAccess, Enumerable {
 				},
 				$this->items,
 			],
-			$arrayableItems
+			$arrayable_items
 		);
 
 		return new static( call_user_func_array( 'array_map', $params ) );
