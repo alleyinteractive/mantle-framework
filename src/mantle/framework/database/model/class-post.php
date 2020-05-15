@@ -26,6 +26,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 		'content'     => 'post_content',
 		'description' => 'post_excerpt',
 		'id'          => 'ID',
+		'title'       => 'post_title',
 		'name'        => 'post_title',
 		'slug'        => 'post_name',
 	];

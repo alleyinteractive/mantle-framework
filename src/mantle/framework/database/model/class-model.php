@@ -16,14 +16,9 @@ use Mantle\Framework\Support\Str;
  * @todo Add Json-able, arrayable, serialize interfaces
  */
 abstract class Model implements ArrayAccess {
-	use Attributes;
-
-	/**
-	 * Model aliases.
-	 *
-	 * @var string[]
-	 */
-	protected static $aliases = [];
+	use Aliases,
+		Attributes,
+		Relationships;
 
 	/**
 	 * The array of booted models.
@@ -92,8 +87,8 @@ abstract class Model implements ArrayAccess {
 	 * @return mixed
 	 */
 	public function get( string $attribute ) {
-		if ( isset( static::$aliases[ $attribute ] ) ) {
-			$attribute = static::$aliases[ $attribute ];
+		if ( static::has_attribute_alias( $attribute ) ) {
+			$attribute = static::get_attribute_alias( $attribute );
 		}
 
 		return $this->get_attribute( $attribute );
@@ -106,8 +101,8 @@ abstract class Model implements ArrayAccess {
 	 * @param mixed  $value Value to set.
 	 */
 	public function set( string $attribute, $value ) {
-		if ( isset( static::$aliases[ $attribute ] ) ) {
-			$attribute = static::$aliases[ $attribute ];
+		if ( static::has_attribute_alias( $attribute ) ) {
+			$attribute = static::get_attribute_alias( $attribute );
 		}
 
 		$this->set_attribute( $attribute, $value );
