@@ -195,9 +195,9 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param    mixed ...$lists
 	 * @return static
 	 */
-	public function crossJoin( ...$lists ) {
+	public function cross_join(...$lists ) {
 		return new static(
-			Arr::crossJoin(
+			Arr::cross_join(
 				$this->items,
 				...array_map( [ $this, 'getArrayableItems' ], $lists )
 			)
