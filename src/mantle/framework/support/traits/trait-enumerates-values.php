@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * Enumerates_Values trait file.
+ *
+ * @package mantle
+ */
 
 // phpcs:disable WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase
 
@@ -13,6 +17,8 @@
 
 // phpcs:disable Squiz.Commenting.FunctionComment.EmptyThrows
 
+// phpcs:disable Generic.Commenting.DocComment.MissingShort
+
 namespace Mantle\Framework\Support\Traits;
 
 use CachingIterator;
@@ -24,8 +30,6 @@ use function Mantle\Framework\Helpers\data_get;
 use Mantle\Framework\Support\Arr;
 use Mantle\Framework\Support\Collection;
 use Mantle\Support\Enumerable;
-use Mantle\Framework\Support\HigherOrderCollectionProxy;
-use Mantle\Framework\Support\HigherOrderWhenProxy;
 use JsonSerializable;
 use Symfony\Component\VarDumper\VarDumper;
 use Traversable;
@@ -105,8 +109,8 @@ trait Enumerates_Values {
 	 */
 	public static function wrap( $value ) {
 		return $value instanceof Enumerable
-		 ? new static( $value )
-		 : new static( Arr::wrap( $value ) );
+			? new static( $value )
+			: new static( Arr::wrap( $value ) );
 	}
 
 	/**
@@ -148,7 +152,7 @@ trait Enumerates_Values {
 	 * @param  mixed $value
 	 * @return bool
 	 */
-	public function containsStrict( $key, $value = null ) {
+	public function contains_strict( $key, $value = null ) {
 		if ( func_num_args() === 2 ) {
 			return $this->contains(
 				function ( $item ) use ( $key, $value ) {
@@ -157,7 +161,7 @@ trait Enumerates_Values {
 			);
 		}
 
-		if ( $this->useAsCallable( $key ) ) {
+		if ( $this->use_as_callable( $key ) ) {
 			return ! is_null( $this->first( $key ) );
 		}
 
@@ -221,7 +225,7 @@ trait Enumerates_Values {
 	 * @param  callable $callback
 	 * @return static
 	 */
-	public function eachSpread( callable $callback ) {
+	public function each_spread( callable $callback ) {
 		return $this->each(
 			function ( $chunk, $key ) use ( $callback ) {
 				$chunk[] = $key;
@@ -241,7 +245,7 @@ trait Enumerates_Values {
 	 */
 	public function every( $key, $operator = null, $value = null ) {
 		if ( func_num_args() === 1 ) {
-			$callback = $this->valueRetriever( $key );
+			$callback = $this->value_retriever( $key );
 
 			foreach ( $this as $k => $v ) {
 				if ( ! $callback( $v, $k ) ) {
@@ -252,7 +256,7 @@ trait Enumerates_Values {
 			return true;
 		}
 
-		return $this->every( $this->operatorForWhere( ...func_get_args() ) );
+		return $this->every( $this->operator_for_where( ...func_get_args() ) );
 	}
 
 	/**
@@ -263,8 +267,8 @@ trait Enumerates_Values {
 	 * @param  mixed  $value
 	 * @return mixed
 	 */
-	public function firstWhere( $key, $operator = null, $value = null ) {
-		return $this->first( $this->operatorForWhere( ...func_get_args() ) );
+	public function first_where( $key, $operator = null, $value = null ) {
+		return $this->first( $this->operator_for_where( ...func_get_args() ) );
 	}
 
 	/**
@@ -272,7 +276,7 @@ trait Enumerates_Values {
 	 *
 	 * @return bool
 	 */
-	public function isNotEmpty() {
+	public function is_not_empty() {
 		return ! $this->isEmpty();
 	}
 
@@ -282,7 +286,7 @@ trait Enumerates_Values {
 	 * @param  callable $callback
 	 * @return static
 	 */
-	public function mapSpread( callable $callback ) {
+	public function map_spread( callable $callback ) {
 		return $this->map(
 			function ( $chunk, $key ) use ( $callback ) {
 				$chunk[] = $key;
@@ -300,7 +304,7 @@ trait Enumerates_Values {
 	 * @param  callable $callback
 	 * @return static
 	 */
-	public function mapToGroups( callable $callback ) {
+	public function map_to_groups( callable $callback ) {
 		$groups = $this->mapToDictionary( $callback );
 
 		return $groups->map( [ $this, 'make' ] );
@@ -312,7 +316,7 @@ trait Enumerates_Values {
 	 * @param  callable $callback
 	 * @return static
 	 */
-	public function flatMap( callable $callback ) {
+	public function flat_map( callable $callback ) {
 		return $this->map( $callback )->collapse();
 	}
 
@@ -322,7 +326,7 @@ trait Enumerates_Values {
 	 * @param  string $class
 	 * @return static
 	 */
-	public function mapInto( $class ) {
+	public function map_into( $class ) {
 		return $this->map(
 			function ( $value, $key ) use ( $class ) {
 				return new $class( $value, $key );
@@ -337,7 +341,7 @@ trait Enumerates_Values {
 	 * @return mixed
 	 */
 	public function min( $callback = null ) {
-		$callback = $this->valueRetriever( $callback );
+		$callback = $this->value_retriever( $callback );
 
 		return $this->map(
 			function ( $value ) use ( $callback ) {
@@ -361,7 +365,7 @@ trait Enumerates_Values {
 	 * @return mixed
 	 */
 	public function max( $callback = null ) {
-		$callback = $this->valueRetriever( $callback );
+		$callback = $this->value_retriever( $callback );
 
 		return $this->filter(
 			function ( $value ) {
@@ -383,7 +387,7 @@ trait Enumerates_Values {
 	 * @param  int $perPage
 	 * @return static
 	 */
-	public function forPage( $page, $perPage ) {
+	public function for_page( $page, $perPage ) {
 		$offset = max( 0, ( $page - 1 ) * $perPage );
 
 		return $this->slice( $offset, $perPage );
@@ -402,8 +406,8 @@ trait Enumerates_Values {
 		$failed = [];
 
 		$callback = func_num_args() === 1
-			  ? $this->valueRetriever( $key )
-			  : $this->operatorForWhere( ...func_get_args() );
+			? $this->value_retriever( $key )
+			: $this->operator_for_where( ...func_get_args() );
 
 		foreach ( $this as $key => $item ) {
 			if ( $callback( $item, $key ) ) {
@@ -428,7 +432,7 @@ trait Enumerates_Values {
 				return $value;
 			};
 		} else {
-			$callback = $this->valueRetriever( $callback );
+			$callback = $this->value_retriever( $callback );
 		}
 
 		return $this->reduce(
@@ -468,7 +472,7 @@ trait Enumerates_Values {
 	 * @param  callable|null $default
 	 * @return static|mixed
 	 */
-	public function whenEmpty( callable $callback, callable $default = null ) {
+	public function when_empty( callable $callback, callable $default = null ) {
 		return $this->when( $this->isEmpty(), $callback, $default );
 	}
 
@@ -479,8 +483,8 @@ trait Enumerates_Values {
 	 * @param  callable|null $default
 	 * @return static|mixed
 	 */
-	public function whenNotEmpty( callable $callback, callable $default = null ) {
-		return $this->when( $this->isNotEmpty(), $callback, $default );
+	public function when_not_empty( callable $callback, callable $default = null ) {
+		return $this->when( $this->is_not_empty(), $callback, $default );
 	}
 
 	/**
@@ -502,8 +506,8 @@ trait Enumerates_Values {
 	 * @param  callable|null $default
 	 * @return static|mixed
 	 */
-	public function unlessEmpty( callable $callback, callable $default = null ) {
-		return $this->whenNotEmpty( $callback, $default );
+	public function unless_empty( callable $callback, callable $default = null ) {
+		return $this->when_not_empty( $callback, $default );
 	}
 
 	/**
@@ -513,8 +517,8 @@ trait Enumerates_Values {
 	 * @param  callable|null $default
 	 * @return static|mixed
 	 */
-	public function unlessNotEmpty( callable $callback, callable $default = null ) {
-		return $this->whenEmpty( $callback, $default );
+	public function unless_not_empty( callable $callback, callable $default = null ) {
+		return $this->when_empty( $callback, $default );
 	}
 
 	/**
@@ -526,7 +530,7 @@ trait Enumerates_Values {
 	 * @return static
 	 */
 	public function where( $key, $operator = null, $value = null ) {
-		return $this->filter( $this->operatorForWhere( ...func_get_args() ) );
+		return $this->filter( $this->operator_for_where( ...func_get_args() ) );
 	}
 
 	/**
@@ -535,8 +539,8 @@ trait Enumerates_Values {
 	 * @param  string|null $key
 	 * @return static
 	 */
-	public function whereNull( $key = null ) {
-		return $this->whereStrict( $key, null );
+	public function where_null( $key = null ) {
+		return $this->where_strict( $key, null );
 	}
 
 	/**
@@ -545,7 +549,7 @@ trait Enumerates_Values {
 	 * @param  string|null $key
 	 * @return static
 	 */
-	public function whereNotNull( $key = null ) {
+	public function where_not_null( $key = null ) {
 		return $this->where( $key, '!==', null );
 	}
 
@@ -556,7 +560,7 @@ trait Enumerates_Values {
 	 * @param  mixed  $value
 	 * @return static
 	 */
-	public function whereStrict( $key, $value ) {
+	public function where_strict( $key, $value ) {
 		return $this->where( $key, '===', $value );
 	}
 
@@ -568,8 +572,8 @@ trait Enumerates_Values {
 	 * @param  bool   $strict
 	 * @return static
 	 */
-	public function whereIn( $key, $values, $strict = false ) {
-		$values = $this->getArrayableItems( $values );
+	public function where_in( $key, $values, $strict = false ) {
+		$values = $this->get_arrayable_items( $values );
 
 		return $this->filter(
 			function ( $item ) use ( $key, $values, $strict ) {
@@ -585,8 +589,8 @@ trait Enumerates_Values {
 	 * @param  mixed  $values
 	 * @return static
 	 */
-	public function whereInStrict( $key, $values ) {
-		return $this->whereIn( $key, $values, true );
+	public function where_in_strict( $key, $values ) {
+		return $this->where_in( $key, $values, true );
 	}
 
 	/**
@@ -596,7 +600,7 @@ trait Enumerates_Values {
 	 * @param  array  $values
 	 * @return static
 	 */
-	public function whereBetween( $key, $values ) {
+	public function where_between( $key, $values ) {
 		return $this->where( $key, '>=', reset( $values ) )->where( $key, '<=', end( $values ) );
 	}
 
@@ -607,7 +611,7 @@ trait Enumerates_Values {
 	 * @param  array  $values
 	 * @return static
 	 */
-	public function whereNotBetween( $key, $values ) {
+	public function where_not_between( $key, $values ) {
 		return $this->filter(
 			function ( $item ) use ( $key, $values ) {
 				return data_get( $item, $key ) < reset( $values ) || data_get( $item, $key ) > end( $values );
@@ -623,8 +627,8 @@ trait Enumerates_Values {
 	 * @param  bool   $strict
 	 * @return static
 	 */
-	public function whereNotIn( $key, $values, $strict = false ) {
-		$values = $this->getArrayableItems( $values );
+	public function where_not_in( $key, $values, $strict = false ) {
+		$values = $this->get_arrayable_items( $values );
 
 		return $this->reject(
 			function ( $item ) use ( $key, $values, $strict ) {
@@ -640,8 +644,8 @@ trait Enumerates_Values {
 	 * @param  mixed  $values
 	 * @return static
 	 */
-	public function whereNotInStrict( $key, $values ) {
-		return $this->whereNotIn( $key, $values, true );
+	public function where_not_in_strict( $key, $values ) {
+		return $this->where_not_in( $key, $values, true );
 	}
 
 	/**
@@ -650,7 +654,7 @@ trait Enumerates_Values {
 	 * @param  string $type
 	 * @return static
 	 */
-	public function whereInstanceOf( $type ) {
+	public function where_instance_of( $type ) {
 		return $this->filter(
 			function ( $value ) use ( $type ) {
 				return $value instanceof $type;
@@ -687,7 +691,7 @@ trait Enumerates_Values {
 	 * @return static
 	 */
 	public function reject( $callback = true ) {
-		$useAsCallable = $this->useAsCallable( $callback );
+		$useAsCallable = $this->use_as_callable( $callback );
 
 		return $this->filter(
 			function ( $value, $key ) use ( $callback, $useAsCallable ) {
@@ -706,13 +710,14 @@ trait Enumerates_Values {
 	 * @return static
 	 */
 	public function unique( $key = null, $strict = false ) {
-		$callback = $this->valueRetriever( $key );
+		$callback = $this->value_retriever( $key );
 
 		$exists = [];
 
 		return $this->reject(
 			function ( $item, $key ) use ( $callback, $strict, &$exists ) {
-				if ( in_array( $id = $callback( $item, $key ), $exists, $strict ) ) {
+				$id = $callback( $item, $key );
+				if ( in_array( $id, $exists, $strict ) ) {
 					return true;
 				}
 
@@ -727,7 +732,7 @@ trait Enumerates_Values {
 	 * @param  string|callable|null $key
 	 * @return static
 	 */
-	public function uniqueStrict( $key = null ) {
+	public function unique_strict( $key = null ) {
 		return $this->unique( $key, true );
 	}
 
@@ -772,13 +777,13 @@ trait Enumerates_Values {
 	 *
 	 * @return array
 	 */
-	public function jsonSerialize() {
+	public function jsonSerialize() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
 		return array_map(
 			function ( $value ) {
 				if ( $value instanceof JsonSerializable ) {
 					return $value->jsonSerialize();
 				} elseif ( $value instanceof Jsonable ) {
-					return json_decode( $value->toJson(), true );
+					return json_decode( $value->to_json(), true );
 				} elseif ( $value instanceof Arrayable ) {
 					return $value->to_array();
 				}
@@ -795,8 +800,8 @@ trait Enumerates_Values {
 	 * @param  int $options
 	 * @return string
 	 */
-	public function toJson( $options = 0 ) {
-		return json_encode( $this->jsonSerialize(), $options );
+	public function to_json( $options = 0 ) {
+		return json_encode( $this->jsonSerialize(), $options ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
 	}
 
 	/**
@@ -805,7 +810,7 @@ trait Enumerates_Values {
 	 * @param  int $flags
 	 * @return \CachingIterator
 	 */
-	public function getCachingIterator( $flags = CachingIterator::CALL_TOSTRING ) {
+	public function get_caching_iterator( $flags = CachingIterator::CALL_TOSTRING ) {
 		return new CachingIterator( $this->getIterator(), $flags );
 	}
 
@@ -815,7 +820,7 @@ trait Enumerates_Values {
 	 * @param  callable|null $callback
 	 * @return static
 	 */
-	public function countBy( $callback = null ) {
+	public function count_by( $callback = null ) {
 		if ( is_null( $callback ) ) {
 			$callback = function ( $value ) {
 				return $value;
@@ -837,7 +842,7 @@ trait Enumerates_Values {
 	 * @return string
 	 */
 	public function __toString() {
-		return $this->toJson();
+		return $this->to_json();
 	}
 
 	/**
@@ -847,7 +852,7 @@ trait Enumerates_Values {
 	 * @return void
 	 */
 	public static function proxy( $method ) {
-		static::$proxies[] = $method;
+		static::$proxies[] = $method; // phpcs:ignore WordPressVIPMinimum.Variables.VariableAnalysis.StaticOutsideClass
 	}
 
 	/**
@@ -859,7 +864,7 @@ trait Enumerates_Values {
 	 * @throws \Exception
 	 */
 	public function __get( $key ) {
-		if ( ! in_array( $key, static::$proxies ) ) {
+		if ( ! in_array( $key, static::$proxies ) ) { // phpcs:ignore WordPressVIPMinimum.Variables.VariableAnalysis.StaticOutsideClass
 			throw new Exception( "Property [{$key}] does not exist on this collection instance." );
 		}
 
@@ -872,7 +877,7 @@ trait Enumerates_Values {
 	 * @param  mixed $items
 	 * @return array
 	 */
-	protected function getArrayableItems( $items ) {
+	protected function get_arrayable_items( $items ) {
 		if ( is_array( $items ) ) {
 			return $items;
 		} elseif ( $items instanceof Enumerable ) {
@@ -880,7 +885,7 @@ trait Enumerates_Values {
 		} elseif ( $items instanceof Arrayable ) {
 			return $items->to_array();
 		} elseif ( $items instanceof Jsonable ) {
-			return json_decode( $items->toJson(), true );
+			return json_decode( $items->to_json(), true );
 		} elseif ( $items instanceof JsonSerializable ) {
 			return (array) $items->jsonSerialize();
 		} elseif ( $items instanceof Traversable ) {
@@ -898,7 +903,7 @@ trait Enumerates_Values {
 	 * @param  mixed       $value
 	 * @return \Closure
 	 */
-	protected function operatorForWhere( $key, $operator = null, $value = null ) {
+	protected function operator_for_where( $key, $operator = null, $value = null ) {
 		if ( func_num_args() === 1 ) {
 			$value = true;
 
@@ -955,7 +960,7 @@ trait Enumerates_Values {
 	 * @param  mixed $value
 	 * @return bool
 	 */
-	protected function useAsCallable( $value ) {
+	protected function use_as_callable( $value ) {
 		return ! is_string( $value ) && is_callable( $value );
 	}
 
@@ -965,8 +970,8 @@ trait Enumerates_Values {
 	 * @param  callable|string|null $value
 	 * @return callable
 	 */
-	protected function valueRetriever( $value ) {
-		if ( $this->useAsCallable( $value ) ) {
+	protected function value_retriever( $value ) {
+		if ( $this->use_as_callable( $value ) ) {
 			return $value;
 		}
 

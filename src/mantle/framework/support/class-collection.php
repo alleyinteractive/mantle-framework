@@ -42,7 +42,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return void
 	 */
 	public function __construct( $items = [] ) {
-		$this->items = $this->getArrayableItems( $items );
+		$this->items = $this->get_arrayable_items( $items );
 	}
 
 	/**
@@ -89,7 +89,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return mixed
 	 */
 	public function avg( $callback = null ) {
-		$callback = $this->valueRetriever( $callback );
+		$callback = $this->value_retriever( $callback );
 
 		$items = $this->map(
 			function ( $value ) use ( $callback ) {
@@ -193,7 +193,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	public function contains( $key, $operator = null, $value = null ) {
 		if ( func_num_args() === 1 ) {
-			if ( $this->useAsCallable( $key ) ) {
+			if ( $this->use_as_callable( $key ) ) {
 				$placeholder = new stdClass();
 
 				return $this->first( $key, $placeholder ) !== $placeholder;
@@ -202,7 +202,7 @@ class Collection implements ArrayAccess, Enumerable {
 			return in_array( $key, $this->items );
 		}
 
-		return $this->contains( $this->operatorForWhere( ...func_get_args() ) );
+		return $this->contains( $this->operator_for_where( ...func_get_args() ) );
 	}
 
 	/**
@@ -215,7 +215,7 @@ class Collection implements ArrayAccess, Enumerable {
 		return new static(
 			Arr::cross_join(
 				$this->items,
-				...array_map( [ $this, 'getArrayableItems' ], $lists )
+				...array_map( [ $this, 'get_arrayable_items' ], $lists )
 			)
 		);
 	}
@@ -227,7 +227,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static
 	 */
 	public function diff( $items ) {
-		return new static( array_diff( $this->items, $this->getArrayableItems( $items ) ) );
+		return new static( array_diff( $this->items, $this->get_arrayable_items( $items ) ) );
 	}
 
 	/**
@@ -238,7 +238,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static
 	 */
 	public function diffUsing( $items, callable $callback ) {
-		return new static( array_udiff( $this->items, $this->getArrayableItems( $items ), $callback ) );
+		return new static( array_udiff( $this->items, $this->get_arrayable_items( $items ), $callback ) );
 	}
 
 	/**
@@ -248,7 +248,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static
 	 */
 	public function diffAssoc( $items ) {
-		return new static( array_diff_assoc( $this->items, $this->getArrayableItems( $items ) ) );
+		return new static( array_diff_assoc( $this->items, $this->get_arrayable_items( $items ) ) );
 	}
 
 	/**
@@ -259,7 +259,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static
 	 */
 	public function diffAssocUsing( $items, callable $callback ) {
-		return new static( array_diff_uassoc( $this->items, $this->getArrayableItems( $items ), $callback ) );
+		return new static( array_diff_uassoc( $this->items, $this->get_arrayable_items( $items ), $callback ) );
 	}
 
 	/**
@@ -269,7 +269,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static
 	 */
 	public function diffKeys( $items ) {
-		return new static( array_diff_key( $this->items, $this->getArrayableItems( $items ) ) );
+		return new static( array_diff_key( $this->items, $this->get_arrayable_items( $items ) ) );
 	}
 
 	/**
@@ -280,7 +280,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static
 	 */
 	public function diffKeysUsing( $items, callable $callback ) {
-		return new static( array_diff_ukey( $this->items, $this->getArrayableItems( $items ), $callback ) );
+		return new static( array_diff_ukey( $this->items, $this->get_arrayable_items( $items ), $callback ) );
 	}
 
 	/**
@@ -291,7 +291,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static
 	 */
 	public function duplicates( $callback = null, $strict = false ) {
-		$items = $this->map( $this->valueRetriever( $callback ) );
+		$items = $this->map( $this->value_retriever( $callback ) );
 
 		$uniqueItems = $items->unique( null, $strict );
 
@@ -300,7 +300,7 @@ class Collection implements ArrayAccess, Enumerable {
 		$duplicates = new static();
 
 		foreach ( $items as $key => $value ) {
-			if ( $uniqueItems->isNotEmpty() && $compare( $value, $uniqueItems->first() ) ) {
+			if ( $uniqueItems->is_not_empty() && $compare( $value, $uniqueItems->first() ) ) {
 				$uniqueItems->shift();
 			} else {
 				$duplicates[ $key ] = $value;
@@ -435,13 +435,13 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static
 	 */
 	public function groupBy( $groupBy, $preserveKeys = false ) {
-		if ( ! $this->useAsCallable( $groupBy ) && is_array( $groupBy ) ) {
+		if ( ! $this->use_as_callable( $groupBy ) && is_array( $groupBy ) ) {
 			$nextGroups = $groupBy;
 
 			$groupBy = array_shift( $nextGroups );
 		}
 
-		$groupBy = $this->valueRetriever( $groupBy );
+		$groupBy = $this->value_retriever( $groupBy );
 
 		$results = [];
 
@@ -479,7 +479,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static
 	 */
 	public function keyBy( $keyBy ) {
-		$keyBy = $this->valueRetriever( $keyBy );
+		$keyBy = $this->value_retriever( $keyBy );
 
 		$results = [];
 
@@ -538,7 +538,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static
 	 */
 	public function intersect( $items ) {
-		return new static( array_intersect( $this->items, $this->getArrayableItems( $items ) ) );
+		return new static( array_intersect( $this->items, $this->get_arrayable_items( $items ) ) );
 	}
 
 	/**
@@ -551,7 +551,7 @@ class Collection implements ArrayAccess, Enumerable {
 		return new static(
 			array_intersect_key(
 				$this->items,
-				$this->getArrayableItems( $items )
+				$this->get_arrayable_items( $items )
 			)
 		);
 	}
@@ -696,7 +696,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static
 	 */
 	public function merge( $items ) {
-		return new static( array_merge( $this->items, $this->getArrayableItems( $items ) ) );
+		return new static( array_merge( $this->items, $this->get_arrayable_items( $items ) ) );
 	}
 
 	/**
@@ -706,7 +706,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static
 	 */
 	public function mergeRecursive( $items ) {
-		return new static( array_merge_recursive( $this->items, $this->getArrayableItems( $items ) ) );
+		return new static( array_merge_recursive( $this->items, $this->get_arrayable_items( $items ) ) );
 	}
 
 	/**
@@ -716,7 +716,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static
 	 */
 	public function combine( $values ) {
-		return new static( array_combine( $this->all(), $this->getArrayableItems( $values ) ) );
+		return new static( array_combine( $this->all(), $this->get_arrayable_items( $values ) ) );
 	}
 
 	/**
@@ -726,7 +726,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static
 	 */
 	public function union( $items ) {
-		return new static( $this->items + $this->getArrayableItems( $items ) );
+		return new static( $this->items + $this->get_arrayable_items( $items ) );
 	}
 
 	/**
@@ -882,7 +882,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static
 	 */
 	public function replace( $items ) {
-		return new static( array_replace( $this->items, $this->getArrayableItems( $items ) ) );
+		return new static( array_replace( $this->items, $this->get_arrayable_items( $items ) ) );
 	}
 
 	/**
@@ -892,7 +892,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static
 	 */
 	public function replaceRecursive( $items ) {
-		return new static( array_replace_recursive( $this->items, $this->getArrayableItems( $items ) ) );
+		return new static( array_replace_recursive( $this->items, $this->get_arrayable_items( $items ) ) );
 	}
 
 	/**
@@ -912,7 +912,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return mixed
 	 */
 	public function search( $value, $strict = false ) {
-		if ( ! $this->useAsCallable( $value ) ) {
+		if ( ! $this->use_as_callable( $value ) ) {
 			return array_search( $value, $this->items, $strict );
 		}
 
@@ -1082,7 +1082,7 @@ class Collection implements ArrayAccess, Enumerable {
 	public function sortBy( $callback, $options = SORT_REGULAR, $descending = false ) {
 		$results = [];
 
-		$callback = $this->valueRetriever( $callback );
+		$callback = $this->value_retriever( $callback );
 
 		// First we will loop through the items and get the comparator from a callback
 		// function which we were given. Then, we will sort the returned values and
@@ -1223,7 +1223,7 @@ class Collection implements ArrayAccess, Enumerable {
 	public function zip( $items ) {
 		$arrayableItems = array_map(
 			function ( $items ) {
-				return $this->getArrayableItems( $items );
+				return $this->get_arrayable_items( $items );
 			},
 			func_get_args()
 		);

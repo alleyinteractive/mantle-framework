@@ -72,10 +72,10 @@ class Test_Collection extends TestCase {
 			['material' => 'rubber', 'type' => 'gasket'],
 		]);
 
-		$this->assertSame('book', $data->firstWhere('material', 'paper')['type']);
-		$this->assertSame('gasket', $data->firstWhere('material', 'rubber')['type']);
-		$this->assertNull($data->firstWhere('material', 'nonexistant'));
-		$this->assertNull($data->firstWhere('nonexistant', 'key'));
+		$this->assertSame('book', $data->first_where('material', 'paper')['type']);
+		$this->assertSame('gasket', $data->first_where('material', 'rubber')['type']);
+		$this->assertNull($data->first_where('material', 'nonexistant'));
+		$this->assertNull($data->first_where('nonexistant', 'key'));
 	}
 
 	/**
@@ -161,7 +161,7 @@ class Test_Collection extends TestCase {
 		$c = new $collection(['foo', 'bar']);
 
 		$this->assertFalse($c->isEmpty());
-		$this->assertTrue($c->isNotEmpty());
+		$this->assertTrue($c->is_not_empty());
 	}
 
 	/**
@@ -254,7 +254,7 @@ class Test_Collection extends TestCase {
 		$data = new $collection;
 
 		$class = new ReflectionClass($collection);
-		$method = $class->getMethod('getArrayableItems');
+		$method = $class->getMethod('get_arrayable_items');
 		$method->setAccessible(true);
 
 		$items = new TestArrayableObject;
@@ -331,7 +331,7 @@ class Test_Collection extends TestCase {
 	{
 		$c = $this->getMockBuilder($collection)->setMethods(['jsonSerialize'])->getMock();
 		$c->expects($this->once())->method('jsonSerialize')->willReturn('foo');
-		$results = $c->toJson();
+		$results = $c->to_json();
 		$this->assertJsonStringEqualsJsonString(json_encode('foo'), $results);
 	}
 
@@ -434,13 +434,13 @@ class Test_Collection extends TestCase {
 	public function testCountableByWithoutPredicate($collection)
 	{
 		$c = new $collection(['foo', 'foo', 'foo', 'bar', 'bar', 'foobar']);
-		$this->assertEquals(['foo' => 3, 'bar' => 2, 'foobar' => 1], $c->countBy()->all());
+		$this->assertEquals(['foo' => 3, 'bar' => 2, 'foobar' => 1], $c->count_by()->all());
 
 		$c = new $collection([true, true, false, false, false]);
-		$this->assertEquals([true => 2, false => 3], $c->countBy()->all());
+		$this->assertEquals([true => 2, false => 3], $c->count_by()->all());
 
 		$c = new $collection([1, 5, 1, 5, 5, 1]);
-		$this->assertEquals([1 => 3, 5 => 3], $c->countBy()->all());
+		$this->assertEquals([1 => 3, 5 => 3], $c->count_by()->all());
 	}
 
 	/**
@@ -449,12 +449,12 @@ class Test_Collection extends TestCase {
 	public function testCountableByWithPredicate($collection)
 	{
 		$c = new $collection(['alice', 'aaron', 'bob', 'carla']);
-		$this->assertEquals(['a' => 2, 'b' => 1, 'c' => 1], $c->countBy(function ($name) {
+		$this->assertEquals(['a' => 2, 'b' => 1, 'c' => 1], $c->count_by(function ($name) {
 			return substr($name, 0, 1);
 		})->all());
 
 		$c = new $collection([1, 2, 3, 4, 5]);
-		$this->assertEquals([true => 2, false => 3], $c->countBy(function ($i) {
+		$this->assertEquals([true => 2, false => 3], $c->count_by(function ($i) {
 			return $i % 2 === 0;
 		})->all());
 	}
@@ -472,7 +472,7 @@ class Test_Collection extends TestCase {
 	public function testCachingIterator($collection)
 	{
 		$c = new $collection(['foo']);
-		$this->assertInstanceOf(CachingIterator::class, $c->getCachingIterator());
+		$this->assertInstanceOf(CachingIterator::class, $c->get_caching_iterator());
 	}
 
 	/**
@@ -675,7 +675,7 @@ class Test_Collection extends TestCase {
 
 		$this->assertEquals(
 			[['v' => 3]],
-			$c->whereStrict('v', 3)->values()->all()
+			$c->where_strict('v', 3)->values()->all()
 		);
 	}
 
@@ -685,7 +685,7 @@ class Test_Collection extends TestCase {
 	public function testWhereInstanceOf($collection)
 	{
 		$c = new $collection([new stdClass, new stdClass, new $collection, new stdClass]);
-		$this->assertCount(3, $c->whereInstanceOf(stdClass::class));
+		$this->assertCount(3, $c->where_instance_of(stdClass::class));
 	}
 
 	/**
@@ -694,7 +694,7 @@ class Test_Collection extends TestCase {
 	public function testWhereIn($collection)
 	{
 		$c = new $collection([['v' => 1], ['v' => 2], ['v' => 3], ['v' => '3'], ['v' => 4]]);
-		$this->assertEquals([['v' => 1], ['v' => 3], ['v' => '3']], $c->whereIn('v', [1, 3])->values()->all());
+		$this->assertEquals([['v' => 1], ['v' => 3], ['v' => '3']], $c->where_in('v', [1, 3])->values()->all());
 	}
 
 	/**
@@ -703,7 +703,7 @@ class Test_Collection extends TestCase {
 	public function testWhereInStrict($collection)
 	{
 		$c = new $collection([['v' => 1], ['v' => 2], ['v' => 3], ['v' => '3'], ['v' => 4]]);
-		$this->assertEquals([['v' => 1], ['v' => 3]], $c->whereInStrict('v', [1, 3])->values()->all());
+		$this->assertEquals([['v' => 1], ['v' => 3]], $c->where_in_strict('v', [1, 3])->values()->all());
 	}
 
 	/**
@@ -712,7 +712,7 @@ class Test_Collection extends TestCase {
 	public function testWhereNotIn($collection)
 	{
 		$c = new $collection([['v' => 1], ['v' => 2], ['v' => 3], ['v' => '3'], ['v' => 4]]);
-		$this->assertEquals([['v' => 2], ['v' => 4]], $c->whereNotIn('v', [1, 3])->values()->all());
+		$this->assertEquals([['v' => 2], ['v' => 4]], $c->where_not_in('v', [1, 3])->values()->all());
 	}
 
 	/**
@@ -721,7 +721,7 @@ class Test_Collection extends TestCase {
 	public function testWhereNotInStrict($collection)
 	{
 		$c = new $collection([['v' => 1], ['v' => 2], ['v' => 3], ['v' => '3'], ['v' => 4]]);
-		$this->assertEquals([['v' => 2], ['v' => '3'], ['v' => 4]], $c->whereNotInStrict('v', [1, 3])->values()->all());
+		$this->assertEquals([['v' => 2], ['v' => '3'], ['v' => 4]], $c->where_not_in_strict('v', [1, 3])->values()->all());
 	}
 
 	/**
@@ -743,9 +743,9 @@ class Test_Collection extends TestCase {
 		$c = new $collection([['v' => 1], ['v' => 2], ['v' => 3], ['v' => '3'], ['v' => 4]]);
 
 		$this->assertEquals([['v' => 2], ['v' => 3], ['v' => '3'], ['v' => 4]],
-												$c->whereBetween('v', [2, 4])->values()->all());
-		$this->assertEquals([['v' => 1]], $c->whereBetween('v', [-1, 1])->all());
-		$this->assertEquals([['v' => 3], ['v' => '3']], $c->whereBetween('v', [3, 3])->values()->all());
+												$c->where_between('v', [2, 4])->values()->all());
+		$this->assertEquals([['v' => 1]], $c->where_between('v', [-1, 1])->all());
+		$this->assertEquals([['v' => 3], ['v' => '3']], $c->where_between('v', [3, 3])->values()->all());
 	}
 
 	/**
@@ -755,9 +755,9 @@ class Test_Collection extends TestCase {
 	{
 		$c = new $collection([['v' => 1], ['v' => 2], ['v' => 3], ['v' => '3'], ['v' => 4]]);
 
-		$this->assertEquals([['v' => 1]], $c->whereNotBetween('v', [2, 4])->values()->all());
-		$this->assertEquals([['v' => 2], ['v' => 3], ['v' => 3], ['v' => 4]], $c->whereNotBetween('v', [-1, 1])->values()->all());
-		$this->assertEquals([['v' => 1], ['v' => '2'], ['v' => '4']], $c->whereNotBetween('v', [3, 3])->values()->all());
+		$this->assertEquals([['v' => 1]], $c->where_not_between('v', [2, 4])->values()->all());
+		$this->assertEquals([['v' => 2], ['v' => 3], ['v' => 3], ['v' => 4]], $c->where_not_between('v', [-1, 1])->values()->all());
+		$this->assertEquals([['v' => 1], ['v' => '2'], ['v' => '4']], $c->where_not_between('v', [3, 3])->values()->all());
 	}
 
 	/**
@@ -1155,13 +1155,13 @@ class Test_Collection extends TestCase {
 		$c = new $collection([[1, 'a'], [2, 'b']]);
 
 		$result = [];
-		$c->eachSpread(function ($number, $character) use (&$result) {
+		$c->each_spread(function ($number, $character) use (&$result) {
 			$result[] = [$number, $character];
 		});
 		$this->assertEquals($c->all(), $result);
 
 		$result = [];
-		$c->eachSpread(function ($number, $character) use (&$result) {
+		$c->each_spread(function ($number, $character) use (&$result) {
 			$result[] = [$number, $character];
 
 			return false;
@@ -1169,14 +1169,14 @@ class Test_Collection extends TestCase {
 		$this->assertEquals([[1, 'a']], $result);
 
 		$result = [];
-		$c->eachSpread(function ($number, $character, $key) use (&$result) {
+		$c->each_spread(function ($number, $character, $key) use (&$result) {
 			$result[] = [$number, $character, $key];
 		});
 		$this->assertEquals([[1, 'a', 0], [2, 'b', 1]], $result);
 
 		$c = new $collection([new Collection([1, 'a']), new Collection([2, 'b'])]);
 		$result = [];
-		$c->eachSpread(function ($number, $character, $key) use (&$result) {
+		$c->each_spread(function ($number, $character, $key) use (&$result) {
 			$result[] = [$number, $character, $key];
 		});
 		$this->assertEquals([[1, 'a', 0], [2, 'b', 1]], $result);
@@ -1294,7 +1294,7 @@ class Test_Collection extends TestCase {
 				'id' => '00',
 				'name' => 'double zero',
 			],
-		], $c->uniqueStrict('id')->all());
+		], $c->unique_strict('id')->all());
 	}
 
 	/**
@@ -2184,18 +2184,18 @@ class Test_Collection extends TestCase {
 	{
 		$c = new $collection([[1, 'a'], [2, 'b']]);
 
-		$result = $c->mapSpread(function ($number, $character) {
+		$result = $c->map_spread(function ($number, $character) {
 			return "{$number}-{$character}";
 		});
 		$this->assertEquals(['1-a', '2-b'], $result->all());
 
-		$result = $c->mapSpread(function ($number, $character, $key) {
+		$result = $c->map_spread(function ($number, $character, $key) {
 			return "{$number}-{$character}-{$key}";
 		});
 		$this->assertEquals(['1-a-0', '2-b-1'], $result->all());
 
 		$c = new $collection([new Collection([1, 'a']), new Collection([2, 'b'])]);
-		$result = $c->mapSpread(function ($number, $character, $key) {
+		$result = $c->map_spread(function ($number, $character, $key) {
 			return "{$number}-{$character}-{$key}";
 		});
 		$this->assertEquals(['1-a-0', '2-b-1'], $result->all());
@@ -2210,7 +2210,7 @@ class Test_Collection extends TestCase {
 			['name' => 'taylor', 'hobbies' => ['programming', 'basketball']],
 			['name' => 'adam', 'hobbies' => ['music', 'powerlifting']],
 		]);
-		$data = $data->flatMap(function ($person) {
+		$data = $data->flat_map(function ($person) {
 			return $person['hobbies'];
 		});
 		$this->assertEquals(['programming', 'basketball', 'music', 'powerlifting'], $data->all());
@@ -2263,7 +2263,7 @@ class Test_Collection extends TestCase {
 			['id' => 4, 'name' => 'B'],
 		]);
 
-		$groups = $data->mapToGroups(function ($item, $key) {
+		$groups = $data->map_to_groups(function ($item, $key) {
 			return [$item['name'] => $item['id']];
 		});
 
@@ -2279,7 +2279,7 @@ class Test_Collection extends TestCase {
 	{
 		$data = new $collection([1, 2, 3, 2, 1]);
 
-		$groups = $data->mapToGroups(function ($item, $key) {
+		$groups = $data->map_to_groups(function ($item, $key) {
 			return [$item => $key];
 		});
 
@@ -2378,7 +2378,7 @@ class Test_Collection extends TestCase {
 			'first', 'second',
 		]);
 
-		$data = $data->mapInto(TestCollectionMapIntoObject::class);
+		$data = $data->map_into(TestCollectionMapIntoObject::class);
 
 		$this->assertSame('first', $data->get(0)->value);
 		$this->assertSame('second', $data->get(1)->value);
@@ -2793,45 +2793,45 @@ class Test_Collection extends TestCase {
 	{
 		$c = new $collection([1, 3, 5, '02']);
 
-		$this->assertTrue($c->containsStrict(1));
-		$this->assertFalse($c->containsStrict('1'));
-		$this->assertFalse($c->containsStrict(2));
-		$this->assertTrue($c->containsStrict('02'));
-		$this->assertFalse($c->containsStrict(true));
-		$this->assertTrue($c->containsStrict(function ($value) {
+		$this->assertTrue($c->contains_strict(1));
+		$this->assertFalse($c->contains_strict('1'));
+		$this->assertFalse($c->contains_strict(2));
+		$this->assertTrue($c->contains_strict('02'));
+		$this->assertFalse($c->contains_strict(true));
+		$this->assertTrue($c->contains_strict(function ($value) {
 			return $value < 5;
 		}));
-		$this->assertFalse($c->containsStrict(function ($value) {
+		$this->assertFalse($c->contains_strict(function ($value) {
 			return $value > 5;
 		}));
 
 		$c = new $collection([0]);
-		$this->assertTrue($c->containsStrict(0));
-		$this->assertFalse($c->containsStrict('0'));
+		$this->assertTrue($c->contains_strict(0));
+		$this->assertFalse($c->contains_strict('0'));
 
-		$this->assertFalse($c->containsStrict(false));
-		$this->assertFalse($c->containsStrict(null));
+		$this->assertFalse($c->contains_strict(false));
+		$this->assertFalse($c->contains_strict(null));
 
 		$c = new $collection([1, null]);
-		$this->assertTrue($c->containsStrict(null));
-		$this->assertFalse($c->containsStrict(0));
-		$this->assertFalse($c->containsStrict(false));
+		$this->assertTrue($c->contains_strict(null));
+		$this->assertFalse($c->contains_strict(0));
+		$this->assertFalse($c->contains_strict(false));
 
 		$c = new $collection([['v' => 1], ['v' => 3], ['v' => '04'], ['v' => 5]]);
 
-		$this->assertTrue($c->containsStrict('v', 1));
-		$this->assertFalse($c->containsStrict('v', 2));
-		$this->assertFalse($c->containsStrict('v', '1'));
-		$this->assertFalse($c->containsStrict('v', 4));
-		$this->assertTrue($c->containsStrict('v', '04'));
+		$this->assertTrue($c->contains_strict('v', 1));
+		$this->assertFalse($c->contains_strict('v', 2));
+		$this->assertFalse($c->contains_strict('v', '1'));
+		$this->assertFalse($c->contains_strict('v', 4));
+		$this->assertTrue($c->contains_strict('v', '04'));
 
 		$c = new $collection(['date', 'class', (object) ['foo' => 50], '']);
 
-		$this->assertTrue($c->containsStrict('date'));
-		$this->assertTrue($c->containsStrict('class'));
-		$this->assertFalse($c->containsStrict('foo'));
-		$this->assertFalse($c->containsStrict(null));
-		$this->assertTrue($c->containsStrict(''));
+		$this->assertTrue($c->contains_strict('date'));
+		$this->assertTrue($c->contains_strict('class'));
+		$this->assertFalse($c->contains_strict('foo'));
+		$this->assertFalse($c->contains_strict(null));
+		$this->assertTrue($c->contains_strict(''));
 	}
 
 	/**
@@ -3031,10 +3031,10 @@ class Test_Collection extends TestCase {
 	public function testPaginate($collection)
 	{
 		$c = new $collection(['one', 'two', 'three', 'four']);
-		$this->assertEquals(['one', 'two'], $c->forPage(0, 2)->all());
-		$this->assertEquals(['one', 'two'], $c->forPage(1, 2)->all());
-		$this->assertEquals([2 => 'three', 3 => 'four'], $c->forPage(2, 2)->all());
-		$this->assertEquals([], $c->forPage(3, 2)->all());
+		$this->assertEquals(['one', 'two'], $c->for_page(0, 2)->all());
+		$this->assertEquals(['one', 'two'], $c->for_page(1, 2)->all());
+		$this->assertEquals([2 => 'three', 3 => 'four'], $c->for_page(2, 2)->all());
+		$this->assertEquals([], $c->for_page(3, 2)->all());
 	}
 
 	public function testPrepend()
@@ -3936,7 +3936,7 @@ class Test_Collection extends TestCase {
 	{
 		$data = new $collection(['michael', 'tom']);
 
-		$data = $data->whenEmpty(function ($collection) {
+		$data = $data->when_empty(function ($collection) {
 			return $data->concat(['adam']);
 		});
 
@@ -3944,7 +3944,7 @@ class Test_Collection extends TestCase {
 
 		$data = new $collection;
 
-		$data = $data->whenEmpty(function ($data) {
+		$data = $data->when_empty(function ($data) {
 			return $data->concat(['adam']);
 		});
 
@@ -3958,7 +3958,7 @@ class Test_Collection extends TestCase {
 	{
 		$data = new $collection(['michael', 'tom']);
 
-		$data = $data->whenEmpty(function ($data) {
+		$data = $data->when_empty(function ($data) {
 			return $data->concat(['adam']);
 		}, function ($data) {
 			return $data->concat(['taylor']);
@@ -3974,7 +3974,7 @@ class Test_Collection extends TestCase {
 	{
 		$data = new $collection(['michael', 'tom']);
 
-		$data = $data->whenNotEmpty(function ($data) {
+		$data = $data->when_not_empty(function ($data) {
 			return $data->concat(['adam']);
 		});
 
@@ -3982,7 +3982,7 @@ class Test_Collection extends TestCase {
 
 		$data = new $collection;
 
-		$data = $data->whenNotEmpty(function ($data) {
+		$data = $data->when_not_empty(function ($data) {
 			return $data->concat(['adam']);
 		});
 
@@ -3996,7 +3996,7 @@ class Test_Collection extends TestCase {
 	{
 		$data = new $collection(['michael', 'tom']);
 
-		$data = $data->whenNotEmpty(function ($data) {
+		$data = $data->when_not_empty(function ($data) {
 			return $data->concat(['adam']);
 		}, function ($data) {
 			return $data->concat(['taylor']);
@@ -4050,7 +4050,7 @@ class Test_Collection extends TestCase {
 	{
 		$data = new $collection(['michael', 'tom']);
 
-		$data = $data->unlessEmpty(function ($data) {
+		$data = $data->unless_empty(function ($data) {
 			return $data->concat(['adam']);
 		});
 
@@ -4058,7 +4058,7 @@ class Test_Collection extends TestCase {
 
 		$data = new $collection;
 
-		$data = $data->unlessEmpty(function ($data) {
+		$data = $data->unless_empty(function ($data) {
 			return $data->concat(['adam']);
 		});
 
@@ -4072,7 +4072,7 @@ class Test_Collection extends TestCase {
 	{
 		$data = new $collection(['michael', 'tom']);
 
-		$data = $data->unlessEmpty(function ($data) {
+		$data = $data->unless_empty(function ($data) {
 			return $data->concat(['adam']);
 		}, function ($data) {
 			return $data->concat(['taylor']);
@@ -4088,7 +4088,7 @@ class Test_Collection extends TestCase {
 	{
 		$data = new $collection(['michael', 'tom']);
 
-		$data = $data->unlessNotEmpty(function ($data) {
+		$data = $data->unless_not_empty(function ($data) {
 			return $data->concat(['adam']);
 		});
 
@@ -4096,7 +4096,7 @@ class Test_Collection extends TestCase {
 
 		$data = new $collection;
 
-		$data = $data->unlessNotEmpty(function ($data) {
+		$data = $data->unless_not_empty(function ($data) {
 			return $data->concat(['adam']);
 		});
 
@@ -4110,7 +4110,7 @@ class Test_Collection extends TestCase {
 	{
 		$data = new $collection(['michael', 'tom']);
 
-		$data = $data->unlessNotEmpty(function ($data) {
+		$data = $data->unless_not_empty(function ($data) {
 			return $data->concat(['adam']);
 		}, function ($data) {
 			return $data->concat(['taylor']);
@@ -4178,9 +4178,9 @@ class Test_Collection extends TestCase {
 
 		$this->assertSame([
 			1 => ['name' => null],
-		], $data->whereNull('name')->all());
+		], $data->where_null('name')->all());
 
-		$this->assertSame([], $data->whereNull()->all());
+		$this->assertSame([], $data->where_null()->all());
 	}
 
 	/**
@@ -4191,7 +4191,7 @@ class Test_Collection extends TestCase {
 		$collection = new $collection([1, null, 3, 'null', false, true]);
 		$this->assertSame([
 			1 => null,
-		], $collection->whereNull()->all());
+		], $collection->where_null()->all());
 	}
 
 	/**
@@ -4212,9 +4212,9 @@ class Test_Collection extends TestCase {
 			2 => ['name' => 'Bert'],
 			3 => ['name' => false],
 			4 => ['name' => ''],
-		], $data->whereNotNull('name')->all());
+		], $data->where_not_null('name')->all());
 
-		$this->assertSame($originalData, $data->whereNotNull()->all());
+		$this->assertSame($originalData, $data->where_not_null()->all());
 	}
 
 	/**
@@ -4230,7 +4230,7 @@ class Test_Collection extends TestCase {
 			3 => 'null',
 			4 => false,
 			5 => true,
-		], $data->whereNotNull()->all());
+		], $data->where_not_null()->all());
 	}
 
 	/**
@@ -4358,7 +4358,7 @@ class TestArrayableObject implements Arrayable {
 }
 
 class TestJsonableObject implements Jsonable {
-	public function toJson($options = 0)
+	public function to_json($options = 0)
 	{
 		return '{"foo":"bar"}';
 	}
