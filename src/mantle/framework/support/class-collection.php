@@ -28,10 +28,6 @@ class Collection implements ArrayAccess, Enumerable {
 		$this->items = $this->getArrayableItems( $items );
 	}
 
-	public static function from( $value ) {
-
-	}
-
 	/**
 	 * Create a new collection by invoking the callback a given amount of times.
 	 *
