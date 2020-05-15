@@ -1,4 +1,9 @@
 <?php
+/**
+ * Arrayable interface file.
+ *
+ * @package Mantle
+ */
 
 namespace Mantle\Framework\Contracts\Support;
 
@@ -8,5 +13,5 @@ interface Arrayable {
 	 *
 	 * @return array
 	 */
-	public function toArray();
+	public function to_array();
 }

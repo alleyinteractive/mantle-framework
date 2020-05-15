@@ -1,4 +1,9 @@
 <?php
+/**
+ * Htmlable interface file.
+ *
+ * @package Mantle
+ */
 
 namespace Mantle\Framework\Contracts\Support;
 
@@ -9,5 +14,5 @@ interface Htmlable {
 	 *
 	 * @return string
 	 */
-	public function toHtml();
+	public function to_html();
 }
