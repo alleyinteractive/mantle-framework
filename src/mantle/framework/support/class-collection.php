@@ -1,4 +1,21 @@
 <?php
+/**
+ * Collections class file.
+ *
+ * @package Mantle
+ */
+
+// phpcs:disable WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase
+
+// phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment
+
+// phpcs:disable Squiz.Commenting.ClassComment.Missing
+
+// phpcs:disable Squiz.Commenting.FunctionComment.ParamNameNoMatch
+
+// phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag
+
+// phpcs:disable Squiz.Commenting.FunctionComment.EmptyThrows
 
 namespace Mantle\Framework\Support;
 
@@ -84,7 +101,8 @@ class Collection implements ArrayAccess, Enumerable {
 			}
 		);
 
-		if ( $count = $items->count() ) {
+		$count = $items->count();
+		if ( $count ) {
 			return $items->sum() / $count;
 		}
 	}
@@ -97,14 +115,16 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	public function median( $key = null ) {
 		$values = ( isset( $key ) ? $this->pluck( $key ) : $this )
-				->filter( function ( $item ) {
-					return ! is_null( $item );
-				} )->sort()->values();
+				->filter(
+					function ( $item ) {
+						return ! is_null( $item );
+					}
+				)->sort()->values();
 
 
 		$count = $values->count();
 
-		if ( $count === 0 ) {
+		if ( 0 === $count ) {
 			return;
 		}
 
@@ -191,7 +211,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param    mixed ...$lists
 	 * @return static
 	 */
-	public function cross_join(...$lists ) {
+	public function cross_join( ...$lists ) {
 		return new static(
 			Arr::cross_join(
 				$this->items,
@@ -553,17 +573,17 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return string
 	 */
 	public function join( $glue, $finalGlue = '' ) {
-		if ( $finalGlue === '' ) {
+		if ( '' === $finalGlue ) {
 			return $this->implode( $glue );
 		}
 
 		$count = $this->count();
 
-		if ( $count === 0 ) {
+		if ( 0 === $count ) {
 			return '';
 		}
 
-		if ( $count === 1 ) {
+		if ( 1 === $count ) {
 			return $this->last();
 		}
 
@@ -777,7 +797,7 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Push one or more items onto the end of the collection.
 	 *
-	 * @param    mixed $values [optional]
+	 * @param    mixed $values [optional].
 	 * @return $this
 	 */
 	public function push( ...$values ) {
@@ -1031,8 +1051,8 @@ class Collection implements ArrayAccess, Enumerable {
 		$items = $this->items;
 
 		$callback && is_callable( $callback )
-					 ? uasort( $items, $callback )
-					 : asort( $items, $callback );
+			? uasort( $items, $callback )
+			: asort( $items, $callback );
 
 		return new static( $items );
 	}
@@ -1194,7 +1214,7 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Zip the collection together with one or more arrays.
 	 *
-	 * e.g. new Collection([1, 2, 3])->zip([4, 5, 6]);
+	 * E.g. new Collection([1, 2, 3])->zip([4, 5, 6]);
 	 *          => [[1, 4], [2, 5], [3, 6]]
 	 *
 	 * @param    mixed ...$items
