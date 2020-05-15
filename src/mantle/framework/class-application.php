@@ -9,6 +9,7 @@ namespace Mantle\Framework;
 
 use Mantle\Framework\Contracts\Application as Application_Contract;
 use Mantle\Framework\Contracts\Kernel as Kernel_Contract;
+use Mantle\Framework\Log\Log_Service_Provider;
 
 /**
  * Mantle Application
@@ -54,6 +55,7 @@ class Application extends Container\Container implements Application_Contract {
 
 		$this->set_base_path( $base_path );
 		$this->register_base_bindings();
+		$this->register_base_service_providers();
 		$this->register_core_aliases();
 	}
 
@@ -104,6 +106,13 @@ class Application extends Container\Container implements Application_Contract {
 		$this->instance( 'app', $this );
 		$this->instance( Container\Container::class, $this );
 		$this->instance( static::class, $this );
+	}
+
+	/**
+	 * Register the base service providers.
+	 */
+	protected function register_base_service_providers() {
+		$this->register( Log_Service_Provider::class );
 	}
 
 	/**
