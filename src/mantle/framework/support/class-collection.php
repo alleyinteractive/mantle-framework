@@ -5,12 +5,11 @@ namespace Mantle\Framework\Support;
 use ArrayAccess;
 use ArrayIterator;
 use Mantle\Framework\Support\Traits\EnumeratesValues;
-use Mantle\Framework\Support\Traits\Macroable;
 use function Mantle\Framework\Helpers\value;
 use stdClass;
 
 class Collection implements ArrayAccess, Enumerable {
-	use EnumeratesValues, Macroable;
+	use EnumeratesValues;
 
 	/**
 	 * The items contained in the collection.
