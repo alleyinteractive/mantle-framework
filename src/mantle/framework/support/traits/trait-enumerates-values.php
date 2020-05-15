@@ -1,5 +1,18 @@
 <?php
 
+
+// phpcs:disable WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase
+
+// phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment
+
+// phpcs:disable Squiz.Commenting.ClassComment.Missing
+
+// phpcs:disable Squiz.Commenting.FunctionComment.ParamNameNoMatch
+
+// phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag
+
+// phpcs:disable Squiz.Commenting.FunctionComment.EmptyThrows
+
 namespace Mantle\Framework\Support\Traits;
 
 use CachingIterator;
@@ -40,7 +53,7 @@ use Traversable;
  * @property-read HigherOrderCollectionProxy $unique
  * @property-read HigherOrderCollectionProxy $until
  */
-trait EnumeratesValues {
+trait Enumerates_Values {
 	/**
 	 * The methods that can be proxied.
 	 *
@@ -746,10 +759,10 @@ trait EnumeratesValues {
 	 *
 	 * @return array
 	 */
-	public function toArray() {
+	public function to_array() {
 		return $this->map(
 			function ( $value ) {
-				return $value instanceof Arrayable ? $value->toArray() : $value;
+				return $value instanceof Arrayable ? $value->to_array() : $value;
 			}
 		)->all();
 	}
@@ -767,7 +780,7 @@ trait EnumeratesValues {
 				} elseif ( $value instanceof Jsonable ) {
 					return json_decode( $value->toJson(), true );
 				} elseif ( $value instanceof Arrayable ) {
-					return $value->toArray();
+					return $value->to_array();
 				}
 
 				return $value;
@@ -865,7 +878,7 @@ trait EnumeratesValues {
 		} elseif ( $items instanceof Enumerable ) {
 			return $items->all();
 		} elseif ( $items instanceof Arrayable ) {
-			return $items->toArray();
+			return $items->to_array();
 		} elseif ( $items instanceof Jsonable ) {
 			return json_decode( $items->toJson(), true );
 		} elseif ( $items instanceof JsonSerializable ) {
@@ -915,22 +928,22 @@ trait EnumeratesValues {
 			switch ( $operator ) {
 				default:
 				case '=':
-				case '==':  
+				case '==':
 					return $retrieved == $value;
 				case '!=':
-				case '<>':  
+				case '<>':
 					return $retrieved != $value;
-				case '<':   
+				case '<':
 					return $retrieved < $value;
-				case '>':   
+				case '>':
 					return $retrieved > $value;
-				case '<=':  
+				case '<=':
 					return $retrieved <= $value;
-				case '>=':  
+				case '>=':
 					return $retrieved >= $value;
-				case '===': 
+				case '===':
 					return $retrieved === $value;
-				case '!==': 
+				case '!==':
 					return $retrieved !== $value;
 			}
 		};

@@ -21,12 +21,12 @@ namespace Mantle\Framework\Support;
 
 use ArrayAccess;
 use ArrayIterator;
-use Mantle\Framework\Support\Traits\EnumeratesValues;
+use Mantle\Framework\Support\Traits\Enumerates_Values;
 use function Mantle\Framework\Helpers\value;
 use stdClass;
 
 class Collection implements ArrayAccess, Enumerable {
-	use EnumeratesValues;
+	use Enumerates_Values;
 
 	/**
 	 * The items contained in the collection.
