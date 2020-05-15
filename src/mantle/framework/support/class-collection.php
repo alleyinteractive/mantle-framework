@@ -7,13 +7,9 @@
 
 // phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment
 
-// phpcs:disable Squiz.Commenting.ClassComment.Missing
-
 // phpcs:disable Squiz.Commenting.FunctionComment.ParamNameNoMatch
 
 // phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag
-
-// phpcs:disable Squiz.Commenting.FunctionComment.EmptyThrows
 
 namespace Mantle\Framework\Support;
 
@@ -23,6 +19,9 @@ use Mantle\Framework\Support\Traits\Enumerates_Values;
 use function Mantle\Framework\Helpers\value;
 use stdClass;
 
+/**
+ * Collection
+ */
 class Collection implements ArrayAccess, Enumerable {
 	use Enumerates_Values;
 
@@ -852,7 +851,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param    int|null $number
 	 * @return static|mixed
 	 *
-	 * @throws \InvalidArgumentException
+	 * @throws \InvalidArgumentException Throws on number larger than collection length.
 	 */
 	public function random( $number = null ) {
 		if ( is_null( $number ) ) {

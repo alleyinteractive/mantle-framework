@@ -5,6 +5,8 @@
  * @package mantle
  */
 
+// phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment
+
 // phpcs:disable Squiz.Commenting.FunctionComment.ParamNameNoMatch
 
 // phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag
