@@ -37,15 +37,6 @@ class Term extends Model implements Core_Object, Updatable {
 	];
 
 	/**
-	 * Constructor.
-	 *
-	 * @param mixed $object Model object.
-	 */
-	public function __construct( $object ) {
-		$this->attributes = (array) $object;
-	}
-
-	/**
 	 * Taxonomy of the term.
 	 *
 	 * @return string
@@ -57,12 +48,22 @@ class Term extends Model implements Core_Object, Updatable {
 	/**
 	 * Find a model by Object ID.
 	 *
-	 * @param int $object_id Object ID.
+	 * @param \WP_Term|string|int $object Term to retrieve.
 	 * @return Term|null
 	 */
-	public static function find( $object_id ) {
-		$post = Helpers\get_term_object( $object_id );
-		return $post ? new static( $post ) : null;
+	public static function find( $object ) {
+		$term = Helpers\get_term_object( $object );
+
+		if ( empty( $term ) ) {
+			return null;
+		}
+
+		// Bail if the taxonomy doesn't match the expected object type.
+		if ( static::get_object_name() !== $term->taxonomy ) {
+			return null;
+		}
+
+		return static::new_from_existing( (array) $term );
 	}
 
 	/**
@@ -107,8 +108,10 @@ class Term extends Model implements Core_Object, Updatable {
 	 * @return Core_Object|null
 	 */
 	public function parent(): ?Core_Object {
-		if ( ! empty( $this->attributes['parent'] ) ) {
-			return static::find( (int) $this->attributes['parent'] );
+		$parent = $this->get( 'parent' );
+
+		if ( ! empty( $parent ) ) {
+			return static::find( (int) $parent );
 		}
 
 		return null;
@@ -161,6 +164,8 @@ class Term extends Model implements Core_Object, Updatable {
 		if ( \is_wp_error( $save ) ) {
 			throw new Model_Exception( 'Error saving model: ' . $save->get_error_message() );
 		}
+
+		$this->set_raw_attribute( 'term_id', $save['term_id'] );
 
 		$this->reset_modified_attributes();
 

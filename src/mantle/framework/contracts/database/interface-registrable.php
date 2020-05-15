@@ -20,13 +20,6 @@ interface Registrable {
 	public static function register();
 
 	/**
-	 * Registration name for the model (post type, taxonomy name, etc.)
-	 *
-	 * @return string
-	 */
-	public static function get_registration_name(): string;
-
-	/**
 	 * Arguments to register the model with.
 	 *
 	 * @return array

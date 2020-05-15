@@ -26,12 +26,30 @@ trait Guarded_Attributes {
 	protected $guarded = true;
 
 	/**
-	 * Check if the attribute is guarded.
+	 * Check if the model is guarded.
+	 *
+	 * @return bool
+	 */
+	public function is_model_guarded(): bool {
+		return $this->guarded;
+	}
+
+	/**
+	 * Set if a model is or is not being guarded.
+	 *
+	 * @param bool $guarded Flag if the model is being guarded.
+	 */
+	public function set_model_guard( bool $guarded ) {
+		$this->guarded = $guarded;
+	}
+
+	/**
+	 * Check if a model attribute is guarded.
 	 *
 	 * @param string $attribute Attribute to check.
 	 * @return bool
 	 */
-	protected function is_guarded( string $attribute ): bool {
+	public function is_guarded( string $attribute ): bool {
 		if ( ! $this->guarded ) {
 			return false;
 		}
@@ -44,7 +62,7 @@ trait Guarded_Attributes {
 	 *
 	 * @param bool $guarded Flag if the model is guarded.
 	 */
-	protected function guard( bool $guarded ) {
+	public function guard( bool $guarded ) {
 		$this->guarded = $guarded;
 	}
 }

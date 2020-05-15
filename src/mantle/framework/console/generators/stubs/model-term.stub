@@ -13,13 +13,10 @@ use Mantle\Framework\Database\Model\Term;
  * {{ class }} Model.
  */
 class {{ class }} extends Term {
-
 	/**
-	 * Taxonomy for the model.
+	 * Taxonomy Name
 	 *
-	 * @return string
+	 * @var string
 	 */
-	public static function get_taxonomy(): string {
-		return '{{ object_name }}';
-	}
+	public static $object_name = '{{ object_name }}';
 }

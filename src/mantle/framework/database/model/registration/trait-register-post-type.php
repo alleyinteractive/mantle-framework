@@ -26,7 +26,7 @@ trait Register_Post_Type {
 	 * @throws Model_Exception Thrown when registering a post type that is already registered.
 	 */
 	public static function register_post_type() {
-		$post_type = static::get_registration_name();
+		$post_type = static::get_object_name();
 
 		if ( \post_type_exists( $post_type ) ) {
 			throw new Model_Exception( 'Unable to register post type (post type already exists): ' . $post_type );

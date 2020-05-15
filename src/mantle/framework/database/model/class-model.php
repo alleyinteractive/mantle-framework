@@ -8,6 +8,7 @@
 namespace Mantle\Framework\Database\Model;
 
 use ArrayAccess;
+use Mantle\Framework\Support\Str;
 
 /**
  * Database Model
@@ -32,22 +33,57 @@ abstract class Model implements ArrayAccess {
 	protected static $booted = [];
 
 	/**
+	 * An object's registerable name (post type, taxonomy, etc.).
+	 *
+	 * @var string
+	 */
+	public static $object_name;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param mixed $object Model object.
 	 */
 	public function __construct( $object = [] ) {
-		$this->set_attributes( (array) $object );
 		static::boot_if_not_booted();
+
+		$this->set_attributes( (array) $object );
 	}
 
 	/**
 	 * Find a model by Object ID.
 	 *
-	 * @param int $object_id Object ID.
-	 * @return Model|null
+	 * @param object|string|int $object Object to retrieve.
+	 * @return static|null
 	 */
-	abstract public static function find( $object_id );
+	abstract public static function find( $object );
+
+	/**
+	 * Refresh the model attributes.
+	 *
+	 * @return static
+	 */
+	public function refresh() {
+		if ( ! $this->get( 'id' ) ) {
+			return;
+		}
+
+		$instance = static::find( $this->get( 'id' ) );
+		$this->set_raw_attributes( $instance->get_raw_attributes() );
+		return $this;
+	}
+
+	/**
+	 * Create a new instance of the model from an existing record in the database.
+	 *
+	 * @param array $attributes Attributes to set.
+	 * @return static
+	 */
+	public static function new_from_existing( array $attributes ) {
+		$instance = new static( [] );
+
+		return $instance->set_raw_attributes( $attributes );
+	}
 
 	/**
 	 * Get an attribute model.
@@ -95,6 +131,22 @@ abstract class Model implements ArrayAccess {
 	 * Model booting is performed the first time a model is used in a request.
 	 */
 	protected static function boot() { }
+
+	/**
+	 * Infer the object type for the model.
+	 *
+	 * @return string|null
+	 */
+	public static function get_object_name(): ?string {
+		// Use the model's object name if it exists.
+		if ( ! empty( static::$object_name ) ) {
+			return (string) static::$object_name;
+		}
+
+		// Infer the object name from the model name.
+		$parts = explode( '\\', get_called_class() );
+		return str_replace( '__', '_', Str::snake( array_pop( $parts ) ) );
+	}
 
 	/**
 	 * Check if an offset exists.
