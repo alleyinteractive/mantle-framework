@@ -11,6 +11,7 @@
     ],
     "require": {
         "filp/whoops": "^2.7",
+        "monolog/monolog": "^2.0",
         "nesbot/carbon": "^2.33",
         "psr/container": "^1.0",
         "symfony/finder": "^5.0",
