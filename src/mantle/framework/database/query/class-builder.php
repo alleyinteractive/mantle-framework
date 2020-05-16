@@ -1,28 +1,105 @@
 <?php
+/**
+ * Builder class file.
+ *
+ * @package Mantle
+ */
+
 namespace Mantle\Framework\Database\Query;
 
-use Mantle\Framework\Database\Model\Model;
+use Mantle\Framework\Database\Model\Term;
 use Mantle\Framework\Support\Str;
+use Mantle\Framework\Helpers;
 
-class Builder {
+/**
+ * Builder Query Builder
+ */
+abstract class Builder {
 	/**
+	 * Model to build on.
+	 *
 	 * @var string
 	 */
 	protected $model;
+
+	/**
+	 * Result limit per-page.
+	 *
+	 * @var int
+	 */
 	protected $limit = 100;
+
+	/**
+	 * Where attributes for the query.
+	 *
+	 * @var array
+	 */
 	protected $wheres = [];
+
+	/**
+	 * Order of the query.
+	 *
+	 * @var string
+	 */
 	protected $order = 'DESC';
+
+	/**
+	 * Query by of the query.
+	 *
+	 * @var string
+	 */
 	protected $order_by = 'date';
+
+	/**
+	 * Meta Query.
+	 *
+	 * @var array
+	 */
 	protected $meta_query = [];
 
+	/**
+	 * Tax Query.
+	 *
+	 * @var array
+	 */
+	protected $tax_query = [];
+
+	/**
+	 * Constructor.
+	 *
+	 * @param string $model Model class name.
+	 */
 	public function __construct( string $model ) {
 		$this->model = $model;
 	}
 
+	/**
+	 * Get the query results.
+	 *
+	 * @return array
+	 */
+	abstract public function get(): array;
+
+	abstract public function whereIn( string $attribute, array $values );
+	abstract public function whereNotIn( string $attribute, array $values );
+
+	/**
+	 * Create a query builder for a model.
+	 *
+	 * @return static
+	 */
 	public static function create( string $model ) {
 		return new static( $model );
 	}
 
+	/**
+	 * Add a where clause to the query.
+	 *
+	 * @param string|array $attribute Attribute to use or array of key => value
+	 *                                attributes to set.
+	 * @param mixed        $value Value to compare against.
+	 * @return static
+	 */
 	public function where( $attribute, $value = '' ) {
 		if ( is_array( $attribute ) && empty( $value ) ) {
 			foreach ( $attribute as $key => $value ) {
@@ -63,6 +140,71 @@ class Builder {
 		return $this->whereMeta( ...$args );
 	}
 
+	/**
+	 * Include a taxonomy query.
+	 *
+	 * @param array|string $term Term ID/array of IDs.
+	 * @param string       $taxonomy Taxonomy name.
+	 * @param string       $operator Operator to use, defaults to 'IN'.
+	 */
+	public function whereTerm( $term, $taxonomy = null, string $operator = 'IN' ) {
+		if ( $term instanceof Term ) {
+			$taxonomy = $term->taxonomy();
+			$term     = $term->id();
+		}
+
+		if ( $term instanceof \WP_Term ) {
+			$taxonomy = $term->taxonomy;
+			$term     = $term->term_id;
+		}
+
+		// Get the taxonomy if it wasn't passed.
+		if ( empty( $taxonomy ) && ! is_array( $term ) ) {
+			$object = Helpers\get_term_object( $term );
+
+			if ( empty( $object ) ) {
+				throw new Query_Exception( 'Unknown term: ' . $term );
+			}
+
+			$taxonomy = $object->taxonomy;
+			$term     = $object->term_id;
+		}
+
+		$this->tax_query[] = [
+			'field'            => 'term_id',
+			'include_children' => true,
+			'operator'         => $operator,
+			'taxonomy'         => $taxonomy,
+			'terms'            => $term,
+		];
+
+		return $this;
+	}
+
+	/**
+	 * Include a taxonomy query with the relation set to 'AND'.
+	 *
+	 * @param array|string $term Term ID/array of IDs.
+	 * @param string       $taxonomy Taxonomy name.
+	 * @param string       $operator Operator to use, defaults to 'IN'.
+	 */
+	public function andWhereTerm( ...$args ) {
+		$this->tax_query['relation'] = 'AND';
+		return $this->whereTerm( ...$args );
+	}
+
+	/**
+	 * Include a taxonomy query with the relation set to 'OR'.
+	 *
+	 * @param array|string $term Term ID/array of IDs.
+	 * @param string       $taxonomy Taxonomy name.
+	 * @param string       $operator Operator to use, defaults to 'IN'.
+	 */
+	public function orWhereTerm( ...$args ) {
+		$this->tax_query['relation'] = 'OR';
+		return $this->whereTerm( ...$args );
+	}
+
 	public function dynamicWhere( $method, $args ) {
 		$finder = substr( $method, 5 );
 
@@ -74,64 +216,6 @@ class Builder {
 		}
 
 		return $this->where( $attribute, ...$args );
-	}
-
-	public function whereIn( string $attribute, array $values ) {
-		if ( $this->model::has_attribute_alias( $attribute ) ) {
-			$attribute = $this->model::get_attribute_alias( $attribute );
-		}
-
-		switch ( $attribute ) {
-			case 'ID':
-				$query_attribute = 'post__in';
-				break;
-
-			case 'post_name':
-				$query_attribute = 'post_name__in';
-				break;
-
-			case 'post_parent':
-				$query_attribute = 'post_parent__in';
-				break;
-
-			default:
-				$query_attribute = false;
-		}
-
-		if ( empty( $query_attribute ) ) {
-			throw new Query_Exception( 'Unknown attribute for "whereIn": ' . $attribute );
-		}
-
-		return $this->where( $query_attribute, $values );
-	}
-
-	public function whereNotIn( string $attribute, array $values ) {
-		if ( $this->model::has_attribute_alias( $attribute ) ) {
-			$attribute = $this->model::get_attribute_alias( $attribute );
-		}
-
-		switch ( $attribute ) {
-			case 'ID':
-				$query_attribute = 'post__not_in';
-				break;
-
-			case 'post_name':
-				$query_attribute = 'post_name__not_in';
-				break;
-
-			case 'post_parent':
-				$query_attribute = 'post_parent__not_in';
-				break;
-
-			default:
-				$query_attribute = false;
-		}
-
-		if ( empty( $query_attribute ) ) {
-			throw new Query_Exception( 'Unknown attribute for "whereNotIn": ' . $attribute );
-		}
-
-		return $this->where( $query_attribute, $values );
 	}
 
 	public function orderBy( $attribute, string $direction = 'asc' ) {
@@ -154,36 +238,6 @@ class Builder {
 
 	public function first() {
 		return $this->take( 1 )->get()[0] ?? null;
-	}
-
-	protected function build_args(): array {
-		return array_merge(
-			[
-				'fields'              => 'ids',
-				'ignore_sticky_posts' => true,
-				'meta_query'          => $this->meta_query,
-				'order'               => $this->order,
-				'orderby'             => $this->order_by,
-				'post_type'           => $this->model::get_object_name(),
-				'posts_per_page'      => $this->limit,
-				'suppress_filters'    => false,
-			],
-			$this->wheres,
-		);
-	}
-
-	public function get(): array {
-		$post_ids = \get_posts( $this->build_args() );
-
-		if ( empty( $post_ids ) ) {
-			return [];
-		}
-
-		return array_values(
-			array_filter(
-				array_map( [ $this->model, 'find' ], $post_ids )
-			)
-		);
 	}
 
 	public function __call( $method, $args ) {

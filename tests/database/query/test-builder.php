@@ -3,7 +3,8 @@ namespace Mantle\Tests\Database\Builder;
 
 use Mantle\Framework\Database\Model\Comment;
 use Mantle\Framework\Database\Model\Post;
-use Mantle\Framework\Database\Query\Builder;
+use Mantle\Framework\Database\Model\Term;
+use Mantle\Framework\Database\Query\Post_Query_Builder as Builder;
 use WP_UnitTestCase;
 
 /**
@@ -111,12 +112,77 @@ class Test_Comment_Object extends WP_UnitTestCase {
 		$this->assertEquals( $post_id, $first->id() );
 	}
 
+	public function test_term_query() {
+		$post_id = $this->get_random_post_id();
+		$term = static::factory()->term->create_and_get();
+		wp_set_object_terms( $post_id, $term->term_id, $term->taxonomy, true );
+
+		$first = Builder::create( Testable_Post::class )
+			->whereTerm( $term )
+			->first();
+
+		$this->assertEquals( $post_id, $first->id() );
+	}
+
+	public function test_term_or_query() {
+		$post_id = $this->get_random_post_id();
+		$term_other = static::factory()->term->create();
+		$term = static::factory()->term->create_and_get();
+		wp_set_object_terms( $post_id, $term->term_id, $term->taxonomy, true );
+
+		$first = Builder::create( Testable_Post::class )
+			->whereTerm( $term_other )
+			->orWhereTerm( $term )
+			->first();
+
+		$this->assertEquals( $post_id, $first->id() );
+	}
+
+	public function test_term_and_query() {
+		$post_id = $this->get_random_post_id();
+		$term_other = static::factory()->term->create();
+		$term = static::factory()->term->create();
+		wp_set_object_terms( $post_id, [ $term_other, $term ], 'post_tag', true );
+
+		$first = Builder::create( Testable_Post::class )
+			->whereTerm( $term_other )
+			->andWhereTerm( $term )
+			->first();
+
+		$this->assertEquals( $post_id, $first->id() );
+	}
+
+	public function test_term_query_from_term_model() {
+		$post_id = $this->get_random_post_id();
+		$term_other = static::factory()->term->create();
+		$term = Testable_Tag::find( static::factory()->term->create() );
+
+		wp_set_object_terms( $post_id, $term->id(), $term->taxonomy(), true );
+
+		$first = Builder::create( Testable_Post::class )
+			->whereTerm( $term_other )
+			->orWhereTerm( $term )
+			->first();
+
+		$this->assertEquals( $post_id, $first->id() );
+	}
+
+	/**
+	 * Get a random post ID, ensures the post ID is not the last in the set.
+	 *
+	 * @return integer
+	 */
 	protected function get_random_post_id(): int {
-		$post_ids = static::factory()->post->create_many( 10 );
+		$post_ids = static::factory()->post->create_many( 11 );
+		array_pop( $post_ids );
 		return $post_ids[ array_rand( $post_ids ) ];
 	}
 }
 
 class Testable_Post extends Post {
 	public static $object_name = 'post';
+}
+
+class Testable_Tag extends Term {
+	public static $object_name = 'post_tag';
 }
