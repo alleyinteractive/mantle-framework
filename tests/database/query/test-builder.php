@@ -167,13 +167,53 @@ class Test_Comment_Object extends WP_UnitTestCase {
 		$this->assertEquals( $post_id, $first->id() );
 	}
 
+	public function test_query_by_author() {
+		$user_id = static::factory()->user->create();
+		$post_id = $this->get_random_post_id();
+		wp_update_post(
+			[
+				'ID'          => $post_id,
+				'post_author' => $user_id,
+			]
+		);
+
+		$first = Builder::create( Testable_Post::class )
+			->whereAuthor( $user_id )
+			->first();
+
+		$this->assertEquals( $post_id, $first->id() );
+
+		$first = Builder::create( Testable_Post::class )
+			->whereIn( 'author', [ $user_id ] )
+			->first();
+
+		$this->assertEquals( $post_id, $first->id() );
+	}
+
+	public function test_query_by_author_name() {
+		$user = static::factory()->user->create_and_get();
+		$post_id = $this->get_random_post_id();
+		wp_update_post(
+			[
+				'ID'          => $post_id,
+				'post_author' => $user->ID,
+			]
+		);
+
+		$first = Builder::create( Testable_Post::class )
+			->whereAuthorName( $user->user_nicename )
+			->first();
+
+		$this->assertEquals( $post_id, $first->id() );
+	}
+
 	/**
 	 * Get a random post ID, ensures the post ID is not the last in the set.
 	 *
 	 * @return integer
 	 */
-	protected function get_random_post_id(): int {
-		$post_ids = static::factory()->post->create_many( 11 );
+	protected function get_random_post_id( $args = [] ): int {
+		$post_ids = static::factory()->post->create_many( 11, $args );
 		array_pop( $post_ids );
 		return $post_ids[ array_rand( $post_ids ) ];
 	}

@@ -1,6 +1,15 @@
 <?php
+/**
+ * Aliases trait file.
+ *
+ * @package Mantle
+ */
+
 namespace Mantle\Framework\Database\Model;
 
+/**
+ * Model Aliases
+ */
 trait Aliases {
 	/**
 	 * Model aliases.
@@ -16,7 +25,7 @@ trait Aliases {
 	 * @return bool
 	 */
 	public static function has_attribute_alias( string $attribute ): bool {
-		return ! empty( static::$aliases[ $attribute ] );
+		return ! empty( static::$aliases[ $attribute ] ); // phpcs:ignore WordPressVIPMinimum.Variables.VariableAnalysis.StaticOutsideClass
 	}
 
 	/**
@@ -26,6 +35,6 @@ trait Aliases {
 	 * @return string
 	 */
 	public static function get_attribute_alias( string $attribute ): string {
-		return static::$aliases[ $attribute ] ?? '';
+		return static::$aliases[ $attribute ] ?? ''; // phpcs:ignore WordPressVIPMinimum.Variables.VariableAnalysis.StaticOutsideClass
 	}
 }

@@ -12,6 +12,45 @@ namespace Mantle\Framework\Database\Query;
  */
 class Post_Query_Builder extends Builder {
 	/**
+	 * Query Variable Aliases
+	 *
+	 * @var array
+	 */
+	protected $query_aliases = [
+		'ID'          => 'p',
+		'post_author' => 'author',
+		'post_name'   => 'name',
+	];
+
+	/**
+	 * Query Where In Aliases
+	 *
+	 * @var array
+	 */
+	protected $query_where_in_aliases = [
+		'author'      => 'author__in',
+		'ID'          => 'post__in',
+		'post_name'   => 'post_name__in',
+		'post_parent' => 'post_parent__in',
+		'tag'         => 'tag__in',
+		'tag_slug'    => 'tag_slug__in',
+	];
+
+	/**
+	 * Query Where Not In Aliases
+	 *
+	 * @var array
+	 */
+	protected $query_where_not_in_aliases = [
+		'author'      => 'author__not_in',
+		'ID'          => 'post__not_in',
+		'post_name'   => 'post_name__not_in',
+		'post_parent' => 'post_parent__not_in',
+		'tag'         => 'tag__not_in',
+		'tag_slug'    => 'tag_slug__not_in',
+	];
+
+	/**
 	 * Get the query arguments.
 	 *
 	 * @return array
@@ -50,63 +89,5 @@ class Post_Query_Builder extends Builder {
 				array_map( [ $this->model, 'find' ], $post_ids )
 			)
 		);
-	}
-
-	public function whereIn( string $attribute, array $values ) {
-		if ( $this->model::has_attribute_alias( $attribute ) ) {
-			$attribute = $this->model::get_attribute_alias( $attribute );
-		}
-
-		switch ( $attribute ) {
-			case 'ID':
-				$query_attribute = 'post__in';
-				break;
-
-			case 'post_name':
-				$query_attribute = 'post_name__in';
-				break;
-
-			case 'post_parent':
-				$query_attribute = 'post_parent__in';
-				break;
-
-			default:
-				$query_attribute = false;
-		}
-
-		if ( empty( $query_attribute ) ) {
-			throw new Query_Exception( 'Unknown attribute for "whereIn": ' . $attribute );
-		}
-
-		return $this->where( $query_attribute, (array) $values );
-	}
-
-	public function whereNotIn( string $attribute, array $values ) {
-		if ( $this->model::has_attribute_alias( $attribute ) ) {
-			$attribute = $this->model::get_attribute_alias( $attribute );
-		}
-
-		switch ( $attribute ) {
-			case 'ID':
-				$query_attribute = 'post__not_in';
-				break;
-
-			case 'post_name':
-				$query_attribute = 'post_name__not_in';
-				break;
-
-			case 'post_parent':
-				$query_attribute = 'post_parent__not_in';
-				break;
-
-			default:
-				$query_attribute = false;
-		}
-
-		if ( empty( $query_attribute ) ) {
-			throw new Query_Exception( 'Unknown attribute for "whereNotIn": ' . $attribute );
-		}
-
-		return $this->where( $query_attribute, $values );
 	}
 }

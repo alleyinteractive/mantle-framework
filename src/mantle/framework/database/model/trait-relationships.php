@@ -1,6 +1,15 @@
 <?php
+/**
+ * Relationships trait file.
+ *
+ * @package Mantle
+ */
+
 namespace Mantle\Framework\Database\Model;
 
+/**
+ * Model Relationships
+ */
 trait Relationships {
 	public function hasOne( string $related, string $meta_key ) {
 

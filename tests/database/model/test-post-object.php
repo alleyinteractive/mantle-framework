@@ -182,6 +182,23 @@ class Test_Post_Object extends WP_UnitTestCase {
 
 		$this->assertNull( Testable_Post::find( $post_id ) );
 	}
+
+	public function test_query_builder() {
+		$post_id = $this->get_random_post_id();
+		$first = Testable_Post::whereId( $post_id )->first();
+		$this->assertEquals( $post_id, $first->id() );
+	}
+
+	/**
+	 * Get a random post ID, ensures the post ID is not the last in the set.
+	 *
+	 * @return integer
+	 */
+	protected function get_random_post_id( $args = [] ): int {
+		$post_ids = static::factory()->post->create_many( 11, $args );
+		array_pop( $post_ids );
+		return $post_ids[ array_rand( $post_ids ) ];
+	}
 }
 
 class Testable_Post extends Post {

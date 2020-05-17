@@ -3,6 +3,8 @@
  * Builder class file.
  *
  * @package Mantle
+ * @phpcs:disable WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+ * @phpcs:disable Squiz.Commenting.FunctionComment
  */
 
 namespace Mantle\Framework\Database\Query;
@@ -30,7 +32,21 @@ abstract class Builder {
 	protected $limit = 100;
 
 	/**
-	 * Where attributes for the query.
+	 * Result offset.
+	 *
+	 * @var int
+	 */
+	protected $offset = 0;
+
+	/**
+	 * Result page.
+	 *
+	 * @var int
+	 */
+	protected $page = 1;
+
+	/**
+	 * Where arguments for the query.
 	 *
 	 * @var array
 	 */
@@ -65,6 +81,27 @@ abstract class Builder {
 	protected $tax_query = [];
 
 	/**
+	 * Query Variable Aliases
+	 *
+	 * @var array
+	 */
+	protected $query_aliases = [];
+
+	/**
+	 * Query Where In Aliases
+	 *
+	 * @var array
+	 */
+	protected $query_where_in_aliases = [];
+
+	/**
+	 * Query Where Not In Aliases
+	 *
+	 * @var array
+	 */
+	protected $query_where_not_in_aliases = [];
+
+	/**
 	 * Constructor.
 	 *
 	 * @param string $model Model class name.
@@ -80,12 +117,48 @@ abstract class Builder {
 	 */
 	abstract public function get(): array;
 
-	abstract public function whereIn( string $attribute, array $values );
-	abstract public function whereNotIn( string $attribute, array $values );
+	/**
+	 * Query an attribute against a list.
+	 *
+	 * @param string $attribute Attribute to query against.
+	 * @param array  $values List of values.
+	 * @return static
+	 */
+	public function whereIn( string $attribute, array $values ) {
+		if ( $this->model::has_attribute_alias( $attribute ) ) {
+			$attribute = $this->model::get_attribute_alias( $attribute );
+		}
+
+		if ( ! empty( $this->query_where_in_aliases[ $attribute ] ) ) {
+			$attribute = $this->query_where_in_aliases[ $attribute ];
+		}
+
+		return $this->where( $attribute, (array) $values );
+	}
+
+	/**
+	 * Query an where an attribute is not in a list.
+	 *
+	 * @param string $attribute Attribute to query against.
+	 * @param array  $values List of values.
+	 * @return static
+	 */
+	public function whereNotIn( string $attribute, array $values ) {
+		if ( $this->model::has_attribute_alias( $attribute ) ) {
+			$attribute = $this->model::get_attribute_alias( $attribute );
+		}
+
+		if ( ! empty( $this->query_where_not_in_aliases[ $attribute ] ) ) {
+			$attribute = $this->query_where_not_in_aliases[ $attribute ];
+		}
+
+		return $this->where( $attribute, $values );
+	}
 
 	/**
 	 * Create a query builder for a model.
 	 *
+	 * @param string $model Model name.
 	 * @return static
 	 */
 	public static function create( string $model ) {
@@ -109,18 +182,23 @@ abstract class Builder {
 			return $this;
 		}
 
-		$aliases = [
-			'post_name' => 'name',
-		];
 
-		if ( ! empty( $aliases[ $attribute ] ) ) {
-			$attribute = $aliases[ $attribute ];
+		if ( ! empty( $this->query_aliases[ $attribute ] ) ) {
+			$attribute = $this->query_aliases[ $attribute ];
 		}
 
 		$this->wheres[ $attribute ] = $value;
 		return $this;
 	}
 
+	/**
+	 * Query by a meta field.
+	 *
+	 * @param string $key Meta key.
+	 * @param mixed  $value Meta value.
+	 * @param string $compare Comparison method, defaults to '='.
+	 * @return static
+	 */
 	public function whereMeta( $key, $value, string $compare = '=' ) {
 		$this->meta_query[] = [
 			'compare' => $compare,
@@ -130,11 +208,27 @@ abstract class Builder {
 		return $this;
 	}
 
+	/**
+	 * Query by a meta field with the relation set to 'and'.
+	 *
+	 * @param string $key Meta key.
+	 * @param mixed  $value Meta value.
+	 * @param string $compare Comparison method, defaults to '='.
+	 * @return static
+	 */
 	public function andWhereMeta( ...$args ) {
 		$this->meta_query['relation'] = 'AND';
 		return $this->whereMeta( ...$args );
 	}
 
+	/**
+	 * Query by a meta field with the relation set to 'or'.
+	 *
+	 * @param string $key Meta key.
+	 * @param mixed  $value Meta value.
+	 * @param string $compare Comparison method, defaults to '='.
+	 * @return static
+	 */
 	public function orWhereMeta( ...$args ) {
 		$this->meta_query['relation'] = 'OR';
 		return $this->whereMeta( ...$args );
@@ -146,6 +240,8 @@ abstract class Builder {
 	 * @param array|string $term Term ID/array of IDs.
 	 * @param string       $taxonomy Taxonomy name.
 	 * @param string       $operator Operator to use, defaults to 'IN'.
+	 *
+	 * @throws Query_Exception Unknown term to query against.
 	 */
 	public function whereTerm( $term, $taxonomy = null, string $operator = 'IN' ) {
 		if ( $term instanceof Term ) {
@@ -218,12 +314,26 @@ abstract class Builder {
 		return $this->where( $attribute, ...$args );
 	}
 
+	/**
+	 * Order the query by a field.
+	 *
+	 * @param string $attribute Attribute name.
+	 * @param string $direction Order direction.
+	 * @return static
+	 */
 	public function orderBy( $attribute, string $direction = 'asc' ) {
-		$this->order = strtoupper( $direction );
+		$this->order    = strtoupper( $direction );
 		$this->order_by = $attribute;
 		return $this;
 	}
 
+	/**
+	 * Support a dynamic order by (orderByName(...)).
+	 *
+	 * @param string $method Method name. Attribute name.
+	 * @param array $args Method arguments.
+	 * @return static
+	 */
 	public function dynamicOrderBy( string $method, array $args ) {
 		$attribute = Str::snake( substr( $method, 7 ) );
 
@@ -231,15 +341,35 @@ abstract class Builder {
 		return $this->orderBy( $attribute, $args[0] ?? 'asc' );
 	}
 
+	/**
+	 * Set the limit of objects to include.
+	 *
+	 * @param int $limit Limit to set.
+	 * @return static
+	 */
 	public function take( int $limit ) {
 		$this->limit = $limit;
 		return $this;
 	}
 
+	/**
+	 * Get the first result of the query.
+	 *
+	 * @return \Mantle\Framework\Database\Model|null
+	 */
 	public function first() {
 		return $this->take( 1 )->get()[0] ?? null;
 	}
 
+	/**
+	 * Magic method to proxy to the appropriate query method.
+	 *
+	 * @param string $method Method name.
+	 * @param array  $args Method arguments.
+	 * @return mixed
+	 *
+	 * @throws Query_Exception Unknown query method called.
+	 */
 	public function __call( $method, $args ) {
 		if ( Str::starts_with( $method, 'where' ) ) {
 			return $this->dynamicWhere( $method, $args );
@@ -249,6 +379,6 @@ abstract class Builder {
 			return $this->dynamicOrderBy( $method, $args );
 		}
 
-		// exception
+		throw new Query_Exception( 'Unknown query builder method: ' . $method );
 	}
 }

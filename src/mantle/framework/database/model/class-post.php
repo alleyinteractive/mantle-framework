@@ -8,6 +8,7 @@
 namespace Mantle\Framework\Database\Model;
 
 use Mantle\Framework\Contracts;
+use Mantle\Framework\Database\Query\Post_Query_Builder;
 use Mantle\Framework\Helpers;
 
 /**
@@ -70,6 +71,15 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 		}
 
 		return static::new_from_existing( (array) $post );
+	}
+
+	/**
+	 * Query builder class to use.
+	 *
+	 * @return string
+	 */
+	public static function get_query_builder_class(): string {
+		return Post_Query_Builder::class;
 	}
 
 	/**

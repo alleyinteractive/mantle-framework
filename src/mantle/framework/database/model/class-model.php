@@ -8,6 +8,8 @@
 namespace Mantle\Framework\Database\Model;
 
 use ArrayAccess;
+use Mantle\Framework\Database\Query\Builder;
+use Mantle\Framework\Support\Forward_Calls;
 use Mantle\Framework\Support\Str;
 
 /**
@@ -18,6 +20,7 @@ use Mantle\Framework\Support\Str;
 abstract class Model implements ArrayAccess {
 	use Aliases,
 		Attributes,
+		Forward_Calls,
 		Relationships;
 
 	/**
@@ -52,6 +55,13 @@ abstract class Model implements ArrayAccess {
 	 * @return static|null
 	 */
 	abstract public static function find( $object );
+
+	/**
+	 * Query builder class to use.
+	 *
+	 * @return string
+	 */
+	abstract public static function get_query_builder_class(): string;
 
 	/**
 	 * Refresh the model attributes.
@@ -199,5 +209,49 @@ abstract class Model implements ArrayAccess {
 	 */
 	public function __set( $offset, $value ) {
 		$this->set( $offset, $value );
+	}
+
+	/**
+	 * Create a new query instance.
+	 *
+	 * @return Builder
+	 */
+	public static function query(): Builder {
+		return ( new static() )->new_query();
+	}
+
+	/**
+	 * Create a new query instance.
+	 *
+	 * @todo Add global scopes for queries.
+	 *
+	 * @return Builder
+	 */
+	public function new_query(): Builder {
+		$builder = static::get_query_builder_class();
+
+		return new $builder( get_called_class() );
+	}
+
+	/**
+	 * Handle dynamic method calls into the model.
+	 *
+	 * @param string $method Method name.
+	 * @param array  $parameters Method parameters.
+	 * @return mixed
+	 */
+	public function __call( string $method, array $parameters ) {
+		return $this->forward_call_to( $this->new_query(), $method, $parameters );
+	}
+
+	/**
+	 * Handle dynamic static method calls into the model.
+	 *
+	 * @param string $method Method name.
+	 * @param array  $parameters Method parameters.
+	 * @return mixed
+	 */
+	public static function __callStatic( string $method, array $parameters ) {
+		return ( new static() )->$method( ...$parameters );
 	}
 }
