@@ -41,18 +41,17 @@ class Factory_Service_Provider extends Service_Provider {
 	 */
 	protected function registerMantleFactory()
 	{
-//		$this->app->singleton(Generator::class, function ($app, $parameters) {
-////			$locale = $parameters['locale'] ?? $app['config']->get('app.faker_locale', 'en_US');
-//			$locale = 'en_US';
-//
-//			if (! isset(static::$fakers[$locale])) {
-//				static::$fakers[$locale] = Factory::create();
-//			}
-//
-//			static::$fakers[$locale]->unique(true);
-//
-//			return static::$fakers[$locale];
-//		});
+		$this->app->singleton(FakerGenerator::class, function ($app, $parameters) {
+			$locale = 'en_US';
+
+			if (! isset(static::$fakers[$locale])) {
+				static::$fakers[$locale] = Factory::create();
+			}
+
+			static::$fakers[$locale]->unique(true);
+
+			return static::$fakers[$locale];
+		});
 
 		$this->app->singleton(MantleFactory::class, function ($app) {
 			return MantleFactory::construct(
