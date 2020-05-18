@@ -33,7 +33,7 @@ class Factory_Make_Command extends Generator_Command
 	 *
 	 * @var string
 	 */
-	protected $type = 'Factory';
+	protected $type = 'Factories';
 
 	/**
 	 * Command synopsis.
@@ -109,5 +109,25 @@ class Factory_Make_Command extends Generator_Command
 				$this->get_class_name( $name )
 			)
 		);
+	}
+
+	/**
+	 * Get the folder location of the file.
+	 *
+	 * @param string $name Name to use.
+	 * @return string
+	 */
+	protected function get_folder_path( string $name ): string {
+		$parts = explode( '\\', $name );
+
+		array_pop( $parts );
+
+		if ( ! empty( $parts ) ) {
+			$parts = strtolower( str_replace( '_', '-', join( '/', $parts ) ) ) . '/';
+		} else {
+			$parts = '';
+		}
+
+		return untrailingslashit( $this->app->get_base_path() .'/database/' . strtolower( $this->type ) . '/' . $parts );
 	}
 }
