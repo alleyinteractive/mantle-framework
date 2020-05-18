@@ -9,7 +9,10 @@ namespace Mantle\Framework\Helpers;
 
 use Countable;
 use Exception;
+use Mantle\Framework\Container\Container;
+use Mantle\Framework\Database\Factory\Factory_Builder;
 use Mantle\Framework\Support\Higher_Order_Tap_Proxy;
+use Mantle\Framework\Database\Factory\Factory as MantleFactory;
 
 /**
  * Determine if the given value is "blank".
@@ -273,4 +276,38 @@ function transform( $value, callable $callback, $default = null ) {
  */
 function with( $value, callable $callback = null ) {
 	return is_null( $callback ) ? $value : $callback( $value );
+}
+
+/**
+ * Get the available container instance.
+ *
+ * @param  string|null  $abstract
+ * @param  array  $parameters
+ * @return mixed|Mantle\Framework\Container\Container
+ */
+function app($abstract = null, array $parameters = [])
+{
+	if (is_null($abstract)) {
+		return Container::getInstance();
+	}
+	return Container::getInstance()->make($abstract, $parameters);
+}
+
+/**
+ * Create a model factory builder for a given class and amount.
+ *
+ * @param  string  $class
+ * @param  int  $amount
+ * @return Factory_Builder
+ */
+function factory($class, $amount = null)
+{
+	$factory = app(MantleFactory::class);
+
+
+	if (isset($amount) && is_int($amount)) {
+		return $factory->of($class)->times($amount);
+	}
+
+	return $factory->of($class);
 }
