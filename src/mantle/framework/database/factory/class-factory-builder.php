@@ -10,7 +10,9 @@ namespace Mantle\Framework\Database\Factory;
 use Faker\Generator as Faker;
 use InvalidArgumentException;
 use Mantle\Framework\Database\Model\Model;
+use Mantle\Framework\Support\Collection;
 use Mantle\Framework\Support\Traits\Macroable;
+use function Mantle\Framework\Helpers\collect;
 use function Mantle\Framework\Helpers\tap;
 
 class Factory_Builder
@@ -171,7 +173,7 @@ class Factory_Builder
 	 * Create a collection of models and persist them to the database.
 	 *
 	 * @param  array  $attributes
-	 * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|mixed
+	 * @return Collection|Model|mixed
 	 */
 	public function create(array $attributes = [])
 	{
@@ -194,7 +196,7 @@ class Factory_Builder
 	 * Create a collection of models and persist them to the database.
 	 *
 	 * @param  iterable  $records
-	 * @return \Illuminate\Database\Eloquent\Collection|mixed
+	 * @return Collection|mixed
 	 */
 	public function createMany(iterable $records)
 	{
@@ -206,7 +208,7 @@ class Factory_Builder
 	/**
 	 * Set the connection name on the results and store them.
 	 *
-	 * @param  \Illuminate\Support\Collection  $results
+	 * @param  Collection $results
 	 * @return void
 	 */
 	protected function store($results)
@@ -224,7 +226,7 @@ class Factory_Builder
 	 * Create a collection of models.
 	 *
 	 * @param  array  $attributes
-	 * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|mixed
+	 * @return Collection|Model|mixed
 	 */
 	public function make(array $attributes = [])
 	{
@@ -296,7 +298,7 @@ class Factory_Builder
 	 * Make an instance of the model with the given attributes.
 	 *
 	 * @param  array  $attributes
-	 * @return \Illuminate\Database\Eloquent\Model
+	 * @return Model
 	 */
 	protected function makeInstance(array $attributes = [])
 	{
@@ -388,7 +390,7 @@ class Factory_Builder
 	/**
 	 * Run after making callbacks on a collection of models.
 	 *
-	 * @param  \Illuminate\Support\Collection  $models
+	 * @param  Collection  $models
 	 * @return void
 	 */
 	public function callAfterMaking($models)
@@ -399,7 +401,7 @@ class Factory_Builder
 	/**
 	 * Run after creating callbacks on a collection of models.
 	 *
-	 * @param  \Illuminate\Support\Collection  $models
+	 * @param  Collection  $models
 	 * @return void
 	 */
 	public function callAfterCreating($models)
@@ -411,7 +413,7 @@ class Factory_Builder
 	 * Call after callbacks for each model and state.
 	 *
 	 * @param  array  $afterCallbacks
-	 * @param  \Illuminate\Support\Collection  $models
+	 * @param  Collection  $models
 	 * @return void
 	 */
 	protected function callAfter(array $afterCallbacks, $models)
@@ -429,7 +431,7 @@ class Factory_Builder
 	 * Call after callbacks for each model and state.
 	 *
 	 * @param  array  $afterCallbacks
-	 * @param  \Illuminate\Database\Eloquent\Model  $model
+	 * @param  Model  $model
 	 * @param  string  $state
 	 * @return void
 	 */
