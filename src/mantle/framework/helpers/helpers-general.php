@@ -5,6 +5,8 @@
  * @package Mantle
  */
 
+// phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment
+
 namespace Mantle\Framework\Helpers;
 
 use Countable;
@@ -19,6 +21,7 @@ use Mantle\Framework\Database\Factory\Factory as MantleFactory;
  * Determine if the given value is "blank".
  *
  * @param mixed $value Value to check.
+ *
  * @return bool
  */
 function blank( $value ) {
@@ -45,6 +48,7 @@ function blank( $value ) {
  * Get the class "basename" of the given object / class.
  *
  * @param string|object $class Class or object to basename.
+ *
  * @return string
  */
 function class_basename( $class ) {
@@ -57,6 +61,7 @@ function class_basename( $class ) {
  * Returns all traits used by a class, its parent classes and trait of their traits.
  *
  * @param object|string $class Class or object to analyze.
+ *
  * @return array
  */
 function class_uses_recursive( $class ) {
@@ -88,6 +93,7 @@ function collect( $value = null ) {
  * Determine if a value is "filled".
  *
  * @param mixed $value Value to check.
+ *
  * @return bool
  */
 function filled( $value ) {
@@ -97,9 +103,10 @@ function filled( $value ) {
 /**
  * Get an item from an object using "dot" notation.
  *
- * @param object      $object  Object from which to get an item.
- * @param string|null $key     Key path at which to get the value.
+ * @param object      $object Object from which to get an item.
+ * @param string|null $key Key path at which to get the value.
  * @param mixed       $default Default value to return on failure.
+ *
  * @return mixed
  */
 function object_get( $object, $key, $default = null ) {
@@ -121,9 +128,10 @@ function object_get( $object, $key, $default = null ) {
 /**
  * Replace a given pattern with each value in the array in sequentially.
  *
- * @param string $pattern      Pattern for which to search.
- * @param array  $replacements Strings in which to replace sequentially.
- * @param string $subject      Subject in which to search/replace.
+ * @param string $pattern Pattern for which to search.
+ * @param array $replacements Strings in which to replace sequentially.
+ * @param string $subject Subject in which to search/replace.
+ *
  * @return string
  */
 function preg_replace_array( $pattern, array $replacements, $subject ) {
@@ -141,16 +149,16 @@ function preg_replace_array( $pattern, array $replacements, $subject ) {
 /**
  * Retry an operation a given number of times.
  *
- * @throws \Exception If the callable throws an exception, it is rethrown when
- *                    the retry limit is hit or when `$when` says so.
- *
- * @param int           $times    Number of times to retry.
+ * @param int           $times Number of times to retry.
  * @param callable      $callback Callable to try.
- * @param int           $sleep    Number of milliseconds to sleep between tries.
- * @param callable|null $when     Callable against which to check the thrown
+ * @param int           $sleep Number of milliseconds to sleep between tries.
+ * @param callable|null $when Callable against which to check the thrown
  *                                exception to determine if a retry should not
  *                                occur.
+ *
  * @return mixed
+ * @throws \Exception If the callable throws an exception, it is rethrown when
+ *                    the retry limit is hit or when `$when` says so.
  */
 function retry( $times, callable $callback, $sleep = 0, $when = null ) {
 	$attempts = 0;
@@ -179,8 +187,9 @@ function retry( $times, callable $callback, $sleep = 0, $when = null ) {
 /**
  * Call the given Closure with the given value then return the value.
  *
- * @param mixed         $value    Value to provide to the callback and return.
+ * @param mixed         $value Value to provide to the callback and return.
  * @param callable|null $callback Callable to tap.
+ *
  * @return mixed
  */
 function tap( $value, $callback = null ) {
@@ -196,13 +205,13 @@ function tap( $value, $callback = null ) {
 /**
  * Throw the given exception if the given condition is true.
  *
- * @throws \Throwable `$exception` is thrown if `$condition` is not met.
- *
- * @param mixed             $condition     Condition to check.
- * @param \Throwable|string $exception     Exception to throw.
+ * @param mixed             $condition Condition to check.
+ * @param \Throwable|string $exception Exception to throw.
  * @param array             ...$parameters Params to pass to a new $exception if
  *                                         $exception is a string (classname).
+ *
  * @return mixed
+ * @throws \Throwable `$exception` is thrown if `$condition` is not met.
  */
 function throw_if( $condition, $exception, ...$parameters ) {
 	if ( $condition ) {
@@ -215,13 +224,13 @@ function throw_if( $condition, $exception, ...$parameters ) {
 /**
  * Throw the given exception unless the given condition is true.
  *
- * @throws \Throwable `$exception` is thrown unless `$condition` is not met.
- *
- * @param mixed             $condition     Condition to check.
- * @param \Throwable|string $exception     Exception to throw.
+ * @param mixed             $condition Condition to check.
+ * @param \Throwable|string $exception Exception to throw.
  * @param array             ...$parameters Params to pass to a new $exception if
  *                                         $exception is a string (classname).
+ *
  * @return mixed
+ * @throws \Throwable `$exception` is thrown unless `$condition` is not met.
  */
 function throw_unless( $condition, $exception, ...$parameters ) {
 	if ( ! $condition ) {
@@ -235,6 +244,7 @@ function throw_unless( $condition, $exception, ...$parameters ) {
  * Returns all traits used by a trait and its traits.
  *
  * @param string $trait Trait to check.
+ *
  * @return array
  */
 function trait_uses_recursive( $trait ) {
@@ -250,11 +260,12 @@ function trait_uses_recursive( $trait ) {
 /**
  * Transform the given value if it is present.
  *
- * @param mixed    $value    Value to check.
+ * @param mixed    $value Value to check.
  * @param callable $callback Callable to pass `$value`.
- * @param mixed    $default  Fallback if `$value` is not filled. May be a
+ * @param mixed    $default Fallback if `$value` is not filled. May be a
  *                           callable which accepts `$value`, or it may be any
  *                           other value which is returned directly.
+ *
  * @return mixed|null
  */
 function transform( $value, callable $callback, $default = null ) {
@@ -272,8 +283,9 @@ function transform( $value, callable $callback, $default = null ) {
 /**
  * Return the given value, optionally passed through the given callback.
  *
- * @param mixed         $value    Value to return.
+ * @param mixed         $value Value to return.
  * @param callable|null $callback Callable to pass `$value` through.
+ *
  * @return mixed
  */
 function with( $value, callable $callback = null ) {
@@ -283,33 +295,36 @@ function with( $value, callable $callback = null ) {
 /**
  * Get the available container instance.
  *
- * @param  string|null  $abstract
- * @param  array  $parameters
+ * @param string|null $abstract
+ * @param array       $parameters
+ *
  * @return mixed|Mantle\Framework\Container\Container
+ * @throws \Mantle\Framework\Container\Binding_Resolution_Exception Binding resolution exception.
  */
-function app($abstract = null, array $parameters = [])
-{
-	if (is_null($abstract)) {
+function app( $abstract = null, array $parameters = [] ) {
+	if ( is_null( $abstract ) ) {
 		return Container::getInstance();
 	}
-	return Container::getInstance()->make($abstract, $parameters);
+
+	return Container::getInstance()->make( $abstract, $parameters );
 }
 
 /**
  * Create a model factory builder for a given class and amount.
  *
- * @param  string  $class
- * @param  int  $amount
+ * @param string $class
+ * @param int    $amount
+ *
  * @return Factory_Builder
+ * @throws \Mantle\Framework\Container\Binding_Resolution_Exception Binding resolution exception.
  */
-function factory($class, $amount = null)
-{
-	$factory = app(MantleFactory::class);
+function factory( $class, $amount = null ) {
+	$factory = app( MantleFactory::class );
 
 
-	if (isset($amount) && is_int($amount)) {
-		return $factory->of($class)->times($amount);
+	if ( isset( $amount ) && is_int( $amount ) ) {
+		return $factory->of( $class )->times( $amount );
 	}
 
-	return $factory->of($class);
+	return $factory->of( $class );
 }
