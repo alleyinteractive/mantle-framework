@@ -31,7 +31,7 @@ class Factory_Service_Provider extends Service_Provider {
 	public function register() {
 		$this->add_command( Console\Seed_Command::class );
 
-		$this->registerEloquentFactory();
+		$this->registerMantleFactory();
 	}
 
 	/**
@@ -39,7 +39,7 @@ class Factory_Service_Provider extends Service_Provider {
 	 *
 	 * @return void
 	 */
-	protected function registerEloquentFactory()
+	protected function registerMantleFactory()
 	{
 //		$this->app->singleton(Generator::class, function ($app, $parameters) {
 ////			$locale = $parameters['locale'] ?? $app['config']->get('app.faker_locale', 'en_US');
