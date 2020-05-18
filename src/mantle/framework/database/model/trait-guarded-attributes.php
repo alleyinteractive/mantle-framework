@@ -5,6 +5,9 @@
  * @package Mantle
  */
 
+// phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment
+// phpcs:ignoreFile: WordPressVIPMinimum.Variables.VariableAnalysis.StaticInsideClosure
+
 namespace Mantle\Framework\Database\Model;
 
 /**
@@ -31,10 +34,12 @@ trait Guarded_Attributes {
 	 * @var bool
 	 */
 	protected static $unguarded = false;
+
 	/**
 	 * Check if the attribute is guarded.
 	 *
 	 * @param string $attribute Attribute to check.
+	 *
 	 * @return bool
 	 */
 	protected function is_guarded( string $attribute ): bool {
@@ -57,12 +62,12 @@ trait Guarded_Attributes {
 	/**
 	 * Run the given callable while being unguarded.
 	 *
-	 * @param  callable  $callback
+	 * @param callable $callback
+	 *
 	 * @return mixed
 	 */
-	public static function unguarded(callable $callback)
-	{
-		if (static::$unguarded) {
+	public static function unguarded( callable $callback ) {
+		if ( static::$unguarded ) {
 			return $callback();
 		}
 
@@ -78,11 +83,11 @@ trait Guarded_Attributes {
 	/**
 	 * Disable all mass assignable restrictions.
 	 *
-	 * @param  bool  $state
+	 * @param bool $state
+	 *
 	 * @return void
 	 */
-	public static function unguard($state = true)
-	{
+	public static function unguard( $state = true ) {
 		static::$unguarded = $state;
 	}
 
@@ -91,8 +96,7 @@ trait Guarded_Attributes {
 	 *
 	 * @return void
 	 */
-	public static function reguard()
-	{
+	public static function reguard() {
 		static::$unguarded = false;
 	}
 }
