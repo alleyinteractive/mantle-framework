@@ -578,7 +578,7 @@ class Arr {
 	public static function sort( $array, $callback = null ) {
 		// todo: remove when Collection is available.
 		if ( class_exists( 'Mantle\Framework\Support\Collection' ) ) {
-			return Collection::make( $array )->sortBy( $callback )->all();
+			return Collection::make( $array )->sort_by( $callback )->all();
 		}
 
 		return $array;

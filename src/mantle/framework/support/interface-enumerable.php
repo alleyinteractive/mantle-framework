@@ -162,7 +162,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  callable $callback
 	 * @return static
 	 */
-	public function diffUsing( $items, callable $callback);
+	public function diff_using( $items, callable $callback);
 
 	/**
 	 * Get the items whose keys and values are not present in the given items.
@@ -170,7 +170,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  mixed $items
 	 * @return static
 	 */
-	public function diffAssoc( $items);
+	public function diff_assoc( $items);
 
 	/**
 	 * Get the items whose keys and values are not present in the given items, using the callback.
@@ -179,7 +179,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  callable $callback
 	 * @return static
 	 */
-	public function diffAssocUsing( $items, callable $callback);
+	public function diff_assoc_using( $items, callable $callback);
 
 	/**
 	 * Get the items whose keys are not present in the given items.
@@ -187,7 +187,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  mixed $items
 	 * @return static
 	 */
-	public function diffKeys( $items);
+	public function diff_keys( $items);
 
 	/**
 	 * Get the items whose keys are not present in the given items, using the callback.
@@ -196,7 +196,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  callable $callback
 	 * @return static
 	 */
-	public function diffKeysUsing( $items, callable $callback);
+	public function diff_keys_using( $items, callable $callback);
 
 	/**
 	 * Retrieve duplicate items.
@@ -213,7 +213,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  callable|null $callback
 	 * @return static
 	 */
-	public function duplicatesStrict( $callback = null);
+	public function duplicates_strict( $callback = null);
 
 	/**
 	 * Execute a callback over each item.
@@ -438,7 +438,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  bool                  $preserve_keys
 	 * @return static
 	 */
-	public function groupBy( $group_by, $preserve_keys = false);
+	public function group_by( $group_by, $preserve_keys = false);
 
 	/**
 	 * Key an associative array by a field or using a callback.
@@ -446,7 +446,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  callable|string $key_by
 	 * @return static
 	 */
-	public function keyBy( $key_by);
+	public function key_by( $key_by);
 
 	/**
 	 * Determine if an item exists in the collection by key.
@@ -479,14 +479,14 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  mixed $items
 	 * @return static
 	 */
-	public function intersectByKeys( $items);
+	public function intersect_by_keys( $items);
 
 	/**
 	 * Determine if the collection is empty or not.
 	 *
 	 * @return bool
 	 */
-	public function isEmpty();
+	public function is_empty();
 
 	/**
 	 * Determine if the collection is not empty.
@@ -544,7 +544,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  callable $callback
 	 * @return static
 	 */
-	public function mapToDictionary( callable $callback);
+	public function map_to_dictionary( callable $callback);
 
 	/**
 	 * Run a grouping map over the items.
@@ -564,7 +564,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  callable $callback
 	 * @return static
 	 */
-	public function mapWithKeys( callable $callback);
+	public function map_with_keys( callable $callback);
 
 	/**
 	 * Map a collection and flatten the result by a single level.
@@ -596,7 +596,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  mixed $items
 	 * @return static
 	 */
-	public function mergeRecursive( $items);
+	public function merge_recursive( $items);
 
 	/**
 	 * Create a collection by using this collection for keys and another for its values.
@@ -707,7 +707,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  mixed $items
 	 * @return static
 	 */
-	public function replaceRecursive( $items);
+	public function replace_recursive( $items);
 
 	/**
 	 * Reverse items order.
@@ -780,7 +780,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  int $options
 	 * @return static
 	 */
-	public function sortDesc( $options = SORT_REGULAR);
+	public function sort_desc( $options = SORT_REGULAR);
 
 	/**
 	 * Sort the collection using the given callback.
@@ -790,7 +790,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  bool            $descending
 	 * @return static
 	 */
-	public function sortBy( $callback, $options = SORT_REGULAR, $descending = false);
+	public function sort_by( $callback, $options = SORT_REGULAR, $descending = false);
 
 	/**
 	 * Sort the collection in descending order using the given callback.
@@ -799,7 +799,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  int             $options
 	 * @return static
 	 */
-	public function sortByDesc( $callback, $options = SORT_REGULAR);
+	public function sort_by_desc( $callback, $options = SORT_REGULAR);
 
 	/**
 	 * Sort the collection keys.
@@ -808,7 +808,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  bool $descending
 	 * @return static
 	 */
-	public function sortKeys( $options = SORT_REGULAR, $descending = false);
+	public function sort_keys( $options = SORT_REGULAR, $descending = false);
 
 	/**
 	 * Sort the collection keys in descending order.
@@ -816,7 +816,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  int $options
 	 * @return static
 	 */
-	public function sortKeysDesc( $options = SORT_REGULAR);
+	public function sort_keys_desc( $options = SORT_REGULAR);
 
 	/**
 	 * Get the sum of the given values.

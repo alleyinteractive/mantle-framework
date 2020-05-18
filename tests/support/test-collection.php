@@ -150,7 +150,7 @@ class Test_Collection extends TestCase {
 	{
 		$c = new $collection;
 
-		$this->assertTrue($c->isEmpty());
+		$this->assertTrue($c->is_empty());
 	}
 
 	/**
@@ -160,7 +160,7 @@ class Test_Collection extends TestCase {
 	{
 		$c = new $collection(['foo', 'bar']);
 
-		$this->assertFalse($c->isEmpty());
+		$this->assertFalse($c->is_empty());
 		$this->assertTrue($c->is_not_empty());
 	}
 
@@ -862,7 +862,7 @@ class Test_Collection extends TestCase {
 	public function testMergeRecursiveNull($collection)
 	{
 		$c = new $collection(['name' => 'Hello']);
-		$this->assertEquals(['name' => 'Hello'], $c->mergeRecursive(null)->all());
+		$this->assertEquals(['name' => 'Hello'], $c->merge_recursive(null)->all());
 	}
 
 	/**
@@ -871,7 +871,7 @@ class Test_Collection extends TestCase {
 	public function testMergeRecursiveArray($collection)
 	{
 		$c = new $collection(['name' => 'Hello', 'id' => 1]);
-		$this->assertEquals(['name' => 'Hello', 'id' => [1, 2]], $c->mergeRecursive(['id' => 2])->all());
+		$this->assertEquals(['name' => 'Hello', 'id' => [1, 2]], $c->merge_recursive(['id' => 2])->all());
 	}
 
 	/**
@@ -882,7 +882,7 @@ class Test_Collection extends TestCase {
 		$c = new $collection(['name' => 'Hello', 'id' => 1, 'meta' => ['tags' => ['a', 'b'], 'roles' => 'admin']]);
 		$this->assertEquals(
 			['name' => 'Hello', 'id' => 1, 'meta' => ['tags' => ['a', 'b', 'c'], 'roles' => ['admin', 'editor']]],
-			$c->mergeRecursive(new $collection(['meta' => ['tags' => ['c'], 'roles' => 'editor']]))->all()
+			$c->merge_recursive(new $collection(['meta' => ['tags' => ['c'], 'roles' => 'editor']]))->all()
 		);
 	}
 
@@ -922,7 +922,7 @@ class Test_Collection extends TestCase {
 	public function testReplaceRecursiveNull($collection)
 	{
 		$c = new $collection(['a', 'b', ['c', 'd']]);
-		$this->assertEquals(['a', 'b', ['c', 'd']], $c->replaceRecursive(null)->all());
+		$this->assertEquals(['a', 'b', ['c', 'd']], $c->replace_recursive(null)->all());
 	}
 
 	/**
@@ -931,7 +931,7 @@ class Test_Collection extends TestCase {
 	public function testReplaceRecursiveArray($collection)
 	{
 		$c = new $collection(['a', 'b', ['c', 'd']]);
-		$this->assertEquals(['z', 'b', ['c', 'e']], $c->replaceRecursive(['z', 2 => [1 => 'e']])->all());
+		$this->assertEquals(['z', 'b', ['c', 'e']], $c->replace_recursive(['z', 2 => [1 => 'e']])->all());
 	}
 
 	/**
@@ -942,7 +942,7 @@ class Test_Collection extends TestCase {
 		$c = new $collection(['a', 'b', ['c', 'd']]);
 		$this->assertEquals(
 			['z', 'b', ['c', 'e']],
-			$c->replaceRecursive(new $collection(['z', 2 => [1 => 'e']]))->all()
+			$c->replace_recursive(new $collection(['z', 2 => [1 => 'e']]))->all()
 		);
 	}
 
@@ -991,7 +991,7 @@ class Test_Collection extends TestCase {
 		// demonstrate that diffKeys wont support case insensitivity
 		$this->assertEquals(['en_GB', 'fr', 'HR'], $c->diff(new $collection(['en_gb', 'hr']))->values()->to_array());
 		// allow for case insensitive difference
-		$this->assertEquals(['fr'], $c->diffUsing(new $collection(['en_gb', 'hr']), 'strcasecmp')->values()->to_array());
+		$this->assertEquals(['fr'], $c->diff_using(new $collection(['en_gb', 'hr']), 'strcasecmp')->values()->to_array());
 	}
 
 	/**
@@ -1000,7 +1000,7 @@ class Test_Collection extends TestCase {
 	public function testDiffUsingWithNull($collection)
 	{
 		$c = new $collection(['en_GB', 'fr', 'HR']);
-		$this->assertEquals(['en_GB', 'fr', 'HR'], $c->diffUsing(null, 'strcasecmp')->values()->to_array());
+		$this->assertEquals(['en_GB', 'fr', 'HR'], $c->diff_using(null, 'strcasecmp')->values()->to_array());
 	}
 
 	/**
@@ -1019,7 +1019,7 @@ class Test_Collection extends TestCase {
 	{
 		$c1 = new $collection(['id' => 1, 'first_word' => 'Hello']);
 		$c2 = new $collection(['id' => 123, 'foo_bar' => 'Hello']);
-		$this->assertEquals(['first_word' => 'Hello'], $c1->diffKeys($c2)->all());
+		$this->assertEquals(['first_word' => 'Hello'], $c1->diff_keys($c2)->all());
 	}
 
 	/**
@@ -1030,9 +1030,9 @@ class Test_Collection extends TestCase {
 		$c1 = new $collection(['id' => 1, 'first_word' => 'Hello']);
 		$c2 = new $collection(['ID' => 123, 'foo_bar' => 'Hello']);
 		// demonstrate that diffKeys wont support case insensitivity
-		$this->assertEquals(['id'=>1, 'first_word'=> 'Hello'], $c1->diffKeys($c2)->all());
+		$this->assertEquals(['id'=>1, 'first_word'=> 'Hello'], $c1->diff_keys($c2)->all());
 		// allow for case insensitive difference
-		$this->assertEquals(['first_word' => 'Hello'], $c1->diffKeysUsing($c2, 'strcasecmp')->all());
+		$this->assertEquals(['first_word' => 'Hello'], $c1->diff_keys_using($c2, 'strcasecmp')->all());
 	}
 
 	/**
@@ -1042,7 +1042,7 @@ class Test_Collection extends TestCase {
 	{
 		$c1 = new $collection(['id' => 1, 'first_word' => 'Hello', 'not_affected' => 'value']);
 		$c2 = new $collection(['id' => 123, 'foo_bar' => 'Hello', 'not_affected' => 'value']);
-		$this->assertEquals(['id' => 1, 'first_word' => 'Hello'], $c1->diffAssoc($c2)->all());
+		$this->assertEquals(['id' => 1, 'first_word' => 'Hello'], $c1->diff_assoc($c2)->all());
 	}
 
 	/**
@@ -1053,9 +1053,9 @@ class Test_Collection extends TestCase {
 		$c1 = new $collection(['a' => 'green', 'b' => 'brown', 'c' => 'blue', 'red']);
 		$c2 = new $collection(['A' => 'green', 'yellow', 'red']);
 		// demonstrate that the case of the keys will affect the output when diffAssoc is used
-		$this->assertEquals(['a' => 'green', 'b' => 'brown', 'c' => 'blue', 'red'], $c1->diffAssoc($c2)->all());
+		$this->assertEquals(['a' => 'green', 'b' => 'brown', 'c' => 'blue', 'red'], $c1->diff_assoc($c2)->all());
 		// allow for case insensitive difference
-		$this->assertEquals(['b' => 'brown', 'c' => 'blue', 'red'], $c1->diffAssocUsing($c2, 'strcasecmp')->all());
+		$this->assertEquals(['b' => 'brown', 'c' => 'blue', 'red'], $c1->diff_assoc_using($c2, 'strcasecmp')->all());
 	}
 
 	/**
@@ -1107,20 +1107,20 @@ class Test_Collection extends TestCase {
 	 */
 	public function testDuplicatesWithStrict($collection)
 	{
-		$duplicates = $collection::make([1, 2, 1, 'laravel', null, 'laravel', 'php', null])->duplicatesStrict()->all();
+		$duplicates = $collection::make([1, 2, 1, 'laravel', null, 'laravel', 'php', null])->duplicates_strict()->all();
 		$this->assertSame([2 => 1, 5 => 'laravel', 7 => null], $duplicates);
 
 		// does strict comparison
-		$duplicates = $collection::make([2, '2', [], null])->duplicatesStrict()->all();
+		$duplicates = $collection::make([2, '2', [], null])->duplicates_strict()->all();
 		$this->assertSame([], $duplicates);
 
 		// works with mix of primitives
-		$duplicates = $collection::make([1, '2', ['laravel'], ['laravel'], null, '2'])->duplicatesStrict()->all();
+		$duplicates = $collection::make([1, '2', ['laravel'], ['laravel'], null, '2'])->duplicates_strict()->all();
 		$this->assertSame([3 => ['laravel'], 5 => '2'], $duplicates);
 
 		// works with mix of primitives, objects, and numbers
 		$expected = new $collection(['laravel']);
-		$duplicates = $collection::make([new $collection(['laravel']), $expected, $expected, [], '2', '2'])->duplicatesStrict()->all();
+		$duplicates = $collection::make([new $collection(['laravel']), $expected, $expected, [], '2', '2'])->duplicates_strict()->all();
 		$this->assertSame([2 => $expected, 5 => '2'], $duplicates);
 	}
 
@@ -1206,7 +1206,7 @@ class Test_Collection extends TestCase {
 	public function testIntersectByKeysNull($collection)
 	{
 		$c = new $collection(['name' => 'Mateus', 'age' => 18]);
-		$this->assertEquals([], $c->intersectByKeys(null)->all());
+		$this->assertEquals([], $c->intersect_by_keys(null)->all());
 	}
 
 	/**
@@ -1215,7 +1215,7 @@ class Test_Collection extends TestCase {
 	public function testIntersectByKeys($collection)
 	{
 		$c = new $collection(['name' => 'Mateus', 'age' => 18]);
-		$this->assertEquals(['name' => 'Mateus'], $c->intersectByKeys(new $collection(['name' => 'Mateus', 'surname' => 'Guimaraes']))->all());
+		$this->assertEquals(['name' => 'Mateus'], $c->intersect_by_keys(new $collection(['name' => 'Mateus', 'surname' => 'Guimaraes']))->all());
 	}
 
 	/**
@@ -1389,19 +1389,19 @@ class Test_Collection extends TestCase {
 	 */
 	public function testSortDesc($collection)
 	{
-		$data = (new $collection([5, 3, 1, 2, 4]))->sortDesc();
+		$data = (new $collection([5, 3, 1, 2, 4]))->sort_desc();
 		$this->assertEquals([5, 4, 3, 2, 1], $data->values()->all());
 
-		$data = (new $collection([-1, -3, -2, -4, -5, 0, 5, 3, 1, 2, 4]))->sortDesc();
+		$data = (new $collection([-1, -3, -2, -4, -5, 0, 5, 3, 1, 2, 4]))->sort_desc();
 		$this->assertEquals([5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5], $data->values()->all());
 
-		$data = (new $collection(['bar-1', 'foo', 'bar-10']))->sortDesc();
+		$data = (new $collection(['bar-1', 'foo', 'bar-10']))->sort_desc();
 		$this->assertEquals(['foo', 'bar-10', 'bar-1'], $data->values()->all());
 
-		$data = (new $collection(['T2', 'T1', 'T10']))->sortDesc();
+		$data = (new $collection(['T2', 'T1', 'T10']))->sort_desc();
 		$this->assertEquals(['T2', 'T10', 'T1'], $data->values()->all());
 
-		$data = (new $collection(['T2', 'T1', 'T10']))->sortDesc(SORT_NATURAL);
+		$data = (new $collection(['T2', 'T1', 'T10']))->sort_desc(SORT_NATURAL);
 		$this->assertEquals(['T10', 'T2', 'T1'], $data->values()->all());
 	}
 
@@ -1427,14 +1427,14 @@ class Test_Collection extends TestCase {
 	public function testSortBy($collection)
 	{
 		$data = new $collection(['taylor', 'dayle']);
-		$data = $data->sortBy(function ($x) {
+		$data = $data->sort_by(function ($x) {
 			return $x;
 		});
 
 		$this->assertEquals(['dayle', 'taylor'], array_values($data->all()));
 
 		$data = new $collection(['dayle', 'taylor']);
-		$data = $data->sortByDesc(function ($x) {
+		$data = $data->sort_by_desc(function ($x) {
 			return $x;
 		});
 
@@ -1447,12 +1447,12 @@ class Test_Collection extends TestCase {
 	public function testSortByString($collection)
 	{
 		$data = new $collection([['name' => 'taylor'], ['name' => 'dayle']]);
-		$data = $data->sortBy('name', SORT_STRING);
+		$data = $data->sort_by('name', SORT_STRING);
 
 		$this->assertEquals([['name' => 'dayle'], ['name' => 'taylor']], array_values($data->all()));
 
 		$data = new $collection([['name' => 'taylor'], ['name' => 'dayle']]);
-		$data = $data->sortBy('name', SORT_STRING);
+		$data = $data->sort_by('name', SORT_STRING);
 
 		$this->assertEquals([['name' => 'dayle'], ['name' => 'taylor']], array_values($data->all()));
 	}
@@ -1463,14 +1463,14 @@ class Test_Collection extends TestCase {
 	public function testSortByAlwaysReturnsAssoc($collection)
 	{
 		$data = new $collection(['a' => 'taylor', 'b' => 'dayle']);
-		$data = $data->sortBy(function ($x) {
+		$data = $data->sort_by(function ($x) {
 			return $x;
 		});
 
 		$this->assertEquals(['b' => 'dayle', 'a' => 'taylor'], $data->all());
 
 		$data = new $collection(['taylor', 'dayle']);
-		$data = $data->sortBy(function ($x) {
+		$data = $data->sort_by(function ($x) {
 			return $x;
 		});
 
@@ -1484,7 +1484,7 @@ class Test_Collection extends TestCase {
 	{
 		$data = new $collection(['b' => 'dayle', 'a' => 'taylor']);
 
-		$this->assertSame(['a' => 'taylor', 'b' => 'dayle'], $data->sortKeys()->all());
+		$this->assertSame(['a' => 'taylor', 'b' => 'dayle'], $data->sort_keys()->all());
 	}
 
 	/**
@@ -1494,7 +1494,7 @@ class Test_Collection extends TestCase {
 	{
 		$data = new $collection(['a' => 'taylor', 'b' => 'dayle']);
 
-		$this->assertSame(['b' => 'dayle', 'a' => 'taylor'], $data->sortKeysDesc()->all());
+		$this->assertSame(['b' => 'dayle', 'a' => 'taylor'], $data->sort_keys_desc()->all());
 	}
 
 	/**
@@ -2066,8 +2066,8 @@ class Test_Collection extends TestCase {
 		$range = $collection::times(5);
 
 		$this->assertEquals(['slug-1', 'slug-2'], $two->all());
-		$this->assertTrue($zero->isEmpty());
-		$this->assertTrue($negative->isEmpty());
+		$this->assertTrue($zero->is_empty());
+		$this->assertTrue($negative->is_empty());
 		$this->assertEquals(range(1, 5), $range->all());
 	}
 
@@ -2228,7 +2228,7 @@ class Test_Collection extends TestCase {
 //			['id' => 4, 'name' => 'B'],
 //		]);
 //
-//		$groups = $data->mapToDictionary(function ($item, $key) {
+//		$groups = $data->map_to_dictionary(function ($item, $key) {
 //			return [$item['name'] => $item['id']];
 //		});
 //
@@ -2244,7 +2244,7 @@ class Test_Collection extends TestCase {
 	{
 		$data = new $collection([1, 2, 3, 2, 1]);
 
-		$groups = $data->mapToDictionary(function ($item, $key) {
+		$groups = $data->map_to_dictionary(function ($item, $key) {
 			return [$item => $key];
 		});
 
@@ -2296,7 +2296,7 @@ class Test_Collection extends TestCase {
 			['name' => 'Charmander', 'type' => 'Fire', 'idx' => 4],
 			['name' => 'Dragonair', 'type' => 'Dragon', 'idx' => 148],
 		]);
-		$data = $data->mapWithKeys(function ($pokemon) {
+		$data = $data->map_with_keys(function ($pokemon) {
 			return [$pokemon['name'] => $pokemon['type']];
 		});
 		$this->assertEquals(
@@ -2315,7 +2315,7 @@ class Test_Collection extends TestCase {
 			['id' => 3, 'name' => 'B'],
 			['id' => 2, 'name' => 'C'],
 		]);
-		$data = $data->mapWithKeys(function ($item) {
+		$data = $data->map_with_keys(function ($item) {
 			return [$item['id'] => $item];
 		});
 		$this->assertSame(
@@ -2334,7 +2334,7 @@ class Test_Collection extends TestCase {
 			['id' => 2, 'name' => 'B'],
 			['id' => 3, 'name' => 'C'],
 		]);
-		$data = $data->mapWithKeys(function ($item) {
+		$data = $data->map_with_keys(function ($item) {
 			return [$item['id'] => $item['name'], $item['name'] => $item['id']];
 		});
 		$this->assertSame(
@@ -2360,7 +2360,7 @@ class Test_Collection extends TestCase {
 			5 => ['id' => 3, 'name' => 'B'],
 			4 => ['id' => 2, 'name' => 'C'],
 		]);
-		$data = $data->mapWithKeys(function ($item, $key) {
+		$data = $data->map_with_keys(function ($item, $key) {
 			return [$key => $item['id']];
 		});
 		$this->assertSame(
@@ -2414,7 +2414,7 @@ class Test_Collection extends TestCase {
 			['id' => 2, 'name' => 'B'],
 			['id' => 1, 'name' => 'C'],
 		]);
-		$data = $data->mapWithKeys(function ($item) {
+		$data = $data->map_with_keys(function ($item) {
 			return [$item['id'] => $item['name']];
 		});
 		$this->assertSame(
@@ -2442,10 +2442,10 @@ class Test_Collection extends TestCase {
 	{
 		$data = new $collection([['rating' => 1, 'url' => '1'], ['rating' => 1, 'url' => '1'], ['rating' => 2, 'url' => '2']]);
 
-		$result = $data->groupBy('rating');
+		$result = $data->group_by('rating');
 		$this->assertEquals([1 => [['rating' => 1, 'url' => '1'], ['rating' => 1, 'url' => '1']], 2 => [['rating' => 2, 'url' => '2']]], $result->to_array());
 
-		$result = $data->groupBy('url');
+		$result = $data->group_by('url');
 		$this->assertEquals([1 => [['rating' => 1, 'url' => '1'], ['rating' => 1, 'url' => '1']], 2 => [['rating' => 2, 'url' => '2']]], $result->to_array());
 	}
 
@@ -2456,10 +2456,10 @@ class Test_Collection extends TestCase {
 	{
 		$data = new $collection([['rating' => 1, 'url' => '1'], ['rating' => 1, 'url' => '1'], ['rating' => 2, 'url' => '2']]);
 
-		$result = $data->groupBy([$this, 'sortByRating']);
+		$result = $data->group_by([$this, 'sortByRating']);
 		$this->assertEquals([1 => [['rating' => 1, 'url' => '1'], ['rating' => 1, 'url' => '1']], 2 => [['rating' => 2, 'url' => '2']]], $result->to_array());
 
-		$result = $data->groupBy([$this, 'sortByUrl']);
+		$result = $data->group_by([$this, 'sortByUrl']);
 		$this->assertEquals([1 => [['rating' => 1, 'url' => '1'], ['rating' => 1, 'url' => '1']], 2 => [['rating' => 2, 'url' => '2']]], $result->to_array());
 	}
 
@@ -2480,7 +2480,7 @@ class Test_Collection extends TestCase {
 	{
 		$data = new $collection([10 => ['rating' => 1, 'url' => '1'],	 20 => ['rating' => 1, 'url' => '1'],	 30 => ['rating' => 2, 'url' => '2']]);
 
-		$result = $data->groupBy('rating', true);
+		$result = $data->group_by('rating', true);
 
 		$expected_result = [
 			1 => [10 => ['rating' => 1, 'url' => '1'], 20 => ['rating' => 1, 'url' => '1']],
@@ -2497,7 +2497,7 @@ class Test_Collection extends TestCase {
 	{
 		$data = new $collection([['rating' => 1, 'url' => '1'], ['rating' => 1, 'url' => '1'], ['rating' => 2, 'url' => '2']]);
 
-		$result = $data->groupBy(function ($item) {
+		$result = $data->group_by(function ($item) {
 			return $item['rating'];
 		});
 
@@ -2511,7 +2511,7 @@ class Test_Collection extends TestCase {
 	{
 		$data = new $collection([10 => ['rating' => 1, 'url' => '1'], 20 => ['rating' => 1, 'url' => '1'], 30 => ['rating' => 2, 'url' => '2']]);
 
-		$result = $data->groupBy(function ($item) {
+		$result = $data->group_by(function ($item) {
 			return $item['rating'];
 		}, true);
 
@@ -2534,7 +2534,7 @@ class Test_Collection extends TestCase {
 			['user' => 3, 'roles' => ['Role_1']],
 		]);
 
-		$result = $data->groupBy(function ($item) {
+		$result = $data->group_by(function ($item) {
 			return $item['roles'];
 		});
 
@@ -2566,7 +2566,7 @@ class Test_Collection extends TestCase {
 			30 => ['user' => 3, 'roles' => ['Role_1']],
 		]);
 
-		$result = $data->groupBy(function ($item) {
+		$result = $data->group_by(function ($item) {
 			return $item['roles'];
 		}, true);
 
@@ -2599,7 +2599,7 @@ class Test_Collection extends TestCase {
 //			40 => ['user' => 4, 'skilllevel' => 2, 'roles' => ['Role_2']],
 //		]);
 //
-//		$result = $data->groupBy([
+//		$result = $data->group_by([
 //			'skilllevel',
 //			function ($item) {
 //				return $item['roles'];
@@ -2639,10 +2639,10 @@ class Test_Collection extends TestCase {
 	{
 		$data = new $collection([['rating' => 1, 'name' => '1'], ['rating' => 2, 'name' => '2'], ['rating' => 3, 'name' => '3']]);
 
-		$result = $data->keyBy('rating');
+		$result = $data->key_by('rating');
 		$this->assertEquals([1 => ['rating' => 1, 'name' => '1'], 2 => ['rating' => 2, 'name' => '2'], 3 => ['rating' => 3, 'name' => '3']], $result->all());
 
-		$result = $data->keyBy(function ($item) {
+		$result = $data->key_by(function ($item) {
 			return $item['rating'] * 2;
 		});
 		$this->assertEquals([2 => ['rating' => 1, 'name' => '1'], 4 => ['rating' => 2, 'name' => '2'], 6 => ['rating' => 3, 'name' => '3']], $result->all());
@@ -2657,7 +2657,7 @@ class Test_Collection extends TestCase {
 			['firstname' => 'Taylor', 'lastname' => 'Otwell', 'locale' => 'US'],
 			['firstname' => 'Lucas', 'lastname' => 'Michot', 'locale' => 'FR'],
 		]);
-		$result = $data->keyBy(function ($item, $key) {
+		$result = $data->key_by(function ($item, $key) {
 			return strtolower($key.'-'.$item['firstname'].$item['lastname']);
 		});
 		$this->assertEquals([
@@ -2675,7 +2675,7 @@ class Test_Collection extends TestCase {
 			['firstname' => 'Taylor', 'lastname' => 'Otwell', 'locale' => 'US'],
 			['firstname' => 'Lucas', 'lastname' => 'Michot', 'locale' => 'FR'],
 		]);
-		$result = $data->keyBy(function ($item, $key) use ($collection) {
+		$result = $data->key_by(function ($item, $key) use ($collection) {
 			return new $collection([$key, $item['firstname'], $item['lastname']]);
 		});
 		$this->assertEquals([
@@ -2888,7 +2888,7 @@ class Test_Collection extends TestCase {
 			(object) ['id' => 1, 'foo' => ['bar' => 'B']], (object) ['id' => 2, 'foo' => ['bar' => 'A']],
 		]);
 
-		$c = $c->sortBy('foo.bar');
+		$c = $c->sort_by('foo.bar');
 		$this->assertEquals([2, 1], $c->pluck('id')->all());
 	}
 
@@ -2962,7 +2962,7 @@ class Test_Collection extends TestCase {
 			'c' => true,
 		]);
 		$this->assertTrue(
-			$data2->reject()->isEmpty()
+			$data2->reject()->is_empty()
 		);
 	}
 
