@@ -12,6 +12,8 @@ use Mantle\Framework\Database\Query\Builder;
 use Mantle\Framework\Support\Forward_Calls;
 use Mantle\Framework\Support\Str;
 
+use function Mantle\Framework\Helpers\class_basename;
+
 /**
  * Database Model
  *
@@ -36,6 +38,13 @@ abstract class Model implements ArrayAccess {
 	 * @var string
 	 */
 	public static $object_name;
+
+	/**
+	 * The primary key for the model.
+	 *
+	 * @var string
+	 */
+	protected $primary_key = 'id';
 
 	/**
 	 * Constructor.
@@ -253,5 +262,23 @@ abstract class Model implements ArrayAccess {
 	 */
 	public static function __callStatic( string $method, array $parameters ) {
 		return ( new static() )->$method( ...$parameters );
+	}
+
+	/**
+	 * Get the primary key for the model.
+	 *
+	 * @return string
+	 */
+	public function get_key_name(): string {
+		return $this->primary_key;
+	}
+
+	/**
+	 * Get the default foreign key name for the model.
+	 *
+	 * @return string
+	 */
+	public function get_foreign_key(): string {
+		return Str::snake( class_basename( $this ) ) . '_' . $this->get_key_name();
 	}
 }

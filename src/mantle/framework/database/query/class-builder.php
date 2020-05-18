@@ -118,6 +118,15 @@ abstract class Builder {
 	abstract public function get(): array;
 
 	/**
+	 * Get a model instance for the builder.
+	 *
+	 * @return string
+	 */
+	public function get_model(): string {
+		return $this->model;
+	}
+
+	/**
 	 * Query an attribute against a list.
 	 *
 	 * @param string $attribute Attribute to query against.
