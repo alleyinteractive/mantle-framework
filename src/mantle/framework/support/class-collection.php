@@ -792,7 +792,7 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Push one or more items onto the end of the collection.
 	 *
-	 * @param    mixed $values [optional].
+	 * @param    mixed ...$values [optional].
 	 * @return $this
 	 */
 	public function push( ...$values ) {
@@ -1168,7 +1168,7 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Take items in the collection until the given condition is met.
 	 *
-	 * @param    mixed $key
+	 * @param    mixed $value
 	 * @return static
 	 */
 	public function take_until( $value ) {
@@ -1178,7 +1178,7 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Take items in the collection while the given condition is met.
 	 *
-	 * @param    mixed $key
+	 * @param    mixed $value
 	 * @return static
 	 */
 	public function take_while( $value ) {
@@ -1212,7 +1212,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * E.g. new Collection([1, 2, 3])->zip([4, 5, 6]);
 	 *          => [[1, 4], [2, 5], [3, 6]]
 	 *
-	 * @param    mixed ...$items
+	 * @param    mixed $items
 	 * @return static
 	 */
 	public function zip( $items ) {
