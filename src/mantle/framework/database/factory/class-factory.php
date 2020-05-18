@@ -202,11 +202,12 @@ class Factory implements ArrayAccess
 	 * Create a builder for the given model.
 	 *
 	 * @param  string  $class
-	 * @return FactoryBuilder
+	 *
+	 * @return Factory_Builder
 	 */
 	public function of($class)
 	{
-		return new FactoryBuilder(
+		return new Factory_Builder(
 			$class, $this->definitions, $this->states,
 			$this->afterMaking, $this->afterCreating, $this->faker
 		);
