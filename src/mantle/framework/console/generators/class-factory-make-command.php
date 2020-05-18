@@ -12,8 +12,7 @@ use Mantle\Framework\Console\Generator_Command;
 /**
  * Factory Generator
  */
-class Factory_Make_Command extends Generator_Command
-{
+class Factory_Make_Command extends Generator_Command {
 	/**
 	 * The console command name.
 	 *
@@ -118,16 +117,20 @@ class Factory_Make_Command extends Generator_Command
 	 * @return string
 	 */
 	protected function get_folder_path( string $name ): string {
-		$parts = explode( '\\', $name );
+		return untrailingslashit( $this->app->get_base_path() . '/database/' . strtolower( $this->type ) . '/' );
+	}
 
-		array_pop( $parts );
+	/**
+	 * Get the location for the generated file.
+	 *
+	 * @param string $name Name to use.
+	 * @return string
+	 */
+	protected function get_file_path( string $name ): string {
+		$parts    = explode( '\\', $name );
+		$filename = array_pop( $parts );
+		$filename = sanitize_title_with_dashes( str_replace( '_', '-', $filename ) );
 
-		if ( ! empty( $parts ) ) {
-			$parts = strtolower( str_replace( '_', '-', join( '/', $parts ) ) ) . '/';
-		} else {
-			$parts = '';
-		}
-
-		return untrailingslashit( $this->app->get_base_path() .'/database/' . strtolower( $this->type ) . '/' . $parts );
+		return $this->get_folder_path( $name ) . '/' . $filename . '-factory.php';
 	}
 }
