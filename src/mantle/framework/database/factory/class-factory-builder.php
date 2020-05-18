@@ -17,7 +17,7 @@ use function Mantle\Framework\Helpers\tap;
 
 class Factory_Builder
 {
-//	use Macroable;
+	use Macroable;
 
 	/**
 	 * The model definitions in the container.
