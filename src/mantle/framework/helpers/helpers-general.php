@@ -11,6 +11,7 @@ use Countable;
 use Exception;
 use Mantle\Framework\Container\Container;
 use Mantle\Framework\Database\Factory\Factory_Builder;
+use Mantle\Framework\Support\Collection;
 use Mantle\Framework\Support\Higher_Order_Tap_Proxy;
 use Mantle\Framework\Database\Factory\Factory as MantleFactory;
 
@@ -76,7 +77,8 @@ function class_uses_recursive( $class ) {
  * Create a collection from the given value.
  *
  * @param mixed $value Value to collect.
- * @return \Mantle\Framework\Support\Collection
+ *
+ * @return Collection
  */
 function collect( $value = null ) {
 	return new Collection( $value );
