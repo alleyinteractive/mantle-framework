@@ -5,6 +5,8 @@
  * @package Mantle
  */
 
+// phpcs:ignoreFile: WordPressVIPMinimum.Variables.VariableAnalysis.StaticInsideClosure
+
 namespace Mantle\Framework\Database;
 
 use \Faker\Factory;
@@ -37,24 +39,32 @@ class Factory_Service_Provider extends Service_Provider {
 	 *
 	 * @return void
 	 */
-	protected function registerMantleFactory()
-	{
-		$this->app->singleton(FakerGenerator::class, function ($app, $parameters) {
-			$locale = 'en_US';
+	protected function registerMantleFactory() {
+		$this->app->singleton(
+			FakerGenerator::class,
+			function ( $app, $parameters ) {
+				$locale = 'en_US';
 
-			if (! isset(static::$fakers[$locale])) {
-				static::$fakers[$locale] = Factory::create();
+				if ( ! isset( static::$fakers[ $locale ] ) ) {
+					static::$fakers[ $locale ] = Factory::create();
+				}
+
+				static::$fakers[ $locale ]->unique( true );
+
+				return static::$fakers[ $locale ];
 			}
+		);
 
-			static::$fakers[$locale]->unique(true);
-
-			return static::$fakers[$locale];
-		});
-
-		$this->app->singleton(MantleFactory::class, function ($app) {
-			return MantleFactory::construct(
-				$app->make(FakerGenerator::class), $app->get_base_path() . '/database/factories'
-			);
-		});
+		$this->app->singleton(
+			MantleFactory::class,
+			function ( $app ) {
+				return MantleFactory::construct(
+					$app->make(
+						FakerGenerator::class
+					),
+					$app->get_base_path() . '/database/factories'
+				);
+			}
+		);
 	}
 }
