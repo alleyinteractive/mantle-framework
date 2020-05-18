@@ -1,6 +1,6 @@
 <?php
 
-namespace Mantle\Support\Traits;
+namespace Mantle\Framework\Support\Traits;
 
 use BadMethodCallException;
 use Closure;
