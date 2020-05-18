@@ -1,6 +1,6 @@
 <?php
 
-namespace Illuminate\Tests\Support;
+namespace Mantle\Tests\Support;
 
 use ArrayAccess;
 use ArrayIterator;

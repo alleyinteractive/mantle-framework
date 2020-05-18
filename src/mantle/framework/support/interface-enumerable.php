@@ -911,7 +911,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	/**
 	 * Collect the values into a collection.
 	 *
-	 * @return \Illuminate\Support\Collection
+	 * @return \Mantle\Framework\Support\Collection
 	 */
 	public function collect();
 

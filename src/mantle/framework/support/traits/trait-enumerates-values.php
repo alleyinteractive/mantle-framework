@@ -747,7 +747,7 @@ trait Enumerates_Values {
 	/**
 	 * Collect the values into a collection.
 	 *
-	 * @return \Illuminate\Support\Collection
+	 * @return \Mantle\Framework\Support\Collection
 	 */
 	public function collect() {
 		return new Collection( $this->all() );

@@ -71,7 +71,7 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Get a lazy collection for the items in this collection.
 	 *
-	 * @return \Illuminate\Support\LazyCollection
+	 * @return \Mantle\Framework\Support\LazyCollection
 	 */
 	public function lazy() {
 		return new LazyCollection( $this->items );
@@ -336,7 +336,7 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Get all items except for those with the specified keys.
 	 *
-	 * @param    \Illuminate\Support\Collection|mixed $keys
+	 * @param    \Mantle\Framework\Support\Collection|mixed $keys
 	 * @return static
 	 */
 	public function except( $keys ) {
@@ -1280,7 +1280,7 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Get a base Support collection instance from this collection.
 	 *
-	 * @return \Illuminate\Support\Collection
+	 * @return \Mantle\Framework\Support\Collection
 	 */
 	public function to_base() {
 		return new self( $this );
