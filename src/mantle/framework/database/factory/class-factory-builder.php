@@ -8,12 +8,14 @@
 namespace Mantle\Framework\Database\Factory;
 
 use Faker\Generator as Faker;
-use Mantle\Support\Traits\Macroable;
 use InvalidArgumentException;
+use Mantle\Framework\Database\Model\Model;
+use Mantle\Framework\Support\Traits\Macroable;
+use function Mantle\Framework\Helpers\tap;
 
-class FactoryBuilder
+class Factory_Builder
 {
-	use Macroable;
+//	use Macroable;
 
 	/**
 	 * The model definitions in the container.
@@ -106,7 +108,7 @@ class FactoryBuilder
 	 *
 	 * @param int $amount
 	 *
-	 * @return FactoryBuilder
+	 * @return Factory_Builder
 	 */
 	public function times($amount)
 	{
