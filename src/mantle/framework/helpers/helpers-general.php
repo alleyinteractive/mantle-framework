@@ -129,7 +129,7 @@ function object_get( $object, $key, $default = null ) {
  * Replace a given pattern with each value in the array in sequentially.
  *
  * @param string $pattern Pattern for which to search.
- * @param array $replacements Strings in which to replace sequentially.
+ * @param array  $replacements Strings in which to replace sequentially.
  * @param string $subject Subject in which to search/replace.
  *
  * @return string
