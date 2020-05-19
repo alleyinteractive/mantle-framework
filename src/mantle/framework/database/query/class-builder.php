@@ -124,6 +124,8 @@ abstract class Builder {
 	 * @param string $attribute Attribute to query against.
 	 * @param array  $values List of values.
 	 * @return static
+	 *
+	 * @throws Query_Exception Thrown on an unmapped attribute being used.
 	 */
 	public function whereIn( string $attribute, array $values ) {
 		if ( $this->model::has_attribute_alias( $attribute ) ) {
@@ -132,6 +134,8 @@ abstract class Builder {
 
 		if ( ! empty( $this->query_where_in_aliases[ strtolower( $attribute ) ] ) ) {
 			$attribute = $this->query_where_in_aliases[ strtolower( $attribute ) ];
+		} else {
+			throw new Query_Exception( 'Unknown where in alias: ' . $attribute );
 		}
 
 		return $this->where( $attribute, (array) $values );
@@ -143,6 +147,8 @@ abstract class Builder {
 	 * @param string $attribute Attribute to query against.
 	 * @param array  $values List of values.
 	 * @return static
+	 *
+	 * @throws Query_Exception Thrown on an unmapped attribute being used.
 	 */
 	public function whereNotIn( string $attribute, array $values ) {
 		if ( $this->model::has_attribute_alias( $attribute ) ) {
@@ -151,6 +157,8 @@ abstract class Builder {
 
 		if ( ! empty( $this->query_where_not_in_aliases[ strtolower( $attribute ) ] ) ) {
 			$attribute = $this->query_where_not_in_aliases[ strtolower( $attribute ) ];
+		} else {
+			throw new Query_Exception( 'Unknown where not in alias: ' . $attribute );
 		}
 
 		return $this->where( $attribute, $values );

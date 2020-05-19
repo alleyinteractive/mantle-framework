@@ -161,7 +161,7 @@ class Test_Post_Object extends WP_UnitTestCase {
 
 		$object->id = 12345;
 		$object->set_model_guard( false );
-		$this->assertTrue( $object->save() );
+		$object->save();
 	}
 
 	public function test_model_post_type() {

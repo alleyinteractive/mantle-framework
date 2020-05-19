@@ -109,6 +109,17 @@ class Test_Post_Query_Builder extends WP_UnitTestCase {
 			->first();
 
 		$this->assertEquals( $post_id, $first->id() );
+
+		// Test against a post with only one meta value.
+		$post_id_2 = $this->get_random_post_id();
+		update_post_meta( $post_id_2, 'meta-key', 'the-meta-value' );
+
+		$first = Builder::create( Testable_Post::class )
+			->whereMeta( 'meta-key', 'the-meta-value' )
+			->andWhereMeta( 'another-meta-key', 'another-meta-value' )
+			->first();
+
+		$this->assertEquals( $post_id, $first->id() );
 	}
 
 	public function test_term_query() {
@@ -142,6 +153,17 @@ class Test_Post_Query_Builder extends WP_UnitTestCase {
 		$term_other = static::factory()->term->create();
 		$term = static::factory()->term->create();
 		wp_set_object_terms( $post_id, [ $term_other, $term ], 'post_tag', true );
+
+		$first = Builder::create( Testable_Post::class )
+			->whereTerm( $term_other )
+			->andWhereTerm( $term )
+			->first();
+
+		$this->assertEquals( $post_id, $first->id() );
+
+		// Test against a post with only one term.
+		$post_id_2 = $this->get_random_post_id();
+		wp_set_object_terms( $post_id_2, [ $term_other ], 'post_tag', true );
 
 		$first = Builder::create( Testable_Post::class )
 			->whereTerm( $term_other )

@@ -33,7 +33,7 @@ trait Relationships {
 	}
 
 	/**
-	 * Define a Has One Many Relationship
+	 * Define a Has Many Relationship
 	 *
 	 * @param string $related Related model name.
 	 * @param string $foreign_key Foreign key.
