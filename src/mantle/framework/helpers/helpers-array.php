@@ -42,10 +42,7 @@ function data_get( $target, $key, $default = null ) {
 		}
 
 		if ( '*' === $segment ) {
-			if (
-				class_exists( 'Mantle\Framework\Support\Collection' )
-				&& $target instanceof \Mantle\Framework\Support\Collection
-			) {
+			if ( $target instanceof \Mantle\Framework\Support\Collection ) {
 					$target = $target->all();
 			} elseif ( ! is_array( $target ) ) {
 					return value( $default );

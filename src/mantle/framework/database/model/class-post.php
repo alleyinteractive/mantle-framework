@@ -8,6 +8,7 @@
 namespace Mantle\Framework\Database\Model;
 
 use Mantle\Framework\Contracts;
+use Mantle\Framework\Database\Query\Post_Query_Builder;
 use Mantle\Framework\Helpers;
 
 /**
@@ -26,6 +27,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 		'content'     => 'post_content',
 		'description' => 'post_excerpt',
 		'id'          => 'ID',
+		'title'       => 'post_title',
 		'name'        => 'post_title',
 		'slug'        => 'post_name',
 	];
@@ -40,32 +42,44 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	];
 
 	/**
-	 * Constructor.
+	 * Post type for the model.
 	 *
-	 * @param mixed $object Model object.
+	 * @var string
 	 */
-	public function __construct( $object ) {
-		$this->attributes = (array) $object;
-	}
+	public static $object_name = 'post';
 
 	/**
 	 * Find a model by Object ID.
 	 *
-	 * @param int $object_id Object ID.
+	 * @todo Add global scopes for the model to allow for the query builder
+	 *       to verify the object type as well.
+	 *
+	 * @param \WP_Post|int $object Post to retrieve for.
 	 * @return Post|null
 	 */
-	public static function find( $object_id ) {
-		$post = Helpers\get_post_object( $object_id );
-		return $post ? new static( $post ) : null;
+	public static function find( $object ) {
+		$post = Helpers\get_post_object( $object );
+
+		if ( empty( $post ) ) {
+			return null;
+		}
+
+		// Verify the object type matches the model type.
+		$object_name = static::get_object_name();
+		if ( $post->post_type !== $object_name ) {
+			return null;
+		}
+
+		return static::new_from_existing( (array) $post );
 	}
 
 	/**
-	 * Get the meta type for the object.
+	 * Query builder class to use.
 	 *
-	 * @return string
+	 * @return string|null
 	 */
-	public function get_meta_type(): string {
-		return 'post';
+	public static function get_query_builder_class(): ?string {
+		return Post_Query_Builder::class;
 	}
 
 	/**
@@ -139,6 +153,8 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 * Save the model.
 	 *
 	 * @param array $attributes Attributes to save.
+	 * @return bool
+	 *
 	 * @throws Model_Exception Thrown on error saving.
 	 */
 	public function save( array $attributes = [] ) {
@@ -163,6 +179,9 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 			throw new Model_Exception( 'Error saving model: ' . $save->get_error_message() );
 		}
 
+		// Set the post ID attribute.
+		$this->set_raw_attribute( 'ID', $save );
+
 		$this->reset_modified_attributes();
 
 		return true;
@@ -172,8 +191,9 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 * Delete the model.
 	 *
 	 * @param bool $force Force delete the mode.
+	 * @return mixed
 	 */
 	public function delete( bool $force = false ) {
-		\wp_delete_post( $this->id(), $force );
+		return \wp_delete_post( $this->id(), $force );
 	}
 }

@@ -50,11 +50,11 @@ class Comment extends Model implements Contracts\Database\Core_Object, Contracts
 	/**
 	 * Find a model by Object ID.
 	 *
-	 * @param int $object_id Object ID.
+	 * @param \WP_Comment|string|int $object Comment to retrieve.
 	 * @return Comment|null
 	 */
-	public static function find( $object_id ) {
-		$post = Helpers\get_comment_object( $object_id );
+	public static function find( $object ) {
+		$post = Helpers\get_comment_object( $object );
 		return $post ? new static( $post ) : null;
 	}
 
