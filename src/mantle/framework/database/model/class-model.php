@@ -68,9 +68,11 @@ abstract class Model implements ArrayAccess {
 	/**
 	 * Query builder class to use.
 	 *
-	 * @return string
+	 * @return string|null
 	 */
-	abstract public static function get_query_builder_class(): string;
+	public static function get_query_builder_class(): ?string {
+		return null;
+	}
 
 	/**
 	 * Refresh the model attributes.
@@ -235,9 +237,14 @@ abstract class Model implements ArrayAccess {
 	 * @todo Add global scopes for queries.
 	 *
 	 * @return Builder
+	 * @throws Model_Exception Thrown for an unknown query builder for the model.
 	 */
 	public function new_query(): Builder {
 		$builder = static::get_query_builder_class();
+
+		if ( empty( $builder ) ) {
+			throw new Model_Exception( 'Unknown query builder for model: ' . get_called_class() );
+		}
 
 		return new $builder( get_called_class() );
 	}

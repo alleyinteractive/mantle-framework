@@ -69,9 +69,9 @@ class Term extends Model implements Core_Object, Updatable {
 	/**
 	 * Query builder class to use.
 	 *
-	 * @return string
+	 * @return string|null
 	 */
-	public static function get_query_builder_class(): string {
+	public static function get_query_builder_class(): ?string {
 		return Term_Query_Builder::class;
 	}
 

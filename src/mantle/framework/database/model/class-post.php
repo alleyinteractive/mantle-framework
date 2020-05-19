@@ -76,9 +76,9 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	/**
 	 * Query builder class to use.
 	 *
-	 * @return string
+	 * @return string|null
 	 */
-	public static function get_query_builder_class(): string {
+	public static function get_query_builder_class(): ?string {
 		return Post_Query_Builder::class;
 	}
 
