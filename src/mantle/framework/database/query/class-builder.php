@@ -9,8 +9,6 @@
 
 namespace Mantle\Framework\Database\Query;
 
-use Mantle\Framework\Database\Model\Term;
-use Mantle\Framework\Helpers;
 use Mantle\Framework\Support\Collection;
 use Mantle\Framework\Support\Str;
 
@@ -73,13 +71,6 @@ abstract class Builder {
 	 * @var array
 	 */
 	protected $meta_query = [];
-
-	/**
-	 * Tax Query.
-	 *
-	 * @var array
-	 */
-	protected $tax_query = [];
 
 	/**
 	 * Query Variable Aliases
@@ -201,6 +192,26 @@ abstract class Builder {
 	}
 
 	/**
+	 * Support a dynamic where query.
+	 *
+	 * @param string $method Method name.
+	 * @param array  $args Arguments.
+	 * @return static
+	 */
+	public function dynamicWhere( $method, $args ) {
+		$finder = substr( $method, 5 );
+
+		$attribute = Str::snake( $finder );
+
+		// Use the model's alias if one exist.
+		if ( $this->model::has_attribute_alias( $attribute ) ) {
+			$attribute = $this->model::get_attribute_alias( $attribute );
+		}
+
+		return $this->where( $attribute, ...$args );
+	}
+
+	/**
 	 * Query by a meta field.
 	 *
 	 * @param string $key Meta key.
@@ -244,86 +255,6 @@ abstract class Builder {
 	}
 
 	/**
-	 * Include a taxonomy query.
-	 *
-	 * @param array|string $term Term ID/array of IDs.
-	 * @param string       $taxonomy Taxonomy name.
-	 * @param string       $operator Operator to use, defaults to 'IN'.
-	 *
-	 * @throws Query_Exception Unknown term to query against.
-	 */
-	public function whereTerm( $term, $taxonomy = null, string $operator = 'IN' ) {
-		if ( $term instanceof Term ) {
-			$taxonomy = $term->taxonomy();
-			$term     = $term->id();
-		}
-
-		if ( $term instanceof \WP_Term ) {
-			$taxonomy = $term->taxonomy;
-			$term     = $term->term_id;
-		}
-
-		// Get the taxonomy if it wasn't passed.
-		if ( empty( $taxonomy ) && ! is_array( $term ) ) {
-			$object = Helpers\get_term_object( $term );
-
-			if ( empty( $object ) ) {
-				throw new Query_Exception( 'Unknown term: ' . $term );
-			}
-
-			$taxonomy = $object->taxonomy;
-			$term     = $object->term_id;
-		}
-
-		$this->tax_query[] = [
-			'field'            => 'term_id',
-			'include_children' => true,
-			'operator'         => $operator,
-			'taxonomy'         => $taxonomy,
-			'terms'            => $term,
-		];
-
-		return $this;
-	}
-
-	/**
-	 * Include a taxonomy query with the relation set to 'AND'.
-	 *
-	 * @param array|string $term Term ID/array of IDs.
-	 * @param string       $taxonomy Taxonomy name.
-	 * @param string       $operator Operator to use, defaults to 'IN'.
-	 */
-	public function andWhereTerm( ...$args ) {
-		$this->tax_query['relation'] = 'AND';
-		return $this->whereTerm( ...$args );
-	}
-
-	/**
-	 * Include a taxonomy query with the relation set to 'OR'.
-	 *
-	 * @param array|string $term Term ID/array of IDs.
-	 * @param string       $taxonomy Taxonomy name.
-	 * @param string       $operator Operator to use, defaults to 'IN'.
-	 */
-	public function orWhereTerm( ...$args ) {
-		$this->tax_query['relation'] = 'OR';
-		return $this->whereTerm( ...$args );
-	}
-
-	public function dynamicWhere( $method, $args ) {
-		$finder = substr( $method, 5 );
-
-		$attribute = Str::snake( $finder );
-
-		// Use the model's alias if one exist.
-		if ( $this->model::has_attribute_alias( $attribute ) ) {
-			$attribute = $this->model::get_attribute_alias( $attribute );
-		}
-
-		return $this->where( $attribute, ...$args );
-	}
-
-	/**
 	 * Order the query by a field.
 	 *
 	 * @param string $attribute Attribute name.
@@ -331,6 +262,14 @@ abstract class Builder {
 	 * @return static
 	 */
 	public function orderBy( $attribute, string $direction = 'asc' ) {
+		if ( $this->model::has_attribute_alias( $attribute ) ) {
+			$attribute = $this->model::get_attribute_alias( $attribute );
+		}
+
+		if ( ! empty( $this->query_aliases[ strtolower( $attribute ) ] ) ) {
+			$attribute = $this->query_aliases[ strtolower( $attribute ) ];
+		}
+
 		$this->order    = strtoupper( $direction );
 		$this->order_by = $attribute;
 		return $this;

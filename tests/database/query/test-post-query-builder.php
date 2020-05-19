@@ -9,7 +9,7 @@ use WP_UnitTestCase;
 /**
  * @todo Replace with the Mantle Testing Framework
  */
-class Test_Comment_Object extends WP_UnitTestCase {
+class Test_Post_Query_Builder extends WP_UnitTestCase {
 	public function test_post_by_name() {
 		$post = static::factory()->post->create( [ 'post_name' => 'post-to-find' ] );
 
