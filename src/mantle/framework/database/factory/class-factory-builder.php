@@ -224,10 +224,6 @@ class Factory_Builder {
 	protected function store( $results ) {
 		$results->each(
 			function ( $model ) {
-				if ( ! isset( $this->connection ) ) {
-					$model->setConnection( $model->newQueryWithoutScopes()->getConnection()->getName() );
-				}
-
 				$model->save();
 			}
 		);
