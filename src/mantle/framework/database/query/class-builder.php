@@ -12,6 +12,7 @@ namespace Mantle\Framework\Database\Query;
 use Mantle\Framework\Database\Model\Term;
 use Mantle\Framework\Support\Str;
 use Mantle\Framework\Helpers;
+use Mantle\Framework\Support\Collection;
 
 /**
  * Builder Query Builder
@@ -113,9 +114,9 @@ abstract class Builder {
 	/**
 	 * Get the query results.
 	 *
-	 * @return array
+	 * @return Collection
 	 */
-	abstract public function get(): array;
+	abstract public function get(): Collection;
 
 	/**
 	 * Get a model instance for the builder.

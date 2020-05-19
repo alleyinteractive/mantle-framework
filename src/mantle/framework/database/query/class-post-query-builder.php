@@ -7,6 +7,10 @@
 
 namespace Mantle\Framework\Database\Query;
 
+use Mantle\Framework\Support\Collection;
+
+use function Mantle\Framework\Helpers\collect;
+
 /**
  * Post Query Builder
  */
@@ -75,19 +79,16 @@ class Post_Query_Builder extends Builder {
 	/**
 	 * Execute the query.
 	 *
-	 * @return array
+	 * @return Collection
 	 */
-	public function get(): array {
+	public function get(): Collection {
 		$post_ids = \get_posts( $this->get_query_args() );
 
 		if ( empty( $post_ids ) ) {
-			return [];
+			return collect();
 		}
 
-		return array_values(
-			array_filter(
-				array_map( [ $this->model, 'find' ], $post_ids )
-			)
-		);
+		$models = array_map( [ $this->model, 'find' ], $post_ids );
+		return collect( array_filter( $models ) );
 	}
 }

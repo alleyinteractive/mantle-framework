@@ -1,7 +1,6 @@
 <?php
 namespace Mantle\Tests\Database\Builder;
 
-use Mantle\Framework\Database\Model\Comment;
 use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Term;
 use Mantle\Framework\Database\Query\Post_Query_Builder as Builder;
