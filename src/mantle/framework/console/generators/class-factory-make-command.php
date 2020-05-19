@@ -66,7 +66,9 @@ class Factory_Make_Command extends Generator_Command {
 		$filename = '';
 
 		if ( 'post' === $type ) {
-			$filename = 'factory.stub';
+			$filename = 'factory-post.stub';
+		} elseif ( 'term' === $type ) {
+			$filename = 'factory-term.stub';
 		} else {
 			$this->error( 'Unknown factory type: ' . $type, true );
 		}
