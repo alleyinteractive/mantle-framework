@@ -138,8 +138,8 @@ abstract class Builder {
 			$attribute = $this->model::get_attribute_alias( $attribute );
 		}
 
-		if ( ! empty( $this->query_where_in_aliases[ $attribute ] ) ) {
-			$attribute = $this->query_where_in_aliases[ $attribute ];
+		if ( ! empty( $this->query_where_in_aliases[ strtolower( $attribute ) ] ) ) {
+			$attribute = $this->query_where_in_aliases[ strtolower( $attribute ) ];
 		}
 
 		return $this->where( $attribute, (array) $values );
@@ -157,8 +157,8 @@ abstract class Builder {
 			$attribute = $this->model::get_attribute_alias( $attribute );
 		}
 
-		if ( ! empty( $this->query_where_not_in_aliases[ $attribute ] ) ) {
-			$attribute = $this->query_where_not_in_aliases[ $attribute ];
+		if ( ! empty( $this->query_where_not_in_aliases[ strtolower( $attribute ) ] ) ) {
+			$attribute = $this->query_where_not_in_aliases[ strtolower( $attribute ) ];
 		}
 
 		return $this->where( $attribute, $values );
@@ -191,9 +191,8 @@ abstract class Builder {
 			return $this;
 		}
 
-
-		if ( ! empty( $this->query_aliases[ $attribute ] ) ) {
-			$attribute = $this->query_aliases[ $attribute ];
+		if ( ! empty( $this->query_aliases[ strtolower( $attribute ) ] ) ) {
+			$attribute = $this->query_aliases[ strtolower( $attribute ) ];
 		}
 
 		$this->wheres[ $attribute ] = $value;

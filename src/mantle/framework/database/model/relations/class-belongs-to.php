@@ -50,6 +50,40 @@ class Belongs_To extends Relation {
 	 * Add constraints to the query.
 	 */
 	public function add_constraints() {
-		return $this->query->whereMeta( $this->local_key, $this->parent->get( $this->foreign_key ) );
+		$meta_value = $this->parent->get_meta( $this->local_key );
+
+		if ( empty( $meta_value ) ) {
+			/**
+			 * Prevent the query from going through.
+			 *
+			 * @todo Handle missing meta value better.
+			 */
+			$this->query->where( 'id', PHP_INT_MAX );
+		} else {
+			$this->query->where( $this->foreign_key, $meta_value );
+		}
+
+		return $this->query;
+	}
+
+	/**
+	 * Associate a model with a relationship.
+	 *
+	 * @param Model $model Model to save to.
+	 * @return static
+	 */
+	public function associate( Model $model ) {
+		$this->parent->set_meta( $this->local_key, $model->id() );
+		return $this;
+	}
+
+	/**
+	 * Remove the relationship from the model.
+	 *
+	 * @return static
+	 */
+	public function dissociate() {
+		$this->parent->delete_meta( $this->local_key );
+		return $this;
 	}
 }

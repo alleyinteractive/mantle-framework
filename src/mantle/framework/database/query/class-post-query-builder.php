@@ -17,7 +17,7 @@ class Post_Query_Builder extends Builder {
 	 * @var array
 	 */
 	protected $query_aliases = [
-		'ID'          => 'p',
+		'id'          => 'p',
 		'post_author' => 'author',
 		'post_name'   => 'name',
 	];
@@ -29,7 +29,7 @@ class Post_Query_Builder extends Builder {
 	 */
 	protected $query_where_in_aliases = [
 		'author'      => 'author__in',
-		'ID'          => 'post__in',
+		'id'          => 'post__in',
 		'post_name'   => 'post_name__in',
 		'post_parent' => 'post_parent__in',
 		'tag'         => 'tag__in',
@@ -43,7 +43,7 @@ class Post_Query_Builder extends Builder {
 	 */
 	protected $query_where_not_in_aliases = [
 		'author'      => 'author__not_in',
-		'ID'          => 'post__not_in',
+		'id'          => 'post__not_in',
 		'post_name'   => 'post_name__not_in',
 		'post_parent' => 'post_parent__not_in',
 		'tag'         => 'tag__not_in',

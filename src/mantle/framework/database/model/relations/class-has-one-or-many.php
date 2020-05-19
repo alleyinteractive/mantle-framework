@@ -47,7 +47,7 @@ class Has_One_Or_Many extends Relation {
 	 * Add constraints to the query.
 	 */
 	public function add_constraints() {
-		return $this->query->where( $this->local_key, $this->parent->get_meta( $this->foreign_key ) );
+		return $this->query->whereMeta( $this->foreign_key, $this->parent->get( $this->local_key ) );
 	}
 
 	/**
@@ -57,18 +57,18 @@ class Has_One_Or_Many extends Relation {
 	 * @return Model
 	 */
 	public function save( Model $model ): Model {
-		$this->set_foreign_attributes_for_create( $model );
-		return $model->save() ? $model : false;
+		$model->set_meta( $this->foreign_key, $this->parent->get( $this->local_key ) );
+		return $model;
 	}
 
 	/**
-	 * Set foreign attributes on the save model method.
+	 * Dissociate a model from a parent model.
 	 *
-	 * @param Model $model Model instance to set on.
+	 * @param Model $model Model instance to save.
 	 * @return Model
 	 */
-	protected function set_foreign_attributes_for_create( Model $model ): Model {
-		var_dump('model to save', $this->foreign_key, $this->local_key );exit;
-		// $model->set_meta( $this->foreign_key );
+	public function remove( Model $model ): Model {
+		$model->delete_meta( $this->foreign_key );
+		return $model;
 	}
 }

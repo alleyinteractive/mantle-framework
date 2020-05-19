@@ -3,6 +3,7 @@
  * Relationships trait file.
  *
  * @package Mantle
+ * @phpcs:disable Squiz.Commenting.FunctionComment
  */
 
 namespace Mantle\Framework\Database\Model;
@@ -29,6 +30,18 @@ trait Relationships {
 		$local_key   = $local_key ?? $this->get_key_name();
 
 		return new Has_One_Or_Many( $instance->new_query(), $this, $foreign_key, $local_key );
+	}
+
+	/**
+	 * Define a Has One Many Relationship
+	 *
+	 * @param string $related Related model name.
+	 * @param string $foreign_key Foreign key.
+	 * @param string $local_key Local key.
+	 * @return Relation
+	 */
+	public function has_many( ...$args ): Relation {
+		return $this->has_one( ...$args );
 	}
 
 	/**
