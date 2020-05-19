@@ -3,11 +3,15 @@
  * Post_Query_Builder class file.
  *
  * @package Mantle
+ * @phpcs:disable Squiz.Commenting.FunctionComment
  */
 
 namespace Mantle\Framework\Database\Query;
 
+use Mantle\Framework\Database\Model\Term;
+use Mantle\Framework\Helpers;
 use Mantle\Framework\Support\Collection;
+
 use function Mantle\Framework\Helpers\collect;
 
 /**
@@ -54,6 +58,13 @@ class Post_Query_Builder extends Builder {
 	];
 
 	/**
+	 * Tax Query.
+	 *
+	 * @var array
+	 */
+	protected $tax_query = [];
+
+	/**
 	 * Get the query arguments.
 	 *
 	 * @return array
@@ -89,5 +100,72 @@ class Post_Query_Builder extends Builder {
 
 		$models = array_map( [ $this->model, 'find' ], $post_ids );
 		return collect( array_filter( $models ) );
+	}
+
+	/**
+	 * Include a taxonomy query.
+	 *
+	 * @param array|string $term Term ID/array of IDs.
+	 * @param string       $taxonomy Taxonomy name.
+	 * @param string       $operator Operator to use, defaults to 'IN'.
+	 *
+	 * @throws Query_Exception Unknown term to query against.
+	 */
+	public function whereTerm( $term, $taxonomy = null, string $operator = 'IN' ) {
+		if ( $term instanceof Term ) {
+			$taxonomy = $term->taxonomy();
+			$term     = $term->id();
+		}
+
+		if ( $term instanceof \WP_Term ) {
+			$taxonomy = $term->taxonomy;
+			$term     = $term->term_id;
+		}
+
+		// Get the taxonomy if it wasn't passed.
+		if ( empty( $taxonomy ) && ! is_array( $term ) ) {
+			$object = Helpers\get_term_object( $term );
+
+			if ( empty( $object ) ) {
+				throw new Query_Exception( 'Unknown term: ' . $term );
+			}
+
+			$taxonomy = $object->taxonomy;
+			$term     = $object->term_id;
+		}
+
+		$this->tax_query[] = [
+			'field'            => 'term_id',
+			'include_children' => true,
+			'operator'         => $operator,
+			'taxonomy'         => $taxonomy,
+			'terms'            => $term,
+		];
+
+		return $this;
+	}
+
+	/**
+	 * Include a taxonomy query with the relation set to 'AND'.
+	 *
+	 * @param array|string $term Term ID/array of IDs.
+	 * @param string       $taxonomy Taxonomy name.
+	 * @param string       $operator Operator to use, defaults to 'IN'.
+	 */
+	public function andWhereTerm( ...$args ) {
+		$this->tax_query['relation'] = 'AND';
+		return $this->whereTerm( ...$args );
+	}
+
+	/**
+	 * Include a taxonomy query with the relation set to 'OR'.
+	 *
+	 * @param array|string $term Term ID/array of IDs.
+	 * @param string       $taxonomy Taxonomy name.
+	 * @param string       $operator Operator to use, defaults to 'IN'.
+	 */
+	public function orWhereTerm( ...$args ) {
+		$this->tax_query['relation'] = 'OR';
+		return $this->whereTerm( ...$args );
 	}
 }
