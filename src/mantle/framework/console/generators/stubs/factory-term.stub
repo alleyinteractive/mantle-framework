@@ -28,6 +28,7 @@ $factory->define(
 			'name'        => $name,
 			'slug'        => $slug,
 			'description' => $faker->paragraph,
+			'taxonomy'    => '{{ object_name }}',
 		];
 	}
 );

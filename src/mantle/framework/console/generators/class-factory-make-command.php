@@ -53,6 +53,12 @@ class Factory_Make_Command extends Generator_Command {
 			'type'        => 'assoc',
 			'options'     => [ 'post', 'term' ],
 		],
+		[
+			'description' => 'Object name to use, defaults to inferring from the class name',
+			'name'        => 'object_name',
+			'optional'    => true,
+			'type'        => 'flag',
+		],
 	];
 
 	/**
@@ -72,6 +78,12 @@ class Factory_Make_Command extends Generator_Command {
 		} else {
 			$this->error( 'Unknown factory type: ' . $type, true );
 		}
+
+		// Set the object type to use.
+		$this->replacements->add(
+			'{{ object_name }}',
+			$this->get_flag( 'object_name', $this->get_default_object_name() )
+		);
 
 		return __DIR__ . '/stubs/' . $filename;
 	}
