@@ -23,10 +23,12 @@ class User extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 * @var array
 	 */
 	protected static $aliases = [
-		'id'    => 'ID',
-		'name'  => 'display_name',
-		'slug'  => 'user_login',
-		'title' => 'display_name',
+		'email'    => 'user_email',
+		'id'       => 'ID',
+		'name'     => 'display_name',
+		'password' => 'user_pass',
+		'slug'     => 'user_login',
+		'title'    => 'display_name',
 	];
 
 	/**
@@ -58,7 +60,7 @@ class User extends Model implements Contracts\Database\Core_Object, Contracts\Da
 			return null;
 		}
 
-		return static::new_from_existing( (array) $user );
+		return static::new_from_existing( (array) $user->data );
 	}
 
 	/**
@@ -175,7 +177,7 @@ class User extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 * Delete the model.
 	 *
 	 * @param bool $force Force delete the mode, unused.
-	 * @return mixed
+	 * @return bool Returns value of wp_delete_user().
 	 */
 	public function delete( bool $force = false ) {
 		// Include user admin functions to get access to wp_delete_user().
