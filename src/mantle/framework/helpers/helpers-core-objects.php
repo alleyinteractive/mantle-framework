@@ -73,11 +73,15 @@ function get_comment_object( $comment ): ?\WP_Comment {
 /**
  * Nullable wrapper for `get_userdata()`.
  *
- * @param int $user_id User ID.
+ * @param \WP_User|int $user User ID/object.
  * @return null|\WP_User User object or null.
  */
-function get_user_object( $user_id ): ?\WP_User {
-	$object = \get_userdata( (int) $user_id );
+function get_user_object( $user ): ?\WP_User {
+	if ( $user instanceof \WP_User ) {
+		return $user;
+	}
+
+	$object = \get_userdata( (int) $user );
 
 	return ( $object instanceof \WP_User ) ? $object : null;
 }
