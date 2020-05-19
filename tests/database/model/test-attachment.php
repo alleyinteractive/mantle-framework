@@ -9,35 +9,25 @@ use WP_UnitTestCase;
  */
 class Test_Attachment extends WP_UnitTestCase {
 	/**
-	 * Disabled until this can be converted to be unit-testable.
+	 * @var int
 	 */
-	public function test_create_from_url() {
-		$attachment = $this->get_attachment();
+	protected $attachment_id;
+
+	public function setUp() {
+		parent::setUp();
+		$this->attachment_id = $this->factory->attachment->create_upload_object( DIR_TESTDATA . '/images/test-image.png', 0 );
+	}
+
+	public function tearDown() {
+		parent::tearDown();
+		wp_delete_post( $this->attachment_id );
+	}
+
+	public function test_attachment_image_urls() {
+		$attachment = Attachment::find( $this->attachment_id );
 
 		$this->assertNotEmpty( $attachment->id() );
-
-		// Test calling it again to ensure the ID matches (should only download one attachment).
-		$attachment_2 = $this->get_attachment();
-		$this->assertEquals( $attachment->id(), $attachment_2->id() );
-
-		$this->assertNotEmpty( $attachment->image_url( 'thumbnail' ) );
-	}
-
-	public function test_attachment_url() {
-		$attachment = Attachment::find( static::factory()->attachment->create() );
 		$this->assertNotEmpty( $attachment->url() );
-	}
-
-	/**
-	 * @return Attachment
-	 */
-	protected function get_attachment() {
-		return Attachment::create_from_url(
-			'https://placehold.it/100x100.jpg',
-			[
-				'caption'     => 'Caption',
-				'description' => 'Description',
-			]
-		);
+		$this->assertNotEmpty( $attachment->image_url( 'thumbnail' ) );
 	}
 }
