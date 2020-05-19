@@ -1,11 +1,7 @@
 <?php
 namespace Mantle\Tests\Database\Model;
 
-use Mantle\Framework\Contracts\Database\Registrable;
 use Mantle\Framework\Database\Model\Attachment;
-use Mantle\Framework\Database\Model\Model_Exception;
-use Mantle\Framework\Database\Model\Post;
-use Mantle\Framework\Database\Model\Registration\Register_Post_Type;
 use WP_UnitTestCase;
 
 /**
