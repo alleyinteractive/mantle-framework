@@ -271,7 +271,7 @@ trait Enumerates_Values {
 	 * @return bool
 	 */
 	public function is_not_empty() {
-		return ! $this->isEmpty();
+		return ! $this->is_empty();
 	}
 
 	/**
@@ -299,7 +299,7 @@ trait Enumerates_Values {
 	 * @return static
 	 */
 	public function map_to_groups( callable $callback ) {
-		$groups = $this->mapToDictionary( $callback );
+		$groups = $this->map_to_dictionary( $callback );
 
 		return $groups->map( [ $this, 'make' ] );
 	}
@@ -467,7 +467,7 @@ trait Enumerates_Values {
 	 * @return static|mixed
 	 */
 	public function when_empty( callable $callback, callable $default = null ) {
-		return $this->when( $this->isEmpty(), $callback, $default );
+		return $this->when( $this->is_empty(), $callback, $default );
 	}
 
 	/**
@@ -741,13 +741,13 @@ trait Enumerates_Values {
 	 * @deprecated Use the "takeUntil" method directly.
 	 */
 	public function until( $value ) {
-		return $this->takeUntil( $value );
+		return $this->take_until( $value );
 	}
 
 	/**
 	 * Collect the values into a collection.
 	 *
-	 * @return \Illuminate\Support\Collection
+	 * @return \Mantle\Framework\Support\Collection
 	 */
 	public function collect() {
 		return new Collection( $this->all() );
@@ -822,7 +822,7 @@ trait Enumerates_Values {
 		}
 
 		return new static(
-			$this->groupBy( $callback )->map(
+			$this->group_by( $callback )->map(
 				function ( $value ) {
 					return $value->count();
 				}

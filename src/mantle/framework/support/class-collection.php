@@ -7,8 +7,6 @@
 
 // phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment
 
-// phpcs:disable Squiz.Commenting.FunctionComment.ParamNameNoMatch
-
 // phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag
 
 namespace Mantle\Framework\Support;
@@ -73,7 +71,7 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Get a lazy collection for the items in this collection.
 	 *
-	 * @return \Illuminate\Support\LazyCollection
+	 * @return \Mantle\Framework\Support\LazyCollection
 	 */
 	public function lazy() {
 		return new LazyCollection( $this->items );
@@ -234,7 +232,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param    callable $callback
 	 * @return static
 	 */
-	public function diffUsing( $items, callable $callback ) {
+	public function diff_using( $items, callable $callback ) {
 		return new static( array_udiff( $this->items, $this->get_arrayable_items( $items ), $callback ) );
 	}
 
@@ -244,7 +242,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param    mixed $items
 	 * @return static
 	 */
-	public function diffAssoc( $items ) {
+	public function diff_assoc( $items ) {
 		return new static( array_diff_assoc( $this->items, $this->get_arrayable_items( $items ) ) );
 	}
 
@@ -255,7 +253,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param    callable $callback
 	 * @return static
 	 */
-	public function diffAssocUsing( $items, callable $callback ) {
+	public function diff_assoc_using( $items, callable $callback ) {
 		return new static( array_diff_uassoc( $this->items, $this->get_arrayable_items( $items ), $callback ) );
 	}
 
@@ -265,7 +263,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param    mixed $items
 	 * @return static
 	 */
-	public function diffKeys( $items ) {
+	public function diff_keys( $items ) {
 		return new static( array_diff_key( $this->items, $this->get_arrayable_items( $items ) ) );
 	}
 
@@ -276,7 +274,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param    callable $callback
 	 * @return static
 	 */
-	public function diffKeysUsing( $items, callable $callback ) {
+	public function diff_keys_using( $items, callable $callback ) {
 		return new static( array_diff_ukey( $this->items, $this->get_arrayable_items( $items ), $callback ) );
 	}
 
@@ -292,7 +290,7 @@ class Collection implements ArrayAccess, Enumerable {
 
 		$unique_items = $items->unique( null, $strict );
 
-		$compare = $this->duplicateComparator( $strict );
+		$compare = $this->duplicate_comparator( $strict );
 
 		$duplicates = new static();
 
@@ -313,7 +311,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param    callable|null $callback
 	 * @return static
 	 */
-	public function duplicatesStrict( $callback = null ) {
+	public function duplicates_strict( $callback = null ) {
 		return $this->duplicates( $callback, true );
 	}
 
@@ -323,7 +321,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param    bool $strict
 	 * @return \Closure
 	 */
-	protected function duplicateComparator( $strict ) {
+	protected function duplicate_comparator( $strict ) {
 		if ( $strict ) {
 			return function ( $a, $b ) {
 				return $a === $b;
@@ -338,7 +336,7 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Get all items except for those with the specified keys.
 	 *
-	 * @param    \Illuminate\Support\Collection|mixed $keys
+	 * @param    \Mantle\Framework\Support\Collection|mixed $keys
 	 * @return static
 	 */
 	public function except( $keys ) {
@@ -431,7 +429,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param    bool                  $preserve_keys
 	 * @return static
 	 */
-	public function groupBy( $group_by, $preserve_keys = false ) {
+	public function group_by( $group_by, $preserve_keys = false ) {
 		if ( ! $this->use_as_callable( $group_by ) && is_array( $group_by ) ) {
 			$next_groups = $group_by;
 
@@ -475,7 +473,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param    callable|string $key_by
 	 * @return static
 	 */
-	public function keyBy( $key_by ) {
+	public function key_by( $key_by ) {
 		$key_by = $this->value_retriever( $key_by );
 
 		$results = [];
@@ -544,7 +542,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param    mixed $items
 	 * @return static
 	 */
-	public function intersectByKeys( $items ) {
+	public function intersect_by_keys( $items ) {
 		return new static(
 			array_intersect_key(
 				$this->items,
@@ -558,7 +556,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 *
 	 * @return bool
 	 */
-	public function isEmpty() {
+	public function is_empty() {
 		return empty( $this->items );
 	}
 
@@ -644,7 +642,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param    callable $callback
 	 * @return static
 	 */
-	public function mapToDictionary( callable $callback ) {
+	public function map_to_dictionary( callable $callback ) {
 		$dictionary = [];
 
 		foreach ( $this->items as $key => $item ) {
@@ -672,7 +670,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param    callable $callback
 	 * @return static
 	 */
-	public function mapWithKeys( callable $callback ) {
+	public function map_with_keys( callable $callback ) {
 		$result = [];
 
 		foreach ( $this->items as $key => $value ) {
@@ -702,7 +700,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param    mixed $items
 	 * @return static
 	 */
-	public function mergeRecursive( $items ) {
+	public function merge_recursive( $items ) {
 		return new static( array_merge_recursive( $this->items, $this->get_arrayable_items( $items ) ) );
 	}
 
@@ -794,7 +792,7 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Push one or more items onto the end of the collection.
 	 *
-	 * @param    mixed $values [optional].
+	 * @param    mixed ...$values [optional].
 	 * @return $this
 	 */
 	public function push( ...$values ) {
@@ -888,7 +886,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param    mixed $items
 	 * @return static
 	 */
-	public function replaceRecursive( $items ) {
+	public function replace_recursive( $items ) {
 		return new static( array_replace_recursive( $this->items, $this->get_arrayable_items( $items ) ) );
 	}
 
@@ -957,7 +955,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param    mixed $value
 	 * @return static
 	 */
-	public function skipUntil( $value ) {
+	public function skip_until( $value ) {
 		return new static( $this->lazy()->skipUntil( $value )->all() );
 	}
 
@@ -967,7 +965,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param    mixed $value
 	 * @return static
 	 */
-	public function skipWhile( $value ) {
+	public function skip_while( $value ) {
 		return new static( $this->lazy()->skipWhile( $value )->all() );
 	}
 
@@ -989,7 +987,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static
 	 */
 	public function split( $number_of_groups ) {
-		if ( $this->isEmpty() ) {
+		if ( $this->is_empty() ) {
 			return new static();
 		}
 
@@ -1060,7 +1058,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param    int $options
 	 * @return static
 	 */
-	public function sortDesc( $options = SORT_REGULAR ) {
+	public function sort_desc( $options = SORT_REGULAR ) {
 		$items = $this->items;
 
 		arsort( $items, $options );
@@ -1076,7 +1074,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param    bool            $descending
 	 * @return static
 	 */
-	public function sortBy( $callback, $options = SORT_REGULAR, $descending = false ) {
+	public function sort_by( $callback, $options = SORT_REGULAR, $descending = false ) {
 		$results = [];
 
 		$callback = $this->value_retriever( $callback );
@@ -1108,8 +1106,8 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param    int             $options
 	 * @return static
 	 */
-	public function sortByDesc( $callback, $options = SORT_REGULAR ) {
-		return $this->sortBy( $callback, $options, true );
+	public function sort_by_desc( $callback, $options = SORT_REGULAR ) {
+		return $this->sort_by( $callback, $options, true );
 	}
 
 	/**
@@ -1119,7 +1117,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param    bool $descending
 	 * @return static
 	 */
-	public function sortKeys( $options = SORT_REGULAR, $descending = false ) {
+	public function sort_keys( $options = SORT_REGULAR, $descending = false ) {
 		$items = $this->items;
 
 		$descending ? krsort( $items, $options ) : ksort( $items, $options );
@@ -1133,8 +1131,8 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param    int $options
 	 * @return static
 	 */
-	public function sortKeysDesc( $options = SORT_REGULAR ) {
-		return $this->sortKeys( $options, true );
+	public function sort_keys_desc( $options = SORT_REGULAR ) {
+		return $this->sort_keys( $options, true );
 	}
 
 	/**
@@ -1170,20 +1168,20 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Take items in the collection until the given condition is met.
 	 *
-	 * @param    mixed $key
+	 * @param    mixed $value
 	 * @return static
 	 */
-	public function takeUntil( $value ) {
+	public function take_until( $value ) {
 		return new static( $this->lazy()->takeUntil( $value )->all() );
 	}
 
 	/**
 	 * Take items in the collection while the given condition is met.
 	 *
-	 * @param    mixed $key
+	 * @param    mixed $value
 	 * @return static
 	 */
-	public function takeWhile( $value ) {
+	public function take_while( $value ) {
 		return new static( $this->lazy()->takeWhile( $value )->all() );
 	}
 
@@ -1214,7 +1212,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * E.g. new Collection([1, 2, 3])->zip([4, 5, 6]);
 	 *          => [[1, 4], [2, 5], [3, 6]]
 	 *
-	 * @param    mixed ...$items
+	 * @param    mixed $items
 	 * @return static
 	 */
 	public function zip( $items ) {
@@ -1282,9 +1280,9 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Get a base Support collection instance from this collection.
 	 *
-	 * @return \Illuminate\Support\Collection
+	 * @return \Mantle\Framework\Support\Collection
 	 */
-	public function toBase() {
+	public function to_base() {
 		return new self( $this );
 	}
 
