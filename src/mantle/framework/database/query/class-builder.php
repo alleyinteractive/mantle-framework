@@ -10,9 +10,9 @@
 namespace Mantle\Framework\Database\Query;
 
 use Mantle\Framework\Database\Model\Term;
-use Mantle\Framework\Support\Str;
 use Mantle\Framework\Helpers;
 use Mantle\Framework\Support\Collection;
+use Mantle\Framework\Support\Str;
 
 /**
  * Builder Query Builder

@@ -25,7 +25,7 @@ class Test_Log_Manager extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	 */
 	protected $handler;
 
-	protected function setUp() {
+	protected function setUp(): void {
 		parent::setUp();
 
 		$this->app     = new Application();
@@ -61,7 +61,7 @@ class Test_Log_Manager extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		Facade::set_facade_application( $this->app );
 	}
 
-	protected function tearDown() {
+	protected function tearDown(): void {
 		parent::tearDown();
 		Facade::clear_resolved_instances();
 	}
