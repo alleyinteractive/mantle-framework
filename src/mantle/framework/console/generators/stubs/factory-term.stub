@@ -25,9 +25,9 @@ $factory->define(
 		$slug = Str::slug( $name );
 
 		return [
-			'name'    => $name,
-			'slug'    => $slug,
-			'content' => $faker->paragraph,
+			'name'        => $name,
+			'slug'        => $slug,
+			'description' => $faker->paragraph,
 		];
 	}
 );
