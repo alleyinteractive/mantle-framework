@@ -279,6 +279,6 @@ abstract class Model implements ArrayAccess {
 	 * @return string
 	 */
 	public function get_foreign_key(): string {
-		return Str::snake( class_basename( $this ) ) . '_' . $this->get_key_name();
+		return Str::snake( str_replace( '_', '', class_basename( $this ) ) ) . '_' . $this->get_key_name();
 	}
 }

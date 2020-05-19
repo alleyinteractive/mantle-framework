@@ -78,7 +78,6 @@ class Post_Query_Builder extends Builder {
 	 * @return array
 	 */
 	public function get(): array {
-		// var_dump($this->get_query_args());
 		$post_ids = \get_posts( $this->get_query_args() );
 
 		if ( empty( $post_ids ) ) {

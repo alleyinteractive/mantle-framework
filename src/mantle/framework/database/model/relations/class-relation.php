@@ -28,11 +28,11 @@ abstract class Relation {
 	 * Create a new relation instance.
 	 *
 	 * @param Builder $query Query builder instance.
-	 * @param Model $parent Model instance.
+	 * @param Model   $parent Model instance.
 	 */
 	public function __construct( Builder $query, Model $parent ) {
-		$this->query = $query;
-		$this->parent = $parent;
+		$this->query   = $query;
+		$this->parent  = $parent;
 		$this->related = $query->get_model();
 
 		$this->add_constraints();
@@ -46,8 +46,8 @@ abstract class Relation {
 	/**
 	 * Handle dynamic method calls to the relationship.
 	 *
-	 * @param  string  $method
-	 * @param  array  $parameters
+	 * @param string $method Method name.
+	 * @param array  $parameters Method arguments.
 	 * @return mixed
 	 */
 	public function __call( string $method, array $parameters ) {

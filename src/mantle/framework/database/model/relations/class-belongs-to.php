@@ -1,6 +1,6 @@
 <?php
 /**
- * Has_One_Or_Many class file.
+ * Belongs_To class file.
  *
  * @package Mantle
  */
@@ -11,9 +11,12 @@ use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Database\Query\Builder;
 
 /**
- * Has One or Many Relationship
+ * Creates a 'Belongs To' relationship.
+ * Performs a meta query on the parent model with data from the current model.
+ *
+ * Example: Search the parent post's meta query with the ID of the current model.
  */
-class Has_One_Or_Many extends Relation {
+class Belongs_To extends Relation {
 	/**
 	 * Local key.
 	 *
@@ -47,6 +50,6 @@ class Has_One_Or_Many extends Relation {
 	 * Add constraints to the query.
 	 */
 	public function add_constraints() {
-		return $this->query->where( $this->local_key, $this->parent->get_meta( $this->foreign_key ) );
+		return $this->query->whereMeta( $this->local_key, $this->parent->get( $this->foreign_key ) );
 	}
 }

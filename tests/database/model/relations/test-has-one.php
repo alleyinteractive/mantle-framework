@@ -27,7 +27,7 @@ class Test_Post_Object extends WP_UnitTestCase {
 	public function test_get_has_one() {
 		$post_a = $this->get_random_post_id();
 		$post_b = static::factory()->post->create( [ 'post_type' => 'test-child-post' ] );
-		update_post_meta( $post_a, 'parent_id', $post_b );
+		update_post_meta( $post_a, 'testable_post_id', $post_b );
 
 		$object = Testable_Post::find( $post_a );
 		$first = $object->child()->first();
@@ -38,7 +38,7 @@ class Test_Post_Object extends WP_UnitTestCase {
 	public function test_get_belongs_to() {
 		$post_a = $this->get_random_post_id();
 		$post_b = static::factory()->post->create( [ 'post_type' => 'test-child-post' ] );
-		update_post_meta( $post_a, 'parent_id', $post_b );
+		update_post_meta( $post_a, 'testable_post_id', $post_b );
 
 		$object = Testable_Child_Post::find( $post_b );
 
@@ -64,7 +64,8 @@ class Testable_Post extends Post {
 	public static $object_name = 'post';
 
 	public function child() {
-		return $this->has_one( Testable_Child_Post::class, 'parent_id' );
+		return $this->has_one( Testable_Child_Post::class );
+		return $this->has_one( Testable_Child_Post::class, 'testable_post_id' );
 	}
 }
 
@@ -74,6 +75,7 @@ class Testable_Child_Post extends Post {
 	public static $object_name = 'test-child-post';
 
 	public function parent_item() {
-		return $this->belongs_to( Testable_Post::class,  'parent_id' );
+		return $this->belongs_to( Testable_Post::class );
+		return $this->belongs_to( Testable_Post::class,  'testable_post_id' );
 	}
 }
