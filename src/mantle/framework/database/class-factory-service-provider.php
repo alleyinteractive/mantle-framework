@@ -35,7 +35,7 @@ class Factory_Service_Provider extends Service_Provider {
 	}
 
 	/**
-	 * Register the Eloquent factory instance in the container.
+	 * Register the Mantle factory instance in the container.
 	 *
 	 * @return void
 	 */
