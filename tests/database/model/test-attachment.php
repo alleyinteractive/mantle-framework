@@ -19,6 +19,8 @@ class Test_Attachment extends WP_UnitTestCase {
 		// Test calling it again to ensure the ID matches (should only download one attachment).
 		$attachment_2 = $this->get_attachment();
 		$this->assertEquals( $attachment->id(), $attachment_2->id() );
+
+		$this->assertNotEmpty( $attachment->image_url( 'thumbnail' ) );
 	}
 
 	public function test_attachment_url() {
