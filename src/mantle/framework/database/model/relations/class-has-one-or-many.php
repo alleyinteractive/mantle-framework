@@ -49,4 +49,26 @@ class Has_One_Or_Many extends Relation {
 	public function add_constraints() {
 		return $this->query->where( $this->local_key, $this->parent->get_meta( $this->foreign_key ) );
 	}
+
+	/**
+	 * Attach a model to a parent model and save it.
+	 *
+	 * @param Model $model Model instance to save.
+	 * @return Model
+	 */
+	public function save( Model $model ): Model {
+		$this->set_foreign_attributes_for_create( $model );
+		return $model->save() ? $model : false;
+	}
+
+	/**
+	 * Set foreign attributes on the save model method.
+	 *
+	 * @param Model $model Model instance to set on.
+	 * @return Model
+	 */
+	protected function set_foreign_attributes_for_create( Model $model ): Model {
+		var_dump('model to save', $this->foreign_key, $this->local_key );exit;
+		// $model->set_meta( $this->foreign_key );
+	}
 }

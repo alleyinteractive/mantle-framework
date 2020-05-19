@@ -47,6 +47,16 @@ class Test_Post_Object extends WP_UnitTestCase {
 		$this->assertEquals( $post_a, $first->id() );
 	}
 
+	public function test_saving_model() {
+		$post_a = $this->get_random_post_id();
+		$object = Testable_Post::find( $post_a );
+
+		$new_object = new Testable_Child_Post( [ 'title' => 'child post' ] );
+		$object->child()->save( $new_object );
+
+		var_dump($new_object);exit;
+	}
+
 	/**
 	 * Get a random post ID, ensures the post ID is not the last in the set.
 	 *
