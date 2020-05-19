@@ -103,7 +103,7 @@ class Factory_Make_Command extends Generator_Command {
 	public function synopsis( string $name ) {
 		$this->log(
 			PHP_EOL . sprintf(
-				'You can auto-register this model by adding "%s\\%s::class" to the "register" in "config/models.php".',
+				'You can customize this factory by editing the file in "database/factories".',
 				$this->get_namespace( $name ),
 				$this->get_class_name( $name )
 			)
