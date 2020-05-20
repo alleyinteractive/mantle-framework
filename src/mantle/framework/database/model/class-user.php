@@ -176,7 +176,7 @@ class User extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	/**
 	 * Delete the model.
 	 *
-	 * @param bool $force Force delete the mode, unused.
+	 * @param bool $force Force delete the model, unused.
 	 * @return bool Returns value of wp_delete_user().
 	 */
 	public function delete( bool $force = false ) {

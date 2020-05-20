@@ -138,7 +138,7 @@ class Attachment extends Post implements Contracts\Database\Core_Object, Contrac
 	/**
 	 * Delete the attachment.
 	 *
-	 * @param bool $force Force delete the mode.
+	 * @param bool $force Force delete the model.
 	 * @return mixed
 	 */
 	public function delete( bool $force = false ) {
