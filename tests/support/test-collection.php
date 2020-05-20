@@ -18,8 +18,9 @@ use Mockery as m;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use stdClass;
+use WP_UnitTestCase;
 
-class Test_Collection extends TestCase {
+class Test_Collection extends WP_UnitTestCase {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
