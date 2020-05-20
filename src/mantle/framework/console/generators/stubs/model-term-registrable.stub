@@ -25,24 +25,6 @@ class {{ class }} extends Term implements Registrable {
 	protected static $object_types = [ 'post' ];
 
 	/**
-	 * Taxonomy for the model.
-	 *
-	 * @return string
-	 */
-	public static function get_taxonomy(): string {
-		return '{{ object_name }}';
-	}
-
-	/**
-	 * Registration name for the model (post type, taxonomy name, etc.)
-	 *
-	 * @return string
-	 */
-	public static function get_registration_name(): string {
-		return '{{ object_name }}';
-	}
-
-	/**
 	 * Arguments to register the model with.
 	 *
 	 * @return array

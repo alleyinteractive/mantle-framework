@@ -23,7 +23,7 @@ class Test_Generator_Command extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	 */
 	protected $command;
 
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 
 		$this->app = new Application( __DIR__ );

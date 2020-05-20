@@ -1,7 +1,9 @@
 <?php
 namespace Mantle\Tests\Database\Model;
 
+use Mantle\Framework\Contracts\Database\Registrable;
 use Mantle\Framework\Database\Model\Model_Exception;
+use Mantle\Framework\Database\Model\Registration\Register_Taxonomy;
 use Mantle\Framework\Database\Model\Term;
 use WP_UnitTestCase;
 
@@ -9,9 +11,19 @@ use WP_UnitTestCase;
  * @todo Replace with the Mantle Testing Framework
  */
 class Test_Term_Object extends WP_UnitTestCase {
+	public function setUp() {
+		parent::setUp();
+		Example_Taxonomy::register_taxonomy();
+	}
+
+	public function tearDown() {
+		parent::tearDown();
+		unregister_taxonomy( Example_Taxonomy::get_object_name() );
+	}
+
 	public function test_term_object() {
 		$term   = $this->factory->term->create_and_get();
-		$object = Term::find( $term );
+		$object = Testable_Tag::find( $term );
 
 		$this->assertEquals( $object->id(), $term->term_id );
 		$this->assertEquals( $object->name(), $term->name );
@@ -24,20 +36,20 @@ class Test_Term_Object extends WP_UnitTestCase {
 	}
 
 	public function test_term_object_parent() {
-		$parent_id = $this->factory->term->create();
-		$term_id   = $this->factory->term->create( [ 'parent' => $parent_id ] );
+		$parent_id = $this->factory->term->create( [ 'taxonomy' => 'category' ] );
+		$term_id   = $this->factory->term->create( [ 'taxonomy' => 'category', 'parent' => $parent_id ] );
 
-		$object = Term::find( $term_id );
+		$object = Testable_Category::find( $term_id );
 
 		$parent_object = $object->parent();
 
-		$this->assertInstanceOf( Term::class, $parent_object );
+		$this->assertInstanceOf( Testable_Category::class, $parent_object );
 		$this->assertEquals( $parent_object->id(), $parent_id );
 	}
 
 	public function test_term_meta() {
 		$term   = $this->factory->term->create_and_get( [ 'taxonomy' => 'category' ] );
-		$object = Term::find( $term );
+		$object = Testable_Category::find( $term );
 
 		$this->assertEmpty( \get_term_meta( $term->term_id, 'meta_value_to_set', true ) );
 
@@ -48,7 +60,7 @@ class Test_Term_Object extends WP_UnitTestCase {
 
 	public function test_updating_term() {
 		$term   = $this->factory->term->create_and_get();
-		$object = Term::find( $term );
+		$object = Testable_Tag::find( $term );
 
 		$object->name = 'Updated Content';
 		$object->save();
@@ -63,7 +75,7 @@ class Test_Term_Object extends WP_UnitTestCase {
 		$this->expectException( Model_Exception::class );
 
 		$term   = $this->factory->term->create_and_get();
-		$object = Term::find( $term );
+		$object = Testable_Tag::find( $term );
 
 		$object->term_id = 12345;
 		$object->save();
@@ -71,9 +83,47 @@ class Test_Term_Object extends WP_UnitTestCase {
 
 	public function test_deleting_term() {
 		$term   = $this->factory->term->create_and_get();
-		$object = Term::find( $term );
+		$object = Testable_Tag::find( $term );
 		$object->delete();
 
 		$this->assertEmpty( get_term( $term->term_id, $term->taxonomy ) );
+	}
+
+	public function test_saving_term_through_model() {
+		$term = new Term();
+		$term->name = 'test-term';
+		$term->taxonomy = 'category';
+		$term->save();
+
+		$this->assertNotEmpty( $term->id() );
+	}
+
+	public function test_model_incorrect_taxonomy() {
+		$tag = $this->factory->term->create( [ 'taxonomy' => 'post_tag' ] );
+
+		$this->assertInstanceOf( Testable_Tag::class, Testable_Tag::find( $tag ) );
+		$this->assertNull( Testable_Category::find( $tag ) );
+	}
+
+	public function test_model_inferred_taxonomy() {
+		$term = $this->factory->term->create( [ 'taxonomy' => Example_Taxonomy::get_object_name() ] );
+		$this->assertInstanceOf( Example_Taxonomy::class, Example_Taxonomy::find( $term ) );
+		$this->assertNull( Testable_Category::find( $term ) );
+	}
+}
+
+class Testable_Category extends Term {
+	public static $object_name = 'category';
+}
+
+class Testable_Tag extends Term {
+	public static $object_name = 'post_tag';
+}
+
+class Example_Taxonomy extends Term implements Registrable {
+	use Register_Taxonomy;
+
+	public static function get_registration_args(): array {
+		return [ 'public' => true ];
 	}
 }

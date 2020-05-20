@@ -18,7 +18,7 @@ class Test_Register_Taxonomy extends WP_UnitTestCase {
 		$this->assertFalse( taxonomy_exists( $taxonomy ) );
 
 		$mock = m::mock( Register_Taxonomy::class );
-		$mock->shouldReceive( 'get_registration_name' )->andReturn( $taxonomy );
+		$mock->shouldReceive( 'get_object_name' )->andReturn( $taxonomy );
 		$mock->shouldReceive( 'get_registration_args' )->andReturn(
 			[
 				'public' => true,
@@ -41,7 +41,7 @@ class Test_Register_Taxonomy extends WP_UnitTestCase {
 		$this->assertTrue( taxonomy_exists( $taxonomy ) );
 
 		$mock = m::mock( Register_Taxonomy::class );
-		$mock->shouldReceive( 'get_registration_name' )->andReturn( $taxonomy );
+		$mock->shouldReceive( 'get_object_name' )->andReturn( $taxonomy );
 		$mock->shouldReceive( 'get_registration_args' )->andReturn(
 			[
 				'public' => true,

@@ -84,6 +84,7 @@ trait Attributes {
 	 *
 	 * @param string $attribute Attribute name.
 	 * @param mixed  $value Value to set.
+	 * @return static
 	 *
 	 * @throws Model_Exception Thrown when trying to set 'id'.
 	 */
@@ -98,6 +99,21 @@ trait Attributes {
 
 		$this->attributes[ $attribute ] = $value;
 		$this->modified_attributes[]    = $attribute;
+
+		return $this;
+	}
+
+	/**
+	 * Set a raw attribute on the model.
+	 *
+	 * @param string $attribute Attribute name.
+	 * @param mixed  $value Value to set.
+	 * @return static
+	 */
+	public function set_raw_attribute( string $attribute, $value ) {
+		$this->attributes[ $attribute ] = $value;
+
+		return $this;
 	}
 
 	/**
@@ -106,6 +122,21 @@ trait Attributes {
 	 * @return array
 	 */
 	public function get_attributes(): array {
+		$attributes = [];
+
+		foreach ( $this->attributes as $key => $value ) {
+			$attributes[ $key ] = $this->get_attribute( $key );
+		}
+
+		return $attributes;
+	}
+
+	/**
+	 * Get the raw model attributes.
+	 *
+	 * @return array
+	 */
+	public function get_raw_attributes(): array {
 		return $this->attributes;
 	}
 
@@ -126,15 +157,30 @@ trait Attributes {
 
 		return $attributes;
 	}
+
 	/**
 	 * Set an array of attributes.
 	 *
 	 * @param array $attributes Attributes to set.
+	 * @return static
 	 */
 	public function set_attributes( array $attributes ) {
 		foreach ( $attributes as $key => $value ) {
 			$this->set( $key, $value );
 		}
+
+		return $this;
+	}
+
+	/**
+	 * Set the raw attributes on the model.
+	 *
+	 * @param array $attributes Raw attributes to set.
+	 * @return static
+	 */
+	public function set_raw_attributes( array $attributes ) {
+		$this->attributes = $attributes;
+		return $this;
 	}
 
 	/**

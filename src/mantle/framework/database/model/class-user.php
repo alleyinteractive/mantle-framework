@@ -1,6 +1,6 @@
 <?php
 /**
- * Post class file.
+ * User class file.
  *
  * @package Mantle
  */
@@ -8,15 +8,14 @@
 namespace Mantle\Framework\Database\Model;
 
 use Mantle\Framework\Contracts;
-use Mantle\Framework\Database\Query\Post_Query_Builder;
 use Mantle\Framework\Helpers;
 
 /**
- * Post Model
+ * User Model
  */
-class Post extends Model implements Contracts\Database\Core_Object, Contracts\Database\Updatable {
+class User extends Model implements Contracts\Database\Core_Object, Contracts\Database\Updatable {
 	use Meta\Model_Meta,
-		Meta\Post_Meta;
+		Meta\User_Meta;
 
 	/**
 	 * Attributes for the model from the object
@@ -24,12 +23,12 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 * @var array
 	 */
 	protected static $aliases = [
-		'content'     => 'post_content',
-		'description' => 'post_excerpt',
-		'id'          => 'ID',
-		'title'       => 'post_title',
-		'name'        => 'post_title',
-		'slug'        => 'post_name',
+		'email'    => 'user_email',
+		'id'       => 'ID',
+		'name'     => 'display_name',
+		'password' => 'user_pass',
+		'slug'     => 'user_login',
+		'title'    => 'display_name',
 	];
 
 	/**
@@ -42,35 +41,26 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	];
 
 	/**
-	 * Post type for the model.
+	 * Object type for the model.
 	 *
 	 * @var string
 	 */
-	public static $object_name = 'post';
+	public static $object_name = 'user';
 
 	/**
 	 * Find a model by Object ID.
 	 *
-	 * @todo Add global scopes for the model to allow for the query builder
-	 *       to verify the object type as well.
-	 *
-	 * @param \WP_Post|int $object Post to retrieve for.
-	 * @return Post|null
+	 * @param \WP_User|int $object User to retrieve for.
+	 * @return User|null
 	 */
 	public static function find( $object ) {
-		$post = Helpers\get_post_object( $object );
+		$user = Helpers\get_user_object( $object );
 
-		if ( empty( $post ) ) {
+		if ( empty( $user ) ) {
 			return null;
 		}
 
-		// Verify the object type matches the model type.
-		$object_name = static::get_object_name();
-		if ( $post->post_type !== $object_name ) {
-			return null;
-		}
-
-		return static::new_from_existing( (array) $post );
+		return static::new_from_existing( (array) $user->data );
 	}
 
 	/**
@@ -79,7 +69,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 * @return string|null
 	 */
 	public static function get_query_builder_class(): ?string {
-		return Post_Query_Builder::class;
+		return null;
 	}
 
 	/**
@@ -115,10 +105,6 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 * @return Contracts\Database\Core_Object|null
 	 */
 	public function parent(): ?Contracts\Database\Core_Object {
-		if ( ! empty( $this->attributes['post_parent'] ) ) {
-			return static::find( (int) $this->attributes['post_parent'] );
-		}
-
 		return null;
 	}
 
@@ -137,7 +123,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 * @return string
 	 */
 	public function status(): ?string {
-		return $this->get( 'status' ) ?? null;
+		return null;
 	}
 
 	/**
@@ -146,7 +132,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 * @return string|null
 	 */
 	public function permalink(): ?string {
-		return (string) \get_permalink( $this->id() );
+		return (string) \get_author_posts_url( $this->id() );
 	}
 
 	/**
@@ -163,9 +149,9 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 		$id = $this->id();
 
 		if ( empty( $id ) ) {
-			$save = \wp_insert_post( $this->get_attributes() );
+			$save = \wp_insert_user( $this->get_attributes() );
 		} else {
-			$save = \wp_update_post(
+			$save = \wp_update_user(
 				array_merge(
 					$this->get_modified_attributes(),
 					[
@@ -179,7 +165,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 			throw new Model_Exception( 'Error saving model: ' . $save->get_error_message() );
 		}
 
-		// Set the post ID attribute.
+		// Set the ID attribute.
 		$this->set_raw_attribute( 'ID', $save );
 
 		$this->reset_modified_attributes();
@@ -190,10 +176,13 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	/**
 	 * Delete the model.
 	 *
-	 * @param bool $force Force delete the mode.
-	 * @return mixed
+	 * @param bool $force Force delete the model, unused.
+	 * @return bool Returns value of wp_delete_user().
 	 */
 	public function delete( bool $force = false ) {
-		return \wp_delete_post( $this->id(), $force );
+		// Include user admin functions to get access to wp_delete_user().
+		require_once ABSPATH . 'wp-admin/includes/user.php';
+
+		return \wp_delete_user( $this->id() );
 	}
 }

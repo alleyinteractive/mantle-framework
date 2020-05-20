@@ -27,7 +27,7 @@ trait Register_Taxonomy {
 	 * @throws Model_Exception Thrown when registering a taxonomy that is already registered.
 	 */
 	public static function register_taxonomy() {
-		$taxonomy = static::get_registration_name();
+		$taxonomy = static::get_object_name();
 
 		if ( \taxonomy_exists( $taxonomy ) ) {
 			throw new Model_Exception( 'Unable to register taxonomy (taxonomy already exists): ' . $taxonomy );

@@ -18,24 +18,6 @@ class {{ class }} extends Post implements Registrable {
 	use Register_Post_Type;
 
 	/**
-	 * Post type for the model.
-	 *
-	 * @return string
-	 */
-	public static function get_post_type(): string {
-		return '{{ object_name }}';
-	}
-
-	/**
-	 * Registration name for the model (post type, taxonomy name, etc.)
-	 *
-	 * @return string
-	 */
-	public static function get_registration_name(): string {
-		return '{{ object_name }}';
-	}
-
-	/**
 	 * Arguments to register the model with.
 	 *
 	 * @return array
@@ -43,7 +25,7 @@ class {{ class }} extends Post implements Registrable {
 	public static function get_registration_args(): array {
 		return [
 			'public'                => true,
-			'rest_base'             => '{{ object_name }}',
+			'rest_base'             => static::get_object_name(),
 			'show_in_rest'          => true,
 			'supports'              => [ 'author', 'title', 'editor', 'revisions', 'thumbnail', 'custom-fields', 'excerpt' ],
 			'taxonomies'            => [ 'category', 'post_tag' ],
