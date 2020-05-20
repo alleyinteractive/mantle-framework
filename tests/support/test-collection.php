@@ -11,6 +11,7 @@ use Mantle\Framework\Contracts\Support\Arrayable;
 use Mantle\Framework\Contracts\Support\Jsonable;
 use Mantle\Framework\Support\Collection;
 use Mantle\Framework\Support\HtmlString;
+use Mantle\Framework\Database\Model;
 use InvalidArgumentException;
 use JsonSerializable;
 use Mockery as m;
@@ -4251,6 +4252,38 @@ class Test_Collection extends TestCase {
 			'b' => 2,
 			'c' => 3,
 		], $data->all());
+	}
+
+	/**
+	 * @dataProvider collectionClassProvider
+	 */
+	public function test_from_wp_query( $collection ) {
+		static::factory()->post->create_many( 5 );
+		$query = new \WP_Query( [ 'post_type' => 'post' ] );
+		$c = $collection::from( $query );
+
+		$this->assertSame( 5, count( $c->all() ) );
+		$this->assertTrue( $c->every( function ( $val, $key ) {
+			return $val instanceof Model\Post;
+		} ) );
+	}
+
+	/**
+	 * @dataProvider collectionClassProvider
+	 */
+	public function test_from_empty_wp_query( $collection ) {
+		$query = new \WP_Query();
+		$c = $collection::from( $query );
+		$this->assertTrue( $c->is_empty() );
+	}
+
+	/**
+	 * @dataProvider collectionClassProvider
+	 */
+	public function test_from_fallback( $collection ) {
+		$c = $collection::from( ['a', 'b'] );
+		$this->assertSame( 2, count( $c->all() ) );
+		$this->assertEquals( ['a', 'b'], $c->intersect( ['a', 'b'] )->all() );
 	}
 
 	/**

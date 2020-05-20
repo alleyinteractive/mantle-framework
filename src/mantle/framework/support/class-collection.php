@@ -14,6 +14,7 @@ namespace Mantle\Framework\Support;
 use ArrayAccess;
 use ArrayIterator;
 use Mantle\Framework\Support\Traits\Enumerates_Values;
+use Mantle\Framework\Database\Model;
 use function Mantle\Framework\Helpers\value;
 use stdClass;
 
@@ -38,6 +39,27 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	public function __construct( $items = [] ) {
 		$this->items = $this->get_arrayable_items( $items );
+	}
+
+	/**
+	 * Create a new collection from some known WordPress object.
+	 *
+	 * Falls back to the normal constructor if $value is unrecognized.
+	 *
+	 * @return static
+	 */
+	public static function from( $value ) {
+		global $post;
+		if ( $value instanceof \WP_Query ) {
+			$items = [];
+			while ( $value->have_posts() ) {
+				$value->the_post();
+				$items[] = Model\Post::find( $post );
+			}
+			return new static( $items );
+		}
+
+		return new static( $value );
 	}
 
 	/**
