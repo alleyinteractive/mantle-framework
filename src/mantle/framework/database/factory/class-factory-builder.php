@@ -224,10 +224,6 @@ class Factory_Builder {
 	protected function store( $results ) {
 		$results->each(
 			function ( $model ) {
-				if ( ! isset( $this->connection ) ) {
-					$model->setConnection( $model->newQueryWithoutScopes()->getConnection()->getName() );
-				}
-
 				$model->save();
 			}
 		);
@@ -254,17 +250,22 @@ class Factory_Builder {
 			return ( new $this->class() )->newCollection();
 		}
 
-		$instances = ( new $this->class() )->newCollection(
-			array_map(
-				function () use ( $attributes ) {
-					return $this->make_instance( $attributes );
-				},
-				range(
-					1,
-					$this->amount
-				)
+		$objects = array_map(
+			function() use ( $attributes ) {
+				return tap(
+					$this->make_instance( $attributes ),
+					function ( $instance ) {
+						$this->call_after_making( collect( [ $instance ] ) );
+					}
+				);
+			},
+			range(
+				1,
+				$this->amount,
 			)
 		);
+
+		$instances = new Collection( $objects );
 
 		$this->call_after_making( $instances );
 
