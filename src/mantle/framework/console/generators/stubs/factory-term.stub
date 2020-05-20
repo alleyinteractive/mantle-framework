@@ -21,12 +21,8 @@ use App\Models\{{ class }};
 $factory->define(
 	{{ class }}::class, // phpcs:ignore
 	function ( Faker $faker ) {
-		$name = $faker->sentence;
-		$slug = Str::slug( $name );
-
 		return [
-			'name'        => $name,
-			'slug'        => $slug,
+			'name'        => $faker->sentence,
 			'description' => $faker->paragraph,
 			'taxonomy'    => '{{ object_name }}',
 		];
