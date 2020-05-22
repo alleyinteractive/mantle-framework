@@ -71,10 +71,11 @@ class Application extends Container\Container implements Application_Contract {
 	/**
 	 * Getter for the base path.
 	 *
+	 * @param string $path Path to append.
 	 * @return string
 	 */
-	public function get_base_path(): string {
-		return $this->base_path;
+	public function get_base_path( string $path = '' ): string {
+		return $this->base_path . ( $path ? '/' . $path : '' );
 	}
 
 	/**
@@ -122,6 +123,7 @@ class Application extends Container\Container implements Application_Contract {
 		$core_aliases = [
 			'app'    => [ static::class, \Mantle\Framework\Contracts\Application::class ],
 			'config' => [ \Mantle\Framework\Config\Repository::class, \Mantle\Framework\Contracts\Config\Repository::class ],
+			'router' => [ \Mantle\Framework\Http\Routing\Router::class, \Mantle\Framework\Contracts\Http\Routing\Router::class ],
 		];
 
 		foreach ( $core_aliases as $key => $aliases ) {

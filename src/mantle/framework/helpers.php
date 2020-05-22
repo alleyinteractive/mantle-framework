@@ -39,3 +39,13 @@ function mantle_config( string $key = null, $default = null ) {
 
 	return mantle_app( 'config' )->get( $key, $default );
 }
+
+/**
+ * Get the base path to the application.
+ *
+ * @param string $path Path to append.
+ * @return string
+ */
+function mantle_base_path( string $path = '' ): string {
+	return mantle_app()->get_base_path( $path );
+}
