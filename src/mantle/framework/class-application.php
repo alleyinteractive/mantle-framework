@@ -12,6 +12,8 @@ use Mantle\Framework\Contracts\Kernel as Kernel_Contract;
 use Mantle\Framework\Log\Log_Service_Provider;
 use Mantle\Framework\Providers\Routing_Service_Provider;
 
+use function Mantle\Framework\Helpers\collect;
+
 /**
  * Mantle Application
  */
@@ -80,6 +82,16 @@ class Application extends Container\Container implements Application_Contract {
 	}
 
 	/**
+	 * Get the cached Composer packages path.
+	 * Folder that stores all compiled server-side assets for the application.
+	 *
+	 * @return string
+	 */
+	public function get_cached_packages_path() {
+		return $this->base_path . '/bootstrap/cache/packages.php';
+	}
+
+	/**
 	 * Get the path to the application configuration files.
 	 *
 	 * @return string
@@ -108,6 +120,13 @@ class Application extends Container\Container implements Application_Contract {
 		$this->instance( 'app', $this );
 		$this->instance( Container\Container::class, $this );
 		$this->instance( static::class, $this );
+
+		$this->singleton(
+			Package_Manifest::class,
+			function() {
+				return new Package_Manifest( $this->get_base_path(), $this->get_cached_packages_path() );
+			}
+		);
 	}
 
 	/**
@@ -156,8 +175,13 @@ class Application extends Container\Container implements Application_Contract {
 	 * Register all of the configured providers.
 	 */
 	public function register_configured_providers() {
-		$providers = $this->config->get( 'app.providers', [] );
-		array_map( [ $this, 'register' ], (array) $providers );
+		// Get providers from the application config.
+		$providers = collect( $this->config->get( 'app.providers', [] ) );
+
+		// Include providers from the package manifest.
+		$providers->push( ...$this->make( Package_Manifest::class )->providers() );
+
+		$providers->each( [ $this, 'register' ] );
 	}
 
 	/**

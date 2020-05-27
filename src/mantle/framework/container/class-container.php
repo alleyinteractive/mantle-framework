@@ -1023,7 +1023,7 @@ class Container implements ArrayAccess, Container_Contract {
 				return $abstract;
 		}
 
-			return $this->get_alias( $this->aliases[ $abstract ] );
+		return $this->get_alias( $this->aliases[ $abstract ] );
 	}
 
 	/**
