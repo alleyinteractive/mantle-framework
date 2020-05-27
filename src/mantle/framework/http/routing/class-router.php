@@ -31,26 +31,62 @@ class Router implements Router_Contract {
 		$this->routes = new RouteCollection();
 	}
 
+	/**
+	 * Register a GET route.
+	 *
+	 * @param string $uri URL to register for.
+	 * @param mixed  $action Callback action.
+	 */
 	public function get( string $uri, $action ) {
 		return $this->add_route( [ 'GET', 'HEAD' ], $uri, $action );
 	}
 
+	/**
+	 * Register a POST route.
+	 *
+	 * @param string $uri URL to register for.
+	 * @param mixed  $action Callback action.
+	 */
 	public function post( string $uri, $action ) {
 		return $this->add_route( [ 'POST' ], $uri, $action );
 	}
 
+	/**
+	 * Register a PUT route.
+	 *
+	 * @param string $uri URL to register for.
+	 * @param mixed  $action Callback action.
+	 */
 	public function put( string $uri, $action ) {
 		return $this->add_route( [ 'PUT' ], $uri, $action );
 	}
 
+	/**
+	 * Register a DELETE route.
+	 *
+	 * @param string $uri URL to register for.
+	 * @param mixed  $action Callback action.
+	 */
 	public function delete( string $uri, $action ) {
 		return $this->add_route( [ 'DELETE' ], $uri, $action );
 	}
 
+	/**
+	 * Register a PATCH route.
+	 *
+	 * @param string $uri URL to register for.
+	 * @param mixed  $action Callback action.
+	 */
 	public function patch( string $uri, $action ) {
 		return $this->add_route( [ 'PATCH' ], $uri, $action );
 	}
 
+	/**
+	 * Register a OPTIONS route.
+	 *
+	 * @param string $uri URL to register for.
+	 * @param mixed  $action Callback action.
+	 */
 	public function options( string $uri, $action ) {
 		return $this->add_route( [ 'OPTIONS' ], $uri, $action );
 	}

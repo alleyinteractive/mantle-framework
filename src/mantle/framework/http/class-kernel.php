@@ -8,14 +8,17 @@
 namespace Mantle\Framework\Http;
 
 use Exception;
+use InvalidArgumentException;
 use Mantle\Framework\Application;
 use Mantle\Framework\Contracts\Http\Kernel as Kernel_Contract;
 use Mantle\Framework\Contracts\Kernel as Core_Kernel_Contract;
-use Symfony\Component\HttpFoundation\Request;
+use Mantle\Framework\Contracts\Providers\Route_Service_Provider as Route_Service_Provider_Contract;
+use Mantle\Framework\Facade\Facade;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
+use Mantle\Framework\Http\Request;
 
 /**
  * HTTP Kernel
@@ -27,6 +30,13 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 * @var Application
 	 */
 	protected $app;
+
+	/**
+	 * Request instance.
+	 *
+	 * @var Request
+	 */
+	protected $request;
 
 	/**
 	 * The bootstrap classes for the application.
@@ -63,7 +73,20 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 			\wp_die( 'Error booting HTTP Kernel: ' . $e->getMessage() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
-		$response = $this->send_request( $request );
+		$this->request = $request;
+
+		// Setup the Request Facade.
+		$this->app->instance( 'request', $request );
+		Facade::clear_resolved_instance( 'request' );
+
+		add_action( 'wp_loaded', [ $this, 'on_wp_loaded' ] );
+	}
+
+	/**
+	 * Send the request through the HTTP Router
+	 */
+	public function on_wp_loaded() {
+		$response = $this->send_request( $this->request );
 		if ( ! $response ) {
 			return;
 		}
@@ -93,26 +116,46 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 *
 	 * @param Request $request Request object.
 	 * @return Response|null
+	 *
+	 * @throws InvalidArgumentException Thrown on invalid router service provider instance.
+	 * @throws ResourceNotFoundException Thrown on missing resource.
 	 */
 	protected function send_request( Request $request ): ?Response {
+		$provider = $this->app['router.service-provider'];
+
+		if ( ! ( $provider instanceof Route_Service_Provider_Contract ) ) {
+			throw new InvalidArgumentException( 'Unknown "router.service-provider" instance: ' . get_class( $provider ) );
+		}
+
 		try {
-			$router  = $this->app['router'];
-			$context = new RequestContext();
-			$context = $context->fromRequest( $request );
-			$matcher = new UrlMatcher( $router->get_routes(), $context );
-
-			$match = $matcher->matchRequest( $request );
+			$match = $this->match_route( $request );
 		} catch ( ResourceNotFoundException $e ) {
-			unset( $e );
-
 			// If no route found, allow the request to be passed down to WordPress.
-			// todo: allow this to be prevented and Mantle control the entire thing!
-			return null;
+			if ( $provider->should_pass_through_requests( $request ) ) {
+				return null;
+			}
+
+			throw $e;
 		}
 
 		$response = $this->app->call( $this->get_response( $match ) );
 
 		return $this->ensure_response( $response );
+	}
+
+	/**
+	 * Match the current request with registered routes.
+	 *
+	 * @param Request $request Request instance.
+	 * @return array
+	 */
+	protected function match_route( Request $request ): array {
+		$router  = $this->app['router'];
+		$context = new RequestContext();
+		$context = $context->fromRequest( $request );
+		$matcher = new UrlMatcher( $router->get_routes(), $context );
+
+		return $matcher->matchRequest( $request );
 	}
 
 	/**

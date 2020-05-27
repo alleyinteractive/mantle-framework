@@ -7,7 +7,7 @@
 
 namespace Mantle\Framework\Contracts\Http;
 
-use Symfony\Component\HttpFoundation\Request;
+use Mantle\Framework\Http\Request;
 
 /**
  * Http Kernel

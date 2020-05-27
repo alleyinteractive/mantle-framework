@@ -7,17 +7,27 @@
 
 namespace Mantle\Framework\Providers;
 
+use Mantle\Framework\Contracts\Providers\Route_Service_Provider as Route_Service_Provider_Contract;
+use Mantle\Framework\Http\Request;
 use Mantle\Framework\Http\Routing\Router;
 use Mantle\Framework\Service_Provider;
 
 /**
  * Route Service Provider
  */
-class Route_Service_Provider extends Service_Provider {
+class Route_Service_Provider extends Service_Provider implements Route_Service_Provider_Contract {
+	/**
+	 * Allow requests to be passed down to WordPress.
+	 *
+	 * @var bool
+	 */
+	protected $pass_requests_to_wp = true;
+
 	/**
 	 * Register the service provider.
 	 */
 	public function register() {
+		$this->register_router_service_provider();
 		$this->register_router();
 	}
 
@@ -31,6 +41,13 @@ class Route_Service_Provider extends Service_Provider {
 				return new Router( $app );
 			}
 		);
+	}
+
+	/**
+	 * Register the router service provider.
+	 */
+	protected function register_router_service_provider() {
+		$this->app->instance( 'router.service-provider', $this );
 	}
 
 	/**
@@ -48,5 +65,48 @@ class Route_Service_Provider extends Service_Provider {
 		if ( method_exists( $this, 'map' ) ) {
 			$this->app->call( [ $this, 'map' ] );
 		}
+	}
+
+	/**
+	 * Determine if requests should pass through to WordPress.
+	 *
+	 * @param Request $request Request instance.
+	 * @return bool
+	 */
+	public function should_pass_through_requests( Request $request ): bool {
+		if ( is_callable( $this->pass_requests_to_wp ) ) {
+			return (bool) $this->app->call( $this->pass_requests_to_wp );
+		}
+
+		return (bool) $this->pass_requests_to_wp;
+	}
+
+	/**
+	 * Set a callback to determine if a request should be passed down to WordPress.
+	 *
+	 * @param callable $callback Callback to invoke.
+	 */
+	protected function set_pass_through_callback( callable $callback ) {
+		$this->pass_requests_to_wp = $callback;
+	}
+
+	/**
+	 * Allow pass through requests to WordPress.
+	 *
+	 * @return static
+	 */
+	protected function allow_pass_through_requests() {
+		$this->pass_requests_to_wp = true;
+		return $this;
+	}
+
+	/**
+	 * Prevent pass through requests to WordPress.
+	 *
+	 * @return static
+	 */
+	protected function prevent_pass_through_requests() {
+		$this->pass_requests_to_wp = false;
+		return $this;
 	}
 }
