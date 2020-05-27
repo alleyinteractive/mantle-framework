@@ -10,6 +10,7 @@ namespace Mantle\Framework\Bootstrap;
 use Mantle\Framework\Alias_Loader;
 use Mantle\Framework\Application;
 use Mantle\Framework\Facade\Facade;
+use Mantle\Framework\Package_Manifest;
 
 /**
  * Register the Facades for the Application
@@ -25,7 +26,11 @@ class Register_Facades {
 		Facade::set_facade_application( $app );
 
 		// Load the Facades from the config.
-		$aliases = $app->config->get( 'app.aliases' );
-		Alias_Loader::get_instance( (array) $aliases )->register();
+		Alias_Loader::get_instance(
+			array_merge(
+				$app->config->get( 'app.aliases' ),
+				$app->make( Package_Manifest::class )->aliases()
+			)
+		)->register();
 	}
 }

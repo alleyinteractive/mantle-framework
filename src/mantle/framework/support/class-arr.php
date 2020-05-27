@@ -52,10 +52,7 @@ class Arr {
 		$results = [];
 
 		foreach ( $array as $values ) {
-			if (
-				class_exists( 'Mantle\Framework\Support\Collection' )
-				&& $values instanceof \Mantle\Framework\Support\Collection
-			) {
+			if ( $values instanceof \Mantle\Framework\Support\Collection ) {
 				$values = $values->all();
 			} elseif ( ! is_array( $values ) ) {
 				continue;
@@ -576,12 +573,7 @@ class Arr {
 	 * @return array
 	 */
 	public static function sort( $array, $callback = null ) {
-		// todo: remove when Collection is available.
-		if ( class_exists( 'Mantle\Framework\Support\Collection' ) ) {
-			return Collection::make( $array )->sortBy( $callback )->all();
-		}
-
-		return $array;
+		return Collection::make( $array )->sort_by( $callback )->all();
 	}
 
 	/**

@@ -5,6 +5,9 @@
  * @package Mantle
  */
 
+// phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment
+// phpcs:ignoreFile: WordPressVIPMinimum.Variables.VariableAnalysis.StaticInsideClosure
+
 namespace Mantle\Framework\Database\Model;
 
 /**
@@ -26,12 +29,38 @@ trait Guarded_Attributes {
 	protected $guarded = true;
 
 	/**
-	 * Check if the attribute is guarded.
+	 * Indicates if all mass assignment is enabled.
 	 *
-	 * @param string $attribute Attribute to check.
+	 * @var bool
+	 */
+	protected static $unguarded = false;
+
+	/**
+	 * Check if the model is guarded.
+	 *
 	 * @return bool
 	 */
-	protected function is_guarded( string $attribute ): bool {
+	public function is_model_guarded(): bool {
+		return $this->guarded;
+	}
+
+	/**
+	 * Set if a model is or is not being guarded.
+	 *
+	 * @param bool $guarded Flag if the model is being guarded.
+	 */
+	public function set_model_guard( bool $guarded ) {
+		$this->guarded = $guarded;
+	}
+
+	/**
+	 * Check if a model attribute is guarded.
+	 *
+	 * @param string $attribute Attribute to check.
+	 *
+	 * @return bool
+	 */
+	public function is_guarded( string $attribute ): bool {
 		if ( ! $this->guarded ) {
 			return false;
 		}
@@ -44,7 +73,48 @@ trait Guarded_Attributes {
 	 *
 	 * @param bool $guarded Flag if the model is guarded.
 	 */
-	protected function guard( bool $guarded ) {
+	public function guard( bool $guarded ) {
 		$this->guarded = $guarded;
+	}
+
+	/**
+	 * Run the given callable while being unguarded.
+	 *
+	 * @param callable $callback
+	 *
+	 * @return mixed
+	 */
+	public static function unguarded( callable $callback ) {
+		if ( static::$unguarded ) {
+			return $callback();
+		}
+
+		static::unguard();
+
+		try {
+			return $callback();
+		} finally {
+			static::reguard();
+		}
+	}
+
+	/**
+	 * Disable all mass assignable restrictions.
+	 *
+	 * @param bool $state
+	 *
+	 * @return void
+	 */
+	public static function unguard( $state = true ) {
+		static::$unguarded = $state;
+	}
+
+	/**
+	 * Enable the mass assignment restrictions.
+	 *
+	 * @return void
+	 */
+	public static function reguard() {
+		static::$unguarded = false;
 	}
 }

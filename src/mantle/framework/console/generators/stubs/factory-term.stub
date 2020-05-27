@@ -1,0 +1,30 @@
+<?php
+/**
+ * {{ class }} Factory
+ *
+ * @package Mantle
+ */
+
+// phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment
+
+namespace App\Factory;
+
+use Faker\Generator as Faker;
+use Mantle\Framework\Support\Str;
+use App\Models\{{ class }};
+
+/**
+ * Factory definition.
+ *
+ * @var \Mantle\Framework\Database\Factory\Factory $factory
+ */
+$factory->define(
+	{{ class }}::class, // phpcs:ignore
+	function ( Faker $faker ) {
+		return [
+			'name'        => $faker->sentence,
+			'description' => $faker->paragraph,
+			'taxonomy'    => '{{ object_name }}',
+		];
+	}
+);

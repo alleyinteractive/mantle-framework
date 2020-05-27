@@ -18,7 +18,7 @@ class Test_Register_Post_Type extends WP_UnitTestCase {
 		$this->assertFalse( post_type_exists( $post_type ) );
 
 		$mock = m::mock( Register_Post_Type::class );
-		$mock->shouldReceive( 'get_registration_name' )->andReturn( $post_type );
+		$mock->shouldReceive( 'get_object_name' )->andReturn( $post_type );
 		$mock->shouldReceive( 'get_registration_args' )->andReturn(
 			[
 				'public' => true,
@@ -41,7 +41,7 @@ class Test_Register_Post_Type extends WP_UnitTestCase {
 		$this->assertTrue( post_type_exists( $post_type ) );
 
 		$mock = m::mock( Register_Post_Type::class );
-		$mock->shouldReceive( 'get_registration_name' )->andReturn( $post_type );
+		$mock->shouldReceive( 'get_object_name' )->andReturn( $post_type );
 		$mock->shouldReceive( 'get_registration_args' )->andReturn(
 			[
 				'public' => true,
