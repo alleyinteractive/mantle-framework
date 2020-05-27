@@ -13,7 +13,6 @@ use Mantle\Framework\Testing\Concerns\Incorrect_Usage;
 use Mantle\Framework\Testing\Concerns\Makes_Http_Requests;
 use Mantle\Framework\Testing\Concerns\Refresh_Database;
 use Mantle\Framework\Testing\Concerns\WordPress_State;
-use Mantle\Framework\Testing\Exceptions\WP_Die_Exception;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use WP;
 use WP_Query;
@@ -39,7 +38,7 @@ abstract class Test_Case extends BaseTestCase {
 	/**
 	 * Runs the routine before setting up all tests.
 	 */
-	public static function setUpBeforeClass() {
+	public static function setUpBeforeClass(): void {
 		self::register_traits();
 		if ( isset( self::$test_uses[ Refresh_Database::class ] ) ) {
 			static::refresh_database_pre_setup_before_class();
@@ -55,11 +54,11 @@ abstract class Test_Case extends BaseTestCase {
 	/**
 	 * Runs the routine after all tests have been run.
 	 */
-	public static function tearDownAfterClass() {
+	public static function tearDownAfterClass(): void {
 		parent::tearDownAfterClass();
 
 		if ( isset( self::$test_uses[ Refresh_Database::class ] ) ) {
-			self::delete_all_data();
+			Utils::delete_all_data();
 		}
 
 		self::flush_cache();
@@ -72,8 +71,10 @@ abstract class Test_Case extends BaseTestCase {
 	/**
 	 * Runs the routine before each test is executed.
 	 */
-	public function setUp() {
+	protected function setUp(): void {
 		set_time_limit( 0 );
+
+		parent::setUp();
 
 		$this->hooks_set_up();
 
@@ -86,13 +87,13 @@ abstract class Test_Case extends BaseTestCase {
 		$this->expectDeprecated();
 		$this->expectIncorrectUsage();
 
-		add_filter( 'wp_die_handler', [ $this, 'get_wp_die_handler' ] );
+		add_filter( 'wp_die_handler', [ WP_Die::class, 'get_handler' ] );
 	}
 
 	/**
 	 * After a test method runs, reset any state in WordPress the test method might have changed.
 	 */
-	public function tearDown() {
+	protected function tearDown(): void {
 		// phpcs:disable WordPress.WP.GlobalVariablesOverride,WordPress.NamingConventions.PrefixAllGlobals
 		global $wp_query, $wp;
 
@@ -126,10 +127,12 @@ abstract class Test_Case extends BaseTestCase {
 		}
 
 		$this->unregister_all_meta_keys();
-		remove_filter( 'wp_die_handler', [ $this, 'get_wp_die_handler' ] );
+		remove_filter( 'wp_die_handler', [ WP_Die::class, 'get_handler' ] );
 		$this->hooks_tear_down();
 		wp_set_current_user( 0 );
 		// phpcs:enable
+
+		parent::tearDown();
 	}
 
 	/**
@@ -138,7 +141,7 @@ abstract class Test_Case extends BaseTestCase {
 	 * We use this method to detect expectedDeprecated and expectedIncorrectUsage
 	 * annotations.
 	 */
-	protected function assertPostConditions() {
+	protected function assertPostConditions(): void {
 		$this->expectedDeprecated();
 		$this->expectedIncorrectUsage();
 	}
@@ -148,35 +151,6 @@ abstract class Test_Case extends BaseTestCase {
 	 */
 	public static function register_traits() {
 		self::$test_uses = array_flip( class_uses_recursive( static::class ) );
-	}
-
-	/**
-	 * Retrieves the `wp_die()` handler.
-	 *
-	 * @param callable $handler The current die handler.
-	 * @return callable The test die handler.
-	 */
-	public function get_wp_die_handler( $handler ) {
-		return [ $this, 'wp_die_handler' ];
-	}
-
-	/**
-	 * Throws an exception when called.
-	 *
-	 * @throws WP_Die_Exception Exception containing the message.
-	 *
-	 * @param string $message The `wp_die()` message.
-	 */
-	public function wp_die_handler( $message ) {
-		if ( is_wp_error( $message ) ) {
-			$message = $message->get_error_message();
-		}
-
-		if ( ! is_scalar( $message ) ) {
-			$message = '0';
-		}
-
-		throw new WP_Die_Exception( $message );
 	}
 
 	/**

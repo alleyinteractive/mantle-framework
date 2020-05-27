@@ -44,38 +44,6 @@ trait Refresh_Database {
 	}
 
 	/**
-	 * Deletes all data from the database.
-	 */
-	public static function delete_all_data() {
-		global $wpdb;
-
-		foreach ( [
-			$wpdb->posts,
-			$wpdb->postmeta,
-			$wpdb->comments,
-			$wpdb->commentmeta,
-			$wpdb->term_relationships,
-			$wpdb->termmeta,
-		] as $table ) {
-			//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$wpdb->query( "DELETE FROM {$table}" );
-		}
-
-		foreach ( [
-			$wpdb->terms,
-			$wpdb->term_taxonomy,
-		] as $table ) {
-			//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$wpdb->query( "DELETE FROM {$table} WHERE term_id != 1" );
-		}
-
-		$wpdb->query( "UPDATE {$wpdb->term_taxonomy} SET count = 0" );
-
-		$wpdb->query( "DELETE FROM {$wpdb->users} WHERE ID != 1" );
-		$wpdb->query( "DELETE FROM {$wpdb->usermeta} WHERE user_id != 1" );
-	}
-
-	/**
 	 * Starts a database transaction.
 	 */
 	public function start_transaction() {

@@ -101,22 +101,6 @@ trait WordPress_State {
 	}
 
 	/**
-	 * Reset `$_SERVER` variables
-	 */
-	protected function reset_server() {
-		$_SERVER['HTTP_HOST']       = WP_TESTS_DOMAIN;
-		$_SERVER['REMOTE_ADDR']     = '127.0.0.1'; // phpcs:ignore WordPressVIPMinimum.Variables
-		$_SERVER['REQUEST_METHOD']  = 'GET';
-		$_SERVER['REQUEST_URI']     = '';
-		$_SERVER['SERVER_NAME']     = WP_TESTS_DOMAIN;
-		$_SERVER['SERVER_PORT']     = '80';
-		$_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
-
-		unset( $_SERVER['HTTP_REFERER'] );
-		unset( $_SERVER['HTTPS'] );
-	}
-
-	/**
 	 * Clean up any registered meta keys.
 	 *
 	 * @since 5.1.0

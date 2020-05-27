@@ -59,4 +59,94 @@ class Utils {
 			}
 		}
 	}
+
+	/**
+	 * Reset `$_SERVER` variables
+	 */
+	public static function reset_server() {
+		$_SERVER['HTTP_HOST']       = WP_TESTS_DOMAIN;
+		$_SERVER['REMOTE_ADDR']     = '127.0.0.1'; // phpcs:ignore WordPressVIPMinimum.Variables
+		$_SERVER['REQUEST_METHOD']  = 'GET';
+		$_SERVER['REQUEST_URI']     = '';
+		$_SERVER['SERVER_NAME']     = WP_TESTS_DOMAIN;
+		$_SERVER['SERVER_PORT']     = '80';
+		$_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
+
+		unset( $_SERVER['HTTP_REFERER'] );
+		unset( $_SERVER['HTTPS'] );
+	}
+
+	/**
+	 * Use the Spy_REST_Server class for the REST server.
+	 *
+	 * @return string The server class name.
+	 */
+	public static function wp_rest_server_class_filter() {
+		return __NAMESPACE__ . '\Doubles\Spy_REST_Server';
+	}
+
+	/**
+	 * Deletes all data from the database.
+	 */
+	public static function delete_all_data() {
+		// phpcs:disable WordPress.DB,WordPressVIPMinimum.Variables
+		global $wpdb;
+
+		foreach ( [
+			$wpdb->posts,
+			$wpdb->postmeta,
+			$wpdb->comments,
+			$wpdb->commentmeta,
+			$wpdb->term_relationships,
+			$wpdb->termmeta,
+		] as $table ) {
+			$wpdb->query( "DELETE FROM {$table}" );
+		}
+
+		foreach ( [
+			$wpdb->terms,
+			$wpdb->term_taxonomy,
+		] as $table ) {
+			$wpdb->query( "DELETE FROM {$table} WHERE term_id != 1" );
+		}
+
+		$wpdb->query( "UPDATE {$wpdb->term_taxonomy} SET count = 0" );
+
+		$wpdb->query( "DELETE FROM {$wpdb->users} WHERE ID != 1" );
+		$wpdb->query( "DELETE FROM {$wpdb->usermeta} WHERE user_id != 1" );
+		// phpcs:enable
+	}
+
+	/**
+	 * Deletes all posts from the database.
+	 */
+	public static function delete_all_posts() {
+		global $wpdb;
+
+		// phpcs:ignore WordPress.DB
+		$all_posts = $wpdb->get_results( "SELECT ID, post_type from {$wpdb->posts}", ARRAY_A );
+		if ( ! $all_posts ) {
+			return;
+		}
+
+		foreach ( $all_posts as $data ) {
+			if ( 'attachment' === $data['post_type'] ) {
+				wp_delete_attachment( $data['ID'], true );
+			} else {
+				wp_delete_post( $data['ID'], true );
+			}
+		}
+	}
+
+	/**
+	 * Set a permalink structure.
+	 *
+	 * Hooked as a callback to the 'populate_options' action, we use this function to set a permalink structure during
+	 * `wp_install()`, so that WP doesn't attempt to do a time-consuming remote request.
+	 *
+	 * @since 4.2.0
+	 */
+	public static function set_default_permalink_structure_for_tests() {
+		update_option( 'permalink_structure', '/%year%/%monthnum%/%day%/%postname%/' );
+	}
 }
