@@ -1,4 +1,11 @@
 <?php
+/**
+ * Route_Dependency_Resolver trait file.
+ *
+ * @package Mantle
+ *
+ * @phpcs:disable Squiz.Commenting.FunctionComment
+ */
 
 namespace Mantle\Framework\Http\Routing;
 
@@ -7,6 +14,9 @@ use ReflectionFunctionAbstract;
 use ReflectionMethod;
 use ReflectionParameter;
 
+/**
+ * Route Method Dependency Resolver
+ */
 trait Route_Dependency_Resolver {
 
 	/**
@@ -36,21 +46,21 @@ trait Route_Dependency_Resolver {
 	 * @return array
 	 */
 	public function resolve_method_dependencies( array $parameters, ReflectionFunctionAbstract $reflector ) {
-		$instanceCount = 0;
+		$instance_count = 0;
 
 		$values = array_values( $parameters );
 
-		$skippableValue = new \stdClass();
+		$skippable_value = new \stdClass();
 
 		foreach ( $reflector->getParameters() as $key => $parameter ) {
-			$instance = $this->transform_dependency( $parameter, $parameters, $skippableValue );
+			$instance = $this->transform_dependency( $parameter, $parameters, $skippable_value );
 
-			if ( $instance !== $skippableValue ) {
-				$instanceCount++;
+			if ( $instance !== $skippable_value ) {
+				$instance_count++;
 
 				$this->splice_into_parameters( $parameters, $key, $instance );
-			} elseif ( ! isset( $values[ $key - $instanceCount ] ) &&
-					  $parameter->isDefaultValueAvailable() ) {
+			} elseif ( ! isset( $values[ $key - $instance_count ] ) &&
+				$parameter->isDefaultValueAvailable() ) {
 				$this->splice_into_parameters( $parameters, $key, $parameter->getDefaultValue() );
 			}
 		}
@@ -63,10 +73,10 @@ trait Route_Dependency_Resolver {
 	 *
 	 * @param  \ReflectionParameter $parameter
 	 * @param  array                $parameters
-	 * @param  object               $skippableValue
+	 * @param  object               $skippable_value
 	 * @return mixed
 	 */
-	protected function transform_dependency( ReflectionParameter $parameter, $parameters, $skippableValue ) {
+	protected function transform_dependency( ReflectionParameter $parameter, $parameters, $skippable_value ) {
 		$class = $parameter->getClass();
 
 		// If the parameter has a type-hinted class, we will check to see if it is already in
@@ -74,11 +84,11 @@ trait Route_Dependency_Resolver {
 		// binding and we do not want to mess with those; otherwise, we resolve it here.
 		if ( $class && ! $this->already_in_parameters( $class->name, $parameters ) ) {
 			return $parameter->isDefaultValueAvailable()
-						? null
-						: $this->container->make( $class->name );
+				? null
+				: $this->container->make( $class->name );
 		}
 
-		return $skippableValue;
+		return $skippable_value;
 	}
 
 	/**
@@ -112,7 +122,7 @@ trait Route_Dependency_Resolver {
 			$parameters,
 			$offset,
 			0,
-			array( $value )
+			[ $value ]
 		);
 	}
 }

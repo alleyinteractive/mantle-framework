@@ -16,8 +16,8 @@ abstract class Controller {
 	/**
 	 * Execute an action on the controller.
 	 *
-	 * @param  string  $method
-	 * @param  array  $parameters
+	 * @param string $method Method to call.
+	 * @param array  $parameters Parameters to include.
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	public function call_action( string $method, array $parameters ) {
@@ -27,16 +27,18 @@ abstract class Controller {
 	/**
 	 * Handle calls to missing methods on the controller.
 	 *
-	 * @param  string $method Method name.
-	 * @param  array  $parameters Method parameters.
+	 * @param string $method Method name.
+	 * @param array  $parameters Method parameters.
 	 * @return mixed
 	 *
-	 * @throws \BadMethodCallException Thrown on unknown exception.
+	 * @throws BadMethodCallException Thrown on unknown exception.
 	 */
-	public function __call( string $method, array $parameters) {
+	public function __call( string $method, array $parameters ) {
 		throw new BadMethodCallException(
 			sprintf(
-				'Method %s::%s does not exist.', static::class, $method
+				'Method %s::%s does not exist.',
+				static::class,
+				$method
 			)
 		);
 	}

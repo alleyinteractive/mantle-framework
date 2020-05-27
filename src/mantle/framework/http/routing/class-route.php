@@ -193,7 +193,7 @@ class Route extends Symfony_Route {
 	 */
 	protected function run_controller_callback() {
 		$controller = $this->get_controller_name();
-		$method = $this->get_controller_method();
+		$method     = $this->get_controller_method();
 
 		$parameters = $this->resolve_class_method_dependencies(
 			[],
