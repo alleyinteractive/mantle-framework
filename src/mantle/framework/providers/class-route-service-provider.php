@@ -28,19 +28,6 @@ class Route_Service_Provider extends Service_Provider implements Route_Service_P
 	 */
 	public function register() {
 		$this->register_router_service_provider();
-		$this->register_router();
-	}
-
-	/**
-	 * Register the router singleton instance.
-	 */
-	protected function register_router() {
-		$this->app->singleton(
-			'router',
-			function( $app ) {
-				return new Router( $app );
-			}
-		);
 	}
 
 	/**

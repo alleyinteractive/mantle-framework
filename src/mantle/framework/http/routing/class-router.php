@@ -7,8 +7,14 @@
 
 namespace Mantle\Framework\Http\Routing;
 
+use Mantle\Framework\Contracts\Application;
 use Mantle\Framework\Contracts\Http\Routing\Router as Router_Contract;
-// use Symfony\Component\Routing\Route;
+use Mantle\Framework\Http\Http_Exception;
+use Mantle\Framework\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
+use Symfony\Component\Routing\Matcher\UrlMatcher;
+use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -18,6 +24,13 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class Router implements Router_Contract {
 	/**
+	 * Application instance.
+	 *
+	 * @var Application
+	 */
+	protected $app;
+
+	/**
 	 * Route Collection
 	 *
 	 * @var RouteCollection
@@ -26,8 +39,11 @@ class Router implements Router_Contract {
 
 	/**
 	 * Constructor.
+	 *
+	 * @param Application $app Application instance.
 	 */
-	public function __construct() {
+	public function __construct( Application $app ) {
+		$this->app    = $app;
 		$this->routes = new RouteCollection();
 	}
 
@@ -38,7 +54,7 @@ class Router implements Router_Contract {
 	 * @param mixed  $action Callback action.
 	 * @return Route
 	 */
-	public function get( string $uri, $action ) {
+	public function get( string $uri, $action = '' ) {
 		return $this->add_route( [ 'GET', 'HEAD' ], $uri, $action );
 	}
 
@@ -49,7 +65,7 @@ class Router implements Router_Contract {
 	 * @param mixed  $action Callback action.
 	 * @return Route
 	 */
-	public function post( string $uri, $action ) {
+	public function post( string $uri, $action = '' ) {
 		return $this->add_route( [ 'POST' ], $uri, $action );
 	}
 
@@ -60,7 +76,7 @@ class Router implements Router_Contract {
 	 * @param mixed  $action Callback action.
 	 * @return Route
 	 */
-	public function put( string $uri, $action ) {
+	public function put( string $uri, $action = '' ) {
 		return $this->add_route( [ 'PUT' ], $uri, $action );
 	}
 
@@ -71,7 +87,7 @@ class Router implements Router_Contract {
 	 * @param mixed  $action Callback action.
 	 * @return Route
 	 */
-	public function delete( string $uri, $action ) {
+	public function delete( string $uri, $action = '' ) {
 		return $this->add_route( [ 'DELETE' ], $uri, $action );
 	}
 
@@ -82,7 +98,7 @@ class Router implements Router_Contract {
 	 * @param mixed  $action Callback action.
 	 * @return Route
 	 */
-	public function patch( string $uri, $action ) {
+	public function patch( string $uri, $action = '' ) {
 		return $this->add_route( [ 'PATCH' ], $uri, $action );
 	}
 
@@ -93,7 +109,7 @@ class Router implements Router_Contract {
 	 * @param mixed  $action Callback action.
 	 * @return Route
 	 */
-	public function options( string $uri, $action ) {
+	public function options( string $uri, $action = '' ) {
 		return $this->add_route( [ 'OPTIONS' ], $uri, $action );
 	}
 
@@ -111,29 +127,6 @@ class Router implements Router_Contract {
 		$this->routes->add( $route->get_route_name(), $route );
 		return $route;
 	}
-
-	/**
-	 * Convert the route callback to a consistent format the kernel understands.
-	 *
-	 * @param mixed $action Route callback.
-	 * @return array
-	 */
-	// protected function handle_route_action( $action ): array {
-	// 	if ( is_callable( $action ) ) {
-	// 		return [
-	// 			'callback' => $action,
-	// 		];
-	// 	}
-
-	// 	if ( is_string( $action ) ) {
-	// 		return [
-	// 			'callback' => $action,
-	// 		];
-	// 	}
-
-	// 	return (array) $action;
-	// }
-
 	/**
 	 * Get registered routes.
 	 *
@@ -141,5 +134,49 @@ class Router implements Router_Contract {
 	 */
 	public function get_routes(): RouteCollection {
 		return $this->routes;
+	}
+
+	/**
+	 * Dispatch a request to the registered routes.
+	 *
+	 * @param Request $request Request object.
+	 * @return Response|null
+	 */
+	public function dispatch( Request $request ): ?Response {
+		return $this->execute_route_match(
+			$this->match_route( $request )
+		);
+	}
+
+	/**
+	 * Match a request to a registered route.
+	 *
+	 * @param Request $request Request object.
+	 * @return array|null
+	 */
+	protected function match_route( Request $request ) {
+		$context = new RequestContext();
+		$context = $context->fromRequest( $request );
+		$matcher = new UrlMatcher( $this->get_routes(), $context );
+
+		return $matcher->matchRequest( $request );
+	}
+
+	/**
+	 * Execute a route match and retrieve the response.
+	 *
+	 * @param array $match Route match.
+	 * @return Response|null
+	 *
+	 * @throws Http_Exception Thrown on unknown route callback.
+	 */
+	protected function execute_route_match( $match ): ?Response {
+		$route = Route::get_route_from_match( $match );
+
+		if ( $route ) {
+			return $route->run( $this->app );
+		}
+
+		throw new Http_Exception( 'Unknown route method: ' . \wp_json_encode( $match ) );
 	}
 }

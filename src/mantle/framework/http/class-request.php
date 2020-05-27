@@ -10,14 +10,14 @@ namespace Mantle\Framework\Http;
 
 use Mantle\Framework\Support\Arr;
 use Mantle\Framework\Support\Str;
-use Symfony\Component\HttpFoundation\Request as HttpFoundationRequest;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 use function Mantle\Framework\Helpers\data_get;
 
 /**
  * Request Object
  */
-class Request extends HttpFoundationRequest {
+class Request extends SymfonyRequest {
 	use Interacts_With_Input;
 
 	/**
@@ -160,16 +160,6 @@ class Request extends HttpFoundationRequest {
 	}
 
 	/**
-	 * Determine if the route name matches a given pattern.
-	 *
-	 * @param  mixed ...$patterns
-	 * @return bool
-	 */
-	public function routeIs( ...$patterns ) {
-		return $this->route() && $this->route()->named( ...$patterns );
-	}
-
-	/**
 	 * Determine if the current request URL and query string matches a pattern.
 	 *
 	 * @param  mixed ...$patterns
@@ -211,8 +201,8 @@ class Request extends HttpFoundationRequest {
 	 * @return bool
 	 */
 	public function prefetch() {
-		return strcasecmp( $this->server->get( 'HTTP_X_MOZ' ), 'prefetch' ) === 0 ||
-			strcasecmp( $this->headers->get( 'Purpose' ), 'prefetch' ) === 0;
+		return 0 === strcasecmp( $this->server->get( 'HTTP_X_MOZ' ), 'prefetch' ) ||
+			0 === strcasecmp( $this->headers->get( 'Purpose' ), 'prefetch' );
 	}
 
 	/**
@@ -247,7 +237,7 @@ class Request extends HttpFoundationRequest {
 	 *
 	 * @return string|null
 	 */
-	public function userAgent() {
+	public function user_agent() {
 		return $this->headers->get( 'User-Agent' );
 	}
 
@@ -276,7 +266,7 @@ class Request extends HttpFoundationRequest {
 	}
 
 	/**
-	 * This method belongs to Symfony HttpFoundation and is not usually needed when using Laravel.
+	 * This method belongs to Symfony HttpFoundation and is not usually needed.
 	 *
 	 * Instead, you may use the "input" method.
 	 *
@@ -314,7 +304,7 @@ class Request extends HttpFoundationRequest {
 	 */
 	public function is_json(): bool {
 		return $this->has_header( 'Content-Type' ) &&
-			Str::contains( $this->header( 'Content-Type' )[0], 'json' );
+			Str::contains( $this->header( 'Content-Type' )[0] ?? '', 'json' );
 	}
 
 	/**
@@ -323,8 +313,8 @@ class Request extends HttpFoundationRequest {
 	 * @return \Symfony\Component\HttpFoundation\ParameterBag
 	 */
 	protected function get_input_source() {
-		if ( $this->isJson() ) {
-				return $this->json();
+		if ( $this->is_json() ) {
+			return $this->json();
 		}
 
 		return in_array( $this->getRealMethod(), [ 'GET', 'HEAD' ] ) ? $this->query : $this->request;

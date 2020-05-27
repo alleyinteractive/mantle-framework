@@ -209,7 +209,7 @@ trait Interacts_With_Input {
 	 */
 	public function input( $key = null, $default = null ) {
 		return data_get(
-			$this->getInputSource()->all() + $this->query->all(),
+			$this->get_input_source()->all() + $this->query->all(),
 			$key,
 			$default
 		);
