@@ -8,7 +8,7 @@
 namespace Mantle\Framework\Http\Routing;
 
 use Mantle\Framework\Contracts\Http\Routing\Router as Router_Contract;
-use Symfony\Component\Routing\Route;
+// use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -36,6 +36,7 @@ class Router implements Router_Contract {
 	 *
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
+	 * @return Route
 	 */
 	public function get( string $uri, $action ) {
 		return $this->add_route( [ 'GET', 'HEAD' ], $uri, $action );
@@ -46,6 +47,7 @@ class Router implements Router_Contract {
 	 *
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
+	 * @return Route
 	 */
 	public function post( string $uri, $action ) {
 		return $this->add_route( [ 'POST' ], $uri, $action );
@@ -56,6 +58,7 @@ class Router implements Router_Contract {
 	 *
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
+	 * @return Route
 	 */
 	public function put( string $uri, $action ) {
 		return $this->add_route( [ 'PUT' ], $uri, $action );
@@ -66,6 +69,7 @@ class Router implements Router_Contract {
 	 *
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
+	 * @return Route
 	 */
 	public function delete( string $uri, $action ) {
 		return $this->add_route( [ 'DELETE' ], $uri, $action );
@@ -76,6 +80,7 @@ class Router implements Router_Contract {
 	 *
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
+	 * @return Route
 	 */
 	public function patch( string $uri, $action ) {
 		return $this->add_route( [ 'PATCH' ], $uri, $action );
@@ -86,6 +91,7 @@ class Router implements Router_Contract {
 	 *
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
+	 * @return Route
 	 */
 	public function options( string $uri, $action ) {
 		return $this->add_route( [ 'OPTIONS' ], $uri, $action );
@@ -97,30 +103,13 @@ class Router implements Router_Contract {
 	 * @param array  $methods Methods to register.
 	 * @param string $uri URL route.
 	 * @param mixed  $action Route callback.
-	 * @return static
+	 * @return Route
 	 */
 	public function add_route( array $methods, string $uri, $action ) {
-		$route = new Route( $uri, $this->handle_route_action( $action ) );
-		$name  = $this->generate_route_name( $methods, $uri, $action );
+		$route = new Route( $methods, $uri, $action );
 
-		$this->routes->add( $name, $route );
-		return $this;
-	}
-
-	/**
-	 * Generate the route name.
-	 *
-	 * @param array  $methods Methods to register.
-	 * @param string $uri URL route.
-	 * @param mixed  $action Route callback.
-	 * @return string
-	 */
-	protected function generate_route_name( $methods, $uri, $action ): string {
-		if ( is_array( $action ) && ! empty( $action['name'] ) ) {
-			return $action['name'];
-		}
-
-		return implode( '.', $methods ) . ":{$uri}";
+		$this->routes->add( $route->get_route_name(), $route );
+		return $route;
 	}
 
 	/**
@@ -129,21 +118,21 @@ class Router implements Router_Contract {
 	 * @param mixed $action Route callback.
 	 * @return array
 	 */
-	protected function handle_route_action( $action ): array {
-		if ( is_callable( $action ) ) {
-			return [
-				'action' => $action,
-			];
-		}
+	// protected function handle_route_action( $action ): array {
+	// 	if ( is_callable( $action ) ) {
+	// 		return [
+	// 			'callback' => $action,
+	// 		];
+	// 	}
 
-		if ( is_string( $action ) ) {
-			return [
-				'action' => $action,
-			];
-		}
+	// 	if ( is_string( $action ) ) {
+	// 		return [
+	// 			'callback' => $action,
+	// 		];
+	// 	}
 
-		return (array) $action;
-	}
+	// 	return (array) $action;
+	// }
 
 	/**
 	 * Get registered routes.

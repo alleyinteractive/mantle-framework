@@ -19,6 +19,8 @@ use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Mantle\Framework\Http\Request;
+use Mantle\Framework\Http\Routing\Route;
+use Mantle\Framework\Support\Str;
 
 /**
  * HTTP Kernel
@@ -79,7 +81,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 		$this->app->instance( 'request', $request );
 		Facade::clear_resolved_instance( 'request' );
 
-		add_action( 'wp_loaded', [ $this, 'on_wp_loaded' ] );
+		\add_action( 'wp_loaded', [ $this, 'on_wp_loaded' ] );
 	}
 
 	/**
@@ -138,9 +140,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 			throw $e;
 		}
 
-		$response = $this->app->call( $this->get_response( $match ) );
-
-		return $this->ensure_response( $response );
+		return $this->execute_route_match( $match );
 	}
 
 	/**
@@ -166,29 +166,43 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 *
 	 * @throws Http_Exception Thrown on unknown route callback.
 	 */
-	protected function get_response( array $match ) {
-		if ( isset( $match['action'] ) ) {
-			if ( is_callable( $match['action'] ) ) {
-				return $match['action'];
-			}
+	protected function execute_route_match( array $match ) {
 
-			// todo: translate a controller method.
+		if ( ! empty( $match['route'] ) && $match['route'] instanceof Route ) {
+			return $match['route']->render( $this->app );
 		}
 
 		throw new Http_Exception( 'Unknown route method: ' . \wp_json_encode( $match ) );
 	}
 
-	/**
-	 * Ensure a proper response object.
-	 *
-	 * @param mixed $response Response to send.
-	 * @return Response
-	 */
-	protected function ensure_response( $response ): Response {
-		if ( $response instanceof Response ) {
-			return $response;
-		}
+	protected function get_response_from_controller( array $match ) {
 
-		return new Response( $response );
+	}
+
+	/**
+	 * Get the controller name used for the route.
+	 *
+	 * @return string
+	 */
+	protected function get_controller_name(): string {
+		return $this->parseControllerCallback()[0] ?? '';
+	}
+
+	/**
+	 * Get the controller method used for the route.
+	 *
+	 * @return string
+	 */
+	protected function get_controller_method(): string {
+		return $this->parseControllerCallback()[1] ?? '';
+	}
+
+	/**
+	 * Parse the controller.
+	 *
+	 * @return array
+	 */
+	protected function parse_controller_callback() {
+		return Str::parse_callback($this->action['uses']);
 	}
 }
