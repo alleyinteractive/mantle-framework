@@ -39,15 +39,15 @@ abstract class Test_Case extends BaseTestCase {
 	 * Runs the routine before setting up all tests.
 	 */
 	public static function setUpBeforeClass(): void {
-		self::register_traits();
-		if ( isset( self::$test_uses[ Refresh_Database::class ] ) ) {
+		static::register_traits();
+		if ( isset( static::$test_uses[ Refresh_Database::class ] ) ) {
 			static::refresh_database_pre_setup_before_class();
 		}
 
 		parent::setUpBeforeClass();
 
-		if ( isset( self::$test_uses[ Refresh_Database::class ] ) ) {
-			self::commit_transaction();
+		if ( isset( static::$test_uses[ Refresh_Database::class ] ) ) {
+			static::commit_transaction();
 		}
 	}
 
@@ -57,14 +57,14 @@ abstract class Test_Case extends BaseTestCase {
 	public static function tearDownAfterClass(): void {
 		parent::tearDownAfterClass();
 
-		if ( isset( self::$test_uses[ Refresh_Database::class ] ) ) {
+		if ( isset( static::$test_uses[ Refresh_Database::class ] ) ) {
 			Utils::delete_all_data();
 		}
 
-		self::flush_cache();
+		static::flush_cache();
 
-		if ( isset( self::$test_uses[ Refresh_Database::class ] ) ) {
-			self::commit_transaction();
+		if ( isset( static::$test_uses[ Refresh_Database::class ] ) ) {
+			static::commit_transaction();
 		}
 	}
 
@@ -78,9 +78,9 @@ abstract class Test_Case extends BaseTestCase {
 
 		$this->hooks_set_up();
 
-		self::clean_up_global_scope();
+		static::clean_up_global_scope();
 
-		if ( isset( self::$test_uses[ Refresh_Database::class ] ) ) {
+		if ( isset( static::$test_uses[ Refresh_Database::class ] ) ) {
 			$this->start_transaction();
 		}
 
@@ -97,7 +97,7 @@ abstract class Test_Case extends BaseTestCase {
 		// phpcs:disable WordPress.WP.GlobalVariablesOverride,WordPress.NamingConventions.PrefixAllGlobals
 		global $wp_query, $wp;
 
-		if ( isset( self::$test_uses[ Refresh_Database::class ] ) ) {
+		if ( isset( static::$test_uses[ Refresh_Database::class ] ) ) {
 			$this->refresh_database_tear_down();
 		}
 
@@ -150,7 +150,7 @@ abstract class Test_Case extends BaseTestCase {
 	 * Register the traits that this test case uses.
 	 */
 	public static function register_traits() {
-		self::$test_uses = array_flip( class_uses_recursive( static::class ) );
+		static::$test_uses = array_flip( class_uses_recursive( static::class ) );
 	}
 
 	/**
