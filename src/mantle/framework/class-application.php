@@ -10,6 +10,7 @@ namespace Mantle\Framework;
 use Mantle\Framework\Contracts\Application as Application_Contract;
 use Mantle\Framework\Contracts\Kernel as Kernel_Contract;
 use Mantle\Framework\Log\Log_Service_Provider;
+use Mantle\Framework\Providers\Routing_Service_Provider;
 
 use function Mantle\Framework\Helpers\collect;
 
@@ -73,10 +74,11 @@ class Application extends Container\Container implements Application_Contract {
 	/**
 	 * Getter for the base path.
 	 *
+	 * @param string $path Path to append.
 	 * @return string
 	 */
-	public function get_base_path(): string {
-		return $this->base_path;
+	public function get_base_path( string $path = '' ): string {
+		return $this->base_path . ( $path ? '/' . $path : '' );
 	}
 
 	/**
@@ -132,6 +134,7 @@ class Application extends Container\Container implements Application_Contract {
 	 */
 	protected function register_base_service_providers() {
 		$this->register( Log_Service_Provider::class );
+		$this->register( Routing_Service_Provider::class );
 	}
 
 	/**
@@ -139,8 +142,10 @@ class Application extends Container\Container implements Application_Contract {
 	 */
 	protected function register_core_aliases() {
 		$core_aliases = [
-			'app'    => [ static::class, \Mantle\Framework\Contracts\Application::class ],
-			'config' => [ \Mantle\Framework\Config\Repository::class, \Mantle\Framework\Contracts\Config\Repository::class ],
+			'app'     => [ static::class, \Mantle\Framework\Contracts\Application::class ],
+			'config'  => [ \Mantle\Framework\Config\Repository::class, \Mantle\Framework\Contracts\Config\Repository::class ],
+			'request' => [ \Mantle\Framework\Http\Request::class, \Symfony\Component\HttpFoundation\Request::class ],
+			'router'  => [ \Mantle\Framework\Http\Routing\Router::class, \Mantle\Framework\Contracts\Http\Routing\Router::class ],
 		];
 
 		foreach ( $core_aliases as $key => $aliases ) {
