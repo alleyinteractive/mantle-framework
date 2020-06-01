@@ -135,8 +135,7 @@ class Docs_Service_Provider extends Service_Provider {
 		$content   = $converter->convertToHtml( $this->get_file_contents( $current_file['path'] ) );
 
 		printf(
-			'<div class="wrap"><h2>%s</h2> %s</div>',
-			esc_html( $current_file['title'] ?? '' ),
+			'<div class="wrap">%s</div>',
 			wp_kses_post( $content )
 		);
 	}
