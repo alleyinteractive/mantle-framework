@@ -135,6 +135,12 @@ class Docs_Service_Provider extends Service_Provider {
 		$converter = new MarkdownConverter();
 		$content   = $converter->convertToHtml( $this->get_file_contents( $current_file['path'] ) );
 
+		?>
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.20.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.20.0/prism.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.20.0/plugins/autoloader/prism-autoloader.min.js"></script>
+		<?php
+
 		printf(
 			'<div class="wrap">%s</div>',
 			wp_kses_post( $content )
