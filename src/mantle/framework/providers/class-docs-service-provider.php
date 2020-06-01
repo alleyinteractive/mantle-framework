@@ -163,7 +163,7 @@ class Docs_Service_Provider extends Service_Provider {
 	protected function set_files() {
 		$this->files = new Collection();
 
-		foreach ( Finder::create()->files()->name( '*.md' )->in( $this->get_docs_path() ) as $file ) {
+		foreach ( Finder::create()->files()->name( '*.md' )->in( $this->get_docs_path() )->sortByName() as $file ) {
 			$this->files[] = [
 				'name'  => pathinfo( $file->getFilename(), PATHINFO_FILENAME ),
 				'path'  => $file->getRealPath(),
