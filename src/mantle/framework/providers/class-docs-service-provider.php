@@ -59,7 +59,8 @@ class Docs_Service_Provider extends Service_Provider {
 			__( 'Mantle Docs', 'mantle' ),
 			$this->get_menu_capability(),
 			static::MENU_SLUG,
-			[ $this, 'render' ]
+			[ $this, 'render' ],
+			'dashicons-cloud'
 		);
 
 		foreach ( $this->get_pages() as $page ) {
