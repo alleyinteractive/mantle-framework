@@ -114,9 +114,9 @@ abstract class Builder {
 	/**
 	 * Get a model instance for the builder.
 	 *
-	 * @return string
+	 * @return string|string[]
 	 */
-	public function get_model(): string {
+	public function get_model() {
 		return $this->model;
 	}
 
@@ -230,11 +230,18 @@ abstract class Builder {
 	 * @return static
 	 */
 	public function whereMeta( $key, $value, string $compare = '=' ) {
-		$this->meta_query[] = [
+		$meta_query = [
 			'compare' => $compare,
 			'key'     => $key,
 			'value'   => $value,
 		];
+
+		// Remove the value from meta queries checking for existence.
+		if ( empty( $value ) && ( 'EXISTS' === $compare || 'NOT EXISTS' === $compare ) ) {
+			unset( $meta_query['value'] );
+		}
+
+		$this->meta_query[] = $meta_query;
 		return $this;
 	}
 

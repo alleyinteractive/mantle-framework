@@ -18,6 +18,8 @@ use function Mantle\Framework\Helpers\collect;
  * Post Query Builder
  */
 class Post_Query_Builder extends Builder {
+	use Queries_Relationships;
+
 	/**
 	 * Query Variable Aliases
 	 *
@@ -103,7 +105,6 @@ class Post_Query_Builder extends Builder {
 	 */
 	public function get(): Collection {
 		$post_ids = \get_posts( $this->get_query_args() );
-
 		if ( empty( $post_ids ) ) {
 			return collect();
 		}

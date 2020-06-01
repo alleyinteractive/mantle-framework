@@ -86,4 +86,20 @@ class Belongs_To extends Relation {
 		$this->parent->delete_meta( $this->local_key );
 		return $this;
 	}
+
+	/**
+	 * Add the query constraints for querying against the relationship.
+	 *
+	 * @param Builder $builder Query builder instance.
+	 * @param string  $compare_value Value to compare against, optional.
+	 * @param string  $compare Comparison operator (=, >, EXISTS, etc.).
+	 * @return Builder
+	 */
+	public function get_relation_query( Builder $builder, $compare_value = null, string $compare = 'EXISTS' ): Builder {
+		if ( $compare_value ) {
+			return $builder->whereMeta( $this->local_key, $compare_value, $compare ?? '' );
+		}
+
+		return $builder->whereMeta( $this->local_key, '', $compare );
+	}
 }
