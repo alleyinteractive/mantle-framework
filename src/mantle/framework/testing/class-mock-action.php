@@ -82,7 +82,7 @@ class Mock_Action {
 	/**
 	 * Filter callback for 'all'.
 	 *
-	 * @param string $tag     ACtion/filter tag.
+	 * @param string $tag     Action/filter tag.
 	 * @param mixed  ...$args Arguments passed to the callback.
 	 */
 	public function filter_all( $tag, ...$args ) {
