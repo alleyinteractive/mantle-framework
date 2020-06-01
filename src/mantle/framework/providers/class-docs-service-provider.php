@@ -63,7 +63,7 @@ class Docs_Service_Provider extends Service_Provider {
 		);
 
 		foreach ( $this->get_pages() as $page ) {
-			$title = $page['variables']['title'] ?? 'Unknown';
+			$title = $page['title'] ?? 'Unknown';
 
 			\add_submenu_page(
 				static::MENU_SLUG,
@@ -136,7 +136,7 @@ class Docs_Service_Provider extends Service_Provider {
 
 		printf(
 			'<div class="wrap"><h2>%s</h2> %s</div>',
-			esc_html( $current_file['variables']['title'] ?? '' ),
+			esc_html( $current_file['title'] ?? '' ),
 			wp_kses_post( $content )
 		);
 	}
@@ -165,9 +165,9 @@ class Docs_Service_Provider extends Service_Provider {
 
 		foreach ( Finder::create()->files()->name( '*.md' )->in( $this->get_docs_path() ) as $file ) {
 			$this->files[] = [
-				'name'      => pathinfo( $file->getFilename(), PATHINFO_FILENAME ),
-				'path'      => $file->getRealPath(),
-				'variables' => $this->get_file_variables( $file->getContents() ),
+				'name'  => pathinfo( $file->getFilename(), PATHINFO_FILENAME ),
+				'path'  => $file->getRealPath(),
+				'title' => $this->get_file_title( $file->getRealPath() ),
 			];
 		}
 
@@ -175,36 +175,19 @@ class Docs_Service_Provider extends Service_Provider {
 	}
 
 	/**
-	 * Extract the variables from a documentation file.
+	 * Get the file title.
 	 *
-	 * @param string $file File contents.
-	 * @return array
+	 * @param string $file_path File path.
+	 * @return string|null
 	 */
-	protected function get_file_variables( string $file ): array {
-		if ( ! Str::contains( $file, '---' ) ) {
-			return [];
+	protected function get_file_title( string $file_path ): ?string {
+		$contents = $this->get_file_contents( $file_path );
+		preg_match( '/^(.*)={5,}/s', $contents, $matches );
+		if ( empty( $matches ) ) {
+			return null;
 		}
 
-		if ( ! preg_match_all( '/---((?!---).*)---/s', $file, $matches ) ) {
-			return [];
-		}
-
-		if ( empty( $matches[1] ) ) {
-			return [];
-		}
-
-
-		$variables = [];
-		foreach ( explode( PHP_EOL, $matches[1][0] ) as $line ) {
-			if ( empty( $line ) ) {
-				continue;
-			}
-
-			list( $variable, $value )       = explode( ':', $line, 2 );
-			$variables[ trim( $variable ) ] = trim( $value );
-		}
-
-		return $variables;
+		return explode( PHP_EOL, $matches[0] )[0] ?? null;
 	}
 
 	/**
@@ -214,17 +197,7 @@ class Docs_Service_Provider extends Service_Provider {
 	 * @return string
 	 */
 	protected function get_file_contents( string $file_path ): string {
-		$contents = file_get_contents( $file_path ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
-
-		if ( ! Str::contains( $contents, '---' ) ) {
-			return $contents;
-		}
-
-		if ( ! preg_match_all( '/---((?!---).*)---/s', $contents, $matches ) ) {
-			return $contents;
-		}
-
-		return str_replace( $matches[0], '', $contents );
+		return file_get_contents( $file_path ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
 	}
 
 	/**

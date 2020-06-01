@@ -136,7 +136,6 @@ class Application extends Container\Container implements Application_Contract {
 	protected function register_base_service_providers() {
 		$this->register( Log_Service_Provider::class );
 		$this->register( Routing_Service_Provider::class );
-		$this->register( Docs_Service_Provider::class );
 	}
 
 	/**
