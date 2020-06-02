@@ -9,6 +9,7 @@ namespace Mantle\Framework\Http\Routing;
 
 use Mantle\Framework\Container\Container;
 use Mantle\Framework\Support\Str;
+use ReflectionFunction;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Route as Symfony_Route;
 
@@ -182,8 +183,15 @@ class Route extends Symfony_Route {
 	 * @return mixed
 	 */
 	protected function run_callback() {
-		$callback = $this->get_callback();
-		return $this->container->call( $callback );
+		$callback   = $this->get_callback();
+		$parameters = $this->resolve_method_dependencies(
+			$this->get_request_parameters(),
+			new ReflectionFunction( $callback )
+		);
+
+		return $callback(
+			...array_values( $parameters )
+		);
 	}
 
 	/**
@@ -196,7 +204,7 @@ class Route extends Symfony_Route {
 		$method     = $this->get_controller_method();
 
 		$parameters = $this->resolve_class_method_dependencies(
-			[],
+			$this->get_request_parameters(),
 			$controller,
 			$method
 		);
@@ -222,5 +230,14 @@ class Route extends Symfony_Route {
 		}
 
 		return new Response( $response );
+	}
+
+	/**
+	 * Get the route parameters.
+	 *
+	 * @return array
+	 */
+	public function get_request_parameters(): array {
+		return $this->container['request']->get_route_parameters()->all();
 	}
 }

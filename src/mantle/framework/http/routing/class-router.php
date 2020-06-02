@@ -171,6 +171,9 @@ class Router implements Router_Contract {
 	 * @throws Http_Exception Thrown on unknown route callback.
 	 */
 	protected function execute_route_match( $match ): ?Response {
+		// Store the request parameters.
+		$this->app['request']->set_route_parameters( $match );
+
 		$route = Route::get_route_from_match( $match );
 
 		if ( $route ) {

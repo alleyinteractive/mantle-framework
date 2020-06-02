@@ -8,8 +8,11 @@
 
 namespace Mantle\Framework\Http;
 
+use ArrayAccess;
+use Mantle\Framework\Contracts\Support\Arrayable;
 use Mantle\Framework\Support\Arr;
 use Mantle\Framework\Support\Str;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 use function Mantle\Framework\Helpers\data_get;
@@ -17,8 +20,15 @@ use function Mantle\Framework\Helpers\data_get;
 /**
  * Request Object
  */
-class Request extends SymfonyRequest {
+class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	use Interacts_With_Input;
+
+	/**
+	 * Route parameters.
+	 *
+	 * @var ParameterBag
+	 */
+	protected $route_parameters = [];
 
 	/**
 	 * Create a request object.
@@ -326,7 +336,7 @@ class Request extends SymfonyRequest {
 	 * @param  \Symfony\Component\HttpFoundation\ParameterBag $json
 	 * @return $this
 	 */
-	public function setJson( $json ) {
+	public function set_json( $json ) {
 		$this->json = $json;
 
 		return $this;
@@ -337,8 +347,41 @@ class Request extends SymfonyRequest {
 	 *
 	 * @return array
 	 */
-	public function toArray() {
+	public function to_array() {
 		return $this->all();
+	}
+
+	/**
+	 * Set route parameters.
+	 *
+	 * @param ParameterBag|array $parameters Route parameters to set.
+	 * @return array
+	 */
+	public function set_route_parameters( $parameters ) {
+		if ( ! ( $parameters instanceof ParameterBag ) ) {
+			// Remove internal route parameters.
+			$parameters = new ParameterBag(
+				array_filter(
+					$parameters,
+					function ( $parameter ) {
+						return 0 !== strpos( $parameter, '_' );
+					},
+					ARRAY_FILTER_USE_KEY
+				)
+			);
+		}
+
+		$this->route_parameters = $parameters;
+		return $this;
+	}
+
+	/**
+	 * Set route parameters.
+	 *
+	 * @return ParameterBag
+	 */
+	public function get_route_parameters(): ParameterBag {
+		return $this->route_parameters;
 	}
 
 	/**
@@ -349,7 +392,7 @@ class Request extends SymfonyRequest {
 	 */
 	public function offsetExists( $offset ) {
 		return Arr::has(
-			$this->all() + $this->route()->parameters(),
+			$this->all() + $this->get_route_parameters()->all(),
 			$offset
 		);
 	}
@@ -392,7 +435,7 @@ class Request extends SymfonyRequest {
 	 * @return bool
 	 */
 	public function __isset( $key ) {
-			return ! is_null( $this->__get( $key ) );
+		return ! is_null( $this->__get( $key ) );
 	}
 
 	/**
@@ -406,7 +449,7 @@ class Request extends SymfonyRequest {
 			$this->all(),
 			$key,
 			function () use ( $key ) {
-				return $this->route( $key );
+				return $this->get_route_parameters()->get( $key );
 			}
 		);
 	}
