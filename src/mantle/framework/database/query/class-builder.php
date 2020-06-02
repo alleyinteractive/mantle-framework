@@ -12,6 +12,8 @@ namespace Mantle\Framework\Database\Query;
 use Mantle\Framework\Support\Collection;
 use Mantle\Framework\Support\Str;
 
+use function Mantle\Framework\Helpers\collect;
+
 /**
  * Builder Query Builder
  */
@@ -96,9 +98,9 @@ abstract class Builder {
 	/**
 	 * Constructor.
 	 *
-	 * @param string $model Model class name.
+	 * @param array|string $model Model or array of model class names.
 	 */
-	public function __construct( string $model ) {
+	public function __construct( $model ) {
 		$this->model = $model;
 	}
 
@@ -112,9 +114,9 @@ abstract class Builder {
 	/**
 	 * Get a model instance for the builder.
 	 *
-	 * @return string
+	 * @return string|string[]
 	 */
-	public function get_model(): string {
+	public function get_model() {
 		return $this->model;
 	}
 
@@ -128,7 +130,7 @@ abstract class Builder {
 	 * @throws Query_Exception Thrown on an unmapped attribute being used.
 	 */
 	public function whereIn( string $attribute, array $values ) {
-		if ( $this->model::has_attribute_alias( $attribute ) ) {
+		if ( is_string( $this->model ) && $this->model::has_attribute_alias( $attribute ) ) {
 			$attribute = $this->model::get_attribute_alias( $attribute );
 		}
 
@@ -151,7 +153,7 @@ abstract class Builder {
 	 * @throws Query_Exception Thrown on an unmapped attribute being used.
 	 */
 	public function whereNotIn( string $attribute, array $values ) {
-		if ( $this->model::has_attribute_alias( $attribute ) ) {
+		if ( is_string( $this->model ) && $this->model::has_attribute_alias( $attribute ) ) {
 			$attribute = $this->model::get_attribute_alias( $attribute );
 		}
 
@@ -167,10 +169,10 @@ abstract class Builder {
 	/**
 	 * Create a query builder for a model.
 	 *
-	 * @param string $model Model name.
+	 * @param array|string $model Model name or array of model names.
 	 * @return static
 	 */
-	public static function create( string $model ) {
+	public static function create( $model ) {
 		return new static( $model );
 	}
 
@@ -212,7 +214,7 @@ abstract class Builder {
 		$attribute = Str::snake( $finder );
 
 		// Use the model's alias if one exist.
-		if ( $this->model::has_attribute_alias( $attribute ) ) {
+		if ( is_string( $this->model ) && $this->model::has_attribute_alias( $attribute ) ) {
 			$attribute = $this->model::get_attribute_alias( $attribute );
 		}
 
@@ -228,11 +230,18 @@ abstract class Builder {
 	 * @return static
 	 */
 	public function whereMeta( $key, $value, string $compare = '=' ) {
-		$this->meta_query[] = [
+		$meta_query = [
 			'compare' => $compare,
 			'key'     => $key,
 			'value'   => $value,
 		];
+
+		// Remove the value from meta queries checking for existence.
+		if ( empty( $value ) && ( 'EXISTS' === $compare || 'NOT EXISTS' === $compare ) ) {
+			unset( $meta_query['value'] );
+		}
+
+		$this->meta_query[] = $meta_query;
 		return $this;
 	}
 
@@ -270,7 +279,7 @@ abstract class Builder {
 	 * @return static
 	 */
 	public function orderBy( $attribute, string $direction = 'asc' ) {
-		if ( $this->model::has_attribute_alias( $attribute ) ) {
+		if ( is_string( $this->model ) && $this->model::has_attribute_alias( $attribute ) ) {
 			$attribute = $this->model::get_attribute_alias( $attribute );
 		}
 
@@ -336,5 +345,22 @@ abstract class Builder {
 		}
 
 		throw new Query_Exception( 'Unknown query builder method: ' . $method );
+	}
+
+	/**
+	 * Collect all the model object names in an associative Collection.
+	 *
+	 * @return Collection Collection with object names as keys and model
+	 *                    class names as values.
+	 */
+	public function get_model_object_names(): Collection {
+		return collect( (array) $this->model )
+			->combine( $this->model )
+			->map(
+				function ( $model ) {
+					return $model::get_object_name();
+				}
+			)
+			->flip();
 	}
 }
