@@ -18,6 +18,13 @@ class {{ class }} extends Post implements Registrable {
 	use Register_Post_Type;
 
 	/**
+	 * Post Type
+	 *
+	 * @var string
+	 */
+	public static $object_name = '{{ object_name }}';
+
+	/**
 	 * Arguments to register the model with.
 	 *
 	 * @return array
