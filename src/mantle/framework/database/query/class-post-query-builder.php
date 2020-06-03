@@ -18,6 +18,8 @@ use function Mantle\Framework\Helpers\collect;
  * Post Query Builder
  */
 class Post_Query_Builder extends Builder {
+	use Queries_Relationships;
+
 	/**
 	 * Query Variable Aliases
 	 *
@@ -70,6 +72,16 @@ class Post_Query_Builder extends Builder {
 	 * @return array
 	 */
 	protected function get_query_args(): array {
+		if ( is_array( $this->model ) ) {
+			$post_type = [];
+
+			foreach ( $this->model as $model ) {
+				$post_type[] = $model::get_object_name();
+			}
+		} else {
+			$post_type = $this->model::get_object_name();
+		}
+
 		return array_merge(
 			[
 				'fields'              => 'ids',
@@ -78,7 +90,7 @@ class Post_Query_Builder extends Builder {
 				'tax_query'           => $this->tax_query, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 				'order'               => $this->order,
 				'orderby'             => $this->order_by,
-				'post_type'           => $this->model::get_object_name(),
+				'post_type'           => $post_type,
 				'posts_per_page'      => $this->limit,
 				'suppress_filters'    => false,
 			],
@@ -93,13 +105,35 @@ class Post_Query_Builder extends Builder {
 	 */
 	public function get(): Collection {
 		$post_ids = \get_posts( $this->get_query_args() );
-
 		if ( empty( $post_ids ) ) {
 			return collect();
 		}
 
-		$models = array_map( [ $this->model, 'find' ], $post_ids );
-		return collect( array_filter( $models ) );
+		/**
+		 * Translate the post IDs to model objects.
+		 *
+		 * @todo Use a more abstract way to get the correct model for the post.
+		 */
+		if ( is_array( $this->model ) ) {
+			$model_object_types = static::get_model_object_names();
+			return collect( $post_ids )
+				->map(
+					function ( $post_id ) use ( $model_object_types ) {
+						$post_type = \get_post_type( $post_id );
+
+						if ( empty( $post_type ) ) {
+							return null;
+						}
+
+						return $model_object_types[ $post_type ]::find( $post_id );
+					}
+				)
+				->filter();
+		} else {
+			return collect( $post_ids )
+				->map( [ $this->model, 'find' ] )
+				->filter();
+		}
 	}
 
 	/**

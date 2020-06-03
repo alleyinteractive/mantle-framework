@@ -4,12 +4,23 @@ namespace Mantle\Tests\Database\Builder;
 use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Term;
 use Mantle\Framework\Database\Query\Post_Query_Builder as Builder;
+use Mantle\Framework\Database\Query\Post_Query_Builder;
 use WP_UnitTestCase;
 
 /**
  * @todo Replace with the Mantle Testing Framework
  */
 class Test_Post_Query_Builder extends WP_UnitTestCase {
+	public function setUp() {
+		parent::setUp();
+		register_post_type( Another_Testable_Post::get_object_name() );
+	}
+
+	public function tearDown() {
+		parent::tearDown();
+		unregister_post_type( Another_Testable_Post::get_object_name() );
+	}
+
 	public function test_post_by_name() {
 		$post = static::factory()->post->create( [ 'post_name' => 'post-to-find' ] );
 
@@ -228,6 +239,33 @@ class Test_Post_Query_Builder extends WP_UnitTestCase {
 		$this->assertEquals( $post_id, $first->id() );
 	}
 
+	public function test_query_with_multiple() {
+		$post_a = $this->get_random_post_id();
+		$post_b = $this->get_random_post_id( [ 'post_type' => Another_Testable_Post::get_object_name() ] );
+
+		update_post_meta( $post_a, 'shared-meta', 'meta-value' );
+		update_post_meta( $post_b, 'shared-meta', 'meta-value' );
+
+		update_post_meta( $post_a, 'meta-a', 'meta-value-a' );
+		update_post_meta( $post_b, 'meta-b', 'meta-value-b' );
+
+		$get = Post_Query_Builder::create( [ Testable_Post::class, Another_Testable_Post::class ] )
+			->whereMeta( 'shared-meta', 'meta-value' )
+			->get();
+
+		$this->assertEquals( 2, count( $get ) );
+		$this->assertEquals( $post_a, $get[0]->id() );
+		$this->assertEquals( $post_b, $get[1]->id() );
+
+		// Check querying one.
+		$get = Post_Query_Builder::create( [ Testable_Post::class, Another_Testable_Post::class ] )
+			->whereMeta( 'meta-b', 'meta-value-b' )
+			->get();
+
+		$this->assertEquals( 1, count( $get ) );
+		$this->assertEquals( $post_b, $get[0]->id() );
+	}
+
 	/**
 	 * Get a random post ID, ensures the post ID is not the last in the set.
 	 *
@@ -242,6 +280,10 @@ class Test_Post_Query_Builder extends WP_UnitTestCase {
 
 class Testable_Post extends Post {
 	public static $object_name = 'post';
+}
+
+class Another_Testable_Post extends Post {
+	public static $object_name = 'example-post-type';
 }
 
 class Testable_Tag extends Term {

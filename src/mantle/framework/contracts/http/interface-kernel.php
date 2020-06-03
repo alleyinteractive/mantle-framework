@@ -7,12 +7,16 @@
 
 namespace Mantle\Framework\Contracts\Http;
 
+use Mantle\Framework\Http\Request;
+
 /**
  * Http Kernel
  */
 interface Kernel {
 	/**
 	 * Run the HTTP Application.
+	 *
+	 * @param Request $request Request object.
 	 */
-	public function handle();
+	public function handle( Request $request );
 }

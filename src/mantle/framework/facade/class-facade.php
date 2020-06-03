@@ -47,6 +47,15 @@ abstract class Facade {
 	}
 
 	/**
+	 * Clear a resolved facade instance.
+	 *
+	 * @param string $name Instance name.
+	 */
+	public static function clear_resolved_instance( string $name ) {
+		unset( static::$resolved_instances[ $name ] );
+	}
+
+	/**
 	 * Set the application instance for the Facade.
 	 *
 	 * @param \Mantle\Framework\Contracts\Application $app Application instance.
