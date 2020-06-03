@@ -7,8 +7,11 @@
 
 namespace Mantle\Framework;
 
+use Mantle\Framework\Contracts\Providers as ProviderContracts;
 use Mantle\Framework\Console\Command;
 use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
+
+use function add_action;
 
 /**
  * Application Service Provider
@@ -44,7 +47,26 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	 * Bootstrap services.
 	 */
 	public function boot() {
-		$this->setLogger( $this->app['log']->get_default_logger() );
+		$log = $this->app['log'];
+
+		if ( $log ) {
+			$this->setLogger( $log->get_default_logger() );
+		}
+
+		$this->boot_contracts();
+	}
+
+	/**
+	 * Boot the service provider's contracts.
+	 */
+	protected function boot_contracts() {
+		if ( $this instanceof ProviderContracts\Init ) {
+			add_action( 'init', [ $this, 'on_init' ] );
+		}
+
+		if ( $this instanceof ProviderContracts\Wp_Loaded ) {
+			add_action( 'wp_loaded', [ $this, 'on_wp_loaded' ] );
+		}
 	}
 
 	/**
