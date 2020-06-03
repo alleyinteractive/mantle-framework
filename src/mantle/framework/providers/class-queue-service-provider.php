@@ -12,6 +12,7 @@ use Mantle\Framework\Contracts\Queue\Queue_Manager as Queue_Manager_Contract;
 use Mantle\Framework\Queue\Dispatcher;
 use Mantle\Framework\Queue\Provider\Wp_Cron;
 use Mantle\Framework\Queue\Queue_Manager;
+use Mantle\Framework\Queue\Worker;
 use Mantle\Framework\Service_Provider;
 
 /**
@@ -32,12 +33,26 @@ class Queue_Service_Provider extends Service_Provider {
 			}
 		);
 
+		$this->app->singleton(
+			'queue.worker',
+			function ( $app ) {
+				return new Worker( $app['queue'] );
+			}
+		);
+
 		$this->app->singleton_if(
 			Dispatcher_Contract::class,
 			function( $app ) {
 				return new Dispatcher( $app );
 			}
 		);
+	}
+
+	/**
+	 * Boot the service provider.
+	 */
+	public function boot() {
+		$this->app['queue'];
 	}
 
 	/**

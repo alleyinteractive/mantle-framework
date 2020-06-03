@@ -11,7 +11,7 @@ interface Provider {
 	 * Push a job to the queue.
 	 *
 	 * @param mixed $job Job instance.
-	 * @param int $delay Delay in seconds, optional.
+	 * @param int   $delay Delay in seconds, optional.
 	 * @return bool
 	 */
 	public function push( $job, int $delay = null );

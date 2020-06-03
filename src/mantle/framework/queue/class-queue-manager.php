@@ -6,6 +6,9 @@ use Mantle\Framework\Contracts\Application;
 use Mantle\Framework\Contracts\Queue\Provider;
 use Mantle\Framework\Contracts\Queue\Queue_Manager as Queue_Manager_Contract;
 
+/**
+ * Queue Manager
+ */
 class Queue_Manager implements Queue_Manager_Contract {
 	/**
 	 * Constructor.
@@ -57,11 +60,19 @@ class Queue_Manager implements Queue_Manager_Contract {
 	 * Add a provider for the queue manager.
 	 *
 	 * @param string $name Provider name.
-	 * @param string $class_name Provider class name.
+	 * @param string $provider_class Provider class name.
 	 * @return static
+	 *
+	 * @throws InvalidArgumentException Thrown invalid provider.
 	 */
-	public function add_provider( string $name, string $class_name ) {
-		$this->providers[ $name ] = $class_name;
+	public function add_provider( string $name, string $provider_class ) {
+		if ( ! class_implements( $provider_class, Provider::class ) ) {
+			throw new InvalidArgumentException( "Provider does not implement Provider contract: [$provider_class]" );
+		}
+
+		$this->providers[ $name ] = $provider_class;
+
+		$provider_class::register();
 		return $this;
 	}
 
