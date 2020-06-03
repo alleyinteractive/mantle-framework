@@ -9,6 +9,7 @@ namespace Mantle\Framework\Queue;
 
 use Mantle\Framework\Contracts\Container;
 use Mantle\Framework\Contracts\Queue\Can_Queue;
+use Mantle\Framework\Contracts\Queue\Queue_Manager;
 
 /**
  * Queue Dispatcher
@@ -16,6 +17,7 @@ use Mantle\Framework\Contracts\Queue\Can_Queue;
  * Executes jobs from the queue.
  */
 class Dispatcher {
+
 	/**
 	 * Container instance.
 	 *
@@ -43,7 +45,10 @@ class Dispatcher {
 			return $this->dispatch_now( $job );
 		}
 
-		// send the job to the queue.
+		$manager = $this->container->make( Queue_Manager::class );
+
+		// Send the job to the queue.
+		$manager->get_provider()->push( $job );
 	}
 
 	/**

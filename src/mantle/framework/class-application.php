@@ -144,6 +144,7 @@ class Application extends Container\Container implements Application_Contract {
 		$core_aliases = [
 			'app'     => [ static::class, \Mantle\Framework\Contracts\Application::class ],
 			'config'  => [ \Mantle\Framework\Config\Repository::class, \Mantle\Framework\Contracts\Config\Repository::class ],
+			'queue'   => [ \Mantle\Framework\Queue\Queue_Manager::class, \Mantle\Framework\Contracts\Queue\Queue_Manager::class ],
 			'request' => [ \Mantle\Framework\Http\Request::class, \Symfony\Component\HttpFoundation\Request::class ],
 			'router'  => [ \Mantle\Framework\Http\Routing\Router::class, \Mantle\Framework\Contracts\Http\Routing\Router::class ],
 		];
