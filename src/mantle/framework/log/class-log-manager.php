@@ -29,6 +29,13 @@ class Log_Manager {
 	protected $app;
 
 	/**
+	 * Default logger instance for the application.
+	 *
+	 * @var Logger
+	 */
+	protected $default_logger;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Application $app Application instance.
@@ -176,7 +183,12 @@ class Log_Manager {
 	 * @return Logger
 	 */
 	public function get_default_logger(): Logger {
-		return $this->channel( $this->get_default_channel() );
+		if ( isset( $this->default_logger ) ) {
+			return $this->default_logger;
+		}
+
+		$this->default_logger = $this->channel( $this->get_default_channel() );
+		return $this->default_logger;
 	}
 
 	/**
