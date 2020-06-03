@@ -8,11 +8,14 @@
 namespace Mantle\Framework;
 
 use Mantle\Framework\Console\Command;
+use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
 
 /**
  * Application Service Provider
  */
-abstract class Service_Provider {
+abstract class Service_Provider implements LoggerAwareInterface {
+	use LoggerAwareTrait;
+
 	/**
 	 * The application instance.
 	 *
@@ -38,14 +41,11 @@ abstract class Service_Provider {
 	}
 
 	/**
-	 * Register any application services.
-	 */
-	public function register() { }
-
-	/**
 	 * Bootstrap services.
 	 */
-	public function boot() { }
+	public function boot() {
+		$this->setLogger( $this->app['log']->get_default_logger() );
+	}
 
 	/**
 	 * Register a wp-cli command.
