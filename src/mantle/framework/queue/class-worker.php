@@ -23,18 +23,15 @@ class Worker {
 	/**
 	 * Run a batch of queue items.
 	 *
-	 * @param int $size Size of the batch to run.
+	 * @param int    $size Size of the batch to run.
+	 * @param string $queue Queue name.
 	 */
-	public function run_batch( int $size ) {
+	public function run_batch( int $size, string $queue = null ) {
 		$provider = $this->manager->get_provider();
+		$jobs     = $provider->pop( $queue, $size );
+		var_dump($jobs);
 
-		for ( $i = 0; $i < $size; $i++ ) {
-			$job = $provider->pop();
-
-			if ( ! $job ) {
-				continue;
-			}
-
+		foreach ( $jobs as $job ) {
 			$job->handle();
 		}
 	}

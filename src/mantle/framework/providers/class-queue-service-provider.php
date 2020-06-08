@@ -10,9 +10,10 @@ namespace Mantle\Framework\Providers;
 use Mantle\Framework\Contracts\Queue\Dispatcher as Dispatcher_Contract;
 use Mantle\Framework\Contracts\Queue\Queue_Manager as Queue_Manager_Contract;
 use Mantle\Framework\Queue\Dispatcher;
-use Mantle\Framework\Queue\Provider\Wp_Cron;
 use Mantle\Framework\Queue\Queue_Manager;
 use Mantle\Framework\Queue\Worker;
+use Mantle\Framework\Queue\Wp_Cron_Provider;
+use Mantle\Framework\Queue\Wp_Cron_Scheduler;
 use Mantle\Framework\Service_Provider;
 
 /**
@@ -52,7 +53,7 @@ class Queue_Service_Provider extends Service_Provider {
 	 * Boot the service provider.
 	 */
 	public function boot() {
-		$this->app['queue'];
+		$this->app->make( Queue_Manager_Contract::class );
 	}
 
 	/**
@@ -61,6 +62,9 @@ class Queue_Service_Provider extends Service_Provider {
 	 * @param Queue_Manager_Contract $manager Queue Manager.
 	 */
 	public function register_providers( Queue_Manager_Contract $manager ) {
-		$manager->add_provider( 'wordpress', Wp_Cron::class );
+		$manager->add_provider( 'wordpress', Wp_Cron_Provider::class );
+
+		// Setup the WordPress cron scheduler.
+		Wp_Cron_Scheduler::register();
 	}
 }

@@ -10,16 +10,19 @@ interface Provider {
 	/**
 	 * Push a job to the queue.
 	 *
-	 * @param mixed $job Job instance.
-	 * @param int   $delay Delay in seconds, optional.
+	 * @param mixed  $job Job instance.
+	 * @param string $queue Queue name, optional.
+	 * @param int    $delay Delay in seconds, optional.
 	 * @return bool
 	 */
-	public function push( $job, int $delay = null );
+	public function push( $job, string $queue = null, int $delay = null );
 
 	/**
 	 * Get the next job in the queue.
 	 *
+	 * @param string $queue Queue name, optional.
+	 * @param int    $count Number of items to return.
 	 * @return mixed|false
 	 */
-	public function pop();
+	public function pop( string $queue = null, int $count = 1 );
 }

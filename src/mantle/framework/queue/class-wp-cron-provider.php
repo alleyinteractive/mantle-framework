@@ -1,0 +1,189 @@
+<?php
+/**
+ * Wp_Cron class file.
+ *
+ * @package Mantle
+ */
+
+namespace Mantle\Framework\Queue;
+
+use InvalidArgumentException;
+use Mantle\Framework\Contracts\Queue\Provider;
+use Mantle\Framework\Contracts\Queue\Queue_Manager;
+
+/**
+ * WordPress Cron Queue Provider
+ *
+ * Supports adding cron items to a general WordPress cron event run every
+ * five minutes. The cron event will process a small batch of queue items.
+ *
+ * @todo Add support for one off cron events that should have their own cron scheduled.
+ * @todo Add support for different queue names.
+ */
+class Wp_Cron_Provider implements Provider {
+	/**
+	 * Post/taxonomy name for the internal queue.
+	 *
+	 * @var string
+	 */
+	public const OBJECT_NAME = 'mantle_queue';
+
+	/**
+	 * Queue of cron jobs to process.
+	 *
+	 * @var array
+	 */
+	protected static $pending_queue = [];
+
+	/**
+	 * Register the provider.
+	 */
+	public static function register() {
+		\add_action( 'init', [ static::class, 'on_init' ] );
+	}
+
+	/**
+	 * 'init' callback.
+	 */
+	public static function on_init() {
+		\register_post_type(
+			static::OBJECT_NAME,
+			[
+				'public' => false,
+			]
+		);
+
+		\register_taxonomy(
+			static::OBJECT_NAME,
+			[
+				'public' => false,
+			]
+		);
+
+		static::process_pending_queue();
+	}
+
+	/**
+	 * Process the pending queue items that were added before `init`.
+	 */
+	protected static function process_pending_queue() {
+		if ( ! empty( static::$pending_queue ) ) {
+			$manager = mantle_app( Queue_Manager::class );
+
+			if ( $manager ) {
+				$provider = $manager->get_provider();
+
+				foreach ( static::$pending_queue as $args ) {
+					$provider->push( ...$args );
+				}
+			}
+		}
+	}
+
+	/**
+	 * Push a job to the queue.
+	 *
+	 * @todo Support priority sorting with `menu_order`.
+	 *
+	 * @param mixed  $job Job instance.
+	 * @param string $queue Queue name.
+	 * @param int    $delay Delay in seconds, optional.
+	 * @return bool
+	 */
+	public function push( $job, string $queue = null, int $delay = null ) {
+		// Account for adding to the queue before 'init'.
+		if ( ! \did_action( 'init' ) ) {
+			static::$pending_queue[] = func_get_args();
+			return true;
+		}
+
+		$insert = \wp_insert_post(
+			[
+				'post_type'   => static::OBJECT_NAME,
+				'post_name'   => 'mantle_queue_' . time(),
+				'post_status' => 'publish',
+				'meta_input'  => [
+					'_mantle_queue' => $job,
+				],
+			]
+		);
+
+		if ( is_wp_error( $insert ) ) {
+			return false;
+		}
+
+		wp_set_object_terms( $insert, $this->get_queue_term_id( $queue ), static::OBJECT_NAME, false );
+
+		// Ensure that the next cron event is scheduled for this queue.
+		Wp_Cron_Scheduler::schedule( $queue );
+
+		return true;
+	}
+
+	/**
+	 * Get the next job in the queue.
+	 *
+	 * @param string $queue Queue name.
+	 * @param int    $count Number of items to fetch.
+	 * @return array
+	 */
+	public function pop( string $queue = null, int $count = 1 ) {
+		$post_ids = \get_posts(
+			[
+				'fields'              => 'ids',
+				'ignore_sticky_posts' => true,
+				'post_type'           => static::OBJECT_NAME,
+				'posts_per_page'      => $count,
+				'suppress_filters'    => false,
+				'post_status'         => 'publish',
+				'tax_query'           => [
+					[
+						'taxonomy' => static::OBJECT_NAME,
+						'terms'    => $this->get_queue_term_id( $queue ),
+					],
+				],
+			]
+		);
+
+		if ( empty( $post_ids ) ) {
+			return [];
+		}
+
+		return array_map(
+			function( $post_id ) {
+				$job = \get_post_meta( $post_id, '_mantle_queue', true );
+
+				// Remove the queue item.
+				\wp_delete_post( $post_id, true );
+				return $job;
+			},
+			$post_ids
+		);
+	}
+
+	/**
+	 * Get the taxonomy term for a queue.
+	 *
+	 * @param string $name Queue name, optional.
+	 * @return int
+	 */
+	protected function get_queue_term_id( string $name = null ): int {
+		if ( ! $name ) {
+			$name = 'default';
+		}
+
+		$term = \get_term_by( 'slug', $name, static::OBJECT_NAME );
+
+		if ( empty( $term ) ) {
+			$insert = \wp_insert_term( $name, static::OBJECT_NAME, [ 'slug' => $name ] );
+
+			if ( is_wp_error( $insert ) ) {
+				throw new InvalidArgumentException( 'Error creating queue term: ' . $insert->get_error_message() );
+			}
+
+			return $insert['term_id'];
+		}
+
+		return $term->term_id;
+	}
+}
