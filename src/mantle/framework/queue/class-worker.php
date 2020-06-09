@@ -51,22 +51,22 @@ class Worker {
 	 * @param int    $size Size of the batch to run.
 	 * @param string $queue Queue name.
 	 */
-	public function run_batch( int $size, string $queue = null ) {
+	public function run( int $size, string $queue = null ) {
 		$provider = $this->manager->get_provider();
 		$jobs     = $provider->pop( $queue, $size );
 
-		$this->events->dispatch( new Run_Start( $queue, $jobs ) );
+		$this->events->dispatch( new Run_Start( $provider, $queue, $jobs ) );
 
 		$jobs->each(
-			function( Job $job ) {
-				$this->events->dispatch( new Job_Processing( $job ) );
+			function( Job $job ) use ( $provider ) {
+				$this->events->dispatch( new Job_Processing( $provider, $job ) );
 
 				$job->fire();
 
-				$this->events->dispatch( new Job_Processed( $job ) );
+				$this->events->dispatch( new Job_Processed( $provider, $job ) );
 			}
 		);
 
-		$this->events->dispatch( new Run_Complete( $queue, $jobs ) );
+		$this->events->dispatch( new Run_Complete( $provider, $queue, $jobs ) );
 	}
 }

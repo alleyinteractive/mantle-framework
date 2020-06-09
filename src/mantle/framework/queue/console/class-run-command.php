@@ -87,8 +87,8 @@ class Run_Command extends Command {
 		// Register the event listeners to pipe the events back to the console.
 		$this->app['events']->listen(
 			Run_Start::class,
-			function() {
-				$this->log( 'Run started' );
+			function( Run_Start $event ) {
+				$this->log( 'Run started: ' . $event->queue );
 			}
 		);
 
@@ -108,12 +108,12 @@ class Run_Command extends Command {
 
 		$this->app['events']->listen(
 			Run_Complete::class,
-			function() {
-				$this->log( 'Run complete' );
+			function( Run_Complete $event ) {
+				$this->log( 'Run complete: ' . $event->queue );
 			}
 		);
 
-		$this->app['queue.worker']->run_batch(
+		$this->app['queue.worker']->run(
 			(int) $this->get_flag( 'count', (int) $this->app['config']['queue.batch_size'] ?? 1 ),
 			$queue
 		);

@@ -7,10 +7,19 @@
 
 namespace Mantle\Framework\Queue\Events;
 
+use Mantle\Framework\Contracts\Queue\Provider;
+
 /**
  * Run Complete Event
  */
 class Run_Complete {
+	/**
+	 * Queue provider.
+	 *
+	 * @var mixed
+	 */
+	public $provider;
+
 	/**
 	 * Queue Name
 	 *
@@ -21,9 +30,11 @@ class Run_Complete {
 	/**
 	 * Constructor.
 	 *
-	 * @param string $queue Queue name.
+	 * @param Provider $provider Queue provider.
+	 * @param string   $queue Queue name.
 	 */
-	public function __construct( $queue ) {
-		$this->queue = $queue;
+	public function __construct( Provider $provider, $queue ) {
+		$this->provider = $provider;
+		$this->queue    = $queue;
 	}
 }

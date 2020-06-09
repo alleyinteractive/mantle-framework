@@ -10,7 +10,7 @@
 namespace Mantle\Framework\Events;
 
 use Exception;
-use Mantle\Framework\Contracts\Container;
+use Mantle\Framework\Container\Container;
 use Mantle\Framework\Contracts\Events\Dispatcher as Dispatcher_Contract;
 use Mantle\Framework\Support\Arr;
 use Mantle\Framework\Support\Str;

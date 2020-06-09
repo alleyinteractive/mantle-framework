@@ -30,7 +30,7 @@ class Wp_Cron_Scheduler {
 			$queue = 'default';
 		}
 
-		mantle_app( 'queue.worker' )->run_batch(
+		mantle_app( 'queue.worker' )->run(
 			(int) mantle_config( 'queue.batch_size', 1 ),
 			$queue
 		);

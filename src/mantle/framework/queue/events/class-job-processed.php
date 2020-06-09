@@ -7,10 +7,19 @@
 
 namespace Mantle\Framework\Queue\Events;
 
+use Mantle\Framework\Contracts\Queue\Provider;
+
 /**
  * Job Processed Event
  */
 class Job_Processed {
+	/**
+	 * Queue provider.
+	 *
+	 * @var mixed
+	 */
+	public $provider;
+
 	/**
 	 * Job Data
 	 *
@@ -21,10 +30,12 @@ class Job_Processed {
 	/**
 	 * Constructor.
 	 *
+	 * @param Provider $provider Queue provider.
 	 * @param mixed $job Job object.
 	 */
-	public function __construct( $job ) {
-		$this->job = $job;
+	public function __construct( Provider $provider, $job ) {
+		$this->provider = $provider;
+		$this->job      = $job;
 	}
 
 	/**
