@@ -1,12 +1,17 @@
 <?php
 /**
- * Dueueable trait file.
+ * Queueable trait file.
  *
  * @package Mantle
  */
 
 namespace Mantle\Framework\Queue;
 
+/**
+ * Queueable trait for queue jobs.
+ *
+ * Provides methods to interact with async queue jobs.
+ */
 trait Queueable {
 	/**
 	 * The delay before the job will be run.

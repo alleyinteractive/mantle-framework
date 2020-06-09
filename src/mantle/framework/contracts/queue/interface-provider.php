@@ -1,12 +1,16 @@
 <?php
+/**
+ * Provider interface file.
+ *
+ * @package Mantle
+ */
+
 namespace Mantle\Framework\Contracts\Queue;
 
+/**
+ * Queue Provider Contract
+ */
 interface Provider {
-	/**
-	 * Register the provider.
-	 */
-	public static function register();
-
 	/**
 	 * Push a job to the queue.
 	 *

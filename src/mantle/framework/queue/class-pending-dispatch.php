@@ -7,8 +7,8 @@
 
 namespace Mantle\Framework\Queue;
 
-use InvalidArgumentException;
 use Mantle\Framework\Contracts\Queue\Dispatcher;
+use Mantle\Framework\Contracts\Queue\Job;
 
 /**
  * Allow jobs to be added to the queue with ease.
@@ -17,16 +17,16 @@ class Pending_Dispatch {
 	/**
 	 * Job instance.
 	 *
-	 * @var mixed
+	 * @var Job
 	 */
 	protected $job;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param mixed $job Job instance.
+	 * @param Job $job Job instance.
 	 */
-	public function __construct( $job ) {
+	public function __construct( Job $job ) {
 		$this->job = $job;
 	}
 

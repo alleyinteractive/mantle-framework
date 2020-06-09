@@ -10,6 +10,7 @@ namespace Mantle\Framework;
 use Mantle\Framework\Contracts\Application as Application_Contract;
 use Mantle\Framework\Contracts\Kernel as Kernel_Contract;
 use Mantle\Framework\Log\Log_Service_Provider;
+use Mantle\Framework\Providers\Event_Service_Provider;
 use Mantle\Framework\Providers\Routing_Service_Provider;
 
 use function Mantle\Framework\Helpers\collect;
@@ -133,6 +134,7 @@ class Application extends Container\Container implements Application_Contract {
 	 * Register the base service providers.
 	 */
 	protected function register_base_service_providers() {
+		$this->register( Event_Service_Provider::class );
 		$this->register( Log_Service_Provider::class );
 		$this->register( Routing_Service_Provider::class );
 	}

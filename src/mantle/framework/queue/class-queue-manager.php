@@ -1,4 +1,10 @@
 <?php
+/**
+ * Queue_Manager class file.
+ *
+ * @package Mantle
+ */
+
 namespace Mantle\Framework\Queue;
 
 use InvalidArgumentException;
@@ -71,8 +77,6 @@ class Queue_Manager implements Queue_Manager_Contract {
 		}
 
 		$this->providers[ $name ] = $provider_class;
-
-		$provider_class::register();
 		return $this;
 	}
 
@@ -92,7 +96,7 @@ class Queue_Manager implements Queue_Manager_Contract {
 	 * @return Provider
 	 *
 	 * @throws InvalidArgumentException Thrown on invalid provider name.
-	 * @throws InvalidArgumentException Thrown on invalid provider instance resolved.s
+	 * @throws InvalidArgumentException Thrown on invalid provider instance resolved.
 	 */
 	protected function resolve( string $provider ): Provider {
 		if ( ! isset( $this->providers[ $provider ] ) ) {

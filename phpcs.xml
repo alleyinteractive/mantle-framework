@@ -12,6 +12,8 @@
 
 	<rule ref="WordPress">
 		<exclude name="WordPress.NamingConventions.ValidPostTypeSlug.NotStringLiteral" />
+		<exclude name="WordPress.PHP.DisallowShortTernary.Found" />
+		<exclude name="WordPress.WP.CapitalPDangit.Misspelled" />
 	</rule>
 
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
@@ -28,5 +30,9 @@
 
 	<rule ref="Squiz.PHP.DisallowMultipleAssignments">
 		<exclude-pattern>src/mantle/framework/container/class-container.php</exclude-pattern>
+	</rule>
+
+	<rule ref="Squiz.Commenting.FunctionComment.MissingParamComment">
+		<exclude-pattern>src/</exclude-pattern>
 	</rule>
 </ruleset>

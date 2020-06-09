@@ -10,6 +10,7 @@ namespace Mantle\Framework\Providers;
 use Mantle\Framework\Contracts\Queue\Dispatcher as Dispatcher_Contract;
 use Mantle\Framework\Contracts\Queue\Queue_Manager as Queue_Manager_Contract;
 use Mantle\Framework\Queue\Dispatcher;
+use Mantle\Framework\Queue\Events\Run_Complete;
 use Mantle\Framework\Queue\Queue_Manager;
 use Mantle\Framework\Queue\Worker;
 use Mantle\Framework\Queue\Wp_Cron_Provider;
@@ -37,7 +38,7 @@ class Queue_Service_Provider extends Service_Provider {
 		$this->app->singleton(
 			'queue.worker',
 			function ( $app ) {
-				return new Worker( $app['queue'] );
+				return new Worker( $app['queue'], $app['events'] );
 			}
 		);
 
@@ -65,6 +66,16 @@ class Queue_Service_Provider extends Service_Provider {
 		$manager->add_provider( 'wordpress', Wp_Cron_Provider::class );
 
 		// Setup the WordPress cron scheduler.
+		\add_action( 'init', [ Wp_Cron_Provider::class, 'on_init' ] );
+		\add_action( Wp_Cron_Scheduler::EVENT, [ Wp_Cron_Scheduler::class, 'on_queue_run' ] );
 		Wp_Cron_Scheduler::register();
+
+		// Add the event listener to schedule the next cron run.
+		$this->app['events']->listen(
+			Run_Complete::class,
+			function( Run_Complete $event ) {
+				Wp_Cron_Scheduler::schedule_next_run( $event->queue );
+			}
+		);
 	}
 }

@@ -36,13 +36,6 @@ class Wp_Cron_Provider implements Provider {
 	protected static $pending_queue = [];
 
 	/**
-	 * Register the provider.
-	 */
-	public static function register() {
-		\add_action( 'init', [ static::class, 'on_init' ] );
-	}
-
-	/**
 	 * 'init' callback.
 	 */
 	public static function on_init() {
@@ -112,7 +105,7 @@ class Wp_Cron_Provider implements Provider {
 			return false;
 		}
 
-		wp_set_object_terms( $insert, $this->get_queue_term_id( $queue ), static::OBJECT_NAME, false );
+		wp_set_object_terms( $insert, static::get_queue_term_id( $queue ), static::OBJECT_NAME, false );
 
 		// Ensure that the next cron event is scheduled for this queue.
 		Wp_Cron_Scheduler::schedule( $queue );
@@ -132,14 +125,16 @@ class Wp_Cron_Provider implements Provider {
 			[
 				'fields'              => 'ids',
 				'ignore_sticky_posts' => true,
+				'order'               => 'ASC',
+				'orderby'             => 'date',
+				'post_status'         => 'publish',
 				'post_type'           => static::OBJECT_NAME,
 				'posts_per_page'      => $count,
 				'suppress_filters'    => false,
-				'post_status'         => 'publish',
-				'tax_query'           => [
+				'tax_query'           => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 					[
 						'taxonomy' => static::OBJECT_NAME,
-						'terms'    => $this->get_queue_term_id( $queue ),
+						'terms'    => static::get_queue_term_id( $queue ),
 					],
 				],
 			]
@@ -155,6 +150,7 @@ class Wp_Cron_Provider implements Provider {
 
 				// Remove the queue item.
 				\wp_delete_post( $post_id, true );
+
 				return $job;
 			},
 			$post_ids
@@ -166,8 +162,10 @@ class Wp_Cron_Provider implements Provider {
 	 *
 	 * @param string $name Queue name, optional.
 	 * @return int
+	 *
+	 * @throws InvalidArgumentException Thrown on invalid queue term.
 	 */
-	protected function get_queue_term_id( string $name = null ): int {
+	public static function get_queue_term_id( string $name = null ): int {
 		if ( ! $name ) {
 			$name = 'default';
 		}

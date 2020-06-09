@@ -4,6 +4,7 @@
  *
  * @package Mantle
  */
+
 namespace Mantle\Framework\Contracts\Queue;
 
 /**

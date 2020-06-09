@@ -22,7 +22,7 @@ class Wp_Cron_Scheduler {
 	 * Register the cron scheduler.
 	 */
 	public static function register() {
-		\add_action( Wp_Cron_Scheduler::EVENT, [ static::class, 'on_queue_run' ] );
+		\add_action( static::EVENT, [ static::class, 'on_queue_run' ] );
 	}
 
 	/**
@@ -37,7 +37,10 @@ class Wp_Cron_Scheduler {
 			$queue = 'default';
 		}
 
-		mantle_app( 'queue.worker' )->run_batch( (int) mantle_config( 'queue.batch_size', 1 ), $queue );
+		mantle_app( 'queue.worker' )->run_batch(
+			(int) mantle_config( 'queue.batch_size', 1 ),
+			$queue
+		);
 	}
 
 	/**
@@ -45,8 +48,9 @@ class Wp_Cron_Scheduler {
 	 *
 	 * @param string $queue Queue name.
 	 * @param int    $delay Delay in seconds, defaults to none.
+	 * @return bool
 	 */
-	public static function schedule( string $queue = null, int $delay = 0 ) {
+	public static function schedule( string $queue = null, int $delay = 0 ): bool {
 		if ( ! $queue ) {
 			$queue = 'default';
 		}
@@ -54,21 +58,46 @@ class Wp_Cron_Scheduler {
 		if ( ! \wp_next_scheduled( static::EVENT, [ $queue ] ) ) {
 			\wp_schedule_single_event( time() + $delay, static::EVENT, [ $queue ] );
 		}
+
+		return true;
 	}
 
 	/**
 	 * Schedule the next run of a queue.
 	 *
-	 * Uses the application's configuration if specified, otherwise defaults to now.
+	 * Checks if there are items remaining in the queue before running. Uses the
+	 * application's configuration if specified, otherwise defaults to now.
 	 *
 	 * @param string $queue Queue name.
+	 * @return bool Flag if the next run was scheduled.
 	 */
-	public static function schedule_next_run( string $queue = null ) {
+	public static function schedule_next_run( string $queue = null ): bool {
+		$has_remaining = \get_posts(
+			[
+				'fields'              => 'ids',
+				'ignore_sticky_posts' => true,
+				'post_type'           => Wp_Cron_Provider::OBJECT_NAME,
+				'posts_per_page'      => 1,
+				'suppress_filters'    => false,
+				'post_status'         => 'publish',
+				'tax_query'           => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+					[
+						'taxonomy' => Wp_Cron_Provider::OBJECT_NAME,
+						'terms'    => Wp_Cron_Provider::get_queue_term_id( $queue ),
+					],
+				],
+			]
+		);
+
+		if ( empty( $has_remaining ) ) {
+			return false;
+		}
+
 		if ( ! $queue ) {
 			$queue = 'default';
 		}
 
-		$delay = mantle_config( 'queue.wordpress.delay', [] );
+		$delay = mantle_config( 'queue.wordpress.delay', [] ); // phpcs:ignore WordPress.WP.CapitalPDangit.Misspelled
 
 		// Support queue-specific delay.
 		if ( is_array( $delay ) ) {

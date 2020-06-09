@@ -17,7 +17,6 @@ use Mantle\Framework\Contracts\Queue\Queue_Manager;
  * Executes jobs from the queue.
  */
 class Dispatcher {
-
 	/**
 	 * Container instance.
 	 *
