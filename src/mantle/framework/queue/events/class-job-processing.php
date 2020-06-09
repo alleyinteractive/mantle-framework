@@ -26,4 +26,13 @@ class Job_Processing {
 	public function __construct( $job ) {
 		$this->job = $job;
 	}
+
+	/**
+	 * Get the ID for the job.
+	 *
+	 * @return mixed
+	 */
+	public function get_id() {
+		return $this->job->get_id();
+	}
 }

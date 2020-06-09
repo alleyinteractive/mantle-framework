@@ -57,13 +57,15 @@ class Worker {
 
 		$this->events->dispatch( new Run_Start( $queue, $jobs ) );
 
-		foreach ( $jobs as $job ) {
-			$this->events->dispatch( new Job_Processing( $job ) );
+		$jobs->each(
+			function( Job $job ) {
+				$this->events->dispatch( new Job_Processing( $job ) );
 
-			$job->handle();
+				$job->fire();
 
-			$this->events->dispatch( new Job_Processed( $job ) );
-		}
+				$this->events->dispatch( new Job_Processed( $job ) );
+			}
+		);
 
 		$this->events->dispatch( new Run_Complete( $queue, $jobs ) );
 	}

@@ -10,6 +10,9 @@ namespace Mantle\Framework\Queue;
 use InvalidArgumentException;
 use Mantle\Framework\Contracts\Queue\Provider;
 use Mantle\Framework\Contracts\Queue\Queue_Manager;
+use Mantle\Framework\Support\Collection;
+
+use function Mantle\Framework\Helpers\collect;
 
 /**
  * WordPress Cron Queue Provider
@@ -78,18 +81,17 @@ class Wp_Cron_Provider implements Provider {
 	 *
 	 * @todo Support priority sorting with `menu_order`.
 	 *
-	 * @param mixed  $job Job instance.
-	 * @param string $queue Queue name.
-	 * @param int    $delay Delay in seconds, optional.
+	 * @param mixed $job Job instance.
 	 * @return bool
 	 */
-	public function push( $job, string $queue = null, int $delay = null ) {
+	public function push( $job ) {
 		// Account for adding to the queue before 'init'.
 		if ( ! \did_action( 'init' ) ) {
 			static::$pending_queue[] = func_get_args();
 			return true;
 		}
 
+		$queue  = $job->queue ?? 'default';
 		$insert = \wp_insert_post(
 			[
 				'post_type'   => static::OBJECT_NAME,
@@ -114,13 +116,13 @@ class Wp_Cron_Provider implements Provider {
 	}
 
 	/**
-	 * Get the next job in the queue.
+	 * Get the next set of jobs in the queue.
 	 *
 	 * @param string $queue Queue name.
 	 * @param int    $count Number of items to fetch.
-	 * @return array
+	 * @return Collection
 	 */
-	public function pop( string $queue = null, int $count = 1 ) {
+	public function pop( string $queue = null, int $count = 1 ): Collection {
 		$post_ids = \get_posts(
 			[
 				'fields'              => 'ids',
@@ -141,20 +143,15 @@ class Wp_Cron_Provider implements Provider {
 		);
 
 		if ( empty( $post_ids ) ) {
-			return [];
+			return collect();
 		}
 
-		return array_map(
-			function( $post_id ) {
-				$job = \get_post_meta( $post_id, '_mantle_queue', true );
-
-				// Remove the queue item.
-				\wp_delete_post( $post_id, true );
-
-				return $job;
-			},
-			$post_ids
-		);
+		return collect( $post_ids )
+			->map(
+				function( int $post_id ) {
+					return new Wp_Cron_Job( \get_post_meta( $post_id, '_mantle_queue', true ), $post_id );
+				}
+			);
 	}
 
 	/**

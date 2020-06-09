@@ -7,6 +7,8 @@
 
 namespace Mantle\Framework\Contracts\Queue;
 
+use Mantle\Framework\Support\Collection;
+
 /**
  * Queue Provider Contract
  */
@@ -14,19 +16,17 @@ interface Provider {
 	/**
 	 * Push a job to the queue.
 	 *
-	 * @param mixed  $job Job instance.
-	 * @param string $queue Queue name, optional.
-	 * @param int    $delay Delay in seconds, optional.
+	 * @param mixed $job Job instance.
 	 * @return bool
 	 */
-	public function push( $job, string $queue = null, int $delay = null );
+	public function push( $job );
 
 	/**
-	 * Get the next job in the queue.
+	 * Get the next set of jobs in the queue.
 	 *
 	 * @param string $queue Queue name, optional.
 	 * @param int    $count Number of items to return.
-	 * @return mixed|false
+	 * @return Collection
 	 */
-	public function pop( string $queue = null, int $count = 1 );
+	public function pop( string $queue = null, int $count = 1 ): Collection;
 }

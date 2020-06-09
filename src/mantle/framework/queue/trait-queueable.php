@@ -18,14 +18,14 @@ trait Queueable {
 	 *
 	 * @var int
 	 */
-	protected $delay;
+	public $delay;
 
 	/**
 	 * The name of the queue for the job.
 	 *
 	 * @var string
 	 */
-	protected $queue;
+	public $queue;
 
 	/**
 	 * Add a dispatch to a specific queue.

@@ -9,7 +9,9 @@ namespace Mantle\Framework\Providers;
 
 use Mantle\Framework\Contracts\Queue\Dispatcher as Dispatcher_Contract;
 use Mantle\Framework\Contracts\Queue\Queue_Manager as Queue_Manager_Contract;
+use Mantle\Framework\Queue\Console\Run_Command;
 use Mantle\Framework\Queue\Dispatcher;
+use Mantle\Framework\Queue\Events\Job_Processed;
 use Mantle\Framework\Queue\Events\Run_Complete;
 use Mantle\Framework\Queue\Queue_Manager;
 use Mantle\Framework\Queue\Worker;
@@ -21,6 +23,7 @@ use Mantle\Framework\Service_Provider;
  * Queue Service Provider
  */
 class Queue_Service_Provider extends Service_Provider {
+
 	/**
 	 * Register the service provider.
 	 */
@@ -48,6 +51,8 @@ class Queue_Service_Provider extends Service_Provider {
 				return new Dispatcher( $app );
 			}
 		);
+
+		$this->add_command( Run_Command::class );
 	}
 
 	/**
@@ -62,13 +67,33 @@ class Queue_Service_Provider extends Service_Provider {
 	 *
 	 * @param Queue_Manager_Contract $manager Queue Manager.
 	 */
-	public function register_providers( Queue_Manager_Contract $manager ) {
+	protected function register_providers( Queue_Manager_Contract $manager ) {
+		$this->register_wp_cron_provider( $manager );
+	}
+
+	/**
+	 * Register the WordPress Cron Queue Provider
+	 *
+	 * @param Queue_Manager_Contract $manager Queue Manager.
+	 */
+	protected function register_wp_cron_provider( Queue_Manager_Contract $manager ) {
 		$manager->add_provider( 'wordpress', Wp_Cron_Provider::class );
 
 		// Setup the WordPress cron scheduler.
 		\add_action( 'init', [ Wp_Cron_Provider::class, 'on_init' ] );
 		\add_action( Wp_Cron_Scheduler::EVENT, [ Wp_Cron_Scheduler::class, 'on_queue_run' ] );
-		Wp_Cron_Scheduler::register();
+
+		// Add the event listener to remove the queue item.
+		$this->app['events']->listen(
+			Job_Processed::class,
+			function( Job_Processed $event ) {
+				$queue_post_id = $event->job->get_post_id();
+
+				if ( $queue_post_id ) {
+					wp_delete_post( $queue_post_id, true );
+				}
+			}
+		);
 
 		// Add the event listener to schedule the next cron run.
 		$this->app['events']->listen(

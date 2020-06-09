@@ -19,13 +19,6 @@ class Wp_Cron_Scheduler {
 	public const EVENT = 'mantle_queue';
 
 	/**
-	 * Register the cron scheduler.
-	 */
-	public static function register() {
-		\add_action( static::EVENT, [ static::class, 'on_queue_run' ] );
-	}
-
-	/**
 	 * Callback for the cron event.
 	 *
 	 * @todo Abstract this a bit, allow configuration to control some of this.
