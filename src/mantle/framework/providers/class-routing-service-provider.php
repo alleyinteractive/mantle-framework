@@ -7,6 +7,8 @@
 
 namespace Mantle\Framework\Providers;
 
+use Mantle\Framework\Contracts\Http\Routing\Response_Factory as Response_Factory_Contract;
+use Mantle\Framework\Http\Routing\Response_Factory;
 use Mantle\Framework\Http\Routing\Router;
 use Mantle\Framework\Service_Provider;
 
@@ -21,6 +23,8 @@ class Routing_Service_Provider extends Service_Provider {
 	 */
 	public function register() {
 		$this->register_router();
+		$this->register_redirector();
+		$this->register_response_factory();
 	}
 
 	/**
@@ -31,6 +35,32 @@ class Routing_Service_Provider extends Service_Provider {
 			'router',
 			function( $app ) {
 				return new Router( $app );
+			}
+		);
+	}
+
+	/**
+	 * Register the URL generator service.
+	 */
+	protected function register_url_generator_service() {
+
+	}
+
+	/**
+	 * Register the redirect service.
+	 */
+	protected function register_redirector() {
+
+	}
+
+	/**
+	 * Register the response factory.
+	 */
+	protected function register_response_factory() {
+		$this->app->singleton(
+			Response_Factory_Contract::class,
+			function( $app ) {
+				return new Response_Factory();
 			}
 		);
 	}

@@ -1,0 +1,38 @@
+<?php
+/**
+ * Test_Response_Factory test file.
+ *
+ * @package Mantle
+ */
+
+namespace Mantle\Tests\Framework\Console;
+
+use Mantle\Framework\Http\Routing\Response_Factory;
+use Mockery as m;
+
+class Test_Response_Factory extends \Mockery\Adapter\Phpunit\MockeryTestCase {
+
+	public function setUp(): void {
+		parent::setUp();
+	}
+
+	public function test_raw_response() {
+		$response = mantle_response()->make( "I'm a teapot", 418 );
+		$this->assertEquals( "I'm a teapot", $response->getContent() );
+	}
+
+	public function test_raw_response_through_helper() {
+		$response = mantle_response( "I'm a teapot", 418 );
+		$this->assertEquals( "I'm a teapot", $response->getContent() );
+	}
+
+	public function test_json_response() {
+		$response = mantle_response()->json( [ 'response' => 'test' ] );
+		$this->assertEquals( '{"response":"test"}', $response->getContent() );
+		$this->assertEquals( 'application/json', $response->headers->get( 'Content-Type' ) );
+	}
+
+	public function test_no_content_response() {
+		$this->assertEmpty( mantle_response()->noContent()->getContent() );
+	}
+}

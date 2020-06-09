@@ -143,6 +143,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 		try {
 			$response = $this->router->dispatch( $request );
 		} catch ( ResourceNotFoundException $e ) {
+			var_dump($e);exit;
 			// If no route found, allow the request to be passed down to WordPress.
 			if ( $provider->should_pass_through_requests( $request ) ) {
 				return null;

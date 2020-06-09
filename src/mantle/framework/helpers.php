@@ -9,6 +9,7 @@
  */
 
 use Mantle\Framework\Application;
+use Mantle\Framework\Contracts\Http\Routing\Response_Factory;
 
 /**
  * Get the available container instance.
@@ -48,4 +49,21 @@ function mantle_config( string $key = null, $default = null ) {
  */
 function mantle_base_path( string $path = '' ): string {
 	return mantle_app()->get_base_path( $path );
+}
+
+/**
+ * Return a new response for the application.
+ *
+ * @param string $content Response content, optional.
+ * @param int    $status Response status code, optional.
+ * @param array  $headers Response headers, optional.
+ * @return Response_Factory
+ */
+function mantle_response( ...$args ) {
+	$factory = mantle_app( Response_Factory::class );
+	if ( empty( $args ) ) {
+		return $factory;
+	}
+
+	return $factory->make( ...$args );
 }
