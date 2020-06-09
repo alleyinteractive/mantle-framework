@@ -10,6 +10,7 @@ namespace Mantle\Framework\Providers;
 use Mantle\Framework\Console\Generators\Model_Make_Command;
 use Mantle\Framework\Console\Generators\Service_Provider_Make_Command;
 use Mantle\Framework\Console\Generators\Factory_Make_Command;
+use Mantle\Framework\Console\Generators\Job_Make_Command;
 use Mantle\Framework\Console\Package_Discover_Command;
 use Mantle\Framework\Service_Provider;
 
@@ -26,6 +27,7 @@ class Console_Service_Provider extends Service_Provider {
 	 */
 	protected $commands_to_register = [
 		Factory_Make_Command::class,
+		Job_Make_Command::class,
 		Model_Make_Command::class,
 		Package_Discover_Command::class,
 		Service_Provider_Make_Command::class,
