@@ -23,9 +23,9 @@ class Redirector {
 	 *
 	 * @var Url_Generator
 	 */
-  protected $generator;
+	protected $generator;
 
-	public function __construct( Url_Generator $generator) {
+	public function __construct( Url_Generator $generator ) {
 		$this->generator = $generator;
 	}
 
@@ -33,8 +33,12 @@ class Redirector {
 
 	}
 
-	public function refresh( int $status = self::STATUS_TEMPORARY ): RedirectResponse {
+	public function back( int $status = self::STATUS_TEMPORARY, array $headers = [], string $fallback = null ): RedirectResponse {
+		return $this->to( $this->generator->previous( $fallback ), $status, $headers );
+	}
 
+	public function refresh( int $status = self::STATUS_TEMPORARY, array $headers = [] ): RedirectResponse {
+		return $this->to( $this->generator->get_request()->path(), $status, $headers );
 	}
 
 	public function to( string $path, int $status = self::STATUS_TEMPORARY, array $headers = [], bool $secure = null ): RedirectResponse {
@@ -53,8 +57,12 @@ class Redirector {
 		);
 	}
 
-	public function route( string $route, array $parameters = [], int $status = self::STATUS_TEMPORARY, array $headers = [] ): RedirectResponse {
+	public function secure( string $path, int $status = self::STATUS_TEMPORARY, array $headers = [] ): RedirectResponse {
+		return $this->to( $path, $status, $headers, true );
+	}
 
+	public function route( string $route, array $parameters = [], int $status = self::STATUS_TEMPORARY, array $headers = [] ): RedirectResponse {
+		return $this->to( $this->generator->generate( $route, $parameters ), $status, $headers );
 	}
 
 	/**

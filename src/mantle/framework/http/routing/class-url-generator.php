@@ -2,16 +2,27 @@
 namespace Mantle\Framework\Http\Routing;
 
 use Mantle\Framework\Contracts\Http\Routing\Url_Generator as Generator_Contract;
+use Mantle\Framework\Http\Request;
 use Mantle\Framework\Support\Arr;
 use Mantle\Framework\Support\Str;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Generator\UrlGenerator;
+use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\Routing\RouteCollection;
 
 class Url_Generator extends UrlGenerator implements Generator_Contract {
-	 /**
-	 * A cached copy of the URL root for the current request.
+	/**
+	 * The request instance.
 	 *
-	 * @var string|null
+	 * @var Request
 	 */
+	protected $request;
+
+	 /**
+	  * A cached copy of the URL root for the current request.
+	  *
+	  * @var string|null
+	  */
 	protected $cachedRoot;
 
 	/**
@@ -20,6 +31,68 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 * @var string|null
 	 */
 	protected $cachedScheme;
+
+	/**
+	 * The forced scheme for URLs.
+	 *
+	 * @var string
+	 */
+	protected $forceScheme;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param RouteCollection $routes Route collection.
+	 * @param Request         $request Request object.
+	 * @param LoggerInterface $logger Logger interface.
+	 */
+	public function __construct( RouteCollection $routes, Request $request, LoggerInterface $logger = null ) {
+		$this->routes = $routes;
+
+		$this->set_request( $request );
+	}
+
+	/**
+	 * Set the request object.
+	 *
+	 * @param Request $request Request object to set.
+	 * @return static
+	 */
+	public function set_request( Request $request ) {
+		$this->request = $request;
+		$this->context = ( new RequestContext() )->fromRequest( $request );
+		return $this;
+	}
+
+	/**
+	 * Get the request object.
+	 *
+	 * @return Request
+	 */
+	public function get_request(): Request {
+		return $this->request;
+	}
+
+	/**
+	 * Get the current URL for the request.
+	 *
+	 * @return string
+	 */
+	public function current() {
+			 return $this->to( $this->request->getPathInfo() );
+	}
+
+	/**
+	 * Get the URL for the previous request.
+	 *
+	 * @param string $fallback Fallback value, optional.
+	 * @return string
+	 */
+	public function previous( string $fallback = null ): string {
+		return $this->to(
+			$this->request->headers->get( 'referer', $fallback ?? '/' )
+		);
+	}
 
 	public function to( string $path, array $extra = [], bool $secure = null ) {
 		if ( $this->isValidUrl( $path ) ) {
@@ -58,7 +131,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 
 		foreach ( $parameters as $key => $parameter ) {
 			// if ( $parameter instanceof UrlRoutable ) {
-			// 	$parameters[ $key ] = $parameter->getRouteKey();
+			// $parameters[ $key ] = $parameter->getRouteKey();
 			// }
 		}
 
@@ -68,18 +141,17 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	/**
 	 * Get the default scheme for a raw URL.
 	 *
-	 * @param  bool|null  $secure
+	 * @param  bool|null $secure
 	 * @return string
 	 */
-	public function formatScheme($secure = null)
-	{
-			if (! is_null($secure)) {
-					return $secure ? 'https://' : 'http://';
-			}
+	public function formatScheme( $secure = null ) {
+		if ( ! is_null( $secure ) ) {
+				return $secure ? 'https://' : 'http://';
+		}
 
-			if (is_null($this->cachedScheme)) {
-					$this->cachedScheme = $this->forceScheme ?: $this->request->getScheme().'://';
-			}
+		if ( is_null( $this->cachedScheme ) ) {
+				$this->cachedScheme = $this->forceScheme ?: $this->context->getScheme() . '://';
+		}
 
 			return $this->cachedScheme;
 	}
@@ -110,9 +182,10 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 */
 	public function formatRoot( $scheme, $root = null ) {
 		if ( is_null( $root ) ) {
-			if ( is_null( $this->cachedRoot ) ) {
-				$this->cachedRoot = $this->forcedRoot ?: $this->request->root();
-			}
+			$this->cachedRoot = $this->context->getBaseUrl();
+			// if ( is_null( $this->cachedRoot ) ) {
+			// $this->cachedRoot = $this->forcedRoot ?: $this->context->getBaseUrl();
+			// }
 
 			$root = $this->cachedRoot;
 		}
@@ -147,5 +220,17 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 		}
 
 			return true;
+	}
+
+	/**
+	 * Force the scheme for URLs.
+	 *
+	 * @param  string $scheme
+	 * @return void
+	 */
+	public function forceScheme( $scheme ) {
+			$this->cachedScheme = null;
+
+			$this->forceScheme = $scheme . '://';
 	}
 }

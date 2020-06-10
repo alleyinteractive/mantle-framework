@@ -53,19 +53,10 @@ class Routing_Service_Provider extends Service_Provider {
 				$routes = $app['router']->get_routes();
 				$routes = $app->instance( 'routes', $routes );
 
-				$host = \wp_parse_url( \home_url(), PHP_URL_HOST );
-
-				$context = new RequestContext(
-					'',
-					$_SERVER['REQUEST_METHOD'] ?? 'GET',
-					$host,
-					is_ssl() ? 'https' : 'http'
-				);
-
 				// todo: add logger.
 				return new Url_Generator(
 					$routes,
-					$context
+					$app['request']
 				);
 			}
 		);
