@@ -56,7 +56,7 @@ class Routing_Service_Provider extends Service_Provider {
 
 				$context = new RequestContext(
 					'',
-					'GET',
+					$_SERVER['REQUEST_METHOD'] ?? 'GET',
 					$host,
 					is_ssl() ? 'https' : 'http'
 				);
