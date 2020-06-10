@@ -10,30 +10,20 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class Response_Factory implements Factory_Contract {
-
-	/**
-	 * The view factory instance.
-	 *
-	 * @var \Illuminate\Contracts\View\Factory
-	 */
-	protected $view;
-
 	/**
 	 * The redirector instance.
 	 *
-	 * @var \Illuminate\Routing\Redirector
+	 * @var Redirector
 	 */
 	protected $redirector;
 
 	/**
 	 * Create a new response factory instance.
 	 *
-	 * @param  \Illuminate\Contracts\View\Factory $view
-	 * @param  \Illuminate\Routing\Redirector     $redirector
+	 * @param Redirector $redirector Redirector instance.
 	 */
-	public function __construct() {
-		// $this->view       = $view;
-		// $this->redirector = $redirector;
+	public function __construct( Redirector $redirector ) {
+		$this->redirector = $redirector;
 	}
 
 	/**
@@ -86,7 +76,7 @@ class Response_Factory implements Factory_Contract {
 	 * @param  int   $status
 	 * @param  array $headers
 	 * @param  int   $options
-	 * @return \Illuminate\Http\JsonResponse
+	 * @return JsonResponse
 	 */
 	public function json( $data = [], $status = 200, array $headers = [], $options = 0 ) {
 		return new JsonResponse( $data, $status, $headers, $options );
@@ -100,7 +90,7 @@ class Response_Factory implements Factory_Contract {
 	 * @param  int    $status
 	 * @param  array  $headers
 	 * @param  int    $options
-	 * @return \Illuminate\Http\JsonResponse
+	 * @return JsonResponse
 	 */
 	public function jsonp( $callback, $data = [], $status = 200, array $headers = [], $options = 0 ) {
 		return $this->json( $data, $status, $headers, $options )->setCallback( $callback );
@@ -208,44 +198,5 @@ class Response_Factory implements Factory_Contract {
 	 */
 	public function redirectToRoute( $route, $parameters = [], $status = 302, $headers = [] ) {
 		return $this->redirector->route( $route, $parameters, $status, $headers );
-	}
-
-	/**
-	 * Create a new redirect response to a controller action.
-	 *
-	 * @param  string $action
-	 * @param  mixed  $parameters
-	 * @param  int    $status
-	 * @param  array  $headers
-	 * @return \Illuminate\Http\RedirectResponse
-	 */
-	public function redirectToAction( $action, $parameters = [], $status = 302, $headers = [] ) {
-		return $this->redirector->action( $action, $parameters, $status, $headers );
-	}
-
-	/**
-	 * Create a new redirect response, while putting the current URL in the session.
-	 *
-	 * @param  string    $path
-	 * @param  int       $status
-	 * @param  array     $headers
-	 * @param  bool|null $secure
-	 * @return \Illuminate\Http\RedirectResponse
-	 */
-	public function redirectGuest( $path, $status = 302, $headers = [], $secure = null ) {
-		return $this->redirector->guest( $path, $status, $headers, $secure );
-	}
-
-	/**
-	 * Create a new redirect response to the previously intended location.
-	 *
-	 * @param  string    $default
-	 * @param  int       $status
-	 * @param  array     $headers
-	 * @param  bool|null $secure
-	 * @return \Illuminate\Http\RedirectResponse
-	 */
-	public function redirectToIntended( $default = '/', $status = 302, $headers = [], $secure = null ) {
-		return $this->redirector->intended( $default, $status, $headers, $secure );
 	}
 }

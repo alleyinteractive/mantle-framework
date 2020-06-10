@@ -142,11 +142,12 @@ class Application extends Container\Container implements Application_Contract {
 	 */
 	protected function register_core_aliases() {
 		$core_aliases = [
-			'app'     => [ static::class, \Mantle\Framework\Contracts\Application::class ],
-			'config'  => [ \Mantle\Framework\Config\Repository::class, \Mantle\Framework\Contracts\Config\Repository::class ],
-			'request' => [ \Mantle\Framework\Http\Request::class, \Symfony\Component\HttpFoundation\Request::class ],
-			'router'  => [ \Mantle\Framework\Http\Routing\Router::class, \Mantle\Framework\Contracts\Http\Routing\Router::class ],
-			'url'     => [ \Mantle\Framework\Http\Routing\Url_Generator::class, \Mantle\Framework\Contracts\Http\Routing\Url_Generator::class ],
+			'app'      => [ static::class, \Mantle\Framework\Contracts\Application::class ],
+			'config'   => [ \Mantle\Framework\Config\Repository::class, \Mantle\Framework\Contracts\Config\Repository::class ],
+			'request'  => [ \Mantle\Framework\Http\Request::class, \Symfony\Component\HttpFoundation\Request::class ],
+			'redirect' => [ \Mantle\Framework\Http\Routing\Redirector::class ],
+			'router'   => [ \Mantle\Framework\Http\Routing\Router::class, \Mantle\Framework\Contracts\Http\Routing\Router::class ],
+			'url'      => [ \Mantle\Framework\Http\Routing\Url_Generator::class, \Mantle\Framework\Contracts\Http\Routing\Url_Generator::class ],
 		];
 
 		foreach ( $core_aliases as $key => $aliases ) {
