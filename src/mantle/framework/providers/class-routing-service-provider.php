@@ -10,7 +10,9 @@ namespace Mantle\Framework\Providers;
 use Mantle\Framework\Contracts\Http\Routing\Response_Factory as Response_Factory_Contract;
 use Mantle\Framework\Http\Routing\Response_Factory;
 use Mantle\Framework\Http\Routing\Router;
+use Mantle\Framework\Http\Routing\Url_Generator;
 use Mantle\Framework\Service_Provider;
+use Symfony\Component\Routing\RequestContext;
 
 /**
  * Routing Service Provider
@@ -23,6 +25,7 @@ class Routing_Service_Provider extends Service_Provider {
 	 */
 	public function register() {
 		$this->register_router();
+		$this->register_url_generator();
 		$this->register_redirector();
 		$this->register_response_factory();
 	}
@@ -42,8 +45,29 @@ class Routing_Service_Provider extends Service_Provider {
 	/**
 	 * Register the URL generator service.
 	 */
-	protected function register_url_generator_service() {
+	protected function register_url_generator() {
+		$this->app->singleton(
+			'url',
+			function( $app ) {
+				$routes = $app['router']->get_routes();
+				$routes = $app->instance( 'routes', $routes );
 
+				$host = \wp_parse_url( \home_url(), PHP_URL_HOST );
+
+				$context = new RequestContext(
+					'',
+					'GET',
+					$host,
+					is_ssl() ? 'https' : 'http'
+				);
+
+				// todo: add logger.
+				return new Url_Generator(
+					$routes,
+					$context
+				);
+			}
+		);
 	}
 
 	/**

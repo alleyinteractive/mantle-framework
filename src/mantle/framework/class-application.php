@@ -146,6 +146,7 @@ class Application extends Container\Container implements Application_Contract {
 			'config'  => [ \Mantle\Framework\Config\Repository::class, \Mantle\Framework\Contracts\Config\Repository::class ],
 			'request' => [ \Mantle\Framework\Http\Request::class, \Symfony\Component\HttpFoundation\Request::class ],
 			'router'  => [ \Mantle\Framework\Http\Routing\Router::class, \Mantle\Framework\Contracts\Http\Routing\Router::class ],
+			'url'     => [ \Mantle\Framework\Http\Routing\Url_Generator::class, \Mantle\Framework\Contracts\Http\Routing\Url_Generator::class ],
 		];
 
 		foreach ( $core_aliases as $key => $aliases ) {
