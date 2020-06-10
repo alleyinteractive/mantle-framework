@@ -10,6 +10,7 @@ namespace Mantle\Framework;
 use Mantle\Framework\Contracts\Application as Application_Contract;
 use Mantle\Framework\Contracts\Kernel as Kernel_Contract;
 use Mantle\Framework\Log\Log_Service_Provider;
+use Mantle\Framework\Providers\Docs_Service_Provider;
 use Mantle\Framework\Providers\Routing_Service_Provider;
 
 use function Mantle\Framework\Helpers\collect;
