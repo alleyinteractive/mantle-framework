@@ -46,13 +46,16 @@ class Test_Redirector extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->request->shouldReceive( 'expectsJson' )->andReturn( false )->byDefault();
 		$this->request->headers = $this->headers;
 
+		$root = home_url();
+
 		$this->url = m::mock( Url_Generator::class );
 		$this->url->shouldReceive( 'get_request' )->andReturn( $this->request );
 		$this->url->shouldReceive( 'to' )->with( 'bar', array(), null )->andReturn( 'http://foo.com/bar' );
 		$this->url->shouldReceive( 'to' )->with( 'bar', array(), true )->andReturn( 'https://foo.com/bar' );
 		$this->url->shouldReceive( 'to' )->with( 'login', array(), null )->andReturn( 'http://foo.com/login' );
 		$this->url->shouldReceive( 'to' )->with( 'http://foo.com/bar', array(), null )->andReturn( 'http://foo.com/bar' );
-		$this->url->shouldReceive( 'to' )->with( '/', array(), null )->andReturn( 'http://foo.com/' );
+		// $this->url->shouldReceive( 'to' )->with( '/', array(), null )->andReturn( 'http://foo.com/' );
+		$this->url->shouldReceive( 'to' )->with( '/', array(), null )->andReturn( home_url() );
 		$this->url->shouldReceive( 'to' )->with( 'http://foo.com/bar?signature=secret', array(), null )->andReturn( 'http://foo.com/bar?signature=secret' );
 
 		$this->redirect = new Redirector( $this->url );
@@ -106,6 +109,11 @@ class Test_Redirector extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertSame( 'https://foo.com/bar', $response->getTargetUrl() );
 	}
 
+	public function test_home_redirect() {
+		$response = $this->redirect->home();
+		$this->assertSame( home_url(), $response->getTargetUrl() );
+	}
+
 	// public function testAction()
 	// {
 	// $this->url->shouldReceive('action')->with('bar@index', [])->andReturn('http://foo.com/bar');
@@ -113,16 +121,14 @@ class Test_Redirector extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	// $this->assertSame('http://foo.com/bar', $response->getTargetUrl());
 		// }
 
-	public function testRoute() {
-		$this->url->shouldReceive( 'route' )->with( 'home' )->andReturn( 'http://foo.com/bar' );
-		$this->url->shouldReceive( 'route' )->with( 'home', array() )->andReturn( 'http://foo.com/bar' );
+	// public function testRoute() {
+	// 	$this->url->shouldReceive( 'route' )->with( 'home' )->andReturn( 'http://foo.com/bar' );
+	// 	$this->url->shouldReceive( 'route' )->with( 'home', array() )->andReturn( 'http://foo.com/bar' );
 
-		$response = $this->redirect->route( 'home' );
-		$this->assertSame( 'http://foo.com/bar', $response->getTargetUrl() );
+	// 	$response = $this->redirect->route( 'home' );
+	// 	$this->assertSame( 'http://foo.com/bar', $response->getTargetUrl() );
 
-		$response = $this->redirect->home();
-		$this->assertSame( 'http://foo.com/bar', $response->getTargetUrl() );
-	}
-
-
+	// 	$response = $this->redirect->home();
+	// 	$this->assertSame( 'http://foo.com/bar', $response->getTargetUrl() );
+	// }
 }

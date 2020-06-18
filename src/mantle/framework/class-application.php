@@ -26,6 +26,13 @@ class Application extends Container\Container implements Application_Contract {
 	protected $base_path;
 
 	/**
+	 * Root URL of the application.
+	 *
+	 * @var string
+	 */
+	protected $root_url;
+
+	/**
 	 * Indicates if the application has been bootstrapped before.
 	 *
 	 * @var bool
@@ -50,13 +57,19 @@ class Application extends Container\Container implements Application_Contract {
 	 * Constructor.
 	 *
 	 * @param string $base_path Base path to set.
+	 * @param string $root_url Root URL of the application.
 	 */
-	public function __construct( string $base_path = '' ) {
+	public function __construct( string $base_path = '', string $root_url = null ) {
 		if ( empty( $base_path ) && defined( 'MANTLE_BASE_DIR' ) ) {
 			$base_path = \MANTLE_BASE_DIR;
 		}
 
+		if ( ! $root_url ) {
+			$root_url = \home_url();
+		}
+
 		$this->set_base_path( $base_path );
+		$this->set_root_url( $root_url );
 		$this->register_base_bindings();
 		$this->register_base_service_providers();
 		$this->register_core_aliases();
@@ -79,6 +92,25 @@ class Application extends Container\Container implements Application_Contract {
 	 */
 	public function get_base_path( string $path = '' ): string {
 		return $this->base_path . ( $path ? '/' . $path : '' );
+	}
+
+	/**
+	 * Set the root URL of the application.
+	 *
+	 * @param string $url Root URL to set.
+	 */
+	public function set_root_url( string $url ) {
+		$this->root_url = $url;
+	}
+
+	/**
+	 * Getter for the root URL.
+	 *
+	 * @param string $path Path to append.
+	 * @return string
+	 */
+	public function get_root_url( string $path = '' ): string {
+		return $this->root_url . ( $path ? '/' . $path : '' );
 	}
 
 	/**

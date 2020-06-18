@@ -19,11 +19,11 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	protected $request;
 
 	 /**
-	  * A cached copy of the URL root for the current request.
+	  * Root URL for the application.
 	  *
-	  * @var string|null
+	  * @var string
 	  */
-	protected $cachedRoot;
+	protected $root_url;
 
 	/**
 	 * A cached copy of the URL scheme for the current request.
@@ -46,8 +46,9 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 * @param Request         $request Request object.
 	 * @param LoggerInterface $logger Logger interface.
 	 */
-	public function __construct( RouteCollection $routes, Request $request, LoggerInterface $logger = null ) {
-		$this->routes = $routes;
+	public function __construct( string $root_url = '', RouteCollection $routes, Request $request, LoggerInterface $logger = null ) {
+		$this->root_url = $root_url;
+		$this->routes   = $routes;
 
 		$this->set_request( $request );
 	}
@@ -110,9 +111,9 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 		// Once we have the scheme we will compile the "tail" by collapsing the values
 		// into a single string delimited by slashes. This just makes it convenient
 		// for passing the array of parameters to this URL as a list of segments.
-		$root = $this->formatRoot( $this->formatScheme( $secure ) );
+		$root = $this->get_root_url();
 
-		[$path, $query] = $this->extractQueryString( $path );
+		[ $path, $query ] = $this->extractQueryString( $path );
 
 		return $this->format(
 			$root,
@@ -174,26 +175,35 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	}
 
 	/**
+	 * Get the root URL.
+	 *
+	 * @return string
+	 */
+	public function get_root_url(): string {
+		return $this->root_url;
+	}
+
+	/**
 	 * Get the base URL for the request.
 	 *
 	 * @param  string      $scheme
 	 * @param  string|null $root
 	 * @return string
 	 */
-	public function formatRoot( $scheme, $root = null ) {
-		if ( is_null( $root ) ) {
-			$this->cachedRoot = $this->context->getBaseUrl();
-			// if ( is_null( $this->cachedRoot ) ) {
-			// $this->cachedRoot = $this->forcedRoot ?: $this->context->getBaseUrl();
-			// }
+	// public function formatRoot( $scheme, $root = null ) {
+	// 	if ( is_null( $root ) ) {
+	// 		$this->cachedRoot = $this->context->getBaseUrl();
+	// 		// if ( is_null( $this->cachedRoot ) ) {
+	// 		// $this->cachedRoot = $this->forcedRoot ?: $this->context->getBaseUrl();
+	// 		// }
 
-			$root = $this->cachedRoot;
-		}
+	// 		$root = $this->cachedRoot;
+	// 	}
 
-		$start = Str::starts_with( $root, 'http://' ) ? 'http://' : 'https://';
+	// 	$start = Str::starts_with( $root, 'http://' ) ? 'http://' : 'https://';
 
-		return preg_replace( '~' . $start . '~', $scheme, $root, 1 );
-	}
+	// 	return preg_replace( '~' . $start . '~', $scheme, $root, 1 );
+	// }
 
 	/**
 	 * Format the given URL segments into a single URL.

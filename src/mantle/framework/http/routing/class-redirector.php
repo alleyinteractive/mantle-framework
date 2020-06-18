@@ -29,8 +29,9 @@ class Redirector {
 		$this->generator = $generator;
 	}
 
-	public function home( int $status = self::STATUS_TEMPORARY ): RedirectResponse {
-
+	public function home( int $status = self::STATUS_TEMPORARY, array $headers = [] ): RedirectResponse {
+		var_dump($this->generator->to( '/', [], null ));
+		return $this->to( $this->generator->to( '/', [], null ), $status, $headers );
 	}
 
 	public function back( int $status = self::STATUS_TEMPORARY, array $headers = [], string $fallback = null ): RedirectResponse {
