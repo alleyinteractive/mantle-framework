@@ -201,7 +201,7 @@ class Dispatcher implements Dispatcher_Contract {
 			$payload
 		);
 
-		if ( $this->should_broadcast( $payload ) ) {
+		if ( $this->should_broadcast( $payload ) && isset( $payload[0] ) ) {
 			$this->broadcast_event( $payload[0] );
 		}
 
@@ -465,8 +465,8 @@ class Dispatcher implements Dispatcher_Contract {
 		$queue = $listener->queue ?? null;
 
 		isset( $listener->delay )
-					? $connection->laterOn( $queue, $listener->delay, $job )
-					: $connection->pushOn( $queue, $job );
+			? $connection->laterOn( $queue, $listener->delay, $job )
+			: $connection->pushOn( $queue, $job );
 	}
 
 	/**

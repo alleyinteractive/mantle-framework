@@ -90,7 +90,7 @@ class Wp_Cron_Scheduler {
 			$queue = 'default';
 		}
 
-		$delay = mantle_config( 'queue.wordpress.delay', [] ); // phpcs:ignore WordPress.WP.CapitalPDangit.Misspelled
+		$delay = mantle_config( 'queue.wordpress.delay', [] );
 
 		// Support queue-specific delay.
 		if ( is_array( $delay ) ) {
