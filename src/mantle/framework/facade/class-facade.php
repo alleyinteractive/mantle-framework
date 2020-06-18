@@ -65,6 +65,19 @@ abstract class Facade {
 	}
 
 	/**
+	 * Hotswap the underlying instance behind the facade.
+	 *
+	 * @param mixed $instance Object instance.
+	 */
+	public static function swap( $instance ) {
+		static::$resolved_instances[ static::get_facade_accessor() ] = $instance;
+
+		if ( isset( static::$app ) ) {
+			static::$app->instance( static::get_facade_accessor(), $instance );
+		}
+	}
+
+	/**
 	 * Get the Facade's Root Instance
 	 *
 	 * @return mixed

@@ -10,6 +10,7 @@ namespace Mantle\Framework;
 use Mantle\Framework\Contracts\Application as Application_Contract;
 use Mantle\Framework\Contracts\Kernel as Kernel_Contract;
 use Mantle\Framework\Log\Log_Service_Provider;
+use Mantle\Framework\Providers\Event_Service_Provider;
 use Mantle\Framework\Providers\Routing_Service_Provider;
 
 use function Mantle\Framework\Helpers\collect;
@@ -165,6 +166,7 @@ class Application extends Container\Container implements Application_Contract {
 	 * Register the base service providers.
 	 */
 	protected function register_base_service_providers() {
+		$this->register( Event_Service_Provider::class );
 		$this->register( Log_Service_Provider::class );
 		$this->register( Routing_Service_Provider::class );
 	}
@@ -176,8 +178,9 @@ class Application extends Container\Container implements Application_Contract {
 		$core_aliases = [
 			'app'      => [ static::class, \Mantle\Framework\Contracts\Application::class ],
 			'config'   => [ \Mantle\Framework\Config\Repository::class, \Mantle\Framework\Contracts\Config\Repository::class ],
-			'request'  => [ \Mantle\Framework\Http\Request::class, \Symfony\Component\HttpFoundation\Request::class ],
+			'queue'    => [ \Mantle\Framework\Queue\Queue_Manager::class, \Mantle\Framework\Contracts\Queue\Queue_Manager::class ],
 			'redirect' => [ \Mantle\Framework\Http\Routing\Redirector::class ],
+			'request'  => [ \Mantle\Framework\Http\Request::class, \Symfony\Component\HttpFoundation\Request::class ],
 			'router'   => [ \Mantle\Framework\Http\Routing\Router::class, \Mantle\Framework\Contracts\Http\Routing\Router::class ],
 			'url'      => [ \Mantle\Framework\Http\Routing\Url_Generator::class, \Mantle\Framework\Contracts\Http\Routing\Url_Generator::class ],
 		];

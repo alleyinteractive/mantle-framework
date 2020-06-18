@@ -29,6 +29,13 @@ class Log_Manager {
 	protected $app;
 
 	/**
+	 * Default logger instance for the application.
+	 *
+	 * @var Logger
+	 */
+	protected $default_logger;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Application $app Application instance.
@@ -171,6 +178,20 @@ class Log_Manager {
 	}
 
 	/**
+	 * Get the default logger instance.
+	 *
+	 * @return Logger
+	 */
+	public function get_default_logger(): Logger {
+		if ( isset( $this->default_logger ) ) {
+			return $this->default_logger;
+		}
+
+		$this->default_logger = $this->channel( $this->get_default_channel() );
+		return $this->default_logger;
+	}
+
+	/**
 	 * Parse the string level into a Monolog constant.
 	 *
 	 * @param  array $config Handler configuration.
@@ -194,8 +215,9 @@ class Log_Manager {
 	 *
 	 * @param string $method Method called.
 	 * @param array  $args Arguments for the method.
+	 * @return mixed
 	 */
 	public function __call( $method, $args ) {
-		$this->channel( $this->get_default_channel() )->$method( ...$args );
+		return $this->get_default_logger()->$method( ...$args );
 	}
 }

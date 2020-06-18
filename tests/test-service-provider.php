@@ -3,6 +3,7 @@ namespace Mantle\Tests;
 
 use Mantle\Framework\Application;
 use Mantle\Framework\Console\Command;
+use Mantle\Framework\Contracts\Providers as ProviderContracts;
 use Mantle\Framework\Service_Provider;
 use Mockery as m;
 
@@ -40,5 +41,21 @@ class Test_Service_Provider extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$service_provider
 			->add_command( $command )
 			->register_commands();
+	}
+
+	public function test_on_init() {
+		$provider = m::mock( Service_Provider::class, ProviderContracts\Init::class )->makePartial();
+		$provider->shouldReceive( 'on_init' )->once();
+
+		$provider->boot();
+		do_action( 'init' );
+	}
+
+	public function test_on_wp_loaded() {
+		$provider = m::mock( Service_Provider::class, ProviderContracts\Wp_Loaded::class )->makePartial();
+		$provider->shouldReceive( 'on_wp_loaded' )->once();
+
+		$provider->boot();
+		do_action( 'wp_loaded' );
 	}
 }
