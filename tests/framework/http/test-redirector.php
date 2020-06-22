@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Tests\Framework\Console;
+namespace Mantle\Tests\Framework\Http;
 
 // use Mantle\Framework\Contracts\Http\Routing\Url_Generator;
 use Mantle\Framework\Http\Request;
@@ -50,13 +50,14 @@ class Test_Redirector extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		$this->url = m::mock( Url_Generator::class );
 		$this->url->shouldReceive( 'get_request' )->andReturn( $this->request );
-		$this->url->shouldReceive( 'to' )->with( 'bar', array(), null )->andReturn( 'http://foo.com/bar' );
-		$this->url->shouldReceive( 'to' )->with( 'bar', array(), true )->andReturn( 'https://foo.com/bar' );
-		$this->url->shouldReceive( 'to' )->with( 'login', array(), null )->andReturn( 'http://foo.com/login' );
-		$this->url->shouldReceive( 'to' )->with( 'http://foo.com/bar', array(), null )->andReturn( 'http://foo.com/bar' );
+		$this->url->shouldReceive( 'to' )->with( 'bar', [], null )->andReturn( 'http://foo.com/bar' );
+		$this->url->shouldReceive( 'to' )->with( 'bar', [], true )->andReturn( 'https://foo.com/bar' );
+		$this->url->shouldReceive( 'to' )->with( 'login', [], null )->andReturn( 'http://foo.com/login' );
+		$this->url->shouldReceive( 'to' )->with( 'http://foo.com/bar', [], null )->andReturn( 'http://foo.com/bar' );
 		// $this->url->shouldReceive( 'to' )->with( '/', array(), null )->andReturn( 'http://foo.com/' );
-		$this->url->shouldReceive( 'to' )->with( '/', array(), null )->andReturn( home_url() );
-		$this->url->shouldReceive( 'to' )->with( 'http://foo.com/bar?signature=secret', array(), null )->andReturn( 'http://foo.com/bar?signature=secret' );
+		$this->url->shouldReceive( 'to' )->with( '/', [], null )->andReturn( home_url() );
+		$this->url->shouldReceive( 'to' )->with( 'http://foo.com/bar?signature=secret', [], null )->andReturn( 'http://foo.com/bar?signature=secret' );
+		$this->url->shouldReceive( 'to' )->with( 'http://example.org', [], null )->andReturn( home_url() );
 
 		$this->redirect = new Redirector( $this->url );
 	}
@@ -73,10 +74,10 @@ class Test_Redirector extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$response = $this->redirect->to(
 			'bar',
 			303,
-			array(
+			[
 				'X-RateLimit-Limit'     => 60,
 				'X-RateLimit-Remaining' => 59,
-			),
+			],
 			true
 		);
 
@@ -113,22 +114,4 @@ class Test_Redirector extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$response = $this->redirect->home();
 		$this->assertSame( home_url(), $response->getTargetUrl() );
 	}
-
-	// public function testAction()
-	// {
-	// $this->url->shouldReceive('action')->with('bar@index', [])->andReturn('http://foo.com/bar');
-	// $response = $this->redirect->action('bar@index');
-	// $this->assertSame('http://foo.com/bar', $response->getTargetUrl());
-		// }
-
-	// public function testRoute() {
-	// 	$this->url->shouldReceive( 'route' )->with( 'home' )->andReturn( 'http://foo.com/bar' );
-	// 	$this->url->shouldReceive( 'route' )->with( 'home', array() )->andReturn( 'http://foo.com/bar' );
-
-	// 	$response = $this->redirect->route( 'home' );
-	// 	$this->assertSame( 'http://foo.com/bar', $response->getTargetUrl() );
-
-	// 	$response = $this->redirect->home();
-	// 	$this->assertSame( 'http://foo.com/bar', $response->getTargetUrl() );
-	// }
 }

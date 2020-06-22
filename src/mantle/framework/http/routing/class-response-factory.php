@@ -187,7 +187,7 @@ class Response_Factory implements Factory_Contract {
 	 * @param  bool|null $secure
 	 * @return RedirectResponse
 	 */
-	public function redirect_to( $path, $status = 302, $headers = [], $secure = null ) {
+	public function redirect_to( $path, $status = 302, $headers = [], $secure = null ): RedirectResponse {
 		return $this->redirector->to( $path, $status, $headers, $secure );
 	}
 

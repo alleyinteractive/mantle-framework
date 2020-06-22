@@ -7,13 +7,20 @@
 
 namespace Mantle\Tests\Framework\Console;
 
-use Mantle\Framework\Http\Routing\Response_Factory;
+use Mantle\Framework\Http\Request;
 use Mockery as m;
 
 class Test_Response_Factory extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 	public function setUp(): void {
 		parent::setUp();
+
+		app()->instance( 'request', new Request() );
+	}
+
+	public function tearDown(): void {
+		parent::tearDown();
+		app()->forget_instance( 'request' );
 	}
 
 	public function test_raw_response() {
@@ -33,6 +40,6 @@ class Test_Response_Factory extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	}
 
 	public function test_no_content_response() {
-		$this->assertEmpty( response()->noContent()->getContent() );
+		$this->assertEmpty( response()->no_content()->getContent() );
 	}
 }
