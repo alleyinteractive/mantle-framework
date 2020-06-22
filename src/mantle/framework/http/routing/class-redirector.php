@@ -9,13 +9,22 @@ namespace Mantle\Framework\Http\Routing;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
-use function Mantle\Framework\Helpers\tap;
-
 /**
- * Redirector
+ * Redirector Response
  */
 class Redirector {
+	/**
+	 * Status code for a permanent redirect.
+	 *
+	 * @var int
+	 */
 	public const STATUS_PERMANENT = 301;
+
+	/**
+	 * Status code for a temporary redirect.
+	 *
+	 * @var int
+	 */
 	public const STATUS_TEMPORARY = 302;
 
 	/**
@@ -25,23 +34,58 @@ class Redirector {
 	 */
 	protected $generator;
 
+	/**
+	 * Constructor.
+	 *
+	 * @param Url_Generator $generator Generator instance.
+	 */
 	public function __construct( Url_Generator $generator ) {
 		$this->generator = $generator;
 	}
 
+	/**
+	 * Generate a redirect to the homepage of the site.
+	 *
+	 * @param int   $status Status code.
+	 * @param array $headers Additional headers.
+	 * @return RedirectResponse
+	 */
 	public function home( int $status = self::STATUS_TEMPORARY, array $headers = [] ): RedirectResponse {
-		var_dump($this->generator->to( '/', [], null ));
 		return $this->to( $this->generator->to( '/', [], null ), $status, $headers );
 	}
 
+	/**
+	 * Generate a redirect to the previous page the user was on.
+	 *
+	 * @param int    $status Status code.
+	 * @param array  $headers Additional headers.
+	 * @param string $fallback Fallback URL.
+	 * @return RedirectResponse
+	 */
 	public function back( int $status = self::STATUS_TEMPORARY, array $headers = [], string $fallback = null ): RedirectResponse {
 		return $this->to( $this->generator->previous( $fallback ), $status, $headers );
 	}
 
+	/**
+	 * Generate a redirect to the current URL.
+	 *
+	 * @param int   $status Status code.
+	 * @param array $headers Additional headers.
+	 * @return RedirectResponse
+	 */
 	public function refresh( int $status = self::STATUS_TEMPORARY, array $headers = [] ): RedirectResponse {
 		return $this->to( $this->generator->get_request()->path(), $status, $headers );
 	}
 
+	/**
+	 * Generate a redirect to a specific path on the current site.
+	 *
+	 * @param string $path URL path to redirect to.
+	 * @param int    $status Status code.
+	 * @param array  $headers Additional headers.
+	 * @param bool   $secure Flag if the redirect should be secured with HTTPS.
+	 * @return RedirectResponse
+	 */
 	public function to( string $path, int $status = self::STATUS_TEMPORARY, array $headers = [], bool $secure = null ): RedirectResponse {
 		return $this->create_redirect(
 			$this->generator->to( $path, [], $secure ),
@@ -50,18 +94,43 @@ class Redirector {
 		);
 	}
 
-	public function away( string $path, int $status = self::STATUS_TEMPORARY, array $headers = [] ) {
+	/**
+	 * Generate a redirect to a URL off the site.
+	 *
+	 * @param string $url URL to redirect to.
+	 * @param int    $status Status code.
+	 * @param array  $headers Additional headers.
+	 * @return RedirectResponse
+	 */
+	public function away( string $url, int $status = self::STATUS_TEMPORARY, array $headers = [] ): RedirectResponse {
 		return $this->create_redirect(
-			$path,
+			$url,
 			$status,
 			$headers
 		);
 	}
 
+	/**
+	 * Generate a secure redirect.
+	 *
+	 * @param string $path URL path to redirect to.
+	 * @param int    $status Status code.
+	 * @param array  $headers Additional headers.
+	 * @return RedirectResponse
+	 */
 	public function secure( string $path, int $status = self::STATUS_TEMPORARY, array $headers = [] ): RedirectResponse {
 		return $this->to( $path, $status, $headers, true );
 	}
 
+	/**
+	 * Generate a redirect to a specific route.
+	 *
+	 * @param string $route Route to generate to.
+	 * @param array  $parameters Parameters for the route.
+	 * @param int    $status Status code.
+	 * @param array  $headers Additional headers.
+	 * @return RedirectResponse
+	 */
 	public function route( string $route, array $parameters = [], int $status = self::STATUS_TEMPORARY, array $headers = [] ): RedirectResponse {
 		return $this->to( $this->generator->generate( $route, $parameters ), $status, $headers );
 	}

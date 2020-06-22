@@ -1,4 +1,9 @@
 <?php
+/**
+ * Response_Factory class file.
+ *
+ * @package Mantle
+ */
 
 namespace Mantle\Framework\Http\Routing;
 
@@ -7,8 +12,12 @@ use Mantle\Framework\Http\Response;
 use Mantle\Framework\Support\Str;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
+/**
+ * Route Response Factory.
+ */
 class Response_Factory implements Factory_Contract {
 	/**
 	 * The redirector instance.
@@ -45,7 +54,7 @@ class Response_Factory implements Factory_Contract {
 	 * @param  array $headers
 	 * @return Response
 	 */
-	public function noContent( $status = 204, array $headers = [] ) {
+	public function no_content( $status = 204, array $headers = [] ) {
 		return $this->make( '', $status, $headers );
 	}
 
@@ -57,16 +66,11 @@ class Response_Factory implements Factory_Contract {
 	 * @param  int          $status
 	 * @param  array        $headers
 	 * @return Response
+	 *
+	 * @todo not supported yet.
 	 */
 	public function view( $view, $data = [], $status = 200, array $headers = [] ) {
-		// todo: not supported yet.
 		return false;
-
-		if ( is_array( $view ) ) {
-			return $this->make( $this->view->first( $view, $data ), $status, $headers );
-		}
-
-		return $this->make( $this->view->make( $view, $data ), $status, $headers );
 	}
 
 	/**
@@ -117,7 +121,7 @@ class Response_Factory implements Factory_Contract {
 	 * @param  string|null $disposition
 	 * @return \Symfony\Component\HttpFoundation\StreamedResponse
 	 */
-	public function streamDownload( $callback, $name = null, array $headers = [], $disposition = 'attachment' ) {
+	public function stream_download( $callback, $name = null, array $headers = [], $disposition = 'attachment' ) {
 		$response = new StreamedResponse( $callback, 200, $headers );
 
 		if ( ! is_null( $name ) ) {
@@ -181,9 +185,9 @@ class Response_Factory implements Factory_Contract {
 	 * @param  int       $status
 	 * @param  array     $headers
 	 * @param  bool|null $secure
-	 * @return \Illuminate\Http\RedirectResponse
+	 * @return RedirectResponse
 	 */
-	public function redirectTo( $path, $status = 302, $headers = [], $secure = null ) {
+	public function redirect_to( $path, $status = 302, $headers = [], $secure = null ) {
 		return $this->redirector->to( $path, $status, $headers, $secure );
 	}
 
@@ -194,9 +198,9 @@ class Response_Factory implements Factory_Contract {
 	 * @param  mixed  $parameters
 	 * @param  int    $status
 	 * @param  array  $headers
-	 * @return \Illuminate\Http\RedirectResponse
+	 * @return RedirectResponse
 	 */
-	public function redirectToRoute( $route, $parameters = [], $status = 302, $headers = [] ) {
+	public function redirect_to_route( $route, $parameters = [], $status = 302, $headers = [] ): RedirectResponse {
 		return $this->redirector->route( $route, $parameters, $status, $headers );
 	}
 }

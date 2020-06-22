@@ -1,6 +1,17 @@
 <?php
+/**
+ * Response_Factory interface file.
+ *
+ * @package Mantle
+ */
+
 namespace Mantle\Framework\Contracts\Http\Routing;
 
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
+/**
+ * Response Factory Contract
+ */
 interface Response_Factory {
 
 	/**
@@ -11,7 +22,7 @@ interface Response_Factory {
 	 * @param  array  $headers
 	 * @return \Illuminate\Http\Response
 	 */
-	public function make( $content = '', $status = 200, array $headers = []);
+	public function make( $content = '', $status = 200, array $headers = [] );
 
 	/**
 	 * Create a new "no content" response.
@@ -20,7 +31,7 @@ interface Response_Factory {
 	 * @param  array $headers
 	 * @return \Illuminate\Http\Response
 	 */
-	public function noContent( $status = 204, array $headers = []);
+	public function no_content( $status = 204, array $headers = [] );
 
 	/**
 	 * Create a new response for a given view.
@@ -31,7 +42,7 @@ interface Response_Factory {
 	 * @param  array        $headers
 	 * @return \Illuminate\Http\Response
 	 */
-	public function view( $view, $data = [], $status = 200, array $headers = []);
+	public function view( $view, $data = [], $status = 200, array $headers = [] );
 
 	/**
 	 * Create a new JSON response instance.
@@ -42,7 +53,7 @@ interface Response_Factory {
 	 * @param  int   $options
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function json( $data = [], $status = 200, array $headers = [], $options = 0);
+	public function json( $data = [], $status = 200, array $headers = [], $options = 0 );
 
 	/**
 	 * Create a new JSONP response instance.
@@ -54,7 +65,7 @@ interface Response_Factory {
 	 * @param  int    $options
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function jsonp( $callback, $data = [], $status = 200, array $headers = [], $options = 0);
+	public function jsonp( $callback, $data = [], $status = 200, array $headers = [], $options = 0 );
 
 	/**
 	 * Create a new streamed response instance.
@@ -75,7 +86,7 @@ interface Response_Factory {
 	 * @param  string|null $disposition
 	 * @return \Symfony\Component\HttpFoundation\StreamedResponse
 	 */
-	public function streamDownload( $callback, $name = null, array $headers = [], $disposition = 'attachment');
+	public function stream_download( $callback, $name = null, array $headers = [], $disposition = 'attachment' );
 
 	/**
 	 * Create a new file download response.
@@ -86,7 +97,7 @@ interface Response_Factory {
 	 * @param  string|null         $disposition
 	 * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
 	 */
-	public function download( $file, $name = null, array $headers = [], $disposition = 'attachment');
+	public function download( $file, $name = null, array $headers = [], $disposition = 'attachment' );
 
 	/**
 	 * Return the raw contents of a binary file.
@@ -104,9 +115,9 @@ interface Response_Factory {
 	 * @param  int       $status
 	 * @param  array     $headers
 	 * @param  bool|null $secure
-	 * @return \Illuminate\Http\RedirectResponse
+	 * @return RedirectResponse
 	 */
-	public function redirectTo( $path, $status = 302, $headers = [], $secure = null);
+	public function redirect_to( $path, $status = 302, $headers = [], $secure = null ): RedirectResponse;
 
 	/**
 	 * Create a new redirect response to a named route.
@@ -115,7 +126,7 @@ interface Response_Factory {
 	 * @param  mixed  $parameters
 	 * @param  int    $status
 	 * @param  array  $headers
-	 * @return \Illuminate\Http\RedirectResponse
+	 * @return RedirectResponse
 	 */
-	public function redirectToRoute( $route, $parameters = [], $status = 302, $headers = []);
+	public function redirect_to_route( $route, $parameters = [], $status = 302, $headers = [] ): RedirectResponse;
 }

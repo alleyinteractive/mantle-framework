@@ -6,6 +6,7 @@
  * framework methods.
  *
  * @package Mantle
+ * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound, Squiz.Commenting.FunctionComment
  */
 
 use Mantle\Framework\Application;

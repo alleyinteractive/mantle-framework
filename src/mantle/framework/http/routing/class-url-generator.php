@@ -1,4 +1,10 @@
 <?php
+/**
+ * Url_Generator class file.
+ *
+ * @package Mantle
+ */
+
 namespace Mantle\Framework\Http\Routing;
 
 use Mantle\Framework\Contracts\Http\Routing\Url_Generator as Generator_Contract;
@@ -10,6 +16,11 @@ use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouteCollection;
 
+/**
+ * URL Generator
+ *
+ * Generates URLs to routes, paths, etc. on th e site.
+ */
 class Url_Generator extends UrlGenerator implements Generator_Contract {
 	/**
 	 * The request instance.
@@ -18,11 +29,11 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 */
 	protected $request;
 
-	 /**
-	  * Root URL for the application.
-	  *
-	  * @var string
-	  */
+	/**
+	 * Root URL for the application.
+	 *
+	 * @var string
+	 */
 	protected $root_url;
 
 	/**
@@ -30,23 +41,23 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 *
 	 * @var string|null
 	 */
-	protected $cachedScheme;
+	protected $cached_scheme;
 
 	/**
 	 * The forced scheme for URLs.
 	 *
 	 * @var string
 	 */
-	protected $forceScheme;
+	protected $force_scheme;
 
 	/**
 	 * Constructor.
 	 *
+	 * @param string          $root_url Root URL.
 	 * @param RouteCollection $routes Route collection.
 	 * @param Request         $request Request object.
-	 * @param LoggerInterface $logger Logger interface.
 	 */
-	public function __construct( string $root_url = '', RouteCollection $routes, Request $request, LoggerInterface $logger = null ) {
+	public function __construct( string $root_url = '', RouteCollection $routes, Request $request ) {
 		$this->root_url = $root_url;
 		$this->routes   = $routes;
 
@@ -80,7 +91,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 * @return string
 	 */
 	public function current() {
-			 return $this->to( $this->request->getPathInfo() );
+		return $this->to( $this->request->getPathInfo() );
 	}
 
 	/**
@@ -95,6 +106,14 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 		);
 	}
 
+	/**
+	 * Generate a URL to a specific path.
+	 *
+	 * @param string $path URL Path.
+	 * @param array  $extra Extra parameters.
+	 * @param bool   $secure Flag if should be forced to be secure.
+	 * @return string
+	 */
 	public function to( string $path, array $extra = [], bool $secure = null ) {
 		if ( $this->isValidUrl( $path ) ) {
 			return $path;
@@ -128,46 +147,39 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 * @return array
 	 */
 	public function formatParameters( $parameters ) {
-		$parameters = Arr::wrap( $parameters );
-
-		foreach ( $parameters as $key => $parameter ) {
-			// if ( $parameter instanceof UrlRoutable ) {
-			// $parameters[ $key ] = $parameter->getRouteKey();
-			// }
-		}
-
-		return $parameters;
+		return Arr::wrap( $parameters );
 	}
 
 	/**
 	 * Get the default scheme for a raw URL.
 	 *
-	 * @param  bool|null $secure
+	 * @param  bool|null $secure Flag if should be secure.
 	 * @return string
 	 */
 	public function formatScheme( $secure = null ) {
 		if ( ! is_null( $secure ) ) {
-				return $secure ? 'https://' : 'http://';
+			return $secure ? 'https://' : 'http://';
 		}
 
-		if ( is_null( $this->cachedScheme ) ) {
-				$this->cachedScheme = $this->forceScheme ?: $this->context->getScheme() . '://';
+		if ( is_null( $this->cached_scheme ) ) {
+			$this->cached_scheme = $this->force_scheme ?: $this->context->getScheme() . '://';
 		}
 
-			return $this->cachedScheme;
+		return $this->cached_scheme;
 	}
 
 	/**
 	 * Extract the query string from the given path.
 	 *
-	 * @param  string $path
+	 * @param  string $path URL Path.
 	 * @return array
 	 */
 	protected function extractQueryString( $path ) {
-		if ( ( $queryPosition = strpos( $path, '?' ) ) !== false ) {
+		$query_position = strpos( $path, '?' );
+		if ( false !== $query_position ) {
 			return [
-				substr( $path, 0, $queryPosition ),
-				substr( $path, $queryPosition ),
+				substr( $path, 0, $query_position ),
+				substr( $path, $query_position ),
 			];
 		}
 
@@ -184,36 +196,13 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	}
 
 	/**
-	 * Get the base URL for the request.
-	 *
-	 * @param  string      $scheme
-	 * @param  string|null $root
-	 * @return string
-	 */
-	// public function formatRoot( $scheme, $root = null ) {
-	// 	if ( is_null( $root ) ) {
-	// 		$this->cachedRoot = $this->context->getBaseUrl();
-	// 		// if ( is_null( $this->cachedRoot ) ) {
-	// 		// $this->cachedRoot = $this->forcedRoot ?: $this->context->getBaseUrl();
-	// 		// }
-
-	// 		$root = $this->cachedRoot;
-	// 	}
-
-	// 	$start = Str::starts_with( $root, 'http://' ) ? 'http://' : 'https://';
-
-	// 	return preg_replace( '~' . $start . '~', $scheme, $root, 1 );
-	// }
-
-	/**
 	 * Format the given URL segments into a single URL.
 	 *
-	 * @param  string                         $root
-	 * @param  string                         $path
-	 * @param  \Illuminate\Routing\Route|null $route
+	 * @param  string $root URL root.
+	 * @param  string $path URL path.
 	 * @return string
 	 */
-	public function format( $root, $path, $route = null ) {
+	public function format( $root, $path ) {
 		$path = '/' . trim( $path, '/' );
 		return trim( $root . $path, '/' );
 	}
@@ -226,10 +215,10 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 */
 	public function isValidUrl( $path ) {
 		if ( ! preg_match( '~^(#|//|https?://|(mailto|tel|sms):)~', $path ) ) {
-				return filter_var( $path, FILTER_VALIDATE_URL ) !== false;
+			return filter_var( $path, FILTER_VALIDATE_URL ) !== false;
 		}
 
-			return true;
+		return true;
 	}
 
 	/**
@@ -238,9 +227,9 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 * @param  string $scheme
 	 * @return void
 	 */
-	public function forceScheme( $scheme ) {
-			$this->cachedScheme = null;
+	public function force_scheme( $scheme ) {
+		$this->cached_scheme = null;
 
-			$this->forceScheme = $scheme . '://';
+		$this->force_scheme = $scheme . '://';
 	}
 }
