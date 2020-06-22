@@ -183,6 +183,7 @@ class Application extends Container\Container implements Application_Contract {
 			'request'  => [ \Mantle\Framework\Http\Request::class, \Symfony\Component\HttpFoundation\Request::class ],
 			'router'   => [ \Mantle\Framework\Http\Routing\Router::class, \Mantle\Framework\Contracts\Http\Routing\Router::class ],
 			'url'      => [ \Mantle\Framework\Http\Routing\Url_Generator::class, \Mantle\Framework\Contracts\Http\Routing\Url_Generator::class ],
+			'view'     => [ \Mantle\Framework\Http\View\Factory::class ],
 		];
 
 		foreach ( $core_aliases as $key => $aliases ) {
