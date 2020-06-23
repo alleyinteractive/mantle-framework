@@ -8,12 +8,13 @@
 namespace Mantle\Framework\Http\View;
 
 use Mantle\Framework\Contracts\Container;
+use Mantle\Framework\Contracts\Http\View\Factory as ViewFactory;
 use Mantle\Framework\Support\Arr;
 
 /**
  * View Factory
  */
-class Factory {
+class Factory implements ViewFactory {
 	/**
 	 * The IoC container instance.
 	 *
@@ -92,5 +93,16 @@ class Factory {
 	 */
 	public function get_shared(): array {
 		return $this->shared;
+	}
+
+	/**
+	 * Get the rendered contents of a view.
+	 *
+	 * @param string $view View name.
+	 * @param array  $data Data to pass to the view.
+	 * @return string
+	 */
+	public function make( string $view, array $data = [] ): string {
+
 	}
 }

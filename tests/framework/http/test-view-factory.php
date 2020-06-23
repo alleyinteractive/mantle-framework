@@ -35,6 +35,10 @@ class Test_View_Factory extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		Facade::set_facade_application( $this->app );
 	}
 
+	public function test_get_container() {
+		$this->assertEquals( $this->app, $this->factory->get_container() );
+	}
+
 	public function test_share_service_provider() {
 
 		$this->factory = $this->app['view'];
@@ -60,5 +64,9 @@ class Test_View_Factory extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		);
 
 		$this->assertEquals( 'nested-value', $this->factory->shared( 'nested-data.level0.level1.level2' ) );
+	}
+
+	public function test_get_factory() {
+		$this->assertEquals( $this->factory, $this->factory->shared( '__env' ) );
 	}
 }
