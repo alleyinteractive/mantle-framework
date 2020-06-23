@@ -7,35 +7,58 @@
 
 namespace Mantle\Tests\Framework\Http;
 
-use Mantle\Framework\Config\Repository;
+use Mantle\Framework\Application;
 use Mantle\Framework\Facade\Facade;
 use Mantle\Framework\Facade\View;
-use Mantle\Framework\Http\Request;
-use Mantle\Framework\Http\Routing\Redirector;
-use Mantle\Framework\Http\Routing\Response_Factory;
-use Mantle\Framework\Http\Routing\Url_Generator;
-use Mantle\Framework\Providers\View_Service_Provider;
-use Mantle\Framework\Service_Provider;
+use Mantle\Framework\Http\View\Factory;
 use Mockery as m;
-use Symfony\Component\HttpFoundation\HeaderBag;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class Test_View_Factory extends \Mockery\Adapter\Phpunit\MockeryTestCase {
+	/**
+	 * @var Application
+	 */
+	protected $app;
+
+	/**
+	 * @var Factory
+	 */
+	protected $factory;
 
 	public function setUp(): void {
 		parent::setUp();
+
+		$this->app = new Application();
+		$this->factory = new Factory( $this->app );
+		$this->app->instance( 'view', $this->factory );
+
+		Facade::clear_resolved_instances();
+		Facade::set_facade_application( $this->app );
 	}
 
 	public function test_share_service_provider() {
-		$app = app();
-		$factory = $app['view'];
-		$this->assertEquals( 'default-value', $factory->shared( 'test-to-share', 'default-value' ) );
 
-	}
-}
+		$this->factory = $this->app['view'];
 
-class Service_Provider_Sharing extends Service_Provider {
-	public function boot() {
+		$this->assertEquals( 'default-value', $this->factory->shared( 'test-to-share', 'default-value' ) );
+
+		// Share data as if it was from a service provider.
 		View::share( 'test-to-share', 'the-value-to-compare' );
+
+		$this->assertEquals( 'the-value-to-compare', $this->factory->shared( 'test-to-share', 'default-value' ) );
+		$this->assertEquals( 'the-value-to-compare', $this->factory->get_shared()['test-to-share'] ?? '' );
+
+		// Ensure you can get nested data.
+		View::share(
+			'nested-data',
+			[
+				'level0' => [
+					'level1' => [
+						'level2' => 'nested-value',
+					],
+				],
+			]
+		);
+
+		$this->assertEquals( 'nested-value', $this->factory->shared( 'nested-data.level0.level1.level2' ) );
 	}
 }

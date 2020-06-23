@@ -77,8 +77,8 @@ class Factory {
 	/**
 	 * Get an item from the shared data.
 	 *
-	 * @param  string  $key
-	 * @param  mixed  $default
+	 * @param string $key Key to get item by.
+	 * @param mixed  $default Default value.
 	 * @return mixed
 	 */
 	public function shared( $key, $default = null ) {
