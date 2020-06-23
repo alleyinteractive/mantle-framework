@@ -7,6 +7,9 @@
 
 namespace Mantle\Framework\Contracts\Http\View;
 
+use Mantle\Framework\Http\View\View;
+use Mantle\Framework\Support\Collection;
+
 /**
  * View Factory Contract
  */
@@ -37,11 +40,57 @@ interface Factory {
 	public function get_shared(): array;
 
 	/**
+	 * Create a collection of views that loop over a collection of WordPress objects.
+	 *
+	 * While iterating over the data, the proper post data is setup for each item.
+	 *
+	 * @param array|\ArrayAccess $data Array of WordPress data to loop over.
+	 * @param string             $slug View slug.
+	 * @param array|string       $name View name, optional. Supports passing variables in if
+	 *                                 $variables is not used.
+	 * @param array              $variables Variables for the view, optional.
+	 * @return Collection
+	 */
+	public function loop( $data, string $slug, $name = null, array $variables = [] ): Collection;
+
+	/**
+	 * Iterate over an array, loading a given template part for each item in the
+	 * array.
+	 *
+	 * @param array|\ArrayAccess $data Array of data to iterate over over.
+	 * @param string             $slug View slug.
+	 * @param array|string       $name View name, optional. Supports passing variables in if
+	 *                                 $variables is not used.
+	 * @param array              $variables Variables for the view, optional.
+	 * @return Collection
+	 */
+	public function iterate( $data, string $slug, $name = null, array $variables = [] ): Collection;
+
+	/**
 	 * Get the rendered contents of a view.
 	 *
-	 * @param string $view View name.
-	 * @param array  $data Data to pass to the view.
-	 * @return string
+	 * @param string       $slug View slug.
+	 * @param array|string $name View name, optional. Supports passing variables in if
+	 *                           $variables is not used.
+	 * @param array        $variables Variables for the view, optional.
+	 * @return View
 	 */
-	public function make( string $view, array $data = [] ): string;
+	public function make( string $slug, $name = null, array $variables = [] ): View;
+
+	/**
+	 * Get a variable from the current view.
+	 *
+	 * @param string $key Variable to get.
+	 * @param mixed  $default Default value if unset.
+	 * @return mixed
+	 */
+	public function get_var( string $key, $default = null );
+
+	/**
+	 * Pop a partial off the top of the stack and set the current partial to the
+	 * next one down.
+	 *
+	 * @return static
+	 */
+	public function pop();
 }

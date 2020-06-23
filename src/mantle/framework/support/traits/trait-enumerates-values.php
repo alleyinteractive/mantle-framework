@@ -21,35 +21,36 @@ use Mantle\Framework\Contracts\Support\Jsonable;
 use function Mantle\Framework\Helpers\data_get;
 use Mantle\Framework\Support\Arr;
 use Mantle\Framework\Support\Collection;
-use Mantle\Support\Enumerable;
+use Mantle\Framework\Support\Enumerable;
 use JsonSerializable;
+use Mantle\Framework\Support\Higher_Order_Collection_Proxy;
 use Symfony\Component\VarDumper\VarDumper;
 use Traversable;
 
 /**
  * Enumerate_Values trait.
  *
- * @property-read HigherOrderCollectionProxy $average
- * @property-read HigherOrderCollectionProxy $avg
- * @property-read HigherOrderCollectionProxy $contains
- * @property-read HigherOrderCollectionProxy $each
- * @property-read HigherOrderCollectionProxy $every
- * @property-read HigherOrderCollectionProxy $filter
- * @property-read HigherOrderCollectionProxy $first
- * @property-read HigherOrderCollectionProxy $flat_map
- * @property-read HigherOrderCollectionProxy $group_by
- * @property-read HigherOrderCollectionProxy $key_by
- * @property-read HigherOrderCollectionProxy $map
- * @property-read HigherOrderCollectionProxy $max
- * @property-read HigherOrderCollectionProxy $min
- * @property-read HigherOrderCollectionProxy $partition
- * @property-read HigherOrderCollectionProxy $reject
- * @property-read HigherOrderCollectionProxy $some
- * @property-read HigherOrderCollectionProxy $sort_by
- * @property-read HigherOrderCollectionProxy $sort_by_desc
- * @property-read HigherOrderCollectionProxy $sum
- * @property-read HigherOrderCollectionProxy $unique
- * @property-read HigherOrderCollectionProxy $until
+ * @property-read Higher_Order_Collection_Proxy $average
+ * @property-read Higher_Order_Collection_Proxy $avg
+ * @property-read Higher_Order_Collection_Proxy $contains
+ * @property-read Higher_Order_Collection_Proxy $each
+ * @property-read Higher_Order_Collection_Proxy $every
+ * @property-read Higher_Order_Collection_Proxy $filter
+ * @property-read Higher_Order_Collection_Proxy $first
+ * @property-read Higher_Order_Collection_Proxy $flat_map
+ * @property-read Higher_Order_Collection_Proxy $group_by
+ * @property-read Higher_Order_Collection_Proxy $key_by
+ * @property-read Higher_Order_Collection_Proxy $map
+ * @property-read Higher_Order_Collection_Proxy $max
+ * @property-read Higher_Order_Collection_Proxy $min
+ * @property-read Higher_Order_Collection_Proxy $partition
+ * @property-read Higher_Order_Collection_Proxy $reject
+ * @property-read Higher_Order_Collection_Proxy $some
+ * @property-read Higher_Order_Collection_Proxy $sort_by
+ * @property-read Higher_Order_Collection_Proxy $sort_by_desc
+ * @property-read Higher_Order_Collection_Proxy $sum
+ * @property-read Higher_Order_Collection_Proxy $unique
+ * @property-read Higher_Order_Collection_Proxy $until
  */
 trait Enumerates_Values {
 	/**
@@ -862,7 +863,7 @@ trait Enumerates_Values {
 			throw new Exception( "Property [{$key}] does not exist on this collection instance." );
 		}
 
-		return new HigherOrderCollectionProxy( $this, $key );
+		return new Higher_Order_Collection_Proxy( $this, $key );
 	}
 
 	/**
