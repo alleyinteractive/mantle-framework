@@ -275,6 +275,13 @@ class Test_View_Factory extends \WP_UnitTestCase {
 		// ... but if we load the cached variant, it should give the old value
 		$contents = (string) view( $slug )->cache();
 		$this->assertSame( "Template loaded: {$original_rand}", $contents );
+
+		// Ensure the view isn't cached when passing in a different arguments.
+		$_SERVER['__mantle_cache_data'] = rand_str();
+		$new_rand = $_SERVER['__mantle_cache_data'];
+
+		$contents = (string) view( $slug, [ 'different' => true ] )->cache();
+		$this->assertSame( "Template loaded: {$new_rand}", $contents );
 	}
 
 	public function test_cache_load_custom_key() {
