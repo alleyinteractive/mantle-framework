@@ -44,6 +44,20 @@ class Router implements Router_Contract {
 	protected $routes;
 
 	/**
+	 * All of the short-hand keys for middlewares.
+	 *
+	 * @var array
+	 */
+	protected $middleware = [];
+
+	/**
+	 * All of the middleware groups.
+	 *
+	 * @var array
+	 */
+	protected $middleware_groups = [];
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Application $app Application instance.
@@ -242,22 +256,105 @@ class Router implements Router_Contract {
 	}
 
 	/**
+	 * Get all of the defined middleware short-hand names.
+	 *
+	 * @return array
+	 */
+	public function get_middleware() {
+			return $this->middleware;
+	}
+
+	/**
+	 * Register a short-hand name for a middleware.
+	 *
+	 * @param  string $name
+	 * @param  string $class
+	 * @return static
+	 */
+	public function alias_middleware( $name, $class ) {
+			$this->middleware[ $name ] = $class;
+
+			return $this;
+	}
+
+	/**
+	 * Get all of the defined middleware groups.
+	 *
+	 * @return array
+	 */
+	public function get_middleware_groups() {
+		return $this->middleware_groups;
+	}
+
+	/**
+	 * Register a group of middleware.
+	 *
+	 * @param  string $name
+	 * @param  array  $middleware
+	 * @return static
+	 */
+	public function middleware_group( $name, array $middleware ) {
+		$this->middleware_groups[ $name ] = $middleware;
+
+		return $this;
+	}
+
+	/**
+	 * Add a middleware to the beginning of a middleware group.
+	 *
+	 * If the middleware is already in the group, it will not be added again.
+	 *
+	 * @param  string $group
+	 * @param  string $middleware
+	 * @return static
+	 */
+	public function prepend_middleware_to_group( $group, $middleware ) {
+		if ( isset( $this->middleware_groups[ $group ] ) && ! in_array( $middleware, $this->middleware_groups[ $group ] ) ) {
+			array_unshift( $this->middleware_groups[ $group ], $middleware );
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Add a middleware to the end of a middleware group.
+	 *
+	 * If the middleware is already in the group, it will not be added again.
+	 *
+	 * @param  string $group
+	 * @param  string $middleware
+	 * @return static
+	 */
+	public function push_middleware_to_group( $group, $middleware ) {
+		if ( ! array_key_exists( $group, $this->middleware_groups ) ) {
+				$this->middleware_groups[ $group ] = [];
+		}
+
+		if ( ! in_array( $middleware, $this->middleware_groups[ $group ] ) ) {
+				$this->middleware_groups[ $group ][] = $middleware;
+		}
+
+			return $this;
+	}
+
+	/**
 	 * Gather the middleware for the given route with resolved class names.
 	 *
 	 * @todo Add excluded middleware support.
 	 *
 	 * @param Route $route Route instance.
-	 * @return Collection
+	 * @return array
 	 */
-	public function gather_route_middleware( Route $route ): Collection {
+	public function gather_route_middleware( Route $route ): array {
 		return collect( $route->middleware() )
 			->map(
 				function ( $name ) {
-						return (array) MiddlewareNameResolver::resolve( $name, $this->middleware, $this->middlewareGroups );
+					return (array) Middleware_Name_Resolver::resolve( $name, $this->middleware, $this->middleware_groups );
 				}
 			)
 			->flatten()
-			->values();
+			->values()
+			->to_array();
 	}
 
 	/**
