@@ -214,7 +214,24 @@ class View {
 			return $this->cache_key;
 		}
 
-		return 'partial_' . md5( $this->slug . $this->name . spl_object_hash( $this ) );
+		$filtered_data = array_map(
+			function( $value, $key ) {
+				// Internal class references do not serialize well.
+				if ( '__env' === $key ) {
+					return 'app';
+				}
+
+				if ( is_object( $value ) ) {
+					return spl_object_hash( $value );
+				}
+
+				return $value;
+			},
+			$this->data,
+			array_keys( $this->data )
+		);
+
+		return 'partial_' . md5( $this->slug . $this->name . serialize( $filtered_data ) ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
 	}
 
 	/**
