@@ -204,6 +204,7 @@ trait Makes_Http_Requests {
 		$this->setup_wordpress_query( $uri );
 
 		try {
+			// Execute the request, inasmuch as WordPress would.
 			require ABSPATH . WPINC . '/template-loader.php';
 		} catch ( Exception $e ) { // phpcs:ignore
 			// Mantle Exceptions are thrown to prevent some code from running, e.g.

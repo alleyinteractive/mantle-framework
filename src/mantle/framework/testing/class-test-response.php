@@ -444,4 +444,28 @@ class Test_Response {
 
 		return $this;
 	}
+
+	/**
+	 * Assert that a given ID matches the global queried object ID.
+	 *
+	 * @param int $id Expected ID.
+	 * @return $this
+	 */
+	public function assertQueriedObjectId( int $id ) {
+		Test_Case::assertQueriedObjectId( $id );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a given object is equivalent to the global queried object.
+	 *
+	 * @param Object $object Expected object.
+	 * @return $this
+	 */
+	public function assertQueriedObject( $object ) {
+		Test_Case::assertQueriedObject( $object );
+
+		return $this;
+	}
 }

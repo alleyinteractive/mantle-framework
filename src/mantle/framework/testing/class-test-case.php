@@ -331,4 +331,44 @@ abstract class Test_Case extends BaseTestCase {
 			PHPUnit::fail( $message );
 		}
 	}
+
+	/**
+	 * Assert that a given ID matches the global queried object ID.
+	 *
+	 * @param int $id Expected ID.
+	 */
+	public static function assertQueriedObjectId( int $id ) {
+		PHPUnit::assertSame( $id, get_queried_object_id() );
+	}
+
+	/**
+	 * Assert that a given object is equivalent to the global queried object.
+	 *
+	 * @todo Add support for passing a Mantle Model to compare against a core WP object.
+	 *
+	 * @param Object $object Expected object.
+	 */
+	public static function assertQueriedObject( $object ) {
+		global $wp_query;
+		$queried_object = $wp_query->get_queried_object();
+
+		// First, assert the same object types.
+		PHPUnit::assertInstanceOf( get_class( $object ), $queried_object );
+
+		// Next, assert identifying data about the object.
+		switch ( true ) {
+			case $object instanceof \WP_Post:
+			case $object instanceof \WP_User:
+				PHPUnit::assertSame( $object->ID, $queried_object->ID );
+				break;
+
+			case $object instanceof \WP_Term:
+				PHPUnit::assertSame( $object->term_id, $queried_object->term_id );
+				break;
+
+			case $object instanceof \WP_Post_Type:
+				PHPUnit::assertSame( $object->name, $queried_object->name );
+				break;
+		}
+	}
 }
