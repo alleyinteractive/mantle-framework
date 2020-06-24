@@ -3,6 +3,7 @@
  * View_Loader class file.
  *
  * @package Mantle
+ * @phpcs:disable WordPress.WP.DiscouragedConstants
  */
 
 namespace Mantle\Framework\Http\View;

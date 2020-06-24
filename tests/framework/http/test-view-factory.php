@@ -253,66 +253,58 @@ class Test_View_Factory extends \WP_UnitTestCase {
 		$this->assertSame( null, $GLOBALS['post'] );
 	}
 
-	// public function test_basic_cache_load() {
-	// 	$slug = 'cache';
+	public function test_basic_cache_load() {
+		$slug = 'cache';
 
-	// 	// Set a dynamic value used in the template
-	// 	$rand = _cache_test_data( rand_str() );
+		// Set a dynamic value used in the template
+		$_SERVER['__mantle_cache_data'] = rand_str();
+		$original_rand = $_SERVER['__mantle_cache_data'];
 
-	// 	// Load the partial, verify it works and the transient gets set
-	// 	$contents = $this->ob( function() use ( $slug ) {
-	// 		ai_get_cached_template_part( $slug );
-	// 	} );
-	// 	$this->assertSame( "Template loaded: {$rand}", $contents );
+		// Load the partial, verify it works and the transient gets set
+		$contents = (string) view( $slug )->cache();
+		$this->assertSame( "Template loaded: {$_SERVER['__mantle_cache_data']}", $contents );
 
-	// 	// Change the dynamic value used in the partial
-	// 	$new_rand = _cache_test_data( rand_str() );
+		// Change the dynamic value used in the partial.
+		$_SERVER['__mantle_cache_data'] = rand_str();
+		$new_rand = $_SERVER['__mantle_cache_data'];
 
-	// 	// Verify that the value has changed when not loading from cache
-	// 	$contents = $this->ob( function() use ( $slug ) {
-	// 		ai_get_template_part( $slug );
-	// 	} );
-	// 	$this->assertSame( "Template loaded: {$new_rand}", $contents );
+		// Verify that the value has changed when not loading from cache.
+		$contents = (string) view( $slug );
+		$this->assertSame( "Template loaded: {$new_rand}", $contents );
 
-	// 	// ... but if we load the cached variant, it should give the old value
-	// 	$contents = $this->ob( function() use ( $slug ) {
-	// 		ai_get_cached_template_part( $slug );
-	// 	} );
-	// 	$this->assertSame( "Template loaded: {$rand}", $contents );
-	// }
+		// ... but if we load the cached variant, it should give the old value
+		$contents = (string) view( $slug )->cache();
+		$this->assertSame( "Template loaded: {$original_rand}", $contents );
+	}
 
-	// public function test_cache_load_custom_key() {
-	// 	$slug = 'cache';
-	// 	$key = 'cached_partials_test';
+	public function test_cache_load_custom_key() {
+		$slug = 'cache';
+		$key = 'cached_partials_test';
 
-	// 	// Set a dynamic value used in the template
-	// 	$rand = _cache_test_data( rand_str() );
+		// Set a dynamic value used in the template
+		$rand = rand_str();
+		$_SERVER['__mantle_cache_data'] = $rand;
 
-	// 	// Load the partial, verify it works and the transient gets set
-	// 	$contents = $this->ob( function() use ( $slug, $key ) {
-	// 		ai_get_cached_template_part( $slug, [ '_cache_key' => $key ] );
-	// 	} );
-	// 	$this->assertSame( "Template loaded: {$rand}", $contents );
-	// 	$this->assertSame( "Template loaded: {$rand}", get_transient( $key ) );
+		// Load the partial, verify it works and the transient gets set
+		$contents = (string) view( $slug )->cache( 1000, $key );
+		$this->assertSame( "Template loaded: {$rand}", $contents );
+		$this->assertSame( "Template loaded: {$rand}", get_transient( $key ) );
 
-	// 	// Change the dynamic value used in the partial
-	// 	$new_rand = _cache_test_data( rand_str() );
+		// Change the dynamic value used in the partial
+		$new_rand = rand_str();
+		$_SERVER['__mantle_cache_data'] = $new_rand;
 
-	// 	// Ensure that we get a cached response
-	// 	$contents = $this->ob( function() use ( $slug, $key ) {
-	// 		ai_get_cached_template_part( $slug, [ '_cache_key' => $key ] );
-	// 	} );
-	// 	$this->assertSame( "Template loaded: {$rand}", $contents );
-	// 	$this->assertSame( "Template loaded: {$rand}", get_transient( $key ) );
+		// Ensure that we get a cached response
+		$contents = (string) view( $slug )->cache( 1000, $key );
+		$this->assertSame( "Template loaded: {$rand}", $contents );
+		$this->assertSame( "Template loaded: {$rand}", get_transient( $key ) );
 
-	// 	// Delete the transient
-	// 	delete_transient( $key );
+		// Delete the transient
+		delete_transient( $key );
 
-	// 	// Verify that the value has changed
-	// 	$contents = $this->ob( function() use ( $slug, $key ) {
-	// 		ai_get_cached_template_part( $slug, [ '_cache_key' => $key ] );
-	// 	} );
-	// 	$this->assertSame( "Template loaded: {$new_rand}", $contents );
-	// 	$this->assertSame( "Template loaded: {$new_rand}", get_transient( $key ) );
-	// }
+		// Verify that the value has changed
+		$contents = (string) view( $slug )->cache( 1000, $key );
+		$this->assertSame( "Template loaded: {$new_rand}", $contents );
+		$this->assertSame( "Template loaded: {$new_rand}", get_transient( $key ) );
+	}
 }

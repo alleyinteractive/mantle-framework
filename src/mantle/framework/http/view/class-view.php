@@ -3,6 +3,7 @@
  * View class file.
  *
  * @package Mantle
+ * @phpcs:disable WordPress.WP.GlobalVariablesOverride.Prohibited
  */
 
 namespace Mantle\Framework\Http\View;
@@ -62,7 +63,21 @@ class View {
 	 *
 	 * @var \WP_Post
 	 */
-	public $original_post;
+	protected $original_post;
+
+	/**
+	 * Cache key to use.
+	 *
+	 * @var string
+	 */
+	protected $cache_key;
+
+	/**
+	 * Cache TTL for the view.
+	 *
+	 * @var int
+	 */
+	protected $cache_ttl;
 
 	/**
 	 * Constructor.
@@ -173,7 +188,37 @@ class View {
 	}
 
 	/**
-	 * Set the view parent from the current item in the view factory.
+	 * Set the cache TTL for the view.
+	 *
+	 * @param int|bool $cache_ttl Cache TTL or false to disable. Defaults to 15 minutes.
+	 * @param string   $cache_key Cache key to use, optional.
+	 * @return static
+	 */
+	public function cache( $cache_ttl = 900, string $cache_key = null ) {
+		if ( false === $cache_ttl ) {
+			$cache_ttl = -1;
+		}
+
+		$this->cache_ttl = $cache_ttl;
+		$this->cache_key = $cache_key;
+		return $this;
+	}
+
+	/**
+	 * Retrieve the cache key to use for the view.
+	 *
+	 * @return string
+	 */
+	public function get_cache_key(): string {
+		if ( ! empty( $this->cache_key ) ) {
+			return $this->cache_key;
+		}
+
+		return 'partial_' . md5( $this->slug . $this->name . spl_object_hash( $this ) );
+	}
+
+	/**
+	 * Set the view parent from the current view from the view factory.
 	 */
 	protected function set_parent_from_current() {
 		$current = $this->factory->get_current();
@@ -239,6 +284,8 @@ class View {
 			return;
 		}
 
+		$this->preserve_post();
+
 		if ( $this->post instanceof Post ) {
 			$post = \get_post( $this->post->id() );
 		} else {
@@ -252,11 +299,7 @@ class View {
 	 * Backup the current global `$post`.
 	 */
 	protected function preserve_post() {
-		if ( ! empty( $GLOBALS['post'] ) ) {
-			$this->original_post = $GLOBALS['post'];
-		} else {
-			$this->original_post = null;
-		}
+		$this->original_post = $GLOBALS['post'] ?? null;
 	}
 
 	/**
@@ -282,13 +325,22 @@ class View {
 	 * @return string
 	 */
 	public function render(): string {
+		// Check the cache for the view.
+		if ( isset( $this->cache_ttl ) ) {
+			$cache_key = $this->get_cache_key();
+			$contents  = \get_transient( $cache_key );
+
+			if ( false !== $contents ) {
+				return (string) $contents;
+			}
+		}
+
 		ob_start();
 
 		$this->set_parent_from_current();
 
 		// Setup the post object if needed.
 		if ( isset( $this->post ) ) {
-			$this->preserve_post();
 			$this->setup_post_object();
 		}
 
@@ -304,7 +356,13 @@ class View {
 			$this->restore_post();
 		}
 
-		return ob_get_clean();
+		$contents = ob_get_clean();
+
+		if ( isset( $this->cache_ttl ) ) {
+			\set_transient( $cache_key, $contents, $this->cache_ttl );
+		}
+
+		return $contents;
 	}
 
 	/**
