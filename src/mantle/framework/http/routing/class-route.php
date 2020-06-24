@@ -8,6 +8,7 @@
 namespace Mantle\Framework\Http\Routing;
 
 use Mantle\Framework\Container\Container;
+use Mantle\Framework\Support\Arr;
 use Mantle\Framework\Support\Str;
 use ReflectionFunction;
 use Symfony\Component\HttpFoundation\Response;
@@ -83,13 +84,34 @@ class Route extends Symfony_Route {
 	 *
 	 * @return string
 	 */
-	public function get_route_name(): string {
-		if ( is_array( $this->action ) && ! empty( $this->action['name'] ) ) {
-			return $this->action['name'];
+	public function get_name(): string {
+		if ( is_array( $this->action ) && ! empty( $this->action['as'] ) ) {
+			return $this->action['as'];
 		}
 
 		$uri = $this->getPath();
 		return implode( ':', $this->getMethods() ) . ":{$uri}";
+	}
+
+	/**
+	 * Get the action array or one of its properties for the route.
+	 *
+	 * @param string|null $key Key to get.
+	 * @return mixed
+	 */
+	public function get_action( string $key = null ) {
+		return Arr::get( $this->action, $key );
+	}
+
+	/**
+	 * Set the action array for the route.
+	 *
+	 * @param array $action Action for the route.
+	 * @return static
+	 */
+	public function set_action( array $action ) {
+		$this->action = $action;
+		return $this;
 	}
 
 	/**
