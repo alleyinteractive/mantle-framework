@@ -115,6 +115,29 @@ class Route extends Symfony_Route {
 	}
 
 	/**
+	 * Get or set the middlewares attached to the route.
+	 *
+	 * @param  array|string|null $middleware Middleware to set, optional.
+	 * @return static|array
+	 */
+	public function middleware( $middleware = null ) {
+		if ( is_null( $middleware ) ) {
+			return (array) ( $this->action['middleware'] ?? [] );
+		}
+
+		if ( is_string( $middleware ) ) {
+			$middleware = func_get_args();
+		}
+
+		$this->action['middleware'] = array_merge(
+			(array) ( $this->action['middleware'] ?? [] ),
+			$middleware
+		);
+
+		return $this;
+	}
+
+	/**
 	 * Set a callback for a route.
 	 *
 	 * @param callable $callback Callback to invoke.

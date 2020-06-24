@@ -11,11 +11,15 @@ use Mantle\Framework\Contracts\Application;
 use Mantle\Framework\Contracts\Http\Routing\Router as Router_Contract;
 use Mantle\Framework\Http\Http_Exception;
 use Mantle\Framework\Http\Request;
+use Mantle\Framework\Pipeline;
+use Mantle\Framework\Support\Collection;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouteCollection;
+
+use function Mantle\Framework\Helpers\collect;
 
 /**
  * Router
@@ -221,11 +225,39 @@ class Router implements Router_Contract {
 
 		$route = Route::get_route_from_match( $match );
 
-		if ( $route ) {
-			return $route->run( $this->app );
+		if ( ! $route ) {
+			throw new Http_Exception( 'Unknown route method: ' . \wp_json_encode( $match ) );
 		}
 
-		throw new Http_Exception( 'Unknown route method: ' . \wp_json_encode( $match ) );
+		$middleware = $this->gather_route_middleware( $route );
+
+		return ( new Pipeline( $this->app ) )
+			->send( $this->app['request'] )
+			->through( $middleware )
+			->then(
+				function( Request $request ) use ( $route ) {
+					return $route->run( $this->app );
+				}
+			);
+	}
+
+	/**
+	 * Gather the middleware for the given route with resolved class names.
+	 *
+	 * @todo Add excluded middleware support.
+	 *
+	 * @param Route $route Route instance.
+	 * @return Collection
+	 */
+	public function gather_route_middleware( Route $route ): Collection {
+		return collect( $route->middleware() )
+			->map(
+				function ( $name ) {
+						return (array) MiddlewareNameResolver::resolve( $name, $this->middleware, $this->middlewareGroups );
+				}
+			)
+			->flatten()
+			->values();
 	}
 
 	/**
