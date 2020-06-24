@@ -17,13 +17,13 @@ class PipelineTest extends TestCase {
 		};
 
 		$result = ( new Pipeline( new Container() ) )
-					->send( 'foo' )
-					->through( array( PipelineTestPipeOne::class, $pipeTwo ) )
-					->then(
-						function ( $piped ) {
-							return $piped;
-						}
-					);
+			->send( 'foo' )
+			->through( array( PipelineTestPipeOne::class, $pipeTwo ) )
+			->then(
+				function ( $piped ) {
+					return $piped;
+				}
+			);
 
 		$this->assertSame( 'foo', $result );
 		$this->assertSame( 'foo', $_SERVER['__test.pipe.one'] );
