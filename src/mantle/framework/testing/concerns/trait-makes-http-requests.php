@@ -8,6 +8,8 @@
 namespace Mantle\Framework\Testing\Concerns;
 
 use Mantle\Framework\Support\Str;
+use Mantle\Framework\Testing\Exceptions\Exception;
+use Mantle\Framework\Testing\Exceptions\WP_Redirect_Exception;
 use Mantle\Framework\Testing\Test_Response;
 use Mantle\Framework\Testing\Utils;
 use WP;
@@ -165,26 +167,64 @@ trait Makes_Http_Requests {
 	 * @return Test_Response
 	 */
 	public function call( $method, $uri, $parameters = [], $server = [], $content = null ) {
-		$response_content = '';
+		$this->reset_request_state();
+		$this->set_server_state( $method, $uri, $server );
+
+		// Build a full URL from partial URIs.
+		if ( '/' === $uri[0] ) {
+			$uri = 'https://' . WP_TESTS_DOMAIN . $uri;
+		} elseif ( false === strpos( $uri, '://' ) ) {
+			$uri = 'https://' . WP_TESTS_DOMAIN . '/' . $uri;
+		}
+
 		$response_status  = 200;
 		$response_headers = [];
+
+		$intercept_status = function( $status_header, $code ) use ( &$response_status ) {
+			$response_status = $code;
+		};
+
+		$intercept_headers = function( $send_headers ) use ( &$response_headers ) {
+			$response_headers = $send_headers;
+		};
+
+		$intercept_redirect = function( $location, $status ) use ( &$response_status, &$response_headers ) {
+			$response_status              = $status;
+			$response_headers['Location'] = $location;
+			throw new WP_Redirect_Exception();
+		};
+
+		add_filter( 'status_header', $intercept_status, 9999, 2 );
+		add_filter( 'wp_headers', $intercept_headers, 9999 );
+		add_filter( 'wp_redirect', $intercept_redirect, 9999, 2 );
+		add_filter( 'exit_on_http_head', '__return_false', 9999 );
+		add_filter( 'wp_using_themes', '__return_true', 9999 );
+
+		ob_start();
+		$this->setup_wordpress_query( $uri );
+
+		try {
+			require ABSPATH . WPINC . '/template-loader.php';
+		} catch ( Exception $e ) { // phpcs:ignore
+			// Mantle Exceptions are thrown to prevent some code from running, e.g.
+			// the tail end of wp_redirect().
+		}
+
+		$response_content = ob_get_clean();
+
+		remove_filter( 'status_header', $intercept_status, 9999 );
+		remove_filter( 'wp_headers', $intercept_headers, 9999 );
+		remove_filter( 'wp_redirect', $intercept_redirect, 9999 );
+		remove_filter( 'exit_on_http_head', '__return_false', 9999 );
+		remove_filter( 'wp_using_themes', '__return_true', 9999 );
+
 		return new Test_Response( $response_content, $response_status, $response_headers );
 	}
 
 	/**
-	 * Sets the global state to as if a given URL has been requested.
-	 *
-	 * This sets:
-	 * - The super globals.
-	 * - The globals.
-	 * - The query variables.
-	 * - The main query.
-	 *
-	 * @since 3.5.0
-	 *
-	 * @param string $url The URL for the request.
+	 * Reset the global state related to requests.
 	 */
-	public function go_to( $url ) {
+	protected function reset_request_state() {
 		/*
 		 * Note: the WP and WP_Query classes like to silently fetch parameters
 		 * from all over the place (globals, GET, etc), which makes it tricky
@@ -213,6 +253,27 @@ trait Makes_Http_Requests {
 				unset( $GLOBALS[ $v ] );
 			}
 		}
+	}
+
+	protected function set_server_state( $method, $uri, $server ) {
+		$_SERVER['REQUEST_METHOD'] = strtoupper( $method );
+		$_SERVER['SERVER_NAME']     = WP_TESTS_DOMAIN;
+		$_SERVER['SERVER_PORT']     = '80';
+		$_SERVER = array_merge( $_SERVER, $server );
+	}
+
+	/**
+	 * Sets the WordPress query as if a given URL has been requested.
+	 *
+	 * This sets:
+	 * - The super globals.
+	 * - The globals.
+	 * - The query variables.
+	 * - The main query.
+	 *
+	 * @param string $url The URL for the request.
+	 */
+	protected function setup_wordpress_query( $url ) {
 		$parts = wp_parse_url( $url );
 		if ( isset( $parts['scheme'] ) ) {
 			$req = isset( $parts['path'] ) ? $parts['path'] : '';
@@ -223,9 +284,6 @@ trait Makes_Http_Requests {
 			}
 		} else {
 			$req = $url;
-		}
-		if ( ! isset( $parts['query'] ) ) {
-			$parts['query'] = '';
 		}
 
 		$_SERVER['REQUEST_URI'] = $req;
@@ -247,7 +305,7 @@ trait Makes_Http_Requests {
 
 		Utils::cleanup_query_vars();
 
-		$GLOBALS['wp']->main( $parts['query'] );
+		$GLOBALS['wp']->main();
 		// phpcs:enable WordPress.WP.GlobalVariablesOverride
 	}
 

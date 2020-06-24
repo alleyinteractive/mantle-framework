@@ -13,6 +13,7 @@ use Mantle\Framework\Testing\Concerns\Incorrect_Usage;
 use Mantle\Framework\Testing\Concerns\Makes_Http_Requests;
 use Mantle\Framework\Testing\Concerns\Refresh_Database;
 use Mantle\Framework\Testing\Concerns\WordPress_State;
+use PHPUnit\Framework\Assert as PHPUnit;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use WP;
 use WP_Query;
@@ -258,20 +259,18 @@ abstract class Test_Case extends BaseTestCase {
 	}
 
 	/**
-	 * Checks each of the WP_Query is_* functions/properties against expected boolean value.
+	 * Checks each of the WP_Query is_* functions/properties against expected
+	 * boolean value.
 	 *
-	 * Any properties that are listed by name as parameters will be expected to be true; all others are
-	 * expected to be false. For example, assertQueryTrue( 'is_single', 'is_feed' ) means is_single()
-	 * and is_feed() must be true and everything else must be false to pass.
+	 * Any properties that are listed by name as parameters will be expected to be
+	 * true; all others are expected to be false. For example,
+	 * assertQueryTrue( 'is_single', 'is_feed' ) means is_single() and is_feed()
+	 * must be true and everything else must be false to pass.
 	 *
-	 * @since 2.5.0
-	 * @since 3.8.0 Moved from `Tests_Query_Conditionals` to `WP_UnitTestCase`.
-	 * @since 5.3.0 Formalized the existing `...$prop` parameter by adding it
-	 *              to the function signature.
-	 *
-	 * @param string ...$prop Any number of WP_Query properties that are expected to be true for the current request.
+	 * @param string ...$prop Any number of WP_Query properties that are expected
+	 *                        to be true for the current request.
 	 */
-	public function assertQueryTrue( ...$prop ) {
+	public static function assertQueryTrue( ...$prop ) {
 		global $wp_query;
 
 		$all = [
@@ -308,7 +307,7 @@ abstract class Test_Case extends BaseTestCase {
 		];
 
 		foreach ( $prop as $true_thing ) {
-			$this->assertContains( $true_thing, $all, "Unknown conditional: {$true_thing}." );
+			PHPUnit::assertContains( $true_thing, $all, "Unknown conditional: {$true_thing}." );
 		}
 
 		$passed  = true;
@@ -329,7 +328,7 @@ abstract class Test_Case extends BaseTestCase {
 		}
 
 		if ( ! $passed ) {
-			$this->fail( $message );
+			PHPUnit::fail( $message );
 		}
 	}
 }

@@ -27,7 +27,7 @@ $multisite = ! empty( $argv[1] );
 $wpdb->query( 'SET default_storage_engine = InnoDB' );
 $wpdb->select( DB_NAME, $wpdb->dbh );
 
-echo 'Installing...' . PHP_EOL;
+echo 'Installing WordPress...' . PHP_EOL;
 
 $wpdb->query( 'SET foreign_key_checks = 0' );
 foreach ( $wpdb->tables() as $table => $prefixed_table ) {
@@ -58,7 +58,7 @@ if ( ! is_multisite() ) {
 remove_action( 'populate_options', [ Utils::class, 'set_default_permalink_structure_for_tests' ] );
 
 if ( $multisite ) {
-	echo 'Installing network...' . PHP_EOL;
+	echo '... Installing network...' . PHP_EOL;
 
 	define( 'WP_INSTALLING_NETWORK', true );
 
