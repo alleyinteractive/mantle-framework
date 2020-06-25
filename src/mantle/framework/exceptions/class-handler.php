@@ -227,24 +227,7 @@ class Handler implements ExceptionsHandler {
 	protected function unauthenticated( Request $request, Authentication_Error $exception ): Response {
 		return $request->expects_json()
 			? response()->json( [ 'message' => $exception->getMessage() ], 401 )
-			: response()->redirect()->to( null );
-	}
-
-	/**
-	 * Convert a validation exception into a JSON response.
-	 *
-	 * @param  \Illuminate\Http\Request                   $request
-	 * @param  \Illuminate\Validation\ValidationException $exception
-	 * @return \Illuminate\Http\JsonResponse
-	 */
-	protected function invalidJson( $request, ValidationException $exception ) {
-		return response()->json(
-			[
-				'message' => $exception->getMessage(),
-				'errors'  => $exception->errors(),
-			],
-			$exception->status
-		);
+			: response()->redirect_to( '/' );
 	}
 
 	/**
