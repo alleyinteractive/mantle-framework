@@ -176,11 +176,10 @@ class Handler implements ExceptionsHandler {
 	/**
 	 * Render an exception into an HTTP response.
 	 *
-	 * @param  \Illuminate\Http\Request $request
-	 * @param  \Throwable               $e
+	 * @param Request   $request
+	 * @param Throwable $e
 	 * @return \Symfony\Component\HttpFoundation\Response
-	 *
-	 * @throws \Throwable
+	 * @throws \Throwable Thrown on catch.
 	 */
 	public function render( $request, Throwable $e ) {
 		if ( method_exists( $e, 'render' ) && $response = $e->render( $request ) ) {
@@ -227,8 +226,8 @@ class Handler implements ExceptionsHandler {
 	 */
 	protected function unauthenticated( Request $request, Authentication_Error $exception ): Response {
 		return $request->expects_json()
-					? response()->json( [ 'message' => $exception->getMessage() ], 401 )
-					: redirect()->guest( $exception->redirectTo() ?? route( 'login' ) );
+			? response()->json( [ 'message' => $exception->getMessage() ], 401 )
+			: response()->redirect()->to( null );
 	}
 
 	/**
