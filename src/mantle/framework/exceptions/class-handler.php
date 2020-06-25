@@ -5,13 +5,19 @@ namespace Mantle\Framework\Exceptions;
 use Mantle\Framework\Auth\Authentication_Error;
 use Mantle\Framework\Contracts\Container;
 use Mantle\Framework\Contracts\Exceptions\Handler as ExceptionsHandler;
+use Mantle\Framework\Http\Http_Exception;
 use Mantle\Framework\Http\Request;
 use Mantle\Framework\Http\Routing\Route;
 use Mantle\Framework\Support\Arr;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Throwable;
+
+use function Mantle\Framework\Helpers\collect;
 
 // use Exception;
 // use Illuminate\Auth\Access\AuthorizationException;
@@ -51,7 +57,7 @@ class Handler implements ExceptionsHandler {
 	/**
 	 * The container implementation.
 	 *
-	 * @var \Illuminate\Contracts\Container\Container
+	 * @var Container
 	 */
 	protected $container;
 
@@ -192,9 +198,9 @@ class Handler implements ExceptionsHandler {
 			return $this->unauthenticated( $request, $e );
 		}
 
-		return $request->expectsJson()
-					? $this->prepareJsonResponse( $request, $e )
-					: $this->prepareResponse( $request, $e );
+		return $request->expects_json()
+			? $this->prepareJsonResponse( $request, $e )
+			: $this->prepare_response( $request, $e );
 	}
 
 	/**
@@ -225,9 +231,9 @@ class Handler implements ExceptionsHandler {
 	 * @return Response
 	 */
 	protected function unauthenticated( Request $request, Authentication_Error $exception ): Response {
-		return $request->expects_json()
+		return $request->expects_json() || true
 			? response()->json( [ 'message' => $exception->getMessage() ], 401 )
-			: response()->redirect_to( '/' );
+			: response()->redirect_to( \home_url() );
 	}
 
 	/**
@@ -237,12 +243,13 @@ class Handler implements ExceptionsHandler {
 	 * @param  \Throwable               $e
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
-	protected function prepareResponse( $request, Throwable $e ) {
-		if ( ! $this->isHttpException( $e ) && config( 'app.debug' ) ) {
+	protected function prepare_response( $request, Throwable $e ) {
+		if ( ! $this->is_http_exception( $e ) && config( 'app.debug' ) ) {
+			// var_dump('illum');exit;
 			return $this->toIlluminateResponse( $this->convertExceptionToResponse( $e ), $e );
 		}
 
-		if ( ! $this->isHttpException( $e ) ) {
+		if ( ! $this->is_http_exception( $e ) ) {
 			$e = new HttpException( 500, $e->getMessage() );
 		}
 
@@ -259,10 +266,10 @@ class Handler implements ExceptionsHandler {
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	protected function convertExceptionToResponse( Throwable $e ) {
-		return SymfonyResponse::create(
+		return Response::create(
 			$this->renderExceptionContent( $e ),
-			$this->isHttpException( $e ) ? $e->getStatusCode() : 500,
-			$this->isHttpException( $e ) ? $e->getHeaders() : []
+			$this->is_http_exception( $e ) ? $e->getStatusCode() : 500,
+			$this->is_http_exception( $e ) ? $e->getHeaders() : []
 		);
 	}
 
@@ -334,49 +341,19 @@ class Handler implements ExceptionsHandler {
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	protected function renderHttpException( HttpExceptionInterface $e ) {
-		$this->registerErrorViewPaths();
-
-		if ( view()->exists( $view = $this->getHttpExceptionView( $e ) ) ) {
-			return response()->view(
-				$view,
-				[
-					'errors'    => new ViewErrorBag(),
-					'exception' => $e,
-				],
-				$e->getStatusCode(),
-				$e->getHeaders()
-			);
-		}
-
-		return $this->convertExceptionToResponse( $e );
-	}
-
-	/**
-	 * Register the error template hint paths.
-	 *
-	 * @return void
-	 */
-	protected function registerErrorViewPaths() {
-		$paths = collect( config( 'view.paths' ) );
-
-		View::replaceNamespace(
-			'errors',
-			$paths->map(
-				function ( $path ) {
-					return "{$path}/errors";
-				}
-			)->push( __DIR__ . '/views' )->all()
-		);
+		// todo: check if view exists.
+		$view = $this->get_http_exception_view( $e );
+		return response()->view( $view[0], $view[1], [ 'exception' => $e ] );
 	}
 
 	/**
 	 * Get the view used to render HTTP exceptions.
 	 *
-	 * @param  \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface $e
-	 * @return string
+	 * @param \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface $e
+	 * @return array
 	 */
-	protected function getHttpExceptionView( HttpExceptionInterface $e ) {
-		return "errors::{$e->getStatusCode()}";
+	protected function get_http_exception_view( HttpExceptionInterface $e ) {
+		return [ 'error', $e->getStatusCode() ];
 	}
 
 	/**
@@ -387,13 +364,7 @@ class Handler implements ExceptionsHandler {
 	 * @return \Illuminate\Http\Response
 	 */
 	protected function toIlluminateResponse( $response, Throwable $e ) {
-		if ( $response instanceof SymfonyRedirectResponse ) {
-			$response = new RedirectResponse(
-				$response->getTargetUrl(),
-				$response->getStatusCode(),
-				$response->headers->all()
-			);
-		} else {
+		if ( ! $response instanceof RedirectResponse ) {
 			$response = new Response(
 				$response->getContent(),
 				$response->getStatusCode(),
@@ -407,15 +378,15 @@ class Handler implements ExceptionsHandler {
 	/**
 	 * Prepare a JSON response for the given exception.
 	 *
-	 * @param  \Illuminate\Http\Request $request
-	 * @param  \Throwable               $e
-	 * @return \Illuminate\Http\JsonResponse
+	 * @param Request   $request
+	 * @param Throwable $e
+	 * @return JsonResponse
 	 */
 	protected function prepareJsonResponse( $request, Throwable $e ) {
 		return new JsonResponse(
 			$this->convertExceptionToArray( $e ),
-			$this->isHttpException( $e ) ? $e->getStatusCode() : 500,
-			$this->isHttpException( $e ) ? $e->getHeaders() : [],
+			$this->is_http_exception( $e ) ? $e->getStatusCode() : 500,
+			$this->is_http_exception( $e ) ? $e->getHeaders() : [],
 			JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES
 		);
 	}
@@ -438,7 +409,7 @@ class Handler implements ExceptionsHandler {
 				}
 			)->all(),
 		] : [
-			'message' => $this->isHttpException( $e ) ? $e->getMessage() : 'Server Error',
+			'message' => $this->is_http_exception( $e ) ? $e->getMessage() : __( 'Server Error', 'mantle' ),
 		];
 	}
 
@@ -456,10 +427,10 @@ class Handler implements ExceptionsHandler {
 	/**
 	 * Determine if the given exception is an HTTP exception.
 	 *
-	 * @param  \Throwable $e
+	 * @param Throwable $e Exception thrown.
 	 * @return bool
 	 */
-	protected function isHttpException( Throwable $e ) {
-		return $e instanceof HttpExceptionInterface;
+	protected function is_http_exception( Throwable $e ): bool {
+		return $e instanceof Http_Exception;
 	}
 }

@@ -182,7 +182,8 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 		}
 
 		try {
-			$response = $this->router->dispatch( $request );
+			throw new \Exception( 'Random thing went wrong.' );
+			// $response = $this->router->dispatch( $request );
 		} catch ( Throwable $e ) {
 			// If no route found, allow the request to be passed down to WordPress.
 			if ( $e instanceof ResourceNotFoundException && $provider->should_pass_through_requests( $request ) ) {
