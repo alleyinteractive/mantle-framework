@@ -1,9 +1,19 @@
 <?php
+/**
+ * Interacts_With_Content_Types trait file.
+ *
+ * @package Mantle
+ */
 
 namespace Mantle\Framework\Http\Concerns;
 
 use Mantle\Framework\Support\Str;
 
+/**
+ * Interacts with Content Types Concern
+ *
+ * Provides information about the current request to the request object.
+ */
 trait Interacts_With_Content_Types {
 
 	/**
@@ -55,25 +65,25 @@ trait Interacts_With_Content_Types {
 	/**
 	 * Determines whether the current requests accepts a given content type.
 	 *
-	 * @param  string|array $contentTypes
+	 * @param  string|array $content_types
 	 * @return bool
 	 */
-	public function accepts( $contentTypes ) {
+	public function accepts( $content_types ) {
 		$accepts = $this->getAcceptableContentTypes();
 
 		if ( count( $accepts ) === 0 ) {
 			return true;
 		}
 
-		$types = (array) $contentTypes;
+		$types = (array) $content_types;
 
 		foreach ( $accepts as $accept ) {
-			if ( $accept === '*/*' || $accept === '*' ) {
+			if ( '*/*' === $accept || '*' === $accept ) {
 				return true;
 			}
 
 			foreach ( $types as $type ) {
-				if ( $this->matches_type( $accept, $type ) || $accept === strtok( $type, '/' ) . '/*' ) {
+				if ( $this->matches_type( $accept, $type ) || strtok( $type, '/' ) . '/*' === $accept ) {
 					return true;
 				}
 			}
@@ -85,28 +95,29 @@ trait Interacts_With_Content_Types {
 	/**
 	 * Return the most suitable content type from the given array based on content negotiation.
 	 *
-	 * @param  string|array $contentTypes
+	 * @param  string|array $content_types
 	 * @return string|null
 	 */
-	public function prefers( $contentTypes ) {
+	public function prefers( $content_types ) {
 		$accepts = $this->getAcceptableContentTypes();
 
-		$contentTypes = (array) $contentTypes;
+		$content_types = (array) $content_types;
 
 		foreach ( $accepts as $accept ) {
 			if ( in_array( $accept, [ '*/*', '*' ] ) ) {
-				return $contentTypes[0];
+				return $content_types[0];
 			}
 
-			foreach ( $contentTypes as $contentType ) {
-				$type = $contentType;
+			foreach ( $content_types as $content_type ) {
+				$type = $content_type;
 
-				if ( ! is_null( $mimeType = $this->getMimeType( $contentType ) ) ) {
-					$type = $mimeType;
+				$mime_type = $this->getMimeType( $content_type );
+				if ( ! is_null( $mime_type ) ) {
+					$type = $mime_type;
 				}
 
-				if ( $this->matches_type( $type, $accept ) || $accept === strtok( $type, '/' ) . '/*' ) {
-					return $contentType;
+				if ( $this->matches_type( $type, $accept ) || strtok( $type, '/' ) . '/*' === $accept ) {
+					return $content_type;
 				}
 			}
 		}
@@ -121,7 +132,7 @@ trait Interacts_With_Content_Types {
 		$acceptable = $this->getAcceptableContentTypes();
 
 		return count( $acceptable ) === 0 || (
-			isset( $acceptable[0] ) && ( $acceptable[0] === '*/*' || $acceptable[0] === '*' )
+			isset( $acceptable[0] ) && ( '*/*' === $acceptable[0] || '*' === $acceptable[0] )
 		);
 	}
 
@@ -151,7 +162,8 @@ trait Interacts_With_Content_Types {
 	 */
 	public function format( $default = 'html' ) {
 		foreach ( $this->getAcceptableContentTypes() as $type ) {
-			if ( $format = $this->getFormat( $type ) ) {
+			$format = $this->getFormat( $type );
+			if ( $format ) {
 				return $format;
 			}
 		}

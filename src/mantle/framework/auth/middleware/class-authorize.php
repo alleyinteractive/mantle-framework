@@ -27,7 +27,6 @@ class Authorize {
 	 * @throws Authentication_Error Thrown on invalid access.
 	 */
 	public function handle( Request $request, Closure $next, string $ability = '' ) {
-		throw new Authentication_Error( 403, static::get_unauthenticated_error_message() );
 		if ( ! \is_user_logged_in() ) {
 			throw new Authentication_Error( 403, static::get_unauthenticated_error_message() );
 		}

@@ -180,6 +180,7 @@ class Application extends Container\Container implements Application_Contract {
 		$core_aliases = [
 			'app'      => [ static::class, \Mantle\Framework\Contracts\Application::class ],
 			'config'   => [ \Mantle\Framework\Config\Repository::class, \Mantle\Framework\Contracts\Config\Repository::class ],
+			'log'      => [ \Mantle\Framework\Log\Log_Manager::class, \Psr\Log\LoggerInterface::class ],
 			'queue'    => [ \Mantle\Framework\Queue\Queue_Manager::class, \Mantle\Framework\Contracts\Queue\Queue_Manager::class ],
 			'redirect' => [ \Mantle\Framework\Http\Routing\Redirector::class ],
 			'request'  => [ \Mantle\Framework\Http\Request::class, \Symfony\Component\HttpFoundation\Request::class ],

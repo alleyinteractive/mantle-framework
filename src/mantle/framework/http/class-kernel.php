@@ -172,7 +172,6 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 * @return Response|null
 	 *
 	 * @throws InvalidArgumentException Thrown on invalid router service provider instance.
-	 * @throws ResourceNotFoundException Thrown on missing resource.
 	 */
 	protected function send_request_through_router( Request $request ): ?Response {
 		$provider = $this->app['router.service-provider'];
@@ -182,16 +181,14 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 		}
 
 		try {
-			throw new \Exception( 'Random thing went wrong.' );
-			// $response = $this->router->dispatch( $request );
+			$response = $this->router->dispatch( $request );
 		} catch ( Throwable $e ) {
 			// If no route found, allow the request to be passed down to WordPress.
 			if ( $e instanceof ResourceNotFoundException && $provider->should_pass_through_requests( $request ) ) {
 				return null;
 			}
 
-			// todo: report exception.
-			// $this->report_exception( $e );
+			$this->report_exception( $e );
 
 			$response = $this->render_exception( $request, $e );
 		}
