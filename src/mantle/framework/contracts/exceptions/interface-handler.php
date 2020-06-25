@@ -40,13 +40,4 @@ interface Handler {
 	 * @throws Throwable Thrown on error rendering.
 	 */
 	public function render( $request, Throwable $e );
-
-	/**
-	 * Render an exception to the console.
-	 *
-	 * @param  \Symfony\Component\Console\Output\OutputInterface $output
-	 * @param  \Throwable                                        $e
-	 * @return void
-	 */
-	public function render_for_console( $output, Throwable $e );
 }
