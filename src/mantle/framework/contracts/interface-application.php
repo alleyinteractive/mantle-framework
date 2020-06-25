@@ -26,6 +26,21 @@ interface Application {
 	public function get_base_path(): string;
 
 	/**
+	 * Set the root URL of the application.
+	 *
+	 * @param string $url Root URL to set.
+	 */
+	public function set_root_url( string $url );
+
+	/**
+	 * Getter for the root URL.
+	 *
+	 * @param string $path Path to append.
+	 * @return string
+	 */
+	public function get_root_url( string $path = '' ): string;
+
+	/**
 	 * Get the path to the application configuration files.
 	 *
 	 * @return string

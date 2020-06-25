@@ -57,7 +57,7 @@ class Pending_Dispatch {
 	 */
 	public function __destruct() {
 		if ( $this->job ) {
-			mantle_app( Dispatcher::class )->dispatch( $this->job );
+			app( Dispatcher::class )->dispatch( $this->job );
 		}
 	}
 }
