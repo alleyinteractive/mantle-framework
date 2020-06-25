@@ -64,7 +64,7 @@ class Wp_Cron_Provider implements Provider {
 	 */
 	protected static function process_pending_queue() {
 		if ( ! empty( static::$pending_queue ) ) {
-			$manager = mantle_app( Queue_Manager::class );
+			$manager = app( Queue_Manager::class );
 
 			if ( $manager ) {
 				$provider = $manager->get_provider();

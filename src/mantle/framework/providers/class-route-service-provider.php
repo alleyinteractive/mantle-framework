@@ -9,7 +9,6 @@ namespace Mantle\Framework\Providers;
 
 use Mantle\Framework\Contracts\Providers\Route_Service_Provider as Route_Service_Provider_Contract;
 use Mantle\Framework\Http\Request;
-use Mantle\Framework\Http\Routing\Router;
 use Mantle\Framework\Service_Provider;
 
 /**

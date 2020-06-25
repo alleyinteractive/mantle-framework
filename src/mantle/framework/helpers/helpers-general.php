@@ -293,23 +293,6 @@ function with( $value, callable $callback = null ) {
 }
 
 /**
- * Get the available container instance.
- *
- * @param string|null $abstract
- * @param array       $parameters
- *
- * @return mixed|Mantle\Framework\Container\Container
- * @throws \Mantle\Framework\Container\Binding_Resolution_Exception Binding resolution exception.
- */
-function app( $abstract = null, array $parameters = [] ) {
-	if ( is_null( $abstract ) ) {
-		return Container::getInstance();
-	}
-
-	return Container::getInstance()->make( $abstract, $parameters );
-}
-
-/**
  * Create a model factory builder for a given class and amount.
  *
  * @param string $class
@@ -320,7 +303,6 @@ function app( $abstract = null, array $parameters = [] ) {
  */
 function factory( $class, $amount = null ) {
 	$factory = app( MantleFactory::class );
-
 
 	if ( isset( $amount ) && is_int( $amount ) ) {
 		return $factory->of( $class )->times( $amount );
