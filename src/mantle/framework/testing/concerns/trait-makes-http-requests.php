@@ -207,7 +207,7 @@ trait Makes_Http_Requests {
 			$url = $uri;
 		}
 
-		$this->set_server_state( $method, $url, $server );
+		$this->set_server_state( $method, $url, $server, $parameters );
 
 		$response_status  = 200;
 		$response_headers = [];
@@ -294,8 +294,10 @@ trait Makes_Http_Requests {
 	 * @param string $method HTTP method.
 	 * @param string $url    Request URI.
 	 * @param array  $server Additional $_SERVER args to set.
+	 * @param array  $data   POST data to set.
 	 */
-	protected function set_server_state( $method, $url, $server ) {
+	protected function set_server_state( $method, $url, $server, $data ) {
+		// phpcs:disable WordPress.Security.NonceVerification
 		$_SERVER['REQUEST_METHOD'] = strtoupper( $method );
 		$_SERVER['SERVER_NAME']    = WP_TESTS_DOMAIN;
 		$_SERVER['SERVER_PORT']    = '80';
@@ -307,15 +309,19 @@ trait Makes_Http_Requests {
 			if ( isset( $parts['query'] ) ) {
 				$req .= '?' . $parts['query'];
 				// Parse the URL query vars into $_GET.
-				parse_str( $parts['query'], $_GET ); // phpcs:ignore WordPress.Security.NonceVerification
+				parse_str( $parts['query'], $_GET );
 			}
 		} else {
 			$req = $url;
 		}
-
 		$_SERVER['REQUEST_URI'] = $req;
 
-		$_SERVER = array_merge( $_SERVER, $server );
+		$_POST = $data;
+
+		// The ini setting variable_order determines order; assume GP for simplicity.
+		$_REQUEST = array_merge( $_GET, $_POST );
+		$_SERVER  = array_merge( $_SERVER, $server );
+		// phpcs:enable
 	}
 
 	/**
