@@ -44,6 +44,11 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	}
 
 	/**
+	 * Register the service provider.
+	 */
+	public function register() { }
+
+	/**
 	 * Bootstrap services.
 	 */
 	public function boot() {
