@@ -163,7 +163,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 		$id = $this->id();
 
 		if ( empty( $id ) ) {
-			$save = \wp_insert_post( $this->get_attributes() );
+			$save = \wp_insert_post( $this->get_attributes(), true );
 		} else {
 			$save = \wp_update_post(
 				array_merge(
@@ -171,7 +171,8 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 					[
 						'ID' => $id,
 					]
-				)
+				),
+				true
 			);
 		}
 
