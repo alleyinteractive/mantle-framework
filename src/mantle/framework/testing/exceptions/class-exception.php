@@ -7,7 +7,9 @@
 
 namespace Mantle\Framework\Testing\Exceptions;
 
+use \Exception as Base_Exception;
+
 /**
  * General exception for wp_die().
  */
-class WP_Die_Exception extends Exception {}
+class Exception extends Base_Exception {}

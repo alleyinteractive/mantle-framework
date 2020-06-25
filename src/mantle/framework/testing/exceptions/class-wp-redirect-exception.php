@@ -10,4 +10,4 @@ namespace Mantle\Framework\Testing\Exceptions;
 /**
  * General exception for wp_die().
  */
-class WP_Die_Exception extends Exception {}
+class WP_Redirect_Exception extends Exception {}
