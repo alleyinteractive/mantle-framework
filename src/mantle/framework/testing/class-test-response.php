@@ -1,4 +1,4 @@
-<?php
+<?php // phpcs:disable WordPress.NamingConventions.ValidFunctionName
 /**
  * This file contains the Test_Response class
  *
@@ -136,7 +136,7 @@ class Test_Response {
 	 *
 	 * @return $this
 	 */
-	public function assert_successful() {
+	public function assertSuccessful() {
 		$actual = $this->get_status_code();
 		PHPUnit::assertTrue(
 			$actual >= 200 && $actual < 300,
@@ -151,8 +151,8 @@ class Test_Response {
 	 *
 	 * @return $this
 	 */
-	public function assert_ok() {
-		return $this->assert_status( 200 );
+	public function assertOk() {
+		return $this->assertStatus( 200 );
 	}
 
 	/**
@@ -161,7 +161,7 @@ class Test_Response {
 	 * @param int $status Status code to assert.
 	 * @return $this
 	 */
-	public function assert_status( $status ) {
+	public function assertStatus( $status ) {
 		$actual = $this->get_status_code();
 
 		PHPUnit::assertSame(
@@ -178,8 +178,8 @@ class Test_Response {
 	 *
 	 * @return $this
 	 */
-	public function assert_created() {
-		return $this->assert_status( 201 );
+	public function assertCreated() {
+		return $this->assertStatus( 201 );
 	}
 
 	/**
@@ -188,8 +188,8 @@ class Test_Response {
 	 * @param int $status Status code to assert. Defaults to 204.
 	 * @return $this
 	 */
-	public function assert_no_content( $status = 204 ) {
-		$this->assert_status( $status );
+	public function assertNoContent( $status = 204 ) {
+		$this->assertStatus( $status );
 
 		PHPUnit::assertEmpty( $this->get_content(), 'Response content is not empty.' );
 
@@ -201,8 +201,8 @@ class Test_Response {
 	 *
 	 * @return $this
 	 */
-	public function assert_not_found() {
-		return $this->assert_status( 404 );
+	public function assertNotFound() {
+		return $this->assertStatus( 404 );
 	}
 
 	/**
@@ -210,8 +210,8 @@ class Test_Response {
 	 *
 	 * @return $this
 	 */
-	public function assert_forbidden() {
-		return $this->assert_status( 403 );
+	public function assertForbidden() {
+		return $this->assertStatus( 403 );
 	}
 
 	/**
@@ -219,8 +219,8 @@ class Test_Response {
 	 *
 	 * @return $this
 	 */
-	public function assert_unauthorized() {
-		return $this->assert_status( 401 );
+	public function assertUnauthorized() {
+		return $this->assertStatus( 401 );
 	}
 
 	/**
@@ -229,14 +229,14 @@ class Test_Response {
 	 * @param string|null $uri URI to assert redirection to.
 	 * @return $this
 	 */
-	public function assert_redirect( $uri = null ) {
+	public function assertRedirect( $uri = null ) {
 		PHPUnit::assertTrue(
 			$this->is_redirect(),
 			'Response status code [' . $this->get_status_code() . '] is not a redirect status code.'
 		);
 
 		if ( ! is_null( $uri ) ) {
-			$this->assert_location( $uri );
+			$this->assertLocation( $uri );
 		}
 
 		return $this;
@@ -259,7 +259,7 @@ class Test_Response {
 	 * @param string $uri URI to assert that the location header is set to.
 	 * @return $this
 	 */
-	public function assert_location( $uri ) {
+	public function assertLocation( $uri ) {
 		PHPUnit::assertEquals(
 			trailingslashit( home_url( $uri ) ),
 			trailingslashit( home_url( $this->get_header( 'Location' ) ) )
@@ -276,7 +276,7 @@ class Test_Response {
 	 * @param mixed  $value       Header value to assert.
 	 * @return $this
 	 */
-	public function assert_header( $header_name, $value = null ) {
+	public function assertHeader( $header_name, $value = null ) {
 		PHPUnit::assertArrayHasKey(
 			$header_name,
 			$this->headers,
@@ -302,7 +302,7 @@ class Test_Response {
 	 * @param string $header_name Header name (key) to check.
 	 * @return $this
 	 */
-	public function assert_header_missing( $header_name ) {
+	public function assertHeaderMissing( $header_name ) {
 		PHPUnit::assertArrayNotHasKey(
 			$header_name,
 			$this->headers,
@@ -318,8 +318,8 @@ class Test_Response {
 	 * @param string $value String to search for.
 	 * @return $this
 	 */
-	public function assert_see( $value ) {
-		PHPUnit::assertContains( (string) $value, $this->get_content() );
+	public function assertSee( $value ) {
+		PHPUnit::assertStringContainsString( (string) $value, $this->get_content() );
 
 		return $this;
 	}
@@ -365,7 +365,7 @@ class Test_Response {
 	 * @param array $values Values to check.
 	 * @return $this
 	 */
-	public function assert_see_in_order( array $values ) {
+	public function assertSeeInOrder( array $values ) {
 		try {
 			PHPUnit::assertTrue( $this->see_in_order( $values, $this->get_content() ) );
 		} catch ( Exception $exception ) {
@@ -381,8 +381,8 @@ class Test_Response {
 	 * @param string $value Value to check.
 	 * @return $this
 	 */
-	public function assert_see_text( $value ) {
-		PHPUnit::assertContains( (string) $value, wp_strip_all_tags( $this->get_content() ) );
+	public function assertSeeText( $value ) {
+		PHPUnit::assertStringContainsString( (string) $value, wp_strip_all_tags( $this->get_content() ) );
 
 		return $this;
 	}
@@ -394,7 +394,7 @@ class Test_Response {
 	 * @param array $values Values to check.
 	 * @return $this
 	 */
-	public function assert_see_text_in_order( array $values ) {
+	public function assertSeeTextInOrder( array $values ) {
 		try {
 			PHPUnit::assertTrue(
 				$this->see_in_order( $values, wp_strip_all_tags( $this->get_content() ) )
@@ -412,8 +412,8 @@ class Test_Response {
 	 * @param string $value Value to check.
 	 * @return $this
 	 */
-	public function assert_dont_see( $value ) {
-		PHPUnit::assertNotContains( (string) $value, $this->get_content() );
+	public function assertDontSee( $value ) {
+		PHPUnit::assertStringNotContainsString( (string) $value, $this->get_content() );
 
 		return $this;
 	}
@@ -424,8 +424,47 @@ class Test_Response {
 	 * @param string $value Value to check.
 	 * @return $this
 	 */
-	public function assert_dont_see_text( $value ) {
-		PHPUnit::assertNotContains( (string) $value, wp_strip_all_tags( $this->get_content() ) );
+	public function assertDontSeeText( $value ) {
+		PHPUnit::assertStringNotContainsString( (string) $value, wp_strip_all_tags( $this->get_content() ) );
+
+		return $this;
+	}
+
+	/**
+	 * Checks each of the WP_Query is_* functions/properties against expected
+	 * boolean value.
+	 *
+	 * @see Test_Case::assertQueryTrue()
+	 *
+	 * @param string ...$prop Any number of WP_Query properties that are expected
+	 *                        to be true for the current request.
+	 */
+	public function assertQueryTrue( ...$prop ) {
+		Test_Case::assertQueryTrue( ...$prop );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a given ID matches the global queried object ID.
+	 *
+	 * @param int $id Expected ID.
+	 * @return $this
+	 */
+	public function assertQueriedObjectId( int $id ) {
+		Test_Case::assertQueriedObjectId( $id );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a given object is equivalent to the global queried object.
+	 *
+	 * @param Object $object Expected object.
+	 * @return $this
+	 */
+	public function assertQueriedObject( $object ) {
+		Test_Case::assertQueriedObject( $object );
 
 		return $this;
 	}

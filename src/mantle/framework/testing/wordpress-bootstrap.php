@@ -72,11 +72,9 @@ if ( ! defined( 'WP_DEFAULT_THEME' ) ) {
 	define( 'WP_DEFAULT_THEME', 'default' );
 }
 $wp_theme_directories = [];
+$installing_wp        = defined( 'WP_INSTALLING' ) && WP_INSTALLING;
 
-if (
-	! ( defined( 'WP_INSTALLING' ) && WP_INSTALLING )
-	&& '1' !== getenv( 'WP_TESTS_SKIP_INSTALL' )
-) {
+if ( ! $installing_wp && '1' !== getenv( 'WP_TESTS_SKIP_INSTALL' ) ) {
 	system( WP_PHP_BINARY . ' ' . escapeshellarg( __DIR__ . '/install-wordpress.php' ) . ' ' . $multisite, $retval );
 	if ( 0 !== $retval ) {
 		exit( $retval );
@@ -84,11 +82,13 @@ if (
 }
 
 if ( $multisite ) {
-	echo 'Running as multisite...' . PHP_EOL;
+	if ( ! $installing_wp ) {
+		echo 'Running as multisite...' . PHP_EOL;
+	}
 	defined( 'MULTISITE' ) or define( 'MULTISITE', true );
 	defined( 'SUBDOMAIN_INSTALL' ) or define( 'SUBDOMAIN_INSTALL', false );
 	$GLOBALS['base'] = '/';
-} else {
+} elseif ( ! $installing_wp ) {
 	echo 'Running as single site... To run multisite, use -c tests/phpunit/multisite.xml' . PHP_EOL;
 }
 unset( $multisite );
