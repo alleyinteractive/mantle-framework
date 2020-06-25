@@ -8,6 +8,7 @@
 namespace Mantle\Framework;
 
 use Mantle\Framework\Contracts\Application as Application_Contract;
+use Mantle\Framework\Contracts\Container as Container_Contract;
 use Mantle\Framework\Contracts\Kernel as Kernel_Contract;
 use Mantle\Framework\Log\Log_Service_Provider;
 use Mantle\Framework\Providers\Event_Service_Provider;
@@ -120,6 +121,7 @@ class Application extends Container\Container implements Application_Contract {
 
 		$this->instance( 'app', $this );
 		$this->instance( Container\Container::class, $this );
+		$this->instance( Container_Contract::class, $this );
 		$this->instance( static::class, $this );
 
 		$this->singleton(

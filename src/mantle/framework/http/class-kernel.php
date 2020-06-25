@@ -18,6 +18,8 @@ use Mantle\Framework\Facade\Facade;
 use Mantle\Framework\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
+use Throwable;
+use Mantle\Framework\Contracts\Exceptions\Handler as Exception_Handler;
 
 /**
  * HTTP Kernel
@@ -101,6 +103,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 		try {
 			$this->bootstrap();
 		} catch ( Exception $e ) {
+			// todo: move to error handler.
 			\wp_die( 'Error booting HTTP Kernel: ' . $e->getMessage() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
@@ -180,15 +183,39 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 
 		try {
 			$response = $this->router->dispatch( $request );
-		} catch ( ResourceNotFoundException $e ) {
+		} catch ( Throwable $e ) {
 			// If no route found, allow the request to be passed down to WordPress.
-			if ( $provider->should_pass_through_requests( $request ) ) {
+			if ( $e instanceof ResourceNotFoundException && $provider->should_pass_through_requests( $request ) ) {
 				return null;
 			}
 
-			throw $e;
+			// todo: report exception.
+			// $this->report_exception( $e );
+
+			$response = $this->render_exception( $request, $e );
 		}
 
 		return $response;
+	}
+
+	/**
+	 * Report the exception to the exception handler.
+	 *
+	 * @param  \Throwable $e
+	 * @return void
+	 */
+	protected function report_exception( Throwable $e ) {
+		$this->app[ Exception_Handler::class ]->report( $e );
+	}
+
+	/**
+	 * Render the exception to a response.
+	 *
+	 * @param  \Illuminate\Http\Request $request
+	 * @param  \Throwable               $e
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	protected function render_exception( $request, Throwable $e ) {
+		return $this->app[ Exception_Handler::class ]->render( $request, $e );
 	}
 }
