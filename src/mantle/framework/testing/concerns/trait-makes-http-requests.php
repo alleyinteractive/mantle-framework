@@ -7,6 +7,7 @@
 
 namespace Mantle\Framework\Testing\Concerns;
 
+use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Support\Str;
 use Mantle\Framework\Testing\Exceptions\Exception;
 use Mantle\Framework\Testing\Exceptions\WP_Redirect_Exception;
@@ -114,14 +115,38 @@ trait Makes_Http_Requests {
 	/**
 	 * Visit the given URI with a GET request.
 	 *
-	 * @param string $uri     Request URI.
-	 * @param array  $headers Request headers.
+	 * @param mixed $uri     Request URI.
+	 * @param array $headers Request headers.
 	 * @return Test_Response
 	 */
 	public function get( $uri, array $headers = [] ) {
 		$server = $this->transform_headers_to_server_vars( $headers );
 
 		return $this->call( 'GET', $uri, [], $server );
+	}
+
+	/**
+	 * Infer the request URL from an object like a post or term.
+	 *
+	 * @param mixed $source Source from which to infer the URL.
+	 * @return string
+	 */
+	protected function infer_url( $source ): string {
+		switch ( true ) {
+			case $source instanceof \WP_Post:
+				return get_permalink( $source );
+
+			case $source instanceof \WP_Term:
+				return get_term_link( $source );
+
+			case $source instanceof \WP_User:
+				return \get_author_posts_url( $source->ID );
+
+			case $source instanceof Model && method_exists( $source, 'permalink' ):
+				return $source->permalink();
+		}
+
+		return '';
 	}
 
 	/**
@@ -168,14 +193,21 @@ trait Makes_Http_Requests {
 	 */
 	public function call( $method, $uri, $parameters = [], $server = [], $content = null ) {
 		$this->reset_request_state();
-		$this->set_server_state( $method, $uri, $server );
+
+		if ( ! is_string( $uri ) ) {
+			$uri = $this->infer_url( $uri );
+		}
 
 		// Build a full URL from partial URIs.
 		if ( '/' === $uri[0] ) {
-			$uri = 'https://' . WP_TESTS_DOMAIN . $uri;
+			$url = 'https://' . WP_TESTS_DOMAIN . $uri;
 		} elseif ( false === strpos( $uri, '://' ) ) {
-			$uri = 'https://' . WP_TESTS_DOMAIN . '/' . $uri;
+			$url = 'https://' . WP_TESTS_DOMAIN . '/' . $uri;
+		} else {
+			$url = $uri;
 		}
+
+		$this->set_server_state( $method, $url, $server );
 
 		$response_status  = 200;
 		$response_headers = [];
@@ -201,7 +233,7 @@ trait Makes_Http_Requests {
 		add_filter( 'wp_using_themes', '__return_true', 9999 );
 
 		ob_start();
-		$this->setup_wordpress_query( $uri );
+		$this->setup_wordpress_query();
 
 		try {
 			// Execute the request, inasmuch as WordPress would.
@@ -256,25 +288,19 @@ trait Makes_Http_Requests {
 		}
 	}
 
-	protected function set_server_state( $method, $uri, $server ) {
-		$_SERVER['REQUEST_METHOD'] = strtoupper( $method );
-		$_SERVER['SERVER_NAME']     = WP_TESTS_DOMAIN;
-		$_SERVER['SERVER_PORT']     = '80';
-		$_SERVER = array_merge( $_SERVER, $server );
-	}
-
 	/**
-	 * Sets the WordPress query as if a given URL has been requested.
+	 * Set $_SERVER keys for the request.
 	 *
-	 * This sets:
-	 * - The super globals.
-	 * - The globals.
-	 * - The query variables.
-	 * - The main query.
-	 *
-	 * @param string $url The URL for the request.
+	 * @param string $method HTTP method.
+	 * @param string $url    Request URI.
+	 * @param array  $server Additional $_SERVER args to set.
 	 */
-	protected function setup_wordpress_query( $url ) {
+	protected function set_server_state( $method, $url, $server ) {
+		$_SERVER['REQUEST_METHOD'] = strtoupper( $method );
+		$_SERVER['SERVER_NAME']    = WP_TESTS_DOMAIN;
+		$_SERVER['SERVER_PORT']    = '80';
+		unset( $_SERVER['PATH_INFO'] );
+
 		$parts = wp_parse_url( $url );
 		if ( isset( $parts['scheme'] ) ) {
 			$req = isset( $parts['path'] ) ? $parts['path'] : '';
@@ -288,8 +314,20 @@ trait Makes_Http_Requests {
 		}
 
 		$_SERVER['REQUEST_URI'] = $req;
-		unset( $_SERVER['PATH_INFO'] );
 
+		$_SERVER = array_merge( $_SERVER, $server );
+	}
+
+	/**
+	 * Sets the WordPress query as if a given URL has been requested.
+	 *
+	 * This sets:
+	 * - The super globals.
+	 * - The globals.
+	 * - The query variables.
+	 * - The main query.
+	 */
+	protected function setup_wordpress_query() {
 		self::flush_cache();
 
 		// phpcs:disable WordPress.WP.GlobalVariablesOverride
