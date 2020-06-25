@@ -48,7 +48,7 @@ trait Dispatchable {
 	 * @param mixed ...$args Dispatch arguments.
 	 */
 	public static function dispatch_now( ...$args ) {
-		return mantle_app( Dispatcher::class )->dispatch_now(
+		return app( Dispatcher::class )->dispatch_now(
 			new static( ...$args )
 		);
 	}

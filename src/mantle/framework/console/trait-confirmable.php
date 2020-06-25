@@ -25,7 +25,7 @@ trait Confirmable {
 	 */
 	public function confirm_to_proceed( string $warning = null ) {
 		// Check if the command needs to be confirmed.
-		if ( 'production' !== mantle_app()->environment() ) {
+		if ( 'production' !== app()->environment() ) {
 			return true;
 		}
 
