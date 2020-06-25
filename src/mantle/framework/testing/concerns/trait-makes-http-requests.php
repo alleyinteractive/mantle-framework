@@ -251,7 +251,13 @@ trait Makes_Http_Requests {
 		remove_filter( 'exit_on_http_head', '__return_false', 9999 );
 		remove_filter( 'wp_using_themes', '__return_true', 9999 );
 
-		return new Test_Response( $response_content, $response_status, $response_headers );
+		$response = new Test_Response( $response_content, $response_status, $response_headers );
+
+		if ( $this->follow_redirects ) {
+			return $this->follow_redirects( $response );
+		}
+
+		return $response;
 	}
 
 	/**
