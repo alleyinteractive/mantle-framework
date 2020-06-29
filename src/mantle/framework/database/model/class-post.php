@@ -46,7 +46,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 *
 	 * @var string
 	 */
-	public static $object_name = 'post';
+	public static $object_name;
 
 	/**
 	 * Find a model by Object ID.
