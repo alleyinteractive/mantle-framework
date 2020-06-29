@@ -9,6 +9,7 @@ namespace Mantle\Framework\Http\Routing;
 
 use Mantle\Framework\Contracts\Http\Routing\Response_Factory as Factory_Contract;
 use Mantle\Framework\Http\Response;
+use Mantle\Framework\Http\View\Factory as View_Factory;
 use Mantle\Framework\Support\Str;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,12 +28,21 @@ class Response_Factory implements Factory_Contract {
 	protected $redirector;
 
 	/**
+	 * The view factory instance.
+	 *
+	 * @var View_Factory
+	 */
+	protected $view;
+
+	/**
 	 * Create a new response factory instance.
 	 *
-	 * @param Redirector $redirector Redirector instance.
+	 * @param Redirector   $redirector Redirector instance.
+	 * @param View_Factory $view View factory.
 	 */
-	public function __construct( Redirector $redirector ) {
+	public function __construct( Redirector $redirector, View_Factory $view ) {
 		$this->redirector = $redirector;
+		$this->view       = $view;
 	}
 
 	/**
@@ -61,16 +71,18 @@ class Response_Factory implements Factory_Contract {
 	/**
 	 * Create a new response for a given view.
 	 *
-	 * @param  string|array $view
-	 * @param  array        $data
-	 * @param  int          $status
-	 * @param  array        $headers
+	 * @param  string $view View path.
+	 * @param  array  $data Data to pass to the view.
+	 * @param  int    $status HTTP status code.
+	 * @param  array  $headers Additional headers.
 	 * @return Response
-	 *
-	 * @todo not supported yet.
 	 */
 	public function view( $view, $data = [], $status = 200, array $headers = [] ) {
-		return false;
+		return $this->make(
+			$this->view->make( $view, $data ),
+			$status,
+			$headers
+		);
 	}
 
 	/**
