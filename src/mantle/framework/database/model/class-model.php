@@ -77,14 +77,18 @@ abstract class Model implements ArrayAccess {
 	/**
 	 * Refresh the model attributes.
 	 *
-	 * @return static
+	 * @return static|null Model instance or null if not found.
 	 */
 	public function refresh() {
 		if ( ! $this->get( 'id' ) ) {
-			return;
+			return null;
 		}
 
 		$instance = static::find( $this->get( 'id' ) );
+		if ( ! $instance ) {
+			return null;
+		}
+
 		$this->set_raw_attributes( $instance->get_raw_attributes() );
 		return $this;
 	}

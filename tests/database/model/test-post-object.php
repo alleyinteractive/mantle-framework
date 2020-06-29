@@ -176,6 +176,14 @@ class Test_Post_Object extends WP_UnitTestCase {
 		$this->assertNull( $object );
 	}
 
+	public function test_post_type_assumed() {
+		$object = new Test_Post_Type( [ 'name' => 'post-type-test' ] );
+		$object->save();
+		$this->assertNotEmpty( $object->id() );
+		$this->assertEquals( 'example-post-type', $object->get( 'post_type' ) );
+
+	}
+
 	public function test_model_incorrect_post_type() {
 		register_post_type( 'example_post_type' );
 		$post_id = $this->factory->post->create( [ 'post_type' => 'example_post_type' ] );

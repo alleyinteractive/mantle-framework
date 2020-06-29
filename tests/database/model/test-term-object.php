@@ -110,6 +110,13 @@ class Test_Term_Object extends WP_UnitTestCase {
 		$this->assertInstanceOf( Example_Taxonomy::class, Example_Taxonomy::find( $term ) );
 		$this->assertNull( Testable_Category::find( $term ) );
 	}
+
+	public function test_model_taxonomy_assumed() {
+		$object = new Example_Taxonomy( [ 'name' => 'assumed term' ] );
+		$object->save();
+		$this->assertNotEmpty( $object->id() );
+		$this->assertEquals( Example_Taxonomy::get_object_name(), $object->get( 'taxonomy' ) );
+	}
 }
 
 class Testable_Category extends Term {
