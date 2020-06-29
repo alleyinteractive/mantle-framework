@@ -13,7 +13,6 @@ use Mantle\Framework\Http\Routing\Response_Factory;
 use Mantle\Framework\Http\Routing\Router;
 use Mantle\Framework\Http\Routing\Url_Generator;
 use Mantle\Framework\Service_Provider;
-use Symfony\Component\Routing\RequestContext;
 
 /**
  * Routing Service Provider
@@ -53,7 +52,6 @@ class Routing_Service_Provider extends Service_Provider {
 				$routes = $app['router']->get_routes();
 				$routes = $app->instance( 'routes', $routes );
 
-				// todo: add logger.
 				return new Url_Generator(
 					$app->get_root_url(),
 					$routes,
@@ -82,7 +80,7 @@ class Routing_Service_Provider extends Service_Provider {
 		$this->app->singleton(
 			Response_Factory_Contract::class,
 			function( $app ) {
-				return new Response_Factory( $app['redirect'] );
+				return new Response_Factory( $app['redirect'], $app['view'] );
 			}
 		);
 	}

@@ -11,6 +11,7 @@
 
 use Mantle\Framework\Application;
 use Mantle\Framework\Contracts\Http\Routing\Response_Factory;
+use Mantle\Framework\Contracts\Http\View\Factory as View_Factory;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
 if ( ! function_exists( 'app' ) ) {
@@ -73,6 +74,76 @@ if ( ! function_exists( 'response' ) ) {
 		}
 
 		return $factory->make( ...$args );
+	}
+}
+
+if ( ! function_exists( 'view' ) ) {
+	/**
+	 * Return a new view.
+	 *
+	 * @param string       $slug View slug.
+	 * @param array|string $name View name, optional. Supports passing variables in if
+	 *                           $variables is not used.
+	 * @return View|View_Factory
+	 */
+	function view( ...$args ) {
+		$factory = app( View_Factory::class );
+		if ( empty( $args ) ) {
+			return $factory;
+		}
+
+		return $factory->make( ...$args );
+	}
+}
+
+if ( ! function_exists( 'loop' ) ) {
+	/**
+	 * Loop over a collection/array of posts.
+	 *
+	 * @param \ArrayAccess|array $data Data to loop over.
+	 * @param string           $slug View slug.
+	 * @param array|string     $name View name, optional. Supports passing variables in if
+	 *                           $variables is not used.
+	 * @return string
+	 */
+	function loop( ...$args ) {
+		return view()
+			->loop( ...$args )
+			->map
+			->render()
+			->implode( '' );
+	}
+}
+
+if ( ! function_exists( 'iterate' ) ) {
+	/**
+	 * Iterate over an array of arbitrary items, passing the index and item to a
+	 * given template part.
+	 *
+	 * @param \ArrayAccess|array $data Data to loop over.
+	 * @param string           $slug View slug.
+	 * @param array|string     $name View name, optional. Supports passing variables in if
+	 *                           $variables is not used.
+	 * @return string
+	 */
+	function iterate( ...$args ) {
+		return view()->iterate( ...$args )
+			->map
+			->render()
+			->implode( '' );
+	}
+}
+
+if ( ! function_exists( 'mantle_get_var' ) ) {
+	/**
+	 * Return a new view.
+	 *
+	 * @param string $key Variable to get.
+	 * @param mixed  $default Default value if unset.
+	 * @return mixed
+	 */
+	function mantle_get_var( string $key, $default = null ) {
+		return app( View_Factory::class )->get_var( $key, $default );
 	}
 }
 
