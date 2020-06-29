@@ -12,6 +12,4 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 /**
  * Thrown on error authenticating.
  */
-class Authentication_Error extends HttpException {
-
-}
+class Authentication_Error extends HttpException { }
