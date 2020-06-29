@@ -481,7 +481,7 @@ class Arr {
 	 * @param  int|null $number Number to pull.
 	 * @return mixed
 	 *
-	 * @throws \InvalidArgumentException Thrown when the requested number of items is greater
+	 * @throws InvalidArgumentException Thrown when the requested number of items is greater
 	 *                                   than the length of the array.
 	 */
 	public static function random( array $array, $number = null ) {
