@@ -23,6 +23,8 @@ use Symfony\Component\Routing\RouteCollection;
  * Allow registration of routes to the application.
  */
 class Router implements Router_Contract {
+	use Concerns\Route_Group;
+
 	/**
 	 * Application instance.
 	 *
@@ -114,6 +116,20 @@ class Router implements Router_Contract {
 	}
 
 	/**
+	 * Load the provided routes.
+	 *
+	 * @param  \Closure|string $routes
+	 * @return void
+	 */
+	protected function load_routes( $routes ) {
+		if ( $routes instanceof \Closure ) {
+			$routes( $this );
+		} else {
+			( new Route_File_Registrar( $this ) )->register( $routes );
+		}
+	}
+
+	/**
 	 * Register a route.
 	 *
 	 * @param array  $methods Methods to register.
@@ -122,11 +138,40 @@ class Router implements Router_Contract {
 	 * @return Route
 	 */
 	public function add_route( array $methods, string $uri, $action ) {
-		$route = new Route( $methods, $uri, $action );
+		$route = $this->create_route( $methods, $uri, $action );
 
-		$this->routes->add( $route->get_route_name(), $route );
+		$this->routes->add( $route->get_name(), $route );
 		return $route;
 	}
+
+	/**
+	 * Create a new route instance.
+	 *
+	 * @param array  $methods Methods to register.
+	 * @param string $uri URL route.
+	 * @param mixed  $action Route callback.
+	 * @return Route
+	 */
+	protected function create_route( array $methods, string $uri, $action ): Route {
+		$route = new Route( $methods, $this->prefix( $uri ), $action );
+
+		if ( $this->has_group_stack() ) {
+			$this->merge_group_attributes_into_route( $route );
+		}
+
+		return $route;
+	}
+
+	/**
+	 * Prefix the given URI with the last prefix.
+	 *
+	 * @param string $uri Uri to prefix.
+	 * @return string
+	 */
+	protected function prefix( string $uri ) {
+		return trim( trim( $this->get_last_group_prefix(), '/' ) . '/' . trim( $uri, '/' ), '/' ) ?: '/';
+	}
+
 	/**
 	 * Get registered routes.
 	 *
@@ -181,5 +226,21 @@ class Router implements Router_Contract {
 		}
 
 		throw new Http_Exception( 'Unknown route method: ' . \wp_json_encode( $match ) );
+	}
+
+	/**
+	 * Dynamically handle calls into the router instance.
+	 *
+	 * @param string $method Method name.
+	 * @param array  $parameters Parameters for the method.
+	 * @return mixed
+	 */
+	public function __call( $method, $parameters ) {
+		if ( 'middleware' === $method ) {
+			return ( new Route_Registrar( $this ) )
+				->attribute( $method, is_array( $parameters[0] ) ? $parameters[0] : $parameters );
+		}
+
+		return ( new Route_Registrar( $this ) )->attribute( $method, $parameters[0] );
 	}
 }
