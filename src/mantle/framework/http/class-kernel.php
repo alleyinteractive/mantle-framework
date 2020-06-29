@@ -57,6 +57,27 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	];
 
 	/**
+	 * The application's middleware stack.
+	 *
+	 * @var array
+	 */
+	protected $middleware = [];
+
+	/**
+	 * The application's route middleware groups.
+	 *
+	 * @var array
+	 */
+	protected $middleware_groups = [];
+
+	/**
+	 * The application's route middleware.
+	 *
+	 * @var array
+	 */
+	protected $route_middleware = [];
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Application $app Application instance.
@@ -65,6 +86,8 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	public function __construct( Application $app, Router $router ) {
 		$this->app    = $app;
 		$this->router = $router;
+
+		$this->sync_middleware_to_router();
 	}
 
 	/**
@@ -122,6 +145,21 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 */
 	protected function bootstrappers(): array {
 		return $this->bootstrappers;
+	}
+
+	/**
+	 * Sync the current state of the middleware to the router.
+	 *
+	 * @return void
+	 */
+	protected function sync_middleware_to_router() {
+		foreach ( $this->middleware_groups as $key => $middleware ) {
+			$this->router->middleware_group( $key, $middleware );
+		}
+
+		foreach ( $this->route_middleware as $key => $middleware ) {
+			$this->router->alias_middleware( $key, $middleware );
+		}
 	}
 
 	/**
