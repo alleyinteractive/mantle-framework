@@ -8,6 +8,7 @@
 namespace Mantle\Framework\Contracts\Http\Routing;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Mantle\Framework\Http\Response;
 
 /**
  * Response Factory Contract
@@ -20,7 +21,7 @@ interface Response_Factory {
 	 * @param  string $content
 	 * @param  int    $status
 	 * @param  array  $headers
-	 * @return \Illuminate\Http\Response
+	 * @return Response
 	 */
 	public function make( $content = '', $status = 200, array $headers = [] );
 
@@ -29,20 +30,21 @@ interface Response_Factory {
 	 *
 	 * @param  int   $status
 	 * @param  array $headers
-	 * @return \Illuminate\Http\Response
+	 * @return Response
 	 */
 	public function no_content( $status = 204, array $headers = [] );
 
 	/**
 	 * Create a new response for a given view.
 	 *
-	 * @param  string|array $view
-	 * @param  array        $data
-	 * @param  int          $status
-	 * @param  array        $headers
-	 * @return \Illuminate\Http\Response
+	 * @param string $slug View slug.
+	 * @param string $name View name (optional).
+	 * @param array  $data Data to pass to the view.
+	 * @param int    $status Response status code.
+	 * @param array  $headers Additional headers.
+	 * @return Response
 	 */
-	public function view( $view, $data = [], $status = 200, array $headers = [] );
+	public function view( string $slug, $name = null, $data = [], $status = 200, array $headers = [] );
 
 	/**
 	 * Create a new JSON response instance.

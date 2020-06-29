@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Throwable;
 
@@ -201,7 +202,9 @@ class Handler implements ExceptionsHandler {
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	protected function prepare_response( $request, Throwable $e ) {
-		if ( ! $this->is_http_exception( $e ) ) {
+		if ( $e instanceof ResourceNotFoundException ) {
+			$e = new NotFoundHttpException( $e->getMessage(), $e, 404 );
+		} elseif ( ! $this->is_http_exception( $e ) ) {
 			$e = new HttpException( 500, $e->getMessage() );
 		}
 
@@ -224,9 +227,24 @@ class Handler implements ExceptionsHandler {
 	 * @todo Check if the view exists.
 	 */
 	protected function render_http_exception( HttpExceptionInterface $e ) {
+		global $wp_query;
+
+		// Calling a view this early doesn't work well for WordPress.
+		if ( empty( $wp_query ) ) {
+			$wp_query = new \WP_Query(); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		}
+
 		$view = $this->get_http_exception_view( $e );
 		return Route::ensure_response(
-			response()->view( $view[0], $view[1], [ 'exception' => $e ] ) ?: 'An error has occurred.'
+			response()->view(
+				$view[0],
+				$view[1],
+				[
+					'code'      => $e->getStatusCode(),
+					'exception' => $e,
+				],
+				$e->getStatusCode(),
+			) ?: 'An error has occurred.'
 		);
 	}
 
@@ -237,7 +255,7 @@ class Handler implements ExceptionsHandler {
 	 * @return array
 	 */
 	protected function get_http_exception_view( HttpExceptionInterface $e ) {
-		return [ 'error', $e->getStatusCode() ];
+		return [ 'error/error', $e->getStatusCode() ];
 	}
 
 	/**

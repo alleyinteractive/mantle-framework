@@ -100,18 +100,27 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 * @param Request $request Request instance.
 	 */
 	public function handle( Request $request ) {
-		try {
-			$this->bootstrap();
-		} catch ( Exception $e ) {
-			// todo: move to error handler.
-			\wp_die( 'Error booting HTTP Kernel: ' . $e->getMessage() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		}
-
 		$this->request = $request;
 
 		// Setup the Request Facade.
 		$this->app->instance( 'request', $request );
+
 		Facade::clear_resolved_instance( 'request' );
+
+		try {
+			$this->bootstrap();
+		} catch ( Throwable $e ) {
+			$this->report_exception( $e );
+
+			$response = $this->render_exception( $request, $e );
+
+			if ( $response instanceof Response ) {
+				$response->send();
+				exit;
+			} else {
+				\wp_die( 'Error booting HTTP Kernel: ' . $e->getMessage() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			}
+		}
 
 		\add_action( 'wp_loaded', [ $this, 'handle_request' ] );
 	}
@@ -199,7 +208,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	/**
 	 * Report the exception to the exception handler.
 	 *
-	 * @param  \Throwable $e
+	 * @param Throwable $e Exception thrown.
 	 * @return void
 	 */
 	protected function report_exception( Throwable $e ) {
@@ -209,8 +218,8 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	/**
 	 * Render the exception to a response.
 	 *
-	 * @param  \Illuminate\Http\Request $request
-	 * @param  \Throwable               $e
+	 * @param Request   $request Request instance.
+	 * @param Throwable $e
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	protected function render_exception( $request, Throwable $e ) {

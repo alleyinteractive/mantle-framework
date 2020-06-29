@@ -11,6 +11,7 @@ use Mantle\Framework\Application;
 use Mantle\Framework\Contracts\Console\Kernel as Kernel_Contract;
 use Mantle\Framework\Contracts\Kernel as Core_Kernel_Contract;
 use Exception;
+use Throwable;
 
 /**
  * Console Kernel
@@ -67,7 +68,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	public function handle() {
 		try {
 			$this->bootstrap();
-		} catch ( Exception $e ) {
+		} catch ( Throwable $e ) {
 			\WP_CLI::error( 'Error booting Console Kernel: ' . $e->getMessage() );
 		}
 	}
