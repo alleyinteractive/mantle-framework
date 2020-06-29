@@ -37,6 +37,18 @@ class Term extends Model implements Core_Object, Updatable {
 	];
 
 	/**
+	 * Constructor.
+	 *
+	 * @param mixed $object Model object.
+	 */
+	public function __construct( $object = [] ) {
+		// Set the taxonomy on the model by default.
+		$this->attributes['taxonomy'] = $this->get_object_name();
+
+		parent::__construct( $object );
+	}
+
+	/**
 	 * Taxonomy of the term.
 	 *
 	 * @return string

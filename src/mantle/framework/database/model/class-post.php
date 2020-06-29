@@ -49,6 +49,18 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	public static $object_name;
 
 	/**
+	 * Constructor.
+	 *
+	 * @param mixed $object Model object.
+	 */
+	public function __construct( $object = [] ) {
+		// Set the post type on the model by default.
+		$this->attributes['post_type'] = $this->get_object_name();
+
+		parent::__construct( $object );
+	}
+
+	/**
 	 * Find a model by Object ID.
 	 *
 	 * @todo Add global scopes for the model to allow for the query builder
@@ -183,6 +195,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 		// Set the post ID attribute.
 		$this->set_raw_attribute( 'ID', $save );
 
+		$this->refresh();
 		$this->reset_modified_attributes();
 
 		return true;
