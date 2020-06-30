@@ -68,6 +68,35 @@ class Test_Post_Object extends WP_UnitTestCase {
 		$this->assertEmpty( $object->get_meta( 'meta_key_to_set' ) );
 	}
 
+	public function test_post_meta_attributes() {
+		$post   = $this->factory->post->create_and_get();
+		$object = Testable_Post::find( $post );
+
+		$this->assertEmpty( \get_post_meta( $post->ID, 'attr_meta_key_to_set', true ) );
+
+		$object->save(
+			[
+				'meta' => [
+					'attr_meta_key_to_set' => 'attr_meta_value_to_set',
+				],
+			]
+		);
+
+		$object->set_meta( 'meta_key_to_set', 'meta_value_to_set' );
+		$this->assertEquals( 'attr_meta_value_to_set', $object->get_meta( 'attr_meta_key_to_set' ) );
+		$this->assertEquals( 'attr_meta_value_to_set', \get_post_meta( $post->ID, 'attr_meta_key_to_set', true ) );
+
+		$object->save(
+			[
+				'meta' => [
+					'attr_meta_key_to_set' => '',
+				],
+			]
+		);
+
+		$this->assertEmpty( $object->get_meta( 'attr_meta_key_to_set' ) );
+	}
+
 	public function test_updating_post() {
 		$post   = $this->factory->post->create_and_get();
 		$object = Testable_Post::find( $post );
@@ -198,6 +227,19 @@ class Test_Post_Object extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Ensure that 'set_test_key_attribute()' method is used on the model.
+	 */
+	public function test_mutated_attribute() {
+		$object = new Testable_Post(
+			[
+				'test_key' => 'non-mutated-attribute',
+			]
+		);
+
+		$this->assertEquals( 'mutated_value', $object->get( 'test_key' ) );
+	}
+
+	/**
 	 * Get a random post ID, ensures the post ID is not the last in the set.
 	 *
 	 * @return integer
@@ -211,6 +253,13 @@ class Test_Post_Object extends WP_UnitTestCase {
 
 class Testable_Post extends Post {
 	public static $object_name = 'post';
+
+	/**
+	 * Allow testing the 'test_key' attribute.
+	 */
+	public function set_test_key_attribute() {
+		$this->attributes['test_key'] = 'mutated_value';
+	}
 }
 
 class Test_Post_Type extends Post implements Registrable {

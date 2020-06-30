@@ -46,4 +46,20 @@ trait Model_Meta {
 	public function delete_meta( string $meta_key, $meta_value = '' ) {
 		\delete_metadata( $this->get_meta_type(), $this->id(), $meta_key, $meta_value );
 	}
+
+	/**
+	 * Allow setting meta through an array via an attribute mutator.
+	 *
+	 * @param array $meta_values Meta values to set.
+	 * @throws Model_Exception Thrown on invalid value being set.
+	 */
+	public function set_meta_attribute( $meta_values ) {
+		if ( ! is_array( $meta_values ) ) {
+			throw new Model_Exception( 'Attribute value passed to meta is not an array.' );
+		}
+
+		foreach ( $meta_values as $key => $value ) {
+			$this->set_meta( $key, $value );
+		}
+	}
 }
