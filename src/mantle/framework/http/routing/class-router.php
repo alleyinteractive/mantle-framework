@@ -214,7 +214,8 @@ class Router implements Router_Contract {
 	 */
 	public function dispatch( Request $request ): ?Response {
 		return $this->execute_route_match(
-			$this->match_route( $request )
+			$this->match_route( $request ),
+			$request
 		);
 	}
 
@@ -235,14 +236,16 @@ class Router implements Router_Contract {
 	/**
 	 * Execute a route match and retrieve the response.
 	 *
-	 * @param array $match Route match.
+	 * @param array   $match Route match.
+	 * @param Request $request Request object.
 	 * @return Response|null
 	 *
 	 * @throws HttpException Thrown on unknown route callback.
 	 */
-	protected function execute_route_match( $match ): ?Response {
+	protected function execute_route_match( $match, Request $request ): ?Response {
 		// Store the request parameters.
-		$this->app['request']->set_route_parameters( $match );
+		$request->set_route_parameters( $match );
+		$this->app->instance( 'request', $request );
 
 		$route = Route::get_route_from_match( $match );
 
@@ -255,7 +258,7 @@ class Router implements Router_Contract {
 
 		$middleware = $this->gather_route_middleware( $route );
 
-		return ( new Pipeline( $this->app ) )
+		$response = ( new Pipeline( $this->app ) )
 			->send( $this->app['request'] )
 			->through( $middleware )
 			->then(
@@ -266,6 +269,9 @@ class Router implements Router_Contract {
 					return $route->run( $this->app );
 				}
 			);
+
+		// Ensure the response is valid since the middleware can modify it after it is run through Route.
+		return Route::ensure_response( $response );
 	}
 
 	/**

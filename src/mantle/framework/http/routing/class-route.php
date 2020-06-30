@@ -11,7 +11,7 @@ use Mantle\Framework\Container\Container;
 use Mantle\Framework\Support\Arr;
 use Mantle\Framework\Support\Str;
 use ReflectionFunction;
-use Symfony\Component\HttpFoundation\Response;
+use Mantle\Framework\Http\Response;
 use Symfony\Component\Routing\Route as Symfony_Route;
 
 /**
@@ -65,6 +65,7 @@ class Route extends Symfony_Route {
 	public function __construct( array $methods, string $path, $action ) {
 		parent::__construct( $path );
 
+		$this->setOption( 'utf8', true );
 		$this->setMethods( $methods );
 
 		// Store a reference to the route object inside of the Symfony route.
@@ -163,6 +164,10 @@ class Route extends Symfony_Route {
 			$response = $this->run_callback();
 		} elseif ( $this->has_controller_callback() ) {
 			$response = $this->run_controller_callback();
+		}
+
+		if ( ! isset( $response ) ) {
+			return null;
 		}
 
 		return $response ? static::ensure_response( $response ) : null;

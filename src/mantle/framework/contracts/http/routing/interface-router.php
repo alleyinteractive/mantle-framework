@@ -76,4 +76,11 @@ interface Router {
 	 * @param Request $request Request object.
 	 */
 	public function substitute_bindings( Request $request );
+
+	/**
+	 * Substitute the implicit Eloquent model bindings for the route.
+	 *
+	 * @param Request $request Request instance.
+	 */
+	public function substitute_implicit_bindings( Request $request );
 }

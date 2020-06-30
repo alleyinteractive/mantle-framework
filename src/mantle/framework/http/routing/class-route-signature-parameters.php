@@ -10,6 +10,7 @@ namespace Mantle\Framework\Http\Routing;
 use Mantle\Framework\Support\Str;
 use ReflectionFunction;
 use ReflectionMethod;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * Route Signature Parameters
@@ -21,12 +22,18 @@ class Route_Signature_Parameters {
 	/**
 	 * Extract the route action's signature parameters.
 	 *
-	 * @param  array       $action
-	 * @param  string|null $sub_class
+	 * @param  array       $action Route action.
+	 * @param  string|null $sub_class Route subclass to compare against.
 	 * @return array
+	 *
+	 * @throws HttpException Thrown on missing callback.
 	 */
 	public static function from_action( array $action, $sub_class = null ) {
-		$parameters = isset( $action['callback'] ) && is_string( $action['callback'] )
+		if ( ! isset( $action['callback'] ) ) {
+			throw new HttpException( 500, 'Unknown route callback.' );
+		}
+
+		$parameters = is_string( $action['callback'] )
 			? static::from_class_method_string( $action['callback'] )
 			: ( new ReflectionFunction( $action['callback'] ) )->getParameters();
 
@@ -41,10 +48,10 @@ class Route_Signature_Parameters {
 	/**
 	 * Get the parameters for the given class / method by string.
 	 *
-	 * @param  string $uses
+	 * @param  string $uses Route callback.
 	 * @return array
 	 */
-	protected static function from_class_method_string( $uses ) {
+	protected static function from_class_method_string( $uses ): array {
 		[ $class, $method ] = Str::parse_callback( $uses );
 
 		if ( ! method_exists( $class, $method ) && is_callable( $class, $method ) ) {
