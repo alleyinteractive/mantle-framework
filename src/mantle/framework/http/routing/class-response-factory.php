@@ -71,15 +71,16 @@ class Response_Factory implements Factory_Contract {
 	/**
 	 * Create a new response for a given view.
 	 *
-	 * @param  string $view View path.
+	 * @param  string $slug View slug.
+	 * @param  string $name View name (optional).
 	 * @param  array  $data Data to pass to the view.
 	 * @param  int    $status HTTP status code.
 	 * @param  array  $headers Additional headers.
 	 * @return Response
 	 */
-	public function view( $view, $data = [], $status = 200, array $headers = [] ) {
+	public function view( string $slug, $name = null, $data = [], $status = 200, array $headers = [] ) {
 		return $this->make(
-			$this->view->make( $view, $data ),
+			$this->view->make( $slug, $name, $data ),
 			$status,
 			$headers
 		);

@@ -7,7 +7,6 @@
 
 namespace Mantle\Framework\Auth;
 
-use Exception;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**

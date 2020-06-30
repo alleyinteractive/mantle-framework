@@ -18,6 +18,8 @@ use Mantle\Framework\Facade\Facade;
 use Mantle\Framework\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
+use Throwable;
+use Mantle\Framework\Contracts\Exceptions\Handler as Exception_Handler;
 
 /**
  * HTTP Kernel
@@ -98,17 +100,27 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 * @param Request $request Request instance.
 	 */
 	public function handle( Request $request ) {
-		try {
-			$this->bootstrap();
-		} catch ( Exception $e ) {
-			\wp_die( 'Error booting HTTP Kernel: ' . $e->getMessage() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		}
-
 		$this->request = $request;
 
 		// Setup the Request Facade.
 		$this->app->instance( 'request', $request );
+
 		Facade::clear_resolved_instance( 'request' );
+
+		try {
+			$this->bootstrap();
+		} catch ( Throwable $e ) {
+			$this->report_exception( $e );
+
+			$response = $this->render_exception( $request, $e );
+
+			if ( $response instanceof Response ) {
+				$response->send();
+				exit;
+			} else {
+				\wp_die( 'Error booting HTTP Kernel: ' . $e->getMessage() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			}
+		}
 
 		\add_action( 'wp_loaded', [ $this, 'handle_request' ] );
 	}
@@ -169,7 +181,6 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 * @return Response|null
 	 *
 	 * @throws InvalidArgumentException Thrown on invalid router service provider instance.
-	 * @throws ResourceNotFoundException Thrown on missing resource.
 	 */
 	protected function send_request_through_router( Request $request ): ?Response {
 		$provider = $this->app['router.service-provider'];
@@ -180,15 +191,38 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 
 		try {
 			$response = $this->router->dispatch( $request );
-		} catch ( ResourceNotFoundException $e ) {
+		} catch ( Throwable $e ) {
 			// If no route found, allow the request to be passed down to WordPress.
-			if ( $provider->should_pass_through_requests( $request ) ) {
+			if ( $e instanceof ResourceNotFoundException && $provider->should_pass_through_requests( $request ) ) {
 				return null;
 			}
 
-			throw $e;
+			$this->report_exception( $e );
+
+			$response = $this->render_exception( $request, $e );
 		}
 
 		return $response;
+	}
+
+	/**
+	 * Report the exception to the exception handler.
+	 *
+	 * @param Throwable $e Exception thrown.
+	 * @return void
+	 */
+	protected function report_exception( Throwable $e ) {
+		$this->app[ Exception_Handler::class ]->report( $e );
+	}
+
+	/**
+	 * Render the exception to a response.
+	 *
+	 * @param Request   $request Request instance.
+	 * @param Throwable $e
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	protected function render_exception( $request, Throwable $e ) {
+		return $this->app[ Exception_Handler::class ]->render( $request, $e );
 	}
 }

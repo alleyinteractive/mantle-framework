@@ -261,7 +261,7 @@ class Router implements Router_Contract {
 	 * @return array
 	 */
 	public function get_middleware() {
-			return $this->middleware;
+		return $this->middleware;
 	}
 
 	/**
@@ -272,9 +272,9 @@ class Router implements Router_Contract {
 	 * @return static
 	 */
 	public function alias_middleware( $name, $class ) {
-			$this->middleware[ $name ] = $class;
+		$this->middleware[ $name ] = $class;
 
-			return $this;
+		return $this;
 	}
 
 	/**

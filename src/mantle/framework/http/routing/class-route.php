@@ -165,7 +165,7 @@ class Route extends Symfony_Route {
 			$response = $this->run_controller_callback();
 		}
 
-		return $response ? $this->ensure_response( $response ) : null;
+		return $response ? static::ensure_response( $response ) : null;
 	}
 
 	/**
@@ -269,7 +269,7 @@ class Route extends Symfony_Route {
 	 * @param mixed $response Response to send.
 	 * @return Response
 	 */
-	protected function ensure_response( $response ): Response {
+	public static function ensure_response( $response ): Response {
 		if ( $response instanceof Response ) {
 			return $response;
 		}

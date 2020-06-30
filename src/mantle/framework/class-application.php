@@ -8,6 +8,7 @@
 namespace Mantle\Framework;
 
 use Mantle\Framework\Contracts\Application as Application_Contract;
+use Mantle\Framework\Contracts\Container as Container_Contract;
 use Mantle\Framework\Contracts\Kernel as Kernel_Contract;
 use Mantle\Framework\Log\Log_Service_Provider;
 use Mantle\Framework\Providers\Event_Service_Provider;
@@ -153,6 +154,7 @@ class Application extends Container\Container implements Application_Contract {
 
 		$this->instance( 'app', $this );
 		$this->instance( Container\Container::class, $this );
+		$this->instance( Container_Contract::class, $this );
 		$this->instance( static::class, $this );
 
 		$this->singleton(
@@ -180,6 +182,7 @@ class Application extends Container\Container implements Application_Contract {
 		$core_aliases = [
 			'app'         => [ static::class, \Mantle\Framework\Contracts\Application::class ],
 			'config'      => [ \Mantle\Framework\Config\Repository::class, \Mantle\Framework\Contracts\Config\Repository::class ],
+			'log'         => [ \Mantle\Framework\Log\Log_Manager::class, \Psr\Log\LoggerInterface::class ],
 			'queue'       => [ \Mantle\Framework\Queue\Queue_Manager::class, \Mantle\Framework\Contracts\Queue\Queue_Manager::class ],
 			'redirect'    => [ \Mantle\Framework\Http\Routing\Redirector::class ],
 			'request'     => [ \Mantle\Framework\Http\Request::class, \Symfony\Component\HttpFoundation\Request::class ],

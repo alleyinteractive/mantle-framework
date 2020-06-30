@@ -21,7 +21,8 @@ use function Mantle\Framework\Helpers\data_get;
  * Request Object
  */
 class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
-	use Interacts_With_Input;
+	use Interacts_With_Input,
+		Concerns\Interacts_With_Content_Types;
 
 	/**
 	 * Route parameters.

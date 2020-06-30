@@ -28,13 +28,13 @@ class Authorize {
 	 */
 	public function handle( Request $request, Closure $next, string $ability = '' ) {
 		if ( ! \is_user_logged_in() ) {
-			throw new Authentication_Error( static::get_unauthenticated_error_message() );
+			throw new Authentication_Error( 403, static::get_unauthenticated_error_message() );
 		}
 
 		if ( $ability ) {
 			foreach ( explode( ',', $ability ) as $cap ) {
 				if ( ! \current_user_can( $cap ) ) {
-					throw new Authentication_Error( static::get_invalid_access_error_message() );
+					throw new Authentication_Error( 403, static::get_invalid_access_error_message() );
 				}
 			}
 		}

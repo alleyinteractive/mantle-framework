@@ -16,6 +16,9 @@ use Monolog\Handler\Handler;
 use Monolog\Handler\NewRelicHandler;
 use Monolog\Handler\SlackWebhookHandler;
 use Monolog\Logger;
+use Throwable;
+
+use function Mantle\Framework\Helpers\collect;
 
 /**
  * Log Handler
@@ -47,11 +50,15 @@ class Log_Manager {
 	/**
 	 * Write to a specific channel.
 	 *
-	 * @param string $channels Channel(s) to log to.
+	 * @param array|string $channels Channel(s) to log to.
 	 * @return Logger
 	 */
 	public function channel( $channels ): Logger {
-		$handlers = array_map( [ $this, 'get_channel_handler' ], (array) $channels );
+		$handlers = collect( (array) $channels )
+			->map( [ $this, 'get_channel_handler' ] )
+			->filter()
+			->to_array();
+
 		return new Logger( 'Mantle', $handlers );
 	}
 
@@ -59,11 +66,12 @@ class Log_Manager {
 	 * Get a Log Handler for a Channel.
 	 *
 	 * @param string $channel Channel name.
-	 * @return Handler
+	 * @return Handler|null
 	 *
 	 * @throws InvalidArgumentException Thrown on invalid configuration.
+	 * @throws Throwable Thrown on error getting the logging handler for a channel.
 	 */
-	protected function get_channel_handler( string $channel ): Handler {
+	public function get_channel_handler( string $channel ): ?Handler {
 		$config = $this->app['config']->get( 'logging.channels.' . $channel );
 
 		if ( empty( $config['driver'] ) ) {
@@ -76,7 +84,19 @@ class Log_Manager {
 			throw new InvalidArgumentException( "Driver '{$config['driver']}' is not supported." );
 		}
 
-		return $this->$method( $config );
+		try {
+			$handler = $this->$method( $config );
+		} catch ( Throwable $e ) {
+			// Throw the exception if there was an error getting the handler in debug mode.
+			if ( config( 'app.debug' ) ) {
+				throw $e;
+			}
+
+			// Fail silently.
+			return null;
+		}
+
+		return $handler;
 	}
 
 	/**
