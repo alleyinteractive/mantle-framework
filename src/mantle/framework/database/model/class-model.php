@@ -13,6 +13,7 @@ use Mantle\Framework\Support\Forward_Calls;
 use Mantle\Framework\Support\Str;
 
 use function Mantle\Framework\Helpers\class_basename;
+use function Mantle\Framework\Helpers\class_uses_recursive;
 
 /**
  * Database Model
@@ -31,6 +32,13 @@ abstract class Model implements ArrayAccess {
 	 * @var array
 	 */
 	protected static $booted = [];
+
+	/**
+	 * The array of trait initializers that will be called on each new instance.
+	 *
+	 * @var array
+	 */
+	protected static $trait_initializers = [];
 
 	/**
 	 * An object's registerable name (post type, taxonomy, etc.).
@@ -52,7 +60,8 @@ abstract class Model implements ArrayAccess {
 	 * @param mixed $object Model object.
 	 */
 	public function __construct( $object = [] ) {
-		static::boot_if_not_booted();
+		$this->boot_if_not_booted();
+		$this->initialize_traits();
 
 		$this->set_attributes( (array) $object );
 	}
@@ -140,8 +149,52 @@ abstract class Model implements ArrayAccess {
 	 */
 	protected function boot_if_not_booted() {
 		if ( ! isset( static::$booted[ static::class ] ) ) {
+			static::boot_traits();
 			static::boot();
+
 			static::$booted[ static::class ] = true;
+		}
+	}
+
+	/**
+	 * Boot all of the bootable traits on the model.
+	 */
+	protected static function boot_traits() {
+		$class  = static::class;
+		$booted = [];
+
+		static::$trait_initializers[ $class ] = [];
+
+		foreach ( class_uses_recursive( $class ) as $trait ) {
+			$trait_method = strtolower( class_basename( $trait ) );
+			$method       = 'boot_' . $trait_method;
+
+			if ( method_exists( $class, $method ) && ! in_array( $method, $booted ) ) {
+				forward_static_call( [ $class, $method ] );
+
+				$booted[] = $method;
+			}
+
+			$method = 'initialize_' . $trait_method;
+
+			if ( method_exists( $class, $method ) ) {
+				static::$trait_initializers[ $class ][] = $method;
+
+				static::$trait_initializers[ $class ] = array_unique(
+					static::$trait_initializers[ $class ]
+				);
+			}
+		}
+	}
+
+	/**
+	 * Initialize any initializable traits on the model.
+	 *
+	 * @return void
+	 */
+	protected function initialize_traits() {
+		foreach ( static::$trait_initializers[ static::class ] as $method ) {
+			$this->{ $method }();
 		}
 	}
 
