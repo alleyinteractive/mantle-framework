@@ -7,7 +7,9 @@
 
 namespace Mantle\Framework\Database\Model;
 
+use RuntimeException;
+
 /**
  * Model Exception
  */
-class Model_Exception extends \Exception { }
+class Model_Exception extends RuntimeException {}

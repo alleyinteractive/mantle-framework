@@ -11,7 +11,7 @@ use Mantle\Framework\Container\Container;
 use Mantle\Framework\Support\Arr;
 use Mantle\Framework\Support\Str;
 use ReflectionFunction;
-use Symfony\Component\HttpFoundation\Response;
+use Mantle\Framework\Http\Response;
 use Symfony\Component\Routing\Route as Symfony_Route;
 
 /**
@@ -65,6 +65,7 @@ class Route extends Symfony_Route {
 	public function __construct( array $methods, string $path, $action ) {
 		parent::__construct( $path );
 
+		$this->setOption( 'utf8', true );
 		$this->setMethods( $methods );
 
 		// Store a reference to the route object inside of the Symfony route.
@@ -163,6 +164,10 @@ class Route extends Symfony_Route {
 			$response = $this->run_callback();
 		} elseif ( $this->has_controller_callback() ) {
 			$response = $this->run_controller_callback();
+		}
+
+		if ( ! isset( $response ) ) {
+			return null;
 		}
 
 		return $response ? static::ensure_response( $response ) : null;
@@ -284,5 +289,15 @@ class Route extends Symfony_Route {
 	 */
 	public function get_request_parameters(): array {
 		return $this->container['request']->get_route_parameters()->all();
+	}
+
+	/**
+	 * Get the parameters that are listed in the route / controller signature.
+	 *
+	 * @param string|null $sub_class Subclass to verify the parameter is an instance of.
+	 * @return array
+	 */
+	public function get_signature_parameters( string $sub_class = null ) {
+		return Route_Signature_Parameters::from_action( $this->action, $sub_class );
 	}
 }

@@ -129,7 +129,7 @@ class Route_Registrar {
 	 */
 	protected function register_route( $method, $uri, $action = null ) {
 		if ( ! is_array( $action ) ) {
-			$action = array_merge( $this->attributes, $action ? [ 'uses' => $action ] : [] );
+			$action = array_merge( $this->attributes, $action ? [ 'callback' => $action ] : [] );
 		}
 
 		return $this->router->{$method}( $uri, $this->compile_action( $action ) );
@@ -147,7 +147,7 @@ class Route_Registrar {
 		}
 
 		if ( is_string( $action ) || $action instanceof Closure ) {
-			$action = [ 'uses' => $action ];
+			$action = [ 'callback' => $action ];
 		}
 
 		return array_merge( $this->attributes, $action );
