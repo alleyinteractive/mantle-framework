@@ -386,6 +386,17 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	}
 
 	/**
+	 * Set a parameter to the given value.
+	 *
+	 * @param  string  $name
+	 * @param  string|object|null  $value
+	 * @return void
+	 */
+	public function set_route_parameter( string $name, $value) {
+		$this->route_parameters[ $name ] = $value;
+	}
+
+	/**
 	 * Determine if the given offset exists.
 	 *
 	 * @param  string $offset

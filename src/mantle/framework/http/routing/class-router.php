@@ -12,9 +12,7 @@ use Mantle\Framework\Contracts\Http\Routing\Router as Router_Contract;
 use Mantle\Framework\Http\Http_Exception;
 use Mantle\Framework\Http\Request;
 use Mantle\Framework\Pipeline;
-use Mantle\Framework\Support\Collection;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouteCollection;
@@ -355,6 +353,17 @@ class Router implements Router_Contract {
 			->flatten()
 			->values()
 			->to_array();
+	}
+
+	/**
+	 * Substitute the implicit Eloquent model bindings for the route.
+	 *
+	 * @param Route $route Route instance.
+	 *
+	 * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+	 */
+	public function substitute_implicit_bindings( $route ) {
+		Implicit_Route_Binding::resolve_for_route( $this->app, $route );
 	}
 
 	/**
