@@ -2,7 +2,11 @@
 
 namespace Mantle\Framework\Testing\Doubles;
 
-require_once ABSPATH . '/wp-includes/class-phpmailer.php';
+if ( file_exists( ABSPATH . '/wp-includes/PHPMailer/PHPMailer.php' ) ) {
+	require_once ABSPATH . '/wp-includes/PHPMailer/PHPMailer.php';
+} else {
+	require_once ABSPATH . '/wp-includes/class-phpmailer.php';
+}
 
 class MockPHPMailer extends \PHPMailer {
 	var $mock_sent = array();

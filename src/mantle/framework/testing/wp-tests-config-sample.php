@@ -1,19 +1,12 @@
 <?php // phpcs:disable
 
 /* Path to the WordPress codebase you'd like to test. Add a forward slash in the end. */
-if ( defined( 'WP_RUN_CORE_TESTS' ) && WP_RUN_CORE_TESTS ) {
-	define( 'ABSPATH', dirname( __FILE__ ) . '/build/' );
-} else {
-	define( 'ABSPATH', dirname( __FILE__ ) . '/src/' );
-}
+define( 'ABSPATH', __DIR__ . '/' );
 
 /*
  * Path to the theme to test with.
- *
- * The 'default' theme is symlinked from test/phpunit/data/themedir1/default into
- * the themes directory of the WordPress installation defined above.
  */
-define( 'WP_DEFAULT_THEME', 'default' );
+define( 'WP_DEFAULT_THEME', 'twentytwenty' );
 
 /*
  * Test with multisite enabled.
