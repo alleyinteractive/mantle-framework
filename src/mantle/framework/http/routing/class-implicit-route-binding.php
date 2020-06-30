@@ -1,59 +1,59 @@
 <?php
+/**
+ * Implicit_Route_Binding class file.
+ *
+ * @package Mantle
+ */
 
 namespace Mantle\Framework\Http\Routing;
 
+use Mantle\Framework\Contracts\Container;
+use Mantle\Framework\Contracts\Http\Routing\Url_Routable;
+use Mantle\Framework\Database\Model\Model_Not_Found_Exception;
 use Mantle\Framework\Http\Request;
+use Mantle\Framework\Support\Reflector;
 use Mantle\Framework\Support\Str;
 
-// use Illuminate\Contracts\Routing\UrlRoutable;
-// use Illuminate\Database\Eloquent\ModelNotFoundException;
-// use Illuminate\Support\Reflector;
-// use Illuminate\Support\Str;
-
+/**
+ * Implicit Route Binding
+ *
+ * Allow models to be auto-resolved without any additional binding needed.
+ */
 class Implicit_Route_Binding {
 
 	/**
 	 * Resolve the implicit route bindings for the given route.
 	 *
-	 * @param  \Illuminate\Container\Container $container
-	 * @param  \Illuminate\Routing\Route       $route
-	 * @return void
+	 * @param Container $container Container instance.
+	 * @param Request   $request Request instance.
 	 *
-	 * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+	 * @throws Model_Not_Found_Exception Thrown on missing model.
 	 */
-	public static function resolve_for_route( $container, Request $request ) {
-		$parameters = $request->get_route_parameters();
-		var_dump($parameters);exit;
-		$parameters = $route->parameters();
+	public static function resolve_for_route( Container $container, Request $request ) {
+		$route = $request->get_route();
 
-		foreach ( $route->signatureParameters( UrlRoutable::class ) as $parameter ) {
-			if ( ! $parameterName = static::get_parameter_name( $parameter->getName(), $parameters ) ) {
+		$parameters = $request->get_route_parameters()->all();
+
+		foreach ( $route->get_signature_parameters( Url_Routable::class ) as $parameter ) {
+			$parameter_name = static::get_parameter_name( $parameter->getName(), $parameters );
+			if ( ! $parameter_name ) {
 				continue;
 			}
 
-			$parameterValue = $parameters[ $parameterName ];
+			$parameter_value = $parameters[ $parameter_name ];
 
-			if ( $parameterValue instanceof UrlRoutable ) {
+			if ( $parameter_value instanceof Url_Routable ) {
 				continue;
 			}
 
-			$instance = $container->make( Reflector::getParameterClassName( $parameter ) );
+			$instance = $container->make( Reflector::get_parameter_class_name( $parameter ) );
+			$model    = $instance->resolve_route_binding( $parameter_value );
 
-			$parent = $route->parentOfParameter( $parameterName );
-
-			if ( $parent instanceof UrlRoutable && $route->bindingFieldFor( $parameterName ) ) {
-				if ( ! $model = $parent->resolveChildRouteBinding(
-					$parameterName,
-					$parameterValue,
-					$route->bindingFieldFor( $parameterName )
-				) ) {
-					throw (new ModelNotFoundException())->setModel( get_class( $instance ), [ $parameterValue ] );
-				}
-			} elseif ( ! $model = $instance->resolveRouteBinding( $parameterValue, $route->bindingFieldFor( $parameterName ) ) ) {
-				throw (new ModelNotFoundException())->setModel( get_class( $instance ), [ $parameterValue ] );
+			if ( ! $model ) {
+				throw ( new Model_Not_Found_Exception() )->set_model( get_class( $instance ), [ $parameter_value ] );
 			}
 
-			$route->setParameter( $parameterName, $model );
+			$request->set_route_parameter( $parameter_name, $model );
 		}
 	}
 
@@ -64,13 +64,14 @@ class Implicit_Route_Binding {
 	 * @param  array  $parameters
 	 * @return string|null
 	 */
-	protected static function get_parameter_name( $name, $parameters ) {
+	protected static function get_parameter_name( $name, array $parameters ) {
 		if ( array_key_exists( $name, $parameters ) ) {
 			return $name;
 		}
 
-		if ( array_key_exists( $snakedName = Str::snake( $name ), $parameters ) ) {
-			return $snakedName;
+		$snaked_name = Str::snake( $name );
+		if ( array_key_exists( $snaked_name, $parameters ) ) {
+			return $snaked_name;
 		}
 	}
 }

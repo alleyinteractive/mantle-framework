@@ -7,12 +7,14 @@
 
 namespace Mantle\Framework\Http\Routing;
 
+use Closure;
 use Mantle\Framework\Contracts\Application;
 use Mantle\Framework\Contracts\Http\Routing\Router as Router_Contract;
 use Mantle\Framework\Http\Http_Exception;
 use Mantle\Framework\Http\Request;
 use Mantle\Framework\Pipeline;
-use Symfony\Component\HttpFoundation\Response;
+use Mantle\Framework\Http\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouteCollection;
@@ -54,6 +56,13 @@ class Router implements Router_Contract {
 	 * @var array
 	 */
 	protected $middleware_groups = [];
+
+	/**
+	 * The registered route value binders.
+	 *
+	 * @var array
+	 */
+	protected $binders = [];
 
 	/**
 	 * Constructor.
@@ -229,7 +238,7 @@ class Router implements Router_Contract {
 	 * @param array $match Route match.
 	 * @return Response|null
 	 *
-	 * @throws Http_Exception Thrown on unknown route callback.
+	 * @throws HttpException Thrown on unknown route callback.
 	 */
 	protected function execute_route_match( $match ): ?Response {
 		// Store the request parameters.
@@ -238,8 +247,11 @@ class Router implements Router_Contract {
 		$route = Route::get_route_from_match( $match );
 
 		if ( ! $route ) {
-			throw new Http_Exception( 'Unknown route method: ' . \wp_json_encode( $match ) );
+			throw new HttpException( 'Unknown route method: ' . \wp_json_encode( $match ) );
 		}
+
+		// Store the route match in the request object.
+		$this->app['request']->set_route( $route );
 
 		$middleware = $this->gather_route_middleware( $route );
 
@@ -248,6 +260,9 @@ class Router implements Router_Contract {
 			->through( $middleware )
 			->then(
 				function( Request $request ) use ( $route ) {
+					// Refresh the request object in the container with modifications from the middleware.
+					$this->app['request'] = $request;
+
 					return $route->run( $this->app );
 				}
 			);
@@ -356,14 +371,63 @@ class Router implements Router_Contract {
 	}
 
 	/**
+	 * Add a new route parameter binder.
+	 *
+	 * @param string          $key
+	 * @param string|callable $binder
+	 */
+	public function bind( string $key, $binder ) {
+		$this->binders[ str_replace( '-', '_', $key ) ] = Route_Binding::for_callback(
+			$this->app,
+			$binder
+		);
+	}
+
+	/**
+	 * Register a model binder for a wildcard.
+	 *
+	 * @param string        $key
+	 * @param string        $class
+	 * @param \Closure|null $callback
+	 */
+	public function model( $key, $class, Closure $callback = null ) {
+		$this->bind( $key, Route_Binding::for_model( $this->app, $class, $callback ) );
+	}
+
+	/**
+	 * Substitute Explicit Bindings
+	 *
+	 * @param Request $request Request object.
+	 */
+	public function substitute_bindings( Request $request ) {
+		foreach ( $request->get_route_parameters() as $key => $value ) {
+			if ( ! isset( $this->binders[ $key ] ) ) {
+				continue;
+			}
+
+			$request->set_route_parameter( $key, $this->perform_binding( $key, $value, $request ) );
+		}
+	}
+
+	/**
+	 * Call the binding callback for the given key.
+	 *
+	 * @param  string  $key Route key.
+	 * @param  string  $value Value.
+	 * @param  Request $request Request object.
+	 * @return mixed
+	 */
+	protected function perform_binding( string $key, $value, Request $request ) {
+		return call_user_func( $this->binders[ $key ], $value, $request );
+	}
+
+	/**
 	 * Substitute the implicit Eloquent model bindings for the route.
 	 *
-	 * @param Route $route Route instance.
-	 *
-	 * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+	 * @param Request $request Request instance.
 	 */
-	public function substitute_implicit_bindings( $route ) {
-		Implicit_Route_Binding::resolve_for_route( $this->app, $route );
+	public function substitute_implicit_bindings( Request $request ) {
+		Implicit_Route_Binding::resolve_for_route( $this->app, $request );
 	}
 
 	/**

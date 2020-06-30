@@ -10,6 +10,7 @@ namespace Mantle\Framework\Http;
 
 use ArrayAccess;
 use Mantle\Framework\Contracts\Support\Arrayable;
+use Mantle\Framework\Http\Routing\Route;
 use Mantle\Framework\Support\Arr;
 use Mantle\Framework\Support\Str;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -30,6 +31,13 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * @var ParameterBag
 	 */
 	protected $route_parameters = [];
+
+	/**
+	 * Route matched.
+	 *
+	 * @var Route
+	 */
+	protected $route;
 
 	/**
 	 * Create a request object.
@@ -377,7 +385,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	}
 
 	/**
-	 * Set route parameters.
+	 * Get route parameters.
 	 *
 	 * @return ParameterBag
 	 */
@@ -388,12 +396,33 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Set a parameter to the given value.
 	 *
-	 * @param  string  $name
-	 * @param  string|object|null  $value
-	 * @return void
+	 * @param string $key Parameter to set.
+	 * @param mixed  $value Value to set.
+	 * @return static
 	 */
-	public function set_route_parameter( string $name, $value) {
-		$this->route_parameters[ $name ] = $value;
+	public function set_route_parameter( string $key, $value ) {
+		$this->route_parameters->set( $key, $value );
+		return $this;
+	}
+
+	/**
+	 * Get the route.
+	 *
+	 * @return Route
+	 */
+	public function get_route(): ?Route {
+		return $this->route ?? null;
+	}
+
+	/**
+	 * Set a route match for the current request.
+	 *
+	 * @param Route $route Route instance to set.
+	 * @return static
+	 */
+	public function set_route( Route $route ) {
+		$this->route = $route;
+		return $this;
 	}
 
 	/**

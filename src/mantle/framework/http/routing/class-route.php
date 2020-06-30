@@ -285,4 +285,14 @@ class Route extends Symfony_Route {
 	public function get_request_parameters(): array {
 		return $this->container['request']->get_route_parameters()->all();
 	}
+
+	/**
+	 * Get the parameters that are listed in the route / controller signature.
+	 *
+	 * @param string|null $sub_class Subclass to verify the parameter is an instance of.
+	 * @return array
+	 */
+	public function get_signature_parameters( string $sub_class = null ) {
+		return Route_Signature_Parameters::from_action( $this->action, $sub_class );
+	}
 }

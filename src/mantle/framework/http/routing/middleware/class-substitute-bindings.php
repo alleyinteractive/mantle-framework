@@ -1,10 +1,19 @@
 <?php
+/**
+ * Substitute_Bindings class file.
+ *
+ * @package Mantle
+ */
+
 namespace Mantle\Framework\Http\Routing\Middleware;
 
 use Closure;
 use Mantle\Framework\Contracts\Http\Routing\Router;
 use Mantle\Framework\Http\Request;
 
+/**
+ * Substitute parameters for the route with dynamically binded models.
+ */
 class Substitute_Bindings {
 	/**
 	 * Router Instance
@@ -30,13 +39,8 @@ class Substitute_Bindings {
 	 * @return mixed
 	 */
 	public function handle( Request $request, Closure $next ) {
-		// $route = $request->get_route();
-
-		// var_dump('handle');exit;
-		// $this->router->substituteBindings($route = $request->route());
-
+		$this->router->substitute_bindings( $request );
 		$this->router->substitute_implicit_bindings( $request );
-		// $this->router->substitute_implicit_bindings( $request );
 
 		return $next( $request );
 	}

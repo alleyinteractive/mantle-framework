@@ -8,6 +8,7 @@
 namespace Mantle\Framework\Database\Model;
 
 use ArrayAccess;
+use Mantle\Framework\Contracts\Http\Routing\Url_Routable;
 use Mantle\Framework\Database\Query\Builder;
 use Mantle\Framework\Support\Forward_Calls;
 use Mantle\Framework\Support\Str;
@@ -19,7 +20,7 @@ use function Mantle\Framework\Helpers\class_basename;
  *
  * @todo Add Json-able, arrayable, serialize interfaces
  */
-abstract class Model implements ArrayAccess {
+abstract class Model implements ArrayAccess, Url_Routable {
 	use Aliases,
 		Attributes,
 		Forward_Calls,
@@ -291,5 +292,41 @@ abstract class Model implements ArrayAccess {
 	 */
 	public function get_foreign_key(): string {
 		return Str::snake( str_replace( '_', '', class_basename( $this ) ) ) . '_' . $this->get_key_name();
+	}
+
+	/**
+	 * Get the value of the model's route key.
+	 *
+	 * @return mixed
+	 */
+	public function get_route_key() {
+		return $this->get_attribute( $this->get_route_key_name() );
+	}
+
+	/**
+	 * Get the route key for the model.
+	 *
+	 * @return string
+	 */
+	public function get_route_key_name(): string {
+		return $this->get_key_name();
+	}
+
+	/**
+	 * Retrieve the model for a bound value.
+	 *
+	 * @param mixed       $value Value to compare against.
+	 * @param string|null $field Field to compare against.
+	 * @return static|null
+	 */
+	public function resolve_route_binding( $value, $field = null ) {
+		$key = $field ?? $this->get_route_key_name();
+
+		// If the key is the same as the primary key, use the find method to help with some caching.
+		if ( $key === $this->primary_key ) {
+			return static::find( $value );
+		}
+
+		return $this->where( $key, $value )->first();
 	}
 }
