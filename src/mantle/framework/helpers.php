@@ -12,6 +12,8 @@
 use Mantle\Framework\Application;
 use Mantle\Framework\Contracts\Http\Routing\Response_Factory;
 use Mantle\Framework\Contracts\Http\View\Factory as View_Factory;
+use Mantle\Framework\Http\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
 if ( ! function_exists( 'app' ) ) {
@@ -157,5 +159,50 @@ if ( ! function_exists( 'route' ) ) {
 	 */
 	function route( string $name, array $args, bool $relative = false ) {
 		return app( 'url' )->generate( $name, $args, $relative ? UrlGenerator::ABSOLUTE_PATH : UrlGenerator::ABSOLUTE_URL );
+	}
+}
+
+if ( ! function_exists( 'abort' ) ) {
+	/**
+	 * Throw an HttpException with the given data.
+	 *
+	 * @param int     $code Error code or exception.
+	 * @param  string $message Response message
+	 * @param  array  $headers HTTP Headers
+	 */
+	function abort( $code, $message = '', array $headers = [] ) {
+		app()->abort( $code, $message, $headers );
+	}
+}
+
+if ( ! function_exists( 'abort_if' ) ) {
+	/**
+	 * Throw an HttpException with the given data if the given condition is true.
+	 *
+	 * @param  bool  $boolean
+	 * @param  int  $code
+	 * @param  string  $message Response message
+	 * @param  array  $headers HTTP Headers
+	 */
+	function abort_if( $boolean, $code, $message = '', array $headers = [] ) {
+		if ( $boolean ) {
+			abort( $code, $message, $headers );
+		}
+	}
+}
+
+if ( ! function_exists( 'abort_unless' ) ) {
+	/**
+	 * Throw an HttpException with the given data unless the given condition is true.
+	 *
+	 * @param  bool  $boolean
+	 * @param  int  $code
+	 * @param  string  $message Response message
+	 * @param  array  $headers HTTP Headers
+	 */
+	function abort_unless( $boolean, $code, $message = '', array $headers = [] ) {
+		if ( ! $boolean ) {
+			abort( $code, $message, $headers );
+		}
 	}
 }
