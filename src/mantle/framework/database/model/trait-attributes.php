@@ -90,15 +90,16 @@ trait Attributes {
 	 */
 	public function set_attribute( string $attribute, $value ) {
 		if ( $this->is_guarded( $attribute ) ) {
-			throw new Model_Exception( 'Unable to set "id" on model.' );
+			throw new Model_Exception( "Unable to set '{$attribute} on model." );
 		}
 
 		if ( $this->has_set_mutator( $attribute ) ) {
 			$value = $this->mutate_set_attribute( $attribute, $value );
+		} else {
+			$this->attributes[ $attribute ] = $value;
 		}
 
-		$this->attributes[ $attribute ] = $value;
-		$this->modified_attributes[]    = $attribute;
+		$this->modified_attributes[] = $attribute;
 
 		return $this;
 	}
