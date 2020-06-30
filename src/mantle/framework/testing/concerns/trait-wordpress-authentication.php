@@ -35,7 +35,10 @@ trait WordPress_Authentication {
 	 * Restore the backed up global user.
 	 */
 	public function wordpress_authentication_tear_down() {
-		wp_set_current_user( $this->backup_user );
+		// If the user changed, set it back.
+		if ( get_current_user_id() !== $this->backup_user ) {
+			wp_set_current_user( $this->backup_user );
+		}
 	}
 
 	/**
