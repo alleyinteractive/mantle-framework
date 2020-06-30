@@ -11,7 +11,7 @@ use Exception;
 use Mantle\Framework\Auth\Authentication_Error;
 use Mantle\Framework\Contracts\Container;
 use Mantle\Framework\Contracts\Exceptions\Handler as ExceptionsHandler;
-use Mantle\Framework\Http\Http_Exception;
+use Mantle\Framework\Database\Model\Model_Not_Found_Exception;
 use Mantle\Framework\Http\Request;
 use Mantle\Framework\Http\Routing\Route;
 use Mantle\Framework\Support\Arr;
@@ -57,6 +57,7 @@ class Handler implements ExceptionsHandler {
 	protected $internal_dont_report = [
 		Authentication_Error::class,
 		HttpException::class,
+		Model_Not_Found_Exception::class,
 		ResourceNotFoundException::class,
 	];
 
@@ -189,9 +190,25 @@ class Handler implements ExceptionsHandler {
 			throw $e;
 		}
 
+		$e = $this->prepare_exception( $e );
+
 		return $request->expects_json()
 			? $this->prepare_json_response( $request, $e )
 			: $this->prepare_response( $request, $e );
+	}
+
+	/**
+	 * Prepare an exception for rendering.
+	 *
+	 * @param Throwable $e Exception thrown.
+	 * @return Throwable
+	 */
+	protected function prepare_exception( Throwable $e ): Throwable {
+		if ( $e instanceof Model_Not_Found_Exception ) {
+			$e = new NotFoundHttpException( $e->getMessage(), $e, 404 );
+		}
+
+		return $e;
 	}
 
 	/**
@@ -321,6 +338,6 @@ class Handler implements ExceptionsHandler {
 	 * @return bool
 	 */
 	protected function is_http_exception( Throwable $e ): bool {
-		return $e instanceof Http_Exception;
+		return $e instanceof HttpException;
 	}
 }
