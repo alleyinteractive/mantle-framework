@@ -97,6 +97,16 @@ class Test_Post_Object extends WP_UnitTestCase {
 		$this->assertEmpty( $object->get_meta( 'attr_meta_key_to_set' ) );
 	}
 
+	public function test_post_meta_attributes_invalid() {
+		$this->expectException( Model_Exception::class );
+
+		new Testable_Post(
+			[
+				'meta' => 'as-a-string'
+			]
+		);
+	}
+
 	public function test_updating_post() {
 		$post   = $this->factory->post->create_and_get();
 		$object = Testable_Post::find( $post );
