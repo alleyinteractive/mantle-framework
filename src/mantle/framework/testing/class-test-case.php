@@ -7,17 +7,20 @@
 
 namespace Mantle\Framework\Testing;
 
+use Mantle\Framework\Testing\Concerns\Admin_Screen;
 use Mantle\Framework\Testing\Concerns\Assertions;
 use Mantle\Framework\Testing\Concerns\Deprecations;
 use Mantle\Framework\Testing\Concerns\Hooks;
 use Mantle\Framework\Testing\Concerns\Incorrect_Usage;
 use Mantle\Framework\Testing\Concerns\Makes_Http_Requests;
+use Mantle\Framework\Testing\Concerns\Network_Admin_Screen;
 use Mantle\Framework\Testing\Concerns\Refresh_Database;
 use Mantle\Framework\Testing\Concerns\WordPress_Authentication;
 use Mantle\Framework\Testing\Concerns\WordPress_State;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use WP;
 use WP_Query;
+use function Mantle\Framework\Helpers\class_basename;
 use function Mantle\Framework\Helpers\class_uses_recursive;
 
 /**
@@ -84,11 +87,20 @@ abstract class Test_Case extends BaseTestCase {
 
 		static::clean_up_global_scope();
 
-		if ( isset( static::$test_uses[ Refresh_Database::class ] ) ) {
-			$this->start_transaction();
+		foreach (
+			[
+				// This order is deliberate.
+				Refresh_Database::class,
+				WordPress_Authentication::class,
+				Admin_Screen::class,
+				Network_Admin_Screen::class,
+			] as $trait
+		) {
+			if ( isset( static::$test_uses[ $trait ] ) ) {
+				$method = strtolower( class_basename( $trait ) ) . '_set_up';
+				$this->{$method}();
+			}
 		}
-
-		$this->wordpress_authentication_set_up();
 
 		$this->expectDeprecated();
 		$this->expectIncorrectUsage();
@@ -103,10 +115,19 @@ abstract class Test_Case extends BaseTestCase {
 		// phpcs:disable WordPress.WP.GlobalVariablesOverride,WordPress.NamingConventions.PrefixAllGlobals
 		global $wp_query, $wp;
 
-		$this->wordpress_authentication_tear_down();
-
-		if ( isset( static::$test_uses[ Refresh_Database::class ] ) ) {
-			$this->refresh_database_tear_down();
+		foreach (
+			[
+				// This order is deliberate.
+				WordPress_Authentication::class,
+				Admin_Screen::class,
+				Network_Admin_Screen::class,
+				Refresh_Database::class,
+			] as $trait
+		) {
+			if ( isset( static::$test_uses[ $trait ] ) ) {
+				$method = strtolower( class_basename( $trait ) ) . '_tear_down';
+				$this->{$method}();
+			}
 		}
 
 		if ( is_multisite() ) {
