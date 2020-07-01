@@ -40,6 +40,13 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	protected $route;
 
 	/**
+	 * All of the converted files for the request.
+	 *
+	 * @var array
+	 */
+	protected $converted_files;
+
+	/**
 	 * Create a request object.
 	 *
 	 * @return static

@@ -336,7 +336,8 @@ trait Interacts_With_Input {
 	public function all_files() {
 		$files = $this->files->all();
 
-		return $this->converted_files ?? $this->convert_uploaded_files( $files );
+		$this->converted_files = $this->converted_files ?? $this->convert_uploaded_files($files);
+		return $this->converted_files;
 	}
 
 	/**
@@ -371,7 +372,6 @@ trait Interacts_With_Input {
 		if ( ! is_array( $files ) ) {
 			$files = [ $files ];
 		}
-
 		foreach ( $files as $file ) {
 			if ( $this->is_valid_file( $file ) ) {
 				return true;
@@ -388,7 +388,7 @@ trait Interacts_With_Input {
 	 * @return bool
 	 */
 	protected function is_valid_file( $file ) {
-		return $file instanceof SplFileInfo && $file->getPath() !== '';
+		return $file instanceof Uploaded_File && $file->getPath() !== '';
 	}
 
 	/**

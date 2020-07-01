@@ -69,8 +69,6 @@ class Uploaded_File extends SymfonyUploadedFile {
 	 * @return string|false
 	 */
 	public function storePrivately( $path, $options = [] ) {
-		// $options = $this->parseOptions( $options );
-
 		// $options['visibility'] = 'public';
 
 		// return $this->storeAs( $path, $this->hashName(), $options );
@@ -85,11 +83,9 @@ class Uploaded_File extends SymfonyUploadedFile {
 	 * @return string|false
 	 */
 	public function storePubliclyAs( $path, $name, $options = [] ) {
-		$options = $this->parseOptions( $options );
+		// $options['visibility'] = 'public';
 
-		$options['visibility'] = 'public';
-
-		return $this->storeAs( $path, $name, $options );
+		// return $this->storeAs( $path, $name, $options );
 	}
 
 	/**
@@ -101,16 +97,12 @@ class Uploaded_File extends SymfonyUploadedFile {
 	 * @return string|false
 	 */
 	public function storeAs( $path, $name, $options = [] ) {
-		$options = $this->parseOptions( $options );
-
-		$disk = Arr::pull( $options, 'disk' );
-
-		return Container::getInstance()->make( FilesystemFactory::class )->disk( $disk )->putFileAs(
-			$path,
-			$this,
-			$name,
-			$options
-		);
+		// return Container::getInstance()->make( FilesystemFactory::class )->disk( $disk )->putFileAs(
+		// 	$path,
+		// 	$this,
+		// 	$name,
+		// 	$options
+		// );
 	}
 
 	/**
@@ -145,7 +137,7 @@ class Uploaded_File extends SymfonyUploadedFile {
 	 * @return static
 	 */
 	public static function createFromBase( \Symfony\Component\HttpFoundation\File\UploadedFile $file, $test = false ) {
-		return is_array( $file ) instanceof static ? $file : new static(
+		return $file instanceof static ? $file : new static(
 			$file->getPathname(),
 			$file->getClientOriginalName(),
 			$file->getClientMimeType(),
@@ -154,17 +146,4 @@ class Uploaded_File extends SymfonyUploadedFile {
 		);
 	}
 
-	/**
-	 * Parse and format the given options.
-	 *
-	 * @param  array|string $options
-	 * @return array
-	 */
-	protected function parseOptions( $options ) {
-		if ( is_string( $options ) ) {
-			$options = [ 'disk' => $options ];
-		}
-
-		return $options;
-	}
 }
