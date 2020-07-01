@@ -8,7 +8,6 @@
 namespace Mantle\Tests\Framework\Console;
 
 use Mantle\Framework\Http\Request;
-use Mockery as m;
 
 class Test_Response_Factory extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 

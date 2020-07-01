@@ -14,6 +14,8 @@ use Mantle\Framework\Log\Log_Service_Provider;
 use Mantle\Framework\Providers\Event_Service_Provider;
 use Mantle\Framework\Providers\Routing_Service_Provider;
 use Mantle\Framework\Providers\View_Service_Provider;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use function Mantle\Framework\Helpers\collect;
 
@@ -315,5 +317,23 @@ class Application extends Container\Container implements Application_Contract {
 	 */
 	public function is_environment( ...$environments ): bool {
 		return in_array( $this->environment(), (array) $environments, true );
+	}
+
+	/**
+	 * Throw an HttpException with the given data.
+	 *
+	 * @param int    $code HTTP status code.
+	 * @param string $message Response message.
+	 * @param array  $headers Response headers.
+	 *
+	 * @throws NotFoundHttpException Thrown on 404 error.
+	 * @throws HttpException Thrown on other HTTP error.
+	 */
+	public function abort( int $code, string $message = '', array $headers = [] ) {
+		if ( 404 === $code ) {
+			throw new NotFoundHttpException( $message, null, 404, $headers );
+		} else {
+			throw new HttpException( $code, $message, null, $headers );
+		}
 	}
 }

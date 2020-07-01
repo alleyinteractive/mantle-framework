@@ -26,6 +26,13 @@ trait Refresh_Database {
 	}
 
 	/**
+	 * Start the transaction on setUp().
+	 */
+	public function refresh_database_set_up() {
+		$this->start_transaction();
+	}
+
+	/**
 	 * Routines to run on tearDown().
 	 */
 	public function refresh_database_tear_down() {

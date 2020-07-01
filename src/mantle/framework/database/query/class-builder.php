@@ -9,6 +9,7 @@
 
 namespace Mantle\Framework\Database\Query;
 
+use Mantle\Framework\Database\Model\Model_Not_Found_Exception;
 use Mantle\Framework\Support\Collection;
 use Mantle\Framework\Support\Str;
 
@@ -324,6 +325,22 @@ abstract class Builder {
 	 */
 	public function first() {
 		return $this->take( 1 )->get()[0] ?? null;
+	}
+
+	/**
+	 * Execute the query and get the first result or throw an exception.
+	 *
+	 * @return \Mantle\Framework\Database\Model
+	 * @throws Model_Not_Found_Exception Throws exception if not found.
+	 */
+	public function firstOrFail() {
+		$model = $this->first();
+
+		if ( ! $model ) {
+			throw ( new Model_Not_Found_Exception() )->set_model( $this->model );
+		}
+
+		return $model;
 	}
 
 	/**

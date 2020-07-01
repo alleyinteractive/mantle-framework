@@ -79,8 +79,6 @@ trait Assertions {
 	/**
 	 * Asserts that two values are equal, with EOL differences discarded.
 	 *
-	 * @since 5.4.0
-	 *
 	 * @param string $expected The expected value.
 	 * @param string $actual   The actual value.
 	 */
@@ -90,8 +88,6 @@ trait Assertions {
 
 	/**
 	 * Asserts that the contents of two un-keyed, single arrays are equal, without accounting for the order of elements.
-	 *
-	 * @since 3.5.0
 	 *
 	 * @param array $expected Expected array.
 	 * @param array $actual   Array to check.
@@ -105,8 +101,6 @@ trait Assertions {
 	/**
 	 * Asserts that the contents of two keyed, single arrays are equal, without accounting for the order of elements.
 	 *
-	 * @since 4.1.0
-	 *
 	 * @param array $expected Expected array.
 	 * @param array $actual   Array to check.
 	 */
@@ -118,8 +112,6 @@ trait Assertions {
 
 	/**
 	 * Asserts that the given variable is a multidimensional array, and that all arrays are non-empty.
-	 *
-	 * @since 4.8.0
 	 *
 	 * @param array $array Array to check.
 	 */

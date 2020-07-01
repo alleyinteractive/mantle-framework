@@ -7,6 +7,9 @@
 
 namespace Mantle\Framework\Contracts\Http\Routing;
 
+use Mantle\Framework\Http\Request;
+use Mantle\Framework\Http\Response;
+
 /**
  * Router Contract
  */
@@ -58,4 +61,26 @@ interface Router {
 	 * @param mixed  $action Callback action.
 	 */
 	public function options( string $uri, $action = '' );
+
+	/**
+	 * Dispatch a request to the registered routes.
+	 *
+	 * @param Request $request Request object.
+	 * @return Response|null
+	 */
+	public function dispatch( Request $request ): ?Response;
+
+	/**
+	 * Substitute Explicit Bindings
+	 *
+	 * @param Request $request Request object.
+	 */
+	public function substitute_bindings( Request $request );
+
+	/**
+	 * Substitute the implicit Eloquent model bindings for the route.
+	 *
+	 * @param Request $request Request instance.
+	 */
+	public function substitute_implicit_bindings( Request $request );
 }
