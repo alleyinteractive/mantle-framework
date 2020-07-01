@@ -494,4 +494,5 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 			}
 		);
 	}
+
 }

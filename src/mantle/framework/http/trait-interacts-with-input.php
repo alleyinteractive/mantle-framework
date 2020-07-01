@@ -9,6 +9,7 @@
 
 namespace Mantle\Framework\Http;
 
+use Mantle\Framework\Http\Uploaded_File;
 use Mantle\Framework\Support\Arr;
 use Mantle\Framework\Support\Str;
 use stdClass;
@@ -325,5 +326,79 @@ trait Interacts_With_Input {
 		}
 
 		return $this->$source->get( $key, $default );
+	}
+
+	/**
+	 * Get an array of all of the files on the request.
+	 *
+	 * @return array
+	 */
+	public function all_files() {
+		$files = $this->files->all();
+
+		return $this->converted_files ?? $this->convert_uploaded_files( $files );
+	}
+
+	/**
+	 * Convert the given array of Symfony Uploaded_Files to custom Laravel Uploaded_Files.
+	 *
+	 * @param  array $files
+	 * @return array
+	 */
+	protected function convert_uploaded_files( array $files ) {
+		return array_map(
+			function ( $file ) {
+				if ( is_null( $file ) || ( is_array( $file ) && empty( array_filter( $file ) ) ) ) {
+					return $file;
+				}
+
+				return is_array( $file )
+						? $this->convert_uploaded_files( $file )
+						: Uploaded_File::createFromBase( $file );
+			},
+			$files
+		);
+	}
+
+	/**
+	 * Determine if the uploaded data contains a file.
+	 *
+	 * @param  string $key
+	 * @return bool
+	 */
+	public function has_file( $key ) {
+		$files = $this->file( $key );
+		if ( ! is_array( $files ) ) {
+			$files = [ $files ];
+		}
+
+		foreach ( $files as $file ) {
+			if ( $this->is_valid_file( $file ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check that the given file is a valid file instance.
+	 *
+	 * @param  mixed $file
+	 * @return bool
+	 */
+	protected function is_valid_file( $file ) {
+		return $file instanceof SplFileInfo && $file->getPath() !== '';
+	}
+
+	/**
+	 * Retrieve a file from the request.
+	 *
+	 * @param  string|null $key
+	 * @param  mixed       $default
+	 * @return \Illuminate\Http\Uploaded_File|\Illuminate\Http\Uploaded_File[]|array|null
+	 */
+	public function file( $key = null, $default = null ) {
+		return data_get( $this->all_files(), $key, $default );
 	}
 }
