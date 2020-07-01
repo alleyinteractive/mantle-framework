@@ -57,7 +57,11 @@ class Uploaded_File extends SymfonyUploadedFile {
 			'post_content'   => '',
 		];
 		$id = \wp_insert_attachment( $details, $file, $parent );
-
+		if ( !is_wp_error($id) ) {
+			require_once ABSPATH . 'wp-admin/includes/image.php';
+			$data = wp_generate_attachment_metadata( $id, $file );
+			wp_update_attachment_metadata( $id, $data );
+		}
 		return $id;
 	}
 
