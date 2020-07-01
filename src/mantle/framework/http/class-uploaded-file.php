@@ -8,13 +8,7 @@
 
 namespace Mantle\Framework\Http;
 
-use Illuminate\Container\Container;
-use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Http\Testing\FileFactory;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Traits\Macroable;
-use Mantle\Framework\Database\Model\Attachment;
 use Symfony\Component\HttpFoundation\File\UploadedFile as SymfonyUploadedFile;
 
 /**
@@ -63,50 +57,6 @@ class Uploaded_File extends SymfonyUploadedFile {
 			wp_update_attachment_metadata( $id, $data );
 		}
 		return $id;
-	}
-
-	/**
-	 * Store the uploaded file on a filesystem disk with private visibility.
-	 *
-	 * @param  string       $path
-	 * @param  array|string $options
-	 * @return string|false
-	 */
-	public function storePrivately( $path, $options = [] ) {
-		// $options['visibility'] = 'public';
-
-		// return $this->storeAs( $path, $this->hashName(), $options );
-	}
-
-	/**
-	 * Store the uploaded file on a filesystem disk with public visibility.
-	 *
-	 * @param  string       $path
-	 * @param  string       $name
-	 * @param  array|string $options
-	 * @return string|false
-	 */
-	public function storePubliclyAs( $path, $name, $options = [] ) {
-		// $options['visibility'] = 'public';
-
-		// return $this->storeAs( $path, $name, $options );
-	}
-
-	/**
-	 * Store the uploaded file on a filesystem disk.
-	 *
-	 * @param  string       $path
-	 * @param  string       $name
-	 * @param  array|string $options
-	 * @return string|false
-	 */
-	public function storeAs( $path, $name, $options = [] ) {
-		// return Container::getInstance()->make( FilesystemFactory::class )->disk( $disk )->putFileAs(
-		// 	$path,
-		// 	$this,
-		// 	$name,
-		// 	$options
-		// );
 	}
 
 	/**
