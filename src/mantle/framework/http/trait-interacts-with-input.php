@@ -336,7 +336,7 @@ trait Interacts_With_Input {
 	public function all_files() {
 		$files = $this->files->all();
 
-		$this->converted_files = $this->converted_files ?? $this->convert_uploaded_files($files);
+		$this->converted_files = $this->converted_files ?? $this->convert_uploaded_files( $files );
 		return $this->converted_files;
 	}
 
