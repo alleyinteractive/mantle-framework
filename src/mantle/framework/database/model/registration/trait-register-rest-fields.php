@@ -10,7 +10,8 @@ namespace Mantle\Framework\Database\Model\Registration;
 
 use Closure;
 use Mantle\Framework\Database\Model\Model_Exception;
-use SML\REST_Field;
+use Mantle\Framework\Database\Model\Rest_Field;
+// use SML\REST_Field;
 use SML\REST_Field_Registrar;
 
 /**
@@ -63,7 +64,7 @@ trait Register_Rest_Fields {
 	 */
 	public static function register_field( $field, Closure $get_callback = null ) {
 		// Bail early if the field is a valid REST Field.
-		if ( $field instanceof REST_Field ) {
+		if ( $field instanceof Rest_Field ) {
 			static::$rest_fields[] = $field;
 			return $field;
 		}
