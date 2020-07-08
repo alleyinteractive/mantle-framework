@@ -1,0 +1,23 @@
+<?php
+/**
+ * {{ class }} class file.
+ *
+ * @package {{ namespace }}
+ */
+
+namespace App\Http\Controller;
+
+use \Mantle\Framework\Http\Controller;
+
+/**
+ * {{ class }} Controller
+ */
+class {{ class }} extends Controller {
+    /**
+     * Set everything up.
+     */
+	public function __construct() {
+		//
+	}
+
+}
