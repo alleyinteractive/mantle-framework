@@ -69,7 +69,10 @@ class Rest_Field implements REST_Field_Contract, REST_Field_Schema, REST_Field_G
 		$this->set_object_types( $object_types );
 		$this->set_attribute( $attribute );
 		$this->set_callback( $callback );
-		$this->set_update_callback( $update_callback );
+
+		if ( null !== $update_callback ) {
+			$this->set_update_callback( $update_callback );
+		}
 	}
 
 	/**
