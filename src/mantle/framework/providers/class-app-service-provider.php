@@ -8,6 +8,7 @@
 namespace Mantle\Framework\Providers;
 
 use Mantle\Framework\Contracts\Application;
+use Mantle\Framework\Scheduling\Schedule;
 use Mantle\Framework\Service_Provider;
 
 use function Mantle\Framework\Helpers\tap;
@@ -46,13 +47,15 @@ class App_Service_Provider extends Service_Provider {
 			Schedule::class,
 			function( $app ) {
 				return tap(
-					new Schedule( $app ),
+					new Schedule(),
 					function( $schedule) {
 						$this->schedule( $schedule );
 					}
 				);
 			}
 		);
+
+		$this->app->make( Schedule::class );
 	}
 
 	/**
