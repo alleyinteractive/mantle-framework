@@ -43,7 +43,7 @@ class Model_Register_Provider extends Service_Provider {
 				throw new Provider_Exception( $model . ' does not implement ' . Registrable_Contract::class . ' interface' );
 			}
 
-			$model::register();
+			$model::boot_if_not_booted();
 		}
 	}
 

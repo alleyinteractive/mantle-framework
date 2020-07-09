@@ -25,7 +25,7 @@ class Test_Register_Taxonomy extends WP_UnitTestCase {
 			]
 		);
 
-		$mock->register();
+		$mock->register_object();
 
 		// Allow the taxonomy to be registered.
 		do_action( 'init' );
@@ -48,7 +48,7 @@ class Test_Register_Taxonomy extends WP_UnitTestCase {
 			]
 		);
 
-		$mock->register();
+		$mock->register_object();
 
 		// Allow the taxonomy to be registered.
 		do_action( 'init' );
