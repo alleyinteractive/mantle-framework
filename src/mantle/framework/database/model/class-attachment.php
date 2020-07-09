@@ -69,7 +69,7 @@ class Attachment extends Post implements Contracts\Database\Core_Object, Contrac
 	 * @return Model
 	 * @throws Model_Exception Thrown on error sideloading image.
 	 */
-	public static function create_from_url( string $url, array $args ): Model {
+	public static function create_from_url( string $url, array $args = [] ): Model {
 		$existing = static::query()->whereMeta( '_source_url', $url )->first();
 
 		if ( $existing ) {
