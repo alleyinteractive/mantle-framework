@@ -11,11 +11,10 @@ namespace Mantle\Framework\Database\Model\Registration;
 use Closure;
 use Mantle\Framework\Database\Model\Model_Exception;
 use Mantle\Framework\Database\Model\Rest_Field;
-// use SML\REST_Field;
 use SML\REST_Field_Registrar;
 
 /**
- * Model Trait to allow a post type to be registered for a model.
+ * Model Trait to REST Fields to be registered for a model.
  */
 trait Register_Rest_Fields {
 	/**
@@ -35,10 +34,10 @@ trait Register_Rest_Fields {
 	/**
 	 * Register the post type.
 	 */
-	public static function boot_Register_Rest_Fields() {
+	public static function boot_register_rest_fields() {
 		static::$rest_registrar = new REST_Field_Registrar();
 
-		\add_action( 'rest_api_init', [ __CLASS__, 'register_post_type' ] );
+		\add_action( 'rest_api_init', [ __CLASS__, 'register_fields' ] );
 	}
 
 	/**
@@ -52,27 +51,39 @@ trait Register_Rest_Fields {
 			throw new Model_Exception( "REST field registrar is not defined for [${class}]" );
 		}
 
-		array_map( [ static::$rest_registrar, 'register' ], static::$rest_fields );
+		array_map( [ static::$rest_registrar, 'register_once' ], static::$rest_fields );
 	}
 
 	/**
 	 * Register a REST API field.
 	 *
-	 * @param REST_Field|string $field Field instance/field attribute to register.
-	 * @param Closure           $get_callback Callback for the field if $field isn't a field.
-	 * @return REST_Field
+	 * @param REST_Field|string $attribute Field instance/field attribute to register.
+	 * @param Closure|string    $get_callback Callback for the field if $field isn't a field.
+	 * @return Rest_Field
+	 *
+	 * @throws Model_Exception Thrown on missing REST Registrar.
+	 *
+	 * @todo Allow for creation of a a REST Field from a SML REST Field.
 	 */
-	public static function register_field( $field, Closure $get_callback = null ) {
+	public static function register_field( $attribute, $get_callback = null ): Rest_Field {
+		if ( ! isset( static::$rest_registrar ) ) {
+			$class = get_called_class();
+			throw new Model_Exception( "REST field registrar is not defined for [${class}]" );
+		}
+
 		// Bail early if the field is a valid REST Field.
-		if ( $field instanceof Rest_Field ) {
-			static::$rest_fields[] = $field;
-			return $field;
+		if ( $attribute instanceof Rest_Field ) {
+			static::$rest_fields[] = $attribute;
+			return $attribute;
 		}
 
-
-
-		if ( $field instanceof Closure ) {
-
+		if ( is_null( $get_callback ) ) {
+			throw new Model_Exception( "Missing callback for REST field [${$attribute}]" );
 		}
+
+		$field = new Rest_Field( [ static::get_object_name() ], $attribute, $get_callback );
+
+		static::$rest_fields[ $attribute ] = $field;
+		return $field;
 	}
 }
