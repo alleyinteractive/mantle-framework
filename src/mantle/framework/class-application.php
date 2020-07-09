@@ -52,6 +52,20 @@ class Application extends Container\Container implements Application_Contract {
 	protected $booted = false;
 
 	/**
+	 * The array of booting callbacks.
+	 *
+	 * @var callable[]
+	 */
+	protected $booting_callbacks = [];
+
+	/**
+	 * The array of booted callbacks.
+	 *
+	 * @var callable[]
+	 */
+	protected $booted_callbacks = [];
+
+	/**
 	 * All of the registered service providers.
 	 *
 	 * @var ServiceProvider[]
@@ -202,6 +216,17 @@ class Application extends Container\Container implements Application_Contract {
 	}
 
 	/**
+	 * Flush the container of all bindings and resolved instances.
+	 */
+	public function flush() {
+		parent::flush();
+
+		$this->booted_callbacks  = [];
+		$this->booting_callbacks = [];
+		$this->service_providers = [];
+	}
+
+	/**
 	 * Run the given array of bootstrap classes.
 	 *
 	 * Bootstrap classes should implement `Mantle\Framework\Contracts\Bootstrapable`.
@@ -270,23 +295,27 @@ class Application extends Container\Container implements Application_Contract {
 	 *
 	 * @return bool
 	 */
-	public function is_booted() {
+	public function is_booted(): bool {
 		return $this->booted;
 	}
 
 	/**
 	 * Boot the application's service providers.
 	 *
-	 * @return Application
+	 * @return static
 	 */
-	public function boot(): Application {
+	public function boot() {
 		if ( $this->is_booted() ) {
 			return $this;
 		}
 
+		$this->fire_app_callbacks( $this->booting_callbacks );
+
 		foreach ( $this->service_providers as $provider ) {
 			$provider->boot();
 		}
+
+		$this->fire_app_callbacks( $this->booted_callbacks );
 
 		$this->booted = true;
 		return $this;
@@ -334,6 +363,44 @@ class Application extends Container\Container implements Application_Contract {
 			throw new NotFoundHttpException( $message, null, 404, $headers );
 		} else {
 			throw new HttpException( $code, $message, null, $headers );
+		}
+	}
+
+	/**
+	 * Register a new boot listener.
+	 *
+	 * @param callable $callback Callback for the listener.
+	 * @return static
+	 */
+	public function booting( $callback ) {
+		$this->booting_callbacks[] = $callback;
+		return $this;
+	}
+
+	/**
+	 * Register a new "booted" listener.
+	 *
+	 * @param callable $callback Callback for the listener.
+	 * @return static
+	 */
+	public function booted( $callback ) {
+		$this->booted_callbacks[] = $callback;
+
+		if ( $this->is_booted() ) {
+			$this->fire_app_callbacks( [ $callback ] );
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Call the booting callbacks for the application.
+	 *
+	 * @param callable[] $callbacks Callbacks to fire.
+	 */
+	protected function fire_app_callbacks( array $callbacks ) {
+		foreach ( $callbacks as $callback ) {
+			$callback( $this );
 		}
 	}
 }
