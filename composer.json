@@ -46,9 +46,9 @@
             "url": "https://github.com/alleyinteractive/Alley-Coding-Standards"
         },
         {
-          "type": "git",
-          "url": "git@github.com:alleyinteractive/sml.git"
-      }
+            "type": "git",
+            "url": "git@github.com:alleyinteractive/sml.git"
+        }
     ],
     "scripts": {
         "phpcs": "phpcs --standard=./phpcs.xml ."
