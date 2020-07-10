@@ -1,10 +1,18 @@
 <?php
+/**
+ * Interacts_With_Container trait file.
+ *
+ * @package Mantle
+ */
 
 namespace Mantle\Framework\Testing\Concerns;
 
 use Closure;
 use Mockery;
 
+/**
+ * Concern for interacting with the container for helpful testing.
+ */
 trait Interacts_With_Container {
 
 	/**
