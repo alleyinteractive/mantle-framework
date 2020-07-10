@@ -28,8 +28,8 @@ class Register_Facades {
 		// Load the Facades from the config.
 		Alias_Loader::get_instance(
 			array_merge(
-				$app->config->get( 'app.aliases' ),
-				$app->make( Package_Manifest::class )->aliases()
+				(array) $app->config->get( 'app.aliases' ),
+				(array) $app->make( Package_Manifest::class )->aliases()
 			)
 		)->register();
 	}

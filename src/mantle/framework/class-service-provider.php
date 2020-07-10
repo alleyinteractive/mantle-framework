@@ -52,10 +52,8 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	 * Bootstrap services.
 	 */
 	public function boot() {
-		$log = $this->app['log'];
-
-		if ( $log ) {
-			$this->setLogger( $log->get_default_logger() );
+		if ( isset( $this->app['log'] ) ) {
+			$this->setLogger( $this->app['log']->get_default_logger() );
 		}
 
 		$this->boot_contracts();

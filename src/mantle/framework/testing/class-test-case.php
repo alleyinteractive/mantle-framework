@@ -7,11 +7,14 @@
 
 namespace Mantle\Framework\Testing;
 
+use Mantle\Framework\Facade\Facade;
 use Mantle\Framework\Testing\Concerns\Admin_Screen;
 use Mantle\Framework\Testing\Concerns\Assertions;
+use Mantle\Framework\Testing\Concerns\Create_Application;
 use Mantle\Framework\Testing\Concerns\Deprecations;
 use Mantle\Framework\Testing\Concerns\Hooks;
 use Mantle\Framework\Testing\Concerns\Incorrect_Usage;
+use Mantle\Framework\Testing\Concerns\Interacts_With_Container;
 use Mantle\Framework\Testing\Concerns\Makes_Http_Requests;
 use Mantle\Framework\Testing\Concerns\Network_Admin_Screen;
 use Mantle\Framework\Testing\Concerns\Refresh_Database;
@@ -28,10 +31,12 @@ use function Mantle\Framework\Helpers\class_uses_recursive;
  */
 abstract class Test_Case extends BaseTestCase {
 	use Assertions,
-		Makes_Http_Requests,
+		Create_Application,
 		Deprecations,
-		Incorrect_Usage,
 		Hooks,
+		Incorrect_Usage,
+		Interacts_With_Container,
+		Makes_Http_Requests,
 		WordPress_State,
 		WordPress_Authentication;
 
@@ -41,6 +46,13 @@ abstract class Test_Case extends BaseTestCase {
 	 * @var array
 	 */
 	protected static $test_uses;
+
+	/**
+	 * Application instance.
+	 *
+	 * @var \Mantle\Framework\Application
+	 */
+	protected $app;
 
 	/**
 	 * Runs the routine before setting up all tests.
@@ -82,6 +94,10 @@ abstract class Test_Case extends BaseTestCase {
 		set_time_limit( 0 );
 
 		parent::setUp();
+
+		if ( ! $this->app ) {
+			$this->refresh_application();
+		}
 
 		$this->hooks_set_up();
 
@@ -162,6 +178,11 @@ abstract class Test_Case extends BaseTestCase {
 		// phpcs:enable
 
 		parent::tearDown();
+
+		// todo: Fire the shutdown hooks when added.
+		if ( $this->app ) {
+			$this->app = null;
+		}
 	}
 
 	/**
@@ -169,5 +190,14 @@ abstract class Test_Case extends BaseTestCase {
 	 */
 	public static function register_traits() {
 		static::$test_uses = array_flip( class_uses_recursive( static::class ) );
+	}
+
+	/**
+	 * Refresh the application instance.
+	 */
+	protected function refresh_application() {
+		$this->app = $this->create_application();
+		Facade::set_facade_application( $this->app );
+		Facade::clear_resolved_instances();
 	}
 }
