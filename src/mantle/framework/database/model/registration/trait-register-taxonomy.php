@@ -17,8 +17,8 @@ trait Register_Taxonomy {
 	/**
 	 * Register the taxonomy.
 	 */
-	public static function register() {
-		\add_action( 'init', [ __CLASS__, 'register_taxonomy' ] );
+	public static function boot_register_taxonomy() {
+		\add_action( 'init', [ __CLASS__, 'register_object' ] );
 	}
 
 	/**
@@ -26,7 +26,7 @@ trait Register_Taxonomy {
 	 *
 	 * @throws Model_Exception Thrown when registering a taxonomy that is already registered.
 	 */
-	public static function register_taxonomy() {
+	public static function register_object() {
 		$taxonomy = static::get_object_name();
 
 		if ( \taxonomy_exists( $taxonomy ) ) {

@@ -10,6 +10,7 @@
         }
     ],
     "require": {
+        "alleyinteractive/sml": "0.9.0",
         "filp/whoops": "^2.7",
         "fzaninotto/faker": "^1.9",
         "league/commonmark": "^1.4",
@@ -43,6 +44,10 @@
         {
             "type": "git",
             "url": "https://github.com/alleyinteractive/Alley-Coding-Standards"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:alleyinteractive/sml.git"
         }
     ],
     "scripts": {

@@ -145,10 +145,8 @@ abstract class Model implements ArrayAccess, Url_Routable {
 
 	/**
 	 * Check if the model needs to be booted and if so, do it.
-	 *
-	 * @return void
 	 */
-	protected function boot_if_not_booted() {
+	public static function boot_if_not_booted() {
 		if ( ! isset( static::$booted[ static::class ] ) ) {
 			static::boot_traits();
 			static::boot();

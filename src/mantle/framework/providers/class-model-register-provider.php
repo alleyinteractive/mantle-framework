@@ -7,11 +7,12 @@
 
 namespace Mantle\Framework\Providers;
 
-use Mantle\Framework\Contracts\Database\Registrable as Registrable_Contract;
 use Mantle\Framework\Service_Provider;
 
 /**
  * Model Register Service Provider
+ *
+ * Allows models to always be booted on each request to register whatever side-effects they desire.
  */
 class Model_Register_Provider extends Service_Provider {
 	/**
@@ -39,11 +40,7 @@ class Model_Register_Provider extends Service_Provider {
 		}
 
 		foreach ( $this->models as $model ) {
-			if ( ! in_array( Registrable_Contract::class, class_implements( $model ), true ) ) {
-				throw new Provider_Exception( $model . ' does not implement ' . Registrable_Contract::class . ' interface' );
-			}
-
-			$model::register();
+			$model::boot_if_not_booted();
 		}
 	}
 

@@ -13,7 +13,7 @@ use WP_UnitTestCase;
 class Test_Term_Object extends WP_UnitTestCase {
 	public function setUp() {
 		parent::setUp();
-		Example_Taxonomy::register_taxonomy();
+		Example_Taxonomy::register_object();
 	}
 
 	public function tearDown() {

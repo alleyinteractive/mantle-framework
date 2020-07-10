@@ -13,7 +13,7 @@ use WP_UnitTestCase;
 class Test_Post_Object extends WP_UnitTestCase {
 	public function setUp() {
 		parent::setUp();
-		Test_Post_Type::register_post_type();
+		Test_Post_Type::register_object();
 	}
 
 	public function tearDown() {
