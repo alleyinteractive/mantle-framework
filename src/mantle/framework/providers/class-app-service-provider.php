@@ -47,15 +47,16 @@ class App_Service_Provider extends Service_Provider {
 			Schedule::class,
 			function( $app ) {
 				return tap(
-					new Schedule(),
-					function( $schedule) {
+					new Schedule( $app ),
+					function( $schedule ) {
 						$this->schedule( $schedule );
 					}
 				);
 			}
 		);
 
-		$this->app->make( Schedule::class );
+		// Setup the cron event for the scheduler.
+		Schedule::schedule_cron_event();
 	}
 
 	/**
@@ -63,7 +64,5 @@ class App_Service_Provider extends Service_Provider {
 	 *
 	 * @param Schedule $schedule Schedule instance.
 	 */
-	protected function schedule( Schedule $schedule ) {
-		//
-	}
+	protected function schedule( $schedule ) { }
 }
