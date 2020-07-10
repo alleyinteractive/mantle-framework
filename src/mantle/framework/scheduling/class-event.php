@@ -15,11 +15,9 @@ use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\TransferException;
 use Mantle\Framework\Contracts\Application;
 use Mantle\Framework\Contracts\Container;
-use Mantle\Framework\Exceptions\Handler;
-use Mantle\Framework\Support\Arr;
+use Mantle\Framework\Contracts\Exceptions\Handler;
 use Mantle\Framework\Support\Traits\Macroable;
 use Psr\Http\Client\ClientExceptionInterface;
-use Symfony\Component\Process\Process;
 use Throwable;
 
 /**
