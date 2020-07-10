@@ -4,8 +4,55 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f9688109bdb00163e434133e3491dea7",
+    "content-hash": "7dd43802fb6446048cdd390b48df0bee",
     "packages": [
+        {
+            "name": "alleyinteractive/sml",
+            "version": "v0.9.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:alleyinteractive/sml.git",
+                "reference": "38ab830c4bf0d3f46b7d8b9013f6ca800c0875a5"
+            },
+            "require": {
+                "php": "^7.3"
+            },
+            "require-dev": {
+                "automattic/vipwpcs": "^2.0",
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.4.3",
+                "friendsofphp/php-cs-fixer": "^2.14",
+                "phpunit/phpunit": "^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "sml.php"
+                ]
+            },
+            "scripts": {
+                "coverage": [
+                    "WP_MULTISITE=1 vendor/bin/phpunit --coverage-html coverage"
+                ],
+                "fixer": [
+                    "vendor/bin/php-cs-fixer fix --allow-risky=yes"
+                ],
+                "lint": [
+                    "find src/ tests/ -type 'f' -iname '*.php' | xargs -L '1' php -l"
+                ],
+                "phpcs": [
+                    "vendor/bin/phpcs -- -v"
+                ],
+                "phpunit": [
+                    "vendor/bin/phpunit; WP_MULTISITE=1 vendor/bin/phpunit"
+                ]
+            },
+            "license": [
+                "GPL-2.0"
+            ],
+            "description": "The Standard Medium Library (SML)",
+            "homepage": "https://github.com/alleyinteractive/sml",
+            "time": "2020-02-17T18:48:53+00:00"
+        },
         {
             "name": "dragonmantank/cron-expression",
             "version": "v2.3.0",

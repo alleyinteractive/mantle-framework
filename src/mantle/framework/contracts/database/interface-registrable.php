@@ -17,7 +17,7 @@ interface Registrable {
 	/**
 	 * Method to register the model.
 	 */
-	public static function register();
+	public static function register_object();
 
 	/**
 	 * Arguments to register the model with.

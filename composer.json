@@ -10,10 +10,11 @@
         }
     ],
     "require": {
+        "alleyinteractive/sml": "0.9.0",
         "dragonmantank/cron-expression": "^2.0",
         "filp/whoops": "^2.7",
         "fzaninotto/faker": "^1.9",
-        "guzzlehttp/guzzle": "^6.3.1|^7.0",
+        "guzzlehttp/guzzle": "^6.3.1 || ^7.0",
         "league/commonmark": "^1.4",
         "monolog/monolog": "^2.0",
         "nesbot/carbon": "^2.36",
@@ -45,6 +46,10 @@
         {
             "type": "git",
             "url": "https://github.com/alleyinteractive/Alley-Coding-Standards"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:alleyinteractive/sml.git"
         }
     ],
     "scripts": {
