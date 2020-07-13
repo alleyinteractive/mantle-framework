@@ -30,7 +30,8 @@ trait Post_Events {
 		add_filter_side_effect(
 			'wp_insert_post_data',
 			function( $data, $postarr ) use ( $post_type ) {
-				if ( empty( $data['post_type'] ) || $post_type !== $data['post_type'] ) {
+				// Skip if the ID isn't found or the post type is incorrect.
+				if ( empty( $postarr['ID'] ) || empty( $data['post_type'] ) || $post_type !== $data['post_type'] ) {
 					return;
 				}
 
