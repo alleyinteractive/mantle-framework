@@ -1,0 +1,58 @@
+<?php
+/**
+ * {{ class }} class file.
+ *
+ * @package {{ namespace }}
+ */
+
+namespace App\Console;
+
+use Mantle\Framework\Console\Command;
+
+/**
+ * {{ class }} Controller
+ */
+class {{ class }} extends Command {
+	/**
+	 * The console command name.
+	 *
+	 * @var string
+	 */
+	protected $name = '{{ command_name }}';
+
+	/**
+	 * Command Short Description.
+	 *
+	 * @var string
+	 */
+	protected $short_description = '';
+
+	/**
+	 * Command Description.
+	 *
+	 * @var string
+	 */
+	protected $description = '';
+
+	/**
+	 * Command synopsis.
+	 *
+	 * Supports registering command arguments in a string or array format.
+	 * For example:
+	 *
+	 *     <argument> --example-flag
+	 *
+	 * @var string|array
+	 */
+	protected $synopsis = '';
+
+   /**
+	 * Callback for the command.
+	 *
+	 * @param array $args Command Arguments.
+	 * @param array $assoc_args Command flags.
+	 */
+	public function handle( array $args, array $assoc_args ) {
+		//
+	}
+}
