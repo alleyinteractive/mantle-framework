@@ -90,7 +90,7 @@ abstract class Command {
 	 *
 	 * @return string
 	 */
-	protected function get_name(): string {
+	public function get_name(): string {
 		return $this->name;
 	}
 

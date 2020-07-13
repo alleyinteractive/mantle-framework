@@ -7,6 +7,8 @@
 
 namespace Mantle\Framework\Contracts;
 
+use Mantle\Framework\Contracts\Kernel as Kernel_Contract;
+
 /**
  * Application Contract
  */
@@ -61,4 +63,40 @@ interface Application {
 	 * @return bool
 	 */
 	public function is_environment( ...$environments ): bool;
+
+	/**
+	 * Determine if the application has booted.
+	 *
+	 * @return bool
+	 */
+	public function is_booted(): bool;
+
+	/**
+	 * Boot the application's service providers.
+	 */
+	public function boot();
+
+	/**
+	 * Register a new boot listener.
+	 *
+	 * @param callable $callback Callback for the listener.
+	 */
+	public function booting( $callback );
+
+	/**
+	 * Register a new "booted" listener.
+	 *
+	 * @param callable $callback Callback for the listener.
+	 */
+	public function booted( $callback );
+
+	/**
+	 * Run the given array of bootstrap classes.
+	 *
+	 * Bootstrap classes should implement `Mantle\Framework\Contracts\Bootstrapable`.
+	 *
+	 * @param string[]        $bootstrappers Class names of packages to boot.
+	 * @param Kernel_Contract $kernel Kernel instance.
+	 */
+	public function bootstrap_with( array $bootstrappers, Kernel_Contract $kernel );
 }

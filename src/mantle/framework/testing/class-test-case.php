@@ -7,6 +7,7 @@
 
 namespace Mantle\Framework\Testing;
 
+use Mantle\Framework\Alias_Loader;
 use Mantle\Framework\Facade\Facade;
 use Mantle\Framework\Testing\Concerns\Admin_Screen;
 use Mantle\Framework\Testing\Concerns\Assertions;
@@ -197,7 +198,10 @@ abstract class Test_Case extends BaseTestCase {
 	 */
 	protected function refresh_application() {
 		$this->app = $this->create_application();
+
 		Facade::set_facade_application( $this->app );
 		Facade::clear_resolved_instances();
+
+		Alias_Loader::set_instance( null );
 	}
 }

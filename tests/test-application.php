@@ -41,4 +41,31 @@ class Test_Application extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		$app->abort( 500, 'Something went wrong' );
 	}
+
+	public function test_boot_callback() {
+		$_SERVER['__booting_callback'] = false;
+		$_SERVER['__boot_callback']    = false;
+
+		$app = new Application();
+		$app->flush();
+		$app->booting(
+			function() {
+				$_SERVER['__booting_callback'] = microtime( true );
+			}
+		);
+
+		$app->booted(
+			function() {
+				$_SERVER['__boot_callback'] = microtime( true );
+			}
+		);
+
+		$app->boot();
+
+		$this->assertNotFalse( $_SERVER['__booting_callback'] );
+		$this->assertNotFalse( $_SERVER['__boot_callback'] );
+
+		// Assert that the booting callback happened before the boot one.
+		$this->assertTrue( $_SERVER['__booting_callback'] < $_SERVER['__boot_callback'] );
+	}
 }
