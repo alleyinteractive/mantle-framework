@@ -33,7 +33,7 @@ trait Create_Application {
 	}
 
 	/**
-	 * Override application bindings.
+	 * Override application bindings, to be overridden by the child unit test.
 	 *
 	 * @param Application $app Application instance.
 	 * @return array
