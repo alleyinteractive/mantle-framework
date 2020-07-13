@@ -11,8 +11,6 @@ use Mantle\Framework\Application;
 use Mantle\Framework\Config\Repository;
 use Mantle\Framework\Support\Collection;
 
-use function Mantle\Framework\Helpers\tap;
-
 /**
  * Concern for creating the application instance.
  */
@@ -61,7 +59,9 @@ trait Create_Application {
 	 */
 	protected function get_application_config(): array {
 		return [
-			'app'     => [],
+			'app'     => [
+				'providers' => \Mantle\Framework\Providers\Model_Service_Provider::class,
+			],
 			'logging' => [
 				'default'  => 'error_log',
 				'channels' => [

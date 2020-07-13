@@ -7,14 +7,13 @@
 
 namespace Mantle\Framework\Providers;
 
+use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Service_Provider;
 
 /**
- * Model Register Service Provider
- *
- * Allows models to always be booted on each request to register whatever side-effects they desire.
+ * Model Service Provider
  */
-class Model_Register_Provider extends Service_Provider {
+class Model_Service_Provider extends Service_Provider {
 	/**
 	 * Models to register for the application.
 	 *
@@ -26,7 +25,10 @@ class Model_Register_Provider extends Service_Provider {
 	 * Register the service provider.
 	 */
 	public function register() {
-		$this->set_models_to_register( $this->app['config']->get( 'models.register' ) );
+		Model::set_event_dispatcher( $this->app['events'] );
+
+		// Allows models to always be booted on each request to register whatever side-effects they desire.
+		$this->set_models_to_register( (array) $this->app['config']->get( 'models.register' ) );
 	}
 
 	/**

@@ -8,6 +8,7 @@
 namespace Mantle\Framework\Testing;
 
 use Mantle\Framework\Alias_Loader;
+use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Facade\Facade;
 use Mantle\Framework\Testing\Concerns\Admin_Screen;
 use Mantle\Framework\Testing\Concerns\Assertions;
@@ -203,5 +204,7 @@ abstract class Test_Case extends BaseTestCase {
 		Facade::clear_resolved_instances();
 
 		Alias_Loader::set_instance( null );
+
+		Model::set_event_dispatcher( $this->app['events'] );
 	}
 }

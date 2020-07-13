@@ -20,12 +20,14 @@ use function Mantle\Framework\Helpers\class_uses_recursive;
  * Database Model
  *
  * @todo Add Json-able, arrayable, serialize interfaces
+ * @todo Move all concerns to the 'Concerns' namespace.
  */
 abstract class Model implements ArrayAccess, Url_Routable {
 	use Aliases,
 		Attributes,
 		Forward_Calls,
-		Relationships;
+		Relationships,
+		Concerns\Has_Events;
 
 	/**
 	 * The array of booted models.

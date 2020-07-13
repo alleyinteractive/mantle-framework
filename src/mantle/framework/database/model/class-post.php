@@ -15,7 +15,8 @@ use Mantle\Framework\Helpers;
  * Post Model
  */
 class Post extends Model implements Contracts\Database\Core_Object, Contracts\Database\Updatable {
-	use Meta\Model_Meta,
+	use Events\Post_Events,
+		Meta\Model_Meta,
 		Meta\Post_Meta;
 
 	/**
