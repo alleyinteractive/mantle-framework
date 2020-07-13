@@ -46,7 +46,7 @@ trait Has_Events {
 	 */
 	public function fire_model_event( $event ) {
 		if ( ! isset( static::$dispatcher ) ) {
-				return true;
+			return true;
 		}
 
 		return static::$dispatcher->dispatch(
