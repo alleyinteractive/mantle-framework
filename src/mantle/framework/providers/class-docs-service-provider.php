@@ -143,16 +143,20 @@ class Docs_Service_Provider extends Service_Provider {
 		<style type="text/css">
 		.mantle-docs-wrap {
 			font-family: 'Open Sans', sans-serif;
-			max-width: 800px;
 		}
 
 		.mantle-docs-wrap p {
 			font-size: 15px;
+			max-width: 800px;
 		}
 
 		.mantle-docs-wrap h2,
 		.mantle-docs-wrap h3 {
 			margin: 2em 0 1em;
+		}
+
+		.mantle-docs-wrap h2 {
+			font-size: 1.8em
 		}
 
 		.mantle-docs-wrap p code {
@@ -167,15 +171,17 @@ class Docs_Service_Provider extends Service_Provider {
 			background: #fbfbfd;
 			box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
 			font-family: 'Source Code Pro', monospace, sans-serif;
+			max-width: 1000px;
 			padding: 20px;
 		}
 
 		.mantle-docs-wrap pre code {
 			background: transparent;
+			color: #090910;
 			font-size: .8rem;
 			font-weight: 500;
 			line-height: 1.9;
-			color: #090910;
+			padding: 0;
 		}
 
 		.mantle-docs-wrap code[class*="language-"],
