@@ -167,12 +167,26 @@ class Docs_Service_Provider extends Service_Provider {
 			font-family: 'Source Code Pro', monospace, sans-serif;
 		}
 
-		.mantle-docs-wrap pre {
+		.mantle-docs-wrap pre, .mantle-docs-wrap table {
 			background: #fbfbfd;
 			box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
 			font-family: 'Source Code Pro', monospace, sans-serif;
 			max-width: 1000px;
 			padding: 20px;
+		}
+
+		.mantle-docs-wrap table {
+			padding: 0;
+		}
+
+		.mantle-docs-wrap table td,
+		.mantle-docs-wrap table th {
+			padding: 10px;
+		}
+
+		.mantle-docs-wrap table th {
+			font-family: 'Open Sans', sans-serif;
+			text-align: left;
 		}
 
 		.mantle-docs-wrap pre code {
@@ -190,10 +204,6 @@ class Docs_Service_Provider extends Service_Provider {
 			font-size: .8rem;
 			font-weight: 500;
 			line-height: 1.9;
-		}
-
-		.mantle-docs-wrap span.token.package {
-
 		}
 		</style>
 		<?php
