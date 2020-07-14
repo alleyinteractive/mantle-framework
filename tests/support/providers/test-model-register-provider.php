@@ -4,7 +4,7 @@ namespace Mantle\Tests\Providers;
 
 use Mantle\Framework\Application;
 use Mantle\Framework\Config\Repository;
-use Mantle\Framework\Providers\Model_Register_Provider;
+use Mantle\Framework\Providers\Model_Service_Provider;
 use Mantle\Framework\Contracts\Database\Registrable as Registrable_Contract;
 use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Database\Model\Registration\Register_Post_Type;
@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 use Mockery as m;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 
-class Test_Model_Register_Provider extends MockeryTestCase {
+class Test_Model_Service_Provider extends MockeryTestCase {
 	public function test_register_model() {
 		$app    = new Application();
 		$config = new Repository();
@@ -33,7 +33,7 @@ class Test_Model_Register_Provider extends MockeryTestCase {
 		);
 
 
-		$provider = new Model_Register_Provider( $app );
+		$provider = new Model_Service_Provider( $app );
 		$provider->register();
 		$provider->boot();
 

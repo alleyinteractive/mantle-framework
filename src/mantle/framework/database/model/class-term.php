@@ -15,7 +15,8 @@ use Mantle\Framework\Helpers;
  * Term Model
  */
 class Term extends Model implements Core_Object, Updatable {
-	use Meta\Model_Meta,
+	use Events\Term_Events,
+		Meta\Model_Meta,
 		Meta\Term_Meta;
 
 	/**
