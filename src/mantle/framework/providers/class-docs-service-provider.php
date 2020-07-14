@@ -159,6 +159,7 @@ class Docs_Service_Provider extends Service_Provider {
 			background: rgb(247, 250, 252);
 			border-radius: 4px;
 			border: 1px solid rgb(227, 232, 238);
+			color: #e3423b;
 			font-family: 'Source Code Pro', monospace, sans-serif;
 		}
 
