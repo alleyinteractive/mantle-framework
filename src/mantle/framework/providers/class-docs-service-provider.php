@@ -136,13 +136,80 @@ class Docs_Service_Provider extends Service_Provider {
 		$content   = $converter->convertToHtml( $this->get_file_contents( $current_file['path'] ) );
 
 		?>
-		<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.20.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.20.0/themes/prism-solarizedlight.min.css" rel="stylesheet" />
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.20.0/prism.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.20.0/plugins/autoloader/prism-autoloader.min.js"></script>
+		<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&family=Open+Sans:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+		<style type="text/css">
+		.mantle-docs-wrap {
+			font-family: 'Open Sans', sans-serif;
+		}
+
+		.mantle-docs-wrap p {
+			font-size: 15px;
+			max-width: 800px;
+		}
+
+		.mantle-docs-wrap h2,
+		.mantle-docs-wrap h3 {
+			margin: 2em 0 1em;
+		}
+
+		.mantle-docs-wrap h2 {
+			font-size: 1.8em
+		}
+
+		.mantle-docs-wrap p code {
+			background: rgb(247, 250, 252);
+			border-radius: 4px;
+			border: 1px solid rgb(227, 232, 238);
+			color: #e3423b;
+			font-family: 'Source Code Pro', monospace, sans-serif;
+		}
+
+		.mantle-docs-wrap pre, .mantle-docs-wrap table {
+			background: #fbfbfd;
+			box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+			font-family: 'Source Code Pro', monospace, sans-serif;
+			max-width: 1000px;
+			padding: 20px;
+		}
+
+		.mantle-docs-wrap table {
+			padding: 0;
+		}
+
+		.mantle-docs-wrap table td,
+		.mantle-docs-wrap table th {
+			padding: 10px;
+		}
+
+		.mantle-docs-wrap table th {
+			font-family: 'Open Sans', sans-serif;
+			text-align: left;
+		}
+
+		.mantle-docs-wrap pre code {
+			background: transparent;
+			color: #090910;
+			font-size: .8rem;
+			font-weight: 500;
+			line-height: 1.9;
+			padding: 0;
+		}
+
+		.mantle-docs-wrap code[class*="language-"],
+		.mantle-docs-wrap pre[class*="language-"] {
+			font-family: 'Source Code Pro', monospace, sans-serif;
+			font-size: .8rem;
+			font-weight: 500;
+			line-height: 1.9;
+		}
+		</style>
 		<?php
 
 		printf(
-			'<div class="wrap">%s</div>',
+			'<div class="wrap mantle-docs-wrap">%s</div>',
 			wp_kses_post( $content )
 		);
 	}
