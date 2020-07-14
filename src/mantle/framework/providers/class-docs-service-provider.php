@@ -136,7 +136,7 @@ class Docs_Service_Provider extends Service_Provider {
 		$content   = $converter->convertToHtml( $this->get_file_contents( $current_file['path'] ) );
 
 		?>
-		<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.20.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.20.0/themes/prism-solarizedlight.min.css" rel="stylesheet" />
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.20.0/prism.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.20.0/plugins/autoloader/prism-autoloader.min.js"></script>
 		<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&family=Open+Sans:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -155,7 +155,7 @@ class Docs_Service_Provider extends Service_Provider {
 			margin: 2em 0 1em;
 		}
 
-		p code {
+		.mantle-docs-wrap p code {
 			background: rgb(247, 250, 252);
 			border-radius: 4px;
 			border: 1px solid rgb(227, 232, 238);
@@ -163,11 +163,31 @@ class Docs_Service_Provider extends Service_Provider {
 			font-family: 'Source Code Pro', monospace, sans-serif;
 		}
 
-		code[class*="language-"], pre[class*="language-"] {
+		.mantle-docs-wrap pre {
+			background: #fbfbfd;
+			box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+			font-family: 'Source Code Pro', monospace, sans-serif;
+			padding: 20px;
+		}
+
+		.mantle-docs-wrap pre code {
+			background: transparent;
+			font-size: .8rem;
+			font-weight: 500;
+			line-height: 1.9;
+			color: #090910;
+		}
+
+		.mantle-docs-wrap code[class*="language-"],
+		.mantle-docs-wrap pre[class*="language-"] {
 			font-family: 'Source Code Pro', monospace, sans-serif;
 			font-size: .8rem;
 			font-weight: 500;
 			line-height: 1.9;
+		}
+
+		.mantle-docs-wrap span.token.package {
+
 		}
 		</style>
 		<?php
