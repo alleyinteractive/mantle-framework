@@ -89,7 +89,7 @@ abstract class Generator_Command extends Command {
 	 * @param array $args Command Arguments.
 	 * @param array $assoc_args Command flags.
 	 */
-	public function handle( array $args, array $assoc_args = [] ) {
+	public function handle( array $args, array $assoc_args ) {
 		// Prevent command being run in non-local environments.
 		if ( 'local' !== $this->app->environment() ) {
 			$this->error( 'Generator cannot be used outside of local environment.', true );
@@ -214,7 +214,7 @@ abstract class Generator_Command extends Command {
 			$parts = '';
 		}
 
-		return untrailingslashit( $this->app->get_base_path() . '/app/' . strtolower( $this->type ) . '/' . $parts );
+		return \untrailingslashit( $this->get_base_path() . strtolower( str_replace( '\\', '/', $this->type ) ) . '/' . $parts );
 	}
 
 	/**
@@ -226,8 +226,17 @@ abstract class Generator_Command extends Command {
 	protected function get_file_path( string $name ): string {
 		$parts    = explode( '\\', $name );
 		$filename = array_pop( $parts );
-		$filename = sanitize_title_with_dashes( str_replace( '_', '-', $filename ) );
+		$filename = \sanitize_title_with_dashes( str_replace( '_', '-', $filename ) );
 
 		return $this->get_folder_path( $name ) . '/class-' . $filename . '.php';
+	}
+
+	/**
+	 * Get the base path for the generated folder.
+	 *
+	 * @return string
+	 */
+	protected function get_base_path(): string {
+		return $this->app->get_base_path() . '/app/';
 	}
 }

@@ -1,0 +1,23 @@
+<?php
+/**
+ * {{ class }} class file.
+ *
+ * @package {{ namespace }}
+ */
+
+namespace {{ namespace }};
+
+use Mantle\Framework\Database\Seeder;
+use function Mantle\Framework\Helpers\factory;
+
+/**
+ * {{ class }} Seeder
+ */
+class {{ class }} extends Seeder {
+	/**
+	 * Run the seeder.
+	 */
+	public function run() {
+		//
+	}
+}
