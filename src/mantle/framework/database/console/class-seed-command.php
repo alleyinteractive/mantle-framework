@@ -9,6 +9,7 @@ namespace Mantle\Framework\Database\Console;
 
 use Mantle\Framework\Console\Command;
 use Mantle\Framework\Console\Confirmable;
+use Mantle\Framework\Contracts\Application;
 
 /**
  * Database Seed Command
@@ -24,6 +25,29 @@ class Seed_Command extends Command {
 	protected $name = 'db:seed';
 
 	/**
+	 * Command synopsis.
+	 *
+	 * @var string|array
+	 */
+	protected $synopsis = '[--class=<class>]';
+
+	/**
+	 * Application instance.
+	 *
+	 * @var Application
+	 */
+	protected $app;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param Application $app
+	 */
+	public function __construct( Application $app ) {
+		$this->app = $app;
+	}
+
+	/**
 	 * Run Database Seeding
 	 *
 	 * @param array $args Command Arguments.
@@ -34,6 +58,10 @@ class Seed_Command extends Command {
 			return;
 		}
 
-		$this->log( 'Handle...' );
+		$this->app
+			->make( $this->get_flag( 'class', \App\Database\Seeds\Database_Seeder::class ) )
+			->set_container( $this->app )
+			->set_command( $this )
+			->__invoke();
 	}
 }
