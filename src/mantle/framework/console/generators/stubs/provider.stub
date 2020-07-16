@@ -25,6 +25,8 @@ class {{ class }} extends Service_Provider {
 	 * Boot the service provider.
 	 */
 	public function boot() {
+		parent::boot();
+
 		// Boot the provider.
 	}
 }
