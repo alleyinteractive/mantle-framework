@@ -8,7 +8,7 @@
 namespace Mantle\Framework\Contracts\Http\Routing;
 
 use Mantle\Framework\Http\Request;
-use Mantle\Framework\Http\Response;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Router Contract

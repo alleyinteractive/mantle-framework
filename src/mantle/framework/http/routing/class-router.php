@@ -13,11 +13,11 @@ use Mantle\Framework\Contracts\Http\Routing\Router as Router_Contract;
 use Mantle\Framework\Http\Http_Exception;
 use Mantle\Framework\Http\Request;
 use Mantle\Framework\Pipeline;
-use Mantle\Framework\Http\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\HttpFoundation\Response as Symfony_Response;
 
 use function Mantle\Framework\Helpers\collect;
 
@@ -210,9 +210,9 @@ class Router implements Router_Contract {
 	 * Dispatch a request to the registered routes.
 	 *
 	 * @param Request $request Request object.
-	 * @return Response|null
+	 * @return Symfony_Response|null
 	 */
-	public function dispatch( Request $request ): ?Response {
+	public function dispatch( Request $request ): ?Symfony_Response {
 		return $this->execute_route_match(
 			$this->match_route( $request ),
 			$request
@@ -238,11 +238,11 @@ class Router implements Router_Contract {
 	 *
 	 * @param array   $match Route match.
 	 * @param Request $request Request object.
-	 * @return Response|null
+	 * @return Symfony_Response|null
 	 *
 	 * @throws HttpException Thrown on unknown route callback.
 	 */
-	protected function execute_route_match( $match, Request $request ): ?Response {
+	protected function execute_route_match( $match, Request $request ): ?Symfony_Response {
 		// Store the request parameters.
 		$request->set_route_parameters( $match );
 		$this->app->instance( 'request', $request );

@@ -7,12 +7,19 @@
 
 namespace Mantle\Framework\Http\Routing;
 
+use ArrayAccess;
+use ArrayObject;
+use JsonSerializable;
 use Mantle\Framework\Container\Container;
+use Mantle\Framework\Contracts\Support\Arrayable;
+use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Support\Arr;
 use Mantle\Framework\Support\Str;
 use ReflectionFunction;
 use Mantle\Framework\Http\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Route as Symfony_Route;
+use Symfony\Component\HttpFoundation\Response as Symfony_Response;
 
 /**
  * Route Class
@@ -157,7 +164,7 @@ class Route extends Symfony_Route {
 	 * @param Container $container Service Container.
 	 * @return Response|null
 	 */
-	public function run( Container $container ): ?Response {
+	public function run( Container $container ): ?Symfony_Response {
 		$this->container = $container;
 
 		if ( $this->has_callback() ) {
@@ -272,11 +279,22 @@ class Route extends Symfony_Route {
 	 * Ensure a proper response object.
 	 *
 	 * @param mixed $response Response to send.
-	 * @return Response
+	 * @return Symfony_Response
 	 */
-	public static function ensure_response( $response ): Response {
-		if ( $response instanceof Response ) {
+	public static function ensure_response( $response ): Symfony_Response {
+		if ( $response instanceof Response || $response instanceof Symfony_Response ) {
 			return $response;
+		}
+
+		if (
+			is_array( $response )
+			|| $response instanceof Arrayable
+			|| $response instanceof ArrayAccess
+			|| $response instanceof JsonSerializable
+			|| $response instanceof ArrayObject
+			|| $response instanceof Model
+		) {
+			return new JsonResponse( $response );
 		}
 
 		return new Response( $response );
