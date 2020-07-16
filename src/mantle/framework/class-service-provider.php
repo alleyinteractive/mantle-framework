@@ -9,9 +9,12 @@ namespace Mantle\Framework;
 
 use Mantle\Framework\Contracts\Providers as ProviderContracts;
 use Mantle\Framework\Console\Command;
+use Mantle\Framework\Support\Str;
 use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
 
 use function add_action;
+use function Mantle\Framework\Helpers\class_uses_recursive;
+use function Mantle\Framework\Helpers\collect;
 
 /**
  * Application Service Provider
@@ -56,11 +59,43 @@ abstract class Service_Provider implements LoggerAwareInterface {
 			$this->setLogger( $this->app['log']->get_default_logger() );
 		}
 
+		$this->boot_action_hooks();
 		$this->boot_contracts();
 	}
 
 	/**
+	 * Boot all actions on the service provider.
+	 *
+	 * Allow methods in the 'on_{hook}_at_priority' and 'on_{hook}' format
+	 * to automatically register WordPress hooks.
+	 */
+	protected function boot_action_hooks() {
+		collect( get_class_methods( static::class ) )
+			->filter(
+				function( string $method ) {
+					return Str::starts_with( $method, 'on_' );
+				}
+			)
+			->each(
+				function( string $method ) {
+					$hook     = Str::after( $method, 'on_' );
+					$priority = 10;
+
+					if ( Str::contains( $hook, '_at_' ) ) {
+						// Strip the priority from the hook name.
+						$priority = (int) Str::after_last( $hook, '_at_' );
+						$hook     = Str::before_last( $hook, '_at_' );
+					}
+
+					\add_action( $hook, [ $this, $method ], $priority, 99 );
+				}
+			);
+	}
+
+	/**
 	 * Boot the service provider's contracts.
+	 *
+	 * @deprecated Replaced with boot_action_hooks.
 	 */
 	protected function boot_contracts() {
 		if ( $this instanceof ProviderContracts\Init ) {
