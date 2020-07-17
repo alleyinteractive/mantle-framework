@@ -167,7 +167,7 @@ class User extends Model implements Contracts\Database\Core_Object, Contracts\Da
 
 		// Set the ID attribute.
 		$this->set_raw_attribute( 'ID', $save );
-
+		$this->store_queued_meta();
 		$this->reset_modified_attributes();
 
 		return true;

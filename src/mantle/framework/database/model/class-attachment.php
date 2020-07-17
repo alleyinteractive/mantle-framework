@@ -129,7 +129,7 @@ class Attachment extends Post implements Contracts\Database\Core_Object, Contrac
 
 		// Set the attachment ID attribute.
 		$this->set_raw_attribute( 'ID', $save );
-
+		$this->store_queued_meta();
 		$this->reset_modified_attributes();
 
 		return true;
