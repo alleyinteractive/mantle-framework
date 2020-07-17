@@ -11,6 +11,8 @@ use Mantle\Framework\Console\Command;
 use Mantle\Framework\Console\Confirmable;
 use Mantle\Framework\Contracts\Application;
 
+use function SML\remove_action_validated;
+
 /**
  * Database Seed Command
  */
@@ -56,6 +58,11 @@ class Seed_Command extends Command {
 	public function handle( array $args, array $assoc_args ) {
 		if ( ! $this->confirm_to_proceed() ) {
 			return;
+		}
+
+		// Disable cache purging.
+		if ( class_exists( 'WPCOM_VIP_Cache_Manager' ) ) {
+			remove_action_validated( 'shutdown', [ \WPCOM_VIP_Cache_Manager::instance(), 'execute_purges' ] );
 		}
 
 		$this->app

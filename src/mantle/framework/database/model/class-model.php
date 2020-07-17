@@ -10,6 +10,7 @@ namespace Mantle\Framework\Database\Model;
 use ArrayAccess;
 use Mantle\Framework\Contracts\Http\Routing\Url_Routable;
 use Mantle\Framework\Database\Query\Builder;
+use Mantle\Framework\Support\Collection;
 use Mantle\Framework\Support\Forward_Calls;
 use Mantle\Framework\Support\Str;
 
@@ -381,5 +382,14 @@ abstract class Model implements ArrayAccess, Url_Routable {
 		}
 
 		return $this->where( $key, $value )->first();
+	}
+
+	/**
+	 * Get all the models from the database.
+	 *
+	 * @return Collection
+	 */
+	public static function all(): Collection {
+		return static::query()->take( -1 )->get();
 	}
 }
