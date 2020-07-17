@@ -196,6 +196,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 		// Set the post ID attribute.
 		$this->set_raw_attribute( 'ID', $save );
 
+		$this->store_queued_meta();
 		$this->refresh();
 		$this->reset_modified_attributes();
 

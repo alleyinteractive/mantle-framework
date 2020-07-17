@@ -7,14 +7,19 @@
 
 namespace Mantle\Framework\Database\Model\Meta;
 
-use Mantle\Framework\Contracts\Database\Core_Object;
-use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Database\Model\Model_Exception;
 
 /**
  * Interface for interfacing with a model's meta.
  */
 trait Model_Meta {
+	/**
+	 * Meta queued for saving.
+	 *
+	 * @var [type]
+	 */
+	protected $queued_meta = [];
+
 	/**
 	 * Retrieve meta data for the object.
 	 *
@@ -34,6 +39,11 @@ trait Model_Meta {
 	 * @param string $prev_value Optional, previous meta value.
 	 */
 	public function set_meta( string $meta_key, $meta_value, $prev_value = '' ) {
+		if ( ! $this->id() ) {
+			$this->queue_meta_attribute( $meta_key, $meta_value );
+			return;
+		}
+
 		\update_metadata( $this->get_meta_type(), $this->id(), $meta_key, $meta_value, $prev_value );
 	}
 
@@ -48,6 +58,15 @@ trait Model_Meta {
 	}
 
 	/**
+	 * Retrieve the meta 'attribute'.
+	 *
+	 * @return Model_Meta_Proxy
+	 */
+	public function get_meta_attribute() {
+		return new Model_Meta_Proxy( $this );
+	}
+
+	/**
 	 * Allow setting meta through an array via an attribute mutator.
 	 *
 	 * @param array $meta_values Meta values to set.
@@ -59,7 +78,42 @@ trait Model_Meta {
 		}
 
 		foreach ( $meta_values as $key => $value ) {
+			$this->queued_meta[ $key ] = $value;
 			$this->set_meta( $key, $value );
 		}
+	}
+
+	/**
+	 * Get a queued meta attribute.
+	 *
+	 * @param string $key Meta key.
+	 * @return mixed|null Meta value or null.
+	 */
+	public function get_queued_meta_attribute( string $key ) {
+		return $this->queued_meta[ $key ] ?? null;
+	}
+
+	/**
+	 * Queue a meta attribute for saving.
+	 * Allows meta to be set before a model is saved.
+	 *
+	 * Should not be called directly, only to be used via `$model->meta->...`.
+	 *
+	 * @param string $key Meta key.
+	 * @param mixed  $value Meta value.
+	 */
+	public function queue_meta_attribute( string $key, $value ) {
+		$this->queued_meta[ $key ] = $value;
+	}
+
+	/**
+	 * Store queued model meta.
+	 */
+	protected function store_queued_meta() {
+		foreach ( $this->queued_meta as $key => $value ) {
+			$this->set_meta( $key, $value );
+		}
+
+		$this->queued_meta = [];
 	}
 }

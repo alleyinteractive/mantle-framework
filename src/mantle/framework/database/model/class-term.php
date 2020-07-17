@@ -188,7 +188,7 @@ class Term extends Model implements Core_Object, Updatable {
 		}
 
 		$this->set_raw_attribute( 'term_id', $save['term_id'] );
-
+		$this->store_queued_meta();
 		$this->reset_modified_attributes();
 
 		return true;

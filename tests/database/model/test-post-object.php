@@ -1,7 +1,9 @@
 <?php
 namespace Mantle\Tests\Database\Model;
 
+use Mantle\Framework\Application;
 use Mantle\Framework\Contracts\Database\Registrable;
+use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Database\Model\Model_Exception;
 use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Registration\Register_Post_Type;
@@ -247,6 +249,31 @@ class Test_Post_Object extends WP_UnitTestCase {
 		);
 
 		$this->assertEquals( 'mutated_value', $object->get( 'test_key' ) );
+	}
+
+	public function test_setting_meta_before_saving() {
+		$object = new Testable_Post(
+			[
+				'name' => 'Test Post with Meta',
+				'meta' => [
+					'meta_key' => 'meta_value_to_check',
+				],
+			]
+		);
+
+		$object->save();
+		$this->assertNotEmpty( $object->id() );
+		$this->assertEquals( 'meta_value_to_check', $object->get_meta( 'meta_key' ) );
+
+		$object->meta->meta_key = 'Updated meta value';
+		$this->assertEquals( 'meta_value_to_check', $object->get_meta( 'meta_key' ) );
+
+		// Retrieving by attribute should give the queued value.
+		$this->assertEquals( 'Updated meta value', $object->meta->meta_key );
+
+		$object->save();
+		$this->assertEquals( 'Updated meta value', $object->get_meta( 'meta_key' ) );
+		$this->assertEquals( 'Updated meta value', $object->meta->meta_key );
 	}
 
 	/**

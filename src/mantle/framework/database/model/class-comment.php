@@ -155,6 +155,7 @@ class Comment extends Model implements Contracts\Database\Core_Object, Contracts
 			throw new Model_Exception( 'Error saving model: ' . $save->get_error_message() );
 		}
 
+		$this->store_queued_meta();
 		$this->reset_modified_attributes();
 
 		return true;
