@@ -138,9 +138,6 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 		}
 
 		$response->send();
-
-		// shutdown_action_hook();
-
 		exit;
 	}
 

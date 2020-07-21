@@ -23,6 +23,13 @@ use function SML\remove_action_validated;
  */
 class Routing_Service_Provider extends Service_Provider {
 	/**
+	 * Callbacks to fire to dispatch Query Monitor.
+	 *
+	 * @var array
+	 */
+	protected $query_monitor_dispatches = [];
+
+	/**
 	 * Register the service provider.
 	 */
 	public function register() {
@@ -90,17 +97,39 @@ class Routing_Service_Provider extends Service_Provider {
 	}
 
 	/**
-	 * Fix the Query Monitor Dispatcher
+	 * Fix the Query Monitor Dispatcher to properly fire in Mantle.
 	 *
 	 * @param \QM_Dispatcher[] $dispatchers Array of dispatchers.
 	 * @return \QM_Dispatcher[]
 	 */
 	public function fix_query_monitor_dispatcher( $dispatchers ) {
-		if ( isset( $dispatchers['html'] ) ) {
-			remove_action_validated( 'shutdown', [ $dispatchers['html'], 'dispatch' ], 0 );
-			add_action( 'mantle_shutdown', [ $dispatchers['html'], 'dispatch' ], 0 );
+		foreach ( [ 'ajax', 'html', 'wp_die' ] as $dispatcher ) {
+			if ( isset( $dispatchers[ $dispatcher ] ) ) {
+				$this->query_monitor_dispatches[] = [ $dispatchers[ $dispatcher ], 'dispatch' ];
+			}
 		}
 
 		return $dispatchers;
+	}
+
+	/**
+	 * Fire the Query Monitor dispatches and return the response.
+	 *
+	 * @return string|null
+	 */
+	public function fire_query_monitor_dispatches(): ?string {
+		if ( empty( $this->query_monitor_dispatches ) ) {
+			return null;
+		}
+
+		ob_start();
+
+		foreach ( $this->query_monitor_dispatches as $callback ) {
+			// Remove the dispatcher from the 'shutdown' hook.
+			remove_action_validated( 'shutdown', $callback, 0 );
+			$callback();
+		}
+
+		return (string) ob_get_clean();
 	}
 }

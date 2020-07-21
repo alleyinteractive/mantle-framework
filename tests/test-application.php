@@ -2,6 +2,7 @@
 namespace Mantle\Tests;
 
 use Mantle\Framework\Application;
+use Mantle\Framework\Service_Provider;
 use Mockery as m;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -68,4 +69,19 @@ class Test_Application extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		// Assert that the booting callback happened before the boot one.
 		$this->assertTrue( $_SERVER['__booting_callback'] < $_SERVER['__boot_callback'] );
 	}
+
+	public function test_service_provider_instance() {
+		$app = new Application();
+		$app->register( Test_Service_Provider::class );
+
+		$provider = $app->get_provider( Test_Service_Provider::class );
+		$this->assertInstanceOf( Test_Service_Provider::class, $provider );
+
+		// Ensure it is a global instance.
+		$this->assertSame( $provider, $app->get_provider( Test_Service_Provider::class ) );
+		$this->assertNull( $app->get_provider( \Invalid_Class::class ) );
+	}
 }
+
+
+class Test_Service_Provider extends Service_Provider { }

@@ -270,8 +270,6 @@ class Router implements Router_Contract {
 				}
 			);
 
-			// do_action
-
 		// Ensure the response is valid since the middleware can modify it after it is run through Route.
 		return Route::ensure_response( $response );
 	}
