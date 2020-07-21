@@ -10,7 +10,7 @@ namespace Mantle\Framework\Http\Routing\Middleware;
 use Closure;
 use Mantle\Framework\Contracts\Application;
 use Mantle\Framework\Http\Request;
-use Mantle\Framework\Providers\Routing_Service_Provider;
+use Mantle\Framework\Query_Monitor\Query_Monitor_Service_Provider;
 
 /**
  * Setup the WordPress environment for routing.
@@ -65,7 +65,7 @@ class Setup_WordPress {
 		if ( ! static::$did_setup ) {
 			static::$did_setup = true;
 
-			$provider = $this->app->get_provider( Routing_Service_Provider::class );
+			$provider = $this->app->get_provider( Query_Monitor_Service_Provider::class );
 
 			if ( $provider ) {
 				$qm_output = $provider->fire_query_monitor_dispatches();
