@@ -14,6 +14,8 @@ use Mantle\Framework\Http\Routing\Router;
 use Mantle\Framework\Http\Routing\Url_Generator;
 use Mantle\Framework\Service_Provider;
 
+use function SML\remove_action_validated;
+
 /**
  * Routing Service Provider
  *
@@ -28,6 +30,8 @@ class Routing_Service_Provider extends Service_Provider {
 		$this->register_url_generator();
 		$this->register_redirector();
 		$this->register_response_factory();
+
+		\add_filter( 'qm/dispatchers', [ $this, 'fix_query_monitor_dispatcher' ], PHP_INT_MAX );
 	}
 
 	/**
@@ -83,5 +87,20 @@ class Routing_Service_Provider extends Service_Provider {
 				return new Response_Factory( $app['redirect'], $app['view'] );
 			}
 		);
+	}
+
+	/**
+	 * Fix the Query Monitor Dispatcher
+	 *
+	 * @param \QM_Dispatcher[] $dispatchers Array of dispatchers.
+	 * @return \QM_Dispatcher[]
+	 */
+	public function fix_query_monitor_dispatcher( $dispatchers ) {
+		if ( isset( $dispatchers['html'] ) ) {
+			remove_action_validated( 'shutdown', [ $dispatchers['html'], 'dispatch' ], 0 );
+			add_action( 'mantle_shutdown', [ $dispatchers['html'], 'dispatch' ], 0 );
+		}
+
+		return $dispatchers;
 	}
 }
