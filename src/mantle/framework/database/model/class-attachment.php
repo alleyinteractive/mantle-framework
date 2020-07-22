@@ -49,6 +49,8 @@ class Attachment extends Post implements Contracts\Database\Core_Object, Contrac
 	/**
 	 * Create or get an already saved attachment from an URL address.
 	 *
+	 * Mirrors 'media_sideload_image()' with the ability to also load PDFs.
+	 *
 	 * @param string $url Image URL.
 	 * @param array  $args  {
 	 *        Optional. Arguments for the attachment. Default empty array.
@@ -76,16 +78,36 @@ class Attachment extends Post implements Contracts\Database\Core_Object, Contrac
 			return $existing;
 		}
 
-		if ( ! function_exists( 'media_sideload_image' ) ) {
+		if ( ! function_exists( 'media_handle_sideload' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/file.php';
 			require_once ABSPATH . 'wp-admin/includes/image.php';
 			require_once ABSPATH . 'wp-admin/includes/media.php';
 		}
 
-		$attachment_id = \media_sideload_image( $url, 0, $args['description'] ?? '', 'id' );
+		preg_match( '/[^\?]+\.(jpe?g|jpe|gif|png|pdf)\b/i', $url, $matches );
 
-		if ( is_wp_error( $attachment_id ) ) {
-			throw new Model_Exception( 'Error sideloading image: ' . $attachment_id->get_error_message() );
+		if ( ! $matches ) {
+			throw new Model_Exception( __( 'Invalid URL to create from.', 'mantle' ) );
+		}
+
+		$file_array         = [];
+		$file_array['name'] = \wp_basename( $matches[0] );
+
+		// Download file to temp location.
+		$file_array['tmp_name'] = \download_url( $url );
+
+		// If error storing temporarily, return the error.
+		if ( \is_wp_error( $file_array['tmp_name'] ) ) {
+			throw new Model_Exception( $file_array['tmp_name']->get_error_message() );
+		}
+
+		// Do the validation and storage of the file.
+		$attachment_id = \media_handle_sideload( $file_array, 0, $args['description'] ?? '' );
+
+		// If error storing permanently, unlink.
+		if ( \is_wp_error( $attachment_id ) ) {
+			@unlink( $file_array['tmp_name'] ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_unlink
+			throw new Model_Exception( $attachment_id->get_error_message() );
 		}
 
 		// Update the arguments if they exist.
