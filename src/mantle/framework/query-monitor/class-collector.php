@@ -1,10 +1,24 @@
 <?php
+/**
+ * Collector class file.
+ *
+ * @package Mantle
+ */
+
 namespace Mantle\Framework\Query_Monitor;
 
 use Mantle\Framework\Contracts\Application;
 use Mantle\Framework\Http\Request;
 
+/**
+ * Data Collector
+ */
 class Collector extends \QM_Collector {
+	/**
+	 * Collector ID
+	 *
+	 * @var string
+	 */
 	public $id = 'mantle';
 
 	/**

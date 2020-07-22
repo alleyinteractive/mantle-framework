@@ -62,6 +62,9 @@ class Setup_WordPress {
 
 		$response = $next( $request );
 
+		// Store the response object for use in Query Monitor.
+		$this->app->instance( 'response', $response );
+
 		if ( ! static::$did_setup ) {
 			static::$did_setup = true;
 
@@ -75,6 +78,8 @@ class Setup_WordPress {
 				}
 			}
 		}
+
+		unset( $this->app['response'] );
 
 		return $response;
 	}

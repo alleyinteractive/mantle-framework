@@ -71,6 +71,7 @@ class Query_Monitor_Service_Provider extends Service_Provider {
 
 	public function register_collector( array $collectors ) {
 		$collectors['mantle'] = new Collector( $this->app );
+		$collectors['mantle-headers'] = new Header_Collector( $this->app );
 		return $collectors;
 	}
 
@@ -79,6 +80,11 @@ class Query_Monitor_Service_Provider extends Service_Provider {
 
 		if ( $collector ) {
 			$output['mantle'] = new Output( $collector );
+		}
+
+		$collector = QM_Collectors::get( 'mantle-headers' );
+		if ( $collector ) {
+			$output['mantle-headers'] = new Output_Headers( $collector );
 		}
 
 		return $output;
