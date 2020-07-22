@@ -98,6 +98,31 @@ if ( ! function_exists( 'view' ) ) {
 	}
 }
 
+if ( ! function_exists( 'render_view' ) ) {
+	/**
+	 * Render a new view.
+	 *
+	 * @param string       $slug View slug.
+	 * @param array|string $name View name, optional. Supports passing variables in if
+	 *                           $variables is not used.
+	 * @return View|View_Factory
+	 */
+	function render_view( ...$args ) {
+		echo view( ...$args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+}
+
+if ( ! function_exists( 'render_main_template' ) ) {
+	/**
+	 * Render the contents of the main template passed to the wrapper.
+	 *
+	 * The contents of the '_mantle_contents' variable are assumed to be pre-sanitized.
+	 */
+	function render_main_template() {
+		echo mantle_get_var( '_mantle_contents' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+}
+
 if ( ! function_exists( 'loop' ) ) {
 	/**
 	 * Loop over a collection/array of posts.
@@ -117,6 +142,21 @@ if ( ! function_exists( 'loop' ) ) {
 	}
 }
 
+if ( ! function_exists( 'render_loop' ) ) {
+	/**
+	 * Render the loop() function.
+	 *
+	 * @param \ArrayAccess|array $data Data to loop over.
+	 * @param string           $slug View slug.
+	 * @param array|string     $name View name, optional. Supports passing variables in if
+	 *                           $variables is not used.
+	 * @return string
+	 */
+	function render_loop( ...$args ) {
+		echo loop( ...$args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+}
+
 if ( ! function_exists( 'iterate' ) ) {
 	/**
 	 * Iterate over an array of arbitrary items, passing the index and item to a
@@ -133,6 +173,21 @@ if ( ! function_exists( 'iterate' ) ) {
 			->map
 			->render()
 			->implode( '' );
+	}
+}
+
+if ( ! function_exists( 'render_iterate' ) ) {
+	/**
+	 * Render over iterate().
+	 *
+	 * @param \ArrayAccess|array $data Data to loop over.
+	 * @param string           $slug View slug.
+	 * @param array|string     $name View name, optional. Supports passing variables in if
+	 *                           $variables is not used.
+	 * @return string
+	 */
+	function render_iterate( ...$args ) {
+		echo iterate( ...$args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 }
 

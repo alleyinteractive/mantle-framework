@@ -8,6 +8,7 @@
 namespace Mantle\Framework\Contracts;
 
 use Mantle\Framework\Contracts\Kernel as Kernel_Contract;
+use Mantle\Framework\Service_Provider;
 
 /**
  * Application Contract
@@ -99,4 +100,19 @@ interface Application {
 	 * @param Kernel_Contract $kernel Kernel instance.
 	 */
 	public function bootstrap_with( array $bootstrappers, Kernel_Contract $kernel );
+
+	/**
+	 * Get an instance of a service provider.
+	 *
+	 * @param string $name Provider class name.
+	 * @return Service_Provider|null
+	 */
+	public function get_provider( string $name ): ?Service_Provider;
+
+	/**
+	 * Get all service providers.
+	 *
+	 * @return Service_Provider[]
+	 */
+	public function get_providers(): array;
 }

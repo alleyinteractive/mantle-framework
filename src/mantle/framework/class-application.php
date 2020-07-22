@@ -14,6 +14,7 @@ use Mantle\Framework\Log\Log_Service_Provider;
 use Mantle\Framework\Providers\Event_Service_Provider;
 use Mantle\Framework\Providers\Routing_Service_Provider;
 use Mantle\Framework\Providers\View_Service_Provider;
+use Mantle\Framework\Support\Arr;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -253,6 +254,23 @@ class Application extends Container\Container implements Application_Contract {
 		$providers->push( ...$this->make( Package_Manifest::class )->providers() );
 
 		$providers->each( [ $this, 'register' ] );
+	}
+
+	/**
+	 * Get an instance of a service provider.
+	 *
+	 * @param string $name Provider class name.
+	 * @return Service_Provider|null
+	 */
+	public function get_provider( string $name ): ?Service_Provider {
+		$providers = Arr::where(
+			$this->get_providers(),
+			function( Service_Provider $provider ) use ( $name ) {
+				return $provider instanceof $name;
+			}
+		);
+
+		return array_shift( $providers );
 	}
 
 	/**
