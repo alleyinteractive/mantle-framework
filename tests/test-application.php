@@ -72,16 +72,16 @@ class Test_Application extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 	public function test_service_provider_instance() {
 		$app = new Application();
-		$app->register( Test_Service_Provider::class );
+		$app->register( Test_App_Service_Provider::class );
 
-		$provider = $app->get_provider( Test_Service_Provider::class );
-		$this->assertInstanceOf( Test_Service_Provider::class, $provider );
+		$provider = $app->get_provider( Test_App_Service_Provider::class );
+		$this->assertInstanceOf( Test_App_Service_Provider::class, $provider );
 
 		// Ensure it is a global instance.
-		$this->assertSame( $provider, $app->get_provider( Test_Service_Provider::class ) );
+		$this->assertSame( $provider, $app->get_provider( Test_App_Service_Provider::class ) );
 		$this->assertNull( $app->get_provider( \Invalid_Class::class ) );
 	}
 }
 
 
-class Test_Service_Provider extends Service_Provider { }
+class Test_App_Service_Provider extends Service_Provider { }
