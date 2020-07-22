@@ -25,6 +25,15 @@ class Output_Headers extends QM_Output_Html {
 	}
 
 	/**
+	 * Get the name for the output.
+	 *
+	 * @return string
+	 */
+	public function name() {
+		return __( 'Mantle Headers', 'mantle' );
+	}
+
+	/**
 	 * Output for the Query Monitor panel.
 	 */
 	public function output() {
