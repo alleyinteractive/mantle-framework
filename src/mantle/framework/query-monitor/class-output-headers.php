@@ -80,7 +80,7 @@ class Output_Headers extends QM_Output_Html {
 			}
 
 			echo '<tr>';
-			$formatted = str_replace( ' ', '-', ucwords( strtolower( str_replace( array( '-', '_' ), ' ', $name ) ) ) );
+			$formatted = str_replace( ' ', '-', ucwords( strtolower( str_replace( [ '-', '_' ], ' ', $name ) ) ) );
 			printf( '<th scope="row"><code>%s</code></th>', esc_html( $formatted ) );
 			printf( '<td><pre class="qm-pre-wrap"><code>%s</code></pre></td>', esc_html( $value ) );
 			echo '</tr>';

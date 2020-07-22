@@ -28,20 +28,20 @@ class Collector extends \QM_Collector {
 	 */
 	protected $app;
 
+	/**
+	 * Constructor.
+	 *
+	 * @param Application $app Application instance.
+	 */
 	public function __construct( Application $app ) {
 		$this->app = $app;
 	}
 
+	/**
+	 * Process the current request.
+	 */
 	public function process() {
 		$this->data['request'] = $this->app->make( Request::class );
-		$this->data['route'] = $this->data['request']->get_route();
-		// dd($this->data['route']);
-		return $this->data;
-		dd($this->data);
+		$this->data['route']   = $this->data['request']->get_route();
 	}
-	// public function get_data() {
-	// 	return [
-
-	// 	]
-	// }
 }

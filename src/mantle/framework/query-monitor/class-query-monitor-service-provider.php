@@ -13,7 +13,7 @@ use QM_Collectors;
 use function SML\remove_action_validated;
 
 /**
- * Docs Service Provider
+ * Query Monitor Service Provider
  */
 class Query_Monitor_Service_Provider extends Service_Provider {
 	/**
@@ -69,12 +69,24 @@ class Query_Monitor_Service_Provider extends Service_Provider {
 		return (string) ob_get_clean();
 	}
 
+	/**
+	 * Register collector to Query Monitor.
+	 *
+	 * @param array $collectors Collectors.
+	 * @return array
+	 */
 	public function register_collector( array $collectors ) {
-		$collectors['mantle'] = new Collector( $this->app );
+		$collectors['mantle']         = new Collector( $this->app );
 		$collectors['mantle-headers'] = new Header_Collector( $this->app );
 		return $collectors;
 	}
 
+	/**
+	 * Register the output class.
+	 *
+	 * @param array $output Output classes.
+	 * @return array
+	 */
 	public function output( $output ) {
 		$collector = QM_Collectors::get( 'mantle' );
 
@@ -89,14 +101,4 @@ class Query_Monitor_Service_Provider extends Service_Provider {
 
 		return $output;
 	}
-	/**
-	 * Register the service provider.
-	 */
-	// public function boot() {
-	// 	$this->set_files();
-	// 	if ( $this->should_register_menu() ) {
-
-	// 		\add_action( 'admin_menu', [ $this, 'register_admin_menu' ] );
-	// 	}
-	// }
 }

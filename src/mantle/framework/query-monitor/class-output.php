@@ -45,12 +45,12 @@ class Output extends QM_Output_Html {
 
 		echo '<section>';
 		echo '<h3>' . esc_html_e( 'Request', 'mantle' ) . '</h3>';
-		echo '<p class="qm-ltr"><code>' . $request->getRequestUri() . '</code></p>'; // WPCS: XSS ok.
+		echo '<p class="qm-ltr"><code>' . $request->getRequestUri() . '</code></p>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo '</section>';
 
 		echo '<section>';
 		echo '<h3>' . esc_html_e( 'Matched Route', 'mantle' ) . '</h3>';
-		echo '<p class="qm-ltr"><code>' . ( $route ? $route->getPath() :  'n/a' ) . '</code></p>'; // WPCS: XSS ok.
+		echo '<p class="qm-ltr"><code>' . ( $route ? $route->getPath() : 'n/a' ) . '</code></p>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo '</section>';
 
 		echo '</div>';
@@ -99,7 +99,7 @@ class Output extends QM_Output_Html {
 			}
 
 			echo '<tr>';
-			$formatted = str_replace( ' ', '-', ucwords( strtolower( str_replace( array( '-', '_' ), ' ', $name ) ) ) );
+			$formatted = str_replace( ' ', '-', ucwords( strtolower( str_replace( [ '-', '_' ], ' ', $name ) ) ) );
 			printf( '<th scope="row"><code>%s</code></th>', esc_html( $formatted ) );
 			printf( '<td><pre class="qm-pre-wrap"><code>%s</code></pre></td>', esc_html( $value ) );
 			echo '</tr>';
