@@ -10,8 +10,8 @@ namespace Mantle\Framework\Http\Routing\Middleware;
 use Closure;
 use Mantle\Framework\Contracts\Application;
 use Mantle\Framework\Http\Request;
+use Mantle\Framework\Http\Response;
 use Mantle\Framework\Http\View\Factory;
-use Mantle\Framework\Query_Monitor\Query_Monitor_Service_Provider;
 
 /**
  * Wrap the current response with a template.
@@ -51,24 +51,42 @@ class Wrap_Template {
 		 *
 		 * @param string $template Template to use.
 		 */
-		$template = \apply_filters( 'mantle_wrap_template', 'wrapper' );
+		$template = \apply_filters( 'mantle_wrap_template', null );
 
-		// Bail if the template is invalid.
+		// Fill in the header and footer if no template is specified.
 		if ( empty( $template ) ) {
-			return $response;
+			return $this->wrap_fallback( $response );
 		}
 
 		try {
 			$factory = $this->app->make( Factory::class );
 		} catch ( \Throwable $e ) {
 			unset( $e );
-			return $response;
+			return $this->wrap_fallback( $response );
 		}
 
 		$response->setContent(
 			$factory->make( $template, [ '_mantle_contents' => $response->getContent() ] )->render()
 		);
 
+		return $response;
+	}
+
+	/**
+	 * Fallback to running get_header()/get_footer() around the content if a wrapper
+	 * template is not specified.
+	 *
+	 * @param Response $response Response object.
+	 * @return Response
+	 */
+	protected function wrap_fallback( $response ) {
+		ob_start();
+		\get_header();
+		// Assumed to be sanitized.
+		echo $response->getContent(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		\get_footer();
+
+		$response->setContent( ob_get_clean() );
 		return $response;
 	}
 }

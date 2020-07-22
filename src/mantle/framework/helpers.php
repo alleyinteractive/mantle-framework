@@ -178,7 +178,7 @@ if ( ! function_exists( 'iterate' ) ) {
 
 if ( ! function_exists( 'render_iterate' ) ) {
 	/**
-	 * Render over iterate()\
+	 * Render over iterate().
 	 *
 	 * @param \ArrayAccess|array $data Data to loop over.
 	 * @param string           $slug View slug.
