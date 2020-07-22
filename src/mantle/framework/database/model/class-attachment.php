@@ -106,7 +106,7 @@ class Attachment extends Post implements Contracts\Database\Core_Object, Contrac
 
 		// If error storing permanently, unlink.
 		if ( \is_wp_error( $attachment_id ) ) {
-			@unlink( $file_array['tmp_name'] );
+			@unlink( $file_array['tmp_name'] ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_unlink
 			throw new Model_Exception( $attachment_id->get_error_message() );
 		}
 
