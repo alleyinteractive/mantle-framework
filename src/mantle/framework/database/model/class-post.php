@@ -232,7 +232,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	}
 
 	/**
-	 * Get term(s) associated with a post.
+	 * Set the term(s) associated with a post.
 	 *
 	 * @param mixed  $terms Accepts an array of or a single instance of terms.
 	 * @param string $taxonomy Taxonomy name, optional.
@@ -243,7 +243,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 * @throws Model_Exception Thrown if error saving the post's terms.
 	 */
 	public function set_terms( $terms, string $taxonomy = null, bool $append = false ) {
-		$terms = collect( is_array( $terms ) ? $terms : [ $terms ] )
+		$terms = collect( $terms )
 			->map(
 				function ( $term ) use ( &$taxonomy ) {
 					if ( $term instanceof Term ) {
@@ -292,7 +292,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 * @throws Model_Exception Thrown if the $taxonomy cannot be inferred from $terms.
 	 */
 	public function remove_terms( $terms, string $taxonomy = null ) {
-		$terms = collect( is_array( $terms ) ? $terms : [ $terms ] )
+		$terms = collect( $terms )
 			->map(
 				function ( $term ) use ( &$taxonomy ) {
 					if ( $term instanceof Term ) {
