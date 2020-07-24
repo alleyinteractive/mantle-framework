@@ -98,13 +98,12 @@ class Test_Post_Object extends WP_UnitTestCase {
 	public function test_has_one_term() {
 		$post = Testable_Post::find( $this->get_random_post_id() );
 
-		$term = new Testable_Term(
+		$term = Testable_Term::create(
 			[
 				'name' => 'Test Term Has One',
 			]
 		);
 
-		$term->save();
 		$post->terms()->save( $term );
 
 		$terms = get_the_terms( $post->id(), 'test_taxonomy' );
@@ -113,6 +112,26 @@ class Test_Post_Object extends WP_UnitTestCase {
 		$this->assertEquals( $term->id(), array_shift( $terms )->term_id );
 
 		$post->terms()->remove( $term );
+		$this->assertEmpty( get_the_terms( $post->id(), 'test_taxonomy' ) );
+	}
+
+	public function test_has_one_through_term() {
+		$post = Testable_Post::find( $this->get_random_post_id() );
+
+		$term = Testable_Term::create(
+			[
+				'name' => 'Test Term Belongs To',
+			]
+		);
+
+		$term->posts()->save( $post );
+
+		$terms = get_the_terms( $post->id(), 'test_taxonomy' );
+
+		$this->assertNotEmpty( $terms );
+		$this->assertEquals( $term->id(), array_shift( $terms )->term_id );
+
+		$term->posts()->remove( $post );
 		$this->assertEmpty( get_the_terms( $post->id(), 'test_taxonomy' ) );
 	}
 

@@ -8,7 +8,9 @@
 namespace Mantle\Framework\Database\Model\Relations;
 
 use Mantle\Framework\Database\Model\Model;
+use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Query\Builder;
+use Mantle\Framework\Database\Query\Term_Query_Builder;
 
 /**
  * Creates a 'Belongs To' relationship.
