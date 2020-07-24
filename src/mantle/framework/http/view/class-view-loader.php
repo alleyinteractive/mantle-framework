@@ -41,7 +41,7 @@ class View_Loader {
 	public function __construct( string $base_path ) {
 		$this->base_path = $base_path;
 
-		$this->set_default_paths();
+		\add_action( 'after_setup_theme', [ $this, 'set_default_paths' ] );
 	}
 
 	/**
@@ -49,19 +49,20 @@ class View_Loader {
 	 */
 	public function set_default_paths() {
 		if ( defined( 'STYLESHEETPATH' ) && STYLESHEETPATH ) {
-			$this->add_path( STYLESHEETPATH );
+			$this->add_path( STYLESHEETPATH, 'stylesheet-path' );
 		}
 
 		if ( defined( 'TEMPLATEPATH' ) && TEMPLATEPATH ) {
-			$this->add_path( TEMPLATEPATH );
+			$this->add_path( TEMPLATEPATH, 'template-path' );
 		}
 
+
 		if ( defined( 'ABSPATH' ) && defined( 'WPINC' ) ) {
-			$this->add_path( ABSPATH . WPINC . '/theme-compat' );
+			$this->add_path( ABSPATH . WPINC . '/theme-compat', 'theme-compat' );
 		}
 
 		// Allow mantle-site to load views.
-		$this->add_path( $this->base_path . '/views' );
+		$this->add_path( $this->base_path . '/views', 'mantle-site' );
 	}
 
 	/**
