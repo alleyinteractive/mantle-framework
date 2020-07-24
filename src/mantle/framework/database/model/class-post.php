@@ -11,6 +11,8 @@ use Mantle\Framework\Contracts;
 use Mantle\Framework\Database\Query\Post_Query_Builder;
 use Mantle\Framework\Helpers;
 
+use function Mantle\Framework\Helpers\collect;
+
 /**
  * Post Model
  */
@@ -211,5 +213,116 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 */
 	public function delete( bool $force = false ) {
 		return \wp_delete_post( $this->id(), $force );
+	}
+
+	/**
+	 * Get term(s) associated with a post.
+	 *
+	 * @param string $taxonomy Taxonomy name.
+	 * @return \WP_Term[]
+	 */
+	public function get_terms( string $taxonomy ): array {
+		$terms = \get_the_terms( $taxonomy );
+
+		if ( empty( $terms ) || \is_wp_error( $terms ) ) {
+			return [];
+		}
+
+		return (array) $terms;
+	}
+
+	/**
+	 * Get term(s) associated with a post.
+	 *
+	 * @param mixed  $terms Accepts an array of or a single instance of terms.
+	 * @param string $taxonomy Taxonomy name, optional.
+	 * @param bool   $append Append to the object's terms, defaults to false.
+	 * @return static
+	 *
+	 * @throws Model_Exception Thrown if the $taxonomy cannot be inferred from $terms.
+	 * @throws Model_Exception Thrown if error saving the post's terms.
+	 */
+	public function set_terms( $terms, string $taxonomy = null, bool $append = false ) {
+		$terms = collect( is_array( $terms ) ? $terms : [ $terms ] )
+			->map(
+				function ( $term ) use ( &$taxonomy ) {
+					if ( $term instanceof Term ) {
+						if ( empty( $taxonomy ) ) {
+							$taxonomy = $term->taxonomy();
+						}
+
+						return $term->id();
+					}
+
+					if ( $term instanceof \WP_Term ) {
+						if ( empty( $taxonomy ) ) {
+							$taxonomy = $term->taxonomy;
+						}
+
+						return $term->term_id;
+					}
+
+					return $term;
+				}
+			)
+			->filter()
+			->all();
+
+		if ( empty( $taxonomy ) ) {
+			throw new Model_Exception( 'Term taxonomy not able to be inferred.' );
+		}
+
+		$update = \wp_set_object_terms( $this->id(), $terms, $taxonomy, $append );
+
+		if ( \is_wp_error( $update ) ) {
+			throw new Model_Exception( "Error setting model terms: [{$update->get_error_message()}]" );
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * Remove terms from a post.
+	 *
+	 * @param mixed  $terms Accepts an array of or a single instance of terms.
+	 * @param string $taxonomy Taxonomy name, optional.
+	 * @return static
+	 *
+	 * @throws Model_Exception Thrown if the $taxonomy cannot be inferred from $terms.
+	 */
+	public function remove_terms( $terms, string $taxonomy = null ) {
+		$terms = collect( is_array( $terms ) ? $terms : [ $terms ] )
+			->map(
+				function ( $term ) use ( &$taxonomy ) {
+					if ( $term instanceof Term ) {
+						if ( empty( $taxonomy ) ) {
+							$taxonomy = $term->taxonomy();
+						}
+
+						return $term->id();
+					}
+
+					if ( $term instanceof \WP_Term ) {
+						if ( empty( $taxonomy ) ) {
+							$taxonomy = $term->taxonomy;
+						}
+
+						return $term->term_id;
+					}
+
+					return $term;
+				}
+			)
+			->filter()
+			->all();
+
+		if ( empty( $taxonomy ) ) {
+			throw new Model_Exception( 'Term taxonomy not able to be inferred.' );
+		}
+
+		\wp_remove_object_terms( $this->id, $terms, $taxonomy );
+
+		return $this;
 	}
 }
