@@ -8,6 +8,12 @@
 
 namespace Mantle\Framework\Http\View;
 
+use InvalidArgumentException;
+use Mantle\Framework\Support\Collection;
+use Mantle\Framework\Support\Str;
+
+use function Mantle\Framework\Helpers\collect;
+
 /**
  * View Loader
  * Handles the loading of a template file in any location of the code base.
@@ -23,15 +29,19 @@ class View_Loader {
 	/**
 	 * Paths to check against when loading a template.
 	 *
-	 * @var string[]
+	 * @var array
 	 */
 	protected $paths = [];
 
 	/**
 	 * Constructor.
+	 *
+	 * @param string $base_path Base path.
 	 */
-	public function __construct() {
-		$this->set_default_paths();
+	public function __construct( string $base_path ) {
+		$this->base_path = $base_path;
+
+		\add_action( 'after_setup_theme', [ $this, 'set_default_paths' ] );
 	}
 
 	/**
@@ -39,29 +49,42 @@ class View_Loader {
 	 */
 	public function set_default_paths() {
 		if ( defined( 'STYLESHEETPATH' ) && STYLESHEETPATH ) {
-			$this->add_path( STYLESHEETPATH );
+			$this->add_path( STYLESHEETPATH, 'stylesheet-path' );
 		}
 
 		if ( defined( 'TEMPLATEPATH' ) && TEMPLATEPATH ) {
-			$this->add_path( TEMPLATEPATH );
+			$this->add_path( TEMPLATEPATH, 'template-path' );
 		}
 
+
 		if ( defined( 'ABSPATH' ) && defined( 'WPINC' ) ) {
-			$this->add_path( ABSPATH . WPINC . '/theme-compat/' );
+			$this->add_path( ABSPATH . WPINC . '/theme-compat', 'theme-compat' );
 		}
 
 		// Allow mantle-site to load views.
-		$this->add_path( $this->base_path . '/views' );
+		$this->add_path( $this->base_path . '/views', 'mantle-site' );
 	}
 
 	/**
 	 * Add a path to check against when loading a template.
 	 *
 	 * @param string $path Path to add.
+	 * @param string $alias Alias to set it as, defaults to none.
 	 * @return static
+	 *
+	 * @throws InvalidArgumentException Thrown on invalid alias.
 	 */
-	public function add_path( string $path ) {
-		$this->paths[] = $path;
+	public function add_path( string $path, string $alias = null ) {
+		if ( $alias && Str::contains( $alias, [ '/', '\\', '@' ] ) ) {
+			throw new InvalidArgumentException( 'Alias cannot contain invalid characters.' );
+		}
+
+		if ( $alias ) {
+			$this->paths[ $alias ] = \untrailingslashit( $path );
+		} else {
+			$this->paths[] = \untrailingslashit( $path );
+		}
+
 		return $this;
 	}
 
@@ -78,6 +101,15 @@ class View_Loader {
 		}
 
 		return $this;
+	}
+
+	/**
+	 * Get the registered paths.
+	 *
+	 * @return array
+	 */
+	public function get_paths(): array {
+		return array_unique( $this->paths );
 	}
 
 	/**
@@ -101,6 +133,14 @@ class View_Loader {
 	 * @return string The template filename if one is located.
 	 */
 	public function load( string $slug, string $name = null ): string {
+		$alias = null;
+
+		// Extract the alias if passed.
+		if ( 0 === strpos( $slug, '@' ) ) {
+			$alias = substr( Str::before( $slug, '/' ), 1 );
+			$slug  = Str::after( $slug, '/' );
+		}
+
 		$templates = [];
 
 		if ( $name ) {
@@ -109,7 +149,7 @@ class View_Loader {
 
 		$templates[] = "{$slug}.php";
 
-		return $this->locate_template( $templates, true, false );
+		return $this->locate_template( $templates, true, false, $alias );
 	}
 
 	/**
@@ -117,16 +157,22 @@ class View_Loader {
 	 *
 	 * Acts as a replacement to `locate_template()`.
 	 *
-	 * @param array $templates Template files to search for.
-	 * @param bool  $load If true, the template file will be loaded.
-	 * @param bool  $require_once Whether to require_once or require. Default true. Has no effect if $load is false.
+	 * @param array  $templates Template files to search for.
+	 * @param bool   $load If true, the template file will be loaded.
+	 * @param bool   $require_once Whether to require_once or require. Default true. Has no effect if $load is false.
+	 * @param string $alias Alias to load, optional.
 	 * @return string The template filename if one is located.
 	 */
-	public function locate_template( array $templates, bool $load = true, bool $require_once = true ): string {
+	public function locate_template( array $templates, bool $load = true, bool $require_once = true, string $alias = null ): string {
 		$located = '';
 
 		foreach ( $templates as $template ) {
-			foreach ( $this->paths as $path ) {
+			foreach ( $this->get_paths() as $key => $path ) {
+				// Confirm the alias if passed.
+				if ( $alias && $key !== $alias ) {
+					continue;
+				}
+
 				$file_path = $path . '/' . $template;
 
 				if ( file_exists( $file_path ) ) {
