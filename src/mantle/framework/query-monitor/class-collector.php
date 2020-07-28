@@ -38,6 +38,15 @@ class Collector extends \QM_Collector {
 	}
 
 	/**
+	 * Collector name.
+	 *
+	 * @return string
+	 */
+	public function name() {
+		return 'Mantle Collector';
+	}
+
+	/**
 	 * Process the current request.
 	 */
 	public function process() {

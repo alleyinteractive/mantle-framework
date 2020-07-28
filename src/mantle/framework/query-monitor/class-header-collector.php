@@ -38,6 +38,15 @@ class Header_Collector extends \QM_Collector {
 	}
 
 	/**
+	 * Collector name.
+	 *
+	 * @return string
+	 */
+	public function name() {
+		return 'Mantle Header Collector';
+	}
+
+	/**
 	 * Setup the collector data.
 	 */
 	public function process() {
