@@ -9,6 +9,7 @@ namespace Mantle\Framework\Database\Model;
 
 use Mantle\Framework\Contracts\Database\Core_Object;
 use Mantle\Framework\Contracts\Database\Updatable;
+use Mantle\Framework\Database\Query\Term_Query_Builder;
 use Mantle\Framework\Helpers;
 
 /**

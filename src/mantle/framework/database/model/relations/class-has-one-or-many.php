@@ -8,7 +8,11 @@
 namespace Mantle\Framework\Database\Model\Relations;
 
 use Mantle\Framework\Database\Model\Model;
+use Mantle\Framework\Database\Model\Post;
+use Mantle\Framework\Database\Model\Term;
 use Mantle\Framework\Database\Query\Builder;
+use Mantle\Framework\Database\Query\Post_Query_Builder;
+use Mantle\Framework\Database\Query\Term_Query_Builder;
 
 /**
  * Has One or Many Relationship
@@ -53,11 +57,22 @@ class Has_One_Or_Many extends Relation {
 	/**
 	 * Attach a model to a parent model and save it.
 	 *
-	 * @param Model $model Model instance to save.
+	 * @param Model[]|Model $model Model instance to save.
 	 * @return Model
 	 */
-	public function save( Model $model ): Model {
-		$model->set_meta( $this->foreign_key, $this->parent->get( $this->local_key ) );
+	public function save( $model ): Model {
+		if ( $this->is_post_term_relationship() ) {
+			$this->parent->set_terms( $model );
+		} elseif ( $this->is_term_post_relationship() ) {
+			$models = is_array( $model ) ? $model : [ $model ];
+
+			foreach ( $models as $model ) {
+				$model->set_terms( $this->parent );
+			}
+		} else {
+			$model->set_meta( $this->foreign_key, $this->parent->get( $this->local_key ) );
+		}
+
 		return $model;
 	}
 
@@ -68,7 +83,36 @@ class Has_One_Or_Many extends Relation {
 	 * @return Model
 	 */
 	public function remove( Model $model ): Model {
-		$model->delete_meta( $this->foreign_key );
+		if ( $this->is_post_term_relationship() ) {
+			$this->parent->remove_terms( $model );
+		} elseif ( $this->is_term_post_relationship() ) {
+			$models = is_array( $model ) ? $model : [ $model ];
+
+			foreach ( $models as $model ) {
+				$model->remove_terms( $this->parent );
+			}
+		} else {
+			$model->delete_meta( $this->foreign_key );
+		}
+
 		return $model;
+	}
+
+	/**
+	 * Determine if this is a post -> term relationship.
+	 *
+	 * @return bool
+	 */
+	protected function is_post_term_relationship(): bool {
+		return $this->parent instanceof Post && $this->query instanceof Term_Query_Builder;
+	}
+
+	/**
+	 * Determine if this is a term -> post relationship.
+	 *
+	 * @return bool
+	 */
+	protected function is_term_post_relationship(): bool {
+		return $this->parent instanceof Term && $this->query instanceof Post_Query_Builder;
 	}
 }

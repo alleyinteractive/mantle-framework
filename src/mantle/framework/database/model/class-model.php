@@ -392,4 +392,16 @@ abstract class Model implements ArrayAccess, Url_Routable {
 	public static function all(): Collection {
 		return static::query()->take( -1 )->get();
 	}
+
+	/**
+	 * Create a new instance of a model and save it.
+	 *
+	 * @param array $args Model arguments.
+	 * @return static
+	 */
+	public static function create( array $args ) {
+		$instance = new static();
+		$instance->save( $args );
+		return $instance;
+	}
 }

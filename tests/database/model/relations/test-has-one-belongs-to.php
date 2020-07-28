@@ -3,6 +3,7 @@ namespace Mantle\Tests\Database\Model\Relations;
 
 use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Relationships;
+use Mantle\Framework\Database\Model\Term;
 use WP_UnitTestCase;
 
 /**
@@ -12,11 +13,13 @@ class Test_Post_Object extends WP_UnitTestCase {
 	public function setUp() {
 		parent::setUp();
 		register_post_type( 'sponsor' );
+		register_taxonomy( 'test_taxonomy', 'post' );
 	}
 
 	public function tearDown() {
 		parent::tearDown();
 		unregister_post_type( 'sponsor' );
+		unregister_taxonomy( 'test_taxonomy' );
 	}
 
 	public function test_get_belongs_to() {
@@ -92,6 +95,46 @@ class Test_Post_Object extends WP_UnitTestCase {
 		$this->assertNull( $sponsor->posts()->first() );
 	}
 
+	public function test_has_one_term() {
+		$post = Testable_Post::find( $this->get_random_post_id() );
+
+		$term = Testable_Term::create(
+			[
+				'name' => 'Test Term Has One',
+			]
+		);
+
+		$post->terms()->save( $term );
+
+		$terms = get_the_terms( $post->id(), 'test_taxonomy' );
+
+		$this->assertNotEmpty( $terms );
+		$this->assertEquals( $term->id(), array_shift( $terms )->term_id );
+
+		$post->terms()->remove( $term );
+		$this->assertEmpty( get_the_terms( $post->id(), 'test_taxonomy' ) );
+	}
+
+	public function test_has_one_through_term() {
+		$post = Testable_Post::find( $this->get_random_post_id() );
+
+		$term = Testable_Term::create(
+			[
+				'name' => 'Test Term Belongs To',
+			]
+		);
+
+		$term->posts()->save( $post );
+
+		$terms = get_the_terms( $post->id(), 'test_taxonomy' );
+
+		$this->assertNotEmpty( $terms );
+		$this->assertEquals( $term->id(), array_shift( $terms )->term_id );
+
+		$term->posts()->remove( $post );
+		$this->assertEmpty( get_the_terms( $post->id(), 'test_taxonomy' ) );
+	}
+
 	/**
 	 * Get a random post ID, ensures the post ID is not the last in the set.
 	 *
@@ -111,6 +154,10 @@ class Testable_Post extends Post {
 	public function sponsor() {
 		return $this->belongs_to( Testable_Sponsor::class );
 	}
+
+	public function terms() {
+		return $this->has_many( Testable_Term::class );
+	}
 }
 
 class Testable_Sponsor extends Post {
@@ -121,6 +168,16 @@ class Testable_Sponsor extends Post {
 	public function post() {
 		return $this->has_one( Testable_Post::class );
 	}
+
+	public function posts() {
+		return $this->has_many( Testable_Post::class );
+	}
+}
+
+class Testable_Term extends Term {
+	use Relationships;
+
+	public static $object_name = 'test_taxonomy';
 
 	public function posts() {
 		return $this->has_many( Testable_Post::class );
