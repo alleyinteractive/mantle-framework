@@ -33,7 +33,7 @@ class Test_View_Factory extends \WP_UnitTestCase {
 		$this->app = new Application();
 
 		// Register a view loader specific to tests.
-		$loader = new View_Loader();
+		$loader = new View_Loader( '' );
 		$loader->clear_paths();
 		$loader->add_path( MANTLE_PHPUNIT_TEMPLATE_PATH . '/view' );
 		$this->app->instance( 'view.loader', $loader );
