@@ -56,6 +56,17 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	}
 
 	/**
+	 * Set the path info for the request.
+	 *
+	 * @param string $path_info Path info.
+	 * @return static
+	 */
+	public function setPathInfo( string $path_info ) {
+		$this->pathInfo = $path_info; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		return $this;
+	}
+
+	/**
 	 * Return the Request instance.
 	 *
 	 * @return static
