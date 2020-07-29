@@ -7,6 +7,7 @@
 
 namespace Mantle\Framework\Query_Monitor;
 
+use Mantle\Framework\Database\Model\Model;
 use QM_Output_Html;
 
 /**
@@ -66,7 +67,16 @@ class Output extends QM_Output_Html {
 			foreach ( $request->get_route_parameters()->all() as $key => $value ) {
 				echo '<tr>';
 				echo '<td class="qm-ltr"><code>' . esc_html( $key ) . '</code></td>';
-				echo '<td class="qm-ltr"><code>' . esc_html( $value ) . '</code></td>';
+
+				if ( $value instanceof Model ) {
+					echo '<td class="qm-ltr"><code>' . esc_html( get_class( $value ) ) . ' (' . esc_html( $value->id() ) . ')</code></td>';
+				} elseif ( is_object( $value ) ) {
+					echo '<td class="qm-ltr"><code>' . esc_html( get_class( $value ) ) . '</code></td>';
+				} elseif ( is_array( $value ) ) {
+					echo '<td class="qm-ltr"><code>' . wp_json_encode( $value ) . '</code></td>';
+				} else {
+					echo '<td class="qm-ltr"><code>' . esc_html( (string) $value ) . '</code></td>';
+				}
 				echo '</tr>';
 			}
 

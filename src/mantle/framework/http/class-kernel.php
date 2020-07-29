@@ -183,6 +183,13 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 * @throws InvalidArgumentException Thrown on invalid router service provider instance.
 	 */
 	protected function send_request_through_router( Request $request ): ?Response {
+		if ( is_admin() ) {
+			return null;
+		}
+
+		// Strip the trailing slash from the request.
+		$request->setPathInfo( \untrailingslashit( $request->getPathInfo() ) );
+
 		$provider = $this->app['router.service-provider'];
 
 		if ( ! ( $provider instanceof Route_Service_Provider_Contract ) ) {
