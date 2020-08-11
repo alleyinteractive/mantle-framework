@@ -1,8 +1,8 @@
 <?php
 /**
- * {{ class }} class file.
+ * Hook_Usage_Command class file.
  *
- * @package {{ namespace }}
+ * @package Mantle
  */
 
 namespace Mantle\Framework\Console;
@@ -13,13 +13,14 @@ use Mantle\Framework\Support\Str;
 use RecursiveCallbackFilterIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use RegexIterator;
 use RuntimeException;
 
 use function Mantle\Framework\Helpers\collect;
 
 /**
- * {{ class }} Controller
+ * Hook Usage Command Command
+ *
+ * Search across a set of files for a reference to a specific hook.
  */
 class Hook_Usage_Command extends Command {
 	/**
@@ -68,7 +69,6 @@ class Hook_Usage_Command extends Command {
 			'optional'    => true,
 			'type'        => 'flag',
 		],
-
 		[
 			'description' => 'Output format.',
 			'name'        => 'format',
