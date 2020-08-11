@@ -60,6 +60,14 @@ class Route_Service_Provider extends Service_Provider implements Route_Service_P
 	 * @return bool
 	 */
 	public function should_pass_through_requests( Request $request ): bool {
+		if ( 0 === strpos( $request->path(), 'wp-json' ) ) {
+			return true;
+		}
+
+		if ( ! wp_using_themes() ) {
+			return true;
+		}
+
 		if ( is_callable( $this->pass_requests_to_wp ) ) {
 			return (bool) $this->app->call( $this->pass_requests_to_wp );
 		}
