@@ -134,13 +134,22 @@ class Application extends Container\Container implements Application_Contract {
 	}
 
 	/**
+	 * Get the cache folder root
+	 *
+	 * @return string
+	 */
+	public function get_cache_path(): string {
+		return $this->base_path . '/bootstrap/cache';
+	}
+
+	/**
 	 * Get the cached Composer packages path.
 	 * Folder that stores all compiled server-side assets for the application.
 	 *
 	 * @return string
 	 */
 	public function get_cached_packages_path() {
-		return $this->base_path . '/bootstrap/cache/packages.php';
+		return $this->get_cache_path() . '/packages.php';
 	}
 
 	/**
@@ -176,8 +185,8 @@ class Application extends Container\Container implements Application_Contract {
 
 		$this->singleton(
 			Package_Manifest::class,
-			function() {
-				return new Package_Manifest( $this->get_base_path(), $this->get_cached_packages_path() );
+			function( $app ) {
+				return new Package_Manifest( $this->get_base_path(), $this->get_cached_packages_path(), $app );
 			}
 		);
 	}

@@ -20,4 +20,11 @@ interface Kernel {
 	 * Register the application's commands.
 	 */
 	public function register_commands();
+
+	/**
+	 * Log to the console.
+	 *
+	 * @param string $message Message to log.
+	 */
+	public function log( string $message );
 }
