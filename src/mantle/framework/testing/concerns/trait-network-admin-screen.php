@@ -30,12 +30,12 @@ trait Network_Admin_Screen {
 		}
 
 		// phpcs:disable WordPress.WP.GlobalVariablesOverride
-		$GLOBALS['pagenow'] = 'index.php';
+		$GLOBALS['pagenow']      = 'index.php';
 		$GLOBALS['wp_importers'] = null;
-		$GLOBALS['hook_suffix'] = 'index.php';
-		$GLOBALS['plugin_page'] = null;
-		$GLOBALS['typenow'] = '';
-		$GLOBALS['taxnow'] = '';
+		$GLOBALS['hook_suffix']  = 'index.php';
+		$GLOBALS['plugin_page']  = null;
+		$GLOBALS['typenow']      = '';
+		$GLOBALS['taxnow']       = '';
 		// phpcs:enable
 
 		$this->backup_screen = get_current_screen();
