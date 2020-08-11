@@ -23,5 +23,10 @@ class Test_Site_Object extends WP_UnitTestCase {
 		$this->assertEquals( $object->path, $site->slug() );
 		$this->assertEquals( get_home_url( $site_id ), $site->permalink() );
 		$this->assertEquals( $object->public, $site->public );
+
+		// Test that you can get the WordPress object.
+		$core_object = $site->core_object();
+		$this->assertInstanceOf( \WP_Site::class, $core_object );
+		$this->assertEquals( $site->id(), $core_object->blog_id );
 	}
 }

@@ -33,6 +33,11 @@ class Test_Term_Object extends WP_UnitTestCase {
 
 		// Retrieve an attribute straight from the object itself.
 		$this->assertEquals( $term->taxonomy, $object->get( 'taxonomy' ) );
+
+		// Test that you can get the WordPress object.
+		$core_object = $object->core_object();
+		$this->assertInstanceOf( \WP_Term::class, $core_object );
+		$this->assertEquals( $object->id(), $core_object->term_id );
 	}
 
 	public function test_term_object_parent() {

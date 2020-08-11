@@ -165,6 +165,21 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	}
 
 	/**
+	 * Retrieve the core object for the underlying object.
+	 *
+	 * @return \WP_Post|null
+	 */
+	public function core_object() {
+		$id = $this->id();
+
+		if ( $id ) {
+			return Helpers\get_post_object( $id );
+		}
+
+		return null;
+	}
+
+	/**
 	 * Save the model.
 	 *
 	 * @param array $attributes Attributes to save.

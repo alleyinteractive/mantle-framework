@@ -42,6 +42,11 @@ class Test_Post_Object extends WP_UnitTestCase {
 		// Test magic methods work.
 		$this->assertEquals( $post->post_content, $object->post_content );
 		$this->assertEquals( $post->post_title, $object->name );
+
+		// Test that you can get the WordPress object.
+		$core_object = $object->core_object();
+		$this->assertInstanceOf( \WP_Post::class, $core_object );
+		$this->assertEquals( $object->id(), $core_object->ID );
 	}
 
 	public function test_post_object_parent() {
