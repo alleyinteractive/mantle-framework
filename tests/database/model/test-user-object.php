@@ -30,6 +30,11 @@ class Test_User_Object extends WP_UnitTestCase {
 		$this->assertEquals( $user->user_email, $object->get( 'email' ) );
 		$this->assertEquals( $user->user_email, $object->email );
 		$this->assertEquals( $user->user_email, $object->user_email );
+
+		// Test that you can get the WordPress object.
+		$core_object = $object->core_object();
+		$this->assertInstanceOf( \WP_User::class, $core_object );
+		$this->assertEquals( $object->id(), $user_id );
 	}
 
 	public function test_create_user() {

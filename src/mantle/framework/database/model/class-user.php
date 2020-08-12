@@ -136,6 +136,21 @@ class User extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	}
 
 	/**
+	 * Retrieve the core object for the underlying object.
+	 *
+	 * @return \WP_User|null
+	 */
+	public function core_object() {
+		$id = $this->id();
+
+		if ( $id ) {
+			return Helpers\get_user_object( $id );
+		}
+
+		return null;
+	}
+
+	/**
 	 * Save the model.
 	 *
 	 * @param array $attributes Attributes to save.

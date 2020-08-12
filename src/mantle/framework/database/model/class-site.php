@@ -107,4 +107,19 @@ class Site extends Model implements Contracts\Database\Core_Object {
 	public function permalink(): ?string {
 		return (string) \get_home_url( $this->id() );
 	}
+
+	/**
+	 * Retrieve the core object for the underlying object.
+	 *
+	 * @return \WP_Site|null
+	 */
+	public function core_object() {
+		$id = $this->id();
+
+		if ( $id ) {
+			return Helpers\get_site_object( $id );
+		}
+
+		return null;
+	}
 }

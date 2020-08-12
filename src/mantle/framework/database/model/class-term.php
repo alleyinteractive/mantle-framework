@@ -160,6 +160,21 @@ class Term extends Model implements Core_Object, Updatable {
 	}
 
 	/**
+	 * Retrieve the core object for the underlying object.
+	 *
+	 * @return \WP_Term|null
+	 */
+	public function core_object() {
+		$id = $this->id();
+
+		if ( $id ) {
+			return Helpers\get_term_object( $id );
+		}
+
+		return null;
+	}
+
+	/**
 	 * Save the model.
 	 *
 	 * @param array $attributes Attributes to save.

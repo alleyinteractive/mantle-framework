@@ -54,4 +54,11 @@ interface Core_Object {
 	 * @return string|null
 	 */
 	public function permalink(): ?string;
+
+	/**
+	 * Retrieve the core object for the underlying object.
+	 *
+	 * @return mixed
+	 */
+	public function core_object();
 }

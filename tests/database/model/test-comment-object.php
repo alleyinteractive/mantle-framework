@@ -19,6 +19,11 @@ class Test_Comment_Object extends WP_UnitTestCase {
 
 		// Retrieve an attribute straight from the object itself.
 		$this->assertEquals( $comment->comment_author_email, $object->get( 'comment_author_email' ) );
+
+		// Test that you can get the WordPress object.
+		$core_object = $object->core_object();
+		$this->assertInstanceOf( \WP_Comment::class, $core_object );
+		$this->assertEquals( $object->id(), $core_object->comment_ID );
 	}
 
 	public function test_comment_object_parent() {
