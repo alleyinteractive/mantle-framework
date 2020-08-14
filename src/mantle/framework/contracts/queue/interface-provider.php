@@ -29,4 +29,13 @@ interface Provider {
 	 * @return Collection
 	 */
 	public function pop( string $queue = null, int $count = 1 ): Collection;
+
+	/**
+	 * Check if a job is in the queue.
+	 *
+	 * @param mixed  $job Job instance.
+	 * @param string $queue Queue to compare against.
+	 * @return bool
+	 */
+	public function in_queue( $job, string $queue = null ): bool;
 }

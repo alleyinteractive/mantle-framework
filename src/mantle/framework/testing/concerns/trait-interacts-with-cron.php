@@ -3,10 +3,14 @@
  * Interacts_With_Cron trait file.
  *
  * @package Mantle
+ * @phpcs:disable WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
  */
 
 namespace Mantle\Framework\Testing\Concerns;
 
+use InvalidArgumentException;
+use Mantle\Framework\Contracts\Queue\Queue_Manager;
+use Mantle\Framework\Queue\Wp_Cron_Scheduler;
 use PHPUnit\Framework\Assert as PHPUnit;
 use stdClass;
 
@@ -41,12 +45,62 @@ trait Interacts_With_Cron {
 		);
 	}
 
-	public function assertQueued( $job, string $queue = null ): void {
+	/**
+	 * Assert if a job has been queued.
+	 *
+	 * Supports passing a job instance as a class or as a string (class name) with arguments
+	 * in the second function argument.
+	 *
+	 * @param string|mixed $job Job class/instance.
+	 * @param array        $args Job arguments for class, optional.
+	 * @param string       $queue Queue, optional.
+	 *
+	 * @throws InvalidArgumentException Thrown for missing job class.
+	 */
+	public function assertQueued( $job, array $args = [], string $queue = null ): void {
+		$provider = app( Queue_Manager::class )->get_provider();
 
+		if ( is_string( $job ) ) {
+			if ( ! class_exists( $job ) ) {
+				throw new InvalidArgumentException( "Job class not found: [$job]" );
+			}
+
+			$job = new $job( ...$args );
+		}
+
+		PHPUnit::assertTrue(
+			$provider->in_queue( $job, $queue ),
+			'Job is not in the queue.'
+		);
 	}
 
-	public function assertNotQueued( $job, string $queue = null ): void {
+	/**
+	 * Assert that a job has not been queued.
+	 *
+	 * Supports passing a job instance as a class or as a string (class name) with arguments
+	 * in the second function argument.
+	 *
+	 * @param string|mixed $job Job class/instance.
+	 * @param array        $args Job arguments for class, optional.
+	 * @param string       $queue Queue, optional.
+	 *
+	 * @throws InvalidArgumentException Thrown for missing job class.
+	 */
+	public function assertNotQueued( $job, array $args = [], string $queue = null ): void {
+		$provider = app( Queue_Manager::class )->get_provider();
 
+		if ( is_string( $job ) ) {
+			if ( ! class_exists( $job ) ) {
+				throw new InvalidArgumentException( "Job class not found: [$job]" );
+			}
+
+			$job = new $job( ...$args );
+		}
+
+		PHPUnit::assertFalse(
+			$provider->in_queue( $job, $queue ),
+			'Job is in the queue.'
+		);
 	}
 
 	/**
@@ -120,7 +174,6 @@ trait Interacts_With_Cron {
 						'sig'      => $sig,
 						'args'     => $data['args'],
 						'schedule' => $data['schedule'],
-						// 'interval' => Utils\get_flag_value( $data, 'interval' ),
 					];
 				}
 			}
@@ -149,5 +202,14 @@ trait Interacts_With_Cron {
 
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- Can't prefix dynamic hooks here, calling registered hooks.
 		\do_action_ref_array( $event->hook, $event->args );
+	}
+
+	/**
+	 * Dispatch the queue.
+	 *
+	 * @param string $queue Queue to run.
+	 */
+	public static function dispatch_queue( string $queue = null ) {
+		app( Wp_Cron_Scheduler::class )->on_queue_run( $queue );
 	}
 }
