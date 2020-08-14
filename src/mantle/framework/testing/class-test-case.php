@@ -17,6 +17,7 @@ use Mantle\Framework\Testing\Concerns\Deprecations;
 use Mantle\Framework\Testing\Concerns\Hooks;
 use Mantle\Framework\Testing\Concerns\Incorrect_Usage;
 use Mantle\Framework\Testing\Concerns\Interacts_With_Container;
+use Mantle\Framework\Testing\Concerns\Interacts_With_Cron;
 use Mantle\Framework\Testing\Concerns\Makes_Http_Requests;
 use Mantle\Framework\Testing\Concerns\Network_Admin_Screen;
 use Mantle\Framework\Testing\Concerns\Refresh_Database;
@@ -38,6 +39,7 @@ abstract class Test_Case extends BaseTestCase {
 		Hooks,
 		Incorrect_Usage,
 		Interacts_With_Container,
+		Interacts_With_Cron,
 		Makes_Http_Requests,
 		WordPress_State,
 		WordPress_Authentication;
