@@ -45,8 +45,8 @@ class Test_Class {
 			[ $this, 'on_init' ]
 		);
 
-		 /**
-			* Some comments after.
-			*/
+		/**
+		 * Some comments after.
+		 */
 	}
 }

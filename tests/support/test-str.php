@@ -431,6 +431,31 @@ class SupportStrTest extends TestCase {
 		$this->assertTrue( Str::is_ascii( null ) );
 		$this->assertSame( '', Str::slug( null ) );
 	}
+
+	public function testLineNumber() {
+		$contents = 'Vestibulum aliquet consequat neque, eget lobortis urna porta volutpat.
+Donec dapibus ac ligula eget sodales. Aliquam sed efficitur arcu, ut imperdiet sapien.
+In vitae euismod dui, ut rhoncus purus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
+Maecenas a euismod ex. Maecenas placerat turpis eu suscipit tristique. Ut euismod mi eget tellus euismod fermentum.
+item_to_match
+Integer nec metus pellentesque, blandit libero id, porttitor urna. Quisque feugiat maximus elit in tristique.
+     Sed et porttitor sapien. Curabitur. another_item_to_match Duis at placerat mauris. Cras.
+Suspendisse eget auctor est. Maecenas.';
+
+		$expected = [
+			'item_to_match' => 5,
+			'another_item_to_match' => 7,
+		];
+
+		foreach ( $expected as $search => $line_num ) {
+			preg_match_all( '/' . $search . '/', $contents, $matches, PREG_OFFSET_CAPTURE );
+
+			[ $match, $char_pos ] = $matches[0][0] ?? [ 0, 0 ];
+			$this->assertNotEmpty( $char_pos );
+
+			$this->assertEquals( $line_num, Str::line_number( $contents, $char_pos ) );
+		}
+	}
 }
 
 class StringableObjectStub {

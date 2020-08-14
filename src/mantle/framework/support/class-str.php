@@ -561,4 +561,23 @@ class Str {
 	public static function upper( $value ) {
 		return mb_strtoupper( $value, 'UTF-8' );
 	}
+
+	/**
+	 * Get the line number for a match from a character position.
+	 *
+	 * Useful inside of a regex match to determine the line number of the
+	 * matched pair.
+	 *
+	 * The character position can be retrieved when matching against a string
+	 * by passing `PREG_OFFSET_CAPTURE` to `preg_match_all()` as a flag.
+	 *
+	 * @param string $contents Contents used to match against.
+	 * @param int    $char_pos Character position.
+	 * @return int
+	 */
+	public static function line_number( string $contents, int $char_pos ): int {
+		[ $before ] = str_split( $contents, $char_pos );
+		return strlen( $before ) - strlen( str_replace( PHP_EOL, '', $before ) ) + 1;
+	}
+
 }

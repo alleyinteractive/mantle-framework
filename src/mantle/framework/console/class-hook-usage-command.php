@@ -249,13 +249,7 @@ class Hook_Usage_Command extends Command {
 			foreach ( $matches[1] as $i => $match ) {
 				[ $method, $char_pos ] = $match;
 
-				/**
-				 * Props to StackOverflow!
-				 *
-				 * @link https://stackoverflow.com/questions/4730867/get-line-number-from-preg-match-all
-				 */
-				[ $before ] = str_split( $contents, $char_pos );
-				$line       = strlen( $before ) - strlen( str_replace( PHP_EOL, '', $before ) ) + 1;
+				$line = Str::line_number( $contents, $char_pos );
 
 				$references->add( compact( 'file', 'line', 'method' ) );
 			}
