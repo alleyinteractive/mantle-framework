@@ -23,6 +23,21 @@ trait Network_Admin_Screen {
 	 * Backup the current screen.
 	 */
 	public function network_admin_screen_set_up() {
+		if ( ! function_exists( 'get_current_screen' ) ) {
+			/** WordPress Administration Screen API */
+			require_once ABSPATH . 'wp-admin/includes/class-wp-screen.php';
+			require_once ABSPATH . 'wp-admin/includes/screen.php';
+		}
+
+		// phpcs:disable WordPress.WP.GlobalVariablesOverride
+		$GLOBALS['pagenow']      = 'index.php';
+		$GLOBALS['wp_importers'] = null;
+		$GLOBALS['hook_suffix']  = 'index.php';
+		$GLOBALS['plugin_page']  = null;
+		$GLOBALS['typenow']      = '';
+		$GLOBALS['taxnow']       = '';
+		// phpcs:enable
+
 		$this->backup_screen = get_current_screen();
 		set_current_screen( 'dashboard-network' );
 	}
@@ -33,5 +48,14 @@ trait Network_Admin_Screen {
 	public function network_admin_screen_tear_down() {
 		// Restore screen to state at setUp.
 		set_current_screen( $this->backup_screen );
+
+		unset(
+			$GLOBALS['pagenow'],
+			$GLOBALS['wp_importers'],
+			$GLOBALS['hook_suffix'],
+			$GLOBALS['plugin_page'],
+			$GLOBALS['typenow'],
+			$GLOBALS['taxnow']
+		);
 	}
 }
