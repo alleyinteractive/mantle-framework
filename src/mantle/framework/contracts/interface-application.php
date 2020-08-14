@@ -44,6 +44,13 @@ interface Application {
 	public function get_root_url( string $path = '' ): string;
 
 	/**
+	 * Get the cache folder root
+	 *
+	 * @return string
+	 */
+	public function get_cache_path(): string;
+
+	/**
 	 * Get the path to the application configuration files.
 	 *
 	 * @return string

@@ -333,7 +333,7 @@ class Hook_Usage_Command extends Command {
 	 */
 	protected function get_cache_file_for_path( string $path ): string {
 		$path = md5( $path );
-		return $this->app->get_base_path() . "/bootstrap/cache/hook-usage-{$path}.php";
+		return $this->app->get_cache_path() . "/hook-usage-{$path}.php";
 	}
 
 	/**

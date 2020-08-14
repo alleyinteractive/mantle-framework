@@ -7,6 +7,7 @@
 
 namespace Mantle\Framework\Providers;
 
+use Mantle\Framework\Console\Clear_Cache_Command;
 use Mantle\Framework\Console\Generators\Command_Make_Command;
 use Mantle\Framework\Console\Generators\Controller_Make_Command;
 use Mantle\Framework\Console\Generators\Factory_Make_Command;
@@ -30,6 +31,7 @@ class Console_Service_Provider extends Service_Provider {
 	 * @var array
 	 */
 	protected $commands_to_register = [
+		Clear_Cache_Command::class,
 		Command_Make_Command::class,
 		Controller_Make_Command::class,
 		Factory_Make_Command::class,
