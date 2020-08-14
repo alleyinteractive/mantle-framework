@@ -46,7 +46,7 @@ class {{ class }} extends Command {
 	 */
 	protected $synopsis = '';
 
-   /**
+	/**
 	 * Callback for the command.
 	 *
 	 * @param array $args Command Arguments.

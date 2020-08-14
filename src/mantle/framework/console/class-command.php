@@ -112,7 +112,7 @@ abstract class Command {
 	 *
 	 * @param array $args Arguments for the command.
 	 */
-	protected function set_command_args( array $args ) {
+	public function set_command_args( array $args ) {
 		$this->command_args = $args;
 	}
 
@@ -121,7 +121,7 @@ abstract class Command {
 	 *
 	 * @param array $flags Flags for the command.
 	 */
-	protected function set_command_flags( array $flags ) {
+	public function set_command_flags( array $flags ) {
 		$this->command_flags = $flags;
 	}
 

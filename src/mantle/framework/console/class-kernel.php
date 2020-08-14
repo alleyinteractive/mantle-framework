@@ -111,4 +111,15 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	protected function bootstrappers(): array {
 		return $this->bootstrappers;
 	}
+
+	/**
+	 * Log to the console.
+	 *
+	 * @param string $message Message to log.
+	 */
+	public function log( string $message ) {
+		if ( class_exists( 'WP_CLI' ) ) {
+			\WP_CLI::log( $message );
+		}
+	}
 }
