@@ -9,6 +9,7 @@
 namespace Mantle\Framework\Testing\Concerns;
 
 use InvalidArgumentException;
+use Mantle\Framework\Contracts\Queue\Job;
 use Mantle\Framework\Contracts\Queue\Queue_Manager;
 use Mantle\Framework\Queue\Wp_Cron_Scheduler;
 use PHPUnit\Framework\Assert as PHPUnit;
@@ -26,6 +27,11 @@ trait Interacts_With_Cron {
 	 * @param array  $args Arguments for the cron queue event.
 	 */
 	public function assertInCronQueue( string $action, array $args = [] ): void {
+		if ( $this->is_job_action( $action ) ) {
+			$this->assertJobQueued( $action, $args );
+			return;
+		}
+
 		PHPUnit::assertNotFalse(
 			\wp_next_scheduled( $action, $args ),
 			"Cron action is not in cron queue: [$action]"
@@ -39,10 +45,25 @@ trait Interacts_With_Cron {
 	 * @param array  $args Arguments for the cron queue event.
 	 */
 	public function assertNotInCronQueue( string $action, array $args = [] ): void {
+		if ( $this->is_job_action( $action ) ) {
+			$this->assertJobNotQueued( $action, $args );
+			return;
+		}
+
 		PHPUnit::assertFalse(
 			\wp_next_scheduled( $action, $args ),
 			"Cron action is in cron queue: [$action]"
 		);
+	}
+
+	/**
+	 * Determine if a cron 'action' is actually a queued job.
+	 *
+	 * @param string $action Action name.
+	 * @return bool
+	 */
+	protected function is_job_action( string $action ): bool {
+		return class_exists( $action ) && in_array( Job::class, class_implements( $action ), true );
 	}
 
 	/**
@@ -57,7 +78,7 @@ trait Interacts_With_Cron {
 	 *
 	 * @throws InvalidArgumentException Thrown for missing job class.
 	 */
-	public function assertQueued( $job, array $args = [], string $queue = null ): void {
+	public function assertJobQueued( $job, array $args = [], string $queue = null ): void {
 		$provider = app( Queue_Manager::class )->get_provider();
 
 		if ( is_string( $job ) ) {
@@ -86,7 +107,7 @@ trait Interacts_With_Cron {
 	 *
 	 * @throws InvalidArgumentException Thrown for missing job class.
 	 */
-	public function assertNotQueued( $job, array $args = [], string $queue = null ): void {
+	public function assertJobNotQueued( $job, array $args = [], string $queue = null ): void {
 		$provider = app( Queue_Manager::class )->get_provider();
 
 		if ( is_string( $job ) ) {
