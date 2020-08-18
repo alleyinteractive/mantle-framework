@@ -33,6 +33,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 		'title'       => 'post_title',
 		'name'        => 'post_title',
 		'slug'        => 'post_name',
+		'status'      => 'post_status',
 	];
 
 	/**

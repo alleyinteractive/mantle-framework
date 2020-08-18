@@ -88,6 +88,27 @@ abstract class Model implements ArrayAccess, Url_Routable {
 	}
 
 	/**
+	 * Determine if the model has a given scope.
+	 *
+	 * @param string $scope Scope name.
+	 * @return bool
+	 */
+	public function has_named_scope( string $scope ): bool {
+		return method_exists( $this, 'scope' . ucfirst( $scope ) );
+	}
+
+	/**
+	 * Apply the given named scope if possible.
+	 *
+	 * @param  string $scope Scope name.
+	 * @param  array  $parameters Scope parameters.
+	 * @return mixed
+	 */
+	public function call_named_scope($scope, array $parameters = []) {
+		return $this->{ 'scope' . ucfirst( $scope ) }( ...$parameters );
+	}
+
+	/**
 	 * Refresh the model attributes.
 	 *
 	 * @return static|null Model instance or null if not found.

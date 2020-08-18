@@ -9,6 +9,7 @@
 
 namespace Mantle\Framework\Database\Query;
 
+use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Database\Model\Model_Not_Found_Exception;
 use Mantle\Framework\Support\Collection;
 use Mantle\Framework\Support\Str;
@@ -119,6 +120,19 @@ abstract class Builder {
 	 */
 	public function get_model() {
 		return $this->model;
+	}
+
+	/**
+	 * Get the model instance for the builder.
+	 *
+	 * @return Model
+	 */
+	protected function get_model_instance(): Model {
+		if ( is_array( $this->model ) ) {
+			throw new Query_Exception( 'Unable to get model instance for multiple models.' );
+		}
+
+		return new $this->model;
 	}
 
 	/**
@@ -308,6 +322,50 @@ abstract class Builder {
 	}
 
 	/**
+	 * Determine if the given model has a scope.
+	 *
+	 * @param string $scope Scope name.
+	 * @return bool
+	 */
+	public function has_named_scope( string $scope ): bool{
+		// Disable model scopes for multi-model queries.
+		if ( is_array( $this->model ) ) {
+			return false;
+		}
+
+		return $this->get_model_instance()->has_named_scope( $scope );
+	}
+
+	/**
+	 * Apply the given scope on the current builder instance.
+	 *
+	 * @param callable $scope Scope callback.
+	 * @param array    $parameters Scope parameters.
+	 * @return mixed
+	 */
+	protected function call_scope( callable $scope, array $parameters = [] ) {
+		array_unshift( $parameters, $this );
+
+		return $scope( ...array_values($parameters ) ) ?? $this;
+	}
+
+	/**
+	 * Apply the given named scope on the current builder instance.
+	 *
+	 * @param string $scope Scope name.
+	 * @param array  $parameters Scope parameters.
+	 * @return mixed
+	 */
+	protected function call_named_scope( string $scope, array $parameters = [] ) {
+		return $this->call_scope(
+			function ( ...$parameters ) use ( $scope ) {
+				return $this->get_model_instance()->call_named_scope( $scope, $parameters );
+			},
+			$parameters
+		);
+	}
+
+	/**
 	 * Set the limit of objects to include.
 	 *
 	 * @param int $limit Limit to set.
@@ -359,6 +417,11 @@ abstract class Builder {
 
 		if ( Str::starts_with( $method, 'orderBy' ) ) {
 			return $this->dynamicOrderBy( $method, $args );
+		}
+
+		// Check if the model has a local/named scope.
+		if ( $this->has_named_scope( $method ) ) {
+			return $this->call_named_scope( $method, $args );
 		}
 
 		throw new Query_Exception( 'Unknown query builder method: ' . $method );
