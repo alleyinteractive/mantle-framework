@@ -9,6 +9,8 @@
 
 namespace Mantle\Framework\Database\Query;
 
+use Closure;
+use Mantle\Framework\Contracts\Database\Scope;
 use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Database\Model\Model_Not_Found_Exception;
 use Mantle\Framework\Support\Collection;
@@ -98,6 +100,13 @@ abstract class Builder {
 	protected $query_where_not_in_aliases = [];
 
 	/**
+	 * Applied global scopes.
+	 *
+	 * @var array
+	 */
+	protected $scopes = [];
+
+	/**
 	 * Constructor.
 	 *
 	 * @param array|string $model Model or array of model class names.
@@ -126,13 +135,15 @@ abstract class Builder {
 	 * Get the model instance for the builder.
 	 *
 	 * @return Model
+	 *
+	 * @throws Query_Exception Thrown when trying to use with multiple models.
 	 */
 	protected function get_model_instance(): Model {
 		if ( is_array( $this->model ) ) {
 			throw new Query_Exception( 'Unable to get model instance for multiple models.' );
 		}
 
-		return new $this->model;
+		return new $this->model();
 	}
 
 	/**
@@ -327,7 +338,7 @@ abstract class Builder {
 	 * @param string $scope Scope name.
 	 * @return bool
 	 */
-	public function has_named_scope( string $scope ): bool{
+	public function has_named_scope( string $scope ): bool {
 		// Disable model scopes for multi-model queries.
 		if ( is_array( $this->model ) ) {
 			return false;
@@ -346,7 +357,7 @@ abstract class Builder {
 	protected function call_scope( callable $scope, array $parameters = [] ) {
 		array_unshift( $parameters, $this );
 
-		return $scope( ...array_values($parameters ) ) ?? $this;
+		return $scope( ...array_values( $parameters ) ) ?? $this;
 	}
 
 	/**
@@ -363,6 +374,47 @@ abstract class Builder {
 			},
 			$parameters
 		);
+	}
+
+	/**
+	 * Apply the scopes to the Eloquent builder instance and return it.
+	 *
+	 * @return static
+	 */
+	protected function apply_scopes() {
+		// Ignore query builders across multiple models.
+		if ( is_array( $this->model ) || empty( $this->scopes ) ) {
+			return $this;
+		}
+
+		foreach ( $this->scopes as $identifier => $scope ) {
+			$this->call_scope(
+				function( self $builder ) use ( $scope ) {
+					if ( $scope instanceof Closure ) {
+						return $scope( $builder );
+					}
+
+					if ( $scope instanceof Scope ) {
+						return $scope->apply( $builder, $this->get_model_instance() );
+					}
+				}
+			);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Register a new global scope.
+	 *
+	 * @param  string        $identifier Scope name.
+	 * @param Scope|\Closure $scope Scope callback.
+	 * @return static
+	 */
+	public function with_global_scope( string $identifier, $scope ) {
+		$this->scopes[ $identifier ] = $scope;
+
+		return $this;
 	}
 
 	/**

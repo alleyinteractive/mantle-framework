@@ -28,7 +28,8 @@ abstract class Model implements ArrayAccess, Url_Routable {
 		Attributes,
 		Forward_Calls,
 		Relationships,
-		Concerns\Has_Events;
+		Concerns\Has_Events,
+		Concerns\Has_Global_Scopes;
 
 	/**
 	 * The array of booted models.
@@ -43,6 +44,13 @@ abstract class Model implements ArrayAccess, Url_Routable {
 	 * @var array
 	 */
 	protected static $trait_initializers = [];
+
+	/**
+	 * The array of global scopes on the model.
+	 *
+	 * @var array
+	 */
+	protected static $global_scopes = [];
 
 	/**
 	 * An object's registerable name (post type, taxonomy, etc.).
@@ -100,11 +108,11 @@ abstract class Model implements ArrayAccess, Url_Routable {
 	/**
 	 * Apply the given named scope if possible.
 	 *
-	 * @param  string $scope Scope name.
-	 * @param  array  $parameters Scope parameters.
+	 * @param string $scope Scope name.
+	 * @param array  $parameters Scope parameters.
 	 * @return mixed
 	 */
-	public function call_named_scope($scope, array $parameters = []) {
+	public function call_named_scope( string $scope, array $parameters = [] ) {
 		return $this->{ 'scope' . ucfirst( $scope ) }( ...$parameters );
 	}
 
@@ -314,8 +322,6 @@ abstract class Model implements ArrayAccess, Url_Routable {
 	/**
 	 * Create a new query instance.
 	 *
-	 * @todo Add global scopes for queries.
-	 *
 	 * @return Builder
 	 * @throws Model_Exception Thrown for an unknown query builder for the model.
 	 */
@@ -326,7 +332,23 @@ abstract class Model implements ArrayAccess, Url_Routable {
 			throw new Model_Exception( 'Unknown query builder for model: ' . get_called_class() );
 		}
 
-		return new $builder( get_called_class() );
+		return $this->register_global_scopes(
+			new $builder( get_called_class() )
+		);
+	}
+
+	/**
+	 * Register the global scopes for this builder instance.
+	 *
+	 * @param Builder $builder Builder instance.
+	 * @return Builder
+	 */
+	public function register_global_scopes( Builder $builder ) {
+		foreach ( $this->get_global_scopes() as $identifier => $scope ) {
+			$builder->with_global_scope( $identifier, $scope );
+		}
+
+		return $builder;
 	}
 
 	/**
