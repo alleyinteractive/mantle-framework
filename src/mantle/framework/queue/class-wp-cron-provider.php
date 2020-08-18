@@ -155,6 +155,38 @@ class Wp_Cron_Provider implements Provider {
 	}
 
 	/**
+	 * Check if a job is in the queue.
+	 *
+	 * @param object $job Job instance.
+	 * @param string $queue Queue to compare against.
+	 * @return bool
+	 */
+	public function in_queue( $job, string $queue = null ): bool {
+		$queued_objects = \get_posts(
+			[
+				'fields'         => 'ids',
+				'post_status'    => 'publish',
+				'post_type'      => static::OBJECT_NAME,
+				'posts_per_page' => 100,
+				'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+					[
+						'key'   => '_mantle_queue',
+						'value' => maybe_serialize( $job ),
+					],
+				],
+				'tax_query'      => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+					[
+						'taxonomy' => static::OBJECT_NAME,
+						'terms'    => static::get_queue_term_id( $queue ),
+					],
+				],
+			]
+		);
+
+		return ! empty( $queued_objects );
+	}
+
+	/**
 	 * Get the taxonomy term for a queue.
 	 *
 	 * @param string $name Queue name, optional.

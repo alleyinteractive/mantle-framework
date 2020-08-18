@@ -114,14 +114,14 @@ class Package_Manifest {
 	 */
 	protected function get_manifest(): array {
 		if ( ! is_null( $this->manifest ) ) {
-			return $this->manifest;
+			return (array) $this->manifest;
 		}
 
 		// Skip when the manifest doesn't exist.
 		if ( ! file_exists( $this->manifest_path ) ) {
 			$this->manifest = [];
 
-			return $this->manifest;
+			return (array) $this->manifest;
 		}
 
 		$this->manifest = require_once $this->manifest_path;
