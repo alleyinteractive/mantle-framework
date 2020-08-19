@@ -67,7 +67,7 @@ class Test_Application extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertNotFalse( $_SERVER['__boot_callback'] );
 
 		// Assert that the booting callback happened before the boot one.
-		$this->assertTrue( $_SERVER['__booting_callback'] < $_SERVER['__boot_callback'] );
+		$this->assertTrue( $_SERVER['__booting_callback'] <= $_SERVER['__boot_callback'] );
 	}
 
 	public function test_service_provider_instance() {

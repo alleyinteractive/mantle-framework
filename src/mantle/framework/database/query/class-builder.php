@@ -9,6 +9,9 @@
 
 namespace Mantle\Framework\Database\Query;
 
+use Closure;
+use Mantle\Framework\Contracts\Database\Scope;
+use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Database\Model\Model_Not_Found_Exception;
 use Mantle\Framework\Support\Collection;
 use Mantle\Framework\Support\Str;
@@ -97,6 +100,13 @@ abstract class Builder {
 	protected $query_where_not_in_aliases = [];
 
 	/**
+	 * Applied global scopes.
+	 *
+	 * @var array
+	 */
+	protected $scopes = [];
+
+	/**
 	 * Constructor.
 	 *
 	 * @param array|string $model Model or array of model class names.
@@ -119,6 +129,21 @@ abstract class Builder {
 	 */
 	public function get_model() {
 		return $this->model;
+	}
+
+	/**
+	 * Get the model instance for the builder.
+	 *
+	 * @return Model
+	 *
+	 * @throws Query_Exception Thrown when trying to use with multiple models.
+	 */
+	protected function get_model_instance(): Model {
+		if ( is_array( $this->model ) ) {
+			throw new Query_Exception( 'Unable to get model instance for multiple models.' );
+		}
+
+		return new $this->model();
 	}
 
 	/**
@@ -308,6 +333,91 @@ abstract class Builder {
 	}
 
 	/**
+	 * Determine if the given model has a scope.
+	 *
+	 * @param string $scope Scope name.
+	 * @return bool
+	 */
+	public function has_named_scope( string $scope ): bool {
+		// Disable model scopes for multi-model queries.
+		if ( is_array( $this->model ) ) {
+			return false;
+		}
+
+		return $this->get_model_instance()->has_named_scope( $scope );
+	}
+
+	/**
+	 * Apply the given scope on the current builder instance.
+	 *
+	 * @param callable $scope Scope callback.
+	 * @param array    $parameters Scope parameters.
+	 * @return mixed
+	 */
+	protected function call_scope( callable $scope, array $parameters = [] ) {
+		array_unshift( $parameters, $this );
+
+		return $scope( ...array_values( $parameters ) ) ?? $this;
+	}
+
+	/**
+	 * Apply the given named scope on the current builder instance.
+	 *
+	 * @param string $scope Scope name.
+	 * @param array  $parameters Scope parameters.
+	 * @return mixed
+	 */
+	protected function call_named_scope( string $scope, array $parameters = [] ) {
+		return $this->call_scope(
+			function ( ...$parameters ) use ( $scope ) {
+				return $this->get_model_instance()->call_named_scope( $scope, $parameters );
+			},
+			$parameters
+		);
+	}
+
+	/**
+	 * Apply the scopes to the Eloquent builder instance and return it.
+	 *
+	 * @return static
+	 */
+	protected function apply_scopes() {
+		// Ignore query builders across multiple models.
+		if ( is_array( $this->model ) || empty( $this->scopes ) ) {
+			return $this;
+		}
+
+		foreach ( $this->scopes as $identifier => $scope ) {
+			$this->call_scope(
+				function( self $builder ) use ( $scope ) {
+					if ( $scope instanceof Closure ) {
+						return $scope( $builder );
+					}
+
+					if ( $scope instanceof Scope ) {
+						return $scope->apply( $builder, $this->get_model_instance() );
+					}
+				}
+			);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Register a new global scope.
+	 *
+	 * @param  string        $identifier Scope name.
+	 * @param Scope|\Closure $scope Scope callback.
+	 * @return static
+	 */
+	public function with_global_scope( string $identifier, $scope ) {
+		$this->scopes[ $identifier ] = $scope;
+
+		return $this;
+	}
+
+	/**
 	 * Set the limit of objects to include.
 	 *
 	 * @param int $limit Limit to set.
@@ -359,6 +469,11 @@ abstract class Builder {
 
 		if ( Str::starts_with( $method, 'orderBy' ) ) {
 			return $this->dynamicOrderBy( $method, $args );
+		}
+
+		// Check if the model has a local/named scope.
+		if ( $this->has_named_scope( $method ) ) {
+			return $this->call_named_scope( $method, $args );
 		}
 
 		throw new Query_Exception( 'Unknown query builder method: ' . $method );
