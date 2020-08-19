@@ -132,7 +132,7 @@ class Comment extends Model implements Contracts\Database\Core_Object, Contracts
 	 *
 	 * @return \WP_Comment|null
 	 */
-	public function core_object() {
+	public function core_object(): ?\WP_Comment {
 		$id = $this->id();
 
 		if ( $id ) {

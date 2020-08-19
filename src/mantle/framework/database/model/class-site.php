@@ -113,7 +113,7 @@ class Site extends Model implements Contracts\Database\Core_Object {
 	 *
 	 * @return \WP_Site|null
 	 */
-	public function core_object() {
+	public function core_object(): ?\WP_Site {
 		$id = $this->id();
 
 		if ( $id ) {

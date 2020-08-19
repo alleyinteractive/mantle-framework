@@ -120,7 +120,7 @@ class User extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	/**
 	 * Getter for Object Status
 	 *
-	 * @return string
+	 * @return string|null
 	 */
 	public function status(): ?string {
 		return null;
@@ -140,7 +140,7 @@ class User extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 *
 	 * @return \WP_User|null
 	 */
-	public function core_object() {
+	public function core_object(): ?\WP_User {
 		$id = $this->id();
 
 		if ( $id ) {
