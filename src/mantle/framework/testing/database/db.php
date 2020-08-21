@@ -5,9 +5,11 @@
  * Allows unit tests to be run through SQLite for speed improvements.
  *
  * @link https://github.com/aaemnnosttv/wp-sqlite-db/
+ *
+ * @package Mantle
  */
 
-use WP_SQLite_DB\CreateQuery;
+use Mantle\Framework\Testing\Database\CreateQuery;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -216,4 +218,4 @@ function wp_install( $blog_title, $user_name, $user_email, $public, $deprecated 
 		];
 }
 
-$GLOBALS['wpdb'] = new WP_SQLite_DB\SQLite_DB();
+$GLOBALS['wpdb'] = new Mantle\Framework\Testing\Database\SQLite_DB();

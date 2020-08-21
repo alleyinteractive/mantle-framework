@@ -1,6 +1,5 @@
 <?php
-// namespace Mantle\Framework\Testing\Database;
-namespace WP_SQLite_DB;
+namespace Mantle\Framework\Testing\Database;
 
 /**
  * This class extends wpdb and replaces it.
