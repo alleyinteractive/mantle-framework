@@ -13,6 +13,9 @@ use function Mantle\Framework\Testing\tests_add_filter;
 require_once __DIR__ . '/class-utils.php';
 require_once __DIR__ . '/class-wp-die.php';
 
+// Setup SQLite.
+require_once __DIR__ . '/database/sqlite.php';
+
 if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) ) {
 	$config_file_path = WP_TESTS_CONFIG_FILE_PATH;
 } else {
