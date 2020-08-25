@@ -74,6 +74,13 @@ class Application extends Container\Container implements Application_Contract {
 	protected $service_providers = [];
 
 	/**
+	 * Storage of the overridden environment name.
+	 *
+	 * @var string
+	 */
+	protected $environment;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param string $base_path Base path to set.
@@ -357,6 +364,10 @@ class Application extends Container\Container implements Application_Contract {
 	 * @return string
 	 */
 	public function environment(): string {
+		if ( ! empty( $this->environment ) ) {
+			return $this->environment;
+		}
+
 		if ( defined( 'VIP_GO_APP_ENVIRONMENT' ) && ! empty( VIP_GO_APP_ENVIRONMENT ) ) {
 			return (string) VIP_GO_APP_ENVIRONMENT;
 		}
@@ -376,6 +387,17 @@ class Application extends Container\Container implements Application_Contract {
 	 */
 	public function is_environment( ...$environments ): bool {
 		return in_array( $this->environment(), (array) $environments, true );
+	}
+
+	/**
+	 * Set the environment for the application.
+	 *
+	 * @param string $environment Environment to set.
+	 * @return static
+	 */
+	public function set_environment( string $environment ) {
+		$this->environment = $environment;
+		return $this;
 	}
 
 	/**
