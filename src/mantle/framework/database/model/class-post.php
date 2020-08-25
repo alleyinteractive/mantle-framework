@@ -170,7 +170,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 *
 	 * @return \WP_Post|null
 	 */
-	public function core_object() {
+	public function core_object(): ?\WP_Post {
 		$id = $this->id();
 
 		if ( $id ) {
@@ -238,7 +238,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 * @return \WP_Term[]
 	 */
 	public function get_terms( string $taxonomy ): array {
-		$terms = \get_the_terms( $taxonomy );
+		$terms = \get_the_terms( $this->id(), $taxonomy );
 
 		if ( empty( $terms ) || \is_wp_error( $terms ) ) {
 			return [];
@@ -337,7 +337,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 			throw new Model_Exception( 'Term taxonomy not able to be inferred.' );
 		}
 
-		\wp_remove_object_terms( $this->id, $terms, $taxonomy );
+		\wp_remove_object_terms( $this->id(), $terms, $taxonomy );
 
 		return $this;
 	}

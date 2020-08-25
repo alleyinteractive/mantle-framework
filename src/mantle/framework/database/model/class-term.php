@@ -164,7 +164,7 @@ class Term extends Model implements Core_Object, Updatable {
 	 *
 	 * @return \WP_Term|null
 	 */
-	public function core_object() {
+	public function core_object(): ?\WP_Term {
 		$id = $this->id();
 
 		if ( $id ) {
