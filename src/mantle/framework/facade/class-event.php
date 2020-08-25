@@ -22,6 +22,8 @@ namespace Mantle\Framework\Facade;
  * @method static void listen(string|array $events, \Closure|string $listener)
  * @method static void push(string $event, array $payload = [])
  * @method static void subscribe(object|string $subscriber)
+ * @method static void action(string $action, callable $callback)
+ * @method static void filter(string $filter, callable $callback)
  */
 class Event extends Facade {
 	/**
