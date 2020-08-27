@@ -7,6 +7,9 @@
 
 namespace Mantle\Framework\Testing\Concerns;
 
+use Mantle\Framework\Database\Model\Post;
+use Mantle\Framework\Database\Model\Term;
+use Mantle\Framework\Database\Model\User;
 use PHPUnit\Framework\Assert as PHPUnit;
 
 /**
@@ -211,8 +214,6 @@ trait Assertions {
 	/**
 	 * Assert that a given object is equivalent to the global queried object.
 	 *
-	 * @todo Add support for passing a Mantle Model to compare against a core WP object.
-	 *
 	 * @param Object $object Expected object.
 	 */
 	public static function assertQueriedObject( $object ) {
@@ -224,6 +225,15 @@ trait Assertions {
 
 		// Next, assert identifying data about the object.
 		switch ( true ) {
+			case $object instanceof Post:
+			case $object instanceof User:
+				PHPUnit::assertSame( $object->id(), $queried_object->ID );
+				break;
+
+			case $object instanceof Term:
+				PHPUnit::assertSame( $object->id(), $queried_object->term_id );
+				break;
+
 			case $object instanceof \WP_Post:
 			case $object instanceof \WP_User:
 				PHPUnit::assertSame( $object->ID, $queried_object->ID );
@@ -237,5 +247,121 @@ trait Assertions {
 				PHPUnit::assertSame( $object->name, $queried_object->name );
 				break;
 		}
+	}
+
+	/**
+	 * Assert if a post exists given a set of arguments.
+	 *
+	 * @param array $arguments Arguments to query against.
+	 */
+	public function assertPostExists( array $arguments ) {
+		$posts = \get_posts(
+			array_merge(
+				[
+					'fields'         => 'ids',
+					'posts_per_page' => 1,
+				],
+				$arguments
+			)
+		);
+
+		PHPUnit::assertNotEmpty( $posts );
+	}
+
+	/**
+	 * Assert if a post does not exist given a set of arguments.
+	 *
+	 * @param array $arguments Arguments to query against.
+	 */
+	public function assertPostDoesNotExists( array $arguments ) {
+		$posts = \get_posts(
+			array_merge(
+				[
+					'fields'         => 'ids',
+					'posts_per_page' => 1,
+				],
+				$arguments
+			)
+		);
+
+		PHPUnit::assertEmpty( $posts );
+	}
+
+	/**
+	 * Assert if a term exists given a set of arguments.
+	 *
+	 * @param array $arguments Arguments to query against.
+	 */
+	public function assertTermExists( array $arguments ) {
+		$terms = \get_terms(
+			array_merge(
+				[
+					'fields'     => 'ids',
+					'count'      => 1,
+					'hide_empty' => false,
+				],
+				$arguments
+			)
+		);
+
+		PHPUnit::assertNotEmpty( $terms );
+	}
+
+	/**
+	 * Assert if a term does not exist given a set of arguments.
+	 *
+	 * @param array $arguments Arguments to query against.
+	 */
+	public function assertTermDoesNotExists( array $arguments ) {
+		$terms = \get_terms(
+			array_merge(
+				[
+					'fields'     => 'ids',
+					'count'      => 1,
+					'hide_empty' => false,
+				],
+				$arguments
+			)
+		);
+
+		PHPUnit::assertEmpty( $terms );
+	}
+
+	/**
+	 * Assert if a user exists given a set of arguments.
+	 *
+	 * @param array $arguments Arguments to query against.
+	 */
+	public function assertUserExists( array $arguments ) {
+		$users = \get_users(
+			array_merge(
+				[
+					'fields' => 'ids',
+					'count'  => 1,
+				],
+				$arguments
+			)
+		);
+
+		PHPUnit::assertNotEmpty( $users );
+	}
+
+	/**
+	 * Assert if a user does not exist given a set of arguments.
+	 *
+	 * @param array $arguments Arguments to query against.
+	 */
+	public function assertUserDoesNotExists( array $arguments ) {
+		$users = \get_users(
+			array_merge(
+				[
+					'fields' => 'ids',
+					'count'  => 1,
+				],
+				$arguments
+			)
+		);
+
+		PHPUnit::assertEmpty( $users );
 	}
 }
