@@ -2,6 +2,8 @@
 /**
  * Interacts_With_Requests trait file.
  *
+ * @phpcs:disable WordPress.NamingConventions.ValidFunctionName
+ *
  * @package Mantle
  */
 
@@ -11,6 +13,7 @@ use Closure;
 use Mantle\Framework\Support\Collection;
 use Mantle\Framework\Support\Str;
 use Mantle\Framework\Testing\Mock_Http_Response;
+use PHPUnit\Framework\Assert as PHPUnit;
 
 use function Mantle\Framework\Helpers\collect;
 
@@ -26,10 +29,18 @@ trait Interacts_With_Requests {
 	protected $stub_callbacks;
 
 	/**
+	 * Storage of request URLs.
+	 *
+	 * @var array
+	 */
+	protected $requested_urls;
+
+	/**
 	 * Setup the trait.
 	 */
 	public function interacts_with_requests_set_up() {
 		$this->stub_callbacks = collect();
+		$this->requested_urls = [];
 
 		\add_filter( 'pre_http_request', [ $this, 'pre_http_request' ], PHP_INT_MAX, 3 );
 	}
@@ -54,25 +65,29 @@ trait Interacts_With_Requests {
 	 *               not false otherwise.
 	 */
 	public function pre_http_request( $preempt, $request_args, $url ) {
-		if ( $this->stub_callbacks->is_empty() ) {
-			return $preempt;
+		if ( ! isset( $this->requested_urls[ $url ] ) ) {
+			$this->requested_urls[ $url ] = 1;
+		} else {
+			$this->requested_urls[ $url ]++;
 		}
 
-		foreach ( $this->stub_callbacks as $callback ) {
-			$response = $callback( $url, $request_args );
-			if ( $response instanceof Mock_Http_Response ) {
-				return $response->to_array();
-			}
+		if ( ! $this->stub_callbacks->is_empty() ) {
+			foreach ( $this->stub_callbacks as $callback ) {
+				$response = $callback( $url, $request_args );
+				if ( $response instanceof Mock_Http_Response ) {
+					return $response->to_array();
+				}
 
-			if ( ! is_null( $response ) ) {
-				return $response;
+				if ( ! is_null( $response ) ) {
+					return $response;
+				}
 			}
 		}
 
 		// To aid in debugging, print a message to the console that this test is making an actual HTTP request
 		// which it probably shouldn't be.
 		printf(
-			"No faked HTTP response found, making an actual HTTP request. [%s]",
+			'No faked HTTP response found, making an actual HTTP request. [%s]',
 			esc_url( $url )
 		);
 
@@ -145,5 +160,47 @@ trait Interacts_With_Requests {
 				? $response( $request_url, $request_args )
 				: $response;
 		};
+	}
+
+	/**
+	 * Assert that a request was sent.
+	 *
+	 * @param string $url URL to check against.
+	 * @param int    $expected_times Number of times the request should have been sent, optional.
+	 */
+	public function assertRequestSent( string $url, int $expected_times = null ) {
+		foreach ( $this->requested_urls as $request_url => $times ) {
+			if ( ! Str::is( $url, $request_url ) ) {
+				continue;
+			}
+
+			PHPUnit::assertTrue( true );
+
+			if ( $expected_times ) {
+				$this->assertEquals( $expected_times, $times );
+			}
+
+			return;
+		}
+
+		PHPUnit::assertTrue( false, 'The URL was not requested.' );
+	}
+
+	/**
+	 * Assert that a request was not sent.
+	 *
+	 * @param string $url URL to check against.
+	 */
+	public function assertRequestNotSent( string $url ) {
+		foreach ( $this->requested_urls as $request_url => $times ) {
+			if ( ! Str::is( $url, $request_url ) ) {
+				continue;
+			}
+
+			PHPUnit::assertTrue( false, 'The URL was requested.' );
+			return;
+		}
+
+		PHPUnit::assertTrue( true );
 	}
 }

@@ -102,5 +102,8 @@ class Test_Interacts_With_Requests extends Test_Case {
 
 		$response = wp_remote_get( 'https://alley.co/' );
 		$this->assertWPError( $response );
+
+		$this->assertRequestSent( 'https://alley.co/', 1 );
+		$this->assertRequestNotSent( 'https://anothersite.com/' );
 	}
 }
