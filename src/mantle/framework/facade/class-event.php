@@ -11,7 +11,7 @@ namespace Mantle\Framework\Facade;
  * Event Facade
  *
  * @method static \Closure create_class_listener(string $listener, bool $wildcard = false)
- * @method static \Closure make_istener(\Closure|string $listener, bool $wildcard = false)
+ * @method static \Closure make_listener(\Closure|string $listener, bool $wildcard = false)
  * @method static array get_listeners(string $eventName)
  * @method static array|null dispatch(string|object $event, mixed $payload = [], bool $halt = false)
  * @method static array|null until(string|object $event, mixed $payload = [])
