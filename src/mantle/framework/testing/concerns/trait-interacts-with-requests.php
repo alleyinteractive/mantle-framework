@@ -71,7 +71,10 @@ trait Interacts_With_Requests {
 
 		// To aid in debugging, print a message to the console that this test is making an actual HTTP request
 		// which it probably shouldn't be.
-		echo "No faked HTTP response found, making an actual HTTP request. [{$url}]"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		printf(
+			"No faked HTTP response found, making an actual HTTP request. [%s]",
+			esc_url( $url )
+		);
 
 		return $preempt;
 	}
