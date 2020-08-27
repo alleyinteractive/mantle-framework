@@ -368,11 +368,6 @@ class Application extends Container\Container implements Application_Contract {
 			return $this->environment;
 		}
 
-		$environment = wp_get_environment_type();
-		if ( ! empty( $environment ) ) {
-			return (string) $environment;
-		}
-
 		if ( defined( 'VIP_GO_APP_ENVIRONMENT' ) && ! empty( VIP_GO_APP_ENVIRONMENT ) ) {
 			return (string) VIP_GO_APP_ENVIRONMENT;
 		}
