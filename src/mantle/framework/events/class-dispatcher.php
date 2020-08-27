@@ -22,6 +22,7 @@ use function Mantle\Framework\Helpers\tap;
  * Event Dispatcher
  */
 class Dispatcher implements Dispatcher_Contract {
+	use WordPress_Action;
 
 	/**
 	 * The IoC container instance.
