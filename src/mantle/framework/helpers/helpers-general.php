@@ -2,6 +2,8 @@
 /**
  * This file contains assorted helpers
  *
+ * @phpcs:disable Squiz.Commenting.FunctionComment
+ *
  * @package Mantle
  */
 
