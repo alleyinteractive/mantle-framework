@@ -12,6 +12,7 @@ namespace Mantle\Framework\Helpers;
 use Countable;
 use Exception;
 use Mantle\Framework\Container\Container;
+use Mantle\Framework\Events\Dispatcher;
 use Mantle\Framework\Database\Factory\Factory_Builder;
 use Mantle\Framework\Support\Collection;
 use Mantle\Framework\Support\Higher_Order_Tap_Proxy;
@@ -309,4 +310,28 @@ function factory( $class, $amount = null ) {
 	}
 
 	return $factory->of( $class );
+}
+
+/**
+ * Add a WordPress action with type-hint support.
+ *
+ * @param string   $action Action to listen to.
+ * @param callable $callback Callback to invoke.
+ * @param int      $priority
+ * @return void
+ */
+function add_action( string $hook, callable $callable, int $priority = 10 ): void {
+	app( Dispatcher::class )->action( $hook, $callable, $priority );
+}
+
+/**
+ * Add a WordPress filter with type-hint support.
+ *
+ * @param string   $action Action to listen to.
+ * @param callable $callback Callback to invoke.
+ * @param int      $priority
+ * @return void
+ */
+function add_filter( string $hook, callable $callable, int $priority = 10 ): void {
+	app( Dispatcher::class )->filter( $hook, $callable, $priority );
 }
