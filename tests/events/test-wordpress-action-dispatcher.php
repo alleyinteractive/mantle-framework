@@ -183,8 +183,8 @@ class Test_WordPress_Action_Dispatcher extends Test_Case {
 	public function test_helpers() {
 		add_filter(
 			'test_filter_handler_typehint',
-			function( array $string ) {
-				return $string;
+			function( array $value ) {
+				return $value;
 			}
 		);
 
