@@ -123,6 +123,7 @@ class Mock_Http_Response implements Arrayable {
 	 * Also sets the proper JSON Content-Type header.
 	 *
 	 * @param array|string $payload JSON Payload to use.
+	 * @return Mock_Http_Response This object.
 	 */
 	public function with_json( $payload ): Mock_Http_Response {
 		return $this
@@ -134,6 +135,7 @@ class Mock_Http_Response implements Arrayable {
 	 * Set the response as a 301 redirect
 	 *
 	 * @param string $url Redirect URL.
+	 * @return Mock_Http_Response This object.
 	 */
 	public function with_redirect( string $url ): Mock_Http_Response {
 		return $this
@@ -145,6 +147,7 @@ class Mock_Http_Response implements Arrayable {
 	 * Set the response as a 302 temporary redirect
 	 *
 	 * @param string $url Redirect URL.
+	 * @return Mock_Http_Response This object.
 	 */
 	public function with_temporary_redirect( string $url ): Mock_Http_Response {
 		return $this

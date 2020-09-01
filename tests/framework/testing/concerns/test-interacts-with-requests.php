@@ -68,7 +68,17 @@ class Test_Interacts_With_Requests extends Test_Case {
 		$response = wp_remote_get( 'https://github.com/' );
 		$this->assertEquals( [ 1, 2, 3 ], json_decode( wp_remote_retrieve_body( $response ) ) );
 	}
+public function test_permanent_redirect_response() {
+		$this->fake_request()->with_redirect( 'https://wordpress.org/', 308 );
 
+		$response = wp_remote_get( 'https://drupal.org/' );
+		$this->assertEquals(
+			'https://wordpress.org/',
+			wp_remote_retrieve_header( $response, 'Location' )
+		);
+
+		$this->assertEquals( 308, wp_remote_retrieve_response_code( $response ) );
+	}
 	public function test_redirect_response() {
 		$this->fake_request()->with_redirect( 'https://wordpress.org/' );
 
