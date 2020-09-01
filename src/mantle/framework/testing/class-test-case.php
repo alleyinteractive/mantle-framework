@@ -18,6 +18,7 @@ use Mantle\Framework\Testing\Concerns\Hooks;
 use Mantle\Framework\Testing\Concerns\Incorrect_Usage;
 use Mantle\Framework\Testing\Concerns\Interacts_With_Container;
 use Mantle\Framework\Testing\Concerns\Interacts_With_Cron;
+use Mantle\Framework\Testing\Concerns\Interacts_With_Requests;
 use Mantle\Framework\Testing\Concerns\Makes_Http_Requests;
 use Mantle\Framework\Testing\Concerns\Network_Admin_Screen;
 use Mantle\Framework\Testing\Concerns\Refresh_Database;
@@ -40,6 +41,7 @@ abstract class Test_Case extends BaseTestCase {
 		Incorrect_Usage,
 		Interacts_With_Container,
 		Interacts_With_Cron,
+		Interacts_With_Requests,
 		Makes_Http_Requests,
 		WordPress_State,
 		WordPress_Authentication;
@@ -114,6 +116,7 @@ abstract class Test_Case extends BaseTestCase {
 				WordPress_Authentication::class,
 				Admin_Screen::class,
 				Network_Admin_Screen::class,
+				Interacts_With_Requests::class,
 			] as $trait
 		) {
 			if ( isset( static::$test_uses[ $trait ] ) ) {
@@ -141,6 +144,7 @@ abstract class Test_Case extends BaseTestCase {
 				WordPress_Authentication::class,
 				Admin_Screen::class,
 				Network_Admin_Screen::class,
+				Interacts_With_Requests::class,
 				Refresh_Database::class,
 			] as $trait
 		) {
