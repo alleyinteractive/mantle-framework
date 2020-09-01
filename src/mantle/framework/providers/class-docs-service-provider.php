@@ -7,7 +7,9 @@
 
 namespace Mantle\Framework\Providers;
 
-use League\CommonMark\GithubFlavoredMarkdownConverter as MarkdownConverter;
+use League\CommonMark\CommonMarkConverter;
+use League\CommonMark\Environment;
+use League\CommonMark\Extension\HeadingPermalink\HeadingPermalinkExtension;
 use Mantle\Framework\Service_Provider;
 use Mantle\Framework\Helpers;
 use Mantle\Framework\Support\Collection;
@@ -132,7 +134,17 @@ class Docs_Service_Provider extends Service_Provider {
 			throw new Provider_Exception( 'Unknown documentation page: ' . $current_page );
 		}
 
-		$converter = new MarkdownConverter();
+		$env = Environment::createGFMEnvironment();
+		$env->addExtension( new HeadingPermalinkExtension() );
+
+		$converter = new CommonMarkConverter(
+			[
+				'heading_permalink' => [
+					'symbol' => '#',
+				],
+			],
+			$env
+		);
 		$content   = $converter->convertToHtml( $this->get_file_contents( $current_file['path'] ) );
 
 		?>
@@ -143,6 +155,7 @@ class Docs_Service_Provider extends Service_Provider {
 		<style type="text/css">
 		.mantle-docs-wrap {
 			font-family: 'Open Sans', sans-serif;
+			margin-left: 10px;
 		}
 
 		.mantle-docs-wrap p {
@@ -204,6 +217,47 @@ class Docs_Service_Provider extends Service_Provider {
 			font-size: .8rem;
 			font-weight: 500;
 			line-height: 1.9;
+		}
+
+		.mantle-docs-wrap h1 + ul ul {
+			margin-top: 0.5em;
+			padding: 0;
+		}
+
+		.mantle-docs-wrap h1 + ul ul li {
+			padding-left: 1.5em;
+		}
+
+		.mantle-docs-wrap h1 + ul li {
+			display: block;
+			margin-bottom: 0.5em;
+		}
+
+		.mantle-docs-wrap a.heading-permalink {
+			color: #00000038;
+			float: left;
+			line-height: 1;
+			margin-left: -20px;
+			margin-top: -5px;
+			padding-right: 4px;
+			text-decoration: none;
+			visibility: hidden;
+		}
+
+		.mantle-docs-wrap h1:hover a.heading-permalink,
+		.mantle-docs-wrap h2:hover a.heading-permalink,
+		.mantle-docs-wrap h3:hover a.heading-permalink,
+		.mantle-docs-wrap h4:hover a.heading-permalink,
+		.mantle-docs-wrap h5:hover a.heading-permalink,
+		.mantle-docs-wrap h6:hover a.heading-permalink {
+			visibility: visible;
+		}
+
+		@media screen and (min-width: 55em) {
+			.mantle-docs-wrap,
+			.mantle-docs-wrap p {
+				font-size: 1rem;
+			}
 		}
 		</style>
 		<?php
