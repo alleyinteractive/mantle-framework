@@ -24,11 +24,13 @@ use Mantle\Framework\Testing\Concerns\Network_Admin_Screen;
 use Mantle\Framework\Testing\Concerns\Refresh_Database;
 use Mantle\Framework\Testing\Concerns\WordPress_Authentication;
 use Mantle\Framework\Testing\Concerns\WordPress_State;
+use Mantle\Framework\Testing\Factory\Factory_Container;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use WP;
 use WP_Query;
 use function Mantle\Framework\Helpers\class_basename;
 use function Mantle\Framework\Helpers\class_uses_recursive;
+use function Mantle\Framework\Helpers\collect;
 
 /**
  * Root Test Case for Mantle sites.
@@ -213,5 +215,14 @@ abstract class Test_Case extends BaseTestCase {
 		Alias_Loader::set_instance( null );
 
 		Model::set_event_dispatcher( $this->app['events'] );
+	}
+
+	/**
+	 * Fetches the factory object for generating WordPress fixtures.
+	 *
+	 * @return \Mantle\Framework\Testing\Factory\Factory_Container
+	 */
+	public static function factory() {
+		return new Factory_Container( app() );
 	}
 }

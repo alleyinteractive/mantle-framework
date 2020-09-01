@@ -39,7 +39,7 @@ class Site extends Model implements Contracts\Database\Core_Object {
 	 *
 	 * @param mixed $object Model object.
 	 */
-	public function __construct( $object ) {
+	public function __construct( $object = [] ) {
 		$this->attributes = (array) $object;
 	}
 
