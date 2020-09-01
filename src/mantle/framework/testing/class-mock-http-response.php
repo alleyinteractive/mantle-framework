@@ -135,12 +135,13 @@ class Mock_Http_Response implements Arrayable {
 	 * Set the response as a 301 redirect
 	 *
 	 * @param string $url Redirect URL.
+	 * @param int    $code Status code.
 	 * @return Mock_Http_Response This object.
 	 */
-	public function with_redirect( string $url ): Mock_Http_Response {
+	public function with_redirect( string $url, int $code = 301 ): Mock_Http_Response {
 		return $this
 			->with_header( 'Location', $url )
-			->with_response_code( 301 );
+			->with_response_code( $code );
 	}
 
 	/**
