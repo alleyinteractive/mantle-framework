@@ -183,7 +183,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 * @throws InvalidArgumentException Thrown on invalid router service provider instance.
 	 */
 	protected function send_request_through_router( Request $request ): ?Response {
-		if ( is_admin() ) {
+		if ( is_admin() || ! wp_using_themes() ) {
 			return null;
 		}
 
