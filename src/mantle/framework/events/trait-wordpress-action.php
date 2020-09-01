@@ -23,7 +23,7 @@ use RuntimeException;
  */
 trait WordPress_Action {
 	/**
-	 * Add an WordPress action with type-hint support.
+	 * Add a WordPress action with type-hint support.
 	 *
 	 * @param string   $action Action to listen to.
 	 * @param callable $callback Callback to invoke.
@@ -35,7 +35,7 @@ trait WordPress_Action {
 	}
 
 	/**
-	 * Add an WordPress filter with type-hint support.
+	 * Add a WordPress filter with type-hint support.
 	 *
 	 * @param string   $action Action to listen to.
 	 * @param callable $callback Callback to invoke.

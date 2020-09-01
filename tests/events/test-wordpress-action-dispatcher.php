@@ -10,6 +10,8 @@ use ReflectionParameter;
 use RuntimeException;
 use WP_Query;
 
+use function Mantle\Framework\Helpers\add_action;
+use function Mantle\Framework\Helpers\add_filter;
 use function Mantle\Framework\Helpers\collect;
 
 class Test_WordPress_Action_Dispatcher extends Test_Case {
@@ -176,5 +178,30 @@ class Test_WordPress_Action_Dispatcher extends Test_Case {
 			[ 'touppercase' ],
 			apply_filters( 'test_filter_handler_typehint', 'touppercase' )
 		);
+	}
+
+	public function test_helpers() {
+		add_filter(
+			'test_filter_handler_typehint',
+			function( array $value ) {
+				return $value;
+			}
+		);
+
+		$this->assertEquals(
+			[ 'touppercase' ],
+			apply_filters( 'test_filter_handler_typehint', 'touppercase' )
+		);
+
+		$_SERVER['__test'] = false;
+		add_action(
+			'test_action_to_fire',
+			function() {
+				$_SERVER['__test'] = true;
+			}
+		);
+
+		do_action( 'test_action_to_fire' );
+		$this->assertTrue( $_SERVER['__test'] );
 	}
 }
