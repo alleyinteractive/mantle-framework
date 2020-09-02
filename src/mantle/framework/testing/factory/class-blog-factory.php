@@ -10,6 +10,8 @@ namespace Mantle\Framework\Testing\Factory;
 use Faker\Generator;
 use Mantle\Framework\Database\Model\Site;
 
+use function SML\get_site_object;
+
 /**
  * Blog Factory
  */
@@ -34,7 +36,7 @@ class Blog_Factory extends Factory {
 	 * Creates an object.
 	 *
 	 * @param array $args The arguments.
-	 * @return mixed The result. Can be anything.
+	 * @return int|null
 	 */
 	public function create( $args ) {
 		global $current_site, $base;
@@ -48,16 +50,16 @@ class Blog_Factory extends Factory {
 				],
 				$args
 			)
-		)->core_object();
+		)->id();
 	}
 
 	/**
 	 * Retrieves an object by ID.
 	 *
 	 * @param int $object_id The object ID.
-	 * @return mixed The object. Can be anything.
+	 * @return \WP_Site|null
 	 */
 	public function get_object_by_id( $object_id ) {
-		return \get_site( $object_id );
+		return get_site_object( $object_id );
 	}
 }

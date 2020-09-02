@@ -10,6 +10,8 @@ namespace Mantle\Framework\Testing\Factory;
 use Faker\Generator;
 use Mantle\Framework\Database\Model\Term;
 
+use function SML\get_term_object;
+
 /**
  * Term Factory
  */
@@ -43,7 +45,7 @@ class Term_Factory extends Factory {
 	 * Creates an object.
 	 *
 	 * @param array $args The arguments.
-	 * @return mixed The result. Can be anything.
+	 * @return int|null
 	 */
 	public function create( $args ) {
 		$args = array_merge(
@@ -55,16 +57,16 @@ class Term_Factory extends Factory {
 			$args
 		);
 
-		return Term::create( $args )->core_object();
+		return Term::create( $args )->id();
 	}
 
 	/**
 	 * Retrieves an object by ID.
 	 *
 	 * @param int $object_id The object ID.
-	 * @return mixed The object. Can be anything.
+	 * @return \WP_Term|null
 	 */
 	public function get_object_by_id( $object_id ) {
-		return \get_term( $object_id );
+		return get_term_object( $object_id );
 	}
 }

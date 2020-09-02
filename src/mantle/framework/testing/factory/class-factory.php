@@ -17,7 +17,7 @@ abstract class Factory {
 	 * Creates an object.
 	 *
 	 * @param array $args The arguments.
-	 * @return mixed The result. Can be anything.
+	 * @return mixed
 	 */
 	abstract public function create( $args );
 
@@ -25,7 +25,7 @@ abstract class Factory {
 	 * Retrieves an object by ID.
 	 *
 	 * @param int $object_id The object ID.
-	 * @return mixed The object. Can be anything.
+	 * @return mixed
 	 */
 	abstract public function get_object_by_id( $object_id );
 

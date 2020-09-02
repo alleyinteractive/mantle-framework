@@ -10,6 +10,8 @@ namespace Mantle\Framework\Testing\Factory;
 use Faker\Generator;
 use Mantle\Framework\Database\Model\Post;
 
+use function SML\get_post_object;
+
 /**
  * Post Factory
  */
@@ -34,7 +36,7 @@ class Post_Factory extends Factory {
 	 * Creates an object.
 	 *
 	 * @param array $args The arguments.
-	 * @return mixed The result. Can be anything.
+	 * @return int|null|
 	 */
 	public function create( $args ) {
 		return Post::create(
@@ -48,7 +50,7 @@ class Post_Factory extends Factory {
 				],
 				$args
 			)
-		)->core_object();
+		)->id();
 	}
 
 	/**
@@ -58,6 +60,6 @@ class Post_Factory extends Factory {
 	 * @return mixed The object. Can be anything.
 	 */
 	public function get_object_by_id( $object_id ) {
-		return \get_post( $object_id );
+		return get_post_object( $object_id );
 	}
 }

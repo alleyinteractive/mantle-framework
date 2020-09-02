@@ -1,8 +1,6 @@
 <?php
 namespace Mantle\Framework\Testing;
 
-use function Mantle\Framework\Helpers\factory;
-
 class Test_Core_Test_Shim extends Test_Case {
 	public function test_go_to() {
 		$this->go_to( home_url( '/' ) );
@@ -21,6 +19,10 @@ class Test_Core_Test_Shim extends Test_Case {
 		);
 
 		$this->assertCount( 10, $posts );
+		foreach ( $posts as $post_id ) {
+			$this->assertInternalType( 'int', $post_id );
+		}
+
 		$this->assertEquals( 'draft', get_post_status( array_shift( $posts ) ) );
 	}
 
@@ -28,6 +30,9 @@ class Test_Core_Test_Shim extends Test_Case {
 		$this->assertInstanceOf( \WP_Term::class, static::factory()->category->create_and_get() );
 
 		$terms = static::factory()->tag->create_many( 10 );
+		foreach ( $terms as $term_id ) {
+			$this->assertInternalType( 'int', $term_id );
+		}
 
 		$this->assertCount( 10, $terms );
 	}
