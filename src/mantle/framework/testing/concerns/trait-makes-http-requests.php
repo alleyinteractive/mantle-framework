@@ -126,6 +126,16 @@ trait Makes_Http_Requests {
 	}
 
 	/**
+	 * Legacy support for the WordPress core unit test's `go_to()` method.
+	 *
+	 * @deprecated Use {@see Mantle\Framework\Testing\Concerns\Makes_Http_Requests::get()} instead.
+	 * @param string $url The URL for the request.
+	 */
+	public function go_to( string $url ) {
+		$this->get( $url );
+	}
+
+	/**
 	 * Infer the request URL from an object like a post or term.
 	 *
 	 * @param mixed $source Source from which to infer the URL.
