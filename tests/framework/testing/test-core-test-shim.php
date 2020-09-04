@@ -26,14 +26,42 @@ class Test_Core_Test_Shim extends Test_Case {
 		$this->assertEquals( 'draft', get_post_status( array_shift( $posts ) ) );
 	}
 
-	public function test_term_factory() {
-		$this->assertInstanceOf( \WP_Term::class, static::factory()->category->create_and_get() );
+	public function test_attachment_factory() {
+		$this->shim_test( \WP_Post::class, 'attachment' );
 
-		$terms = static::factory()->tag->create_many( 10 );
-		foreach ( $terms as $term_id ) {
-			$this->assertInternalType( 'int', $term_id );
+		$attachment = static::factory()->attachment->create_and_get();
+		$this->assertEquals( 'attachment', get_post_type( $attachment ) );
+	}
+
+	public function test_term_factory() {
+		$this->shim_test( \WP_Term::class, 'category' );
+		$this->shim_test( \WP_Term::class, 'tag' );
+	}
+
+	public function test_blog_factory() {
+		$this->shim_test( \WP_Site::class, 'blog' );
+	}
+
+	public function test_network_factory() {
+		$this->shim_test( \WP_Network::class, 'network' );
+	}
+
+	public function test_user_factory() {
+		$this->shim_test( \WP_User::class, 'user' );
+	}
+
+	public function test_comment_factory() {
+		$this->shim_test( \WP_Comment::class, 'comment' );
+	}
+
+	protected function shim_test( string $class_name, string $property ) {
+		$this->assertInstanceOf( $class_name, static::factory()->$property->create_and_get() );
+
+		$object_ids = static::factory()->$property->create_many( 10 );
+		foreach ( $object_ids as $object_id ) {
+			$this->assertInternalType( 'int', $object_id );
 		}
 
-		$this->assertCount( 10, $terms );
+		$this->assertCount( 10, $object_ids );
 	}
 }

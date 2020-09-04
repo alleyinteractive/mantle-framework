@@ -19,7 +19,7 @@ abstract class Factory {
 	 * @param array $args The arguments.
 	 * @return mixed
 	 */
-	abstract public function create( $args );
+	abstract public function create( $args = [] );
 
 	/**
 	 * Retrieves an object by ID.

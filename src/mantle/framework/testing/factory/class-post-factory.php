@@ -38,7 +38,7 @@ class Post_Factory extends Factory {
 	 * @param array $args The arguments.
 	 * @return int|null|
 	 */
-	public function create( $args ) {
+	public function create( $args = [] ) {
 		return Post::create(
 			array_merge(
 				[
@@ -57,7 +57,7 @@ class Post_Factory extends Factory {
 	 * Retrieves an object by ID.
 	 *
 	 * @param int $object_id The object ID.
-	 * @return mixed The object. Can be anything.
+	 * @return \WP_Post|null
 	 */
 	public function get_object_by_id( $object_id ) {
 		return get_post_object( $object_id );

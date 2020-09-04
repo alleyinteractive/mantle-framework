@@ -47,7 +47,7 @@ class Term_Factory extends Factory {
 	 * @param array $args The arguments.
 	 * @return int|null
 	 */
-	public function create( $args ) {
+	public function create( $args = [] ) {
 		$args = array_merge(
 			[
 				'description' => trim( $this->faker->paragraph( 2 ) ),

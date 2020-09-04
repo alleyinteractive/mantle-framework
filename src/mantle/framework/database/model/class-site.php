@@ -13,7 +13,7 @@ use Mantle\Framework\Helpers;
 /**
  * Site Model
  */
-class Site extends Model implements Contracts\Database\Core_Object {
+class Site extends Model implements Contracts\Database\Core_Object, Contracts\Database\Updatable {
 	/**
 	 * Attributes for the model from the object
 	 *
@@ -121,5 +121,55 @@ class Site extends Model implements Contracts\Database\Core_Object {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Save the model.
+	 *
+	 * @param array $attributes Attributes to save.
+	 * @return bool
+	 *
+	 * @throws Model_Exception Thrown on error saving.
+	 */
+	public function save( array $attributes = [] ) {
+		$this->set_attributes( $attributes );
+
+		$id = $this->id();
+
+		if ( empty( $id ) ) {
+			$save = \wp_insert_site( $this->get_attributes() );
+		} else {
+			$save = \wp_update_site(
+				$this->id(),
+				array_merge(
+					$this->get_modified_attributes(),
+					[
+						'ID' => $id,
+					]
+				)
+			);
+		}
+
+		if ( \is_wp_error( $save ) ) {
+			throw new Model_Exception( 'Error saving model: ' . $save->get_error_message() );
+		}
+
+		// Set the ID attribute.
+		$this->set_raw_attribute( 'blog_id', $save );
+
+		$this->refresh();
+		$this->reset_modified_attributes();
+
+		return true;
+	}
+
+	/**
+	 * Delete the model.
+	 *
+	 * @param bool $force Force delete the mode.
+	 * @return \WP_Site|\WP_Error The deleted site object on success, or error object on failure.
+	 */
+	public function delete( bool $force = false ) {
+		return \wp_delete_site( $this->id() );
 	}
 }

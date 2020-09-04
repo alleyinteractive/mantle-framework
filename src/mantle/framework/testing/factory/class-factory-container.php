@@ -16,6 +16,13 @@ use Mantle\Framework\Contracts\Container;
  */
 class Factory_Container {
 	/**
+	 * Attachment Factory
+	 *
+	 * @var Attachment_Factory
+	 */
+	public $attachment;
+
+	/**
 	 * Blog Factory
 	 *
 	 * @var Blog_Factory
@@ -28,6 +35,20 @@ class Factory_Container {
 	 * @var Term_Factory
 	 */
 	public $category;
+
+	/**
+	 * Comment Factory
+	 *
+	 * @var Comment_Factory
+	 */
+	public $comment;
+
+	/**
+	 * Network Factory
+	 *
+	 * @var Network_Factory
+	 */
+	public $network;
 
 	/**
 	 * Post Factory
@@ -44,14 +65,28 @@ class Factory_Container {
 	public $tag;
 
 	/**
+	 * User Factory
+	 *
+	 * @var User_Factory
+	 */
+	public $user;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Container $container Container instance.
 	 */
 	public function __construct( Container $container ) {
-		$this->blog     = $container->make( Blog_Factory::class );
-		$this->category = $container->make( Term_Factory::class, [ 'taxonomy' => 'category' ] );
-		$this->post     = $container->make( Post_Factory::class );
-		$this->tag      = $container->make( Term_Factory::class, [ 'taxonomy' => 'post_tag' ] );
+		$this->attachment = $container->make( Attachment_Factory::class );
+		$this->category   = $container->make( Term_Factory::class, [ 'taxonomy' => 'category' ] );
+		$this->comment    = $container->make( Comment_Factory::class );
+		$this->post       = $container->make( Post_Factory::class );
+		$this->tag        = $container->make( Term_Factory::class, [ 'taxonomy' => 'post_tag' ] );
+		$this->user       = $container->make( User_Factory::class );
+
+		if ( is_multisite() ) {
+			$this->blog    = $container->make( Blog_Factory::class );
+			$this->network = $container->make( Network_Factory::class );
+		}
 	}
 }
