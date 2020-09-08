@@ -39,7 +39,7 @@ class Attachment_Factory extends Post_Factory {
 	 * @param array $args The arguments.
 	 * @return int|null|
 	 */
-	public function create( $args = [] ) {
+	public function create( array $args = [] ): ?int {
 		return Attachment::create(
 			array_merge(
 				[
