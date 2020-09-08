@@ -38,7 +38,7 @@ class User_Factory extends Factory {
 	 * @param array $args The arguments.
 	 * @return int|null
 	 */
-	public function create( $args = [] ) {
+	public function create( array $args = [] ): ?int {
 		return User::create(
 			array_merge(
 				[
@@ -57,7 +57,7 @@ class User_Factory extends Factory {
 	 * @param int $object_id The object ID.
 	 * @return \WP_User|null
 	 */
-	public function get_object_by_id( $object_id ) {
+	public function get_object_by_id( int $object_id ): ?\WP_User {
 		return get_user_object( $object_id );
 	}
 }

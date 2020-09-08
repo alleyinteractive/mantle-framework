@@ -37,7 +37,7 @@ class Network_Factory extends Factory {
 	 * @param array $args The arguments to pass to populate_network().
 	 * @return int|null
 	 */
-	public function create( $args = [] ) {
+	public function create( array $args = [] ): ?int {
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
 		if ( ! isset( $args['user'] ) ) {
@@ -67,7 +67,7 @@ class Network_Factory extends Factory {
 	 * @param int $object_id The object ID.
 	 * @return \WP_Network|null
 	 */
-	public function get_object_by_id( $object_id ) {
+	public function get_object_by_id( int $object_id ): ?\WP_Network {
 		return get_network( $object_id );
 	}
 }

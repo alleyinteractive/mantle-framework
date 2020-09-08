@@ -98,7 +98,7 @@ class Attachment_Factory extends Post_Factory {
 	 * @param int $object_id The object ID.
 	 * @return \WP_Post|null
 	 */
-	public function get_object_by_id( $object_id ) {
+	public function get_object_by_id( int $object_id ): ?\WP_Post  {
 		return get_post_object( $object_id );
 	}
 }

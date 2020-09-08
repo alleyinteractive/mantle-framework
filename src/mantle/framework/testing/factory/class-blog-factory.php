@@ -38,7 +38,7 @@ class Blog_Factory extends Factory {
 	 * @param array $args The arguments.
 	 * @return int|null
 	 */
-	public function create( $args = [] ) {
+	public function create( array $args = [] ) {
 		global $current_site, $base;
 		return Site::create(
 			array_merge(

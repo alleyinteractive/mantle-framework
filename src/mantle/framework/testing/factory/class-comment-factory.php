@@ -68,7 +68,7 @@ class Comment_Factory extends Factory {
 	 *
 	 * @return int[] Array with the comment IDs.
 	 */
-	public function create_post_comments( int $post_id, $count = 1, $args = [] ) {
+	public function create_post_comments( int $post_id, int $count = 1, array $args = [] ) {
 		$args['comment_post_ID'] = $post_id;
 		return $this->create_many( $count, $args );
 	}
@@ -79,7 +79,7 @@ class Comment_Factory extends Factory {
 	 * @param int $object_id The object ID.
 	 * @return \WP_Comment|null
 	 */
-	public function get_object_by_id( $object_id ) {
+	public function get_object_by_id( int $object_id ): ?\WP_Comment {
 		return get_comment_object( $object_id );
 	}
 }
