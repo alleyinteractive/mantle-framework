@@ -47,7 +47,7 @@ trait Makes_Http_Requests {
 	/**
 	 * Store flag if the request was for the REST API.
 	 *
-	 * @var bool
+	 * @var string|bool
 	 */
 	protected $rest_api_response = false;
 
@@ -410,33 +410,35 @@ trait Makes_Http_Requests {
 		// phpcs:enable WordPress.WP.GlobalVariablesOverride
 	}
 
+	/**
+	 * Replace the REST API request.
+	 */
 	protected function replace_rest_api() {
+		// Setup the REST API routes.
 		rest_api_init();
 
+		// Ensure the spy server is used.
 		add_filter( 'wp_rest_server_class', [ Utils::class, 'wp_rest_server_class_filter' ], PHP_INT_MAX );
 
+		// Replace the `rest_api_loaded()` method with one we can control.
 		remove_filter( 'parse_request', 'rest_api_loaded' );
 		add_action( 'parse_request', [ $this, 'serve_rest_api_request' ] );
 	}
 
+	/**
+	 * Server the REST API request if applicable.
+	 *
+	 * Mirroring `{@see rest_api_loaded()}`, this method fires the REST API
+	 * request and stores the response.
+	 */
 	public function serve_rest_api_request() {
 		if ( empty( $GLOBALS['wp']->query_vars['rest_route'] ) ) {
 			return;
 		}
 
-		/**
-		 * Whether this is a REST Request.
-		 *
-		 * @since 4.4.0
-		 * @var bool
-		 */
-		// defined( 'REST_REQUEST' ) || define( 'REST_REQUEST', true );
-
 		// Initialize the server.
 		$server = rest_get_server();
-
-		// Fire off the request.
-		$route = untrailingslashit( $GLOBALS['wp']->query_vars['rest_route'] );
+		$route  = untrailingslashit( $GLOBALS['wp']->query_vars['rest_route'] );
 		if ( empty( $route ) ) {
 			$route = '/';
 		}

@@ -488,24 +488,6 @@ class Test_Response {
 	}
 
 	/**
-	 * Assert that the response is a superset of the given JSON.
-	 *
-	 * @param  array $data
-	 * @param  bool  $strict
-	 * @return $this
-	 */
-	// public function assertJson( array $data, $strict = false ) {
-	// 	Test_Case::assertArraySubset(
-	// 		$data,
-	// 		$this->decode_response_json(),
-	// 		$strict,
-	// 		$this->assertJsonMessage( $data )
-	// 	);
-
-	// 	return $this;
-	// }
-
-	/**
 	 * Get the assertion message for assertJson.
 	 *
 	 * @param  array $data
@@ -513,13 +495,12 @@ class Test_Response {
 	 */
 	protected function assertJsonMessage( array $data ) {
 		$expected = wp_json_encode( $data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
-
-		$actual = wp_json_encode( $this->decode_response_json(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
+		$actual   = wp_json_encode( $this->decode_response_json(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
 
 		return 'Unable to find JSON: ' . PHP_EOL . PHP_EOL .
-				"[{$expected}]" . PHP_EOL . PHP_EOL .
-				'within response JSON:' . PHP_EOL . PHP_EOL .
-				"[{$actual}]." . PHP_EOL . PHP_EOL;
+			"[{$expected}]" . PHP_EOL . PHP_EOL .
+			'within response JSON:' . PHP_EOL . PHP_EOL .
+			"[{$actual}]." . PHP_EOL . PHP_EOL;
 	}
 
 	/**
@@ -542,52 +523,52 @@ class Test_Response {
 	 * @return $this
 	 */
 	public function assertExactJson( array $data ) {
-			$actual = wp_json_encode(
-				Arr::sort_recursive(
-					(array) $this->decode_response_json()
-				)
-			);
+		$actual = wp_json_encode(
+			Arr::sort_recursive(
+				(array) $this->decode_response_json()
+			)
+		);
 
-			PHPUnit::assertEquals( wp_json_encode( Arr::sort_recursive( $data ) ), $actual );
+		PHPUnit::assertEquals( wp_json_encode( Arr::sort_recursive( $data ) ), $actual );
 
-			return $this;
+		return $this;
 	}
 
-		/**
-		 * Assert that the response contains the given JSON fragment.
-		 *
-		 * @param  array $data
-		 * @return $this
-		 */
+	/**
+	 * Assert that the response contains the given JSON fragment.
+	 *
+	 * @param  array $data Data to compare.
+	 * @return $this
+	 */
 	public function assertJsonFragment( array $data ) {
-			$actual = wp_json_encode(
-				Arr::sort_recursive(
-					(array) $this->decode_response_json()
-				)
-			);
+		$actual = wp_json_encode(
+			Arr::sort_recursive(
+				(array) $this->decode_response_json()
+			)
+		);
 
 		foreach ( Arr::sort_recursive( $data ) as $key => $value ) {
-				$expected = $this->json_search_strings( $key, $value );
+			$expected = $this->json_search_strings( $key, $value );
 
-				PHPUnit::assertTrue(
-					Str::contains( $actual, $expected ),
-					'Unable to find JSON fragment: ' . PHP_EOL . PHP_EOL .
-						'[' . wp_json_encode( [ $key => $value ] ) . ']' . PHP_EOL . PHP_EOL .
-						'within' . PHP_EOL . PHP_EOL .
-						"[{$actual}]."
-				);
+			PHPUnit::assertTrue(
+				Str::contains( $actual, $expected ),
+				'Unable to find JSON fragment: ' . PHP_EOL . PHP_EOL .
+					'[' . wp_json_encode( [ $key => $value ] ) . ']' . PHP_EOL . PHP_EOL .
+					'within' . PHP_EOL . PHP_EOL .
+					"[{$actual}]."
+			);
 		}
 
-			return $this;
+		return $this;
 	}
 
-		/**
-		 * Assert that the response does not contain the given JSON fragment.
-		 *
-		 * @param  array $data
-		 * @param  bool  $exact
-		 * @return $this
-		 */
+	/**
+	 * Assert that the response does not contain the given JSON fragment.
+	 *
+	 * @param  array $data Data to compare.
+	 * @param  bool  $exact Flag for exact match, defaults to false.
+	 * @return $this
+	 */
 	public function assertJsonMissing( array $data, $exact = false ) {
 		if ( $exact ) {
 				return $this->assertJsonMissingExact( $data );
