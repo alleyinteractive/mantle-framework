@@ -99,7 +99,7 @@ $GLOBALS['_wp_die_disabled'] = false;
 tests_add_filter( 'wp_die_handler', [ WP_Die::class, 'get_toggled_handler' ] );
 
 // Use the Spy REST Server instead of default.
-tests_add_filter( 'wp_rest_server_class', [ Utils::class, 'wp_rest_server_class_filter' ] );
+tests_add_filter( 'wp_rest_server_class', [ Utils::class, 'wp_rest_server_class_filter' ], PHP_INT_MAX );
 
 // Load WordPress.
 require_once ABSPATH . '/wp-settings.php';

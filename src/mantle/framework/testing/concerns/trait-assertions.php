@@ -7,10 +7,14 @@
 
 namespace Mantle\Framework\Testing\Concerns;
 
+use ArrayAccess;
+use InvalidArgumentException;
 use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Term;
 use Mantle\Framework\Database\Model\User;
+use Mantle\Framework\Testing\Constraints\ArraySubset;
 use PHPUnit\Framework\Assert as PHPUnit;
+use PHPUnit\Util\InvalidArgumentHelper;
 
 /**
  * Assorted Test_Cast assertions.
@@ -364,4 +368,35 @@ trait Assertions {
 
 		PHPUnit::assertEmpty( $users );
 	}
+
+	/**
+	 * Asserts that an array has a specified subset.
+	 *
+	 * @param  \ArrayAccess|array $subset
+	 * @param  \ArrayAccess|array $array
+	 * @param  bool               $check_for_identity
+	 * @param  string             $msg
+	 * @return void
+	 */
+	// public static function assertArraySubset( $subset, $array, bool $check_for_identity = false, string $msg = '' ): void {
+	// 	if ( ! ( is_array( $subset ) || $subset instanceof ArrayAccess ) ) {
+	// 		if ( class_exists( InvalidArgumentException::class ) ) {
+	// 				throw InvalidArgumentException::create( 1, 'array or ArrayAccess' );
+	// 		} else {
+	// 				throw InvalidArgumentHelper::factory( 1, 'array or ArrayAccess' );
+	// 		}
+	// 	}
+
+	// 	if ( ! ( is_array( $array ) || $array instanceof ArrayAccess ) ) {
+	// 		if ( class_exists( InvalidArgumentException::class ) ) {
+	// 				throw InvalidArgumentException::create( 2, 'array or ArrayAccess' );
+	// 		} else {
+	// 				throw InvalidArgumentHelper::factory( 2, 'array or ArrayAccess' );
+	// 		}
+	// 	}
+
+	// 	$constraint = new ArraySubset( $subset, $check_for_identity );
+
+	// 	PHPUnit::assertThat( $array, $constraint, $msg );
+	// }
 }

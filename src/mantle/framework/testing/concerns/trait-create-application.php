@@ -64,6 +64,7 @@ trait Create_Application {
 					\Mantle\Framework\Providers\Model_Service_Provider::class,
 					\Mantle\Framework\Providers\Queue_Service_Provider::class,
 					\Mantle\Framework\Database\Factory_Service_Provider::class,
+					\Mantle\Framework\Providers\Route_Service_Provider::class,
 				],
 			],
 			'queue'   => [
