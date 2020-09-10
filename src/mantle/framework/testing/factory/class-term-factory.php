@@ -47,7 +47,7 @@ class Term_Factory extends Factory {
 	 * @param array $args The arguments.
 	 * @return int|null
 	 */
-	public function create( $args ) {
+	public function create( array $args = [] ) {
 		$args = array_merge(
 			[
 				'description' => trim( $this->faker->paragraph( 2 ) ),
@@ -66,7 +66,7 @@ class Term_Factory extends Factory {
 	 * @param int $object_id The object ID.
 	 * @return \WP_Term|null
 	 */
-	public function get_object_by_id( $object_id ) {
+	public function get_object_by_id( int $object_id ) {
 		return get_term_object( $object_id );
 	}
 }

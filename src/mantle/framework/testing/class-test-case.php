@@ -63,6 +63,13 @@ abstract class Test_Case extends BaseTestCase {
 	protected $app;
 
 	/**
+	 * Factory Instance.
+	 *
+	 * @var Factory_Container
+	 */
+	protected static $factory;
+
+	/**
 	 * Runs the routine before setting up all tests.
 	 */
 	public static function setUpBeforeClass(): void {
@@ -106,6 +113,9 @@ abstract class Test_Case extends BaseTestCase {
 		if ( ! $this->app ) {
 			$this->refresh_application();
 		}
+
+		// Clear the test factory.
+		static::$factory = null;
 
 		$this->hooks_set_up();
 
@@ -223,6 +233,10 @@ abstract class Test_Case extends BaseTestCase {
 	 * @return \Mantle\Framework\Testing\Factory\Factory_Container
 	 */
 	public static function factory() {
-		return new Factory_Container( app() );
+		if ( ! isset( static::$factory ) ) {
+			static::$factory = new Factory_Container( app() );
+		}
+
+		return static::$factory;
 	}
 }

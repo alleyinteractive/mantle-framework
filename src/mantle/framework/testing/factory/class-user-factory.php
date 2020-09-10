@@ -1,6 +1,6 @@
 <?php
 /**
- * Blog_Factory class file.
+ * User_Factory class file.
  *
  * @package Mantle
  */
@@ -8,14 +8,14 @@
 namespace Mantle\Framework\Testing\Factory;
 
 use Faker\Generator;
-use Mantle\Framework\Database\Model\Site;
+use Mantle\Framework\Database\Model\User;
 
-use function SML\get_site_object;
+use function SML\get_user_object;
 
 /**
- * Blog Factory
+ * User Factory
  */
-class Blog_Factory extends Factory {
+class User_Factory extends Factory {
 	/**
 	 * Faker instance.
 	 *
@@ -38,15 +38,13 @@ class Blog_Factory extends Factory {
 	 * @param array $args The arguments.
 	 * @return int|null
 	 */
-	public function create( array $args = [] ) {
-		global $current_site, $base;
-		return Site::create(
+	public function create( array $args = [] ): ?int {
+		return User::create(
 			array_merge(
 				[
-					'domain'     => $current_site->domain,
-					'path'       => $base . $this->faker->slug,
-					'title'      => $this->faker->text,
-					'network_id' => $current_site->id,
+					'user_email' => $this->faker->email,
+					'user_login' => $this->faker->userName,
+					'user_pass'  => 'password',
 				],
 				$args
 			)
@@ -57,9 +55,9 @@ class Blog_Factory extends Factory {
 	 * Retrieves an object by ID.
 	 *
 	 * @param int $object_id The object ID.
-	 * @return \WP_Site|null
+	 * @return \WP_User|null
 	 */
 	public function get_object_by_id( int $object_id ) {
-		return get_site_object( $object_id );
+		return get_user_object( $object_id );
 	}
 }

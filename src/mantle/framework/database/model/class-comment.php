@@ -43,7 +43,7 @@ class Comment extends Model implements Contracts\Database\Core_Object, Contracts
 	 *
 	 * @param mixed $object Model object.
 	 */
-	public function __construct( $object ) {
+	public function __construct( $object = [] ) {
 		$this->attributes = (array) $object;
 	}
 
@@ -170,6 +170,7 @@ class Comment extends Model implements Contracts\Database\Core_Object, Contracts
 			throw new Model_Exception( 'Error saving model: ' . $save->get_error_message() );
 		}
 
+		$this->set_raw_attribute( 'comment_ID', $save );
 		$this->store_queued_meta();
 		$this->reset_modified_attributes();
 

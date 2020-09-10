@@ -4260,7 +4260,12 @@ class Test_Collection extends WP_UnitTestCase {
 	 */
 	public function test_from_wp_query( $collection ) {
 		static::factory()->post->create_many( 5 );
-		$query = new \WP_Query( [ 'post_type' => 'post' ] );
+		$query = new \WP_Query(
+			[
+				'posts_per_page' => 5,
+				'post_type'      => 'post',
+			]
+		);
 		$c = $collection::from( $query );
 
 		$this->assertSame( 5, count( $c->all() ) );

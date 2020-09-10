@@ -19,7 +19,7 @@ abstract class Factory {
 	 * @param array $args The arguments.
 	 * @return mixed
 	 */
-	abstract public function create( $args );
+	abstract public function create( array $args = [] );
 
 	/**
 	 * Retrieves an object by ID.
@@ -27,7 +27,7 @@ abstract class Factory {
 	 * @param int $object_id The object ID.
 	 * @return mixed
 	 */
-	abstract public function get_object_by_id( $object_id );
+	abstract public function get_object_by_id( int $object_id );
 
 	/**
 	 * Creates multiple objects.

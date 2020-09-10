@@ -120,24 +120,6 @@ class Test_Container_Call extends TestCase {
 		$this->assertEquals( [ 'foo', 'bar' ], $result );
 	}
 
-	public function testClosureCallWithInjectedDependency() {
-		$container = new Container();
-		$container->call(
-			function ( ContainerCallConcreteStub $stub ) {
-			},
-			[ 'foo' => 'bar' ]
-		);
-
-		$container->call(
-			function ( ContainerCallConcreteStub $stub ) {
-			},
-			[
-				'foo'  => 'bar',
-				'stub' => new ContainerCallConcreteStub(),
-			]
-		);
-	}
-
 	public function testCallWithDependencies() {
 		$container = new Container();
 		$result    = $container->call(
