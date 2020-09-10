@@ -79,4 +79,11 @@ class Test_Makes_Http_Requests extends Test_Case {
 			->assertJsonPath( 'id', $post_id )
 			->assertJsonPath( 'title.rendered', get_the_title( $post_id ) );
 	}
+
+	public function test_multiple_requests() {
+		$this->test_get_singular();
+		$this->test_get_mantle_route();
+		$this->test_post_mantle_route();
+		$this->test_rest_api_route();
+	}
 }
