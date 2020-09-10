@@ -49,7 +49,7 @@ trait Makes_Http_Requests {
 	 *
 	 * @var bool
 	 */
-	protected $is_rest_api = false;
+	protected $rest_api_response = false;
 
 	/**
 	 * Define additional headers to be sent with the request.
@@ -240,7 +240,6 @@ trait Makes_Http_Requests {
 		};
 
 		$intercept_redirect = function( $location, $status ) use ( &$response_status, &$response_headers ) {
-			var_dump('redirect', debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS));return;
 			$response_status              = $status;
 			$response_headers['Location'] = $location;
 			throw new WP_Redirect_Exception();
@@ -250,18 +249,18 @@ trait Makes_Http_Requests {
 		add_filter( 'wp_using_themes', '__return_true', 9999 );
 
 		// Attempt to run the query through the Mantle router.
-		// if ( isset( $this->app['router'] ) ) {
-		// 	$kernel   = new HttpKernel( $this->app, $this->app['router'] );
-		// 	$response = $kernel->send_request_through_router( Request::capture() );
+		if ( isset( $this->app['router'] ) ) {
+			$kernel   = new HttpKernel( $this->app, $this->app['router'] );
+			$response = $kernel->send_request_through_router( Request::capture() );
 
-		// 	if ( $response ) {
-		// 		$response = new Test_Response(
-		// 			$response->getContent(),
-		// 			$response->getStatusCode(),
-		// 			$response->headers->all()
-		// 		);
-		// 	}
-		// }
+			if ( $response ) {
+				$response = new Test_Response(
+					$response->getContent(),
+					$response->getStatusCode(),
+					$response->headers->all()
+				);
+			}
+		}
 
 		// Attempt to run the query through the Mantle router.
 		if ( empty( $response ) ) {
@@ -269,24 +268,26 @@ trait Makes_Http_Requests {
 			add_filter( 'wp_headers', $intercept_headers, 9999 );
 			add_filter( 'wp_redirect', $intercept_redirect, 9999, 2 );
 
-			// ob_start();
+			ob_start();
 
 			$this->setup_wordpress_query();
-			var_dump('did setup_wordpress_query');
 
-			require ABSPATH . WPINC . '/template-loader.php';
-			// try {
-			// 	// Execute the request, inasmuch as WordPress would.
-			// 	require ABSPATH . WPINC . '/template-loader.php';
-			// } catch ( Exception $e ) { // phpcs:ignore
-			// 	// Mantle Exceptions are thrown to prevent some code from running, e.g.
-			// 	// the tail end of wp_redirect().
-			// 	var_dump($e);
-			// }
+			if ( $this->rest_api_response ) {
+				// Use the response from the REST API server.
+				ob_end_clean();
 
-			$response_content = '';
-			// $response_content = ob_get_clean();
-			// var_dump('$response_content', $response_content);
+				$response_content = $this->rest_api_response;
+			} else {
+				try {
+					// Execute the request, inasmuch as WordPress would.
+					require ABSPATH . WPINC . '/template-loader.php';
+				} catch ( Exception $e ) { // phpcs:ignore
+					// Mantle Exceptions are thrown to prevent some code from running, e.g.
+					// the tail end of wp_redirect().
+				}
+
+				$response_content = ob_get_clean();
+			}
 
 			remove_filter( 'status_header', $intercept_status, 9999 );
 			remove_filter( 'wp_headers', $intercept_headers, 9999 );
@@ -338,7 +339,7 @@ trait Makes_Http_Requests {
 			}
 		}
 
-		$this->is_rest_api = false;
+		$this->rest_api_response = false;
 	}
 
 	/**
@@ -402,18 +403,10 @@ trait Makes_Http_Requests {
 		$GLOBALS['wp']->private_query_vars = $private_query_vars;
 
 		Utils::cleanup_query_vars();
-
 		$this->replace_rest_api();
 
-		// add_filter( 'wp_rest_server_class', [ Utils::class, 'wp_rest_server_class_filter' ], PHP_INT_MAX );
-		// remove_filter( 'parse_request', 'rest_api_loaded' );
-		// add_action( 'parse_request', [ $this, 'serve_rest_api_request' ] );
-
-		var_dump('doing main');
-		// global $wp_filter;
-		// var_dump($wp_filter[ 'wp_rest_server_class' ]);
 		$GLOBALS['wp']->main();
-		var_dump('did main');exit;
+
 		// phpcs:enable WordPress.WP.GlobalVariablesOverride
 	}
 
@@ -424,11 +417,9 @@ trait Makes_Http_Requests {
 
 		remove_filter( 'parse_request', 'rest_api_loaded' );
 		add_action( 'parse_request', [ $this, 'serve_rest_api_request' ] );
-		add_action( 'parse_request', [ $this, 'handle_rest_api_response' ] );
 	}
 
 	public function serve_rest_api_request() {
-		var_dump('serve_rest_api_request');
 		if ( empty( $GLOBALS['wp']->query_vars['rest_route'] ) ) {
 			return;
 		}
@@ -439,7 +430,7 @@ trait Makes_Http_Requests {
 		 * @since 4.4.0
 		 * @var bool
 		 */
-		define( 'REST_REQUEST', true );
+		// defined( 'REST_REQUEST' ) || define( 'REST_REQUEST', true );
 
 		// Initialize the server.
 		$server = rest_get_server();
@@ -452,14 +443,9 @@ trait Makes_Http_Requests {
 
 		$server->serve_request( $route );
 
-		if ( ! empty( $server->sent_body ) ) {
-			$this->is_rest_api = true;
+		if ( isset( $server->sent_body ) ) {
+			$this->rest_api_response = $server->sent_body;
 		}
-	}
-
-	public function handle_rest_api_response() {
-		$server = rest_get_server();
-		// var_dump($server->sent_body);exit;
 	}
 
 	/**
