@@ -403,6 +403,7 @@ trait Makes_Http_Requests {
 		$GLOBALS['wp']->private_query_vars = $private_query_vars;
 
 		Utils::cleanup_query_vars();
+
 		$this->replace_rest_api();
 
 		$GLOBALS['wp']->main();
@@ -414,7 +415,6 @@ trait Makes_Http_Requests {
 	 * Replace the REST API request.
 	 */
 	protected function replace_rest_api() {
-		// Setup the REST API routes.
 		rest_api_init();
 
 		// Ensure the spy server is used.
