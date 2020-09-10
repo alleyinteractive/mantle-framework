@@ -67,7 +67,7 @@ class Network_Factory extends Factory {
 	 * @param int $object_id The object ID.
 	 * @return \WP_Network|null
 	 */
-	public function get_object_by_id( int $object_id ): ?\WP_Network {
+	public function get_object_by_id( int $object_id ) {
 		return get_network( $object_id );
 	}
 }

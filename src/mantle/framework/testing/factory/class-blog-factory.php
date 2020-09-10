@@ -59,7 +59,7 @@ class Blog_Factory extends Factory {
 	 * @param int $object_id The object ID.
 	 * @return \WP_Site|null
 	 */
-	public function get_object_by_id( $object_id ) {
+	public function get_object_by_id( int $object_id ) {
 		return get_site_object( $object_id );
 	}
 }

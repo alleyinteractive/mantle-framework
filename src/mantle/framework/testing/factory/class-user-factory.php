@@ -57,7 +57,7 @@ class User_Factory extends Factory {
 	 * @param int $object_id The object ID.
 	 * @return \WP_User|null
 	 */
-	public function get_object_by_id( int $object_id ): ?\WP_User {
+	public function get_object_by_id( int $object_id ) {
 		return get_user_object( $object_id );
 	}
 }

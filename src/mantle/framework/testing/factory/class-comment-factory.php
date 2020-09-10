@@ -79,7 +79,7 @@ class Comment_Factory extends Factory {
 	 * @param int $object_id The object ID.
 	 * @return \WP_Comment|null
 	 */
-	public function get_object_by_id( int $object_id ): ?\WP_Comment {
+	public function get_object_by_id( int $object_id ) {
 		return get_comment_object( $object_id );
 	}
 }
