@@ -83,7 +83,6 @@ class Spy_REST_Server extends WP_REST_Server {
 	 * @return null|false Null if not served and a HEAD request, false otherwise.
 	 */
 	public function serve_request( $path = null ) {
-
 		ob_start();
 		$result          = parent::serve_request( $path );
 		$this->sent_body = ob_get_clean();

@@ -8,6 +8,8 @@
 namespace Mantle\Framework\Testing\Concerns;
 
 use Mantle\Framework\Database\Model\Model;
+use Mantle\Framework\Http\Kernel as HttpKernel;
+use Mantle\Framework\Http\Request;
 use Mantle\Framework\Support\Str;
 use Mantle\Framework\Testing\Exceptions\Exception;
 use Mantle\Framework\Testing\Exceptions\WP_Redirect_Exception;
@@ -41,6 +43,13 @@ trait Makes_Http_Requests {
 	 * @var bool
 	 */
 	protected $follow_redirects = false;
+
+	/**
+	 * Store flag if the request was for the REST API.
+	 *
+	 * @var string|bool
+	 */
+	protected $rest_api_response = false;
 
 	/**
 	 * Define additional headers to be sent with the request.
@@ -236,32 +245,59 @@ trait Makes_Http_Requests {
 			throw new WP_Redirect_Exception();
 		};
 
-		add_filter( 'status_header', $intercept_status, 9999, 2 );
-		add_filter( 'wp_headers', $intercept_headers, 9999 );
-		add_filter( 'wp_redirect', $intercept_redirect, 9999, 2 );
 		add_filter( 'exit_on_http_head', '__return_false', 9999 );
 		add_filter( 'wp_using_themes', '__return_true', 9999 );
 
-		ob_start();
-		$this->setup_wordpress_query();
+		// Attempt to run the query through the Mantle router.
+		if ( isset( $this->app['router'] ) ) {
+			$kernel   = new HttpKernel( $this->app, $this->app['router'] );
+			$response = $kernel->send_request_through_router( Request::capture() );
 
-		try {
-			// Execute the request, inasmuch as WordPress would.
-			require ABSPATH . WPINC . '/template-loader.php';
-		} catch ( Exception $e ) { // phpcs:ignore
-			// Mantle Exceptions are thrown to prevent some code from running, e.g.
-			// the tail end of wp_redirect().
+			if ( $response ) {
+				$response = new Test_Response(
+					$response->getContent(),
+					$response->getStatusCode(),
+					$response->headers->all()
+				);
+			}
 		}
 
-		$response_content = ob_get_clean();
+		// Attempt to run the query through the Mantle router.
+		if ( empty( $response ) ) {
+			add_filter( 'status_header', $intercept_status, 9999, 2 );
+			add_filter( 'wp_headers', $intercept_headers, 9999 );
+			add_filter( 'wp_redirect', $intercept_redirect, 9999, 2 );
 
-		remove_filter( 'status_header', $intercept_status, 9999 );
-		remove_filter( 'wp_headers', $intercept_headers, 9999 );
-		remove_filter( 'wp_redirect', $intercept_redirect, 9999 );
+			ob_start();
+
+			$this->setup_wordpress_query();
+
+			if ( $this->rest_api_response ) {
+				// Use the response from the REST API server.
+				ob_end_clean();
+
+				$response_content = $this->rest_api_response;
+			} else {
+				try {
+					// Execute the request, inasmuch as WordPress would.
+					require ABSPATH . WPINC . '/template-loader.php';
+				} catch ( Exception $e ) { // phpcs:ignore
+					// Mantle Exceptions are thrown to prevent some code from running, e.g.
+					// the tail end of wp_redirect().
+				}
+
+				$response_content = ob_get_clean();
+			}
+
+			remove_filter( 'status_header', $intercept_status, 9999 );
+			remove_filter( 'wp_headers', $intercept_headers, 9999 );
+			remove_filter( 'wp_redirect', $intercept_redirect, 9999 );
+
+			$response = new Test_Response( $response_content, $response_status, $response_headers );
+		}
+
 		remove_filter( 'exit_on_http_head', '__return_false', 9999 );
 		remove_filter( 'wp_using_themes', '__return_true', 9999 );
-
-		$response = new Test_Response( $response_content, $response_status, $response_headers );
 
 		if ( $this->follow_redirects ) {
 			return $this->follow_redirects( $response );
@@ -302,6 +338,8 @@ trait Makes_Http_Requests {
 				unset( $GLOBALS[ $v ] );
 			}
 		}
+
+		$this->rest_api_response = false;
 	}
 
 	/**
@@ -366,8 +404,50 @@ trait Makes_Http_Requests {
 
 		Utils::cleanup_query_vars();
 
+		$this->replace_rest_api();
+
 		$GLOBALS['wp']->main();
+
 		// phpcs:enable WordPress.WP.GlobalVariablesOverride
+	}
+
+	/**
+	 * Replace the REST API request.
+	 */
+	protected function replace_rest_api() {
+		rest_api_init();
+
+		// Ensure the spy server is used.
+		add_filter( 'wp_rest_server_class', [ Utils::class, 'wp_rest_server_class_filter' ], PHP_INT_MAX );
+
+		// Replace the `rest_api_loaded()` method with one we can control.
+		remove_filter( 'parse_request', 'rest_api_loaded' );
+		add_action( 'parse_request', [ $this, 'serve_rest_api_request' ] );
+	}
+
+	/**
+	 * Server the REST API request if applicable.
+	 *
+	 * Mirroring `{@see rest_api_loaded()}`, this method fires the REST API
+	 * request and stores the response.
+	 */
+	public function serve_rest_api_request() {
+		if ( empty( $GLOBALS['wp']->query_vars['rest_route'] ) ) {
+			return;
+		}
+
+		// Initialize the server.
+		$server = rest_get_server();
+		$route  = untrailingslashit( $GLOBALS['wp']->query_vars['rest_route'] );
+		if ( empty( $route ) ) {
+			$route = '/';
+		}
+
+		$server->serve_request( $route );
+
+		if ( isset( $server->sent_body ) ) {
+			$this->rest_api_response = $server->sent_body;
+		}
 	}
 
 	/**

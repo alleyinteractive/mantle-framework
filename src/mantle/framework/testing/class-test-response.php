@@ -8,7 +8,11 @@
 namespace Mantle\Framework\Testing;
 
 use Exception;
+use Mantle\Framework\Support\Arr;
+use Mantle\Framework\Support\Str;
 use PHPUnit\Framework\Assert as PHPUnit;
+
+use function Mantle\Framework\Helpers\data_get;
 
 /**
  * Faux "Response" class for unit testing.
@@ -122,7 +126,10 @@ class Test_Response {
 	public function get_header( string $key, string $default = null ): ?string {
 		// If the header is set and not null, return the string value.
 		if ( isset( $this->headers[ $key ] ) ) {
-			return (string) $this->headers[ $key ];
+			// Account for multiple headers with the same key.
+			return is_array( $this->headers[ $key ] )
+				? (string) $this->headers[ $key ][0] ?? ''
+				: (string) $this->headers[ $key ];
 		}
 
 		// If the header is set and null, return that. Otherwise, the default.
@@ -313,6 +320,17 @@ class Test_Response {
 	}
 
 	/**
+	 * Asset that the contents matches an expected value.
+	 *
+	 * @param mixed $value Contents to compare.
+	 * @return $this
+	 */
+	public function assertContent( $value ) {
+		PHPUnit::assertEquals( $value, $this->get_content() );
+		return $this;
+	}
+
+	/**
 	 * Assert that the given string is contained within the response.
 	 *
 	 * @param string $value String to search for.
@@ -467,5 +485,212 @@ class Test_Response {
 		Test_Case::assertQueriedObject( $object );
 
 		return $this;
+	}
+
+	/**
+	 * Get the assertion message for assertJson.
+	 *
+	 * @param  array $data
+	 * @return string
+	 */
+	protected function assertJsonMessage( array $data ) {
+		$expected = wp_json_encode( $data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
+		$actual   = wp_json_encode( $this->decode_response_json(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
+
+		return 'Unable to find JSON: ' . PHP_EOL . PHP_EOL .
+			"[{$expected}]" . PHP_EOL . PHP_EOL .
+			'within response JSON:' . PHP_EOL . PHP_EOL .
+			"[{$actual}]." . PHP_EOL . PHP_EOL;
+	}
+
+	/**
+	 * Assert that the expected value and type exists at the given path in the response.
+	 *
+	 * @param  string $path
+	 * @param  mixed  $expect
+	 * @return $this
+	 */
+	public function assertJsonPath( $path, $expect ) {
+		PHPUnit::assertSame( $expect, $this->json( $path ) );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response has the exact given JSON.
+	 *
+	 * @param  array $data
+	 * @return $this
+	 */
+	public function assertExactJson( array $data ) {
+		$actual = wp_json_encode(
+			Arr::sort_recursive(
+				(array) $this->decode_response_json()
+			)
+		);
+
+		PHPUnit::assertEquals( wp_json_encode( Arr::sort_recursive( $data ) ), $actual );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response contains the given JSON fragment.
+	 *
+	 * @param  array $data Data to compare.
+	 * @return $this
+	 */
+	public function assertJsonFragment( array $data ) {
+		$actual = wp_json_encode(
+			Arr::sort_recursive(
+				(array) $this->decode_response_json()
+			)
+		);
+
+		foreach ( Arr::sort_recursive( $data ) as $key => $value ) {
+			$expected = $this->json_search_strings( $key, $value );
+
+			PHPUnit::assertTrue(
+				Str::contains( $actual, $expected ),
+				'Unable to find JSON fragment: ' . PHP_EOL . PHP_EOL .
+					'[' . wp_json_encode( [ $key => $value ] ) . ']' . PHP_EOL . PHP_EOL .
+					'within' . PHP_EOL . PHP_EOL .
+					"[{$actual}]."
+			);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response does not contain the given JSON fragment.
+	 *
+	 * @param  array $data Data to compare.
+	 * @param  bool  $exact Flag for exact match, defaults to false.
+	 * @return $this
+	 */
+	public function assertJsonMissing( array $data, $exact = false ) {
+		if ( $exact ) {
+				return $this->assertJsonMissingExact( $data );
+		}
+
+			$actual = wp_json_encode(
+				Arr::sort_recursive(
+					(array) $this->decode_response_json()
+				)
+			);
+
+		foreach ( Arr::sort_recursive( $data ) as $key => $value ) {
+				$unexpected = $this->json_search_strings( $key, $value );
+
+				PHPUnit::assertFalse(
+					Str::contains( $actual, $unexpected ),
+					'Found unexpected JSON fragment: ' . PHP_EOL . PHP_EOL .
+						'[' . wp_json_encode( [ $key => $value ] ) . ']' . PHP_EOL . PHP_EOL .
+						'within' . PHP_EOL . PHP_EOL .
+						"[{$actual}]."
+				);
+		}
+
+			return $this;
+	}
+
+		/**
+		 * Assert that the response does not contain the exact JSON fragment.
+		 *
+		 * @param  array $data
+		 * @return $this
+		 */
+	public function assertJsonMissingExact( array $data ) {
+			$actual = wp_json_encode(
+				Arr::sort_recursive(
+					(array) $this->decode_response_json()
+				)
+			);
+
+		foreach ( Arr::sort_recursive( $data ) as $key => $value ) {
+			$unexpected = $this->json_search_strings( $key, $value );
+
+			if ( ! Str::contains( $actual, $unexpected ) ) {
+				return $this;
+			}
+		}
+
+		PHPUnit::fail(
+			'Found unexpected JSON fragment: ' . PHP_EOL . PHP_EOL .
+			'[' . wp_json_encode( $data ) . ']' . PHP_EOL . PHP_EOL .
+			'within' . PHP_EOL . PHP_EOL .
+			"[{$actual}]."
+		);
+	}
+
+	/**
+	 * Get the strings we need to search for when examining the JSON.
+	 *
+	 * @param  string $key
+	 * @param  string $value
+	 * @return array
+	 */
+	protected function json_search_strings( $key, $value ) {
+		$needle = substr( wp_json_encode( [ $key => $value ] ), 1, -1 );
+
+		return [
+			$needle . ']',
+			$needle . '}',
+			$needle . ',',
+		];
+	}
+
+	/**
+	 * Assert that the response JSON has the expected count of items at the given key.
+	 *
+	 * @param  int         $count
+	 * @param  string|null $key
+	 * @return $this
+	 */
+	public function assertJsonCount( int $count, $key = null ) {
+		if ( ! is_null( $key ) ) {
+			PHPUnit::assertCount(
+				$count,
+				data_get( $this->json(), $key ),
+				"Failed to assert that the response count matched the expected {$count}"
+			);
+
+			return $this;
+		}
+
+		PHPUnit::assertCount(
+			$count,
+			$this->json(),
+			"Failed to assert that the response count matched the expected {$count}"
+		);
+
+		return $this;
+	}
+
+	/**
+	 * Validate and return the decoded response JSON.
+	 *
+	 * @param  string|null $key Key to retrieve (passed to {@see data_get()}).
+	 * @return mixed
+	 */
+	public function decode_response_json( $key = null ) {
+		$decoded_response = json_decode( $this->get_content(), true );
+
+		if ( is_null( $decoded_response ) || false === $decoded_response ) {
+			PHPUnit::fail( 'Invalid JSON was returned from the route.' );
+		}
+
+		return data_get( $decoded_response, $key );
+	}
+
+	/**
+	 * Validate and return the decoded response JSON.
+	 *
+	 * @param string|null $key Key to retrieve, optional.
+	 * @return mixed
+	 */
+	public function json( $key = null ) {
+		return $this->decode_response_json( $key );
 	}
 }
