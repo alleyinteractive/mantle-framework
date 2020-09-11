@@ -8,6 +8,7 @@
 namespace Mantle\Framework\Testing;
 
 use Mantle\Framework\Alias_Loader;
+use Mantle\Framework\Contracts\Application;
 use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Facade\Facade;
 use Mantle\Framework\Testing\Concerns\Admin_Screen;
@@ -37,7 +38,6 @@ use function Mantle\Framework\Helpers\collect;
  */
 abstract class Test_Case extends BaseTestCase {
 	use Assertions,
-		Create_Application,
 		Deprecations,
 		Hooks,
 		Incorrect_Usage,
@@ -68,6 +68,13 @@ abstract class Test_Case extends BaseTestCase {
 	 * @var Factory_Container
 	 */
 	protected static $factory;
+
+	/**
+	 * Creates the application.
+	 *
+	 * @return \Mantle\Framework\Contracts\Application
+	 */
+	abstract public function create_application(): Application;
 
 	/**
 	 * Runs the routine before setting up all tests.

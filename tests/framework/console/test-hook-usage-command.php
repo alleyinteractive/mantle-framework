@@ -9,9 +9,9 @@ namespace Mantle\Tests\Framework\Console;
 
 use Mantle\Framework\Console\Hook_Usage_Command;
 use Mantle\Framework\Support\Collection;
-use Mantle\Framework\Testing\Test_Case;
+use Mantle\Framework\Testing\Framework_Test_Case;
 
-class Test_Hook_Usage_Command extends Test_Case {
+class Test_Hook_Usage_Command extends Framework_Test_Case {
 
 	public function test_do_action() {
 		$usage = $this->run_command( 'init' )->all();

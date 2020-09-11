@@ -5,7 +5,7 @@ use Mantle\Framework\Events\Dispatcher;
 use Exception;
 use Mantle\Framework\Container\Container;
 use Mantle\Framework\Support\Collection;
-use Mantle\Framework\Testing\Test_Case;
+use Mantle\Framework\Testing\Framework_Test_Case;
 use ReflectionParameter;
 use RuntimeException;
 use WP_Query;
@@ -14,7 +14,7 @@ use function Mantle\Framework\Helpers\add_action;
 use function Mantle\Framework\Helpers\add_filter;
 use function Mantle\Framework\Helpers\collect;
 
-class Test_WordPress_Action_Dispatcher extends Test_Case {
+class Test_WordPress_Action_Dispatcher extends Framework_Test_Case {
 	public function test_action_handler() {
 		$_SERVER['__action_fired'] = false;
 

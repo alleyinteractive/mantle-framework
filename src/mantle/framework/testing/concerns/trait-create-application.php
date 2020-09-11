@@ -20,7 +20,7 @@ trait Create_Application {
 	 *
 	 * @return Application
 	 */
-	public function create_application() {
+	public function create_application(): \Mantle\Framework\Contracts\Application {
 		$app = new Application();
 
 		$this->resolve_application_bindings( $app );

@@ -2,12 +2,12 @@
 namespace Mantle\Tests\Database\Model;
 
 use Mantle\Framework\Database\Model\Term;
-use Mantle\Framework\Testing\Test_Case;
+use Mantle\Framework\Testing\Framework_Test_Case;
 
 /**
  * Test non-WordPress specific logic of the model
  */
-class Test_Term_Model_Events extends Test_Case {
+class Test_Term_Model_Events extends Framework_Test_Case {
 	public function setUp(): void {
 		parent::setUp();
 

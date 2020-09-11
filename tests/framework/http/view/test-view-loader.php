@@ -2,9 +2,9 @@
 namespace Mantle\Tests\Framework\Http\View;
 
 use Mantle\Framework\Facade\View_Loader;
-use Mantle\Framework\Testing\Test_Case;
+use Mantle\Framework\Testing\Framework_Test_Case;
 
-class Test_View_Loader extends Test_Case {
+class Test_View_Loader extends Framework_Test_Case {
 	protected function setUp(): void {
 		parent::setUp();
 

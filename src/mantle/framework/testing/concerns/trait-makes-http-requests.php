@@ -7,6 +7,7 @@
 
 namespace Mantle\Framework\Testing\Concerns;
 
+use Mantle\Framework\Contracts\Http\Kernel;
 use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Http\Kernel as HttpKernel;
 use Mantle\Framework\Http\Request;
@@ -17,6 +18,8 @@ use Mantle\Framework\Testing\Test_Response;
 use Mantle\Framework\Testing\Utils;
 use WP;
 use WP_Query;
+
+use function Mantle\Framework\Helpers\class_basename;
 
 /**
  * Trait for Test_Case classes which want to make http-like requests against
@@ -250,7 +253,9 @@ trait Makes_Http_Requests {
 
 		// Attempt to run the query through the Mantle router.
 		if ( isset( $this->app['router'] ) ) {
-			$kernel   = new HttpKernel( $this->app, $this->app['router'] );
+			// $kernel   = $this->app->make( Kernel::class ); // new HttpKernel( $this->app, $this->app['router'] );
+			$kernel =  new HttpKernel( $this->app, $this->app['router'] );
+			// var_dump(get_class($kernel));exit;
 			$response = $kernel->send_request_through_router( Request::capture() );
 
 			if ( $response ) {
@@ -413,11 +418,18 @@ trait Makes_Http_Requests {
 
 	/**
 	 * Replace the REST API request.
+	 *
+	 * This will:
+	 * - Initiate the REST API.
+	 * - Set the WordPress REST Server to use the Mantle Spy REST Server to allow
+	 *   for the responses to be read.
+	 * - Replace the REST API `rest_api_loaded` method to allow the REST response
+	 *   to be read without terminating the script.
 	 */
 	protected function replace_rest_api() {
 		rest_api_init();
 
-		// Ensure the spy server is used.
+		// Ensure the Mantle REST Spy Server is used.
 		add_filter( 'wp_rest_server_class', [ Utils::class, 'wp_rest_server_class_filter' ], PHP_INT_MAX );
 
 		// Replace the `rest_api_loaded()` method with one we can control.
