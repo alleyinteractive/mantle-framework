@@ -45,6 +45,7 @@ require_once $config_file_path;
 Utils::reset_server();
 
 define( 'WP_TESTS_TABLE_PREFIX', $table_prefix );
+define( 'DIR_TESTDATA', __DIR__ . '/data' );
 
 /*
  * Cron tries to make an HTTP request to the site, which always fails,
