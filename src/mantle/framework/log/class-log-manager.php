@@ -13,6 +13,7 @@ use Monolog\Handler\AbstractHandler;
 use Monolog\Handler\ErrorLogHandler;
 use Monolog\Handler\GroupHandler;
 use Monolog\Handler\Handler;
+use Monolog\Handler\HandlerInterface;
 use Monolog\Handler\NewRelicHandler;
 use Monolog\Handler\SlackWebhookHandler;
 use Monolog\Logger;
@@ -66,12 +67,12 @@ class Log_Manager {
 	 * Get a Log Handler for a Channel.
 	 *
 	 * @param string $channel Channel name.
-	 * @return Handler|null
+	 * @return HandlerInterface|null
 	 *
 	 * @throws InvalidArgumentException Thrown on invalid configuration.
 	 * @throws Throwable Thrown on error getting the logging handler for a channel.
 	 */
-	public function get_channel_handler( string $channel ): ?Handler {
+	public function get_channel_handler( string $channel ): ?HandlerInterface {
 		$config = $this->app['config']->get( 'logging.channels.' . $channel );
 
 		if ( empty( $config['driver'] ) ) {

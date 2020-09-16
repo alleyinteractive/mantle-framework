@@ -246,4 +246,26 @@ abstract class Test_Case extends BaseTestCase {
 
 		return static::$factory;
 	}
+
+	/**
+	 * Allow the factory to be checked against.
+	 *
+	 * @param string $name Property name.
+	 * @return boolean
+	 */
+	public function __isset( $name ) {
+		return 'factory' === $name;
+	}
+
+	/**
+	 * Retrieve the factory instance non-statically.
+	 *
+	 * @param string $name Property name.
+	 * @return mixed
+	 */
+	public function __get( $name ) {
+		if ( 'factory' === $name ) {
+			return self::factory();
+		}
+	}
 }
