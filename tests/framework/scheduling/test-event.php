@@ -1,7 +1,7 @@
 <?php
 namespace Mantle\Tests\Framework\Scheduling;
 
-use Mantle\Framework\Testing\Test_Case;
+use Mantle\Framework\Testing\Framework_Test_Case;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Handler\MockHandler;
@@ -13,7 +13,7 @@ use Mantle\Framework\Scheduling\Event;
 use Mantle\Framework\Scheduling\Schedule;
 use Mockery as m;
 
-class Test_Event extends Test_Case {
+class Test_Event extends Framework_Test_Case {
 	protected function tearDown(): void {
 		parent::tearDown();
 

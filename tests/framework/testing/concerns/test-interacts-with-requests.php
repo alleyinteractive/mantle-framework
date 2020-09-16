@@ -2,9 +2,9 @@
 namespace Mantle\Tests\Framework\Testing\Concerns;
 
 use Mantle\Framework\Testing\Mock_Http_Response;
-use Mantle\Framework\Testing\Test_Case;
+use Mantle\Framework\Testing\Framework_Test_Case;
 
-class Test_Interacts_With_Requests extends Test_Case {
+class Test_Interacts_With_Requests extends Framework_Test_Case {
 	public function test_fake_request() {
 		$this->fake_request( 'https://testing.com/*' )
 			->with_response_code( 404 )

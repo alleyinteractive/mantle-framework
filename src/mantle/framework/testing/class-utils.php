@@ -7,6 +7,8 @@
 
 namespace Mantle\Framework\Testing;
 
+use Mantle\Framework\Testing\Doubles\Spy_REST_Server;
+
 /**
  * Assorted testing utilities.
  *
@@ -82,7 +84,7 @@ class Utils {
 	 * @return string The server class name.
 	 */
 	public static function wp_rest_server_class_filter() {
-		return __NAMESPACE__ . '\Doubles\Spy_REST_Server';
+		return Spy_REST_Server::class;
 	}
 
 	/**

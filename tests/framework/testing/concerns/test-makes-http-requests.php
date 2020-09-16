@@ -1,13 +1,11 @@
 <?php
 namespace Mantle\Tests\Framework\Testing\Concerns;
 
-use Mantle\Framework\Facade\Route;
 use Mantle\Framework\Http\Response;
-use Mantle\Framework\Providers\Route_Service_Provider;
 use Mantle\Framework\Providers\Routing_Service_Provider;
-use Mantle\Framework\Testing\Test_Case;
+use Mantle\Framework\Testing\Framework_Test_Case;
 
-class Test_Makes_Http_Requests extends Test_Case {
+class Test_Makes_Http_Requests extends Framework_Test_Case {
 	public function test_get_home() {
 		$this->get( home_url( '/' ) );
 		$this->assertQueryTrue( 'is_home', 'is_front_page' );
