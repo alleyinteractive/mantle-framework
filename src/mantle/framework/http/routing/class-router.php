@@ -9,6 +9,7 @@ namespace Mantle\Framework\Http\Routing;
 
 use Closure;
 use Mantle\Framework\Contracts\Application;
+use Mantle\Framework\Contracts\Container;
 use Mantle\Framework\Contracts\Http\Routing\Router as Router_Contract;
 use Mantle\Framework\Http\Request;
 use Mantle\Framework\Pipeline;
@@ -224,6 +225,15 @@ class Router implements Router_Contract {
 	 */
 	public function get_routes(): RouteCollection {
 		return $this->routes;
+	}
+
+	/**
+	 * Retrieve the container/application instance.
+	 *
+	 * @return Container
+	 */
+	public function get_container(): Container {
+		return $this->app;
 	}
 
 	/**
@@ -464,6 +474,7 @@ class Router implements Router_Contract {
 	 *                               will register child REST API routes.
 	 * @param array           $args Arguments for the route or callback for the route.
 	 *                              Not used if $route is a callback.
+	 * @return Rest_Route_Registrar
 	 */
 	public function rest_api( string $namespace, $route, $args = [] ) {
 		$registrar = new Rest_Route_Registrar( $this, $namespace );
@@ -475,6 +486,8 @@ class Router implements Router_Contract {
 		} else {
 			$registrar->register_route( $route, $args );
 		}
+
+		return $registrar;
 	}
 
 	/**

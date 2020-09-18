@@ -55,6 +55,19 @@ trait Makes_Http_Requests {
 	protected $rest_api_response = false;
 
 	/**
+	 * Setup the trait in the test case.
+	 */
+	public function makes_http_requests_set_up() {
+		global $wp_rest_server, $wp_actions;
+
+		// Clear out the existing REST Server to allow for REST API routes to be re-registered.
+		$wp_rest_server = null; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals
+
+		// Mark 'rest_api_init' as an un-run action.
+		unset( $wp_actions['rest_api_init'] );
+	}
+
+	/**
 	 * Define additional headers to be sent with the request.
 	 *
 	 * @param array $headers Headers for the request.

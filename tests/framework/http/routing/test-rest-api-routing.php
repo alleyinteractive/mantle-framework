@@ -1,6 +1,7 @@
 <?php
 namespace Mantle\Tests\Framework\Http\Routing;
 
+use Closure;
 use Mantle\Framework\Facade\Route;
 use Mantle\Framework\Testing\Framework_Test_Case;
 use WP_REST_Request;
@@ -31,7 +32,6 @@ class Test_REST_API_Routing extends Framework_Test_Case {
 			]
 		);
 
-
 		Route::rest_api(
 			'namespace/v1',
 			function() {
@@ -46,6 +46,13 @@ class Test_REST_API_Routing extends Framework_Test_Case {
 					'/example-with-param/(?P<slug>[a-z\-]+)',
 					function( WP_REST_Request $request) {
 						return $request['slug'];
+					}
+				);
+
+				Route::post(
+					'/example-post',
+					function() {
+						return 'example-post';
 					}
 				);
 			}
@@ -67,5 +74,51 @@ class Test_REST_API_Routing extends Framework_Test_Case {
 		$this->get( rest_url( '/namespace/v1/example-with-param/the-slug' ) )
 			->assertOk()
 			->assertContent( json_encode( 'the-slug' ) );
+
+		$this->post( rest_url( '/namespace/v1/example-post' ) )
+			->assertOk()
+			->assertContent( json_encode( 'example-post' ) );
+	}
+
+	public function test_middleware_route() {
+		Route::middleware( Testable_Before_Middleware::class )
+			->rest_api(
+				'namespace/v1',
+				'/example-middleware-route',
+				function() {
+					return 'base-response';
+				}
+			);
+
+		Route::middleware(
+			function( WP_REST_Request $request, $next ) {
+				$request->set_param( 'input', 'modified' );
+				return $next( $request );
+			}
+		)
+		->rest_api(
+			'namespace/v1',
+			'/example-middleware-modify-post',
+			[
+				'methods' => 'POST',
+				'callback' => function( WP_REST_Request $request ) {
+					return $request['input'];
+				}
+			]
+		);
+
+		$this->get( rest_url( '/namespace/v1/example-middleware-route' ) )
+			->assertOk()
+			->assertContent( json_encode( 'middleware-response' ) );
+
+		$this->post( rest_url( '/namespace/v1/example-middleware-modify-post' ), [ 'input' => 'value' ] )
+			->assertOk()
+			->assertContent( json_encode( 'modified' ) );
+	}
+}
+
+class Testable_Before_Middleware {
+	public function handle( $request, Closure $next ) {
+		return 'middleware-response';
 	}
 }
