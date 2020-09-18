@@ -425,10 +425,10 @@ trait Makes_Http_Requests {
 	 *   to be read without terminating the script.
 	 */
 	protected function replace_rest_api() {
-		rest_api_init();
-
 		// Ensure the Mantle REST Spy Server is used.
 		add_filter( 'wp_rest_server_class', [ Utils::class, 'wp_rest_server_class_filter' ], PHP_INT_MAX );
+
+		rest_api_init();
 
 		// Replace the `rest_api_loaded()` method with one we can control.
 		remove_filter( 'parse_request', 'rest_api_loaded' );

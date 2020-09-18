@@ -10,7 +10,6 @@ namespace Mantle\Framework\Http\Routing;
 use Closure;
 use Mantle\Framework\Contracts\Application;
 use Mantle\Framework\Contracts\Http\Routing\Router as Router_Contract;
-use Mantle\Framework\Http\Http_Exception;
 use Mantle\Framework\Http\Request;
 use Mantle\Framework\Pipeline;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -20,6 +19,7 @@ use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\HttpFoundation\Response as Symfony_Response;
 
 use function Mantle\Framework\Helpers\collect;
+use function Mantle\Framework\Helpers\tap;
 
 /**
  * Router
@@ -63,6 +63,13 @@ class Router implements Router_Contract {
 	 * @var array
 	 */
 	protected $binders = [];
+
+	/**
+	 * REST Route Registrar
+	 *
+	 * @var Rest_Route_Registrar
+	 */
+	protected $rest_registrar;
 
 	/**
 	 * Constructor.
@@ -163,6 +170,19 @@ class Router implements Router_Contract {
 	 * @return Route
 	 */
 	public function add_route( array $methods, string $uri, $action ) {
+		// Send the route to the REST Registrar if set.
+		if ( $this->rest_registrar ) {
+			$this->rest_registrar->register_route(
+				$uri,
+				[
+					'callback' => $action,
+					'methods'  => $methods,
+				]
+			);
+
+			return;
+		}
+
 		$route = $this->create_route( $methods, $uri, $action );
 
 		$this->routes->add( $route->get_name(), $route );
@@ -437,6 +457,27 @@ class Router implements Router_Contract {
 	}
 
 	/**
+	 * Register a REST API route
+	 *
+	 * @param string          $namespace Namespace for the REST API route.
+	 * @param \Closure|string $route Route to register or a callback function that
+	 *                               will register child REST API routes.
+	 * @param array           $args Arguments for the route or callback for the route.
+	 *                              Not used if $route is a callback.
+	 */
+	public function rest_api( string $namespace, $route, $args = [] ) {
+		$registrar = new Rest_Route_Registrar( $this, $namespace );
+
+		if ( $route instanceof Closure ) {
+			$this->rest_registrar = $registrar;
+			$route();
+			$this->rest_registrar = null;
+		} else {
+			$registrar->register_route( $route, $args );
+		}
+	}
+
+	/**
 	 * Dynamically handle calls into the router instance.
 	 *
 	 * @param string $method Method name.
@@ -448,6 +489,8 @@ class Router implements Router_Contract {
 			return ( new Route_Registrar( $this ) )
 				->attribute( $method, is_array( $parameters[0] ) ? $parameters[0] : $parameters );
 		}
+
+		dd('method', $method);
 
 		return ( new Route_Registrar( $this ) )->attribute( $method, $parameters[0] );
 	}
