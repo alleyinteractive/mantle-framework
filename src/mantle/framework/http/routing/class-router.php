@@ -20,7 +20,6 @@ use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\HttpFoundation\Response as Symfony_Response;
 
 use function Mantle\Framework\Helpers\collect;
-use function Mantle\Framework\Helpers\tap;
 
 /**
  * Router
@@ -168,20 +167,21 @@ class Router implements Router_Contract {
 	 * @param array  $methods Methods to register.
 	 * @param string $uri URL route.
 	 * @param mixed  $action Route callback.
-	 * @return Route
+	 * @return Route|null
 	 */
 	public function add_route( array $methods, string $uri, $action ) {
 		// Send the route to the REST Registrar if set.
 		if ( $this->rest_registrar ) {
-			$this->rest_registrar->register_route(
-				$uri,
-				[
-					'callback' => $action,
-					'methods'  => $methods,
-				]
-			);
+			$args = [
+				'callback' => $action,
+				'methods'  => $methods,
+			];
 
-			return;
+			if ( $this->has_group_stack() ) {
+				$args = $this->merge_with_last_group( $args );
+			}
+
+			return $this->rest_registrar->register_route( $this->prefix( $uri ), $args );
 		}
 
 		$route = $this->create_route( $methods, $uri, $action );
@@ -484,7 +484,18 @@ class Router implements Router_Contract {
 			$route();
 			$this->rest_registrar = null;
 		} else {
-			$registrar->register_route( $route, $args );
+			// Include the group attributes.
+			if ( $this->has_group_stack() ) {
+				if ( $args instanceof Closure ) {
+					$args = [
+						'callback' => $args,
+					];
+				}
+
+				$args = $this->merge_with_last_group( $args );
+			}
+
+			$registrar->register_route( $this->prefix( $route ), $args );
 		}
 
 		return $registrar;

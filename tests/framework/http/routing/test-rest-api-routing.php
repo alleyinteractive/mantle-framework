@@ -115,6 +115,24 @@ class Test_REST_API_Routing extends Framework_Test_Case {
 			->assertOk()
 			->assertContent( json_encode( 'modified' ) );
 	}
+
+	public function test_group_route() {
+		Route::middleware( Testable_Before_Middleware::class )->group(
+			function() {
+				Route::rest_api(
+					'namespace/v1',
+					'example-group',
+					function() {
+						return 'response';
+					}
+				);
+			}
+		);
+
+		$this->get( rest_url( '/namespace/v1/example-group' ) )
+			->assertOk()
+			->assertContent( json_encode( 'middleware-response' ) );
+	}
 }
 
 class Testable_Before_Middleware {
