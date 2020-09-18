@@ -490,8 +490,6 @@ class Router implements Router_Contract {
 				->attribute( $method, is_array( $parameters[0] ) ? $parameters[0] : $parameters );
 		}
 
-		dd('method', $method);
-
 		return ( new Route_Registrar( $this ) )->attribute( $method, $parameters[0] );
 	}
 }
