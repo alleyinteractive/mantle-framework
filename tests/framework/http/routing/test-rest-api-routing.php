@@ -58,7 +58,6 @@ class Test_REST_API_Routing extends Framework_Test_Case {
 			}
 		);
 
-
 		$this->get( rest_url( '/namespace/v1/example-closure-third' ) )
 			->assertOk()
 			->assertContent( json_encode( 'example-closure-third' ) );
