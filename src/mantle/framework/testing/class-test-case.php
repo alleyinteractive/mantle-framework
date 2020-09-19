@@ -136,6 +136,7 @@ abstract class Test_Case extends BaseTestCase {
 				Admin_Screen::class,
 				Network_Admin_Screen::class,
 				Interacts_With_Requests::class,
+				Makes_Http_Requests::class,
 			] as $trait
 		) {
 			if ( isset( static::$test_uses[ $trait ] ) ) {

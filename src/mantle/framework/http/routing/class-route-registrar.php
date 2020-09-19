@@ -154,6 +154,28 @@ class Route_Registrar {
 	}
 
 	/**
+	 * Pass the REST API method back to the REST API registrar.
+	 *
+	 * @param string          $namespace Route namespace.
+	 * @param \Closure|string $route Route name or callback to register more routes.
+	 * @param array           $args Route arguments.
+	 * @return Rest_Route_Registrar
+	 */
+	public function rest_api( string $namespace, $route, $args = [] ): Rest_Route_Registrar {
+		if ( $args instanceof Closure ) {
+			$args = [
+				'callback' => $args,
+			];
+		}
+
+		if ( is_array( $args ) ) {
+			$args = array_merge( $this->attributes, $args );
+		}
+
+		return $this->router->rest_api( $namespace, $route, $args );
+	}
+
+	/**
 	 * Dynamically handle calls into the route registrar.
 	 *
 	 * @param  string $method

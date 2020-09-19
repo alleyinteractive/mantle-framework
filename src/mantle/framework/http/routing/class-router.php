@@ -9,8 +9,8 @@ namespace Mantle\Framework\Http\Routing;
 
 use Closure;
 use Mantle\Framework\Contracts\Application;
+use Mantle\Framework\Contracts\Container;
 use Mantle\Framework\Contracts\Http\Routing\Router as Router_Contract;
-use Mantle\Framework\Http\Http_Exception;
 use Mantle\Framework\Http\Request;
 use Mantle\Framework\Pipeline;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -63,6 +63,13 @@ class Router implements Router_Contract {
 	 * @var array
 	 */
 	protected $binders = [];
+
+	/**
+	 * REST Route Registrar
+	 *
+	 * @var Rest_Route_Registrar
+	 */
+	protected $rest_registrar;
 
 	/**
 	 * Constructor.
@@ -160,9 +167,23 @@ class Router implements Router_Contract {
 	 * @param array  $methods Methods to register.
 	 * @param string $uri URL route.
 	 * @param mixed  $action Route callback.
-	 * @return Route
+	 * @return Route|null
 	 */
 	public function add_route( array $methods, string $uri, $action ) {
+		// Send the route to the REST Registrar if set.
+		if ( $this->rest_registrar ) {
+			$args = [
+				'callback' => $action,
+				'methods'  => $methods,
+			];
+
+			if ( $this->has_group_stack() ) {
+				$args = $this->merge_with_last_group( $args );
+			}
+
+			return $this->rest_registrar->register_route( $this->prefix( $uri ), $args );
+		}
+
 		$route = $this->create_route( $methods, $uri, $action );
 
 		$this->routes->add( $route->get_name(), $route );
@@ -204,6 +225,15 @@ class Router implements Router_Contract {
 	 */
 	public function get_routes(): RouteCollection {
 		return $this->routes;
+	}
+
+	/**
+	 * Retrieve the container/application instance.
+	 *
+	 * @return Container
+	 */
+	public function get_container(): Container {
+		return $this->app;
 	}
 
 	/**
@@ -434,6 +464,41 @@ class Router implements Router_Contract {
 	 */
 	public function substitute_implicit_bindings( Request $request ) {
 		Implicit_Route_Binding::resolve_for_route( $this->app, $request );
+	}
+
+	/**
+	 * Register a REST API route
+	 *
+	 * @param string          $namespace Namespace for the REST API route.
+	 * @param \Closure|string $route Route to register or a callback function that
+	 *                               will register child REST API routes.
+	 * @param array           $args Arguments for the route or callback for the route.
+	 *                              Not used if $route is a callback.
+	 * @return Rest_Route_Registrar
+	 */
+	public function rest_api( string $namespace, $route, $args = [] ) {
+		$registrar = new Rest_Route_Registrar( $this, $namespace );
+
+		if ( $route instanceof Closure ) {
+			$this->rest_registrar = $registrar;
+			$route();
+			$this->rest_registrar = null;
+		} else {
+			// Include the group attributes.
+			if ( $this->has_group_stack() ) {
+				if ( $args instanceof Closure ) {
+					$args = [
+						'callback' => $args,
+					];
+				}
+
+				$args = $this->merge_with_last_group( $args );
+			}
+
+			$registrar->register_route( $this->prefix( $route ), $args );
+		}
+
+		return $registrar;
 	}
 
 	/**

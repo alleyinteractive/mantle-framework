@@ -83,4 +83,15 @@ interface Router {
 	 * @param Request $request Request instance.
 	 */
 	public function substitute_implicit_bindings( Request $request );
+
+	/**
+	 * Register a REST API route
+	 *
+	 * @param string          $namespace Namespace for the REST API route.
+	 * @param \Closure|string $route Route to register or a callback function that
+	 *                               will register child REST API routes.
+	 * @param array           $args Arguments for the route or callback for the route.
+	 *                              Not used if $route is a callback.
+	 */
+	public function rest_api( string $namespace, $route, $args = [] );
 }

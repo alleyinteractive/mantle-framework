@@ -1,6 +1,6 @@
 <?php
 /**
- * Controller_Make_Command class file.
+ * Middleware_Make_Command class file.
  *
  * @package Mantle
  */
@@ -10,29 +10,29 @@ namespace Mantle\Framework\Console\Generators;
 use Mantle\Framework\Console\Generator_Command;
 
 /**
- * Controller Generator
+ * Middleware Generator
  */
-class Controller_Make_Command extends Generator_Command {
+class Middleware_Make_Command extends Generator_Command {
 	/**
 	 * The console command name.
 	 *
 	 * @var string
 	 */
-	protected $name = 'make:controller';
+	protected $name = 'make:middleware';
 
 	/**
 	 * Command Description.
 	 *
 	 * @var string
 	 */
-	protected $description = 'Generate a controller.';
+	protected $description = 'Generate a middleware class.';
 
 	/**
 	 * The type of class being generated.
 	 *
 	 * @var string
 	 */
-	protected $type = 'Http\Controller';
+	protected $type = 'Http\Middleware';
 
 	/**
 	 * Command synopsis.
@@ -54,7 +54,7 @@ class Controller_Make_Command extends Generator_Command {
 	 * @return string
 	 */
 	public function get_file_stub(): string {
-		$filename = 'controller.stub';
+		$filename = 'middleware.stub';
 
 		return __DIR__ . '/stubs/' . $filename;
 	}
