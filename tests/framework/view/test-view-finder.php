@@ -1,10 +1,10 @@
 <?php
-namespace Mantle\Tests\Framework\Http\View;
+namespace Mantle\Tests\Framework\View;
 
 use Mantle\Framework\Facade\View_Loader;
 use Mantle\Framework\Testing\Framework_Test_Case;
 
-class Test_View_Loader extends Framework_Test_Case {
+class Test_View_Finder extends Framework_Test_Case {
 	protected function setUp(): void {
 		parent::setUp();
 
@@ -17,7 +17,7 @@ class Test_View_Loader extends Framework_Test_Case {
 	}
 
 	public function test_loading_view() {
-		View_Loader::load( 'view-loader/view-loader' );
+		$this->load_view( 'view-loader/view-loader' );
 
 		$this->assertTrue( $_SERVER['__view_loaded'] );
 	}
@@ -26,7 +26,7 @@ class Test_View_Loader extends Framework_Test_Case {
 	 * Allow an alias to define the specific view location to load from.
 	 */
 	public function test_loading_view_alias() {
-		View_Loader::load( '@view-loader-alias/view-loader' );
+		$this->load_view( '@view-loader-alias/view-loader' );
 
 		$this->assertEquals( 'alias', $_SERVER['__view_loaded'] );
 	}
@@ -35,13 +35,24 @@ class Test_View_Loader extends Framework_Test_Case {
 	 * Ensure that an alias doesn't fallback to other template parts.
 	 */
 	public function test_loading_view_alias_fallback() {
-		View_Loader::load( '@unit-test/view-loader/alias-specific' );
+		$this->load_view( '@unit-test/view-loader/alias-specific' );
 		$this->assertFalse( $_SERVER['__view_loaded'] );
 
-		View_Loader::load( 'view-loader/view-loader' );
+		$this->load_view( 'view-loader/view-loader' );
 		$this->assertTrue( $_SERVER['__view_loaded'] );
 
-		View_Loader::load( '@view-loader-alias/alias-specific' );
+		$this->load_view( '@view-loader-alias/alias-specific' );
 		$this->assertEquals( 'alias', $_SERVER['__view_loaded'] );
+	}
+
+	/**
+	 * Load the contents of a view.
+	 *
+	 * @param string $name View to load.
+	 */
+	protected function load_view( string $name ) {
+		try {
+			include View_Loader::find( $name );
+		} catch ( \Throwable $e ) { }
 	}
 }

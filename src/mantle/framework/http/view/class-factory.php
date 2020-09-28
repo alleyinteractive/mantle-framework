@@ -7,10 +7,14 @@
 
 namespace Mantle\Framework\Http\View;
 
+use InvalidArgumentException;
 use Mantle\Framework\Contracts\Container;
 use Mantle\Framework\Contracts\Http\View\Factory as ViewFactory;
+use Mantle\Framework\Contracts\View\Engine;
 use Mantle\Framework\Support\Arr;
 use Mantle\Framework\Support\Collection;
+use Mantle\Framework\Support\Str;
+use Mantle\Framework\View\Engines\Engine_Resolver;
 use WP_Query;
 
 /**
@@ -23,6 +27,20 @@ class Factory implements ViewFactory {
 	 * @var Container
 	 */
 	protected $container;
+
+	/**
+	 * The view engine resolver.
+	 *
+	 * @var Engine_Resolver
+	 */
+	protected $engines;
+
+	/**
+	 * The view finder.
+	 *
+	 * @var View_Finder
+	 */
+	protected $finder;
 
 	/**
 	 * Data that should be available to all templates.
@@ -46,11 +64,28 @@ class Factory implements ViewFactory {
 	protected $current;
 
 	/**
+	 * The extension to engine bindings.
+	 *
+	 * @var string[]
+	 */
+	protected $extensions = [
+		'blade.php' => 'blade',
+		'php'       => 'php',
+		'css'       => 'file',
+		'html'      => 'file',
+];
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Container $container Container to set.
+	 * @param Engine_Resolver $engines
+	 * @param View_Finder $loader
 	 */
-	public function __construct( Container $container ) {
+	public function __construct( Container $container, Engine_Resolver $engines, View_Finder $finder ) {
+		$this->engines = $engines;
+		$this->finder = $finder;
+
 		$this->set_container( $container );
 		$this->share( '__env', $this );
 	}
@@ -180,8 +215,45 @@ class Factory implements ViewFactory {
 		}
 
 		$variables = array_merge( $this->get_shared(), $variables );
+		$path      = $this->resolve_view_path( $slug, $name );
+		$engine    = $this->get_engine_from_path( $path );
 
-		return new View( $this, $slug, $name, $variables );
+		return new View( $this, $engine, $path, $variables );
+	}
+
+	/**
+	 * Resolve the view path for a given template slug and name.
+	 *
+	 * @param string $slug Template slug.
+	 * @param string $name Template name.
+	 * @return string|null File path, null otherwise.
+	 */
+	protected function resolve_view_path( string $slug, string $name = null ): ?string {
+		// Prepend the current view if the requested slug is a child template.
+		if ( Str::starts_with( $slug, '_' ) && $this->current ) {
+			return $this->resolve_child_view_path_from_parent( $slug );
+		}
+
+		return $this->finder->find( $slug, $name );
+	}
+
+	/**
+	 * Resolve a child view path from the current parent.
+	 *
+	 * @param string $slug Slug of the view to load.
+	 * @return string
+	 * @throws InvalidArgumentException Thrown if child view not found.
+	 */
+	protected function resolve_child_view_path_from_parent( string $slug ) {
+		$path = Str::before( $this->current->get_path(), '.' ) . '-' . Str::substr( $slug, '1' );
+
+		foreach ( $this->finder->get_possible_view_files( $path ) as $file ) {
+			if ( file_exists( $file ) ) {
+				return $file;
+			}
+		}
+
+		throw new InvalidArgumentException( "Child view not found: [{$path}]" );
 	}
 
 	/**
@@ -242,5 +314,38 @@ class Factory implements ViewFactory {
 		}
 
 		return $results;
+	}
+
+	/**
+	 * Resolve the engine for a given path.
+	 *
+	 * @param string $path Path to resolve.
+	 * @return Engine
+	 */
+	public function get_engine_from_path( string $path ): Engine {
+		$extension = $this->get_extension( $path );
+		if ( ! $extension ) {
+			throw new InvalidArgumentException( "Unknown extension in file: {$path}" );
+		}
+
+		return $this->engines->resolve( $this->extensions[ $extension ] );
+
+	}
+
+	/**
+	 * Get the extension used by the view file.
+	 *
+	 * @param  string $path Path to check against.
+	 * @return string|null
+	 */
+	protected function get_extension( string $path ): ?string {
+		$extensions = array_keys( $this->extensions );
+
+		return Arr::first(
+			$extensions,
+			function ( $value ) use ( $path ) {
+				return Str::ends_with( $path, '.' . $value );
+			}
+		);
 	}
 }

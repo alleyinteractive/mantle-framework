@@ -9,16 +9,14 @@
 namespace Mantle\Framework\Http\View;
 
 use InvalidArgumentException;
-use Mantle\Framework\Support\Collection;
 use Mantle\Framework\Support\Str;
-
-use function Mantle\Framework\Helpers\collect;
+use Symfony\Component\Finder\Finder;
 
 /**
  * View Loader
  * Handles the loading of a template file in any location of the code base.
  */
-class View_Loader {
+class View_Finder {
 	/**
 	 * Base path for the application.
 	 *
@@ -34,14 +32,58 @@ class View_Loader {
 	protected $paths = [];
 
 	/**
+	 * Register a view extension with the finder.
+	 *
+	 * @var string[]
+	 */
+	protected $extensions = [
+		'blade.php',
+		'php',
+		'css',
+		'html',
+	];
+
+	/**
+	 * @var Finder
+	 */
+	protected $finder;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param string $base_path Base path.
 	 */
 	public function __construct( string $base_path ) {
 		$this->base_path = $base_path;
+		$this->finder    = new Finder();
 
 		\add_action( 'after_setup_theme', [ $this, 'set_default_paths' ] );
+	}
+
+	/**
+	 * Register an extension with the view finder.
+	 *
+	 * @param string $extension Extension to add.
+	 * @return static
+	 */
+	public function add_extension( $extension ) {
+		$index = array_search( $extension, $this->extensions );
+		if ( false !== $index ) {
+			unset( $this->extensions[ $index ] );
+		}
+
+		array_unshift( $this->extensions, $extension );
+
+		return $this;
+	}
+
+	/**
+	 * Get registered extensions.
+	 *
+	 * @return string
+	 */
+	public function get_extensions(): array {
+		return $this->extensions;
 	}
 
 	/**
@@ -132,7 +174,7 @@ class View_Loader {
 	 * @param string $name Template name.
 	 * @return string The template filename if one is located.
 	 */
-	public function load( string $slug, string $name = null ): string {
+	public function find( string $slug, string $name = null ): string {
 		$alias = null;
 
 		// Extract the alias if passed.
@@ -144,12 +186,12 @@ class View_Loader {
 		$templates = [];
 
 		if ( $name ) {
-			$templates[] = "{$slug}-{$name}.php";
+			$templates[] = "{$slug}-{$name}";
 		}
 
-		$templates[] = "{$slug}.php";
+		$templates[] = $slug;
 
-		return $this->locate_template( $templates, true, false, $alias );
+		return $this->locate_template( $templates, $alias );
 	}
 
 	/**
@@ -163,29 +205,48 @@ class View_Loader {
 	 * @param string $alias Alias to load, optional.
 	 * @return string The template filename if one is located.
 	 */
-	public function locate_template( array $templates, bool $load = true, bool $require_once = true, string $alias = null ): string {
-		$located = '';
+	public function locate_template( array $templates, string $alias = null ): string {
+		$paths = $this->get_paths();
+
+		if ( $alias ) {
+			$paths = array_filter(
+				$paths,
+				function( $path_alias ) use ( $alias ) {
+					return $alias === $path_alias;
+				},
+				ARRAY_FILTER_USE_KEY
+			);
+		}
 
 		foreach ( $templates as $template ) {
-			foreach ( $this->get_paths() as $key => $path ) {
-				// Confirm the alias if passed.
-				if ( $alias && $key !== $alias ) {
-					continue;
-				}
+			$possible_view_files = $this->get_possible_view_files( $template );
 
-				$file_path = $path . '/' . $template;
+			foreach ( $possible_view_files as $view_file ) {
+				foreach ( $this->get_paths() as $path ) {
+					$path = "{$path}/{$view_file}";
 
-				if ( file_exists( $file_path ) ) {
-					$located = $file_path;
-					break 2;
+					if ( file_exists( $path ) ) {
+						return $path;
+					}
 				}
 			}
 		}
 
-		if ( $load && ! empty( $located ) ) {
-			\load_template( $located, $require_once );
-		}
+		throw new InvalidArgumentException( "View [{$templates[0]}] not found." );
+	}
 
-		return $located;
+	/**
+	 * Calculate the possible view file paths with supported extensions.
+	 *
+	 * @param string $name File path without extension.
+	 * @return string[]
+	 */
+	public function get_possible_view_files( string $name): array {
+		return array_map(
+			function ( $extension ) use ( $name ) {
+				return "{$name}.{$extension}";
+			},
+			$this->extensions
+		);
 	}
 }

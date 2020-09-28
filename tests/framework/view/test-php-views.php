@@ -1,53 +1,20 @@
 <?php
-/**
- * Test_View_Factory test file.
- *
- * @package Mantle
- */
+namespace Mantle\Tests\Framework\View;
 
-namespace Mantle\Tests\Framework\Http;
-
-use Mantle\Framework\Application;
-use Mantle\Framework\Facade\Facade;
+use Mantle\Framework\Testing\Framework_Test_Case;
 use Mantle\Framework\Facade\View;
-use Mantle\Framework\Http\View\Factory;
-use Mantle\Framework\Http\View\View_Loader;
 
-/**
- * @todo Replace with Mantle testing.
- */
-class Test_View_Factory extends \WP_UnitTestCase {
-	/**
-	 * @var Application
-	 */
-	protected $app;
-
-	/**
-	 * @var Factory
-	 */
-	protected $view_factory;
-
-	public function setUp(): void {
+class Test_Php_Views extends Framework_Test_Case {
+	protected function setUp(): void {
 		parent::setUp();
 
-		$this->app = new Application();
-
-		// Register a view loader specific to tests.
-		$loader = new View_Loader( '' );
-		$loader->clear_paths();
-		$loader->add_path( MANTLE_PHPUNIT_TEMPLATE_PATH . '/view' );
-		$this->app->instance( 'view.loader', $loader );
-
-		// Replace the view factory.
-		$this->view_factory = new Factory( $this->app );
-		$this->app->instance( 'view', $this->view_factory );
-
-		Facade::clear_resolved_instances();
-		Facade::set_facade_application( $this->app );
+		$this->app['view.loader']
+			->clear_paths()
+			->add_path( MANTLE_PHPUNIT_TEMPLATE_PATH . '/view', 'unit-test' );
 	}
 
 	public function test_get_container() {
-		$this->assertEquals( $this->app, $this->view_factory->get_container() );
+		$this->assertEquals( $this->app, $this->app['view']->get_container() );
 	}
 
 	public function test_share_service_provider() {
@@ -78,7 +45,7 @@ class Test_View_Factory extends \WP_UnitTestCase {
 	}
 
 	public function test_get_factory() {
-		$this->assertEquals( $this->view_factory, $this->view_factory->shared( '__env' ) );
+		$this->assertEquals( $this->app['view'], $this->app['view']->shared( '__env' ) );
 	}
 
 	public function test_basic_load() {
@@ -148,11 +115,33 @@ class Test_View_Factory extends \WP_UnitTestCase {
 
 	public function test_loop_query() {
 		$posts = [
-			static::factory()->post->create( [ 'post_date' => '2003-01-01 00:00:00' ] ),
-			static::factory()->post->create( [ 'post_date' => '2002-01-01 00:00:00' ] ),
-			static::factory()->post->create( [ 'post_date' => '2001-01-01 00:00:00' ] ),
+			static::factory()->post->create(
+				[
+					'post_date' => '2003-01-01 00:00:00',
+					'meta' => [
+						'loop_query' => 1,
+					],
+					]
+			),
+			static::factory()->post->create(
+				[
+					'post_date' => '2002-01-01 00:00:00',
+					'meta' => [
+						'loop_query' => 1,
+					],
+					]
+			),
+			static::factory()->post->create(
+				[
+					'post_date' => '2001-01-01 00:00:00',
+					'meta' => [
+						'loop_query' => 1,
+					],
+					]
+			),
 		];
-		$contents = loop( new \WP_Query( 'orderby=date&order=desc' ), 'loop-post' );
+
+		$contents = loop( new \WP_Query( 'orderby=date&order=desc&meta_key=loop_query&meta_value=1' ), 'loop-post' );
 		foreach ( $posts as $key => $post_id ) {
 			$this->assertContains( "Post {$key}: {$post_id}", $contents );
 		}
@@ -192,16 +181,27 @@ class Test_View_Factory extends \WP_UnitTestCase {
 	}
 
 	public function test_nested_loops() {
+		$create_post = function( $date ) {
+			return static::factory()->post->create(
+				[
+					'post_date' => $date,
+					'meta' => [
+						'nested_loop' => 1,
+					],
+				]
+			);
+		};
+
 		$posts = [
-			static::factory()->post->create( [ 'post_date' => '2016-01-01 00:00:00' ] ),
+			$create_post( '2016-01-01 00:00:00' ),
 
-			static::factory()->post->create( [ 'post_date' => '2015-01-03 00:00:00' ] ),
-			static::factory()->post->create( [ 'post_date' => '2015-01-02 00:00:00' ] ),
-			static::factory()->post->create( [ 'post_date' => '2015-01-01 00:00:00' ] ),
+			$create_post( '2015-01-03 00:00:00' ),
+			$create_post( '2015-01-02 00:00:00' ),
+			$create_post( '2015-01-01 00:00:00' ),
 
-			static::factory()->post->create( [ 'post_date' => '2014-01-03 00:00:00' ] ),
-			static::factory()->post->create( [ 'post_date' => '2014-01-02 00:00:00' ] ),
-			static::factory()->post->create( [ 'post_date' => '2014-01-01 00:00:00' ] ),
+			$create_post( '2014-01-03 00:00:00' ),
+			$create_post( '2014-01-02 00:00:00' ),
+			$create_post( '2014-01-01 00:00:00' ),
 		];
 
 		global $post;
@@ -211,10 +211,10 @@ class Test_View_Factory extends \WP_UnitTestCase {
 		$this->assertSame( $posts[0], get_the_ID() );
 
 		$contents = loop(
-			new \WP_Query( 'year=2015orderby=date&order=desc' ),
+			new \WP_Query( 'year=2015orderby=date&order=desc&meta_key=nested_loop&meta_value=1' ),
 			'loop',
 			[
-				'child_query' => new \WP_Query( 'year=2014&orderby=date&order=desc' ),
+				'child_query' => new \WP_Query( 'year=2014&orderby=date&order=desc&meta_key=nested_loop&meta_value=1' ),
 			]
 		);
 
@@ -232,7 +232,7 @@ class Test_View_Factory extends \WP_UnitTestCase {
 
 		$this->assertSame( $expected, $contents );
 		$this->assertSame( $posts[0], get_the_ID() );
-		$this->assertNull( $this->view_factory->get_current() );
+		$this->assertNull( $this->app['view']->get_current() );
 	}
 
 	public function test_empty_post_restoring() {
