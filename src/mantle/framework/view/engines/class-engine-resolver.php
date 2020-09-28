@@ -50,7 +50,7 @@ class Engine_Resolver {
 	 * @param  string $engine
 	 * @return Engine
 	 *
-	 * @throws \InvalidArgumentException
+	 * @throws InvalidArgumentException Thrown on unknown engine.
 	 */
 	public function resolve( $engine ): Engine {
 		if ( isset( $this->resolved[ $engine ] ) ) {
@@ -58,7 +58,8 @@ class Engine_Resolver {
 		}
 
 		if ( isset( $this->resolvers[ $engine ] ) ) {
-			return $this->resolved[ $engine ] = call_user_func( $this->resolvers[ $engine ] );
+			$this->resolved[ $engine ] = call_user_func( $this->resolvers[ $engine ] );
+			return $this->resolved[ $engine ];
 		}
 
 		throw new InvalidArgumentException( "Engine [{$engine}] not found." );

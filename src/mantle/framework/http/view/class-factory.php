@@ -73,18 +73,18 @@ class Factory implements ViewFactory {
 		'php'       => 'php',
 		'css'       => 'file',
 		'html'      => 'file',
-];
+	];
 
 	/**
 	 * Constructor.
 	 *
-	 * @param Container $container Container to set.
-	 * @param Engine_Resolver $engines
-	 * @param View_Finder $loader
+	 * @param Container       $container Container to set.
+	 * @param Engine_Resolver $engines Engine Resolver.
+	 * @param View_Finder     $finder View Finder.
 	 */
 	public function __construct( Container $container, Engine_Resolver $engines, View_Finder $finder ) {
 		$this->engines = $engines;
-		$this->finder = $finder;
+		$this->finder  = $finder;
 
 		$this->set_container( $container );
 		$this->share( '__env', $this );
@@ -321,6 +321,8 @@ class Factory implements ViewFactory {
 	 *
 	 * @param string $path Path to resolve.
 	 * @return Engine
+	 *
+	 * @throws InvalidArgumentException Thrown on unknown extension from file.
 	 */
 	public function get_engine_from_path( string $path ): Engine {
 		$extension = $this->get_extension( $path );

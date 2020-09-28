@@ -44,6 +44,8 @@ class View_Finder {
 	];
 
 	/**
+	 * View Finder.
+	 *
 	 * @var Finder
 	 */
 	protected $finder;
@@ -200,10 +202,10 @@ class View_Finder {
 	 * Acts as a replacement to `locate_template()`.
 	 *
 	 * @param array  $templates Template files to search for.
-	 * @param bool   $load If true, the template file will be loaded.
-	 * @param bool   $require_once Whether to require_once or require. Default true. Has no effect if $load is false.
 	 * @param string $alias Alias to load, optional.
 	 * @return string The template filename if one is located.
+	 *
+	 * @throws InvalidArgumentException Thrown on unknown view to locate.
 	 */
 	public function locate_template( array $templates, string $alias = null ): string {
 		$paths = $this->get_paths();
@@ -241,7 +243,7 @@ class View_Finder {
 	 * @param string $name File path without extension.
 	 * @return string[]
 	 */
-	public function get_possible_view_files( string $name): array {
+	public function get_possible_view_files( string $name ): array {
 		return array_map(
 			function ( $extension ) use ( $name ) {
 				return "{$name}.{$extension}";

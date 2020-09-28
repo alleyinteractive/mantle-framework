@@ -50,6 +50,11 @@ class View_Service_Provider extends Service_Provider {
 		);
 	}
 
+	/**
+	 * Register the PHP (WordPress template) view engine.
+	 *
+	 * @param Engine_Resolver $resolver Engine resolver.
+	 */
 	protected function register_php_engine( Engine_Resolver $resolver ) {
 		$resolver->register(
 			'php',
@@ -59,6 +64,11 @@ class View_Service_Provider extends Service_Provider {
 		);
 	}
 
+	/**
+	 * Register the file view engine.
+	 *
+	 * @param Engine_Resolver $resolver Engine resolver.
+	 */
 	protected function register_file_engine( Engine_Resolver $resolver ) {
 		$resolver->register(
 			'file',
@@ -93,9 +103,6 @@ class View_Service_Provider extends Service_Provider {
 		$this->app->singleton(
 			'view',
 			function( $app ) {
-				// Retrieve the engine resolver.
-				// $resolver = $app['view.engine.resolver'];
-
 				$factory = new Factory(
 					$app,
 					$app['view.engine.resolver'],

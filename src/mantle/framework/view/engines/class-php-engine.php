@@ -1,7 +1,12 @@
 <?php
+/**
+ * Php_Engine class file.
+ *
+ * @package Mantle
+ */
+
 namespace Mantle\Framework\View\Engines;
 
-use Mantle\Framework\Contracts\Http\View\View_Loader;
 use Mantle\Framework\Contracts\View\Engine;
 use Throwable;
 
@@ -9,22 +14,6 @@ use Throwable;
  * PHP Template to load WordPress template files.
  */
 class Php_Engine implements Engine {
-	/**
-	 * View Loader
-	 *
-	 * @var View_Loader
-	 */
-	// protected $loader;
-
-	// /**
-	// * Constructor.
-	// *
-	// * @param View_Loader $loader
-	// */
-	// public function __construct( View_Loader $loader ) {
-	// $this->loader = $loader;
-	// }
-
 	/**
 	 * Evaluate the contents of a view at a given path.
 	 *
@@ -46,20 +35,16 @@ class Php_Engine implements Engine {
 		}
 
 		return ltrim( ob_get_clean() );
-
-		// if ( 0 === validate_file( $this->slug ) && 0 === validate_file( $this->slug ) ) {
-		// $this->factory->get_container()['view.loader']->load( $this->slug, $this->name );
-		// }
 	}
 
 	/**
 	 * Handle a view exception.
 	 *
-	 * @param  \Throwable $e
-	 * @param  int        $ob_level
+	 * @param  \Throwable $e Exception thrown.
+	 * @param  int        $ob_level Output buffer level.
 	 * @return void
 	 *
-	 * @throws \Throwable
+	 * @throws \Throwable Rethrows the exception thrown.
 	 */
 	protected function handle_view_exception( Throwable $e, $ob_level ) {
 		while ( ob_get_level() > $ob_level ) {

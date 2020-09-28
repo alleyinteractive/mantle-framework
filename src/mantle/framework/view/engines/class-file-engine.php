@@ -14,9 +14,17 @@ use Mantle\Framework\Contracts\View\Engine;
  */
 class File_Engine implements Engine {
 	/**
-	 * @inheritDoc
+	 * Evaluate the contents of a view at a given path.
+	 *
+	 * @param string $path View path.
+	 * @param array  $data View data.
+	 * @return string
 	 */
 	public function get( string $path, array $data = [] ): string {
-		return file_get_contents( $path );
+		if ( 0 === validate_file( $path ) && 0 === validate_file( $path ) ) {
+			return file_get_contents( $path ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
+		}
+
+		return '';
 	}
 }
