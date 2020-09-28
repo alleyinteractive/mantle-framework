@@ -13,8 +13,9 @@ use Mantle\Framework\Support\Str;
 use Symfony\Component\Finder\Finder;
 
 /**
- * View Loader
- * Handles the loading of a template file in any location of the code base.
+ * View Finder
+ *
+ * Handles the flexible location of templates.
  */
 class View_Finder {
 	/**
@@ -27,7 +28,7 @@ class View_Finder {
 	/**
 	 * Paths to check against when loading a template.
 	 *
-	 * @var array
+	 * @var string[]
 	 */
 	protected $paths = [];
 
@@ -44,20 +45,12 @@ class View_Finder {
 	];
 
 	/**
-	 * View Finder.
-	 *
-	 * @var Finder
-	 */
-	protected $finder;
-
-	/**
 	 * Constructor.
 	 *
 	 * @param string $base_path Base path.
 	 */
 	public function __construct( string $base_path ) {
 		$this->base_path = $base_path;
-		$this->finder    = new Finder();
 
 		\add_action( 'after_setup_theme', [ $this, 'set_default_paths' ] );
 	}
@@ -123,10 +116,12 @@ class View_Finder {
 			throw new InvalidArgumentException( 'Alias cannot contain invalid characters.' );
 		}
 
+		$path = \untrailingslashit( $path );
+
 		if ( $alias ) {
-			$this->paths[ $alias ] = \untrailingslashit( $path );
-		} else {
-			$this->paths[] = \untrailingslashit( $path );
+			$this->paths[ $alias ] = $path;
+		} elseif ( ! in_array( $path, $this->paths, true ) ) {
+			$this->paths[] = $path;
 		}
 
 		return $this;
