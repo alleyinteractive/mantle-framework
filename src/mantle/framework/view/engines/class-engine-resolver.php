@@ -48,11 +48,11 @@ class Engine_Resolver {
 	 * Resolve an engine instance by name.
 	 *
 	 * @param  string $engine
-	 * @return Engine
+	 * @return Engine|\Illuminate\View\Engines\CompilerEngine
 	 *
 	 * @throws InvalidArgumentException Thrown on unknown engine.
 	 */
-	public function resolve( $engine ): Engine {
+	public function resolve( $engine ) {
 		if ( isset( $this->resolved[ $engine ] ) ) {
 			return $this->resolved[ $engine ];
 		}

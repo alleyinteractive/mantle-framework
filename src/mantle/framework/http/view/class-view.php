@@ -76,12 +76,12 @@ class View {
 	/**
 	 * Constructor.
 	 *
-	 * @param Factory_Contract $factory View Factory.
-	 * @param Engine           $engine View Engine.
-	 * @param string           $path View path.
-	 * @param array            $variables Variables for the view, optional.
+	 * @param Factory_Contract                               $factory View Factory.
+	 * @param Engine|\Illuminate\View\Engines\CompilerEngine $engine View Engine.
+	 * @param string                                         $path View path.
+	 * @param array                                          $variables Variables for the view, optional.
 	 */
-	public function __construct( Factory_Contract $factory, Engine $engine, string $path, array $variables = [] ) {
+	public function __construct( Factory_Contract $factory, $engine, string $path, array $variables = [] ) {
 		$this->factory = $factory;
 		$this->engine  = $engine;
 		$this->path    = $path;

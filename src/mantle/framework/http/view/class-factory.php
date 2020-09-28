@@ -320,11 +320,11 @@ class Factory implements ViewFactory {
 	 * Resolve the engine for a given path.
 	 *
 	 * @param string $path Path to resolve.
-	 * @return Engine
+	 * @return Engine|\Illuminate\View\Engines\CompilerEngine
 	 *
 	 * @throws InvalidArgumentException Thrown on unknown extension from file.
 	 */
-	public function get_engine_from_path( string $path ): Engine {
+	public function get_engine_from_path( string $path ) {
 		$extension = $this->get_extension( $path );
 		if ( ! $extension ) {
 			throw new InvalidArgumentException( "Unknown extension in file: {$path}" );

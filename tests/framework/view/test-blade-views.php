@@ -9,11 +9,30 @@ class Test_Blade_Views extends Framework_Test_Case {
 
 		$this->app['view.loader']
 			->clear_paths()
-			->add_path( MANTLE_PHPUNIT_TEMPLATE_PATH . '/template-parts/blade' );
+			->add_path( MANTLE_PHPUNIT_TEMPLATE_PATH . '/blade', 'blade' );
 	}
 
-	public function test_basic_blade() {
-		$contents = (string) view( 'basic', [ 'name' => 'world' ] );
-		$this->assertSame( 'Hello world.', $contents );
+	public function test_basic() {
+		$contents = (string) view( '@blade/basic', [ 'name' => 'world' ] );
+		$this->assertSame( 'Hello, world.', trim( $contents ) );
+	}
+
+	public function test_if_else() {
+		$this->assertContains(
+			'True!',
+			(string) view( '@blade/if-else', [ 'should_if' => true ] ),
+		);
+
+		$this->assertContains(
+			'False',
+			(string) view( '@blade/if-else', [ 'should_if' => false ] ),
+		);
+	}
+
+	public function test_include() {
+		$this->assertContains(
+			'child',
+			(string) view( '@blade/parent' )
+		);
 	}
 }

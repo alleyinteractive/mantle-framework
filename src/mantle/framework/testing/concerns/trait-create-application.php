@@ -79,6 +79,9 @@ trait Create_Application {
 					],
 				],
 			],
+			'view'    => [
+				'compiled' => sys_get_temp_dir(),
+			],
 		];
 	}
 

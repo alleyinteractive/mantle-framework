@@ -7,13 +7,15 @@
 
 namespace Mantle\Framework\Providers;
 
+use Illuminate\Filesystem\Filesystem;
 use Mantle\Framework\Http\View\Factory;
 use Mantle\Framework\Http\View\View_Finder;
-use Mantle\Framework\Http\View\View_Loader;
 use Mantle\Framework\Service_Provider;
 use Mantle\Framework\View\Engines\Engine_Resolver;
 use Mantle\Framework\View\Engines\File_Engine;
 use Mantle\Framework\View\Engines\Php_Engine;
+use Illuminate\View\Compilers\BladeCompiler;
+use Illuminate\View\Engines\CompilerEngine;
 
 use function Mantle\Framework\Helpers\tap;
 
@@ -26,9 +28,22 @@ class View_Service_Provider extends Service_Provider {
 	 * Register the service provider.
 	 */
 	public function register() {
+		$this->register_blade_compiler();
 		$this->register_engine_resolver();
 		$this->register_loader();
 		$this->register_factory();
+	}
+
+	/**
+	 * Register the Blade Compiler Engine
+	 */
+	protected function register_blade_compiler() {
+		$this->app->singleton(
+			'blade.compiler',
+			function( $app ) {
+				return new BladeCompiler( new Filesystem(), $app['config']['view.compiled'] );
+			}
+		);
 	}
 
 	/**
@@ -44,6 +59,7 @@ class View_Service_Provider extends Service_Provider {
 						// Register the various view engines.
 						$this->register_php_engine( $resolver );
 						$this->register_file_engine( $resolver );
+						$this->register_compiler_engine( $resolver );
 					}
 				);
 			}
@@ -74,6 +90,20 @@ class View_Service_Provider extends Service_Provider {
 			'file',
 			function() {
 				return new File_Engine();
+			}
+		);
+	}
+
+	/**
+	 * Register the compiler view engine.
+	 *
+	 * @param Engine_Resolver $resolver Engine resolver.
+	 */
+	protected function register_compiler_engine( Engine_Resolver $resolver ) {
+		$resolver->register(
+			'blade',
+			function() {
+				return new CompilerEngine( $this->app['blade.compiler'] );
 			}
 		);
 	}

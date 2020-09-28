@@ -10,7 +10,6 @@ namespace Mantle\Framework\Http\View;
 
 use InvalidArgumentException;
 use Mantle\Framework\Support\Str;
-use Symfony\Component\Finder\Finder;
 
 /**
  * View Finder

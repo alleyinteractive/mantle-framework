@@ -32,6 +32,20 @@ class Application extends Container\Container implements Application_Contract {
 	protected $base_path;
 
 	/**
+	 * Bootstrap path of the application.
+	 *
+	 * @var string
+	 */
+	protected $bootstrap_path;
+
+	/**
+	 * Storage path of the application.
+	 *
+	 * @var string
+	 */
+	protected $storage_path;
+
+	/**
 	 * Root URL of the application.
 	 *
 	 * @var string
@@ -106,9 +120,16 @@ class Application extends Container\Container implements Application_Contract {
 	 * Set the base path of the application.
 	 *
 	 * @param string $path Path to set.
+	 * @return static
 	 */
 	public function set_base_path( string $path ) {
 		$this->base_path = $path;
+
+		$this->instance( 'path', $this->get_base_path() );
+		$this->instance( 'path.bootstrap', $this->get_storage_path() );
+		$this->instance( 'path.storage', $this->get_storage_path() );
+
+		return $this;
 	}
 
 	/**
@@ -119,6 +140,26 @@ class Application extends Container\Container implements Application_Contract {
 	 */
 	public function get_base_path( string $path = '' ): string {
 		return $this->base_path . ( $path ? '/' . $path : '' );
+	}
+
+	/**
+	 * Getter for the bootstrap path.
+	 *
+	 * @param string $path Path to append.
+	 * @return string
+	 */
+	public function get_bootstrap_path( string $path = '' ): string {
+		return ( $this->bootstrap_path ?: $this->base_path . DIRECTORY_SEPARATOR . 'bootstrap' ) . $path;
+	}
+
+	/**
+	 * Getter for the storage path.
+	 *
+	 * @param string $path Path to append.
+	 * @return string
+	 */
+	public function get_storage_path( string $path = '' ): string {
+		return ( $this->storage_path ?: $this->base_path . DIRECTORY_SEPARATOR . 'storage' ) . $path;
 	}
 
 	/**
@@ -146,7 +187,7 @@ class Application extends Container\Container implements Application_Contract {
 	 * @return string
 	 */
 	public function get_cache_path(): string {
-		return $this->base_path . '/bootstrap/cache';
+		return $this->get_bootstrap_path( '/cache' );
 	}
 
 	/**
