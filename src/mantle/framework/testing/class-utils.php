@@ -161,6 +161,7 @@ class Utils {
 	public static function setup_configuration(): void {
 		global $table_prefix;
 
+		// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
 		defined( 'ABSPATH' ) || define( 'ABSPATH', preg_replace( '#/wp-content/.*$#', '/', __DIR__ ) );
 		defined( 'WP_DEBUG' ) || define( 'WP_DEBUG', true );
 
@@ -180,12 +181,14 @@ class Utils {
 		defined( 'LOGGED_IN_SALT' ) || define( 'LOGGED_IN_SALT', 'put your unique phrase here' );
 		defined( 'NONCE_SALT' ) || define( 'NONCE_SALT', 'put your unique phrase here' );
 
-		$table_prefix = 'wptests_';
+		$table_prefix = 'wptests_'; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 
 		defined( 'WP_TESTS_DOMAIN' ) || define( 'WP_TESTS_DOMAIN', 'example.org' );
 		defined( 'WP_TESTS_EMAIL' ) || define( 'WP_TESTS_EMAIL', 'admin@example.org' );
 		defined( 'WP_TESTS_TITLE' ) || define( 'WP_TESTS_TITLE', 'Test Site' );
 		defined( 'WP_PHP_BINARY' ) || define( 'WP_PHP_BINARY', 'php' );
 		defined( 'WPLANG' ) || define( 'WPLANG', '' );
+
+		// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
 	}
 }
