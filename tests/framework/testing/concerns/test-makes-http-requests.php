@@ -3,9 +3,12 @@ namespace Mantle\Tests\Framework\Testing\Concerns;
 
 use Mantle\Framework\Http\Response;
 use Mantle\Framework\Providers\Routing_Service_Provider;
+use Mantle\Framework\Testing\Concerns\Refresh_Database;
 use Mantle\Framework\Testing\Framework_Test_Case;
 
 class Test_Makes_Http_Requests extends Framework_Test_Case {
+	use Refresh_Database;
+
 	public function test_get_home() {
 		$this->get( home_url( '/' ) );
 		$this->assertQueryTrue( 'is_home', 'is_front_page' );
@@ -13,9 +16,9 @@ class Test_Makes_Http_Requests extends Framework_Test_Case {
 
 	public function test_get_singular() {
 		$post_id = static::factory()->post->create();
-		$this->get( get_permalink( $post_id ) );
-		$this->assertQueryTrue( 'is_single', 'is_singular' );
-		$this->assertQueriedObjectId( $post_id );
+		$this->get( get_permalink( $post_id ) )
+			->assertQueryTrue( 'is_single', 'is_singular' )
+			->assertQueriedObjectId( $post_id );
 	}
 
 	public function test_get_term() {
