@@ -266,7 +266,7 @@ if ( ! function_exists( 'storage_path' ) ) {
 	/**
 	 * Get the path to the storage folder.
 	 *
-	 * @param  string  $path
+	 * @param  string  $path Path to append.
 	 * @return string
 	 */
 	function storage_path( string $path = '' ): string {

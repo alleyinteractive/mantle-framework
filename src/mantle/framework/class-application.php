@@ -126,7 +126,7 @@ class Application extends Container\Container implements Application_Contract {
 		$this->base_path = $path;
 
 		$this->instance( 'path', $this->get_base_path() );
-		$this->instance( 'path.bootstrap', $this->get_storage_path() );
+		$this->instance( 'path.bootstrap', $this->get_bootstrap_path() );
 		$this->instance( 'path.storage', $this->get_storage_path() );
 
 		return $this;
