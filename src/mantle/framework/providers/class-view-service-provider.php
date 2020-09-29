@@ -7,9 +7,15 @@
 
 namespace Mantle\Framework\Providers;
 
+use Illuminate\Filesystem\Filesystem;
 use Mantle\Framework\Http\View\Factory;
-use Mantle\Framework\Http\View\View_Loader;
+use Mantle\Framework\Http\View\View_Finder;
 use Mantle\Framework\Service_Provider;
+use Mantle\Framework\View\Engines\Engine_Resolver;
+use Mantle\Framework\View\Engines\File_Engine;
+use Mantle\Framework\View\Engines\Php_Engine;
+use Illuminate\View\Compilers\BladeCompiler;
+use Illuminate\View\Engines\CompilerEngine;
 
 use function Mantle\Framework\Helpers\tap;
 
@@ -22,8 +28,84 @@ class View_Service_Provider extends Service_Provider {
 	 * Register the service provider.
 	 */
 	public function register() {
+		$this->register_blade_compiler();
+		$this->register_engine_resolver();
 		$this->register_loader();
 		$this->register_factory();
+	}
+
+	/**
+	 * Register the Blade Compiler Engine
+	 */
+	protected function register_blade_compiler() {
+		$this->app->singleton(
+			'blade.compiler',
+			function( $app ) {
+				return new BladeCompiler( new Filesystem(), $app['config']['view.compiled'] );
+			}
+		);
+	}
+
+	/**
+	 * Register the view engine resolver.
+	 */
+	protected function register_engine_resolver() {
+		$this->app->singleton(
+			'view.engine.resolver',
+			function() {
+				return tap(
+					new Engine_Resolver(),
+					function( Engine_Resolver $resolver ) {
+						// Register the various view engines.
+						$this->register_php_engine( $resolver );
+						$this->register_file_engine( $resolver );
+						$this->register_compiler_engine( $resolver );
+					}
+				);
+			}
+		);
+	}
+
+	/**
+	 * Register the PHP (WordPress template) view engine.
+	 *
+	 * @param Engine_Resolver $resolver Engine resolver.
+	 */
+	protected function register_php_engine( Engine_Resolver $resolver ) {
+		$resolver->register(
+			'php',
+			function() {
+				return new Php_Engine();
+			}
+		);
+	}
+
+	/**
+	 * Register the file view engine.
+	 *
+	 * @param Engine_Resolver $resolver Engine resolver.
+	 */
+	protected function register_file_engine( Engine_Resolver $resolver ) {
+		$resolver->register(
+			'file',
+			function() {
+				return new File_Engine();
+			}
+		);
+	}
+
+	/**
+	 * Register the compiler view engine.
+	 *
+	 * @param Engine_Resolver $resolver Engine resolver.
+	 */
+	protected function register_compiler_engine( Engine_Resolver $resolver ) {
+		$resolver->register(
+			'blade',
+			function() {
+				return new CompilerEngine( $this->app['blade.compiler'] );
+			}
+		);
 	}
 
 	/**
@@ -34,8 +116,8 @@ class View_Service_Provider extends Service_Provider {
 			'view.loader',
 			function ( $app ) {
 				return tap(
-					new View_Loader( $app->get_base_path() ),
-					function ( View_Loader $loader ) {
+					new View_Finder( $app->get_base_path() ),
+					function ( View_Finder $loader ) {
 						// Register the base view folder for the project.
 						$loader->add_path( $this->app->get_base_path( 'views/' ) );
 					}
@@ -51,7 +133,12 @@ class View_Service_Provider extends Service_Provider {
 		$this->app->singleton(
 			'view',
 			function( $app ) {
-				$factory = new Factory( $app );
+				$factory = new Factory(
+					$app,
+					$app['view.engine.resolver'],
+					$app['view.loader']
+				);
+
 				$factory->share( 'app', $app );
 				return $factory;
 			}

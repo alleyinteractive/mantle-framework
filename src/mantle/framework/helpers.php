@@ -261,3 +261,15 @@ if ( ! function_exists( 'abort_unless' ) ) {
 		}
 	}
 }
+
+if ( ! function_exists( 'storage_path' ) ) {
+	/**
+	 * Get the path to the storage folder.
+	 *
+	 * @param  string  $path Path to append.
+	 * @return string
+	 */
+	function storage_path( string $path = '' ): string {
+			return app( 'path.storage' ) . ( $path ? DIRECTORY_SEPARATOR . $path : $path );
+	}
+}
