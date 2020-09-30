@@ -13,18 +13,6 @@ use function Mantle\Framework\Testing\tests_add_filter;
 require_once __DIR__ . '/class-utils.php';
 require_once __DIR__ . '/class-wp-die.php';
 
-if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) ) {
-	$config_file_path = WP_TESTS_CONFIG_FILE_PATH;
-} else {
-	$config_file_path = preg_replace( '#/wp-content/.*$#', '/wp-tests-config.php', __DIR__ );
-}
-
-if ( ! is_readable( $config_file_path ) ) {
-	// TODO: Add a mantle generator for wp-tests-config.php.
-	echo "Error: wp-tests-config.php is missing! Please use wp-tests-config-sample.php to create a config file.\n";
-	exit( 1 );
-}
-
 /*
  * Globalize some WordPress variables, because PHPUnit loads this file inside a function.
  * See: https://github.com/sebastianbergmann/phpunit/issues/325
@@ -40,11 +28,23 @@ global $wpdb,
        $wp_theme_directories,
        $PHP_SELF;
 
-require_once $config_file_path;
+// Load the configuration.
+if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) ) {
+	$config_file_path = WP_TESTS_CONFIG_FILE_PATH;
+} else {
+	$config_file_path = preg_replace( '#/wp-content/.*$#', '/wp-tests-config.php', __DIR__ );
+}
 
+if ( is_readable( $config_file_path ) ) {
+	echo "Using configuration file: [{$config_file_path}]\n";
+	require_once $config_file_path;
+}
+
+Utils::setup_configuration();
 Utils::reset_server();
 
 define( 'WP_TESTS_TABLE_PREFIX', $table_prefix );
+define( 'DIR_TESTDATA', __DIR__ . '/data' );
 
 /*
  * Cron tries to make an HTTP request to the site, which always fails,

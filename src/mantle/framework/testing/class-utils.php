@@ -151,4 +151,44 @@ class Utils {
 	public static function set_default_permalink_structure_for_tests() {
 		update_option( 'permalink_structure', '/%year%/%monthnum%/%day%/%postname%/' );
 	}
+
+	/**
+	 * Define the constants that are necessary for WordPress installation.
+	 *
+	 * Mirrors the wp-tests-config-sample.php file that can optionally be loaded
+	 * before this file.
+	 */
+	public static function setup_configuration(): void {
+		global $table_prefix;
+
+		// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
+		defined( 'ABSPATH' ) || define( 'ABSPATH', preg_replace( '#/wp-content/.*$#', '/', __DIR__ ) );
+		defined( 'WP_DEBUG' ) || define( 'WP_DEBUG', true );
+
+		defined( 'DB_NAME' ) || define( 'DB_NAME', 'wordpress_unit_tests' );
+		defined( 'DB_USER' ) || define( 'DB_USER', 'root' );
+		defined( 'DB_PASSWORD' ) || define( 'DB_PASSWORD', 'root' );
+		defined( 'DB_HOST' ) || define( 'DB_HOST', 'localhost' );
+		defined( 'DB_CHARSET' ) || define( 'DB_CHARSET', 'utf8' );
+		defined( 'DB_COLLATE' ) || define( 'DB_COLLATE', '' );
+
+		defined( 'AUTH_KEY' ) || define( 'AUTH_KEY', 'put your unique phrase here' );
+		defined( 'SECURE_AUTH_KEY' ) || define( 'SECURE_AUTH_KEY', 'put your unique phrase here' );
+		defined( 'LOGGED_IN_KEY' ) || define( 'LOGGED_IN_KEY', 'put your unique phrase here' );
+		defined( 'NONCE_KEY' ) || define( 'NONCE_KEY', 'put your unique phrase here' );
+		defined( 'AUTH_SALT' ) || define( 'AUTH_SALT', 'put your unique phrase here' );
+		defined( 'SECURE_AUTH_SALT' ) || define( 'SECURE_AUTH_SALT', 'put your unique phrase here' );
+		defined( 'LOGGED_IN_SALT' ) || define( 'LOGGED_IN_SALT', 'put your unique phrase here' );
+		defined( 'NONCE_SALT' ) || define( 'NONCE_SALT', 'put your unique phrase here' );
+
+		$table_prefix = 'wptests_'; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+
+		defined( 'WP_TESTS_DOMAIN' ) || define( 'WP_TESTS_DOMAIN', 'example.org' );
+		defined( 'WP_TESTS_EMAIL' ) || define( 'WP_TESTS_EMAIL', 'admin@example.org' );
+		defined( 'WP_TESTS_TITLE' ) || define( 'WP_TESTS_TITLE', 'Test Site' );
+		defined( 'WP_PHP_BINARY' ) || define( 'WP_PHP_BINARY', 'php' );
+		defined( 'WPLANG' ) || define( 'WPLANG', '' );
+
+		// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
+	}
 }

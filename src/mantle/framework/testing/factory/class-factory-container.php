@@ -82,6 +82,7 @@ class Factory_Container {
 		$this->comment    = $container->make( Comment_Factory::class );
 		$this->post       = $container->make( Post_Factory::class );
 		$this->tag        = $container->make( Term_Factory::class, [ 'taxonomy' => 'post_tag' ] );
+		$this->term       = $container->make( Term_Factory::class, [ 'taxonomy' => 'post_tag' ] );
 		$this->user       = $container->make( User_Factory::class );
 
 		if ( is_multisite() ) {
