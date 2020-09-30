@@ -7,6 +7,8 @@
 
 namespace Mantle\Framework\Testing\Concerns;
 
+use Mantle\Framework\Testing\Expectation\Expectation;
+use Mantle\Framework\Testing\Expectation\Expectation_Container;
 use PHPUnit\Framework\Assert as PHPUnit;
 
 /**
@@ -21,11 +23,18 @@ trait Interacts_With_Hooks {
 	protected $hooks_fired = [];
 
 	/**
+	 * @var Expectation_Container
+	 */
+	protected $expectation_container;
+
+	/**
 	 * Setup the trait listener.
 	 *
 	 * @return void
 	 */
 	public function interacts_with_hooks_set_up(): void {
+		$this->expectation_container = new Expectation_Container();
+
 		\add_filter(
 			'all',
 			function( $value ) {
@@ -48,6 +57,9 @@ trait Interacts_With_Hooks {
 	 */
 	public function interacts_with_hooks_tear_down(): void {
 		$this->hooks_fired = [];
+
+		$this->expectation_container->validate();
+		$this->expectation_container = null;
 	}
 
 	/**
@@ -80,22 +92,32 @@ trait Interacts_With_Hooks {
 		PHPUnit::assertTrue( empty( $this->hooks_fired[ $hook ] ) );
 	}
 
-	public function expectAction( string $hook ) {
+	// public function expectActionAdded( string $hook, callable $callback = null ) {
 
+	// }
+
+	public function expectApplied( string $hook ): Expectation {
+		return $this->expectation_container->add_applied( $hook );
 	}
 
-	public function expectFilter( string $hook ) {
+	// public function expectFilterAdded( string $hook ) {
 
-	}
+	// }
 
-	/**
-	 * Fake a hook from being applied while allowing all other
-	 * hooks to function normally.
-	 *
-	 * @param string|string[] $hook Hooks to apply.
-	 * @return void
-	 */
-	public function fake( $hook ): void {
-		//  collect
-	}
+	// public function expectFilterApplied( string $hook ) {
+
+	// }
+
+	// protected function add_hook_expectation()
+
+	// /**
+	//  * Fake a hook from being applied while allowing all other
+	//  * hooks to function normally.
+	//  *
+	//  * @param string|string[] $hook Hooks to apply.
+	//  * @return void
+	//  */
+	// public function fake( $hook ): void {
+	// 	//  collect
+	// }
 }
