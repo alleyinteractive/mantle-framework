@@ -11,6 +11,7 @@ use Mantle\Framework\Alias_Loader;
 use Mantle\Framework\Contracts\Application;
 use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Facade\Facade;
+use Mantle\Framework\Support\Collection;
 use Mantle\Framework\Testing\Concerns\Admin_Screen;
 use Mantle\Framework\Testing\Concerns\Assertions;
 use Mantle\Framework\Testing\Concerns\Create_Application;
@@ -19,6 +20,7 @@ use Mantle\Framework\Testing\Concerns\Hooks;
 use Mantle\Framework\Testing\Concerns\Incorrect_Usage;
 use Mantle\Framework\Testing\Concerns\Interacts_With_Container;
 use Mantle\Framework\Testing\Concerns\Interacts_With_Cron;
+use Mantle\Framework\Testing\Concerns\Interacts_With_Hooks;
 use Mantle\Framework\Testing\Concerns\Interacts_With_Requests;
 use Mantle\Framework\Testing\Concerns\Makes_Http_Requests;
 use Mantle\Framework\Testing\Concerns\Network_Admin_Screen;
@@ -43,6 +45,7 @@ abstract class Test_Case extends BaseTestCase {
 		Incorrect_Usage,
 		Interacts_With_Container,
 		Interacts_With_Cron,
+		Interacts_With_Hooks,
 		Interacts_With_Requests,
 		Makes_Http_Requests,
 		WordPress_State,
@@ -128,22 +131,17 @@ abstract class Test_Case extends BaseTestCase {
 
 		static::clean_up_global_scope();
 
-		foreach (
-			[
-				// This order is deliberate.
-				Refresh_Database::class,
-				WordPress_Authentication::class,
-				Admin_Screen::class,
-				Network_Admin_Screen::class,
-				Interacts_With_Requests::class,
-				Makes_Http_Requests::class,
-			] as $trait
-		) {
-			if ( isset( static::$test_uses[ $trait ] ) ) {
-				$method = strtolower( class_basename( $trait ) ) . '_set_up';
-				$this->{$method}();
-			}
-		}
+		// Boot traits on the test case.
+		$this->get_test_case_traits( 'setup' )
+			->each(
+				function( $trait ) {
+					$method = strtolower( class_basename( $trait ) ) . '_set_up';
+
+					if ( method_exists( $this, $method ) ) {
+						$this->{$method}();
+					}
+				}
+			);
 
 		$this->expectDeprecated();
 		$this->expectIncorrectUsage();
@@ -159,21 +157,31 @@ abstract class Test_Case extends BaseTestCase {
 		// phpcs:disable WordPress.WP.GlobalVariablesOverride,WordPress.NamingConventions.PrefixAllGlobals
 		global $wp_query, $wp;
 
-		foreach (
-			[
-				// This order is deliberate.
-				WordPress_Authentication::class,
-				Admin_Screen::class,
-				Network_Admin_Screen::class,
-				Interacts_With_Requests::class,
-				Refresh_Database::class,
-			] as $trait
-		) {
-			if ( isset( static::$test_uses[ $trait ] ) ) {
-				$method = strtolower( class_basename( $trait ) ) . '_tear_down';
-				$this->{$method}();
-			}
-		}
+		$this->get_test_case_traits( 'teardown' )
+			->each(
+				function( $trait ) {
+					$method = strtolower( class_basename( $trait ) ) . '_tear_down';
+
+					if ( method_exists( $this, $method ) ) {
+						$this->{$method}();
+					}
+				}
+			);
+		// foreach (
+		// 	[
+		// 		// This order is deliberate.
+		// 		WordPress_Authentication::class,
+		// 		Admin_Screen::class,
+		// 		Network_Admin_Screen::class,
+		// 		Interacts_With_Requests::class,
+		// 		Refresh_Database::class,
+		// 	] as $trait
+		// ) {
+		// 	if ( isset( static::$test_uses[ $trait ] ) ) {
+		// 		$method = strtolower( class_basename( $trait ) ) . '_tear_down';
+		// 		$this->{$method}();
+		// 	}
+		// }
 
 		if ( is_multisite() ) {
 			while ( ms_is_switched() ) {
@@ -212,6 +220,35 @@ abstract class Test_Case extends BaseTestCase {
 		if ( $this->app ) {
 			$this->app = null;
 		}
+	}
+
+	/**
+	 * Get the test case traits.
+	 *
+	 * @param string $action Action being performed (setup/teardown).
+	 * @return Collection
+	 */
+	protected function get_test_case_traits( string $action ): Collection {
+		// Boot traits on the test case.
+		$traits = array_values( class_uses_recursive( static::class ) );
+
+		$priority_traits = [
+			// This order is deliberate.
+			Refresh_Database::class,
+			WordPress_Authentication::class,
+			Admin_Screen::class,
+			Network_Admin_Screen::class,
+		];
+
+		if ( 'teardown' === $action ) {
+			$priority_traits = array_reverse( $priority_traits );
+		}
+
+		// Combine the priority and non-priority traits.
+		return collect()
+			->merge( array_intersect( $priority_traits, $traits ) )
+			->merge( array_diff( $traits, $priority_traits ) )
+			->unique();
 	}
 
 	/**
