@@ -88,4 +88,14 @@ trait Interacts_With_Hooks {
 
 	}
 
+	/**
+	 * Fake a hook from being applied while allowing all other
+	 * hooks to function normally.
+	 *
+	 * @param string|string[] $hook Hooks to apply.
+	 * @return void
+	 */
+	public function fake( $hook ): void {
+		//  collect
+	}
 }
