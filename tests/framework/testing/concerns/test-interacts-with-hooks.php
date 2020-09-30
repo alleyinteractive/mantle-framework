@@ -16,22 +16,40 @@ class Test_Interacts_With_Hooks extends Framework_Test_Case {
 	}
 
 	public function test_hook_applied_declaration() {
-		$this->expectAction( 'action_to_check' )
-			->once()
-			->with( 'value_to_check' );
+		$this->expectApplied( 'action_to_check' )
+			->twice()
+			->with( 'value_to_check', 'secondary_value_to_check' );
 
-		do_action( 'action_to_check', 'value_to_check' );
+		$this->expectApplied( 'action_that_shouldnt_fire' )->never();
+
+		do_action( 'action_to_check', 'value_to_check', 'secondary_value_to_check' );
+		do_action( 'action_to_check', 'value_to_check', 'secondary_value_to_check' );
+
+		$this->expectApplied( 'falsey_filter_to_check' )
+			->once()
+			->andReturnFalse();
+
+		add_filter( 'falsey_filter_to_check', '__return_false' );
+		apply_filters( 'falsey_filter_to_check', true );
 	}
 
-	public function test_filter_applied_declaration() {
-		$this->expectFilter( 'filter_to_check' )
-			->once()
-			->with( 'value_to_compare' )
-			->andReturn( 'updated_value' );
+	// public function test_hook_added_declaration() {
+	// 	$this->expectAdded( 'hook_to_add' )
+	// 		->once()
+	// 		->andReturn( true );
 
-		$this->assertEquals(
-			'updated_value',
-			apply_filters( 'value_to_compare', 'value_to_compare' )
-		);
-	}
+	// 	add_action( 'hook_to_add', '__return_true' );
+	// }
+
+	// public function test_filter_applied_declaration() {
+	// 	$this->expectFilterApplied( 'filter_to_check' )
+	// 		->once()
+	// 		->with( 'value_to_compare' )
+	// 		->andReturn( 'updated_value' );
+
+	// 	$this->assertEquals(
+	// 		'updated_value',
+	// 		apply_filters( 'value_to_compare', 'value_to_compare' )
+	// 	);
+	// }
 }
