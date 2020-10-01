@@ -132,7 +132,7 @@ abstract class Test_Case extends BaseTestCase {
 		static::clean_up_global_scope();
 
 		// Boot traits on the test case.
-		$this->get_test_case_traits( 'setup' )
+		$this->get_test_case_traits()
 			->each(
 				function( $trait ) {
 					$method = strtolower( class_basename( $trait ) ) . '_set_up';
@@ -157,7 +157,9 @@ abstract class Test_Case extends BaseTestCase {
 		// phpcs:disable WordPress.WP.GlobalVariablesOverride,WordPress.NamingConventions.PrefixAllGlobals
 		global $wp_query, $wp;
 
-		$this->get_test_case_traits( 'teardown' )
+		$this->get_test_case_traits()
+			// Tearing down requires performing priority traits in opposite order.
+			->reverse()
 			->each(
 				function( $trait ) {
 					$method = strtolower( class_basename( $trait ) ) . '_tear_down';
@@ -210,10 +212,9 @@ abstract class Test_Case extends BaseTestCase {
 	/**
 	 * Get the test case traits.
 	 *
-	 * @param string $action Action being performed (setup/teardown).
 	 * @return Collection
 	 */
-	protected function get_test_case_traits( string $action ): Collection {
+	protected function get_test_case_traits(): Collection {
 		// Boot traits on the test case.
 		$traits = array_values( class_uses_recursive( static::class ) );
 
@@ -224,15 +225,6 @@ abstract class Test_Case extends BaseTestCase {
 			Admin_Screen::class,
 			Network_Admin_Screen::class,
 		];
-
-		if ( 'teardown' === $action ) {
-			$priority_traits = array_merge(
-				[
-					Interacts_With_Hooks::class,
-				],
-				array_reverse( $priority_traits ),
-			);
-		}
 
 		// Combine the priority and non-priority traits.
 		return collect()
