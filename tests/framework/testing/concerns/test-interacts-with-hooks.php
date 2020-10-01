@@ -44,16 +44,4 @@ class Test_Interacts_With_Hooks extends Framework_Test_Case {
 
 		add_filter( 'filter_to_add', '__return_true' );
 	}
-
-	// public function test_filter_applied_declaration() {
-	// 	$this->expectFilterApplied( 'filter_to_check' )
-	// 		->once()
-	// 		->with( 'value_to_compare' )
-	// 		->andReturn( 'updated_value' );
-
-	// 	$this->assertEquals(
-	// 		'updated_value',
-	// 		apply_filters( 'value_to_compare', 'value_to_compare' )
-	// 	);
-	// }
 }
