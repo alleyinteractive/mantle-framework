@@ -1,10 +1,30 @@
 <?php
+/**
+ * Expectation_Container class file.
+ *
+ * @package Mantle
+ */
+
 namespace Mantle\Framework\Testing\Expectation;
 
 use Mantle\Framework\Support\Collection;
 
+/**
+ * Container for the expectation checking.
+ */
 class Expectation_Container {
+	/**
+	 * Name for adding an action.
+	 *
+	 * @var string
+	 */
 	public const ACTION_ADDED = 'added';
+
+	/**
+	 * Name for applying an action.
+	 *
+	 * @var string
+	 */
 	public const ACTION_APPLIED = 'applied';
 
 	/**
@@ -14,15 +34,18 @@ class Expectation_Container {
 	 */
 	protected $expectations;
 
+	/**
+	 * Constructor.
+	 */
 	public function __construct() {
 		$this->expectations = new Collection();
 	}
 
 	/**
-	 * Create an expectation.
+	 * Create an expectation for checking if a hook was fired.
 	 *
-	 * @param string $hook
-	 * @param array $args
+	 * @param string $hook Hook to check.
+	 * @param array  ...$args Arguments for the hook, optional.
 	 * @return Expectation
 	 */
 	public function add_applied( string $hook, ...$args ): Expectation {
@@ -32,9 +55,22 @@ class Expectation_Container {
 	}
 
 	/**
+	 * Create an expectation for checking if a hook was added.
+	 *
+	 * @param string   $hook Hook to check.
+	 * @param callable $callback Callback for the hook, optional.
+	 * @return Expectation
+	 */
+	public function add_added( string $hook, callable $callback = null ): Expectation {
+		$expectation = new Expectation( static::ACTION_ADDED, $hook, $callback );
+		$this->expectations->push( $expectation );
+		return $expectation;
+	}
+
+	/**
 	 * Validate the expectations in the container.
 	 */
-	public function validate(): void {
+	public function tear_down(): void {
 		$this->expectations->each->validate();
 	}
 }

@@ -2,6 +2,8 @@
 /**
  * Interacts_With_Hooks trait file.
  *
+ * phpcs:disable WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+ *
  * @package Mantle
  */
 
@@ -23,6 +25,8 @@ trait Interacts_With_Hooks {
 	protected $hooks_fired = [];
 
 	/**
+	 * Expectation Container
+	 *
 	 * @var Expectation_Container
 	 */
 	protected $expectation_container;
@@ -58,8 +62,10 @@ trait Interacts_With_Hooks {
 	public function interacts_with_hooks_tear_down(): void {
 		$this->hooks_fired = [];
 
-		$this->expectation_container->validate();
-		$this->expectation_container = null;
+		if ( isset( $this->expectation_container ) ) {
+			$this->expectation_container->tear_down();
+			$this->expectation_container = null;
+		}
 	}
 
 	/**
@@ -92,32 +98,24 @@ trait Interacts_With_Hooks {
 		PHPUnit::assertTrue( empty( $this->hooks_fired[ $hook ] ) );
 	}
 
-	// public function expectActionAdded( string $hook, callable $callback = null ) {
-
-	// }
-
+	/**
+	 * Add expectation that an action applied.
+	 *
+	 * @param string $hook Action to listen to.
+	 * @return Expectation
+	 */
 	public function expectApplied( string $hook ): Expectation {
 		return $this->expectation_container->add_applied( $hook );
 	}
 
-	// public function expectFilterAdded( string $hook ) {
-
-	// }
-
-	// public function expectFilterApplied( string $hook ) {
-
-	// }
-
-	// protected function add_hook_expectation()
-
-	// /**
-	//  * Fake a hook from being applied while allowing all other
-	//  * hooks to function normally.
-	//  *
-	//  * @param string|string[] $hook Hooks to apply.
-	//  * @return void
-	//  */
-	// public function fake( $hook ): void {
-	// 	//  collect
-	// }
+	/**
+	 * Add expectation that an action added.
+	 *
+	 * @param string   $hook Action to listen to.
+	 * @param callable $callback Callback to check was added, optional.
+	 * @return Expectation
+	 */
+	public function expectAdded( string $hook, callable $callback = null ) {
+		return $this->expectation_container->add_added( $hook, $callback );
+	}
 }

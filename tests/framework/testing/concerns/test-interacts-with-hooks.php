@@ -33,13 +33,17 @@ class Test_Interacts_With_Hooks extends Framework_Test_Case {
 		apply_filters( 'falsey_filter_to_check', true );
 	}
 
-	// public function test_hook_added_declaration() {
-	// 	$this->expectAdded( 'hook_to_add' )
-	// 		->once()
-	// 		->andReturn( true );
+	public function test_hook_added_declaration() {
+		$this->expectAdded( 'hook_to_add' )
+			->once()
+			->andReturn( true );
 
-	// 	add_action( 'hook_to_add', '__return_true' );
-	// }
+		add_action( 'hook_to_add', '__return_true' );
+
+		$this->expectAdded( 'filter_to_add', '__return_true' );
+
+		add_filter( 'filter_to_add', '__return_true' );
+	}
 
 	// public function test_filter_applied_declaration() {
 	// 	$this->expectFilterApplied( 'filter_to_check' )

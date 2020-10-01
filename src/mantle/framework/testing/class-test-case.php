@@ -167,21 +167,6 @@ abstract class Test_Case extends BaseTestCase {
 					}
 				}
 			);
-		// foreach (
-		// 	[
-		// 		// This order is deliberate.
-		// 		WordPress_Authentication::class,
-		// 		Admin_Screen::class,
-		// 		Network_Admin_Screen::class,
-		// 		Interacts_With_Requests::class,
-		// 		Refresh_Database::class,
-		// 	] as $trait
-		// ) {
-		// 	if ( isset( static::$test_uses[ $trait ] ) ) {
-		// 		$method = strtolower( class_basename( $trait ) ) . '_tear_down';
-		// 		$this->{$method}();
-		// 	}
-		// }
 
 		if ( is_multisite() ) {
 			while ( ms_is_switched() ) {
@@ -241,7 +226,12 @@ abstract class Test_Case extends BaseTestCase {
 		];
 
 		if ( 'teardown' === $action ) {
-			$priority_traits = array_reverse( $priority_traits );
+			$priority_traits = array_merge(
+				[
+					Interacts_With_Hooks::class,
+				],
+				array_reverse( $priority_traits ),
+			);
 		}
 
 		// Combine the priority and non-priority traits.
