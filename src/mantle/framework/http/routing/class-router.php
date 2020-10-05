@@ -8,10 +8,11 @@
 namespace Mantle\Framework\Http\Routing;
 
 use Closure;
-use Mantle\Framework\Contracts\Application;
 use Mantle\Framework\Contracts\Container;
+use Mantle\Framework\Contracts\Events\Dispatcher;
 use Mantle\Framework\Contracts\Http\Routing\Router as Router_Contract;
 use Mantle\Framework\Http\Request;
+use Mantle\Framework\Http\Routing\Events\Route_Matched;
 use Mantle\Framework\Pipeline;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
@@ -30,11 +31,18 @@ class Router implements Router_Contract {
 	use Concerns\Route_Group;
 
 	/**
-	 * Application instance.
+	 * Events instance.
 	 *
-	 * @var Application
+	 * @var Dispatcher
 	 */
-	protected $app;
+	protected $events;
+
+	/**
+	 * Container instance.
+	 *
+	 * @var Container
+	 */
+	protected $container;
 
 	/**
 	 * Route Collection
@@ -74,10 +82,13 @@ class Router implements Router_Contract {
 	/**
 	 * Constructor.
 	 *
-	 * @param Application $app Application instance.
+	 * @param Dispatcher $events Events dispatcher.
+	 * @param Container  $container Container instance.
 	 */
-	public function __construct( Application $app ) {
-		$this->app    = $app;
+	public function __construct( Dispatcher $events, Container $container ) {
+		$this->events    = $events;
+		$this->container = $container;
+
 		$this->routes = new RouteCollection();
 	}
 
@@ -233,7 +244,7 @@ class Router implements Router_Contract {
 	 * @return Container
 	 */
 	public function get_container(): Container {
-		return $this->app;
+		return $this->container;
 	}
 
 	/**
@@ -275,7 +286,7 @@ class Router implements Router_Contract {
 	protected function execute_route_match( $match, Request $request ): ?Symfony_Response {
 		// Store the request parameters.
 		$request->set_route_parameters( $match );
-		$this->app->instance( 'request', $request );
+		$this->container->instance( 'request', $request );
 
 		$route = Route::get_route_from_match( $match );
 
@@ -284,19 +295,21 @@ class Router implements Router_Contract {
 		}
 
 		// Store the route match in the request object.
-		$this->app['request']->set_route( $route );
+		$this->container['request']->set_route( $route );
+
+		$this->events->dispatch( new Route_Matched( $route, $request ) );
 
 		$middleware = $this->gather_route_middleware( $route );
 
-		$response = ( new Pipeline( $this->app ) )
-			->send( $this->app['request'] )
+		$response = ( new Pipeline( $this->container ) )
+			->send( $this->container['request'] )
 			->through( $middleware )
 			->then(
 				function( Request $request ) use ( $route ) {
 					// Refresh the request object in the container with modifications from the middleware.
-					$this->app['request'] = $request;
+					$this->container['request'] = $request;
 
-					return $route->run( $this->app );
+					return $route->run( $this->container );
 				}
 			);
 
@@ -414,7 +427,7 @@ class Router implements Router_Contract {
 	 */
 	public function bind( string $key, $binder ) {
 		$this->binders[ str_replace( '-', '_', $key ) ] = Route_Binding::for_callback(
-			$this->app,
+			$this->container,
 			$binder
 		);
 	}
@@ -427,7 +440,7 @@ class Router implements Router_Contract {
 	 * @param \Closure|null $callback
 	 */
 	public function model( $key, $class, Closure $callback = null ) {
-		$this->bind( $key, Route_Binding::for_model( $this->app, $class, $callback ) );
+		$this->bind( $key, Route_Binding::for_model( $this->container, $class, $callback ) );
 	}
 
 	/**
@@ -463,7 +476,7 @@ class Router implements Router_Contract {
 	 * @param Request $request Request instance.
 	 */
 	public function substitute_implicit_bindings( Request $request ) {
-		Implicit_Route_Binding::resolve_for_route( $this->app, $request );
+		Implicit_Route_Binding::resolve_for_route( $this->container, $request );
 	}
 
 	/**

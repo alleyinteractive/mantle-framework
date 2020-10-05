@@ -37,7 +37,7 @@ class Routing_Service_Provider extends Service_Provider {
 		$this->app->singleton(
 			'router',
 			function( $app ) {
-				return new Router( $app );
+				return new Router( $app['events'], $app );
 			}
 		);
 	}
