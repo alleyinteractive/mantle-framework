@@ -127,7 +127,7 @@ class Expectation {
 	}
 
 	/**
-	 * Validate if an expectation
+	 * Validate if an expectation meets its expectations.
 	 *
 	 * @return void
 	 */
