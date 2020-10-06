@@ -9,6 +9,7 @@
 namespace Mantle\Framework\Http;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\File\UploadedFile as SymfonyUploadedFile;
 
 /**
@@ -20,42 +21,54 @@ class Uploaded_File extends SymfonyUploadedFile {
 	 *
 	 * @param int          $parent_id The id of the parent post.
 	 * @param  array|string $options Any options for the file.
-	 * @return string|false
+	 * @return int Attachment ID.
+	 *
+	 * @throws RuntimeException Thrown on error saving uploaded file.
 	 */
-	public function store( $parent_id = 0, $options = [] ) {
+	public function store( int $parent_id = null, $options = [] ): int {
 		if ( ! function_exists( 'wp_handle_upload' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/file.php';
 		}
-		$filearray = [
-			'name'     => $this->getClientOriginalName(),
+
+		if ( ! function_exists( 'wp_generate_attachment_metadata' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/image.php';
+		}
+
+		$filearr = [
+			// Rename the file name with a random hash.
+			'name'     => wp_generate_password( 15, false, false ) . '.' . $this->getClientOriginalExtension(),
 			'type'     => $this->getClientMimeType(),
 			'tmp_name' => $this->getPathname(),
 			'error'    => $this->getError(),
 			'size'     => filesize( $this->getPathname() ),
 		];
-		$file      = \wp_handle_upload( $filearray, [ 'test_form' => false ] );
+
+		$file = \wp_handle_upload( $filearr, [ 'test_form' => false ] );
 
 		if ( is_wp_error( $file ) ) {
-			return $file;
+			throw new RuntimeException( 'Error handling uploaded file: ' . $file->get_error_message() );
+		} elseif ( ! empty( $file['error'] ) ) {
+			throw new RuntimeException( 'Error handling uploaded file: ' . $file['error'] );
 		}
-		$url     = $file['url'];
-		$type    = $file['type'];
-		$file    = $file['file'];
+
 		$title   = preg_replace( '/\.[^.]+$/', '', basename( $file ) );
-		$parent  = (int) absint( $parent_id ) > 0 ? absint( $parent_id ) : 0;
+		$parent  = $parent_id >= 0 ? $parent_id : 0;
 		$details = [
-			'post_mime_type' => $type,
-			'guid'           => $url,
+			'post_mime_type' => $file['type'] ?? '',
+			'guid'           => $file['url'] ?? '',
 			'post_parent'    => $parent,
 			'post_title'     => $title,
 			'post_content'   => '',
 		];
-		$id      = \wp_insert_attachment( $details, $file, $parent );
-		if ( ! is_wp_error( $id ) ) {
-			require_once ABSPATH . 'wp-admin/includes/image.php';
-			$data = wp_generate_attachment_metadata( $id, $file );
-			wp_update_attachment_metadata( $id, $data );
+
+		$id = \wp_insert_attachment( $details, $file, $parent );
+
+		if ( is_wp_error( $id ) ) {
+			throw new RuntimeException( 'Error saving attachment: ' . $id->get_error_message() );
 		}
+
+		wp_update_attachment_metadata( $id, wp_generate_attachment_metadata( $id, $file ) );
+
 		return $id;
 	}
 
@@ -71,7 +84,7 @@ class Uploaded_File extends SymfonyUploadedFile {
 			throw new FileNotFoundException( "File does not exist at path {$this->getPathname()}." );
 		}
 
-		return wpcom_vip_file_get_contents( $this->getPathname() );
+		return file_get_contents( $this->getPathname() ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
 	}
 
 	/**
