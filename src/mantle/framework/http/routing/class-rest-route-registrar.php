@@ -7,6 +7,7 @@
 
 namespace Mantle\Framework\Http\Routing;
 
+use Mantle\Framework\Http\Routing\Events\Route_Matched;
 use Mantle\Framework\Pipeline;
 use WP_REST_Request;
 
@@ -57,7 +58,7 @@ class Rest_Route_Registrar {
 	 * @param array|callable $args Arguments or callback for the route.
 	 */
 	public function register_route( string $route, $args = [] ) {
-		$args = $this->normalize_args( $args );
+		$args = $this->normalize_args( $args, $route );
 
 		if ( $this->should_register_now() ) {
 			register_rest_route( $this->namespace, $route, $args );
@@ -70,9 +71,10 @@ class Rest_Route_Registrar {
 	 * Normalize the arguments that are registered.
 	 *
 	 * @param array|callable $args Arguments for the route or callback function.
+	 * @param string         $route Route name.
 	 * @return array
 	 */
-	protected function normalize_args( $args ): array {
+	protected function normalize_args( $args, string $route ): array {
 		if ( is_callable( $args ) ) {
 			$args = [
 				'callback' => $args,
@@ -86,7 +88,7 @@ class Rest_Route_Registrar {
 
 		// Ensure the callback returns a valid REST response.
 		if ( isset( $args['callback'] ) ) {
-			$args['callback'] = $this->wrap_callback( $args['callback'] );
+			$args['callback'] = $this->wrap_callback( $args['callback'], $route );
 		}
 
 		return $args;
@@ -96,18 +98,31 @@ class Rest_Route_Registrar {
 	 * Wrap the route callback with a valid WordPress REST response.
 	 *
 	 * @param callable $callback Callback to invoke.
+	 * @param string   $route Route name.
 	 * @return callable
 	 */
-	protected function wrap_callback( callable $callback ): callable {
-		return function( WP_REST_Request $request ) use ( $callback ) {
+	protected function wrap_callback( callable $callback, string $route ): callable {
+		return function( WP_REST_Request $request ) use ( $callback, $route ) {
 			$middleware = $request->get_attributes()['middleware'] ?? [];
 
 			if ( empty( $middleware ) ) {
 				return rest_ensure_response( $callback( $request ) );
 			}
 
+			$container = $this->router->get_container();
+
+			$container['events']->dispatch(
+				new Route_Matched(
+					[
+						'namespace' => $this->namespace,
+						'route'     => $route,
+					],
+					$request
+				)
+			);
+
 			return rest_ensure_response(
-				( new Pipeline( $this->router->get_container() ) )
+				( new Pipeline( $container ) )
 					->send( $request )
 					->through( $this->gather_route_middleware( $middleware ) )
 					->then(

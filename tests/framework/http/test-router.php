@@ -4,6 +4,7 @@ namespace Mantle\Tests\Framework\Http;
 
 use Mantle\Framework\Application;
 use Mantle\Framework\Database\Model\Post;
+use Mantle\Framework\Events\Dispatcher;
 use Mantle\Framework\Http\Request;
 use Mantle\Framework\Http\Routing\Middleware\Substitute_Bindings;
 use Mantle\Framework\Http\Routing\Router;
@@ -205,7 +206,8 @@ class Test_Router extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 	protected function get_router(): Router {
 		$app    = new Application();
-		$router = new Router( $app );
+		$events = new Dispatcher( $app );
+		$router = new Router( $events, $app );
 		$app->instance( \Mantle\Framework\Contracts\Http\Routing\Router::class, $router );
 
 		return $router;

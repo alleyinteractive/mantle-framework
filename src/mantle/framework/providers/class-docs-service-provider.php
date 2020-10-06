@@ -16,6 +16,8 @@ use Mantle\Framework\Support\Collection;
 use Mantle\Framework\Support\Str;
 use Symfony\Component\Finder\Finder;
 
+use function Mantle\Framework\Helpers\collect;
+
 /**
  * Docs Service Provider
  */
@@ -45,9 +47,8 @@ class Docs_Service_Provider extends Service_Provider {
 	 * Register the service provider.
 	 */
 	public function boot() {
-		$this->set_files();
 		if ( $this->should_register_menu() ) {
-
+			$this->set_files();
 			\add_action( 'admin_menu', [ $this, 'register_admin_menu' ] );
 		}
 	}
@@ -285,12 +286,26 @@ class Docs_Service_Provider extends Service_Provider {
 	/**
 	 * Load the list of files.
 	 *
-	 * @todo Allow this to be abstracted a bit more and extended by other service providers.
+	 * @return Collection
 	 */
 	protected function set_files() {
+		$transient = get_transient( 'mantle_docs' );
+
+		if ( false !== $transient ) {
+			$this->files = collect( $transient );
+			return;
+		}
+
 		$this->files = new Collection();
 
-		foreach ( Finder::create()->files()->name( '*.md' )->in( $this->get_docs_path() )->sortByName() as $file ) {
+		$files = Finder::create()
+			->files()
+			->name( '*.md' )
+			->in( $this->get_docs_path() )
+			->exclude( 'node_modules' )
+			->sortByName();
+
+		foreach ( $files as $file ) {
 			$this->files[] = [
 				'name'  => pathinfo( $file->getFilename(), PATHINFO_FILENAME ),
 				'path'  => $file->getRealPath(),
@@ -298,7 +313,7 @@ class Docs_Service_Provider extends Service_Provider {
 			];
 		}
 
-		return $this->files;
+		set_transient( 'mantle_docs', $this->files->values(), HOUR_IN_SECONDS );
 	}
 
 	/**
@@ -308,13 +323,8 @@ class Docs_Service_Provider extends Service_Provider {
 	 * @return string|null
 	 */
 	protected function get_file_title( string $file_path ): ?string {
-		$contents = $this->get_file_contents( $file_path );
-		preg_match( '/^(.*)={5,}/s', $contents, $matches );
-		if ( empty( $matches ) ) {
-			return null;
-		}
-
-		return explode( PHP_EOL, $matches[0] )[0] ?? null;
+		$lines = explode( "\n", $this->get_file_contents( $file_path ) );
+		return trim( str_replace( '#', '', array_shift( $lines ) ) );
 	}
 
 	/**
