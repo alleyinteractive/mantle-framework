@@ -9,7 +9,7 @@ use Mantle\Framework\Database\Model\Registration\Register_Post_Type;
 use Mantle\Framework\Database\Model\Registration\Register_Rest_Fields;
 use WP_UnitTestCase;
 use Mockery as m;
-use SML\Registered_REST_Field;
+use Mantle\Framework\REST_API\Registered_REST_Field;
 
 class Test_Register_Post_Type extends WP_UnitTestCase {
 	public function tearDown() {

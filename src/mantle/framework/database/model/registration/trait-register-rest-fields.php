@@ -10,15 +10,15 @@ namespace Mantle\Framework\Database\Model\Registration;
 
 use Closure;
 use Mantle\Framework\Database\Model\Model_Exception;
-use Mantle\Framework\Database\Model\Rest_Field;
-use SML\REST_Field_Registrar;
+use Mantle\Framework\REST_API\REST_Field;
+use Mantle\Framework\REST_API\REST_Field_Registrar;
 
 /**
  * Model Trait to REST Fields to be registered for a model.
  */
 trait Register_Rest_Fields {
 	/**
-	 * REST Field Registar
+	 * REST Field Registrar
 	 *
 	 * @var REST_Field_Registrar
 	 */
