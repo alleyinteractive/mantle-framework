@@ -10,7 +10,6 @@
         }
     ],
     "require": {
-        "alleyinteractive/sml": "0.9.0",
         "dragonmantank/cron-expression": "^2.0",
         "filp/whoops": "^2.7",
         "fzaninotto/faker": "^1.9",
