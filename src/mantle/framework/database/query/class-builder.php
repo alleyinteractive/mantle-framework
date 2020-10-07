@@ -438,6 +438,15 @@ abstract class Builder {
 	}
 
 	/**
+	 * Get all the results of a query.
+	 *
+	 * @return Collection
+	 */
+	public function all(): Collection {
+		return $this->take( -1 )->get();
+	}
+
+	/**
 	 * Execute the query and get the first result or throw an exception.
 	 *
 	 * @return \Mantle\Framework\Database\Model

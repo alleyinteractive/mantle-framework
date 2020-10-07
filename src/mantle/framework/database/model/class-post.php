@@ -8,6 +8,7 @@
 namespace Mantle\Framework\Database\Model;
 
 use Mantle\Framework\Contracts;
+use Mantle\Framework\Database\Query\Builder;
 use Mantle\Framework\Database\Query\Post_Query_Builder;
 use Mantle\Framework\Helpers;
 
@@ -340,5 +341,21 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 		\wp_remove_object_terms( $this->id(), $terms, $taxonomy );
 
 		return $this;
+	}
+
+	/**
+	 * Allow the query to query against any post status.
+	 *
+	 * This will check against _any_ post status that is registered and does not
+	 * use the 'any' post_status attribute.
+	 *
+	 * @param Builder $builder Query builder instance.
+	 * @return Builder
+	 */
+	public function scopeAnyStatus( Builder $builder ): Builder {
+		return $builder->where(
+			'post_status',
+			array_values( get_post_stati( [], 'names' ) )
+		);
 	}
 }
