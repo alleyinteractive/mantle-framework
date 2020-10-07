@@ -94,4 +94,16 @@ interface Router {
 	 *                              Not used if $route is a callback.
 	 */
 	public function rest_api( string $namespace, $route, $args = [] );
+
+	/**
+	 * Rename a route.
+	 *
+	 * @param string $old_name Old route name.
+	 * @param string $new_name New route name.
+	 * @return static
+	 *
+	 * @throws InvalidArgumentException Thrown when attempting to rename a route
+	 *                                  a name that is already taken.
+	 */
+	public function rename_route( string $old_name, string $new_name );
 }

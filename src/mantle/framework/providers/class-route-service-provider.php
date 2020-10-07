@@ -51,6 +51,14 @@ class Route_Service_Provider extends Service_Provider implements Route_Service_P
 		if ( method_exists( $this, 'map' ) ) {
 			$this->app->call( [ $this, 'map' ] );
 		}
+
+		// Setup the default request object.
+		if ( ! isset( $this->app['request'] ) ) {
+			$this->app['request'] = new Request();
+		}
+
+		// Sync the loaded routes to the URL generator.
+		$this->app['router']->sync_routes_to_url_generator();
 	}
 
 	/**

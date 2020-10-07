@@ -232,4 +232,15 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 
 		$this->force_scheme = $scheme . '://';
 	}
+
+	/**
+	 * Set the routes in the generator.
+	 *
+	 * @param RouteCollection $routes Route collection.
+	 * @return static
+	 */
+	public function set_routes( RouteCollection $routes ) {
+		$this->routes = $routes;
+		return $this;
+	}
 }

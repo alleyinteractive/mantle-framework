@@ -212,7 +212,7 @@ if ( ! function_exists( 'route' ) ) {
 	 * @param array  $args Route arguments.
 	 * @return string
 	 */
-	function route( string $name, array $args, bool $relative = false ) {
+	function route( string $name, array $args = [], bool $relative = false ) {
 		return app( 'url' )->generate( $name, $args, $relative ? UrlGenerator::ABSOLUTE_PATH : UrlGenerator::ABSOLUTE_URL );
 	}
 }

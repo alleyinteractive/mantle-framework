@@ -11,6 +11,7 @@ use ArrayAccess;
 use ArrayObject;
 use JsonSerializable;
 use Mantle\Framework\Container\Container;
+use Mantle\Framework\Contracts\Http\Routing\Router;
 use Mantle\Framework\Contracts\Support\Arrayable;
 use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Support\Arr;
@@ -49,6 +50,20 @@ class Route extends Symfony_Route {
 	protected $container;
 
 	/**
+	 * Router instance.
+	 *
+	 * @var Router
+	 */
+	protected $router;
+
+	/**
+	 * Name for the route.
+	 *
+	 * @var string
+	 */
+	protected $name;
+
+	/**
 	 * Get the route object from a Symfony route match.
 	 *
 	 * @param array $match Route match.
@@ -85,6 +100,24 @@ class Route extends Symfony_Route {
 		}
 
 		$this->action = $action;
+
+		// Set the route name if it was passed in the action.
+		if ( ! empty( $this->action['as'] ) ) {
+			$this->name( (string) $this->action['as'] );
+		} elseif ( ! empty( $this->action['name'] ) ) {
+			$this->name( (string) $this->action['name'] );
+		}
+	}
+
+	/**
+	 * Set the route container.
+	 *
+	 * @param Router $router Router interface.
+	 * @return static
+	 */
+	public function set_router( Router $router ) {
+		$this->router = $router;
+		return $this;
 	}
 
 	/**
@@ -93,12 +126,34 @@ class Route extends Symfony_Route {
 	 * @return string
 	 */
 	public function get_name(): string {
-		if ( is_array( $this->action ) && ! empty( $this->action['as'] ) ) {
-			return $this->action['as'];
+		if ( isset( $this->name ) ) {
+			return (string) $this->name;
 		}
 
-		$uri = $this->getPath();
-		return implode( ':', $this->getMethods() ) . ":{$uri}";
+		// Fallback to the default route name.
+		return strtolower( implode( '.', $this->getMethods() ) . ".{$this->getPath()}" );
+	}
+
+	/**
+	 * Set the name for a route.
+	 *
+	 * @param string $name Name for the route.
+	 * @return static
+	 */
+	public function name( string $name ) {
+		/**
+		 * Attempt to rename the route in the router.
+		 *
+		 * The route object is stored in a route collection as a reference but the
+		 * route name is a static key for the collection.
+		 */
+		if ( isset( $this->router ) ) {
+			$this->router->rename_route( $this->get_name(), $name );
+		}
+
+		$this->name = $name;
+
+		return $this;
 	}
 
 	/**
