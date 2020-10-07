@@ -5,23 +5,23 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Database\Model;
+namespace Mantle\Framework\REST_API;
 
 use Closure;
-use SML\REST_Field as REST_Field_Contract;
-use SML\REST_Field_Get_Callback;
-use SML\REST_Field_Schema;
-use SML\REST_Field_Update_Callback;
+use Mantle\Framework\Contracts\REST_API\REST_Field as REST_Field_Contract;
+use Mantle\Framework\Contracts\Rest_Api\REST_Field_Get_Callback;
+use Mantle\Framework\Contracts\REST_API\REST_Field_Schema;
+use Mantle\Framework\Contracts\REST_API\REST_Field_Update_Callback;
 
-use function SML\default_from_rest_schema;
-use function SML\fill_rest_schema;
+use function Mantle\Framework\Helpers\default_from_rest_schema;
+use function Mantle\Framework\Helpers\fill_rest_schema;
 
 /**
  * WordPress REST API Field
  *
  * Allows a fluent registration interface for a field in the REST API.
  */
-class Rest_Field implements REST_Field_Contract, REST_Field_Schema, REST_Field_Get_Callback, REST_Field_Update_Callback {
+class REST_Field implements REST_Field_Contract, REST_Field_Schema, REST_Field_Get_Callback, REST_Field_Update_Callback {
 	/**
 	 * Attribute name.
 	 *
@@ -41,7 +41,7 @@ class Rest_Field implements REST_Field_Contract, REST_Field_Schema, REST_Field_G
 	 *
 	 * @var string
 	 */
-	protected $description = 'A mantle-powered field.';
+	protected $description = 'A Mantle-powered field.';
 
 	/**
 	 * Callback for the field.

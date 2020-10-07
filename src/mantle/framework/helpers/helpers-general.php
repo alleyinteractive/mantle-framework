@@ -82,6 +82,63 @@ function class_uses_recursive( $class ) {
 }
 
 /**
+ * Wrap a string in backticks.
+ *
+ * @param string $string The string.
+ * @return string $string The wrapped string.
+ */
+function backtickit( string $string ): string {
+	return "`{$string}`";
+}
+
+/**
+ * Translate a callable into a readable string.
+ *
+ * Many props to Query Monitor's \QM_Util::populate_callback().
+ *
+ * Internals are not subject to semantic-versioning constraints.
+ *
+ * @param mixed $callable The plugin callback.
+ * @return string The readable function name, or an empty string if untranslatable.
+ */
+function get_callable_fqn( $callable ): string {
+	$function_name = '';
+
+	if ( \is_string( $callable ) ) {
+		$function_name = $callable . '()';
+	}
+
+	if ( \is_array( $callable ) ) {
+		$class  = '';
+		$access = '';
+
+		if ( \is_object( $callable[0] ) ) {
+			$class  = \get_class( $callable[0] );
+			$access = '->';
+		}
+
+		if ( \is_string( $callable[0] ) ) {
+			$class  = $callable[0];
+			$access = '::';
+		}
+
+		if ( $class && $access ) {
+			$function_name = $class . $access . $callable[1] . '()';
+		}
+	}
+
+	if ( \is_object( $callable ) ) {
+		$function_name = \get_class( $callable );
+
+		if ( ! ( $callable instanceof \Closure ) ) {
+			$function_name .= '->__invoke()';
+		}
+	}
+
+	return $function_name;
+}
+
+/**
  * Create a collection from the given value.
  *
  * @param mixed $value Value to collect.
