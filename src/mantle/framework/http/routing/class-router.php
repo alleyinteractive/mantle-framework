@@ -8,6 +8,7 @@
 namespace Mantle\Framework\Http\Routing;
 
 use Closure;
+use InvalidArgumentException;
 use Mantle\Framework\Contracts\Container;
 use Mantle\Framework\Contracts\Events\Dispatcher;
 use Mantle\Framework\Contracts\Http\Routing\Router as Router_Contract;
@@ -215,6 +216,8 @@ class Router implements Router_Contract {
 		if ( $this->has_group_stack() ) {
 			$this->merge_group_attributes_into_route( $route );
 		}
+
+		$route->set_router( $this );
 
 		return $route;
 	}
@@ -528,5 +531,38 @@ class Router implements Router_Contract {
 		}
 
 		return ( new Route_Registrar( $this ) )->attribute( $method, $parameters[0] );
+	}
+
+	/**
+	 * Sync the routes to the URL generator.
+	 */
+	public function sync_routes_to_url_generator() {
+		$this->container['url']->set_routes( $this->routes );
+	}
+
+	/**
+	 * Rename a route.
+	 *
+	 * @param string $old_name Old route name.
+	 * @param string $new_name New route name.
+	 * @return static
+	 *
+	 * @throws InvalidArgumentException Thrown when attempting to rename a route
+	 *                                  a name that is already taken.
+	 */
+	public function rename_route( string $old_name, string $new_name ) {
+		$old = $this->routes->get( $old_name );
+		if ( ! $old ) {
+			return;
+		}
+
+		$new = $this->routes->get( $new_name );
+		if ( $new ) {
+			throw new InvalidArgumentException( "Unable to rename route, name already taken. [{$old_name} => {$new_name}]" );
+		}
+
+		$this->routes->add( $new_name, $old );
+		$this->routes->remove( $old_name );
+		return $this;
 	}
 }

@@ -44,6 +44,9 @@ class Routing_Service_Provider extends Service_Provider {
 
 	/**
 	 * Register the URL generator service.
+	 *
+	 * @todo Improve on this URL generator to allow the routes to be shared
+	 * instantly from the router.
 	 */
 	protected function register_url_generator() {
 		$this->app->singleton(

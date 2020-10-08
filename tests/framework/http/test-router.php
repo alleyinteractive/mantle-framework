@@ -8,8 +8,9 @@ use Mantle\Framework\Events\Dispatcher;
 use Mantle\Framework\Http\Request;
 use Mantle\Framework\Http\Routing\Middleware\Substitute_Bindings;
 use Mantle\Framework\Http\Routing\Router;
+use Mantle\Framework\Testing\Framework_Test_Case;
 
-class Test_Router extends \Mockery\Adapter\Phpunit\MockeryTestCase {
+class Test_Router extends Framework_Test_Case {
 	public function test_basic_dispatching() {
 		$router = $this->get_router();
 		$router->get(
@@ -204,11 +205,47 @@ class Test_Router extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertSame( 'first_name-last_name', $router->dispatch( Request::create( 'names/first_name/last_name', 'GET' ) )->getContent() );
 	}
 
+	public function test_route_name_url() {
+		$router = $this->get_router();
+		$router->get(
+			'/example-route-url',
+			[
+				'callback' => function() { return 'response'; },
+				'name' => 'test_route_name_url',
+			]
+		);
+
+		$router->sync_routes_to_url_generator();
+
+		$this->assertEquals( '/example-route-url', route( 'test_route_name_url' ) );
+	}
+
+	public function test_fluent_routing() {
+		$router = $this->get_router();
+
+		$router->get( '/test_fluent_routing' )
+		->callback( function() {} )
+			->name( 'route-name' );
+
+		$router->get( '/test_fluent_routing_with_var/{var}' )
+				->callback( function() {} )
+				->name( 'route-name-with-var' );
+
+		$router->sync_routes_to_url_generator();
+
+		$this->assertEquals( '/test_fluent_routing', route( 'route-name' ) );
+		$this->assertEquals(
+			'/test_fluent_routing_with_var/var_to_compare',
+			route( 'route-name-with-var', [ 'var' => 'var_to_compare' ] )
+		);
+	}
+
 	protected function get_router(): Router {
-		$app    = new Application();
-		$events = new Dispatcher( $app );
-		$router = new Router( $events, $app );
-		$app->instance( \Mantle\Framework\Contracts\Http\Routing\Router::class, $router );
+		$events = new Dispatcher( $this->app );
+		$router = new Router( $events, $this->app );
+
+		$this->app->instance( 'request', new Request() );
+		$this->app->instance( \Mantle\Framework\Contracts\Http\Routing\Router::class, $router );
 
 		return $router;
 	}
