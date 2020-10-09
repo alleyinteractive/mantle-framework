@@ -17,7 +17,7 @@ class Route_Matched {
 	/**
 	 * Route matched.
 	 *
-	 * @var Route
+	 * @var Route|array
 	 */
 	public $route;
 

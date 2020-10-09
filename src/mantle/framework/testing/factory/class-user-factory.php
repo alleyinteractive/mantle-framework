@@ -10,7 +10,7 @@ namespace Mantle\Framework\Testing\Factory;
 use Faker\Generator;
 use Mantle\Framework\Database\Model\User;
 
-use function SML\get_user_object;
+use function Mantle\Framework\Helpers\get_user_object;
 
 /**
  * User Factory
