@@ -7,18 +7,22 @@ use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Database\Model\Model_Exception;
 use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Registration\Register_Post_Type;
+use Mantle\Framework\Testing\Concerns\Refresh_Database;
+use Mantle\Framework\Testing\Framework_Test_Case;
 use WP_UnitTestCase;
 
 /**
  * @todo Replace with the Mantle Testing Framework
  */
-class Test_Post_Object extends WP_UnitTestCase {
-	public function setUp() {
+class Test_Post_Object extends Framework_Test_Case {
+	use Refresh_Database;
+
+	protected function setUp(): void {
 		parent::setUp();
 		Test_Post_Type::register_object();
 	}
 
-	public function tearDown() {
+	protected function tearDown(): void {
 		parent::tearDown();
 		unregister_post_type( Test_Post_Type::get_object_name() );
 	}
@@ -279,6 +283,32 @@ class Test_Post_Object extends WP_UnitTestCase {
 		$object->save();
 		$this->assertEquals( 'Updated meta value', $object->get_meta( 'meta_key' ) );
 		$this->assertEquals( 'Updated meta value', $object->meta->meta_key );
+	}
+
+	public function test_get_all() {
+		$published_post_ids = static::factory()->post->create_many( 5, [ 'post_status' => 'publish' ] );
+		$draft_post_ids     = static::factory()->post->create_many( 5, [ 'post_status' => 'draft' ] );
+
+		$all = Post::all()->pluck( 'id' );
+
+		$this->assertCount( 5, $all );
+
+		foreach ( $published_post_ids as $post_id ) {
+			$this->assertTrue( false !== $all->search( $post_id, true ) );
+		}
+
+		// Ensure drafts aren't included.
+		foreach ( $draft_post_ids as $post_id ) {
+			$this->assertFalse( $all->search( $post_id, true ) );
+		}
+
+		// Query all with draft posts.
+		$all = Post::anyStatus()->all()->pluck( 'id' );
+		$this->assertCount( 10, $all );
+
+		foreach ( $draft_post_ids as $post_id ) {
+			$this->assertTrue( false !== $all->search( $post_id, true ) );
+		}
 	}
 
 	/**
