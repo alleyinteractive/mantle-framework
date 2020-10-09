@@ -10,7 +10,7 @@ namespace Mantle\Framework\Testing\Factory;
 use Faker\Generator;
 use Mantle\Framework\Database\Model\Site;
 
-use function SML\get_site_object;
+use function Mantle\Framework\Helpers\get_site_object;
 
 /**
  * Blog Factory

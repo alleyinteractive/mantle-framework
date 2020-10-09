@@ -8,7 +8,7 @@
 namespace Mantle\Framework\Database\Model\Events;
 
 use Closure;
-use function SML\add_filter_side_effect;
+use function Mantle\Framework\Helpers\add_filter_side_effect;
 
 /**
  * Term Event Subscribers

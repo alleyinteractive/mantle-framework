@@ -10,7 +10,7 @@ namespace Mantle\Framework\Testing\Factory;
 use Faker\Generator;
 use Mantle\Framework\Database\Model\Post;
 
-use function SML\get_post_object;
+use function Mantle\Framework\Helpers\get_post_object;
 
 /**
  * Post Factory

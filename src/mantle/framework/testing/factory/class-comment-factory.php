@@ -10,7 +10,7 @@ namespace Mantle\Framework\Testing\Factory;
 use Faker\Generator;
 use Mantle\Framework\Database\Model\Comment;
 
-use function SML\get_comment_object;
+use function Mantle\Framework\Helpers\get_comment_object;
 
 /**
  * Term Factory

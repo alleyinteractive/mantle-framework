@@ -10,7 +10,7 @@ namespace Mantle\Framework\Query_Monitor;
 use Mantle\Framework\Service_Provider;
 use QM_Collectors;
 
-use function SML\remove_action_validated;
+use function Mantle\Framework\Helpers\remove_action_validated;
 
 /**
  * Query Monitor Service Provider

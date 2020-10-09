@@ -11,7 +11,7 @@ use Faker\Generator;
 use Mantle\Framework\Database\Model\Attachment;
 use Mantle\Framework\Database\Model\Post;
 
-use function SML\get_post_object;
+use function Mantle\Framework\Helpers\get_post_object;
 
 /**
  * Attachment Factory
