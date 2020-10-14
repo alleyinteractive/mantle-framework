@@ -48,9 +48,9 @@ class Generator_Make_Command extends Generator_Command {
 		],
 		[
 			'description' => 'Type of Generator',
-			'name'				=> 'type',
-			'optional'		=> false,
-			'type'				=> 'positional',
+			'name'        => 'type',
+			'optional'    => false,
+			'type'        => 'positional',
 		],
 	];
 
