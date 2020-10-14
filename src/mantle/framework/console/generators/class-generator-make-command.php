@@ -127,10 +127,11 @@ class Generator_Make_Command extends Generator_Command {
 	public function synopsis( string $name ) {
 		$this->log(
 			PHP_EOL . sprintf(
-				'You can auto-register this model by adding "%s\\%s::class" to the "commands" in "app/console/class-kernel.php".',
+				'You can auto-register this generator by adding "%s\\%s::class" to the "commands" in "app/console/class-kernel.php".',
 				$this->get_namespace( $name ),
 				$this->get_class_name( $name )
 			)
 		);
+		$this->log( 'You can customize the template this generator uses by editing its stub file in "app/console/generators/stubs/"' );
 	}
 }
