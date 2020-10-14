@@ -1,0 +1,10 @@
+<?php
+/**
+ * {{ class }} file.
+ *
+ * @package {{ namespace }}
+ */
+
+namespace {{ namespace }};
+
+// Stub file for {{ class }}.

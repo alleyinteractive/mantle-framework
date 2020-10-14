@@ -11,6 +11,7 @@ use Mantle\Framework\Console\Clear_Cache_Command;
 use Mantle\Framework\Console\Generators\Command_Make_Command;
 use Mantle\Framework\Console\Generators\Controller_Make_Command;
 use Mantle\Framework\Console\Generators\Factory_Make_Command;
+use Mantle\Framework\Console\Generators\Generator_Make_Command;
 use Mantle\Framework\Console\Generators\Job_Make_Command;
 use Mantle\Framework\Console\Generators\Middleware_Make_Command;
 use Mantle\Framework\Console\Generators\Model_Make_Command;
@@ -36,6 +37,7 @@ class Console_Service_Provider extends Service_Provider {
 		Command_Make_Command::class,
 		Controller_Make_Command::class,
 		Factory_Make_Command::class,
+		Generator_Make_Command::class,
 		Hook_Usage_Command::class,
 		Job_Make_Command::class,
 		Middleware_Make_Command::class,
