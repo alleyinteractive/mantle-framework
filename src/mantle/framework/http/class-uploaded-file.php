@@ -61,7 +61,7 @@ class Uploaded_File extends SymfonyUploadedFile {
 			'post_content'   => '',
 		];
 
-		$id = \wp_insert_attachment( $details, $file, $parent );
+		$id = \wp_insert_attachment( $details, $file['file'], $parent );
 
 		if ( is_wp_error( $id ) ) {
 			throw new RuntimeException( 'Error saving attachment: ' . $id->get_error_message() );
