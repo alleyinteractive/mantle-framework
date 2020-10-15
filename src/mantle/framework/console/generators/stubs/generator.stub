@@ -27,7 +27,6 @@ class {{ class }}_Make_Command extends Generator_Command {
 	 */
 	protected $description = 'Generate a {{ class }}.';
 
-
 	/**
 	 * Command synopsis.
 	 *
@@ -48,7 +47,6 @@ class {{ class }}_Make_Command extends Generator_Command {
 	 * @var string
 	 */
 	protected $type = '{{ type }}';
-
 
 	/**
 	 * Get the stub file for the generator.
