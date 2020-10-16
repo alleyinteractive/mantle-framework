@@ -6,7 +6,7 @@
 
 	<exclude-pattern>tests/</exclude-pattern>
 
-	<rule ref="./vendor/alley/alley-coding-standards" />
+	<rule ref="Alley-Interactive" />
 
 	<rule ref="Generic.Arrays.DisallowLongArraySyntax" />
 
