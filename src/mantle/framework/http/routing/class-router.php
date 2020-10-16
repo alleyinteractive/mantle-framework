@@ -81,6 +81,13 @@ class Router implements Router_Contract {
 	protected $rest_registrar;
 
 	/**
+	 * Data Object Router
+	 *
+	 * @var Entity_Router
+	 */
+	protected $entity_router;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Dispatcher $events Events dispatcher.
@@ -90,7 +97,8 @@ class Router implements Router_Contract {
 		$this->events    = $events;
 		$this->container = $container;
 
-		$this->routes = new RouteCollection();
+		$this->routes        = new RouteCollection();
+		$this->entity_router = new Entity_Router( $this );
 	}
 
 	/**
@@ -515,6 +523,17 @@ class Router implements Router_Contract {
 		}
 
 		return $registrar;
+	}
+
+	/**
+	 * Register routing for a post type.
+	 *
+	 * @param string $model Model class name.
+	 * @param string $controller Controller class name.
+	 * @return void
+	 */
+	public function post_type( string $model, string $controller ) {
+		return $this->entity_router->add( $model, $controller );
 	}
 
 	/**
