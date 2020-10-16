@@ -38,8 +38,6 @@ class Entity_Router {
 	 */
 	public function __construct( Router $router ) {
 		$this->router = $router;
-
-		// $router->get_container()['events']->action( 'template_redirect', fn() => $this->handle_template_redirect() );
 	}
 
 	/**
@@ -100,19 +98,34 @@ class Entity_Router {
 			throw new InvalidArgumentException( "Unroutable entity: [{$entity}]" );
 		}
 
-		// $this->entities[ $entity ] = $controller;
-		// return;
+		$this->router->get( $this->get_singular_route( $entity ), [ $controller, 'show' ] );
 
-		// $index    = $this->get_index_endpoint( $entity );
-		$this->router->get( $this->get_singular_endpoint( $entity ), [ $controller, 'view' ] );
-
+		$archive_route = $this->get_archive_route( $entity );
+		if ( $archive_route ) {
+			$this->router->get( $archive_route, [ $controller, 'index' ] );
+		}
 	}
 
-	protected function get_index_endpoint( string $entity ): ?string {
-		return null;
+	/**
+	 * Retrieve the archive route for an entity.
+	 *
+	 * @param string $entity Entity name.
+	 * @return string|null
+	 */
+	protected function get_archive_route( string $entity ): ?string {
+		return $entity::get_archive_route();
 	}
 
-	protected function get_singular_endpoint( string $entity ): string {
+	/**
+	 * Retrieve the singular route for an entity.
+	 *
+	 * @param string $entity Entity name.
+	 * @return string
+	 *
+	 * @throws InvalidArgumentException Thrown when unable to determine the
+	 * endpoint for the entity.
+	 */
+	protected function get_singular_route( string $entity ): string {
 		$route = $entity::get_route();
 
 		if ( ! $route ) {
@@ -127,6 +140,8 @@ class Entity_Router {
 	 *
 	 * @param string $entity Entity class name.
 	 * @return \WP_Post_Type|\WP_Taxonomy
+	 *
+	 * @throws InvalidArgumentException Thrown when unable to determine entity type.
 	 */
 	protected static function get_entity_object( string $entity ) {
 		if ( is_subclass_of( $entity, Post::class ) ) {

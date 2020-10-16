@@ -8,6 +8,7 @@
 namespace Mantle\Framework\Http\Routing;
 
 use Mantle\Framework\Support\Str;
+use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -33,9 +34,14 @@ class Route_Signature_Parameters {
 			throw new HttpException( 500, 'Unknown route callback.' );
 		}
 
-		$parameters = is_string( $action['callback'] )
-			? static::from_class_method_string( $action['callback'] )
-			: ( new ReflectionFunction( $action['callback'] ) )->getParameters();
+		if ( is_array( $action['callback'] ) ) {
+			$class      = new ReflectionClass( $action['callback'][0] );
+			$parameters = $class->getMethod( $action['callback'][1] )->getParameters();
+		} else {
+			$parameters = is_string( $action['callback'] )
+				? static::from_class_method_string( $action['callback'] )
+				: ( new ReflectionFunction( $action['callback'] ) )->getParameters();
+		}
 
 		return is_null( $sub_class ) ? $parameters : array_filter(
 			$parameters,

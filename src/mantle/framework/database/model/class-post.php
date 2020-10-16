@@ -371,6 +371,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 			$structure = get_option( 'permalink_structure' );
 			dd($structure);
 		}
-		return null;
+
+		return '/' . static::get_object_name() . '/{slug}';
 	}
 }
