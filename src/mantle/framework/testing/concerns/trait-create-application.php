@@ -9,6 +9,8 @@ namespace Mantle\Framework\Testing\Concerns;
 
 use Mantle\Framework\Application;
 use Mantle\Framework\Config\Repository;
+use Mantle\Framework\Contracts\Exceptions\Handler as Handler_Contract;
+use Mantle\Framework\Exceptions\Handler;
 use Mantle\Framework\Support\Collection;
 
 /**
@@ -47,6 +49,8 @@ trait Create_Application {
 	 * @return void
 	 */
 	final protected function resolve_application_bindings( $app ): void {
+		$app->singleton( Handler_Contract::class, Handler::class );
+
 		foreach ( $this->override_application_bindings( $app ) as $original => $replacement ) {
 			$app->bind( $original, $replacement );
 		}

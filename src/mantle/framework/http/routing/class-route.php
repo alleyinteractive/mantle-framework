@@ -14,6 +14,7 @@ use Mantle\Framework\Container\Container;
 use Mantle\Framework\Contracts\Http\Routing\Router;
 use Mantle\Framework\Contracts\Support\Arrayable;
 use Mantle\Framework\Database\Model\Model;
+use Mantle\Framework\Http\Controller;
 use Mantle\Framework\Support\Arr;
 use Mantle\Framework\Support\Str;
 use ReflectionFunction;
@@ -222,10 +223,10 @@ class Route extends Symfony_Route {
 	public function run( Container $container ): ?Symfony_Response {
 		$this->container = $container;
 
-		if ( $this->has_callback() ) {
-			$response = $this->run_callback();
-		} elseif ( $this->has_controller_callback() ) {
+		if ( $this->has_controller_callback() ) {
 			$response = $this->run_controller_callback();
+		} elseif ( $this->has_callback() ) {
+			$response = $this->run_callback();
 		}
 
 		if ( ! isset( $response ) ) {
@@ -250,7 +251,30 @@ class Route extends Symfony_Route {
 	 * @return bool
 	 */
 	protected function has_controller_callback(): bool {
-		return ! empty( $this->action['callback'] ) && Str::contains( $this->action['callback'], '@' );
+		if ( empty( $this->action['callback'] ) ) {
+			return false;
+		}
+
+		if ( is_string( $this->action['callback'] ) ) {
+			// Check for Controller@method callback.
+			if ( Str::contains( $this->action['callback'], '@' ) ) {
+				return true;
+			}
+
+			// Assume it is invokable.
+			$this->action['callback'] = static::make_invokable( $this->action['callback'] );
+			return true;
+		}
+
+		if ( is_array( $this->action['callback'] ) ) {
+			[ $controller ] = $this->action['callback'];
+
+			if ( class_exists( $controller ) && is_subclass_of( $controller, Controller::class ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -277,7 +301,11 @@ class Route extends Symfony_Route {
 	 * @return array
 	 */
 	protected function parse_controller_callback() {
-		return Str::parse_callback( $this->action['callback'] );
+		if ( is_string( $this->action['callback'] ) ) {
+			return Str::parse_callback( $this->action['callback'] );
+		}
+
+		return $this->action['callback'];
 	}
 
 	/**
@@ -372,5 +400,21 @@ class Route extends Symfony_Route {
 	 */
 	public function get_signature_parameters( string $sub_class = null ) {
 		return Route_Signature_Parameters::from_action( $this->action, $sub_class );
+	}
+
+	/**
+	 * Make an action for an invokable controller.
+	 *
+	 * @param string $action
+	 * @return string
+	 *
+	 * @throws \UnexpectedValueException Thrown on missing method.
+	 */
+	protected static function make_invokable( string $action ): string {
+		if ( ! method_exists( $action, '__invoke' ) ) {
+			throw new \UnexpectedValueException( "Invalid route action: [{$action}]." );
+		}
+
+		return "{$action}@__invoke";
 	}
 }
