@@ -46,6 +46,12 @@ class Controller_Make_Command extends Generator_Command {
 			'optional'    => false,
 			'type'        => 'positional',
 		],
+		[
+			'description' => 'Invokable controller',
+			'name'        => 'invokable',
+			'optional'    => true,
+			'type'        => 'flag',
+		],
 	];
 
 	/**
@@ -55,6 +61,10 @@ class Controller_Make_Command extends Generator_Command {
 	 */
 	public function get_file_stub(): string {
 		$filename = 'controller.stub';
+
+		if ( $this->get_flag( 'invokable' ) ) {
+			$filename = 'controller-invokable.stub';
+		}
 
 		return __DIR__ . '/stubs/' . $filename;
 	}
