@@ -526,13 +526,13 @@ class Router implements Router_Contract {
 	}
 
 	/**
-	 * Register routing for a post type.
+	 * Register routing for a WordPress entity.
 	 *
 	 * @param string $model Model class name.
 	 * @param string $controller Controller class name.
 	 * @return void
 	 */
-	public function post_type( string $model, string $controller ) {
+	public function entity( string $model, string $controller ) {
 		return $this->entity_router->add( $model, $controller );
 	}
 

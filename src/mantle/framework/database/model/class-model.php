@@ -410,6 +410,24 @@ abstract class Model implements ArrayAccess, Url_Routable {
 	}
 
 	/**
+	 * Get the registerable route for the model.
+	 *
+	 * @return string|null
+	 */
+	public static function get_route(): ?string {
+		return null;
+	}
+
+	/**
+	 * Get the archive route for the model.
+	 *
+	 * @return string|null
+	 */
+	public static function get_archive_route(): ?string {
+		return null;
+	}
+
+	/**
 	 * Retrieve the model for a bound value.
 	 *
 	 * @param mixed       $value Value to compare against.

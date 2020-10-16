@@ -358,4 +358,19 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 			array_values( get_post_stati( [], 'names' ) )
 		);
 	}
+
+	/**
+	 * Get the registerable route for the model.
+	 *
+	 * @return string|null
+	 */
+	public static function get_route(): ?string {
+		// $object = get_post_type_object( static::get_object_name() );
+		if ( 'post' === static::get_object_name() ) {
+			// Calculate the route for the 'post' post type.
+			$structure = get_option( 'permalink_structure' );
+			dd($structure);
+		}
+		return null;
+	}
 }
