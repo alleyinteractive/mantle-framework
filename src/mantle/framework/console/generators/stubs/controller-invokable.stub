@@ -8,10 +8,18 @@
 namespace App\Http\Controller;
 
 use Mantle\Framework\Http\Controller;
+use Mantle\Framework\Http\Request;
 
 /**
  * {{ class }} Controller
  */
 class {{ class }} extends Controller {
-	//
+	/**
+	 * Handle the incoming request.
+	 *
+	 * @param Request $request Request object.
+	 */
+	public function __invoke( Request $request ) {
+		//
+	}
 }
