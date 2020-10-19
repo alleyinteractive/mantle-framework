@@ -25,7 +25,11 @@ trait Custom_Post_Permalink {
 	 */
 	public static function boot_custom_post_permalink() {
 		if ( static::get_route() ) {
-			add_filter( 'post_type_link', [ __CLASS__, 'filter_post_type_link' ] );
+			if ( 'post' === static::get_object_name() ) {
+				add_filter( 'post_link', [ __CLASS__, 'filter_post_type_link' ] );
+			} else {
+				add_filter( 'post_type_link', [ __CLASS__, 'filter_post_type_link' ] );
+			}
 		}
 
 		if ( static::get_archive_route() ) {
@@ -38,11 +42,11 @@ trait Custom_Post_Permalink {
 	/**
 	 * Filter the post type link to allow for customization.
 	 *
-	 * @param string  $post_link The post's permalink.
+	 * @param string   $post_link The post's permalink.
 	 * @param \WP_Post $post     The post in question.
 	 */
 	public static function filter_post_type_link( string $post_link, \WP_Post $post ): string {
-		if ( ! static::$using_permalinks || $post->post_type !== static::get_object_name() ) {
+		if ( ! static::$using_permalinks || static::get_object_name() !== $post->post_type ) {
 			return $post_link;
 		}
 
@@ -60,7 +64,7 @@ trait Custom_Post_Permalink {
 	 * @return string
 	 */
 	public static function filter_post_type_archive_link( string $link, string $post_type ): string {
-		if ( 'post' === $post_type || ! static::$using_permalinks || $post_type !== static::get_object_name() ) {
+		if ( 'post' === $post_type || ! static::$using_permalinks || static::get_object_name() !== $post_type ) {
 			return $link;
 		}
 

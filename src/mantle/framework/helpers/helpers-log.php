@@ -20,8 +20,8 @@ function info( string $message, array $context = [] ) {
 /**
  * Log a debug message to the logs.
  *
- * @param  string|null  $message Log message.
- * @param  array  $context Log context.
+ * @param  string|null $message Log message.
+ * @param  array       $context Log context.
  * @return \Mantle\Framework\Log\Log_Manager|null
  */
 function logger( string $message = null, array $context = [] ) {

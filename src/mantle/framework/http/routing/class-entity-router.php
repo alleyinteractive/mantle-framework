@@ -42,6 +42,8 @@ class Entity_Router {
 	 * @param string $entity Entity class name.
 	 * @param string $controller Controller class name.
 	 * @return void
+	 *
+	 * @throws InvalidArgumentException Thrown on invalid entity.
 	 */
 	public static function add( Router $router, string $entity, string $controller ): void {
 		if ( ! is_subclass_of( $entity, Model::class ) ) {

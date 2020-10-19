@@ -365,11 +365,9 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 * @return string|null
 	 */
 	public static function get_route(): ?string {
-		// $object = get_post_type_object( static::get_object_name() );
+		// todo: define a better default value for 'post' post types.
 		if ( 'post' === static::get_object_name() ) {
-			// Calculate the route for the 'post' post type.
-			$structure = get_option( 'permalink_structure' );
-			dd($structure);
+			return null;
 		}
 
 		return '/' . static::get_object_name() . '/{slug}';

@@ -1,9 +1,9 @@
 <?php
 namespace Mantle\Tests\Framework\Http\Routing;
 
-use Closure;
 use Mantle\Framework\Contracts\Database\Registrable;
 use Mantle\Framework\Database\Model\Post;
+use Mantle\Framework\Database\Model\Registration\Custom_Post_Permalink;
 use Mantle\Framework\Database\Model\Registration\Register_Post_Type;
 use Mantle\Framework\Facade\Route;
 use Mantle\Framework\Http\Controller;
@@ -13,20 +13,29 @@ class Test_Post_Model_Routing extends Framework_Test_Case {
 	protected function setUp(): void {
 		parent::setUp();
 
-		// delete_option( 'permalink_structure' );
 		update_option( 'permalink_structure', '/%year%/%monthnum%/%day%/%postname%/' );
 		flush_rewrite_rules();
 	}
 
-	// public function test_post_routing() {
-	// 	Route::entity( Testable_Post_Model::class, Testable_Post_Model_Controller::class );
+	public function test_post_type() {
+		Testable_Post_Model::boot_if_not_booted();
 
-	// 	$post = Testable_Post_Model::find( static::factory()->post->create() );
+		Route::model( Testable_Post_Model::class, Testable_Post_Model_Controller::class );
 
-	// 	$this->get( $post )->assertContent( $post->id() );
-	// }
+		$post = Testable_Post_Model::create(
+			[
+				'title'  => 'Example Post',
+				'status' => 'publish',
+			]
+		);
 
-	public function test_custom_post_type_routing() {
+		$permalink = get_permalink( $post->ID );
+		$this->assertEquals( home_url( '/blog/' . $post->slug() ), $permalink );
+
+		$this->get( $permalink )->assertContent( $post->slug() );
+	}
+
+	public function test_custom_post_type() {
 		Testable_Custom_Post_Model::register_object();
 
 		Route::model( Testable_Custom_Post_Model::class, Testable_Custom_Post_Model_Controller::class );
@@ -42,11 +51,9 @@ class Test_Post_Model_Routing extends Framework_Test_Case {
 
 		$permalink = get_permalink( $post->ID );
 
-		// Model permalinks and singular request.
 		$this->assertEquals( home_url( '/test_cpt_routing/' . $post->slug ), $permalink );
 		$this->get( $permalink )->assertContent( $post->slug() );
 
-		// Post type archive.
 		$archive_link = get_post_type_archive_link( Testable_Custom_Post_Model::get_object_name() );
 		$this->assertEquals( home_url( '/test_cpt_routing' ), $archive_link );
 
@@ -61,7 +68,19 @@ class Test_Post_Model_Routing extends Framework_Test_Case {
 }
 
 class Testable_Post_Model extends Post {
+	use Custom_Post_Permalink;
+
 	public static $object_name = 'post';
+
+	public static function get_route(): ?string {
+		return '/blog/{slug}';
+	}
+}
+
+class Testable_Post_Model_Controller extends Controller {
+	public function show( $slug ) {
+		return $slug;
+	}
 }
 
 class Testable_Custom_Post_Model extends Post implements Registrable {
@@ -74,16 +93,6 @@ class Testable_Custom_Post_Model extends Post implements Registrable {
 			'public'      => true,
 			'has_archive' => true,
 		];
-	}
-}
-
-class Testable_Post_Model_Controller extends Controller {
-	public function index() {
-		return Testable_Post_Model::all()->each->pluck( 'id' );
-	}
-
-	public function show(Testable_Post_Model $post) {
-		return $post->id();
 	}
 }
 

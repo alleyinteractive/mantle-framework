@@ -188,6 +188,15 @@ abstract class Model implements ArrayAccess, Url_Routable {
 	}
 
 	/**
+	 * Clear the list of booted models so they will be re-booted.
+	 *
+	 * @return void
+	 */
+	public static function clear_booted_models(): void {
+		static::$booted = [];
+	}
+
+	/**
 	 * Boot all of the bootable traits on the model.
 	 */
 	protected static function boot_traits() {
