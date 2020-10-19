@@ -410,21 +410,27 @@ abstract class Model implements ArrayAccess, Url_Routable {
 	}
 
 	/**
-	 * Get the registerable route for the model.
+	 * Get the registerable route for the model. By default this is set relative
+	 * the object's archive route with the object's slug.
+	 *
+	 *     /object_name/object_slug/
 	 *
 	 * @return string|null
 	 */
 	public static function get_route(): ?string {
-		return null;
+		return static::get_archive_route() . '/{slug}';
 	}
 
 	/**
-	 * Get the archive route for the model.
+	 * Get the registerable archive route for the model. By default this is set to
+	 * the object's name:
+	 *
+	 *     /object_name/
 	 *
 	 * @return string|null
 	 */
 	public static function get_archive_route(): ?string {
-		return null;
+		return '/' . static::get_object_name();
 	}
 
 	/**

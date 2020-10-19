@@ -8,15 +8,12 @@
 namespace Mantle\Framework\Database\Model\Registration;
 
 use Mantle\Framework\Database\Model\Model_Exception;
-use RuntimeException;
-
-use function Mantle\Framework\Helpers\add_filter;
 
 /**
  * Model Trait to allow a post type to be registered for a model.
  */
 trait Register_Post_Type {
-	use Custom_Permalink;
+	use Custom_Post_Permalink;
 
 	/**
 	 * Register the post type.

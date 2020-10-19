@@ -7,11 +7,9 @@ use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Registration\Register_Post_Type;
 use Mantle\Framework\Facade\Route;
 use Mantle\Framework\Http\Controller;
-use Mantle\Framework\Http\Routing\Middleware\Substitute_Bindings;
 use Mantle\Framework\Testing\Framework_Test_Case;
-use WP_REST_Request;
 
-class Test_Entity_Routing extends Framework_Test_Case {
+class Test_Post_Model_Routing extends Framework_Test_Case {
 	protected function setUp(): void {
 		parent::setUp();
 
@@ -31,9 +29,9 @@ class Test_Entity_Routing extends Framework_Test_Case {
 	public function test_custom_post_type_routing() {
 		Testable_Custom_Post_Model::register_object();
 
-		$this->assertTrue( post_type_exists( Testable_Custom_Post_Model::get_object_name() ) );
+		Route::model( Testable_Custom_Post_Model::class, Testable_Custom_Post_Model_Controller::class );
 
-		Route::entity( Testable_Custom_Post_Model::class, Testable_Custom_Post_Model_Controller::class );
+		$this->assertTrue( post_type_exists( Testable_Custom_Post_Model::get_object_name() ) );
 
 		$post = Testable_Custom_Post_Model::create(
 			[
@@ -42,18 +40,23 @@ class Test_Entity_Routing extends Framework_Test_Case {
 			]
 		);
 
-		// Verify the URL matches the expected permalink.
-		$this->assertEquals( home_url( '/custom-post-type/' . $post->slug() ), get_permalink( $post->id() ) );
+		$permalink = get_permalink( $post->ID );
 
-		$this->get( $post )->assertContent( $post->slug() );
+		// Model permalinks and singular request.
+		$this->assertEquals( home_url( '/test_cpt_routing/' . $post->slug ), $permalink );
+		$this->get( $permalink )->assertContent( $post->slug() );
 
-		// is_archive() test.
-		$url = trailingslashit( get_post_type_archive_link(
-			Testable_Custom_Post_Model::get_object_name()
-		) );
+		// Post type archive.
+		$archive_link = get_post_type_archive_link( Testable_Custom_Post_Model::get_object_name() );
+		$this->assertEquals( home_url( '/test_cpt_routing' ), $archive_link );
 
-		dd($url);
-		dd($this->get( $url ));
+		$this
+			->get( $archive_link )
+			->assertExactJson(
+				[
+					$post->ID,
+				]
+			);
 	}
 }
 
@@ -64,36 +67,18 @@ class Testable_Post_Model extends Post {
 class Testable_Custom_Post_Model extends Post implements Registrable {
 	use Register_Post_Type;
 
-	public static $object_name = 'test_cpt_model';
+	public static $object_name = 'test_cpt_routing';
 
 	public static function get_registration_args(): array {
 		return [
-			'public'       => true,
-			'rest_base'    => static::get_object_name(),
-			'show_in_rest' => true,
-			'supports'     => [ 'author', 'title', 'editor', 'revisions', 'thumbnail', 'custom-fields', 'excerpt' ],
-			'taxonomies'   => [ 'category', 'post_tag' ],
-			'label'        => 'test-post-type',
-			'has_archive'  => true,
+			'public'      => true,
+			'has_archive' => true,
 		];
-	}
-
-	public static function get_route(): ?string {
-		return '/custom-post-type/{post}';
-	}
-
-	public static function get_archive_route(): ?string {
-			return '/custom-post-type/';
-	}
-
-	public function get_route_key() {
-		return 'post_name';
 	}
 }
 
 class Testable_Post_Model_Controller extends Controller {
 	public function index() {
-		dd(Testable_Post_Model::all()->each->pluck( 'id' ));
 		return Testable_Post_Model::all()->each->pluck( 'id' );
 	}
 
@@ -104,11 +89,10 @@ class Testable_Post_Model_Controller extends Controller {
 
 class Testable_Custom_Post_Model_Controller extends Controller {
 	public function index() {
-		dd(Testable_Custom_Post_Model::all()->each->pluck( 'id' ));
-		return Testable_Custom_Post_Model::all()->each->pluck( 'id' );
+		return [ Testable_Custom_Post_Model::first()->id() ];
 	}
 
-	public function show($slug) {
+	public function show( $slug ) {
 		return $slug;
 	}
 }
