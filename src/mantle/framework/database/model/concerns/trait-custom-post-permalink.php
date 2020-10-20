@@ -5,7 +5,9 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Database\Model\Registration;
+namespace Mantle\Framework\Database\Model\Concerns;
+
+use Mantle\Framework\Database\Model\Permalink_Generator;
 
 use function Mantle\Framework\Helpers\add_filter;
 
@@ -50,10 +52,7 @@ trait Custom_Post_Permalink {
 			return $post_link;
 		}
 
-		$route = static::get_route();
-
-		// todo: abstract a bit.
-		return home_url( str_replace( '{slug}', $post->post_name, $route ) );
+		return Permalink_Generator::create( static::get_route(), static::find_or_fail( $post->ID ) );
 	}
 
 	/**
@@ -68,7 +67,6 @@ trait Custom_Post_Permalink {
 			return $link;
 		}
 
-		// todo: abstract a bit.
-		return home_url( static::get_archive_route() );
+		return (string) Permalink_Generator::create( static::get_archive_route() );
 	}
 }

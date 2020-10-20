@@ -7,6 +7,7 @@
 
 namespace Mantle\Framework\Database\Model\Registration;
 
+use Mantle\Framework\Database\Model\Concerns\Custom_Post_Permalink;
 use Mantle\Framework\Database\Model\Model_Exception;
 
 /**

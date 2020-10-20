@@ -87,6 +87,23 @@ abstract class Model implements ArrayAccess, Url_Routable {
 	abstract public static function find( $object );
 
 	/**
+	 * Find a model or throw an exception.
+	 *
+	 * @param object|string|int $object Object to retrieve.
+	 * @return static
+	 *
+	 * @throws Model_Not_Found_Exception Thrown on missing resource.
+	 */
+	public static function find_or_fail( $object ) {
+		$find = static::find( $object );
+		if ( $find ) {
+			return $find;
+		}
+
+		throw ( new Model_Not_Found_Exception() )->set_model( __CLASS__, $object );
+	}
+
+	/**
 	 * Query builder class to use.
 	 *
 	 * @return string|null
@@ -478,6 +495,7 @@ abstract class Model implements ArrayAccess, Url_Routable {
 	public static function create( array $args ) {
 		$instance = new static();
 		$instance->save( $args );
+		$instance->refresh();
 		return $instance;
 	}
 }

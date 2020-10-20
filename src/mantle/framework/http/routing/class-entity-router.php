@@ -72,13 +72,13 @@ class Entity_Router {
 		$single_route = $entity::get_route();
 
 		if ( $single_route ) {
-			$router->get( $single_route, [ $controller, 'show' ] );
+			$router->get( trailingslashit( $single_route ), [ $controller, 'show' ] );
 		}
 
 		$archive_route = $entity::get_archive_route();
 
 		if ( $archive_route ) {
-			$router->get( $archive_route, [ $controller, 'index' ] );
+			$router->get( trailingslashit( $archive_route ), [ $controller, 'index' ] );
 		}
 	}
 }
