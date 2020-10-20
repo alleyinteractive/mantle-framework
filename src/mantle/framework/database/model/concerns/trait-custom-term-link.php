@@ -37,6 +37,6 @@ trait Custom_Term_Link {
 			return $term_link;
 		}
 
-		return (string) Permalink_Generator::create( static::get_route(), static::find_or_fail( $term->term_id ) );
+		return Permalink_Generator::create( static::get_route(), static::find_or_fail( $term->term_id ) );
 	}
 }

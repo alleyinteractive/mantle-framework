@@ -67,6 +67,6 @@ trait Custom_Post_Permalink {
 			return $link;
 		}
 
-		return (string) Permalink_Generator::create( static::get_archive_route() );
+		return Permalink_Generator::create( static::get_archive_route() );
 	}
 }
