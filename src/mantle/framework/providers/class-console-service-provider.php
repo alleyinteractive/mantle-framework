@@ -19,6 +19,7 @@ use Mantle\Framework\Console\Generators\Seeder_Make_Command;
 use Mantle\Framework\Console\Generators\Service_Provider_Make_Command;
 use Mantle\Framework\Console\Hook_Usage_Command;
 use Mantle\Framework\Console\Package_Discover_Command;
+use Mantle\Framework\Console\Route_List_Command;
 use Mantle\Framework\Service_Provider;
 
 /**
@@ -43,6 +44,7 @@ class Console_Service_Provider extends Service_Provider {
 		Middleware_Make_Command::class,
 		Model_Make_Command::class,
 		Package_Discover_Command::class,
+		Route_List_Command::class,
 		Seeder_Make_Command::class,
 		Service_Provider_Make_Command::class,
 	];

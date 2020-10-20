@@ -23,6 +23,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Route as Symfony_Route;
 use Symfony\Component\HttpFoundation\Response as Symfony_Response;
 
+use function Mantle\Framework\Helpers\get_callable_fqn;
+
 /**
  * Route Class
  */
@@ -234,6 +236,25 @@ class Route extends Symfony_Route {
 		}
 
 		return $response ? static::ensure_response( $response ) : null;
+	}
+
+
+	/**
+	 * Retrieve the route's callback name.
+	 *
+	 * @return string
+	 */
+	public function get_callback_name(): string {
+		if ( $this->has_controller_callback() ) {
+			$controller = $this->get_controller_name();
+			$method     = $this->get_controller_method();
+
+			return get_callable_fqn( [ $controller, $method ] );
+		} elseif ( $this->has_callback() ) {
+			return get_callable_fqn( $this->action['callback'] );
+		}
+
+		return '';
 	}
 
 	/**
