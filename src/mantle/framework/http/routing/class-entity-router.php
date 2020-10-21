@@ -27,7 +27,7 @@ class Entity_Router {
 	protected static $router;
 
 	/**
-	 * Set the router for the entity router..
+	 * Set the router for the entity router.
 	 *
 	 * @param Router $router Router instance.
 	 */
@@ -36,7 +36,7 @@ class Entity_Router {
 	}
 
 	/**
-	 * Add a entity to the router.
+	 * Add an entity to the router.
 	 *
 	 * @param Router $router Router instance.
 	 * @param string $entity Entity class name.
@@ -60,7 +60,7 @@ class Entity_Router {
 	}
 
 	/**
-	 * Resolve the endpoints to add for a entity.
+	 * Resolve the endpoints to add for an entity.
 	 *
 	 * @param Router $router Router instance.
 	 * @param string $entity Entity class name.

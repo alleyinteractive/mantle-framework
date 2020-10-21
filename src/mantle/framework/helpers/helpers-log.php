@@ -18,7 +18,7 @@ function info( string $message, array $context = [] ) {
 }
 
 /**
- * Log a debug message to the logs.
+ * Log a debug message.
  *
  * @param  string|null $message Log message.
  * @param  array       $context Log context.
