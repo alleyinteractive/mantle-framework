@@ -166,7 +166,7 @@ class Test_Router extends Framework_Test_Case {
 				},
 			)
 		);
-		$router->model( 'bar', RouteModelBindingStub::class );
+		$router->bind_model( 'bar', RouteModelBindingStub::class );
 		$this->assertSame( 'TAYLOR', $router->dispatch( Request::create( 'foo/taylor', 'GET' ) )->getContent() );
 	}
 

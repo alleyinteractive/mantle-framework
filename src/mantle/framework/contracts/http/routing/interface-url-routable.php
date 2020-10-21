@@ -29,6 +29,20 @@ interface Url_Routable {
 	public function get_route_key_name(): string;
 
 	/**
+	 * Get route for the model.
+	 *
+	 * @return string|null
+	 */
+	public static function get_route(): ?string;
+
+	/**
+	 * Get archive route for the model.
+	 *
+	 * @return string|null
+	 */
+	public static function get_archive_route(): ?string;
+
+	/**
 	 * Retrieve the model for a bound value.
 	 *
 	 * @param  mixed       $value

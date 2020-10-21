@@ -11,6 +11,7 @@ use Closure;
 use Mantle\Framework\Contracts\Support\Arrayable;
 use Mantle\Framework\Support\Enumerable;
 use Mantle\Framework\Support\Reflector;
+use ReflectionClass;
 use ReflectionFunction;
 use ReflectionParameter;
 use RuntimeException;
@@ -54,7 +55,12 @@ trait WordPress_Action {
 	 */
 	protected function wrap_action_callback( callable $callback ): Closure {
 		return function( ...$args ) use ( $callback ) {
-			$parameters = ( new ReflectionFunction( $callback ) )->getParameters();
+			if ( is_array( $callback ) ) {
+				$class      = new ReflectionClass( $callback[0] );
+				$parameters = $class->getMethod( $callback[1] )->getParameters();
+			} else {
+				$parameters = ( new ReflectionFunction( $callback ) )->getParameters();
+			}
 
 			if ( empty( $parameters ) ) {
 				return $callback( ...$args );
@@ -104,6 +110,15 @@ trait WordPress_Action {
 
 			if ( Reflector::is_parameter_subclass_of( $parameter, Enumerable::class ) ) {
 				return $parameter_class::make( $argument );
+			}
+
+			// Return the argument if the class matches the typehint.
+			$class_name = Reflector::get_parameter_class_name( $parameter );
+			if (
+				$class_name
+				&& ( is_object( $argument ) && get_class( $argument ) === $class_name || is_subclass_of( $argument, $class_name ) )
+			) {
+				return $argument;
 			}
 
 			/**

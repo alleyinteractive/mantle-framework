@@ -81,6 +81,13 @@ class Router implements Router_Contract {
 	protected $rest_registrar;
 
 	/**
+	 * Data Object Router
+	 *
+	 * @var Entity_Router
+	 */
+	protected $model_router;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Dispatcher $events Events dispatcher.
@@ -442,7 +449,7 @@ class Router implements Router_Contract {
 	 * @param string        $class
 	 * @param \Closure|null $callback
 	 */
-	public function model( $key, $class, Closure $callback = null ) {
+	public function bind_model( $key, $class, Closure $callback = null ) {
 		$this->bind( $key, Route_Binding::for_model( $this->container, $class, $callback ) );
 	}
 
@@ -515,6 +522,17 @@ class Router implements Router_Contract {
 		}
 
 		return $registrar;
+	}
+
+	/**
+	 * Register routing for a WordPress model.
+	 *
+	 * @param string $model Model class name.
+	 * @param string $controller Controller class name.
+	 * @return void
+	 */
+	public function model( string $model, string $controller ): void {
+		Entity_Router::add( $this, $model, $controller );
 	}
 
 	/**

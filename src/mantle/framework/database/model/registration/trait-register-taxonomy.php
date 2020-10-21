@@ -8,12 +8,15 @@
 namespace Mantle\Framework\Database\Model\Registration;
 
 use Mantle\Framework\Contracts\Database\Registrable as Registrable_Contract;
+use Mantle\Framework\Database\Model\Concerns\Custom_Term_Link;
 use Mantle\Framework\Database\Model\Model_Exception;
 
 /**
  * Model Trait to allow a taxonomy to be registered for a model.
  */
 trait Register_Taxonomy {
+	use Custom_Term_Link;
+
 	/**
 	 * Register the taxonomy.
 	 */

@@ -13,7 +13,6 @@ namespace Mantle\Framework\Helpers;
 
 use Countable;
 use Exception;
-use Mantle\Framework\Container\Container;
 use Mantle\Framework\Events\Dispatcher;
 use Mantle\Framework\Database\Factory\Factory_Builder;
 use Mantle\Framework\Support\Collection;
@@ -393,4 +392,16 @@ function add_action( string $hook, callable $callable, int $priority = 10 ): voi
  */
 function add_filter( string $hook, callable $callable, int $priority = 10 ): void {
 	app( Dispatcher::class )->filter( $hook, $callable, $priority );
+}
+
+/**
+ * Dispatch an event and call the listeners.
+ *
+ * @param  string|object  $event Event object.
+ * @param  mixed  $payload Event payload.
+ * @param  bool  $halt Flag if the event should halt on a returned value.
+ * @return array|null
+ */
+function event( ...$args ) {
+	return app( 'events' )->dispatch( ...$args );
 }

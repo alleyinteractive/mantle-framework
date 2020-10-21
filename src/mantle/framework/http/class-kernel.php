@@ -122,7 +122,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 			}
 		}
 
-		\add_action( 'wp_loaded', [ $this, 'handle_request' ] );
+		\add_action( 'wp_loaded', [ $this, 'handle_request' ], 99 );
 	}
 
 	/**

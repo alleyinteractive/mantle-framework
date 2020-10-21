@@ -17,7 +17,9 @@ use Mantle\Framework\Service_Provider;
 /**
  * Routing Service Provider
  *
- * Registers the application's core router and all dependencies of it.
+ * Registers the application's core router and all dependencies of it. Supports
+ * the application-defined `Route_Service_Provider` in providing the core
+ * services of routing.
  */
 class Routing_Service_Provider extends Service_Provider {
 	/**

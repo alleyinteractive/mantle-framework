@@ -7,12 +7,15 @@
 
 namespace Mantle\Framework\Database\Model\Registration;
 
+use Mantle\Framework\Database\Model\Concerns\Custom_Post_Permalink;
 use Mantle\Framework\Database\Model\Model_Exception;
 
 /**
  * Model Trait to allow a post type to be registered for a model.
  */
 trait Register_Post_Type {
+	use Custom_Post_Permalink;
+
 	/**
 	 * Register the post type.
 	 */
@@ -32,6 +35,10 @@ trait Register_Post_Type {
 			throw new Model_Exception( 'Unable to register post type (post type already exists): ' . $post_type );
 		}
 
-		\register_post_type( $post_type, static::get_registration_args() );
+		$register = \register_post_type( $post_type, static::get_registration_args() );
+
+		if ( is_wp_error( $register ) ) {
+			throw new Model_Exception( 'Error registering post type: ' . $register->get_error_message() );
+		}
 	}
 }

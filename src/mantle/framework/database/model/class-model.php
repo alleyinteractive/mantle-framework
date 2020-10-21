@@ -87,6 +87,23 @@ abstract class Model implements ArrayAccess, Url_Routable {
 	abstract public static function find( $object );
 
 	/**
+	 * Find a model or throw an exception.
+	 *
+	 * @param object|string|int $object Object to retrieve.
+	 * @return static
+	 *
+	 * @throws Model_Not_Found_Exception Thrown on missing resource.
+	 */
+	public static function find_or_fail( $object ) {
+		$find = static::find( $object );
+		if ( $find ) {
+			return $find;
+		}
+
+		throw ( new Model_Not_Found_Exception() )->set_model( __CLASS__, $object );
+	}
+
+	/**
 	 * Query builder class to use.
 	 *
 	 * @return string|null
@@ -185,6 +202,15 @@ abstract class Model implements ArrayAccess, Url_Routable {
 
 			static::$booted[ static::class ] = true;
 		}
+	}
+
+	/**
+	 * Clear the list of booted models so they will be re-booted.
+	 *
+	 * @return void
+	 */
+	public static function clear_booted_models(): void {
+		static::$booted = [];
 	}
 
 	/**
@@ -410,6 +436,30 @@ abstract class Model implements ArrayAccess, Url_Routable {
 	}
 
 	/**
+	 * Get the registerable route for the model. By default this is set relative
+	 * the object's archive route with the object's slug.
+	 *
+	 *     /object_name/object_slug/
+	 *
+	 * @return string|null
+	 */
+	public static function get_route(): ?string {
+		return static::get_archive_route() . '/{slug}';
+	}
+
+	/**
+	 * Get the registerable archive route for the model. By default this is set to
+	 * the object's name:
+	 *
+	 *     /object_name/
+	 *
+	 * @return string|null
+	 */
+	public static function get_archive_route(): ?string {
+		return '/' . static::get_object_name();
+	}
+
+	/**
 	 * Retrieve the model for a bound value.
 	 *
 	 * @param mixed       $value Value to compare against.
@@ -445,6 +495,7 @@ abstract class Model implements ArrayAccess, Url_Routable {
 	public static function create( array $args ) {
 		$instance = new static();
 		$instance->save( $args );
+		$instance->refresh();
 		return $instance;
 	}
 }
