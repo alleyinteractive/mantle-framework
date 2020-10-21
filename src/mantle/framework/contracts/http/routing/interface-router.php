@@ -9,6 +9,7 @@ namespace Mantle\Framework\Contracts\Http\Routing;
 
 use Mantle\Framework\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\RouteCollection;
 
 /**
  * Router Contract
@@ -69,6 +70,13 @@ interface Router {
 	 * @return Response|null
 	 */
 	public function dispatch( Request $request ): ?Response;
+
+	/**
+	 * Get registered routes.
+	 *
+	 * @return RouteCollection
+	 */
+	public function get_routes(): RouteCollection;
 
 	/**
 	 * Substitute Explicit Bindings

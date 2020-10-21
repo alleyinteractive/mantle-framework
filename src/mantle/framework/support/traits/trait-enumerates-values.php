@@ -2,7 +2,7 @@
 /**
  * Enumerates_Values trait file.
  *
- * @package mantle
+ * @package Mantle
  */
 
 // phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment
