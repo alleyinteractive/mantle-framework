@@ -269,6 +269,38 @@ class Filesystem_Adapter implements Filesystem {
 	}
 
 	/**
+	 * Prepend to a file.
+	 *
+	 * @param  string  $path
+	 * @param  string  $data
+	 * @param  string  $separator
+	 * @return bool
+	 */
+	public function prepend( string $path, string $data, string $separator = PHP_EOL ) {
+		if ( $this->exists( $path ) ) {
+			return $this->put( $path, $data . $separator . $this->get( $path ) );
+		}
+
+		return $this->put( $path, $data );
+	}
+
+	/**
+	 * Append to a file.
+	 *
+	 * @param  string  $path
+	 * @param  string  $data
+	 * @param  string  $separator
+	 * @return bool
+	 */
+	public function append( $path, $data, $separator = PHP_EOL) {
+		if ( $this->exists( $path ) ) {
+			return $this->put( $path, $this->get( $path ) . $separator . $data );
+		}
+
+		return $this->put( $path, $data );
+	}
+
+	/**
 	 * Parse the given visibility value.
 	 *
 	 * @param string $visibility Visibility to set.
