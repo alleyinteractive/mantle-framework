@@ -69,6 +69,7 @@ trait Create_Application {
 					\Mantle\Framework\Providers\Queue_Service_Provider::class,
 					\Mantle\Framework\Database\Factory_Service_Provider::class,
 					\Mantle\Framework\Providers\Route_Service_Provider::class,
+					\Mantle\Framework\Filesystem\Filesystem_Service_Provider::class,
 				],
 			],
 			'queue'   => [
@@ -86,6 +87,15 @@ trait Create_Application {
 			'view'    => [
 				'compiled' => sys_get_temp_dir(),
 			],
+			'filesystem' => [
+				'default' => 'local',
+				'disks'   => [
+					'local' => [
+						'driver' => 'local',
+						'root'   => storage_path(),
+					],
+				]
+			]
 		];
 	}
 
