@@ -10,13 +10,15 @@ namespace Mantle\Framework\Filesystem;
 use Closure;
 use InvalidArgumentException;
 use League\Flysystem\AdapterInterface;
+use League\Flysystem\Cached\CachedAdapter;
+use League\Flysystem\Cached\Storage\AbstractCache;
 use League\Flysystem\Filesystem as Flysystem;
 use League\Flysystem\FilesystemInterface;
+use League\Flysystem\Cached\Storage\Memory as MemoryStore;
 use Mantle\Framework\Contracts\Application;
 use Mantle\Framework\Contracts\Filesystem\Filesystem;
 use Mantle\Framework\Contracts\Filesystem\Filesystem_Manager as Filesystem_Manager_Contract;
 use Mantle\Framework\Support\Arr;
-use Psr\SimpleCache\CacheInterface;
 use RuntimeException;
 
 /**
@@ -170,6 +172,8 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 * @param AdapterInterface $adapter
 	 * @param array            $config Adapter configuration.
 	 * @return FilesystemInterface
+	 *
+	 * @throws RuntimeException Thrown on missing CachedAdapter.
 	 */
 	protected function create_flysystem( AdapterInterface $adapter, array $config = [] ): FilesystemInterface {
 		$cache  = Arr::pull( $config, 'cache' );
@@ -191,11 +195,11 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 * Create a cache store instance.
 	 *
 	 * @param mixed $config Adapter configuration.
-	 * @return CacheInterface
+	 * @return AbstractCache
 	 *
 	 * @todo Add support for other caching adapters.
 	 */
-	protected function create_cache_store( $config ): CacheInterface {
+	protected function create_cache_store( $config ): AbstractCache {
 		return new MemoryStore( $config );
 	}
 

@@ -30,6 +30,6 @@ class Filesystem_Service_Provider extends Service_Provider {
 			function ( $app ) {
 				return new Filesystem_Manager( $app );
 			}
-		)
+		);
 	}
 }

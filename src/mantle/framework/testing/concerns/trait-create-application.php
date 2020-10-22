@@ -63,7 +63,7 @@ trait Create_Application {
 	 */
 	protected function get_application_config(): array {
 		return [
-			'app'     => [
+			'app'        => [
 				'providers' => [
 					\Mantle\Framework\Providers\Model_Service_Provider::class,
 					\Mantle\Framework\Providers\Queue_Service_Provider::class,
@@ -72,11 +72,11 @@ trait Create_Application {
 					\Mantle\Framework\Filesystem\Filesystem_Service_Provider::class,
 				],
 			],
-			'queue'   => [
+			'queue'      => [
 				'batch_size' => 100,
 				'default'    => 'wordpress',
 			],
-			'logging' => [
+			'logging'    => [
 				'default'  => 'error_log',
 				'channels' => [
 					'error_log' => [
@@ -84,7 +84,7 @@ trait Create_Application {
 					],
 				],
 			],
-			'view'    => [
+			'view'       => [
 				'compiled' => sys_get_temp_dir(),
 			],
 			'filesystem' => [
@@ -94,8 +94,8 @@ trait Create_Application {
 						'driver' => 'local',
 						'root'   => storage_path(),
 					],
-				]
-			]
+				],
+			],
 		];
 	}
 
