@@ -1,1 +1,0 @@
-/var/www/mantle/wp-content/private/mantle-framework/tests/framework/filesystem/tmp/file.txt
