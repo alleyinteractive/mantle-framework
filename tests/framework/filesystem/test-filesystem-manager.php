@@ -67,7 +67,7 @@ class Test_Filesystem_Manager extends TestCase {
 			'custom-driver',
 			function () {
 				$_SERVER['__custom_driver_called']++;
-				return new Filesystem( new NullAdapter() );
+				return new NullAdapter();
 			}
 		);
 

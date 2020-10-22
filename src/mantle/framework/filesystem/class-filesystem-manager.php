@@ -9,10 +9,15 @@ namespace Mantle\Framework\Filesystem;
 
 use Closure;
 use InvalidArgumentException;
+use League\Flysystem\AdapterInterface;
+use League\Flysystem\Filesystem as Flysystem;
 use League\Flysystem\FilesystemInterface;
 use Mantle\Framework\Contracts\Application;
 use Mantle\Framework\Contracts\Filesystem\Filesystem;
 use Mantle\Framework\Contracts\Filesystem\Filesystem_Manager as Filesystem_Manager_Contract;
+use Mantle\Framework\Support\Arr;
+use Psr\SimpleCache\CacheInterface;
+use RuntimeException;
 
 /**
  * Filesystem Manager
@@ -138,6 +143,10 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	protected function call_custom_driver( string $driver, array $config ): Filesystem {
 		$instance = $this->custom_drivers[ $driver ]( $this->app, $config );
 
+		if ( $instance instanceof AdapterInterface ) {
+			$instance = $this->create_flysystem( $instance, $config );
+		}
+
 		if ( $instance instanceof FilesystemInterface ) {
 			$instance = $this->adapt( $instance );
 		}
@@ -153,6 +162,41 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 */
 	protected function adapt( FilesystemInterface $filesystem ) {
 		return new Filesystem_Adapter( $filesystem );
+	}
+
+	/**
+	 * Create a Flysystem instance with the given adapter.
+	 *
+	 * @param AdapterInterface $adapter
+	 * @param array            $config Adapter configuration.
+	 * @return FilesystemInterface
+	 */
+	protected function create_flysystem( AdapterInterface $adapter, array $config = [] ): FilesystemInterface {
+		$cache  = Arr::pull( $config, 'cache' );
+		$config = Arr::only( $config, [ 'visibility', 'disable_asserts', 'url' ] );
+
+		if ( $cache ) {
+
+			if ( ! class_exists( CachedAdapter::class ) ) {
+				throw new RuntimeException( 'CachedAdapter class is not loaded.' );
+			}
+
+			$adapter = new CachedAdapter( $adapter, $this->create_cache_store( $cache ) );
+		}
+
+		return new Flysystem( $adapter, $config );
+	}
+
+	/**
+	 * Create a cache store instance.
+	 *
+	 * @param mixed $config Adapter configuration.
+	 * @return CacheInterface
+	 *
+	 * @todo Add support for other caching adapters.
+	 */
+	protected function create_cache_store( $config ): CacheInterface {
+		return new MemoryStore( $config );
 	}
 
 	/**
