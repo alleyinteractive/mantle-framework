@@ -13,7 +13,6 @@ use ErrorException;
 use FilesystemIterator;
 use Mantle\Framework\Support\Traits\Macroable;
 use RuntimeException;
-use Symfony\Component\Filesystem\Filesystem as SymfonyFilesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\Mime\MimeTypes;
