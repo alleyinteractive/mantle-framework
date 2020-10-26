@@ -7,8 +7,10 @@
 
 namespace Mantle\Framework\Filesystem;
 
+use Aws\S3\S3Client;
 use Closure;
 use InvalidArgumentException;
+use League\Flysystem\Adapter\Local;
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\Cached\CachedAdapter;
 use League\Flysystem\Cached\Storage\AbstractCache;
@@ -204,6 +206,71 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	}
 
 	/**
+	 * Create an instance of the local driver.
+	 *
+	 * @param  array $config
+	 * @return \Illuminate\Contracts\Filesystem\Filesystem
+	 */
+	public function create_local_driver( array $config ) {
+		$permissions = $config['permissions'] ?? [];
+
+		$links = ( $config['links'] ?? null ) === 'skip'
+			? Local::SKIP_LINKS
+			: Local::DISALLOW_LINKS;
+
+		return $this->adapt(
+			$this->create_flysystem(
+				new Local(
+					$config['root'] ?? wp_upload_dir()['basedir'],
+					$config['lock'] ?? LOCK_EX,
+					$links,
+					$permissions
+				),
+				$config
+			)
+		);
+	}
+
+	/**
+	 * Create an instance of the Amazon S3 driver.
+	 *
+	 * @param  array $config
+	 * @return mixed
+	 */
+	public function create_s3_driver( array $config ) {
+		$s3_config = $this->format_s3_config( $config );
+
+		$root = $s3_config['root'] ?? null;
+
+		$options = $config['options'] ?? [];
+
+		$stream_reads = $config['stream_reads'] ?? false;
+
+		return $this->adapt(
+			$this->create_flysystem(
+				new S3Adapter( new S3Client( $s3_config ), $s3_config['bucket'], $root, $options, $stream_reads ),
+				$config
+			)
+		);
+	}
+
+	/**
+	 * Format the given S3 configuration with the default options.
+	 *
+	 * @param  array $config
+	 * @return array
+	 */
+	protected function format_s3_config( array $config ) {
+		$config += [ 'version' => 'latest' ];
+
+		if ( ! empty( $config['key'] ) && ! empty( $config['secret'] ) ) {
+			$config['credentials'] = Arr::only( $config, [ 'key', 'secret', 'token' ] );
+		}
+
+		return $config;
+	}
+
+	/**
 	 * Pass the method calls to the default disk.
 	 *
 	 * @param string $method Method to invoke.
@@ -211,6 +278,6 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 * @return mixed
 	 */
 	public function __call( string $method, array $arguments ) {
-		return $this->disk()->$method( ...$arguments );
+		return $this->drive()->$method( ...$arguments );
 	}
 }
