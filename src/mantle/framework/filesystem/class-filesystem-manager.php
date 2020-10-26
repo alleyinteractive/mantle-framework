@@ -66,7 +66,7 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 * @throws InvalidArgumentException Thrown on invalid disk configuration.
 	 */
 	public function drive( string $name = null ): Filesystem {
-		return $this->resolve_disk( $name ?: $this->get_default_driver() );
+		return $this->resolve_disk( $name ?: $this->get_default_disk() );
 	}
 
 	/**
@@ -119,8 +119,8 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 *
 	 * @return string
 	 */
-	protected function get_default_driver(): string {
-		return (string) $this->app['config']['filesystem.default'];
+	protected function get_default_disk(): string {
+		return (string) ( $this->app['config']['filesystem.default'] ?? 'local' );
 	}
 
 	/**

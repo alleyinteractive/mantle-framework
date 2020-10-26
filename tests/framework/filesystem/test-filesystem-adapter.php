@@ -3,6 +3,7 @@
 namespace Mantle\Tests\Framework\Filesystem;
 
 use GuzzleHttp\Psr7\Stream;
+use InvalidArgumentException;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\FileNotFoundException;
@@ -13,6 +14,7 @@ use Mantle\Framework\Http\Uploaded_File;
 use Mantle\Framework\Testing\Assert;
 use PHPUnit\Framework\TestCase;
 use Mockery as m;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class Test_Filesystem_Adapter extends TestCase {
 	private $temp_dir;
@@ -29,7 +31,6 @@ class Test_Filesystem_Adapter extends TestCase {
 		$files = new Filesystem();
 		$files->ensure_directory_exists( $this->temp_dir );
 		$files->clean_directory( $this->temp_dir );
-		// ( new Filesystem() )->clean_directory()
 
 	}
 
@@ -38,51 +39,51 @@ class Test_Filesystem_Adapter extends TestCase {
 		m::close();
 	}
 
-	// public function testResponse() {
-	// 	$this->filesystem->write( 'file.txt', 'Hello World' );
-	// 	$files    = new Filesystem_Adapter( $this->filesystem );
-	// 	$response = $files->response( 'file.txt' );
+	public function testResponse() {
+		$this->filesystem->write( 'file.txt', 'Hello World' );
+		$files    = new Filesystem_Adapter( $this->filesystem );
+		$response = $files->response( 'file.txt' );
 
-	// 	ob_start();
-	// 	$response->sendContent();
-	// 	$content = ob_get_clean();
+		ob_start();
+		$response->sendContent();
+		$content = ob_get_clean();
 
-	// 	$this->assertInstanceOf( StreamedResponse::class, $response );
-	// 	$this->assertSame( 'Hello World', $content );
-	// 	$this->assertSame( 'inline; filename=file.txt', $response->headers->get( 'content-disposition' ) );
-	// }
+		$this->assertInstanceOf( StreamedResponse::class, $response );
+		$this->assertSame( 'Hello World', $content );
+		$this->assertSame( 'inline; filename=file.txt', $response->headers->get( 'content-disposition' ) );
+	}
 
-	// public function testDownload() {
-	// 	$this->filesystem->write( 'file.txt', 'Hello World' );
-	// 	$files    = new Filesystem_Adapter( $this->filesystem );
-	// 	$response = $files->download( 'file.txt', 'hello.txt' );
-	// 	$this->assertInstanceOf( StreamedResponse::class, $response );
-	// 	$this->assertSame( 'attachment; filename=hello.txt', $response->headers->get( 'content-disposition' ) );
-	// }
+	public function testDownload() {
+	$this->filesystem->write( 'file.txt', 'Hello World' );
+	$files    = new Filesystem_Adapter( $this->filesystem );
+	$response = $files->download( 'file.txt', 'hello.txt' );
+	$this->assertInstanceOf( StreamedResponse::class, $response );
+	$this->assertSame( 'attachment; filename=hello.txt', $response->headers->get( 'content-disposition' ) );
+	}
 
-	// public function testDownloadNonAsciiFilename() {
-	// 	$this->filesystem->write( 'file.txt', 'Hello World' );
-	// 	$files    = new Filesystem_Adapter( $this->filesystem );
-	// 	$response = $files->download( 'file.txt', 'пиздюк.txt' );
-	// 	$this->assertInstanceOf( StreamedResponse::class, $response );
-	// 	$this->assertSame( "attachment; filename=pizdyuk.txt; filename*=utf-8''%D0%BF%D0%B8%D0%B7%D0%B4%D1%8E%D0%BA.txt", $response->headers->get( 'content-disposition' ) );
-	// }
+	public function testDownloadNonAsciiFilename() {
+	$this->filesystem->write( 'file.txt', 'Hello World' );
+	$files    = new Filesystem_Adapter( $this->filesystem );
+	$response = $files->download( 'file.txt', 'пиздюк.txt' );
+	$this->assertInstanceOf( StreamedResponse::class, $response );
+	$this->assertSame( "attachment; filename=pizdyuk.txt; filename*=utf-8''%D0%BF%D0%B8%D0%B7%D0%B4%D1%8E%D0%BA.txt", $response->headers->get( 'content-disposition' ) );
+	}
 
-	// public function testDownloadNonAsciiEmptyFilename() {
-	// 	$this->filesystem->write( 'пиздюк.txt', 'Hello World' );
-	// 	$files    = new Filesystem_Adapter( $this->filesystem );
-	// 	$response = $files->download( 'пиздюк.txt' );
-	// 	$this->assertInstanceOf( StreamedResponse::class, $response );
-	// 	$this->assertSame( 'attachment; filename=pizdyuk.txt; filename*=utf-8\'\'%D0%BF%D0%B8%D0%B7%D0%B4%D1%8E%D0%BA.txt', $response->headers->get( 'content-disposition' ) );
-	// }
+	public function testDownloadNonAsciiEmptyFilename() {
+	$this->filesystem->write( 'пиздюк.txt', 'Hello World' );
+	$files    = new Filesystem_Adapter( $this->filesystem );
+	$response = $files->download( 'пиздюк.txt' );
+	$this->assertInstanceOf( StreamedResponse::class, $response );
+	$this->assertSame( 'attachment; filename=pizdyuk.txt; filename*=utf-8\'\'%D0%BF%D0%B8%D0%B7%D0%B4%D1%8E%D0%BA.txt', $response->headers->get( 'content-disposition' ) );
+	}
 
-	// public function testDownloadPercentInFilename() {
-	// 	$this->filesystem->write( 'Hello%World.txt', 'Hello World' );
-	// 	$files    = new Filesystem_Adapter( $this->filesystem );
-	// 	$response = $files->download( 'Hello%World.txt', 'Hello%World.txt' );
-	// 	$this->assertInstanceOf( StreamedResponse::class, $response );
-	// 	$this->assertSame( 'attachment; filename=HelloWorld.txt; filename*=utf-8\'\'Hello%25World.txt', $response->headers->get( 'content-disposition' ) );
-	// }
+	public function testDownloadPercentInFilename() {
+	$this->filesystem->write( 'Hello%World.txt', 'Hello World' );
+	$files    = new Filesystem_Adapter( $this->filesystem );
+	$response = $files->download( 'Hello%World.txt', 'Hello%World.txt' );
+	$this->assertInstanceOf( StreamedResponse::class, $response );
+	$this->assertSame( 'attachment; filename=HelloWorld.txt; filename*=utf-8\'\'Hello%25World.txt', $response->headers->get( 'content-disposition' ) );
+	}
 
 	public function testExists() {
 		$this->filesystem->write( 'file.txt', 'Hello World' );
@@ -95,11 +96,11 @@ class Test_Filesystem_Adapter extends TestCase {
 		$this->assertTrue( $Filesystem_Adapter->missing( 'file.txt' ) );
 	}
 
-	// public function testPath() {
-	// 	$this->filesystem->write( 'file.txt', 'Hello World' );
-	// 	$Filesystem_Adapter = new Filesystem_Adapter( $this->filesystem );
-	// 	$this->assertEquals( $this->temp_dir . DIRECTORY_SEPARATOR . 'file.txt', $Filesystem_Adapter->path( 'file.txt' ) );
-	// }
+	public function testPath() {
+		$this->filesystem->write( 'file.txt', 'Hello World' );
+		$Filesystem_Adapter = new Filesystem_Adapter( $this->filesystem );
+		$this->assertEquals( $this->temp_dir . DIRECTORY_SEPARATOR . 'file.txt', $Filesystem_Adapter->path( 'file.txt' ) );
+	}
 
 	public function testGet() {
 		$this->filesystem->write( 'file.txt', 'Hello World' );
@@ -177,7 +178,7 @@ class Test_Filesystem_Adapter extends TestCase {
 	public function testStream() {
 		$this->filesystem->write( 'file.txt', $original_content = 'Hello World' );
 		$Filesystem_Adapter = new Filesystem_Adapter( $this->filesystem );
-		$readStream        = $Filesystem_Adapter->readStream( 'file.txt' );
+		$readStream         = $Filesystem_Adapter->readStream( 'file.txt' );
 		$Filesystem_Adapter->writeStream( 'copy.txt', $readStream );
 		$this->assertEquals( $original_content, $Filesystem_Adapter->get( 'copy.txt' ) );
 	}
@@ -187,7 +188,7 @@ class Test_Filesystem_Adapter extends TestCase {
 		$this->filesystem->write( 'file.txt', $original_content = 'Hello World' );
 		$Filesystem_Adapter       = new Filesystem_Adapter( $this->filesystem );
 		$secondFilesystem_Adapter = new Filesystem_Adapter( $secondFilesystem );
-		$readStream              = $Filesystem_Adapter->readStream( 'file.txt' );
+		$readStream               = $Filesystem_Adapter->readStream( 'file.txt' );
 		$secondFilesystem_Adapter->writeStream( 'copy.txt', $readStream );
 		$this->assertEquals( $original_content, $secondFilesystem_Adapter->get( 'copy.txt' ) );
 	}
@@ -197,7 +198,7 @@ class Test_Filesystem_Adapter extends TestCase {
 		$this->filesystem->write( 'file.txt', 'Hello World' );
 		$this->filesystem->write( 'existing.txt', 'Dear Kate' );
 		$Filesystem_Adapter = new Filesystem_Adapter( $this->filesystem );
-		$readStream        = $Filesystem_Adapter->readStream( 'file.txt' );
+		$readStream         = $Filesystem_Adapter->readStream( 'file.txt' );
 		$Filesystem_Adapter->writeStream( 'existing.txt', $readStream );
 	}
 
@@ -213,73 +214,80 @@ class Test_Filesystem_Adapter extends TestCase {
 		$Filesystem_Adapter->writeStream( 'file.txt', 'foo bar' );
 	}
 
-	// public function testPutWithStreamInterface() {
-	// 	file_put_contents( $this->temp_dir . '/foo.txt', 'some-data' );
-	// 	$spy = m::spy( $this->filesystem );
+	public function testPutWithStreamInterface() {
+		file_put_contents( $this->temp_dir . '/foo.txt', 'some-data' );
+		$spy = m::spy( $this->filesystem );
 
-	// 	$Filesystem_Adapter = new Filesystem_Adapter( $spy );
-	// 	$stream            = fopen( $this->temp_dir . '/foo.txt', 'r' );
-	// 	$guzzleStream      = new Stream( $stream );
-	// 	$Filesystem_Adapter->put( 'bar.txt', $guzzleStream );
-	// 	fclose( $stream );
+		$Filesystem_Adapter = new Filesystem_Adapter( $spy );
+		$stream             = fopen( $this->temp_dir . '/foo.txt', 'r' );
+		$guzzleStream       = new Stream( $stream );
+		$Filesystem_Adapter->put( 'bar.txt', $guzzleStream );
+		fclose( $stream );
 
-	// 	$spy->shouldHaveReceived( 'putStream' );
-	// 	$this->assertSame( 'some-data', $Filesystem_Adapter->get( 'bar.txt' ) );
-	// }
+		$spy->shouldHaveReceived( 'putStream' );
+		$this->assertSame( 'some-data', $Filesystem_Adapter->get( 'bar.txt' ) );
+	}
 
-	// public function testPutFileAs() {
-	// 	file_put_contents( $filePath = $this->temp_dir . '/foo.txt', 'uploaded file content' );
+	public function testPutFileAs() {
+		file_put_contents( $filePath = $this->temp_dir . '/foo.txt', 'uploaded file content' );
 
-	// 	$Filesystem_Adapter = new Filesystem_Adapter( $this->filesystem );
+		$Filesystem_Adapter = new Filesystem_Adapter( $this->filesystem );
 
-	// 	$uploadedFile = new Uploaded_File( $filePath, 'org.txt', null, null, true );
+		$uploadedFile = new Uploaded_File( $filePath, 'org.txt', null, null, true );
 
-	// 	$storagePath = $Filesystem_Adapter->putFileAs( '/', $uploadedFile, 'new.txt' );
+		$storagePath = $Filesystem_Adapter->put_file_as( '/', $uploadedFile, 'new.txt' );
 
-	// 	$this->assertSame( 'new.txt', $storagePath );
+		$this->assertSame( 'new.txt', $storagePath );
 
-	// 	$this->assertFileExists( $filePath );
+		$this->assertFileExists( $filePath );
 
-	// 	$Filesystem_Adapter->assertExists( $storagePath );
+		$Filesystem_Adapter->assertExists( $storagePath );
 
-	// 	$this->assertSame( 'uploaded file content', $Filesystem_Adapter->read( $storagePath ) );
-	// }
+		$this->assertSame( 'uploaded file content', $Filesystem_Adapter->read( $storagePath ) );
+	}
 
 	public function testPutFileAsWithAbsoluteFilePath() {
 		file_put_contents( $filePath = $this->temp_dir . '/foo.txt', 'normal file content' );
 
 		$Filesystem_Adapter = new Filesystem_Adapter( $this->filesystem );
 
-		$storagePath = $Filesystem_Adapter->putFileAs( '/', $filePath, 'new.txt' );
+		$storagePath = $Filesystem_Adapter->put_file_as( '/', $filePath, 'new.txt' );
 
 		$this->assertSame( 'normal file content', $Filesystem_Adapter->read( $storagePath ) );
 	}
 
-	// public function testPutFile() {
-	// 	file_put_contents( $filePath = $this->temp_dir . '/foo.txt', 'uploaded file content' );
+	public function testPutFile() {
+		file_put_contents( $filePath = $this->temp_dir . '/foo.txt', 'uploaded file content' );
 
-	// 	$Filesystem_Adapter = new Filesystem_Adapter( $this->filesystem );
+		$Filesystem_Adapter = new Filesystem_Adapter( $this->filesystem );
 
-	// 	$uploadedFile = new Uploaded_File( $filePath, 'org.txt', null, null, true );
+		$uploadedFile = new Uploaded_File( $filePath, 'org.txt', null, null, true );
 
-	// 	$storagePath = $Filesystem_Adapter->putFile( '/', $uploadedFile );
+		$storagePath = $Filesystem_Adapter->put_file( '/', $uploadedFile );
 
-	// 	$this->assertSame( 44, strlen( $storagePath ) ); // random 40 characters + ".txt"
+		$this->assertSame( 44, strlen( $storagePath ) ); // random 40 characters + ".txt"
 
-	// 	$this->assertFileExists( $filePath );
+		$this->assertFileExists( $filePath );
 
-	// 	$Filesystem_Adapter->assertExists( $storagePath );
-	// }
+		$Filesystem_Adapter->assertExists( $storagePath );
+	}
 
 	public function testPutFileWithAbsoluteFilePath() {
 		file_put_contents( $filePath = $this->temp_dir . '/foo.txt', 'uploaded file content' );
 
 		$Filesystem_Adapter = new Filesystem_Adapter( $this->filesystem );
 
-		$storagePath = $Filesystem_Adapter->putFile( '/', $filePath );
+		$storagePath = $Filesystem_Adapter->put_file( '/', $filePath );
 
 		$this->assertSame( 44, strlen( $storagePath ) ); // random 40 characters + ".txt"
 
 		$Filesystem_Adapter->assertExists( $storagePath );
+	}
+
+	public function test_url() {
+		$this->assertEquals(
+			home_url( '/wp-content/uploads/foo.txt' ),
+			( new Filesystem_Adapter( $this->filesystem ) )->url( '/foo.txt' )
+		);
 	}
 }

@@ -55,7 +55,7 @@ class Filesystem {
 	 */
 	public function get( $path, $lock = false ) {
 		if ( $this->is_file( $path ) ) {
-			return $lock ? $this->shared_get( $path ) : file_get_contents( $path );
+			return $lock ? $this->shared_get( $path ) : file_get_contents( $path ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
 		}
 
 		throw new FileNotFoundException( "File does not exist at path {$path}." );
@@ -70,19 +70,19 @@ class Filesystem {
 	public function shared_get( $path ) {
 		$contents = '';
 
-		$handle = fopen( $path, 'rb' );
+		$handle = fopen( $path, 'rb' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fopen
 
 		if ( $handle ) {
 			try {
 				if ( flock( $handle, LOCK_SH ) ) {
 					clearstatcache( true, $path );
 
-					$contents = fread( $handle, $this->size( $path ) ?: 1 );
+					$contents = fread( $handle, $this->size( $path ) ?: 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fread
 
 					flock( $handle, LOCK_UN );
 				}
 			} finally {
-				fclose( $handle );
+				fclose( $handle ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fclose
 			}
 		}
 
@@ -236,7 +236,7 @@ class Filesystem {
 
 		foreach ( $paths as $path ) {
 			try {
-				if ( ! @unlink( $path ) ) {
+				if ( ! @unlink( $path ) ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 					$success = false;
 				}
 			} catch ( ErrorException $e ) {
@@ -514,7 +514,7 @@ class Filesystem {
 			return false;
 		}
 
-		return @rename( $from, $to ) === true;
+		return @rename( $from, $to ) === true; // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 	}
 
 	/**
@@ -597,7 +597,7 @@ class Filesystem {
 		}
 
 		if ( ! $preserve ) {
-			@rmdir( $directory );
+			@rmdir( $directory ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 		}
 
 		return true;

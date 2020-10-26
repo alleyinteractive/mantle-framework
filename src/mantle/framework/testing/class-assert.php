@@ -11,6 +11,9 @@ use PHPUnit\Framework\Assert as PHPUnit;
 use PHPUnit\Framework\Constraint\RegularExpression;
 
 /**
+ * Internal assertions that exist in PHPUnit 8.x.
+ * Once the code base is migrated to use PHPUnit 8+ we can remove this file.
+ *
  * @internal This class is not meant to be used or overwritten outside the framework itself.
  */
 abstract class Assert extends PHPUnit {

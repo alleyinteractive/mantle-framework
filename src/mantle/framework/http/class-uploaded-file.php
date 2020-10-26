@@ -9,6 +9,7 @@
 namespace Mantle\Framework\Http;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Mantle\Framework\Filesystem\File_Helpers;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\File\UploadedFile as SymfonyUploadedFile;
 
@@ -16,6 +17,8 @@ use Symfony\Component\HttpFoundation\File\UploadedFile as SymfonyUploadedFile;
  * Handles Uploaded Files
  */
 class Uploaded_File extends SymfonyUploadedFile {
+	use File_Helpers;
+
 	/**
 	 * Store the uploaded file on a filesystem disk.
 	 *

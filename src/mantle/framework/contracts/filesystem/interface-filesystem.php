@@ -170,6 +170,26 @@ interface Filesystem {
 	public function write_stream( string $path, $resource, $options = [] ): bool;
 
 	/**
+	 * Prepend to a file.
+	 *
+	 * @param string $path File to prepend.
+	 * @param string $data Data to prepend.
+	 * @param string $separator Separator from existing data.
+	 * @return bool
+	 */
+	public function prepend( string $path, string $data, string $separator = PHP_EOL );
+
+	/**
+	 * Append to a file.
+	 *
+	 * @param string $path File to append.
+	 * @param string $data Data to append.
+	 * @param string $separator Separator from existing data.
+	 * @return bool
+	 */
+	public function append( $path, $data, $separator = PHP_EOL);
+
+	/**
 	 * Retrieve a file's visibility.
 	 *
 	 * @param string $path
@@ -185,4 +205,12 @@ interface Filesystem {
 	 * @return bool
 	 */
 	public function set_visibility( string $path, string $visibility ): bool;
+
+	/**
+	 * Get the URL for the file at the given path.
+	 *
+	 * @param string $path Path to the file.
+	 * @return string|null
+	 */
+	public function url( string $path ): ?string;
 }
