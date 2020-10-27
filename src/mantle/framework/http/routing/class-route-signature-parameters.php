@@ -60,6 +60,11 @@ class Route_Signature_Parameters {
 	protected static function from_class_method_string( $uses ): array {
 		[ $class, $method ] = Str::parse_callback( $uses );
 
+		// Use the invoke method if it found.
+		if ( empty( $method ) && class_exists( $class ) && method_exists( $class, '__invoke' ) ) {
+			$method = '__invoke';
+		}
+
 		if ( ! method_exists( $class, $method ) && is_callable( $class, $method ) ) {
 			return [];
 		}

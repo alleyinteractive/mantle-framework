@@ -73,6 +73,10 @@ class Log_Manager {
 	 * @throws Throwable Thrown on error getting the logging handler for a channel.
 	 */
 	public function get_channel_handler( string $channel ): ?HandlerInterface {
+		if ( empty( $channel ) ) {
+			return null;
+		}
+
 		$config = $this->app['config']->get( 'logging.channels.' . $channel );
 
 		if ( empty( $config['driver'] ) ) {
