@@ -33,7 +33,7 @@ class Uploaded_File extends SymfonyUploadedFile {
 	 * @return string|false
 	 */
 	public function store( $path, $options = [] ) {
-		return $this->store_as( $path, $this->hash_name(), $this->parse_options( $options ) );
+		return $this->store_as( $path, $this->getFilename(), $this->parse_options( $options ) );
 	}
 
 	/**
@@ -48,7 +48,7 @@ class Uploaded_File extends SymfonyUploadedFile {
 
 		$options['visibility'] = 'public';
 
-		return $this->store_as( $path, $this->hashName(), $options );
+		return $this->store_as( $path, $this->getFilename(), $options );
 	}
 
 	/**
@@ -76,6 +76,7 @@ class Uploaded_File extends SymfonyUploadedFile {
 	 * @return string|false
 	 */
 	public function store_as( $path, $name, $options = [] ) {
+		$path    = untrailingslashit( $path );
 		$options = $this->parse_options( $options );
 
 		$disk = Arr::pull( $options, 'disk' );
@@ -105,6 +106,11 @@ class Uploaded_File extends SymfonyUploadedFile {
 
 		$options = $this->parse_options( $options );
 
+		// Set the default visibility for attachments to public.
+		if ( ! isset( $options['visibility'] ) ) {
+			$options['visibility'] = 'public';
+		}
+
 		if ( $name ) {
 			$uploaded_file = $this->store_as( $path, $name, $options );
 		} else {
@@ -115,7 +121,8 @@ class Uploaded_File extends SymfonyUploadedFile {
 			throw new RuntimeException( "Error uploading file to [{$path}]: [{$this->getFilename()}]" );
 		}
 
-		$disk = Container::getInstance()->make( Filesystem_Manager::class )->drive( $options['disk'] ?? null );
+		$disk_name = $options['disk'] ?? null;
+		$disk      = Container::getInstance()->make( Filesystem_Manager::class )->drive( $disk_name );
 
 		// Create the attachment for the file.
 		$attachment = Attachment::create(
@@ -126,6 +133,13 @@ class Uploaded_File extends SymfonyUploadedFile {
 				'post_title'     => preg_replace( '/\.[^.]+$/', '', basename( $uploaded_file ) ),
 				'post_content'   => '',
 				'file'           => $disk->path( $uploaded_file ),
+				'meta'           => [
+					Attachment::META_KEY_CLOUD_STORAGE => [
+						'disk' => $disk_name,
+						'name' => $name ?: $this->getFilename(),
+						'path' => $path,
+					],
+				],
 			]
 		);
 
