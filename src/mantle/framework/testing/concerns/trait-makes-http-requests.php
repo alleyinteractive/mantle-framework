@@ -266,8 +266,13 @@ trait Makes_Http_Requests {
 
 		// Attempt to run the query through the Mantle router.
 		if ( isset( $this->app['router'] ) ) {
-			$kernel   = new HttpKernel( $this->app, $this->app['router'] );
-			$response = $kernel->send_request_through_router( Request::capture() );
+			$kernel = new HttpKernel( $this->app, $this->app['router'] );
+
+			// Setup the current request object.
+			$request = Request::capture();
+			$this->app->instance( 'request', $request );
+
+			$response = $kernel->send_request_through_router( $request );
 
 			if ( $response ) {
 				$response = new Test_Response(

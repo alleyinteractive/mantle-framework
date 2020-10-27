@@ -13,6 +13,7 @@ use Closure;
 use Mantle\Framework\Contracts\Database\Scope;
 use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Database\Model\Model_Not_Found_Exception;
+use Mantle\Framework\Database\Pagination\Paginator;
 use Mantle\Framework\Support\Collection;
 use Mantle\Framework\Support\Str;
 
@@ -429,6 +430,17 @@ abstract class Builder {
 	}
 
 	/**
+	 * Set the current page of the builder.
+	 *
+	 * @param int $page Page to set.
+	 * @return static
+	 */
+	public function page( int $page ) {
+		$this->page = $page;
+		return $this;
+	}
+
+	/**
 	 * Get the first result of the query.
 	 *
 	 * @return \Mantle\Framework\Database\Model|null
@@ -460,6 +472,14 @@ abstract class Builder {
 		}
 
 		return $model;
+	}
+
+	public function simple_paginate( int $per_page = 20, int $current_page = null ) {
+		return new Paginator( $this, $per_page, $current_page );
+	}
+
+	public function paginate() {
+
 	}
 
 	/**

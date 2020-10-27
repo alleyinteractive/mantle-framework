@@ -89,12 +89,13 @@ class Post_Query_Builder extends Builder {
 				'fields'              => 'ids',
 				'ignore_sticky_posts' => true,
 				'meta_query'          => $this->meta_query, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
-				'tax_query'           => $this->tax_query, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 				'order'               => $this->order,
 				'orderby'             => $this->order_by,
+				'paged'               => $this->page,
 				'post_type'           => $post_type,
 				'posts_per_page'      => $this->limit,
 				'suppress_filters'    => false,
+				'tax_query'           => $this->tax_query, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 			],
 			$this->wheres,
 		);

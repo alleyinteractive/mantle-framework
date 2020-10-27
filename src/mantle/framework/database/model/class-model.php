@@ -22,6 +22,8 @@ use function Mantle\Framework\Helpers\class_uses_recursive;
  *
  * @todo Add Json-able, arrayable, serialize interfaces
  * @todo Move all concerns to the 'Concerns' namespace.
+ *
+ * @mixin \Mantle\Framework\Database\Query\Builder
  */
 abstract class Model implements ArrayAccess, Url_Routable {
 	use Aliases,
