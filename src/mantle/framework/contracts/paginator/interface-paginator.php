@@ -26,4 +26,5 @@ interface Paginator {
 	public function query(): array;
 	public function next_url(): ?string;
 	public function previous_url(): ?string;
+	// public function links(): string;
 }
