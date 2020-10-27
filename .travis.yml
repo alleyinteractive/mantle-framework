@@ -54,4 +54,5 @@ script:
       composer run phpcs
     fi
   - |
+    which phpunit
     phpunit
