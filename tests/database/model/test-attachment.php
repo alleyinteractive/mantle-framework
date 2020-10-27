@@ -2,23 +2,20 @@
 namespace Mantle\Tests\Database\Model;
 
 use Mantle\Framework\Database\Model\Attachment;
-use WP_UnitTestCase;
+use Mantle\Framework\Testing\Framework_Test_Case;
 
-/**
- * @todo Replace with the Mantle Testing Framework
- */
-class Test_Attachment extends WP_UnitTestCase {
+class Test_Attachment extends Framework_Test_Case {
 	/**
 	 * @var int
 	 */
 	protected $attachment_id;
 
-	public function setUp() {
+	protected function setUp(): void {
 		parent::setUp();
 		$this->attachment_id = $this->factory->attachment->create_upload_object( DIR_TESTDATA . '/images/test-image.png', 0 );
 	}
 
-	public function tearDown() {
+	protected function tearDown(): void {
 		parent::tearDown();
 		wp_delete_post( $this->attachment_id );
 	}

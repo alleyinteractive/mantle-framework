@@ -7,13 +7,14 @@
 
 namespace Mantle\Tests\Framework\Helpers;
 
-use WP_UnitTestCase;
+use Mantle\Framework\Testing\Framework_Test_Case;
+
 use function Mantle\Framework\Helpers\get_comment_object;
 
 /**
  * Unit tests for nullable comment object functions.
  */
-class Nullable_Comment_Objects_Test_Case extends WP_UnitTestCase {
+class Nullable_Comment_Objects_Test_Case extends Framework_Test_Case {
 	/**
 	 * Test that `get_comment_object()` returns a comment object.
 	 */

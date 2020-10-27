@@ -7,14 +7,14 @@
 
 namespace Mantle\Tests\Framework\Helpers;
 
-use WP_UnitTestCase;
+use Mantle\Framework\Testing\Framework_Test_Case;
 use function Mantle\Framework\Helpers\get_site_object;
 
 if ( \is_multisite() ) {
 	/**
 	 * Unit tests for nullable site object functions.
 	 */
-	class Nullable_Site_Objects_Test_Case extends WP_UnitTestCase {
+	class Nullable_Site_Objects_Test_Case extends Framework_Test_Case {
 		/**
 		 * Test that `get_site_object()` returns a site object.
 		 */

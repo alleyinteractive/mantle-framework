@@ -9,7 +9,7 @@ use Psr\Container\ContainerExceptionInterface;
 use stdClass;
 
 class Test_Container extends TestCase {
-	public function tearDown() {
+	protected function tearDown(): void {
 		Container::set_instance( null );
 	}
 

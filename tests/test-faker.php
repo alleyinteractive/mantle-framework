@@ -10,7 +10,7 @@ class Test_Faker extends \PHPUnit\Framework\TestCase {
 	 */
 	protected $faker;
 
-	public function setUp() {
+	protected function setUp(): void {
 		parent::setUp();
 
 		$this->faker = Factory::create();
