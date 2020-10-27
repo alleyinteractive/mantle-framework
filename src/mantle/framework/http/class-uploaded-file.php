@@ -33,7 +33,7 @@ class Uploaded_File extends SymfonyUploadedFile {
 	 * @return string|false
 	 */
 	public function store( $path, $options = [] ) {
-		return $this->store_as( $path, $this->getFilename(), $this->parse_options( $options ) );
+		return $this->store_as( $path, $this->hash_name(), $this->parse_options( $options ) );
 	}
 
 	/**
@@ -133,7 +133,7 @@ class Uploaded_File extends SymfonyUploadedFile {
 				'meta'           => [
 					Attachment::META_KEY_CLOUD_STORAGE => [
 						'disk'       => $disk_name,
-						'name'       => $name ?: $this->getFilename(),
+						'name'       => $uploaded_file,
 						'path'       => $path,
 						'visibility' => $options['visibility'],
 					],
