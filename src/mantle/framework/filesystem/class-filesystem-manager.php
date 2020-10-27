@@ -12,6 +12,7 @@ use Closure;
 use InvalidArgumentException;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\AdapterInterface;
+use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use League\Flysystem\Cached\CachedAdapter;
 use League\Flysystem\Cached\Storage\AbstractCache;
 use League\Flysystem\Filesystem as Flysystem;
@@ -248,7 +249,7 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 
 		return $this->adapt(
 			$this->create_flysystem(
-				new S3Adapter( new S3Client( $s3_config ), $s3_config['bucket'], $root, $options, $stream_reads ),
+				new AwsS3Adapter( new S3Client( $s3_config ), $s3_config['bucket'], $root, $options, $stream_reads ),
 				$config
 			)
 		);
