@@ -98,12 +98,10 @@ class Uploaded_File extends SymfonyUploadedFile {
 	 * @return Attachment
 	 *
 	 * @throws RuntimeException Thrown on error storing file.
+	 *
+	 * @todo Enable proper attachment meta data indexing.
 	 */
 	public function store_as_attachment( string $path = '/', string $name = null, $options = [] ): Attachment {
-		if ( ! function_exists( 'wp_generate_attachment_metadata' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/image.php';
-		}
-
 		$options = $this->parse_options( $options );
 
 		// Set the default visibility for attachments to public.
@@ -132,7 +130,6 @@ class Uploaded_File extends SymfonyUploadedFile {
 				'post_parent'    => 0,
 				'post_title'     => preg_replace( '/\.[^.]+$/', '', basename( $uploaded_file ) ),
 				'post_content'   => '',
-				'file'           => $disk->path( $uploaded_file ),
 				'meta'           => [
 					Attachment::META_KEY_CLOUD_STORAGE => [
 						'disk' => $disk_name,
@@ -141,11 +138,6 @@ class Uploaded_File extends SymfonyUploadedFile {
 					],
 				],
 			]
-		);
-
-		wp_update_attachment_metadata(
-			$attachment->id(),
-			wp_generate_attachment_metadata( $attachment->id, $disk->path( $uploaded_file ) )
 		);
 
 		return $attachment;

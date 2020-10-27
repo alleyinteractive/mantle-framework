@@ -72,7 +72,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 *       to verify the object type as well.
 	 *
 	 * @param \WP_Post|int $object Post to retrieve for.
-	 * @return Post|null
+	 * @return static|null
 	 */
 	public static function find( $object ) {
 		$post = Helpers\get_post_object( $object );

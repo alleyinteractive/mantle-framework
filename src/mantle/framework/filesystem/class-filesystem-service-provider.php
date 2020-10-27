@@ -7,7 +7,9 @@
 
 namespace Mantle\Framework\Filesystem;
 
+use Mantle\Framework\Database\Model\Attachment;
 use Mantle\Framework\Service_Provider;
+use RuntimeException;
 
 /**
  * Filesystem Service Provider
@@ -31,5 +33,33 @@ class Filesystem_Service_Provider extends Service_Provider {
 				return new Filesystem_Manager( $app );
 			}
 		);
+	}
+
+	/**
+	 * Filter the attachment URL for cloud-stored attachments.
+	 *
+	 * @param string $url Attachment URL.
+	 * @param int    $post_id Attachment ID.
+	 * @return string
+	 */
+	public function on_wp_get_attachment_url( string $url, int $post_id ): string {
+		static $doing_wp_get_attachment_url = false;
+
+		if ( ! $doing_wp_get_attachment_url ) {
+			$doing_wp_get_attachment_url = true;
+
+			$attachment = Attachment::find( $post_id );
+			if ( $attachment ) {
+				try {
+					$url = $attachment->url();
+				} catch ( RuntimeException $e ) {
+					unset( $e );
+				}
+			}
+
+			$doing_wp_get_attachment_url = false;
+		}
+
+		return $url;
 	}
 }
