@@ -10,7 +10,9 @@
 namespace Mantle\Framework\Database\Query;
 
 use Closure;
+use Mantle\Framework\Container\Container;
 use Mantle\Framework\Contracts\Database\Scope;
+use Mantle\Framework\Contracts\Paginator\Paginator as PaginatorContract;
 use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Database\Model\Model_Not_Found_Exception;
 use Mantle\Framework\Database\Pagination\Paginator;
@@ -474,10 +476,29 @@ abstract class Builder {
 		return $model;
 	}
 
-	public function simple_paginate( int $per_page = 20, int $current_page = null ) {
-		return new Paginator( $this, $per_page, $current_page );
+	/**
+	 * Create a simple paginator instance for the current query.
+	 *
+	 * @param int $per_page Items per page.
+	 * @param int $current_page Current page number.
+	 * @return PaginatorContract
+	 */
+	public function simple_paginate( int $per_page = 20, int $current_page = null ): PaginatorContract {
+		return Container::getInstance()->make_with(
+			Paginator::class,
+			[
+				'builder'      => $this,
+				'current_page' => $current_page,
+				'per_page'     => $per_page,
+			]
+		);
 	}
 
+	/**
+	 * Create a length-aware paginator instance for the current query.
+	 *
+	 * @return void
+	 */
 	public function paginate() {
 
 	}

@@ -10,9 +10,11 @@ namespace Mantle\Framework\Database\Pagination;
 use ArrayAccess;
 use Countable;
 use JsonSerializable;
+use Mantle\Framework\Contracts\Paginator\Paginator as PaginatorContract;
 use Mantle\Framework\Contracts\Support\Arrayable;
 use Mantle\Framework\Contracts\Support\Jsonable;
 use Mantle\Framework\Database\Query\Builder;
+use Mantle\Framework\Database\Query\Post_Query_Builder;
 use Mantle\Framework\Http\Request;
 use Mantle\Framework\Support\Collection;
 use Mantle\Framework\Support\Str;
@@ -20,7 +22,7 @@ use Mantle\Framework\Support\Str;
 /**
  * Paginator for query results.
  */
-class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSerializable {
+class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSerializable, PaginatorContract {
 	/**
 	 * Current page number
 	 *
@@ -189,7 +191,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 * @return static
 	 */
 	protected function set_items() {
-		$this->items = $this->builder->get();
+		$this->items = $this->builder->where( 'no_found_rows', true )->get();
 		return $this;
 	}
 
