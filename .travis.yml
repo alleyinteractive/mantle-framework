@@ -58,5 +58,4 @@ script:
       composer run phpcs
     fi
   - |
-    which phpunit
-    phpunit
+    $HOME/.composer/vendor/bin/phpunit
