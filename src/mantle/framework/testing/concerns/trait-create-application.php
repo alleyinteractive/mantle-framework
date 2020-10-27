@@ -93,7 +93,7 @@ trait Create_Application {
 					'local' => [
 						'driver' => 'local',
 					],
-					's3' => [
+					's3'    => [
 						'driver' => 's3',
 						'region' => 'us-west-2',
 						'bucket' => '',
