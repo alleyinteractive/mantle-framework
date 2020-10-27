@@ -132,9 +132,10 @@ class Uploaded_File extends SymfonyUploadedFile {
 				'post_content'   => '',
 				'meta'           => [
 					Attachment::META_KEY_CLOUD_STORAGE => [
-						'disk' => $disk_name,
-						'name' => $name ?: $this->getFilename(),
-						'path' => $path,
+						'disk'       => $disk_name,
+						'name'       => $name ?: $this->getFilename(),
+						'path'       => $path,
+						'visibility' => $options['visibility'],
 					],
 				],
 			]

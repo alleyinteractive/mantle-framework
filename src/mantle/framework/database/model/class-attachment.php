@@ -57,6 +57,12 @@ class Attachment extends Post implements Contracts\Database\Core_Object, Contrac
 			return \wp_get_attachment_url( $this->id() ) ?? null;
 		}
 
+		// For private attachments serve a temporary URL.
+		// todo: allow some permissions to be used.
+		if ( ! empty( $settings['visibility'] ) && 'private' === $settings['visibility'] ) {
+			return $this->get_temporary_url();
+		}
+
 		return Storage::drive( $settings['disk'] )->url( untrailingslashit( $settings['path'] ) . $settings['name'] );
 	}
 
