@@ -362,7 +362,7 @@ class Filesystem_Adapter implements Filesystem {
 	public function put_file( string $path, $file, $options = [] ) {
 		$file = is_string( $file ) ? new File( $file ) : $file;
 
-		return $this->put_file_as( $path, $file, $file->getFilename(), $options );
+		return $this->put_file_as( $path, $file, $file->hash_name(), $options );
 	}
 
 	/**
