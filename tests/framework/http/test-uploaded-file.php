@@ -35,5 +35,6 @@ class Test_Uploaded_File extends Framework_Test_Case {
 
 		$this->assertInstanceOf( Attachment::class, $attachment );
 		$this->assertContains( '/wp-content/uploads/test-uploaded-file.txt', $attachment->url() );
+		$this->assertTrue( file_exists( WP_CONTENT_DIR . '/uploads/test-uploaded-file.txt' ) );
 	}
 }
