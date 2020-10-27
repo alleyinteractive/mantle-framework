@@ -244,6 +244,7 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 		if ( ! class_exists( AwsS3Adapter::class ) ) {
 			throw new RuntimeException( 'AwsS3Adapter class not found. Run `composer require league/flysystem-aws-s3-v3`.' );
 		}
+
 		$s3_config = $this->format_s3_config( $config );
 
 		$root = $s3_config['root'] ?? null;
