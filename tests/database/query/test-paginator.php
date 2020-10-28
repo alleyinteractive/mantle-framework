@@ -91,4 +91,23 @@ class Test_Paginator extends Framework_Test_Case {
 			$this->assertEquals( '/page/' . ( $i + 1 ) . '/', $paginator->next_url() );
 		}
 	}
+
+	public function test_paginate_render() {
+		for ( $i = 1; $i <= 3; $i++ ) {
+			if ( isset( $paginator) ) {
+				$this->get( $paginator->next_url() );
+			} else {
+				$this->get( '/' );
+			}
+
+			$paginator = Post::simple_paginate( 20 );
+			$render    = (string) $paginator->render();
+
+			if ( $i > 2 ) {
+				$this->assertContains( '<li><a href="/?page=' . ( $i - 1 ) . '" rel="prev">Previous</a></li>', $render );
+			}
+
+			$this->assertContains( '<li><a href="/?page=' . ( $i + 1 ) .'" rel="next">Next</a></li>', $render );
+		}
+	}
 }

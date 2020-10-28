@@ -9,26 +9,36 @@ namespace Mantle\Framework\Database\Pagination;
 
 use ArrayAccess;
 use Countable;
+use InvalidArgumentException;
 use JsonSerializable;
+use Mantle\Framework\Contracts\Container;
 use Mantle\Framework\Contracts\Paginator\Paginator as PaginatorContract;
 use Mantle\Framework\Contracts\Support\Arrayable;
+use Mantle\Framework\Contracts\Support\Htmlable;
 use Mantle\Framework\Contracts\Support\Jsonable;
 use Mantle\Framework\Database\Query\Builder;
-use Mantle\Framework\Database\Query\Post_Query_Builder;
 use Mantle\Framework\Http\Request;
+use Mantle\Framework\Http\View\View;
 use Mantle\Framework\Support\Collection;
 use Mantle\Framework\Support\Str;
 
 /**
  * Paginator for query results.
  */
-class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSerializable, PaginatorContract {
+class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSerializable, Htmlable, PaginatorContract {
 	/**
 	 * Current page number
 	 *
 	 * @var int
 	 */
 	protected $current_page;
+
+	/**
+	 * Container instance.
+	 *
+	 * @var Container
+	 */
+	protected $container;
 
 	/**
 	 * Query builder instance.
@@ -73,6 +83,13 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	protected $query = [];
 
 	/**
+	 * View name to load.
+	 *
+	 * @var string
+	 */
+	protected $view = 'simple';
+
+	/**
 	 * The current path resolver callback.
 	 *
 	 * @var \Closure
@@ -96,13 +113,15 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	/**
 	 * Constructor.
 	 *
-	 * @param Builder $builder Query builder instance.
-	 * @param integer $per_page Items per-page.
-	 * @param integer $current_page Current page to set.
+	 * @param Container $container Application instance.
+	 * @param Builder   $builder Query builder instance.
+	 * @param int       $per_page Items per-page.
+	 * @param int       $current_page Current page to set.
 	 */
-	public function __construct( Builder $builder, int $per_page = 20, int $current_page = null ) {
-		$this->builder  = $builder;
-		$this->per_page = $per_page;
+	public function __construct( Container $container, Builder $builder, int $per_page = 20, int $current_page = null ) {
+		$this->container = $container;
+		$this->builder   = $builder;
+		$this->per_page  = $per_page;
 
 		$this->builder->take( $per_page );
 
@@ -186,6 +205,15 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	}
 
 	/**
+	 * Determine if this is the first page.
+	 *
+	 * @return bool
+	 */
+	public function on_first_page(): bool {
+		return 1 === $this->current_page();
+	}
+
+	/**
 	 * Set the items for the paginator.
 	 *
 	 * @return static
@@ -202,6 +230,29 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 */
 	public function items(): Collection {
 		return $this->items;
+	}
+
+	/**
+	 * Determine if there are more items in the data source.
+	 *
+	 * @param bool $has_more Flag if there should be more pages.
+	 * @return bool
+	 */
+	public function has_more( bool $has_more = null ): bool {
+		if ( null !== $has_more ) {
+			$this->has_more = $has_more;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Determine if there are enough items to split into multiple pages.
+	 *
+	 * @return bool
+	 */
+	public function has_pages(): bool {
+		return 1 !== $this->current_page() || $this->has_more();
 	}
 
 	/**
@@ -344,7 +395,11 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 * @return string|null
 	 */
 	public function next_url(): ?string {
-		return $this->url( $this->current_page() + 1 );
+		if ( $this->has_more() ) {
+			return $this->url( $this->current_page() + 1 );
+		}
+
+		return null;
 	}
 
 	/**
@@ -434,5 +489,62 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 */
 	public function offsetUnset( $offset ): void {
 		unset( $this->items[ $offset ] );
+	}
+
+	/**
+	 * View name to load.
+	 *
+	 * @param string $view View name.
+	 * @return static
+	 */
+	public function view( string $view ) {
+		$this->view = $view;
+		return $view;
+	}
+
+	/**
+	 * Render the paginator
+	 *
+	 * @param string $view View name to load, optional.
+	 * @param array  $data View data.
+	 * @return View|null
+	 */
+	public function render( string $view = null, array $data = [] ): ?View {
+		try {
+			return $this->container['view']->make(
+				$view ?: $this->view,
+				array_merge(
+					$data,
+					[
+						'paginator' => $this,
+					]
+				)
+			);
+		} catch ( InvalidArgumentException $e ) {
+			unset( $e );
+			return null;
+		}
+	}
+
+	/**
+	 * Render the links
+	 *
+	 * @param string $view View name to load, optional.
+	 * @param array  $data View data.
+	 * @return string
+	 */
+	public function links( string $view = null, array $data = [] ): string {
+		return (string) $this->render( $view, $data );
+	}
+
+	/**
+	 * Convert the paginator to HTML.
+	 *
+	 * @param string $view View name to load, optional.
+	 * @param array  $data View data.
+	 * @return string
+	 */
+	public function to_html( string $view = null, array $data = [] ): string {
+		return (string) $this->render( $view, $data );
 	}
 }
