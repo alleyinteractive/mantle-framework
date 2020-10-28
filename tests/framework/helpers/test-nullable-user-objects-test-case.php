@@ -7,14 +7,14 @@
 
 namespace Mantle\Tests\Framework\Helpers;
 
-use WP_UnitTestCase;
+use Mantle\Framework\Testing\Framework_Test_Case;
 use function Mantle\Framework\Helpers\get_user_object;
 use function Mantle\Framework\Helpers\get_user_object_by;
 
 /**
  * Unit tests for nullable user object functions.
  */
-class Nullable_User_Objects_Test_Case extends WP_UnitTestCase {
+class Nullable_User_Objects_Test_Case extends Framework_Test_Case {
 	/**
 	 * Test that `get_user_object()` returns a user object.
 	 */

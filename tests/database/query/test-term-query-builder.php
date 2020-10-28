@@ -3,12 +3,10 @@ namespace Mantle\Tests\Database\Builder;
 
 use Mantle\Framework\Database\Model\Term;
 use Mantle\Framework\Database\Query\Term_Query_Builder as Builder;
-use WP_UnitTestCase;
+use Mantle\Framework\Testing\Framework_Test_Case;
 
-/**
- * @todo Replace with the Mantle Testing Framework
- */
-class Test_Term_Query_Builder extends WP_UnitTestCase {
+
+class Test_Term_Query_Builder extends Framework_Test_Case {
 	public function test_term_by_name() {
 		$tag_id = $this->get_random_term_id();
 		$tag    = \get_term( $tag_id );

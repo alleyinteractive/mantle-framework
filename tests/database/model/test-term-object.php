@@ -5,18 +5,16 @@ use Mantle\Framework\Contracts\Database\Registrable;
 use Mantle\Framework\Database\Model\Model_Exception;
 use Mantle\Framework\Database\Model\Registration\Register_Taxonomy;
 use Mantle\Framework\Database\Model\Term;
-use WP_UnitTestCase;
+use Mantle\Framework\Testing\Framework_Test_Case;
 
-/**
- * @todo Replace with the Mantle Testing Framework
- */
-class Test_Term_Object extends WP_UnitTestCase {
-	public function setUp() {
+
+class Test_Term_Object extends Framework_Test_Case {
+	protected function setUp(): void {
 		parent::setUp();
 		Example_Taxonomy::register_object();
 	}
 
-	public function tearDown() {
+	protected function tearDown(): void {
 		parent::tearDown();
 		unregister_taxonomy( Example_Taxonomy::get_object_name() );
 	}

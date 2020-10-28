@@ -7,12 +7,12 @@ use Mantle\Framework\Database\Model\Model_Exception;
 use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Registration\Register_Post_Type;
 use Mantle\Framework\Database\Model\Registration\Register_Rest_Fields;
-use WP_UnitTestCase;
 use Mockery as m;
 use Mantle\Framework\REST_API\Registered_REST_Field;
+use Mantle\Framework\Testing\Framework_Test_Case;
 
-class Test_Register_Post_Type extends WP_UnitTestCase {
-	public function tearDown() {
+class Test_Register_Post_Type extends Framework_Test_Case {
+	protected function tearDown(): void {
 		parent::tearDown();
 		m::close();
 

@@ -3,20 +3,17 @@ namespace Mantle\Tests\Database\Model;
 
 use Faker\Factory;
 use Mantle\Framework\Database\Model\User;
-use WP_UnitTestCase;
+use Mantle\Framework\Testing\Framework_Test_Case;
 
-/**
- * @todo Replace with the Mantle Testing Framework
- */
-class Test_User_Object extends WP_UnitTestCase {
+class Test_User_Object extends Framework_Test_Case {
 	/**
 	 * @var Factory
 	 */
-	protected static $factory;
+	protected static $faker;
 
-	public static function setUpBeforeClass() {
+	public static function setUpBeforeClass(): void {
 		parent::setUpBeforeClass();
-		static::$factory = Factory::create();
+		static::$faker = Factory::create();
 	}
 
 	public function test_find_user() {
@@ -38,13 +35,13 @@ class Test_User_Object extends WP_UnitTestCase {
 	}
 
 	public function test_create_user() {
-		$email = static::$factory->email;
+		$email = static::$faker->email;
 
 		$user = new User(
 			[
 				'email' => $email,
-				'slug'  => static::$factory->userName,
-				'password' => static::$factory->password,
+				'slug'  => static::$faker->userName,
+				'password' => static::$faker->password,
 			]
 		);
 
@@ -61,7 +58,7 @@ class Test_User_Object extends WP_UnitTestCase {
 		$user_id = $this->get_random_user_id();
 		$user    = User::find( $user_id );
 
-		$email = static::$factory->email;
+		$email = static::$faker->email;
 		$user->email = $email;
 		$user->save();
 

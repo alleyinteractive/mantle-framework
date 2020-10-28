@@ -1,19 +1,14 @@
 <?php
 namespace Mantle\Tests\Database\Model;
 
-use Mantle\Framework\Application;
 use Mantle\Framework\Contracts\Database\Registrable;
-use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Database\Model\Model_Exception;
 use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Registration\Register_Post_Type;
 use Mantle\Framework\Testing\Concerns\Refresh_Database;
 use Mantle\Framework\Testing\Framework_Test_Case;
-use WP_UnitTestCase;
 
-/**
- * @todo Replace with the Mantle Testing Framework
- */
+
 class Test_Post_Object extends Framework_Test_Case {
 	use Refresh_Database;
 
@@ -286,6 +281,8 @@ class Test_Post_Object extends Framework_Test_Case {
 	}
 
 	public function test_get_all() {
+		Post::all()->each->delete( true );
+
 		$published_post_ids = static::factory()->post->create_many( 5, [ 'post_status' => 'publish' ] );
 		$draft_post_ids     = static::factory()->post->create_many( 5, [ 'post_status' => 'draft' ] );
 
