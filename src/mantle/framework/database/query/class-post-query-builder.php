@@ -107,7 +107,9 @@ class Post_Query_Builder extends Builder {
 	 * @return Collection
 	 */
 	public function get(): Collection {
-		$post_ids = \get_posts( $this->get_query_args() );
+		$query    = new \WP_Query( $this->get_query_args() );
+		$post_ids = $query->posts;
+		dd($query);
 		if ( empty( $post_ids ) ) {
 			return collect();
 		}
