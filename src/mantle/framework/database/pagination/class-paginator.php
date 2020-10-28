@@ -90,6 +90,13 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	protected $view = 'simple';
 
 	/**
+	 * Flag if the paginator has more.
+	 *
+	 * @var bool
+	 */
+	protected $has_more = true;
+
+	/**
 	 * The current path resolver callback.
 	 *
 	 * @var \Closure
@@ -126,6 +133,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 		$this->builder->take( $per_page );
 
 		$this->set_current_page( $current_page );
+		$this->path();
 		$this->set_items();
 	}
 
@@ -146,7 +154,9 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 			return $this;
 		}
 
-		$request = app( Request::class );
+		$this->path = static::strip_page_from_path( $this->request()->path() );
+
+		return $this;
 	}
 
 	/**
@@ -334,8 +344,40 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 			return 1;
 		}
 
+		return static::get_page_from_path( $path );
+	}
+
+	/**
+	 * Find the current page from the path.
+	 *
+	 * @param string $path URL path.
+	 * @return int|null
+	 */
+	protected static function get_page_from_path( string $path ): ?int {
+		if ( ! Str::is( 'page/*', $path ) ) {
+			return 1;
+		}
 		preg_match_all( '/page\/(\d*)\/?/', $path, $matches );
 		return (int) ( $matches[1][0] ?? 1 );
+	}
+
+	/**
+	 * Find the current page from the path.
+	 *
+	 * @param string $path URL path.
+	 * @return int|null
+	 */
+	protected static function strip_page_from_path( string $path ): string {
+		if ( ! Str::is( 'page/*', $path ) ) {
+			return $path;
+		}
+		preg_match_all( '/page\/(\d*)\/?/', $path, $matches );
+
+		if ( ! empty( $matches[0][0] ) ) {
+			$path = str_replace( $matches[0][0], '', $path );
+		}
+
+		return $path;
 	}
 
 	/**
@@ -370,7 +412,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 		}
 
 		if ( $this->use_query_string ) {
-			if ( $page < 1 ) {
+			if ( $page <= 1 ) {
 				return add_query_arg( $this->query, $this->path );
 			}
 
@@ -426,7 +468,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 			'data'           => $this->items->to_array(),
 			'first_page_url' => $this->url( 1 ),
 			'next_url'       => $this->next_url(),
-			'path'           => $this->path,
+			'path'           => $this->get_path(),
 			'previous_url'   => $this->previous_url(),
 		];
 	}

@@ -15,7 +15,7 @@ class Test_Paginator extends Framework_Test_Case {
 	public function test_simple_paginate_url_query_string() {
 		$paginator = Post::simple_paginate( 20 )->path( '/test-path/' );
 
-		$this->assertEquals( '/test-path/?page=1', $paginator->url( 1 ) );
+		$this->assertEquals( '/test-path/', $paginator->url( 1 ) );
 		$this->assertEquals( '/test-path/?page=10', $paginator->url( 10 ) );
 		$this->assertEquals( '/test-path/', $paginator->url( -1 ) );
 	}
@@ -56,8 +56,10 @@ class Test_Paginator extends Framework_Test_Case {
 			$this->assertEquals( $i, $paginator->current_page() );
 			$this->assertEquals( $expected, $paginator->items()->pluck( 'ID' )->all(), 'Expected results for ' . $i );
 
-			if ( $i > 1 ) {
+			if ( $i > 2 ) {
 				$this->assertEquals( '/?page=' . ( $i - 1 ), $paginator->previous_url() );
+			} elseif ( $i > 1 ) {
+				$this->assertEquals( '/', $paginator->previous_url() );
 			} else {
 				$this->assertNull( $paginator->previous_url() );
 			}
@@ -108,6 +110,49 @@ class Test_Paginator extends Framework_Test_Case {
 			}
 
 			$this->assertContains( '<li><a href="/?page=' . ( $i + 1 ) .'" rel="next">Next</a></li>', $render );
+		}
+	}
+
+	public function test_paginate_render_length() {
+		static::factory()->post->create_many( 100 );
+
+		$max_pages = 5;
+
+		for ( $i = 1; $i <= $max_pages; $i++ ) {
+			if ( isset( $paginator) ) {
+				$this->assertNotNull( $paginator->next_url() );
+				$this->get( $paginator->next_url() );
+			} else {
+				$this->get( '/' );
+			}
+
+			$paginator = Post::paginate( 30 );
+			$render    = (string) $paginator->render();
+
+			$this->assertEquals( $i, $paginator->current_page() );
+
+			// On the last page there should be no valid next link.
+			if ( $i >= $max_pages ) {
+				$this->assertFalse( $paginator->has_more() );
+				$this->assertContains( '<li class="disabled" aria-disabled="true"><span>&rsaquo;</span></li>', $render );
+			} else {
+				$this->assertTrue( $paginator->has_more() );
+
+				if ( $paginator->has_more() ) {
+					$this->assertContains( '<li><a href="' . $paginator->next_url() . '" rel="next">&rsaquo;</a></li>', $render );
+				}
+			}
+
+			// On page one the previous link should be disabled.
+			if ( 1 === $i ) {
+				$this->assertContains( '<li class="disabled" aria-disabled="true"><span>&lsaquo;</span></li>', $render );
+			} else {
+				$this->assertContains( '<li><a href="' . $paginator->previous_url() . '" rel="prev">&lsaquo;</a></li>', $render );
+
+				if ( $paginator->has_more() ) {
+					$this->assertContains( '<li><a href="/?page=' . ( $i + 1 ) . '"', $render );
+				}
+			}
 		}
 	}
 }
