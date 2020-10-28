@@ -7,6 +7,10 @@ language: php
 services:
   - mysql
 
+git:
+  depth: 1
+  quiet: true
+
 notifications:
   email: false
 
@@ -28,22 +32,19 @@ matrix:
       env: WP_VERSION=latest
 
 before_install:
-  - |
-    export PATH="$HOME/.composer/vendor/bin:$PATH"
-  - |
-    if [ -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ]; then
-      phpenv config-rm xdebug.ini
-    else
-      echo "xdebug.ini does not exist"
-    fi
+  # Turn off Xdebug. See https://core.trac.wordpress.org/changeset/40138.
+  - phpenv config-rm xdebug.ini || echo "Xdebug not available"
+
+  - export PATH="${HOME}/.config/composer/vendor/bin:${PATH}"
+
+  # Couple the PHPUnit version to the PHP version.
+  - composer global require "phpunit/phpunit=6.1.*"
 
 install:
-  - |
-    composer validate --strict
+  - composer validate --strict
   - |
     if [[ ! -z "$WP_VERSION" ]] ; then
       bash bin/install-wp-tests.sh wordpress_test root "" 127.0.0.1 "$WP_VERSION"
-      composer global require "phpunit/phpunit=4.8.*|5.7.*"
     fi
   - |
     composer install
@@ -54,4 +55,5 @@ script:
       composer run phpcs
     fi
   - |
+    which phpunit
     phpunit
