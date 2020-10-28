@@ -7,13 +7,13 @@
 
 namespace Mantle\Tests\Framework\Helpers;
 
-use WP_UnitTestCase;
+use Mantle\Framework\Testing\Framework_Test_Case;
 use function Mantle\Framework\Helpers\get_post_object;
 
 /**
  * Unit tests for nullable post object functions.
  */
-class Nullable_Post_Objects_Test_Case extends WP_UnitTestCase {
+class Nullable_Post_Objects_Test_Case extends Framework_Test_Case {
 	/**
 	 * Test that `get_post_object()` returns a post object.
 	 */

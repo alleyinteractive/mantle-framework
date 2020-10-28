@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
  * Test non-WordPress specific logic of the model
  */
 class Test_Model extends TestCase {
-	public function setUp() {
+	protected function setUp(): void {
 		parent::setUp();
 
 		$_SERVER['__testable_model_boot'] = 0;

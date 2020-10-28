@@ -5,18 +5,19 @@ use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Term;
 use Mantle\Framework\Database\Query\Post_Query_Builder as Builder;
 use Mantle\Framework\Database\Query\Post_Query_Builder;
-use WP_UnitTestCase;
+use Mantle\Framework\Testing\Concerns\Refresh_Database;
+use Mantle\Framework\Testing\Framework_Test_Case;
 
-/**
- * @todo Replace with the Mantle Testing Framework
- */
-class Test_Post_Query_Builder extends WP_UnitTestCase {
-	public function setUp() {
+
+class Test_Post_Query_Builder extends Framework_Test_Case {
+	use Refresh_Database;
+
+	protected function setUp(): void {
 		parent::setUp();
 		register_post_type( Another_Testable_Post::get_object_name() );
 	}
 
-	public function tearDown() {
+	protected function tearDown(): void {
 		parent::tearDown();
 		unregister_post_type( Another_Testable_Post::get_object_name() );
 	}

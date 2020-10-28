@@ -1,9 +1,11 @@
 <?php
 namespace Mantle\Tests;
 
+use Mantle\Framework\Testing\Framework_Test_Case;
+
 use function Mantle\Framework\generate_wp_autoloader;
 
-class Test_Autoload extends \WP_UnitTestCase {
+class Test_Autoload extends Framework_Test_Case {
 	/**
 	 * Generated autoloader.
 	 *
@@ -14,7 +16,7 @@ class Test_Autoload extends \WP_UnitTestCase {
 	/**
 	 * Set up, generate the autoloader.
 	 */
-	public function setUp() {
+	protected function setUp(): void {
 		parent::setUp();
 		$this->autoloader = generate_wp_autoloader(
 			'Mantle\\Tests\\Autoloaded',
@@ -25,7 +27,7 @@ class Test_Autoload extends \WP_UnitTestCase {
 	/**
 	 * Tear down, make sure the autoloader is unregistered.
 	 */
-	public function tearDown() {
+	protected function tearDown(): void {
 		parent::tearDown();
 		\spl_autoload_unregister( $this->autoloader );
 	}

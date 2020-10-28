@@ -2,12 +2,10 @@
 namespace Mantle\Tests\Database\Model;
 
 use Mantle\Framework\Database\Model\Site;
-use WP_UnitTestCase;
+use Mantle\Framework\Testing\Framework_Test_Case;
 
-/**
- * @todo Replace with the Mantle Testing Framework
- */
-class Test_Site_Object extends WP_UnitTestCase {
+
+class Test_Site_Object extends Framework_Test_Case {
 	public function test_site_attributes() {
 		$site_id = static::factory()->blog->create();
 		$site    = Site::find( $site_id );

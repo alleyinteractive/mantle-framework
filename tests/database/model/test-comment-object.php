@@ -2,12 +2,10 @@
 namespace Mantle\Tests\Database\Model;
 
 use Mantle\Framework\Database\Model\Comment;
-use WP_UnitTestCase;
+use Mantle\Framework\Testing\Framework_Test_Case;
 
-/**
- * @todo Replace with the Mantle Testing Framework
- */
-class Test_Comment_Object extends WP_UnitTestCase {
+
+class Test_Comment_Object extends Framework_Test_Case {
 	public function test_comment_object() {
 		$comment = $this->factory->comment->create_and_get();
 		$object  = Comment::find( $comment );

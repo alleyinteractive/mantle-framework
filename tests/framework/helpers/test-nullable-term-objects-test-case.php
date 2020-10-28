@@ -7,14 +7,14 @@
 
 namespace Mantle\Tests\Framework\Helpers;
 
-use WP_UnitTestCase;
+use Mantle\Framework\Testing\Framework_Test_Case;
 use function Mantle\Framework\Helpers\get_term_object;
 use function Mantle\Framework\Helpers\get_term_object_by;
 
 /**
  * Unit tests for nullable term object functions.
  */
-class Nullable_Term_Objects_Test_Case extends WP_UnitTestCase {
+class Nullable_Term_Objects_Test_Case extends Framework_Test_Case {
 	/**
 	 * Test that `get_term_object()` returns a term object.
 	 */

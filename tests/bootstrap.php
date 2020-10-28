@@ -21,12 +21,4 @@ require_once __DIR__ . '/../vendor/autoload.php';
 define( 'MANTLE_PHPUNIT_INCLUDES_PATH', __DIR__ . '/includes' );
 define( 'MANTLE_PHPUNIT_TEMPLATE_PATH', __DIR__ . '/template-parts' );
 
-try {
-	spl_autoload_register(
-		\Mantle\Framework\generate_wp_autoloader( __NAMESPACE__, __DIR__ )
-	);
-} catch ( \Exception $e ) {
-	\wp_die( $e->getMessage() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-}
-
 require $_tests_dir . '/includes/bootstrap.php';

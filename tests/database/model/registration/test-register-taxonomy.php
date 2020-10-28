@@ -3,11 +3,11 @@ namespace Mantle\Tests\Database\Model\Registration;
 
 use Mantle\Framework\Database\Model\Model_Exception;
 use Mantle\Framework\Database\Model\Registration\Register_Taxonomy;
-use WP_UnitTestCase;
+use Mantle\Framework\Testing\Framework_Test_Case;
 use Mockery as m;
 
-class Test_Register_Taxonomy extends WP_UnitTestCase {
-	public function tearDown() {
+class Test_Register_Taxonomy extends Framework_Test_Case {
+	protected function tearDown(): void {
 		parent::tearDown();
 		m::close();
 	}

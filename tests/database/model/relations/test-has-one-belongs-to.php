@@ -4,19 +4,17 @@ namespace Mantle\Tests\Database\Model\Relations;
 use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Relationships;
 use Mantle\Framework\Database\Model\Term;
-use WP_UnitTestCase;
+use Mantle\Framework\Testing\Framework_Test_Case;
 
-/**
- * @todo Replace with the Mantle Testing Framework
- */
-class Test_Post_Object extends WP_UnitTestCase {
-	public function setUp() {
+
+class Test_Post_Object extends Framework_Test_Case {
+	protected function setUp(): void {
 		parent::setUp();
 		register_post_type( 'sponsor' );
 		register_taxonomy( 'test_taxonomy', 'post' );
 	}
 
-	public function tearDown() {
+	protected function tearDown(): void {
 		parent::tearDown();
 		unregister_post_type( 'sponsor' );
 		unregister_taxonomy( 'test_taxonomy' );
