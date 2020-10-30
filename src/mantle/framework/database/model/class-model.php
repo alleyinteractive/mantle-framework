@@ -8,7 +8,10 @@
 namespace Mantle\Framework\Database\Model;
 
 use ArrayAccess;
+use JsonSerializable;
 use Mantle\Framework\Contracts\Http\Routing\Url_Routable;
+use Mantle\Framework\Contracts\Support\Arrayable;
+use Mantle\Framework\Contracts\Support\Jsonable;
 use Mantle\Framework\Database\Query\Builder;
 use Mantle\Framework\Support\Collection;
 use Mantle\Framework\Support\Forward_Calls;
@@ -20,12 +23,11 @@ use function Mantle\Framework\Helpers\class_uses_recursive;
 /**
  * Database Model
  *
- * @todo Add Json-able, arrayable, serialize interfaces
  * @todo Move all concerns to the 'Concerns' namespace.
  *
  * @mixin \Mantle\Framework\Database\Query\Builder
  */
-abstract class Model implements ArrayAccess, Url_Routable {
+abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializable, Url_Routable {
 	use Aliases,
 		Attributes,
 		Forward_Calls,
@@ -499,5 +501,33 @@ abstract class Model implements ArrayAccess, Url_Routable {
 		$instance->save( $args );
 		$instance->refresh();
 		return $instance;
+	}
+
+	/**
+	 * Convert the model instance to an array.
+	 *
+	 * @return array
+	 */
+	public function to_array(): array {
+		return $this->get_attributes();
+	}
+
+	/**
+	 * Convert the object to its JSON representation.
+	 *
+	 * @param int $options json_encode() options.
+	 * @return string
+	 */
+	public function to_json( $options = 0 ): string {
+		return wp_json_encode( $this->to_array(), $options );
+	}
+
+	/**
+	 * Convert the object into something JSON serializable.
+	 *
+	 * @return array
+	 */
+	public function jsonSerialize() {
+		return $this->to_array();
 	}
 }

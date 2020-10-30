@@ -5,6 +5,7 @@ use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Term;
 use Mantle\Framework\Database\Query\Post_Query_Builder as Builder;
 use Mantle\Framework\Database\Query\Post_Query_Builder;
+use Mantle\Framework\Facade\Route;
 use Mantle\Framework\Testing\Concerns\Refresh_Database;
 use Mantle\Framework\Testing\Framework_Test_Case;
 
@@ -154,5 +155,29 @@ class Test_Paginator extends Framework_Test_Case {
 				}
 			}
 		}
+	}
+
+	public function test_paginate_response() {
+		$post_ids = static::factory()->post->create_many( 100 );
+
+		Route::get( '/test-paginate', function() {
+			return Post::paginate( 20 );
+		} );
+
+		$this->get( '/test-paginate' )
+			->assertOk()
+			->assertJsonPath( 'current_page', 1 )
+			->assertJsonPath( 'previous_url', null )
+			->assertJsonPath( 'next_url', '/test-paginate?page=2' )
+			->assertJsonPath( 'path', '/test-paginate' )
+			->assertHeader( 'content-type', 'application/json' )
+			->assertJsonPath( 'data.0.ID', array_pop( $post_ids ) );
+
+		$this->get( '/test-paginate?page=3' )
+			->assertOk()
+			->assertJsonPath( 'current_page', 3 )
+			->assertJsonPath( 'previous_url', '/test-paginate?page=2' )
+			->assertJsonPath( 'next_url', '/test-paginate?page=4' )
+			->assertJsonPath( 'path', '/test-paginate' );
 	}
 }

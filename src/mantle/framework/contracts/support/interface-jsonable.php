@@ -6,8 +6,8 @@ interface Jsonable {
   /**
    * Convert the object to its JSON representation.
    *
-   * @param  int  $options
+   * @param int $options json_encode() options.
    * @return string
    */
-  public function to_json($options = 0 );
+  public function to_json( $options = 0 );
 }

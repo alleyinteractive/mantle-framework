@@ -156,6 +156,11 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 
 		$this->path = static::strip_page_from_path( $this->request()->path() );
 
+		// Ensure the path starts with a /.
+		if ( $this->path && '/' !== $this->path[0] ) {
+			$this->path = "/{$this->path}";
+		}
+
 		return $this;
 	}
 
