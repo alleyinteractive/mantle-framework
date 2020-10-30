@@ -16,11 +16,6 @@ cache:
   directories:
     - $HOME/.composer/cache
 
-branches:
-  only:
-  - main
-  - develop
-
 matrix:
   include:
     - php: 7.3
