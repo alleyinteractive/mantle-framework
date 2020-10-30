@@ -7,6 +7,9 @@
 
 namespace Mantle\Framework\Http\View;
 
+use Illuminate\View\Concerns\ManagesLayouts;
+use Illuminate\View\Concerns\ManagesLoops;
+use Illuminate\View\Concerns\ManagesStacks;
 use InvalidArgumentException;
 use Mantle\Framework\Contracts\Container;
 use Mantle\Framework\Contracts\Http\View\Factory as ViewFactory;
@@ -21,6 +24,10 @@ use WP_Query;
  * View Factory
  */
 class Factory implements ViewFactory {
+	use ManagesLayouts,
+		ManagesLoops,
+		ManagesStacks;
+
 	/**
 	 * The IoC container instance.
 	 *

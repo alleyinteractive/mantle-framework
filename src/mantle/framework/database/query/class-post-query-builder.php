@@ -89,12 +89,13 @@ class Post_Query_Builder extends Builder {
 				'fields'              => 'ids',
 				'ignore_sticky_posts' => true,
 				'meta_query'          => $this->meta_query, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
-				'tax_query'           => $this->tax_query, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 				'order'               => $this->order,
 				'orderby'             => $this->order_by,
+				'paged'               => $this->page,
 				'post_type'           => $post_type,
 				'posts_per_page'      => $this->limit,
 				'suppress_filters'    => false,
+				'tax_query'           => $this->tax_query, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 			],
 			$this->wheres,
 		);
@@ -106,7 +107,10 @@ class Post_Query_Builder extends Builder {
 	 * @return Collection
 	 */
 	public function get(): Collection {
-		$post_ids = \get_posts( $this->get_query_args() );
+		$query            = new \WP_Query( $this->get_query_args() );
+		$this->found_rows = $query->found_posts;
+		$post_ids         = $query->posts;
+
 		if ( empty( $post_ids ) ) {
 			return collect();
 		}
@@ -117,7 +121,7 @@ class Post_Query_Builder extends Builder {
 		 * @todo Use a more abstract way to get the correct model for the post.
 		 */
 		if ( is_array( $this->model ) ) {
-			$model_object_types = static::get_model_object_names();
+			$model_object_types = $this->get_model_object_names();
 			return collect( $post_ids )
 				->map(
 					function ( $post_id ) use ( $model_object_types ) {

@@ -10,9 +10,13 @@
 namespace Mantle\Framework\Database\Query;
 
 use Closure;
+use Mantle\Framework\Container\Container;
 use Mantle\Framework\Contracts\Database\Scope;
+use Mantle\Framework\Contracts\Paginator\Paginator as PaginatorContract;
 use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Database\Model\Model_Not_Found_Exception;
+use Mantle\Framework\Database\Pagination\Length_Aware_Paginator;
+use Mantle\Framework\Database\Pagination\Paginator;
 use Mantle\Framework\Support\Collection;
 use Mantle\Framework\Support\Str;
 
@@ -107,6 +111,13 @@ abstract class Builder {
 	protected $scopes = [];
 
 	/**
+	 * Storage of the found rows for a query.
+	 *
+	 * @var int
+	 */
+	protected $found_rows = 0;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param array|string $model Model or array of model class names.
@@ -144,6 +155,15 @@ abstract class Builder {
 		}
 
 		return new $this->model();
+	}
+
+	/**
+	 * Retrieve the found rows for a query.
+	 *
+	 * @return int
+	 */
+	public function get_found_rows(): int {
+		return $this->found_rows;
 	}
 
 	/**
@@ -429,6 +449,17 @@ abstract class Builder {
 	}
 
 	/**
+	 * Set the current page of the builder.
+	 *
+	 * @param int $page Page to set.
+	 * @return static
+	 */
+	public function page( int $page ) {
+		$this->page = $page;
+		return $this;
+	}
+
+	/**
 	 * Get the first result of the query.
 	 *
 	 * @return \Mantle\Framework\Database\Model|null
@@ -460,6 +491,42 @@ abstract class Builder {
 		}
 
 		return $model;
+	}
+
+	/**
+	 * Create a simple paginator instance for the current query.
+	 *
+	 * @param int $per_page Items per page.
+	 * @param int $current_page Current page number.
+	 * @return PaginatorContract
+	 */
+	public function simple_paginate( int $per_page = 20, int $current_page = null ): PaginatorContract {
+		return Container::getInstance()->make_with(
+			Paginator::class,
+			[
+				'builder'      => $this,
+				'current_page' => $current_page,
+				'per_page'     => $per_page,
+			]
+		);
+	}
+
+	/**
+	 * Create a length-aware paginator instance for the current query.
+	 *
+	 * @param int $per_page Items per page.
+	 * @param int $current_page Current page number.
+	 * @return PaginatorContract
+	 */
+	public function paginate( int $per_page = 20, int $current_page = null ): PaginatorContract {
+		return Container::getInstance()->make_with(
+			Length_Aware_Paginator::class,
+			[
+				'builder'      => $this,
+				'current_page' => $current_page,
+				'per_page'     => $per_page,
+			]
+		);
 	}
 
 	/**
