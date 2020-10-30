@@ -51,13 +51,12 @@ install:
     cd $og_dir
 
     # Go into the core directory and replace wp-content.
-    rm -rf ${WP_CORE_DIR}wp-content
-    mkdir ${WP_CORE_DIR}wp-content
-    cp -R . "${WP_CORE_DIR}wp-content"
+    mkdir ${WP_CORE_DIR}wp-content/plugins/mantle-framework
+    cp -R . "${WP_CORE_DIR}wp-content/plugins/mantle-framework"
 
   # Install Composer
   - |
-    cd ${WP_CORE_DIR}wp-content/
+    cd ${WP_CORE_DIR}wp-content/plugins/mantle-framework
     composer install
     pwd
     ls

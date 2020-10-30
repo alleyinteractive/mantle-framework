@@ -7,12 +7,14 @@
  * @package Mantle
  */
 
+namespace Mantle\Framework\Testing;
+
 /**
  * Retrieve the Mantle Framework Directory
  *
  * @return string
  */
-function mantle_tests_get_framework_directory(): string {
+function get_framework_directory(): string {
 	$preload_path = '/src/mantle/framework/testing/preload.php';
 
 	$mantle_dir = getenv( 'MANTLE_FRAMEWORK_DIR' );
@@ -45,8 +47,8 @@ function mantle_tests_get_framework_directory(): string {
  * @param callable $callback_after_preload Callback to invoke before WordPress is loaded.
  * @return void
  */
-function mantle_tests_install( callable $callback_after_preload = null ): void {
-	$dir = mantle_tests_get_framework_directory();
+function install( callable $callback_after_preload = null ): void {
+	$dir = get_framework_directory();
 
 	if ( ! file_exists( $dir . '/src/mantle/framework/testing/preload.php' ) ) {
 		echo "ERROR: Failed to locate valid mantle-framework location. \n";
