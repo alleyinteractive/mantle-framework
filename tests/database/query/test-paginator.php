@@ -107,10 +107,10 @@ class Test_Paginator extends Framework_Test_Case {
 			$render    = (string) $paginator->render();
 
 			if ( $i > 2 ) {
-				$this->assertContains( '<li><a href="/?page=' . ( $i - 1 ) . '" rel="prev">Previous</a></li>', $render );
+				$this->assertStringContainsString( '<li><a href="/?page=' . ( $i - 1 ) . '" rel="prev">Previous</a></li>', $render );
 			}
 
-			$this->assertContains( '<li><a href="/?page=' . ( $i + 1 ) .'" rel="next">Next</a></li>', $render );
+			$this->assertStringContainsString( '<li><a href="/?page=' . ( $i + 1 ) .'" rel="next">Next</a></li>', $render );
 		}
 	}
 
@@ -135,23 +135,23 @@ class Test_Paginator extends Framework_Test_Case {
 			// On the last page there should be no valid next link.
 			if ( $i >= $max_pages ) {
 				$this->assertFalse( $paginator->has_more() );
-				$this->assertContains( '<li class="disabled" aria-disabled="true"><span>&rsaquo;</span></li>', $render );
+				$this->assertStringContainsString( '<li class="disabled" aria-disabled="true"><span>&rsaquo;</span></li>', $render );
 			} else {
 				$this->assertTrue( $paginator->has_more() );
 
 				if ( $paginator->has_more() ) {
-					$this->assertContains( '<li><a href="' . $paginator->next_url() . '" rel="next">&rsaquo;</a></li>', $render );
+					$this->assertStringContainsString( '<li><a href="' . $paginator->next_url() . '" rel="next">&rsaquo;</a></li>', $render );
 				}
 			}
 
 			// On page one the previous link should be disabled.
 			if ( 1 === $i ) {
-				$this->assertContains( '<li class="disabled" aria-disabled="true"><span>&lsaquo;</span></li>', $render );
+				$this->assertStringContainsString( '<li class="disabled" aria-disabled="true"><span>&lsaquo;</span></li>', $render );
 			} else {
-				$this->assertContains( '<li><a href="' . $paginator->previous_url() . '" rel="prev">&lsaquo;</a></li>', $render );
+				$this->assertStringContainsString( '<li><a href="' . $paginator->previous_url() . '" rel="prev">&lsaquo;</a></li>', $render );
 
 				if ( $paginator->has_more() ) {
-					$this->assertContains( '<li><a href="/?page=' . ( $i + 1 ) . '"', $render );
+					$this->assertStringContainsString( '<li><a href="/?page=' . ( $i + 1 ) . '"', $render );
 				}
 			}
 		}

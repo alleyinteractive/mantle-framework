@@ -12,6 +12,11 @@ use Mantle\Framework\REST_API\Registered_REST_Field;
 use Mantle\Framework\Testing\Framework_Test_Case;
 
 class Test_Register_Post_Type extends Framework_Test_Case {
+	protected function setUp(): void {
+		parent::setUp();
+		remove_all_actions( 'init' );
+	}
+
 	protected function tearDown(): void {
 		parent::tearDown();
 		m::close();

@@ -8,6 +8,11 @@ use Mantle\Framework\Service_Provider;
 use Mockery as m;
 
 class Test_Service_Provider extends \Mockery\Adapter\Phpunit\MockeryTestCase {
+	protected function setUp(): void {
+		parent::setUp();
+
+		remove_all_actions( 'init' );
+	}
 
 	public function test_service_provider_registered() {
 		$service_provider = m::mock( Service_Provider::class )->makePartial();

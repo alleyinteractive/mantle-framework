@@ -13,7 +13,7 @@ class Test_Repository extends TestCase {
 	/**
 	 * Setup the unit test.
 	 */
-	protected function setUp() {
+	protected function setUp(): void {
 		$this->repository = new Repository(
 			[
 				'foo' => 'bar',

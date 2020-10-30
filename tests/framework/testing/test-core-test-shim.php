@@ -20,7 +20,7 @@ class Test_Core_Test_Shim extends Framework_Test_Case {
 
 		$this->assertCount( 10, $posts );
 		foreach ( $posts as $post_id ) {
-			$this->assertInternalType( 'int', $post_id );
+			$this->assertIsInt( $post_id );
 		}
 
 		$this->assertEquals( 'draft', get_post_status( array_shift( $posts ) ) );
@@ -59,7 +59,7 @@ class Test_Core_Test_Shim extends Framework_Test_Case {
 
 		$object_ids = static::factory()->$property->create_many( 10 );
 		foreach ( $object_ids as $object_id ) {
-			$this->assertInternalType( 'int', $object_id );
+			$this->assertIsInt( $object_id );
 		}
 
 		$this->assertCount( 10, $object_ids );
