@@ -37,9 +37,6 @@ before_install:
 
   - export PATH="${HOME}/.config/composer/vendor/bin:${PATH}"
 
-  # Couple the PHPUnit version to the PHP version.
-  - composer global require "phpunit/phpunit=6.1.*"
-
 install:
   - composer validate --strict
   - |
@@ -55,5 +52,4 @@ script:
       composer run phpcs
     fi
   - |
-    which phpunit
-    phpunit
+    composer run phpunit
