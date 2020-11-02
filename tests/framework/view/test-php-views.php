@@ -50,29 +50,29 @@ class Test_Php_Views extends Framework_Test_Case {
 
 	public function test_basic_load() {
 		$contents = (string) view( 'basic' );
-		$this->assertContains( 'Template loaded: successfully', $contents );
+		$this->assertStringContainsString( 'Template loaded: successfully', $contents );
 	}
 
 	public function test_basic_load_name() {
 		$contents = (string) view( 'basic', 'variant' );
-		$this->assertContains( 'Variant loaded: successfully', $contents );
+		$this->assertStringContainsString( 'Variant loaded: successfully', $contents );
 	}
 
 	public function test_basic_load_name_fallback() {
 		$contents = (string) view( 'basic', 'phony' );
-		$this->assertContains( 'Template loaded: successfully', $contents );
+		$this->assertStringContainsString( 'Template loaded: successfully', $contents );
 	}
 
 	public function test_basic_var() {
 		$test = wp_rand();
 		$contents = (string) view( 'basic', [ 'custom_var' => $test ] );
-		$this->assertContains( "Template loaded: {$test}", $contents );
+		$this->assertStringContainsString( "Template loaded: {$test}", $contents );
 	}
 
 	public function test_parent_child_load() {
 		$contents = (string) view( 'parent' );
-		$this->assertContains( 'Parent loaded: successfully', $contents );
-		$this->assertContains( 'Child loaded: successfully', $contents );
+		$this->assertStringContainsString( 'Parent loaded: successfully', $contents );
+		$this->assertStringContainsString( 'Child loaded: successfully', $contents );
 	}
 
 	public function test_iterate() {
@@ -83,7 +83,7 @@ class Test_Php_Views extends Framework_Test_Case {
 		];
 		$contents = iterate( $items, 'iterate-item' );
 		foreach ( $items as $key => $value ) {
-			$this->assertContains( "Item {$key}: {$value}", $contents );
+			$this->assertStringContainsString( "Item {$key}: {$value}", $contents );
 		}
 	}
 
@@ -95,7 +95,7 @@ class Test_Php_Views extends Framework_Test_Case {
 		];
 		$contents = iterate( $items, 'iterate-item' );
 		foreach ( $items as $key => $value ) {
-			$this->assertContains( "Item {$key}: {$value}", $contents );
+			$this->assertStringContainsString( "Item {$key}: {$value}", $contents );
 		}
 	}
 
@@ -109,7 +109,7 @@ class Test_Php_Views extends Framework_Test_Case {
 		$contents = loop( $post_ids, 'loop-post' );
 
 		foreach ( $post_ids as $key => $post_id ) {
-			$this->assertContains( "Post {$key}: {$post_id}", $contents );
+			$this->assertStringContainsString( "Post {$key}: {$post_id}", $contents );
 		}
 	}
 
@@ -143,7 +143,7 @@ class Test_Php_Views extends Framework_Test_Case {
 
 		$contents = loop( new \WP_Query( 'orderby=date&order=desc&meta_key=loop_query&meta_value=1' ), 'loop-post' );
 		foreach ( $posts as $key => $post_id ) {
-			$this->assertContains( "Post {$key}: {$post_id}", $contents );
+			$this->assertStringContainsString( "Post {$key}: {$post_id}", $contents );
 		}
 	}
 
@@ -162,7 +162,7 @@ class Test_Php_Views extends Framework_Test_Case {
 
 		$contents = loop( new \WP_Query( 'year=2015' ), 'loop-post' );
 		foreach ( [ 1, 2, 3 ] as $i => $key ) {
-			$this->assertContains( "Post {$i}: {$posts[ $key ]}", $contents );
+			$this->assertStringContainsString( "Post {$i}: {$posts[ $key ]}", $contents );
 		}
 
 		$this->assertSame( $posts[0], get_the_ID() );
@@ -176,7 +176,7 @@ class Test_Php_Views extends Framework_Test_Case {
 		];
 		$contents = loop( $posts, 'loop-post' );
 		foreach ( $posts as $key => $post_id ) {
-			$this->assertContains( "Post {$key}: {$post_id}", $contents );
+			$this->assertStringContainsString( "Post {$key}: {$post_id}", $contents );
 		}
 	}
 

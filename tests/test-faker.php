@@ -42,7 +42,7 @@ class Test_Faker extends \PHPUnit\Framework\TestCase {
 	public function test_paragraph() {
 		$block = $this->faker->paragraph_block();
 
-		$this->assertContains( '<!-- wp:paragraph -->' . PHP_EOL . '<p>', $block );
-		$this->assertContains( '</p>' . PHP_EOL . '<!-- /wp:paragraph -->', $block );
+		$this->assertStringContainsString( '<!-- wp:paragraph -->' . PHP_EOL . '<p>', $block );
+		$this->assertStringContainsString( '</p>' . PHP_EOL . '<!-- /wp:paragraph -->', $block );
 	}
 }

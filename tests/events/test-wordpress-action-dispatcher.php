@@ -40,7 +40,7 @@ class Test_WordPress_Action_Dispatcher extends Framework_Test_Case {
 
 		do_action( 'test_action_handler', $_SERVER['__action_value'] );
 
-		$this->assertInternalType( 'array', $_SERVER['__action_value'] );
+		$this->assertIsArray( $_SERVER['__action_value'] );
 	}
 
 	public function test_action_handler_non_builtin_typecast() {
@@ -72,7 +72,7 @@ class Test_WordPress_Action_Dispatcher extends Framework_Test_Case {
 
 		do_action( 'test_action_handler_non_builtin_typecast_to_array', $_SERVER['__action_value'] );
 
-		$this->assertInternalType( 'array', $_SERVER['__action_value'] );
+		$this->assertIsArray( $_SERVER['__action_value'] );
 
 		// Assert that it converted it to an array of values.
 		$this->assertEquals( [ 1, 2, 3 ], $_SERVER['__action_value'] );
@@ -130,7 +130,7 @@ class Test_WordPress_Action_Dispatcher extends Framework_Test_Case {
 		$d->listen(
 			'event-typehint:WP_Query',
 			function( $arg, $parameter ) {
-				$this->assertInternalType( 'array', $arg );
+				$this->assertIsArray( $arg );
 				$this->assertInstanceOf( ReflectionParameter::class, $parameter );
 
 				$instance = new WP_Query();

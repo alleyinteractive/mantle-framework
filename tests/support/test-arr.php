@@ -1246,8 +1246,4 @@ class SupportArrTest extends TestCase {
 		$this->assertEquals( [ $obj ], Arr::wrap( $obj ) );
 		$this->assertSame( $obj, Arr::wrap( $obj )[0] );
 	}
-
-	protected function assertIsArray( $value ) {
-		$this->assertInternalType( 'array', $value );
-	}
 }
