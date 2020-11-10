@@ -14,6 +14,7 @@ use Mantle\Framework\Contracts\Filesystem\Filesystem_Manager;
 use Mantle\Framework\Database\Model\Attachment;
 use Mantle\Framework\Filesystem\File_Helpers;
 use Mantle\Framework\Support\Arr;
+use Mantle\Framework\Support\Str;
 use Mantle\Framework\Support\Traits\Macroable;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
@@ -131,6 +132,7 @@ class Uploaded_File extends SymfonyUploadedFile {
 				'post_title'     => preg_replace( '/\.[^.]+$/', '', basename( $uploaded_file ) ),
 				'post_content'   => '',
 				'meta'           => [
+					'_wp_attached_file'                => Str::unpreceding_slash( trailingslashit( $path ) . $uploaded_file ),
 					Attachment::META_KEY_CLOUD_STORAGE => [
 						'disk'       => $disk_name,
 						'name'       => $uploaded_file,
