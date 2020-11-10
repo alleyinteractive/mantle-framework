@@ -2,3 +2,4 @@
 /.idea/
 .run
 composer.lock
+.phpunit.result.cache

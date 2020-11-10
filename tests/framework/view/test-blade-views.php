@@ -18,19 +18,19 @@ class Test_Blade_Views extends Framework_Test_Case {
 	}
 
 	public function test_if_else() {
-		$this->assertContains(
+		$this->assertStringContainsString(
 			'True!',
 			(string) view( '@blade/if-else', [ 'should_if' => true ] ),
 		);
 
-		$this->assertContains(
+		$this->assertStringContainsString(
 			'False',
 			(string) view( '@blade/if-else', [ 'should_if' => false ] ),
 		);
 	}
 
 	public function test_include() {
-		$this->assertContains(
+		$this->assertStringContainsString(
 			'child',
 			(string) view( '@blade/parent' )
 		);

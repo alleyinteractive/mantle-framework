@@ -7,6 +7,8 @@
 
 namespace Mantle\Framework\Testing;
 
+require_once __DIR__ . '/core-polyfill.php';
+
 /**
  * Adds hooks before loading WP.
  *
