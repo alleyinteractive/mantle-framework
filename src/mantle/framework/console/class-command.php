@@ -144,7 +144,7 @@ abstract class Command {
 	 * @param array $args Command Arguments.
 	 * @param array $assoc_args Command flags.
 	 */
-	abstract public function handle( array $args, array $assoc_args );
+	abstract public function handle( array $args, array $assoc_args = [] );
 
 	/**
 	 * Write to the console log.
@@ -240,5 +240,16 @@ abstract class Command {
 	 */
 	public function get_flag( string $flag, $default_value = null ) {
 		return $this->command_flags[ $flag ] ?? $default_value;
+	}
+
+	/**
+	 * Run another wp-cli command.
+	 *
+	 * @param string $command Command to run.
+	 * @param array  $options Options for the command.
+	 * @return mixed
+	 */
+	public function call( string $command, array $options = [] ) {
+		return \WP_CLI::runcommand( $command, $options );
 	}
 }

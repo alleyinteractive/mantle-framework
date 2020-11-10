@@ -52,7 +52,7 @@ class {{ class }} extends Command {
 	 * @param array $args Command Arguments.
 	 * @param array $assoc_args Command flags.
 	 */
-	public function handle( array $args, array $assoc_args ) {
+	public function handle( array $args, array $assoc_args = [] ) {
 		//
 	}
 }
