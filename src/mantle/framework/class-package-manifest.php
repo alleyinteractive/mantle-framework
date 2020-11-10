@@ -145,6 +145,8 @@ class Package_Manifest {
 				512,
 				JSON_THROW_ON_ERROR
 			);
+
+			$installed = $installed['packages'] ?? $installed;
 		}
 
 		$ignore     = [];
