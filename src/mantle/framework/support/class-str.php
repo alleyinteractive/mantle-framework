@@ -580,4 +580,33 @@ class Str {
 		return strlen( $before ) - strlen( str_replace( PHP_EOL, '', $before ) ) + 1;
 	}
 
+	/**
+	 * Add a trailing slash to a string.
+	 *
+	 * @param string $string String to trail.
+	 * @return string
+	 */
+	public static function trailing_slash( string $string ): string {
+		return \trailingslashit( $string );
+	}
+
+	/**
+	 * Add a preceding slash to a string.
+	 *
+	 * @param string $string String to proceed.
+	 * @return string
+	 */
+	public static function preceding_slash( string $string ): string {
+		return '/' . static::unpreceding_slash( $string );
+	}
+
+	/**
+	 * Remove a preceding slash from a string.
+	 *
+	 * @param string $string String to proceed.
+	 * @return string
+	 */
+	public static function unpreceding_slash( string $string ): string {
+		return ltrim( $string, '/\\' );
+	}
 }
