@@ -341,7 +341,7 @@ trait Interacts_With_Input {
 	}
 
 	/**
-	 * Convert the given array of Symfony Uploaded_Files to custom Laravel Uploaded_Files.
+	 * Convert the given array of Symfony Uploaded_Files to custom Mantle Uploaded_Files.
 	 *
 	 * @param  array $files
 	 * @return array
@@ -354,8 +354,8 @@ trait Interacts_With_Input {
 				}
 
 				return is_array( $file )
-						? $this->convert_uploaded_files( $file )
-						: Uploaded_File::createFromBase( $file );
+					? $this->convert_uploaded_files( $file )
+					: Uploaded_File::createFromBase( $file );
 			},
 			$files
 		);
@@ -372,6 +372,7 @@ trait Interacts_With_Input {
 		if ( ! is_array( $files ) ) {
 			$files = [ $files ];
 		}
+
 		foreach ( $files as $file ) {
 			if ( $this->is_valid_file( $file ) ) {
 				return true;

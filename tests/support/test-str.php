@@ -456,6 +456,25 @@ Suspendisse eget auctor est. Maecenas.';
 			$this->assertEquals( $line_num, Str::line_number( $contents, $char_pos ) );
 		}
 	}
+
+	public function test_trailing_slash() {
+		$this->assertEquals( 'String/', Str::trailing_slash( 'String' ) );
+		$this->assertEquals( 'String/', Str::trailing_slash( 'String/' ) );
+		$this->assertEquals( 'String/', Str::trailing_slash( 'String////' ) );
+	}
+
+	public function test_preceding_slash() {
+		$this->assertEquals( '/String', Str::preceding_slash( 'String' ) );
+		$this->assertEquals( '/String', Str::preceding_slash( '/String' ) );
+		$this->assertEquals( '/String', Str::preceding_slash( '////String' ) );
+		$this->assertEquals( '/ String', Str::preceding_slash( ' String' ) );
+	}
+
+	public function test_unpreceding_slash() {
+		$this->assertEquals( 'String', Str::unpreceding_slash( '/String' ) );
+		$this->assertEquals( 'String', Str::unpreceding_slash( '/////String' ) );
+		$this->assertEquals( ' String', Str::unpreceding_slash( '//// String' ) );
+	}
 }
 
 class StringableObjectStub {

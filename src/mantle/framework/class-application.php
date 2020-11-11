@@ -256,14 +256,15 @@ class Application extends Container\Container implements Application_Contract {
 		$core_aliases = [
 			'app'         => [ static::class, \Mantle\Framework\Contracts\Application::class ],
 			'config'      => [ \Mantle\Framework\Config\Repository::class, \Mantle\Framework\Contracts\Config\Repository::class ],
+			'filesystem'  => [ \Mantle\Framework\Filesystem\Filesystem_Manager::class, \Mantle\Framework\Contracts\Filesystem\Filesystem_Manager::class ],
 			'log'         => [ \Mantle\Framework\Log\Log_Manager::class, \Psr\Log\LoggerInterface::class ],
 			'queue'       => [ \Mantle\Framework\Queue\Queue_Manager::class, \Mantle\Framework\Contracts\Queue\Queue_Manager::class ],
 			'redirect'    => [ \Mantle\Framework\Http\Routing\Redirector::class ],
 			'request'     => [ \Mantle\Framework\Http\Request::class, \Symfony\Component\HttpFoundation\Request::class ],
 			'router'      => [ \Mantle\Framework\Http\Routing\Router::class, \Mantle\Framework\Contracts\Http\Routing\Router::class ],
 			'url'         => [ \Mantle\Framework\Http\Routing\Url_Generator::class, \Mantle\Framework\Contracts\Http\Routing\Url_Generator::class ],
-			'view'        => [ \Mantle\Framework\Http\View\Factory::class, \Mantle\Framework\Contracts\Http\View\Factory::class ],
 			'view.loader' => [ \Mantle\Framework\Http\View\View_Loader::class, \Mantle\Framework\Contracts\Http\View\View_Loader::class ],
+			'view'        => [ \Mantle\Framework\Http\View\Factory::class, \Mantle\Framework\Contracts\Http\View\Factory::class ],
 		];
 
 		foreach ( $core_aliases as $key => $aliases ) {

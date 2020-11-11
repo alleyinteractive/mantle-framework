@@ -8,68 +8,142 @@
 
 namespace Mantle\Framework\Http;
 
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Mantle\Framework\Container\Container;
+use Mantle\Framework\Contracts\Filesystem\Filesystem;
+use Mantle\Framework\Contracts\Filesystem\Filesystem_Manager;
+use Mantle\Framework\Database\Model\Attachment;
+use Mantle\Framework\Filesystem\File_Helpers;
+use Mantle\Framework\Support\Arr;
+use Mantle\Framework\Support\Str;
+use Mantle\Framework\Support\Traits\Macroable;
 use RuntimeException;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\HttpFoundation\File\UploadedFile as SymfonyUploadedFile;
 
 /**
  * Handles Uploaded Files
  */
 class Uploaded_File extends SymfonyUploadedFile {
+	use File_Helpers, Macroable;
+
 	/**
 	 * Store the uploaded file on a filesystem disk.
 	 *
-	 * @param int          $parent_id The id of the parent post.
-	 * @param  array|string $options Any options for the file.
-	 * @return int Attachment ID.
-	 *
-	 * @throws RuntimeException Thrown on error saving uploaded file.
+	 * @param  string       $path
+	 * @param  array|string $options
+	 * @return string|false
 	 */
-	public function store( int $parent_id = null, $options = [] ): int {
-		if ( ! function_exists( 'wp_handle_upload' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/file.php';
+	public function store( $path, $options = [] ) {
+		return $this->store_as( $path, $this->hash_name(), $this->parse_options( $options ) );
+	}
+
+	/**
+	 * Store the uploaded file on a filesystem disk with public visibility.
+	 *
+	 * @param  string       $path
+	 * @param  array|string $options
+	 * @return string|false
+	 */
+	public function store_publicly( $path, $options = [] ) {
+		$options = $this->parse_options( $options );
+
+		$options['visibility'] = 'public';
+
+		return $this->store_as( $path, $this->getFilename(), $options );
+	}
+
+	/**
+	 * Store the uploaded file on a filesystem disk with public visibility.
+	 *
+	 * @param  string       $path
+	 * @param  string       $name
+	 * @param  array|string $options
+	 * @return string|false
+	 */
+	public function store_publicly_as( $path, $name, $options = [] ) {
+		$options = $this->parse_options( $options );
+
+		$options['visibility'] = 'public';
+
+		return $this->store_as( $path, $name, $options );
+	}
+
+	/**
+	 * Store the uploaded file on a filesystem disk.
+	 *
+	 * @param  string       $path
+	 * @param  string       $name
+	 * @param  array|string $options
+	 * @return string|false
+	 */
+	public function store_as( $path, $name, $options = [] ) {
+		$path    = untrailingslashit( $path );
+		$options = $this->parse_options( $options );
+
+		$disk = Arr::pull( $options, 'disk' );
+
+		return Container::getInstance()->make( Filesystem_Manager::class )->drive( $disk )->put_file_as(
+			$path,
+			$this,
+			$name,
+			$options
+		);
+	}
+
+	/**
+	 * Store the file as a WordPress attachment.
+	 *
+	 * @param string $path Path to store uploaded file to.
+	 * @param string $name File name.
+	 * @param array  $options Options for storage, disk name as string.
+	 * @return Attachment
+	 *
+	 * @throws RuntimeException Thrown on error storing file.
+	 *
+	 * @todo Enable proper attachment meta data indexing.
+	 */
+	public function store_as_attachment( string $path = '/', string $name = null, $options = [] ): Attachment {
+		$options = $this->parse_options( $options );
+
+		// Set the default visibility for attachments to public.
+		if ( ! isset( $options['visibility'] ) ) {
+			$options['visibility'] = 'public';
 		}
 
-		if ( ! function_exists( 'wp_generate_attachment_metadata' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/image.php';
+		if ( $name ) {
+			$uploaded_file = $this->store_as( $path, $name, $options );
+		} else {
+			$uploaded_file = $this->store( $path, $options );
 		}
 
-		$filearr = [
-			// Rename the file name with a random hash.
-			'name'     => wp_generate_password( 15, false, false ) . '.' . $this->getClientOriginalExtension(),
-			'type'     => $this->getClientMimeType(),
-			'tmp_name' => $this->getPathname(),
-			'error'    => $this->getError(),
-			'size'     => filesize( $this->getPathname() ),
-		];
-
-		$file = \wp_handle_upload( $filearr, [ 'test_form' => false ] );
-
-		if ( is_wp_error( $file ) ) {
-			throw new RuntimeException( 'Error handling uploaded file: ' . $file->get_error_message() );
-		} elseif ( ! empty( $file['error'] ) ) {
-			throw new RuntimeException( 'Error handling uploaded file: ' . $file['error'] );
+		if ( empty( $uploaded_file ) ) {
+			throw new RuntimeException( "Error uploading file to [{$path}]: [{$this->getFilename()}]" );
 		}
 
-		$title   = preg_replace( '/\.[^.]+$/', '', basename( $file ) );
-		$parent  = $parent_id >= 0 ? $parent_id : 0;
-		$details = [
-			'post_mime_type' => $file['type'] ?? '',
-			'guid'           => $file['url'] ?? '',
-			'post_parent'    => $parent,
-			'post_title'     => $title,
-			'post_content'   => '',
-		];
+		$disk_name = $options['disk'] ?? null;
+		$disk      = Container::getInstance()->make( Filesystem_Manager::class )->drive( $disk_name );
 
-		$id = \wp_insert_attachment( $details, $file['file'], $parent );
+		// Create the attachment for the file.
+		$attachment = Attachment::create(
+			[
+				'post_mime_type' => $this->getClientMimeType(),
+				'guid'           => $disk->url( $uploaded_file ),
+				'post_parent'    => 0,
+				'post_title'     => preg_replace( '/\.[^.]+$/', '', basename( $uploaded_file ) ),
+				'post_content'   => '',
+				'meta'           => [
+					'_wp_attached_file'                => Str::unpreceding_slash( trailingslashit( $path ) . $uploaded_file ),
+					Attachment::META_KEY_CLOUD_STORAGE => [
+						'disk'       => $disk_name,
+						'name'       => $uploaded_file,
+						'path'       => $path,
+						'visibility' => $options['visibility'],
+					],
+				],
+			]
+		);
 
-		if ( is_wp_error( $id ) ) {
-			throw new RuntimeException( 'Error saving attachment: ' . $id->get_error_message() );
-		}
-
-		wp_update_attachment_metadata( $id, wp_generate_attachment_metadata( $id, $file ) );
-
-		return $id;
+		return $attachment;
 	}
 
 	/**
@@ -77,7 +151,7 @@ class Uploaded_File extends SymfonyUploadedFile {
 	 *
 	 * @return bool|string
 	 *
-	 * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException When file not found.
+	 * @throws FileNotFoundException When file not found.
 	 */
 	public function get() {
 		if ( ! $this->isValid() ) {
@@ -97,6 +171,20 @@ class Uploaded_File extends SymfonyUploadedFile {
 	}
 
 	/**
+	 * Parse and format the given options.
+	 *
+	 * @param  array|string $options
+	 * @return array
+	 */
+	protected function parse_options( $options ) {
+		if ( is_string( $options ) ) {
+			$options = [ 'disk' => $options ];
+		}
+
+		return $options;
+	}
+
+	/**
 	 * Create a new file instance from a base instance.
 	 *
 	 * @param  \Symfony\Component\HttpFoundation\File\UploadedFile $file
@@ -112,5 +200,4 @@ class Uploaded_File extends SymfonyUploadedFile {
 			$test
 		);
 	}
-
 }

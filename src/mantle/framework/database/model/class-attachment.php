@@ -8,6 +8,7 @@
 namespace Mantle\Framework\Database\Model;
 
 use Mantle\Framework\Contracts;
+use Mantle\Framework\Facade\Storage;
 
 /**
  * Attachment Model
@@ -21,7 +22,14 @@ class Attachment extends Post implements Contracts\Database\Core_Object, Contrac
 	public static $object_name = 'attachment';
 
 	/**
-	 * Get an attachment's URL.
+	 * Meta key for storage of file information in the cloud.
+	 *
+	 * @var string
+	 */
+	public const META_KEY_CLOUD_STORAGE = 'mantle_cloud';
+
+	/**
+	 * Get an attachment's URL by size.
 	 *
 	 * @param array|string $size Image URL.
 	 * @return string|null
@@ -43,7 +51,47 @@ class Attachment extends Post implements Contracts\Database\Core_Object, Contrac
 	 * @return string|null
 	 */
 	public function url(): ?string {
-		return \wp_get_attachment_url( $this->id() ) ?? null;
+		$settings = $this->get_cloud_settings();
+
+		if ( empty( $settings['disk'] ) ) {
+			return \wp_get_attachment_url( $this->id() ) ?? null;
+		}
+
+		// For private attachments serve a temporary URL.
+		// todo: allow some permissions to be used.
+		if ( ! empty( $settings['visibility'] ) && 'private' === $settings['visibility'] ) {
+			return $this->get_temporary_url();
+		}
+
+		return Storage::drive( $settings['disk'] )->url( untrailingslashit( $settings['path'] ) . $settings['name'] );
+	}
+
+	/**
+	 * Retrieve a temporary URL for a file.
+	 *
+	 * @param \DateTimeInterface $expiration File expiration.
+	 * @return string
+	 */
+	public function get_temporary_url( $expiration = null ): string {
+		$settings = $this->get_cloud_settings();
+		if ( empty( $settings['disk'] ) ) {
+			return $settings;
+		}
+
+		if ( is_null( $expiration ) ) {
+			$expiration = time() + 3600;
+		}
+
+		return Storage::drive( $settings['disk'] )->temporary_url( untrailingslashit( $settings['path'] ) . $settings['name'], $expiration );
+	}
+
+	/**
+	 * Get the stored cloud settings for an attachment.
+	 *
+	 * @return array|null
+	 */
+	protected function get_cloud_settings(): ?array {
+		return (array) $this->get_meta( static::META_KEY_CLOUD_STORAGE, true );
 	}
 
 	/**
