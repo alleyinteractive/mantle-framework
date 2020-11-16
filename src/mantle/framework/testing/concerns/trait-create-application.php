@@ -101,6 +101,17 @@ trait Create_Application {
 					],
 				],
 			],
+			'cache'      => [
+				'default' => 'wordpress',
+				'stores'  => [
+					'wordpress' => [
+						'driver' => 'wordpress',
+					],
+					'array' => [
+						'driver' => 'array',
+					],
+				],
+			],
 		];
 	}
 
