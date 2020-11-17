@@ -37,10 +37,7 @@ class Test_Cache_Manager extends Framework_Test_Case {
 	}
 
 	public function test_cache_helper() {
-		$this->assertEmpty( cache( 'cache-key' ) );
-		$this->assertEquals( 'default', cache( 'cache-key', 'default' ) );
-		$this->assertTrue( Cache::put( 'cache-key', 'cache-value' ) );
-		$this->assertEquals( 'cache-value', Cache::get( 'cache-key', 'default' ) );
+		//
 	}
 
 	public function test_redis_driver() {
