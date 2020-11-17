@@ -114,6 +114,11 @@ trait Create_Application {
 					'array'          => [
 						'driver' => 'array',
 					],
+					'redis'          => [
+						'driver' => 'redis',
+						'host'   => '127.0.0.1',
+						'scheme' => 'tcp',
+					],
 				],
 			],
 		];

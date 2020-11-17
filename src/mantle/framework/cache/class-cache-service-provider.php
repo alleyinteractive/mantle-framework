@@ -24,13 +24,4 @@ class Cache_Service_Provider extends Service_Provider {
 			}
 		);
 	}
-
-	/**
-	 * Boot the service provider.
-	 */
-	// public function boot() {
-	// 	parent::boot();
-
-	// 	// Boot the provider.
-	// }
 }

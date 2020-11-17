@@ -5,6 +5,7 @@ use InvalidArgumentException;
 use Mantle\Framework\Cache\Cache_Manager;
 use Mantle\Framework\Facade\Cache;
 use Mantle\Framework\Testing\Framework_Test_Case;
+use Predis\Connection\ConnectionException;
 
 class Test_Cache_Manager extends Framework_Test_Case {
 	public function test_unconfigured_store() {
@@ -26,5 +27,33 @@ class Test_Cache_Manager extends Framework_Test_Case {
 		$this->assertEquals( 'default', Cache::get( 'cache-key', 'default' ) );
 		$this->assertTrue( Cache::put( 'cache-key', 'cache-value' ) );
 		$this->assertEquals( 'cache-value', Cache::get( 'cache-key', 'default' ) );
+	}
+
+	public function test_array_driver() {
+		$this->assertFalse( Cache::store( 'array' )->has( 'cache-key' ) );
+		$this->assertEquals( 'default', Cache::store( 'array' )->get( 'cache-key', 'default' ) );
+		$this->assertTrue( Cache::store( 'array' )->put( 'cache-key', 'cache-value' ) );
+		$this->assertEquals( 'cache-value', Cache::store( 'array' )->get( 'cache-key', 'default' ) );
+	}
+
+	public function test_redis_driver() {
+		if ( ! class_exists( 'Predis\Client' ) ) {
+			$this->markTestSkipped( 'Redis not loaded. ');
+			return;
+		}
+
+		$key = 'test_key_' . wp_rand();
+
+		try {
+			$this->assertFalse( Cache::store( 'redis' )->has( $key ) );
+			$this->assertEquals( 'default', Cache::store( 'redis' )->get( $key, 'default' ) );
+			$this->assertNotEmpty( Cache::store( 'redis' )->put( $key, 'cache-value' ) );
+			$this->assertEquals( 'cache-value', Cache::store( 'redis' )->get( $key, 'default' ) );
+
+			Cache::store( 'redis' )->clear();
+		} catch ( ConnectionException $e ) {
+			unset( $e );
+			$this->markTestSkipped( 'Redis not connected.' );
+		}
 	}
 }

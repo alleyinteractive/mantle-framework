@@ -67,4 +67,24 @@ class Cache_Manager extends Driver_Manager implements Factory {
 	protected function create_wordpress_driver( array $config ): Repository {
 		return new WordPress_Repository( $config['prefix'] ?? '' );
 	}
+
+	/**
+	 * Create a array adapter.
+	 *
+	 * @param array $config Configuration.
+	 * @return Repository
+	 */
+	protected function create_array_driver( array $config ): Repository {
+		return new Array_Repository( $config['prefix'] ?? '' );
+	}
+
+	/**
+	 * Create a Redis adapter.
+	 *
+	 * @param array $config Configuration.
+	 * @return Repository
+	 */
+	protected function create_redis_driver( array $config ): Repository {
+		return new Redis_Repository( $config );
+	}
 }

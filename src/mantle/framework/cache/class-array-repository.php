@@ -1,33 +1,25 @@
 <?php
 /**
- * WordPress_Repository class file.
+ * Array_Repository class file.
  *
  * @package Mantle
  */
 
 namespace Mantle\Framework\Cache;
 
-use Mantle\Framework\Contracts\Cache\Taggable_Repository;
+use Carbon\Carbon;
+use Mantle\Framework\Contracts\Cache\Repository as Repository_Contract;
 
 /**
- * WordPress Cache Repository
+ * Array Cache Repository
  */
-class WordPress_Repository extends Repository implements Taggable_Repository {
+class Array_Repository extends Repository implements Repository_Contract {
 	/**
-	 * Cache prefix.
+	 * Cache storage.
 	 *
-	 * @var string
+	 * @var array
 	 */
-	protected $prefix = '';
-
-	/**
-	 * Constructor.
-	 *
-	 * @param string $prefix Prefix for caching.
-	 */
-	public function __construct( string $prefix = '' ) {
-		$this->prefix = $prefix;
-	}
+	protected $storage = [];
 
 	/**
 	 * Retrieve a value from cache.
@@ -37,10 +29,21 @@ class WordPress_Repository extends Repository implements Taggable_Repository {
 	 * @return mixed
 	 */
 	public function get( $key, $default = null ) {
-		$value = \wp_cache_get( $key, $this->prefix );
-		return false === $value ? $default : $value;
-	}
+		if ( ! isset( $this->storage[ $key ] ) ) {
+			return $default;
+		}
 
+		$item       = $this->storage[ $key ];
+		$expires_at = $item['expires_at'] ?? 0;
+
+		if ( 0 !== $expires_at && Carbon::now()->getTimestamp() > $expires_at ) {
+			unset( $this->storage[ $key ] );
+
+			return $default;
+		}
+
+		return $item['value'] ?? $default;
+	}
 	/**
 	 * Retrieve an item from the cache and delete it.
 	 *
@@ -49,13 +52,10 @@ class WordPress_Repository extends Repository implements Taggable_Repository {
 	 * @return mixed
 	 */
 	public function pull( $key, $default = null ) {
-		$value = \wp_cache_get( $key, $this->prefix );
+		$value = $this->get( $key, $default );
+		unset( $this->storage[ $key ] );
 
-		if ( false !== $value ) {
-			\wp_cache_delete( $key, $this->prefix );
-		}
-
-		return false === $value ? $default : $value;
+		return $value;
 	}
 
 	/**
@@ -67,7 +67,12 @@ class WordPress_Repository extends Repository implements Taggable_Repository {
 	 * @return bool
 	 */
 	public function put( $key, $value, $ttl = null ) {
-		return \wp_cache_set( $key, $value, $this->prefix, $ttl );
+		$this->storage[ $key ] = [
+			'expire_at' => Carbon::now()->addSeconds( $ttl ?: 0 )->getTimestamp(),
+			'value'     => $value,
+		];
+
+		return true;
 	}
 
 	/**
@@ -78,7 +83,8 @@ class WordPress_Repository extends Repository implements Taggable_Repository {
 	 * @return int|bool
 	 */
 	public function increment( $key, $value = 1 ) {
-		return \wp_cache_incr( $key, $value, $this->prefix );
+		$value = (int) $this->get( $key, 0 );
+		return $this->set( $key, $value += $value );
 	}
 
 	/**
@@ -89,7 +95,8 @@ class WordPress_Repository extends Repository implements Taggable_Repository {
 	 * @return int|bool
 	 */
 	public function decrement( $key, $value = 1 ) {
-		return \wp_cache_decr( $key, $value, $this->prefix );
+		$value = (int) $this->get( $key, 0 );
+		return $this->set( $key, $value -= $value );
 	}
 
 	/**
@@ -99,34 +106,15 @@ class WordPress_Repository extends Repository implements Taggable_Repository {
 	 * @return bool
 	 */
 	public function forget( $key ) {
-		return \wp_cache_delete( $key, $this->prefix );
+		unset( $this->storage[ $key ] );
+		return true;
 	}
 
 	/**
 	 * Clear the cache.
 	 */
 	public function clear() {
-		return \wp_cache_flush();
-	}
-
-	/**
-	 * Cache tags to apply.
-	 *
-	 * @param string[]|string $names Cache names.
-	 * @return static
-	 */
-	public function tags( $names ) {
-		if ( is_array( $names ) ) {
-			sort( $names );
-			$names = implode( $names );
-		} else {
-			$names = (string) $names;
-		}
-
-		if ( ! empty( $names ) ) {
-			$names = "{$names}_";
-		}
-
-		return new static( $this->prefix . $names );
+		$this->storage = [];
+		return $this->storage;
 	}
 }

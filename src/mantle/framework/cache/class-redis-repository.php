@@ -1,18 +1,19 @@
 <?php
 /**
- * WordPress_Repository class file.
+ * Redis_Repository class file.
  *
  * @package Mantle
  */
 
 namespace Mantle\Framework\Cache;
 
+use Predis\Client;
 use Mantle\Framework\Contracts\Cache\Taggable_Repository;
 
 /**
- * WordPress Cache Repository
+ * Redis Cache Repository
  */
-class WordPress_Repository extends Repository implements Taggable_Repository {
+class Redis_Repository extends Repository implements Taggable_Repository {
 	/**
 	 * Cache prefix.
 	 *
@@ -21,24 +22,35 @@ class WordPress_Repository extends Repository implements Taggable_Repository {
 	protected $prefix = '';
 
 	/**
+	 * Redis client.
+	 *
+	 * @var Client
+	 */
+	protected $client;
+
+	/**
 	 * Constructor.
 	 *
-	 * @param string $prefix Prefix for caching.
+	 * @param Client|array $config Configuration options or client.
+	 * @param string       $prefix Prefix for caching.
 	 */
-	public function __construct( string $prefix = '' ) {
+	public function __construct( $config, string $prefix = '' ) {
+		$this->set_connection( $config );
+
 		$this->prefix = $prefix;
 	}
 
 	/**
-	 * Retrieve a value from cache.
+	 * Set the Redis connection
 	 *
-	 * @param string $key Cache key.
-	 * @param mixed  $default Default value.
-	 * @return mixed
+	 * @param Client|array $config Configuration instance.
 	 */
-	public function get( $key, $default = null ) {
-		$value = \wp_cache_get( $key, $this->prefix );
-		return false === $value ? $default : $value;
+	protected function set_connection( $config ) {
+		if ( $config instanceof Client ) {
+			return $config;
+		}
+
+		$this->client = new Client( $config );
 	}
 
 	/**
@@ -48,14 +60,16 @@ class WordPress_Repository extends Repository implements Taggable_Repository {
 	 * @param  mixed  $default
 	 * @return mixed
 	 */
-	public function pull( $key, $default = null ) {
-		$value = \wp_cache_get( $key, $this->prefix );
+	public function get( $key, $default = null ) {
+		$value = $this->client->get( $this->prefix . $key );
 
-		if ( false !== $value ) {
-			\wp_cache_delete( $key, $this->prefix );
+		if ( is_null( $value ) ) {
+			$value = $default;
+		} else {
+			$value = maybe_unserialize( $value );
 		}
 
-		return false === $value ? $default : $value;
+		return $value;
 	}
 
 	/**
@@ -67,7 +81,13 @@ class WordPress_Repository extends Repository implements Taggable_Repository {
 	 * @return bool
 	 */
 	public function put( $key, $value, $ttl = null ) {
-		return \wp_cache_set( $key, $value, $this->prefix, $ttl );
+		$value = maybe_serialize( $value );
+
+		if ( is_null( $ttl ) ) {
+			return $this->client->set( $this->prefix . $key, $value );
+		} else {
+			return $this->client->setex( $this->prefix . $key, $ttl, $value );
+		}
 	}
 
 	/**
@@ -78,7 +98,7 @@ class WordPress_Repository extends Repository implements Taggable_Repository {
 	 * @return int|bool
 	 */
 	public function increment( $key, $value = 1 ) {
-		return \wp_cache_incr( $key, $value, $this->prefix );
+		return $this->client->incr( $this->prefix . $key );
 	}
 
 	/**
@@ -89,7 +109,7 @@ class WordPress_Repository extends Repository implements Taggable_Repository {
 	 * @return int|bool
 	 */
 	public function decrement( $key, $value = 1 ) {
-		return \wp_cache_decr( $key, $value, $this->prefix );
+		return $this->client->decr( $this->prefix . $key );
 	}
 
 	/**
@@ -99,14 +119,14 @@ class WordPress_Repository extends Repository implements Taggable_Repository {
 	 * @return bool
 	 */
 	public function forget( $key ) {
-		return \wp_cache_delete( $key, $this->prefix );
+		return $this->client->del( $key );
 	}
 
 	/**
 	 * Clear the cache.
 	 */
 	public function clear() {
-		return \wp_cache_flush();
+		return $this->client->flushall();
 	}
 
 	/**
@@ -117,7 +137,7 @@ class WordPress_Repository extends Repository implements Taggable_Repository {
 	 */
 	public function tags( $names ) {
 		if ( is_array( $names ) ) {
-			sort( $names );
+			$names = sort( $names );
 			$names = implode( $names );
 		} else {
 			$names = (string) $names;
@@ -127,6 +147,6 @@ class WordPress_Repository extends Repository implements Taggable_Repository {
 			$names = "{$names}_";
 		}
 
-		return new static( $this->prefix . $names );
+		return new static( $this->client, $names );
 	}
 }
