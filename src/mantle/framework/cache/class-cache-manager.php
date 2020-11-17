@@ -1,13 +1,20 @@
 <?php
+/**
+ * Cache_Manager class file.
+ *
+ * @package Mantle
+ */
+
 namespace Mantle\Framework\Cache;
 
-use InvalidArgumentException;
 use Mantle\Framework\Contracts\Application;
 use Mantle\Framework\Contracts\Cache\Factory;
 use Mantle\Framework\Contracts\Cache\Repository;
-use Mantle\Framework\Support\Arr;
 use Mantle\Framework\Support\Driver_Manager;
 
+/**
+ * Cache Manager
+ */
 class Cache_Manager extends Driver_Manager implements Factory {
 	/**
 	 * Application instance.
@@ -33,27 +40,11 @@ class Cache_Manager extends Driver_Manager implements Factory {
 	}
 
 	/**
-	 * Retrieve a cache store by name.
-	 *
-	 * @param string|null $name Cache store name.
-	 * @return Repository
-	 */
-	public function store( string $name = null ): Repository {
-		$name = $name ?: $this->get_default_driver();
-
-		if ( ! isset( $this->resolved[ $name ] ) ) {
-			$this->resolved[ $name ] = $this->resolve( $name );
-		}
-
-		return $this->resolved[ $name ];
-	}
-
-	/**
-	 * Retrieve the default driver name.
+	 * Retrieve the default store name.
 	 *
 	 * @return string
 	 */
-	protected function get_default_driver(): string {
+	protected function get_default_store(): string {
 		return (string) $this->app['config']['cache.default'];
 	}
 
@@ -64,28 +55,16 @@ class Cache_Manager extends Driver_Manager implements Factory {
 	 * @return array
 	 */
 	protected function get_config( string $name ): array {
-		return (array) $this->app['config']["stores.{$name}"];
+		return (array) $this->app['config'][ "cache.stores.{$name}" ];
 	}
 
 	/**
-	 * Resolve an instance of a cache store.
+	 * Create a WordPress adapter.
 	 *
-	 * @param string $name Cache store.
+	 * @param array $config Configuration.
 	 * @return Repository
 	 */
-	protected function resolve( string $name ): Repository {
-		$config = $this->get_config( $name );
-		$driver = Arr::pull( $config, 'driver' );
-
-		if ( empty( $driver ) ) {
-			throw new InvalidArgumentException( "Driver not specified for [$name}." );
-		}
-
-		$instance = $this->resolve_driver( $driver, $config );
-		dd($name, $config, $instance);
-	}
-
-	protected function create_wordpress_driver(): Repository {
-
+	protected function create_wordpress_driver( array $config ): Repository {
+		return new WordPress_Repository( $config['prefix'] ?? '' );
 	}
 }

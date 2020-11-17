@@ -17,5 +17,5 @@ interface Factory {
 	 * @param string|null $name Cache store name.
 	 * @return Repository
 	 */
-	public function store( string $name = null ): Repository;
+	public function store( string $name = null );
 }

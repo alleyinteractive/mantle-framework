@@ -71,6 +71,7 @@ trait Create_Application {
 					\Mantle\Framework\Providers\Route_Service_Provider::class,
 					\Mantle\Framework\Filesystem\Filesystem_Service_Provider::class,
 					\Mantle\Framework\Database\Pagination\Paginator_Service_Provider::class,
+					\Mantle\Framework\Cache\Cache_Service_Provider::class,
 				],
 			],
 			'queue'      => [
@@ -104,10 +105,13 @@ trait Create_Application {
 			'cache'      => [
 				'default' => 'wordpress',
 				'stores'  => [
-					'wordpress' => [
+					'wordpress'      => [
 						'driver' => 'wordpress',
 					],
-					'array' => [
+					'unknown-driver' => [
+						'driver' => 'unknown-driver',
+					],
+					'array'          => [
 						'driver' => 'array',
 					],
 				],

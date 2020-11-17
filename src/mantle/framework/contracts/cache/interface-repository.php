@@ -12,6 +12,9 @@ use Psr\SimpleCache\CacheInterface;
 
 /**
  * Cache Repository
+ * Implements PSR-16 standard and follows PSR code naming conventions.
+ *
+ * @link https://www.php-fig.org/psr/psr-16/
  */
 interface Repository extends CacheInterface {
 	/**
@@ -96,7 +99,7 @@ interface Repository extends CacheInterface {
 	 * @param  \Closure $callback
 	 * @return mixed
 	 */
-	public function remember_forever( $key, Closure $callback );
+	public function rememberForever( $key, Closure $callback );
 
 	/**
 	 * Remove an item from the cache.
@@ -105,11 +108,4 @@ interface Repository extends CacheInterface {
 	 * @return bool
 	 */
 	public function forget( $key );
-
-	/**
-	 * Get the cache store implementation.
-	 *
-	 * @return \Illuminate\Contracts\Cache\Store
-	 */
-	public function getStore();
 }
