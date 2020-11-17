@@ -62,8 +62,6 @@ if ( ! function_exists( 'cache' ) ) {
 	 * @throws \Exception
 	 */
 	function cache( ...$args ) {
-		$arguments = func_get_args();
-
 		if ( empty( $args ) ) {
 			return app( 'cache' );
 		}
@@ -72,13 +70,13 @@ if ( ! function_exists( 'cache' ) ) {
 			return app( 'cache' )->get( ...$args );
 		}
 
-		if ( ! is_array( $arguments[0] ) ) {
+		if ( ! is_array( $args[0] ) ) {
 			throw new Exception(
 				'When setting a value in the cache, you must pass an array of key / value pairs.'
 			);
 		}
 
-		return app( 'cache' )->put( key( $arguments[0] ), reset( $arguments[0] ), $arguments[1] ?? null );
+		return app( 'cache' )->put( key( $args[0] ), reset( $args[0] ), $args[1] ?? null );
 	}
 }
 
