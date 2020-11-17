@@ -36,6 +36,13 @@ class Test_Cache_Manager extends Framework_Test_Case {
 		$this->assertEquals( 'cache-value', Cache::store( 'array' )->get( 'cache-key', 'default' ) );
 	}
 
+	public function test_cache_helper() {
+		$this->assertEmpty( cache( 'cache-key' ) );
+		$this->assertEquals( 'default', cache( 'cache-key', 'default' ) );
+		$this->assertTrue( Cache::put( 'cache-key', 'cache-value' ) );
+		$this->assertEquals( 'cache-value', Cache::get( 'cache-key', 'default' ) );
+	}
+
 	public function test_redis_driver() {
 		if ( ! class_exists( 'Predis\Client' ) ) {
 			$this->markTestSkipped( 'Redis not loaded. ');
