@@ -62,7 +62,7 @@ class Generator_Make_Command extends Generator_Command {
 	 * @param array $args Command Arguments.
 	 * @param array $assoc_args Command flags.
 	 */
-	public function handle( array $args, array $assoc_args ) {
+	public function handle( array $args, array $assoc_args = [] ) {
 		// Prevent command being run in non-local environments.
 		if ( 'local' !== $this->app->environment() ) {
 			$this->error( 'Generator cannot be used outside of local environment.', true );

@@ -1,6 +1,6 @@
 <?php
 /**
- * View_Loader class file.
+ * View_Finder class file.
  *
  * @package Mantle
  * @phpcs:disable WordPress.WP.DiscouragedConstants

@@ -1,6 +1,6 @@
 <?php
 /**
- * View_Loader interface file.
+ * View_Finder interface file.
  *
  * @package Mantle
  */
@@ -10,7 +10,7 @@ namespace Mantle\Framework\Contracts\Http\View;
 /**
  * View Loader Contract
  */
-interface View_Loader {
+interface View_Finder {
 	/**
 	 * Add a path to check against when loading a template.
 	 *

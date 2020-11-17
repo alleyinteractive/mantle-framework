@@ -65,7 +65,7 @@ class Clear_Cache_Command extends Command {
 	 * @param array $args Command Arguments.
 	 * @param array $assoc_args Command flags.
 	 */
-	public function handle( array $args, array $assoc_args ) {
+	public function handle( array $args, array $assoc_args = [] ) {
 		$this->app['events']->dispatch( 'cache:clearing' );
 
 		$this->delete_cached_files();

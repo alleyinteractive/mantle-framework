@@ -55,7 +55,7 @@ class Seed_Command extends Command {
 	 * @param array $args Command Arguments.
 	 * @param array $assoc_args Command flags.
 	 */
-	public function handle( array $args, array $assoc_args ) {
+	public function handle( array $args, array $assoc_args = [] ) {
 		if ( ! $this->confirm_to_proceed() ) {
 			return;
 		}

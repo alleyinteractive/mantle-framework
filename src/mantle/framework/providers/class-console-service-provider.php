@@ -20,6 +20,8 @@ use Mantle\Framework\Console\Generators\Service_Provider_Make_Command;
 use Mantle\Framework\Console\Hook_Usage_Command;
 use Mantle\Framework\Console\Package_Discover_Command;
 use Mantle\Framework\Console\Route_List_Command;
+use Mantle\Framework\Console\View_Cache_Command;
+use Mantle\Framework\Console\View_Clear_Command;
 use Mantle\Framework\Service_Provider;
 
 /**
@@ -47,6 +49,8 @@ class Console_Service_Provider extends Service_Provider {
 		Route_List_Command::class,
 		Seeder_Make_Command::class,
 		Service_Provider_Make_Command::class,
+		View_Cache_Command::class,
+		View_Clear_Command::class,
 	];
 
 	/**
