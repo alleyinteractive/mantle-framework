@@ -37,7 +37,16 @@ class Test_Cache_Manager extends Framework_Test_Case {
 	}
 
 	public function test_cache_helper() {
-		//
+		$key = 'cache-helper-' . wp_rand();
+		$this->assertNull( cache( $key ) );
+		$this->assertTrue( cache( [ $key => 'cache-value' ], 3600 ) );
+		$this->assertEquals( 'cache-value', cache( $key ) );
+
+		cache()->remember( 'remember-key', 3600, function() {
+			return 'cache-value';
+		} );
+
+		$this->assertEquals( 'cache-value', cache( 'remember-key' ) );
 	}
 
 	public function test_redis_driver() {
