@@ -34,9 +34,6 @@ jobs:
           - wp_version: "trunk"
             php: 7.4
             can_fail: true
-          - wp_version: "latest"
-            php: 8.0
-            can_fail: true
 
     name: PHP ${{ matrix.php }} -- ${{ matrix.wp_version }}
 

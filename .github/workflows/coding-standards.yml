@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
+      matrix:
+        php: [7.4]
 
     name: PHP Coding Standards
 
