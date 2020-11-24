@@ -1,4 +1,4 @@
-name: Unit Tests
+name: Coding Standards
 
 on:
   push:
@@ -12,7 +12,7 @@ jobs:
       matrix:
         php: [7.4]
 
-    name: PHP Coding Standards
+    name: Coding Standards
 
     steps:
       - name: Cancel previous runs of this workflow (pull requests only)
