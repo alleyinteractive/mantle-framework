@@ -23,11 +23,16 @@ jobs:
         ports:
           - 6379:6379
         options: --entrypoint redis-server
+    continue-on-error: ${{ matrix.can_fail }}
     strategy:
       fail-fast: true
       matrix:
         php: [7.3, 7.4]
         wp_version: ["latest", "trunk"]
+        can_fail: false
+        include:
+          - wp_version: "trunk"
+            can_fail: true
 
     name: PHP ${{ matrix.php }} -- ${{ matrix.wp_version }}
 
