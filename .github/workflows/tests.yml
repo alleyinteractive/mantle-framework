@@ -29,11 +29,11 @@ jobs:
         php: [7.4]
         wp_version: ["latest"]
 
-    name: PHP ${{ matrix.php }} - ${{ matrix.stability }} -- ${{ matrix.wp_version }}
+    name: PHP ${{ matrix.php }} -- ${{ matrix.wp_version }}
 
-    # env:
-    #   WP_DEVELOP_DIR: /tmp/wordpress
-    #   WP_CORE_DIR: /tmp/wordpress
+    env:
+      WP_DEVELOP_DIR: /tmp/wordpress
+      WP_CORE_DIR: /tmp/wordpress
 
     # Setups Mantle for testing.
     #
@@ -119,7 +119,4 @@ jobs:
           cp -R . "${WP_CORE_DIR}wp-content/plugins/mantle-framework"
 
       - name: Execute tests
-        run: vendor/bin/phpunit --verbose
-        env:
-          DB_PORT: ${{ job.services.mysql.ports[3306] }}
-          DB_USERNAME: root
+        run: /tmp/wordpress/wp-content/plugins/mantle-framework/vendor/bin/phpunit --verbose
