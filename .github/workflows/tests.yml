@@ -69,7 +69,7 @@ jobs:
         with:
           timeout_minutes: 5
           max_attempts: 5
-          command: composer install --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
+          command: composer install
 
       - name: Install WordPress
         shell: bash
