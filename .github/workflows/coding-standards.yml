@@ -4,7 +4,6 @@ on:
   push:
   pull_request:
 
-
 jobs:
   coding-standards:
     runs-on: ubuntu-latest
