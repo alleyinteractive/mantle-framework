@@ -115,11 +115,11 @@ jobs:
           ls
 
           # Go into the core directory and replace wp-content.
-          mkdir -p ${WP_CORE_DIR}wp-content/plugins/mantle-framework
-          cp -R . "${WP_CORE_DIR}wp-content/plugins/mantle-framework"
+          mkdir -p ${WP_CORE_DIR}/wp-content/plugins/mantle-framework
+          cp -R . "${WP_CORE_DIR}/wp-content/plugins/mantle-framework"
 
           # Execute Tests
-          cd "${WP_CORE_DIR}wp-content/plugins/mantle-framework"
+          cd "${WP_CORE_DIR}/wp-content/plugins/mantle-framework"
           ls
           ls vendor
           ./vendor/bin/phpunit --verbose
