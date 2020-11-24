@@ -102,7 +102,7 @@ jobs:
           og_dir="$(pwd)"
 
           # Copy the wp-tests-config.php to the WP installation.
-          cp ${WP_TESTS_DIR-/tmp/wordpress-tests-lib}/wp-tests-config.php ${WP_CORE_DIR-/tmp/wordpress/}wp-tests-config.php
+          cp ${WP_TESTS_DIR-/tmp/wordpress-tests-lib}/wp-tests-config.php ${WP_CORE_DIR-/tmp/wordpress/}/wp-tests-config.php
 
           cd ${WP_CORE_DIR}
           echo "WP_CORE_DIR"
