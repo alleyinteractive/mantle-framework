@@ -27,7 +27,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: [7.3, 7.4, 8.0]
+        php: [7.4]
         stability: [prefer-lowest, prefer-stable]
 
     name: PHP ${{ matrix.php }} - ${{ matrix.stability }}
@@ -62,9 +62,6 @@ jobs:
       - name: Setup Memcached
         uses: niden/actions-memcached@v7
 
-      - name: Setup problem matchers
-        run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
-
       - name: Validate Composer
         run: composer validate --strict
 
@@ -81,9 +78,6 @@ jobs:
           WP_DEVELOP_DIR: /tmp/wordpress
           WP_CORE_DIR: /tmp/wordpress
         run: |
-          # Turn off Xdebug. See https://core.trac.wordpress.org/changeset/40138.
-          phpenv config-rm xdebug.ini || echo "Xdebug not available"
-
           og_dir="$(pwd)"
           bash bin/install-wp-tests.sh wordpress_unit_tests root '' localhost $WP_VERSION
 
