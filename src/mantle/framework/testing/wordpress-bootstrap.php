@@ -29,7 +29,7 @@ global $wpdb,
        $PHP_SELF;
 
 // Load the configuration.
-if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) ) {
+if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) && ! empty( WP_TESTS_CONFIG_FILE_PATH ) ) {
 	$config_file_path = WP_TESTS_CONFIG_FILE_PATH;
 } else {
 	$config_file_path = preg_replace( '#/wp-content/.*$#', '/wp-tests-config.php', __DIR__ );
