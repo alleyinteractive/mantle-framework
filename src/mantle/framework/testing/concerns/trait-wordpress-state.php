@@ -71,7 +71,7 @@ trait WordPress_State {
 	protected function reset_post_types() {
 		foreach ( get_post_types( [], 'objects' ) as $pt ) {
 			if ( empty( $pt->tests_no_auto_unregister ) ) {
-				_unregister_post_type( $pt->name );
+				unregister_post_type( $pt->name );
 			}
 		}
 		create_initial_post_types();
@@ -86,7 +86,7 @@ trait WordPress_State {
 	 */
 	protected function reset_taxonomies() {
 		foreach ( get_taxonomies() as $tax ) {
-			_unregister_taxonomy( $tax );
+			unregister_taxonomy( $tax );
 		}
 		create_initial_taxonomies();
 	}
