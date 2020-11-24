@@ -119,4 +119,7 @@ jobs:
           cp -R . "${WP_CORE_DIR}wp-content/plugins/mantle-framework"
 
           # Execute Tests
-          /tmp/wordpress/wp-content/plugins/mantle-framework/vendor/bin/phpunit --verbose
+          cd /tmp/wordpress/wp-content/plugins/mantle-framework
+          ls
+          ls vendor
+          ./vendor/bin/phpunit --verbose
