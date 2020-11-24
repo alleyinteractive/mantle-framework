@@ -118,5 +118,5 @@ jobs:
           mkdir -p ${WP_CORE_DIR}wp-content/plugins/mantle-framework
           cp -R . "${WP_CORE_DIR}wp-content/plugins/mantle-framework"
 
-      - name: Execute tests
-        run: /tmp/wordpress/wp-content/plugins/mantle-framework/vendor/bin/phpunit --verbose
+          # Execute Tests
+          /tmp/wordpress/wp-content/plugins/mantle-framework/vendor/bin/phpunit --verbose
