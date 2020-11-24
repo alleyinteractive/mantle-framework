@@ -85,7 +85,6 @@ jobs:
           phpenv config-rm xdebug.ini || echo "Xdebug not available"
 
           og_dir="$(pwd)"
-
           bash bin/install-wp-tests.sh wordpress_unit_tests root '' localhost $WP_VERSION
 
           # Copy the wp-tests-config.php to the WP installation.
