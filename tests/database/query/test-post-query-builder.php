@@ -240,32 +240,32 @@ class Test_Post_Query_Builder extends Framework_Test_Case {
 		$this->assertEquals( $post_id, $first->id() );
 	}
 
-	public function test_query_with_multiple() {
-		$post_a = $this->get_random_post_id();
-		$post_b = $this->get_random_post_id( [ 'post_type' => Another_Testable_Post::get_object_name() ] );
+	// public function test_query_with_multiple() {
+	// 	$post_a = $this->get_random_post_id();
+	// 	$post_b = $this->get_random_post_id( [ 'post_type' => Another_Testable_Post::get_object_name() ] );
 
-		update_post_meta( $post_a, 'shared-meta', 'meta-value' );
-		update_post_meta( $post_b, 'shared-meta', 'meta-value' );
+	// 	update_post_meta( $post_a, 'shared-meta', 'meta-value' );
+	// 	update_post_meta( $post_b, 'shared-meta', 'meta-value' );
 
-		update_post_meta( $post_a, 'meta-a', 'meta-value-a' );
-		update_post_meta( $post_b, 'meta-b', 'meta-value-b' );
+	// 	update_post_meta( $post_a, 'meta-a', 'meta-value-a' );
+	// 	update_post_meta( $post_b, 'meta-b', 'meta-value-b' );
 
-		$get = Post_Query_Builder::create( [ Testable_Post::class, Another_Testable_Post::class ] )
-			->whereMeta( 'shared-meta', 'meta-value' )
-			->get();
+	// 	$get = Post_Query_Builder::create( [ Testable_Post::class, Another_Testable_Post::class ] )
+	// 		->whereMeta( 'shared-meta', 'meta-value' )
+	// 		->get();
 
-		$this->assertEquals( 2, count( $get ) );
-		$this->assertEquals( $post_a, $get[0]->id() );
-		$this->assertEquals( $post_b, $get[1]->id() );
+	// 	$this->assertEquals( 2, count( $get ) );
+	// 	$this->assertEquals( $post_a, $get[0]->id() );
+	// 	$this->assertEquals( $post_b, $get[1]->id() );
 
-		// Check querying one.
-		$get = Post_Query_Builder::create( [ Testable_Post::class, Another_Testable_Post::class ] )
-			->whereMeta( 'meta-b', 'meta-value-b' )
-			->get();
+	// 	// Check querying one.
+	// 	$get = Post_Query_Builder::create( [ Testable_Post::class, Another_Testable_Post::class ] )
+	// 		->whereMeta( 'meta-b', 'meta-value-b' )
+	// 		->get();
 
-		$this->assertEquals( 1, count( $get ) );
-		$this->assertEquals( $post_b, $get[0]->id() );
-	}
+	// 	$this->assertEquals( 1, count( $get ) );
+	// 	$this->assertEquals( $post_b, $get[0]->id() );
+	// }
 
 	/**
 	 * Get a random post ID, ensures the post ID is not the last in the set.
