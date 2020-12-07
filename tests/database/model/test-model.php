@@ -2,12 +2,14 @@
 namespace Mantle\Tests\Database\Model;
 
 use Mantle\Framework\Database\Model\Model;
+use Mantle\Framework\Database\Model\Post;
+use Mantle\Framework\Testing\Framework_Test_Case;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Test non-WordPress specific logic of the model
  */
-class Test_Model extends TestCase {
+class Test_Model extends Framework_Test_Case {
 	protected function setUp(): void {
 		parent::setUp();
 
@@ -33,6 +35,25 @@ class Test_Model extends TestCase {
 		$this->assertEquals( 1, $_SERVER['__boot_model_trait_to_test'] );
 		$this->assertEquals( 2, $_SERVER['__initialize_model_trait_to_test'] );
 	}
+
+	public function test_attributes_append() {
+		$post = Testable_Post_For_Appending::find( static::factory()->post->create() );
+
+		$post->append( 'abstract' );
+
+		$array = $post->to_array();
+
+		$this->assertArrayHasKey( 'abstract', $array );
+		$this->assertArrayHasKey( 'included_append', $array );
+		$this->assertEquals( 'value-to-compare', $array['abstract'] );
+		$this->assertEquals( 'included_append', $array['included_append'] );
+
+		$post->set_appends( 'abstract' );
+		$array = $post->to_array();
+
+		$this->assertArrayHasKey( 'abstract', $array );
+		$this->assertArrayNotHasKey( 'included_append', $array );
+	}
 }
 
 class Testable_Model extends Model {
@@ -45,6 +66,19 @@ class Testable_Model extends Model {
 	}
 }
 
+class Testable_Post_For_Appending extends Post {
+	public static $object_name = 'post';
+
+	protected $appends = [ 'included_append' ];
+
+	public function get_included_append_attribute(): string {
+		return 'included_append';
+	}
+
+	public function get_abstract_attribute(): string {
+		return 'value-to-compare';
+	}
+}
 trait Model_Trait_To_Test {
 	public static function boot_model_trait_to_test() {
 		$_SERVER['__boot_model_trait_to_test']++;

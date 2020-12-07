@@ -9,6 +9,8 @@ namespace Mantle\Framework\Database\Model\Concerns;
 
 use Mantle\Framework\Database\Model\Model_Exception;
 
+use function Mantle\Framework\Helpers\collect;
+
 /**
  * Model Attributes
  */
@@ -35,6 +37,13 @@ trait Has_Attributes {
 	 * @var array
 	 */
 	protected $casts = [];
+
+	/**
+	 * The accessors to append to the model's array form.
+	 *
+	 * @var array
+	 */
+	protected $appends = [];
 
 	/**
 	 * The built-in, primitive cast types supported by the model.
@@ -132,6 +141,24 @@ trait Has_Attributes {
 		}
 
 		return $attributes;
+	}
+
+	/**
+	 * Convert the models' attributes to an array.
+	 *
+	 * @return array
+	 */
+	public function attributes_to_array(): array {
+		// Retrieve all attributes, passing them through the mutators.
+		$attributes = collect( $this->attributes )
+			->map(
+				function( $value, string $attribute ) {
+					return $this->get_attribute( $attribute );
+				}
+			)
+			->merge( $this->get_arrayable_appends() );
+
+		return $attributes->to_array();
 	}
 
 	/**
@@ -326,5 +353,61 @@ trait Has_Attributes {
 	 */
 	public function mutate_set_attribute( string $attribute, $value ) {
 		return $this->{ $this->get_set_mutator_method_name( $attribute ) }( $value );
+	}
+
+	/**
+	 * Set the accessors to append to model arrays.
+	 *
+	 * @param string|string[] ...$appends Accessors to append.
+	 * @return static
+	 */
+	public function set_appends( ...$appends ) {
+		$this->appends = $appends;
+		return $this;
+	}
+
+	/**
+	 * Check if an attribute is being appended.
+	 *
+	 * @param string $attribute Attribute to check.
+	 * @return bool
+	 */
+	public function has_appended( string $attribute ): bool {
+		return in_array( $attribute, $this->appends, true );
+	}
+
+	/**
+	 * Append attributes to the model arrays.
+	 *
+	 * @param string|string[] ...$attributes Attributes to append.
+	 * @return static
+	 */
+	public function append( ...$attributes ) {
+		$this->appends = array_unique(
+			array_merge( $this->appends, $attributes )
+		);
+
+		return $this;
+	}
+
+	/**
+	 * Retrieve all the appendable values in an array.
+	 *
+	 * @return array
+	 */
+	public function get_arrayable_appends(): array {
+		if ( empty( $this->appends ) ) {
+			return [];
+		}
+
+		return collect( $this->appends )
+			->combine(
+				collect( $this->appends )->map(
+					function ( string $attribute ) {
+						return $this->get_attribute( $attribute );
+					}
+				)
+			)
+			->to_array();
 	}
 }

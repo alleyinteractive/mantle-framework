@@ -509,7 +509,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 * @return array
 	 */
 	public function to_array(): array {
-		return $this->get_attributes();
+		return $this->attributes_to_array();
 	}
 
 	/**
