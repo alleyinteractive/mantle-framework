@@ -9,6 +9,8 @@
 
 namespace Mantle\Framework\Testing\Concerns;
 
+use PHPUnit\Framework\Test;
+
 trait Deprecations {
 
 	/**
@@ -29,7 +31,15 @@ trait Deprecations {
 	 * Sets up the expectations for testing a deprecated call.
 	 */
 	public function expectDeprecated() {
-		$annotations = $this->getAnnotations();
+		if ( ! method_exists( $this, 'getAnnotations' ) ) {
+			$annotations = Test::parseTestMethodAnnotations(
+				static::class,
+				$this->name
+			);
+		} else {
+			$annotations = $this->getAnnotations();
+		}
+
 		foreach ( [ 'class', 'method' ] as $depth ) {
 			if ( ! empty( $annotations[ $depth ]['expectedDeprecated'] ) ) {
 				$this->expected_deprecated = array_merge( $this->expected_deprecated, $annotations[ $depth ]['expectedDeprecated'] );
