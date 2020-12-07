@@ -1,16 +1,16 @@
 <?php
 /**
- * Aliases trait file.
+ * Has_Aliases trait file.
  *
  * @package Mantle
  */
 
-namespace Mantle\Framework\Database\Model;
+namespace Mantle\Framework\Database\Model\Concerns;
 
 /**
  * Model Aliases
  */
-trait Aliases {
+trait Has_Aliases {
 	/**
 	 * Model aliases.
 	 *

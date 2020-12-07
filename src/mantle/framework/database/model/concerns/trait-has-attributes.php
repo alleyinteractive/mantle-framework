@@ -1,17 +1,19 @@
 <?php
 /**
- * Attributes trait file.
+ * Has_Attributes trait file.
  *
  * @package Mantle
  */
 
-namespace Mantle\Framework\Database\Model;
+namespace Mantle\Framework\Database\Model\Concerns;
+
+use Mantle\Framework\Database\Model\Model_Exception;
 
 /**
  * Model Attributes
  */
-trait Attributes {
-	use Guarded_Attributes;
+trait Has_Attributes {
+	use Has_Guarded_Attributes;
 
 	/**
 	 * Attributes for the model from the object

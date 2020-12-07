@@ -2,7 +2,7 @@
 namespace Mantle\Tests\Database\Builder\Post_Query_Relationships;
 
 use Mantle\Framework\Database\Model\Post;
-use Mantle\Framework\Database\Model\Relationships;
+use Mantle\Framework\Database\Model\Concerns\Has_Relationships as Relationships;
 use Mantle\Framework\Testing\Framework_Test_Case;
 
 

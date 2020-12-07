@@ -28,12 +28,12 @@ use function Mantle\Framework\Helpers\class_uses_recursive;
  * @mixin \Mantle\Framework\Database\Query\Builder
  */
 abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializable, Url_Routable {
-	use Aliases,
-		Attributes,
-		Forward_Calls,
-		Relationships,
+	use Forward_Calls,
+		Concerns\Has_Aliases,
+		Concerns\Has_Attributes,
 		Concerns\Has_Events,
-		Concerns\Has_Global_Scopes;
+		Concerns\Has_Global_Scopes,
+		Concerns\Has_Relationships;
 
 	/**
 	 * The array of booted models.
