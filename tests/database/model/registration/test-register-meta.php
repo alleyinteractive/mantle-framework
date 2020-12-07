@@ -1,6 +1,7 @@
 <?php
 namespace Mantle\Tests\Database\Model\Registration;
 
+use Mantle\Framework\Contracts\Database\Registrable_Meta;
 use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Registration\Register_Meta;
 use Mockery as m;
@@ -22,7 +23,7 @@ class Test_Register_Meta extends Framework_Test_Case {
 	}
 }
 
-class Testable_Post_Model_Meta extends Post {
+class Testable_Post_Model_Meta extends Post implements Registrable_Meta {
 	use Register_Meta;
 
 	public static $object_name = 'post';
