@@ -9,6 +9,8 @@
 
 namespace Mantle\Framework\Testing\Concerns;
 
+use PHPUnit\Util\Test;
+
 trait Incorrect_Usage {
 
 	/**
@@ -29,7 +31,15 @@ trait Incorrect_Usage {
 	 * Sets up the expectations for testing a deprecated call.
 	 */
 	public function expectIncorrectUsage() {
-		$annotations = $this->getAnnotations();
+		if ( ! method_exists( $this, 'getAnnotations' ) ) {
+			$annotations = Test::parseTestMethodAnnotations(
+				static::class,
+				$this->name
+			);
+		} else {
+			$annotations = $this->getAnnotations();
+		}
+
 		foreach ( [ 'class', 'method' ] as $depth ) {
 			if ( ! empty( $annotations[ $depth ]['expectedIncorrectUsage'] ) ) {
 				$this->expected_doing_it_wrong = array_merge( $this->expected_doing_it_wrong, $annotations[ $depth ]['expectedIncorrectUsage'] );

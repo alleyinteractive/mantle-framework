@@ -9,7 +9,7 @@
 
 namespace Mantle\Framework\Testing\Concerns;
 
-use PHPUnit\Framework\Test;
+use PHPUnit\Util\Test;
 
 trait Deprecations {
 
