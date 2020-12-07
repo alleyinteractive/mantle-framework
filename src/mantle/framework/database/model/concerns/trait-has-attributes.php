@@ -15,7 +15,7 @@ use function Mantle\Framework\Helpers\collect;
  * Model Attributes
  */
 trait Has_Attributes {
-	use Has_Guarded_Attributes;
+	use Has_Guarded_Attributes, Hides_Attributes;
 
 	/**
 	 * Attributes for the model from the object
@@ -144,13 +144,22 @@ trait Has_Attributes {
 	}
 
 	/**
+	 * Get an attribute array of all arrayable attributes.
+	 *
+	 * @return array
+	 */
+	protected function get_arrayable_attributes(): array {
+		return $this->get_arrayable_items( $this->get_attributes() );
+	}
+
+	/**
 	 * Convert the models' attributes to an array.
 	 *
 	 * @return array
 	 */
 	public function attributes_to_array(): array {
 		// Retrieve all attributes, passing them through the mutators.
-		$attributes = collect( $this->attributes )
+		$attributes = collect( $this->get_arrayable_attributes() )
 			->map(
 				function( $value, string $attribute ) {
 					return $this->get_attribute( $attribute );
@@ -159,6 +168,30 @@ trait Has_Attributes {
 			->merge( $this->get_arrayable_appends() );
 
 		return $attributes->to_array();
+	}
+
+	/**
+	 * Get an attribute array of all arrayable values.
+	 *
+	 * Filters out any hidden attribute that shouldn't appear and only includes
+	 * visible attributes if set.
+	 *
+	 * @param string[] $values Values to check.
+	 * @return array
+	 */
+	protected function get_arrayable_items( array $values ): array {
+		$visible = $this->get_visible();
+		$hidden  = $this->get_hidden();
+
+		if ( ! empty( $visible ) ) {
+			$values = array_intersect_key( $values, array_flip( $visible ) );
+		}
+
+		if ( ! empty( $hidden ) ) {
+			$values = array_diff_key( $values, array_flip( $hidden ) );
+		}
+
+		return $values;
 	}
 
 	/**
@@ -400,14 +433,16 @@ trait Has_Attributes {
 			return [];
 		}
 
-		return collect( $this->appends )
-			->combine(
-				collect( $this->appends )->map(
-					function ( string $attribute ) {
-						return $this->get_attribute( $attribute );
-					}
+		return $this->get_arrayable_items(
+			collect( $this->appends )
+				->combine(
+					collect( $this->appends )->map(
+						function ( string $attribute ) {
+							return $this->get_attribute( $attribute );
+						}
+					)
 				)
-			)
-			->to_array();
+				->to_array()
+		);
 	}
 }

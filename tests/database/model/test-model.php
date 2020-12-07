@@ -54,6 +54,41 @@ class Test_Model extends Framework_Test_Case {
 		$this->assertArrayHasKey( 'abstract', $array );
 		$this->assertArrayNotHasKey( 'included_append', $array );
 	}
+
+	public function test_hidden_attribute() {
+		$post = Testable_Post_For_Appending::find(
+			static::factory()->post->create( [ 'post_password' => 'password' ] )
+		);
+
+		$array = $post->to_array();
+		$this->assertArrayHasKey( 'post_title', $array );
+		$this->assertArrayNotHasKey( 'post_password', $array );
+
+		$post->set_visible( 'post_password' );
+		$post->set_hidden( 'post_title', 'included_append' );
+		$array = $post->to_array();
+
+		$this->assertArrayNotHasKey( 'post_title', $array );
+		$this->assertArrayNotHasKey( 'included_append', $array );
+		$this->assertArrayHasKey( 'post_password', $array );
+		$this->assertEquals(
+			[
+				'post_password' => 'password',
+			],
+			$array
+		);
+
+		$post->make_visible_if( function() { return true; }, 'post_title' );
+		$array = $post->to_array();
+
+		$this->assertEquals(
+			[
+				'post_title' => $post->title,
+				'post_password' => 'password',
+			],
+			$array
+		);
+	}
 }
 
 class Testable_Model extends Model {
