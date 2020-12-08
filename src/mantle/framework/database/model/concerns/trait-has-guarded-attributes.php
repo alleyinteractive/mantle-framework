@@ -1,6 +1,6 @@
 <?php
 /**
- * Guarded_Attributes class file.
+ * Has_Guarded_Attributes class file.
  *
  * @package Mantle
  */
@@ -8,12 +8,12 @@
 // phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment
 // phpcs:ignoreFile: WordPressVIPMinimum.Variables.VariableAnalysis.StaticInsideClosure
 
-namespace Mantle\Framework\Database\Model;
+namespace Mantle\Framework\Database\Model\Concerns;
 
 /**
  * Guard Specific Attributes from being set.
  */
-trait Guarded_Attributes {
+trait Has_Guarded_Attributes {
 	/**
 	 * Attributes that are guarded.
 	 *

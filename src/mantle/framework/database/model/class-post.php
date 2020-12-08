@@ -47,6 +47,15 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	];
 
 	/**
+	 * The attributes that should be hidden for serialization.
+	 *
+	 * @var string[]
+	 */
+	protected $hidden = [
+		'post_password',
+	];
+
+	/**
 	 * Post type for the model.
 	 *
 	 * @var string

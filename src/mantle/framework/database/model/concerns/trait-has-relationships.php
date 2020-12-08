@@ -1,12 +1,12 @@
 <?php
 /**
- * Relationships trait file.
+ * Has_Relationships trait file.
  *
  * @package Mantle
  * @phpcs:disable Squiz.Commenting.FunctionComment
  */
 
-namespace Mantle\Framework\Database\Model;
+namespace Mantle\Framework\Database\Model\Concerns;
 
 use Mantle\Framework\Database\Model\Relations\Belongs_To;
 use Mantle\Framework\Database\Model\Relations\Has_One_Or_Many;
@@ -15,7 +15,7 @@ use Mantle\Framework\Database\Model\Relations\Relation;
 /**
  * Model Relationships
  */
-trait Relationships {
+trait Has_Relationships {
 	/**
 	 * Define a Has One Relationship
 	 *

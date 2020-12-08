@@ -1,17 +1,21 @@
 <?php
 /**
- * Attributes trait file.
+ * Has_Attributes trait file.
  *
  * @package Mantle
  */
 
-namespace Mantle\Framework\Database\Model;
+namespace Mantle\Framework\Database\Model\Concerns;
+
+use Mantle\Framework\Database\Model\Model_Exception;
+
+use function Mantle\Framework\Helpers\collect;
 
 /**
  * Model Attributes
  */
-trait Attributes {
-	use Guarded_Attributes;
+trait Has_Attributes {
+	use Has_Guarded_Attributes, Hides_Attributes;
 
 	/**
 	 * Attributes for the model from the object
@@ -33,6 +37,13 @@ trait Attributes {
 	 * @var array
 	 */
 	protected $casts = [];
+
+	/**
+	 * The accessors to append to the model's array form.
+	 *
+	 * @var array
+	 */
+	protected $appends = [];
 
 	/**
 	 * The built-in, primitive cast types supported by the model.
@@ -130,6 +141,57 @@ trait Attributes {
 		}
 
 		return $attributes;
+	}
+
+	/**
+	 * Get an attribute array of all arrayable attributes.
+	 *
+	 * @return array
+	 */
+	protected function get_arrayable_attributes(): array {
+		return $this->get_arrayable_items( $this->get_attributes() );
+	}
+
+	/**
+	 * Convert the models' attributes to an array.
+	 *
+	 * @return array
+	 */
+	public function attributes_to_array(): array {
+		// Retrieve all attributes, passing them through the mutators.
+		$attributes = collect( $this->get_arrayable_attributes() )
+			->map(
+				function( $value, string $attribute ) {
+					return $this->get_attribute( $attribute );
+				}
+			)
+			->merge( $this->get_arrayable_appends() );
+
+		return $attributes->to_array();
+	}
+
+	/**
+	 * Get an attribute array of all arrayable values.
+	 *
+	 * Filters out any hidden attribute that shouldn't appear and only includes
+	 * visible attributes if set.
+	 *
+	 * @param string[] $values Values to check.
+	 * @return array
+	 */
+	protected function get_arrayable_items( array $values ): array {
+		$visible = $this->get_visible();
+		$hidden  = $this->get_hidden();
+
+		if ( ! empty( $visible ) ) {
+			$values = array_intersect_key( $values, array_flip( $visible ) );
+		}
+
+		if ( ! empty( $hidden ) ) {
+			$values = array_diff_key( $values, array_flip( $hidden ) );
+		}
+
+		return $values;
 	}
 
 	/**
@@ -324,5 +386,63 @@ trait Attributes {
 	 */
 	public function mutate_set_attribute( string $attribute, $value ) {
 		return $this->{ $this->get_set_mutator_method_name( $attribute ) }( $value );
+	}
+
+	/**
+	 * Set the accessors to append to model arrays.
+	 *
+	 * @param string|string[] ...$appends Accessors to append.
+	 * @return static
+	 */
+	public function set_appends( ...$appends ) {
+		$this->appends = $appends;
+		return $this;
+	}
+
+	/**
+	 * Check if an attribute is being appended.
+	 *
+	 * @param string $attribute Attribute to check.
+	 * @return bool
+	 */
+	public function has_appended( string $attribute ): bool {
+		return in_array( $attribute, $this->appends, true );
+	}
+
+	/**
+	 * Append attributes to the model arrays.
+	 *
+	 * @param string|string[] ...$attributes Attributes to append.
+	 * @return static
+	 */
+	public function append( ...$attributes ) {
+		$this->appends = array_unique(
+			array_merge( $this->appends, $attributes )
+		);
+
+		return $this;
+	}
+
+	/**
+	 * Retrieve all the appendable values in an array.
+	 *
+	 * @return array
+	 */
+	public function get_arrayable_appends(): array {
+		if ( empty( $this->appends ) ) {
+			return [];
+		}
+
+		return $this->get_arrayable_items(
+			collect( $this->appends )
+				->combine(
+					collect( $this->appends )->map(
+						function ( string $attribute ) {
+							return $this->get_attribute( $attribute );
+						}
+					)
+				)
+				->to_array()
+		);
 	}
 }
