@@ -23,8 +23,6 @@ use function Mantle\Framework\Helpers\class_uses_recursive;
 /**
  * Database Model
  *
- * @todo Move all concerns to the 'Concerns' namespace.
- *
  * @mixin \Mantle\Framework\Database\Query\Builder
  */
 abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializable, Url_Routable {
