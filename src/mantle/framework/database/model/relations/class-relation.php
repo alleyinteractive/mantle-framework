@@ -53,8 +53,6 @@ abstract class Relation {
 		if ( ! is_null( $uses_terms ) ) {
 			$this->uses_terms( $uses_terms );
 		}
-
-		$this->add_constraints();
 	}
 
 	/**
@@ -70,6 +68,8 @@ abstract class Relation {
 	 * @return mixed
 	 */
 	public function __call( string $method, array $parameters ) {
+		$this->add_constraints();
+
 		$result = $this->forward_call_to( $this->query, $method, $parameters );
 
 		if ( $this->query === $result ) {

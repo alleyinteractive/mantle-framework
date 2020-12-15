@@ -20,6 +20,13 @@ use Mantle\Framework\Database\Query\Term_Query_Builder;
  */
 class Has_One_Or_Many extends Relation {
 	/**
+	 * Delimiter for the term slug.
+	 *
+	 * @var string
+	 */
+	public const DELIMITER = '__-__';
+
+	/**
 	 * Local key.
 	 *
 	 * @var string
@@ -53,9 +60,9 @@ class Has_One_Or_Many extends Relation {
 	 */
 	public function add_constraints() {
 		if ( $this->uses_terms ) {
-			return $this->query->whereMeta( $this->foreign_key, $this->parent->get( $this->local_key ) );
-		} else {
 			return $this->query->whereTerm( $this->get_term_slug_for_relationship(), static::RELATION_TAXONOMY );
+		} else {
+			return $this->query->whereMeta( $this->foreign_key, $this->parent->get( $this->local_key ) );
 		}
 	}
 
@@ -151,7 +158,7 @@ class Has_One_Or_Many extends Relation {
 		}
 
 		$name = $this->get_term_slug_for_relationship();
-		$term = get_term_by( 'name', $this->get_term_slug_for_relationship(), static::RELATION_TAXONOMY );
+		$term = get_term_by( 'name', $name, static::RELATION_TAXONOMY );
 
 		if ( empty( $term ) ) {
 			$insert = wp_insert_term( $name, static::RELATION_TAXONOMY );
@@ -172,6 +179,7 @@ class Has_One_Or_Many extends Relation {
 	 * @return string
 	 */
 	protected function get_term_slug_for_relationship(): string {
-		return "{$this->foreign_key}__{$this->parent->get( $this->local_key )}";
+		$delimiter = static::DELIMITER;
+		return "{$this->foreign_key}{$delimiter}{$this->parent->get( $this->local_key )}";
 	}
 }
