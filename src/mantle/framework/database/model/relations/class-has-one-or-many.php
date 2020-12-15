@@ -8,6 +8,7 @@
 namespace Mantle\Framework\Database\Model\Relations;
 
 use Mantle\Framework\Database\Model\Model;
+use Mantle\Framework\Database\Model\Model_Exception;
 use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Term;
 use Mantle\Framework\Database\Query\Builder;
@@ -51,7 +52,11 @@ class Has_One_Or_Many extends Relation {
 	 * Add constraints to the query.
 	 */
 	public function add_constraints() {
-		return $this->query->whereMeta( $this->foreign_key, $this->parent->get( $this->local_key ) );
+		if ( $this->uses_terms ) {
+			return $this->query->whereMeta( $this->foreign_key, $this->parent->get( $this->local_key ) );
+		} else {
+			return $this->query->whereTerm( $this->get_term_slug_for_relationship(), static::RELATION_TAXONOMY );
+		}
 	}
 
 	/**
@@ -70,7 +75,17 @@ class Has_One_Or_Many extends Relation {
 				$model->set_terms( $this->parent );
 			}
 		} else {
-			$model->set_meta( $this->foreign_key, $this->parent->get( $this->local_key ) );
+			// Save the model if it doesn't exist.
+			if ( ! $model->exists ) {
+				$model->save();
+			}
+
+			// Set meta or use a hidden taxonomy if using terms.
+			if ( $this->uses_terms ) {
+				wp_set_post_terms( $model->id(), [ $this->get_term_for_relationship() ], static::RELATION_TAXONOMY, true );
+			} else {
+				$model->set_meta( $this->foreign_key, $this->parent->get( $this->local_key ) );
+			}
 		}
 
 		return $model;
@@ -91,8 +106,16 @@ class Has_One_Or_Many extends Relation {
 			foreach ( $models as $model ) {
 				$model->remove_terms( $this->parent );
 			}
-		} else {
-			$model->delete_meta( $this->foreign_key );
+		} elseif ( $model->exists ) {
+			if ( $this->uses_terms ) {
+				$term = $this->get_term_for_relationship();
+
+				if ( has_term( $term, static::RELATION_TAXONOMY, $model->id() ) ) {
+					wp_remove_object_terms( $model->id(), $term, static::RELATION_TAXONOMY );
+				}
+			} else {
+				$model->delete_meta( $this->foreign_key );
+			}
 		}
 
 		return $model;
@@ -114,5 +137,41 @@ class Has_One_Or_Many extends Relation {
 	 */
 	protected function is_term_post_relationship(): bool {
 		return $this->parent instanceof Term && $this->query instanceof Post_Query_Builder;
+	}
+
+	/**
+	 * Retrieve a internal term for a post to post relationship.
+	 *
+	 * @return int
+	 * @throws Model_Exception Thrown on error using internal term with a post to term or term to post relationship.
+	 */
+	protected function get_term_for_relationship(): int {
+		if ( $this->is_post_term_relationship() || $this->is_term_post_relationship() ) {
+			throw new Model_Exception( 'Unable to retrieve an internal term for a post->term or term->post relationship.' );
+		}
+
+		$name = $this->get_term_slug_for_relationship();
+		$term = get_term_by( 'name', $this->get_term_slug_for_relationship(), static::RELATION_TAXONOMY );
+
+		if ( empty( $term ) ) {
+			$insert = wp_insert_term( $name, static::RELATION_TAXONOMY );
+
+			if ( is_wp_error( $insert ) ) {
+				throw new Model_Exception( "Error creating internal term for relationship: [{$insert->get_error_message()}]" );
+			}
+
+			return $insert['term_id'];
+		}
+
+		return $term->term_id;
+	}
+
+	/**
+	 * Retrieve the term slug for a post to post relationship.
+	 *
+	 * @return string
+	 */
+	protected function get_term_slug_for_relationship(): string {
+		return "{$this->foreign_key}__{$this->parent->get( $this->local_key )}";
 	}
 }
