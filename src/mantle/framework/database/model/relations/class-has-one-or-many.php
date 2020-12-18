@@ -147,7 +147,7 @@ class Has_One_Or_Many extends Relation {
 	}
 
 	/**
-	 * Retrieve a internal term for a post to post relationship.
+	 * Retrieve a internal term for a post-to-post relationship.
 	 *
 	 * @return int
 	 * @throws Model_Exception Thrown on error using internal term with a post to term or term to post relationship.
@@ -174,7 +174,7 @@ class Has_One_Or_Many extends Relation {
 	}
 
 	/**
-	 * Retrieve the term slug for a post to post relationship.
+	 * Retrieve the term slug for a post-to-post relationship.
 	 *
 	 * @return string
 	 */

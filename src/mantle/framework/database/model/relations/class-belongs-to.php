@@ -165,7 +165,7 @@ class Belongs_To extends Relation {
 	}
 
 	/**
-	 * Retrieve a internal term for a post to post relationship.
+	 * Retrieve a internal term for a post-to-post relationship.
 	 *
 	 * @param Model|string $model Model instance/id.
 	 * @return int
@@ -189,7 +189,7 @@ class Belongs_To extends Relation {
 	}
 
 	/**
-	 * Retrieve the term slug for a post to post relationship.
+	 * Retrieve the term slug for a post-to-post relationship.
 	 *
 	 * @param Model|string $model Model instance/id.
 	 * @return string

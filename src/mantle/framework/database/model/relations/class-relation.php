@@ -18,7 +18,7 @@ abstract class Relation {
 	use Forward_Calls;
 
 	/**
-	 * Internal taxonomy for post to post relationships.
+	 * Internal taxonomy for post-to-post relationships.
 	 *
 	 * @var string
 	 */
