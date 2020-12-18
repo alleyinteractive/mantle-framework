@@ -73,7 +73,7 @@ class Command_Make_Command extends Generator_Command {
 	public function synopsis( string $name ) {
 		$this->log(
 			PHP_EOL . sprintf(
-				'You can register this command by adding "%s\\%s::class" to the "$commands" property in "app/console/class-kernel.php".',
+				'This command should be automatically registered for you. If it is not you can register this command by adding "%s\\%s::class" to the "$commands" property in "app/console/class-kernel.php".',
 				$this->get_namespace( $name ),
 				$this->get_class_name( $name )
 			)

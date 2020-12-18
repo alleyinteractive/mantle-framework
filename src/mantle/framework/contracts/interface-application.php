@@ -7,6 +7,7 @@
 
 namespace Mantle\Framework\Contracts;
 
+use RuntimeException;
 use Mantle\Framework\Contracts\Kernel as Kernel_Contract;
 use Mantle\Framework\Service_Provider;
 
@@ -71,6 +72,15 @@ interface Application {
 	 * @return bool
 	 */
 	public function is_environment( ...$environments ): bool;
+
+	/**
+	 * Get the application namespace.
+	 *
+	 * @return string
+	 *
+	 * @throws RuntimeException Thrown on error determining namespace.
+	 */
+	public function get_namespace(): string;
 
 	/**
 	 * Check if the application is running in the console.

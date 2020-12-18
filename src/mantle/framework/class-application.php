@@ -33,6 +33,13 @@ class Application extends Container\Container implements Application_Contract {
 	protected $base_path;
 
 	/**
+	 * Application path of the application.
+	 *
+	 * @var string
+	 */
+	protected $app_path;
+
+	/**
 	 * Bootstrap path of the application.
 	 *
 	 * @var string
@@ -148,6 +155,32 @@ class Application extends Container\Container implements Application_Contract {
 	 */
 	public function get_base_path( string $path = '' ): string {
 		return $this->base_path . ( $path ? '/' . $path : '' );
+	}
+
+	/**
+	 * Get the path to the application "app" directory.
+	 *
+	 * @param string $path Path to append, optional.
+	 * @return string
+	 */
+	public function get_app_path( string $path = '' ): string {
+		$app_path = $this->app_path ?: $this->get_base_path( 'app' );
+
+		return $app_path . ( $path ? DIRECTORY_SEPARATOR . $path : $path );
+	}
+
+	/**
+	 * Set the application directory.
+	 *
+	 * @param string $path Path to use.
+	 * @return static
+	 */
+	public function set_app_path( string $path ) {
+		$this->app_path = $path;
+
+		$this->instance( 'path', $path );
+
+		return $this;
 	}
 
 	/**
@@ -437,6 +470,17 @@ class Application extends Container\Container implements Application_Contract {
 	 */
 	public function is_environment( ...$environments ): bool {
 		return in_array( $this->environment(), (array) $environments, true );
+	}
+
+	/**
+	 * Get the application namespace.
+	 *
+	 * @return string
+	 *
+	 * @throws RuntimeException Thrown on error determining namespace.
+	 */
+	public function get_namespace(): string {
+		return Environment::get( 'APP_NAMESPACE', 'App' );
 	}
 
 	/**
