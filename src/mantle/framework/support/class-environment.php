@@ -7,7 +7,6 @@
 
 namespace Mantle\Framework\Support;
 
-
 use PhpOption\Option;
 use Dotenv\Repository\RepositoryBuilder;
 use Dotenv\Repository\RepositoryInterface;
@@ -60,7 +59,7 @@ class Environment {
 		return Option::fromValue( static::get_repository()->get( $key ) )
 			->map(
 				function ( $value ) {
-					switch (strtolower($value)) {
+					switch ( strtolower( $value ) ) {
 						case 'true':
 						case '(true)':
 							return true;
