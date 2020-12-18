@@ -426,7 +426,7 @@ class Application extends Container\Container implements Application_Contract {
 			return (string) $_SERVER['PANTHEON_ENVIRONMENT']; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		}
 
-		return Environment::get( 'env', 'local' );
+		return Environment::get( 'ENV', 'local' );
 	}
 
 	/**

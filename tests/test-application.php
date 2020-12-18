@@ -11,15 +11,15 @@ class Test_Application extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	public function test_environment() {
 		$app = new Application();
 
-		$_ENV['env'] = 'test-env';
+		$_ENV['ENV'] = 'test-env';
 		$this->assertEquals( 'test-env', $app->environment() );
 
-		$_ENV['env'] = 'another-test-env';
+		$_ENV['ENV'] = 'another-test-env';
 		$this->assertEquals( 'another-test-env', $app->environment() );
 	}
 
 	public function test_is_environment() {
-		$_ENV['env'] = 'test-env';
+		$_ENV['ENV'] = 'test-env';
 		$app         = new Application();
 
 		$this->assertTrue( $app->is_environment( 'test-env', 'another-thing' ) );
