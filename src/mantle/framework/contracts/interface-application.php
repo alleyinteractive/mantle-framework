@@ -16,6 +16,13 @@ use Mantle\Framework\Service_Provider;
  */
 interface Application {
 	/**
+	 * Getter for the base path.
+	 *
+	 * @return string
+	 */
+	public function get_base_path(): string;
+
+	/**
 	 * Set the base path for a application.
 	 *
 	 * @param string $path Path to set.
@@ -23,11 +30,28 @@ interface Application {
 	public function set_base_path( string $path );
 
 	/**
-	 * Getter for the base path.
+	 * Get the path to the application "app" directory.
 	 *
+	 * @param string $path Path to append, optional.
 	 * @return string
 	 */
-	public function get_base_path(): string;
+	public function get_app_path( string $path = '' ): string;
+
+	/**
+	 * Set the application directory.
+	 *
+	 * @param string $path Path to use.
+	 * @return static
+	 */
+	public function set_app_path( string $path );
+
+	/**
+	 * Getter for the bootstrap path.
+	 *
+	 * @param string $path Path to append.
+	 * @return string
+	 */
+	public function get_bootstrap_path( string $path = '' ): string;
 
 	/**
 	 * Set the root URL of the application.
@@ -50,6 +74,14 @@ interface Application {
 	 * @return string
 	 */
 	public function get_cache_path(): string;
+
+	/**
+	 * Get the cached Composer packages path.
+	 * Folder that stores all compiled server-side assets for the application.
+	 *
+	 * @return string
+	 */
+	public function get_cached_packages_path(): string;
 
 	/**
 	 * Get the path to the application configuration files.
@@ -139,4 +171,18 @@ interface Application {
 	 * @return Service_Provider[]
 	 */
 	public function get_providers(): array;
+
+	/**
+	 * Determine if the application is cached.
+	 *
+	 * @return bool
+	 */
+	public function is_configuration_cached(): bool;
+
+	/**
+	 * Retrieve the cached configuration path.
+	 *
+	 * @return string
+	 */
+	public function get_cached_config_path(): string;
 }

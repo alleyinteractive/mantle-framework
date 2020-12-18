@@ -8,8 +8,7 @@
 namespace Mantle\Framework\Console;
 
 use Mantle\Framework\Contracts\Application;
-use Mantle\Framework\Providers\Provider_Exception;
-use Mantle\Framework\Support\String_Replacements;
+use Mantle\Framework\Filesystem\Filesystem;
 
 /**
  * Clear Config Cache Command
@@ -44,6 +43,13 @@ class Config_Clear_Command extends Command {
 	protected $app;
 
 	/**
+	 * Filesystem instance.
+	 *
+	 * @var Filesystem
+	 */
+	protected $files;
+
+	/**
 	 * Command synopsis.
 	 *
 	 * @var array
@@ -54,41 +60,38 @@ class Config_Clear_Command extends Command {
 	 * Constructor.
 	 *
 	 * @param Application $app Application instance.
+	 * @param Filesystem  $filesystem Filesystem instance.
 	 */
-	public function __construct( Application $app ) {
-		$this->app = $app;
+	public function __construct( Application $app, Filesystem $filesystem ) {
+		$this->app   = $app;
+		$this->files = $filesystem;
 	}
 
 	/**
-	 * Flush Mantle's local cache.
+	 * Flush Mantle's configuration cache.
 	 *
 	 * @param array $args Command Arguments.
 	 * @param array $assoc_args Command flags.
 	 */
 	public function handle( array $args, array $assoc_args = [] ) {
-		$this->app['events']->dispatch( 'cache:clearing' );
+		$this->app['events']->dispatch( 'config-cache:clearing' );
 
 		$this->delete_cached_files();
 
-		$this->app['events']->dispatch( 'cache:cleared' );
+		$this->app['events']->dispatch( 'config-cache:cleared' );
 	}
 
 	/**
 	 * Delete the cached files.
 	 */
 	protected function delete_cached_files() {
-		$files = glob( $this->app->get_cache_path() . '/*.php' );
+		$path = $this->app->get_cached_config_path();
+		$this->log( "Deleting: [{$path}]" );
 
-		foreach ( $files as $file ) {
-			$this->log( "Deleting: [$file]" );
-
-			try {
-				unlink( $file ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_unlink
-			} catch ( \Throwable $e ) {
-				$this->log( 'Error deleting: ' . $e->getMessage() );
-			}
+		if ( $this->files->delete( $path ) ) {
+			$this->log( 'All files deleted.' );
+		} else {
+			$this->log( 'File not deleted.' );
 		}
-
-		$this->log( 'All files deleted.' );
 	}
 }

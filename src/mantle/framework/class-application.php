@@ -10,6 +10,7 @@ namespace Mantle\Framework;
 use Mantle\Framework\Contracts\Application as Application_Contract;
 use Mantle\Framework\Contracts\Container as Container_Contract;
 use Mantle\Framework\Contracts\Kernel as Kernel_Contract;
+use Mantle\Framework\Filesystem\Filesystem;
 use Mantle\Framework\Log\Log_Service_Provider;
 use Mantle\Framework\Providers\Event_Service_Provider;
 use Mantle\Framework\Providers\Routing_Service_Provider;
@@ -237,8 +238,26 @@ class Application extends Container\Container implements Application_Contract {
 	 *
 	 * @return string
 	 */
-	public function get_cached_packages_path() {
+	public function get_cached_packages_path(): string {
 		return $this->get_cache_path() . '/packages.php';
+	}
+
+	/**
+	 * Determine if the application is cached.
+	 *
+	 * @return bool
+	 */
+	public function is_configuration_cached(): bool {
+		return is_file( $this->get_cached_config_path() );
+	}
+
+	/**
+	 * Retrieve the cached configuration path.
+	 *
+	 * @return string
+	 */
+	public function get_cached_config_path(): string {
+		return $this->get_bootstrap_path() . '/' . Environment::get( 'APP_CONFIG_CACHE', 'cache/config.php' );
 	}
 
 	/**
@@ -297,6 +316,7 @@ class Application extends Container\Container implements Application_Contract {
 		$core_aliases = [
 			'app'         => [ static::class, \Mantle\Framework\Contracts\Application::class ],
 			'config'      => [ \Mantle\Framework\Config\Repository::class, \Mantle\Framework\Contracts\Config\Repository::class ],
+			'files'       => [ \Mantle\Framework\Filesystem\Filesystem::class ],
 			'filesystem'  => [ \Mantle\Framework\Filesystem\Filesystem_Manager::class, \Mantle\Framework\Contracts\Filesystem\Filesystem_Manager::class ],
 			'log'         => [ \Mantle\Framework\Log\Log_Manager::class, \Psr\Log\LoggerInterface::class ],
 			'queue'       => [ \Mantle\Framework\Queue\Queue_Manager::class, \Mantle\Framework\Contracts\Queue\Queue_Manager::class ],

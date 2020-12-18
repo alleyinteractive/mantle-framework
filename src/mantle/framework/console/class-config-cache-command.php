@@ -7,9 +7,13 @@
 
 namespace Mantle\Framework\Console;
 
+use LogicException;
 use Mantle\Framework\Contracts\Application;
+use Mantle\Framework\Contracts\Console\Kernel;
+use Mantle\Framework\Filesystem\Filesystem;
 use Mantle\Framework\Providers\Provider_Exception;
 use Mantle\Framework\Support\String_Replacements;
+use Throwable;
 
 /**
  * Clear Config Cache Command
@@ -20,7 +24,7 @@ class Config_Cache_Command extends Command {
 	 *
 	 * @var string
 	 */
-	protected $name = 'config:clear';
+	protected $name = 'config:cache';
 
 	/**
 	 * Command Short Description.
@@ -44,6 +48,13 @@ class Config_Cache_Command extends Command {
 	protected $app;
 
 	/**
+	 * Filesystem instance.
+	 *
+	 * @var Filesystem
+	 */
+	protected $files;
+
+	/**
 	 * Command synopsis.
 	 *
 	 * @var array
@@ -54,9 +65,11 @@ class Config_Cache_Command extends Command {
 	 * Constructor.
 	 *
 	 * @param Application $app Application instance.
+	 * @param Filesystem  $filesystem Filesystem instance.
 	 */
-	public function __construct( Application $app ) {
-		$this->app = $app;
+	public function __construct( Application $app, Filesystem $filesystem ) {
+		$this->app   = $app;
+		$this->files = $filesystem;
 	}
 
 	/**
@@ -64,31 +77,43 @@ class Config_Cache_Command extends Command {
 	 *
 	 * @param array $args Command Arguments.
 	 * @param array $assoc_args Command flags.
+	 *
+	 * @throws LogicException Thrown on error writing config file.
 	 */
 	public function handle( array $args, array $assoc_args = [] ) {
-		$this->app['events']->dispatch( 'cache:clearing' );
+		$this->call( 'mantle config:clear' );
 
-		$this->delete_cached_files();
+		$path   = $this->app->get_cached_config_path();
+		$config = $this->get_fresh_configuration();
 
-		$this->app['events']->dispatch( 'cache:cleared' );
+		$this->files->put(
+			$path,
+			'<?php return ' . var_export( $config, true ) . ';' . PHP_EOL // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_var_export
+		);
+
+		try {
+			require $path;
+		} catch ( Throwable $e ) {
+			$this->files->delete( $path );
+
+			throw new LogicException( 'Your configuration files are not serializable.', 0, $e );
+		}
+
+		$this->app['events']->dispatch( 'config-cache:cached' );
+
+		$this->log( 'Configuration cached successfully!' );
 	}
 
 	/**
-	 * Delete the cached files.
+	 * Boot a fresh copy of the application configuration.
+	 *
+	 * @return array
 	 */
-	protected function delete_cached_files() {
-		$files = glob( $this->app->get_cache_path() . '/*.php' );
+	protected function get_fresh_configuration() : array {
+		$app = require $this->app->get_bootstrap_path( '/app.php' );
+		$app->set_base_path( $this->app->get_base_path() );
+		$app->make( Kernel::class )->bootstrap();
 
-		foreach ( $files as $file ) {
-			$this->log( "Deleting: [$file]" );
-
-			try {
-				unlink( $file ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_unlink
-			} catch ( \Throwable $e ) {
-				$this->log( 'Error deleting: ' . $e->getMessage() );
-			}
-		}
-
-		$this->log( 'All files deleted.' );
+		return $app['config']->all();
 	}
 }
