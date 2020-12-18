@@ -81,6 +81,17 @@ class Test_Application extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertSame( $provider, $app->get_provider( Test_App_Service_Provider::class ) );
 		$this->assertNull( $app->get_provider( \Invalid_Class::class ) );
 	}
+
+	public function test_is_running_in_console() {
+		unset( $_ENV['APP_RUNNING_IN_CONSOLE'] );
+		$this->assertFalse( ( new Application() )->is_running_in_console() );
+
+		$_ENV['APP_RUNNING_IN_CONSOLE'] = true;
+
+		$this->assertTrue( ( new Application() )->is_running_in_console() );
+
+		unset( $_ENV['APP_RUNNING_IN_CONSOLE'] );
+	}
 }
 
 

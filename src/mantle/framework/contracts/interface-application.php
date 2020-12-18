@@ -73,6 +73,13 @@ interface Application {
 	public function is_environment( ...$environments ): bool;
 
 	/**
+	 * Check if the application is running in the console.
+	 *
+	 * @return bool
+	 */
+	public function is_running_in_console(): bool;
+
+	/**
 	 * Determine if the application has booted.
 	 *
 	 * @return bool

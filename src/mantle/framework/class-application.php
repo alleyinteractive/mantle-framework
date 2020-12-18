@@ -15,6 +15,7 @@ use Mantle\Framework\Providers\Event_Service_Provider;
 use Mantle\Framework\Providers\Routing_Service_Provider;
 use Mantle\Framework\Providers\View_Service_Provider;
 use Mantle\Framework\Support\Arr;
+use Mantle\Framework\Support\Environment;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -93,6 +94,13 @@ class Application extends Container\Container implements Application_Contract {
 	 * @var string
 	 */
 	protected $environment;
+
+	/**
+	 * Indicates if the application is running in the console.
+	 *
+	 * @var bool
+	 */
+	protected $is_running_in_console;
 
 	/**
 	 * Constructor.
@@ -429,6 +437,19 @@ class Application extends Container\Container implements Application_Contract {
 	 */
 	public function is_environment( ...$environments ): bool {
 		return in_array( $this->environment(), (array) $environments, true );
+	}
+
+	/**
+	 * Check if the application is running in the console.
+	 *
+	 * @return bool
+	 */
+	public function is_running_in_console(): bool {
+		if ( null === $this->is_running_in_console ) {
+			$this->is_running_in_console = Environment::get( 'APP_RUNNING_IN_CONSOLE' ) || ( defined( 'WP_CLI' ) && WP_CLI && ! wp_doing_cron() );
+		}
+
+		return $this->is_running_in_console;
 	}
 
 	/**
