@@ -62,13 +62,13 @@ class Model_Service_Provider extends Service_Provider {
 	 * Use the 'init' hook with a priority of 99.
 	 */
 	public function on_init() {
-		$this->register_internal_taxonomy();
+		static::register_internal_taxonomy();
 	}
 
 	/**
 	 * Register the internal taxonomy for post <--> post relationships.
 	 */
-	public function register_internal_taxonomy() {
+	public static function register_internal_taxonomy() {
 		register_taxonomy(
 			Relation::RELATION_TAXONOMY,
 			array_keys( get_post_types() ),

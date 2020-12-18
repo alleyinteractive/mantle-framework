@@ -5,6 +5,7 @@ use Carbon\Carbon;
 use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Concerns\Has_Relationships as Relationships;
 use Mantle\Framework\Database\Model\Relations\Relation;
+use Mantle\Framework\Providers\Model_Service_Provider;
 use Mantle\Framework\Testing\Framework_Test_Case;
 
 
@@ -12,6 +13,10 @@ class Test_Post_Query_Relationships extends Framework_Test_Case {
 	protected function setUp(): void {
 		parent::setUp();
 		register_post_type( Testable_Sponsor::get_object_name() );
+
+		if ( ! taxonomy_exists( Relation::RELATION_TAXONOMY ) ) {
+			Model_Service_Provider::register_internal_taxonomy();
+		}
 	}
 
 	protected function tearDown(): void {
