@@ -18,6 +18,13 @@ abstract class Relation {
 	use Forward_Calls;
 
 	/**
+	 * Internal taxonomy for post-to-post relationships.
+	 *
+	 * @var string
+	 */
+	public const RELATION_TAXONOMY = 'mantle_relationship';
+
+	/**
 	 * Query Builder instance.
 	 *
 	 * @var Builder
@@ -25,17 +32,27 @@ abstract class Relation {
 	protected $query;
 
 	/**
+	 * Flag if the relation uses terms.
+	 *
+	 * @var bool|null
+	 */
+	protected $uses_terms;
+
+	/**
 	 * Create a new relation instance.
 	 *
-	 * @param Builder $query Query builder instance.
-	 * @param Model   $parent Model instance.
+	 * @param Builder   $query Query builder instance.
+	 * @param Model     $parent Model instance.
+	 * @param bool|null $uses_terms Flag if the relation uses terms.
 	 */
-	public function __construct( Builder $query, Model $parent ) {
+	public function __construct( Builder $query, Model $parent, ?bool $uses_terms = null ) {
 		$this->query   = $query;
 		$this->parent  = $parent;
 		$this->related = $query->get_model();
 
-		$this->add_constraints();
+		if ( ! is_null( $uses_terms ) ) {
+			$this->uses_terms( $uses_terms );
+		}
 	}
 
 	/**
@@ -51,6 +68,8 @@ abstract class Relation {
 	 * @return mixed
 	 */
 	public function __call( string $method, array $parameters ) {
+		$this->add_constraints();
+
 		$result = $this->forward_call_to( $this->query, $method, $parameters );
 
 		if ( $this->query === $result ) {
@@ -58,5 +77,16 @@ abstract class Relation {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Flag if the relation uses terms.
+	 *
+	 * @param bool $uses Flag if the relation uses or doesn't use terms.
+	 * @return static
+	 */
+	public function uses_terms( bool $uses = true ) {
+		$this->uses_terms = $uses;
+		return $this;
 	}
 }

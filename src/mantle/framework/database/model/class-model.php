@@ -69,6 +69,13 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	protected $primary_key = 'id';
 
 	/**
+	 * Indicates if the model exists.
+	 *
+	 * @var bool
+	 */
+	public $exists = false;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param mixed $object Model object.
@@ -150,6 +157,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 			return null;
 		}
 
+		$this->exists = true;
 		$this->set_raw_attributes( $instance->get_raw_attributes() );
 		return $this;
 	}
@@ -162,6 +170,8 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 */
 	public static function new_from_existing( array $attributes ) {
 		$instance = new static( [] );
+
+		$instance->exists = true;
 
 		return $instance->set_raw_attributes( $attributes );
 	}
