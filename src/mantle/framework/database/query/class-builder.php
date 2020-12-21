@@ -118,6 +118,13 @@ abstract class Builder {
 	protected $found_rows = 0;
 
 	/**
+	 * Relationships to eager load.
+	 *
+	 * @var string[]
+	 */
+	protected $eager_load = [];
+
+	/**
 	 * Constructor.
 	 *
 	 * @param array|string $model Model or array of model class names.
@@ -570,5 +577,25 @@ abstract class Builder {
 				}
 			)
 			->flip();
+	}
+
+	/**
+	 * Begin a query with eager loading.
+	 *
+	 * @param string ...$relations Relations to eager load.
+	 * @return static
+	 */
+	public function with( ...$relations ) {
+
+	}
+
+	/**
+	 * Begin a query without eager loading relationships.
+	 *
+	 * @param string ...$relations Relations to not eager load.
+	 * @return static
+	 */
+	public function without( ...$relations ) {
+
 	}
 }

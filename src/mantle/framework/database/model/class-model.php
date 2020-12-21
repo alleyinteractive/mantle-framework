@@ -76,6 +76,13 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	public $exists = false;
 
 	/**
+	 * The relations to eager load on every query.
+	 *
+	 * @var string[]
+	 */
+	protected $with = [];
+
+	/**
 	 * Constructor.
 	 *
 	 * @param mixed $object Model object.
@@ -358,6 +365,26 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	}
 
 	/**
+	 * Begin a query with eager loading.
+	 *
+	 * @param string ...$relations Relations to eager load.
+	 * @return Builder
+	 */
+	public static function with( ...$relations ): Builder {
+		return static::query()->with( ...$relations );
+	}
+
+	/**
+	 * Begin a query without eager loading relationships.
+	 *
+	 * @param string ...$relations Relations to not eager load.
+	 * @return Builder
+	 */
+	public static function without( ...$relations ): Builder {
+		return static::query()->without( ...$relations );
+	}
+
+	/**
 	 * Create a new query instance.
 	 *
 	 * @return Builder
@@ -372,7 +399,8 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
 		return $this->register_global_scopes(
 			new $builder( get_called_class() )
-		);
+		)
+			->with( ...$this->with );
 	}
 
 	/**
