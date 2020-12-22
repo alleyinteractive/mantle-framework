@@ -10,11 +10,13 @@ namespace Mantle\Framework;
 use Mantle\Framework\Contracts\Application as Application_Contract;
 use Mantle\Framework\Contracts\Container as Container_Contract;
 use Mantle\Framework\Contracts\Kernel as Kernel_Contract;
+use Mantle\Framework\Filesystem\Filesystem;
 use Mantle\Framework\Log\Log_Service_Provider;
 use Mantle\Framework\Providers\Event_Service_Provider;
 use Mantle\Framework\Providers\Routing_Service_Provider;
 use Mantle\Framework\Providers\View_Service_Provider;
 use Mantle\Framework\Support\Arr;
+use Mantle\Framework\Support\Environment;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -30,6 +32,13 @@ class Application extends Container\Container implements Application_Contract {
 	 * @var string
 	 */
 	protected $base_path;
+
+	/**
+	 * Application path of the application.
+	 *
+	 * @var string
+	 */
+	protected $app_path;
 
 	/**
 	 * Bootstrap path of the application.
@@ -95,6 +104,13 @@ class Application extends Container\Container implements Application_Contract {
 	protected $environment;
 
 	/**
+	 * Indicates if the application is running in the console.
+	 *
+	 * @var bool
+	 */
+	protected $is_running_in_console;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param string $base_path Base path to set.
@@ -140,6 +156,32 @@ class Application extends Container\Container implements Application_Contract {
 	 */
 	public function get_base_path( string $path = '' ): string {
 		return $this->base_path . ( $path ? '/' . $path : '' );
+	}
+
+	/**
+	 * Get the path to the application "app" directory.
+	 *
+	 * @param string $path Path to append, optional.
+	 * @return string
+	 */
+	public function get_app_path( string $path = '' ): string {
+		$app_path = $this->app_path ?: $this->get_base_path( 'app' );
+
+		return $app_path . ( $path ? DIRECTORY_SEPARATOR . $path : $path );
+	}
+
+	/**
+	 * Set the application directory.
+	 *
+	 * @param string $path Path to use.
+	 * @return static
+	 */
+	public function set_app_path( string $path ) {
+		$this->app_path = $path;
+
+		$this->instance( 'path', $path );
+
+		return $this;
 	}
 
 	/**
@@ -196,8 +238,26 @@ class Application extends Container\Container implements Application_Contract {
 	 *
 	 * @return string
 	 */
-	public function get_cached_packages_path() {
+	public function get_cached_packages_path(): string {
 		return $this->get_cache_path() . '/packages.php';
+	}
+
+	/**
+	 * Determine if the application is cached.
+	 *
+	 * @return bool
+	 */
+	public function is_configuration_cached(): bool {
+		return is_file( $this->get_cached_config_path() );
+	}
+
+	/**
+	 * Retrieve the cached configuration path.
+	 *
+	 * @return string
+	 */
+	public function get_cached_config_path(): string {
+		return $this->get_bootstrap_path() . '/' . Environment::get( 'APP_CONFIG_CACHE', 'cache/config.php' );
 	}
 
 	/**
@@ -256,6 +316,7 @@ class Application extends Container\Container implements Application_Contract {
 		$core_aliases = [
 			'app'         => [ static::class, \Mantle\Framework\Contracts\Application::class ],
 			'config'      => [ \Mantle\Framework\Config\Repository::class, \Mantle\Framework\Contracts\Config\Repository::class ],
+			'files'       => [ \Mantle\Framework\Filesystem\Filesystem::class ],
 			'filesystem'  => [ \Mantle\Framework\Filesystem\Filesystem_Manager::class, \Mantle\Framework\Contracts\Filesystem\Filesystem_Manager::class ],
 			'log'         => [ \Mantle\Framework\Log\Log_Manager::class, \Psr\Log\LoggerInterface::class ],
 			'queue'       => [ \Mantle\Framework\Queue\Queue_Manager::class, \Mantle\Framework\Contracts\Queue\Queue_Manager::class ],
@@ -418,7 +479,7 @@ class Application extends Container\Container implements Application_Contract {
 			return (string) $_SERVER['PANTHEON_ENVIRONMENT']; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		}
 
-		return $_ENV['env'] ?? 'local';
+		return Environment::get( 'ENV', 'local' );
 	}
 
 	/**
@@ -429,6 +490,30 @@ class Application extends Container\Container implements Application_Contract {
 	 */
 	public function is_environment( ...$environments ): bool {
 		return in_array( $this->environment(), (array) $environments, true );
+	}
+
+	/**
+	 * Get the application namespace.
+	 *
+	 * @return string
+	 *
+	 * @throws RuntimeException Thrown on error determining namespace.
+	 */
+	public function get_namespace(): string {
+		return Environment::get( 'APP_NAMESPACE', 'App' );
+	}
+
+	/**
+	 * Check if the application is running in the console.
+	 *
+	 * @return bool
+	 */
+	public function is_running_in_console(): bool {
+		if ( null === $this->is_running_in_console ) {
+			$this->is_running_in_console = Environment::get( 'APP_RUNNING_IN_CONSOLE' ) || ( defined( 'WP_CLI' ) && WP_CLI && ! wp_doing_cron() );
+		}
+
+		return $this->is_running_in_console;
 	}
 
 	/**

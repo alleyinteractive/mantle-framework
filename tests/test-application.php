@@ -11,15 +11,15 @@ class Test_Application extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	public function test_environment() {
 		$app = new Application();
 
-		$_ENV['env'] = 'test-env';
+		$_ENV['ENV'] = 'test-env';
 		$this->assertEquals( 'test-env', $app->environment() );
 
-		$_ENV['env'] = 'another-test-env';
+		$_ENV['ENV'] = 'another-test-env';
 		$this->assertEquals( 'another-test-env', $app->environment() );
 	}
 
 	public function test_is_environment() {
-		$_ENV['env'] = 'test-env';
+		$_ENV['ENV'] = 'test-env';
 		$app         = new Application();
 
 		$this->assertTrue( $app->is_environment( 'test-env', 'another-thing' ) );
@@ -80,6 +80,17 @@ class Test_Application extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		// Ensure it is a global instance.
 		$this->assertSame( $provider, $app->get_provider( Test_App_Service_Provider::class ) );
 		$this->assertNull( $app->get_provider( \Invalid_Class::class ) );
+	}
+
+	public function test_is_running_in_console() {
+		unset( $_ENV['APP_RUNNING_IN_CONSOLE'] );
+		$this->assertFalse( ( new Application() )->is_running_in_console() );
+
+		$_ENV['APP_RUNNING_IN_CONSOLE'] = true;
+
+		$this->assertTrue( ( new Application() )->is_running_in_console() );
+
+		unset( $_ENV['APP_RUNNING_IN_CONSOLE'] );
 	}
 }
 

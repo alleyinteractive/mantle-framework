@@ -85,11 +85,35 @@ if ( ! function_exists( 'cache' ) ) {
  *
  * @param string $path Path to append.
  * @return string
+ * @deprecated Use base_path().
  */
 function mantle_base_path( string $path = '' ): string {
-	return app()->get_base_path( $path );
+	return base_path( $path );
 }
 
+if ( ! function_exists( 'base_path' ) ) {
+	/**
+	 * Get the base path to the application.
+	 *
+	 * @param string $path Path to append.
+	 * @return string
+	 */
+	function base_path( string $path = '' ): string {
+		return app()->get_base_path( $path );
+	}
+}
+
+if ( ! function_exists( 'app_path' ) ) {
+	/**
+	 * Get the application path (the app/ folder).
+	 *
+	 * @param string $path Path to append.
+	 * @return string
+	 */
+	function app_path( string $path = '' ): string {
+		return app()->get_app_path( $path );
+	}
+}
 if ( ! function_exists( 'response' ) ) {
 	/**
 	 * Return a new response for the application.

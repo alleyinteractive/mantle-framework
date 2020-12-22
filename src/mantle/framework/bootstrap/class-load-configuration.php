@@ -27,12 +27,26 @@ class Load_Configuration {
 	 * @param Application $app Application instance.
 	 */
 	public function bootstrap( Application $app ) {
-		$config = new Repository();
+		$cached = $app->get_cached_config_path();
+
+		$items = [];
+
+		// Check if a cached configuration file exists.
+		if ( is_file( $cached ) ) {
+			$items = require $cached;
+
+			$loaded_from_cache = true;
+		}
+
+		$config = new Repository( $items );
 
 		// Set the global config alias.
 		$app->instance( 'config', $config );
 
-		$this->load_configuration_files( $app, $config );
+		// Load configuration files if the config hasn't been loaded from cache.
+		if ( ! isset( $loaded_from_cache ) ) {
+			$this->load_configuration_files( $app, $config );
+		}
 	}
 
 	/**

@@ -173,6 +173,17 @@ class Str {
 	}
 
 	/**
+	 * Convert a value to studly caps case while preserving spaces as underscores.
+	 *
+	 * @param string $value Value to studly.
+	 * @return string
+	 */
+	public static function studly_underscore( $value ) {
+		$value = ucwords( str_replace( [ '-', '_' ], ' ', $value ) );
+		return str_replace( ' ', '_', $value );
+	}
+
+	/**
 	 * Determine if a given string contains all array values.
 	 *
 	 * @param string   $haystack String to search.
