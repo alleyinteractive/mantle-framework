@@ -76,7 +76,7 @@ trait Has_Attributes {
 	 */
 	public function get_attribute( string $attribute ) {
 		// Retrieve the attribute from the object.
-		if ( isset( $this->attributes[ $attribute ] ) ) {
+		if ( isset( $this->attributes[ $attribute ] ) || $this->has_get_mutator( $attribute ) ) {
 			$value = $this->attributes[ $attribute ] ?? null;
 
 			// Check if an attribute has a cast.
@@ -88,11 +88,11 @@ trait Has_Attributes {
 			if ( $this->has_get_mutator( $attribute ) ) {
 				$value = $this->mutate_attribute( $attribute, $value );
 			}
-		} else {
+		} elseif ( 'ID' !== $attribute ) {
 			$value = $this->get_relation_value( $attribute );
 		}
 
-		return $value;
+		return $value ?? null;
 	}
 
 	/**

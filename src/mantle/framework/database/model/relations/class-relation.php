@@ -7,8 +7,10 @@
 
 namespace Mantle\Framework\Database\Model\Relations;
 
+use Closure;
 use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Database\Query\Builder;
+use Mantle\Framework\Support\Collection;
 use Mantle\Framework\Support\Forward_Calls;
 
 /**
@@ -46,6 +48,13 @@ abstract class Relation {
 	protected $relationship;
 
 	/**
+	 * Indicates if the relation is adding constraints.
+	 *
+	 * @var bool
+	 */
+	protected static $constraints = true;
+
+	/**
 	 * Create a new relation instance.
 	 *
 	 * @param Builder   $query Query builder instance.
@@ -66,9 +75,38 @@ abstract class Relation {
 	}
 
 	/**
+	 * Run a callback with constraints disabled on the relation.
+	 *
+	 * @param Closure $callback Callback to invoke.
+	 * @return mixed
+	 */
+	public static function no_constraints( Closure $callback ) {
+		$previous = static::$constraints;
+
+		static::$constraints = false;
+
+		try {
+			return $callback();
+		} finally {
+			static::$constraints = $previous;
+		}
+	}
+
+
+	/**
 	 * Set the query constraints to apply to the query.
+	 *
+	 * @return void
 	 */
 	abstract public function add_constraints();
+
+	/**
+	 * Set the query constraints for an eager load of the relation.
+	 *
+	 * @param Collection $models Models to eager load for.
+	 * @return void
+	 */
+	abstract public function add_eager_constraints( Collection $models ): void;
 
 	/**
 	 * Get the results of the relationship.
@@ -76,6 +114,33 @@ abstract class Relation {
 	 * @return mixed
 	 */
 	abstract public function get_results();
+
+	/**
+	 * Match the eagerly loaded results to their parents.
+	 *
+	 * @param Collection $models Parent models.
+	 * @param Collection $results Eagerly loaded results to match.
+	 * @return Collection
+	 */
+	abstract public function match( Collection $models, Collection $results ): Collection;
+
+	/**
+	 * Retrieve the query for a relation.
+	 *
+	 * @return Builder;
+	 */
+	public function get_query(): Builder {
+		return $this->query;
+	}
+
+	/**
+	 * Get the relationship for eager loading.
+	 *
+	 * @return Collection
+	 */
+	public function get_eager(): Collection {
+		return $this->query->get();
+	}
 
 	/**
 	 * Handle dynamic method calls to the relationship.

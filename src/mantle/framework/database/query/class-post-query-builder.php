@@ -71,7 +71,7 @@ class Post_Query_Builder extends Builder {
 	 *
 	 * @return array
 	 */
-	protected function get_query_args(): array {
+	public function get_query_args(): array {
 		$this->apply_scopes();
 
 		if ( is_array( $this->model ) ) {
@@ -116,7 +116,14 @@ class Post_Query_Builder extends Builder {
 		}
 
 		$models = $this->get_models( $post_ids );
-		dd($models);
+
+		// Return the models if there are no models or if multiple model instances
+		// are used. Eager loading does not currently support multiple models.
+		if ( $models->is_empty() || is_array( $this->model ) || empty( $this->eager_load ) ) {
+			return $models;
+		}
+
+		return $this->eager_load_relations( $models );
 	}
 
 	/**

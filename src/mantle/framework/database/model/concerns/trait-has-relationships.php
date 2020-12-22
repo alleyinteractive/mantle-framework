@@ -99,6 +99,16 @@ trait Has_Relationships {
 	}
 
 	/**
+	 * Check if the given relation is loaded.
+	 *
+	 * @param string $relation Relation to check.
+	 * @return bool
+	 */
+	public function relation_loaded( string $relation ): bool {
+		return array_key_exists( $relation, $this->relations );
+	}
+
+	/**
 	 * Unset a relationship for the model.
 	 *
 	 * @param string $relation Relation name.

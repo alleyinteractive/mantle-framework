@@ -14,6 +14,9 @@ use Mantle\Framework\Database\Model\Term;
 use Mantle\Framework\Database\Query\Builder;
 use Mantle\Framework\Database\Query\Post_Query_Builder;
 use Mantle\Framework\Database\Query\Term_Query_Builder;
+use Mantle\Framework\Support\Collection;
+use RuntimeException;
+use Throwable;
 
 /**
  * Has One or Many Relationship
@@ -59,10 +62,28 @@ abstract class Has_One_Or_Many extends Relation {
 	 * Add constraints to the query.
 	 */
 	public function add_constraints() {
+		if ( static::$constraints ) {
+			if ( $this->uses_terms ) {
+				return $this->query->whereTerm( $this->get_term_slug_for_relationship(), static::RELATION_TAXONOMY );
+			} else {
+				return $this->query->whereMeta( $this->foreign_key, $this->parent->get( $this->local_key ) );
+			}
+		}
+	}
+
+	/**
+	 * Set the query constraints for an eager load of the relation.
+	 *
+	 * @param Collection $models Models to eager load for.
+	 * @return void
+	 */
+	public function add_eager_constraints( Collection $models ): void {
+		$keys = $models->pluck( $this->local_key )->to_array();
+
 		if ( $this->uses_terms ) {
-			return $this->query->whereTerm( $this->get_term_slug_for_relationship(), static::RELATION_TAXONOMY );
+			throw new RuntimeException( 'Eager loading relationships with terms is not supported yet.' );
 		} else {
-			return $this->query->whereMeta( $this->foreign_key, $this->parent->get( $this->local_key ) );
+			$this->query->whereMeta( $this->foreign_key, $keys, 'IN' );
 		}
 	}
 
@@ -189,5 +210,25 @@ abstract class Has_One_Or_Many extends Relation {
 	protected function get_term_slug_for_relationship(): string {
 		$delimiter = static::DELIMITER;
 		return "{$this->foreign_key}{$delimiter}{$this->parent->get( $this->local_key )}";
+	}
+
+	/**
+	 * Build a model dictionary keyed by the relation's foreign key.
+	 *
+	 * @param Collection $results Collection of results.
+	 * @return array
+	 */
+	protected function build_dictionary( Collection $results ): array {
+		return $results
+			->map_to_dictionary(
+				function ( $result ) {
+					try {
+						return [ $result->meta->{$this->foreign_key} => $result ];
+					} catch ( Throwable $e ) {
+						return [];
+					}
+				}
+			)
+			->all();
 	}
 }

@@ -12,6 +12,7 @@ use Mantle\Framework\Database\Model\Model_Exception;
 use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Query\Builder;
 use Mantle\Framework\Database\Query\Term_Query_Builder;
+use Mantle\Framework\Support\Collection;
 use Mantle\Framework\Support\Str;
 use WP_Term;
 
@@ -57,6 +58,10 @@ class Belongs_To extends Relation {
 	 * Add constraints to the query.
 	 */
 	public function add_constraints() {
+		if ( ! static::$constraints ) {
+			return $this->query;
+		}
+
 		if ( $this->uses_terms ) {
 			$object_ids = $this->get_term_ids_for_relationship();
 
@@ -83,6 +88,16 @@ class Belongs_To extends Relation {
 		}
 
 		return $this->query;
+	}
+
+	/**
+	 * Set the query constraints for an eager load of the relation.
+	 *
+	 * @param Collection $models Models to eager load for.
+	 * @return void
+	 */
+	public function add_eager_constraints( Collection $models ): void {
+		dd('eager');
 	}
 
 	/**
@@ -254,5 +269,16 @@ class Belongs_To extends Relation {
 			)
 			->values()
 			->to_array();
+	}
+
+	/**
+	 * Match the eagerly loaded results to their parents.
+	 *
+	 * @param Collection $models Parent models.
+	 * @param Collection $results Eagerly loaded results to match.
+	 * @return Collection
+	 */
+	public function match( Collection $models, Collection $results ): Collection {
+		dd($models, $results);
 	}
 }
