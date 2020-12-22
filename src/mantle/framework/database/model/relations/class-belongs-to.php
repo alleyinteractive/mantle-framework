@@ -14,6 +14,8 @@ use Mantle\Framework\Database\Query\Builder;
 use Mantle\Framework\Database\Query\Term_Query_Builder;
 use Mantle\Framework\Support\Collection;
 use Mantle\Framework\Support\Str;
+use RuntimeException;
+use Throwable;
 use WP_Term;
 
 use function Mantle\Framework\Helpers\collect;
@@ -95,9 +97,24 @@ class Belongs_To extends Relation {
 	 *
 	 * @param Collection $models Models to eager load for.
 	 * @return void
+	 *
+	 * @throws RuntimeException Thrown on eager loading term relationships.
 	 */
 	public function add_eager_constraints( Collection $models ): void {
-		dd('eager');
+		if ( $this->uses_terms ) {
+			throw new RuntimeException( 'Eager loading relationships with terms is not supported yet.' );
+		} else {
+			$meta_values = $models
+				->map(
+					function ( $model ) {
+						return $model->get_meta( $this->local_key );
+					}
+				)
+				->all();
+
+			$this->query->whereIn( 'id', $meta_values );
+			$this->query->orderByWhereIn( 'id' );
+		}
 	}
 
 	/**
@@ -279,6 +296,30 @@ class Belongs_To extends Relation {
 	 * @return Collection
 	 */
 	public function match( Collection $models, Collection $results ): Collection {
-		dd($models, $results);
+		$dictionary = $this->build_dictionary( $results );
+
+		return $models->each(
+			function( $model ) use ( $dictionary ) {
+				$key = $model->meta->{$this->local_key};
+
+				$model->set_relation( $this->relationship, $dictionary[ $key ][0] ?? null );
+			}
+		);
+	}
+
+	/**
+	 * Build a model dictionary keyed by the relation's foreign key.
+	 *
+	 * @param Collection $results Collection of results.
+	 * @return array
+	 */
+	protected function build_dictionary( Collection $results ): array {
+		return $results
+			->map_to_dictionary(
+				function ( $result ) {
+					return [ (string) $result[ $this->foreign_key ] => $result ];
+				}
+			)
+			->all();
 	}
 }

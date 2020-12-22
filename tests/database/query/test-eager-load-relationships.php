@@ -112,6 +112,39 @@ class Test_Eager_Load_Relationships extends Framework_Test_Case {
 			}
 		}
 	}
+
+	public function test_eager_loading_relationships_belongs_to() {
+		$related_post_ids = [];
+		$posts = collect()
+			->pad(10, null)
+			->map(
+				function() use ( &$related_post_ids ) {
+					// $related_post = Another_Testable_Post_Eager::
+					$related_post = Another_Testable_Post_Eager::find( static::factory()->post->create( [ 'post_type' => 'example-post-eager' ] ) );
+
+					$post = $related_post->post()->save( new Testable_Post_Eager(
+						[
+							'post_status' => 'publish',
+							'post_title' => "$related_post->title relation"
+						]
+					) );
+
+					// Store the ID for testing later.
+					$related_post_ids[ $related_post->id ] = $post->id;
+
+					return $post;
+				}
+			)
+			->to_array();
+
+		// Eager load the models.
+		$posts = Another_Testable_Post_Eager::with('post')->get();
+
+		foreach ( $posts as $post ) {
+			$this->assertTrue( $post->relation_loaded( 'post' ) );
+			$this->assertEquals( $related_post_ids[ $post->id ], $post->post->id );
+		}
+	}
 }
 
 class Testable_Post_Eager extends Post {

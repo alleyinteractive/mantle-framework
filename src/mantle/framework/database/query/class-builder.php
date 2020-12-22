@@ -365,6 +365,8 @@ abstract class Builder {
 	 *
 	 * @param string $attribute Attribute to use.
 	 * @return static
+	 *
+	 * @throws Query_Exception Thrown on unknown alias.
 	 */
 	public function orderByWhereIn( string $attribute ) {
 		if ( is_string( $this->model ) && $this->model::has_attribute_alias( $attribute ) ) {

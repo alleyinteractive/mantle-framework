@@ -76,6 +76,8 @@ abstract class Has_One_Or_Many extends Relation {
 	 *
 	 * @param Collection $models Models to eager load for.
 	 * @return void
+	 *
+	 * @throws RuntimeException Thrown on currently unsupported query condition.
 	 */
 	public function add_eager_constraints( Collection $models ): void {
 		$keys = $models->pluck( $this->local_key )->to_array();
