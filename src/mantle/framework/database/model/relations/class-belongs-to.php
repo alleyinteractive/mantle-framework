@@ -121,6 +121,10 @@ class Belongs_To extends Relation {
 			$this->parent->set_meta( $this->local_key, $model->id() );
 		}
 
+		if ( $this->relationship ) {
+			$this->parent->unset_relation( $this->relationship );
+		}
+
 		return $model;
 	}
 
@@ -148,6 +152,10 @@ class Belongs_To extends Relation {
 			}
 		} else {
 			$this->parent->delete_meta( $this->local_key );
+		}
+
+		if ( $this->relationship ) {
+			$this->parent->unset_relation( $this->relationship );
 		}
 
 		return $this;

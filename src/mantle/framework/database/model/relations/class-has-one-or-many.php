@@ -95,6 +95,10 @@ abstract class Has_One_Or_Many extends Relation {
 			}
 		}
 
+		if ( $this->relationship ) {
+			$this->parent->unset_relation( $this->relationship );
+		}
+
 		return $model;
 	}
 
@@ -123,6 +127,10 @@ abstract class Has_One_Or_Many extends Relation {
 			} else {
 				$model->delete_meta( $this->foreign_key );
 			}
+		}
+
+		if ( $this->relationship ) {
+			$this->parent->unset_relation( $this->relationship );
 		}
 
 		return $model;

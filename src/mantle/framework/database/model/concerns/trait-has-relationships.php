@@ -3,7 +3,6 @@
  * Has_Relationships trait file.
  *
  * @package Mantle
- * @phpcs:disable Squiz.Commenting.FunctionComment
  */
 
 namespace Mantle\Framework\Database\Model\Concerns;
@@ -96,6 +95,17 @@ trait Has_Relationships {
 	public function set_relation( string $relation, $value ) {
 		$this->relations[ $relation ] = $value;
 
+		return $this;
+	}
+
+	/**
+	 * Unset a relationship for the model.
+	 *
+	 * @param string $relation Relation name.
+	 * @return static
+	 */
+	public function unset_relation( string $relation ) {
+		unset( $this->relations[ $relation ] );
 		return $this;
 	}
 }

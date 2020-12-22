@@ -24,6 +24,8 @@ class Test_Eager_Load_Relationships extends Framework_Test_Case {
 
 	public function test_relationship_as_attribute() {
 		$post = Testable_Post_Eager::find( static::factory()->post->create() );
+		$this->assertNull( $post->post_relationship );
+
 		$another_post = $post->post_relationship()->save( new Another_Testable_Post_Eager(
 			[
 				'post_status' => 'publish',

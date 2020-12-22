@@ -39,13 +39,21 @@ abstract class Relation {
 	protected $uses_terms;
 
 	/**
+	 * Model's relationship name.
+	 *
+	 * @var string|null
+	 */
+	protected $relationship;
+
+	/**
 	 * Create a new relation instance.
 	 *
 	 * @param Builder   $query Query builder instance.
 	 * @param Model     $parent Model instance.
 	 * @param bool|null $uses_terms Flag if the relation uses terms.
+	 * @param string    $relationship Relationship name, optional.
 	 */
-	public function __construct( Builder $query, Model $parent, ?bool $uses_terms = null ) {
+	public function __construct( Builder $query, Model $parent, ?bool $uses_terms = null, string $relationship = null ) {
 		$this->query   = $query;
 		$this->parent  = $parent;
 		$this->related = $query->get_model();
@@ -53,6 +61,8 @@ abstract class Relation {
 		if ( ! is_null( $uses_terms ) ) {
 			$this->uses_terms( $uses_terms );
 		}
+
+		$this->relationship = $relationship ?: $this->guess_relationship();
 	}
 
 	/**
@@ -95,5 +105,22 @@ abstract class Relation {
 	public function uses_terms( bool $uses = true ) {
 		$this->uses_terms = $uses;
 		return $this;
+	}
+
+	/**
+	 * Guess the name of the relationship.
+	 *
+	 * @return string|null
+	 */
+	protected function guess_relationship() : ?string {
+		$trace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 5 ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
+
+		foreach ( $trace as $item ) {
+			if ( is_subclass_of( $item['class'], Model::class ) ) {
+				return $item['function'];
+			}
+		}
+
+		return null;
 	}
 }

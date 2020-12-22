@@ -106,7 +106,7 @@ trait Has_Attributes {
 			return null;
 		}
 
-		if ( isset( $this->relations[ $key ] ) ) {
+		if ( array_key_exists( $key, $this->relations ) ) {
 			return $this->relations[ $key ];
 		}
 
@@ -120,6 +120,9 @@ trait Has_Attributes {
 	 *
 	 * @param string $method
 	 * @return Relation
+	 *
+	 * @throws LogicException Thrown if the relationship method is not an instance
+	 *                        of Relation.
 	 */
 	protected function get_relationship_from_method( string $method ) {
 		$relation = $this->$method();
