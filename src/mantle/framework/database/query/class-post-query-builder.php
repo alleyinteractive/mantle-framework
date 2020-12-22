@@ -115,11 +115,17 @@ class Post_Query_Builder extends Builder {
 			return collect();
 		}
 
-		/**
-		 * Translate the post IDs to model objects.
-		 *
-		 * @todo Use a more abstract way to get the correct model for the post.
-		 */
+		$models = $this->get_models( $post_ids );
+		dd($models);
+	}
+
+	/**
+	 * Retrieve hydrated models for the post IDs.
+	 *
+	 * @param int[] $post_ids Post IDs.
+	 * @return Collection
+	 */
+	protected function get_models( array $post_ids ): Collection {
 		if ( is_array( $this->model ) ) {
 			$model_object_types = $this->get_model_object_names();
 			return collect( $post_ids )
