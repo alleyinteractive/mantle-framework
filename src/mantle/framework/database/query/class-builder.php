@@ -586,7 +586,8 @@ abstract class Builder {
 	 * @return static
 	 */
 	public function with( ...$relations ) {
-
+		$this->eager_load = array_merge( $this->eager_load, $relations );
+		return $this;
 	}
 
 	/**
@@ -596,6 +597,7 @@ abstract class Builder {
 	 * @return static
 	 */
 	public function without( ...$relations ) {
-
+		$this->eager_load = array_diff_key( $this->eager_load, array_flip( $relations ) );
+		return $this;
 	}
 }

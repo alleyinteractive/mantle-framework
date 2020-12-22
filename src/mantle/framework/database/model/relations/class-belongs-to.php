@@ -86,6 +86,17 @@ class Belongs_To extends Relation {
 	}
 
 	/**
+	 * Retrieve the results of the query.
+	 *
+	 * @return \Mantle\Framework\Database\Model\Model|null
+	 */
+	public function get_results() {
+		$this->add_constraints();
+
+		return $this->query->first();
+	}
+
+	/**
 	 * Associate a model with a relationship.
 	 *
 	 * @param Model $model Model to save to.

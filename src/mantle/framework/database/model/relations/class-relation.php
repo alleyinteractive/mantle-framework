@@ -61,6 +61,13 @@ abstract class Relation {
 	abstract public function add_constraints();
 
 	/**
+	 * Get the results of the relationship.
+	 *
+	 * @return mixed
+	 */
+	abstract public function get_results();
+
+	/**
 	 * Handle dynamic method calls to the relationship.
 	 *
 	 * @param string $method Method name.

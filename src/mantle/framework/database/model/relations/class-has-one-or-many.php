@@ -18,7 +18,7 @@ use Mantle\Framework\Database\Query\Term_Query_Builder;
 /**
  * Has One or Many Relationship
  */
-class Has_One_Or_Many extends Relation {
+abstract class Has_One_Or_Many extends Relation {
 	/**
 	 * Delimiter for the term slug.
 	 *

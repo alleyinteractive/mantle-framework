@@ -334,6 +334,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 */
 	public function offsetUnset( $offset ) {
 		$this->set( $offset, null );
+		unset( $this->relations[ $offset ] );
 	}
 
 	/**
