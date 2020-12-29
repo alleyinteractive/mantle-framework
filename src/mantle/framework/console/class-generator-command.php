@@ -79,7 +79,7 @@ abstract class Generator_Command extends Command {
 	 *
 	 * @param string $name Class name.
 	 */
-	public function synopsis( string $name ) { }
+	public function complete_synopsis( string $name ) { }
 
 	/**
 	 * Generator Command.

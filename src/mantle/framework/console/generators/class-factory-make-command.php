@@ -114,7 +114,7 @@ class Factory_Make_Command extends Generator_Command {
 	 * @param string $name Class name.
 	 * @todo Edit or remove this.
 	 */
-	public function synopsis( string $name ) {
+	public function complete_synopsis( string $name ) {
 		$this->log(
 			PHP_EOL . sprintf(
 				'You can customize this factory by editing the file in "database/factories".',

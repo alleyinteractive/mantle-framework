@@ -9,6 +9,8 @@ namespace Mantle\Framework\Console;
 
 use WP_CLI;
 
+use function Mantle\Framework\Helpers\collect;
+
 /**
  * CLI Command for Service Providers
  */
@@ -54,6 +56,13 @@ abstract class Command {
 	 * @var array
 	 */
 	protected $command_args;
+
+	/**
+	 * Named command Arguments (generated at run-time).
+	 *
+	 * @var array
+	 */
+	protected $named_command_args = [];
 
 	/**
 	 * Command Flags (generated at run-time).
@@ -114,6 +123,34 @@ abstract class Command {
 	 */
 	public function set_command_args( array $args ) {
 		$this->command_args = $args;
+
+		if ( ! empty( $args ) ) {
+
+			// Convert the arguments to the positional arguments from the command's synopsis.
+			$synopsis = collect( $this->synopsis() )
+				->filter(
+					function( $item ) {
+						return ! empty( $item['type'] ) && 'positional' === $item['type'];
+					}
+				)
+				->pluck( 'name' )
+				->all();
+
+				$this->named_command_args = array_combine( $synopsis, $args );
+		}
+	}
+
+	/**
+	 * Retrieve the calculated synopsis for a command.
+	 *
+	 * @return array
+	 */
+	protected function synopsis(): array {
+		if ( is_array( $this->synopsis ) ) {
+			return $this->synopsis;
+		}
+
+		return \WP_CLI\SynopsisParser::parse( $this->synopsis );
 	}
 
 	/**
@@ -221,7 +258,9 @@ abstract class Command {
 	}
 
 	/**
-	 * Get a command argument.
+	 * Get a command argument by its position.
+	 *
+	 * @deprecated Use `Command::argument()` instead to retrieve arguments by name.
 	 *
 	 * @param int   $position Argument position.
 	 * @param mixed $default_value Default value.
@@ -229,6 +268,17 @@ abstract class Command {
 	 */
 	public function get_arg( int $position, $default_value = null ) {
 		return $this->command_args[ $position ] ?? $default_value;
+	}
+
+	/**
+	 * Retrieve a command argument by its name.
+	 *
+	 * @param string $name Argument name.
+	 * @param mixed  $default_value Default value.
+	 * @return mixed
+	 */
+	public function argument( string $name, $default_value = null ) {
+		return $this->named_command_args[ $name ] ?? $default_value;
 	}
 
 	/**
@@ -240,6 +290,19 @@ abstract class Command {
 	 */
 	public function get_flag( string $flag, $default_value = null ) {
 		return $this->command_flags[ $flag ] ?? $default_value;
+	}
+
+	/**
+	 * Retrieve a flag/option.
+	 *
+	 * Alias to `get_flag()`.
+	 *
+	 * @param string $flag Flag to get.
+	 * @param mixed  $default_value Default value.
+	 * @return mixed
+	 */
+	public function option( string $flag, $default_value = null ) {
+		return $this->get_flag( $flag, $default_value );
 	}
 
 	/**
