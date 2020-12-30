@@ -113,7 +113,7 @@ class Package_Manifest {
 	 * @return array
 	 */
 	protected function get_manifest(): array {
-		if ( ! is_null( $this->manifest ) ) {
+		if ( isset( $this->manifest ) ) {
 			return (array) $this->manifest;
 		}
 
@@ -124,7 +124,7 @@ class Package_Manifest {
 			return (array) $this->manifest;
 		}
 
-		$this->manifest = require_once $this->manifest_path;
+		$this->manifest = include $this->manifest_path;
 
 		return (array) $this->manifest;
 	}
