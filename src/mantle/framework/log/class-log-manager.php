@@ -17,6 +17,7 @@ use Monolog\Handler\HandlerInterface;
 use Monolog\Handler\NewRelicHandler;
 use Monolog\Handler\SlackWebhookHandler;
 use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Throwable;
 
 use function Mantle\Framework\Helpers\collect;
@@ -24,7 +25,7 @@ use function Mantle\Framework\Helpers\collect;
 /**
  * Log Handler
  */
-class Log_Manager {
+class Log_Manager implements LoggerInterface {
 	/**
 	 * Application instance.
 	 *
@@ -207,7 +208,7 @@ class Log_Manager {
 	 *
 	 * @return Logger
 	 */
-	public function get_default_logger(): Logger {
+	public function default_logger(): Logger {
 		if ( isset( $this->default_logger ) ) {
 			return $this->default_logger;
 		}
@@ -243,6 +244,128 @@ class Log_Manager {
 	 * @return mixed
 	 */
 	public function __call( $method, $args ) {
-		return $this->get_default_logger()->$method( ...$args );
+		return $this->default_logger()->$method( ...$args );
+	}
+
+	/**
+	 * System is unusable.
+	 *
+	 * @param string  $message Log message.
+	 * @param mixed[] $context Log context.
+	 *
+	 * @return void
+	 */
+	public function emergency( $message, array $context = [] ) {
+		$this->default_logger()->emergency( $message, $context );
+	}
+
+	/**
+	 * Action must be taken immediately.
+	 *
+	 * Example: Entire website down, database unavailable, etc. This should
+	 * trigger the SMS alerts and wake you up.
+	 *
+	 * @param string  $message Log message.
+	 * @param mixed[] $context Log context.
+	 *
+	 * @return void
+	 */
+	public function alert( $message, array $context = [] ): void {
+		$this->default_logger()->alert( $message, $context );
+	}
+
+	/**
+	 * Critical conditions.
+	 *
+	 * Example: Application component unavailable, unexpected exception.
+	 *
+	 * @param string  $message Log message.
+	 * @param mixed[] $context Log context.
+	 *
+	 * @return void
+	 */
+	public function critical( $message, array $context = [] ): void {
+		$this->default_logger()->critical( $message, $context );
+	}
+
+	/**
+	 * Runtime errors that do not require immediate action but should typically
+	 * be logged and monitored.
+	 *
+	 * @param string  $message Log message.
+	 * @param mixed[] $context Log context.
+	 *
+	 * @return void
+	 */
+	public function error( $message, array $context = [] ): void {
+		$this->default_logger()->error( $message, $context );
+	}
+
+	/**
+	 * Exceptional occurrences that are not errors.
+	 *
+	 * Example: Use of deprecated APIs, poor use of an API, undesirable things
+	 * that are not necessarily wrong.
+	 *
+	 * @param string  $message Log message.
+	 * @param mixed[] $context Log context.
+	 *
+	 * @return void
+	 */
+	public function warning( $message, array $context = [] ): void {
+		$this->default_logger()->warning( $message, $context );
+	}
+
+	/**
+	 * Normal but significant events.
+	 *
+	 * @param string  $message Log message.
+	 * @param mixed[] $context Log context.
+	 *
+	 * @return void
+	 */
+	public function notice( $message, array $context = [] ): void {
+		$this->default_logger()->notice( $message, $context );
+	}
+
+	/**
+	 * Interesting events.
+	 *
+	 * Example: User logs in, SQL logs.
+	 *
+	 * @param string  $message Log message.
+	 * @param mixed[] $context Log context.
+	 *
+	 * @return void
+	 */
+	public function info( $message, array $context = [] ): void {
+		$this->default_logger()->info( $message, $context );
+	}
+
+	/**
+	 * Detailed debug information.
+	 *
+	 * @param string  $message Log message.
+	 * @param mixed[] $context Log context.
+	 *
+	 * @return void
+	 */
+	public function debug( $message, array $context = [] ): void {
+		$this->default_logger()->debug( $message, $context );
+	}
+
+	/**
+	 * Logs with an arbitrary level.
+	 *
+	 * @param mixed   $level Log level.
+	 * @param string  $message Log message.
+	 * @param mixed[] $context Log context.
+	 *
+	 * @return void
+	 *
+	 * @throws \Psr\Log\InvalidArgumentException Thrown on invalid arguments.
+	 */
+	public function log( $level, $message, array $context = [] ): void {
+		$this->default_logger()->log( $level, $message, $context );
 	}
 }
