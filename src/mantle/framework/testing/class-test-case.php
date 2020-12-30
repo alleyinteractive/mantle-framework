@@ -14,7 +14,6 @@ use Mantle\Framework\Facade\Facade;
 use Mantle\Framework\Support\Collection;
 use Mantle\Framework\Testing\Concerns\Admin_Screen;
 use Mantle\Framework\Testing\Concerns\Assertions;
-use Mantle\Framework\Testing\Concerns\Create_Application;
 use Mantle\Framework\Testing\Concerns\Deprecations;
 use Mantle\Framework\Testing\Concerns\Hooks;
 use Mantle\Framework\Testing\Concerns\Incorrect_Usage;
@@ -206,6 +205,7 @@ abstract class Test_Case extends BaseTestCase {
 		// todo: Fire the shutdown hooks when added.
 		if ( $this->app ) {
 			$this->app = null;
+			Facade::set_facade_application( null );
 		}
 	}
 

@@ -51,6 +51,13 @@ abstract class Generator_Command extends Command {
 	protected $replacements;
 
 	/**
+	 * Prefix for the file.
+	 *
+	 * @var string
+	 */
+	protected $prefix = 'class-';
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Application_Contract $app Application contract.
@@ -214,7 +221,7 @@ abstract class Generator_Command extends Command {
 			$parts = '';
 		}
 
-		return \untrailingslashit( $this->get_base_path() . strtolower( str_replace( '\\', '/', $this->type ) ) . '/' . $parts );
+		return \untrailingslashit( untrailingslashit( $this->get_base_path() ) . '/' . strtolower( str_replace( '\\', '/', $this->type ) ) . '/' . $parts );
 	}
 
 	/**
@@ -228,7 +235,7 @@ abstract class Generator_Command extends Command {
 		$filename = array_pop( $parts );
 		$filename = \sanitize_title_with_dashes( str_replace( '_', '-', $filename ) );
 
-		return $this->get_folder_path( $name ) . '/class-' . $filename . '.php';
+		return $this->get_folder_path( $name ) . "/{$this->prefix}{$filename}.php";
 	}
 
 	/**
