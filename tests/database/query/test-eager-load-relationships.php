@@ -1,6 +1,7 @@
 <?php
 namespace Mantle\Tests\Database\Builder;
 
+use Carbon\Carbon;
 use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Term;
 use Mantle\Framework\Database\Query\Post_Query_Builder as Builder;
@@ -66,9 +67,11 @@ class Test_Eager_Load_Relationships extends Framework_Test_Case {
 			->to_array();
 
 		// Eager load the models.
-		$posts = Testable_Post_Eager::with('post_relationship')->get();
+		$posts = Testable_Post_Eager::with( 'post_relationship' )->get();
+		dump( $posts );
 
 		foreach ( $posts as $post ) {
+			dump( $post );
 			$this->assertTrue( $post->relation_loaded( 'post_relationship' ) );
 			$this->assertEquals( $related_post_ids[ $post->id ] ?? null, $post->post_relationship->id );
 		}
@@ -146,6 +149,19 @@ class Test_Eager_Load_Relationships extends Framework_Test_Case {
 			$this->assertEquals( $related_post_ids[ $post->id ], $post->post->id );
 		}
 	}
+
+	// public function test_eager_loading_term_has_one() {
+	// 	$tag = Testable_Tag_Eager::create( [ 'name' => 'Test Eager Loading Term' ] );
+	// 	$post = Testable_Post_Eager::create(
+	// 		[
+	// 			'title'     => 'Testable Post Eager for Testable Term',
+	// 			'post_date' => Carbon::now()->subWeek()->toDateTimeString(),
+	// 		]
+	// 	);
+
+	// 	static::factory()->post->create_many( 10 );
+	// 	static::factory()->tag->create_many( 10 );
+	// }
 }
 
 class Testable_Post_Eager extends Post {
