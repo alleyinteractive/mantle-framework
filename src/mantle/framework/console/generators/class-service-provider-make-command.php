@@ -48,7 +48,7 @@ class Service_Provider_Make_Command extends Generator_Command {
 	 *
 	 * @param string $name Class name.
 	 */
-	public function synopsis( string $name ) {
+	public function complete_synopsis( string $name ) {
 		$this->log(
 			PHP_EOL . sprintf(
 				'You can use this service provider by adding "%s\\%s::class" to the "providers" in "config/app.php".',

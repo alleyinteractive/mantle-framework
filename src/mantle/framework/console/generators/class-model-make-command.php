@@ -154,7 +154,7 @@ class Model_Make_Command extends Generator_Command {
 	 *
 	 * @param string $name Class name.
 	 */
-	public function synopsis( string $name ) {
+	public function complete_synopsis( string $name ) {
 		if ( ! $this->get_flag( 'registrable', false ) ) {
 			return;
 		}
