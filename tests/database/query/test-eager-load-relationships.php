@@ -71,7 +71,7 @@ class Test_Eager_Load_Relationships extends Framework_Test_Case {
 
 		foreach ( $posts as $post ) {
 			$this->assertTrue( $post->relation_loaded( 'post_relationship' ) );
-			$this->assertNotNull( $post->post_relationship );
+			$this->assertNotNull( $post->post_relationship, 'Expecting that the "post_relationship" has an actual model' );
 			$this->assertEquals( $related_post_ids[ $post->id ] ?? null, $post->post_relationship->id );
 		}
 	}
