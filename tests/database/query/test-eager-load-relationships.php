@@ -71,9 +71,7 @@ class Test_Eager_Load_Relationships extends Framework_Test_Case {
 
 		foreach ( $posts as $post ) {
 			$this->assertTrue( $post->relation_loaded( 'post_relationship' ) );
-			if (!is_object($post)) {
-				dump($post);
-			}
+			$this->assertNotNull( $post->post_relationship );
 			$this->assertEquals( $related_post_ids[ $post->id ] ?? null, $post->post_relationship->id );
 		}
 	}
