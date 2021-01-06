@@ -1,6 +1,7 @@
 <?php
 namespace Mantle\Tests\Database\Builder;
 
+use Carbon\Carbon;
 use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Term;
 use Mantle\Framework\Database\Query\Post_Query_Builder as Builder;
@@ -240,32 +241,39 @@ class Test_Post_Query_Builder extends Framework_Test_Case {
 		$this->assertEquals( $post_id, $first->id() );
 	}
 
-	// public function test_query_with_multiple() {
-	// 	$post_a = $this->get_random_post_id();
-	// 	$post_b = $this->get_random_post_id( [ 'post_type' => Another_Testable_Post::get_object_name() ] );
+	public function test_query_with_multiple() {
+		$post_a = static::factory()->post->create( [ 'post_date' => Carbon::now()->subWeek()->toDateTimeString() ] );
+		$post_b = static::factory()->post->create( [
+			'post_date' => Carbon::now()->subWeek()->toDateTimeString(),
+			'post_type' => Another_Testable_Post::get_object_name(),
+		] );
 
-	// 	update_post_meta( $post_a, 'shared-meta', 'meta-value' );
-	// 	update_post_meta( $post_b, 'shared-meta', 'meta-value' );
+		// Create some posts after for some randomness.
+		static::factory()->post->create_many( 10 );
+		static::factory()->post->create_many( 10, [ 'post_type' => Another_Testable_Post::get_object_name() ] );
 
-	// 	update_post_meta( $post_a, 'meta-a', 'meta-value-a' );
-	// 	update_post_meta( $post_b, 'meta-b', 'meta-value-b' );
+		update_post_meta( $post_a, 'shared-meta', 'meta-value' );
+		update_post_meta( $post_b, 'shared-meta', 'meta-value' );
 
-	// 	$get = Post_Query_Builder::create( [ Testable_Post::class, Another_Testable_Post::class ] )
-	// 		->whereMeta( 'shared-meta', 'meta-value' )
-	// 		->get();
+		update_post_meta( $post_a, 'meta-a', 'meta-value-a' );
+		update_post_meta( $post_b, 'meta-b', 'meta-value-b' );
 
-	// 	$this->assertEquals( 2, count( $get ) );
-	// 	$this->assertEquals( $post_a, $get[0]->id() );
-	// 	$this->assertEquals( $post_b, $get[1]->id() );
+		$get = Post_Query_Builder::create( [ Testable_Post::class, Another_Testable_Post::class ] )
+			->whereMeta( 'shared-meta', 'meta-value' )
+			->get();
 
-	// 	// Check querying one.
-	// 	$get = Post_Query_Builder::create( [ Testable_Post::class, Another_Testable_Post::class ] )
-	// 		->whereMeta( 'meta-b', 'meta-value-b' )
-	// 		->get();
+		$this->assertEquals( 2, count( $get ) );
+		$this->assertEquals( $post_a, $get[0]->id() );
+		$this->assertEquals( $post_b, $get[1]->id() );
 
-	// 	$this->assertEquals( 1, count( $get ) );
-	// 	$this->assertEquals( $post_b, $get[0]->id() );
-	// }
+		// Check querying one.
+		$get = Post_Query_Builder::create( [ Testable_Post::class, Another_Testable_Post::class ] )
+			->whereMeta( 'meta-b', 'meta-value-b' )
+			->get();
+
+		$this->assertEquals( 1, count( $get ) );
+		$this->assertEquals( $post_b, $get[0]->id() );
+	}
 
 	/**
 	 * Get a random post ID, ensures the post ID is not the last in the set.
