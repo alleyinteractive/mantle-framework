@@ -60,7 +60,8 @@ class Routing_Service_Provider extends Service_Provider {
 				return new Url_Generator(
 					$app->get_root_url(),
 					$routes,
-					$app['request']
+					$app['request'],
+					$app['log'],
 				);
 			}
 		);

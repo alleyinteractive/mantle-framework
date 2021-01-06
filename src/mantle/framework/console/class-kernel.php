@@ -11,6 +11,9 @@ use Mantle\Framework\Application;
 use Mantle\Framework\Contracts\Console\Kernel as Kernel_Contract;
 use Mantle\Framework\Contracts\Kernel as Core_Kernel_Contract;
 use Exception;
+use Mantle\Framework\Support\Str;
+use ReflectionClass;
+use Symfony\Component\Finder\Finder;
 use Throwable;
 
 /**
@@ -81,12 +84,52 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	}
 
 	/**
-	 * Get the application's commands.
+	 * Register the application's commands.
 	 *
-	 * @return array
+	 * @return void
 	 */
-	public function commands(): array {
-		return $this->commands();
+	public function commands(): void {}
+
+	/**
+	 * Register all the commands in a given directory.
+	 *
+	 * @param string ...$paths Paths to register.
+	 * @return void
+	 */
+	protected function load( ...$paths ) {
+		$namespace = $this->app->get_namespace();
+
+		collect( $paths )
+			->unique()
+			->filter(
+				function( $path ) {
+					return is_dir( $path );
+				}
+			)
+			->each(
+				function( string $path ) use ( $namespace ) {
+					$files = ( new Finder() )
+						->in( $path )
+						->files()
+						->name( 'class-*-command.php' );
+
+					foreach ( $files as $file ) {
+						$command = $namespace . str_replace(
+							[ '/', '.php', 'class_', '-', '\app' ],
+							[ '\\', '', '', '_', 'app' ],
+							Str::studly_underscore( Str::after( $file->getRealPath(), realpath( $this->app->get_app_path() ) ) )
+						);
+
+						if (
+							class_exists( $command )
+							&& is_subclass_of( $command, Command::class )
+							&& ! ( new ReflectionClass( $command ) )->isAbstract()
+						) {
+							$this->commands[] = $command;
+						}
+					}
+				}
+			);
 	}
 
 	/**
@@ -94,6 +137,8 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 */
 	public function register_commands() {
 		if ( ! $this->commands_loaded ) {
+			$this->commands();
+
 			foreach ( $this->commands as $command ) {
 				$command = $this->app->make( $command );
 				$command->register();

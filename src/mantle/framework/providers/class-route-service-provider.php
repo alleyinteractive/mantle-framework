@@ -41,7 +41,12 @@ class Route_Service_Provider extends Service_Provider implements Route_Service_P
 	 */
 	public function boot() {
 		parent::boot();
-		$this->load_routes();
+
+		$this->app->booted(
+			function() {
+				$this->load_routes();
+			}
+		);
 	}
 
 	/**

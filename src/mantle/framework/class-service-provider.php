@@ -56,7 +56,7 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	 */
 	public function boot() {
 		if ( isset( $this->app['log'] ) ) {
-			$this->setLogger( $this->app['log']->get_default_logger() );
+			$this->setLogger( $this->app['log']->default_logger() );
 		}
 
 		$this->boot_action_hooks();
@@ -110,11 +110,15 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	/**
 	 * Register a wp-cli command.
 	 *
-	 * @param Command|string $command Command instance or class name to register.
+	 * @param Command[]|string[]|Command|string $command Command instance or class name to register.
 	 * @return Service_Provider
 	 */
 	public function add_command( $command ): Service_Provider {
-		if ( $command instanceof Command ) {
+		if ( is_array( $command ) ) {
+			foreach ( $command as $item ) {
+				$this->add_command( $item );
+			}
+		} elseif ( $command instanceof Command ) {
 			$this->commands[] = $command;
 		} else {
 			$this->commands[] = $this->app->make( $command );

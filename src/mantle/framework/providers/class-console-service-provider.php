@@ -8,6 +8,8 @@
 namespace Mantle\Framework\Providers;
 
 use Mantle\Framework\Console\Clear_Cache_Command;
+use Mantle\Framework\Console\Config_Cache_Command;
+use Mantle\Framework\Console\Config_Clear_Command;
 use Mantle\Framework\Console\Generators\Command_Make_Command;
 use Mantle\Framework\Console\Generators\Controller_Make_Command;
 use Mantle\Framework\Console\Generators\Factory_Make_Command;
@@ -17,6 +19,7 @@ use Mantle\Framework\Console\Generators\Middleware_Make_Command;
 use Mantle\Framework\Console\Generators\Model_Make_Command;
 use Mantle\Framework\Console\Generators\Seeder_Make_Command;
 use Mantle\Framework\Console\Generators\Service_Provider_Make_Command;
+use Mantle\Framework\Console\Generators\Test_Make_Command;
 use Mantle\Framework\Console\Hook_Usage_Command;
 use Mantle\Framework\Console\Package_Discover_Command;
 use Mantle\Framework\Console\Route_List_Command;
@@ -38,6 +41,8 @@ class Console_Service_Provider extends Service_Provider {
 	protected $commands_to_register = [
 		Clear_Cache_Command::class,
 		Command_Make_Command::class,
+		Config_Cache_Command::class,
+		Config_Clear_Command::class,
 		Controller_Make_Command::class,
 		Factory_Make_Command::class,
 		Generator_Make_Command::class,
@@ -49,6 +54,7 @@ class Console_Service_Provider extends Service_Provider {
 		Route_List_Command::class,
 		Seeder_Make_Command::class,
 		Service_Provider_Make_Command::class,
+		Test_Make_Command::class,
 		View_Cache_Command::class,
 		View_Clear_Command::class,
 	];

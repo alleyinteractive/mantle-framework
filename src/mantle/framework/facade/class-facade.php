@@ -60,7 +60,7 @@ abstract class Facade {
 	 *
 	 * @param \Mantle\Framework\Contracts\Application $app Application instance.
 	 */
-	public static function set_facade_application( Application $app ) {
+	public static function set_facade_application( Application $app = null ) {
 		static::$app = $app;
 	}
 

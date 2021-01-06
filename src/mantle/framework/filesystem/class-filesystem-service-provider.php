@@ -20,7 +20,22 @@ class Filesystem_Service_Provider extends Service_Provider {
 	 * Register the service provider.
 	 */
 	public function register() {
+		$this->register_native_filesystem();
 		$this->register_flysystem();
+	}
+
+	/**
+	 * Register the native filesystem.
+	 *
+	 * @return void
+	 */
+	protected function register_native_filesystem() {
+		$this->app->singleton(
+			'files',
+			function( $app ) {
+				return new Filesystem();
+			}
+		);
 	}
 
 	/**

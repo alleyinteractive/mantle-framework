@@ -10,7 +10,6 @@ namespace Mantle\Framework\Http\Routing;
 use Mantle\Framework\Contracts\Http\Routing\Url_Generator as Generator_Contract;
 use Mantle\Framework\Http\Request;
 use Mantle\Framework\Support\Arr;
-use Mantle\Framework\Support\Str;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\RequestContext;
@@ -56,10 +55,12 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 * @param string          $root_url Root URL.
 	 * @param RouteCollection $routes Route collection.
 	 * @param Request         $request Request object.
+	 * @param LoggerInterface $logger Logger instance.
 	 */
-	public function __construct( string $root_url = '', RouteCollection $routes, Request $request ) {
+	public function __construct( string $root_url = '', RouteCollection $routes, Request $request, LoggerInterface $logger ) {
 		$this->root_url = $root_url;
 		$this->routes   = $routes;
+		$this->logger   = $logger;
 
 		$this->set_request( $request );
 	}
@@ -115,7 +116,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 * @return string
 	 */
 	public function to( string $path, array $extra = [], bool $secure = null ) {
-		if ( $this->isValidUrl( $path ) ) {
+		if ( $this->is_valid_url( $path ) ) {
 			return $path;
 		}
 
@@ -123,7 +124,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 			'/',
 			array_map(
 				'rawurlencode',
-				(array) $this->formatParameters( $extra )
+				(array) $this->format_parameters( $extra )
 			)
 		);
 
@@ -146,7 +147,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 * @param  mixed|array $parameters
 	 * @return array
 	 */
-	public function formatParameters( $parameters ) {
+	public function format_parameters( $parameters ): array {
 		return Arr::wrap( $parameters );
 	}
 
@@ -156,7 +157,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 * @param  bool|null $secure Flag if should be secure.
 	 * @return string
 	 */
-	public function formatScheme( $secure = null ) {
+	public function format_scheme( $secure = null ): string {
 		if ( ! is_null( $secure ) ) {
 			return $secure ? 'https://' : 'http://';
 		}
@@ -196,6 +197,20 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	}
 
 	/**
+	 * Set the root URL.
+	 *
+	 * @param string $url Root URL to set.
+	 * @return static
+	 */
+	public function root_url( string $url ) {
+		$this->root_url = $url;
+
+		$this->context->setHost( wp_parse_url( $url, PHP_URL_HOST ) );
+
+		return $this;
+	}
+
+	/**
 	 * Format the given URL segments into a single URL.
 	 *
 	 * @param  string $root URL root.
@@ -213,7 +228,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 * @param  string $path
 	 * @return bool
 	 */
-	public function isValidUrl( $path ) {
+	public function is_valid_url( $path ): bool {
 		if ( ! preg_match( '~^(#|//|https?://|(mailto|tel|sms):)~', $path ) ) {
 			return filter_var( $path, FILTER_VALIDATE_URL ) !== false;
 		}
