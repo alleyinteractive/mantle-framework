@@ -68,11 +68,12 @@ class Test_Eager_Load_Relationships extends Framework_Test_Case {
 
 		// Eager load the models.
 		$posts = Testable_Post_Eager::with( 'post_relationship' )->get();
-		dump( $posts );
 
 		foreach ( $posts as $post ) {
-			dump( $post );
 			$this->assertTrue( $post->relation_loaded( 'post_relationship' ) );
+			if (!is_object($post)) {
+				dump($post);
+			}
 			$this->assertEquals( $related_post_ids[ $post->id ] ?? null, $post->post_relationship->id );
 		}
 	}
