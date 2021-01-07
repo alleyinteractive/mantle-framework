@@ -8,6 +8,7 @@
 namespace Mantle\Framework\Database\Model\Concerns;
 
 use Mantle\Framework\Database\Model\Relations\Belongs_To;
+use Mantle\Framework\Database\Model\Relations\Belongs_To_Many;
 use Mantle\Framework\Database\Model\Relations\Has_Many;
 use Mantle\Framework\Database\Model\Relations\Has_One;
 use Mantle\Framework\Database\Model\Relations\Has_One_Or_Many;
@@ -59,8 +60,8 @@ trait Has_Relationships {
 	/**
 	 * Define a belongs to relationship.
 	 *
-	 * Defines a relationship between two posts with the reference stored on the remote
-	 * post's meta.
+	 * Defines a relationship between two models with the reference stored on the remote
+	 * model's meta.
 	 *
 	 * @param string $related Related model name.
 	 * @param string $foreign_key Foreign key.
@@ -73,6 +74,25 @@ trait Has_Relationships {
 		$local_key   = $local_key ?? $instance->get_foreign_key();
 
 		return new Belongs_To( $instance->new_query(), $this, $foreign_key, $local_key );
+	}
+
+	/**
+	 * Define a belongs to relationship.
+	 *
+	 * Defines a relationship between two models with the reference stored on the remote
+	 * object's meta.
+	 *
+	 * @param string $related Related model name.
+	 * @param string $foreign_key Foreign key.
+	 * @param string $local_key Local key.
+	 * @return Relation
+	 */
+	public function belongs_to_many( string $related, string $foreign_key = null, string $local_key = null ): Relation {
+		$instance    = new $related();
+		$foreign_key = $foreign_key ?? $this->get_key_name();
+		$local_key   = $local_key ?? $instance->get_foreign_key();
+
+		return new Belongs_To_Many( $instance->new_query(), $this, $foreign_key, $local_key );
 	}
 
 	/**

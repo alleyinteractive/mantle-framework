@@ -1,6 +1,6 @@
 <?php
 /**
- * Belongs_To class file.
+ * Belongs_To_Many class file.
  *
  * @package Mantle
  */
@@ -9,9 +9,7 @@ namespace Mantle\Framework\Database\Model\Relations;
 
 use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Database\Model\Model_Exception;
-use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Query\Builder;
-use Mantle\Framework\Database\Query\Term_Query_Builder;
 use Mantle\Framework\Support\Collection;
 use Mantle\Framework\Support\Str;
 use RuntimeException;
@@ -21,12 +19,9 @@ use WP_Term;
 use function Mantle\Framework\Helpers\collect;
 
 /**
- * Creates a 'Belongs To' relationship.
- * Performs a meta query on the parent model with data from the current model.
- *
- * Example: Search the parent post's meta query with the ID of the current model.
+ * Creates a 'Belongs To Many' relationship.
  */
-class Belongs_To extends Relation {
+class Belongs_To_Many extends Belongs_To {
 	/**
 	 * Local key.
 	 *
@@ -49,66 +44,48 @@ class Belongs_To extends Relation {
 	 * @param string  $foreign_key Foreign key.
 	 * @param string  $local_key Local key.
 	 */
-	public function __construct( Builder $query, Model $parent, string $foreign_key, ?string $local_key = null ) {
-		$this->foreign_key = $foreign_key;
-		$this->local_key   = $local_key;
+	// public function __construct( Builder $query, Model $parent, string $foreign_key, ?string $local_key = null ) {
+	// 	$this->foreign_key = $foreign_key;
+	// 	$this->local_key   = $local_key;
 
-		parent::__construct( $query, $parent );
-	}
+	// 	parent::__construct( $query, $parent );
+	// }
 
 	/**
 	 * Add constraints to the query.
 	 */
-	public function add_constraints() {
-		if ( ! static::$constraints ) {
-			return $this->query;
-		}
+	// public function add_constraints() {
+	// 	if ( ! static::$constraints ) {
+	// 		return $this->query;
+	// 	}
 
-		// if ( $this->is_post_term_relationship() ) {
-		// 	$object_name = $this->related::get_object_name();
-		// 	$terms       = get_the_terms( $this->parent->id(), $object_name );
+	// 	if ( $this->uses_terms ) {
+	// 		$object_ids = $this->get_term_ids_for_relationship();
 
-		// 	if ( is_array( $terms ) && ! empty( $terms ) ) {
-		// 		$terms = wp_list_pluck( $terms, 'term_id' );
+	// 		if ( empty( $object_ids ) ) {
+	// 			// Prevent the query from going through.
+	// 			// @todo Handle this better.
+	// 			return $this->query->where( 'id', PHP_INT_MAX );
+	// 		} else {
+	// 			return $this->query->whereIn( 'id', $object_ids );
+	// 		}
+	// 	} else {
+	// 		$meta_value = $this->parent->get_meta( $this->local_key );
 
-		// 		if ( $terms ) {
-		// 			return $this->query->whereIn( 'id', $terms );
-		// 		}
-		// 	}
+	// 		if ( empty( $meta_value ) ) {
+	// 			/**
+	// 			 * Prevent the query from going through.
+	// 			 *
+	// 			 * @todo Handle missing meta value better.
+	// 			 */
+	// 			$this->query->where( 'id', PHP_INT_MAX );
+	// 		} else {
+	// 			$this->query->where( $this->foreign_key, $meta_value );
+	// 		}
+	// 	}
 
-		// 	// Prevent the query from going through.`
-		// 	return $this->query->where( 'id', PHP_INT_MAX );
-		// } else
-		// if ( $this->is_term_post_relationship() ) {
-		// 	dd('Not supported.');
-		// } else
-		if ( $this->uses_terms ) {
-			$object_ids = $this->get_term_ids_for_relationship();
-
-			if ( empty( $object_ids ) ) {
-				// Prevent the query from going through.
-				// @todo Handle this better.
-				return $this->query->where( 'id', PHP_INT_MAX );
-			} else {
-				return $this->query->whereIn( 'id', $object_ids );
-			}
-		} else {
-			$meta_value = $this->parent->get_meta( $this->local_key );
-
-			if ( empty( $meta_value ) ) {
-				/**
-				 * Prevent the query from going through.
-				 *
-				 * @todo Handle missing meta value better.
-				 */
-				$this->query->where( 'id', PHP_INT_MAX );
-			} else {
-				$this->query->where( $this->foreign_key, $meta_value );
-			}
-		}
-
-		return $this->query;
-	}
+	// 	return $this->query;
+	// }
 
 	/**
 	 * Set the query constraints for an eager load of the relation.
@@ -143,84 +120,7 @@ class Belongs_To extends Relation {
 	public function get_results() {
 		$this->add_constraints();
 
-		return $this->query->first();
-	}
-
-	/**
-	 * Associate a model with a relationship.
-	 *
-	 * @param Model $model Model to save to.
-	 * @return Model
-	 *
-	 * @throws Model_Exception Thrown on error setting term for relationship.
-	 */
-	public function associate( Model $model ) {
-		if ( ! $model->exists ) {
-			$model->save();
-		}
-
-		if ( $this->is_post_term_relationship() ) {
-			$set = wp_set_object_terms( $this->parent->id(), $model->id(), $model->taxonomy, false );
-
-			if ( is_wp_error( $set ) ) {
-				throw new Model_Exception( "Error associating term relationship for [{$this->parent->id()}]: [{$set->get_error_message()}]" );
-			}
-
-			return $model;
-		} elseif ( $this->is_term_post_relationship() ) {
-			dd($model);
-		}
-
-		if ( $this->uses_terms ) {
-			$set = wp_set_post_terms( $this->parent->id(), [ $this->get_term_for_relationship( $model ) ], static::RELATION_TAXONOMY, true );
-
-			if ( is_wp_error( $set ) ) {
-				throw new Model_Exception( "Error associating term relationship for [{$this->parent->id()}]: [{$set->get_error_message()}]" );
-			} elseif ( false === $set ) {
-				throw new Model_Exception( "Unknown error associating term relationship for [{$this->parent->id()}]" );
-			}
-		} else {
-			$this->parent->set_meta( $this->local_key, $model->id() );
-		}
-
-		if ( $this->relationship ) {
-			$this->parent->unset_relation( $this->relationship );
-		}
-
-		return $model;
-	}
-
-	/**
-	 * Proxy to `Belongs_To::associate()`.
-	 *
-	 * @param Model $model Model to save to.
-	 * @return Model
-	 */
-	public function save( Model $model ) {
-		return $this->associate( $model );
-	}
-
-	/**
-	 * Remove the relationship from the model.
-	 *
-	 * @return static
-	 */
-	public function dissociate() {
-		if ( $this->uses_terms ) {
-			$term_ids = $this->get_term_ids_for_relationship( true );
-
-			if ( ! empty( $term_ids ) ) {
-				wp_remove_object_terms( $this->parent->id(), $term_ids, static::RELATION_TAXONOMY );
-			}
-		} else {
-			$this->parent->delete_meta( $this->local_key );
-		}
-
-		if ( $this->relationship ) {
-			$this->parent->unset_relation( $this->relationship );
-		}
-
-		return $this;
+		return $this->query->get();
 	}
 
 	/**

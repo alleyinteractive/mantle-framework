@@ -7,7 +7,7 @@ use Mantle\Framework\Database\Model\Term;
 use Mantle\Framework\Testing\Framework_Test_Case;
 
 
-class Test_Post_Object extends Framework_Test_Case {
+class Test_Has_One_Or_Many extends Framework_Test_Case {
 	protected function setUp(): void {
 		parent::setUp();
 		register_post_type( 'sponsor' );
@@ -18,18 +18,6 @@ class Test_Post_Object extends Framework_Test_Case {
 		parent::tearDown();
 		unregister_post_type( 'sponsor' );
 		unregister_taxonomy( 'test_taxonomy' );
-	}
-
-	public function test_get_belongs_to() {
-		$post_a     = $this->get_random_post_id();
-		$sponsor_id = $this->get_random_post_id( [ 'post_type' => 'sponsor' ] );
-
-		// Get the sponsor via a belongs_to relationship.
-		$object = Testable_Post::find( $post_a );
-		$object->set_meta( 'testable_sponsor_id', $sponsor_id );
-
-		$first = $object->sponsor()->first();
-		$this->assertEquals( $sponsor_id, $first->id() );
 	}
 
 	public function test_get_has_one() {
@@ -132,6 +120,35 @@ class Test_Post_Object extends Framework_Test_Case {
 		$term->posts()->remove( $post );
 		$this->assertEmpty( get_the_terms( $post->id(), 'test_taxonomy' ) );
 	}
+
+	// public function test_post_to_term_relationship_has_many() {
+	// 	$post = static::factory()->post->create( [ 'post_date' => Carbon::now()->subWeek()->toDateTimeString() ] );
+	// 	$tag = Testable_Tag_Relationships::find( static::factory()->tag->create() );
+
+	// 	static::factory()->post->create_many( 10 );
+	// 	static::factory()->tag->create_many( 10 );
+
+	// 	$post = Testable_Post::find( $post );
+
+	// 	$tag->posts()->save( $post );
+
+	// 	// Check if the post has the tag.
+	// 	$this->assertTrue( has_tag( $tag->id, $post->id ) );
+
+	// 	// Retrieve the tags on the post (via the relationship).
+	// 	$post_tags = $post->tags;
+
+	// 	dump($post_tags);
+	// 	// $this->assertNotEmpty( $post_tags );
+	// 	// $this->assertCount( 1, $post_tags );
+	// 	// $this->assertEquals( $tag->id, $post_tags[0]->id );
+
+	// 	// // Retrieve the posts for the tag (via the relationship).
+	// 	// $tag_posts = $tag->posts;
+
+	// 	// $this->assertCount( 1, $tag_posts );
+	// 	// $this->assertEquals( $post->id, $tag_posts[0]->id );
+	// }
 
 	/**
 	 * Get a random post ID, ensures the post ID is not the last in the set.
