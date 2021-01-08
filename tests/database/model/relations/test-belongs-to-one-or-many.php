@@ -6,14 +6,20 @@ use InvalidArgumentException;
 use Mantle\Framework\Testing\Framework_Test_Case;
 use Mantle\Framework\Database\Model\Concerns\Has_Relationships as Relationships;
 use Mantle\Framework\Database\Model\Post;
+use Mantle\Framework\Database\Model\Relations\Has_One;
 use Mantle\Framework\Database\Model\Relations\Has_One_Or_Many;
 use Mantle\Framework\Database\Model\Term;
+use Mantle\Framework\Providers\Model_Service_Provider;
 
 class Test_Belongs_To_One_Or_Many extends Framework_Test_Case {
 	protected function setUp(): void {
 		parent::setUp();
 
 		register_post_type( 'sponsor' );
+
+		if ( ! taxonomy_exists( Has_One::RELATION_TAXONOMY ) ) {
+			Model_Service_Provider::register_internal_taxonomy();
+		}
 	}
 
 	protected function tearDown(): void {
