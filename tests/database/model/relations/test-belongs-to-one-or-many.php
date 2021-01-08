@@ -2,13 +2,14 @@
 namespace Mantle\Tests\Database\Model\Relations\Belongs_To;
 
 use Carbon\Carbon;
+use InvalidArgumentException;
 use Mantle\Framework\Testing\Framework_Test_Case;
 use Mantle\Framework\Database\Model\Concerns\Has_Relationships as Relationships;
 use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Relations\Has_One_Or_Many;
 use Mantle\Framework\Database\Model\Term;
 
-class Test_Belongs_To extends Framework_Test_Case {
+class Test_Belongs_To_One_Or_Many extends Framework_Test_Case {
 	protected function setUp(): void {
 		parent::setUp();
 
@@ -64,32 +65,22 @@ class Test_Belongs_To extends Framework_Test_Case {
 	}
 
 	public function test_post_to_term() {
-		$post = Testable_Post::find(
-			static::factory()->post->create( [ 'post_date' => Carbon::now()->subWeek()->toDateTimeString() ] )
-		);
+		$this->expectException( InvalidArgumentException::class );
 
-
-		$tag = Testable_Tag::find( static::factory()->tag->create() );
-
-		static::factory()->post->create_many( 10 );
-		static::factory()->tag->create_many( 10 );
-
-		$post->tag()->save( $tag );
-
-		$this->assertEquals( $tag->id, $post->tag->id );
-	}
-
-	public function test_post_to_terms() {
-		$post = Testable_Post::find(
-			static::factory()->post->create( [ 'post_date' => Carbon::now()->subWeek()->toDateTimeString() ] )
-		);
-
+		$post = Testable_Post::find( static::factory()->post->create() );
 		$tag = Testable_Tag::find( static::factory()->tag->create() );
 
 		$post->tags()->save( $tag );
+	}
 
-		$this->assertEquals( $tag->id, $post->tags[0]->id );
-		$this->assertNotEmpty( get_the_tags( $post->id ) );
+	public function test_term_to_term() {
+		$tag     = Testable_Tag::find( static::factory()->tag->create() );
+		$related = $tag->related_tag()->save( new Testable_Tag( [ 'name' => 'Related' ] ) );
+
+		static::factory()->tag->create_many( 10 );
+
+		$this->assertNotNull( $tag->related_tag, 'Term should have related relationship.' );
+		$this->assertEquals( $related->id, $tag->related_tag->id );
 	}
 }
 
@@ -104,10 +95,6 @@ class Testable_Post extends Post {
 
 	public function sponsor_with_terms() {
 		return $this->belongs_to( Testable_Sponsor::class )->uses_terms();
-	}
-
-	public function tag() {
-		return $this->belongs_to( Testable_Tag::class );
 	}
 
 	public function tags() {
@@ -127,7 +114,7 @@ class Testable_Tag extends Term {
 
 	public static $object_name = 'post_tag';
 
-	public function posts() {
-		return $this->belongs_to_many( Testable_Post::class );
+	public function related_tag() {
+		return $this->belongs_to( Testable_Tag::class );
 	}
 }

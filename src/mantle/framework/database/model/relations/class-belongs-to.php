@@ -25,6 +25,9 @@ use function Mantle\Framework\Helpers\collect;
  * Performs a meta query on the parent model with data from the current model.
  *
  * Example: Search the parent post's meta query with the ID of the current model.
+ *
+ * For relationships between posts and term models, the Belongs To relationship
+ * is not supported for performance reasons.
  */
 class Belongs_To extends Relation {
 	/**
@@ -64,24 +67,6 @@ class Belongs_To extends Relation {
 			return $this->query;
 		}
 
-		// if ( $this->is_post_term_relationship() ) {
-		// 	$object_name = $this->related::get_object_name();
-		// 	$terms       = get_the_terms( $this->parent->id(), $object_name );
-
-		// 	if ( is_array( $terms ) && ! empty( $terms ) ) {
-		// 		$terms = wp_list_pluck( $terms, 'term_id' );
-
-		// 		if ( $terms ) {
-		// 			return $this->query->whereIn( 'id', $terms );
-		// 		}
-		// 	}
-
-		// 	// Prevent the query from going through.`
-		// 	return $this->query->where( 'id', PHP_INT_MAX );
-		// } else
-		// if ( $this->is_term_post_relationship() ) {
-		// 	dd('Not supported.');
-		// } else
 		if ( $this->uses_terms ) {
 			$object_ids = $this->get_term_ids_for_relationship();
 
@@ -159,20 +144,11 @@ class Belongs_To extends Relation {
 			$model->save();
 		}
 
-		if ( $this->is_post_term_relationship() ) {
-			$set = wp_set_object_terms( $this->parent->id(), $model->id(), $model->taxonomy, false );
-
-			if ( is_wp_error( $set ) ) {
-				throw new Model_Exception( "Error associating term relationship for [{$this->parent->id()}]: [{$set->get_error_message()}]" );
-			}
-
-			return $model;
-		} elseif ( $this->is_term_post_relationship() ) {
-			dd($model);
-		}
 
 		if ( $this->uses_terms ) {
-			$set = wp_set_post_terms( $this->parent->id(), [ $this->get_term_for_relationship( $model ) ], static::RELATION_TAXONOMY, true );
+			$append = Belongs_To_Many::class === get_class( $this ) || is_subclass_of( $this, Belongs_To_Many::class );
+
+			$set = wp_set_post_terms( $this->parent->id(), [ $this->get_term_for_relationship( $model ) ], static::RELATION_TAXONOMY, $append );
 
 			if ( is_wp_error( $set ) ) {
 				throw new Model_Exception( "Error associating term relationship for [{$this->parent->id()}]: [{$set->get_error_message()}]" );

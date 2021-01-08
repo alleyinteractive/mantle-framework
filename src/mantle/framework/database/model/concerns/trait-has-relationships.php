@@ -7,12 +7,15 @@
 
 namespace Mantle\Framework\Database\Model\Concerns;
 
+use InvalidArgumentException;
+use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Relations\Belongs_To;
 use Mantle\Framework\Database\Model\Relations\Belongs_To_Many;
 use Mantle\Framework\Database\Model\Relations\Has_Many;
 use Mantle\Framework\Database\Model\Relations\Has_One;
 use Mantle\Framework\Database\Model\Relations\Has_One_Or_Many;
 use Mantle\Framework\Database\Model\Relations\Relation;
+use Mantle\Framework\Database\Model\Term;
 
 /**
  * Model Relationships
@@ -67,8 +70,18 @@ trait Has_Relationships {
 	 * @param string $foreign_key Foreign key.
 	 * @param string $local_key Local key.
 	 * @return Relation
+	 *
+	 * @throws InvalidArgumentException Used on the definition of a post and term relationship.
 	 */
 	public function belongs_to( string $related, string $foreign_key = null, string $local_key = null ): Relation {
+		// Check if this a post and term relationship.
+		if (
+			( $this instanceof Term && is_subclass_of( $related, Post::class ) )
+			|| ( $this instanceof Post && is_subclass_of( $related, Term::class ) )
+		) {
+			throw new InvalidArgumentException( 'Post and term relationships must always use has_one() or has_many()' );
+		}
+
 		$instance    = new $related();
 		$foreign_key = $foreign_key ?? $this->get_key_name();
 		$local_key   = $local_key ?? $instance->get_foreign_key();
@@ -86,8 +99,18 @@ trait Has_Relationships {
 	 * @param string $foreign_key Foreign key.
 	 * @param string $local_key Local key.
 	 * @return Relation
+	 *
+	 * @throws InvalidArgumentException Used on the definition of a post and term relationship.
 	 */
 	public function belongs_to_many( string $related, string $foreign_key = null, string $local_key = null ): Relation {
+		// Check if this a post and term relationship.
+		if (
+			( $this instanceof Term && is_subclass_of( $related, Post::class ) )
+			|| ( $this instanceof Post && is_subclass_of( $related, Term::class ) )
+		) {
+			throw new InvalidArgumentException( 'Post and term relationships must always use has_one() or has_many()' );
+		}
+
 		$instance    = new $related();
 		$foreign_key = $foreign_key ?? $this->get_key_name();
 		$local_key   = $local_key ?? $instance->get_foreign_key();

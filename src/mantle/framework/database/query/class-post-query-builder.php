@@ -74,7 +74,7 @@ class Post_Query_Builder extends Builder {
 	public function get_query_args(): array {
 		$this->apply_scopes();
 
-		if ( is_array($this->model ) ) {
+		if ( is_array( $this->model ) ) {
 			$post_type = [];
 
 			foreach ( $this->model as $model ) {

@@ -24,12 +24,21 @@ class Post_Factory extends Factory {
 	protected $faker;
 
 	/**
+	 * Post type to use.
+	 *
+	 * @var string
+	 */
+	protected $post_type;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Generator $generator Faker generator.
+	 * @param string    $post_type Post type to use.
 	 */
-	public function __construct( Generator $generator ) {
-		$this->faker = $generator;
+	public function __construct( Generator $generator, string $post_type = 'post' ) {
+		$this->faker     = $generator;
+		$this->post_type = $post_type;
 	}
 
 	/**
@@ -46,7 +55,7 @@ class Post_Factory extends Factory {
 					'excerpt'   => trim( $this->faker->paragraph( 2 ) ),
 					'status'    => 'publish',
 					'title'     => $this->faker->sentence(),
-					'post_type' => 'post',
+					'post_type' => $this->post_type,
 				],
 				$args
 			)

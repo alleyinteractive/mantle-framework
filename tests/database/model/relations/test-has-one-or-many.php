@@ -1,13 +1,18 @@
 <?php
-namespace Mantle\Tests\Database\Model\Relations;
+namespace Mantle\Tests\Database\Model\Relations\Has_One;
 
+use Carbon\Carbon;
+use COM;
 use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Concerns\Has_Relationships as Relationships;
+use Mantle\Framework\Database\Model\Relations\Relation;
 use Mantle\Framework\Database\Model\Term;
+use Mantle\Framework\Testing\Concerns\Refresh_Database;
 use Mantle\Framework\Testing\Framework_Test_Case;
 
-
 class Test_Has_One_Or_Many extends Framework_Test_Case {
+	use Refresh_Database;
+
 	protected function setUp(): void {
 		parent::setUp();
 		register_post_type( 'sponsor' );
@@ -20,51 +25,58 @@ class Test_Has_One_Or_Many extends Framework_Test_Case {
 		unregister_taxonomy( 'test_taxonomy' );
 	}
 
-	public function test_get_has_one() {
-		$post_a     = $this->get_random_post_id();
-		$sponsor_id = $this->get_random_post_id( [ 'post_type' => 'sponsor' ] );
+	public function test_has_one_post_to_post() {
+		$date = Carbon::now()->subWeek()->toDateTimeString();
 
-		// Associate the post with the sponsor.
-		update_post_meta( $post_a, 'testable_sponsor_id', $sponsor_id );
+		$post = Testable_Post::create( [ 'title' => 'Test Post', 'date' => $date, 'status' => 'publish' ] );
+		$page = $post->page()->save(
+			new Testable_Page( [
+				'date'   => $date,
+				'status' => 'publish',
+				'title'  => 'Test Page',
+			] )
+		);
 
-		$object = Testable_Sponsor::find( $sponsor_id );
-		$first = $object->post()->first();
-		$this->assertEquals( $post_a, $first->id() );
+		static::factory()->post->create_many( 10 );
+		static::factory()->page->create_many( 10 );
+
+		$this->assertEquals( $page->id, $post->page->id );
+		$this->assertEquals( $page->id, $post->page()->first()->id );
+
+		// Check the inverse of the relationship (belongs to).
+		$this->assertEquals( $post->id, $page->post->id );
 	}
 
-	public function test_get_has_many() {
-		$post_a     = $this->get_random_post_id();
-		$sponsor_id = $this->get_random_post_id( [ 'post_type' => 'sponsor' ] );
+	public function test_has_many_post_to_post() {
+		$date = Carbon::now()->subWeek()->toDateTimeString();
 
-		// Associate the post with the sponsor.
-		update_post_meta( $post_a, 'testable_sponsor_id', $sponsor_id );
+		$post  = Testable_Post::create( [ 'title' => 'Test Post Many', 'date' => $date, 'status' => 'publish' ] );
+		$pages = [];
 
-		$object = Testable_Sponsor::find( $sponsor_id );
-		$first = $object->posts()->first();
-		$this->assertEquals( $post_a, $first->id() );
+		for ( $i = 0; $i < 5; $i++ ) {
+			$pages[] = $post->pages()->save(
+				new Testable_Page( [
+					'date'   => $date,
+					'status' => 'publish',
+					'title'  => "Page {$i}",
+				] )
+			);
+		}
+
+		static::factory()->page->create_many( 10 );
+
+		$this->assertCount( count( $pages ), $post->pages );
+
+		// Assert that all pages exist and in the expected order.
+		foreach ( $pages as $i => $page ) {
+			$this->assertEquals( $page->id, $post->pages[ $i ]->id );
+
+			// Check the inverse of the relationship (belongs to).
+			$this->assertEquals( $post->id, $page->post->id );
+		}
 	}
 
-	public function test_saving_model_belongs_to() {
-		$post    = Testable_Post::find( $this->get_random_post_id() );
-		$sponsor = Testable_Sponsor::find( $this->get_random_post_id( [ 'post_type' => 'sponsor' ] ) );
-
-		// Save the post's sponsor.
-		$post->sponsor()->associate( $sponsor );
-
-		// Check that the expected meta was set.
-		$this->assertEquals( $sponsor->id(), $post->get_meta( 'testable_sponsor_id' ) );
-
-		// Test querying against the relationship.
-		$this->assertEquals( $sponsor->id(), $post->sponsor()->first()->id() );
-
-		// Remove the relationship and expect the meta removed.
-		$post->sponsor()->dissociate();
-
-		// Query against the now-removed relationship.
-		$this->assertNull( $post->sponsor()->first() );
-	}
-
-	public function test_saving_model_has_many() {
+	public function has_many_post_to_post_saving() {
 		$post    = Testable_Post::find( $this->get_random_post_id() );
 		$sponsor = Testable_Sponsor::find( $this->get_random_post_id( [ 'post_type' => 'sponsor' ] ) );
 
@@ -81,74 +93,121 @@ class Test_Has_One_Or_Many extends Framework_Test_Case {
 		$this->assertNull( $sponsor->posts()->first() );
 	}
 
-	public function test_has_one_term() {
+	public function test_has_one_post_to_term() {
 		$post = Testable_Post::find( $this->get_random_post_id() );
 
-		$term = Testable_Term::create(
-			[
-				'name' => 'Test Term Has One',
-			]
-		);
-
-		$post->terms()->save( $term );
-
-		$terms = get_the_terms( $post->id(), 'test_taxonomy' );
-
-		$this->assertNotEmpty( $terms );
-		$this->assertEquals( $term->id(), array_shift( $terms )->term_id );
-
-		$post->terms()->remove( $term );
-		$this->assertEmpty( get_the_terms( $post->id(), 'test_taxonomy' ) );
-	}
-
-	public function test_has_one_through_term() {
-		$post = Testable_Post::find( $this->get_random_post_id() );
-
-		$term = Testable_Term::create(
+		$tag = Testable_Tag::create(
 			[
 				'name' => 'Test Term Belongs To',
 			]
 		);
 
-		$term->posts()->save( $post );
+		$tag->posts()->save( $post );
 
-		$terms = get_the_terms( $post->id(), 'test_taxonomy' );
+		static::factory()->post->create_many( 10 );
+		static::factory()->tag->create_many( 10 );
+
+		$terms = get_the_tags( $post->id() );
 
 		$this->assertNotEmpty( $terms );
-		$this->assertEquals( $term->id(), array_shift( $terms )->term_id );
+		$this->assertEquals( $tag->id(), array_shift( $terms )->term_id );
 
-		$term->posts()->remove( $post );
+		// Check the relationship.
+		$this->assertEquals( $tag->id, $post->tag->id );
+
+		$tag->posts()->remove( $post );
 		$this->assertEmpty( get_the_terms( $post->id(), 'test_taxonomy' ) );
 	}
 
-	// public function test_post_to_term_relationship_has_many() {
-	// 	$post = static::factory()->post->create( [ 'post_date' => Carbon::now()->subWeek()->toDateTimeString() ] );
-	// 	$tag = Testable_Tag_Relationships::find( static::factory()->tag->create() );
+	public function test_has_many_post_to_term() {
+		$post = Testable_Post::find( $this->get_random_post_id() );
+		$tags = [];
 
-	// 	static::factory()->post->create_many( 10 );
-	// 	static::factory()->tag->create_many( 10 );
+		for ( $i = 0; $i < 5; $i++ ) {
+			$tags[] = $post->tags()->save( new Testable_Tag( [
+				'name' => "Tag {$i}",
+			] ) );
+		}
 
-	// 	$post = Testable_Post::find( $post );
+		static::factory()->tag->create_many( 10 );
 
-	// 	$tag->posts()->save( $post );
+		$this->assertEquals( count( $tags ), count( get_the_tags( $post->id ) ) );
+		$this->assertEquals( count( $tags ), count( $post->tags ) );
 
-	// 	// Check if the post has the tag.
-	// 	$this->assertTrue( has_tag( $tag->id, $post->id ) );
+		// Check they match the expected tags.
+		foreach ( $tags as $i => $tag ) {
+			$this->assertEquals( $tag->id, $post->tags[ $i ]->id );
+		}
+	}
 
-	// 	// Retrieve the tags on the post (via the relationship).
-	// 	$post_tags = $post->tags;
+	public function test_has_one_term_to_post() {
+		$tag = Testable_Tag::create( [ 'name' => 'Has One Term to Post' ] );
 
-	// 	dump($post_tags);
-	// 	// $this->assertNotEmpty( $post_tags );
-	// 	// $this->assertCount( 1, $post_tags );
-	// 	// $this->assertEquals( $tag->id, $post_tags[0]->id );
+		$post = $tag->post()->save( new Testable_Post( [
+			'date'   => Carbon::now()->subWeek()->toDateTimeString(),
+			'name'   => 'Testable Post',
+			'status' => 'publish',
+		] ) );
 
-	// 	// // Retrieve the posts for the tag (via the relationship).
-	// 	// $tag_posts = $tag->posts;
+		$this->assertEquals( $post->id, $tag->post->id );
+		$this->assertEquals( $tag->id, get_the_tags( $post->id )[0]->term_id );
 
-	// 	// $this->assertCount( 1, $tag_posts );
-	// 	// $this->assertEquals( $post->id, $tag_posts[0]->id );
-	// }
+		$tag->post()->remove( $post );
+
+		$this->assertEmpty( get_the_tags( $post->id ) );
+	}
+
+	public function test_has_many_term_to_post() {
+		$tag = Testable_Tag::create( [ 'name' => 'Has Many Term to Post' ] );
+
+		$posts = [];
+
+		for ( $i = 0; $i < 5; $i++ ) {
+			$posts[] = $tag->posts()->save( new Testable_Post( [
+				'date'   => Carbon::now()->subWeek()->toDateTimeString(),
+				'name'   => "Testable Post {$i}",
+				'status' => 'publish',
+			] ) );
+		}
+
+		$this->assertEquals( count( $posts ), count( $tag->posts ) );
+
+		foreach ( $posts as $i => $post ) {
+			$this->assertTrue( has_tag( $tag->id, $post->id ) );
+			$this->assertEquals( $post->id, $tag->posts[ $i ]->id );
+		}
+	}
+
+	public function test_has_many_post_to_post_with_terms() {
+		$date = Carbon::now()->subDays( 7 )->toDateTimeString();
+		$sponsor = Testable_Sponsor_Using_Term::create( [ 'title' => 'Sponsor Test', 'status' => 'publish', 'date' => $date ] );
+		$post    = $sponsor->post()->save(
+			new Testable_Post_Using_Term(
+				[
+					'date'   => $date,
+					'status' => 'publish',
+					'title'  => 'Post with Sponsor',
+				]
+			)
+		);
+
+		// Create some posts after the current.
+		static::factory()->post->create_many( 10 );
+		static::factory()->post->create_many( 10, [ 'post_type' => 'sponsor' ] );
+
+		// Ensure it wasn't set using the post meta.
+		$this->assertEmpty( $post->meta->testable_sponsor_using_term_id );
+		$this->assertNotEmpty( get_the_terms( $post->id, Relation::RELATION_TAXONOMY ) );
+
+		$sponsors_post = $sponsor->post()->first();
+
+		$this->assertInstanceOf( Testable_Post_Using_Term::class, $sponsors_post );
+		$this->assertEquals( $post->id, $sponsors_post->id );
+
+		// Delete the relationship and ensure the internal term is removed.
+		$sponsor->post()->remove( $post );
+		$this->assertEmpty( get_the_terms( $post->id, Relation::RELATION_TAXONOMY ) );
+	}
 
 	/**
 	 * Get a random post ID, ensures the post ID is not the last in the set.
@@ -164,7 +223,24 @@ class Test_Has_One_Or_Many extends Framework_Test_Case {
 
 class Testable_Post extends Post {
 	use Relationships;
+
 	public static $object_name = 'post';
+
+	public function page() {
+		return $this->has_one( Testable_Page::class );
+	}
+
+	public function pages() {
+		return $this->has_many( Testable_Page::class );
+	}
+
+	public function tag() {
+		return $this->has_one( Testable_Tag::class );
+	}
+
+	public function tags() {
+		return $this->has_many( Testable_Tag::class );
+	}
 
 	public function sponsor() {
 		return $this->belongs_to( Testable_Sponsor::class );
@@ -172,6 +248,30 @@ class Testable_Post extends Post {
 
 	public function terms() {
 		return $this->has_many( Testable_Term::class );
+	}
+}
+
+class Testable_Page extends Post {
+	use Relationships;
+
+	public static $object_name = 'page';
+
+	public function post() {
+		return $this->belongs_to( Testable_Post::class );
+	}
+}
+
+class Testable_Tag extends Term {
+	use Relationships;
+
+	public static $object_name = 'post_tag';
+
+	public function post() {
+		return $this->has_one( Testable_Post::class );
+	}
+
+	public function posts() {
+		return $this->has_many( Testable_Post::class );
 	}
 }
 
@@ -196,5 +296,35 @@ class Testable_Term extends Term {
 
 	public function posts() {
 		return $this->has_many( Testable_Post::class );
+	}
+}
+
+class Testable_Tag_Relationships extends Term {
+	use Relationships;
+
+	public static $object_name = 'post_tag';
+
+	public function posts() {
+		return $this->has_many( Testable_Post::class );
+	}
+}
+
+class Testable_Post_Using_Term extends Post {
+	use Relationships;
+
+	public static $object_name = 'post';
+
+	public function sponsor() {
+		return $this->belongs_to( Testable_Sponsor_Using_Term::class )->uses_terms();
+	}
+}
+
+class Testable_Sponsor_Using_Term extends Post {
+	use Relationships;
+
+	public static $object_name = 'sponsor';
+
+	public function post() {
+		return $this->has_one( Testable_Post_Using_Term::class )->uses_terms();
 	}
 }
