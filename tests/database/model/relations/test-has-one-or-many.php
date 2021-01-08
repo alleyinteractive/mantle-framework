@@ -2,7 +2,6 @@
 namespace Mantle\Tests\Database\Model\Relations\Has_One;
 
 use Carbon\Carbon;
-use COM;
 use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Concerns\Has_Relationships as Relationships;
 use Mantle\Framework\Database\Model\Relations\Relation;
