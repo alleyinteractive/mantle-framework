@@ -9,11 +9,13 @@ use Mantle\Framework\Database\Model\Relations\Relation;
 use Mantle\Framework\Database\Model\Term;
 use Mantle\Framework\Testing\Concerns\Refresh_Database;
 use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Framework\Testing\Utils;
 
 class Test_Has_One_Or_Many extends Framework_Test_Case {
 	use Refresh_Database;
 
 	protected function setUp(): void {
+		Utils::delete_all_posts();
 		parent::setUp();
 		register_post_type( 'sponsor' );
 		register_taxonomy( 'test_taxonomy', 'post' );
