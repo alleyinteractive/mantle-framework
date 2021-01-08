@@ -20,6 +20,7 @@ class Term_Query_Builder extends Builder {
 	 * @var array
 	 */
 	protected $query_aliases = [
+		'id'      => 'include',
 		'term_id' => 'include',
 	];
 

@@ -5,9 +5,10 @@ use Carbon\Carbon;
 use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Concerns\Has_Relationships as Relationships;
 use Mantle\Framework\Database\Model\Relations\Relation;
+use Mantle\Framework\Database\Model\Term;
 use Mantle\Framework\Providers\Model_Service_Provider;
 use Mantle\Framework\Testing\Framework_Test_Case;
-
+use Mantle\Tests\Database\Builder\Testable_Tag;
 
 class Test_Post_Query_Relationships extends Framework_Test_Case {
 	protected function setUp(): void {
@@ -60,73 +61,6 @@ class Test_Post_Query_Relationships extends Framework_Test_Case {
 		$this->assertNotEquals( $post_a, $first->id() );
 	}
 
-	public function test_has_many_post_to_post_with_terms() {
-		$sponsor = Testable_Sponsor_Using_Term::create( [ 'title' => 'Sponsor Test', 'status' => 'publish' ] );
-		$post    = $sponsor->post()->save(
-			new Testable_Post_Using_Term(
-				[
-					'title' => 'Post with Sponsor',
-					'status' => 'publish',
-					'post_date' => Carbon::now()->subDays( 7 )->toDateTimeString(),
-				]
-			)
-		);
-
-		// Create some posts after the current.
-		static::factory()->post->create_many( 10 );
-
-		// Ensure it wasn't set using the post meta.
-		$this->assertEmpty( $post->meta->testable_sponsor_using_term_id );
-		$this->assertNotEmpty( get_the_terms( $post->id, Relation::RELATION_TAXONOMY ) );
-
-		$sponsors_post = $sponsor->post()->first();
-
-		$this->assertInstanceOf( Testable_Post_Using_Term::class, $sponsors_post );
-		$this->assertEquals( $post->id, $sponsors_post->id );
-
-		// Delete the relationship and ensure the internal term is removed.
-		$sponsor->post()->remove( $post );
-		$this->assertEmpty( get_the_terms( $post->id, Relation::RELATION_TAXONOMY ) );
-	}
-
-	public function test_belongs_to_post_to_post_with_terms() {
-		$post = Testable_Post_Using_Term::create(
-			[
-				'title' => 'Post with Sponsor Belongs To',
-				'status' => 'publish',
-				'post_date' => Carbon::now()->subDays( 5 )->toDateTimeString(),
-			]
-		);
-
-		$sponsor = $post->sponsor()->associate(
-			new Testable_Sponsor_Using_Term(
-				[
-					'title' => 'Sponsor Test Belongs To',
-					'status' => 'publish',
-					'post_date' => Carbon::now()->subDays( 5 )->toDateTimeString(),
-				]
-			)
-		);
-
-		// Create some posts after the current.
-		static::factory()->post->create_many( 10 );
-		static::factory()->post->create_many( 10, [ 'post_type' => 'sponsor' ] );
-
-		// Ensure it wasn't set using the post meta.
-		$this->assertEmpty( $post->meta->testable_sponsor_using_term_id );
-		$this->assertNotEmpty( get_the_terms( $post->id, Relation::RELATION_TAXONOMY ) );
-
-		// Retrieve the relationship and compare.
-		$post_sponsor = $post->sponsor()->first();
-
-		$this->assertInstanceOf( Testable_Sponsor_Using_Term::class, $post_sponsor );
-		$this->assertEquals( $sponsor->id(), $post_sponsor->id() );
-
-		// Delete the relationship and ensure the internal term is removed.
-		$post->sponsor()->dissociate();
-		$this->assertEmpty( get_the_terms( $post->id, Relation::RELATION_TAXONOMY ) );
-	}
-
 	/**
 	 * Get a random post ID, ensures the post ID is not the last in the set.
 	 *
@@ -146,6 +80,10 @@ class Testable_Post extends Post {
 	public function sponsor() {
 		return $this->belongs_to( Testable_Sponsor::class );
 	}
+
+	public function tags() {
+		return $this->has_many( Testable_Tag_Relationships::class );
+	}
 }
 
 class Testable_Sponsor extends Post {
@@ -162,21 +100,12 @@ class Testable_Sponsor extends Post {
 	}
 }
 
-class Testable_Post_Using_Term extends Post {
-	use Relationships;
-	public static $object_name = 'post';
-
-	public function sponsor() {
-		return $this->belongs_to( Testable_Sponsor_Using_Term::class )->uses_terms();
-	}
-}
-
-class Testable_Sponsor_Using_Term extends Post {
+class Testable_Tag_Relationships extends Term {
 	use Relationships;
 
-	public static $object_name = 'sponsor';
+	public static $object_name = 'post_tag';
 
-	public function post() {
-		return $this->has_one( Testable_Post_Using_Term::class )->uses_terms();
+	public function posts() {
+		return $this->has_many( Testable_Post::class );
 	}
 }

@@ -30,7 +30,7 @@ abstract class Builder {
 	/**
 	 * Model to build on.
 	 *
-	 * @var string
+	 * @var string[]|string
 	 */
 	protected $model;
 

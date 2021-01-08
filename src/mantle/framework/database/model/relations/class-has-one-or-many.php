@@ -9,14 +9,12 @@ namespace Mantle\Framework\Database\Model\Relations;
 
 use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Database\Model\Model_Exception;
-use Mantle\Framework\Database\Model\Post;
-use Mantle\Framework\Database\Model\Term;
 use Mantle\Framework\Database\Query\Builder;
-use Mantle\Framework\Database\Query\Post_Query_Builder;
-use Mantle\Framework\Database\Query\Term_Query_Builder;
 use Mantle\Framework\Support\Collection;
 use RuntimeException;
 use Throwable;
+
+use function Mantle\Framework\Helpers\collect;
 
 /**
  * Has One or Many Relationship
@@ -63,7 +61,22 @@ abstract class Has_One_Or_Many extends Relation {
 	 */
 	public function add_constraints() {
 		if ( static::$constraints ) {
-			if ( $this->uses_terms ) {
+			if ( $this->is_post_term_relationship() ) {
+				$term_ids = get_the_terms( $this->parent->id(), $this->related::get_object_name() );
+
+				$term_ids = collect( is_array( $term_ids ) ? $term_ids : [] )
+					->pluck( 'term_id' )
+					->all();
+
+				// If the post has no terms, 'kill' the query.
+				if ( empty( $term_ids ) ) {
+					return $this->query->whereIn( $this->local_key, [ PHP_INT_MAX ] );
+				}
+
+				return $this->query->whereIn( $this->local_key, $term_ids );
+			} elseif ( $this->is_term_post_relationship() ) {
+				return $this->query->whereTerm( $this->parent->id(), $this->parent->taxonomy() );
+			} elseif ( $this->uses_terms ) {
 				return $this->query->whereTerm( $this->get_term_slug_for_relationship(), static::RELATION_TAXONOMY );
 			} else {
 				return $this->query->whereMeta( $this->foreign_key, $this->parent->get( $this->local_key ) );
@@ -96,20 +109,28 @@ abstract class Has_One_Or_Many extends Relation {
 	 * @return Model
 	 */
 	public function save( $model ): Model {
+		// Save the model if it doesn't exist.
+		if ( ! is_array( $model ) && ! $model->exists ) {
+			$model->save();
+		} elseif ( is_array( $model ) ) {
+			foreach ( $model as $model ) {
+				if ( ! $model->exists ) {
+					$model->save();
+				}
+			}
+		}
+
+		$append = Has_Many::class === get_class( $this ) || is_subclass_of( $this, Has_Many::class );
+
 		if ( $this->is_post_term_relationship() ) {
-			$this->parent->set_terms( $model );
+			$this->parent->set_terms( $model, $model::get_object_name(), $append );
 		} elseif ( $this->is_term_post_relationship() ) {
 			$models = is_array( $model ) ? $model : [ $model ];
 
 			foreach ( $models as $model ) {
-				$model->set_terms( $this->parent );
+				$model->set_terms( $this->parent, $this->parent::get_object_name(), $append );
 			}
 		} else {
-			// Save the model if it doesn't exist.
-			if ( ! $model->exists ) {
-				$model->save();
-			}
-
 			// Set meta or use a hidden taxonomy if using terms.
 			if ( $this->uses_terms ) {
 				wp_set_post_terms( $model->id(), [ $this->get_term_for_relationship() ], static::RELATION_TAXONOMY, true );
@@ -157,24 +178,6 @@ abstract class Has_One_Or_Many extends Relation {
 		}
 
 		return $model;
-	}
-
-	/**
-	 * Determine if this is a post -> term relationship.
-	 *
-	 * @return bool
-	 */
-	protected function is_post_term_relationship(): bool {
-		return $this->parent instanceof Post && $this->query instanceof Term_Query_Builder;
-	}
-
-	/**
-	 * Determine if this is a term -> post relationship.
-	 *
-	 * @return bool
-	 */
-	protected function is_term_post_relationship(): bool {
-		return $this->parent instanceof Term && $this->query instanceof Post_Query_Builder;
 	}
 
 	/**

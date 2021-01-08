@@ -9,7 +9,11 @@ namespace Mantle\Framework\Database\Model\Relations;
 
 use Closure;
 use Mantle\Framework\Database\Model\Model;
+use Mantle\Framework\Database\Model\Post;
+use Mantle\Framework\Database\Model\Term;
 use Mantle\Framework\Database\Query\Builder;
+use Mantle\Framework\Database\Query\Post_Query_Builder;
+use Mantle\Framework\Database\Query\Term_Query_Builder;
 use Mantle\Framework\Support\Collection;
 use Mantle\Framework\Support\Forward_Calls;
 
@@ -32,6 +36,13 @@ abstract class Relation {
 	 * @var Builder
 	 */
 	protected $query;
+
+	/**
+	 * The related model (child).
+	 *
+	 * @var string
+	 */
+	protected $related;
 
 	/**
 	 * Flag if the relation uses terms.
@@ -187,5 +198,23 @@ abstract class Relation {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Determine if this is a post -> term relationship.
+	 *
+	 * @return bool
+	 */
+	protected function is_post_term_relationship(): bool {
+		return $this->parent instanceof Post && $this->query instanceof Term_Query_Builder;
+	}
+
+	/**
+	 * Determine if this is a term -> post relationship.
+	 *
+	 * @return bool
+	 */
+	protected function is_term_post_relationship(): bool {
+		return $this->parent instanceof Term && $this->query instanceof Post_Query_Builder;
 	}
 }

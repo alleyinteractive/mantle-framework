@@ -25,6 +25,9 @@ use function Mantle\Framework\Helpers\collect;
  * Performs a meta query on the parent model with data from the current model.
  *
  * Example: Search the parent post's meta query with the ID of the current model.
+ *
+ * For relationships between posts and term models, the Belongs To relationship
+ * is not supported for performance reasons.
  */
 class Belongs_To extends Relation {
 	/**
@@ -141,8 +144,11 @@ class Belongs_To extends Relation {
 			$model->save();
 		}
 
+
 		if ( $this->uses_terms ) {
-			$set = wp_set_post_terms( $this->parent->id(), [ $this->get_term_for_relationship( $model ) ], static::RELATION_TAXONOMY, true );
+			$append = Belongs_To_Many::class === get_class( $this ) || is_subclass_of( $this, Belongs_To_Many::class );
+
+			$set = wp_set_post_terms( $this->parent->id(), [ $this->get_term_for_relationship( $model ) ], static::RELATION_TAXONOMY, $append );
 
 			if ( is_wp_error( $set ) ) {
 				throw new Model_Exception( "Error associating term relationship for [{$this->parent->id()}]: [{$set->get_error_message()}]" );
