@@ -8,7 +8,7 @@ use Mantle\Framework\Database\Query\Post_Query_Builder as Builder;
 use Mantle\Framework\Database\Query\Post_Query_Builder;
 use Mantle\Framework\Testing\Concerns\Refresh_Database;
 use Mantle\Framework\Testing\Framework_Test_Case;
-
+use Mantle\Framework\Testing\Utils;
 
 class Test_Post_Query_Builder extends Framework_Test_Case {
 	use Refresh_Database;
@@ -242,6 +242,8 @@ class Test_Post_Query_Builder extends Framework_Test_Case {
 	}
 
 	public function test_query_with_multiple() {
+		Utils::delete_all_posts();
+
 		$post_a = static::factory()->post->create( [ 'post_date' => Carbon::now()->subWeek()->toDateTimeString() ] );
 		$post_b = static::factory()->post->create( [
 			'post_date' => Carbon::now()->subWeek()->toDateTimeString(),
