@@ -1,17 +1,17 @@
 <?php
 namespace Mantle\Tests\Database\Builder\Post_Query_Relationships;
 
-use Carbon\Carbon;
 use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Concerns\Has_Relationships as Relationships;
 use Mantle\Framework\Database\Model\Relations\Relation;
 use Mantle\Framework\Database\Model\Term;
 use Mantle\Framework\Providers\Model_Service_Provider;
 use Mantle\Framework\Testing\Framework_Test_Case;
-use Mantle\Tests\Database\Builder\Testable_Tag;
+use Mantle\Framework\Testing\Utils;
 
 class Test_Post_Query_Relationships extends Framework_Test_Case {
 	protected function setUp(): void {
+		Utils::delete_all_posts();
 		parent::setUp();
 		register_post_type( Testable_Sponsor::get_object_name() );
 
