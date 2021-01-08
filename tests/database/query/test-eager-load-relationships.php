@@ -8,6 +8,7 @@ use Mantle\Framework\Database\Query\Post_Query_Builder as Builder;
 use Mantle\Framework\Database\Query\Post_Query_Builder;
 use Mantle\Framework\Testing\Concerns\Refresh_Database;
 use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Framework\Testing\Utils;
 
 use function Mantle\Framework\Helpers\collect;
 
@@ -44,6 +45,8 @@ class Test_Eager_Load_Relationships extends Framework_Test_Case {
 	}
 
 	public function test_eager_loading_relationships_has_one() {
+		Utils::delete_all_posts();
+
 		$related_post_ids = [];
 		$posts = collect()
 			->pad(10, null)
@@ -53,18 +56,20 @@ class Test_Eager_Load_Relationships extends Framework_Test_Case {
 
 					$related_post = $post->post_relationship()->save( new Another_Testable_Post_Eager(
 						[
-							'post_status' => 'publish',
-							'post_title' => "$post->title relation"
+							'status' => 'publish',
+							'title'  => "$post->title relation"
 						]
 					) );
 
 					// Store the ID for testing later.
 					$related_post_ids[ $post->id ] = $related_post->id;
 
+					$this->assertEquals( $related_post->id, $post->post_relationship->id );
+
 					return $post;
 				}
 			)
-			->to_array();
+			->all();
 
 		// Eager load the models.
 		$posts = Testable_Post_Eager::with( 'post_relationship' )->get();
@@ -77,6 +82,8 @@ class Test_Eager_Load_Relationships extends Framework_Test_Case {
 	}
 
 	public function test_eager_loading_relationships_has_many() {
+		Utils::delete_all_posts();
+
 		$related_post_ids = [];
 		$posts = collect()
 			->pad(10, null)

@@ -93,6 +93,8 @@ class Term_Query_Builder extends Builder {
 		}
 
 		$models = array_map( [ $this->model, 'find' ], $term_ids );
-		return collect( array_filter( $models ) );
+		$models = collect( array_filter( $models ) );
+
+		return $this->eager_load_relations( $models );
 	}
 }
