@@ -279,7 +279,27 @@ abstract class Has_One_Or_Many extends Relation {
 			return $dictionary;
 		} elseif ( $this->is_term_post_relationship() ) {
 			// Term post relationships also always rely on the underlying term.
-			dd($results, $models);
+			$dictionary = [];
+
+			$post_term_ids = [];
+
+			foreach ( $results as $result ) {
+				$terms = get_the_terms( $result->id(), $this->parent->taxonomy() );
+				$terms = is_array( $terms ) ? wp_list_pluck( $terms, 'term_id' ) : [];
+
+				foreach ( $terms as $term_id ) {
+					$post_term_ids[ $term_id ][] = $result->id();
+				}
+			}
+
+			$results = $results->key_by( 'id' );
+
+			// End result: a dictionary with key of term IDs and array of post results.
+			foreach ( $post_term_ids as $term_id => $post_ids ) {
+				$dictionary[ $term_id ] = $results->only( $post_ids )->values()->all();
+			}
+
+			return $dictionary;
 		}
 
 		return $results
