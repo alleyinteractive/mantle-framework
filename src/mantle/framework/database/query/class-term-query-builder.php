@@ -14,6 +14,8 @@ use function Mantle\Framework\Helpers\collect;
  * Term Query Builder
  */
 class Term_Query_Builder extends Builder {
+	use Queries_Relationships;
+
 	/**
 	 * Query Variable Aliases
 	 *
@@ -66,6 +68,21 @@ class Term_Query_Builder extends Builder {
 	 * @return array
 	 */
 	protected function get_query_args(): array {
+		if ( is_array( $this->model ) ) {
+			$taxonomies = [];
+
+			foreach ( $this->model as $model ) {
+				$taxonomies[] = $model::get_object_name();
+			}
+		} else {
+			$taxonomies = $this->model::get_object_name();
+		}
+
+		// Limit is handled differently for term queries.
+		if ( -1 === $this->limit ) {
+			$this->limit = '';
+		}
+
 		return array_merge(
 			[
 				'fields'     => 'ids',
@@ -74,7 +91,7 @@ class Term_Query_Builder extends Builder {
 				'number'     => $this->limit,
 				'order'      => $this->order,
 				'orderby'    => $this->order_by,
-				'taxonomy'   => $this->model::get_object_name(),
+				'taxonomy'   => $taxonomies,
 			],
 			$this->wheres,
 		);

@@ -32,7 +32,7 @@ class Has_Many extends Has_One_Or_Many {
 	 * @return Collection
 	 */
 	public function match( Collection $models, Collection $results ): Collection {
-		$dictionary = $this->build_dictionary( $results );
+		$dictionary = $this->build_dictionary( $results, $models );
 
 		return $models->each(
 			function( $model ) use ( $dictionary ) {

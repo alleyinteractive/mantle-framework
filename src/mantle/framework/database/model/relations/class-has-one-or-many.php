@@ -95,7 +95,35 @@ abstract class Has_One_Or_Many extends Relation {
 	public function add_eager_constraints( Collection $models ): void {
 		$keys = $models->pluck( $this->local_key )->to_array();
 
-		if ( $this->uses_terms ) {
+		if ( $this->is_post_term_relationship() ) {
+			$terms = collect();
+
+			/**
+			 * Get the terms for the $models.
+			 *
+			 * @todo Optimize this to use a raw query instead of making a bunch of
+			 * unnecessary queries on top of 'eager' loading.
+			 */
+
+			foreach ( $models as $model ) {
+				$terms = $terms->merge(
+					get_the_terms( $model->id(), $this->related::get_object_name() ),
+				);
+			}
+
+			$terms = $terms
+				->pluck( 'term_id' )
+				->filter()
+				->unique();
+
+			if ( $terms->is_empty() ) {
+				$this->query->whereIn( $this->local_key, [ PHP_INT_MAX ] );
+			} else {
+				$this->query->whereIn( $this->local_key, $terms->all() );
+			}
+		} elseif ( $this->is_term_post_relationship() ) {
+			$this->query->whereTerm( $keys, $this->parent->taxonomy() );
+		} elseif ( $this->uses_terms ) {
 			throw new RuntimeException( 'Eager loading relationships with terms is not supported yet.' );
 		} else {
 			$this->query->whereMeta( $this->foreign_key, $keys, 'IN' );
@@ -221,9 +249,39 @@ abstract class Has_One_Or_Many extends Relation {
 	 * Build a model dictionary keyed by the relation's foreign key.
 	 *
 	 * @param Collection $results Collection of results.
+	 * @param Collection $models Parent models.
 	 * @return array
 	 */
-	protected function build_dictionary( Collection $results ): array {
+	protected function build_dictionary( Collection $results, Collection $models ): array {
+		// Post term relationships always rely on the underlying term.
+		if ( $this->is_post_term_relationship() ) {
+			$post_term_ids = [];
+
+			foreach ( $models as $model ) {
+				$terms = get_the_terms( $model->id(), $this->related::get_object_name() );
+
+				$post_term_ids[ $model->id() ] = is_array( $terms ) ? wp_list_pluck( $terms, 'term_id' ) : [];
+			}
+
+			$results    = $results->key_by( 'term_id' );
+			$dictionary = [];
+
+			foreach ( $models as $model ) {
+				if ( empty( $post_term_ids[ $model->id() ] ) ) {
+					continue;
+				}
+
+				foreach ( $post_term_ids[ $model->id() ] as $term_id ) {
+					$dictionary[ $model->id() ][] = $results[ $term_id ];
+				}
+			}
+
+			return $dictionary;
+		} elseif ( $this->is_term_post_relationship() ) {
+			// Term post relationships also always rely on the underlying term.
+			dd($results, $models);
+		}
+
 		return $results
 			->map_to_dictionary(
 				function ( $result ) {
