@@ -14,6 +14,7 @@ class Test_Eager_Load_Relationships extends Framework_Test_Case {
 
 	protected function setUp(): void {
 		parent::setUp();
+		Utils::delete_all_data();
 		register_post_type( Another_Testable_Post_Eager::get_object_name() );
 	}
 
@@ -154,8 +155,6 @@ class Test_Eager_Load_Relationships extends Framework_Test_Case {
 	}
 
 	public function test_eager_loading_post_to_term() {
-		Utils::delete_all_data();
-
 		$posts = [];
 		$tags  = [];
 
@@ -179,8 +178,6 @@ class Test_Eager_Load_Relationships extends Framework_Test_Case {
 	}
 
 	public function test_eager_loading_term_to_post() {
-		Utils::delete_all_data();
-
 		$tags  = [];
 		$posts = [];
 
@@ -217,9 +214,108 @@ class Test_Eager_Load_Relationships extends Framework_Test_Case {
 		}
 	}
 
-	// public function test_eager_loading_term_to_term() {
+	public function test_eager_loading_term_to_term_has_one() {
+		$tags = [];
+		$categories = [];
 
-	// }
+		for ( $i = 0; $i < 10; $i++ ) {
+			$tag = $tags[] = Testable_Tag_Eager::find( static::factory()->tag->create() );
+
+			for ( $n = 0; $n < rand( 2, 5 ); $n++ ) {
+				$categories[ $tag->id() ][] = $tag->category()->save(
+					new Testable_Category_Eager( [ 'name' => "Eager Category {$tag->id} {$n}" ] )
+				);
+			}
+		}
+
+		$results = Testable_Tag_Eager::with( 'category' )->all();
+
+		$this->assertEquals( count( $tags ), count( $results ) );
+
+		foreach ( $results as $result ) {
+			$this->assertTrue( $result->relation_loaded( 'category' ) );
+			$this->assertNotNull( $result->category );
+
+			$tag_category_ids = collect( $result->category )->pluck( 'id' );
+
+			foreach ( $categories[ $result->id ] as $category ) {
+				$this->assertNotFalse( $tag_category_ids->search( $category->id(), true ) );
+			}
+		}
+	}
+
+	public function test_eager_loading_term_to_term_belongs_to() {
+		$categories = [];
+		$tags = [];
+
+		for ( $i = 0; $i < 10; $i++ ) {
+			$category = $categories[] = Testable_Category_Eager::create( [
+				'name' => 'Testable Category Belongs To ' . $i,
+			] );
+
+			$tags[ $category->id() ] = $category->tag()->save(
+				new Testable_Tag_Eager( [ 'name' => "Eager Tag {$category->id}" ] )
+			);
+		}
+
+		static::factory()->tag->create_many( 10 );
+
+		$results = Testable_Category_Eager::with( 'tag' )->all();
+
+		foreach ( $results as $result ) {
+			// Ignore thee default term.
+			if ( 'uncategorized' === $result->slug ) {
+				continue;
+			}
+
+			$this->assertTrue( $result->relation_loaded( 'tag' ) );
+			$this->assertNotNull( $result->tag );
+			$this->assertEquals( $tags[ $result->id ]->id, $result->tag->id );
+		}
+	}
+
+	public function test_eager_loading_term_to_term_belongs_to_many() {
+		$categories = [];
+		$tags = [];
+
+		$count = 0;
+
+		for ( $i = 0; $i < 10; $i++ ) {
+			$category = $categories[] = Testable_Category_Eager::create( [
+				'name' => 'Testable Category Belongs To ' . $i,
+			] );
+
+			for ( $n = 0; $n < rand( 2, 5 ); $n++ ) {
+				$count++;
+				$tags[ $category->id() ][] = $category->tags()->save(
+					new Testable_Tag_Eager( [ 'name' => "Eager Tag {$category->id} {$n}" ] )
+				);
+			}
+		}
+
+		static::factory()->tag->create_many( 10 );
+
+		$results = Testable_Category_Eager::with( 'tags' )->all();
+
+		foreach ( $results as $result ) {
+			// Ignore thee default term.
+			if ( 'uncategorized' === $result->slug ) {
+				continue;
+			}
+
+			$this->assertTrue( $result->relation_loaded( 'tags' ) );
+			$this->assertNotNull( $result->tags );
+
+			$this->assertEquals( count( $tags[ $result->id ] ), count( $result->tags ) );
+
+			// Assert that the eager loaded terms match the expected.
+			$term_ids = wp_list_pluck( $tags[ $result->id ], 'id' );
+
+			foreach ( $result->tags as $tag ) {
+				$this->assertTrue( in_array( $tag->id, $term_ids, false ) );
+			}
+		}
+	}
 }
 
 class Testable_Post_Eager extends Post {
@@ -249,8 +345,8 @@ class Another_Testable_Post_Eager extends Post {
 class Testable_Tag_Eager extends Term {
 	public static $object_name = 'post_tag';
 
-	public function relation() {
-		return $this->has_one( Another_Testable_Tag_Eager::class );
+	public function category() {
+		return $this->has_many( Testable_Category_Eager::class );
 	}
 
 	public function posts() {
@@ -258,8 +354,14 @@ class Testable_Tag_Eager extends Term {
 	}
 }
 
-class Another_Testable_Tag_Eager extends Testable_Tag_Eager {
+class Testable_Category_Eager extends Testable_Tag_Eager {
+	public static $object_name = 'category';
+
 	public function tag() {
-		return $this->has_one( Testable_Tag_Eager::class );
+		return $this->belongs_to( Testable_Tag_Eager::class );
+	}
+
+	public function tags() {
+		return $this->belongs_to_many( Testable_Tag_Eager::class );
 	}
 }

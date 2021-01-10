@@ -7,6 +7,10 @@
 
 namespace Mantle\Framework\Database\Model\Relations;
 
+use Mantle\Framework\Support\Collection;
+
+use function Mantle\Framework\Helpers\collect;
+
 /**
  * Creates a 'Belongs To Many' relationship.
  */
@@ -20,5 +24,49 @@ class Belongs_To_Many extends Belongs_To {
 		$this->add_constraints();
 
 		return $this->query->get();
+	}
+
+	/**
+	 * Match the eagerly loaded results to their parents.
+	 *
+	 * @param Collection $models Parent models.
+	 * @param Collection $results Eagerly loaded results to match.
+	 * @return Collection
+	 */
+	public function match( Collection $models, Collection $results ): Collection {
+		$dictionary = $this->build_dictionary( $results, $models );
+
+		return $models->each(
+			function( $model ) use ( $dictionary ) {
+				$key = $model->{$this->foreign_key};
+
+				$model->set_relation( $this->relationship, $dictionary[ $key ] ?? null );
+			}
+		);
+	}
+
+	/**
+	 * Build a model dictionary keyed by the relation's foreign key.
+	 *
+	 * @param Collection $results Collection of results.
+	 * @param Collection $models Eagerly loaded results to match.
+	 * @return array
+	 */
+	protected function build_dictionary( Collection $results, Collection $models ): array {
+		$results    = $results->key_by( $this->foreign_key );
+		$dictionary = collect();
+
+		foreach ( $models as $model ) {
+			$dictionary[ $model->{$this->foreign_key} ] = $model->get_meta( $this->local_key, false );
+		}
+
+		return $dictionary
+			->map(
+				function ( $child_ids ) use ( $results ) {
+					return $results->only( $child_ids )->values()->all();
+				}
+			)
+			->filter()
+			->all();
 	}
 }

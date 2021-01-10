@@ -9,9 +9,7 @@ namespace Mantle\Framework\Database\Model\Relations;
 
 use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Database\Model\Model_Exception;
-use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Query\Builder;
-use Mantle\Framework\Database\Query\Term_Query_Builder;
 use Mantle\Framework\Support\Collection;
 use Mantle\Framework\Support\Str;
 use RuntimeException;
@@ -107,16 +105,21 @@ class Belongs_To extends Relation {
 		if ( $this->uses_terms ) {
 			throw new RuntimeException( 'Eager loading relationships with terms is not supported yet.' );
 		} else {
+			$append = $this->should_append();
+
 			$meta_values = $models
 				->map(
-					function ( $model ) {
-						return $model->get_meta( $this->local_key );
+					function ( $model ) use ( $append ) {
+						return $model->get_meta( $this->local_key, ! $append );
 					}
 				)
-				->all();
+				->filter();
 
-			$this->query->whereIn( 'id', $meta_values );
-			$this->query->orderByWhereIn( 'id' );
+			if ( $append ) {
+				$meta_values = $meta_values->collapse();
+			}
+
+			$this->query->whereIn( $this->foreign_key, $meta_values->unique()->all() );
 		}
 	}
 
@@ -144,10 +147,9 @@ class Belongs_To extends Relation {
 			$model->save();
 		}
 
+		$append = Belongs_To_Many::class === get_class( $this ) || is_subclass_of( $this, Belongs_To_Many::class );
 
 		if ( $this->uses_terms ) {
-			$append = Belongs_To_Many::class === get_class( $this ) || is_subclass_of( $this, Belongs_To_Many::class );
-
 			$set = wp_set_post_terms( $this->parent->id(), [ $this->get_term_for_relationship( $model ) ], static::RELATION_TAXONOMY, $append );
 
 			if ( is_wp_error( $set ) ) {
@@ -155,6 +157,8 @@ class Belongs_To extends Relation {
 			} elseif ( false === $set ) {
 				throw new Model_Exception( "Unknown error associating term relationship for [{$this->parent->id()}]" );
 			}
+		} elseif ( $append ) {
+			$this->parent->add_meta( $this->local_key, $model->id() );
 		} else {
 			$this->parent->set_meta( $this->local_key, $model->id() );
 		}
@@ -302,7 +306,7 @@ class Belongs_To extends Relation {
 	 * @return Collection
 	 */
 	public function match( Collection $models, Collection $results ): Collection {
-		$dictionary = $this->build_dictionary( $results );
+		$dictionary = $this->build_dictionary( $results, $models );
 
 		return $models->each(
 			function( $model ) use ( $dictionary ) {
@@ -317,9 +321,10 @@ class Belongs_To extends Relation {
 	 * Build a model dictionary keyed by the relation's foreign key.
 	 *
 	 * @param Collection $results Collection of results.
+	 * @param Collection $models Eagerly loaded results to match.
 	 * @return array
 	 */
-	protected function build_dictionary( Collection $results ): array {
+	protected function build_dictionary( Collection $results, Collection $models ): array {
 		return $results
 			->map_to_dictionary(
 				function ( $result ) {
@@ -327,5 +332,14 @@ class Belongs_To extends Relation {
 				}
 			)
 			->all();
+	}
+
+	/**
+	 * Flag if the meta should appended.
+	 *
+	 * @return bool
+	 */
+	protected function should_append(): bool {
+		return Belongs_To_Many::class === get_class( $this ) || is_subclass_of( $this, Belongs_To_Many::class );
 	}
 }
