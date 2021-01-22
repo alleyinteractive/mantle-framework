@@ -77,6 +77,10 @@ class Schedule {
 	 * Schedule the WordPress cron event for the scheduler.
 	 */
 	public static function schedule_cron_event() {
+		if ( ! is_blog_installed() ) {
+			return;
+		}
+
 		if ( ! wp_next_scheduled( static::CRON_HOOK ) ) {
 			\wp_schedule_single_event( time() + MINUTE_IN_SECONDS, static::CRON_HOOK );
 		}

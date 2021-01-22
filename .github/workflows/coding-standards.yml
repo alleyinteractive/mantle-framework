@@ -11,6 +11,8 @@ jobs:
       matrix:
         php: [7.4]
 
+    name: Coding Standards
+
     steps:
       - name: Cancel previous runs of this workflow (pull requests only)
         if: ${{ github.event_name == 'pull_request' }}

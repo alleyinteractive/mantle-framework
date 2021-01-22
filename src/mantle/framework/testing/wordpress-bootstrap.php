@@ -115,4 +115,6 @@ if ( isset( $_SERVER['REQUEST_TIME_FLOAT'] ) ) {
 }
 
 // Delete any default posts & related data.
-Utils::delete_all_posts();
+if ( is_blog_installed() ) {
+	Utils::delete_all_posts();
+}
