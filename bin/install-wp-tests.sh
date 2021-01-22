@@ -22,7 +22,6 @@ download() {
 	# Check if the file has been downloaded in the last couple of hours.
 	if [[ -f $2 ]]; then
 		if test "`find $2 -mmin -240`"; then
-			echo "Using Cached File: $2"
 			return
 		fi
 	fi
@@ -60,12 +59,13 @@ else
 	fi
 	WP_TESTS_TAG="tags/$LATEST_VERSION"
 fi
-set -ex
+
+set -e
 
 install_wp() {
 
 	if [ -d $WP_CORE_DIR ]; then
-		return;
+		return
 	fi
 
 	mkdir -p $WP_CORE_DIR
@@ -127,7 +127,7 @@ install_config() {
 install_db() {
 
 	if [ ${SKIP_DB_CREATE} = "true" ]; then
-		return 0
+		return
 	fi
 
 	# parse DB_HOST for port or socket references
