@@ -9,16 +9,17 @@ namespace Mantle\Framework\Database\Model\Relations;
 
 use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Database\Model\Model_Exception;
-use Mantle\Framework\Database\Model\Post;
-use Mantle\Framework\Database\Model\Term;
 use Mantle\Framework\Database\Query\Builder;
-use Mantle\Framework\Database\Query\Post_Query_Builder;
-use Mantle\Framework\Database\Query\Term_Query_Builder;
+use Mantle\Framework\Support\Collection;
+use RuntimeException;
+use Throwable;
+
+use function Mantle\Framework\Helpers\collect;
 
 /**
  * Has One or Many Relationship
  */
-class Has_One_Or_Many extends Relation {
+abstract class Has_One_Or_Many extends Relation {
 	/**
 	 * Delimiter for the term slug.
 	 *
@@ -59,10 +60,73 @@ class Has_One_Or_Many extends Relation {
 	 * Add constraints to the query.
 	 */
 	public function add_constraints() {
-		if ( $this->uses_terms ) {
-			return $this->query->whereTerm( $this->get_term_slug_for_relationship(), static::RELATION_TAXONOMY );
+		if ( static::$constraints ) {
+			if ( $this->is_post_term_relationship() ) {
+				$term_ids = get_the_terms( $this->parent->id(), $this->related::get_object_name() );
+
+				$term_ids = collect( is_array( $term_ids ) ? $term_ids : [] )
+					->pluck( 'term_id' )
+					->all();
+
+				// If the post has no terms, 'kill' the query.
+				if ( empty( $term_ids ) ) {
+					return $this->query->whereIn( $this->local_key, [ PHP_INT_MAX ] );
+				}
+
+				return $this->query->whereIn( $this->local_key, $term_ids );
+			} elseif ( $this->is_term_post_relationship() ) {
+				return $this->query->whereTerm( $this->parent->id(), $this->parent->taxonomy() );
+			} elseif ( $this->uses_terms ) {
+				return $this->query->whereTerm( $this->get_term_slug_for_relationship(), static::RELATION_TAXONOMY );
+			} else {
+				return $this->query->whereMeta( $this->foreign_key, $this->parent->get( $this->local_key ) );
+			}
+		}
+	}
+
+	/**
+	 * Set the query constraints for an eager load of the relation.
+	 *
+	 * @param Collection $models Models to eager load for.
+	 * @return void
+	 *
+	 * @throws RuntimeException Thrown on currently unsupported query condition.
+	 */
+	public function add_eager_constraints( Collection $models ): void {
+		$keys = $models->pluck( $this->local_key )->to_array();
+
+		if ( $this->is_post_term_relationship() ) {
+			$terms = collect();
+
+			/**
+			 * Get the terms for the $models.
+			 *
+			 * @todo Optimize this to use a raw query instead of making a bunch of
+			 * unnecessary queries on top of 'eager' loading.
+			 */
+
+			foreach ( $models as $model ) {
+				$terms = $terms->merge(
+					get_the_terms( $model->id(), $this->related::get_object_name() ),
+				);
+			}
+
+			$terms = $terms
+				->pluck( 'term_id' )
+				->filter()
+				->unique();
+
+			if ( $terms->is_empty() ) {
+				$this->query->whereIn( $this->local_key, [ PHP_INT_MAX ] );
+			} else {
+				$this->query->whereIn( $this->local_key, $terms->all() );
+			}
+		} elseif ( $this->is_term_post_relationship() ) {
+			$this->query->whereTerm( $keys, $this->parent->taxonomy() );
+		} elseif ( $this->uses_terms ) {
+			throw new RuntimeException( 'Eager loading relationships with terms is not supported yet.' );
 		} else {
-			return $this->query->whereMeta( $this->foreign_key, $this->parent->get( $this->local_key ) );
+			$this->query->whereMeta( $this->foreign_key, $keys, 'IN' );
 		}
 	}
 
@@ -73,26 +137,38 @@ class Has_One_Or_Many extends Relation {
 	 * @return Model
 	 */
 	public function save( $model ): Model {
+		// Save the model if it doesn't exist.
+		if ( ! is_array( $model ) && ! $model->exists ) {
+			$model->save();
+		} elseif ( is_array( $model ) ) {
+			foreach ( $model as $model ) {
+				if ( ! $model->exists ) {
+					$model->save();
+				}
+			}
+		}
+
+		$append = Has_Many::class === get_class( $this ) || is_subclass_of( $this, Has_Many::class );
+
 		if ( $this->is_post_term_relationship() ) {
-			$this->parent->set_terms( $model );
+			$this->parent->set_terms( $model, $model::get_object_name(), $append );
 		} elseif ( $this->is_term_post_relationship() ) {
 			$models = is_array( $model ) ? $model : [ $model ];
 
 			foreach ( $models as $model ) {
-				$model->set_terms( $this->parent );
+				$model->set_terms( $this->parent, $this->parent::get_object_name(), $append );
 			}
 		} else {
-			// Save the model if it doesn't exist.
-			if ( ! $model->exists ) {
-				$model->save();
-			}
-
 			// Set meta or use a hidden taxonomy if using terms.
 			if ( $this->uses_terms ) {
 				wp_set_post_terms( $model->id(), [ $this->get_term_for_relationship() ], static::RELATION_TAXONOMY, true );
 			} else {
 				$model->set_meta( $this->foreign_key, $this->parent->get( $this->local_key ) );
 			}
+		}
+
+		if ( $this->relationship ) {
+			$this->parent->unset_relation( $this->relationship );
 		}
 
 		return $model;
@@ -125,25 +201,11 @@ class Has_One_Or_Many extends Relation {
 			}
 		}
 
+		if ( $this->relationship ) {
+			$this->parent->unset_relation( $this->relationship );
+		}
+
 		return $model;
-	}
-
-	/**
-	 * Determine if this is a post -> term relationship.
-	 *
-	 * @return bool
-	 */
-	protected function is_post_term_relationship(): bool {
-		return $this->parent instanceof Post && $this->query instanceof Term_Query_Builder;
-	}
-
-	/**
-	 * Determine if this is a term -> post relationship.
-	 *
-	 * @return bool
-	 */
-	protected function is_term_post_relationship(): bool {
-		return $this->parent instanceof Term && $this->query instanceof Post_Query_Builder;
 	}
 
 	/**
@@ -181,5 +243,75 @@ class Has_One_Or_Many extends Relation {
 	protected function get_term_slug_for_relationship(): string {
 		$delimiter = static::DELIMITER;
 		return "{$this->foreign_key}{$delimiter}{$this->parent->get( $this->local_key )}";
+	}
+
+	/**
+	 * Build a model dictionary keyed by the relation's foreign key.
+	 *
+	 * @param Collection $results Collection of results.
+	 * @param Collection $models Parent models.
+	 * @return array
+	 */
+	protected function build_dictionary( Collection $results, Collection $models ): array {
+		// Post term relationships always rely on the underlying term.
+		if ( $this->is_post_term_relationship() ) {
+			$post_term_ids = [];
+
+			foreach ( $models as $model ) {
+				$terms = get_the_terms( $model->id(), $this->related::get_object_name() );
+
+				$post_term_ids[ $model->id() ] = is_array( $terms ) ? wp_list_pluck( $terms, 'term_id' ) : [];
+			}
+
+			$results    = $results->key_by( 'term_id' );
+			$dictionary = [];
+
+			foreach ( $models as $model ) {
+				if ( empty( $post_term_ids[ $model->id() ] ) ) {
+					continue;
+				}
+
+				foreach ( $post_term_ids[ $model->id() ] as $term_id ) {
+					$dictionary[ $model->id() ][] = $results[ $term_id ];
+				}
+			}
+
+			return $dictionary;
+		} elseif ( $this->is_term_post_relationship() ) {
+			// Term post relationships also always rely on the underlying term.
+			$dictionary = [];
+
+			$post_term_ids = [];
+
+			foreach ( $results as $result ) {
+				$terms = get_the_terms( $result->id(), $this->parent->taxonomy() );
+				$terms = is_array( $terms ) ? wp_list_pluck( $terms, 'term_id' ) : [];
+
+				foreach ( $terms as $term_id ) {
+					$post_term_ids[ $term_id ][] = $result->id();
+				}
+			}
+
+			$results = $results->key_by( 'id' );
+
+			// End result: a dictionary with key of term IDs and array of post results.
+			foreach ( $post_term_ids as $term_id => $post_ids ) {
+				$dictionary[ $term_id ] = $results->only( $post_ids )->values()->all();
+			}
+
+			return $dictionary;
+		}
+
+		return $results
+			->map_to_dictionary(
+				function ( $result ) {
+					try {
+						return [ $result->meta->{$this->foreign_key} => $result ];
+					} catch ( Throwable $e ) {
+						return [];
+					}
+				}
+			)
+			->all();
 	}
 }

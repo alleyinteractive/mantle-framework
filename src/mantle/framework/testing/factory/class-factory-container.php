@@ -80,6 +80,7 @@ class Factory_Container {
 		$this->attachment = $container->make( Attachment_Factory::class );
 		$this->category   = $container->make( Term_Factory::class, [ 'taxonomy' => 'category' ] );
 		$this->comment    = $container->make( Comment_Factory::class );
+		$this->page       = $container->make( Post_Factory::class, [ 'post_type' => 'page' ] );
 		$this->post       = $container->make( Post_Factory::class );
 		$this->tag        = $container->make( Term_Factory::class, [ 'taxonomy' => 'post_tag' ] );
 		$this->term       = $container->make( Term_Factory::class, [ 'taxonomy' => 'post_tag' ] );

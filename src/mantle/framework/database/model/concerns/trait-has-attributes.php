@@ -7,9 +7,12 @@
 
 namespace Mantle\Framework\Database\Model\Concerns;
 
+use LogicException;
 use Mantle\Framework\Database\Model\Model_Exception;
+use Mantle\Framework\Database\Model\Relations\Relation;
 
 use function Mantle\Framework\Helpers\collect;
+use function Mantle\Framework\Helpers\tap;
 
 /**
  * Model Attributes
@@ -73,19 +76,73 @@ trait Has_Attributes {
 	 */
 	public function get_attribute( string $attribute ) {
 		// Retrieve the attribute from the object.
-		$value = $this->attributes[ $attribute ] ?? null;
+		if ( isset( $this->attributes[ $attribute ] ) || $this->has_get_mutator( $attribute ) ) {
+			$value = $this->attributes[ $attribute ] ?? null;
 
-		// Check if an attribute has a cast.
-		if ( isset( $this->casts[ $attribute ] ) ) {
-			$this->cast_attribute( $value, $this->casts[ $attribute ] );
+			// Check if an attribute has a cast.
+			if ( isset( $this->casts[ $attribute ] ) ) {
+				$this->cast_attribute( $value, $this->casts[ $attribute ] );
+			}
+
+			// Pass the attribute to the mutator.
+			if ( $this->has_get_mutator( $attribute ) ) {
+				$value = $this->mutate_attribute( $attribute, $value );
+			}
+		} elseif ( 'ID' !== $attribute ) {
+			$value = $this->get_relation_value( $attribute );
 		}
 
-		// Pass the attribute to the mutator.
-		if ( $this->has_get_mutator( $attribute ) ) {
-			$value = $this->mutate_attribute( $attribute, $value );
+		return $value ?? null;
+	}
+
+	/**
+	 * Retrieve a relationship value.
+	 *
+	 * @param string $key Relation name.
+	 * @return \Mantle\Framework\Database\Model\Relations\Relation|null
+	 */
+	public function get_relation_value( string $key ) {
+		if ( 'ID' === $key ) {
+			return null;
 		}
 
-		return $value;
+		if ( array_key_exists( $key, $this->relations ) ) {
+			return $this->relations[ $key ];
+		}
+
+		if ( method_exists( $this, $key ) ) {
+			return $this->get_relationship_from_method( $key );
+		}
+	}
+
+	/**
+	 * Retrieve a relationship from a method.
+	 *
+	 * @param string $method
+	 * @return Relation
+	 *
+	 * @throws LogicException Thrown if the relationship method is not an instance
+	 *                        of Relation.
+	 */
+	protected function get_relationship_from_method( string $method ) {
+		$relation = $this->$method();
+
+		if ( ! $relation instanceof Relation ) {
+			throw new LogicException(
+				sprintf(
+					'%s::%s must return a relationship instance.',
+					static::class,
+					$method
+				)
+			);
+		}
+
+		return tap(
+			$relation->get_results(),
+			function( $relation ) use ( $method ) {
+				$this->set_relation( $method, $relation );
+			}
+		);
 	}
 
 	/**

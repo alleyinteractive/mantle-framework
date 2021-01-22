@@ -15,6 +15,7 @@ use Mantle\Framework\Contracts\Database\Scope;
 use Mantle\Framework\Contracts\Paginator\Paginator as PaginatorContract;
 use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Database\Model\Model_Not_Found_Exception;
+use Mantle\Framework\Database\Model\Relations\Relation;
 use Mantle\Framework\Database\Pagination\Length_Aware_Paginator;
 use Mantle\Framework\Database\Pagination\Paginator;
 use Mantle\Framework\Support\Collection;
@@ -29,7 +30,7 @@ abstract class Builder {
 	/**
 	 * Model to build on.
 	 *
-	 * @var string
+	 * @var string[]|string
 	 */
 	protected $model;
 
@@ -116,6 +117,13 @@ abstract class Builder {
 	 * @var int
 	 */
 	protected $found_rows = 0;
+
+	/**
+	 * Relationships to eager load.
+	 *
+	 * @var string[]
+	 */
+	protected $eager_load = [];
 
 	/**
 	 * Constructor.
@@ -353,6 +361,28 @@ abstract class Builder {
 	}
 
 	/**
+	 * Order by the value passed in `whereIn()`.
+	 *
+	 * @param string $attribute Attribute to use.
+	 * @return static
+	 *
+	 * @throws Query_Exception Thrown on unknown alias.
+	 */
+	public function orderByWhereIn( string $attribute ) {
+		if ( is_string( $this->model ) && $this->model::has_attribute_alias( $attribute ) ) {
+			$attribute = $this->model::get_attribute_alias( $attribute );
+		}
+
+		if ( ! empty( $this->query_where_in_aliases[ strtolower( $attribute ) ] ) ) {
+			$attribute = $this->query_where_in_aliases[ strtolower( $attribute ) ];
+		} else {
+			throw new Query_Exception( 'Unknown where in alias: ' . $attribute );
+		}
+
+		return $this->orderBy( $attribute );
+	}
+
+	/**
 	 * Determine if the given model has a scope.
 	 *
 	 * @param string $scope Scope name.
@@ -570,5 +600,63 @@ abstract class Builder {
 				}
 			)
 			->flip();
+	}
+
+	/**
+	 * Begin a query with eager loading.
+	 *
+	 * @param string ...$relations Relations to eager load.
+	 * @return static
+	 */
+	public function with( ...$relations ) {
+		$this->eager_load = array_merge( $this->eager_load, $relations );
+		return $this;
+	}
+
+	/**
+	 * Begin a query without eager loading relationships.
+	 *
+	 * @param string ...$relations Relations to not eager load.
+	 * @return static
+	 */
+	public function without( ...$relations ) {
+		$this->eager_load = array_diff_key( $this->eager_load, array_flip( $relations ) );
+		return $this;
+	}
+
+	/**
+	 * Eager load relations for a set of models.
+	 *
+	 * @param Collection $models Models to load for.
+	 * @return Collection
+	 */
+	protected function eager_load_relations( Collection $models ): Collection {
+		foreach ( $this->eager_load as $name ) {
+			$models = $this->eager_load_relation( $models, $name );
+		}
+
+		return $models;
+	}
+
+	/**
+	 * Eager load a relation on a set of models.
+	 *
+	 * @param Collection $models Model instances.
+	 * @param string $name Relation name to eager load.
+	 * @return Collection
+	 */
+	protected function eager_load_relation( Collection $models, string $name ) : Collection {
+		$relation = $this->get_relation( $name );
+
+		$results = Relation::no_constraints(
+			function() use ( $models, $relation ) {
+				// Add the eager constraints from the relation to the query.
+				$relation->add_eager_constraints( $models );
+
+				return $relation->get_eager();
+			}
+		);
+
+		return $relation->match( $models, $results );
 	}
 }
