@@ -159,13 +159,17 @@ class Test_Has_One_Or_Many extends Framework_Test_Case {
 	}
 
 	public function test_has_many_term_to_post() {
+		Utils::delete_all_data();
+
 		$tag = Testable_Tag::create( [ 'name' => 'Has Many Term to Post' ] );
 
 		$posts = [];
 
+		$date = Carbon::now()->subWeek()->toDateTimeString();
+
 		for ( $i = 0; $i < 5; $i++ ) {
 			$posts[] = $tag->posts()->save( new Testable_Post( [
-				'date'   => Carbon::now()->subWeek()->toDateTimeString(),
+				'date'   => $date,
 				'name'   => "Testable Post {$i}",
 				'status' => 'publish',
 			] ) );

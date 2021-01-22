@@ -17,6 +17,7 @@ CACHEDIR=$(echo $CACHEDIR | sed -e "s/\/$//")
 
 WP_CORE_DIR=${WP_CORE_DIR-$CACHEDIR/wordpress/}
 
+# Create the cache directory if it doesn't exist.
 mkdir -p $CACHEDIR
 
 download() {

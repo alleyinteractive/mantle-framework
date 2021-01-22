@@ -33,7 +33,7 @@ jobs:
     name: PHP ${{ matrix.php }} -- ${{ matrix.wp_version }}
 
     env:
-      CACHEDIR: /tmp/cache
+      CACHEDIR: /tmp/test-cache
       WP_CORE_DIR: /tmp/wordpress
       WP_VERSION: ${{ matrix.wp_version }}
 
@@ -56,7 +56,9 @@ jobs:
         env:
           cache-name: cache-composer-dependencies
         with:
-          path: ${{ steps.composer-cache.outputs.dir }}
+          path:
+            - ${{ steps.composer-cache.outputs.dir }}
+            - /tmp/test-cache
           key: ${{ runner.os }}-${{ matrix.php }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.php }}-composer-
