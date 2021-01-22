@@ -30,10 +30,10 @@ jobs:
         wp_version: ["latest"]
         can_fail: [false]
 
-    name: PHP ${{ matrix.php }} -- ${{ matrix.wp_version }}
+    name: ${{ matrix.php }} @ ${{ matrix.wp_version }}
 
     env:
-      WP_DEVELOP_DIR: /tmp/wordpress
+      CACHEDIR: /tmp/test-cache
       WP_CORE_DIR: /tmp/wordpress
       WP_VERSION: ${{ matrix.wp_version }}
 
@@ -51,12 +51,14 @@ jobs:
         id: composer-cache
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
-      - name: Set up Composer caching
+      - name: Set up caching
         uses: actions/cache@v2
         env:
           cache-name: cache-composer-dependencies
         with:
-          path: ${{ steps.composer-cache.outputs.dir }}
+          path: |
+            ${{ steps.composer-cache.outputs.dir }}
+            /tmp/test-cache
           key: ${{ runner.os }}-${{ matrix.php }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.php }}-composer-
@@ -68,9 +70,6 @@ jobs:
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, gd
           tools: composer:v2
           coverage: none
-
-      - name: Setup Memcached
-        uses: niden/actions-memcached@v7
 
       - name: Validate Composer
         run: composer validate --strict
@@ -87,12 +86,11 @@ jobs:
         run: |
           bash bin/install-wp-tests.sh wordpress_unit_tests root '' 127.0.0.1 $WP_VERSION
 
-          # Copy the wp-tests-config.php to the WP installation.
-          cp ${WP_TESTS_DIR-/tmp/wordpress-tests-lib}/wp-tests-config.php ${WP_CORE_DIR-/tmp/wordpress}/wp-tests-config.php
-
           # Go into the core directory and replace wp-content.
           mkdir -p ${WP_CORE_DIR}/wp-content/plugins/mantle-framework
-          cp -R . "${WP_CORE_DIR}/wp-content/plugins/mantle-framework"
+          # cp -R . "${WP_CORE_DIR}/wp-content/plugins/mantle-framework"
+          rm -rf ${WP_CORE_DIR}/wp-content/plugins/mantle-framework
+          rsync -aWq --no-compress . ${WP_CORE_DIR}/wp-content/plugins/mantle-framework
 
       - name: Test Framework
         shell: bash
