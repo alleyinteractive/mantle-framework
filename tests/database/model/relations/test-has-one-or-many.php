@@ -14,7 +14,7 @@ class Test_Has_One_Or_Many extends Framework_Test_Case {
 	use Refresh_Database;
 
 	protected function setUp(): void {
-		Utils::delete_all_data();
+		Utils::delete_all_posts();
 		parent::setUp();
 		register_post_type( 'sponsor' );
 		register_taxonomy( 'test_taxonomy', 'post' );
@@ -49,15 +49,17 @@ class Test_Has_One_Or_Many extends Framework_Test_Case {
 	}
 
 	public function test_has_many_post_to_post() {
-		$date = Carbon::now()->subWeek()->toDateTimeString();
+		Utils::delete_all_data();
 
-		$post  = Testable_Post::create( [ 'title' => 'Test Post Many', 'date' => $date, 'status' => 'publish' ] );
+		$date = Carbon::now()->subWeek();
+
+		$post  = Testable_Post::create( [ 'title' => 'Test Post Many', 'date' => $date->toDateTimeString(), 'status' => 'publish' ] );
 		$pages = [];
 
 		for ( $i = 0; $i < 5; $i++ ) {
 			$pages[] = $post->pages()->save(
 				new Testable_Page( [
-					'date'   => $date,
+					'date'   => $date->subMinute()->toDateTimeString(),
 					'status' => 'publish',
 					'title'  => "Page {$i}",
 				] )
@@ -159,17 +161,13 @@ class Test_Has_One_Or_Many extends Framework_Test_Case {
 	}
 
 	public function test_has_many_term_to_post() {
-		Utils::delete_all_data();
-
 		$tag = Testable_Tag::create( [ 'name' => 'Has Many Term to Post' ] );
 
 		$posts = [];
 
-		$date = Carbon::now()->subWeek()->toDateTimeString();
-
 		for ( $i = 0; $i < 5; $i++ ) {
 			$posts[] = $tag->posts()->save( new Testable_Post( [
-				'date'   => $date,
+				'date'   => Carbon::now()->subWeek()->toDateTimeString(),
 				'name'   => "Testable Post {$i}",
 				'status' => 'publish',
 			] ) );
