@@ -14,7 +14,7 @@ class Test_Has_One_Or_Many extends Framework_Test_Case {
 	use Refresh_Database;
 
 	protected function setUp(): void {
-		Utils::delete_all_posts();
+		Utils::delete_all_data();
 		parent::setUp();
 		register_post_type( 'sponsor' );
 		register_taxonomy( 'test_taxonomy', 'post' );
