@@ -16,7 +16,7 @@ trait Model_Meta {
 	/**
 	 * Meta queued for saving.
 	 *
-	 * @var [type]
+	 * @var array
 	 */
 	protected $queued_meta = [];
 
@@ -29,6 +29,22 @@ trait Model_Meta {
 	 */
 	public function get_meta( string $meta_key, bool $single = true ) {
 		return \get_metadata( $this->get_meta_type(), $this->id(), $meta_key, $single );
+	}
+
+	/**
+	 * Add meta value for the object.
+	 *
+	 * @param string $meta_key Meta key.
+	 * @param mixed  $meta_value Meta value to store.
+	 * @param string $prev_value Optional, previous meta value.
+	 */
+	public function add_meta( string $meta_key, $meta_value, $prev_value = '' ) {
+		if ( ! $this->id() ) {
+			$this->queue_meta_attribute( $meta_key, $meta_value, false );
+			return;
+		}
+
+		\add_metadata( $this->get_meta_type(), $this->id(), $meta_key, $meta_value );
 	}
 
 	/**
@@ -90,7 +106,7 @@ trait Model_Meta {
 	 * @return mixed|null Meta value or null.
 	 */
 	public function get_queued_meta_attribute( string $key ) {
-		return $this->queued_meta[ $key ] ?? null;
+		return ( $this->queued_meta[ $key ] ?? [] )[0] ?? null;
 	}
 
 	/**
@@ -101,17 +117,23 @@ trait Model_Meta {
 	 *
 	 * @param string $key Meta key.
 	 * @param mixed  $value Meta value.
+	 * @param bool   $update Flag to update the queued meta.
+	 * @return void
 	 */
-	public function queue_meta_attribute( string $key, $value ) {
-		$this->queued_meta[ $key ] = $value;
+	public function queue_meta_attribute( string $key, $value, bool $update = true ): void {
+		$this->queued_meta[ $key ] = [ $value, $update ];
 	}
 
 	/**
 	 * Store queued model meta.
 	 */
 	protected function store_queued_meta() {
-		foreach ( $this->queued_meta as $key => $value ) {
-			$this->set_meta( $key, $value );
+		foreach ( $this->queued_meta as $key => [ $value, $update ] ) {
+			if ( $update ) {
+				$this->set_meta( $key, $value );
+			} else {
+				$this->add_meta( $key, $value );
+			}
 		}
 
 		$this->queued_meta = [];

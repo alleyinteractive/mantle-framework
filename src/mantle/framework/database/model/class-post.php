@@ -29,6 +29,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 */
 	protected static $aliases = [
 		'content'     => 'post_content',
+		'date'        => 'post_date',
 		'description' => 'post_excerpt',
 		'id'          => 'ID',
 		'title'       => 'post_title',

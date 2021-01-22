@@ -3,19 +3,31 @@
  * Has_Relationships trait file.
  *
  * @package Mantle
- * @phpcs:disable Squiz.Commenting.FunctionComment
  */
 
 namespace Mantle\Framework\Database\Model\Concerns;
 
+use InvalidArgumentException;
+use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Relations\Belongs_To;
+use Mantle\Framework\Database\Model\Relations\Belongs_To_Many;
+use Mantle\Framework\Database\Model\Relations\Has_Many;
+use Mantle\Framework\Database\Model\Relations\Has_One;
 use Mantle\Framework\Database\Model\Relations\Has_One_Or_Many;
 use Mantle\Framework\Database\Model\Relations\Relation;
+use Mantle\Framework\Database\Model\Term;
 
 /**
  * Model Relationships
  */
 trait Has_Relationships {
+	/**
+	 * The loaded relationships for the model.
+	 *
+	 * @var array
+	 */
+	protected $relations = [];
+
 	/**
 	 * Define a Has One Relationship
 	 *
@@ -29,7 +41,7 @@ trait Has_Relationships {
 		$foreign_key = $foreign_key ?? $this->get_foreign_key();
 		$local_key   = $local_key ?? $this->get_key_name();
 
-		return new Has_One_Or_Many( $instance->new_query(), $this, $foreign_key, $local_key );
+		return new Has_One( $instance->new_query(), $this, $foreign_key, $local_key );
 	}
 
 	/**
@@ -40,26 +52,113 @@ trait Has_Relationships {
 	 * @param string $local_key Local key.
 	 * @return Relation
 	 */
-	public function has_many( ...$args ): Relation {
-		return $this->has_one( ...$args );
+	public function has_many( string $related, string $foreign_key = null, string $local_key = null ): Relation {
+		$instance    = new $related();
+		$foreign_key = $foreign_key ?? $this->get_foreign_key();
+		$local_key   = $local_key ?? $this->get_key_name();
+
+		return new Has_Many( $instance->new_query(), $this, $foreign_key, $local_key );
 	}
 
 	/**
 	 * Define a belongs to relationship.
 	 *
-	 * Defines a relationship between two posts with the reference stored on the remote
-	 * post's meta.
+	 * Defines a relationship between two models with the reference stored on the remote
+	 * model's meta.
 	 *
 	 * @param string $related Related model name.
 	 * @param string $foreign_key Foreign key.
 	 * @param string $local_key Local key.
 	 * @return Relation
+	 *
+	 * @throws InvalidArgumentException Used on the definition of a post and term relationship.
 	 */
 	public function belongs_to( string $related, string $foreign_key = null, string $local_key = null ): Relation {
+		// Check if this a post and term relationship.
+		if (
+			( $this instanceof Term && is_subclass_of( $related, Post::class ) )
+			|| ( $this instanceof Post && is_subclass_of( $related, Term::class ) )
+		) {
+			throw new InvalidArgumentException( 'Post and term relationships must always use has_one() or has_many()' );
+		}
+
 		$instance    = new $related();
 		$foreign_key = $foreign_key ?? $this->get_key_name();
 		$local_key   = $local_key ?? $instance->get_foreign_key();
 
 		return new Belongs_To( $instance->new_query(), $this, $foreign_key, $local_key );
+	}
+
+	/**
+	 * Define a belongs to relationship.
+	 *
+	 * Defines a relationship between two models with the reference stored on the remote
+	 * object's meta.
+	 *
+	 * @param string $related Related model name.
+	 * @param string $foreign_key Foreign key.
+	 * @param string $local_key Local key.
+	 * @return Relation
+	 *
+	 * @throws InvalidArgumentException Used on the definition of a post and term relationship.
+	 */
+	public function belongs_to_many( string $related, string $foreign_key = null, string $local_key = null ): Relation {
+		// Check if this a post and term relationship.
+		if (
+			( $this instanceof Term && is_subclass_of( $related, Post::class ) )
+			|| ( $this instanceof Post && is_subclass_of( $related, Term::class ) )
+		) {
+			throw new InvalidArgumentException( 'Post and term relationships must always use has_one() or has_many()' );
+		}
+
+		$instance    = new $related();
+		$foreign_key = $foreign_key ?? $this->get_key_name();
+		$local_key   = $local_key ?? $instance->get_foreign_key();
+
+		return new Belongs_To_Many( $instance->new_query(), $this, $foreign_key, $local_key );
+	}
+
+	/**
+	 * Get a relationship for the model.
+	 *
+	 * @param string $relation Relation name.
+	 * @return Relation|null
+	 */
+	public function get_relation( string $relation ): ?Relation {
+		return $this->relations[ $relation ] ?? null;
+	}
+
+	/**
+	 * Set a relationship for the model.
+	 *
+	 * @param string $relation Relation name.
+	 * @param mixed  $value Value to set.
+	 * @return static
+	 */
+	public function set_relation( string $relation, $value ) {
+		$this->relations[ $relation ] = $value;
+
+		return $this;
+	}
+
+	/**
+	 * Check if the given relation is loaded.
+	 *
+	 * @param string $relation Relation to check.
+	 * @return bool
+	 */
+	public function relation_loaded( string $relation ): bool {
+		return array_key_exists( $relation, $this->relations );
+	}
+
+	/**
+	 * Unset a relationship for the model.
+	 *
+	 * @param string $relation Relation name.
+	 * @return static
+	 */
+	public function unset_relation( string $relation ) {
+		unset( $this->relations[ $relation ] );
+		return $this;
 	}
 }

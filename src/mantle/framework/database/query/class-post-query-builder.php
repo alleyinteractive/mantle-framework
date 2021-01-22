@@ -71,7 +71,7 @@ class Post_Query_Builder extends Builder {
 	 *
 	 * @return array
 	 */
-	protected function get_query_args(): array {
+	public function get_query_args(): array {
 		$this->apply_scopes();
 
 		if ( is_array( $this->model ) ) {
@@ -115,11 +115,24 @@ class Post_Query_Builder extends Builder {
 			return collect();
 		}
 
-		/**
-		 * Translate the post IDs to model objects.
-		 *
-		 * @todo Use a more abstract way to get the correct model for the post.
-		 */
+		$models = $this->get_models( $post_ids );
+
+		// Return the models if there are no models or if multiple model instances
+		// are used. Eager loading does not currently support multiple models.
+		if ( $models->is_empty() || is_array( $this->model ) || empty( $this->eager_load ) ) {
+			return $models;
+		}
+
+		return $this->eager_load_relations( $models );
+	}
+
+	/**
+	 * Retrieve hydrated models for the post IDs.
+	 *
+	 * @param int[] $post_ids Post IDs.
+	 * @return Collection
+	 */
+	protected function get_models( array $post_ids ): Collection {
 		if ( is_array( $this->model ) ) {
 			$model_object_types = $this->get_model_object_names();
 			return collect( $post_ids )
