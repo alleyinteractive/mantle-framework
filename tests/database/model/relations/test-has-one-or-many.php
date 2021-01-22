@@ -59,7 +59,7 @@ class Test_Has_One_Or_Many extends Framework_Test_Case {
 		for ( $i = 0; $i < 5; $i++ ) {
 			$pages[] = $post->pages()->save(
 				new Testable_Page( [
-					'date'   => $date->subMinute()->toDateTimeString(),
+					'date'   => $date->subMinute( $i )->toDateTimeString(),
 					'status' => 'publish',
 					'title'  => "Page {$i}",
 				] )
@@ -165,9 +165,11 @@ class Test_Has_One_Or_Many extends Framework_Test_Case {
 
 		$posts = [];
 
+		$date = Carbon::now()->subWeek();
+
 		for ( $i = 0; $i < 5; $i++ ) {
 			$posts[] = $tag->posts()->save( new Testable_Post( [
-				'date'   => Carbon::now()->subWeek()->toDateTimeString(),
+				'date'   => $date->subMinute( $i )->toDateTimeString(),
 				'name'   => "Testable Post {$i}",
 				'status' => 'publish',
 			] ) );

@@ -71,9 +71,6 @@ jobs:
           tools: composer:v2
           coverage: none
 
-      - name: Setup Memcached
-        uses: niden/actions-memcached@v7
-
       - name: Validate Composer
         run: composer validate --strict
 
@@ -92,6 +89,7 @@ jobs:
           # Go into the core directory and replace wp-content.
           mkdir -p ${WP_CORE_DIR}/wp-content/plugins/mantle-framework
           # cp -R . "${WP_CORE_DIR}/wp-content/plugins/mantle-framework"
+          rm -rf ${WP_CORE_DIR}/wp-content/plugins/mantle-framework
           rsync -aWq --no-compress . ${WP_CORE_DIR}/wp-content/plugins/mantle-framework
 
       - name: Test Framework
