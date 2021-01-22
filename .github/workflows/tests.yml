@@ -30,7 +30,7 @@ jobs:
         wp_version: ["latest"]
         can_fail: [false]
 
-    name: Unit Tests ${{ matrix.php }} @ ${{ matrix.wp_version }}
+    name: ${{ matrix.php }} @ ${{ matrix.wp_version }}
 
     env:
       CACHEDIR: /tmp/test-cache
