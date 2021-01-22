@@ -89,7 +89,8 @@ jobs:
 
           # Go into the core directory and replace wp-content.
           mkdir -p ${WP_CORE_DIR}/wp-content/plugins/mantle-framework
-          cp -R . "${WP_CORE_DIR}/wp-content/plugins/mantle-framework"
+          # cp -R . "${WP_CORE_DIR}/wp-content/plugins/mantle-framework"
+          rsync -avhW --no-compress --progress . ${WP_CORE_DIR}/wp-content/plugins/mantle-framework
 
       - name: Test Framework
         shell: bash
