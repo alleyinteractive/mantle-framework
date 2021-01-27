@@ -44,6 +44,10 @@ class Wrap_Template {
 	 * @return mixed
 	 */
 	public function handle( Request $request, Closure $next ) {
+		if ( $request->is_json() ) {
+			return $next( $request );
+		}
+
 		$response = $next( $request );
 
 		/**

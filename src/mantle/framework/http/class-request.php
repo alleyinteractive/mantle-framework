@@ -341,7 +341,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 */
 	public function is_json(): bool {
 		return $this->has_header( 'Content-Type' ) &&
-			Str::contains( $this->header( 'Content-Type' )[0] ?? '', 'json' );
+			Str::contains( $this->header( 'Content-Type' ), 'json' );
 	}
 
 	/**
