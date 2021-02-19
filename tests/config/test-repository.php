@@ -1,7 +1,7 @@
 <?php
 namespace Mantle\Tests\Support;
 
-use Mantle\Framework\Config\Repository;
+use Mantle\Config\Repository;
 use PHPUnit\Framework\TestCase;
 
 class Test_Repository extends TestCase {

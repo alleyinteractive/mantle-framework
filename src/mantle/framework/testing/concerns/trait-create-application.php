@@ -8,7 +8,7 @@
 namespace Mantle\Framework\Testing\Concerns;
 
 use Mantle\Framework\Application;
-use Mantle\Framework\Config\Repository;
+use Mantle\Config\Repository;
 use Mantle\Framework\Contracts\Exceptions\Handler as Handler_Contract;
 use Mantle\Framework\Exceptions\Handler;
 use Mantle\Support\Collection;

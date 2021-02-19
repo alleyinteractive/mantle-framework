@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Config;
+namespace Mantle\Config;
 
 use ArrayAccess;
 use Mantle\Framework\Contracts\Config\Repository as Config_Contract;

@@ -315,7 +315,7 @@ class Application extends Container\Container implements Application_Contract {
 	protected function register_core_aliases() {
 		$core_aliases = [
 			'app'         => [ static::class, \Mantle\Framework\Contracts\Application::class ],
-			'config'      => [ \Mantle\Framework\Config\Repository::class, \Mantle\Framework\Contracts\Config\Repository::class ],
+			'config'      => [ \Mantle\Config\Repository::class, \Mantle\Framework\Contracts\Config\Repository::class ],
 			'files'       => [ \Mantle\Framework\Filesystem\Filesystem::class ],
 			'filesystem'  => [ \Mantle\Framework\Filesystem\Filesystem_Manager::class, \Mantle\Framework\Contracts\Filesystem\Filesystem_Manager::class ],
 			'log'         => [ \Mantle\Framework\Log\Log_Manager::class, \Psr\Log\LoggerInterface::class ],
