@@ -5,9 +5,9 @@ namespace Mantle\Tests\Framework\Http;
 use Mantle\Framework\Application;
 use Mantle\Framework\Database\Model\Post;
 use Mantle\Events\Dispatcher;
-use Mantle\Framework\Http\Request;
-use Mantle\Framework\Http\Routing\Middleware\Substitute_Bindings;
-use Mantle\Framework\Http\Routing\Router;
+use Mantle\Http\Request;
+use Mantle\Http\Routing\Middleware\Substitute_Bindings;
+use Mantle\Http\Routing\Router;
 use Mantle\Testing\Framework_Test_Case;
 
 class Test_Router extends Framework_Test_Case {

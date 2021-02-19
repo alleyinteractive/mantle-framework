@@ -16,7 +16,7 @@ use League\Flysystem\Cached\CachedAdapter;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\FilesystemInterface;
 use Mantle\Framework\Contracts\Filesystem\Filesystem;
-use Mantle\Framework\Http\Uploaded_File;
+use Mantle\Http\Uploaded_File;
 use Mantle\Support\Arr;
 use Mantle\Support\Str;
 use PHPUnit\Framework\Assert as PHPUnit;
@@ -355,7 +355,7 @@ class Filesystem_Adapter implements Filesystem {
 	 * Store the uploaded file on the disk.
 	 *
 	 * @param string                                           $path File path.
-	 * @param File|\Mantle\Framework\Http\Uploaded_File|string $file File object.
+	 * @param File|\Mantle\Http\Uploaded_File|string $file File object.
 	 * @param mixed                                            $options Options.
 	 * @return string|false
 	 */
@@ -369,7 +369,7 @@ class Filesystem_Adapter implements Filesystem {
 	 * Store the uploaded file on the disk with a given name.
 	 *
 	 * @param  string                                           $path File path.
-	 * @param  File|\Mantle\Framework\Http\Uploaded_File|string $file File object.
+	 * @param  File|\Mantle\Http\Uploaded_File|string $file File object.
 	 * @param  string                                           $name File name.
 	 * @param  mixed                                            $options Options.
 	 * @return string|false

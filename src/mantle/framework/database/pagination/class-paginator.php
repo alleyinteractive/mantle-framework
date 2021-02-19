@@ -17,8 +17,8 @@ use Mantle\Framework\Contracts\Support\Arrayable;
 use Mantle\Framework\Contracts\Support\Htmlable;
 use Mantle\Framework\Contracts\Support\Jsonable;
 use Mantle\Framework\Database\Query\Builder;
-use Mantle\Framework\Http\Request;
-use Mantle\Framework\Http\View\View;
+use Mantle\Http\Request;
+use Mantle\Http\View\View;
 use Mantle\Support\Collection;
 use Mantle\Support\Str;
 

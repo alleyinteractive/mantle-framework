@@ -7,7 +7,7 @@
 
 namespace App\Http\Controller;
 
-use Mantle\Framework\Http\Controller;
+use Mantle\Http\Controller;
 
 /**
  * {{ class }} Controller

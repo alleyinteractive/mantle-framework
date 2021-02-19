@@ -7,9 +7,9 @@
 
 namespace Mantle\Tests\Framework\Http;
 
-use Mantle\Framework\Http\Request;
-use Mantle\Framework\Http\Routing\Redirector;
-use Mantle\Framework\Http\Routing\Url_Generator;
+use Mantle\Http\Request;
+use Mantle\Http\Routing\Redirector;
+use Mantle\Http\Routing\Url_Generator;
 use Mockery as m;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\RedirectResponse;

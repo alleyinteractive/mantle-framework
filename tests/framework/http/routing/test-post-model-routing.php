@@ -6,7 +6,7 @@ use Mantle\Framework\Database\Model\Concerns\Custom_Post_Permalink;
 use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Registration\Register_Post_Type;
 use Mantle\Facade\Route;
-use Mantle\Framework\Http\Controller;
+use Mantle\Http\Controller;
 use Mantle\Testing\Framework_Test_Case;
 
 class Test_Post_Model_Routing extends Framework_Test_Case {

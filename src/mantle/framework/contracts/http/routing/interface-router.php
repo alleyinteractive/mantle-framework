@@ -7,7 +7,7 @@
 
 namespace Mantle\Framework\Contracts\Http\Routing;
 
-use Mantle\Framework\Http\Request;
+use Mantle\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouteCollection;
 

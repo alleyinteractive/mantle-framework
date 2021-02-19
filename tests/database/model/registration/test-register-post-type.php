@@ -8,7 +8,7 @@ use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Registration\Register_Post_Type;
 use Mantle\Framework\Database\Model\Registration\Register_Rest_Fields;
 use Mockery as m;
-use Mantle\Framework\REST_API\Registered_REST_Field;
+use Mantle\REST_API\Registered_REST_Field;
 use Mantle\Testing\Framework_Test_Case;
 
 class Test_Register_Post_Type extends Framework_Test_Case {

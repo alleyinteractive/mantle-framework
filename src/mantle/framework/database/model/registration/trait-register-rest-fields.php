@@ -10,8 +10,8 @@ namespace Mantle\Framework\Database\Model\Registration;
 
 use Closure;
 use Mantle\Framework\Database\Model\Model_Exception;
-use Mantle\Framework\REST_API\REST_Field;
-use Mantle\Framework\REST_API\REST_Field_Registrar;
+use Mantle\REST_API\REST_Field;
+use Mantle\REST_API\REST_Field_Registrar;
 
 /**
  * Model Trait to REST Fields to be registered for a model.

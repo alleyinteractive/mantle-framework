@@ -321,12 +321,12 @@ class Application extends Container implements Application_Contract {
 			'filesystem'  => [ \Mantle\Filesystem\Filesystem_Manager::class, \Mantle\Framework\Contracts\Filesystem\Filesystem_Manager::class ],
 			'log'         => [ \Mantle\Log\Log_Manager::class, \Psr\Log\LoggerInterface::class ],
 			'queue'       => [ \Mantle\Queue\Queue_Manager::class, \Mantle\Framework\Contracts\Queue\Queue_Manager::class ],
-			'redirect'    => [ \Mantle\Framework\Http\Routing\Redirector::class ],
-			'request'     => [ \Mantle\Framework\Http\Request::class, \Symfony\Component\HttpFoundation\Request::class ],
-			'router'      => [ \Mantle\Framework\Http\Routing\Router::class, \Mantle\Framework\Contracts\Http\Routing\Router::class ],
-			'url'         => [ \Mantle\Framework\Http\Routing\Url_Generator::class, \Mantle\Framework\Contracts\Http\Routing\Url_Generator::class ],
-			'view.loader' => [ \Mantle\Framework\Http\View\View_Finder::class, \Mantle\Framework\Contracts\Http\View\View_Finder::class ],
-			'view'        => [ \Mantle\Framework\Http\View\Factory::class, \Mantle\Framework\Contracts\Http\View\Factory::class ],
+			'redirect'    => [ \Mantle\Http\Routing\Redirector::class ],
+			'request'     => [ \Mantle\Http\Request::class, \Symfony\Component\HttpFoundation\Request::class ],
+			'router'      => [ \Mantle\Http\Routing\Router::class, \Mantle\Framework\Contracts\Http\Routing\Router::class ],
+			'url'         => [ \Mantle\Http\Routing\Url_Generator::class, \Mantle\Framework\Contracts\Http\Routing\Url_Generator::class ],
+			'view.loader' => [ \Mantle\Http\View\View_Finder::class, \Mantle\Framework\Contracts\Http\View\View_Finder::class ],
+			'view'        => [ \Mantle\Http\View\Factory::class, \Mantle\Framework\Contracts\Http\View\Factory::class ],
 		];
 
 		foreach ( $core_aliases as $key => $aliases ) {

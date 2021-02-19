@@ -7,7 +7,7 @@
 
 namespace Mantle\Framework\Contracts\Providers;
 
-use Mantle\Framework\Http\Request;
+use Mantle\Http\Request;
 
 /**
  * Route Service Provider Contract

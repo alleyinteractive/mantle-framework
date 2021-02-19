@@ -7,7 +7,7 @@
 
 namespace Mantle\Framework\Contracts\Http\View;
 
-use Mantle\Framework\Http\View\View;
+use Mantle\Http\View\View;
 use Mantle\Support\Collection;
 
 /**

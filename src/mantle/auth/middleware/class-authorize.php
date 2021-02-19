@@ -9,7 +9,7 @@ namespace Mantle\Auth\Middleware;
 
 use Closure;
 use Mantle\Auth\Authentication_Error;
-use Mantle\Framework\Http\Request;
+use Mantle\Http\Request;
 
 /**
  * Authorize Middleware

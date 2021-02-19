@@ -9,8 +9,8 @@ namespace Mantle\Testing\Concerns;
 
 use Mantle\Framework\Contracts\Http\Kernel;
 use Mantle\Framework\Database\Model\Model;
-use Mantle\Framework\Http\Kernel as HttpKernel;
-use Mantle\Framework\Http\Request;
+use Mantle\Http\Kernel as HttpKernel;
+use Mantle\Http\Request;
 use Mantle\Support\Str;
 use Mantle\Testing\Exceptions\Exception;
 use Mantle\Testing\Exceptions\WP_Redirect_Exception;

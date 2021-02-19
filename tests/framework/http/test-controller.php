@@ -8,7 +8,7 @@
 namespace Mantle\Tests\Framework\Http;
 
 use Mantle\Facade\Route;
-use Mantle\Framework\Http\Controller;
+use Mantle\Http\Controller;
 use Mantle\Testing\Framework_Test_Case;
 
 class Test_Controller extends Framework_Test_Case {

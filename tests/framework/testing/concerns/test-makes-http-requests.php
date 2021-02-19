@@ -1,7 +1,7 @@
 <?php
 namespace Mantle\Tests\Framework\Testing\Concerns;
 
-use Mantle\Framework\Http\Response;
+use Mantle\Http\Response;
 use Mantle\Framework\Providers\Routing_Service_Provider;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;

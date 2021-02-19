@@ -7,7 +7,7 @@
 
 namespace Mantle\Framework\Contracts\Http;
 
-use Mantle\Framework\Http\Request;
+use Mantle\Http\Request;
 
 /**
  * Http Kernel

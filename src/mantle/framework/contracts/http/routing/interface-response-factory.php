@@ -8,7 +8,7 @@
 namespace Mantle\Framework\Contracts\Http\Routing;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Mantle\Framework\Http\Response;
+use Mantle\Http\Response;
 
 /**
  * Response Factory Contract

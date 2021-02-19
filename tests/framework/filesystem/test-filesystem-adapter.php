@@ -10,7 +10,7 @@ use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem as Flysystem;
 use Mantle\Filesystem\Filesystem;
 use Mantle\Filesystem\Filesystem_Adapter;
-use Mantle\Framework\Http\Uploaded_File;
+use Mantle\Http\Uploaded_File;
 use Mantle\Testing\Assert;
 use PHPUnit\Framework\TestCase;
 use Mockery as m;

@@ -9,7 +9,7 @@ use Mantle\Framework\Database\Model\Registration\Register_Post_Type;
 use Mantle\Framework\Database\Model\Registration\Register_Taxonomy;
 use Mantle\Framework\Database\Model\Term;
 use Mantle\Facade\Route;
-use Mantle\Framework\Http\Controller;
+use Mantle\Http\Controller;
 use Mantle\Testing\Framework_Test_Case;
 
 class Test_Taxonomy_Model_Routing extends Framework_Test_Case {

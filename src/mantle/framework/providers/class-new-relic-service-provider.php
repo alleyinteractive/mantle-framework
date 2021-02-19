@@ -9,8 +9,8 @@ namespace Mantle\Framework\Providers;
 
 use Mantle\Framework\Contracts\Application;
 use Mantle\Framework\Contracts\Events\Dispatcher;
-use Mantle\Framework\Http\Routing\Events\Route_Matched;
-use Mantle\Framework\Http\Routing\Route;
+use Mantle\Http\Routing\Events\Route_Matched;
+use Mantle\Http\Routing\Route;
 use Mantle\Framework\Service_Provider;
 use WP;
 

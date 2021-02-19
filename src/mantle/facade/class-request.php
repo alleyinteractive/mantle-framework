@@ -10,7 +10,7 @@ namespace Mantle\Facade;
 /**
  * Request Facade
  *
- * @see \Mantle\Framework\Http\Request
+ * @see \Mantle\Http\Request
  */
 class Request extends Facade {
 	/**

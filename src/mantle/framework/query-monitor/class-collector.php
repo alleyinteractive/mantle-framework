@@ -8,7 +8,7 @@
 namespace Mantle\Framework\Query_Monitor;
 
 use Mantle\Framework\Contracts\Application;
-use Mantle\Framework\Http\Request;
+use Mantle\Http\Request;
 
 /**
  * Data Collector
