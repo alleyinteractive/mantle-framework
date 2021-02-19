@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Caper;
+namespace Mantle\Caper;
 
 /**
  * Fluently distribute capabilities to roles.
