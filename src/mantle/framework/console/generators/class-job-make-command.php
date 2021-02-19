@@ -1,38 +1,38 @@
 <?php
 /**
- * Middleware_Make_Command class file.
+ * Job_Make_Command class file.
  *
  * @package Mantle
  */
 
-namespace Mantle\Console\Generators;
+namespace Mantle\Framework\Console\Generators;
 
-use Mantle\Console\Generator_Command;
+use Mantle\Framework\Console\Generator_Command;
 
 /**
- * Middleware Generator
+ * Queueable Job Generator Command
  */
-class Middleware_Make_Command extends Generator_Command {
+class Job_Make_Command extends Generator_Command {
 	/**
 	 * The console command name.
 	 *
 	 * @var string
 	 */
-	protected $name = 'make:middleware';
+	protected $name = 'make:job';
 
 	/**
 	 * Command Description.
 	 *
 	 * @var string
 	 */
-	protected $description = 'Generate a middleware class.';
+	protected $description = 'Generate a job.';
 
 	/**
 	 * The type of class being generated.
 	 *
 	 * @var string
 	 */
-	protected $type = 'Http\Middleware';
+	protected $type = 'Jobs';
 
 	/**
 	 * Command synopsis.
@@ -54,8 +54,6 @@ class Middleware_Make_Command extends Generator_Command {
 	 * @return string
 	 */
 	public function get_file_stub(): string {
-		$filename = 'middleware.stub';
-
-		return __DIR__ . '/stubs/' . $filename;
+		return __DIR__ . '/stubs/job.stub';
 	}
 }

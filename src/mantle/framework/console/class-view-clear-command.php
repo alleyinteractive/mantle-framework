@@ -5,10 +5,10 @@
  * @package Mantle
  */
 
-namespace Mantle\Console;
+namespace Mantle\Framework\Console;
 
+use Mantle\Console\Command;
 use Mantle\Framework\Filesystem\Filesystem;
-use RuntimeException;
 
 /**
  * Command to clear the compiled views.

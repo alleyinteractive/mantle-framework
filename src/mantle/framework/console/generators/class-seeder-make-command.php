@@ -1,38 +1,38 @@
 <?php
 /**
- * Job_Make_Command class file.
+ * Seeder_Make_Command class file.
  *
  * @package Mantle
  */
 
-namespace Mantle\Console\Generators;
+namespace Mantle\Framework\Console\Generators;
 
-use Mantle\Console\Generator_Command;
+use Mantle\Framework\Console\Generator_Command;
 
 /**
- * Queueable Job Generator Command
+ * Seeder Generator
  */
-class Job_Make_Command extends Generator_Command {
+class Seeder_Make_Command extends Generator_Command {
 	/**
 	 * The console command name.
 	 *
 	 * @var string
 	 */
-	protected $name = 'make:job';
+	protected $name = 'make:seeder';
 
 	/**
 	 * Command Description.
 	 *
 	 * @var string
 	 */
-	protected $description = 'Generate a job.';
+	protected $description = 'Generate a seeder.';
 
 	/**
 	 * The type of class being generated.
 	 *
 	 * @var string
 	 */
-	protected $type = 'Jobs';
+	protected $type = 'Database\Seeds';
 
 	/**
 	 * Command synopsis.
@@ -54,6 +54,17 @@ class Job_Make_Command extends Generator_Command {
 	 * @return string
 	 */
 	public function get_file_stub(): string {
-		return __DIR__ . '/stubs/job.stub';
+		$filename = 'seeder.stub';
+
+		return __DIR__ . '/stubs/' . $filename;
+	}
+
+	/**
+	 * Get the base path for the generated folder.
+	 *
+	 * @return string
+	 */
+	protected function get_base_path(): string {
+		return $this->app->get_base_path() . '/';
 	}
 }

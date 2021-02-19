@@ -5,9 +5,9 @@
  * @package Mantle
  */
 
-namespace Mantle\Console\Generators;
+namespace Mantle\Framework\Console\Generators;
 
-use Mantle\Console\Generator_Command;
+use Mantle\Framework\Console\Generator_Command;
 
 /**
  * Controller Generator

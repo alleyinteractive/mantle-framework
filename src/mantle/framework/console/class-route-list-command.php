@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Console;
+namespace Mantle\Framework\Console;
 
 use Mantle\Console\Command;
 use Mantle\Framework\Contracts\Http\Routing\Router;

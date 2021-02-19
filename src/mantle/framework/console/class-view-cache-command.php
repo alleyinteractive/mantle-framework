@@ -5,8 +5,9 @@
  * @package Mantle
  */
 
-namespace Mantle\Console;
+namespace Mantle\Framework\Console;
 
+use Mantle\Console\Command;
 use Mantle\Framework\Contracts\Application;
 use Mantle\Framework\Http\View\View_Finder;
 use Mantle\Support\Collection;

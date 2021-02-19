@@ -7,7 +7,7 @@
 
 namespace App\Console\Generators;
 
-use Mantle\Console\Generator_Command;
+use Mantle\Framework\Console\Generator_Command;
 
 /**
  * {{ class }} Generator Command

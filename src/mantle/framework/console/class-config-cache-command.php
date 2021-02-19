@@ -5,14 +5,13 @@
  * @package Mantle
  */
 
-namespace Mantle\Console;
+namespace Mantle\Framework\Console;
 
 use LogicException;
 use Mantle\Framework\Contracts\Application;
 use Mantle\Framework\Contracts\Console\Kernel;
+use Mantle\Console\Command;
 use Mantle\Framework\Filesystem\Filesystem;
-use Mantle\Framework\Providers\Provider_Exception;
-use Mantle\Support\String_Replacements;
 use Throwable;
 
 /**

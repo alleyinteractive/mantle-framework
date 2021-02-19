@@ -1,38 +1,38 @@
 <?php
 /**
- * Seeder_Make_Command class file.
+ * Middleware_Make_Command class file.
  *
  * @package Mantle
  */
 
-namespace Mantle\Console\Generators;
+namespace Mantle\Framework\Console\Generators;
 
-use Mantle\Console\Generator_Command;
+use Mantle\Framework\Console\Generator_Command;
 
 /**
- * Seeder Generator
+ * Middleware Generator
  */
-class Seeder_Make_Command extends Generator_Command {
+class Middleware_Make_Command extends Generator_Command {
 	/**
 	 * The console command name.
 	 *
 	 * @var string
 	 */
-	protected $name = 'make:seeder';
+	protected $name = 'make:middleware';
 
 	/**
 	 * Command Description.
 	 *
 	 * @var string
 	 */
-	protected $description = 'Generate a seeder.';
+	protected $description = 'Generate a middleware class.';
 
 	/**
 	 * The type of class being generated.
 	 *
 	 * @var string
 	 */
-	protected $type = 'Database\Seeds';
+	protected $type = 'Http\Middleware';
 
 	/**
 	 * Command synopsis.
@@ -54,17 +54,8 @@ class Seeder_Make_Command extends Generator_Command {
 	 * @return string
 	 */
 	public function get_file_stub(): string {
-		$filename = 'seeder.stub';
+		$filename = 'middleware.stub';
 
 		return __DIR__ . '/stubs/' . $filename;
-	}
-
-	/**
-	 * Get the base path for the generated folder.
-	 *
-	 * @return string
-	 */
-	protected function get_base_path(): string {
-		return $this->app->get_base_path() . '/';
 	}
 }

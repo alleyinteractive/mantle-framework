@@ -5,8 +5,9 @@
  * @package Mantle
  */
 
-namespace Mantle\Console;
+namespace Mantle\Framework\Console;
 
+use Mantle\Console\Command;
 use Mantle\Framework\Contracts\Application as Application_Contract;
 use Mantle\Framework\Providers\Provider_Exception;
 use Mantle\Support\String_Replacements;

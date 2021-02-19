@@ -7,7 +7,7 @@
 
 namespace App\Console;
 
-use Mantle\Console\Command;
+use Mantle\Framework\Console\Command;
 
 /**
  * {{ class }} Controller
