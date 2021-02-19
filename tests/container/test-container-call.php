@@ -3,8 +3,8 @@
 namespace Mantle\Tests\Container;
 
 use Closure;
-use Mantle\Framework\Container\Container;
-use Mantle\Framework\Container\Binding_Resolution_Exception;
+use Mantle\Container\Container;
+use Mantle\Container\Binding_Resolution_Exception;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use stdClass;

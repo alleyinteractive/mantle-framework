@@ -8,7 +8,7 @@
 
 namespace Mantle\Framework\Http;
 
-use Mantle\Framework\Container\Container;
+use Mantle\Container\Container;
 use Mantle\Framework\Contracts\Filesystem\Filesystem;
 use Mantle\Framework\Contracts\Filesystem\Filesystem_Manager;
 use Mantle\Framework\Database\Model\Attachment;

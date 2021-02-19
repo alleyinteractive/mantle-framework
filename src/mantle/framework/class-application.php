@@ -7,6 +7,7 @@
 
 namespace Mantle\Framework;
 
+use Mantle\Container\Container;
 use Mantle\Framework\Contracts\Application as Application_Contract;
 use Mantle\Framework\Contracts\Container as Container_Contract;
 use Mantle\Framework\Contracts\Kernel as Kernel_Contract;
@@ -25,7 +26,7 @@ use function Mantle\Framework\Helpers\collect;
 /**
  * Mantle Application
  */
-class Application extends Container\Container implements Application_Contract {
+class Application extends Container implements Application_Contract {
 	/**
 	 * Base path of the application.
 	 *

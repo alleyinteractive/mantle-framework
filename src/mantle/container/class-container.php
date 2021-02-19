@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Container;
+namespace Mantle\Container;
 
 use ArrayAccess;
 use Closure;

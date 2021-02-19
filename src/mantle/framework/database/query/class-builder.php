@@ -10,7 +10,7 @@
 namespace Mantle\Framework\Database\Query;
 
 use Closure;
-use Mantle\Framework\Container\Container;
+use Mantle\Container\Container;
 use Mantle\Framework\Contracts\Database\Scope;
 use Mantle\Framework\Contracts\Paginator\Paginator as PaginatorContract;
 use Mantle\Framework\Database\Model\Model;

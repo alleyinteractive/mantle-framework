@@ -10,7 +10,7 @@ namespace Mantle\Framework\Http\Routing;
 use ArrayAccess;
 use ArrayObject;
 use JsonSerializable;
-use Mantle\Framework\Container\Container;
+use Mantle\Container\Container;
 use Mantle\Framework\Contracts\Http\Routing\Router;
 use Mantle\Framework\Contracts\Support\Arrayable;
 use Mantle\Framework\Database\Model\Model;
@@ -48,7 +48,7 @@ class Route extends Symfony_Route {
 	/**
 	 * Container instance.
 	 *
-	 * @var \Mantle\Framework\Container\Container
+	 * @var \Mantle\Container\Container
 	 */
 	protected $container;
 

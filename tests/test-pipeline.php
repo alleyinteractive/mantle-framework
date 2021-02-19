@@ -2,7 +2,7 @@
 
 namespace Mantle\Tests;
 
-use Mantle\Framework\Container\Container;
+use Mantle\Container\Container;
 use Mantle\Framework\Pipeline;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;

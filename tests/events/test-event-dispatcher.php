@@ -3,7 +3,7 @@ namespace Mantle\Tests\Events;
 
 use Mantle\Framework\Events\Dispatcher;
 use Exception;
-use Mantle\Framework\Container\Container;
+use Mantle\Container\Container;
 use Mockery as m;
 
 use function Mantle\Framework\Helpers\collect;

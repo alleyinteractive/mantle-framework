@@ -3,7 +3,7 @@ namespace Mantle\Tests\Events;
 
 use Mantle\Framework\Events\Dispatcher;
 use Exception;
-use Mantle\Framework\Container\Container;
+use Mantle\Container\Container;
 use Mantle\Support\Collection;
 use Mantle\Framework\Testing\Framework_Test_Case;
 use ReflectionParameter;

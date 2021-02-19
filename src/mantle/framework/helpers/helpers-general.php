@@ -358,7 +358,7 @@ function with( $value, callable $callback = null ) {
  * @param int    $amount
  *
  * @return Factory_Builder
- * @throws \Mantle\Framework\Container\Binding_Resolution_Exception Binding resolution exception.
+ * @throws \Mantle\Container\Binding_Resolution_Exception Binding resolution exception.
  */
 function factory( $class, $amount = null ) {
 	$factory = app( MantleFactory::class );
