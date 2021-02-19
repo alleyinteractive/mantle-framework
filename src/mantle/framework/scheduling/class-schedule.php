@@ -9,7 +9,7 @@
 namespace Mantle\Framework\Scheduling;
 
 use DateTimeZone;
-use Mantle\Framework\Console\Command;
+use Mantle\Console\Command;
 use Mantle\Framework\Contracts\Application;
 use Mantle\Framework\Contracts\Container;
 use Mantle\Framework\Contracts\Queue\Job;

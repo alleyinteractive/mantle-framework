@@ -7,7 +7,7 @@
 
 namespace Mantle\Framework\Queue\Console;
 
-use Mantle\Framework\Console\Command;
+use Mantle\Console\Command;
 use Mantle\Framework\Contracts\Application;
 use Mantle\Framework\Queue\Events\Job_Processed;
 use Mantle\Framework\Queue\Events\Job_Processing;

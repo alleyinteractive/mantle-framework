@@ -1,0 +1,68 @@
+<?php
+/**
+ * {{ class }}_Make_Command class file.
+ *
+ * @package {{ namespace }}
+ */
+
+namespace App\Console\Generators;
+
+use Mantle\Console\Generator_Command;
+
+/**
+ * {{ class }} Generator Command
+ */
+class {{ class }}_Make_Command extends Generator_Command {
+	/**
+	 * The console command name.
+	 *
+	 * @var string
+	 */
+	protected $name = 'make:{{ class }}';
+
+	/**
+	 * Command Description.
+	 *
+	 * @var string
+	 */
+	protected $description = 'Generate a {{ class }}.';
+
+	/**
+	 * Command synopsis.
+	 *
+	 * @var string|array
+	 */
+	protected $synopsis = [
+		[
+			'description' => 'Class name',
+			'name'        => 'name',
+			'optional'    => false,
+			'type'        => 'positional',
+		],
+	];
+
+	/**
+	 * The type of class being generated.
+	 *
+	 * @var string
+	 */
+	protected $type = '{{ type }}';
+
+	/**
+	 * Get the stub file for the generator.
+	 *
+	 * @return string
+	 */
+	public function get_file_stub(): string {
+		$filename = '{{ class }}.stub';
+		return __DIR__ . '/stubs/' . $filename;
+	}
+
+	/**
+	 * Command synopsis.
+	 * Provides information to the user about how to use the generated file.
+	 *
+	 * @param string $name Class name.
+	 */
+	public function complete_synopsis( string $name ) { }
+}

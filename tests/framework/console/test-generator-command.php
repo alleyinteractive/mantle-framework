@@ -9,7 +9,7 @@ namespace Mantle\Tests\Framework\Console;
 
 use Mantle\Framework\Application;
 use Mantle\Framework\Config\Repository;
-use Mantle\Framework\Console\Generator_Command;
+use Mantle\Console\Generator_Command;
 use Mockery as m;
 
 class Test_Generator_Command extends \Mockery\Adapter\Phpunit\MockeryTestCase {

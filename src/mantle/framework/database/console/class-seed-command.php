@@ -7,8 +7,8 @@
 
 namespace Mantle\Framework\Database\Console;
 
-use Mantle\Framework\Console\Command;
-use Mantle\Framework\Console\Confirmable;
+use Mantle\Console\Command;
+use Mantle\Console\Confirmable;
 use Mantle\Framework\Contracts\Application;
 
 use function Mantle\Framework\Helpers\remove_action_validated;

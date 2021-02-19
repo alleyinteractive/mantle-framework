@@ -8,7 +8,7 @@
 namespace Mantle\Framework;
 
 use Mantle\Framework\Contracts\Providers as ProviderContracts;
-use Mantle\Framework\Console\Command;
+use Mantle\Console\Command;
 use Mantle\Support\Str;
 use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
 
@@ -33,7 +33,7 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	 * Commands to register.
 	 * Register commands through `Service_Provider::add_command()`.
 	 *
-	 * @var \Mantle\Framework\Console\Command[]
+	 * @var \Mantle\Console\Command[]
 	 */
 	protected $commands;
 

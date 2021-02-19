@@ -7,24 +7,24 @@
 
 namespace Mantle\Framework\Providers;
 
-use Mantle\Framework\Console\Clear_Cache_Command;
-use Mantle\Framework\Console\Config_Cache_Command;
-use Mantle\Framework\Console\Config_Clear_Command;
-use Mantle\Framework\Console\Generators\Command_Make_Command;
-use Mantle\Framework\Console\Generators\Controller_Make_Command;
-use Mantle\Framework\Console\Generators\Factory_Make_Command;
-use Mantle\Framework\Console\Generators\Generator_Make_Command;
-use Mantle\Framework\Console\Generators\Job_Make_Command;
-use Mantle\Framework\Console\Generators\Middleware_Make_Command;
-use Mantle\Framework\Console\Generators\Model_Make_Command;
-use Mantle\Framework\Console\Generators\Seeder_Make_Command;
-use Mantle\Framework\Console\Generators\Service_Provider_Make_Command;
-use Mantle\Framework\Console\Generators\Test_Make_Command;
-use Mantle\Framework\Console\Hook_Usage_Command;
-use Mantle\Framework\Console\Package_Discover_Command;
-use Mantle\Framework\Console\Route_List_Command;
-use Mantle\Framework\Console\View_Cache_Command;
-use Mantle\Framework\Console\View_Clear_Command;
+use Mantle\Console\Clear_Cache_Command;
+use Mantle\Console\Config_Cache_Command;
+use Mantle\Console\Config_Clear_Command;
+use Mantle\Console\Generators\Command_Make_Command;
+use Mantle\Console\Generators\Controller_Make_Command;
+use Mantle\Console\Generators\Factory_Make_Command;
+use Mantle\Console\Generators\Generator_Make_Command;
+use Mantle\Console\Generators\Job_Make_Command;
+use Mantle\Console\Generators\Middleware_Make_Command;
+use Mantle\Console\Generators\Model_Make_Command;
+use Mantle\Console\Generators\Seeder_Make_Command;
+use Mantle\Console\Generators\Service_Provider_Make_Command;
+use Mantle\Console\Generators\Test_Make_Command;
+use Mantle\Console\Hook_Usage_Command;
+use Mantle\Console\Package_Discover_Command;
+use Mantle\Console\Route_List_Command;
+use Mantle\Console\View_Cache_Command;
+use Mantle\Console\View_Clear_Command;
 use Mantle\Framework\Service_Provider;
 
 /**

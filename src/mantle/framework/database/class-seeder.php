@@ -8,7 +8,7 @@
 namespace Mantle\Framework\Database;
 
 use InvalidArgumentException;
-use Mantle\Framework\Console\Command;
+use Mantle\Console\Command;
 use Mantle\Framework\Contracts\Container;
 use Mantle\Support\Arr;
 
