@@ -9,9 +9,9 @@ namespace Mantle\Testing\Concerns;
 
 use ArrayAccess;
 use InvalidArgumentException;
-use Mantle\Framework\Database\Model\Post;
-use Mantle\Framework\Database\Model\Term;
-use Mantle\Framework\Database\Model\User;
+use Mantle\Database\Model\Post;
+use Mantle\Database\Model\Term;
+use Mantle\Database\Model\User;
 use Mantle\Testing\Constraints\ArraySubset;
 use PHPUnit\Framework\Assert as PHPUnit;
 use PHPUnit\Util\InvalidArgumentHelper;

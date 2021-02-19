@@ -3,7 +3,7 @@
 namespace Mantle\Tests\Framework\Http;
 
 use Mantle\Framework\Application;
-use Mantle\Framework\Database\Model\Post;
+use Mantle\Database\Model\Post;
 use Mantle\Events\Dispatcher;
 use Mantle\Http\Request;
 use Mantle\Http\Routing\Middleware\Substitute_Bindings;

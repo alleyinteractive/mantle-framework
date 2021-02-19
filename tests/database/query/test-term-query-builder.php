@@ -1,8 +1,8 @@
 <?php
 namespace Mantle\Tests\Database\Builder;
 
-use Mantle\Framework\Database\Model\Term;
-use Mantle\Framework\Database\Query\Term_Query_Builder as Builder;
+use Mantle\Database\Model\Term;
+use Mantle\Database\Query\Term_Query_Builder as Builder;
 use Mantle\Testing\Framework_Test_Case;
 
 

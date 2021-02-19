@@ -1,8 +1,8 @@
 <?php
 namespace Mantle\Tests\Database\Model;
 
-use Mantle\Framework\Database\Model\Permalink_Generator;
-use Mantle\Framework\Database\Model\Post;
+use Mantle\Database\Model\Permalink_Generator;
+use Mantle\Database\Model\Post;
 use Mantle\Testing\Framework_Test_Case;
 
 class Test_Permalink_Generator extends Framework_Test_Case {

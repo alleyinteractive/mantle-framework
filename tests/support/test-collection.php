@@ -11,7 +11,7 @@ use Mantle\Framework\Contracts\Support\Arrayable;
 use Mantle\Framework\Contracts\Support\Jsonable;
 use Mantle\Support\Collection;
 use Mantle\Support\HtmlString;
-use Mantle\Framework\Database\Model;
+use Mantle\Database\Model;
 use InvalidArgumentException;
 use JsonSerializable;
 use Mantle\Testing\Framework_Test_Case;

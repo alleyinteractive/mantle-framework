@@ -10,7 +10,7 @@ namespace Mantle\Http\View;
 
 use Mantle\Framework\Contracts\Http\View\Factory as Factory_Contract;
 use Mantle\Framework\Contracts\View\Engine;
-use Mantle\Framework\Database\Model\Post;
+use Mantle\Database\Model\Post;
 use Mantle\Support\Arr;
 
 /**

@@ -2,7 +2,7 @@
 
 namespace Mantle\Tests\Framework\Http;
 
-use Mantle\Framework\Database\Model\Attachment;
+use Mantle\Database\Model\Attachment;
 use Mantle\Http\Uploaded_File;
 use Mantle\Testing\Framework_Test_Case;
 

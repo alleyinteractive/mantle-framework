@@ -3,10 +3,10 @@ namespace Mantle\Tests\Database\Model;
 
 use Faker\Factory as Faker;
 use Mantle\Framework\Contracts\Database\Scope;
-use Mantle\Framework\Database\Model\Model;
-use Mantle\Framework\Database\Model\Post;
-use Mantle\Framework\Database\Query\Builder;
-use Mantle\Framework\Database\Query\Post_Query_Builder;
+use Mantle\Database\Model\Model;
+use Mantle\Database\Model\Post;
+use Mantle\Database\Query\Builder;
+use Mantle\Database\Query\Post_Query_Builder;
 use Mantle\Testing\Framework_Test_Case;
 
 class Test_Model_Scope extends Framework_Test_Case {

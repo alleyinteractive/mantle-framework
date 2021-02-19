@@ -1,7 +1,7 @@
 <?php
 namespace Mantle\Tests\Database\Model;
 
-use Mantle\Framework\Database\Model\Term;
+use Mantle\Database\Model\Term;
 use Mantle\Testing\Framework_Test_Case;
 
 /**

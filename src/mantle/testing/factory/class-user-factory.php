@@ -8,7 +8,7 @@
 namespace Mantle\Testing\Factory;
 
 use Faker\Generator;
-use Mantle\Framework\Database\Model\User;
+use Mantle\Database\Model\User;
 
 use function Mantle\Framework\Helpers\get_user_object;
 

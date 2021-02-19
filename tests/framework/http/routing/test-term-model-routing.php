@@ -2,12 +2,12 @@
 namespace Mantle\Tests\Framework\Http\Routing;
 
 use Mantle\Framework\Contracts\Database\Registrable;
-use Mantle\Framework\Database\Model\Concerns\Custom_Term_Link;
-use Mantle\Framework\Database\Model\Post;
-use Mantle\Framework\Database\Model\Registration\Custom_Post_Permalink;
-use Mantle\Framework\Database\Model\Registration\Register_Post_Type;
-use Mantle\Framework\Database\Model\Registration\Register_Taxonomy;
-use Mantle\Framework\Database\Model\Term;
+use Mantle\Database\Model\Concerns\Custom_Term_Link;
+use Mantle\Database\Model\Post;
+use Mantle\Database\Model\Registration\Custom_Post_Permalink;
+use Mantle\Database\Model\Registration\Register_Post_Type;
+use Mantle\Database\Model\Registration\Register_Taxonomy;
+use Mantle\Database\Model\Term;
 use Mantle\Facade\Route;
 use Mantle\Http\Controller;
 use Mantle\Testing\Framework_Test_Case;

@@ -8,8 +8,8 @@
 namespace Mantle\Testing\Factory;
 
 use Faker\Generator;
-use Mantle\Framework\Database\Model\Attachment;
-use Mantle\Framework\Database\Model\Post;
+use Mantle\Database\Model\Attachment;
+use Mantle\Database\Model\Post;
 
 use function Mantle\Framework\Helpers\get_post_object;
 

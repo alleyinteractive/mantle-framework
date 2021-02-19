@@ -4,11 +4,11 @@ namespace Mantle\Tests\Database\Model\Relations\Belongs_To;
 use Carbon\Carbon;
 use InvalidArgumentException;
 use Mantle\Testing\Framework_Test_Case;
-use Mantle\Framework\Database\Model\Concerns\Has_Relationships as Relationships;
-use Mantle\Framework\Database\Model\Post;
-use Mantle\Framework\Database\Model\Relations\Has_One;
-use Mantle\Framework\Database\Model\Relations\Has_One_Or_Many;
-use Mantle\Framework\Database\Model\Term;
+use Mantle\Database\Model\Concerns\Has_Relationships as Relationships;
+use Mantle\Database\Model\Post;
+use Mantle\Database\Model\Relations\Has_One;
+use Mantle\Database\Model\Relations\Has_One_Or_Many;
+use Mantle\Database\Model\Term;
 use Mantle\Framework\Providers\Model_Service_Provider;
 
 class Test_Belongs_To_One_Or_Many extends Framework_Test_Case {

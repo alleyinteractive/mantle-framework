@@ -8,7 +8,7 @@
 namespace Mantle\Testing\Factory;
 
 use Faker\Generator;
-use Mantle\Framework\Database\Model\Comment;
+use Mantle\Database\Model\Comment;
 
 use function Mantle\Framework\Helpers\get_comment_object;
 

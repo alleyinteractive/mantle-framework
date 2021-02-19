@@ -8,7 +8,7 @@
 namespace Mantle\Testing\Factory;
 
 use Faker\Generator;
-use Mantle\Framework\Database\Model\Term;
+use Mantle\Database\Model\Term;
 
 use function Mantle\Framework\Helpers\get_term_object;
 

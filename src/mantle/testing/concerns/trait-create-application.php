@@ -67,10 +67,10 @@ trait Create_Application {
 				'providers' => [
 					\Mantle\Framework\Providers\Model_Service_Provider::class,
 					\Mantle\Framework\Providers\Queue_Service_Provider::class,
-					\Mantle\Framework\Database\Factory_Service_Provider::class,
+					\Mantle\Database\Factory_Service_Provider::class,
 					\Mantle\Framework\Providers\Route_Service_Provider::class,
 					\Mantle\Filesystem\Filesystem_Service_Provider::class,
-					\Mantle\Framework\Database\Pagination\Paginator_Service_Provider::class,
+					\Mantle\Database\Pagination\Paginator_Service_Provider::class,
 					\Mantle\Cache\Cache_Service_Provider::class,
 				],
 			],

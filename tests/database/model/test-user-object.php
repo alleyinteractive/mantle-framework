@@ -2,7 +2,7 @@
 namespace Mantle\Tests\Database\Model;
 
 use Faker\Factory;
-use Mantle\Framework\Database\Model\User;
+use Mantle\Database\Model\User;
 use Mantle\Testing\Framework_Test_Case;
 
 class Test_User_Object extends Framework_Test_Case {

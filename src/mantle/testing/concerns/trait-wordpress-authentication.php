@@ -7,8 +7,8 @@
 
 namespace Mantle\Testing\Concerns;
 
-use Mantle\Framework\Database\Model\Model_Exception;
-use Mantle\Framework\Database\Model\User;
+use Mantle\Database\Model\Model_Exception;
+use Mantle\Database\Model\User;
 use Mantle\Testing\Exceptions\Exception;
 use WP_User;
 use function Mantle\Framework\Helpers\get_user_object;
@@ -44,7 +44,7 @@ trait WordPress_Authentication {
 	/**
 	 * Set the current user.
 	 *
-	 * If a \WP_User, int (user ID), or Mantle\Framework\Database\Model\User is
+	 * If a \WP_User, int (user ID), or Mantle\Database\Model\User is
 	 * passed, that user will be used. If a string is passed, that is assumed to
 	 * be a role, and a new user will be created with that role. The user (as a
 	 * \WP_User) will then be returned.

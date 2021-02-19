@@ -10,7 +10,7 @@ namespace Mantle\Http\Routing\Middleware;
 use Closure;
 use Mantle\Framework\Contracts\Application;
 use Mantle\Http\Request;
-use Mantle\Framework\Query_Monitor\Query_Monitor_Service_Provider;
+use Mantle\Query_Monitor\Query_Monitor_Service_Provider;
 
 /**
  * Setup the WordPress environment for routing.

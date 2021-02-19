@@ -13,7 +13,7 @@ use JsonSerializable;
 use Mantle\Container\Container;
 use Mantle\Framework\Contracts\Http\Routing\Router;
 use Mantle\Framework\Contracts\Support\Arrayable;
-use Mantle\Framework\Database\Model\Model;
+use Mantle\Database\Model\Model;
 use Mantle\Http\Controller;
 use Mantle\Support\Arr;
 use Mantle\Support\Str;

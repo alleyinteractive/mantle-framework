@@ -2,9 +2,9 @@
 namespace Mantle\Tests\Database\Model;
 
 use Mantle\Framework\Contracts\Database\Registrable;
-use Mantle\Framework\Database\Model\Model_Exception;
-use Mantle\Framework\Database\Model\Registration\Register_Taxonomy;
-use Mantle\Framework\Database\Model\Term;
+use Mantle\Database\Model\Model_Exception;
+use Mantle\Database\Model\Registration\Register_Taxonomy;
+use Mantle\Database\Model\Term;
 use Mantle\Testing\Framework_Test_Case;
 
 

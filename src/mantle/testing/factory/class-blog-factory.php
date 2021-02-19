@@ -8,7 +8,7 @@
 namespace Mantle\Testing\Factory;
 
 use Faker\Generator;
-use Mantle\Framework\Database\Model\Site;
+use Mantle\Database\Model\Site;
 
 use function Mantle\Framework\Helpers\get_site_object;
 

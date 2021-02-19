@@ -7,7 +7,7 @@
 
 namespace Mantle\Filesystem;
 
-use Mantle\Framework\Database\Model\Attachment;
+use Mantle\Database\Model\Attachment;
 use Mantle\Framework\Service_Provider;
 use RuntimeException;
 

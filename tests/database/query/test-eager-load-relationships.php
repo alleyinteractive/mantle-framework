@@ -1,8 +1,8 @@
 <?php
 namespace Mantle\Tests\Database\Builder;
 
-use Mantle\Framework\Database\Model\Post;
-use Mantle\Framework\Database\Model\Term;
+use Mantle\Database\Model\Post;
+use Mantle\Database\Model\Term;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Utils;

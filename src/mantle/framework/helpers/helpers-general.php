@@ -14,10 +14,10 @@ namespace Mantle\Framework\Helpers;
 use Countable;
 use Exception;
 use Mantle\Events\Dispatcher;
-use Mantle\Framework\Database\Factory\Factory_Builder;
+use Mantle\Database\Factory\Factory_Builder;
 use Mantle\Support\Collection;
 use Mantle\Support\Higher_Order_Tap_Proxy;
-use Mantle\Framework\Database\Factory\Factory as MantleFactory;
+use Mantle\Database\Factory\Factory as MantleFactory;
 
 /**
  * Determine if the given value is "blank".

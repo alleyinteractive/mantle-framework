@@ -2,8 +2,8 @@
 namespace Mantle\Tests\Database\Model\Registration;
 
 use Mantle\Framework\Contracts\Database\Registrable_Meta;
-use Mantle\Framework\Database\Model\Post;
-use Mantle\Framework\Database\Model\Registration\Register_Meta;
+use Mantle\Database\Model\Post;
+use Mantle\Database\Model\Registration\Register_Meta;
 use Mantle\Testing\Framework_Test_Case;
 
 class Test_Register_Meta extends Framework_Test_Case {

@@ -1,8 +1,8 @@
 <?php
 namespace Mantle\Tests\Database\Model;
 
-use Mantle\Framework\Database\Model\Post;
-use Mantle\Framework\Database\Model\Registration\Register_Rest_Fields;
+use Mantle\Database\Model\Post;
+use Mantle\Database\Model\Registration\Register_Rest_Fields;
 use Mantle\Testing\Framework_Test_Case;
 
 class Test_Rest_Field extends Framework_Test_Case {

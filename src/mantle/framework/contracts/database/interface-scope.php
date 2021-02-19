@@ -7,8 +7,8 @@
 
 namespace Mantle\Framework\Contracts\Database;
 
-use Mantle\Framework\Database\Model\Model;
-use Mantle\Framework\Database\Query\Builder;
+use Mantle\Database\Model\Model;
+use Mantle\Database\Query\Builder;
 
 /**
  * Query Scope Contract

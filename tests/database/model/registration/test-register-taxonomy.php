@@ -1,8 +1,8 @@
 <?php
 namespace Mantle\Tests\Database\Model\Registration;
 
-use Mantle\Framework\Database\Model\Model_Exception;
-use Mantle\Framework\Database\Model\Registration\Register_Taxonomy;
+use Mantle\Database\Model\Model_Exception;
+use Mantle\Database\Model\Registration\Register_Taxonomy;
 use Mantle\Testing\Framework_Test_Case;
 use Mockery as m;
 

@@ -2,9 +2,9 @@
 namespace Mantle\Tests\Database\Model;
 
 use Mantle\Framework\Contracts\Database\Registrable;
-use Mantle\Framework\Database\Model\Model_Exception;
-use Mantle\Framework\Database\Model\Post;
-use Mantle\Framework\Database\Model\Registration\Register_Post_Type;
+use Mantle\Database\Model\Model_Exception;
+use Mantle\Database\Model\Post;
+use Mantle\Database\Model\Registration\Register_Post_Type;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
 
