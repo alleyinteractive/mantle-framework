@@ -57,7 +57,7 @@ if ( ! function_exists( 'cache' ) ) {
 	 * If an array is passed, we'll assume you want to put to the cache.
 	 *
 	 * @param  dynamic  key|key,default|data,expiration|null
-	 * @return mixed|\Mantle\Cache\Cache_Manager
+	 * @return mixed|\Mantle\Framework\Cache\Cache_Manager
 	 *
 	 * @throws \Exception
 	 */

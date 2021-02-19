@@ -70,9 +70,6 @@ try {
 	spl_autoload_register(
 		generate_wp_autoloader( __NAMESPACE__, __DIR__ . '/mantle' )
 	);
-	// spl_autoload_register(
-	// 	generate_wp_autoloader( __NAMESPACE__, __DIR__ . '/mantle/framework' )
-	// );
 } catch ( \Exception $e ) {
 	\wp_die( $e->getMessage() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 }

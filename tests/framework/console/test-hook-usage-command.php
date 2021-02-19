@@ -7,7 +7,7 @@
 
 namespace Mantle\Tests\Framework\Console;
 
-use Mantle\Console\Hook_Usage_Command;
+use Mantle\Framework\Console\Hook_Usage_Command;
 use Mantle\Support\Collection;
 use Mantle\Framework\Testing\Framework_Test_Case;
 
