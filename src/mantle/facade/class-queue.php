@@ -5,9 +5,9 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Facade;
+namespace Mantle\Facade;
 
-use Mantle\Framework\Facade\Facade;
+use Mantle\Facade\Facade;
 use Mantle\Tests\Queue\Queue_Fake;
 
 /**

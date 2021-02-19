@@ -9,7 +9,7 @@ namespace Mantle\Framework\Console;
 
 use Mantle\Console\Command;
 use Mantle\Framework\Contracts\Application;
-use Mantle\Framework\Filesystem\Filesystem;
+use Mantle\Filesystem\Filesystem;
 
 /**
  * Clear Config Cache Command

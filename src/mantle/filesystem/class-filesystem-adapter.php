@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Filesystem;
+namespace Mantle\Filesystem;
 
 use InvalidArgumentException;
 use League\Flysystem\Adapter\Ftp;

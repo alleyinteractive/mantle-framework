@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Facade;
+namespace Mantle\Facade;
 
 use Mantle\Framework\Contracts\Application;
 use RuntimeException;

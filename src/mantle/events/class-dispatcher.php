@@ -7,7 +7,7 @@
  * @phpcs:disable Squiz.Commenting.FunctionComment
  */
 
-namespace Mantle\Framework\Events;
+namespace Mantle\Events;
 
 use Exception;
 use Mantle\Container\Container;

@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Filesystem;
+namespace Mantle\Filesystem;
 
 use Aws\S3\S3Client;
 use Closure;

@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Facade;
+namespace Mantle\Facade;
 
 /**
  * Cache Facade

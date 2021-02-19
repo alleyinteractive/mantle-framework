@@ -3,8 +3,8 @@ namespace Mantle\Tests\Framework\Log;
 
 use Mantle\Framework\Application;
 use Mantle\Config\Repository;
-use Mantle\Framework\Facade\Facade;
-use Mantle\Framework\Facade\Log;
+use Mantle\Facade\Facade;
+use Mantle\Facade\Log;
 use Mantle\Framework\Log\Log_Manager;
 use Monolog\Handler\TestHandler;
 

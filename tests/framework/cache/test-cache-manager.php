@@ -3,7 +3,7 @@ namespace Mantle\Tests\Framework\Cache;
 
 use InvalidArgumentException;
 use Mantle\Cache\Cache_Manager;
-use Mantle\Framework\Facade\Cache;
+use Mantle\Facade\Cache;
 use Mantle\Framework\Testing\Framework_Test_Case;
 use Predis\Connection\ConnectionException;
 

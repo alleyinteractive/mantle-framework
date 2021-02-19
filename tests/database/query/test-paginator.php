@@ -5,7 +5,7 @@ use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Term;
 use Mantle\Framework\Database\Query\Post_Query_Builder as Builder;
 use Mantle\Framework\Database\Query\Post_Query_Builder;
-use Mantle\Framework\Facade\Route;
+use Mantle\Facade\Route;
 use Mantle\Framework\Testing\Concerns\Refresh_Database;
 use Mantle\Framework\Testing\Framework_Test_Case;
 

@@ -10,7 +10,7 @@ namespace Mantle\Framework\Testing;
 use Mantle\Framework\Alias_Loader;
 use Mantle\Framework\Contracts\Application;
 use Mantle\Framework\Database\Model\Model;
-use Mantle\Framework\Facade\Facade;
+use Mantle\Facade\Facade;
 use Mantle\Support\Collection;
 use Mantle\Framework\Testing\Concerns\Admin_Screen;
 use Mantle\Framework\Testing\Concerns\Assertions;

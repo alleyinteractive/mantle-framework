@@ -11,7 +11,7 @@ use LogicException;
 use Mantle\Framework\Contracts\Application;
 use Mantle\Framework\Contracts\Console\Kernel;
 use Mantle\Console\Command;
-use Mantle\Framework\Filesystem\Filesystem;
+use Mantle\Filesystem\Filesystem;
 use Throwable;
 
 /**

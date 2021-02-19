@@ -12,7 +12,7 @@ use Mantle\Container\Container;
 use Mantle\Framework\Contracts\Filesystem\Filesystem;
 use Mantle\Framework\Contracts\Filesystem\Filesystem_Manager;
 use Mantle\Framework\Database\Model\Attachment;
-use Mantle\Framework\Filesystem\File_Helpers;
+use Mantle\Filesystem\File_Helpers;
 use Mantle\Support\Arr;
 use Mantle\Support\Str;
 use Mantle\Support\Traits\Macroable;

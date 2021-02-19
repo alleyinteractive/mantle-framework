@@ -9,7 +9,7 @@ namespace Mantle\Framework\Bootstrap;
 
 use Mantle\Framework\Alias_Loader;
 use Mantle\Framework\Application;
-use Mantle\Framework\Facade\Facade;
+use Mantle\Facade\Facade;
 use Mantle\Framework\Package_Manifest;
 
 /**

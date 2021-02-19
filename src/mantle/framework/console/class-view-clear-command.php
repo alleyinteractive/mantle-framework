@@ -8,7 +8,7 @@
 namespace Mantle\Framework\Console;
 
 use Mantle\Console\Command;
-use Mantle\Framework\Filesystem\Filesystem;
+use Mantle\Filesystem\Filesystem;
 
 /**
  * Command to clear the compiled views.

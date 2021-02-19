@@ -2,7 +2,7 @@
 namespace Mantle\Tests\Framework\Http\Routing;
 
 use Closure;
-use Mantle\Framework\Facade\Route;
+use Mantle\Facade\Route;
 use Mantle\Framework\Testing\Concerns\Refresh_Database;
 use Mantle\Framework\Testing\Framework_Test_Case;
 use WP_REST_Request;

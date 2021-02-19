@@ -5,7 +5,7 @@ use Mantle\Framework\Contracts\Database\Registrable;
 use Mantle\Framework\Database\Model\Concerns\Custom_Post_Permalink;
 use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Registration\Register_Post_Type;
-use Mantle\Framework\Facade\Route;
+use Mantle\Facade\Route;
 use Mantle\Framework\Http\Controller;
 use Mantle\Framework\Testing\Framework_Test_Case;
 

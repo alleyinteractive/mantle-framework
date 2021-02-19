@@ -5,12 +5,12 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Facade;
+namespace Mantle\Facade;
 
 /**
  * Storage Facade
  *
- * @mixin \Mantle\Framework\Filesystem\Filesystem_Manager
+ * @mixin \Mantle\Filesystem\Filesystem_Manager
  */
 class Storage extends Facade {
 	/**

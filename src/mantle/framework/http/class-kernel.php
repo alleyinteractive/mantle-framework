@@ -14,7 +14,7 @@ use Mantle\Framework\Contracts\Http\Kernel as Kernel_Contract;
 use Mantle\Framework\Contracts\Http\Routing\Router;
 use Mantle\Framework\Contracts\Kernel as Core_Kernel_Contract;
 use Mantle\Framework\Contracts\Providers\Route_Service_Provider as Route_Service_Provider_Contract;
-use Mantle\Framework\Facade\Facade;
+use Mantle\Facade\Facade;
 use Mantle\Framework\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;

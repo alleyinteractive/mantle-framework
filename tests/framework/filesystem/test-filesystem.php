@@ -2,7 +2,7 @@
 
 namespace Mantle\Tests\Framework\Filesystem;
 
-use Mantle\Framework\Filesystem\Filesystem;
+use Mantle\Filesystem\Filesystem;
 use Mantle\Framework\Testing\Assert;
 use Mockery as m;
 use PHPUnit\Framework\TestCase;

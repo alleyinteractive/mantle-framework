@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Events;
+namespace Mantle\Events;
 
 use Closure;
 use Mantle\Framework\Contracts\Support\Arrayable;

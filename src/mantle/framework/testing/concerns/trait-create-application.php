@@ -69,7 +69,7 @@ trait Create_Application {
 					\Mantle\Framework\Providers\Queue_Service_Provider::class,
 					\Mantle\Framework\Database\Factory_Service_Provider::class,
 					\Mantle\Framework\Providers\Route_Service_Provider::class,
-					\Mantle\Framework\Filesystem\Filesystem_Service_Provider::class,
+					\Mantle\Filesystem\Filesystem_Service_Provider::class,
 					\Mantle\Framework\Database\Pagination\Paginator_Service_Provider::class,
 					\Mantle\Cache\Cache_Service_Provider::class,
 				],

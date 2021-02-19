@@ -8,7 +8,7 @@
 
 namespace Mantle\Framework\Database\Model\Concerns;
 
-use Mantle\Framework\Events\Dispatcher;
+use Mantle\Events\Dispatcher;
 use InvalidArgumentException;
 
 /**
@@ -18,7 +18,7 @@ trait Has_Events {
 	/**
 	 * The event dispatcher instance.
 	 *
-	 * @var \Mantle\Framework\Events\Dispatcher
+	 * @var \Mantle\Events\Dispatcher
 	 */
 	protected static $dispatcher;
 

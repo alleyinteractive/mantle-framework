@@ -8,7 +8,7 @@
 namespace Mantle\Framework\Database\Model;
 
 use Mantle\Framework\Contracts;
-use Mantle\Framework\Facade\Storage;
+use Mantle\Facade\Storage;
 
 /**
  * Attachment Model

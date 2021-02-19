@@ -5,12 +5,12 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Facade;
+namespace Mantle\Facade;
 
 /**
- * View Finder Facade
+ * View Loader Facade
  */
-class View_Finder extends Facade {
+class View_Loader extends Facade {
 	/**
 	 * Get the registered name of the component.
 	 *

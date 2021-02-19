@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Filesystem;
+namespace Mantle\Filesystem;
 
 use Symfony\Component\HttpFoundation\File\File as SymfonyFile;
 

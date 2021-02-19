@@ -11,7 +11,7 @@ use Mantle\Container\Container;
 use Mantle\Framework\Contracts\Application as Application_Contract;
 use Mantle\Framework\Contracts\Container as Container_Contract;
 use Mantle\Framework\Contracts\Kernel as Kernel_Contract;
-use Mantle\Framework\Filesystem\Filesystem;
+use Mantle\Filesystem\Filesystem;
 use Mantle\Framework\Log\Log_Service_Provider;
 use Mantle\Framework\Providers\Event_Service_Provider;
 use Mantle\Framework\Providers\Routing_Service_Provider;
@@ -317,8 +317,8 @@ class Application extends Container implements Application_Contract {
 		$core_aliases = [
 			'app'         => [ static::class, \Mantle\Framework\Contracts\Application::class ],
 			'config'      => [ \Mantle\Config\Repository::class, \Mantle\Framework\Contracts\Config\Repository::class ],
-			'files'       => [ \Mantle\Framework\Filesystem\Filesystem::class ],
-			'filesystem'  => [ \Mantle\Framework\Filesystem\Filesystem_Manager::class, \Mantle\Framework\Contracts\Filesystem\Filesystem_Manager::class ],
+			'files'       => [ \Mantle\Filesystem\Filesystem::class ],
+			'filesystem'  => [ \Mantle\Filesystem\Filesystem_Manager::class, \Mantle\Framework\Contracts\Filesystem\Filesystem_Manager::class ],
 			'log'         => [ \Mantle\Framework\Log\Log_Manager::class, \Psr\Log\LoggerInterface::class ],
 			'queue'       => [ \Mantle\Framework\Queue\Queue_Manager::class, \Mantle\Framework\Contracts\Queue\Queue_Manager::class ],
 			'redirect'    => [ \Mantle\Framework\Http\Routing\Redirector::class ],

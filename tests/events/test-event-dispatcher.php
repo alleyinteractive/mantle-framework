@@ -1,7 +1,7 @@
 <?php
 namespace Mantle\Tests\Events;
 
-use Mantle\Framework\Events\Dispatcher;
+use Mantle\Events\Dispatcher;
 use Exception;
 use Mantle\Container\Container;
 use Mockery as m;

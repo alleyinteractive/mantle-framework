@@ -5,7 +5,7 @@
  * @package mantle
  */
 
-namespace Mantle\Framework\Filesystem;
+namespace Mantle\Filesystem;
 
 use Mantle\Framework\Database\Model\Attachment;
 use Mantle\Framework\Service_Provider;

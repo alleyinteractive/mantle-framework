@@ -4,7 +4,7 @@ namespace Mantle\Tests\Framework\Http;
 
 use Mantle\Framework\Application;
 use Mantle\Framework\Database\Model\Post;
-use Mantle\Framework\Events\Dispatcher;
+use Mantle\Events\Dispatcher;
 use Mantle\Framework\Http\Request;
 use Mantle\Framework\Http\Routing\Middleware\Substitute_Bindings;
 use Mantle\Framework\Http\Routing\Router;

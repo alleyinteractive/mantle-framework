@@ -5,7 +5,7 @@ use InvalidArgumentException;
 use League\Flysystem\Adapter\NullAdapter;
 use League\Flysystem\Filesystem;
 use Mantle\Framework\Application;
-use Mantle\Framework\Filesystem\Filesystem_Manager;
+use Mantle\Filesystem\Filesystem_Manager;
 use PHPUnit\Framework\TestCase;
 use Mantle\Framework\Contracts\Filesystem\Filesystem as Filesystem_Contract;
 use function Mantle\Framework\Helpers\tap;
