@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Queue;
+namespace Mantle\Queue;
 
 use Mantle\Framework\Contracts\Container;
 use Mantle\Framework\Contracts\Queue\Can_Queue;

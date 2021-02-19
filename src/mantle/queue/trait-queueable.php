@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Queue;
+namespace Mantle\Queue;
 
 /**
  * Queueable trait for queue jobs.

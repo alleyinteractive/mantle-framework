@@ -12,7 +12,7 @@ use Mantle\Framework\Contracts\Application as Application_Contract;
 use Mantle\Framework\Contracts\Container as Container_Contract;
 use Mantle\Framework\Contracts\Kernel as Kernel_Contract;
 use Mantle\Filesystem\Filesystem;
-use Mantle\Framework\Log\Log_Service_Provider;
+use Mantle\Log\Log_Service_Provider;
 use Mantle\Framework\Providers\Event_Service_Provider;
 use Mantle\Framework\Providers\Routing_Service_Provider;
 use Mantle\Framework\Providers\View_Service_Provider;
@@ -319,8 +319,8 @@ class Application extends Container implements Application_Contract {
 			'config'      => [ \Mantle\Config\Repository::class, \Mantle\Framework\Contracts\Config\Repository::class ],
 			'files'       => [ \Mantle\Filesystem\Filesystem::class ],
 			'filesystem'  => [ \Mantle\Filesystem\Filesystem_Manager::class, \Mantle\Framework\Contracts\Filesystem\Filesystem_Manager::class ],
-			'log'         => [ \Mantle\Framework\Log\Log_Manager::class, \Psr\Log\LoggerInterface::class ],
-			'queue'       => [ \Mantle\Framework\Queue\Queue_Manager::class, \Mantle\Framework\Contracts\Queue\Queue_Manager::class ],
+			'log'         => [ \Mantle\Log\Log_Manager::class, \Psr\Log\LoggerInterface::class ],
+			'queue'       => [ \Mantle\Queue\Queue_Manager::class, \Mantle\Framework\Contracts\Queue\Queue_Manager::class ],
 			'redirect'    => [ \Mantle\Framework\Http\Routing\Redirector::class ],
 			'request'     => [ \Mantle\Framework\Http\Request::class, \Symfony\Component\HttpFoundation\Request::class ],
 			'router'      => [ \Mantle\Framework\Http\Routing\Router::class, \Mantle\Framework\Contracts\Http\Routing\Router::class ],

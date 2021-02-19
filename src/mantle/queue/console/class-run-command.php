@@ -5,14 +5,14 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Queue\Console;
+namespace Mantle\Queue\Console;
 
 use Mantle\Console\Command;
 use Mantle\Framework\Contracts\Application;
-use Mantle\Framework\Queue\Events\Job_Processed;
-use Mantle\Framework\Queue\Events\Job_Processing;
-use Mantle\Framework\Queue\Events\Run_Complete;
-use Mantle\Framework\Queue\Events\Run_Start;
+use Mantle\Queue\Events\Job_Processed;
+use Mantle\Queue\Events\Job_Processing;
+use Mantle\Queue\Events\Run_Complete;
+use Mantle\Queue\Events\Run_Start;
 
 /**
  * Queue Run Command

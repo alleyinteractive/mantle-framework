@@ -5,7 +5,7 @@ use Mantle\Framework\Application;
 use Mantle\Config\Repository;
 use Mantle\Facade\Facade;
 use Mantle\Facade\Log;
-use Mantle\Framework\Log\Log_Manager;
+use Mantle\Log\Log_Manager;
 use Monolog\Handler\TestHandler;
 
 class Test_Log_Manager extends \Mockery\Adapter\Phpunit\MockeryTestCase {

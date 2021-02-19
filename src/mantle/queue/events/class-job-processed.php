@@ -1,18 +1,18 @@
 <?php
 /**
- * Job_Processing class file.
+ * Job_Processed class file.
  *
  * @package Mantle
  */
 
-namespace Mantle\Framework\Queue\Events;
+namespace Mantle\Queue\Events;
 
 use Mantle\Framework\Contracts\Queue\Provider;
 
 /**
- * Job Processing Event
+ * Job Processed Event
  */
-class Job_Processing {
+class Job_Processed {
 	/**
 	 * Queue provider.
 	 *

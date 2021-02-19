@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Log;
+namespace Mantle\Log;
 
 use Mantle\Framework\Service_Provider;
 

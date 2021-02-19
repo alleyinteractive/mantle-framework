@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Queue\Events;
+namespace Mantle\Queue\Events;
 
 use Mantle\Framework\Contracts\Queue\Provider;
 

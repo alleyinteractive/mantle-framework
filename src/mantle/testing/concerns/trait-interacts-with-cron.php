@@ -11,7 +11,7 @@ namespace Mantle\Testing\Concerns;
 use InvalidArgumentException;
 use Mantle\Framework\Contracts\Queue\Job;
 use Mantle\Framework\Contracts\Queue\Queue_Manager;
-use Mantle\Framework\Queue\Wp_Cron_Scheduler;
+use Mantle\Queue\Wp_Cron_Scheduler;
 use PHPUnit\Framework\Assert as PHPUnit;
 use stdClass;
 

@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Queue;
+namespace Mantle\Queue;
 
 /**
  * Abstract Queue Job

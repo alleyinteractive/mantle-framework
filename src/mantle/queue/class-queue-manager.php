@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Queue;
+namespace Mantle\Queue;
 
 use InvalidArgumentException;
 use Mantle\Framework\Contracts\Application;

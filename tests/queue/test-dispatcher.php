@@ -8,10 +8,10 @@ use Mantle\Framework\Contracts\Queue\Job;
 use Mantle\Framework\Contracts\Queue\Provider;
 use Mantle\Facade\Facade;
 use Mantle\Framework\Providers\Queue_Service_Provider;
-use Mantle\Framework\Queue\Dispatchable;
-use Mantle\Framework\Queue\Dispatcher;
-use Mantle\Framework\Queue\Pending_Dispatch;
-use Mantle\Framework\Queue\Queue_Manager;
+use Mantle\Queue\Dispatchable;
+use Mantle\Queue\Dispatcher;
+use Mantle\Queue\Pending_Dispatch;
+use Mantle\Queue\Queue_Manager;
 use Mockery as m;
 
 class Test_Dispatcher extends \Mockery\Adapter\Phpunit\MockeryTestCase {

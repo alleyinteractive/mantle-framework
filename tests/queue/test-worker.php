@@ -5,11 +5,11 @@ use Mantle\Framework\Application;
 use Mantle\Config\Repository;
 use Mantle\Framework\Contracts\Queue\Provider;
 use Mantle\Framework\Providers\Queue_Service_Provider;
-use Mantle\Framework\Queue\Events\Job_Processed;
-use Mantle\Framework\Queue\Events\Job_Processing;
-use Mantle\Framework\Queue\Events\Run_Complete;
-use Mantle\Framework\Queue\Events\Run_Start;
-use Mantle\Framework\Queue\Job;
+use Mantle\Queue\Events\Job_Processed;
+use Mantle\Queue\Events\Job_Processing;
+use Mantle\Queue\Events\Run_Complete;
+use Mantle\Queue\Events\Run_Start;
+use Mantle\Queue\Job;
 use Mantle\Support\Collection;
 use Mockery as m;
 

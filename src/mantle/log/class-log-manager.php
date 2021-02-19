@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Log;
+namespace Mantle\Log;
 
 use InvalidArgumentException;
 use Mantle\Framework\Contracts\Application;

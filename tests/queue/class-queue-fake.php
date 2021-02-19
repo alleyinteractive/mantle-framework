@@ -1,7 +1,7 @@
 <?php
 namespace Mantle\Tests\Queue;
 
-use Mantle\Framework\Queue\Queue_Manager;
+use Mantle\Queue\Queue_Manager;
 use PHPUnit\Framework\Assert as PHPUnit;
 
 class Queue_Fake extends Queue_Manager {

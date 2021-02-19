@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Queue;
+namespace Mantle\Queue;
 
 use Mantle\Framework\Contracts\Queue\Dispatcher;
 use Mantle\Framework\Contracts\Queue\Job;

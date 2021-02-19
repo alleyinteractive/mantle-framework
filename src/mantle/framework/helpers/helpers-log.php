@@ -22,7 +22,7 @@ function info( string $message, array $context = [] ) {
  *
  * @param  string|null $message Log message.
  * @param  array       $context Log context.
- * @return \Mantle\Framework\Log\Log_Manager|null
+ * @return \Mantle\Log\Log_Manager|null
  */
 function logger( string $message = null, array $context = [] ) {
 	if ( is_null( $message ) ) {
