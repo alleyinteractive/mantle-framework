@@ -3,7 +3,7 @@ namespace Mantle\Tests\Database\Model\Relations\Belongs_To;
 
 use Carbon\Carbon;
 use InvalidArgumentException;
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Testing\Framework_Test_Case;
 use Mantle\Framework\Database\Model\Concerns\Has_Relationships as Relationships;
 use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Relations\Has_One;

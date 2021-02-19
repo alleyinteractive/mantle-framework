@@ -7,7 +7,7 @@
 
 namespace Mantle\Tests\Framework\Helpers;
 
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Testing\Framework_Test_Case;
 use function Mantle\Framework\Helpers\get_user_object;
 use function Mantle\Framework\Helpers\get_user_object_by;
 

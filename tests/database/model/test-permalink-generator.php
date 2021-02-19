@@ -3,7 +3,7 @@ namespace Mantle\Tests\Database\Model;
 
 use Mantle\Framework\Database\Model\Permalink_Generator;
 use Mantle\Framework\Database\Model\Post;
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Testing\Framework_Test_Case;
 
 class Test_Permalink_Generator extends Framework_Test_Case {
 	public function test_generate_permalink() {

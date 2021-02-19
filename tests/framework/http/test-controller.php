@@ -9,7 +9,7 @@ namespace Mantle\Tests\Framework\Http;
 
 use Mantle\Facade\Route;
 use Mantle\Framework\Http\Controller;
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Testing\Framework_Test_Case;
 
 class Test_Controller extends Framework_Test_Case {
 	public function test_controller_at_method() {

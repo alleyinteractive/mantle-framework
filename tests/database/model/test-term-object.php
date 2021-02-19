@@ -5,7 +5,7 @@ use Mantle\Framework\Contracts\Database\Registrable;
 use Mantle\Framework\Database\Model\Model_Exception;
 use Mantle\Framework\Database\Model\Registration\Register_Taxonomy;
 use Mantle\Framework\Database\Model\Term;
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Testing\Framework_Test_Case;
 
 
 class Test_Term_Object extends Framework_Test_Case {

@@ -5,8 +5,8 @@ use Mantle\Framework\Contracts\Database\Registrable;
 use Mantle\Framework\Database\Model\Model_Exception;
 use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Registration\Register_Post_Type;
-use Mantle\Framework\Testing\Concerns\Refresh_Database;
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Testing\Concerns\Refresh_Database;
+use Mantle\Testing\Framework_Test_Case;
 
 
 class Test_Post_Object extends Framework_Test_Case {

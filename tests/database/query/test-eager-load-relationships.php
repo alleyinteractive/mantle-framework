@@ -3,9 +3,9 @@ namespace Mantle\Tests\Database\Builder;
 
 use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Term;
-use Mantle\Framework\Testing\Concerns\Refresh_Database;
-use Mantle\Framework\Testing\Framework_Test_Case;
-use Mantle\Framework\Testing\Utils;
+use Mantle\Testing\Concerns\Refresh_Database;
+use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\Utils;
 
 use function Mantle\Framework\Helpers\collect;
 

@@ -14,7 +14,7 @@ use Mantle\Support\HtmlString;
 use Mantle\Framework\Database\Model;
 use InvalidArgumentException;
 use JsonSerializable;
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Testing\Framework_Test_Case;
 use Mockery as m;
 use ReflectionClass;
 use stdClass;

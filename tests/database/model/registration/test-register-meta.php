@@ -4,7 +4,7 @@ namespace Mantle\Tests\Database\Model\Registration;
 use Mantle\Framework\Contracts\Database\Registrable_Meta;
 use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Registration\Register_Meta;
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Testing\Framework_Test_Case;
 
 class Test_Register_Meta extends Framework_Test_Case {
 	public function test_register_meta() {

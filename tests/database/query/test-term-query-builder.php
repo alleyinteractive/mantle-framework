@@ -3,7 +3,7 @@ namespace Mantle\Tests\Database\Builder;
 
 use Mantle\Framework\Database\Model\Term;
 use Mantle\Framework\Database\Query\Term_Query_Builder as Builder;
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Testing\Framework_Test_Case;
 
 
 class Test_Term_Query_Builder extends Framework_Test_Case {

@@ -3,7 +3,7 @@ namespace Mantle\Tests\Database\Model;
 
 use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Database\Model\Post;
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Testing\Framework_Test_Case;
 use PHPUnit\Framework\TestCase;
 
 /**

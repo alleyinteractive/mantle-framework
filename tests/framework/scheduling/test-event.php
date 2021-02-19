@@ -1,7 +1,7 @@
 <?php
 namespace Mantle\Tests\Framework\Scheduling;
 
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Testing\Framework_Test_Case;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Handler\MockHandler;

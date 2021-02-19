@@ -7,7 +7,7 @@ use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Registration\Register_Post_Type;
 use Mantle\Facade\Route;
 use Mantle\Framework\Http\Controller;
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Testing\Framework_Test_Case;
 
 class Test_Post_Model_Routing extends Framework_Test_Case {
 	protected function setUp(): void {

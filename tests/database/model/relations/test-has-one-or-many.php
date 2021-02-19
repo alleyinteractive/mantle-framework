@@ -6,9 +6,9 @@ use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Model\Concerns\Has_Relationships as Relationships;
 use Mantle\Framework\Database\Model\Relations\Relation;
 use Mantle\Framework\Database\Model\Term;
-use Mantle\Framework\Testing\Concerns\Refresh_Database;
-use Mantle\Framework\Testing\Framework_Test_Case;
-use Mantle\Framework\Testing\Utils;
+use Mantle\Testing\Concerns\Refresh_Database;
+use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\Utils;
 
 class Test_Has_One_Or_Many extends Framework_Test_Case {
 	use Refresh_Database;

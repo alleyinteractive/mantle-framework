@@ -8,7 +8,7 @@ use Mantle\Events\Dispatcher;
 use Mantle\Framework\Http\Request;
 use Mantle\Framework\Http\Routing\Middleware\Substitute_Bindings;
 use Mantle\Framework\Http\Routing\Router;
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Testing\Framework_Test_Case;
 
 class Test_Router extends Framework_Test_Case {
 	public function test_basic_dispatching() {

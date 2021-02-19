@@ -7,7 +7,7 @@ use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Database\Model\Post;
 use Mantle\Framework\Database\Query\Builder;
 use Mantle\Framework\Database\Query\Post_Query_Builder;
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Testing\Framework_Test_Case;
 
 class Test_Model_Scope extends Framework_Test_Case {
 	public function test_local_scope() {

@@ -4,7 +4,7 @@ namespace Mantle\Tests\Framework\Http;
 
 use Mantle\Framework\Database\Model\Attachment;
 use Mantle\Framework\Http\Uploaded_File;
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Testing\Framework_Test_Case;
 
 class Test_Uploaded_File extends Framework_Test_Case {
 

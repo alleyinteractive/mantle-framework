@@ -1,7 +1,7 @@
 <?php
 namespace Mantle\Tests;
 
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Testing\Framework_Test_Case;
 
 use function Mantle\generate_wp_autoloader;
 

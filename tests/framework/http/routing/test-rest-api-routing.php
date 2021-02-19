@@ -3,8 +3,8 @@ namespace Mantle\Tests\Framework\Http\Routing;
 
 use Closure;
 use Mantle\Facade\Route;
-use Mantle\Framework\Testing\Concerns\Refresh_Database;
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Testing\Concerns\Refresh_Database;
+use Mantle\Testing\Framework_Test_Case;
 use WP_REST_Request;
 
 class Test_REST_API_Routing extends Framework_Test_Case {

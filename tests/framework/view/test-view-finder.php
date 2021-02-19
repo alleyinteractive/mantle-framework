@@ -2,7 +2,7 @@
 namespace Mantle\Tests\Framework\View;
 
 use Mantle\Facade\View_Loader;
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Testing\Framework_Test_Case;
 
 class Test_View_Finder extends Framework_Test_Case {
 	protected function setUp(): void {

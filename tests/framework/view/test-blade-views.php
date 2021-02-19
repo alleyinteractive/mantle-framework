@@ -1,7 +1,7 @@
 <?php
 namespace Mantle\Tests\Framework\View;
 
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Testing\Framework_Test_Case;
 
 class Test_Blade_Views extends Framework_Test_Case {
 	protected function setUp(): void {

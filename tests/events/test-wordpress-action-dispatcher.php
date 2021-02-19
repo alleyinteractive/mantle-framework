@@ -5,7 +5,7 @@ use Mantle\Events\Dispatcher;
 use Exception;
 use Mantle\Container\Container;
 use Mantle\Support\Collection;
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Testing\Framework_Test_Case;
 use ReflectionParameter;
 use RuntimeException;
 use WP_Query;

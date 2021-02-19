@@ -10,7 +10,7 @@ use Mantle\Framework\Database\Model\Registration\Register_Taxonomy;
 use Mantle\Framework\Database\Model\Term;
 use Mantle\Facade\Route;
 use Mantle\Framework\Http\Controller;
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Testing\Framework_Test_Case;
 
 class Test_Taxonomy_Model_Routing extends Framework_Test_Case {
 	public function test_category_term() {

@@ -1,7 +1,7 @@
 <?php
 namespace Mantle\Tests\Framework\Testing\Concerns;
 
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Testing\Framework_Test_Case;
 
 class Test_Interacts_With_Hooks extends Framework_Test_Case {
 	public function test_hook_applied() {
