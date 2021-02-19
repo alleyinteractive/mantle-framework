@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\View\Engines;
+namespace Mantle\View\Engines;
 
 use Mantle\Framework\Contracts\View\Engine;
 

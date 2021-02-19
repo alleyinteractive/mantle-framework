@@ -17,7 +17,7 @@ use Mantle\Framework\Contracts\View\Engine;
 use Mantle\Support\Arr;
 use Mantle\Support\Collection;
 use Mantle\Support\Str;
-use Mantle\Framework\View\Engines\Engine_Resolver;
+use Mantle\View\Engines\Engine_Resolver;
 use WP_Query;
 
 /**
