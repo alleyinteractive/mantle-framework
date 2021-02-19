@@ -6,7 +6,7 @@
  * @phpcs:disable WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
  */
 
-namespace Mantle\Framework\Scheduling;
+namespace Mantle\Scheduling;
 
 use Carbon\Carbon;
 

@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Scheduling;
+namespace Mantle\Scheduling;
 
 use Mantle\Framework\Contracts\Container;
 use Mantle\Framework\Exceptions\Handler;

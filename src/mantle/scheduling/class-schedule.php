@@ -6,7 +6,7 @@
  * @phpcs:disable WordPress.NamingConventions.ValidVariableName.PropertyNotSnakeCase
  */
 
-namespace Mantle\Framework\Scheduling;
+namespace Mantle\Scheduling;
 
 use DateTimeZone;
 use Mantle\Console\Command;

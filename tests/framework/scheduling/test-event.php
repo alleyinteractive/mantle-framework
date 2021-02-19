@@ -9,8 +9,8 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response as Psr7Response;
 use Mantle\Framework\Contracts\Container;
 use Mantle\Framework\Contracts\Exceptions\Handler;
-use Mantle\Framework\Scheduling\Event;
-use Mantle\Framework\Scheduling\Schedule;
+use Mantle\Scheduling\Event;
+use Mantle\Scheduling\Schedule;
 use Mockery as m;
 
 class Test_Event extends Framework_Test_Case {

@@ -2,7 +2,7 @@
 
 namespace Illuminate\Tests\Console\Scheduling;
 
-use Mantle\Framework\Scheduling\Event;
+use Mantle\Scheduling\Event;
 use Mantle\Testing\Framework_Test_Case;
 use Mockery as m;
 
