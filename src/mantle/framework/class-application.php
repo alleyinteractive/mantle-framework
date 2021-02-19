@@ -18,6 +18,7 @@ use Mantle\Framework\Providers\Routing_Service_Provider;
 use Mantle\Framework\Providers\View_Service_Provider;
 use Mantle\Support\Arr;
 use Mantle\Support\Environment;
+use Mantle\Support\Service_Provider;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -93,7 +94,7 @@ class Application extends Container implements Application_Contract {
 	/**
 	 * All of the registered service providers.
 	 *
-	 * @var ServiceProvider[]
+	 * @var Service_Provider[]
 	 */
 	protected $service_providers = [];
 

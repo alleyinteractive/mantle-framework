@@ -7,7 +7,7 @@
 
 namespace Mantle\Database\Pagination;
 
-use Mantle\Framework\Service_Provider;
+use Mantle\Support\Service_Provider;
 
 /**
  * Paginator Service Provider

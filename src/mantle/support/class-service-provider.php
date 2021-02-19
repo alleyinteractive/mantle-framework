@@ -5,15 +5,15 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework;
+namespace Mantle\Support;
 
 use Mantle\Framework\Contracts\Providers as ProviderContracts;
 use Mantle\Console\Command;
+use Mantle\Framework\Contracts\Application;
 use Mantle\Support\Str;
 use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
 
 use function add_action;
-use function Mantle\Framework\Helpers\class_uses_recursive;
 use function Mantle\Framework\Helpers\collect;
 
 /**

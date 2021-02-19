@@ -8,7 +8,7 @@
 namespace Mantle\Framework\Providers;
 
 use Mantle\Events\Dispatcher;
-use Mantle\Framework\Service_Provider;
+use Mantle\Support\Service_Provider;
 
 /**
  * Event Service Provider

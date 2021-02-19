@@ -9,7 +9,7 @@ namespace Mantle\Framework\Contracts;
 
 use RuntimeException;
 use Mantle\Framework\Contracts\Kernel as Kernel_Contract;
-use Mantle\Framework\Service_Provider;
+use Mantle\Support\Service_Provider;
 
 /**
  * Application Contract

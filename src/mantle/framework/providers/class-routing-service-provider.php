@@ -12,7 +12,7 @@ use Mantle\Http\Routing\Redirector;
 use Mantle\Http\Routing\Response_Factory;
 use Mantle\Http\Routing\Router;
 use Mantle\Http\Routing\Url_Generator;
-use Mantle\Framework\Service_Provider;
+use Mantle\Support\Service_Provider;
 
 /**
  * Routing Service Provider

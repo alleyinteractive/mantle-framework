@@ -12,7 +12,7 @@ namespace Mantle\Database;
 use \Faker\Factory;
 use \Faker\Generator as FakerGenerator;
 use Mantle\Database\Factory\Factory as MantleFactory;
-use Mantle\Framework\Service_Provider;
+use Mantle\Support\Service_Provider;
 
 /**
  * Database Factory

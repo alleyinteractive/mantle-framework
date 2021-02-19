@@ -11,7 +11,7 @@ use Mantle\Framework\Contracts\Application;
 use Mantle\Framework\Contracts\Events\Dispatcher;
 use Mantle\Http\Routing\Events\Route_Matched;
 use Mantle\Http\Routing\Route;
-use Mantle\Framework\Service_Provider;
+use Mantle\Support\Service_Provider;
 use WP;
 
 use function Mantle\Framework\Helpers\collect;

@@ -10,7 +10,7 @@ namespace Mantle\Framework\Providers;
 use League\CommonMark\CommonMarkConverter;
 use League\CommonMark\Environment;
 use League\CommonMark\Extension\HeadingPermalink\HeadingPermalinkExtension;
-use Mantle\Framework\Service_Provider;
+use Mantle\Support\Service_Provider;
 use Mantle\Framework\Helpers;
 use Mantle\Support\Collection;
 use Mantle\Support\Str;

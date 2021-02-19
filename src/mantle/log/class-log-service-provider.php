@@ -7,7 +7,7 @@
 
 namespace Mantle\Log;
 
-use Mantle\Framework\Service_Provider;
+use Mantle\Support\Service_Provider;
 
 /**
  * Log Service Provider

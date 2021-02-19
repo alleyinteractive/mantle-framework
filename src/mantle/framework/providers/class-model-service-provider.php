@@ -9,7 +9,7 @@ namespace Mantle\Framework\Providers;
 
 use Mantle\Database\Model\Model;
 use Mantle\Database\Model\Relations\Relation;
-use Mantle\Framework\Service_Provider;
+use Mantle\Support\Service_Provider;
 
 /**
  * Model Service Provider

@@ -7,7 +7,7 @@
 
 namespace Mantle\Framework\Providers;
 
-use Mantle\Framework\Service_Provider;
+use Mantle\Support\Service_Provider;
 
 /**
  * Error Service Provider

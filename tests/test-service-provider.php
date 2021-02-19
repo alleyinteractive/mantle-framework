@@ -4,7 +4,7 @@ namespace Mantle\Tests;
 use Mantle\Framework\Application;
 use Mantle\Console\Command;
 use Mantle\Framework\Contracts\Providers as ProviderContracts;
-use Mantle\Framework\Service_Provider;
+use Mantle\Support\Service_Provider;
 use Mockery as m;
 
 class Test_Service_Provider extends \Mockery\Adapter\Phpunit\MockeryTestCase {

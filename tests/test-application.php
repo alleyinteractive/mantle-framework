@@ -2,7 +2,7 @@
 namespace Mantle\Tests;
 
 use Mantle\Framework\Application;
-use Mantle\Framework\Service_Provider;
+use Mantle\Support\Service_Provider;
 use Mockery as m;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;

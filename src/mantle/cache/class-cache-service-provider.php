@@ -7,7 +7,7 @@
 
 namespace Mantle\Cache;
 
-use Mantle\Framework\Service_Provider;
+use Mantle\Support\Service_Provider;
 
 /**
  * Cache Service Provider

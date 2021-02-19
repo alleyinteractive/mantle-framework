@@ -10,7 +10,7 @@ namespace Mantle\Framework\Providers;
 use Illuminate\Filesystem\Filesystem;
 use Mantle\Http\View\Factory;
 use Mantle\Http\View\View_Finder;
-use Mantle\Framework\Service_Provider;
+use Mantle\Support\Service_Provider;
 use Mantle\View\Engines\Engine_Resolver;
 use Mantle\View\Engines\File_Engine;
 use Mantle\View\Engines\Php_Engine;

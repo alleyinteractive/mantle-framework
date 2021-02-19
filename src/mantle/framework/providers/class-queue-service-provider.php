@@ -18,7 +18,7 @@ use Mantle\Queue\Worker;
 use Mantle\Queue\Wp_Cron_Job;
 use Mantle\Queue\Wp_Cron_Provider;
 use Mantle\Queue\Wp_Cron_Scheduler;
-use Mantle\Framework\Service_Provider;
+use Mantle\Support\Service_Provider;
 
 /**
  * Queue Service Provider

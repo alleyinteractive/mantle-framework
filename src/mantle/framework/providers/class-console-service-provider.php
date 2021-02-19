@@ -25,7 +25,7 @@ use Mantle\Framework\Console\Package_Discover_Command;
 use Mantle\Framework\Console\Route_List_Command;
 use Mantle\Framework\Console\View_Cache_Command;
 use Mantle\Framework\Console\View_Clear_Command;
-use Mantle\Framework\Service_Provider;
+use Mantle\Support\Service_Provider;
 
 /**
  * Console Service Provider
