@@ -8,7 +8,7 @@
 namespace Mantle\Framework\Exceptions;
 
 use Exception;
-use Mantle\Framework\Auth\Authentication_Error;
+use Mantle\Auth\Authentication_Error;
 use Mantle\Framework\Contracts\Container;
 use Mantle\Framework\Contracts\Exceptions\Handler as ExceptionsHandler;
 use Mantle\Framework\Database\Model\Model_Not_Found_Exception;

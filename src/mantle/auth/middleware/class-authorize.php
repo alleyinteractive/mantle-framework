@@ -5,10 +5,10 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Auth\Middleware;
+namespace Mantle\Auth\Middleware;
 
 use Closure;
-use Mantle\Framework\Auth\Authentication_Error;
+use Mantle\Auth\Authentication_Error;
 use Mantle\Framework\Http\Request;
 
 /**
