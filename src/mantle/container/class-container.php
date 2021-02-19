@@ -344,7 +344,7 @@ class Container implements ArrayAccess, Container_Contract {
 	 * @param  \Closure $closure
 	 * @return void
 	 *
-	 * @throws \InvalidArgumentException
+	 * @throws \InvalidArgumentException Thrown on invalid argument.
 	 */
 	public function extend( $abstract, Closure $closure ) {
 		$abstract = $this->get_alias( $abstract );

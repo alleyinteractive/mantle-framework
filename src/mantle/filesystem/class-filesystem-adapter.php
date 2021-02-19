@@ -354,9 +354,9 @@ class Filesystem_Adapter implements Filesystem {
 	/**
 	 * Store the uploaded file on the disk.
 	 *
-	 * @param string                                           $path File path.
+	 * @param string                                 $path File path.
 	 * @param File|\Mantle\Http\Uploaded_File|string $file File object.
-	 * @param mixed                                            $options Options.
+	 * @param mixed                                  $options Options.
 	 * @return string|false
 	 */
 	public function put_file( string $path, $file, $options = [] ) {
@@ -368,10 +368,10 @@ class Filesystem_Adapter implements Filesystem {
 	/**
 	 * Store the uploaded file on the disk with a given name.
 	 *
-	 * @param  string                                           $path File path.
+	 * @param  string                                 $path File path.
 	 * @param  File|\Mantle\Http\Uploaded_File|string $file File object.
-	 * @param  string                                           $name File name.
-	 * @param  mixed                                            $options Options.
+	 * @param  string                                 $name File name.
+	 * @param  mixed                                  $options Options.
 	 * @return string|false
 	 */
 	public function put_file_as( string $path, $file, string $name, $options = [] ) {

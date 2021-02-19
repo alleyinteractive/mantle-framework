@@ -34,7 +34,7 @@ interface Handler {
 	 * Render an exception into an HTTP response.
 	 *
 	 * @param \Mantle\Http\Request $request
-	 * @param \Throwable                     $e Exception thrown.
+	 * @param \Throwable           $e Exception thrown.
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 *
 	 * @throws Throwable Thrown on error rendering.

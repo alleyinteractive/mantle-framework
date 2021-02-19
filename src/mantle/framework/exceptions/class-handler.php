@@ -215,7 +215,7 @@ class Handler implements ExceptionsHandler {
 	 * Prepare a response for the given exception.
 	 *
 	 * @param  \Mantle\Http\Request $request Request object.
-	 * @param  \Throwable                     $e Exception thrown.
+	 * @param  \Throwable           $e Exception thrown.
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	protected function prepare_response( $request, Throwable $e ) {
