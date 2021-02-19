@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Support;
+namespace Mantle\Support;
 
 /**
  * Collects pairs of strings to search and replace.

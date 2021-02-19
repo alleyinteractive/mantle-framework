@@ -9,7 +9,7 @@
 namespace Mantle\Framework\Http\View;
 
 use InvalidArgumentException;
-use Mantle\Framework\Support\Str;
+use Mantle\Support\Str;
 
 /**
  * View Finder

@@ -11,7 +11,7 @@ use Mantle\Framework\Alias_Loader;
 use Mantle\Framework\Contracts\Application;
 use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Facade\Facade;
-use Mantle\Framework\Support\Collection;
+use Mantle\Support\Collection;
 use Mantle\Framework\Testing\Concerns\Admin_Screen;
 use Mantle\Framework\Testing\Concerns\Assertions;
 use Mantle\Framework\Testing\Concerns\Deprecations;

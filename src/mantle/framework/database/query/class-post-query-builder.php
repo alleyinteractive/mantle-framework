@@ -10,7 +10,7 @@ namespace Mantle\Framework\Database\Query;
 
 use Mantle\Framework\Database\Model\Term;
 use Mantle\Framework\Helpers;
-use Mantle\Framework\Support\Collection;
+use Mantle\Support\Collection;
 
 use function Mantle\Framework\Helpers\collect;
 

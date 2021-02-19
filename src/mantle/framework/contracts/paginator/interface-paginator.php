@@ -7,7 +7,7 @@
 
 namespace Mantle\Framework\Contracts\Paginator;
 
-use Mantle\Framework\Support\Collection;
+use Mantle\Support\Collection;
 
 /**
  * Paginator Contract

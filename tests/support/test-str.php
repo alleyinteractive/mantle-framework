@@ -2,7 +2,7 @@
 
 namespace Mantle\Tests\Support;
 
-use Mantle\Framework\Support\Str;
+use Mantle\Support\Str;
 use PHPUnit\Framework\TestCase;
 
 class SupportStrTest extends TestCase {

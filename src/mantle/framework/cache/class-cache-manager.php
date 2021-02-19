@@ -10,7 +10,7 @@ namespace Mantle\Framework\Cache;
 use Mantle\Framework\Contracts\Application;
 use Mantle\Framework\Contracts\Cache\Factory;
 use Mantle\Framework\Contracts\Cache\Repository;
-use Mantle\Framework\Support\Driver_Manager;
+use Mantle\Support\Driver_Manager;
 
 /**
  * Cache Manager

@@ -10,7 +10,7 @@ namespace Mantle\Framework\Http\Routing;
 use Mantle\Framework\Contracts\Http\Routing\Response_Factory as Factory_Contract;
 use Mantle\Framework\Http\Response;
 use Mantle\Framework\Http\View\Factory as View_Factory;
-use Mantle\Framework\Support\Str;
+use Mantle\Support\Str;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;

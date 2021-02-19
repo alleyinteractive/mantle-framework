@@ -8,7 +8,7 @@
 namespace Mantle\Framework\Console\Generators;
 
 use Mantle\Framework\Console\Generator_Command;
-use Mantle\Framework\Support\Str;
+use Mantle\Support\Str;
 
 /**
  * Command Generator

@@ -6,7 +6,7 @@
  * phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.VariableRedeclaration
  */
 
-namespace Mantle\Framework\Support;
+namespace Mantle\Support;
 
 use ArrayAccess;
 use InvalidArgumentException;
@@ -53,7 +53,7 @@ class Arr {
 		$results = [];
 
 		foreach ( $array as $values ) {
-			if ( $values instanceof \Mantle\Framework\Support\Collection ) {
+			if ( $values instanceof \Mantle\Support\Collection ) {
 				$values = $values->all();
 			} elseif ( ! is_array( $values ) ) {
 				continue;

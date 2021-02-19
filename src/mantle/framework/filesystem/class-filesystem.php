@@ -11,7 +11,7 @@ namespace Mantle\Framework\Filesystem;
 
 use ErrorException;
 use FilesystemIterator;
-use Mantle\Framework\Support\Traits\Macroable;
+use Mantle\Support\Traits\Macroable;
 use RuntimeException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;

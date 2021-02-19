@@ -15,7 +15,7 @@
 
 // phpcs:disable Squiz.Commenting.FunctionComment.EmptyThrows
 
-namespace Mantle\Framework\Support;
+namespace Mantle\Support;
 
 use Countable;
 use Mantle\Framework\Contracts\Support\Arrayable;
@@ -911,7 +911,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	/**
 	 * Collect the values into a collection.
 	 *
-	 * @return \Mantle\Framework\Support\Collection
+	 * @return \Mantle\Support\Collection
 	 */
 	public function collect();
 

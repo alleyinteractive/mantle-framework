@@ -18,8 +18,8 @@ use Mantle\Framework\Database\Model\Model_Not_Found_Exception;
 use Mantle\Framework\Database\Model\Relations\Relation;
 use Mantle\Framework\Database\Pagination\Length_Aware_Paginator;
 use Mantle\Framework\Database\Pagination\Paginator;
-use Mantle\Framework\Support\Collection;
-use Mantle\Framework\Support\Str;
+use Mantle\Support\Collection;
+use Mantle\Support\Str;
 
 use function Mantle\Framework\Helpers\collect;
 

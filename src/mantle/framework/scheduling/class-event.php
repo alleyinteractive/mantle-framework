@@ -16,7 +16,7 @@ use GuzzleHttp\Exception\TransferException;
 use Mantle\Framework\Contracts\Application;
 use Mantle\Framework\Contracts\Container;
 use Mantle\Framework\Contracts\Exceptions\Handler;
-use Mantle\Framework\Support\Traits\Macroable;
+use Mantle\Support\Traits\Macroable;
 use Psr\Http\Client\ClientExceptionInterface;
 use Throwable;
 

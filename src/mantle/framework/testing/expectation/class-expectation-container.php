@@ -7,7 +7,7 @@
 
 namespace Mantle\Framework\Testing\Expectation;
 
-use Mantle\Framework\Support\Collection;
+use Mantle\Support\Collection;
 
 /**
  * Container for the expectation checking.

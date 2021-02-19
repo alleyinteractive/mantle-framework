@@ -12,8 +12,8 @@ namespace Mantle\Framework\Database\Factory;
 use Faker\Generator as Faker;
 use InvalidArgumentException;
 use Mantle\Framework\Database\Model\Model;
-use Mantle\Framework\Support\Collection;
-use Mantle\Framework\Support\Traits\Macroable;
+use Mantle\Support\Collection;
+use Mantle\Support\Traits\Macroable;
 use function Mantle\Framework\Helpers\collect;
 use function Mantle\Framework\Helpers\tap;
 

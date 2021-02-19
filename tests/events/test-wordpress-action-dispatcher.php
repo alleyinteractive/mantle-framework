@@ -4,7 +4,7 @@ namespace Mantle\Tests\Events;
 use Mantle\Framework\Events\Dispatcher;
 use Exception;
 use Mantle\Framework\Container\Container;
-use Mantle\Framework\Support\Collection;
+use Mantle\Support\Collection;
 use Mantle\Framework\Testing\Framework_Test_Case;
 use ReflectionParameter;
 use RuntimeException;

@@ -8,7 +8,7 @@
 namespace Mantle\Framework\Contracts\Http\View;
 
 use Mantle\Framework\Http\View\View;
-use Mantle\Framework\Support\Collection;
+use Mantle\Support\Collection;
 
 /**
  * View Factory Contract

@@ -10,8 +10,8 @@
 namespace Mantle\Framework\Http;
 
 use Mantle\Framework\Http\Uploaded_File;
-use Mantle\Framework\Support\Arr;
-use Mantle\Framework\Support\Str;
+use Mantle\Support\Arr;
+use Mantle\Support\Str;
 use stdClass;
 
 use function Mantle\Framework\Helpers\data_get;

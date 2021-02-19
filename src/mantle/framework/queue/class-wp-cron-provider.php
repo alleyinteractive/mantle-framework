@@ -10,7 +10,7 @@ namespace Mantle\Framework\Queue;
 use InvalidArgumentException;
 use Mantle\Framework\Contracts\Queue\Provider;
 use Mantle\Framework\Contracts\Queue\Queue_Manager;
-use Mantle\Framework\Support\Collection;
+use Mantle\Support\Collection;
 
 use function Mantle\Framework\Helpers\collect;
 

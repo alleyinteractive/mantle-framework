@@ -11,8 +11,8 @@ use Mantle\Framework\Contracts\Container;
 use Mantle\Framework\Contracts\Http\Routing\Url_Routable;
 use Mantle\Framework\Database\Model\Model_Not_Found_Exception;
 use Mantle\Framework\Http\Request;
-use Mantle\Framework\Support\Reflector;
-use Mantle\Framework\Support\Str;
+use Mantle\Support\Reflector;
+use Mantle\Support\Str;
 
 /**
  * Implicit Route Binding

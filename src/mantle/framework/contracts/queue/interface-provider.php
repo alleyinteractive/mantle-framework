@@ -7,7 +7,7 @@
 
 namespace Mantle\Framework\Contracts\Queue;
 
-use Mantle\Framework\Support\Collection;
+use Mantle\Support\Collection;
 
 /**
  * Queue Provider Contract

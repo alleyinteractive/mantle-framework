@@ -14,9 +14,9 @@ use InvalidArgumentException;
 use Mantle\Framework\Contracts\Container;
 use Mantle\Framework\Contracts\Http\View\Factory as ViewFactory;
 use Mantle\Framework\Contracts\View\Engine;
-use Mantle\Framework\Support\Arr;
-use Mantle\Framework\Support\Collection;
-use Mantle\Framework\Support\Str;
+use Mantle\Support\Arr;
+use Mantle\Support\Collection;
+use Mantle\Support\Str;
 use Mantle\Framework\View\Engines\Engine_Resolver;
 use WP_Query;
 

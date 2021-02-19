@@ -7,7 +7,7 @@
 
 namespace Mantle\Framework\Database\Model\Relations;
 
-use Mantle\Framework\Support\Collection;
+use Mantle\Support\Collection;
 
 use function Mantle\Framework\Helpers\collect;
 

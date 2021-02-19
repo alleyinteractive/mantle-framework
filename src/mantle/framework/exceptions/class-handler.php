@@ -14,7 +14,7 @@ use Mantle\Framework\Contracts\Exceptions\Handler as ExceptionsHandler;
 use Mantle\Framework\Database\Model\Model_Not_Found_Exception;
 use Mantle\Framework\Http\Request;
 use Mantle\Framework\Http\Routing\Route;
-use Mantle\Framework\Support\Arr;
+use Mantle\Support\Arr;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;

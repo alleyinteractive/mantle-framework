@@ -10,7 +10,7 @@ namespace Mantle\Framework\Database\Model\Relations;
 use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Database\Model\Model_Exception;
 use Mantle\Framework\Database\Query\Builder;
-use Mantle\Framework\Support\Collection;
+use Mantle\Support\Collection;
 use RuntimeException;
 use Throwable;
 

@@ -15,8 +15,8 @@ use Countable;
 use Exception;
 use Mantle\Framework\Events\Dispatcher;
 use Mantle\Framework\Database\Factory\Factory_Builder;
-use Mantle\Framework\Support\Collection;
-use Mantle\Framework\Support\Higher_Order_Tap_Proxy;
+use Mantle\Support\Collection;
+use Mantle\Support\Higher_Order_Tap_Proxy;
 use Mantle\Framework\Database\Factory\Factory as MantleFactory;
 
 /**

@@ -11,8 +11,8 @@ namespace Mantle\Framework\Http;
 use ArrayAccess;
 use Mantle\Framework\Contracts\Support\Arrayable;
 use Mantle\Framework\Http\Routing\Route;
-use Mantle\Framework\Support\Arr;
-use Mantle\Framework\Support\Str;
+use Mantle\Support\Arr;
+use Mantle\Support\Str;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 

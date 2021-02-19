@@ -13,9 +13,9 @@ use Mantle\Framework\Contracts\Http\Routing\Url_Routable;
 use Mantle\Framework\Contracts\Support\Arrayable;
 use Mantle\Framework\Contracts\Support\Jsonable;
 use Mantle\Framework\Database\Query\Builder;
-use Mantle\Framework\Support\Collection;
-use Mantle\Framework\Support\Forward_Calls;
-use Mantle\Framework\Support\Str;
+use Mantle\Support\Collection;
+use Mantle\Support\Forward_Calls;
+use Mantle\Support\Str;
 
 use function Mantle\Framework\Helpers\class_basename;
 use function Mantle\Framework\Helpers\class_uses_recursive;

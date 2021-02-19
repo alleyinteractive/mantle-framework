@@ -13,7 +13,7 @@ use Mantle\Framework\Console\Command;
 use Mantle\Framework\Contracts\Application;
 use Mantle\Framework\Contracts\Container;
 use Mantle\Framework\Contracts\Queue\Job;
-use Mantle\Framework\Support\Collection;
+use Mantle\Support\Collection;
 use RuntimeException;
 
 use function Mantle\Framework\Helpers\collect;

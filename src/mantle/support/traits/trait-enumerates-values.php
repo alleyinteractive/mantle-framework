@@ -11,7 +11,7 @@
 
 // phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag
 
-namespace Mantle\Framework\Support\Traits;
+namespace Mantle\Support\Traits;
 
 use CachingIterator;
 use Closure;
@@ -19,11 +19,11 @@ use Exception;
 use Mantle\Framework\Contracts\Support\Arrayable;
 use Mantle\Framework\Contracts\Support\Jsonable;
 use function Mantle\Framework\Helpers\data_get;
-use Mantle\Framework\Support\Arr;
-use Mantle\Framework\Support\Collection;
-use Mantle\Framework\Support\Enumerable;
+use Mantle\Support\Arr;
+use Mantle\Support\Collection;
+use Mantle\Support\Enumerable;
 use JsonSerializable;
-use Mantle\Framework\Support\Higher_Order_Collection_Proxy;
+use Mantle\Support\Higher_Order_Collection_Proxy;
 use Symfony\Component\VarDumper\VarDumper;
 use Traversable;
 
@@ -748,7 +748,7 @@ trait Enumerates_Values {
 	/**
 	 * Collect the values into a collection.
 	 *
-	 * @return \Mantle\Framework\Support\Collection
+	 * @return \Mantle\Support\Collection
 	 */
 	public function collect() {
 		return new Collection( $this->all() );

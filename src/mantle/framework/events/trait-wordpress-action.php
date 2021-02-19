@@ -9,8 +9,8 @@ namespace Mantle\Framework\Events;
 
 use Closure;
 use Mantle\Framework\Contracts\Support\Arrayable;
-use Mantle\Framework\Support\Enumerable;
-use Mantle\Framework\Support\Reflector;
+use Mantle\Support\Enumerable;
+use Mantle\Support\Reflector;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionParameter;

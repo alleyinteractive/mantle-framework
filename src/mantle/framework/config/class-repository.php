@@ -9,7 +9,7 @@ namespace Mantle\Framework\Config;
 
 use ArrayAccess;
 use Mantle\Framework\Contracts\Config\Repository as Config_Contract;
-use Mantle\Framework\Support\Arr;
+use Mantle\Support\Arr;
 
 /**
  * Configuration Repository

@@ -7,7 +7,7 @@
 
 namespace Mantle\Framework\Http\Concerns;
 
-use Mantle\Framework\Support\Str;
+use Mantle\Support\Str;
 
 /**
  * Interacts with Content Types Concern

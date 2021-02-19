@@ -8,7 +8,7 @@
 // phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment
 // phpcs:ignoreFile: WordPressVIPMinimum.Variables.VariableAnalysis.StaticInsideClosure
 
-namespace Mantle\Framework\Support\Traits;
+namespace Mantle\Support\Traits;
 
 use BadMethodCallException;
 use Closure;

@@ -11,7 +11,7 @@ namespace Mantle\Framework\Database\Model\Concerns;
 use Closure;
 use InvalidArgumentException;
 use Mantle\Framework\Contracts\Database\Scope;
-use Mantle\Framework\Support\Arr;
+use Mantle\Support\Arr;
 
 /**
  * Query Global Scope

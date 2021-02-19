@@ -10,7 +10,7 @@ namespace Mantle\Framework\Database;
 use InvalidArgumentException;
 use Mantle\Framework\Console\Command;
 use Mantle\Framework\Contracts\Container;
-use Mantle\Framework\Support\Arr;
+use Mantle\Support\Arr;
 
 /**
  * Base Database Seeder

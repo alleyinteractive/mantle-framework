@@ -10,7 +10,7 @@ namespace Mantle\Framework\Http\Routing;
 use BadMethodCallException;
 use Closure;
 use InvalidArgumentException;
-use Mantle\Framework\Support\Arr;
+use Mantle\Support\Arr;
 
 /**
  * Router Registrar

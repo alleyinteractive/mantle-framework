@@ -10,7 +10,7 @@ namespace Mantle\Framework\Console;
 use Mantle\Framework\Console\Command;
 use Mantle\Framework\Contracts\Http\Routing\Router;
 use Mantle\Framework\Http\Routing\Route;
-use Mantle\Framework\Support\Collection;
+use Mantle\Support\Collection;
 
 use function Mantle\Framework\Helpers\collect;
 

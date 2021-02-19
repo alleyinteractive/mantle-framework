@@ -12,8 +12,8 @@ namespace Mantle\Framework\Events;
 use Exception;
 use Mantle\Framework\Container\Container;
 use Mantle\Framework\Contracts\Events\Dispatcher as Dispatcher_Contract;
-use Mantle\Framework\Support\Arr;
-use Mantle\Framework\Support\Str;
+use Mantle\Support\Arr;
+use Mantle\Support\Str;
 use ReflectionClass;
 
 use function Mantle\Framework\Helpers\tap;

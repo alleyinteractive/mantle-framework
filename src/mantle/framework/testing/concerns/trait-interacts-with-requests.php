@@ -10,8 +10,8 @@
 namespace Mantle\Framework\Testing\Concerns;
 
 use Closure;
-use Mantle\Framework\Support\Collection;
-use Mantle\Framework\Support\Str;
+use Mantle\Support\Collection;
+use Mantle\Support\Str;
 use Mantle\Framework\Testing\Mock_Http_Response;
 use PHPUnit\Framework\Assert as PHPUnit;
 

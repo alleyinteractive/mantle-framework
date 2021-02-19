@@ -21,7 +21,7 @@ use League\Flysystem\Cached\Storage\Memory as MemoryStore;
 use Mantle\Framework\Contracts\Application;
 use Mantle\Framework\Contracts\Filesystem\Filesystem;
 use Mantle\Framework\Contracts\Filesystem\Filesystem_Manager as Filesystem_Manager_Contract;
-use Mantle\Framework\Support\Arr;
+use Mantle\Support\Arr;
 use RuntimeException;
 
 /**

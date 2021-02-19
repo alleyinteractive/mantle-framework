@@ -11,7 +11,7 @@ use Mantle\Framework\Contracts\Http\Kernel;
 use Mantle\Framework\Database\Model\Model;
 use Mantle\Framework\Http\Kernel as HttpKernel;
 use Mantle\Framework\Http\Request;
-use Mantle\Framework\Support\Str;
+use Mantle\Support\Str;
 use Mantle\Framework\Testing\Exceptions\Exception;
 use Mantle\Framework\Testing\Exceptions\WP_Redirect_Exception;
 use Mantle\Framework\Testing\Test_Response;

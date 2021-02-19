@@ -7,7 +7,7 @@
 
 namespace Mantle\Framework\Filesystem;
 
-use Mantle\Framework\Support\Str;
+use Mantle\Support\Str;
 
 /**
  * File helpers.

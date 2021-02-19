@@ -9,11 +9,11 @@
 
 // phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag
 
-namespace Mantle\Framework\Support;
+namespace Mantle\Support;
 
 use ArrayAccess;
 use ArrayIterator;
-use Mantle\Framework\Support\Traits\Enumerates_Values;
+use Mantle\Support\Traits\Enumerates_Values;
 use Mantle\Framework\Database\Model;
 use function Mantle\Framework\Helpers\value;
 use stdClass;
@@ -93,7 +93,7 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Get a lazy collection for the items in this collection.
 	 *
-	 * @return \Mantle\Framework\Support\LazyCollection
+	 * @return \Mantle\Support\LazyCollection
 	 */
 	public function lazy() {
 		return new LazyCollection( $this->items );
@@ -358,7 +358,7 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Get all items except for those with the specified keys.
 	 *
-	 * @param    \Mantle\Framework\Support\Collection|mixed $keys
+	 * @param    \Mantle\Support\Collection|mixed $keys
 	 * @return static
 	 */
 	public function except( $keys ) {
@@ -1302,7 +1302,7 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Get a base Support collection instance from this collection.
 	 *
-	 * @return \Mantle\Framework\Support\Collection
+	 * @return \Mantle\Support\Collection
 	 */
 	public function to_base() {
 		return new self( $this );

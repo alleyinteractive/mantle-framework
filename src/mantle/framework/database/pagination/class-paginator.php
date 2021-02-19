@@ -19,8 +19,8 @@ use Mantle\Framework\Contracts\Support\Jsonable;
 use Mantle\Framework\Database\Query\Builder;
 use Mantle\Framework\Http\Request;
 use Mantle\Framework\Http\View\View;
-use Mantle\Framework\Support\Collection;
-use Mantle\Framework\Support\Str;
+use Mantle\Support\Collection;
+use Mantle\Support\Str;
 
 /**
  * Paginator for query results.
@@ -50,7 +50,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	/**
 	 * Items being paginate.
 	 *
-	 * @var \Mantle\Framework\Support\Collection
+	 * @var \Mantle\Support\Collection
 	 */
 	protected $items;
 

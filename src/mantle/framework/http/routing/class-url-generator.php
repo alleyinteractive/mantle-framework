@@ -9,7 +9,7 @@ namespace Mantle\Framework\Http\Routing;
 
 use Mantle\Framework\Contracts\Http\Routing\Url_Generator as Generator_Contract;
 use Mantle\Framework\Http\Request;
-use Mantle\Framework\Support\Arr;
+use Mantle\Support\Arr;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\RequestContext;

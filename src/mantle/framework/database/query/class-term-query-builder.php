@@ -7,7 +7,7 @@
 
 namespace Mantle\Framework\Database\Query;
 
-use Mantle\Framework\Support\Collection;
+use Mantle\Support\Collection;
 use function Mantle\Framework\Helpers\collect;
 
 /**

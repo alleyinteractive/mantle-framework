@@ -14,8 +14,8 @@ use Mantle\Framework\Database\Model\Term;
 use Mantle\Framework\Database\Query\Builder;
 use Mantle\Framework\Database\Query\Post_Query_Builder;
 use Mantle\Framework\Database\Query\Term_Query_Builder;
-use Mantle\Framework\Support\Collection;
-use Mantle\Framework\Support\Forward_Calls;
+use Mantle\Support\Collection;
+use Mantle\Support\Forward_Calls;
 
 /**
  * Relation base class.

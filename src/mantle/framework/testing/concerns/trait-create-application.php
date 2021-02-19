@@ -11,7 +11,7 @@ use Mantle\Framework\Application;
 use Mantle\Framework\Config\Repository;
 use Mantle\Framework\Contracts\Exceptions\Handler as Handler_Contract;
 use Mantle\Framework\Exceptions\Handler;
-use Mantle\Framework\Support\Collection;
+use Mantle\Support\Collection;
 
 /**
  * Concern for creating the application instance.

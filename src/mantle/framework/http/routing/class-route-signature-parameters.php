@@ -7,7 +7,7 @@
 
 namespace Mantle\Framework\Http\Routing;
 
-use Mantle\Framework\Support\Str;
+use Mantle\Support\Str;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;

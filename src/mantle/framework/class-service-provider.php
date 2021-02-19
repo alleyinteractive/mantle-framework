@@ -9,7 +9,7 @@ namespace Mantle\Framework;
 
 use Mantle\Framework\Contracts\Providers as ProviderContracts;
 use Mantle\Framework\Console\Command;
-use Mantle\Framework\Support\Str;
+use Mantle\Support\Str;
 use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
 
 use function add_action;

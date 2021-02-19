@@ -10,7 +10,7 @@ namespace Mantle\Framework\Http\Routing;
 use Closure;
 use Mantle\Framework\Contracts\Container;
 use Mantle\Framework\Database\Model\Model_Not_Found_Exception;
-use Mantle\Framework\Support\Str;
+use Mantle\Support\Str;
 
 /**
  * Route Binding to support model-resolution in a route.

@@ -10,7 +10,7 @@ use Mantle\Framework\Queue\Events\Job_Processing;
 use Mantle\Framework\Queue\Events\Run_Complete;
 use Mantle\Framework\Queue\Events\Run_Start;
 use Mantle\Framework\Queue\Job;
-use Mantle\Framework\Support\Collection;
+use Mantle\Support\Collection;
 use Mockery as m;
 
 use function Mantle\Framework\Helpers\collect;

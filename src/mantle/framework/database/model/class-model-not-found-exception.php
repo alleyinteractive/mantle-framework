@@ -7,7 +7,7 @@
 
 namespace Mantle\Framework\Database\Model;
 
-use Mantle\Framework\Support\Arr;
+use Mantle\Support\Arr;
 
 /**
  * Model Not Found Exception

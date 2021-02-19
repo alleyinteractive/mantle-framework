@@ -11,7 +11,7 @@ namespace Mantle\Framework\Http\View;
 use Mantle\Framework\Contracts\Http\View\Factory as Factory_Contract;
 use Mantle\Framework\Contracts\View\Engine;
 use Mantle\Framework\Database\Model\Post;
-use Mantle\Framework\Support\Arr;
+use Mantle\Support\Arr;
 
 /**
  * View Class

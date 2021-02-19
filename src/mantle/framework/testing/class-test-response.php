@@ -8,8 +8,8 @@
 namespace Mantle\Framework\Testing;
 
 use Exception;
-use Mantle\Framework\Support\Arr;
-use Mantle\Framework\Support\Str;
+use Mantle\Support\Arr;
+use Mantle\Support\Str;
 use PHPUnit\Framework\Assert as PHPUnit;
 
 use function Mantle\Framework\Helpers\data_get;

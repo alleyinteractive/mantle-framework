@@ -4,7 +4,7 @@ namespace Mantle\Tests\Support;
 
 use BadMethodCallException;
 use Error;
-use Mantle\Framework\Support\Forward_Calls;
+use Mantle\Support\Forward_Calls;
 use PHPUnit\Framework\TestCase;
 
 class Forward_CallsTest extends TestCase {

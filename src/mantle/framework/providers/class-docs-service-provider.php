@@ -12,8 +12,8 @@ use League\CommonMark\Environment;
 use League\CommonMark\Extension\HeadingPermalink\HeadingPermalinkExtension;
 use Mantle\Framework\Service_Provider;
 use Mantle\Framework\Helpers;
-use Mantle\Framework\Support\Collection;
-use Mantle\Framework\Support\Str;
+use Mantle\Support\Collection;
+use Mantle\Support\Str;
 use Symfony\Component\Finder\Finder;
 
 use function Mantle\Framework\Helpers\collect;

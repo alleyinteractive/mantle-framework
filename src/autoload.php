@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework;
+namespace Mantle;
 
 /**
  * Generate an autoloader for the WordPress file naming conventions.
@@ -68,8 +68,11 @@ function generate_wp_autoloader( string $namespace, string $root_path ): callabl
 // Generate the autoloader for the Framework.
 try {
 	spl_autoload_register(
-		generate_wp_autoloader( __NAMESPACE__, __DIR__ . '/mantle/framework' )
+		generate_wp_autoloader( __NAMESPACE__, __DIR__ . '/mantle' )
 	);
+	// spl_autoload_register(
+	// 	generate_wp_autoloader( __NAMESPACE__, __DIR__ . '/mantle/framework' )
+	// );
 } catch ( \Exception $e ) {
 	\wp_die( $e->getMessage() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 }

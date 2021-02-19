@@ -9,7 +9,7 @@ namespace Mantle\Framework\Console;
 
 use Mantle\Framework\Contracts\Application;
 use Mantle\Framework\Providers\Provider_Exception;
-use Mantle\Framework\Support\String_Replacements;
+use Mantle\Support\String_Replacements;
 
 /**
  * Clear Cache Command

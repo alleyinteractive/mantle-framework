@@ -8,7 +8,7 @@
 namespace Mantle\Framework\Http\Routing\Concerns;
 
 use Mantle\Framework\Http\Routing\Route;
-use Mantle\Framework\Support\Arr;
+use Mantle\Support\Arr;
 
 /**
  * Route Group functions.

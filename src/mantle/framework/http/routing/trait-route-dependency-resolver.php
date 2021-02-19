@@ -9,7 +9,7 @@
 
 namespace Mantle\Framework\Http\Routing;
 
-use Mantle\Framework\Support\Arr;
+use Mantle\Support\Arr;
 use ReflectionFunctionAbstract;
 use ReflectionMethod;
 use ReflectionParameter;

@@ -15,8 +15,8 @@ use Mantle\Framework\Log\Log_Service_Provider;
 use Mantle\Framework\Providers\Event_Service_Provider;
 use Mantle\Framework\Providers\Routing_Service_Provider;
 use Mantle\Framework\Providers\View_Service_Provider;
-use Mantle\Framework\Support\Arr;
-use Mantle\Framework\Support\Environment;
+use Mantle\Support\Arr;
+use Mantle\Support\Environment;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
