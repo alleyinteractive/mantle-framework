@@ -7,7 +7,7 @@
 
 namespace Mantle\Database\Model;
 
-use Mantle\Framework\Contracts;
+use Mantle\Contracts;
 use Mantle\Database\Query\Builder;
 use Mantle\Database\Query\Post_Query_Builder;
 use Mantle\Framework\Helpers;

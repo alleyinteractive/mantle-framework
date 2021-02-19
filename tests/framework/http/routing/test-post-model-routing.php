@@ -1,7 +1,7 @@
 <?php
 namespace Mantle\Tests\Framework\Http\Routing;
 
-use Mantle\Framework\Contracts\Database\Registrable;
+use Mantle\Contracts\Database\Registrable;
 use Mantle\Database\Model\Concerns\Custom_Post_Permalink;
 use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Registration\Register_Post_Type;

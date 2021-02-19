@@ -10,9 +10,9 @@ namespace Mantle\Scheduling;
 
 use DateTimeZone;
 use Mantle\Console\Command;
-use Mantle\Framework\Contracts\Application;
-use Mantle\Framework\Contracts\Container;
-use Mantle\Framework\Contracts\Queue\Job;
+use Mantle\Contracts\Application;
+use Mantle\Contracts\Container;
+use Mantle\Contracts\Queue\Job;
 use Mantle\Support\Collection;
 use RuntimeException;
 

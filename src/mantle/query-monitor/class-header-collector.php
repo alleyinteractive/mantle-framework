@@ -7,7 +7,7 @@
 
 namespace Mantle\Query_Monitor;
 
-use Mantle\Framework\Contracts\Application;
+use Mantle\Contracts\Application;
 use Mantle\Http\Request;
 
 /**

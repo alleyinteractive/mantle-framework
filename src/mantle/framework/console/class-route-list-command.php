@@ -8,7 +8,7 @@
 namespace Mantle\Framework\Console;
 
 use Mantle\Console\Command;
-use Mantle\Framework\Contracts\Http\Routing\Router;
+use Mantle\Contracts\Http\Routing\Router;
 use Mantle\Http\Routing\Route;
 use Mantle\Support\Collection;
 

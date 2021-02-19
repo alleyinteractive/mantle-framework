@@ -8,7 +8,7 @@
 namespace Mantle\Framework\Console;
 
 use Mantle\Console\Command;
-use Mantle\Framework\Contracts\Application;
+use Mantle\Contracts\Application;
 use Mantle\Http\View\View_Finder;
 use Mantle\Support\Collection;
 use SplFileInfo;

@@ -7,7 +7,7 @@
 
 namespace Mantle\Scheduling;
 
-use Mantle\Framework\Contracts\Container;
+use Mantle\Contracts\Container;
 use Mantle\Framework\Exceptions\Handler;
 use Throwable;
 

@@ -7,7 +7,7 @@
 
 namespace Mantle\Queue;
 
-use Mantle\Framework\Contracts\Queue\Dispatcher;
+use Mantle\Contracts\Queue\Dispatcher;
 
 /**
  * Allow a job to be dispatchable.

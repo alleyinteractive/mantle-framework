@@ -10,7 +10,7 @@ namespace Mantle\Database\Model\Concerns;
 
 use Closure;
 use InvalidArgumentException;
-use Mantle\Framework\Contracts\Database\Scope;
+use Mantle\Contracts\Database\Scope;
 use Mantle\Support\Arr;
 
 /**

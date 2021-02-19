@@ -3,7 +3,7 @@ namespace Mantle\Tests\Queue;
 
 use Mantle\Framework\Application;
 use Mantle\Config\Repository;
-use Mantle\Framework\Contracts\Queue\Provider;
+use Mantle\Contracts\Queue\Provider;
 use Mantle\Framework\Providers\Queue_Service_Provider;
 use Mantle\Queue\Events\Job_Processed;
 use Mantle\Queue\Events\Job_Processing;

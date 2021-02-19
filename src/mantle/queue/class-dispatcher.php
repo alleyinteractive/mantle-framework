@@ -7,9 +7,9 @@
 
 namespace Mantle\Queue;
 
-use Mantle\Framework\Contracts\Container;
-use Mantle\Framework\Contracts\Queue\Can_Queue;
-use Mantle\Framework\Contracts\Queue\Queue_Manager;
+use Mantle\Contracts\Container;
+use Mantle\Contracts\Queue\Can_Queue;
+use Mantle\Contracts\Queue\Queue_Manager;
 
 /**
  * Queue Dispatcher

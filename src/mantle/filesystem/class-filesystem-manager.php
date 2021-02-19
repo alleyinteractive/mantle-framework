@@ -18,16 +18,16 @@ use League\Flysystem\Cached\Storage\AbstractCache;
 use League\Flysystem\Filesystem as Flysystem;
 use League\Flysystem\FilesystemInterface;
 use League\Flysystem\Cached\Storage\Memory as MemoryStore;
-use Mantle\Framework\Contracts\Application;
-use Mantle\Framework\Contracts\Filesystem\Filesystem;
-use Mantle\Framework\Contracts\Filesystem\Filesystem_Manager as Filesystem_Manager_Contract;
+use Mantle\Contracts\Application;
+use Mantle\Contracts\Filesystem\Filesystem;
+use Mantle\Contracts\Filesystem\Filesystem_Manager as Filesystem_Manager_Contract;
 use Mantle\Support\Arr;
 use RuntimeException;
 
 /**
  * Filesystem Manager
  *
- * @mixin \Mantle\Framework\Contracts\Filesystem\Filesystem
+ * @mixin \Mantle\Contracts\Filesystem\Filesystem
  */
 class Filesystem_Manager implements Filesystem_Manager_Contract {
 	/**
@@ -64,7 +64,7 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 * Retrieve a filesystem disk.
 	 *
 	 * @param string $name Disk name.
-	 * @return \Mantle\Framework\Contracts\Filesystem\Filesystem
+	 * @return \Mantle\Contracts\Filesystem\Filesystem
 	 *
 	 * @throws InvalidArgumentException Thrown on invalid disk configuration.
 	 */

@@ -10,7 +10,7 @@ namespace Mantle\Container;
 use ArrayAccess;
 use Closure;
 use Exception;
-use Mantle\Framework\Contracts\Container as Container_Contract;
+use Mantle\Contracts\Container as Container_Contract;
 use LogicException;
 use ReflectionClass;
 use ReflectionException;

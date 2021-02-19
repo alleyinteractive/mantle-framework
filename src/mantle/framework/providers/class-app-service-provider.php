@@ -7,7 +7,7 @@
 
 namespace Mantle\Framework\Providers;
 
-use Mantle\Framework\Contracts\Application;
+use Mantle\Contracts\Application;
 use Mantle\Scheduling\Schedule;
 use Mantle\Support\Service_Provider;
 

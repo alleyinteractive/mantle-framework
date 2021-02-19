@@ -9,7 +9,7 @@ namespace Mantle\Testing\Concerns;
 
 use Mantle\Framework\Application;
 use Mantle\Config\Repository;
-use Mantle\Framework\Contracts\Exceptions\Handler as Handler_Contract;
+use Mantle\Contracts\Exceptions\Handler as Handler_Contract;
 use Mantle\Framework\Exceptions\Handler;
 use Mantle\Support\Collection;
 
@@ -22,7 +22,7 @@ trait Create_Application {
 	 *
 	 * @return Application
 	 */
-	public function create_application(): \Mantle\Framework\Contracts\Application {
+	public function create_application(): \Mantle\Contracts\Application {
 		$app = new Application();
 
 		$this->resolve_application_bindings( $app );

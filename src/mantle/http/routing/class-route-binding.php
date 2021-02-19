@@ -8,7 +8,7 @@
 namespace Mantle\Http\Routing;
 
 use Closure;
-use Mantle\Framework\Contracts\Container;
+use Mantle\Contracts\Container;
 use Mantle\Database\Model\Model_Not_Found_Exception;
 use Mantle\Support\Str;
 

@@ -7,7 +7,7 @@
 
 namespace Mantle\Testing\Concerns;
 
-use Mantle\Framework\Contracts\Http\Kernel;
+use Mantle\Contracts\Http\Kernel;
 use Mantle\Database\Model\Model;
 use Mantle\Http\Kernel as HttpKernel;
 use Mantle\Http\Request;

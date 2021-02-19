@@ -7,7 +7,7 @@
 
 namespace Mantle\Cache;
 
-use Mantle\Framework\Contracts\Cache\Taggable_Repository;
+use Mantle\Contracts\Cache\Taggable_Repository;
 
 /**
  * WordPress Cache Repository

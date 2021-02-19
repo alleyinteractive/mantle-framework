@@ -1,7 +1,7 @@
 <?php
 namespace Mantle\Tests\Database\Model\Registration;
 
-use Mantle\Framework\Contracts\Database\Registrable_Meta;
+use Mantle\Contracts\Database\Registrable_Meta;
 use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Registration\Register_Meta;
 use Mantle\Testing\Framework_Test_Case;

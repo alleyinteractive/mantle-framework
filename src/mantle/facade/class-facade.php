@@ -7,7 +7,7 @@
 
 namespace Mantle\Facade;
 
-use Mantle\Framework\Contracts\Application;
+use Mantle\Contracts\Application;
 use RuntimeException;
 
 /**
@@ -21,7 +21,7 @@ abstract class Facade {
 	/**
 	 * The application instance being facaded.
 	 *
-	 * @var \Mantle\Framework\Contracts\Application
+	 * @var \Mantle\Contracts\Application
 	 */
 	protected static $app;
 
@@ -58,7 +58,7 @@ abstract class Facade {
 	/**
 	 * Set the application instance for the Facade.
 	 *
-	 * @param \Mantle\Framework\Contracts\Application $app Application instance.
+	 * @param \Mantle\Contracts\Application $app Application instance.
 	 */
 	public static function set_facade_application( Application $app = null ) {
 		static::$app = $app;

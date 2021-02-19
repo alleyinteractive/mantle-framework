@@ -7,7 +7,7 @@
 
 namespace Mantle\Queue;
 
-use Mantle\Framework\Contracts\Queue\Job as JobContract;
+use Mantle\Contracts\Queue\Job as JobContract;
 
 /**
  * WordPress Cron Queue Job

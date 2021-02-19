@@ -15,7 +15,7 @@ use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use League\Flysystem\Cached\CachedAdapter;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\FilesystemInterface;
-use Mantle\Framework\Contracts\Filesystem\Filesystem;
+use Mantle\Contracts\Filesystem\Filesystem;
 use Mantle\Http\Uploaded_File;
 use Mantle\Support\Arr;
 use Mantle\Support\Str;

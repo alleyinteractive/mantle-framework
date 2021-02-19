@@ -5,7 +5,7 @@ namespace Mantle\Tests\Providers;
 use Mantle\Framework\Application;
 use Mantle\Config\Repository;
 use Mantle\Framework\Providers\Model_Service_Provider;
-use Mantle\Framework\Contracts\Database\Registrable as Registrable_Contract;
+use Mantle\Contracts\Database\Registrable as Registrable_Contract;
 use Mantle\Database\Model\Model;
 use Mantle\Database\Model\Registration\Register_Post_Type;
 use Mantle\Framework\Providers\Provider_Exception;

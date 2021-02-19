@@ -9,9 +9,9 @@ namespace Mantle\Database\Model;
 
 use ArrayAccess;
 use JsonSerializable;
-use Mantle\Framework\Contracts\Http\Routing\Url_Routable;
-use Mantle\Framework\Contracts\Support\Arrayable;
-use Mantle\Framework\Contracts\Support\Jsonable;
+use Mantle\Contracts\Http\Routing\Url_Routable;
+use Mantle\Contracts\Support\Arrayable;
+use Mantle\Contracts\Support\Jsonable;
 use Mantle\Database\Query\Builder;
 use Mantle\Support\Collection;
 use Mantle\Support\Forward_Calls;

@@ -8,8 +8,8 @@
 namespace Mantle\Framework;
 
 use Closure;
-use Mantle\Framework\Contracts\Container;
-use Mantle\Framework\Contracts\Pipeline as PipelineContract;
+use Mantle\Contracts\Container;
+use Mantle\Contracts\Pipeline as PipelineContract;
 use RuntimeException;
 use Throwable;
 

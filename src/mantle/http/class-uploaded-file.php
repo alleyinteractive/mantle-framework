@@ -9,8 +9,8 @@
 namespace Mantle\Http;
 
 use Mantle\Container\Container;
-use Mantle\Framework\Contracts\Filesystem\Filesystem;
-use Mantle\Framework\Contracts\Filesystem\Filesystem_Manager;
+use Mantle\Contracts\Filesystem\Filesystem;
+use Mantle\Contracts\Filesystem\Filesystem_Manager;
 use Mantle\Database\Model\Attachment;
 use Mantle\Filesystem\File_Helpers;
 use Mantle\Support\Arr;

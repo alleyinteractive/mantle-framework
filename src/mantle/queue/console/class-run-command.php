@@ -8,7 +8,7 @@
 namespace Mantle\Queue\Console;
 
 use Mantle\Console\Command;
-use Mantle\Framework\Contracts\Application;
+use Mantle\Contracts\Application;
 use Mantle\Queue\Events\Job_Processed;
 use Mantle\Queue\Events\Job_Processing;
 use Mantle\Queue\Events\Run_Complete;

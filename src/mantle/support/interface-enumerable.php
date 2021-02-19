@@ -18,8 +18,8 @@
 namespace Mantle\Support;
 
 use Countable;
-use Mantle\Framework\Contracts\Support\Arrayable;
-use Mantle\Framework\Contracts\Support\Jsonable;
+use Mantle\Contracts\Support\Arrayable;
+use Mantle\Contracts\Support\Jsonable;
 use IteratorAggregate;
 use JsonSerializable;
 

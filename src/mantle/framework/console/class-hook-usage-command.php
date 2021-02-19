@@ -8,7 +8,7 @@
 namespace Mantle\Framework\Console;
 
 use Mantle\Console\Command;
-use Mantle\Framework\Contracts\Application;
+use Mantle\Contracts\Application;
 use Mantle\Support\Collection;
 use Mantle\Support\Str;
 use RecursiveCallbackFilterIterator;

@@ -8,7 +8,7 @@
 namespace Mantle\Http\Routing;
 
 use InvalidArgumentException;
-use Mantle\Framework\Contracts\Http\Routing\Url_Routable;
+use Mantle\Contracts\Http\Routing\Url_Routable;
 use Mantle\Database\Model\Model;
 use Mantle\Http\Routing\Events\Entity_Route_Added;
 use WP_Post_Type;

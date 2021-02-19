@@ -7,9 +7,9 @@
 
 namespace Mantle\Cache;
 
-use Mantle\Framework\Contracts\Application;
-use Mantle\Framework\Contracts\Cache\Factory;
-use Mantle\Framework\Contracts\Cache\Repository;
+use Mantle\Contracts\Application;
+use Mantle\Contracts\Cache\Factory;
+use Mantle\Contracts\Cache\Repository;
 use Mantle\Support\Driver_Manager;
 
 /**

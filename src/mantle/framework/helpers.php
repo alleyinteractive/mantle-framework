@@ -10,8 +10,8 @@
  */
 
 use Mantle\Framework\Application;
-use Mantle\Framework\Contracts\Http\Routing\Response_Factory;
-use Mantle\Framework\Contracts\Http\View\Factory as View_Factory;
+use Mantle\Contracts\Http\Routing\Response_Factory;
+use Mantle\Contracts\Http\View\Factory as View_Factory;
 use Mantle\Http\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Generator\UrlGenerator;

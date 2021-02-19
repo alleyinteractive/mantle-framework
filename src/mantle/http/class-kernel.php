@@ -10,16 +10,16 @@ namespace Mantle\Http;
 use Exception;
 use InvalidArgumentException;
 use Mantle\Framework\Application;
-use Mantle\Framework\Contracts\Http\Kernel as Kernel_Contract;
-use Mantle\Framework\Contracts\Http\Routing\Router;
-use Mantle\Framework\Contracts\Kernel as Core_Kernel_Contract;
-use Mantle\Framework\Contracts\Providers\Route_Service_Provider as Route_Service_Provider_Contract;
+use Mantle\Contracts\Http\Kernel as Kernel_Contract;
+use Mantle\Contracts\Http\Routing\Router;
+use Mantle\Contracts\Kernel as Core_Kernel_Contract;
+use Mantle\Contracts\Providers\Route_Service_Provider as Route_Service_Provider_Contract;
 use Mantle\Facade\Facade;
 use Mantle\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Throwable;
-use Mantle\Framework\Contracts\Exceptions\Handler as Exception_Handler;
+use Mantle\Contracts\Exceptions\Handler as Exception_Handler;
 
 /**
  * HTTP Kernel

@@ -8,7 +8,7 @@
 namespace Mantle\Http\Routing\Middleware;
 
 use Closure;
-use Mantle\Framework\Contracts\Application;
+use Mantle\Contracts\Application;
 use Mantle\Http\Request;
 use Mantle\Query_Monitor\Query_Monitor_Service_Provider;
 

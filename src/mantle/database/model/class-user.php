@@ -7,7 +7,7 @@
 
 namespace Mantle\Database\Model;
 
-use Mantle\Framework\Contracts;
+use Mantle\Contracts;
 use Mantle\Framework\Helpers;
 
 /**

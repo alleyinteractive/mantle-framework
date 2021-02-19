@@ -8,8 +8,8 @@
 
 namespace Mantle\Http\View;
 
-use Mantle\Framework\Contracts\Http\View\Factory as Factory_Contract;
-use Mantle\Framework\Contracts\View\Engine;
+use Mantle\Contracts\Http\View\Factory as Factory_Contract;
+use Mantle\Contracts\View\Engine;
 use Mantle\Database\Model\Post;
 use Mantle\Support\Arr;
 

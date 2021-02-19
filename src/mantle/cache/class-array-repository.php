@@ -8,7 +8,7 @@
 namespace Mantle\Cache;
 
 use Carbon\Carbon;
-use Mantle\Framework\Contracts\Cache\Repository as Repository_Contract;
+use Mantle\Contracts\Cache\Repository as Repository_Contract;
 
 /**
  * Array Cache Repository

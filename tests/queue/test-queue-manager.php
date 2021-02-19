@@ -3,7 +3,7 @@ namespace Mantle\Tests\Queue;
 
 use Mantle\Framework\Application;
 use Mantle\Config\Repository;
-use Mantle\Framework\Contracts\Queue\Provider;
+use Mantle\Contracts\Queue\Provider;
 use Mantle\Queue\Queue_Manager;
 use Mockery as m;
 

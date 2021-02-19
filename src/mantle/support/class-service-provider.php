@@ -7,9 +7,9 @@
 
 namespace Mantle\Support;
 
-use Mantle\Framework\Contracts\Providers as ProviderContracts;
+use Mantle\Contracts\Providers as ProviderContracts;
 use Mantle\Console\Command;
-use Mantle\Framework\Contracts\Application;
+use Mantle\Contracts\Application;
 use Mantle\Support\Str;
 use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
 

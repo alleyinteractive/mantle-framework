@@ -7,7 +7,7 @@
 
 namespace Mantle\Queue\Events;
 
-use Mantle\Framework\Contracts\Queue\Provider;
+use Mantle\Contracts\Queue\Provider;
 
 /**
  * Job Processed Event

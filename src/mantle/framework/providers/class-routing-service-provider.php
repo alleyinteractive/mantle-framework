@@ -7,7 +7,7 @@
 
 namespace Mantle\Framework\Providers;
 
-use Mantle\Framework\Contracts\Http\Routing\Response_Factory as Response_Factory_Contract;
+use Mantle\Contracts\Http\Routing\Response_Factory as Response_Factory_Contract;
 use Mantle\Http\Routing\Redirector;
 use Mantle\Http\Routing\Response_Factory;
 use Mantle\Http\Routing\Router;

@@ -245,7 +245,7 @@ class Test_Router extends Framework_Test_Case {
 		$router = new Router( $events, $this->app );
 
 		$this->app->instance( 'request', new Request() );
-		$this->app->instance( \Mantle\Framework\Contracts\Http\Routing\Router::class, $router );
+		$this->app->instance( \Mantle\Contracts\Http\Routing\Router::class, $router );
 
 		return $router;
 	}

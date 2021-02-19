@@ -7,7 +7,7 @@
 
 namespace Mantle\Database\Model\Registration;
 
-use Mantle\Framework\Contracts\Database\Registrable as Registrable_Contract;
+use Mantle\Contracts\Database\Registrable as Registrable_Contract;
 use Mantle\Database\Model\Concerns\Custom_Term_Link;
 use Mantle\Database\Model\Model_Exception;
 

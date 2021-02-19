@@ -8,7 +8,7 @@
 namespace Mantle\Log;
 
 use InvalidArgumentException;
-use Mantle\Framework\Contracts\Application;
+use Mantle\Contracts\Application;
 use Monolog\Handler\AbstractHandler;
 use Monolog\Handler\ErrorLogHandler;
 use Monolog\Handler\GroupHandler;

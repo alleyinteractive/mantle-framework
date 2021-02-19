@@ -7,8 +7,8 @@
 
 namespace Mantle\Queue;
 
-use Mantle\Framework\Contracts\Events\Dispatcher;
-use Mantle\Framework\Contracts\Queue\Queue_Manager;
+use Mantle\Contracts\Events\Dispatcher;
+use Mantle\Contracts\Queue\Queue_Manager;
 use Mantle\Queue\Events\Job_Processed;
 use Mantle\Queue\Events\Job_Processing;
 use Mantle\Queue\Events\Run_Complete;

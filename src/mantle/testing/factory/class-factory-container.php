@@ -7,7 +7,7 @@
 
 namespace Mantle\Testing\Factory;
 
-use Mantle\Framework\Contracts\Container;
+use Mantle\Contracts\Container;
 
 /**
  * Collect all the Unit Test Factories for IDE Support

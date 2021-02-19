@@ -8,8 +8,8 @@
 namespace Mantle\Console;
 
 use Mantle\Framework\Application;
-use Mantle\Framework\Contracts\Console\Kernel as Kernel_Contract;
-use Mantle\Framework\Contracts\Kernel as Core_Kernel_Contract;
+use Mantle\Contracts\Console\Kernel as Kernel_Contract;
+use Mantle\Contracts\Kernel as Core_Kernel_Contract;
 use Exception;
 use Mantle\Support\Str;
 use ReflectionClass;

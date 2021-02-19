@@ -7,7 +7,7 @@
 
 namespace Mantle\View\Engines;
 
-use Mantle\Framework\Contracts\View\Engine;
+use Mantle\Contracts\View\Engine;
 
 /**
  * File Engine to load raw view files.

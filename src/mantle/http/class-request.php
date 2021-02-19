@@ -9,7 +9,7 @@
 namespace Mantle\Http;
 
 use ArrayAccess;
-use Mantle\Framework\Contracts\Support\Arrayable;
+use Mantle\Contracts\Support\Arrayable;
 use Mantle\Http\Routing\Route;
 use Mantle\Support\Arr;
 use Mantle\Support\Str;

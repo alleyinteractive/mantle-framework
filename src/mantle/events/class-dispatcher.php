@@ -11,7 +11,7 @@ namespace Mantle\Events;
 
 use Exception;
 use Mantle\Container\Container;
-use Mantle\Framework\Contracts\Events\Dispatcher as Dispatcher_Contract;
+use Mantle\Contracts\Events\Dispatcher as Dispatcher_Contract;
 use Mantle\Support\Arr;
 use Mantle\Support\Str;
 use ReflectionClass;

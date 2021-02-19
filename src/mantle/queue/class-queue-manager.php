@@ -8,9 +8,9 @@
 namespace Mantle\Queue;
 
 use InvalidArgumentException;
-use Mantle\Framework\Contracts\Application;
-use Mantle\Framework\Contracts\Queue\Provider;
-use Mantle\Framework\Contracts\Queue\Queue_Manager as Queue_Manager_Contract;
+use Mantle\Contracts\Application;
+use Mantle\Contracts\Queue\Provider;
+use Mantle\Contracts\Queue\Queue_Manager as Queue_Manager_Contract;
 
 /**
  * Queue Manager

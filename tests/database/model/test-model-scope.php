@@ -2,7 +2,7 @@
 namespace Mantle\Tests\Database\Model;
 
 use Faker\Factory as Faker;
-use Mantle\Framework\Contracts\Database\Scope;
+use Mantle\Contracts\Database\Scope;
 use Mantle\Database\Model\Model;
 use Mantle\Database\Model\Post;
 use Mantle\Database\Query\Builder;

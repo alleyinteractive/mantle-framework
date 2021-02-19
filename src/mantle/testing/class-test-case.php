@@ -8,7 +8,7 @@
 namespace Mantle\Testing;
 
 use Mantle\Framework\Alias_Loader;
-use Mantle\Framework\Contracts\Application;
+use Mantle\Contracts\Application;
 use Mantle\Database\Model\Model;
 use Mantle\Facade\Facade;
 use Mantle\Support\Collection;
@@ -74,7 +74,7 @@ abstract class Test_Case extends BaseTestCase {
 	/**
 	 * Creates the application.
 	 *
-	 * @return \Mantle\Framework\Contracts\Application
+	 * @return \Mantle\Contracts\Application
 	 */
 	abstract public function create_application(): Application;
 

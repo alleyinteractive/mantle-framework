@@ -9,7 +9,7 @@ namespace Mantle\View\Engines;
 
 use Closure;
 use InvalidArgumentException;
-use Mantle\Framework\Contracts\View\Engine;
+use Mantle\Contracts\View\Engine;
 
 /**
  * View Engine Resolver

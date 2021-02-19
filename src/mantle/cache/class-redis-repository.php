@@ -8,7 +8,7 @@
 namespace Mantle\Cache;
 
 use Predis\Client;
-use Mantle\Framework\Contracts\Cache\Taggable_Repository;
+use Mantle\Contracts\Cache\Taggable_Repository;
 
 /**
  * Redis Cache Repository

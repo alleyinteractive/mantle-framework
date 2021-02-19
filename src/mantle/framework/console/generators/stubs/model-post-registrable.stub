@@ -7,7 +7,7 @@
 
 namespace App\Models;
 
-use Mantle\Framework\Contracts\Database\Registrable;
+use Mantle\Contracts\Database\Registrable;
 use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Registration\Register_Post_Type;
 

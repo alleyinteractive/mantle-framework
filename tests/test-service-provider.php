@@ -3,7 +3,7 @@ namespace Mantle\Tests;
 
 use Mantle\Framework\Application;
 use Mantle\Console\Command;
-use Mantle\Framework\Contracts\Providers as ProviderContracts;
+use Mantle\Contracts\Providers as ProviderContracts;
 use Mantle\Support\Service_Provider;
 use Mockery as m;
 

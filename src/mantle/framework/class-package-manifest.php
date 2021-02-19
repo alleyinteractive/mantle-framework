@@ -7,7 +7,7 @@
 
 namespace Mantle\Framework;
 
-use Mantle\Framework\Contracts\Application;
+use Mantle\Contracts\Application;
 use function Mantle\Framework\Helpers\collect;
 
 /**
@@ -62,7 +62,7 @@ class Package_Manifest {
 				$this->build();
 
 				try {
-					$kernel = $app->make( \Mantle\Framework\Contracts\Console\Kernel::class );
+					$kernel = $app->make( \Mantle\Contracts\Console\Kernel::class );
 					$kernel->log( 'Package Manifest rebuilt.' );
 				} catch ( \Throwable $e ) {
 					// Ignore if the kernel isn't found.

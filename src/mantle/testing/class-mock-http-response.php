@@ -7,7 +7,7 @@
 
 namespace Mantle\Testing;
 
-use Mantle\Framework\Contracts\Support\Arrayable;
+use Mantle\Contracts\Support\Arrayable;
 
 /**
  * This class provides a mock HTTP response to be able to simulate HTTP requests

@@ -7,7 +7,7 @@
 
 namespace Mantle\Http\Routing;
 
-use Mantle\Framework\Contracts\Http\Routing\Url_Generator as Generator_Contract;
+use Mantle\Contracts\Http\Routing\Url_Generator as Generator_Contract;
 use Mantle\Http\Request;
 use Mantle\Support\Arr;
 use Psr\Log\LoggerInterface;

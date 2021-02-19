@@ -7,7 +7,7 @@
 
 namespace Mantle\Http\Routing;
 
-use Mantle\Framework\Contracts\Http\Routing\Response_Factory as Factory_Contract;
+use Mantle\Contracts\Http\Routing\Response_Factory as Factory_Contract;
 use Mantle\Http\Response;
 use Mantle\Http\View\Factory as View_Factory;
 use Mantle\Support\Str;

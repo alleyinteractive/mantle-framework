@@ -7,8 +7,8 @@
 
 namespace Mantle\Framework\Providers;
 
-use Mantle\Framework\Contracts\Queue\Dispatcher as Dispatcher_Contract;
-use Mantle\Framework\Contracts\Queue\Queue_Manager as Queue_Manager_Contract;
+use Mantle\Contracts\Queue\Dispatcher as Dispatcher_Contract;
+use Mantle\Contracts\Queue\Queue_Manager as Queue_Manager_Contract;
 use Mantle\Queue\Console\Run_Command;
 use Mantle\Queue\Dispatcher;
 use Mantle\Queue\Events\Job_Processed;

@@ -8,9 +8,9 @@
 namespace Mantle\Framework;
 
 use Mantle\Container\Container;
-use Mantle\Framework\Contracts\Application as Application_Contract;
-use Mantle\Framework\Contracts\Container as Container_Contract;
-use Mantle\Framework\Contracts\Kernel as Kernel_Contract;
+use Mantle\Contracts\Application as Application_Contract;
+use Mantle\Contracts\Container as Container_Contract;
+use Mantle\Contracts\Kernel as Kernel_Contract;
 use Mantle\Filesystem\Filesystem;
 use Mantle\Log\Log_Service_Provider;
 use Mantle\Framework\Providers\Event_Service_Provider;
@@ -316,18 +316,18 @@ class Application extends Container implements Application_Contract {
 	 */
 	protected function register_core_aliases() {
 		$core_aliases = [
-			'app'         => [ static::class, \Mantle\Framework\Contracts\Application::class ],
-			'config'      => [ \Mantle\Config\Repository::class, \Mantle\Framework\Contracts\Config\Repository::class ],
+			'app'         => [ static::class, \Mantle\Contracts\Application::class ],
+			'config'      => [ \Mantle\Config\Repository::class, \Mantle\Contracts\Config\Repository::class ],
 			'files'       => [ \Mantle\Filesystem\Filesystem::class ],
-			'filesystem'  => [ \Mantle\Filesystem\Filesystem_Manager::class, \Mantle\Framework\Contracts\Filesystem\Filesystem_Manager::class ],
+			'filesystem'  => [ \Mantle\Filesystem\Filesystem_Manager::class, \Mantle\Contracts\Filesystem\Filesystem_Manager::class ],
 			'log'         => [ \Mantle\Log\Log_Manager::class, \Psr\Log\LoggerInterface::class ],
-			'queue'       => [ \Mantle\Queue\Queue_Manager::class, \Mantle\Framework\Contracts\Queue\Queue_Manager::class ],
+			'queue'       => [ \Mantle\Queue\Queue_Manager::class, \Mantle\Contracts\Queue\Queue_Manager::class ],
 			'redirect'    => [ \Mantle\Http\Routing\Redirector::class ],
 			'request'     => [ \Mantle\Http\Request::class, \Symfony\Component\HttpFoundation\Request::class ],
-			'router'      => [ \Mantle\Http\Routing\Router::class, \Mantle\Framework\Contracts\Http\Routing\Router::class ],
-			'url'         => [ \Mantle\Http\Routing\Url_Generator::class, \Mantle\Framework\Contracts\Http\Routing\Url_Generator::class ],
-			'view.loader' => [ \Mantle\Http\View\View_Finder::class, \Mantle\Framework\Contracts\Http\View\View_Finder::class ],
-			'view'        => [ \Mantle\Http\View\Factory::class, \Mantle\Framework\Contracts\Http\View\Factory::class ],
+			'router'      => [ \Mantle\Http\Routing\Router::class, \Mantle\Contracts\Http\Routing\Router::class ],
+			'url'         => [ \Mantle\Http\Routing\Url_Generator::class, \Mantle\Contracts\Http\Routing\Url_Generator::class ],
+			'view.loader' => [ \Mantle\Http\View\View_Finder::class, \Mantle\Contracts\Http\View\View_Finder::class ],
+			'view'        => [ \Mantle\Http\View\Factory::class, \Mantle\Contracts\Http\View\Factory::class ],
 		];
 
 		foreach ( $core_aliases as $key => $aliases ) {
@@ -351,7 +351,7 @@ class Application extends Container implements Application_Contract {
 	/**
 	 * Run the given array of bootstrap classes.
 	 *
-	 * Bootstrap classes should implement `Mantle\Framework\Contracts\Bootstrapable`.
+	 * Bootstrap classes should implement `Mantle\Contracts\Bootstrapable`.
 	 *
 	 * @param string[]        $bootstrappers Class names of packages to boot.
 	 * @param Kernel_Contract $kernel Kernel instance.

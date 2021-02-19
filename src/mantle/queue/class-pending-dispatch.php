@@ -7,8 +7,8 @@
 
 namespace Mantle\Queue;
 
-use Mantle\Framework\Contracts\Queue\Dispatcher;
-use Mantle\Framework\Contracts\Queue\Job;
+use Mantle\Contracts\Queue\Dispatcher;
+use Mantle\Contracts\Queue\Job;
 
 /**
  * Allow jobs to be added to the queue with ease.

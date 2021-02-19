@@ -11,8 +11,8 @@ namespace Mantle\Database\Query;
 
 use Closure;
 use Mantle\Container\Container;
-use Mantle\Framework\Contracts\Database\Scope;
-use Mantle\Framework\Contracts\Paginator\Paginator as PaginatorContract;
+use Mantle\Contracts\Database\Scope;
+use Mantle\Contracts\Paginator\Paginator as PaginatorContract;
 use Mantle\Database\Model\Model;
 use Mantle\Database\Model\Model_Not_Found_Exception;
 use Mantle\Database\Model\Relations\Relation;
