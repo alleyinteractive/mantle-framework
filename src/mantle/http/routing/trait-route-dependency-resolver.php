@@ -10,6 +10,7 @@
 namespace Mantle\Http\Routing;
 
 use Mantle\Support\Arr;
+use Mantle\Support\Reflector;
 use ReflectionFunctionAbstract;
 use ReflectionMethod;
 use ReflectionParameter;
@@ -77,7 +78,7 @@ trait Route_Dependency_Resolver {
 	 * @return mixed
 	 */
 	protected function transform_dependency( ReflectionParameter $parameter, $parameters, $skippable_value ) {
-		$class = $parameter->getClass();
+		$class = Reflector::get_parameter_class_name( $parameter );
 
 		// If the parameter has a type-hinted class, we will check to see if it is already in
 		// the list of parameters. If it is we will just skip it as it is probably a model

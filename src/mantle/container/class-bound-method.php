@@ -9,6 +9,7 @@ namespace Mantle\Container;
 
 use Closure;
 use InvalidArgumentException;
+use Mantle\Support\Reflector;
 use ReflectionFunction;
 use ReflectionMethod;
 
@@ -174,12 +175,20 @@ class Bound_Method {
 			$dependencies[] = $parameters[ $parameter->name ];
 
 			unset( $parameters[ $parameter->name ] );
-		} elseif ( $parameter->getClass() && array_key_exists( $parameter->getClass()->name, $parameters ) ) {
-			$dependencies[] = $parameters[ $parameter->getClass()->name ];
+		} elseif (! is_null($className = Reflector::get_parameter_class_name($parameter))) {
+			if (array_key_exists($className, $parameters)) {
+					$dependencies[] = $parameters[$className];
 
-			unset( $parameters[ $parameter->getClass()->name ] );
-		} elseif ( $parameter->getClass() ) {
-			$dependencies[] = $container->make( $parameter->getClass()->name );
+					unset($parameters[$className]);
+			} else {
+					$dependencies[] = $container->make($className);
+			}
+		// } elseif ( $parameter->getClass() && array_key_exists( $parameter->getClass()->name, $parameters ) ) {
+		// 	$dependencies[] = $parameters[ $parameter->getClass()->name ];
+
+		// 	unset( $parameters[ $parameter->getClass()->name ] );
+		// } elseif ( $parameter->getClass() ) {
+		// 	$dependencies[] = $container->make( $parameter->getClass()->name );
 		} elseif ( $parameter->isDefaultValueAvailable() ) {
 			$dependencies[] = $parameter->getDefaultValue();
 		} elseif ( ! $parameter->isOptional() && ! array_key_exists( $parameter->name, $parameters ) ) {

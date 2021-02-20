@@ -7,6 +7,7 @@
 
 namespace Mantle\Http\Routing;
 
+use Mantle\Support\Reflector;
 use Mantle\Support\Str;
 use ReflectionClass;
 use ReflectionFunction;
@@ -46,7 +47,7 @@ class Route_Signature_Parameters {
 		return is_null( $sub_class ) ? $parameters : array_filter(
 			$parameters,
 			function ( $p ) use ( $sub_class ) {
-				return $p->getClass() && $p->getClass()->isSubclassOf( $sub_class );
+				return Reflector::is_parameter_subclass_of( $p, $sub_class );
 			}
 		);
 	}

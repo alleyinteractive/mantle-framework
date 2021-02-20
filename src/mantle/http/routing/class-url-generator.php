@@ -57,7 +57,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 * @param Request         $request Request object.
 	 * @param LoggerInterface $logger Logger instance.
 	 */
-	public function __construct( string $root_url = '', RouteCollection $routes, Request $request, LoggerInterface $logger ) {
+	public function __construct( string $root_url, RouteCollection $routes, Request $request, LoggerInterface $logger ) {
 		$this->root_url = $root_url;
 		$this->routes   = $routes;
 		$this->logger   = $logger;
