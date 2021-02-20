@@ -1,8 +1,8 @@
 <?php
 namespace Mantle\Tests\Database\Model;
 
-use Mantle\Framework\Database\Model\Site;
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Database\Model\Site;
+use Mantle\Testing\Framework_Test_Case;
 
 
 class Test_Site_Object extends Framework_Test_Case {

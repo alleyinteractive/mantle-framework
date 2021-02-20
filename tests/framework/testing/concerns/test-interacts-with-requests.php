@@ -1,8 +1,8 @@
 <?php
 namespace Mantle\Tests\Framework\Testing\Concerns;
 
-use Mantle\Framework\Testing\Mock_Http_Response;
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Testing\Mock_Http_Response;
+use Mantle\Testing\Framework_Test_Case;
 
 class Test_Interacts_With_Requests extends Framework_Test_Case {
 	public function test_fake_request() {

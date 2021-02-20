@@ -7,9 +7,10 @@
 
 namespace Mantle\Framework\Console;
 
-use Mantle\Framework\Contracts\Application;
-use Mantle\Framework\Http\View\View_Finder;
-use Mantle\Framework\Support\Collection;
+use Mantle\Console\Command;
+use Mantle\Contracts\Application;
+use Mantle\Http\View\View_Finder;
+use Mantle\Support\Collection;
 use SplFileInfo;
 use Symfony\Component\Finder\Finder;
 

@@ -7,12 +7,12 @@
 
 namespace Mantle\Framework\Providers;
 
-use Mantle\Framework\Contracts\Http\Routing\Response_Factory as Response_Factory_Contract;
-use Mantle\Framework\Http\Routing\Redirector;
-use Mantle\Framework\Http\Routing\Response_Factory;
-use Mantle\Framework\Http\Routing\Router;
-use Mantle\Framework\Http\Routing\Url_Generator;
-use Mantle\Framework\Service_Provider;
+use Mantle\Contracts\Http\Routing\Response_Factory as Response_Factory_Contract;
+use Mantle\Http\Routing\Redirector;
+use Mantle\Http\Routing\Response_Factory;
+use Mantle\Http\Routing\Router;
+use Mantle\Http\Routing\Url_Generator;
+use Mantle\Support\Service_Provider;
 
 /**
  * Routing Service Provider

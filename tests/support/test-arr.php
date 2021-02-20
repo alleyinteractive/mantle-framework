@@ -3,14 +3,14 @@
 namespace Mantle\Tests\Support;
 
 use ArrayObject;
-use Mantle\Framework\Support\Arr;
+use Mantle\Support\Arr;
 use Carbon\Carbon;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
 // Collection-specific tests are commented out until Collection is available.
-// use Mantle\Framework\Support\Collection;
+// use Mantle\Support\Collection;
 
 class SupportArrTest extends TestCase {
 

@@ -7,9 +7,9 @@
 
 namespace Mantle\Framework\Providers;
 
-use Mantle\Framework\Contracts\Application;
-use Mantle\Framework\Scheduling\Schedule;
-use Mantle\Framework\Service_Provider;
+use Mantle\Contracts\Application;
+use Mantle\Scheduling\Schedule;
+use Mantle\Support\Service_Provider;
 
 use function Mantle\Framework\Helpers\tap;
 

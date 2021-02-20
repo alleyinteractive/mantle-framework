@@ -7,7 +7,7 @@
 
 namespace Mantle\Framework\Helpers;
 
-use Mantle\Framework\Support;
+use Mantle\Support;
 
 /**
  * Return the default value of the given value.
@@ -42,7 +42,7 @@ function data_get( $target, $key, $default = null ) {
 		}
 
 		if ( '*' === $segment ) {
-			if ( $target instanceof \Mantle\Framework\Support\Collection ) {
+			if ( $target instanceof \Mantle\Support\Collection ) {
 					$target = $target->all();
 			} elseif ( ! is_array( $target ) ) {
 					return value( $default );

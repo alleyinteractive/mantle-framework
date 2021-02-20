@@ -3,12 +3,12 @@
 namespace Mantle\Tests\Framework\Http;
 
 use Mantle\Framework\Application;
-use Mantle\Framework\Database\Model\Post;
-use Mantle\Framework\Events\Dispatcher;
-use Mantle\Framework\Http\Request;
-use Mantle\Framework\Http\Routing\Middleware\Substitute_Bindings;
-use Mantle\Framework\Http\Routing\Router;
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Database\Model\Post;
+use Mantle\Events\Dispatcher;
+use Mantle\Http\Request;
+use Mantle\Http\Routing\Middleware\Substitute_Bindings;
+use Mantle\Http\Routing\Router;
+use Mantle\Testing\Framework_Test_Case;
 
 class Test_Router extends Framework_Test_Case {
 	public function test_basic_dispatching() {
@@ -245,7 +245,7 @@ class Test_Router extends Framework_Test_Case {
 		$router = new Router( $events, $this->app );
 
 		$this->app->instance( 'request', new Request() );
-		$this->app->instance( \Mantle\Framework\Contracts\Http\Routing\Router::class, $router );
+		$this->app->instance( \Mantle\Contracts\Http\Routing\Router::class, $router );
 
 		return $router;
 	}

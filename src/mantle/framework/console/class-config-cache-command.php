@@ -8,11 +8,10 @@
 namespace Mantle\Framework\Console;
 
 use LogicException;
-use Mantle\Framework\Contracts\Application;
-use Mantle\Framework\Contracts\Console\Kernel;
-use Mantle\Framework\Filesystem\Filesystem;
-use Mantle\Framework\Providers\Provider_Exception;
-use Mantle\Framework\Support\String_Replacements;
+use Mantle\Contracts\Application;
+use Mantle\Contracts\Console\Kernel;
+use Mantle\Console\Command;
+use Mantle\Filesystem\Filesystem;
 use Throwable;
 
 /**

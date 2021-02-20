@@ -8,12 +8,12 @@
 namespace Mantle\Framework\Providers;
 
 use Illuminate\Filesystem\Filesystem;
-use Mantle\Framework\Http\View\Factory;
-use Mantle\Framework\Http\View\View_Finder;
-use Mantle\Framework\Service_Provider;
-use Mantle\Framework\View\Engines\Engine_Resolver;
-use Mantle\Framework\View\Engines\File_Engine;
-use Mantle\Framework\View\Engines\Php_Engine;
+use Mantle\Http\View\Factory;
+use Mantle\Http\View\View_Finder;
+use Mantle\Support\Service_Provider;
+use Mantle\View\Engines\Engine_Resolver;
+use Mantle\View\Engines\File_Engine;
+use Mantle\View\Engines\Php_Engine;
 use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\View\Engines\CompilerEngine;
 

@@ -2,10 +2,10 @@
 namespace Mantle\Tests\Framework\Log;
 
 use Mantle\Framework\Application;
-use Mantle\Framework\Config\Repository;
-use Mantle\Framework\Facade\Facade;
-use Mantle\Framework\Facade\Log;
-use Mantle\Framework\Log\Log_Manager;
+use Mantle\Config\Repository;
+use Mantle\Facade\Facade;
+use Mantle\Facade\Log;
+use Mantle\Log\Log_Manager;
 use Monolog\Handler\TestHandler;
 
 class Test_Log_Manager extends \Mockery\Adapter\Phpunit\MockeryTestCase {

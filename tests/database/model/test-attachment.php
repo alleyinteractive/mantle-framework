@@ -1,8 +1,8 @@
 <?php
 namespace Mantle\Tests\Database\Model;
 
-use Mantle\Framework\Database\Model\Attachment;
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Database\Model\Attachment;
+use Mantle\Testing\Framework_Test_Case;
 
 class Test_Attachment extends Framework_Test_Case {
 	/**

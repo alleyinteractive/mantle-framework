@@ -8,7 +8,7 @@
 namespace Mantle\Framework\Bootstrap;
 
 use Mantle\Framework\Application;
-use Mantle\Framework\Contracts\Bootstrapable as Bootstrapable_Contract;
+use Mantle\Contracts\Bootstrapable as Bootstrapable_Contract;
 
 /**
  * Register the Service Providers with the Application from the config.

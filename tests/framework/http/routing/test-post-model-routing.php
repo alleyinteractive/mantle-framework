@@ -1,13 +1,13 @@
 <?php
 namespace Mantle\Tests\Framework\Http\Routing;
 
-use Mantle\Framework\Contracts\Database\Registrable;
-use Mantle\Framework\Database\Model\Concerns\Custom_Post_Permalink;
-use Mantle\Framework\Database\Model\Post;
-use Mantle\Framework\Database\Model\Registration\Register_Post_Type;
-use Mantle\Framework\Facade\Route;
-use Mantle\Framework\Http\Controller;
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Contracts\Database\Registrable;
+use Mantle\Database\Model\Concerns\Custom_Post_Permalink;
+use Mantle\Database\Model\Post;
+use Mantle\Database\Model\Registration\Register_Post_Type;
+use Mantle\Facade\Route;
+use Mantle\Http\Controller;
+use Mantle\Testing\Framework_Test_Case;
 
 class Test_Post_Model_Routing extends Framework_Test_Case {
 	protected function setUp(): void {

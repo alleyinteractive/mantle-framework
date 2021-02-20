@@ -9,9 +9,9 @@ namespace Mantle\Framework\Bootstrap;
 
 use Exception;
 use Mantle\Framework\Application;
-use Mantle\Framework\Config\Repository;
-use Mantle\Framework\Contracts\Config\Repository as Repository_Contract;
-use Mantle\Framework\Support\Arr;
+use Mantle\Config\Repository;
+use Mantle\Contracts\Config\Repository as Repository_Contract;
+use Mantle\Support\Arr;
 use Symfony\Component\Finder\Finder;
 use Mantle\Framework\Helpers;
 

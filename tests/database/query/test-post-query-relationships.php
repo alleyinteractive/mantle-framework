@@ -1,13 +1,13 @@
 <?php
 namespace Mantle\Tests\Database\Builder\Post_Query_Relationships;
 
-use Mantle\Framework\Database\Model\Post;
-use Mantle\Framework\Database\Model\Concerns\Has_Relationships as Relationships;
-use Mantle\Framework\Database\Model\Relations\Relation;
-use Mantle\Framework\Database\Model\Term;
+use Mantle\Database\Model\Post;
+use Mantle\Database\Model\Concerns\Has_Relationships as Relationships;
+use Mantle\Database\Model\Relations\Relation;
+use Mantle\Database\Model\Term;
 use Mantle\Framework\Providers\Model_Service_Provider;
-use Mantle\Framework\Testing\Framework_Test_Case;
-use Mantle\Framework\Testing\Utils;
+use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\Utils;
 
 class Test_Post_Query_Relationships extends Framework_Test_Case {
 	protected function setUp(): void {

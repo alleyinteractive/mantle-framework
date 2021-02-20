@@ -2,8 +2,8 @@
 
 namespace Illuminate\Tests\Console\Scheduling;
 
-use Mantle\Framework\Scheduling\Event;
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Scheduling\Event;
+use Mantle\Testing\Framework_Test_Case;
 use Mockery as m;
 
 class Test_Frequency extends Framework_Test_Case {

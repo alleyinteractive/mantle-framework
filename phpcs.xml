@@ -40,4 +40,12 @@
 	<rule ref="Internal.NoCodeFound">
 		<exclude-pattern>*.blade.php</exclude-pattern>
 	</rule>
+
+	<rule ref="Squiz.PHP.DisallowMultipleAssignments.Found">
+		<severity>0</severity>
+	</rule>
+
+	<rule ref="Squiz.PHP.DisallowMultipleAssignments.FoundInControlStructure">
+		<severity>0</severity>
+	</rule>
 </ruleset>

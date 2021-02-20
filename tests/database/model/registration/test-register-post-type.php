@@ -1,15 +1,15 @@
 <?php
 namespace Mantle\Tests\Database\Model\Registration;
 
-use Mantle\Framework\Contracts\Database\Registrable;
-use Mantle\Framework\Contracts\Database\Registrable_Fields;
-use Mantle\Framework\Database\Model\Model_Exception;
-use Mantle\Framework\Database\Model\Post;
-use Mantle\Framework\Database\Model\Registration\Register_Post_Type;
-use Mantle\Framework\Database\Model\Registration\Register_Rest_Fields;
+use Mantle\Contracts\Database\Registrable;
+use Mantle\Contracts\Database\Registrable_Fields;
+use Mantle\Database\Model\Model_Exception;
+use Mantle\Database\Model\Post;
+use Mantle\Database\Model\Registration\Register_Post_Type;
+use Mantle\Database\Model\Registration\Register_Rest_Fields;
 use Mockery as m;
-use Mantle\Framework\REST_API\Registered_REST_Field;
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\REST_API\Registered_REST_Field;
+use Mantle\Testing\Framework_Test_Case;
 
 class Test_Register_Post_Type extends Framework_Test_Case {
 	protected function setUp(): void {

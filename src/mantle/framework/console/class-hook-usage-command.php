@@ -7,9 +7,10 @@
 
 namespace Mantle\Framework\Console;
 
-use Mantle\Framework\Contracts\Application;
-use Mantle\Framework\Support\Collection;
-use Mantle\Framework\Support\Str;
+use Mantle\Console\Command;
+use Mantle\Contracts\Application;
+use Mantle\Support\Collection;
+use Mantle\Support\Str;
 use RecursiveCallbackFilterIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;

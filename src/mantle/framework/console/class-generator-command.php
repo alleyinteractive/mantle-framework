@@ -7,9 +7,10 @@
 
 namespace Mantle\Framework\Console;
 
-use Mantle\Framework\Contracts\Application as Application_Contract;
+use Mantle\Console\Command;
+use Mantle\Contracts\Application as Application_Contract;
 use Mantle\Framework\Providers\Provider_Exception;
-use Mantle\Framework\Support\String_Replacements;
+use Mantle\Support\String_Replacements;
 
 /**
  * Generator Command

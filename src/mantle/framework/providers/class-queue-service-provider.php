@@ -7,18 +7,18 @@
 
 namespace Mantle\Framework\Providers;
 
-use Mantle\Framework\Contracts\Queue\Dispatcher as Dispatcher_Contract;
-use Mantle\Framework\Contracts\Queue\Queue_Manager as Queue_Manager_Contract;
-use Mantle\Framework\Queue\Console\Run_Command;
-use Mantle\Framework\Queue\Dispatcher;
-use Mantle\Framework\Queue\Events\Job_Processed;
-use Mantle\Framework\Queue\Events\Run_Complete;
-use Mantle\Framework\Queue\Queue_Manager;
-use Mantle\Framework\Queue\Worker;
-use Mantle\Framework\Queue\Wp_Cron_Job;
-use Mantle\Framework\Queue\Wp_Cron_Provider;
-use Mantle\Framework\Queue\Wp_Cron_Scheduler;
-use Mantle\Framework\Service_Provider;
+use Mantle\Contracts\Queue\Dispatcher as Dispatcher_Contract;
+use Mantle\Contracts\Queue\Queue_Manager as Queue_Manager_Contract;
+use Mantle\Queue\Console\Run_Command;
+use Mantle\Queue\Dispatcher;
+use Mantle\Queue\Events\Job_Processed;
+use Mantle\Queue\Events\Run_Complete;
+use Mantle\Queue\Queue_Manager;
+use Mantle\Queue\Worker;
+use Mantle\Queue\Wp_Cron_Job;
+use Mantle\Queue\Wp_Cron_Provider;
+use Mantle\Queue\Wp_Cron_Scheduler;
+use Mantle\Support\Service_Provider;
 
 /**
  * Queue Service Provider

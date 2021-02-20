@@ -1,8 +1,8 @@
 <?php
 namespace Mantle\Tests\Database\Model;
 
-use Mantle\Framework\Database\Model\Post;
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Database\Model\Post;
+use Mantle\Testing\Framework_Test_Case;
 
 /**
  * Test non-WordPress specific logic of the model

@@ -7,6 +7,7 @@
 
 namespace Mantle\Framework\Console;
 
+use Mantle\Console\Command;
 use Mantle\Framework\Package_Manifest;
 
 /**

@@ -13,11 +13,11 @@ namespace Mantle\Framework\Helpers;
 
 use Countable;
 use Exception;
-use Mantle\Framework\Events\Dispatcher;
-use Mantle\Framework\Database\Factory\Factory_Builder;
-use Mantle\Framework\Support\Collection;
-use Mantle\Framework\Support\Higher_Order_Tap_Proxy;
-use Mantle\Framework\Database\Factory\Factory as MantleFactory;
+use Mantle\Events\Dispatcher;
+use Mantle\Database\Factory\Factory_Builder;
+use Mantle\Support\Collection;
+use Mantle\Support\Higher_Order_Tap_Proxy;
+use Mantle\Database\Factory\Factory as MantleFactory;
 
 /**
  * Determine if the given value is "blank".
@@ -358,7 +358,7 @@ function with( $value, callable $callback = null ) {
  * @param int    $amount
  *
  * @return Factory_Builder
- * @throws \Mantle\Framework\Container\Binding_Resolution_Exception Binding resolution exception.
+ * @throws \Mantle\Container\Binding_Resolution_Exception Binding resolution exception.
  */
 function factory( $class, $amount = null ) {
 	$factory = app( MantleFactory::class );

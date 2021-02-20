@@ -2,9 +2,9 @@
 namespace Mantle\Tests\Queue;
 
 use Mantle\Framework\Application;
-use Mantle\Framework\Config\Repository;
-use Mantle\Framework\Contracts\Queue\Provider;
-use Mantle\Framework\Queue\Queue_Manager;
+use Mantle\Config\Repository;
+use Mantle\Contracts\Queue\Provider;
+use Mantle\Queue\Queue_Manager;
 use Mockery as m;
 
 class Test_Queue_Manager extends \Mockery\Adapter\Phpunit\MockeryTestCase {

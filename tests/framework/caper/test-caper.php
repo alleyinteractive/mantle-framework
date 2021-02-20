@@ -7,8 +7,8 @@
 
 namespace Mantle\Tests\Fraework\Caper;
 
-use Mantle\Framework\Caper\Caper;
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Caper\Caper;
+use Mantle\Testing\Framework_Test_Case;
 
 /**
  * Tests the Caper class.

@@ -16,7 +16,7 @@ class {{ class }} {
 	/**
 	 * Handle the request and modify the response.
 	 *
-	 * @param \Mantle\Framework\Http\Request|\WP_REST_Request $request Request object.
+	 * @param \Mantle\Http\Request|\WP_REST_Request $request Request object.
 	 * @param Closure                                         $next Callback to continue.
 	 * @return mixed
 	 */

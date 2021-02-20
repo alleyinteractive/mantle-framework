@@ -2,9 +2,9 @@
 namespace Mantle\Tests\Framework\Cache;
 
 use InvalidArgumentException;
-use Mantle\Framework\Cache\Cache_Manager;
-use Mantle\Framework\Facade\Cache;
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Cache\Cache_Manager;
+use Mantle\Facade\Cache;
+use Mantle\Testing\Framework_Test_Case;
 use Predis\Connection\ConnectionException;
 
 class Test_Cache_Manager extends Framework_Test_Case {

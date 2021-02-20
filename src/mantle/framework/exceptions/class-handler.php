@@ -8,13 +8,13 @@
 namespace Mantle\Framework\Exceptions;
 
 use Exception;
-use Mantle\Framework\Auth\Authentication_Error;
-use Mantle\Framework\Contracts\Container;
-use Mantle\Framework\Contracts\Exceptions\Handler as ExceptionsHandler;
-use Mantle\Framework\Database\Model\Model_Not_Found_Exception;
-use Mantle\Framework\Http\Request;
-use Mantle\Framework\Http\Routing\Route;
-use Mantle\Framework\Support\Arr;
+use Mantle\Auth\Authentication_Error;
+use Mantle\Contracts\Container;
+use Mantle\Contracts\Exceptions\Handler as ExceptionsHandler;
+use Mantle\Database\Model\Model_Not_Found_Exception;
+use Mantle\Http\Request;
+use Mantle\Http\Routing\Route;
+use Mantle\Support\Arr;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -214,8 +214,8 @@ class Handler implements ExceptionsHandler {
 	/**
 	 * Prepare a response for the given exception.
 	 *
-	 * @param  \Mantle\Framework\Http\Request $request Request object.
-	 * @param  \Throwable                     $e Exception thrown.
+	 * @param  \Mantle\Http\Request $request Request object.
+	 * @param  \Throwable           $e Exception thrown.
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	protected function prepare_response( $request, Throwable $e ) {
@@ -280,7 +280,7 @@ class Handler implements ExceptionsHandler {
 	 *
 	 * @param  \Symfony\Component\HttpFoundation\Response $response
 	 * @param  \Throwable                                 $e
-	 * @return \Mantle\Framework\Http\Response
+	 * @return \Mantle\Http\Response
 	 */
 	protected function to_mantle_response( $response, Throwable $e ) {
 		if ( ! $response instanceof RedirectResponse ) {

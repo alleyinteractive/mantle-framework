@@ -1,9 +1,9 @@
 <?php
 namespace Mantle\Tests\Container;
 
-use Mantle\Framework\Container\Binding_Resolution_Exception;
-use Mantle\Framework\Container\Container;
-use Mantle\Framework\Container\Entry_Not_Found_Exception;
+use Mantle\Container\Binding_Resolution_Exception;
+use Mantle\Container\Container;
+use Mantle\Container\Entry_Not_Found_Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
 use stdClass;

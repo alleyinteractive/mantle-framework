@@ -2,8 +2,8 @@
 
 namespace Mantle\Tests\Support;
 
-use Mantle\Framework\Support\Environment;
-use Mantle\Framework\Testing\Framework_Test_Case;
+use Mantle\Support\Environment;
+use Mantle\Testing\Framework_Test_Case;
 
 class Test_Environment extends Framework_Test_Case {
 	protected function setUp(): void {
