@@ -78,15 +78,15 @@ trait Route_Dependency_Resolver {
 	 * @return mixed
 	 */
 	protected function transform_dependency( ReflectionParameter $parameter, $parameters, $skippable_value ) {
-		$class = Reflector::get_parameter_class_name( $parameter );
+		$class_name = Reflector::get_parameter_class_name( $parameter );
 
 		// If the parameter has a type-hinted class, we will check to see if it is already in
 		// the list of parameters. If it is we will just skip it as it is probably a model
 		// binding and we do not want to mess with those; otherwise, we resolve it here.
-		if ( $class && ! $this->already_in_parameters( $class->name, $parameters ) ) {
+		if ( $class_name && ! $this->already_in_parameters( $class_name, $parameters ) ) {
 			return $parameter->isDefaultValueAvailable()
 				? null
-				: $this->container->make( $class->name );
+				: $this->container->make( $class_name );
 		}
 
 		return $skippable_value;

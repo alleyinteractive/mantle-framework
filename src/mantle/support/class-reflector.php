@@ -28,23 +28,17 @@ class Reflector {
 			return;
 		}
 
-		// $name = $type->getName();
-
-		// if ( 'self' === $name ) {
-		// 	return $parameter->getDeclaringClass()->getName();
-		// }
-
 		$name = $type->getName();
 
-        if (! is_null($class = $parameter->getDeclaringClass())) {
-            if ($name === 'self') {
-                return $class->getName();
-            }
+		if ( ! is_null( $class = $parameter->getDeclaringClass() ) ) {
+			if ( 'self' === $name ) {
+				return $class->getName();
+			}
 
-            if ($name === 'parent' && $parent = $class->getParentClass()) {
-                return $parent->getName();
-            }
-        }
+			if ( 'parent' === $name && $parent = $class->getParentClass() ) {
+				return $parent->getName();
+			}
+		}
 
 		return $name;
 	}

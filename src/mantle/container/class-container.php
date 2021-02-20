@@ -655,7 +655,7 @@ class Container implements ArrayAccess, Container_Contract {
 	 * Get the contextual concrete binding for the given abstract.
 	 *
 	 * @param  string $abstract
-	 * @return \Closure|string|null
+	 * @return \Closure|array|string|null
 	 */
 	protected function get_contextual_concrete( $abstract ) {
 		if ( ! is_null( $binding = $this->find_in_contextual_bindings( $abstract ) ) ) {
@@ -852,8 +852,8 @@ class Container implements ArrayAccess, Container_Contract {
 	protected function resolveClass( ReflectionParameter $parameter ) {
 		try {
 			return $parameter->isVariadic()
-												? $this->resolve_variadic_class($parameter)
-                        : $this->make( Reflector::get_parameter_class_name( $parameter ) );
+												? $this->resolve_variadic_class( $parameter )
+						: $this->make( Reflector::get_parameter_class_name( $parameter ) );
 		} catch ( Binding_Resolution_Exception $e ) {
 			// If we can not resolve the class instance, we will check to see if the value
 			// is optional, and if it is we will return the optional parameter value as
@@ -869,22 +869,24 @@ class Container implements ArrayAccess, Container_Contract {
 	/**
 	 * Resolve a class based variadic dependency from the container.
 	 *
-	 * @param  \ReflectionParameter  $parameter
+	 * @param  \ReflectionParameter $parameter
 	 * @return mixed
 	 */
-	protected function resolve_variadic_class(ReflectionParameter $parameter)
-	{
-			$className = Reflector::get_parameter_class_name($parameter);
+	protected function resolve_variadic_class( ReflectionParameter $parameter ) {
+		$class_name = Reflector::get_parameter_class_name( $parameter );
 
-			$abstract = $this->get_alias($className);
+		$abstract = $this->get_alias( $class_name );
 
-			if (! is_array($concrete = $this->get_contextual_concrete( $abstract ))) {
-					return $this->make($className);
-			}
+		if ( ! is_array( $concrete = $this->get_contextual_concrete( $abstract ) ) ) {
+				return $this->make( $class_name );
+		}
 
-			return array_map(function ($abstract) {
-					return $this->resolve($abstract);
-			}, $concrete);
+		return array_map(
+			function ( $abstract ) {
+				return $this->resolve( $abstract );
+			},
+			$concrete
+		);
 	}
 
 	/**

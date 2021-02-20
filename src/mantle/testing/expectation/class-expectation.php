@@ -157,7 +157,7 @@ class Expectation {
 						$this->args,
 						$record,
 						sprintf(
-							'Failed asserting that hook [%] argument passed %s is identical to %s.',
+							'Failed asserting that hook [%s] argument passed %s is identical to %s.',
 							$this->hook,
 							$exporter->export( $record ),
 							$exporter->export( $this->args )
