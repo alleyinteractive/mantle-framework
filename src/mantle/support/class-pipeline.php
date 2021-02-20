@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework;
+namespace Mantle\Support;
 
 use Closure;
 use Mantle\Contracts\Container;

@@ -8,7 +8,7 @@
 namespace Mantle\Http\Routing;
 
 use Mantle\Http\Routing\Events\Route_Matched;
-use Mantle\Framework\Pipeline;
+use Mantle\Support\Pipeline;
 use WP_REST_Request;
 
 use function Mantle\Framework\Helpers\collect;

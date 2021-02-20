@@ -14,7 +14,7 @@ use Mantle\Contracts\Events\Dispatcher;
 use Mantle\Contracts\Http\Routing\Router as Router_Contract;
 use Mantle\Http\Request;
 use Mantle\Http\Routing\Events\Route_Matched;
-use Mantle\Framework\Pipeline;
+use Mantle\Support\Pipeline;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
