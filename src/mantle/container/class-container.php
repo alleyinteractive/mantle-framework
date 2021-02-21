@@ -852,8 +852,8 @@ class Container implements ArrayAccess, Container_Contract {
 	protected function resolveClass( ReflectionParameter $parameter ) {
 		try {
 			return $parameter->isVariadic()
-												? $this->resolve_variadic_class( $parameter )
-						: $this->make( Reflector::get_parameter_class_name( $parameter ) );
+				? $this->resolve_variadic_class( $parameter )
+				: $this->make( Reflector::get_parameter_class_name( $parameter ) );
 		} catch ( Binding_Resolution_Exception $e ) {
 			// If we can not resolve the class instance, we will check to see if the value
 			// is optional, and if it is we will return the optional parameter value as
@@ -878,7 +878,7 @@ class Container implements ArrayAccess, Container_Contract {
 		$abstract = $this->get_alias( $class_name );
 
 		if ( ! is_array( $concrete = $this->get_contextual_concrete( $abstract ) ) ) {
-				return $this->make( $class_name );
+			return $this->make( $class_name );
 		}
 
 		return array_map(
