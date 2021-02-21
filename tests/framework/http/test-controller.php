@@ -7,6 +7,7 @@
 
 namespace Mantle\Tests\Framework\Http;
 
+use Mantle\Contracts\Http\Routing\Router;
 use Mantle\Facade\Route;
 use Mantle\Http\Controller;
 use Mantle\Testing\Framework_Test_Case;
@@ -20,7 +21,6 @@ class Test_Controller extends Framework_Test_Case {
 
 	public function test_controller_callable_method() {
 		Route::get( '/example-controller-route', [ Example_Controller::class, 'example_method' ] );
-
 		$this->get( '/example-controller-route' )->assertContent( 'controller-response' );
 	}
 

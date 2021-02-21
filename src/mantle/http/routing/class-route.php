@@ -100,6 +100,11 @@ class Route extends Symfony_Route {
 			$action = [
 				'callback' => $action,
 			];
+		} elseif ( is_array( $action ) && ! empty( $action[0] ) && class_exists( $action[0] ) ) {
+			// Handle controller static style callbacks.
+			$action = [
+				'callback' => $action,
+			];
 		}
 
 		$this->action = $action;
