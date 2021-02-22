@@ -9,6 +9,7 @@ namespace Mantle\Container;
 
 use Closure;
 use InvalidArgumentException;
+use Mantle\Support\Reflector;
 use ReflectionFunction;
 use ReflectionMethod;
 
@@ -38,10 +39,7 @@ class Bound_Method {
 			$container,
 			$callback,
 			function () use ( $container, $callback, $parameters ) {
-				return call_user_func_array(
-					$callback,
-					static::get_method_dependencies( $container, $callback, $parameters )
-				);
+				return $callback( ...array_values( static::get_method_dependencies( $container, $callback, $parameters ) ) );
 			}
 		);
 	}
@@ -174,12 +172,14 @@ class Bound_Method {
 			$dependencies[] = $parameters[ $parameter->name ];
 
 			unset( $parameters[ $parameter->name ] );
-		} elseif ( $parameter->getClass() && array_key_exists( $parameter->getClass()->name, $parameters ) ) {
-			$dependencies[] = $parameters[ $parameter->getClass()->name ];
+		} elseif ( ! is_null( $class_name = Reflector::get_parameter_class_name( $parameter ) ) ) {
+			if ( array_key_exists( $class_name, $parameters ) ) {
+					$dependencies[] = $parameters[ $class_name ];
 
-			unset( $parameters[ $parameter->getClass()->name ] );
-		} elseif ( $parameter->getClass() ) {
-			$dependencies[] = $container->make( $parameter->getClass()->name );
+					unset( $parameters[ $class_name ] );
+			} else {
+					$dependencies[] = $container->make( $class_name );
+			}
 		} elseif ( $parameter->isDefaultValueAvailable() ) {
 			$dependencies[] = $parameter->getDefaultValue();
 		} elseif ( ! $parameter->isOptional() && ! array_key_exists( $parameter->name, $parameters ) ) {

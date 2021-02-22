@@ -3,6 +3,7 @@
 namespace Mantle\Tests\Container;
 
 use Closure;
+use Error;
 use Mantle\Container\Container;
 use Mantle\Container\Binding_Resolution_Exception;
 use PHPUnit\Framework\TestCase;
@@ -12,8 +13,8 @@ use stdClass;
 class Test_Container_Call extends TestCase {
 
 	public function testCallWithAtSignBasedClassReferencesWithoutMethodThrowsException() {
-		$this->expectException( ReflectionException::class );
-		$this->expectExceptionMessage( 'Function ContainerTestCallStub() does not exist' );
+		$this->expectException( Error::class );
+		$this->expectExceptionMessage( 'Call to undefined function ContainerTestCallStub()' );
 
 		$container = new Container();
 		$container->call( 'ContainerTestCallStub' );

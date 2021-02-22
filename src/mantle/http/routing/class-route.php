@@ -100,6 +100,24 @@ class Route extends Symfony_Route {
 			$action = [
 				'callback' => $action,
 			];
+		} elseif (
+			is_array( $action )
+			&& ! empty( $action[0] )
+			&& ! empty( $action[1] )
+			&& is_string( $action[0] )
+			&& is_string( $action[1] )
+			&& class_exists( $action[0] )
+		) {
+			/**
+			 * Handle controller 'static' style callbacks.
+			 *
+			 * They're written as callable-style (class name -> method). For PHP 8,
+			 * they need to be manually detected since is_callable() will return false
+			 * for non-static methods using the array structure.
+			 */
+			$action = [
+				'callback' => $action,
+			];
 		}
 
 		$this->action = $action;

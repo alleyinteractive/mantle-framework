@@ -474,6 +474,10 @@ class Str {
 	 * @return string
 	 */
 	public static function replace_last( $search, $replace, $subject ) {
+		if ( '' === $search ) {
+			return $subject;
+		}
+
 		$position = strrpos( $subject, $search );
 
 		if ( false !== $position ) {
