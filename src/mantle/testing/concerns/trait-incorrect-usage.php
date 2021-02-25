@@ -34,7 +34,7 @@ trait Incorrect_Usage {
 		if ( ! method_exists( $this, 'getAnnotations' ) ) {
 			$annotations = Test::parseTestMethodAnnotations(
 				static::class,
-				$this->name
+				$this->getName()
 			);
 		} else {
 			$annotations = $this->getAnnotations();
