@@ -7,12 +7,10 @@
 
 namespace Mantle\Framework\Console\Generators;
 
-use Mantle\Framework\Console\Generator_Command;
-
 /**
  * Test Case Generator
  */
-class Test_Make_Command extends Generator_Command {
+class Test_Make_Command extends Stub_Generator_Command {
 	/**
 	 * The console command name.
 	 *

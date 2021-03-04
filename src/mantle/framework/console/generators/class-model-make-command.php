@@ -7,14 +7,12 @@
 
 namespace Mantle\Framework\Console\Generators;
 
-use Mantle\Framework\Console\Generator_Command;
-
 /**
  * Model Generator
  *
  * @todo Add support for generating a controller, migration, and seed in addition to the model.
  */
-class Model_Make_Command extends Generator_Command {
+class Model_Make_Command extends Stub_Generator_Command {
 	/**
 	 * The console command name.
 	 *

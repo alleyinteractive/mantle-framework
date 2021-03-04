@@ -7,12 +7,10 @@
 
 namespace Mantle\Framework\Console\Generators;
 
-use Mantle\Framework\Console\Generator_Command;
-
 /**
  * Generator Generator
  */
-class Generator_Make_Command extends Generator_Command {
+class Generator_Make_Command extends Stub_Generator_Command {
 	/**
 	 * The console command name.
 	 *
@@ -86,12 +84,8 @@ class Generator_Make_Command extends Generator_Command {
 			$this->error( $this->type . ' already exists: ' . $file_path, true );
 		}
 
-		// Build the stub file and apply replacements.
-		$this->build_stub( $name );
-		$this->replacements->add( '{{ type }}', $type );
-		$this->set_stub( $this->replacements->replace( $this->get_stub() ) );
-
-		if ( false === file_put_contents( $file_path, $this->get_stub() ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents
+		// Write the generated class to disk.
+		if ( false === file_put_contents( $file_path, $this->get_generated_class( $name ) ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents
 			$this->error( 'Error writing to ' . $file_path );
 		}
 

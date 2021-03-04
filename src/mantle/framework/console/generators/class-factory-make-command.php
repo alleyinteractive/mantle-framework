@@ -7,12 +7,10 @@
 
 namespace Mantle\Framework\Console\Generators;
 
-use Mantle\Framework\Console\Generator_Command;
-
 /**
  * Factory Generator
  */
-class Factory_Make_Command extends Generator_Command {
+class Factory_Make_Command extends Stub_Generator_Command {
 	/**
 	 * The console command name.
 	 *
