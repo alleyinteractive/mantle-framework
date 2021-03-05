@@ -452,7 +452,7 @@ class Application extends Container implements Application_Contract {
 		$this->fire_app_callbacks( $this->booting_callbacks );
 
 		foreach ( $this->service_providers as $provider ) {
-			$provider->boot();
+			$provider->boot_provider();
 		}
 
 		$this->booted = true;

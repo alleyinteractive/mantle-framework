@@ -48,19 +48,21 @@ class Test_Service_Provider extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 			->register_commands();
 	}
 
-	public function test_on_init() {
-		$provider = m::mock( Service_Provider::class, ProviderContracts\Init::class )->makePartial();
-		$provider->shouldReceive( 'on_init' )->once();
+	public function test_hook_method() {
+		$_SERVER['__hook_fired'] = false;
 
-		$provider->boot();
-		do_action( 'init' );
+		$app = m::mock( Application::class )->makePartial();
+		$app->register( Provider_Test_Hook::class );
+		$app->boot();
+
+		do_action( 'custom_hook' );
+
+		$this->assertTrue( $_SERVER['__hook_fired'] );
 	}
+}
 
-	public function test_on_wp_loaded() {
-		$provider = m::mock( Service_Provider::class, ProviderContracts\Wp_Loaded::class )->makePartial();
-		$provider->shouldReceive( 'on_wp_loaded' )->once();
-
-		$provider->boot();
-		do_action( 'wp_loaded' );
+class Provider_Test_Hook extends Service_Provider {
+	public function on_custom_hook() {
+		$_SERVER['__hook_fired'] = true;
 	}
 }
