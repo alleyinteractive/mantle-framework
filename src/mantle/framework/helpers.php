@@ -13,6 +13,7 @@ use Mantle\Framework\Application;
 use Mantle\Contracts\Http\Routing\Response_Factory;
 use Mantle\Contracts\Http\View\Factory as View_Factory;
 use Mantle\Http\Response;
+use Mantle\Support\Environment;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
@@ -77,6 +78,21 @@ if ( ! function_exists( 'cache' ) ) {
 		}
 
 		return app( 'cache' )->put( key( $args[0] ), reset( $args[0] ), $args[1] ?? null );
+	}
+}
+
+if ( ! function_exists( 'environment' ) ) {
+	/**
+	 * Gets the value of an environment variable.
+	 *
+	 * @see Mantle\Support\Environment
+	 *
+	 * @param  string $key Environment variable key.
+	 * @param  mixed  $default Default value.
+	 * @return mixed
+	 */
+	function environment( string $key, $default = null ) {
+		return Environment::get( $key, $default );
 	}
 }
 

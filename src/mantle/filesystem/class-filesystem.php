@@ -11,6 +11,7 @@ namespace Mantle\Filesystem;
 
 use ErrorException;
 use FilesystemIterator;
+use Mantle\Support\Str;
 use Mantle\Support\Traits\Macroable;
 use RuntimeException;
 use Symfony\Component\Finder\Finder;
@@ -337,6 +338,24 @@ class Filesystem {
 		}
 
 		return ( new MimeTypes() )->getExtensions( $this->mime_type( $path ) )[0] ?? null;
+	}
+
+	/**
+	 * Guess the class name for a file path.
+	 *
+	 * @param string $path File path.
+	 * @return string|null
+	 */
+	public function guess_class_name( string $path ): ?string {
+		$name = $this->name( $path );
+
+		if ( Str::starts_with( $name, [ 'class-', 'trait-', 'interface-' ] ) ) {
+			$name = preg_replace( '/^(\w*-)/', '', $name, 1 );
+
+			return Str::studly_underscore( $name );
+		}
+
+		return $name;
 	}
 
 	/**
