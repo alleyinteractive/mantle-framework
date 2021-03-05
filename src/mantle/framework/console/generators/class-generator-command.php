@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Console;
+namespace Mantle\Framework\Console\Generators;
 
 use Mantle\Console\Command;
 use Mantle\Contracts\Application as Application_Contract;
@@ -16,13 +16,6 @@ use Mantle\Support\String_Replacements;
  * Generator Command
  */
 abstract class Generator_Command extends Command {
-	/**
-	 * File Stub
-	 *
-	 * @var string
-	 */
-	protected $stub;
-
 	/**
 	 * The application instance.
 	 *
@@ -45,13 +38,6 @@ abstract class Generator_Command extends Command {
 	protected $type;
 
 	/**
-	 * Stub variables String Replacement instance.
-	 *
-	 * @var String_Replacements
-	 */
-	protected $replacements;
-
-	/**
 	 * Prefix for the file.
 	 *
 	 * @var string
@@ -67,19 +53,16 @@ abstract class Generator_Command extends Command {
 	public function __construct( Application_Contract $app ) {
 		$this->app = $app;
 
-		if ( empty( $this->type ) ) {
-			throw new Provider_Exception( 'Generator needs a "type" set: ' . get_class( $this ) );
-		}
-
 		$this->replacements = new String_Replacements();
 	}
 
 	/**
-	 * Get the stub file for the generator.
+	 * Retrieve the generated class contents.
 	 *
+	 * @param string $name Class name.
 	 * @return string
 	 */
-	abstract public function get_file_stub(): string;
+	abstract public function get_generated_class( string $name ): string;
 
 	/**
 	 * Command synopsis.
@@ -117,58 +100,18 @@ abstract class Generator_Command extends Command {
 		}
 
 		$file_path = $this->get_file_path( $name );
+
 		if ( file_exists( $file_path ) ) {
-			$this->error( $this->type . ' already exists: ' . $file_path, true );
+			$this->error( ( $this->type ?: ' File' ) . ' already exists: ' . $file_path, true );
 		}
 
-		// Build the stub file and apply replacements.
-		$this->build_stub( $name );
-		$this->set_stub( $this->replacements->replace( $this->get_stub() ) );
-
-		if ( false === file_put_contents( $file_path, $this->get_stub() ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents
+		// Store the generated class.
+		if ( false === file_put_contents( $file_path, $this->get_generated_class( $name ) ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents
 			$this->error( 'Error writing to ' . $file_path );
 		}
 
-		$this->log( $this->type . ' created successfully: ' . $file_path );
-		$this->synopsis( $name );
-	}
-
-	/**
-	 * Build the generated file.
-	 *
-	 * @param string $name Class name to generate.
-	 */
-	protected function build_stub( string $name ) {
-		$this->set_stub( file_get_contents( $this->get_file_stub() ) ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
-
-		// Register replacements for the stub file.
-		$this->replacements->add( '{{ class }}', $this->get_class_name( $name ) );
-		$this->replacements->add( '{{ namespace }}', $this->get_namespace( $name ) );
-	}
-
-	/**
-	 * Get the file stub.
-	 *
-	 * @return string
-	 */
-	protected function get_stub(): string {
-		return $this->stub;
-	}
-
-	/**
-	 * Set the file stub.
-	 *
-	 * @param string $stub File stub contents.
-	 * @return static
-	 */
-	protected function set_stub( string $stub ) {
-		$this->stub = $stub;
-
-		if ( empty( $this->stub ) ) {
-			$this->error( 'Empty stub generated.', true );
-		}
-
-		return $this;
+		$this->log( ( $this->type ?: 'File' ) . ' created successfully: ' . $file_path );
+		$this->complete_synopsis( $name );
 	}
 
 	/**
@@ -222,7 +165,17 @@ abstract class Generator_Command extends Command {
 			$parts = '';
 		}
 
-		return \untrailingslashit( untrailingslashit( $this->get_base_path() ) . '/' . strtolower( str_replace( '\\', '/', $this->type ) ) . '/' . $parts );
+		$parts = array_merge(
+			[
+				untrailingslashit( $this->get_base_path() ),
+				strtolower( str_replace( '\\', '/', $this->type ) ),
+			],
+			[
+				$parts,
+			],
+		);
+
+		return untrailingslashit( implode( '/', array_filter( $parts ) ) );
 	}
 
 	/**

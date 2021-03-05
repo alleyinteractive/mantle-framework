@@ -7,12 +7,10 @@
 
 namespace Mantle\Framework\Console\Generators;
 
-use Mantle\Framework\Console\Generator_Command;
-
 /**
  * Service Provider Generator
  */
-class Service_Provider_Make_Command extends Generator_Command {
+class Service_Provider_Make_Command extends Stub_Generator_Command {
 	/**
 	 * The console command name.
 	 *

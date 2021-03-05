@@ -7,12 +7,12 @@
 
 namespace App\Console\Generators;
 
-use Mantle\Framework\Console\Generator_Command;
+use Mantle\Framework\Console\Generators\Stub_Generator_Command;
 
 /**
  * {{ class }} Generator Command
  */
-class {{ class }}_Make_Command extends Generator_Command {
+class {{ class }}_Make_Command extends Stub_Generator_Command {
 	/**
 	 * The console command name.
 	 *

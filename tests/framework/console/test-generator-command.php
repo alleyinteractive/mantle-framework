@@ -10,6 +10,7 @@ namespace Mantle\Tests\Framework\Console;
 use Mantle\Framework\Application;
 use Mantle\Config\Repository;
 use Mantle\Framework\Console\Generator_Command;
+use Mantle\Framework\Console\Generators\Stub_Generator_Command;
 use Mockery as m;
 
 class Test_Generator_Command extends \Mockery\Adapter\Phpunit\MockeryTestCase {
@@ -77,7 +78,7 @@ class Test_Generator_Command extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 /**
  * Generator Command with protected methods exposed to the public.
  */
-class Test_Generator_Public extends Generator_Command {
+class Test_Generator_Public extends Stub_Generator_Command {
 	protected $type = 'Provider';
 
 	public function get_file_stub(): string {

@@ -7,12 +7,10 @@
 
 namespace Mantle\Framework\Console\Generators;
 
-use Mantle\Framework\Console\Generator_Command;
-
 /**
  * Middleware Generator
  */
-class Middleware_Make_Command extends Generator_Command {
+class Middleware_Make_Command extends Stub_Generator_Command {
 	/**
 	 * The console command name.
 	 *

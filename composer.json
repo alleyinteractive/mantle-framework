@@ -20,6 +20,7 @@
         "league/flysystem-cached-adapter": "^1.1",
         "monolog/monolog": "^2.0",
         "nesbot/carbon": "^2.36",
+        "nette/php-generator": "^3.5",
         "psr/container": "^1.0",
         "symfony/finder": "^5.1.4",
         "symfony/http-foundation": "^5.1.4",
@@ -52,6 +53,7 @@
     "scripts": {
         "phpcs": "phpcs --standard=./phpcs.xml .",
         "phpcs-modified": "./bin/phpcs-modified-files.sh",
+        "phpcbf": "phpcbf --standard=./phpcs.xml .",
         "phpunit": "phpunit"
     }
 }
