@@ -2,7 +2,7 @@
 namespace Mantle\Tests;
 
 use Faker\Factory;
-use Mantle\Framework\Faker\Faker_Provider;
+use Mantle\Faker\Faker_Provider;
 
 class Test_Faker extends \PHPUnit\Framework\TestCase {
 	/**
