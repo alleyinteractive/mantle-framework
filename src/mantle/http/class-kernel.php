@@ -122,7 +122,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 			}
 		}
 
-		\add_action( 'wp_loaded', [ $this, 'handle_request' ], 99 );
+		\add_action( 'wp_loaded', [ $this, 'handle_request' ], PHP_INT_MAX );
 	}
 
 	/**
@@ -138,6 +138,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 		}
 
 		$response->send();
+
 		exit;
 	}
 
