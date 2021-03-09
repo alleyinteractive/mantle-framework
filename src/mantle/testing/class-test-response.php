@@ -7,6 +7,8 @@
 
 namespace Mantle\Testing;
 
+use DOMDocument;
+use DOMXPath;
 use Exception;
 use Mantle\Support\Arr;
 use Mantle\Support\Str;
@@ -39,6 +41,13 @@ class Test_Response {
 	 * @var int
 	 */
 	protected $status_code;
+
+	/**
+	 * DOM Document Storage.
+	 *
+	 * @var DOMDocument
+	 */
+	protected $document;
 
 	/**
 	 * Create a new test response instance.
@@ -692,5 +701,51 @@ class Test_Response {
 	 */
 	public function json( $key = null ) {
 		return $this->decode_response_json( $key );
+	}
+
+	/**
+	 * Retrieve the DOM Document for the response.
+	 *
+	 * @return DOMDocument
+	 */
+	protected function get_dom_document(): DOMDocument {
+		if ( isset( $this->document ) ) {
+			return $this->document;
+		}
+
+		libxml_use_internal_errors( true );
+
+		$this->document = new DOMDocument();
+		$this->document->loadHTML( $this->get_content() );
+
+		return $this->document;
+	}
+
+	/**
+	 * Assert that an element exists in the response.
+	 *
+	 * @param string $expression The XPath expression to execute.
+	 * @return static
+	 */
+	public function assertElementExists( string $expression ) {
+		$nodes = ( new DOMXPath( $this->get_dom_document() ) )->query( $expression );
+
+		PHPUnit::assertTrue( ! $nodes ? false : $nodes->length > 0 );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that an element is missing in the response.
+	 *
+	 * @param string $expression The XPath expression to execute.
+	 * @return static
+	 */
+	public function assertElementMissing( string $expression ) {
+		$nodes = ( new DOMXPath( $this->get_dom_document() ) )->query( $expression );
+
+		PHPUnit::assertTrue( false === $nodes || 0 === $nodes->length );
+
+		return $this;
 	}
 }
