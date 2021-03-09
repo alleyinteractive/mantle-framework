@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Query_Monitor;
+namespace Mantle\Query_Monitor\Collector;
 
 use Mantle\Contracts\Application;
 use Mantle\Http\Request;
