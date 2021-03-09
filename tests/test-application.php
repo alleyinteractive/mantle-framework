@@ -2,6 +2,7 @@
 namespace Mantle\Tests;
 
 use Mantle\Framework\Application;
+use Mantle\Framework\Bootstrap\Load_Environment_Variables;
 use Mantle\Support\Service_Provider;
 use Mockery as m;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -91,6 +92,30 @@ class Test_Application extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertTrue( ( new Application() )->is_running_in_console() );
 
 		unset( $_ENV['APP_RUNNING_IN_CONSOLE'] );
+	}
+
+	public function test_can_load_env_file() {
+		$this->assertNull( $_ENV['ENV_VAR_FOO'] ?? null );
+
+		$app = new Application();
+		$app->environment_path( __DIR__ . '/fixtures/config' );
+		$app->environment_file( 'env-file' );
+
+		( new Load_Environment_Variables() )->bootstrap( $app );
+
+		$this->assertEquals( 'bar', environment( 'ENV_VAR_FOO' ) );
+		$this->assertEquals( 'bar', $_ENV['ENV_VAR_FOO'] );
+		$this->assertEquals( 'bar', $_SERVER['ENV_VAR_FOO'] );
+	}
+
+	public function test_can_fail_loading_config_silently() {
+		$this->expectOutputString( '' );
+
+		$app = new Application();
+		$app->environment_path( __DIR__ . '/fixtures/config' );
+		$app->environment_file( 'fake-file' );
+
+		( new Load_Environment_Variables() )->bootstrap( $app );
 	}
 }
 

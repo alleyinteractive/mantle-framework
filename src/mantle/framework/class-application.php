@@ -99,6 +99,20 @@ class Application extends Container implements Application_Contract {
 	protected $service_providers = [];
 
 	/**
+	 * Environment file name.
+	 *
+	 * @var string
+	 */
+	protected $environment_file = '.env';
+
+	/**
+	 * The custom environment path defined by the developer.
+	 *
+	 * @var string
+	 */
+	protected $environment_path;
+
+	/**
 	 * Storage of the overridden environment name.
 	 *
 	 * @var string
@@ -461,6 +475,34 @@ class Application extends Container implements Application_Contract {
 		$this->fire_app_callbacks( $this->booted_callbacks );
 
 		return $this;
+	}
+
+	/**
+	 * Set and retrieve the environment file name.
+	 *
+	 * @param string $file File name to set.
+	 * @return string
+	 */
+	public function environment_file( string $file = null ): string {
+		if ( $file ) {
+			$this->environment_file = $file;
+		}
+
+		return $this->environment_file ?: '.env';
+	}
+
+	/**
+	 * Set and retrieve the environment path to use.
+	 *
+	 * @param string $path Path to set, optional.
+	 * @return string
+	 */
+	public function environment_path( string $path = null ): ?string {
+		if ( $path ) {
+			$this->environment_path = $path;
+		}
+
+		return $this->environment_path;
 	}
 
 	/**
