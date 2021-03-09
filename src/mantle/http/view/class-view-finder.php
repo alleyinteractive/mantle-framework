@@ -51,7 +51,10 @@ class View_Finder {
 	public function __construct( string $base_path ) {
 		$this->base_path = $base_path;
 
+		$this->set_default_paths();
+
 		\add_action( 'after_setup_theme', [ $this, 'set_default_paths' ] );
+		\add_action( 'switch_theme', [ $this, 'set_default_paths' ] );
 	}
 
 	/**
@@ -84,14 +87,9 @@ class View_Finder {
 	 * Set the default paths to load from for WordPress sites.
 	 */
 	public function set_default_paths() {
-		if ( defined( 'STYLESHEETPATH' ) && STYLESHEETPATH ) {
-			$this->add_path( STYLESHEETPATH, 'stylesheet-path' );
-		}
-
-		if ( defined( 'TEMPLATEPATH' ) && TEMPLATEPATH ) {
-			$this->add_path( TEMPLATEPATH, 'template-path' );
-		}
-
+		dump('set_default_paths', get_stylesheet_directory());
+		$this->add_path( get_stylesheet_directory(), 'stylesheet-path' );
+		$this->add_path( get_template_directory(), 'template-path' );
 
 		if ( defined( 'ABSPATH' ) && defined( 'WPINC' ) ) {
 			$this->add_path( ABSPATH . WPINC . '/theme-compat', 'theme-compat' );
@@ -147,6 +145,7 @@ class View_Finder {
 	 * @return array
 	 */
 	public function get_paths(): array {
+		return $this->paths;
 		return array_unique( $this->paths );
 	}
 
