@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Faker;
+namespace Mantle\Faker;
 
 use Faker\Provider\Base;
 use Faker\Provider\Lorem;
