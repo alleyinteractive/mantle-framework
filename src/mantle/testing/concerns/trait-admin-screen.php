@@ -7,6 +7,8 @@
 
 namespace Mantle\Testing\Concerns;
 
+use WP_Screen;
+
 /**
  * This trait, when used, sets the current screen so that `is_admin()` is true.
  */
@@ -56,4 +58,11 @@ trait Admin_Screen {
 			$GLOBALS['taxnow']
 		);
 	}
+
+	/**
+	 * Set the current active screen based.
+	 */
+	// public function set_admin_screen( WP_Screen $screen ) {
+
+	// }
 }
