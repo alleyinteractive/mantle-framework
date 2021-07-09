@@ -9,6 +9,8 @@ namespace Mantle\Facade;
 
 /**
  * Route Facade
+ *
+ * @mixin \Mantle\Http\Routing\Router
  */
 class Route extends Facade {
 	/**

@@ -160,6 +160,10 @@ class Rest_Route_Registrar {
 	 * Register the queued routes.
 	 */
 	public function register_routes() {
+		if ( empty( $this->routes ) ) {
+			return;
+		}
+
 		foreach ( $this->routes as $route ) {
 			register_rest_route( $this->namespace, ...$route );
 		}
