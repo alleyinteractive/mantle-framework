@@ -67,7 +67,7 @@ class WordPress_Repository extends Repository implements Taggable_Repository {
 	 * @return bool
 	 */
 	public function put( $key, $value, $ttl = null ) {
-		return \wp_cache_set( $key, $value, $this->prefix, $ttl );
+		return \wp_cache_set( $key, $value, $this->prefix, $ttl ); // phpcs:ignore WordPressVIPMinimum.Performance.LowExpiryCacheTime.CacheTimeUndetermined
 	}
 
 	/**

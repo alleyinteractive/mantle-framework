@@ -58,11 +58,4 @@ trait Admin_Screen {
 			$GLOBALS['taxnow']
 		);
 	}
-
-	/**
-	 * Set the current active screen based.
-	 */
-	// public function set_admin_screen( WP_Screen $screen ) {
-
-	// }
 }
