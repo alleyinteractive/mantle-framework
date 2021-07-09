@@ -7,6 +7,9 @@
 
 namespace Mantle\Query_Monitor;
 
+use Mantle\Contracts\Events\Dispatcher;
+use Mantle\Http\Routing\Events\Response_Sent;
+use Mantle\Http\Routing\Events\Route_Matched;
 use Mantle\Support\Service_Provider;
 use QM_Collectors;
 
@@ -30,6 +33,9 @@ class Query_Monitor_Service_Provider extends Service_Provider {
 		\add_filter( 'qm/dispatchers', [ $this, 'fix_query_monitor_dispatcher' ], PHP_INT_MAX );
 		\add_filter( 'qm/collectors', [ $this, 'register_collector' ] );
 		\add_filter( 'qm/outputter/html', [ $this, 'output' ], 60, 2 );
+
+		$this->app->booting( fn() => Timing::start( 'Mantle: Booting' ) );
+		$this->app->booted( fn() => Timing::stop( 'Mantle: Booting' ) );
 	}
 
 	/**
@@ -76,8 +82,9 @@ class Query_Monitor_Service_Provider extends Service_Provider {
 	 * @return array
 	 */
 	public function register_collector( array $collectors ) {
-		$collectors['mantle']         = new Collector( $this->app );
-		$collectors['mantle-headers'] = new Header_Collector( $this->app );
+		$collectors['mantle']         = new Collector\Collector( $this->app );
+		$collectors['mantle-headers'] = new Collector\Header_Collector( $this->app );
+		$collectors['mantle-logs']    = new Collector\Log_Collector( $this->app );
 		return $collectors;
 	}
 
@@ -91,12 +98,17 @@ class Query_Monitor_Service_Provider extends Service_Provider {
 		$collector = QM_Collectors::get( 'mantle' );
 
 		if ( $collector ) {
-			$output['mantle'] = new Output( $collector );
+			$output['mantle'] = new Output\Output( $collector );
 		}
 
 		$collector = QM_Collectors::get( 'mantle-headers' );
 		if ( $collector ) {
-			$output['mantle-headers'] = new Output_Headers( $collector );
+			$output['mantle-headers'] = new Output\Output_Headers( $collector );
+		}
+
+		$collector = QM_Collectors::get( 'mantle-logs' );
+		if ( $collector ) {
+			$output['mantle-logs'] = new Output\Output_Logs( $collector );
 		}
 
 		return $output;

@@ -470,6 +470,13 @@ class Test_Filesystem extends TestCase {
 		Assert::assertSame( 'acbd18db4cc2f85cedef654fccc4a4d8', $filesystem->hash( static::$temp_dir . '/foo.txt' ) );
 	}
 
+	public function test_guess_class_name() {
+		$filesystem = new Filesystem();
+
+		$this->assertEquals( 'Example_Class', $filesystem->guess_class_name( __DIR__ . '/data/class-example-class.php' ) );
+		$this->assertEquals( 'PsrStyleClass', $filesystem->guess_class_name( __DIR__ . '/data/PsrStyleClass.php' ) );
+	}
+
 	/**
 	 * @param  string $file
 	 * @return int

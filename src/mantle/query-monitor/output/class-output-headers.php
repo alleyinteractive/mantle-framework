@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Query_Monitor;
+namespace Mantle\Query_Monitor\Output;
 
 use QM_Output_Html;
 

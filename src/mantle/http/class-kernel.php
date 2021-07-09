@@ -52,6 +52,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 * @var array
 	 */
 	protected $bootstrappers = [
+		\Mantle\Framework\Bootstrap\Load_Environment_Variables::class,
 		\Mantle\Framework\Bootstrap\Load_Configuration::class,
 		\Mantle\Framework\Bootstrap\Register_Facades::class,
 		\Mantle\Framework\Bootstrap\Register_Providers::class,
@@ -122,7 +123,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 			}
 		}
 
-		\add_action( 'wp_loaded', [ $this, 'handle_request' ], 99 );
+		\add_action( 'wp_loaded', [ $this, 'handle_request' ], PHP_INT_MAX );
 	}
 
 	/**
@@ -138,6 +139,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 		}
 
 		$response->send();
+
 		exit;
 	}
 

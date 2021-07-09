@@ -22,7 +22,7 @@ class Log_Service_Provider extends Service_Provider {
 		$this->app->singleton(
 			'log',
 			function( $app ) {
-				return new Log_Manager( $app );
+				return new Log_Manager( $app, $app['events'] );
 			}
 		);
 	}

@@ -7,17 +7,18 @@
 
 namespace Mantle\Log;
 
+use Closure;
 use InvalidArgumentException;
 use Mantle\Contracts\Application;
+use Mantle\Contracts\Events\Dispatcher;
 use Monolog\Handler\AbstractHandler;
 use Monolog\Handler\ErrorLogHandler;
 use Monolog\Handler\GroupHandler;
-use Monolog\Handler\Handler;
 use Monolog\Handler\HandlerInterface;
 use Monolog\Handler\NewRelicHandler;
 use Monolog\Handler\SlackWebhookHandler;
-use Monolog\Logger;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Throwable;
 
 use function Mantle\Framework\Helpers\collect;
@@ -34,19 +35,28 @@ class Log_Manager implements LoggerInterface {
 	protected $app;
 
 	/**
+	 * Dispatcher instance.
+	 *
+	 * @var Dispatcher
+	 */
+	protected $dispatcher;
+
+	/**
 	 * Default logger instance for the application.
 	 *
 	 * @var Logger
 	 */
-	protected $default_logger;
+	protected $drive;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param Application $app Application instance.
+	 * @param Dispatcher  $dispatcher Event dispatcher.
 	 */
-	public function __construct( Application $app ) {
-		$this->app = $app;
+	public function __construct( Application $app, Dispatcher $dispatcher = null ) {
+		$this->app        = $app;
+		$this->dispatcher = $dispatcher;
 	}
 
 	/**
@@ -61,7 +71,7 @@ class Log_Manager implements LoggerInterface {
 			->filter()
 			->to_array();
 
-		return new Logger( 'Mantle', $handlers );
+		return ( new Logger( 'Mantle', $handlers ) )->set_dispatcher( $this->dispatcher );
 	}
 
 	/**
@@ -208,13 +218,13 @@ class Log_Manager implements LoggerInterface {
 	 *
 	 * @return Logger
 	 */
-	public function default_logger(): Logger {
-		if ( isset( $this->default_logger ) ) {
-			return $this->default_logger;
+	public function driver(): Logger {
+		if ( isset( $this->drive ) ) {
+			return $this->drive;
 		}
 
-		$this->default_logger = $this->channel( $this->get_default_channel() );
-		return $this->default_logger;
+		$this->drive = $this->channel( $this->get_default_channel() );
+		return $this->drive;
 	}
 
 	/**
@@ -244,7 +254,7 @@ class Log_Manager implements LoggerInterface {
 	 * @return mixed
 	 */
 	public function __call( $method, $args ) {
-		return $this->default_logger()->$method( ...$args );
+		return $this->driver()->$method( ...$args );
 	}
 
 	/**
@@ -256,7 +266,7 @@ class Log_Manager implements LoggerInterface {
 	 * @return void
 	 */
 	public function emergency( $message, array $context = [] ) {
-		$this->default_logger()->emergency( $message, $context );
+		$this->driver()->emergency( $message, $context );
 	}
 
 	/**
@@ -271,7 +281,7 @@ class Log_Manager implements LoggerInterface {
 	 * @return void
 	 */
 	public function alert( $message, array $context = [] ): void {
-		$this->default_logger()->alert( $message, $context );
+		$this->driver()->alert( $message, $context );
 	}
 
 	/**
@@ -285,7 +295,7 @@ class Log_Manager implements LoggerInterface {
 	 * @return void
 	 */
 	public function critical( $message, array $context = [] ): void {
-		$this->default_logger()->critical( $message, $context );
+		$this->driver()->critical( $message, $context );
 	}
 
 	/**
@@ -298,7 +308,7 @@ class Log_Manager implements LoggerInterface {
 	 * @return void
 	 */
 	public function error( $message, array $context = [] ): void {
-		$this->default_logger()->error( $message, $context );
+		$this->driver()->error( $message, $context );
 	}
 
 	/**
@@ -313,7 +323,7 @@ class Log_Manager implements LoggerInterface {
 	 * @return void
 	 */
 	public function warning( $message, array $context = [] ): void {
-		$this->default_logger()->warning( $message, $context );
+		$this->driver()->warning( $message, $context );
 	}
 
 	/**
@@ -325,7 +335,7 @@ class Log_Manager implements LoggerInterface {
 	 * @return void
 	 */
 	public function notice( $message, array $context = [] ): void {
-		$this->default_logger()->notice( $message, $context );
+		$this->driver()->notice( $message, $context );
 	}
 
 	/**
@@ -339,7 +349,7 @@ class Log_Manager implements LoggerInterface {
 	 * @return void
 	 */
 	public function info( $message, array $context = [] ): void {
-		$this->default_logger()->info( $message, $context );
+		$this->driver()->info( $message, $context );
 	}
 
 	/**
@@ -351,7 +361,7 @@ class Log_Manager implements LoggerInterface {
 	 * @return void
 	 */
 	public function debug( $message, array $context = [] ): void {
-		$this->default_logger()->debug( $message, $context );
+		$this->driver()->debug( $message, $context );
 	}
 
 	/**
@@ -366,6 +376,21 @@ class Log_Manager implements LoggerInterface {
 	 * @throws \Psr\Log\InvalidArgumentException Thrown on invalid arguments.
 	 */
 	public function log( $level, $message, array $context = [] ): void {
-		$this->default_logger()->log( $level, $message, $context );
+		$this->driver()->$level( $message, $context );
+	}
+
+	/**
+	 * Register a new callback handler for when a log event is triggered.
+	 *
+	 * @param Closure $callback
+	 * @return void
+	 * @throws RuntimeException Thrown on missing dispatcher.
+	 */
+	public function listen( Closure $callback ) {
+		if ( ! isset( $this->dispatcher ) ) {
+			throw new RuntimeException( 'Event dispatcher not set.' );
+		}
+
+		$this->dispatcher->listen( Events\Message_Logged::class, $callback );
 	}
 }
