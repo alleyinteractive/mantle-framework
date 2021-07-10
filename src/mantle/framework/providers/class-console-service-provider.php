@@ -10,6 +10,7 @@ namespace Mantle\Framework\Providers;
 use Mantle\Framework\Console\Clear_Cache_Command;
 use Mantle\Framework\Console\Config_Cache_Command;
 use Mantle\Framework\Console\Config_Clear_Command;
+use Mantle\Framework\Console\Test_Config_Install_Command;
 use Mantle\Framework\Console\Generators\Class_Make_Command;
 use Mantle\Framework\Console\Generators\Command_Make_Command;
 use Mantle\Framework\Console\Generators\Controller_Make_Command;
@@ -68,5 +69,9 @@ class Console_Service_Provider extends Service_Provider {
 	 */
 	public function register() {
 		array_map( [ $this, 'add_command' ], $this->commands_to_register );
+
+		if ( ! $this->app->is_environment( 'production' ) && ! file_exists( Test_Config_Install_Command::get_test_config_path() ) ) {
+			$this->add_command( Test_Config_Install_Command::class );
+		}
 	}
 }
