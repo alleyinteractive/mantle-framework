@@ -1,16 +1,23 @@
 <?php
 /**
- * Asset_Manager interface file.
+ * Asset_Manager class file.
  *
  * @package Mantle
  */
 
-namespace Mantle\Contracts\Assets;
+namespace Mantle\Assets;
+
+use Asset_Manager_Preload;
+use Asset_Manager_Scripts;
+use Asset_Manager_Styles;
+use Mantle\Contracts\Assets\Asset_Manager as Asset_Manager_Contract;
+use Mantle\Contracts\Assets\Load_Hook;
+use Mantle\Contracts\Assets\Load_Method;
 
 /**
- * Asset Manager Contract
+ * Asset Manager
  */
-interface Asset_Manager {
+class Asset_Manager implements Asset_Manager_Contract {
 	/**
 	 * Load a external script.
 	 *
@@ -31,7 +38,19 @@ interface Asset_Manager {
 		string $load_method = Load_Method::SYNC,
 		string $load_hook = Load_Hook::HEADER,
 		?string $version = null
-	): void;
+	): void {
+		Asset_Manager_Scripts::instance()->add_asset(
+			[
+				'handle'      => $handle,
+				'src'         => $src,
+				'deps'        => $deps,
+				'condition'   => $condition,
+				'load_method' => $load_method,
+				'version'     => $version,
+				'load_hook'   => $load_hook,
+			]
+		);
+	}
 
 	/**
 	 * Load an external stylesheet file.
@@ -55,7 +74,20 @@ interface Asset_Manager {
 		string $load_hook = Load_Hook::HEADER,
 		?string $version = null,
 		string $media = null
-	): void;
+	): void {
+		Asset_Manager_Styles::instance()->add_asset(
+			[
+				'handle'      => $handle,
+				'src'         => $src,
+				'deps'        => $deps,
+				'condition'   => $condition,
+				'load_method' => $load_method,
+				'version'     => $version,
+				'load_hook'   => $load_hook,
+				'media'       => $media ?: null,
+			]
+		);
+	}
 
 	/**
 	 * Preload content by URL.
@@ -81,7 +113,20 @@ interface Asset_Manager {
 		string $media = 'all',
 		bool $crossorigin = false,
 		?string $version = null
-	): void;
+	): void {
+		Asset_Manager_Preload::instance()->add_asset(
+			[
+				'handle'      => $handle,
+				'src'         => $src,
+				'condition'   => $condition,
+				'version'     => $version,
+				'media'       => $media,
+				'as'          => $as,
+				'crossorigin' => $crossorigin,
+				'mime_type'   => $mime_type,
+			]
+		);
+	}
 
 	/**
 	 * Asynchronously load a script file.
@@ -89,7 +134,9 @@ interface Asset_Manager {
 	 * @param string $handle Handle to change.
 	 * @return void
 	 */
-	public function async( string $handle ): void;
+	public function async( string $handle ): void {
+		Asset_Manager_Scripts::instance()->modify_load_method( $handle, Load_Method::ASYNC );
+	}
 
 	/**
 	 * Defer a script file
@@ -97,7 +144,9 @@ interface Asset_Manager {
 	 * @param string $handle Handle to change.
 	 * @return void
 	 */
-	public function defer( string $handle ): void;
+	public function defer( string $handle ): void {
+		Asset_Manager_Scripts::instance()->modify_load_method( $handle, Load_Method::DEFER );
+	}
 
 	/**
 	 * Change the load method of an asset.
@@ -106,5 +155,7 @@ interface Asset_Manager {
 	 * @param string $load_method Load method to change to.
 	 * @return void
 	 */
-	public function load_method( string $handle, string $load_method = Load_Method::SYNC ): void;
+	public function load_method( string $handle, string $load_method = Load_Method::SYNC ): void {
+		Asset_Manager_Scripts::instance()->modify_load_method( $handle, $load_method );
+	}
 }
