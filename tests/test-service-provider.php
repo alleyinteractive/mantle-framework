@@ -12,6 +12,7 @@ class Test_Service_Provider extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		parent::setUp();
 
 		remove_all_actions( 'init' );
+		remove_all_filters( 'custom_filter' );
 	}
 
 	public function test_service_provider_registered() {
@@ -48,7 +49,7 @@ class Test_Service_Provider extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 			->register_commands();
 	}
 
-	public function test_hook_method() {
+	public function test_hook_method_action() {
 		$_SERVER['__hook_fired'] = false;
 
 		$app = m::mock( Application::class )->makePartial();
@@ -59,10 +60,24 @@ class Test_Service_Provider extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		$this->assertTrue( $_SERVER['__hook_fired'] );
 	}
+
+	public function test_hook_method_filter() {
+		$app = m::mock( Application::class )->makePartial();
+		$app->register( Provider_Test_Hook::class );
+		$app->boot();
+
+		$value = apply_filters( 'custom_filter', 5 );
+
+		$this->assertEquals( 15, $value );
+	}
 }
 
 class Provider_Test_Hook extends Service_Provider {
 	public function on_custom_hook() {
 		$_SERVER['__hook_fired'] = true;
+	}
+
+	public function on_custom_filter( $value ) {
+		return $value + 10;
 	}
 }
