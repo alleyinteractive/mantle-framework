@@ -45,7 +45,7 @@ class Post_Factory extends Factory {
 	 * Creates an object.
 	 *
 	 * @param array $args The arguments.
-	 * @return int|null|
+	 * @return int|null
 	 */
 	public function create( array $args = [] ): ?int {
 		return Post::create(
@@ -60,6 +60,27 @@ class Post_Factory extends Factory {
 				$args
 			)
 		)->id();
+	}
+
+	/**
+	 * Create a post with a thumbnail.
+	 *
+	 * @param array $args The arguments.
+	 * @return int|null
+	 */
+	public function create_with_thumbnail( array $args = [] ): ?int {
+		$meta = $args['meta'] ?? [];
+
+		$meta['_thumbnail_id'] = ( new Attachment_Factory( $this->faker ) )->create();
+
+		return $this->create(
+			array_merge(
+				$args,
+				[
+					'meta' => $meta,
+				]
+			)
+		);
 	}
 
 	/**
