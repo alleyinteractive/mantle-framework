@@ -71,6 +71,6 @@ class Expectation_Container {
 	 * Validate the expectations in the container.
 	 */
 	public function tear_down(): void {
-		$this->expectations->each->validate();
+		$this->expectations->each->validate(); /** @phpstan-ignore-line */
 	}
 }

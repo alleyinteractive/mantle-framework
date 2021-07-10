@@ -1,11 +1,20 @@
 includes:
-  - vendor/szepeviktor/phpstan-wordpress/extension.neon
+	- vendor/szepeviktor/phpstan-wordpress/extension.neon
 parameters:
-  level: 3
-  paths:
-    - mantle.php
-    - src
-  scanFiles:
-    - mantle.php
-  scanDirectories:
-    - src
+	level: 3
+	bootstrapFiles:
+		- tests/constants.php
+	paths:
+		- mantle.php
+		- src
+	scanFiles:
+		- mantle.php
+		- src/mantle/cache/class-redis-repository.php
+		- src/mantle/cache/class-repository.php
+	scanDirectories:
+		- src
+	excludePaths:
+		analyse:
+			- src/mantle/cache/class-redis-repository.php
+			- src/mantle/testing/install-wordpress.php
+			- src/mantle/testing/class-test-case.php

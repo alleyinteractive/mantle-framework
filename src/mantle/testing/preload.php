@@ -50,9 +50,9 @@ function tests_add_filter( $tag, $function_to_add, $priority = 10, $accepted_arg
  * @param callable $function The function to generate ID for.
  * @param int      $priority Unused. The order in which the functions
  *                           associated with a particular action are executed.
- * @return string Unique function ID for usage as array key.
+ * @return string|null Unique function ID for usage as array key.
  */
-function _test_filter_build_unique_id( $tag, $function, $priority ) {
+function _test_filter_build_unique_id( $tag, $function, $priority ): ?string {
 	if ( is_string( $function ) ) {
 		return $function;
 	}
@@ -71,4 +71,6 @@ function _test_filter_build_unique_id( $tag, $function, $priority ) {
 		// Static calling.
 		return $function[0] . '::' . $function[1];
 	}
+
+	return null;
 }

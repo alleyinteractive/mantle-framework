@@ -21,6 +21,13 @@ class Network_Factory extends Factory {
 	protected $faker;
 
 	/**
+	 * Network ID
+	 *
+	 * @var int
+	 */
+	public $network_id;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Generator $generator Faker generator.
@@ -28,7 +35,7 @@ class Network_Factory extends Factory {
 	public function __construct( Generator $generator ) {
 		$this->faker = $generator;
 
-		$this->network_id = 2;
+		$this->network_id = 1;
 	}
 
 	/**

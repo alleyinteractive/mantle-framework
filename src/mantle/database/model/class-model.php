@@ -9,6 +9,7 @@ namespace Mantle\Database\Model;
 
 use ArrayAccess;
 use JsonSerializable;
+use Mantle\Contracts\Database\Model as ModelContract;
 use Mantle\Contracts\Http\Routing\Url_Routable;
 use Mantle\Contracts\Support\Arrayable;
 use Mantle\Contracts\Support\Jsonable;
@@ -25,7 +26,7 @@ use function Mantle\Framework\Helpers\class_uses_recursive;
  *
  * @mixin \Mantle\Database\Query\Builder
  */
-abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializable, Url_Routable {
+abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializable, ModelContract, Url_Routable {
 	use Forward_Calls,
 		Concerns\Has_Aliases,
 		Concerns\Has_Attributes,

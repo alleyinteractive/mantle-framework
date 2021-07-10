@@ -32,7 +32,7 @@ class Schedule {
 	/**
 	 * Container instance.
 	 *
-	 * @var Container
+	 * @var Container|
 	 */
 	protected $container;
 
@@ -181,7 +181,7 @@ class Schedule {
 	 * @return Collection
 	 */
 	public function due_events( Application $app ): Collection {
-		return collect( $this->events )->filter->is_due( $app );
+		return collect( $this->events )->filter->is_due( $app ); /** @phpstan-ignore-line */
 	}
 
 	/**

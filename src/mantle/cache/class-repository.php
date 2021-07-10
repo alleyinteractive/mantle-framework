@@ -18,6 +18,25 @@ use function Mantle\Framework\Helpers\collect;
  */
 abstract class Repository {
 	/**
+	 * Retrieve a value from cache.
+	 *
+	 * @param string $key Cache key.
+	 * @param mixed  $default Default value.
+	 * @return mixed
+	 */
+	abstract public function get( $key, $default = null );
+
+	/**
+	 * Store an item in the cache.
+	 *
+	 * @param  string                                    $key
+	 * @param  mixed                                     $value
+	 * @param  \DateTimeInterface|\DateInterval|int|null $ttl
+	 * @return bool
+	 */
+	abstract public function put( $key, $value, $ttl = null )
+
+	/**
 	 * Retrieve an item from the cache and delete it.
 	 *
 	 * @param  string $key

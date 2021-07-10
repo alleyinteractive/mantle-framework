@@ -662,11 +662,11 @@ class Container implements ArrayAccess, Container_Contract {
 			return $binding;
 		}
 
-			// Next we need to see if a contextual binding might be bound under an alias of the
-			// given abstract type. So, we will need to check if any aliases exist with this
-			// type and then spin through them and check for contextual bindings on these.
+		// Next we need to see if a contextual binding might be bound under an alias of the
+		// given abstract type. So, we will need to check if any aliases exist with this
+		// type and then spin through them and check for contextual bindings on these.
 		if ( empty( $this->abstract_aliases[ $abstract ] ) ) {
-			return;
+			return null;
 		}
 
 		foreach ( $this->abstract_aliases[ $abstract ] as $alias ) {
@@ -674,6 +674,8 @@ class Container implements ArrayAccess, Container_Contract {
 				return $binding;
 			}
 		}
+
+		return null;
 	}
 
 	/**

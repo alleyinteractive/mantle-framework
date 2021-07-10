@@ -57,7 +57,7 @@
         "phpcs-modified": "./bin/phpcs-modified-files.sh",
         "phpcbf": "phpcbf --standard=./phpcs.xml .",
         "phpunit": "phpunit",
-        "phpstan": "phpstan analyze",
+        "phpstan": "phpstan analyze --memory-limit=2G",
         "test": [
           "@phpcs",
           "@phpunit",

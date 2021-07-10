@@ -75,7 +75,7 @@ class Cache_Manager extends Driver_Manager implements Factory {
 	 * @return Repository
 	 */
 	protected function create_array_driver( array $config ): Repository {
-		return new Array_Repository( $config['prefix'] ?? '' );
+		return new Array_Repository();
 	}
 
 	/**
@@ -85,6 +85,6 @@ class Cache_Manager extends Driver_Manager implements Factory {
 	 * @return Repository
 	 */
 	protected function create_redis_driver( array $config ): Repository {
-		return new Redis_Repository( $config );
+		return new Redis_Repository( $config ); /** @phpstan-ignore-line */
 	}
 }

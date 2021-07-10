@@ -112,9 +112,11 @@ class Array_Repository extends Repository implements Repository_Contract {
 
 	/**
 	 * Clear the cache.
+	 *
+	 * @return bool
 	 */
 	public function clear() {
 		$this->storage = [];
-		return $this->storage;
+		return true;
 	}
 }

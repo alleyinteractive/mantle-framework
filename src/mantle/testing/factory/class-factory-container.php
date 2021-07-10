@@ -72,6 +72,20 @@ class Factory_Container {
 	public $user;
 
 	/**
+	 * Page Factory
+	 *
+	 * @var Post_Factory
+	 */
+	public $page;
+
+	/**
+	 * Term Factory
+	 *
+	 * @var Term_Factory
+	 */
+	public $term;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Container $container Container instance.

@@ -64,7 +64,7 @@ trait Interacts_With_Hooks {
 
 		if ( isset( $this->expectation_container ) ) {
 			$this->expectation_container->tear_down();
-			$this->expectation_container = null;
+			unset( $this->expectation_container );
 		}
 	}
 

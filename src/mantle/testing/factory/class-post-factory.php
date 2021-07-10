@@ -45,7 +45,7 @@ class Post_Factory extends Factory {
 	 * Creates an object.
 	 *
 	 * @param array $args The arguments.
-	 * @return int|null|
+	 * @return int|null
 	 */
 	public function create( array $args = [] ): ?int {
 		return Post::create(

@@ -20,7 +20,7 @@ class Environment {
 	/**
 	 * Variable repository.
 	 *
-	 * @var array
+	 * @var \Dotenv\Repository\RepositoryInterface|null
 	 */
 	protected static $repository;
 

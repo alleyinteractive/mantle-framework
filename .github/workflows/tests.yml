@@ -95,3 +95,7 @@ jobs:
       - name: Test Framework
         shell: bash
         run: ${WP_CORE_DIR}/wp-content/plugins/mantle-framework/vendor/bin/phpunit --verbose
+
+      - name: Run PHPStan
+        shell: bash
+        run: ${WP_CORE_DIR}/wp-content/plugins/mantle-framework/vendor/bin/phpstan analyse

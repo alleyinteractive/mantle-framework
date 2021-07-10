@@ -37,7 +37,7 @@ class Attachment_Factory extends Post_Factory {
 	 * Creates an object.
 	 *
 	 * @param array $args The arguments.
-	 * @return int|null|
+	 * @return int|null
 	 */
 	public function create( array $args = [] ): ?int {
 		return Attachment::create(

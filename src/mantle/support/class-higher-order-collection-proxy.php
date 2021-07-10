@@ -31,7 +31,7 @@ class Higher_Order_Collection_Proxy {
 	/**
 	 * Create a new proxy instance.
 	 *
-	 * @param  \Illuminate\Support\Enumerable $collection
+	 * @param  \Mantle\Support\Enumerable $collection
 	 * @param  string                         $method
 	 * @return void
 	 */
