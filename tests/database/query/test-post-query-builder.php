@@ -10,6 +10,8 @@ use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Utils;
 
+use function Mantle\Framework\Helpers\factory;
+
 class Test_Post_Query_Builder extends Framework_Test_Case {
 	use Refresh_Database;
 
@@ -276,6 +278,31 @@ class Test_Post_Query_Builder extends Framework_Test_Case {
 
 		$this->assertEquals( 1, count( $get ) );
 		$this->assertEquals( $post_b, $get[0]->id() );
+	}
+
+	public function test_delete_posts() {
+		Utils::delete_all_data();
+
+		static::factory()->post->create_many( 10 );
+
+		$post_ids = static::factory()->post->create_many(
+			10,
+			[
+				'meta' => [
+					'meta-key' => 'meta-value',
+				]
+			]
+		);
+
+		static::factory()->post->create_many( 10 );
+
+		// Attempt to delete the posts.
+		Testable_Post::whereMeta( 'meta-key', 'meta-value' )->delete( true );
+
+		// Ensure the posts are deleted.
+		foreach ( $post_ids as $post_id ) {
+			$this->assertEmpty( get_post( $post_id ) );
+		}
 	}
 
 	/**

@@ -508,6 +508,16 @@ abstract class Builder {
 	}
 
 	/**
+	 * Delete the results of this query.
+	 *
+	 * @param bool $force Flag to force delete.
+	 * @return void
+	 */
+	public function delete( bool $force = false ) {
+		$this->all()->each->delete( $force );
+	}
+
+	/**
 	 * Execute the query and get the first result or throw an exception.
 	 *
 	 * @return \Mantle\Database\Model
