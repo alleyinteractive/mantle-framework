@@ -12,6 +12,7 @@ use Mantle\Contracts\Application;
 use Mantle\Support\Str;
 use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
 
+use function Mantle\Framework\Helpers\add_action;
 use function Mantle\Framework\Helpers\collect;
 
 /**
@@ -90,7 +91,7 @@ abstract class Service_Provider implements LoggerAwareInterface {
 						$hook     = Str::before_last( $hook, '_at_' );
 					}
 
-					\add_action( $hook, [ $this, $method ], $priority, 99 );
+					add_action( $hook, [ $this, $method ], $priority, 99 );
 				}
 			);
 	}
