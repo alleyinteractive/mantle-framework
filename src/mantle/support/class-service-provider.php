@@ -24,7 +24,7 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	/**
 	 * The application instance.
 	 *
-	 * @var Application
+	 * @var Application|\Mantle\Container\Container
 	 */
 	protected $app;
 
