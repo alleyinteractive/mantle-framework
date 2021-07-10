@@ -75,7 +75,7 @@ jobs:
         run: composer validate --strict
 
       - name: Install dependencies
-        uses: nick-invision/retry@v1
+        uses: nick-invision/retry@v2
         with:
           timeout_minutes: 5
           max_attempts: 5
@@ -93,5 +93,9 @@ jobs:
           rsync -aWq --no-compress . ${WP_CORE_DIR}/wp-content/plugins/mantle-framework
 
       - name: Test Framework
-        shell: bash
-        run: ${WP_CORE_DIR}/wp-content/plugins/mantle-framework/vendor/bin/phpunit --verbose
+        uses: nick-invision/retry@v2
+        with:
+          timeout_minutes: 2
+          max_attempts: 3
+          retry_on: error
+          command: ${WP_CORE_DIR}/wp-content/plugins/mantle-framework/vendor/bin/phpunit --verbose
