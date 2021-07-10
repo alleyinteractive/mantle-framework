@@ -9,13 +9,6 @@ use Mantle\Assets\Asset_Manager;
 use Mantle\Testing\Framework_Test_Case;
 
 class Test_Asset_Manager extends Framework_Test_Case {
-	public static function setUpBeforeClass(): void {
-		parent::setUpBeforeClass();
-
-		// Ensure the plugin is loaded.
-		// require_once __DIR__ . '/../../vendor/alleyinteractive/wp-asset-manager/asset-manager.php';
-	}
-
 	protected function setUp(): void {
 		parent::setUp();
 
