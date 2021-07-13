@@ -10,6 +10,7 @@
         }
     ],
     "require": {
+        "alleyinteractive/wp-asset-manager": "^0.1",
         "dragonmantank/cron-expression": "^2.0",
         "fakerphp/faker": "^1.9",
         "filp/whoops": "^2.7",
