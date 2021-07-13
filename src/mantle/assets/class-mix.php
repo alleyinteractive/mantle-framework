@@ -10,6 +10,9 @@ namespace Mantle\Assets;
 use Mantle\Assets\Exception\Mix_File_Not_Found;
 use Mantle\Support\Str;
 
+/**
+ * Mix Asset Loader
+ */
 class Mix {
 	/**
 	 * Get the path to a versioned Mix file.
@@ -18,7 +21,7 @@ class Mix {
 	 * @param  string $manifest_directory Manifest directory, defaults to application.
 	 * @return string
 	 *
-	 * @throws Mix_File_Not_Found
+	 * @throws Mix_File_Not_Found Thrown on missing manifest or asset.
 	 */
 	public function __invoke( string $path, ?string $manifest_directory = null ): string {
 		static $manifests = [];
@@ -45,7 +48,6 @@ class Mix {
 			return "//localhost:8080/{$path}";
 		}
 
-		// Combine t
 		$manifest_path = base_path( "{$manifest_directory}/mix-manifest.json" );
 
 		if ( ! isset( $manifests[ $manifest_path ] ) ) {
@@ -53,7 +55,7 @@ class Mix {
 				throw new Mix_File_Not_Found( 'The Mix manifest does not exist.' );
 			}
 
-			$manifests[ $manifest_path ] = json_decode( file_get_contents( $manifest_path ), true );
+			$manifests[ $manifest_path ] = json_decode( file_get_contents( $manifest_path ), true ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
 		}
 
 		$manifest = $manifests[ $manifest_path ];
