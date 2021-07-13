@@ -16,7 +16,7 @@ class Load_Hook {
 	 *
 	 * @var string
 	 */
-	public const HEADER = 'wp_header';
+	public const HEADER = 'wp_head';
 
 	/**
 	 * Footer load method.
