@@ -14,8 +14,8 @@ class Mix {
 	/**
 	 * Get the path to a versioned Mix file.
 	 *
-	 * @param  string  $path Mix file path.
-	 * @param  string  $manifest_directory Manifest directory, defaults to application.
+	 * @param  string $path Mix file path.
+	 * @param  string $manifest_directory Manifest directory, defaults to application.
 	 * @return string
 	 *
 	 * @throws Mix_File_Not_Found
@@ -49,7 +49,7 @@ class Mix {
 		$manifest_path = base_path( "{$manifest_directory}/mix-manifest.json" );
 
 		if ( ! isset( $manifests[ $manifest_path ] ) ) {
-			if (! is_file( $manifest_path ) ) {
+			if ( ! is_file( $manifest_path ) ) {
 				throw new Mix_File_Not_Found( 'The Mix manifest does not exist.' );
 			}
 
