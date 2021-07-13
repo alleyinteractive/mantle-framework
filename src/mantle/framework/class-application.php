@@ -332,6 +332,7 @@ class Application extends Container implements Application_Contract {
 		$core_aliases = [
 			'app'         => [ static::class, \Mantle\Contracts\Application::class ],
 			'config'      => [ \Mantle\Config\Repository::class, \Mantle\Contracts\Config\Repository::class ],
+			'events'      => [ \Mantle\Events\Dispatcher::class, \Mantle\Contracts\Events\Dispatcher::class ],
 			'files'       => [ \Mantle\Filesystem\Filesystem::class ],
 			'filesystem'  => [ \Mantle\Filesystem\Filesystem_Manager::class, \Mantle\Contracts\Filesystem\Filesystem_Manager::class ],
 			'log'         => [ \Mantle\Log\Log_Manager::class, \Psr\Log\LoggerInterface::class ],
