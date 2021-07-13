@@ -12,10 +12,10 @@
 use Mantle\Framework\Application;
 use Mantle\Contracts\Http\Routing\Response_Factory;
 use Mantle\Contracts\Http\View\Factory as View_Factory;
-use Mantle\Http\Response;
 use Mantle\Support\Environment;
-use Symfony\Component\HttpKernel\Exception\HttpException;
+use Mantle\Framework\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\Routing\Generator\UrlGenerator;
+use Mantle\Assets\Mix;
 
 if ( ! function_exists( 'app' ) ) {
 	/**
@@ -81,6 +81,20 @@ if ( ! function_exists( 'cache' ) ) {
 	}
 }
 
+if ( ! function_exists( 'remember' ) ) {
+	/**
+	 * Get an item from the cache, or execute the given Closure and store the result.
+	 *
+	 * @param  string                                    $key Cache key.
+	 * @param  \DateTimeInterface|\DateInterval|int|null $ttl Cache TTL.
+	 * @param  \Closure                                  $callback Closure to invoke.
+	 * @return mixed
+	 */
+	function remember( string $key, $ttl, Closure $closure ) {
+		return app( 'cache' )->remember( $key, $ttl, $closure );
+	}
+}
+
 if ( ! function_exists( 'environment' ) ) {
 	/**
 	 * Gets the value of an environment variable.
@@ -119,6 +133,21 @@ if ( ! function_exists( 'base_path' ) ) {
 	}
 }
 
+if ( ! function_exists( 'mix' ) ) {
+	/**
+	 * Get the path to a versioned Mix file.
+	 *
+	 * @param  string  $path
+	 * @param  string  $manifest_directory
+	 * @return string
+	 *
+	 * @throws \Exception
+	 */
+	function mix( string $path, string $manifest_directory = '' ): string {
+		return app( Mix::class )( ...func_get_args() );
+	}
+}
+
 if ( ! function_exists( 'app_path' ) ) {
 	/**
 	 * Get the application path (the app/ folder).
@@ -146,6 +175,41 @@ if ( ! function_exists( 'response' ) ) {
 		}
 
 		return $factory->make( ...$args );
+	}
+}
+
+if ( ! function_exists( 'redirect' ) ) {
+	/**
+	 * Get an instance of the redirector.
+	 *
+	 * @param  string|null  $to
+	 * @param  int  $status
+	 * @param  array  $headers
+	 * @param  bool|null  $secure
+	 * @return \Mantle\Http\Routing\Redirector
+	 */
+	function redirect( ?string $to = null, int $status = 302, array $headers = [], ?bool $secure = null ) {
+		if ( is_null( $to ) ) {
+			return app( 'redirect' );
+		}
+
+		return app( 'redirect' )->to( $to, $status, $headers, $secure );
+	}
+}
+
+if ( ! function_exists( 'report' ) ) {
+	/**
+	 * Report an exception.
+	 *
+	 * @param  \Throwable|string  $exception
+	 * @return void
+	 */
+	function report( $exception ) {
+		if ( is_string( $exception ) ) {
+			$exception = new Exception( $exception );
+		}
+
+		app( ExceptionHandler::class )->report( $exception );
 	}
 }
 
