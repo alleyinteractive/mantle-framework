@@ -21,7 +21,7 @@ abstract class Controller {
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	public function call_action( string $method, array $parameters ) {
-		return call_user_func_array( [ $this, $method ], $parameters );
+		return $this->{ $method }( ...array_values( $parameters ) );
 	}
 
 	/**
