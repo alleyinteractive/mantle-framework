@@ -380,7 +380,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 			$structure = get_option( 'permalink_structure' );
 
 			if ( ! empty( $structure ) ) {
-				$index = 1;
+				$index     = 1;
 				$structure = preg_replace_callback(
 					'/\%/',
 					function () use ( &$index ) {
