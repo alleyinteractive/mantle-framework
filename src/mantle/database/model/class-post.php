@@ -8,6 +8,7 @@
 namespace Mantle\Database\Model;
 
 use Mantle\Contracts;
+use Mantle\Contracts\Events\Dispatcher;
 use Mantle\Database\Query\Builder;
 use Mantle\Database\Query\Post_Query_Builder;
 use Mantle\Framework\Helpers;
@@ -375,11 +376,39 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 * @return string|null
 	 */
 	public static function get_route(): ?string {
-		// todo: define a better default value for 'post' post types.
 		if ( 'post' === static::get_object_name() ) {
-			return null;
+			$structure = get_option( 'permalink_structure' );
+
+			if ( ! empty( $structure ) ) {
+				$index     = 1;
+				$structure = preg_replace_callback(
+					'/\%/',
+					function () use ( &$index ) {
+						return ( $index++ ) % 2 ? '{' : '}';
+					},
+					$structure
+				);
+
+				$route_structure = str_replace( '{postname}', '{slug}', $structure );
+			} else {
+				$route_structure = null;
+			}
+		} else {
+			$route_structure = '/' . static::get_object_name() . '/{slug}';
 		}
 
-		return '/' . static::get_object_name() . '/{slug}';
+		/**
+		 * Filter the route structure for a post handled through the entity router.
+		 *
+		 * @param string $route_structure Route structure.
+		 * @param string $object_name Post type.
+		 * @param string $object_class Model class name.
+		 */
+		return (string) apply_filters(
+			'mantle_entity_router_post_route',
+			$route_structure,
+			static::get_object_name(),
+			get_called_class()
+		);
 	}
 }
