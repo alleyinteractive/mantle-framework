@@ -23,6 +23,7 @@ use Mantle\Framework\Console\Generators\Seeder_Make_Command;
 use Mantle\Framework\Console\Generators\Service_Provider_Make_Command;
 use Mantle\Framework\Console\Generators\Test_Make_Command;
 use Mantle\Framework\Console\Hook_Usage_Command;
+use Mantle\Framework\Console\Model_Discover_Command;
 use Mantle\Framework\Console\Package_Discover_Command;
 use Mantle\Framework\Console\Route_List_Command;
 use Mantle\Framework\Console\View_Cache_Command;
@@ -52,6 +53,7 @@ class Console_Service_Provider extends Service_Provider {
 		Hook_Usage_Command::class,
 		Job_Make_Command::class,
 		Middleware_Make_Command::class,
+		Model_Discover_Command::class,
 		Model_Make_Command::class,
 		Package_Discover_Command::class,
 		Route_List_Command::class,

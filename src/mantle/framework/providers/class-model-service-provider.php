@@ -9,6 +9,7 @@ namespace Mantle\Framework\Providers;
 
 use Mantle\Database\Model\Model;
 use Mantle\Database\Model\Relations\Relation;
+use Mantle\Framework\Model_Manifest;
 use Mantle\Support\Service_Provider;
 
 /**
@@ -28,8 +29,20 @@ class Model_Service_Provider extends Service_Provider {
 	public function register() {
 		Model::set_event_dispatcher( $this->app['events'] );
 
+		// Allow the configuration to disable discovery.
+		if ( $this->app['config']->get( 'models.disable_discovery', false ) ) {
+			return;
+		}
+
+		$configuration = (array) $this->app['config']->get( 'models.register', [] );
+
 		// Allows models to always be booted on each request to register whatever side-effects they desire.
-		$this->set_models_to_register( (array) $this->app['config']->get( 'models.register' ) );
+		$this->set_models_to_register(
+			[
+				...$configuration,
+				...$this->app[ Model_Manifest::class ]->models(),
+			]
+		);
 	}
 
 	/**
@@ -55,7 +68,7 @@ class Model_Service_Provider extends Service_Provider {
 	 * @param string[] $models Models to register.
 	 */
 	public function set_models_to_register( array $models ) {
-		$this->models = $models;
+		$this->models = array_unique( $models );
 	}
 
 	/**

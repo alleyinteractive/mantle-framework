@@ -157,12 +157,8 @@ class Model_Make_Command extends Stub_Generator_Command {
 			return;
 		}
 
-		$this->log(
-			PHP_EOL . sprintf(
-				'You can auto-register this model by adding "%s\\%s::class" to the "register" in "config/models.php".',
-				$this->get_namespace( $name ),
-				$this->get_class_name( $name )
-			)
-		);
+		// Run the model discovery command.
+		$this->call( 'mantle model:discover' );
+		$this->log( 'Your model should automatically be registered with Wordpress.' );
 	}
 }

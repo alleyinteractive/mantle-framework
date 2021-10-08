@@ -11,7 +11,6 @@ use Mantle\Container\Container;
 use Mantle\Contracts\Application as Application_Contract;
 use Mantle\Contracts\Container as Container_Contract;
 use Mantle\Contracts\Kernel as Kernel_Contract;
-use Mantle\Filesystem\Filesystem;
 use Mantle\Log\Log_Service_Provider;
 use Mantle\Framework\Providers\Event_Service_Provider;
 use Mantle\Framework\Providers\Routing_Service_Provider;
@@ -241,6 +240,7 @@ class Application extends Container implements Application_Contract {
 
 	/**
 	 * Get the cache folder root
+	 * Folder that stores all compiled server-side assets for the application.
 	 *
 	 * @return string
 	 */
@@ -250,12 +250,23 @@ class Application extends Container implements Application_Contract {
 
 	/**
 	 * Get the cached Composer packages path.
-	 * Folder that stores all compiled server-side assets for the application.
+	 *
+	 * Used to store all auto-loaded packages that are Composer dependencies.
 	 *
 	 * @return string
 	 */
 	public function get_cached_packages_path(): string {
 		return $this->get_cache_path() . '/packages.php';
+	}
+
+	/**
+	 * Get the cached model manifest path.
+	 * Used to store all auto-registered models that are in the application.
+	 *
+	 * @return string
+	 */
+	public function get_cached_models_path(): string {
+		return $this->get_cache_path() . '/models.php';
 	}
 
 	/**
@@ -309,9 +320,12 @@ class Application extends Container implements Application_Contract {
 
 		$this->singleton(
 			Package_Manifest::class,
-			function( $app ) {
-				return new Package_Manifest( $this->get_base_path(), $this->get_cached_packages_path(), $app );
-			}
+			fn( $app ) => new Package_Manifest( $this->get_base_path(), $this->get_cached_packages_path(), $app ),
+		);
+
+		$this->singleton(
+			Model_Manifest::class,
+			fn ( $app ) => new Model_Manifest( $this->get_app_path(), $this->get_cached_models_path(), $app ),
 		);
 	}
 

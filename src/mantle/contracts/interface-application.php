@@ -69,7 +69,8 @@ interface Application {
 	public function get_root_url( string $path = '' ): string;
 
 	/**
-	 * Get the cache folder root
+	 * Get the cache folder root.
+	 * Folder that stores all compiled server-side assets for the application.
 	 *
 	 * @return string
 	 */
@@ -77,11 +78,20 @@ interface Application {
 
 	/**
 	 * Get the cached Composer packages path.
-	 * Folder that stores all compiled server-side assets for the application.
+	 *
+	 * Used to store all auto-loaded packages that are Composer dependencies.
 	 *
 	 * @return string
 	 */
 	public function get_cached_packages_path(): string;
+
+	/**
+	 * Get the cached model manifest path.
+	 * Used to store all auto-registered models that are in the application.
+	 *
+	 * @return string
+	 */
+	public function get_cached_models_path(): string;
 
 	/**
 	 * Get the path to the application configuration files.
