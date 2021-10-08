@@ -58,7 +58,9 @@ class Model_Service_Provider extends Service_Provider {
 		}
 
 		foreach ( $this->models as $model ) {
-			$model::boot_if_not_booted();
+			if ( class_exists( $model ) ) {
+				$model::boot_if_not_booted();
+			}
 		}
 	}
 
