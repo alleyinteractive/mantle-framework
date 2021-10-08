@@ -389,7 +389,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 					$structure
 				);
 
-				$route_structure = str_replace( '{postname}', '{slug}', $structure );
+				$route_structure = str_replace( '{postname}', '{post}', $structure );
 			} else {
 				$route_structure = null;
 			}

@@ -51,9 +51,17 @@ trait Route_Dependency_Resolver {
 
 		$values = array_values( $parameters );
 
-		$skippable_value = new \stdClass();
+		$skippable_value   = new \stdClass();
+		$method_parameters = [];
+		$has_typehint      = false;
 
 		foreach ( $reflector->getParameters() as $key => $parameter ) {
+			if ( $parameter->getType() ) {
+				$has_typehint = true;
+			}
+
+			$method_parameters[] = $parameter->getName();
+
 			$instance = $this->transform_dependency( $parameter, $parameters, $skippable_value );
 
 			if ( $instance !== $skippable_value ) {
@@ -64,6 +72,14 @@ trait Route_Dependency_Resolver {
 				$parameter->isDefaultValueAvailable() ) {
 				$this->splice_into_parameters( $parameters, $key, $parameter->getDefaultValue() );
 			}
+		}
+
+		// Ensure the order of the parameters matches the order defined on the method.
+		if ( $has_typehint ) {
+			$parameters = array_replace(
+				array_flip( $method_parameters ),
+				$parameters,
+			);
 		}
 
 		return $parameters;

@@ -468,12 +468,12 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	}
 
 	/**
-	 * Get the route key for the model.
+	 * Get the route key for models.
 	 *
 	 * @return string
 	 */
 	public function get_route_key_name(): string {
-		return $this->get_key_name();
+		return 'slug';
 	}
 
 	/**
@@ -515,7 +515,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 			return static::find( $value );
 		}
 
-		return $this->where( $key, $value )->first();
+		return static::query()->where( $key, $value )->first();
 	}
 
 	/**
