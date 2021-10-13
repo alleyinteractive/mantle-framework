@@ -23,7 +23,7 @@ if ( ! function_exists( 'app' ) ) {
 	 *
 	 * @param string|null $abstract Component name.
 	 * @param array       $parameters Parameters to pass to the class.
-	 * @return mixed|Mantle\Framework\Application
+	 * @return mixed|\Mantle\Framework\Application
 	 */
 	function app( string $abstract = null, array $parameters = [] ) {
 		if ( empty( $abstract ) ) {
