@@ -159,6 +159,6 @@ class Model_Make_Command extends Stub_Generator_Command {
 
 		// Run the model discovery command.
 		$this->call( 'mantle model:discover' );
-		$this->log( 'Your model should automatically be registered with Wordpress.' );
+		$this->log( 'Your model should automatically be registered with WordPress.' );
 	}
 }

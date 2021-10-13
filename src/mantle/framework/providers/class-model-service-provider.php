@@ -38,10 +38,10 @@ class Model_Service_Provider extends Service_Provider {
 
 		// Allows models to always be booted on each request to register whatever side-effects they desire.
 		$this->set_models_to_register(
-			[
-				...$configuration,
-				...$this->app[ Model_Manifest::class ]->models(),
-			]
+			array_merge(
+				$configuration,
+				$this->app[ Model_Manifest::class ]->models()
+			)
 		);
 	}
 

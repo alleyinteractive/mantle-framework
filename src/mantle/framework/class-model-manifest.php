@@ -1,6 +1,6 @@
 <?php
 /**
- * Model_Manifest class file.
+ * Model_Manifest class file
  *
  * @package Mantle
  */
@@ -15,7 +15,7 @@ use Symfony\Component\Finder\Finder;
 use function Mantle\Framework\Helpers\collect;
 
 /**
- * Model Manifest
+ * Model Manifest.
  *
  * Automatically registers models in the application.
  */
