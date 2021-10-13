@@ -205,6 +205,28 @@ class Test_Router extends Framework_Test_Case {
 		$this->assertSame( 'first_name-last_name', $router->dispatch( Request::create( 'names/first_name/last_name', 'GET' ) )->getContent() );
 	}
 
+	// Ensure that a route with multiple variables and a single type-hinted one
+	// works properly.
+	public function test_implicit_binding_multiple_variables() {
+		$router = $this->get_router();
+
+		$router->get(
+			'{year}/{month}/{day}/{post}',
+			array(
+				'middleware' => Substitute_Bindings::class,
+				'callback'   => function ( Routing_Test_Post_Model $post ) {
+					$this->assertInstanceOf( Routing_Test_Post_Model::class, $post );
+
+					return $post->name();
+				},
+			)
+		);
+
+		$post = static::factory()->post->create_and_get();
+
+		$this->assertSame( $post->post_title, $router->dispatch( Request::create( 'year/month/day/' . $post->post_name, 'GET' ) )->getContent() );
+	}
+
 	public function test_route_name_url() {
 		$router = $this->get_router();
 		$router->get(
@@ -291,4 +313,8 @@ class Routing_Test_User_Model extends Post {
 	public function firstOrFail() {
 		return $this;
 	}
+}
+
+class Routing_Test_Post_Model extends Post {
+	public static $object_name = 'post';
 }
