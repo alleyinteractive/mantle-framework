@@ -10,7 +10,9 @@
 namespace Mantle\Framework\Console\Generators;
 
 use Nette\PhpGenerator\ClassType;
+use Nette\PhpGenerator\GlobalFunction;
 use Nette\PhpGenerator\Method;
+use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
 
 /**
@@ -18,15 +20,38 @@ use Nette\PhpGenerator\PhpNamespace;
  */
 class Printer extends \Nette\PhpGenerator\Printer {
 	/**
+	 * Print the file
+	 *
+	 * @inheritDoc
+	 */
+	public function printFile( PhpFile $file ): string {
+		return str_replace(
+			[
+				"<?php\n\n",
+				'(  ) {',
+				'(  ):',
+			],
+			[
+				"<?php\n",
+				'() {',
+				'():',
+			],
+			parent::printFile( $file ),
+		);
+	}
+
+	/**
 	 * Print the class.
 	 *
 	 * @inheritDoc
 	 */
 	public function printClass( ClassType $class, PhpNamespace $namespace = null ): string {
-		return str_replace(
-			"\n{\n",
-			" {\n",
-			parent::printClass( $class, $namespace ),
+		return trim(
+			str_replace(
+				"\n{\n",
+				" {\n",
+				parent::printClass( $class, $namespace ),
+			)
 		);
 	}
 
@@ -60,5 +85,46 @@ class Printer extends \Nette\PhpGenerator\Printer {
 
 		// Move the method's opening bracket to the same line as the function.
 		return str_replace( "\n{", ' {', $method );
+	}
+
+	/**
+	 * Print a single function.
+	 *
+	 * @inheritDoc
+	 */
+	public function printFunction( GlobalFunction $function, PhpNamespace $namespace = null ): string {
+		$function = parent::printFunction( $function, $namespace );
+		$lines    = explode( "\n", $function );
+
+		foreach ( $lines as $i => $line ) {
+			if ( 0 !== strpos( $line, 'function ' ) ) {
+				continue;
+			}
+
+			$lines[ $i ] = str_replace(
+				[
+					'(',
+					')',
+				],
+				[
+					'( ',
+					' )',
+				],
+				$lines[ $i ],
+			);
+			break;
+		}
+
+		return str_replace(
+			[
+				'(  )',
+				"\n{\n\t",
+			],
+			[
+				'()',
+				" {\n\t",
+			],
+			implode( "\n", $lines ),
+		);
 	}
 }
