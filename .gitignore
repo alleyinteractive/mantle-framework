@@ -3,3 +3,4 @@
 .run
 composer.lock
 .phpunit.result.cache
+temp

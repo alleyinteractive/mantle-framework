@@ -109,5 +109,4 @@ class Test_Printer extends TestCase {
 
 		$this->assertEquals( 0, $exit_code, 'phpcs exit code should be 0 for no errors.' );
 	}
-
 }
