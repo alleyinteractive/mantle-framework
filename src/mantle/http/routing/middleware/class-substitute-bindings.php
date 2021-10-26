@@ -10,6 +10,9 @@ namespace Mantle\Http\Routing\Middleware;
 use Closure;
 use Mantle\Contracts\Http\Routing\Router;
 use Mantle\Http\Request;
+use Mantle\Http\Routing\Events\Bindings_Substituted;
+
+use function Mantle\Framework\Helpers\event;
 
 /**
  * Substitute parameters for the route with dynamically binded models.
@@ -41,6 +44,8 @@ class Substitute_Bindings {
 	public function handle( Request $request, Closure $next ) {
 		$this->router->substitute_bindings( $request );
 		$this->router->substitute_implicit_bindings( $request );
+
+		event( new Bindings_Substituted( $request ) );
 
 		return $next( $request );
 	}

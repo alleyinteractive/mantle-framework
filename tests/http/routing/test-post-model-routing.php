@@ -33,7 +33,11 @@ class Test_Post_Model_Routing extends Framework_Test_Case {
 			]
 		);
 
-		$this->get( $post )->assertSee( $post->slug() );
+		$this
+			->get( $post )
+			->assertSee( $post->slug() )
+			->assertQueriedObject( get_post( $post->id() ) )
+			->assertQueryTrue( 'is_singular', 'is_single' );
 	}
 
 	public function test_custom_post_type() {

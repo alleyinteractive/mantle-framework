@@ -532,7 +532,7 @@ class Router implements Router_Contract {
 	 * @return void
 	 */
 	public function model( string $model, string $controller ): void {
-		Entity_Router::add( $this, $model, $controller );
+		$this->container->make( Entity_Router::class )->add( $this, $model, $controller );
 	}
 
 	/**
