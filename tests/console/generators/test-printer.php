@@ -1,5 +1,5 @@
 <?php
-namespace Mantle\Tests\Framework\Console\Generators;
+namespace Mantle\Tests\Console\Generators;
 
 use Mantle\Filesystem\Filesystem;
 use Mantle\Framework\Console\Generators\Printer;

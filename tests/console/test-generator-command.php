@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Tests\Framework\Console;
+namespace Mantle\Tests\Console;
 
 use Mantle\Framework\Application;
 use Mantle\Config\Repository;

@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Tests\Framework\Console;
+namespace Mantle\Tests\Console;
 
 use Mantle\Framework\Console\Hook_Usage_Command;
 use Mantle\Support\Collection;
