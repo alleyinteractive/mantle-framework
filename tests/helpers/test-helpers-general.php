@@ -1,6 +1,6 @@
 <?php
 
-namespace Illuminate\Tests\Support;
+namespace Mantle\Tests\Helpers;
 
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
@@ -239,4 +239,3 @@ class SupportTestClassThree extends SupportTestClassTwo
 {
 	use SupportTestTraitThree;
 }
-
