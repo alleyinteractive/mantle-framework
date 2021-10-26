@@ -1,5 +1,5 @@
 <?php
-namespace Mantle\Tests\Framework\Scheduling;
+namespace Mantle\Tests\Scheduling;
 
 use Mantle\Testing\Framework_Test_Case;
 use GuzzleHttp\Client as HttpClient;

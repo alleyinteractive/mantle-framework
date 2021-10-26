@@ -1,6 +1,6 @@
 <?php
 
-namespace Illuminate\Tests\Console\Scheduling;
+namespace Mantle\Tests\Scheduling;
 
 use Mantle\Scheduling\Event;
 use Mantle\Testing\Framework_Test_Case;
