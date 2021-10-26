@@ -64,6 +64,7 @@ trait Create_Application {
 	protected function get_application_config(): array {
 		return [
 			'app'        => [
+				'debug'     => true,
 				'providers' => [
 					\Mantle\Framework\Providers\Model_Service_Provider::class,
 					\Mantle\Framework\Providers\Queue_Service_Provider::class,
