@@ -1,5 +1,5 @@
 <?php
-namespace Mantle\Tests\Framework\Cache;
+namespace Mantle\Tests\Cache;
 
 use InvalidArgumentException;
 use Mantle\Cache\Cache_Manager;

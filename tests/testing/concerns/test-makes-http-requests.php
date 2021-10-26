@@ -1,5 +1,5 @@
 <?php
-namespace Mantle\Tests\Framework\Testing\Concerns;
+namespace Mantle\Tests\Testing\Concerns;
 
 use Mantle\Http\Response;
 use Mantle\Framework\Providers\Routing_Service_Provider;

@@ -1,5 +1,5 @@
 <?php
-namespace Mantle\Tests\Framework\Log;
+namespace Mantle\Tests\Log;
 
 use Mantle\Framework\Application;
 use Mantle\Config\Repository;

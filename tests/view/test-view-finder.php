@@ -1,5 +1,5 @@
 <?php
-namespace Mantle\Tests\Framework\View;
+namespace Mantle\Tests\View;
 
 use Mantle\Facade\View_Loader;
 use Mantle\Testing\Framework_Test_Case;

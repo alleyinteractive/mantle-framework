@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Tests\Fraework\Caper;
+namespace Mantle\Tests\Caper;
 
 use Mantle\Caper\Caper;
 use Mantle\Testing\Framework_Test_Case;

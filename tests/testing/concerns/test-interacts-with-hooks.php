@@ -1,5 +1,5 @@
 <?php
-namespace Mantle\Tests\Framework\Testing\Concerns;
+namespace Mantle\Tests\Testing\Concerns;
 
 use Mantle\Testing\Framework_Test_Case;
 
