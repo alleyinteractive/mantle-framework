@@ -1,5 +1,5 @@
 <?php
-namespace Mantle\Tests\Framework\Filesystem;
+namespace Mantle\Tests\Filesystem;
 
 use InvalidArgumentException;
 use League\Flysystem\Adapter\NullAdapter;

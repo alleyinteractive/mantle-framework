@@ -1,6 +1,6 @@
 <?php
 
-namespace Mantle\Tests\Framework\Filesystem;
+namespace Mantle\Tests\Filesystem;
 
 use GuzzleHttp\Psr7\Stream;
 use InvalidArgumentException;
