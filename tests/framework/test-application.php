@@ -98,7 +98,7 @@ class Test_Application extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertNull( $_ENV['ENV_VAR_FOO'] ?? null );
 
 		$app = new Application();
-		$app->environment_path( __DIR__ . '/fixtures/config' );
+		$app->environment_path( __DIR__ . '/../fixtures/config' );
 		$app->environment_file( 'env-file' );
 
 		( new Load_Environment_Variables() )->bootstrap( $app );
@@ -112,7 +112,7 @@ class Test_Application extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->expectOutputString( '' );
 
 		$app = new Application();
-		$app->environment_path( __DIR__ . '/fixtures/config' );
+		$app->environment_path( __DIR__ . '/../fixtures/config' );
 		$app->environment_file( 'fake-file' );
 
 		( new Load_Environment_Variables() )->bootstrap( $app );
