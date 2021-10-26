@@ -1,5 +1,5 @@
 <?php
-namespace Mantle\Tests;
+namespace Mantle\Tests\Support;
 
 use Mantle\Framework\Application;
 use Mantle\Console\Command;

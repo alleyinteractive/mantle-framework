@@ -1,6 +1,6 @@
 <?php
 
-namespace Mantle\Tests;
+namespace Mantle\Tests\Framework;
 
 use Mantle\Container\Container;
 use Mantle\Support\Pipeline;

@@ -1,5 +1,5 @@
 <?php
-namespace Mantle\Tests;
+namespace Mantle\Tests\Framework;
 
 use Mantle\Framework\Application;
 use Mantle\Framework\Bootstrap\Load_Environment_Variables;
