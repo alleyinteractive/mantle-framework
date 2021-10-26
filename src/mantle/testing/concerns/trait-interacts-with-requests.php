@@ -101,7 +101,7 @@ trait Interacts_With_Requests {
 	 * a closure that will be invoked when the HTTP request is made. The closure will be passed
 	 * the request URL and request arguments to determine if it wishes to make a response. For more
 	 * information on how this is used, see the `get_stub_request_callback()` method below and the
-	 * relevant test for the trait (Mantle\Tests\Framework\Testing\Concerns\Test_Interacts_With_Requests).
+	 * relevant test for the trait (Mantle\Tests\Testing\Concerns\Test_Interacts_With_Requests).
 	 *
 	 * @param string|array       $url URL to fake, array of URL and response pairs, or a closure
 	 *                                that will return a faked response.
