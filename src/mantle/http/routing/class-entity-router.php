@@ -187,7 +187,7 @@ class Entity_Router implements Entity_Router_Contract {
 		// Singular endpoint.
 		$single_route = $entity::get_route();
 
-		if ( $single_route ) {
+		if ( $single_route && method_exists( $controller, 'show' ) ) {
 			$router
 				->get( trailingslashit( $single_route ), [ $controller, 'show' ] )
 				->addOptions(
@@ -200,9 +200,19 @@ class Entity_Router implements Entity_Router_Contract {
 
 		$archive_route = $entity::get_archive_route();
 
-		if ( $archive_route ) {
+		if ( $archive_route && method_exists( $controller, 'index' ) ) {
 			$router
 				->get( trailingslashit( $archive_route ), [ $controller, 'index' ] )
+				->addOptions(
+					[
+						'entity_router' => 'index',
+						'entity'        => $entity,
+					]
+				);
+
+			// Add a paginated endpoint for the archive.
+			$router
+				->get( trailingslashit( $archive_route ) . 'page/{page}/', [ $controller, 'index' ] )
 				->addOptions(
 					[
 						'entity_router' => 'index',
