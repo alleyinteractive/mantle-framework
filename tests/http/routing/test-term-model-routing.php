@@ -10,13 +10,17 @@ use Mantle\Database\Model\Registration\Register_Taxonomy;
 use Mantle\Database\Model\Term;
 use Mantle\Facade\Route;
 use Mantle\Http\Controller;
+use Mantle\Http\Routing\Middleware\Substitute_Bindings;
+use Mantle\Http\Routing\Middleware\Wrap_Template;
 use Mantle\Testing\Framework_Test_Case;
 
-class Test_Taxonomy_Model_Routing extends Framework_Test_Case {
+class Test_Term_Model_Routing extends Framework_Test_Case {
 	public function test_category_term() {
 		Testable_Category_Model::boot_if_not_booted();
 
-		Route::model( Testable_Category_Model::class, Testable_Term_Model_Controller::class );
+		Route::middleware( [ Substitute_Bindings::class ] )->group( function () {
+			Route::model( Testable_Category_Model::class, Testable_Term_Model_Controller::class );
+		} );
 
 		$category = Testable_Category_Model::create( [ 'name' => 'Example Category' ] );
 		$post_id  = static::factory()->post->create();
@@ -27,13 +31,20 @@ class Test_Taxonomy_Model_Routing extends Framework_Test_Case {
 
 		$this->assertEquals( home_url( '/custom-category-rewrite/' . $category->slug() ), $term_link );
 
-		$this->get( $term_link )->assertContent( $category->slug() );
+		$this
+			->get( $term_link )
+			->assertSee( $category->slug() )
+			->assertQueriedObject( get_term( $category->id() ) )
+			->assertQueriedObjectId( $category->id() )
+			->assertQueryTrue( 'is_archive', 'is_category', 'is_tax' );
 	}
 
 	public function test_custom_taxonomy() {
 		Testable_Custom_Taxonomy_Model::register_object();
 
-		Route::model( Testable_Custom_Taxonomy_Model::class, Testable_Term_Model_Controller::class );
+		Route::middleware( [ Substitute_Bindings::class ] )->group( function () {
+			Route::model( Testable_Custom_Taxonomy_Model::class, Testable_Custom_Term_Model_Controller::class );
+		} );
 
 		$this->assertTrue( taxonomy_exists( Testable_Custom_Taxonomy_Model::get_object_name() ) );
 
@@ -48,9 +59,14 @@ class Test_Taxonomy_Model_Routing extends Framework_Test_Case {
 
 		$term_link = $term->permalink();
 
-		$this->assertEquals( home_url( '/test_tax_test/' . $term->slug() ), $term_link );
+		$this->assertEquals( home_url( '/test_tax_test/' . $term->slug() . '/' ), $term_link );
 
-		$this->get( $term_link )->assertContent( $term->slug() );
+		$this
+			->get( $term_link )
+			->assertContent( $term->slug() )
+			->assertQueriedObject( get_term( $term->id() ) )
+			->assertQueriedObjectId( $term->id() )
+			->assertQueryTrue( 'is_archive', 'is_tax' );
 	}
 }
 
@@ -60,13 +76,13 @@ class Testable_Category_Model extends Term {
 	public static $object_name = 'category';
 
 	public static function get_route(): ?string {
-		return '/custom-category-rewrite/{slug}';
+		return '/custom-category-rewrite/{category}';
 	}
 }
 
 class Testable_Term_Model_Controller extends Controller {
-	public function show( $slug ) {
-		return $slug;
+	public function show( Testable_Category_Model $category  ) {
+		return $category->slug();
 	}
 }
 
@@ -80,5 +96,11 @@ class Testable_Custom_Taxonomy_Model extends Term implements Registrable {
 			'public'      => true,
 			'object_type' => [ 'post' ],
 		];
+	}
+}
+
+class Testable_Custom_Term_Model_Controller extends Controller {
+	public function show( Testable_Custom_Taxonomy_Model $test_tax_test  ) {
+		return $test_tax_test->slug();
 	}
 }

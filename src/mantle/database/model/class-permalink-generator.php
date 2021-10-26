@@ -119,7 +119,12 @@ class Permalink_Generator {
 	 * @return string
 	 */
 	public function get_attribute( string $attribute ): string {
-		$value = $this->attributes[ $attribute ] ?? null;
+		$value = $this->attributes[ $attribute ] ?? $this->model->get( $attribute );
+
+		// Fallback to the model's slug when using the object name as an attribute.
+		if ( empty( $value ) && $attribute === $this->model::get_object_name() ) {
+			$value = $this->model->slug();
+		}
 
 		if ( ! $value && $this->model ) {
 			$value = $this->model[ $attribute ] ?? null;

@@ -14,6 +14,9 @@ use Mantle\Contracts\Http\Routing\Entity_Router as Entity_Router_Contract;
 use Mantle\Contracts\Http\Routing\Url_Routable;
 use Mantle\Contracts\Http\Routing\Router as Router_Contract;
 use Mantle\Database\Model\Model;
+use Mantle\Database\Model\Post;
+use Mantle\Database\Model\Term;
+use Mantle\Facade\Log;
 use Mantle\Http\Routing\Events\Bindings_Substituted;
 use Mantle\Http\Routing\Events\Entity_Route_Added;
 use Mantle\Http\Routing\Events\Route_Matched;
@@ -91,18 +94,37 @@ class Entity_Router implements Entity_Router_Contract {
 			return;
 		}
 
+		// Ignore if the entity model referenced doesn't exist.
+		$entity = $route->getOption( 'entity' );
+		if ( ! class_exists( $entity ) ) {
+			Log::error( "Entity matched for route not found [{$entity}]" );
+			return;
+		}
+
 		// Instantiate WP_Query if it isn't set already.
 		if ( ! $wp_query ) {
 			$wp_query = new \WP_Query(); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 		}
 
-		// Setup the global queried object.
+		// Setup the WordPress template variables.
 		if ( 'single' === $route->getOption( 'entity_router' ) ) {
-			$wp_query->is_singular = true;
-			$wp_query->is_single   = true;
+			if ( is_subclass_of( $entity, Term::class ) ) {
+				$wp_query->is_archive = true;
+				$wp_query->is_tax     = true;
+
+				$object_name = $entity::get_object_name();
+
+				if ( 'post_tag' === $object_name ) {
+					$wp_query->is_tag = true;
+				} elseif ( 'category' === $object_name ) {
+					$wp_query->is_category = true;
+				}
+			} elseif ( is_subclass_of( $entity, Post::class ) ) {
+				$wp_query->is_single   = true;
+				$wp_query->is_singular = true;
+			}
 		} elseif ( 'index' === $route->getOption( 'entity_router' ) ) {
-			$wp_query->is_archive           = true;
-			$wp_query->is_post_type_archive = true;
+			$wp_query->is_archive = true;
 		}
 	}
 
@@ -121,7 +143,7 @@ class Entity_Router implements Entity_Router_Contract {
 		$parameters = collect( $event->request->get_route_parameters()->all() );
 
 		// Set the queried object for the entity route.
-		if ( false && 'single' === $route->getOption( 'entity_router' ) ) {
+		if ( 'single' === $route->getOption( 'entity_router' ) ) {
 			$entity = $route->getOption( 'entity' );
 
 			$queried_object = $parameters

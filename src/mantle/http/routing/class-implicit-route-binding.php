@@ -30,8 +30,7 @@ class Implicit_Route_Binding {
 	 * @throws Model_Not_Found_Exception Thrown on missing model.
 	 */
 	public static function resolve_for_route( Container $container, Request $request ) {
-		$route = $request->get_route();
-
+		$route      = $request->get_route();
 		$parameters = $request->get_route_parameters()->all();
 
 		foreach ( $route->get_signature_parameters( Url_Routable::class ) as $parameter ) {
