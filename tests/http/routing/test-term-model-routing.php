@@ -1,5 +1,5 @@
 <?php
-namespace Mantle\Tests\Framework\Http\Routing;
+namespace Mantle\Tests\Http\Routing;
 
 use Mantle\Contracts\Database\Registrable;
 use Mantle\Database\Model\Concerns\Custom_Term_Link;

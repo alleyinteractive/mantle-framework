@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Tests\Framework\Http;
+namespace Mantle\Tests\Http;
 
 use Mantle\Http\Request;
 use Mantle\Http\Routing\Redirector;

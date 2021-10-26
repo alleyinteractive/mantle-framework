@@ -1,5 +1,5 @@
 <?php
-namespace Mantle\Tests\Framework\Http\Routing;
+namespace Mantle\Tests\Http\Routing;
 
 use Closure;
 use Mantle\Facade\Route;

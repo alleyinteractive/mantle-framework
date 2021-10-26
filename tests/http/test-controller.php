@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Tests\Framework\Http;
+namespace Mantle\Tests\Http;
 
 use Mantle\Contracts\Http\Routing\Router;
 use Mantle\Facade\Route;

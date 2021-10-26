@@ -1,6 +1,6 @@
 <?php
 
-namespace Mantle\Tests\Framework\Http;
+namespace Mantle\Tests\Http;
 
 use Mantle\Database\Model\Attachment;
 use Mantle\Http\Uploaded_File;

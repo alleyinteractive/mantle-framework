@@ -1,6 +1,6 @@
 <?php
 
-namespace Mantle\Tests\Framework\Http;
+namespace Mantle\Tests\Http;
 
 use Mantle\Framework\Application;
 use Mantle\Database\Model\Post;
