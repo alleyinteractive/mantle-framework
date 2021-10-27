@@ -68,7 +68,7 @@ class Load_Environment_Variables {
 
 		$paths = [];
 
-		if (file_exists( $app->get_base_path() . $dotenv_suffix ) ) {
+		if ( file_exists( $app->get_base_path() . $dotenv_suffix ) ) {
 			$paths[] = $app->get_base_path();
 		}
 
