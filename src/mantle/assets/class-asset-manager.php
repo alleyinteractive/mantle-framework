@@ -2,6 +2,8 @@
 /**
  * Asset_Manager class file.
  *
+ * phpcs:disable Squiz.Commenting.FunctionComment
+ *
  * @package Mantle
  */
 
@@ -9,9 +11,7 @@ namespace Mantle\Assets;
 
 use Asset_Manager_Preload;
 use Asset_Manager_Scripts;
-use Asset_Manager_Styles;
 use Mantle\Contracts\Assets\Asset_Manager as Asset_Manager_Contract;
-use Mantle\Contracts\Assets\Load_Hook;
 use Mantle\Contracts\Assets\Load_Method;
 
 /**
@@ -22,71 +22,32 @@ class Asset_Manager implements Asset_Manager_Contract {
 	 * Load a external script.
 	 *
 	 * @param string          $handle Script handle.
-	 * @param string          $src Script URL.
-	 * @param string[]|string $deps Script dependencies.
-	 * @param array|string    $condition Condition to load.
+	 * @param string          $src Script URL, optional.
+	 * @param string[]|string $deps Script dependencies, optional.
+	 * @param array|string    $condition Condition to load, defaults to global.
 	 * @param string          $load_method Load method.
 	 * @param string          $load_hook Load hook.
 	 * @param string|null     $version Script version.
-	 * @return void
+	 * @return Asset
 	 */
-	public function script(
-		string $handle,
-		string $src,
-		array $deps = [],
-		$condition = 'global',
-		string $load_method = Load_Method::SYNC,
-		string $load_hook = Load_Hook::HEADER,
-		?string $version = null
-	): void {
-		Asset_Manager_Scripts::instance()->add_asset(
-			[
-				'handle'      => $handle,
-				'src'         => $src,
-				'deps'        => $deps,
-				'condition'   => $condition,
-				'load_method' => $load_method,
-				'version'     => $version,
-				'load_hook'   => $load_hook,
-			]
-		);
+	public function script( ...$params ) {
+		return new Asset( 'script', ...$params );
 	}
 
 	/**
 	 * Load an external stylesheet file.
 	 *
 	 * @param string          $handle Stylesheet handle.
-	 * @param string          $src Stylesheet URL.
+	 * @param string          $src Stylesheet URL, optional.
 	 * @param string[]|string $deps Stylesheet dependencies.
 	 * @param array|string    $condition Condition to load.
 	 * @param string          $load_method Load method.
 	 * @param string          $load_hook Load hook.
 	 * @param string|null     $version Script version.
-	 * @param string          $media Style media.
 	 * @return void
 	 */
-	public function style(
-		string $handle,
-		string $src,
-		array $deps = [],
-		$condition = 'global',
-		string $load_method = Load_Method::SYNC,
-		string $load_hook = Load_Hook::HEADER,
-		?string $version = null,
-		string $media = null
-	): void {
-		Asset_Manager_Styles::instance()->add_asset(
-			[
-				'handle'      => $handle,
-				'src'         => $src,
-				'deps'        => $deps,
-				'condition'   => $condition,
-				'load_method' => $load_method,
-				'version'     => $version,
-				'load_hook'   => $load_hook,
-				'media'       => $media ?: null,
-			]
-		);
+	public function style( ...$params ): Asset {
+		return new Asset( 'style', ...$params );
 	}
 
 	/**
