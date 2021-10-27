@@ -60,17 +60,21 @@ class Load_Environment_Variables {
 		// Use the application path if set.
 		$application_path = $app->environment_path();
 
-		if ( $application_path ) {
+		$dotenv_suffix = "/{$app->environment_file()}";
+
+		if ( $application_path && file_exists( $application_path . $dotenv_suffix ) ) {
 			return [ $application_path ];
 		}
 
-		$paths = [
-			$app->get_base_path(),
-		];
+		$paths = [];
 
-		if ( defined( 'WPCOM_VIP_PRIVATE_DIR' ) && WPCOM_VIP_PRIVATE_DIR ) {
+		if ( file_exists( $app->get_base_path() . $dotenv_suffix ) ) {
+			$paths[] = $app->get_base_path();
+		}
+
+		if ( defined( 'WPCOM_VIP_PRIVATE_DIR' ) && WPCOM_VIP_PRIVATE_DIR && file_exists( WPCOM_VIP_PRIVATE_DIR . $dotenv_suffix ) ) {
 			$paths[] = WPCOM_VIP_PRIVATE_DIR;
-		} elseif ( defined( 'WP_CONTENT_DIR' ) ) {
+		} elseif ( defined( 'WP_CONTENT_DIR' ) && file_exists( WP_CONTENT_DIR . '/private' . $dotenv_suffix ) ) {
 			$paths[] = WP_CONTENT_DIR . '/private';
 		}
 
