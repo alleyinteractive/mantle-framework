@@ -1,6 +1,6 @@
 <?php
 /**
- * {{ class }} class file.
+ * {{ class }} class file
  *
  * @package {{ namespace }}
  */
@@ -10,7 +10,7 @@ namespace {{ namespace }};
 use Mantle\Support\Service_Provider;
 
 /**
- * {{ class }} Service Provider
+ * {{ class }} Service Provider.
  */
 class {{ class }} extends Service_Provider {
 

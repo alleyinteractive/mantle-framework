@@ -1,6 +1,6 @@
 <?php
 /**
- * {{ class }} class file.
+ * {{ class }} class file
  *
  * @package {{ namespace }}
  */
@@ -10,7 +10,7 @@ namespace App\Http\Middleware;
 use Closure;
 
 /**
- * {{ class }} Middleware
+ * {{ class }} Middleware.
  */
 class {{ class }} {
 	/**
