@@ -34,70 +34,91 @@ class Test_Asset_Manager extends Framework_Test_Case {
 		Asset_Manager_Scripts::instance()->add_hooks();
 		Asset_Manager_Scripts::instance()->manage_async();
 		Asset_Manager_Styles::instance()->add_hooks();
+
+		// Register with the container.
+		$this->app->singleton(
+			'asset.manager',
+			fn() => new Asset_Manager(),
+		);
+
+		$this->app->alias( 'asset.manager', Asset_Manager::class );
+		$this->app->alias( 'asset.manager', \Mantle\Contracts\Assets\Asset_Manager::class );
 	}
 
-	// public function test_register_script() {
-	// 	$manager = new Asset_Manager();
-	// 	$manager
-	// 		->script(
-	// 			'script-handle',
-	// 			'https://example.org/script.js',
-	// 			[
-	// 				'jquery',
-	// 			],
-	// 			'global',
-	// 			'sync',
-	// 		);
+	public function test_register_script() {
+		$manager = new Asset_Manager();
+		$manager
+			->script(
+				'script-handle',
+				'https://example.org/script.js',
+				[
+					'jquery',
+				],
+				'global',
+				'sync',
+			);
 
-	// 	$this->assertStringContainsString(
-	// 		"<script src='https://example.org/script.js' id='script-handle-js'></script>",
-	// 		$this->get_wp_head(),
-	// 	);
-	// }
+		$this->assertStringContainsString(
+			"<script src='https://example.org/script.js' id='script-handle-js'></script>",
+			$this->get_wp_head(),
+		);
+	}
 
-	// public function test_register_style() {
-	// 	$manager = new Asset_Manager();
-	// 	$manager
-	// 		->style(
-	// 			'style-handle',
-	// 			'https://example.org/style.css',
-	// 			[]
-	// 		);
+	public function test_register_style() {
+		$manager = new Asset_Manager();
+		$manager
+			->style(
+				'style-handle',
+				'https://example.org/style.css',
+				[]
+			);
 
-	// 	$this->assertStringContainsString(
-	// 		"<link rel='stylesheet' id='style-handle-css'  href='https://example.org/style.css' media='all' />",
-	// 		$this->get_wp_head(),
-	// 	);
-	// }
+		$this->assertStringContainsString(
+			"<link rel='stylesheet' id='style-handle-css'  href='https://example.org/style.css' media='all' />",
+			$this->get_wp_head(),
+		);
+	}
 
-	// public function test_async_script() {
-	// 	$manager = new Asset_Manager();
-	// 	$manager
-	// 		->script(
-	// 			'testsync-script-handle',
-	// 			'https://example.org/example-script.js',
-	// 		);
+	public function test_async_script() {
+		$manager = new Asset_Manager();
+		$manager
+			->script(
+				'testsync-script-handle',
+				'https://example.org/example-script.js',
+			);
 
-	// 	$manager->async( 'testsync-script-handle' );
+		$manager->async( 'testsync-script-handle' );
 
-	// 	$this->assertStringContainsString(
-	// 		"<script async src='https://example.org/example-script.js' id='testsync-script-handle-js'></script>",
-	// 		$this->get_wp_head(),
-	// 	);
-	// }
+		$this->assertStringContainsString(
+			"<script async src='https://example.org/example-script.js' id='testsync-script-handle-js'></script>",
+			$this->get_wp_head(),
+		);
+	}
 
-	// public function test_fluent_script() {
-	// 	$manager = new Asset_Manager();
-	// 	$manager
-	// 		->script( 'example-fluent' )
-	// 		->src( 'https://example.org/example-fluent.js' )
-	// 		->async();
+	public function test_fluent_script() {
+		$manager = new Asset_Manager();
+		$manager
+			->script( 'example-fluent' )
+			->src( 'https://example.org/example-fluent.js' )
+			->async();
 
-	// 	$this->assertStringContainsString(
-	// 		"<script async src='https://example.org/example-fluent.js' id='example-fluent-js'></script>",
-	// 		$this->get_wp_head(),
-	// 	);
-	// }
+		$this->assertStringContainsString(
+			"<script async src='https://example.org/example-fluent.js' id='example-fluent-js'></script>",
+			$this->get_wp_head(),
+		);
+	}
+
+	public function test_fluent_script_helper() {
+		asset()
+			->script( 'example-helper' )
+			->src( 'https://example.org/example-helper.js' )
+			->async();
+
+		$this->assertStringContainsString(
+			"<script async src='https://example.org/example-helper.js' id='example-helper-js'></script>",
+			$this->get_wp_head(),
+		);
+	}
 
 	public function test_core_dependency() {
 		global $wp_scripts;
