@@ -1,6 +1,6 @@
 <?php
 /**
- * {{ class }} class file.
+ * {{ class }} class file
  *
  * @package {{ namespace }}
  */
@@ -10,7 +10,7 @@ namespace App\Http\Controller;
 use Mantle\Http\Controller;
 
 /**
- * {{ class }} Controller
+ * {{ class }} Controller.
  */
 class {{ class }} extends Controller {
 	//

@@ -10,7 +10,7 @@ namespace {{ namespace }};
 use App\Tests\Test_Case;
 
 /**
- * Base Test Case that each Test Case should extend.
+ * {{ class }} Test Case.
  */
 class Test_{{ class }} extends Test_Case {
   public function test_example() {

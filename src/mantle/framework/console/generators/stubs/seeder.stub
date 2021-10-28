@@ -1,6 +1,6 @@
 <?php
 /**
- * {{ class }} class file.
+ * {{ class }} class file
  *
  * @package {{ namespace }}
  */
@@ -11,7 +11,7 @@ use Mantle\Database\Seeder;
 use function Mantle\Framework\Helpers\factory;
 
 /**
- * {{ class }} Seeder
+ * {{ class }} Seeder.
  */
 class {{ class }} extends Seeder {
 	/**

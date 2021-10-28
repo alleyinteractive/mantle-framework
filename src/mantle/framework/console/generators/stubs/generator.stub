@@ -1,6 +1,6 @@
 <?php
 /**
- * {{ class }}_Make_Command class file.
+ * {{ class }}_Make_Command class file
  *
  * @package {{ namespace }}
  */
@@ -10,7 +10,7 @@ namespace App\Console\Generators;
 use Mantle\Framework\Console\Generators\Stub_Generator_Command;
 
 /**
- * {{ class }} Generator Command
+ * {{ class }} Generator Command.
  */
 class {{ class }}_Make_Command extends Stub_Generator_Command {
 	/**

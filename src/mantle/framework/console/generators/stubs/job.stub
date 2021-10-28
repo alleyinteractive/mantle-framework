@@ -1,6 +1,6 @@
 <?php
 /**
- * {{ class }} class file.
+ * {{ class }} class file
  *
  * @package Mantle
  */
@@ -13,7 +13,7 @@ use Mantle\Queue\Dispatchable;
 use Mantle\Queue\Queueable;
 
 /**
- * {{ class }}
+ * {{ class }} Job.
  */
 class {{ class }} implements Job, Can_Queue {
 	use Queueable, Dispatchable;
