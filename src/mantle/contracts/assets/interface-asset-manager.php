@@ -2,6 +2,8 @@
 /**
  * Asset_Manager interface file.
  *
+ * phpcs:disable Squiz.Commenting.FunctionComment
+ *
  * @package Mantle
  */
 
@@ -23,15 +25,7 @@ interface Asset_Manager {
 	 * @param string|null     $version Script version.
 	 * @return void
 	 */
-	public function script(
-		string $handle,
-		string $src,
-		array $deps = [],
-		$condition = 'global',
-		string $load_method = Load_Method::SYNC,
-		string $load_hook = Load_Hook::HEADER,
-		?string $version = null
-	): void;
+	public function script( ...$params );
 
 	/**
 	 * Load an external stylesheet file.
@@ -46,16 +40,7 @@ interface Asset_Manager {
 	 * @param string          $media Style media.
 	 * @return void
 	 */
-	public function style(
-		string $handle,
-		string $src,
-		array $deps = [],
-		$condition = 'global',
-		string $load_method = Load_Method::SYNC,
-		string $load_hook = Load_Hook::HEADER,
-		?string $version = null,
-		string $media = null
-	): void;
+	public function style( ...$params );
 
 	/**
 	 * Preload content by URL.

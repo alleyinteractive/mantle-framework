@@ -16,6 +16,7 @@ use Mantle\Support\Environment;
 use Mantle\Framework\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Mantle\Assets\Mix;
+use Mantle\Contracts\Assets\Asset_Manager;
 
 if ( ! function_exists( 'app' ) ) {
 	/**
@@ -405,5 +406,16 @@ if ( ! function_exists( 'storage_path' ) ) {
 	 */
 	function storage_path( string $path = '' ): string {
 			return app( 'path.storage' ) . ( $path ? DIRECTORY_SEPARATOR . $path : $path );
+	}
+}
+
+if ( ! function_exists( 'asset' ) ) {
+	/**
+	 * Retrieve an instance of the Asset Manager.
+	 *
+	 * @return \Mantle\Assets\Asset_Manager
+	 */
+	function asset() {
+		return app( Asset_Manager::class );
 	}
 }

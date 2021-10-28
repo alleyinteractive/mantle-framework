@@ -21,7 +21,10 @@ abstract class Asset_Service_Provider extends Service_Provider {
 	public function register() {
 		$this->app->singleton(
 			'asset.manager',
-			fn() => new Asset_Manager()
+			fn() => new Asset_Manager(),
 		);
+
+		$this->app->alias( 'asset.manager', Asset_Manager::class );
+		$this->app->alias( 'asset.manager', \Mantle\Contracts\Assets\Asset_Manager::class );
 	}
 }
