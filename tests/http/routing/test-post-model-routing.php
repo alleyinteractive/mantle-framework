@@ -7,6 +7,8 @@ use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Registration\Register_Post_Type;
 use Mantle\Facade\Route;
 use Mantle\Http\Controller;
+use Mantle\Http\Routing\Middleware\Substitute_Bindings;
+use Mantle\Http\Routing\Middleware\Wrap_Template;
 use Mantle\Testing\Framework_Test_Case;
 
 class Test_Post_Model_Routing extends Framework_Test_Case {
@@ -20,7 +22,9 @@ class Test_Post_Model_Routing extends Framework_Test_Case {
 	public function test_post_type() {
 		Testable_Post_Model::boot_if_not_booted();
 
-		Route::model( Testable_Post_Model::class, Testable_Post_Model_Controller::class );
+		Route::middleware( [ Substitute_Bindings::class, Wrap_Template::class ] )->group( function () {
+			Route::model( Testable_Post_Model::class, Testable_Post_Model_Controller::class );
+		} );
 
 		$post = Testable_Post_Model::create(
 			[
@@ -29,10 +33,11 @@ class Test_Post_Model_Routing extends Framework_Test_Case {
 			]
 		);
 
-		$permalink = get_permalink( $post->ID );
-		$this->assertEquals( home_url( '/blog/' . $post->slug() ), $permalink );
-
-		$this->get( $permalink )->assertContent( $post->slug() );
+		$this
+			->get( $post )
+			->assertSee( $post->slug() )
+			->assertQueriedObject( get_post( $post->id() ) )
+			->assertQueryTrue( 'is_singular', 'is_single' );
 	}
 
 	public function test_custom_post_type() {
@@ -68,18 +73,12 @@ class Test_Post_Model_Routing extends Framework_Test_Case {
 }
 
 class Testable_Post_Model extends Post {
-	use Custom_Post_Permalink;
-
 	public static $object_name = 'post';
-
-	public static function get_route(): ?string {
-		return '/blog/{slug}';
-	}
 }
 
 class Testable_Post_Model_Controller extends Controller {
-	public function show( $slug ) {
-		return $slug;
+	public function show( Testable_Post_Model $post ) {
+		return $post->slug();
 	}
 }
 

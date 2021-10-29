@@ -218,4 +218,30 @@ class Term extends Model implements Core_Object, Updatable {
 	public function delete( bool $force = false ) {
 		\wp_delete_term( $this->id(), $this->taxonomy() );
 	}
+
+	/**
+	 * Get the registerable route for the model. By default this is set relative
+	 * the object's archive route with the object's slug.
+	 *
+	 *     /object_name/object_slug/
+	 *
+	 * @return string|null
+	 */
+	public static function get_route(): ?string {
+		$route_structure = static::get_archive_route() . '/{' . static::get_object_name() . '}/';
+
+		/**
+		 * Filter the route structure for a term handled through the entity router.
+		 *
+		 * @param string $route_structure Route structure.
+		 * @param string $object_name Taxonomy name.
+		 * @param string $object_class Model class name.
+		 */
+		return (string) apply_filters(
+			'mantle_entity_router_term_route',
+			$route_structure,
+			static::get_object_name(),
+			get_called_class()
+		);
+	}
 }

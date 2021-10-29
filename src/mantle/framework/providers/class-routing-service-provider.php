@@ -8,6 +8,7 @@
 namespace Mantle\Framework\Providers;
 
 use Mantle\Contracts\Http\Routing\Response_Factory as Response_Factory_Contract;
+use Mantle\Http\Routing\Entity_Router;
 use Mantle\Http\Routing\Redirector;
 use Mantle\Http\Routing\Response_Factory;
 use Mantle\Http\Routing\Router;
@@ -41,6 +42,13 @@ class Routing_Service_Provider extends Service_Provider {
 			function( $app ) {
 				return new Router( $app['events'], $app );
 			}
+		);
+
+		$this->app->singleton(
+			'router.entity',
+			function( $app ) {
+				return new Entity_Router( $app );
+			},
 		);
 	}
 
