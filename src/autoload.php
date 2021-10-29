@@ -56,7 +56,7 @@ function generate_wp_autoloader( string $namespace, string $root_path ): callabl
 		foreach ( $paths as $path ) {
 			$path = $root_path . \sprintf( $path, $base_path, $class );
 
-			if ( \file_exists( $path ) && 0 === validate_file( $path ) ) {
+			if ( \file_exists( $path ) ) {
 				// Path is defined by this file and validated.
 				require_once $path; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 				return;
