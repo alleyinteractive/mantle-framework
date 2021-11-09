@@ -64,6 +64,14 @@ class Package_Discover_Command extends Command {
 
 		$this->manifest->build();
 
+		foreach ( array_keys( $this->manifest->get_manifest() ) as $package ) {
+			$this->log( 'Discovered Package: ' . $this->colorize( $package, 'green' ) );
+		}
+
+		if ( empty( $this->manifest->get_manifest() ) ) {
+			$this->log( 'No packages discovered.' );
+		}
+
 		$this->log( 'Package manifest generated successfully.' );
 	}
 }
