@@ -13,6 +13,8 @@ use function Mantle\Framework\Helpers\collect;
 
 /**
  * CLI Command for Service Providers
+ *
+ * @todo Abstract WP_CLI output to a console stream.
  */
 abstract class Command {
 	/**
@@ -190,6 +192,43 @@ abstract class Command {
 	 */
 	public function log( string $message ): void {
 		WP_CLI::log( $message );
+	}
+
+	/**
+	 * Colorize a string for output.
+	 *
+	 * @param string $string String to colorize.
+	 * @param string $color Color to use.
+	 * @return string
+	 */
+	public function colorize( string $string, string $color ): string {
+		$colors = [
+			'yellow'     => '%y',
+			'green'      => '%g',
+			'blue'       => '%b',
+			'red'        => '%r',
+			'magenta'    => '%p',
+			'magenta'    => '%m',
+			'cyan'       => '%c',
+			'grey'       => '%w',
+			'black'      => '%k',
+			'reset'      => '%n',
+			'yellow-bg'  => '%3',
+			'green-bg'   => '%2',
+			'blue-bg'    => '%4',
+			'red-bg'     => '%1',
+			'magenta-bg' => '%5',
+			'cyan-bg'    => '%6',
+			'grey-bg'    => '%7',
+			'black-bg'   => '%0',
+			'blink'      => '%F',
+			'underline'  => '%U',
+			'inverse'    => '%8',
+			'bright'     => '%9',
+		];
+
+		$char = $colors[ $color ] ?? '';
+		return WP_CLI::colorize( "{$char}{$string}%n" );
 	}
 
 	/**

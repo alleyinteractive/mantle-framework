@@ -58,10 +58,18 @@ class Model_Discover_Command extends Command {
 	 * @param array $assoc_args Command flags.
 	 */
 	public function handle( array $args, array $assoc_args = [] ) {
-		$this->log( 'Discovering...' );
+		$this->log( 'Discovering models...' );
 
 		$this->manifest->build();
 
-		$this->log( 'Model manifest generated successfully.' );
+		foreach ( $this->manifest->models() as $model ) {
+			$this->log( 'Model discovered: ' . $this->colorize( $model, 'green' ) );
+		}
+
+		if ( empty( $this->manifest->models() ) ) {
+			$this->log( $this->colorize( 'No models discovered.', 'yellow' ) );
+		} else {
+			$this->log( PHP_EOL . $this->colorize( 'Model manifest generated successfully.', 'green' ) );
+		}
 	}
 }

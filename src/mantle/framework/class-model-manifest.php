@@ -167,5 +167,8 @@ class Model_Manifest {
 		) ) {
 			throw new Application_Exception( 'Error writing file: ' . $this->manifest_path );
 		}
+
+		// Refresh the manifest.
+		$this->manifest = $manifest;
 	}
 }

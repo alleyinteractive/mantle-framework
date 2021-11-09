@@ -60,10 +60,18 @@ class Package_Discover_Command extends Command {
 	 * @param array $assoc_args Command flags.
 	 */
 	public function handle( array $args, array $assoc_args = [] ) {
-		$this->log( 'Discovering...' );
+		$this->log( 'Discovering packages...' );
 
 		$this->manifest->build();
 
-		$this->log( 'Package manifest generated successfully.' );
+		foreach ( array_keys( $this->manifest->get_manifest() ) as $package ) {
+			$this->log( 'Discovered Package: ' . $this->colorize( $package, 'green' ) );
+		}
+
+		if ( empty( $this->manifest->get_manifest() ) ) {
+			$this->log( $this->colorize( 'No packages discovered.', 'yellow' ) );
+		} else {
+			$this->log( PHP_EOL . $this->colorize( 'Package manifest generated successfully.', 'green' ) );
+		}
 	}
 }

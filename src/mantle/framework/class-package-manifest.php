@@ -112,7 +112,7 @@ class Package_Manifest {
 	 *
 	 * @return array
 	 */
-	protected function get_manifest(): array {
+	public function get_manifest(): array {
 		if ( isset( $this->manifest ) ) {
 			return (array) $this->manifest;
 		}
