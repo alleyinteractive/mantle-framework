@@ -62,6 +62,14 @@ class Model_Discover_Command extends Command {
 
 		$this->manifest->build();
 
-		$this->log( 'Model manifest generated successfully.' );
+		foreach ( array_keys( $this->manifest->models() ) as $model ) {
+			$this->log( 'Model discovered: ' . $this->colorize( $model, 'green' ) );
+		}
+
+		if ( empty( $this->manifest->models() ) ) {
+			$this->log( 'No models discovered.' );
+		} else {
+			$this->log( 'Model manifest generated successfully.' );
+		}
 	}
 }

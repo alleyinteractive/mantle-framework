@@ -70,8 +70,8 @@ class Package_Discover_Command extends Command {
 
 		if ( empty( $this->manifest->get_manifest() ) ) {
 			$this->log( 'No packages discovered.' );
+		} else {
+			$this->log( 'Package manifest generated successfully.' );
 		}
-
-		$this->log( 'Package manifest generated successfully.' );
 	}
 }
