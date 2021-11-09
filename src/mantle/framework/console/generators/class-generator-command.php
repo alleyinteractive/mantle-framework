@@ -200,4 +200,20 @@ abstract class Generator_Command extends Command {
 	protected function get_base_path(): string {
 		return $this->app->get_base_path() . '/app/';
 	}
+
+	/**
+	 * Get the application's i18n domain.
+	 *
+	 * @return string
+	 */
+	protected function get_i18n_domain(): string {
+		$domain = config( 'app.i18n_domain', environment( 'APP_I18N_DOMAIN', null ) );
+
+		if ( $domain ) {
+			return $domain;
+		}
+
+		// Attempt to calculate the domain from the application's folder.
+		return sanitize_title( basename( $this->app->get_base_path() ), 'mantle' );
+	}
 }

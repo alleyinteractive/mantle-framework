@@ -44,6 +44,7 @@ abstract class Stub_Generator_Command extends Generator_Command {
 		// Register replacements for the stub file.
 		$this->replacements->add( '{{ class }}', $this->get_class_name( $name ) );
 		$this->replacements->add( '{{ namespace }}', $this->get_namespace( $name ) );
+		$this->replacements->add( '{{ domain }}', $this->get_i18n_domain() );
 
 		$contents = file_get_contents( $this->get_file_stub() ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
 
