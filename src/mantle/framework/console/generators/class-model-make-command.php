@@ -112,16 +112,19 @@ class Model_Make_Command extends Stub_Generator_Command {
 			$this->get_flag( 'object_name', $this->get_default_object_name() )
 		);
 
-		$default_label = $this->get_default_label();
+		$inflector      = $this->inflector();
+		$default_label  = $this->get_default_label();
+		$singular_label = $inflector->singularize( $default_label )[0] ?? $default_label;
+		$plural_label   = $inflector->pluralize( $singular_label )[0] ?? $default_label;
 
 		$this->replacements->add(
 			'{{ label_singular }}',
-			$this->get_flag( 'label_singular', $default_label )
+			$this->get_flag( 'label_singular', $singular_label )
 		);
 
 		$this->replacements->add(
 			'{{ label_plural }}',
-			$this->get_flag( 'label_plural', $default_label )
+			$this->get_flag( 'label_plural', $plural_label )
 		);
 
 		return __DIR__ . '/stubs/' . $filename;
