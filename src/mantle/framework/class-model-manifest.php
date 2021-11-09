@@ -133,8 +133,6 @@ class Model_Manifest {
 			}
 		}
 
-		$manifest[] = 'App\Model\Example';
-
 		/**
 		 * Filter the models that are being automatically registered.
 		 *
@@ -142,7 +140,6 @@ class Model_Manifest {
 		 */
 		$manifest = apply_filters( 'mantle_model_registration', $manifest );
 
-		dd($manifest);
 		$this->write_manifest( $manifest->unique()->values()->all() );
 	}
 
@@ -170,5 +167,8 @@ class Model_Manifest {
 		) ) {
 			throw new Application_Exception( 'Error writing file: ' . $this->manifest_path );
 		}
+
+		// Refresh the manifest.
+		$this->manifest = $manifest;
 	}
 }
