@@ -11,6 +11,8 @@ use Mantle\Console\Command;
 use Mantle\Contracts\Application as Application_Contract;
 use Mantle\Framework\Providers\Provider_Exception;
 use Mantle\Support\String_Replacements;
+use Symfony\Component\String\Inflector\EnglishInflector;
+use Symfony\Component\String\Inflector\InflectorInterface;
 
 /**
  * Generator Command
@@ -199,5 +201,35 @@ abstract class Generator_Command extends Command {
 	 */
 	protected function get_base_path(): string {
 		return $this->app->get_base_path() . '/app/';
+	}
+
+	/**
+	 * Get the application's i18n domain.
+	 *
+	 * @return string
+	 */
+	protected function get_i18n_domain(): string {
+		$domain = config( 'app.i18n_domain', environment( 'APP_I18N_DOMAIN', null ) );
+
+		if ( $domain ) {
+			return $domain;
+		}
+
+		// Attempt to calculate the domain from the application's folder.
+		return sanitize_title( basename( $this->app->get_base_path() ), 'mantle' );
+	}
+
+	/**
+	 * Retrieve the string inflector to use.
+	 *
+	 * @return InflectorInterface
+	 */
+	protected function inflector(): InflectorInterface {
+		// Use the bound inflector if available.
+		if ( $this->app->bound( InflectorInterface::class ) ) {
+			return $this->app->make( InflectorInterface::class );
+		}
+
+		return $this->app->make( EnglishInflector::class );
 	}
 }
