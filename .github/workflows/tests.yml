@@ -1,6 +1,7 @@
 name: Unit Tests
 
 on:
+  push:
   pull_request:
   schedule:
     - cron: '0 0 * * *'
@@ -80,16 +81,6 @@ jobs:
           timeout_minutes: 5
           max_attempts: 5
           command: composer install
-
-      - name: Install WordPress and Copy Project
-        shell: bash
-        run: |
-          bash bin/install-wp-tests.sh wordpress_unit_tests root '' 127.0.0.1 $WP_VERSION true
-
-          # Go into the core directory and replace wp-content.
-          mkdir -p ${WP_CORE_DIR}/wp-content/plugins/mantle-framework
-          rm -rf ${WP_CORE_DIR}/wp-content/plugins/mantle-framework
-          rsync -aWq --no-compress . ${WP_CORE_DIR}/wp-content/plugins/mantle-framework
 
       - name: Test Framework
         uses: nick-invision/retry@v2
