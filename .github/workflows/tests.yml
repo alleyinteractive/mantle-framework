@@ -81,13 +81,10 @@ jobs:
           max_attempts: 5
           command: composer install
 
-      - name: Run PHPUnit
-        run: composer run phpunit
-
-      # - name: Test Framework
-      #   uses: nick-invision/retry@v2
-      #   with:
-      #     timeout_minutes: 2
-      #     max_attempts: 3
-      #     retry_on: error
-      #     command: composer run phpunit
+      - name: Test Framework
+        uses: nick-invision/retry@v2
+        with:
+          timeout_minutes: 2
+          max_attempts: 3
+          retry_on: error
+          command: composer run phpunit

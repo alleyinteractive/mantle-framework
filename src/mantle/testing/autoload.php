@@ -38,7 +38,7 @@ function get_framework_directory(): string {
 		return $dir;
 	}
 
-	return dirname( __DIR__, 4 );
+	return dirname( __DIR__, 3 );
 }
 
 /**
@@ -49,11 +49,6 @@ function get_framework_directory(): string {
  */
 function install( callable $callback_after_preload = null ): void {
 	$dir = get_framework_directory();
-
-	dump(
-		'debugging',
-		scandir( $dir ),
-	);
 
 	if ( ! file_exists( $dir . '/src/mantle/testing/preload.php' ) ) {
 		echo "ERROR: Failed to locate valid mantle-framework location. \n";
