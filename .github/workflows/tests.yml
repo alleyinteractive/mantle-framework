@@ -1,7 +1,6 @@
 name: Unit Tests
 
 on:
-  push:
   pull_request:
   schedule:
     - cron: '0 0 * * *'
@@ -88,4 +87,4 @@ jobs:
           timeout_minutes: 2
           max_attempts: 3
           retry_on: error
-          command: ${WP_CORE_DIR}/wp-content/plugins/mantle-framework/vendor/bin/phpunit --verbose
+          command: composer run phpunit
