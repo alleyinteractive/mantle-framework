@@ -53,6 +53,7 @@ function install( callable $callback_after_preload = null ): void {
 	if ( ! file_exists( $dir . '/src/mantle/testing/preload.php' ) ) {
 		echo "ERROR: Failed to locate valid mantle-framework location. \n";
 		echo "Location: {$dir} \n";
+		echo 'Current file: ' . __FILE__ . PHP_EOL;
 		exit( 1 );
 	}
 
