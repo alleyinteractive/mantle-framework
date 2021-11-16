@@ -84,11 +84,10 @@ jobs:
       - name: Install WordPress and Copy Project
         shell: bash
         run: |
-          bash bin/install-wp-tests.sh wordpress_unit_tests root '' 127.0.0.1 $WP_VERSION
+          bash bin/install-wp-tests.sh wordpress_unit_tests root '' 127.0.0.1 $WP_VERSION true
 
           # Go into the core directory and replace wp-content.
           mkdir -p ${WP_CORE_DIR}/wp-content/plugins/mantle-framework
-          # cp -R . "${WP_CORE_DIR}/wp-content/plugins/mantle-framework"
           rm -rf ${WP_CORE_DIR}/wp-content/plugins/mantle-framework
           rsync -aWq --no-compress . ${WP_CORE_DIR}/wp-content/plugins/mantle-framework
 
