@@ -34,6 +34,7 @@ function get_framework_directory(): string {
 
 
 	$dir = preg_replace( '#/mantle-framework/.*$#', '/mantle-framework', __DIR__ );
+	dd($dir);
 	if ( is_dir( $dir ) ) {
 		return $dir;
 	}
