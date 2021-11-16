@@ -16,7 +16,6 @@
         "filp/whoops": "^2.14",
         "guzzlehttp/guzzle": "^6.3.1 || ^7.3",
         "illuminate/view": "^8.6",
-        "league/commonmark": "^1.4",
         "league/flysystem": "^1.1",
         "league/flysystem-cached-adapter": "^1.1",
         "monolog/monolog": "^2.0",
