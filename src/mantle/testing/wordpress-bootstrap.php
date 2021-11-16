@@ -54,7 +54,7 @@ if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) && ! empty( WP_TESTS_CONFIG_FILE_PAT
 
 		// Download the latest installation command from GitHub and install WordPress.
 		$cmd = sprintf(
-			'WP_CORE_DIR=%s /bin/bash -c %s %s %s %s %s %s true',
+			'WP_CORE_DIR=%s /bin/bash -c %s %s %s %s %s %s',
 			WP_TESTS_INSTALL_PATH,
 			'$(curl -fsSL https://raw.githubusercontent.com/alleyinteractive/mantle-framework/main/bin/install-wp-tests.sh)',
 			defined( 'DB_NAME' ) ? DB_NAME : 'wordpress_unit_tests',
