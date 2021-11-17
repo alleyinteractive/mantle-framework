@@ -54,7 +54,7 @@ if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) && ! empty( WP_TESTS_CONFIG_FILE_PAT
 
 		// Download the latest installation command from GitHub and install WordPress.
 		$cmd = sprintf(
-			'WP_CORE_DIR=%s curl -s %s | bash -s %s %s %s %s %s true',
+			'WP_CORE_DIR=%s curl -s %s | bash -s %s %s %s %s %s %s',
 			WP_TESTS_INSTALL_PATH,
 			// 'https://raw.githubusercontent.com/alleyinteractive/mantle-framework/main/bin/install-wp-tests.sh',
 			'https://raw.githubusercontent.com/alleyinteractive/mantle-framework/remove-bin-install/bin/install-wp-tests.sh',
@@ -62,7 +62,8 @@ if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) && ! empty( WP_TESTS_CONFIG_FILE_PAT
 			defined( 'DB_USER' ) ? DB_USER : Utils::env( 'WP_DB_USER', 'root' ),
 			defined( 'DB_PASSWORD' ) ? DB_PASSWORD : Utils::env( 'WP_DB_PASSWORD', 'root' ),
 			defined( 'DB_HOST' ) ? DB_HOST : Utils::env( 'WP_DB_HOST', 'localhost' ),
-			'latest',
+			Utils::env( 'WP_VERSION', 'latest' ),
+			Utils::env( 'WP_SKIP_DB_CREATE', 'false' ),
 		);
 
 		$resp = system( $cmd, $retval );
