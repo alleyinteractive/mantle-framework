@@ -36,6 +36,9 @@ jobs:
       CACHEDIR: /tmp
       WP_CORE_DIR: /tmp/wordpress
       WP_VERSION: ${{ matrix.wp_version }}
+      WP_DB_HOST: 127.0.0.1
+      WP_DB_USER: root
+      WP_DB_PASSWORD: ''
 
     steps:
       - name: Cancel previous runs of this workflow (pull requests only)
