@@ -25,7 +25,6 @@ global $wpdb,
        $wp_rewrite,
        $shortcode_tags,
        $wp,
-       $phpmailer,
        $table_prefix,
        $wp_theme_directories,
        $PHP_SELF;
@@ -47,6 +46,7 @@ if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) && ! empty( WP_TESTS_CONFIG_FILE_PAT
 
 	$config_file_path = WP_TESTS_INSTALL_PATH . '/wp-tests-config.php';
 
+	// Install WordPress if we're not in the sub-process that installs WordPress.
 	if ( ! defined( 'WP_INSTALLING' ) || ! WP_INSTALLING ) {
 		echo 'WordPress installation not found, installing in temporary directory: ' . WP_TESTS_INSTALL_PATH . PHP_EOL;
 
@@ -54,9 +54,9 @@ if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) && ! empty( WP_TESTS_CONFIG_FILE_PAT
 
 		// Download the latest installation command from GitHub and install WordPress.
 		$cmd = sprintf(
-			'WP_CORE_DIR=%s /bin/bash -c %s %s %s %s %s %s',
+			'WP_CORE_DIR=%s curl -s %s | bash -s %s %s %s %s %s true',
 			WP_TESTS_INSTALL_PATH,
-			'$(curl -fsSL https://raw.githubusercontent.com/alleyinteractive/mantle-framework/main/bin/install-wp-tests.sh)',
+			'https://raw.githubusercontent.com/alleyinteractive/mantle-framework/main/bin/install-wp-tests.sh',
 			defined( 'DB_NAME' ) ? DB_NAME : 'wordpress_unit_tests',
 			defined( 'DB_USER' ) ? DB_USER : 'root',
 			defined( 'DB_PASSWORD' ) ? DB_PASSWORD : 'root',
@@ -64,7 +64,7 @@ if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) && ! empty( WP_TESTS_CONFIG_FILE_PAT
 			'latest',
 		);
 
-		system( $cmd, $retval );
+		$resp = system( $cmd, $retval );
 
 		if ( 0 !== $retval ) {
 			echo PHP_EOL . 'Error installing WordPress!';
@@ -79,6 +79,8 @@ if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) && ! empty( WP_TESTS_CONFIG_FILE_PAT
 if ( is_readable( $config_file_path ) ) {
 	echo "Using configuration file: [{$config_file_path}]\n";
 	require_once $config_file_path;
+} elseif ( ! defined( 'WP_INSTALLING' ) || ! WP_INSTALLING ) {
+	echo "No wp-tests-config.php file found, using default configuration.\n";
 }
 
 Utils::setup_configuration();
@@ -107,7 +109,6 @@ $multisite = $multisite || ( defined( 'MULTISITE' ) && MULTISITE );
 
 // Override the PHPMailer.
 require_once __DIR__ . '/doubles/class-mockphpmailer.php';
-$phpmailer = new MockPHPMailer( true );
 
 if ( ! defined( 'WP_DEFAULT_THEME' ) ) {
 	define( 'WP_DEFAULT_THEME', 'default' );

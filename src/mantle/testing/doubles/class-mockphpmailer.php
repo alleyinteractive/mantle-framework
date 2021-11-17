@@ -2,8 +2,13 @@
 
 namespace Mantle\Testing\Doubles;
 
-require_once ABSPATH . '/wp-includes/PHPMailer/PHPMailer.php';
+if ( ! file_exists( ABSPATH . '/wp-includes/PHPMailer/PHPMailer.php' ) ) {
+	return;
+}
 
+global $phpmailer;
+
+require_once ABSPATH . '/wp-includes/PHPMailer/PHPMailer.php';
 class MockPHPMailer extends \PHPMailer\PHPMailer\PHPMailer {
 	var $mock_sent = array();
 
@@ -104,3 +109,5 @@ function reset_phpmailer_instance() {
 
 	return false;
 }
+
+$phpmailer = new MockPHPMailer( true );
