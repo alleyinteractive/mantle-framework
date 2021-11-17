@@ -25,7 +25,7 @@ global $wpdb,
        $wp_rewrite,
        $shortcode_tags,
        $wp,
-			 $phpmailer,
+       $phpmailer,
        $table_prefix,
        $wp_theme_directories,
        $PHP_SELF;
