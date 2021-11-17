@@ -61,7 +61,8 @@ jobs:
         with:
           path: |
             ${{ steps.composer-cache.outputs.dir }}
-            /tmp
+            /tmp/wordpress
+            /tmp/wp-latest.json
           key: ${{ runner.os }}-${{ matrix.php }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.php }}-composer-

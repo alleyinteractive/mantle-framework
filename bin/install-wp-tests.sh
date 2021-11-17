@@ -12,14 +12,6 @@ DB_HOST=${4-localhost}
 WP_VERSION=${5-latest}
 SKIP_DB_CREATE=${6-false}
 
-# Debugging
-echo "DB_NAME $DB_NAME"
-echo "DB_USER $DB_USER"
-echo "DB_PASS $DB_PASS"
-echo "DB_HOST $DB_HOST"
-echo "WP_VERSION $WP_VERSION"
-echo "SKIP_DB_CREATE $SKIP_DB_CREATE"
-
 CACHEDIR=${CACHEDIR-/tmp}
 CACHEDIR=$(echo $CACHEDIR | sed -e "s/\/$//")
 
