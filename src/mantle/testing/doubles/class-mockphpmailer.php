@@ -110,5 +110,3 @@ function reset_phpmailer_instance() {
 
 	return false;
 }
-
-$phpmailer = new MockPHPMailer( true );
