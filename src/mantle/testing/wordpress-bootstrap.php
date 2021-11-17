@@ -25,6 +25,7 @@ global $wpdb,
        $wp_rewrite,
        $shortcode_tags,
        $wp,
+			 $phpmailer,
        $table_prefix,
        $wp_theme_directories,
        $PHP_SELF;
@@ -110,6 +111,7 @@ $multisite = $multisite || ( defined( 'MULTISITE' ) && MULTISITE );
 
 // Override the PHPMailer.
 require_once __DIR__ . '/doubles/class-mockphpmailer.php';
+$phpmailer = new MockPHPMailer( true );
 
 if ( ! defined( 'WP_DEFAULT_THEME' ) ) {
 	define( 'WP_DEFAULT_THEME', 'default' );
