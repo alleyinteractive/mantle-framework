@@ -191,4 +191,17 @@ class Utils {
 
 		// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
 	}
+
+	/**
+	 * Retrieve an environment variable with a fallback.
+	 *
+	 * @param string $variable Variable to get.
+	 * @param mixed  $default Default value.
+	 * @return mixed
+	 */
+	public static function env( string $variable, $default ) {
+		$value = getenv( $variable );
+
+		return false === $value ? $default : $value;
+	}
 }

@@ -33,9 +33,12 @@ jobs:
     name: ${{ matrix.php }} @ ${{ matrix.wp_version }}
 
     env:
-      CACHEDIR: /tmp/test-cache
+      CACHEDIR: /tmp
       WP_CORE_DIR: /tmp/wordpress
       WP_VERSION: ${{ matrix.wp_version }}
+      WP_DB_HOST: 127.0.0.1
+      WP_DB_USER: root
+      WP_DB_PASSWORD: '""'
 
     steps:
       - name: Cancel previous runs of this workflow (pull requests only)
@@ -58,7 +61,8 @@ jobs:
         with:
           path: |
             ${{ steps.composer-cache.outputs.dir }}
-            /tmp/test-cache
+            /tmp/wordpress
+            /tmp/wp-latest.json
           key: ${{ runner.os }}-${{ matrix.php }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.php }}-composer-
@@ -81,21 +85,10 @@ jobs:
           max_attempts: 5
           command: composer install
 
-      - name: Install WordPress and Copy Project
-        shell: bash
-        run: |
-          bash bin/install-wp-tests.sh wordpress_unit_tests root '' 127.0.0.1 $WP_VERSION
-
-          # Go into the core directory and replace wp-content.
-          mkdir -p ${WP_CORE_DIR}/wp-content/plugins/mantle-framework
-          # cp -R . "${WP_CORE_DIR}/wp-content/plugins/mantle-framework"
-          rm -rf ${WP_CORE_DIR}/wp-content/plugins/mantle-framework
-          rsync -aWq --no-compress . ${WP_CORE_DIR}/wp-content/plugins/mantle-framework
-
       - name: Test Framework
         uses: nick-invision/retry@v2
         with:
           timeout_minutes: 2
           max_attempts: 3
           retry_on: error
-          command: ${WP_CORE_DIR}/wp-content/plugins/mantle-framework/vendor/bin/phpunit --verbose
+          command: composer run phpunit

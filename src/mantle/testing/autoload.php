@@ -32,13 +32,12 @@ function get_framework_directory(): string {
 		return $mantle_dir;
 	}
 
-
-	$dir = preg_replace( '#/mantle-framework/.*$#', '/mantle-framework', __DIR__ );
+	$dir = preg_replace( '#/mantle-framework/src/.*$#', '/mantle-framework/src/', __DIR__ );
 	if ( is_dir( $dir ) ) {
-		return $dir;
+		return dirname( $dir );
 	}
 
-	return dirname( __DIR__, 4 );
+	return dirname( __DIR__, 3 );
 }
 
 /**
@@ -53,6 +52,7 @@ function install( callable $callback_after_preload = null ): void {
 	if ( ! file_exists( $dir . '/src/mantle/testing/preload.php' ) ) {
 		echo "ERROR: Failed to locate valid mantle-framework location. \n";
 		echo "Location: {$dir} \n";
+		echo 'Current file: ' . __FILE__ . PHP_EOL;
 		exit( 1 );
 	}
 

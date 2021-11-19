@@ -2,6 +2,12 @@
 
 namespace Mantle\Testing\Doubles;
 
+if ( ! file_exists( ABSPATH . '/wp-includes/PHPMailer/PHPMailer.php' ) ) {
+	// todo: add link to documentation when it is available.
+	echo "Core PHPMailer file not found. Is WordPress installed properly at " . ABSPATH . "?\n";
+	return;
+}
+
 require_once ABSPATH . '/wp-includes/PHPMailer/PHPMailer.php';
 
 class MockPHPMailer extends \PHPMailer\PHPMailer\PHPMailer {
