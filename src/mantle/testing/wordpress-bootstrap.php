@@ -57,7 +57,7 @@ if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) && ! empty( WP_TESTS_CONFIG_FILE_PAT
 		$cmd = sprintf(
 			'WP_CORE_DIR=%s curl -s %s | bash -s %s %s %s %s %s %s',
 			WP_TESTS_INSTALL_PATH,
-			'https://raw.githubusercontent.com/alleyinteractive/mantle-framework/main/bin/install-wp-tests.sh',
+			'https://raw.githubusercontent.com/alleyinteractive/mantle-ci/HEAD/install-wp-tests.sh',
 			defined( 'DB_NAME' ) ? DB_NAME : Utils::env( 'WP_DB_NAME', 'wordpress_unit_tests' ),
 			defined( 'DB_USER' ) ? DB_USER : Utils::env( 'WP_DB_USER', 'root' ),
 			defined( 'DB_PASSWORD' ) ? DB_PASSWORD : Utils::env( 'WP_DB_PASSWORD', 'root' ),
