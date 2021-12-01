@@ -531,15 +531,7 @@ class Application extends Container implements Application_Contract {
 			return $this->environment;
 		}
 
-		if ( defined( 'VIP_GO_APP_ENVIRONMENT' ) && ! empty( VIP_GO_APP_ENVIRONMENT ) ) {
-			return (string) VIP_GO_APP_ENVIRONMENT;
-		}
-
-		if ( ! empty( $_SERVER['PANTHEON_ENVIRONMENT'] ) ) {
-			return (string) $_SERVER['PANTHEON_ENVIRONMENT']; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		}
-
-		return Environment::get( 'ENV', 'local' );
+		return Environment::get( 'ENV', wp_get_environment_type() );
 	}
 
 	/**
