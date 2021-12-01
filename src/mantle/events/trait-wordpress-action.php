@@ -36,6 +36,25 @@ trait WordPress_Action {
 	}
 
 	/**
+	 * Dispatch an action if a condition resolves true.
+	 *
+	 * @param callable|bool $condition Condition to check.
+	 * @param string        $action Action to invoke.
+	 * @param callable      $callback Callback to invoke.
+	 * @param integer       $priority Action priority.
+	 * @return void
+	 */
+	public function action_if( $condition, string $action, callable $callback, int $priority = 10 ): void {
+		if ( is_callable( $condition ) ) {
+			$condition = $condition();
+		}
+
+		if ( $condition ) {
+			$this->action( $action, $callback, $priority );
+		}
+	}
+
+	/**
 	 * Add a WordPress filter with type-hint support.
 	 *
 	 * @param string   $action Action to listen to.
