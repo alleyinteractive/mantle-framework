@@ -13,10 +13,7 @@ namespace Mantle\Framework\Helpers;
  * @return bool
  */
 function is_hosted_env(): bool {
-	return (
-		( defined( 'WPCOM_IS_VIP_ENV' ) && \WPCOM_IS_VIP_ENV )
-		|| ( defined( 'PANTHEON_ENVIRONMENT' ) && \PANTHEON_ENVIRONMENT )
-	);
+	return app()->is_environment( 'production' );
 }
 
 /**
