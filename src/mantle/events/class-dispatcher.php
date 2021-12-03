@@ -9,6 +9,7 @@
 
 namespace Mantle\Events;
 
+use Closure;
 use Exception;
 use Mantle\Container\Container;
 use Mantle\Contracts\Events\Dispatcher as Dispatcher_Contract;
@@ -71,16 +72,21 @@ class Dispatcher implements Dispatcher_Contract {
 	/**
 	 * Register an event listener with the dispatcher.
 	 *
-	 * @param  string|array    $events Events to listen to.
+	 * @param string|array $events Event(s) to listen to.
+	 * @param mixed        $listener Listener to register.
+	 * @param int          $priority Event priority.
 	 * @param  \Closure|string $listener Listener callback.
 	 */
-	public function listen( $events, $listener ) {
+	public function listen( $events, $listener, int $priority = 10 ) {
+		// todo: add wildcard listeners.
+
 		foreach ( (array) $events as $event ) {
-			if ( Str::contains( $event, '*' ) ) {
-				$this->setup_wildcard_listener( $event, $listener );
-			} else {
-				$this->listeners[ $event ][] = $this->make_listener( $listener );
-			}
+			add_action(
+				$event,
+				$this->make_listener( $listener, $event ),
+				$priority,
+				PHP_INT_MAX,
+			);
 		}
 	}
 
@@ -103,9 +109,7 @@ class Dispatcher implements Dispatcher_Contract {
 	 * @return bool
 	 */
 	public function has_listeners( $event_name ): bool {
-		return isset( $this->listeners[ $event_name ] ) ||
-			isset( $this->wildcards[ $event_name ] ) ||
-			$this->has_wildcard_listeners( $event_name );
+		return has_action( $event_name ) || has_filter( $event_name );
 	}
 
 	/**
@@ -182,53 +186,23 @@ class Dispatcher implements Dispatcher_Contract {
 	 * @return array|null
 	 */
 	public function until( $event, $payload = [] ) {
+		// todo: reimplement or discard.
 		return $this->dispatch( $event, $payload, true );
 	}
 
 	/**
 	 * Fire an event and call the listeners.
 	 *
+	 * @todo Break out support for a filter.
+	 *
 	 * @param  string|object $event Event name.
 	 * @param  mixed         $payload Event payload.
-	 * @param  bool          $halt Flag to halt.
-	 * @return array|null
+	 * @return void
 	 */
-	public function dispatch( $event, $payload = [], $halt = false ) {
-		// When the given "event" is actually an object we will assume it is an event
-		// object and use the class as the event name and this event itself as the
-		// payload to the handler, which makes object based events quite simple.
-		[ $event, $payload ] = $this->parse_event_and_payload(
-			$event,
-			$payload
-		);
+	public function dispatch( $event, $payload = [] ) {
+		[ $event, $payload ] = $this->parse_event_and_payload( $event, $payload );
 
-		if ( $this->should_broadcast( $payload ) && isset( $payload[0] ) ) {
-			$this->broadcast_event( $payload[0] );
-		}
-
-		$responses = [];
-
-		foreach ( $this->get_listeners( $event ) as $listener ) {
-			$response = $listener( $event, $payload );
-
-			// If a response is returned from the listener and event halting is enabled
-			// we will just return this response, and not call the rest of the event
-			// listeners. Otherwise we will add the response on the response list.
-			if ( $halt && ! is_null( $response ) ) {
-				return $response;
-			}
-
-			// If a boolean false is returned from a listener, we will stop propagating
-			// the event to any further listeners down in the chain, else we keep on
-			// looping through the listeners and firing every one in our sequence.
-			if ( false === $response ) {
-				break;
-			}
-
-			$responses[] = $response;
-		}
-
-		return $halt ? null : $responses;
+		do_action( $event, ...$payload );
 	}
 
 	/**
@@ -330,20 +304,17 @@ class Dispatcher implements Dispatcher_Contract {
 	 * Register an event listener with the dispatcher.
 	 *
 	 * @param  \Closure|string $listener
-	 * @param  bool            $wildcard
 	 * @return \Closure
 	 */
-	public function make_listener( $listener, $wildcard = false ) {
+	public function make_listener( $listener ): Closure {
 		if ( is_string( $listener ) ) {
-			return $this->create_class_listener( $listener, $wildcard );
+			return $this->create_class_listener( $listener );
 		}
 
-		return function ( $event, $payload ) use ( $listener, $wildcard ) {
-			if ( $wildcard ) {
-				return $listener( $event, $payload );
-			}
-
-			return $listener( ...array_values( $payload ) );
+		return function ( ...$payload ) use ( $listener ) {
+			return $this->create_action_callback(
+				$listener,
+			)( ...array_values( $payload ) );
 		};
 	}
 
@@ -351,19 +322,13 @@ class Dispatcher implements Dispatcher_Contract {
 	 * Create a class based listener using the IoC container.
 	 *
 	 * @param  string $listener
-	 * @param  bool   $wildcard
 	 * @return \Closure
 	 */
-	public function create_class_listener( $listener, $wildcard = false ) {
-		return function ( $event, $payload ) use ( $listener, $wildcard ) {
-			if ( $wildcard ) {
-				return call_user_func( $this->create_class_callable( $listener ), $event, $payload );
-			}
-
-			return call_user_func_array(
+	public function create_class_listener( $listener ): Closure {
+		return function ( ...$payload ) use ( $listener ) {
+			return $this->create_action_callback(
 				$this->create_class_callable( $listener ),
-				$payload
-			);
+			)( ...array_values( $payload ) );
 		};
 	}
 
@@ -376,9 +341,7 @@ class Dispatcher implements Dispatcher_Contract {
 	protected function create_class_callable( $listener ) {
 		[ $class, $method ] = $this->parse_class_callable( $listener );
 
-		if ( $this->handler_should_be_queued( $class ) ) {
-			return $this->create_queued_handler_callable( $class, $method );
-		}
+		// todo: add queued callback support.
 
 		return [ $this->container->make( $class ), $method ];
 	}
@@ -518,6 +481,8 @@ class Dispatcher implements Dispatcher_Contract {
 	 * @return void
 	 */
 	public function forget( $event ) {
+		// todo: update
+
 		if ( Str::contains( $event, '*' ) ) {
 			unset( $this->wildcards[ $event ] );
 		} else {

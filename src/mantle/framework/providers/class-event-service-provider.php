@@ -9,6 +9,7 @@ namespace Mantle\Framework\Providers;
 
 use Mantle\Events\Dispatcher;
 use Mantle\Support\Service_Provider;
+use Mantle\Facade\Event;
 
 /**
  * Event Service Provider
@@ -19,11 +20,7 @@ class Event_Service_Provider extends Service_Provider {
 	 *
 	 * @var array
 	 */
-	protected $listen = [
-		'init' => [
-			\class_to_fire::class,
-		],
-	];
+	protected $listen = [];
 
 	/**
 	 * Register the application's event listeners.
@@ -33,14 +30,22 @@ class Event_Service_Provider extends Service_Provider {
 	public function register() {
 		$this->app->booting( function() {
 			$events = $this->get_events();
-			//
+
+			foreach ( $events as $event => $listeners ) {
+				foreach ( array_unique( $listeners ) as $listener ) {
+					[ $listener, $priority ] = $this->parse_listener( $listener );
+
+					Event::listen( $event, $listener, $priority );
+				}
+			}
+
+			// todo: add event subscribers.
 		} );
 	}
 
 	/**
 	 * Get discovered events and listeners for the application.
 	 *
-	 * @todo Add event caching.
 	 * @return array
 	 */
 	public function get_events(): array {
@@ -56,6 +61,7 @@ class Event_Service_Provider extends Service_Provider {
 	 * @return array
 	 */
 	protected function get_discovered_events(): array {
+		// todo: add cached discovered events.
 		return [];
 	}
 
@@ -75,5 +81,21 @@ class Event_Service_Provider extends Service_Provider {
 	 */
 	public function should_discover_events(): bool {
 		return false;
+	}
+
+	/**
+	 * Parse an event listener.
+	 *
+	 * @param mixed $listener Event listener, optionally an array with a listener
+	 *                        and priority.
+	 * @return array
+	 */
+	protected function parse_listener( $listener ): array {
+		// Support the listener being an array of listener and action priority.
+		if ( is_array( $listener ) && isset( $listener[1] ) && is_numeric( $listener[1] ) ) {
+			[ $listener, $priority ] = $listener;
+		}
+
+		return [ $listener, $priority ?? 10 ];
 	}
 }

@@ -12,6 +12,7 @@ use Mantle\Contracts\Support\Arrayable;
 use Mantle\Support\Enumerable;
 use Mantle\Support\Reflector;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionFunction;
 use ReflectionParameter;
 use RuntimeException;
@@ -32,7 +33,7 @@ trait WordPress_Action {
 	 * @return void
 	 */
 	public function action( string $action, callable $callback, int $priority = 10 ): void {
-		\add_action( $action, $this->wrap_action_callback( $callback ), $priority, 99 );
+		\add_action( $action, $this->create_action_callback( $callback ), $priority, 99 );
 	}
 
 	/**
@@ -63,7 +64,7 @@ trait WordPress_Action {
 	 * @return void
 	 */
 	public function filter( string $action, callable $callback, int $priority = 10 ): void {
-		\add_filter( $action, $this->wrap_action_callback( $callback ), $priority, 99 );
+		\add_filter( $action, $this->create_action_callback( $callback ), $priority, 99 );
 	}
 
 	/**
@@ -72,11 +73,17 @@ trait WordPress_Action {
 	 * @param callable $callback
 	 * @return Closure
 	 */
-	protected function wrap_action_callback( callable $callback ): Closure {
+	protected function create_action_callback( callable $callback ): Closure {
 		return function( ...$args ) use ( $callback ) {
 			if ( is_array( $callback ) ) {
-				$class      = new ReflectionClass( $callback[0] );
-				$parameters = $class->getMethod( $callback[1] )->getParameters();
+				try {
+					$class      = new ReflectionClass( $callback[0] );
+					$parameters = $class->getMethod( $callback[1] )->getParameters();
+				} catch ( ReflectionException $e ) {
+					// Pass through if Reflection is unable to find the class and/or methods.
+					unset( $e );
+					return $callback( ...$args );
+				}
 			} else {
 				$parameters = ( new ReflectionFunction( $callback ) )->getParameters();
 			}
