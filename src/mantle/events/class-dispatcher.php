@@ -181,6 +181,8 @@ class Dispatcher implements Dispatcher_Contract {
 	/**
 	 * Fire an event until the first non-null response is returned.
 	 *
+	 * @deprecated
+	 *
 	 * @param  string|object $event Event name.
 	 * @param  mixed         $payload Event payload.
 	 * @return array|null
@@ -197,12 +199,12 @@ class Dispatcher implements Dispatcher_Contract {
 	 *
 	 * @param  string|object $event Event name.
 	 * @param  mixed         $payload Event payload.
-	 * @return void
+	 * @return mixed
 	 */
 	public function dispatch( $event, $payload = [] ) {
 		[ $event, $payload ] = $this->parse_event_and_payload( $event, $payload );
 
-		do_action( $event, ...$payload );
+		return apply_filters( $event, ...$payload );
 	}
 
 	/**
@@ -326,9 +328,11 @@ class Dispatcher implements Dispatcher_Contract {
 	 */
 	public function create_class_listener( $listener ): Closure {
 		return function ( ...$payload ) use ( $listener ) {
-			return $this->create_action_callback(
+			$callable = $this->create_action_callback(
 				$this->create_class_callable( $listener ),
-			)( ...array_values( $payload ) );
+			);
+
+			return $callable( ...array_values( $payload ) );
 		};
 	}
 

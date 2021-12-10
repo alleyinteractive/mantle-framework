@@ -151,30 +151,19 @@ trait WordPress_Action {
 			 * Fire an event to allow a type-hint conversion to be added dynamically.
 			 *
 			 * For example, if you wanted to handle the type-hint conversion to `SomeClass`, one could
-			 * listen for the `event-typehint:SomeClass` event to be fired. Returning a non-null value
+			 * listen for the `mantle-typehint-resolve:SomeClass` event to be fired. Returning a non-null value
 			 * to that event will pass the argument down to the callback for the action/filter.
 			 *
 			 * @param mixed               $argument Argument value.
 			 * @param ReflectionParameter $parameter Callback paramater.
 			 */
-			$modified_argument = $this->dispatch( 'event-typehint:' . $type->getName(), [ $argument, $parameter ], true );
+			$modified_argument = $this->dispatch( 'mantle-typehint-resolve:' . $type->getName(), [ null, $argument, $parameter ], true );
+
 			if ( $modified_argument ) {
 				return $modified_argument;
 			}
 
-			// Handle gracefully in production.
-			if ( $this->container->is_environment( 'production' ) ) {
-				_doing_it_wrong(
-					__FUNCTION__,
-					"Invalid type hinted parameter on callback: [$parameter_class]", // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-					'0.1.0'
-				);
-
-				// Pass to the container to resolve the object's arguments.
-				return $this->container->make( $parameter_class, [ $parameter ] );
-			}
-
-			throw new RuntimeException( "Unknown type hinted parameter on callback: [$parameter_class]" );
+			return $this->container->make( $parameter_class, [ $parameter ] );
 		}
 
 		// Ensure an 'Arrayable' interface is cast to an array properly.
