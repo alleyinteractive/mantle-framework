@@ -40,20 +40,6 @@ class Dispatcher implements Dispatcher_Contract {
 	protected $listeners = [];
 
 	/**
-	 * The wildcard listeners.
-	 *
-	 * @var array
-	 */
-	protected $wildcards = [];
-
-	/**
-	 * The cached wildcard listeners.
-	 *
-	 * @var array
-	 */
-	protected $wildcards_cache = [];
-
-	/**
 	 * The queue resolver instance.
 	 *
 	 * @var callable
@@ -72,14 +58,14 @@ class Dispatcher implements Dispatcher_Contract {
 	/**
 	 * Register an event listener with the dispatcher.
 	 *
+	 * @todo Add wildcard listeners.
+	 *
 	 * @param string|array $events Event(s) to listen to.
 	 * @param mixed        $listener Listener to register.
 	 * @param int          $priority Event priority.
 	 * @param  \Closure|string $listener Listener callback.
 	 */
 	public function listen( $events, $listener, int $priority = 10 ) {
-		// todo: add wildcard listeners.
-
 		foreach ( (array) $events as $event ) {
 			add_action(
 				$event,
@@ -91,18 +77,6 @@ class Dispatcher implements Dispatcher_Contract {
 	}
 
 	/**
-	 * Setup a wildcard listener callback.
-	 *
-	 * @param  string          $event Event name.
-	 * @param  \Closure|string $listener Event callback.
-	 */
-	protected function setup_wildcard_listener( $event, $listener ) {
-		$this->wildcards[ $event ][] = $this->make_listener( $listener, true );
-
-		$this->wildcards_cache = [];
-	}
-
-	/**
 	 * Determine if a given event has listeners.
 	 *
 	 * @param  string $event_name Event name.
@@ -110,22 +84,6 @@ class Dispatcher implements Dispatcher_Contract {
 	 */
 	public function has_listeners( $event_name ): bool {
 		return has_action( $event_name ) || has_filter( $event_name );
-	}
-
-	/**
-	 * Determine if the given event has any wildcard listeners.
-	 *
-	 * @param string $event_name Event name.
-	 * @return bool
-	 */
-	public function has_wildcard_listeners( $event_name ): bool {
-		foreach ( $this->wildcards as $key => $listeners ) {
-			if ( Str::is( $key, $event_name ) ) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	/**
@@ -176,20 +134,6 @@ class Dispatcher implements Dispatcher_Contract {
 		}
 
 		return $subscriber;
-	}
-
-	/**
-	 * Fire an event until the first non-null response is returned.
-	 *
-	 * @deprecated
-	 *
-	 * @param  string|object $event Event name.
-	 * @param  mixed         $payload Event payload.
-	 * @return array|null
-	 */
-	public function until( $event, $payload = [] ) {
-		// todo: reimplement or discard.
-		return $this->dispatch( $event, $payload, true );
 	}
 
 	/**
@@ -253,34 +197,9 @@ class Dispatcher implements Dispatcher_Contract {
 	public function get_listeners( $event_name ) {
 		$listeners = $this->listeners[ $event_name ] ?? [];
 
-		$listeners = array_merge(
-			$listeners,
-			$this->wildcards_cache[ $event_name ] ?? $this->get_wildcard_listeners( $event_name )
-		);
-
 		return class_exists( $event_name, false )
 			? $this->add_interface_listeners( $event_name, $listeners )
 			: $listeners;
-	}
-
-	/**
-	 * Get the wildcard listeners for the event.
-	 *
-	 * @param  string $event_name
-	 * @return array
-	 */
-	protected function get_wildcard_listeners( $event_name ) {
-		$wildcards = [];
-
-		foreach ( $this->wildcards as $key => $listeners ) {
-			if ( Str::is( $key, $event_name ) ) {
-				$wildcards = array_merge( $wildcards, $listeners );
-			}
-		}
-
-		$this->wildcards_cache[ $event_name ] = $wildcards;
-
-		return $wildcards;
 	}
 
 	/**
@@ -486,18 +405,6 @@ class Dispatcher implements Dispatcher_Contract {
 	 */
 	public function forget( $event ) {
 		// todo: update
-
-		if ( Str::contains( $event, '*' ) ) {
-			unset( $this->wildcards[ $event ] );
-		} else {
-			unset( $this->listeners[ $event ] );
-		}
-
-		foreach ( $this->wildcards_cache as $key => $listeners ) {
-			if ( Str::is( $event, $key ) ) {
-				unset( $this->wildcards_cache[ $key ] );
-			}
-		}
 	}
 
 	/**
