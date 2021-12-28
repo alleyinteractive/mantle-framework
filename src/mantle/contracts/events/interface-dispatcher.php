@@ -39,18 +39,19 @@ interface Dispatcher {
 	/**
 	 * Dispatch an event and call the listeners.
 	 *
-	 * @param  string|object $event
-	 * @param  mixed         $payload
-	 * @param  bool          $halt
-	 * @return array|null
+	 * @param  string|object $event Event name.
+	 * @param  mixed         $payload Event payload.
+	 * @return mixed
 	 */
 	public function dispatch( $event, $payload = [] );
 
 	/**
 	 * Remove a set of listeners from the dispatcher.
 	 *
-	 * @param  string $event
+	 * @param string          $event Event to remove.
+	 * @param callable|string $listener Listener to remove.
+	 * @param int             $priority Priority of the listener.
 	 * @return void
 	 */
-	public function forget( $event );
+	public function forget( $event, $listener, int $priority = 10 );
 }

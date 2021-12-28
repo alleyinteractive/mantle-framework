@@ -123,7 +123,7 @@ class Dispatcher implements Dispatcher_Contract {
 	public function dispatch( $event, $payload = [ null ] ) {
 		[ $event, $payload ] = $this->parse_event_and_payload( $event, $payload );
 
-		return apply_filters( $event, ...$payload );
+		return apply_filters( $event, ...$payload ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
 	}
 
 	/**
@@ -235,10 +235,16 @@ class Dispatcher implements Dispatcher_Contract {
 	/**
 	 * Remove a set of listeners from the dispatcher.
 	 *
-	 * @param  string $event
+	 * @param string $event Event to remove.
+	 * @param callable|string $listener Listener to remove.
+	 * @param int $priority Priority of the listener.
 	 * @return void
 	 */
-	public function forget( $event ) {
-		// todo: update
+	public function forget( $event, $listener, int $priority = 10 ) {
+		if ( is_object( $event ) ) {
+			$event = get_class( $event );
+		}
+
+		remove_filter( $event, $listener, $priority );
 	}
 }

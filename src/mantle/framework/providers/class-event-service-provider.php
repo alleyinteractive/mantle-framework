@@ -28,19 +28,21 @@ class Event_Service_Provider extends Service_Provider {
 	 * @return void
 	 */
 	public function register() {
-		$this->app->booting( function() {
-			$events = $this->get_events();
+		$this->app->booting(
+			function() {
+				$events = $this->get_events();
 
-			foreach ( $events as $event => $listeners ) {
-				foreach ( array_unique( $listeners ) as $listener ) {
-					[ $listener, $priority ] = $this->parse_listener( $listener );
+				foreach ( $events as $event => $listeners ) {
+					foreach ( array_unique( $listeners ) as $listener ) {
+						[ $listener, $priority ] = $this->parse_listener( $listener );
 
-					Event::listen( $event, $listener, $priority );
+						Event::listen( $event, $listener, $priority );
+					}
 				}
-			}
 
-			// todo: add event subscribers.
-		} );
+				// todo: add event subscribers.
+			} 
+		);
 	}
 
 	/**
