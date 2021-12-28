@@ -47,34 +47,10 @@ interface Dispatcher {
 	public function dispatch( $event, $payload = [] );
 
 	/**
-	 * Register an event and payload to be fired later.
-	 *
-	 * @param  string $event
-	 * @param  array  $payload
-	 * @return void
-	 */
-	public function push( $event, $payload = [] );
-
-	/**
-	 * Flush a set of pushed events.
-	 *
-	 * @param  string $event
-	 * @return void
-	 */
-	public function flush( $event );
-
-	/**
 	 * Remove a set of listeners from the dispatcher.
 	 *
 	 * @param  string $event
 	 * @return void
 	 */
 	public function forget( $event );
-
-	/**
-	 * Forget all of the queued listeners.
-	 *
-	 * @return void
-	 */
-	public function forget_pushed();
 }

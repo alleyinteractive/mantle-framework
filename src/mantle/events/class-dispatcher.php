@@ -10,14 +10,10 @@
 namespace Mantle\Events;
 
 use Closure;
-use Exception;
 use Mantle\Container\Container;
 use Mantle\Contracts\Events\Dispatcher as Dispatcher_Contract;
 use Mantle\Support\Arr;
 use Mantle\Support\Str;
-use ReflectionClass;
-
-use function Mantle\Framework\Helpers\tap;
 
 /**
  * Event Dispatcher
@@ -86,31 +82,7 @@ class Dispatcher implements Dispatcher_Contract {
 	 * @return bool
 	 */
 	public function has_listeners( $event_name ): bool {
-		return has_action( $event_name ) || has_filter( $event_name );
-	}
-
-	/**
-	 * Register an event and payload to be fired later.
-	 *
-	 * @param string $event Event name.
-	 * @param array  $payload Event payload.
-	 */
-	public function push( $event, $payload = [] ) {
-		$this->listen(
-			$event . '_pushed',
-			function () use ( $event, $payload ) {
-				$this->dispatch( $event, $payload );
-			}
-		);
-	}
-
-	/**
-	 * Flush a set of pushed events.
-	 *
-	 * @param string $event Event name.
-	 */
-	public function flush( $event ) {
-		$this->dispatch( $event . '_pushed' );
+		return has_filter( $event_name );
 	}
 
 	/**
@@ -150,6 +122,7 @@ class Dispatcher implements Dispatcher_Contract {
 	 */
 	public function dispatch( $event, $payload = [] ) {
 		[ $event, $payload ] = $this->parse_event_and_payload( $event, $payload );
+		dump('DISPATCHING', $event, $payload);
 
 		return apply_filters( $event, ...$payload );
 	}
@@ -261,124 +234,6 @@ class Dispatcher implements Dispatcher_Contract {
 	}
 
 	/**
-	 * Determine if the event handler class should be queued.
-	 *
-	 * @param  string $class
-	 * @return bool
-	 */
-	protected function handler_should_be_queued( $class ) {
-		try {
-			return ( new ReflectionClass( $class ) )->implementsInterface(
-				Should_Queue::class
-			);
-		} catch ( Exception $e ) {
-			return false;
-		}
-	}
-
-	/**
-	 * Create a callable for putting an event handler on the queue.
-	 *
-	 * @param  string $class
-	 * @param  string $method
-	 * @return \Closure
-	 */
-	protected function create_queued_handler_callable( $class, $method ) {
-		return function () use ( $class, $method ) {
-			$arguments = array_map(
-				function ( $a ) {
-					return is_object( $a ) ? clone $a : $a;
-				},
-				func_get_args()
-			);
-
-			if ( $this->handler_wants_to_be_queued( $class, $arguments ) ) {
-				$this->queue_handler( $class, $method, $arguments );
-			}
-		};
-	}
-
-	/**
-	 * Determine if the event handler wants to be queued.
-	 *
-	 * @param  string $class
-	 * @param  array  $arguments
-	 * @return bool
-	 */
-	protected function handler_wants_to_be_queued( $class, $arguments ) {
-		$instance = $this->container->make( $class );
-
-		if ( method_exists( $instance, 'shouldQueue' ) ) {
-			return $instance->shouldQueue( $arguments[0] );
-		}
-
-		return true;
-	}
-
-	/**
-	 * Queue the handler class.
-	 *
-	 * @param  string $class
-	 * @param  string $method
-	 * @param  array  $arguments
-	 * @return void
-	 */
-	protected function queue_handler( $class, $method, $arguments ) {
-		[ $listener, $job ] = $this->create_listener_and_job( $class, $method, $arguments );
-
-		$connection = $this->resolve_queue()->connection(
-			$listener->connection ?? null
-		);
-
-		$queue = $listener->queue ?? null;
-
-		isset( $listener->delay )
-			? $connection->laterOn( $queue, $listener->delay, $job )
-			: $connection->pushOn( $queue, $job );
-	}
-
-	/**
-	 * Create the listener and job for a queued listener.
-	 *
-	 * @param  string $class
-	 * @param  string $method
-	 * @param  array  $arguments
-	 * @return array
-	 */
-	protected function create_listener_and_job( $class, $method, $arguments ) {
-		$listener = ( new ReflectionClass( $class ) )->newInstanceWithoutConstructor();
-
-		return [
-			$listener,
-			$this->propagate_listener_options(
-				$listener,
-				new CallQueuedListener( $class, $method, $arguments )
-			),
-		];
-	}
-
-	/**
-	 * Propagate listener options to the job.
-	 *
-	 * @param  mixed $listener
-	 * @param  mixed $job
-	 * @return mixed
-	 */
-	protected function propagate_listener_options( $listener, $job ) {
-		return tap(
-			$job,
-			function ( $job ) use ( $listener ) {
-				$job->tries       = $listener->tries ?? null;
-				$job->retry_after = method_exists( $listener, 'retry_after' )
-					? $listener->retry_after() : ( $listener->retry_after ?? null );
-				$job->timeout     = $listener->timeout ?? null;
-				$job->timeout_at  = method_exists( $listener, 'retry_until' )
-					? $listener->retry_until() : null;
-			}
-		);
-	}
-
-	/**
 	 * Remove a set of listeners from the dispatcher.
 	 *
 	 * @param  string $event
@@ -386,39 +241,5 @@ class Dispatcher implements Dispatcher_Contract {
 	 */
 	public function forget( $event ) {
 		// todo: update
-	}
-
-	/**
-	 * Forget all of the pushed listeners.
-	 *
-	 * @return void
-	 */
-	public function forget_pushed() {
-		foreach ( $this->listeners as $key => $value ) {
-			if ( Str::ends_with( $key, '_pushed' ) ) {
-				$this->forget( $key );
-			}
-		}
-	}
-
-	/**
-	 * Get the queue implementation from the resolver.
-	 *
-	 * @return Queue
-	 */
-	protected function resolve_queue() {
-		return call_user_func( $this->queue_resolver );
-	}
-
-	/**
-	 * Set the queue resolver implementation.
-	 *
-	 * @param  callable $resolver
-	 * @return $this
-	 */
-	public function set_queue_resolver( callable $resolver ) {
-		$this->queue_resolver = $resolver;
-
-		return $this;
 	}
 }
