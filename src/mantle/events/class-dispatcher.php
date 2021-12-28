@@ -240,11 +240,15 @@ class Dispatcher implements Dispatcher_Contract {
 	 * @param int $priority Priority of the listener.
 	 * @return void
 	 */
-	public function forget( $event, $listener, int $priority = 10 ) {
+	public function forget( $event, $listener = null, int $priority = 10 ) {
 		if ( is_object( $event ) ) {
 			$event = get_class( $event );
 		}
 
-		remove_filter( $event, $listener, $priority );
+		if ( null === $listener ) {
+			remove_all_filters( $event, $priority );
+		} else {
+			remove_filter( $event, $listener, $priority );
+		}
 	}
 }

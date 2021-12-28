@@ -53,5 +53,5 @@ interface Dispatcher {
 	 * @param int             $priority Priority of the listener.
 	 * @return void
 	 */
-	public function forget( $event, $listener, int $priority = 10 );
+	public function forget( $event, $listener = null, int $priority = 10 );
 }
