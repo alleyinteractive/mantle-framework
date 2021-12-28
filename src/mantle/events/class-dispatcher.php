@@ -21,6 +21,9 @@ use function Mantle\Framework\Helpers\tap;
 
 /**
  * Event Dispatcher
+ *
+ * @todo Add queued event listeners.
+ * @todo Add wildcard listeners.
  */
 class Dispatcher implements Dispatcher_Contract {
 	use WordPress_Action;
@@ -164,28 +167,6 @@ class Dispatcher implements Dispatcher_Contract {
 		}
 
 		return [ $event, Arr::wrap( $payload ) ];
-	}
-
-	/**
-	 * Determine if the payload has a broadcastable event.
-	 *
-	 * @todo Add support for broadcasted events.
-	 *
-	 * @param  array $payload
-	 * @return bool
-	 */
-	protected function should_broadcast( array $payload ): bool {
-		return false;
-	}
-
-	/**
-	 * Broadcast the given event class.
-	 *
-	 * @param mixed Event3 class.
-	 * @return void
-	 */
-	protected function broadcast_event( $event ) {
-		$this->container->make( BroadcastFactory::class )->queue( $event );
 	}
 
 	/**
