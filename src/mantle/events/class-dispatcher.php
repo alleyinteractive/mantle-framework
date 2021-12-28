@@ -120,9 +120,8 @@ class Dispatcher implements Dispatcher_Contract {
 	 * @param  mixed         $payload Event payload.
 	 * @return mixed
 	 */
-	public function dispatch( $event, $payload = [] ) {
+	public function dispatch( $event, $payload = [ null ] ) {
 		[ $event, $payload ] = $this->parse_event_and_payload( $event, $payload );
-		dump('DISPATCHING', $event, $payload);
 
 		return apply_filters( $event, ...$payload );
 	}
