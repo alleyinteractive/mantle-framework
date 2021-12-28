@@ -288,6 +288,24 @@ class Application extends Container implements Application_Contract {
 	}
 
 	/**
+	 * Determine if events are cached.
+	 *
+	 * @return bool
+	 */
+	public function is_events_cached(): bool {
+		return is_file( $this->get_cached_events_path() );
+	}
+
+	/**
+	 * Retrieve the cached configuration path.
+	 *
+	 * @return string
+	 */
+	public function get_cached_events_path(): string {
+		return $this->get_bootstrap_path() . '/' . Environment::get( 'APP_EVENTS_CACHE', 'cache/events.php' );
+	}
+
+	/**
 	 * Get the path to the application configuration files.
 	 *
 	 * @return string

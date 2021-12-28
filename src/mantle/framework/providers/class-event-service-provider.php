@@ -7,9 +7,13 @@
 
 namespace Mantle\Framework\Providers;
 
-use Mantle\Events\Dispatcher;
+use Mantle\Contracts\Application;
 use Mantle\Support\Service_Provider;
 use Mantle\Facade\Event;
+use Mantle\Framework\Events\Discover_Events;
+use Mantle\Framework\Events\Events_Manifest;
+
+use function Mantle\Framework\Helpers\collect;
 
 /**
  * Event Service Provider
@@ -31,7 +35,6 @@ class Event_Service_Provider extends Service_Provider {
 		$this->app->booting(
 			function() {
 				$events = $this->get_events();
-
 				foreach ( $events as $event => $listeners ) {
 					foreach ( array_unique( $listeners ) as $listener ) {
 						[ $listener, $priority ] = $this->parse_listener( $listener );
@@ -41,7 +44,15 @@ class Event_Service_Provider extends Service_Provider {
 				}
 
 				// todo: add event subscribers.
-			} 
+			}
+		);
+
+		$this->app->singleton(
+			Events_Manifest::class,
+			fn ( Application $app ) => new Events_Manifest(
+				$app->get_cached_events_path(),
+				$app,
+			),
 		);
 	}
 
@@ -51,6 +62,12 @@ class Event_Service_Provider extends Service_Provider {
 	 * @return array
 	 */
 	public function get_events(): array {
+		if ( $this->app->is_events_cached() ) {
+			$this->app['log']->info( 'Using cached events' );
+
+			return $this->app[ Events_Manifest::class ]->events();
+		}
+
 		return array_merge_recursive(
 			$this->get_discovered_events(),
 			$this->get_listen(),
@@ -58,13 +75,31 @@ class Event_Service_Provider extends Service_Provider {
 	}
 
 	/**
-	 * Get discovered events.
+	 * Get discovered events for the application.
 	 *
 	 * @return array
 	 */
 	protected function get_discovered_events(): array {
-		// todo: add cached discovered events.
-		return [];
+		return $this->should_discover_events()
+			? $this->discover_events()
+			: [];
+	}
+
+	/**
+	 * Discover events and listeners for the application.
+	 *
+	 * @return array
+	 */
+	protected function discover_events(): array {
+		return collect( $this->discover_events_within() )
+			->reject( fn ( $dir ) => ! is_dir( $dir ) )
+			->reduce(
+				fn ( array $discovered, string $directory ) => array_merge_recursive(
+					$discovered,
+					Discover_Events::within( $directory, $this->app->get_base_path() )
+				),
+				[]
+			);
 	}
 
 	/**
@@ -83,6 +118,17 @@ class Event_Service_Provider extends Service_Provider {
 	 */
 	public function should_discover_events(): bool {
 		return false;
+	}
+
+	/**
+	 * Get the listener directories that should be used to discover events.
+	 *
+	 * @return string[]
+	 */
+	protected function discover_events_within() {
+		return [
+			$this->app->get_app_path( 'listeners' ),
+		];
 	}
 
 	/**

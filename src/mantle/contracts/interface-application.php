@@ -195,4 +195,18 @@ interface Application {
 	 * @return string
 	 */
 	public function get_cached_config_path(): string;
+
+	/**
+	 * Determine if events are cached.
+	 *
+	 * @return bool
+	 */
+	public function is_events_cached(): bool;
+
+	/**
+	 * Retrieve the cached configuration path.
+	 *
+	 * @return string
+	 */
+	public function get_cached_events_path(): string;
 }
