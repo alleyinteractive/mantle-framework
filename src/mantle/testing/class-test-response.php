@@ -497,22 +497,6 @@ class Test_Response {
 	}
 
 	/**
-	 * Get the assertion message for assertJson.
-	 *
-	 * @param  array $data
-	 * @return string
-	 */
-	protected function assertJsonMessage( array $data ) {
-		$expected = wp_json_encode( $data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
-		$actual   = wp_json_encode( $this->decode_response_json(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
-
-		return 'Unable to find JSON: ' . PHP_EOL . PHP_EOL .
-			"[{$expected}]" . PHP_EOL . PHP_EOL .
-			'within response JSON:' . PHP_EOL . PHP_EOL .
-			"[{$actual}]." . PHP_EOL . PHP_EOL;
-	}
-
-	/**
 	 * Assert that the expected value and type exists at the given path in the response.
 	 *
 	 * @param  string $path
@@ -521,6 +505,28 @@ class Test_Response {
 	 */
 	public function assertJsonPath( $path, $expect ) {
 		PHPUnit::assertSame( $expect, $this->json( $path ) );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a specific path exists in the response.
+	 *
+	 * @param string $path Path to check.
+	 */
+	public function assertJsonPathExists( string $path ) {
+		PHPUnit::assertNotNull( $this->json( $path ) );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a specific path does not exist in the response.
+	 *
+	 * @param string $path Path to check.
+	 */
+	public function assertJsonPathMissing( string $path ) {
+		PHPUnit::assertNull( $this->json( $path ) );
 
 		return $this;
 	}
@@ -580,42 +586,42 @@ class Test_Response {
 	 */
 	public function assertJsonMissing( array $data, $exact = false ) {
 		if ( $exact ) {
-				return $this->assertJsonMissingExact( $data );
+			return $this->assertJsonMissingExact( $data );
 		}
 
-			$actual = wp_json_encode(
-				Arr::sort_recursive(
-					(array) $this->decode_response_json()
-				)
-			);
+		$actual = wp_json_encode(
+			Arr::sort_recursive(
+				(array) $this->decode_response_json()
+			)
+		);
 
 		foreach ( Arr::sort_recursive( $data ) as $key => $value ) {
-				$unexpected = $this->json_search_strings( $key, $value );
+			$unexpected = $this->json_search_strings( $key, $value );
 
-				PHPUnit::assertFalse(
-					Str::contains( $actual, $unexpected ),
-					'Found unexpected JSON fragment: ' . PHP_EOL . PHP_EOL .
-						'[' . wp_json_encode( [ $key => $value ] ) . ']' . PHP_EOL . PHP_EOL .
-						'within' . PHP_EOL . PHP_EOL .
-						"[{$actual}]."
-				);
+			PHPUnit::assertFalse(
+				Str::contains( $actual, $unexpected ),
+				'Found unexpected JSON fragment: ' . PHP_EOL . PHP_EOL .
+					'[' . wp_json_encode( [ $key => $value ] ) . ']' . PHP_EOL . PHP_EOL .
+					'within' . PHP_EOL . PHP_EOL .
+					"[{$actual}]."
+			);
 		}
 
-			return $this;
+		return $this;
 	}
 
-		/**
-		 * Assert that the response does not contain the exact JSON fragment.
-		 *
-		 * @param  array $data
-		 * @return $this
-		 */
+	/**
+	 * Assert that the response does not contain the exact JSON fragment.
+	 *
+	 * @param  array $data
+	 * @return $this
+	 */
 	public function assertJsonMissingExact( array $data ) {
-			$actual = wp_json_encode(
-				Arr::sort_recursive(
-					(array) $this->decode_response_json()
-				)
-			);
+		$actual = wp_json_encode(
+			Arr::sort_recursive(
+				(array) $this->decode_response_json()
+			)
+		);
 
 		foreach ( Arr::sort_recursive( $data ) as $key => $value ) {
 			$unexpected = $this->json_search_strings( $key, $value );
