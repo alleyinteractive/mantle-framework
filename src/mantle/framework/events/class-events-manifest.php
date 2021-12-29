@@ -140,7 +140,7 @@ class Events_Manifest {
 		if ( ! is_dir( $dir ) ) {
 			$filesystem->ensure_directory_exists( $dir );
 
-			// Create the folder if it doesn't exist.
+			// Throw an exception if the folder doesn't exist.
 			if ( ! $filesystem->is_directory( $dir ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.directory_mkdir
 				throw new Application_Exception( 'Unable to create path ' . $dir );
 			}
