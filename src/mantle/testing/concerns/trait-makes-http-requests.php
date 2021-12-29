@@ -38,13 +38,6 @@ trait Makes_Http_Requests {
 	protected array $default_cookies = [];
 
 	/**
-	 * Additional server variables for the request.
-	 *
-	 * @var array
-	 */
-	protected $server_variables = [];
-
-	/**
 	 * Indicates whether redirects should be followed.
 	 *
 	 * @var bool
@@ -126,18 +119,6 @@ trait Makes_Http_Requests {
 	 */
 	public function flush_cookies() {
 		$this->default_cookies = [];
-
-		return $this;
-	}
-
-	/**
-	 * Define a set of server variables to be sent with the requests.
-	 *
-	 * @param array $server Server variables.
-	 * @return $this
-	 */
-	public function with_server_variables( array $server ) {
-		$this->server_variables = $server;
 
 		return $this;
 	}
@@ -259,14 +240,14 @@ trait Makes_Http_Requests {
 	/**
 	 * Call the given URI and return the Response.
 	 *
-	 * @param string      $method     Request method.
-	 * @param string      $uri        Request URI.
-	 * @param array       $parameters Request params.
-	 * @param array       $server     Server vars.
-	 * @param string|null $content    Request body.
+	 * @param string $method     Request method.
+	 * @param string $uri        Request URI.
+	 * @param array  $parameters Request params.
+	 * @param array  $server     Server vars.
+	 * @param array  $cookies Cookies to be sent with the request.
 	 * @return Test_Response
 	 */
-	public function call( $method, $uri, $parameters = [], $server = [], $content = null ) {
+	public function call( $method, $uri, $parameters = [], $server = [], array $cookies = [] ) {
 		$this->reset_request_state();
 
 		if ( ! is_string( $uri ) ) {
@@ -282,7 +263,13 @@ trait Makes_Http_Requests {
 			$url = $uri;
 		}
 
-		$this->set_server_state( $method, $url, $server, $parameters );
+		$this->set_server_state(
+			$method,
+			$url,
+			$server,
+			$parameters,
+			array_merge( $this->default_cookies, $cookies ),
+		);
 
 		$response_status  = null;
 		$response_headers = [];
@@ -417,8 +404,9 @@ trait Makes_Http_Requests {
 	 * @param string $url    Request URI.
 	 * @param array  $server Additional $_SERVER args to set.
 	 * @param array  $data   POST data to set.
+	 * @param array  $cookies Cookies to be sent with the request.
 	 */
-	protected function set_server_state( $method, $url, $server, $data ) {
+	protected function set_server_state( $method, $url, $server, $data, array $cookies = [] ) {
 		// phpcs:disable WordPress.Security.NonceVerification
 		$_SERVER['REQUEST_METHOD'] = strtoupper( $method );
 		$_SERVER['SERVER_NAME']    = WP_TESTS_DOMAIN;
@@ -445,7 +433,7 @@ trait Makes_Http_Requests {
 		$_SERVER  = array_merge( $_SERVER, $server );
 
 		// Set the cookies for the request.
-		$_COOKIE = $this->default_cookies; // phpcs:ignore WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE
+		$_COOKIE = $cookies; // phpcs:ignore WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE
 
 		// phpcs:enable
 	}
