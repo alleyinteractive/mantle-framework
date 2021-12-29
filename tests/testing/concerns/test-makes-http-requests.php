@@ -3,6 +3,7 @@ namespace Mantle\Tests\Testing\Concerns;
 
 use Mantle\Http\Response;
 use Mantle\Framework\Providers\Routing_Service_Provider;
+use Mantle\Http\Request;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
 
@@ -101,6 +102,25 @@ class Test_Makes_Http_Requests extends Framework_Test_Case {
 	public function test_rest_api_route_error() {
 		$this->get( rest_url( '/an/unknown/route' ) )
 			->assertStatus( 404 );
+	}
+
+	public function test_cookie_test() {
+		$_SERVER['__cookie_test'] = false;
+
+		$this->app['router']->get(
+			'/set-cookie',
+			function() {
+				$_SERVER['__cookie_test'] = request()->cookie( 'test-cookie', 'fallback-value' );
+
+				return 123;
+			}
+		);
+
+		$this
+			->with_cookie( 'test-cookie', 'test-value' )
+			->get( '/set-cookie' );
+
+		$this->assertEquals( 'test-value', $_SERVER['__cookie_test'] );
 	}
 
 	public function test_multiple_requests() {
