@@ -93,7 +93,9 @@ class Test_Makes_Http_Requests extends Framework_Test_Case {
 		$this->get( rest_url( "wp/v2/posts/{$post_id}" ) )
 			->assertOk()
 			->assertJsonPath( 'id', $post_id )
-			->assertJsonPath( 'title.rendered', get_the_title( $post_id ) );
+			->assertJsonPath( 'title.rendered', get_the_title( $post_id ) )
+			->assertJsonPathExists( 'guid' )
+			->assertJsonPathMissing( 'example_path' );
 	}
 
 	public function test_rest_api_route_error() {
