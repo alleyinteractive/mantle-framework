@@ -138,6 +138,7 @@ class Events_Manifest {
 
 		// Ensure the cached folder exists.
 		if ( ! is_dir( $dir ) ) {
+			// Create the folder if it doesn't exist.
 			$filesystem->ensure_directory_exists( $dir );
 
 			// Throw an exception if the folder doesn't exist.
