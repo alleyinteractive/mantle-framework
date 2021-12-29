@@ -244,11 +244,13 @@ trait Makes_Http_Requests {
 
 		$this->set_server_state( $method, $url, $server, $parameters );
 
-		$response_status  = 200;
+		$response_status  = null;
 		$response_headers = [];
 
 		$intercept_status = function( $status_header, $code ) use ( &$response_status ) {
-			$response_status = $code;
+			if ( ! $response_status ) {
+				$response_status = $code;
+			}
 		};
 
 		$intercept_headers = function( $send_headers ) use ( &$response_headers ) {
@@ -314,7 +316,7 @@ trait Makes_Http_Requests {
 			remove_filter( 'wp_headers', $intercept_headers, 9999 );
 			remove_filter( 'wp_redirect', $intercept_redirect, 9999 );
 
-			$response = new Test_Response( $response_content, $response_status, $response_headers );
+			$response = new Test_Response( $response_content, $response_status ?? 200, $response_headers );
 		}
 
 		remove_filter( 'exit_on_http_head', '__return_false', 9999 );

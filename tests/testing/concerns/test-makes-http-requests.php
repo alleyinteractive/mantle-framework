@@ -29,6 +29,12 @@ class Test_Makes_Http_Requests extends Framework_Test_Case {
 		$this->assertQueriedObjectId( $category_id );
 	}
 
+	public function test_wordpress_404() {
+		$this
+			->get( '/not-found' )
+			->assertNotFound();
+	}
+
 	/**
 	 * Test checking against a Mantle route.
 	 */
@@ -66,10 +72,19 @@ class Test_Makes_Http_Requests extends Framework_Test_Case {
 			}
 		);
 
+		$this->app['router']->get(
+			'/404',
+			function() {
+				return new Response( 'yes', 404 );
+			}
+		);
+
 		$this->post( '/test-post' )
 			->assertCreated()
 			->assertHeader( 'test-header', 'test-value' )
 			->assertContent( 'yes' );
+
+		$this->get( '/404' )->assertNotFound();
 	}
 
 	public function test_rest_api_route() {
@@ -79,6 +94,11 @@ class Test_Makes_Http_Requests extends Framework_Test_Case {
 			->assertOk()
 			->assertJsonPath( 'id', $post_id )
 			->assertJsonPath( 'title.rendered', get_the_title( $post_id ) );
+	}
+
+	public function test_rest_api_route_error() {
+		$this->get( rest_url('/an/unknown/route' ) )
+			->assertStatus( 404 );
 	}
 
 	public function test_multiple_requests() {
