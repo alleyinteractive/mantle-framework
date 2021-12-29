@@ -90,14 +90,14 @@ class Test_Makes_Http_Requests extends Framework_Test_Case {
 	public function test_rest_api_route() {
 		$post_id = static::factory()->post->create();
 
-		$this->get( rest_url("wp/v2/posts/{$post_id}" ) )
+		$this->get( rest_url( "wp/v2/posts/{$post_id}" ) )
 			->assertOk()
 			->assertJsonPath( 'id', $post_id )
 			->assertJsonPath( 'title.rendered', get_the_title( $post_id ) );
 	}
 
 	public function test_rest_api_route_error() {
-		$this->get( rest_url('/an/unknown/route' ) )
+		$this->get( rest_url( '/an/unknown/route' ) )
 			->assertStatus( 404 );
 	}
 
