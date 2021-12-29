@@ -3,7 +3,7 @@
 	<description>alleyinteractive/mantle-framework</description>
 
 	<arg value="ps" />
-	<arg name="parallel" value="8" />
+	<arg name="parallel" value="20" />
 
 	<exclude-pattern>tests/</exclude-pattern>
 

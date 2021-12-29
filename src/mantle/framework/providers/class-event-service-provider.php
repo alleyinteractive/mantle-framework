@@ -36,7 +36,7 @@ class Event_Service_Provider extends Service_Provider {
 			function() {
 				$events = $this->get_events();
 				foreach ( $events as $event => $listeners ) {
-					foreach ( array_unique( $listeners ) as $listener ) {
+					foreach ( $listeners as $listener ) {
 						[ $listener, $priority ] = $this->parse_listener( $listener );
 
 						Event::listen( $event, $listener, $priority );

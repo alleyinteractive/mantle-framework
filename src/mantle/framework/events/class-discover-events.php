@@ -19,6 +19,8 @@ use function Mantle\Framework\Helpers\collect;
 
 /**
  * Discover events within a specific directory.
+ *
+ * @todo Add support for WordPress hooks using attributes.
  */
 class Discover_Events {
 	/**
@@ -39,12 +41,14 @@ class Discover_Events {
 		$discovered_events = [];
 
 		foreach ( $listeners as $listener => $events ) {
+			[ $events, $priority ] = $events;
+
 			foreach ( $events as $event ) {
 				if ( ! isset( $discovered_events[ $event ] ) ) {
 					$discovered_events[ $event ] = [];
 				}
 
-				$discovered_events[ $event ][] = $listener;
+				$discovered_events[ $event ][] = [ $listener, $priority ];
 			}
 		}
 
@@ -75,13 +79,44 @@ class Discover_Events {
 			}
 
 			foreach ( $listener->getMethods( ReflectionMethod::IS_PUBLIC ) as $method ) {
+				// Handle WordPress hooks being registered with a listener.
+				// todo: move to use attributes with PHP 8.
+				if ( Str::starts_with( $method->name, 'on_' ) ) {
+					$hook     = Str::after( $method->name, 'on_' );
+					$priority = 10;
+
+					if ( Str::contains( $hook, '_at_' ) ) {
+						// Strip the priority from the hook name.
+						$priority = (int) Str::after_last( $hook, '_at_' );
+						$hook     = Str::before_last( $hook, '_at_' );
+					}
+
+					$listener_events[ $listener->name . '@' . $method->name ] = [
+						[ $hook ],
+						$priority,
+					];
+
+					continue;
+				}
+
 				if ( ! Str::is( 'handle*', $method->name ) || ! isset( $method->getParameters()[0] ) ) {
 					continue;
 				}
 
-				$listener_events[ $listener->name . '@' . $method->name ] = Reflector::get_paramater_class_names(
-					$method->getParameters()[0]
-				);
+				// Check the priority on the hook.
+				$priority = 10;
+
+				// todo: move to attributes to define priority in PHP 8.
+				if ( Str::is( '*_at_*', $method->name ) ) {
+					$priority = (int) Str::after_last( $method->name, '_at_' );
+				}
+
+				$listener_events[ $listener->name . '@' . $method->name ] = [
+					Reflector::get_paramater_class_names(
+						$method->getParameters()[0]
+					),
+					$priority,
+				];
 			}
 		}
 
