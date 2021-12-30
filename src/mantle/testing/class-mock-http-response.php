@@ -82,6 +82,16 @@ class Mock_Http_Response implements Arrayable {
 	}
 
 	/**
+	 * Alias for with_response_code().
+	 *
+	 * @param int $code HTTP response code.
+	 * @return Mock_Http_Response This object.
+	 */
+	public function with_status( int $code ): Mock_Http_Response {
+		return $this->with_response_code( $code );
+	}
+
+	/**
 	 * Set the response body.
 	 *
 	 * @param string $body Response body.
