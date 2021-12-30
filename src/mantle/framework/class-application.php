@@ -12,7 +12,7 @@ use Mantle\Contracts\Application as Application_Contract;
 use Mantle\Contracts\Container as Container_Contract;
 use Mantle\Contracts\Kernel as Kernel_Contract;
 use Mantle\Log\Log_Service_Provider;
-use Mantle\Framework\Providers\Event_Service_Provider;
+use Mantle\Framework\Providers\Event_Core_Service_Provider;
 use Mantle\Framework\Providers\Routing_Service_Provider;
 use Mantle\Framework\Providers\View_Service_Provider;
 use Mantle\Support\Arr;
@@ -288,6 +288,24 @@ class Application extends Container implements Application_Contract {
 	}
 
 	/**
+	 * Determine if events are cached.
+	 *
+	 * @return bool
+	 */
+	public function is_events_cached(): bool {
+		return is_file( $this->get_cached_events_path() );
+	}
+
+	/**
+	 * Retrieve the cached configuration path.
+	 *
+	 * @return string
+	 */
+	public function get_cached_events_path(): string {
+		return $this->get_bootstrap_path() . '/' . Environment::get( 'APP_EVENTS_CACHE', 'cache/events.php' );
+	}
+
+	/**
 	 * Get the path to the application configuration files.
 	 *
 	 * @return string
@@ -333,7 +351,7 @@ class Application extends Container implements Application_Contract {
 	 * Register the base service providers.
 	 */
 	protected function register_base_service_providers() {
-		$this->register( Event_Service_Provider::class );
+		$this->register( Event_Core_Service_Provider::class );
 		$this->register( Log_Service_Provider::class );
 		$this->register( View_Service_Provider::class );
 		$this->register( Routing_Service_Provider::class );

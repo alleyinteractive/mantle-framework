@@ -78,86 +78,46 @@ class Test_WordPress_Action_Dispatcher extends Framework_Test_Case {
 		$this->assertEquals( [ 1, 2, 3 ], $_SERVER['__action_value'] );
 	}
 
-	public function test_action_handler_invalid_typehint() {
-		$_SERVER['__action_value'] = [ 1, 2, 3 ];
+	public function test_action_if_should_run() {
+		$_SERVER['test_action_if_should_run'] = false;
 
-		$this->expectException( RuntimeException::class );
-		$this->expectExceptionMessage( 'Unknown type hinted parameter on callback: [WP_Query]' );
-
-		$this->app->set_environment( 'testing' );
 		$d = new Dispatcher( $this->app );
-		$d->action(
-			'test_action_handler_invalid_typehint',
-			function( \WP_Query $posts ) {
-				$_SERVER['__action_value'] = $posts;
-			}
+		$d->action_if(
+			fn () => true,
+			'test_action_if_should_run',
+			fn () => $_SERVER['test_action_if_should_run'] = true,
 		);
 
-		do_action( 'test_action_handler_invalid_typehint', $_SERVER['__action_value'] );
+		do_action( 'test_action_if_should_run' );
+
+		$this->assertTrue( $_SERVER['test_action_if_should_run'] ?? false );
 	}
 
-	/**
-	 * In production this should be handled gracefully.
-	 *
-	 * @return void
-	 */
-	public function test_action_handler_invalid_typehint_production() {
-		$this->setExpectedIncorrectUsage( 'validate_argument_type' );
+	public function test_action_if_should_not_run() {
+		$_SERVER['test_action_if_should_not_run'] = false;
 
-		$_SERVER['__action_value'] = [ 1, 2, 3 ];
-
-		$this->app->set_environment( 'production' );
 		$d = new Dispatcher( $this->app );
-		$d->action(
-			'test_action_handler_invalid_typehint_production',
-			function( WP_Query $posts ) {
-				$_SERVER['__action_value'] = $posts;
-			}
+		$d->action_if(
+			fn () => false,
+			'test_action_if_should_not_run',
+			fn () => $_SERVER['test_action_if_should_not_run'] = true,
 		);
 
-		do_action( 'test_action_handler_invalid_typehint_production', $_SERVER['__action_value'] );
-		$this->assertInstanceOf( WP_Query::class, $_SERVER['__action_value'] );
-	}
-
-	/**
-	 * Allow the unknown type hint to be handled via an event filter.
-	 */
-	public function test_action_handler_invalid_typehint_override() {
-		$_SERVER['__action_value'] = [ 1, 2, 3 ];
-
-		$this->app->set_environment( 'testing' );
-		$d = new Dispatcher( $this->app );
-		$d->listen(
-			'event-typehint:WP_Query',
-			function( $arg, $parameter ) {
-				$this->assertIsArray( $arg );
-				$this->assertInstanceOf( ReflectionParameter::class, $parameter );
-
-				$instance = new WP_Query();
-				$instance->posts = $arg;
-				return $instance;
-			}
+		$d->action_if(
+			false,
+			'test_action_if_should_not_run',
+			fn () => $_SERVER['test_action_if_should_not_run'] = true,
 		);
 
-		$d->action(
-			'test_action_handler_invalid_typehint_override',
-			function( \WP_Query $posts ) {
-				$_SERVER['__action_value'] = $posts;
-			}
-		);
+		do_action( 'test_action_if_should_not_run' );
 
-		do_action( 'test_action_handler_invalid_typehint_override', $_SERVER['__action_value'] );
-
-		$this->assertInstanceOf( WP_Query::class, $_SERVER['__action_value'] );
-		$this->assertEquals( [ 1, 2, 3 ], $_SERVER['__action_value']->posts );
+		$this->assertFalse( $_SERVER['test_action_if_should_not_run'] ?? false );
 	}
 
 	public function test_filter_handler() {
 		$this->app['events']->filter(
 			'test_filter_handler',
-			function( string $string ) {
-				return strtoupper( $string );
-			}
+			fn( string $string ) => strtoupper( $string ),
 		);
 
 		$this->assertEquals(
@@ -169,28 +129,36 @@ class Test_WordPress_Action_Dispatcher extends Framework_Test_Case {
 	public function test_filter_handler_typehint() {
 		$this->app['events']->filter(
 			'test_filter_handler_typehint',
-			function( array $string ) {
-				return $string;
-			}
+			fn ( array $string ) => $string,
 		);
 
 		$this->assertEquals(
-			[ 'touppercase' ],
-			apply_filters( 'test_filter_handler_typehint', 'touppercase' )
+			[ 'string-in-array' ],
+			apply_filters( 'test_filter_handler_typehint', 'string-in-array' )
+		);
+	}
+
+	public function test_filter_handler_typehint_collection_returns_array() {
+		$this->app['events']->filter(
+			'test_filter_handler_typehint_collection_returns_array',
+			fn ( Collection $col ): array => $col->to_array(),
+		);
+
+		$this->assertEquals(
+			[ 'array-not-collection' ],
+			apply_filters( 'test_filter_handler_typehint_collection_returns_array', [ 'array-not-collection' ] )
 		);
 	}
 
 	public function test_helpers() {
 		add_filter(
 			'test_filter_handler_typehint',
-			function( array $value ) {
-				return $value;
-			}
+			fn ( array $value ) => $value,
 		);
 
 		$this->assertEquals(
-			[ 'touppercase' ],
-			apply_filters( 'test_filter_handler_typehint', 'touppercase' )
+			[ 'string-in-array' ],
+			apply_filters( 'test_filter_handler_typehint', 'string-in-array' )
 		);
 
 		$_SERVER['__test'] = false;

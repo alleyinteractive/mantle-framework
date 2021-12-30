@@ -5,17 +5,18 @@ use Mantle\Framework\Application;
 use Mantle\Config\Repository;
 use Mantle\Contracts\Queue\Provider;
 use Mantle\Framework\Providers\Queue_Service_Provider;
-use Mantle\Queue\Events\Job_Processed;
-use Mantle\Queue\Events\Job_Processing;
+use Mantle\Queue\Events;
 use Mantle\Queue\Events\Run_Complete;
 use Mantle\Queue\Events\Run_Start;
 use Mantle\Queue\Job;
 use Mantle\Support\Collection;
 use Mockery as m;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 
 use function Mantle\Framework\Helpers\collect;
 
-class Test_Worker extends \Mockery\Adapter\Phpunit\MockeryTestCase {
+class Test_Worker extends MockeryTestCase {
+
 	/**
 	 * Application instance.
 	 *
@@ -44,6 +45,12 @@ class Test_Worker extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		// Register the testable provider.
 		$this->app['queue']->add_provider( 'test', Testable_Provider::class );
+
+		// Remove the conflicting events from the previous runs.
+		remove_all_filters( Events\Job_Processed::class );
+		remove_all_filters( Events\Job_Processing::class );
+		remove_all_filters( Events\Run_Complete::class );
+		remove_all_filters( Events\Run_Start::class );
 	}
 
 	public function test_event_fire() {
@@ -60,10 +67,10 @@ class Test_Worker extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 			$events_fired[] = get_class( $event );
 		};
 
-		$this->app['events']->listen( Run_Start::class, $callback );
-		$this->app['events']->listen( Job_Processing::class, $callback );
-		$this->app['events']->listen( Job_Processed::class, $callback );
-		$this->app['events']->listen( Run_Complete::class, $callback );
+		$this->app['events']->listen( Events\Run_Start::class, $callback );
+		$this->app['events']->listen( Events\Job_Processing::class, $callback );
+		$this->app['events']->listen( Events\Job_Processed::class, $callback );
+		$this->app['events']->listen( Events\Run_Complete::class, $callback );
 
 		$this->app['queue']->get_provider( 'test' )->push( $this->get_mock_job( 1 ) );
 		$this->app['queue']->get_provider( 'test' )->push( $this->get_mock_job( 2 ) );
@@ -72,12 +79,12 @@ class Test_Worker extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertCount( 6, $events_fired );
 		$this->assertEquals(
 			[
-				Run_Start::class,
-				Job_Processing::class,
-				Job_Processed::class,
-				Job_Processing::class,
-				Job_Processed::class,
-				Run_Complete::class,
+				Events\Run_Start::class,
+				Events\Job_Processing::class,
+				Events\Job_Processed::class,
+				Events\Job_Processing::class,
+				Events\Job_Processed::class,
+				Events\Run_Complete::class,
 			],
 			$events_fired
 		);

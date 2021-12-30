@@ -10,6 +10,8 @@ namespace Mantle\Framework\Providers;
 use Mantle\Framework\Console\Clear_Cache_Command;
 use Mantle\Framework\Console\Config_Cache_Command;
 use Mantle\Framework\Console\Config_Clear_Command;
+use Mantle\Framework\Console\Event_Cache_Clear_Command;
+use Mantle\Framework\Console\Event_Cache_Command;
 use Mantle\Framework\Console\Test_Config_Install_Command;
 use Mantle\Framework\Console\Generators\Class_Make_Command;
 use Mantle\Framework\Console\Generators\Command_Make_Command;
@@ -17,6 +19,7 @@ use Mantle\Framework\Console\Generators\Controller_Make_Command;
 use Mantle\Framework\Console\Generators\Factory_Make_Command;
 use Mantle\Framework\Console\Generators\Generator_Make_Command;
 use Mantle\Framework\Console\Generators\Job_Make_Command;
+use Mantle\Framework\Console\Generators\Listener_Make_Command;
 use Mantle\Framework\Console\Generators\Middleware_Make_Command;
 use Mantle\Framework\Console\Generators\Model_Make_Command;
 use Mantle\Framework\Console\Generators\Seeder_Make_Command;
@@ -48,10 +51,13 @@ class Console_Service_Provider extends Service_Provider {
 		Config_Cache_Command::class,
 		Config_Clear_Command::class,
 		Controller_Make_Command::class,
+		Event_Cache_Clear_Command::class,
+		Event_Cache_Command::class,
 		Factory_Make_Command::class,
 		Generator_Make_Command::class,
 		Hook_Usage_Command::class,
 		Job_Make_Command::class,
+		Listener_Make_Command::class,
 		Middleware_Make_Command::class,
 		Model_Discover_Command::class,
 		Model_Make_Command::class,

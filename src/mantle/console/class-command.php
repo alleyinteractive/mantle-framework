@@ -138,7 +138,10 @@ abstract class Command {
 				->pluck( 'name' )
 				->all();
 
-				$this->named_command_args = array_combine( $synopsis, $args );
+				$this->named_command_args = array_combine(
+					$synopsis,
+					array_pad( $args, count( $synopsis ), null ),
+				);
 		}
 	}
 

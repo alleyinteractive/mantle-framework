@@ -12,6 +12,7 @@ use Mantle\Contracts\Support\Arrayable;
 use Mantle\Support\Enumerable;
 use Mantle\Support\Reflector;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionFunction;
 use ReflectionParameter;
 use RuntimeException;
@@ -32,7 +33,26 @@ trait WordPress_Action {
 	 * @return void
 	 */
 	public function action( string $action, callable $callback, int $priority = 10 ): void {
-		\add_action( $action, $this->wrap_action_callback( $callback ), $priority, 99 );
+		\add_action( $action, $this->create_action_callback( $callback ), $priority, 99 );
+	}
+
+	/**
+	 * Dispatch an action if a condition resolves true.
+	 *
+	 * @param callable|bool $condition Condition to check.
+	 * @param string        $action Action to invoke.
+	 * @param callable      $callback Callback to invoke.
+	 * @param integer       $priority Action priority.
+	 * @return void
+	 */
+	public function action_if( $condition, string $action, callable $callback, int $priority = 10 ): void {
+		if ( is_callable( $condition ) ) {
+			$condition = $condition();
+		}
+
+		if ( $condition ) {
+			$this->action( $action, $callback, $priority );
+		}
 	}
 
 	/**
@@ -44,7 +64,7 @@ trait WordPress_Action {
 	 * @return void
 	 */
 	public function filter( string $action, callable $callback, int $priority = 10 ): void {
-		\add_filter( $action, $this->wrap_action_callback( $callback ), $priority, 99 );
+		\add_filter( $action, $this->create_action_callback( $callback ), $priority, 99 );
 	}
 
 	/**
@@ -53,11 +73,17 @@ trait WordPress_Action {
 	 * @param callable $callback
 	 * @return Closure
 	 */
-	protected function wrap_action_callback( callable $callback ): Closure {
+	protected function create_action_callback( callable $callback ): Closure {
 		return function( ...$args ) use ( $callback ) {
 			if ( is_array( $callback ) ) {
-				$class      = new ReflectionClass( $callback[0] );
-				$parameters = $class->getMethod( $callback[1] )->getParameters();
+				try {
+					$class      = new ReflectionClass( $callback[0] );
+					$parameters = $class->getMethod( $callback[1] )->getParameters();
+				} catch ( ReflectionException $e ) {
+					// Pass through if Reflection is unable to find the class and/or methods.
+					unset( $e );
+					return $callback( ...$args );
+				}
 			} else {
 				$parameters = ( new ReflectionFunction( $callback ) )->getParameters();
 			}
@@ -125,30 +151,19 @@ trait WordPress_Action {
 			 * Fire an event to allow a type-hint conversion to be added dynamically.
 			 *
 			 * For example, if you wanted to handle the type-hint conversion to `SomeClass`, one could
-			 * listen for the `event-typehint:SomeClass` event to be fired. Returning a non-null value
+			 * listen for the `mantle-typehint-resolve:SomeClass` event to be fired. Returning a non-null value
 			 * to that event will pass the argument down to the callback for the action/filter.
 			 *
 			 * @param mixed               $argument Argument value.
 			 * @param ReflectionParameter $parameter Callback paramater.
 			 */
-			$modified_argument = $this->dispatch( 'event-typehint:' . $type->getName(), [ $argument, $parameter ], true );
+			$modified_argument = $this->dispatch( 'mantle-typehint-resolve:' . $type->getName(), [ null, $argument, $parameter ], true );
+
 			if ( $modified_argument ) {
 				return $modified_argument;
 			}
 
-			// Handle gracefully in production.
-			if ( $this->container->is_environment( 'production' ) ) {
-				_doing_it_wrong(
-					__FUNCTION__,
-					"Invalid type hinted parameter on callback: [$parameter_class]", // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-					'0.1.0'
-				);
-
-				// Pass to the container to resolve the object's arguments.
-				return $this->container->make( $parameter_class, [ $parameter ] );
-			}
-
-			throw new RuntimeException( "Unknown type hinted parameter on callback: [$parameter_class]" );
+			return $this->container->make( $parameter_class, [ $parameter ] );
 		}
 
 		// Ensure an 'Arrayable' interface is cast to an array properly.
