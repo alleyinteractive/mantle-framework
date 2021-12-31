@@ -11,6 +11,36 @@ use function Mantle\Framework\Helpers\tap;
 
 /**
  * Pending HTTP Request
+ *
+ * @method \Mantle\Http\Client\Http_Client as_form()
+ * @method \Mantle\Http\Client\Http_Client as_json()
+ * @method \Mantle\Http\Client\Http_Client base_url( string $url )
+ * @method \Mantle\Http\Client\Http_Client with_body( string $content, string $content_type )
+ * @method \Mantle\Http\Client\Http_Client with_options( array $options )
+ * @method \Mantle\Http\Client\Http_Client as_multipart()
+ * @method \Mantle\Http\Client\Http_Client body_format( string $format)
+ * @method \Mantle\Http\Client\Http_Client content_type( string $content_type )
+ * @method \Mantle\Http\Client\Http_Client accept_json()
+ * @method \Mantle\Http\Client\Http_Client accept( string $content_type )
+ * @method \Mantle\Http\Client\Http_Client with_headers( array $headers)
+ * @method \Mantle\Http\Client\Http_Client with_header( string $key, $value )
+ * @method \Mantle\Http\Client\Http_Client with_basic_auth( string $username, string $password)
+ * @method \Mantle\Http\Client\Http_Client with_digest_auth( string $username, string $password )
+ * @method \Mantle\Http\Client\Http_Client with_token( string $token, string $type = 'Bearer' )
+ * @method \Mantle\Http\Client\Http_Client with_user_agent( string $user_agent )
+ * @method \Mantle\Http\Client\Http_Client with_cookies( \WP_Http_Cookie[] $cookies )
+ * @method \Mantle\Http\Client\Http_Client with_cookie( \WP_Http_Cookie $cookie )
+ * @method \Mantle\Http\Client\Http_Client without_redirecting()
+ * @method \Mantle\Http\Client\Http_Client with_redirecting( int $times = 5 )
+ * @method \Mantle\Http\Client\Http_Client without_verifying()
+ * @method \Mantle\Http\Client\Http_Client timeout( int $seconds )
+ * @method \Mantle\Http\Client\Http_Client retry( int $retry )
+ * @method \Mantle\Http\Client\Http_Client get( string $url, $query = null )
+ * @method \Mantle\Http\Client\Http_Client head( string $url, $query = null )
+ * @method \Mantle\Http\Client\Http_Client post( string $url, array $data = [] )
+ * @method \Mantle\Http\Client\Http_Client patch( string $url, $data = [] )
+ * @method \Mantle\Http\Client\Http_Client put( string $url, array $data = [] )
+ * @method \Mantle\Http\Client\Http_Client delete( string $url, array $data = [] )
  */
 class Http_Client {
 	/**
@@ -103,7 +133,7 @@ class Http_Client {
 	 * @param  string $content_type Content mime type.
 	 * @return static
 	 */
-	public function with_body( $content, $content_type ) {
+	public function with_body( string $content, string $content_type ) {
 		$this->body_format( 'body' );
 
 		$this->pending_body = $content;
@@ -222,7 +252,7 @@ class Http_Client {
 	 * @param  string $password
 	 * @return static
 	 */
-	public function with_digest_auth( $username, $password ) {
+	public function with_digest_auth( string $username, string $password ) {
 		return tap(
 			$this,
 			function ( $request ) use ( $username, $password ) {
@@ -238,7 +268,7 @@ class Http_Client {
 	 * @param  string $type
 	 * @return static
 	 */
-	public function with_token( $token, $type = 'Bearer' ) {
+	public function with_token( string $token, string $type = 'Bearer' ) {
 		return $this->with_header( 'Authorization', trim( $type . ' ' . $token ) );
 	}
 
@@ -248,7 +278,7 @@ class Http_Client {
 	 * @param  string $user_agent User agent to set.
 	 * @return static
 	 */
-	public function with_user_agent( $user_agent ) {
+	public function with_user_agent( string $user_agent ) {
 		$this->options['user-agent'] = $user_agent;
 		return $this;
 	}
@@ -402,7 +432,7 @@ class Http_Client {
 	 * @param  array  $data
 	 * @return Response
 	 */
-	public function patch( $url, $data = [] ): Response {
+	public function patch( string $url, $data = [] ): Response {
 		return $this->send(
 			'PATCH',
 			$url,
@@ -419,7 +449,7 @@ class Http_Client {
 	 * @param  array  $data
 	 * @return Response
 	 */
-	public function put( $url, $data = [] ): Response {
+	public function put( string $url, array $data = [] ): Response {
 		return $this->send(
 			'PUT',
 			$url,
@@ -436,7 +466,7 @@ class Http_Client {
 	 * @param  array  $data
 	 * @return Response
 	 */
-	public function delete( $url, $data = [] ): Response {
+	public function delete( string $url, array $data = [] ): Response {
 		return $this->send(
 			'DELETE',
 			$url,

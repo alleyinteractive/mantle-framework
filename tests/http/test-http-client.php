@@ -146,9 +146,9 @@ class Test_Http_Client extends Framework_Test_Case {
 	public function test_http_client_with_base_url() {
 		$this->fake_request();
 
-		$this->http_factory
-			->base_url( 'https://wordpress.org/' )
-			->get( '/wp-json/wp/v2/posts/' );
+		$rest_client = Http::base_url( 'https://wordpress.org/' );
+
+		$rest_client->get( '/wp-json/wp/v2/posts/' );
 
 		$this->assertRequestSent( 'https://wordpress.org/wp-json/wp/v2/posts/' );
 	}
