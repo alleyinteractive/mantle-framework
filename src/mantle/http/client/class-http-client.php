@@ -246,22 +246,6 @@ class Http_Client {
 	}
 
 	/**
-	 * Specify the digest authentication username and password for the request.
-	 *
-	 * @param  string $username
-	 * @param  string $password
-	 * @return static
-	 */
-	public function with_digest_auth( string $username, string $password ) {
-		return tap(
-			$this,
-			function ( $request ) use ( $username, $password ) {
-				return $this->options['auth'] = [ $username, $password, 'digest' ];
-			}
-		);
-	}
-
-	/**
 	 * Specify an authorization token for the request.
 	 *
 	 * @param  string $token

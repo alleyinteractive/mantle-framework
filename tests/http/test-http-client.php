@@ -111,10 +111,6 @@ class Test_Http_Client extends Framework_Test_Case {
 		);
 	}
 
-	public function test_make_request_with_digest_auth() {
-		$this->markTestSkipped( 'Not implemented yet.' );
-	}
-
 	public function test_make_request_with_token() {
 		$this->fake_request();
 
