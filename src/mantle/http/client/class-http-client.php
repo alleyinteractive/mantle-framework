@@ -12,7 +12,14 @@ use function Mantle\Framework\Helpers\tap;
 /**
  * Pending HTTP Request
  */
-class Pending_Request {
+class Http_Client {
+	/**
+	 * Base URL for the request.
+	 *
+	 * @var string
+	 */
+	protected string $base_url = '';
+
 	/**
 	 * URL for the request.
 	 *
@@ -75,6 +82,18 @@ class Pending_Request {
 		return $this
 			->body_format( 'json' )
 			->content_type( 'application/json' );
+	}
+
+	/**
+	 * Set the base URL for the pending request.
+	 *
+	 * @param string $url Base URL.
+	 * @return static
+	 */
+	public function base_url( string $url ) {
+		$this->base_url = $url;
+
+		return $this;
 	}
 
 	/**
@@ -436,7 +455,7 @@ class Pending_Request {
 	 * @return Response
 	 */
 	public function send( string $method, string $url, array $options = [] ): Response {
-		$this->url     = $url;
+		$this->url     = ltrim( rtrim( $this->base_url, '/' ) . '/' . ltrim( $url, '/' ), '/' );
 		$this->options = array_merge( $this->options, $options );
 
 		$this->prepare_request_url();

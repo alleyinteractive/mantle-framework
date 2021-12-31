@@ -7,18 +7,21 @@
 
 namespace Mantle\Tests\Http;
 
-use Mantle\Http\Client\Factory;
+use Mantle\Http\Client\Http_Client;
 use Mantle\Http\Client\Request;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Mock_Http_Response;
 
 class Test_Http_Client extends Framework_Test_Case {
-	protected Factory $http_factory;
+	/**
+	 * @var Http_Client
+	 */
+	protected Http_Client $http_factory;
 
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->http_factory = new Factory();
+		$this->http_factory = new Http_Client();
 	}
 
 	public function test_make_post_request() {
@@ -137,5 +140,15 @@ class Test_Http_Client extends Framework_Test_Case {
 
 	public function test_make_request_with_files() {
 		$this->markTestSkipped( 'Not implemented yet.' );
+	}
+
+	public function test_http_client_with_base_url() {
+		$this->fake_request();
+
+		$this->http_factory
+			->base_url( 'https://wordpress.org/' )
+			->get( '/wp-json/wp/v2/posts/' );
+
+		$this->assertRequestSent( 'https://wordpress.org/wp-json/wp/v2/posts/' );
 	}
 }
