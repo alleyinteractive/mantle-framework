@@ -134,4 +134,8 @@ class Test_Http_Client extends Framework_Test_Case {
 
 		$this->assertRequestSent();
 	}
+
+	public function test_make_request_with_files() {
+		$this->markTestSkipped( 'Not implemented yet.' );
+	}
 }
