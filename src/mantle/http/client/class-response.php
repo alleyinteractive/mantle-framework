@@ -10,7 +10,9 @@ namespace Mantle\Http\Client;
 use ArrayAccess;
 use LogicException;
 use Mantle\Support\Collection;
+use WP_HTTP_Cookie;
 
+use function Mantle\Framework\Helpers\collect;
 use function Mantle\Framework\Helpers\data_get;
 
 /**
@@ -192,6 +194,27 @@ class Response implements ArrayAccess {
 	}
 
 	/**
+	 * Retrieve the cookies from the response.
+	 *
+	 * @return WP_HTTP_Cookie[]
+	 */
+	public function cookies(): array {
+		return $this->response['cookies'] ?? [];
+	}
+
+	/**
+	 * Retrieve a specific cookie by name.
+	 *
+	 * @param string $name Cookie name.
+	 * @return WP_HTTP_Cookie
+	 */
+	public function cookie( string $name ): ?WP_HTTP_Cookie {
+		return collect( $this->cookies() )
+			->key_by( 'name' )
+			->get( $name );
+	}
+
+	/**
 	 * Dump the response to the screen.
 	 *
 	 * @return static
@@ -245,8 +268,9 @@ class Response implements ArrayAccess {
 	}
 
 	/**
-	 * @throws LogicException Not supported on responses.
+	 * Remove an attribute from the response.
 	 *
+	 * @throws LogicException Not supported on responses.
 	 * @param mixed $offset Offset.
 	 * @return void
 	 */

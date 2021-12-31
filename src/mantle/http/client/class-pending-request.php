@@ -1,15 +1,44 @@
 <?php
+/**
+ * Pending_Request class file
+ *
+ * @package Mantle
+ */
+
 namespace Mantle\Http\Client;
 
 use function Mantle\Framework\Helpers\tap;
 
+/**
+ * Pending HTTP Request
+ */
 class Pending_Request {
+	/**
+	 * URL for the request.
+	 *
+	 * @var string
+	 */
 	protected string $url;
 
+	/**
+	 * Options for the request.
+	 *
+	 * @var array
+	 */
 	protected array $options = [];
 
+	/**
+	 * Pending body for the request.
+	 *
+	 * @var mixed
+	 */
 	protected $pending_body;
 
+	/**
+	 * Pending files for the request.
+	 *
+	 * @var array
+	 */
 	protected array $pending_files = [];
 
 	/**
@@ -19,16 +48,29 @@ class Pending_Request {
 	 */
 	protected string $body_format;
 
+	/**
+	 * Constructor.
+	 */
 	public function __construct() {
 		$this->as_json();
 	}
 
+	/**
+	 * Indicate the request contains form parameters.
+	 *
+	 * @return static
+	 */
 	public function as_form() {
 		return $this
 			->body_format( 'form' )
 			->content_type( 'application/x-www-form-urlencoded' );
 	}
 
+	/**
+	 * Indicate the request contains JSON.
+	 *
+	 * @return static
+	 */
 	public function as_json() {
 		return $this
 			->body_format( 'json' )
@@ -38,33 +80,38 @@ class Pending_Request {
 	/**
 	 * Attach a raw body to the request.
 	 *
-	 * @param  string  $content
-	 * @param  string  $contentType
-	 * @return $this
+	 * @param  string $content Content to attach.
+	 * @param  string $content_type Content mime type.
+	 * @return static
 	 */
-	public function with_body($content, $contentType)
-	{
-			$this->body_format('body');
+	public function with_body( $content, $content_type ) {
+		$this->body_format( 'body' );
 
-			$this->pending_body = $content;
+		$this->pending_body = $content;
 
-			$this->content_type($contentType);
+		$this->content_type( $content_type );
 
-			return $this;
+		return $this;
 	}
 
+	/**
+	 * Pass raw options to the request (passed to `wp_remote_request()`).
+	 *
+	 * @param array $options Options for the request.
+	 * @return static
+	 */
 	public function with_options( array $options ) {
-		$this->options = array_merge_recursive( $this->options, $options );
+		$this->options['options'] = $options;
 		return $this;
 	}
 
 	/**
 	 * Indicate the request is a multi-part form request.
 	 *
-	 * @return $this
+	 * @return static
 	 */
 	public function as_multipart() {
-			return $this->body_format( 'multipart' );
+		return $this->body_format( 'multipart' );
 	}
 
 	/**
@@ -81,17 +128,17 @@ class Pending_Request {
 	/**
 	 * Specify the request's content type.
 	 *
-	 * @param  string $contentType
-	 * @return $this
+	 * @param string $content_type Content type.
+	 * @return static
 	 */
-	public function content_type( string $contentType ) {
-		return $this->with_headers( [ 'Content-Type' => $contentType ] );
+	public function content_type( string $content_type ) {
+		return $this->with_headers( [ 'Content-Type' => $content_type ] );
 	}
 
 	/**
 	 * Indicate that JSON should be returned by the server.
 	 *
-	 * @return $this
+	 * @return static
 	 */
 	public function accept_json() {
 		return $this->accept( 'application/json' );
@@ -100,46 +147,52 @@ class Pending_Request {
 	/**
 	 * Indicate the type of content that should be returned by the server.
 	 *
-	 * @param  string $contentType
-	 * @return $this
+	 * @param  string $content_type Content type.
+	 * @return static
 	 */
-	public function accept( $contentType ) {
-		return $this->with_headers( [ 'Accept' => $contentType ] );
+	public function accept( $content_type ) {
+		return $this->with_headers( [ 'Accept' => $content_type ] );
 	}
 
 	/**
 	 * Add the given headers to the request.
 	 *
-	 * @param  array $headers
-	 * @return $this
+	 * @param  array $headers Headers to add.
+	 * @return static
 	 */
 	public function with_headers( array $headers ) {
-		return tap(
-			$this,
-			function ( $request ) use ( $headers ) {
-				return $this->options = array_merge_recursive(
-					$this->options,
-					[
-						'headers' => $headers,
-					]
-				);
-			}
+		$this->options = array_merge_recursive(
+			$this->options,
+			[
+				'headers' => $headers,
+			]
 		);
+
+		return $this;
+	}
+
+	/**
+	 * Add a specific header to the request.
+	 *
+	 * @param string $key Header key.
+	 * @param mixed  $value Header value.
+	 * @return static
+	 */
+	public function with_header( string $key, $value ) {
+		return $this->with_headers( [ $key => $value ] );
 	}
 
 	/**
 	 * Specify the basic authentication username and password for the request.
 	 *
-	 * @param  string $username
-	 * @param  string $password
-	 * @return $this
+	 * @param string $username Username.
+	 * @param string $password Password.
+	 * @return static
 	 */
 	public function with_basic_auth( string $username, string $password ) {
-		return tap(
-			$this,
-			function ( $request ) use ( $username, $password ) {
-				return $this->options['auth'] = [ $username, $password ];
-			}
+		return $this->with_header(
+			'Authorization',
+			'Basic ' . base64_encode( $username . ':' . $password )
 		);
 	}
 
@@ -148,7 +201,7 @@ class Pending_Request {
 	 *
 	 * @param  string $username
 	 * @param  string $password
-	 * @return $this
+	 * @return static
 	 */
 	public function with_digest_auth( $username, $password ) {
 		return tap(
@@ -164,37 +217,28 @@ class Pending_Request {
 	 *
 	 * @param  string $token
 	 * @param  string $type
-	 * @return $this
+	 * @return static
 	 */
 	public function with_token( $token, $type = 'Bearer' ) {
-		return tap(
-			$this,
-			function ( $request ) use ( $token, $type ) {
-				return $this->options['headers']['Authorization'] = trim( $type . ' ' . $token );
-			}
-		);
+		return $this->with_header( 'Authorization', trim( $type . ' ' . $token ) );
 	}
 
 	/**
 	 * Specify the user agent for the request.
 	 *
-	 * @param  string $userAgent
-	 * @return $this
+	 * @param  string $user_agent User agent to set.
+	 * @return static
 	 */
-	public function with_user_agent( $userAgent ) {
-		return tap(
-			$this,
-			function ( $request ) use ( $userAgent ) {
-				return $this->options['headers']['User-Agent'] = trim( $userAgent );
-			}
-		);
+	public function with_user_agent( $user_agent ) {
+		$this->options['user-agent'] = $user_agent;
+		return $this;
 	}
 
 	/**
 	 * Specify the cookies that should be included with the request.
 	 *
-	 * @param  array  $cookies Cookies to pass.
-	 * @return $this
+	 * @param  \WP_Http_Cookie[] $cookies Cookies to pass.
+	 * @return static
 	 */
 	public function with_cookies( array $cookies ) {
 		$this->options['cookies'] = $cookies;
@@ -203,9 +247,19 @@ class Pending_Request {
 	}
 
 	/**
+	 * Specify a single cookie that should be included with the request.
+	 *
+	 * @param \WP_Http_Cookie $cookie Cookie to include.
+	 * @return static
+	 */
+	public function with_cookie( \WP_Http_Cookie $cookie ) {
+		return $this->with_cookies( [ $cookie ] );
+	}
+
+	/**
 	 * Indicate that redirects should not be followed.
 	 *
-	 * @return $this
+	 * @return static
 	 */
 	public function without_redirecting() {
 		return tap(
@@ -219,7 +273,8 @@ class Pending_Request {
 	/**
 	 * Indicate that redirects should be followed.
 	 *
-	 * @return $this
+	 * @param int $times Number of redirects to allow.
+	 * @return static
 	 */
 	public function with_redirecting( int $times = 5 ) {
 		return tap(
@@ -233,7 +288,7 @@ class Pending_Request {
 	/**
 	 * Indicate that TLS certificates should not be verified.
 	 *
-	 * @return $this
+	 * @return static
 	 */
 	public function without_verifying() {
 		return tap(
@@ -248,7 +303,7 @@ class Pending_Request {
 	 * Specify the timeout (in seconds) for the request.
 	 *
 	 * @param  int $seconds
-	 * @return $this
+	 * @return static
 	 */
 	public function timeout( int $seconds ) {
 		return tap(
@@ -259,15 +314,25 @@ class Pending_Request {
 		);
 	}
 
+	/**
+	 * Number of times to retry a failed request.
+	 *
+	 * @param int $retry Number of retries.
+	 * @return static
+	 */
+	public function retry( int $retry ) {
+		$this->options['retry'] = $retry;
+		return $this;
+	}
 
 	/**
 	 * Issue a GET request to the given URL.
 	 *
 	 * @param  string            $url
 	 * @param  array|string|null $query
-	 * @return \Illuminate\Http\Client\Response
+	 * @return Response
 	 */
-	public function get( string $url, $query = null ) {
+	public function get( string $url, $query = null ): Response {
 		return $this->send(
 			'GET',
 			$url,
@@ -282,9 +347,9 @@ class Pending_Request {
 	 *
 	 * @param  string            $url
 	 * @param  array|string|null $query
-	 * @return \Illuminate\Http\Client\Response
+	 * @return Response
 	 */
-	public function head( string $url, $query = null ) {
+	public function head( string $url, $query = null ): Response {
 		return $this->send(
 			'HEAD',
 			$url,
@@ -299,9 +364,9 @@ class Pending_Request {
 	 *
 	 * @param  string $url
 	 * @param  array  $data
-	 * @return \Illuminate\Http\Client\Response
+	 * @return Response
 	 */
-	public function post( string $url, array $data = [] ) {
+	public function post( string $url, array $data = [] ): Response {
 		return $this->send(
 			'POST',
 			$url,
@@ -316,9 +381,9 @@ class Pending_Request {
 	 *
 	 * @param  string $url
 	 * @param  array  $data
-	 * @return \Illuminate\Http\Client\Response
+	 * @return Response
 	 */
-	public function patch( $url, $data = [] ) {
+	public function patch( $url, $data = [] ): Response {
 		return $this->send(
 			'PATCH',
 			$url,
@@ -333,9 +398,9 @@ class Pending_Request {
 	 *
 	 * @param  string $url
 	 * @param  array  $data
-	 * @return \Illuminate\Http\Client\Response
+	 * @return Response
 	 */
-	public function put( $url, $data = [] ) {
+	public function put( $url, $data = [] ): Response {
 		return $this->send(
 			'PUT',
 			$url,
@@ -350,9 +415,9 @@ class Pending_Request {
 	 *
 	 * @param  string $url
 	 * @param  array  $data
-	 * @return \Illuminate\Http\Client\Response
+	 * @return Response
 	 */
-	public function delete( $url, $data = [] ) {
+	public function delete( $url, $data = [] ): Response {
 		return $this->send(
 			'DELETE',
 			$url,
@@ -362,7 +427,15 @@ class Pending_Request {
 		);
 	}
 
-	public function send( string $method, string $url, array $options = [] ) {
+	/**
+	 * Issue a request to the given URL.
+	 *
+	 * @param  string $method HTTP Method.
+	 * @param  string $url URL for the request.
+	 * @param  array  $options Options for the request.
+	 * @return Response
+	 */
+	public function send( string $method, string $url, array $options = [] ): Response {
 		$this->url     = $url;
 		$this->options = array_merge( $this->options, $options );
 
@@ -370,11 +443,19 @@ class Pending_Request {
 
 		$args = $this->get_request_args( $method );
 
-		return retry( 1, function() use ( $args ){
-			$request = wp_remote_request( $this->url, $args );
+		return retry(
+			min( 1, $this->options['retry'] ?? 1 ),
+			function() use ( $args ) {
+				$response = new Response( wp_remote_request( $this->url, $args ) );
 
-			return new Response( $request );
-		} );
+				if ( ! $response->successful() ) {
+					throw new Http_Client_Exception();
+				}
+
+				return $response;
+			},
+			$this->options['retry_delay'] ?? 0,
+		);
 	}
 
 	/**
@@ -405,7 +486,7 @@ class Pending_Request {
 				$this->url = add_query_arg( $this->options['query'], $this->url );
 			} elseif ( is_string( $this->options['query'] ) ) {
 				// Append the string query string.
-				// $this->url = $this->url =
+				$this->url = "{$this->url}?{$this->options['query']}";
 			}
 		}
 	}
@@ -418,10 +499,10 @@ class Pending_Request {
 	 */
 	protected function get_request_args( string $method ): array {
 		if ( isset( $this->options[ $this->body_format ] ) ) {
-			if ( $this->body_format === 'multipart' ) {
+			if ( 'multipart' === $this->body_format ) {
 					$this->options[ $this->body_format ] = $this->parse_multipart_body_format( $this->options[ $this->body_format ] );
-			} elseif ( $this->body_format === 'body' ) {
-					$this->options[ $this->body_format ] = $this->pendingBody;
+			} elseif ( 'body' === $this->body_format ) {
+					$this->options[ $this->body_format ] = $this->pending_body;
 			}
 
 			if ( is_array( $this->options[ $this->body_format ] ) ) {
@@ -452,13 +533,13 @@ class Pending_Request {
 
 		switch ( $this->body_format ) {
 			case 'json':
-				$args['body'] = json_encode( $this->options[ $this->body_format ] );
+				$args['body'] = wp_json_encode( $this->options[ $this->body_format ] );
 				break;
 			default:
 				$args['body'] = $this->options[ $this->body_format ];
 				break;
 		}
 
-		return $args;
+		return array_merge( $args, $this->options['options'] ?? [] );
 	}
 }

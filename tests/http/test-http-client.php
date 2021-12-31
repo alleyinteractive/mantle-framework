@@ -8,9 +8,9 @@
 namespace Mantle\Tests\Http;
 
 use Mantle\Http\Client\Factory;
+use Mantle\Http\Client\Request;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Mock_Http_Response;
-use PHPUnit\Framework\TestCase;
 
 class Test_Http_Client extends Framework_Test_Case {
 	protected Factory $http_factory;
@@ -53,5 +53,85 @@ class Test_Http_Client extends Framework_Test_Case {
 		$this->http_factory->get( 'https://wordpress.org/', [ 'example' => 'value' ] );
 
 		$this->assertRequestSent( 'https://wordpress.org/?example=value' );
+		$this->assertRequestSent(
+			fn ( Request $request ) => 'https://wordpress.org/?example=value' === $request->url()
+		);
+	}
+
+	public function test_make_request_with_cookies() {
+		$cookie = new \WP_Http_Cookie( [
+			'name' => 'example',
+			'value' => 'value',
+		] );
+
+		$this->fake_request( fn () => Mock_Http_Response::create()
+			->with_cookie( $cookie )
+			->with_status( 200 )
+		);
+
+		$response = $this->http_factory->get( 'https://wordpress.org/' );
+
+		$this->assertNotEmpty( $response->cookie( 'example' ) );
+		$this->assertEquals( 'value', $response->cookie( 'example' )->value );
+	}
+
+	public function test_make_request_with_json() {
+		$this->fake_request( fn () => Mock_Http_Response::create()
+			->with_status( 200 )
+			->with_json( [ 'example' => 'value' ] )
+		);
+
+		$this->http_factory->post( 'https://wordpress.org/', [
+			'example' => 'value',
+		] );
+
+		$this->assertRequestSent( 'https://wordpress.org/' );
+		$this->assertRequestSent(
+			fn ( Request $request ) => 'https://wordpress.org/' === $request->url()
+				&& $request->is_json()
+				&& $request->json() === [ 'example' => 'value' ]
+		);
+	}
+
+	public function test_make_request_with_basic_auth() {
+		$this->fake_request();
+
+		$this->http_factory
+			->with_basic_auth( 'user', 'pass' )
+			->get( 'https://wordpress.org/basic-auth/' );
+
+		$this->assertRequestSent( fn ( Request $request ) => $request
+			->has_header( 'Authorization', 'Basic dXNlcjpwYXNz' )
+			&& 'https://wordpress.org/basic-auth/' === $request->url()
+			&& 'GET' === $request->method()
+		);
+	}
+
+	public function test_make_request_with_digest_auth() {
+		$this->markTestSkipped( 'Not implemented yet.' );
+	}
+
+	public function test_make_request_with_token() {
+		$this->fake_request();
+
+		$this->http_factory
+			->with_token( 'token' )
+			->get( 'https://wordpress.org/token/' );
+
+		$this->assertRequestSent( fn ( Request $request ) => $request
+			->has_header( 'Authorization', 'Bearer token' )
+			&& 'https://wordpress.org/token/' === $request->url()
+			&& 'GET' === $request->method()
+		);
+	}
+
+	public function test_nothing_sent() {
+		$this->assertNoRequestSent();
+
+		$this->fake_request();
+
+		$this->http_factory->get( 'https://wordpress.org/' );
+
+		$this->assertRequestSent();
 	}
 }
