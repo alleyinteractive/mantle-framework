@@ -7,6 +7,7 @@
 
 namespace Mantle\Tests\Http;
 
+use Mantle\Facade\Http;
 use Mantle\Http\Client\Http_Client;
 use Mantle\Http\Client\Request;
 use Mantle\Testing\Framework_Test_Case;
@@ -150,5 +151,13 @@ class Test_Http_Client extends Framework_Test_Case {
 			->get( '/wp-json/wp/v2/posts/' );
 
 		$this->assertRequestSent( 'https://wordpress.org/wp-json/wp/v2/posts/' );
+	}
+
+	public function test_facade_request() {
+		$this->fake_request();
+
+		Http::get( 'https://wordpress.org/facade/' );
+
+		$this->assertRequestSent( 'https://wordpress.org/facade/' );
 	}
 }
