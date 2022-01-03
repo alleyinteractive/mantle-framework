@@ -7,7 +7,6 @@
 
 namespace Mantle\Testing\Concerns;
 
-use Mantle\Contracts\Http\Kernel;
 use Mantle\Database\Model\Model;
 use Mantle\Http\Kernel as HttpKernel;
 use Mantle\Http\Request;
@@ -19,8 +18,6 @@ use Mantle\Testing\Utils;
 use WP;
 use WP_Query;
 
-use function Mantle\Framework\Helpers\class_basename;
-
 /**
  * Trait for Test_Case classes which want to make http-like requests against
  * WordPress.
@@ -31,14 +28,14 @@ trait Makes_Http_Requests {
 	 *
 	 * @var array
 	 */
-	protected $default_headers = [];
+	protected array $default_headers = [];
 
 	/**
-	 * Additional server variables for the request.
+	 * Additional cookies for the request.
 	 *
 	 * @var array
 	 */
-	protected $server_variables = [];
+	protected array $default_cookies = [];
 
 	/**
 	 * Indicates whether redirects should be followed.
@@ -91,13 +88,37 @@ trait Makes_Http_Requests {
 	}
 
 	/**
-	 * Define a set of server variables to be sent with the requests.
+	 * Make a request with a set of cookies.
 	 *
-	 * @param array $server Server variables.
-	 * @return $this
+	 * @param array $cookies Cookies to be sent with the request.
+	 * @return static
 	 */
-	public function with_server_variables( array $server ) {
-		$this->server_variables = $server;
+	public function with_cookies( array $cookies ) {
+		$this->default_cookies = array_merge( $this->default_cookies, $cookies );
+
+		return $this;
+	}
+
+	/**
+	 * Make a request with a specific cookie.
+	 *
+	 * @param string $name  Cookie name.
+	 * @param string $value Cookie value.
+	 * @return static
+	 */
+	public function with_cookie( string $name, string $value ) {
+		$this->default_cookies[ $name ] = $value;
+
+		return $this;
+	}
+
+	/**
+	 * Flush the cookies for the request.
+	 *
+	 * @return static
+	 */
+	public function flush_cookies() {
+		$this->default_cookies = [];
 
 		return $this;
 	}
@@ -219,14 +240,14 @@ trait Makes_Http_Requests {
 	/**
 	 * Call the given URI and return the Response.
 	 *
-	 * @param string      $method     Request method.
-	 * @param string      $uri        Request URI.
-	 * @param array       $parameters Request params.
-	 * @param array       $server     Server vars.
-	 * @param string|null $content    Request body.
+	 * @param string $method     Request method.
+	 * @param string $uri        Request URI.
+	 * @param array  $parameters Request params.
+	 * @param array  $server     Server vars.
+	 * @param array  $cookies Cookies to be sent with the request.
 	 * @return Test_Response
 	 */
-	public function call( $method, $uri, $parameters = [], $server = [], $content = null ) {
+	public function call( $method, $uri, $parameters = [], $server = [], array $cookies = [] ) {
 		$this->reset_request_state();
 
 		if ( ! is_string( $uri ) ) {
@@ -242,7 +263,13 @@ trait Makes_Http_Requests {
 			$url = $uri;
 		}
 
-		$this->set_server_state( $method, $url, $server, $parameters );
+		$this->set_server_state(
+			$method,
+			$url,
+			$server,
+			$parameters,
+			array_merge( $this->default_cookies, $cookies ),
+		);
 
 		$response_status  = null;
 		$response_headers = [];
@@ -333,13 +360,16 @@ trait Makes_Http_Requests {
 	 * Reset the global state related to requests.
 	 */
 	protected function reset_request_state() {
+		// phpcs:disable
+
 		/*
 		 * Note: the WP and WP_Query classes like to silently fetch parameters
 		 * from all over the place (globals, GET, etc), which makes it tricky
 		 * to run them more than once without very carefully clearing everything.
 		 */
-		$_GET  = [];
-		$_POST = [];
+		$_GET    = [];
+		$_POST   = [];
+		$_COOKIE = [];
 		foreach (
 			[
 				'query_string',
@@ -363,6 +393,8 @@ trait Makes_Http_Requests {
 		}
 
 		$this->rest_api_response = false;
+
+		// phpcs:enable
 	}
 
 	/**
@@ -372,8 +404,9 @@ trait Makes_Http_Requests {
 	 * @param string $url    Request URI.
 	 * @param array  $server Additional $_SERVER args to set.
 	 * @param array  $data   POST data to set.
+	 * @param array  $cookies Cookies to be sent with the request.
 	 */
-	protected function set_server_state( $method, $url, $server, $data ) {
+	protected function set_server_state( $method, $url, $server, $data, array $cookies = [] ) {
 		// phpcs:disable WordPress.Security.NonceVerification
 		$_SERVER['REQUEST_METHOD'] = strtoupper( $method );
 		$_SERVER['SERVER_NAME']    = WP_TESTS_DOMAIN;
@@ -398,6 +431,10 @@ trait Makes_Http_Requests {
 		// The ini setting variable_order determines order; assume GP for simplicity.
 		$_REQUEST = array_merge( $_GET, $_POST );
 		$_SERVER  = array_merge( $_SERVER, $server );
+
+		// Set the cookies for the request.
+		$_COOKIE = $cookies; // phpcs:ignore WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE
+
 		// phpcs:enable
 	}
 
