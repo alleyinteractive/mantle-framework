@@ -7,9 +7,12 @@
 
 namespace Mantle\Tests\Http;
 
+use Closure;
 use Mantle\Facade\Http;
 use Mantle\Http\Client\Http_Client;
+use Mantle\Http\Client\Http_Client_Exception;
 use Mantle\Http\Client\Request;
+use Mantle\Http\Client\Response;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Mock_Http_Response;
 
@@ -155,5 +158,94 @@ class Test_Http_Client extends Framework_Test_Case {
 		Http::get( 'https://wordpress.org/facade/' );
 
 		$this->assertRequestSent( 'https://wordpress.org/facade/' );
+	}
+
+	public function test_no_exception_thrown_by_default() {
+		$this->fake_request( fn () => Mock_Http_Response::create()->with_status( 500 ) );
+
+		$response = $this->http_factory->get( 'https://wordpress.org/' );
+
+		$this->assertInstanceOf( Response::class, $response );
+	}
+
+	public function test_no_exception_thrown_if_muted() {
+		$this->fake_request( fn () => Mock_Http_Response::create()->with_status( 500 ) );
+
+		$response = $this->http_factory
+			->dont_throw_exception()
+			->get( 'https://wordpress.org/' );
+
+		$this->assertInstanceOf( Response::class, $response );
+	}
+
+	public function test_exception_thrown_on_failure() {
+		$this->fake_request( fn () => Mock_Http_Response::create()->with_status( 500 ) );
+
+		$this->expectException( Http_Client_Exception::class );
+
+		$this->http_factory
+			->throw_exception()
+			->get( 'https://wordpress.org/' );
+	}
+
+	public function test_retry_exception_on_error() {
+		$this->fake_request( fn () => Mock_Http_Response::create()->with_status( 500 ) );
+
+		$this->http_factory
+			->retry( 5 )
+			->get( 'https://wordpress.org/retry/' );
+
+		$this->assertRequestSent( 'https://wordpress.org/retry/', 5 );
+	}
+
+	public function test_retry_exception_on_error_with_exception() {
+		$this->fake_request( fn () => Mock_Http_Response::create()->with_status( 500 ) );
+
+		$this->expectException( Http_Client_Exception::class );
+
+		$this->http_factory
+			->retry( 5 )
+			->throw_exception()
+			->get( 'https://wordpress.org/retry/' );
+
+		$this->assertRequestSent( 'https://wordpress.org/retry/', 5 );
+	}
+
+	public function test_middleware_request() {
+		$this->fake_request();
+
+		$this->http_factory
+			->middleware( function ( Http_Client $client, Closure $next ) {
+				$client->url( 'https://wordpress.org/middleware/?modified=true' );
+
+				return $next( $client );
+			} )
+			->get( 'https://wordpress.org/middleware/' );
+
+		$this->assertRequestSent( 'https://wordpress.org/middleware/?modified=true' );
+	}
+
+	public function test_middleware_response() {
+		$this->fake_request( fn () => Mock_Http_Response::create()
+			->with_header( 'test-header', 'origin-value' )
+		);
+
+		$response = $this->http_factory
+			->middleware( function ( Http_Client $client, Closure $next ) {
+				$response = $next( $client );
+
+				return new Response( array_merge(
+					$response->response(),
+					[
+						'headers' => [
+							'test-header' => 'modified-value',
+						],
+					],
+				) );
+			} )
+			->get( 'https://wordpress.org/middleware/' );
+
+		$this->assertRequestSent( 'https://wordpress.org/middleware/' );
+		$this->assertEquals( 'modified-value', $response->header( 'test-header' ) );
 	}
 }

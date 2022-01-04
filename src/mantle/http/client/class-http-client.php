@@ -7,10 +7,13 @@
 
 namespace Mantle\Http\Client;
 
+use Mantle\Support\Pipeline;
+
+use function Mantle\Framework\Helpers\retry;
 use function Mantle\Framework\Helpers\tap;
 
 /**
- * Pending HTTP Request
+ * Http Request Client
  *
  * @method \Mantle\Http\Client\Http_Client as_form()
  * @method \Mantle\Http\Client\Http_Client as_json()
@@ -51,6 +54,13 @@ class Http_Client {
 	protected string $base_url = '';
 
 	/**
+	 * Method for the request.
+	 *
+	 * @var string
+	 */
+	public string $method;
+
+	/**
 	 * URL for the request.
 	 *
 	 * @var string
@@ -84,6 +94,22 @@ class Http_Client {
 	 * @var string
 	 */
 	protected string $body_format;
+
+	/**
+	 * Middleware for the request.
+	 *
+	 * @var array
+	 */
+	protected array $middleware = [];
+
+	/**
+	 * Create an instance of the Http Client
+	 *
+	 * @return static
+	 */
+	public static function create() {
+		return new static();
+	}
 
 	/**
 	 * Constructor.
@@ -122,6 +148,38 @@ class Http_Client {
 	 */
 	public function base_url( string $url ) {
 		$this->base_url = $url;
+
+		return $this;
+	}
+
+	/**
+	 * Set or get the URL for the request.
+	 *
+	 * @param string $url URL for the request, optional.
+	 * @return static|string
+	 */
+	public function url( string $url = null ) {
+		if ( is_null( $url ) ) {
+			return $this->url;
+		}
+
+		$this->url = $url;
+
+		return $this;
+	}
+
+	/**
+	 * Set or get the method for the request.
+	 *
+	 * @param string $method Http Method for the request, optional.
+	 * @return static|string
+	 */
+	public function method( string $method = null ) {
+		if ( is_null( $method ) ) {
+			return $this->method;
+		}
+
+		$this->method = $method;
 
 		return $this;
 	}
@@ -348,6 +406,27 @@ class Http_Client {
 	}
 
 	/**
+	 * Add middleware for the request.
+	 *
+	 * @param callable $middleware Middleware to call.
+	 * @return static
+	 */
+	public function middleware( $middleware ) {
+		$this->middleware[] = $middleware;
+		return $this;
+	}
+
+	/**
+	 * Clear all middleware for the request.
+	 *
+	 * @return static
+	 */
+	public function without_middleware() {
+		$this->middleware = [];
+		return $this;
+	}
+
+	/**
 	 * Number of times to retry a failed request.
 	 *
 	 * @param int $retry Number of retries.
@@ -355,6 +434,26 @@ class Http_Client {
 	 */
 	public function retry( int $retry ) {
 		$this->options['retry'] = $retry;
+		return $this;
+	}
+
+	/**
+	 * Flag to throw an Http_Client_Exception on failure.
+	 *
+	 * @return static
+	 */
+	public function throw_exception() {
+		$this->options['throw_exception'] = true;
+		return $this;
+	}
+
+	/**
+	 * Flag to not throw an Http_Client_Exception on failure.
+	 *
+	 * @return static
+	 */
+	public function dont_throw_exception() {
+		$this->options['throw_exception'] = false;
 		return $this;
 	}
 
@@ -471,18 +570,41 @@ class Http_Client {
 	public function send( string $method, string $url, array $options = [] ): Response {
 		$this->url     = ltrim( rtrim( $this->base_url, '/' ) . '/' . ltrim( $url, '/' ), '/' );
 		$this->options = array_merge( $this->options, $options );
+		$this->method  = $method;
 
-		$this->prepare_request_url();
-
-		$args = $this->get_request_args( $method );
+		// Ensure some options are always set.
+		$this->options['throw_exception'] = $this->options['throw_exception'] ?? false;
+		$this->options['retry']           = max( 1, $this->options['retry'] ?? 1 );
 
 		return retry(
-			min( 1, $this->options['retry'] ?? 1 ),
-			function() use ( $args ) {
-				$response = new Response( wp_remote_request( $this->url, $args ) );
+			$this->options['retry'],
+			function( int $attempts ) {
+				$response = ( new Pipeline() )
+					->send( $this )
+					->through( $this->middleware )
+					->then(
+						function() {
+							$this->prepare_request_url();
 
-				if ( ! $response->successful() ) {
-					throw new Http_Client_Exception();
+							return new Response(
+								wp_remote_request(
+									$this->url,
+									$this->get_request_args( $this->method ),
+								),
+							);
+						}
+					);
+
+				// Throw the exception if the request is being retried (so it can be
+				// retried) or if configured to always throw the exception.
+				if (
+					! $response->successful()
+					&& (
+						$this->options['throw_exception']
+						|| $attempts < $this->options['retry']
+					)
+				) {
+					throw new Http_Client_Exception( $response );
 				}
 
 				return $response;

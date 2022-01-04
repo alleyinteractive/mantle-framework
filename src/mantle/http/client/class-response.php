@@ -46,6 +46,15 @@ class Response implements ArrayAccess {
 	}
 
 	/**
+	 * Retrieve the raw response from `wp_remote_request()`.
+	 *
+	 * @return array
+	 */
+	public function response(): array {
+		return $this->response;
+	}
+
+	/**
 	 * Retrieve all the headers from a response.
 	 *
 	 * @return array
