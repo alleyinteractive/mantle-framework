@@ -202,6 +202,15 @@ class Http_Client {
 	}
 
 	/**
+	 * Retrieve the body for the request.
+	 *
+	 * @return mixed
+	 */
+	public function body() {
+		return $this->options[ $this->body_format ] ?? $this->pending_body;
+	}
+
+	/**
 	 * Pass raw options to the request (passed to `wp_remote_request()`).
 	 *
 	 * @param array $options Options for the request.
