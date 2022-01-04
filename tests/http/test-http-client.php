@@ -228,6 +228,7 @@ class Test_Http_Client extends Framework_Test_Case {
 	public function test_middleware_response() {
 		$this->fake_request( fn () => Mock_Http_Response::create()
 			->with_header( 'test-header', 'origin-value' )
+			->with_body( 'example-body' )
 		);
 
 		$response = $this->http_factory
@@ -247,5 +248,6 @@ class Test_Http_Client extends Framework_Test_Case {
 
 		$this->assertRequestSent( 'https://wordpress.org/middleware/' );
 		$this->assertEquals( 'modified-value', $response->header( 'test-header' ) );
+		$this->assertEquals( 'example-body', $response->body() );
 	}
 }
