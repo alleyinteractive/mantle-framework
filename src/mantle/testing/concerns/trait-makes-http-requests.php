@@ -328,10 +328,6 @@ trait Makes_Http_Requests {
 
 				$response_content = $this->rest_api_response;
 			} else {
-				// Restore the response header/status listeners.
-				$response_status  = null;
-				$response_headers = [];
-
 				try {
 					// Execute the request, inasmuch as WordPress would.
 					require ABSPATH . WPINC . '/template-loader.php';
