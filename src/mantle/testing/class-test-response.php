@@ -12,6 +12,7 @@ use DOMXPath;
 use Exception;
 use Mantle\Support\Arr;
 use Mantle\Support\Str;
+use Mantle\Support\Traits\Macroable;
 use PHPUnit\Framework\Assert as PHPUnit;
 
 use function Mantle\Framework\Helpers\data_get;
@@ -20,6 +21,7 @@ use function Mantle\Framework\Helpers\data_get;
  * Faux "Response" class for unit testing.
  */
 class Test_Response {
+	use Macroable;
 
 	/**
 	 * Response headers.
@@ -753,5 +755,57 @@ class Test_Response {
 		PHPUnit::assertTrue( false === $nodes || 0 === $nodes->length );
 
 		return $this;
+	}
+
+	/**
+	 * Dump the contents of the response to the screen.
+	 *
+	 * @return static
+	 */
+	public function dump() {
+		$content = $this->get_content();
+
+		$json = json_decode( $content );
+
+		if ( json_last_error() === JSON_ERROR_NONE ) {
+			$content = $json;
+		}
+
+		dump( $content );
+
+		return $this;
+	}
+
+	/**
+	 * Dump the headers of the response to the screen.
+	 *
+	 * @return static
+	 */
+	public function dump_headers() {
+		dump( $this->headers );
+
+		return $this;
+	}
+
+	/**
+	 * Dump the content from the response and end the script.
+	 *
+	 * @return void
+	 */
+	public function dd() {
+		$this->dump();
+
+		exit( 1 );
+	}
+
+	/**
+	 * Dump the headers from the response and end the script.
+	 *
+	 * @return void
+	 */
+	public function dd_headers() {
+		$this->dump_headers();
+
+		exit( 1 );
 	}
 }
