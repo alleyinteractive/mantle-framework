@@ -585,6 +585,8 @@ class Http_Client {
 		$this->options['throw_exception'] = $this->options['throw_exception'] ?? false;
 		$this->options['retry']           = max( 1, $this->options['retry'] ?? 1 );
 
+		$this->prepare_request_url();
+
 		return retry(
 			$this->options['retry'],
 			function( int $attempts ) {
@@ -592,16 +594,12 @@ class Http_Client {
 					->send( $this )
 					->through( $this->middleware )
 					->then(
-						function() {
-							$this->prepare_request_url();
-
-							return new Response(
-								wp_remote_request(
-									$this->url,
-									$this->get_request_args( $this->method ),
-								),
-							);
-						}
+						fn () => new Response(
+							wp_remote_request(
+								$this->url,
+								$this->get_request_args(),
+							),
+						),
 					);
 
 				// Throw the exception if the request is being retried (so it can be
@@ -658,10 +656,9 @@ class Http_Client {
 	/**
 	 * Prepare the request arguments to pass to `wp_remote_request()`.
 	 *
-	 * @param string $method Request method.
 	 * @return array
 	 */
-	protected function get_request_args( string $method ): array {
+	public function get_request_args(): array {
 		if ( isset( $this->options[ $this->body_format ] ) ) {
 			if ( 'multipart' === $this->body_format ) {
 					$this->options[ $this->body_format ] = $this->parse_multipart_body_format( $this->options[ $this->body_format ] );
@@ -689,7 +686,7 @@ class Http_Client {
 		$args = [
 			'cookies'     => $this->options['cookies'] ?? [],
 			'headers'     => $this->options['headers'] ?? [],
-			'method'      => $method,
+			'method'      => $this->method,
 			'redirection' => $this->options['allow_redirects'],
 			'sslverify'   => $this->options['verify'] ?? true,
 			'timeout'     => $this->options['timeout'] ?? 5,
