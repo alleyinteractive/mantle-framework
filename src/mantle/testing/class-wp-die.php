@@ -77,8 +77,8 @@ class WP_Die {
 	 * Dies without an exit.
 	 *
 	 * @param string|\WP_Error $message The message.
-	 * @param string $title   The title.
-	 * @param array  $args    Array with arguments.
+	 * @param string           $title   The title.
+	 * @param array            $args    Array with arguments.
 	 */
 	public static function txt_handler( $message, $title, $args ) {
 		// phpcs:disable WordPress.Security.EscapeOutput
