@@ -81,6 +81,8 @@ class WP_Die {
 	 * @param array  $args    Array with arguments.
 	 */
 	public static function txt_handler( $message, $title, $args ) {
+		[ $message, $title, $args ] = _wp_die_process_input( $message, $title, $args );
+
 		// phpcs:disable WordPress.Security.EscapeOutput
 		echo "\nwp_die called\n";
 		echo "Message : $message\n";
