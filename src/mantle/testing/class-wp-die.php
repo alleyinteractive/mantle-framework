@@ -76,14 +76,36 @@ class WP_Die {
 	/**
 	 * Dies without an exit.
 	 *
-	 * @param string $message The message.
+	 * @param string|\WP_Error $message The message.
 	 * @param string $title   The title.
 	 * @param array  $args    Array with arguments.
 	 */
 	public static function txt_handler( $message, $title, $args ) {
+		// phpcs:disable WordPress.Security.EscapeOutput
+
+		// Display fatal error information from wp_die().
+		if ( is_wp_error( $message ) && 'internal_server_error' === $message->get_error_code() ) {
+			$error = $message->get_error_data( 'internal_server_error' )['error'] ?? [];
+
+			if ( ! empty( $error ) ) {
+
+				echo "\nwp_die called\n";
+				echo "Internal server error: {$error['message']}\n\n";
+
+				if ( ! empty( $error['file'] ) ) {
+					echo "File: {$error['file']}\n";
+				}
+
+				if ( ! empty( $error['line'] ) ) {
+					echo "Line: {$error['line']}\n";
+				}
+
+				return;
+			}
+		}
+
 		[ $message, $title, $args ] = _wp_die_process_input( $message, $title, $args );
 
-		// phpcs:disable WordPress.Security.EscapeOutput
 		echo "\nwp_die called\n";
 		echo "Message : $message\n";
 		echo "Title : $title\n";
@@ -93,6 +115,7 @@ class WP_Die {
 				echo "\t $k : $v\n";
 			}
 		}
+
 		// phpcs:enable
 	}
 
