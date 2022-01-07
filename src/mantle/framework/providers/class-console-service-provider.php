@@ -31,7 +31,7 @@ class Console_Service_Provider extends Service_Provider {
 			return;
 		}
 
-		$path = MANTLE_FRAMEWORK_DIR . '/mantle/framework/console';
+		$path = dirname( __DIR__, 2 ) . '/framework/console';
 
 		if ( ! is_dir( $path ) ) {
 			return;
