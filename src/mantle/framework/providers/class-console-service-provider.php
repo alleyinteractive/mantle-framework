@@ -8,11 +8,12 @@
 namespace Mantle\Framework\Providers;
 
 use Mantle\Console\Command;
-use Mantle\Filesystem\Filesystem;
 use Mantle\Framework\Console\Test_Config_Install_Command;
 use Mantle\Support\Service_Provider;
+use Mantle\Support\Traits\Loads_Classes;
 use ReflectionClass;
-use Symfony\Component\Finder\Finder;
+
+use function Mantle\Framework\Helpers\collect;
 
 /**
  * Console Service Provider
@@ -20,6 +21,8 @@ use Symfony\Component\Finder\Finder;
  * Registers core commands for the framework.
  */
 class Console_Service_Provider extends Service_Provider {
+	use Loads_Classes;
+
 	/**
 	 * Register the commands from the framework.
 	 *
@@ -31,32 +34,15 @@ class Console_Service_Provider extends Service_Provider {
 			return;
 		}
 
-		$path = dirname( __DIR__, 2 ) . '/framework/console';
-
-		if ( ! is_dir( $path ) ) {
-			return;
-		}
-
-		$files = ( new Finder() )
-			->in( $path )
-			->files()
-			->name( 'class-*-command.php' );
-
-		$filesystem = new Filesystem();
-
-		foreach ( $files as $file ) {
-			$class = 'Mantle\\Framework\\Console'
-				. str_replace( [ $path, $file->getFilename(), '/' ], [ '', '', '\\' ], $file->getRealPath() )
-				. $filesystem->guess_class_name( $file->getRealPath() );
-
-			if (
-				class_exists( $class )
-				&& is_subclass_of( $class, Command::class )
-				&& ( new ReflectionClass( $class ) )->isInstantiable()
-			) {
-				$this->add_command( $class );
-			}
-		}
+		$this->add_command(
+			collect( $this->classes_from_path( dirname( __DIR__, 2 ) . '/framework/console', 'Mantle\Framework\Console' ) )
+				->filter(
+					fn ( string $class ) => class_exists( $class )
+					&& is_subclass_of( $class, Command::class )
+					&& ( new ReflectionClass( $class ) )->isInstantiable()
+				)
+				->all()
+		);
 
 		// Remove the test config command if the test config file exists.
 		if ( file_exists( Test_Config_Install_Command::get_test_config_path() ) ) {
