@@ -14,6 +14,7 @@ use Mantle\Http\Client\Http_Client;
  *
  * @method static \Mantle\Http\Client\Http_Client as_form()
  * @method static \Mantle\Http\Client\Http_Client as_json()
+ * @method static \Mantle\Http\Client\Http_Client attach( string|array $name, string|resource $contents = '', ?string $filename = null, array $headers = [] )
  * @method static \Mantle\Http\Client\Http_Client base_url( string $url )
  * @method static \Mantle\Http\Client\Http_Client with_body( string $content, string $content_type )
  * @method static \Mantle\Http\Client\Http_Client with_options( array $options )

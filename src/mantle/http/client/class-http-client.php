@@ -111,6 +111,38 @@ class Http_Client {
 	}
 
 	/**
+	 * Attach a file to the request.
+	 *
+	 * @param array|string    $name Field name or array of files.
+	 * @param string|resource $contents File contents.
+	 * @param string|null     $filename Filename, optional.
+	 * @param string[]        $headers Headers, optional.
+	 * @return static
+	 */
+	public function attach( $name, $contents = '', ?string $filename = null, array $headers = [] ) {
+		if ( is_array( $name ) ) {
+			foreach ( $name as $file ) {
+				$this->attach( ...$file );
+			}
+
+			return $this;
+		}
+
+		$this->as_multipart();
+
+		$this->pending_files[] = array_filter(
+			[
+				'contents' => $contents,
+				'filename' => $filename,
+				'headers'  => $headers,
+				'name'     => $name,
+			]
+		);
+
+		return $this;
+	}
+
+	/**
 	 * Set the base URL for the pending request.
 	 *
 	 * @param string $url Base URL.
