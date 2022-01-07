@@ -10,6 +10,7 @@ namespace Mantle\Support;
 use PhpOption\Option;
 use Dotenv\Repository\RepositoryBuilder;
 use Dotenv\Repository\RepositoryInterface;
+use PhpOption\Some;
 
 use function Mantle\Framework\Helpers\value;
 
@@ -56,7 +57,21 @@ class Environment {
 	 * @return mixed
 	 */
 	public static function get( string $key, $default = null ) {
-		return Option::fromValue( static::get_repository()->get( $key ) )
+		$value = Option::fromValue( static::get_repository()->get( $key ) );
+
+		// Fallback to the VIP environment variable if the key is not found.
+		if ( $value instanceof \PhpOption\None ) {
+			$constant     = strtoupper( $key );
+			$vip_constant = "VIP_ENV_VAR_{$key}";
+
+			if ( defined( $vip_constant ) ) {
+				$value = new Some( constant( $vip_constant ) );
+			} elseif ( defined( $constant ) ) {
+				$value = new Some( constant( $constant ) );
+			}
+		}
+
+		return $value
 			->map(
 				function ( $value ) {
 					switch ( strtolower( $value ) ) {
