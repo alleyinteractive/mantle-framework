@@ -3,7 +3,6 @@ namespace Mantle\Tests\Testing\Concerns;
 
 use Mantle\Http\Response;
 use Mantle\Framework\Providers\Routing_Service_Provider;
-use Mantle\Http\Request;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
 
@@ -32,7 +31,7 @@ class Test_Makes_Http_Requests extends Framework_Test_Case {
 
 	public function test_wordpress_404() {
 		$this
-			->get( '/not-found' )
+			->get( '/not-found/should-404/' )
 			->assertNotFound();
 	}
 
@@ -59,6 +58,23 @@ class Test_Makes_Http_Requests extends Framework_Test_Case {
 			->assertContent( 'yes' );
 
 		$this->assertTrue( $_SERVER['__route_run'] );
+	}
+
+	public function test_get_mantle_route_404() {
+		// Ensure routing is enabled.
+		$this->assertNotNull( $this->app->get_provider( Routing_Service_Provider::class ) );
+
+		// Register a route.
+		$this->app['router']->get(
+			'/test-route-404',
+			function() {
+				return response()->make( 'not-found', 404 );
+			}
+		);
+
+		$this->get( '/test-route-404' )
+			->assertNotFound()
+			->assertContent( 'not-found' );
 	}
 
 	public function test_post_mantle_route() {
@@ -104,29 +120,14 @@ class Test_Makes_Http_Requests extends Framework_Test_Case {
 			->assertStatus( 404 );
 	}
 
-	public function test_cookie_test() {
-		$_SERVER['__cookie_test'] = false;
-
-		$this->app['router']->get(
-			'/set-cookie',
-			function() {
-				$_SERVER['__cookie_test'] = request()->cookie( 'test-cookie', 'fallback-value' );
-
-				return 123;
-			}
-		);
-
-		$this
-			->with_cookie( 'test-cookie', 'test-value' )
-			->get( '/set-cookie' );
-
-		$this->assertEquals( 'test-value', $_SERVER['__cookie_test'] );
-	}
-
 	public function test_multiple_requests() {
-		$this->test_get_singular();
-		$this->test_get_mantle_route();
-		$this->test_post_mantle_route();
-		$this->test_rest_api_route();
+		// Re-run all test methods on this class in a single pass.
+		foreach ( get_class_methods( $this ) as $method ) {
+			if ( __FUNCTION__ === $method || 'test_' !== substr( $method, 0, 5 ) ) {
+				continue;
+			}
+
+			$this->$method();
+		}
 	}
 }
