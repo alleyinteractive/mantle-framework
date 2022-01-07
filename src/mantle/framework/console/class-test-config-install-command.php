@@ -19,7 +19,7 @@ class Test_Config_Install_Command extends Command {
 	 *
 	 * @var string
 	 */
-	protected $name = 'test-config:install';
+	protected $name = 'test-config';
 
 	/**
 	 * Command Short Description.
