@@ -26,6 +26,11 @@ class Console_Service_Provider extends Service_Provider {
 	 * @return void
 	 */
 	public function register() {
+		// Don't bother registering the commands if the request is not for the console.
+		if ( ! $this->app->is_running_in_console() ) {
+			return;
+		}
+
 		$path = MANTLE_FRAMEWORK_DIR . '/mantle/framework/console';
 
 		if ( ! is_dir( $path ) ) {
