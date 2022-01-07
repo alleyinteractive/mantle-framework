@@ -7,31 +7,12 @@
 
 namespace Mantle\Framework\Providers;
 
-use Mantle\Framework\Console\Clear_Cache_Command;
-use Mantle\Framework\Console\Config_Cache_Command;
-use Mantle\Framework\Console\Config_Clear_Command;
-use Mantle\Framework\Console\Event_Cache_Clear_Command;
-use Mantle\Framework\Console\Event_Cache_Command;
+use Mantle\Console\Command;
+use Mantle\Filesystem\Filesystem;
 use Mantle\Framework\Console\Test_Config_Install_Command;
-use Mantle\Framework\Console\Generators\Class_Make_Command;
-use Mantle\Framework\Console\Generators\Command_Make_Command;
-use Mantle\Framework\Console\Generators\Controller_Make_Command;
-use Mantle\Framework\Console\Generators\Factory_Make_Command;
-use Mantle\Framework\Console\Generators\Generator_Make_Command;
-use Mantle\Framework\Console\Generators\Job_Make_Command;
-use Mantle\Framework\Console\Generators\Listener_Make_Command;
-use Mantle\Framework\Console\Generators\Middleware_Make_Command;
-use Mantle\Framework\Console\Generators\Model_Make_Command;
-use Mantle\Framework\Console\Generators\Seeder_Make_Command;
-use Mantle\Framework\Console\Generators\Service_Provider_Make_Command;
-use Mantle\Framework\Console\Generators\Test_Make_Command;
-use Mantle\Framework\Console\Hook_Usage_Command;
-use Mantle\Framework\Console\Model_Discover_Command;
-use Mantle\Framework\Console\Package_Discover_Command;
-use Mantle\Framework\Console\Route_List_Command;
-use Mantle\Framework\Console\View_Cache_Command;
-use Mantle\Framework\Console\View_Clear_Command;
 use Mantle\Support\Service_Provider;
+use ReflectionClass;
+use Symfony\Component\Finder\Finder;
 
 /**
  * Console Service Provider
@@ -40,46 +21,44 @@ use Mantle\Support\Service_Provider;
  */
 class Console_Service_Provider extends Service_Provider {
 	/**
-	 * Commands to register.
-	 *
-	 * @var array
-	 */
-	protected $commands_to_register = [
-		Class_Make_Command::class,
-		Clear_Cache_Command::class,
-		Command_Make_Command::class,
-		Config_Cache_Command::class,
-		Config_Clear_Command::class,
-		Controller_Make_Command::class,
-		Event_Cache_Clear_Command::class,
-		Event_Cache_Command::class,
-		Factory_Make_Command::class,
-		Generator_Make_Command::class,
-		Hook_Usage_Command::class,
-		Job_Make_Command::class,
-		Listener_Make_Command::class,
-		Middleware_Make_Command::class,
-		Model_Discover_Command::class,
-		Model_Make_Command::class,
-		Package_Discover_Command::class,
-		Route_List_Command::class,
-		Seeder_Make_Command::class,
-		Service_Provider_Make_Command::class,
-		Test_Make_Command::class,
-		View_Cache_Command::class,
-		View_Clear_Command::class,
-	];
-
-	/**
-	 * Register the commands.
+	 * Register the commands from the framework.
 	 *
 	 * @return void
 	 */
 	public function register() {
-		array_map( [ $this, 'add_command' ], $this->commands_to_register );
+		$path = MANTLE_FRAMEWORK_DIR . '/mantle/framework/console';
 
-		if ( ! file_exists( Test_Config_Install_Command::get_test_config_path() ) ) {
-			$this->add_command( Test_Config_Install_Command::class );
+		if ( ! is_dir( $path ) ) {
+			return;
+		}
+
+		$files = ( new Finder() )
+			->in( $path )
+			->files()
+			->name( 'class-*-command.php' );
+
+		$filesystem = new Filesystem();
+
+		foreach ( $files as $file ) {
+			$class = 'Mantle\\Framework\\Console'
+				. str_replace( [ $path, $file->getFilename(), '/' ], [ '', '', '\\' ], $file->getRealPath() )
+				. $filesystem->guess_class_name( $file->getRealPath() );
+
+			if (
+				class_exists( $class )
+				&& is_subclass_of( $class, Command::class )
+				&& ( new ReflectionClass( $class ) )->isInstantiable()
+			) {
+				$this->add_command( $class );
+			}
+		}
+
+		// Remove the test config command if the test config file exists.
+		if ( file_exists( Test_Config_Install_Command::get_test_config_path() ) ) {
+			$this->commands = array_filter(
+				$this->commands,
+				fn ( Command $command ) => ! ( $command instanceof Test_Config_Install_Command ),
+			);
 		}
 	}
 }

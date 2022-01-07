@@ -7,6 +7,9 @@
 
 namespace Mantle;
 
+// Define the root of the framework directory.
+defined( 'MANTLE_FRAMEWORK_DIR' ) || define( 'MANTLE_FRAMEWORK_DIR', __DIR__ );
+
 /**
  * Generate an autoloader for the WordPress file naming conventions.
  *
