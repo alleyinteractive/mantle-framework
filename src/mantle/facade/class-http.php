@@ -18,7 +18,6 @@ use Mantle\Http\Client\Http_Client;
  * @method static \Mantle\Http\Client\Http_Client base_url( string $url )
  * @method static \Mantle\Http\Client\Http_Client with_body( string $content, string $content_type )
  * @method static \Mantle\Http\Client\Http_Client with_options( array $options )
- * @method static \Mantle\Http\Client\Http_Client as_multipart()
  * @method static \Mantle\Http\Client\Http_Client body_format( string $format)
  * @method static \Mantle\Http\Client\Http_Client content_type( string $content_type )
  * @method static \Mantle\Http\Client\Http_Client accept_json()

@@ -111,38 +111,6 @@ class Http_Client {
 	}
 
 	/**
-	 * Attach a file to the request.
-	 *
-	 * @param array|string    $name Field name or array of files.
-	 * @param string|resource $contents File contents.
-	 * @param string|null     $filename Filename, optional.
-	 * @param string[]        $headers Headers, optional.
-	 * @return static
-	 */
-	public function attach( $name, $contents = '', ?string $filename = null, array $headers = [] ) {
-		if ( is_array( $name ) ) {
-			foreach ( $name as $file ) {
-				$this->attach( ...$file );
-			}
-
-			return $this;
-		}
-
-		$this->as_multipart();
-
-		$this->pending_files[] = array_filter(
-			[
-				'contents' => $contents,
-				'filename' => $filename,
-				'headers'  => $headers,
-				'name'     => $name,
-			]
-		);
-
-		return $this;
-	}
-
-	/**
 	 * Set the base URL for the pending request.
 	 *
 	 * @param string $url Base URL.
@@ -221,15 +189,6 @@ class Http_Client {
 	public function with_options( array $options ) {
 		$this->options['options'] = $options;
 		return $this;
-	}
-
-	/**
-	 * Indicate the request is a multi-part form request.
-	 *
-	 * @return static
-	 */
-	public function as_multipart() {
-		return $this->body_format( 'multipart' );
 	}
 
 	/**
@@ -623,23 +582,6 @@ class Http_Client {
 	}
 
 	/**
-	 * Parse multi-part form data.
-	 *
-	 * @param  array $data
-	 * @return array|array[]
-	 */
-	protected function parse_multipart_body_format( array $data ) {
-		return collect( $data )->map(
-			function ( $value, $key ) {
-				return is_array( $value ) ? $value : [
-					'name'     => $key,
-					'contents' => $value,
-				];
-			}
-		)->values()->all();
-	}
-
-	/**
 	 * Prepare the request URL.
 	 *
 	 * @return void
@@ -662,10 +604,8 @@ class Http_Client {
 	 */
 	public function get_request_args(): array {
 		if ( isset( $this->options[ $this->body_format ] ) ) {
-			if ( 'multipart' === $this->body_format ) {
-					$this->options[ $this->body_format ] = $this->parse_multipart_body_format( $this->options[ $this->body_format ] );
-			} elseif ( 'body' === $this->body_format ) {
-					$this->options[ $this->body_format ] = $this->pending_body;
+			if ( 'body' === $this->body_format ) {
+				$this->options[ $this->body_format ] = $this->pending_body;
 			}
 
 			if ( is_array( $this->options[ $this->body_format ] ) ) {
