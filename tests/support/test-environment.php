@@ -18,4 +18,16 @@ class Test_Environment extends Framework_Test_Case {
 		$this->assertEquals( 'fallback', Environment::get( 'UNKNOWN_VARIABLE', 'fallback' ) );
 		$this->assertEquals( 'closure-fallback', Environment::get( 'ANOTHER_UNKNOWN_VARIABLE', function() { return 'closure-fallback'; } ) );
 	}
+
+	public function test_defined_constant() {
+		define( 'TEST_CONSTANT', 'test-var' );
+
+		$this->assertEquals( Environment::get( 'TEST_CONSTANT' ), 'test-var' );
+	}
+
+	public function test_vip_env_var() {
+		define( 'VIP_ENV_VAR_TEST_VIP_VAR', 'vip-var-value' );
+
+		$this->assertEquals( Environment::get( 'TEST_VIP_VAR' ), 'vip-var-value' );
+	}
 }
