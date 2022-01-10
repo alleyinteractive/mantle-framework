@@ -10,16 +10,16 @@ namespace Mantle\Console;
 use Mantle\Framework\Application;
 use Mantle\Contracts\Console\Kernel as Kernel_Contract;
 use Mantle\Contracts\Kernel as Core_Kernel_Contract;
-use Exception;
-use Mantle\Support\Str;
+use Mantle\Support\Traits\Loads_Classes;
 use ReflectionClass;
-use Symfony\Component\Finder\Finder;
 use Throwable;
 
 /**
  * Console Kernel
  */
 class Kernel implements Kernel_Contract, Core_Kernel_Contract {
+	use Loads_Classes;
+
 	/**
 	 * The application implementation.
 	 *
@@ -92,7 +92,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	public function commands(): void {}
 
 	/**
-	 * Register all the commands in a given directory.
+	 * Register all the commands in a set of directories.
 	 *
 	 * @param string ...$paths Paths to register.
 	 * @return void
@@ -100,37 +100,20 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	protected function load( ...$paths ) {
 		$namespace = $this->app->get_namespace();
 
-		collect( $paths )
+		$this->commands = collect( $paths )
 			->unique()
+			->filter( fn ( string $path ) => is_dir( $path ) )
+			->map( fn ( string $path ) => $this->classes_from_path( $path, $namespace . '\Console' ) )
+			->flatten()
 			->filter(
-				function( $path ) {
-					return is_dir( $path );
-				}
+				fn ( string $class ) => class_exists( $class )
+				&& is_subclass_of( $class, Command::class )
+				&& ( new ReflectionClass( $class ) )->isInstantiable()
 			)
-			->each(
-				function( string $path ) use ( $namespace ) {
-					$files = ( new Finder() )
-						->in( $path )
-						->files()
-						->name( 'class-*-command.php' );
-
-					foreach ( $files as $file ) {
-						$command = $namespace . str_replace(
-							[ '/', '.php', 'class_', '-', '\app' ],
-							[ '\\', '', '', '_', 'app' ],
-							Str::studly_underscore( Str::after( $file->getRealPath(), realpath( $this->app->get_app_path() ) ) )
-						);
-
-						if (
-							class_exists( $command )
-							&& is_subclass_of( $command, Command::class )
-							&& ! ( new ReflectionClass( $command ) )->isAbstract()
-						) {
-							$this->commands[] = $command;
-						}
-					}
-				}
-			);
+			->filter()
+			->merge( $this->commands )
+			->unique()
+			->all();
 	}
 
 	/**
