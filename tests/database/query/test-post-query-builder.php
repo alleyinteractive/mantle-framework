@@ -10,8 +10,6 @@ use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Utils;
 
-use function Mantle\Framework\Helpers\factory;
-
 class Test_Post_Query_Builder extends Framework_Test_Case {
 	use Refresh_Database;
 
@@ -247,7 +245,7 @@ class Test_Post_Query_Builder extends Framework_Test_Case {
 	public function test_query_with_multiple() {
 		Utils::delete_all_data();
 
-		$post_a = static::factory()->post->create( [ 'post_date' => Carbon::now()->subWeek()->toDateTimeString() ] );
+		$post_a = static::factory()->post->create( [ 'post_date' => Carbon::now()->subWeek()->subHour()->toDateTimeString() ] );
 		$post_b = static::factory()->post->create( [
 			'post_date' => Carbon::now()->subWeek()->toDateTimeString(),
 			'post_type' => Another_Testable_Post::get_object_name(),
@@ -265,6 +263,7 @@ class Test_Post_Query_Builder extends Framework_Test_Case {
 
 		$get = Post_Query_Builder::create( [ Testable_Post::class, Another_Testable_Post::class ] )
 			->whereMeta( 'shared-meta', 'meta-value' )
+			->orderBy( 'post_date', 'ASC' )
 			->get();
 
 		$this->assertEquals( 2, count( $get ) );
