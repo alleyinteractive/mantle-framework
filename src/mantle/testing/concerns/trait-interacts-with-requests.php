@@ -10,6 +10,8 @@
 namespace Mantle\Testing\Concerns;
 
 use Closure;
+use Mantle\Http\Client\Request;
+use Mantle\Http\Client\Response;
 use Mantle\Support\Collection;
 use Mantle\Support\Str;
 use Mantle\Testing\Mock_Http_Response;
@@ -31,16 +33,16 @@ trait Interacts_With_Requests {
 	/**
 	 * Storage of request URLs.
 	 *
-	 * @var array
+	 * @var Collection
 	 */
-	protected $requested_urls;
+	protected $recorded_requests;
 
 	/**
 	 * Setup the trait.
 	 */
 	public function interacts_with_requests_set_up() {
-		$this->stub_callbacks = collect();
-		$this->requested_urls = [];
+		$this->stub_callbacks    = collect();
+		$this->recorded_requests = collect();
 
 		\add_filter( 'pre_http_request', [ $this, 'pre_http_request' ], PHP_INT_MAX, 3 );
 	}
@@ -65,11 +67,7 @@ trait Interacts_With_Requests {
 	 *               not false otherwise.
 	 */
 	public function pre_http_request( $preempt, $request_args, $url ) {
-		if ( ! isset( $this->requested_urls[ $url ] ) ) {
-			$this->requested_urls[ $url ] = 1;
-		} else {
-			$this->requested_urls[ $url ]++;
-		}
+		$this->recorded_requests[] = new Request( $request_args, $url );
 
 		if ( ! $this->stub_callbacks->is_empty() ) {
 			foreach ( $this->stub_callbacks as $callback ) {
@@ -100,7 +98,7 @@ trait Interacts_With_Requests {
 	 * A response object could be passed with a matching URL to fake. Also supports passing
 	 * a closure that will be invoked when the HTTP request is made. The closure will be passed
 	 * the request URL and request arguments to determine if it wishes to make a response. For more
-	 * information on how this is used, see the `get_stub_request_callback()` method below and the
+	 * information on how this is used, see the `create_stub_request_callback()` method below and the
 	 * relevant test for the trait (Mantle\Tests\Testing\Concerns\Test_Interacts_With_Requests).
 	 *
 	 * @param string|array       $url URL to fake, array of URL and response pairs, or a closure
@@ -114,7 +112,7 @@ trait Interacts_With_Requests {
 				collect( $url )
 					->map(
 						function( $response, $url ) {
-							return $this->get_stub_request_callback( $url, $response );
+							return $this->create_stub_request_callback( $url, $response );
 						}
 					)
 			);
@@ -138,7 +136,7 @@ trait Interacts_With_Requests {
 			$url = '*';
 		}
 
-		$this->stub_callbacks->push( $this->get_stub_request_callback( $url, $response ) );
+		$this->stub_callbacks->push( $this->create_stub_request_callback( $url, $response ) );
 
 		return $response;
 	}
@@ -150,7 +148,7 @@ trait Interacts_With_Requests {
 	 * @param Mock_Http_Response $response Response to send.
 	 * @return Closure
 	 */
-	protected function get_stub_request_callback( string $url, Mock_Http_Response $response ): Closure {
+	protected function create_stub_request_callback( string $url, Mock_Http_Response $response ): Closure {
 		return function( string $request_url, array $request_args ) use ( $url, $response ) {
 			if ( ! Str::is( Str::start( $url, '*' ), $request_url ) ) {
 				return;
@@ -163,44 +161,86 @@ trait Interacts_With_Requests {
 	}
 
 	/**
-	 * Assert that a request was sent.
+	 * Get a collection of the request pairs matching the given truth test.
 	 *
-	 * @param string $url URL to check against.
-	 * @param int    $expected_times Number of times the request should have been sent, optional.
+	 * @param callable $callback Callback to invoke on each request.
+	 * @return Collection
 	 */
-	public function assertRequestSent( string $url, int $expected_times = null ) {
-		foreach ( $this->requested_urls as $request_url => $times ) {
-			if ( ! Str::is( $url, $request_url ) ) {
-				continue;
-			}
-
-			PHPUnit::assertTrue( true );
-
-			if ( $expected_times ) {
-				$this->assertEquals( $expected_times, $times );
-			}
-
-			return;
+	protected function recorded_requests( callable $callback ): Collection {
+		if ( empty( $this->recorded_requests ) ) {
+				return collect();
 		}
 
-		PHPUnit::assertTrue( false, 'The URL was not requested.' );
+		$callback = $callback ?: fn () => true;
+
+		return collect( $this->recorded_requests )->filter( fn ( Request $response ) => $callback( $response ) );
+	}
+
+	/**
+	 * Assert that a request was sent.
+	 *
+	 * @param string|callable $url_or_callback Specific URL to check against or a callback to
+	 *                                         check against specific request information.
+	 * @param int             $expected_times Number of times the request should have been
+	 *                                        sent, optional.
+	 */
+	public function assertRequestSent( $url_or_callback = null, int $expected_times = null ) {
+		if ( is_null( $url_or_callback ) ) {
+			return PHPUnit::assertTrue( $this->recorded_requests->is_not_empty(), 'A request was made.' );
+		}
+
+		if ( is_string( $url_or_callback ) ) {
+			$url_or_callback = fn ( $request ) => Str::is( $url_or_callback, $request->url() );
+		}
+
+		$requests = $this->recorded_requests( $url_or_callback )->count();
+
+		PHPUnit::assertTrue(
+			$requests > 0,
+			'An expected request was not recorded.',
+		);
+
+		if ( null !== $expected_times ) {
+			PHPUnit::assertEquals( $expected_times, $requests, 'Expected request count does not match.' );
+		}
 	}
 
 	/**
 	 * Assert that a request was not sent.
 	 *
-	 * @param string $url URL to check against.
+	 * @param string|callable $url_or_callback URL to check against or callback.
 	 */
-	public function assertRequestNotSent( string $url ) {
-		foreach ( $this->requested_urls as $request_url => $times ) {
-			if ( ! Str::is( $url, $request_url ) ) {
-				continue;
-			}
-
-			PHPUnit::assertTrue( false, 'The URL was requested.' );
-			return;
+	public function assertRequestNotSent( $url_or_callback = null ) {
+		if ( is_string( $url_or_callback ) ) {
+			$url_or_callback = fn ( $request ) => Str::is( $url_or_callback, $request->url() );
 		}
 
-		PHPUnit::assertTrue( true );
+		PHPUnit::assertEquals(
+			0,
+			$this->recorded_requests( $url_or_callback )->count(),
+			'Unexpected request was recorded.',
+		);
+	}
+
+	/**
+	 * Assert that no request was sent.
+	 *
+	 * @return void
+	 */
+	public function assertNoRequestSent() {
+		PHPUnit::assertEmpty(
+			$this->recorded_requests,
+			'Requests were recorded',
+		);
+	}
+
+	/**
+	 * Assert a specific request count was sent.
+	 *
+	 * @param int $count Request count.
+	 * @return void
+	 */
+	public function assertRequestCount( int $count ) {
+		PHPUnit::assertCount( $count, $this->recorded_requests );
 	}
 }
