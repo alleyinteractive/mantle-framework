@@ -302,8 +302,21 @@ class Http_Client {
 	 * @return static
 	 */
 	public function with_cookies( array $cookies ) {
-		$this->options['cookies'] = $cookies;
+		$this->options['cookies'] = array_merge_recursive(
+			$this->options['cookies'] ?? [],
+			$cookies,
+		);
 
+		return $this;
+	}
+
+	/**
+	 * Clear the cookies included with the request.
+	 *
+	 * @return static
+	 */
+	public function clear_cookies() {
+		$this->options['cookies'] = [];
 		return $this;
 	}
 
