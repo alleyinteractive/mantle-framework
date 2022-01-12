@@ -30,6 +30,7 @@ use Mantle\Http\Client\Http_Client;
  * @method static \Mantle\Http\Client\Http_Client with_user_agent( string $user_agent )
  * @method static \Mantle\Http\Client\Http_Client with_cookies( \WP_Http_Cookie[] $cookies )
  * @method static \Mantle\Http\Client\Http_Client with_cookie( \WP_Http_Cookie $cookie )
+ * @method static \Mantle\Http\Client\Http_Client clear_cookies()
  * @method static \Mantle\Http\Client\Http_Client without_redirecting()
  * @method static \Mantle\Http\Client\Http_Client with_redirecting( int $times = 5 )
  * @method static \Mantle\Http\Client\Http_Client without_verifying()

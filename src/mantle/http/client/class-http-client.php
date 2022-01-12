@@ -10,7 +10,6 @@ namespace Mantle\Http\Client;
 use Mantle\Support\Pipeline;
 
 use function Mantle\Framework\Helpers\retry;
-use function Mantle\Framework\Helpers\tap;
 
 /**
  * Http Request Client
@@ -296,6 +295,16 @@ class Http_Client {
 	}
 
 	/**
+	 * Clear the cookies included with the request.
+	 *
+	 * @return static
+	 */
+	public function clear_cookies() {
+		$this->options['cookies'] = [];
+		return $this;
+	}
+
+	/**
 	 * Specify the cookies that should be included with the request.
 	 *
 	 * @param  \WP_Http_Cookie[] $cookies Cookies to pass.
@@ -307,16 +316,6 @@ class Http_Client {
 			$cookies,
 		);
 
-		return $this;
-	}
-
-	/**
-	 * Clear the cookies included with the request.
-	 *
-	 * @return static
-	 */
-	public function clear_cookies() {
-		$this->options['cookies'] = [];
 		return $this;
 	}
 
@@ -336,12 +335,8 @@ class Http_Client {
 	 * @return static
 	 */
 	public function without_redirecting() {
-		return tap(
-			$this,
-			function ( $request ) {
-				return $this->options['allow_redirects'] = false;
-			}
-		);
+		$this->options['allow_redirects'] = false;
+		return $this;
 	}
 
 	/**
@@ -351,12 +346,8 @@ class Http_Client {
 	 * @return static
 	 */
 	public function with_redirecting( int $times = 5 ) {
-		return tap(
-			$this,
-			function ( $request ) use ( $times ) {
-				return $this->options['allow_redirects'] = $times;
-			}
-		);
+		$this->options['allow_redirects'] = $times;
+		return $this;
 	}
 
 	/**
@@ -365,12 +356,8 @@ class Http_Client {
 	 * @return static
 	 */
 	public function without_verifying() {
-		return tap(
-			$this,
-			function ( $request ) {
-				return $this->options['verify'] = false;
-			}
-		);
+		$this->options['verify'] = false;
+		return $this;
 	}
 
 	/**
@@ -380,12 +367,8 @@ class Http_Client {
 	 * @return static
 	 */
 	public function timeout( int $seconds ) {
-		return tap(
-			$this,
-			function () use ( $seconds ) {
-				$this->options['timeout'] = $seconds;
-			}
-		);
+		$this->options['timeout'] = $seconds;
+		return $this;
 	}
 
 	/**
