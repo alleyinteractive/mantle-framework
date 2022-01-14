@@ -96,6 +96,14 @@ class Listener_Make_Command extends Generator_Command {
 			->addParameter( 'event' )
 			->setType( $event_class_namespaced );
 
+		$class
+			->addMethod( 'on_example_hook' )
+			->addComment( 'Handle the WordPress hook: example_hook.' )
+			->addComment( '' )
+			->addComment( '@return void' )
+			->setBody( '//' )
+			->setVisibility( 'public' );
+
 		return ( new Printer() )->printFile( $file );
 	}
 }
