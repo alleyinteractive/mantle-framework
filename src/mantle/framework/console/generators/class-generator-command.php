@@ -13,6 +13,7 @@ use Mantle\Framework\Providers\Provider_Exception;
 use Mantle\Support\String_Replacements;
 use Symfony\Component\String\Inflector\EnglishInflector;
 use Symfony\Component\String\Inflector\InflectorInterface;
+use Throwable;
 
 /**
  * Generator Command
@@ -103,8 +104,13 @@ abstract class Generator_Command extends Command {
 		}
 
 		// Store the generated class.
-		if ( false === file_put_contents( $file_path, $this->get_generated_class( $name ) ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents
-			$this->error( 'Error writing to ' . $file_path );
+		try {
+			if ( false === file_put_contents( $file_path, $this->get_generated_class( $name ) ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents
+				$this->error( 'Error writing to ' . $file_path );
+			}
+		} catch ( Throwable $e ) {
+			dump( $e );
+			$this->error( 'There was an error generating: ' . $e->getMessage(), true );
 		}
 
 		$this->log( ( $this->type ?: 'File' ) . ' created successfully: ' . $file_path );
