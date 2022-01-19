@@ -36,12 +36,12 @@ use Mantle\Http\Client\Http_Client;
  * @method static \Mantle\Http\Client\Http_Client without_verifying()
  * @method static \Mantle\Http\Client\Http_Client timeout( int $seconds )
  * @method static \Mantle\Http\Client\Http_Client retry( int $retry )
- * @method static \Mantle\Http\Client\Http_Client get( string $url, $query = null )
- * @method static \Mantle\Http\Client\Http_Client head( string $url, $query = null )
- * @method static \Mantle\Http\Client\Http_Client post( string $url, array $data = [] )
- * @method static \Mantle\Http\Client\Http_Client patch( string $url, $data = [] )
- * @method static \Mantle\Http\Client\Http_Client put( string $url, array $data = [] )
- * @method static \Mantle\Http\Client\Http_Client delete( string $url, array $data = [] )
+ * @method static \Mantle\Http\Client\Response get( string $url, $query = null )
+ * @method static \Mantle\Http\Client\Response head( string $url, $query = null )
+ * @method static \Mantle\Http\Client\Response post( string $url, array $data = [] )
+ * @method static \Mantle\Http\Client\Response patch( string $url, $data = [] )
+ * @method static \Mantle\Http\Client\Response put( string $url, array $data = [] )
+ * @method static \Mantle\Http\Client\Response delete( string $url, array $data = [] )
  */
 class Http extends Facade {
 	/**
