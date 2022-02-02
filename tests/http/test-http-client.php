@@ -264,4 +264,16 @@ class Test_Http_Client extends Framework_Test_Case {
 
 		$this->assertEquals( 'An error occurred.', $response->body() );
 	}
+
+	public function test_invalid_json() {
+		$this->fake_request( fn () => Mock_Http_Response::create()
+			->with_header( 'content-type', 'application/json' )
+			->with_body( 'text-body' )
+		);
+
+		$response = $this->http_factory->get( 'https://example.com/wp-error/' );
+
+		$this->assertEquals( 'text-body', $response->body() );
+		$this->assertNull( $response->json() );
+	}
 }
