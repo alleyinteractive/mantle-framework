@@ -8,8 +8,10 @@
 namespace Mantle\Http\Client;
 
 use ArrayAccess;
+use InvalidArgumentException;
 use LogicException;
 use Mantle\Support\Collection;
+use WP_Error;
 use WP_HTTP_Cookie;
 
 use function Mantle\Framework\Helpers\collect;
@@ -42,7 +44,45 @@ class Response implements ArrayAccess {
 		$this->response = $response;
 
 		// Format the headers to be lower-case.
-		$this->response['headers'] = array_change_key_case( $this->response['headers'] ?? [] );
+		$this->response['headers'] = array_change_key_case( (array) ( $this->response['headers'] ?? [] ) );
+	}
+
+	/**
+	 * Create a response object from a `wp_remote_request()` response.
+	 *
+	 * @throws InvalidArgumentException If the response is not an array or WP_Error.
+	 * @param array|WP_Error $response Raw response from `wp_remote_request()`.
+	 * @return static
+	 */
+	public static function create( $response ) {
+		if ( is_array( $response ) ) {
+			return new static( $response );
+		}
+
+		if ( $response instanceof WP_Error ) {
+			return static::create_from_wp_error( $response );
+		}
+
+		throw new InvalidArgumentException( 'Unknown response type.' );
+	}
+
+	/**
+	 * Create a response from a WP_Error object.
+	 *
+	 * @param WP_Error $error WP_Error object.
+	 * @return static
+	 */
+	protected static function create_from_wp_error( WP_Error $error ) {
+		return new static(
+			[
+				'body'        => $error->get_error_message(),
+				'headers'     => [],
+				'is_wp_error' => true,
+				'response'    => [
+					'code' => $error->get_error_code() ?: 500,
+				],
+			],
+		);
 	}
 
 	/**
@@ -102,6 +142,15 @@ class Response implements ArrayAccess {
 	}
 
 	/**
+	 * Determine if the response code was not found (404).
+	 *
+	 * @return bool
+	 */
+	public function not_found() {
+		return $this->status() === 404;
+	}
+
+	/**
 	 * Determine if the response was a redirect.
 	 *
 	 * @return bool
@@ -134,7 +183,7 @@ class Response implements ArrayAccess {
 	 * @return bool
 	 */
 	public function failed(): bool {
-			return $this->server_error() || $this->client_error();
+		return $this->server_error() || $this->client_error() || $this->is_wp_error();
 	}
 
 	/**
@@ -153,6 +202,15 @@ class Response implements ArrayAccess {
 	 */
 	public function server_error(): bool {
 		return $this->status() >= 500;
+	}
+
+	/**
+	 * Check if the error was an WP_Error.
+	 *
+	 * @return bool
+	 */
+	public function is_wp_error(): bool {
+		return ! empty( $this->response['is_wp_error'] );
 	}
 
 	/**
