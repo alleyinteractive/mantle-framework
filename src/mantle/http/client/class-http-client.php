@@ -551,7 +551,7 @@ class Http_Client {
 					->send( $this )
 					->through( $this->middleware )
 					->then(
-						fn () => new Response(
+						fn () => Response::create(
 							wp_remote_request(
 								$this->url,
 								$this->get_request_args(),

@@ -251,4 +251,17 @@ class Test_Http_Client extends Framework_Test_Case {
 		$this->assertEquals( 'modified-value', $response->header( 'test-header' ) );
 		$this->assertEquals( 'example-body', $response->body() );
 	}
+
+	public function test_wp_error_response() {
+		$error = new \WP_Error( 'http_request_failed', 'An error occurred.' );
+
+		$this->fake_request( fn () => $error );
+
+		$response = $this->http_factory->get( 'https://example.com/wp-error/' );
+
+		$this->assertTrue( $response->is_wp_error() );
+		$this->assertTrue( $response->failed() );
+
+		$this->assertEquals( 'An error occurred.', $response->body() );
+	}
 }
