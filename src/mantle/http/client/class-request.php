@@ -9,6 +9,8 @@ namespace Mantle\Http\Client;
 
 use Mantle\Support\Str;
 
+use function Mantle\Framework\Helpers\data_get;
+
 /**
  * Request Record
  *
@@ -143,6 +145,16 @@ class Request {
 	public function is_json(): bool {
 		return $this->has_header( 'Content-Type' )
 			&& Str::contains( $this->header( 'Content-Type' ), 'json' );
+	}
+
+	/**
+	 * Retrieve a specific value from the request.
+	 *
+	 * @param string $key Key to retrieve.
+	 * @return mixed
+	 */
+	public function get( string $key ) {
+		return data_get( $this->args, $key );
 	}
 
 	/**

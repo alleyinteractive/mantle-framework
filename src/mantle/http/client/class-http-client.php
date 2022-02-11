@@ -426,8 +426,8 @@ class Http_Client {
 	/**
 	 * Issue a GET request to the given URL.
 	 *
-	 * @param  string            $url
-	 * @param  array|string|null $query
+	 * @param  string            $url URL to retrieve.
+	 * @param  array|string|null $query Query parameters (assumed to be urlencoded).
 	 * @return Response
 	 */
 	public function get( string $url, $query = null ): Response {

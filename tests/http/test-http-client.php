@@ -276,4 +276,17 @@ class Test_Http_Client extends Framework_Test_Case {
 		$this->assertEquals( 'text-body', $response->body() );
 		$this->assertNull( $response->json() );
 	}
+
+	public function test_timeout() {
+		$this->fake_request();
+
+		$this->http_factory
+			->timeout( 9 )
+			->get( 'https://example.com/timeout/' );
+
+		$this->assertRequestSent(
+			fn ( Request $request ) => 'https://example.com/timeout/' === $request->url()
+				&& 9 === $request->get( 'timeout' )
+		);
+	}
 }
