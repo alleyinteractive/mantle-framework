@@ -54,14 +54,16 @@
             "src/mantle/testing/autoload.php",
             "src/mantle/framework/helpers.php",
             "src/mantle/framework/helpers/helpers.php"
-        ],
-        "wordpress": {
-          "Mantle\\": "src/mantle/"
-        }
+        ]
     },
-    "autoload-dev": {
-      "wordpress": {
-        "Mantle\\Tests\\": "tests/"
+    "extra": {
+      "wordpress-autoloader": {
+        "autoload": {
+          "Mantle\\": "src/mantle/"
+        },
+        "autoload-dev": {
+          "Mantle\\Tests\\": "tests/"
+        }
       }
     },
     "scripts": {
