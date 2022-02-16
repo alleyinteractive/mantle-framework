@@ -19,6 +19,11 @@ namespace Mantle;
  * @return \Closure Function for spl_autoload_register().
  */
 function generate_wp_autoloader( string $namespace, string $root_path ): callable {
+	trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
+		'Mantle\generate_wp_autoloader() is deprecated. Use alleyinteractive/wordpress-autoloader instead.',
+		E_USER_DEPRECATED,
+	);
+
 	return \Alley_Interactive\Autoloader\Autoloader::generate(
 		$namespace,
 		$root_path,
