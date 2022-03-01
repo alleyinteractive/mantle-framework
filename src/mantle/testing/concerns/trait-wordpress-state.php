@@ -167,7 +167,7 @@ trait WordPress_State {
 		global $wpdb;
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
-		return $wpdb->update(
+		$update = $wpdb->update(
 			$wpdb->posts,
 			[
 				'post_modified'     => $date,
@@ -184,5 +184,9 @@ trait WordPress_State {
 				'%d',
 			]
 		);
+
+		clean_post_cache( $post_id );
+
+		return $update;
 	}
 }
