@@ -29,6 +29,16 @@ class Mock_Http_Response implements Arrayable {
 	public $response = [];
 
 	/**
+	 * Http Sequences
+	 * Support for faking a series of fake responses in a specific order.
+	 *
+	 * @return Mock_Http_Sequence
+	 */
+	public static function sequence(): Mock_Http_Sequence {
+		return new Mock_Http_Sequence();
+	}
+
+	/**
 	 * Mock_Http_Response constructor.
 	 */
 	public function __construct() {
@@ -62,6 +72,20 @@ class Mock_Http_Response implements Arrayable {
 	 */
 	public function with_header( string $key, string $value ): Mock_Http_Response {
 		$this->response['headers'][ $key ] = $value;
+
+		return $this;
+	}
+
+	/**
+	 * Add an array of headers to the response.
+	 *
+	 * @param array<string, string> $headers Headers to append.
+	 * @return Mock_Http_Response
+	 */
+	public function with_headers( array $headers ): Mock_Http_Response {
+		foreach ( $headers as $key => $value ) {
+			$this->with_header( $key, $value );
+		}
 
 		return $this;
 	}

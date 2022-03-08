@@ -101,18 +101,20 @@ trait Interacts_With_Requests {
 	 * information on how this is used, see the `create_stub_request_callback()` method below and the
 	 * relevant test for the trait (Mantle\Tests\Testing\Concerns\Test_Interacts_With_Requests).
 	 *
-	 * @param string|array       $url URL to fake, array of URL and response pairs, or a closure
-	 *                                that will return a faked response.
-	 * @param Mock_Http_Response $response Optional response object, defaults to creating a 200 response.
+	 * @throws \InvalidArgumentException Thrown on invalid argument.
+	 *
+	 * @param Closure|string|array $url_or_callback URL to fake, array of URL and response pairs, or a closure
+	 *                                  that will return a faked response.
+	 * @param Mock_Http_Response   $response Optional response object, defaults to creating a 200 response.
 	 * @return static|Mock_Http_Response
 	 */
-	public function fake_request( $url = null, Mock_Http_Response $response = null ) {
-		if ( is_array( $url ) ) {
+	public function fake_request( $url_or_callback = null, Mock_Http_Response $response = null ) {
+		if ( is_array( $url_or_callback ) ) {
 			$this->stub_callbacks = $this->stub_callbacks->merge(
-				collect( $url )
+				collect( $url_or_callback )
 					->map(
-						function( $response, $url ) {
-							return $this->create_stub_request_callback( $url, $response );
+						function( $response, $url_or_callback ) {
+							return $this->create_stub_request_callback( $url_or_callback, $response );
 						}
 					)
 			);
@@ -121,19 +123,27 @@ trait Interacts_With_Requests {
 		}
 
 		// Allow a callback to be passed instead.
-		if ( $url instanceof Closure ) {
-			$this->stub_callbacks->push( $url );
+		if ( is_callable( $url_or_callback ) ) {
+			$this->stub_callbacks->push( $url_or_callback );
 			return $this;
 		}
+
+		// Throw an exception on an unknown argument.
+		if ( ! is_string( $url_or_callback ) && ! is_null( $url_or_callback ) ) {
+			throw new \InvalidArgumentException(
+				sprintf(
+					'Expected a URL string or a callback, got %s.',
+					gettype( $url_or_callback )
+				)
+			);
+		}
+
+		// Renaming for clarity.
+		$url = $url_or_callback ?? '*';
 
 		// If no arguments passed, assume that all requests should return an 200 response.
 		if ( is_null( $response ) ) {
 			$response = new Mock_Http_Response();
-		}
-
-		// If no URL was passed assume that it should match all requests.
-		if ( is_null( $url ) ) {
-			$url = '*';
 		}
 
 		$this->stub_callbacks->push( $this->create_stub_request_callback( $url, $response ) );

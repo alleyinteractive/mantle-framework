@@ -13,7 +13,6 @@ use Mantle\Http\Client\Http_Client;
 use Mantle\Http\Client\Http_Client_Exception;
 use Mantle\Http\Client\Request;
 use Mantle\Http\Client\Response;
-use Mantle\Support\Str;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Mock_Http_Response;
 
