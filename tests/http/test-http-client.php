@@ -13,10 +13,8 @@ use Mantle\Http\Client\Http_Client;
 use Mantle\Http\Client\Http_Client_Exception;
 use Mantle\Http\Client\Request;
 use Mantle\Http\Client\Response;
-use Mantle\Support\Str;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Mock_Http_Response;
-use RuntimeException;
 
 class Test_Http_Client extends Framework_Test_Case {
 	/**
@@ -289,49 +287,5 @@ class Test_Http_Client extends Framework_Test_Case {
 			fn ( Request $request ) => 'https://example.com/timeout/' === $request->url()
 				&& 9 === $request->get( 'timeout' )
 		);
-	}
-
-	public function test_sequence() {
-		$this->fake_request(
-			Mock_Http_Response::sequence()
-				->push_status( 200 )
-				->push_status( 400 )
-				->push_status( 500 )
-		);
-
-		$this->assertEquals( 200, $this->http_factory->get( 'https://example.com/sequence/' )->status() );
-		$this->assertEquals( 400, $this->http_factory->get( 'https://example.com/sequence/' )->status() );
-		$this->assertEquals( 500, $this->http_factory->get( 'https://example.com/sequence/' )->status() );
-	}
-
-	public function test_sequence_exception_empty() {
-		$this->expectException( RuntimeException::class );
-		$this->expectExceptionMessage( 'No more responses in sequence.' );
-
-		$this->fake_request(
-			Mock_Http_Response::sequence()
-				->push_status( 200 )
-				->push_status( 400 )
-		);
-
-		$this->assertEquals( 200, $this->http_factory->get( 'https://example.com/sequence/' )->status() );
-		$this->assertEquals( 400, $this->http_factory->get( 'https://example.com/sequence/' )->status() );
-		$this->assertEquals( 500, $this->http_factory->get( 'https://example.com/sequence/' )->status() );
-	}
-
-	public function test_sequence_fallback_empty() {
-		$this->fake_request(
-			Mock_Http_Response::sequence()
-				->push_status( 200 )
-				->push_status( 400 )
-				->when_empty( Mock_Http_Response::create()->with_status( 202 ) )
-		);
-
-		$this->assertEquals( 200, $this->http_factory->get( 'https://example.com/sequence/' )->status() );
-		$this->assertEquals( 400, $this->http_factory->get( 'https://example.com/sequence/' )->status() );
-
-		// These two should use the fallback response.
-		$this->assertEquals( 202, $this->http_factory->get( 'https://example.com/sequence/' )->status() );
-		$this->assertEquals( 202, $this->http_factory->get( 'https://example.com/sequence/' )->status() );
 	}
 }

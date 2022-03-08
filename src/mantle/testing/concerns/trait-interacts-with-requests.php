@@ -139,16 +139,11 @@ trait Interacts_With_Requests {
 		}
 
 		// Renaming for clarity.
-		$url = $url_or_callback;
+		$url = $url_or_callback ?? '*';
 
 		// If no arguments passed, assume that all requests should return an 200 response.
 		if ( is_null( $response ) ) {
 			$response = new Mock_Http_Response();
-		}
-
-		// If no URL was passed assume that it should match all requests.
-		if ( is_null( $url ) ) {
-			$url = '*';
 		}
 
 		$this->stub_callbacks->push( $this->create_stub_request_callback( $url, $response ) );

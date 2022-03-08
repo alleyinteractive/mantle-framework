@@ -34,6 +34,15 @@ class Mock_Http_Sequence {
 	protected ?Mock_Http_Response $empty_response = null;
 
 	/**
+	 * Create a Mock_Http_Sequence instance.
+	 *
+	 * @return static
+	 */
+	public static function create() {
+		return new static();
+	}
+
+	/**
 	 * Push a specific response to the sequence
 	 *
 	 * @param Mock_Http_Response $response Response to push.
