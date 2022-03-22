@@ -11,6 +11,7 @@ use ArrayAccess;
 use InvalidArgumentException;
 use LogicException;
 use Mantle\Support\Collection;
+use SimpleXMLElement;
 use WP_Error;
 use WP_HTTP_Cookie;
 
@@ -239,6 +240,28 @@ class Response implements ArrayAccess {
 		}
 
 		return data_get( $this->decoded, $key, $default );
+	}
+
+	/**
+	 * Get the XML body of the response.
+	 *
+	 * @param string $xpath Path to pass to `SimpleXMLElement::xpath()`, optional.
+	 * @param string $default Default value to return if the path does not exist.
+	 * @return SimpleXMLElement Returns a specific SimpleXMLElement if path is specified, otherwise the entire document.
+	 */
+	public function xml( string $xpath = null, $default = null ) {
+		$previous = libxml_use_internal_errors( true );
+
+		$doc = new SimpleXMLElement( $this->body() );
+
+		// Restore the former error level.
+		libxml_use_internal_errors( $previous );
+
+		if ( ! $xpath ) {
+			return $doc;
+		}
+
+		return $doc->xpath( $xpath ) ?: $default;
 	}
 
 	/**

@@ -288,4 +288,37 @@ class Test_Http_Client extends Framework_Test_Case {
 				&& 9 === $request->get( 'timeout' )
 		);
 	}
+
+	public function test_xml_response() {
+		$this->fake_request( fn () => Mock_Http_Response::create()
+			->with_header( 'content-type', 'application/xml' )
+			->with_body(
+				<<<EOF
+<?xml version="1.0"?>
+	<slideshow
+		title="Sample Slide Show"
+		date="Date of publication"
+		author="Yours Truly"
+	>
+		<slide type="all">
+			<title>First Slide Title</title>
+			<point>Very interesting!</point>
+		</slide>
+
+		<slide type="specific">
+			<title>Second Slide Title</title>
+			<point>Another point!</point>
+		</slide>
+</slideshow>
+EOF
+			)
+		);
+
+		$response = $this->http_factory->get( 'https://example.com/xml/' );
+
+		$this->assertEquals( 'First Slide Title', $response->xml()->slide[0]->title );
+		$this->assertEquals( 'Second Slide Title', $response->xml()->slide[1]->title );
+
+		$this->assertEquals( 'Another point!', $response->xml( '/slideshow/slide[@type="specific"]/point' )[0] ?? '' );
+	}
 }
