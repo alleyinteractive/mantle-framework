@@ -37,6 +37,13 @@ class Response implements ArrayAccess {
 	protected ?array $decoded;
 
 	/**
+	 * The decoded XML Element response.
+	 *
+	 * @var SimpleXMLElement|null
+	 */
+	protected ?SimpleXMLElement $element;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param array $response Raw response from `wp_remote_request()`.
@@ -215,7 +222,33 @@ class Response implements ArrayAccess {
 	}
 
 	/**
-	 * Get the body of the response.
+	 * Check if the response is JSON.
+	 *
+	 * @return bool
+	 */
+	public function is_json(): bool {
+		if ( false !== strpos( $this->header( 'content-type' ), 'application/json' ) ) {
+			return true;
+		}
+
+		return ! empty( $this->json() );
+	}
+
+	/**
+	 * Check if the response is XML.
+	 *
+	 * @return bool
+	 */
+	public function is_xml(): bool {
+		if ( false !== strpos( $this->header( 'content-type' ), 'application/xml' ) ) {
+			return true;
+		}
+
+		return 0 === strpos( trim( $this->body() ), '<?xml' );
+	}
+
+	/**
+	 * Get the raw body of the response.
 	 *
 	 * @return string
 	 */
@@ -250,18 +283,20 @@ class Response implements ArrayAccess {
 	 * @return SimpleXMLElement Returns a specific SimpleXMLElement if path is specified, otherwise the entire document.
 	 */
 	public function xml( string $xpath = null, $default = null ) {
-		$previous = libxml_use_internal_errors( true );
+		if ( ! isset( $this->element ) ) {
+			$previous = libxml_use_internal_errors( true );
 
-		$doc = new SimpleXMLElement( $this->body() );
+			$this->element = new SimpleXMLElement( $this->body() );
 
-		// Restore the former error level.
-		libxml_use_internal_errors( $previous );
-
-		if ( ! $xpath ) {
-			return $doc;
+			// Restore the former error level.
+			libxml_use_internal_errors( $previous );
 		}
 
-		return $doc->xpath( $xpath ) ?: $default;
+		if ( ! $xpath ) {
+			return $this->element;
+		}
+
+		return $this->element->xpath( $xpath ) ?: $default;
 	}
 
 	/**
@@ -331,6 +366,10 @@ class Response implements ArrayAccess {
 	 * @return bool
 	 */
 	public function offsetExists( $offset ): bool {
+		if ( $this->is_xml() ) {
+			return isset( $this->xml()[ $offset ] );
+		}
+
 		return isset( $this->json()[ $offset ] );
 	}
 
@@ -341,6 +380,10 @@ class Response implements ArrayAccess {
 	 * @return mixed
 	 */
 	public function offsetGet( $offset ) {
+		if ( $this->is_xml() ) {
+			return $this->xml()->{ $offset };
+		}
+
 		return $this->json()[ $offset ];
 	}
 
@@ -353,7 +396,7 @@ class Response implements ArrayAccess {
 	 * @param mixed $value Value.
 	 * @return void
 	 */
-	public function offsetSet( $offset, $value ) {
+	public function offsetSet( $offset, $value ): void {
 		throw new LogicException( 'Response values are read-only.' );
 	}
 
@@ -364,7 +407,7 @@ class Response implements ArrayAccess {
 	 * @param mixed $offset Offset.
 	 * @return void
 	 */
-	public function offsetUnset( $offset ) {
+	public function offsetUnset( $offset ): void {
 		throw new LogicException( 'Response values are read-only.' );
 	}
 }
