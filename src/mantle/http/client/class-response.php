@@ -235,7 +235,8 @@ class Response implements ArrayAccess {
 	}
 
 	/**
-	 * Check if the response is XML.
+	 * Check if the response is XML. Does not validate if the response is a valid
+	 * XML document.
 	 *
 	 * @return bool
 	 */
@@ -244,7 +245,7 @@ class Response implements ArrayAccess {
 			return true;
 		}
 
-		return 0 === strpos( trim( $this->body() ), '<?xml' );
+		return 0 === strpos( trim( strtolower( $this->body() ) ), '<?xml' );
 	}
 
 	/**
