@@ -40,10 +40,14 @@ class Test_Http_Client extends Framework_Test_Case {
 		] );
 
 		$this->assertTrue( $response->ok() );
+		$this->assertTrue( $response->is_json() );
+		$this->assertFalse( $response->is_xml() );
+
 		$this->assertEquals( 'Example-Value', $response->headers()['example-header'] );
 		$this->assertEquals( 'Example-Value', $response->header('example-header') );
 		$this->assertEquals( [ 'example' => 'value' ], $response->json() );
 		$this->assertEquals( 'value', $response->json( 'example' ) );
+		$this->assertEquals( 'value', $response['example'] );
 	}
 
 	public function test_make_get_request() {
@@ -287,5 +291,42 @@ class Test_Http_Client extends Framework_Test_Case {
 			fn ( Request $request ) => 'https://example.com/timeout/' === $request->url()
 				&& 9 === $request->get( 'timeout' )
 		);
+	}
+
+	public function test_xml_response() {
+		$this->fake_request( fn () => Mock_Http_Response::create()
+			->with_header( 'content-type', 'application/xml' )
+			->with_body(
+				<<<EOF
+<?xml version="1.0"?>
+	<slideshow
+		title="Sample Slide Show"
+		date="Date of publication"
+		author="Yours Truly"
+	>
+		<slide type="all">
+			<title>First Slide Title</title>
+			<point>Very interesting!</point>
+		</slide>
+
+		<slide type="specific">
+			<title>Second Slide Title</title>
+			<point>Another point!</point>
+		</slide>
+</slideshow>
+EOF
+			)
+		);
+
+		$response = $this->http_factory->get( 'https://example.com/xml/' );
+
+		$this->assertTrue( $response->is_xml() );
+		$this->assertFalse( $response->is_json() );
+
+		$this->assertEquals( 'First Slide Title', $response->xml()->slide[0]->title );
+		$this->assertEquals( 'First Slide Title', $response['slide']->title );
+		$this->assertEquals( 'Second Slide Title', $response->xml()->slide[1]->title );
+
+		$this->assertEquals( 'Another point!', $response->xml( '/slideshow/slide[@type="specific"]/point' )[0] ?? '' );
 	}
 }

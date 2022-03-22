@@ -166,6 +166,20 @@ class Mock_Http_Response implements Arrayable {
 	}
 
 	/**
+	 * Set the XML body for the response.
+	 *
+	 * Also sets the proper application/xml Content-Type header.
+	 *
+	 * @param string $payload JSON Payload to use.
+	 * @return Mock_Http_Response This object.
+	 */
+	public function with_xml( string $payload ): Mock_Http_Response {
+		return $this
+			->with_body( $payload )
+			->with_header( 'Content-Type', 'application/xml' );
+	}
+
+	/**
 	 * Set the response as a 301 redirect
 	 *
 	 * @param string $url Redirect URL.
