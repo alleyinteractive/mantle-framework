@@ -632,10 +632,16 @@ class Http_Client {
 
 		switch ( $this->body_format ) {
 			case 'json':
-				$args['body'] = wp_json_encode( $this->options[ $this->body_format ] );
+				if ( isset( $this->options[ $this->body_format ] ) ) {
+					$args['body'] = wp_json_encode( $this->options[ $this->body_format ] );
+				}
+
 				break;
 			default:
-				$args['body'] = $this->options[ $this->body_format ];
+				if ( isset( $this->options[ $this->body_format ] ) ) {
+					$args['body'] = $this->options[ $this->body_format ];
+				}
+
 				break;
 		}
 

@@ -10,7 +10,13 @@ namespace Mantle\Facade;
 /**
  * Route Facade
  *
- * @mixin \Mantle\Http\Routing\Router
+ * @method static public get( string $uri, $action = '' )
+ * @method static public post( string $uri, $action = '' )
+ * @method static public put( string $uri, $action = '' )
+ * @method static public delete( string $uri, $action = '' )
+ * @method static public patch( string $uri, $action = '' )
+ * @method static public options( string $uri, $action = '' )
+ * @method static protected prefix( string $uri )
  */
 class Route extends Facade {
 	/**
