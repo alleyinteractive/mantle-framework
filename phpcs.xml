@@ -11,8 +11,6 @@
 
 	<rule ref="Generic.Arrays.DisallowLongArraySyntax" />
 
-	<arg name="cache" value=".phpcs/cache.json" />
-
 	<rule ref="WordPress">
 		<exclude name="WordPress.NamingConventions.ValidPostTypeSlug.NotStringLiteral" />
 		<exclude name="WordPress.PHP.DisallowShortTernary.Found" />
