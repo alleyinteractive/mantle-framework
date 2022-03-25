@@ -17,8 +17,8 @@ use Mantle\Support\Collection;
 use Mantle\Support\Forward_Calls;
 use Mantle\Support\Str;
 
-use function Mantle\Framework\Helpers\class_basename;
-use function Mantle\Framework\Helpers\class_uses_recursive;
+use function Mantle\Support\Helpers\class_basename;
+use function Mantle\Support\Helpers\class_uses_recursive;
 
 /**
  * Database Model

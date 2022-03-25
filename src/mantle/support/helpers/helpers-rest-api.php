@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Helpers;
+namespace Mantle\Support\Helpers;
 
 /**
  * Eases writing and reading schema with defaults and requirements.

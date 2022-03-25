@@ -17,7 +17,7 @@ use Mantle\View\Engines\Php_Engine;
 use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\View\Engines\CompilerEngine;
 
-use function Mantle\Framework\Helpers\tap;
+use function Mantle\Support\Helpers\tap;
 
 /**
  * View Service Provider

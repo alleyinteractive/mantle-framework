@@ -16,7 +16,7 @@ use Mantle\Support\Str;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
-use function Mantle\Framework\Helpers\data_get;
+use function Mantle\Support\Helpers\data_get;
 
 /**
  * Request Object

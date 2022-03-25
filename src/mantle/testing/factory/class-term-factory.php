@@ -10,7 +10,7 @@ namespace Mantle\Testing\Factory;
 use Faker\Generator;
 use Mantle\Database\Model\Term;
 
-use function Mantle\Framework\Helpers\get_term_object;
+use function Mantle\Support\Helpers\get_term_object;
 
 /**
  * Term Factory

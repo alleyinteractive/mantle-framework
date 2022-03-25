@@ -13,7 +13,7 @@ use Mantle\Config\Repository;
 use Mantle\Contracts\Config\Repository as Repository_Contract;
 use Mantle\Support\Arr;
 use Symfony\Component\Finder\Finder;
-use Mantle\Framework\Helpers;
+use Mantle\Support\Helpers;
 
 /**
  * Load the Application's Configuration

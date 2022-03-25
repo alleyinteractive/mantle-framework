@@ -14,7 +14,7 @@ use Mantle\Http\Routing\Route;
 use Mantle\Support\Service_Provider;
 use WP;
 
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\collect;
 
 /**
  * New Relic Service Provider

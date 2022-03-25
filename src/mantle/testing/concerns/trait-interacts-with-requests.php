@@ -17,7 +17,7 @@ use Mantle\Support\Str;
 use Mantle\Testing\Mock_Http_Response;
 use PHPUnit\Framework\Assert as PHPUnit;
 
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\collect;
 
 /**
  * Allow Mock HTTP Requests

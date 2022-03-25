@@ -12,7 +12,7 @@ use Dotenv\Repository\RepositoryBuilder;
 use Dotenv\Repository\RepositoryInterface;
 use PhpOption\Some;
 
-use function Mantle\Framework\Helpers\value;
+use function Mantle\Support\Helpers\value;
 
 /**
  * Storage of environment variables for the application.

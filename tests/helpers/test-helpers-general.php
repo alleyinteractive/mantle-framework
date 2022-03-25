@@ -6,18 +6,18 @@ use Mockery as m;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use stdClass;
-use function Mantle\Framework\Helpers\class_basename;
-use function Mantle\Framework\Helpers\class_uses_recursive;
-use function Mantle\Framework\Helpers\head;
-use function Mantle\Framework\Helpers\last;
-use function Mantle\Framework\Helpers\object_get;
-use function Mantle\Framework\Helpers\preg_replace_array;
-use function Mantle\Framework\Helpers\retry;
-use function Mantle\Framework\Helpers\tap;
-use function Mantle\Framework\Helpers\throw_if;
-use function Mantle\Framework\Helpers\throw_unless;
-use function Mantle\Framework\Helpers\transform;
-use function Mantle\Framework\Helpers\with;
+use function Mantle\Support\Helpers\class_basename;
+use function Mantle\Support\Helpers\class_uses_recursive;
+use function Mantle\Support\Helpers\head;
+use function Mantle\Support\Helpers\last;
+use function Mantle\Support\Helpers\object_get;
+use function Mantle\Support\Helpers\preg_replace_array;
+use function Mantle\Support\Helpers\retry;
+use function Mantle\Support\Helpers\tap;
+use function Mantle\Support\Helpers\throw_if;
+use function Mantle\Support\Helpers\throw_unless;
+use function Mantle\Support\Helpers\transform;
+use function Mantle\Support\Helpers\with;
 
 class SupportHelpersGeneralTest extends TestCase {
 	public function testClassBasename() {

@@ -13,7 +13,7 @@ use Mantle\Facade\Event;
 use Mantle\Framework\Events\Discover_Events;
 use Mantle\Framework\Events\Events_Manifest;
 
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\collect;
 
 /**
  * Event Service Provider

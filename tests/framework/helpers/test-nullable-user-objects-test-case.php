@@ -8,8 +8,8 @@
 namespace Mantle\Tests\Framework\Helpers;
 
 use Mantle\Testing\Framework_Test_Case;
-use function Mantle\Framework\Helpers\get_user_object;
-use function Mantle\Framework\Helpers\get_user_object_by;
+use function Mantle\Support\Helpers\get_user_object;
+use function Mantle\Support\Helpers\get_user_object_by;
 
 /**
  * Unit tests for nullable user object functions.

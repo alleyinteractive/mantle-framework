@@ -15,7 +15,7 @@ use ArrayAccess;
 use ArrayIterator;
 use Mantle\Support\Traits\Enumerates_Values;
 use Mantle\Database\Model;
-use function Mantle\Framework\Helpers\value;
+use function Mantle\Support\Helpers\value;
 use stdClass;
 
 /**

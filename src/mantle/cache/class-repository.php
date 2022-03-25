@@ -11,7 +11,7 @@ namespace Mantle\Cache;
 
 use Closure;
 
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\collect;
 
 /**
  * Cache repository.

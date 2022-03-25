@@ -7,7 +7,7 @@ use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Utils;
 
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\collect;
 
 class Test_Eager_Load_Relationships extends Framework_Test_Case {
 	use Refresh_Database;

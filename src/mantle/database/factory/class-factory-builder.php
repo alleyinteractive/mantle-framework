@@ -14,8 +14,8 @@ use InvalidArgumentException;
 use Mantle\Database\Model\Model;
 use Mantle\Support\Collection;
 use Mantle\Support\Traits\Macroable;
-use function Mantle\Framework\Helpers\collect;
-use function Mantle\Framework\Helpers\tap;
+use function Mantle\Support\Helpers\collect;
+use function Mantle\Support\Helpers\tap;
 
 /**
  * Class Factory_Builder

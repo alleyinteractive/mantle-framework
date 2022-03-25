@@ -14,7 +14,7 @@ use Mantle\Support\Collection;
 use RuntimeException;
 use Throwable;
 
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\collect;
 
 /**
  * Has One or Many Relationship

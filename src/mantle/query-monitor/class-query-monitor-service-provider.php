@@ -13,7 +13,7 @@ use Mantle\Http\Routing\Events\Route_Matched;
 use Mantle\Support\Service_Provider;
 use QM_Collectors;
 
-use function Mantle\Framework\Helpers\remove_action_validated;
+use function Mantle\Support\Helpers\remove_action_validated;
 
 /**
  * Query Monitor Service Provider

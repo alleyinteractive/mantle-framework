@@ -12,7 +12,7 @@ use Mantle\Contracts\Http\Routing\Router;
 use Mantle\Http\Request;
 use Mantle\Http\Routing\Events\Bindings_Substituted;
 
-use function Mantle\Framework\Helpers\event;
+use function Mantle\Support\Helpers\event;
 
 /**
  * Substitute parameters for the route with dynamically binded models.

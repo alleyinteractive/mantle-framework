@@ -8,7 +8,7 @@
 namespace Mantle\Database\Model;
 
 use Mantle\Contracts;
-use Mantle\Framework\Helpers;
+use Mantle\Support\Helpers;
 
 /**
  * Comment Model

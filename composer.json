@@ -77,7 +77,7 @@
         "files": [
             "src/autoload.php",
             "src/mantle/framework/helpers.php",
-            "src/mantle/framework/helpers/helpers.php",
+            "src/mantle/support/autoload.php",
             "src/mantle/testing/autoload.php"
         ]
     },

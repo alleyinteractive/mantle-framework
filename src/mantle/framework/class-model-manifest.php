@@ -12,7 +12,7 @@ use Mantle\Contracts\Database\Registrable;
 use Mantle\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\collect;
 
 /**
  * Model Manifest.

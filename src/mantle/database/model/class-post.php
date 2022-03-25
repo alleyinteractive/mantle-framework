@@ -11,9 +11,9 @@ use Mantle\Contracts;
 use Mantle\Contracts\Events\Dispatcher;
 use Mantle\Database\Query\Builder;
 use Mantle\Database\Query\Post_Query_Builder;
-use Mantle\Framework\Helpers;
+use Mantle\Support\Helpers;
 
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\collect;
 
 /**
  * Post Model

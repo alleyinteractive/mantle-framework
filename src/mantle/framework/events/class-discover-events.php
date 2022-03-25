@@ -15,7 +15,7 @@ use ReflectionMethod;
 use SplFileInfo;
 use Symfony\Component\Finder\Finder;
 
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\collect;
 
 /**
  * Discover events within a specific directory.

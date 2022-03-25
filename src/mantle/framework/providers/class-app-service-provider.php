@@ -11,7 +11,7 @@ use Mantle\Contracts\Application;
 use Mantle\Scheduling\Schedule;
 use Mantle\Support\Service_Provider;
 
-use function Mantle\Framework\Helpers\tap;
+use function Mantle\Support\Helpers\tap;
 
 /**
  * App Service Provider

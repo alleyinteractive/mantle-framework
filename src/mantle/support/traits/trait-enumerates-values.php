@@ -18,7 +18,7 @@ use Closure;
 use Exception;
 use Mantle\Contracts\Support\Arrayable;
 use Mantle\Contracts\Support\Jsonable;
-use function Mantle\Framework\Helpers\data_get;
+use function Mantle\Support\Helpers\data_get;
 use Mantle\Support\Arr;
 use Mantle\Support\Collection;
 use Mantle\Support\Enumerable;

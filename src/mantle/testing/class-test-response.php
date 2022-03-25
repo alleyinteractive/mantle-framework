@@ -15,7 +15,7 @@ use Mantle\Support\Str;
 use Mantle\Support\Traits\Macroable;
 use PHPUnit\Framework\Assert as PHPUnit;
 
-use function Mantle\Framework\Helpers\data_get;
+use function Mantle\Support\Helpers\data_get;
 
 /**
  * Faux "Response" class for unit testing.

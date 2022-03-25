@@ -15,8 +15,8 @@ use SimpleXMLElement;
 use WP_Error;
 use WP_HTTP_Cookie;
 
-use function Mantle\Framework\Helpers\collect;
-use function Mantle\Framework\Helpers\data_get;
+use function Mantle\Support\Helpers\collect;
+use function Mantle\Support\Helpers\data_get;
 
 /**
  * Response object from WordPress HTTP API.

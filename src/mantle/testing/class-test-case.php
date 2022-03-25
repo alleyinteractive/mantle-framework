@@ -30,9 +30,9 @@ use Mantle\Testing\Factory\Factory_Container;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use WP;
 use WP_Query;
-use function Mantle\Framework\Helpers\class_basename;
-use function Mantle\Framework\Helpers\class_uses_recursive;
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\class_basename;
+use function Mantle\Support\Helpers\class_uses_recursive;
+use function Mantle\Support\Helpers\collect;
 
 /**
  * Root Test Case for Mantle sites.

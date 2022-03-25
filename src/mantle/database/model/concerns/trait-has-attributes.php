@@ -11,8 +11,8 @@ use LogicException;
 use Mantle\Database\Model\Model_Exception;
 use Mantle\Database\Model\Relations\Relation;
 
-use function Mantle\Framework\Helpers\collect;
-use function Mantle\Framework\Helpers\tap;
+use function Mantle\Support\Helpers\collect;
+use function Mantle\Support\Helpers\tap;
 
 /**
  * Model Attributes

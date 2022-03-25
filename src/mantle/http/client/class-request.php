@@ -9,7 +9,7 @@ namespace Mantle\Http\Client;
 
 use Mantle\Support\Str;
 
-use function Mantle\Framework\Helpers\data_get;
+use function Mantle\Support\Helpers\data_get;
 
 /**
  * Request Record

@@ -9,7 +9,7 @@ namespace Mantle\Database\Model\Relations;
 
 use Mantle\Support\Collection;
 
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\collect;
 
 /**
  * Creates a 'Belongs To Many' relationship.

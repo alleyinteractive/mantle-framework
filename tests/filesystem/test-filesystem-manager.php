@@ -8,7 +8,7 @@ use Mantle\Framework\Application;
 use Mantle\Filesystem\Filesystem_Manager;
 use PHPUnit\Framework\TestCase;
 use Mantle\Contracts\Filesystem\Filesystem as Filesystem_Contract;
-use function Mantle\Framework\Helpers\tap;
+use function Mantle\Support\Helpers\tap;
 
 class Test_Filesystem_Manager extends TestCase {
 	public function test_invalid_disk() {

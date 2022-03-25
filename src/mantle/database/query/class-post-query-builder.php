@@ -9,10 +9,10 @@
 namespace Mantle\Database\Query;
 
 use Mantle\Database\Model\Term;
-use Mantle\Framework\Helpers;
+use Mantle\Support\Helpers;
 use Mantle\Support\Collection;
 
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\collect;
 
 /**
  * Post Query Builder

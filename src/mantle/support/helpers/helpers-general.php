@@ -9,7 +9,7 @@
 
 // phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment
 
-namespace Mantle\Framework\Helpers;
+namespace Mantle\Support\Helpers;
 
 use Countable;
 use Exception;

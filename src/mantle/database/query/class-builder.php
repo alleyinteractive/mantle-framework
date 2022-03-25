@@ -21,7 +21,7 @@ use Mantle\Database\Pagination\Paginator;
 use Mantle\Support\Collection;
 use Mantle\Support\Str;
 
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\collect;
 
 /**
  * Builder Query Builder

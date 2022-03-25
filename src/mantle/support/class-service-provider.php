@@ -12,8 +12,8 @@ use Mantle\Contracts\Application;
 use Mantle\Support\Str;
 use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
 
-use function Mantle\Framework\Helpers\add_action;
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\add_action;
+use function Mantle\Support\Helpers\collect;
 
 /**
  * Application Service Provider
