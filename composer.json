@@ -11,23 +11,9 @@
     ],
     "require": {
         "alleyinteractive/composer-wordpress-autoloader": "^0.2",
-        "dragonmantank/cron-expression": "^3.1",
-        "fakerphp/faker": "^1.16",
+        "mantle-framework/FRAMEWORK": "^0.1",
         "filp/whoops": "^2.14",
-        "guzzlehttp/guzzle": "^6.3.1 || ^7.3",
-        "illuminate/view": "^8.6",
-        "league/flysystem": "^1.1",
-        "league/flysystem-cached-adapter": "^1.1",
-        "monolog/monolog": "^2.0",
-        "nesbot/carbon": "^2.53",
-        "symfony/finder": "^5.3",
-        "symfony/http-foundation": "^5.3",
-        "symfony/http-kernel": "^5.3",
-        "symfony/routing": "^5.3",
-        "symfony/string": "^5.3",
-        "symfony/var-dumper": "^5.3",
-        "vlucas/phpdotenv": "^5.3",
-        "voku/portable-ascii": "^1.4"
+        "symfony/var-dumper": "^5.3"
     },
     "require-dev": {
         "alleyinteractive/alley-coding-standards": "^0.3.0",
@@ -35,13 +21,35 @@
         "nunomaduro/collision": "^5.0",
         "phpunit/phpunit": "^8.5.8 || ^9.3.3"
     },
+    "replace": {
+        "mantle-framework/assets": "self.version",
+        "mantle-framework/auth": "self.version",
+        "mantle-framework/cache": "self.version",
+        "mantle-framework/caper": "self.version",
+        "mantle-framework/config": "self.version",
+        "mantle-framework/console": "self.version",
+        "mantle-framework/container": "self.version",
+        "mantle-framework/contracts": "self.version",
+        "mantle-framework/database": "self.version",
+        "mantle-framework/events": "self.version",
+        "mantle-framework/facade": "self.version",
+        "mantle-framework/faker": "self.version",
+        "mantle-framework/filesystem": "self.version",
+        "mantle-framework/http": "self.version",
+        "mantle-framework/log": "self.version",
+        "mantle-framework/query-monitor": "self.version",
+        "mantle-framework/queue": "self.version",
+        "mantle-framework/rest-api": "self.version",
+        "mantle-framework/scheduling": "self.version",
+        "mantle-framework/support": "self.version",
+        "mantle-framework/testing": "self.version",
+        "mantle-framework/view": "self.version"
+    },
     "config": {
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true,
             "alleyinteractive/composer-wordpress-autoloader": true
         },
-        "apcu-autoloader": true,
-        "optimize-autoloader": true,
         "sort-packages": true
     },
     "autoload": {

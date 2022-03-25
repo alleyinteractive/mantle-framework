@@ -10,3 +10,7 @@ insert_final_newline = true
 [*.{js,css,scss,yml,json,.babelrc}]
 indent_style = space
 indent_size = 2
+
+[composer.*]
+indent_style = space
+indent_size = 4

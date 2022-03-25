@@ -1,19 +1,15 @@
 {
-    "name": "mantle-framework/console",
-    "description": "The Mantle Framework Console Package",
+    "name": "mantle-framework/facade",
+    "description": "The Mantle Framework Facade Package",
     "type": "project",
     "require": {
         "php": "^7.4|^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^0.2",
-        "mantle-framework/contracts": "^0.1",
-        "mantle-framework/support": "^0.1",
-        "nette/php-generator": "^3.6",
-        "symfony/finder": "^5.3",
-        "symfony/string": "^5.3"
+        "mantle-framework/contracts": "^0.1"
     },
     "extra": {
       "wordpress-autoloader": {
-        "Mantle\\Console": "./"
+        "Mantle\\Facade": "./"
       }
     },
     "license": "GPL-2.0-or-later",

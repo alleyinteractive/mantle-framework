@@ -1,21 +1,21 @@
 {
-    "name": "mantle-framework/filesystem",
-    "description": "The Mantle Framework Filesystem Package",
+    "name": "mantle-framework/http",
+    "description": "The Mantle Framework Http Package",
     "type": "project",
     "require": {
         "php": "^7.4|^8.0",
-        "alleyinteractive/composer-wordpress-autoloader": "^0.2",
-        "league/flysystem": "^1.1",
-        "league/flysystem-cached-adapter": "^1.1",
+        "illuminate/view": "^8.6",
         "mantle-framework/contracts": "^0.1",
+        "mantle-framework/filesystem": "^0.1",
         "mantle-framework/support": "^0.1",
-        "psr/container": "^1.1.1 || ^2.0.1",
         "symfony/http-foundation": "^5.3",
-        "symfony/finder": "^5.3"
+        "symfony/http-kernel": "^5.3",
+        "symfony/mime": "^5.3",
+        "symfony/routing": "^5.3"
     },
     "extra": {
       "wordpress-autoloader": {
-        "Mantle\\Filesystem": "./"
+        "Mantle\\Http": "./"
       }
     },
     "license": "GPL-2.0-or-later",

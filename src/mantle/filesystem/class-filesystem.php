@@ -11,11 +11,11 @@ namespace Mantle\Filesystem;
 
 use ErrorException;
 use FilesystemIterator;
+use League\Flysystem\FileNotFoundException;
 use Mantle\Support\Str;
 use Mantle\Support\Traits\Macroable;
 use RuntimeException;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\Mime\MimeTypes;
 
 /**
