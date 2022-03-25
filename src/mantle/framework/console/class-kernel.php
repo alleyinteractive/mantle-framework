@@ -5,9 +5,9 @@
  * @package Mantle
  */
 
-namespace Mantle\Console;
+namespace Mantle\Framework\Console;
 
-use Mantle\Framework\Application;
+use Mantle\Contracts\Application;
 use Mantle\Contracts\Console\Kernel as Kernel_Contract;
 use Mantle\Contracts\Kernel as Core_Kernel_Contract;
 use Mantle\Support\Traits\Loads_Classes;

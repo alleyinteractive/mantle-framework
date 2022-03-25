@@ -46,36 +46,33 @@ return static function ( ContainerConfigurator $container_config ): void {
 	);
 
 	// Remove the mantle packages from the composer.json (temporary).
-	$parameters->set(
-		Option::DATA_TO_REMOVE,
-		[
-			ComposerJsonSection::REQUIRE => [
-				'mantle-framework/assets' => '*',
-				'mantle-framework/auth' => '*',
-				'mantle-framework/cache' => '*',
-				'mantle-framework/caper' => '*',
-				'mantle-framework/config' => '*',
-				'mantle-framework/console' => '*',
-				'mantle-framework/container' => '*',
-				'mantle-framework/contracts' => '*',
-				'mantle-framework/database' => '*',
-				'mantle-framework/events' => '*',
-				'mantle-framework/facade' => '*',
-				'mantle-framework/faker' => '*',
-				'mantle-framework/filesystem' => '*',
-				'mantle-framework/http' => '*',
-				'mantle-framework/log' => '*',
-				'mantle-framework/query-monitor' => '*',
-				'mantle-framework/queue' => '*',
-				'mantle-framework/rest-api' => '*',
-				'mantle-framework/scheduling' => '*',
-				'mantle-framework/support' => '*',
-				'mantle-framework/testing' => '*',
-				'mantle-framework/view' => '*',
-
-				// todo: fix the location.
-				'mantle-framework/framework' => '*',
-			],
-		],
-	);
+	// $parameters->set(
+	// 	Option::DATA_TO_REMOVE,
+	// 	[
+	// 		ComposerJsonSection::REQUIRE => [
+	// 			'mantle-framework/assets' => '*',
+	// 			'mantle-framework/auth' => '*',
+	// 			'mantle-framework/cache' => '*',
+	// 			'mantle-framework/caper' => '*',
+	// 			'mantle-framework/config' => '*',
+	// 			'mantle-framework/console' => '*',
+	// 			'mantle-framework/container' => '*',
+	// 			'mantle-framework/contracts' => '*',
+	// 			'mantle-framework/database' => '*',
+	// 			'mantle-framework/events' => '*',
+	// 			'mantle-framework/facade' => '*',
+	// 			'mantle-framework/faker' => '*',
+	// 			'mantle-framework/filesystem' => '*',
+	// 			'mantle-framework/http' => '*',
+	// 			'mantle-framework/log' => '*',
+	// 			'mantle-framework/query-monitor' => '*',
+	// 			'mantle-framework/queue' => '*',
+	// 			'mantle-framework/rest-api' => '*',
+	// 			'mantle-framework/scheduling' => '*',
+	// 			'mantle-framework/support' => '*',
+	// 			'mantle-framework/testing' => '*',
+	// 			'mantle-framework/view' => '*',
+	// 		],
+	// 	],
+	// );
 };

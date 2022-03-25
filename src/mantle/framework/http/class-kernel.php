@@ -5,11 +5,10 @@
  * @package Mantle
  */
 
-namespace Mantle\Http;
+namespace Mantle\Framework\Http;
 
-use Exception;
 use InvalidArgumentException;
-use Mantle\Framework\Application;
+use Mantle\Contracts\Application;
 use Mantle\Contracts\Http\Kernel as Kernel_Contract;
 use Mantle\Contracts\Http\Routing\Router;
 use Mantle\Contracts\Kernel as Core_Kernel_Contract;

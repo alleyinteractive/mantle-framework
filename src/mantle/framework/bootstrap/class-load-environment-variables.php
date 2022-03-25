@@ -9,7 +9,7 @@ namespace Mantle\Framework\Bootstrap;
 
 use Dotenv\Dotenv;
 use Dotenv\Exception\InvalidFileException;
-use Mantle\Console\Kernel;
+use Mantle\Framework\Console\Kernel;
 use Mantle\Framework\Application;
 use Mantle\Support\Environment;
 
