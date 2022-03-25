@@ -84,27 +84,6 @@
     "extra": {
         "wordpress-autoloader": {
             "autoload": {
-                "Mantle\\Console": "./",
-                "Mantle\\REST_API": "./",
-                "Mantle\\Assets": "./",
-                "Mantle\\Events": "./",
-                "Mantle\\Log": "./",
-                "Mantle\\Queue": "./",
-                "Mantle\\View": "./",
-                "Mantle\\Http": "./",
-                "Mantle\\Support": "./",
-                "Mantle\\Container": "./",
-                "Mantle\\Testing": "./",
-                "Mantle\\Filesystem": "./",
-                "Mantle\\Faker": "./",
-                "Mantle\\Facade": "./",
-                "Mantle\\Auth": "./",
-                "Mantle\\Config": "./",
-                "Mantle\\Caper": "./",
-                "Mantle\\Scheduling": "./",
-                "Mantle\\Cache": "./",
-                "Mantle\\Query_Monitor": "./",
-                "Mantle\\Database": "./",
                 "Mantle\\": "src/mantle/"
             },
             "autoload-dev": {

@@ -76,7 +76,7 @@ return static function ( ContainerConfigurator $container_config ): void {
 				// todo: fix the location.
 				'mantle-framework/framework' => '*',
 				'mantle-framework/helpers' => '*',
-			]
+			],
 		],
 	);
 };
