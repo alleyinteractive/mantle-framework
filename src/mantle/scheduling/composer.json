@@ -13,9 +13,11 @@
         "mantle-framework/helpers": "^0.1"
     },
     "extra": {
-      "wordpress-autoloader": {
-        "Mantle\\Scheduling": "./"
-      }
+        "wordpress-autoloader": {
+            "autoload": {
+                "Mantle\\Scheduling": "./"
+            }
+        }
     },
     "license": "GPL-2.0-or-later",
     "authors": [

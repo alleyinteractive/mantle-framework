@@ -9,9 +9,11 @@
         "symfony/http-kernel": "^5.3"
     },
     "extra": {
-      "wordpress-autoloader": {
-        "Mantle\\Auth": "./"
-      }
+        "wordpress-autoloader": {
+            "autoload": {
+                "Mantle\\Auth": "./"
+            }
+        }
     },
     "license": "GPL-2.0-or-later",
     "authors": [

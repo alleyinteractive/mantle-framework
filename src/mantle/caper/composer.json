@@ -7,9 +7,11 @@
         "alleyinteractive/composer-wordpress-autoloader": "^0.2"
     },
     "extra": {
-      "wordpress-autoloader": {
-        "Mantle\\Caper": "./"
-      }
+        "wordpress-autoloader": {
+            "autoload": {
+                "Mantle\\Caper": "./"
+            }
+        }
     },
     "license": "GPL-2.0-or-later",
     "authors": [

@@ -8,9 +8,11 @@
         "mantle-framework/contracts": "^0.1"
     },
     "extra": {
-      "wordpress-autoloader": {
-        "Mantle\\View": "./"
-      }
+        "wordpress-autoloader": {
+            "autoload": {
+                "Mantle\\View": "./"
+            }
+        }
     },
     "license": "GPL-2.0-or-later",
     "authors": [

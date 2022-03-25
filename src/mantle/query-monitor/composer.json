@@ -14,9 +14,11 @@
         "psr/log": "^1.0.1 || ^2.0 || ^3.0"
     },
     "extra": {
-      "wordpress-autoloader": {
-        "Mantle\\Query_Monitor": "./"
-      }
+        "wordpress-autoloader": {
+            "autoload": {
+                "Mantle\\Query_Monitor": "./"
+            }
+        }
     },
     "license": "GPL-2.0-or-later",
     "authors": [

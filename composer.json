@@ -10,16 +10,40 @@
         }
     ],
     "require": {
+        "php": "^7.4|^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^0.2",
-        "mantle-framework/FRAMEWORK": "^0.1",
+        "alleyinteractive/wp-asset-manager": "^0.1",
+        "dragonmantank/cron-expression": "^3.1",
+        "fakerphp/faker": "^1.16",
         "filp/whoops": "^2.14",
-        "symfony/var-dumper": "^5.3"
+        "guzzlehttp/guzzle": "^6.3.1 || ^7.3",
+        "illuminate/view": "^8.6",
+        "league/flysystem": "^1.1",
+        "league/flysystem-cached-adapter": "^1.1",
+        "mantle-framework/contracts": "^0.1",
+        "mantle-framework/framework": "^0.1",
+        "mantle-framework/helpers": "^0.1",
+        "monolog/monolog": "^2.0",
+        "nesbot/carbon": "^2.53",
+        "nette/php-generator": "^3.6",
+        "psr/container": "^1.1.1 || ^2.0.1",
+        "psr/log": "^1.0.1 || ^2.0 || ^3.0",
+        "symfony/finder": "^5.3",
+        "symfony/http-foundation": "^5.3",
+        "symfony/http-kernel": "^5.3",
+        "symfony/mime": "^5.3",
+        "symfony/routing": "^5.3",
+        "symfony/string": "^5.3",
+        "symfony/var-dumper": "^5.3",
+        "vlucas/phpdotenv": "^5.3",
+        "voku/portable-ascii": "^1.4"
     },
     "require-dev": {
-        "alleyinteractive/alley-coding-standards": "^0.3.0",
+        "alleyinteractive/alley-coding-standards": "^0.3",
         "mockery/mockery": "^1.3",
         "nunomaduro/collision": "^5.0",
-        "phpunit/phpunit": "^8.5.8 || ^9.3.3"
+        "phpunit/phpunit": "^8.5.8 || ^9.3.3",
+        "symplify/monorepo-builder": "^10.1"
     },
     "replace": {
         "mantle-framework/assets": "self.version",
@@ -55,20 +79,20 @@
     "autoload": {
         "files": [
             "src/autoload.php",
-            "src/mantle/testing/autoload.php",
             "src/mantle/framework/helpers.php",
-            "src/mantle/framework/helpers/helpers.php"
+            "src/mantle/framework/helpers/helpers.php",
+            "src/mantle/testing/autoload.php"
         ]
     },
     "extra": {
-      "wordpress-autoloader": {
-        "autoload": {
-          "Mantle\\": "src/mantle/"
-        },
-        "autoload-dev": {
-          "Mantle\\Tests\\": "tests/"
+        "wordpress-autoloader": {
+            "autoload": {
+                "Mantle\\": "src/mantle/"
+            },
+            "autoload-dev": {
+                "Mantle\\Tests\\": "tests/"
+            }
         }
-      }
     },
     "scripts": {
         "lint": "@phpcs",
@@ -80,5 +104,6 @@
             "@phpcs",
             "@phpunit"
         ]
-    }
+    },
+    "minimum-stability": "dev"
 }

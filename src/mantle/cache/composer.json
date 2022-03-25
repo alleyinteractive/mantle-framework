@@ -10,9 +10,11 @@
         "nesbot/carbon": "^2.53"
     },
     "extra": {
-      "wordpress-autoloader": {
-        "Mantle\\Cache": "./"
-      }
+        "wordpress-autoloader": {
+            "autoload": {
+                "Mantle\\Cache": "./"
+            }
+        }
     },
     "license": "GPL-2.0-or-later",
     "authors": [

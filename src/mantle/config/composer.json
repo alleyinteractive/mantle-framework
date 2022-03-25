@@ -9,9 +9,11 @@
         "mantle-framework/support": "^0.1"
     },
     "extra": {
-      "wordpress-autoloader": {
-        "Mantle\\Config": "./"
-      }
+        "wordpress-autoloader": {
+            "autoload": {
+                "Mantle\\Config": "./"
+            }
+        }
     },
     "license": "GPL-2.0-or-later",
     "authors": [

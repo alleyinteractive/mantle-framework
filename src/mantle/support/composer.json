@@ -15,9 +15,11 @@
         "voku/portable-ascii": "^1.4"
     },
     "extra": {
-      "wordpress-autoloader": {
-        "Mantle\\Support": "./"
-      }
+        "wordpress-autoloader": {
+            "autoload": {
+                "Mantle\\Support": "./"
+            }
+        }
     },
     "license": "GPL-2.0-or-later",
     "authors": [

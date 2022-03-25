@@ -14,9 +14,11 @@
         "symfony/routing": "^5.3"
     },
     "extra": {
-      "wordpress-autoloader": {
-        "Mantle\\Http": "./"
-      }
+        "wordpress-autoloader": {
+            "autoload": {
+                "Mantle\\Http": "./"
+            }
+        }
     },
     "license": "GPL-2.0-or-later",
     "authors": [

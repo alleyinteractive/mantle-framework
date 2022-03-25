@@ -12,9 +12,11 @@
         "symfony/finder": "^5.3"
     },
     "extra": {
-      "wordpress-autoloader": {
-        "Mantle\\Events": "./"
-      }
+        "wordpress-autoloader": {
+            "autoload": {
+                "Mantle\\Events": "./"
+            }
+        }
     },
     "license": "GPL-2.0-or-later",
     "authors": [

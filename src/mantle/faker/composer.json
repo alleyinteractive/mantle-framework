@@ -8,9 +8,11 @@
         "fakerphp/faker": "^1.16"
     },
     "extra": {
-      "wordpress-autoloader": {
-        "Mantle\\Faker": "./"
-      }
+        "wordpress-autoloader": {
+            "autoload": {
+                "Mantle\\Faker": "./"
+            }
+        }
     },
     "license": "GPL-2.0-or-later",
     "authors": [

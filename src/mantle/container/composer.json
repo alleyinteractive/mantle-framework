@@ -13,9 +13,11 @@
         "psr/container-implementation": "1.1|2.0"
     },
     "extra": {
-      "wordpress-autoloader": {
-        "Mantle\\Container": "./"
-      }
+        "wordpress-autoloader": {
+            "autoload": {
+                "Mantle\\Container": "./"
+            }
+        }
     },
     "license": "GPL-2.0-or-later",
     "authors": [

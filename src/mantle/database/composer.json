@@ -11,9 +11,11 @@
         "symfony/finder": "^5.3"
     },
     "extra": {
-      "wordpress-autoloader": {
-        "Mantle\\Database": "./"
-      }
+        "wordpress-autoloader": {
+            "autoload": {
+                "Mantle\\Database": "./"
+            }
+        }
     },
     "license": "GPL-2.0-or-later",
     "authors": [

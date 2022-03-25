@@ -11,9 +11,11 @@
         "mantle-framework/support": "^0.1"
     },
     "extra": {
-      "wordpress-autoloader": {
-        "Mantle\\Queue": "./"
-      }
+        "wordpress-autoloader": {
+            "autoload": {
+                "Mantle\\Queue": "./"
+            }
+        }
     },
     "license": "GPL-2.0-or-later",
     "authors": [

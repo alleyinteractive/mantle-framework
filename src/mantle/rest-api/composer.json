@@ -9,9 +9,11 @@
         "mantle-framework/helpers": "^0.1"
     },
     "extra": {
-      "wordpress-autoloader": {
-        "Mantle\\REST_API": "./"
-      }
+        "wordpress-autoloader": {
+            "autoload": {
+                "Mantle\\REST_API": "./"
+            }
+        }
     },
     "license": "GPL-2.0-or-later",
     "authors": [

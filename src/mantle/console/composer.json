@@ -12,9 +12,11 @@
         "symfony/string": "^5.3"
     },
     "extra": {
-      "wordpress-autoloader": {
-        "Mantle\\Console": "./"
-      }
+        "wordpress-autoloader": {
+            "autoload": {
+                "Mantle\\Console": "./"
+            }
+        }
     },
     "license": "GPL-2.0-or-later",
     "authors": [

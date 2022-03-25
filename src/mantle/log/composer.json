@@ -11,9 +11,11 @@
         "psr/log": "^1.0.1 || ^2.0 || ^3.0"
     },
     "extra": {
-      "wordpress-autoloader": {
-        "Mantle\\Log": "./"
-      }
+        "wordpress-autoloader": {
+            "autoload": {
+                "Mantle\\Log": "./"
+            }
+        }
     },
     "license": "GPL-2.0-or-later",
     "authors": [
