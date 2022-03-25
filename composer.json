@@ -20,9 +20,6 @@
         "illuminate/view": "^8.6",
         "league/flysystem": "^1.1",
         "league/flysystem-cached-adapter": "^1.1",
-        "mantle-framework/contracts": "^0.1",
-        "mantle-framework/framework": "^0.1",
-        "mantle-framework/helpers": "^0.1",
         "monolog/monolog": "^2.0",
         "nesbot/carbon": "^2.53",
         "nette/php-generator": "^3.6",
@@ -87,6 +84,27 @@
     "extra": {
         "wordpress-autoloader": {
             "autoload": {
+                "Mantle\\Console": "./",
+                "Mantle\\REST_API": "./",
+                "Mantle\\Assets": "./",
+                "Mantle\\Events": "./",
+                "Mantle\\Log": "./",
+                "Mantle\\Queue": "./",
+                "Mantle\\View": "./",
+                "Mantle\\Http": "./",
+                "Mantle\\Support": "./",
+                "Mantle\\Container": "./",
+                "Mantle\\Testing": "./",
+                "Mantle\\Filesystem": "./",
+                "Mantle\\Faker": "./",
+                "Mantle\\Facade": "./",
+                "Mantle\\Auth": "./",
+                "Mantle\\Config": "./",
+                "Mantle\\Caper": "./",
+                "Mantle\\Scheduling": "./",
+                "Mantle\\Cache": "./",
+                "Mantle\\Query_Monitor": "./",
+                "Mantle\\Database": "./",
                 "Mantle\\": "src/mantle/"
             },
             "autoload-dev": {
