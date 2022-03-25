@@ -9,8 +9,7 @@
         "guzzlehttp/guzzle": "^6.3.1 || ^7.3",
         "mantle-framework/contracts": "^0.1",
         "nesbot/carbon": "^2.53",
-        "mantle-framework/console": "^0.1",
-        "mantle-framework/helpers": "^0.1"
+        "mantle-framework/console": "^0.1"
     },
     "extra": {
         "wordpress-autoloader": {
