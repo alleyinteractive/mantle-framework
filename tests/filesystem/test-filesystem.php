@@ -7,7 +7,7 @@ use Mantle\Testing\Assert;
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
 use SplFileInfo;
-use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
+use League\Flysystem\FileNotFoundException;
 
 class Test_Filesystem extends TestCase {
 
