@@ -202,10 +202,12 @@ abstract class Test_Case extends BaseTestCase {
 
 		parent::tearDown();
 
-		// todo: Fire the shutdown hooks when added.
 		if ( $this->app ) {
 			$this->app = null;
-			Facade::set_facade_application( null );
+
+			if ( class_exists( Facade::class ) ) {
+				Facade::set_facade_application( null );
+			}
 		}
 	}
 
@@ -249,7 +251,9 @@ abstract class Test_Case extends BaseTestCase {
 		Facade::set_facade_application( $this->app );
 		Facade::clear_resolved_instances();
 
-		Alias_Loader::set_instance( null );
+		if ( class_exists( Alias_Loader::class ) ) {
+			Alias_Loader::set_instance( null );
+		}
 
 		Model::set_event_dispatcher( $this->app['events'] );
 	}
