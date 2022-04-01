@@ -45,6 +45,9 @@ jobs:
           tools: composer:v2
           coverage: none
 
+      - name: Validate Composer
+        run: composer validate --strict
+
       - name: Install dependencies
         uses: nick-invision/retry@v1
         with:
@@ -57,9 +60,15 @@ jobs:
 
       - name: Validate Composer.json in Packages
         run: |
+          cwd=$(pwd)
+
           for file in $(find src -name composer.json); do
             cd $(dirname $file)
-            pwd
+
+            composer validate --strict
+
+            # Return to the previous directory.
+            cd $cwd
           done
 
       - name: Run phpcs
