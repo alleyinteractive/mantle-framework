@@ -65,6 +65,7 @@ jobs:
           for file in $(find src -name composer.json); do
             cd $(dirname $file)
 
+            echo "Validating $file..."
             composer validate --strict
 
             # Return to the previous directory.
