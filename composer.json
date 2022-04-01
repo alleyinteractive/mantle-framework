@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "php": "^7.4 || ^8.0",
+        "php": "^7.4|^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^0.2",
         "alleyinteractive/wp-asset-manager": "^0.1",
         "dragonmantank/cron-expression": "^3.1",
