@@ -204,6 +204,7 @@ class Test_Has_One_Or_Many extends Framework_Test_Case {
 		$this->assertEmpty( $post->meta->testable_sponsor_using_term_id );
 		$this->assertNotEmpty( get_the_terms( $post->id, Relation::RELATION_TAXONOMY ) );
 
+		// Fetch the post through the relationship on the sponsor.
 		$sponsors_post = $sponsor->post()->first();
 
 		$this->assertInstanceOf( Testable_Post_Using_Term::class, $sponsors_post );

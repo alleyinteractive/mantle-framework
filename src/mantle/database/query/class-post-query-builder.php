@@ -11,6 +11,7 @@ namespace Mantle\Database\Query;
 use Mantle\Database\Model\Term;
 use Mantle\Support\Helpers;
 use Mantle\Support\Collection;
+use WP_Term;
 
 use function Mantle\Support\Helpers\collect;
 
@@ -162,10 +163,11 @@ class Post_Query_Builder extends Builder {
 	 * @param array|string $term Term ID/array of IDs.
 	 * @param string       $taxonomy Taxonomy name.
 	 * @param string       $operator Operator to use, defaults to 'IN'.
+	 * @param string       $field Field to use for the query, defaults to term ID.
 	 *
 	 * @throws Query_Exception Unknown term to query against.
 	 */
-	public function whereTerm( $term, $taxonomy = null, string $operator = 'IN' ) {
+	public function whereTerm( $term, $taxonomy = null, string $operator = 'IN', string $field = 'term_id' ) {
 		if ( $term instanceof Term ) {
 			$taxonomy = $term->taxonomy();
 			$term     = $term->id();
@@ -178,7 +180,16 @@ class Post_Query_Builder extends Builder {
 
 		// Get the taxonomy if it wasn't passed.
 		if ( empty( $taxonomy ) && ! is_array( $term ) ) {
-			$object = Helpers\get_term_object( $term );
+			// Attempt to resolve the term from the slug.
+			if ( 'slug' === $field ) {
+				$object = get_term_by( 'slug', $term, $taxonomy );
+
+				if ( ! ( $term instanceof WP_Term ) ) {
+					throw new Query_Exception( 'Unknown term to query against with slug (must pass taxonomy): ' . $term );
+				}
+			} else {
+				$object = Helpers\get_term_object( $term );
+			}
 
 			if ( empty( $object ) ) {
 				throw new Query_Exception( 'Unknown term: ' . $term );
@@ -189,7 +200,7 @@ class Post_Query_Builder extends Builder {
 		}
 
 		$this->tax_query[] = [
-			'field'            => 'term_id',
+			'field'            => $field,
 			'include_children' => true,
 			'operator'         => $operator,
 			'taxonomy'         => $taxonomy,

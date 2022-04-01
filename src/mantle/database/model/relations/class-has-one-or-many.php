@@ -77,7 +77,12 @@ abstract class Has_One_Or_Many extends Relation {
 			} elseif ( $this->is_term_post_relationship() ) {
 				return $this->query->whereTerm( $this->parent->id(), $this->parent->taxonomy() );
 			} elseif ( $this->uses_terms ) {
-				return $this->query->whereTerm( $this->get_term_slug_for_relationship(), static::RELATION_TAXONOMY );
+				return $this->query->whereTerm(
+					$this->get_term_slug_for_relationship(),
+					static::RELATION_TAXONOMY,
+					'IN',
+					'slug',
+				);
 			} else {
 				return $this->query->whereMeta( $this->foreign_key, $this->parent->get( $this->local_key ) );
 			}
