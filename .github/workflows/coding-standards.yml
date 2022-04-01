@@ -52,5 +52,8 @@ jobs:
           max_attempts: 5
           command: composer install
 
+      - name: Validate Monorepo
+        run: composer run validate-monorepo
+
       - name: Run phpcs
         run: composer run phpcs

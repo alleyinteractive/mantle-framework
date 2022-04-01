@@ -1,8 +1,8 @@
 {
     "name": "alleyinteractive/mantle-framework",
-    "type": "library",
     "description": "A framework for powerful WordPress development",
     "license": "GPL-2.0-or-later",
+    "type": "library",
     "authors": [
         {
             "name": "Alley",
@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "php": "^7.4|^8.0",
+        "php": "^7.4 || ^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^0.2",
         "alleyinteractive/wp-asset-manager": "^0.1",
         "dragonmantank/cron-expression": "^3.1",
@@ -66,19 +66,20 @@
         "mantle-framework/testing": "self.version",
         "mantle-framework/view": "self.version"
     },
-    "config": {
-        "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": true,
-            "alleyinteractive/composer-wordpress-autoloader": true
-        },
-        "sort-packages": true
-    },
+    "minimum-stability": "dev",
     "autoload": {
         "files": [
             "src/mantle/framework/helpers.php",
             "src/mantle/support/autoload.php",
             "src/mantle/testing/autoload.php"
         ]
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "alleyinteractive/composer-wordpress-autoloader": true
+        },
+        "sort-packages": true
     },
     "extra": {
         "wordpress-autoloader": {
@@ -92,14 +93,17 @@
     },
     "scripts": {
         "lint": "@phpcs",
+        "merge": "monorepo-builder merge",
         "phpcbf": "phpcbf --standard=./phpcs.xml .",
         "phpcs": "phpcs --standard=./phpcs.xml .",
         "phpcs-modified": "./bin/phpcs-modified-files.sh",
         "phpunit": "phpunit",
+        "release": "monorepo-builder release --ansi",
+        "release:patch": "monorepo-builder release patch --ansi",
         "test": [
             "@phpcs",
             "@phpunit"
-        ]
-    },
-    "minimum-stability": "dev"
+        ],
+        "validate-monorepo": "monorepo-builder validate --ansi"
+    }
 }
