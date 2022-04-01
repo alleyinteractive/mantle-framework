@@ -55,5 +55,12 @@ jobs:
       - name: Validate Monorepo
         run: composer run validate-monorepo
 
+      - name: Validate Composer.json in Packages
+        run: |
+          for file in $(find src -name composer.json); do
+            cd $(dirname $file)
+            pwd
+          done
+
       - name: Run phpcs
         run: composer run phpcs
