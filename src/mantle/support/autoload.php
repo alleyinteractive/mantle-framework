@@ -3,7 +3,8 @@
  * Autoloaded File for Mantle Support
  *
  * @package Mantle
- * phpcs:disable Squiz.Commenting.FileComment.Missing
  */
+
+namespace Mantle\Support;
 
 require_once __DIR__ . '/helpers/helpers.php';
