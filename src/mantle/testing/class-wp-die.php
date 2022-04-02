@@ -121,11 +121,7 @@ class WP_Die {
 		}
 
 		// Provide a helper message for database errors after displaying the error message.
-		if (
-			false !== strpos( $message, 'Error establishing a database connection' )
-			|| false !== strpos( $message, 'Unknown database' )
-
-		) {
+		if ( false !== strpos( $message, 'database' ) ) {
 			echo "\n\n";
 			printf(
 				"\033[31m%s \033[0m\n\n",
