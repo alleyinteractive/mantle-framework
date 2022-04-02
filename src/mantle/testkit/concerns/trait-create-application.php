@@ -64,9 +64,7 @@ trait Create_Application {
 		return [
 			'app'        => [
 				'debug'     => true,
-				'providers' => [
-					\Mantle\Database\Factory_Service_Provider::class,
-				],
+				'providers' => [],
 			],
 			'queue'      => [
 				'batch_size' => 100,
