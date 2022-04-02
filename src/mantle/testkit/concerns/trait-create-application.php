@@ -28,6 +28,10 @@ trait Create_Application {
 		$this->resolve_application_bindings( $app );
 		$this->resolve_application_config( $app );
 
+		// Boot any service providers manually.
+		$app->register_configured_providers();
+		$app->boot();
+
 		return $app;
 	}
 
@@ -64,7 +68,9 @@ trait Create_Application {
 		return [
 			'app'        => [
 				'debug'     => true,
-				'providers' => [],
+				'providers' => [
+					\Mantle\Database\Factory_Service_Provider::class,
+				],
 			],
 			'queue'      => [
 				'batch_size' => 100,

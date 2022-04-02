@@ -7,6 +7,7 @@
 
 namespace Mantle\Testing;
 
+use Mantle\Container\Container;
 use Mantle\Framework\Alias_Loader;
 use Mantle\Contracts\Application;
 use Mantle\Database\Model\Model;
@@ -248,8 +249,10 @@ abstract class Test_Case extends BaseTestCase {
 	protected function refresh_application() {
 		$this->app = $this->create_application();
 
-		Facade::set_facade_application( $this->app );
-		Facade::clear_resolved_instances();
+		if ( class_exists( Facade::class ) ) {
+			Facade::set_facade_application( $this->app );
+			Facade::clear_resolved_instances();
+		}
 
 		if ( class_exists( Alias_Loader::class ) ) {
 			Alias_Loader::set_instance( null );
@@ -265,7 +268,7 @@ abstract class Test_Case extends BaseTestCase {
 	 */
 	public static function factory() {
 		if ( ! isset( static::$factory ) ) {
-			static::$factory = new Factory_Container( app() );
+			static::$factory = new Factory_Container( Container::getInstance() );
 		}
 
 		return static::$factory;

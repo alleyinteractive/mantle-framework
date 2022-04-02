@@ -14,6 +14,7 @@ use Mantle\Contracts\Kernel as Kernel_Contract;
 use Mantle\Events\Dispatcher;
 use Mantle\Support\Environment;
 use Mantle\Support\Service_Provider;
+use RuntimeException;
 
 /**
  * Testkit Application
@@ -71,18 +72,11 @@ class Application extends Container implements Application_Contract {
 	protected $booted = false;
 
 	/**
-	 * The array of booting callbacks.
+	 * All of the registered service providers.
 	 *
-	 * @var callable[]
+	 * @var Service_Provider[]
 	 */
-	protected $booting_callbacks = [];
-
-	/**
-	 * The array of booted callbacks.
-	 *
-	 * @var callable[]
-	 */
-	protected $booted_callbacks = [];
+	protected $service_providers = [];
 
 	/**
 	 * Environment file name.
@@ -104,13 +98,6 @@ class Application extends Container implements Application_Contract {
 	 * @var string
 	 */
 	protected $environment;
-
-	/**
-	 * Indicates if the application is running in the console.
-	 *
-	 * @var bool
-	 */
-	protected $is_running_in_console;
 
 	/**
 	 * Constructor.
@@ -331,33 +318,34 @@ class Application extends Container implements Application_Contract {
 	}
 
 	/**
-	 * Flush the container of all bindings and resolved instances.
-	 */
-	public function flush() {
-		parent::flush();
-
-		$this->booted_callbacks  = [];
-		$this->booting_callbacks = [];
-	}
-
-	/**
 	 * Run the given array of bootstrap classes.
+	 *
+	 * @throws RuntimeException Thrown on use.
 	 *
 	 * @param string[]        $bootstrappers Class names of packages to boot.
 	 * @param Kernel_Contract $kernel Kernel instance.
 	 */
 	public function bootstrap_with( array $bootstrappers, Kernel_Contract $kernel ) {
-		// Not supported.
+		throw new RuntimeException( 'Not supported with Testkit' );
+	}
+
+	/**
+	 * Register all of the configured providers.
+	 */
+	public function register_configured_providers() {
+		collect( $this->config->get( 'app.providers', [] ) )->each( [ $this, 'register' ] );
 	}
 
 	/**
 	 * Get an instance of a service provider.
 	 *
+	 * @throws RuntimeException Thrown on use.
+	 *
 	 * @param string $name Provider class name.
-	 * @return Service_Provider|null
+	 * @return void
 	 */
 	public function get_provider( string $name ): ?Service_Provider {
-		return null;
+		throw new RuntimeException( 'Not supported with Testkit' );
 	}
 
 	/**
@@ -366,7 +354,7 @@ class Application extends Container implements Application_Contract {
 	 * @return array
 	 */
 	public function get_providers(): array {
-		return [];
+		return $this->service_providers;
 	}
 
 	/**
@@ -376,7 +364,18 @@ class Application extends Container implements Application_Contract {
 	 * @return Application
 	 */
 	public function register( $provider ): Application {
-		// Not supported.
+		$provider_name = is_string( $provider ) ? $provider : get_class( $provider );
+
+		if ( ! empty( $this->service_providers[ $provider_name ] ) ) {
+			return $this;
+		}
+
+		if ( is_string( $provider ) ) {
+			$provider = new $provider( $this );
+		}
+
+		$provider->register();
+		$this->service_providers[ $provider_name ] = $provider;
 		return $this;
 	}
 
@@ -399,13 +398,11 @@ class Application extends Container implements Application_Contract {
 			return $this;
 		}
 
-		// Fire the 'booting' callbacks.
-		$this->fire_app_callbacks( $this->booting_callbacks );
+		foreach ( $this->service_providers as $provider ) {
+			$provider->boot_provider();
+		}
 
 		$this->booted = true;
-
-		// Fire the 'booted' callbacks.
-		$this->fire_app_callbacks( $this->booted_callbacks );
 
 		return $this;
 	}
@@ -473,16 +470,12 @@ class Application extends Container implements Application_Contract {
 	}
 
 	/**
-	 * Check if the application is running in the console.
+	 * Check if the application is running in the console (wp-cli).
 	 *
 	 * @return bool
 	 */
 	public function is_running_in_console(): bool {
-		if ( null === $this->is_running_in_console ) {
-			$this->is_running_in_console = Environment::get( 'APP_RUNNING_IN_CONSOLE' ) || ( defined( 'WP_CLI' ) && WP_CLI && ! wp_doing_cron() );
-		}
-
-		return $this->is_running_in_console;
+		return false;
 	}
 
 	/**
@@ -499,38 +492,23 @@ class Application extends Container implements Application_Contract {
 	/**
 	 * Register a new boot listener.
 	 *
+	 * @throws RuntimeException Thrown on use.
+	 *
 	 * @param callable $callback Callback for the listener.
-	 * @return static
 	 */
 	public function booting( $callback ) {
-		$this->booting_callbacks[] = $callback;
-		return $this;
+		throw new RuntimeException( 'Not supported with Testkit' );
 	}
 
 	/**
 	 * Register a new "booted" listener.
 	 *
+	 * @throws RuntimeException Thrown on use.
+	 *
 	 * @param callable $callback Callback for the listener.
-	 * @return static
+	 * @return void
 	 */
 	public function booted( $callback ) {
-		$this->booted_callbacks[] = $callback;
-
-		if ( $this->is_booted() ) {
-			$this->fire_app_callbacks( [ $callback ] );
-		}
-
-		return $this;
-	}
-
-	/**
-	 * Call the booting callbacks for the application.
-	 *
-	 * @param callable[] $callbacks Callbacks to fire.
-	 */
-	protected function fire_app_callbacks( array $callbacks ) {
-		foreach ( $callbacks as $callback ) {
-			$callback( $this );
-		}
+		throw new RuntimeException( 'Not supported with Testkit' );
 	}
 }

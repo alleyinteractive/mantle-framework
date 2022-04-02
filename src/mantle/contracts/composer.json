@@ -14,7 +14,7 @@
     "extra": {
         "wordpress-autoloader": {
             "autoload": {
-                "Mantle\\Container": "./"
+                "Mantle\\Contracts": "./"
             }
         }
     },
