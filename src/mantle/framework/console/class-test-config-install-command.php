@@ -68,7 +68,13 @@ class Test_Config_Install_Command extends Command {
 			$this->error( __( 'Error copying configuration file.', 'mantle' ), true );
 		}
 
-		$this->log( __( 'Configuration copied! Update it to reference your proper database credentials.', 'mantle' ) );
+		$this->log(
+			sprintf(
+				$path,
+				/* translators: 1: config file path */
+				__( 'Configuration copied to %s. Update it to reference your proper database credentials.', 'mantle' ),
+			),
+		);
 	}
 
 	/**

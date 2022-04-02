@@ -112,7 +112,47 @@ class WP_Die {
 		if ( ! empty( $args ) ) {
 			echo "Args: \n";
 			foreach ( $args as $k => $v ) {
+				if ( is_array( $v ) ) {
+					continue;
+				}
+
 				echo "\t $k : $v\n";
+			}
+		}
+
+		// Provide a helper message for database errors after displaying the error message.
+		if (
+			false !== strpos( $message, 'Error establishing a database connection' )
+			|| false !== strpos( $message, 'Unknown database' )
+
+		) {
+			echo "\n\n";
+			printf(
+				"\033[31m%s \033[0m\n\n",
+				'🚨 It looks like there was an error connecting to the database. Mantle can help!',
+			);
+
+			$path = trailingslashit( ABSPATH ) . 'wp-tests-config.php';
+
+			// Display debug information if wp-tests-config.php doesn't exist.
+			if ( true || ! file_exists( $path ) ) {
+				echo "Try creating a \033[36mwp-tests-config.php\033[0m file in your project root.\n\n";
+				echo "Mantle can help with that. Either run `wp mantle test-config` to generate a configuration or download the latest\n";
+				echo "copy to the project root to \033[36m{$path}\033[0m: \n\n";
+				echo "    \033[33mhttps://raw.githubusercontent.com/alleyinteractive/mantle-framework/HEAD/src/mantle/testing/wp-tests-config-sample.php\033[0m \n\n";
+				echo "    \033[33mwget https://raw.githubusercontent.com/alleyinteractive/mantle-framework/HEAD/src/mantle/testing/wp-tests-config-sample.php -O $path\033[0m \n\n";
+
+				echo "Mantle can run without a configuration in place but assumes a default set of configuration.\n";
+				echo "🔍 Check if your database is configured to allow access with the default credentials:\n\n";
+
+				echo "DB_NAME: \033[36m" . Utils::DEFAULT_DB_NAME . "\033[0m\n";
+				echo "DB_USER: \033[36m" . Utils::DEFAULT_DB_USER . "\033[0m\n";
+				echo "DB_PASSWORD: \033[36m" . ( Utils::DEFAULT_DB_PASSWORD ?: '(none)' ) . "\033[0m\n";
+				echo "DB_HOST: \033[36m" . Utils::DEFAULT_DB_HOST . "\033[0m\n";
+
+				echo "\n";
+			} else {
+				echo "🔍 Check the configuration settings in \033[36m{$path}\033[0m and ensure you have access to the configured database.\n\n";
 			}
 		}
 
