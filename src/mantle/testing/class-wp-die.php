@@ -135,7 +135,7 @@ class WP_Die {
 			$path = trailingslashit( ABSPATH ) . 'wp-tests-config.php';
 
 			// Display debug information if wp-tests-config.php doesn't exist.
-			if ( true || ! file_exists( $path ) ) {
+			if ( ! file_exists( $path ) ) {
 				echo "Try creating a \033[36mwp-tests-config.php\033[0m file in your project root.\n\n";
 				echo "Mantle can help with that. Either run `wp mantle test-config` to generate a configuration or download the latest\n";
 				echo "copy to the project root to \033[36m{$path}\033[0m: \n\n";
