@@ -28,10 +28,6 @@ trait Create_Application {
 		$this->resolve_application_bindings( $app );
 		$this->resolve_application_config( $app );
 
-		// Boot any service providers manually.
-		$app->register_configured_providers();
-		$app->boot();
-
 		return $app;
 	}
 

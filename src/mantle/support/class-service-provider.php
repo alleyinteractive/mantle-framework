@@ -103,11 +103,6 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	 * @return Service_Provider
 	 */
 	public function add_command( $command ): Service_Provider {
-		// Check if mantle-framework/console is loaded.
-		if ( ! class_exists( \Mantle\Console\Command::class ) ) {
-			return $this;
-		}
-
 		if ( is_array( $command ) ) {
 			foreach ( $command as $item ) {
 				$this->add_command( $item );

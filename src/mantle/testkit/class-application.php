@@ -7,6 +7,8 @@
 
 namespace Mantle\Testkit;
 
+use Faker\Generator;
+use Faker\Factory;
 use Mantle\Container\Container;
 use Mantle\Contracts\Application as Application_Contract;
 use Mantle\Contracts\Container as Container_Contract;
@@ -315,6 +317,17 @@ class Application extends Container implements Application_Contract {
 	 */
 	protected function register_base_service_providers() {
 		$this->app->singleton( 'events', fn( $app ) => new Dispatcher( $app ) );
+
+		$this->app->singleton(
+			Generator::class,
+			function() {
+				$factory = Factory::create();
+
+				$factory->unique( true );
+
+				return $factory;
+			},
+		);
 	}
 
 	/**
@@ -327,13 +340,6 @@ class Application extends Container implements Application_Contract {
 	 */
 	public function bootstrap_with( array $bootstrappers, Kernel_Contract $kernel ) {
 		throw new RuntimeException( 'Not supported with Testkit' );
-	}
-
-	/**
-	 * Register all of the configured providers.
-	 */
-	public function register_configured_providers() {
-		collect( $this->config->get( 'app.providers', [] ) )->each( [ $this, 'register' ] );
 	}
 
 	/**
@@ -360,23 +366,12 @@ class Application extends Container implements Application_Contract {
 	/**
 	 * Register a Service Provider
 	 *
+	 * @throws RuntimeException Thrown on use.
+	 *
 	 * @param object $provider Service provider to register.
-	 * @return Application
 	 */
 	public function register( $provider ): Application {
-		$provider_name = is_string( $provider ) ? $provider : get_class( $provider );
-
-		if ( ! empty( $this->service_providers[ $provider_name ] ) ) {
-			return $this;
-		}
-
-		if ( is_string( $provider ) ) {
-			$provider = new $provider( $this );
-		}
-
-		$provider->register();
-		$this->service_providers[ $provider_name ] = $provider;
-		return $this;
+		throw new RuntimeException( 'Not supported with Testkit' );
 	}
 
 	/**
@@ -394,14 +389,6 @@ class Application extends Container implements Application_Contract {
 	 * @return static
 	 */
 	public function boot() {
-		if ( $this->is_booted() ) {
-			return $this;
-		}
-
-		foreach ( $this->service_providers as $provider ) {
-			$provider->boot_provider();
-		}
-
 		$this->booted = true;
 
 		return $this;
