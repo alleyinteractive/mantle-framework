@@ -145,7 +145,7 @@ class Application extends Container implements Application_Contract {
 	 * @return string
 	 */
 	public function get_base_path( string $path = '' ): string {
-		return $this->base_path . ( $path ? '/' . $path : '' );
+		return $this->base_path . ( $path ? DIRECTORY_SEPARATOR . $path : '' );
 	}
 
 	/**
@@ -210,7 +210,7 @@ class Application extends Container implements Application_Contract {
 	 * @return string
 	 */
 	public function get_root_url( string $path = '' ): string {
-		return $this->root_url . ( $path ? '/' . $path : '' );
+		return $this->root_url . ( $path ? DIRECTORY_SEPARATOR . $path : '' );
 	}
 
 	/**
