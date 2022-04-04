@@ -70,9 +70,9 @@ class Test_Config_Install_Command extends Command {
 
 		$this->log(
 			sprintf(
-				$path,
 				/* translators: 1: config file path */
 				__( 'Configuration copied to %s. Update it to reference your proper database credentials.', 'mantle' ),
+				$path,
 			),
 		);
 	}
