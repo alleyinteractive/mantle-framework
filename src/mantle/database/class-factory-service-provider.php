@@ -31,7 +31,7 @@ class Factory_Service_Provider extends Service_Provider {
 	public function register() {
 		$this->add_command( Console\Seed_Command::class );
 
-		$this->registerMantleFactory();
+		$this->register_mantle_factory();
 	}
 
 	/**
@@ -39,7 +39,7 @@ class Factory_Service_Provider extends Service_Provider {
 	 *
 	 * @return void
 	 */
-	protected function registerMantleFactory() {
+	protected function register_mantle_factory() {
 		$this->app->singleton(
 			FakerGenerator::class,
 			function ( $app, $parameters ) {

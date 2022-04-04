@@ -191,6 +191,16 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 		// Strip the trailing slash from the request.
 		$request->setPathInfo( \untrailingslashit( $request->getPathInfo() ) );
 
+		// Check if the router service provider exists.
+		if ( ! isset( $this->app['router.service-provider'] ) ) {
+			// Flag the missing router service provider if not running testkit.
+			if ( ! ( $this->app instanceof \Mantle\Testkit\Application ) ) {
+				throw new InvalidArgumentException( 'Router service provider not found.' );
+			}
+
+			return null;
+		}
+
 		$provider = $this->app['router.service-provider'];
 
 		if ( ! ( $provider instanceof Route_Service_Provider_Contract ) ) {
