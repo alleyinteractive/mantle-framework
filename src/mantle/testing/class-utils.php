@@ -16,6 +16,34 @@ use Mantle\Testing\Doubles\Spy_REST_Server;
  */
 class Utils {
 	/**
+	 * Default database name.
+	 *
+	 * @var string
+	 */
+	public const DEFAULT_DB_NAME = 'wordpress_unit_tests';
+
+	/**
+	 * Default database user.
+	 *
+	 * @var string
+	 */
+	public const DEFAULT_DB_USER = 'root';
+
+	/**
+	 * Default database password.
+	 *
+	 * @var string
+	 */
+	public const DEFAULT_DB_PASSWORD = 'root';
+
+	/**
+	 * Default database host.
+	 *
+	 * @var string
+	 */
+	public const DEFAULT_DB_HOST = 'localhost';
+
+	/**
 	 * Get the output from a given callable.
 	 *
 	 * @param callable $callable Callable to execute.
@@ -165,10 +193,10 @@ class Utils {
 		defined( 'ABSPATH' ) || define( 'ABSPATH', preg_replace( '#/wp-content/.*$#', '/', __DIR__ ) );
 		defined( 'WP_DEBUG' ) || define( 'WP_DEBUG', true );
 
-		defined( 'DB_NAME' ) || define( 'DB_NAME', 'wordpress_unit_tests' );
-		defined( 'DB_USER' ) || define( 'DB_USER', 'root' );
-		defined( 'DB_PASSWORD' ) || define( 'DB_PASSWORD', 'root' );
-		defined( 'DB_HOST' ) || define( 'DB_HOST', 'localhost' );
+		defined( 'DB_NAME' ) || define( 'DB_NAME', static::DEFAULT_DB_NAME );
+		defined( 'DB_USER' ) || define( 'DB_USER', static::DEFAULT_DB_USER );
+		defined( 'DB_PASSWORD' ) || define( 'DB_PASSWORD', static::DEFAULT_DB_PASSWORD );
+		defined( 'DB_HOST' ) || define( 'DB_HOST', static::DEFAULT_DB_HOST );
 		defined( 'DB_CHARSET' ) || define( 'DB_CHARSET', 'utf8' );
 		defined( 'DB_COLLATE' ) || define( 'DB_COLLATE', '' );
 
