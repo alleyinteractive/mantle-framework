@@ -232,4 +232,19 @@ class Utils {
 
 		return false === $value ? $default : $value;
 	}
+
+	/**
+	 * Ensure an environment variable is is a valid string that can be passed to
+	 * to a shell script.
+	 *
+	 * For example, an empty string should be '' vs a blank space.
+	 * `escapeshellarg()` doesn't fit here because the script is expecting
+	 * unquoted arguments.
+	 *
+	 * @param string $string String to sanitize.
+	 * @return string
+	 */
+	public static function shell_safe( string $string ): string {
+		return empty( trim( $string ) ) ? "''" : $string;
+	}
 }

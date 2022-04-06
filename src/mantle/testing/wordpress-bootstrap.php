@@ -58,12 +58,12 @@ if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) && ! empty( WP_TESTS_CONFIG_FILE_PAT
 			'WP_CORE_DIR=%s curl -s %s | bash -s %s %s %s %s %s %s',
 			WP_TESTS_INSTALL_PATH,
 			'https://raw.githubusercontent.com/alleyinteractive/mantle-ci/HEAD/install-wp-tests.sh',
-			defined( 'DB_NAME' ) ? DB_NAME : Utils::env( 'WP_DB_NAME', 'wordpress_unit_tests' ),
-			defined( 'DB_USER' ) ? DB_USER : Utils::env( 'WP_DB_USER', 'root' ),
-			defined( 'DB_PASSWORD' ) ? DB_PASSWORD : Utils::env( 'WP_DB_PASSWORD', 'root' ),
-			defined( 'DB_HOST' ) ? DB_HOST : Utils::env( 'WP_DB_HOST', 'localhost' ),
-			Utils::env( 'WP_VERSION', 'latest' ),
-			Utils::env( 'WP_SKIP_DB_CREATE', 'false' ),
+			Utils::shell_safe( defined( 'DB_NAME' ) ? DB_NAME : Utils::env( 'WP_DB_NAME', 'wordpress_unit_tests' ) ),
+			Utils::shell_safe( defined( 'DB_USER' ) ? DB_USER : Utils::env( 'WP_DB_USER', 'root' ) ),
+			Utils::shell_safe( defined( 'DB_PASSWORD' ) ? DB_PASSWORD : Utils::env( 'WP_DB_PASSWORD', 'root' ) ),
+			Utils::shell_safe( defined( 'DB_HOST' ) ? DB_HOST : Utils::env( 'WP_DB_HOST', 'localhost' ) ),
+			Utils::shell_safe( Utils::env( 'WP_VERSION', 'latest' ) ),
+			Utils::shell_safe( Utils::env( 'WP_SKIP_DB_CREATE', 'false' ) ),
 		);
 
 		$resp = system( $cmd, $retval );
