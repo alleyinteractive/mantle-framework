@@ -51,7 +51,13 @@ if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) && ! empty( WP_TESTS_CONFIG_FILE_PAT
 	if ( ! defined( 'WP_INSTALLING' ) || ! WP_INSTALLING ) {
 		echo 'WordPress installation not found, installing in temporary directory: ' . WP_TESTS_INSTALL_PATH . PHP_EOL;
 
-		$dir = get_framework_directory();
+		$dir      = get_framework_directory();
+		$password = defined( 'DB_PASSWORD' ) ? DB_PASSWORD : Utils::env( 'WP_DB_PASSWORD', 'root' );
+
+		// Solve for some legacy use cases where this was already being set as "".
+		if ( "''" === $password ) {
+			$password = '';
+		}
 
 		// Download the latest installation command from GitHub and install WordPress.
 		$cmd = sprintf(
@@ -60,7 +66,7 @@ if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) && ! empty( WP_TESTS_CONFIG_FILE_PAT
 			'https://raw.githubusercontent.com/alleyinteractive/mantle-ci/HEAD/install-wp-tests.sh',
 			escapeshellarg( defined( 'DB_NAME' ) ? DB_NAME : Utils::env( 'WP_DB_NAME', 'wordpress_unit_tests' ) ),
 			escapeshellarg( defined( 'DB_USER' ) ? DB_USER : Utils::env( 'WP_DB_USER', 'root' ) ),
-			escapeshellarg( defined( 'DB_PASSWORD' ) ? DB_PASSWORD : Utils::env( 'WP_DB_PASSWORD', 'root' ) ),
+			escapeshellarg( $password ),
 			escapeshellarg( defined( 'DB_HOST' ) ? DB_HOST : Utils::env( 'WP_DB_HOST', 'localhost' ) ),
 			escapeshellarg( Utils::env( 'WP_VERSION', 'latest' ) ),
 			escapeshellarg( Utils::env( 'WP_SKIP_DB_CREATE', 'false' ) ),
