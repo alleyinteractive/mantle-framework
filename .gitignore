@@ -11,6 +11,9 @@ vendor
 .phpcs/*.json
 .phpunit.result.cache
 
+# Composer files
+composer.lock
+
 # Ignore temporary OS files
 .DS_Store
 .DS_Store?
