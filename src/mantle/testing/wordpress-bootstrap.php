@@ -9,7 +9,6 @@ use Mantle\Testing\Doubles\MockPHPMailer;
 use Mantle\Testing\Utils;
 use Mantle\Testing\WP_Die;
 
-use function Mantle\Testing\get_framework_directory;
 use function Mantle\Testing\tests_add_filter;
 
 require_once __DIR__ . '/class-utils.php';
@@ -50,8 +49,6 @@ if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) && ! empty( WP_TESTS_CONFIG_FILE_PAT
 	// Install WordPress if we're not in the sub-process that installs WordPress.
 	if ( ! defined( 'WP_INSTALLING' ) || ! WP_INSTALLING ) {
 		echo 'WordPress installation not found, installing in temporary directory: ' . WP_TESTS_INSTALL_PATH . PHP_EOL;
-
-		$dir = get_framework_directory();
 
 		// Download the latest installation command from GitHub and install WordPress.
 		$cmd = sprintf(
