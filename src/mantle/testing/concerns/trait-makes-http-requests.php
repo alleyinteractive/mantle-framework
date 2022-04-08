@@ -8,7 +8,7 @@
 namespace Mantle\Testing\Concerns;
 
 use Mantle\Database\Model\Model;
-use Mantle\Http\Kernel as HttpKernel;
+use Mantle\Framework\Http\Kernel as HttpKernel;
 use Mantle\Http\Request;
 use Mantle\Support\Str;
 use Mantle\Testing\Exceptions\Exception;

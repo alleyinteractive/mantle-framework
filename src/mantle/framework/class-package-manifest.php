@@ -8,7 +8,7 @@
 namespace Mantle\Framework;
 
 use Mantle\Contracts\Application;
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\collect;
 
 /**
  * Package Manifest

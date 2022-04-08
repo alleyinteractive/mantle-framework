@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Helpers;
+namespace Mantle\Support\Helpers;
 
 /**
  * Check if we are on a hosted environment

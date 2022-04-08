@@ -9,7 +9,7 @@ namespace Mantle\Console;
 
 use WP_CLI;
 
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\collect;
 
 /**
  * CLI Command for Service Providers

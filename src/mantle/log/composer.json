@@ -1,0 +1,31 @@
+{
+    "name": "mantle-framework/log",
+    "description": "The Mantle Framework Log Package",
+    "type": "project",
+    "require": {
+        "php": "^7.4|^8.0",
+        "alleyinteractive/composer-wordpress-autoloader": "^0.2",
+        "mantle-framework/contracts": "^0.1",
+        "mantle-framework/support": "^0.1",
+        "monolog/monolog": "^2.0",
+        "psr/log": "^1.0.1 || ^2.0 || ^3.0"
+    },
+    "extra": {
+        "wordpress-autoloader": {
+            "autoload": {
+                "Mantle\\Log": "./"
+            }
+        }
+    },
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Alley",
+            "email": "info@alley.co"
+        }
+    ],
+    "minimum-stability": "dev",
+    "config": {
+      "sort-packages": true
+    }
+}

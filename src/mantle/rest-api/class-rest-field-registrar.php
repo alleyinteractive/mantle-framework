@@ -12,7 +12,7 @@ use Mantle\Contracts\Rest_Api\REST_Field_Get_Callback;
 use Mantle\Contracts\REST_API\REST_Field_Schema;
 use Mantle\Contracts\REST_API\REST_Field_Update_Callback;
 
-use function Mantle\Framework\Helpers\backtickit;
+use function Mantle\Support\Helpers\backtickit;
 
 /**
  * Registers REST fields that implement library interfaces.

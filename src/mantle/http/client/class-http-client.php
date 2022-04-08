@@ -9,7 +9,7 @@ namespace Mantle\Http\Client;
 
 use Mantle\Support\Pipeline;
 
-use function Mantle\Framework\Helpers\retry;
+use function Mantle\Support\Helpers\retry;
 
 /**
  * Http Request Client

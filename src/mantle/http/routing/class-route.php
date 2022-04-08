@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Route as Symfony_Route;
 use Symfony\Component\HttpFoundation\Response as Symfony_Response;
 
-use function Mantle\Framework\Helpers\get_callable_fqn;
+use function Mantle\Support\Helpers\get_callable_fqn;
 
 /**
  * Route Class

@@ -16,7 +16,7 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RuntimeException;
 
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\collect;
 
 /**
  * Hook Usage Command Command

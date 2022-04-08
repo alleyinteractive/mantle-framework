@@ -10,9 +10,9 @@ use ReflectionParameter;
 use RuntimeException;
 use WP_Query;
 
-use function Mantle\Framework\Helpers\add_action;
-use function Mantle\Framework\Helpers\add_filter;
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\add_action;
+use function Mantle\Support\Helpers\add_filter;
+use function Mantle\Support\Helpers\collect;
 
 class Test_WordPress_Action_Dispatcher extends Framework_Test_Case {
 	public function test_action_handler() {

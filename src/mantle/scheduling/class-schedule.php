@@ -16,7 +16,7 @@ use Mantle\Contracts\Queue\Job;
 use Mantle\Support\Collection;
 use RuntimeException;
 
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\collect;
 
 /**
  * Event Scheduler

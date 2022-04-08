@@ -1,10 +1,10 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use function Mantle\Framework\Helpers\data_fill;
-use function Mantle\Framework\Helpers\data_get;
-use function Mantle\Framework\Helpers\data_set;
-use function Mantle\Framework\Helpers\value;
+use function Mantle\Support\Helpers\data_fill;
+use function Mantle\Support\Helpers\data_get;
+use function Mantle\Support\Helpers\data_set;
+use function Mantle\Support\Helpers\value;
 
 class SupportHelpersArrayTest extends TestCase {
 	public function testValue() {

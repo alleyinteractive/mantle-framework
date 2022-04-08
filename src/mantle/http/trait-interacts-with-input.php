@@ -14,7 +14,7 @@ use Mantle\Support\Arr;
 use Mantle\Support\Str;
 use stdClass;
 
-use function Mantle\Framework\Helpers\data_get;
+use function Mantle\Support\Helpers\data_get;
 
 /**
  * Interacts With Input trait.

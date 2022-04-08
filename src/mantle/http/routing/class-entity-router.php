@@ -21,7 +21,7 @@ use Mantle\Http\Routing\Events\Bindings_Substituted;
 use Mantle\Http\Routing\Events\Entity_Route_Added;
 use Mantle\Http\Routing\Events\Route_Matched;
 
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\collect;
 
 /**
  * Provide routing to a WordPress data entity: post or term.

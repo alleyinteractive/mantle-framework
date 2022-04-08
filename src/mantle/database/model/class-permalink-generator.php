@@ -9,7 +9,7 @@ namespace Mantle\Database\Model;
 
 use Mantle\Database\Model\Events\Permalink_Generated;
 
-use function Mantle\Framework\Helpers\event;
+use function Mantle\Support\Helpers\event;
 
 /**
  * Model Permalink Generator

@@ -1,8 +1,8 @@
 {
     "name": "alleyinteractive/mantle-framework",
-    "type": "library",
     "description": "A framework for powerful WordPress development",
     "license": "GPL-2.0-or-later",
+    "type": "library",
     "authors": [
         {
             "name": "Alley",
@@ -10,6 +10,7 @@
         }
     ],
     "require": {
+        "php": "^7.4|^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^0.2",
         "alleyinteractive/wp-asset-manager": "^0.1",
         "dragonmantank/cron-expression": "^3.1",
@@ -23,6 +24,7 @@
         "nesbot/carbon": "^2.53",
         "nette/php-generator": "^3.6",
         "psr/container": "^1.1.1 || ^2.0.1",
+        "psr/log": "^1.0.1 || ^2.0 || ^3.0",
         "symfony/finder": "^5.3",
         "symfony/http-foundation": "^5.3",
         "symfony/http-kernel": "^5.3",
@@ -34,46 +36,74 @@
         "voku/portable-ascii": "^1.4"
     },
     "require-dev": {
-        "alleyinteractive/alley-coding-standards": "^0.3.0",
+        "alleyinteractive/alley-coding-standards": "^0.3",
         "mockery/mockery": "^1.3",
         "nunomaduro/collision": "^5.0",
-        "phpunit/phpunit": "^8.5.8 || ^9.3.3"
+        "phpunit/phpunit": "^8.5.8 || ^9.3.3",
+        "symplify/monorepo-builder": "^10.1"
+    },
+    "replace": {
+        "mantle-framework/assets": "self.version",
+        "mantle-framework/auth": "self.version",
+        "mantle-framework/cache": "self.version",
+        "mantle-framework/caper": "self.version",
+        "mantle-framework/config": "self.version",
+        "mantle-framework/console": "self.version",
+        "mantle-framework/container": "self.version",
+        "mantle-framework/contracts": "self.version",
+        "mantle-framework/database": "self.version",
+        "mantle-framework/events": "self.version",
+        "mantle-framework/facade": "self.version",
+        "mantle-framework/faker": "self.version",
+        "mantle-framework/filesystem": "self.version",
+        "mantle-framework/http": "self.version",
+        "mantle-framework/log": "self.version",
+        "mantle-framework/query-monitor": "self.version",
+        "mantle-framework/queue": "self.version",
+        "mantle-framework/rest-api": "self.version",
+        "mantle-framework/scheduling": "self.version",
+        "mantle-framework/support": "self.version",
+        "mantle-framework/testing": "self.version",
+        "mantle-framework/view": "self.version"
+    },
+    "minimum-stability": "dev",
+    "autoload": {
+        "files": [
+            "src/mantle/framework/helpers.php",
+            "src/mantle/support/autoload.php",
+            "src/mantle/testing/autoload.php"
+        ]
     },
     "config": {
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true,
             "alleyinteractive/composer-wordpress-autoloader": true
         },
-        "apcu-autoloader": true,
-        "optimize-autoloader": true,
         "sort-packages": true
     },
-    "autoload": {
-        "files": [
-            "src/mantle/testing/autoload.php",
-            "src/mantle/framework/helpers.php",
-            "src/mantle/framework/helpers/helpers.php"
-        ]
-    },
     "extra": {
-      "wordpress-autoloader": {
-        "autoload": {
-          "Mantle\\": "src/mantle/"
-        },
-        "autoload-dev": {
-          "Mantle\\Tests\\": "tests/"
+        "wordpress-autoloader": {
+            "autoload": {
+                "Mantle\\": "src/mantle/"
+            },
+            "autoload-dev": {
+                "Mantle\\Tests\\": "tests/"
+            }
         }
-      }
     },
     "scripts": {
         "lint": "@phpcs",
+        "merge": "monorepo-builder merge",
         "phpcbf": "phpcbf --standard=./phpcs.xml .",
         "phpcs": "phpcs --standard=./phpcs.xml .",
         "phpcs-modified": "./bin/phpcs-modified-files.sh",
         "phpunit": "phpunit",
+        "release": "monorepo-builder release --ansi",
+        "release:patch": "monorepo-builder release patch --ansi",
         "test": [
             "@phpcs",
             "@phpunit"
-        ]
+        ],
+        "validate-monorepo": "monorepo-builder validate --ansi"
     }
 }

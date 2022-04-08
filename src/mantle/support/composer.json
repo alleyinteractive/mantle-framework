@@ -1,0 +1,42 @@
+{
+    "name": "mantle-framework/support",
+    "description": "The Mantle Framework Support Package",
+    "type": "project",
+    "require": {
+        "php": "^7.4|^8.0",
+        "alleyinteractive/composer-wordpress-autoloader": "^0.2",
+        "mantle-framework/contracts": "^0.1",
+        "monolog/monolog": "^2.0",
+        "nesbot/carbon": "^2.53",
+        "symfony/finder": "^5.3",
+        "symfony/var-dumper": "^5.3",
+        "voku/portable-ascii": "^1.4"
+    },
+    "extra": {
+        "wordpress-autoloader": {
+            "autoload": {
+                "Mantle\\Support": "./"
+            }
+        }
+    },
+    "autoload": {
+        "files": [
+            "autoload.php"
+        ]
+    },
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Alley",
+            "email": "info@alley.co"
+        }
+    ],
+    "minimum-stability": "dev",
+    "config": {
+      "sort-packages": true
+    },
+    "suggest": {
+        "mantle-framework/console": "Required to load Mantle Console Commands",
+        "vlucas/phpdotenv": "Required to use Environment class (^5.3)"
+    }
+}

@@ -8,7 +8,7 @@
 namespace Mantle\Database\Query;
 
 use Mantle\Support\Collection;
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\collect;
 
 /**
  * Term Query Builder

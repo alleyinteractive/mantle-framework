@@ -10,7 +10,7 @@ namespace Mantle\Support;
 
 use ArrayAccess;
 use InvalidArgumentException;
-use Mantle\Framework\Helpers;
+use Mantle\Support\Helpers;
 
 /**
  * Array Helpers

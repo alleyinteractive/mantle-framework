@@ -12,7 +12,7 @@ use Mantle\Filesystem\Filesystem;
 use Mantle\Framework\Application_Exception;
 use Mantle\Framework\Providers\Event_Service_Provider;
 
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\collect;
 
 /**
  * Events Manifest

@@ -11,7 +11,7 @@ use Mantle\Http\Routing\Events\Route_Matched;
 use Mantle\Support\Pipeline;
 use WP_REST_Request;
 
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\collect;
 
 /**
  * REST API Route Registrar

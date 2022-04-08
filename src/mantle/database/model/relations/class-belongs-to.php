@@ -16,7 +16,7 @@ use RuntimeException;
 use Throwable;
 use WP_Term;
 
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\collect;
 
 /**
  * Creates a 'Belongs To' relationship.

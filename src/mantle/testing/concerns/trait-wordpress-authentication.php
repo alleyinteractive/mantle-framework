@@ -11,7 +11,7 @@ use Mantle\Database\Model\Model_Exception;
 use Mantle\Database\Model\User;
 use Mantle\Testing\Exceptions\Exception;
 use WP_User;
-use function Mantle\Framework\Helpers\get_user_object;
+use function Mantle\Support\Helpers\get_user_object;
 
 /**
  * Trait to provide authentication-related testing functionality.

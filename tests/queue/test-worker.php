@@ -13,7 +13,7 @@ use Mantle\Support\Collection;
 use Mockery as m;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\collect;
 
 class Test_Worker extends MockeryTestCase {
 

@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Helpers;
+namespace Mantle\Support\Helpers;
 
 require_once __DIR__ . '/internals.php';
 require_once __DIR__ . '/helpers-array.php';

@@ -11,7 +11,7 @@ use Mantle\Console\Command;
 use Mantle\Console\Confirmable;
 use Mantle\Contracts\Application;
 
-use function Mantle\Framework\Helpers\remove_action_validated;
+use function Mantle\Support\Helpers\remove_action_validated;
 
 /**
  * Database Seed Command

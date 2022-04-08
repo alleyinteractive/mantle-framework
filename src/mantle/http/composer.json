@@ -1,0 +1,35 @@
+{
+    "name": "mantle-framework/http",
+    "description": "The Mantle Framework Http Package",
+    "type": "project",
+    "require": {
+        "php": "^7.4|^8.0",
+        "illuminate/view": "^8.6",
+        "mantle-framework/contracts": "^0.1",
+        "mantle-framework/filesystem": "^0.1",
+        "mantle-framework/support": "^0.1",
+        "symfony/http-foundation": "^5.3",
+        "symfony/http-kernel": "^5.3",
+        "symfony/mime": "^5.3",
+        "symfony/routing": "^5.3",
+        "symfony/var-dumper": "^5.3"
+    },
+    "extra": {
+        "wordpress-autoloader": {
+            "autoload": {
+                "Mantle\\Http": "./"
+            }
+        }
+    },
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Alley",
+            "email": "info@alley.co"
+        }
+    ],
+    "minimum-stability": "dev",
+    "config": {
+      "sort-packages": true
+    }
+}

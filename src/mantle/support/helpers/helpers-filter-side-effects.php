@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Helpers;
+namespace Mantle\Support\Helpers;
 
 /**
  * All-in-one wrapper for `add_filter()` and `generate_filter_side_effect()`.

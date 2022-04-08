@@ -9,7 +9,7 @@ namespace Mantle\Database\Model\Concerns;
 
 use Mantle\Database\Model\Permalink_Generator;
 
-use function Mantle\Framework\Helpers\add_filter;
+use function Mantle\Support\Helpers\add_filter;
 
 /**
  * Define custom permalink structure for post models.

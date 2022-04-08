@@ -8,7 +8,7 @@
 namespace Mantle\Tests\Framework\Helpers;
 
 use Mantle\Testing\Framework_Test_Case;
-use function Mantle\Framework\Helpers\get_post_object;
+use function Mantle\Support\Helpers\get_post_object;
 
 /**
  * Unit tests for nullable post object functions.

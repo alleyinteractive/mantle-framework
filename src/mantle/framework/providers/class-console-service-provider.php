@@ -13,7 +13,7 @@ use Mantle\Support\Service_Provider;
 use Mantle\Support\Traits\Loads_Classes;
 use ReflectionClass;
 
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\collect;
 
 /**
  * Console Service Provider

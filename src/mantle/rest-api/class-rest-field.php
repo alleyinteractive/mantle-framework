@@ -13,8 +13,8 @@ use Mantle\Contracts\Rest_Api\REST_Field_Get_Callback;
 use Mantle\Contracts\REST_API\REST_Field_Schema;
 use Mantle\Contracts\REST_API\REST_Field_Update_Callback;
 
-use function Mantle\Framework\Helpers\default_from_rest_schema;
-use function Mantle\Framework\Helpers\fill_rest_schema;
+use function Mantle\Support\Helpers\default_from_rest_schema;
+use function Mantle\Support\Helpers\fill_rest_schema;
 
 /**
  * WordPress REST API Field

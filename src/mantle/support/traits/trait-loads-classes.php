@@ -10,7 +10,7 @@ namespace Mantle\Support\Traits;
 use Mantle\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\collect;
 
 /**
  * Trait for loading classes

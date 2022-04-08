@@ -10,7 +10,7 @@ namespace Mantle\Database\Model;
 use Mantle\Contracts\Database\Core_Object;
 use Mantle\Contracts\Database\Updatable;
 use Mantle\Database\Query\Term_Query_Builder;
-use Mantle\Framework\Helpers;
+use Mantle\Support\Helpers;
 
 /**
  * Term Model

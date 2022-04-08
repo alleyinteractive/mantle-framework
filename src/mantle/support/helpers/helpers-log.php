@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Helpers;
+namespace Mantle\Support\Helpers;
 
 /**
  * Write some information to the log.

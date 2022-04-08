@@ -7,7 +7,7 @@
 
 namespace Mantle\Testing\Factory;
 
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\collect;
 
 /**
  * Base Factory

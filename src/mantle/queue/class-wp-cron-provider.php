@@ -12,7 +12,7 @@ use Mantle\Contracts\Queue\Provider;
 use Mantle\Contracts\Queue\Queue_Manager;
 use Mantle\Support\Collection;
 
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\collect;
 
 /**
  * WordPress Cron Queue Provider

@@ -25,14 +25,6 @@
 		</properties>
 	</rule>
 
-	<rule ref="Squiz.Commenting.FunctionComment">
-		<exclude-pattern>src/mantle/framework/container/class-container.php</exclude-pattern>
-	</rule>
-
-	<rule ref="Squiz.PHP.DisallowMultipleAssignments">
-		<exclude-pattern>src/mantle/framework/container/class-container.php</exclude-pattern>
-	</rule>
-
 	<rule ref="Squiz.Commenting.FunctionComment.MissingParamComment">
 		<exclude-pattern>src/</exclude-pattern>
 	</rule>

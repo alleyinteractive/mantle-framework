@@ -1,0 +1,27 @@
+{
+    "name": "mantle-framework/caper",
+    "description": "The Mantle Framework Caper Package",
+    "type": "project",
+    "require": {
+        "php": "^7.4|^8.0",
+        "alleyinteractive/composer-wordpress-autoloader": "^0.2"
+    },
+    "extra": {
+        "wordpress-autoloader": {
+            "autoload": {
+                "Mantle\\Caper": "./"
+            }
+        }
+    },
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Alley",
+            "email": "info@alley.co"
+        }
+    ],
+    "minimum-stability": "dev",
+    "config": {
+        "sort-packages": true
+    }
+}

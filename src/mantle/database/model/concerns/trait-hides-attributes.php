@@ -8,7 +8,7 @@
 namespace Mantle\Database\Model\Concerns;
 
 use Closure;
-use function Mantle\Framework\Helpers\value;
+use function Mantle\Support\Helpers\value;
 
 /**
  * Concern to hide attributes from serialization.

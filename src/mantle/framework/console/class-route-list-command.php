@@ -12,7 +12,7 @@ use Mantle\Contracts\Http\Routing\Router;
 use Mantle\Http\Routing\Route;
 use Mantle\Support\Collection;
 
-use function Mantle\Framework\Helpers\collect;
+use function Mantle\Support\Helpers\collect;
 
 /**
  * Route_List_Command Controller

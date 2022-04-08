@@ -7,8 +7,8 @@
 
 namespace Mantle\REST_API;
 
-use function Mantle\Framework\Helpers\backtickit;
-use function Mantle\Framework\Helpers\get_callable_fqn;
+use function Mantle\Support\Helpers\backtickit;
+use function Mantle\Support\Helpers\get_callable_fqn;
 
 /**
  * A representation of a registered REST API field.
