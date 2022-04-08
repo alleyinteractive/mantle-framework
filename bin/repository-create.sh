@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Create the mantle-framework repositories for subtree splitting.
-# Requires `gh` and `git` to be installed.
+# Requires `gh` and `jq` to be installed.
 
 PACKAGES=$(find src/mantle -type d -exec test -e '{}'/composer.json \;  -print)
 ORGANIZATION="mantle-framework"
