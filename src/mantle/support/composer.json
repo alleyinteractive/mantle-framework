@@ -37,6 +37,7 @@
     },
     "suggest": {
         "mantle-framework/console": "Required to load Mantle Console Commands",
+        "mantle-framework/container": "Required to use wrapped add_action/add_filter functions",
         "vlucas/phpdotenv": "Required to use Environment class (^5.3)"
     }
 }
