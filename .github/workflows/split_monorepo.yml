@@ -52,7 +52,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         with:
-          package_directory: 'src/${{ matrix.package }}'
+          package_directory: 'src/mantle/${{ matrix.package }}'
           repository_organization: 'mantle-framework'
           repository_name: '${{ matrix.package }}'
           repository_host: github.com
@@ -71,7 +71,7 @@ jobs:
         with:
           tag: ${GITHUB_REF#refs/tags/}
 
-          package_directory: 'src/${{ matrix.package }}'
+          package_directory: 'src/mantle/${{ matrix.package }}'
           repository_organization: 'mantle-framework'
           repository_name: '${{ matrix.package }}'
           repository_host: "github.com"
