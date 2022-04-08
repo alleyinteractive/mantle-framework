@@ -20,6 +20,9 @@ for path in $PACKAGES; do
 		echo "Repository not found. Creating..."
 		gh repo create "$ORGANIZATION/$package" -d "[READ ONLY] Subtree split of the Mantle $package package" --public
 	fi
+
+	# Update the settings to disable issues and wikis.
+	gh repo edit "$ORGANIZATION/$package" --enable-issues=false --enable-wiki=false --homepage https://mantle.alley.co/
 done
 
 echo "DONE"
