@@ -48,7 +48,7 @@ jobs:
         if: "!startsWith(github.ref, 'refs/tags/')"
         # Uses an action in the root directory
         name: Monorepo Split of ${{ matrix.package }}
-        uses: symplify/github-action-monorepo-split@2.0
+        uses: symplify/github-action-monorepo-split@2.1
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         with:
@@ -64,7 +64,7 @@ jobs:
         if: "startsWith(github.ref, 'refs/tags/')"
         # Uses an action in the root directory
         name: Monorepo Tagged Split of ${{ matrix.package }}
-        uses: symplify/github-action-monorepo-split@2.0
+        uses: symplify/github-action-monorepo-split@2.1
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         with:
