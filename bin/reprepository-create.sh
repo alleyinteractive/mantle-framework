@@ -12,13 +12,11 @@ if ! type gh &> /dev/null; then
 fi
 
 for path in $PACKAGES; do
-	package=$(basename $path)
+	package=$(basename "$path")
 	echo "Checking $ORGANIZATION/$package..."
 
 	# Fetch the package from GitHub.
-	gh repo view "$ORGANIZATION/$package" > /dev/null 2>&1
-
-	if [ $? -ne 0 ]; then
+	if ! gh repo view "$ORGANIZATION/$package" > /dev/null 2>&1; then
 		echo "Repository not found. Creating..."
 		gh repo create "$ORGANIZATION/$package" -d "[READ ONLY] Subtree split of the Mantle $package package" --public
 	fi
