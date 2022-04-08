@@ -1,13 +1,12 @@
 #
 # Exclude these files from release archives.
 #
-/.travis.yml export-ignore
-/.php_cs.dist export-ignore
+/.github export-ignore
+/.phpcs export-ignore
 /phpcs.xml export-ignore
 /phpunit.xml export-ignore
 /bin export-ignore
 /tests export-ignore
-
 
 #
 # Auto detect text files and perform LF normalization.
