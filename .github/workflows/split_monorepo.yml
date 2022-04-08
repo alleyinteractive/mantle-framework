@@ -55,6 +55,7 @@ jobs:
           package_directory: 'src/${{ matrix.package }}'
           repository_organization: 'mantle-framework'
           repository_name: '${{ matrix.package }}'
+          repository_host: github.com
           user_name: "mantle-ci"
           user_email: "mantle@alley.co"
           branch: "main"
@@ -73,6 +74,7 @@ jobs:
           package_directory: 'src/${{ matrix.package }}'
           repository_organization: 'mantle-framework'
           repository_name: '${{ matrix.package }}'
+          repository_host: "github.com"
           user_name: "mantle-ci"
           user_email: "mantle@alley.co"
           branch: "main"
