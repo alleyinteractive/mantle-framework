@@ -13,6 +13,7 @@ namespace Mantle\Support\Helpers;
 
 use Countable;
 use Exception;
+use Mantle\Container\Container;
 use Mantle\Events\Dispatcher;
 use Mantle\Database\Factory\Factory_Builder;
 use Mantle\Support\Collection;
@@ -361,7 +362,7 @@ function with( $value, callable $callback = null ) {
  * @throws \Mantle\Container\Binding_Resolution_Exception Binding resolution exception.
  */
 function factory( $class, $amount = null ) {
-	$factory = app( MantleFactory::class );
+	$factory = Container::getInstance()->make( MantleFactory::class );
 
 	if ( isset( $amount ) && is_int( $amount ) ) {
 		return $factory->of( $class )->times( $amount );
@@ -379,7 +380,7 @@ function factory( $class, $amount = null ) {
  * @return void
  */
 function add_action( string $hook, callable $callable, int $priority = 10 ): void {
-	app( Dispatcher::class )->action( $hook, $callable, $priority );
+	Container::getInstance()->make( Dispatcher::class )->action( $hook, $callable, $priority );
 }
 
 /**
@@ -391,7 +392,7 @@ function add_action( string $hook, callable $callable, int $priority = 10 ): voi
  * @return void
  */
 function add_filter( string $hook, callable $callable, int $priority = 10 ): void {
-	app( Dispatcher::class )->filter( $hook, $callable, $priority );
+	Container::getInstance()->make( Dispatcher::class )->filter( $hook, $callable, $priority );
 }
 
 /**
@@ -403,5 +404,5 @@ function add_filter( string $hook, callable $callable, int $priority = 10 ): voi
  * @return array|null
  */
 function event( ...$args ) {
-	return app( 'events' )->dispatch( ...$args );
+	return Container::getInstance()->make( 'events' )->dispatch( ...$args );
 }
