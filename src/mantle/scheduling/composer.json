@@ -1,5 +1,5 @@
 {
-    "name": "mantle-framework/rest-api",
+    "name": "mantle-framework/scheduling",
     "description": "The Mantle Framework Scheduling Package",
     "type": "project",
     "require": {
