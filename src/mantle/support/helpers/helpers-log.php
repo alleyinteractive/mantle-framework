@@ -7,6 +7,8 @@
 
 namespace Mantle\Support\Helpers;
 
+use Psr\Log\LoggerInterface;
+
 /**
  * Write some information to the log.
  *
@@ -18,13 +20,15 @@ function info( string $message, array $context = [] ) {
 }
 
 /**
- * Log a debug message.
+ * Send a message to the logger.
  *
- * @param  string|null $message Log message.
- * @param  array       $context Log context.
- * @return \Mantle\Log\Log_Manager|null
+ * If no parameters are passed, the logger instance is returned.
+ *
+ * @param  string|null $message Log message, optional.
+ * @param  array       $context Log context, optional.
+ * @return LoggerInterface|null
  */
-function logger( string $message = null, array $context = [] ) {
+function logger( string $message = null, array $context = [] ): ?LoggerInterface {
 	if ( is_null( $message ) ) {
 		return app( 'log' );
 	}
