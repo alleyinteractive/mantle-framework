@@ -66,7 +66,7 @@ if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) && ! empty( WP_TESTS_CONFIG_FILE_PAT
 		$resp = system( $cmd, $retval );
 
 		if ( 0 !== $retval ) {
-			echo PHP_EOL . 'Error installing WordPress!';
+			echo "\n🚨 Error downloading WordPress!\nResponse from installation command:\n\n$resp\n" . PHP_EOL;
 			exit( 1 );
 		}
 	}
@@ -117,8 +117,9 @@ $wp_theme_directories = [];
 $installing_wp        = defined( 'WP_INSTALLING' ) && WP_INSTALLING;
 
 if ( ! $installing_wp && '1' !== getenv( 'WP_TESTS_SKIP_INSTALL' ) ) {
-	system( WP_PHP_BINARY . ' ' . escapeshellarg( __DIR__ . '/install-wordpress.php' ) . ' ' . $multisite, $retval );
+	$resp = system( WP_PHP_BINARY . ' ' . escapeshellarg( __DIR__ . '/install-wordpress.php' ) . ' ' . $multisite, $retval );
 	if ( 0 !== $retval ) {
+		echo "🚨 Error installing WordPress!\nResponse from installation script:\n\n$resp\n";
 		exit( $retval );
 	}
 }
