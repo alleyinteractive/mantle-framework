@@ -28,7 +28,7 @@ for path in $PACKAGES; do
 		gh repo create "$ORGANIZATION/$package" -d "[READ ONLY] Subtree split of the Mantle $package package" --public
 	fi
 
-	is_empty=$(gh repo view mantle-framework/auth --json=isEmpty | jq -r .isEmpty)
+	is_empty=$(gh repo view $ORGANIZATION/$package --json=isEmpty | jq -r .isEmpty)
 
 	# Initialize the repository if it is empty.
 	if [ "$is_empty" = "true" ]; then
@@ -50,7 +50,7 @@ for path in $PACKAGES; do
 	fi
 
 	# Update the settings to disable issues and wikis.
-	gh repo edit "$ORGANIZATION/$package" --enable-issues=false --enable-wiki=false --homepage https://mantle.alley.co/
+	gh repo edit "$ORGANIZATION/$package" --enable-issues=false --enable-wiki=false --homepage https://mantle.alley.co
 done
 
 echo "DONE"
