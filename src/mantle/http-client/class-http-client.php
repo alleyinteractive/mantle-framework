@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Http\Client;
+namespace Mantle\Http_Client;
 
 use Mantle\Support\Pipeline;
 
