@@ -14,6 +14,8 @@ use Asset_Manager_Scripts;
 use Mantle\Contracts\Assets\Asset_Manager as Asset_Manager_Contract;
 use Mantle\Contracts\Assets\Load_Method;
 
+use function Mantle\Support\Helpers\hook_callable;
+
 /**
  * Asset Manager
  */
@@ -75,17 +77,20 @@ class Asset_Manager implements Asset_Manager_Contract {
 		bool $crossorigin = false,
 		?string $version = null
 	): void {
-		Asset_Manager_Preload::instance()->add_asset(
-			[
-				'handle'      => $handle,
-				'src'         => $src,
-				'condition'   => $condition,
-				'version'     => $version,
-				'media'       => $media,
-				'as'          => $as,
-				'crossorigin' => $crossorigin,
-				'mime_type'   => $mime_type,
-			]
+		hook_callable(
+			'wp_enqueue_scripts',
+			fn() => Asset_Manager_Preload::instance()->add_asset(
+				[
+					'handle'      => $handle,
+					'src'         => $src,
+					'condition'   => $condition,
+					'version'     => $version,
+					'media'       => $media,
+					'as'          => $as,
+					'crossorigin' => $crossorigin,
+					'mime_type'   => $mime_type,
+				]
+			),
 		);
 	}
 
@@ -96,7 +101,11 @@ class Asset_Manager implements Asset_Manager_Contract {
 	 * @return void
 	 */
 	public function async( string $handle ): void {
-		Asset_Manager_Scripts::instance()->modify_load_method( $handle, Load_Method::ASYNC );
+		hook_callable(
+			'wp_enqueue_scripts',
+			fn() => Asset_Manager_Scripts::instance()->modify_load_method( $handle, Load_Method::ASYNC ),
+			20, // Ensures the asset is registered.
+		);
 	}
 
 	/**
@@ -106,7 +115,11 @@ class Asset_Manager implements Asset_Manager_Contract {
 	 * @return void
 	 */
 	public function defer( string $handle ): void {
-		Asset_Manager_Scripts::instance()->modify_load_method( $handle, Load_Method::DEFER );
+		hook_callable(
+			'wp_enqueue_scripts',
+			fn() => Asset_Manager_Scripts::instance()->modify_load_method( $handle, Load_Method::DEFER ),
+			20, // Ensures the asset is registered.
+		);
 	}
 
 	/**
@@ -117,6 +130,10 @@ class Asset_Manager implements Asset_Manager_Contract {
 	 * @return void
 	 */
 	public function load_method( string $handle, string $load_method = Load_Method::SYNC ): void {
-		Asset_Manager_Scripts::instance()->modify_load_method( $handle, $load_method );
+		hook_callable(
+			'wp_enqueue_scripts',
+			fn() => Asset_Manager_Scripts::instance()->modify_load_method( $handle, $load_method ),
+			20, // Ensures the asset is registered.
+		);
 	}
 }

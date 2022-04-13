@@ -7,12 +7,12 @@
 
 namespace Mantle\Assets;
 
-use Asset_Manager_Preload;
 use Asset_Manager_Scripts;
 use Asset_Manager_Styles;
-use Mantle\Contracts\Assets\Asset_Manager as Asset_Manager_Contract;
 use Mantle\Contracts\Assets\Load_Hook;
 use Mantle\Contracts\Assets\Load_Method;
+
+use function Mantle\Support\Helpers\hook_callable;
 
 /**
  * Asset Manager
@@ -251,11 +251,19 @@ class Asset {
 	}
 
 	/**
+	 * Register the asset with asset manager. If called before
+	 * 'wp_enqueue_scripts', it will defer registration until then.
+	 */
+	public function register(): void {
+		hook_callable( 'wp_enqueue_scripts', fn () => $this->register_asset() );
+	}
+
+	/**
 	 * Register the asset with asset manager.
 	 *
 	 * @return void
 	 */
-	public function register(): void {
+	protected function register_asset() {
 		if ( 'script' === $this->type ) {
 			Asset_Manager_Scripts::instance()->add_asset(
 				[
