@@ -406,3 +406,20 @@ function add_filter( string $hook, callable $callable, int $priority = 10 ): voi
 function event( ...$args ) {
 	return Container::getInstance()->make( 'events' )->dispatch( ...$args );
 }
+
+/**
+ * Fire a callback if a hook was fired or is being fired. Otherwise, defer the
+ * callback until the hook was fired.
+ *
+ * @param string $hook Hook to check for.
+ * @param callable $callable Callable to invoke.
+ * @param int $priority Hook priority.
+ * @return void
+ */
+function hook_callable( string $hook, callable $callable, int $priority = 10 ): void {
+	if ( ! did_action( $hook ) && ! doing_action( $hook ) ) {
+		\add_action( $hook, fn () => $callable(), $priority );
+	} else {
+		$callable();
+	}
+}
