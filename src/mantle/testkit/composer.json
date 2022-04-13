@@ -11,7 +11,8 @@
         "mantle-framework/events": "^0.1",
         "mantle-framework/faker": "^0.1",
         "mantle-framework/support": "^0.1",
-        "mantle-framework/testing": "^0.1"
+        "mantle-framework/testing": "^0.1",
+        "phpunit/phpunit": "^9.3.3"
     },
     "extra": {
         "wordpress-autoloader": {
