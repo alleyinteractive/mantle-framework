@@ -1,7 +1,7 @@
 <?php
 namespace Mantle\Tests\Testing\Concerns;
 
-use Mantle\Http\Client\Http_Client;
+use Mantle\Http_Client\Http_Client;
 use Mantle\Testing\Mock_Http_Response;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Mock_Http_Sequence;

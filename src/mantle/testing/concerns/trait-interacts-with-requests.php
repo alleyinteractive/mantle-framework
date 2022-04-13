@@ -10,8 +10,8 @@
 namespace Mantle\Testing\Concerns;
 
 use Closure;
-use Mantle\Http\Client\Request;
-use Mantle\Http\Client\Response;
+use Mantle\Http_Client\Request;
+use Mantle\Http_Client\Response;
 use Mantle\Support\Collection;
 use Mantle\Support\Str;
 use Mantle\Testing\Mock_Http_Response;
