@@ -8,6 +8,9 @@
         "fakerphp/faker": "^1.16"
     },
     "extra": {
+        "branch-alias": {
+            "dev-main": "0.1-dev"
+        },
         "wordpress-autoloader": {
             "autoload": {
                 "Mantle\\Faker": "./"

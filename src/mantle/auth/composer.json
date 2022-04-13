@@ -9,6 +9,9 @@
         "symfony/http-kernel": "^5.3"
     },
     "extra": {
+        "branch-alias": {
+            "dev-main": "0.1-dev"
+        },
         "wordpress-autoloader": {
             "autoload": {
                 "Mantle\\Auth": "./"

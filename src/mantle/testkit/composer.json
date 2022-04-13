@@ -15,6 +15,9 @@
         "phpunit/phpunit": "^9.3.3"
     },
     "extra": {
+        "branch-alias": {
+            "dev-main": "0.1-dev"
+        },
         "wordpress-autoloader": {
             "autoload": {
                 "Mantle\\Testkit": "./"
