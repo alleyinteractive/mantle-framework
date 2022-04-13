@@ -47,12 +47,12 @@ return static function ( ContainerConfigurator $container_config ): void {
 		Option::DATA_TO_APPEND,
 		[
 			ComposerJsonSection::REQUIRE     => [
-				'alleyinteractive/composer-wordpress-autoloader' => '^0.2',
+				'alleyinteractive/composer-wordpress-autoloader' => '^0.4',
 				'php'                                            => '^7.4|^8.0',
 			],
 			ComposerJsonSection::REQUIRE_DEV => [
 				'alleyinteractive/alley-coding-standards' => '^0.3',
-				'phpunit/phpunit'                         => '^8.5.8 || ^9.3.3',
+				'phpunit/phpunit'                         => '^9.3.3',
 			],
 		],
 	);
