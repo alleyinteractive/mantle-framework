@@ -17,16 +17,10 @@ $_SERVER['PHP_SELF'] = '/index.php';
 
 global $wp_rewrite;
 
-
-register_shutdown_function( function() {
-	dd('SHUTDOWN', debug_backtrace());
-});
-
 require_once __DIR__ . '/preload.php';
 require_once __DIR__ . '/wordpress-bootstrap.php';
 require_once ABSPATH . '/wp-admin/includes/upgrade.php';
 require_once ABSPATH . '/wp-includes/wp-db.php';
-
 
 $multisite = ! empty( $argv[1] );
 
