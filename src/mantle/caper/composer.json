@@ -4,7 +4,7 @@
     "type": "project",
     "require": {
         "php": "^7.4|^8.0",
-        "alleyinteractive/composer-wordpress-autoloader": "^0.2"
+        "alleyinteractive/composer-wordpress-autoloader": "^0.4"
     },
     "extra": {
         "wordpress-autoloader": {

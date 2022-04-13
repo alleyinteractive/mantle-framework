@@ -11,7 +11,7 @@
     ],
     "require": {
         "php": "^7.4|^8.0",
-        "alleyinteractive/composer-wordpress-autoloader": "^0.2",
+        "alleyinteractive/composer-wordpress-autoloader": "^0.4",
         "alleyinteractive/wp-asset-manager": "^0.1",
         "dragonmantank/cron-expression": "^3.1",
         "fakerphp/faker": "^1.16",
@@ -39,7 +39,7 @@
         "alleyinteractive/alley-coding-standards": "^0.3",
         "mockery/mockery": "^1.3",
         "nunomaduro/collision": "^5.0",
-        "phpunit/phpunit": "^8.5.8 || ^9.3.3",
+        "phpunit/phpunit": "^9.3.3",
         "symplify/monorepo-builder": "^10.1"
     },
     "replace": {
