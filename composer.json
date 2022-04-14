@@ -57,6 +57,7 @@
         "mantle-framework/faker": "self.version",
         "mantle-framework/filesystem": "self.version",
         "mantle-framework/http": "self.version",
+        "mantle-framework/http-client": "self.version",
         "mantle-framework/log": "self.version",
         "mantle-framework/query-monitor": "self.version",
         "mantle-framework/queue": "self.version",
