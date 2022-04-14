@@ -8,6 +8,8 @@
 namespace Mantle\Framework;
 
 use Mantle\Contracts\Application;
+use Mantle\Filesystem\Filesystem;
+
 use function Mantle\Support\Helpers\collect;
 
 /**
@@ -131,14 +133,14 @@ class Package_Manifest {
 
 	/**
 	 * Build the manifest.
-	 *
-	 * @todo Replace with file system class.
 	 */
 	public function build() {
+		$filesystem = new Filesystem();
+
 		$installed          = [];
 		$composer_installed = $this->vendor_path . '/composer/installed.json';
 
-		if ( file_exists( $composer_installed ) ) {
+		if ( $filesystem->exists( $composer_installed ) ) {
 			$installed = json_decode(
 				file_get_contents( $composer_installed ), // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
 				true,
@@ -191,23 +193,27 @@ class Package_Manifest {
 	 * @throws Application_Exception Thrown on error writing file.
 	 */
 	protected function write_manifest( array $manifest ) {
+		$filesystem = new Filesystem();
+
 		$dir = dirname( $this->manifest_path );
 
 		// Ensure the cached folder exists.
-		if ( ! is_dir( $dir ) ) {
+		if ( ! $filesystem->is_directory( $dir ) ) {
 			// Create the folder if it doesn't exist.
-			if ( ! mkdir( $dir ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.directory_mkdir
+			if ( ! $filesystem->make_directory( $dir ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.directory_mkdir
 				throw new Application_Exception( 'Unable to create path ' . $dir );
 			}
 		}
 
-
-		if ( ! file_put_contents( // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents
+		if ( ! $filesystem->put(
 			$this->manifest_path,
 			'<?php return ' . var_export( $manifest, true ) . ';' // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_var_export
 		) ) {
 			throw new Application_Exception( 'Error writing file: ' . $this->manifest_path );
 		}
+
+		// Replace the manifest on the object.
+		$this->manifest = $manifest;
 	}
 
 	/**
