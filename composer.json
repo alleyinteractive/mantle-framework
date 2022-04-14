@@ -65,6 +65,7 @@
         "mantle-framework/scheduling": "self.version",
         "mantle-framework/support": "self.version",
         "mantle-framework/testing": "self.version",
+        "mantle-framework/testkit": "self.version",
         "mantle-framework/view": "self.version"
     },
     "minimum-stability": "dev",
@@ -83,6 +84,9 @@
         "sort-packages": true
     },
     "extra": {
+        "branch-alias": {
+            "dev-main": "0.1-dev"
+        },
         "wordpress-autoloader": {
             "autoload": {
                 "Mantle\\": "src/mantle/"

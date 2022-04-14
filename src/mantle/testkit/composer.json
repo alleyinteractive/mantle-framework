@@ -4,7 +4,9 @@
     "type": "project",
     "require": {
         "php": "^7.4|^8.0",
-        "alleyinteractive/composer-wordpress-autoloader": "^0.4",
+        "alleyinteractive/composer-wordpress-autoloader": "^0.4"
+    },
+    "require-dev": {
         "mantle-framework/config": "^0.1",
         "mantle-framework/container": "^0.1",
         "mantle-framework/contracts": "^0.1",
@@ -15,6 +17,9 @@
         "phpunit/phpunit": "^9.3.3"
     },
     "extra": {
+        "branch-alias": {
+            "dev-main": "0.1-dev"
+        },
         "wordpress-autoloader": {
             "autoload": {
                 "Mantle\\Testkit": "./"

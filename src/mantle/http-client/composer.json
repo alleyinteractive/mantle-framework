@@ -7,6 +7,9 @@
         "mantle-framework/support": "^0.1"
     },
     "extra": {
+        "branch-alias": {
+            "dev-main": "0.1-dev"
+        },
         "wordpress-autoloader": {
             "autoload": {
                 "Mantle\\Http_Client": "./"

@@ -26,6 +26,8 @@ use Symplify\MonorepoBuilder\ValueObject\Option;
 return static function ( ContainerConfigurator $container_config ): void {
 	$parameters = $container_config->parameters();
 
+	$parameters->set( Option::DEFAULT_BRANCH_NAME, 'main' );
+
 	// Define the location of the packages.
 	$parameters->set(
 		Option::PACKAGE_DIRECTORIES,
