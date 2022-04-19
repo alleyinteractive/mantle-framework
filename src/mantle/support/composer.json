@@ -36,7 +36,7 @@
     ],
     "minimum-stability": "dev",
     "config": {
-      "sort-packages": true
+        "sort-packages": true
     },
     "suggest": {
         "mantle-framework/console": "Required to load Mantle Console Commands",
