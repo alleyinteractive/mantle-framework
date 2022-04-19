@@ -256,6 +256,7 @@ class Asset {
 	 */
 	public function register(): void {
 		hook_callable( 'wp_enqueue_scripts', fn () => $this->register_asset() );
+		hook_callable( 'admin_enqueue_scripts', fn () => $this->register_asset() );
 	}
 
 	/**
