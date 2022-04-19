@@ -4,11 +4,11 @@
     "type": "project",
     "require": {
         "php": "^7.4|^8.0",
-        "mantle-framework/support": "^0.1"
+        "mantle-framework/support": "^0.2"
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "0.1-dev"
+            "dev-main": "0.2-dev"
         },
         "wordpress-autoloader": {
             "autoload": {
