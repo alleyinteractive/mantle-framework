@@ -88,6 +88,20 @@ abstract class Test_Case extends BaseTestCase {
 			static::refresh_database_pre_setup_before_class();
 		}
 
+		if ( ! empty( static::$test_uses ) ) {
+
+			static::get_test_case_traits()
+				->each(
+					function( $trait ) {
+						$method = strtolower( class_basename( $trait ) ) . '_set_up_before_class';
+
+						if ( method_exists( static::class, $method ) ) {
+							call_user_func( [ static::class, $method ] );
+						}
+					}
+				);
+		}
+
 		parent::setUpBeforeClass();
 
 		if ( isset( static::$test_uses[ Refresh_Database::class ] ) ) {
@@ -132,7 +146,7 @@ abstract class Test_Case extends BaseTestCase {
 		static::clean_up_global_scope();
 
 		// Boot traits on the test case.
-		$this->get_test_case_traits()
+		static::get_test_case_traits()
 			->each(
 				function( $trait ) {
 					$method = strtolower( class_basename( $trait ) ) . '_set_up';
@@ -157,7 +171,7 @@ abstract class Test_Case extends BaseTestCase {
 		// phpcs:disable WordPress.WP.GlobalVariablesOverride,WordPress.NamingConventions.PrefixAllGlobals
 		global $wp_query, $wp;
 
-		$this->get_test_case_traits()
+		static::get_test_case_traits()
 			// Tearing down requires performing priority traits in opposite order.
 			->reverse()
 			->each(
@@ -217,7 +231,7 @@ abstract class Test_Case extends BaseTestCase {
 	 *
 	 * @return Collection
 	 */
-	protected function get_test_case_traits(): Collection {
+	protected static function get_test_case_traits(): Collection {
 		// Boot traits on the test case.
 		$traits = array_values( class_uses_recursive( static::class ) );
 
