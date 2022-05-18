@@ -146,7 +146,7 @@ abstract class Test_Case extends BaseTestCase {
 		static::clean_up_global_scope();
 
 		// Boot traits on the test case.
-		self::get_test_case_traits()
+		static::get_test_case_traits()
 			->each(
 				function( $trait ) {
 					$method = strtolower( class_basename( $trait ) ) . '_set_up';
