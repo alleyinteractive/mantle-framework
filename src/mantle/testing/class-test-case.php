@@ -90,7 +90,7 @@ abstract class Test_Case extends BaseTestCase {
 
 		if ( ! empty( static::$test_uses ) ) {
 
-			self::get_test_case_traits()
+			static::get_test_case_traits()
 				->each(
 					function( $trait ) {
 						$method = strtolower( class_basename( $trait ) ) . '_set_up_before_class';
