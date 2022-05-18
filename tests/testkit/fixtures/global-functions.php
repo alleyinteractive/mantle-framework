@@ -11,7 +11,7 @@
 function mantle_after_wordpress_install( bool $increment = true ): int {
 	static $called = 0;
 
-	if( true === $increment ) {
+	if ( true === $increment ) {
 		$called++;
 	}
 
