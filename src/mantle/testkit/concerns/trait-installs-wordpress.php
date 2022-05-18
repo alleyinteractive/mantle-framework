@@ -21,7 +21,7 @@ trait Installs_WordPress {
 	public static function installs_wordpress_set_up_before_class(): void {
 		static $installed = false;
 
-		if( true === $installed ) {
+		if ( true === $installed ) {
 			return;
 		}
 
