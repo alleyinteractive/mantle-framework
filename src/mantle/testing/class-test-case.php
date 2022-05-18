@@ -88,7 +88,7 @@ abstract class Test_Case extends BaseTestCase {
 			static::refresh_database_pre_setup_before_class();
 		}
 
-		if( ! empty( static::$test_uses ) ) {
+		if ( ! empty( static::$test_uses ) ) {
 
 			self::get_test_case_traits()
 				->each(
@@ -96,7 +96,7 @@ abstract class Test_Case extends BaseTestCase {
 						$method = strtolower( class_basename( $trait ) ) . '_set_up_before_class';
 
 						if ( method_exists( static::class, $method ) ) {
-							call_user_func([ static::class, $method ]);
+							call_user_func( [ static::class, $method ] );
 						}
 					}
 				);
