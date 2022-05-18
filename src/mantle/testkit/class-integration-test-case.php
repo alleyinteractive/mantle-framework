@@ -16,6 +16,6 @@ use Mantle\Testkit\Test_Case as Testing_Test_Case;
  * For use in integration tests. Will install WordPress during Test Class
  * set up process.
  */
-abstract class Test_Case extends Testing_Test_Case {
+abstract class Integration_Test_Case extends Testing_Test_Case {
 	use Installs_WordPress;
 }
