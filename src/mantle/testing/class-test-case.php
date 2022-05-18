@@ -171,7 +171,7 @@ abstract class Test_Case extends BaseTestCase {
 		// phpcs:disable WordPress.WP.GlobalVariablesOverride,WordPress.NamingConventions.PrefixAllGlobals
 		global $wp_query, $wp;
 
-		self::get_test_case_traits()
+		static::get_test_case_traits()
 			// Tearing down requires performing priority traits in opposite order.
 			->reverse()
 			->each(
