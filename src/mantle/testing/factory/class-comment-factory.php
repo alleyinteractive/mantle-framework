@@ -48,10 +48,10 @@ class Comment_Factory extends Factory {
 	public function create( $args = [] ) {
 		$args = array_merge(
 			[
-				'comment_author'     => $this->faker->name,
-				'comment_author_url' => $this->faker->url,
+				'comment_author'     => $this->faker->name(),
+				'comment_author_url' => $this->faker->url(),
 				'comment_approved'   => 1,
-				'comment_content'    => $this->faker->sentence,
+				'comment_content'    => $this->faker->sentence(),
 			],
 			$args
 		);

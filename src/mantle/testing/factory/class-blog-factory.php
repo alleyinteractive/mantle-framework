@@ -44,8 +44,8 @@ class Blog_Factory extends Factory {
 			array_merge(
 				[
 					'domain'     => $current_site->domain,
-					'path'       => $base . $this->faker->slug,
-					'title'      => $this->faker->text,
+					'path'       => $base . $this->faker->slug(),
+					'title'      => $this->faker->text(),
 					'network_id' => $current_site->id,
 				],
 				$args
