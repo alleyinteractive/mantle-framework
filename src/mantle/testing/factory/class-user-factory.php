@@ -42,8 +42,8 @@ class User_Factory extends Factory {
 		return User::create(
 			array_merge(
 				[
-					'user_email' => $this->faker->email,
-					'user_login' => $this->faker->userName,
+					'user_email' => $this->faker->email(),
+					'user_login' => $this->faker->userName(),
 					'user_pass'  => 'password',
 				],
 				$args

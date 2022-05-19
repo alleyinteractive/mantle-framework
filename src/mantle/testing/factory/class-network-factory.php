@@ -41,16 +41,16 @@ class Network_Factory extends Factory {
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
 		if ( ! isset( $args['user'] ) ) {
-			$email = $this->faker->email;
+			$email = $this->faker->email();
 		} else {
 			$email = get_userdata( $args['user'] )->user_email;
 		}
 
 		$args = array_merge(
 			[
-				'domain' => $this->faker->domainName,
-				'title'  => $this->faker->words,
-				'path'   => $this->faker->slug,
+				'domain' => $this->faker->domainName(),
+				'title'  => $this->faker->words(),
+				'path'   => $this->faker->slug(),
 			],
 			$args
 		);
