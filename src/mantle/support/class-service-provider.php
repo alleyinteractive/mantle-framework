@@ -104,7 +104,7 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	 */
 	protected function boot_attribute_hooks() {
 		// Abandon if we're not running PHP 8.
-		if ( phpversion() < '8.0.0' ) {
+		if ( version_compare( phpversion(), '8.0.0', '<' ) ) {
 			return;
 		}
 

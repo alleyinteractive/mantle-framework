@@ -74,7 +74,7 @@ class Test_Service_Provider extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 	public function test_hook_attribute() {
 		// Abandon if we're not running PHP 8.
-		if ( phpversion() < '8.0.0' ) {
+		if ( version_compare( phpversion(), '8.0.0', '<' ) ) {
 			$this->markTestSkipped( 'Requires PHP 8.0.0 or greater.' );
 			return;
 		}
