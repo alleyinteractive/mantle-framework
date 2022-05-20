@@ -32,7 +32,7 @@ class Test_Factory extends Framework_Test_Case {
 	}
 
 	public function test_post_descending_set() {
-		$post_ids = static::factory()->post->create_descending_set( 10, [
+		$post_ids = static::factory()->post->create_ordered_set( 10, [
 			'meta' => [
 				'_test_date_meta_key' => '_test_meta_value',
 			],
