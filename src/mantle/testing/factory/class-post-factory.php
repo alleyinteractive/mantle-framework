@@ -8,7 +8,6 @@
 namespace Mantle\Testing\Factory;
 
 use Carbon\Carbon;
-use DateTime;
 use Faker\Generator;
 use Mantle\Database\Model\Post;
 
@@ -92,22 +91,24 @@ class Post_Factory extends Factory {
 	 * Useful to create posts in a specific order for testing. Creates posts with
 	 * an increasing date separated by a specific number of seconds.
 	 *
-	 * @param int      $count The number of posts to create.
-	 * @param array    $args The arguments.
-	 * @param DateTime $starting_date The starting date for the posts, defaults to
-	 *                                a month ago.
-	 * @param int      $separation The number of seconds between each post.
+	 * @param int           $count The number of posts to create.
+	 * @param array         $args The arguments.
+	 * @param Carbon|string $starting_date The starting date for the posts, defaults to
+	 *                                     a month ago.
+	 * @param int           $separation The number of seconds between each post.
 	 * @return array<int>
 	 */
 	public function create_ordered_set(
 		int $count = 10,
 		array $args = [],
-		?DateTime $starting_date = null,
+		$starting_date = null,
 		int $separation = 3600,
 	): array {
-		$starting_date = $starting_date
-			? Carbon::instance( $starting_date )
-			: Carbon::now()->subMonth();
+		if ( ! ( $starting_date instanceof Carbon ) ) {
+			$starting_date = $starting_date
+				? Carbon::parse( $starting_date )
+				: Carbon::now()->subMonth();
+		}
 
 		// Set the date for the first post (seconds added before each run).
 		$date = $starting_date->subSeconds( $separation );
