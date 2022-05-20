@@ -7,9 +7,11 @@
 
 namespace Mantle\Testing\Factory;
 
+use Carbon\Carbon;
 use Faker\Generator;
 use Mantle\Database\Model\Post;
 
+use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\get_post_object;
 
 /**
@@ -81,6 +83,50 @@ class Post_Factory extends Factory {
 				]
 			)
 		);
+	}
+
+	/**
+	 * Create an ordered set of posts.
+	 *
+	 * Useful to create posts in a specific order for testing. Creates posts in
+	 * chronological order separated by a defined number of seconds, the
+	 * default of which is equal to 1 hour.
+	 *
+	 * @param int           $count The number of posts to create.
+	 * @param array         $args The arguments.
+	 * @param Carbon|string $starting_date The starting date for the posts, defaults to
+	 *                                     a month ago.
+	 * @param int           $separation The number of seconds between each post.
+	 * @return array<int>
+	 */
+	public function create_ordered_set(
+		int $count = 10,
+		array $args = [],
+		$starting_date = null,
+		int $separation = 3600
+	): array {
+		if ( ! ( $starting_date instanceof Carbon ) ) {
+			$starting_date = $starting_date
+				? Carbon::parse( $starting_date )
+				: Carbon::now()->subMonth();
+		}
+
+		// Set the date for the first post (seconds added before each run).
+		$date = $starting_date->subSeconds( $separation );
+
+		return collect()
+			->pad( $count, null )
+			->map(
+				fn() => $this->create(
+					array_merge(
+						$args,
+						[
+							'date' => $date->addSeconds( $separation )->format( 'Y-m-d H:i:s' ),
+						]
+					)
+				)
+			)
+			->to_array();
 	}
 
 	/**

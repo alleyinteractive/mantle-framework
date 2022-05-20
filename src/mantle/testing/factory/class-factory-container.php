@@ -51,6 +51,13 @@ class Factory_Container {
 	public $network;
 
 	/**
+	 * Page Factory
+	 *
+	 * @var Post_Factory
+	 */
+	public $page;
+
+	/**
 	 * Post Factory
 	 *
 	 * @var Post_Factory
@@ -63,6 +70,13 @@ class Factory_Container {
 	 * @var Term_Factory
 	 */
 	public $tag;
+
+	/**
+	 * Term Factory
+	 *
+	 * @var Term_Factory
+	 */
+	public $term;
 
 	/**
 	 * User Factory
