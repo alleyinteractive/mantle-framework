@@ -7,9 +7,12 @@
 
 namespace Mantle\Testing\Factory;
 
+use Carbon\Carbon;
+use DateTime;
 use Faker\Generator;
 use Mantle\Database\Model\Post;
 
+use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\get_post_object;
 
 /**
@@ -81,6 +84,47 @@ class Post_Factory extends Factory {
 				]
 			)
 		);
+	}
+
+	/**
+	 * Create a descending set of posts.
+	 *
+	 * Useful to create posts in a specific order for testing.
+	 *
+	 * @param int      $count The number of posts to create.
+	 * @param array    $args The arguments.
+	 * @param DateTime $starting_date The starting date for the posts, defaults to a month ago.
+	 * @param int      $separation The number of seconds between each post.
+	 * @return array<int>
+	 */
+	public function create_descending_set(
+		int $count = 10,
+		array $args = [],
+		?DateTime $starting_date = null,
+		int $separation = 3600,
+	): array {
+		$post_ids = [];
+
+		$starting_date = $starting_date
+			? Carbon::instance( $starting_date )
+			: Carbon::now()->subMonth();
+
+		// Set the date for the first post (seconds added before each run).
+		$date = $starting_date->subSeconds( $separation );
+
+		return collect()
+			->pad( $count, null )
+			->map( fn() => $this->create(
+				array_merge(
+					$args,
+					[
+						'date' => $date->addSeconds( $separation )->format( 'Y-m-d H:i:s' ),
+					]
+				)
+			) )
+			->to_array();
+
+		return $post_ids;
 	}
 
 	/**
