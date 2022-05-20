@@ -90,7 +90,7 @@ class Post_Factory extends Factory {
 	 * Create a ordered set of posts.
 	 *
 	 * Useful to create posts in a specific order for testing. Creates posts with
-	 * a increasing date seperated by a specific number of seconds.
+	 * an increasing date separated by a specific number of seconds.
 	 *
 	 * @param int      $count The number of posts to create.
 	 * @param array    $args The arguments.
