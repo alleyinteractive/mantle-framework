@@ -78,11 +78,13 @@ class Attachment extends Post implements Contracts\Database\Core_Object, Contrac
 			return $settings;
 		}
 
+		$disk = $settings['disk'];
+
 		if ( is_null( $expiration ) ) {
-			$expiration = time() + 3600;
+			$expiration = time() + max( 1, (int) config( "filesystem.disks.{$disk}.temporary_url_expiration" ) );
 		}
 
-		return Storage::drive( $settings['disk'] )->temporary_url( untrailingslashit( $settings['path'] ) . $settings['name'], $expiration );
+		return Storage::drive( $disk )->temporary_url( untrailingslashit( $settings['path'] ) . $settings['name'], $expiration );
 	}
 
 	/**
