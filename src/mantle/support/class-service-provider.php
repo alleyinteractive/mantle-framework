@@ -9,8 +9,10 @@ namespace Mantle\Support;
 
 use Mantle\Console\Command;
 use Mantle\Contracts\Application;
+use Mantle\Support\Attributes\Action;
 use Mantle\Support\Str;
 use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
+use ReflectionClass;
 
 use function Mantle\Support\Helpers\add_action;
 use function Mantle\Support\Helpers\collect;
@@ -64,6 +66,7 @@ abstract class Service_Provider implements LoggerAwareInterface {
 		}
 
 		$this->boot_action_hooks();
+		$this->boot_attribute_hooks();
 		$this->boot();
 	}
 
@@ -94,6 +97,33 @@ abstract class Service_Provider implements LoggerAwareInterface {
 					add_action( $hook, [ $this, $method ], $priority, 99 );
 				}
 			);
+	}
+
+	/**
+	 * Boot all attribute actions on the service provider.
+	 */
+	protected function boot_attribute_hooks() {
+		// Abandon if we're not running PHP 8.
+		if ( phpversion() < '8.0.0' ) {
+			return;
+		}
+
+		$class = new ReflectionClass( static::class );
+
+		foreach ( $class->getMethods() as $method ) {
+			$action_attributes = $method->getAttributes( Action::class );
+
+			if ( empty( $action_attributes ) ) {
+				continue;
+			}
+
+			foreach ( $action_attributes as $attribute ) {
+				$instance = $attribute->newInstance();
+
+				add_action( $instance->action, [ $this, $method->name ], $instance->priority );
+			}
+		}
+
 	}
 
 	/**

@@ -5,6 +5,7 @@ use Mantle\Framework\Application;
 use Mantle\Console\Command;
 use Mantle\Contracts\Providers as ProviderContracts;
 use Mantle\Support\Service_Provider;
+use Mantle\Support\Attributes\Action;
 use Mockery as m;
 
 class Test_Service_Provider extends \Mockery\Adapter\Phpunit\MockeryTestCase {
@@ -70,6 +71,22 @@ class Test_Service_Provider extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		$this->assertEquals( 15, $value );
 	}
+
+	public function test_hook_attribute() {
+		// Abandon if we're not running PHP 8.
+		if ( phpversion() < '8.0.0' ) {
+			$this->markTestSkipped( 'Requires PHP 8.0.0 or greater.' );
+			return;
+		}
+
+		$app = m::mock( Application::class )->makePartial();
+		$app->register( Provider_Test_Hook::class );
+		$app->boot();
+
+		do_action( 'testable-attribute-hook' );
+
+		$this->assertTrue( $_SERVER['__custom_hook_fired'] ?? false );
+	}
 }
 
 class Provider_Test_Hook extends Service_Provider {
@@ -79,5 +96,14 @@ class Provider_Test_Hook extends Service_Provider {
 
 	public function on_custom_filter( $value ) {
 		return $value + 10;
+	}
+
+	#[Action('testable-attribute-hook', 20)]
+	public function handle_custom_hook() {
+		$_SERVER['__custom_hook_fired'] = true;
+	}
+
+	public function handle_customn_filter( $value ) {
+		return $value + 100;
 	}
 }
