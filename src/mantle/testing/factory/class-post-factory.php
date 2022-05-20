@@ -102,7 +102,7 @@ class Post_Factory extends Factory {
 		int $count = 10,
 		array $args = [],
 		$starting_date = null,
-		int $separation = 3600,
+		int $separation = 3600
 	): array {
 		if ( ! ( $starting_date instanceof Carbon ) ) {
 			$starting_date = $starting_date
