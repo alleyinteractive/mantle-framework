@@ -31,7 +31,7 @@ class Test_Factory extends Framework_Test_Case {
 		$this->assertTrue( has_post_thumbnail( $post_id ) );
 	}
 
-	public function test_post_descending_set() {
+	public function test_create_ordered_set() {
 		$post_ids = static::factory()->post->create_ordered_set( 10, [
 			'meta' => [
 				'_test_date_meta_key' => '_test_meta_value',
