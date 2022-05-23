@@ -59,17 +59,19 @@ class Test_Discover_Events extends Framework_Test_Case {
 			] : null,
 		];
 
-		// Filter out events for PHP 8.
-		foreach ( $expected as $event => $listeners ) {
-			if ( $is_php_8 && ! $listeners ) {
-				unset( $events[ $event ] );
-				continue;
-			}
+		// Filter out expected events for PHP 7.4.
+		if ( ! $is_php_8 ) {
+			foreach ( $expected as $event => $listeners ) {
+				if ( ! $listeners ) {
+					unset( $events[ $event ] );
+					continue;
+				}
 
-			$events[ $event ] = array_filter(
-				$events[ $event ],
-				fn ( $listener ) => $listener !== null,
-			);
+				$events[ $event ] = array_filter(
+					$events[ $event ],
+					fn ( $listener ) => $listener !== null,
+				);
+			}
 		}
 
 		$this->assertEquals( $expected, $events );
