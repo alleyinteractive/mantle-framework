@@ -67,10 +67,7 @@ class Test_Discover_Events extends Framework_Test_Case {
 					continue;
 				}
 
-				$events[ $event ] = array_filter(
-					$events[ $event ],
-					fn ( $listener ) => $listener !== null,
-				);
+				$events[ $event ] = array_filter( $events[ $event ] );
 			}
 		}
 
