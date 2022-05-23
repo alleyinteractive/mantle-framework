@@ -118,7 +118,9 @@ $installing_wp        = defined( 'WP_INSTALLING' ) && WP_INSTALLING;
 
 if ( ! $installing_wp && '1' !== getenv( 'WP_TESTS_SKIP_INSTALL' ) ) {
 	$resp = system( WP_PHP_BINARY . ' ' . escapeshellarg( __DIR__ . '/install-wordpress.php' ) . ' ' . $multisite, $retval );
-	if ( 0 !== $retval ) {
+
+	// Verify the return code and that 'Done!' is included in the output.
+	if ( 0 !== $retval || empty( $resp ) || false === strpos( $resp, 'Done!' ) ) {
 		echo "🚨 Error installing WordPress!\nResponse from installation script:\n\n$resp\n";
 		exit( $retval );
 	}
