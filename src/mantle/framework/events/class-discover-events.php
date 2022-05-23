@@ -7,6 +7,7 @@
 
 namespace Mantle\Framework\Events;
 
+use Mantle\Support\Attributes\Action;
 use Mantle\Support\Reflector;
 use Mantle\Support\Str;
 use ReflectionClass;
@@ -79,8 +80,26 @@ class Discover_Events {
 			}
 
 			foreach ( $listener->getMethods( ReflectionMethod::IS_PUBLIC ) as $method ) {
+				// Check for attribute support with PHP 8.
+				if ( version_compare( phpversion(), '8.0.0', '>=' ) ) {
+					// Check if the method has an attribute action.
+					$action_attributes = $method->getAttributes( Action::class );
+
+					if ( ! empty( $action_attributes ) ) {
+						foreach ( $action_attributes as $attribute ) {
+							$instance = $attribute->newInstance();
+
+							$listener_events[ $listener->name . '@' . $method->name ] = [
+								[ $instance->action ],
+								$instance->priority,
+							];
+						}
+
+						continue;
+					}
+				}
+
 				// Handle WordPress hooks being registered with a listener.
-				// todo: move to use attributes with PHP 8.
 				if ( Str::starts_with( $method->name, 'on_' ) ) {
 					$hook     = Str::after( $method->name, 'on_' );
 					$priority = 10;

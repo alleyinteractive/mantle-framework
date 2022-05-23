@@ -33,11 +33,14 @@ class Test_Discover_Events extends Framework_Test_Case {
 			getcwd(),
 		);
 
-		$this->assertEquals( [
+		$is_php_8 = version_compare( PHP_VERSION, '8.0.0', '>=' );
+
+		$expected = [
 			// Type hinted events.
 			Event_One::class => [
 				[ Example_Listener::class . '@handle', 10 ],
 				[ Example_Listener::class . '@handle_event_one', 10 ],
+				$is_php_8 ? [ Example_Listener::class . '@handle_attribute_event_one', 10 ] : null,
 			],
 			Event_Two::class => [
 				[ Example_Listener::class . '@handle_event_two', 10 ],
@@ -50,6 +53,25 @@ class Test_Discover_Events extends Framework_Test_Case {
 			'pre_get_posts' => [
 				[ Example_Listener::class . '@on_pre_get_posts_at_20', 20 ],
 			],
-		], $events );
+			'attribute-event' => $is_php_8 ? [
+				[ Example_Listener::class . '@handle_attribute_string_callback', 10 ],
+				[ Example_Listener::class . '@handle_attribute_string_callback_priority', 20 ],
+			] : null,
+		];
+
+		// Filter out events for PHP 8.
+		foreach ( $expected as $event => $listeners ) {
+			if ( $is_php_8 && ! $listeners ) {
+				unset( $events[ $event ] );
+				continue;
+			}
+
+			$events[ $event ] = array_filter(
+				$events[ $event ],
+				fn ( $listener ) => $listener !== null,
+			);
+		}
+
+		$this->assertEquals( $expected, $events );
 	}
 }
