@@ -103,7 +103,7 @@ class Provider_Test_Hook extends Service_Provider {
 		$_SERVER['__custom_hook_fired'] = true;
 	}
 
-	public function handle_customn_filter( $value ) {
+	public function handle_custom_filter( $value ) {
 		return $value + 100;
 	}
 }
