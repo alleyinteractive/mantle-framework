@@ -126,13 +126,11 @@ if ( ! $installing_wp && '1' !== getenv( 'WP_TESTS_SKIP_INSTALL' ) ) {
 	}
 }
 
-if ( $multisite ) {
-	if ( ! $installing_wp ) {
-		echo 'Running as multisite...' . PHP_EOL;
-		defined( 'MULTISITE' ) or define( 'MULTISITE', true );
-		defined( 'SUBDOMAIN_INSTALL' ) or define( 'SUBDOMAIN_INSTALL', false );
-		$GLOBALS['base'] = '/';
-	}
+if ( $multisite && ! $installing_wp ) {
+	echo 'Running as multisite...' . PHP_EOL;
+	defined( 'MULTISITE' ) or define( 'MULTISITE', true );
+	defined( 'SUBDOMAIN_INSTALL' ) or define( 'SUBDOMAIN_INSTALL', false );
+	$GLOBALS['base'] = '/';
 } elseif ( ! $installing_wp ) {
 	echo "Running as single site...\nℹ️  To run multisite, pass WP_MULTISITE=1 or set the WP_TESTS_MULTISITE=1 constant.\n";
 }
