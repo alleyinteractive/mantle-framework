@@ -132,7 +132,7 @@ if ( $multisite ) {
 	defined( 'SUBDOMAIN_INSTALL' ) or define( 'SUBDOMAIN_INSTALL', false );
 	$GLOBALS['base'] = '/';
 } elseif ( ! $installing_wp ) {
-	echo 'Running as single site... To run multisite, pass WP_TESTS_MULTISITE=1' . PHP_EOL;
+	echo "Running as single site...\nℹ️  To run multisite, pass WP_MULTISITE=1 or set the WP_TESTS_MULTISITE=1 constant.\n";
 }
 unset( $multisite );
 
