@@ -8,6 +8,8 @@ use Mantle\Tests\Framework\Events\Fixtures\Events\Event_One;
 use Mantle\Tests\Framework\Events\Fixtures\Events\Event_Two;
 use Mantle\Tests\Framework\Events\Fixtures\Listeners\Example_Listener;
 
+use function Mantle\Support\Helpers\collect;
+
 class Test_Discover_Events extends Framework_Test_Case {
 	protected function setUp(): void {
 		parent::setUp();
@@ -40,7 +42,7 @@ class Test_Discover_Events extends Framework_Test_Case {
 			Event_One::class => [
 				[ Example_Listener::class . '@handle', 10 ],
 				[ Example_Listener::class . '@handle_event_one', 10 ],
-				$is_php_8 ? [ Example_Listener::class . '@handle_attribute_event_one', 10 ] : null,
+				[ Example_Listener::class . '@handle_attribute_event_one', 10 ],
 			],
 			Event_Two::class => [
 				[ Example_Listener::class . '@handle_event_two', 10 ],
@@ -61,14 +63,9 @@ class Test_Discover_Events extends Framework_Test_Case {
 
 		// Filter out expected events for PHP 7.4.
 		if ( ! $is_php_8 ) {
-			foreach ( $expected as $event => $listeners ) {
-				if ( ! $listeners ) {
-					unset( $events[ $event ] );
-					continue;
-				}
-
-				$events[ $event ] = array_filter( $events[ $event ] );
-			}
+			$expected = collect( $expected )
+				->filter( fn ( $events ) => null !== $events )
+				->to_array();
 		}
 
 		$this->assertEquals( $expected, $events );
