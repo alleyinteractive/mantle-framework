@@ -118,21 +118,21 @@ $installing_wp        = defined( 'WP_INSTALLING' ) && WP_INSTALLING;
 
 if ( ! $installing_wp && '1' !== getenv( 'WP_TESTS_SKIP_INSTALL' ) ) {
 	$resp = system( WP_PHP_BINARY . ' ' . escapeshellarg( __DIR__ . '/install-wordpress.php' ) . ' ' . $multisite, $retval );
-	if ( 0 !== $retval ) {
+
+	// Verify the return code and that 'Done!' is included in the output.
+	if ( 0 !== $retval || empty( $resp ) || false === strpos( $resp, 'Done!' ) ) {
 		echo "🚨 Error installing WordPress!\nResponse from installation script:\n\n$resp\n";
 		exit( $retval );
 	}
 }
 
-if ( $multisite ) {
-	if ( ! $installing_wp ) {
-		echo 'Running as multisite...' . PHP_EOL;
-	}
+if ( $multisite && ! $installing_wp ) {
+	echo 'Running as multisite...' . PHP_EOL;
 	defined( 'MULTISITE' ) or define( 'MULTISITE', true );
 	defined( 'SUBDOMAIN_INSTALL' ) or define( 'SUBDOMAIN_INSTALL', false );
 	$GLOBALS['base'] = '/';
 } elseif ( ! $installing_wp ) {
-	echo 'Running as single site... To run multisite, pass WP_TESTS_MULTISITE=1' . PHP_EOL;
+	echo "Running as single site...\nℹ️  To run multisite, pass WP_MULTISITE=1 or set the WP_TESTS_MULTISITE=1 constant.\n";
 }
 unset( $multisite );
 
