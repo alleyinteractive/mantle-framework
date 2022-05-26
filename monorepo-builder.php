@@ -68,7 +68,9 @@ return static function ( ContainerConfigurator $container_config ): void {
 	$services->set( AddTagToChangelogReleaseWorker::class );
 	$services->set( TagVersionReleaseWorker::class );
 	$services->set( PushTagReleaseWorker::class );
-	// $services->set( SetNextMutualDependenciesReleaseWorker::class );
-	// $services->set( UpdateBranchAliasReleaseWorker::class );
-	// $services->set( PushNextDevReleaseWorker::class );
+
+	// todo: remove below services when going to 1.0.0.
+	$services->set( SetNextMutualDependenciesReleaseWorker::class );
+	$services->set( UpdateBranchAliasReleaseWorker::class );
+	$services->set( PushNextDevReleaseWorker::class );
 };
