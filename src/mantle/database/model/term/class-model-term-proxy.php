@@ -15,7 +15,7 @@ use RuntimeException;
  */
 class Model_Term_Proxy {
 	/**
-	 * Model to retrieve meta from.
+	 * Model to retrieve term from.
 	 *
 	 * @var Post
 	 */
@@ -50,7 +50,7 @@ class Model_Term_Proxy {
 	 * Set model term.
 	 *
 	 * @param string $taxonomy Taxonomy name..
-	 * @param mixed  $value Meta value.
+	 * @param mixed  $value Terms.
 	 */
 	public function __set( string $taxonomy, $value ) {
 		$this->model->queue_term_attribute( $taxonomy, $value );

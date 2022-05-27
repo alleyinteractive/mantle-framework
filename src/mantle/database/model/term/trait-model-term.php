@@ -21,23 +21,23 @@ use function Mantle\Support\Helpers\collect;
  */
 trait Model_Term {
 	/**
-	 * Meta queued for saving.
+	 * Terms queued for saving.
 	 *
 	 * @var array
 	 */
 	protected $queued_terms = [];
 
 	/**
-	 * Retrieve the meta 'attribute'.
+	 * Retrieve the terms 'attribute'.
 	 *
-	 * @return Model_Meta_Proxy
+	 * @return Model_Term_Proxy
 	 */
 	public function get_terms_attribute() {
 		return new Model_Term_Proxy( $this );
 	}
 
 	/**
-	 * Allow setting meta through an array via an attribute mutator.
+	 * Allow setting terms through an array via an attribute mutator.
 	 *
 	 * @param array $values Term values to set.
 	 * @throws Model_Exception Thrown on invalid value being set.
@@ -73,7 +73,7 @@ trait Model_Term {
 	}
 
 	/**
-	 * Store queued model meta.
+	 * Store queued model terms.
 	 */
 	protected function store_queued_terms() {
 		foreach ( $this->queued_terms as $taxonomy => $values ) {
