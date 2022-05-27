@@ -288,11 +288,7 @@ class Test_Post_Object extends Framework_Test_Case {
 		$post->terms->category = [ $category ];
 		$post->save();
 
-		$this->assertEquals(
-			$category->term_id,
-			get_the_category( $post->id() )[0]->term_id,
-		);
-
+		$this->assertPostHasTerm( $post, $category );
 		$this->assertInstanceOf( Term::class, $post->terms->category[0] );
 
 		$this->assertEquals(
@@ -305,6 +301,10 @@ class Test_Post_Object extends Framework_Test_Case {
 		$post->save();
 
 		$this->assertEmpty( get_the_category( $post->id() ) );
+	}
+
+	public function test_terms_attribute_create() {
+		$category = static::factory()->category->create_and_get();
 
 		// Create a post using terms attribute.
 		$new_post = static::factory()->post->as_models()->create_and_get( [
@@ -313,10 +313,34 @@ class Test_Post_Object extends Framework_Test_Case {
 			],
 		] );
 
-		$this->assertEquals(
-			$category->term_id,
-			get_the_category( $new_post->id() )[0]->term_id,
-		);
+		$this->assertPostHasTerm( $new_post, $category );
+	}
+
+	public function test_terms_attribute_create_without_taxonomy() {
+		$category_a = static::factory()->category->create_and_get();
+		$category_b = static::factory()->category->create_and_get();
+
+		// Create a post using terms attribute without specifying a taxonomy.
+		$new_post = static::factory()->post->as_models()->create_and_get( [
+			'terms' => [ $category_a, $category_b ],
+		] );
+
+		$this->assertCount( 2, get_the_category( $new_post->id() ) );
+		$this->assertPostHasTerm( $new_post, $category_a );
+		$this->assertPostHasTerm( $new_post, $category_b );
+	}
+
+	public function test_terms_attribute_create_without_taxonomy_multiple() {
+		$category = static::factory()->category->create_and_get();
+		$tag      = static::factory()->tag->create_and_get();
+
+		// Create a post using terms attribute without specifying a taxonomy.
+		$new_post = static::factory()->post->as_models()->create_and_get( [
+			'terms' => [ $category, $tag ],
+		] );
+
+		$this->assertPostHasTerm( $new_post, $category );
+		$this->assertPostHasTerm( $new_post, $tag );
 	}
 
 	public function test_get_all() {

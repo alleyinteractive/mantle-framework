@@ -13,6 +13,7 @@ use Mantle\Support\Arr;
 use WP_Term;
 
 use function Mantle\Support\Helpers\collect;
+use function Mantle\Support\Helpers\get_term_object;
 
 /**
  * Interface for interfacing with a model's terms.
@@ -76,8 +77,17 @@ trait Model_Term {
 	 * Store queued model terms.
 	 */
 	protected function store_queued_terms() {
-		foreach ( $this->queued_terms as $taxonomy => $values ) {
-			$this->set_terms( $values, $taxonomy );
+		if ( empty( $this->queued_terms ) ) {
+			return;
+		}
+
+		// Determine if this is an array of terms instead of taxonomy => term pairs.
+		if ( Arr::is_assoc( $this->queued_terms ) ) {
+			foreach ( $this->queued_terms as $taxonomy => $values ) {
+				$this->set_terms( $values, $taxonomy );
+			}
+		} else {
+			$this->set_terms( $this->queued_terms );
 		}
 
 		$this->queued_terms = [];
@@ -113,23 +123,44 @@ trait Model_Term {
 	 * @throws Model_Exception Thrown if the $taxonomy cannot be inferred from $terms.
 	 * @throws Model_Exception Thrown if error saving the post's terms.
 	 */
-	public function set_terms( $terms, string $taxonomy = null, bool $append = false ) {
-		$terms = collect( Arr::wrap( $terms ) )
-			->map(
-				function ( $term ) use ( &$taxonomy ) {
-					if ( $term instanceof Term ) {
-						if ( empty( $taxonomy ) ) {
-							$taxonomy = $term->taxonomy();
-						}
+	public function set_terms( $terms, ?string $taxonomy = null, bool $append = false ) {
+		$terms = collect( Arr::wrap( $terms ) );
 
-						return $term->id();
+		// If taxonomy is not specified, chunk the terms into taxonomy groups.
+		if ( ! $taxonomy ) {
+			$terms = $terms->map_to_dictionary(
+				function ( $term ) {
+					if ( $term instanceof WP_Term ) {
+						return [ $term->taxonomy => $term ];
 					}
 
-					if ( $term instanceof \WP_Term ) {
-						if ( empty( $taxonomy ) ) {
-							$taxonomy = $term->taxonomy;
-						}
+					if ( $term instanceof Term ) {
+						return [ $term->taxonomy => $term->core_object() ];
+					}
 
+					$term = get_term_object( $term );
+
+					if ( $term ) {
+						return [ $term->taxonomy => $term ];
+					}
+
+					return null;
+				}
+			)
+			->filter();
+
+			foreach ( $terms as $taxonomy => $items ) {
+				$this->set_terms( Arr::pluck( $items, 'term_id' ), $taxonomy, $append );
+			}
+
+			return $this;
+		}
+
+		// Convert the terms to a array of term IDs.
+		$terms = $terms
+			->map(
+				function ( $term ) {
+					if ( $term instanceof WP_Term || $term instanceof Term ) {
 						return $term->term_id;
 					}
 
@@ -138,10 +169,6 @@ trait Model_Term {
 			)
 			->filter()
 			->all();
-
-		if ( empty( $taxonomy ) ) {
-			throw new Model_Exception( 'Term taxonomy not able to be inferred.' );
-		}
 
 		$update = \wp_set_object_terms( $this->id(), $terms, $taxonomy, $append );
 
