@@ -305,6 +305,18 @@ class Test_Post_Object extends Framework_Test_Case {
 		$post->save();
 
 		$this->assertEmpty( get_the_category( $post->id() ) );
+
+		// Create a post using terms attribute.
+		$new_post = static::factory()->post->as_models()->create_and_get( [
+			'terms' => [
+				'category' => [ $category ],
+			],
+		] );
+
+		$this->assertEquals(
+			$category->term_id,
+			get_the_category( $new_post->id() )[0]->term_id,
+		);
 	}
 
 	public function test_get_all() {
