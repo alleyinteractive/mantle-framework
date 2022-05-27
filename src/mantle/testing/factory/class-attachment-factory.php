@@ -99,6 +99,8 @@ class Attachment_Factory extends Post_Factory {
 	 * @return \WP_Post|null
 	 */
 	public function get_object_by_id( int $object_id ): ?\WP_Post {
-		return get_post_object( $object_id );
+		return $this->as_models
+			? Post::find( $object_id )
+			: get_post_object( $object_id );
 	}
 }

@@ -8,11 +8,19 @@
 namespace Mantle\Testing\Factory;
 
 use function Mantle\Support\Helpers\collect;
+use function Mantle\Support\Helpers\tap;
 
 /**
  * Base Factory
  */
 abstract class Factory {
+	/**
+	 * Flag to return the factory as a model.
+	 *
+	 * @var bool
+	 */
+	protected bool $as_models = false;
+
 	/**
 	 * Creates an object.
 	 *
@@ -28,6 +36,34 @@ abstract class Factory {
 	 * @return mixed
 	 */
 	abstract public function get_object_by_id( int $object_id );
+
+	/**
+	 * Generate models from the factory.
+	 *
+	 * @return static
+	 */
+	public function as_models(): static {
+		return tap(
+			clone $this,
+			function ( $factory ) {
+				$factory->as_models = true;
+			} 
+		);
+	}
+
+	/**
+	 * Generate core WordPress objects from the factory.
+	 *
+	 * @return static
+	 */
+	public function as_objects(): static {
+		return tap(
+			clone $this,
+			function ( $factory ) {
+				$factory->as_models = false;
+			} 
+		);
+	}
 
 	/**
 	 * Creates multiple objects.
