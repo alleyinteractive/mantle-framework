@@ -45,9 +45,7 @@ abstract class Factory {
 	public function as_models(): static {
 		return tap(
 			clone $this,
-			function ( $factory ) {
-				$factory->as_models = true;
-			} 
+			fn ( $factory ) => $factory->as_models = true,
 		);
 	}
 
@@ -59,9 +57,7 @@ abstract class Factory {
 	public function as_objects(): static {
 		return tap(
 			clone $this,
-			function ( $factory ) {
-				$factory->as_models = false;
-			} 
+			fn ( $factory ) => $factory->as_models = false,
 		);
 	}
 
