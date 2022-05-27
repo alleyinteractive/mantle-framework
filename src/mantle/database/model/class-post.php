@@ -7,8 +7,9 @@
 
 namespace Mantle\Database\Model;
 
+use Carbon\Carbon;
+use DateTime;
 use Mantle\Contracts;
-use Mantle\Contracts\Events\Dispatcher;
 use Mantle\Database\Query\Builder;
 use Mantle\Database\Query\Post_Query_Builder;
 use Mantle\Support\Helpers;
@@ -190,6 +191,29 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 		}
 
 		return null;
+	}
+
+	/**
+	 * Publish a post.
+	 */
+	public function publish() : bool {
+		return $this->save( [ 'status' => 'publish' ] );
+	}
+
+	/**
+	 * Schedule a post for publication.
+	 *
+	 * @param string|DateTime $date Date to schedule the post for.
+	 * @return bool
+	 */
+	public function schedule( $date ) : bool {
+		if ( $date instanceof DateTime ) {
+			$date = $date->format( 'Y-m-d H:i:s' );
+		} else {
+			$date = Carbon::parse( $date )->format( 'Y-m-d H:i:s' );
+		}
+
+		return $this->save( [ 'status' => 'future', 'date' => $date ] );
 	}
 
 	/**

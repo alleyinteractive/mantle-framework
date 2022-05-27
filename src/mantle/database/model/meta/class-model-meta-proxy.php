@@ -53,4 +53,13 @@ class Model_Meta_Proxy {
 	public function __set( string $key, $value ) {
 		$this->model->queue_meta_attribute( $key, $value );
 	}
+
+	/**
+	 * Delete model meta.
+	 *
+	 * @param string $key Meta key.
+	 */
+	public function __unset( string $key ) {
+		$this->model->delete_meta( $key );
+	}
 }
