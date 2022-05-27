@@ -7,6 +7,8 @@
 
 namespace Mantle\Testing\Factory;
 
+use Mantle\Contracts\Database\Core_Object;
+
 use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\tap;
 
@@ -84,7 +86,7 @@ abstract class Factory {
 	 * Creates an object and returns its object.
 	 *
 	 * @param array $args Optional. The arguments for the object to create. Default is empty array.
-	 * @return mixed The created object.
+	 * @return mixed|Core_Object The created object.
 	 */
 	public function create_and_get( $args = [] ) {
 		$object_id = $this->create( $args );
