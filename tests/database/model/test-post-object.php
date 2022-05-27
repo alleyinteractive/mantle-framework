@@ -5,6 +5,7 @@ use Mantle\Contracts\Database\Registrable;
 use Mantle\Database\Model\Model_Exception;
 use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Registration\Register_Post_Type;
+use Mantle\Database\Model\Term;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
 
@@ -278,6 +279,33 @@ class Test_Post_Object extends Framework_Test_Case {
 		$object->save();
 		$this->assertEquals( 'Updated meta value', $object->get_meta( 'meta_key' ) );
 		$this->assertEquals( 'Updated meta value', $object->meta->meta_key );
+	}
+
+	public function test_terms_attribute() {
+		$post = static::factory()->post->as_models()->create_and_get();
+		$category = static::factory()->category->create_and_get();
+
+		// Save the term to the post.
+		$post->terms->category = [ $category ];
+		$post->save();
+
+		$this->assertEquals(
+			$category->term_id,
+			get_the_category( $post->id() )[0]->term_id,
+		);
+
+		$this->assertInstanceOf( Term::class, $post->terms->category[0] );
+
+		$this->assertEquals(
+			$category->term_id,
+			$post->terms->category[0]->id(),
+		);
+
+		// Remove the term.
+		$post->terms->category = [];
+		$post->save();
+
+		$this->assertEmpty( get_the_category( $post->id() ) );
 	}
 
 	public function test_get_all() {
