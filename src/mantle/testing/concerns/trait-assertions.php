@@ -439,4 +439,14 @@ trait Assertions {
 			PHPUnit::fail( 'Term not found to assert against' );
 		}
 	}
+
+	/**
+	 * Alias of `assertPostNotHasTerm()`.
+	 *
+	 * @param Post|\WP_Post|int $post Post to check.
+	 * @param Term|\WP_Term|int $term Term to check.
+	 */
+	public function assertPostsDoesNotHaveTerm( $post, $term ) {
+		$this->assertPostNotHasTerm( $post, $term );
+	}
 }
