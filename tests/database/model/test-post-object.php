@@ -9,7 +9,6 @@ use Mantle\Database\Model\Term;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
 
-
 class Test_Post_Object extends Framework_Test_Case {
 	use Refresh_Database;
 

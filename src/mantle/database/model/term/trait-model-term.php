@@ -17,7 +17,7 @@ use function Mantle\Support\Helpers\collect;
 /**
  * Interface for interfacing with a model's terms.
  *
- * @property Model_Term_Proxy $terms Terms proxy instance.
+ * @property Model_Term_Proxy $terms Proxy to manage terms for the model.
  */
 trait Model_Term {
 	/**

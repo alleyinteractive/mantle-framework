@@ -8,10 +8,14 @@
 namespace Mantle\Database\Model\Term;
 
 use Mantle\Database\Model\Post;
+use Mantle\Database\Model\Term;
 use RuntimeException;
 
 /**
  * Allow term to be retrieve as an attribute on the object.
+ *
+ * @property Term[] $category Categories for the model.
+ * @property Term[] $post_tag Tags for the model.
  */
 class Model_Term_Proxy {
 	/**
@@ -34,7 +38,7 @@ class Model_Term_Proxy {
 	 * Retrieve model terms by taxonomy.
 	 *
 	 * @param string $taxonomy Taxonomy name.
-	 * @return mixed
+	 * @return Term[]
 	 */
 	public function __get( string $taxonomy ) {
 		$queued_value = $this->model->get_queued_term_attribute( $taxonomy );
@@ -49,11 +53,11 @@ class Model_Term_Proxy {
 	/**
 	 * Set model term.
 	 *
-	 * @param string $taxonomy Taxonomy name..
-	 * @param mixed  $value Terms.
+	 * @param string                  $taxonomy Taxonomy name..
+	 * @param Term[]|\WP_Term[]|int[] $values Terms.
 	 */
-	public function __set( string $taxonomy, $value ) {
-		$this->model->queue_term_attribute( $taxonomy, $value );
+	public function __set( string $taxonomy, $values ) {
+		$this->model->queue_term_attribute( $taxonomy, $values );
 	}
 
 	/**
