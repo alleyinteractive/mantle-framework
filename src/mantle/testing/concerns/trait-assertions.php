@@ -15,6 +15,9 @@ use Mantle\Database\Model\User;
 use Mantle\Testing\Constraints\ArraySubset;
 use PHPUnit\Framework\Assert as PHPUnit;
 use PHPUnit\Util\InvalidArgumentHelper;
+use WP_Term;
+
+use function Mantle\Support\Helpers\get_term_object;
 
 /**
  * Assorted Test_Cast assertions.
@@ -367,5 +370,73 @@ trait Assertions {
 		);
 
 		PHPUnit::assertEmpty( $users );
+	}
+
+	/**
+	 * Get a term object from a flexible argument.
+	 *
+	 * @param Term|\WP_Term|int $argument Term object, term ID, or term slug.
+	 * @return WP_Term|null
+	 */
+	protected function get_term_from_argument( $argument ): ?WP_Term {
+		if ( $argument instanceof Term ) {
+			return $argument->core_object();
+		}
+
+		if ( is_int( $argument ) ) {
+			return get_term_object( $argument );
+		}
+
+		if ( $argument instanceof WP_Term ) {
+			return $argument;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Assert that a post has a specific term.
+	 *
+	 * `assertPostNotHasTerm()` is the inverse of this method.
+	 *
+	 * @param Post|\WP_Post|int $post Post to check.
+	 * @param Term|\WP_Term|int $term Term to check.
+	 * @return void
+	 */
+	public function assertPostHasTerm( $post, $term ) {
+		if ( $post instanceof Post ) {
+			$post = $post->id();
+		}
+
+		$term = $this->get_term_from_argument( $term );
+
+		if ( $term ) {
+			PHPUnit::assertTrue( \has_term( $term->term_id, $term->taxonomy, $post ) );
+		} else {
+			PHPUnit::fail( 'Term not found to assert against' );
+		}
+	}
+
+	/**
+	 * Assert that a post doesn't have a specific term.
+	 *
+	 * `assertPostHasTerm()` is the inverse of this method.
+	 *
+	 * @param Post|\WP_Post|int $post Post to check.
+	 * @param Term|\WP_Term|int $term Term to check.
+	 * @return void
+	 */
+	public function assertPostNotHasTerm( $post, $term ) {
+		if ( $post instanceof Post ) {
+			$post = $post->id();
+		}
+
+		$term = $this->get_term_from_argument( $term );
+
+		if ( $term ) {
+			PHPUnit::assertFalse( \has_term( $term->term_id, $term->taxonomy, $post ) );
+		} else {
+			PHPUnit::fail( 'Term not found to assert against' );
+		}
 	}
 }
