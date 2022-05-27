@@ -67,6 +67,12 @@ class Term_Factory extends Factory {
 	 * @return \WP_Term|null
 	 */
 	public function get_object_by_id( int $object_id ) {
-		return get_term_object( $object_id );
+		$term = get_term_object( $object_id );
+
+		if ( $term && $this->as_models ) {
+			return Term::new_from_existing( (array) $term );
+		}
+
+		return $term;
 	}
 }

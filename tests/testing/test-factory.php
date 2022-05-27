@@ -2,6 +2,8 @@
 namespace Mantle\Testing;
 
 use Carbon\Carbon;
+use Mantle\Database\Model\Post;
+use Mantle\Database\Model\Term;
 
 use function Mantle\Support\Helpers\collect;
 
@@ -97,6 +99,14 @@ class Test_Factory extends Framework_Test_Case {
 
 	public function test_comment_factory() {
 		$this->shim_test( \WP_Comment::class, 'comment' );
+	}
+
+	public function test_as_models() {
+		$post = static::factory()->post->as_models()->create_and_get();
+		$term = static::factory()->term->as_models()->create_and_get();
+
+		$this->assertInstanceOf( Post::class, $post );
+		$this->assertInstanceOf( Term::class, $term );
 	}
 
 	protected function shim_test( string $class_name, string $property ) {
