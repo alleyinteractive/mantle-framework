@@ -5,9 +5,9 @@ use Mantle\Contracts\Database\Registrable;
 use Mantle\Database\Model\Model_Exception;
 use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Registration\Register_Post_Type;
+use Mantle\Database\Model\Term;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
-
 
 class Test_Post_Object extends Framework_Test_Case {
 	use Refresh_Database;
@@ -278,6 +278,69 @@ class Test_Post_Object extends Framework_Test_Case {
 		$object->save();
 		$this->assertEquals( 'Updated meta value', $object->get_meta( 'meta_key' ) );
 		$this->assertEquals( 'Updated meta value', $object->meta->meta_key );
+	}
+
+	public function test_terms_attribute() {
+		$post = static::factory()->post->as_models()->create_and_get();
+		$category = static::factory()->category->create_and_get();
+
+		// Save the term to the post.
+		$post->terms->category = [ $category ];
+		$post->save();
+
+		$this->assertPostHasTerm( $post, $category );
+		$this->assertInstanceOf( Term::class, $post->terms->category[0] );
+
+		$this->assertEquals(
+			$category->term_id,
+			$post->terms->category[0]->id(),
+		);
+
+		// Remove the term.
+		$post->terms->category = [];
+		$post->save();
+
+		$this->assertEmpty( get_the_category( $post->id() ) );
+	}
+
+	public function test_terms_attribute_create() {
+		$category = static::factory()->category->create_and_get();
+
+		// Create a post using terms attribute.
+		$new_post = static::factory()->post->as_models()->create_and_get( [
+			'terms' => [
+				'category' => [ $category ],
+			],
+		] );
+
+		$this->assertPostHasTerm( $new_post, $category );
+	}
+
+	public function test_terms_attribute_create_without_taxonomy() {
+		$category_a = static::factory()->category->create_and_get();
+		$category_b = static::factory()->category->create_and_get();
+
+		// Create a post using terms attribute without specifying a taxonomy.
+		$new_post = static::factory()->post->as_models()->create_and_get( [
+			'terms' => [ $category_a, $category_b ],
+		] );
+
+		$this->assertCount( 2, get_the_category( $new_post->id() ) );
+		$this->assertPostHasTerm( $new_post, $category_a );
+		$this->assertPostHasTerm( $new_post, $category_b );
+	}
+
+	public function test_terms_attribute_create_without_taxonomy_multiple() {
+		$category = static::factory()->category->create_and_get();
+		$tag      = static::factory()->tag->create_and_get();
+
+		// Create a post using terms attribute without specifying a taxonomy.
+		$new_post = static::factory()->post->as_models()->create_and_get( [
+			'terms' => [ $category, $tag ],
+		] );
+
+		$this->assertPostHasTerm( $new_post, $category );
+		$this->assertPostHasTerm( $new_post, $tag );
 	}
 
 	public function test_get_all() {

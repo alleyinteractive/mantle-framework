@@ -19,6 +19,7 @@ use Mantle\Support\Str;
 
 use function Mantle\Support\Helpers\class_basename;
 use function Mantle\Support\Helpers\class_uses_recursive;
+use function Mantle\Support\Helpers\tap;
 
 /**
  * Database Model
@@ -167,6 +168,19 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 		$this->exists = true;
 		$this->set_raw_attributes( $instance->get_raw_attributes() );
 		return $this;
+	}
+
+	/**
+	 * Create an instance of a model from another.
+	 *
+	 * @param Model $instance Instance to clone.
+	 * @return static
+	 */
+	public static function instance( Model $instance ) {
+		return tap(
+			( new static() )->set_raw_attributes( $instance->get_raw_attributes() ),
+			fn ( Model $model ) => $model->exists = true,
+		);
 	}
 
 	/**

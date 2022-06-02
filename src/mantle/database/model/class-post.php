@@ -7,8 +7,9 @@
 
 namespace Mantle\Database\Model;
 
+use Carbon\Carbon;
+use DateTime;
 use Mantle\Contracts;
-use Mantle\Contracts\Events\Dispatcher;
 use Mantle\Database\Query\Builder;
 use Mantle\Database\Query\Post_Query_Builder;
 use Mantle\Support\Helpers;
@@ -21,7 +22,8 @@ use function Mantle\Support\Helpers\collect;
 class Post extends Model implements Contracts\Database\Core_Object, Contracts\Database\Updatable {
 	use Events\Post_Events,
 		Meta\Model_Meta,
-		Meta\Post_Meta;
+		Meta\Post_Meta,
+		Term\Model_Term;
 
 	/**
 	 * Attributes for the model from the object
@@ -193,6 +195,34 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	}
 
 	/**
+	 * Publish a post.
+	 */
+	public function publish() : bool {
+		return $this->save( [ 'status' => 'publish' ] );
+	}
+
+	/**
+	 * Schedule a post for publication.
+	 *
+	 * @param string|DateTime $date Date to schedule the post for.
+	 * @return bool
+	 */
+	public function schedule( $date ) : bool {
+		if ( $date instanceof DateTime ) {
+			$date = $date->format( 'Y-m-d H:i:s' );
+		} else {
+			$date = Carbon::parse( $date )->format( 'Y-m-d H:i:s' );
+		}
+
+		return $this->save(
+			[
+				'status' => 'future',
+				'date'   => $date,
+			] 
+		);
+	}
+
+	/**
 	 * Save the model.
 	 *
 	 * @param array $attributes Attributes to save.
@@ -227,6 +257,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 		$this->set_raw_attribute( 'ID', $save );
 
 		$this->store_queued_meta();
+		$this->store_queued_terms();
 		$this->refresh();
 		$this->reset_modified_attributes();
 
@@ -241,117 +272,6 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 */
 	public function delete( bool $force = false ) {
 		return \wp_delete_post( $this->id(), $force );
-	}
-
-	/**
-	 * Get term(s) associated with a post.
-	 *
-	 * @param string $taxonomy Taxonomy name.
-	 * @return \WP_Term[]
-	 */
-	public function get_terms( string $taxonomy ): array {
-		$terms = \get_the_terms( $this->id(), $taxonomy );
-
-		if ( empty( $terms ) || \is_wp_error( $terms ) ) {
-			return [];
-		}
-
-		return (array) $terms;
-	}
-
-	/**
-	 * Set the term(s) associated with a post.
-	 *
-	 * @param mixed  $terms Accepts an array of or a single instance of terms.
-	 * @param string $taxonomy Taxonomy name, optional.
-	 * @param bool   $append Append to the object's terms, defaults to false.
-	 * @return static
-	 *
-	 * @throws Model_Exception Thrown if the $taxonomy cannot be inferred from $terms.
-	 * @throws Model_Exception Thrown if error saving the post's terms.
-	 */
-	public function set_terms( $terms, string $taxonomy = null, bool $append = false ) {
-		$terms = collect( is_array( $terms ) ? $terms : [ $terms ] )
-			->map(
-				function ( $term ) use ( &$taxonomy ) {
-					if ( $term instanceof Term ) {
-						if ( empty( $taxonomy ) ) {
-							$taxonomy = $term->taxonomy();
-						}
-
-						return $term->id();
-					}
-
-					if ( $term instanceof \WP_Term ) {
-						if ( empty( $taxonomy ) ) {
-							$taxonomy = $term->taxonomy;
-						}
-
-						return $term->term_id;
-					}
-
-					return $term;
-				}
-			)
-			->filter()
-			->all();
-
-		if ( empty( $taxonomy ) ) {
-			throw new Model_Exception( 'Term taxonomy not able to be inferred.' );
-		}
-
-		$update = \wp_set_object_terms( $this->id(), $terms, $taxonomy, $append );
-
-		if ( \is_wp_error( $update ) ) {
-			throw new Model_Exception( "Error setting model terms: [{$update->get_error_message()}]" );
-		}
-
-		return $this;
-	}
-
-
-	/**
-	 * Remove terms from a post.
-	 *
-	 * @param mixed  $terms Accepts an array of or a single instance of terms.
-	 * @param string $taxonomy Taxonomy name, optional.
-	 * @return static
-	 *
-	 * @throws Model_Exception Thrown if the $taxonomy cannot be inferred from $terms.
-	 */
-	public function remove_terms( $terms, string $taxonomy = null ) {
-		$terms = collect( is_array( $terms ) ? $terms : [ $terms ] )
-			->map(
-				function ( $term ) use ( &$taxonomy ) {
-					if ( $term instanceof Term ) {
-						if ( empty( $taxonomy ) ) {
-							$taxonomy = $term->taxonomy();
-						}
-
-						return $term->id();
-					}
-
-					if ( $term instanceof \WP_Term ) {
-						if ( empty( $taxonomy ) ) {
-							$taxonomy = $term->taxonomy;
-						}
-
-						return $term->term_id;
-					}
-
-					return $term;
-				}
-			)
-			->filter()
-			->all();
-
-		if ( empty( $taxonomy ) ) {
-			throw new Model_Exception( 'Term taxonomy not able to be inferred.' );
-		}
-
-		\wp_remove_object_terms( $this->id(), $terms, $taxonomy );
-
-		return $this;
 	}
 
 	/**
