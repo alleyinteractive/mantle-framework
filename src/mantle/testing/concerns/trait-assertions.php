@@ -410,11 +410,8 @@ trait Assertions {
 
 		$term = $this->get_term_from_argument( $term );
 
-		if ( $term ) {
-			PHPUnit::assertTrue( \has_term( $term->term_id, $term->taxonomy, $post ) );
-		} else {
-			PHPUnit::fail( 'Term not found to assert against' );
-		}
+		PHPUnit::assertInstanceOf( \WP_Term::class, $term, 'Term not found to assert against' );
+		PHPUnit::assertTrue( \has_term( $term->term_id, $term->taxonomy, $post ) );
 	}
 
 	/**
@@ -435,8 +432,6 @@ trait Assertions {
 
 		if ( $term ) {
 			PHPUnit::assertFalse( \has_term( $term->term_id, $term->taxonomy, $post ) );
-		} else {
-			PHPUnit::fail( 'Term not found to assert against' );
 		}
 	}
 
