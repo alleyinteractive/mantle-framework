@@ -72,5 +72,5 @@ return static function ( ContainerConfigurator $container_config ): void {
 	// todo: remove below services when going to 1.0.0.
 	$services->set( SetNextMutualDependenciesReleaseWorker::class );
 	$services->set( UpdateBranchAliasReleaseWorker::class );
-	$services->set( PushNextDevReleaseWorker::class );
+	// $services->set( PushNextDevReleaseWorker::class );
 };
