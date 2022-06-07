@@ -7,12 +7,15 @@
 
 namespace Mantle\Support;
 
+use JsonException;
+use Mantle\Support\Traits\Macroable;
 use voku\helper\ASCII;
 
 /**
  * String helpers.
  */
 class Str {
+	use Macroable;
 
 	/**
 	 * The cache of snake-cased words.
@@ -292,6 +295,26 @@ class Str {
 	 */
 	public static function is_ascii( $value ) {
 		return ASCII::is_ascii( (string) $value );
+	}
+
+	/**
+	 * Determine if a given string is valid JSON.
+	 *
+	 * @param  string $value
+	 * @return bool
+	 */
+	public static function is_json( $value ) {
+		if ( ! is_string( $value ) ) {
+				return false;
+		}
+
+		try {
+			json_decode( $value, true, 512, JSON_THROW_ON_ERROR );
+		} catch ( JsonException ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -575,6 +598,24 @@ class Str {
 	 */
 	public static function upper( $value ) {
 		return mb_strtoupper( $value, 'UTF-8' );
+	}
+
+	/**
+	 * Convert the given string to title case for each word.
+	 *
+	 * @param  string $value
+	 * @return string
+	 */
+	public static function headline( $value ) {
+		$parts = explode( ' ', $value );
+
+		$parts = count( $parts ) > 1
+			? array_map( [ static::class, 'title' ], $parts )
+			: array_map( [ static::class, 'title' ], static::ucsplit( implode( '_', $parts ) ) );
+
+		$collapsed = static::replace( [ '-', '_', ' ' ], '_', implode( '_', $parts ) );
+
+		return implode( ' ', array_filter( explode( '_', $collapsed ) ) );
 	}
 
 	/**
