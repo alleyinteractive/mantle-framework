@@ -305,7 +305,7 @@ class Str {
 	 */
 	public static function is_json( $value ) {
 		if ( ! is_string( $value ) ) {
-				return false;
+			return false;
 		}
 
 		try {

@@ -23,32 +23,32 @@ class SupportStrTest extends TestCase {
 	}
 
 	public function testStringHeadline() {
-			$this->assertSame( 'Jefferson Costella', Str::headline( 'jefferson costella' ) );
-			$this->assertSame( 'Jefferson Costella', Str::headline( 'jefFErson coSTella' ) );
-			$this->assertSame( 'Jefferson Costella Uses Laravel', Str::headline( 'jefferson_costella uses-_Laravel' ) );
-			$this->assertSame( 'Jefferson Costella Uses Laravel', Str::headline( 'jefferson_costella uses__Laravel' ) );
+		$this->assertSame( 'Jefferson Costella', Str::headline( 'jefferson costella' ) );
+		$this->assertSame( 'Jefferson Costella', Str::headline( 'jefFErson coSTella' ) );
+		$this->assertSame( 'Jefferson Costella Uses Laravel', Str::headline( 'jefferson_costella uses-_Laravel' ) );
+		$this->assertSame( 'Jefferson Costella Uses Laravel', Str::headline( 'jefferson_costella uses__Laravel' ) );
 
-			$this->assertSame( 'Laravel P H P Framework', Str::headline( 'laravel_p_h_p_framework' ) );
-			$this->assertSame( 'Laravel P H P Framework', Str::headline( 'laravel _p _h _p _framework' ) );
-			$this->assertSame( 'Laravel Php Framework', Str::headline( 'laravel_php_framework' ) );
-			$this->assertSame( 'Laravel Ph P Framework', Str::headline( 'laravel-phP-framework' ) );
-			$this->assertSame( 'Laravel Php Framework', Str::headline( 'laravel  -_-  php   -_-   framework   ' ) );
+		$this->assertSame( 'Laravel P H P Framework', Str::headline( 'laravel_p_h_p_framework' ) );
+		$this->assertSame( 'Laravel P H P Framework', Str::headline( 'laravel _p _h _p _framework' ) );
+		$this->assertSame( 'Laravel Php Framework', Str::headline( 'laravel_php_framework' ) );
+		$this->assertSame( 'Laravel Ph P Framework', Str::headline( 'laravel-phP-framework' ) );
+		$this->assertSame( 'Laravel Php Framework', Str::headline( 'laravel  -_-  php   -_-   framework   ' ) );
 
-			$this->assertSame( 'Foo Bar', Str::headline( 'fooBar' ) );
-			$this->assertSame( 'Foo Bar', Str::headline( 'foo_bar' ) );
-			$this->assertSame( 'Foo Bar Baz', Str::headline( 'foo-barBaz' ) );
-			$this->assertSame( 'Foo Bar Baz', Str::headline( 'foo-bar_baz' ) );
+		$this->assertSame( 'Foo Bar', Str::headline( 'fooBar' ) );
+		$this->assertSame( 'Foo Bar', Str::headline( 'foo_bar' ) );
+		$this->assertSame( 'Foo Bar Baz', Str::headline( 'foo-barBaz' ) );
+		$this->assertSame( 'Foo Bar Baz', Str::headline( 'foo-bar_baz' ) );
 
-			$this->assertSame( 'Öffentliche Überraschungen', Str::headline( 'öffentliche-überraschungen' ) );
-			$this->assertSame( 'Öffentliche Überraschungen', Str::headline( '-_öffentliche_überraschungen_-' ) );
-			$this->assertSame( 'Öffentliche Überraschungen', Str::headline( '-öffentliche überraschungen' ) );
+		$this->assertSame( 'Öffentliche Überraschungen', Str::headline( 'öffentliche-überraschungen' ) );
+		$this->assertSame( 'Öffentliche Überraschungen', Str::headline( '-_öffentliche_überraschungen_-' ) );
+		$this->assertSame( 'Öffentliche Überraschungen', Str::headline( '-öffentliche überraschungen' ) );
 
-			$this->assertSame( 'Sind Öde Und So', Str::headline( 'sindÖdeUndSo' ) );
+		$this->assertSame( 'Sind Öde Und So', Str::headline( 'sindÖdeUndSo' ) );
 
-			$this->assertSame( 'Orwell 1984', Str::headline( 'orwell 1984' ) );
-			$this->assertSame( 'Orwell 1984', Str::headline( 'orwell   1984' ) );
-			$this->assertSame( 'Orwell 1984', Str::headline( '-orwell-1984 -' ) );
-			$this->assertSame( 'Orwell 1984', Str::headline( ' orwell_- 1984 ' ) );
+		$this->assertSame( 'Orwell 1984', Str::headline( 'orwell 1984' ) );
+		$this->assertSame( 'Orwell 1984', Str::headline( 'orwell   1984' ) );
+		$this->assertSame( 'Orwell 1984', Str::headline( '-orwell-1984 -' ) );
+		$this->assertSame( 'Orwell 1984', Str::headline( ' orwell_- 1984 ' ) );
 	}
 
 	public function testStringWithoutWordsDoesntProduceError() {
@@ -205,8 +205,8 @@ class SupportStrTest extends TestCase {
 				[
 					'taylor',
 					'otwell',
-				] 
-			) 
+				]
+			)
 		);
 		$this->assertTrue( Str::contains_all( 'taylor otwell', [ 'taylor' ] ) );
 		$this->assertFalse(
@@ -215,8 +215,8 @@ class SupportStrTest extends TestCase {
 				[
 					'taylor',
 					'xxx',
-				] 
-			) 
+				]
+			)
 		);
 	}
 
@@ -226,14 +226,14 @@ class SupportStrTest extends TestCase {
 				'Class',
 				'method',
 			],
-			Str::parse_callback( 'Class@method', 'foo' ) 
+			Str::parse_callback( 'Class@method', 'foo' )
 		);
 		$this->assertEquals(
 			[
 				'Class',
 				'foo',
 			],
-			Str::parse_callback( 'Class', 'foo' ) 
+			Str::parse_callback( 'Class', 'foo' )
 		);
 		$this->assertEquals( [ 'Class', null ], Str::parse_callback( 'Class' ) );
 	}
@@ -360,8 +360,8 @@ class SupportStrTest extends TestCase {
 					'bar',
 					'baz',
 				],
-				'?/?/?' 
-			) 
+				'?/?/?'
+			)
 		);
 		$this->assertSame(
 			'foo/bar/baz/?',
@@ -372,8 +372,8 @@ class SupportStrTest extends TestCase {
 					'bar',
 					'baz',
 				],
-				'?/?/?/?' 
-			) 
+				'?/?/?/?'
+			)
 		);
 		$this->assertSame(
 			'foo/bar',
@@ -384,8 +384,8 @@ class SupportStrTest extends TestCase {
 					'bar',
 					'baz',
 				],
-				'?/?' 
-			) 
+				'?/?'
+			)
 		);
 		$this->assertSame(
 			'?/?/?',
@@ -396,8 +396,8 @@ class SupportStrTest extends TestCase {
 					'bar',
 					'baz',
 				],
-				'?/?/?' 
-			) 
+				'?/?/?'
+			)
 		);
 		// Ensure recursive replacements are avoided
 		$this->assertSame(
@@ -409,8 +409,8 @@ class SupportStrTest extends TestCase {
 					'bar',
 					'baz',
 				],
-				'?/?/?' 
-			) 
+				'?/?/?'
+			)
 		);
 		// Test for associative array support
 		$this->assertSame(
@@ -421,8 +421,8 @@ class SupportStrTest extends TestCase {
 					1 => 'foo',
 					2 => 'bar',
 				],
-				'?/?' 
-			) 
+				'?/?'
+			)
 		);
 		$this->assertSame(
 			'foo/bar',
@@ -432,8 +432,8 @@ class SupportStrTest extends TestCase {
 					'x' => 'foo',
 					'y' => 'bar',
 				],
-				'?/?' 
-			) 
+				'?/?'
+			)
 		);
 	}
 
