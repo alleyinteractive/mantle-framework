@@ -22,6 +22,35 @@ class SupportStrTest extends TestCase {
 		$this->assertSame( 'Jefferson Costella', Str::title( 'jefFErson coSTella' ) );
 	}
 
+	public function testStringHeadline() {
+			$this->assertSame( 'Jefferson Costella', Str::headline( 'jefferson costella' ) );
+			$this->assertSame( 'Jefferson Costella', Str::headline( 'jefFErson coSTella' ) );
+			$this->assertSame( 'Jefferson Costella Uses Laravel', Str::headline( 'jefferson_costella uses-_Laravel' ) );
+			$this->assertSame( 'Jefferson Costella Uses Laravel', Str::headline( 'jefferson_costella uses__Laravel' ) );
+
+			$this->assertSame( 'Laravel P H P Framework', Str::headline( 'laravel_p_h_p_framework' ) );
+			$this->assertSame( 'Laravel P H P Framework', Str::headline( 'laravel _p _h _p _framework' ) );
+			$this->assertSame( 'Laravel Php Framework', Str::headline( 'laravel_php_framework' ) );
+			$this->assertSame( 'Laravel Ph P Framework', Str::headline( 'laravel-phP-framework' ) );
+			$this->assertSame( 'Laravel Php Framework', Str::headline( 'laravel  -_-  php   -_-   framework   ' ) );
+
+			$this->assertSame( 'Foo Bar', Str::headline( 'fooBar' ) );
+			$this->assertSame( 'Foo Bar', Str::headline( 'foo_bar' ) );
+			$this->assertSame( 'Foo Bar Baz', Str::headline( 'foo-barBaz' ) );
+			$this->assertSame( 'Foo Bar Baz', Str::headline( 'foo-bar_baz' ) );
+
+			$this->assertSame( 'Öffentliche Überraschungen', Str::headline( 'öffentliche-überraschungen' ) );
+			$this->assertSame( 'Öffentliche Überraschungen', Str::headline( '-_öffentliche_überraschungen_-' ) );
+			$this->assertSame( 'Öffentliche Überraschungen', Str::headline( '-öffentliche überraschungen' ) );
+
+			$this->assertSame( 'Sind Öde Und So', Str::headline( 'sindÖdeUndSo' ) );
+
+			$this->assertSame( 'Orwell 1984', Str::headline( 'orwell 1984' ) );
+			$this->assertSame( 'Orwell 1984', Str::headline( 'orwell   1984' ) );
+			$this->assertSame( 'Orwell 1984', Str::headline( '-orwell-1984 -' ) );
+			$this->assertSame( 'Orwell 1984', Str::headline( ' orwell_- 1984 ' ) );
+	}
+
 	public function testStringWithoutWordsDoesntProduceError() {
 		$nbsp = chr( 0xC2 ) . chr( 0xA0 );
 		$this->assertSame( ' ', Str::words( ' ' ) );
@@ -170,26 +199,42 @@ class SupportStrTest extends TestCase {
 	}
 
 	public function testStrContainsAll() {
-		$this->assertTrue( Str::contains_all( 'taylor otwell', [
-			'taylor',
-			'otwell',
-		] ) );
+		$this->assertTrue(
+			Str::contains_all(
+				'taylor otwell',
+				[
+					'taylor',
+					'otwell',
+				] 
+			) 
+		);
 		$this->assertTrue( Str::contains_all( 'taylor otwell', [ 'taylor' ] ) );
-		$this->assertFalse( Str::contains_all( 'taylor otwell', [
-			'taylor',
-			'xxx',
-		] ) );
+		$this->assertFalse(
+			Str::contains_all(
+				'taylor otwell',
+				[
+					'taylor',
+					'xxx',
+				] 
+			) 
+		);
 	}
 
 	public function testParseCallback() {
-		$this->assertEquals( [
-			'Class',
-			'method',
-		], Str::parse_callback( 'Class@method', 'foo' ) );
-		$this->assertEquals( [
-			'Class',
-			'foo',
-		], Str::parse_callback( 'Class', 'foo' ) );
+		$this->assertEquals(
+			[
+				'Class',
+				'method',
+			],
+			Str::parse_callback( 'Class@method', 'foo' ) 
+		);
+		$this->assertEquals(
+			[
+				'Class',
+				'foo',
+			],
+			Str::parse_callback( 'Class', 'foo' ) 
+		);
 		$this->assertEquals( [ 'Class', null ], Str::parse_callback( 'Class' ) );
 	}
 
@@ -238,7 +283,7 @@ class SupportStrTest extends TestCase {
 
 		$this->assertTrue( Str::is( '*/foo', 'blah/baz/foo' ) );
 
-		$valueObject = new StringableObjectStub( 'foo/bar/baz' );
+		$valueObject   = new StringableObjectStub( 'foo/bar/baz' );
 		$patternObject = new StringableObjectStub( 'foo/*' );
 
 		$this->assertTrue( Str::is( 'foo/bar/baz', $valueObject ) );
@@ -250,6 +295,23 @@ class SupportStrTest extends TestCase {
 
 	public function testKebab() {
 		$this->assertSame( 'laravel-php-framework', Str::kebab( 'LaravelPhpFramework' ) );
+	}
+
+	public function testIsJson() {
+		$this->assertTrue( Str::is_json( '1' ) );
+		$this->assertTrue( Str::is_json( '[1,2,3]' ) );
+		$this->assertTrue( Str::is_json( '[1,   2,   3]' ) );
+		$this->assertTrue( Str::is_json( '{"first": "John", "last": "Doe"}' ) );
+		$this->assertTrue( Str::is_json( '[{"first": "John", "last": "Doe"}, {"first": "Jane", "last": "Doe"}]' ) );
+
+		$this->assertFalse( Str::is_json( '1,' ) );
+		$this->assertFalse( Str::is_json( '[1,2,3' ) );
+		$this->assertFalse( Str::is_json( '[1,   2   3]' ) );
+		$this->assertFalse( Str::is_json( '{first: "John"}' ) );
+		$this->assertFalse( Str::is_json( '[{first: "John"}, {first: "Jane"}]' ) );
+		$this->assertFalse( Str::is_json( '' ) );
+		$this->assertFalse( Str::is_json( null ) );
+		$this->assertFalse( Str::is_json( [] ) );
 	}
 
 	public function testLower() {
@@ -289,41 +351,90 @@ class SupportStrTest extends TestCase {
 	}
 
 	public function testReplaceArray() {
-		$this->assertSame( 'foo/bar/baz', Str::replace_array( '?', [
-			'foo',
-			'bar',
-			'baz',
-		], '?/?/?' ) );
-		$this->assertSame( 'foo/bar/baz/?', Str::replace_array( '?', [
-			'foo',
-			'bar',
-			'baz',
-		], '?/?/?/?' ) );
-		$this->assertSame( 'foo/bar', Str::replace_array( '?', [
-			'foo',
-			'bar',
-			'baz',
-		], '?/?' ) );
-		$this->assertSame( '?/?/?', Str::replace_array( 'x', [
-			'foo',
-			'bar',
-			'baz',
-		], '?/?/?' ) );
+		$this->assertSame(
+			'foo/bar/baz',
+			Str::replace_array(
+				'?',
+				[
+					'foo',
+					'bar',
+					'baz',
+				],
+				'?/?/?' 
+			) 
+		);
+		$this->assertSame(
+			'foo/bar/baz/?',
+			Str::replace_array(
+				'?',
+				[
+					'foo',
+					'bar',
+					'baz',
+				],
+				'?/?/?/?' 
+			) 
+		);
+		$this->assertSame(
+			'foo/bar',
+			Str::replace_array(
+				'?',
+				[
+					'foo',
+					'bar',
+					'baz',
+				],
+				'?/?' 
+			) 
+		);
+		$this->assertSame(
+			'?/?/?',
+			Str::replace_array(
+				'x',
+				[
+					'foo',
+					'bar',
+					'baz',
+				],
+				'?/?/?' 
+			) 
+		);
 		// Ensure recursive replacements are avoided
-		$this->assertSame( 'foo?/bar/baz', Str::replace_array( '?', [
-			'foo?',
-			'bar',
-			'baz',
-		], '?/?/?' ) );
+		$this->assertSame(
+			'foo?/bar/baz',
+			Str::replace_array(
+				'?',
+				[
+					'foo?',
+					'bar',
+					'baz',
+				],
+				'?/?/?' 
+			) 
+		);
 		// Test for associative array support
-		$this->assertSame( 'foo/bar', Str::replace_array( '?', [
-			1 => 'foo',
-			2 => 'bar',
-		], '?/?' ) );
-		$this->assertSame( 'foo/bar', Str::replace_array( '?', [
-			'x' => 'foo',
-			'y' => 'bar',
-		], '?/?' ) );
+		$this->assertSame(
+			'foo/bar',
+			Str::replace_array(
+				'?',
+				[
+					1 => 'foo',
+					2 => 'bar',
+				],
+				'?/?' 
+			) 
+		);
+		$this->assertSame(
+			'foo/bar',
+			Str::replace_array(
+				'?',
+				[
+					'x' => 'foo',
+					'y' => 'bar',
+				],
+				'?/?' 
+			) 
+		);
 	}
 
 	public function testReplaceFirst() {
@@ -443,7 +554,7 @@ Integer nec metus pellentesque, blandit libero id, porttitor urna. Quisque feugi
 Suspendisse eget auctor est. Maecenas.';
 
 		$expected = [
-			'item_to_match' => 5,
+			'item_to_match'         => 5,
 			'another_item_to_match' => 7,
 		];
 

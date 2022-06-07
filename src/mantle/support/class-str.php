@@ -467,6 +467,18 @@ class Str {
 	}
 
 	/**
+	 * Replace the given value in the given string.
+	 *
+	 * @param string|string[] $search
+	 * @param string|string[] $replace
+	 * @param string|string[] $subject
+	 * @return string
+	 */
+	public static function replace( $search, $replace, $subject ) {
+		return str_replace( $search, $replace, $subject );
+	}
+
+	/**
 	 * Replace the first occurrence of a given value in the string.
 	 *
 	 * @param string $search  String for which to search.
@@ -586,8 +598,18 @@ class Str {
 	 * @param string $string The string to modify.
 	 * @return string
 	 */
-	public static function ucfirst( $string ) {
+	public static function ucfirst( string $string ) {
 		return static::upper( static::substr( $string, 0, 1 ) ) . static::substr( $string, 1 );
+	}
+
+	/**
+	 * Split a string into pieces by uppercase characters.
+	 *
+	 * @param  string $string
+	 * @return array
+	 */
+	public static function ucsplit( string $string ) {
+			return preg_split( '/(?=\p{Lu})/u', $string, -1, PREG_SPLIT_NO_EMPTY );
 	}
 
 	/**
