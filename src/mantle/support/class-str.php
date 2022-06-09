@@ -300,10 +300,10 @@ class Str {
 	/**
 	 * Determine if a given string is valid JSON.
 	 *
-	 * @param  string $value
+	 * @param  mixed $value
 	 * @return bool
 	 */
-	public static function is_json( $value ) {
+	public static function is_json( $value ): bool {
 		if ( ! is_string( $value ) ) {
 			return false;
 		}
@@ -473,7 +473,7 @@ class Str {
 	 * @param string|string[] $search
 	 * @param string|string[] $replace
 	 * @param string|string[] $subject
-	 * @return string
+	 * @return string|string[]
 	 */
 	public static function replace( $search, $replace, $subject ) {
 		return str_replace( $search, $replace, $subject );
@@ -629,7 +629,7 @@ class Str {
 	 * @param  string $value
 	 * @return string
 	 */
-	public static function headline( $value ) {
+	public static function headline( string $value ): string {
 		$parts = explode( ' ', $value );
 
 		$parts = count( $parts ) > 1
