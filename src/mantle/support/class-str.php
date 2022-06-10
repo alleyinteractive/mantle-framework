@@ -7,12 +7,15 @@
 
 namespace Mantle\Support;
 
+use JsonException;
+use Mantle\Support\Traits\Macroable;
 use voku\helper\ASCII;
 
 /**
  * String helpers.
  */
 class Str {
+	use Macroable;
 
 	/**
 	 * The cache of snake-cased words.
@@ -295,6 +298,27 @@ class Str {
 	}
 
 	/**
+	 * Determine if a given string is valid JSON.
+	 *
+	 * @param  mixed $value
+	 * @return bool
+	 */
+	public static function is_json( $value ): bool {
+		if ( ! is_string( $value ) ) {
+			return false;
+		}
+
+		try {
+			json_decode( $value, true, 512, JSON_THROW_ON_ERROR );
+		} catch ( JsonException $e ) {
+			unset( $e );
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Convert a string to kebab case.
 	 *
 	 * @param string $value String to kebab.
@@ -444,6 +468,18 @@ class Str {
 	}
 
 	/**
+	 * Replace the given value in the given string.
+	 *
+	 * @param string|string[] $search
+	 * @param string|string[] $replace
+	 * @param string|string[] $subject
+	 * @return string|string[]
+	 */
+	public static function replace( $search, $replace, $subject ) {
+		return str_replace( $search, $replace, $subject );
+	}
+
+	/**
 	 * Replace the first occurrence of a given value in the string.
 	 *
 	 * @param string $search  String for which to search.
@@ -563,8 +599,18 @@ class Str {
 	 * @param string $string The string to modify.
 	 * @return string
 	 */
-	public static function ucfirst( $string ) {
+	public static function ucfirst( string $string ) {
 		return static::upper( static::substr( $string, 0, 1 ) ) . static::substr( $string, 1 );
+	}
+
+	/**
+	 * Split a string into pieces by uppercase characters.
+	 *
+	 * @param  string $string
+	 * @return array
+	 */
+	public static function ucsplit( string $string ) {
+			return preg_split( '/(?=\p{Lu})/u', $string, -1, PREG_SPLIT_NO_EMPTY );
 	}
 
 	/**
@@ -575,6 +621,24 @@ class Str {
 	 */
 	public static function upper( $value ) {
 		return mb_strtoupper( $value, 'UTF-8' );
+	}
+
+	/**
+	 * Convert the given string to title case for each word.
+	 *
+	 * @param  string $value
+	 * @return string
+	 */
+	public static function headline( string $value ): string {
+		$parts = explode( ' ', $value );
+
+		$parts = count( $parts ) > 1
+			? array_map( [ static::class, 'title' ], $parts )
+			: array_map( [ static::class, 'title' ], static::ucsplit( implode( '_', $parts ) ) );
+
+		$collapsed = static::replace( [ '-', '_', ' ' ], '_', implode( '_', $parts ) );
+
+		return implode( ' ', array_filter( explode( '_', $collapsed ) ) );
 	}
 
 	/**
