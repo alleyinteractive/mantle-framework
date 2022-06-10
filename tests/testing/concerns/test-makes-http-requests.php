@@ -128,6 +128,7 @@ class Test_Makes_Http_Requests extends Framework_Test_Case {
 
 		$this->get( '/route-to-redirect/' )
 			->assertHeader( 'location', home_url( '/redirected' ) )
+			->assertHeader( 'Location', home_url( '/redirected' ) )
 			->assertRedirect( '/redirected' )
 			->assertHeader( 'Other-Header', '123' );
 	}
