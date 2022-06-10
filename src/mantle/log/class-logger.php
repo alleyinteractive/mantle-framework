@@ -7,6 +7,7 @@
 
 namespace Mantle\Log;
 
+use DateTimeImmutable;
 use Mantle\Contracts\Events\Dispatcher;
 use Monolog\Logger as MonologLogger;
 
@@ -37,15 +38,16 @@ class Logger extends MonologLogger {
 	/**
 	 * Adds a log record.
 	 *
-	 * @param  int     $level   The logging level.
-	 * @param  string  $message The log message.
-	 * @param  mixed[] $context The log context.
+	 * @param int               $level    The logging level.
+	 * @param string            $message  The log message.
+	 * @param mixed[]           $context  The log context.
+	 * @param DateTimeImmutable $datetime Optional log date to log into the past or future.
 	 * @return bool    Whether the record has been processed
 	 */
-	public function addRecord( int $level, string $message, array $context = [] ): bool {
+	public function addRecord( int $level, string $message, array $context = [], DateTimeImmutable $datetime = null ): bool {
 		$this->fire_log_event( $this->getLevelName( $level ), $message, $context );
 
-		return parent::addRecord( $level, $message, $context );
+		return parent::addRecord( $level, $message, $context, $datetime );
 	}
 
 	/**
