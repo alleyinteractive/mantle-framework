@@ -7,7 +7,7 @@
         "alleyinteractive/composer-wordpress-autoloader": "^0.4",
         "mantle-framework/contracts": "^0.3",
         "mantle-framework/support": "^0.3",
-        "monolog/monolog": "^2.0",
+        "monolog/monolog": "^2.7",
         "psr/log": "^1.0.1 || ^2.0 || ^3.0"
     },
     "extra": {
