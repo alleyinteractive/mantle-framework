@@ -120,6 +120,18 @@ class Test_Makes_Http_Requests extends Framework_Test_Case {
 			->assertStatus( 404 );
 	}
 
+	public function test_redirect_response() {
+		$this->app['router']->get(
+			'/route-to-redirect/',
+			fn () => redirect()->to( '/redirected', 302, [ 'Other-Header' => '123' ] ),
+		);
+
+		$this->get( '/route-to-redirect/' )
+			->assertHeader( 'location', home_url( '/redirected' ) )
+			->assertRedirect( '/redirected' )
+			->assertHeader( 'Other-Header', '123' );
+	}
+
 	public function test_multiple_requests() {
 		// Re-run all test methods on this class in a single pass.
 		foreach ( get_class_methods( $this ) as $method ) {

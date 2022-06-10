@@ -116,6 +116,9 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 * @return string
 	 */
 	public function to( string $path, array $extra = [], bool $secure = null ) {
+		// First we will check if the URL is already a valid URL. If it is we will not
+		// try to generate a new one but will simply return the URL as is, which is
+		// convenient since developers do not always have to check if it's valid.
 		if ( $this->is_valid_url( $path ) ) {
 			return $path;
 		}

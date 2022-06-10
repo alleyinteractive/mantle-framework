@@ -113,7 +113,7 @@ class Test_Response {
 	 * @return $this
 	 */
 	public function set_headers( array $headers ): object {
-		$this->headers = $headers;
+		$this->headers = array_change_key_case( $headers, CASE_LOWER );
 
 		return $this;
 	}
@@ -135,6 +135,9 @@ class Test_Response {
 	 * @return string|null
 	 */
 	public function get_header( string $key, string $default = null ): ?string {
+		// Enforce a lowercase header name.
+		$key = strtolower( $key );
+
 		// If the header is set and not null, return the string value.
 		if ( isset( $this->headers[ $key ] ) ) {
 			// Account for multiple headers with the same key.
@@ -245,15 +248,15 @@ class Test_Response {
 	 * Assert whether the response is redirecting to a given URI.
 	 *
 	 * @param string|null $uri URI to assert redirection to.
-	 * @return $this
+	 * @return static
 	 */
-	public function assertRedirect( $uri = null ) {
+	public function assertRedirect( ?string $uri = null ) {
 		PHPUnit::assertTrue(
 			$this->is_redirect(),
 			'Response status code [' . $this->get_status_code() . '] is not a redirect status code.'
 		);
 
-		if ( ! is_null( $uri ) ) {
+		if ( $uri ) {
 			$this->assertLocation( $uri );
 		}
 
@@ -275,12 +278,12 @@ class Test_Response {
 	 * Assert that the current location header matches the given URI.
 	 *
 	 * @param string $uri URI to assert that the location header is set to.
-	 * @return $this
+	 * @return static
 	 */
 	public function assertLocation( $uri ) {
 		PHPUnit::assertEquals(
-			trailingslashit( home_url( $uri ) ),
-			trailingslashit( home_url( $this->get_header( 'Location' ) ) )
+			app( 'url' )->to( $uri ),
+			app( 'url' )->to( $this->get_header( 'location' ) ),
 		);
 
 		return $this;
@@ -292,9 +295,12 @@ class Test_Response {
 	 *
 	 * @param string $header_name Header name (key) to assert.
 	 * @param mixed  $value       Header value to assert.
-	 * @return $this
+	 * @return static
 	 */
 	public function assertHeader( $header_name, $value = null ) {
+		// Enforce a lowercase header name.
+		$header_name = strtolower( $header_name );
+
 		PHPUnit::assertArrayHasKey(
 			$header_name,
 			$this->headers,
@@ -321,6 +327,9 @@ class Test_Response {
 	 * @return $this
 	 */
 	public function assertHeaderMissing( $header_name ) {
+		// Enforce a lowercase header name.
+		$header_name = strtolower( $header_name );
+
 		PHPUnit::assertArrayNotHasKey(
 			$header_name,
 			$this->headers,
