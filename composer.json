@@ -20,7 +20,7 @@
         "illuminate/view": "^8.6",
         "league/flysystem": "^1.1",
         "league/flysystem-cached-adapter": "^1.1",
-        "monolog/monolog": "^2.0",
+        "monolog/monolog": "^2.7",
         "nesbot/carbon": "^2.53",
         "nette/php-generator": "^3.6",
         "psr/container": "^1.1.1 || ^2.0.1",
