@@ -11,6 +11,8 @@ use Faker\Generator;
 
 /**
  * Network Factory
+ *
+ * @template TObject
  */
 class Network_Factory extends Factory {
 	/**

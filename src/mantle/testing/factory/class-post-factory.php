@@ -10,12 +10,15 @@ namespace Mantle\Testing\Factory;
 use Carbon\Carbon;
 use Faker\Generator;
 use Mantle\Database\Model\Post;
+use WP_Post;
 
 use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\get_post_object;
 
 /**
  * Post Factory
+ *
+ * @template TObject
  */
 class Post_Factory extends Factory {
 	/**
@@ -97,7 +100,7 @@ class Post_Factory extends Factory {
 	 * @param Carbon|string $starting_date The starting date for the posts, defaults to
 	 *                                     a month ago.
 	 * @param int           $separation The number of seconds between each post.
-	 * @return array<int>
+	 * @return array<int, int>
 	 */
 	public function create_ordered_set(
 		int $count = 10,
@@ -133,7 +136,7 @@ class Post_Factory extends Factory {
 	 * Retrieves an object by ID.
 	 *
 	 * @param int $object_id The object ID.
-	 * @return \WP_Post|null
+	 * @return Post|WP_Post|null
 	 */
 	public function get_object_by_id( int $object_id ) {
 		return $this->as_models

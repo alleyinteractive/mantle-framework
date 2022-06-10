@@ -14,6 +14,8 @@ use function Mantle\Support\Helpers\tap;
 
 /**
  * Base Factory
+ *
+ * @template TObject
  */
 abstract class Factory {
 	/**
@@ -27,7 +29,7 @@ abstract class Factory {
 	 * Creates an object.
 	 *
 	 * @param array $args The arguments.
-	 * @return mixed
+	 * @return int|null
 	 */
 	abstract public function create( array $args = [] );
 
@@ -69,7 +71,7 @@ abstract class Factory {
 	 * @param int   $count Amount of objects to create.
 	 * @param array $args  Optional. The arguments for the object to create. Default is empty array.
 	 *
-	 * @return array
+	 * @return array<int, int>
 	 */
 	public function create_many( int $count, array $args = [] ) {
 		return collect()
@@ -86,7 +88,7 @@ abstract class Factory {
 	 * Creates an object and returns its object.
 	 *
 	 * @param array $args Optional. The arguments for the object to create. Default is empty array.
-	 * @return mixed|Core_Object The created object.
+	 * @return TObject|Core_Object The created object.
 	 */
 	public function create_and_get( $args = [] ) {
 		$object_id = $this->create( $args );

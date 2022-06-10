@@ -14,6 +14,8 @@ use function Mantle\Support\Helpers\get_user_object;
 
 /**
  * User Factory
+ *
+ * @template TObject
  */
 class User_Factory extends Factory {
 	/**

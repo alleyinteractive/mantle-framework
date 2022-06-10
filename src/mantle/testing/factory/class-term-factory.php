@@ -14,6 +14,8 @@ use function Mantle\Support\Helpers\get_term_object;
 
 /**
  * Term Factory
+ *
+ * @template TObject
  */
 class Term_Factory extends Factory {
 	/**
