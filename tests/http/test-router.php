@@ -205,6 +205,24 @@ class Test_Router extends Framework_Test_Case {
 		$this->assertSame( 'first_name-last_name', $router->dispatch( Request::create( 'names/first_name/last_name', 'GET' ) )->getContent() );
 	}
 
+	public function test_route_typehint_non_model() {
+		$router = $this->get_router();
+
+		$router->get(
+			'example/non-binding/{who}',
+			[
+				'middleware' => Substitute_Bindings::class,
+				'callback'   => fn ( string $who ) => "Hello {$who}",
+			],
+		);
+
+		// Test without a model typehint.
+		$this->assertSame(
+			'Hello sean',
+			$router->dispatch( Request::create( 'example/non-binding/sean', 'GET' ) )->getContent(),
+		);
+	}
+
 	// Ensure that a route with multiple variables and a single type-hinted one
 	// works properly.
 	public function test_implicit_binding_multiple_variables() {
