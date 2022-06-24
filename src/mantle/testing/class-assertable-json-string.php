@@ -73,7 +73,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 * @param  mixed  $expect
 	 * @return $this
 	 */
-	public function assertJsonPath( $path, $expect ) {
+	public function assertPath( $path, $expect ) {
 		PHPUnit::assertSame( $expect, $this->json( $path ) );
 
 		return $this;
@@ -84,7 +84,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 *
 	 * @param string $path Path to check.
 	 */
-	public function assertJsonPathExists( string $path ) {
+	public function assertPathExists( string $path ) {
 		PHPUnit::assertNotNull( $this->json( $path ) );
 
 		return $this;
@@ -95,7 +95,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 *
 	 * @param string $path Path to check.
 	 */
-	public function assertJsonPathMissing( string $path ) {
+	public function assertPathMissing( string $path ) {
 		PHPUnit::assertNull( $this->json( $path ) );
 
 		return $this;
@@ -107,7 +107,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 * @param  array $data
 	 * @return $this
 	 */
-	public function assertExactJson( array $data ) {
+	public function assertExact( array $data ) {
 		$actual = wp_json_encode(
 			Arr::sort_recursive(
 				(array) $this->json()
@@ -125,7 +125,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 * @param  array $data Data to compare.
 	 * @return $this
 	 */
-	public function assertJsonFragment( array $data ) {
+	public function assertFragment( array $data ) {
 		$actual = wp_json_encode(
 			Arr::sort_recursive(
 				(array) $this->json()
@@ -154,9 +154,9 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 * @param  bool  $exact Flag for exact match, defaults to false.
 	 * @return $this
 	 */
-	public function assertJsonMissing( array $data, $exact = false ) {
+	public function assertMissing( array $data, $exact = false ) {
 		if ( $exact ) {
-			return $this->assertJsonMissingExact( $data );
+			return $this->assertMissingExact( $data );
 		}
 
 		$actual = wp_json_encode(
@@ -186,7 +186,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 * @param  array $data
 	 * @return $this
 	 */
-	public function assertJsonMissingExact( array $data ) {
+	public function assertMissingExact( array $data ) {
 		$actual = wp_json_encode(
 			Arr::sort_recursive(
 				(array) $this->json()
@@ -210,30 +210,13 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	}
 
 	/**
-	 * Get the strings we need to search for when examining the JSON.
-	 *
-	 * @param  string $key
-	 * @param  string $value
-	 * @return array
-	 */
-	protected function json_search_strings( $key, $value ) {
-		$needle = substr( wp_json_encode( [ $key => $value ] ), 1, -1 );
-
-		return [
-			$needle . ']',
-			$needle . '}',
-			$needle . ',',
-		];
-	}
-
-	/**
 	 * Assert that the response JSON has the expected count of items at the given key.
 	 *
 	 * @param  int         $count
 	 * @param  string|null $key
 	 * @return $this
 	 */
-	public function assertJsonCount( int $count, $key = null ) {
+	public function assertCount( int $count, $key = null ) {
 		if ( ! is_null( $key ) ) {
 			PHPUnit::assertCount(
 				$count,
@@ -251,6 +234,23 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 		);
 
 		return $this;
+	}
+
+	/**
+	 * Get the strings we need to search for when examining the JSON.
+	 *
+	 * @param  string $key
+	 * @param  string $value
+	 * @return array
+	 */
+	protected function json_search_strings( $key, $value ) {
+		$needle = substr( wp_json_encode( [ $key => $value ] ), 1, -1 );
+
+		return [
+			$needle . ']',
+			$needle . '}',
+			$needle . ',',
+		];
 	}
 
 	/**

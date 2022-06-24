@@ -518,7 +518,7 @@ class Test_Response {
 	 * @return $this
 	 */
 	public function assertJsonPath( $path, $expect ) {
-		$this->decoded_json()->assertJsonPath( $path, $expect );
+		$this->decoded_json()->assertPath( $path, $expect );
 
 		return $this;
 	}
@@ -529,7 +529,7 @@ class Test_Response {
 	 * @param string $path Path to check.
 	 */
 	public function assertJsonPathExists( string $path ) {
-		$this->decoded_json()->assertJsonPathExists( $path );
+		$this->decoded_json()->assertPathExists( $path );
 
 		return $this;
 	}
@@ -540,7 +540,7 @@ class Test_Response {
 	 * @param string $path Path to check.
 	 */
 	public function assertJsonPathMissing( string $path ) {
-		$this->decoded_json()->assertJsonPathMissing( $path );
+		$this->decoded_json()->assertPathMissing( $path );
 
 		return $this;
 	}
@@ -552,7 +552,7 @@ class Test_Response {
 	 * @return $this
 	 */
 	public function assertExactJson( array $data ) {
-		$this->decoded_json()->assertExactJson( $data );
+		$this->decoded_json()->assertExact( $data );
 
 		return $this;
 	}
@@ -564,7 +564,7 @@ class Test_Response {
 	 * @return $this
 	 */
 	public function assertJsonFragment( array $data ) {
-		$this->decoded_json()->assertJsonFragment( $data );
+		$this->decoded_json()->assertFragment( $data );
 
 		return $this;
 	}
@@ -577,7 +577,7 @@ class Test_Response {
 	 * @return $this
 	 */
 	public function assertJsonMissing( array $data, $exact = false ) {
-		$this->decoded_json()->assertJsonMissing( $data, $exact );
+		$this->decoded_json()->assertMissing( $data, $exact );
 
 		return $this;
 	}
@@ -589,7 +589,7 @@ class Test_Response {
 	 * @return $this
 	 */
 	public function assertJsonMissingExact( array $data ) {
-		$this->decoded_json()->assertJsonMissingExact( $data );
+		$this->decoded_json()->assertMissingExact( $data );
 
 		return $this;
 	}
@@ -602,7 +602,7 @@ class Test_Response {
 	 * @return $this
 	 */
 	public function assertJsonCount( int $count, $key = null ) {
-		$this->decoded_json()->assertJsonCount( $count, $key );
+		$this->decoded_json()->assertCount( $count, $key );
 
 		return $this;
 	}
