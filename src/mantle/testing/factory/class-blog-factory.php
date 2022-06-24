@@ -14,6 +14,8 @@ use function Mantle\Support\Helpers\get_site_object;
 
 /**
  * Blog Factory
+ *
+ * @template TObject
  */
 class Blog_Factory extends Factory {
 	/**
