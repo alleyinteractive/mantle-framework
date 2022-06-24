@@ -47,6 +47,8 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 			$this->decoded = $jsonable->jsonSerialize();
 		} elseif ( $jsonable instanceof Jsonable ) {
 			$this->decoded = json_decode( $jsonable->to_json(), true );
+		} elseif ( is_array( $jsonable ) ) {
+			$this->decoded = $jsonable;
 		} else {
 			$this->decoded = json_decode( $jsonable, true );
 		}
@@ -97,6 +99,57 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 */
 	public function assertPathMissing( string $path ) {
 		PHPUnit::assertNull( $this->json( $path ) );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response has the similar JSON as given.
+	 *
+	 * @param  array  $data
+	 * @return $this
+	 */
+	public function assertSimilar( array $data ) {
+		$actual = json_encode( Arr::sort_recursive(
+			(array) $this->decoded
+		) );
+
+		PHPUnit::assertEquals( json_encode( Arr::sort_recursive( $data ) ), $actual );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response has a given JSON structure.
+	 *
+	 * @param  array|null  $structure
+	 * @param  array|null  $response_data
+	 * @return $this
+	 */
+	public function assertStructure( array $structure = null, $response_data = null ) {
+		if ( is_null( $structure ) ) {
+			return $this->assertSimilar( $this->decoded );
+		}
+
+		if ( ! is_null( $response_data ) ) {
+			return ( new static( $response_data ) )->assertStructure( $structure );
+		}
+
+		foreach ( $structure as $key => $value ) {
+			if ( is_array( $value ) && '*' === $key ) {
+				PHPUnit::assertIsArray($this->decoded);
+
+				foreach ( $this->decoded as $item ) {
+					$this->assertStructure( $structure['*'], $item );
+				}
+			} elseif ( is_array( $value ) ) {
+				PHPUnit::assertArrayHasKey($key, $this->decoded);
+
+				$this->assertStructure( $structure[ $key ], $this->decoded[ $key ] );
+			} else {
+				PHPUnit::assertArrayHasKey( $value, $this->decoded );
+			}
+		}
 
 		return $this;
 	}
