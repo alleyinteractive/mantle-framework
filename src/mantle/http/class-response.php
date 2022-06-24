@@ -50,7 +50,7 @@ class Response extends HttpFoundationResponse {
 	 *
 	 * @throws InvalidArgumentException When the HTTP status code is not valid.
 	 */
-	public function setContent( mixed $content ): static {
+	public function setContent( $content ) {
 		$this->original = $content;
 
 		// If the content is "JSONable" we will set the appropriate header and convert
@@ -78,7 +78,7 @@ class Response extends HttpFoundationResponse {
 	 * @param  Arrayable|Jsonable|ArrayObject|JsonSerializable|array|mixed $content
 	 * @return bool
 	 */
-	protected function should_be_json( mixed $content ): bool {
+	protected function should_be_json( $content ): bool {
 		return $content instanceof Arrayable ||
 			$content instanceof Jsonable ||
 			$content instanceof ArrayObject ||
