@@ -10,6 +10,7 @@ namespace Mantle\Testing;
 use DOMDocument;
 use DOMXPath;
 use Exception;
+use Mantle\Http\Response;
 use Mantle\Support\Traits\Macroable;
 use PHPUnit\Framework\Assert as PHPUnit;
 
@@ -65,6 +66,16 @@ class Test_Response {
 		$this->set_content( $content )
 			->set_status_code( $status )
 			->set_headers( $headers );
+	}
+
+	/**
+	 * Create a response from a base response instance.
+	 *
+	 * @param Response $response Base response instance.
+	 * @return static
+	 */
+	public static function from_base_response( Response $response ) {
+		return new static( $response->getContent(), $response->getStatusCode(), $response->headers->all() );
 	}
 
 	/**
@@ -603,6 +614,30 @@ class Test_Response {
 	 */
 	public function assertJsonCount( int $count, $key = null ) {
 		$this->decoded_json()->assertCount( $count, $key );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response has the similar JSON as given.
+	 *
+	 * @param  array $data
+	 * @return $this
+	 */
+	public function assertJsonSimilar( array $data ) {
+		$this->decoded_json()->assertSimilar( $data );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response has a given JSON structure.
+	 *
+	 * @param  array|null $structure Structure to check.
+	 * @return $this
+	 */
+	public function assertJsonStructure( array $structure = null ) {
+		$this->decoded_json()->assertStructure( $structure );
 
 		return $this;
 	}
