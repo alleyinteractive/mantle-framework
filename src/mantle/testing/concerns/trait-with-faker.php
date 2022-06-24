@@ -1,6 +1,6 @@
 <?php
 /**
- * This file contains the Admin_Screen trait
+ * This file contains the With_Faker trait
  *
  * @package Mantle
  */
