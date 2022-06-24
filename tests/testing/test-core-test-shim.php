@@ -1,5 +1,7 @@
 <?php
-namespace Mantle\Testing;
+namespace Mantle\Tests\Testing;
+
+use Mantle\Testing\Framework_Test_Case;
 
 class Test_Core_Test_Shim extends Framework_Test_Case {
 	public function test_go_to() {

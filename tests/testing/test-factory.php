@@ -1,9 +1,10 @@
 <?php
-namespace Mantle\Testing;
+namespace Mantle\Tests\Testing;
 
 use Carbon\Carbon;
 use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Term;
+use Mantle\Testing\Framework_Test_Case;
 
 use function Mantle\Support\Helpers\collect;
 
