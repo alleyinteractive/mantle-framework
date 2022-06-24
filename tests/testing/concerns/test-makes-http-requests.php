@@ -117,7 +117,8 @@ class Test_Makes_Http_Requests extends Framework_Test_Case {
 
 	public function test_rest_api_route_error() {
 		$this->get( rest_url( '/an/unknown/route' ) )
-			->assertStatus( 404 );
+			->assertStatus( 404 )
+			->assertNotFound();
 	}
 
 	public function test_redirect_response() {
