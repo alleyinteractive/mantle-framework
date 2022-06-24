@@ -35,7 +35,7 @@ class Response extends HttpFoundationResponse {
 	 *
 	 * @throws InvalidArgumentException When the HTTP status code is not valid.
 	 */
-	public function __construct( mixed $content = '', int $status = 200, array $headers = [] ) {
+	public function __construct( $content = '', int $status = 200, array $headers = [] ) {
 		$this->headers = new ResponseHeaderBag( $headers );
 		$this->setContent( $content );
 		$this->setStatusCode( $status );
