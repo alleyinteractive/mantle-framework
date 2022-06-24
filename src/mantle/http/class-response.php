@@ -92,7 +92,7 @@ class Response extends HttpFoundationResponse {
 	 * @param  Arrayable|Jsonable|ArrayObject|JsonSerializable|array|mixed $content
 	 * @return string
 	 */
-	protected function morph_to_json( mixed $content ) {
+	protected function morph_to_json( $content ) {
 		if ( $content instanceof Jsonable ) {
 			return $content->to_json();
 		} elseif ( $content instanceof Arrayable ) {
