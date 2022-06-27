@@ -14,6 +14,8 @@ use function Mantle\Support\Helpers\get_comment_object;
 
 /**
  * Term Factory
+ *
+ * @template TObject
  */
 class Comment_Factory extends Factory {
 	/**

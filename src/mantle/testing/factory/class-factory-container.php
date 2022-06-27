@@ -18,70 +18,70 @@ class Factory_Container {
 	/**
 	 * Attachment Factory
 	 *
-	 * @var Attachment_Factory
+	 * @var Attachment_Factory<\WP_Post|\Mantle\Database\Model\Attachment>
 	 */
 	public $attachment;
 
 	/**
 	 * Blog Factory
 	 *
-	 * @var Blog_Factory
+	 * @var Blog_Factory<\WP_Site|\Mantle\Database\Model\Site>
 	 */
 	public $blog;
 
 	/**
 	 * Category Factory
 	 *
-	 * @var Term_Factory
+	 * @var Term_Factory<\WP_Term|\Mantle\Database\Model\Term>
 	 */
 	public $category;
 
 	/**
 	 * Comment Factory
 	 *
-	 * @var Comment_Factory
+	 * @var Comment_Factory<\WP_Comment>
 	 */
 	public $comment;
 
 	/**
 	 * Network Factory
 	 *
-	 * @var Network_Factory
+	 * @var Network_Factory<\WP_Network>
 	 */
 	public $network;
 
 	/**
 	 * Page Factory
 	 *
-	 * @var Post_Factory
+	 * @var Post_Factory<\WP_Post|\Mantle\Database\Model\Post>
 	 */
 	public $page;
 
 	/**
 	 * Post Factory
 	 *
-	 * @var Post_Factory
+	 * @var Post_Factory<\WP_Post|\Mantle\Database\Model\Post>
 	 */
 	public $post;
 
 	/**
 	 * Tag Factory
 	 *
-	 * @var Term_Factory
+	 * @var Term_Factory<\WP_Term|\Mantle\Database\Model\Term>
 	 */
 	public $tag;
 
 	/**
 	 * Term Factory
 	 *
-	 * @var Term_Factory
+	 * @var Term_Factory<\WP_Term|\Mantle\Database\Model\Term>
 	 */
 	public $term;
 
 	/**
 	 * User Factory
 	 *
-	 * @var User_Factory
+	 * @var User_Factory<\WP_User|\Mantle\Database\Model\User>
 	 */
 	public $user;
 

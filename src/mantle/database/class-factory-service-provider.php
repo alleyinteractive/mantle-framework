@@ -43,7 +43,7 @@ class Factory_Service_Provider extends Service_Provider {
 		$this->app->singleton(
 			FakerGenerator::class,
 			function ( $app, $parameters ) {
-				$locale = 'en_US';
+				$locale = config( 'app.faker_locale', Factory::DEFAULT_LOCALE );
 
 				if ( ! isset( static::$fakers[ $locale ] ) ) {
 					static::$fakers[ $locale ] = Factory::create();

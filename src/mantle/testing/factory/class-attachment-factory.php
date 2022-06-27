@@ -15,6 +15,8 @@ use function Mantle\Support\Helpers\get_post_object;
 
 /**
  * Attachment Factory
+ *
+ * @template TObject
  */
 class Attachment_Factory extends Post_Factory {
 	/**
