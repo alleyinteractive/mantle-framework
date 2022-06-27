@@ -11,6 +11,7 @@ use ArrayObject;
 use InvalidArgumentException;
 use JsonSerializable;
 use Mantle\Contracts\Support\Arrayable;
+use Mantle\Contracts\Support\Htmlable;
 use Mantle\Contracts\Support\Jsonable;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -64,9 +65,10 @@ class Response extends HttpFoundationResponse {
 			if ( false === $content ) {
 				throw new InvalidArgumentException( json_last_error_msg() );
 			}
+		} elseif ( $content instanceof Htmlable ) {
+			$content = $content->to_html();
 		}
 
-		// todo: include Renderable/Htmlable interfaces.
 		parent::setContent( $content );
 
 		return $this;
