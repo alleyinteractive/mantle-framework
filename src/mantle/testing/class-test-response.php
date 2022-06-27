@@ -10,12 +10,9 @@ namespace Mantle\Testing;
 use DOMDocument;
 use DOMXPath;
 use Exception;
-use Mantle\Support\Arr;
-use Mantle\Support\Str;
+use Mantle\Http\Response;
 use Mantle\Support\Traits\Macroable;
 use PHPUnit\Framework\Assert as PHPUnit;
-
-use function Mantle\Support\Helpers\data_get;
 
 /**
  * Faux "Response" class for unit testing.
@@ -52,6 +49,13 @@ class Test_Response {
 	protected $document;
 
 	/**
+	 * Assertable JSON string.
+	 *
+	 * @var Assertable_Json_String
+	 */
+	protected Assertable_Json_String $decoded_json;
+
+	/**
 	 * Create a new test response instance.
 	 *
 	 * @param string|null $content HTTP response body.
@@ -62,6 +66,16 @@ class Test_Response {
 		$this->set_content( $content )
 			->set_status_code( $status )
 			->set_headers( $headers );
+	}
+
+	/**
+	 * Create a response from a base response instance.
+	 *
+	 * @param Response $response Base response instance.
+	 * @return static
+	 */
+	public static function from_base_response( Response $response ) {
+		return new static( $response->getContent(), $response->getStatusCode(), $response->headers->all() );
 	}
 
 	/**
@@ -515,7 +529,7 @@ class Test_Response {
 	 * @return $this
 	 */
 	public function assertJsonPath( $path, $expect ) {
-		PHPUnit::assertSame( $expect, $this->json( $path ) );
+		$this->decoded_json()->assertPath( $path, $expect );
 
 		return $this;
 	}
@@ -526,7 +540,7 @@ class Test_Response {
 	 * @param string $path Path to check.
 	 */
 	public function assertJsonPathExists( string $path ) {
-		PHPUnit::assertNotNull( $this->json( $path ) );
+		$this->decoded_json()->assertPathExists( $path );
 
 		return $this;
 	}
@@ -537,7 +551,7 @@ class Test_Response {
 	 * @param string $path Path to check.
 	 */
 	public function assertJsonPathMissing( string $path ) {
-		PHPUnit::assertNull( $this->json( $path ) );
+		$this->decoded_json()->assertPathMissing( $path );
 
 		return $this;
 	}
@@ -549,13 +563,7 @@ class Test_Response {
 	 * @return $this
 	 */
 	public function assertExactJson( array $data ) {
-		$actual = wp_json_encode(
-			Arr::sort_recursive(
-				(array) $this->decode_response_json()
-			)
-		);
-
-		PHPUnit::assertEquals( wp_json_encode( Arr::sort_recursive( $data ) ), $actual );
+		$this->decoded_json()->assertExact( $data );
 
 		return $this;
 	}
@@ -567,23 +575,7 @@ class Test_Response {
 	 * @return $this
 	 */
 	public function assertJsonFragment( array $data ) {
-		$actual = wp_json_encode(
-			Arr::sort_recursive(
-				(array) $this->decode_response_json()
-			)
-		);
-
-		foreach ( Arr::sort_recursive( $data ) as $key => $value ) {
-			$expected = $this->json_search_strings( $key, $value );
-
-			PHPUnit::assertTrue(
-				Str::contains( $actual, $expected ),
-				'Unable to find JSON fragment: ' . PHP_EOL . PHP_EOL .
-					'[' . wp_json_encode( [ $key => $value ] ) . ']' . PHP_EOL . PHP_EOL .
-					'within' . PHP_EOL . PHP_EOL .
-					"[{$actual}]."
-			);
-		}
+		$this->decoded_json()->assertFragment( $data );
 
 		return $this;
 	}
@@ -596,27 +588,7 @@ class Test_Response {
 	 * @return $this
 	 */
 	public function assertJsonMissing( array $data, $exact = false ) {
-		if ( $exact ) {
-			return $this->assertJsonMissingExact( $data );
-		}
-
-		$actual = wp_json_encode(
-			Arr::sort_recursive(
-				(array) $this->decode_response_json()
-			)
-		);
-
-		foreach ( Arr::sort_recursive( $data ) as $key => $value ) {
-			$unexpected = $this->json_search_strings( $key, $value );
-
-			PHPUnit::assertFalse(
-				Str::contains( $actual, $unexpected ),
-				'Found unexpected JSON fragment: ' . PHP_EOL . PHP_EOL .
-					'[' . wp_json_encode( [ $key => $value ] ) . ']' . PHP_EOL . PHP_EOL .
-					'within' . PHP_EOL . PHP_EOL .
-					"[{$actual}]."
-			);
-		}
+		$this->decoded_json()->assertMissing( $data, $exact );
 
 		return $this;
 	}
@@ -628,43 +600,9 @@ class Test_Response {
 	 * @return $this
 	 */
 	public function assertJsonMissingExact( array $data ) {
-		$actual = wp_json_encode(
-			Arr::sort_recursive(
-				(array) $this->decode_response_json()
-			)
-		);
+		$this->decoded_json()->assertMissingExact( $data );
 
-		foreach ( Arr::sort_recursive( $data ) as $key => $value ) {
-			$unexpected = $this->json_search_strings( $key, $value );
-
-			if ( ! Str::contains( $actual, $unexpected ) ) {
-				return $this;
-			}
-		}
-
-		PHPUnit::fail(
-			'Found unexpected JSON fragment: ' . PHP_EOL . PHP_EOL .
-			'[' . wp_json_encode( $data ) . ']' . PHP_EOL . PHP_EOL .
-			'within' . PHP_EOL . PHP_EOL .
-			"[{$actual}]."
-		);
-	}
-
-	/**
-	 * Get the strings we need to search for when examining the JSON.
-	 *
-	 * @param  string $key
-	 * @param  string $value
-	 * @return array
-	 */
-	protected function json_search_strings( $key, $value ) {
-		$needle = substr( wp_json_encode( [ $key => $value ] ), 1, -1 );
-
-		return [
-			$needle . ']',
-			$needle . '}',
-			$needle . ',',
-		];
+		return $this;
 	}
 
 	/**
@@ -675,49 +613,56 @@ class Test_Response {
 	 * @return $this
 	 */
 	public function assertJsonCount( int $count, $key = null ) {
-		if ( ! is_null( $key ) ) {
-			PHPUnit::assertCount(
-				$count,
-				data_get( $this->json(), $key ),
-				"Failed to assert that the response count matched the expected {$count}"
-			);
-
-			return $this;
-		}
-
-		PHPUnit::assertCount(
-			$count,
-			$this->json(),
-			"Failed to assert that the response count matched the expected {$count}"
-		);
+		$this->decoded_json()->assertCount( $count, $key );
 
 		return $this;
 	}
 
 	/**
-	 * Validate and return the decoded response JSON.
+	 * Assert that the response has the similar JSON as given.
 	 *
-	 * @param  string|null $key Key to retrieve (passed to {@see data_get()}).
-	 * @return mixed
+	 * @param  array $data
+	 * @return $this
 	 */
-	public function decode_response_json( $key = null ) {
-		$decoded_response = json_decode( $this->get_content(), true );
+	public function assertJsonSimilar( array $data ) {
+		$this->decoded_json()->assertSimilar( $data );
 
-		if ( is_null( $decoded_response ) || false === $decoded_response ) {
-			PHPUnit::fail( 'Invalid JSON was returned from the route.' );
-		}
-
-		return data_get( $decoded_response, $key );
+		return $this;
 	}
 
 	/**
-	 * Validate and return the decoded response JSON.
+	 * Assert that the response has a given JSON structure.
+	 *
+	 * @param  array|null $structure Structure to check.
+	 * @return $this
+	 */
+	public function assertJsonStructure( array $structure = null ) {
+		$this->decoded_json()->assertStructure( $structure );
+
+		return $this;
+	}
+
+	/**
+	 * Validate and assert against the decoded JSON content.
+	 *
+	 * @return Assertable_Json_String
+	 */
+	public function decoded_json(): Assertable_Json_String {
+		if ( ! isset( $this->decoded_json ) ) {
+			$this->decoded_json = new Assertable_Json_String( $this->get_content() );
+		}
+
+		return $this->decoded_json;
+	}
+
+	/**
+	 * Return the decoded response JSON.
 	 *
 	 * @param string|null $key Key to retrieve, optional.
 	 * @return mixed
 	 */
 	public function json( $key = null ) {
-		return $this->decode_response_json( $key );
+		return $this->decoded_json()->json( $key );
 	}
 
 	/**
