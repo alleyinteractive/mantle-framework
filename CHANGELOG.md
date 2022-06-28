@@ -1,43 +1,48 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v0.4.0 - 2022-06-28
+
+Fixing a miss-tagged version.
+
 ## Unreleased
 
 ## 0.4.0 - 2022-06-28
 
-* Fixing a miss tagged version.
+- Fixing a miss tagged version.
 
 ## 0.3.0 - 2022-06-27
 
 ### Added
 
-* Allow testing framework factory to return models pull/276
-* Define Post Model Terms Fluently
-* Add is_json/headline to Str
-* Adding a With_Faker trait
-* Adding Assert JSON Structure
+- Allow testing framework factory to return models pull/276
+- Define Post Model Terms Fluently
+- Add is_json/headline to Str
+- Adding a With_Faker trait
+- Adding Assert JSON Structure
 
 ### Fixed
 
-* Make all headers lowercase for easier comparison when testing
+- Make all headers lowercase for easier comparison when testing
 
 ## 0.2.0 - 2022-05-25
 
 ### Added
 
-* Create new Testkit cases: Integration and Unit Test by @anubisthejackle in https://github.com/alleyinteractive/mantle-framework/pull/269
-* Adding create_ordered_set helper by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/271
-* Allow control over the temporary URL expiration by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/272
-* Allow attributes to register hooks by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/273
-* Registering listeners with attributes in https://github.com/alleyinteractive/mantle-framework/pull/275
+- Create new Testkit cases: Integration and Unit Test by @anubisthejackle in https://github.com/alleyinteractive/mantle-framework/pull/269
+- Adding create_ordered_set helper by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/271
+- Allow control over the temporary URL expiration by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/272
+- Allow attributes to register hooks by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/273
+- Registering listeners with attributes in https://github.com/alleyinteractive/mantle-framework/pull/275
 
 ### Fixed
 
-* Fix Faker deprecation warnings about accessing methods as parameters by @anubisthejackle in https://github.com/alleyinteractive/mantle-framework/pull/270
-* Ensure WP_MULTISITE can be passed properly in https://github.com/alleyinteractive/mantle-framework/pull/274
+- Fix Faker deprecation warnings about accessing methods as parameters by @anubisthejackle in https://github.com/alleyinteractive/mantle-framework/pull/270
+- Ensure WP_MULTISITE can be passed properly in https://github.com/alleyinteractive/mantle-framework/pull/274
 
 ## [0.1.0](https://github.com/alleyinteractive/mantle-framework/releases/tag/v0.1.0) - 2022-04-19
 
