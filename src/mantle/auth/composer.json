@@ -5,12 +5,12 @@
     "require": {
         "php": "^7.4|^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^0.4",
-        "mantle-framework/http": "^0.4",
+        "mantle-framework/http": "^0.5",
         "symfony/http-kernel": "^5.3"
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "0.4-dev"
+            "dev-main": "0.5-dev"
         },
         "wordpress-autoloader": {
             "autoload": {
