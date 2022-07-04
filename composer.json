@@ -12,7 +12,7 @@
     "require": {
         "php": "^7.4|^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^0.4",
-        "alleyinteractive/wp-asset-manager": "^0.1",
+        "alleyinteractive/wp-asset-manager": "^0.1 || ^1.0",
         "dragonmantank/cron-expression": "^3.1",
         "fakerphp/faker": "^1.16",
         "filp/whoops": "^2.14",
