@@ -578,6 +578,12 @@ class Http_Client {
 		);
 	}
 
+	/**
+	 * Send a pool of asynchronous requests concurrently.
+	 *
+	 * @param callable $callback Callback to build the HTTP pool.
+	 * @return array
+	 */
 	public function pool( callable $callback ): array {
 		$responses = tap( new Pool( $this ), $callback )->get_requests();
 
