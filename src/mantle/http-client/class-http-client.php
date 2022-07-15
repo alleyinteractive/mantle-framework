@@ -10,6 +10,7 @@ namespace Mantle\Http_Client;
 use Mantle\Support\Pipeline;
 
 use function Mantle\Support\Helpers\retry;
+use function Mantle\Support\Helpers\tap;
 
 /**
  * Http Request Client
@@ -575,6 +576,12 @@ class Http_Client {
 			},
 			$this->options['retry_delay'] ?? 0,
 		);
+	}
+
+	public function pool( callable $callback ): array {
+		$responses = tap( new Pool( $this ), $callback )->get_requests();
+
+		dd('$responses', $responses);
 	}
 
 	/**

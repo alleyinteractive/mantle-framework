@@ -11,6 +11,7 @@ use Closure;
 use Mantle\Facade\Http;
 use Mantle\Http_Client\Http_Client;
 use Mantle\Http_Client\Http_Client_Exception;
+use Mantle\Http_Client\Pool;
 use Mantle\Http_Client\Request;
 use Mantle\Http_Client\Response;
 use Mantle\Testing\Framework_Test_Case;
@@ -328,5 +329,20 @@ EOF
 		$this->assertEquals( 'Second Slide Title', $response->xml()->slide[1]->title );
 
 		$this->assertEquals( 'Another point!', $response->xml( '/slideshow/slide[@type="specific"]/point' )[0] ?? '' );
+	}
+
+	public function test_async_requests() {
+		$this->fake_request( [
+			'https://example.com/async/' => Mock_Http_Response::create()->with_status( 200 ),
+			'https://example.com/second-async/' => Mock_Http_Response::create()->with_status( 402 ),
+		] );
+
+		$response = $this->http_factory->pool( fn ( Pool $pool ) => [
+			$pool->get( 'https://example.com/async/' ),
+			$pool->get( 'https://example.com/second-async/' ),
+		] );
+
+		$this->assertEquals( 200, $response[0]->status() );
+		$this->assertEquals( 402, $response[1]->status() );
 	}
 }
