@@ -1,6 +1,7 @@
 <?php
 namespace Mantle\Tests\Testing\Concerns;
 
+use Mantle\Facade\Http;
 use Mantle\Http_Client\Http_Client;
 use Mantle\Testing\Mock_Http_Response;
 use Mantle\Testing\Framework_Test_Case;
@@ -173,5 +174,32 @@ class Test_Interacts_With_External_Requests extends Framework_Test_Case {
 		// These two should use the fallback response.
 		$this->assertEquals( 202, $http->get( 'https://example.com/sequence/' )->status() );
 		$this->assertEquals( 202, $http->get( 'https://example.com/sequence/' )->status() );
+	}
+
+	public function test_prevent_stray_requests() {
+		$this->prevent_stray_requests(
+			Mock_Http_Response::create()->with_status( 201 ),
+		);
+
+		$this->assertEquals( 201, Http::get( 'https://example.com/' )->status() );
+		$this->assertRequestSent();
+	}
+
+	public function test_prevent_stray_requests_callback() {
+		$this->prevent_stray_requests(
+			fn () => Mock_Http_Response::create()->with_status( 400 ),
+		);
+
+		$this->assertEquals( 400, Http::get( 'https://example.com/' )->status() );
+		$this->assertRequestSent();
+	}
+
+	public function test_prevent_stray_requests_no_fallback() {
+		$this->expectException( RuntimeException::class );
+		$this->expectExceptionMessage( 'Attempted request to [https://example.org/path/] without a matching fake.' );
+
+		$this->prevent_stray_requests();
+
+		Http::get( 'https://example.org/path/' );
 	}
 }
