@@ -61,7 +61,7 @@ abstract class Test_Case extends BaseTestCase {
 	/**
 	 * Application instance.
 	 *
-	 * @var \Mantle\Framework\Application
+	 * @var \Mantle\Contracts\Container|\Mantle\Container\Container
 	 */
 	protected $app;
 

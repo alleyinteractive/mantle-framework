@@ -16,6 +16,12 @@ class Test_Testkit_Test_Case extends Test_Case {
 		$this->get( '/unknown/' )->assertNotFound();
 	}
 
+	public function test_url_generator() {
+		$this->assertNotEmpty( $this->app['url'] );
+		$this->assertEquals( home_url( '/example/' ), $this->app['url']->to( home_url( '/example/' ) ) );
+		$this->assertEquals( home_url( '/example/' ), $this->app['url']->to( '/example/' ) );
+	}
+
 	/**
 	 * Verifies that trait methods for {$trait}_setUpBeforeClass are called.
 	 */

@@ -10,8 +10,11 @@ namespace Mantle\Testkit\Concerns;
 use Mantle\Testkit\Application;
 use Mantle\Config\Repository;
 use Mantle\Contracts\Exceptions\Handler as Handler_Contract;
+use Mantle\Http\Request;
+use Mantle\Http\Routing\Url_Generator;
 use Mantle\Support\Collection;
 use Mantle\Testkit\Exception_Handler;
+use Symfony\Component\Routing\RouteCollection;
 
 /**
  * Concern for creating the application instance.
@@ -53,6 +56,15 @@ trait Create_Application {
 		foreach ( $this->override_application_bindings( $app ) as $original => $replacement ) {
 			$app->bind( $original, $replacement );
 		}
+
+		$app->singleton_if(
+			'url',
+			fn ( $app ) => new Url_Generator(
+				$app->get_root_url(),
+				new RouteCollection(),
+				$app['request'] ?? new Request(),
+			),
+		);
 	}
 
 	/**
