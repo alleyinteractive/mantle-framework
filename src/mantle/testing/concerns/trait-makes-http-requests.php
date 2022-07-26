@@ -346,6 +346,8 @@ trait Makes_Http_Requests {
 			$response = new Test_Response( $response_content, $response_status ?? 200, $response_headers );
 		}
 
+		$response->set_app( $this->app );
+
 		remove_filter( 'exit_on_http_head', '__return_false', 9999 );
 		remove_filter( 'wp_using_themes', '__return_true', 9999 );
 
