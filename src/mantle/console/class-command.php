@@ -131,9 +131,7 @@ abstract class Command {
 			// Convert the arguments to the positional arguments from the command's synopsis.
 			$synopsis = collect( $this->synopsis() )
 				->filter(
-					function( $item ) {
-						return ! empty( $item['type'] ) && 'positional' === $item['type'];
-					}
+					fn( $item ) => ! empty( $item['type'] ) && 'positional' === $item['type'],
 				)
 				->pluck( 'name' )
 				->all();
