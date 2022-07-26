@@ -56,7 +56,7 @@ class Command_Make_Command extends Stub_Generator_Command {
 	public function get_file_stub(): string {
 		$this->replacements->add(
 			'{{ command_name }}',
-			str_replace( '__', '_', Str::snake( $this->get_class_name( $this->get_arg( 0 ) ) ) )
+			str_replace( '__', '_', Str::snake( $this->get_class_name( $this->argument( 'name' ) ) ) )
 		);
 
 		return __DIR__ . '/stubs/command.stub';

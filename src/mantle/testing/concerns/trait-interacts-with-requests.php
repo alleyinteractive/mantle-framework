@@ -16,8 +16,10 @@ use Mantle\Support\Collection;
 use Mantle\Support\Str;
 use Mantle\Testing\Mock_Http_Response;
 use PHPUnit\Framework\Assert as PHPUnit;
+use RuntimeException;
 
 use function Mantle\Support\Helpers\collect;
+use function Mantle\Support\Helpers\value;
 
 /**
  * Allow Mock HTTP Requests
@@ -36,6 +38,13 @@ trait Interacts_With_Requests {
 	 * @var Collection
 	 */
 	protected $recorded_requests;
+
+	/**
+	 * Flag to prevent external requests from being made.
+	 *
+	 * @var Mock_Http_Response|\Closure|bool
+	 */
+	protected $preventing_stray_requests = false;
 
 	/**
 	 * Setup the trait.
@@ -65,6 +74,8 @@ trait Interacts_With_Requests {
 	 * @param string                $url          The request URL.
 	 * @return mixed Array if the request has been preempted, any value that's
 	 *               not false otherwise.
+	 *
+	 * @throws RuntimeException If the request was made without a matching faked request.
 	 */
 	public function pre_http_request( $preempt, $request_args, $url ) {
 		$this->recorded_requests[] = new Request( $request_args, $url );
@@ -80,6 +91,16 @@ trait Interacts_With_Requests {
 					return $response;
 				}
 			}
+		}
+
+		if ( false !== $this->preventing_stray_requests ) {
+			$prevent = value( $this->preventing_stray_requests );
+
+			if ( $prevent instanceof Mock_Http_Response ) {
+				return $prevent->to_array();
+			}
+
+			throw new RuntimeException( "Attempted request to [{$url}] without a matching fake." );
 		}
 
 		// To aid in debugging, print a message to the console that this test is making an actual HTTP request
@@ -149,6 +170,22 @@ trait Interacts_With_Requests {
 		$this->stub_callbacks->push( $this->create_stub_request_callback( $url, $response ) );
 
 		return $response;
+	}
+
+	/**
+	 * Prevent stray external requests.
+	 *
+	 * @param Mock_Http_Response|\Closure|bool $response A default response or callback to use, boolean otherwise.
+	 */
+	public function prevent_stray_requests( $response = true ) {
+		$this->preventing_stray_requests = $response;
+	}
+
+	/**
+	 * Allow stray external requests.
+	 */
+	public function allow_stray_requests() {
+		$this->preventing_stray_requests = false;
 	}
 
 	/**

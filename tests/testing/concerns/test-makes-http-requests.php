@@ -126,12 +126,12 @@ class Test_Makes_Http_Requests extends Framework_Test_Case {
 	public function test_redirect_response() {
 		$this->app['router']->get(
 			'/route-to-redirect/',
-			fn () => redirect()->to( '/redirected', 302, [ 'Other-Header' => '123' ] ),
+			fn () => redirect()->to( '/redirected/', 302, [ 'Other-Header' => '123' ] ),
 		);
 
 		$this->get( '/route-to-redirect/' )
-			->assertHeader( 'location', home_url( '/redirected' ) )
-			->assertHeader( 'Location', home_url( '/redirected' ) )
+			->assertHeader( 'location', home_url( '/redirected/' ) )
+			->assertHeader( 'Location', home_url( '/redirected/' ) )
 			->assertRedirect( '/redirected' )
 			->assertHeader( 'Other-Header', '123' );
 	}
@@ -158,6 +158,19 @@ class Test_Makes_Http_Requests extends Framework_Test_Case {
 
 		// Nested after wildcard
 		$response->assertJsonStructure( [ 'baz' => [ '*' => [ 'foo', 'bar' => [ 'foo', 'bar' ] ] ] ] );
+	}
+
+	public function test_callbacks() {
+		$_SERVER['__callback_before'] = false;
+		$_SERVER['__callback_after']  = false;
+
+		$this
+			->before_request( fn () => $_SERVER['__callback_before'] = true )
+			->after_request( fn ( $response ) => $_SERVER['__callback_after'] = $response )
+			->get( '/' );
+
+		$this->assertTrue( $_SERVER['__callback_before'] );
+		$this->assertInstanceOf( Test_Response::class, $_SERVER['__callback_after'] );
 	}
 
 	public function test_multiple_requests() {

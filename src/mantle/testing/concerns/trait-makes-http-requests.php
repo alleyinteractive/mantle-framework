@@ -52,6 +52,20 @@ trait Makes_Http_Requests {
 	protected $rest_api_response = false;
 
 	/**
+	 * The array of callbacks to be run before the event is started.
+	 *
+	 * @var array
+	 */
+	protected $before_callbacks = [];
+
+	/**
+	 * The array of callbacks to be run after the event is finished.
+	 *
+	 * @var array
+	 */
+	protected $after_callbacks = [];
+
+	/**
 	 * Setup the trait in the test case.
 	 */
 	public function makes_http_requests_set_up() {
@@ -62,6 +76,10 @@ trait Makes_Http_Requests {
 
 		// Mark 'rest_api_init' as an un-run action.
 		unset( $wp_actions['rest_api_init'] );
+
+		// Clear before/after callbacks.
+		$this->before_callbacks = [];
+		$this->after_callbacks  = [];
 	}
 
 	/**
@@ -293,6 +311,8 @@ trait Makes_Http_Requests {
 		add_filter( 'exit_on_http_head', '__return_false', 9999 );
 		add_filter( 'wp_using_themes', '__return_true', 9999 );
 
+		$this->call_before_callbacks();
+
 		// Attempt to run the query through the Mantle router.
 		if ( isset( $this->app['router'] ) ) {
 			$kernel = new HttpKernel( $this->app, $this->app['router'] );
@@ -345,6 +365,10 @@ trait Makes_Http_Requests {
 
 			$response = new Test_Response( $response_content, $response_status ?? 200, $response_headers );
 		}
+
+		$response->set_app( $this->app );
+
+		$this->call_after_callbacks( $response );
 
 		remove_filter( 'exit_on_http_head', '__return_false', 9999 );
 		remove_filter( 'wp_using_themes', '__return_true', 9999 );
@@ -706,5 +730,56 @@ trait Makes_Http_Requests {
 	 */
 	public function options_json( $uri, array $data = [], array $headers = [] ) {
 		return $this->json( 'OPTIONS', $uri, $data, $headers );
+	}
+
+	/**
+	 * Call a given Closure/method before requests and inject its dependencies.
+	 *
+	 * @param callable|string $callback Callback to invoke.
+	 * @return static
+	 */
+	public function before_request( $callback ) {
+		$this->before_callbacks[] = $callback;
+
+		return $this;
+	}
+
+	/**
+	 * Call a given Closure/method after requests and inject its dependencies.
+	 *
+	 * Callback will be invoked with a 'response' argument.
+	 *
+	 * @param callable|string $callback Callback to invoke.
+	 * @return static
+	 */
+	public function after_request( $callback ) {
+		$this->after_callbacks[] = $callback;
+
+		return $this;
+	}
+
+	/**
+	 * Call all of the "before" callbacks for the requests.
+	 */
+	protected function call_before_callbacks() {
+		foreach ( $this->before_callbacks as $callback ) {
+			$this->app->call( $callback );
+		}
+	}
+
+	/**
+	 * Call all of the "after" callbacks for the request.
+	 *
+	 * @param Test_Response $response Response object.
+	 */
+	protected function call_after_callbacks( Test_Response $response ) {
+		foreach ( $this->after_callbacks as $callback ) {
+			$this->app->call(
+				$callback,
+				[
+					'response' => $response,
+				]
+			);
+		}
 	}
 }

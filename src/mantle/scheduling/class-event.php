@@ -184,6 +184,7 @@ class Event {
 			$container->call( $callback );
 		}
 	}
+
 	/**
 	 * Determine if the given event should run based on the Cron expression.
 	 *

@@ -2,6 +2,7 @@ name: Unit Tests
 
 on:
   pull_request:
+  push:
   schedule:
     - cron: '0 0 * * *'
 
@@ -55,7 +56,7 @@ jobs:
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
       - name: Set up caching
-        uses: actions/cache@v3.0.4
+        uses: actions/cache@v3.0.5
         env:
           cache-name: cache-composer-dependencies
         with:
