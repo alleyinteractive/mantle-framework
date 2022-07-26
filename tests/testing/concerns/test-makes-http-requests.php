@@ -160,6 +160,19 @@ class Test_Makes_Http_Requests extends Framework_Test_Case {
 		$response->assertJsonStructure( [ 'baz' => [ '*' => [ 'foo', 'bar' => [ 'foo', 'bar' ] ] ] ] );
 	}
 
+	public function test_callbacks() {
+		$_SERVER['__callback_before'] = false;
+		$_SERVER['__callback_after']  = false;
+
+		$this
+			->before_request( fn () => $_SERVER['__callback_before'] = true )
+			->after_request( fn ( $response ) => $_SERVER['__callback_after'] = $response )
+			->get( '/' );
+
+		$this->assertTrue( $_SERVER['__callback_before'] );
+		$this->assertInstanceOf( Test_Response::class, $_SERVER['__callback_after'] );
+	}
+
 	public function test_multiple_requests() {
 		// Re-run all test methods on this class in a single pass.
 		foreach ( get_class_methods( $this ) as $method ) {
