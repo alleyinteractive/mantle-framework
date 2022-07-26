@@ -152,11 +152,7 @@ class Hook_Usage_Command extends Command {
 		}
 
 		return $usage
-			->map(
-				function( $file ) {
-					return $this->read_file( $file );
-				}
-			)
+			->map( fn ( $file ) => $this->read_file( $file ) )
 			->flatten( 1 );
 	}
 
@@ -237,7 +233,7 @@ class Hook_Usage_Command extends Command {
 
 		foreach ( static::HOOK_METHODS as $method ) {
 			preg_match_all(
-				'/[^A-Za-z_](' . preg_quote( $method, '#' ) . ')\(\s*?[\'"]' . preg_quote( $this->argument( 'name' ), '#' ) . '[\'"]\s*?/m',
+				'/[^A-Za-z_](' . preg_quote( $method, '#' ) . ')\(\s*?[\'"]' . preg_quote( $this->argument( 'hook' ), '#' ) . '[\'"]\s*?/m',
 				$contents,
 				$matches,
 				PREG_OFFSET_CAPTURE

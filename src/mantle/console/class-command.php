@@ -126,9 +126,8 @@ abstract class Command {
 	public function set_command_args( array $args ) {
 		$this->command_args = $args;
 
+		// Convert the arguments to the positional arguments from the command's synopsis.
 		if ( ! empty( $args ) ) {
-
-			// Convert the arguments to the positional arguments from the command's synopsis.
 			$synopsis = collect( $this->synopsis() )
 				->filter(
 					fn( $item ) => ! empty( $item['type'] ) && 'positional' === $item['type'],
@@ -136,10 +135,10 @@ abstract class Command {
 				->pluck( 'name' )
 				->all();
 
-				$this->named_command_args = array_combine(
-					$synopsis,
-					array_pad( $args, count( $synopsis ), null ),
-				);
+			$this->named_command_args = array_combine(
+				$synopsis,
+				array_pad( $args, count( $synopsis ), null ),
+			);
 		}
 	}
 
