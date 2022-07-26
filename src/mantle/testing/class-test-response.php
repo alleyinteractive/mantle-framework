@@ -21,6 +21,13 @@ class Test_Response {
 	use Macroable;
 
 	/**
+	 * Application instance.
+	 *
+	 * @var \Mantle\Contracts\Container|\Mantle\Container\Container
+	 */
+	protected $app;
+
+	/**
 	 * Response headers.
 	 *
 	 * @var array
@@ -66,6 +73,17 @@ class Test_Response {
 		$this->set_content( $content )
 			->set_status_code( $status )
 			->set_headers( $headers );
+	}
+
+	/**
+	 * Set the container instance.
+	 *
+	 * @param \Mantle\Contracts\Container|\Mantle\Container\Container $app Application instance.
+	 * @return static
+	 */
+	public function set_app( $app ) {
+		$this->app = $app;
+		return $this;
 	}
 
 	/**
@@ -296,8 +314,8 @@ class Test_Response {
 	 */
 	public function assertLocation( $uri ) {
 		PHPUnit::assertEquals(
-			app( 'url' )->to( $uri ),
-			app( 'url' )->to( $this->get_header( 'location' ) ),
+			$this->app['url']->to( $uri ),
+			$this->app['url']->to( $this->get_header( 'location' ) ),
 		);
 
 		return $this;

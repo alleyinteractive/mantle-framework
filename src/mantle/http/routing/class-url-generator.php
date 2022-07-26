@@ -52,12 +52,12 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	/**
 	 * Constructor.
 	 *
-	 * @param string          $root_url Root URL.
-	 * @param RouteCollection $routes Route collection.
-	 * @param Request         $request Request object.
-	 * @param LoggerInterface $logger Logger instance.
+	 * @param string               $root_url Root URL.
+	 * @param RouteCollection      $routes Route collection.
+	 * @param Request              $request Request object.
+	 * @param LoggerInterface|null $logger Logger instance.
 	 */
-	public function __construct( string $root_url, RouteCollection $routes, Request $request, LoggerInterface $logger ) {
+	public function __construct( string $root_url, RouteCollection $routes, Request $request, LoggerInterface $logger = null ) {
 		$this->root_url = $root_url;
 		$this->routes   = $routes;
 		$this->logger   = $logger;
@@ -140,7 +140,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 
 		return $this->format(
 			$root,
-			'/' . trim( $path . '/' . $tail, '/' )
+			'/' . trailingslashit( trim( $path, '/' ) ),
 		) . $query;
 	}
 
@@ -222,7 +222,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 */
 	public function format( $root, $path ) {
 		$path = '/' . trim( $path, '/' );
-		return trim( $root . $path, '/' );
+		return trailingslashit( trim( $root . $path, '/' ) );
 	}
 
 	/**

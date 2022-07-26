@@ -13,6 +13,7 @@ use JsonSerializable;
 use Mantle\Contracts\Support\Arrayable;
 use Mantle\Contracts\Support\Htmlable;
 use Mantle\Contracts\Support\Jsonable;
+use Mantle\Support\Traits\Macroable;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
@@ -20,6 +21,8 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
  * HTTP Response
  */
 class Response extends HttpFoundationResponse {
+	use Macroable;
+
 	/**
 	 * The original content of the response.
 	 *

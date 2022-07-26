@@ -11,6 +11,7 @@ use ArrayAccess;
 use InvalidArgumentException;
 use LogicException;
 use Mantle\Support\Collection;
+use Mantle\Support\Traits\Macroable;
 use SimpleXMLElement;
 use WP_Error;
 use WP_HTTP_Cookie;
@@ -22,6 +23,8 @@ use function Mantle\Support\Helpers\data_get;
  * Response object from WordPress HTTP API.
  */
 class Response implements ArrayAccess {
+	use Macroable;
+
 	/**
 	 * Raw response from `wp_remote_request()`.
 	 *
