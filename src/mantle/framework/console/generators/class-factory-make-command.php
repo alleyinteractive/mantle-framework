@@ -65,7 +65,7 @@ class Factory_Make_Command extends Stub_Generator_Command {
 	 * @return string
 	 */
 	public function get_file_stub(): string {
-		$type = $this->get_flag( 'model_type' );
+		$type = $this->flag( 'model_type' );
 
 		$filename = '';
 
@@ -80,7 +80,7 @@ class Factory_Make_Command extends Stub_Generator_Command {
 		// Set the object type to use.
 		$this->replacements->add(
 			'{{ object_name }}',
-			$this->get_flag( 'object_name', $this->get_default_object_name() )
+			$this->flag( 'object_name', $this->get_default_object_name() )
 		);
 
 		return __DIR__ . '/stubs/' . $filename;
@@ -92,7 +92,7 @@ class Factory_Make_Command extends Stub_Generator_Command {
 	 * @return string
 	 */
 	protected function get_default_object_name(): string {
-		$class_name = $this->get_class_name( $this->get_arg( 0 ) );
+		$class_name = $this->get_class_name( $this->argument( 'name' ) );
 		return strtolower( str_replace( '_', '-', $class_name ) );
 	}
 
@@ -102,7 +102,7 @@ class Factory_Make_Command extends Stub_Generator_Command {
 	 * @return string
 	 */
 	protected function get_default_label(): string {
-		$class_name = str_replace( [ '_', '-' ], ' ', $this->get_class_name( $this->get_arg( 0 ) ) );
+		$class_name = str_replace( [ '_', '-' ], ' ', $this->get_class_name( $this->argument( 'name' ) ) );
 		return ucwords( $class_name );
 	}
 

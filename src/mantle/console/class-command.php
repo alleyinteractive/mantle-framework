@@ -300,19 +300,6 @@ abstract class Command {
 	}
 
 	/**
-	 * Get a command argument by its position.
-	 *
-	 * @deprecated Use `Command::argument()` instead to retrieve arguments by name.
-	 *
-	 * @param int   $position Argument position.
-	 * @param mixed $default_value Default value.
-	 * @return mixed
-	 */
-	public function get_arg( int $position, $default_value = null ) {
-		return $this->command_args[ $position ] ?? $default_value;
-	}
-
-	/**
 	 * Retrieve a command argument by its name.
 	 *
 	 * @param string $name Argument name.
@@ -324,27 +311,27 @@ abstract class Command {
 	}
 
 	/**
-	 * Get a flag value for the command.
+	 * Retrieve a flag.
 	 *
 	 * @param string $flag Flag to get.
 	 * @param mixed  $default_value Default value.
 	 * @return mixed
 	 */
-	public function get_flag( string $flag, $default_value = null ) {
+	public function flag( string $flag, $default_value = null ) {
 		return $this->command_flags[ $flag ] ?? $default_value;
 	}
 
 	/**
-	 * Retrieve a flag/option.
+	 * Retrieve a option.
 	 *
-	 * Alias to `get_flag()`.
+	 * Alias to `flag()`.
 	 *
-	 * @param string $flag Flag to get.
+	 * @param string $option Option to get.
 	 * @param mixed  $default_value Default value.
 	 * @return mixed
 	 */
-	public function option( string $flag, $default_value = null ) {
-		return $this->get_flag( $flag, $default_value );
+	public function option( string $option, $default_value = null ) {
+		return $this->flag( $option, $default_value );
 	}
 
 	/**

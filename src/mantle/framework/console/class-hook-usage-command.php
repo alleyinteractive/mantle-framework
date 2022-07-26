@@ -121,7 +121,7 @@ class Hook_Usage_Command extends Command {
 		}
 
 		\WP_CLI\Utils\format_items(
-			$this->get_flag( 'format', 'table' ),
+			$this->flag( 'format', 'table' ),
 			$usage->all(),
 			[
 				'file',
@@ -237,7 +237,7 @@ class Hook_Usage_Command extends Command {
 
 		foreach ( static::HOOK_METHODS as $method ) {
 			preg_match_all(
-				'/[^A-Za-z_](' . preg_quote( $method, '#' ) . ')\(\s*?[\'"]' . preg_quote( $this->get_arg( 0 ), '#' ) . '[\'"]\s*?/m',
+				'/[^A-Za-z_](' . preg_quote( $method, '#' ) . ')\(\s*?[\'"]' . preg_quote( $this->argument( 'name' ), '#' ) . '[\'"]\s*?/m',
 				$contents,
 				$matches,
 				PREG_OFFSET_CAPTURE
@@ -343,10 +343,10 @@ class Hook_Usage_Command extends Command {
 	 * @todo Filter out inactive plugins from the path list.
 	 */
 	protected function set_paths() {
-		if ( ! $this->get_flag( 'search-path' ) ) {
+		if ( ! $this->flag( 'search-path' ) ) {
 			$paths = collect( WP_CONTENT_DIR );
 		} else {
-			$paths = collect( explode( ',', $this->get_flag( 'search-path' ) ) );
+			$paths = collect( explode( ',', $this->flag( 'search-path' ) ) );
 		}
 
 		$this->paths = $paths
