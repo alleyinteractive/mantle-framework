@@ -85,8 +85,8 @@ class Model_Make_Command extends Stub_Generator_Command {
 	 * @return string
 	 */
 	public function get_file_stub(): string {
-		$type        = $this->get_flag( 'model_type' );
-		$registrable = $this->get_flag( 'registrable', false );
+		$type        = $this->flag( 'model_type' );
+		$registrable = $this->flag( 'registrable', false );
 
 		$filename = '';
 
@@ -109,7 +109,7 @@ class Model_Make_Command extends Stub_Generator_Command {
 		// Set the object type to use.
 		$this->replacements->add(
 			'{{ object_name }}',
-			$this->get_flag( 'object_name', $this->get_default_object_name() )
+			$this->flag( 'object_name', $this->get_default_object_name() )
 		);
 
 		$inflector      = $this->inflector();
@@ -119,12 +119,12 @@ class Model_Make_Command extends Stub_Generator_Command {
 
 		$this->replacements->add(
 			'{{ label_singular }}',
-			$this->get_flag( 'label_singular', $singular_label )
+			$this->flag( 'label_singular', $singular_label )
 		);
 
 		$this->replacements->add(
 			'{{ label_plural }}',
-			$this->get_flag( 'label_plural', $plural_label )
+			$this->flag( 'label_plural', $plural_label )
 		);
 
 		return __DIR__ . '/stubs/' . $filename;
@@ -136,7 +136,7 @@ class Model_Make_Command extends Stub_Generator_Command {
 	 * @return string
 	 */
 	protected function get_default_object_name(): string {
-		$class_name = $this->get_class_name( $this->get_arg( 0 ) );
+		$class_name = $this->get_class_name( $this->argument( 'name' ) );
 		return strtolower( str_replace( '_', '-', $class_name ) );
 	}
 
@@ -146,7 +146,7 @@ class Model_Make_Command extends Stub_Generator_Command {
 	 * @return string
 	 */
 	protected function get_default_label(): string {
-		$class_name = str_replace( [ '_', '-' ], ' ', $this->get_class_name( $this->get_arg( 0 ) ) );
+		$class_name = str_replace( [ '_', '-' ], ' ', $this->get_class_name( $this->argument( 'name' ) ) );
 		return ucwords( $class_name );
 	}
 
@@ -156,7 +156,7 @@ class Model_Make_Command extends Stub_Generator_Command {
 	 * @param string $name Class name.
 	 */
 	public function complete_synopsis( string $name ) {
-		if ( ! $this->get_flag( 'registrable', false ) ) {
+		if ( ! $this->flag( 'registrable', false ) ) {
 			return;
 		}
 

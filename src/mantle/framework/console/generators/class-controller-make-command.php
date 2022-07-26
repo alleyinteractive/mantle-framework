@@ -91,7 +91,7 @@ class Controller_Make_Command extends Generator_Command {
 			->addComment( "$class_name class." )
 			->setExtends( Controller::class );
 
-		if ( $this->get_flag( 'invokable' ) ) {
+		if ( $this->flag( 'invokable' ) ) {
 			$namespace->addUse( Request::class );
 			$class
 				->addMethod( '__invoke' )
@@ -102,7 +102,7 @@ class Controller_Make_Command extends Generator_Command {
 				->setVisibility( 'public' )
 				->addParameter( 'request' )
 				->setType( Request::class );
-		} elseif ( $this->get_flag( 'entity' ) ) {
+		} elseif ( $this->flag( 'entity' ) ) {
 			// Attempt to determine the model for the entity.
 			$entity = $this->get_model_entity();
 			$namespace->addUse( $entity );
@@ -135,7 +135,7 @@ class Controller_Make_Command extends Generator_Command {
 	 */
 	protected function get_model_entity(): string {
 		// Attempt to determine the model for the entity.
-		$entity = $this->get_flag( 'entity-model', $this->argument( 'name' ) );
+		$entity = $this->flag( 'entity-model', $this->argument( 'name' ) );
 
 		// Attempt to find the model if the one passed is not a model instance.
 		if ( class_exists( $entity ) && is_subclass_of( $entity, Model::class ) ) {

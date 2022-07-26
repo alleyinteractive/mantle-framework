@@ -114,7 +114,7 @@ class Run_Command extends Command {
 		);
 
 		$this->app['queue.worker']->run(
-			(int) $this->get_flag( 'count', (int) $this->app['config']['queue.batch_size'] ?? 1 ),
+			(int) $this->flag( 'count', (int) $this->app['config']['queue.batch_size'] ?? 1 ),
 			$queue
 		);
 	}

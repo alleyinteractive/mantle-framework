@@ -85,7 +85,7 @@ class Route_List_Command extends Command {
 		$routes = $this->collect_routes();
 
 		\WP_CLI\Utils\format_items(
-			$this->get_flag( 'format', 'table' ),
+			$this->flag( 'format', 'table' ),
 			$routes->to_array(),
 			[
 				'method',

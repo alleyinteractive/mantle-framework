@@ -66,7 +66,7 @@ class Seed_Command extends Command {
 		}
 
 		$this->app
-			->make( $this->get_flag( 'class', \App\Database\Seeds\Database_Seeder::class ) )
+			->make( $this->flag( 'class', \App\Database\Seeds\Database_Seeder::class ) )
 			->set_container( $this->app )
 			->set_command( $this )
 			->__invoke();
