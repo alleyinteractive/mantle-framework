@@ -16,7 +16,7 @@ class Http_Client {
 	/**
 	 * Create an instance of the Http Client
 	 *
-	 * @return static
+	 * @return Factory
 	 */
 	public static function create() {
 		return new Factory();

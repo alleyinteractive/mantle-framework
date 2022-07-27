@@ -42,6 +42,7 @@ use Mantle\Support\Traits\Macroable;
  * @method static \Mantle\Http_Client\Response|static patch( string $url, $data = [] )
  * @method static \Mantle\Http_Client\Response|static put( string $url, array $data = [] )
  * @method static \Mantle\Http_Client\Response|static delete( string $url, array $data = [] )
+ * @method static array pool( callable $callback )
  */
 class Factory {
 	use Macroable {
