@@ -1,10 +1,18 @@
 <?php
+/**
+ * Pool class file
+ *
+ * @package Mantle
+ */
+
 namespace Mantle\Http_Client;
 
+use function Alley\WP\Concurrent_Remote_Requests\wp_remote_request;
+
 /**
- * Http Pool
+ * Http Pool for making requests concurrently.
  *
- * @mixin \Mantle\Http_Client\Http_Client
+ * @mixin \Mantle\Http_Client\Pending_Request
  */
 class Pool {
 	/**
@@ -15,34 +23,44 @@ class Pool {
 	protected array $pool = [];
 
 	/**
-	 * Constructor.
-	 *
-	 * @param Http_Client|null $client
-	 */
-	public function __construct( Http_Client $client = null ) {
-		$this->client = $client ?: new Http_Client();
-	}
-
-	/**
 	 * Create a pending request for the pool
 	 *
 	 * @return Pending_Request
 	 */
 	protected function create_request(): Pending_Request {
-		return new Pending_Request( $this->client );
+		return ( new Pending_Request() )->pool();
 	}
 
 	/**
 	 * Retrieve the requests for the given pool
 	 *
-	 * @return array<int|string, Pending_Request>
+	 * @throws Http_Client_Exception Thrown in error in response from wp_remote_request().
+	 * @return array<int|string, Response>
 	 */
-	public function get_requests(): array {
-		return $this->pool;
+	public function get_results(): array {
+		// Execute the pool of requests.
+		$results = wp_remote_request(
+			array_map(
+				fn ( Pending_Request $request ) => [
+					$request->url(),
+					$request->get_request_args(),
+				],
+				$this->pool,
+			)
+		);
+
+		if ( is_wp_error( $results ) ) {
+			throw new Http_Client_Exception( Response::create( $results ) );
+		}
+
+		return array_map(
+			fn ( array $result ) => Response::create( $result ),
+			$results,
+		);
 	}
 
 	/**
-	 * Call a pending request a specific name.
+	 * Call a pending request a specific index name.
 	 *
 	 * @param string $key The name of the pending request.
 	 * @return Pending_Request
@@ -54,10 +72,10 @@ class Pool {
 	}
 
 	/**
-	 * Add a request to the pool with a numeric index
+	 * Add a request to the pool with a numeric index.
 	 *
-	 * @param string $method
-	 * @param array $args
+	 * @param string $method Method name.
+	 * @param array  $args   Arguments for the method.
 	 * @return Pending_Request
 	 */
 	public function __call( string $method, array $args = [] ) {
