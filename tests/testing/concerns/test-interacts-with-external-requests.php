@@ -2,7 +2,6 @@
 namespace Mantle\Tests\Testing\Concerns;
 
 use Mantle\Facade\Http;
-// todo: convert to facade.
 use Mantle\Http_Client\Factory;
 use Mantle\Testing\Mock_Http_Response;
 use Mantle\Testing\Framework_Test_Case;
