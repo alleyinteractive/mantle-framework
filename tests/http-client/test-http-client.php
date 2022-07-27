@@ -25,6 +25,8 @@ class Test_Http_Client extends Framework_Test_Case {
 		parent::setUp();
 
 		$this->http_factory = new Factory();
+
+		$this->prevent_stray_requests();
 	}
 
 	public function test_make_post_request() {
@@ -365,6 +367,35 @@ EOF
 
 		$this->assertRequestSent(
 			fn ( Request $request ) => 'https://example.com/second-async/' === $request->url()
+				&& 'POST' === $request->method()
+		);
+	}
+
+	public function test_pool_forward_base_url() {
+		$this->fake_request( [
+			'https://github.com/endpoint-a/' => Mock_Http_Response::create()->with_status( 200 ),
+			'https://github.com/endpoint-b/' => Mock_Http_Response::create()->with_status( 404 ),
+		] );
+
+		$githubClient = Http::base_url( 'https://github.com' )
+			->with_header( 'X-Foo', 'Bar' );
+
+		$response = $githubClient->pool( fn ( Pool $githubPool ) => [
+			$githubPool->get( '/endpoint-a/' ),
+			$githubPool->post( '/endpoint-b/' ),
+		] );
+
+		$this->assertEquals( 200, $response[0]->status() );
+		$this->assertEquals( 404, $response[1]->status() );
+
+		$this->assertRequestSent(
+			fn ( Request $request ) => 'https://github.com/endpoint-a/' === $request->url()
+				&& 'GET' === $request->method()
+				&& 'Bar' === $request->header( 'X-Foo' )
+		);
+
+		$this->assertRequestSent(
+			fn ( Request $request ) => 'https://github.com/endpoint-b/' === $request->url()
 				&& 'POST' === $request->method()
 		);
 	}

@@ -9,6 +9,8 @@ namespace Mantle\Http_Client;
 
 use Mantle\Support\Pipeline;
 
+use function Mantle\Support\Helpers\tap;
+
 /**
  * Pending Request to be made with the Http Client.
  */
@@ -593,10 +595,20 @@ class Pending_Request {
 	 * @param bool $pooled Whether this is a pooled request.
 	 * @return static
 	 */
-	public function pool( bool $pooled = true ) {
+	public function pooled( bool $pooled = true ) {
 		$this->pooled = $pooled;
 
 		return $this;
+	}
+
+	/**
+	 * Create a pool request from the current pending request.
+	 *
+	 * @param callable $callback Callback to build the HTTP pool.
+	 * @return array<int|string, Response>
+	 */
+	public function pool( callable $callback ): array {
+		return tap( new Pool( $this ), $callback )->results();
 	}
 
 	/**

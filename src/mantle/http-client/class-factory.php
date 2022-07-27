@@ -49,16 +49,6 @@ class Factory {
 	}
 
 	/**
-	 * Make a pool of requests concurrently.
-	 *
-	 * @param callable $callback Callback to build the HTTP pool.
-	 * @return array
-	 */
-	public function pool( callable $callback ): array {
-		return tap( new Pool(), $callback )->get_results();
-	}
-
-	/**
 	 * Generate a new pending request.
 	 *
 	 * @return Pending_Request
@@ -87,7 +77,7 @@ class Factory {
 	 *
 	 * @param string $method Method name.
 	 * @param array  $parameters Method parameters.
-	 * @return Response|Pending_Request|mixed
+	 * @return Response|Pending_Request|Pool|mixed
 	 */
 	public static function __callStatic( string $method, array $parameters ) {
 		return ( new static() )->{$method}( ...$parameters );

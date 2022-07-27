@@ -23,12 +23,28 @@ class Pool {
 	protected array $pool = [];
 
 	/**
+	 * Base pending request.
+	 *
+	 * @var Pending_Request
+	 */
+	protected Pending_Request $base_request;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param Pending_Request $base_request
+	 */
+	public function __construct( Pending_Request $base_request ) {
+		$this->base_request = $base_request;
+	}
+
+	/**
 	 * Create a pending request for the pool
 	 *
 	 * @return Pending_Request
 	 */
 	protected function create_request(): Pending_Request {
-		return ( new Pending_Request() )->pool();
+		return ( clone $this->base_request )->pooled();
 	}
 
 	/**
@@ -37,7 +53,7 @@ class Pool {
 	 * @throws Http_Client_Exception Thrown in error in response from wp_remote_request().
 	 * @return array<int|string, Response>
 	 */
-	public function get_results(): array {
+	public function results(): array {
 		// Execute the pool of requests.
 		$results = wp_remote_request(
 			array_map(
