@@ -16,7 +16,7 @@ use Mantle\Support\Environment;
 use Mantle\Framework\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Mantle\Assets\Mix;
-use Mantle\Contracts\Assets\Asset_Manager;
+use Mantle\Assets\Asset_Manager;
 
 if ( ! function_exists( 'app' ) ) {
 	/**
