@@ -329,18 +329,43 @@ EOF
 		$this->assertEquals( 'Another point!', $response->xml( '/slideshow/slide[@type="specific"]/point' )[0] ?? '' );
 	}
 
-	// public function test_async_requests() {
-	// 	$this->fake_request( [
-	// 		'https://example.com/async/' => Mock_Http_Response::create()->with_status( 200 ),
-	// 		'https://example.com/second-async/' => Mock_Http_Response::create()->with_status( 402 ),
-	// 	] );
+	public function test_pool_requests() {
+		$this->fake_request( [
+			'https://example.com/async/' => Mock_Http_Response::create()->with_status( 200 ),
+			'https://example.com/second-async/' => Mock_Http_Response::create()->with_status( 402 ),
+		] );
 
-	// 	$response = $this->http_factory->pool( fn ( Pool $pool ) => [
-	// 		$pool->get( 'https://example.com/async/' ),
-	// 		$pool->get( 'https://example.com/second-async/' ),
-	// 	] );
+		$response = $this->http_factory->pool( fn ( Pool $pool ) => [
+			$pool->get( 'https://example.com/async/' ),
+			$pool->get( 'https://example.com/second-async/' ),
+		] );
 
-	// 	$this->assertEquals( 200, $response[0]->status() );
-	// 	$this->assertEquals( 402, $response[1]->status() );
-	// }
+		$this->assertEquals( 200, $response[0]->status() );
+		$this->assertEquals( 402, $response[1]->status() );
+	}
+
+	public function test_pool_requests_name() {
+		$this->fake_request( [
+			'https://example.com/async/' => Mock_Http_Response::create()->with_status( 200 ),
+			'https://example.com/second-async/' => Mock_Http_Response::create()->with_status( 402 ),
+		] );
+
+		$response = $this->http_factory->pool( fn ( Pool $pool ) => [
+			$pool->as( 'first' )->get( 'https://example.com/async/' ),
+			$pool->as( 'second' )->post( 'https://example.com/second-async/' ),
+		] );
+
+		$this->assertEquals( 200, $response['first']->status() );
+		$this->assertEquals( 402, $response['second']->status() );
+
+		$this->assertRequestSent(
+			fn ( Request $request ) => 'https://example.com/async/' === $request->url()
+				&& 'GET' === $request->method()
+		);
+
+		$this->assertRequestSent(
+			fn ( Request $request ) => 'https://example.com/second-async/' === $request->url()
+				&& 'POST' === $request->method()
+		);
+	}
 }

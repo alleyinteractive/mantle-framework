@@ -75,7 +75,7 @@ class Factory {
 	 * @return Response|Pending_Request|mixed
 	 */
 	public function __call( string $method, array $parameters ) {
-		if ( static::hasMacro( $method ) ) {
+		if ( static::has_macro( $method ) ) {
 			return $this->macro_call( $method, $parameters );
 		}
 
