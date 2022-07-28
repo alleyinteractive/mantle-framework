@@ -9,30 +9,32 @@
 
 namespace Mantle\Testing;
 
-/**
- * Install the Mantle Tests Framework
- *
- * @param callable $callback_after_preload Callback to invoke before WordPress is loaded.
- * @return void
- */
-function install( callable $callback_after_preload = null ): void {
-	if ( ! file_exists( __DIR__ . '/preload.php' ) ) {
-		echo "ERROR: Failed to locate valid Mantle testing preload file. \n";
-		echo 'Current file: ' . __FILE__ . PHP_EOL;
-		exit( 1 );
-	}
+use function Mantle\Support\Helpers\tap;
 
+/**
+ * Retrieve an instance of the Installation Manager
+ *
+ * The manager can install the Mantle Testing Framework but will not by default.
+ * Call {@see Installation_Manager::install()} to install or use the
+ * {@see install()} helper.
+ *
+ * @return Installation_Manager
+ */
+function manager(): Installation_Manager {
 	require_once __DIR__ . '/preload.php';
 
-	if ( $callback_after_preload ) {
-		$callback_after_preload();
-	}
+	return Installation_Manager::instance();
+}
 
-	try {
-		require_once __DIR__ . '/wordpress-bootstrap.php';
-	} catch ( \Throwable $throwable ) {
-		echo "ERROR: Failed to load WordPress!\n";
-		echo "{$throwable}\n";
-		exit( 1 );
-	}
+/**
+ * Install the Mantle Testing Framework
+ *
+ * @param callable $callback_after_preload Callback to invoke before WordPress is loaded.
+ * @return Installation_Manager
+ */
+function install( callable $callback_after_preload = null ): Installation_Manager {
+	return tap(
+		manager(),
+		fn ( Installation_Manager $manager ) => $manager->after( $callback_after_preload ),
+	)->install();
 }
