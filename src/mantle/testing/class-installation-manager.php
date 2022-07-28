@@ -80,11 +80,12 @@ class Installation_Manager {
 	 * @param string   $hook Hook name.
 	 * @param callable $callback Callback to invoke.
 	 * @param int      $priority Priority.
+	 * @param int      $accepted_args Number of accepted arguments.
 	 * @return static
 	 */
-	public function on( string $hook, ?callable $callback, int $priority = 10 ) {
+	public function on( string $hook, ?callable $callback, int $priority = 10, int $accepted_args = 1 ) {
 		if ( is_callable( $callback ) ) {
-			tests_add_filter( $hook, $callback, $priority );
+			tests_add_filter( $hook, $callback, $priority, $accepted_args );
 		}
 
 		return $this;
