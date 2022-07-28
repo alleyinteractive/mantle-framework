@@ -53,6 +53,8 @@ use Traversable;
  * @property-read Higher_Order_Collection_Proxy $until
  */
 trait Enumerates_Values {
+	use Conditionable;
+
 	/**
 	 * The methods that can be proxied.
 	 *
