@@ -5,11 +5,15 @@
  * @subpackage Tests
  */
 
-namespace Mantle\Tests\Framework\Blocks\Fixtures;
+namespace Mantle\Tests\Framework\Blocks\Fixtures\Dummy;
 
 use Mantle\Contracts\Block;
 
 class Example_Block implements Block {
+	public function register() {
+
+	}
+
 	public function render() {
 
 	}
