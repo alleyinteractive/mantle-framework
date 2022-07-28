@@ -62,7 +62,7 @@ class Discover_Blocks {
 				continue;
 			}
 
-			if( ! $block->implementsInterface( Block::class ) ) {
+			if ( ! $block->implementsInterface( Block::class ) ) {
 				continue;
 			}
 
