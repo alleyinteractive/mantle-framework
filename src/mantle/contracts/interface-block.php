@@ -12,7 +12,12 @@ namespace Mantle\Contracts;
  */
 interface Block {
 	/**
-	 * Render method.
+	 * Used for registering the Block. Treated as the constructor.
+	 */
+	public function register();
+
+	/**
+	 * Render method. Used for rendering the block output.
 	 */
 	public function render();
 }
