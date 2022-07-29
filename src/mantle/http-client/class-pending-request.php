@@ -8,6 +8,7 @@
 namespace Mantle\Http_Client;
 
 use Mantle\Support\Pipeline;
+use Mantle\Support\Traits\Conditionable;
 
 use function Mantle\Support\Helpers\tap;
 
@@ -15,6 +16,8 @@ use function Mantle\Support\Helpers\tap;
  * Pending Request to be made with the Http Client.
  */
 class Pending_Request {
+	use Conditionable;
+
 	/**
 	 * Base URL for the request.
 	 *
@@ -259,10 +262,44 @@ class Pending_Request {
 	 *
 	 * @param string $key Header key.
 	 * @param mixed  $value Header value.
+	 * @param bool   $replace Replace the existing header, defaults to false.
 	 * @return static
 	 */
-	public function with_header( string $key, $value ) {
+	public function with_header( string $key, $value, bool $replace = false ) {
+		if ( $replace && isset( $this->options['headers'][ $key ] ) ) {
+			unset( $this->options['headers'][ $key ] );
+		}
+
 		return $this->with_headers( [ $key => $value ] );
+	}
+
+	/**
+	 * Retrieve the headers for the request.
+	 *
+	 * @return array
+	 */
+	public function headers(): array {
+		return $this->options['headers'] ?? [];
+	}
+
+	/**
+	 * Clear the headers for the request.
+	 *
+	 * @return static
+	 */
+	public function clear_headers() {
+		$this->options['headers'] = [];
+		return $this;
+	}
+
+	/**
+	 * Retrieve a specific header for the request.
+	 *
+	 * @param  string $key Header key.
+	 * @return mixed
+	 */
+	public function header( string $key ) {
+		return $this->headers()[ $key ] ?? null;
 	}
 
 	/**

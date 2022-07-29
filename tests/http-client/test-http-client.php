@@ -399,4 +399,44 @@ EOF
 				&& 'POST' === $request->method()
 		);
 	}
+
+	public function test_conditionable_when_request() {
+		$request = $this->http_factory
+			->with_header( 'X-Foo', 'Bar' )
+			->when( true, fn ( Pending_Request $request ) => $request->with_header( 'X-Foo', 'Baz', true ) );
+
+		$this->assertEquals( 'Baz', $request->header( 'X-Foo' ) );
+
+		$request = $this->http_factory
+			->with_header( 'X-Foo', 'Bar' )
+			->when( true )->with_header( 'X-Foo', 'Baz', true );
+
+		$this->assertEquals( 'Baz', $request->header( 'X-Foo' ) );
+
+		$request = $this->http_factory
+			->with_header( 'X-Foo', 'Bar' )
+			->when( false, fn ( Pending_Request $request ) => $request->with_header( 'X-Foo', 'Baz', true ) );
+
+		$this->assertEquals( 'Bar', $request->header( 'X-Foo' ) );
+	}
+
+	public function test_conditionable_unless_request() {
+		$request = $this->http_factory
+			->with_header( 'X-Foo', 'Bar' )
+			->unless( false, fn ( Pending_Request $request ) => $request->with_header( 'X-Foo', 'Baz', true ) );
+
+		$this->assertEquals( 'Baz', $request->header( 'X-Foo' ) );
+
+		$request = $this->http_factory
+			->with_header( 'X-Foo', 'Bar' )
+			->unless( false )->with_header( 'X-Foo', 'Baz', true );
+
+		$this->assertEquals( 'Baz', $request->header( 'X-Foo' ) );
+
+		$request = $this->http_factory
+			->with_header( 'X-Foo', 'Bar' )
+			->unless( true, fn ( Pending_Request $request ) => $request->with_header( 'X-Foo', 'Baz', true ) );
+
+		$this->assertEquals( 'Bar', $request->header( 'X-Foo' ) );
+	}
 }
