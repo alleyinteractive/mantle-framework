@@ -3,6 +3,7 @@ namespace Mantle\Tests\Testing\Concerns;
 
 use Mantle\Facade\Http;
 use Mantle\Http_Client\Factory;
+use Mantle\Http_Client\Pending_Request;
 use Mantle\Testing\Mock_Http_Response;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Mock_Http_Sequence;
@@ -154,7 +155,7 @@ class Test_Interacts_With_External_Requests extends Framework_Test_Case {
 			]
 		);
 
-		$http = new Http_Client();
+		$http = new Pending_Request();
 
 		$this->assertEquals( 200, $http->get( 'https://github.com/request/' )->status() );
 		$this->assertEquals( 400, $http->get( 'https://github.com/request/' )->status() );
