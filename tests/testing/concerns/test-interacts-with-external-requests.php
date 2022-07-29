@@ -141,6 +141,28 @@ class Test_Interacts_With_External_Requests extends Framework_Test_Case {
 		$this->assertEquals( 500, $http->get( 'https://example.com/sequence/' )->status() );
 	}
 
+	public function test_sequence_array() {
+		$this->fake_request(
+			[
+				'github.com/*' => Mock_Http_Sequence::create()
+					->push_status( 200 )
+					->push_status( 400 )
+					->push_status( 500 ),
+				'alley.co/*' => Mock_Http_Sequence::create()
+					->push_status( 200 )
+					->push_status( 403 ),
+			]
+		);
+
+		$http = new Http_Client();
+
+		$this->assertEquals( 200, $http->get( 'https://github.com/request/' )->status() );
+		$this->assertEquals( 400, $http->get( 'https://github.com/request/' )->status() );
+
+		$this->assertEquals( 200, $http->get( 'https://alley.co/test/' )->status() );
+		$this->assertEquals( 403, $http->get( 'https://alley.co/test/' )->status() );
+	}
+
 	public function test_sequence_exception_empty() {
 		$this->expectException( RuntimeException::class );
 		$this->expectExceptionMessage( 'No more responses in sequence.' );

@@ -15,6 +15,7 @@ use Mantle\Http_Client\Response;
 use Mantle\Support\Collection;
 use Mantle\Support\Str;
 use Mantle\Testing\Mock_Http_Response;
+use Mantle\Testing\Mock_Http_Sequence;
 use PHPUnit\Framework\Assert as PHPUnit;
 use RuntimeException;
 
@@ -124,12 +125,12 @@ trait Interacts_With_Requests {
 	 *
 	 * @throws \InvalidArgumentException Thrown on invalid argument.
 	 *
-	 * @param Closure|string|array $url_or_callback URL to fake, array of URL and response pairs, or a closure
-	 *                                  that will return a faked response.
-	 * @param Mock_Http_Response   $response Optional response object, defaults to creating a 200 response.
+	 * @param Closure|string|array                  $url_or_callback URL to fake, array of URL and response pairs, or a closure
+	 *                                                               that will return a faked response.
+	 * @param Mock_Http_Response|Mock_Http_Sequence $response Optional response object, defaults to creating a 200 response.
 	 * @return static|Mock_Http_Response
 	 */
-	public function fake_request( $url_or_callback = null, Mock_Http_Response $response = null ) {
+	public function fake_request( $url_or_callback = null, $response = null ) {
 		if ( is_array( $url_or_callback ) ) {
 			$this->stub_callbacks = $this->stub_callbacks->merge(
 				collect( $url_or_callback )
@@ -191,17 +192,17 @@ trait Interacts_With_Requests {
 	/**
 	 * Retrieve a callback for the stubbed response.
 	 *
-	 * @param string             $url URL to stub.
-	 * @param Mock_Http_Response $response Response to send.
+	 * @param string                                $url URL to stub.
+	 * @param Mock_Http_Response|Mock_Http_Sequence $response Response to send.
 	 * @return Closure
 	 */
-	protected function create_stub_request_callback( string $url, Mock_Http_Response $response ): Closure {
+	protected function create_stub_request_callback( string $url, $response ): Closure {
 		return function( string $request_url, array $request_args ) use ( $url, $response ) {
 			if ( ! Str::is( Str::start( $url, '*' ), $request_url ) ) {
 				return;
 			}
 
-			return $response instanceof Closure
+			return $response instanceof Closure || $response instanceof Mock_Http_Sequence
 				? $response( $request_url, $request_args )
 				: $response;
 		};
