@@ -2,7 +2,7 @@
 namespace Mantle\Tests\Testing\Concerns;
 
 use Mantle\Facade\Http;
-use Mantle\Http_Client\Http_Client;
+use Mantle\Http_Client\Factory;
 use Mantle\Testing\Mock_Http_Response;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Mock_Http_Sequence;
@@ -134,7 +134,7 @@ class Test_Interacts_With_External_Requests extends Framework_Test_Case {
 				->push_status( 500 )
 		);
 
-		$http = new Http_Client();
+		$http = new Factory();
 
 		$this->assertEquals( 200, $http->get( 'https://example.com/sequence/' )->status() );
 		$this->assertEquals( 400, $http->get( 'https://example.com/sequence/' )->status() );
@@ -173,7 +173,7 @@ class Test_Interacts_With_External_Requests extends Framework_Test_Case {
 				->push_status( 400 )
 		);
 
-		$http = new Http_Client();
+		$http = new Factory();
 
 		$this->assertEquals( 200, $http->get( 'https://example.com/sequence/' )->status() );
 		$this->assertEquals( 400, $http->get( 'https://example.com/sequence/' )->status() );
@@ -188,7 +188,7 @@ class Test_Interacts_With_External_Requests extends Framework_Test_Case {
 				->when_empty( Mock_Http_Response::create()->with_status( 202 ) )
 		);
 
-		$http = new Http_Client();
+		$http = new Factory();
 
 		$this->assertEquals( 200, $http->get( 'https://example.com/sequence/' )->status() );
 		$this->assertEquals( 400, $http->get( 'https://example.com/sequence/' )->status() );

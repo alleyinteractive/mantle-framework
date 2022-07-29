@@ -1,16 +1,16 @@
 <?php
 /**
- * Http Facade class file
+ * Factory class file
  *
  * @package Mantle
  */
 
-namespace Mantle\Facade;
+namespace Mantle\Http_Client;
 
-use Mantle\Http_Client\Factory;
+use Mantle\Support\Traits\Macroable;
 
 /**
- * Http Facade
+ * Http Client factory.
  *
  * @method static \Mantle\Http_Client\Pending_Request as_form()
  * @method static \Mantle\Http_Client\Pending_Request as_json()
@@ -42,14 +42,45 @@ use Mantle\Http_Client\Factory;
  * @method static \Mantle\Http_Client\Response|static patch( string $url, $data = [] )
  * @method static \Mantle\Http_Client\Response|static put( string $url, array $data = [] )
  * @method static \Mantle\Http_Client\Response|static delete( string $url, array $data = [] )
+ * @method static array pool( callable $callback )
  */
-class Http extends Facade {
+class Factory {
+	use Macroable {
+		__call as macro_call;
+	}
+
 	/**
-	 * Get the registered name of the component.
+	 * Generate a new pending request.
 	 *
-	 * @return string
+	 * @return Pending_Request
 	 */
-	protected static function get_facade_accessor(): string {
-		return Factory::class;
+	protected function new_pending_request(): Pending_Request {
+		return new Pending_Request();
+	}
+
+	/**
+	 * Forward the call to a new pending request.
+	 *
+	 * @param string $method Method name.
+	 * @param array  $parameters Method parameters.
+	 * @return Response|Pending_Request|mixed
+	 */
+	public function __call( string $method, array $parameters ) {
+		if ( static::has_macro( $method ) ) {
+			return $this->macro_call( $method, $parameters );
+		}
+
+		return $this->new_pending_request()->{$method}( ...$parameters );
+	}
+
+	/**
+	 * Forward a static call to a new pending request.
+	 *
+	 * @param string $method Method name.
+	 * @param array  $parameters Method parameters.
+	 * @return Response|Pending_Request|Pool|mixed
+	 */
+	public static function __callStatic( string $method, array $parameters ) {
+		return ( new static() )->{$method}( ...$parameters );
 	}
 }
