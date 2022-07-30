@@ -2,7 +2,8 @@
 namespace Mantle\Tests\Testing\Concerns;
 
 use Mantle\Facade\Http;
-use Mantle\Http_Client\Http_Client;
+use Mantle\Http_Client\Factory;
+use Mantle\Http_Client\Pending_Request;
 use Mantle\Testing\Mock_Http_Response;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Mock_Http_Sequence;
@@ -134,11 +135,33 @@ class Test_Interacts_With_External_Requests extends Framework_Test_Case {
 				->push_status( 500 )
 		);
 
-		$http = new Http_Client();
+		$http = new Factory();
 
 		$this->assertEquals( 200, $http->get( 'https://example.com/sequence/' )->status() );
 		$this->assertEquals( 400, $http->get( 'https://example.com/sequence/' )->status() );
 		$this->assertEquals( 500, $http->get( 'https://example.com/sequence/' )->status() );
+	}
+
+	public function test_sequence_array() {
+		$this->fake_request(
+			[
+				'github.com/*' => Mock_Http_Sequence::create()
+					->push_status( 200 )
+					->push_status( 400 )
+					->push_status( 500 ),
+				'alley.co/*' => Mock_Http_Sequence::create()
+					->push_status( 200 )
+					->push_status( 403 ),
+			]
+		);
+
+		$http = new Pending_Request();
+
+		$this->assertEquals( 200, $http->get( 'https://github.com/request/' )->status() );
+		$this->assertEquals( 400, $http->get( 'https://github.com/request/' )->status() );
+
+		$this->assertEquals( 200, $http->get( 'https://alley.co/test/' )->status() );
+		$this->assertEquals( 403, $http->get( 'https://alley.co/test/' )->status() );
 	}
 
 	public function test_sequence_exception_empty() {
@@ -151,7 +174,7 @@ class Test_Interacts_With_External_Requests extends Framework_Test_Case {
 				->push_status( 400 )
 		);
 
-		$http = new Http_Client();
+		$http = new Factory();
 
 		$this->assertEquals( 200, $http->get( 'https://example.com/sequence/' )->status() );
 		$this->assertEquals( 400, $http->get( 'https://example.com/sequence/' )->status() );
@@ -166,7 +189,7 @@ class Test_Interacts_With_External_Requests extends Framework_Test_Case {
 				->when_empty( Mock_Http_Response::create()->with_status( 202 ) )
 		);
 
-		$http = new Http_Client();
+		$http = new Factory();
 
 		$this->assertEquals( 200, $http->get( 'https://example.com/sequence/' )->status() );
 		$this->assertEquals( 400, $http->get( 'https://example.com/sequence/' )->status() );
