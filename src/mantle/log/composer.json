@@ -4,7 +4,7 @@
     "type": "project",
     "require": {
         "php": "^7.4|^8.0",
-        "alleyinteractive/composer-wordpress-autoloader": "^0.4",
+        "alleyinteractive/composer-wordpress-autoloader": "^0.6",
         "mantle-framework/contracts": "^0.5",
         "mantle-framework/support": "^0.5",
         "monolog/monolog": "^2.7",
