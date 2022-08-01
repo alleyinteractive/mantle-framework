@@ -65,9 +65,9 @@ class Installation_Manager {
 	}
 
 	/**
-	 * Define a callback to be invoked after WordPress is loaded.
+	 * Define a callback to be invoked using the 'muplugins_loaded' hook.
 	 *
-	 * @param callable $callback Callback to invoke after WordPress is loaded.
+	 * @param callable $callback Callback to invoke on 'muplugins_loaded'.
 	 * @return static
 	 */
 	public function loaded( ?callable $callback ) {
