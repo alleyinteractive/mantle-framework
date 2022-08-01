@@ -71,7 +71,7 @@ class Installation_Manager {
 	 * @return static
 	 */
 	public function loaded( ?callable $callback ) {
-		return $this->on( 'wp_loaded', $callback );
+		return $this->on( 'muplugins_loaded', $callback );
 	}
 
 	/**
