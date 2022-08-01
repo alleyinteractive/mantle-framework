@@ -35,6 +35,6 @@ function manager(): Installation_Manager {
 function install( callable $callback_after_preload = null ): Installation_Manager {
 	return tap(
 		manager(),
-		fn ( Installation_Manager $manager ) => $manager->after( $callback_after_preload ),
+		fn ( Installation_Manager $manager ) => $manager->loaded( $callback_after_preload ),
 	)->install();
 }
