@@ -33,7 +33,9 @@ trait Installs_WordPress {
 		 */
 		$callback = function_exists( 'mantle_after_wordpress_install' ) ? 'mantle_after_wordpress_install' : null;
 
-		\Mantle\Testing\install( $callback );
+		\Mantle\Testing\manager()
+			->after( $callback )
+			->install();
 
 		$installed = true;
 	}
