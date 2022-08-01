@@ -29,12 +29,12 @@ function manager(): Installation_Manager {
 /**
  * Install the Mantle Testing Framework
  *
- * @param callable $callback Callback to invoke once WordPress is loaded.
+ * @param callable $callback Callback to invoke once the installation has begun.
  * @return Installation_Manager
  */
 function install( callable $callback = null ): Installation_Manager {
 	return tap(
 		manager(),
-		fn ( Installation_Manager $manager ) => $manager->loaded( $callback ),
+		fn ( Installation_Manager $manager ) => $manager->before( $callback ),
 	)->install();
 }
