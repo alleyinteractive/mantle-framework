@@ -10,6 +10,7 @@ namespace Mantle\Http_Client;
 use Mantle\Support\Pipeline;
 use Mantle\Support\Traits\Conditionable;
 
+use function Mantle\Support\Helpers\retry;
 use function Mantle\Support\Helpers\tap;
 
 /**
