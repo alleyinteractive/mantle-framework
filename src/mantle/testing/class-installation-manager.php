@@ -97,7 +97,7 @@ class Installation_Manager {
 	 * @return static
 	 */
 	public function install() {
-		require_once __DIR__ . '/preload.php';
+		require_once __DIR__ . '/core-polyfill.php';
 
 		foreach ( $this->before_install_callbacks as $callback ) {
 			$callback();

@@ -11,6 +11,8 @@ namespace Mantle\Testing;
 
 use function Mantle\Support\Helpers\tap;
 
+require_once __DIR__ . '/preload.php';
+
 /**
  * Retrieve an instance of the Installation Manager
  *
