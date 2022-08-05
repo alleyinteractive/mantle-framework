@@ -55,6 +55,7 @@ wp_install( WP_TESTS_TITLE, 'admin', WP_TESTS_EMAIL, true, null, 'password' );
 if ( ! is_multisite() ) {
 	delete_option( 'permalink_structure' );
 }
+remove_action( 'populate_options', [ Utils::class, 'set_default_permalink_structure_for_tests' ] );
 
 if ( $multisite ) {
 	echo '... Installing network...' . PHP_EOL;
@@ -72,12 +73,8 @@ if ( $multisite ) {
 		echo 'Error populating network: ' . $populate->get_error_message() . PHP_EOL;
 		exit( 1 );
 	}
+
+	$wp_rewrite->set_permalink_structure( '' );
 }
-
-// Set the default permalink structure.
-$wp_rewrite->set_permalink_structure( Utils::DEFAULT_PERMALINK_STRUCTURE );
-$wp_rewrite->flush_rules();
-
-remove_action( 'populate_options', [ Utils::class, 'set_default_permalink_structure_for_tests' ] );
 
 echo "... Done!\n";
