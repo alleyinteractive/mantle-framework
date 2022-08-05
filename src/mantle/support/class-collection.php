@@ -796,13 +796,19 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static
 	 */
 	public function only_children( $keys ) {
+		if ( is_null( $keys ) ) {
+			return new static( $this->items );
+		}
+
 		if ( $keys instanceof Enumerable ) {
 			$keys = $keys->all();
 		}
 
 		$keys = is_array( $keys ) ? $keys : func_get_args();
 
-		return new static( Arr::only( $this->items, $keys ) );
+		return $this->map(
+			fn ( $item ) => Arr::only( $item, $keys ),
+		);
 	}
 
 	/**

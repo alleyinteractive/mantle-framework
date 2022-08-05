@@ -3150,58 +3150,58 @@ class Test_Collection extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
-//	public function testGettingMaxItemsFromCollection($collection)
-//	{
-//		$c = new $collection([(object) ['foo' => 10], (object) ['foo' => 20]]);
-//		$this->assertEquals(20, $c->max(function ($item) {
-//			return $item->foo;
-//		}));
-//		$this->assertEquals(20, $c->max('foo'));
-//		$this->assertEquals(20, $c->max->foo);
-//
-//		$c = new $collection([['foo' => 10], ['foo' => 20]]);
-//		$this->assertEquals(20, $c->max('foo'));
-//		$this->assertEquals(20, $c->max->foo);
-//
-//		$c = new $collection([1, 2, 3, 4, 5]);
-//		$this->assertEquals(5, $c->max());
-//
-//		$c = new $collection;
-//		$this->assertNull($c->max());
-//	}
+	public function testGettingMaxItemsFromCollection($collection)
+	{
+		$c = new $collection([(object) ['foo' => 10], (object) ['foo' => 20]]);
+		$this->assertEquals(20, $c->max(function ($item) {
+			return $item->foo;
+		}));
+		$this->assertEquals(20, $c->max('foo'));
+		$this->assertEquals(20, $c->max->foo);
+
+		$c = new $collection([['foo' => 10], ['foo' => 20]]);
+		$this->assertEquals(20, $c->max('foo'));
+		$this->assertEquals(20, $c->max->foo);
+
+		$c = new $collection([1, 2, 3, 4, 5]);
+		$this->assertEquals(5, $c->max());
+
+		$c = new $collection;
+		$this->assertNull($c->max());
+	}
 
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
-//	public function testGettingMinItemsFromCollection($collection)
-//	{
-//		$c = new $collection([(object) ['foo' => 10], (object) ['foo' => 20]]);
-//		$this->assertEquals(10, $c->min(function ($item) {
-//			return $item->foo;
-//		}));
-//		$this->assertEquals(10, $c->min('foo'));
-//		$this->assertEquals(10, $c->min->foo);
-//
-//		$c = new $collection([['foo' => 10], ['foo' => 20]]);
-//		$this->assertEquals(10, $c->min('foo'));
-//		$this->assertEquals(10, $c->min->foo);
-//
-//		$c = new $collection([['foo' => 10], ['foo' => 20], ['foo' => null]]);
-//		$this->assertEquals(10, $c->min('foo'));
-//		$this->assertEquals(10, $c->min->foo);
-//
-//		$c = new $collection([1, 2, 3, 4, 5]);
-//		$this->assertEquals(1, $c->min());
-//
-//		$c = new $collection([1, null, 3, 4, 5]);
-//		$this->assertEquals(1, $c->min());
-//
-//		$c = new $collection([0, 1, 2, 3, 4]);
-//		$this->assertEquals(0, $c->min());
-//
-//		$c = new $collection;
-//		$this->assertNull($c->min());
-//	}
+	public function testGettingMinItemsFromCollection($collection)
+	{
+		$c = new $collection([(object) ['foo' => 10], (object) ['foo' => 20]]);
+		$this->assertEquals(10, $c->min(function ($item) {
+			return $item->foo;
+		}));
+		$this->assertEquals(10, $c->min('foo'));
+		$this->assertEquals(10, $c->min->foo);
+
+		$c = new $collection([['foo' => 10], ['foo' => 20]]);
+		$this->assertEquals(10, $c->min('foo'));
+		$this->assertEquals(10, $c->min->foo);
+
+		$c = new $collection([['foo' => 10], ['foo' => 20], ['foo' => null]]);
+		$this->assertEquals(10, $c->min('foo'));
+		$this->assertEquals(10, $c->min->foo);
+
+		$c = new $collection([1, 2, 3, 4, 5]);
+		$this->assertEquals(1, $c->min());
+
+		$c = new $collection([1, null, 3, 4, 5]);
+		$this->assertEquals(1, $c->min());
+
+		$c = new $collection([0, 1, 2, 3, 4]);
+		$this->assertEquals(0, $c->min());
+
+		$c = new $collection;
+		$this->assertNull($c->min());
+	}
 
 	/**
 	 * @dataProvider collectionClassProvider
@@ -3222,6 +3222,61 @@ class Test_Collection extends Framework_Test_Case {
 		$this->assertEquals( [ 'first' => 'Taylor', 'email' => 'taylorotwell@gmail.com' ], $data->only( [ 'first', 'email' ] )->all() );
 		$this->assertEquals( [ 'first' => 'Taylor', 'email' => 'taylorotwell@gmail.com' ], $data->only( 'first', 'email' )->all() );
 		$this->assertEquals( [ 'first' => 'Taylor', 'email' => 'taylorotwell@gmail.com' ], $data->only( collect( [ 'first', 'email' ] ) )->all() );
+	}
+
+	/**
+	 * @dataProvider collectionClassProvider
+	 */
+	public function testOnlyChildren($collection)
+	{
+		$data = new $collection( [
+			[
+				'first' => 'Taylor',
+				'last' => 'Otwell',
+				'email' => 'taylorotwell@gmail.com',
+			],
+			[
+				'first' => 'John',
+				'last' => 'Smith',
+				'email' => 'john@gmail.com',
+			],
+			[
+				'first' => 'Adam',
+				'last' => 'Scott',
+				'email' => 'adam@gmail.com',
+			],
+			[
+				'first' => 'Leslie',
+				'last' => 'Knope',
+				'email' => 'leslie@gmail.com',
+			],
+		] );
+
+		$this->assertEquals( $data->all(), $data->only_children( null )->all() );
+
+		$expected = [
+			[
+				'first' => 'Taylor',
+				'last' => 'Otwell',
+			],
+			[
+				'first' => 'John',
+				'last' => 'Smith',
+			],
+			[
+				'first' => 'Adam',
+				'last' => 'Scott',
+			],
+			[
+				'first' => 'Leslie',
+				'last' => 'Knope',
+			],
+		];
+
+		$this->assertEquals( $expected, $data->only_children( [ 'first', 'last' ] )->all() );
+		$this->assertEquals( $expected, $data->only_children( 'first', 'last' )->all() );
+		$this->assertEquals( $expected, $data->only_children( 'first', 'last', 'missing' )->all() );
+		$this->assertEquals( $expected, $data->only_children( collect( [ 'first', 'last' ] ) )->all());
 	}
 
 	/**
