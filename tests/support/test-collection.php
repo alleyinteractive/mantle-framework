@@ -19,6 +19,8 @@ use Mockery as m;
 use ReflectionClass;
 use stdClass;
 
+use function Mantle\Support\Helpers\collect;
+
 class Test_Collection extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
@@ -3204,49 +3206,53 @@ class Test_Collection extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
-//	public function testOnly($collection)
-//	{
-//		$data = new $collection(['first' => 'Taylor', 'last' => 'Otwell', 'email' => 'taylorotwell@gmail.com']);
-//
-//		$this->assertEquals($data->all(), $data->only(null)->all());
-//		$this->assertEquals(['first' => 'Taylor'], $data->only(['first', 'missing'])->all());
-//		$this->assertEquals(['first' => 'Taylor'], $data->only('first', 'missing')->all());
-//		$this->assertEquals(['first' => 'Taylor'], $data->only(collect(['first', 'missing']))->all());
-//
-//		$this->assertEquals(['first' => 'Taylor', 'email' => 'taylorotwell@gmail.com'], $data->only(['first', 'email'])->all());
-//		$this->assertEquals(['first' => 'Taylor', 'email' => 'taylorotwell@gmail.com'], $data->only('first', 'email')->all());
-//		$this->assertEquals(['first' => 'Taylor', 'email' => 'taylorotwell@gmail.com'], $data->only(collect(['first', 'email']))->all());
-//	}
+	public function testOnly($collection)
+	{
+		$data = new $collection( [
+			'first' => 'Taylor',
+			'last' => 'Otwell',
+			'email' => 'taylorotwell@gmail.com',
+		] );
+
+		$this->assertEquals( $data->all(), $data->only( null )->all() );
+		$this->assertEquals( [ 'first' => 'Taylor' ], $data->only( [ 'first', 'missing' ] )->all() );
+		$this->assertEquals( [ 'first' => 'Taylor' ], $data->only( 'first', 'missing' )->all() );
+		$this->assertEquals( [ 'first' => 'Taylor' ], $data->only( collect( [ 'first', 'missing' ] ) )->all());
+
+		$this->assertEquals( [ 'first' => 'Taylor', 'email' => 'taylorotwell@gmail.com' ], $data->only( [ 'first', 'email' ] )->all() );
+		$this->assertEquals( [ 'first' => 'Taylor', 'email' => 'taylorotwell@gmail.com' ], $data->only( 'first', 'email' )->all() );
+		$this->assertEquals( [ 'first' => 'Taylor', 'email' => 'taylorotwell@gmail.com' ], $data->only( collect( [ 'first', 'email' ] ) )->all() );
+	}
 
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
-//	public function testGettingAvgItemsFromCollection($collection)
-//	{
-//		$c = new $collection([(object) ['foo' => 10], (object) ['foo' => 20]]);
-//		$this->assertEquals(15, $c->avg(function ($item) {
-//			return $item->foo;
-//		}));
-//		$this->assertEquals(15, $c->avg('foo'));
-//		$this->assertEquals(15, $c->avg->foo);
-//
-//		$c = new $collection([(object) ['foo' => 10], (object) ['foo' => 20], (object) ['foo' => null]]);
-//		$this->assertEquals(15, $c->avg(function ($item) {
-//			return $item->foo;
-//		}));
-//		$this->assertEquals(15, $c->avg('foo'));
-//		$this->assertEquals(15, $c->avg->foo);
-//
-//		$c = new $collection([['foo' => 10], ['foo' => 20]]);
-//		$this->assertEquals(15, $c->avg('foo'));
-//		$this->assertEquals(15, $c->avg->foo);
-//
-//		$c = new $collection([1, 2, 3, 4, 5]);
-//		$this->assertEquals(3, $c->avg());
-//
-//		$c = new $collection;
-//		$this->assertNull($c->avg());
-//	}
+	public function testGettingAvgItemsFromCollection($collection)
+	{
+		$c = new $collection([(object) ['foo' => 10], (object) ['foo' => 20]]);
+		$this->assertEquals(15, $c->avg(function ($item) {
+			return $item->foo;
+		}));
+		$this->assertEquals(15, $c->avg('foo'));
+		$this->assertEquals(15, $c->avg->foo);
+
+		$c = new $collection([(object) ['foo' => 10], (object) ['foo' => 20], (object) ['foo' => null]]);
+		$this->assertEquals(15, $c->avg(function ($item) {
+			return $item->foo;
+		}));
+		$this->assertEquals(15, $c->avg('foo'));
+		$this->assertEquals(15, $c->avg->foo);
+
+		$c = new $collection([['foo' => 10], ['foo' => 20]]);
+		$this->assertEquals(15, $c->avg('foo'));
+		$this->assertEquals(15, $c->avg->foo);
+
+		$c = new $collection([1, 2, 3, 4, 5]);
+		$this->assertEquals(3, $c->avg());
+
+		$c = new $collection;
+		$this->assertNull($c->avg());
+	}
 
 	/**
 	 * @dataProvider collectionClassProvider
@@ -3697,59 +3703,59 @@ class Test_Collection extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
-//	public function testHigherOrderCollectionGroupBy($collection)
-//	{
-//		$data = new $collection([
-//			new TestSupportCollectionHigherOrderItem,
-//			new TestSupportCollectionHigherOrderItem('TAYLOR'),
-//			new TestSupportCollectionHigherOrderItem('foo'),
-//		]);
-//
-//		$this->assertEquals([
-//			'taylor' => [$data->get(0)],
-//			'TAYLOR' => [$data->get(1)],
-//			'foo' => [$data->get(2)],
-//		], $data->groupBy->name->to_array());
-//
-//		$this->assertEquals([
-//			'TAYLOR' => [$data->get(0), $data->get(1)],
-//			'FOO' => [$data->get(2)],
-//		], $data->groupBy->uppercase()->to_array());
-//	}
+	public function testHigherOrderCollectionGroupBy($collection)
+	{
+		$data = new $collection([
+			new TestSupportCollectionHigherOrderItem,
+			new TestSupportCollectionHigherOrderItem('TAYLOR'),
+			new TestSupportCollectionHigherOrderItem('foo'),
+		]);
+
+		$this->assertEquals([
+			'taylor' => [$data->get(0)],
+			'TAYLOR' => [$data->get(1)],
+			'foo' => [$data->get(2)],
+		], $data->group_by->name->to_array());
+
+		$this->assertEquals([
+			'TAYLOR' => [$data->get(0), $data->get(1)],
+			'FOO' => [$data->get(2)],
+		], $data->group_by->uppercase()->to_array());
+	}
 
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
-//	public function testHigherOrderCollectionMap($collection)
-//	{
-//		$person1 = (object) ['name' => 'Taylor'];
-//		$person2 = (object) ['name' => 'Yaz'];
-//
-//		$data = new $collection([$person1, $person2]);
-//
-//		$this->assertEquals(['Taylor', 'Yaz'], $data->map->name->to_array());
-//
-//		$data = new $collection([new TestSupportCollectionHigherOrderItem, new TestSupportCollectionHigherOrderItem]);
-//
-//		$this->assertEquals(['TAYLOR', 'TAYLOR'], $data->each->uppercase()->map->name->to_array());
-//	}
+	public function testHigherOrderCollectionMap($collection)
+	{
+		$person1 = (object) ['name' => 'Taylor'];
+		$person2 = (object) ['name' => 'Yaz'];
+
+		$data = new $collection([$person1, $person2]);
+
+		$this->assertEquals(['Taylor', 'Yaz'], $data->map->name->to_array());
+
+		$data = new $collection([new TestSupportCollectionHigherOrderItem, new TestSupportCollectionHigherOrderItem]);
+
+		$this->assertEquals(['TAYLOR', 'TAYLOR'], $data->each->uppercase()->map->name->to_array());
+	}
 
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
-//	public function testHigherOrderCollectionMapFromArrays($collection)
-//	{
-//		$person1 = ['name' => 'Taylor'];
-//		$person2 = ['name' => 'Yaz'];
-//
-//		$data = new $collection([$person1, $person2]);
-//
-//		$this->assertEquals(['Taylor', 'Yaz'], $data->map->name->to_array());
-//
-//		$data = new $collection([new TestSupportCollectionHigherOrderItem, new TestSupportCollectionHigherOrderItem]);
-//
-//		$this->assertEquals(['TAYLOR', 'TAYLOR'], $data->each->uppercase()->map->name->to_array());
-//	}
+	public function testHigherOrderCollectionMapFromArrays($collection)
+	{
+		$person1 = ['name' => 'Taylor'];
+		$person2 = ['name' => 'Yaz'];
+
+		$data = new $collection([$person1, $person2]);
+
+		$this->assertEquals(['Taylor', 'Yaz'], $data->map->name->to_array());
+
+		$data = new $collection([new TestSupportCollectionHigherOrderItem, new TestSupportCollectionHigherOrderItem]);
+
+		$this->assertEquals(['TAYLOR', 'TAYLOR'], $data->each->uppercase()->map->name->to_array());
+	}
 
 	/**
 	 * @dataProvider collectionClassProvider
