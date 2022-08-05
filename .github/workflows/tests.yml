@@ -27,11 +27,12 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
+        can_fail: [false]
+        multisite: ["0", "1"]
         php: [7.4, 8.0]
         wp_version: ["latest"]
-        can_fail: [false]
 
-    name: ${{ matrix.php }} @ ${{ matrix.wp_version }}
+    name: ${{ matrix.php }} @ ${{ matrix.wp_version }} (Multisite ${{ matrix.multisite }})
 
     env:
       CACHEDIR: /tmp
@@ -40,6 +41,7 @@ jobs:
       WP_DB_HOST: 127.0.0.1
       WP_DB_USER: root
       WP_DB_PASSWORD: '""'
+      WP_MULTISITE: ${{ matrix.multisite }}
 
     steps:
       - name: Cancel previous runs of this workflow (pull requests only)
