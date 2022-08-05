@@ -72,10 +72,11 @@ if ( $multisite ) {
 		echo 'Error populating network: ' . $populate->get_error_message() . PHP_EOL;
 		exit( 1 );
 	}
-
-	$wp_rewrite->set_permalink_structure( Utils::DEFAULT_PERMALINK_STRUCTURE );
-	$wp_rewrite->flush_rules();
 }
+
+// Set the default permalink structure.
+$wp_rewrite->set_permalink_structure( Utils::DEFAULT_PERMALINK_STRUCTURE );
+$wp_rewrite->flush_rules();
 
 remove_action( 'populate_options', [ Utils::class, 'set_default_permalink_structure_for_tests' ] );
 
