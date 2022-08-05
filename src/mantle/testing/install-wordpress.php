@@ -55,7 +55,6 @@ wp_install( WP_TESTS_TITLE, 'admin', WP_TESTS_EMAIL, true, null, 'password' );
 if ( ! is_multisite() ) {
 	delete_option( 'permalink_structure' );
 }
-remove_action( 'populate_options', [ Utils::class, 'set_default_permalink_structure_for_tests' ] );
 
 if ( $multisite ) {
 	echo '... Installing network...' . PHP_EOL;
@@ -66,8 +65,18 @@ if ( $multisite ) {
 	$subdomain_install = false;
 
 	install_network();
-	populate_network( 1, WP_TESTS_DOMAIN, WP_TESTS_EMAIL, $title, '/', $subdomain_install );
-	$wp_rewrite->set_permalink_structure( '' );
+
+	$populate = populate_network( 1, WP_TESTS_DOMAIN, WP_TESTS_EMAIL, $title, '/', $subdomain_install );
+
+	if ( is_wp_error( $populate ) ) {
+		echo 'Error populating network: ' . $populate->get_error_message() . PHP_EOL;
+		exit( 1 );
+	}
+
+	$wp_rewrite->set_permalink_structure( Utils::DEFAULT_PERMALINK_STRUCTURE );
+	$wp_rewrite->flush_rules();
 }
+
+remove_action( 'populate_options', [ Utils::class, 'set_default_permalink_structure_for_tests' ] );
 
 echo "... Done!\n";
