@@ -26,4 +26,46 @@ class Test_Permalink_Structure extends Framework_Test_Case {
 			->assertQueriedObject( $post )
 			->assertQueryTrue( 'is_single', 'is_singular' );
   }
+
+  public function test_custom_permalink_structure() {
+		$this->set_permalink_structure( '/blog/%year%/%postname%/' );
+
+		$this->assertEquals(
+			'/blog/%year%/%postname%/',
+			get_option( 'permalink_structure' ),
+		);
+
+    $post = static::factory()->post->create_and_get( [
+			'post_date' => '2018-01-01 00:00:00',
+			'post_name' => 'test-post-custom',
+		] );
+
+		$permalink = get_permalink( $post );
+
+		$this->assertEquals( home_url( '/blog/2018/test-post-custom/' ), $permalink );
+
+		// Ensure the permalink can be reached by the testing framework.
+		$this->get( $permalink )
+			->assertOk()
+			->assertQueriedObject( $post )
+			->assertQueryTrue( 'is_single', 'is_singular' );
+  }
+
+  public function test_no_permalinks() {
+		$this->set_permalink_structure( '' );
+
+		$this->assertEmpty( get_option( 'permalink_structure' ) );
+
+    $post_id = static::factory()->post->create();
+
+		$permalink = get_permalink( $post_id );
+
+		$this->assertEquals( home_url( '?p=' . $post_id ), $permalink );
+
+		// Ensure the permalink can be reached by the testing framework.
+		$this->get( $permalink )
+			->assertOk()
+			->assertQueriedObjectId( $post_id )
+			->assertQueryTrue( 'is_single', 'is_singular' );
+  }
 }
