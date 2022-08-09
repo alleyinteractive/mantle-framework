@@ -2,10 +2,13 @@
 namespace Mantle\Tests\Database\Model;
 
 use Mantle\Database\Model\Site;
+use Mantle\Testing\Concerns\Multisite_Test;
 use Mantle\Testing\Framework_Test_Case;
 
 
 class Test_Site_Object extends Framework_Test_Case {
+	use Multisite_Test;
+
 	public function test_site_attributes() {
 		$site_id = static::factory()->blog->create();
 		$site    = Site::find( $site_id );

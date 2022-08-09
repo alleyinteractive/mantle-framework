@@ -132,6 +132,10 @@ abstract class Test_Case extends BaseTestCase {
 	protected function setUp(): void {
 		set_time_limit( 0 );
 
+		// Set the default permalink structure on each test before setUp() to allow
+		// the tests to override it.
+		$this->set_permalink_structure( Utils::DEFAULT_PERMALINK_STRUCTURE );
+
 		parent::setUp();
 
 		if ( ! $this->app ) {

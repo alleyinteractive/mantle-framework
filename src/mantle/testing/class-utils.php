@@ -44,6 +44,13 @@ class Utils {
 	public const DEFAULT_DB_HOST = 'localhost';
 
 	/**
+	 * Default permalink structure.
+	 *
+	 * @var string
+	 */
+	public const DEFAULT_PERMALINK_STRUCTURE = '/%year%/%monthnum%/%day%/%postname%/';
+
+	/**
 	 * Get the output from a given callable.
 	 *
 	 * @param callable $callable Callable to execute.
@@ -177,7 +184,7 @@ class Utils {
 	 * @since 4.2.0
 	 */
 	public static function set_default_permalink_structure_for_tests() {
-		update_option( 'permalink_structure', '/%year%/%monthnum%/%day%/%postname%/' );
+		update_option( 'permalink_structure', static::DEFAULT_PERMALINK_STRUCTURE );
 	}
 
 	/**

@@ -66,7 +66,14 @@ if ( $multisite ) {
 	$subdomain_install = false;
 
 	install_network();
-	populate_network( 1, WP_TESTS_DOMAIN, WP_TESTS_EMAIL, $title, '/', $subdomain_install );
+
+	$populate = populate_network( 1, WP_TESTS_DOMAIN, WP_TESTS_EMAIL, $title, '/', $subdomain_install );
+
+	if ( is_wp_error( $populate ) ) {
+		echo 'Error populating network: ' . $populate->get_error_message() . PHP_EOL;
+		exit( 1 );
+	}
+
 	$wp_rewrite->set_permalink_structure( '' );
 }
 
