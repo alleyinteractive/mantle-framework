@@ -792,7 +792,7 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Get the items in an collection of arrays with filtered child keys.
 	 *
-	 * @param    mixed $keys
+	 * @param mixed[]|mixed $keys The keys to filter by.
 	 * @return static
 	 */
 	public function only_children( $keys ) {
