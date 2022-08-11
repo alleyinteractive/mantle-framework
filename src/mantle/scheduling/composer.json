@@ -7,13 +7,13 @@
         "alleyinteractive/composer-wordpress-autoloader": "^0.6",
         "dragonmantank/cron-expression": "^3.1",
         "guzzlehttp/guzzle": "^6.3.1 || ^7.3",
-        "mantle-framework/contracts": "^0.5",
+        "mantle-framework/contracts": "^0.6",
         "nesbot/carbon": "^2.53",
-        "mantle-framework/console": "^0.5"
+        "mantle-framework/console": "^0.6"
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "0.5-dev"
+            "dev-main": "0.6-dev"
         },
         "wordpress-autoloader": {
             "autoload": {

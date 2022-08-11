@@ -12,7 +12,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "0.5-dev"
+            "dev-main": "0.6-dev"
         },
         "wordpress-autoloader": {
             "autoload": {

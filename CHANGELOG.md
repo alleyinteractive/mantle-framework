@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+- Ensure tests have a permalink structure by default.
+- Adding only_children() method to collections.
+- Update to `alleyinteractive/composer-wordpress-autoloader` v0.7.0.
+
 ## v0.5.4 - 2022-08-04
 
 - Fixing issue with testing library
@@ -24,7 +30,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bump actions/cache from 3.0.4 to 3.0.5 by @dependabot in https://github.com/alleyinteractive/mantle-framework/pull/294
 - Bumping asset manager by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/295
 - Update testkit to include URL Generator by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/296
-- Opening up 0.5 by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/289
 - Add request before/after callbacks by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/298
 - Cleaning up the flag/argument, simplify to flag/argument/option by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/297
 - Including mantle-framework/http-client with testing by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/299
