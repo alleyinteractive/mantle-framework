@@ -4,15 +4,15 @@
     "type": "project",
     "require": {
         "php": "^7.4|^8.0",
-        "alleyinteractive/composer-wordpress-autoloader": "^0.6",
-        "mantle-framework/contracts": "^0.5",
-        "mantle-framework/support": "^0.5",
+        "alleyinteractive/composer-wordpress-autoloader": "^0.7",
+        "mantle-framework/contracts": "^0.6",
+        "mantle-framework/support": "^0.6",
         "monolog/monolog": "^2.7",
         "psr/log": "^1.0.1 || ^2.0 || ^3.0"
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "0.5-dev"
+            "dev-main": "0.6-dev"
         },
         "wordpress-autoloader": {
             "autoload": {

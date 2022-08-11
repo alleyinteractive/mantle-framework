@@ -49,7 +49,7 @@ return static function ( ContainerConfigurator $container_config ): void {
 		Option::DATA_TO_APPEND,
 		[
 			ComposerJsonSection::REQUIRE     => [
-				'alleyinteractive/composer-wordpress-autoloader' => '^0.6',
+				'alleyinteractive/composer-wordpress-autoloader' => '^0.7',
 				'php'                                            => '^7.4|^8.0',
 			],
 			ComposerJsonSection::REQUIRE_DEV => [
