@@ -109,7 +109,7 @@ trait Interacts_With_Requests {
 		printf(
 			'No faked HTTP response found, making an actual HTTP request. [%s]',
 			esc_url( $url )
-		);
+		) . PHP_EOL;
 
 		return $preempt;
 	}
