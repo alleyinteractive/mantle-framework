@@ -2,18 +2,16 @@
 namespace Mantle\Tests\Events;
 
 use Mantle\Events\Dispatcher;
-use Exception;
-use Mantle\Container\Container;
 use Mantle\Support\Collection;
 use Mantle\Testing\Framework_Test_Case;
-use ReflectionParameter;
-use RuntimeException;
-use WP_Query;
 
 use function Mantle\Support\Helpers\add_action;
 use function Mantle\Support\Helpers\add_filter;
 use function Mantle\Support\Helpers\collect;
 
+/**
+ * @group events
+ */
 class Test_WordPress_Action_Dispatcher extends Framework_Test_Case {
 	public function test_action_handler() {
 		$_SERVER['__action_fired'] = false;

@@ -21,7 +21,7 @@ abstract class Facade {
 	/**
 	 * The application instance being facaded.
 	 *
-	 * @var \Mantle\Contracts\Application
+	 * @var \Mantle\Contracts\Application|\Mantle\Contracts\Container
 	 */
 	protected static $app;
 

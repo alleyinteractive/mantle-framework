@@ -7,6 +7,7 @@
 
 namespace Mantle\Queue;
 
+use Mantle\Container\Container;
 use Mantle\Contracts\Queue\Dispatcher;
 use Mantle\Contracts\Queue\Job;
 
@@ -24,9 +25,9 @@ class Pending_Dispatch {
 	/**
 	 * Constructor.
 	 *
-	 * @param Job $job Job instance.
+	 * @param Job|Closure_Job $job Job instance.
 	 */
-	public function __construct( Job $job ) {
+	public function __construct( $job ) {
 		$this->job = $job;
 	}
 
@@ -36,8 +37,9 @@ class Pending_Dispatch {
 	 * @param string $queue Queue to add to.
 	 * @return static
 	 */
-	public function on_queue( string $queue ) {
+	public function on_queue( string $queue ): Pending_Dispatch {
 		$this->job->on_queue( $queue );
+
 		return $this;
 	}
 
@@ -47,8 +49,9 @@ class Pending_Dispatch {
 	 * @param int $delay Delay in seconds.
 	 * @return static
 	 */
-	public function delay( int $delay ) {
+	public function delay( int $delay ): Pending_Dispatch {
 		$this->job->delay( $delay );
+
 		return $this;
 	}
 
@@ -56,7 +59,14 @@ class Pending_Dispatch {
 	 * Handle the job and send it to the queue.
 	 */
 	public function __destruct() {
-		if ( $this->job ) {
+		if ( ! $this->job ) {
+			return;
+		}
+
+		// Allow the queue package to be run independent of the application.
+		if ( ! class_exists( \Mantle\Framework\Application::class ) ) {
+			Container::getInstance()->make( Dispatcher::class )->dispatch( $this->job );
+		} else {
 			app( Dispatcher::class )->dispatch( $this->job );
 		}
 	}

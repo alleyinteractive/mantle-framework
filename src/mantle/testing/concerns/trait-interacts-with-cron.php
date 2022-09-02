@@ -11,7 +11,6 @@ namespace Mantle\Testing\Concerns;
 use InvalidArgumentException;
 use Mantle\Contracts\Queue\Job;
 use Mantle\Contracts\Queue\Queue_Manager;
-use Mantle\Queue\Wp_Cron_Scheduler;
 use PHPUnit\Framework\Assert as PHPUnit;
 use stdClass;
 
@@ -226,11 +225,11 @@ trait Interacts_With_Cron {
 	}
 
 	/**
-	 * Dispatch the queue.
+	 * Dispatch the WordPress cron queue.
 	 *
 	 * @param string $queue Queue to run.
 	 */
 	public static function dispatch_queue( string $queue = null ) {
-		app( Wp_Cron_Scheduler::class )->on_queue_run( $queue );
+		app( \Mantle\Queue\Providers\WordPress\Scheduler::class )->on_queue_run( $queue );
 	}
 }

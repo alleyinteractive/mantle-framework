@@ -8,7 +8,7 @@
 namespace Mantle\Facade;
 
 use Mantle\Facade\Facade;
-use Mantle\Tests\Queue\Queue_Fake;
+use Mantle\Queue\Queue_Fake;
 
 /**
  * Queue Facade
@@ -20,7 +20,8 @@ class Queue extends Facade {
 	 * @return \Illuminate\Support\Testing\Fakes\QueueFake
 	 */
 	public static function fake() {
-		$fake = new Queue_Fake( static::get_facade_accessor() );
+		$fake = new Queue_Fake( static::$app );
+
 		static::swap( $fake );
 
 		return $fake;
@@ -31,7 +32,7 @@ class Queue extends Facade {
 	 *
 	 * @return string
 	 */
-	protected static function get_facade_accessor() {
+	protected static function get_facade_accessor(): string {
 		return 'queue';
 	}
 }
