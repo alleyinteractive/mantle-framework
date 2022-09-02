@@ -7,14 +7,10 @@
 
 namespace Mantle\Testing\Concerns;
 
-use ArrayAccess;
-use InvalidArgumentException;
 use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Term;
 use Mantle\Database\Model\User;
-use Mantle\Testing\Constraints\ArraySubset;
 use PHPUnit\Framework\Assert as PHPUnit;
-use PHPUnit\Util\InvalidArgumentHelper;
 use WP_Term;
 
 use function Mantle\Support\Helpers\get_term_object;
@@ -23,6 +19,7 @@ use function Mantle\Support\Helpers\get_term_object;
  * Assorted Test_Cast assertions.
  */
 trait Assertions {
+	use Asset_Assertions;
 
 	/**
 	 * Detect post-test failure conditions.

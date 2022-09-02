@@ -34,6 +34,8 @@ class Test_Asset_Map extends Test_Case {
 			asset_map()->enqueue( 'example-entry.js' )
 		);
 
+		$this->assertScriptEnqueued( 'example-entry' );
+
 		$this->assertHeadContains(
 			"<script src='http://example.org/wp-content/plugins/mantle/build/example-entry.bundle.min.js' id='example-entry-js'></script>",
 		);
@@ -45,9 +47,21 @@ class Test_Asset_Map extends Test_Case {
 			asset_map()->enqueue( 'example-entry.css' )
 		);
 
+		$this->assertStyleEnqueued( 'example-entry' );
+
 		$this->assertHeadContains(
 			"href='http://example.org/wp-content/plugins/mantle/build/example-entry.min.css' media='all",
 		);
+	}
+
+	public function test_asset_map_registered_style() {
+		$this->assertInstanceOf(
+			Asset::class,
+			asset_map()->enqueue( 'example-entry.css' )->condition( 'unknown' )
+		);
+
+		$this->assertStyleNotEnqueued( 'example-entry' );
+		$this->assertStyleRegistered( 'example-entry' );
 	}
 
 	public function test_asset_map_enqueue_unknown() {

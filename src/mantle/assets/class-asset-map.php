@@ -200,6 +200,7 @@ class Asset_Map {
 			throw new InvalidArgumentException( "Invalid asset type: {$type} ({$asset})" );
 		}
 
+		// todo: convert to non-match.
 		$type = match ($type) {
 			'js' => 'script',
 			'css' => 'style',
