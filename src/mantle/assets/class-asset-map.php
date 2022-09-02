@@ -1,9 +1,20 @@
 <?php
+/**
+ * Asset_Map class file
+ *
+ * @package Mantle
+ */
+
 namespace Mantle\Assets;
 
 use InvalidArgumentException;
 use Mantle\Assets\Exception\Asset_Map_Not_Found;
 
+/**
+ * Asset Map
+ *
+ * Manage and enqueue assets from the asset map.
+ */
 class Asset_Map {
 	/**
 	 * Storage of all parsed asset maps.
@@ -22,7 +33,10 @@ class Asset_Map {
 	/**
 	 * Read a map from a specific path.
 	 *
+	 * @throws Exception\Asset_Map_Not_Found Thrown when asset map not found and in debug mode.
+	 *
 	 * @param string $path Path to read.
+	 * @param string $name  Map to read, optional.
 	 * @return static|null
 	 */
 	public static function create( string $path, string $name = null ) {
@@ -54,7 +68,7 @@ class Asset_Map {
 	/**
 	 * Read the default asset map for the site and return an Asset Map instance.
 	 *
-	 * @return void
+	 * @return static
 	 */
 	public static function default_map() {
 		return static::create( base_path( 'build/assetMap.json' ) );
@@ -63,7 +77,7 @@ class Asset_Map {
 	/**
 	 * Constructor.
 	 *
-	 * @param string $asset_map Asset map to read, optional.
+	 * @param string $map Asset map to read, optional.
 	 */
 	public function __construct( string $map = 'default' ) {
 		$this->map = $map;
@@ -92,7 +106,7 @@ class Asset_Map {
 	/**
 	 * Retrieve a URL for a given property.
 	 *
-	 * @param string  $asset Entry point and asset type separated by a '.'.
+	 * @param string $asset Entry point and asset type separated by a '.'.
 	 * @return string|null
 	 */
 	public function path( string $asset ): ?string {
@@ -156,8 +170,7 @@ class Asset_Map {
 		}
 
 		// Try to load the dependencies.
-		// phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
-		$dependencies = require $dependency_file;
+		$dependencies = require $dependency_file; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 
 		if ( empty( $dependencies['dependencies'] ) || ! is_array( $dependencies['dependencies'] ) ) {
 			return [];
@@ -169,8 +182,10 @@ class Asset_Map {
 	/**
 	 * Enqueue an asset from the asset map.
 	 *
-	 * @param string $asset Asset to enqueue.
+	 * @throws InvalidArgumentException Thrown when the asset type is invalid (expects js/css).
 	 *
+	 * @param string $asset Asset to enqueue.
+	 * @return Asset|null
 	 */
 	public function enqueue( string $asset ): ?Asset {
 		$path = $this->path( $asset );
