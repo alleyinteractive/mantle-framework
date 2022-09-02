@@ -15,8 +15,8 @@ use Mantle\Contracts\Http\View\Factory as View_Factory;
 use Mantle\Support\Environment;
 use Mantle\Framework\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\Routing\Generator\UrlGenerator;
-use Mantle\Assets\Mix;
 use Mantle\Assets\Asset_Manager;
+use Mantle\Assets\Asset_Map;
 
 if ( ! function_exists( 'app' ) ) {
 	/**
@@ -131,21 +131,6 @@ if ( ! function_exists( 'base_path' ) ) {
 	 */
 	function base_path( string $path = '' ): string {
 		return app()->get_base_path( $path );
-	}
-}
-
-if ( ! function_exists( 'mix' ) ) {
-	/**
-	 * Get the path to a versioned Mix file.
-	 *
-	 * @param  string  $path
-	 * @param  string  $manifest_directory
-	 * @return string
-	 *
-	 * @throws \Exception
-	 */
-	function mix( string $path, string $manifest_directory = '' ): string {
-		return app( Mix::class )( ...func_get_args() );
 	}
 }
 
@@ -440,5 +425,22 @@ if ( ! function_exists( 'asset' ) ) {
 	 */
 	function asset() {
 		return app( Asset_Manager::class );
+	}
+}
+
+if ( ! function_exists( 'asset_map' ) ) {
+	/**
+	 * Get the Asset Map for the site or get an specific entry property from the asset map.
+	 *
+	 * @param string $asset Entry point and asset type seperated by a '.', optional.
+	 * @param string $prop  Property to retrieve from the map, optional.
+	 * @return mixed|Asset_Map
+	 */
+	function asset_map( string $asset = null, string $prop = null ) {
+		if ( empty( $asset ) ) {
+			return app( Asset_Map::class );
+		}
+
+		return app( Asset_Map::class )->get( $asset, $prop );
 	}
 }

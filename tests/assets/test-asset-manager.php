@@ -6,45 +6,12 @@ use Asset_Manager_Scripts;
 use Asset_Manager_Styles;
 use Asset_Manager_Preload;
 use Mantle\Assets\Asset_Manager;
-use Mantle\Testing\Framework_Test_Case;
 use WP_Scripts;
 
-class Test_Asset_Manager extends Framework_Test_Case {
-	protected function setUp(): void {
-		parent::setUp();
-
-		// Add test conditions
-		remove_all_filters( 'am_asset_conditions', 10 );
-		add_filter(
-			'am_asset_conditions',
-			function() {
-				return [
-					'global'            => true,
-					'article_post_type' => true,
-					'single'            => true,
-					'archive'           => false,
-					'has_slideshow'     => false,
-					'has_video'         => false,
-				];
-			}
-		);
-
-		$this->reset_assets();
-
-		Asset_Manager_Scripts::instance()->add_hooks();
-		Asset_Manager_Scripts::instance()->manage_async();
-		Asset_Manager_Styles::instance()->add_hooks();
-
-		// Register with the container.
-		$this->app->singleton(
-			'asset.manager',
-			fn() => new Asset_Manager(),
-		);
-
-		$this->app->alias( 'asset.manager', Asset_Manager::class );
-		$this->app->alias( 'asset.manager', \Mantle\Contracts\Assets\Asset_Manager::class );
-	}
-
+/**
+ * @group assets
+ */
+class Test_Asset_Manager extends Test_Case {
 	public function test_register_script() {
 		$manager = new Asset_Manager();
 		$manager

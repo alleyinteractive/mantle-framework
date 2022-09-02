@@ -15,16 +15,13 @@ use Mantle\Support\Service_Provider;
 abstract class Asset_Service_Provider extends Service_Provider {
 	/**
 	 * Register the service provider.
-	 *
-	 * @return void
 	 */
 	public function register() {
-		$this->app->singleton(
-			'asset.manager',
-			fn() => new Asset_Manager(),
-		);
+		$this->app->singleton( 'asset.manager', fn() => new Asset_Manager() );
+		$this->app->singleton( 'asset.map', fn() => Asset_Map::default_map() );
 
 		$this->app->alias( 'asset.manager', Asset_Manager::class );
 		$this->app->alias( 'asset.manager', \Mantle\Contracts\Assets\Asset_Manager::class );
+		$this->app->alias( 'asset.map', Asset_Map::class );
 	}
 }

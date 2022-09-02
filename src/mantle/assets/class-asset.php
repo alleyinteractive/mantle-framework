@@ -139,6 +139,17 @@ class Asset {
 	}
 
 	/**
+	 * Condition to load the asset.
+	 *
+	 * @param string|array $condition Condition to load.
+	 * @return static
+	 */
+	public function condition( $condition ): Asset {
+		$this->condition = $condition;
+		return $this;
+	}
+
+	/**
 	 * Defer a script.
 	 *
 	 * @return static

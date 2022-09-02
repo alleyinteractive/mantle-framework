@@ -1,0 +1,28 @@
+{
+  "hash": "b214d753ac793b5dd48d",
+  "mode": "production",
+  "slotfills": {
+    "js": {
+      "path": "slotfills.bundle.min.js",
+      "hash": "00db2f90352d94a1a4c4"
+    },
+    "php": {
+      "path": "slotfills.bundle.min.asset.php",
+      "hash": "b214d753ac793b5dd48d"
+    }
+  },
+  "example-entry": {
+    "js": {
+      "path": "example-entry.bundle.min.js",
+      "hash": "14b07c93c228c31a4b1a"
+    },
+    "css": {
+      "path": "example-entry.min.css",
+      "hash": "14b07c93c2asdasda28c31a4b1a"
+    },
+    "php": {
+      "path": "example-entry.bundle.min.asset.php",
+      "hash": "b214d753ac793b5dd48d"
+    }
+  }
+}
