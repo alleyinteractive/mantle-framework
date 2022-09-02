@@ -43,10 +43,7 @@ class Worker {
 	 * @param Queue_Manager $manager Manager instance.
 	 * @param Dispatcher    $events Events dispatcher.
 	 */
-	public function __construct(
-		Queue_Manager $manager,
-		Dispatcher $events,
-	) {
+	public function __construct( Queue_Manager $manager, Dispatcher $events ) {
 		$this->manager = $manager;
 		$this->events  = $events;
 	}
