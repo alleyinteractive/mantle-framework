@@ -438,7 +438,7 @@ if ( ! function_exists( 'asset' ) ) {
 	 *
 	 * @return \Mantle\Assets\Asset_Manager
 	 */
-	function asset() {
+	function asset(): Asset_Manager {
 		return app( Asset_Manager::class );
 	}
 }
