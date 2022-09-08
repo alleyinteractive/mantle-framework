@@ -12,12 +12,10 @@ namespace Mantle\Contracts;
  */
 interface Block {
 	/**
-	 * Used for registering the Block. Treated as the constructor.
+	 * Executed by the Block Service Provider to handle registering the block
+	 * with Mantle and WordPress.
+	 *
+	 * @return void
 	 */
-	public function register();
-
-	/**
-	 * Render method. Used for rendering the block output.
-	 */
-	public function render();
+	public function register(): void;
 }
