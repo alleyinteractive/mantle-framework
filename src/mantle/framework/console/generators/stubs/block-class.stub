@@ -1,6 +1,6 @@
 <?php
 /**
- * {{ block_name }} Block Definition
+ * {{ class }} Definition
  *
  * @package {{ namespace }}
  */
@@ -11,9 +11,9 @@ use Mantle\Blocks\Block;
 use Mantle\Contracts\Block as Block_Contract;
 
 /**
- * {{ block_name }}_Block Class.
+ * {{ class }} Class.
  */
-class {{ block_name }}_Block extends Block implements Block_Contract {
+class {{ class }} extends Block implements Block_Contract {
 	/**
 	 * The name of the block.
 	 *

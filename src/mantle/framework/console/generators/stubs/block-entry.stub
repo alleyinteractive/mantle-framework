@@ -14,13 +14,13 @@ registerBlockType(
     category: '{{ block_category }}',
     description: __(
       '{{ block_description }}',
-      '{{ block_namespace }}',
+      '{{ domain }}',
     ),
     edit,
     icon: '{{ block_icon }}',
     keywords: [
-      __('{{ block_name }}', '{{ block_namespace }}'),
+      __('{{ block_name }}', '{{ domain }}'),
     ],
-    title: __('{{ block_title }}', '{{ block_namespace }}'),
+    title: __('{{ block_title }}', '{{ domain }}'),
   }
 );

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 const Edit = ({
   setAttributes,
 }) => (
-  <div>{__('Get going!', '{{ block_namespace }}')}</div>
+  <div>{__('Get going!', '{{ domain }}')}</div>
 );
 
 Edit.propTypes = {
