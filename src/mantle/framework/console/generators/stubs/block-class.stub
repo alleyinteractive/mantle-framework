@@ -1,0 +1,30 @@
+<?php
+/**
+ * {{ block_name }} Block Definition
+ *
+ * @package {{ namespace }}
+ */
+
+namespace App\Blocks;
+
+use Mantle\Blocks\Block;
+use Mantle\Contracts\Block as Block_Contract;
+
+/**
+ * {{ block_name }}_Block Class.
+ */
+class {{ block_name }}_Block extends Block implements Block_Contract {
+	/**
+	 * The name of the block.
+	 *
+	 * @var string
+	 */
+	protected string $name = '{{ block_name }}';
+
+	/**
+	 * The namespace of the block.
+	 *
+	 * @var string
+	 */
+	protected string $namespace = '{{ block_namespace }}';
+}
