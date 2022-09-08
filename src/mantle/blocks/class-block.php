@@ -16,6 +16,10 @@ use Mantle\Http\View\View;
 use Mantle\Http\View\Factory as View_Factory;
 use Mantle\Support\Str;
 
+/**
+ * Abstract class that handles the majority of Gutenberg Block
+ * registration.
+ */
 abstract class Block implements Block_Contract {
 
 	/**
@@ -34,6 +38,8 @@ abstract class Block implements Block_Contract {
 
 	/**
 	 * A custom override value for the block's Editor script asset file location.
+	 *
+	 * @var string
 	 */
 	protected string $editor_script_asset = '';
 
@@ -141,48 +147,71 @@ abstract class Block implements Block_Contract {
 	 */
 	public function register(): void {
 
-		if( ! $this->should_register() ) {
+		if ( ! $this->should_register() ) {
 			return;
 		}
 
-		add_action( 'enqueue_block_editor_assets', function() {
-			$this->register_editor_assets();
-			$this->register_frontend_assets();
-		});
+		add_action(
+			'enqueue_block_editor_assets',
+			function() {
+				$this->register_editor_assets();
+				$this->register_frontend_assets();
+			}
+		);
 
-		add_action( 'init', function() {
-			$args = wp_parse_args(
-				[
-					'attributes'      => $this->get_attributes(),
-					'editor_script'   => $this->get_editor_script_handle(),
-					'render_callback' => $this->is_dynamic ? fn( $attributes, $content ) => $this->render( $attributes, $content ) : null,
-					'editor_style'    => $this->get_editor_style_handle(),
-				]
-			);
+		add_action(
+			'init',
+			function() {
+				$args = wp_parse_args(
+					[
+						'attributes'      => $this->get_attributes(),
+						'editor_script'   => $this->get_editor_script_handle(),
+						'render_callback' => $this->is_dynamic ? fn( $attributes, $content ) => $this->render( $attributes, $content ) : null,
+						'editor_style'    => $this->get_editor_style_handle(),
+					]
+				);
 
-			// Register the block.
-			register_block_type(
-				$this->get_block_name(),
-				$args
-			);
-		});
+				// Register the block.
+				register_block_type(
+					$this->get_block_name(),
+					$args
+				);
+			}
+		);
 	}
 
+	/**
+	 * Whether or not a view was found for the block.
+	 *
+	 * @param string $name The name of the view to attempt to locate.
+	 * @return bool
+	 */
 	protected function block_view_exists( $name ): bool {
 		try {
 			View_Loader::find( $name );
-		} catch( InvalidArgumentException $e ) {
+		} catch ( InvalidArgumentException $e ) {
 			return false;
 		}
 
 		return true;
 	}
 
+	/**
+	 * A helper function for formatting script handles correctly.
+	 *
+	 * @param string $type The type of handle being formatted.
+	 * @return string
+	 */
 	protected function format_handle( string $type ): string {
-		$name = str_replace( '/', '-', $this->get_block_name() );
+		$name = Str::replace( '/', '-', $this->get_block_name() );
 		return sprintf( '%1$s-%2$s', $name, $type );
 	}
 
+	/**
+	 * Returns the blocks attributes array.
+	 *
+	 * @return array
+	 */
 	protected function get_attributes(): array {
 		return $this->attributes;
 	}
@@ -194,21 +223,23 @@ abstract class Block implements Block_Contract {
 	 */
 	protected function get_block_assets(): object {
 		$root = \trailingslashit( MANTLE_BASE_DIR ) . \trailingslashit( app( 'config' )->get( 'assets.path' ) );
-		$disk = Storage::create_local_driver([
-			'root' => $root,
-		]);
+		$disk = Storage::create_local_driver(
+			[
+				'root' => $root,
+			]
+		);
 
 		try {
 			$assets = $disk->get( "blocks/{$this->name}/{$this->entry_filename}.asset.json" );
 			$assets = \json_decode( $assets );
-		}catch( FileNotFoundException $e ) {
+		} catch ( FileNotFoundException $e ) {
 			return new \stdClass();
 		}
 
 		/**
 		 * Fallback to an empty object if the JSON is malformed.
 		 */
-		if( !is_object( $assets ) ) {
+		if ( ! is_object( $assets ) ) {
 			return new \stdClass();
 		}
 
@@ -234,14 +265,14 @@ abstract class Block implements Block_Contract {
 	protected function get_editor_script_dependencies(): array {
 		if (
 			is_array( $this->editor_script_dependencies )
-		  && ! empty( $this->editor_script_dependencies )
+			&& ! empty( $this->editor_script_dependencies )
 		) {
 			return $this->editor_script_dependencies;
 		}
 
 		$assets = $this->get_block_assets();
 
-		if( empty( $assets->dependencies ) ){
+		if ( empty( $assets->dependencies ) ) {
 			return [];
 		}
 
@@ -256,7 +287,7 @@ abstract class Block implements Block_Contract {
 	protected function get_editor_script_version(): string {
 		if (
 			is_array( $this->editor_script_dependencies )
-		  && ! empty( $this->editor_script_dependencies )
+			&& ! empty( $this->editor_script_dependencies )
 		) {
 			return $this->editor_script_dependencies;
 		}
@@ -307,10 +338,20 @@ abstract class Block implements Block_Contract {
 		return $this->frontend_style_handle ?: $this->format_handle( 'frontend-style' );
 	}
 
+	/**
+	 * Return the namespace for the block. Generate one if necessary.
+	 *
+	 * @return string
+	 */
 	protected function get_namespace(): string {
 		return $this->namespace ?: Str::lower( app( 'config' )->get( 'app.namespace', 'app' ) );
 	}
 
+	/**
+	 * Handle registering the Block Editor assets.
+	 *
+	 * @return void
+	 */
 	protected function register_editor_assets(): void {
 
 		asset()
@@ -322,21 +363,26 @@ abstract class Block implements Block_Contract {
 			->version( $this->get_editor_script_version() )
 			->frontend( false );
 
-		if( !empty( $this->editor_style ) ) {
+		if ( ! empty( $this->editor_style ) ) {
 			asset()
 				->style( $this->get_editor_style_handle(), $this->editor_style )
 				->frontend( false );
 		}
 	}
 
+	/**
+	 * Handle registering the block's frontend assets.
+	 *
+	 * @return void
+	 */
 	protected function register_frontend_assets(): void {
-		if( ! empty( $this->frontend_script ) ) {
+		if ( ! empty( $this->frontend_script ) ) {
 			asset()
 				->script( $this->get_frontend_script_handle(), $this->frontend_script )
 				->admin( false );
 		}
 
-		if( ! empty( $this->frontend_style ) ) {
+		if ( ! empty( $this->frontend_style ) ) {
 			asset()
 				->style( $this->get_frontend_style_handle(), $this->frontend_style )
 				->admin( false );
@@ -346,7 +392,7 @@ abstract class Block implements Block_Contract {
 	/**
 	 * Default render function for dynamic blocks.
 	 *
-	 * @param array $attributes The attributes for this block.
+	 * @param array  $attributes The attributes for this block.
 	 * @param string $content   The inner content for this block. Used when using InnerBlocks.
 	 * @return View The content for the block.
 	 */
@@ -357,14 +403,14 @@ abstract class Block implements Block_Contract {
 		];
 
 		$found = false;
-		foreach( $templates as $template ) {
-			if( $this->block_view_exists( $template ) ) {
+		foreach ( $templates as $template ) {
+			if ( $this->block_view_exists( $template ) ) {
 				$found = true;
 				break;
 			}
 		}
 
-		if( !$found ) {
+		if ( ! $found ) {
 			return '';
 		}
 
@@ -388,7 +434,7 @@ abstract class Block implements Block_Contract {
 			$template,
 			[
 				'attributes' => $attributes,
-				'content' => $content
+				'content'    => $content,
 			]
 		);
 	}
@@ -406,6 +452,6 @@ abstract class Block implements Block_Contract {
 		 *
 		 * @param bool $should_register Whether or not the block should be registered on this post type.
 		 */
-		return apply_filters( "{$this->get_block_name()}_should_register", $should_register );
+		return apply_filters( "{$this->get_block_name()}_should_register", $should_register ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
 	}
 }
