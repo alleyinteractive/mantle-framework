@@ -46,7 +46,7 @@ class Asset_Manager implements Asset_Manager_Contract {
 	 * @param string          $load_method Load method.
 	 * @param string          $load_hook Load hook.
 	 * @param string|null     $version Script version.
-	 * @return void
+	 * @return Asset
 	 */
 	public function style( ...$params ): Asset {
 		return new Asset( 'style', ...$params );
