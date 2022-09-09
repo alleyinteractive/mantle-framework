@@ -115,6 +115,17 @@ class Block_Make_Command extends Generator_Command {
 	}
 
 	/**
+	 * Return the generated edit.jsx stub for this block.
+	 *
+	 * @return string
+	 */
+	protected function get_generated_view(): string {
+		$contents = file_get_contents( __DIR__ . '/stubs/block-view.stub' ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
+
+		return $this->replacements->replace( $contents );
+	}
+
+	/**
 	 * Generator Command.
 	 *
 	 * @todo Replace with a filesystem abstraction.
@@ -151,7 +162,6 @@ class Block_Make_Command extends Generator_Command {
 		$this->replacements->add( '{{ block_name }}', $block_name );
 		$this->replacements->add( '{{ block_namespace }}', $block_namespace );
 
-
 		/**
 		 * Make sure the blocks folder, and new block folder, exist before moving on.
 		 */
@@ -170,6 +180,7 @@ class Block_Make_Command extends Generator_Command {
 		$this->generate_block_class( $name );
 		$this->generate_block_entry( $block_name );
 		$this->generate_block_edit( $block_name );
+		$this->generate_block_view( $block_namespace, $block_name );
 
 		$this->complete_synopsis( $name );
 	}
@@ -191,7 +202,7 @@ class Block_Make_Command extends Generator_Command {
 		// Store the generated class.
 		try {
 			// TODO: Dynamically retrieve attributes to add to block.
-			if ( false === file_put_contents( $entry_attributes_path, \json_encode( [] ) ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents
+			if ( false === file_put_contents( $entry_attributes_path, \wp_json_encode( [] ) ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents
 				$this->error( 'Error writing to ' . $entry_attributes_path );
 			}
 		} catch ( \Throwable $e ) {
@@ -208,7 +219,7 @@ class Block_Make_Command extends Generator_Command {
 	 * @param string $name The name of the class to generate the file for.
 	 * @return void
 	 */
-	protected function generate_block_class( string $name ) {
+	protected function generate_block_class( string $name ): void {
 		$path = $this->get_folder_path( $name );
 
 		// Ensure the folder path exists.
@@ -241,7 +252,7 @@ class Block_Make_Command extends Generator_Command {
 	 * @param string $block_name The name of the block to generate the file for.
 	 * @return void
 	 */
-	protected function generate_block_entry( string $block_name ) {
+	protected function generate_block_entry( string $block_name ): void {
 		/**
 		 * Define some block entry specific replacements. If they weren't passed as flags, we
 		 * still need to get that information, so request it as input.
@@ -304,6 +315,48 @@ class Block_Make_Command extends Generator_Command {
 	}
 
 	/**
+	 * Generate the view file for the Gutenberg block.
+	 *
+	 * @param string $block_namespace The namespace of the block to generate the file for.
+	 * @param string $block_name      The name of the block to generate the file for.
+	 * @return void
+	 */
+	protected function generate_block_view( string $block_namespace, string $block_name ): void {
+		/**
+		 * Make sure the blocks views folder, and new block view folder, exist before moving on.
+		 */
+		$views_path = $this->get_views_path();
+		$view_path  = $this->get_view_path( $block_namespace );
+
+		if ( ! is_dir( $views_path ) && ! mkdir( $views_path, 0700, true ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.directory_mkdir
+			$this->error( 'Error creating folder: ' . $views_path, true );
+		}
+
+		if ( ! is_dir( $view_path ) && ! mkdir( $view_path, 0700, true ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.directory_mkdir
+			$this->error( 'Error creating folder: ' . $view_path, true );
+		}
+
+		$entry_view = $view_path . "/{$block_name}.blade.php";
+
+		if ( file_exists( $entry_view ) ) {
+			$this->error( 'Block View already exists: ' . $entry_view );
+			return;
+		}
+
+		// Store the generated class.
+		try {
+			if ( false === file_put_contents( $entry_view, $this->get_generated_view() ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents
+				$this->error( 'Error writing to ' . $entry_view );
+			}
+		} catch ( \Throwable $e ) {
+			dump( $e );
+			$this->error( 'There was an error generating: ' . $e->getMessage(), true );
+		}
+
+		$this->log( 'Block View created successfully: ' . $entry_view );
+	}
+
+	/**
 	 * Get the base path for the generated blocks folder.
 	 *
 	 * @return string
@@ -319,7 +372,26 @@ class Block_Make_Command extends Generator_Command {
 	 * @return string
 	 */
 	protected function get_block_path( string $name ): string {
-		return $this->get_blocks_path() . '/' . $name;
+		return $this->get_blocks_path() . $name;
+	}
+
+	/**
+	 * Get the base path for the generated blocks folder.
+	 *
+	 * @return string
+	 */
+	protected function get_views_path(): string {
+		return "{$this->app->get_base_path()}/views/blocks/";
+	}
+
+	/**
+	 * Get the base path for the genereated block.
+	 *
+	 * @param string $name The block name.
+	 * @return string
+	 */
+	protected function get_view_path( string $namespace ): string {
+		return $this->get_views_path() . $namespace;
 	}
 
 	/**
