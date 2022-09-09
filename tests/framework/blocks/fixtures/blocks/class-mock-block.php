@@ -15,9 +15,7 @@ class Mock_Block implements Block {
 	 */
 	public static int $registrations = 0;
 
-	public function register() {
+	public function register(): void {
 		self::$registrations++;
 	}
-
-	public function render() {}
 }
