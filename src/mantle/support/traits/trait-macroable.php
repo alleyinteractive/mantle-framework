@@ -51,7 +51,7 @@ trait Macroable {
 		);
 
 		foreach ( $methods as $method ) {
-			if ( $replace || ! static::hasMacro( $method->name ) ) {
+			if ( $replace || ! static::has_macro( $method->name ) ) {
 				$method->setAccessible( true );
 				static::macro( $method->name, $method->invoke( $mixin ) );
 			}
@@ -65,7 +65,7 @@ trait Macroable {
 	 *
 	 * @return bool
 	 */
-	public static function hasMacro( $name ) {
+	public static function has_macro( $name ) {
 		return isset( static::$macros[ $name ] );
 	}
 
@@ -80,7 +80,7 @@ trait Macroable {
 	 * @throws \BadMethodCallException
 	 */
 	public static function __callStatic( $method, $parameters ) {
-		if ( ! static::hasMacro( $method ) ) {
+		if ( ! static::has_macro( $method ) ) {
 			throw new BadMethodCallException( sprintf(
 				'Method %s::%s does not exist.', static::class, $method
 			) );
@@ -106,7 +106,7 @@ trait Macroable {
 	 * @throws \BadMethodCallException
 	 */
 	public function __call( $method, $parameters ) {
-		if ( ! static::hasMacro( $method ) ) {
+		if ( ! static::has_macro( $method ) ) {
 			throw new BadMethodCallException( sprintf(
 				'Method %s::%s does not exist.', static::class, $method
 			) );

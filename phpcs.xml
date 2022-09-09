@@ -40,4 +40,8 @@
 	<rule ref="Squiz.PHP.DisallowMultipleAssignments.FoundInControlStructure">
 		<severity>0</severity>
 	</rule>
+
+	<rule ref="VariableAnalysis.CodeAnalysis.VariableAnalysis.VariableRedeclaration">
+		<severity>0</severity>
+	</rule>
 </ruleset>

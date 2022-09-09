@@ -5,6 +5,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+- Ensure tests have a permalink structure by default.
+- Adding only_children() method to collections.
+- Update to `alleyinteractive/composer-wordpress-autoloader` v0.7.0.
+
+## v0.5.4 - 2022-08-04
+
+- Fixing issue with testing library
+
+## v0.5.2 - 2022-08-03
+
+- Fixing issue with Http Client.
+
+## v0.5.1 - 2022-08-01
+
+- Fixing issue with testing installation callback.
+
+## v0.5.0 - 2022-07-29
+
+- Prevent external requests during unit testing by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/293
+- Adding macroable to responses by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/292
+- Bump actions/cache from 3.0.4 to 3.0.5 by @dependabot in https://github.com/alleyinteractive/mantle-framework/pull/294
+- Bumping asset manager by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/295
+- Update testkit to include URL Generator by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/296
+- Add request before/after callbacks by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/298
+- Cleaning up the flag/argument, simplify to flag/argument/option by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/297
+- Including mantle-framework/http-client with testing by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/299
+- Fix Asset_Manager bug on asset() by @anubisthejackle in https://github.com/alleyinteractive/mantle-framework/pull/300
+- Adding an Installation_Manager to facilitate installation by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/302
+- Adding Conditionable Method Chaining by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/304
+- Adding support for Mock_Http_Sequence inside an array by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/303
+- Adding Concurrent Http Client Request Support by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/301
+- Bumping composer autoloader to v0.6 by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/306
+
 ## v0.4.0 - 2022-06-28
 
 Fixing a miss-tagged version.

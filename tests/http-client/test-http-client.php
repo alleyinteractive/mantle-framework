@@ -9,23 +9,24 @@ namespace Mantle\Tests\Http_Client;
 
 use Closure;
 use Mantle\Facade\Http;
-use Mantle\Http_Client\Http_Client;
+use Mantle\Http_Client\Factory;
 use Mantle\Http_Client\Http_Client_Exception;
+use Mantle\Http_Client\Pending_Request;
+use Mantle\Http_Client\Pool;
 use Mantle\Http_Client\Request;
 use Mantle\Http_Client\Response;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Mock_Http_Response;
 
 class Test_Http_Client extends Framework_Test_Case {
-	/**
-	 * @var Http_Client
-	 */
-	protected Http_Client $http_factory;
+	protected Factory $http_factory;
 
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->http_factory = new Http_Client();
+		$this->http_factory = new Factory();
+
+		$this->prevent_stray_requests();
 	}
 
 	public function test_make_post_request() {
@@ -219,10 +220,10 @@ class Test_Http_Client extends Framework_Test_Case {
 		$this->fake_request();
 
 		$this->http_factory
-			->middleware( function ( Http_Client $client, Closure $next ) {
-				$client->url( 'https://example.com/middleware/?modified=true' );
+			->middleware( function ( Pending_Request $request, Closure $next ) {
+				$request->url( 'https://example.com/middleware/?modified=true' );
 
-				return $next( $client );
+				return $next( $request );
 			} )
 			->get( 'https://example.com/middleware/' );
 
@@ -236,8 +237,8 @@ class Test_Http_Client extends Framework_Test_Case {
 		);
 
 		$response = $this->http_factory
-			->middleware( function ( Http_Client $client, Closure $next ) {
-				$response = $next( $client );
+			->middleware( function ( Pending_Request $request, Closure $next ) {
+				$response = $next( $request );
 
 				return new Response( array_merge(
 					$response->response(),
@@ -328,5 +329,114 @@ EOF
 		$this->assertEquals( 'Second Slide Title', $response->xml()->slide[1]->title );
 
 		$this->assertEquals( 'Another point!', $response->xml( '/slideshow/slide[@type="specific"]/point' )[0] ?? '' );
+	}
+
+	public function test_pool_requests() {
+		$this->fake_request( [
+			'https://example.com/async/' => Mock_Http_Response::create()->with_status( 200 ),
+			'https://example.com/second-async/' => Mock_Http_Response::create()->with_status( 402 ),
+		] );
+
+		$response = $this->http_factory->pool( fn ( Pool $pool ) => [
+			$pool->get( 'https://example.com/async/' ),
+			$pool->get( 'https://example.com/second-async/' ),
+		] );
+
+		$this->assertEquals( 200, $response[0]->status() );
+		$this->assertEquals( 402, $response[1]->status() );
+	}
+
+	public function test_pool_requests_name() {
+		$this->fake_request( [
+			'https://example.com/async/' => Mock_Http_Response::create()->with_status( 200 ),
+			'https://example.com/second-async/' => Mock_Http_Response::create()->with_status( 402 ),
+		] );
+
+		$response = $this->http_factory->pool( fn ( Pool $pool ) => [
+			$pool->as( 'first' )->get( 'https://example.com/async/' ),
+			$pool->as( 'second' )->post( 'https://example.com/second-async/' ),
+		] );
+
+		$this->assertEquals( 200, $response['first']->status() );
+		$this->assertEquals( 402, $response['second']->status() );
+
+		$this->assertRequestSent(
+			fn ( Request $request ) => 'https://example.com/async/' === $request->url()
+				&& 'GET' === $request->method()
+		);
+
+		$this->assertRequestSent(
+			fn ( Request $request ) => 'https://example.com/second-async/' === $request->url()
+				&& 'POST' === $request->method()
+		);
+	}
+
+	public function test_pool_forward_base_url() {
+		$this->fake_request( [
+			'https://github.com/endpoint-a/' => Mock_Http_Response::create()->with_status( 200 ),
+			'https://github.com/endpoint-b/' => Mock_Http_Response::create()->with_status( 404 ),
+		] );
+
+		$githubClient = Http::base_url( 'https://github.com' )
+			->with_header( 'X-Foo', 'Bar' );
+
+		$response = $githubClient->pool( fn ( Pool $githubPool ) => [
+			$githubPool->get( '/endpoint-a/' ),
+			$githubPool->post( '/endpoint-b/' ),
+		] );
+
+		$this->assertEquals( 200, $response[0]->status() );
+		$this->assertEquals( 404, $response[1]->status() );
+
+		$this->assertRequestSent(
+			fn ( Request $request ) => 'https://github.com/endpoint-a/' === $request->url()
+				&& 'GET' === $request->method()
+				&& 'Bar' === $request->header( 'X-Foo' )
+		);
+
+		$this->assertRequestSent(
+			fn ( Request $request ) => 'https://github.com/endpoint-b/' === $request->url()
+				&& 'POST' === $request->method()
+		);
+	}
+
+	public function test_conditionable_when_request() {
+		$request = $this->http_factory
+			->with_header( 'X-Foo', 'Bar' )
+			->when( true, fn ( Pending_Request $request ) => $request->with_header( 'X-Foo', 'Baz', true ) );
+
+		$this->assertEquals( 'Baz', $request->header( 'X-Foo' ) );
+
+		$request = $this->http_factory
+			->with_header( 'X-Foo', 'Bar' )
+			->when( true )->with_header( 'X-Foo', 'Baz', true );
+
+		$this->assertEquals( 'Baz', $request->header( 'X-Foo' ) );
+
+		$request = $this->http_factory
+			->with_header( 'X-Foo', 'Bar' )
+			->when( false, fn ( Pending_Request $request ) => $request->with_header( 'X-Foo', 'Baz', true ) );
+
+		$this->assertEquals( 'Bar', $request->header( 'X-Foo' ) );
+	}
+
+	public function test_conditionable_unless_request() {
+		$request = $this->http_factory
+			->with_header( 'X-Foo', 'Bar' )
+			->unless( false, fn ( Pending_Request $request ) => $request->with_header( 'X-Foo', 'Baz', true ) );
+
+		$this->assertEquals( 'Baz', $request->header( 'X-Foo' ) );
+
+		$request = $this->http_factory
+			->with_header( 'X-Foo', 'Bar' )
+			->unless( false )->with_header( 'X-Foo', 'Baz', true );
+
+		$this->assertEquals( 'Baz', $request->header( 'X-Foo' ) );
+
+		$request = $this->http_factory
+			->with_header( 'X-Foo', 'Bar' )
+			->unless( true, fn ( Pending_Request $request ) => $request->with_header( 'X-Foo', 'Baz', true ) );
+
+		$this->assertEquals( 'Bar', $request->header( 'X-Foo' ) );
 	}
 }

@@ -87,10 +87,20 @@ class Test_Factory extends Framework_Test_Case {
 	}
 
 	public function test_blog_factory() {
+		if ( ! is_multisite() ) {
+			$this->markTestSkipped( 'This test requires multisite.' );
+			return;
+		}
+
 		$this->shim_test( \WP_Site::class, 'blog' );
 	}
 
 	public function test_network_factory() {
+		if ( ! is_multisite() ) {
+			$this->markTestSkipped( 'This test requires multisite.' );
+			return;
+		}
+
 		$this->shim_test( \WP_Network::class, 'network' );
 	}
 

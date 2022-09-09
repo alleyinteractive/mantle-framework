@@ -20,6 +20,7 @@ use Mantle\Database\Pagination\Length_Aware_Paginator;
 use Mantle\Database\Pagination\Paginator;
 use Mantle\Support\Collection;
 use Mantle\Support\Str;
+use Mantle\Support\Traits\Conditionable;
 
 use function Mantle\Support\Helpers\collect;
 
@@ -27,6 +28,8 @@ use function Mantle\Support\Helpers\collect;
  * Builder Query Builder
  */
 abstract class Builder {
+	use Conditionable;
+
 	/**
 	 * Model to build on.
 	 *

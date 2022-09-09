@@ -4,8 +4,8 @@
     "type": "project",
     "require": {
         "php": "^7.4|^8.0",
-        "alleyinteractive/composer-wordpress-autoloader": "^0.4",
-        "mantle-framework/contracts": "^0.5",
+        "alleyinteractive/composer-wordpress-autoloader": "^1.0",
+        "mantle-framework/contracts": "^0.6",
         "monolog/monolog": "^2.7",
         "nesbot/carbon": "^2.53",
         "symfony/finder": "^5.3",
@@ -14,7 +14,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "0.5-dev"
+            "dev-main": "0.6-dev"
         },
         "wordpress-autoloader": {
             "autoload": {

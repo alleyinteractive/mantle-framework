@@ -790,6 +790,28 @@ class Collection implements ArrayAccess, Enumerable {
 	}
 
 	/**
+	 * Get the items in an collection of arrays with filtered child keys.
+	 *
+	 * @param mixed[]|mixed $keys The keys to filter by.
+	 * @return static
+	 */
+	public function only_children( $keys ) {
+		if ( is_null( $keys ) ) {
+			return new static( $this->items );
+		}
+
+		if ( $keys instanceof Enumerable ) {
+			$keys = $keys->all();
+		}
+
+		$keys = is_array( $keys ) ? $keys : func_get_args();
+
+		return $this->map(
+			fn ( $item ) => Arr::only( $item, $keys ),
+		);
+	}
+
+	/**
 	 * Get and remove the last item from the collection.
 	 *
 	 * @return mixed

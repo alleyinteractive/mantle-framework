@@ -11,8 +11,9 @@
     ],
     "require": {
         "php": "^7.4|^8.0",
-        "alleyinteractive/composer-wordpress-autoloader": "^0.4",
+        "alleyinteractive/composer-wordpress-autoloader": "^1.0",
         "alleyinteractive/wp-asset-manager": "^1.0",
+        "alleyinteractive/wp-concurrent-remote-requests": "^1.0.0",
         "dragonmantank/cron-expression": "^3.1",
         "fakerphp/faker": "^1.16",
         "filp/whoops": "^2.14",
@@ -84,7 +85,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "0.5-dev"
+            "dev-main": "0.6-dev"
         },
         "wordpress-autoloader": {
             "autoload": {
