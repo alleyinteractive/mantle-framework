@@ -83,7 +83,7 @@ class Block_Make_Command extends Generator_Command {
 	/**
 	 * Retrieve the generated class contents.
 	 *
-	 * @param string $name Class name.
+	 * @param string $name Unused.
 	 * @return string
 	 */
 	public function get_generated_class( string $name ): string {
@@ -92,13 +92,13 @@ class Block_Make_Command extends Generator_Command {
 		return $this->replacements->replace( $contents );
 	}
 
-	protected function get_generated_entry( string $name ): string {
+	protected function get_generated_entry(): string {
 		$contents = file_get_contents( __DIR__ . '/stubs/block-entry.stub' ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
 
 		return $this->replacements->replace( $contents );
 	}
 
-	protected function get_generated_edit( string $name ): string {
+	protected function get_generated_edit(): string {
 		$contents = file_get_contents( __DIR__ . '/stubs/block-edit.stub' ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
 
 		return $this->replacements->replace( $contents );
@@ -113,6 +113,7 @@ class Block_Make_Command extends Generator_Command {
 	 * @param array $assoc_args Command flags.
 	 */
 	public function handle( array $args, array $assoc_args = [] ) {
+
 		if ( empty( $args[0] ) ) {
 			$this->error( 'Missing block class name.', true );
 		}
@@ -127,6 +128,12 @@ class Block_Make_Command extends Generator_Command {
 
 		list( $name, $block_namespace, $block_name ) = $args;
 
+		/**
+		 * Normalize block namespace and name to lowercase.
+		 */
+		$block_namespace = strtolower( $block_namespace );
+		$block_name = strtolower( $block_name );
+
 		// Register replacements for the stub files.
 		$this->replacements->add( '{{ class }}', $this->get_class_name( $name ) );
 		$this->replacements->add( '{{ namespace }}', $this->get_namespace( $name ) );
@@ -134,8 +141,23 @@ class Block_Make_Command extends Generator_Command {
 		$this->replacements->add( '{{ block_name }}', $block_name );
 		$this->replacements->add( '{{ block_namespace }}', $block_namespace );
 
+
+		/**
+		 * Make sure the blocks folder, and new block folder, exist before moving on.
+		 */
+		$blocks_path = $this->get_blocks_path();
+		$block_path  = $this->get_block_path( $block_name );
+
+		if ( ! is_dir( $blocks_path ) && ! mkdir( $blocks_path, 0700, true ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.directory_mkdir
+			$this->error( 'Error creating folder: ' . $blocks_path, true );
+		}
+
+		if ( ! is_dir( $block_path ) && ! mkdir( $block_path, 0700, true ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.directory_mkdir
+			$this->error( 'Error creating folder: ' . $block_path, true );
+		}
+
 		$this->generate_block_class( $name );
-		$this->generate_block_entry();
+		$this->generate_block_entry( $block_name );
 		$this->generate_block_edit( $block_name );
 
 		$this->complete_synopsis( $name );
@@ -168,28 +190,109 @@ class Block_Make_Command extends Generator_Command {
 		$this->log( ( $this->type ?: 'File' ) . ' created successfully: ' . $file_path );
 	}
 
-	protected function generate_block_entry() {
-
-	}
-
-	protected function generate_block_edit( string $block_name ) {
+	protected function generate_block_entry( string $block_name ) {
 		/**
-		 * Get input for:
-		 * - block_category
-		 * - block_description
-		 * - block_icon
-		 * - block_title
+		 * Define some block entry specific replacements. If they weren't passed as flags, we
+		 * still need to get that information, so request it as input.
 		 */
-
-		$category = $this->flag( 'category', fn() => ( $this->input( 'What is a good category for this block? (empty for default)' ) ?? 'widget' ) );
-		$description = $this->flag( 'description', fn() => $this->input( 'Description: ' ) );
-		$icon = $this->flag( 'icon', 'generic' );
-		$title = $this->flag( 'title', fn() => ( $this->input( 'Block Title: ' ) ?? $block_name ) );
+		$category = Str::lower( $this->flag( 'category', $this->require_input( 'What is a good category for this block? (default: widget)', 'widget' ) ) );
+		$description = $this->flag( 'description', $this->require_input( 'Description: ' ) );
+		$icon = Str::lower( $this->flag( 'icon', 'generic' ) );
+		$title = $this->flag( 'title', $this->require_input( "Block Title (default: {$block_name}) ", $block_name ) );
 
 		$this->replacements->add( '{{ block_category }}', $category );
 		$this->replacements->add( '{{ block_description }}', $description );
 		$this->replacements->add( '{{ block_icon }}', $icon );
 		$this->replacements->add( '{{ block_title }}', $title );
 
+		$entry_index_path = $this->get_block_path( $block_name ) . '/index.js';
+
+		if ( file_exists( $entry_index_path ) ) {
+			$this->error( 'Block Index File already exists: ' . $entry_index_path );
+			return;
+		}
+
+		// Store the generated class.
+		try {
+			if ( false === file_put_contents( $entry_index_path, $this->get_generated_entry() ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents
+				$this->error( 'Error writing to ' . $entry_index_path );
+			}
+		} catch ( \Throwable $e ) {
+			dump( $e );
+			$this->error( 'There was an error generating: ' . $e->getMessage(), true );
+		}
+
+		$this->log( 'Block Index File created successfully: ' . $entry_index_path );
+	}
+
+	protected function generate_block_edit( string $block_name ) {
+		$entry_edit_path = $this->get_block_path( $block_name ) . '/edit.jsx';
+
+		if ( file_exists( $entry_edit_path ) ) {
+			$this->error( 'Block Edit File already exists: ' . $entry_edit_path );
+			return;
+		}
+
+		// Store the generated class.
+		try {
+			if ( false === file_put_contents( $entry_edit_path, $this->get_generated_edit() ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents
+				$this->error( 'Error writing to ' . $entry_edit_path );
+			}
+		} catch ( \Throwable $e ) {
+			dump( $e );
+			$this->error( 'There was an error generating: ' . $e->getMessage(), true );
+		}
+
+		$this->log( 'Block Edit File created successfully: ' . $entry_edit_path );
+	}
+
+	/**
+	 * Get the base path for the generated blocks folder.
+	 *
+	 * @return string
+	 */
+	protected function get_blocks_path(): string {
+		return "{$this->app->get_base_path()}/src/js/blocks/";
+	}
+
+	/**
+	 * Get the base path for the genereated block.
+	 *
+	 * @return string
+	 */
+	protected function get_block_path( string $name ): string {
+		return $this->get_blocks_path() . '/' . $name;
+	}
+
+	/**
+	 * Used as a callback for a flagged value that we don't want to make required
+	 * but still need to get a value for. Allows us to provide an input prompt, while
+	 * also allowing for a default value.
+	 *
+	 * If an input is not provided, and no default value is provided, we will continue to ask
+	 * until we get a response.
+	 *
+	 * @param string $question The question to ask in the input.
+	 * @param ?string $default The optional default value for the response.
+	 * @return callable A callable to be used as a default value for the `flag` method.
+	 */
+	protected function require_input( string $question, ?string $default = null ): callable {
+		/**
+		 * Callable that handles requiring a response to an input.
+		 *
+		 * @return string The response, or a default value.
+		 */
+		return function() use ($question, $default) {
+			$response = $this->input( $question );
+
+			/**
+			 * If we don't get a response, recurse until we do, unless we have a defined default value.
+			 */
+			if ( empty( $response )	) {
+				return $default ?? ( $this->require_input( $question ) )();
+			}
+
+			return $response;
+		};
 	}
 }
