@@ -166,11 +166,40 @@ class Block_Make_Command extends Generator_Command {
 			$this->error( 'Error creating folder: ' . $block_path, true );
 		}
 
+		$this->generate_block_attributes( $block_name );
 		$this->generate_block_class( $name );
 		$this->generate_block_entry( $block_name );
 		$this->generate_block_edit( $block_name );
 
 		$this->complete_synopsis( $name );
+	}
+
+	/**
+	 * Generate the attributes file for the block.
+	 *
+	 * @param string $block_name The block to generate attributes for.
+	 * @return void
+	 */
+	protected function generate_block_attributes( string $block_name ): void {
+		$entry_attributes_path = $this->get_block_path( $block_name ) . '/attributes.json';
+
+		if ( file_exists( $entry_attributes_path ) ) {
+			$this->error( 'Block Attributes File already exists: ' . $entry_attributes_path );
+			return;
+		}
+
+		// Store the generated class.
+		try {
+			// TODO: Dynamically retrieve attributes to add to block.
+			if ( false === file_put_contents( $entry_attributes_path, \json_encode( [] ) ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents
+				$this->error( 'Error writing to ' . $entry_attributes_path );
+			}
+		} catch ( \Throwable $e ) {
+			dump( $e );
+			$this->error( 'There was an error generating: ' . $e->getMessage(), true );
+		}
+
+		$this->log( 'Block Attributes File created successfully: ' . $entry_attributes_path );
 	}
 
 	/**
@@ -217,10 +246,10 @@ class Block_Make_Command extends Generator_Command {
 		 * Define some block entry specific replacements. If they weren't passed as flags, we
 		 * still need to get that information, so request it as input.
 		 */
-		$category    = Str::lower( $this->flag( 'category', $this->require_input( 'What is a good category for this block? (default: widget)', 'widget' ) ) );
-		$description = $this->flag( 'description', $this->require_input( 'Description: ' ) );
+		$category    = Str::lower( $this->flag( 'category' ) ?: $this->require_input( 'What is a good category for this block? (default: widget)', 'widget' ) );
+		$description = $this->flag( 'description' ) ?: $this->require_input( 'Description: ' );
 		$icon        = Str::lower( $this->flag( 'icon', 'generic' ) );
-		$title       = $this->flag( 'title', $this->require_input( "Block Title (default: {$block_name}) ", $block_name ) );
+		$title       = $this->flag( 'title' ) ?: $this->require_input( "Block Title (default: {$block_name}) ", $block_name );
 
 		$this->replacements->add( '{{ block_category }}', $category );
 		$this->replacements->add( '{{ block_description }}', $description );
@@ -305,23 +334,16 @@ class Block_Make_Command extends Generator_Command {
 	 * @param ?string $default The optional default value for the response.
 	 * @return callable A callable to be used as a default value for the `flag` method.
 	 */
-	protected function require_input( string $question, ?string $default = null ): callable {
+	protected function require_input( string $question, ?string $default = null ): string {
+		$response = $this->input( $question );
+
 		/**
-		 * Callable that handles requiring a response to an input.
-		 *
-		 * @return string The response, or a default value.
-		 */
-		return function() use ( $question, $default ) {
-			$response = $this->input( $question );
+		 * If we don't get a response, recurse until we do, unless we have a defined default value.
+			*/
+		if ( empty( $response ) ) {
+			return $default ?? ( $this->require_input( $question ) );
+		}
 
-			/**
-			 * If we don't get a response, recurse until we do, unless we have a defined default value.
-			 */
-			if ( empty( $response ) ) {
-				return $default ?? ( $this->require_input( $question ) )();
-			}
-
-			return $response;
-		};
+		return $response;
 	}
 }
