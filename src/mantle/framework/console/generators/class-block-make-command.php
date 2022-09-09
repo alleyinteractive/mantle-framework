@@ -77,11 +77,11 @@ class Block_Make_Command extends Generator_Command {
 			'name'        => 'icon',
 			'optional'    => true,
 			'type'        => 'flag',
-		]
+		],
 	];
 
 	/**
-	 * Retrieve the generated class contents.
+	 * Retrieve the generated PHP class contents.
 	 *
 	 * @param string $name Unused.
 	 * @return string
@@ -92,12 +92,22 @@ class Block_Make_Command extends Generator_Command {
 		return $this->replacements->replace( $contents );
 	}
 
+	/**
+	 * Return the generated index.js stub for this block.
+	 *
+	 * @return string
+	 */
 	protected function get_generated_entry(): string {
 		$contents = file_get_contents( __DIR__ . '/stubs/block-entry.stub' ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
 
 		return $this->replacements->replace( $contents );
 	}
 
+	/**
+	 * Return the generated edit.jsx stub for this block.
+	 *
+	 * @return string
+	 */
 	protected function get_generated_edit(): string {
 		$contents = file_get_contents( __DIR__ . '/stubs/block-edit.stub' ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
 
@@ -132,7 +142,7 @@ class Block_Make_Command extends Generator_Command {
 		 * Normalize block namespace and name to lowercase.
 		 */
 		$block_namespace = strtolower( $block_namespace );
-		$block_name = strtolower( $block_name );
+		$block_name      = strtolower( $block_name );
 
 		// Register replacements for the stub files.
 		$this->replacements->add( '{{ class }}', $this->get_class_name( $name ) );
@@ -163,6 +173,12 @@ class Block_Make_Command extends Generator_Command {
 		$this->complete_synopsis( $name );
 	}
 
+	/**
+	 * Generate the PHP file for the Gutenberg block.
+	 *
+	 * @param string $name The name of the class to generate the file for.
+	 * @return void
+	 */
 	protected function generate_block_class( string $name ) {
 		$path = $this->get_folder_path( $name );
 
@@ -190,15 +206,21 @@ class Block_Make_Command extends Generator_Command {
 		$this->log( ( $this->type ?: 'File' ) . ' created successfully: ' . $file_path );
 	}
 
+	/**
+	 * Generate the index.js file for the Gutenberg block.
+	 *
+	 * @param string $block_name The name of the block to generate the file for.
+	 * @return void
+	 */
 	protected function generate_block_entry( string $block_name ) {
 		/**
 		 * Define some block entry specific replacements. If they weren't passed as flags, we
 		 * still need to get that information, so request it as input.
 		 */
-		$category = Str::lower( $this->flag( 'category', $this->require_input( 'What is a good category for this block? (default: widget)', 'widget' ) ) );
+		$category    = Str::lower( $this->flag( 'category', $this->require_input( 'What is a good category for this block? (default: widget)', 'widget' ) ) );
 		$description = $this->flag( 'description', $this->require_input( 'Description: ' ) );
-		$icon = Str::lower( $this->flag( 'icon', 'generic' ) );
-		$title = $this->flag( 'title', $this->require_input( "Block Title (default: {$block_name}) ", $block_name ) );
+		$icon        = Str::lower( $this->flag( 'icon', 'generic' ) );
+		$title       = $this->flag( 'title', $this->require_input( "Block Title (default: {$block_name}) ", $block_name ) );
 
 		$this->replacements->add( '{{ block_category }}', $category );
 		$this->replacements->add( '{{ block_description }}', $description );
@@ -225,7 +247,13 @@ class Block_Make_Command extends Generator_Command {
 		$this->log( 'Block Index File created successfully: ' . $entry_index_path );
 	}
 
-	protected function generate_block_edit( string $block_name ) {
+	/**
+	 * Generate the edit.jsx file for the Gutenberg block.
+	 *
+	 * @param string $block_name The name of the block to generate the file for.
+	 * @return void
+	 */
+	protected function generate_block_edit( string $block_name ): void {
 		$entry_edit_path = $this->get_block_path( $block_name ) . '/edit.jsx';
 
 		if ( file_exists( $entry_edit_path ) ) {
@@ -258,6 +286,7 @@ class Block_Make_Command extends Generator_Command {
 	/**
 	 * Get the base path for the genereated block.
 	 *
+	 * @param string $name The block name.
 	 * @return string
 	 */
 	protected function get_block_path( string $name ): string {
@@ -272,7 +301,7 @@ class Block_Make_Command extends Generator_Command {
 	 * If an input is not provided, and no default value is provided, we will continue to ask
 	 * until we get a response.
 	 *
-	 * @param string $question The question to ask in the input.
+	 * @param string  $question The question to ask in the input.
 	 * @param ?string $default The optional default value for the response.
 	 * @return callable A callable to be used as a default value for the `flag` method.
 	 */
@@ -282,13 +311,13 @@ class Block_Make_Command extends Generator_Command {
 		 *
 		 * @return string The response, or a default value.
 		 */
-		return function() use ($question, $default) {
+		return function() use ( $question, $default ) {
 			$response = $this->input( $question );
 
 			/**
 			 * If we don't get a response, recurse until we do, unless we have a defined default value.
 			 */
-			if ( empty( $response )	) {
+			if ( empty( $response ) ) {
 				return $default ?? ( $this->require_input( $question ) )();
 			}
 
