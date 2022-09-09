@@ -387,7 +387,7 @@ class Block_Make_Command extends Generator_Command {
 	/**
 	 * Get the base path for the genereated block.
 	 *
-	 * @param string $name The block name.
+	 * @param string $namespace The block namespace.
 	 * @return string
 	 */
 	protected function get_view_path( string $namespace ): string {
