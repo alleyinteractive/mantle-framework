@@ -101,6 +101,7 @@
     },
     "scripts": {
         "lint": "@phpcs",
+        "lint:fix": "@phpcbf",
         "merge": "monorepo-builder merge",
         "phpcbf": "phpcbf --standard=./phpcs.xml .",
         "phpcs": "phpcs --standard=./phpcs.xml .",

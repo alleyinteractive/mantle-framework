@@ -82,6 +82,20 @@ class Asset {
 	protected $media = null;
 
 	/**
+	 * Enqueue on frontend.
+	 *
+	 * @var bool
+	 */
+	protected $frontend = true;
+
+	/**
+	 * Enqueue in the admin area.
+	 *
+	 * @var bool
+	 */
+	protected $admin = true;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param string          $type     Asset type (script/style).
@@ -251,12 +265,39 @@ class Asset {
 	}
 
 	/**
+	 * Tell the asset whether or not to load on the frontend.
+	 *
+	 * @param bool $load True if this should load on the frontend of the site.
+	 * @return Asset
+	 */
+	public function frontend( bool $load ): Asset {
+		$this->frontend = $load;
+		return $this;
+	}
+
+	/**
+	 * Tell the asset whether or not to load in the admin area.
+	 *
+	 * @param bool $load True if this should load in the admin area of the site.
+	 * @return Asset
+	 */
+	public function admin( bool $load ): Asset {
+		$this->admin = $load;
+		return $this;
+	}
+
+	/**
 	 * Register the asset with asset manager. If called before
 	 * 'wp_enqueue_scripts', it will defer registration until then.
 	 */
 	public function register(): void {
-		hook_callable( 'wp_enqueue_scripts', fn () => $this->register_asset() );
-		hook_callable( 'admin_enqueue_scripts', fn () => $this->register_asset() );
+		if ( $this->frontend ) {
+			hook_callable( 'wp_enqueue_scripts', fn () => $this->register_asset() );
+		}
+
+		if ( $this->admin ) {
+			hook_callable( 'admin_enqueue_scripts', fn () => $this->register_asset() );
+		}
 	}
 
 	/**

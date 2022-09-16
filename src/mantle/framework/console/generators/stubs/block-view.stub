@@ -1,0 +1,18 @@
+@php
+	$attributes = mantle_get_var( 'attributes' );
+	$content    = mantle_get_var( 'content' );
+@endphp
+
+<p>The current date and time is: {{ date( 'M jS @ g:iA' ) }}</p>
+
+@if( empty( $attributes ) )
+	<p>No attributes were passed to this block</p>
+@else
+	<p>{{ print_r( $attributes, true ) }}</p>
+@endif
+
+@if( empty( $content ) )
+	<p>No content was passed to this block</p>
+@else
+	<p>{!! $content !!}</p>
+@endif
