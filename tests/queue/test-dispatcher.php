@@ -102,16 +102,4 @@ class Test_Dispatcher extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		get_class( $job )::dispatch_if( true, [] );
 		get_class( $job )::dispatch_if( false, [] );
 	}
-
-	// public function test_closure_job() {
-	// 	$job = fn () => true;
-
-	// 	$this->provider
-	// 		->shouldReceive( 'push' )
-	// 		->withArgs( [ $job ] )
-	// 		->once()
-	// 		->andReturn( true );
-
-	// 	( new Dispatcher( $this->app ) )->dispatch( $job );
-	// }
 }
