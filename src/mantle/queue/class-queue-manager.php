@@ -8,7 +8,7 @@
 namespace Mantle\Queue;
 
 use InvalidArgumentException;
-use Mantle\Contracts\Application;
+use Mantle\Contracts\Container;
 use Mantle\Contracts\Queue\Provider;
 use Mantle\Contracts\Queue\Queue_Manager as Queue_Manager_Contract;
 
@@ -17,11 +17,11 @@ use Mantle\Contracts\Queue\Queue_Manager as Queue_Manager_Contract;
  */
 class Queue_Manager implements Queue_Manager_Contract {
 	/**
-	 * Constructor.
+	 * Container instance.
 	 *
-	 * @var Application
+	 * @var Container
 	 */
-	protected $app;
+	protected Container $container;
 
 	/**
 	 * Provider class map.
@@ -40,10 +40,10 @@ class Queue_Manager implements Queue_Manager_Contract {
 	/***
 	 * Constructor.
 	 *
-	 * @param Application $app Application instance.
+	 * @param Container $container Container instance.
 	 */
-	public function __construct( Application $app ) {
-		$this->app = $app;
+	public function __construct( Container $container ) {
+		$this->container = $container;
 	}
 
 	/**
@@ -88,7 +88,11 @@ class Queue_Manager implements Queue_Manager_Contract {
 	 * @return string|null
 	 */
 	protected function get_default_driver(): ?string {
-		return $this->app['config']['queue.default'] ?? null;
+		if ( ! isset( $this->container['config'] ) ) {
+			return null;
+		}
+
+		return $this->container['config']['queue.default'] ?? 'wordpress';
 	}
 
 	/**
@@ -106,7 +110,7 @@ class Queue_Manager implements Queue_Manager_Contract {
 		}
 
 		if ( ! is_object( $this->providers[ $provider ] ) ) {
-			$this->connections[ $provider ] = $this->app->make( $this->providers[ $provider ] );
+			$this->connections[ $provider ] = $this->container->make( $this->providers[ $provider ] );
 		} else {
 			$this->connections[ $provider ] = $this->providers[ $provider ];
 		}

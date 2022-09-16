@@ -1,16 +1,16 @@
 <?php
 /**
- * Wp_Cron_Scheduler class file.
+ * Scheduler class file.
  *
  * @package Mantle
  */
 
-namespace Mantle\Queue;
+namespace Mantle\Queue\Providers\WordPress;
 
 /**
  * WordPress Cron Scheduler
  */
-class Wp_Cron_Scheduler {
+class Scheduler {
 	/**
 	 * Cron event.
 	 *
@@ -56,6 +56,19 @@ class Wp_Cron_Scheduler {
 	}
 
 	/**
+	 * Unschedule the next run of the cron for a queue.
+	 *
+	 * @param string $queue Queue name.
+	 */
+	public static function unschedule( string $queue = null ): void {
+		if ( ! $queue ) {
+			$queue = 'default';
+		}
+
+		\wp_clear_scheduled_hook( static::EVENT, [ $queue ] );
+	}
+
+	/**
 	 * Schedule the next run of a queue.
 	 *
 	 * Checks if there are items remaining in the queue before running. Uses the
@@ -69,20 +82,23 @@ class Wp_Cron_Scheduler {
 			[
 				'fields'              => 'ids',
 				'ignore_sticky_posts' => true,
-				'post_type'           => Wp_Cron_Provider::OBJECT_NAME,
+				'post_type'           => Provider::OBJECT_NAME,
 				'posts_per_page'      => 1,
 				'suppress_filters'    => false,
 				'post_status'         => 'publish',
 				'tax_query'           => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 					[
-						'taxonomy' => Wp_Cron_Provider::OBJECT_NAME,
-						'terms'    => Wp_Cron_Provider::get_queue_term_id( $queue ),
+						'taxonomy' => Provider::OBJECT_NAME,
+						'terms'    => Provider::get_queue_term_id( $queue ),
 					],
 				],
 			]
 		);
 
+		// Ensure the queue job isn't scheduled if there are no items in the queue.
 		if ( empty( $has_remaining ) ) {
+			static::unschedule( $queue );
+
 			return false;
 		}
 
@@ -90,7 +106,7 @@ class Wp_Cron_Scheduler {
 			$queue = 'default';
 		}
 
-		$delay = mantle_config( 'queue.wordpress.delay', [] );
+		$delay = config( 'queue.wordpress.delay', [] );
 
 		// Support queue-specific delay.
 		if ( is_array( $delay ) ) {

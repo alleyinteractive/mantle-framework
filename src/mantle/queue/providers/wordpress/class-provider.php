@@ -5,12 +5,14 @@
  * @package Mantle
  */
 
-namespace Mantle\Queue;
+namespace Mantle\Queue\Providers\WordPress;
 
 use InvalidArgumentException;
-use Mantle\Contracts\Queue\Provider;
+use Laravel\SerializableClosure\SerializableClosure;
+use Mantle\Contracts\Queue\Provider as Provider_Contract;
 use Mantle\Contracts\Queue\Queue_Manager;
 use Mantle\Support\Collection;
+use RuntimeException;
 
 use function Mantle\Support\Helpers\collect;
 
@@ -23,13 +25,20 @@ use function Mantle\Support\Helpers\collect;
  * @todo Add support for one off cron events that should have their own cron scheduled.
  * @todo Add support for different queue names.
  */
-class Wp_Cron_Provider implements Provider {
+class Provider implements Provider_Contract {
 	/**
 	 * Post/taxonomy name for the internal queue.
 	 *
 	 * @var string
 	 */
 	public const OBJECT_NAME = 'mantle_queue';
+
+	/**
+	 * Post status for failed jobs.
+	 *
+	 * @var string
+	 */
+	public const POST_STATUS_FAILED = 'failed';
 
 	/**
 	 * Queue of cron jobs to process.
@@ -51,8 +60,17 @@ class Wp_Cron_Provider implements Provider {
 
 		\register_taxonomy(
 			static::OBJECT_NAME,
+			static::OBJECT_NAME,
 			[
 				'public' => false,
+			]
+		);
+
+		\register_post_status(
+			static::POST_STATUS_FAILED,
+			[
+				'internal' => true,
+				'public'   => false,
 			]
 		);
 
@@ -79,7 +97,7 @@ class Wp_Cron_Provider implements Provider {
 	/**
 	 * Push a job to the queue.
 	 *
-	 * @todo Support priority sorting with `menu_order`.
+	 * @throws RuntimeException Thrown on error inserting the job into the database.
 	 *
 	 * @param mixed $job Job instance.
 	 * @return bool
@@ -89,6 +107,10 @@ class Wp_Cron_Provider implements Provider {
 		if ( ! \did_action( 'init' ) ) {
 			static::$pending_queue[] = func_get_args();
 			return true;
+		}
+
+		if ( $job instanceof SerializableClosure ) {
+			$job = serialize( $job ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
 		}
 
 		$queue  = $job->queue ?? 'default';
@@ -104,13 +126,13 @@ class Wp_Cron_Provider implements Provider {
 		);
 
 		if ( is_wp_error( $insert ) ) {
-			return false;
+			throw new RuntimeException( 'Error adding job to queue: ' . $insert->get_error_message() );
 		}
 
 		wp_set_object_terms( $insert, static::get_queue_term_id( $queue ), static::OBJECT_NAME, false );
 
 		// Ensure that the next cron event is scheduled for this queue.
-		Wp_Cron_Scheduler::schedule( $queue );
+		Scheduler::schedule( $queue );
 
 		return true;
 	}
@@ -148,9 +170,7 @@ class Wp_Cron_Provider implements Provider {
 
 		return collect( $post_ids )
 			->map(
-				function( int $post_id ) {
-					return new Wp_Cron_Job( \get_post_meta( $post_id, '_mantle_queue', true ), $post_id );
-				}
+				fn( int $post_id ) => new Queue_Worker_Job( \get_post_meta( $post_id, '_mantle_queue', true ), $post_id ),
 			);
 	}
 

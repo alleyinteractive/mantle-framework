@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Providers;
+namespace Mantle\Queue;
 
 use Mantle\Contracts\Queue\Dispatcher as Dispatcher_Contract;
 use Mantle\Contracts\Queue\Queue_Manager as Queue_Manager_Contract;
@@ -15,10 +15,9 @@ use Mantle\Queue\Events\Job_Processed;
 use Mantle\Queue\Events\Run_Complete;
 use Mantle\Queue\Queue_Manager;
 use Mantle\Queue\Worker;
-use Mantle\Queue\Wp_Cron_Job;
-use Mantle\Queue\Wp_Cron_Provider;
-use Mantle\Queue\Wp_Cron_Scheduler;
 use Mantle\Support\Service_Provider;
+
+use function Mantle\Support\Helpers\tap;
 
 /**
  * Queue Service Provider
@@ -33,9 +32,10 @@ class Queue_Service_Provider extends Service_Provider {
 			'queue',
 			function ( $app ) {
 				// Register the Queue Manager with the supported providers when invoked.
-				$manager = new Queue_Manager( $app );
-				$this->register_providers( $manager );
-				return $manager;
+				return tap(
+					new Queue_Manager( $app ),
+					fn ( $manager ) => $this->register_providers( $manager ),
+				);
 			}
 		);
 
@@ -78,32 +78,18 @@ class Queue_Service_Provider extends Service_Provider {
 	 * @param Queue_Manager_Contract $manager Queue Manager.
 	 */
 	protected function register_wp_cron_provider( Queue_Manager_Contract $manager ) {
-		$manager->add_provider( 'wordpress', Wp_Cron_Provider::class );
+		$manager->add_provider( 'wordpress', Providers\WordPress\Provider::class );
 
 		// Setup the WordPress cron scheduler.
-		\add_action( 'init', [ Wp_Cron_Provider::class, 'on_init' ] );
-		\add_action( Wp_Cron_Scheduler::EVENT, [ Wp_Cron_Scheduler::class, 'on_queue_run' ] );
-
-		// Add the event listener to remove the queue item.
-		$this->app['events']->listen(
-			Job_Processed::class,
-			function( Job_Processed $event ) {
-				if ( $event->job instanceof Wp_Cron_Job ) {
-					$queue_post_id = $event->job->get_post_id();
-
-					if ( $queue_post_id ) {
-						wp_delete_post( $queue_post_id, true );
-					}
-				}
-			}
-		);
+		\add_action( 'init', [ Providers\WordPress\Provider::class, 'on_init' ] );
+		\add_action( Providers\WordPress\Scheduler::EVENT, [ Providers\WordPress\Scheduler::class, 'on_queue_run' ] );
 
 		// Add the event listener to schedule the next cron run.
 		$this->app['events']->listen(
 			Run_Complete::class,
-			function( Run_Complete $event ) {
-				if ( $event->provider instanceof Wp_Cron_Provider ) {
-					Wp_Cron_Scheduler::schedule_next_run( $event->queue );
+			function( Events\Run_Complete $event ) {
+				if ( $event->provider instanceof Providers\WordPress\Provider ) {
+					Providers\WordPress\Scheduler::schedule_next_run( $event->queue );
 				}
 			}
 		);

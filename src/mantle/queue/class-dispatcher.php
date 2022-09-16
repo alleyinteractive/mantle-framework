@@ -7,6 +7,7 @@
 
 namespace Mantle\Queue;
 
+use Closure;
 use Mantle\Contracts\Container;
 use Mantle\Contracts\Queue\Can_Queue;
 use Mantle\Contracts\Queue\Queue_Manager;

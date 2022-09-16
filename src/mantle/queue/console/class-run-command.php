@@ -8,7 +8,7 @@
 namespace Mantle\Queue\Console;
 
 use Mantle\Console\Command;
-use Mantle\Contracts\Application;
+use Mantle\Contracts\Container;
 use Mantle\Queue\Events\Job_Processed;
 use Mantle\Queue\Events\Job_Processing;
 use Mantle\Queue\Events\Run_Complete;
@@ -60,19 +60,19 @@ class Run_Command extends Command {
 	];
 
 	/**
-	 * Application instance.
+	 * Container instance.
 	 *
-	 * @var Application
+	 * @var Container
 	 */
-	protected $app;
+	protected Container $container;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param Application $app Application instance.
+	 * @param Container $container Container instance.
 	 */
-	public function __construct( Application $app ) {
-		$this->app = $app;
+	public function __construct( Container $container ) {
+		$this->container = $container;
 	}
 
 	/**
@@ -85,36 +85,36 @@ class Run_Command extends Command {
 		[ $queue ] = $args;
 
 		// Register the event listeners to pipe the events back to the console.
-		$this->app['events']->listen(
+		$this->container['events']->listen(
 			Run_Start::class,
 			function( Run_Start $event ) {
 				$this->log( 'Run started: ' . $event->queue );
 			}
 		);
 
-		$this->app['events']->listen(
+		$this->container['events']->listen(
 			Job_Processing::class,
 			function( Job_Processing $job ) {
 				$this->log( 'Queue item started: ' . $job->get_id() );
 			}
 		);
 
-		$this->app['events']->listen(
+		$this->container['events']->listen(
 			Job_Processed::class,
 			function( Job_Processed $job ) {
 				$this->log( 'Queue item complete: ' . $job->get_id() );
 			}
 		);
 
-		$this->app['events']->listen(
+		$this->container['events']->listen(
 			Run_Complete::class,
 			function( Run_Complete $event ) {
 				$this->log( 'Run complete: ' . $event->queue );
 			}
 		);
 
-		$this->app['queue.worker']->run(
-			(int) $this->flag( 'count', (int) $this->app['config']['queue.batch_size'] ?? 1 ),
+		$this->container['queue.worker']->run(
+			(int) $this->flag( 'count', (int) $this->container['config']['queue.batch_size'] ?? 1 ),
 			$queue
 		);
 	}

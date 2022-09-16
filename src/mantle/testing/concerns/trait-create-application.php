@@ -67,7 +67,7 @@ trait Create_Application {
 				'debug'     => true,
 				'providers' => [
 					\Mantle\Framework\Providers\Model_Service_Provider::class,
-					\Mantle\Framework\Providers\Queue_Service_Provider::class,
+					\Mantle\Queue\Queue_Service_Provider::class,
 					\Mantle\Database\Factory_Service_Provider::class,
 					\Mantle\Framework\Providers\Route_Service_Provider::class,
 					\Mantle\Filesystem\Filesystem_Service_Provider::class,
@@ -76,7 +76,7 @@ trait Create_Application {
 				],
 			],
 			'queue'      => [
-				'batch_size' => 100,
+				'batch_size' => 25,
 				'default'    => 'wordpress',
 			],
 			'logging'    => [

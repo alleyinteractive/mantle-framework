@@ -7,6 +7,9 @@ use Mantle\Contracts\Queue\Provider;
 use Mantle\Queue\Queue_Manager;
 use Mockery as m;
 
+/**
+ * @group queue
+ */
 class Test_Queue_Manager extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	public function test_default_connection() {
 		$provider = m::mock( Provider::class );

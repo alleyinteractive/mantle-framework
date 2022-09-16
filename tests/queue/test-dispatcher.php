@@ -7,13 +7,15 @@ use Mantle\Contracts\Queue\Can_Queue;
 use Mantle\Contracts\Queue\Job;
 use Mantle\Contracts\Queue\Provider;
 use Mantle\Facade\Facade;
-use Mantle\Framework\Providers\Queue_Service_Provider;
+use Mantle\Queue\Queue_Service_Provider;
 use Mantle\Queue\Dispatchable;
 use Mantle\Queue\Dispatcher;
-use Mantle\Queue\Pending_Dispatch;
 use Mantle\Queue\Queue_Manager;
 use Mockery as m;
 
+/**
+ * @group queue
+ */
 class Test_Dispatcher extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	/**
 	 * Provider instance.
@@ -86,7 +88,6 @@ class Test_Dispatcher extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 			->with( m::type( get_class( $job ) ) )
 			->once();
 
-		// $job_class = get_class( $job );
 		get_class( $job )::dispatch( [] );
 	}
 

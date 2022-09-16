@@ -4,7 +4,7 @@ namespace Mantle\Tests\Queue;
 use Mantle\Framework\Application;
 use Mantle\Config\Repository;
 use Mantle\Contracts\Queue\Provider;
-use Mantle\Framework\Providers\Queue_Service_Provider;
+use Mantle\Queue\Queue_Service_Provider;
 use Mantle\Queue\Events;
 use Mantle\Queue\Events\Run_Complete;
 use Mantle\Queue\Events\Run_Start;
@@ -15,6 +15,9 @@ use Mockery\Adapter\Phpunit\MockeryTestCase;
 
 use function Mantle\Support\Helpers\collect;
 
+/**
+ * @group queue
+ */
 class Test_Worker extends MockeryTestCase {
 
 	/**
@@ -90,11 +93,26 @@ class Test_Worker extends MockeryTestCase {
 		);
 	}
 
+	public function test_closure_job() {
+		$job = fn () => $_SERVER['__closure_run'] = true;
+
+		$this->app['queue']->get_provider( 'test' )->push( $job );
+
+		$this->app['queue.worker']->run( 1 );
+
+		$this->assertTrue( $_SERVER['__closure_run'] );
+
+		$this->app['queue.worker']->run( 1 );
+	}
+
 	protected function get_mock_job( $id, $should_run = true ) {
 		$mock_job = m::mock( Job::class );
 
 		if ( $should_run ) {
-			$mock_job->shouldReceive( 'fire' )->once();
+			$mock_job->shouldReceive( 'fire' )->once()->andReturn( true );
+			$mock_job->shouldReceive( 'delete' )->once();
+			$mock_job->shouldReceive( 'has_failed' )->once()->andReturn( false );
+			$mock_job->shouldNotReceive( 'failed' );
 		}
 
 		$mock_job->shouldReceive( 'get_id' )->andReturn( $id );

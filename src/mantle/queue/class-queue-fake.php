@@ -1,9 +1,20 @@
 <?php
-namespace Mantle\Tests\Queue;
+/**
+ * Queue_Fake class file
+ *
+ * @package Mantle
+ */
+
+namespace Mantle\Queue;
 
 use Mantle\Queue\Queue_Manager;
 use PHPUnit\Framework\Assert as PHPUnit;
 
+/**
+ * Queue Fake
+ *
+ * Used as a fake provider to perform assertions against.
+ */
 class Queue_Fake extends Queue_Manager {
 	/**
 	 * Assert if a job was pushed based on a truth-test callback.
@@ -14,7 +25,8 @@ class Queue_Fake extends Queue_Manager {
 	 */
 	public function assertPushed( $job, $callback = null ) {
 		if ( is_numeric( $callback ) ) {
-			return $this->assertPushedTimes( $job, $callback );
+			$this->assertPushedTimes( $job, $callback );
+			return;
 		}
 
 		PHPUnit::assertTrue(
