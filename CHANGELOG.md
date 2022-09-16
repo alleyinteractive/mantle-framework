@@ -7,10 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.6.0 - 2022-09-16
+
 - Ensure tests have a permalink structure by default.
 - Adding only_children() method to collections.
 - Update to `alleyinteractive/composer-wordpress-autoloader` v1.0.0.
-- Overhaul queue system, add support for closures to be dispatched to the queue.
+- Overhaul queue system, add support for closures to be dispatched to the queue asynchronously.
+- Remove Caper package in favor of https://github.com/alleyinteractive/wp-caper.
 
 ## v0.5.4 - 2022-08-04
 
