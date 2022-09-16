@@ -411,7 +411,7 @@ class Block_Make_Command extends Generator_Command {
 
 		/**
 		 * If we don't get a response, recurse until we do, unless we have a defined default value.
-			*/
+		 */
 		if ( empty( $response ) ) {
 			return $default ?? ( $this->require_input( $question ) );
 		}
