@@ -46,7 +46,7 @@ class Closure_Job implements Can_Queue {
 	/**
 	 * Constructor.
 	 *
-	 * @param SerializableClosure $closure Serialzied closure to wrap.
+	 * @param SerializableClosure $closure Serialized closure to wrap.
 	 */
 	public function __construct( SerializableClosure $closure ) {
 		$this->closure = $closure;
