@@ -86,14 +86,21 @@ class Asset {
 	 *
 	 * @var bool
 	 */
-	protected $frontend = true;
+	protected bool $frontend = true;
 
 	/**
 	 * Enqueue in the admin area.
 	 *
 	 * @var bool
 	 */
-	protected $admin = true;
+	protected bool $admin = false;
+
+	/**
+	 * Enqueue in the block editor area.
+	 *
+	 * @var bool
+	 */
+	protected bool $block_editor = false;
 
 	/**
 	 * Constructor.
@@ -298,6 +305,17 @@ class Asset {
 	}
 
 	/**
+	 * Tell the asset whether or not to load in the block editor
+	 *
+	 * @param bool $load True if this should load in the admin area of the site.
+	 * @return Asset
+	 */
+	public function block_editor( bool $load ): Asset {
+		$this->block_editor = $load;
+		return $this;
+	}
+
+	/**
 	 * Register the asset with asset manager. If called before
 	 * 'wp_enqueue_scripts', it will defer registration until then.
 	 */
@@ -308,6 +326,10 @@ class Asset {
 
 		if ( $this->admin ) {
 			hook_callable( 'admin_enqueue_scripts', fn () => $this->register_asset() );
+		}
+
+		if ( $this->block_editor ) {
+			hook_callable( 'enqueue_block_editor_assets', fn () => $this->register_asset() );
 		}
 	}
 
