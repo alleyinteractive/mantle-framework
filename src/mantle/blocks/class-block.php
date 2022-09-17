@@ -361,12 +361,14 @@ abstract class Block implements Block_Contract {
 			)
 			->dependencies( $this->get_editor_script_dependencies() )
 			->version( $this->get_editor_script_version() )
-			->frontend( false );
+			->frontend( false )
+			->block_editor( true );
 
 		if ( ! empty( $this->editor_style ) ) {
 			asset()
 				->style( $this->get_editor_style_handle(), $this->editor_style )
-				->frontend( false );
+				->frontend( false )
+				->block_editor( true );
 		}
 	}
 

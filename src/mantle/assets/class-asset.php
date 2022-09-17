@@ -307,7 +307,7 @@ class Asset {
 	/**
 	 * Tell the asset whether or not to load in the block editor
 	 *
-	 * @param bool $load True if this should load in the admin area of the site.
+	 * @param bool $load True if this should load in the block editor.
 	 * @return Asset
 	 */
 	public function block_editor( bool $load ): Asset {
