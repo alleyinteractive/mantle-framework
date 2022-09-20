@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.6.1 - 2022-09-20
+
+- Adding alleyinteractive/wp-filter-side-effects to mantle-framework/database
+
 ## v0.6.0 - 2022-09-16
 
 - Ensure tests have a permalink structure by default.
