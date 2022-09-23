@@ -15,31 +15,104 @@ use Mantle\Support\Str;
  */
 class Mix {
 	/**
+	 * Storage of parsed Mix manifests.
+	 *
+	 * @var array
+	 */
+	protected static array $manifests = [];
+
+	/**
+	 * Manifest directory read from.
+	 *
+	 * @var string
+	 */
+	protected string $manifest_directory;
+
+	/**
+	 * Parsed manifest for the current instance.
+	 *
+	 * @var array
+	 */
+	protected array $manifest;
+
+	/**
+	 * Flag if HMR is enabled.
+	 *
+	 * @var bool
+	 */
+	protected bool $hmr = false;
+
+	/**
+	 * Read a manifest file from disk.
+	 *
+	 * @throws Mix_File_Not_Found Thrown on missing file.
+	 *
+	 * @param string $manifest_path Manifest file path.
+	 * @return array
+	 */
+	protected static function manifest( string $manifest_path ): array {
+		if ( isset( static::$manifests[ $manifest_path ] ) ) {
+			return static::$manifests[ $manifest_path ];
+		}
+
+		if ( ! file_exists( $manifest_path ) ) {
+			throw new Mix_File_Not_Found( $manifest_path );
+		}
+
+		static::$manifests[ $manifest_path ] = json_decode( file_get_contents( $manifest_path ), true ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
+
+		return static::$manifests[ $manifest_path ];
+	}
+
+	/**
+	 * Constructor.
+	 *
+	 * @param string $manifest_directory Manifest directory to read from, optional.
+	 */
+	public function __construct( string $manifest_directory = null ) {
+		$this->read( $manifest_directory );
+	}
+
+	/**
+	 * Read a manifest from a directory.
+	 *
+	 * @param string $manifest_directory Manifest directory to read from, optional.
+	 * @return string
+	 */
+	public function read( string $manifest_directory = null ) {
+		$asset_path = config( 'asset.path', 'build' );
+
+		if ( ! $manifest_directory ) {
+			$manifest_directory = base_path( $asset_path );
+		}
+
+		$this->manifest_directory = $manifest_directory;
+
+		// Skip if HMR is enabled.
+		if ( is_file( $manifest_directory . '/hot' ) ) {
+			$this->hmr = true;
+			return;
+		}
+
+		$manifest_name = config( 'assets.mix.manifest_name', 'mix-manifest.json' );
+
+		$this->manifest = static::manifest( "{$manifest_directory}/{$manifest_name}" );
+	}
+
+	/**
 	 * Get the path to a versioned Mix file.
 	 *
 	 * @param  string $path Mix file path.
-	 * @param  string $manifest_directory Manifest directory, defaults to application.
 	 * @return string
 	 *
 	 * @throws Mix_File_Not_Found Thrown on missing manifest or asset.
 	 */
-	public function __invoke( string $path, ?string $manifest_directory = null ): string {
-		static $manifests = [];
-
-		if ( ! Str::starts_with( $path, '/' ) ) {
-			$path = "/{$path}";
-		}
-
-		if ( $manifest_directory && ! Str::starts_with( $manifest_directory, '/' ) ) {
-			$manifest_directory = "/{$manifest_directory}";
-		} else {
-			// Set the default manifest directory.
-			$manifest_directory = config( 'assets.path', 'build' );
-		}
+	public function path( string $path ): string {
+		$asset_path = config( 'asset.path', 'build' );
 
 		// Pass directly to HMR.
-		if ( is_file( base_path( $manifest_directory . '/hot' ) ) ) {
-			$url = rtrim( file_get_contents( base_path( $manifest_directory . '/hot' ) ) );
+		if ( $this->hmr ) {
+			$url = rtrim( file_get_contents( $this->manifest_directory . '/hot' ) );
 
 			if ( Str::starts_with( $url, [ 'http://', 'https://' ] ) ) {
 				return Str::after( $url, ':' ) . $path;
@@ -48,19 +121,7 @@ class Mix {
 			return "//localhost:8080/{$path}";
 		}
 
-		$manifest_path = base_path( "{$manifest_directory}/mix-manifest.json" );
-
-		if ( ! isset( $manifests[ $manifest_path ] ) ) {
-			if ( ! is_file( $manifest_path ) ) {
-				throw new Mix_File_Not_Found( 'The Mix manifest does not exist.' );
-			}
-
-			$manifests[ $manifest_path ] = json_decode( file_get_contents( $manifest_path ), true ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
-		}
-
-		$manifest = $manifests[ $manifest_path ];
-
-		if ( ! isset( $manifest[ $path ] ) ) {
+		if ( ! isset( $this->manifest[ $path ] ) ) {
 			$exception = new Mix_File_Not_Found( "Unable to locate Mix file: {$path}." );
 
 			if ( ! app( 'config' )->get( 'app.debug' ) ) {
@@ -78,6 +139,21 @@ class Mix {
 			$asset_base_url = '/';
 		}
 
-		return $asset_base_url . $manifest_directory . $manifest[ $path ];
+		return $asset_base_url . $asset_path . $this->manifest[ $path ];
+	}
+
+	/**
+	 * Retrieve the path to an asset when invoked.
+	 *
+	 * @param string $path Asset path.
+	 * @param string $manifest_directory Manifest directory, optional.
+	 * @return string
+	 */
+	public function __invoke( string $path, ?string $manifest_directory = null ): string {
+		if ( $manifest_directory ) {
+			return ( new Mix( $manifest_directory ) )->path( $path );
+		}
+
+		return $this->path( $path, $manifest_directory );
 	}
 }
