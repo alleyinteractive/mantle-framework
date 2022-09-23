@@ -86,14 +86,21 @@ class Asset {
 	 *
 	 * @var bool
 	 */
-	protected $frontend = true;
+	protected bool $frontend = true;
 
 	/**
 	 * Enqueue in the admin area.
 	 *
 	 * @var bool
 	 */
-	protected $admin = true;
+	protected bool $admin = true;
+
+	/**
+	 * Enqueue in the block editor area.
+	 *
+	 * @var bool
+	 */
+	protected bool $block_editor = false;
 
 	/**
 	 * Constructor.
@@ -164,6 +171,17 @@ class Asset {
 			$this->load_method = Load_Method::DEFER;
 		}
 
+		return $this;
+	}
+
+	/**
+	 * Condition to load the asset.
+	 *
+	 * @param string|array $condition Condition to load.
+	 * @return static
+	 */
+	public function condition( $condition ): Asset {
+		$this->condition = $condition;
 		return $this;
 	}
 
@@ -276,6 +294,18 @@ class Asset {
 	}
 
 	/**
+	 * Tell the asset to only load on the front-end
+	 *
+	 * @return Asset
+	 */
+	public function only_frontend(): Asset {
+		return $this
+			->frontend( true )
+			->admin( false )
+			->block_editor( false );
+	}
+
+	/**
 	 * Tell the asset whether or not to load in the admin area.
 	 *
 	 * @param bool $load True if this should load in the admin area of the site.
@@ -284,6 +314,41 @@ class Asset {
 	public function admin( bool $load ): Asset {
 		$this->admin = $load;
 		return $this;
+	}
+
+	/**
+	 * Tell the asset to only load in the admin area.
+	 *
+	 * @return Asset
+	 */
+	public function only_admin(): Asset {
+		return $this
+			->frontend( false )
+			->admin( true )
+			->block_editor( false );
+	}
+
+	/**
+	 * Tell the asset whether or not to load in the block editor
+	 *
+	 * @param bool $load True if this should load in the block editor.
+	 * @return Asset
+	 */
+	public function block_editor( bool $load ): Asset {
+		$this->block_editor = $load;
+		return $this;
+	}
+
+	/**
+	 * Tell the asset to only load in the block editor.
+	 *
+	 * @return Asset
+	 */
+	public function only_block_editor(): Asset {
+		return $this
+			->frontend( false )
+			->admin( false )
+			->block_editor( true );
 	}
 
 	/**
@@ -297,6 +362,10 @@ class Asset {
 
 		if ( $this->admin ) {
 			hook_callable( 'admin_enqueue_scripts', fn () => $this->register_asset() );
+		}
+
+		if ( $this->block_editor ) {
+			hook_callable( 'enqueue_block_editor_assets', fn () => $this->register_asset() );
 		}
 	}
 

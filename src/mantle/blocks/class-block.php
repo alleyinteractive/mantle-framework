@@ -353,7 +353,6 @@ abstract class Block implements Block_Contract {
 	 * @return void
 	 */
 	protected function register_editor_assets(): void {
-
 		asset()
 			->script(
 				$this->get_editor_script_handle(),
@@ -361,12 +360,12 @@ abstract class Block implements Block_Contract {
 			)
 			->dependencies( $this->get_editor_script_dependencies() )
 			->version( $this->get_editor_script_version() )
-			->frontend( false );
+			->only_block_editor();
 
 		if ( ! empty( $this->editor_style ) ) {
 			asset()
 				->style( $this->get_editor_style_handle(), $this->editor_style )
-				->frontend( false );
+				->only_block_editor();
 		}
 	}
 
@@ -379,13 +378,13 @@ abstract class Block implements Block_Contract {
 		if ( ! empty( $this->frontend_script ) ) {
 			asset()
 				->script( $this->get_frontend_script_handle(), $this->frontend_script )
-				->admin( false );
+				->only_frontend();
 		}
 
 		if ( ! empty( $this->frontend_style ) ) {
 			asset()
 				->style( $this->get_frontend_style_handle(), $this->frontend_style )
-				->admin( false );
+				->only_frontend();
 		}
 	}
 
