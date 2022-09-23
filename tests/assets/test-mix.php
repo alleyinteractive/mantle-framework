@@ -75,4 +75,28 @@ class Test_Mix extends Test_Case {
 			$mix->path( '/app.css' )
 		);
 	}
+
+	public function test_read_asset_dependencies() {
+		$this->assertEquals(
+			[ 'wp-data' ],
+			$this->mix->dependencies( '/blocks-example-block.js' ),
+		);
+
+		$this->assertEquals(
+			[ 'wp-data' ],
+			$this->mix->dependencies( '/blocks-example-block' ),
+		);
+	}
+
+	public function test_read_missing_asset_dependencies() {
+		$this->assertEquals(
+			[],
+			$this->mix->dependencies( '/unknown-entry.js' ),
+		);
+
+		$this->assertEquals(
+			[],
+			$this->mix->dependencies( '/unknown-entry' ),
+		);
+	}
 }

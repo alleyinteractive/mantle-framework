@@ -143,6 +143,49 @@ class Mix {
 	}
 
 	/**
+	 * Retrieve the dependencies for an asset.
+	 *
+	 * @param string $path Asset path.
+	 * @return array
+	 */
+	public function dependencies( string $path ): array {
+		return $this->details( $path )['dependencies'] ?? [];
+	}
+
+	/**
+	 * Retrieve the version for an asset.
+	 *
+	 * @param string $path Asset path.
+	 * @return array
+	 */
+	public function version( string $path ): array {
+		return $this->details( $path )['version'] ?? [];
+	}
+
+	/**
+	 * Retrieve an asset file from @wordpress/dependency-extraction-webpack-plugin.
+	 *
+	 * @param string $path Asset path.
+	 * @return array
+	 */
+	protected function details( string $path ): array {
+		// Attempt to cleanup the asset "path" to match the manifest name for the
+		// asset file. The asset file is a PHP file with the asset's path suffixed
+		// with `.asset.php`.
+		if ( Str::contains( $path, '.' ) ) {
+			$path = pathinfo( $path, PATHINFO_FILENAME );
+		}
+
+		$details_file = "{$this->manifest_directory}/{$path}.asset.php";
+
+		if ( file_exists( $details_file ) && 0 === validate_file( $details_file ) ) {
+			return require $details_file;
+		}
+
+		return [];
+	}
+
+	/**
 	 * Retrieve the path to an asset when invoked.
 	 *
 	 * @param string $path Asset path.
