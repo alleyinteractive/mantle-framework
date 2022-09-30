@@ -1,6 +1,7 @@
 {
     "name": "mantle-framework/testing",
     "description": "The Mantle Framework Testing Package",
+    "keywords": ["testing", "mantle"],
     "type": "project",
     "require": {
         "php": "^7.4|^8.0",
