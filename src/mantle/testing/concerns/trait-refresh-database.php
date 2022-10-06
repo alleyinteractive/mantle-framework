@@ -14,7 +14,7 @@ trait Refresh_Database {
 	/**
 	 * Routines to run before setupBeforeClass.
 	 */
-	public static function refresh_database_pre_setup_before_class() {
+	public static function refresh_database_setup_before_class() {
 		global $wpdb;
 
 		$wpdb->suppress_errors = false;
