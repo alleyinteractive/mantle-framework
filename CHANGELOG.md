@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v0.7.0 - 2022-10-06
+
+- Asset assertions and improvements.
+- Support for mix pulling in dependencies.
+- Cast the item to an array inside of only_children.
+- Adding keywords to trigger --dev.
+- Separate requires based on what they include.
+- Compatibility layer for Refresh_Database and Installs_Wordpress.
+
 ## v0.6.1 - 2022-09-20
 
 - Adding alleyinteractive/wp-filter-side-effects to mantle-framework/database
