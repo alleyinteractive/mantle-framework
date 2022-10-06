@@ -6,14 +6,14 @@
         "php": "^7.4|^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
         "alleyinteractive/wp-filter-side-effects": "^1.0",
-        "mantle-framework/contracts": "^0.6",
-        "mantle-framework/support": "^0.6",
+        "mantle-framework/contracts": "^0.7",
+        "mantle-framework/support": "^0.7",
         "psr/container": "^1.1.1 || ^2.0.1",
         "symfony/finder": "^5.3"
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "0.6-dev"
+            "dev-main": "0.7-dev"
         },
         "wordpress-autoloader": {
             "autoload": {
