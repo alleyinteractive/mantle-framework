@@ -84,10 +84,7 @@ abstract class Test_Case extends BaseTestCase {
 	 */
 	public static function setUpBeforeClass(): void {
 		static::register_traits();
-		if ( isset( static::$test_uses[ Refresh_Database::class ] ) ) {
-			static::refresh_database_pre_setup_before_class();
-		}
-
+		
 		if ( ! empty( static::$test_uses ) ) {
 
 			static::get_test_case_traits()
