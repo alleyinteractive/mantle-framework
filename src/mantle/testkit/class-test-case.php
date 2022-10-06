@@ -8,6 +8,7 @@
 namespace Mantle\Testkit;
 
 use Mantle\Testkit\Concerns\Create_Application;
+use Mantle\Testkit\Concerns\Installs_Wordpress;
 use Mantle\Testing\Test_Case as Testing_Test_Case;
 
 /**
@@ -18,4 +19,14 @@ use Mantle\Testing\Test_Case as Testing_Test_Case;
  */
 abstract class Test_Case extends Testing_Test_Case {
 	use Create_Application;
+	
+	protected static function get_priority_traits(): array {
+		$parent_priorities = parent::get_priority_traits();
+		
+		$priorities = [
+			Installs_Wordpress::class,
+		];
+		
+		return array_merge( $priorities, $parent_priorities );
+	}
 }
