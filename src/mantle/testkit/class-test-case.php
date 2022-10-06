@@ -20,6 +20,11 @@ use Mantle\Testing\Test_Case as Testing_Test_Case;
 abstract class Test_Case extends Testing_Test_Case {
 	use Create_Application;
 	
+	/**
+	 * Add Testkit specific traits to Priority list.
+	 *
+	 * @return array
+	 */
 	protected static function get_priority_traits(): array {
 		$parent_priorities = parent::get_priority_traits();
 		
