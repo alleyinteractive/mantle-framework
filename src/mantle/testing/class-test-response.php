@@ -315,7 +315,7 @@ class Test_Response {
 	public function assertLocation( $uri ) {
 		PHPUnit::assertEquals(
 			$this->app['url']->to( $uri ),
-			$this->app['url']->to( $this->get_header( 'location' ) ),
+			$this->app['url']->to( $this->get_header( 'location', '' ) ),
 		);
 
 		return $this;

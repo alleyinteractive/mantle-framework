@@ -84,10 +84,7 @@ abstract class Test_Case extends BaseTestCase {
 	 */
 	public static function setUpBeforeClass(): void {
 		static::register_traits();
-		if ( isset( static::$test_uses[ Refresh_Database::class ] ) ) {
-			static::refresh_database_pre_setup_before_class();
-		}
-
+		
 		if ( ! empty( static::$test_uses ) ) {
 
 			static::get_test_case_traits()
@@ -239,13 +236,7 @@ abstract class Test_Case extends BaseTestCase {
 		// Boot traits on the test case.
 		$traits = array_values( class_uses_recursive( static::class ) );
 
-		$priority_traits = [
-			// This order is deliberate.
-			Refresh_Database::class,
-			WordPress_Authentication::class,
-			Admin_Screen::class,
-			Network_Admin_Screen::class,
-		];
+		$priority_traits = static::get_priority_traits();
 
 		// Combine the priority and non-priority traits.
 		return collect()
@@ -253,7 +244,21 @@ abstract class Test_Case extends BaseTestCase {
 			->merge( array_diff( $traits, $priority_traits ) )
 			->unique();
 	}
-
+	
+	/**
+	 * Get an array of priority traits.
+	 * 
+	 * @return array
+	 */
+	protected static function get_priority_traits(): array {
+		return [
+			// This order is deliberate.
+			Refresh_Database::class,
+			WordPress_Authentication::class,
+			Admin_Screen::class,
+			Network_Admin_Screen::class,
+		];
+	}
 	/**
 	 * Register the traits that this test case uses.
 	 */

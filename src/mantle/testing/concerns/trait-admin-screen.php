@@ -24,9 +24,12 @@ trait Admin_Screen {
 	 * Backup the current screen.
 	 */
 	public function admin_screen_set_up() {
-		if ( ! function_exists( 'get_current_screen' ) ) {
-			/** WordPress Administration Screen API */
+		/** WordPress Administration Screen API */
+		if ( ! class_exists( 'WP_Screen' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/class-wp-screen.php';
+		}
+		
+		if ( ! function_exists( 'get_current_screen' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/screen.php';
 		}
 

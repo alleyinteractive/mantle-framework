@@ -807,7 +807,7 @@ class Collection implements ArrayAccess, Enumerable {
 		$keys = is_array( $keys ) ? $keys : func_get_args();
 
 		return $this->map(
-			fn ( $item ) => Arr::only( $item, $keys ),
+			fn ( $item ) => Arr::only( (array) $item, $keys ),
 		);
 	}
 
