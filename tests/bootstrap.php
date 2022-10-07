@@ -11,7 +11,7 @@ define( 'MANTLE_PHPUNIT_INCLUDES_PATH', __DIR__ . '/includes' );
 define( 'MANTLE_PHPUNIT_TEMPLATE_PATH', __DIR__ . '/template-parts' );
 
 \Mantle\Testing\manager()
-	->maybe_rsync()
+	->maybe_rsync_plugin()
 	->install();
 
 // \Mantle\Testing\install();

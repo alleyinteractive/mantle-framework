@@ -98,6 +98,10 @@ class Installation_Manager {
 	 * @return static
 	 */
 	public function install() {
+		if ( $this->rsync_to ) {
+			$this->rsync_before_install();
+		}
+
 		require_once __DIR__ . '/core-polyfill.php';
 
 		foreach ( $this->before_install_callbacks as $callback ) {
