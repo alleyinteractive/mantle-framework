@@ -3,7 +3,7 @@
     "description": "The Mantle Framework Queue Package",
     "type": "project",
     "require": {
-        "php": "^7.4|^8.0",
+        "php": "^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
         "laravel/serializable-closure": "^1.2",
         "mantle-framework/console": "^0.7",
