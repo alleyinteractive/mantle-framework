@@ -2,6 +2,8 @@
 /**
  * Rsync_Installation trait file
  *
+ * phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
+ *
  * @package Mantle
  */
 
@@ -37,13 +39,15 @@ trait Rsync_Installation {
 	/**
 	 * Rsync the code base to be located under a valid WordPress installation.
 	 *
+	 * By default, the codebase will be rsynced to the `wp-content` directory.
+	 *
 	 * @param string $to Location to rsync to within `wp-content`.
 	 * @param string $from Location to rsync from.
 	 * @return static
 	 */
 	public function rsync( string $to = null, string $from = null ) {
 		$this->rsync_to   = $to ?: $this->get_installation_path() . '/wp-content/plugins/plugin';
-		$this->rsync_from = $from ?: getcwd();
+		$this->rsync_from = $from ?: getcwd() . '/';
 
 		return $this;
 	}
@@ -68,31 +72,33 @@ trait Rsync_Installation {
 	/**
 	 * Maybe rsync the codebase as a plugin within WordPress.
 	 *
-	 * @param string $name Name of the plugin to use.
+	 * By default, the from path will be rsynced to `wp-content/plugins/{directory_name}`.
+	 *
+	 * @param string $name Name of the plugin folder, optional.
 	 * @param string $from Location to rsync from.
 	 */
-	public function maybe_rsync_plugin( string $name = 'plugin', string $from = null ) {
-		// Check if we are under an existing WordPress installation.
-		if ( $this->is_within_wordpress_install() ) {
-			return $this;
+	public function maybe_rsync_plugin( string $name = null, string $from = null ) {
+		if ( ! $name ) {
+			$name = basename( getcwd() );
 		}
 
-		return $this->rsync( "plugins/{$name}", $from );
+		return $this->maybe_rsync( "plugins/{$name}/", $from );
 	}
 
 	/**
 	 * Maybe rsync the codebase as a theme within WordPress.
 	 *
-	 * @param string $name Name of the plugin to use.
+	 * By default, the from path will be rsynced to `wp-content/themes/{directory_name}`.
+	 *
+	 * @param string $name Name of the theme folder, optional.
 	 * @param string $from Location to rsync from.
 	 */
-	public function maybe_rsync_theme( string $name = 'theme', string $from = null ) {
-		// Check if we are under an existing WordPress installation.
-		if ( $this->is_within_wordpress_install() ) {
-			return $this;
+	public function maybe_rsync_theme( string $name = null, string $from = null ) {
+		if ( ! $name ) {
+			$name = basename( getcwd() );
 		}
 
-		return $this->rsync( "themes/{$name}", $from );
+		return $this->maybe_rsync( 'themes', $from );
 	}
 
 	/**
@@ -117,7 +123,8 @@ trait Rsync_Installation {
 	/**
 	 * Rsync the codebase before installation.
 	 *
-	 * @return void
+	 * This allows the plugin/theme project to properly situate itself within a
+	 * WordPress installation without needing to rsync it manually.
 	 */
 	protected function rsync_before_install() {
 		require_once __DIR__ . '/../class-utils.php';
@@ -127,58 +134,56 @@ trait Rsync_Installation {
 		// Normalize the rsync destination.
 		$this->rsync_to = is_dir( $this->rsync_to ) ? $this->rsync_to : "$base_install_path/wp-content/{$this->rsync_to}";
 
+		// Define the constants relative to where the codebase is being rsynced to.
 		defined( 'WP_TESTS_INSTALL_PATH' ) || define( 'WP_TESTS_INSTALL_PATH', $base_install_path );
-
-		// TEMP
-		system( "rm -rf {$base_install_path}" );
+		defined( 'WP_TESTS_CONFIG_FILE_PATH' ) || define( 'WP_TESTS_CONFIG_FILE_PATH', "{$base_install_path}/wp-tests-config.php" );
+		defined( 'ABSPATH' ) || define( 'ABSPATH', ensure_trailingslash( $base_install_path ) );
 
 		// Install WordPress at the base installation path if it doesn't exist yet.
 		if ( ! is_dir( $base_install_path ) ) {
-			echo "Installing WordPress at [{$base_install_path}]...\n";
-
-
-			// Create the installation directory.
-			if ( ! is_dir( $base_install_path ) && ! mkdir( $base_install_path, 0777, true ) ) {
-				throw new \RuntimeException( "Unable to create directory [{$base_install_path}]." );
-			}
-
-			$cmd = sprintf(
-				'export WP_CORE_DIR=%s && curl -s %s | bash -s %s %s %s %s %s %s',
-				$base_install_path,
-				'https://raw.githubusercontent.com/alleyinteractive/mantle-ci/HEAD/install-wp-tests.sh',
-				// 'https://raw.githubusercontent.com/alleyinteractive/mantle-ci/debug/install-wp-tests.sh',
-				// 'http://localhost:3030/install-wp-tests.sh',
-				Utils::shell_safe( defined( 'DB_NAME' ) ? DB_NAME : Utils::env( 'WP_DB_NAME', 'wordpress_unit_tests' ) ),
-				Utils::shell_safe( defined( 'DB_USER' ) ? DB_USER : Utils::env( 'WP_DB_USER', 'root' ) ),
-				Utils::shell_safe( defined( 'DB_PASSWORD' ) ? DB_PASSWORD : Utils::env( 'WP_DB_PASSWORD', 'root' ) ),
-				Utils::shell_safe( defined( 'DB_HOST' ) ? DB_HOST : Utils::env( 'WP_DB_HOST', 'localhost' ) ),
-				Utils::shell_safe( Utils::env( 'WP_VERSION', 'latest' ) ),
-				Utils::shell_safe( Utils::env( 'WP_SKIP_DB_CREATE', 'false' ) ),
+			Utils::info(
+				"Installating WordPress at <em>{$base_install_path}</em> ...",
+				'Install Rsync'
 			);
 
-			$resp = system( $cmd, $retval );
-			// $resp = system( $cmd, $retval );
+			// Create the installation directory.
+			if ( ! is_dir( $base_install_path ) && ! mkdir( $base_install_path, 0777, true ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.directory_mkdir
+				Utils::error(
+					"Unable to create the WordPress installation directory at <em>{$base_install_path}</em>",
+					'Install Rsync'
+				);
 
-			dd('RESP', $cmd, $resp);
-
-			if ( 0 !== $retval ) {
-				echo "\n🚨 Error installing WordPress!\nResponse from installation command:\n\n$resp\n" . PHP_EOL;
 				exit( 1 );
 			}
 
-			echo "WordPress installed at [{$base_install_path}]...\n";
+			Utils::install_wordpress( $base_install_path );
+
+			Utils::success(
+				"WordPress installed at <em>{$base_install_path}</em>",
+				'Install Rsync'
+			);
 		} else {
-			echo "WordPress already installed at [{$base_install_path}]...\n";
+			Utils::info(
+				"WordPress already installed at <em>{$base_install_path}</em>",
+				'Install Rsync'
+			);
 		}
 
-		echo "Rsyncing the code from [{$this->rsync_from}] to [{$this->rsync_to}]...\n";
+		Utils::info(
+			"Rsyncing <em>{$this->rsync_from}</em> to <em>{$this->rsync_to}</em>...",
+			'Install Rsync'
+		);
 
-		if ( ! is_dir( $this->rsync_to ) && ! mkdir( $this->rsync_to, 0777, true ) ) {
-			throw new \RuntimeException( "Unable to create destination directory [{$this->rsync_to}]." );
+		if ( ! is_dir( $this->rsync_to ) && ! mkdir( $this->rsync_to, 0777, true ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.directory_mkdir
+			Utils::error(
+				"Unable to create destination directory [{$this->rsync_to}]."
+			);
+
+			exit( 1 );
 		}
 
-		$cmd = implode(
-			' ',
+		// Rsync the from folder to the destination.
+		$output = Utils::command(
 			[
 				'rsync -aWq',
 				'--no-compress',
@@ -189,11 +194,21 @@ trait Rsync_Installation {
 				'--exclude .phpcs',
 				'--exclude .buddy-tests',
 				"{$this->rsync_from} {$this->rsync_to}",
-			]
+			],
+			$retval
 		);
 
-		dd('CMD', $cmd);
+		if ( 0 !== $retval ) {
+			Utils::error( '🚨 Error installing rsyncing! Output from command:', 'Install Rsync' );
+			Utils::code( $output );
+			exit( 1 );
+		}
 
-		exit;
+		Utils::success(
+			"Rsynced to <em>{$this->rsync_to}</em> and changed working directory.",
+			'Install Rsync'
+		);
+
+		chdir( $this->rsync_to );
 	}
 }

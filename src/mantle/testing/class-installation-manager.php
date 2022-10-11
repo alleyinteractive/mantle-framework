@@ -98,21 +98,21 @@ class Installation_Manager {
 	 * @return static
 	 */
 	public function install() {
+		require_once __DIR__ . '/core-polyfill.php';
+
 		if ( $this->rsync_to ) {
 			$this->rsync_before_install();
 		}
-
-		require_once __DIR__ . '/core-polyfill.php';
 
 		foreach ( $this->before_install_callbacks as $callback ) {
 			$callback();
 		}
 
 		try {
-			require_once __DIR__ . '/wordpress-bootstrap.php';
+			require_once $this->bootstrap_file_path();
 		} catch ( \Throwable $throwable ) {
-			echo "ERROR: Failed to load WordPress!\n";
-			echo "{$throwable}\n"; // phpcs:ignore
+			Utils::error( '🚨 Failed to load the WordPress installation. Exception thrown:' );
+			Utils::code( $throwable->getMessage() );
 			exit( 1 );
 		}
 
@@ -121,5 +121,34 @@ class Installation_Manager {
 		}
 
 		return $this;
+	}
+
+	/**
+	 * Retrieve the bootstrap file path.
+	 *
+	 * @return string
+	 */
+	protected function bootstrap_file_path(): string {
+		if ( defined( 'WP_TESTS_BOOTSTRAP_FILE' ) ) {
+			return WP_TESTS_BOOTSTRAP_FILE;
+		}
+
+		if ( ! $this->rsync_to ) {
+			return __DIR__ . '/wordpress-bootstrap.php';
+		}
+
+		$base_path = [
+			$this->rsync_to . '/src/mantle/testing/wordpress-bootstrap.php',
+			$this->rsync_to . '/vendor/alleyinteractive/mantle-framework/src/mantle/testing/wordpress-bootstrap.php',
+			$this->rsync_to . '/vendor/mantle-framework/testing/src/mantle/testing/wordpress-bootstrap.php',
+		];
+
+		foreach ( $base_path as $path ) {
+			if ( file_exists( $path ) ) {
+				return $path;
+			}
+		}
+
+		return __DIR__ . '/wordpress-bootstrap.php';
 	}
 }
