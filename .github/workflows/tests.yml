@@ -19,4 +19,4 @@ jobs:
     with:
       # php: 6.5
       wordpress: ${{ matrix.wordpress }}
-      # multisite: ${{ matrix.multisite }}
+      multisite: ${{ matrix.multisite }}
