@@ -441,10 +441,13 @@ class Pending_Request {
 	 * Number of times to retry a failed request.
 	 *
 	 * @param int $retry Number of retries.
+	 * @param int $delay Number of seconds to delay between retries, defaults to none.
 	 * @return static
 	 */
-	public function retry( int $retry ) {
+	public function retry( int $retry, int $delay = 0 ) {
 		$this->options['retry'] = $retry;
+		$this->options['delay'] = $delay;
+
 		return $this;
 	}
 

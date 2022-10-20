@@ -35,7 +35,7 @@ use Mantle\Support\Traits\Macroable;
  * @method static \Mantle\Http_Client\Pending_Request with_redirecting( int $times = 5 )
  * @method static \Mantle\Http_Client\Pending_Request without_verifying()
  * @method static \Mantle\Http_Client\Pending_Request timeout( int $seconds )
- * @method static \Mantle\Http_Client\Pending_Request retry( int $retry )
+ * @method static \Mantle\Http_Client\Pending_Request retry( int $retry, int $delay = 0 )
  * @method static \Mantle\Http_Client\Response|static get( string $url, $query = null )
  * @method static \Mantle\Http_Client\Response|static head( string $url, $query = null )
  * @method static \Mantle\Http_Client\Response|static post( string $url, array $data = [] )
