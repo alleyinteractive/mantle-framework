@@ -8,8 +8,10 @@
 namespace Mantle\Testing\Factory;
 
 use Carbon\Carbon;
+use Closure;
 use Faker\Generator;
 use Mantle\Database\Model\Post;
+use Mantle\Support\Pipeline;
 use WP_Post;
 
 use function Mantle\Support\Helpers\collect;
@@ -47,45 +49,87 @@ class Post_Factory extends Factory {
 	}
 
 	/**
+	 * Create a new factory instance to create posts with a set of terms.
+	 *
+	 * @param array<int, WP_Term|int|string>|WP_Term|int|string ...$terms Terms to assign to the post.
+	 * @return static
+	 */
+	public function with_terms( ...$terms ) {
+		$terms = collect( $terms )->flatten()->all();
+
+		return $this->with_middleware(
+			fn ( array $args, Closure $next ) => $next( $args )->set_terms( $terms ),
+		);
+	}
+
+	/**
+	 * Create a new factory instance to create posts with a set of meta.
+	 *
+	 * @param array<string, mixed> $meta Meta to assign to the post.
+	 * @return static
+	 */
+	public function with_meta( array $meta ) {
+		return $this->with_middleware(
+			function ( array $args, Closure $next ) use ( $meta ) {
+				$args['meta_input'] = array_merge_recursive(
+					$args['meta_input'] ?? [],
+					$meta
+				);
+
+				return $next( $args );
+			}
+		);
+	}
+
+	/**
+	 * Create a new factory instance to create posts with a thumbnail.
+	 *
+	 * @return static
+	 */
+	public function with_thumbnail() {
+		return $this->with_meta(
+			[
+				'_thumbnail_id' => ( new Attachment_Factory( $this->faker ) )->create(),
+			]
+		);
+	}
+
+	/**
 	 * Creates an object.
 	 *
 	 * @param array $args The arguments.
 	 * @return int|null
 	 */
 	public function create( array $args = [] ): ?int {
-		return Post::create(
-			array_merge(
-				[
-					'content'   => trim( $this->faker->randomHtml() ),
-					'excerpt'   => trim( $this->faker->paragraph( 2 ) ),
-					'status'    => 'publish',
-					'title'     => $this->faker->sentence(),
-					'post_type' => $this->post_type,
-				],
-				$args
-			)
-		)->id();
+		$args = array_merge(
+			[
+				'content'   => trim( $this->faker->randomHtml() ),
+				'excerpt'   => trim( $this->faker->paragraph( 2 ) ),
+				'status'    => 'publish',
+				'title'     => $this->faker->sentence(),
+				'post_type' => $this->post_type,
+			],
+			$args
+		);
+
+		return Pipeline::make()
+			->send( $args )
+			->through( $this->middleware )
+			->then(
+				fn ( array $args ) => Post::create( $args ),
+			)?->id();
 	}
 
 	/**
 	 * Create a post with a thumbnail.
 	 *
+	 * @deprecated Use {@see Post_Factory::with_thumbnail()} instead.
+	 *
 	 * @param array $args The arguments.
 	 * @return int|null
 	 */
 	public function create_with_thumbnail( array $args = [] ): ?int {
-		$meta = $args['meta'] ?? [];
-
-		$meta['_thumbnail_id'] = ( new Attachment_Factory( $this->faker ) )->create();
-
-		return $this->create(
-			array_merge(
-				$args,
-				[
-					'meta' => $meta,
-				]
-			)
-		);
+		return $this->with_thumbnail()->create( $args );
 	}
 
 	/**
