@@ -42,14 +42,9 @@ class Attachment_Factory extends Post_Factory {
 	 * @return int|null|
 	 */
 	public function create( array $args = [] ): ?int {
-		return Attachment::create(
-			array_merge(
-				[
-					'post_type' => 'attachment',
-				],
-				$args
-			)
-		)->id();
+		$args['post_type'] = 'attachment';
+
+		return $this->make( $args, Attachment::class )?->id();
 	}
 
 	/**

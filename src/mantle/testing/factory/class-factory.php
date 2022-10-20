@@ -120,4 +120,20 @@ abstract class Factory {
 
 		return $this->get_object_by_id( $object_id );
 	}
+
+	/**
+	 * Pass arguments through the middleware and return a core object.
+	 *
+	 * @param array  $args  Arguments to pass through the middleware.
+	 * @param string $class Model class name.
+	 * @return TObject|Core_Object
+	 */
+	protected function make( array $args, string $class ) {
+		return Pipeline::make()
+			->send( $args )
+			->through( $this->middleware )
+			->then(
+				fn ( array $args ) => $class::create( $args )
+			);
+	}
 }

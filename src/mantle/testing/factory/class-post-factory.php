@@ -11,7 +11,6 @@ use Carbon\Carbon;
 use Closure;
 use Faker\Generator;
 use Mantle\Database\Model\Post;
-use Mantle\Support\Pipeline;
 use WP_Post;
 
 use function Mantle\Support\Helpers\collect;
@@ -112,12 +111,7 @@ class Post_Factory extends Factory {
 			$args
 		);
 
-		return Pipeline::make()
-			->send( $args )
-			->through( $this->middleware )
-			->then(
-				fn ( array $args ) => Post::create( $args ),
-			)?->id();
+		return $this->make( $args, Post::class )?->id();
 	}
 
 	/**
