@@ -23,7 +23,7 @@ class Test_Element_Assertions extends Framework_Test_Case {
 	public function test_element_exists_by_id() {
 		$response = new Test_Response( $this->test_content );
 
-		$response->assertElementExistsById( '#test-id' );
+		$response->assertElementExistsById( 'test-id' );
 		$response->assertElementExistsById( '#test-id' );
 		$response->assertElementMissingById( 'missing-id' );
 		$response->assertElementMissingById( '.missing-id' );
