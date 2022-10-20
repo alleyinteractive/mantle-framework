@@ -17,6 +17,7 @@ jobs:
         multisite: [true, false]
     uses: alleyinteractive/.github/.github/workflows/php-tests.yml@main
     with:
-      php: ${{ matrix.php }}
+      # php: ${{ matrix.php }}
+      php: 7.4
       wordpress: ${{ matrix.wordpress }}
       # multisite: ${{ matrix.multisite }}
