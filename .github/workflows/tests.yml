@@ -10,7 +10,7 @@ on:
 
 jobs:
   php-tests:
-    name: "PHP Tests ${{ mat"
+    name: "PHP Tests ${{ matrix.php }} - ${{ matrix.php }} - ${{ matrix.multisite }}"
     strategy:
       matrix:
         php: [7.4, 8.0]
