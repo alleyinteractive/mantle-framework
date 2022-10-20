@@ -18,6 +18,6 @@ jobs:
     uses: alleyinteractive/.github/.github/workflows/php-tests.yml@main
     with:
       # php: 6.5
-      php: ${{ matrix.php }}
+      # php: ${{ matrix.php }}
       wordpress: ${{ matrix.wordpress }}
       # multisite: ${{ matrix.multisite }}
