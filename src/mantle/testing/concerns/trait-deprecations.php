@@ -30,7 +30,7 @@ trait Deprecations {
 	/**
 	 * Sets up the expectations for testing a deprecated call.
 	 */
-	public function expectDeprecated() {
+	public function deprecations_set_up() {
 		if ( ! method_exists( $this, 'getAnnotations' ) ) {
 			$annotations = Test::parseTestMethodAnnotations(
 				static::class,

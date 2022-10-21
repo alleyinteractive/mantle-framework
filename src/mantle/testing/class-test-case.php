@@ -84,7 +84,7 @@ abstract class Test_Case extends BaseTestCase {
 	 */
 	public static function setUpBeforeClass(): void {
 		static::register_traits();
-		
+
 		if ( ! empty( static::$test_uses ) ) {
 
 			static::get_test_case_traits()
@@ -158,8 +158,8 @@ abstract class Test_Case extends BaseTestCase {
 				}
 			);
 
-		$this->expectDeprecated();
-		$this->expectIncorrectUsage();
+		// $this->expectDeprecated();
+		// $this->expectIncorrectUsage();
 
 		remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
 		add_filter( 'wp_die_handler', [ WP_Die::class, 'get_handler' ] );
@@ -244,10 +244,10 @@ abstract class Test_Case extends BaseTestCase {
 			->merge( array_diff( $traits, $priority_traits ) )
 			->unique();
 	}
-	
+
 	/**
 	 * Get an array of priority traits.
-	 * 
+	 *
 	 * @return array
 	 */
 	protected static function get_priority_traits(): array {

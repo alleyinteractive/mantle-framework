@@ -30,7 +30,7 @@ trait Incorrect_Usage {
 	/**
 	 * Sets up the expectations for testing a deprecated call.
 	 */
-	public function expectIncorrectUsage() {
+	public function incorrect_usage_set_up() {
 		if ( ! method_exists( $this, 'getAnnotations' ) ) {
 			$annotations = Test::parseTestMethodAnnotations(
 				static::class,
@@ -54,7 +54,7 @@ trait Incorrect_Usage {
 	 *
 	 * The DocBlock should contain `@expectedDeprecated` to trigger this.
 	 */
-	public function expectedIncorrectUsage() {
+	public function incorrect_usage_tear_down() {
 		$errors = [];
 
 		$not_caught_doing_it_wrong = array_diff( $this->expected_doing_it_wrong, $this->caught_doing_it_wrong );
@@ -79,7 +79,7 @@ trait Incorrect_Usage {
 	/**
 	 * Declare an expected `_doing_it_wrong()` call from within a test.
 	 *
-	 * @since 4.2.0
+	 * Note: If a `_doing_it_wrong()` call isn't made within the test, the test will fail.
 	 *
 	 * @param string $doing_it_wrong Name of the function, method, or class that appears in the first argument
 	 *                               of the source `_doing_it_wrong()` call.
