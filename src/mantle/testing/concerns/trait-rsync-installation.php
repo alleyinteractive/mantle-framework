@@ -20,6 +20,8 @@ use Mantle\Testing\Utils;
  * plugin/theme from code that is written in a standalone repository. For
  * example, a repository can contain only a theme. Mantle will internally rsync
  * the theme to a WordPress installation without needing to run a bash script.
+ *
+ * After the rsync is complete, PHPUnit will be rerun from the new location.
  */
 trait Rsync_Installation {
 	/**
@@ -126,7 +128,7 @@ trait Rsync_Installation {
 	 * This allows the plugin/theme project to properly situate itself within a
 	 * WordPress installation without needing to rsync it manually.
 	 */
-	protected function rsync_before_install() {
+	protected function rsync_testsuite() {
 		require_once __DIR__ . '/../class-utils.php';
 
 		$base_install_path = $this->get_installation_path();
@@ -210,5 +212,34 @@ trait Rsync_Installation {
 		);
 
 		chdir( $this->rsync_to );
+
+		$command = $this->get_phpunit_command();
+
+		// Proxy to the phpunit instance within the new rsynced WordPress installation.
+		Utils::info(
+			"Running <em>{$command}</em> in <em>{$this->rsync_to}</em>:",
+			'Install Rsync'
+		);
+
+		system( $command, $result_code ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.system_calls_system
+
+		exit( (int) $result_code );
+	}
+
+	/**
+	 * Generate the command that will be run inside the rsync-ed WordPress
+	 * installation to fire off PHPUnit.
+	 *
+	 * @return string
+	 */
+	protected function get_phpunit_command(): string {
+		$args = (array) $_SERVER['argv'] ?? []; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+
+		// Remove the first argument, which is the path to the phpunit binary.
+		array_shift( $args );
+
+		$executable = getenv( 'WP_PHPUNIT_PATH' ) ?: 'vendor/bin/phpunit';
+
+		return $executable . ' ' . implode( ' ', array_map( 'escapeshellarg', $args ) );
 	}
 }

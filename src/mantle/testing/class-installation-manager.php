@@ -101,7 +101,8 @@ class Installation_Manager {
 		require_once __DIR__ . '/core-polyfill.php';
 
 		if ( $this->rsync_to ) {
-			$this->rsync_before_install();
+			$this->rsync_testsuite();
+			return;
 		}
 
 		foreach ( $this->before_install_callbacks as $callback ) {
