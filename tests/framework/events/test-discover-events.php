@@ -55,18 +55,11 @@ class Test_Discover_Events extends Framework_Test_Case {
 			'pre_get_posts' => [
 				[ Example_Listener::class . '@on_pre_get_posts_at_20', 20 ],
 			],
-			'attribute-event' => $is_php_8 ? [
+			'attribute-event' => [
 				[ Example_Listener::class . '@handle_attribute_string_callback', 10 ],
 				[ Example_Listener::class . '@handle_attribute_string_callback_priority', 20 ],
-			] : null,
+			],
 		];
-
-		// Filter out expected events for PHP 7.4.
-		if ( ! $is_php_8 ) {
-			$expected = collect( $expected )
-				->filter( fn ( $events ) => null !== $events )
-				->to_array();
-		}
 
 		$this->assertEquals( $expected, $events );
 	}

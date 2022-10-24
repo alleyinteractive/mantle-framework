@@ -2,6 +2,7 @@
 namespace Mantle\Tests\Testing;
 
 use Carbon\Carbon;
+use Closure;
 use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Term;
 use Mantle\Testing\Framework_Test_Case;
@@ -28,8 +29,14 @@ class Test_Factory extends Framework_Test_Case {
 		$this->assertEquals( 'draft', get_post_status( array_shift( $posts ) ) );
 	}
 
-	public function test_post_with_thumbnail_factory() {
+	public function test_post_create_with_thumbnail() {
 		$post_id = static::factory()->post->create_with_thumbnail();
+
+		$this->assertTrue( has_post_thumbnail( $post_id ) );
+	}
+
+	public function test_post_with_thumbnail_middleware() {
+		$post_id = static::factory()->post->with_thumbnail()->create();
 
 		$this->assertTrue( has_post_thumbnail( $post_id ) );
 	}
@@ -118,6 +125,64 @@ class Test_Factory extends Framework_Test_Case {
 
 		$this->assertInstanceOf( Post::class, $post );
 		$this->assertInstanceOf( Term::class, $term );
+	}
+
+	public function test_factory_middleware() {
+		$middleware = function ( $item, Closure $next ) {
+			$post = $next( $item );
+
+			update_post_meta( $post->ID, '_test_meta_key', '_test_meta_value' );
+
+			return $post;
+		};
+
+		$post = static::factory()->post->with_middleware( $middleware )->create_and_get();
+
+		$this->assertEquals( '_test_meta_value', get_post_meta( $post->ID, '_test_meta_key', true ) );
+	}
+
+	public function test_posts_with_terms() {
+		$post = static::factory()->post->with_terms(
+			[
+				$category = static::factory()->category->create_and_get(),
+			],
+			static::factory()->category->create_and_get(),
+		)->create_and_get();
+
+		$this->assertTrue( has_term( $category->term_id, 'category', $post ) );
+	}
+
+	public function test_posts_with_term_ids() {
+		$post = static::factory()->post->with_terms(
+			[
+				$category_id = static::factory()->category->create(),
+				$category    = static::factory()->category->create_and_get(),
+			],
+			static::factory()->category->create_and_get(),
+		)->create_and_get();
+
+		$this->assertTrue( has_term( $category_id, 'category', $post ) );
+		$this->assertTrue( has_term( $category->term_id, 'category', $post ) );
+	}
+
+	public function test_posts_with_terms_multiple_taxonomies() {
+		$post = static::factory()->post->with_terms(
+			$category = static::factory()->category->create_and_get(),
+			$tag = static::factory()->tag->create_and_get(),
+		)->create_and_get();
+
+		$this->assertTrue( has_term( $category->term_id, 'category', $post ) );
+		$this->assertTrue( has_term( $tag->term_id, 'post_tag', $post ) );
+	}
+
+	public function test_post_with_meta() {
+		$post = static::factory()->post->with_meta(
+			[
+				'_test_meta_key' => '_test_meta_value',
+			],
+		)->create_and_get();
+
+		$this->assertEquals( '_test_meta_value', get_post_meta( $post->ID, '_test_meta_key', true ) );
 	}
 
 	protected function shim_test( string $class_name, string $property ) {

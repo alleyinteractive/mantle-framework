@@ -9,6 +9,7 @@ namespace Mantle\Testing\Factory;
 
 use Faker\Generator;
 use Mantle\Database\Model\User;
+use Mantle\Support\Pipeline;
 
 use function Mantle\Support\Helpers\get_user_object;
 
@@ -41,16 +42,16 @@ class User_Factory extends Factory {
 	 * @return int|null
 	 */
 	public function create( array $args = [] ): ?int {
-		return User::create(
-			array_merge(
-				[
-					'user_email' => $this->faker->email(),
-					'user_login' => $this->faker->userName(),
-					'user_pass'  => 'password',
-				],
-				$args
-			)
-		)->id();
+		$args = array_merge(
+			[
+				'user_email' => $this->faker->email(),
+				'user_login' => $this->faker->userName(),
+				'user_pass'  => 'password',
+			],
+			$args
+		);
+
+		return $this->make( $args, User::class )?->id();
 	}
 
 	/**

@@ -10,6 +10,7 @@ namespace Mantle\Support;
 use Closure;
 use Mantle\Contracts\Container;
 use Mantle\Contracts\Pipeline as PipelineContract;
+use Mantle\Support\Traits\Makeable;
 use RuntimeException;
 use Throwable;
 
@@ -17,6 +18,7 @@ use Throwable;
  * Middleware Pipeline
  */
 class Pipeline implements PipelineContract {
+	use Makeable;
 
 	/**
 	 * The container implementation.

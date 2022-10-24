@@ -4,7 +4,7 @@
     "keywords": ["testing", "mantle"],
     "type": "project",
     "require": {
-        "php": "^7.4|^8.0",
+        "php": "^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
         "mantle-framework/config": "^0.7",
         "mantle-framework/container": "^0.7",

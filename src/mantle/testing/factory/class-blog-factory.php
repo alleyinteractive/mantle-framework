@@ -42,17 +42,18 @@ class Blog_Factory extends Factory {
 	 */
 	public function create( array $args = [] ) {
 		global $current_site, $base;
-		return Site::create(
-			array_merge(
-				[
-					'domain'     => $current_site->domain,
-					'path'       => $base . $this->faker->slug(),
-					'title'      => $this->faker->text(),
-					'network_id' => $current_site->id,
-				],
-				$args
-			)
-		)->id();
+
+		$args = array_merge(
+			[
+				'domain'     => $current_site->domain,
+				'path'       => $base . $this->faker->slug(),
+				'title'      => $this->faker->text(),
+				'network_id' => $current_site->id,
+			],
+			$args
+		);
+
+		return $this->make( $args, Site::class )?->id();
 	}
 
 	/**
