@@ -8,6 +8,7 @@
 namespace Mantle\Testing\Factory;
 
 use Mantle\Contracts\Database\Core_Object;
+use Mantle\Support\Pipeline;
 
 use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\tap;
@@ -24,6 +25,13 @@ abstract class Factory {
 	 * @var bool
 	 */
 	protected bool $as_models = false;
+
+	/**
+	 * Array of pipes (middleware) to run through.
+	 *
+	 * @var array<callable>
+	 */
+	public array $middleware = [];
 
 	/**
 	 * Creates an object.
@@ -66,6 +74,21 @@ abstract class Factory {
 	}
 
 	/**
+	 * Create a new factory instance with middleware.
+	 *
+	 * @param array $middleware Middleware to run the factory through.
+	 * @return static
+	 */
+	public function with_middleware( $middleware ) {
+		return tap(
+			clone $this,
+			fn ( $factory ) => $factory->middleware = collect( $this->middleware )
+				->merge( $middleware )
+				->all(),
+		);
+	}
+
+	/**
 	 * Creates multiple objects.
 	 *
 	 * @param int   $count Amount of objects to create.
@@ -77,9 +100,7 @@ abstract class Factory {
 		return collect()
 			->pad( $count, null )
 			->map(
-				function() use ( $args ) {
-					return $this->create( $args );
-				}
+				fn() => $this->create( $args ),
 			)
 			->to_array();
 	}
@@ -98,5 +119,21 @@ abstract class Factory {
 		}
 
 		return $this->get_object_by_id( $object_id );
+	}
+
+	/**
+	 * Pass arguments through the middleware and return a core object.
+	 *
+	 * @param array  $args  Arguments to pass through the middleware.
+	 * @param string $class Model class name.
+	 * @return TObject|Core_Object
+	 */
+	protected function make( array $args, string $class ) {
+		return Pipeline::make()
+			->send( $args )
+			->through( $this->middleware )
+			->then(
+				fn ( array $args ) => $class::create( $args )
+			);
 	}
 }
