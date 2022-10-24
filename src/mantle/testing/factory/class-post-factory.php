@@ -50,7 +50,7 @@ class Post_Factory extends Factory {
 	/**
 	 * Create a new factory instance to create posts with a set of terms.
 	 *
-	 * @param array<int, WP_Term|int|string>|WP_Term|int|string ...$terms Terms to assign to the post.
+	 * @param array<int, WP_Term|int|string>|WP_Term|int|string> ...$terms Terms to assign to the post.
 	 * @return static
 	 */
 	public function with_terms( ...$terms ) {
