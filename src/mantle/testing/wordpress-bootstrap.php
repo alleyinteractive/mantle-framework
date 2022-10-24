@@ -140,7 +140,7 @@ if ( $multisite && ! $installing_wp ) {
 	defined( 'SUBDOMAIN_INSTALL' ) or define( 'SUBDOMAIN_INSTALL', false );
 	$GLOBALS['base'] = '/';
 } elseif ( ! $installing_wp ) {
-	Utils::info( "Running as single site...\nℹ️  To run multisite, pass WP_MULTISITE=1 or set the WP_TESTS_MULTISITE=1 constant." );
+	Utils::info( "Running as single site...\n<br>ℹ️ To run multisite, pass <span class=\"text-orange-500\">WP_MULTISITE=1</span> or set the <span class=\"text-orange-500\">WP_TESTS_MULTISITE=1</span> constant." );
 }
 unset( $multisite );
 
