@@ -41,14 +41,15 @@ trait Rsync_Installation {
 	/**
 	 * Rsync the code base to be located under a valid WordPress installation.
 	 *
-	 * By default, the codebase will be rsynced to the `wp-content` directory.
+	 * By default, the codebase will be rsynced to the `wp-content` directory. The
+	 * `to` path is assumed to be relative to the `wp-content` folder.
 	 *
 	 * @param string $to Location to rsync to within `wp-content`.
 	 * @param string $from Location to rsync from.
 	 * @return static
 	 */
 	public function rsync( string $to = null, string $from = null ) {
-		$this->rsync_to   = $to ?: $this->get_installation_path() . '/wp-content/plugins/plugin';
+		$this->rsync_to   = $to ?: '/';
 		$this->rsync_from = $from ?: getcwd() . '/';
 
 		return $this;
