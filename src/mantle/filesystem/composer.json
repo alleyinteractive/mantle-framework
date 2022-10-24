@@ -3,7 +3,7 @@
     "description": "The Mantle Framework Filesystem Package",
     "type": "project",
     "require": {
-        "php": "^7.4|^8.0",
+        "php": "^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
         "league/flysystem": "^1.1",
         "league/flysystem-cached-adapter": "^1.1",
