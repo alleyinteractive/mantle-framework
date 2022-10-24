@@ -131,6 +131,8 @@ if ( ! $installing_wp && '1' !== getenv( 'WP_TESTS_SKIP_INSTALL' ) ) {
 		Utils::code( $resp );
 
 		exit( $retval );
+	} elseif ( Utils::is_debug_mode() ) {
+		Utils::info( 'WordPress installation complete.' );
 	}
 }
 

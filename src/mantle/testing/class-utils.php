@@ -292,6 +292,24 @@ class Utils {
 	}
 
 	/**
+	 * Check if the command is being run in debug mode.
+	 *
+	 * @return bool
+	 */
+	public static function is_debug_mode(): bool {
+		return ! empty(
+			array_intersect(
+				(array) $_SERVER['argv'] ?? [], // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+				[
+					'--debug',
+					'--verbose',
+					'-v',
+				],
+			)
+		);
+	}
+
+	/**
 	 * Run a system command and return the output.
 	 *
 	 * @param string|string[] $command Command to run.
@@ -299,19 +317,12 @@ class Utils {
 	 * @return string[]
 	 */
 	public static function command( $command, &$exit_code = null ) {
+		$is_debug_mode = static::is_debug_mode();
+
 		// Display the command if in debug mode.
-		if (
-			! empty(
-				array_intersect(
-					(array) $_SERVER['argv'] ?? [], // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-					[
-						'--debug',
-						'--verbose',
-						'-v',
-					],
-				)
-			)
-		) {
+		if ( $is_debug_mode ) {
+			$time = microtime( true );
+
 			render(
 				'<div class="p-1">
 					Running:
@@ -325,6 +336,17 @@ class Utils {
 		}
 
 		exec( $command, $output, $exit_code ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.system_calls_exec
+
+		// Display the command runtime if in debug mode.
+		if ( $is_debug_mode ) {
+			$time = microtime( true ) - $time;
+
+			render(
+				'<div class="p-1">
+					Finished in ' . number_format( $time, 2 ) . 's with exit code ' . $exit_code . '.
+				</div>'
+			);
+		}
 
 		return $output;
 	}
