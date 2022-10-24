@@ -13,8 +13,8 @@ use Mantle\Support\Traits\Singleton;
  * Installation Manager
  */
 class Installation_Manager {
-	use Concerns\Rsync_Installation,
-		Singleton;
+	use Concerns\Rsync_Installation;
+	use Singleton;
 
 	/**
 	 * Callbacks for before installation.
