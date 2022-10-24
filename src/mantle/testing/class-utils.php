@@ -8,12 +8,7 @@
 namespace Mantle\Testing;
 
 use Mantle\Testing\Doubles\Spy_REST_Server;
-
 use function Termwind\render;
-
-if ( class_exists( Utils::class ) ) {
-	return;
-}
 
 require_once __DIR__ . '/concerns/trait-output-messages.php';
 
