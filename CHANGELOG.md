@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- **Fix:** Set default to string incase of missing location.
+- Adding assertions for element missing/existing.
+- Middleware for testing factories.
+
 ## v0.7.0 - 2022-10-06
 
 - Asset assertions and improvements.
