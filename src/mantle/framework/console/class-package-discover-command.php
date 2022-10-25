@@ -8,12 +8,13 @@
 namespace Mantle\Framework\Console;
 
 use Mantle\Console\Command;
+use Mantle\Contracts\Console\Isolated_Command;
 use Mantle\Framework\Package_Manifest;
 
 /**
  * Package Discover Command
  */
-class Package_Discover_Command extends Command {
+class Package_Discover_Command extends Command implements Isolated_Command {
 	/**
 	 * The console command name.
 	 *

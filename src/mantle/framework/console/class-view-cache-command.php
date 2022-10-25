@@ -1,6 +1,6 @@
 <?php
 /**
- * Package_Discover_Command class file.
+ * View_Cache_Command class file.
  *
  * @package Mantle
  */
@@ -17,7 +17,7 @@ use Symfony\Component\Finder\Finder;
 use function Mantle\Support\Helpers\collect;
 
 /**
- * Package Discover Command
+ * View Cache Command
  */
 class View_Cache_Command extends Command {
 	/**

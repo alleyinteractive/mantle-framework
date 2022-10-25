@@ -137,7 +137,7 @@ class Application extends Container implements Application_Contract {
 		}
 
 		if ( ! $root_url ) {
-			$root_url = \home_url();
+			$root_url = function_exists( 'home_url' ) ? \home_url() : '/';
 		}
 
 		$this->set_base_path( $base_path );
@@ -549,7 +549,7 @@ class Application extends Container implements Application_Contract {
 			return $this->environment;
 		}
 
-		return Environment::get( 'ENV', wp_get_environment_type() );
+		return Environment::get( 'ENV', function_exists( 'wp_get_environment_' ) ? wp_get_environment_type() : '' );
 	}
 
 	/**

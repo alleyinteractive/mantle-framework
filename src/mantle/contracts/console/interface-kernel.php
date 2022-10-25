@@ -14,7 +14,7 @@ interface Kernel {
 	/**
 	 * Run the console application.
 	 */
-	public function handle();
+	public function handle( $input, $ouput = null );
 
 	/**
 	 * Register the application's commands.
