@@ -117,7 +117,6 @@ if ( ! $installing_wp && '1' !== getenv( 'WP_TESTS_SKIP_INSTALL' ) ) {
 			WP_PHP_BINARY,
 			escapeshellarg( __DIR__ . '/install-wordpress.php' ),
 			$multisite,
-			// Utils::get_autoloader_path()
 		],
 		$retval,
 	);

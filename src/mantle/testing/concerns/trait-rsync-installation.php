@@ -202,7 +202,7 @@ trait Rsync_Installation {
 		);
 
 		if ( 0 !== $retval ) {
-			Utils::error( '🚨 Error installing rsyncing! Output from command:', 'Install Rsync' );
+			Utils::error( '🚨 Error rsyncing! Output from command:', 'Install Rsync' );
 			Utils::code( $output );
 			exit( 1 );
 		}
