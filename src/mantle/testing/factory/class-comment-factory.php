@@ -58,7 +58,7 @@ class Comment_Factory extends Factory {
 			$args
 		);
 
-		return Comment::create( $args )->id();
+		return $this->make( $args, Comment::class )?->id();
 	}
 
 	/**

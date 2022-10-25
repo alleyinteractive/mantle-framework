@@ -59,7 +59,7 @@ class Term_Factory extends Factory {
 			$args
 		);
 
-		return Term::create( $args )->id();
+		return $this->make( $args, Term::class )?->id();
 	}
 
 	/**

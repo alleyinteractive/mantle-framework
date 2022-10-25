@@ -3,7 +3,7 @@
     "description": "The Mantle Framework Http Package",
     "type": "project",
     "require": {
-        "php": "^7.4|^8.0",
+        "php": "^8.0",
         "illuminate/view": "^8.6",
         "mantle-framework/contracts": "^0.7",
         "mantle-framework/filesystem": "^0.7",
