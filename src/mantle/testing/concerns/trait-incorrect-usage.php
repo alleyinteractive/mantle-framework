@@ -9,16 +9,32 @@
 
 namespace Mantle\Testing\Concerns;
 
+use Mantle\Support\Str;
 use PHPUnit\Util\Test;
 
+use function Mantle\Support\Helpers\collect;
+
+/**
+ * Check for _doing_it_wrong() calls during testing.
+ *
+ * If a _doing_it_wrong() call is made, the test will fail unless it is marked
+ * as expected or ignored.
+ */
 trait Incorrect_Usage {
 
 	/**
 	 * Expected "doing it wrong" calls.
 	 *
-	 * @var array
+	 * @var string[]
 	 */
 	protected $expected_doing_it_wrong = [];
+
+	/**
+	 * Ignored "doing it wrong" calls.
+	 *
+	 * @var string[]
+	 */
+	protected $ignored_doing_it_wrong = [];
 
 	/**
 	 * Caught "doing it wrong" calls.
@@ -45,6 +61,7 @@ trait Incorrect_Usage {
 				$this->expected_doing_it_wrong = array_merge( $this->expected_doing_it_wrong, $annotations[ $depth ]['expectedIncorrectUsage'] );
 			}
 		}
+
 		add_action( 'doing_it_wrong_run', [ $this, 'doing_it_wrong_run' ] );
 		add_action( 'doing_it_wrong_trigger_error', '__return_false' );
 	}
@@ -62,7 +79,27 @@ trait Incorrect_Usage {
 			$errors[] = "Failed to assert that $not_caught triggered an incorrect usage notice";
 		}
 
-		$unexpected_doing_it_wrong = array_diff( $this->caught_doing_it_wrong, $this->expected_doing_it_wrong );
+		$unexpected_doing_it_wrong = collect( $this->caught_doing_it_wrong )
+			->filter(
+				function ( string $caught ) {
+					$ignored_and_expected = array_merge( $this->expected_doing_it_wrong, $this->ignored_doing_it_wrong );
+
+					if ( in_array( $caught, $ignored_and_expected, true ) ) {
+						return false;
+					}
+
+					// Allow partial matches when ignoring a _doing_it_wrong() call.
+					foreach ( $this->ignored_doing_it_wrong as $ignored ) {
+						if ( Str::is( $ignored, $caught ) ) {
+							return false;
+						}
+					}
+
+					return true;
+				}
+			)
+			->all();
+
 		foreach ( $unexpected_doing_it_wrong as $unexpected ) {
 			$errors[] = "Unexpected incorrect usage notice for $unexpected";
 		}
@@ -79,13 +116,30 @@ trait Incorrect_Usage {
 	/**
 	 * Declare an expected `_doing_it_wrong()` call from within a test.
 	 *
-	 * Note: If a `_doing_it_wrong()` call isn't made within the test, the test will fail.
+	 * Note: If a `_doing_it_wrong()` call isn't made within the test, the test
+	 * will fail. To ignore a `_doing_it_wrong()` call, use
+	 * {@see Incorrect_Usage::ignoreIncorrectUsage()}.
 	 *
-	 * @param string $doing_it_wrong Name of the function, method, or class that appears in the first argument
-	 *                               of the source `_doing_it_wrong()` call.
+	 * @param string $doing_it_wrong Name of the function, method, or class that
+	 *                               appears in the first argument of the source
+	 *                               `_doing_it_wrong()` call.
 	 */
 	public function setExpectedIncorrectUsage( $doing_it_wrong ) {
 		$this->expected_doing_it_wrong[] = $doing_it_wrong;
+	}
+
+	/**
+	 * Ignore a `_doing_it_wrong()` call from within a test.
+	 *
+	 * Supports partial matches using `Str::is()` syntax with * as a wildcard.
+	 *
+	 * @param string $doing_it_wrong Name of the function, method, or class that
+	 *                               appears in the first argument of the source
+	 *                               `_doing_it_wrong()` call. Supports * as a
+	 *                               wildcard.
+	 */
+	public function ignoreIncorrectUsage( $doing_it_wrong = '*' ) {
+		$this->ignored_doing_it_wrong[] = $doing_it_wrong;
 	}
 
 	/**

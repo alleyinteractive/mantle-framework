@@ -158,9 +158,6 @@ abstract class Test_Case extends BaseTestCase {
 				}
 			);
 
-		// $this->expectDeprecated();
-		// $this->expectIncorrectUsage();
-
 		remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
 		add_filter( 'wp_die_handler', [ WP_Die::class, 'get_handler' ] );
 	}
