@@ -67,9 +67,7 @@ trait Incorrect_Usage {
 	}
 
 	/**
-	 * Handles a deprecated expectation.
-	 *
-	 * The DocBlock should contain `@expectedDeprecated` to trigger this.
+	 * Set up handling a _doing_it_wrong() call.
 	 */
 	public function incorrect_usage_tear_down() {
 		$errors = [];
