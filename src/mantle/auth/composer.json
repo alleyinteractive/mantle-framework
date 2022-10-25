@@ -5,7 +5,7 @@
     "require": {
         "php": "^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
-        "mantle-framework/http": "^0.7",
+        "mantle-framework/http": "^0.8",
         "symfony/http-kernel": "^5.3"
     },
     "extra": {

@@ -5,7 +5,7 @@
     "require": {
         "php": "^8.0",
         "alleyinteractive/wp-concurrent-remote-requests": "^1.0.0",
-        "mantle-framework/support": "^0.7"
+        "mantle-framework/support": "^0.8"
     },
     "extra": {
         "branch-alias": {

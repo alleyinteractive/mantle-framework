@@ -5,7 +5,7 @@
     "require": {
         "php": "^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
-        "mantle-framework/contracts": "^0.7"
+        "mantle-framework/contracts": "^0.8"
     },
     "extra": {
         "branch-alias": {

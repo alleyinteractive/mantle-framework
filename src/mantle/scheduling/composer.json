@@ -7,9 +7,9 @@
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
         "dragonmantank/cron-expression": "^3.1",
         "guzzlehttp/guzzle": "^6.3.1 || ^7.3",
-        "mantle-framework/contracts": "^0.7",
+        "mantle-framework/contracts": "^0.8",
         "nesbot/carbon": "^2.53",
-        "mantle-framework/console": "^0.7"
+        "mantle-framework/console": "^0.8"
     },
     "extra": {
         "branch-alias": {
