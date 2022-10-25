@@ -33,7 +33,7 @@ trait Output_Messages {
 		render(
 			sprintf(
 				'<div class="%s">
-					<div class="px-1 bg-%s text-%s">%s</div>
+					<div class="px-1 bg-%s text-%s">%s:</div>
 					<span class="ml-1">%s</span>
 				</div>',
 				$parent_classes,
