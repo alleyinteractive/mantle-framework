@@ -135,7 +135,7 @@ trait Rsync_Installation {
 		$base_install_path = $this->get_installation_path();
 
 		// Normalize the rsync destination.
-		$this->rsync_to = is_dir( $this->rsync_to ) ? $this->rsync_to : "$base_install_path/wp-content/{$this->rsync_to}";
+		$this->rsync_to = "$base_install_path/wp-content/{$this->rsync_to}";
 
 		// Define the constants relative to where the codebase is being rsynced to.
 		defined( 'WP_TESTS_INSTALL_PATH' ) || define( 'WP_TESTS_INSTALL_PATH', $base_install_path );
