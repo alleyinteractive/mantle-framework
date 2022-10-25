@@ -6,10 +6,10 @@
         "php": "^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
         "laravel/serializable-closure": "^1.2",
-        "mantle-framework/console": "^0.7",
-        "mantle-framework/container": "^0.7",
-        "mantle-framework/contracts": "^0.7",
-        "mantle-framework/support": "^0.7"
+        "mantle-framework/console": "^0.9",
+        "mantle-framework/container": "^0.9",
+        "mantle-framework/contracts": "^0.9",
+        "mantle-framework/support": "^0.9"
     },
     "autoload": {
         "files": [
@@ -18,7 +18,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "0.7-dev"
+            "dev-main": "0.9-dev"
         },
         "wordpress-autoloader": {
             "autoload": {

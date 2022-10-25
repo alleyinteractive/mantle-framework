@@ -63,7 +63,7 @@ return static function ( ContainerConfigurator $container_config ): void {
 	$services = $container_config->services();
 
 	// release workers - in order to execute.
-	$services->set( UpdateReplaceReleaseWorker::class );
+	// $services->set( UpdateReplaceReleaseWorker::class );
 	$services->set( SetCurrentMutualDependenciesReleaseWorker::class );
 	$services->set( AddTagToChangelogReleaseWorker::class );
 	$services->set( TagVersionReleaseWorker::class );

@@ -5,9 +5,9 @@
     "require": {
         "php": "^8.0",
         "illuminate/view": "^8.6",
-        "mantle-framework/contracts": "^0.7",
-        "mantle-framework/filesystem": "^0.7",
-        "mantle-framework/support": "^0.7",
+        "mantle-framework/contracts": "^0.9",
+        "mantle-framework/filesystem": "^0.9",
+        "mantle-framework/support": "^0.9",
         "symfony/http-foundation": "^5.3",
         "symfony/http-kernel": "^5.3",
         "symfony/mime": "^5.3",
@@ -16,7 +16,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "0.7-dev"
+            "dev-main": "0.9-dev"
         },
         "wordpress-autoloader": {
             "autoload": {
