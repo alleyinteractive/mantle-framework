@@ -27,6 +27,7 @@
         "monolog/monolog": "^2.7",
         "nesbot/carbon": "^2.53",
         "nette/php-generator": "^3.6",
+        "nunomaduro/termwind": "^1.14",
         "psr/container": "^1.1.1 || ^2.0.1",
         "psr/log": "^1.0.1 || ^2.0 || ^3.0",
         "symfony/finder": "^5.3",
@@ -88,7 +89,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "0.7-dev"
+            "dev-main": "0.9-dev"
         },
         "wordpress-autoloader": {
             "autoload": {

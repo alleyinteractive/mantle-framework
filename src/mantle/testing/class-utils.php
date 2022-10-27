@@ -8,6 +8,9 @@
 namespace Mantle\Testing;
 
 use Mantle\Testing\Doubles\Spy_REST_Server;
+use function Termwind\render;
+
+require_once __DIR__ . '/concerns/trait-output-messages.php';
 
 /**
  * Assorted testing utilities.
@@ -15,6 +18,8 @@ use Mantle\Testing\Doubles\Spy_REST_Server;
  * A fork of https://github.com/WordPress/wordpress-develop/blob/master/tests/phpunit/includes/utils.php.
  */
 class Utils {
+	use Concerns\Output_Messages;
+
 	/**
 	 * Default database name.
 	 *
@@ -62,6 +67,7 @@ class Utils {
 		call_user_func_array( $callable, $args );
 		return ob_get_clean();
 	}
+
 	/**
 	 * Unregister a post status.
 	 *
@@ -197,7 +203,7 @@ class Utils {
 		global $table_prefix;
 
 		// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
-		defined( 'ABSPATH' ) || define( 'ABSPATH', preg_replace( '#/wp-content/.*$#', '/', __DIR__ ) );
+		defined( 'ABSPATH' ) || define( 'ABSPATH', ensure_trailingslash( preg_replace( '#/wp-content/.*$#', '/', __DIR__ ) ) );
 		defined( 'WP_DEBUG' ) || define( 'WP_DEBUG', true );
 
 		defined( 'DB_NAME' ) || define( 'DB_NAME', static::DEFAULT_DB_NAME );
@@ -253,5 +259,117 @@ class Utils {
 	 */
 	public static function shell_safe( string $string ): string {
 		return empty( trim( $string ) ) ? "''" : $string;
+	}
+
+	/**
+	 * Install a WordPress codebase through a shell script.
+	 *
+	 * This installs the WordPress codebase in the specified directory. It does
+	 * not install the WordPress database.
+	 *
+	 * @param string $directory Directory to install WordPress in.
+	 */
+	public static function install_wordpress( string $directory ): void {
+		$command = sprintf(
+			'export WP_CORE_DIR=%s && curl -s %s | bash -s %s %s %s %s %s %s',
+			$directory,
+			'https://raw.githubusercontent.com/alleyinteractive/mantle-ci/HEAD/install-wp-tests.sh',
+			static::shell_safe( defined( 'DB_NAME' ) ? DB_NAME : static::env( 'WP_DB_NAME', 'wordpress_unit_tests' ) ),
+			static::shell_safe( defined( 'DB_USER' ) ? DB_USER : static::env( 'WP_DB_USER', 'root' ) ),
+			static::shell_safe( defined( 'DB_PASSWORD' ) ? DB_PASSWORD : static::env( 'WP_DB_PASSWORD', 'root' ) ),
+			static::shell_safe( defined( 'DB_HOST' ) ? DB_HOST : static::env( 'WP_DB_HOST', 'localhost' ) ),
+			static::shell_safe( static::env( 'WP_VERSION', 'latest' ) ),
+			static::shell_safe( static::env( 'WP_SKIP_DB_CREATE', 'false' ) ),
+		);
+
+		$output = static::command( $command, $retval );
+
+		if ( 0 !== $retval ) {
+			static::error( '🚨 Error installing WordPress! Output from installation:', 'Install Rsync' );
+			static::code( $output );
+			exit( 1 );
+		}
+	}
+
+	/**
+	 * Check if the command is being run in debug mode.
+	 *
+	 * @return bool
+	 */
+	public static function is_debug_mode(): bool {
+		return ! empty(
+			array_intersect(
+				(array) $_SERVER['argv'] ?? [], // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+				[
+					'--debug',
+					'--verbose',
+					'-v',
+				],
+			)
+		);
+	}
+
+	/**
+	 * Run a system command and return the output.
+	 *
+	 * @param string|string[] $command Command to run.
+	 * @param int             $exit_code Exit code.
+	 * @return string[]
+	 */
+	public static function command( $command, &$exit_code = null ) {
+		$is_debug_mode = static::is_debug_mode();
+
+		// Display the command if in debug mode.
+		if ( $is_debug_mode ) {
+			$time = microtime( true );
+
+			render(
+				'<div class="p-1">
+					Running:
+					<code>' . implode( ' ', (array) $command ) . '</code>
+				</div>'
+			);
+		}
+
+		if ( is_array( $command ) ) {
+			$command = implode( ' ', $command );
+		}
+
+		exec( $command, $output, $exit_code ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.system_calls_exec
+
+		// Display the command runtime if in debug mode.
+		if ( $is_debug_mode ) {
+			$time = microtime( true ) - $time;
+
+			render(
+				'<div class="p-1">
+					Finished in ' . number_format( $time, 2 ) . 's with exit code ' . $exit_code . '.
+				</div>'
+			);
+		}
+
+		return $output;
+	}
+
+	/**
+	 * Ensure that Composer is loaded for the current environment.
+	 */
+	public static function ensure_composer_loaded() {
+		if ( class_exists( 'Composer\Autoload\ClassLoader' ) ) {
+			return;
+		}
+
+		$paths = [
+			preg_replace( '#/vendor/.*$#', '/vendor/autoload.php', __DIR__ ),
+			__DIR__ . '/../../../vendor/autoload.php',
+			__DIR__ . '/../../vendor/autoload.php',
+		];
+
+		foreach ( $paths as $path ) {
+			if ( ! is_dir( $path ) && file_exists( $path ) ) {
+				require_once $path;
+				return;
+			}
+		}
 	}
 }

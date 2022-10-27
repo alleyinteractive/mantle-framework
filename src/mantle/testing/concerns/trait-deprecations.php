@@ -9,7 +9,10 @@
 
 namespace Mantle\Testing\Concerns;
 
+use Mantle\Support\Str;
 use PHPUnit\Util\Test;
+
+use function Mantle\Support\Helpers\collect;
 
 trait Deprecations {
 
@@ -21,6 +24,13 @@ trait Deprecations {
 	protected $expected_deprecated = [];
 
 	/**
+	 * Ignored deprecation calls.
+	 *
+	 * @var string[]
+	 */
+	protected $ignored_deprecated = [];
+
+	/**
 	 * Caught deprecated calls.
 	 *
 	 * @var array
@@ -30,11 +40,11 @@ trait Deprecations {
 	/**
 	 * Sets up the expectations for testing a deprecated call.
 	 */
-	public function expectDeprecated() {
+	public function deprecations_set_up() {
 		if ( ! method_exists( $this, 'getAnnotations' ) ) {
 			$annotations = Test::parseTestMethodAnnotations(
 				static::class,
-				$this->name
+				$this->getName()
 			);
 		} else {
 			$annotations = $this->getAnnotations();
@@ -45,6 +55,7 @@ trait Deprecations {
 				$this->expected_deprecated = array_merge( $this->expected_deprecated, $annotations[ $depth ]['expectedDeprecated'] );
 			}
 		}
+
 		add_action( 'deprecated_function_run', [ $this, 'deprecated_function_run' ] );
 		add_action( 'deprecated_argument_run', [ $this, 'deprecated_function_run' ] );
 		add_action( 'deprecated_hook_run', [ $this, 'deprecated_function_run' ] );
@@ -58,7 +69,7 @@ trait Deprecations {
 	 *
 	 * The DocBlock should contain `@expectedDeprecated` to trigger this.
 	 */
-	public function expectedDeprecated() {
+	public function deprecations_tear_down() {
 		$errors = [];
 
 		$not_caught_deprecated = array_diff( $this->expected_deprecated, $this->caught_deprecated );
@@ -66,7 +77,27 @@ trait Deprecations {
 			$errors[] = "Failed to assert that $not_caught triggered a deprecated notice";
 		}
 
-		$unexpected_deprecated = array_diff( $this->caught_deprecated, $this->expected_deprecated );
+		$unexpected_deprecated = collect( $this->caught_deprecated )
+			->filter(
+				function ( string $caught ) {
+					$ignored_and_expected = array_merge( $this->expected_deprecated, $this->ignored_deprecated );
+
+					if ( in_array( $caught, $ignored_and_expected, true ) ) {
+						return false;
+					}
+
+					// Allow partial matches when ignoring a deprecation call.
+					foreach ( $this->ignored_deprecated as $ignored ) {
+						if ( Str::is( $ignored, $caught ) ) {
+							return false;
+						}
+					}
+
+					return true;
+				}
+			)
+			->all();
+
 		foreach ( $unexpected_deprecated as $unexpected ) {
 			$errors[] = "Unexpected deprecated notice for $unexpected";
 		}
@@ -81,15 +112,33 @@ trait Deprecations {
 	}
 
 	/**
-	 * Declare an expected `_deprecated_function()` or `_deprecated_argument()` call from within a test.
+	 * Declare an expected `_deprecated_function()` or `_deprecated_argument()`
+	 * call from within a test.
 	 *
-	 * @since 4.2.0
+	 * Note: If a deprecation call isn't made within the test, the test will fail.
+	 * To ignore the deprecation entirely, use {@see Deprecations::setExpectedDeprecated()}.
 	 *
-	 * @param string $deprecated Name of the function, method, class, or argument that is deprecated. Must match
-	 *                           the first parameter of the `_deprecated_function()` or `_deprecated_argument()` call.
+	 * @param string $deprecated Name of the function, method, class, or argument
+	 *                           that is deprecated. Must match the first
+	 *                           parameter of the `_deprecated_function()` or
+	 *                           `_deprecated_argument()` call.
 	 */
 	public function setExpectedDeprecated( $deprecated ) {
 		$this->expected_deprecated[] = $deprecated;
+	}
+
+	/**
+	 * Ignore a deprecation call from within a test.
+	 *
+	 * Supports partial matches using `Str::is()` syntax with * as a wildcard.
+	 *
+	 * @param string $deprecated Name of the function, method, class, or argument
+	 *                           that is deprecated. Must match the first
+	 *                           parameter of the `_deprecated_function()` or
+	 *                           `_deprecated_argument()` call.
+	 */
+	public function ignoreDeprecated( $deprecated = '*' ) {
+		$this->ignored_deprecated[] = $deprecated;
 	}
 
 	/**

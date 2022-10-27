@@ -13,6 +13,7 @@ use Mantle\Support\Traits\Singleton;
  * Installation Manager
  */
 class Installation_Manager {
+	use Concerns\Rsync_Installation;
 	use Singleton;
 
 	/**
@@ -99,6 +100,11 @@ class Installation_Manager {
 	public function install() {
 		require_once __DIR__ . '/core-polyfill.php';
 
+		if ( $this->rsync_to ) {
+			$this->perform_rsync_testsuite();
+			return;
+		}
+
 		foreach ( $this->before_install_callbacks as $callback ) {
 			$callback();
 		}
@@ -106,8 +112,8 @@ class Installation_Manager {
 		try {
 			require_once __DIR__ . '/wordpress-bootstrap.php';
 		} catch ( \Throwable $throwable ) {
-			echo "ERROR: Failed to load WordPress!\n";
-			echo "{$throwable}\n"; // phpcs:ignore
+			Utils::error( '🚨 Failed to load the WordPress installation. Exception thrown:' );
+			Utils::code( $throwable->getMessage() );
 			exit( 1 );
 		}
 
