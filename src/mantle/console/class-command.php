@@ -56,6 +56,13 @@ abstract class Command extends Symfony_Command {
 	protected $description = '';
 
 	/**
+	 * The console command signature.
+	 *
+	 * @var string
+	 */
+	protected $signature;
+
+	/**
 	 * Command synopsis.
 	 *
 	 * @var string|array
@@ -94,7 +101,12 @@ abstract class Command extends Symfony_Command {
 	 * Constructor.
 	 */
 	public function __construct() {
-		parent::__construct( $this->name );
+		// Infer the name from the signature.
+		if ( ! empty( $this->signature ) ) {
+			$this->set_definition_from_signature( $this->signature );
+		} else {
+			parent::__construct( $this->name );
+		}
 
 		$this->setDescription( $this->short_description ?: $this->description );
 
@@ -104,12 +116,27 @@ abstract class Command extends Symfony_Command {
 	}
 
 	/**
+	 * Setup the definition from the signature.
+	 */
+	protected function set_definition_from_signature() {
+		[ $this->name, $arguments, $options ] = Parser::parse( $this->signature );
+
+		parent::__construct( $this->name );
+
+		// After parsing the signature we will spin through the arguments and options
+		// and set them on this command. These will already be changed into proper
+		// instances of these "InputArgument" and "InputOption" Symfony classes.
+		$this->getDefinition()->addArguments( $arguments );
+		$this->getDefinition()->addOptions( $options );
+	}
+
+	/**
 	 * Register the command with wp-cli.
 	 *
 	 * @throws InvalidCommandException Thrown for a command without a name, incorrectly.
 	 */
 	public function register() {
-		dd('TO BE REMOVED');
+		dd( 'TO BE REMOVED' );
 
 		$name = $this->get_name();
 
@@ -203,10 +230,10 @@ abstract class Command extends Symfony_Command {
 	 * @param array $assoc_args Command flags.
 	 */
 	// public function callback( array $args, array $assoc_args ) {
-	// 	$this->set_command_args( $args );
-	// 	$this->set_command_flags( $assoc_args );
+	// $this->set_command_args( $args );
+	// $this->set_command_flags( $assoc_args );
 
-	// 	$this->handle( $args, $assoc_args );
+	// $this->handle( $args, $assoc_args );
 	// }
 
 	/**
@@ -220,7 +247,7 @@ abstract class Command extends Symfony_Command {
 	/**
 	 * Execute the console command.
 	 *
-	 * @param InputInterface $input
+	 * @param InputInterface  $input
 	 * @param OutputInterface $output
 	 * @return int
 	 */
@@ -399,9 +426,8 @@ abstract class Command extends Symfony_Command {
 	 *
 	 * @param Container $container Application container.
 	 */
-	public function set_container( Container $container )
-	{
-		$this->container = $container;
+	public function set_container( Container $container ) {
+		 $this->container = $container;
 	}
 
 	/**
@@ -409,8 +435,7 @@ abstract class Command extends Symfony_Command {
 	 *
 	 * @return Container
 	 */
-	public function get_container(): Container
-	{
+	public function get_container(): Container {
 		return $this->container;
 	}
 }

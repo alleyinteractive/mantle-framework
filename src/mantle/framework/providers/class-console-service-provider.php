@@ -47,10 +47,10 @@ class Console_Service_Provider extends Service_Provider implements Isolated_Serv
 
 		// Remove the test config command if the test config file exists.
 		// if ( file_exists( Test_Config_Install_Command::get_test_config_path() ) ) {
-		// 	$this->commands = array_filter(
-		// 		$this->commands,
-		// 		fn ( Command $command ) => ! ( $command instanceof Test_Config_Install_Command ),
-		// 	);
+		// $this->commands = array_filter(
+		// $this->commands,
+		// fn ( Command $command ) => ! ( $command instanceof Test_Config_Install_Command ),
+		// );
 		// }
 	}
 }

@@ -136,16 +136,16 @@ abstract class Service_Provider implements LoggerAwareInterface {
 		);
 
 		return $this;
-		dd('add_command', $command);
+		dd( 'add_command', $command );
 
 		// Console_Application::starting(
-		// 	function ( Console_Application $console ) use ( $command ) {
-		// 		if ( is_string( $command ) ) {
-		// 			$command = $this->app->make( $command );
-		// 		}
+		// function ( Console_Application $console ) use ( $command ) {
+		// if ( is_string( $command ) ) {
+		// $command = $this->app->make( $command );
+		// }
 
-		// 		$console->add( $command );
-		// 	}
+		// $console->add( $command );
+		// }
 		// );
 
 		if ( is_array( $command ) ) {
@@ -167,10 +167,10 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	 * @return Service_Provider
 	 */
 	// public function register_commands(): Service_Provider {
-	// 	foreach ( (array) $this->commands as $command ) {
-	// 		$command->register();
-	// 	}
+	// foreach ( (array) $this->commands as $command ) {
+	// $command->register();
+	// }
 
-	// 	return $this;
+	// return $this;
 	// }
 }

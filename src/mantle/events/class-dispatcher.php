@@ -67,10 +67,10 @@ class Dispatcher implements Dispatcher_Contract {
 	public function listen( $events, $listener, int $priority = 10 ) {
 		foreach ( (array) $events as $event ) {
 			// add_action(
-			// 	$event,
-			// 	$this->make_listener( $listener, $event ),
-			// 	$priority,
-			// 	PHP_INT_MAX,
+			// $event,
+			// $this->make_listener( $listener, $event ),
+			// $priority,
+			// PHP_INT_MAX,
 			// );
 		}
 	}
