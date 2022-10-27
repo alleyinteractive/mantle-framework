@@ -56,7 +56,9 @@ class App_Service_Provider extends Service_Provider {
 		);
 
 		// Setup the cron event for the scheduler.
-		Schedule::schedule_cron_event();
+		if ( ! $this->app->is_running_in_console_isolation() ) {
+			Schedule::schedule_cron_event();
+		}
 	}
 
 	/**

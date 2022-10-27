@@ -7,6 +7,10 @@
 
 namespace Mantle\Console;
 
+use Mantle\Container\Container;
+use Symfony\Component\Console\Command\Command as Symfony_Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use WP_CLI;
 
 use function Mantle\Support\Helpers\collect;
@@ -16,7 +20,7 @@ use function Mantle\Support\Helpers\collect;
  *
  * @todo Abstract WP_CLI output to a console stream.
  */
-abstract class Command {
+abstract class Command extends Symfony_Command {
 	/**
 	 * Prefix for the command.
 	 *
@@ -73,12 +77,23 @@ abstract class Command {
 	 */
 	protected $command_flags;
 
+	protected Container $container;
+
+	/**
+	 * Constructor.
+	 */
+	public function __construct() {
+		parent::__construct( $this->name );
+	}
+
 	/**
 	 * Register the command with wp-cli.
 	 *
 	 * @throws InvalidCommandException Thrown for a command without a name, incorrectly.
 	 */
 	public function register() {
+		dd('TO BE REMOVED');
+
 		$name = $this->get_name();
 
 		if ( empty( $name ) ) {
@@ -183,7 +198,20 @@ abstract class Command {
 	 * @param array $args Command Arguments.
 	 * @param array $assoc_args Command flags.
 	 */
-	abstract public function handle( array $args, array $assoc_args = [] );
+	// abstract public function handle( array $args, array $assoc_args = [] );
+
+	/**
+	 * Execute the console command.
+	 *
+	 * @param InputInterface $input
+	 * @param OutputInterface $output
+	 * @return int
+	 */
+	protected function execute( InputInterface $input, OutputInterface $output ) {
+		$method = method_exists( $this, 'handle' ) ? 'handle' : '__invoke';
+
+		return (int) $this->container->call( [ $this, $method ] );
+	}
 
 	/**
 	 * Write to the console log.
@@ -334,11 +362,23 @@ abstract class Command {
 	/**
 	 * Run another wp-cli command.
 	 *
+	 * @todo Run the command through the application directly if not prefixed with 'mantle'.
+	 *
 	 * @param string $command Command to run.
 	 * @param array  $options Options for the command.
 	 * @return mixed
 	 */
 	public function call( string $command, array $options = [] ) {
 		return \WP_CLI::runcommand( $command, $options );
+	}
+
+	public function set_container( Container $container )
+	{
+		$this->container = $container;
+	}
+
+	public function get_container(): Container
+	{
+		return $this->container;
 	}
 }

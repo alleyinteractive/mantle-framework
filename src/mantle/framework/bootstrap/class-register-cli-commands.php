@@ -25,10 +25,10 @@ class Register_Cli_Commands {
 		$providers = $app->get_providers();
 
 		foreach ( $providers as $provider ) {
-			$provider->register_commands();
+			// $provider->register_commands();
 		}
 
-		// Register the commands from the Application Kernel.
+		// Register the commands from the Console Application Kernel.
 		if ( $kernel instanceof Console_Contract ) {
 			$kernel->register_commands();
 		}

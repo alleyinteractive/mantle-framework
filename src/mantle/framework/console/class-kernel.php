@@ -9,8 +9,11 @@ namespace Mantle\Framework\Console;
 
 use Mantle\Contracts\Application;
 use Mantle\Contracts\Console\Kernel as Kernel_Contract;
+use Mantle\Console\Application as Console_Application;
+use Mantle\Contracts\Console\Application as Console_Application_Contract;
 use Mantle\Contracts\Kernel as Core_Kernel_Contract;
 use Mantle\Support\Traits\Loads_Classes;
+use Mantle\Testkit\Exception_Handler;
 use ReflectionClass;
 use Throwable;
 
@@ -36,8 +39,9 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 		\Mantle\Framework\Bootstrap\Load_Environment_Variables::class,
 		\Mantle\Framework\Bootstrap\Load_Configuration::class,
 		\Mantle\Framework\Bootstrap\Register_Facades::class,
-		\Mantle\Framework\Bootstrap\Register_Providers::class,
-		\Mantle\Framework\Bootstrap\Boot_Providers::class,
+		// todo: reenable when ready.
+		// \Mantle\Framework\Bootstrap\Register_Providers::class,
+		// \Mantle\Framework\Bootstrap\Boot_Providers::class,
 		\Mantle\Framework\Bootstrap\Register_Cli_Commands::class,
 	];
 
@@ -49,11 +53,18 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	protected $commands = [];
 
 	/**
+	 * Console application.
+	 *
+	 * @var Console_Application_Contract
+	 */
+	protected Console_Application_Contract $console_application;
+
+	/**
 	 * Indicates if the Closure commands have been loaded.
 	 *
 	 * @var bool
 	 */
-	protected $commands_loaded = false;
+	protected bool $commands_loaded = false;
 
 	/**
 	 * Constructor.
@@ -68,13 +79,23 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 * Bootstrap the console.
 	 *
 	 * @todo Add better error handling.
+	 * @return int
 	 */
 	public function handle( $input, $output = null ) {
 		try {
 			$this->bootstrap();
+
+			// temporary.
+			$this->app->singleton( 'files', fn () => new \Mantle\Filesystem\Filesystem() );
+
+			Console_Application::starting( fn ( $app ) => $app->resolve( Config_Cache_Command::class ) );
+
+			return $this->get_console_application()->run( $input, $output );
 		} catch ( Throwable $e ) {
-			dd('e', $e);
-			\WP_CLI::error( 'Error booting Console Kernel: ' . $e->getMessage() );
+			$this->report_exception( $e );
+			$this->render_exception( $output, $e );
+
+			return 1;
 		}
 	}
 
@@ -83,6 +104,26 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 */
 	public function bootstrap() {
 		$this->app->bootstrap_with( $this->bootstrappers(), $this );
+	}
+
+	/**
+	 * Resolve the instance of the console application.
+	 *
+	 * @return Console_Application_Contract
+	 */
+	public function get_console_application(): Console_Application_Contract {
+		if ( ! isset( $this->console_application ) ) {
+			$this->console_application = new Console_Application( $this->app );
+		}
+
+		return $this->console_application;
+	}
+
+	/**
+	 * Set the console application instance.
+	 */
+	public function set_console_application( Console_Application_Contract $app ): void {
+		$this->console_application = $app;
 	}
 
 	/**
@@ -108,8 +149,8 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 			->flatten()
 			->filter(
 				fn ( string $class ) => class_exists( $class )
-				&& is_subclass_of( $class, Command::class )
-				&& ( new ReflectionClass( $class ) )->isInstantiable()
+					&& is_subclass_of( $class, Command::class )
+					&& ( new ReflectionClass( $class ) )->isInstantiable()
 			)
 			->filter()
 			->merge( $this->commands )
@@ -124,10 +165,9 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 		if ( ! $this->commands_loaded ) {
 			$this->commands();
 
-			foreach ( $this->commands as $command ) {
-				$command = $this->app->make( $command );
-				$command->register();
-			}
+			Console_Application::starting(
+				fn ( Console_Application $app ) => $app->resolve_commands( $this->commands )
+			);
 
 			$this->commands_loaded = true;
 		}
@@ -148,8 +188,30 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 * @param string $message Message to log.
 	 */
 	public function log( string $message ) {
+		dd( 'to be replaced', $message );
 		if ( class_exists( 'WP_CLI' ) ) {
 			\WP_CLI::log( $message );
 		}
+	}
+
+	/**
+	 * Report the exception to the exception handler.
+	 *
+	 * @param Throwable $e Exception thrown.
+	 * @return void
+	 */
+	protected function report_exception( Throwable $e ) {
+		$this->app[ Exception_Handler::class ]->report( $e );
+	}
+
+	/**
+	 * Render the exception to a response.
+	 *
+	 * @param Request   $request Request instance.
+	 * @param Throwable $e
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	protected function render_exception( $request, Throwable $e ) {
+		return $this->app[ Exception_Handler::class ]->render( $request, $e );
 	}
 }

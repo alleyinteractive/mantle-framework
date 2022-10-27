@@ -14,7 +14,8 @@ use Mantle\Support\Service_Provider;
 /**
  * Application Contract
  */
-interface Application {
+// interface Application {
+interface Application extends Container {
 	/**
 	 * Getter for the base path.
 	 *
@@ -130,6 +131,13 @@ interface Application {
 	 * @return bool
 	 */
 	public function is_running_in_console(): bool;
+
+	/**
+	 * Check if the application is running in console isolation mode.
+	 *
+	 * @return bool
+	 */
+	public function is_running_in_console_isolation(): bool;
 
 	/**
 	 * Determine if the application has booted.

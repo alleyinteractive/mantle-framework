@@ -8,12 +8,12 @@
 namespace Mantle\Support;
 
 use Mantle\Console\Command;
+use Mantle\Console\Application as Console_Application;
 use Mantle\Contracts\Application;
 use Mantle\Support\Attributes\Action;
 use Mantle\Support\Str;
 use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
 use ReflectionClass;
-
 use function Mantle\Support\Helpers\add_action;
 use function Mantle\Support\Helpers\collect;
 
@@ -65,8 +65,11 @@ abstract class Service_Provider implements LoggerAwareInterface {
 			$this->setLogger( $this->app['log']->driver() );
 		}
 
-		$this->boot_action_hooks();
-		$this->boot_attribute_hooks();
+		if ( ! $this->app->is_running_in_console_isolation() ) {
+			$this->boot_action_hooks();
+			$this->boot_attribute_hooks();
+		}
+
 		$this->boot();
 	}
 
@@ -127,12 +130,24 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	}
 
 	/**
-	 * Register a wp-cli command.
+	 * Register a console command.
 	 *
 	 * @param Command[]|string[]|Command|string $command Command instance or class name to register.
 	 * @return Service_Provider
 	 */
 	public function add_command( $command ): Service_Provider {
+		dd('add_command', $command);
+
+		// Console_Application::starting(
+		// 	function ( Console_Application $console ) use ( $command ) {
+		// 		if ( is_string( $command ) ) {
+		// 			$command = $this->app->make( $command );
+		// 		}
+
+		// 		$console->add( $command );
+		// 	}
+		// );
+
 		if ( is_array( $command ) ) {
 			foreach ( $command as $item ) {
 				$this->add_command( $item );
@@ -151,11 +166,11 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	 *
 	 * @return Service_Provider
 	 */
-	public function register_commands(): Service_Provider {
-		foreach ( (array) $this->commands as $command ) {
-			$command->register();
-		}
+	// public function register_commands(): Service_Provider {
+	// 	foreach ( (array) $this->commands as $command ) {
+	// 		$command->register();
+	// 	}
 
-		return $this;
-	}
+	// 	return $this;
+	// }
 }

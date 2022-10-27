@@ -30,6 +30,10 @@ class Query_Monitor_Service_Provider extends Service_Provider {
 	 * Register the Service Provider
 	 */
 	public function register() {
+		if ( $this->app->is_running_in_console_isolation() ) {
+			return;
+		}
+
 		\add_filter( 'qm/dispatchers', [ $this, 'fix_query_monitor_dispatcher' ], PHP_INT_MAX );
 		\add_filter( 'qm/collectors', [ $this, 'register_collector' ] );
 		\add_filter( 'qm/outputter/html', [ $this, 'output' ], 60, 2 );

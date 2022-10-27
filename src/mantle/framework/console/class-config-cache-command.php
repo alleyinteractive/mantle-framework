@@ -61,17 +61,6 @@ class Config_Cache_Command extends Command {
 	protected $synopsis = '';
 
 	/**
-	 * Constructor.
-	 *
-	 * @param Application $app Application instance.
-	 * @param Filesystem  $filesystem Filesystem instance.
-	 */
-	public function __construct( Application $app, Filesystem $filesystem ) {
-		$this->app   = $app;
-		$this->files = $filesystem;
-	}
-
-	/**
 	 * Flush Mantle's local cache.
 	 *
 	 * @param array $args Command Arguments.
@@ -79,7 +68,12 @@ class Config_Cache_Command extends Command {
 	 *
 	 * @throws LogicException Thrown on error writing config file.
 	 */
-	public function handle( array $args, array $assoc_args = [] ) {
+	public function handle( Application $app, Filesystem $filesystem ) {
+		$this->app   = $app;
+		$this->files = $filesystem;
+
+		dd('HANDLE');
+
 		$this->call( 'mantle config:clear' );
 
 		$path   = $this->app->get_cached_config_path();

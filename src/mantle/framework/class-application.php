@@ -587,6 +587,16 @@ class Application extends Container implements Application_Contract {
 	}
 
 	/**
+	 * Check if the application is running in console isolation mode.
+	 *
+	 * @todo fill in logic.
+	 * @return bool
+	 */
+	public function is_running_in_console_isolation(): bool {
+		return defined( 'MANTLE_ISOLATION_MODE' ) && MANTLE_ISOLATION_MODE;
+	}
+
+	/**
 	 * Set the environment for the application.
 	 *
 	 * @param string $environment Environment to set.

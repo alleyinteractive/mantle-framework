@@ -40,6 +40,8 @@ class New_Relic_Service_Provider extends Service_Provider {
 	 * @param Application $app Application instance.
 	 */
 	public function __construct( Application $app ) {
+		parent::__construct( $app );
+
 		$this->events = $app['events'];
 	}
 

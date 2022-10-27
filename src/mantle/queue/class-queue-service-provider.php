@@ -69,6 +69,10 @@ class Queue_Service_Provider extends Service_Provider {
 	 * @param Queue_Manager_Contract $manager Queue Manager.
 	 */
 	protected function register_providers( Queue_Manager_Contract $manager ) {
+		if ( $this->app->is_running_in_console_isolation() ) {
+			return;
+		}
+
 		$this->register_wp_cron_provider( $manager );
 	}
 
