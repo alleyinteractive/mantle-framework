@@ -106,11 +106,6 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	 * Boot all attribute actions on the service provider.
 	 */
 	protected function boot_attribute_hooks() {
-		// Abandon if we're not running PHP 8.
-		if ( version_compare( phpversion(), '8.0.0', '<' ) ) {
-			return;
-		}
-
 		$class = new ReflectionClass( static::class );
 
 		foreach ( $class->getMethods() as $method ) {
@@ -136,6 +131,11 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	 * @return Service_Provider
 	 */
 	public function add_command( $command ): Service_Provider {
+		Console_Application::starting(
+			fn ( Console_Application $console ) => $console->resolve_commands( $command )
+		);
+
+		return $this;
 		dd('add_command', $command);
 
 		// Console_Application::starting(

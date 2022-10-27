@@ -129,11 +129,9 @@ class Block_Make_Command extends Generator_Command {
 	 * Generator Command.
 	 *
 	 * @todo Replace with a filesystem abstraction.
-	 *
-	 * @param array $args Command Arguments.
-	 * @param array $assoc_args Command flags.
 	 */
-	public function handle( array $args, array $assoc_args = [] ) {
+	public function handle() {
+		// todo: update arguments.
 
 		if ( empty( $args[0] ) ) {
 			$this->error( 'Missing block class name.', true );
@@ -362,7 +360,7 @@ class Block_Make_Command extends Generator_Command {
 	 * @return string
 	 */
 	protected function get_blocks_path(): string {
-		return "{$this->app->get_base_path()}/src/js/blocks/";
+		return "{$this->container->get_base_path()}/src/js/blocks/";
 	}
 
 	/**
@@ -381,7 +379,7 @@ class Block_Make_Command extends Generator_Command {
 	 * @return string
 	 */
 	protected function get_views_path(): string {
-		return "{$this->app->get_base_path()}/views/blocks/";
+		return "{$this->container->get_base_path()}/views/blocks/";
 	}
 
 	/**

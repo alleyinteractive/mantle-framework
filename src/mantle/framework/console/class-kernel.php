@@ -10,6 +10,7 @@ namespace Mantle\Framework\Console;
 use Mantle\Contracts\Application;
 use Mantle\Contracts\Console\Kernel as Kernel_Contract;
 use Mantle\Console\Application as Console_Application;
+use Mantle\Console\Command;
 use Mantle\Contracts\Console\Application as Console_Application_Contract;
 use Mantle\Contracts\Kernel as Core_Kernel_Contract;
 use Mantle\Support\Traits\Loads_Classes;
@@ -40,8 +41,9 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 		\Mantle\Framework\Bootstrap\Load_Configuration::class,
 		\Mantle\Framework\Bootstrap\Register_Facades::class,
 		// todo: reenable when ready.
-		// \Mantle\Framework\Bootstrap\Register_Providers::class,
-		// \Mantle\Framework\Bootstrap\Boot_Providers::class,
+		\Mantle\Framework\Bootstrap\Register_Providers::class,
+		\Mantle\Framework\Bootstrap\Boot_Providers::class,
+
 		\Mantle\Framework\Bootstrap\Register_Cli_Commands::class,
 	];
 
@@ -72,23 +74,20 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 * @param Application $app Application instance.
 	 */
 	public function __construct( Application $app ) {
-		$this->app = $app;
+		$this->container = $app;
+
+		$this->register_wpcli_command();
 	}
 
 	/**
-	 * Bootstrap the console.
+	 * Run the console application
 	 *
 	 * @todo Add better error handling.
 	 * @return int
 	 */
-	public function handle( $input, $output = null ) {
+	public function handle( $input = null, $output = null ) {
 		try {
 			$this->bootstrap();
-
-			// temporary.
-			$this->app->singleton( 'files', fn () => new \Mantle\Filesystem\Filesystem() );
-
-			Console_Application::starting( fn ( $app ) => $app->resolve( Config_Cache_Command::class ) );
 
 			return $this->get_console_application()->run( $input, $output );
 		} catch ( Throwable $e ) {
@@ -103,7 +102,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 * Bootstrap the console.
 	 */
 	public function bootstrap() {
-		$this->app->bootstrap_with( $this->bootstrappers(), $this );
+		$this->container->bootstrap_with( $this->bootstrappers(), $this );
 	}
 
 	/**
@@ -113,7 +112,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 */
 	public function get_console_application(): Console_Application_Contract {
 		if ( ! isset( $this->console_application ) ) {
-			$this->console_application = new Console_Application( $this->app );
+			$this->console_application = new Console_Application( $this->container );
 		}
 
 		return $this->console_application;
@@ -140,7 +139,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 * @return void
 	 */
 	protected function load( ...$paths ) {
-		$namespace = $this->app->get_namespace();
+		$namespace = $this->container->get_namespace();
 
 		$this->commands = collect( $paths )
 			->unique()
@@ -201,17 +200,42 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 * @return void
 	 */
 	protected function report_exception( Throwable $e ) {
-		$this->app[ Exception_Handler::class ]->report( $e );
+		$this->container[ Exception_Handler::class ]->report( $e );
 	}
 
 	/**
 	 * Render the exception to a response.
 	 *
 	 * @param Request   $request Request instance.
-	 * @param Throwable $e
+	 * @param Throwable $e Exception thrown.
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	protected function render_exception( $request, Throwable $e ) {
-		return $this->app[ Exception_Handler::class ]->render( $request, $e );
+		return $this->container[ Exception_Handler::class ]->render( $request, $e );
+	}
+
+	/**
+	 * Register a proxy WP-CLI command that will proxy back to the Symfony
+	 * application.
+	 */
+	protected function register_wpcli_command() {
+		if ( ! defined( 'WP_CLI' ) || ! WP_CLI ) {
+			return;
+		}
+
+		\WP_CLI::add_command(
+			Command::PREFIX,
+			function () {
+				$status = $this->handle(
+					new \Symfony\Component\Console\Input\ArgvInput( array_slice( $_SERVER['argv'] ?? [], 1 ) ),
+					new \Symfony\Component\Console\Output\ConsoleOutput(),
+				);
+
+				exit( $status );
+			},
+			[
+				'shortdesc' => __( 'Mantle Framework Command Line Interface', 'mantle' ),
+			]
+		);
 	}
 }

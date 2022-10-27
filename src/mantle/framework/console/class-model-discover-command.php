@@ -43,21 +43,13 @@ class Model_Discover_Command extends Command {
 	protected $manifest;
 
 	/**
-	 * Constructor.
+	 * Discover Command.
 	 *
 	 * @param Model_Manifest $manifest Package Manifest.
 	 */
-	public function __construct( Model_Manifest $manifest ) {
+	public function handle( Model_Manifest $manifest ) {
 		$this->manifest = $manifest;
-	}
 
-	/**
-	 * Discover Command.
-	 *
-	 * @param array $args Command Arguments.
-	 * @param array $assoc_args Command flags.
-	 */
-	public function handle( array $args, array $assoc_args = [] ) {
 		$this->log( 'Discovering models...' );
 
 		$this->manifest->build();

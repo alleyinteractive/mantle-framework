@@ -41,21 +41,14 @@ class Seed_Command extends Command {
 	protected $app;
 
 	/**
-	 * Constructor.
-	 *
-	 * @param Application $app
-	 */
-	public function __construct( Application $app ) {
-		$this->app = $app;
-	}
-
-	/**
 	 * Run Database Seeding
 	 *
 	 * @param array $args Command Arguments.
 	 * @param array $assoc_args Command flags.
 	 */
-	public function handle( array $args, array $assoc_args = [] ) {
+	public function handle( Application $app ) {
+		// todo: update.
+
 		if ( ! $this->confirm_to_proceed() ) {
 			return;
 		}

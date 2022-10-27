@@ -129,7 +129,7 @@ class Factory_Make_Command extends Stub_Generator_Command {
 	 * @return string
 	 */
 	protected function get_folder_path( string $name ): string {
-		return untrailingslashit( $this->app->get_base_path() . '/database/' . strtolower( $this->type ) . '/' );
+		return untrailingslashit( $this->container->get_base_path() . '/database/' . strtolower( $this->type ) . '/' );
 	}
 
 	/**

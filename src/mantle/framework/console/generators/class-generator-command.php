@@ -20,13 +20,6 @@ use Throwable;
  */
 abstract class Generator_Command extends Command {
 	/**
-	 * The application instance.
-	 *
-	 * @var \Mantle\Framework\Application
-	 */
-	protected $app;
-
-	/**
 	 * Command synopsis.
 	 *
 	 * @var string|array
@@ -46,19 +39,6 @@ abstract class Generator_Command extends Command {
 	 * @var string
 	 */
 	protected $prefix = 'class-';
-
-	/**
-	 * Constructor.
-	 *
-	 * @param Application_Contract $app Application contract.
-	 * @throws Provider_Exception Thrown when generator doesn't have type set.
-	 */
-	public function __construct( Application_Contract $app ) {
-		$this->app = $app;
-
-		$this->replacements = new String_Replacements();
-	}
-
 	/**
 	 * Retrieve the generated class contents.
 	 *
@@ -79,11 +59,10 @@ abstract class Generator_Command extends Command {
 	 * Generator Command.
 	 *
 	 * @todo Replace with a filesystem abstraction.
-	 *
-	 * @param array $args Command Arguments.
-	 * @param array $assoc_args Command flags.
 	 */
-	public function handle( array $args, array $assoc_args = [] ) {
+	public function handle() {
+		$this->replacements = new String_Replacements();
+
 		if ( empty( $args[0] ) ) {
 			$this->error( 'Missing class name.', true );
 		}
@@ -141,7 +120,7 @@ abstract class Generator_Command extends Command {
 		$name = explode( '\\', $name );
 		array_pop( $name );
 
-		$parts[] = (string) $this->app->config->get( 'app.namespace', 'App' );
+		$parts[] = (string) $this->container->config->get( 'app.namespace', 'App' );
 		$parts[] = $this->type;
 
 		if ( ! empty( $name ) ) {
@@ -201,7 +180,7 @@ abstract class Generator_Command extends Command {
 	 * @return string
 	 */
 	protected function get_base_path(): string {
-		return $this->app->get_base_path() . '/app/';
+		return $this->container->get_base_path() . '/app/';
 	}
 
 	/**
@@ -217,7 +196,7 @@ abstract class Generator_Command extends Command {
 		}
 
 		// Attempt to calculate the domain from the application's folder.
-		return sanitize_title( basename( $this->app->get_base_path() ), 'mantle' );
+		return sanitize_title( basename( $this->container->get_base_path() ), 'mantle' );
 	}
 
 	/**
@@ -227,10 +206,10 @@ abstract class Generator_Command extends Command {
 	 */
 	protected function inflector(): InflectorInterface {
 		// Use the bound inflector if available.
-		if ( $this->app->bound( InflectorInterface::class ) ) {
-			return $this->app->make( InflectorInterface::class );
+		if ( $this->container->bound( InflectorInterface::class ) ) {
+			return $this->container->make( InflectorInterface::class );
 		}
 
-		return $this->app->make( EnglishInflector::class );
+		return $this->container->make( EnglishInflector::class );
 	}
 }

@@ -67,21 +67,13 @@ class Route_List_Command extends Command {
 	protected $router;
 
 	/**
-	 * Constructor.
+	 * Callback for the command.
 	 *
 	 * @param Router $router Router instance.
 	 */
-	public function __construct( Router $router ) {
+	public function handle( Router $router ) {
 		$this->router = $router;
-	}
 
-	/**
-	 * Callback for the command.
-	 *
-	 * @param array $args Command Arguments.
-	 * @param array $assoc_args Command flags.
-	 */
-	public function handle( array $args, array $assoc_args = [] ) {
 		$routes = $this->collect_routes();
 
 		\WP_CLI\Utils\format_items(

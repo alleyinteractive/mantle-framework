@@ -36,13 +36,6 @@ class Clear_Cache_Command extends Command {
 	protected $description = 'Delete the local Mantle cache (not the WordPress object cache).';
 
 	/**
-	 * Application instance.
-	 *
-	 * @var Application
-	 */
-	protected $app;
-
-	/**
 	 * Command synopsis.
 	 *
 	 * @var array
@@ -50,36 +43,24 @@ class Clear_Cache_Command extends Command {
 	protected $synopsis = '';
 
 	/**
-	 * Constructor.
-	 *
-	 * @param Application $app Application instance.
-	 */
-	public function __construct( Application $app ) {
-		$this->app = $app;
-	}
-
-	/**
 	 * Flush Mantle's local cache.
-	 *
-	 * @param array $args Command Arguments.
-	 * @param array $assoc_args Command flags.
 	 */
-	public function handle( array $args, array $assoc_args = [] ) {
-		$this->app['events']->dispatch( 'cache:clearing' );
+	public function handle() {
+		$this->container['events']->dispatch( 'cache:clearing' );
 
 		$this->delete_cached_files();
 
-		$this->app['events']->dispatch( 'cache:cleared' );
+		$this->container['events']->dispatch( 'cache:cleared' );
 	}
 
 	/**
 	 * Delete the cached files.
 	 */
 	protected function delete_cached_files() {
-		$files = glob( $this->app->get_cache_path() . '/*.php' );
+		$files = glob( $this->container->get_cache_path() . '/*.php' );
 
 		foreach ( $files as $file ) {
-			$this->log( "Deleting: [$file]" );
+			$this->log( 'Deleting: ' . $this->colorize( $file, 'yellow' ) );
 
 			try {
 				unlink( $file ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_unlink
@@ -88,6 +69,6 @@ class Clear_Cache_Command extends Command {
 			}
 		}
 
-		$this->log( 'All files deleted.' );
+		$this->success( 'All files deleted.' );
 	}
 }

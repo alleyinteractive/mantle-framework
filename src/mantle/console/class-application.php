@@ -4,6 +4,7 @@ namespace Mantle\Console;
 use Closure;
 use Mantle\Contracts\Console\Application as Console_Application_Contract;
 use Mantle\Contracts\Container;
+use Mantle\Support\Arr;
 use Symfony\Component\Console\Application as Console_Application;
 use Symfony\Component\Console\Command\Command as Symfony_Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -104,10 +105,12 @@ class Application extends Console_Application implements Console_Application_Con
 	/**
 	 * Resolve an array of commands through the console application.
 	 *
-	 * @param array $commands
+	 * @param array|string|Symfony_Command|Command $commands
 	 * @return static
 	 */
-	public function resolve_commands( array $commands ): static {
+	public function resolve_commands( $commands ): static {
+		$commands = Arr::wrap( $commands );
+
 		foreach ( $commands as $command ) {
 			$this->resolve( $command );
 		}

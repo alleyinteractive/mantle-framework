@@ -64,7 +64,7 @@ class Listener_Make_Command extends Generator_Command {
 		$class_name             = $this->get_class_name( $name );
 		$namespace_name         = untrailingslashit( str_replace( '\\\\', '\\', $this->get_namespace( $name ) ) );
 		$event_class            = $this->argument( 'event', str_replace( '_Listener', '_Event', $class_name ) );
-		$event_class_namespaced = $this->app->config->get( 'app.namespace', 'App' ) . '\Events\\' . $event_class;
+		$event_class_namespaced = $this->container->config->get( 'app.namespace', 'App' ) . '\Events\\' . $event_class;
 
 		$file = new PhpFile();
 

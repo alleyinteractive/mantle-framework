@@ -36,28 +36,9 @@ class Test_Config_Install_Command extends Command {
 	protected $description = 'Create a wp-test-config.php file for local development.';
 
 	/**
-	 * Filesystem instance.
-	 *
-	 * @var Filesystem
-	 */
-	protected $files;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param Filesystem $files Filesystem.
-	 */
-	public function __construct( Filesystem $files ) {
-		$this->files = $files;
-	}
-
-	/**
 	 * Test Config Install Command.
-	 *
-	 * @param array $args Command Arguments.
-	 * @param array $assoc_args Command flags.
 	 */
-	public function handle( array $args, array $assoc_args = [] ) {
+	public function handle() {
 		$path = static::get_test_config_path();
 
 		if ( file_exists( $path ) ) {

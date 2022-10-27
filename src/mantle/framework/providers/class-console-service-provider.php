@@ -8,6 +8,7 @@
 namespace Mantle\Framework\Providers;
 
 use Mantle\Console\Command;
+use Mantle\Contracts\Support\Isolated_Service_Provider;
 use Mantle\Framework\Console\Test_Config_Install_Command;
 use Mantle\Support\Service_Provider;
 use Mantle\Support\Traits\Loads_Classes;
@@ -20,7 +21,7 @@ use function Mantle\Support\Helpers\collect;
  *
  * Registers core commands for the framework.
  */
-class Console_Service_Provider extends Service_Provider {
+class Console_Service_Provider extends Service_Provider implements Isolated_Service_Provider {
 	use Loads_Classes;
 
 	/**
@@ -45,11 +46,11 @@ class Console_Service_Provider extends Service_Provider {
 		);
 
 		// Remove the test config command if the test config file exists.
-		if ( file_exists( Test_Config_Install_Command::get_test_config_path() ) ) {
-			$this->commands = array_filter(
-				$this->commands,
-				fn ( Command $command ) => ! ( $command instanceof Test_Config_Install_Command ),
-			);
-		}
+		// if ( file_exists( Test_Config_Install_Command::get_test_config_path() ) ) {
+		// 	$this->commands = array_filter(
+		// 		$this->commands,
+		// 		fn ( Command $command ) => ! ( $command instanceof Test_Config_Install_Command ),
+		// 	);
+		// }
 	}
 }

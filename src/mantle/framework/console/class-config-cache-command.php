@@ -63,20 +63,16 @@ class Config_Cache_Command extends Command {
 	/**
 	 * Flush Mantle's local cache.
 	 *
-	 * @param array $args Command Arguments.
-	 * @param array $assoc_args Command flags.
+	 * @param Filesystem $filesystem Filesystem instance.
 	 *
 	 * @throws LogicException Thrown on error writing config file.
 	 */
-	public function handle( Application $app, Filesystem $filesystem ) {
-		$this->app   = $app;
+	public function handle( Filesystem $filesystem ) {
 		$this->files = $filesystem;
-
-		dd('HANDLE');
 
 		$this->call( 'mantle config:clear' );
 
-		$path   = $this->app->get_cached_config_path();
+		$path   = $this->container->get_cached_config_path();
 		$config = $this->get_fresh_configuration();
 
 		$this->files->put(
@@ -92,9 +88,9 @@ class Config_Cache_Command extends Command {
 			throw new LogicException( 'Your configuration files are not serializable.', 0, $e );
 		}
 
-		$this->app['events']->dispatch( 'config-cache:cached' );
+		$this->container['events']->dispatch( 'config-cache:cached' );
 
-		$this->log( 'Configuration cached successfully!' );
+		$this->success( 'Configuration cached successfully.' );
 	}
 
 	/**
@@ -103,8 +99,8 @@ class Config_Cache_Command extends Command {
 	 * @return array
 	 */
 	protected function get_fresh_configuration() : array {
-		$app = require $this->app->get_bootstrap_path( '/app.php' );
-		$app->set_base_path( $this->app->get_base_path() );
+		$app = require $this->container->get_bootstrap_path( '/app.php' );
+		$app->set_base_path( $this->container->get_base_path() );
 		$app->make( Kernel::class )->bootstrap();
 
 		return $app['config']->all();

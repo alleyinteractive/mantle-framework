@@ -7,6 +7,7 @@
 
 namespace Mantle\Filesystem;
 
+use Mantle\Contracts\Support\Isolated_Service_Provider;
 use Mantle\Database\Model\Attachment;
 use Mantle\Support\Service_Provider;
 use RuntimeException;
@@ -14,7 +15,7 @@ use RuntimeException;
 /**
  * Filesystem Service Provider
  */
-class Filesystem_Service_Provider extends Service_Provider {
+class Filesystem_Service_Provider extends Service_Provider implements Isolated_Service_Provider {
 
 	/**
 	 * Register the service provider.

@@ -11,6 +11,7 @@ use Mantle\Container\Container;
 use Mantle\Contracts\Application as Application_Contract;
 use Mantle\Contracts\Container as Container_Contract;
 use Mantle\Contracts\Kernel as Kernel_Contract;
+use Mantle\Contracts\Support\Isolated_Service_Provider;
 use Mantle\Log\Log_Service_Provider;
 use Mantle\Framework\Providers\Event_Core_Service_Provider;
 use Mantle\Framework\Providers\Routing_Service_Provider;
@@ -422,6 +423,17 @@ class Application extends Container implements Application_Contract {
 		// Include providers from the package manifest.
 		$providers->push( ...$this->make( Package_Manifest::class )->providers() );
 
+		// Only register enabled service providers when in isolation mode.
+		if ( $this->is_running_in_console_isolation() ) {
+			$providers = $providers->filter(
+				fn ( string $provider ) => in_array(
+					Isolated_Service_Provider::class,
+					class_implements( $provider ),
+					true,
+				)
+			);
+		}
+
 		$providers->each( [ $this, 'register' ] );
 	}
 
@@ -579,6 +591,10 @@ class Application extends Container implements Application_Contract {
 	 * @return bool
 	 */
 	public function is_running_in_console(): bool {
+		if ( $this->is_running_in_console_isolation() ) {
+			return true;
+		}
+
 		if ( null === $this->is_running_in_console ) {
 			$this->is_running_in_console = Environment::get( 'APP_RUNNING_IN_CONSOLE' ) || ( defined( 'WP_CLI' ) && WP_CLI && ! wp_doing_cron() );
 		}

@@ -60,22 +60,6 @@ class Run_Command extends Command {
 	];
 
 	/**
-	 * Container instance.
-	 *
-	 * @var Container
-	 */
-	protected Container $container;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param Container $container Container instance.
-	 */
-	public function __construct( Container $container ) {
-		$this->container = $container;
-	}
-
-	/**
 	 * Queue Run Command.
 	 *
 	 * @param array $args Command Arguments.

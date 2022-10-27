@@ -46,13 +46,6 @@ class Hook_Usage_Command extends Command {
 	protected $description = 'Tabulate all the usage of a hook in the code base.';
 
 	/**
-	 * Application instance.
-	 *
-	 * @var Application
-	 */
-	protected $app;
-
-	/**
 	 * Command synopsis.
 	 *
 	 * @var array
@@ -99,21 +92,9 @@ class Hook_Usage_Command extends Command {
 	];
 
 	/**
-	 * Constructor.
-	 *
-	 * @param Application $app Application instance.
-	 */
-	public function __construct( Application $app ) {
-		$this->app = $app;
-	}
-
-	/**
 	 * Callback for the command.
-	 *
-	 * @param array $args Command Arguments.
-	 * @param array $assoc_args Command flags.
 	 */
-	public function handle( array $args, array $assoc_args = [] ) {
+	public function handle() {
 		$usage = $this->get_usage();
 
 		if ( empty( $usage ) ) {
@@ -263,7 +244,7 @@ class Hook_Usage_Command extends Command {
 	 * @return bool
 	 */
 	protected function should_use_cache(): bool {
-		if ( ! $this->app->is_environment( 'local' ) ) {
+		if ( ! app()->is_environment( 'local' ) ) {
 			return false;
 		}
 
@@ -330,7 +311,7 @@ class Hook_Usage_Command extends Command {
 	 */
 	protected function get_cache_file_for_path( string $path ): string {
 		$path = md5( $path );
-		return $this->app->get_cache_path() . "/hook-usage-{$path}.php";
+		return app()->get_cache_path() . "/hook-usage-{$path}.php";
 	}
 
 	/**

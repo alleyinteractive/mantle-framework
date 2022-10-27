@@ -56,13 +56,10 @@ class Generator_Make_Command extends Stub_Generator_Command {
 	 * Generator Command.
 	 *
 	 * @todo Replace with a filesystem abstraction.
-	 *
-	 * @param array $args Command Arguments.
-	 * @param array $assoc_args Command flags.
 	 */
-	public function handle( array $args, array $assoc_args = [] ) {
+	public function handle() {
 		// Prevent command being run in non-local environments.
-		if ( 'local' !== $this->app->environment() ) {
+		if ( 'local' !== $this->container->environment() ) {
 			$this->error( 'Generator cannot be used outside of local environment.', true );
 		}
 
@@ -70,6 +67,7 @@ class Generator_Make_Command extends Stub_Generator_Command {
 			$this->error( 'Missing class name.', true );
 		}
 
+		// todo: update arguments.
 		list( $name, $type ) = $args;
 
 		$path = $this->get_folder_path( $name );

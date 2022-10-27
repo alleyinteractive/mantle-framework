@@ -58,41 +58,31 @@ class Config_Clear_Command extends Command {
 	protected $synopsis = '';
 
 	/**
-	 * Constructor.
-	 *
-	 * @param Application $app Application instance.
-	 * @param Filesystem  $filesystem Filesystem instance.
-	 */
-	public function __construct( Application $app, Filesystem $filesystem ) {
-		$this->app   = $app;
-		$this->files = $filesystem;
-	}
-
-	/**
 	 * Flush Mantle's configuration cache.
 	 *
-	 * @param array $args Command Arguments.
-	 * @param array $assoc_args Command flags.
+	 * @param Filesystem $filesystem Filesystem instance.
 	 */
-	public function handle( array $args, array $assoc_args = [] ) {
-		$this->app['events']->dispatch( 'config-cache:clearing' );
+	public function handle( Filesystem $filesystem ) {
+		$this->files = $filesystem;
+
+		$this->container['events']->dispatch( 'config-cache:clearing' );
 
 		$this->delete_cached_files();
 
-		$this->app['events']->dispatch( 'config-cache:cleared' );
+		$this->container['events']->dispatch( 'config-cache:cleared' );
 	}
 
 	/**
 	 * Delete the cached files.
 	 */
 	protected function delete_cached_files() {
-		$path = $this->app->get_cached_config_path();
-		$this->log( "Deleting: [{$path}]" );
+		$path = $this->container->get_cached_config_path();
+		$this->log( 'Deleting: ' . $this->colorize( $path, 'yellow' ) );
 
 		if ( $this->files->delete( $path ) ) {
-			$this->log( 'All files deleted.' );
+			$this->success( 'Config cache file deleted.' );
 		} else {
-			$this->log( 'File not deleted.' );
+			$this->error( 'File not deleted.' );
 		}
 	}
 }

@@ -7,9 +7,14 @@
 
 namespace Mantle\Console;
 
+use InvalidArgumentException;
 use Mantle\Container\Container;
+use Mantle\Support\Traits\Macroable;
 use Symfony\Component\Console\Command\Command as Symfony_Command;
+use Symfony\Component\Console\Exception\CommandNotFoundException;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use WP_CLI;
 
@@ -17,10 +22,11 @@ use function Mantle\Support\Helpers\collect;
 
 /**
  * CLI Command for Service Providers
- *
- * @todo Abstract WP_CLI output to a console stream.
  */
 abstract class Command extends Symfony_Command {
+	use Concerns\Interacts_With_IO,
+		Macroable;
+
 	/**
 	 * Prefix for the command.
 	 *
@@ -54,29 +60,34 @@ abstract class Command extends Symfony_Command {
 	 *
 	 * @var string|array
 	 */
-	protected $synopsis = '';
+	// protected $synopsis = '';
 
 	/**
 	 * Command Arguments (generated at run-time).
 	 *
 	 * @var array
 	 */
-	protected $command_args;
+	// protected $command_args;
 
 	/**
 	 * Named command Arguments (generated at run-time).
 	 *
 	 * @var array
 	 */
-	protected $named_command_args = [];
+	// protected $named_command_args = [];
 
 	/**
 	 * Command Flags (generated at run-time).
 	 *
 	 * @var array
 	 */
-	protected $command_flags;
+	// protected $command_flags;
 
+	/**
+	 * Container instance.
+	 *
+	 * @var Container
+	 */
 	protected Container $container;
 
 	/**
@@ -84,6 +95,12 @@ abstract class Command extends Symfony_Command {
 	 */
 	public function __construct() {
 		parent::__construct( $this->name );
+
+		$this->setDescription( $this->short_description ?: $this->description );
+
+		if ( ! empty( $this->help ) ) {
+			$this->setHelp( $this->help );
+		}
 	}
 
 	/**
@@ -185,12 +202,12 @@ abstract class Command extends Symfony_Command {
 	 * @param array $args Command Arguments.
 	 * @param array $assoc_args Command flags.
 	 */
-	public function callback( array $args, array $assoc_args ) {
-		$this->set_command_args( $args );
-		$this->set_command_flags( $assoc_args );
+	// public function callback( array $args, array $assoc_args ) {
+	// 	$this->set_command_args( $args );
+	// 	$this->set_command_flags( $assoc_args );
 
-		$this->handle( $args, $assoc_args );
-	}
+	// 	$this->handle( $args, $assoc_args );
+	// }
 
 	/**
 	 * Callback for the command.
@@ -208,18 +225,21 @@ abstract class Command extends Symfony_Command {
 	 * @return int
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ) {
+		$this->set_input( $input );
+		$this->set_output( $output );
+
 		$method = method_exists( $this, 'handle' ) ? 'handle' : '__invoke';
 
 		return (int) $this->container->call( [ $this, $method ] );
 	}
 
 	/**
-	 * Write to the console log.
+	 * Write to the output interface.
 	 *
 	 * @param string $message Message to log.
 	 */
 	public function log( string $message ): void {
-		WP_CLI::log( $message );
+		$this->output->writeln( $message );
 	}
 
 	/**
@@ -230,43 +250,30 @@ abstract class Command extends Symfony_Command {
 	 * @return string
 	 */
 	public function colorize( string $string, string $color ): string {
-		$colors = [
-			'yellow'     => '%y',
-			'green'      => '%g',
-			'blue'       => '%b',
-			'red'        => '%r',
-			'magenta'    => '%p',
-			'magenta'    => '%m',
-			'cyan'       => '%c',
-			'grey'       => '%w',
-			'black'      => '%k',
-			'reset'      => '%n',
-			'yellow-bg'  => '%3',
-			'green-bg'   => '%2',
-			'blue-bg'    => '%4',
-			'red-bg'     => '%1',
-			'magenta-bg' => '%5',
-			'cyan-bg'    => '%6',
-			'grey-bg'    => '%7',
-			'black-bg'   => '%0',
-			'blink'      => '%F',
-			'underline'  => '%U',
-			'inverse'    => '%8',
-			'bright'     => '%9',
-		];
-
-		$char = $colors[ $color ] ?? '';
-		return WP_CLI::colorize( "{$char}{$string}%n" );
+		return sprintf( '<fg=%s>%s</>', $color, $string );
 	}
 
 	/**
-	 * Write an error to the console log.
+	 * Write an error to the output interface.
 	 *
 	 * @param string $message Message to prompt.
 	 * @param bool   $exit Flag to exit the script, defaults to false.
 	 */
 	public function error( string $message, bool $exit = false ) {
-		WP_CLI::error( $message, $exit );
+		$this->output->writeln( $this->colorize( $message, 'red' ) );
+
+		if ( $exit ) {
+			exit( 1 );
+		}
+	}
+
+	/**
+	 * Write a success message to the output interface.
+	 *
+	 * @param string $message Message to prompt.
+	 */
+	public function success( string $message ) {
+		$this->output->writeln( $this->colorize( $message, 'green' ) );
 	}
 
 	/**
@@ -360,23 +367,48 @@ abstract class Command extends Symfony_Command {
 	}
 
 	/**
-	 * Run another wp-cli command.
+	 * Run another command.
 	 *
-	 * @todo Run the command through the application directly if not prefixed with 'mantle'.
+	 * @param string          $command Command to run.
+	 * @param array           $options Options for the command.
+	 * @param OutputInterface $output Output interface.
+	 * @return int|mixed
 	 *
-	 * @param string $command Command to run.
-	 * @param array  $options Options for the command.
-	 * @return mixed
+	 * @throws InvalidArgumentException Thrown on invalid command.
+	 * @throws CommandNotFoundException Thrown on unknown command.
 	 */
-	public function call( string $command, array $options = [] ) {
+	public function call( string $command, array $options = [], OutputInterface $output = null ) {
+		if ( 0 === strpos( $command, static::PREFIX . ' ' ) ) {
+			$command = substr( $command, strlen( static::PREFIX ) + 1 );
+
+			// Attempt to resolve the command from the container and run it.
+			$command = $this->getApplication()->find( $command );
+
+			return $command->run( new ArrayInput( $options ), $output ?: new ConsoleOutput() );
+		}
+
+		if ( ! defined( 'WP_CLI' ) || ! WP_CLI ) {
+			throw new InvalidArgumentException( 'Unable to proxy to WP-CLI when not running in WP-CLI mode.' );
+		}
+
 		return \WP_CLI::runcommand( $command, $options );
 	}
 
+	/**
+	 * Set the application container.
+	 *
+	 * @param Container $container Application container.
+	 */
 	public function set_container( Container $container )
 	{
 		$this->container = $container;
 	}
 
+	/**
+	 * Retrieve the application container.
+	 *
+	 * @return Container
+	 */
 	public function get_container(): Container
 	{
 		return $this->container;

@@ -63,6 +63,6 @@ class Seeder_Make_Command extends Stub_Generator_Command {
 	 * @return string
 	 */
 	protected function get_base_path(): string {
-		return $this->app->get_base_path() . '/';
+		return $this->container->get_base_path() . '/';
 	}
 }

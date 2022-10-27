@@ -56,27 +56,18 @@ class View_Cache_Command extends Command {
 	protected $blade;
 
 	/**
-	 * Constructor.
+	 * Compile all blade views.
 	 *
-	 * @param Application $app Application instance.
 	 * @param View_Finder $finder Finder instance.
 	 */
-	public function __construct( Application $app, View_Finder $finder ) {
-		if ( ! isset( $app['view.engine.resolver'] ) ) {
+	public function handle( View_Finder $finder ) {
+		if ( ! isset( $this->container['view.engine.resolver'] ) ) {
 			$this->error( 'Missing view engine resolver from the view service provider.', true );
 		}
 
-		$this->blade  = $app['view.engine.resolver']->resolve( 'blade' )->getCompiler();
+		$this->blade  = $this->container['view.engine.resolver']->resolve( 'blade' )->getCompiler();
 		$this->finder = $finder;
-	}
 
-	/**
-	 * Compile all blade views.
-	 *
-	 * @param array $args Command Arguments.
-	 * @param array $assoc_args Command flags.
-	 */
-	public function handle( array $args, array $assoc_args = [] ) {
 		$this->call( 'mantle view:clear' );
 
 		$paths = $this->finder->get_paths();
