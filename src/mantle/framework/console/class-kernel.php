@@ -16,6 +16,7 @@ use Mantle\Contracts\Kernel as Core_Kernel_Contract;
 use Mantle\Support\Traits\Loads_Classes;
 use Mantle\Testkit\Exception_Handler;
 use ReflectionClass;
+use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
 
 /**
@@ -67,6 +68,13 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	protected bool $commands_loaded = false;
 
 	/**
+	 * Output interface
+	 *
+	 * @var OutputInterface
+	 */
+	protected ?OutputInterface $output;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Application $app Application instance.
@@ -85,6 +93,8 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 * @return int
 	 */
 	public function handle( $input = null, $output = null ) {
+		$this->output = $output;
+
 		try {
 			$this->bootstrap();
 
@@ -190,9 +200,8 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 * @param string $message Message to log.
 	 */
 	public function log( string $message ) {
-		dd( 'to be replaced', $message );
-		if ( class_exists( 'WP_CLI' ) ) {
-			\WP_CLI::log( $message );
+		if ( isset( $this->output ) ) {
+			$this->output->writeln( $message );
 		}
 	}
 
