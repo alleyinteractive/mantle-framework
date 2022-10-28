@@ -92,6 +92,13 @@ class Application extends Container implements Application_Contract {
 	protected $booted_callbacks = [];
 
 	/**
+	 * The array of terminating callbacks.
+	 *
+	 * @var callable[]
+	 */
+	protected $terminating_callbacks = [];
+
+	/**
 	 * All of the registered service providers.
 	 *
 	 * @var Service_Provider[]
@@ -606,7 +613,6 @@ class Application extends Container implements Application_Contract {
 	/**
 	 * Check if the application is running in console isolation mode.
 	 *
-	 * @todo fill in logic.
 	 * @return bool
 	 */
 	public function is_running_in_console_isolation(): bool {
@@ -648,7 +654,7 @@ class Application extends Container implements Application_Contract {
 	 * @param callable $callback Callback for the listener.
 	 * @return static
 	 */
-	public function booting( $callback ) {
+	public function booting( callable $callback ): static {
 		$this->booting_callbacks[] = $callback;
 		return $this;
 	}
@@ -659,7 +665,7 @@ class Application extends Container implements Application_Contract {
 	 * @param callable $callback Callback for the listener.
 	 * @return static
 	 */
-	public function booted( $callback ) {
+	public function booted( callable $callback ): static {
 		$this->booted_callbacks[] = $callback;
 
 		if ( $this->is_booted() ) {
@@ -667,6 +673,26 @@ class Application extends Container implements Application_Contract {
 		}
 
 		return $this;
+	}
+
+	/**
+	 * Register a new terminating callback.
+	 *
+	 * @param callable $callback Callback for the listener.
+	 * @return static
+	 */
+	public function terminating( callable $callback ): static {
+		$this->terminating_callbacks[] = $callback;
+		return $this;
+	}
+
+	/**
+	 * Terminate the application.
+	 *
+	 * @return void
+	 */
+	public function terminate(): void {
+		$this->fire_app_callbacks( $this->terminating_callbacks );
 	}
 
 	/**

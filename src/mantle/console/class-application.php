@@ -65,8 +65,6 @@ class Application extends Console_Application implements Console_Application_Con
 		$this->setAutoExit( false );
 		$this->setCatchExceptions( false );
 
-		$this->container['events']->dispatch( 'console.starting', $this );
-
 		$this->bootstrap();
 	}
 
@@ -74,6 +72,9 @@ class Application extends Console_Application implements Console_Application_Con
 	 * Bootstrap the console application.
 	 */
 	protected function bootstrap() {
+		// Fire off a starting event for the application to listen to.
+		$this->container['events']->dispatch( 'console.starting', $this );
+
 		foreach ( static::$bootstrappers as $bootstrapper ) {
 			$bootstrapper( $this );
 		}

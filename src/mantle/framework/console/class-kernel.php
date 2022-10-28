@@ -11,10 +11,11 @@ use Mantle\Contracts\Application;
 use Mantle\Contracts\Console\Kernel as Kernel_Contract;
 use Mantle\Console\Application as Console_Application;
 use Mantle\Console\Command;
+use Mantle\Console\Lightweight_Event_Dispatcher;
 use Mantle\Contracts\Console\Application as Console_Application_Contract;
 use Mantle\Contracts\Kernel as Core_Kernel_Contract;
 use Mantle\Support\Traits\Loads_Classes;
-use Mantle\Testkit\Exception_Handler;
+use Mantle\Contracts\Exceptions\Handler as Exception_Handler;
 use ReflectionClass;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
@@ -80,8 +81,9 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 * @param Application $app Application instance.
 	 */
 	public function __construct( Application $app ) {
-		$this->container = $app;
+		$this->app = $app;
 
+		$this->ensure_environment_is_set();
 		$this->register_wpcli_command();
 	}
 
@@ -111,7 +113,15 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 * Bootstrap the console.
 	 */
 	public function bootstrap() {
-		$this->container->bootstrap_with( $this->bootstrappers(), $this );
+		// Replace the event dispatcher when running in isolation mode.
+		if ( $this->app->is_running_in_console_isolation() ) {
+			$this->app->singleton(
+				'events',
+				fn ( $app ) => new Lightweight_Event_Dispatcher( $app ),
+			);
+		}
+
+		$this->app->bootstrap_with( $this->bootstrappers(), $this );
 	}
 
 	/**
@@ -121,7 +131,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 */
 	public function get_console_application(): Console_Application_Contract {
 		if ( ! isset( $this->console_application ) ) {
-			$this->console_application = new Console_Application( $this->container );
+			$this->console_application = new Console_Application( $this->app );
 		}
 
 		return $this->console_application;
@@ -152,7 +162,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 * @return void
 	 */
 	protected function load( ...$paths ) {
-		$namespace = $this->container->get_namespace();
+		$namespace = $this->app->get_namespace();
 
 		$this->commands = collect( $paths )
 			->unique()
@@ -212,7 +222,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 * @return void
 	 */
 	protected function report_exception( Throwable $e ) {
-		$this->container[ Exception_Handler::class ]->report( $e );
+		$this->app[ Exception_Handler::class ]->report( $e );
 	}
 
 	/**
@@ -223,7 +233,18 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	protected function render_exception( $request, Throwable $e ) {
-		return $this->container[ Exception_Handler::class ]->render( $request, $e );
+		return $this->app[ Exception_Handler::class ]->render( $request, $e );
+	}
+
+	/**
+	 * Ensure the WordPress environment is setup for isolation mode.
+	 */
+	protected function ensure_environment_is_set() {
+		if ( ! $this->app->is_running_in_console_isolation() ) {
+			return;
+		}
+
+		defined( 'ABSPATH' ) || define( 'ABSPATH', preg_replace( '#/wp-content/.*$#', '/', __DIR__ ) ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
 	}
 
 	/**
@@ -249,5 +270,18 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 				'shortdesc' => __( 'Mantle Framework Command Line Interface', 'mantle' ),
 			]
 		);
+	}
+
+	/**
+	 * Terminate the kernel.
+	 *
+	 * @param  \Symfony\Component\Console\Input\InputInterface $input
+	 * @param  int                                             $status
+	 * @return void
+	 */
+	public function terminate( $input, $status ): void {
+		if ( isset( $this->app ) ) {
+			$this->app->terminate();
+		}
 	}
 }

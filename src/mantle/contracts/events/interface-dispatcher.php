@@ -26,7 +26,7 @@ interface Dispatcher {
 	 * @param  string $event_name
 	 * @return bool
 	 */
-	public function has_listeners( $event_name );
+	public function has_listeners( $event_name ): bool;
 
 	/**
 	 * Register an event subscriber with the dispatcher.

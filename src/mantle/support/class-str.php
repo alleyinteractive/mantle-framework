@@ -667,7 +667,17 @@ class Str {
 	 * @return string
 	 */
 	public static function trailing_slash( string $string ): string {
-		return \trailingslashit( $string );
+		return rtrim( $string, '/' ) . '/';
+	}
+
+	/**
+	 * Remove a trailing slash from a string.
+	 *
+	 * @param string $string String to untrail.
+	 * @return string
+	 */
+	public static function untrailing_slash( string $string ): string {
+		return rtrim( $string, '/' );
 	}
 
 	/**

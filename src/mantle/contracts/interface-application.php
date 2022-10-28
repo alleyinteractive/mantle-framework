@@ -155,14 +155,29 @@ interface Application extends Container {
 	 *
 	 * @param callable $callback Callback for the listener.
 	 */
-	public function booting( $callback );
+	public function booting( callable $callback ): static;
 
 	/**
 	 * Register a new "booted" listener.
 	 *
 	 * @param callable $callback Callback for the listener.
 	 */
-	public function booted( $callback );
+	public function booted( callable $callback ): static;
+
+	/**
+	 * Register a new terminating callback.
+	 *
+	 * @param callable $callback Callback for the listener.
+	 * @return static
+	 */
+	public function terminating( callable $callback ): static;
+
+	/**
+	 * Termine the application.
+	 *
+	 * @return void
+	 */
+	public function terminate(): void;
 
 	/**
 	 * Run the given array of bootstrap classes.

@@ -31,4 +31,13 @@ interface Kernel {
 	 * @param string $message Message to log.
 	 */
 	public function log( string $message );
+
+	/**
+	 * Terminate the application.
+	 *
+	 * @param  \Symfony\Component\Console\Input\InputInterface $input
+	 * @param  int                                             $status
+	 * @return void
+	 */
+	public function terminate( $input, $status ): void;
 }
