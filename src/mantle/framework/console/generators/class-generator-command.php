@@ -10,6 +10,7 @@ namespace Mantle\Framework\Console\Generators;
 use Mantle\Console\Command;
 use Mantle\Contracts\Application as Application_Contract;
 use Mantle\Framework\Providers\Provider_Exception;
+use Mantle\Support\Str;
 use Mantle\Support\String_Replacements;
 use Symfony\Component\String\Inflector\EnglishInflector;
 use Symfony\Component\String\Inflector\InflectorInterface;
@@ -63,11 +64,11 @@ abstract class Generator_Command extends Command {
 	public function handle() {
 		$this->replacements = new String_Replacements();
 
-		if ( empty( $args[0] ) ) {
+		$name = $this->argument( 'name' );
+
+		if ( empty( $name ) ) {
 			$this->error( 'Missing class name.', true );
 		}
-
-		list( $name ) = $args;
 
 		$path = $this->get_folder_path( $name );
 
@@ -169,7 +170,7 @@ abstract class Generator_Command extends Command {
 	protected function get_file_path( string $name ): string {
 		$parts    = explode( '\\', $name );
 		$filename = array_pop( $parts );
-		$filename = \sanitize_title_with_dashes( str_replace( '_', '-', $filename ) );
+		$filename = Str::slug( str_replace( '_', '-', $filename ) );
 
 		return $this->get_folder_path( $name ) . "/{$this->prefix}{$filename}.php";
 	}

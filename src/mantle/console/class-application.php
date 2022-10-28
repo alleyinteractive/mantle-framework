@@ -1,4 +1,10 @@
 <?php
+/**
+ * Application class file
+ *
+ * @package Mantle
+ */
+
 namespace Mantle\Console;
 
 use Closure;
@@ -59,7 +65,7 @@ class Application extends Console_Application implements Console_Application_Con
 		$this->setAutoExit( false );
 		$this->setCatchExceptions( false );
 
-		// todo: fire starting event.
+		$this->container['events']->dispatch( 'console.starting', $this );
 
 		$this->bootstrap();
 	}
@@ -74,11 +80,13 @@ class Application extends Console_Application implements Console_Application_Con
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * Run the command through the console application.
 	 *
 	 * @todo Add event dispatching for before and after firing the command.
+	 * @param InputInterface|null  $input Input interface.
+	 * @param OutputInterface|null $output Output interface.
 	 */
-	public function run( InputInterface $input = null, OutputInterface $output = null ): int {
+	public function run( InputInterface $input = null, OutputInterface $output = null ): int { // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod.Found
 		return parent::run( $input, $output );
 	}
 

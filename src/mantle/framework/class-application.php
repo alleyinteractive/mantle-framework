@@ -423,7 +423,8 @@ class Application extends Container implements Application_Contract {
 		// Include providers from the package manifest.
 		$providers->push( ...$this->make( Package_Manifest::class )->providers() );
 
-		// Only register enabled service providers when in isolation mode.
+		// Only register service providers that implement Isolated_Service_Provider
+		// when in isolation mode.
 		if ( $this->is_running_in_console_isolation() ) {
 			$providers = $providers->filter(
 				fn ( string $provider ) => in_array(

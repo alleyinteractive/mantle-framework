@@ -1,4 +1,11 @@
 <?php
+/**
+ * Parser class file
+ *
+ * phpcs:disable Squiz.Commenting.FunctionComment.EmptyThrows
+ *
+ * @package Mantle
+ */
 
 namespace Mantle\Console;
 
@@ -6,6 +13,9 @@ use InvalidArgumentException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
+/**
+ * Command Signature Parser
+ */
 class Parser {
 
 	/**

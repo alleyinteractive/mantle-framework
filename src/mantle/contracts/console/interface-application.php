@@ -1,16 +1,19 @@
 <?php
+/**
+ * Application interface file
+ *
+ * @package Mantle
+ */
+
 namespace Mantle\Contracts\Console;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Console Application Contract
+ */
 interface Application {
-	/**
-	 * Run the console application.
-	 *
-	 * @return int
-	 */
-
 	/**
 	 * Run the command through the console application.
 	 *

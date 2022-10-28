@@ -11,7 +11,6 @@ use Mantle\Contracts\Queue\Dispatcher as Dispatcher_Contract;
 use Mantle\Contracts\Queue\Queue_Manager as Queue_Manager_Contract;
 use Mantle\Queue\Console\Run_Command;
 use Mantle\Queue\Dispatcher;
-use Mantle\Queue\Events\Job_Processed;
 use Mantle\Queue\Events\Run_Complete;
 use Mantle\Queue\Queue_Manager;
 use Mantle\Queue\Worker;
@@ -69,10 +68,6 @@ class Queue_Service_Provider extends Service_Provider {
 	 * @param Queue_Manager_Contract $manager Queue Manager.
 	 */
 	protected function register_providers( Queue_Manager_Contract $manager ) {
-		if ( $this->app->is_running_in_console_isolation() ) {
-			return;
-		}
-
 		$this->register_wp_cron_provider( $manager );
 	}
 

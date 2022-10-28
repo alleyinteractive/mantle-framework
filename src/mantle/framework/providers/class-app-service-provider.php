@@ -48,17 +48,12 @@ class App_Service_Provider extends Service_Provider {
 			function( $app ) {
 				return tap(
 					new Schedule( $app ),
-					function( $schedule ) {
-						$this->schedule( $schedule );
-					}
+					fn ( Schedule $schedule ) => $this->schedule( $schedule ),
 				);
 			}
 		);
 
-		// Setup the cron event for the scheduler.
-		if ( ! $this->app->is_running_in_console_isolation() ) {
-			Schedule::schedule_cron_event();
-		}
+		Schedule::schedule_cron_event();
 	}
 
 	/**

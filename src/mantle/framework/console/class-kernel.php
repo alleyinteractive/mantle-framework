@@ -40,10 +40,8 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 		\Mantle\Framework\Bootstrap\Load_Environment_Variables::class,
 		\Mantle\Framework\Bootstrap\Load_Configuration::class,
 		\Mantle\Framework\Bootstrap\Register_Facades::class,
-		// todo: reenable when ready.
 		\Mantle\Framework\Bootstrap\Register_Providers::class,
 		\Mantle\Framework\Bootstrap\Boot_Providers::class,
-
 		\Mantle\Framework\Bootstrap\Register_Cli_Commands::class,
 	];
 
@@ -82,7 +80,8 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	/**
 	 * Run the console application
 	 *
-	 * @todo Add better error handling.
+	 * @param \Symfony\Component\Console\Input\InputInterface   $input
+	 * @param \Symfony\Component\Console\Output\OutputInterface $output
 	 * @return int
 	 */
 	public function handle( $input = null, $output = null ) {
@@ -120,6 +119,10 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 
 	/**
 	 * Set the console application instance.
+	 *
+	 * Set the instance of the Symfony console application.
+	 *
+	 * @param Console_Application_Contract $app Console application instance.
 	 */
 	public function set_console_application( Console_Application_Contract $app ): void {
 		$this->console_application = $app;
@@ -227,11 +230,11 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 			Command::PREFIX,
 			function () {
 				$status = $this->handle(
-					new \Symfony\Component\Console\Input\ArgvInput( array_slice( $_SERVER['argv'] ?? [], 1 ) ),
+					new \Symfony\Component\Console\Input\ArgvInput( array_slice( $_SERVER['argv'] ?? [], 1 ) ), // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 					new \Symfony\Component\Console\Output\ConsoleOutput(),
 				);
 
-				exit( $status );
+				exit( (int) $status );
 			},
 			[
 				'shortdesc' => __( 'Mantle Framework Command Line Interface', 'mantle' ),

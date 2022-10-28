@@ -13,8 +13,12 @@ namespace Mantle\Contracts\Console;
 interface Kernel {
 	/**
 	 * Run the console application.
+	 *
+	 * @param mixed      $input Console input.
+	 * @param mixed|null $output Console output.
+	 * @return int
 	 */
-	public function handle( $input, $ouput = null );
+	public function handle( $input, $output = null );
 
 	/**
 	 * Register the application's commands.

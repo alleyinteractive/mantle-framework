@@ -14,7 +14,6 @@ use Mantle\Support\Service_Provider;
 /**
  * Application Contract
  */
-// interface Application {
 interface Application extends Container {
 	/**
 	 * Getter for the base path.

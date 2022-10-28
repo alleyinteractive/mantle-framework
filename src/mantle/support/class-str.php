@@ -553,6 +553,7 @@ class Str {
 	 * @return string
 	 */
 	public static function slug( $title ) {
+		// todo: replace with non-wordpress function.
 		return sanitize_title( $title );
 	}
 

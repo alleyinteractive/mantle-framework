@@ -36,6 +36,18 @@ class Test_Config_Install_Command extends Command {
 	protected $description = 'Create a wp-test-config.php file for local development.';
 
 	/**
+	 * Constructor.
+	 */
+	public function __construct() {
+		parent::__construct();
+
+		// Hide the command if the test configuration is already installed.
+		if ( file_exists( static::get_test_config_path() ) ) {
+			$this->setHidden( true );
+		}
+	}
+
+	/**
 	 * Test Config Install Command.
 	 */
 	public function handle() {
