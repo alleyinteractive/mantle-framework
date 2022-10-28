@@ -11,7 +11,7 @@ use Mantle\Contracts\Application;
 use Mantle\Contracts\Console\Kernel as Kernel_Contract;
 use Mantle\Console\Application as Console_Application;
 use Mantle\Console\Command;
-use Mantle\Console\Lightweight_Event_Dispatcher;
+use Mantle\Console\Events\Lightweight_Event_Dispatcher;
 use Mantle\Contracts\Console\Application as Console_Application_Contract;
 use Mantle\Contracts\Kernel as Core_Kernel_Contract;
 use Mantle\Support\Traits\Loads_Classes;

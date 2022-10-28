@@ -77,7 +77,12 @@ class Config_Clear_Command extends Command {
 	 */
 	protected function delete_cached_files() {
 		$path = $this->container->get_cached_config_path();
-		$this->log( 'Deleting: ' . $this->colorize( $path, 'yellow' ) );
+
+		if ( ! $this->files->exists( $path ) ) {
+			return;
+		}
+
+		$this->line( 'Deleting: ' . $this->colorize( $path, 'yellow' ) );
 
 		if ( $this->files->delete( $path ) ) {
 			$this->success( 'Config cache file deleted.' );

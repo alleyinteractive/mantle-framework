@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Console;
+namespace Mantle\Console\Events;
 
 use Mantle\Events\Dispatcher;
 use RuntimeException;

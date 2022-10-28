@@ -133,13 +133,6 @@ class Model_Manifest {
 			}
 		}
 
-		/**
-		 * Filter the models that are being automatically registered.
-		 *
-		 * @param \Mantle\Support\Collection $manifest Model manifest.
-		 */
-		$manifest = apply_filters( 'mantle_model_registration', $manifest );
-
 		$this->write_manifest( $manifest->unique()->values()->all() );
 	}
 

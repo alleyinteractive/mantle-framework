@@ -8,6 +8,7 @@
 namespace Mantle\Framework\Providers;
 
 use Mantle\Contracts\Application;
+use Mantle\Contracts\Support\Isolated_Service_Provider;
 use Mantle\Support\Service_Provider;
 use Mantle\Facade\Event;
 use Mantle\Framework\Events\Discover_Events;
@@ -18,7 +19,7 @@ use function Mantle\Support\Helpers\collect;
 /**
  * Event Service Provider
  */
-class Event_Service_Provider extends Service_Provider {
+class Event_Service_Provider extends Service_Provider implements Isolated_Service_Provider {
 	/**
 	 * The event listener mappings for the application.
 	 *
