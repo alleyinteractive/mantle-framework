@@ -11,14 +11,10 @@ use InvalidArgumentException;
 use Mantle\Container\Container;
 use Mantle\Support\Traits\Macroable;
 use Symfony\Component\Console\Command\Command as Symfony_Command;
-use Symfony\Component\Console\Exception\CommandNotFoundException;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
-use WP_CLI;
-
-use function Mantle\Support\Helpers\collect;
 
 /**
  * CLI Command for Service Providers

@@ -7,12 +7,13 @@
 
 namespace Mantle\Framework\Providers;
 
+use Mantle\Contracts\Support\Isolated_Service_Provider;
 use Mantle\Support\Service_Provider;
 
 /**
  * Error Service Provider
  */
-class Error_Service_Provider extends Service_Provider {
+class Error_Service_Provider extends Service_Provider implements Isolated_Service_Provider {
 	/**
 	 * Error Handler
 	 *
@@ -30,7 +31,8 @@ class Error_Service_Provider extends Service_Provider {
 
 		$this->handler = new \Whoops\Run();
 
-		if ( defined( 'WP_CLI' ) && \WP_CLI ) {
+
+		if ( $this->app->is_running_in_console() ) {
 			$this->handler->pushHandler( new \Whoops\Handler\PlainTextHandler() );
 		} elseif ( \Whoops\Util\Misc::isAjaxRequest() ) {
 			$this->handler->pushHandler( new \Whoops\Handler\JsonResponseHandler() );
