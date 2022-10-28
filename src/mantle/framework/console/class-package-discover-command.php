@@ -22,13 +22,6 @@ class Package_Discover_Command extends Command {
 	protected $name = 'package:discover';
 
 	/**
-	 * Command Short Description.
-	 *
-	 * @var string
-	 */
-	protected $short_description = 'Discover package dependencies from Composer';
-
-	/**
 	 * Command Description.
 	 *
 	 * @var string

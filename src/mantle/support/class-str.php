@@ -550,11 +550,28 @@ class Str {
 	 * Generate a URL friendly "slug" from a given string.
 	 *
 	 * @param string $title String to slugify.
+	 * @param string $separator Separator to use.
+	 * @param string $language Language to use.
 	 * @return string
 	 */
-	public static function slug( $title ) {
-		// todo: replace with non-wordpress function.
-		return sanitize_title( $title );
+	public static function slug( $title, $separator = '-', $language = 'en' ) {
+		$title = $language ? static::ascii( $title, $language ) : $title;
+
+		// Convert all dashes/underscores into separator.
+		$flip = '-' === $separator ? '_' : '-';
+
+		$title = preg_replace( '![' . preg_quote( $flip, null ) . ']+!u', $separator, $title );
+
+		// Replace @ with the word 'at'.
+		$title = str_replace( '@', $separator . 'at' . $separator, $title );
+
+		// Remove all characters that are not the separator, letters, numbers, or whitespace..
+		$title = preg_replace( '![^' . preg_quote( $separator, null ) . '\pL\pN\s]+!u', '', static::lower( $title ) );
+
+		// Replace all separator characters and whitespace by a single separator.
+		$title = preg_replace( '![' . preg_quote( $separator, null ) . '\s]+!u', $separator, $title );
+
+		return trim( $title, $separator );
 	}
 
 	/**

@@ -40,18 +40,11 @@ class Test_Make_Command extends Stub_Generator_Command {
 	protected $prefix = 'test-';
 
 	/**
-	 * Command synopsis.
+	 * Command signature.
 	 *
-	 * @var string|array
+	 * @var string
 	 */
-	protected $synopsis = [
-		[
-			'description' => 'Class name',
-			'name'        => 'name',
-			'optional'    => false,
-			'type'        => 'positional',
-		],
-	];
+	protected $signature = '{name}';
 
 	/**
 	 * Get the stub file for the generator.

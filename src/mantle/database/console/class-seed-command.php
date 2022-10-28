@@ -23,7 +23,7 @@ class Seed_Command extends Command {
 	 *
 	 * @var string|array
 	 */
-	protected $signature = 'db:seed {--class}';
+	protected $signature = 'db:seed {--class=}';
 
 	/**
 	 * Run Database Seeding

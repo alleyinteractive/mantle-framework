@@ -24,25 +24,11 @@ class Event_Cache_Clear_Command extends Command {
 	protected $name = 'event:clear';
 
 	/**
-	 * Command Short Description.
-	 *
-	 * @var string
-	 */
-	protected $short_description = 'Clear the local event cache.';
-
-	/**
 	 * Command Description.
 	 *
 	 * @var string
 	 */
 	protected $description = 'Clear the local event cache.';
-
-	/**
-	 * Command synopsis.
-	 *
-	 * @var array
-	 */
-	protected $synopsis = '';
 
 	/**
 	 * Flush Mantle's local cache.

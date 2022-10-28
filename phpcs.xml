@@ -41,6 +41,10 @@
 		<exclude-pattern>src/</exclude-pattern>
 	</rule>
 
+	<rule ref="Squiz.Commenting.FunctionCommentThrowTag.Missing">
+		<exclude-pattern>src/mantle/framework/console/generators/</exclude-pattern>
+	</rule>
+
 	<rule ref="Internal.NoCodeFound">
 		<exclude-pattern>*.blade.php</exclude-pattern>
 	</rule>

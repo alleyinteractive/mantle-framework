@@ -212,6 +212,30 @@ trait Interacts_With_IO {
 	}
 
 	/**
+	 * Format items into multiple formats based on a flag.
+	 *
+	 * @param string          $format Format to return (json, xml, count, csv, or table).
+	 * @param array           $headers Headers for the table.
+	 * @param array|Arrayable $data    Data for the table.
+	 * @return mixed
+	 */
+	public function format_data( string $format, array $headers, $data ) {
+		if ( $data instanceof Arrayable ) {
+			$data = $data->to_array();
+		} else {
+			$data = (array) $data;
+		}
+
+		return match ( $format ) {
+			'count'  => count( $data ),
+			'csv'    => $this->output->format_csv( $headers, $data ),
+			'json'   => $this->output->format_json( $headers, $data ),
+			'xml'    => $this->output->format_xml( $headers, $data ),
+			default  => $this->table( $headers, $data ),
+		};
+	}
+
+	/**
 	 * Format input to textual table.
 	 *
 	 * @param  array                                               $headers

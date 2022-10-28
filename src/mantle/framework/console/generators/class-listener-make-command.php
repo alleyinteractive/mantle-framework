@@ -35,24 +35,11 @@ class Listener_Make_Command extends Generator_Command {
 	protected $type = 'Listeners';
 
 	/**
-	 * Command synopsis.
+	 * Command signature.
 	 *
-	 * @var string|array
+	 * @var string
 	 */
-	protected $synopsis = [
-		[
-			'description' => 'Class name',
-			'name'        => 'name',
-			'optional'    => false,
-			'type'        => 'positional',
-		],
-		[
-			'description' => 'Event name for listener',
-			'name'        => 'event',
-			'optional'    => true,
-			'type'        => 'positional',
-		],
-	];
+	protected $signature = '{name} {event}';
 
 	/**
 	 * Build the generated file.

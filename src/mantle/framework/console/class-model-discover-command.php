@@ -22,13 +22,6 @@ class Model_Discover_Command extends Command {
 	protected $name = 'model:discover';
 
 	/**
-	 * Command Short Description.
-	 *
-	 * @var string
-	 */
-	protected $short_description = 'Discover models within the application for automatic registration.';
-
-	/**
 	 * Command Description.
 	 *
 	 * @var string

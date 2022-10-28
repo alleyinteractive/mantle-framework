@@ -28,18 +28,11 @@ class {{ class }}_Make_Command extends Stub_Generator_Command {
 	protected $description = 'Generate a {{ class }}.';
 
 	/**
-	 * Command synopsis.
+	 * Command signature.
 	 *
-	 * @var string|array
+	 * @var string
 	 */
-	protected $synopsis = [
-		[
-			'description' => 'Class name',
-			'name'        => 'name',
-			'optional'    => false,
-			'type'        => 'positional',
-		],
-	];
+	protected $signature = '{name}';
 
 	/**
 	 * The type of class being generated.

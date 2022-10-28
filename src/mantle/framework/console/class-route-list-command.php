@@ -19,18 +19,11 @@ use function Mantle\Support\Helpers\collect;
  */
 class Route_List_Command extends Command {
 	/**
-	 * The console command name.
+	 * The console signature.
 	 *
 	 * @var string
 	 */
-	protected $name = 'route:list';
-
-	/**
-	 * Command Short Description.
-	 *
-	 * @var string
-	 */
-	protected $short_description = 'List the registered routes in the application.';
+	protected $signature = 'route:list {--format=table}';
 
 	/**
 	 * Command Description.
@@ -38,26 +31,6 @@ class Route_List_Command extends Command {
 	 * @var string
 	 */
 	protected $description = 'List the registered routes in the application.';
-
-	/**
-	 * Command synopsis.
-	 *
-	 * Supports registering command arguments in a string or array format.
-	 * For example:
-	 *
-	 *     <argument> --example-flag
-	 *
-	 * @var string|array
-	 */
-	protected $synopsis = [
-		[
-			'description' => 'Output format.',
-			'name'        => 'format',
-			'optional'    => true,
-			'options'     => [ 'table', 'json', 'csv', 'count' ],
-			'type'        => 'flag',
-		],
-	];
 
 	/**
 	 * Router instance.
@@ -74,18 +47,16 @@ class Route_List_Command extends Command {
 	public function handle( Router $router ) {
 		$this->router = $router;
 
-		$routes = $this->collect_routes();
-
-		\WP_CLI\Utils\format_items(
-			$this->flag( 'format', 'table' ),
-			$routes->to_array(),
+		return $this->format_data(
+			$this->option( 'format', 'table' ),
 			[
 				'method',
 				'url',
 				'name',
 				'action',
 				'middleware',
-			]
+			],
+			$this->collect_routes()->to_array(),
 		);
 	}
 
@@ -105,11 +76,11 @@ class Route_List_Command extends Command {
 			->map(
 				function ( Route $route, string $name ) {
 					return [
-						'action'     => $route->get_callback_name(),
-						'method'     => implode( '|', $route->getMethods() ),
-						'middleware' => implode( '|', $route->middleware() ),
-						'name'       => $name,
-						'url'        => $route->getPath(),
+						implode( '|', $route->getMethods() ),
+						$route->getPath(),
+						$name,
+						$route->get_callback_name(),
+						implode( '|', $route->middleware() ),
 					];
 				}
 			);

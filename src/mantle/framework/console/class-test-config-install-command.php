@@ -22,13 +22,6 @@ class Test_Config_Install_Command extends Command {
 	protected $name = 'test-config';
 
 	/**
-	 * Command Short Description.
-	 *
-	 * @var string
-	 */
-	protected $short_description = 'Create a wp-test-config.php file for local development.';
-
-	/**
 	 * Command Description.
 	 *
 	 * @var string
@@ -55,10 +48,12 @@ class Test_Config_Install_Command extends Command {
 
 		if ( file_exists( $path ) ) {
 			$this->error( __( 'Test configuration already exists!', 'mantle' ), true );
+			return Command::FAILURE;
 		}
 
 		if ( ! copy( __DIR__ . '/../../../mantle/testing/wp-tests-config-sample.php', $path ) ) {
 			$this->error( __( 'Error copying configuration file.', 'mantle' ), true );
+			return Command::FAILURE;
 		}
 
 		$this->log(
@@ -68,6 +63,8 @@ class Test_Config_Install_Command extends Command {
 				$path,
 			),
 		);
+
+		return Command::SUCCESS;
 	}
 
 	/**

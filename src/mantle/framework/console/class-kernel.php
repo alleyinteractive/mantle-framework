@@ -218,6 +218,8 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	/**
 	 * Report the exception to the exception handler.
 	 *
+	 * @todo Improve exception handling in the console.
+	 *
 	 * @param Throwable $e Exception thrown.
 	 * @return void
 	 */

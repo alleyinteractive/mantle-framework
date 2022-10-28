@@ -36,27 +36,9 @@ class Clear_Cache_Command extends Command {
 	protected $description = 'Delete the local Mantle cache (not the WordPress object cache).';
 
 	/**
-	 * Command synopsis.
-	 *
-	 * @var array
-	 */
-	protected $synopsis = '';
-
-	/**
 	 * Flush Mantle's local cache.
 	 */
 	public function handle() {
-		$this->container['events']->dispatch( 'cache:clearing' );
-
-		$this->delete_cached_files();
-
-		$this->container['events']->dispatch( 'cache:cleared' );
-	}
-
-	/**
-	 * Delete the cached files.
-	 */
-	protected function delete_cached_files() {
 		$files = glob( $this->container->get_cache_path() . '/*.php' );
 
 		foreach ( $files as $file ) {

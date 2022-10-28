@@ -23,13 +23,6 @@ class Config_Clear_Command extends Command {
 	protected $name = 'config:clear';
 
 	/**
-	 * Command Short Description.
-	 *
-	 * @var string
-	 */
-	protected $short_description = 'Delete the local Mantle cache for the configuration.';
-
-	/**
 	 * Command Description.
 	 *
 	 * @var string
@@ -51,13 +44,6 @@ class Config_Clear_Command extends Command {
 	protected $files;
 
 	/**
-	 * Command synopsis.
-	 *
-	 * @var array
-	 */
-	protected $synopsis = '';
-
-	/**
 	 * Flush Mantle's configuration cache.
 	 *
 	 * @param Filesystem $filesystem Filesystem instance.
@@ -67,27 +53,31 @@ class Config_Clear_Command extends Command {
 
 		$this->container['events']->dispatch( 'config-cache:clearing' );
 
-		$this->delete_cached_files();
+		$status = $this->delete_cached_files();
 
 		$this->container['events']->dispatch( 'config-cache:cleared' );
+
+		return $status;
 	}
 
 	/**
 	 * Delete the cached files.
 	 */
-	protected function delete_cached_files() {
+	protected function delete_cached_files(): int {
 		$path = $this->container->get_cached_config_path();
 
 		if ( ! $this->files->exists( $path ) ) {
-			return;
+			return Command::SUCCESS;
 		}
 
 		$this->line( 'Deleting: ' . $this->colorize( $path, 'yellow' ) );
 
 		if ( $this->files->delete( $path ) ) {
 			$this->success( 'Config cache file deleted.' );
+			return Command::SUCCESS;
 		} else {
 			$this->error( 'File not deleted.' );
+			return Command::FAILURE;
 		}
 	}
 }

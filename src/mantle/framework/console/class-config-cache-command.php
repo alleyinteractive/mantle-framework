@@ -26,13 +26,6 @@ class Config_Cache_Command extends Command {
 	protected $name = 'config:cache';
 
 	/**
-	 * Command Short Description.
-	 *
-	 * @var string
-	 */
-	protected $short_description = 'Delete the local Mantle cache for the configuration.';
-
-	/**
 	 * Command Description.
 	 *
 	 * @var string
@@ -52,13 +45,6 @@ class Config_Cache_Command extends Command {
 	 * @var Filesystem
 	 */
 	protected $files;
-
-	/**
-	 * Command synopsis.
-	 *
-	 * @var array
-	 */
-	protected $synopsis = '';
 
 	/**
 	 * Flush Mantle's local cache.

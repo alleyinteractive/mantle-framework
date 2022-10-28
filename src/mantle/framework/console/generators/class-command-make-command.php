@@ -35,20 +35,6 @@ class Command_Make_Command extends Stub_Generator_Command {
 	protected $type = 'Console';
 
 	/**
-	 * Command synopsis.
-	 *
-	 * @var string|array
-	 */
-	protected $synopsis = [
-		[
-			'description' => 'Class name',
-			'name'        => 'name',
-			'optional'    => false,
-			'type'        => 'positional',
-		],
-	];
-
-	/**
 	 * Get the stub file for the generator.
 	 *
 	 * @return string
@@ -63,7 +49,7 @@ class Command_Make_Command extends Stub_Generator_Command {
 	}
 
 	/**
-	 * Command synopsis.
+	 * Complete synopsis.
 	 *
 	 * @param string $name Class name.
 	 */

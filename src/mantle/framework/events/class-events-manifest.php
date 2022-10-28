@@ -7,7 +7,6 @@
 
 namespace Mantle\Framework\Events;
 
-use Mantle\Contracts\Application;
 use Mantle\Filesystem\Filesystem;
 use Mantle\Framework\Application_Exception;
 use Mantle\Framework\Providers\Event_Service_Provider;
@@ -51,26 +50,10 @@ class Events_Manifest {
 	/**
 	 * Constructor.
 	 *
-	 * @param string      $manifest_path Path to the package manifest file.
-	 * @param Application $app           Application instance.
+	 * @param string $manifest_path Path to the package manifest file.
 	 */
-	public function __construct( string $manifest_path, Application $app ) {
+	public function __construct( string $manifest_path ) {
 		$this->manifest_path = $manifest_path;
-
-		$app['events']->listen(
-			'cache:cleared',
-			function() use ( $app ) {
-				$this->build();
-
-				try {
-					$kernel = $app->make( \Mantle\Contracts\Console\Kernel::class );
-					$kernel->log( 'Events Manifest rebuilt.' );
-				} catch ( \Throwable $e ) {
-					// Ignore if the kernel isn't found.
-					unset( $e );
-				}
-			}
-		);
 	}
 
 	/**

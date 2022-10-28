@@ -8,8 +8,6 @@
 namespace Mantle\Framework\Console\Generators;
 
 use Mantle\Console\Command;
-use Mantle\Contracts\Application as Application_Contract;
-use Mantle\Framework\Providers\Provider_Exception;
 use Mantle\Support\Str;
 use Mantle\Support\String_Replacements;
 use Symfony\Component\String\Inflector\EnglishInflector;
@@ -21,11 +19,11 @@ use Throwable;
  */
 abstract class Generator_Command extends Command {
 	/**
-	 * Command synopsis.
+	 * Command signature.
 	 *
-	 * @var string|array
+	 * @var string
 	 */
-	protected $synopsis = '<name>';
+	protected $signature = '{name}';
 
 	/**
 	 * The type of class being generated.
@@ -40,6 +38,7 @@ abstract class Generator_Command extends Command {
 	 * @var string
 	 */
 	protected $prefix = 'class-';
+
 	/**
 	 * Retrieve the generated class contents.
 	 *
@@ -75,12 +74,16 @@ abstract class Generator_Command extends Command {
 		// Ensure the folder path exists.
 		if ( ! is_dir( $path ) && ! mkdir( $path, 0700, true ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.directory_mkdir
 			$this->error( 'Error creating folder: ' . $path );
+
+			return Command::FAILURE;
 		}
 
 		$file_path = $this->get_file_path( $name );
 
 		if ( file_exists( $file_path ) ) {
 			$this->error( ( $this->type ?: ' File' ) . ' already exists: ' . $file_path, true );
+
+			return Command::FAILURE;
 		}
 
 		// Store the generated class.
@@ -90,10 +93,14 @@ abstract class Generator_Command extends Command {
 			}
 		} catch ( Throwable $e ) {
 			dump( $e );
+
 			$this->error( 'There was an error generating: ' . $e->getMessage(), true );
+
+			return Command::FAILURE;
 		}
 
-		$this->log( ( $this->type ?: 'File' ) . ' created successfully: ' . $file_path );
+		$this->log( ( $this->type ?: 'File' ) . ' created successfully: <info>' . $file_path . '</info>' );
+
 		$this->complete_synopsis( $name );
 	}
 
@@ -150,7 +157,7 @@ abstract class Generator_Command extends Command {
 
 		$parts = array_merge(
 			[
-				untrailingslashit( $this->get_base_path() ),
+				Str::untrailing_slash( $this->get_base_path() ),
 				strtolower( str_replace( '\\', '/', $this->type ) ),
 			],
 			[
@@ -158,7 +165,7 @@ abstract class Generator_Command extends Command {
 			],
 		);
 
-		return untrailingslashit( implode( '/', array_filter( $parts ) ) );
+		return Str::untrailing_slash( implode( '/', array_filter( $parts ) ) );
 	}
 
 	/**
@@ -197,7 +204,7 @@ abstract class Generator_Command extends Command {
 		}
 
 		// Attempt to calculate the domain from the application's folder.
-		return sanitize_title( basename( $this->container->get_base_path() ), 'mantle' );
+		return Str::slug( basename( $this->container->get_base_path() ), 'mantle' );
 	}
 
 	/**

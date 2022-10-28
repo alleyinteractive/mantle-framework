@@ -24,14 +24,6 @@ class Run_Command extends Command {
 	 * @var string
 	 */
 	protected $name = 'queue:run';
-
-	/**
-	 * Command Short Description.
-	 *
-	 * @var string
-	 */
-	protected $short_description = 'Run items from a queue.';
-
 	/**
 	 * Command Description.
 	 *
@@ -40,33 +32,17 @@ class Run_Command extends Command {
 	protected $description = 'Run items from a queue.';
 
 	/**
-	 * Command synopsis.
+	 * Command signature.
 	 *
-	 * @var string|array
+	 * @var string
 	 */
-	protected $synopsis = [
-		[
-			'description' => 'Queue name.',
-			'name'        => 'queue',
-			'optional'    => false,
-			'type'        => 'positional',
-		],
-		[
-			'description' => 'Batch size, defaults to application default.',
-			'name'        => 'count',
-			'optional'    => true,
-			'type'        => 'flag',
-		],
-	];
+	protected $signature = '{queue=default} {--count}';
 
 	/**
 	 * Queue Run Command.
-	 *
-	 * @param array $args Command Arguments.
-	 * @param array $assoc_args Command flags.
 	 */
-	public function handle( array $args, array $assoc_args = [] ) {
-		[ $queue ] = $args;
+	public function handle() {
+		$queue = $this->argument( 'queue' );
 
 		// Register the event listeners to pipe the events back to the console.
 		$this->container['events']->listen(
@@ -98,7 +74,7 @@ class Run_Command extends Command {
 		);
 
 		$this->container['queue.worker']->run(
-			(int) $this->flag( 'count', (int) $this->container['config']['queue.batch_size'] ?? 1 ),
+			(int) $this->option( 'count', (int) $this->container['config']['queue.batch_size'] ?? 1 ),
 			$queue
 		);
 	}

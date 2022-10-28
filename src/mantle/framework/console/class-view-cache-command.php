@@ -28,13 +28,6 @@ class View_Cache_Command extends Command {
 	protected $name = 'view:cache';
 
 	/**
-	 * Command Short Description.
-	 *
-	 * @var string
-	 */
-	protected $short_description = 'Compile all Blade templates in an application.';
-
-	/**
 	 * Command Description.
 	 *
 	 * @var string
@@ -75,6 +68,7 @@ class View_Cache_Command extends Command {
 	public function handle( View_Finder $finder ) {
 		if ( ! isset( $this->container['view.engine.resolver'] ) ) {
 			$this->error( 'Missing view engine resolver from the view service provider.', true );
+			return Command::FAILURE;
 		}
 
 		$this->blade  = $this->container['view.engine.resolver']->resolve( 'blade' )->getCompiler();
@@ -86,11 +80,14 @@ class View_Cache_Command extends Command {
 
 		if ( empty( $paths ) ) {
 			$this->error( 'No view paths found.', true );
+			return Command::FAILURE;
 		}
 
 		$this->compile_views( $this->blade_files_in( $paths ) );
 
 		$this->log( 'Blade templates cached successfully.' );
+
+		return Command::SUCCESS;
 	}
 
 	/**

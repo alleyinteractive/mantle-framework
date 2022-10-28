@@ -25,25 +25,11 @@ class Event_Cache_Command extends Command {
 	protected $name = 'event:cache';
 
 	/**
-	 * Command Short Description.
-	 *
-	 * @var string
-	 */
-	protected $short_description = 'Cache the currently registered events.';
-
-	/**
 	 * Command Description.
 	 *
 	 * @var string
 	 */
 	protected $description = 'Cache the currently registered events.';
-
-	/**
-	 * Command synopsis.
-	 *
-	 * @var array
-	 */
-	protected $synopsis = '';
 
 	/**
 	 * Flush Mantle's local cache.

@@ -22,13 +22,6 @@ class View_Clear_Command extends Command {
 	protected $name = 'view:clear';
 
 	/**
-	 * Command Short Description.
-	 *
-	 * @var string
-	 */
-	protected $short_description = 'Clear the compiled views.';
-
-	/**
 	 * Command Description.
 	 *
 	 * @var string
@@ -45,6 +38,7 @@ class View_Clear_Command extends Command {
 
 		if ( ! $path ) {
 			$this->error( 'View path not found.', true );
+			return Command::FAILURE;
 		}
 
 		foreach ( $this->files->glob( "{$path}/*" ) as $file ) {
@@ -52,5 +46,7 @@ class View_Clear_Command extends Command {
 		}
 
 		$this->log( 'Compiled views cleared!' );
+
+		return Command::SUCCESS;
 	}
 }

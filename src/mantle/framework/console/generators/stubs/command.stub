@@ -21,13 +21,6 @@ class {{ class }} extends Command {
 	protected $name = '{{ command_name }}';
 
 	/**
-	 * Command Short Description.
-	 *
-	 * @var string
-	 */
-	protected $short_description = '';
-
-	/**
 	 * Command Description.
 	 *
 	 * @var string
@@ -35,16 +28,16 @@ class {{ class }} extends Command {
 	protected $description = '';
 
 	/**
-	 * Command synopsis.
+	 * Command signature.
 	 *
 	 * Supports registering command arguments in a string or array format.
 	 * For example:
 	 *
-	 *     <argument> --example-flag
+	 *     {argument} {--example-flag}
 	 *
-	 * @var string|array
+	 * @var string
 	 */
-	protected $synopsis = '';
+	protected $signature = '';
 
    /**
 	 * Callback for the command.
