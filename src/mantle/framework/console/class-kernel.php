@@ -7,15 +7,16 @@
 
 namespace Mantle\Framework\Console;
 
-use Mantle\Contracts\Application;
-use Mantle\Contracts\Console\Kernel as Kernel_Contract;
 use Mantle\Console\Application as Console_Application;
 use Mantle\Console\Command;
 use Mantle\Console\Events\Lightweight_Event_Dispatcher;
+use Mantle\Console\Exception_Handler as Console_Exception_Handler;
+use Mantle\Contracts\Application;
 use Mantle\Contracts\Console\Application as Console_Application_Contract;
+use Mantle\Contracts\Console\Kernel as Kernel_Contract;
+use Mantle\Contracts\Exceptions\Handler as Exception_Handler;
 use Mantle\Contracts\Kernel as Core_Kernel_Contract;
 use Mantle\Support\Traits\Loads_Classes;
-use Mantle\Contracts\Exceptions\Handler as Exception_Handler;
 use ReflectionClass;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
@@ -113,6 +114,10 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 * Bootstrap the console.
 	 */
 	public function bootstrap() {
+		if ( ! $this->app->is_running_in_console() ) {
+			return;
+		}
+
 		// Replace the event dispatcher when running in isolation mode.
 		if ( $this->app->is_running_in_console_isolation() ) {
 			$this->app->singleton(
@@ -122,6 +127,14 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 		}
 
 		$this->app->bootstrap_with( $this->bootstrappers(), $this );
+
+		$app_exception_handler = $this->app->make( Exception_Handler::class );
+
+		// Replace the exception handler with a console version.
+		$this->app->singleton(
+			Exception_Handler::class,
+			fn ( $app ) => new Console_Exception_Handler( $app, $app_exception_handler ),
+		);
 	}
 
 	/**
