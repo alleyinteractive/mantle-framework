@@ -32,13 +32,6 @@ class Dispatcher implements Dispatcher_Contract {
 	protected $container;
 
 	/**
-	 * The registered event listeners.
-	 *
-	 * @var array
-	 */
-	protected $listeners = [];
-
-	/**
 	 * The queue resolver instance.
 	 *
 	 * @var callable

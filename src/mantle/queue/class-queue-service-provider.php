@@ -11,7 +11,6 @@ use Mantle\Contracts\Queue\Dispatcher as Dispatcher_Contract;
 use Mantle\Contracts\Queue\Queue_Manager as Queue_Manager_Contract;
 use Mantle\Queue\Console\Run_Command;
 use Mantle\Queue\Dispatcher;
-use Mantle\Queue\Events\Job_Processed;
 use Mantle\Queue\Events\Run_Complete;
 use Mantle\Queue\Queue_Manager;
 use Mantle\Queue\Worker;

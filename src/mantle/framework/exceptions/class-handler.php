@@ -180,6 +180,12 @@ class Handler implements ExceptionsHandler {
 			}
 		}
 
+		// Display the entire exception if the app is running in console mode.
+		if ( method_exists( $this->container, 'is_running_in_console' ) && $this->container->is_running_in_console() ) {
+			dump( $e );
+			return '';
+		}
+
 		/**
 		 * Allow the whoops page handler to handle this automatically except for
 		 * JSON requests which returns an error in JSON instead.

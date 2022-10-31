@@ -11,6 +11,7 @@ use Mantle\Http\Routing\Events\Route_Matched;
 use Mantle\Support\Pipeline;
 use WP_REST_Request;
 
+use function Mantle\Support\Helpers\add_action;
 use function Mantle\Support\Helpers\collect;
 
 /**

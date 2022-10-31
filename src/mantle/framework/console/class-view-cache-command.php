@@ -1,6 +1,6 @@
 <?php
 /**
- * Package_Discover_Command class file.
+ * View_Cache_Command class file.
  *
  * @package Mantle
  */
@@ -17,7 +17,7 @@ use Symfony\Component\Finder\Finder;
 use function Mantle\Support\Helpers\collect;
 
 /**
- * Package Discover Command
+ * View Cache Command
  */
 class View_Cache_Command extends Command {
 	/**
@@ -26,13 +26,6 @@ class View_Cache_Command extends Command {
 	 * @var string
 	 */
 	protected $name = 'view:cache';
-
-	/**
-	 * Command Short Description.
-	 *
-	 * @var string
-	 */
-	protected $short_description = 'Compile all Blade templates in an application.';
 
 	/**
 	 * Command Description.
@@ -57,37 +50,44 @@ class View_Cache_Command extends Command {
 
 	/**
 	 * Constructor.
-	 *
-	 * @param Application $app Application instance.
-	 * @param View_Finder $finder Finder instance.
 	 */
-	public function __construct( Application $app, View_Finder $finder ) {
-		if ( ! isset( $app['view.engine.resolver'] ) ) {
-			$this->error( 'Missing view engine resolver from the view service provider.', true );
-		}
+	public function __construct() {
+		parent::__construct();
 
-		$this->blade  = $app['view.engine.resolver']->resolve( 'blade' )->getCompiler();
-		$this->finder = $finder;
+		// Hide the command in isolation mode.
+		if ( app()->is_running_in_console_isolation() ) {
+			$this->setHidden( true );
+		}
 	}
 
 	/**
 	 * Compile all blade views.
 	 *
-	 * @param array $args Command Arguments.
-	 * @param array $assoc_args Command flags.
+	 * @param View_Finder $finder Finder instance.
 	 */
-	public function handle( array $args, array $assoc_args = [] ) {
+	public function handle( View_Finder $finder ) {
+		if ( ! isset( $this->container['view.engine.resolver'] ) ) {
+			$this->error( 'Missing view engine resolver from the view service provider.', true );
+			return Command::FAILURE;
+		}
+
+		$this->blade  = $this->container['view.engine.resolver']->resolve( 'blade' )->getCompiler();
+		$this->finder = $finder;
+
 		$this->call( 'mantle view:clear' );
 
 		$paths = $this->finder->get_paths();
 
 		if ( empty( $paths ) ) {
 			$this->error( 'No view paths found.', true );
+			return Command::FAILURE;
 		}
 
 		$this->compile_views( $this->blade_files_in( $paths ) );
 
 		$this->log( 'Blade templates cached successfully.' );
+
+		return Command::SUCCESS;
 	}
 
 	/**

@@ -7,6 +7,8 @@
 
 namespace Mantle\Console;
 
+use Mantle\Console\Concerns\Interacts_With_IO;
+
 /**
  * Checks if the command needs to be confirmed before proceeding.
  *
@@ -14,6 +16,8 @@ namespace Mantle\Console;
  * run on production environments.
  */
 trait Confirmable {
+	use Interacts_With_IO;
+
 	/**
 	 * Confirm before proceeding with the action.
 	 * This method only asks for confirmation in production.
@@ -29,12 +33,12 @@ trait Confirmable {
 			return true;
 		}
 
-		$this->log( $warning ?? __( 'Application In Production!', 'mantle' ) );
+		$this->line( $warning ?? __( 'Application In Production!', 'mantle' ) );
 
-		$confirm = $this->prompt( __( 'Do you really wish to run this command?', 'mantle' ) );
+		$confirm = $this->confirm( __( 'Do you really wish to run this command?', 'mantle' ) );
 
 		if ( ! $confirm ) {
-			$this->log( __( 'Command Cancelled!', 'mantle' ) );
+			$this->line( __( 'Command Cancelled!', 'mantle' ) );
 			return false;
 		}
 

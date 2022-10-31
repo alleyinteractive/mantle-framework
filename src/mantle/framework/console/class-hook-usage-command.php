@@ -7,6 +7,7 @@
 
 namespace Mantle\Framework\Console;
 
+use InvalidArgumentException;
 use Mantle\Console\Command;
 use Mantle\Contracts\Application;
 use Mantle\Support\Collection;
@@ -22,22 +23,10 @@ use function Mantle\Support\Helpers\collect;
  * Hook Usage Command Command
  *
  * Search across a set of files for a reference to a specific hook.
+ *
+ * @todo Reflect on the current implementation and see if it can be improved.
  */
 class Hook_Usage_Command extends Command {
-	/**
-	 * The console command name.
-	 *
-	 * @var string
-	 */
-	protected $name = 'hook-usage';
-
-	/**
-	 * Command Short Description.
-	 *
-	 * @var string
-	 */
-	protected $short_description = 'Tabulate all the usage of a hook in the code base.';
-
 	/**
 	 * Command Description.
 	 *
@@ -46,38 +35,11 @@ class Hook_Usage_Command extends Command {
 	protected $description = 'Tabulate all the usage of a hook in the code base.';
 
 	/**
-	 * Application instance.
-	 *
-	 * @var Application
-	 */
-	protected $app;
-
-	/**
-	 * Command synopsis.
+	 * Command signature.
 	 *
 	 * @var array
 	 */
-	protected $synopsis = [
-		[
-			'description' => 'Hook name',
-			'name'        => 'hook',
-			'optional'    => false,
-			'type'        => 'positional',
-		],
-		[
-			'description' => 'File or path(s), comma-delimited. Defaults to the Mantle base path and current theme.',
-			'name'        => 'search-path',
-			'optional'    => true,
-			'type'        => 'flag',
-		],
-		[
-			'description' => 'Output format.',
-			'name'        => 'format',
-			'optional'    => true,
-			'options'     => [ 'table', 'json', 'csv', 'count' ],
-			'type'        => 'flag',
-		],
-	];
+	protected $signature = 'hook-usage {hook} {--search-path=} {--format=}';
 
 	/**
 	 * Paths to search.
@@ -99,36 +61,27 @@ class Hook_Usage_Command extends Command {
 	];
 
 	/**
-	 * Constructor.
-	 *
-	 * @param Application $app Application instance.
-	 */
-	public function __construct( Application $app ) {
-		$this->app = $app;
-	}
-
-	/**
 	 * Callback for the command.
-	 *
-	 * @param array $args Command Arguments.
-	 * @param array $assoc_args Command flags.
 	 */
-	public function handle( array $args, array $assoc_args = [] ) {
+	public function handle() {
 		$usage = $this->get_usage();
 
 		if ( empty( $usage ) ) {
 			$this->error( 'No usage found.' );
+			return Command::FAILURE;
 		}
 
-		\WP_CLI\Utils\format_items(
-			$this->flag( 'format', 'table' ),
-			$usage->all(),
+		$this->format_data(
+			$this->option( 'format', 'table' ),
 			[
 				'file',
 				'line',
 				'method',
-			]
+			],
+			$usage->all(),
 		);
+
+		return Command::SUCCESS;
 	}
 
 	/**
@@ -136,13 +89,14 @@ class Hook_Usage_Command extends Command {
 	 *
 	 * @todo Account for service providers!
 	 *
+	 * @throws InvalidArgumentException Thrown on invalid search path.
 	 * @return Collection
 	 */
 	public function get_usage(): Collection {
 		$this->set_paths();
 
 		if ( $this->paths->is_empty() ) {
-			$this->error( 'No paths specified.', true );
+			throw new InvalidArgumentException( 'No paths specified.', true );
 		}
 
 		// Collect all the files.
@@ -263,7 +217,7 @@ class Hook_Usage_Command extends Command {
 	 * @return bool
 	 */
 	protected function should_use_cache(): bool {
-		if ( ! $this->app->is_environment( 'local' ) ) {
+		if ( ! app()->is_environment( 'local' ) ) {
 			return false;
 		}
 
@@ -330,7 +284,7 @@ class Hook_Usage_Command extends Command {
 	 */
 	protected function get_cache_file_for_path( string $path ): string {
 		$path = md5( $path );
-		return $this->app->get_cache_path() . "/hook-usage-{$path}.php";
+		return app()->get_cache_path() . "/hook-usage-{$path}.php";
 	}
 
 	/**
@@ -339,10 +293,10 @@ class Hook_Usage_Command extends Command {
 	 * @todo Filter out inactive plugins from the path list.
 	 */
 	protected function set_paths() {
-		if ( ! $this->flag( 'search-path' ) ) {
+		if ( ! $this->option( 'search-path' ) ) {
 			$paths = collect( WP_CONTENT_DIR );
 		} else {
-			$paths = collect( explode( ',', $this->flag( 'search-path' ) ) );
+			$paths = collect( explode( ',', $this->option( 'search-path' ) ) );
 		}
 
 		$this->paths = $paths
@@ -351,7 +305,7 @@ class Hook_Usage_Command extends Command {
 			->filter(
 				function ( $path ) {
 					if ( ! is_file( $path ) && ! is_dir( $path ) ) {
-						$this->error( "Not a valid file or directory: [$path]", true );
+						return false;
 					}
 
 					return true;

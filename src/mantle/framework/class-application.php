@@ -11,6 +11,7 @@ use Mantle\Container\Container;
 use Mantle\Contracts\Application as Application_Contract;
 use Mantle\Contracts\Container as Container_Contract;
 use Mantle\Contracts\Kernel as Kernel_Contract;
+use Mantle\Contracts\Support\Isolated_Service_Provider;
 use Mantle\Log\Log_Service_Provider;
 use Mantle\Framework\Providers\Event_Core_Service_Provider;
 use Mantle\Framework\Providers\Routing_Service_Provider;
@@ -91,6 +92,13 @@ class Application extends Container implements Application_Contract {
 	protected $booted_callbacks = [];
 
 	/**
+	 * The array of terminating callbacks.
+	 *
+	 * @var callable[]
+	 */
+	protected $terminating_callbacks = [];
+
+	/**
 	 * All of the registered service providers.
 	 *
 	 * @var Service_Provider[]
@@ -137,7 +145,7 @@ class Application extends Container implements Application_Contract {
 		}
 
 		if ( ! $root_url ) {
-			$root_url = \home_url();
+			$root_url = function_exists( 'home_url' ) ? \home_url() : '/';
 		}
 
 		$this->set_base_path( $base_path );
@@ -422,6 +430,18 @@ class Application extends Container implements Application_Contract {
 		// Include providers from the package manifest.
 		$providers->push( ...$this->make( Package_Manifest::class )->providers() );
 
+		// Only register service providers that implement Isolated_Service_Provider
+		// when in isolation mode.
+		if ( $this->is_running_in_console_isolation() ) {
+			$providers = $providers->filter(
+				fn ( string $provider ) => in_array(
+					Isolated_Service_Provider::class,
+					class_implements( $provider ),
+					true,
+				)
+			);
+		}
+
 		$providers->each( [ $this, 'register' ] );
 	}
 
@@ -549,7 +569,7 @@ class Application extends Container implements Application_Contract {
 			return $this->environment;
 		}
 
-		return Environment::get( 'ENV', wp_get_environment_type() );
+		return Environment::get( 'ENV', function_exists( 'wp_get_environment_' ) ? wp_get_environment_type() : '' );
 	}
 
 	/**
@@ -579,11 +599,24 @@ class Application extends Container implements Application_Contract {
 	 * @return bool
 	 */
 	public function is_running_in_console(): bool {
+		if ( $this->is_running_in_console_isolation() ) {
+			return true;
+		}
+
 		if ( null === $this->is_running_in_console ) {
 			$this->is_running_in_console = Environment::get( 'APP_RUNNING_IN_CONSOLE' ) || ( defined( 'WP_CLI' ) && WP_CLI && ! wp_doing_cron() );
 		}
 
 		return $this->is_running_in_console;
+	}
+
+	/**
+	 * Check if the application is running in console isolation mode.
+	 *
+	 * @return bool
+	 */
+	public function is_running_in_console_isolation(): bool {
+		return defined( 'MANTLE_ISOLATION_MODE' ) && MANTLE_ISOLATION_MODE;
 	}
 
 	/**
@@ -621,7 +654,7 @@ class Application extends Container implements Application_Contract {
 	 * @param callable $callback Callback for the listener.
 	 * @return static
 	 */
-	public function booting( $callback ) {
+	public function booting( callable $callback ): static {
 		$this->booting_callbacks[] = $callback;
 		return $this;
 	}
@@ -632,7 +665,7 @@ class Application extends Container implements Application_Contract {
 	 * @param callable $callback Callback for the listener.
 	 * @return static
 	 */
-	public function booted( $callback ) {
+	public function booted( callable $callback ): static {
 		$this->booted_callbacks[] = $callback;
 
 		if ( $this->is_booted() ) {
@@ -640,6 +673,26 @@ class Application extends Container implements Application_Contract {
 		}
 
 		return $this;
+	}
+
+	/**
+	 * Register a new terminating callback.
+	 *
+	 * @param callable $callback Callback for the listener.
+	 * @return static
+	 */
+	public function terminating( callable $callback ): static {
+		$this->terminating_callbacks[] = $callback;
+		return $this;
+	}
+
+	/**
+	 * Terminate the application.
+	 *
+	 * @return void
+	 */
+	public function terminate(): void {
+		$this->fire_app_callbacks( $this->terminating_callbacks );
 	}
 
 	/**

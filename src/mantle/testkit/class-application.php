@@ -2,6 +2,8 @@
 /**
  * Application class file
  *
+ * phpcs:disable Squiz.Commenting.FunctionComment.InvalidNoReturn
+ *
  * @package Mantle
  */
 
@@ -466,6 +468,15 @@ class Application extends Container implements Application_Contract {
 	}
 
 	/**
+	 * Check if the application is running in console isolation mode.
+	 *
+	 * @return bool
+	 */
+	public function is_running_in_console_isolation(): bool {
+		return false;
+	}
+
+	/**
 	 * Set the environment for the application.
 	 *
 	 * @param string $environment Environment to set.
@@ -483,7 +494,7 @@ class Application extends Container implements Application_Contract {
 	 *
 	 * @param callable $callback Callback for the listener.
 	 */
-	public function booting( $callback ) {
+	public function booting( callable $callback ): static {
 		throw new RuntimeException( 'Not supported with Testkit' );
 	}
 
@@ -495,7 +506,28 @@ class Application extends Container implements Application_Contract {
 	 * @param callable $callback Callback for the listener.
 	 * @return void
 	 */
-	public function booted( $callback ) {
+	public function booted( callable $callback ): static {
+		throw new RuntimeException( 'Not supported with Testkit' );
+	}
+
+	/**
+	 * Register a new terminating callback.
+	 *
+	 * @throws RuntimeException Thrown on use.
+	 *
+	 * @param callable $callback Callback for the listener.
+	 * @return static
+	 */
+	public function terminating( callable $callback ): static {
+		throw new RuntimeException( 'Not supported with Testkit' );
+	}
+
+	/**
+	 * Terminate the application.
+	 *
+	 * @throws RuntimeException Thrown on use.
+	 */
+	public function terminate(): void {
 		throw new RuntimeException( 'Not supported with Testkit' );
 	}
 }

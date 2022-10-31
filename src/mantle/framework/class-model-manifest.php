@@ -51,28 +51,12 @@ class Model_Manifest {
 	/**
 	 * Constructor.
 	 *
-	 * @param string      $base_path     Base folder path for the Mantle site.
-	 * @param string      $manifest_path Path to the package manifest file.
-	 * @param Application $app           Application instance.
+	 * @param string $base_path     Base folder path for the Mantle site.
+	 * @param string $manifest_path Path to the package manifest file.
 	 */
-	public function __construct( string $base_path, string $manifest_path, Application $app ) {
+	public function __construct( string $base_path, string $manifest_path ) {
 		$this->base_path     = $base_path;
 		$this->manifest_path = $manifest_path;
-
-		$app['events']->listen(
-			'cache:cleared',
-			function() use ( $app ) {
-				$this->build();
-
-				try {
-					$kernel = $app->make( \Mantle\Contracts\Console\Kernel::class );
-					$kernel->log( 'Model Manifest rebuilt.' );
-				} catch ( \Throwable $e ) {
-					// Ignore if the kernel isn't found.
-					unset( $e );
-				}
-			}
-		);
 	}
 
 	/**
@@ -132,13 +116,6 @@ class Model_Manifest {
 				$manifest[] = $class;
 			}
 		}
-
-		/**
-		 * Filter the models that are being automatically registered.
-		 *
-		 * @param \Mantle\Support\Collection $manifest Model manifest.
-		 */
-		$manifest = apply_filters( 'mantle_model_registration', $manifest );
 
 		$this->write_manifest( $manifest->unique()->values()->all() );
 	}

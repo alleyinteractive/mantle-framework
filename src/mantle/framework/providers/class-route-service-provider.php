@@ -8,13 +8,14 @@
 namespace Mantle\Framework\Providers;
 
 use Mantle\Contracts\Providers\Route_Service_Provider as Route_Service_Provider_Contract;
+use Mantle\Contracts\Support\Isolated_Service_Provider;
 use Mantle\Http\Request;
 use Mantle\Support\Service_Provider;
 
 /**
  * Route Service Provider
  */
-class Route_Service_Provider extends Service_Provider implements Route_Service_Provider_Contract {
+class Route_Service_Provider extends Service_Provider implements Route_Service_Provider_Contract, Isolated_Service_Provider {
 	/**
 	 * Allow requests to be passed down to WordPress.
 	 *
@@ -42,11 +43,7 @@ class Route_Service_Provider extends Service_Provider implements Route_Service_P
 	public function boot() {
 		parent::boot();
 
-		$this->app->booted(
-			function() {
-				$this->load_routes();
-			}
-		);
+		$this->app->booted( fn () => $this->load_routes() );
 	}
 
 	/**

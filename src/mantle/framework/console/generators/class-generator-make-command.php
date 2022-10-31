@@ -7,6 +7,8 @@
 
 namespace Mantle\Framework\Console\Generators;
 
+use Mantle\Console\Command;
+
 /**
  * Generator Generator
  */
@@ -33,74 +35,64 @@ class Generator_Make_Command extends Stub_Generator_Command {
 	protected $type = 'Console\Generators';
 
 	/**
-	 * Command synopsis.
+	 * Command signature.
 	 *
-	 * @var string|array
+	 * @var string
 	 */
-	protected $synopsis = [
-		[
-			'description' => 'Class name',
-			'name'        => 'name',
-			'optional'    => false,
-			'type'        => 'positional',
-		],
-		[
-			'description' => 'Type of Generator',
-			'name'        => 'type',
-			'optional'    => false,
-			'type'        => 'positional',
-		],
-	];
+	protected $signature = '{name} {type}';
 
 	/**
 	 * Generator Command.
 	 *
 	 * @todo Replace with a filesystem abstraction.
-	 *
-	 * @param array $args Command Arguments.
-	 * @param array $assoc_args Command flags.
 	 */
-	public function handle( array $args, array $assoc_args = [] ) {
+	public function handle() {
 		// Prevent command being run in non-local environments.
-		if ( 'local' !== $this->app->environment() ) {
+		if ( 'local' !== $this->container->environment() ) {
 			$this->error( 'Generator cannot be used outside of local environment.', true );
+			return Command::FAILURE;
 		}
 
-		if ( empty( $args[0] ) ) {
-			$this->error( 'Missing class name.', true );
-		}
-
-		list( $name, $type ) = $args;
+		$name = $this->argument( 'name' );
+		$type = $this->argument( 'type' );
 
 		$path = $this->get_folder_path( $name );
 
 		// Ensure the folder path exists.
 		if ( ! is_dir( $path ) && ! mkdir( $path, 0700, true ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.directory_mkdir
 			$this->error( 'Error creating folder: ' . $path );
+			return Command::FAILURE;
 		}
 
 		$file_path = $this->get_file_path( $name . '-make-command' );
 		if ( file_exists( $file_path ) ) {
 			$this->error( $this->type . ' already exists: ' . $file_path, true );
+			return Command::FAILURE;
 		}
 
 		// Write the generated class to disk.
 		if ( false === file_put_contents( $file_path, $this->get_generated_class( $name ) ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents
 			$this->error( 'Error writing to ' . $file_path );
+			return Command::FAILURE;
 		}
 
 		// Create the stub file for the generated generator.
 		$stub_path = $this->get_base_path() . 'console/generators/stubs';
 		if ( ! is_dir( $stub_path ) && ! mkdir( $stub_path, 0700, true ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.directory_mkdir
 			$this->error( 'Error creating folder: ' . $stub_path );
+			return Command::FAILURE;
 		}
 
 		if ( ! copy( __DIR__ . '/stubs/stub.stub', $stub_path . '/' . $name . '.stub' ) ) {
 			$this->error( 'Error copying stub file to ' . $stub_path );
+			return Command::FAILURE;
 		}
 
 		$this->log( $this->type . ' created successfully: ' . $file_path );
+
 		$this->synopsis( $name );
+
+		return Command::SUCCESS;
 	}
 
 	/**

@@ -7,6 +7,9 @@
 
 namespace Mantle\Framework\Console\Generators;
 
+use InvalidArgumentException;
+use Mantle\Console\Command;
+
 /**
  * Model Generator
  *
@@ -35,49 +38,11 @@ class Model_Make_Command extends Stub_Generator_Command {
 	protected $type = 'Models';
 
 	/**
-	 * Command synopsis.
+	 * Command signature.
 	 *
 	 * @var string|array
 	 */
-	protected $synopsis = [
-		[
-			'description' => 'Class name',
-			'name'        => 'name',
-			'optional'    => false,
-			'type'        => 'positional',
-		],
-		[
-			'description' => 'Model Type',
-			'name'        => 'model_type',
-			'optional'    => false,
-			'type'        => 'assoc',
-			'options'     => [ 'post', 'term' ],
-		],
-		[
-			'description' => 'Flag if a model is registrable',
-			'name'        => 'registrable',
-			'optional'    => true,
-			'type'        => 'flag',
-		],
-		[
-			'description' => 'Object name to use, defaults to inferring from the class name',
-			'name'        => 'object_name',
-			'optional'    => true,
-			'type'        => 'flag',
-		],
-		[
-			'description' => 'Singular Label to use',
-			'name'        => 'label_singular',
-			'optional'    => true,
-			'type'        => 'flag',
-		],
-		[
-			'description' => 'Plural Label to use',
-			'name'        => 'label_plural',
-			'optional'    => true,
-			'type'        => 'flag',
-		],
-	];
+	protected $signature = '{name} {--model_type=: post, term} {--registrable=false} {--object_name=} {--label_singular=} {--label_plural=}';
 
 	/**
 	 * Get the stub file for the generator.
@@ -85,8 +50,8 @@ class Model_Make_Command extends Stub_Generator_Command {
 	 * @return string
 	 */
 	public function get_file_stub(): string {
-		$type        = $this->flag( 'model_type' );
-		$registrable = $this->flag( 'registrable', false );
+		$type        = $this->option( 'model_type' );
+		$registrable = $this->option( 'registrable', false );
 
 		$filename = '';
 
@@ -103,13 +68,13 @@ class Model_Make_Command extends Stub_Generator_Command {
 				$filename = 'model-term-registrable.stub';
 			}
 		} else {
-			$this->error( 'Unknown model type: ' . $type, true );
+			throw new InvalidArgumentException( 'Unknown model type: ' . $type, true );
 		}
 
 		// Set the object type to use.
 		$this->replacements->add(
 			'{{ object_name }}',
-			$this->flag( 'object_name', $this->get_default_object_name() )
+			$this->option( 'object_name', $this->get_default_object_name() )
 		);
 
 		$inflector      = $this->inflector();
@@ -119,12 +84,12 @@ class Model_Make_Command extends Stub_Generator_Command {
 
 		$this->replacements->add(
 			'{{ label_singular }}',
-			$this->flag( 'label_singular', $singular_label )
+			$this->option( 'label_singular', $singular_label )
 		);
 
 		$this->replacements->add(
 			'{{ label_plural }}',
-			$this->flag( 'label_plural', $plural_label )
+			$this->option( 'label_plural', $plural_label )
 		);
 
 		return __DIR__ . '/stubs/' . $filename;
@@ -156,7 +121,7 @@ class Model_Make_Command extends Stub_Generator_Command {
 	 * @param string $name Class name.
 	 */
 	public function complete_synopsis( string $name ) {
-		if ( ! $this->flag( 'registrable', false ) ) {
+		if ( ! $this->option( 'registrable', false ) ) {
 			return;
 		}
 

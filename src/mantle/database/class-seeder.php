@@ -45,7 +45,7 @@ abstract class Seeder {
 			$name   = get_class( $seeder );
 
 			if ( ! $silent && isset( $this->command ) ) {
-				$this->command->log( "Seeding: {$name}" );
+				$this->command->line( "Seeding: {$name}" );
 			}
 
 			$start_time = microtime( true );
@@ -55,7 +55,7 @@ abstract class Seeder {
 			$run_time = round( microtime( true ) - $start_time, 2 );
 
 			if ( ! $silent && isset( $this->command ) ) {
-				$this->command->log( "Seeded: {$name} ({$run_time} seconds)" );
+				$this->command->line( "Seeded: {$name} ({$run_time} seconds)" );
 			}
 		}
 

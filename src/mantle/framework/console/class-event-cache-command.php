@@ -25,13 +25,6 @@ class Event_Cache_Command extends Command {
 	protected $name = 'event:cache';
 
 	/**
-	 * Command Short Description.
-	 *
-	 * @var string
-	 */
-	protected $short_description = 'Cache the currently registered events.';
-
-	/**
 	 * Command Description.
 	 *
 	 * @var string
@@ -39,49 +32,14 @@ class Event_Cache_Command extends Command {
 	protected $description = 'Cache the currently registered events.';
 
 	/**
-	 * Application instance.
-	 *
-	 * @var Application
-	 */
-	protected $app;
-
-	/**
-	 * Filesystem instance.
-	 *
-	 * @var Filesystem
-	 */
-	protected $files;
-
-	/**
-	 * Command synopsis.
-	 *
-	 * @var array
-	 */
-	protected $synopsis = '';
-
-	/**
-	 * Constructor.
-	 *
-	 * @param Application $app Application instance.
-	 * @param Filesystem  $filesystem Filesystem instance.
-	 */
-	public function __construct( Application $app, Filesystem $filesystem ) {
-		$this->app   = $app;
-		$this->files = $filesystem;
-	}
-
-	/**
 	 * Flush Mantle's local cache.
-	 *
-	 * @param array $args Command Arguments.
-	 * @param array $assoc_args Command flags.
 	 *
 	 * @throws LogicException Thrown on error writing config file.
 	 */
-	public function handle( array $args, array $assoc_args = [] ) {
+	public function handle() {
 		$this->call( 'mantle event:clear' );
 
-		$this->app[ Events_Manifest::class ]->build();
+		$this->container[ Events_Manifest::class ]->build();
 
 		$this->log( 'Events cached cached successfully!' );
 	}

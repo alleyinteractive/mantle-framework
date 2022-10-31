@@ -22,13 +22,6 @@ class View_Clear_Command extends Command {
 	protected $name = 'view:clear';
 
 	/**
-	 * Command Short Description.
-	 *
-	 * @var string
-	 */
-	protected $short_description = 'Clear the compiled views.';
-
-	/**
 	 * Command Description.
 	 *
 	 * @var string
@@ -36,37 +29,24 @@ class View_Clear_Command extends Command {
 	protected $description = 'Clear the compiled views.';
 
 	/**
-	 * Filesystem instance.
-	 *
-	 * @var Filesystem
-	 */
-	protected $files;
-
-	/**
-	 * Constructor.
+	 * View Clear Command.
 	 *
 	 * @param Filesystem $files Filesystem.
 	 */
-	public function __construct( Filesystem $files ) {
-		$this->files = $files;
-	}
-	/**
-	 * View Clear Command.
-	 *
-	 * @param array $args Command Arguments.
-	 * @param array $assoc_args Command flags.
-	 */
-	public function handle( array $args, array $assoc_args = [] ) {
+	public function handle( Filesystem $files ) {
 		$path = config( 'view.compiled' );
 
 		if ( ! $path ) {
 			$this->error( 'View path not found.', true );
+			return Command::FAILURE;
 		}
 
 		foreach ( $this->files->glob( "{$path}/*" ) as $file ) {
-			$this->files->delete( $file );
+			$files->delete( $file );
 		}
 
 		$this->log( 'Compiled views cleared!' );
+
+		return Command::SUCCESS;
 	}
 }

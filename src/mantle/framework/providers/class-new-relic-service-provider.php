@@ -40,6 +40,8 @@ class New_Relic_Service_Provider extends Service_Provider {
 	 * @param Application $app Application instance.
 	 */
 	public function __construct( Application $app ) {
+		parent::__construct( $app );
+
 		$this->events = $app['events'];
 	}
 
@@ -117,7 +119,7 @@ class New_Relic_Service_Provider extends Service_Provider {
 			! empty( $wp->query_vars['rest_route'] )
 			|| is_admin()
 			|| wp_doing_cron()
-			|| ( defined( 'WP_CLI' ) && WP_CLI )
+			|| $this->app->is_running_in_console()
 		) {
 			return;
 		}

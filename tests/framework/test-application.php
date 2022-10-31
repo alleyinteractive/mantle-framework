@@ -71,6 +71,21 @@ class Test_Application extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertTrue( $_SERVER['__booting_callback'] <= $_SERVER['__boot_callback'] );
 	}
 
+	public function test_terminating_callback() {
+		$_SERVER['__terminating_callback'] = false;
+
+		$app = new Application();
+
+		$app->flush();
+		$app->terminating(
+			fn() => $_SERVER['__terminating_callback'] = microtime( true ),
+		);
+
+		$app->terminate();
+
+		$this->assertNotFalse( $_SERVER['__terminating_callback'] );
+	}
+
 	public function test_service_provider_instance() {
 		$app = new Application();
 		$app->register( Test_App_Service_Provider::class );

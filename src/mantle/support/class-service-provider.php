@@ -8,12 +8,12 @@
 namespace Mantle\Support;
 
 use Mantle\Console\Command;
+use Mantle\Console\Application as Console_Application;
 use Mantle\Contracts\Application;
 use Mantle\Support\Attributes\Action;
 use Mantle\Support\Str;
 use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
 use ReflectionClass;
-
 use function Mantle\Support\Helpers\add_action;
 use function Mantle\Support\Helpers\collect;
 
@@ -103,11 +103,6 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	 * Boot all attribute actions on the service provider.
 	 */
 	protected function boot_attribute_hooks() {
-		// Abandon if we're not running PHP 8.
-		if ( version_compare( phpversion(), '8.0.0', '<' ) ) {
-			return;
-		}
-
 		$class = new ReflectionClass( static::class );
 
 		foreach ( $class->getMethods() as $method ) {
@@ -123,38 +118,18 @@ abstract class Service_Provider implements LoggerAwareInterface {
 				add_action( $instance->action, [ $this, $method->name ], $instance->priority );
 			}
 		}
-
 	}
 
 	/**
-	 * Register a wp-cli command.
+	 * Register a console command.
 	 *
 	 * @param Command[]|string[]|Command|string $command Command instance or class name to register.
 	 * @return Service_Provider
 	 */
 	public function add_command( $command ): Service_Provider {
-		if ( is_array( $command ) ) {
-			foreach ( $command as $item ) {
-				$this->add_command( $item );
-			}
-		} elseif ( $command instanceof Command ) {
-			$this->commands[] = $command;
-		} else {
-			$this->commands[] = $this->app->make( $command );
-		}
-
-		return $this;
-	}
-
-	/**
-	 * Register the wp-cli commands for a service provider.
-	 *
-	 * @return Service_Provider
-	 */
-	public function register_commands(): Service_Provider {
-		foreach ( (array) $this->commands as $command ) {
-			$command->register();
-		}
+		Console_Application::starting(
+			fn ( Console_Application $console ) => $console->resolve_commands( $command )
+		);
 
 		return $this;
 	}

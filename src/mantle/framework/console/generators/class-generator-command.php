@@ -8,8 +8,7 @@
 namespace Mantle\Framework\Console\Generators;
 
 use Mantle\Console\Command;
-use Mantle\Contracts\Application as Application_Contract;
-use Mantle\Framework\Providers\Provider_Exception;
+use Mantle\Support\Str;
 use Mantle\Support\String_Replacements;
 use Symfony\Component\String\Inflector\EnglishInflector;
 use Symfony\Component\String\Inflector\InflectorInterface;
@@ -20,18 +19,11 @@ use Throwable;
  */
 abstract class Generator_Command extends Command {
 	/**
-	 * The application instance.
+	 * Command signature.
 	 *
-	 * @var \Mantle\Framework\Application
+	 * @var string
 	 */
-	protected $app;
-
-	/**
-	 * Command synopsis.
-	 *
-	 * @var string|array
-	 */
-	protected $synopsis = '<name>';
+	protected $signature = '{name}';
 
 	/**
 	 * The type of class being generated.
@@ -46,18 +38,6 @@ abstract class Generator_Command extends Command {
 	 * @var string
 	 */
 	protected $prefix = 'class-';
-
-	/**
-	 * Constructor.
-	 *
-	 * @param Application_Contract $app Application contract.
-	 * @throws Provider_Exception Thrown when generator doesn't have type set.
-	 */
-	public function __construct( Application_Contract $app ) {
-		$this->app = $app;
-
-		$this->replacements = new String_Replacements();
-	}
 
 	/**
 	 * Retrieve the generated class contents.
@@ -79,28 +59,31 @@ abstract class Generator_Command extends Command {
 	 * Generator Command.
 	 *
 	 * @todo Replace with a filesystem abstraction.
-	 *
-	 * @param array $args Command Arguments.
-	 * @param array $assoc_args Command flags.
 	 */
-	public function handle( array $args, array $assoc_args = [] ) {
-		if ( empty( $args[0] ) ) {
+	public function handle() {
+		$this->replacements = new String_Replacements();
+
+		$name = $this->argument( 'name' );
+
+		if ( empty( $name ) ) {
 			$this->error( 'Missing class name.', true );
 		}
-
-		list( $name ) = $args;
 
 		$path = $this->get_folder_path( $name );
 
 		// Ensure the folder path exists.
 		if ( ! is_dir( $path ) && ! mkdir( $path, 0700, true ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.directory_mkdir
 			$this->error( 'Error creating folder: ' . $path );
+
+			return Command::FAILURE;
 		}
 
 		$file_path = $this->get_file_path( $name );
 
 		if ( file_exists( $file_path ) ) {
 			$this->error( ( $this->type ?: ' File' ) . ' already exists: ' . $file_path, true );
+
+			return Command::FAILURE;
 		}
 
 		// Store the generated class.
@@ -110,10 +93,14 @@ abstract class Generator_Command extends Command {
 			}
 		} catch ( Throwable $e ) {
 			dump( $e );
+
 			$this->error( 'There was an error generating: ' . $e->getMessage(), true );
+
+			return Command::FAILURE;
 		}
 
-		$this->log( ( $this->type ?: 'File' ) . ' created successfully: ' . $file_path );
+		$this->log( ( $this->type ?: 'File' ) . ' created successfully: <info>' . $file_path . '</info>' );
+
 		$this->complete_synopsis( $name );
 	}
 
@@ -141,7 +128,7 @@ abstract class Generator_Command extends Command {
 		$name = explode( '\\', $name );
 		array_pop( $name );
 
-		$parts[] = (string) $this->app->config->get( 'app.namespace', 'App' );
+		$parts[] = (string) $this->container->config->get( 'app.namespace', 'App' );
 		$parts[] = $this->type;
 
 		if ( ! empty( $name ) ) {
@@ -170,7 +157,7 @@ abstract class Generator_Command extends Command {
 
 		$parts = array_merge(
 			[
-				untrailingslashit( $this->get_base_path() ),
+				Str::untrailing_slash( $this->get_base_path() ),
 				strtolower( str_replace( '\\', '/', $this->type ) ),
 			],
 			[
@@ -178,7 +165,7 @@ abstract class Generator_Command extends Command {
 			],
 		);
 
-		return untrailingslashit( implode( '/', array_filter( $parts ) ) );
+		return Str::untrailing_slash( implode( '/', array_filter( $parts ) ) );
 	}
 
 	/**
@@ -190,7 +177,7 @@ abstract class Generator_Command extends Command {
 	protected function get_file_path( string $name ): string {
 		$parts    = explode( '\\', $name );
 		$filename = array_pop( $parts );
-		$filename = \sanitize_title_with_dashes( str_replace( '_', '-', $filename ) );
+		$filename = Str::slug( str_replace( '_', '-', $filename ) );
 
 		return $this->get_folder_path( $name ) . "/{$this->prefix}{$filename}.php";
 	}
@@ -201,7 +188,7 @@ abstract class Generator_Command extends Command {
 	 * @return string
 	 */
 	protected function get_base_path(): string {
-		return $this->app->get_base_path() . '/app/';
+		return $this->container->get_base_path() . '/app/';
 	}
 
 	/**
@@ -217,7 +204,7 @@ abstract class Generator_Command extends Command {
 		}
 
 		// Attempt to calculate the domain from the application's folder.
-		return sanitize_title( basename( $this->app->get_base_path() ), 'mantle' );
+		return Str::slug( basename( $this->container->get_base_path() ), 'mantle' );
 	}
 
 	/**
@@ -227,10 +214,10 @@ abstract class Generator_Command extends Command {
 	 */
 	protected function inflector(): InflectorInterface {
 		// Use the bound inflector if available.
-		if ( $this->app->bound( InflectorInterface::class ) ) {
-			return $this->app->make( InflectorInterface::class );
+		if ( $this->container->bound( InflectorInterface::class ) ) {
+			return $this->container->make( InflectorInterface::class );
 		}
 
-		return $this->app->make( EnglishInflector::class );
+		return $this->container->make( EnglishInflector::class );
 	}
 }
