@@ -18,6 +18,7 @@ use Mantle\Testing\Concerns\Assertions;
 use Mantle\Testing\Concerns\Deprecations;
 use Mantle\Testing\Concerns\Hooks;
 use Mantle\Testing\Concerns\Incorrect_Usage;
+use Mantle\Testing\Concerns\Interacts_With_Console;
 use Mantle\Testing\Concerns\Interacts_With_Container;
 use Mantle\Testing\Concerns\Interacts_With_Cron;
 use Mantle\Testing\Concerns\Interacts_With_Hooks;
@@ -43,6 +44,7 @@ abstract class Test_Case extends BaseTestCase {
 		Deprecations,
 		Hooks,
 		Incorrect_Usage,
+		Interacts_With_Console,
 		Interacts_With_Container,
 		Interacts_With_Cron,
 		Interacts_With_Hooks,

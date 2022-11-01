@@ -15,16 +15,16 @@ use Mantle\Contracts\Application;
 use Mantle\Contracts\Console\Application as Console_Application_Contract;
 use Mantle\Contracts\Console\Kernel as Kernel_Contract;
 use Mantle\Contracts\Exceptions\Handler as Exception_Handler;
-use Mantle\Contracts\Kernel as Core_Kernel_Contract;
 use Mantle\Support\Traits\Loads_Classes;
 use ReflectionClass;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Tester\CommandTester;
 use Throwable;
 
 /**
  * Console Kernel
  */
-class Kernel implements Kernel_Contract, Core_Kernel_Contract {
+class Kernel implements Kernel_Contract {
 	use Loads_Classes;
 
 	/**
@@ -108,6 +108,33 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 
 			return 1;
 		}
+	}
+
+	/**
+	 * Run the console application by command name.
+	 *
+	 * @param string $command Command name.
+	 * @param array  $parameters Command parameters.
+	 * @param mixed  $output_buffer Output buffer.
+	 * @return int
+	 */
+	public function call( string $command, array $parameters = [], $output_buffer = null ) {
+		$this->bootstrap();
+
+		return $this->get_console_application()->call( $command, $parameters, $output_buffer );
+	}
+
+	/**
+	 * Test a console command by name.
+	 *
+	 * @param string $command Command name.
+	 * @param array  $parameters Command parameters.
+	 * @return CommandTester
+	 */
+	public function test( string $command, array $parameters = [] ): CommandTester {
+		$this->bootstrap();
+
+		return $this->get_console_application()->test( $command, $parameters );
 	}
 
 	/**
