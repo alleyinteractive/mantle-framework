@@ -185,7 +185,6 @@ class Test_Command {
 	 * Verify the command is formatted properly.
 	 *
 	 * @throws InvalidArgumentException Thrown on invalid command.
-	 *
 	 * @return void
 	 */
 	protected function verify_command(): void {

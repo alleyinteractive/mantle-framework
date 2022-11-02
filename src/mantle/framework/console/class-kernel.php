@@ -7,7 +7,9 @@
 
 namespace Mantle\Framework\Console;
 
+use Closure;
 use Mantle\Console\Application as Console_Application;
+use Mantle\Console\Closure_Command;
 use Mantle\Console\Command;
 use Mantle\Console\Events\Lightweight_Event_Dispatcher;
 use Mantle\Console\Exception_Handler as Console_Exception_Handler;
@@ -135,6 +137,23 @@ class Kernel implements Kernel_Contract {
 		$this->bootstrap();
 
 		return $this->get_console_application()->test( $command, $parameters );
+	}
+
+	/**
+	 * Register a new Closure based command with a signature.
+	 *
+	 * @param string  $signature Command signature.
+	 * @param Closure $callback Command callback.
+	 * @return Closure_Command
+	 */
+	public function command( string $signature, Closure $callback ): Closure_Command {
+		$command = new Closure_Command( $signature, $callback );
+
+		Console_Application::starting(
+			fn ( Console_Application $app ) => $app->resolve( $command )
+		);
+
+		return $command;
 	}
 
 	/**

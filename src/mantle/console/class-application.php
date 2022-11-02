@@ -112,10 +112,6 @@ class Application extends Console_Application implements Console_Application_Con
 
 		$command = $this->find( $command );
 
-		$tester = new CommandTester( $command );
-
-		dd( 'CMD', $command );
-
 		return $this->run(
 			new ArrayInput( array_merge( [ 'command' => $command ], $parameters ) ),
 			$output_buffer ?: new BufferedOutput(),
