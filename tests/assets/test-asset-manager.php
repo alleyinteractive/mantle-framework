@@ -37,7 +37,7 @@ class Test_Asset_Manager extends Test_Case {
 			);
 
 		$this->assertStringContainsString(
-			"<link rel='stylesheet' id='style-handle-css'  href='https://example.org/style.css' media='all' />",
+			"<link rel='stylesheet' id='style-handle-css' href='https://example.org/style.css' media='all' />",
 			$this->get_wp_head(),
 		);
 	}
