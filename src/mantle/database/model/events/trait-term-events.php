@@ -43,7 +43,7 @@ trait Term_Events {
 	protected static function get_term_event_callback( string $event, string $taxonomy ): Closure {
 		return function( $term_id, $tt_id, $term_taxonomy = null, $term = null ) use ( $event, $taxonomy ) {
 			// Account for actions that have taxonomy as the second argument.
-			if ( empty( $term_taxonomy ) && is_string( $tt_id ) ) {
+			if ( ( empty( $term_taxonomy ) || ! is_string( $term_taxonomy ) ) && is_string( $tt_id ) ) {
 				$term_taxonomy = $tt_id;
 			}
 
