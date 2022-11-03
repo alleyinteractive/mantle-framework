@@ -110,8 +110,6 @@ class Application extends Console_Application implements Console_Application_Con
 			throw new InvalidArgumentException( "Command [{$command}] does not exist." );
 		}
 
-		$command = $this->find( $command );
-
 		return $this->run(
 			new ArrayInput( array_merge( [ 'command' => $command ], $parameters ) ),
 			$output_buffer ?: new BufferedOutput(),
