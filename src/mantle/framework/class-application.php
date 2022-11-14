@@ -569,7 +569,7 @@ class Application extends Container implements Application_Contract {
 			return $this->environment;
 		}
 
-		return Environment::get( 'ENV', function_exists( 'wp_get_environment_' ) ? wp_get_environment_type() : '' );
+		return Environment::get( 'ENV', function_exists( 'wp_get_environment_type' ) ? wp_get_environment_type() : '' );
 	}
 
 	/**
