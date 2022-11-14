@@ -23,13 +23,6 @@ class Config_Clear_Command extends Command {
 	protected $name = 'config:clear';
 
 	/**
-	 * Command Short Description.
-	 *
-	 * @var string
-	 */
-	protected $short_description = 'Delete the local Mantle cache for the configuration.';
-
-	/**
 	 * Command Description.
 	 *
 	 * @var string
@@ -51,48 +44,40 @@ class Config_Clear_Command extends Command {
 	protected $files;
 
 	/**
-	 * Command synopsis.
-	 *
-	 * @var array
-	 */
-	protected $synopsis = '';
-
-	/**
-	 * Constructor.
-	 *
-	 * @param Application $app Application instance.
-	 * @param Filesystem  $filesystem Filesystem instance.
-	 */
-	public function __construct( Application $app, Filesystem $filesystem ) {
-		$this->app   = $app;
-		$this->files = $filesystem;
-	}
-
-	/**
 	 * Flush Mantle's configuration cache.
 	 *
-	 * @param array $args Command Arguments.
-	 * @param array $assoc_args Command flags.
+	 * @param Filesystem $filesystem Filesystem instance.
 	 */
-	public function handle( array $args, array $assoc_args = [] ) {
-		$this->app['events']->dispatch( 'config-cache:clearing' );
+	public function handle( Filesystem $filesystem ) {
+		$this->files = $filesystem;
 
-		$this->delete_cached_files();
+		$this->container['events']->dispatch( 'config-cache:clearing' );
 
-		$this->app['events']->dispatch( 'config-cache:cleared' );
+		$status = $this->delete_cached_files();
+
+		$this->container['events']->dispatch( 'config-cache:cleared' );
+
+		return $status;
 	}
 
 	/**
 	 * Delete the cached files.
 	 */
-	protected function delete_cached_files() {
-		$path = $this->app->get_cached_config_path();
-		$this->log( "Deleting: [{$path}]" );
+	protected function delete_cached_files(): int {
+		$path = $this->container->get_cached_config_path();
+
+		if ( ! $this->files->exists( $path ) ) {
+			return Command::SUCCESS;
+		}
+
+		$this->line( 'Deleting: ' . $this->colorize( $path, 'yellow' ) );
 
 		if ( $this->files->delete( $path ) ) {
-			$this->log( 'All files deleted.' );
+			$this->success( 'Config cache file deleted.' );
+			return Command::SUCCESS;
 		} else {
-			$this->log( 'File not deleted.' );
+			$this->error( 'File not deleted.' );
+			return Command::FAILURE;
 		}
 	}
 }

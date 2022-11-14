@@ -179,7 +179,7 @@ class Mix {
 		$details_file = "{$this->manifest_directory}/{$path}.asset.php";
 
 		if ( file_exists( $details_file ) && 0 === validate_file( $details_file ) ) {
-			return require $details_file;
+			return require $details_file; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 		}
 
 		return [];

@@ -3,7 +3,19 @@
 	<description>alleyinteractive/mantle-framework</description>
 
 	<arg value="ps" />
+
+	<!-- Whenever possible, cache the scan results and re-use those for unchanged files on the next scan. -->
+	<arg name="cache" value=".phpcs/cache.json" />
+
+	<!-- Strip the filepaths down to the relevant bit. -->
+	<arg name="basepath" value="./" />
+
+	<!-- Check up to 20 files simultaneously. -->
 	<arg name="parallel" value="20" />
+
+	<!-- Set severity to 1 to see everything that isn't effectively turned off. -->
+	<!-- todo: enable in a follow up pull request -->
+	<!-- <arg name="severity" value="1" /> -->
 
 	<exclude-pattern>tests/</exclude-pattern>
 
@@ -27,6 +39,10 @@
 
 	<rule ref="Squiz.Commenting.FunctionComment.MissingParamComment">
 		<exclude-pattern>src/</exclude-pattern>
+	</rule>
+
+	<rule ref="Squiz.Commenting.FunctionCommentThrowTag.Missing">
+		<exclude-pattern>src/mantle/framework/console/generators/</exclude-pattern>
 	</rule>
 
 	<rule ref="Internal.NoCodeFound">

@@ -7,17 +7,26 @@
 
 namespace Mantle\Framework\Console;
 
+use Closure;
+use Mantle\Console\Application as Console_Application;
+use Mantle\Console\Closure_Command;
+use Mantle\Console\Command;
+use Mantle\Console\Events\Lightweight_Event_Dispatcher;
+use Mantle\Console\Exception_Handler as Console_Exception_Handler;
 use Mantle\Contracts\Application;
+use Mantle\Contracts\Console\Application as Console_Application_Contract;
 use Mantle\Contracts\Console\Kernel as Kernel_Contract;
-use Mantle\Contracts\Kernel as Core_Kernel_Contract;
+use Mantle\Contracts\Exceptions\Handler as Exception_Handler;
 use Mantle\Support\Traits\Loads_Classes;
 use ReflectionClass;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Tester\CommandTester;
 use Throwable;
 
 /**
  * Console Kernel
  */
-class Kernel implements Kernel_Contract, Core_Kernel_Contract {
+class Kernel implements Kernel_Contract {
 	use Loads_Classes;
 
 	/**
@@ -49,11 +58,25 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	protected $commands = [];
 
 	/**
+	 * Console application.
+	 *
+	 * @var Console_Application_Contract
+	 */
+	protected Console_Application_Contract $console_application;
+
+	/**
 	 * Indicates if the Closure commands have been loaded.
 	 *
 	 * @var bool
 	 */
-	protected $commands_loaded = false;
+	protected bool $commands_loaded = false;
+
+	/**
+	 * Output interface
+	 *
+	 * @var OutputInterface
+	 */
+	protected ?OutputInterface $output;
 
 	/**
 	 * Constructor.
@@ -62,26 +85,126 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 */
 	public function __construct( Application $app ) {
 		$this->app = $app;
+
+		$this->ensure_environment_is_set();
+		$this->register_wpcli_command();
 	}
 
 	/**
-	 * Bootstrap the console.
+	 * Run the console application
 	 *
-	 * @todo Add better error handling.
+	 * @param \Symfony\Component\Console\Input\InputInterface   $input
+	 * @param \Symfony\Component\Console\Output\OutputInterface $output
+	 * @return int
 	 */
-	public function handle() {
+	public function handle( $input = null, $output = null ) {
+		$this->output = $output;
+
 		try {
 			$this->bootstrap();
+
+			return $this->get_console_application()->run( $input, $output );
 		} catch ( Throwable $e ) {
-			\WP_CLI::error( 'Error booting Console Kernel: ' . $e->getMessage() );
+			$this->report_exception( $e );
+			$this->render_exception( $output, $e );
+
+			return 1;
 		}
+	}
+
+	/**
+	 * Run the console application by command name.
+	 *
+	 * @param string $command Command name.
+	 * @param array  $parameters Command parameters.
+	 * @param mixed  $output_buffer Output buffer.
+	 * @return int
+	 */
+	public function call( string $command, array $parameters = [], $output_buffer = null ) {
+		$this->bootstrap();
+
+		return $this->get_console_application()->call( $command, $parameters, $output_buffer );
+	}
+
+	/**
+	 * Test a console command by name.
+	 *
+	 * @param string $command Command name.
+	 * @param array  $parameters Command parameters.
+	 * @return CommandTester
+	 */
+	public function test( string $command, array $parameters = [] ): CommandTester {
+		$this->bootstrap();
+
+		return $this->get_console_application()->test( $command, $parameters );
+	}
+
+	/**
+	 * Register a new Closure based command with a signature.
+	 *
+	 * @param string  $signature Command signature.
+	 * @param Closure $callback Command callback.
+	 * @return Closure_Command
+	 */
+	public function command( string $signature, Closure $callback ): Closure_Command {
+		$command = new Closure_Command( $signature, $callback );
+
+		Console_Application::starting(
+			fn ( Console_Application $app ) => $app->resolve( $command )
+		);
+
+		return $command;
 	}
 
 	/**
 	 * Bootstrap the console.
 	 */
 	public function bootstrap() {
+		if ( ! $this->app->is_running_in_console() ) {
+			return;
+		}
+
+		// Replace the event dispatcher when running in isolation mode.
+		if ( $this->app->is_running_in_console_isolation() ) {
+			$this->app->singleton(
+				'events',
+				fn ( $app ) => new Lightweight_Event_Dispatcher( $app ),
+			);
+		}
+
 		$this->app->bootstrap_with( $this->bootstrappers(), $this );
+
+		$app_exception_handler = $this->app->make( Exception_Handler::class );
+
+		// Replace the exception handler with a console version.
+		$this->app->singleton(
+			Exception_Handler::class,
+			fn ( $app ) => new Console_Exception_Handler( $app, $app_exception_handler ),
+		);
+	}
+
+	/**
+	 * Resolve the instance of the console application.
+	 *
+	 * @return Console_Application_Contract
+	 */
+	public function get_console_application(): Console_Application_Contract {
+		if ( ! isset( $this->console_application ) ) {
+			$this->console_application = new Console_Application( $this->app );
+		}
+
+		return $this->console_application;
+	}
+
+	/**
+	 * Set the console application instance.
+	 *
+	 * Set the instance of the Symfony console application.
+	 *
+	 * @param Console_Application_Contract $app Console application instance.
+	 */
+	public function set_console_application( Console_Application_Contract $app ): void {
+		$this->console_application = $app;
 	}
 
 	/**
@@ -107,8 +230,8 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 			->flatten()
 			->filter(
 				fn ( string $class ) => class_exists( $class )
-				&& is_subclass_of( $class, Command::class )
-				&& ( new ReflectionClass( $class ) )->isInstantiable()
+					&& is_subclass_of( $class, Command::class )
+					&& ( new ReflectionClass( $class ) )->isInstantiable()
 			)
 			->filter()
 			->merge( $this->commands )
@@ -123,10 +246,9 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 		if ( ! $this->commands_loaded ) {
 			$this->commands();
 
-			foreach ( $this->commands as $command ) {
-				$command = $this->app->make( $command );
-				$command->register();
-			}
+			Console_Application::starting(
+				fn ( Console_Application $app ) => $app->resolve_commands( $this->commands )
+			);
 
 			$this->commands_loaded = true;
 		}
@@ -147,8 +269,80 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 * @param string $message Message to log.
 	 */
 	public function log( string $message ) {
-		if ( class_exists( 'WP_CLI' ) ) {
-			\WP_CLI::log( $message );
+		if ( isset( $this->output ) ) {
+			$this->output->writeln( $message );
+		}
+	}
+
+	/**
+	 * Report the exception to the exception handler.
+	 *
+	 * @todo Improve exception handling in the console.
+	 *
+	 * @param Throwable $e Exception thrown.
+	 * @return void
+	 */
+	protected function report_exception( Throwable $e ) {
+		$this->app[ Exception_Handler::class ]->report( $e );
+	}
+
+	/**
+	 * Render the exception to a response.
+	 *
+	 * @param Request   $request Request instance.
+	 * @param Throwable $e Exception thrown.
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	protected function render_exception( $request, Throwable $e ) {
+		return $this->app[ Exception_Handler::class ]->render( $request, $e );
+	}
+
+	/**
+	 * Ensure the WordPress environment is setup for isolation mode.
+	 */
+	protected function ensure_environment_is_set() {
+		if ( ! $this->app->is_running_in_console_isolation() ) {
+			return;
+		}
+
+		defined( 'ABSPATH' ) || define( 'ABSPATH', preg_replace( '#/wp-content/.*$#', '/', __DIR__ ) ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
+	}
+
+	/**
+	 * Register a proxy WP-CLI command that will proxy back to the Symfony
+	 * application.
+	 */
+	protected function register_wpcli_command() {
+		if ( ! defined( 'WP_CLI' ) || ! WP_CLI ) {
+			return;
+		}
+
+		\WP_CLI::add_command(
+			Command::PREFIX,
+			function () {
+				$status = $this->handle(
+					new \Symfony\Component\Console\Input\ArgvInput( array_slice( $_SERVER['argv'] ?? [], 1 ) ), // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+					new \Symfony\Component\Console\Output\ConsoleOutput(),
+				);
+
+				exit( (int) $status );
+			},
+			[
+				'shortdesc' => __( 'Mantle Framework Command Line Interface', 'mantle' ),
+			]
+		);
+	}
+
+	/**
+	 * Terminate the kernel.
+	 *
+	 * @param  \Symfony\Component\Console\Input\InputInterface $input
+	 * @param  int                                             $status
+	 * @return void
+	 */
+	public function terminate( $input, $status ): void {
+		if ( isset( $this->app ) ) {
+			$this->app->terminate();
 		}
 	}
 }

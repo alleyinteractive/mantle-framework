@@ -81,6 +81,10 @@ class Test_Generator_Command extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 class Test_Generator_Public extends Stub_Generator_Command {
 	protected $type = 'Provider';
 
+	public function __construct( $app ) {
+		$this->container = $app;
+	}
+
 	public function get_file_stub(): string {
 		return file_get_contents( __DIR__ . '/test.stub' );
 	}

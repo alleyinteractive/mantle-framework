@@ -18,7 +18,7 @@ class Event_Core_Service_Provider extends Service_Provider {
 	 * Register any application services.
 	 */
 	public function register() {
-		$this->app->singleton(
+		$this->app->singleton_if(
 			'events',
 			function( $app ) {
 				return new Dispatcher( $app );

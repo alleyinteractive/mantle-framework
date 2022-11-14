@@ -33,20 +33,6 @@ class Middleware_Make_Command extends Stub_Generator_Command {
 	protected $type = 'Http\Middleware';
 
 	/**
-	 * Command synopsis.
-	 *
-	 * @var string|array
-	 */
-	protected $synopsis = [
-		[
-			'description' => 'Class name',
-			'name'        => 'name',
-			'optional'    => false,
-			'type'        => 'positional',
-		],
-	];
-
-	/**
 	 * Get the stub file for the generator.
 	 *
 	 * @return string

@@ -35,18 +35,11 @@ class Class_Make_Command extends Generator_Command {
 	protected $type = '';
 
 	/**
-	 * Command synopsis.
+	 * Command signature.
 	 *
-	 * @var string|array
+	 * @var string
 	 */
-	protected $synopsis = [
-		[
-			'description' => 'Class name',
-			'name'        => 'name',
-			'optional'    => false,
-			'type'        => 'positional',
-		],
-	];
+	protected $signature = '{name}';
 
 	/**
 	 * Build the generated file.

@@ -241,7 +241,7 @@ class SupportStrTest extends TestCase {
 	public function testSlug() {
 		$this->assertSame( 'hello-world', Str::slug( 'hello world' ) );
 		$this->assertSame( 'hello-world', Str::slug( 'hello-world' ) );
-		$this->assertSame( 'hello_world', Str::slug( 'hello_world' ) );
+		$this->assertSame( 'hello_world', Str::slug( 'hello_world', '_' ) );
 		$this->assertSame( '', Str::slug( '' ) );
 	}
 

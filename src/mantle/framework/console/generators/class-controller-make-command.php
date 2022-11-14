@@ -10,6 +10,7 @@ namespace Mantle\Framework\Console\Generators;
 use Mantle\Database\Model\Model;
 use Mantle\Http\Controller;
 use Mantle\Http\Request;
+use Mantle\Support\Str;
 use Nette\PhpGenerator\PhpFile;
 
 /**
@@ -38,36 +39,14 @@ class Controller_Make_Command extends Generator_Command {
 	protected $type = 'Http\Controller';
 
 	/**
-	 * Command synopsis.
+	 * Command signature.
 	 *
-	 * @var string|array
+	 * @var string
 	 */
-	protected $synopsis = [
-		[
-			'description' => 'Class name',
-			'name'        => 'name',
-			'optional'    => false,
-			'type'        => 'positional',
-		],
-		[
-			'description' => 'Invokable controller',
-			'name'        => 'invokable',
-			'optional'    => true,
-			'type'        => 'flag',
-		],
-		[
-			'description' => 'Entity controller',
-			'name'        => 'entity',
-			'optional'    => true,
-			'type'        => 'flag',
-		],
-		[
-			'description' => 'Model for the entity controller',
-			'name'        => 'entity-model',
-			'optional'    => true,
-			'type'        => 'flag',
-		],
-	];
+	protected $signature = '{name : The name of the controller.}
+		{--invokable                : Flag if the model should be invokable.}
+		{--entity                   : Flag to generate an entity controller.}
+		{--entity-model=            : Entity controller model.}';
 
 	/**
 	 * Build the generated file.
@@ -77,7 +56,7 @@ class Controller_Make_Command extends Generator_Command {
 	 */
 	public function get_generated_class( string $name ): string {
 		$class_name     = $this->get_class_name( $name );
-		$namespace_name = untrailingslashit( str_replace( '\\\\', '\\', $this->get_namespace( $name ) ) );
+		$namespace_name = Str::untrailing_slash( str_replace( '\\\\', '\\', $this->get_namespace( $name ) ) );
 
 		$file = new PhpFile();
 
@@ -91,7 +70,7 @@ class Controller_Make_Command extends Generator_Command {
 			->addComment( "$class_name class." )
 			->setExtends( Controller::class );
 
-		if ( $this->flag( 'invokable' ) ) {
+		if ( $this->option( 'invokable' ) ) {
 			$namespace->addUse( Request::class );
 			$class
 				->addMethod( '__invoke' )
@@ -102,7 +81,7 @@ class Controller_Make_Command extends Generator_Command {
 				->setVisibility( 'public' )
 				->addParameter( 'request' )
 				->setType( Request::class );
-		} elseif ( $this->flag( 'entity' ) ) {
+		} elseif ( $this->option( 'entity' ) ) {
 			// Attempt to determine the model for the entity.
 			$entity = $this->get_model_entity();
 			$namespace->addUse( $entity );
@@ -135,7 +114,7 @@ class Controller_Make_Command extends Generator_Command {
 	 */
 	protected function get_model_entity(): string {
 		// Attempt to determine the model for the entity.
-		$entity = $this->flag( 'entity-model', $this->argument( 'name' ) );
+		$entity = $this->option( 'entity-model', $this->argument( 'name' ) );
 
 		// Attempt to find the model if the one passed is not a model instance.
 		if ( class_exists( $entity ) && is_subclass_of( $entity, Model::class ) ) {

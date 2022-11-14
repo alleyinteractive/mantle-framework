@@ -14,7 +14,7 @@ use Mantle\Support\Service_Provider;
 /**
  * Application Contract
  */
-interface Application {
+interface Application extends Container {
 	/**
 	 * Getter for the base path.
 	 *
@@ -132,6 +132,13 @@ interface Application {
 	public function is_running_in_console(): bool;
 
 	/**
+	 * Check if the application is running in console isolation mode.
+	 *
+	 * @return bool
+	 */
+	public function is_running_in_console_isolation(): bool;
+
+	/**
 	 * Determine if the application has booted.
 	 *
 	 * @return bool
@@ -148,14 +155,29 @@ interface Application {
 	 *
 	 * @param callable $callback Callback for the listener.
 	 */
-	public function booting( $callback );
+	public function booting( callable $callback ): static;
 
 	/**
 	 * Register a new "booted" listener.
 	 *
 	 * @param callable $callback Callback for the listener.
 	 */
-	public function booted( $callback );
+	public function booted( callable $callback ): static;
+
+	/**
+	 * Register a new terminating callback.
+	 *
+	 * @param callable $callback Callback for the listener.
+	 * @return static
+	 */
+	public function terminating( callable $callback ): static;
+
+	/**
+	 * Termine the application.
+	 *
+	 * @return void
+	 */
+	public function terminate(): void;
 
 	/**
 	 * Run the given array of bootstrap classes.

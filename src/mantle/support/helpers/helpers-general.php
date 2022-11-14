@@ -380,7 +380,7 @@ function factory( $class, $amount = null ) {
  * @return void
  */
 function add_action( string $hook, callable $callable, int $priority = 10 ): void {
-	Container::getInstance()->make( Dispatcher::class )->action( $hook, $callable, $priority );
+	Container::getInstance()->make( Dispatcher::class )->listen( $hook, $callable, $priority );
 }
 
 /**
@@ -392,7 +392,7 @@ function add_action( string $hook, callable $callable, int $priority = 10 ): voi
  * @return void
  */
 function add_filter( string $hook, callable $callable, int $priority = 10 ): void {
-	Container::getInstance()->make( Dispatcher::class )->filter( $hook, $callable, $priority );
+	Container::getInstance()->make( Dispatcher::class )->listen( $hook, $callable, $priority );
 }
 
 /**

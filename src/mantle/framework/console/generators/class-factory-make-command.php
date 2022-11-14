@@ -7,6 +7,9 @@
 
 namespace Mantle\Framework\Console\Generators;
 
+use InvalidArgumentException;
+use Mantle\Console\Command;
+
 /**
  * Factory Generator
  */
@@ -37,27 +40,7 @@ class Factory_Make_Command extends Stub_Generator_Command {
 	 *
 	 * @var string|array
 	 */
-	protected $synopsis = [
-		[
-			'description' => 'Factory name',
-			'name'        => 'name',
-			'optional'    => false,
-			'type'        => 'positional',
-		],
-		[
-			'description' => 'Model Type',
-			'name'        => 'model_type',
-			'optional'    => false,
-			'type'        => 'assoc',
-			'options'     => [ 'post', 'term' ],
-		],
-		[
-			'description' => 'Object name to use, defaults to inferring from the class name',
-			'name'        => 'object_name',
-			'optional'    => true,
-			'type'        => 'flag',
-		],
-	];
+	protected $signature = '{name} {model_type} {--object_name=}';
 
 	/**
 	 * Get the stub file for the generator.
@@ -65,7 +48,7 @@ class Factory_Make_Command extends Stub_Generator_Command {
 	 * @return string
 	 */
 	public function get_file_stub(): string {
-		$type = $this->flag( 'model_type' );
+		$type = $this->option( 'model_type' );
 
 		$filename = '';
 
@@ -74,13 +57,13 @@ class Factory_Make_Command extends Stub_Generator_Command {
 		} elseif ( 'term' === $type ) {
 			$filename = 'factory-term.stub';
 		} else {
-			$this->error( 'Unknown factory type: ' . $type, true );
+			throw new InvalidArgumentException( 'Unknown factory type: ' . $type, true );
 		}
 
 		// Set the object type to use.
 		$this->replacements->add(
 			'{{ object_name }}',
-			$this->flag( 'object_name', $this->get_default_object_name() )
+			$this->option( 'object_name', $this->get_default_object_name() )
 		);
 
 		return __DIR__ . '/stubs/' . $filename;
@@ -129,7 +112,7 @@ class Factory_Make_Command extends Stub_Generator_Command {
 	 * @return string
 	 */
 	protected function get_folder_path( string $name ): string {
-		return untrailingslashit( $this->app->get_base_path() . '/database/' . strtolower( $this->type ) . '/' );
+		return untrailingslashit( $this->container->get_base_path() . '/database/' . strtolower( $this->type ) . '/' );
 	}
 
 	/**

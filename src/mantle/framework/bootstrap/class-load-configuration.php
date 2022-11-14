@@ -14,6 +14,7 @@ use Mantle\Contracts\Config\Repository as Repository_Contract;
 use Mantle\Support\Arr;
 use Symfony\Component\Finder\Finder;
 use Mantle\Support\Helpers;
+use Mantle\Support\Str;
 
 /**
  * Load the Application's Configuration
@@ -103,11 +104,11 @@ class Load_Configuration {
 			$name = basename( $file->getRealPath(), '.php' );
 
 			// Get the environment the configuration file is from.
-			$environment = str_replace( \trailingslashit( $path ), '', \trailingslashit( $file->getPath() ) );
+			$environment = str_replace( Str::trailing_slash( $path ), '', Str::trailing_slash( $file->getPath() ) );
 			if ( empty( $environment ) ) {
 				$files[ $name ] = $file->getRealPath();
 			} else {
-				$files[ \untrailingslashit( $environment ) ][ $name ] = $file->getRealPath();
+				$files[ Str::untrailing_slash( $environment ) ][ $name ] = $file->getRealPath();
 			}
 		}
 

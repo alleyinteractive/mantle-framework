@@ -40,16 +40,6 @@ class Test_Service_Provider extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertTrue( $app->is_booted() );
 	}
 
-	public function test_register_commands() {
-		$command = m::mock( Command::class )->makePartial();
-		$command->shouldReceive( 'register' )->once();
-
-		$service_provider = m::mock( Service_Provider::class )->makePartial();
-		$service_provider
-			->add_command( $command )
-			->register_commands();
-	}
-
 	public function test_hook_method_action() {
 		$_SERVER['__hook_fired'] = false;
 

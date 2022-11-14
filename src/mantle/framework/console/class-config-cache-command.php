@@ -26,13 +26,6 @@ class Config_Cache_Command extends Command {
 	protected $name = 'config:cache';
 
 	/**
-	 * Command Short Description.
-	 *
-	 * @var string
-	 */
-	protected $short_description = 'Delete the local Mantle cache for the configuration.';
-
-	/**
 	 * Command Description.
 	 *
 	 * @var string
@@ -54,35 +47,18 @@ class Config_Cache_Command extends Command {
 	protected $files;
 
 	/**
-	 * Command synopsis.
-	 *
-	 * @var array
-	 */
-	protected $synopsis = '';
-
-	/**
-	 * Constructor.
-	 *
-	 * @param Application $app Application instance.
-	 * @param Filesystem  $filesystem Filesystem instance.
-	 */
-	public function __construct( Application $app, Filesystem $filesystem ) {
-		$this->app   = $app;
-		$this->files = $filesystem;
-	}
-
-	/**
 	 * Flush Mantle's local cache.
 	 *
-	 * @param array $args Command Arguments.
-	 * @param array $assoc_args Command flags.
+	 * @param Filesystem $filesystem Filesystem instance.
 	 *
 	 * @throws LogicException Thrown on error writing config file.
 	 */
-	public function handle( array $args, array $assoc_args = [] ) {
+	public function handle( Filesystem $filesystem ) {
+		$this->files = $filesystem;
+
 		$this->call( 'mantle config:clear' );
 
-		$path   = $this->app->get_cached_config_path();
+		$path   = $this->container->get_cached_config_path();
 		$config = $this->get_fresh_configuration();
 
 		$this->files->put(
@@ -98,9 +74,9 @@ class Config_Cache_Command extends Command {
 			throw new LogicException( 'Your configuration files are not serializable.', 0, $e );
 		}
 
-		$this->app['events']->dispatch( 'config-cache:cached' );
+		$this->container['events']->dispatch( 'config-cache:cached' );
 
-		$this->log( 'Configuration cached successfully!' );
+		$this->success( 'Configuration cached successfully.' );
 	}
 
 	/**
@@ -109,8 +85,8 @@ class Config_Cache_Command extends Command {
 	 * @return array
 	 */
 	protected function get_fresh_configuration() : array {
-		$app = require $this->app->get_bootstrap_path( '/app.php' );
-		$app->set_base_path( $this->app->get_base_path() );
+		$app = require $this->container->get_bootstrap_path( '/app.php' );
+		$app->set_base_path( $this->container->get_base_path() );
 		$app->make( Kernel::class )->bootstrap();
 
 		return $app['config']->all();

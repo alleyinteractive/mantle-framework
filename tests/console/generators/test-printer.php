@@ -99,14 +99,21 @@ class Test_Printer extends TestCase {
 			'phpcs',
 			$path,
 			'-vsn',
+			'--no-cache',
 		];
 
 		// tip: turn off the output buffering for help debugging!
 		ob_start();
 		$runner = new Runner();
 		$exit_code = $runner->runPHPCS();
-		ob_end_clean();
+		$output = ob_get_clean();
+
+		if ( 0 !== $exit_code ) {
+			echo "Output from phpcs:\n";
+			dump( $output );
+		}
 
 		$this->assertEquals( 0, $exit_code, 'phpcs exit code should be 0 for no errors.' );
+
 	}
 }
