@@ -7,7 +7,9 @@
 
 namespace Mantle\Framework\Console;
 
+use Closure;
 use Mantle\Console\Application as Console_Application;
+use Mantle\Console\Closure_Command;
 use Mantle\Console\Command;
 use Mantle\Console\Events\Lightweight_Event_Dispatcher;
 use Mantle\Console\Exception_Handler as Console_Exception_Handler;
@@ -15,16 +17,16 @@ use Mantle\Contracts\Application;
 use Mantle\Contracts\Console\Application as Console_Application_Contract;
 use Mantle\Contracts\Console\Kernel as Kernel_Contract;
 use Mantle\Contracts\Exceptions\Handler as Exception_Handler;
-use Mantle\Contracts\Kernel as Core_Kernel_Contract;
 use Mantle\Support\Traits\Loads_Classes;
 use ReflectionClass;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Tester\CommandTester;
 use Throwable;
 
 /**
  * Console Kernel
  */
-class Kernel implements Kernel_Contract, Core_Kernel_Contract {
+class Kernel implements Kernel_Contract {
 	use Loads_Classes;
 
 	/**
@@ -108,6 +110,50 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 
 			return 1;
 		}
+	}
+
+	/**
+	 * Run the console application by command name.
+	 *
+	 * @param string $command Command name.
+	 * @param array  $parameters Command parameters.
+	 * @param mixed  $output_buffer Output buffer.
+	 * @return int
+	 */
+	public function call( string $command, array $parameters = [], $output_buffer = null ) {
+		$this->bootstrap();
+
+		return $this->get_console_application()->call( $command, $parameters, $output_buffer );
+	}
+
+	/**
+	 * Test a console command by name.
+	 *
+	 * @param string $command Command name.
+	 * @param array  $parameters Command parameters.
+	 * @return CommandTester
+	 */
+	public function test( string $command, array $parameters = [] ): CommandTester {
+		$this->bootstrap();
+
+		return $this->get_console_application()->test( $command, $parameters );
+	}
+
+	/**
+	 * Register a new Closure based command with a signature.
+	 *
+	 * @param string  $signature Command signature.
+	 * @param Closure $callback Command callback.
+	 * @return Closure_Command
+	 */
+	public function command( string $signature, Closure $callback ): Closure_Command {
+		$command = new Closure_Command( $signature, $callback );
+
+		Console_Application::starting(
+			fn ( Console_Application $app ) => $app->resolve( $command )
+		);
+
+		return $command;
 	}
 
 	/**

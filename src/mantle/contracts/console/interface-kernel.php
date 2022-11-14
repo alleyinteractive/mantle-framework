@@ -7,10 +7,12 @@
 
 namespace Mantle\Contracts\Console;
 
+use Symfony\Component\Console\Tester\CommandTester;
+
 /**
  * Console Kernel
  */
-interface Kernel {
+interface Kernel extends \Mantle\Contracts\Kernel {
 	/**
 	 * Run the console application.
 	 *
@@ -19,6 +21,25 @@ interface Kernel {
 	 * @return int
 	 */
 	public function handle( $input, $output = null );
+
+	/**
+	 * Run the console application by command name.
+	 *
+	 * @param string $command Command name.
+	 * @param array  $parameters Command parameters.
+	 * @param mixed  $output_buffer Output buffer.
+	 * @return int
+	 */
+	public function call( string $command, array $parameters = [], $output_buffer = null );
+
+	/**
+	 * Test a console command by name.
+	 *
+	 * @param string $command Command name.
+	 * @param array  $parameters Command parameters.
+	 * @return CommandTester
+	 */
+	public function test( string $command, array $parameters = [] ): CommandTester;
 
 	/**
 	 * Register the application's commands.

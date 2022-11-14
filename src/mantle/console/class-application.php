@@ -8,21 +8,23 @@
 namespace Mantle\Console;
 
 use Closure;
+use InvalidArgumentException;
 use Mantle\Contracts\Console\Application as Console_Application_Contract;
 use Mantle\Contracts\Container;
 use Mantle\Support\Arr;
 use Symfony\Component\Console\Application as Console_Application;
 use Symfony\Component\Console\Command\Command as Symfony_Command;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * Console Application
  *
  * Not to be confused with the Mantle Application/Container, this is an instance
  * of the Symfony Console Application.
- *
- * @todo Add contract for console application.
  */
 class Application extends Console_Application implements Console_Application_Contract {
 	/**
@@ -89,6 +91,46 @@ class Application extends Console_Application implements Console_Application_Con
 	 */
 	public function run( InputInterface $input = null, OutputInterface $output = null ): int { // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod.Found
 		return parent::run( $input, $output );
+	}
+
+	/**
+	 * Run a console command by name.
+	 *
+	 * @todo Add support for non-Mantle commands (e.g. WP-CLI).
+	 *
+	 * @param string               $command Command name.
+	 * @param array                $parameters Command parameters.
+	 * @param OutputInterface|null $output_buffer Output buffer.
+	 * @return int
+	 *
+	 * @throws InvalidArgumentException Thrown if the command is not a Mantle command.
+	 */
+	public function call( string $command, array $parameters = [], $output_buffer = null ): int {
+		if ( ! $this->has( $command ) ) {
+			throw new InvalidArgumentException( "Command [{$command}] does not exist." );
+		}
+
+		return $this->run(
+			new ArrayInput( array_merge( [ 'command' => $command ], $parameters ) ),
+			$output_buffer ?: new BufferedOutput(),
+		);
+	}
+
+	/**
+	 * Test a console command by name.
+	 *
+	 * @param string $command Command name.
+	 * @param array  $parameters Command parameters.
+	 * @return CommandTester
+	 */
+	public function test( string $command, array $parameters = [] ): CommandTester {
+		$command = $this->find( $command );
+
+		$tester = new CommandTester( $command );
+
+		$tester->execute( array_merge( [ 'command' => $command ], $parameters ) );
+
+		return $tester;
 	}
 
 	/**
