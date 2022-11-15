@@ -45,6 +45,11 @@ trait Incorrect_Usage {
 	 */
 	protected $caught_doing_it_wrong = [];
 
+	/**
+	 * Trace storage for "doing it wrong" calls.
+	 *
+	 * @var array
+	 */
 	protected $caught_doing_it_wrong_traces = [];
 
 	/**

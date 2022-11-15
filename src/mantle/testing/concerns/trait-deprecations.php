@@ -15,6 +15,7 @@ use PHPUnit\Util\Test;
 use function Mantle\Support\Helpers\collect;
 
 trait Deprecations {
+	use Output_Messages;
 
 	/**
 	 * Expected deprecation calls.
@@ -36,6 +37,13 @@ trait Deprecations {
 	 * @var array
 	 */
 	protected $caught_deprecated = [];
+
+	/**
+	 * Trace storage for deprecated calls.
+	 *
+	 * @var array
+	 */
+	protected array $caught_deprecated_traces = [];
 
 	/**
 	 * Sets up the expectations for testing a deprecated call.
@@ -98,8 +106,16 @@ trait Deprecations {
 			)
 			->all();
 
-		foreach ( $unexpected_deprecated as $unexpected ) {
-			$errors[] = "Unexpected deprecated notice for $unexpected";
+		foreach ( $unexpected_deprecated as $index => $unexpected ) {
+			if ( ! empty( $this->caught_deprecated_traces[ $index ] ) ) {
+				static::trace(
+					message: "Unexpected deprecated notice for $unexpected",
+					file: $this->caught_deprecated_traces[ $index ]['file'],
+					line: $this->caught_deprecated_traces[ $index ]['line'],
+				);
+			}
+
+			$errors[] = $unexpected;
 		}
 
 		// Perform an assertion, but only if there are expected or unexpected deprecated calls or wrongdoings.
@@ -107,7 +123,11 @@ trait Deprecations {
 			! empty( $this->expected_deprecated )
 			|| ! empty( $this->caught_deprecated )
 		) {
-			$this->assertEmpty( $errors, implode( "\n", $errors ) );
+			if ( ! empty( $errors ) ) {
+				$this->fail( 'Unexpected deprecated notices: ' . implode( ', ', $errors ) );
+			} else {
+				$this->assertTrue( true );
+			}
 		}
 	}
 
@@ -149,6 +169,11 @@ trait Deprecations {
 	public function deprecated_function_run( $function ) {
 		if ( ! in_array( $function, $this->caught_deprecated, true ) ) {
 			$this->caught_deprecated[] = $function;
+
+			$this->caught_deprecated_traces[] = collect( debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 6 ) )
+				// Filter out invalid calls that shouldn't be included in a trace.
+				->filter( fn ( $item ) => false === strpos( $item['file'], 'phpunit/phpunit' ) )
+				->last();
 		}
 	}
 }
