@@ -101,18 +101,22 @@ trait Output_Messages {
 	/**
 	 * Outputs a trace message with Collision/Whoops.
 	 *
-	 * @param string  $message Message to output.
-	 * @param string  $file File the message is from.
-	 * @param integer $line Line the message is from.
+	 * @param string $message Message to output.
+	 * @param array  $trace Trace to output.
 	 * @return void
 	 */
-	public static function trace( string $message, string $file, int $line ): void {
+	public static function trace( string $message, array $trace ): void {
+		// Identify the starting frame for the trace.
+		$frame = collect( $trace )
+			->filter( fn ( $item ) => false === strpos( $item['file'], 'phpunit/phpunit' ) )
+			->last();
+
 		$exception = new ErrorException(
 			$message,
 			E_USER_ERROR,
 			E_USER_ERROR,
-			$file,
-			$line,
+			$frame['file'],
+			$frame['line'],
 		);
 
 		$output = new \Symfony\Component\console\Output\ConsoleOutput();
