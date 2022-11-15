@@ -170,7 +170,7 @@ trait Incorrect_Usage {
 		if ( ! in_array( $function, $this->caught_doing_it_wrong, true ) ) {
 			$this->caught_doing_it_wrong[] = $function;
 
-			$this->caught_doing_it_wrong_traces[] = collect( debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 6 ) )
+			$this->caught_doing_it_wrong_traces[] = collect( debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 6 ) ) // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
 				// Filter out invalid calls that shouldn't be included in a trace.
 				->filter( fn ( $item ) => false === strpos( $item['file'], 'phpunit/phpunit' ) )
 				->last();
