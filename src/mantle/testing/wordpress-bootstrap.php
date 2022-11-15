@@ -36,27 +36,36 @@ global $wpdb,
 if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) && ! empty( WP_TESTS_CONFIG_FILE_PATH ) && is_readable( WP_TESTS_CONFIG_FILE_PATH ) ) {
 	$config_file_path = WP_TESTS_CONFIG_FILE_PATH;
 } elseif ( false === strpos( __DIR__, '/wp-content/' ) ) {
-	/**
-	 * Install WordPress automatically in the /tmp/wordpress folder.
-	 *
-	 * Retrieves the latest installation command from Mantle's GitHub and runs it
-	 * to install WordPress to a temporary folder (/tmp/wordpress by default).
-	 * This unlocks the ability to run `composer run phpunit` both locally and in
-	 * CI tests.
-	 */
+	// Check if WP_CORE_DIR is defined and points to a valid installation.
+	if ( getenv( 'WP_CORE_DIR' ) && ! defined( 'WP_TESTS_INSTALL_PATH' ) && is_readable( getenv( 'WP_CORE_DIR' ) . '/wp-load.php' ) ) {
+		define( 'WP_TESTS_INSTALL_PATH', getenv( 'WP_CORE_DIR' ) );
 
-	defined( 'WP_TESTS_INSTALL_PATH' ) || define( 'WP_TESTS_INSTALL_PATH', '/tmp/wordpress' );
+		Utils::info( 'Using the WP_CORE_DIR environment variable: ' . WP_TESTS_INSTALL_PATH );
 
-	$config_file_path = WP_TESTS_INSTALL_PATH . '/wp-tests-config.php';
+		$config_file_path = WP_TESTS_INSTALL_PATH . '/wp-tests-config.php';
+	} else {
+		/**
+		 * Install WordPress automatically in the /tmp/wordpress folder.
+		 *
+		 * Retrieves the latest installation command from Mantle's GitHub and runs
+		 * it to install WordPress to a temporary folder (WP_CORE_DIR if set falling
+		 * back to /tmp/wordpress). This unlocks the ability to run `composer run
+		 * phpunit` both locally and in CI tests.
+		 */
 
-	// Install WordPress if we're not in the sub-process that installs WordPress.
-	if ( ! defined( 'WP_INSTALLING' ) || ! WP_INSTALLING ) {
-		Utils::info(
-			'WordPress installation not found, installing in temporary directory: <em>' . WP_TESTS_INSTALL_PATH . '</em>'
-		);
+		defined( 'WP_TESTS_INSTALL_PATH' ) || define( 'WP_TESTS_INSTALL_PATH', getenv( 'WP_CORE_DIR' ) ?: '/tmp/wordpress' );
 
-		// Download the latest installation command from GitHub and install WordPress.
-		Utils::install_wordpress( WP_TESTS_INSTALL_PATH );
+		$config_file_path = WP_TESTS_INSTALL_PATH . '/wp-tests-config.php';
+
+		// Install WordPress if we're not in the sub-process that installs WordPress.
+		if ( ! defined( 'WP_INSTALLING' ) || ! WP_INSTALLING ) {
+			Utils::info(
+				'WordPress installation not found, installing in temporary directory: <em>' . WP_TESTS_INSTALL_PATH . '</em>'
+			);
+
+			// Download the latest installation command from GitHub and install WordPress.
+			Utils::install_wordpress( WP_TESTS_INSTALL_PATH );
+		}
 	}
 } else {
 	// The project is being loaded from inside a WordPress installation.

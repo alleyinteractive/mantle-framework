@@ -7,6 +7,7 @@
 
 namespace Mantle\Testing;
 
+use Mantle\Support\Str;
 use Mantle\Testing\Doubles\Spy_REST_Server;
 use function Termwind\render;
 
@@ -203,7 +204,7 @@ class Utils {
 		global $table_prefix;
 
 		// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
-		defined( 'ABSPATH' ) || define( 'ABSPATH', ensure_trailingslash( preg_replace( '#/wp-content/.*$#', '/', __DIR__ ) ) );
+		defined( 'ABSPATH' ) || define( 'ABSPATH', Str::trailing_slash( preg_replace( '#/wp-content/.*$#', '/', __DIR__ ) ) );
 		defined( 'WP_DEBUG' ) || define( 'WP_DEBUG', true );
 
 		defined( 'DB_NAME' ) || define( 'DB_NAME', static::DEFAULT_DB_NAME );
