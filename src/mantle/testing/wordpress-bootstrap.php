@@ -47,13 +47,13 @@ if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) && ! empty( WP_TESTS_CONFIG_FILE_PAT
 		/**
 		 * Install WordPress automatically in the /tmp/wordpress folder.
 		 *
-		 * Retrieves the latest installation command from Mantle's GitHub and runs it
-		 * to install WordPress to a temporary folder (/tmp/wordpress by default).
-		 * This unlocks the ability to run `composer run phpunit` both locally and in
-		 * CI tests.
+		 * Retrieves the latest installation command from Mantle's GitHub and runs
+		 * it to install WordPress to a temporary folder (WP_CORE_DIR if set falling
+		 * back to /tmp/wordpress). This unlocks the ability to run `composer run
+		 * phpunit` both locally and in CI tests.
 		 */
 
-		defined( 'WP_TESTS_INSTALL_PATH' ) || define( 'WP_TESTS_INSTALL_PATH', '/tmp/wordpress' );
+		defined( 'WP_TESTS_INSTALL_PATH' ) || define( 'WP_TESTS_INSTALL_PATH', getenv( 'WP_CORE_DIR' ) ?: '/tmp/wordpress' );
 
 		$config_file_path = WP_TESTS_INSTALL_PATH . '/wp-tests-config.php';
 
