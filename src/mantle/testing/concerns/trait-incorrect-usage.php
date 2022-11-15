@@ -110,11 +110,13 @@ trait Incorrect_Usage {
 		foreach ( $unexpected_doing_it_wrong as $index => $unexpected ) {
 			$errors[] = $unexpected;
 
-			static::trace(
-				message: "Unexpected incorrect usage notice for $unexpected",
-				file: $this->caught_doing_it_wrong_traces[ $index ]['file'],
-				line: $this->caught_doing_it_wrong_traces[ $index ]['line'],
-			);
+			if ( ! empty( $this->caught_doing_it_wrong_traces[ $index ] ) ) {
+				static::trace(
+					message: "Unexpected incorrect usage notice for $unexpected",
+					file: $this->caught_doing_it_wrong_traces[ $index ]['file'],
+					line: $this->caught_doing_it_wrong_traces[ $index ]['line'],
+				);
+			}
 		}
 
 		// Perform an assertion, but only if there are expected or unexpected
