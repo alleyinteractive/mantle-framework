@@ -30,8 +30,10 @@ class Test_Incorrect_Usage extends Framework_Test_Case {
 
 	public function test_ignore_by_prefix() {
 		$this->ignoreIncorrectUsage( 'wp_*' );
+		$this->ignoreIncorrectUsage( 'WP_*' );
 		$this->setExpectedIncorrectUsage( 'expected_incorrect_usage' );
 
+		wp_cache_set( false, 'data' ); // Throws a deprecation notice because of the invalid cache key.
 		_doing_it_wrong( 'wp_prefix_test', 'This is a test', '1.0.0' );
 		_doing_it_wrong( 'expected_incorrect_usage', 'This is a test', '1.0.0' );
 	}

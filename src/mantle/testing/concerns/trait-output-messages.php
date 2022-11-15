@@ -7,6 +7,10 @@
 
 namespace Mantle\Testing\Concerns;
 
+use ErrorException;
+use NunoMaduro\Collision\Writer;
+use Whoops\Exception\Inspector;
+
 use function Termwind\render;
 
 /**
@@ -92,5 +96,58 @@ trait Output_Messages {
 		}
 
 		render( "<div class=\"my-1\"><code>{$code}</code></div>" );
+	}
+
+	/**
+	 * Outputs a trace message with Collision/Whoops.
+	 *
+	 * @param string  $message Message to output.
+	 * @param string  $file File the message is from.
+	 * @param integer $line Line the message is from.
+	 * @return void
+	 */
+	public static function trace( string $message, string $file, int $line ): void {
+		$exception = new ErrorException(
+			$message,
+			E_USER_ERROR,
+			E_USER_ERROR,
+			$file,
+			$line,
+		);
+
+		$output = new \Symfony\Component\console\Output\ConsoleOutput();
+
+		$writer = ( new Writer() )->setOutput( $output );
+
+		$writer->showTitle( false );
+
+		$writer->ignoreFilesIn(
+			[
+				'/vendor\/pestphp\/pest/',
+				'/vendor\/phpspec\/prophecy-phpunit/',
+				'/vendor\/phpunit\/phpunit\/src/',
+				'/vendor\/mockery\/mockery/',
+				'/vendor\/laravel\/dusk/',
+				'/vendor\/laravel\/framework\/src\/Illuminate\/Testing/',
+				'/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Testing/',
+				'/vendor\/symfony\/framework-bundle\/Test/',
+				'/vendor\/symfony\/phpunit-bridge/',
+				'/vendor\/symfony\/dom-crawler/',
+				'/vendor\/symfony\/browser-kit/',
+				'/vendor\/symfony\/css-selector/',
+				'/vendor\/alleyinteractive\/mantle-framework/',
+				'/vendor\/mantle-framework/',
+				'/vendor\/bin\/.phpunit/',
+				'/bin\/.phpunit/',
+				'/vendor\/bin\/simple-phpunit/',
+				'/bin\/phpunit/',
+				'/vendor\/coduo\/php-matcher\/src\/PHPUnit/',
+				'/vendor\/sulu\/sulu\/src\/Sulu\/Bundle\/TestBundle\/Testing/',
+			]
+		);
+
+		$writer->write( new Inspector( $exception ) );
+
+		$output->writeln( '' );
 	}
 }

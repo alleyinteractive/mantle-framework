@@ -10,6 +10,7 @@
 namespace Mantle\Testing\Concerns;
 
 use Mantle\Support\Str;
+use PHPUnit\TextUI\XmlConfiguration\PHPUnit;
 use PHPUnit\Util\Test;
 
 use function Mantle\Support\Helpers\collect;
@@ -21,6 +22,7 @@ use function Mantle\Support\Helpers\collect;
  * as expected or ignored.
  */
 trait Incorrect_Usage {
+	use Output_Messages;
 
 	/**
 	 * Expected "doing it wrong" calls.
@@ -42,6 +44,8 @@ trait Incorrect_Usage {
 	 * @var array
 	 */
 	protected $caught_doing_it_wrong = [];
+
+	protected $caught_doing_it_wrong_traces = [];
 
 	/**
 	 * Sets up the expectations for testing a deprecated call.
@@ -98,16 +102,26 @@ trait Incorrect_Usage {
 			)
 			->all();
 
-		foreach ( $unexpected_doing_it_wrong as $unexpected ) {
-			$errors[] = "Unexpected incorrect usage notice for $unexpected";
+		foreach ( $unexpected_doing_it_wrong as $index => $unexpected ) {
+			$errors[] = $unexpected;
+
+			static::trace(
+				message: "Unexpected incorrect usage notice for $unexpected",
+				file: $this->caught_doing_it_wrong_traces[ $index ]['file'],
+				line: $this->caught_doing_it_wrong_traces[ $index ]['line'],
+			);
 		}
 
-		// Perform an assertion, but only if there are expected or unexpected deprecated calls or wrongdoings.
+		// Perform an assertion, but only if there are expected or unexpected
+		// deprecated calls or wrongdoings.
 		if (
-			! empty( $this->expected_doing_it_wrong )
-			|| ! empty( $this->caught_doing_it_wrong )
+			! empty( $this->expected_doing_it_wrong ) || ! empty( $this->caught_doing_it_wrong )
 		) {
-			$this->assertEmpty( $errors, implode( "\n", $errors ) );
+			if ( ! empty( $errors ) ) {
+				$this->fail( 'Unexpected incorrect usage notice(s) triggered: ' . implode( ', ', $errors ) );
+			} else {
+				$this->assertTrue( true );
+			}
 		}
 	}
 
@@ -148,6 +162,11 @@ trait Incorrect_Usage {
 	public function doing_it_wrong_run( $function ) {
 		if ( ! in_array( $function, $this->caught_doing_it_wrong, true ) ) {
 			$this->caught_doing_it_wrong[] = $function;
+
+			$this->caught_doing_it_wrong_traces[] = collect( debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 6 ) )
+				// Filter out invalid calls that shouldn't be included in a trace.
+				->filter( fn ( $item ) => false === strpos( $item['file'], 'phpunit/phpunit' ) )
+				->last();
 		}
 	}
 }
