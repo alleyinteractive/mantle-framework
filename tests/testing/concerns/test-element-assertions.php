@@ -4,6 +4,9 @@ namespace Mantle\Tests\Testing\Concerns;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Test_Response;
 
+/**
+ * @group testing
+ */
 class Test_Element_Assertions extends Framework_Test_Case {
 	public string $test_content = '
 	<div>

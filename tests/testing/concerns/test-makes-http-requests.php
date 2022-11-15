@@ -8,6 +8,9 @@ use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Test_Response;
 
+/**
+ * @group testing
+ */
 class Test_Makes_Http_Requests extends Framework_Test_Case {
 	use Refresh_Database;
 

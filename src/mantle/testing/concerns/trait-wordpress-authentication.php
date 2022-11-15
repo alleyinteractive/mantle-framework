@@ -2,6 +2,8 @@
 /**
  * This file contains the WordPress_Authentication trait
  *
+ * phpcs:disable WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+ *
  * @package Mantle
  */
 
@@ -51,11 +53,11 @@ trait WordPress_Authentication {
 	 *
 	 * @throws Exception|Model_Exception If the user could not be set or created.
 	 *
-	 * @param mixed $user Either a user to use, or a role in which to create a new
+	 * @param User|WP_User|string|int|null $user Either a user to use, or a role in which to create a new
 	 *                    user.
 	 * @return \WP_User User which is now being used in the WordPress state.
 	 */
-	public function acting_as( $user ): WP_User {
+	public function acting_as( User|WP_User|string|int|null $user ): WP_User {
 		$user_id = null;
 		if ( is_string( $user ) ) {
 			$model   = $this->create_user_with_role( $user );
@@ -74,6 +76,15 @@ trait WordPress_Authentication {
 		}
 
 		throw new Exception( 'Could not find or create the user' );
+	}
+
+	/**
+	 * Alias to `acting_as()`.
+	 *
+	 * @param User|WP_User|string|int|null $user
+	 */
+	public function actingAs( User|WP_User|string|int|null $user ): WP_User {
+		return $this->acting_as( $user );
 	}
 
 	/**
@@ -98,5 +109,45 @@ trait WordPress_Authentication {
 		$model->save();
 		$sequence++;
 		return $model;
+	}
+
+	/**
+	 * Assert that we are authenticated with a given user/role.
+	 *
+	 * @param User|WP_User|string|int|null $user User to check.
+	 */
+	public function assertAuthenticated( User|WP_User|string|int|null $user = null ): void {
+		if ( is_null( $user ) ) {
+			$this->assertTrue( is_user_logged_in(), 'User is not authenticated.' );
+		}
+
+		$user = wp_get_current_user();
+
+		if ( empty( $user ) ) {
+			$this->fail( 'User is not authenticated.' );
+		}
+
+		match ( true ) {
+			$user instanceof User => $this->assertEquals( $user->id(), get_current_user_id() ),
+			is_int( $user ) => $this->assertEquals( $user, get_current_user_id() ),
+			$user instanceof WP_User => $this->assertEquals( $user->ID, get_current_user_id() ),
+			is_string( $user ) => $this->assertTrue( in_array( $user, $user->roles, true ) ),
+		};
+	}
+
+	/**
+	 * Assert that we are not authenticated.
+	 */
+	public function assertGuest(): void {
+		$this->assertFalse( is_user_logged_in(), 'User is authenticated.' );
+	}
+
+	/**
+	 * Assert that the given user not authenticated.
+	 *
+	 * Alias to `assertGuest()`.
+	 */
+	public function assertNotAuthenticated(): void {
+		$this->assertGuest();
 	}
 }
