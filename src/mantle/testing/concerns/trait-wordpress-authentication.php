@@ -25,7 +25,7 @@ trait WordPress_Authentication {
 	 *
 	 * @var int
 	 */
-	protected int $backup_user;
+	protected $backup_user;
 
 	/**
 	 * Backup the current global user.
