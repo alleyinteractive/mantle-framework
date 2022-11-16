@@ -2,6 +2,8 @@
 /**
  * This file contains the WordPress_Authentication trait
  *
+ * phpcs:disable WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+ *
  * @package Mantle
  */
 
@@ -10,6 +12,7 @@ namespace Mantle\Testing\Concerns;
 use Mantle\Database\Model\Model_Exception;
 use Mantle\Database\Model\User;
 use Mantle\Testing\Exceptions\Exception;
+use PHPUnit\Framework\Assert;
 use WP_User;
 use function Mantle\Support\Helpers\get_user_object;
 
@@ -51,11 +54,11 @@ trait WordPress_Authentication {
 	 *
 	 * @throws Exception|Model_Exception If the user could not be set or created.
 	 *
-	 * @param mixed $user Either a user to use, or a role in which to create a new
+	 * @param User|WP_User|string|int|null $user Either a user to use, or a role in which to create a new
 	 *                    user.
 	 * @return \WP_User User which is now being used in the WordPress state.
 	 */
-	public function acting_as( $user ): WP_User {
+	public function acting_as( User|WP_User|string|int|null $user ): WP_User {
 		$user_id = null;
 		if ( is_string( $user ) ) {
 			$model   = $this->create_user_with_role( $user );
@@ -74,6 +77,15 @@ trait WordPress_Authentication {
 		}
 
 		throw new Exception( 'Could not find or create the user' );
+	}
+
+	/**
+	 * Alias to `acting_as()`.
+	 *
+	 * @param User|WP_User|string|int|null $user
+	 */
+	public function actingAs( User|WP_User|string|int|null $user ): WP_User {
+		return $this->acting_as( $user );
 	}
 
 	/**
@@ -98,5 +110,47 @@ trait WordPress_Authentication {
 		$model->save();
 		$sequence++;
 		return $model;
+	}
+
+	/**
+	 * Assert that we are authenticated with a given user/role.
+	 *
+	 * @param User|WP_User|string|int|null $user User to check.
+	 */
+	public function assertAuthenticated( User|WP_User|string|int|null $user = null ): void {
+		if ( is_null( $user ) ) {
+			Assert::assertTrue( is_user_logged_in(), 'User is not authenticated.' );
+			return;
+		}
+
+		$current_user = wp_get_current_user();
+
+		if ( empty( $current_user ) ) {
+			Assert::fail( 'User is not authenticated.' );
+		}
+
+		match ( true ) {
+			$user instanceof User => Assert::assertEquals( $user->id(), $current_user->ID ),
+			is_int( $user ) => Assert::assertEquals( $user, $current_user->ID ),
+			$user instanceof WP_User => Assert::assertEquals( $user->ID, $current_user->ID ),
+			is_string( $user ) => Assert::assertTrue( in_array( $user, $current_user->roles, true ) ),
+			default => Assert::fail( 'Unexpected argument passed to assertAuthenticated().' ),
+		};
+	}
+
+	/**
+	 * Assert that we are not authenticated.
+	 */
+	public function assertGuest(): void {
+		Assert::assertFalse( is_user_logged_in(), 'User is authenticated.' );
+	}
+
+	/**
+	 * Assert that the given user not authenticated.
+	 *
+	 * Alias to `assertGuest()`.
+	 */
+	public function assertNotAuthenticated(): void {
+		$this->assertGuest();
 	}
 }

@@ -22,21 +22,6 @@ trait Assertions {
 	use Asset_Assertions;
 
 	/**
-	 * Detect post-test failure conditions.
-	 *
-	 * We use this method to detect expectedDeprecated and expectedIncorrectUsage
-	 * annotations.
-	 */
-	protected function assertPostConditions(): void {
-		if ( method_exists( $this, 'expectedDeprecated' ) ) {
-			$this->expectedDeprecated();
-		}
-		if ( method_exists( $this, 'expectedIncorrectUsage' ) ) {
-			$this->expectedIncorrectUsage();
-		}
-	}
-
-	/**
 	 * Asserts that the given value is an instance of WP_Error.
 	 *
 	 * @param mixed  $actual  The value to check.

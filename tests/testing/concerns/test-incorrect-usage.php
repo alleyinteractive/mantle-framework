@@ -5,6 +5,8 @@ use Mantle\Testing\Framework_Test_Case;
 
 /**
  * Test for incorrect usage errors being thrown and handled.
+ *
+ * @group testing
  */
 class Test_Incorrect_Usage extends Framework_Test_Case {
 	/**

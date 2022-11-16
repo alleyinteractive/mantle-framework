@@ -5,6 +5,8 @@ use Mantle\Testing\Framework_Test_Case;
 
 /**
  * Test for deprecation errors being thrown and handled.
+ *
+ * @group testing
  */
 class Test_Deprecations extends Framework_Test_Case {
 	/**

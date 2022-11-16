@@ -1,11 +1,12 @@
 <?php
 namespace Mantle\Testing\Concerns;
 
-// use Mantle\Console\Application as Console;
-use Mantle\Console\Command;
 use Mantle\Facade\Console;
 use Mantle\Testing\Framework_Test_Case;
 
+/**
+ * @group testing
+ */
 class Test_Interacts_With_Console extends Framework_Test_Case {
 	protected function setUp(): void {
 		parent::setUp();

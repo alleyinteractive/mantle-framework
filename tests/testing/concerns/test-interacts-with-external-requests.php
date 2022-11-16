@@ -11,6 +11,8 @@ use RuntimeException;
 
 /**
  * Test for Mocking WP HTTP API Requests.
+ *
+ * @group testing
  */
 class Test_Interacts_With_External_Requests extends Framework_Test_Case {
 	public function test_fake_request() {
