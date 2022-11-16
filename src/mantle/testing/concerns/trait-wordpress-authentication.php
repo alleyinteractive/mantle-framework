@@ -12,6 +12,7 @@ namespace Mantle\Testing\Concerns;
 use Mantle\Database\Model\Model_Exception;
 use Mantle\Database\Model\User;
 use Mantle\Testing\Exceptions\Exception;
+use PHPUnit\Framework\Assert;
 use WP_User;
 use function Mantle\Support\Helpers\get_user_object;
 
@@ -24,7 +25,7 @@ trait WordPress_Authentication {
 	 *
 	 * @var int
 	 */
-	protected $backup_user;
+	protected int $backup_user;
 
 	/**
 	 * Backup the current global user.
@@ -118,20 +119,22 @@ trait WordPress_Authentication {
 	 */
 	public function assertAuthenticated( User|WP_User|string|int|null $user = null ): void {
 		if ( is_null( $user ) ) {
-			$this->assertTrue( is_user_logged_in(), 'User is not authenticated.' );
+			Assert::assertTrue( is_user_logged_in(), 'User is not authenticated.' );
+			return;
 		}
 
-		$user = wp_get_current_user();
+		$current_user = wp_get_current_user();
 
-		if ( empty( $user ) ) {
-			$this->fail( 'User is not authenticated.' );
+		if ( empty( $current_user ) ) {
+			Assert::fail( 'User is not authenticated.' );
 		}
 
 		match ( true ) {
-			$user instanceof User => $this->assertEquals( $user->id(), get_current_user_id() ),
-			is_int( $user ) => $this->assertEquals( $user, get_current_user_id() ),
-			$user instanceof WP_User => $this->assertEquals( $user->ID, get_current_user_id() ),
-			is_string( $user ) => $this->assertTrue( in_array( $user, $user->roles, true ) ),
+			$user instanceof User => Assert::assertEquals( $user->id(), $current_user->ID ),
+			is_int( $user ) => Assert::assertEquals( $user, $current_user->ID ),
+			$user instanceof WP_User => Assert::assertEquals( $user->ID, $current_user->ID ),
+			is_string( $user ) => Assert::assertTrue( in_array( $user, $current_user->roles, true ) ),
+			default => Assert::fail( 'Unexpected argument passed to assertAuthenticated().' ),
 		};
 	}
 
@@ -139,7 +142,7 @@ trait WordPress_Authentication {
 	 * Assert that we are not authenticated.
 	 */
 	public function assertGuest(): void {
-		$this->assertFalse( is_user_logged_in(), 'User is authenticated.' );
+		Assert::assertFalse( is_user_logged_in(), 'User is authenticated.' );
 	}
 
 	/**

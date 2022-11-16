@@ -35,5 +35,6 @@ class Test_WordPress_Authentication extends Framework_Test_Case {
 
 	public function test_acting_as_anonymous() {
 		$this->assertNotAuthenticated();
+		$this->assertGuest();
 	}
 }
