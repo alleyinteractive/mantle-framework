@@ -55,9 +55,9 @@ abstract class Repository {
 	/**
 	 * Set a cache item.
 	 *
-	 * @param string $key Cache key.
-	 * @param mixed  $value Item value.
-	 * @param int    $ttl TTL.
+	 * @param string                 $key Cache key.
+	 * @param mixed                  $value Item value.
+	 * @param null|int|\DateInterval $ttl TTL.
 	 * @return mixed
 	 */
 	public function set( string $key, mixed $value, null|int|\DateInterval $ttl = null ): bool {
@@ -77,9 +77,9 @@ abstract class Repository {
 	/**
 	 * Retrieve multiple cache keys.
 	 *
-	 * @param string[] $keys Cache keys.
+	 * @param iterable $keys Cache keys.
 	 * @param mixed    $default Default value.
-	 * @return mixed
+	 * @return iterable
 	 */
 	public function getMultiple( iterable $keys, mixed $default = null ): iterable {
 		return collect( $keys )
@@ -94,8 +94,8 @@ abstract class Repository {
 	/**
 	 * Set multiple keys.
 	 *
-	 * @param array $values Key value pair of values to set.
-	 * @param int   $ttl Cache TTL.
+	 * @param iterable               $values Key value pair of values to set.
+	 * @param null|int|\DateInterval $ttl Cache TTL.
 	 * @return bool
 	 */
 	public function setMultiple( iterable $values, null|int|\DateInterval $ttl = null ): bool {

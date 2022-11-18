@@ -470,7 +470,7 @@ class Container implements ArrayAccess, Container_Contract {
 		$instance = $this->make( $abstract );
 
 		foreach ( $this->getReboundCallbacks( $abstract ) as $callback ) {
-				call_user_func( $callback, $this, $instance );
+			call_user_func( $callback, $this, $instance );
 		}
 	}
 
@@ -1146,7 +1146,7 @@ class Container implements ArrayAccess, Container_Contract {
 	/**
 	 * Determine if a given offset exists.
 	 *
-	 * @param  string $key
+	 * @param  mixed $key
 	 * @return bool
 	 */
 	public function offsetExists( mixed $key ): bool {
@@ -1156,18 +1156,18 @@ class Container implements ArrayAccess, Container_Contract {
 	/**
 	 * Get the value at a given offset.
 	 *
-	 * @param  string $key
+	 * @param  mixed $key
 	 * @return mixed
 	 */
-	public function offsetGet( $key ) {
+	public function offsetGet( mixed $key ) {
 			return $this->make( $key );
 	}
 
 	/**
 	 * Set the value at a given offset.
 	 *
-	 * @param  string $key
-	 * @param  mixed  $value
+	 * @param  mixed $key
+	 * @param  mixed $value
 	 * @return void
 	 */
 	public function offsetSet( mixed $key, mixed $value ): void {
@@ -1182,7 +1182,7 @@ class Container implements ArrayAccess, Container_Contract {
 	/**
 	 * Unset the value at a given offset.
 	 *
-	 * @param  string $key
+	 * @param  mixed $key
 	 * @return void
 	 */
 	public function offsetUnset( mixed $key ): void {
