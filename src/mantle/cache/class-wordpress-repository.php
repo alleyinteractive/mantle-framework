@@ -36,7 +36,7 @@ class WordPress_Repository extends Repository implements Taggable_Repository {
 	 * @param mixed  $default Default value.
 	 * @return mixed
 	 */
-	public function get( $key, $default = null ) {
+	public function get( string $key, mixed $default = null ): mixed {
 		$value = \wp_cache_get( $key, $this->prefix );
 		return false === $value ? $default : $value;
 	}
@@ -105,7 +105,7 @@ class WordPress_Repository extends Repository implements Taggable_Repository {
 	/**
 	 * Clear the cache.
 	 */
-	public function clear() {
+	public function clear(): bool {
 		return \wp_cache_flush();
 	}
 
