@@ -8,12 +8,12 @@
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
         "mantle-framework/contracts": "^0.9",
         "mantle-framework/database": "^0.9",
+        "mantle-framework/faker": "^0.9",
         "mantle-framework/http-client": "^0.9",
         "mantle-framework/http": "^0.9",
         "mantle-framework/support": "^0.9",
         "nunomaduro/collision": "^5.0",
-        "nunomaduro/termwind": "^1.14",
-        "phpunit/phpunit": "^9.3.3"
+        "nunomaduro/termwind": "^1.14"
     },
     "extra": {
         "branch-alias": {
@@ -33,6 +33,7 @@
         }
     ],
     "suggest": {
+        "mantle-framework/console": "Required to assert console commands.",
         "phpunit/phpunit": "Required to use assertions and run tests."
     },
     "minimum-stability": "dev",
