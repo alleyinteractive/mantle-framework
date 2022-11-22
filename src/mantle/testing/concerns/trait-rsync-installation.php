@@ -142,8 +142,8 @@ trait Rsync_Installation {
 		defined( 'WP_TESTS_CONFIG_FILE_PATH' ) || define( 'WP_TESTS_CONFIG_FILE_PATH', "{$base_install_path}/wp-tests-config.php" );
 		defined( 'ABSPATH' ) || define( 'ABSPATH', ensure_trailingslash( $base_install_path ) );
 
-		// Install WordPress at the base installation path if it doesn't exist yet.
-		if ( ! is_dir( $base_install_path ) ) {
+		// Install WordPress at the base installation if it doesn't exist yet.
+		if ( ! is_dir( $base_install_path ) || ! is_file( "{$base_install_path}/wp-load.php" ) ) {
 			Utils::info(
 				"Installating WordPress at <em>{$base_install_path}</em> ...",
 				'Install Rsync'
