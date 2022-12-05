@@ -74,6 +74,11 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	public function set_request( Request $request ) {
 		$this->request = $request;
 		$this->context = ( new RequestContext() )->fromRequest( $request );
+
+		if ( ! $this->context->hasParameter( '_locale' ) ) {
+			$this->context->setParameter( '_locale', 'en' );
+		}
+
 		return $this;
 	}
 

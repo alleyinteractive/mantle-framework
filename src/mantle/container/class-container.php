@@ -157,7 +157,7 @@ class Container implements ArrayAccess, Container_Contract {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function has( $id ) {
+	public function has( string $id ): bool {
 		return $this->bound( $id );
 	}
 
@@ -470,7 +470,7 @@ class Container implements ArrayAccess, Container_Contract {
 		$instance = $this->make( $abstract );
 
 		foreach ( $this->getReboundCallbacks( $abstract ) as $callback ) {
-				call_user_func( $callback, $this, $instance );
+			call_user_func( $callback, $this, $instance );
 		}
 	}
 
@@ -664,9 +664,9 @@ class Container implements ArrayAccess, Container_Contract {
 
 		/**
 		 * Next we need to see if a contextual binding might be bound under an alias of the
-		 * given abstract type. 
-		 * 
-		 * To do that, we will need to check if any aliases exist with this type and then 
+		 * given abstract type.
+		 *
+		 * To do that, we will need to check if any aliases exist with this type and then
 		 * spin through them and check each for contextual bindings as well.
 		 */
 		if ( empty( $this->abstract_aliases[ $abstract ] ) ) {
@@ -1146,31 +1146,31 @@ class Container implements ArrayAccess, Container_Contract {
 	/**
 	 * Determine if a given offset exists.
 	 *
-	 * @param  string $key
+	 * @param  mixed $key
 	 * @return bool
 	 */
-	public function offsetExists( $key ) {
+	public function offsetExists( mixed $key ): bool {
 			return $this->bound( $key );
 	}
 
 	/**
 	 * Get the value at a given offset.
 	 *
-	 * @param  string $key
+	 * @param  mixed $key
 	 * @return mixed
 	 */
-	public function offsetGet( $key ) {
+	public function offsetGet( mixed $key ) {
 			return $this->make( $key );
 	}
 
 	/**
 	 * Set the value at a given offset.
 	 *
-	 * @param  string $key
-	 * @param  mixed  $value
+	 * @param  mixed $key
+	 * @param  mixed $value
 	 * @return void
 	 */
-	public function offsetSet( $key, $value ) {
+	public function offsetSet( mixed $key, mixed $value ): void {
 			$this->bind(
 				$key,
 				$value instanceof Closure ? $value : function () use ( $value ) {
@@ -1182,10 +1182,10 @@ class Container implements ArrayAccess, Container_Contract {
 	/**
 	 * Unset the value at a given offset.
 	 *
-	 * @param  string $key
+	 * @param  mixed $key
 	 * @return void
 	 */
-	public function offsetUnset( $key ) {
+	public function offsetUnset( mixed $key ): void {
 			unset( $this->bindings[ $key ], $this->instances[ $key ], $this->resolved[ $key ] );
 	}
 

@@ -6,7 +6,7 @@
         "php": "^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
         "mantle-framework/http": "^0.9",
-        "symfony/http-kernel": "^5.3"
+        "symfony/http-kernel": "^6.0"
     },
     "extra": {
         "branch-alias": {

@@ -9,7 +9,7 @@
         "mantle-framework/contracts": "^0.9",
         "mantle-framework/support": "^0.9",
         "psr/container": "^1.1.1 || ^2.0.1",
-        "symfony/finder": "^5.3"
+        "symfony/finder": "^6.0"
     },
     "extra": {
         "branch-alias": {

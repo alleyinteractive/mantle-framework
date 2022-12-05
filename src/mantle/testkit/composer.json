@@ -14,7 +14,7 @@
         "mantle-framework/support": "^0.9",
         "mantle-framework/testing": "^0.9",
         "phpunit/phpunit": "^9.3.3",
-        "symfony/http-foundation": "^5.3"
+        "symfony/http-foundation": "^6.0"
     },
     "extra": {
         "branch-alias": {
