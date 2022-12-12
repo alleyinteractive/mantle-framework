@@ -115,6 +115,16 @@ class Test_Factory extends Framework_Test_Case {
 		$this->shim_test( \WP_User::class, 'user' );
 	}
 
+	public function test_user_meta_factory() {
+		$user_id = static::factory()->user->with_meta(
+			[
+				'_test_meta_key' => '_test_meta_value',
+			]
+		)->create();
+
+		$this->assertEquals( '_test_meta_value', get_user_meta( $user_id, '_test_meta_key', true ) );
+	}
+
 	public function test_comment_factory() {
 		$this->shim_test( \WP_Comment::class, 'comment' );
 	}
@@ -163,6 +173,15 @@ class Test_Factory extends Framework_Test_Case {
 
 		$this->assertTrue( has_term( $category_id, 'category', $post ) );
 		$this->assertTrue( has_term( $category->term_id, 'category', $post ) );
+	}
+
+	public function test_terms_with_posts() {
+		$post_ids = static::factory()->post->create_many( 2 );
+
+		$category = static::factory()->category->with_posts( $post_ids )->create_and_get();
+
+		$this->assertTrue( has_term( $category->term_id, 'category', $post_ids[0] ) );
+		$this->assertTrue( has_term( $category->term_id, 'category', $post_ids[1] ) );
 	}
 
 	public function test_posts_with_terms_multiple_taxonomies() {
