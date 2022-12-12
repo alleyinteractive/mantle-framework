@@ -78,7 +78,11 @@ class Term_Factory extends Factory {
 
 		return $this->with_middleware(
 			function ( array $args, Closure $next ) use ( $posts ) {
-				/** @var \WP_Term $term */
+				/**
+				 * The created term.
+				 *
+				 * @var \WP_Term $term
+				 */
 				$term = $next( $args );
 
 				foreach ( $posts as $post ) {
