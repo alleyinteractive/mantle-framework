@@ -29,28 +29,28 @@ trait Incorrect_Usage {
 	 *
 	 * @var string[]
 	 */
-	protected $expected_doing_it_wrong = [];
+	private $expected_doing_it_wrong = [];
 
 	/**
 	 * Ignored "doing it wrong" calls.
 	 *
 	 * @var string[]
 	 */
-	protected $ignored_doing_it_wrong = [];
+	private $ignored_doing_it_wrong = [];
 
 	/**
 	 * Caught "doing it wrong" calls.
 	 *
 	 * @var array
 	 */
-	protected $caught_doing_it_wrong = [];
+	private $caught_doing_it_wrong = [];
 
 	/**
 	 * Trace storage for "doing it wrong" calls.
 	 *
 	 * @var array
 	 */
-	protected $caught_doing_it_wrong_traces = [];
+	private $caught_doing_it_wrong_traces = [];
 
 	/**
 	 * Sets up the expectations for testing a deprecated call.

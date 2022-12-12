@@ -22,28 +22,28 @@ trait Deprecations {
 	 *
 	 * @var array
 	 */
-	protected $expected_deprecated = [];
+	private $expected_deprecated = [];
 
 	/**
 	 * Ignored deprecation calls.
 	 *
 	 * @var string[]
 	 */
-	protected $ignored_deprecated = [];
+	private $ignored_deprecated = [];
 
 	/**
 	 * Caught deprecated calls.
 	 *
 	 * @var array
 	 */
-	protected $caught_deprecated = [];
+	private $caught_deprecated = [];
 
 	/**
 	 * Trace storage for deprecated calls.
 	 *
 	 * @var array
 	 */
-	protected array $caught_deprecated_traces = [];
+	private array $caught_deprecated_traces = [];
 
 	/**
 	 * Sets up the expectations for testing a deprecated call.
