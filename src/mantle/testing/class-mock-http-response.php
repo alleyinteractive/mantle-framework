@@ -212,4 +212,13 @@ class Mock_Http_Response implements Arrayable {
 	public function to_array() {
 		return $this->response;
 	}
+
+	/**
+	 * Returns a Http_Client response object.
+	 *
+	 * @return \Mantle\Http_Client\Response
+	 */
+	public function to_response(): \Mantle\Http_Client\Response {
+		return \Mantle\Http_Client\Response::create( $this->response );
+	}
 }

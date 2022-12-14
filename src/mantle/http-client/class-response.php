@@ -366,10 +366,10 @@ class Response implements ArrayAccess {
 	/**
 	 * Check if an attribute exists on the response.
 	 *
-	 * @param string $offset
+	 * @param mixed $offset Offset to check.
 	 * @return bool
 	 */
-	public function offsetExists( $offset ): bool {
+	public function offsetExists( mixed $offset ): bool {
 		if ( $this->is_xml() ) {
 			return isset( $this->xml()[ $offset ] );
 		}
@@ -383,7 +383,7 @@ class Response implements ArrayAccess {
 	 * @param mixed $offset Offset to get.
 	 * @return mixed
 	 */
-	public function offsetGet( $offset ) {
+	public function offsetGet( mixed $offset ): mixed {
 		if ( $this->is_xml() ) {
 			return $this->xml()->{ $offset };
 		}
@@ -400,7 +400,7 @@ class Response implements ArrayAccess {
 	 * @param mixed $value Value.
 	 * @return void
 	 */
-	public function offsetSet( $offset, $value ): void {
+	public function offsetSet( mixed $offset, mixed $value ): void {
 		throw new LogicException( 'Response values are read-only.' );
 	}
 
@@ -411,7 +411,7 @@ class Response implements ArrayAccess {
 	 * @param mixed $offset Offset.
 	 * @return void
 	 */
-	public function offsetUnset( $offset ): void {
+	public function offsetUnset( mixed $offset ): void {
 		throw new LogicException( 'Response values are read-only.' );
 	}
 }
