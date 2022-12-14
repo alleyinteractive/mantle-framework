@@ -22,6 +22,8 @@ use function Mantle\Support\Helpers\get_post_object;
  * @template TObject
  */
 class Post_Factory extends Factory {
+	use Concerns\With_Meta;
+
 	/**
 	 * Faker instance.
 	 *
@@ -58,25 +60,6 @@ class Post_Factory extends Factory {
 
 		return $this->with_middleware(
 			fn ( array $args, Closure $next ) => $next( $args )->set_terms( $terms ),
-		);
-	}
-
-	/**
-	 * Create a new factory instance to create posts with a set of meta.
-	 *
-	 * @param array<string, mixed> $meta Meta to assign to the post.
-	 * @return static
-	 */
-	public function with_meta( array $meta ) {
-		return $this->with_middleware(
-			function ( array $args, Closure $next ) use ( $meta ) {
-				$args['meta_input'] = array_merge_recursive(
-					$args['meta_input'] ?? [],
-					$meta
-				);
-
-				return $next( $args );
-			}
 		);
 	}
 

@@ -7,9 +7,9 @@
 
 namespace Mantle\Testing\Factory;
 
+use Closure;
 use Faker\Generator;
 use Mantle\Database\Model\User;
-use Mantle\Support\Pipeline;
 
 use function Mantle\Support\Helpers\get_user_object;
 
@@ -19,6 +19,8 @@ use function Mantle\Support\Helpers\get_user_object;
  * @template TObject
  */
 class User_Factory extends Factory {
+	use Concerns\With_Meta;
+
 	/**
 	 * Faker instance.
 	 *
@@ -42,11 +44,19 @@ class User_Factory extends Factory {
 	 * @return int|null
 	 */
 	public function create( array $args = [] ): ?int {
+		$first_name = $this->faker->firstName();
+		$last_name  = $this->faker->lastName();
+
 		$args = array_merge(
 			[
-				'user_email' => $this->faker->email(),
-				'user_login' => $this->faker->userName(),
-				'user_pass'  => 'password',
+				'description'  => $this->faker->sentence(),
+				'display_name' => "{$first_name} {$last_name}",
+				'first_name'   => $first_name,
+				'last_name'    => $last_name,
+				'role'         => 'subscriber',
+				'user_email'   => $this->faker->email(),
+				'user_login'   => $this->faker->userName(),
+				'user_pass'    => 'password',
 			],
 			$args
 		);
