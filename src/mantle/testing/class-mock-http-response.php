@@ -205,6 +205,34 @@ class Mock_Http_Response implements Arrayable {
 	}
 
 	/**
+	 * Create a response with the file contents as the body.
+	 *
+	 * @throws \InvalidArgumentException If the file is not readable.
+	 *
+	 * @param string $file File path.
+	 * @return Mock_Http_Response
+	 */
+	public function with_file( string $file ): Mock_Http_Response {
+		if ( ! is_readable( $file ) ) {
+			throw new \InvalidArgumentException( "File '{$file}' is not readable." );
+		}
+
+		// Determine the mime type.
+		$mime_type = wp_check_filetype( $file );
+
+		// Set the headers.
+		if ( ! empty( $mime_type['type'] ) ) {
+			$this->with_header( 'Content-Type', $mime_type['type'] );
+		}
+
+		if ( ! empty( $mime_type['ext'] ) ) {
+			$this->with_header( 'Content-Disposition', "attachment; filename={$file}.{$mime_type['ext']}" );
+		}
+
+		return $this->with_body( file_get_contents( $file ) ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
+	}
+
+	/**
 	 * Returns the combined response array.
 	 *
 	 * @return array WP_Http response array, per WP_Http::request().

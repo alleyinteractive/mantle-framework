@@ -1,6 +1,7 @@
 <?php
 namespace Mantle\Tests\Testing\Concerns;
 
+use InvalidArgumentException;
 use Mantle\Facade\Http;
 use Mantle\Http_Client\Factory;
 use Mantle\Http_Client\Pending_Request;
@@ -226,5 +227,50 @@ class Test_Interacts_With_External_Requests extends Framework_Test_Case {
 		$this->prevent_stray_requests();
 
 		Http::get( 'https://example.org/path/' );
+	}
+
+	public function test_file_as_response() {
+		$this->fake_request(
+			fn() => Mock_Http_Response::create()->with_file( MANTLE_PHPUNIT_FIXTURES_PATH . '/images/alley.jpg' )
+		);
+
+		$filename = sys_get_temp_dir() . '/' . time() . '-alley.jpg';
+
+		$response = Http::with_options(
+			[
+				'filename' => $filename,
+				'stream'   => true,
+			]
+		)
+			->get( 'https://alley.com/wp-content/uploads/2021/12/NSF_Cover.png?w=960' );
+
+		$this->assertEquals( 200, $response->status() );
+		$this->assertNotEmpty( file_get_contents( $filename ) );
+		$this->assertEquals( 'image/jpeg', $response->header( 'Content-Type' ) );
+	}
+
+	public function test_streamed_response() {
+		$this->fake_request(
+			fn() => Mock_Http_Response::create()->with_file( MANTLE_PHPUNIT_FIXTURES_PATH . '/images/alley.jpg' )
+		);
+
+		$response = Http::with_options(
+			[
+				'stream'   => true,
+			]
+		)
+			->get( 'https://alley.com/wp-content/uploads/2021/12/NSF_Cover.png?w=960' );
+
+		$this->assertEquals( 200, $response->status() );
+		$this->assertNotEmpty( $response->file_contents() );
+		$this->assertEquals( 'image/jpeg', $response->header( 'Content-Type' ) );
+	}
+
+	public function test_unknown_file_as_response() {
+		$this->expectException( InvalidArgumentException::class );
+
+		$this->fake_request(
+			Mock_Http_Response::create()->with_file( 'unknown' )
+		);
 	}
 }

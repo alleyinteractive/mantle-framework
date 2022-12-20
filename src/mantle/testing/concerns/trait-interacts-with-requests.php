@@ -18,6 +18,7 @@ use Mantle\Testing\Mock_Http_Response;
 use Mantle\Testing\Mock_Http_Sequence;
 use PHPUnit\Framework\Assert as PHPUnit;
 use RuntimeException;
+use WP_Error;
 
 use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\value;
@@ -41,7 +42,8 @@ trait Interacts_With_Requests {
 	protected $recorded_requests;
 
 	/**
-	 * Flag to prevent external requests from being made.
+	 * Flag to prevent external requests from being made. By default, this is
+	 * false.
 	 *
 	 * @var Mock_Http_Response|\Closure|bool
 	 */
@@ -81,6 +83,38 @@ trait Interacts_With_Requests {
 	public function pre_http_request( $preempt, $request_args, $url ) {
 		$this->recorded_requests[] = new Request( $request_args, $url );
 
+		$stub = $this->get_stub_response( $url, $request_args );
+
+		if ( $stub ) {
+			// If the request is for streaming the response to a file, store the
+			// response body in the requested file.
+			if ( ! is_wp_error( $stub ) && ! empty( $request_args['stream'] ) ) {
+				return $this->store_streamed_response( $url, $stub, $request_args );
+			}
+
+			return $stub;
+		}
+
+		// To aid in debugging, print a message to the console that this test is making an actual HTTP request
+		// which it probably shouldn't be.
+		printf(
+			'No faked HTTP response found, making an actual HTTP request. [%s]',
+			esc_url( $url )
+		) . PHP_EOL;
+
+		return $preempt;
+	}
+
+	/**
+	 * Retrieve the stub response for a given request URL and arguments.
+	 *
+	 * @throws RuntimeException If the request was made without a matching faked request when external requests are prevented.
+	 *
+	 * @param string $url          Request URL.
+	 * @param array  $request_args Request arguments.
+	 * @return array|null
+	 */
+	protected function get_stub_response( $url, $request_args ): array|WP_Error|null {
 		if ( ! $this->stub_callbacks->is_empty() ) {
 			foreach ( $this->stub_callbacks as $callback ) {
 				$response = $callback( $url, $request_args );
@@ -104,14 +138,43 @@ trait Interacts_With_Requests {
 			throw new RuntimeException( "Attempted request to [{$url}] without a matching fake." );
 		}
 
-		// To aid in debugging, print a message to the console that this test is making an actual HTTP request
-		// which it probably shouldn't be.
-		printf(
-			'No faked HTTP response found, making an actual HTTP request. [%s]',
-			esc_url( $url )
-		) . PHP_EOL;
+		return null;
+	}
 
-		return $preempt;
+	/**
+	 * Store the response body in the requested file for a streamed request.
+	 *
+	 * @throws RuntimeException If the directory is not writable.
+	 * @throws RuntimeException If the file cannot be written.
+	 *
+	 * @param string $url          Request URL.
+	 * @param array  $response     Stubbed response array.
+	 * @param array  $request_args Request arguments.
+	 * @return array The modified response array.
+	 */
+	protected function store_streamed_response( string $url, array $response, array $request_args ): array {
+		if ( empty( $request_args['stream'] ) ) {
+			return $response;
+		}
+
+		if ( empty( $request_args['filename'] ) ) {
+			$request_args['filename'] = get_temp_dir() . basename( $url );
+		}
+
+		if ( ! wp_is_writable( dirname( $request_args['filename'] ) ) ) {
+			throw new RuntimeException( "The directory [{$request_args['filename']}] is not writable." );
+		}
+
+		if ( ! file_put_contents( $request_args['filename'], $response['body'] ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents
+			throw new RuntimeException( "Unable to write to the file [{$request_args['filename']}]." );
+		}
+
+		// Replace the response body with an empty string to prevent the response
+		// from being returned in the body (since it was streamed to a file).
+		$response['body']     = '';
+		$response['filename'] = $request_args['filename'];
+
+		return $response;
 	}
 
 	/**
