@@ -95,8 +95,8 @@ trait Interacts_With_Requests {
 			return $stub;
 		}
 
-		// To aid in debugging, print a message to the console that this test is making an actual HTTP request
-		// which it probably shouldn't be.
+		// To aid in debugging, print a message to the console that this test is
+		// making an actual HTTP request which it probably shouldn't be.
 		printf(
 			'No faked HTTP response found, making an actual HTTP request. [%s]',
 			esc_url( $url )
@@ -108,7 +108,8 @@ trait Interacts_With_Requests {
 	/**
 	 * Retrieve the stub response for a given request URL and arguments.
 	 *
-	 * @throws RuntimeException If the request was made without a matching faked request when external requests are prevented.
+	 * @throws RuntimeException If the request was made without a matching
+	 *                          faked request when external requests are prevented.
 	 *
 	 * @param string $url          Request URL.
 	 * @param array  $request_args Request arguments.
