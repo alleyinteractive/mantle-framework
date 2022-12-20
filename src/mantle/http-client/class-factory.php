@@ -12,16 +12,18 @@ use Mantle\Support\Traits\Macroable;
 /**
  * Http Client factory.
  *
+ * @method static \Mantle\Http_Client\Pending_Request accept_json()
+ * @method static \Mantle\Http_Client\Pending_Request accept( string $content_type )
  * @method static \Mantle\Http_Client\Pending_Request as_form()
  * @method static \Mantle\Http_Client\Pending_Request as_json()
  * @method static \Mantle\Http_Client\Pending_Request attach( string|array $name, string|resource $contents = '', ?string $filename = null, array $headers = [] )
  * @method static \Mantle\Http_Client\Pending_Request base_url( string $url )
- * @method static \Mantle\Http_Client\Pending_Request with_body( string $content, string $content_type )
- * @method static \Mantle\Http_Client\Pending_Request with_options( array $options )
  * @method static \Mantle\Http_Client\Pending_Request body_format( string $format)
  * @method static \Mantle\Http_Client\Pending_Request content_type( string $content_type )
- * @method static \Mantle\Http_Client\Pending_Request accept_json()
- * @method static \Mantle\Http_Client\Pending_Request accept( string $content_type )
+ * @method static \Mantle\Http_Client\Pending_Request dont_stream()
+ * @method static \Mantle\Http_Client\Pending_Request stream( ?string $file )
+ * @method static \Mantle\Http_Client\Pending_Request with_body( string $content, string $content_type )
+ * @method static \Mantle\Http_Client\Pending_Request with_options( array $options, bool $merge = true )
  * @method static \Mantle\Http_Client\Pending_Request with_headers( array $headers)
  * @method static \Mantle\Http_Client\Pending_Request with_header( string $key, $value )
  * @method static \Mantle\Http_Client\Pending_Request with_basic_auth( string $username, string $password)

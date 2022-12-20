@@ -236,13 +236,7 @@ class Test_Interacts_With_External_Requests extends Framework_Test_Case {
 
 		$filename = sys_get_temp_dir() . '/' . time() . '-alley.jpg';
 
-		$response = Http::with_options(
-			[
-				'filename' => $filename,
-				'stream'   => true,
-			]
-		)
-			->get( 'https://alley.com/wp-content/uploads/2021/12/NSF_Cover.png?w=960' );
+		$response = Http::stream( $filename )->get( 'https://alley.com/wp-content/uploads/2021/12/NSF_Cover.png?w=960' );
 
 		$this->assertEquals( 200, $response->status() );
 		$this->assertNotEmpty( file_get_contents( $filename ) );
@@ -254,12 +248,7 @@ class Test_Interacts_With_External_Requests extends Framework_Test_Case {
 			fn() => Mock_Http_Response::create()->with_file( MANTLE_PHPUNIT_FIXTURES_PATH . '/images/alley.jpg' )
 		);
 
-		$response = Http::with_options(
-			[
-				'stream'   => true,
-			]
-		)
-			->get( 'https://alley.com/wp-content/uploads/2021/12/NSF_Cover.png?w=960' );
+		$response = Http::stream()->get( 'https://alley.com/wp-content/uploads/2021/12/NSF_Cover.png?w=960' );
 
 		$this->assertEquals( 200, $response->status() );
 		$this->assertNotEmpty( $response->file_contents() );
