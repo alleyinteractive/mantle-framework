@@ -53,7 +53,7 @@ return static function ( ContainerConfigurator $container_config ): void {
 				'php'                                            => '^8.0',
 			],
 			ComposerJsonSection::REQUIRE_DEV => [
-				'alleyinteractive/alley-coding-standards' => '^0.3',
+				'alleyinteractive/alley-coding-standards' => '^0.3 || ^0.4 || ^1.0',
 				'phpunit/phpunit'                         => '^9.3.3',
 			],
 		],
