@@ -261,6 +261,24 @@ class Response implements ArrayAccess {
 	}
 
 	/**
+	 * Retrieve the file path to the downloaded file.
+	 *
+	 * @return string|null
+	 */
+	public function file(): ?string {
+		return $this->response['filename'] ?? null;
+	}
+
+	/**
+	 * Retrieve the file contents of the downloaded file.
+	 *
+	 * @return string|null
+	 */
+	public function file_contents(): ?string {
+		return ! empty( $this->response['filename'] ) ? file_get_contents( $this->file() ) : null; // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
+	}
+
+	/**
 	 * Get the JSON decoded body of the response as an array or scalar value.
 	 *
 	 * @param  string|null $key

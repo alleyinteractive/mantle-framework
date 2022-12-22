@@ -194,10 +194,19 @@ class Pending_Request {
 	 * Pass raw options to the request (passed to `wp_remote_request()`).
 	 *
 	 * @param array $options Options for the request.
+	 * @param bool  $merge Merge the options with the existing options, default true.
 	 * @return static
 	 */
-	public function with_options( array $options ) {
-		$this->options['options'] = $options;
+	public function with_options( array $options, bool $merge = true ): static {
+		if ( $merge ) {
+			$this->options['options'] = array_merge(
+				$this->options['options'] ?? [],
+				$options
+			);
+		} else {
+			$this->options['options'] = $options;
+		}
+
 		return $this;
 	}
 
@@ -435,6 +444,29 @@ class Pending_Request {
 	public function without_middleware() {
 		$this->middleware = [];
 		return $this;
+	}
+
+	/**
+	 * Stream the response body to a file.
+	 *
+	 * @param string|null $file File to stream to, optional.
+	 */
+	public function stream( string $file = null ): static {
+		return $this->with_options(
+			[
+				'filename' => $file,
+				'stream'   => true,
+			]
+		);
+	}
+
+	/**
+	 * Don't stream the response body to a file.
+	 *
+	 * @return static
+	 */
+	public function dont_stream() {
+		return $this->with_options( [ 'stream' => false ] );
 	}
 
 	/**
