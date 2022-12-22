@@ -19,15 +19,16 @@
 
 	<exclude-pattern>tests/</exclude-pattern>
 
-	<rule ref="Alley-Interactive" />
-
-	<rule ref="Generic.Arrays.DisallowLongArraySyntax" />
-
-	<rule ref="WordPress">
+	<rule ref="Alley-Interactive">
 		<exclude name="WordPress.NamingConventions.ValidPostTypeSlug.NotStringLiteral" />
 		<exclude name="WordPress.PHP.DisallowShortTernary.Found" />
 		<exclude name="WordPress.WP.CapitalPDangit.Misspelled" />
+
+		<exclude name="PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection" />
+		<exclude name="PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.Changed" />
 	</rule>
+
+	<rule ref="Generic.Arrays.DisallowLongArraySyntax" />
 
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
 		<properties>
