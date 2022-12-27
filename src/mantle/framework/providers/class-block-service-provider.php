@@ -7,7 +7,7 @@
 
 namespace Mantle\Framework\Providers;
 
-use Mantle\Framework\Blocks\Discover_Blocks;
+use Mantle\Blocks\Discover_Blocks;
 use Mantle\Support\Service_Provider;
 
 /**
@@ -23,10 +23,9 @@ class Block_Service_Provider extends Service_Provider {
 	 */
 	public function register() {
 		$this->app->booting(
-			function() {
-				collect( $this->get_blocks() )
-				->each( fn ( string $block ) => ( new $block() )->register() );
-			}
+			fn () => collect( $this->get_blocks() )->each(
+				fn ( string $block ) => ( new $block() )->register()
+			)
 		);
 	}
 
@@ -36,19 +35,15 @@ class Block_Service_Provider extends Service_Provider {
 	 * @return array An array of block class names.
 	 */
 	public function get_blocks(): array {
-		$blocks = collect( $this->discover_blocks_within() );
-
-		$after_rejects = $blocks->reject( fn ( $dir ) => ! is_dir( $dir ) );
-
-		$reduced = $after_rejects->reduce(
-			fn ( array $discovered, string $directory ) => array_merge_recursive(
-				$discovered,
-				Discover_Blocks::within( $directory, $this->app->get_base_path() )
-			),
-			[]
-		);
-
-		return $reduced;
+		return collect( $this->discover_blocks_within() )
+			->reject( fn ( $dir ) => ! is_dir( $dir ) )
+			->reduce(
+				fn ( array $discovered, string $directory ) => array_merge_recursive(
+					$discovered,
+					Discover_Blocks::within( $directory, $this->app->get_base_path() )
+				),
+				[]
+			);
 	}
 
 	/**

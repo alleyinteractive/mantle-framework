@@ -1,13 +1,13 @@
 {
-    "name": "mantle-framework/application",
-    "description": "The Mantle Framework Application Package",
+    "name": "mantle-framework/blocks",
+    "description": "The Mantle Framework Blocks Package",
     "type": "project",
     "require": {
         "php": "^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
-        "mantle-framework/container": "^0.9",
         "mantle-framework/contracts": "^0.9",
-        "mantle-framework/log": "^0.9",
+        "mantle-framework/facade": "^0.9",
+        "mantle-framework/http": "^0.9",
         "mantle-framework/support": "^0.9"
     },
     "extra": {
@@ -16,7 +16,7 @@
         },
         "wordpress-autoloader": {
             "autoload": {
-                "Mantle\\Application": "./"
+                "Mantle\\Blocks": "./"
             }
         }
     },

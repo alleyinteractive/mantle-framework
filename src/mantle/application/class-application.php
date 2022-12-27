@@ -15,7 +15,7 @@ use Mantle\Contracts\Support\Isolated_Service_Provider;
 use Mantle\Framework\Model_Manifest;
 use Mantle\Framework\Package_Manifest;
 use Mantle\Log\Log_Service_Provider;
-use Mantle\Framework\Providers\Event_Core_Service_Provider;
+use Mantle\Events\Event_Service_Provider;
 use Mantle\Framework\Providers\Routing_Service_Provider;
 use Mantle\Framework\Providers\View_Service_Provider;
 use Mantle\Support\Arr;
@@ -361,7 +361,7 @@ class Application extends Container implements Application_Contract {
 	 * Register the base service providers.
 	 */
 	protected function register_base_service_providers() {
-		$this->register( Event_Core_Service_Provider::class );
+		$this->register( Event_Service_Provider::class );
 		$this->register( Log_Service_Provider::class );
 		$this->register( View_Service_Provider::class );
 		$this->register( Routing_Service_Provider::class );
