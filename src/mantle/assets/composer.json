@@ -26,6 +26,11 @@
             "email": "info@alley.co"
         }
     ],
+    "autoload": {
+        "files": [
+            "autoload.php"
+        ]
+    },
     "config": {
         "sort-packages": true
     },

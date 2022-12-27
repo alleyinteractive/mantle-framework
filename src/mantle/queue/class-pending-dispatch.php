@@ -64,7 +64,7 @@ class Pending_Dispatch {
 		}
 
 		// Allow the queue package to be run independent of the application.
-		if ( ! class_exists( \Mantle\Framework\Application::class ) ) {
+		if ( ! class_exists( \Mantle\Application\Application::class ) ) {
 			Container::getInstance()->make( Dispatcher::class )->dispatch( $this->job );
 		} else {
 			app( Dispatcher::class )->dispatch( $this->job );

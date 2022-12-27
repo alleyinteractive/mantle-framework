@@ -2,7 +2,7 @@
 
 namespace Mantle\Tests\Providers;
 
-use Mantle\Framework\Application;
+use Mantle\Application\Application;
 use Mantle\Config\Repository;
 use Mantle\Framework\Providers\Model_Service_Provider;
 use Mantle\Contracts\Database\Registrable as Registrable_Contract;

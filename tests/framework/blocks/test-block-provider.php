@@ -1,7 +1,7 @@
 <?php
 namespace Mantle\Tests\Framework\Tests;
 
-use Mantle\Framework\Application;
+use Mantle\Application\Application;
 use Mantle\Framework\Blocks\Discover_Blocks;
 use Mantle\Framework\Providers\Block_Service_Provider;
 use Mantle\Support\Environment;

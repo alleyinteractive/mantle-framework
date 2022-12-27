@@ -1,7 +1,7 @@
 <?php
 namespace Mantle\Tests\Support;
 
-use Mantle\Framework\Application;
+use Mantle\Application\Application;
 use Mantle\Console\Command;
 use Mantle\Contracts\Providers as ProviderContracts;
 use Mantle\Support\Service_Provider;
