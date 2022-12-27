@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework;
+namespace Mantle\Framework\Manifest;
 
 use Mantle\Filesystem\Filesystem;
 

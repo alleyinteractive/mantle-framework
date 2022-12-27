@@ -5,8 +5,9 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework;
+namespace Mantle\Framework\Manifest;
 
+use Mantle\Application\Application_Exception;
 use Mantle\Contracts\Application;
 use Mantle\Contracts\Database\Registrable;
 use Mantle\Filesystem\Filesystem;

@@ -8,7 +8,7 @@
 namespace Mantle\Framework\Console;
 
 use Mantle\Console\Command;
-use Mantle\Framework\Package_Manifest;
+use Mantle\Framework\Manifest\Package_Manifest;
 
 /**
  * Package Discover Command
