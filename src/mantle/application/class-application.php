@@ -5,13 +5,15 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework;
+namespace Mantle\Application;
 
 use Mantle\Container\Container;
 use Mantle\Contracts\Application as Application_Contract;
 use Mantle\Contracts\Container as Container_Contract;
 use Mantle\Contracts\Kernel as Kernel_Contract;
 use Mantle\Contracts\Support\Isolated_Service_Provider;
+use Mantle\Framework\Model_Manifest;
+use Mantle\Framework\Package_Manifest;
 use Mantle\Log\Log_Service_Provider;
 use Mantle\Framework\Providers\Event_Core_Service_Provider;
 use Mantle\Framework\Providers\Routing_Service_Provider;
