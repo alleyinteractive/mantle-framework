@@ -83,7 +83,7 @@ trait Rsync_Installation {
 	 * wp-content level to the root of the WordPress installation.
 	 */
 	public function maybe_rsync_wp_content() {
-		return $this->maybe_rsync( '/', '../../../' );
+		return $this->maybe_rsync( '/', dirname( getcwd(), 3 ) );
 	}
 
 	/**
