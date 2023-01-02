@@ -13,7 +13,7 @@
         "php": "^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
         "alleyinteractive/wp-asset-manager": "^1.0",
-        "alleyinteractive/wp-caper": "^1.0",
+        "alleyinteractive/wp-caper": "^1.0 || ^2.0",
         "alleyinteractive/wp-concurrent-remote-requests": "^1.0.0",
         "alleyinteractive/wp-filter-side-effects": "^1.0 || ^2.0",
         "dragonmantank/cron-expression": "^3.1",
