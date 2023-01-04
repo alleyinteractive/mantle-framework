@@ -4,12 +4,10 @@ namespace Mantle\Tests\Providers;
 
 use Mantle\Application\Application;
 use Mantle\Config\Repository;
-use Mantle\Framework\Providers\Model_Service_Provider;
+use Mantle\Database\Model_Service_Provider;
 use Mantle\Contracts\Database\Registrable as Registrable_Contract;
 use Mantle\Database\Model\Model;
 use Mantle\Database\Model\Registration\Register_Post_Type;
-use Mantle\Framework\Providers\Provider_Exception;
-use PHPUnit\Framework\TestCase;
 use Mockery as m;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 

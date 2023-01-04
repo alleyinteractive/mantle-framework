@@ -3,7 +3,7 @@ namespace Mantle\Tests\Framework\Tests;
 
 use Mantle\Application\Application;
 use Mantle\Blocks\Discover_Blocks;
-use Mantle\Framework\Providers\Block_Service_Provider;
+use Mantle\Blocks\Block_Service_Provider;
 use Mantle\Support\Environment;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Tests\Framework\Blocks\Fixtures\Blocks\Mock_Block;

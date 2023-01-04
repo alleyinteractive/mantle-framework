@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Providers;
+namespace Mantle\Database;
 
 use Mantle\Database\Model\Model;
 use Mantle\Database\Model\Relations\Relation;

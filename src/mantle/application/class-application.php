@@ -12,15 +12,16 @@ use Mantle\Contracts\Application as Application_Contract;
 use Mantle\Contracts\Container as Container_Contract;
 use Mantle\Contracts\Kernel as Kernel_Contract;
 use Mantle\Contracts\Support\Isolated_Service_Provider;
+use Mantle\Events\Event_Service_Provider;
 use Mantle\Framework\Manifest\Model_Manifest;
 use Mantle\Framework\Manifest\Package_Manifest;
-use Mantle\Log\Log_Service_Provider;
-use Mantle\Events\Event_Service_Provider;
+use Mantle\Framework\Providers\Console_Service_Provider;
 use Mantle\Framework\Providers\Routing_Service_Provider;
-use Mantle\Framework\Providers\View_Service_Provider;
+use Mantle\Log\Log_Service_Provider;
 use Mantle\Support\Arr;
 use Mantle\Support\Environment;
 use Mantle\Support\Service_Provider;
+use Mantle\View\View_Service_Provider;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -361,6 +362,7 @@ class Application extends Container implements Application_Contract {
 	 * Register the base service providers.
 	 */
 	protected function register_base_service_providers() {
+		$this->register( Console_Service_Provider::class );
 		$this->register( Event_Service_Provider::class );
 		$this->register( Log_Service_Provider::class );
 		$this->register( View_Service_Provider::class );

@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Providers;
+namespace Mantle\Blocks;
 
 use Mantle\Blocks\Discover_Blocks;
 use Mantle\Support\Service_Provider;

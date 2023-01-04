@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Providers;
+namespace Mantle\Application;
 
 use Mantle\Contracts\Application;
 use Mantle\Scheduling\Schedule;
@@ -33,9 +33,7 @@ class App_Service_Provider extends Service_Provider {
 		$this->app = $app;
 
 		$this->app->booted(
-			function() {
-				$this->boot_scheduler();
-			}
+			fn () => $this->boot_scheduler(),
 		);
 	}
 
@@ -45,12 +43,10 @@ class App_Service_Provider extends Service_Provider {
 	protected function boot_scheduler() {
 		$this->app->singleton(
 			Schedule::class,
-			function( $app ) {
-				return tap(
-					new Schedule( $app ),
-					fn ( Schedule $schedule ) => $this->schedule( $schedule ),
-				);
-			}
+			fn ( $app ) => tap(
+				new Schedule( $app ),
+				fn ( Schedule $schedule ) => $this->schedule( $schedule ),
+			),
 		);
 
 		Schedule::schedule_cron_event();
