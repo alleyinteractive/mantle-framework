@@ -15,7 +15,7 @@ use Mantle\Support\Service_Provider;
 /**
  * Route Service Provider
  */
-class Route_Service_Provider extends Service_Provider implements Route_Service_Provider_Contract, Isolated_Service_Provider {
+abstract class Route_Service_Provider extends Service_Provider implements Route_Service_Provider_Contract, Isolated_Service_Provider {
 	/**
 	 * Allow requests to be passed down to WordPress.
 	 *

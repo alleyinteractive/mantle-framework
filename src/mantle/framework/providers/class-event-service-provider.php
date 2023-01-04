@@ -19,8 +19,10 @@ use function Mantle\Support\Helpers\collect;
 
 /**
  * Event Service Provider
+ *
+ * Extended by the application.
  */
-class Event_Service_Provider extends Service_Provider implements Isolated_Service_Provider {
+abstract class Event_Service_Provider extends Service_Provider implements Isolated_Service_Provider {
 	/**
 	 * The event listener mappings for the application.
 	 *
