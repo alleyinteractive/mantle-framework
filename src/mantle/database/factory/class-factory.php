@@ -245,8 +245,7 @@ class Factory implements ArrayAccess {
 	/**
 	 * Determine if the given offset exists.
 	 *
-	 * @param string $offset
-	 *
+	 * @param mixed $offset Offset to check on.
 	 * @return bool
 	 */
 	public function offsetExists( mixed $offset ): bool {
@@ -256,8 +255,7 @@ class Factory implements ArrayAccess {
 	/**
 	 * Get the value of the given offset.
 	 *
-	 * @param string $offset
-	 *
+	 * @param mixed $offset Offset to retrieve.
 	 * @return mixed
 	 */
 	public function offsetGet( mixed $offset ): mixed {
@@ -267,9 +265,8 @@ class Factory implements ArrayAccess {
 	/**
 	 * Set the given offset to the given value.
 	 *
-	 * @param string   $offset
-	 * @param callable $value
-	 *
+	 * @param mixed  $offset Offset to assign the value to.
+	 * @param mixed  $value Value to set.
 	 * @return void
 	 */
 	public function offsetSet( mixed $offset, mixed $value ): void {
@@ -279,8 +276,7 @@ class Factory implements ArrayAccess {
 	/**
 	 * Unset the value at the given offset.
 	 *
-	 * @param string $offset
-	 *
+	 * @param mixed $offset Offset to unset.
 	 * @return void
 	 */
 	public function offsetUnset( mixed $offset ): void {

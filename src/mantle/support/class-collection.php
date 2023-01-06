@@ -2,12 +2,10 @@
 /**
  * Collections class file.
  *
+ * phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment, Squiz.Commenting.FunctionComment.MissingParamTag
+ *
  * @package Mantle
  */
-
-// phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment
-
-// phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag
 
 namespace Mantle\Support;
 
@@ -94,10 +92,10 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Get a lazy collection for the items in this collection.
 	 *
-	 * @return \Mantle\Support\LazyCollection
+	 * @return void
 	 */
 	public function lazy() {
-		throw new \RuntimeException( 'Lazy collections are not supported at this time. ');
+		throw new \RuntimeException( 'Lazy collections are not supported at this time. ' ); // phpcs:ignore
 	}
 
 	/**
