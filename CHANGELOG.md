@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support streamed HTTP responses in the client and fake.
 - Add `maybe_rsync_content` during testing.
 - Add `--delete` when rsyncing content during testing.
+- Work to make Mantle a bit more isolated.
 
 ## 0.9.1 - 2022-11-22
 
