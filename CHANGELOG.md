@@ -7,7 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-Improvements to database factories: adds `with_meta()` to all supported types, adds `with_posts()` to term factory.
+- Improvements to database factories: adds `with_meta()` to all supported types, adds `with_posts()` to term factory.
+- Upgrading to Symfony 6 and Illuminate/View 9
+- Allow `Mantle\Testing\Mock_Http_Response` to be converted to `Mantle\Http_Client\Response`
+- Support streamed HTTP responses in the client and fake.
+- Add `maybe_rsync_content` during testing.
+- Add `--delete` when rsyncing content during testing.
 
 ## 0.9.1 - 2022-11-22
 
