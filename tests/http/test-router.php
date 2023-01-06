@@ -2,7 +2,7 @@
 
 namespace Mantle\Tests\Http;
 
-use Mantle\Framework\Application;
+use Mantle\Application\Application;
 use Mantle\Database\Model\Post;
 use Mantle\Events\Dispatcher;
 use Mantle\Http\Request;

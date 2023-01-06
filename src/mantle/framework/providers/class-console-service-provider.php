@@ -18,7 +18,8 @@ use function Mantle\Support\Helpers\collect;
 /**
  * Console Service Provider
  *
- * Registers core commands for the framework.
+ * Registers core commands for the framework. Not designed to be located in the
+ * mantle-framework/console package.
  */
 class Console_Service_Provider extends Service_Provider implements Isolated_Service_Provider {
 	use Loads_Classes;

@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Providers;
+namespace Mantle\View;
 
 use Illuminate\Filesystem\Filesystem;
 use Mantle\Http\View\Factory;

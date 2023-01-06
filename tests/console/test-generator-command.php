@@ -7,7 +7,7 @@
 
 namespace Mantle\Tests\Console;
 
-use Mantle\Framework\Application;
+use Mantle\Application\Application;
 use Mantle\Config\Repository;
 use Mantle\Framework\Console\Generator_Command;
 use Mantle\Framework\Console\Generators\Stub_Generator_Command;

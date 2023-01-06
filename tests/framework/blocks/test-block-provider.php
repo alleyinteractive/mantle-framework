@@ -1,13 +1,13 @@
 <?php
 namespace Mantle\Tests\Framework\Tests;
 
-use Mantle\Framework\Application;
-use Mantle\Framework\Blocks\Discover_Blocks;
-use Mantle\Framework\Providers\Block_Service_Provider;
+use Mantle\Application\Application;
+use Mantle\Blocks\Discover_Blocks;
+use Mantle\Blocks\Block_Service_Provider;
 use Mantle\Support\Environment;
 use Mantle\Testing\Framework_Test_Case;
-use Mantle\Tests\Framework\Blocks\Fixtures\Dummy\Example_Block;
 use Mantle\Tests\Framework\Blocks\Fixtures\Blocks\Mock_Block;
+use Mantle\Tests\Framework\Blocks\Fixtures\Dummy\Example_Block;
 use Mockery as m;
 
 class Test_Block_Provider extends Framework_Test_Case {

@@ -8,7 +8,7 @@
 namespace Mantle\Framework\Events;
 
 use Mantle\Filesystem\Filesystem;
-use Mantle\Framework\Application_Exception;
+use Mantle\Application\Application_Exception;
 use Mantle\Framework\Providers\Event_Service_Provider;
 
 use function Mantle\Support\Helpers\collect;

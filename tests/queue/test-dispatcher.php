@@ -1,7 +1,7 @@
 <?php
 namespace Mantle\Tests\Queue;
 
-use Mantle\Framework\Application;
+use Mantle\Application\Application;
 use Mantle\Config\Repository;
 use Mantle\Contracts\Queue\Can_Queue;
 use Mantle\Contracts\Queue\Job;

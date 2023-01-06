@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Providers;
+namespace Mantle\New_Relic;
 
 use Mantle\Contracts\Application;
 use Mantle\Contracts\Events\Dispatcher;

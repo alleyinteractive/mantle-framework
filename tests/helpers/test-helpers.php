@@ -5,7 +5,7 @@ namespace Mantle\Tests\Helpers;
 use Mantle\Config\Repository;
 use Mantle\Container\Container;
 use Mantle\Facade\Facade;
-use Mantle\Framework\Application;
+use Mantle\Application\Application;
 use Mantle\Log\Log_Manager;
 use Monolog\Handler\TestHandler;
 use PHPUnit\Framework\TestCase;

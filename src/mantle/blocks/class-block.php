@@ -7,7 +7,6 @@
 
 namespace Mantle\Blocks;
 
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use InvalidArgumentException;
 use Mantle\Contracts\Block as Block_Contract;
 use Mantle\Facade\Storage;
@@ -15,6 +14,7 @@ use Mantle\Facade\View_Loader;
 use Mantle\Http\View\View;
 use Mantle\Http\View\Factory as View_Factory;
 use Mantle\Support\Str;
+use Throwable;
 
 /**
  * Abstract class that handles the majority of Gutenberg Block
@@ -232,7 +232,7 @@ abstract class Block implements Block_Contract {
 		try {
 			$assets = $disk->get( "blocks/{$this->name}/{$this->entry_filename}.asset.json" );
 			$assets = \json_decode( $assets );
-		} catch ( FileNotFoundException $e ) {
+		} catch ( Throwable $e ) {
 			return new \stdClass();
 		}
 

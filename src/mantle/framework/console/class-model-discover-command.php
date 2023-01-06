@@ -8,7 +8,7 @@
 namespace Mantle\Framework\Console;
 
 use Mantle\Console\Command;
-use Mantle\Framework\Model_Manifest;
+use Mantle\Framework\Manifest\Model_Manifest;
 
 /**
  * Model Discover Command

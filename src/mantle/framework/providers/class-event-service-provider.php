@@ -9,6 +9,7 @@ namespace Mantle\Framework\Providers;
 
 use Mantle\Contracts\Application;
 use Mantle\Contracts\Support\Isolated_Service_Provider;
+use Mantle\Events\Dispatcher;
 use Mantle\Support\Service_Provider;
 use Mantle\Facade\Event;
 use Mantle\Framework\Events\Discover_Events;
@@ -18,8 +19,10 @@ use function Mantle\Support\Helpers\collect;
 
 /**
  * Event Service Provider
+ *
+ * Extended by the application.
  */
-class Event_Service_Provider extends Service_Provider implements Isolated_Service_Provider {
+abstract class Event_Service_Provider extends Service_Provider implements Isolated_Service_Provider {
 	/**
 	 * The event listener mappings for the application.
 	 *
@@ -33,6 +36,14 @@ class Event_Service_Provider extends Service_Provider implements Isolated_Servic
 	 * @return void
 	 */
 	public function register() {
+		$this->app->singleton(
+			Events_Manifest::class,
+			fn ( Application $app ) => new Events_Manifest(
+				$app->get_cached_events_path(),
+				$app,
+			),
+		);
+
 		$this->app->booting(
 			function() {
 				$events = $this->get_events();
@@ -46,14 +57,6 @@ class Event_Service_Provider extends Service_Provider implements Isolated_Servic
 
 				// todo: add event subscribers.
 			}
-		);
-
-		$this->app->singleton(
-			Events_Manifest::class,
-			fn ( Application $app ) => new Events_Manifest(
-				$app->get_cached_events_path(),
-				$app,
-			),
 		);
 	}
 

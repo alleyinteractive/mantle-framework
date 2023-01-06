@@ -7,7 +7,7 @@
 
 namespace Mantle\Contracts;
 
-use Mantle\Framework\Application;
+use Mantle\Application\Application;
 
 /**
  * Bootstrapable Contract

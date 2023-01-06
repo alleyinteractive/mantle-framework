@@ -1,7 +1,7 @@
 <?php
 namespace Mantle\Tests\Framework;
 
-use Mantle\Framework\Application;
+use Mantle\Application\Application;
 use Mantle\Framework\Bootstrap\Load_Environment_Variables;
 use Mantle\Support\Service_Provider;
 use Mockery as m;

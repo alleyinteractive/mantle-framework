@@ -1,7 +1,7 @@
 <?php
 namespace Mantle\Tests\Log;
 
-use Mantle\Framework\Application;
+use Mantle\Application\Application;
 use Mantle\Config\Repository;
 use Mantle\Facade\Facade;
 use Mantle\Facade\Log;
