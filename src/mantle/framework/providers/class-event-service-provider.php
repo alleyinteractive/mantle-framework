@@ -22,7 +22,7 @@ use function Mantle\Support\Helpers\collect;
  *
  * Extended by the application.
  */
-abstract class Event_Service_Provider extends Service_Provider implements Isolated_Service_Provider {
+class Event_Service_Provider extends Service_Provider implements Isolated_Service_Provider {
 	/**
 	 * The event listener mappings for the application.
 	 *

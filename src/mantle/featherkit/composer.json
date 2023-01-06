@@ -6,21 +6,11 @@
     "require": {
         "php": "^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
-        "mantle-framework/config": "^0.9",
-        "mantle-framework/container": "^0.9",
-        "mantle-framework/contracts": "^0.9",
-        "mantle-framework/faker": "^0.9",
-        "mantle-framework/support": "^0.9",
-        "mantle-framework/testing": "^0.9"
+        "alleyinteractive/mantle-framework": "^0.10"
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "0.9-dev"
-        },
-        "wordpress-autoloader": {
-            "autoload": {
-                "Mantle\\Featherkit": "./"
-            }
+            "dev-main": "0.10-dev"
         }
     },
     "license": "GPL-2.0-or-later",
@@ -30,11 +20,6 @@
             "email": "mantle@alley.com"
         }
     ],
-    "autoload": {
-        "files": [
-            "src/autoload.php"
-        ]
-    },
     "minimum-stability": "dev",
     "config": {
         "sort-packages": true

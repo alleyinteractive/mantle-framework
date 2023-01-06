@@ -9,6 +9,7 @@
  * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
  */
 
+use Mantle\Application\Application;
 use Mantle\Framework\Exceptions\Handler as ExceptionHandler;
 
 if ( ! function_exists( 'report' ) ) {

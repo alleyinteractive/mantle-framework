@@ -23,19 +23,6 @@ use Throwable;
  * Queue Worker
  */
 class Worker {
-	/**
-	 * Queue Manager
-	 *
-	 * @var Queue_Manager
-	 */
-	protected $manager;
-
-	/**
-	 * Events Dispatcher.
-	 *
-	 * @var Dispatcher
-	 */
-	protected $events;
 
 	/**
 	 * Constructor.
@@ -43,9 +30,7 @@ class Worker {
 	 * @param Queue_Manager $manager Manager instance.
 	 * @param Dispatcher    $events Events dispatcher.
 	 */
-	public function __construct( Queue_Manager $manager, Dispatcher $events ) {
-		$this->manager = $manager;
-		$this->events  = $events;
+	public function __construct( protected Queue_Manager $manager, protected Dispatcher $events ) {
 	}
 
 	/**
