@@ -317,7 +317,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 * @param string $offset Array offset.
 	 * @return bool
 	 */
-	public function offsetExists( $offset ): bool {
+	public function offsetExists( mixed $offset ): bool {
 		return null !== $this->get( $offset );
 	}
 
@@ -327,7 +327,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 * @param string $offset Array offset.
 	 * @return mixed
 	 */
-	public function offsetGet( $offset ) {
+	public function offsetGet( mixed $offset ): mixed {
 		return $this->get( $offset );
 	}
 
@@ -337,8 +337,8 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 * @param string $offset Offset name.
 	 * @param mixed  $value Value to set.
 	 */
-	public function offsetSet( $offset, $value ) {
-		return $this->set( $offset, $value );
+	public function offsetSet( mixed $offset, mixed $value ): void {
+		$this->set( $offset, $value );
 	}
 
 	/**
@@ -346,7 +346,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 *
 	 * @param string $offset Offset to unset.
 	 */
-	public function offsetUnset( $offset ) {
+	public function offsetUnset( mixed $offset ): void {
 		$this->set( $offset, null );
 		unset( $this->relations[ $offset ] );
 	}

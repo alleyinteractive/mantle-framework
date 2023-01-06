@@ -4428,22 +4428,22 @@ class TestArrayAccessImplementation implements ArrayAccess {
 		$this->arr = $arr;
 	}
 
-	public function offsetExists($offset)
+	public function offsetExists( mixed $offset ): bool
 	{
 		return isset($this->arr[$offset]);
 	}
 
-	public function offsetGet($offset)
+	public function offsetGet( mixed $offset ): mixed
 	{
 		return $this->arr[$offset];
 	}
 
-	public function offsetSet($offset, $value)
+	public function offsetSet( mixed $offset, mixed $value ): void
 	{
 		$this->arr[$offset] = $value;
 	}
 
-	public function offsetUnset($offset)
+	public function offsetUnset( mixed $offset ): void
 	{
 		unset($this->arr[$offset]);
 	}

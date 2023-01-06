@@ -17,6 +17,7 @@ use Mantle\Support\Traits\Enumerates_Values;
 use Mantle\Database\Model;
 use function Mantle\Support\Helpers\value;
 use stdClass;
+use Traversable;
 
 /**
  * Collection
@@ -96,7 +97,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return \Mantle\Support\LazyCollection
 	 */
 	public function lazy() {
-		return new LazyCollection( $this->items );
+		throw new \RuntimeException( 'Lazy collections are not supported at this time. ');
 	}
 
 	/**
@@ -1091,7 +1092,7 @@ class Collection implements ArrayAccess, Enumerable {
 
 		$callback && is_callable( $callback )
 			? uasort( $items, $callback )
-			: asort( $items, $callback );
+			: asort( $items, $callback ?? SORT_REGULAR );
 
 		return new static( $items );
 	}
@@ -1296,7 +1297,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 *
 	 * @return \ArrayIterator
 	 */
-	public function getIterator() {
+	public function getIterator(): Traversable {
 		return new ArrayIterator( $this->items );
 	}
 
@@ -1305,7 +1306,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 *
 	 * @return int
 	 */
-	public function count() {
+	public function count(): int {
 		return count( $this->items );
 	}
 
@@ -1336,7 +1337,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param    mixed $key
 	 * @return bool
 	 */
-	public function offsetExists( $key ) {
+	public function offsetExists( mixed $key ): bool {
 		return array_key_exists( $key, $this->items );
 	}
 
@@ -1357,7 +1358,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param    mixed $value
 	 * @return void
 	 */
-	public function offsetSet( $key, $value ) {
+	public function offsetSet( mixed $key, mixed $value ): void {
 		if ( is_null( $key ) ) {
 			$this->items[] = $value;
 		} else {
@@ -1371,7 +1372,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param    string $key
 	 * @return void
 	 */
-	public function offsetUnset( $key ) {
+	public function offsetUnset( $key ): void {
 		unset( $this->items[ $key ] );
 	}
 }

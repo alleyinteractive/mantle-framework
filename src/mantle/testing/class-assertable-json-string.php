@@ -321,7 +321,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 * @param  mixed  $offset
 	 * @return bool
 	 */
-	public function offsetExists( $offset ): bool {
+	public function offsetExists( mixed $offset ): bool {
 		return isset( $this->decoded[ $offset ] );
 	}
 
@@ -342,7 +342,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 * @param  mixed  $value
 	 * @return void
 	 */
-	public function offsetSet($offset, $value): void {
+	public function offsetSet( mixed $offset, mixed $value): void {
 		$this->decoded[ $offset ] = $value;
 	}
 
@@ -352,7 +352,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 * @param  string  $offset
 	 * @return void
 	 */
-	public function offsetUnset($offset): void {
+	public function offsetUnset( mixed $offset ): void {
 		unset( $this->decoded[ $offset ] );
 	}
 }
