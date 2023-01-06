@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.10.0 - 2023-01-06
+## v0.10.0 - 2023-01-06
 
 - Improvements to database factories: adds `with_meta()` to all supported types, adds `with_posts()` to term factory.
 - Upgrading to Symfony 6 and Illuminate/View 9
@@ -15,11 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `--delete` when rsyncing content during testing.
 - Work to make Mantle a bit more isolated.
 
-## 0.9.1 - 2022-11-22
+## v0.9.1 - 2022-11-22
 
 - Fix for testing installation.
 
-## 0.9.0 - 2022-11-16
+## v0.9.0 - 2022-11-16
 
 - Allow more flexible control over incorrect usage and deprecations
 - Add support for rsync-ing a codebase from within the testing suite
@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Display trace for incorrect usage/deprecation notices
 - Authentication assertions and tests
 
-## 0.8.0 - 2022-10-25
+## v0.8.0 - 2022-10-25
 
 - **Fix:** Set default to string incase of missing location.
 - Adding assertions for element missing/existing.
