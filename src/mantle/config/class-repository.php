@@ -93,7 +93,7 @@ class Repository implements ArrayAccess, Config_Contract {
 	 * @param mixed $offset Offset to retrieve.
 	 * @return mixed
 	 */
-	public function offsetGet( mixed $offset ) {
+	public function offsetGet( mixed $offset ): mixed {
 		return $this->get( $offset );
 	}
 

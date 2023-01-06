@@ -4464,14 +4464,14 @@ class TestJsonableObject implements Jsonable {
 }
 
 class TestJsonSerializeObject implements JsonSerializable {
-	public function jsonSerialize()
+	public function jsonSerialize(): mixed
 	{
 		return ['foo' => 'bar'];
 	}
 }
 
 class TestJsonSerializeWithScalarValueObject implements JsonSerializable {
-	public function jsonSerialize()
+	public function jsonSerialize(): mixed
 	{
 		return 'foo';
 	}

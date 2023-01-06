@@ -772,9 +772,9 @@ trait Enumerates_Values {
 	/**
 	 * Convert the object into something JSON serializable.
 	 *
-	 * @return array
+	 * @return mixed
 	 */
-	public function jsonSerialize() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+	public function jsonSerialize(): mixed { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
 		return array_map(
 			function ( $value ) {
 				if ( $value instanceof JsonSerializable ) {

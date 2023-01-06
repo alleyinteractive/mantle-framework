@@ -1345,7 +1345,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param    mixed $key
 	 * @return mixed
 	 */
-	public function offsetGet( $key ) {
+	public function offsetGet( mixed $key ): mixed {
 		return $this->items[ $key ];
 	}
 

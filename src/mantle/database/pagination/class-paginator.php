@@ -488,9 +488,9 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	/**
 	 * Convert the object into something JSON serializable.
 	 *
-	 * @return array
+	 * @return mixed
 	 */
-	public function jsonSerialize() {
+	public function jsonSerialize(): mixed {
 		return $this->to_array();
 	}
 

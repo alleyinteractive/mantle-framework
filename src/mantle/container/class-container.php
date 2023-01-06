@@ -1159,8 +1159,8 @@ class Container implements ArrayAccess, Container_Contract {
 	 * @param  mixed $key
 	 * @return mixed
 	 */
-	public function offsetGet( mixed $key ) {
-			return $this->make( $key );
+	public function offsetGet( mixed $key ): mixed {
+		return $this->make( $key );
 	}
 
 	/**
