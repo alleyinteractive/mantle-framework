@@ -21,7 +21,7 @@ if ( ! function_exists( 'response' ) ) {
 	 * Return a new response for the application.
 	 *
 	 * @param string $content Response content, optional.
-	 * @param int    $status Response status code, optional.
+	 * @param int    $status  Response status code, optional.
 	 * @param array  $headers Response headers, optional.
 	 * @return Response_Factory
 	 */
@@ -39,10 +39,10 @@ if ( ! function_exists( 'redirect' ) ) {
 	/**
 	 * Get an instance of the redirector.
 	 *
-	 * @param  string|null  $to
-	 * @param  int  $status
-	 * @param  array  $headers
-	 * @param  bool|null  $secure
+	 * @param  string|null $to 	    URL to redirect to, optional.
+	 * @param  int         $status  Status code, optional.
+	 * @param  array       $headers Headers, optional.
+	 * @param  bool|null   $secure  Whether the redirect should be secure, optional.
 	 * @return \Mantle\Http\Routing\Redirector
 	 */
 	function redirect( ?string $to = null, int $status = 302, array $headers = [], ?bool $secure = null ) {
@@ -58,8 +58,8 @@ if ( ! function_exists( 'request' ) ) {
 	/**
 	 * Get an instance of the current request or an input item from the request.
 	 *
-	 * @param  array|string|null  $key
-	 * @param  mixed  $default
+	 * @param  array|string|null $key     Request key.
+	 * @param  mixed             $default Default value.
 	 * @return \Mantle\Http\Request|string|array|null
 	 */
 	function request( $key = null, $default = null ) {
