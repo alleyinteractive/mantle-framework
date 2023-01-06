@@ -204,6 +204,7 @@ trait Rsync_Installation {
 			[
 				'rsync -aWq',
 				'--no-compress',
+				'--delete',
 				'--exclude .npm',
 				'--exclude .git',
 				'--exclude node_modules',
