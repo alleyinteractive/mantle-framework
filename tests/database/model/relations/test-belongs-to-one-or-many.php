@@ -9,7 +9,7 @@ use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Relations\Has_One;
 use Mantle\Database\Model\Relations\Has_One_Or_Many;
 use Mantle\Database\Model\Term;
-use Mantle\Framework\Providers\Model_Service_Provider;
+use Mantle\Database\Model_Service_Provider;
 
 class Test_Belongs_To_One_Or_Many extends Framework_Test_Case {
 	protected function setUp(): void {

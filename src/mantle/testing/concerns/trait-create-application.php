@@ -7,7 +7,7 @@
 
 namespace Mantle\Testing\Concerns;
 
-use Mantle\Framework\Application;
+use Mantle\Application\Application;
 use Mantle\Config\Repository;
 use Mantle\Contracts\Exceptions\Handler as Handler_Contract;
 use Mantle\Framework\Exceptions\Handler;
@@ -66,7 +66,7 @@ trait Create_Application {
 			'app'        => [
 				'debug'     => true,
 				'providers' => [
-					\Mantle\Framework\Providers\Model_Service_Provider::class,
+					\Mantle\Database\Model_Service_Provider::class,
 					\Mantle\Queue\Queue_Service_Provider::class,
 					\Mantle\Database\Factory_Service_Provider::class,
 					\Mantle\Framework\Providers\Route_Service_Provider::class,

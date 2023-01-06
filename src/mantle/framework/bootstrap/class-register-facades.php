@@ -8,9 +8,9 @@
 namespace Mantle\Framework\Bootstrap;
 
 use Mantle\Framework\Alias_Loader;
-use Mantle\Framework\Application;
+use Mantle\Application\Application;
 use Mantle\Facade\Facade;
-use Mantle\Framework\Package_Manifest;
+use Mantle\Framework\Manifest\Package_Manifest;
 
 /**
  * Register the Facades for the Application

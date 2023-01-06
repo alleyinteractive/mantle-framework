@@ -9,6 +9,7 @@
 
 namespace Mantle\Testing\Concerns;
 
+use Mantle\Support\Traits\Conditionable;
 use Mantle\Testing\Utils;
 
 /**
@@ -24,6 +25,8 @@ use Mantle\Testing\Utils;
  * After the rsync is complete, PHPUnit will be rerun from the new location.
  */
 trait Rsync_Installation {
+	use Conditionable;
+
 	/**
 	 * Storage location to rsync the codebase to.
 	 *
@@ -70,6 +73,17 @@ trait Rsync_Installation {
 		}
 
 		return $this->rsync( $to, $from );
+	}
+
+	/**
+	 * Maybe rsync the codebase to the wp-content within WordPress.
+	 *
+	 * Assumed to be called from either /wp-content/plugin/:plugin/tests OR
+	 * /wp-content/themes/:theme/tests. Will rsync the codebase from the
+	 * wp-content level to the root of the WordPress installation.
+	 */
+	public function maybe_rsync_wp_content() {
+		return $this->maybe_rsync( '/', dirname( getcwd(), 3 ) );
 	}
 
 	/**
@@ -190,6 +204,7 @@ trait Rsync_Installation {
 			[
 				'rsync -aWq',
 				'--no-compress',
+				'--delete',
 				'--exclude .npm',
 				'--exclude .git',
 				'--exclude node_modules',

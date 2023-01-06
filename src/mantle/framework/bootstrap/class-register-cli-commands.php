@@ -7,7 +7,7 @@
 
 namespace Mantle\Framework\Bootstrap;
 
-use Mantle\Framework\Application;
+use Mantle\Application\Application;
 use Mantle\Contracts\Console\Kernel as Console_Contract;
 use Mantle\Contracts\Kernel as Kernel_Contract;
 

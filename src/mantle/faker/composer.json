@@ -9,7 +9,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "0.9-dev"
+            "dev-main": "0.10-dev"
         },
         "wordpress-autoloader": {
             "autoload": {
@@ -21,7 +21,7 @@
     "authors": [
         {
             "name": "Alley",
-            "email": "info@alley.co"
+            "email": "mantle@alley.com"
         }
     ],
     "minimum-stability": "dev",

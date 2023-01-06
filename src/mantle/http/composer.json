@@ -5,9 +5,9 @@
     "require": {
         "php": "^8.0",
         "illuminate/view": "^9.40",
-        "mantle-framework/contracts": "^0.9",
-        "mantle-framework/filesystem": "^0.9",
-        "mantle-framework/support": "^0.9",
+        "mantle-framework/contracts": "^0.10",
+        "mantle-framework/filesystem": "^0.10",
+        "mantle-framework/support": "^0.10",
         "symfony/http-foundation": "^6.0",
         "symfony/http-kernel": "^6.0",
         "symfony/mime": "^6.0",
@@ -16,7 +16,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "0.9-dev"
+            "dev-main": "0.10-dev"
         },
         "wordpress-autoloader": {
             "autoload": {
@@ -28,9 +28,14 @@
     "authors": [
         {
             "name": "Alley",
-            "email": "info@alley.co"
+            "email": "mantle@alley.com"
         }
     ],
+    "autoload": {
+        "files": [
+            "autoload.php"
+        ]
+    },
     "minimum-stability": "dev",
     "config": {
         "sort-packages": true

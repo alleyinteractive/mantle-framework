@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Framework\Blocks;
+namespace Mantle\Blocks;
 
 use Mantle\Contracts\Block;
 use Mantle\Support\Str;
@@ -28,14 +28,12 @@ class Discover_Blocks {
 	 * @return array
 	 */
 	public static function within( string $path, string $base_path ): array {
-		$blocks = collect(
+		return collect(
 			static::get_blocks(
 				( new Finder() )->files()->in( $path )->name( '*.php' ),
 				$base_path,
 			),
-		);
-
-		return $blocks->all();
+		)->all();
 	}
 
 	/**
@@ -46,7 +44,6 @@ class Discover_Blocks {
 	 * @return array
 	 */
 	protected static function get_blocks( $blocks, string $base_path ): array {
-
 		$found_blocks = [];
 
 		foreach ( $blocks as $block ) {

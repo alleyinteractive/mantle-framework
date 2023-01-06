@@ -6,16 +6,16 @@
     "authors": [
         {
             "name": "Alley",
-            "email": "info@alley.co"
+            "email": "mantle@alley.com"
         }
     ],
     "require": {
         "php": "^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
         "alleyinteractive/wp-asset-manager": "^1.0",
-        "alleyinteractive/wp-caper": "^1.0",
+        "alleyinteractive/wp-caper": "^1.0 || ^2.0",
         "alleyinteractive/wp-concurrent-remote-requests": "^1.0.0",
-        "alleyinteractive/wp-filter-side-effects": "^1.0",
+        "alleyinteractive/wp-filter-side-effects": "^1.0 || ^2.0",
         "dragonmantank/cron-expression": "^3.1",
         "fakerphp/faker": "^1.16",
         "filp/whoops": "^2.14",
@@ -24,7 +24,7 @@
         "laravel/serializable-closure": "^1.2",
         "league/flysystem": "^1.1",
         "league/flysystem-cached-adapter": "^1.1",
-        "monolog/monolog": "^2.7",
+        "monolog/monolog": "^2.7 || ^3.0",
         "nesbot/carbon": "^2.53",
         "nette/php-generator": "^3.6",
         "nunomaduro/termwind": "^1.14",
@@ -75,6 +75,11 @@
     "autoload": {
         "files": [
             "src/mantle/framework/helpers.php",
+            "src/mantle/application/autoload.php",
+            "src/mantle/assets/autoload.php",
+            "src/mantle/cache/autoload.php",
+            "src/mantle/config/autoload.php",
+            "src/mantle/http/autoload.php",
             "src/mantle/queue/autoload.php",
             "src/mantle/support/autoload.php",
             "src/mantle/testing/autoload.php"
@@ -89,7 +94,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "0.9-dev"
+            "dev-main": "0.10-dev"
         },
         "wordpress-autoloader": {
             "autoload": {

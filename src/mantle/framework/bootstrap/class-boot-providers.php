@@ -7,7 +7,7 @@
 
 namespace Mantle\Framework\Bootstrap;
 
-use Mantle\Framework\Application;
+use Mantle\Application\Application;
 
 /**
  * Boot the Application

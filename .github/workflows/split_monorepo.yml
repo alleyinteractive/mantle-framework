@@ -57,7 +57,7 @@ jobs:
           repository_name: '${{ matrix.package }}'
           repository_host: github.com
           user_name: "mantle-ci"
-          user_email: "mantle@alley.co"
+          user_email: "mantle@alley.com"
           branch: "main"
 
       # with tag
@@ -76,5 +76,5 @@ jobs:
           repository_name: '${{ matrix.package }}'
           repository_host: "github.com"
           user_name: "mantle-ci"
-          user_email: "mantle@alley.co"
+          user_email: "mantle@alley.com"
           branch: "main"

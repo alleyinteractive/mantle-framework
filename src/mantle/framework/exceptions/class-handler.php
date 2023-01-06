@@ -10,7 +10,7 @@ namespace Mantle\Framework\Exceptions;
 use Exception;
 use Mantle\Auth\Authentication_Error;
 use Mantle\Contracts\Container;
-use Mantle\Contracts\Exceptions\Handler as ExceptionsHandler;
+use Mantle\Contracts\Exceptions\Handler as Contract;
 use Mantle\Database\Model\Model_Not_Found_Exception;
 use Mantle\Http\Request;
 use Mantle\Http\Routing\Route;
@@ -33,7 +33,7 @@ use function Mantle\Support\Helpers\collect;
  * Provides logging back to the logging service provider for exceptions thrown and
  * graceful handling of errors.
  */
-class Handler implements ExceptionsHandler {
+abstract class Handler implements Contract {
 
 	/**
 	 * The container implementation.
@@ -91,14 +91,14 @@ class Handler implements ExceptionsHandler {
 
 		try {
 			$logger = $this->container->make( LoggerInterface::class );
-		} catch ( Exception $ex ) {
+		} catch ( Exception $e ) {
 			throw $e;
 		}
 
 		$logger->error(
 			$e->getMessage(),
 			array_merge(
-				$this->exceptionContext( $e ),
+				$this->exception_context( $e ),
 				$this->context(),
 				[ 'exception' => $e ]
 			)
@@ -125,12 +125,7 @@ class Handler implements ExceptionsHandler {
 		$dont_report = array_merge( $this->dont_report, $this->internal_dont_report );
 
 		return ! is_null(
-			Arr::first(
-				$dont_report,
-				function ( $type ) use ( $e ) {
-					return $e instanceof $type;
-				}
-			)
+			Arr::first( $dont_report, fn ( $type ) => $e instanceof $type ),
 		);
 	}
 
@@ -140,7 +135,11 @@ class Handler implements ExceptionsHandler {
 	 * @param  \Throwable $e
 	 * @return array
 	 */
-	protected function exceptionContext( Throwable $e ) {
+	protected function exception_context( Throwable $e ) {
+		if ( method_exists( $e, 'context' ) ) {
+			return $e->context();
+		}
+
 		return [];
 	}
 
@@ -303,13 +302,13 @@ class Handler implements ExceptionsHandler {
 	/**
 	 * Prepare a JSON response for the given exception.
 	 *
-	 * @param Request   $request
-	 * @param Throwable $e
+	 * @param Request                 $request
+	 * @param Throwable|HttpException $e
 	 * @return JsonResponse
 	 */
-	protected function prepare_json_response( $request, Throwable $e ): JsonResponse {
+	protected function prepare_json_response( $request, Throwable | HttpException $e ): JsonResponse {
 		return new JsonResponse(
-			$this->convertExceptionToArray( $e ),
+			$this->convert_exception_to_array( $e ),
 			$this->is_http_exception( $e ) ? $e->getStatusCode() : 500,
 			$this->is_http_exception( $e ) ? $e->getHeaders() : []
 		);
@@ -321,7 +320,7 @@ class Handler implements ExceptionsHandler {
 	 * @param  \Throwable $e
 	 * @return array
 	 */
-	protected function convertExceptionToArray( Throwable $e ) {
+	protected function convert_exception_to_array( Throwable $e ): array {
 		return config( 'app.debug' ) ? [
 			'message'   => $e->getMessage(),
 			'exception' => get_class( $e ),

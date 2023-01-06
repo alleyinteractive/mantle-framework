@@ -4,7 +4,7 @@ namespace Mantle\Tests\Filesystem;
 use InvalidArgumentException;
 use League\Flysystem\Adapter\NullAdapter;
 use League\Flysystem\Filesystem;
-use Mantle\Framework\Application;
+use Mantle\Application\Application;
 use Mantle\Filesystem\Filesystem_Manager;
 use PHPUnit\Framework\TestCase;
 use Mantle\Contracts\Filesystem\Filesystem as Filesystem_Contract;

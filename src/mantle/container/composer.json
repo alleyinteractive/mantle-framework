@@ -5,7 +5,7 @@
     "require": {
         "php": "^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
-        "mantle-framework/contracts": "^0.9",
+        "mantle-framework/contracts": "^0.10",
         "psr/container": "^1.1.1 || ^2.0.1"
     },
     "provide": {
@@ -13,7 +13,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "0.9-dev"
+            "dev-main": "0.10-dev"
         },
         "wordpress-autoloader": {
             "autoload": {
@@ -25,7 +25,7 @@
     "authors": [
         {
             "name": "Alley",
-            "email": "info@alley.co"
+            "email": "mantle@alley.com"
         }
     ],
     "minimum-stability": "dev",

@@ -5,7 +5,7 @@ use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Concerns\Has_Relationships as Relationships;
 use Mantle\Database\Model\Relations\Relation;
 use Mantle\Database\Model\Term;
-use Mantle\Framework\Providers\Model_Service_Provider;
+use Mantle\Database\Model_Service_Provider;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Utils;
 

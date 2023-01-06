@@ -1,12 +1,12 @@
 {
-    "name": "mantle-framework/assets",
-    "description": "The Mantle Framework Asset Package",
+    "name": "mantle-framework/new-relic",
+    "description": "The Mantle Framework New Relic Package",
     "type": "project",
     "require": {
         "php": "^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
-        "alleyinteractive/wp-asset-manager": "^1.0",
         "mantle-framework/contracts": "^0.10",
+        "mantle-framework/http": "^0.10",
         "mantle-framework/support": "^0.10"
     },
     "extra": {
@@ -15,7 +15,7 @@
         },
         "wordpress-autoloader": {
             "autoload": {
-                "Mantle\\Assets": "./"
+                "Mantle\\New_Relic": "./"
             }
         }
     },
@@ -26,13 +26,8 @@
             "email": "mantle@alley.com"
         }
     ],
-    "autoload": {
-        "files": [
-            "autoload.php"
-        ]
-    },
+    "minimum-stability": "dev",
     "config": {
         "sort-packages": true
-    },
-    "minimum-stability": "dev"
+    }
 }
