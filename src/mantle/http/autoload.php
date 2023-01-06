@@ -39,7 +39,7 @@ if ( ! function_exists( 'redirect' ) ) {
 	/**
 	 * Get an instance of the redirector.
 	 *
-	 * @param  string|null $to 	    URL to redirect to, optional.
+	 * @param  string|null $to      URL to redirect to, optional.
 	 * @param  int         $status  Status code, optional.
 	 * @param  array       $headers Headers, optional.
 	 * @param  bool|null   $secure  Whether the redirect should be secure, optional.
