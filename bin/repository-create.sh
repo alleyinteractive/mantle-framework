@@ -50,7 +50,7 @@ for path in $PACKAGES; do
 	fi
 
 	# Update the settings to disable issues and wikis.
-	gh repo edit "$ORGANIZATION/$package" --enable-issues=false --enable-wiki=false --homepage https://mantle.alley.co
+	gh repo edit "$ORGANIZATION/$package" --enable-issues=false --enable-wiki=false --homepage https://mantle.alley.com
 done
 
 echo "DONE"

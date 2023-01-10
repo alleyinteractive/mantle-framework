@@ -10,7 +10,7 @@
         "nesbot/carbon": "^2.53",
         "symfony/finder": "^6.0",
         "symfony/var-dumper": "^6.0",
-        "voku/portable-ascii": "^1.4"
+        "voku/portable-ascii": "^2.0"
     },
     "extra": {
         "branch-alias": {
