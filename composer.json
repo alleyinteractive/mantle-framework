@@ -39,7 +39,7 @@
         "symfony/string": "^6.0",
         "symfony/var-dumper": "^6.0",
         "vlucas/phpdotenv": "^5.5",
-        "voku/portable-ascii": "^1.4"
+        "voku/portable-ascii": "^2.0"
     },
     "require-dev": {
         "alleyinteractive/alley-coding-standards": "^0.3 || ^0.4 || ^1.0",
