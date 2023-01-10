@@ -23,7 +23,6 @@ use Throwable;
  * Queue Worker
  */
 class Worker {
-
 	/**
 	 * Constructor.
 	 *
