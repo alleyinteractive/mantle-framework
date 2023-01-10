@@ -3,6 +3,9 @@ namespace Mantle\Tests\Framework;
 
 use Mantle\Application\Application;
 use Mantle\Contracts;
+use Mantle\Events\Dispatcher;
+use Mantle\Http\Routing\Router;
+use Mantle\Http\Request;
 use Mantle\Queue\Dispatchable;
 use Mantle\Queue\Events\Run_Complete;
 use Mantle\Queue\Providers\WordPress\Provider;
@@ -64,7 +67,29 @@ class Test_Featherkit extends Framework_Test_Case {
 		$this->assertTrue( $_SERVER['__example_job'] );
 	}
 
-	// public function test_http_router() {}
+	public function test_http_router() {
+		$router = $this->get_router();
+
+		$router->get( 'example/route', fn () => 'response' );
+
+		$this->assertEquals( 'response', $router->dispatch( Request::create( 'example/route' ) )->getContent() );
+	}
+
+	public function test_make_request() {
+		$this->get( '/' )
+			->assertOk()
+			->assertQueryTrue( 'is_home', 'is_front_page' );
+	}
+
+	protected function get_router(): Router {
+		$events = new Dispatcher( $this->app );
+		$router = new Router( $events, $this->app );
+
+		$this->app->instance( 'request', new Request() );
+		$this->app->instance( \Mantle\Contracts\Http\Routing\Router::class, $router );
+
+		return $router;
+	}
 }
 
 class Testable_Featherkit_Job implements Contracts\Queue\Job, Contracts\Queue\Can_Queue {
