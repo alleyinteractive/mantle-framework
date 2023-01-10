@@ -31,6 +31,10 @@ class Bound_Method {
 	 * @throws \InvalidArgumentException Throw on invalid arguments.
 	 */
 	public static function call( $container, $callback, array $parameters = [], $default_method = null ) {
+		if ( is_string( $callback ) && ! $default_method && method_exists( $callback, '__invoke' ) ) {
+			$default_method = '__invoke';
+		}
+
 		if ( static::is_callable_with_at_sign( $callback ) || $default_method ) {
 			return static::call_class( $container, $callback, $parameters, $default_method );
 		}
@@ -38,9 +42,7 @@ class Bound_Method {
 		return static::call_bound_method(
 			$container,
 			$callback,
-			function () use ( $container, $callback, $parameters ) {
-				return $callback( ...array_values( static::get_method_dependencies( $container, $callback, $parameters ) ) );
-			}
+			fn () => $callback( ...array_values( static::get_method_dependencies( $container, $callback, $parameters ) ) ),
 		);
 	}
 
@@ -55,24 +57,23 @@ class Bound_Method {
 	 *
 	 * @throws \InvalidArgumentException Throw on invalid arguments.
 	 */
-	protected static function call_class( $container, $target, array $parameters = [], $default_method = null ) {
-			$segments = explode( '@', $target );
+	protected static function call_class( Container $container, string $target, array $parameters = [], ?string $default_method = null ): mixed {
+		$segments = explode( '@', $target );
 
-			// We will assume an @ sign is used to delimit the class name from the method
-			// name. We will split on this @ sign and then build a callable array that
-			// we can pass right back into the "call" method for dependency binding.
-			$method = count( $segments ) === 2
-											? $segments[1] : $default_method;
+		// We will assume an @ sign is used to delimit the class name from the method
+		// name. We will split on this @ sign and then build a callable array that
+		// we can pass right back into the "call" method for dependency binding.
+		$method = count( $segments ) === 2 ? $segments[1] : $default_method;
 
 		if ( is_null( $method ) ) {
 				throw new \InvalidArgumentException( 'Method not provided.' );
 		}
 
-			return static::call(
-				$container,
-				[ $container->make( $segments[0] ), $method ],
-				$parameters
-			);
+		return static::call(
+			$container,
+			[ $container->make( $segments[0] ), $method ],
+			$parameters
+		);
 	}
 
 	/**
@@ -83,7 +84,7 @@ class Bound_Method {
 	 * @param  mixed     $default Default value.
 	 * @return mixed
 	 */
-	protected static function call_bound_method( $container, $callback, $default ) {
+	protected static function call_bound_method( Container $container, $callback, mixed $default ): mixed {
 		if ( ! is_array( $callback ) ) {
 			return Util::unwrap_if_closure( $default );
 		}
@@ -121,25 +122,29 @@ class Bound_Method {
 	 *
 	 * @throws \ReflectionException Throw on invalid arguments.
 	 */
-	protected static function get_method_dependencies( $container, $callback, array $parameters = [] ) {
+	protected static function get_method_dependencies(
+		Container $container,
+		callable|string $callback,
+		array $parameters = [],
+	): array {
 		$dependencies = [];
 
 		foreach ( static::get_call_reflector( $callback )->getParameters() as $parameter ) {
 			static::add_dependency_for_call_parameter( $container, $parameter, $parameters, $dependencies );
 		}
 
-		return array_merge( $dependencies, $parameters );
+		return array_merge( $dependencies, array_values( $parameters ) );
 	}
 
 	/**
 	 * Get the proper reflection instance for the given callback.
 	 *
 	 * @param  callable|string $callback Callback to get from.
-	 * @return \ReflectionFunctionAbstract
+	 * @return ReflectionMethod|ReflectionFunction
 	 *
 	 * @throws \ReflectionException Throw on invalid arguments.
 	 */
-	protected static function get_call_reflector( $callback ) {
+	protected static function get_call_reflector( callable|string $callback ): ReflectionMethod|ReflectionFunction {
 		if ( is_string( $callback ) && strpos( $callback, '::' ) !== false ) {
 			$callback = explode( '::', $callback );
 		} elseif ( is_object( $callback ) && ! $callback instanceof Closure ) {
@@ -163,26 +168,35 @@ class Bound_Method {
 	 * @throws Binding_Resolution_Exception Thrown for invalid binding resolution.
 	 */
 	protected static function add_dependency_for_call_parameter(
-		$container,
-		$parameter,
+		Container $container,
+		\ReflectionParameter $parameter,
 		array &$parameters,
-		&$dependencies
-	) {
-		if ( array_key_exists( $parameter->name, $parameters ) ) {
-			$dependencies[] = $parameters[ $parameter->name ];
+		array &$dependencies
+	): void {
+		if ( array_key_exists( $param_name = $parameter->getName(), $parameters ) ) {
+			$dependencies[] = $parameters[ $param_name ];
 
-			unset( $parameters[ $parameter->name ] );
+			unset( $parameters[ $param_name ] );
 		} elseif ( ! is_null( $class_name = Reflector::get_parameter_class_name( $parameter ) ) ) {
 			if ( array_key_exists( $class_name, $parameters ) ) {
-					$dependencies[] = $parameters[ $class_name ];
+				$dependencies[] = $parameters[ $class_name ];
 
-					unset( $parameters[ $class_name ] );
+				unset( $parameters[ $class_name ] );
+			} elseif ( $parameter->isVariadic() ) {
+				$variadic_dependencies = $container->make( $class_name );
+
+				$dependencies = array_merge(
+					$dependencies,
+					is_array( $variadic_dependencies )
+										? $variadic_dependencies
+										: [ $variadic_dependencies ]
+				);
 			} else {
-					$dependencies[] = $container->make( $class_name );
+				$dependencies[] = $container->make( $class_name );
 			}
 		} elseif ( $parameter->isDefaultValueAvailable() ) {
 			$dependencies[] = $parameter->getDefaultValue();
-		} elseif ( ! $parameter->isOptional() && ! array_key_exists( $parameter->name, $parameters ) ) {
+		} elseif ( ! $parameter->isOptional() && ! array_key_exists( $param_name, $parameters ) ) {
 			$message = "Unable to resolve dependency [{$parameter}] in class {$parameter->getDeclaringClass()->getName()}";
 
 			throw new Binding_Resolution_Exception( $message );
