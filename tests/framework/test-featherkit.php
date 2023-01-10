@@ -58,6 +58,30 @@ class Test_Featherkit extends Test_Case {
 		$this->assertEquals( 'bar', $app['config']['foo'] );
 	}
 
+	public function test_base_path() {
+		$this->assertNotEquals( __DIR__, $this->app->get_base_path() );
+
+		featherkit_clear();
+
+		$app = featherkit(
+			base_path: __DIR__,
+		);
+
+		$this->assertEquals( __DIR__, $app->get_base_path() );
+	}
+
+	public function test_root_url() {
+		$this->assertNotEquals( 'https://root.test', $this->app->get_root_url() );
+
+		featherkit_clear();
+
+		$app = featherkit(
+			root_url: 'https://root.test',
+		);
+
+		$this->assertEquals( 'https://root.test', $app->get_root_url() );
+	}
+
 	public function test_dispatch_events() {
 		$this->expectApplied( 'example_hook' );
 
