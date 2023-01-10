@@ -2,6 +2,8 @@
 /**
  * Mantle Featherkit Loader
  *
+ * phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
+ *
  * @package Mantle
  */
 
@@ -79,36 +81,54 @@ const DEFAULT_FEATHERKIT_CONFIG = [
 	'view'       => [],
 ];
 
-static $featherkit = null;
+static $mantle_featherkit = null;
 
 if ( ! function_exists( 'featherkit' ) ) {
 	/**
 	 * Load a pre-configured Mantle Application.
+	 *
+	 * @param array  $config    Configuration to merge with the default.
+	 * @param string $base_path Base path for the application.
+	 * @param string $root_url  Root URL for the application.
+	 * @return Application
 	 */
 	function featherkit(
 		array $config = [],
 		string $base_path = null,
 		string $root_url = null,
 	): Application {
-		global $featherkit;
+		global $mantle_featherkit;
 
-		if ( $featherkit ) {
-			return $featherkit;
+		if ( $mantle_featherkit ) {
+			return $mantle_featherkit;
 		}
 
-		$featherkit = new Application( $base_path ?? ABSPATH, $root_url ?? home_url() );
+		$mantle_featherkit = new Application( $base_path ?? ABSPATH, $root_url ?? home_url() );
 
 		// Register the main contracts for the application.
-		$featherkit->singleton( Contracts\Http\Kernel::class, Featherkit\Http\Kernel::class );
-		$featherkit->singleton( Contracts\Exceptions\Handler::class, Featherkit\Exceptions\Handler::class );
+		$mantle_featherkit->singleton( Contracts\Http\Kernel::class, Featherkit\Http\Kernel::class );
+		$mantle_featherkit->singleton( Contracts\Exceptions\Handler::class, Featherkit\Exceptions\Handler::class );
 
 		// Setup the application's configuration.
-		$featherkit->instance( 'config', new Repository( array_merge( DEFAULT_FEATHERKIT_CONFIG, $config ) ) );
+		$mantle_featherkit->instance( 'config', new Repository( array_merge( DEFAULT_FEATHERKIT_CONFIG, $config ) ) );
 
 		// Fire off the HTTP kernel.
-		$kernel = $featherkit->make( Contracts\Http\Kernel::class );
+		$kernel = $mantle_featherkit->make( Contracts\Http\Kernel::class );
 		$kernel->handle( Request::capture() );
 
-		return $featherkit;
+		return $mantle_featherkit;
+	}
+}
+
+if ( ! function_exists( 'featherkit_clear' ) ) {
+	/**
+	 * Clear the Featherkit instance.
+	 *
+	 * @return void
+	 */
+	function featherkit_clear(): void {
+		global $mantle_featherkit;
+
+		$mantle_featherkit = null;
 	}
 }

@@ -16,9 +16,13 @@ class Test_Featherkit extends Framework_Test_Case {
 	protected function setUp(): void {
 		parent::setUp();
 
-		global $featherkit;
+		featherkit_clear();
+	}
 
-		$featherkit = null;
+	protected function tearDown(): void {
+		parent::tearDown();
+
+		featherkit_clear();
 	}
 
 	public function test_instantiate_application() {
