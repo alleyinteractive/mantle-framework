@@ -86,7 +86,7 @@ class Queue_Service_Provider extends Service_Provider {
 		// Add the event listener to schedule the next cron run.
 		$this->app['events']->listen(
 			Run_Complete::class,
-			function( Events\Run_Complete $event ) {
+			function( Run_Complete $event ) {
 				if ( $event->provider instanceof Providers\WordPress\Provider ) {
 					Providers\WordPress\Scheduler::schedule_next_run( $event->queue );
 				}
