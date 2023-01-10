@@ -10,9 +10,9 @@ use Mantle\Queue\Dispatchable;
 use Mantle\Queue\Events\Run_Complete;
 use Mantle\Queue\Providers\WordPress\Provider;
 use Mantle\Queue\Queueable;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\Test_Case;
 
-class Test_Featherkit extends Framework_Test_Case {
+class Test_Featherkit extends Test_Case {
 	protected function setUp(): void {
 		parent::setUp();
 
@@ -25,10 +25,21 @@ class Test_Featherkit extends Framework_Test_Case {
 		featherkit_clear();
 	}
 
+	/**
+	 * Creates the application.
+	 *
+	 * @return \Mantle\Contracts\Application
+	 */
+	public function create_application(): \Mantle\Contracts\Application {
+		return featherkit();
+	}
+
 	public function test_instantiate_application() {
 		$app = featherkit();
 
+		$this->assertEquals( $this->app, $app );
 		$this->assertInstanceOf( Application::class, $app );
+		$this->assertInstanceOf( Application::class, $this->app );
 
 		$this->assertInstanceOf( Contracts\Application::class, $app['app'] );
 		$this->assertInstanceOf( Contracts\Config\Repository::class, $app['config'] );
@@ -38,6 +49,8 @@ class Test_Featherkit extends Framework_Test_Case {
 	}
 
 	public function test_application_config() {
+		featherkit_clear();
+
 		$app = featherkit( [
 			'foo' => 'bar',
 		] );
