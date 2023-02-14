@@ -590,11 +590,9 @@ class Application extends Container implements Application_Contract {
 	 * Get the application namespace.
 	 *
 	 * @return string
-	 *
-	 * @throws RuntimeException Thrown on error determining namespace.
 	 */
 	public function get_namespace(): string {
-		return Environment::get( 'APP_NAMESPACE', 'App' );
+		return (string) $this['config']->get( 'app.namespace', 'App' );
 	}
 
 	/**
