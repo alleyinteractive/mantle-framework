@@ -5,7 +5,7 @@
  * @package {{ namespace }}
  */
 
-namespace App\Console;
+namespace {{ namespace }}\Console;
 
 use Mantle\Console\Command;
 

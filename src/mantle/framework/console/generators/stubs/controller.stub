@@ -5,7 +5,7 @@
  * @package {{ namespace }}
  */
 
-namespace App\Http\Controller;
+namespace {{ namespace }}\Http\Controller;
 
 use Mantle\Http\Controller;
 
