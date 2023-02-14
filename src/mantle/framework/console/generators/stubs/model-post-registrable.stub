@@ -5,7 +5,7 @@
  * @package {{ namespace }}
  */
 
-namespace App\Models;
+namespace {{ namespace }}\Models;
 
 use Mantle\Contracts\Database\Registrable;
 use Mantle\Database\Model\Post;

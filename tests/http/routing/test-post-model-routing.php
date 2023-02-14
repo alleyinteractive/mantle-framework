@@ -15,8 +15,9 @@ class Test_Post_Model_Routing extends Framework_Test_Case {
 	protected function setUp(): void {
 		parent::setUp();
 
-		update_option( 'permalink_structure', '/%year%/%monthnum%/%day%/%postname%/' );
-		flush_rewrite_rules();
+		$this->set_permalink_structure( '/%year%/%monthnum%/%day%/%postname%/' );
+
+		add_filter( 'deprecated_file_trigger_error', '__return_false' );
 	}
 
 	public function test_post_type() {

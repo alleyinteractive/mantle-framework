@@ -15,13 +15,15 @@ class Test_Discover_Events extends Framework_Test_Case {
 		parent::setUp();
 
 		// Mock a true Mantle application.
-		Environment::get_repository()->set( 'APP_NAMESPACE', 'Mantle\\Tests' );
+		$this->app['config']->set( 'app.namespace', 'Mantle\\Tests' );
 		$this->app->set_app_path( dirname( __DIR__, 2 ) );
 	}
 
 	protected function tearDown(): void {
-		Environment::get_repository()->clear( 'APP_NAMESPACE' );
 		$this->app->set_app_path( $this->app->get_base_path( 'app' ) );
+		$this->app['config']->set( 'app.namespace', 'App' );
+
+		parent::tearDown();
 	}
 
 	public function test_events_can_be_discovered() {
