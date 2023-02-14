@@ -22,6 +22,7 @@ use Mantle\Support\Arr;
 use Mantle\Support\Environment;
 use Mantle\Support\Service_Provider;
 use Mantle\View\View_Service_Provider;
+use RuntimeException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -590,8 +591,14 @@ class Application extends Container implements Application_Contract {
 	 * Get the application namespace.
 	 *
 	 * @return string
+	 *
+	 * @throws RuntimeException If the config is not set yet.
 	 */
 	public function get_namespace(): string {
+		if ( ! isset( $this['config'] ) ) {
+			throw new RuntimeException( 'Configurations not set yet.' );
+		}
+
 		return (string) $this['config']->get( 'app.namespace', 'App' );
 	}
 

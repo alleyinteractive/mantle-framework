@@ -15,13 +15,16 @@ class Test_Block_Provider extends Framework_Test_Case {
 		parent::setUp();
 
 		// Mock a true Mantle application.
-		Environment::get_repository()->set( 'APP_NAMESPACE', 'Mantle\\Tests' );
 		$this->app->set_app_path( dirname( __DIR__, 2 ) );
+
+		$this->app['config']->set( 'app.namespace', 'Mantle\\Tests' );
 	}
 
 	protected function tearDown(): void {
-		Environment::get_repository()->clear( 'APP_NAMESPACE' );
+		$this->app['config']->set( 'app.namespace', 'App' );
 		$this->app->set_app_path( $this->app->get_base_path( 'app' ) );
+
+		parent::tearDown();
 	}
 
 	/**
@@ -57,6 +60,8 @@ class Test_Block_Provider extends Framework_Test_Case {
 		$app = m::mock( Application::class )->makePartial();
 		$app->set_base_path( getcwd() );
 		$app->set_app_path( __DIR__ . '/fixtures' );
+
+		$app['config'] = $this->app['config'];
 
 		$this->assertEquals( 'Mantle\\Tests', $app->get_namespace() );
 
