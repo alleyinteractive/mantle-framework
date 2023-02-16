@@ -11,6 +11,8 @@ use Mantle\Contracts\Container;
 use Mantle\Contracts\Exceptions\Handler as Exceptions_Handler;
 use Throwable;
 
+use function Termwind\render;
+
 /**
  * Exception Handler for use in the console.
  *
@@ -61,6 +63,14 @@ class Exception_Handler implements Exceptions_Handler {
 	 * @throws Throwable Thrown on error rendering.
 	 */
 	public function render( $request, Throwable $e ) {
+		if ( $e instanceof \Symfony\Component\Console\Exception\RuntimeException ) {
+			render(
+				'<div class="p-2 bg-red-500 text-white">' . $e->getMessage() . '</div>'
+			);
+
+			return;
+		}
+
 		( new \NunoMaduro\Collision\Provider() )->register();
 
 		throw $e;
