@@ -17,11 +17,14 @@ use Mantle\Contracts\Application;
 use Mantle\Contracts\Console\Application as Console_Application_Contract;
 use Mantle\Contracts\Console\Kernel as Kernel_Contract;
 use Mantle\Contracts\Exceptions\Handler as Exception_Handler;
+use Mantle\Support\Str;
 use Mantle\Support\Traits\Loads_Classes;
 use ReflectionClass;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 use Throwable;
+
+use function Mantle\Support\Helpers\collect;
 
 /**
  * Console Kernel
@@ -321,7 +324,12 @@ class Kernel implements Kernel_Contract {
 			Command::PREFIX,
 			function () {
 				$status = $this->handle(
-					new \Symfony\Component\Console\Input\ArgvInput( array_slice( $_SERVER['argv'] ?? [], 1 ) ), // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+					new \Symfony\Component\Console\Input\ArgvInput(
+						collect( (array) ( $_SERVER['argv'] ?? [] ) ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+							// Remove the `wp` prefix from argv and any invalid arguments (such as --url).
+							->filter( fn ( $value, $index ) => 0 !== $index && ! Str::starts_with( $value, '--url=' ) )
+							->all()
+					),
 					new \Symfony\Component\Console\Output\ConsoleOutput(),
 				);
 

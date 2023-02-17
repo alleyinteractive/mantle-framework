@@ -59,6 +59,7 @@ abstract class Handler implements Contract {
 		HttpException::class,
 		Model_Not_Found_Exception::class,
 		ResourceNotFoundException::class,
+		\Symfony\Component\Console\Exception\RuntimeException::class,
 	];
 
 	/**
