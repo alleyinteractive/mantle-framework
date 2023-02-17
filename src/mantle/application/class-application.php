@@ -242,6 +242,7 @@ class Application extends Container implements Application_Contract {
 
 	/**
 	 * Getter for the root URL.
+	 * This would be the root URL to the WordPress installation.
 	 *
 	 * @param string $path Path to append.
 	 * @return string

@@ -12,6 +12,8 @@ use Mantle\Support\Str;
 
 /**
  * Mix Asset Loader
+ *
+ * @deprecated Use ___ instead.
  */
 class Mix {
 	/**

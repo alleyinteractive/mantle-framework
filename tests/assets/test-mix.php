@@ -17,7 +17,7 @@ class Test_Mix extends Test_Case {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->manifest_dir = realpath( __DIR__ . '/../fixtures/assets/' );
+		$this->manifest_dir = realpath( __DIR__ . '/../fixtures/assets-mix/' );
 
 		$this->mix = new Mix( $this->manifest_dir );
 	}
