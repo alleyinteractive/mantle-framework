@@ -13,7 +13,7 @@ use Mantle\Support\Str;
 /**
  * Mix Asset Loader
  *
- * @deprecated Use ___ instead.
+ * @deprecated Use Asset_Loader instead.
  */
 class Mix {
 	/**
