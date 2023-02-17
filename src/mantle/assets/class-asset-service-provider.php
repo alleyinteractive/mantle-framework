@@ -15,8 +15,6 @@ use Mantle\Support\Service_Provider;
 abstract class Asset_Service_Provider extends Service_Provider {
 	/**
 	 * Register the service provider.
-	 *
-	 * @return void
 	 */
 	public function register() {
 		$this->app->singleton_if(
@@ -37,13 +35,9 @@ abstract class Asset_Service_Provider extends Service_Provider {
 
 	/**
 	 * Load the blocks from the application's `build/` folder.
-	 *
-	 * @return void
 	 */
-	protected function load_blocks() {
-		$blocks = ( new Asset_Loader() )->blocks();
-
-		foreach ( $blocks as $file ) {
+	protected function load_blocks(): void {
+		foreach ( $this->app['asset.loader']->blocks() as $file ) {
 			if ( file_exists( $file ) && 0 === validate_file( $file ) ) {
 				require_once $file;
 			}
