@@ -16,27 +16,6 @@ use Mantle\Assets\Asset_Loader;
 use Mantle\Assets\Mix;
 use Mantle\Assets\Asset_Manager;
 
-if ( ! function_exists( 'mix' ) ) {
-	/**
-	 * Get the path to a versioned Mix file or a Mix instance.
-	 *
-	 * @param  string  $path Path to the asset, optional.
-	 * @param  string  $manifest_directory Path to the manifest directory, optional.
-	 * @return string|Mix
-	 *
-	 * @deprecated Migrated to `asset()` and `asset_loader()`.
-	 *
-	 * @throws \Exception
-	 */
-	function mix( string $path = null, string $manifest_directory = null ) {
-		if ( ! $path ) {
-			return app( Mix::class );
-		}
-
-		return app( Mix::class )( ...func_get_args() );
-	}
-}
-
 if ( ! function_exists( 'asset' ) ) {
 	/**
 	 * Retrieve an instance of the Asset Manager.

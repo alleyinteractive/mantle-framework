@@ -8,7 +8,6 @@
 namespace Mantle\Assets;
 
 use Mantle\Assets\Exception\Asset_Not_Found;
-use Mantle\Assets\Exception\Mix_File_Not_Found;
 use Mantle\Support\Str;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -51,10 +50,10 @@ class Asset_Loader {
 	/**
 	 * Get the path to a versioned asset.
 	 *
-	 * @param  string $path Mix file path.
+	 * @param  string $path Asset file path.
 	 * @return string|null
 	 *
-	 * @throws Mix_File_Not_Found Thrown on missing manifest or asset.
+	 * @throws Asset_Not_Found Thrown on missing manifest or asset.
 	 */
 	public function path( string $path ): ?string {
 		if ( ! file_exists( $this->build_directory . $path ) ) {
