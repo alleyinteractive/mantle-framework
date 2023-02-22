@@ -19,62 +19,6 @@ use function Mantle\Support\Helpers\hook_callable;
  */
 class Asset {
 	/**
-	 * Asset type (script/style).
-	 *
-	 * @var string
-	 */
-	protected $type;
-
-	/**
-	 * Asset handle.
-	 *
-	 * @var string
-	 */
-	protected $handle;
-
-	/**
-	 * Asset URL.
-	 *
-	 * @var string|null
-	 */
-	protected $src = null;
-
-	/**
-	 * Asset dependencies.
-	 *
-	 * @var string[]
-	 */
-	protected $deps = [];
-
-	/**
-	 * Condition to load the asset.
-	 *
-	 * @var string
-	 */
-	protected $condition = 'global';
-
-	/**
-	 * Load method for the asset (async/sync/async-defer).
-	 *
-	 * @var string
-	 */
-	protected $load_method = Load_Method::SYNC;
-
-	/**
-	 * Load hook for the asset.
-	 *
-	 * @var string
-	 */
-	protected $load_hook = Load_Hook::HEADER;
-
-	/**
-	 * Version for the asset.
-	 *
-	 * @var string|null
-	 */
-	protected $version = null;
-
-	/**
 	 * Asset style media.
 	 *
 	 * @var string
@@ -105,33 +49,30 @@ class Asset {
 	/**
 	 * Constructor.
 	 *
-	 * @param string          $type     Asset type (script/style).
-	 * @param string          $handle Asset handle.
-	 * @param string          $src Script URL.
-	 * @param string[]|string $deps Script dependencies.
-	 * @param array|string    $condition Condition to load.
+	 * @param string          $type        Asset type (script/style).
+	 * @param string          $handle      Asset handle.
+	 * @param string          $src         Script URL.
+	 * @param string[]|string $deps        Script dependencies.
+	 * @param array|string    $condition   Condition to load.
 	 * @param string          $load_method Load method.
-	 * @param string          $load_hook Load hook.
-	 * @param string|null     $version Script version.
+	 * @param string          $load_hook   Load hook.
+	 * @param string|null     $version     Script version.
+	 * @param bool            $infer_from_loader Infer the asset from the loader if the source is not provided.
 	 */
 	public function __construct(
-		string $type,
-		string $handle,
-		?string $src = null,
-		array $deps = [],
-		$condition = 'global',
-		string $load_method = Load_Method::SYNC,
-		string $load_hook = Load_Hook::HEADER,
-		?string $version = null
+		protected string $type,
+		protected string $handle,
+		protected ?string $src = null,
+		protected array $deps = [],
+		protected string|array $condition = 'global',
+		protected string $load_method = Load_Method::SYNC,
+		protected string $load_hook = Load_Hook::HEADER,
+		protected ?string $version = null,
+		bool $infer_from_loader = true,
 	) {
-		$this->type        = $type;
-		$this->handle      = $handle;
-		$this->src         = $src;
-		$this->deps        = $deps;
-		$this->condition   = $condition;
-		$this->load_method = $load_method;
-		$this->load_hook   = $load_hook;
-		$this->version     = $version;
+		if ( ! $src && $infer_from_loader ) {
+			$this->infer_from_asset_loader();
+		}
 	}
 
 	/**
@@ -410,5 +351,46 @@ class Asset {
 	 */
 	public function __destruct() {
 		$this->register();
+	}
+
+	/**
+	 * Attempt to automatically infer the asset src from the asset loader.
+	 *
+	 * For example, if /folder/app.js is passed as the handle with no src,
+	 * this will attempt to load the asset from the asset loader. If it
+	 * is found, it will set the src to the URL of the asset and rename the handle to
+	 * a sanitized version (folder-app-js).
+	 */
+	protected function infer_from_asset_loader() {
+		// Bail if the src is set OR if the handle doesn't include an extension.
+		if ( $this->src || false === strpos( $this->handle, '.' ) ) {
+			return;
+		}
+
+		$asset_loader = asset_loader();
+
+		// Bail if the asset doesn't exist.
+		if ( ! $asset_loader->exists( $this->handle ) ) {
+			return;
+		}
+
+		$this
+			->src( $asset_loader->url( $this->handle ) )
+			->dependencies(
+				array_merge(
+					$this->deps,
+					$asset_loader->dependencies( $this->handle ),
+				)
+			);
+
+		$handle = str_replace( [ '/', '.' ], '-', esc_attr( $this->handle ) );
+
+		// Ensure the handle doesn't start with a dash.
+		if ( 0 === strpos( $handle, '-' ) ) {
+			$handle = substr( $handle, 1 );
+		}
+
+		// Update the handle with a sanitized version.
+		$this->handle( $handle );
 	}
 }
