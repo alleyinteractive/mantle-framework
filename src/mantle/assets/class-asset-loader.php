@@ -155,7 +155,7 @@ class Asset_Loader {
 	 * @return string[]
 	 */
 	public function blocks(): array {
-		if ( ! is_dir(  $this->build_directory ) ) {
+		if ( ! is_dir( $this->build_directory ) ) {
 			return [];
 		}
 
