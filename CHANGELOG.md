@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v0.10.4 - 2023-02-22
+
+### Changed
+
+- Remove Laravel Mix support. Switch to asset loader that aligns with shared company configuration.
+
+## v0.10.3 - 2023-02-17
+
+### Fixed
+
+- Ensure --url doesn't throw an error on bin/mantle
+
 ## v0.10.2 - 2023-02-15
 
 - Fix issue with custom namespace in application.
