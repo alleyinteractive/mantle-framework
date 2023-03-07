@@ -122,7 +122,8 @@ class Provider implements Provider_Contract {
 				'meta_input'  => [
 					'_mantle_queue' => $job,
 				],
-			]
+			],
+			true
 		);
 
 		if ( is_wp_error( $insert ) ) {
