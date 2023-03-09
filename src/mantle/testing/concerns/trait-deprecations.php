@@ -109,9 +109,8 @@ trait Deprecations {
 		foreach ( $unexpected_deprecated as $index => $unexpected ) {
 			if ( ! empty( $this->caught_deprecated_traces[ $index ] ) ) {
 				static::trace(
-					message: "Unexpected deprecated notice for $unexpected",
-					file: $this->caught_deprecated_traces[ $index ]['file'],
-					line: $this->caught_deprecated_traces[ $index ]['line'],
+					"Unexpected deprecated notice for $unexpected",
+					$this->caught_deprecated_traces[ $index ],
 				);
 			}
 
