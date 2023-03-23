@@ -16,7 +16,7 @@ class App extends Facade {
 	 *
 	 * @return string
 	 */
-	protected static function get_facade_accessor() {
+	protected static function get_facade_accessor(): string {
 		return 'app';
 	}
 }
