@@ -671,7 +671,7 @@ class Test_Response {
 	 * @param string|null $key Key to retrieve, optional.
 	 * @return mixed
 	 */
-	public function json( $key = null ) {
+	public function json( ?string $key = null ) {
 		return $this->decoded_json()->json( $key );
 	}
 
@@ -680,7 +680,7 @@ class Test_Response {
 	 *
 	 * @return static
 	 */
-	public function dump() {
+	public function dump(): static {
 		$content = $this->get_content();
 
 		$json = json_decode( $content );
@@ -699,10 +699,41 @@ class Test_Response {
 	 *
 	 * @return static
 	 */
-	public function dump_headers() {
+	public function dump_headers(): static {
 		dump( $this->headers );
 
 		return $this;
+	}
+
+	/**
+	 * Camel-case alias to dump_headers().
+	 *
+	 * @return static
+	 */
+	public function dumpHeaders(): static {
+		return $this->dump_headers();
+	}
+
+	/**
+	 * Dump the JSON, optionally by path, to the screen.
+	 *
+	 * @param string|null $path
+	 * @return static
+	 */
+	public function dump_json( ?string $path = null ): static {
+		dump( $this->json( $path ) );
+
+		return $this;
+	}
+
+	/**
+	 * Camel-case alias to dump_json().
+	 *
+	 * @param string|null $path
+	 * @return static
+	 */
+	public function dumpJson( ?string $path = null ): static {
+		return $this->dump_json( $path );
 	}
 
 	/**
@@ -710,7 +741,7 @@ class Test_Response {
 	 *
 	 * @return void
 	 */
-	public function dd() {
+	public function dd(): void {
 		$this->dump();
 
 		exit( 1 );
@@ -721,9 +752,40 @@ class Test_Response {
 	 *
 	 * @return void
 	 */
-	public function dd_headers() {
+	public function dd_headers(): void {
 		$this->dump_headers();
 
 		exit( 1 );
+	}
+
+	/**
+	 * Camel-case alias to dd_headers().
+	 *
+	 * @return void
+	 */
+	public function ddHeaders(): void {
+		$this->dd_headers();
+	}
+
+	/**
+	 * Dump the JSON from the response and end the script.
+	 *
+	 * @param string|null $path
+	 * @return void
+	 */
+	public function dd_json( ?string $path = null ): void {
+		$this->dump_json( $path );
+
+		exit( 1 );
+	}
+
+	/**
+	 * Camel-case alias to dd_json().
+	 *
+	 * @param string|null $path
+	 * @return void
+	 */
+	public function ddJson( ?string $path = null ): void {
+		$this->dd_json( $path );
 	}
 }
