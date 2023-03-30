@@ -182,7 +182,7 @@ trait Rsync_Installation {
 
 		// Store the subdirectory of the current working directory relative to the
 		// from rsync path.
-		$this->rsync_subdir = str_replace( $this->rsync_from, '', getcwd() );
+		$this->rsync_subdir = str_replace( $this->rsync_from, '', rtrim( getcwd(), '/' ) . '/' );
 
 		// Define the constants relative to where the codebase is being rsynced to.
 		defined( 'WP_TESTS_INSTALL_PATH' ) || define( 'WP_TESTS_INSTALL_PATH', $base_install_path );
