@@ -16,6 +16,7 @@ use Mantle\Support\Collection;
 use Mantle\Support\Str;
 use Mantle\Testing\Mock_Http_Response;
 use Mantle\Testing\Mock_Http_Sequence;
+use Mantle\Testing\Utils;
 use PHPUnit\Framework\Assert as PHPUnit;
 use RuntimeException;
 use WP_Error;
@@ -32,29 +33,37 @@ trait Interacts_With_Requests {
 	 *
 	 * @var Collection
 	 */
-	protected $stub_callbacks;
+	protected Collection $stub_callbacks;
 
 	/**
 	 * Storage of request URLs.
 	 *
 	 * @var Collection
 	 */
-	protected $recorded_requests;
+	protected Collection $recorded_requests;
 
 	/**
 	 * Flag to prevent external requests from being made. By default, this is
 	 * false.
 	 *
-	 * @var Mock_Http_Response|\Closure|bool
+	 * @var Mock_Http_Response|Closure|bool
 	 */
-	protected $preventing_stray_requests = false;
+	protected mixed $preventing_stray_requests = false;
+
+	/**
+	 * Recorded actual HTTP requests made during the test.
+	 *
+	 * @var Collection
+	 */
+	protected Collection $recorded_actual_requests;
 
 	/**
 	 * Setup the trait.
 	 */
 	public function interacts_with_requests_set_up() {
-		$this->stub_callbacks    = collect();
-		$this->recorded_requests = collect();
+		$this->stub_callbacks           = collect();
+		$this->recorded_requests        = collect();
+		$this->recorded_actual_requests = collect();
 
 		\add_filter( 'pre_http_request', [ $this, 'pre_http_request' ], PHP_INT_MAX, 3 );
 	}
@@ -64,6 +73,95 @@ trait Interacts_With_Requests {
 	 */
 	public function interacts_with_requests_tear_down() {
 		\remove_filter( 'pre_http_request', [ $this, 'pre_http_request' ], PHP_INT_MAX );
+
+		$this->report_stray_requests();
+	}
+
+	/**
+	 * Prevent stray external requests.
+	 *
+	 * @param Mock_Http_Response|\Closure|bool $response A default response or callback to use, boolean otherwise.
+	 */
+	public function prevent_stray_requests( $response = true ) {
+		$this->preventing_stray_requests = $response;
+	}
+
+	/**
+	 * Allow stray external requests.
+	 */
+	public function allow_stray_requests() {
+		$this->preventing_stray_requests = false;
+	}
+
+	/**
+	 * Fake a remote request.
+	 *
+	 * A response object could be passed with a matching URL to fake. Also supports passing
+	 * a closure that will be invoked when the HTTP request is made. The closure will be passed
+	 * the request URL and request arguments to determine if it wishes to make a response. For more
+	 * information on how this is used, see the `create_stub_request_callback()` method below and the
+	 * relevant test for the trait (Mantle\Tests\Testing\Concerns\Test_Interacts_With_Requests).
+	 *
+	 * @throws \InvalidArgumentException Thrown on invalid argument.
+	 *
+	 * @param Closure|string|array                  $url_or_callback URL to fake, array of URL and response pairs, or a closure
+	 *                                                               that will return a faked response.
+	 * @param Mock_Http_Response|Mock_Http_Sequence $response Optional response object, defaults to creating a 200 response.
+	 * @return static|Mock_Http_Response
+	 */
+	public function fake_request( Mock_Http_Response|Mock_Http_Sequence|Closure|string|array|null $url_or_callback = null, Mock_Http_Response|Mock_Http_Sequence|Closure $response = null ) {
+		if ( is_array( $url_or_callback ) ) {
+			$this->stub_callbacks = $this->stub_callbacks->merge(
+				collect( $url_or_callback )
+					->map(
+						function( $response, $url_or_callback ) {
+							return $this->create_stub_request_callback( $url_or_callback, $response );
+						}
+					)
+			);
+
+			return $this;
+		}
+
+		// Allow a callback to be passed instead.
+		if ( is_callable( $url_or_callback ) ) {
+			$this->stub_callbacks->push( $url_or_callback );
+			return $this;
+		}
+
+		// Throw an exception on an unknown argument.
+		if ( ! is_string( $url_or_callback ) && ! is_null( $url_or_callback ) ) {
+			throw new \InvalidArgumentException(
+				sprintf(
+					'Expected a URL string or a callback, got %s.',
+					gettype( $url_or_callback )
+				)
+			);
+		}
+
+		// Renaming for clarity.
+		$url = $url_or_callback ?? '*';
+
+		// If no arguments passed, assume that all requests should return an 200 response.
+		if ( is_null( $response ) ) {
+			$response = new Mock_Http_Response();
+		}
+
+		$this->stub_callbacks->push( $this->create_stub_request_callback( $url, $response ) );
+
+		return $response;
+	}
+
+	/**
+	 * Alias for fake_request().
+	 *
+	 * @param Closure|string|array                  $url_or_callback URL to fake, array of URL and response pairs, or a closure
+	 *                                                               that will return a faked response.
+	 * @param Mock_Http_Response|Mock_Http_Sequence $response Optional response object, defaults to creating a 200 response.
+	 * @return static|Mock_Http_Response
+	 */
+	public function fake( Mock_Http_Response|Mock_Http_Sequence|Closure|string|array|null $url_or_callback = null, Mock_Http_Response|Mock_Http_Sequence|Closure $response = null ) {
+		return $this->fake_request( $url_or_callback, $response );
 	}
 
 	/**
@@ -81,7 +179,9 @@ trait Interacts_With_Requests {
 	 * @throws RuntimeException If the request was made without a matching faked request.
 	 */
 	public function pre_http_request( $preempt, $request_args, $url ) {
-		$this->recorded_requests[] = new Request( $request_args, $url );
+		$request = new Request( $request_args, $url );
+
+		$this->recorded_requests[] = $request;
 
 		$stub = $this->get_stub_response( $url, $request_args );
 
@@ -95,12 +195,8 @@ trait Interacts_With_Requests {
 			return $stub;
 		}
 
-		// To aid in debugging, print a message to the console that this test is
-		// making an actual HTTP request which it probably shouldn't be.
-		printf(
-			'No faked HTTP response found, making an actual HTTP request. [%s]',
-			esc_url( $url )
-		) . PHP_EOL;
+		// Store the actual request for later reporting.
+		$this->recorded_actual_requests[] = method_exists( $this, 'getName' ) ? static::class . '::' . $this->getName() : static::class;
 
 		return $preempt;
 	}
@@ -179,81 +275,6 @@ trait Interacts_With_Requests {
 	}
 
 	/**
-	 * Fake a remote request.
-	 *
-	 * A response object could be passed with a matching URL to fake. Also supports passing
-	 * a closure that will be invoked when the HTTP request is made. The closure will be passed
-	 * the request URL and request arguments to determine if it wishes to make a response. For more
-	 * information on how this is used, see the `create_stub_request_callback()` method below and the
-	 * relevant test for the trait (Mantle\Tests\Testing\Concerns\Test_Interacts_With_Requests).
-	 *
-	 * @throws \InvalidArgumentException Thrown on invalid argument.
-	 *
-	 * @param Closure|string|array                  $url_or_callback URL to fake, array of URL and response pairs, or a closure
-	 *                                                               that will return a faked response.
-	 * @param Mock_Http_Response|Mock_Http_Sequence $response Optional response object, defaults to creating a 200 response.
-	 * @return static|Mock_Http_Response
-	 */
-	public function fake_request( $url_or_callback = null, $response = null ) {
-		if ( is_array( $url_or_callback ) ) {
-			$this->stub_callbacks = $this->stub_callbacks->merge(
-				collect( $url_or_callback )
-					->map(
-						function( $response, $url_or_callback ) {
-							return $this->create_stub_request_callback( $url_or_callback, $response );
-						}
-					)
-			);
-
-			return $this;
-		}
-
-		// Allow a callback to be passed instead.
-		if ( is_callable( $url_or_callback ) ) {
-			$this->stub_callbacks->push( $url_or_callback );
-			return $this;
-		}
-
-		// Throw an exception on an unknown argument.
-		if ( ! is_string( $url_or_callback ) && ! is_null( $url_or_callback ) ) {
-			throw new \InvalidArgumentException(
-				sprintf(
-					'Expected a URL string or a callback, got %s.',
-					gettype( $url_or_callback )
-				)
-			);
-		}
-
-		// Renaming for clarity.
-		$url = $url_or_callback ?? '*';
-
-		// If no arguments passed, assume that all requests should return an 200 response.
-		if ( is_null( $response ) ) {
-			$response = new Mock_Http_Response();
-		}
-
-		$this->stub_callbacks->push( $this->create_stub_request_callback( $url, $response ) );
-
-		return $response;
-	}
-
-	/**
-	 * Prevent stray external requests.
-	 *
-	 * @param Mock_Http_Response|\Closure|bool $response A default response or callback to use, boolean otherwise.
-	 */
-	public function prevent_stray_requests( $response = true ) {
-		$this->preventing_stray_requests = $response;
-	}
-
-	/**
-	 * Allow stray external requests.
-	 */
-	public function allow_stray_requests() {
-		$this->preventing_stray_requests = false;
-	}
-
-	/**
 	 * Retrieve a callback for the stubbed response.
 	 *
 	 * @param string                                $url URL to stub.
@@ -286,6 +307,20 @@ trait Interacts_With_Requests {
 		$callback = $callback ?: fn () => true;
 
 		return collect( $this->recorded_requests )->filter( fn ( Request $response ) => $callback( $response ) );
+	}
+
+	/**
+	 * Report any stray requests that were made during the unit test.
+	 *
+	 * @return void
+	 */
+	protected function report_stray_requests(): void {
+		$this->recorded_actual_requests->map(
+			fn ( $method, $index ) => Utils::info(
+				"An HTTP request was made in <span class='font-bold'>{$method}</span> to <span class='font-bold'>{$this->recorded_requests[ $index ]->url()}</span> but no faked response was found.",
+				'HTTP Requests',
+			)
+		);
 	}
 
 	/**
