@@ -168,7 +168,7 @@ trait Rsync_Installation {
 	 * Specify the exclusions to be used when rsyncing the codebase.
 	 *
 	 * @param string[] $exclusions Exclusions to be used when rsyncing the codebase.
-	 * @param bool $merge Whether to merge the exclusions with the default exclusions.
+	 * @param bool     $merge Whether to merge the exclusions with the default exclusions.
 	 */
 	public function exclusions( array $exclusions, bool $merge = true ): static {
 		$this->rsync_exclusions = $merge ? array_merge( $this->rsync_exclusions, $exclusions ) : $exclusions;
