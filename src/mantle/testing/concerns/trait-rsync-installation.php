@@ -107,7 +107,7 @@ trait Rsync_Installation {
 			$name = basename( getcwd() );
 		}
 
-		return $this->maybe_rsync( "plugins/{$name}/", $from );
+		return $this->maybe_rsync( "plugins/{$name}", $from );
 	}
 
 	/**
