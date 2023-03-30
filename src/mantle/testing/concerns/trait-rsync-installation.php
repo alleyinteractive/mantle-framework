@@ -78,12 +78,20 @@ trait Rsync_Installation {
 	/**
 	 * Maybe rsync the codebase to the wp-content within WordPress.
 	 *
-	 * Assumed to be called from either /wp-content/plugin/:plugin/tests OR
-	 * /wp-content/themes/:theme/tests. Will rsync the codebase from the
-	 * wp-content level to the root of the WordPress installation.
+	 * Will attempt to locate the wp-content directory relative to the current
+	 * directory. As a fallback, it will assumme it is being called from either
+	 * /wp-content/plugin/:plugin/tests OR /wp-content/themes/:theme/tests. Will
+	 * rsync the codebase from the wp-content level to the root of the WordPress
+	 * installation. Also will attempt to locate the wp-content directory relative
+	 * to the current directory.
 	 */
 	public function maybe_rsync_wp_content() {
-		return $this->maybe_rsync( '/', dirname( getcwd(), 3 ) );
+		// Attempt to locate wp-content relative to the current directory.
+		if ( false !== strpos( __DIR__, '/wp-content/' ) ) {
+			return $this->maybe_rsync( '/', preg_replace( '\/wp-content\/.*$', '/wp-content', __DIR__ ) );
+		}
+
+		return $this->maybe_rsync( null, dirname( getcwd(), 3 ) );
 	}
 
 	/**
@@ -115,7 +123,7 @@ trait Rsync_Installation {
 			$name = basename( getcwd() );
 		}
 
-		return $this->maybe_rsync( 'themes', $from );
+		return $this->maybe_rsync( "themes/{$name}", $from );
 	}
 
 	/**
