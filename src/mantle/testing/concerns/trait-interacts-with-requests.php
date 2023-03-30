@@ -315,6 +315,10 @@ trait Interacts_With_Requests {
 	 * @return void
 	 */
 	protected function report_stray_requests(): void {
+		if ( ! isset( $this->recorded_actual_requests ) || $this->recorded_actual_requests->is_empty() ) {
+			return;
+		}
+
 		$this->recorded_actual_requests->map(
 			fn ( $method, $index ) => Utils::info(
 				"An HTTP request was made in <span class='font-bold'>{$method}</span> to <span class='font-bold'>{$this->recorded_requests[ $index ]->url()}</span> but no faked response was found.",

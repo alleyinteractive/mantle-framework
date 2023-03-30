@@ -14,6 +14,8 @@ class Test_Frequency extends Framework_Test_Case {
 	protected $event;
 
 	protected function setUp(): void {
+		parent::setUp();
+
 		$this->event = new Event(
 			'php foo'
 		);
