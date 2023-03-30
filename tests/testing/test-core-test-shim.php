@@ -1,9 +1,9 @@
 <?php
 namespace Mantle\Tests\Testing;
 
-use Mantle\Testing\Framework_Test_Case;
+use WP_UnitTestCase;
 
-class Test_Core_Test_Shim extends Framework_Test_Case {
+class Test_Core_Test_Shim extends WP_UnitTestCase {
 	protected $setup_called = false;
 
 	public function set_up() {
@@ -19,9 +19,5 @@ class Test_Core_Test_Shim extends Framework_Test_Case {
 
 	public function test_core_set_up_called() {
 		$this->assertTrue( $this->setup_called );
-	}
-
-	public function test_wp_unit_test_case_mocked() {
-		$this->assertTrue( class_exists( \WP_UnitTestCase::class ) );
 	}
 }

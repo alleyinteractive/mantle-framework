@@ -8,6 +8,7 @@
  * @package Mantle
  */
 
+use Mantle\Testing\Concerns\Core_Shim;
 use Mantle\Testkit\Test_Case;
 
 if ( ! class_exists( 'WP_UnitTestCase' ) ) {
@@ -18,6 +19,6 @@ if ( ! class_exists( 'WP_UnitTestCase' ) ) {
 	 * the Mantle Testing Framework.
 	 */
 	class WP_UnitTestCase extends Test_Case {
-		// ...
+		use Core_Shim;
 	}
 }
