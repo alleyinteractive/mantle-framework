@@ -65,7 +65,7 @@ trait Register_Meta {
 						'show_in_rest'   => true,
 						'single'         => true,
 						'type'           => 'string',
-					]
+					],
 				],
 			),
 			$args,

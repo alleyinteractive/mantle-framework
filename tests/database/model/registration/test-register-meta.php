@@ -8,7 +8,14 @@ use Mantle\Testing\Framework_Test_Case;
 
 class Test_Register_Meta extends Framework_Test_Case {
 	public function test_register_meta() {
-		$this->expectApplied( 'mantle_register_meta_default_args' )->once();
+		$this->expectApplied( 'mantle_register_meta_default_args' )->once()->andReturn(
+			[
+				'object_subtype' => 'post',
+				'show_in_rest'   => true,
+				'single'         => true,
+				'type'           => 'string',
+			],
+		);
 
 		Testable_Post_Model_Meta::boot_if_not_booted();
 

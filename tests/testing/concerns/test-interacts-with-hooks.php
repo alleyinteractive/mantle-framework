@@ -47,4 +47,66 @@ class Test_Interacts_With_Hooks extends Framework_Test_Case {
 
 		add_filter( 'filter_to_add', '__return_true' );
 	}
+
+	public function test_hook_return_boolean() {
+		$this->expectApplied( 'true_hook_to_add' )->once()->andReturnTrue();
+		$this->expectApplied( 'false_hook_to_add' )->once()->andReturnFalse();
+
+		add_filter( 'true_hook_to_add', '__return_true' );
+		add_filter( 'false_hook_to_add', '__return_false' );
+
+		$this->assertTrue( apply_filters( 'true_hook_to_add', false ) );
+		$this->assertFalse( apply_filters( 'false_hook_to_add', true ) );
+	}
+
+	public function test_hook_return_truthy_falsy() {
+		$this->expectApplied( 'truthy_hook_to_add' )->once()->andReturnTruthy();
+		$this->expectApplied( 'falsy_hook_to_add' )->once()->andReturnFalsy();
+
+		add_filter( 'truthy_hook_to_add', fn () => 123 );
+		add_filter( 'falsy_hook_to_add', fn () => 0 );
+
+		apply_filters( 'truthy_hook_to_add', false );
+		apply_filters( 'falsy_hook_to_add', true );
+	}
+
+	public function test_hook_return_null() {
+		$this->expectApplied( 'null_hook_to_add' )->once()->andReturnNull();
+
+		add_filter( 'null_hook_to_add', '__return_null' );
+
+		$this->assertNull( apply_filters( 'null_hook_to_add', 'not_null' ) );
+	}
+
+	public function test_hook_return_empty() {
+		$this->expectApplied( 'empty_hook_to_add' )->once()->andReturnEmpty();
+
+		add_filter( 'empty_hook_to_add', fn () => '' );
+
+		$this->assertEmpty( apply_filters( 'empty_hook_to_add', 'not_empty' ) );
+	}
+
+	public function test_hook_return_array() {
+		$this->expectApplied( 'array_hook_to_add' )->once()->andReturnArray();
+
+		add_filter( 'array_hook_to_add', fn () => [] );
+
+		$this->assertIsArray( apply_filters( 'array_hook_to_add', 'not_array' ) );
+	}
+
+	public function test_hook_return_string() {
+		$this->expectApplied( 'string_hook_to_add' )->once()->andReturnString();
+
+		add_filter( 'string_hook_to_add', fn () => 'string' );
+
+		$this->assertIsString( apply_filters( 'string_hook_to_add', 'not_string' ) );
+	}
+
+	public function test_hook_return_int() {
+		$this->expectApplied( 'int_hook_to_add' )->once()->andReturnInteger();
+
+		add_filter( 'int_hook_to_add', fn () => 123 );
+
+		$this->assertIsInt( apply_filters( 'int_hook_to_add', 'not_int' ) );
+	}
 }
