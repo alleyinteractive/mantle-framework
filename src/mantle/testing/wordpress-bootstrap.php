@@ -114,9 +114,16 @@ $multisite = $multisite || ( defined( 'MULTISITE' ) && MULTISITE );
 require_once __DIR__ . '/doubles/class-mockphpmailer.php';
 $phpmailer = new MockPHPMailer( true );
 
-if ( ! defined( 'WP_DEFAULT_THEME' ) ) {
-	define( 'WP_DEFAULT_THEME', 'default' );
+// Include a WP_UnitTestCase class to allow for easier transition to the testing
+// framework.
+if ( ! Utils::env( 'DISABLE_WP_UNIT_TEST_CASE_SHIM', false ) ) {
+	require_once __DIR__ . '/class-wp-unittestcase.php';
 }
+
+if ( ! defined( 'WP_DEFAULT_THEME' ) ) {
+	define( 'WP_DEFAULT_THEME', Utils::env( 'WP_DEFAULT_THEME', 'default' ) );
+}
+
 $wp_theme_directories = [];
 $installing_wp        = defined( 'WP_INSTALLING' ) && WP_INSTALLING;
 

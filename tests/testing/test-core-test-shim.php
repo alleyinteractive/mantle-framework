@@ -20,4 +20,8 @@ class Test_Core_Test_Shim extends Framework_Test_Case {
 	public function test_core_set_up_called() {
 		$this->assertTrue( $this->setup_called );
 	}
+
+	public function test_wp_unit_test_case_mocked() {
+		$this->assertTrue( class_exists( \WP_UnitTestCase::class ) );
+	}
 }
