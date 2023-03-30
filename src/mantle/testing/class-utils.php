@@ -275,14 +275,15 @@ class Utils {
 			'export WP_CORE_DIR=%s && curl -s %s | bash -s %s %s %s %s %s %s',
 			$directory,
 			'https://raw.githubusercontent.com/alleyinteractive/mantle-ci/HEAD/install-wp-tests.sh',
-			static::shell_safe( defined( 'DB_NAME' ) ? DB_NAME : static::env( 'WP_DB_NAME', 'wordpress_unit_tests' ) ),
-			static::shell_safe( defined( 'DB_USER' ) ? DB_USER : static::env( 'WP_DB_USER', 'root' ) ),
-			static::shell_safe( defined( 'DB_PASSWORD' ) ? DB_PASSWORD : static::env( 'WP_DB_PASSWORD', 'root' ) ),
-			static::shell_safe( defined( 'DB_HOST' ) ? DB_HOST : static::env( 'WP_DB_HOST', 'localhost' ) ),
+			static::shell_safe( defined( 'DB_NAME' ) ? DB_NAME : static::env( 'WP_DB_NAME', static::DEFAULT_DB_NAME ) ),
+			static::shell_safe( defined( 'DB_USER' ) ? DB_USER : static::env( 'WP_DB_USER', static::DEFAULT_DB_USER ) ),
+			static::shell_safe( defined( 'DB_PASSWORD' ) ? DB_PASSWORD : static::env( 'WP_DB_PASSWORD', static::DEFAULT_DB_PASSWORD) ),
+			static::shell_safe( defined( 'DB_HOST' ) ? DB_HOST : static::env( 'WP_DB_HOST', static::DEFAULT_DB_HOST ) ),
 			static::shell_safe( static::env( 'WP_VERSION', 'latest' ) ),
 			static::shell_safe( static::env( 'WP_SKIP_DB_CREATE', 'false' ) ),
 		);
 
+		$retval = 0;
 		$output = static::command( $command, $retval );
 
 		if ( 0 !== $retval ) {
