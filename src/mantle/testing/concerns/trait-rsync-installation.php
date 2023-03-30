@@ -12,6 +12,8 @@ namespace Mantle\Testing\Concerns;
 use Mantle\Support\Traits\Conditionable;
 use Mantle\Testing\Utils;
 
+use function Mantle\Support\Helpers\collect;
+
 /**
  * Trait to manage rsync-ing the codebase to live within a WordPress
  * installation.
@@ -50,6 +52,23 @@ trait Rsync_Installation {
 	protected ?string $rsync_subdir = '';
 
 	/**
+	 * Exclusions to be used when rsyncing the codebase.
+	 *
+	 * @var array
+	 */
+	protected array $rsync_exclusions = [
+		'.buddy-tests',
+		'.composer',
+		'.composer',
+		'.git',
+		'.npm',
+		'.phpcs',
+		'.phpcs',
+		'.turbo',
+		'node_modules',
+	];
+
+	/**
 	 * Rsync the code base to be located under a valid WordPress installation.
 	 *
 	 * By default, the codebase will be rsynced to the `wp-content` directory. The
@@ -59,7 +78,7 @@ trait Rsync_Installation {
 	 * @param string $from Location to rsync from.
 	 * @return static
 	 */
-	public function rsync( string $to = null, string $from = null ) {
+	public function rsync( string $to = null, string $from = null ): static {
 		$this->rsync_to   = $to ?: '/';
 		$this->rsync_from = $from ?: getcwd() . '/';
 
@@ -74,7 +93,7 @@ trait Rsync_Installation {
 	 * @param string $from Location to rsync from.
 	 * @return static
 	 */
-	public function maybe_rsync( string $to = null, string $from = null ) {
+	public function maybe_rsync( string $to = null, string $from = null ): static {
 		// Check if we are under an existing WordPress installation.
 		if ( $this->is_within_wordpress_install() ) {
 			return $this;
@@ -93,7 +112,7 @@ trait Rsync_Installation {
 	 * installation. Also will attempt to locate the wp-content directory relative
 	 * to the current directory.
 	 */
-	public function maybe_rsync_wp_content() {
+	public function maybe_rsync_wp_content(): static {
 		// Attempt to locate wp-content relative to the current directory.
 		if ( false !== strpos( __DIR__, '/wp-content/' ) ) {
 			return $this->maybe_rsync( '/', preg_replace( '/\/wp-content\/.*$/', '/wp-content', __DIR__ ) );
@@ -121,7 +140,7 @@ trait Rsync_Installation {
 	 * @param string $name Name of the plugin folder, optional.
 	 * @param string $from Location to rsync from.
 	 */
-	public function maybe_rsync_plugin( string $name = null, string $from = null ) {
+	public function maybe_rsync_plugin( string $name = null, string $from = null ): static {
 		if ( ! $name ) {
 			$name = basename( getcwd() );
 		}
@@ -137,12 +156,24 @@ trait Rsync_Installation {
 	 * @param string $name Name of the theme folder, optional.
 	 * @param string $from Location to rsync from.
 	 */
-	public function maybe_rsync_theme( string $name = null, string $from = null ) {
+	public function maybe_rsync_theme( string $name = null, string $from = null ): static {
 		if ( ! $name ) {
 			$name = basename( getcwd() );
 		}
 
 		return $this->maybe_rsync( "themes/{$name}", $from );
+	}
+
+	/**
+	 * Specify the exclusions to be used when rsyncing the codebase.
+	 *
+	 * @param string[] $exclusions Exclusions to be used when rsyncing the codebase.
+	 * @param bool $merge Whether to merge the exclusions with the default exclusions.
+	 */
+	public function exclusions( array $exclusions, bool $merge = true ): static {
+		$this->rsync_exclusions = $merge ? array_merge( $this->rsync_exclusions, $exclusions ) : $exclusions;
+
+		return $this;
 	}
 
 	/**
@@ -235,15 +266,9 @@ trait Rsync_Installation {
 		// Rsync the from folder to the destination.
 		$output = Utils::command(
 			[
-				'rsync -aWq',
-				'--no-compress',
+				'rsync -aWq --no-compress',
+				collect( $this->rsync_exclusions )->map( fn( $exclusion ) => "--exclude '{$exclusion}'" )->implode( ' ' ),
 				'--delete',
-				'--exclude .npm',
-				'--exclude .git',
-				'--exclude node_modules',
-				'--exclude .composer',
-				'--exclude .phpcs',
-				'--exclude .buddy-tests',
 				"{$this->rsync_from} {$this->rsync_to}",
 			],
 			$retval
@@ -256,10 +281,13 @@ trait Rsync_Installation {
 		}
 
 		if ( ! chdir( $this->rsync_to . $this->rsync_subdir ) ) {
-			Utils::error(
-				"Unable to change directory to <em>{$this->rsync_to}</em>",
-				'Install Rsync'
-			);
+			// Fallback to just the rsync_to directory without the subdirectory.
+			if ( ! chdir( $this->rsync_to ) ) {
+				Utils::error(
+					"Unable to change directory to <em>{$this->rsync_to}</em>",
+					'Install Rsync'
+				);
+			}
 
 			exit( 1 );
 		}
