@@ -89,6 +89,13 @@ trait Rsync_Installation {
 		// Attempt to locate wp-content relative to the current directory.
 		if ( false !== strpos( __DIR__, '/wp-content/' ) ) {
 			return $this->maybe_rsync( '/', preg_replace( '\/wp-content\/.*$', '/wp-content', __DIR__ ) );
+		} elseif ( preg_match( '/\/(?:client-mu-plugins|mu-plugins|plugins|themes)\/.*/', __DIR__ ) ) {
+			// Attempt to locate the wp-content directory relative to the current
+			// directory by finding the WordPress-parent folder after wp-content. Used
+			// when the directory structure doesn't contain wp-content but contains a
+			// subfolder that we can use to locate the WordPress installation such as
+			// plugins, themes, etc.
+			return $this->maybe_rsync( null, preg_replace( '/\/(?:client-mu-plugins|mu-plugins|plugins|themes)\/.*/', '', __DIR__ ) );
 		}
 
 		return $this->maybe_rsync( null, dirname( getcwd(), 3 ) );
