@@ -264,10 +264,12 @@ trait Rsync_Installation {
 			exit( 1 );
 		}
 
-		$cwd = getcwd();
-
 		Utils::success(
-			"Finished rsyncing to <em>{$this->rsync_to}</em> and working directory is now <em>{$cwd}</em>",
+			sprintf(
+				'Finished rsyncing to <em>%s</em> and working directory is now <em>%s</em>',
+				$this->rsync_to,
+				getcwd(),
+			),
 			'Install Rsync'
 		);
 
