@@ -8,10 +8,17 @@ use Mantle\Testing\Framework_Test_Case;
 
 class Test_Register_Meta extends Framework_Test_Case {
 	public function test_register_meta() {
+		$this->expectApplied( 'mantle_register_meta_default_args' )->once();
+
 		Testable_Post_Model_Meta::boot_if_not_booted();
 
 		$this->assertTrue( registered_meta_key_exists( 'post', 'test_meta', 'post' ) );
 		$this->assertFalse( registered_meta_key_exists( 'post', 'test_meta', 'page' ) );
+
+		$keys = get_registered_meta_keys( 'post', 'post' );
+
+		$this->assertTrue( $keys['test_meta']['single'] );
+		$this->assertTrue( $keys['test_meta']['show_in_rest'] );
 	}
 }
 
