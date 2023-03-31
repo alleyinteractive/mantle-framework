@@ -54,7 +54,7 @@ trait Rsync_Installation {
 	/**
 	 * Exclusions to be used when rsyncing the codebase.
 	 *
-	 * @var array
+	 * @var string[]
 	 */
 	protected array $rsync_exclusions = [
 		'.buddy-tests',
