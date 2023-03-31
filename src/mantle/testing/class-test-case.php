@@ -8,10 +8,10 @@
 namespace Mantle\Testing;
 
 use Mantle\Container\Container;
-use Mantle\Framework\Alias_Loader;
 use Mantle\Contracts\Application;
 use Mantle\Database\Model\Model;
 use Mantle\Facade\Facade;
+use Mantle\Framework\Alias_Loader;
 use Mantle\Support\Collection;
 use Mantle\Testing\Concerns\Admin_Screen;
 use Mantle\Testing\Concerns\Assertions;
@@ -137,6 +137,11 @@ abstract class Test_Case extends BaseTestCase {
 
 		parent::setUp();
 
+		// Call the PHPUnit 8 'set_up' method if it exists.
+		if ( method_exists( $this, 'set_up' ) ) {
+			$this->set_up();
+		}
+
 		if ( ! $this->app ) {
 			$this->refresh_application();
 		}
@@ -170,6 +175,11 @@ abstract class Test_Case extends BaseTestCase {
 	protected function tearDown(): void {
 		// phpcs:disable WordPress.WP.GlobalVariablesOverride,WordPress.NamingConventions.PrefixAllGlobals
 		global $wp_query, $wp;
+
+		// Call the test case's "tear_down" method if it exists.
+		if ( method_exists( $this, 'tear_down' ) ) {
+			$this->tear_down();
+		}
 
 		static::get_test_case_traits()
 			// Tearing down requires performing priority traits in opposite order.
@@ -288,7 +298,7 @@ abstract class Test_Case extends BaseTestCase {
 	 *
 	 * @return \Mantle\Testing\Factory\Factory_Container
 	 */
-	public static function factory() {
+	protected static function factory() {
 		if ( ! isset( static::$factory ) ) {
 			static::$factory = new Factory_Container( Container::getInstance() );
 		}
