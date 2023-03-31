@@ -292,12 +292,10 @@ trait Rsync_Installation {
 			exit( 1 );
 		}
 
+		$cwd = getcwd();
+
 		Utils::success(
-			sprintf(
-				'Finished rsyncing to <em>%s</em> and working directory is now <em>%s</em>',
-				$this->rsync_to,
-				getcwd(),
-			),
+			"Finished rsyncing to <em>{$this->rsync_to}</em> and working directory is now <em>{$cwd}</em>",
 			'Install Rsync'
 		);
 
@@ -306,7 +304,7 @@ trait Rsync_Installation {
 
 		// Proxy to the phpunit instance within the new rsynced WordPress installation.
 		Utils::info(
-			"Running <em>{$command}</em> in <em>{$this->rsync_to}</em>:",
+			"Running <em>{$command}</em> in <em>{$cwd}</em>",
 			'Install Rsync'
 		);
 
