@@ -12,6 +12,8 @@ namespace Mantle\Testing\Concerns;
 use Mantle\Support\Traits\Conditionable;
 use Mantle\Testing\Utils;
 
+use function Mantle\Support\Helpers\collect;
+
 /**
  * Trait to manage rsync-ing the codebase to live within a WordPress
  * installation.
@@ -42,6 +44,31 @@ trait Rsync_Installation {
 	protected ?string $rsync_from = null;
 
 	/**
+	 * Subdirectory from the parent folder being rsynced to the previous working
+	 * directory.
+	 *
+	 * @var string
+	 */
+	protected ?string $rsync_subdir = '';
+
+	/**
+	 * Exclusions to be used when rsyncing the codebase.
+	 *
+	 * @var string[]
+	 */
+	protected array $rsync_exclusions = [
+		'.buddy-tests',
+		'.composer',
+		'.composer',
+		'.git',
+		'.npm',
+		'.phpcs',
+		'.phpcs',
+		'.turbo',
+		'node_modules',
+	];
+
+	/**
 	 * Rsync the code base to be located under a valid WordPress installation.
 	 *
 	 * By default, the codebase will be rsynced to the `wp-content` directory. The
@@ -51,7 +78,7 @@ trait Rsync_Installation {
 	 * @param string $from Location to rsync from.
 	 * @return static
 	 */
-	public function rsync( string $to = null, string $from = null ) {
+	public function rsync( string $to = null, string $from = null ): static {
 		$this->rsync_to   = $to ?: '/';
 		$this->rsync_from = $from ?: getcwd() . '/';
 
@@ -66,7 +93,7 @@ trait Rsync_Installation {
 	 * @param string $from Location to rsync from.
 	 * @return static
 	 */
-	public function maybe_rsync( string $to = null, string $from = null ) {
+	public function maybe_rsync( string $to = null, string $from = null ): static {
 		// Check if we are under an existing WordPress installation.
 		if ( $this->is_within_wordpress_install() ) {
 			return $this;
@@ -78,11 +105,30 @@ trait Rsync_Installation {
 	/**
 	 * Maybe rsync the codebase to the wp-content within WordPress.
 	 *
-	 * Assumed to be called from either /wp-content/plugin/:plugin/tests OR
-	 * /wp-content/themes/:theme/tests. Will rsync the codebase from the
-	 * wp-content level to the root of the WordPress installation.
+	 * Will attempt to locate the wp-content directory relative to the current
+	 * directory. As a fallback, it will assumme it is being called from either
+	 * /wp-content/plugin/:plugin/tests OR /wp-content/themes/:theme/tests. Will
+	 * rsync the codebase from the wp-content level to the root of the WordPress
+	 * installation. Also will attempt to locate the wp-content directory relative
+	 * to the current directory.
 	 */
-	public function maybe_rsync_wp_content() {
+	public function maybe_rsync_wp_content(): static {
+		// Attempt to locate wp-content relative to the current directory.
+		if ( false !== strpos( __DIR__, '/wp-content/' ) ) {
+			return $this->maybe_rsync( '/', preg_replace( '/\/wp-content\/.*$/', '/wp-content', __DIR__ ) );
+		} elseif ( preg_match( '/\/(?:client-mu-plugins|mu-plugins|plugins|themes)\/.*/', __DIR__ ) ) {
+			/**
+			 * Attempt to locate the wp-content directory relative to the current
+			 * directory by finding the WordPress-parent folder after wp-content. Used
+			 * when the directory structure doesn't contain wp-content but contains a
+			 * subfolder that we can use to locate the WordPress installation such as
+			 * plugins, themes, etc. This is common for wp-content-rooted projects
+			 * that have the root of their directory structure as the wp-content
+			 * folder.
+			 */
+			return $this->maybe_rsync( '/', preg_replace( '/\/(?:client-mu-plugins|mu-plugins|plugins|themes)\/.*/', '', __DIR__ ) );
+		}
+
 		return $this->maybe_rsync( '/', dirname( getcwd(), 3 ) );
 	}
 
@@ -94,12 +140,12 @@ trait Rsync_Installation {
 	 * @param string $name Name of the plugin folder, optional.
 	 * @param string $from Location to rsync from.
 	 */
-	public function maybe_rsync_plugin( string $name = null, string $from = null ) {
+	public function maybe_rsync_plugin( string $name = null, string $from = null ): static {
 		if ( ! $name ) {
 			$name = basename( getcwd() );
 		}
 
-		return $this->maybe_rsync( "plugins/{$name}/", $from );
+		return $this->maybe_rsync( "plugins/{$name}", $from );
 	}
 
 	/**
@@ -110,12 +156,24 @@ trait Rsync_Installation {
 	 * @param string $name Name of the theme folder, optional.
 	 * @param string $from Location to rsync from.
 	 */
-	public function maybe_rsync_theme( string $name = null, string $from = null ) {
+	public function maybe_rsync_theme( string $name = null, string $from = null ): static {
 		if ( ! $name ) {
 			$name = basename( getcwd() );
 		}
 
-		return $this->maybe_rsync( 'themes', $from );
+		return $this->maybe_rsync( "themes/{$name}", $from );
+	}
+
+	/**
+	 * Specify the exclusions to be used when rsyncing the codebase.
+	 *
+	 * @param string[] $exclusions Exclusions to be used when rsyncing the codebase.
+	 * @param bool     $merge Whether to merge the exclusions with the default exclusions.
+	 */
+	public function exclusions( array $exclusions, bool $merge = true ): static {
+		$this->rsync_exclusions = $merge ? array_merge( $this->rsync_exclusions, $exclusions ) : $exclusions;
+
+		return $this;
 	}
 
 	/**
@@ -148,8 +206,14 @@ trait Rsync_Installation {
 
 		$base_install_path = $this->get_installation_path();
 
-		// Normalize the rsync destination.
-		$this->rsync_to = "$base_install_path/wp-content/{$this->rsync_to}";
+		// Normalize the rsync paths. Ensure that both have a trailing slash to be
+		// inclusive of the directory's contents and not just the directory itself.
+		$this->rsync_from = rtrim( $this->rsync_from, '/' ) . '/';
+		$this->rsync_to   = rtrim( "$base_install_path/wp-content/{$this->rsync_to}", '/' ) . '/';
+
+		// Store the subdirectory of the current working directory relative to the
+		// from rsync path.
+		$this->rsync_subdir = str_replace( $this->rsync_from, '', rtrim( getcwd(), '/' ) . '/' );
 
 		// Define the constants relative to where the codebase is being rsynced to.
 		defined( 'WP_TESTS_INSTALL_PATH' ) || define( 'WP_TESTS_INSTALL_PATH', $base_install_path );
@@ -202,15 +266,9 @@ trait Rsync_Installation {
 		// Rsync the from folder to the destination.
 		$output = Utils::command(
 			[
-				'rsync -aWq',
-				'--no-compress',
+				'rsync -aWq --no-compress',
+				collect( $this->rsync_exclusions )->map( fn( $exclusion ) => "--exclude '{$exclusion}'" )->implode( ' ' ),
 				'--delete',
-				'--exclude .npm',
-				'--exclude .git',
-				'--exclude node_modules',
-				'--exclude .composer',
-				'--exclude .phpcs',
-				'--exclude .buddy-tests',
 				"{$this->rsync_from} {$this->rsync_to}",
 			],
 			$retval
@@ -222,12 +280,27 @@ trait Rsync_Installation {
 			exit( 1 );
 		}
 
+		if ( ! chdir( $this->rsync_to . $this->rsync_subdir ) ) {
+			// Fallback to just the rsync_to directory without the subdirectory.
+			if ( ! chdir( $this->rsync_to ) ) {
+				Utils::error(
+					"Unable to change directory to <em>{$this->rsync_to}</em>",
+					'Install Rsync'
+				);
+			}
+
+			exit( 1 );
+		}
+
 		Utils::success(
-			"Rsynced to <em>{$this->rsync_to}</em> and changed working directory.",
+			sprintf(
+				'Finished rsyncing to <em>%s</em> and working directory is now <em>%s</em>',
+				$this->rsync_to,
+				getcwd(),
+			),
 			'Install Rsync'
 		);
 
-		chdir( $this->rsync_to );
 
 		$command = $this->get_phpunit_command();
 
@@ -251,11 +324,46 @@ trait Rsync_Installation {
 	protected function get_phpunit_command(): string {
 		$args = (array) $_SERVER['argv'] ?? []; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
-		// Remove the first argument, which is the path to the phpunit binary.
+		if ( ! empty( getenv( 'WP_PHPUNIT_PATH' ) ) ) {
+			$executable = getenv( 'WP_PHPUNIT_PATH' );
+		} elseif ( ! empty( $args[0] ) && false !== strpos( $args[0], 'phpunit' ) ) {
+			// Use the first argument and translate it to the rsync-ed path.
+			$executable = $this->translate_location( $args[0] );
+
+			// Attempt to fallback to the phpunit binrary reference in PHP_SELF. This
+			// would be the one used to invoke the current script. With that, we can
+			// translate it to the new location in the rsync-ed WordPress
+			// installation.
+			if (
+				! empty( $_SERVER['PHP_SELF'] )
+				&& ! is_file( $executable )
+				&& ! is_executable( $executable )
+				&& 0 !== strpos( 'composer ', $executable )
+			) {
+				$executable = $this->translate_location( $_SERVER['PHP_SELF'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			}
+		}
+
+		// Default to a local phpunit in the vendor directory.
+		if ( empty( $executable ) ) {
+			$executable = 'vendor/bin/phpunit';
+		}
+
+		// Remove the first argument, which is the path to the phpunit binary. The
+		// rest will be forwarded to the command.
 		array_shift( $args );
 
-		$executable = getenv( 'WP_PHPUNIT_PATH' ) ?: 'vendor/bin/phpunit';
-
 		return $executable . ' ' . implode( ' ', array_map( 'escapeshellarg', $args ) );
+	}
+
+	/**
+	 * Translate a path from the rsync-ed WordPress installation to the original
+	 * location.
+	 *
+	 * @param string $path Path to translate.
+	 * @return string
+	 */
+	protected function translate_location( string $path ): string {
+		return str_replace( $this->rsync_from, $this->rsync_to, $path );
 	}
 }
