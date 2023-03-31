@@ -16,26 +16,6 @@ namespace Mantle\Testing\Concerns;
  */
 trait Core_Shim {
 	/**
-	 * Fake 'set_up' method to allow for easier transition and some PHPUnit 8
-	 * compatibility.
-	 *
-	 * @return void
-	 */
-	public function set_up() {
-		// Do nothing.
-	}
-
-	/**
-	 * Fake 'tear_down' method to allow for easier transition and some PHPUnit 8
-	 * compatibility.
-	 *
-	 * @return void
-	 */
-	public function tear_down() {
-		// Do nothing.
-	}
-
-	/**
 	 * Allows tests to be skipped when Multisite is not in use.
 	 *
 	 * Use in conjunction with the ms-required group.
@@ -68,6 +48,7 @@ trait Core_Shim {
 		if ( ! is_wp_error( $response ) ) {
 			return;
 		}
+
 		if ( 'connect() timed out!' === $response->get_error_message() ) {
 			$this->markTestSkipped( 'HTTP timeout' );
 		}
