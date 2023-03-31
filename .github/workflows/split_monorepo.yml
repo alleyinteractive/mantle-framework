@@ -5,7 +5,7 @@ on:
     branches:
       - main
     tags:
-      - '*'
+      - 'v*.*.*'
 
 jobs:
   provide_packages_json:
@@ -25,7 +25,7 @@ jobs:
       # get package json list
       -
         id: output_data
-        run: echo "::set-output name=matrix::$(vendor/bin/monorepo-builder packages-json)"
+        run: echo "matrix=$(vendor/bin/monorepo-builder packages-json)" >> $GITHUB_OUTPUT
 
     # this step is needed, so the output gets to the next defined job
     outputs:
@@ -48,7 +48,7 @@ jobs:
         if: "!startsWith(github.ref, 'refs/tags/')"
         # Uses an action in the root directory
         name: Monorepo Split of ${{ matrix.package }}
-        uses: symplify/monorepo-split-github-action@2.2
+        uses: symplify/monorepo-split-github-action@2.3
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         with:
@@ -65,7 +65,7 @@ jobs:
         if: "startsWith(github.ref, 'refs/tags/')"
         # Uses an action in the root directory
         name: Monorepo Tagged Split of ${{ matrix.package }}
-        uses: symplify/monorepo-split-github-action@2.2
+        uses: symplify/monorepo-split-github-action@2.3
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         with:
