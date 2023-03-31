@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v0.10.6 - 2023-03-31
+
+### Changed
+
+- Set better defaults for registering meta.
+- Improving rsyncing and phpunit path detection during unit tests.
+- Introduce a WP_UnitTestCase class and a core shim to the testing framework.
+- Improve reporting of stray HTTP requests during unit tests.
+- Allow json to be dumped from the testing response.
+
+### Fixed
+
+- Make `wp_insert_post` return `WP_Error`.
+- Fix an error with the trace not passing through.
+- Fix `get_facade_accessor` signature.
+
 ## v0.10.5 - 2023-02-22
 
 ### Fixed
