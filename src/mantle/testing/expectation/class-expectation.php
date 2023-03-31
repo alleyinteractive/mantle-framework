@@ -45,11 +45,11 @@ class Expectation {
 	protected $times;
 
 	/**
-	 * Return value for the action
+	 * Return value comparison callback.
 	 *
-	 * @var mixed
+	 * @var callable
 	 */
-	protected $return_value = '_undefined_';
+	protected $return_value_callback;
 
 	/**
 	 * Record of the start value of the hook
@@ -167,16 +167,14 @@ class Expectation {
 			}
 
 			// Compare the return value of the hook.
-			if ( '_undefined_' !== $this->return_value ) {
+			if ( isset( $this->return_value_callback ) ) {
 				foreach ( $this->record_stop as $record ) {
-					PHPUnit::assertSame(
-						[ $this->return_value ],
-						$record,
+					PHPUnit::assertTrue(
+						call_user_func_array( $this->return_value_callback, $record ),
 						sprintf(
-							'Failed asserting that hook [%s] return value %s is identical to %s.',
+							'Failed asserting that hook\'s [%s] return value %s matches the expected return value.',
 							$this->hook,
 							$exporter->export( $record ),
-							$exporter->export( $this->return_value )
 						)
 					);
 				}
@@ -232,7 +230,7 @@ class Expectation {
 	 * @param int $times Number of times.
 	 * @return static
 	 */
-	public function times( int $times ) {
+	public function times( int $times ): static {
 		$this->times = $times;
 		return $this;
 	}
@@ -243,7 +241,7 @@ class Expectation {
 	 * @param mixed ...$args Arguments.
 	 * @return static
 	 */
-	public function with( ...$args ) {
+	public function with( ...$args ): static {
 		$this->args = $args;
 		return $this;
 	}
@@ -253,7 +251,7 @@ class Expectation {
 	 *
 	 * @return static
 	 */
-	public function withAnyArgs() {
+	public function withAnyArgs(): static {
 		$this->args = null;
 		return $this;
 	}
@@ -264,9 +262,10 @@ class Expectation {
 	 * @param mixed $value Return value.
 	 * @return static
 	 */
-	public function andReturn( $value ) {
-		$this->return_value = $value;
-		return $this;
+	public function andReturn( mixed $value ): static {
+		return $this->returnComparison(
+			fn ( $return_value ) => $return_value === $value
+		);
 	}
 
 	/**
@@ -274,7 +273,7 @@ class Expectation {
 	 *
 	 * @return static
 	 */
-	public function andReturnNull() {
+	public function andReturnNull(): static {
 		return $this->andReturn( null );
 	}
 
@@ -283,7 +282,7 @@ class Expectation {
 	 *
 	 * @return static
 	 */
-	public function andReturnFalse() {
+	public function andReturnFalse(): static {
 		return $this->andReturn( false );
 	}
 
@@ -292,7 +291,91 @@ class Expectation {
 	 *
 	 * @return static
 	 */
-	public function andReturnTrue() {
+	public function andReturnTrue(): static {
 		return $this->andReturn( true );
+	}
+
+	/**
+	 * Specify that the filter returns a truthy value.
+	 *
+	 * @return static
+	 */
+	public function andReturnTruthy(): static {
+		return $this->returnComparison( fn ( $value ) => ! ! $value );
+	}
+
+	/**
+	 * Specify that the filter returns a falsy value.
+	 *
+	 * @return static
+	 */
+	public function andReturnFalsy(): static {
+		return $this->returnComparison( fn ( $value ) => ! $value );
+	}
+
+	/**
+	 * Specify that the filter returns an empty value.
+	 *
+	 * @return static
+	 */
+	public function andReturnEmpty(): static {
+		return $this->returnComparison( fn ( $value ) => empty( $value ) );
+	}
+
+	/**
+	 * Specify that the filter returns a non-empty value.
+	 *
+	 * @return static
+	 */
+	public function andReturnNotEmpty(): static {
+		return $this->returnComparison( fn ( $value ) => ! empty( $value ) );
+	}
+
+	/**
+	 * Specify that the filter returns an array value.
+	 *
+	 * @return static
+	 */
+	public function andReturnArray(): static {
+		return $this->returnComparison( fn ( $value ) => is_array( $value ) );
+	}
+
+	/**
+	 * Specify that the filter returns an instance of a class.
+	 *
+	 * @param string $class Class name.
+	 * @return static
+	 */
+	public function andReturnInstanceOf( string $class ): static {
+		return $this->returnComparison( fn ( $value ) => $value instanceof $class );
+	}
+
+	/**
+	 * Specify that the filter returns a string value.
+	 *
+	 * @return static
+	 */
+	public function andReturnString(): static {
+		return $this->returnComparison( fn ( $value ) => is_string( $value ) );
+	}
+
+	/**
+	 * Specify that the filter returns an integer value.
+	 *
+	 * @return static
+	 */
+	public function andReturnInteger(): static {
+		return $this->returnComparison( fn ( $value ) => is_int( $value ) );
+	}
+
+	/**
+	 * Specify the return comparison callback for the filter.
+	 *
+	 * @param callable $callback Callback.
+	 * @return static
+	 */
+	protected function returnComparison( callable $callback ): static {
+		$this->return_value_callback = $callback;
+		return $this;
 	}
 }

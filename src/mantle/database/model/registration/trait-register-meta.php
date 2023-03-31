@@ -10,6 +10,8 @@ namespace Mantle\Database\Model\Registration;
 
 use Mantle\Database\Model;
 
+use function Mantle\Support\Helpers\event;
+
 /**
  * Model Trait to register meta for a model.
  */
@@ -54,9 +56,20 @@ trait Register_Meta {
 	 *              but will not add to the global registry.
 	 */
 	public static function register_meta( string $meta_key, array $args = [] ): bool {
-		if ( ! isset( $args['object_subtype'] ) ) {
-			$args['object_subtype'] = static::get_object_name();
-		}
+		$args = array_merge(
+			event(
+				'mantle_register_meta_default_args',
+				[
+					[
+						'object_subtype' => static::get_object_name(),
+						'show_in_rest'   => true,
+						'single'         => true,
+						'type'           => 'string',
+					],
+				],
+			),
+			$args,
+		);
 
 		return register_meta( static::get_object_type(), $meta_key, $args );
 	}
