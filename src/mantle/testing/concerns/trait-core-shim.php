@@ -1,6 +1,6 @@
 <?php
 /**
- * Asset_Assertions trait file
+ * Core_Shim trait file
  *
  * phpcs:disable WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
  *
