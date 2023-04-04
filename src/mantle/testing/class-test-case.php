@@ -15,6 +15,7 @@ use Mantle\Framework\Alias_Loader;
 use Mantle\Support\Collection;
 use Mantle\Testing\Concerns\Admin_Screen;
 use Mantle\Testing\Concerns\Assertions;
+use Mantle\Testing\Concerns\Core_Shim;
 use Mantle\Testing\Concerns\Deprecations;
 use Mantle\Testing\Concerns\Hooks;
 use Mantle\Testing\Concerns\Incorrect_Usage;
@@ -41,6 +42,7 @@ use function Mantle\Support\Helpers\collect;
  */
 abstract class Test_Case extends BaseTestCase {
 	use Assertions,
+		Core_Shim,
 		Deprecations,
 		Hooks,
 		Incorrect_Usage,
@@ -151,7 +153,7 @@ abstract class Test_Case extends BaseTestCase {
 
 		$this->hooks_set_up();
 
-		static::clean_up_global_scope();
+		$this->clean_up_global_scope();
 
 		// Boot traits on the test case.
 		static::get_test_case_traits()
