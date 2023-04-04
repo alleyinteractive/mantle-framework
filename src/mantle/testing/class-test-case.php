@@ -153,7 +153,7 @@ abstract class Test_Case extends BaseTestCase {
 
 		$this->hooks_set_up();
 
-		static::clean_up_global_scope();
+		$this->clean_up_global_scope();
 
 		// Boot traits on the test case.
 		static::get_test_case_traits()
