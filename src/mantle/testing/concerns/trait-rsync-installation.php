@@ -63,7 +63,6 @@ trait Rsync_Installation {
 		'.git',
 		'.npm',
 		'.phpcs',
-		'.phpcs',
 		'.turbo',
 		'node_modules',
 	];
