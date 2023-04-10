@@ -204,6 +204,12 @@ class Test_Factory extends Framework_Test_Case {
 		$this->assertEquals( '_test_meta_value', get_post_meta( $post->ID, '_test_meta_key', true ) );
 	}
 
+	public function test_attachment_with_image() {
+		$attachment = static::factory()->attachment->with_image()->create();
+
+		$this->assertNotEmpty( wp_get_attachment_image_url( $attachment ) );
+	}
+
 	protected function shim_test( string $class_name, string $property ) {
 		$this->assertInstanceOf( $class_name, static::factory()->$property->create_and_get() );
 
