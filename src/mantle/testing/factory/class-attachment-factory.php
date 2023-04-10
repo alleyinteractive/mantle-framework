@@ -100,7 +100,6 @@ class Attachment_Factory extends Post_Factory {
 				$attachment = $next( $args );
 
 				$id = $attachment instanceof Model ? $attachment->id() : $attachment;
-				dd($id, $attachment);
 
 				update_attached_file( $id, $upload['file'] );
 				wp_update_attachment_metadata( $id, wp_generate_attachment_metadata( $id, $upload['file'] ) );
