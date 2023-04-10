@@ -42,7 +42,7 @@ class Model_Make_Command extends Stub_Generator_Command {
 	 *
 	 * @var string|array
 	 */
-	protected $signature = '{name} {--model_type=: post, term} {--registrable=false} {--object_name=} {--label_singular=} {--label_plural=}';
+	protected $signature = '{name} {--model_type=: post, term} {--registrable} {--object_name=} {--label_singular=} {--label_plural=}';
 
 	/**
 	 * Get the stub file for the generator.
