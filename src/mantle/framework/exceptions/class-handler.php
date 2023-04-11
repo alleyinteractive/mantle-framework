@@ -9,6 +9,7 @@ namespace Mantle\Framework\Exceptions;
 
 use Exception;
 use Mantle\Auth\Authentication_Error;
+use Mantle\Contracts\Application;
 use Mantle\Contracts\Container;
 use Mantle\Contracts\Exceptions\Handler as Contract;
 use Mantle\Database\Model\Model_Not_Found_Exception;
@@ -38,9 +39,9 @@ abstract class Handler implements Contract {
 	/**
 	 * The container implementation.
 	 *
-	 * @var Container
+	 * @var Application
 	 */
-	protected $container;
+	protected Application $container;
 
 	/**
 	 * A list of the exception types that are not reported.
@@ -65,9 +66,9 @@ abstract class Handler implements Contract {
 	/**
 	 * Create a new exception handler instance.
 	 *
-	 * @param Container $container
+	 * @param Application $container
 	 */
-	public function __construct( Container $container ) {
+	public function __construct( Application $container ) {
 		$this->container = $container;
 	}
 
@@ -167,7 +168,7 @@ abstract class Handler implements Contract {
 	 *
 	 * @param Request   $request Request object.
 	 * @param Throwable $e Exception thrown.
-	 * @return \Symfony\Component\HttpFoundation\Response
+	 * @return \Symfony\Component\HttpFoundation\Response|mixed
 	 * @throws \Throwable Thrown on catch.
 	 */
 	public function render( $request, Throwable $e ) {
@@ -222,7 +223,7 @@ abstract class Handler implements Contract {
 	 *
 	 * @param  \Mantle\Http\Request $request Request object.
 	 * @param  \Throwable           $e Exception thrown.
-	 * @return \Symfony\Component\HttpFoundation\Response
+	 * @return \Mantle\Http\Response
 	 */
 	protected function prepare_response( $request, Throwable $e ) {
 		if ( $e instanceof ResourceNotFoundException ) {
@@ -244,12 +245,12 @@ abstract class Handler implements Contract {
 	 * error will load `/views/error-500.php` that will fallback to '/views/error.php'
 	 * if that is not found.
 	 *
-	 * @param  \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface $e
+	 * @param  HttpException $e
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 *
 	 * @todo Check if the view exists.
 	 */
-	protected function render_http_exception( HttpExceptionInterface $e ) {
+	protected function render_http_exception( HttpException $e ) {
 		global $wp_query;
 
 		// Calling a view this early doesn't work well for WordPress.
@@ -258,6 +259,7 @@ abstract class Handler implements Contract {
 		}
 
 		$view = $this->get_http_exception_view( $e );
+
 		return Route::ensure_response(
 			response()->view(
 				$view[0],
@@ -310,8 +312,8 @@ abstract class Handler implements Contract {
 	protected function prepare_json_response( $request, Throwable | HttpException $e ): JsonResponse {
 		return new JsonResponse(
 			$this->convert_exception_to_array( $e ),
-			$this->is_http_exception( $e ) ? $e->getStatusCode() : 500,
-			$this->is_http_exception( $e ) ? $e->getHeaders() : []
+			$e instanceof HttpException ? $e->getStatusCode() : 500,
+			$e instanceof HttpException ? $e->getHeaders() : []
 		);
 	}
 

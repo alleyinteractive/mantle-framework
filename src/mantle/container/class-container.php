@@ -26,9 +26,9 @@ class Container implements ArrayAccess, Container_Contract {
 	/**
 	 * The current globally available container (if any).
 	 *
-	 * @var Container_Contract
+	 * @var Container_Contract|null
 	 */
-	protected static Container_Contract $instance;
+	protected static ?Container_Contract $instance;
 
 	/**
 	 * An array of the types that have been resolved.
@@ -1150,9 +1150,9 @@ class Container implements ArrayAccess, Container_Contract {
 	 * Set the shared instance of the container.
 	 *
 	 * @param  Container_Contract|null $container
-	 * @return Container_Contract|static
+	 * @return Container_Contract|null
 	 */
-	public static function set_instance( Container_Contract $container = null ): Container_Contract {
+	public static function set_instance( Container_Contract|null $container = null ): ?Container_Contract {
 		static::$instance = $container;
 
 		return static::$instance;
