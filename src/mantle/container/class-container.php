@@ -26,9 +26,9 @@ class Container implements ArrayAccess, Container_Contract {
 	/**
 	 * The current globally available container (if any).
 	 *
-	 * @var static
+	 * @var Container_Contract
 	 */
-	protected static $instance;
+	protected static Container_Contract $instance;
 
 	/**
 	 * An array of the types that have been resolved.
@@ -89,7 +89,7 @@ class Container implements ArrayAccess, Container_Contract {
 	/**
 	 * The stack of concretions currently being built.
 	 *
-	 * @var array[]
+	 * @var array
 	 */
 	protected $build_stack = [];
 
@@ -670,7 +670,7 @@ class Container implements ArrayAccess, Container_Contract {
 		 * spin through them and check each for contextual bindings as well.
 		 */
 		if ( empty( $this->abstract_aliases[ $abstract ] ) ) {
-			return;
+			return null;
 		}
 
 		foreach ( $this->abstract_aliases[ $abstract ] as $alias ) {
@@ -678,6 +678,8 @@ class Container implements ArrayAccess, Container_Contract {
 				return $binding;
 			}
 		}
+
+		return null;
 	}
 
 	/**
@@ -704,7 +706,7 @@ class Container implements ArrayAccess, Container_Contract {
 	/**
 	 * Instantiate a concrete instance of the given type.
 	 *
-	 * @param  string $concrete
+	 * @param  \Closure|string $concrete
 	 * @return mixed
 	 *
 	 * @throws Binding_Resolution_Exception Thrown on missing resolution.
@@ -727,7 +729,8 @@ class Container implements ArrayAccess, Container_Contract {
 			// an abstract type such as an Interface or Abstract Class and there is
 			// no binding registered for the abstractions so we need to bail out.
 		if ( ! $reflector->isInstantiable() ) {
-			return $this->not_instantiable( $concrete );
+			$this->not_instantiable( $concrete );
+			return;
 		}
 
 		$this->build_stack[] = $concrete;
@@ -1123,24 +1126,36 @@ class Container implements ArrayAccess, Container_Contract {
 	/**
 	 * Get the globally available instance of the container.
 	 *
-	 * @return static
+	 * @deprecated Use `get_instance()` instead.
+	 * @return Container_Contract
 	 */
 	public static function getInstance() {
-		if ( is_null( static::$instance ) ) {
-				static::$instance = new static();
+		return static::get_instance();
+	}
+
+	/**
+	 * Get the globally available instance of the container.
+	 *
+	 * @return Container_Contract
+	 */
+	public static function get_instance(): Container_Contract {
+		if ( ! isset( static::$instance ) ) {
+			static::$instance = new static();
 		}
 
-			return static::$instance;
+		return static::$instance;
 	}
 
 	/**
 	 * Set the shared instance of the container.
 	 *
-	 * @param  \Illuminate\Contracts\Container\Container|null $container
-	 * @return \Illuminate\Contracts\Container\Container|static
+	 * @param  Container_Contract|null $container
+	 * @return Container_Contract|static
 	 */
-	public static function set_instance( Container_Contract $container = null ) {
-		return static::$instance = $container;
+	public static function set_instance( Container_Contract $container = null ): Container_Contract {
+		static::$instance = $container;
+
+		return static::$instance;
 	}
 
 	/**
