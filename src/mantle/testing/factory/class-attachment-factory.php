@@ -119,7 +119,7 @@ class Attachment_Factory extends Post_Factory {
 	 *
 	 * @return int|\WP_Error The attachment ID on success. The value 0 or WP_Error on failure.
 	 */
-	public function create_upload_object( $file, $parent = 0 ) {
+	public function create_upload_object( $file, $parent = 0 ): int|\WP_Error {
 		return $this->with_image( $file, $parent )->create();
 	}
 
