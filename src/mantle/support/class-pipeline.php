@@ -23,9 +23,9 @@ class Pipeline implements PipelineContract {
 	/**
 	 * The container implementation.
 	 *
-	 * @var Container
+	 * @var Container|null
 	 */
-	protected $container;
+	protected ?Container $container;
 
 	/**
 	 * The object being passed through the pipeline.
@@ -72,7 +72,7 @@ class Pipeline implements PipelineContract {
 	/**
 	 * Set the array of pipes.
 	 *
-	 * @param  array|mixed $pipes
+	 * @param  array<callable>|null $pipes
 	 * @return static
 	 */
 	public function through( $pipes ) {
@@ -212,7 +212,7 @@ class Pipeline implements PipelineContract {
 	 * @throws RuntimeException Thrown on missing container instance.
 	 */
 	protected function get_container() {
-		if ( ! $this->container ) {
+		if ( ! isset( $this->container ) ) {
 			throw new RuntimeException( 'A container instance has not been passed to the Pipeline.' );
 		}
 

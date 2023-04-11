@@ -14,7 +14,7 @@ use Mantle\Support\Collection;
 use Mantle\Support\Traits\Macroable;
 use SimpleXMLElement;
 use WP_Error;
-use WP_HTTP_Cookie;
+use WP_Http_Cookie;
 
 use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\data_get;
@@ -73,8 +73,6 @@ class Response implements ArrayAccess {
 		if ( $response instanceof WP_Error ) {
 			return static::create_from_wp_error( $response );
 		}
-
-		throw new InvalidArgumentException( 'Unknown response type.' );
 	}
 
 	/**
@@ -302,7 +300,7 @@ class Response implements ArrayAccess {
 	 *
 	 * @param string $xpath Path to pass to `SimpleXMLElement::xpath()`, optional.
 	 * @param string $default Default value to return if the path does not exist.
-	 * @return SimpleXMLElement Returns a specific SimpleXMLElement if path is specified, otherwise the entire document.
+	 * @return SimpleXMLElement|string|null Returns a specific SimpleXMLElement if path is specified, otherwise the entire document.
 	 */
 	public function xml( string $xpath = null, $default = null ) {
 		if ( ! isset( $this->element ) ) {
@@ -343,7 +341,7 @@ class Response implements ArrayAccess {
 	/**
 	 * Retrieve the cookies from the response.
 	 *
-	 * @return WP_HTTP_Cookie[]
+	 * @return WP_Http_Cookie[]
 	 */
 	public function cookies(): array {
 		return $this->response['cookies'] ?? [];
@@ -353,9 +351,9 @@ class Response implements ArrayAccess {
 	 * Retrieve a specific cookie by name.
 	 *
 	 * @param string $name Cookie name.
-	 * @return WP_HTTP_Cookie
+	 * @return WP_Http_Cookie
 	 */
-	public function cookie( string $name ): ?WP_HTTP_Cookie {
+	public function cookie( string $name ): ?WP_Http_Cookie {
 		return collect( $this->cookies() )
 			->key_by( 'name' )
 			->get( $name );

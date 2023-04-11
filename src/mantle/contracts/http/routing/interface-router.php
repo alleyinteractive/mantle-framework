@@ -110,8 +110,8 @@ interface Router {
 	 * @param string $new_name New route name.
 	 * @return static
 	 *
-	 * @throws InvalidArgumentException Thrown when attempting to rename a route
+	 * @throws \InvalidArgumentException Thrown when attempting to rename a route
 	 *                                  a name that is already taken.
 	 */
-	public function rename_route( string $old_name, string $new_name );
+	public function rename_route( string $old_name, string $new_name ): static;
 }

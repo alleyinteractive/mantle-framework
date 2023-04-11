@@ -565,13 +565,13 @@ class Router implements Router_Contract {
 	 * @param string $new_name New route name.
 	 * @return static
 	 *
-	 * @throws InvalidArgumentException Thrown when attempting to rename a route
+	 * @throws \InvalidArgumentException Thrown when attempting to rename a route
 	 *                                  a name that is already taken.
 	 */
-	public function rename_route( string $old_name, string $new_name ) {
+	public function rename_route( string $old_name, string $new_name ): static {
 		$old = $this->routes->get( $old_name );
 		if ( ! $old ) {
-			return;
+			return $this;
 		}
 
 		$new = $this->routes->get( $new_name );

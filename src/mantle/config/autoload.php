@@ -24,9 +24,9 @@ if ( ! function_exists( 'config' ) ) {
 	 */
 	function config( string $key = null, $default = null ) {
 		if ( is_null( $key ) ) {
-			return Application::getInstance()->make( 'config' );
+			return app( 'config' );
 		}
 
-		return Application::getInstance()->make( 'config' )->get( $key, $default );
+		return app( 'config' )->get( $key, $default );
 	}
 }
