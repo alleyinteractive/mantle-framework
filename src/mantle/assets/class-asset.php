@@ -49,15 +49,15 @@ class Asset {
 	/**
 	 * Constructor.
 	 *
-	 * @param string          $type        Asset type (script/style).
-	 * @param string          $handle      Asset handle.
-	 * @param string          $src         Script URL.
-	 * @param string[]|string $deps        Script dependencies.
-	 * @param array|string    $condition   Condition to load.
-	 * @param string          $load_method Load method.
-	 * @param string          $load_hook   Load hook.
-	 * @param string|null     $version     Script version.
-	 * @param bool            $infer_from_loader Infer the asset from the loader if the source is not provided.
+	 * @param string               $type        Asset type (script/style).
+	 * @param string               $handle      Asset handle.
+	 * @param string               $src         Asset URL.
+	 * @param array<string>        $deps        Asset dependencies.
+	 * @param array<string>|string $condition   Condition to load.
+	 * @param string               $load_method Load method.
+	 * @param string               $load_hook   Load hook.
+	 * @param string|null          $version     Asset version.
+	 * @param bool                 $infer_from_loader Infer the asset from the loader if the source is not provided.
 	 */
 	public function __construct(
 		protected string $type,

@@ -175,14 +175,14 @@ class Asset_Loader {
 	 * Retrieve the path to an asset when invoked.
 	 *
 	 * @param string $path Asset path.
-	 * @param string $manifest_directory Manifest directory, optional.
+	 * @param string $build_directory Build directory, optional.
 	 * @return string
 	 */
-	public function __invoke( string $path, ?string $manifest_directory = null ): string {
-		if ( $manifest_directory ) {
-			return ( new static( $manifest_directory ) )->url( $path );
+	public function __invoke( string $path, ?string $build_directory = null ): string {
+		if ( $build_directory ) {
+			return ( new static( $build_directory ) )->url( $path );
 		}
 
-		return $this->url( $path, $manifest_directory );
+		return $this->url( $path );
 	}
 }

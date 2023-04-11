@@ -1,0 +1,46 @@
+includes:
+  - vendor/szepeviktor/phpstan-wordpress/extension.neon
+
+parameters:
+	# Level 9 is the highest level
+	level: 5
+
+	paths:
+		# - src/mantle/application
+		- src/mantle/assets
+		- src/mantle/auth
+		# - src/mantle/blocks
+		- src/mantle/cache
+		# - src/mantle/config
+		# - src/mantle/console
+		# - src/mantle/container
+		# - src/mantle/contracts
+		# - src/mantle/database
+		# - src/mantle/events
+		# - src/mantle/facade
+		# - src/mantle/faker
+		# - src/mantle/featherkit
+		# - src/mantle/filesystem
+		# - src/mantle/framework
+		# - src/mantle/http
+		# - src/mantle/http-client
+		# - src/mantle/log
+		# - src/mantle/new-relic
+		# - src/mantle/query-monitor
+		# - src/mantle/queue
+		# - src/mantle/rest-api
+		# - src/mantle/scheduling
+		# - src/mantle/support
+		# - src/mantle/testing
+		# - src/mantle/testkit
+		# - src/mantle/view
+		- mantle.php
+
+	ignoreErrors:
+		- "#Unsafe usage of new static#"
+		- "#PHPDoc tag @param references unknown parameter#"
+#
+#    excludePaths:
+#        - ./*/*/FileToBeExcluded.php
+#
+#    checkMissingIterableValueType: false

@@ -24,9 +24,11 @@ class Array_Repository extends Repository implements Repository_Contract {
 	/**
 	 * Retrieve a value from cache.
 	 *
+	 * @template TCacheValue
+	 *
 	 * @param string $key Cache key.
-	 * @param mixed  $default Default value.
-	 * @return mixed
+	 * @param TCacheValue|(\Closure(): TCacheValue) $default Default value.
+	 * @return (TCacheValue is null ? mixed : TCacheValue)
 	 */
 	public function get( string $key, mixed $default = null ): mixed {
 		if ( ! isset( $this->storage[ $key ] ) ) {
@@ -66,7 +68,7 @@ class Array_Repository extends Repository implements Repository_Contract {
 	 * @param  \DateTimeInterface|\DateInterval|int|null $ttl
 	 * @return bool
 	 */
-	public function put( $key, $value, $ttl = null ) {
+	public function put( $key, $value, $ttl = null ): bool {
 		$this->storage[ $key ] = [
 			'expire_at' => Carbon::now()->addSeconds( $ttl ?: 0 )->getTimestamp(),
 			'value'     => $value,
@@ -105,7 +107,7 @@ class Array_Repository extends Repository implements Repository_Contract {
 	 * @param  string $key Cache key.
 	 * @return bool
 	 */
-	public function forget( $key ) {
+	public function forget( $key ): bool {
 		unset( $this->storage[ $key ] );
 		return true;
 	}

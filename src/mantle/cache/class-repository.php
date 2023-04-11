@@ -15,8 +15,39 @@ use function Mantle\Support\Helpers\collect;
 
 /**
  * Cache repository.
+ *
+ * This class contains some camelCase methods to match the PSR interface.
  */
 abstract class Repository {
+	/**
+	 * Retrieve a value from cache.
+	 *
+	 * @template TCacheValue
+	 *
+	 * @param string $key Cache key.
+	 * @param TCacheValue|(\Closure(): TCacheValue) $default Default value.
+	 * @return (TCacheValue is null ? mixed : TCacheValue)
+	 */
+	abstract public function get( string $key, mixed $default = null ): mixed;
+
+	/**
+	 * Remove an item from the cache.
+	 *
+	 * @param  string $key Cache key.
+	 * @return bool
+	 */
+	abstract public function forget( $key ): bool;
+
+	/**
+	 * Store an item in the cache.
+	 *
+	 * @param  string                                    $key
+	 * @param  mixed                                     $value
+	 * @param  \DateTimeInterface|\DateInterval|int|null $ttl
+	 * @return bool
+	 */
+	abstract public function put( $key, $value, $ttl = null ): bool;
+
 	/**
 	 * Retrieve an item from the cache and delete it.
 	 *
@@ -58,7 +89,7 @@ abstract class Repository {
 	 * @param string                 $key Cache key.
 	 * @param mixed                  $value Item value.
 	 * @param null|int|\DateInterval $ttl TTL.
-	 * @return mixed
+	 * @return bool
 	 */
 	public function set( string $key, mixed $value, null|int|\DateInterval $ttl = null ): bool {
 		return $this->put( $key, $value, $ttl );
@@ -68,7 +99,7 @@ abstract class Repository {
 	 * Delete a cache key.
 	 *
 	 * @param string $key Cache key.
-	 * @return mixed
+	 * @return bool
 	 */
 	public function delete( string $key ): bool {
 		return $this->forget( $key );
@@ -109,7 +140,7 @@ abstract class Repository {
 	/**
 	 * Delete multiple cache keys.
 	 *
-	 * @param string[]|string $keys Cache keys.
+	 * @param string[] $keys Cache keys.
 	 * @return bool
 	 */
 	public function deleteMultiple( iterable $keys ): bool {

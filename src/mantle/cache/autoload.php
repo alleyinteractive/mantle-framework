@@ -15,7 +15,7 @@ if ( ! function_exists( 'cache' ) ) {
 	 *
 	 * If an array is passed, we'll assume you want to put to the cache.
 	 *
-	 * @param  dynamic  key|key,default|data,expiration|null
+	 * @param  mixed $args Arguments.
 	 * @return mixed|\Mantle\Framework\Cache\Cache_Manager
 	 *
 	 * @throws \Exception
