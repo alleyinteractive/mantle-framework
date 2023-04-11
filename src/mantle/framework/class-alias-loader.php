@@ -105,7 +105,7 @@ class Alias_Loader {
 	 * @return void
 	 */
 	protected function prepend_to_loader_stack() {
-		spl_autoload_register( [ $this, 'load' ], true, true );
+		spl_autoload_register( [ $this, 'load' ], true, true ); // @phpstan-ignore-line Parameter #1 $callback of function spl_autoload_register
 	}
 
 	/**

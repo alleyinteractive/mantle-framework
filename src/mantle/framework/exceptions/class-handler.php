@@ -176,7 +176,7 @@ abstract class Handler implements Contract {
 			$response = $e->render( $request );
 
 			if ( $response ) {
-				return Route::ensure_response( $request, $response );
+				return Route::ensure_response( $response );
 			}
 		}
 

@@ -34,7 +34,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	/**
 	 * Router instance.
 	 *
-	 * @var \Mantle\Http\Routing\Router
+	 * @var Router
 	 */
 	protected $router;
 
@@ -238,7 +238,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 *
 	 * @param Request   $request Request instance.
 	 * @param Throwable $e
-	 * @return \Symfony\Component\HttpFoundation\Response
+	 * @return \Symfony\Component\HttpFoundation\Response|mixed
 	 */
 	protected function render_exception( $request, Throwable $e ) {
 		return $this->app[ Exception_Handler::class ]->render( $request, $e );

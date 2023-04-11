@@ -30,13 +30,6 @@ class Config_Clear_Command extends Command {
 	protected $description = 'Delete the local Mantle cache for the configuration.';
 
 	/**
-	 * Application instance.
-	 *
-	 * @var Application
-	 */
-	protected $app;
-
-	/**
 	 * Filesystem instance.
 	 *
 	 * @var Filesystem

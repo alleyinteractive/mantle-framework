@@ -102,6 +102,13 @@ interface Application extends Container {
 	public function get_config_path(): string;
 
 	/**
+	 * Determine if the application has been bootstrapped before.
+	 *
+	 * @return bool
+	 */
+	public function has_been_bootstrapped(): bool;
+
+	/**
 	 * Get the Application's Environment
 	 *
 	 * @return string

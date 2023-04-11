@@ -37,7 +37,7 @@ class Hook_Usage_Command extends Command {
 	/**
 	 * Command signature.
 	 *
-	 * @var array
+	 * @var string
 	 */
 	protected $signature = 'hook-usage {hook} {--search-path=} {--format=}';
 
@@ -66,7 +66,7 @@ class Hook_Usage_Command extends Command {
 	public function handle() {
 		$usage = $this->get_usage();
 
-		if ( empty( $usage ) ) {
+		if ( $usage->is_empty() ) {
 			$this->error( 'No usage found.' );
 			return Command::FAILURE;
 		}
@@ -155,7 +155,7 @@ class Hook_Usage_Command extends Command {
 					return true;
 				}
 
-				if ( $iterator->hasChildren() || ! $current->isFile() || 'php' !== $current->getExtension() ) {
+				if ( ! $current->isFile() || 'php' !== $current->getExtension() ) {
 					return false;
 				}
 

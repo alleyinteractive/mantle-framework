@@ -94,6 +94,16 @@ interface Container extends ContainerInterface {
 	public function flush();
 
 	/**
+	 * Call the given Closure / class@method and inject its dependencies.
+	 *
+	 * @param  callable|string  $callback
+	 * @param  array  $parameters
+	 * @param  string|null  $defaultMethod
+	 * @return mixed
+	 */
+	public function call( $callback, array $parameters = [], $defaultMethod = null );
+
+	/**
 	 * Resolve the given type from the container.
 	 *
 	 * @param string $abstract Abstract name.

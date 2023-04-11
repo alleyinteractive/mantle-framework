@@ -25,7 +25,7 @@ class Error_Service_Provider extends Service_Provider implements Isolated_Servic
 	 * Register any application services.
 	 */
 	public function register() {
-		if ( ! $this->app->config->get( 'app.debug', false ) ) {
+		if ( ! $this->app->make( 'config' )->get( 'app.debug', false ) ) {
 			return;
 		}
 

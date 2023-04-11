@@ -10,7 +10,7 @@ namespace Mantle\Facade;
 /**
  * Event Facade
  *
- * @method static void listen(string|array $events, \Closure|string $listener)
+ * @method static void listen(string|array $events, \Closure|string $listener, int $priority = 10)
  * @method static mixed dispatch(string|object $event, array $payload = [null])
  * @method static bool has_listeners(string $event_name)
  * @method static void action(string $action, callable $callback)

@@ -114,4 +114,22 @@ interface Router {
 	 *                                  a name that is already taken.
 	 */
 	public function rename_route( string $old_name, string $new_name ): static;
+
+	/**
+	 * Register a group of middleware.
+	 *
+	 * @param  string $name
+	 * @param  array  $middleware
+	 * @return static
+	 */
+	public function middleware_group( $name, array $middleware );
+
+	/**
+	 * Register a short-hand name for a middleware.
+	 *
+	 * @param  string $name
+	 * @param  string $class
+	 * @return static
+	 */
+	public function alias_middleware( $name, $class );
 }

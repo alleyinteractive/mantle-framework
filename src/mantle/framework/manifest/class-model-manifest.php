@@ -24,7 +24,7 @@ class Model_Manifest {
 	/**
 	 * Manifest from the disk.
 	 *
-	 * @var array
+	 * @var array|null
 	 */
 	protected $manifest;
 
