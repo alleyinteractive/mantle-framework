@@ -8,6 +8,7 @@
 namespace Mantle\Console;
 
 use InvalidArgumentException;
+use Mantle\Application\Application;
 use Mantle\Container\Container;
 use Mantle\Support\Traits\Macroable;
 use Symfony\Component\Console\Command\Command as Symfony_Command;
@@ -61,9 +62,9 @@ abstract class Command extends Symfony_Command {
 	/**
 	 * Container instance.
 	 *
-	 * @var Container
+	 * @var Application
 	 */
-	protected Container $container;
+	protected Application $container;
 
 	/**
 	 * Constructor.

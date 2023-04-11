@@ -30,7 +30,7 @@ class Alias_Loader {
 	/**
 	 * The singleton instance of the loader.
 	 *
-	 * @var static
+	 * @var static|null
 	 */
 	protected static $instance;
 
@@ -72,6 +72,8 @@ class Alias_Loader {
 		if ( isset( $this->aliases[ $alias ] ) ) {
 			return class_alias( $this->aliases[ $alias ], $alias );
 		}
+
+		return null;
 	}
 
 	/**
@@ -146,7 +148,7 @@ class Alias_Loader {
 	/**
 	 * Set the value of the singleton alias loader.
 	 *
-	 * @param Alias_Loader $loader Load to set.
+	 * @param static $loader Load to set.
 	 */
 	public static function set_instance( $loader ) {
 		static::$instance = $loader;

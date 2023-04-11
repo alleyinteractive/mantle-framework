@@ -21,7 +21,7 @@ parameters:
 		# - src/mantle/faker
 		# - src/mantle/featherkit
 		# - src/mantle/filesystem
-		# - src/mantle/framework
+		- src/mantle/framework
 		# - src/mantle/http
 		- src/mantle/http-client
 		# - src/mantle/log
