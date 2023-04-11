@@ -19,11 +19,9 @@ if ( ! function_exists( 'app' ) ) {
 	/**
 	 * Get the available container instance.
 	 *
-	 * @template TInstanceType
-	 *
-	 * @param class-string<TInstanceType>|string|null $abstract Abstract to resolve.
+	 * @param string|null $abstract Abstract to resolve.
 	 * @param array<mixed> $parameters Parameters.
-	 * @return (TInstanceType is null ? \Mantle\Contracts\Application : TInstanceType)
+	 * @return mixed|Application
 	 */
 	function app( string $abstract = null, array $parameters = [] ) {
 		if ( empty( $abstract ) ) {

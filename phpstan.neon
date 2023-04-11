@@ -6,7 +6,7 @@ parameters:
 	level: 5
 
 	paths:
-		# - src/mantle/application
+		- src/mantle/application
 		- src/mantle/assets
 		- src/mantle/auth
 		# - src/mantle/blocks
