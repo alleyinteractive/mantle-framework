@@ -8,6 +8,7 @@
 namespace Mantle\Testkit;
 
 use Mantle\Contracts\Exceptions\Handler as Exceptions_Handler;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
@@ -45,5 +46,16 @@ class Exception_Handler implements Exceptions_Handler {
 	 */
 	public function render( $request, Throwable $e ) {
 		return new Response();
+	}
+
+	/**
+	 * Render an exception for the console.
+	 *
+	 * @param OutputInterface $output
+	 * @param Throwable       $e
+	 * @return void
+	 */
+	public function render_for_console( OutputInterface $output, Throwable $e ) {
+		$output->writeln( "<error>Exception: {$e->getMessage()}</error>" );
 	}
 }

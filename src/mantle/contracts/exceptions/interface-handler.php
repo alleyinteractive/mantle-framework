@@ -7,6 +7,7 @@
 
 namespace Mantle\Contracts\Exceptions;
 
+use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
 
 /**
@@ -35,9 +36,18 @@ interface Handler {
 	 *
 	 * @param \Mantle\Http\Request $request
 	 * @param \Throwable           $e Exception thrown.
-	 * @return \Symfony\Component\HttpFoundation\Response
+	 * @return mixed
 	 *
 	 * @throws Throwable Thrown on error rendering.
 	 */
 	public function render( $request, Throwable $e );
+
+	/**
+	 * Render an exception for the console.
+	 *
+	 * @param OutputInterface $output
+	 * @param Throwable       $e
+	 * @return void
+	 */
+	public function render_for_console( OutputInterface $output, Throwable $e );
 }

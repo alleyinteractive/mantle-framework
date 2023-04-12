@@ -10,13 +10,13 @@ namespace Mantle\Framework\Exceptions;
 use Exception;
 use Mantle\Auth\Authentication_Error;
 use Mantle\Contracts\Application;
-use Mantle\Contracts\Container;
 use Mantle\Contracts\Exceptions\Handler as Contract;
 use Mantle\Database\Model\Model_Not_Found_Exception;
 use Mantle\Http\Request;
 use Mantle\Http\Routing\Route;
 use Mantle\Support\Arr;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,6 +33,8 @@ use function Mantle\Support\Helpers\collect;
  *
  * Provides logging back to the logging service provider for exceptions thrown and
  * graceful handling of errors.
+ *
+ * @todo Add testing to improve coverage.
  */
 abstract class Handler implements Contract {
 
@@ -164,11 +166,11 @@ abstract class Handler implements Contract {
 	}
 
 	/**
-	 * Render an exception into an HTTP response.
+	 * Render an exception into an HTTP response for the web.
 	 *
 	 * @param Request   $request Request object.
 	 * @param Throwable $e Exception thrown.
-	 * @return \Symfony\Component\HttpFoundation\Response|mixed
+	 * @return Response|mixed
 	 * @throws \Throwable Thrown on catch.
 	 */
 	public function render( $request, Throwable $e ) {
@@ -179,12 +181,6 @@ abstract class Handler implements Contract {
 			if ( $response ) {
 				return Route::ensure_response( $response );
 			}
-		}
-
-		// Display the entire exception if the app is running in console mode.
-		if ( method_exists( $this->container, 'is_running_in_console' ) && $this->container->is_running_in_console() ) {
-			dump( $e );
-			return '';
 		}
 
 		/**
@@ -202,6 +198,26 @@ abstract class Handler implements Contract {
 		return $request->expects_json()
 			? $this->prepare_json_response( $request, $e )
 			: $this->prepare_response( $request, $e );
+	}
+
+	/**
+	 * Render an exception to the console.
+	 *
+	 * @param OutputInterface $output
+	 * @param Throwable       $e
+	 * @return void
+	 *
+	 * @throws Throwable Thrown in debug mode to trigger Whoops.
+	 */
+	public function render_for_console( OutputInterface $output, Throwable $e ) {
+		if ( config( 'app.debug' ) ) {
+			// Use Whoops to render the exception if we're in debug mode.
+			( new \NunoMaduro\Collision\Provider() )->register();
+
+			throw $e;
+		}
+
+		( new \Mantle\Console\Application( $this->container ) )->render_throwable( $e, $output );
 	}
 
 	/**
@@ -223,9 +239,9 @@ abstract class Handler implements Contract {
 	 *
 	 * @param  \Mantle\Http\Request $request Request object.
 	 * @param  \Throwable           $e Exception thrown.
-	 * @return \Mantle\Http\Response
+	 * @return Response
 	 */
-	protected function prepare_response( $request, Throwable $e ) {
+	protected function prepare_response( $request, Throwable $e ): Response {
 		if ( $e instanceof ResourceNotFoundException ) {
 			$e = new NotFoundHttpException( $e->getMessage(), $e, 404 );
 		} elseif ( ! $this->is_http_exception( $e ) ) {
@@ -246,11 +262,11 @@ abstract class Handler implements Contract {
 	 * if that is not found.
 	 *
 	 * @param  HttpException $e
-	 * @return \Symfony\Component\HttpFoundation\Response
+	 * @return Response
 	 *
 	 * @todo Check if the view exists.
 	 */
-	protected function render_http_exception( HttpException $e ) {
+	protected function render_http_exception( Throwable $e ): Response {
 		global $wp_query;
 
 		// Calling a view this early doesn't work well for WordPress.
@@ -260,16 +276,14 @@ abstract class Handler implements Contract {
 
 		$view = $this->get_http_exception_view( $e );
 
-		return Route::ensure_response(
-			response()->view(
-				$view[0],
-				$view[1],
-				[
-					'code'      => $e->getStatusCode(),
-					'exception' => $e,
-				],
-				$e->getStatusCode(),
-			) ?: 'An error has occurred.'
+		return response()->view(
+			$view[0],
+			$view[1],
+			[
+				'code'      => $e->getStatusCode(),
+				'exception' => $e,
+			],
+			$e->getStatusCode(),
 		);
 	}
 
@@ -277,20 +291,20 @@ abstract class Handler implements Contract {
 	 * Get the view used to render HTTP exceptions.
 	 *
 	 * @param \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface $e Exception thrown.
-	 * @return array
+	 * @return array{0: string, 1: string}
 	 */
 	protected function get_http_exception_view( HttpExceptionInterface $e ) {
-		return [ 'error/error', $e->getStatusCode() ];
+		return [ 'error/error', (string) $e->getStatusCode() ];
 	}
 
 	/**
 	 * Map the given exception into an response.
 	 *
-	 * @param  \Symfony\Component\HttpFoundation\Response $response
-	 * @param  \Throwable                                 $e
-	 * @return \Mantle\Http\Response
+	 * @param  Response   $response
+	 * @param  \Throwable $e
+	 * @return Response
 	 */
-	protected function to_mantle_response( $response, Throwable $e ) {
+	protected function to_mantle_response( Response $response, Throwable $e ) {
 		if ( ! $response instanceof RedirectResponse ) {
 			$response = new Response(
 				$response->getContent(),
@@ -343,7 +357,7 @@ abstract class Handler implements Contract {
 	 * Determine if the given exception is an HTTP exception.
 	 *
 	 * @param Throwable $e Exception thrown.
-	 * @return bool
+	 * @return ($e is HttpException ? true : false)
 	 */
 	protected function is_http_exception( Throwable $e ): bool {
 		return $e instanceof HttpException;
