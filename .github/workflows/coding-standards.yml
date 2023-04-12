@@ -11,7 +11,7 @@ on:
 jobs:
   coding-standards:
     uses: alleyinteractive/.github/.github/workflows/php-coding-standards.yml@main
-  coding-quality:
+  code-quality:
     uses: alleyinteractive/.github/.github/workflows/php-code-quality.yml@main
     with:
       command: "validate-monorepo"
