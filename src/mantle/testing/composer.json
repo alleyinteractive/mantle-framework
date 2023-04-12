@@ -6,18 +6,18 @@
     "require": {
         "php": "^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
-        "mantle-framework/contracts": "^0.10",
-        "mantle-framework/database": "^0.10",
-        "mantle-framework/faker": "^0.10",
-        "mantle-framework/http-client": "^0.10",
-        "mantle-framework/http": "^0.10",
-        "mantle-framework/support": "^0.10",
+        "mantle-framework/contracts": "^0.11",
+        "mantle-framework/database": "^0.11",
+        "mantle-framework/faker": "^0.11",
+        "mantle-framework/http-client": "^0.11",
+        "mantle-framework/http": "^0.11",
+        "mantle-framework/support": "^0.11",
         "nunomaduro/collision": "^5.0",
         "nunomaduro/termwind": "^1.14"
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "0.10-dev"
+            "dev-main": "0.11-dev"
         },
         "wordpress-autoloader": {
             "autoload": {

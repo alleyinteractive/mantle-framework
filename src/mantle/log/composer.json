@@ -5,14 +5,14 @@
     "require": {
         "php": "^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
-        "mantle-framework/contracts": "^0.10",
-        "mantle-framework/support": "^0.10",
+        "mantle-framework/contracts": "^0.11",
+        "mantle-framework/support": "^0.11",
         "monolog/monolog": "^2.7",
         "psr/log": "^1.0.1 || ^2.0 || ^3.0"
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "0.10-dev"
+            "dev-main": "0.11-dev"
         },
         "wordpress-autoloader": {
             "autoload": {
