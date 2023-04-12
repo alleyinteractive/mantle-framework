@@ -26,7 +26,7 @@ class Array_Repository extends Repository implements Repository_Contract {
 	 *
 	 * @template TCacheValue
 	 *
-	 * @param string $key Cache key.
+	 * @param string                                $key Cache key.
 	 * @param TCacheValue|(\Closure(): TCacheValue) $default Default value.
 	 * @return (TCacheValue is null ? mixed : TCacheValue)
 	 */

@@ -96,12 +96,12 @@ interface Container extends ContainerInterface {
 	/**
 	 * Call the given Closure / class@method and inject its dependencies.
 	 *
-	 * @param  callable|string  $callback
-	 * @param  array  $parameters
-	 * @param  string|null  $defaultMethod
+	 * @param  callable|string $callback
+	 * @param  array           $parameters
+	 * @param  string|null     $default_method
 	 * @return mixed
 	 */
-	public function call( $callback, array $parameters = [], $defaultMethod = null );
+	public function call( $callback, array $parameters = [], $default_method = null );
 
 	/**
 	 * Resolve the given type from the container.

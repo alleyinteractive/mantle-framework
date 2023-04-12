@@ -22,7 +22,7 @@ interface Repository extends CacheInterface {
 	 *
 	 * @template TCacheValue
 	 *
-	 * @param string $key Cache key.
+	 * @param string                                $key Cache key.
 	 * @param TCacheValue|(\Closure(): TCacheValue) $default Default value.
 	 * @return (TCacheValue is null ? mixed : TCacheValue)
 	 */
@@ -33,7 +33,7 @@ interface Repository extends CacheInterface {
 	 *
 	 * @template TCacheValue
 	 *
-	 * @param  string $key
+	 * @param  string                                $key
 	 * @param TCacheValue|(\Closure(): TCacheValue) $default Default value.
 	 * @return (TCacheValue is null ? mixed : TCacheValue)
 	 */

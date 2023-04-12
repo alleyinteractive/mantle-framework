@@ -40,6 +40,13 @@ abstract class Generator_Command extends Command {
 	protected $prefix = 'class-';
 
 	/**
+	 * String replacements.
+	 *
+	 * @var String_Replacements
+	 */
+	protected String_Replacements $replacements;
+
+	/**
 	 * Retrieve the generated class contents.
 	 *
 	 * @param string $name Class name.
@@ -66,7 +73,9 @@ abstract class Generator_Command extends Command {
 		$name = $this->argument( 'name' );
 
 		if ( empty( $name ) ) {
-			$this->error( 'Missing class name.', true );
+			$this->error( 'Missing class name.' );
+
+			return Command::FAILURE;
 		}
 
 		$path = $this->get_folder_path( $name );
@@ -81,7 +90,7 @@ abstract class Generator_Command extends Command {
 		$file_path = $this->get_file_path( $name );
 
 		if ( file_exists( $file_path ) ) {
-			$this->error( ( $this->type ?: ' File' ) . ' already exists: ' . $file_path, true );
+			$this->error( ( $this->type ?: ' File' ) . ' already exists: ' . $file_path );
 
 			return Command::FAILURE;
 		}
@@ -94,7 +103,7 @@ abstract class Generator_Command extends Command {
 		} catch ( Throwable $e ) {
 			dump( $e );
 
-			$this->error( 'There was an error generating: ' . $e->getMessage(), true );
+			$this->error( 'There was an error generating: ' . $e->getMessage() );
 
 			return Command::FAILURE;
 		}
@@ -128,7 +137,7 @@ abstract class Generator_Command extends Command {
 		$name = explode( '\\', $name );
 		array_pop( $name );
 
-		$parts[] = (string) $this->container->config->get( 'app.namespace', 'App' );
+		$parts[] = (string) $this->container->make( 'config' )->get( 'app.namespace', 'App' );
 		$parts[] = $this->type;
 
 		if ( ! empty( $name ) ) {

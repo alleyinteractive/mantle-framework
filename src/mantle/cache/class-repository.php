@@ -24,7 +24,7 @@ abstract class Repository {
 	 *
 	 * @template TCacheValue
 	 *
-	 * @param string $key Cache key.
+	 * @param string                                $key Cache key.
 	 * @param TCacheValue|(\Closure(): TCacheValue) $default Default value.
 	 * @return (TCacheValue is null ? mixed : TCacheValue)
 	 */
@@ -140,7 +140,7 @@ abstract class Repository {
 	/**
 	 * Delete multiple cache keys.
 	 *
-	 * @param string[] $keys Cache keys.
+	 * @param iterable<string> $keys Cache keys.
 	 * @return bool
 	 */
 	public function deleteMultiple( iterable $keys ): bool {

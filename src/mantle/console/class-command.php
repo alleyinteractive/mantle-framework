@@ -190,7 +190,7 @@ abstract class Command extends Symfony_Command {
 	/**
 	 * Retrieve the application container.
 	 *
-	 * @return \Mantle\Contracts\Application 	 */
+	 * @return \Mantle\Contracts\Application     */
 	public function get_container(): \Mantle\Contracts\Application {
 		return $this->container;
 	}

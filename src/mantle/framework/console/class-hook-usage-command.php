@@ -96,7 +96,7 @@ class Hook_Usage_Command extends Command {
 		$this->set_paths();
 
 		if ( $this->paths->is_empty() ) {
-			throw new InvalidArgumentException( 'No paths specified.', true );
+			throw new InvalidArgumentException( 'No paths specified.' );
 		}
 
 		// Collect all the files.
@@ -294,7 +294,7 @@ class Hook_Usage_Command extends Command {
 	 */
 	protected function set_paths() {
 		if ( ! $this->option( 'search-path' ) ) {
-			$paths = collect( WP_CONTENT_DIR );
+			$paths = collect( defined( 'WP_CONTENT_DIR' ) ? WP_CONTENT_DIR : getcwd() );
 		} else {
 			$paths = collect( explode( ',', $this->option( 'search-path' ) ) );
 		}

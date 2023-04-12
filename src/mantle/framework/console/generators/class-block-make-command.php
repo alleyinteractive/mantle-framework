@@ -42,7 +42,7 @@ class Block_Make_Command extends Generator_Command {
 	/**
 	 * Command signature.
 	 *
-	 * @var string|array
+	 * @var string
 	 */
 	protected $signature = 'make:block
 		{name            : Full name for PHP Class (e.g. App\\Blocks\\Test_Block)}
@@ -130,12 +130,12 @@ class Block_Make_Command extends Generator_Command {
 		$block_path  = $this->get_block_path( $block_name );
 
 		if ( ! is_dir( $blocks_path ) && ! mkdir( $blocks_path, 0700, true ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.directory_mkdir
-			$this->error( 'Error creating folder: ' . $blocks_path, true );
+			$this->error( 'Error creating folder: ' . $blocks_path );
 			return Command::FAILURE;
 		}
 
 		if ( ! is_dir( $block_path ) && ! mkdir( $block_path, 0700, true ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.directory_mkdir
-			$this->error( 'Error creating folder: ' . $block_path, true );
+			$this->error( 'Error creating folder: ' . $block_path );
 			return Command::FAILURE;
 		}
 
@@ -146,7 +146,7 @@ class Block_Make_Command extends Generator_Command {
 			$this->generate_block_edit( $block_name );
 			$this->generate_block_view( $block_namespace, $block_name );
 		} catch ( RuntimeException $e ) {
-			$this->error( $e->getMessage(), true );
+			$this->error( $e->getMessage() );
 
 			return Command::FAILURE;
 		}
@@ -196,7 +196,7 @@ class Block_Make_Command extends Generator_Command {
 		$file_path = $this->get_file_path( $name );
 
 		if ( file_exists( $file_path ) ) {
-			throw new RuntimeException( ( $this->type ?: ' File' ) . ' already exists: ' . $file_path, true );
+			throw new RuntimeException( ( $this->type ?: ' File' ) . ' already exists: ' . $file_path );
 		}
 
 		// Store the generated class.
@@ -278,11 +278,11 @@ class Block_Make_Command extends Generator_Command {
 		$view_path  = $this->get_view_path( $block_namespace );
 
 		if ( ! is_dir( $views_path ) && ! mkdir( $views_path, 0700, true ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.directory_mkdir
-			throw new RuntimeException( 'Error creating folder: ' . $views_path, true );
+			throw new RuntimeException( 'Error creating folder: ' . $views_path );
 		}
 
 		if ( ! is_dir( $view_path ) && ! mkdir( $view_path, 0700, true ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.directory_mkdir
-			throw new RuntimeException( 'Error creating folder: ' . $view_path, true );
+			throw new RuntimeException( 'Error creating folder: ' . $view_path );
 		}
 
 		$entry_view = $view_path . "/{$block_name}.blade.php";
@@ -347,10 +347,10 @@ class Block_Make_Command extends Generator_Command {
 	 *
 	 * @param string  $question The question to ask in the input.
 	 * @param ?string $default The optional default value for the response.
-	 * @return callable A callable to be used as a default value for the `flag` method.
+	 * @return string
 	 */
 	protected function require_input( string $question, ?string $default = null ): string {
-		$response = $this->input( $question );
+		$response = $this->ask( $question );
 
 		/**
 		 * If we don't get a response, recurse until we do, unless we have a defined default value.

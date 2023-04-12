@@ -40,7 +40,7 @@ class Model_Make_Command extends Stub_Generator_Command {
 	/**
 	 * Command signature.
 	 *
-	 * @var string|array
+	 * @var string
 	 */
 	protected $signature = '{name} {--model_type=: post, term} {--registrable} {--object_name=} {--label_singular=} {--label_plural=}';
 
@@ -68,7 +68,7 @@ class Model_Make_Command extends Stub_Generator_Command {
 				$filename = 'model-term-registrable.stub';
 			}
 		} else {
-			throw new InvalidArgumentException( 'Unknown model type: ' . $type, true );
+			throw new InvalidArgumentException( 'Unknown model type: ' . $type );
 		}
 
 		// Set the object type to use.

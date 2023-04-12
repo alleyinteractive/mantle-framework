@@ -35,7 +35,7 @@ class Kernel implements Kernel_Contract {
 	/**
 	 * The application implementation.
 	 *
-	 * @var Application
+	 * @var Application|null
 	 */
 	protected $app;
 

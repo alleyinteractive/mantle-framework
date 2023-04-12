@@ -22,9 +22,9 @@ class Events_Manifest {
 	/**
 	 * Manifest from the disk.
 	 *
-	 * @var array
+	 * @var ?array
 	 */
-	protected $manifest;
+	protected $manifest = null;
 
 	/**
 	 * Base folder path.
