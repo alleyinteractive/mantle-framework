@@ -326,8 +326,11 @@ class Kernel implements Kernel_Contract {
 				$status = $this->handle(
 					new \Symfony\Component\Console\Input\ArgvInput(
 						collect( (array) ( $_SERVER['argv'] ?? [] ) ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-							// Remove the `wp` prefix from argv and any invalid arguments (such as --url).
-							->filter( fn ( $value, $index ) => 0 !== $index && ! Str::starts_with( $value, '--url=' ) )
+							// Remove any invalid arguments (such as --url).
+							->filter( fn ( $value ) => ! Str::starts_with( $value, [ '--path=', '--url=' ] ) )
+							// Remove the wp-cli binary from the arguments.
+							->filter( fn ( $value ) => ! Str::contains( $value, 'wp-cli.phar' ) && ! Str::is( '*/wp', $value ) )
+							->values()
 							->all()
 					),
 					new \Symfony\Component\Console\Output\ConsoleOutput(),
