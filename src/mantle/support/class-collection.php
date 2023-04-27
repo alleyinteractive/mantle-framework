@@ -91,15 +91,6 @@ class Collection implements ArrayAccess, Enumerable {
 	}
 
 	/**
-	 * Get a lazy collection for the items in this collection.
-	 *
-	 * @return \Mantle\Support\LazyCollection
-	 */
-	public function lazy() {
-		return new LazyCollection( $this->items );
-	}
-
-	/**
 	 * Get the average value of a given key.
 	 *
 	 * @param    callable|string|null $callback
