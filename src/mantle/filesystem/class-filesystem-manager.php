@@ -203,14 +203,14 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 * @todo Add support for other caching adapters.
 	 */
 	protected function create_cache_store( $config ): AbstractCache {
-		return new MemoryStore( $config );
+		return new MemoryStore();
 	}
 
 	/**
 	 * Create an instance of the local driver.
 	 *
 	 * @param  array $config
-	 * @return \Illuminate\Contracts\Filesystem\Filesystem
+	 * @return Filesystem_Adapter
 	 */
 	public function create_local_driver( array $config ) {
 		$permissions = $config['permissions'] ?? [];

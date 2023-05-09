@@ -285,7 +285,7 @@ class Filesystem_Adapter implements Filesystem {
 	 *
 	 * @param string      $path File path.
 	 * @param string|null $name File name.
-	 * @param array|null  $headers HTTP headers.
+	 * @param array       $headers HTTP headers.
 	 * @return StreamedResponse
 	 */
 	public function download( $path, $name = null, array $headers = [] ): StreamedResponse {
@@ -325,9 +325,9 @@ class Filesystem_Adapter implements Filesystem {
 	/**
 	 * Write the contents of a file.
 	 *
-	 * @param string          $path File path.
-	 * @param string|resource $contents File contents.
-	 * @param array|string    $options  Options for the files or a string visibility.
+	 * @param string                                             $path File path.
+	 * @param string|File|Uploaded_File|StreamInterface|resource $contents File contents.
+	 * @param array|string                                       $options  Options for the files or a string visibility.
 	 * @return bool
 	 */
 	public function put( string $path, $contents, $options = [] ): bool {
