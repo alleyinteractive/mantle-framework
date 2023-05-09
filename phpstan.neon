@@ -23,7 +23,7 @@ parameters:
 		- src/mantle/framework
 		# - src/mantle/http
 		- src/mantle/http-client
-		# - src/mantle/log
+		- src/mantle/log
 		- src/mantle/new-relic
 		# - src/mantle/queue
 		- src/mantle/rest-api
