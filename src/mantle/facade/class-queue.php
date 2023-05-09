@@ -17,7 +17,7 @@ class Queue extends Facade {
 	/**
 	 * Replace the bound instance with a fake.
 	 *
-	 * @return \Illuminate\Support\Testing\Fakes\QueueFake
+	 * @return Queue_Fake
 	 */
 	public static function fake() {
 		$fake = new Queue_Fake( static::$app );

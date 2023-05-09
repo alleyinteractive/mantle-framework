@@ -21,9 +21,9 @@ abstract class Facade {
 	/**
 	 * The application instance being facaded.
 	 *
-	 * @var \Mantle\Contracts\Application|\Mantle\Contracts\Container
+	 * @var \Mantle\Contracts\Application|null
 	 */
-	protected static $app;
+	protected static ?Application $app = null;
 
 	/**
 	 * The resolved object instances.
@@ -93,10 +93,6 @@ abstract class Facade {
 	 * @return mixed
 	 */
 	protected static function resolve_facade_instance( $name ) {
-		if ( is_object( $name ) ) {
-			return $name;
-		}
-
 		if ( isset( static::$resolved_instances[ $name ] ) ) {
 			return static::$resolved_instances[ $name ];
 		}

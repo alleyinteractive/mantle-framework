@@ -17,7 +17,7 @@ parameters:
 		- src/mantle/contracts
 		# - src/mantle/database
 		# - src/mantle/events
-		# - src/mantle/facade
+		- src/mantle/facade
 		# - src/mantle/faker
 		# - src/mantle/featherkit
 		# - src/mantle/filesystem
