@@ -16,19 +16,18 @@ parameters:
 		- src/mantle/container
 		- src/mantle/contracts
 		# - src/mantle/database
-		# - src/mantle/events
+		- src/mantle/events
 		- src/mantle/facade
-		# - src/mantle/faker
+		- src/mantle/faker
 		# - src/mantle/featherkit
 		# - src/mantle/filesystem
 		- src/mantle/framework
 		# - src/mantle/http
 		- src/mantle/http-client
 		# - src/mantle/log
-		# - src/mantle/new-relic
-		# - src/mantle/query-monitor
+		- src/mantle/new-relic
 		# - src/mantle/queue
-		# - src/mantle/rest-api
+		- src/mantle/rest-api
 		# - src/mantle/scheduling
 		# - src/mantle/support
 		- src/mantle/testing
@@ -45,6 +44,7 @@ parameters:
 		- tests/fixtures/phpstan/constants.php
 
 	excludePaths:
+		- src/mantle/query-monitor
 		- src/mantle/testing/class-mock-action.php
 		- src/mantle/testing/doubles/class-mockphpmailer.php
 		- src/mantle/testing/install-wordpress.php

@@ -79,7 +79,7 @@ class New_Relic_Service_Provider extends Service_Provider {
 			newrelic_name_transaction( $event->route->getPath() );
 			newrelic_add_custom_parameter( 'mantle-request', true );
 			newrelic_add_custom_parameter( 'mantle-route-method', implode( ' ', $event->route->getMethods() ) );
-		} elseif ( is_array( $event->route ) && defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+		} elseif ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
 			$route = collect(
 				[
 					$event->route['namespace'] ?? '',

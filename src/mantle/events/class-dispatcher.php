@@ -61,7 +61,7 @@ class Dispatcher implements Dispatcher_Contract {
 		foreach ( (array) $events as $event ) {
 			add_action(
 				$event,
-				$this->make_listener( $listener, $event ),
+				$this->make_listener( $listener ),
 				$priority,
 				PHP_INT_MAX,
 			);
@@ -228,7 +228,7 @@ class Dispatcher implements Dispatcher_Contract {
 	/**
 	 * Remove a set of listeners from the dispatcher.
 	 *
-	 * @param string $event Event to remove.
+	 * @param string|object $event Event to remove.
 	 * @param callable|string $listener Listener to remove.
 	 * @param int $priority Priority of the listener.
 	 * @return void
