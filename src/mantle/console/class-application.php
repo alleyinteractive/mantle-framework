@@ -11,7 +11,6 @@ use Closure;
 use InvalidArgumentException;
 use Mantle\Contracts\Application as Application_Contract;
 use Mantle\Contracts\Console\Application as Console_Application_Contract;
-use Mantle\Contracts\Container;
 use Mantle\Support\Arr;
 use Symfony\Component\Console\Application as Console_Application;
 use Symfony\Component\Console\Command\Command as Symfony_Command;
