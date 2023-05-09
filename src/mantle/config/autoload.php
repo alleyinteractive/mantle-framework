@@ -12,8 +12,6 @@
 
 declare( strict_types=1 );
 
-use Mantle\Application\Application;
-
 if ( ! function_exists( 'config' ) ) {
 	/**
 	 * Get a configuration value from the Configuration Repository.
