@@ -66,14 +66,12 @@ class Alias_Loader {
 	 * Load a class alias if it is registered.
 	 *
 	 * @param  string $alias Alias to load.
-	 * @return bool|null
+	 * @return void
 	 */
-	public function load( $alias ) {
+	public function load( $alias ): void {
 		if ( isset( $this->aliases[ $alias ] ) ) {
-			return class_alias( $this->aliases[ $alias ], $alias );
+			class_alias( $this->aliases[ $alias ], $alias );
 		}
-
-		return null;
 	}
 
 	/**
@@ -105,7 +103,7 @@ class Alias_Loader {
 	 * @return void
 	 */
 	protected function prepend_to_loader_stack() {
-		spl_autoload_register( [ $this, 'load' ], true, true ); // @phpstan-ignore-line Parameter #1 $callback of function spl_autoload_register
+		spl_autoload_register( [ $this, 'load' ], true, true );
 	}
 
 	/**

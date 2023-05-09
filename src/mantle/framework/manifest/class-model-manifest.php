@@ -26,28 +26,28 @@ class Model_Manifest {
 	 *
 	 * @var array|null
 	 */
-	protected $manifest;
+	protected ?array $manifest = null;
 
 	/**
 	 * Base folder path.
 	 *
 	 * @var string
 	 */
-	protected $base_path;
+	protected string $base_path;
 
 	/**
 	 * Vendor folder path.
 	 *
 	 * @var string
 	 */
-	protected $vendor_path;
+	protected string $vendor_path;
 
 	/**
 	 * Package Manifest file path.
 	 *
 	 * @var string
 	 */
-	protected $manifest_path;
+	protected string $manifest_path;
 
 	/**
 	 * Constructor.

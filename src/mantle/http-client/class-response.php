@@ -351,7 +351,7 @@ class Response implements ArrayAccess {
 	 * Retrieve a specific cookie by name.
 	 *
 	 * @param string $name Cookie name.
-	 * @return WP_Http_Cookie
+	 * @return WP_Http_Cookie|null
 	 */
 	public function cookie( string $name ): ?WP_Http_Cookie {
 		return collect( $this->cookies() )
