@@ -76,10 +76,10 @@ abstract class Factory {
 	/**
 	 * Create a new factory instance with middleware.
 	 *
-	 * @param array $middleware Middleware to run the factory through.
+	 * @param array<mixed, callable>|callable $middleware Middleware to run the factory through.
 	 * @return static
 	 */
-	public function with_middleware( $middleware ) {
+	public function with_middleware( array|callable $middleware ) {
 		return tap(
 			clone $this,
 			fn ( $factory ) => $factory->middleware = collect( $this->middleware )
@@ -112,13 +112,7 @@ abstract class Factory {
 	 * @return TObject|Core_Object The created object.
 	 */
 	public function create_and_get( $args = [] ) {
-		$object_id = $this->create( $args );
-
-		if ( is_wp_error( $object_id ) ) {
-			return $object_id;
-		}
-
-		return $this->get_object_by_id( $object_id );
+		return $this->get_object_by_id( $this->create( $args ) );
 	}
 
 	/**

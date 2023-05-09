@@ -357,7 +357,7 @@ trait Assertions {
 	/**
 	 * Get a term object from a flexible argument.
 	 *
-	 * @param Term|\WP_Term|int $argument Term object, term ID, or term slug.
+	 * @param mixed $argument Term object, term ID, or term slug.
 	 * @return WP_Term|null
 	 */
 	protected function get_term_from_argument( $argument ): ?WP_Term {

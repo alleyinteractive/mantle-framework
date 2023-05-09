@@ -15,6 +15,7 @@ use Mantle\Testing\Exceptions\Exception;
 use Mantle\Testing\Exceptions\WP_Redirect_Exception;
 use Mantle\Testing\Test_Response;
 use Mantle\Testing\Utils;
+use RuntimeException;
 use WP;
 use WP_Query;
 
@@ -292,14 +293,18 @@ trait Makes_Http_Requests {
 		$response_status  = null;
 		$response_headers = [];
 
-		$intercept_status = function( $status_header, $code ) use ( &$response_status ) {
+		$intercept_status = function( $status_header, $code ) use ( &$response_status ): int {
 			if ( ! $response_status ) {
 				$response_status = $code;
 			}
+
+			return $code;
 		};
 
-		$intercept_headers = function( $send_headers ) use ( &$response_headers ) {
+		$intercept_headers = function( $send_headers ) use ( &$response_headers ): array {
 			$response_headers = $send_headers;
+
+			return $send_headers;
 		};
 
 		$intercept_redirect = function( $location, $status ) use ( &$response_status, &$response_headers ) {
@@ -336,7 +341,7 @@ trait Makes_Http_Requests {
 		if ( empty( $response ) ) {
 			add_filter( 'status_header', $intercept_status, 9999, 2 );
 			add_filter( 'wp_headers', $intercept_headers, 9999 );
-			add_filter( 'wp_redirect', $intercept_redirect, 9999, 2 );
+			add_filter( 'wp_redirect', $intercept_redirect, 9999, 2 ); // @phpstan-ignore-line Filter callback
 
 			ob_start();
 
@@ -581,25 +586,17 @@ trait Makes_Http_Requests {
 	/**
 	 * Call the given URI with a JSON request.
 	 *
+	 * @todo Reimplement this method for Mantle.
+	 *
 	 * @param string $method  Request method.
 	 * @param string $uri     Request URI.
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
-	 * @return Test_Response
+	 *
+	 * @throws RuntimeException If not implemented.
 	 */
 	public function json( $method, $uri, array $data = [], array $headers = [] ) {
-		$content = wp_json_encode( $data );
-
-		$headers = array_merge(
-			[
-				'CONTENT_LENGTH' => mb_strlen( $content, '8bit' ),
-				'CONTENT_TYPE'   => 'application/json',
-				'Accept'         => 'application/json',
-			],
-			$headers
-		);
-
-		return $this->call( $method, $uri, [], $this->transform_headers_to_server_vars( $headers ), $content );
+		throw new RuntimeException( 'Not implemented.' );
 	}
 
 	/**

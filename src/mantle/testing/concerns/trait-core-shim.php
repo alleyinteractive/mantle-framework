@@ -9,6 +9,8 @@
 
 namespace Mantle\Testing\Concerns;
 
+use WP_Error;
+
 /**
  * Core Shims
  *
@@ -68,6 +70,7 @@ trait Core_Shim {
 		if ( ! is_wp_error( $response ) ) {
 			return;
 		}
+
 		if ( 'connect() timed out!' === $response->get_error_message() ) {
 			$this->markTestSkipped( 'HTTP timeout' );
 		}

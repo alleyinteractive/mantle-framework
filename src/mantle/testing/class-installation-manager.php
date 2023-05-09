@@ -102,7 +102,7 @@ class Installation_Manager {
 
 		if ( $this->rsync_to ) {
 			$this->perform_rsync_testsuite();
-			return;
+			return $this;
 		}
 
 		foreach ( $this->before_install_callbacks as $callback ) {

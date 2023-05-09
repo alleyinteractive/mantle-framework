@@ -1,6 +1,6 @@
 <?php
 /**
- * This file contains the WP_Die_Exception class
+ * This file contains the WP_Redirect_Exception class
  *
  * @package Mantle
  */
@@ -8,6 +8,6 @@
 namespace Mantle\Testing\Exceptions;
 
 /**
- * General exception for wp_die().
+ * Exception thrown when a redirect is encountered.
  */
 class WP_Redirect_Exception extends Exception {}

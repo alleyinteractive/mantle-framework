@@ -30,9 +30,9 @@ class Expectation_Container {
 	/**
 	 * Expectations
 	 *
-	 * @var Collection
+	 * @var Collection<Expectation>
 	 */
-	protected $expectations;
+	protected Collection $expectations;
 
 	/**
 	 * Constructor.
@@ -71,6 +71,8 @@ class Expectation_Container {
 	 * Validate the expectations in the container.
 	 */
 	public function tear_down(): void {
-		$this->expectations->each->validate();
+		$this->expectations->each(
+			fn ( Expectation $expectation ) => $expectation->validate(),
+		);
 	}
 }

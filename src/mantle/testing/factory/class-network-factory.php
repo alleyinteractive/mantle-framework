@@ -16,21 +16,18 @@ use Faker\Generator;
  */
 class Network_Factory extends Factory {
 	/**
-	 * Faker instance.
+	 * Network ID tracker.
 	 *
-	 * @var Generator
+	 * @var int
 	 */
-	protected $faker;
+	protected int $network_id = 2;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param Generator $generator Faker generator.
+	 * @param Generator $faker Faker generator.
 	 */
-	public function __construct( Generator $generator ) {
-		$this->faker = $generator;
-
-		$this->network_id = 2;
+	public function __construct( protected Generator $faker ) {
 	}
 
 	/**

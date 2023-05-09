@@ -166,7 +166,7 @@ class Test_Response {
 		if ( isset( $this->headers[ $key ] ) ) {
 			// Account for multiple headers with the same key.
 			return is_array( $this->headers[ $key ] )
-				? (string) $this->headers[ $key ][0] ?? ''
+				? (string) ( $this->headers[ $key ][0] ?? '' )
 				: (string) $this->headers[ $key ];
 		}
 

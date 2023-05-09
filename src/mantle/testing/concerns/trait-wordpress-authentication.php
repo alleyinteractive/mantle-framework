@@ -115,27 +115,27 @@ trait WordPress_Authentication {
 	/**
 	 * Assert that we are authenticated with a given user/role.
 	 *
-	 * @param User|WP_User|string|int|null $user User to check.
+	 * @param User|WP_User|string|int|null|mixed $user User to check.
 	 */
-	public function assertAuthenticated( User|WP_User|string|int|null $user = null ): void {
-		if ( is_null( $user ) ) {
+	public function assertAuthenticated( mixed $user = null ): void {
+		if ( empty( $user ) ) {
 			Assert::assertTrue( is_user_logged_in(), 'User is not authenticated.' );
 			return;
 		}
 
 		$current_user = wp_get_current_user();
 
-		if ( empty( $current_user ) ) {
+		if ( ! $current_user ) { // @phpstan-ignore-line always exists
 			Assert::fail( 'User is not authenticated.' );
+		} else {
+			match ( true ) {
+				$user instanceof User => Assert::assertEquals( $user->id(), $current_user->ID ),
+				is_int( $user ) => Assert::assertEquals( $user, $current_user->ID ),
+				$user instanceof WP_User => Assert::assertEquals( $user->ID, $current_user->ID ),
+				is_string( $user ) => Assert::assertTrue( in_array( $user, $current_user->roles, true ) ),
+				default => Assert::fail( 'Unexpected argument passed to assertAuthenticated().' ),
+			};
 		}
-
-		match ( true ) {
-			$user instanceof User => Assert::assertEquals( $user->id(), $current_user->ID ),
-			is_int( $user ) => Assert::assertEquals( $user, $current_user->ID ),
-			$user instanceof WP_User => Assert::assertEquals( $user->ID, $current_user->ID ),
-			is_string( $user ) => Assert::assertTrue( in_array( $user, $current_user->roles, true ) ),
-			default => Assert::fail( 'Unexpected argument passed to assertAuthenticated().' ),
-		};
 	}
 
 	/**

@@ -67,9 +67,9 @@ trait Deprecations {
 		add_action( 'deprecated_function_run', [ $this, 'deprecated_function_run' ] );
 		add_action( 'deprecated_argument_run', [ $this, 'deprecated_function_run' ] );
 		add_action( 'deprecated_hook_run', [ $this, 'deprecated_function_run' ] );
-		add_action( 'deprecated_function_trigger_error', '__return_false' );
-		add_action( 'deprecated_argument_trigger_error', '__return_false' );
-		add_action( 'deprecated_hook_trigger_error', '__return_false' );
+		add_action( 'deprecated_function_trigger_error', '__return_false' ); // @phpstan-ignore-line Action callback returns false
+		add_action( 'deprecated_argument_trigger_error', '__return_false' ); // @phpstan-ignore-line Action callback returns false
+		add_action( 'deprecated_hook_trigger_error', '__return_false' ); // @phpstan-ignore-line Action callback returns false
 	}
 
 	/**

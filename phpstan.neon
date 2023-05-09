@@ -31,7 +31,7 @@ parameters:
 		# - src/mantle/rest-api
 		# - src/mantle/scheduling
 		# - src/mantle/support
-		# - src/mantle/testing
+		- src/mantle/testing
 		# - src/mantle/testkit
 		# - src/mantle/view
 		- mantle.php
@@ -42,8 +42,12 @@ parameters:
 
 	scanFiles:
 		- %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-stubs.php
+		- tests/fixtures/phpstan/constants.php
 
-#    excludePaths:
-#        - ./*/*/FileToBeExcluded.php
-#
-#    checkMissingIterableValueType: false
+	excludePaths:
+		- src/mantle/testing/class-mock-action.php
+		- src/mantle/testing/doubles/class-mockphpmailer.php
+		- src/mantle/testing/install-wordpress.php
+		- src/mantle/testing/preload.php
+		- src/mantle/testing/wordpress-bootstrap.php
+		- src/mantle/testing/wp-tests-config-sample.php

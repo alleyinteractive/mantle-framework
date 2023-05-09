@@ -10,9 +10,10 @@ namespace Mantle\Testing;
 /**
  * Helper class for testing code that involves actions and filters.
  *
- * Typical use:
- *     $ma = new MockAction();
- *     add_action( 'foo', [ $ma, 'action' ] );
+ * Typical use: $ma = new MockAction(); add_action( 'foo', [ $ma, 'action' ] );
+ *
+ * @deprecated Used as a shim for core tests. New tests should use Mantle's
+ * testing hook helpers {@see https://mantle.alley.com/docs/testing/hooks}.
  */
 class Mock_Action {
 	/**
