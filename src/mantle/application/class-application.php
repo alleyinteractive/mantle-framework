@@ -345,18 +345,18 @@ class Application extends Container implements Application_Contract {
 		static::set_instance( $this );
 
 		$this->instance( 'app', $this );
-		$this->instance( Container\Container::class, $this );
+		$this->instance( Container::class, $this );
 		$this->instance( Container_Contract::class, $this );
 		$this->instance( static::class, $this );
 
 		$this->singleton(
 			Package_Manifest::class,
-			fn( $app ) => new Package_Manifest( $this->get_base_path(), $this->get_cached_packages_path(), $app ),
+			fn( $app ) => new Package_Manifest( $this->get_base_path(), $this->get_cached_packages_path() ),
 		);
 
 		$this->singleton(
 			Model_Manifest::class,
-			fn ( $app ) => new Model_Manifest( $this->get_app_path(), $this->get_cached_models_path(), $app ),
+			fn ( $app ) => new Model_Manifest( $this->get_app_path(), $this->get_cached_models_path() ),
 		);
 	}
 
@@ -431,7 +431,7 @@ class Application extends Container implements Application_Contract {
 	 */
 	public function register_configured_providers() {
 		// Get providers from the application config.
-		$providers = collect( $this->config->get( 'app.providers', [] ) );
+		$providers = collect( $this->make( 'config' )->get( 'app.providers', [] ) );
 
 		// Include providers from the package manifest.
 		$providers->push( ...$this->make( Package_Manifest::class )->providers() );

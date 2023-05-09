@@ -10,6 +10,7 @@ namespace Mantle\Contracts\Console;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
+use Throwable;
 
 /**
  * Console Application Contract
@@ -42,4 +43,13 @@ interface Application {
 	 * @return CommandTester
 	 */
 	public function test( string $command, array $parameters = [] ): CommandTester;
+
+	/**
+	 * Render an exception for the console.
+	 *
+	 * @param Throwable       $e
+	 * @param OutputInterface $output
+	 * @return void
+	 */
+	public function render_throwable( Throwable $e, OutputInterface $output );
 }

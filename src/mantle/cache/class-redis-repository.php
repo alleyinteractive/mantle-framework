@@ -34,7 +34,7 @@ class Redis_Repository extends Repository implements Taggable_Repository {
 	 * @param Client|array $config Configuration options or client.
 	 * @param string       $prefix Prefix for caching.
 	 */
-	public function __construct( $config, string $prefix = '' ) {
+	public function __construct( array|Client $config, string $prefix = '' ) {
 		$this->set_connection( $config );
 
 		$this->prefix = $prefix;
@@ -45,7 +45,7 @@ class Redis_Repository extends Repository implements Taggable_Repository {
 	 *
 	 * @param Client|array $config Configuration instance.
 	 */
-	protected function set_connection( $config ) {
+	protected function set_connection( Client|array $config ) {
 		if ( $config instanceof Client ) {
 			return $config;
 		}
@@ -80,13 +80,13 @@ class Redis_Repository extends Repository implements Taggable_Repository {
 	 * @param  \DateTimeInterface|\DateInterval|int|null $ttl
 	 * @return bool
 	 */
-	public function put( $key, $value, $ttl = null ) {
+	public function put( $key, $value, $ttl = null ): bool {
 		$value = maybe_serialize( $value );
 
 		if ( is_null( $ttl ) ) {
-			return $this->client->set( $this->prefix . $key, $value );
+			return (bool) $this->client->set( $this->prefix . $key, $value );
 		} else {
-			return $this->client->setex( $this->prefix . $key, $ttl, $value );
+			return (bool) $this->client->setex( $this->prefix . $key, $ttl, $value );
 		}
 	}
 
@@ -118,15 +118,15 @@ class Redis_Repository extends Repository implements Taggable_Repository {
 	 * @param  string $key Cache key.
 	 * @return bool
 	 */
-	public function forget( $key ) {
-		return $this->client->del( $key );
+	public function forget( $key ): bool {
+		return (bool) $this->client->del( $key );
 	}
 
 	/**
 	 * Clear the cache.
 	 */
 	public function clear(): bool {
-		return $this->client->flushall();
+		return (bool) $this->client->flushall();
 	}
 
 	/**
@@ -137,7 +137,7 @@ class Redis_Repository extends Repository implements Taggable_Repository {
 	 */
 	public function tags( $names ) {
 		if ( is_array( $names ) ) {
-			$names = sort( $names );
+			sort( $names );
 			$names = implode( $names );
 		} else {
 			$names = (string) $names;

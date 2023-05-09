@@ -21,7 +21,7 @@ class Request {
 	/**
 	 * The request arguments.
 	 *
-	 * @var string
+	 * @var array
 	 */
 	protected array $args;
 

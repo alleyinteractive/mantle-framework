@@ -9,8 +9,8 @@ namespace Mantle\Console;
 
 use Closure;
 use InvalidArgumentException;
+use Mantle\Contracts\Application as Application_Contract;
 use Mantle\Contracts\Console\Application as Console_Application_Contract;
-use Mantle\Contracts\Container;
 use Mantle\Support\Arr;
 use Symfony\Component\Console\Application as Console_Application;
 use Symfony\Component\Console\Command\Command as Symfony_Command;
@@ -19,6 +19,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
+use Throwable;
 
 /**
  * Console Application
@@ -56,9 +57,9 @@ class Application extends Console_Application implements Console_Application_Con
 	/**
 	 * Constructor.
 	 *
-	 * @param Container $container
+	 * @param Application_Contract $container
 	 */
-	public function __construct( protected Container $container ) {
+	public function __construct( protected Application_Contract $container ) {
 		parent::__construct(
 			$this->container['config']->get( 'app.name', 'Mantle' ),
 			$this->container['config']->get( 'app.version', '1.0.0' ),
@@ -167,5 +168,21 @@ class Application extends Console_Application implements Console_Application_Con
 		}
 
 		return $this;
+	}
+
+	/**
+	 * Render a throwable for the console.
+	 *
+	 * @param Throwable       $e
+	 * @param OutputInterface $output
+	 * @return void
+	 */
+	public function render_throwable( Throwable $e, OutputInterface $output ) {
+		$output->writeln(
+			sprintf(
+				'<error>Exception: %s</error>',
+				$e->getMessage(),
+			)
+		);
 	}
 }

@@ -26,6 +26,7 @@
 
 		<exclude name="PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection" />
 		<exclude name="PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.Changed" />
+		<exclude name="Squiz.Commenting.FunctionComment.IncorrectTypeHint" />
 	</rule>
 
 	<rule ref="Generic.Arrays.DisallowLongArraySyntax" />

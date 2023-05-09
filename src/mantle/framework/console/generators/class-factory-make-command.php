@@ -38,7 +38,7 @@ class Factory_Make_Command extends Stub_Generator_Command {
 	/**
 	 * Command synopsis.
 	 *
-	 * @var string|array
+	 * @var string
 	 */
 	protected $signature = '{name} {model_type} {--object_name=}';
 
@@ -57,7 +57,7 @@ class Factory_Make_Command extends Stub_Generator_Command {
 		} elseif ( 'term' === $type ) {
 			$filename = 'factory-term.stub';
 		} else {
-			throw new InvalidArgumentException( 'Unknown factory type: ' . $type, true );
+			throw new InvalidArgumentException( 'Unknown factory type: ' . $type );
 		}
 
 		// Set the object type to use.
@@ -96,13 +96,7 @@ class Factory_Make_Command extends Stub_Generator_Command {
 	 * @todo Edit or remove this.
 	 */
 	public function complete_synopsis( string $name ) {
-		$this->log(
-			PHP_EOL . sprintf(
-				'You can customize this factory by editing the file in "database/factories".',
-				$this->get_namespace( $name ),
-				$this->get_class_name( $name )
-			)
-		);
+		$this->log( 'You can customize this factory by editing the file in "database/factories".' );
 	}
 
 	/**

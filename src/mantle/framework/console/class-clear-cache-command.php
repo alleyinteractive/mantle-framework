@@ -42,12 +42,12 @@ class Clear_Cache_Command extends Command {
 		$files = glob( $this->container->get_cache_path() . '/*.php' );
 
 		foreach ( $files as $file ) {
-			$this->log( 'Deleting: ' . $this->colorize( $file, 'yellow' ) );
+			$this->line( 'Deleting: ' . $this->colorize( $file, 'yellow' ) );
 
 			try {
 				unlink( $file ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_unlink
 			} catch ( \Throwable $e ) {
-				$this->log( 'Error deleting: ' . $e->getMessage() );
+				$this->line( 'Error deleting: ' . $e->getMessage() );
 			}
 		}
 

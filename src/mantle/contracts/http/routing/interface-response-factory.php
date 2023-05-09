@@ -9,6 +9,7 @@ namespace Mantle\Contracts\Http\Routing;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Mantle\Http\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Response Factory Contract
@@ -53,7 +54,7 @@ interface Response_Factory {
 	 * @param  int   $status
 	 * @param  array $headers
 	 * @param  int   $options
-	 * @return \Illuminate\Http\JsonResponse
+	 * @return JsonResponse
 	 */
 	public function json( $data = [], $status = 200, array $headers = [], $options = 0 );
 
@@ -65,7 +66,7 @@ interface Response_Factory {
 	 * @param  int    $status
 	 * @param  array  $headers
 	 * @param  int    $options
-	 * @return \Illuminate\Http\JsonResponse
+	 * @return JsonResponse
 	 */
 	public function jsonp( $callback, $data = [], $status = 200, array $headers = [], $options = 0 );
 

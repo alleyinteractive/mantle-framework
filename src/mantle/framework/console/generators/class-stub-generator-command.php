@@ -14,13 +14,6 @@ use Mantle\Support\String_Replacements;
  */
 abstract class Stub_Generator_Command extends Generator_Command {
 	/**
-	 * Stub variables String Replacement instance.
-	 *
-	 * @var String_Replacements
-	 */
-	protected $replacements;
-
-	/**
 	 * File Stub
 	 *
 	 * @var string

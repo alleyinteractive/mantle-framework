@@ -35,7 +35,7 @@ class Kernel implements Kernel_Contract {
 	/**
 	 * The application implementation.
 	 *
-	 * @var Application
+	 * @var Application|null
 	 */
 	protected $app;
 
@@ -111,7 +111,7 @@ class Kernel implements Kernel_Contract {
 			$this->report_exception( $e );
 			$this->render_exception( $output, $e );
 
-			return 1;
+			return Command::FAILURE;
 		}
 	}
 
@@ -176,14 +176,6 @@ class Kernel implements Kernel_Contract {
 		}
 
 		$this->app->bootstrap_with( $this->bootstrappers(), $this );
-
-		$app_exception_handler = $this->app->make( Exception_Handler::class );
-
-		// Replace the exception handler with a console version.
-		$this->app->singleton(
-			Exception_Handler::class,
-			fn ( $app ) => new Console_Exception_Handler( $app, $app_exception_handler ),
-		);
 	}
 
 	/**
@@ -292,12 +284,12 @@ class Kernel implements Kernel_Contract {
 	/**
 	 * Render the exception to a response.
 	 *
-	 * @param Request   $request Request instance.
-	 * @param Throwable $e Exception thrown.
-	 * @return \Symfony\Component\HttpFoundation\Response
+	 * @param OutputInterface $output Output interface.
+	 * @param Throwable       $e Exception thrown.
+	 * @return void
 	 */
-	protected function render_exception( $request, Throwable $e ) {
-		return $this->app[ Exception_Handler::class ]->render( $request, $e );
+	protected function render_exception( OutputInterface $output, Throwable $e ) {
+		$this->app[ Exception_Handler::class ]->render_for_console( $output, $e );
 	}
 
 	/**

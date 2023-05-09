@@ -37,7 +37,7 @@ class Hook_Usage_Command extends Command {
 	/**
 	 * Command signature.
 	 *
-	 * @var array
+	 * @var string
 	 */
 	protected $signature = 'hook-usage {hook} {--search-path=} {--format=}';
 
@@ -66,7 +66,7 @@ class Hook_Usage_Command extends Command {
 	public function handle() {
 		$usage = $this->get_usage();
 
-		if ( empty( $usage ) ) {
+		if ( $usage->is_empty() ) {
 			$this->error( 'No usage found.' );
 			return Command::FAILURE;
 		}
@@ -96,7 +96,7 @@ class Hook_Usage_Command extends Command {
 		$this->set_paths();
 
 		if ( $this->paths->is_empty() ) {
-			throw new InvalidArgumentException( 'No paths specified.', true );
+			throw new InvalidArgumentException( 'No paths specified.' );
 		}
 
 		// Collect all the files.
@@ -155,7 +155,7 @@ class Hook_Usage_Command extends Command {
 					return true;
 				}
 
-				if ( $iterator->hasChildren() || ! $current->isFile() || 'php' !== $current->getExtension() ) {
+				if ( ! $current->isFile() || 'php' !== $current->getExtension() ) {
 					return false;
 				}
 
@@ -294,7 +294,7 @@ class Hook_Usage_Command extends Command {
 	 */
 	protected function set_paths() {
 		if ( ! $this->option( 'search-path' ) ) {
-			$paths = collect( WP_CONTENT_DIR );
+			$paths = collect( defined( 'WP_CONTENT_DIR' ) ? WP_CONTENT_DIR : getcwd() );
 		} else {
 			$paths = collect( explode( ',', $this->option( 'search-path' ) ) );
 		}

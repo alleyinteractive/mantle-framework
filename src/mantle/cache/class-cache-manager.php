@@ -75,7 +75,7 @@ class Cache_Manager extends Driver_Manager implements Factory {
 	 * @return Repository
 	 */
 	protected function create_array_driver( array $config ): Repository {
-		return new Array_Repository( $config['prefix'] ?? '' );
+		return new Array_Repository();
 	}
 
 	/**

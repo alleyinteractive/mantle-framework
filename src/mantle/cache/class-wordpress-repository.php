@@ -66,7 +66,7 @@ class WordPress_Repository extends Repository implements Taggable_Repository {
 	 * @param  \DateTimeInterface|\DateInterval|int|null $ttl
 	 * @return bool
 	 */
-	public function put( $key, $value, $ttl = null ) {
+	public function put( $key, $value, $ttl = null ): bool {
 		return \wp_cache_set( $key, $value, $this->prefix, $ttl ); // phpcs:ignore WordPressVIPMinimum.Performance.LowExpiryCacheTime.CacheTimeUndetermined
 	}
 
@@ -98,7 +98,7 @@ class WordPress_Repository extends Repository implements Taggable_Repository {
 	 * @param  string $key Cache key.
 	 * @return bool
 	 */
-	public function forget( $key ) {
+	public function forget( $key ): bool {
 		return \wp_cache_delete( $key, $this->prefix );
 	}
 

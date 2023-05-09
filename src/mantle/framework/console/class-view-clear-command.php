@@ -37,15 +37,15 @@ class View_Clear_Command extends Command {
 		$path = config( 'view.compiled' );
 
 		if ( ! $path ) {
-			$this->error( 'View path not found.', true );
+			$this->error( 'View path not found.' );
 			return Command::FAILURE;
 		}
 
-		foreach ( $this->files->glob( "{$path}/*" ) as $file ) {
+		foreach ( $files->glob( "{$path}/*" ) as $file ) {
 			$files->delete( $file );
 		}
 
-		$this->log( 'Compiled views cleared!' );
+		$this->line( 'Compiled views cleared!' );
 
 		return Command::SUCCESS;
 	}

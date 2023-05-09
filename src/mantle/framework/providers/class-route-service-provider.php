@@ -19,7 +19,7 @@ class Route_Service_Provider extends Service_Provider implements Route_Service_P
 	/**
 	 * Allow requests to be passed down to WordPress.
 	 *
-	 * @var bool
+	 * @var bool|callable
 	 */
 	protected $pass_requests_to_wp = true;
 

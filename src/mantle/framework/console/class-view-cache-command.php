@@ -67,7 +67,7 @@ class View_Cache_Command extends Command {
 	 */
 	public function handle( View_Finder $finder ) {
 		if ( ! isset( $this->container['view.engine.resolver'] ) ) {
-			$this->error( 'Missing view engine resolver from the view service provider.', true );
+			$this->error( 'Missing view engine resolver from the view service provider.' );
 			return Command::FAILURE;
 		}
 
@@ -79,7 +79,7 @@ class View_Cache_Command extends Command {
 		$paths = $this->finder->get_paths();
 
 		if ( empty( $paths ) ) {
-			$this->error( 'No view paths found.', true );
+			$this->error( 'No view paths found.' );
 			return Command::FAILURE;
 		}
 

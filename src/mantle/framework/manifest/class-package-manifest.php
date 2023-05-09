@@ -7,6 +7,7 @@
 
 namespace Mantle\Framework\Manifest;
 
+use Mantle\Application\Application_Exception;
 use Mantle\Filesystem\Filesystem;
 
 use function Mantle\Support\Helpers\collect;
@@ -20,7 +21,7 @@ class Package_Manifest {
 	/**
 	 * Manifest from the disk.
 	 *
-	 * @var array
+	 * @var array|null
 	 */
 	protected $manifest;
 
@@ -134,8 +135,7 @@ class Package_Manifest {
 			$installed = $installed['packages'] ?? $installed;
 		}
 
-		$ignore     = [];
-		$ignore_all = in_array( '*', $ignore, true );
+		$ignore = [];
 
 		/**
 		 * Process the installed packages:
@@ -159,9 +159,7 @@ class Package_Manifest {
 				}
 			)
 			->reject(
-				function ( $configuration, $package ) use ( $ignore, $ignore_all ) {
-					return $ignore_all || in_array( $package, $ignore, true );
-				}
+				fn ( $configuration, $package ) => in_array( $package, $ignore, true ),
 			)
 			->filter()
 			->all();

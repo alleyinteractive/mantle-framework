@@ -29,6 +29,13 @@ class Package_Discover_Command extends Command {
 	protected $description = 'Discover package dependencies from Composer';
 
 	/**
+	 * Package Manifest.
+	 *
+	 * @var Package_Manifest
+	 */
+	protected Package_Manifest $manifest;
+
+	/**
 	 * Discover Command.
 	 *
 	 * @todo Replace with a filesystem abstraction.
@@ -38,18 +45,18 @@ class Package_Discover_Command extends Command {
 	public function handle( Package_Manifest $manifest ) {
 		$this->manifest = $manifest;
 
-		$this->log( 'Discovering packages...' );
+		$this->line( 'Discovering packages...' );
 
 		$this->manifest->build();
 
 		foreach ( array_keys( $this->manifest->get_manifest() ) as $package ) {
-			$this->log( 'Discovered Package: ' . $this->colorize( $package, 'green' ) );
+			$this->line( 'Discovered Package: ' . $this->colorize( $package, 'green' ) );
 		}
 
 		if ( empty( $this->manifest->get_manifest() ) ) {
-			$this->log( $this->colorize( 'No packages discovered.', 'yellow' ) );
+			$this->line( $this->colorize( 'No packages discovered.', 'yellow' ) );
 		} else {
-			$this->log( PHP_EOL . $this->colorize( 'Package manifest generated successfully.', 'green' ) );
+			$this->line( PHP_EOL . $this->colorize( 'Package manifest generated successfully.', 'green' ) );
 		}
 	}
 }

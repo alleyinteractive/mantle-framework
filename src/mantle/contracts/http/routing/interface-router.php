@@ -110,8 +110,26 @@ interface Router {
 	 * @param string $new_name New route name.
 	 * @return static
 	 *
-	 * @throws InvalidArgumentException Thrown when attempting to rename a route
+	 * @throws \InvalidArgumentException Thrown when attempting to rename a route
 	 *                                  a name that is already taken.
 	 */
-	public function rename_route( string $old_name, string $new_name );
+	public function rename_route( string $old_name, string $new_name ): static;
+
+	/**
+	 * Register a group of middleware.
+	 *
+	 * @param  string $name
+	 * @param  array  $middleware
+	 * @return static
+	 */
+	public function middleware_group( $name, array $middleware );
+
+	/**
+	 * Register a short-hand name for a middleware.
+	 *
+	 * @param  string $name
+	 * @param  string $class
+	 * @return static
+	 */
+	public function alias_middleware( $name, $class );
 }

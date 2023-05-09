@@ -18,11 +18,24 @@ use Psr\SimpleCache\CacheInterface;
  */
 interface Repository extends CacheInterface {
 	/**
+	 * Retrieve a value from cache.
+	 *
+	 * @template TCacheValue
+	 *
+	 * @param string                                $key Cache key.
+	 * @param TCacheValue|(\Closure(): TCacheValue) $default Default value.
+	 * @return (TCacheValue is null ? mixed : TCacheValue)
+	 */
+	public function get( string $key, mixed $default = null ): mixed;
+
+	/**
 	 * Retrieve an item from the cache and delete it.
 	 *
-	 * @param  string $key
-	 * @param  mixed  $default
-	 * @return mixed
+	 * @template TCacheValue
+	 *
+	 * @param  string                                $key
+	 * @param TCacheValue|(\Closure(): TCacheValue) $default Default value.
+	 * @return (TCacheValue is null ? mixed : TCacheValue)
 	 */
 	public function pull( $key, $default = null );
 
@@ -76,9 +89,11 @@ interface Repository extends CacheInterface {
 	/**
 	 * Get an item from the cache, or execute the given Closure and store the result.
 	 *
+	 * @template TCacheValue
+	 *
 	 * @param  string                                    $key
 	 * @param  \DateTimeInterface|\DateInterval|int|null $ttl
-	 * @param  \Closure                                  $callback
+	 * @param  (\Closure(): TCacheValue)                 $callback
 	 * @return mixed
 	 */
 	public function remember( $key, $ttl, Closure $callback );
@@ -95,8 +110,10 @@ interface Repository extends CacheInterface {
 	/**
 	 * Get an item from the cache, or execute the given Closure and store the result forever.
 	 *
-	 * @param  string   $key
-	 * @param  \Closure $callback
+	 * @template TCacheValue
+	 *
+	 * @param  string                    $key
+	 * @param  (\Closure(): TCacheValue) $callback
 	 * @return mixed
 	 */
 	public function rememberForever( $key, Closure $callback );

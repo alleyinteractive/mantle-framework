@@ -25,7 +25,7 @@ interface Pipeline {
 	/**
 	 * Set the stops of the pipeline.
 	 *
-	 * @param  dynamic|array $stops
+	 * @param  array<callable>|null $stops
 	 * @return $this
 	 */
 	public function through( $stops );

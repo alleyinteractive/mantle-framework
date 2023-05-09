@@ -47,12 +47,12 @@ class Test_Config_Install_Command extends Command {
 		$path = static::get_test_config_path();
 
 		if ( file_exists( $path ) ) {
-			$this->error( __( 'Test configuration already exists!', 'mantle' ), true );
+			$this->error( __( 'Test configuration already exists!', 'mantle' ) );
 			return Command::FAILURE;
 		}
 
 		if ( ! copy( __DIR__ . '/../../../mantle/testing/wp-tests-config-sample.php', $path ) ) {
-			$this->error( __( 'Error copying configuration file.', 'mantle' ), true );
+			$this->error( __( 'Error copying configuration file.', 'mantle' ) );
 			return Command::FAILURE;
 		}
 

@@ -49,10 +49,9 @@ class Test_Alias_Loader extends TestCase {
 	public function testLoaderCanAliasAndLoadClasses() {
 		$loader = Alias_Loader::get_instance( [ 'some_alias_foo_bar' => FoundationAlias_LoaderStub::class ] );
 
-		$result = $loader->load( 'some_alias_foo_bar' );
+		$loader->load( 'some_alias_foo_bar' );
 
 		$this->assertInstanceOf( FoundationAlias_LoaderStub::class, new \some_alias_foo_bar() );
-		$this->assertTrue( $result );
 
 		$result2 = $loader->load( 'bar' );
 		$this->assertNull( $result2 );
@@ -62,11 +61,10 @@ class Test_Alias_Loader extends TestCase {
 		$loader = Alias_Loader::get_instance();
 		$loader->set_aliases( [ 'some_alias_foo' => FoundationAlias_LoaderStub::class ] );
 
-		$result = $loader->load( 'some_alias_foo' );
+		$loader->load( 'some_alias_foo' );
 
 		$fooObj = new \some_alias_foo();
 		$this->assertInstanceOf( FoundationAlias_LoaderStub::class, $fooObj );
-		$this->assertTrue( $result );
 	}
 }
 

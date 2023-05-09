@@ -2,6 +2,7 @@
 
 namespace Mantle\Tests\Console;
 
+use Mantle\Application\Application;
 use Mantle\Console\Command;
 use Mantle\Container\Container;
 use PHPUnit\Framework\TestCase;
@@ -36,7 +37,7 @@ class Test_Command extends TestCase {
 			public function __invoke() { }
 		};
 
-		$command->set_container( new Container() );
+		$command->set_container( new Application() );
 
 		$command->run( new ArrayInput( [
 			'arg1' => 'value1',
@@ -69,7 +70,7 @@ class Test_Command extends TestCase {
 			protected $signature = 'foo:bar {arg1}';
 		};
 
-		$command->set_container( new Container() );
+		$command->set_container( new Application() );
 
 		$command->run( new ArrayInput( [
 			'arg1' => 'value1',

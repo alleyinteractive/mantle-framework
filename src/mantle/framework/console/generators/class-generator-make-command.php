@@ -49,7 +49,7 @@ class Generator_Make_Command extends Stub_Generator_Command {
 	public function handle() {
 		// Prevent command being run in non-local environments.
 		if ( 'local' !== $this->container->environment() ) {
-			$this->error( 'Generator cannot be used outside of local environment.', true );
+			$this->error( 'Generator cannot be used outside of local environment.' );
 			return Command::FAILURE;
 		}
 
@@ -66,7 +66,7 @@ class Generator_Make_Command extends Stub_Generator_Command {
 
 		$file_path = $this->get_file_path( $name . '-make-command' );
 		if ( file_exists( $file_path ) ) {
-			$this->error( $this->type . ' already exists: ' . $file_path, true );
+			$this->error( $this->type . ' already exists: ' . $file_path );
 			return Command::FAILURE;
 		}
 
@@ -90,7 +90,7 @@ class Generator_Make_Command extends Stub_Generator_Command {
 
 		$this->log( $this->type . ' created successfully: ' . $file_path );
 
-		$this->synopsis( $name );
+		$this->complete_synopsis( $name );
 
 		return Command::SUCCESS;
 	}
