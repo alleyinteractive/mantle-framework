@@ -7,6 +7,7 @@
 
 namespace Mantle\Database\Model\Relations;
 
+use Mantle\Contracts\Database\Updatable;
 use Mantle\Database\Model\Model;
 use Mantle\Database\Model\Model_Exception;
 use Mantle\Database\Query\Builder;
@@ -73,18 +74,18 @@ abstract class Has_One_Or_Many extends Relation {
 					return $this->query->whereIn( $this->local_key, [ PHP_INT_MAX ] );
 				}
 
-				return $this->query->whereIn( $this->local_key, $term_ids );
+				$this->query->whereIn( $this->local_key, $term_ids );
 			} elseif ( $this->is_term_post_relationship() ) {
-				return $this->query->whereTerm( $this->parent->id(), $this->parent->taxonomy() );
+				$this->query->whereTerm( $this->parent->id(), $this->parent->taxonomy() );
 			} elseif ( $this->uses_terms ) {
-				return $this->query->whereTerm(
+				$this->query->whereTerm(
 					$this->get_term_slug_for_relationship(),
 					static::RELATION_TAXONOMY,
 					'IN',
 					'slug',
 				);
 			} else {
-				return $this->query->whereMeta( $this->foreign_key, $this->parent->get( $this->local_key ) );
+				$this->query->whereMeta( $this->foreign_key, $this->parent->get( $this->local_key ) );
 			}
 		}
 	}
@@ -143,7 +144,7 @@ abstract class Has_One_Or_Many extends Relation {
 	 */
 	public function save( $model ): Model {
 		// Save the model if it doesn't exist.
-		if ( ! is_array( $model ) && ! $model->exists ) {
+		if ( ! is_array( $model ) && ! $model->exists && $model instanceof Updatable ) {
 			$model->save();
 		} elseif ( is_array( $model ) ) {
 			foreach ( $model as $model ) {

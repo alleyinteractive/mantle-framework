@@ -8,6 +8,7 @@
 namespace Mantle\Database\Model\Relations;
 
 use Closure;
+use Mantle\Contracts\Database\Core_Object;
 use Mantle\Database\Model\Model;
 use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Term;
@@ -40,7 +41,8 @@ abstract class Relation {
 	/**
 	 * Parent model instance.
 	 *
-	 * @var Model
+	 * @var Model|Post|Term
+	 * @phpstan-var Model|\Mantle\Database\Model\Post|\Mantle\Database\Model\Term
 	 */
 	protected Model $parent;
 

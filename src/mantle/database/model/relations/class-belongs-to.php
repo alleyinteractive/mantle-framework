@@ -62,7 +62,7 @@ class Belongs_To extends Relation {
 	 */
 	public function add_constraints() {
 		if ( ! static::$constraints ) {
-			return $this->query;
+			return;
 		}
 
 		if ( $this->uses_terms ) {
@@ -71,10 +71,12 @@ class Belongs_To extends Relation {
 			if ( empty( $object_ids ) ) {
 				// Prevent the query from going through.
 				// @todo Handle this better.
-				return $this->query->where( 'id', PHP_INT_MAX );
+				$this->query->where( 'id', PHP_INT_MAX );
 			} else {
-				return $this->query->whereIn( 'id', $object_ids );
+				$this->query->whereIn( 'id', $object_ids );
 			}
+
+			return;
 		} else {
 			$meta_value = $this->parent->get_meta( $this->local_key );
 
@@ -89,8 +91,6 @@ class Belongs_To extends Relation {
 				$this->query->where( $this->foreign_key, $meta_value );
 			}
 		}
-
-		return $this->query;
 	}
 
 	/**
@@ -206,20 +206,20 @@ class Belongs_To extends Relation {
 	/**
 	 * Add the query constraints for querying against the relationship.
 	 *
-	 * @param Builder $builder Query builder instance.
-	 * @param string  $compare_value Value to compare against, optional.
-	 * @param string  $compare Comparison operator (=, >, EXISTS, etc.).
+	 * @param Builder     $builder Query builder instance.
+	 * @param string|null $compare_value Value to compare against, optional.
+	 * @param string      $compare Comparison operator (=, >, EXISTS, etc.).
 	 * @return Builder
 	 *
 	 * @throws Model_Exception Thrown on unsupported relationship method.
 	 */
-	public function get_relation_query( Builder $builder, $compare_value = null, string $compare = 'EXISTS' ): Builder {
+	public function get_relation_query( Builder $builder, ?string $compare_value = null, string $compare = 'EXISTS' ): Builder {
 		if ( $this->uses_terms ) {
 			throw new Model_Exception( 'Queries_Relationships does not support post <--> post relationships with terms.' );
 		}
 
 		if ( $compare_value ) {
-			return $builder->whereMeta( $this->local_key, $compare_value, $compare ?? '' );
+			return $builder->whereMeta( $this->local_key, $compare_value, $compare );
 		}
 
 		return $builder->whereMeta( $this->local_key, '', $compare );
