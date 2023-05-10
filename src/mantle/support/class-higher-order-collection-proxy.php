@@ -10,7 +10,7 @@ namespace Mantle\Support;
 /**
  * Higher Order Collection Proxy
  *
- * @link https://laravel-news.com/higher-order-messaging
+ * @mixin Enumerable
  */
 class Higher_Order_Collection_Proxy {
 
@@ -31,8 +31,8 @@ class Higher_Order_Collection_Proxy {
 	/**
 	 * Create a new proxy instance.
 	 *
-	 * @param  \Illuminate\Support\Enumerable $collection
-	 * @param  string                         $method
+	 * @param  Enumerable $collection
+	 * @param  string     $method
 	 * @return void
 	 */
 	public function __construct( Enumerable $collection, $method ) {

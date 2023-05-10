@@ -27,9 +27,9 @@ trait Interacts_With_Hooks {
 	/**
 	 * Expectation Container
 	 *
-	 * @var Expectation_Container
+	 * @var Expectation_Container|null
 	 */
-	protected $expectation_container;
+	protected ?Expectation_Container $expectation_container;
 
 	/**
 	 * Setup the trait listener.

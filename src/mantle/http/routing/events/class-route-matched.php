@@ -35,7 +35,7 @@ class Route_Matched {
 	 *                           information for REST API routes.
 	 * @param Request     $request Current request.
 	 */
-	public function __construct( $route, $request ) {
+	public function __construct( Route|array $route, $request ) {
 		$this->route   = $route;
 		$this->request = $request;
 	}

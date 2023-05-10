@@ -9,6 +9,7 @@ namespace Mantle\Testing\Factory;
 
 use Closure;
 use Faker\Generator;
+use Mantle\Contracts\Database\Core_Object;
 use Mantle\Database\Model\Attachment;
 use Mantle\Database\Model\Model;
 use Mantle\Database\Model\Post;
@@ -42,7 +43,7 @@ class Attachment_Factory extends Post_Factory {
 	 * Creates an object.
 	 *
 	 * @param array $args The arguments.
-	 * @return int|null|
+	 * @return int|null
 	 */
 	public function create( array $args = [] ): ?int {
 		$args['post_type'] = 'attachment';
@@ -74,11 +75,13 @@ class Attachment_Factory extends Post_Factory {
 				$upload   = wp_upload_bits( wp_basename( $file ), null, $contents );
 
 				$type = '';
+
 				if ( ! empty( $upload['type'] ) ) {
 					$type = $upload['type'];
 				} else {
 					$mime = wp_check_filetype( $upload['file'] );
-					if ( $mime ) {
+
+					if ( ! empty( $mime['type'] ) ) {
 						$type = $mime['type'];
 					}
 				}
@@ -99,7 +102,7 @@ class Attachment_Factory extends Post_Factory {
 				// Create the underlying attachment.
 				$attachment = $next( $args );
 
-				$id = $attachment instanceof Model ? $attachment->id() : $attachment;
+				$id = $attachment instanceof Core_Object ? $attachment->id() : $attachment;
 
 				update_attached_file( $id, $upload['file'] );
 				wp_update_attachment_metadata( $id, wp_generate_attachment_metadata( $id, $upload['file'] ) );

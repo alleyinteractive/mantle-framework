@@ -15,12 +15,12 @@ use League\Flysystem\AdapterInterface;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use League\Flysystem\Cached\CachedAdapter;
 use League\Flysystem\Cached\Storage\AbstractCache;
+use League\Flysystem\Cached\Storage\Memory as MemoryStore;
 use League\Flysystem\Filesystem as Flysystem;
 use League\Flysystem\FilesystemInterface;
-use League\Flysystem\Cached\Storage\Memory as MemoryStore;
 use Mantle\Contracts\Application;
-use Mantle\Contracts\Filesystem\Filesystem;
 use Mantle\Contracts\Filesystem\Filesystem_Manager as Filesystem_Manager_Contract;
+use Mantle\Contracts\Filesystem\Filesystem;
 use Mantle\Support\Arr;
 use RuntimeException;
 
@@ -152,7 +152,7 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 			$instance = $this->create_flysystem( $instance, $config );
 		}
 
-		if ( $instance instanceof FilesystemInterface ) {
+		if ( $instance instanceof Flysystem ) {
 			$instance = $this->adapt( $instance );
 		}
 
@@ -162,10 +162,10 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	/**
 	 * Adapt a adapter instance.
 	 *
-	 * @param FilesystemInterface $filesystem Filesystem instance.
+	 * @param Flysystem $filesystem Filesystem instance.
 	 * @return Filesystem_Adapter
 	 */
-	protected function adapt( FilesystemInterface $filesystem ) {
+	protected function adapt( Flysystem $filesystem ) {
 		return new Filesystem_Adapter( $filesystem );
 	}
 
@@ -174,16 +174,15 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 *
 	 * @param AdapterInterface $adapter
 	 * @param array            $config Adapter configuration.
-	 * @return FilesystemInterface
+	 * @return Flysystem
 	 *
 	 * @throws RuntimeException Thrown on missing CachedAdapter.
 	 */
-	protected function create_flysystem( AdapterInterface $adapter, array $config = [] ): FilesystemInterface {
+	protected function create_flysystem( AdapterInterface $adapter, array $config = [] ): Flysystem {
 		$cache  = Arr::pull( $config, 'cache' );
 		$config = Arr::only( $config, [ 'visibility', 'disable_asserts', 'url' ] );
 
 		if ( $cache ) {
-
 			if ( ! class_exists( CachedAdapter::class ) ) {
 				throw new RuntimeException( 'CachedAdapter class is not loaded.' );
 			}
@@ -203,14 +202,14 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 * @todo Add support for other caching adapters.
 	 */
 	protected function create_cache_store( $config ): AbstractCache {
-		return new MemoryStore( $config );
+		return new MemoryStore();
 	}
 
 	/**
 	 * Create an instance of the local driver.
 	 *
 	 * @param  array $config
-	 * @return \Illuminate\Contracts\Filesystem\Filesystem
+	 * @return \Mantle\Contracts\Filesystem\Filesystem
 	 */
 	public function create_local_driver( array $config ) {
 		$permissions = $config['permissions'] ?? [];

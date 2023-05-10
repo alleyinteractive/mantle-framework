@@ -65,21 +65,21 @@ abstract class Test_Case extends BaseTestCase {
 	/**
 	 * Application instance.
 	 *
-	 * @var \Mantle\Contracts\Container|\Mantle\Container\Container
+	 * @var Application|null
 	 */
-	protected $app;
+	protected ?Application $app = null;
 
 	/**
 	 * Factory Instance.
 	 *
-	 * @var Factory_Container
+	 * @var Factory_Container|null
 	 */
-	protected static $factory;
+	protected static ?Factory_Container $factory;
 
 	/**
 	 * Creates the application.
 	 *
-	 * @return \Mantle\Contracts\Application
+	 * @return Application
 	 */
 	abstract public function create_application(): Application;
 
@@ -105,7 +105,7 @@ abstract class Test_Case extends BaseTestCase {
 
 		parent::setUpBeforeClass();
 
-		if ( isset( static::$test_uses[ Refresh_Database::class ] ) ) {
+		if ( isset( static::$test_uses[ Refresh_Database::class ] ) && method_exists( static::class, 'commit_transaction' ) ) {
 			static::commit_transaction();
 		}
 	}
@@ -122,7 +122,7 @@ abstract class Test_Case extends BaseTestCase {
 
 		static::flush_cache();
 
-		if ( isset( static::$test_uses[ Refresh_Database::class ] ) ) {
+		if ( isset( static::$test_uses[ Refresh_Database::class ] ) && method_exists( static::class, 'commit_transaction' ) ) {
 			static::commit_transaction();
 		}
 	}
@@ -144,7 +144,7 @@ abstract class Test_Case extends BaseTestCase {
 			$this->set_up();
 		}
 
-		if ( ! $this->app ) {
+		if ( ! isset( $this->app ) ) {
 			$this->refresh_application();
 		}
 
@@ -302,7 +302,7 @@ abstract class Test_Case extends BaseTestCase {
 	 */
 	protected static function factory() {
 		if ( ! isset( static::$factory ) ) {
-			static::$factory = new Factory_Container( Container::getInstance() );
+			static::$factory = new Factory_Container( Container::get_instance() );
 		}
 
 		return static::$factory;

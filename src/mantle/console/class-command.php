@@ -58,6 +58,13 @@ abstract class Command extends Symfony_Command {
 	protected $signature;
 
 	/**
+	 * The command's help text.
+	 *
+	 * @var string
+	 */
+	protected string $help;
+
+	/**
 	 * Container instance.
 	 *
 	 * @var \Mantle\Contracts\Application
@@ -70,7 +77,7 @@ abstract class Command extends Symfony_Command {
 	public function __construct() {
 		// Infer the name from the signature.
 		if ( ! empty( $this->signature ) ) {
-			$this->set_definition_from_signature( $this->signature );
+			$this->set_definition_from_signature();
 		} else {
 			parent::__construct( $this->name );
 		}

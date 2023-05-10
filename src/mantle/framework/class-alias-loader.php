@@ -30,9 +30,9 @@ class Alias_Loader {
 	/**
 	 * The singleton instance of the loader.
 	 *
-	 * @var static|null
+	 * @var Alias_Loader|null
 	 */
-	protected static $instance;
+	protected static ?Alias_Loader $instance = null;
 
 	/**
 	 * Create a new Alias_Loader instance.
@@ -146,9 +146,9 @@ class Alias_Loader {
 	/**
 	 * Set the value of the singleton alias loader.
 	 *
-	 * @param static $loader Load to set.
+	 * @param Alias_Loader|null $loader Load to set.
 	 */
-	public static function set_instance( $loader ) {
+	public static function set_instance( ?Alias_Loader $loader ) {
 		static::$instance = $loader;
 	}
 }

@@ -319,7 +319,7 @@ trait Rsync_Installation {
 	 * @return string
 	 */
 	protected function get_phpunit_command(): string {
-		$args = (array) $_SERVER['argv'] ?? []; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$args = (array) ( $_SERVER['argv'] ?? [] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
 		if ( ! empty( getenv( 'WP_PHPUNIT_PATH' ) ) ) {
 			$executable = getenv( 'WP_PHPUNIT_PATH' );

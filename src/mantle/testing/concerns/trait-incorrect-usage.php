@@ -71,8 +71,8 @@ trait Incorrect_Usage {
 			}
 		}
 
-		add_action( 'doing_it_wrong_run', [ $this, 'doing_it_wrong_run' ] );
-		add_action( 'doing_it_wrong_trigger_error', '__return_false' );
+		add_action( 'doing_it_wrong_run', [ $this, 'doing_it_wrong_run' ] ); // @phpstan-ignore-line Action callback returns false
+		add_action( 'doing_it_wrong_trigger_error', '__return_false' ); // @phpstan-ignore-line Action callback returns false
 	}
 
 	/**

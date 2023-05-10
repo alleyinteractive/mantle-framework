@@ -31,7 +31,7 @@ trait Installs_WordPress {
 		 *
 		 * @deprecated Logic condensed into {@see \Mantle\Testing\Installation_Manager::after()}.
 		 */
-		$callback = function_exists( 'mantle_after_wordpress_install' ) ? 'mantle_after_wordpress_install' : null;
+		$callback = function_exists( 'mantle_after_wordpress_install' ) ? 'mantle_after_wordpress_install' : 'null';
 
 		\Mantle\Testing\manager()
 			->after( $callback )

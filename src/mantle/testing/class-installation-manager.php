@@ -7,14 +7,16 @@
 
 namespace Mantle\Testing;
 
+use Mantle\Support\Traits\Conditionable;
 use Mantle\Support\Traits\Singleton;
 
 /**
  * Installation Manager
  */
 class Installation_Manager {
-	use Concerns\Rsync_Installation;
-	use Singleton;
+	use Conditionable,
+		Concerns\Rsync_Installation,
+		Singleton;
 
 	/**
 	 * Callbacks for before installation.
@@ -54,7 +56,7 @@ class Installation_Manager {
 	/**
 	 * Define a callback to be invoked after installation.
 	 *
-	 * @param callable $callback Callback to invoke after installation.
+	 * @param callable|null $callback Callback to invoke after installation.
 	 * @return static
 	 */
 	public function after( ?callable $callback ) {
@@ -102,7 +104,7 @@ class Installation_Manager {
 
 		if ( $this->rsync_to ) {
 			$this->perform_rsync_testsuite();
-			return;
+			return $this;
 		}
 
 		foreach ( $this->before_install_callbacks as $callback ) {

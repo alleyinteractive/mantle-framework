@@ -70,7 +70,7 @@ class Term_Factory extends Factory {
 	 *
 	 * Supports an array of post IDs or WP_Post objects.
 	 *
-	 * @param array<int, \WP_Post|int>|\WP_Post|int> ...$posts Posts to assign to the term.
+	 * @param array<int, \WP_Post|int>|\WP_Post|int ...$posts Posts to assign to the term.
 	 * @return static
 	 */
 	public function with_posts( ...$posts ) {
@@ -102,7 +102,7 @@ class Term_Factory extends Factory {
 	 * Retrieves an object by ID.
 	 *
 	 * @param int $object_id The object ID.
-	 * @return \WP_Term|null
+	 * @return \WP_Term|Term|null
 	 */
 	public function get_object_by_id( int $object_id ) {
 		$term = get_term_object( $object_id );

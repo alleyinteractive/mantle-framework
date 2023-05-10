@@ -14,8 +14,8 @@ interface Dispatcher {
 	/**
 	 * Register an event listener with the dispatcher.
 	 *
-	 * @param  string|array    $events
-	 * @param  \Closure|string $listener
+	 * @param  string|array      $events
+	 * @param  \Closure|callable $listener
 	 * @return void
 	 */
 	public function listen( $events, $listener );

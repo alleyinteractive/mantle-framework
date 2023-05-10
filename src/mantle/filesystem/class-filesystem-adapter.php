@@ -14,7 +14,7 @@ use League\Flysystem\AdapterInterface;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use League\Flysystem\Cached\CachedAdapter;
 use League\Flysystem\FileNotFoundException;
-use League\Flysystem\FilesystemInterface;
+use League\Flysystem\Filesystem as Flysystem;
 use Mantle\Contracts\Filesystem\Filesystem;
 use Mantle\Http\Uploaded_File;
 use Mantle\Support\Arr;
@@ -35,16 +35,16 @@ class Filesystem_Adapter implements Filesystem {
 	/**
 	 * Filesystem instance.
 	 *
-	 * @var FilesystemInterface|\League\Flysystem\Filesystem
+	 * @var Flysystem
 	 */
-	protected $driver;
+	protected Flysystem $driver;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param FilesystemInterface $driver Filesystem instance.
+	 * @param Flysystem $driver Filesystem instance.
 	 */
-	public function __construct( FilesystemInterface $driver ) {
+	public function __construct( Flysystem $driver ) {
 		$this->driver = $driver;
 	}
 
@@ -229,7 +229,11 @@ class Filesystem_Adapter implements Filesystem {
 			$adapter = $adapter->getAdapter();
 		}
 
-		return $adapter->getPathPrefix() . $path;
+		if ( method_exists( $adapter, 'getPathPrefix' ) ) {
+			return $adapter->getPathPrefix() . $path;
+		}
+
+		return $path;
 	}
 
 	/**
@@ -285,7 +289,7 @@ class Filesystem_Adapter implements Filesystem {
 	 *
 	 * @param string      $path File path.
 	 * @param string|null $name File name.
-	 * @param array|null  $headers HTTP headers.
+	 * @param array       $headers HTTP headers.
 	 * @return StreamedResponse
 	 */
 	public function download( $path, $name = null, array $headers = [] ): StreamedResponse {
@@ -325,9 +329,9 @@ class Filesystem_Adapter implements Filesystem {
 	/**
 	 * Write the contents of a file.
 	 *
-	 * @param string          $path File path.
-	 * @param string|resource $contents File contents.
-	 * @param array|string    $options  Options for the files or a string visibility.
+	 * @param string                                             $path File path.
+	 * @param string|File|Uploaded_File|StreamInterface|resource $contents File contents.
+	 * @param array|string                                       $options  Options for the files or a string visibility.
 	 * @return bool
 	 */
 	public function put( string $path, $contents, $options = [] ): bool {

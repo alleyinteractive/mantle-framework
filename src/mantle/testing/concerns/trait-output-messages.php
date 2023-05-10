@@ -9,6 +9,7 @@ namespace Mantle\Testing\Concerns;
 
 use ErrorException;
 use NunoMaduro\Collision\Writer;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Whoops\Exception\Inspector;
 
 use function Termwind\render;
@@ -119,9 +120,7 @@ trait Output_Messages {
 			$frame['line'],
 		);
 
-		$output = new \Symfony\Component\console\Output\ConsoleOutput();
-
-		$writer = ( new Writer() )->setOutput( $output );
+		$writer = ( new Writer() )->setOutput( $output = new ConsoleOutput() );
 
 		$writer->showTitle( false );
 

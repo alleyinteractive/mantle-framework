@@ -47,7 +47,7 @@ class Expectation {
 	/**
 	 * Return value comparison callback.
 	 *
-	 * @var callable
+	 * @var callable|null
 	 */
 	protected $return_value_callback;
 
@@ -89,14 +89,14 @@ class Expectation {
 	 * Setup listeners for the applied action.
 	 */
 	protected function setup_applied_hooks() {
-		add_action(
+		add_action( // @phpstan-ignore-line Action callback
 			$this->hook,
 			[ $this, 'record_start' ],
 			-1,
 			99
 		);
 
-		add_action(
+		add_action( // @phpstan-ignore-line Action callback
 			$this->hook,
 			[ $this, 'record_stop' ],
 			PHP_INT_MAX,

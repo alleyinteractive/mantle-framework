@@ -83,7 +83,7 @@ class Repository implements ArrayAccess, Config_Contract {
 	 * @param mixed $offset Offset to retrieve.
 	 * @return bool
 	 */
-	public function offsetExists( $offset ): bool {
+	public function offsetExists( mixed $offset ): bool {
 		return $this->has( $offset );
 	}
 
@@ -93,7 +93,7 @@ class Repository implements ArrayAccess, Config_Contract {
 	 * @param mixed $offset Offset to retrieve.
 	 * @return mixed
 	 */
-	public function offsetGet( $offset ) {
+	public function offsetGet( mixed $offset ): mixed {
 		return $this->get( $offset );
 	}
 
@@ -103,7 +103,7 @@ class Repository implements ArrayAccess, Config_Contract {
 	 * @param mixed $offset Offset to set.
 	 * @param mixed $value Value to set.
 	 */
-	public function offsetSet( $offset, $value ) {
+	public function offsetSet( mixed $offset, mixed $value ): void {
 		$this->set( $offset, $value );
 	}
 
@@ -112,7 +112,7 @@ class Repository implements ArrayAccess, Config_Contract {
 	 *
 	 * @param mixed $offset Offset to unset.
 	 */
-	public function offsetUnset( $offset ) {
+	public function offsetUnset( mixed $offset ): void {
 		$this->set( $offset, null );
 	}
 }

@@ -301,7 +301,7 @@ class Utils {
 	public static function is_debug_mode(): bool {
 		return ! empty(
 			array_intersect(
-				(array) $_SERVER['argv'] ?? [], // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+				(array) ( $_SERVER['argv'] ?? [] ), // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 				[
 					'--debug',
 					'--verbose',

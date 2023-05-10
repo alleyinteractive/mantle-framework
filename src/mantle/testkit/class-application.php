@@ -309,7 +309,7 @@ class Application extends Container implements Application_Contract {
 		static::set_instance( $this );
 
 		$this->instance( 'app', $this );
-		$this->instance( Container\Container::class, $this );
+		$this->instance( Container::class, $this );
 		$this->instance( Container_Contract::class, $this );
 		$this->instance( static::class, $this );
 	}
@@ -318,9 +318,9 @@ class Application extends Container implements Application_Contract {
 	 * Register the base service providers.
 	 */
 	protected function register_base_service_providers() {
-		$this->app->singleton( 'events', fn( $app ) => new Dispatcher( $app ) );
+		$this->singleton( 'events', fn( $app ) => new Dispatcher( $app ) );
 
-		$this->app->singleton(
+		$this->singleton(
 			Generator::class,
 			function() {
 				$factory = Factory::create();
@@ -350,7 +350,7 @@ class Application extends Container implements Application_Contract {
 	 * @throws RuntimeException Thrown on use.
 	 *
 	 * @param string $name Provider class name.
-	 * @return void
+	 * @return Service_Provider|null
 	 */
 	public function get_provider( string $name ): ?Service_Provider {
 		throw new RuntimeException( 'Not supported with Testkit' );
@@ -504,7 +504,7 @@ class Application extends Container implements Application_Contract {
 	 * @throws RuntimeException Thrown on use.
 	 *
 	 * @param callable $callback Callback for the listener.
-	 * @return void
+	 * @return static
 	 */
 	public function booted( callable $callback ): static {
 		throw new RuntimeException( 'Not supported with Testkit' );

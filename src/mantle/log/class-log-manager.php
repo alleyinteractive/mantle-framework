@@ -25,6 +25,8 @@ use function Mantle\Support\Helpers\collect;
 
 /**
  * Log Handler
+ *
+ * @phpstan-type Level Logger::DEBUG|Logger::INFO|Logger::NOTICE|Logger::WARNING|Logger::ERROR|Logger::CRITICAL|Logger::ALERT|Logger::EMERGENCY
  */
 class Log_Manager implements LoggerInterface {
 	/**
@@ -39,14 +41,14 @@ class Log_Manager implements LoggerInterface {
 	 *
 	 * @var Dispatcher
 	 */
-	protected $dispatcher;
+	protected ?Dispatcher $dispatcher;
 
 	/**
 	 * Default logger instance for the application.
 	 *
-	 * @var Logger
+	 * @var Logger|null
 	 */
-	protected $drive;
+	protected ?Logger $drive;
 
 	/**
 	 * Constructor.
@@ -232,6 +234,8 @@ class Log_Manager implements LoggerInterface {
 	 *
 	 * @param  array $config Handler configuration.
 	 * @return int
+	 *
+	 * @phpstan-return Level
 	 *
 	 * @throws \InvalidArgumentException Thrown for unknown log.
 	 */

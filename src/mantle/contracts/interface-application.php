@@ -18,9 +18,10 @@ interface Application extends Container {
 	/**
 	 * Getter for the base path.
 	 *
+	 * @param string $path Path to append.
 	 * @return string
 	 */
-	public function get_base_path(): string;
+	public function get_base_path( string $path = '' ): string;
 
 	/**
 	 * Set the base path for a application.

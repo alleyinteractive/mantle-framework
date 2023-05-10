@@ -277,8 +277,8 @@ trait Interacts_With_Requests {
 	/**
 	 * Retrieve a callback for the stubbed response.
 	 *
-	 * @param string                                $url URL to stub.
-	 * @param Mock_Http_Response|Mock_Http_Sequence $response Response to send.
+	 * @param string                                        $url URL to stub.
+	 * @param Closure|Mock_Http_Response|Mock_Http_Sequence $response Response to send.
 	 * @return Closure
 	 */
 	protected function create_stub_request_callback( string $url, $response ): Closure {
@@ -303,8 +303,6 @@ trait Interacts_With_Requests {
 		if ( empty( $this->recorded_requests ) ) {
 				return collect();
 		}
-
-		$callback = $callback ?: fn () => true;
 
 		return collect( $this->recorded_requests )->filter( fn ( Request $response ) => $callback( $response ) );
 	}
@@ -337,7 +335,8 @@ trait Interacts_With_Requests {
 	 */
 	public function assertRequestSent( $url_or_callback = null, int $expected_times = null ) {
 		if ( is_null( $url_or_callback ) ) {
-			return PHPUnit::assertTrue( $this->recorded_requests->is_not_empty(), 'A request was made.' );
+			PHPUnit::assertTrue( $this->recorded_requests->is_not_empty(), 'A request was made.' );
+			return;
 		}
 
 		if ( is_string( $url_or_callback ) ) {

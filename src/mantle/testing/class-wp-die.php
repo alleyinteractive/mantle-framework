@@ -59,7 +59,7 @@ class WP_Die {
 	 *
 	 * @throws WP_Die_Exception Exception containing the message.
 	 *
-	 * @param string $message The `wp_die()` message.
+	 * @param string|\WP_Error $message The `wp_die()` message.
 	 */
 	public static function handler( $message ) {
 		if ( is_wp_error( $message ) ) {
@@ -143,7 +143,7 @@ class WP_Die {
 
 				echo "DB_NAME: \033[36m" . Utils::DEFAULT_DB_NAME . "\033[0m\n";
 				echo "DB_USER: \033[36m" . Utils::DEFAULT_DB_USER . "\033[0m\n";
-				echo "DB_PASSWORD: \033[36m" . ( Utils::DEFAULT_DB_PASSWORD ?: '(none)' ) . "\033[0m\n";
+				echo "DB_PASSWORD: \033[36m" . ( Utils::DEFAULT_DB_PASSWORD ) . "\033[0m\n";
 				echo "DB_HOST: \033[36m" . Utils::DEFAULT_DB_HOST . "\033[0m\n";
 
 				echo "\n";

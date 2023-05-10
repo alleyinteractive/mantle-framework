@@ -14,7 +14,9 @@ use Mantle\Support\Reflector;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionFunction;
+use ReflectionNamedType;
 use ReflectionParameter;
+use ReflectionUnionType;
 use RuntimeException;
 
 /**
@@ -131,7 +133,7 @@ trait WordPress_Action {
 			return $argument;
 		}
 
-		if ( ! $type->isBuiltin() ) {
+		if ( $type instanceof ReflectionNamedType && ! $type->isBuiltin() ) {
 			$parameter_class = Reflector::get_parameter_class_name( $parameter );
 
 			if ( Reflector::is_parameter_subclass_of( $parameter, Enumerable::class ) ) {
@@ -157,7 +159,7 @@ trait WordPress_Action {
 			 * @param mixed               $argument Argument value.
 			 * @param ReflectionParameter $parameter Callback paramater.
 			 */
-			$modified_argument = $this->dispatch( 'mantle-typehint-resolve:' . $type->getName(), [ null, $argument, $parameter ], true );
+			$modified_argument = $this->dispatch( 'mantle-typehint-resolve:' . $type->getName(), [ null, $argument, $parameter ] );
 
 			if ( $modified_argument ) {
 				return $modified_argument;
@@ -167,14 +169,18 @@ trait WordPress_Action {
 		}
 
 		// Ensure an 'Arrayable' interface is cast to an array properly.
-		if ( 'array' === $type->getName() && $argument instanceof Arrayable ) {
+		if ( $type instanceof ReflectionNamedType && 'array' === $type->getName() && $argument instanceof Arrayable ) {
 			return $argument->to_array();
 		}
 
 		// Handle type casting internal arguments.
 		$argument_type = gettype( $argument );
 
-		if ( $argument_type === $type->getName() ) {
+		if ( ! $type instanceof ReflectionNamedType ) {
+			throw new RuntimeException( $type::class . ' is not a supported type-hint.' );
+		}
+
+		if ( $type instanceof ReflectionNamedType && $argument_type === $type->getName() ) {
 			return $argument;
 		}
 
