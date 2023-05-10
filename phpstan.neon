@@ -9,7 +9,6 @@ parameters:
 		- src/mantle/application
 		- src/mantle/assets
 		- src/mantle/auth
-		# - src/mantle/blocks
 		- src/mantle/cache
 		- src/mantle/config
 		- src/mantle/console
@@ -45,6 +44,7 @@ parameters:
 		- tests/fixtures/phpstan
 
 	excludePaths:
+		- src/mantle/blocks
 		- src/mantle/query-monitor
 		- src/mantle/testing/class-mock-action.php
 		- src/mantle/testing/doubles/class-mockphpmailer.php
