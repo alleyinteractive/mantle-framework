@@ -15,6 +15,7 @@ use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use League\Flysystem\Cached\CachedAdapter;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\FilesystemInterface;
+use League\Flysystem\Filesystem as Flysystem;
 use Mantle\Contracts\Filesystem\Filesystem;
 use Mantle\Http\Uploaded_File;
 use Mantle\Support\Arr;
@@ -35,16 +36,16 @@ class Filesystem_Adapter implements Filesystem {
 	/**
 	 * Filesystem instance.
 	 *
-	 * @var FilesystemInterface|\League\Flysystem\Filesystem
+	 * @var Flysystem
 	 */
-	protected $driver;
+	protected Flysystem $driver;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param FilesystemInterface $driver Filesystem instance.
+	 * @param Flysystem $driver Filesystem instance.
 	 */
-	public function __construct( FilesystemInterface $driver ) {
+	public function __construct( Flysystem $driver ) {
 		$this->driver = $driver;
 	}
 
@@ -229,7 +230,11 @@ class Filesystem_Adapter implements Filesystem {
 			$adapter = $adapter->getAdapter();
 		}
 
-		return $adapter->getPathPrefix() . $path;
+		if ( method_exists( $adapter, 'getPathPrefix' ) ) {
+			return $adapter->getPathPrefix() . $path;
+		}
+
+		return $path;
 	}
 
 	/**
