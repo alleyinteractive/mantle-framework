@@ -12,7 +12,7 @@ parameters:
 		# - src/mantle/blocks
 		- src/mantle/cache
 		- src/mantle/config
-		# - src/mantle/console
+		- src/mantle/console
 		- src/mantle/container
 		- src/mantle/contracts
 		# - src/mantle/database

@@ -11,12 +11,10 @@ use Closure;
 use Mantle\Contracts\Support\Arrayable;
 use Mantle\Support\Str;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 use Mantle\Console\Output_Style;
 
@@ -31,9 +29,9 @@ trait Interacts_With_IO {
 	/**
 	 * Output interface.
 	 *
-	 * @var OutputInterface|Output_Style
+	 * @var Output_Style
 	 */
-	protected OutputInterface $output;
+	protected Output_Style $output;
 
 	/**
 	 * The mapping between human readable verbosity levels and Symfony's OutputInterface.
@@ -444,18 +442,22 @@ trait Interacts_With_IO {
 	/**
 	 * Retrieve the output interface.
 	 *
-	 * @return OutputInterface
+	 * @return OutputInterface|Output_Style
 	 */
-	public function output(): OutputInterface {
+	public function output(): OutputInterface|Output_Style {
 		return $this->output;
 	}
 
 	/**
 	 * Set the output implementation.
 	 *
-	 * @param OutputInterface $output Output interface.
+	 * @param OutputInterface|Output_Style $output Output interface.
 	 */
-	public function set_output( OutputInterface $output ) {
+	public function set_output( OutputInterface|Output_Style $output ) {
+		if ( ! $output instanceof Output_Style ) {
+			$output = new Output_Style( $this->input, $output );
+		}
+
 		$this->output = $output;
 	}
 
