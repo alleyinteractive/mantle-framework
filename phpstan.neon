@@ -40,7 +40,9 @@ parameters:
 
 	scanFiles:
 		- %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-stubs.php
-		- tests/fixtures/phpstan/constants.php
+
+	scanDirectories:
+		- tests/fixtures/phpstan
 
 	excludePaths:
 		- src/mantle/query-monitor
