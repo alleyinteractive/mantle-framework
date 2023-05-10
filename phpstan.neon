@@ -31,7 +31,7 @@ parameters:
 		# - src/mantle/support
 		- src/mantle/testing
 		- src/mantle/testkit
-		# - src/mantle/view
+		- src/mantle/view
 		- mantle.php
 
 	ignoreErrors:
