@@ -300,18 +300,6 @@ class Test_Collection extends Framework_Test_Case {
 		$this->assertEquals(['foo.array', 'bar.array'], $results);
 	}
 
-//	public function testLazyReturnsLazyCollection()
-//	{
-//		$data = new Collection([1, 2, 3, 4, 5]);
-//
-//		$lazy = $data->lazy();
-//
-//		$data->add(6);
-//
-//		$this->assertInstanceOf(LazyCollection::class, $lazy);
-//		$this->assertSame([1, 2, 3, 4, 5], $lazy->all());
-//	}
-
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
@@ -4361,7 +4349,6 @@ class Test_Collection extends Framework_Test_Case {
 	{
 		return [
 			[Collection::class],
-			//[LazyCollection::class],
 		];
 	}
 }
