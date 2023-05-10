@@ -19,7 +19,7 @@ use function Mantle\Support\Helpers\collect;
 /**
  * Post Model
  */
-class Post extends Model implements Contracts\Database\Core_Object, Contracts\Database\Updatable {
+class Post extends Model implements Contracts\Database\Core_Object, Contracts\Database\Model_Meta, Contracts\Database\Updatable {
 	use Events\Post_Events,
 		Meta\Model_Meta,
 		Meta\Post_Meta,
@@ -28,7 +28,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	/**
 	 * Attributes for the model from the object
 	 *
-	 * @var array
+	 * @var array<string, string>
 	 */
 	protected static $aliases = [
 		'content'     => 'post_content',
@@ -218,7 +218,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 			[
 				'status' => 'future',
 				'date'   => $date,
-			] 
+			]
 		);
 	}
 

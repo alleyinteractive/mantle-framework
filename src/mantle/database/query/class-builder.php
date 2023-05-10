@@ -26,6 +26,8 @@ use function Mantle\Support\Helpers\collect;
 
 /**
  * Builder Query Builder
+ *
+ * @template TModel of \Mantle\Database\Model\Model
  */
 abstract class Builder {
 	use Conditionable;
@@ -40,93 +42,93 @@ abstract class Builder {
 	/**
 	 * Result limit per-page.
 	 *
-	 * @var int
+	 * @var int|null
 	 */
-	protected $limit = 100;
+	protected ?int $limit = 100;
 
 	/**
 	 * Result offset.
 	 *
 	 * @var int
 	 */
-	protected $offset = 0;
+	protected int $offset = 0;
 
 	/**
 	 * Result page.
 	 *
 	 * @var int
 	 */
-	protected $page = 1;
+	protected int $page = 1;
 
 	/**
 	 * Where arguments for the query.
 	 *
 	 * @var array
 	 */
-	protected $wheres = [];
+	protected array $wheres = [];
 
 	/**
 	 * Order of the query.
 	 *
 	 * @var string
 	 */
-	protected $order = 'DESC';
+	protected string $order = 'DESC';
 
 	/**
 	 * Query by of the query.
 	 *
 	 * @var string
 	 */
-	protected $order_by = 'date';
+	protected string $order_by = 'date';
 
 	/**
 	 * Meta Query.
 	 *
 	 * @var array
 	 */
-	protected $meta_query = [];
+	protected array $meta_query = [];
 
 	/**
 	 * Query Variable Aliases
 	 *
 	 * @var array
 	 */
-	protected $query_aliases = [];
+	protected array $query_aliases = [];
 
 	/**
 	 * Query Where In Aliases
 	 *
 	 * @var array
 	 */
-	protected $query_where_in_aliases = [];
+	protected array $query_where_in_aliases = [];
 
 	/**
 	 * Query Where Not In Aliases
 	 *
 	 * @var array
 	 */
-	protected $query_where_not_in_aliases = [];
+	protected array $query_where_not_in_aliases = [];
 
 	/**
 	 * Applied global scopes.
 	 *
 	 * @var array
 	 */
-	protected $scopes = [];
+	protected array $scopes = [];
 
 	/**
 	 * Storage of the found rows for a query.
 	 *
 	 * @var int
 	 */
-	protected $found_rows = 0;
+	protected int $found_rows = 0;
 
 	/**
 	 * Relationships to eager load.
 	 *
 	 * @var string[]
 	 */
-	protected $eager_load = [];
+	protected array $eager_load = [];
 
 	/**
 	 * Constructor.
@@ -140,7 +142,7 @@ abstract class Builder {
 	/**
 	 * Get the query results.
 	 *
-	 * @return Collection
+	 * @return Collection<TModel>|TModel[]
 	 */
 	abstract public function get(): Collection;
 
@@ -478,6 +480,7 @@ abstract class Builder {
 	 */
 	public function take( int $limit ) {
 		$this->limit = $limit;
+
 		return $this;
 	}
 
@@ -489,16 +492,37 @@ abstract class Builder {
 	 */
 	public function page( int $page ) {
 		$this->page = $page;
+
 		return $this;
 	}
 
 	/**
 	 * Get the first result of the query.
 	 *
-	 * @return \Mantle\Database\Model|null
+	 * @return \Mantle\Database\Model\Model|null
+	 *
+	 * @phpstan-return TModel|null
 	 */
-	public function first() {
-		return $this->take( 1 )->get()[0] ?? null;
+	public function first(): ?Model {
+		return $this->take( 1 )->get()->first();
+	}
+
+	/**
+	 * Execute the query and get the first result or throw an exception.
+	 *
+	 * @return TModel|\Mantle\Database\Model\Model
+	 * @throws Model_Not_Found_Exception Throws exception if not found.
+	 *
+	 * @phpstan-return TModel
+	 */
+	public function firstOrFail() {
+		$model = $this->first();
+
+		if ( ! $model ) {
+			throw ( new Model_Not_Found_Exception() )->set_model( $this->model );
+		}
+
+		return $model;
 	}
 
 	/**
@@ -521,22 +545,6 @@ abstract class Builder {
 	}
 
 	/**
-	 * Execute the query and get the first result or throw an exception.
-	 *
-	 * @return \Mantle\Database\Model
-	 * @throws Model_Not_Found_Exception Throws exception if not found.
-	 */
-	public function firstOrFail() {
-		$model = $this->first();
-
-		if ( ! $model ) {
-			throw ( new Model_Not_Found_Exception() )->set_model( $this->model );
-		}
-
-		return $model;
-	}
-
-	/**
 	 * Create a simple paginator instance for the current query.
 	 *
 	 * @param int $per_page Items per page.
@@ -544,7 +552,7 @@ abstract class Builder {
 	 * @return PaginatorContract
 	 */
 	public function simple_paginate( int $per_page = 20, int $current_page = null ): PaginatorContract {
-		return Container::getInstance()->make_with(
+		return Container::get_instance()->make(
 			Paginator::class,
 			[
 				'builder'      => $this,
@@ -562,7 +570,7 @@ abstract class Builder {
 	 * @return PaginatorContract
 	 */
 	public function paginate( int $per_page = 20, int $current_page = null ): PaginatorContract {
-		return Container::getInstance()->make_with(
+		return Container::get_instance()->make(
 			Length_Aware_Paginator::class,
 			[
 				'builder'      => $this,

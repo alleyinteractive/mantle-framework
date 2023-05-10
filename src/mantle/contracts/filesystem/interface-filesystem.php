@@ -213,4 +213,16 @@ interface Filesystem {
 	 * @return string|null
 	 */
 	public function url( string $path ): ?string;
+
+	/**
+	 * Get a temporary URL for the file at the given path.
+	 *
+	 * @param  string             $path File path.
+	 * @param  \DateTimeInterface $expiration File expiration.
+	 * @param  array              $options Options for the URL.
+	 * @return string
+	 *
+	 * @throws \RuntimeException Thrown on missing temporary URL.
+	 */
+	public function temporary_url( string $path, $expiration, array $options = [] ): string;
 }

@@ -38,6 +38,13 @@ abstract class Relation {
 	protected $query;
 
 	/**
+	 * Parent model instance.
+	 *
+	 * @var Model
+	 */
+	protected Model $parent;
+
+	/**
 	 * The related model (child).
 	 *
 	 * @var string

@@ -338,7 +338,7 @@ class Factory_Builder {
 					$this->get_raw_attributes( $attributes )
 				);
 
-				if ( isset( $this->connection ) ) {
+				if ( empty( $this->connection ) ) {
 					$instance->setConnection( $this->connection );
 				}
 

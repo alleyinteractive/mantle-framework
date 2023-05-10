@@ -19,14 +19,14 @@ abstract class Seeder {
 	/**
 	 * The container instance.
 	 *
-	 * @var Container
+	 * @var Container|null
 	 */
 	protected $container;
 
 	/**
 	 * The console command instance.
 	 *
-	 * @var Command
+	 * @var Command|null
 	 */
 	protected $command;
 

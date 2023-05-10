@@ -14,7 +14,7 @@ parameters:
 		- src/mantle/console
 		- src/mantle/container
 		- src/mantle/contracts
-		# - src/mantle/database
+		- src/mantle/database
 		- src/mantle/events
 		- src/mantle/facade
 		- src/mantle/faker
@@ -44,6 +44,7 @@ parameters:
 		- tests/fixtures/phpstan
 
 	excludePaths:
+		- src/mantle/database/factory
 		- src/mantle/blocks
 		- src/mantle/query-monitor
 		- src/mantle/testing/class-mock-action.php
