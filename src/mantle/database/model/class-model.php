@@ -328,7 +328,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 * @param mixed $offset Array offset.
 	 * @return mixed
 	 */
-	public function offsetGet( mixed$offset ): mixed {
+	public function offsetGet( mixed $offset ): mixed {
 		return $this->get( $offset );
 	}
 
@@ -336,7 +336,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 * Set data by offset.
 	 *
 	 * @param mixed $offset Offset name.
-	 * @param mixed  $value Value to set.
+	 * @param mixed $value Value to set.
 	 */
 	public function offsetSet( mixed $offset, mixed $value ): void {
 		$this->set( $offset, $value );

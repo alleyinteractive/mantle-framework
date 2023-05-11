@@ -142,7 +142,7 @@ abstract class Builder {
 	/**
 	 * Get the query results.
 	 *
-	 * @return Collection<TModel>|TModel[]
+	 * @return Collection<TModel>
 	 */
 	abstract public function get(): Collection;
 
@@ -643,41 +643,5 @@ abstract class Builder {
 	public function without( ...$relations ) {
 		$this->eager_load = array_diff_key( $this->eager_load, array_flip( $relations ) );
 		return $this;
-	}
-
-	/**
-	 * Eager load relations for a set of models.
-	 *
-	 * @param Collection $models Models to load for.
-	 * @return Collection
-	 */
-	protected function eager_load_relations( Collection $models ): Collection {
-		foreach ( $this->eager_load as $name ) {
-			$models = $this->eager_load_relation( $models, $name );
-		}
-
-		return $models;
-	}
-
-	/**
-	 * Eager load a relation on a set of models.
-	 *
-	 * @param Collection $models Model instances.
-	 * @param string $name Relation name to eager load.
-	 * @return Collection
-	 */
-	protected function eager_load_relation( Collection $models, string $name ) : Collection {
-		$relation = $this->get_relation( $name );
-
-		$results = Relation::no_constraints(
-			function() use ( $models, $relation ) {
-				// Add the eager constraints from the relation to the query.
-				$relation->add_eager_constraints( $models );
-
-				return $relation->get_eager();
-			}
-		);
-
-		return $relation->match( $models, $results );
 	}
 }

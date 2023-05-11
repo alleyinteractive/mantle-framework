@@ -7,10 +7,15 @@
 
 namespace Mantle\Database\Model\Relations;
 
+use Mantle\Contracts\Database\Core_Object;
+use Mantle\Contracts\Database\Model_Meta;
 use Mantle\Contracts\Database\Updatable;
 use Mantle\Database\Model\Model;
 use Mantle\Database\Model\Model_Exception;
+use Mantle\Database\Model\Post;
+use Mantle\Database\Model\Term;
 use Mantle\Database\Query\Builder;
+use Mantle\Database\Query\Post_Query_Builder;
 use Mantle\Support\Collection;
 use RuntimeException;
 use Throwable;
@@ -61,6 +66,11 @@ abstract class Has_One_Or_Many extends Relation {
 	 * Add constraints to the query.
 	 */
 	public function add_constraints() {
+		// todo: remove in PHP 8.1+.
+		if ( ! $this->parent instanceof Core_Object ) {
+			throw new Model_Exception( 'Parent model must be an instance of Core_Object.' );
+		}
+
 		if ( static::$constraints ) {
 			if ( $this->is_post_term_relationship() ) {
 				$term_ids = get_the_terms( $this->parent->id(), $this->related::get_object_name() );
@@ -71,13 +81,14 @@ abstract class Has_One_Or_Many extends Relation {
 
 				// If the post has no terms, 'kill' the query.
 				if ( empty( $term_ids ) ) {
-					return $this->query->whereIn( $this->local_key, [ PHP_INT_MAX ] );
+					$this->query->whereIn( $this->local_key, [ PHP_INT_MAX ] );
+					return;
 				}
 
 				$this->query->whereIn( $this->local_key, $term_ids );
-			} elseif ( $this->is_term_post_relationship() ) {
+			} elseif ( $this->is_term_post_relationship() && $this->parent instanceof Term && $this->query instanceof Post_Query_Builder ) {
 				$this->query->whereTerm( $this->parent->id(), $this->parent->taxonomy() );
-			} elseif ( $this->uses_terms ) {
+			} elseif ( $this->uses_terms && $this->query instanceof Post_Query_Builder ) {
 				$this->query->whereTerm(
 					$this->get_term_slug_for_relationship(),
 					static::RELATION_TAXONOMY,
@@ -127,7 +138,7 @@ abstract class Has_One_Or_Many extends Relation {
 			} else {
 				$this->query->whereIn( $this->local_key, $terms->all() );
 			}
-		} elseif ( $this->is_term_post_relationship() ) {
+		} elseif ( $this->is_term_post_relationship() && $this->query instanceof Post_Query_Builder && $this->parent instanceof Term ) {
 			$this->query->whereTerm( $keys, $this->parent->taxonomy() );
 		} elseif ( $this->uses_terms ) {
 			throw new RuntimeException( 'Eager loading relationships with terms is not supported yet.' );
@@ -156,7 +167,7 @@ abstract class Has_One_Or_Many extends Relation {
 
 		$append = Has_Many::class === get_class( $this ) || is_subclass_of( $this, Has_Many::class );
 
-		if ( $this->is_post_term_relationship() ) {
+		if ( $this->is_post_term_relationship() && $this->parent instanceof Post ) {
 			$this->parent->set_terms( $model, $model::get_object_name(), $append );
 		} elseif ( $this->is_term_post_relationship() ) {
 			$models = is_array( $model ) ? $model : [ $model ];
@@ -183,35 +194,39 @@ abstract class Has_One_Or_Many extends Relation {
 	/**
 	 * Dissociate a model from a parent model.
 	 *
-	 * @param Model $model Model instance to save.
-	 * @return Model
+	 * @param Model|array<mixed, Model> $models Model instance to save.
+	 * @return void
 	 */
-	public function remove( Model $model ): Model {
-		if ( $this->is_post_term_relationship() ) {
-			$this->parent->remove_terms( $model );
+	public function remove( Model|array $models ): void {
+		$models = is_array( $models ) ? $models : [ $models ];
+
+		if ( $this->is_post_term_relationship() && $this->parent instanceof Post ) {
+			$this->parent->remove_terms( $models );
 		} elseif ( $this->is_term_post_relationship() ) {
-			$models = is_array( $model ) ? $model : [ $model ];
-
 			foreach ( $models as $model ) {
-				$model->remove_terms( $this->parent );
-			}
-		} elseif ( $model->exists ) {
-			if ( $this->uses_terms ) {
-				$term = $this->get_term_for_relationship();
-
-				if ( has_term( $term, static::RELATION_TAXONOMY, $model->id() ) ) {
-					wp_remove_object_terms( $model->id(), $term, static::RELATION_TAXONOMY );
+				if ( $model instanceof Post ) {
+					$model->remove_terms( $this->parent );
 				}
-			} else {
-				$model->delete_meta( $this->foreign_key );
+			}
+		} else {
+			foreach ( $models as $model ) {
+				if ( $model->exists ) {
+					if ( $this->uses_terms && $model instanceof Core_Object ) {
+						$term = $this->get_term_for_relationship();
+
+						if ( has_term( $term, static::RELATION_TAXONOMY, $model->id() ) ) {
+							wp_remove_object_terms( $model->id(), $term, static::RELATION_TAXONOMY );
+						}
+					} elseif ( $model instanceof Model_Meta ) {
+						$model->delete_meta( $this->foreign_key );
+					}
+				}
 			}
 		}
 
 		if ( $this->relationship ) {
 			$this->parent->unset_relation( $this->relationship );
 		}
-
-		return $model;
 	}
 
 	/**
@@ -290,6 +305,10 @@ abstract class Has_One_Or_Many extends Relation {
 			$post_term_ids = [];
 
 			foreach ( $results as $result ) {
+				if ( ! $this->parent instanceof Term ) {
+					continue;
+				}
+
 				$terms = get_the_terms( $result->id(), $this->parent->taxonomy() );
 				$terms = is_array( $terms ) ? wp_list_pluck( $terms, 'term_id' ) : [];
 

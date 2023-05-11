@@ -7,6 +7,9 @@
 
 namespace Mantle\Database\Model\Relations;
 
+use Mantle\Contracts\Database\Core_Object;
+use Mantle\Contracts\Database\Model_Meta;
+use Mantle\Contracts\Database\Updatable;
 use Mantle\Database\Model\Model;
 use Mantle\Database\Model\Model_Exception;
 use Mantle\Database\Query\Builder;
@@ -77,7 +80,7 @@ class Belongs_To extends Relation {
 			}
 
 			return;
-		} else {
+		} elseif ( $this->parent instanceof Model_Meta ) {
 			$meta_value = $this->parent->get_meta( $this->local_key );
 
 			if ( empty( $meta_value ) ) {
@@ -143,11 +146,23 @@ class Belongs_To extends Relation {
 	 * @throws Model_Exception Thrown on error setting term for relationship.
 	 */
 	public function associate( Model $model ) {
-		if ( ! $model->exists ) {
+		if ( ! $model->exists && $model instanceof Updatable ) {
 			$model->save();
 		}
 
-		$append = Belongs_To_Many::class === get_class( $this ) || is_subclass_of( $this, Belongs_To_Many::class );
+		if ( ! $model instanceof Core_Object ) {
+			throw new Model_Exception( 'Model must be an instance of Core_Object.' );
+		}
+
+		if ( ! $this->parent instanceof Core_Object ) {
+			throw new Model_Exception( 'Parent model must be an instance of Core_Object.' );
+		}
+
+		if ( ! $this->parent instanceof Model_Meta ) {
+			throw new Model_Exception( 'Parent model must be an instance of Model_Meta.' );
+		}
+
+		$append = Belongs_To_Many::class === $this::class || is_subclass_of( $this, Belongs_To_Many::class );
 
 		if ( $this->uses_terms ) {
 			$set = wp_set_post_terms( $this->parent->id(), [ $this->get_term_for_relationship( $model ) ], static::RELATION_TAXONOMY, $append );
@@ -186,6 +201,15 @@ class Belongs_To extends Relation {
 	 * @return static
 	 */
 	public function dissociate() {
+		// todo: remove in PHP 8.1+.
+		if ( ! $this->parent instanceof Core_Object ) {
+			throw new Model_Exception( 'Parent model must be an instance of Core_Object.' );
+		}
+
+		if ( ! $this->parent instanceof Model_Meta ) {
+			throw new Model_Exception( 'Parent model must be an instance of Model_Meta.' );
+		}
+
 		if ( $this->uses_terms ) {
 			$term_ids = $this->get_term_ids_for_relationship( true );
 
@@ -270,6 +294,10 @@ class Belongs_To extends Relation {
 	 * @return int[]|string[]
 	 */
 	protected function get_term_ids_for_relationship( bool $return_term_ids = false ): array {
+		if ( ! $this->parent instanceof Core_Object ) {
+			throw new Model_Exception( 'Parent model must be an instance of Core_Object.' );
+		}
+
 		$object_terms = get_the_terms( $this->parent->id(), static::RELATION_TAXONOMY );
 
 		if ( empty( $object_terms ) || is_wp_error( $object_terms ) ) {

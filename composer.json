@@ -118,6 +118,7 @@
         "phpcs-modified": "./bin/phpcs-modified-files.sh",
         "phpstan": "phpstan --memory-limit=1024M",
         "phpunit": "phpunit",
+        "phpunit:multisite": "WP_MULTISITE=1 phpunit",
         "release": "monorepo-builder release --ansi",
         "release:patch": "monorepo-builder release patch --ansi",
         "test": [

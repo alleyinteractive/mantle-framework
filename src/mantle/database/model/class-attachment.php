@@ -193,8 +193,8 @@ class Attachment extends Post {
 					[
 						'ID' => $id,
 					]
-					),
-					true,
+				),
+				true,
 			);
 		}
 

@@ -160,10 +160,10 @@ class Post_Query_Builder extends Builder {
 	/**
 	 * Include a taxonomy query.
 	 *
-	 * @param array|string|Term|\WP_Term $term Term ID/array of IDs.
-	 * @param string                     $taxonomy Taxonomy name.
-	 * @param string                     $operator Operator to use, defaults to 'IN'.
-	 * @param string                     $field Field to use for the query, defaults to term ID.
+	 * @param array|string|Term|\WP_Term|int $term Term ID/array of IDs.
+	 * @param string                         $taxonomy Taxonomy name.
+	 * @param string                         $operator Operator to use, defaults to 'IN'.
+	 * @param string                         $field Field to use for the query, defaults to term ID.
 	 *
 	 * @throws Query_Exception Unknown term to query against.
 	 */
