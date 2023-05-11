@@ -872,7 +872,7 @@ trait Enumerates_Values {
 	 * Results array of items from Collection or Arrayable.
 	 *
 	 * @param  mixed $items
-	 * @return array
+	 * @return array<TKey, TValue>
 	 */
 	protected function get_arrayable_items( $items ) {
 		if ( is_array( $items ) ) {
