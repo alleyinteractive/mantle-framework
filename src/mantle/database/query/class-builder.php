@@ -541,7 +541,7 @@ abstract class Builder {
 	 * @return void
 	 */
 	public function delete( bool $force = false ) {
-		$this->all()->each->delete( $force );
+		$this->all()->each->delete( $force ); // @phpstan-ignore-line undefined method
 	}
 
 	/**
