@@ -21,9 +21,9 @@ class Environment {
 	/**
 	 * Variable repository.
 	 *
-	 * @var array
+	 * @var RepositoryInterface|null
 	 */
-	protected static $repository;
+	protected static ?RepositoryInterface $repository;
 
 	/**
 	 * Get the environment repository instance.

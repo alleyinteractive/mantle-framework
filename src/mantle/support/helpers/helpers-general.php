@@ -362,7 +362,7 @@ function with( $value, callable $callback = null ) {
  * @throws \Mantle\Container\Binding_Resolution_Exception Binding resolution exception.
  */
 function factory( $class, $amount = null ) {
-	$factory = Container::getInstance()->make( MantleFactory::class );
+	$factory = Container::get_instance()->make( MantleFactory::class );
 
 	if ( isset( $amount ) && is_int( $amount ) ) {
 		return $factory->of( $class )->times( $amount );
@@ -380,7 +380,7 @@ function factory( $class, $amount = null ) {
  * @return void
  */
 function add_action( string $hook, callable $callable, int $priority = 10 ): void {
-	Container::getInstance()->make( Dispatcher::class )->listen( $hook, $callable, $priority );
+	Container::get_instance()->make( Dispatcher::class )->listen( $hook, $callable, $priority );
 }
 
 /**
@@ -392,7 +392,7 @@ function add_action( string $hook, callable $callable, int $priority = 10 ): voi
  * @return void
  */
 function add_filter( string $hook, callable $callable, int $priority = 10 ): void {
-	Container::getInstance()->make( Dispatcher::class )->listen( $hook, $callable, $priority );
+	Container::get_instance()->make( Dispatcher::class )->listen( $hook, $callable, $priority );
 }
 
 /**
@@ -404,7 +404,7 @@ function add_filter( string $hook, callable $callable, int $priority = 10 ): voi
  * @return array|null
  */
 function event( ...$args ) {
-	return Container::getInstance()->make( 'events' )->dispatch( ...$args );
+	return Container::get_instance()->make( 'events' )->dispatch( ...$args );
 }
 
 /**

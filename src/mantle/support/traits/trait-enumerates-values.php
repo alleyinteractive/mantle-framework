@@ -230,7 +230,7 @@ trait Enumerates_Values {
 	/**
 	 * Execute a callback over each nested chunk of items.
 	 *
-	 * @param  callable(...mixed): mixed  $callback
+	 * @param  callable(array<TKey, TValue>): mixed $callback
 	 * @return static
 	 */
 	public function each_spread( callable $callback ) {
@@ -311,8 +311,11 @@ trait Enumerates_Values {
 	 *
 	 * The callback should return an associative array with a single key/value pair.
 	 *
-	 * @param  callable $callback
-	 * @return static
+	 * @template TMapToGroupsKey of array-key
+	 * @template TMapToGroupsValue
+	 *
+	 * @param  callable(TValue, TKey): array<TMapToGroupsKey, TMapToGroupsValue>  $callback
+	 * @return static<TMapToGroupsKey, static<int, TMapToGroupsValue>>
 	 */
 	public function map_to_groups( callable $callback ) {
 		$groups = $this->map_to_dictionary( $callback );

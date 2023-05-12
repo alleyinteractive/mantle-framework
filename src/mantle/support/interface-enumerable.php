@@ -451,7 +451,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	/**
 	 * Flip the values with their keys.
 	 *
-	 * @return static<TValue, TKey>
+	 * @return static<int|string, TKey>
 	 */
 	public function flip();
 
@@ -955,6 +955,8 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 
 	/**
 	 * Pad collection to the specified length with a value.
+	 *
+	 * @template TPadValue
 	 *
 	 * @param  int  $size
 	 * @param  TPadValue  $value

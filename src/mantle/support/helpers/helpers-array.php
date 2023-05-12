@@ -120,7 +120,7 @@ function data_set( &$target, $key, $value, $overwrite = true ) {
 		$target = [];
 
 		if ( $segments ) {
-			data_set( $target[ $segment ], $segments, $value, $overwrite );
+			data_set( $target[ $segment ], $segments, $value, $overwrite ); // @phpstan-ignore-line offset mixed does not exist
 		} elseif ( $overwrite ) {
 			$target[ $segment ] = $value;
 		}

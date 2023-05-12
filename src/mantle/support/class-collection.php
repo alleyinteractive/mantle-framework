@@ -1314,6 +1314,8 @@ class Collection implements ArrayAccess, Enumerable {
 	 * E.g. new Collection([1, 2, 3])->zip([4, 5, 6]);
 	 *          => [[1, 4], [2, 5], [3, 6]]
 	 *
+	 * @template TZipValue
+	 *
 	 * @param  \Mantle\Contracts\Support\Arrayable<array-key, TZipValue>|iterable<array-key, TZipValue> ...$items
 	 * @return static<int, static<int, TValue|TZipValue>>
 	 */
