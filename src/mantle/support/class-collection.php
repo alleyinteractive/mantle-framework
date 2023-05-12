@@ -32,7 +32,7 @@ use Traversable;
  */
 class Collection implements ArrayAccess, Enumerable {
 	/**
-	 * @use EnumeratesValues<TKey, TValue>
+	 * @use Enumerates_Values<TKey, TValue>
 	 */
 	use Enumerates_Values;
 
