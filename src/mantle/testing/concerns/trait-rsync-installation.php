@@ -54,6 +54,20 @@ trait Rsync_Installation {
 	protected ?string $rsync_subdir = '';
 
 	/**
+	 * Flag to install the VIP MU plugins.
+	 *
+	 * @var boolean
+	 */
+	protected bool $install_vip_mu_plugins = false;
+
+	/**
+	 * Flag to install a Memcache object cache drop-in.
+	 *
+	 * @var boolean
+	 */
+	protected bool $install_object_cache = false;
+
+	/**
 	 * Exclusions to be used when rsyncing the codebase.
 	 *
 	 * @var string[]
@@ -136,39 +150,39 @@ trait Rsync_Installation {
 	/**
 	 * Attempt to install VIP's built mu-plugins into the codebase.
 	 *
+	 * Will only be applied if the codebase is not already within a WordPress and
+	 * is being rsynced to one.
+	 *
 	 * @param bool $install Install VIP's built mu-plugins into the codebase.
 	 * @return static
 	 */
-	public function with_vip_mu_plugins(): static {
+	public function with_vip_mu_plugins( bool $install = true ): static {
 		if ( $this->is_within_wordpress_install() ) {
 			return $this;
 		}
 
-		return $this->after(
-			function () {
-				dd( 'here' );
-			},
-			false,
-		);
+		$this->install_vip_mu_plugins = $install;
+
+		return $this;
 	}
 
 	/**
 	 * Attempt to install the object cache drop-in into the codebase.
 	 *
+	 * Will only be applied if the codebase is not already within a WordPress and
+	 * is being rsynced to one.
+	 *
+	 * @param bool $install Install the object cache drop-in into the codebase.
 	 * @return static
 	 */
-	public function with_object_cache(): static {
+	public function with_object_cache( bool $install = true ): static {
 		if ( $this->is_within_wordpress_install() ) {
 			return $this;
 		}
 
-		return $this->after(
-			function () {
-				dd( 'object cache' );
-				// $this->rsync( 'wp-content/object-cache.php', __DIR__ . '/object-cache.php' );
-			},
-			false,
-		);
+		$this->install_object_cache = $install;
+
+		return $this;
 	}
 
 	/**
@@ -276,7 +290,11 @@ trait Rsync_Installation {
 				exit( 1 );
 			}
 
-			Utils::install_wordpress( $base_install_path );
+			Utils::install_wordpress(
+				directory: $base_install_path,
+				install_vip_mu_plugins: $this->install_vip_mu_plugins,
+				install_object_cache: $this->install_object_cache,
+			);
 
 			Utils::success(
 				"WordPress installed at <em>{$base_install_path}</em>",

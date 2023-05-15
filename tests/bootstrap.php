@@ -13,4 +13,6 @@ define( 'MANTLE_PHPUNIT_TEMPLATE_PATH', __DIR__ . '/template-parts' );
 
 \Mantle\Testing\manager()
 	->maybe_rsync_plugin()
+	->with_object_cache()
+	->with_vip_mu_plugins()
 	->install();
