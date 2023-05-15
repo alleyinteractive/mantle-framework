@@ -31,7 +31,7 @@ class Environment {
 	 * @return \Dotenv\Repository\RepositoryInterface
 	 */
 	public static function get_repository(): RepositoryInterface {
-		if ( null === static::$repository ) {
+		if ( ! isset( static::$repository ) ) {
 			$builder = RepositoryBuilder::createWithDefaultAdapters();
 
 			static::$repository = $builder->immutable()->make();

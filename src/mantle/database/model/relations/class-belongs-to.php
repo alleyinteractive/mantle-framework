@@ -198,6 +198,9 @@ class Belongs_To extends Relation {
 	/**
 	 * Remove the relationship from the model.
 	 *
+	 * @throws Model_Exception Thrown when parent is not an instance of Core_Object.
+	 * @throws Model_Exception Thrown when parent is not an instance of Model_Meta.
+	 *
 	 * @return static
 	 */
 	public function dissociate() {
@@ -288,6 +291,8 @@ class Belongs_To extends Relation {
 
 	/**
 	 * Retrieve term IDs from the current parent for the relationship.
+	 *
+	 * @throws Model_Exception Thrown when parent is not an instance of Core_Object.
 	 *
 	 * @param bool $return_term_ids Flag to return the term ID of the relationship
 	 *                              term, parent ID otherwise.

@@ -5,15 +5,9 @@
  * @package Mantle
  */
 
-// phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment
+// phpcs:disable Squiz.Commenting.FunctionComment
 
 // phpcs:disable Squiz.Commenting.ClassComment.Missing
-
-// phpcs:disable Squiz.Commenting.FunctionComment.ParamNameNoMatch
-
-// phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag
-
-// phpcs:disable Squiz.Commenting.FunctionComment.EmptyThrows
 
 namespace Mantle\Support;
 
@@ -24,6 +18,8 @@ use IteratorAggregate;
 use JsonSerializable;
 
 /**
+ * Enumerable interface.
+ *
  * @template TKey of array-key
  * @template TValue
  *
@@ -468,10 +464,6 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 
 	/**
 	 * Group an associative array by a field or using a callback.
-	 *
-	 * @param  (callable(TValue, TKey): array-key)|array|string  $groupBy
-	 * @param  bool  $preserveKeys
-	 * @return static<array-key, static<array-key, TValue>>
 	 */
 	public function group_by( $group_by, $preserve_keys = false );
 
@@ -592,12 +584,6 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * Run a grouping map over the items.
 	 *
 	 * The callback should return an associative array with a single key/value pair.
-	 *
-	 * @template TMapToGroupsKey of array-key
-	 * @template TMapToGroupsValue
-	 *
-	 * @param  callable(TValue, TKey): array<TMapToGroupsKey, TMapToGroupsValue>  $callback
-	 * @return static<TMapToGroupsKey, static<int, TMapToGroupsValue>>
 	 */
 	public function map_to_groups( callable $callback);
 
@@ -714,12 +700,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	public function for_page( $page, $per_page);
 
 	/**
-	 * Partition the collection into two arrays using the given callback or key.
-	 *
-	 * @param  (callable(TValue, TKey): bool)|TValue|string  $key
-	 * @param  mixed  $operator
-	 * @param  mixed  $value
-	 * @return static<int<0, 1>, static<TKey, TValue>>
+	 * Partition the collection into two arrays using the given callback or key.\
 	 */
 	public function partition( $key, $operator = null, $value = null );
 

@@ -566,9 +566,9 @@ class Arr {
 		if ( is_null( $seed ) ) {
 			shuffle( $array );
 		} else {
-			mt_srand( $seed );
+			mt_srand( $seed ); // phpcs:ignore WordPress.WP.AlternativeFunctions.rand_seeding_mt_srand
 			shuffle( $array );
-			mt_srand();
+			mt_srand(); // phpcs:ignore WordPress.WP.AlternativeFunctions.rand_seeding_mt_srand
 		}
 
 		return $array;

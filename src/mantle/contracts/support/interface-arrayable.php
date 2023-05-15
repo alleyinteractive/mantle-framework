@@ -8,6 +8,8 @@
 namespace Mantle\Contracts\Support;
 
 /**
+ * Arrayable interface.
+ *
  * @template TKey of array-key
  * @template TValue
  */

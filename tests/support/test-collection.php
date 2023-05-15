@@ -460,15 +460,6 @@ class Test_Collection extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
-	public function testCachingIterator($collection)
-	{
-		$c = new $collection(['foo']);
-		$this->assertInstanceOf(CachingIterator::class, $c->get_caching_iterator());
-	}
-
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	public function testFilter($collection)
 	{
 		$c = new $collection([['id' => 1, 'name' => 'Hello'], ['id' => 2, 'name' => 'World']]);

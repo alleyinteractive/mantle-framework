@@ -13,6 +13,7 @@ namespace Mantle\Support;
 
 use ArrayAccess;
 use ArrayIterator;
+use Mantle\Contracts\Support\Arrayable;
 use Mantle\Support\Traits\Enumerates_Values;
 use Mantle\Database\Model;
 
@@ -32,6 +33,8 @@ use Traversable;
  */
 class Collection implements ArrayAccess, Enumerable {
 	/**
+	 * The enumerated values trait.
+	 *
 	 * @use Enumerates_Values<TKey, TValue>
 	 */
 	use Enumerates_Values;
@@ -264,7 +267,7 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Cross join with the given lists, returning all possible permutations.
 	 *
-	 * @template TCrossJoinKey
+	 * @template TCrossJoinKey of array-key
 	 * @template TCrossJoinValue
 	 *
 	 * @param  \Mantle\Contracts\Support\Arrayable<TCrossJoinKey, TCrossJoinValue>|iterable<TCrossJoinKey, TCrossJoinValue> ...$lists
@@ -493,8 +496,8 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Group an associative array by a field or using a callback.
 	 *
-	 * @param  (callable(TValue, TKey): array-key)|array|string $group_by
-	 * @param  bool                                             $preserveKeys
+	 * @param  (callable(TValue, TKey): array-key)|array|string $group_by The field or callback to group by.
+	 * @param  bool                                             $preserve_keys Whether to preserve the keys of the original array.
 	 * @return static<array-key, static<array-key, TValue>>
 	 */
 	public function group_by( $group_by, $preserve_keys = false ) {
@@ -538,7 +541,7 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Key an associative array by a field or using a callback.
 	 *
-	 * @param  (callable(TValue, TKey): array-key)|array|string $keyBy
+	 * @param  (callable(TValue, TKey): array-key)|array|string $key_by The field or callback to key by.
 	 * @return static<array-key, TValue>
 	 */
 	public function key_by( $key_by ) {
@@ -886,16 +889,16 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Get the items in an collection of arrays with filtered child keys.
 	 *
-	 * @param mixed[]|mixed $keys The keys to filter by.
-	 * @return static
+	 * @param TKey[]|TKey|static<int, TKey> $keys The keys to filter by.
+	 * @return static<TKey, array>
 	 */
 	public function only_children( $keys ) {
-		if ( is_null( $keys ) ) {
+		if ( empty( $keys ) ) {
 			return new static( $this->items );
 		}
 
-		if ( $keys instanceof Enumerable ) {
-			$keys = $keys->all();
+		if ( $keys instanceof Arrayable ) {
+			$keys = $keys->to_array();
 		}
 
 		$keys = is_array( $keys ) ? $keys : func_get_args();
@@ -908,7 +911,6 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Get and remove the last item from the collection.
 	 *
-	 * @param  int $count
 	 * @return static<int, TValue>|TValue|null
 	 */
 	public function pop() {
@@ -988,7 +990,6 @@ class Collection implements ArrayAccess, Enumerable {
 	 * Get one or a specified number of items randomly from the collection.
 	 *
 	 * @param  (callable(self<TKey, TValue>): int)|int|null $number
-	 * @param  bool                                         $preserveKeys
 	 * @return static<int, TValue>|TValue
 	 *
 	 * @throws \InvalidArgumentException Throws on number larger than collection length.
@@ -1319,10 +1320,10 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param  \Mantle\Contracts\Support\Arrayable<array-key, TZipValue>|iterable<array-key, TZipValue> ...$items
 	 * @return static<int, static<int, TValue|TZipValue>>
 	 */
-	public function zip( $items ) {
+	public function zip( ...$items ) {
 		$arrayable_items = array_map(
 			fn ( $items ) => $this->get_arrayable_items( $items ),
-			func_get_args()
+			$items,
 		);
 
 		$params = array_merge(

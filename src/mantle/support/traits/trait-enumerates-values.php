@@ -13,7 +13,6 @@
 
 namespace Mantle\Support\Traits;
 
-use CachingIterator;
 use Closure;
 use Exception;
 use Mantle\Contracts\Support\Arrayable;
@@ -314,7 +313,7 @@ trait Enumerates_Values {
 	 * @template TMapToGroupsKey of array-key
 	 * @template TMapToGroupsValue
 	 *
-	 * @param  callable(TValue, TKey): array<TMapToGroupsKey, TMapToGroupsValue>  $callback
+	 * @param  callable(TValue, TKey): array<TMapToGroupsKey, TMapToGroupsValue> $callback
 	 * @return static<TMapToGroupsKey, static<int, TMapToGroupsValue>>
 	 */
 	public function map_to_groups( callable $callback ) {
@@ -466,8 +465,8 @@ trait Enumerates_Values {
 	 *
 	 * @template TWhenEmptyReturnType
 	 *
-	 * @param  (callable( $this): TWhenEmptyReturnType)  $callback
-	 * @param  (callable( $this): TWhenEmptyReturnType)|null  $default
+	 * @param  (callable( $this): TWhenEmptyReturnType)  $callback The callback to apply.
+	 * @param  (callable( $this): TWhenEmptyReturnType)|null  $default The callback to apply if the collection is not empty.
 	 * @return $this|TWhenEmptyReturnType
 	 */
 	public function when_empty( callable $callback, callable $default = null ) {
@@ -479,8 +478,8 @@ trait Enumerates_Values {
 	 *
 	 * @template TWhenNotEmptyReturnType
 	 *
-	 * @param  callable(  $this): TWhenNotEmptyReturnType  $callback
-	 * @param  (callable( $this): TWhenNotEmptyReturnType)|null  $default
+	 * @param  callable(  $this): TWhenNotEmptyReturnType  $callback The callback to apply.
+	 * @param  (callable( $this): TWhenNotEmptyReturnType)|null  $default The callback to apply if the collection is empty.
 	 * @return $this|TWhenNotEmptyReturnType
 	 */
 	public function when_not_empty( callable $callback, callable $default = null ) {
@@ -492,8 +491,8 @@ trait Enumerates_Values {
 	 *
 	 * @template TUnlessEmptyReturnType
 	 *
-	 * @param  callable(  $this): TUnlessEmptyReturnType  $callback
-	 * @param  (callable( $this): TUnlessEmptyReturnType)|null  $default
+	 * @param  callable(  $this): TUnlessEmptyReturnType  $callback The callback to apply.
+	 * @param  (callable( $this): TUnlessEmptyReturnType)|null  $default The callback to apply if the collection is empty.
 	 * @return $this|TUnlessEmptyReturnType
 	 */
 	public function unless_empty( callable $callback, callable $default = null ) {
@@ -505,8 +504,8 @@ trait Enumerates_Values {
 	 *
 	 * @template TUnlessNotEmptyReturnType
 	 *
-	 * @param  callable(  $this): TUnlessNotEmptyReturnType  $callback
-	 * @param  (callable( $this): TUnlessNotEmptyReturnType)|null  $default
+	 * @param  callable(  $this): TUnlessNotEmptyReturnType  $callback The callback to apply.
+	 * @param  (callable( $this): TUnlessNotEmptyReturnType)|null  $default The callback to apply if the collection is not empty.
 	 * @return $this|TUnlessNotEmptyReturnType
 	 */
 	public function unless_not_empty( callable $callback, callable $default = null ) {
@@ -559,9 +558,9 @@ trait Enumerates_Values {
 	/**
 	 * Filter items by the given key value pair.
 	 *
-	 * @param  string                                       $key
-	 * @param  \Mantle\Contracts\Support\Arrayable|iterable $values  $values
-	 * @param  bool                                         $strict
+	 * @param  string                                       $key The key to check.
+	 * @param  \Mantle\Contracts\Support\Arrayable|iterable $values Values to search for.
+	 * @param  bool                                         $strict Whether to use strict comparison.
 	 * @return static
 	 */
 	public function where_in( $key, $values, $strict = false ) {
@@ -577,8 +576,8 @@ trait Enumerates_Values {
 	/**
 	 * Filter items by the given key value pair using strict comparison.
 	 *
-	 * @param  string                                       $key
-	 * @param  \Mantle\Contracts\Support\Arrayable|iterable $values  $values
+	 * @param  string                                       $key The key to check.
+	 * @param  \Mantle\Contracts\Support\Arrayable|iterable $values Values to search for.
 	 * @return static
 	 */
 	public function where_in_strict( $key, $values ) {
@@ -588,8 +587,8 @@ trait Enumerates_Values {
 	/**
 	 * Filter items such that the value of the given key is between the given values.
 	 *
-	 * @param  string                                       $key
-	 * @param  \Mantle\Contracts\Support\Arrayable|iterable $values  $values
+	 * @param  string                                       $key The key to check.
+	 * @param  \Mantle\Contracts\Support\Arrayable|iterable $values Values to search for.
 	 * @return static
 	 */
 	public function where_between( $key, $values ) {
@@ -599,8 +598,8 @@ trait Enumerates_Values {
 	/**
 	 * Filter items such that the value of the given key is not between the given values.
 	 *
-	 * @param  string                                       $key
-	 * @param  \Mantle\Contracts\Support\Arrayable|iterable $values  $values
+	 * @param  string                                       $key The key to check.
+	 * @param  \Mantle\Contracts\Support\Arrayable|iterable $values Values to search against.
 	 * @return static
 	 */
 	public function where_not_between( $key, $values ) {
@@ -614,9 +613,9 @@ trait Enumerates_Values {
 	/**
 	 * Filter items by the given key value pair.
 	 *
-	 * @param  string                                       $key
-	 * @param  \Mantle\Contracts\Support\Arrayable|iterable $values  $values
-	 * @param  bool                                         $strict
+	 * @param  string                                       $key The key to check.
+	 * @param  \Mantle\Contracts\Support\Arrayable|iterable $values Values to search against.
+	 * @param  bool                                         $strict Whether to use strict comparison.
 	 * @return static
 	 */
 	public function where_not_in( $key, $values, $strict = false ) {
@@ -632,8 +631,8 @@ trait Enumerates_Values {
 	/**
 	 * Filter items by the given key value pair using strict comparison.
 	 *
-	 * @param  string                                       $key
-	 * @param  \Mantle\Contracts\Support\Arrayable|iterable $values  $values
+	 * @param  string                                       $key The key to check.
+	 * @param  \Mantle\Contracts\Support\Arrayable|iterable $values Values to search against.
 	 * @return static
 	 */
 	public function where_not_in_strict( $key, $values ) {
@@ -659,7 +658,7 @@ trait Enumerates_Values {
 	 *
 	 * @template TPipeReturnType
 	 *
-	 * @param  callable( $this): TPipeReturnType  $callback
+	 * @param  callable( $this): TPipeReturnType  $callback The callback to pass the collection to.
 	 * @return TPipeReturnType
 	 */
 	public function pipe( callable $callback ) {
@@ -669,7 +668,7 @@ trait Enumerates_Values {
 	/**
 	 * Pass the collection to the given callback and then return it.
 	 *
-	 * @param  callable( $this): mixed  $callback
+	 * @param  callable( $this): mixed  $callback The callback to pass the collection to.
 	 * @return $this
 	 */
 	public function tap( callable $callback ) {
@@ -782,16 +781,6 @@ trait Enumerates_Values {
 	 */
 	public function to_json( $options = 0 ) {
 		return json_encode( $this->jsonSerialize(), $options ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
-	}
-
-	/**
-	 * Get a CachingIterator instance.
-	 *
-	 * @param  int $flags
-	 * @return \CachingIterator
-	 */
-	public function get_caching_iterator( $flags = CachingIterator::CALL_TOSTRING ) {
-		return new CachingIterator( $this->getIterator(), $flags );
 	}
 
 	/**
