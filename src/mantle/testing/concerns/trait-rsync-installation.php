@@ -44,7 +44,7 @@ trait Rsync_Installation {
 	protected ?string $rsync_from = null;
 
 	/**
-	 * Subdirectory from the parent folder being rsynced to the previous working
+	 * Subdirectory from the parent folder being rsync-ed to the previous working
 	 * directory.
 	 *
 	 * @var string
@@ -66,6 +66,13 @@ trait Rsync_Installation {
 		'.turbo',
 		'node_modules',
 	];
+
+	/**
+	 * Install VIP's built mu-plugins into the codebase after rsyncing.
+	 *
+	 * @var bool
+	 */
+	protected bool $install_vip_mu_plugins = false;
 
 	/**
 	 * Rsync the code base to be located under a valid WordPress installation.
@@ -129,6 +136,18 @@ trait Rsync_Installation {
 		}
 
 		return $this->maybe_rsync( '/', dirname( getcwd(), 3 ) );
+	}
+
+	/**
+	 * Attempt to install VIP's built mu-plugins into the codebase.
+	 *
+	 * @param bool $install Install VIP's built mu-plugins into the codebase.
+	 * @return static
+	 */
+	public function install_vip_mu_plugins( bool $install = true ): static {
+		$this->install_vip_mu_plugins = $install;
+
+		return $this;
 	}
 
 	/**
