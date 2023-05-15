@@ -57,11 +57,14 @@ class Installation_Manager {
 	 * Define a callback to be invoked after installation.
 	 *
 	 * @param callable|null $callback Callback to invoke after installation.
+	 * @param bool          $append Whether to append the callback to the list or prepend it.
 	 * @return static
 	 */
-	public function after( ?callable $callback ) {
+	public function after( ?callable $callback, bool $append = true ) {
 		if ( is_callable( $callback ) ) {
-			$this->after_install_callbacks[] = $callback;
+			$append
+				? $this->after_install_callbacks[] = $callback
+				: array_unshift( $this->after_install_callbacks, $callback );
 		}
 
 		return $this;

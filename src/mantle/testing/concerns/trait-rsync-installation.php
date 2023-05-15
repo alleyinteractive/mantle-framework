@@ -25,6 +25,8 @@ use function Mantle\Support\Helpers\collect;
  * the theme to a WordPress installation without needing to run a bash script.
  *
  * After the rsync is complete, PHPUnit will be rerun from the new location.
+ *
+ * @mixin \Mantle\Testing\Installation_Manager
  */
 trait Rsync_Installation {
 	use Conditionable;
@@ -66,13 +68,6 @@ trait Rsync_Installation {
 		'.turbo',
 		'node_modules',
 	];
-
-	/**
-	 * Install VIP's built mu-plugins into the codebase after rsyncing.
-	 *
-	 * @var bool
-	 */
-	protected bool $install_vip_mu_plugins = false;
 
 	/**
 	 * Rsync the code base to be located under a valid WordPress installation.
@@ -144,10 +139,36 @@ trait Rsync_Installation {
 	 * @param bool $install Install VIP's built mu-plugins into the codebase.
 	 * @return static
 	 */
-	public function install_vip_mu_plugins( bool $install = true ): static {
-		$this->install_vip_mu_plugins = $install;
+	public function with_vip_mu_plugins(): static {
+		if ( $this->is_within_wordpress_install() ) {
+			return $this;
+		}
 
-		return $this;
+		return $this->after(
+			function () {
+				dd( 'here' );
+			},
+			false,
+		);
+	}
+
+	/**
+	 * Attempt to install the object cache drop-in into the codebase.
+	 *
+	 * @return static
+	 */
+	public function with_object_cache(): static {
+		if ( $this->is_within_wordpress_install() ) {
+			return $this;
+		}
+
+		return $this->after(
+			function () {
+				dd( 'object cache' );
+				// $this->rsync( 'wp-content/object-cache.php', __DIR__ . '/object-cache.php' );
+			},
+			false,
+		);
 	}
 
 	/**
