@@ -27,7 +27,7 @@ parameters:
 		- src/mantle/new-relic
 		# - src/mantle/queue
 		- src/mantle/rest-api
-		# - src/mantle/scheduling
+		- src/mantle/scheduling
 		- src/mantle/support
 		- src/mantle/testing
 		- src/mantle/testkit

@@ -7,7 +7,8 @@
 
 namespace Mantle\Scheduling;
 
-use Mantle\Contracts\Container;
+use DateTimeZone;
+use Mantle\Contracts\Application;
 use Mantle\Framework\Exceptions\Handler;
 use Throwable;
 
@@ -18,20 +19,6 @@ use Throwable;
  */
 class Job_Event extends Event {
 	/**
-	 * The job class.
-	 *
-	 * @var string
-	 */
-	public $job;
-
-	/**
-	 * The command arguments.
-	 *
-	 * @var array
-	 */
-	public $arguments;
-
-	/**
 	 * The associated command arguments (flags).
 	 *
 	 * @var array
@@ -39,35 +26,21 @@ class Job_Event extends Event {
 	public $assoc_args;
 
 	/**
-	 * Constructor.
-	 *
-	 * @param string $job Job to run.
-	 * @param array  $arguments Arguments for the command.
-	 * @param string $timezone Timezone for the event.
-	 */
-	public function __construct( string $job, array $arguments = [], $timezone = null ) {
-		parent::__construct( null, [], $timezone );
-
-		$this->job       = $job;
-		$this->arguments = $arguments;
-	}
-
-	/**
 	 * Run the event.
 	 *
-	 * @param Container $container Container instance.
+	 * @param Application $container Container instance.
 	 */
-	public function run( Container $container ) {
+	public function run( Application $container ) {
 		if ( ! $this->filters_pass( $container ) ) {
 			return;
 		}
 
 		$this->call_before_callbacks( $container );
 
-		$instance = $container->make( $this->job );
+		$instance = $container->make( $this->callback );
 
 		try {
-			$instance->handle( $this->arguments );
+			$instance->handle( $this->parameters );
 
 			$this->exit_code = 0;
 		} catch ( Throwable $e ) {

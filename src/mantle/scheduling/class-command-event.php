@@ -7,8 +7,9 @@
 
 namespace Mantle\Scheduling;
 
-use Mantle\Contracts\Container;
-use Mantle\Framework\Exceptions\Handler;
+use DateTimeZone;
+use Mantle\Contracts\Application;
+use Mantle\Contracts\Exceptions\Handler;
 use Throwable;
 
 /**
@@ -17,20 +18,6 @@ use Throwable;
  * Allow a command to be run on a specific schedule.
  */
 class Command_Event extends Event {
-	/**
-	 * The command string.
-	 *
-	 * @var string
-	 */
-	public $command;
-
-	/**
-	 * The command arguments.
-	 *
-	 * @var array
-	 */
-	public $arguments;
-
 	/**
 	 * The associated command arguments (flags).
 	 *
@@ -41,35 +28,34 @@ class Command_Event extends Event {
 	/**
 	 * Constructor.
 	 *
-	 * @param string $command Command class to run.
-	 * @param array  $arguments Arguments for the command.
-	 * @param array  $assoc_args Associated arguments for the command.
-	 * @param string $timezone Timezone for the event.
+	 * @param string            $command Command class to run.
+	 * @param array             $parameters Arguments for the command.
+	 * @param array             $assoc_args Associated arguments for the command.
+	 * @param DateTimeZone|null $timezone Timezone for the event.
 	 */
-	public function __construct( string $command, array $arguments = [], array $assoc_args = [], $timezone = null ) {
-		parent::__construct( null, [], $timezone );
+	public function __construct( string $command, array $parameters = [], array $assoc_args = [], ?DateTimeZone $timezone = null ) {
+		parent::__construct( $command, $parameters, $timezone );
 
-		$this->command    = $command;
-		$this->arguments  = $arguments;
 		$this->assoc_args = $assoc_args;
 	}
 
 	/**
 	 * Run the event.
 	 *
-	 * @param Container $container Container instance.
+	 * @param Application $container Container instance.
 	 */
-	public function run( Container $container ) {
+	public function run( Application $container ) {
 		if ( ! $this->filters_pass( $container ) ) {
 			return;
 		}
 
 		$this->call_before_callbacks( $container );
 
-		$instance = $container->make( $this->command );
+		$instance = $container->make( $this->callback );
 
 		try {
-			$instance->callback( $this->arguments, $this->assoc_args );
+			// todo: revisit this and test the command to run.
+			$instance->callback( $this->parameters, $this->assoc_args );
 
 			$this->exit_code = 0;
 		} catch ( Throwable $e ) {
