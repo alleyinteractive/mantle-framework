@@ -25,7 +25,7 @@ parameters:
 		- src/mantle/http-client
 		- src/mantle/log
 		- src/mantle/new-relic
-		# - src/mantle/queue
+		- src/mantle/queue
 		- src/mantle/rest-api
 		- src/mantle/scheduling
 		- src/mantle/support

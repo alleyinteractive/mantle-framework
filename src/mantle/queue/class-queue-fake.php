@@ -10,12 +10,21 @@ namespace Mantle\Queue;
 use Mantle\Queue\Queue_Manager;
 use PHPUnit\Framework\Assert as PHPUnit;
 
+use function Mantle\Support\Helpers\collect;
+
 /**
  * Queue Fake
  *
  * Used as a fake provider to perform assertions against.
  */
 class Queue_Fake extends Queue_Manager {
+	/**
+	 * Pushed jobs.
+	 *
+	 * @var array
+	 */
+	protected $jobs = [];
+
 	/**
 	 * Assert if a job was pushed based on a truth-test callback.
 	 *
@@ -81,21 +90,17 @@ class Queue_Fake extends Queue_Manager {
 	 *
 	 * @param  string        $job
 	 * @param  callable|null $callback
-	 * @return \Illuminate\Support\Collection
+	 * @return \Mantle\Support\Collection
 	 */
 	public function pushed( $job, $callback = null ) {
 		if ( ! $this->hasPushed( $job ) ) {
 			return collect();
 		}
 
-		$callback = $callback ?: function () {
-			return true;
-		};
+		$callback = $callback ?: fn () => true;
 
 		return collect( $this->jobs[ $job ] )->filter(
-			function ( $data ) use ( $callback ) {
-				return $callback( $data['job'], $data['queue'] );
-			}
+			fn ( $data ) => $callback( $data['job'], $data['queue'] ),
 		)->pluck( 'job' );
 	}
 
@@ -107,5 +112,21 @@ class Queue_Fake extends Queue_Manager {
 	 */
 	public function hasPushed( $job ) {
 		return isset( $this->jobs[ $job ] ) && ! empty( $this->jobs[ $job ] );
+	}
+
+	/**
+	 * Push a new job onto the queue.
+	 *
+	 * @param  string|object $job
+	 * @param  mixed         $data
+	 * @param  string        $queue
+	 * @return void
+	 */
+	public function push( $job, $data = '', $queue = null ) {
+		$this->jobs[ is_object( $job ) ? get_class( $job ) : $job ][] = [
+			'data'  => $data,
+			'job'   => $job,
+			'queue' => $queue,
+		];
 	}
 }
