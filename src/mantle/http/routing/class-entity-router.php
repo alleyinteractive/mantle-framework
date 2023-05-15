@@ -178,12 +178,12 @@ class Entity_Router implements Entity_Router_Contract {
 	/**
 	 * Resolve the endpoints to add for an entity.
 	 *
-	 * @param Router $router Router instance.
-	 * @param string $entity Entity class name.
-	 * @param string $controller Controller class name.
+	 * @param Router_Contract $router Router instance.
+	 * @param string          $entity Entity class name.
+	 * @param string          $controller Controller class name.
 	 * @return void
 	 */
-	protected static function resolve_entity_endpoints( Router $router, string $entity, string $controller ): void {
+	protected static function resolve_entity_endpoints( Router_Contract $router, string $entity, string $controller ): void {
 		// Singular endpoint.
 		$single_route = $entity::get_route();
 

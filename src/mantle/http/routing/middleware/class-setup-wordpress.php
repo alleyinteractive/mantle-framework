@@ -70,7 +70,7 @@ class Setup_WordPress {
 
 			$provider = $this->app->get_provider( Query_Monitor_Service_Provider::class );
 
-			if ( $provider ) {
+			if ( $provider instanceof Query_Monitor_Service_Provider ) {
 				$qm_output = $provider->fire_query_monitor_dispatches();
 
 				if ( ! empty( $qm_output ) ) {

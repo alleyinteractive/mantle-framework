@@ -7,31 +7,7 @@ parameters:
 	level: 5
 
 	paths:
-		- src/mantle/application
-		- src/mantle/assets
-		- src/mantle/auth
-		- src/mantle/cache
-		- src/mantle/config
-		- src/mantle/console
-		- src/mantle/container
-		- src/mantle/contracts
-		- src/mantle/database
-		- src/mantle/events
-		- src/mantle/facade
-		- src/mantle/faker
-		- src/mantle/filesystem
-		- src/mantle/framework
-		# - src/mantle/http
-		- src/mantle/http-client
-		- src/mantle/log
-		- src/mantle/new-relic
-		- src/mantle/queue
-		- src/mantle/rest-api
-		- src/mantle/scheduling
-		- src/mantle/support
-		- src/mantle/testing
-		- src/mantle/testkit
-		- src/mantle/view
+		- src/mantle
 		- mantle.php
 
 	ignoreErrors:

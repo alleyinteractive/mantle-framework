@@ -66,9 +66,9 @@ class Factory implements ViewFactory {
 	/**
 	 * Current view being rendered.
 	 *
-	 * @var View
+	 * @var View|null
 	 */
-	protected $current;
+	protected $current = null;
 
 	/**
 	 * The extension to engine bindings.
@@ -171,6 +171,7 @@ class Factory implements ViewFactory {
 	public function push( View $view ) {
 		$this->stack[] = $view;
 		$this->current = $view;
+
 		return $this;
 	}
 
@@ -182,6 +183,7 @@ class Factory implements ViewFactory {
 	 */
 	public function pop() {
 		array_pop( $this->stack );
+
 		$this->current = end( $this->stack );
 
 		if ( ! $this->current ) {
@@ -252,7 +254,7 @@ class Factory implements ViewFactory {
 	 * @throws InvalidArgumentException Thrown if child view not found.
 	 */
 	protected function resolve_child_view_path_from_parent( string $slug ) {
-		$path = Str::before( $this->current->get_path(), '.' ) . '-' . Str::substr( $slug, '1' );
+		$path = Str::before( $this->current->get_path(), '.' ) . '-' . Str::substr( $slug, 1 );
 
 		foreach ( $this->finder->get_possible_view_files( $path ) as $file ) {
 			if ( file_exists( $file ) ) {

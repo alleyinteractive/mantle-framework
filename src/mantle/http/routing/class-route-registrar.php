@@ -19,9 +19,9 @@ class Route_Registrar {
 	/**
 	 * Router instance.
 	 *
-	 * @var Router
+	 * @var Router|null
 	 */
-	protected $router;
+	protected ?Router $router;
 
 	/**
 	 * The attributes to pass on to the router.
@@ -108,24 +108,12 @@ class Route_Registrar {
 	}
 
 	/**
-	 * Register a new route with the given verbs.
-	 *
-	 * @param  array|string               $methods
-	 * @param  string                     $uri
-	 * @param  \Closure|array|string|null $action
-	 * @return \Illuminate\Routing\Route
-	 */
-	public function match( $methods, $uri, $action = null ) {
-		return $this->router->match( $methods, $uri, $this->compile_action( $action ) );
-	}
-
-	/**
 	 * Register a new route with the router.
 	 *
 	 * @param  string                     $method
 	 * @param  string                     $uri
 	 * @param  \Closure|array|string|null $action
-	 * @return \Illuminate\Routing\Route
+	 * @return \Mantle\Http\Routing\Route
 	 */
 	protected function register_route( $method, $uri, $action = null ) {
 		if ( ! is_array( $action ) ) {
@@ -156,9 +144,9 @@ class Route_Registrar {
 	/**
 	 * Pass the REST API method back to the REST API registrar.
 	 *
-	 * @param string          $namespace Route namespace.
-	 * @param \Closure|string $route Route name or callback to register more routes.
-	 * @param array           $args Route arguments.
+	 * @param string         $namespace Route namespace.
+	 * @param Closure|string $route Route name or callback to register more routes.
+	 * @param array|Closure  $args Route arguments.
 	 * @return Rest_Route_Registrar
 	 */
 	public function rest_api( string $namespace, $route, $args = [] ): Rest_Route_Registrar {
@@ -180,7 +168,7 @@ class Route_Registrar {
 	 *
 	 * @param  string $method
 	 * @param  array  $parameters
-	 * @return \Illuminate\Routing\Route|$this
+	 * @return \Mantle\Http\Routing\Route|$this
 	 *
 	 * @throws BadMethodCallException Thrown on missing method.
 	 */

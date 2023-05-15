@@ -14,6 +14,7 @@ declare( strict_types=1 );
 
 use Mantle\Contracts\Http\Routing\Response_Factory;
 use Mantle\Contracts\Http\View\Factory as View_Factory;
+use Mantle\Http\View\View;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
 if ( ! function_exists( 'response' ) ) {
@@ -103,7 +104,7 @@ if ( ! function_exists( 'render_view' ) ) {
 	 * @param string       $slug View slug.
 	 * @param array|string $name View name, optional. Supports passing variables in if
 	 *                           $variables is not used.
-	 * @return View|View_Factory
+	 * @return void
 	 */
 	function render_view( ...$args ) {
 		echo view( ...$args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -134,8 +135,7 @@ if ( ! function_exists( 'loop' ) ) {
 	function loop( ...$args ) {
 		return view()
 			->loop( ...$args )
-			->map
-			->render()
+			->map( fn ( View $item ) => $item->render() )
 			->implode( '' );
 	}
 }
@@ -148,9 +148,9 @@ if ( ! function_exists( 'render_loop' ) ) {
 	 * @param string           $slug View slug.
 	 * @param array|string     $name View name, optional. Supports passing variables in if
 	 *                           $variables is not used.
-	 * @return string
+	 * @return void
 	 */
-	function render_loop( ...$args ) {
+	function render_loop( ...$args ): void {
 		echo loop( ...$args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 }
@@ -167,9 +167,9 @@ if ( ! function_exists( 'iterate' ) ) {
 	 * @return string
 	 */
 	function iterate( ...$args ) {
-		return view()->iterate( ...$args )
-			->map
-			->render()
+		return view()
+			->iterate( ...$args )
+			->map( fn ( View $item ) => $item->render() )
 			->implode( '' );
 	}
 }
@@ -182,9 +182,9 @@ if ( ! function_exists( 'render_iterate' ) ) {
 	 * @param string           $slug View slug.
 	 * @param array|string     $name View name, optional. Supports passing variables in if
 	 *                           $variables is not used.
-	 * @return string
+	 * @return void
 	 */
-	function render_iterate( ...$args ) {
+	function render_iterate( ...$args ): void {
 		echo iterate( ...$args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 }

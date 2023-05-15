@@ -46,9 +46,7 @@ class Route_Signature_Parameters {
 
 		return is_null( $sub_class ) ? $parameters : array_filter(
 			$parameters,
-			function ( $p ) use ( $sub_class ) {
-				return Reflector::is_parameter_subclass_of( $p, $sub_class );
-			}
+			fn ( $p ) => Reflector::is_parameter_subclass_of( $p, $sub_class ),
 		);
 	}
 
@@ -66,7 +64,7 @@ class Route_Signature_Parameters {
 			$method = '__invoke';
 		}
 
-		if ( ! method_exists( $class, $method ) && is_callable( $class, $method ) ) {
+		if ( ! method_exists( $class, $method ) && is_callable( [ $class, $method ] ) ) {
 			return [];
 		}
 

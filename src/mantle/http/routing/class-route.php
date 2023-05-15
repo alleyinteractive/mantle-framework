@@ -10,7 +10,7 @@ namespace Mantle\Http\Routing;
 use ArrayAccess;
 use ArrayObject;
 use JsonSerializable;
-use Mantle\Container\Container;
+use Mantle\Contracts\Container;
 use Mantle\Contracts\Http\Routing\Router;
 use Mantle\Contracts\Support\Arrayable;
 use Mantle\Database\Model\Model;
@@ -48,14 +48,14 @@ class Route extends Symfony_Route {
 	/**
 	 * Container instance.
 	 *
-	 * @var \Mantle\Container\Container
+	 * @var Container
 	 */
 	protected $container;
 
 	/**
 	 * Router instance.
 	 *
-	 * @var Router
+	 * @var Router|null
 	 */
 	protected $router;
 
@@ -83,9 +83,9 @@ class Route extends Symfony_Route {
 	/**
 	 * Constructor.
 	 *
-	 * @param array          $methods HTTP methods the route responds to.
-	 * @param string         $path The path the route responds to.
-	 * @param \Closure|array $action The route callback or array of actions.
+	 * @param array                 $methods HTTP methods the route responds to.
+	 * @param string                $path The path the route responds to.
+	 * @param \Closure|array|string $action The route callback or array of actions.
 	 */
 	public function __construct( array $methods, string $path, $action ) {
 		parent::__construct( $path );
@@ -147,7 +147,7 @@ class Route extends Symfony_Route {
 	 * @return string
 	 */
 	public function get_name(): string {
-		if ( isset( $this->name ) ) {
+		if ( ! empty( $this->name ) ) {
 			return (string) $this->name;
 		}
 
@@ -238,7 +238,7 @@ class Route extends Symfony_Route {
 	 * @todo Add route parameters from the request (pass :slug down to the route).
 	 *
 	 * @param Container $container Service Container.
-	 * @return Response|null
+	 * @return Symfony_Response|null
 	 */
 	public function run( Container $container ): ?Symfony_Response {
 		$this->container = $container;
@@ -382,13 +382,13 @@ class Route extends Symfony_Route {
 		$controller = $this->get_controller_name();
 		$method     = $this->get_controller_method();
 
+		$controller = $this->container->make( $controller );
+
 		$parameters = $this->resolve_class_method_dependencies(
 			$this->get_request_parameters(),
 			$controller,
 			$method
 		);
-
-		$controller = $this->container->make( $controller );
 
 		if ( method_exists( $controller, 'call_action' ) ) {
 			return $controller->call_action( $method, $parameters );
