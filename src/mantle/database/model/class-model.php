@@ -573,7 +573,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 *
 	 * @return array
 	 */
-	public function jsonSerialize() {
+	public function jsonSerialize(): mixed {
 		return $this->to_array();
 	}
 

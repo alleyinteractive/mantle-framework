@@ -229,7 +229,7 @@ class Str {
 	 */
 	public static function ends_with( $haystack, $needles ) {
 		foreach ( (array) $needles as $needle ) {
-			if ( substr( $haystack, - strlen( $needle ) ) === (string) $needle ) {
+			if ( '' !== (string) $needle && str_ends_with( $haystack, (string) $needle ) ) {
 				return true;
 			}
 		}

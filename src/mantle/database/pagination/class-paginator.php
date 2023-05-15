@@ -483,7 +483,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 *
 	 * @return array
 	 */
-	public function jsonSerialize() {
+	public function jsonSerialize(): mixed {
 		return $this->to_array();
 	}
 
@@ -503,7 +503,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 * @param mixed $offset Array offset.
 	 * @return bool
 	 */
-	public function offsetExists( $offset ): bool {
+	public function offsetExists( mixed $offset ): bool {
 		return isset( $this->items[ $offset ] );
 	}
 
@@ -513,7 +513,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 * @param mixed $offset Offset to get.
 	 * @return mixed
 	 */
-	public function offsetGet( $offset ) {
+	public function offsetGet( mixed $offset ): mixed {
 		return $this->items[ $offset ];
 	}
 
@@ -524,7 +524,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 * @param mixed $value  Value to set.
 	 * @return void
 	 */
-	public function offsetSet( $offset, $value ): void {
+	public function offsetSet( mixed $offset, mixed $value ): void {
 		$this->items[ $offset ] = $value;
 	}
 
