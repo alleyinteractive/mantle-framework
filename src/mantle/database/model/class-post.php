@@ -18,8 +18,42 @@ use function Mantle\Support\Helpers\collect;
 
 /**
  * Post Model
+ *
+ * Generate @property for all aliases and elements of WP_Post
+ *
+ * @property int $comment_count
+ * @property int $ID
+ * @property int $menu_order
+ * @property int $post_author
+ * @property int $post_parent
+ * @property string $comment_status
+ * @property string $filter
+ * @property string $guid
+ * @property string $ping_status
+ * @property string $pinged
+ * @property string $post_content
+ * @property string $post_date
+ * @property string $post_date_gmt
+ * @property string $post_excerpt
+ * @property string $post_mime_type
+ * @property string $post_modified
+ * @property string $post_modified_gmt
+ * @property string $post_name
+ * @property string $post_password
+ * @property string $post_status
+ * @property string $post_title
+ * @property string $post_type
+ * @property string $to_ping
+ * @property string $content Alias to post_content.
+ * @property string $date Alias to post_date.
+ * @property string $description Alias to post_excerpt.
+ * @property string $id Alias to ID.
+ * @property string $name Alias to post_title.
+ * @property string $slug Alias to post_name.
+ * @property string $status Alias to post_status.
+ * @property string $title Alias to post_title.
  */
-class Post extends Model implements Contracts\Database\Core_Object, Contracts\Database\Updatable {
+class Post extends Model implements Contracts\Database\Core_Object, Contracts\Database\Model_Meta, Contracts\Database\Updatable {
 	use Events\Post_Events,
 		Meta\Model_Meta,
 		Meta\Post_Meta,
@@ -28,7 +62,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	/**
 	 * Attributes for the model from the object
 	 *
-	 * @var array
+	 * @var array<string, string>
 	 */
 	protected static $aliases = [
 		'content'     => 'post_content',
@@ -218,7 +252,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 			[
 				'status' => 'future',
 				'date'   => $date,
-			] 
+			]
 		);
 	}
 

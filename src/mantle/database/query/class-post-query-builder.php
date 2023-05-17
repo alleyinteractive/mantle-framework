@@ -26,7 +26,7 @@ class Post_Query_Builder extends Builder {
 	 *
 	 * @var array
 	 */
-	protected $query_aliases = [
+	protected array $query_aliases = [
 		'id'          => 'p',
 		'post_author' => 'author',
 		'post_name'   => 'name',
@@ -38,7 +38,7 @@ class Post_Query_Builder extends Builder {
 	 *
 	 * @var array
 	 */
-	protected $query_where_in_aliases = [
+	protected array $query_where_in_aliases = [
 		'author'      => 'author__in',
 		'id'          => 'post__in',
 		'post_name'   => 'post_name__in',
@@ -52,7 +52,7 @@ class Post_Query_Builder extends Builder {
 	 *
 	 * @var array
 	 */
-	protected $query_where_not_in_aliases = [
+	protected array $query_where_not_in_aliases = [
 		'author'      => 'author__not_in',
 		'id'          => 'post__not_in',
 		'post_name'   => 'post_name__not_in',
@@ -66,7 +66,7 @@ class Post_Query_Builder extends Builder {
 	 *
 	 * @var array
 	 */
-	protected $tax_query = [];
+	protected array $tax_query = [];
 
 	/**
 	 * Get the query arguments.
@@ -160,10 +160,10 @@ class Post_Query_Builder extends Builder {
 	/**
 	 * Include a taxonomy query.
 	 *
-	 * @param array|string $term Term ID/array of IDs.
-	 * @param string       $taxonomy Taxonomy name.
-	 * @param string       $operator Operator to use, defaults to 'IN'.
-	 * @param string       $field Field to use for the query, defaults to term ID.
+	 * @param array|string|Term|\WP_Term|int $term Term ID/array of IDs.
+	 * @param string                         $taxonomy Taxonomy name.
+	 * @param string                         $operator Operator to use, defaults to 'IN'.
+	 * @param string                         $field Field to use for the query, defaults to term ID.
 	 *
 	 * @throws Query_Exception Unknown term to query against.
 	 */
@@ -184,11 +184,11 @@ class Post_Query_Builder extends Builder {
 			if ( 'slug' === $field ) {
 				$object = get_term_by( 'slug', $term, $taxonomy );
 
-				if ( ! ( $term instanceof WP_Term ) ) {
+				if ( ! ( $object instanceof WP_Term ) ) {
 					throw new Query_Exception( 'Unknown term to query against with slug (must pass taxonomy): ' . $term );
 				}
 			} else {
-				$object = Helpers\get_term_object( $term );
+				$object = Helpers\get_term_object( (int) $term );
 			}
 
 			if ( empty( $object ) ) {

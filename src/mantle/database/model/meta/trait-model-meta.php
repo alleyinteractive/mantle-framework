@@ -27,7 +27,7 @@ trait Model_Meta {
 	 * @param bool   $single Return the first meta key, defaults to true.
 	 * @return mixed
 	 */
-	public function get_meta( string $meta_key, bool $single = true ) {
+	public function get_meta( string $meta_key, bool $single = true ): mixed {
 		return \get_metadata( $this->get_meta_type(), $this->id(), $meta_key, $single );
 	}
 
@@ -38,7 +38,7 @@ trait Model_Meta {
 	 * @param mixed  $meta_value Meta value to store.
 	 * @param string $prev_value Optional, previous meta value.
 	 */
-	public function add_meta( string $meta_key, $meta_value, $prev_value = '' ) {
+	public function add_meta( string $meta_key, mixed $meta_value, mixed $prev_value = '' ): void {
 		if ( ! $this->id() ) {
 			$this->queue_meta_attribute( $meta_key, $meta_value, false );
 			return;
@@ -54,7 +54,7 @@ trait Model_Meta {
 	 * @param mixed  $meta_value Meta value to store.
 	 * @param string $prev_value Optional, previous meta value.
 	 */
-	public function set_meta( string $meta_key, $meta_value, $prev_value = '' ) {
+	public function set_meta( string $meta_key, mixed $meta_value, mixed $prev_value = '' ): void {
 		if ( ! $this->id() ) {
 			$this->queue_meta_attribute( $meta_key, $meta_value );
 			return;
@@ -69,7 +69,7 @@ trait Model_Meta {
 	 * @param string $meta_key Meta key to delete by.
 	 * @param mixed  $meta_value Previous meta value to delete.
 	 */
-	public function delete_meta( string $meta_key, $meta_value = '' ) {
+	public function delete_meta( string $meta_key, mixed $meta_value = '' ): void {
 		\delete_metadata( $this->get_meta_type(), $this->id(), $meta_key, $meta_value );
 	}
 
@@ -88,7 +88,7 @@ trait Model_Meta {
 	 * @param array $meta_values Meta values to set.
 	 * @throws Model_Exception Thrown on invalid value being set.
 	 */
-	public function set_meta_attribute( $meta_values ) {
+	public function set_meta_attribute( $meta_values ): void {
 		if ( ! is_array( $meta_values ) ) {
 			throw new Model_Exception( 'Attribute value passed to meta is not an array.' );
 		}
@@ -105,7 +105,7 @@ trait Model_Meta {
 	 * @param string $key Meta key.
 	 * @return mixed|null Meta value or null.
 	 */
-	public function get_queued_meta_attribute( string $key ) {
+	public function get_queued_meta_attribute( string $key ): mixed {
 		return ( $this->queued_meta[ $key ] ?? [] )[0] ?? null;
 	}
 
@@ -127,7 +127,7 @@ trait Model_Meta {
 	/**
 	 * Store queued model meta.
 	 */
-	protected function store_queued_meta() {
+	public function store_queued_meta(): void {
 		foreach ( $this->queued_meta as $key => [ $value, $update ] ) {
 			if ( $update ) {
 				$this->set_meta( $key, $value );

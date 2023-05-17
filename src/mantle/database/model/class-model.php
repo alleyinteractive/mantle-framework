@@ -9,6 +9,7 @@ namespace Mantle\Database\Model;
 
 use ArrayAccess;
 use JsonSerializable;
+use Mantle\Contracts\Database\Updatable;
 use Mantle\Contracts\Http\Routing\Url_Routable;
 use Mantle\Contracts\Support\Arrayable;
 use Mantle\Contracts\Support\Jsonable;
@@ -314,31 +315,31 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	/**
 	 * Check if an offset exists.
 	 *
-	 * @param string $offset Array offset.
+	 * @param mixed $offset Array offset.
 	 * @return bool
 	 */
-	public function offsetExists( $offset ): bool {
+	public function offsetExists( mixed $offset ): bool {
 		return null !== $this->get( $offset );
 	}
 
 	/**
 	 * Get data by the offset.
 	 *
-	 * @param string $offset Array offset.
+	 * @param mixed $offset Array offset.
 	 * @return mixed
 	 */
-	public function offsetGet( $offset ) {
+	public function offsetGet( mixed $offset ): mixed {
 		return $this->get( $offset );
 	}
 
 	/**
 	 * Set data by offset.
 	 *
-	 * @param string $offset Offset name.
-	 * @param mixed  $value Value to set.
+	 * @param mixed $offset Offset name.
+	 * @param mixed $value Value to set.
 	 */
-	public function offsetSet( $offset, $value ) {
-		return $this->set( $offset, $value );
+	public function offsetSet( mixed $offset, mixed $value ): void {
+		$this->set( $offset, $value );
 	}
 
 	/**
@@ -346,7 +347,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 *
 	 * @param string $offset Offset to unset.
 	 */
-	public function offsetUnset( $offset ) {
+	public function offsetUnset( mixed $offset ): void {
 		$this->set( $offset, null );
 		unset( $this->relations[ $offset ] );
 	}
@@ -373,7 +374,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	/**
 	 * Create a new query instance.
 	 *
-	 * @return Builder
+	 * @return Builder<static>
 	 */
 	public static function query(): Builder {
 		return ( new static() )->new_query();
@@ -383,7 +384,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 * Begin a query with eager loading.
 	 *
 	 * @param string ...$relations Relations to eager load.
-	 * @return Builder
+	 * @return Builder<static>
 	 */
 	public static function with( ...$relations ): Builder {
 		return static::query()->with( ...$relations );
@@ -393,7 +394,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 * Begin a query without eager loading relationships.
 	 *
 	 * @param string ...$relations Relations to not eager load.
-	 * @return Builder
+	 * @return Builder<static>
 	 */
 	public static function without( ...$relations ): Builder {
 		return static::query()->without( ...$relations );
@@ -402,7 +403,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	/**
 	 * Create a new query instance.
 	 *
-	 * @return Builder
+	 * @return Builder<static>
 	 * @throws Model_Exception Thrown for an unknown query builder for the model.
 	 */
 	public function new_query(): Builder {
@@ -549,8 +550,12 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 */
 	public static function create( array $args ) {
 		$instance = new static();
-		$instance->save( $args );
-		$instance->refresh();
+
+		if ( $instance instanceof Updatable ) {
+			$instance->save( $args );
+			$instance->refresh();
+		}
+
 		return $instance;
 	}
 
@@ -564,6 +569,15 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	}
 
 	/**
+	 * Convert the object into something JSON serializable.
+	 *
+	 * @return array
+	 */
+	public function jsonSerialize() {
+		return $this->to_array();
+	}
+
+	/**
 	 * Convert the object to its JSON representation.
 	 *
 	 * @param int $options json_encode() options.
@@ -571,14 +585,5 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 */
 	public function to_json( $options = 0 ): string {
 		return wp_json_encode( $this->to_array(), $options );
-	}
-
-	/**
-	 * Convert the object into something JSON serializable.
-	 *
-	 * @return array
-	 */
-	public function jsonSerialize() {
-		return $this->to_array();
 	}
 }

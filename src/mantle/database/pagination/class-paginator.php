@@ -99,21 +99,21 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	/**
 	 * The current path resolver callback.
 	 *
-	 * @var \Closure
+	 * @var \Closure|null
 	 */
 	protected static $current_path_resolver;
 
 	/**
 	 * The current page resolver callback.
 	 *
-	 * @var \Closure
+	 * @var \Closure|null
 	 */
 	protected static $current_page_resolver;
 
 	/**
 	 * The URL generator callback.
 	 *
-	 * @var \Closure
+	 * @var \Closure|null
 	 */
 	protected static $url_generator;
 
@@ -288,7 +288,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 */
 	public function append( $key, $value = null ) {
 		if ( is_array( $key ) && null === $value ) {
-			foreach ( $this->append as $k => $v ) {
+			foreach ( $key as $k => $v ) {
 				$this->append( $k, $v );
 			}
 
@@ -370,7 +370,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 * Find the current page from the path.
 	 *
 	 * @param string $path URL path.
-	 * @return int|null
+	 * @return string
 	 */
 	protected static function strip_page_from_path( string $path ): string {
 		if ( ! Str::is( 'page/*', $path ) ) {
@@ -546,7 +546,8 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 */
 	public function view( string $view ) {
 		$this->view = $view;
-		return $view;
+
+		return $this;
 	}
 
 	/**

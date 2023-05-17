@@ -31,7 +31,7 @@ function invalid_hook_removal( $args ) {
 					$hook
 				)
 			),
-			null
+			'',
 		);
 	}
 
@@ -45,7 +45,7 @@ function invalid_hook_removal( $args ) {
 					$hook
 				)
 			),
-			null
+			'',
 		);
 	}
 }

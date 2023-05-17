@@ -197,11 +197,11 @@ class Arr {
 	/**
 	 * Flatten a multi-dimensional array into a single level.
 	 *
-	 * @param  iterable $array Array to process.
-	 * @param  int      $depth Depth to handle.
+	 * @param  iterable  $array Array to process.
+	 * @param  int|float $depth Depth to handle.
 	 * @return array
 	 */
-	public static function flatten( $array, $depth = INF ) {
+	public static function flatten( iterable $array, int|float $depth = INF ) {
 		$result = [];
 
 		foreach ( $array as $item ) {
@@ -343,7 +343,7 @@ class Arr {
 	 * @return bool
 	 */
 	public static function has_any( $array, $keys ): bool {
-		if ( is_null( $keys ) ) {
+		if ( empty( $keys ) ) {
 			return false;
 		}
 
@@ -387,7 +387,7 @@ class Arr {
 	 * @param  array|string $keys Keys to process by.
 	 * @return array
 	 */
-	public static function only( array $array, array $keys ): array {
+	public static function only( array $array, array|string $keys ): array {
 		return array_intersect_key( $array, array_flip( (array) $keys ) );
 	}
 
@@ -559,10 +559,18 @@ class Arr {
 	 * Shuffle the given array and return the result.
 	 *
 	 * @param  array $array Array to process.
+	 * @param  int   $seed Seed to use.
 	 * @return array
 	 */
-	public static function shuffle( array $array ): array {
-		shuffle( $array );
+	public static function shuffle( $array, ?int $seed = null ) {
+		if ( is_null( $seed ) ) {
+			shuffle( $array );
+		} else {
+			mt_srand( $seed ); // phpcs:ignore WordPress.WP.AlternativeFunctions.rand_seeding_mt_srand
+			shuffle( $array );
+			mt_srand(); // phpcs:ignore WordPress.WP.AlternativeFunctions.rand_seeding_mt_srand
+		}
+
 		return $array;
 	}
 
@@ -606,7 +614,7 @@ class Arr {
 	 * @return string
 	 */
 	public static function query( $array ) {
-		return http_build_query( $array, null, '&', PHP_QUERY_RFC3986 );
+		return http_build_query( $array, '', '&', PHP_QUERY_RFC3986 );
 	}
 
 	/**

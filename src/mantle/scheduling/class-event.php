@@ -164,7 +164,7 @@ class Event {
 	/**
 	 * Call all of the "before" callbacks for the event.
 	 *
-	 * @param  \Illuminate\Contracts\Container\Container $container
+	 * @param  \Mantle\Contracts\Container $container
 	 * @return void
 	 */
 	public function call_before_callbacks( Container $container ) {
@@ -176,7 +176,7 @@ class Event {
 	/**
 	 * Call all of the "after" callbacks for the event.
 	 *
-	 * @param  \Illuminate\Contracts\Container\Container $container
+	 * @param  \Mantle\Contracts\Container $container
 	 * @return void
 	 */
 	public function call_after_callbacks( Container $container ) {

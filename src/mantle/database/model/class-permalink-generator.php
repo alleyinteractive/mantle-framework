@@ -7,6 +7,7 @@
 
 namespace Mantle\Database\Model;
 
+use Mantle\Contracts\Database\Core_Object;
 use Mantle\Database\Model\Events\Permalink_Generated;
 
 use function Mantle\Support\Helpers\event;
@@ -20,16 +21,16 @@ class Permalink_Generator {
 	/**
 	 * Model instance.
 	 *
-	 * @var Model
+	 * @var Model|null
 	 */
-	protected $model;
+	protected ?Model $model;
 
 	/**
 	 * Route to generate for.
 	 *
-	 * @var string
+	 * @var string|null
 	 */
-	protected $route;
+	protected ?string $route;
 
 	/**
 	 * Attributes for the generator.
@@ -93,9 +94,9 @@ class Permalink_Generator {
 	/**
 	 * Retrieve the generator route.
 	 *
-	 * @return string
+	 * @return string|null
 	 */
-	public function get_route(): string {
+	public function get_route(): ?string {
 		return $this->route;
 	}
 
@@ -122,7 +123,7 @@ class Permalink_Generator {
 		$value = $this->attributes[ $attribute ] ?? $this->model->get( $attribute );
 
 		// Fallback to the model's slug when using the object name as an attribute.
-		if ( empty( $value ) && $attribute === $this->model::get_object_name() ) {
+		if ( empty( $value ) && $attribute === $this->model::get_object_name() && $this->model instanceof Core_Object ) {
 			$value = $this->model->slug();
 		}
 

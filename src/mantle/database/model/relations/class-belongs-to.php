@@ -7,6 +7,9 @@
 
 namespace Mantle\Database\Model\Relations;
 
+use Mantle\Contracts\Database\Core_Object;
+use Mantle\Contracts\Database\Model_Meta;
+use Mantle\Contracts\Database\Updatable;
 use Mantle\Database\Model\Model;
 use Mantle\Database\Model\Model_Exception;
 use Mantle\Database\Query\Builder;
@@ -62,7 +65,7 @@ class Belongs_To extends Relation {
 	 */
 	public function add_constraints() {
 		if ( ! static::$constraints ) {
-			return $this->query;
+			return;
 		}
 
 		if ( $this->uses_terms ) {
@@ -71,11 +74,13 @@ class Belongs_To extends Relation {
 			if ( empty( $object_ids ) ) {
 				// Prevent the query from going through.
 				// @todo Handle this better.
-				return $this->query->where( 'id', PHP_INT_MAX );
+				$this->query->where( 'id', PHP_INT_MAX );
 			} else {
-				return $this->query->whereIn( 'id', $object_ids );
+				$this->query->whereIn( 'id', $object_ids );
 			}
-		} else {
+
+			return;
+		} elseif ( $this->parent instanceof Model_Meta ) {
 			$meta_value = $this->parent->get_meta( $this->local_key );
 
 			if ( empty( $meta_value ) ) {
@@ -89,8 +94,6 @@ class Belongs_To extends Relation {
 				$this->query->where( $this->foreign_key, $meta_value );
 			}
 		}
-
-		return $this->query;
 	}
 
 	/**
@@ -143,11 +146,23 @@ class Belongs_To extends Relation {
 	 * @throws Model_Exception Thrown on error setting term for relationship.
 	 */
 	public function associate( Model $model ) {
-		if ( ! $model->exists ) {
+		if ( ! $model->exists && $model instanceof Updatable ) {
 			$model->save();
 		}
 
-		$append = Belongs_To_Many::class === get_class( $this ) || is_subclass_of( $this, Belongs_To_Many::class );
+		if ( ! $model instanceof Core_Object ) {
+			throw new Model_Exception( 'Model must be an instance of Core_Object.' );
+		}
+
+		if ( ! $this->parent instanceof Core_Object ) {
+			throw new Model_Exception( 'Parent model must be an instance of Core_Object.' );
+		}
+
+		if ( ! $this->parent instanceof Model_Meta ) {
+			throw new Model_Exception( 'Parent model must be an instance of Model_Meta.' );
+		}
+
+		$append = Belongs_To_Many::class === $this::class || is_subclass_of( $this, Belongs_To_Many::class );
 
 		if ( $this->uses_terms ) {
 			$set = wp_set_post_terms( $this->parent->id(), [ $this->get_term_for_relationship( $model ) ], static::RELATION_TAXONOMY, $append );
@@ -183,9 +198,21 @@ class Belongs_To extends Relation {
 	/**
 	 * Remove the relationship from the model.
 	 *
+	 * @throws Model_Exception Thrown when parent is not an instance of Core_Object.
+	 * @throws Model_Exception Thrown when parent is not an instance of Model_Meta.
+	 *
 	 * @return static
 	 */
 	public function dissociate() {
+		// todo: remove in PHP 8.1+.
+		if ( ! $this->parent instanceof Core_Object ) {
+			throw new Model_Exception( 'Parent model must be an instance of Core_Object.' );
+		}
+
+		if ( ! $this->parent instanceof Model_Meta ) {
+			throw new Model_Exception( 'Parent model must be an instance of Model_Meta.' );
+		}
+
 		if ( $this->uses_terms ) {
 			$term_ids = $this->get_term_ids_for_relationship( true );
 
@@ -206,20 +233,20 @@ class Belongs_To extends Relation {
 	/**
 	 * Add the query constraints for querying against the relationship.
 	 *
-	 * @param Builder $builder Query builder instance.
-	 * @param string  $compare_value Value to compare against, optional.
-	 * @param string  $compare Comparison operator (=, >, EXISTS, etc.).
+	 * @param Builder     $builder Query builder instance.
+	 * @param string|null $compare_value Value to compare against, optional.
+	 * @param string      $compare Comparison operator (=, >, EXISTS, etc.).
 	 * @return Builder
 	 *
 	 * @throws Model_Exception Thrown on unsupported relationship method.
 	 */
-	public function get_relation_query( Builder $builder, $compare_value = null, string $compare = 'EXISTS' ): Builder {
+	public function get_relation_query( Builder $builder, ?string $compare_value = null, string $compare = 'EXISTS' ): Builder {
 		if ( $this->uses_terms ) {
 			throw new Model_Exception( 'Queries_Relationships does not support post <--> post relationships with terms.' );
 		}
 
 		if ( $compare_value ) {
-			return $builder->whereMeta( $this->local_key, $compare_value, $compare ?? '' );
+			return $builder->whereMeta( $this->local_key, $compare_value, $compare );
 		}
 
 		return $builder->whereMeta( $this->local_key, '', $compare );
@@ -265,11 +292,17 @@ class Belongs_To extends Relation {
 	/**
 	 * Retrieve term IDs from the current parent for the relationship.
 	 *
+	 * @throws Model_Exception Thrown when parent is not an instance of Core_Object.
+	 *
 	 * @param bool $return_term_ids Flag to return the term ID of the relationship
 	 *                              term, parent ID otherwise.
 	 * @return int[]|string[]
 	 */
 	protected function get_term_ids_for_relationship( bool $return_term_ids = false ): array {
+		if ( ! $this->parent instanceof Core_Object ) {
+			throw new Model_Exception( 'Parent model must be an instance of Core_Object.' );
+		}
+
 		$object_terms = get_the_terms( $this->parent->id(), static::RELATION_TAXONOMY );
 
 		if ( empty( $object_terms ) || is_wp_error( $object_terms ) ) {

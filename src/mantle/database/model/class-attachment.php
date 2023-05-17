@@ -13,7 +13,7 @@ use Mantle\Facade\Storage;
 /**
  * Attachment Model
  */
-class Attachment extends Post implements Contracts\Database\Core_Object, Contracts\Database\Updatable {
+class Attachment extends Post {
 	/**
 	 * Attachment type for the model.
 	 *
@@ -41,8 +41,7 @@ class Attachment extends Post implements Contracts\Database\Core_Object, Contrac
 			throw new Model_Exception( 'Unable to get attachment URL for unsaved attachment.' );
 		}
 
-		$url = wp_get_attachment_image_url( $this->id(), $size );
-		return $url ?? null;
+		return wp_get_attachment_image_url( $this->id(), $size ) ?: null;
 	}
 
 	/**
@@ -54,7 +53,9 @@ class Attachment extends Post implements Contracts\Database\Core_Object, Contrac
 		$settings = $this->get_cloud_settings();
 
 		if ( empty( $settings['disk'] ) ) {
-			return \wp_get_attachment_url( $this->id() ) ?? null;
+			$url = \wp_get_attachment_url( $this->id() );
+
+			return $url ?: null;
 		}
 
 		// For private attachments serve a temporary URL.
@@ -70,12 +71,13 @@ class Attachment extends Post implements Contracts\Database\Core_Object, Contrac
 	 * Retrieve a temporary URL for a file.
 	 *
 	 * @param \DateTimeInterface $expiration File expiration.
-	 * @return string
+	 * @return string|null
 	 */
-	public function get_temporary_url( $expiration = null ): string {
+	public function get_temporary_url( $expiration = null ): ?string {
 		$settings = $this->get_cloud_settings();
+
 		if ( empty( $settings['disk'] ) ) {
-			return $settings;
+			return null;
 		}
 
 		$disk = $settings['disk'];
@@ -183,7 +185,7 @@ class Attachment extends Post implements Contracts\Database\Core_Object, Contrac
 		$id = $this->id();
 
 		if ( empty( $id ) ) {
-			$save = \wp_insert_attachment( $this->get_attributes() );
+			$save = \wp_insert_attachment( $this->get_attributes(), false, 0, true );
 		} else {
 			$save = \wp_update_post(
 				array_merge(
@@ -191,7 +193,8 @@ class Attachment extends Post implements Contracts\Database\Core_Object, Contrac
 					[
 						'ID' => $id,
 					]
-				)
+				),
+				true,
 			);
 		}
 

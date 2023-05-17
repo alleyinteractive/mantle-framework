@@ -47,8 +47,6 @@ class Model_Service_Provider extends Service_Provider {
 
 	/**
 	 * Bootstrap the service provider.
-	 *
-	 * @throws Provider_Exception Thrown on invalid model.
 	 */
 	public function boot() {
 		parent::boot();

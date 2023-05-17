@@ -93,15 +93,15 @@ class Length_Aware_Paginator extends Paginator {
 			return 0;
 		}
 
-		return ceil( $this->found_rows / $this->per_page );
+		return (int) ceil( $this->found_rows / $this->per_page );
 	}
 
 	/**
 	 * Determine if the paginator has a previous page.
 	 *
-	 * @return int
+	 * @return bool
 	 */
-	public function has_previous(): int {
+	public function has_previous(): bool {
 		return $this->current_page() > $this->max_pages();
 	}
 }

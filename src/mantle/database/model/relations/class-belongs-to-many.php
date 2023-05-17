@@ -18,7 +18,7 @@ class Belongs_To_Many extends Belongs_To {
 	/**
 	 * Retrieve the results of the query.
 	 *
-	 * @return \Mantle\Database\Model\Model|null
+	 * @return Collection|null
 	 */
 	public function get_results() {
 		$this->add_constraints();

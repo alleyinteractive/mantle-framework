@@ -8,14 +8,21 @@
 namespace Mantle\Database\Model;
 
 use Mantle\Contracts\Database\Core_Object;
+use Mantle\Contracts\Database\Model_Meta;
 use Mantle\Contracts\Database\Updatable;
 use Mantle\Database\Query\Term_Query_Builder;
 use Mantle\Support\Helpers;
 
 /**
  * Term Model
+ *
+ * @property int    $id
+ * @property int    $term_id
+ * @property string $name
+ * @property string $slug
+ * @property string $taxonomy
  */
-class Term extends Model implements Core_Object, Updatable {
+class Term extends Model implements Core_Object, Model_Meta, Updatable {
 	use Events\Term_Events,
 		Meta\Model_Meta,
 		Meta\Term_Meta;
@@ -23,7 +30,7 @@ class Term extends Model implements Core_Object, Updatable {
 	/**
 	 * Attributes for the model from the object
 	 *
-	 * @var array
+	 * @var array<string, string>
 	 */
 	protected static $aliases = [
 		'id' => 'term_id',
