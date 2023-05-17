@@ -8,6 +8,7 @@
 
 namespace Mantle\Http\View;
 
+use Illuminate\View\Engines\CompilerEngine;
 use Mantle\Contracts\Http\View\Factory as Factory_Contract;
 use Mantle\Contracts\View\Engine;
 use Mantle\Database\Model\Post;
@@ -18,37 +19,9 @@ use Mantle\Support\Arr;
  */
 class View {
 	/**
-	 * View Factory
-	 *
-	 * @var Factory
-	 */
-	protected $factory;
-
-	/**
-	 * View Engine
-	 *
-	 * @var Engine
-	 */
-	protected $engine;
-
-	/**
-	 * View path.
-	 *
-	 * @var string
-	 */
-	protected $path;
-
-	/**
-	 * Array of view data.
-	 *
-	 * @var array
-	 */
-	protected $data;
-
-	/**
 	 * Post object to set for the post.
 	 *
-	 * @var Post|\WP_Post|int
+	 * @var Post|\WP_Post|int|null
 	 */
 	protected $post;
 
@@ -69,7 +42,7 @@ class View {
 	/**
 	 * Cache TTL for the view.
 	 *
-	 * @var int
+	 * @var int|null
 	 */
 	protected $cache_ttl;
 
@@ -79,13 +52,14 @@ class View {
 	 * @param Factory_Contract                               $factory View Factory.
 	 * @param Engine|\Illuminate\View\Engines\CompilerEngine $engine View Engine.
 	 * @param string                                         $path View path.
-	 * @param array                                          $variables Variables for the view, optional.
+	 * @param array                                          $data Variables for the view, optional.
 	 */
-	public function __construct( Factory_Contract $factory, $engine, string $path, array $variables = [] ) {
-		$this->factory = $factory;
-		$this->engine  = $engine;
-		$this->path    = $path;
-		$this->data    = $variables;
+	public function __construct(
+		protected Factory_Contract $factory,
+		protected Engine|CompilerEngine $engine,
+		protected string $path,
+		protected array $data = [],
+	) {
 	}
 
 	/**

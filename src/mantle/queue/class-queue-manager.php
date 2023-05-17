@@ -26,9 +26,9 @@ class Queue_Manager implements Queue_Manager_Contract {
 	/**
 	 * Provider class map.
 	 *
-	 * @var string[]
+	 * @var class-string<Provider>[]|Provider[]
 	 */
-	protected $providers = [];
+	protected array $providers = [];
 
 	/**
 	 * Provider connections.
@@ -65,20 +65,21 @@ class Queue_Manager implements Queue_Manager_Contract {
 	/**
 	 * Add a provider for the queue manager.
 	 *
-	 * @param string $name Provider name.
-	 * @param string $provider Provider class name/instance.
+	 * @param string                          $name Provider name.
+	 * @param Provider|class-string<Provider> $provider Provider class name/instance.
 	 * @return static
 	 *
 	 * @throws InvalidArgumentException Thrown invalid provider.
 	 */
 	public function add_provider( string $name, $provider ) {
-		$provider_class = is_object( $provider ) ? get_class( $provider ) : $provider;
-
-		if ( ! class_implements( $provider_class, Provider::class ) ) {
-			throw new InvalidArgumentException( "Provider does not implement Provider contract: [$provider_class]" );
+		if ( is_string( $provider ) && ( ! class_exists( $provider ) || ! in_array( Provider::class, class_implements( $provider ), true ) ) ) {
+			throw new InvalidArgumentException( "Provider does not implement Provider contract: [$provider]" );
+		} elseif ( is_object( $provider ) && ! ( $provider instanceof Provider ) ) { // @phpstan-ignore-line is always false
+			throw new InvalidArgumentException( "Provider does not implement Provider contract: [$provider::class]" );
 		}
 
 		$this->providers[ $name ] = $provider;
+
 		return $this;
 	}
 

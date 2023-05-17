@@ -32,16 +32,16 @@ class Schedule {
 	/**
 	 * Container instance.
 	 *
-	 * @var Container
+	 * @var Application
 	 */
 	protected $container;
 
 	/**
 	 * Timezone for scheduling.
 	 *
-	 * @var DateTimeZone
+	 * @var DateTimeZone|null
 	 */
-	protected $timezone;
+	protected ?DateTimeZone $timezone = null;
 
 	/**
 	 * All of the events on the schedule.
@@ -53,10 +53,10 @@ class Schedule {
 	/**
 	 * Constructor.
 	 *
-	 * @param Container    $container Container instance.
+	 * @param Application  $container Application container instance.
 	 * @param DateTimeZone $timezone Timezone instance, optional.
 	 */
-	public function __construct( Container $container, DateTimeZone $timezone = null ) {
+	public function __construct( Application $container, DateTimeZone $timezone = null ) {
 		$this->container = $container;
 
 		if ( $timezone ) {
@@ -87,9 +87,7 @@ class Schedule {
 
 		\add_action(
 			static::CRON_HOOK,
-			function() {
-				app( static::class )->run_due_events();
-			}
+			fn () => app( static::class )->run_due_events(),
 		);
 	}
 
@@ -99,11 +97,7 @@ class Schedule {
 	public function run_due_events() {
 		$this
 			->due_events( $this->container )
-			->each(
-				function ( Event $event ) {
-					$event->run( $this->container );
-				}
-			);
+			->each( fn ( Event $event ) => $event->run( $this->container ) );
 	}
 
 	/**
@@ -178,10 +172,12 @@ class Schedule {
 	 * Get all of the events on the schedule that are due.
 	 *
 	 * @param  Application $app Application instance.
-	 * @return Collection
+	 * @return Collection<int, Event>
 	 */
 	public function due_events( Application $app ): Collection {
-		return collect( $this->events )->filter->is_due( $app );
+		return collect( $this->events() )->filter(
+			fn ( Event $event ) => $event->is_due( $app ),
+		);
 	}
 
 	/**

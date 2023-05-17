@@ -111,17 +111,15 @@ trait Route_Dependency_Resolver {
 	/**
 	 * Determine if an object of the given class is in a list of parameters.
 	 *
-	 * @param  string $class
-	 * @param  array  $parameters
+	 * @param  class-string $class
+	 * @param  array        $parameters
 	 * @return bool
 	 */
-	protected function already_in_parameters( $class, array $parameters ) {
+	protected function already_in_parameters( string $class, array $parameters ) {
 		return ! is_null(
 			Arr::first(
 				$parameters,
-				function ( $value ) use ( $class ) {
-					return $value instanceof $class;
-				}
+				fn ( $value ) => $value instanceof $class,
 			)
 		);
 	}
@@ -130,11 +128,11 @@ trait Route_Dependency_Resolver {
 	 * Splice the given value into the parameter list.
 	 *
 	 * @param  array  $parameters
-	 * @param  string $offset
+	 * @param  int    $offset
 	 * @param  mixed  $value
 	 * @return void
 	 */
-	protected function splice_into_parameters( array &$parameters, $offset, $value ) {
+	protected function splice_into_parameters( array &$parameters, int $offset, mixed $value ) {
 		array_splice(
 			$parameters,
 			$offset,

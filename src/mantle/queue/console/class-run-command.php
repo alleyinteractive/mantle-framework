@@ -74,7 +74,7 @@ class Run_Command extends Command {
 		);
 
 		$this->container['queue.worker']->run(
-			(int) $this->option( 'count', (int) $this->container['config']['queue.batch_size'] ?? 1 ),
+			(int) $this->option( 'count', (int) ( $this->container['config']['queue.batch_size'] ?? 1 ) ),
 			$queue
 		);
 	}

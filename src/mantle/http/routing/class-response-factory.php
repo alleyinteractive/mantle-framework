@@ -92,11 +92,10 @@ class Response_Factory implements Factory_Contract {
 	 * @param  mixed $data
 	 * @param  int   $status
 	 * @param  array $headers
-	 * @param  int   $options
 	 * @return JsonResponse
 	 */
-	public function json( $data = [], $status = 200, array $headers = [], $options = 0 ) {
-		return new JsonResponse( $data, $status, $headers, $options );
+	public function json( $data = [], $status = 200, array $headers = [] ) {
+		return new JsonResponse( $data, $status, $headers, is_string( $data ) );
 	}
 
 	/**
@@ -106,11 +105,10 @@ class Response_Factory implements Factory_Contract {
 	 * @param  mixed  $data
 	 * @param  int    $status
 	 * @param  array  $headers
-	 * @param  int    $options
 	 * @return JsonResponse
 	 */
-	public function jsonp( $callback, $data = [], $status = 200, array $headers = [], $options = 0 ) {
-		return $this->json( $data, $status, $headers, $options )->setCallback( $callback );
+	public function jsonp( $callback, $data = [], $status = 200, array $headers = [] ) {
+		return $this->json( $data, $status, $headers )->setCallback( $callback );
 	}
 
 	/**

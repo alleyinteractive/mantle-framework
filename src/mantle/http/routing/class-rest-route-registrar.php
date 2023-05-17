@@ -118,7 +118,7 @@ class Rest_Route_Registrar {
 						'namespace' => $this->namespace,
 						'route'     => $route,
 					],
-					$request
+					$request,
 				)
 			);
 
@@ -127,9 +127,7 @@ class Rest_Route_Registrar {
 					->send( $request )
 					->through( $this->gather_route_middleware( $middleware ) )
 					->then(
-						function ( WP_REST_Request $request ) use ( $callback ) {
-							return $callback( $request );
-						}
+						fn ( WP_REST_Request $request ) => $callback( $request ),
 					)
 			);
 		};

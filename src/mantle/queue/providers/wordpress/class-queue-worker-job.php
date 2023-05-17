@@ -26,7 +26,7 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 	 *
 	 * @var int
 	 */
-	protected $queue_post_id;
+	protected ?int $queue_post_id = null;
 
 	/**
 	 * Flag if the job failed.
@@ -66,7 +66,7 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 	 * @return int|null
 	 */
 	public function get_post_id(): ?int {
-		return $this->queue_post_id ?? null;
+		return $this->queue_post_id;
 	}
 
 	/**

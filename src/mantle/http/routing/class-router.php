@@ -76,7 +76,7 @@ class Router implements Router_Contract {
 	/**
 	 * REST Route Registrar
 	 *
-	 * @var Rest_Route_Registrar
+	 * @var Rest_Route_Registrar|null
 	 */
 	protected $rest_registrar;
 
@@ -190,7 +190,7 @@ class Router implements Router_Contract {
 	 */
 	public function add_route( array $methods, string $uri, $action ) {
 		// Send the route to the REST Registrar if set.
-		if ( $this->rest_registrar ) {
+		if ( isset( $this->rest_registrar ) ) {
 			$args = [
 				'callback' => $action,
 				'methods'  => $methods,
@@ -301,7 +301,7 @@ class Router implements Router_Contract {
 		$route = Route::get_route_from_match( $match );
 
 		if ( ! $route ) {
-			throw new HttpException( 'Unknown route method: ' . \wp_json_encode( $match ) );
+			throw new HttpException( 500, 'Unknown route method: ' . \wp_json_encode( $match ) );
 		}
 
 		// Store the route match in the request object.
@@ -492,11 +492,11 @@ class Router implements Router_Contract {
 	/**
 	 * Register a REST API route
 	 *
-	 * @param string          $namespace Namespace for the REST API route.
-	 * @param \Closure|string $route Route to register or a callback function that
-	 *                               will register child REST API routes.
-	 * @param array           $args Arguments for the route or callback for the route.
-	 *                              Not used if $route is a callback.
+	 * @param string         $namespace Namespace for the REST API route.
+	 * @param Closure|string $route Route to register or a callback function that
+	 *                              will register child REST API routes.
+	 * @param array|Closure  $args Arguments for the route or callback for the route.
+	 *                             Not used if $route is a callback.
 	 * @return Rest_Route_Registrar
 	 */
 	public function rest_api( string $namespace, $route, $args = [] ) {

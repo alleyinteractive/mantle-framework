@@ -95,7 +95,7 @@ class Response extends HttpFoundationResponse {
 	 * Morph the given content into JSON.
 	 *
 	 * @param  Arrayable|Jsonable|ArrayObject|JsonSerializable|array|mixed $content
-	 * @return string
+	 * @return string|false
 	 */
 	protected function morph_to_json( $content ) {
 		if ( $content instanceof Jsonable ) {

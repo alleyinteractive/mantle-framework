@@ -57,6 +57,7 @@ class Worker {
 	 * @param string $queue Queue name.
 	 */
 	public function run( int $size, string $queue = null ) {
+		$queue  ??= 'default';
 		$provider = $this->manager->get_provider();
 		$jobs     = $provider->pop( $queue, $size );
 
