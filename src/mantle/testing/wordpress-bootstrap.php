@@ -101,6 +101,11 @@ define( 'DISABLE_WP_CRON', true );
 define( 'WP_MEMORY_LIMIT', -1 );
 define( 'WP_MAX_MEMORY_LIMIT', -1 );
 
+// Disable VIP GO cache purging during testing.
+if ( ! defined( 'VIP_GO_DISABLE_CACHE_PURGING' ) ) {
+	define( 'VIP_GO_DISABLE_CACHE_PURGING', true );
+}
+
 $PHP_SELF            = '/index.php';
 $GLOBALS['PHP_SELF'] = '/index.php';
 $_SERVER['PHP_SELF'] = '/index.php';
