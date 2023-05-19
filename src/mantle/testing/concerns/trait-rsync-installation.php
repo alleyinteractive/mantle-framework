@@ -74,13 +74,14 @@ trait Rsync_Installation {
 	 */
 	protected array $rsync_exclusions = [
 		'.buddy-tests',
-		'.composer',
+		'.buddy',
 		'.composer',
 		'.git',
 		'.npm',
 		'.phpcs',
 		'.turbo',
 		'node_modules',
+		'phpstan.neon',
 	];
 
 	/**
@@ -161,6 +162,8 @@ trait Rsync_Installation {
 			return $this;
 		}
 
+		$this->rsync_exclusions[] = 'mu-plugins';
+
 		$this->install_vip_mu_plugins = $install;
 
 		return $this;
@@ -192,6 +195,8 @@ trait Rsync_Installation {
 
 			return $this;
 		}
+
+		$this->rsync_exclusions[] = 'object-cache.php';
 
 		$this->install_object_cache = $install;
 
