@@ -19,6 +19,8 @@ use Mantle\Support\Forward_Calls;
 
 /**
  * Relation base class.
+ *
+ * @template TParent of Model
  */
 abstract class Relation {
 	use Forward_Calls;
@@ -36,6 +38,13 @@ abstract class Relation {
 	 * @var Builder
 	 */
 	protected $query;
+
+	/**
+	 * Parent model instance.
+	 *
+	 * @var Model
+	 */
+	protected Model $parent;
 
 	/**
 	 * The related model (child).

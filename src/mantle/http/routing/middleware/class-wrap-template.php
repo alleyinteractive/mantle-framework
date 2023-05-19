@@ -53,7 +53,7 @@ class Wrap_Template {
 		/**
 		 * Filter the template for wrapping the content.
 		 *
-		 * @param string $template Template to use.
+		 * @param string|null $template Template to use.
 		 */
 		$template = \apply_filters( 'mantle_wrap_template', null );
 

@@ -16,13 +16,6 @@ use Closure;
  */
 class Pending_Closure_Dispatch extends Pending_Dispatch {
 	/**
-	 * Job instance.
-	 *
-	 * @var Closure_Job
-	 */
-	protected $job;
-
-	/**
 	 * Add a callback to be executed on failure.
 	 *
 	 * @param Closure $callback Callback to invoke.

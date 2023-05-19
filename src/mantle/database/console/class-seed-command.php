@@ -21,7 +21,7 @@ class Seed_Command extends Command {
 	/**
 	 * Command signature.
 	 *
-	 * @var string|array
+	 * @var string
 	 */
 	protected $signature = 'db:seed {--class=}';
 

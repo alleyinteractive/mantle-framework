@@ -49,7 +49,7 @@ trait Interacts_With_Input {
 	 * @param  string|array|null $default
 	 * @return string|array|null
 	 */
-	public function header( $key = null, $default = null ) {
+	public function header( $key = null, $default = null ): string|array|null {
 		return $this->retrieve_item( 'headers', $key, $default );
 	}
 
@@ -58,12 +58,18 @@ trait Interacts_With_Input {
 	 *
 	 * @return string|null
 	 */
-	public function bearer_token() {
+	public function bearer_token(): ?string {
 		$header = $this->header( 'Authorization', '' );
+
+		if ( is_array( $header ) ) {
+			$header = Arr::first( $header );
+		}
 
 		if ( Str::starts_with( $header, 'Bearer ' ) ) {
 			return Str::substr( $header, 7 );
 		}
+
+		return $header;
 	}
 
 	/**
@@ -72,7 +78,7 @@ trait Interacts_With_Input {
 	 * @param  string|array $key
 	 * @return bool
 	 */
-	public function exists( $key ) {
+	public function exists( $key ): bool {
 		return $this->has( $key );
 	}
 
@@ -321,7 +327,7 @@ trait Interacts_With_Input {
 	 * @return string|array|null
 	 */
 	protected function retrieve_item( $source, $key, $default ) {
-		if ( is_null( $key ) ) {
+		if ( empty( $key ) ) {
 			return $this->$source->all();
 		}
 
@@ -336,7 +342,10 @@ trait Interacts_With_Input {
 	public function all_files() {
 		$files = $this->files->all();
 
-		$this->converted_files = $this->converted_files ?? $this->convert_uploaded_files( $files );
+		if ( ! isset( $this->converted_files ) ) {
+			$this->converted_files = $this->convert_uploaded_files( $files );
+		}
+
 		return $this->converted_files;
 	}
 
@@ -397,7 +406,7 @@ trait Interacts_With_Input {
 	 *
 	 * @param  string|null $key
 	 * @param  mixed       $default
-	 * @return \Illuminate\Http\Uploaded_File|\Illuminate\Http\Uploaded_File[]|array|null
+	 * @return \Mantle\Http\Uploaded_File|\Mantle\Http\Uploaded_File[]|null
 	 */
 	public function file( $key = null, $default = null ) {
 		return data_get( $this->all_files(), $key, $default );

@@ -323,29 +323,29 @@ class SupportHelpersArrayTest extends TestCase {
 
 class SupportTestArrayAccess implements ArrayAccess
 {
-	protected $attributes = [];
+	protected array $attributes = [];
 
-	public function __construct($attributes = [])
+	public function __construct(array $attributes = [])
 	{
 		$this->attributes = $attributes;
 	}
 
-	public function offsetExists($offset)
+	public function offsetExists(mixed $offset): bool
 	{
 		return array_key_exists($offset, $this->attributes);
 	}
 
-	public function offsetGet($offset)
+	public function offsetGet(mixed $offset): mixed
 	{
 		return $this->attributes[$offset];
 	}
 
-	public function offsetSet($offset, $value)
+	public function offsetSet(mixed $offset, mixed $value): void
 	{
 		$this->attributes[$offset] = $value;
 	}
 
-	public function offsetUnset($offset)
+	public function offsetUnset(mixed $offset): void
 	{
 		unset($this->attributes[$offset]);
 	}

@@ -460,15 +460,6 @@ class Test_Collection extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
-	public function testCachingIterator($collection)
-	{
-		$c = new $collection(['foo']);
-		$this->assertInstanceOf(CachingIterator::class, $c->get_caching_iterator());
-	}
-
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	public function testFilter($collection)
 	{
 		$c = new $collection([['id' => 1, 'name' => 'Hello'], ['id' => 2, 'name' => 'World']]);
@@ -4415,22 +4406,22 @@ class TestArrayAccessImplementation implements ArrayAccess {
 		$this->arr = $arr;
 	}
 
-	public function offsetExists($offset)
+	public function offsetExists(mixed $offset): bool
 	{
 		return isset($this->arr[$offset]);
 	}
 
-	public function offsetGet($offset)
+	public function offsetGet(mixed $offset): mixed
 	{
 		return $this->arr[$offset];
 	}
 
-	public function offsetSet($offset, $value)
+	public function offsetSet(mixed $offset, mixed $value): void
 	{
 		$this->arr[$offset] = $value;
 	}
 
-	public function offsetUnset($offset)
+	public function offsetUnset(mixed $offset): void
 	{
 		unset($this->arr[$offset]);
 	}
@@ -4451,14 +4442,14 @@ class TestJsonableObject implements Jsonable {
 }
 
 class TestJsonSerializeObject implements JsonSerializable {
-	public function jsonSerialize()
+	public function jsonSerialize(): mixed
 	{
 		return ['foo' => 'bar'];
 	}
 }
 
 class TestJsonSerializeWithScalarValueObject implements JsonSerializable {
-	public function jsonSerialize()
+	public function jsonSerialize(): mixed
 	{
 		return 'foo';
 	}

@@ -39,7 +39,8 @@
         "symfony/string": "^6.0",
         "symfony/var-dumper": "^6.0",
         "vlucas/phpdotenv": "^5.5",
-        "voku/portable-ascii": "^2.0"
+        "voku/portable-ascii": "^2.0",
+        "wp-coding-standards/wpcs": "dev-php-8-1 as 2.3.x-dev"
     },
     "require-dev": {
         "alleyinteractive/alley-coding-standards": "^1.0",
@@ -118,6 +119,7 @@
         "phpcs-modified": "./bin/phpcs-modified-files.sh",
         "phpstan": "phpstan --memory-limit=1024M",
         "phpunit": "phpunit",
+        "phpunit:multisite": "WP_MULTISITE=1 phpunit",
         "release": "monorepo-builder release --ansi",
         "release:patch": "monorepo-builder release patch --ansi",
         "test": [
@@ -127,6 +129,12 @@
         ],
         "validate-monorepo": "monorepo-builder validate --ansi"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/alleyinteractive/WordPress-Coding-Standards"
+        }
+    ],
     "minimum-stability": "dev",
     "prefer-stable": true
 }

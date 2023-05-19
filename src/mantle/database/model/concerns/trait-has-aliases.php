@@ -14,7 +14,7 @@ trait Has_Aliases {
 	/**
 	 * Model aliases.
 	 *
-	 * @var string[]
+	 * @var array<string, string>
 	 */
 	protected static $aliases = [];
 

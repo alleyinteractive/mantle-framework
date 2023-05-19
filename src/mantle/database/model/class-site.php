@@ -17,7 +17,7 @@ class Site extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	/**
 	 * Attributes for the model from the object
 	 *
-	 * @var array
+	 * @var array<string, string>
 	 */
 	protected static $aliases = [
 		'id'   => 'blog_id',

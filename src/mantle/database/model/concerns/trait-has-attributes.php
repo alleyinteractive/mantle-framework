@@ -113,6 +113,8 @@ trait Has_Attributes {
 		if ( method_exists( $this, $key ) ) {
 			return $this->get_relationship_from_method( $key );
 		}
+
+		return null;
 	}
 
 	/**

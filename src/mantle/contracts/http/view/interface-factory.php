@@ -87,6 +87,14 @@ interface Factory {
 	public function get_var( string $key, $default = null );
 
 	/**
+	 * Push a view onto the stack and set it as the current view.
+	 *
+	 * @param View $view View being loaded.
+	 * @return static
+	 */
+	public function push( View $view );
+
+	/**
 	 * Pop a partial off the top of the stack and set the current partial to the
 	 * next one down.
 	 *

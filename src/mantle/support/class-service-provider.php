@@ -94,7 +94,7 @@ abstract class Service_Provider implements LoggerAwareInterface {
 						$hook     = Str::before_last( $hook, '_at_' );
 					}
 
-					add_action( $hook, [ $this, $method ], $priority, 99 );
+					add_action( $hook, [ $this, $method ], $priority );
 				}
 			);
 	}

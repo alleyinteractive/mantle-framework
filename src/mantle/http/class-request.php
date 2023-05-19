@@ -28,21 +28,28 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Route parameters.
 	 *
-	 * @var ParameterBag
+	 * @var ParameterBag|null
 	 */
-	protected $route_parameters = [];
+	protected ?ParameterBag $route_parameters = null;
+
+	/**
+	 * The decoded JSON content for the request.
+	 *
+	 * @var ParameterBag|null
+	 */
+	protected ?ParameterBag $json = null;
 
 	/**
 	 * Route matched.
 	 *
-	 * @var Route
+	 * @var Route|null
 	 */
 	protected $route;
 
 	/**
 	 * All of the converted files for the request.
 	 *
-	 * @var array
+	 * @var array|null
 	 */
 	protected $converted_files;
 
@@ -382,7 +389,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * Set route parameters.
 	 *
 	 * @param ParameterBag|array $parameters Route parameters to set.
-	 * @return array
+	 * @return static
 	 */
 	public function set_route_parameters( $parameters ) {
 		if ( ! ( $parameters instanceof ParameterBag ) ) {
@@ -390,24 +397,23 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 			$parameters = new ParameterBag(
 				array_filter(
 					$parameters,
-					function ( $parameter ) {
-						return 0 !== strpos( $parameter, '_' );
-					},
+					fn ( $parameter ) => 0 !== strpos( $parameter, '_' ),
 					ARRAY_FILTER_USE_KEY
 				)
 			);
 		}
 
 		$this->route_parameters = $parameters;
+
 		return $this;
 	}
 
 	/**
 	 * Get route parameters.
 	 *
-	 * @return ParameterBag
+	 * @return ParameterBag|null
 	 */
-	public function get_route_parameters(): ParameterBag {
+	public function get_route_parameters(): ?ParameterBag {
 		return $this->route_parameters;
 	}
 
@@ -429,7 +435,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * @return Route
 	 */
 	public function get_route(): ?Route {
-		return $this->route ?? null;
+		return isset( $this->route ) ? $this->route : null;
 	}
 
 	/**
@@ -440,6 +446,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 */
 	public function set_route( Route $route ) {
 		$this->route = $route;
+
 		return $this;
 	}
 
@@ -459,10 +466,10 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Get the value at the given offset.
 	 *
-	 * @param  string $offset
+	 * @param  mixed $offset
 	 * @return mixed
 	 */
-	public function offsetGet( $offset ) {
+	public function offsetGet( mixed $offset ): mixed {
 		return $this->__get( $offset );
 	}
 

@@ -21,7 +21,7 @@ class Term_Query_Builder extends Builder {
 	 *
 	 * @var array
 	 */
-	protected $query_aliases = [
+	protected array $query_aliases = [
 		'id'      => 'include',
 		'term_id' => 'include',
 	];
@@ -31,7 +31,7 @@ class Term_Query_Builder extends Builder {
 	 *
 	 * @var array
 	 */
-	protected $query_where_in_aliases = [
+	protected array $query_where_in_aliases = [
 		'term_id' => 'include',
 		'name'    => 'name',
 		'slug'    => 'slug',
@@ -42,7 +42,7 @@ class Term_Query_Builder extends Builder {
 	 *
 	 * @var array
 	 */
-	protected $query_where_not_in_aliases = [
+	protected array $query_where_not_in_aliases = [
 		'name'    => 'name',
 		'slug'    => 'slug',
 		'term_id' => 'exclude',
@@ -53,14 +53,14 @@ class Term_Query_Builder extends Builder {
 	 *
 	 * @var string
 	 */
-	protected $order = 'ASC';
+	protected string $order = 'ASC';
 
 	/**
 	 * Query by of the query.
 	 *
 	 * @var string
 	 */
-	protected $order_by = 'name';
+	protected string $order_by = 'name';
 
 	/**
 	 * Get the query arguments.
@@ -80,7 +80,7 @@ class Term_Query_Builder extends Builder {
 
 		// Limit is handled differently for term queries.
 		if ( -1 === $this->limit ) {
-			$this->limit = '';
+			$this->limit = null;
 		}
 
 		return array_merge(

@@ -121,6 +121,8 @@ trait Interacts_With_Content_Types {
 				}
 			}
 		}
+
+		return null;
 	}
 
 	/**

@@ -1,12 +1,15 @@
 #
 # Exclude these files from release archives.
 #
+/bin export-ignore
 /.github export-ignore
 /.phpcs export-ignore
+/monorepo-builder.php export-ignore
 /phpcs.xml export-ignore
+/phpstan-baseline.neon export-ignore
+/phpstan.neon export-ignore
 /phpunit.xml export-ignore
 /tests export-ignore
-/monorepo-builder.php export-ignore
 
 #
 # Auto detect text files and perform LF normalization.

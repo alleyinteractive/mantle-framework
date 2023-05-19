@@ -8,33 +8,19 @@
 namespace Mantle\Queue\Events;
 
 use Mantle\Contracts\Queue\Provider;
+use Mantle\Support\Collection;
 
 /**
  * Run Start Event
  */
 class Run_Start {
 	/**
-	 * Queue provider.
-	 *
-	 * @var mixed
-	 */
-	public $provider;
-
-	/**
-	 * Queue Name
-	 *
-	 * @var string
-	 */
-	public $queue;
-
-	/**
 	 * Constructor.
 	 *
-	 * @param Provider $provider Queue provider.
-	 * @param string   $queue Queue name.
+	 * @param Provider   $provider Queue provider.
+	 * @param string     $queue Queue name.
+	 * @param Collection $jobs Jobs to run.
 	 */
-	public function __construct( Provider $provider, $queue ) {
-		$this->provider = $provider;
-		$this->queue    = $queue;
+	public function __construct( public Provider $provider, public string $queue, public Collection $jobs ) {
 	}
 }

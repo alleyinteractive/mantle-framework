@@ -18,7 +18,7 @@ trait Has_Events {
 	/**
 	 * The event dispatcher instance.
 	 *
-	 * @var \Mantle\Events\Dispatcher
+	 * @var \Mantle\Events\Dispatcher|null
 	 */
 	protected static $dispatcher;
 

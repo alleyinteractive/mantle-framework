@@ -13,14 +13,14 @@ use Mantle\Support\Helpers;
 /**
  * User Model
  */
-class User extends Model implements Contracts\Database\Core_Object, Contracts\Database\Updatable {
+class User extends Model implements Contracts\Database\Core_Object, Contracts\Database\Model_Meta, Contracts\Database\Updatable {
 	use Meta\Model_Meta,
 		Meta\User_Meta;
 
 	/**
 	 * Attributes for the model from the object
 	 *
-	 * @var array
+	 * @var array<string, string>
 	 */
 	protected static $aliases = [
 		'email'    => 'user_email',

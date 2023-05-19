@@ -69,8 +69,11 @@ class Implicit_Route_Binding {
 		}
 
 		$snaked_name = Str::snake( $name );
+
 		if ( array_key_exists( $snaked_name, $parameters ) ) {
 			return $snaked_name;
 		}
+
+		return null;
 	}
 }

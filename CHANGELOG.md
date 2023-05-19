@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v0.11.0 - 2023-05-xx
+
+### Changes
+
+- Assorted fixes from/to support PHPStan (we're now at level 5 with plans to increase).
+
+## v0.10.8 - 2023-04-14
+
+### Fixes
+
+- Remove any reference to `LazyCollection`.
+
+### Added
+
+- Add a `with_image()` helper to create an attachment with a real image.
+
+### Fixes
+
+- Remove duplicate `rsync_exclusions` keys in `Rsync_Installation`.
+- Handle some edge cases when running wp-cli on VIP
+
 ## v0.10.7 - 2023-04-04
 
 - Fixing issue with core test case shim.

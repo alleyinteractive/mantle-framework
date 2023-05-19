@@ -11,6 +11,7 @@ namespace Mantle\Scheduling;
 use Carbon\Carbon;
 use Closure;
 use Cron\CronExpression;
+use DateTimeZone;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\TransferException;
 use Mantle\Contracts\Application;
@@ -27,32 +28,11 @@ class Event {
 	use Macroable, Manages_Frequencies;
 
 	/**
-	 * The event callback.
-	 *
-	 * @var \Closure|string
-	 */
-	public $callback;
-
-	/**
-	 * The event callback parameters.
-	 *
-	 * @var array
-	 */
-	public $parameters;
-
-	/**
 	 * The cron expression representing the event's frequency.
 	 *
 	 * @var string
 	 */
 	public $expression = '* * * * *';
-
-	/**
-	 * The timezone the date should be evaluated on.
-	 *
-	 * @var \DateTimeZone|string
-	 */
-	public $timezone;
 
 	/**
 	 * The list of environments the command should run under.
@@ -121,22 +101,23 @@ class Event {
 	/**
 	 * Create a new event instance.
 	 *
-	 * @param \Closure|string    $callback Event callback.
-	 * @param array              $parameters Event parameters..
-	 * @param \DateTimeZone|null $timezone Event timezone.
+	 * @param \Closure|string   $callback Event callback or class name.
+	 * @param array             $parameters Event parameters..
+	 * @param DateTimeZone|null $timezone Event timezone.
 	 */
-	public function __construct( $callback, array $parameters = [], $timezone = null ) {
-		$this->callback   = $callback;
-		$this->parameters = $parameters;
-		$this->timezone   = $timezone;
+	public function __construct(
+		protected $callback,
+		protected array $parameters = [],
+		protected ?DateTimeZone $timezone = null,
+	) {
 	}
 
 	/**
 	 * Run the given event, assumed to be a closure or callable callback.
 	 *
-	 * @param Container $container
+	 * @param Application $container
 	 */
-	public function run( Container $container ) {
+	public function run( Application $container ) {
 		if ( ! $this->filters_pass( $container ) ) {
 			return;
 		}
@@ -164,7 +145,7 @@ class Event {
 	/**
 	 * Call all of the "before" callbacks for the event.
 	 *
-	 * @param  \Illuminate\Contracts\Container\Container $container
+	 * @param  \Mantle\Contracts\Container $container
 	 * @return void
 	 */
 	public function call_before_callbacks( Container $container ) {
@@ -176,7 +157,7 @@ class Event {
 	/**
 	 * Call all of the "after" callbacks for the event.
 	 *
-	 * @param  \Illuminate\Contracts\Container\Container $container
+	 * @param  \Mantle\Contracts\Container $container
 	 * @return void
 	 */
 	public function call_after_callbacks( Container $container ) {

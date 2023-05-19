@@ -7,6 +7,7 @@
 
 namespace Mantle\Database\Model\Meta;
 
+use Mantle\Contracts\Database\Model_Meta;
 use Mantle\Database\Model\Model;
 
 /**
@@ -16,16 +17,16 @@ class Model_Meta_Proxy {
 	/**
 	 * Model to retrieve meta from.
 	 *
-	 * @var Model
+	 * @var Model_Meta
 	 */
-	protected $model;
+	protected Model_Meta $model;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param Model $model Model to reference.
+	 * @param Model_Meta $model Model to reference.
 	 */
-	public function __construct( Model $model ) {
+	public function __construct( Model_Meta $model ) {
 		$this->model = $model;
 	}
 

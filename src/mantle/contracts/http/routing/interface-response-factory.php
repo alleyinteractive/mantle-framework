@@ -53,10 +53,9 @@ interface Response_Factory {
 	 * @param  mixed $data
 	 * @param  int   $status
 	 * @param  array $headers
-	 * @param  int   $options
 	 * @return JsonResponse
 	 */
-	public function json( $data = [], $status = 200, array $headers = [], $options = 0 );
+	public function json( $data = [], $status = 200, array $headers = [] );
 
 	/**
 	 * Create a new JSONP response instance.
@@ -65,10 +64,9 @@ interface Response_Factory {
 	 * @param  mixed  $data
 	 * @param  int    $status
 	 * @param  array  $headers
-	 * @param  int    $options
 	 * @return JsonResponse
 	 */
-	public function jsonp( $callback, $data = [], $status = 200, array $headers = [], $options = 0 );
+	public function jsonp( $callback, $data = [], $status = 200, array $headers = [] );
 
 	/**
 	 * Create a new streamed response instance.

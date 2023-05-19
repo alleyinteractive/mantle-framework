@@ -77,7 +77,7 @@ class View_Finder {
 	/**
 	 * Get registered extensions.
 	 *
-	 * @return string
+	 * @return string[]
 	 */
 	public function get_extensions(): array {
 		return $this->extensions;

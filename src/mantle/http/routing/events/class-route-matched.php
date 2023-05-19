@@ -9,34 +9,19 @@ namespace Mantle\Http\Routing\Events;
 
 use Mantle\Http\Request;
 use Mantle\Http\Routing\Route;
+use WP_REST_Request;
 
 /**
  * Event for route matched event.
  */
 class Route_Matched {
 	/**
-	 * Route matched.
-	 *
-	 * @var Route|array
-	 */
-	public $route;
-
-	/**
-	 * Current request.
-	 *
-	 * @var \Mantle\Http\Request
-	 */
-	public $request;
-
-	/**
 	 * Constructor.
 	 *
-	 * @param Route|array $route Route matched, Mantle route or an array of route
-	 *                           information for REST API routes.
-	 * @param Request     $request Current request.
+	 * @param Route|array             $route Route matched, Mantle route or an array of route
+	 *                                       information for REST API routes.
+	 * @param Request|WP_REST_Request $request Current request.
 	 */
-	public function __construct( Route|array $route, $request ) {
-		$this->route   = $route;
-		$this->request = $request;
+	public function __construct( public Route|array $route, public Request|WP_REST_Request $request ) {
 	}
 }

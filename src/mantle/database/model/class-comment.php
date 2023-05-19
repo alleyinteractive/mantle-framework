@@ -13,14 +13,14 @@ use Mantle\Support\Helpers;
 /**
  * Comment Model
  */
-class Comment extends Model implements Contracts\Database\Core_Object, Contracts\Database\Updatable {
+class Comment extends Model implements Contracts\Database\Core_Object, Contracts\Database\Model_Meta, Contracts\Database\Updatable {
 	use Meta\Model_Meta,
 		Meta\Comment_Meta;
 
 	/**
 	 * Attributes for the model from the object
 	 *
-	 * @var array
+	 * @var array<string, string>
 	 */
 	protected static $aliases = [
 		'description' => 'comment_content',
@@ -166,8 +166,8 @@ class Comment extends Model implements Contracts\Database\Core_Object, Contracts
 			);
 		}
 
-		if ( \is_wp_error( $save ) ) {
-			throw new Model_Exception( 'Error saving model: ' . $save->get_error_message() );
+		if ( ! $save ) {
+			throw new Model_Exception( 'Error saving model' );
 		}
 
 		$this->set_raw_attribute( 'comment_ID', $save );
