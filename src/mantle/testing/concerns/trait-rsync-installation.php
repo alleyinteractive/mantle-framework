@@ -151,7 +151,7 @@ trait Rsync_Installation {
 	 * Attempt to install VIP's built mu-plugins into the codebase.
 	 *
 	 * Will only be applied if the codebase is not already within a WordPress and
-	 * is being rsynced to one.
+	 * is being rsync-ed to one.
 	 *
 	 * @param bool $install Install VIP's built mu-plugins into the codebase.
 	 * @return static
@@ -170,7 +170,7 @@ trait Rsync_Installation {
 	 * Attempt to install the object cache drop-in into the codebase.
 	 *
 	 * Will only be applied if the codebase is not already within a WordPress and
-	 * is being rsynced to one.
+	 * is being rsync-ed to one.
 	 *
 	 * @param bool $install Install the object cache drop-in into the codebase.
 	 * @return static

@@ -257,10 +257,14 @@ class Utils {
 	 * `escapeshellarg()` doesn't fit here because the script is expecting
 	 * unquoted arguments.
 	 *
-	 * @param string $string String to sanitize.
+	 * @param string|bool $string String to sanitize.
 	 * @return string
 	 */
-	public static function shell_safe( string $string ): string {
+	public static function shell_safe( string|bool $string ): string {
+		if ( is_bool( $string ) ) {
+			return $string ? 'true' : 'false';
+		}
+
 		return empty( trim( $string ) ) ? "''" : $string;
 	}
 
@@ -278,9 +282,10 @@ class Utils {
 		$branch = static::env( 'MANTLE_CI_BRANCH', 'HEAD' );
 
 		$command = sprintf(
-			'export WP_CORE_DIR=%s WP_MULTISITE=%s && curl -s %s | bash -s %s',
+			'export WP_CORE_DIR=%s WP_MULTISITE=%s INSTALL_WP_TEST_DEBUG=%s && curl -s %s | bash -s %s',
 			$directory,
 			static::shell_safe( static::env( 'WP_MULTISITE', '0' ) ),
+			static::shell_safe( static::is_debug_mode() ),
 			"https://raw.githubusercontent.com/alleyinteractive/mantle-ci/{$branch}/install-wp-tests.sh",
 			collect(
 				[
