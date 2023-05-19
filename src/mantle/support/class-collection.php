@@ -583,8 +583,8 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Concatenate values of a given key as a string.
 	 *
-	 * @param callable|string $value
-	 * @param string|null     $glue
+	 * @param callable|string|null $value
+	 * @param string|null          $glue
 	 * @return string
 	 */
 	public function implode( $value, $glue = null ) {
