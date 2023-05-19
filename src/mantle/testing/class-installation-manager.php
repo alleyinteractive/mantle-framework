@@ -71,16 +71,6 @@ class Installation_Manager {
 	}
 
 	/**
-	 * Define a callback to be invoked using the 'muplugins_loaded' hook.
-	 *
-	 * @param callable $callback Callback to invoke on 'muplugins_loaded'.
-	 * @return static
-	 */
-	public function loaded( ?callable $callback ) {
-		return $this->on( 'muplugins_loaded', $callback );
-	}
-
-	/**
 	 * Define a callback for a specific WordPress hook.
 	 *
 	 * @param string   $hook Hook name.
@@ -95,6 +85,48 @@ class Installation_Manager {
 		}
 
 		return $this;
+	}
+
+	/**
+	 * Define a callback to be invoked using the 'muplugins_loaded' hook.
+	 *
+	 * @param callable $callback Callback to invoke on 'muplugins_loaded'.
+	 * @return static
+	 */
+	public function loaded( ?callable $callback ) {
+		return $this->on( 'muplugins_loaded', $callback );
+	}
+
+	/**
+	 * Define a callback to be invoked on 'init'.
+	 *
+	 * @param callable $callback Callback to invoke on 'init'.
+	 * @return static
+	 */
+	public function init( ?callable $callback ) {
+		return $this->loaded(
+			fn () => $this->on( 'init', $callback )
+		);
+	}
+
+	/**
+	 * Define the active theme to be set after the installation is loaded.
+	 *
+	 * @param string $theme Theme name.
+	 * @return static
+	 */
+	public function theme( string $theme ) {
+		return $this->loaded( fn () => switch_theme( $theme ) );
+	}
+
+	/**
+	 * Define the active plugins to be set after the installation is loaded.
+	 *
+	 * @param array<int, string> $plugins Plugin files.
+	 * @return static
+	 */
+	public function plugins( array $plugins ) {
+		return $this->loaded( fn () => update_option( 'active_plugins', $plugins ) );
 	}
 
 	/**
