@@ -312,6 +312,10 @@ class Utils {
 	 * @return bool
 	 */
 	public static function is_debug_mode(): bool {
+		if ( defined( 'MANTLE_TESTING_DEBUG' ) && MANTLE_TESTING_DEBUG ) {
+			return true;
+		}
+
 		return ! empty(
 			array_intersect(
 				(array) ( $_SERVER['argv'] ?? [] ), // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
