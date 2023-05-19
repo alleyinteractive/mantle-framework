@@ -466,10 +466,10 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Get the value at the given offset.
 	 *
-	 * @param  string $offset
+	 * @param  mixed $offset
 	 * @return mixed
 	 */
-	public function offsetGet( $offset ) {
+	public function offsetGet( mixed $offset ): mixed {
 		return $this->__get( $offset );
 	}
 
