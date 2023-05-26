@@ -25,6 +25,8 @@ use function Mantle\Support\Helpers\collect;
  * the theme to a WordPress installation without needing to run a bash script.
  *
  * After the rsync is complete, PHPUnit will be rerun from the new location.
+ *
+ * @mixin \Mantle\Testing\Installation_Manager
  */
 trait Rsync_Installation {
 	use Conditionable;
@@ -44,12 +46,26 @@ trait Rsync_Installation {
 	protected ?string $rsync_from = null;
 
 	/**
-	 * Subdirectory from the parent folder being rsynced to the previous working
+	 * Subdirectory from the parent folder being rsync-ed to the previous working
 	 * directory.
 	 *
 	 * @var string
 	 */
 	protected ?string $rsync_subdir = '';
+
+	/**
+	 * Flag to install the VIP MU plugins.
+	 *
+	 * @var boolean
+	 */
+	protected bool $install_vip_mu_plugins = false;
+
+	/**
+	 * Flag to install a Memcache object cache drop-in.
+	 *
+	 * @var boolean
+	 */
+	protected bool $install_object_cache = false;
 
 	/**
 	 * Exclusions to be used when rsyncing the codebase.
@@ -58,13 +74,14 @@ trait Rsync_Installation {
 	 */
 	protected array $rsync_exclusions = [
 		'.buddy-tests',
-		'.composer',
+		'.buddy',
 		'.composer',
 		'.git',
 		'.npm',
 		'.phpcs',
 		'.turbo',
 		'node_modules',
+		'phpstan.neon',
 	];
 
 	/**
@@ -129,6 +146,61 @@ trait Rsync_Installation {
 		}
 
 		return $this->maybe_rsync( '/', dirname( getcwd(), 3 ) );
+	}
+
+	/**
+	 * Attempt to install VIP's built mu-plugins into the codebase.
+	 *
+	 * Will only be applied if the codebase is not already within a WordPress and
+	 * is being rsync-ed to one.
+	 *
+	 * @param bool $install Install VIP's built mu-plugins into the codebase.
+	 * @return static
+	 */
+	public function with_vip_mu_plugins( bool $install = true ): static {
+		if ( $this->is_within_wordpress_install() ) {
+			return $this;
+		}
+
+		$this->rsync_exclusions[] = 'mu-plugins';
+
+		$this->install_vip_mu_plugins = $install;
+
+		return $this;
+	}
+
+	/**
+	 * Attempt to install the object cache drop-in into the codebase.
+	 *
+	 * Will only be applied if the codebase is not already within a WordPress and
+	 * is being rsync-ed to one.
+	 *
+	 * @param bool $install Install the object cache drop-in into the codebase.
+	 * @return static
+	 */
+	public function with_object_cache( bool $install = true ): static {
+		if ( $this->is_within_wordpress_install() ) {
+			return $this;
+		}
+
+		// Check if Memcached is installed.
+		if ( ! class_exists( \Memcached::class ) ) {
+			// Allow the object cache to be forcefully required.
+			if ( Utils::env( 'MANTLE_REQUIRE_OBJECT_CACHE', false ) ) {
+				Utils::error( 'Memcached is not installed. Cannot install object cache. Exiting...' );
+				exit( 1 );
+			}
+
+			Utils::error( 'Memcached is not installed. Cannot install object cache. Skipping...' );
+
+			return $this;
+		}
+
+		$this->rsync_exclusions[] = 'object-cache.php';
+
+		$this->install_object_cache = $install;
+
+		return $this;
 	}
 
 	/**
@@ -236,7 +308,11 @@ trait Rsync_Installation {
 				exit( 1 );
 			}
 
-			Utils::install_wordpress( $base_install_path );
+			Utils::install_wordpress(
+				directory: $base_install_path,
+				install_vip_mu_plugins: $this->install_vip_mu_plugins,
+				install_object_cache: $this->install_object_cache,
+			);
 
 			Utils::success(
 				"WordPress installed at <em>{$base_install_path}</em>",

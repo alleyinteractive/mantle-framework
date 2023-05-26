@@ -9,6 +9,8 @@ namespace Mantle\Testing;
 
 use Mantle\Support\Str;
 use Mantle\Testing\Doubles\Spy_REST_Server;
+
+use function Mantle\Support\Helpers\collect;
 use function Termwind\render;
 
 require_once __DIR__ . '/concerns/trait-output-messages.php';
@@ -255,10 +257,14 @@ class Utils {
 	 * `escapeshellarg()` doesn't fit here because the script is expecting
 	 * unquoted arguments.
 	 *
-	 * @param string $string String to sanitize.
+	 * @param string|bool $string String to sanitize.
 	 * @return string
 	 */
-	public static function shell_safe( string $string ): string {
+	public static function shell_safe( string|bool $string ): string {
+		if ( is_bool( $string ) ) {
+			return $string ? 'true' : 'false';
+		}
+
 		return empty( trim( $string ) ) ? "''" : $string;
 	}
 
@@ -269,18 +275,30 @@ class Utils {
 	 * not install the WordPress database.
 	 *
 	 * @param string $directory Directory to install WordPress in.
+	 * @param bool   $install_vip_mu_plugins Whether to install VIP MU plugins.
+	 * @param bool   $install_object_cache Whether to install the object cache drop-in.
 	 */
-	public static function install_wordpress( string $directory ): void {
+	public static function install_wordpress( string $directory, bool $install_vip_mu_plugins = false, bool $install_object_cache = false ) {
+		$branch = static::env( 'MANTLE_CI_BRANCH', 'HEAD' );
+
 		$command = sprintf(
-			'export WP_CORE_DIR=%s && curl -s %s | bash -s %s %s %s %s %s %s',
+			'export WP_CORE_DIR=%s WP_MULTISITE=%s INSTALL_WP_TEST_DEBUG=%s && curl -s %s | bash -s %s',
 			$directory,
-			'https://raw.githubusercontent.com/alleyinteractive/mantle-ci/HEAD/install-wp-tests.sh',
-			static::shell_safe( defined( 'DB_NAME' ) ? DB_NAME : static::env( 'WP_DB_NAME', static::DEFAULT_DB_NAME ) ),
-			static::shell_safe( defined( 'DB_USER' ) ? DB_USER : static::env( 'WP_DB_USER', static::DEFAULT_DB_USER ) ),
-			static::shell_safe( defined( 'DB_PASSWORD' ) ? DB_PASSWORD : static::env( 'WP_DB_PASSWORD', static::DEFAULT_DB_PASSWORD ) ),
-			static::shell_safe( defined( 'DB_HOST' ) ? DB_HOST : static::env( 'WP_DB_HOST', static::DEFAULT_DB_HOST ) ),
-			static::shell_safe( static::env( 'WP_VERSION', 'latest' ) ),
-			static::shell_safe( static::env( 'WP_SKIP_DB_CREATE', 'false' ) ),
+			static::shell_safe( static::env( 'WP_MULTISITE', '0' ) ),
+			static::shell_safe( static::is_debug_mode() ),
+			"https://raw.githubusercontent.com/alleyinteractive/mantle-ci/{$branch}/install-wp-tests.sh",
+			collect(
+				[
+					static::shell_safe( defined( 'DB_NAME' ) ? DB_NAME : static::env( 'WP_DB_NAME', static::DEFAULT_DB_NAME ) ),
+					static::shell_safe( defined( 'DB_USER' ) ? DB_USER : static::env( 'WP_DB_USER', static::DEFAULT_DB_USER ) ),
+					static::shell_safe( defined( 'DB_PASSWORD' ) ? DB_PASSWORD : static::env( 'WP_DB_PASSWORD', static::DEFAULT_DB_PASSWORD ) ),
+					static::shell_safe( defined( 'DB_HOST' ) ? DB_HOST : static::env( 'WP_DB_HOST', static::DEFAULT_DB_HOST ) ),
+					static::shell_safe( static::env( 'WP_VERSION', 'latest' ) ),
+					static::shell_safe( static::env( 'WP_SKIP_DB_CREATE', 'false' ) ),
+					static::shell_safe( $install_vip_mu_plugins ? 'true' : 'false' ),
+					static::shell_safe( $install_object_cache ? 'true' : 'false' ),
+				]
+			)->implode( ' ' ),
 		);
 
 		$retval = 0;
@@ -299,6 +317,10 @@ class Utils {
 	 * @return bool
 	 */
 	public static function is_debug_mode(): bool {
+		if ( defined( 'MANTLE_TESTING_DEBUG' ) && MANTLE_TESTING_DEBUG ) {
+			return true;
+		}
+
 		return ! empty(
 			array_intersect(
 				(array) ( $_SERVER['argv'] ?? [] ), // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
