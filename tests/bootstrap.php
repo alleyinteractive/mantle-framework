@@ -13,7 +13,7 @@ define( 'MANTLE_PHPUNIT_TEMPLATE_PATH', __DIR__ . '/template-parts' );
 define( 'MANTLE_TESTING_DEBUG', true );
 
 // Testing an old version of mantle-ci.
-putenv( 'MANTLE_CI_BRANCH=93e2f541a668c4d17eb3b7997c07634ecbd99240' );
+putenv( 'MANTLE_CI_BRANCH=d8b00ec1bf147336d1d9319617fcd2f794f547ed' );
 
 \Mantle\Testing\manager()
 	->maybe_rsync_plugin()
