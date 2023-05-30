@@ -120,6 +120,16 @@ class Installation_Manager {
 	}
 
 	/**
+	 * Alias for `theme()`.
+	 *
+	 * @param string $theme Theme name.
+	 * @return static
+	 */
+	public function with_theme( string $theme ) {
+		return $this->theme( $theme );
+	}
+
+	/**
 	 * Define the active plugins to be set after the installation is loaded.
 	 *
 	 * @param array<int, string> $plugins Plugin files.
@@ -127,6 +137,16 @@ class Installation_Manager {
 	 */
 	public function plugins( array $plugins ) {
 		return $this->loaded( fn () => update_option( 'active_plugins', $plugins ) );
+	}
+
+	/**
+	 * Alias for `plugins()`.
+	 *
+	 * @param array<int, string> $plugins Plugin files.
+	 * @return static
+	 */
+	public function with_plugins( array $plugins ) {
+		return $this->plugins( $plugins );
 	}
 
 	/**

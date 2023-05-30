@@ -275,16 +275,24 @@ class Utils {
 	 * not install the WordPress database.
 	 *
 	 * @param string $directory Directory to install WordPress in.
-	 * @param bool   $install_vip_mu_plugins Whether to install VIP MU plugins.
-	 * @param bool   $install_object_cache Whether to install the object cache drop-in.
+	 * @param bool   $install_vip_mu_plugins Whether to install VIP MU plugins, defaults to false.
+	 * @param bool   $install_object_cache Whether to install the object cache drop-in, defaults to false.
+	 * @param bool   $use_sqlite_db Whether to use SQLite for the database, defaults to false.
 	 */
-	public static function install_wordpress( string $directory, bool $install_vip_mu_plugins = false, bool $install_object_cache = false ) {
-		$branch = static::env( 'MANTLE_CI_BRANCH', 'HEAD' );
+	public static function install_wordpress(
+		string $directory,
+		bool $install_vip_mu_plugins = false,
+		bool $install_object_cache = false,
+		bool $use_sqlite_db = false,
+	): void {
+		// $branch = static::env( 'MANTLE_CI_BRANCH', 'HEAD' );
+		$branch = static::env( 'MANTLE_CI_BRANCH', 'sqlite-drop-in' );
 
 		$command = sprintf(
-			'export WP_CORE_DIR=%s WP_MULTISITE=%s INSTALL_WP_TEST_DEBUG=%s && curl -s %s | bash -s %s',
+			'export WP_CORE_DIR=%s WP_MULTISITE=%s WP_USE_SQLITE=%s INSTALL_WP_TEST_DEBUG=%s && curl -s %s | bash -s %s',
 			$directory,
 			static::shell_safe( static::env( 'WP_MULTISITE', '0' ) ),
+			static::shell_safe( $use_sqlite_db ),
 			static::shell_safe( static::is_debug_mode() ),
 			"https://raw.githubusercontent.com/alleyinteractive/mantle-ci/{$branch}/install-wp-tests.sh",
 			collect(

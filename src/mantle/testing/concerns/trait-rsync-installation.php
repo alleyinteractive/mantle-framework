@@ -68,6 +68,13 @@ trait Rsync_Installation {
 	protected bool $install_object_cache = false;
 
 	/**
+	 * Flag to use a SQLite db.php drop-in when rsyncing the codebase.
+	 *
+	 * @var boolean
+	 */
+	protected bool $use_sqlite_db = false;
+
+	/**
 	 * Exclusions to be used when rsyncing the codebase.
 	 *
 	 * @var string[]
@@ -198,6 +205,25 @@ trait Rsync_Installation {
 	}
 
 	/**
+	 * Install SQLite db.php drop-in into the codebase.
+	 *
+	 * This will only be applied if the codebase is being rsync-ed to a WordPress
+	 * installation.
+	 *
+	 * @param bool $install Install the SQLite db.php drop-in into the codebase.
+	 * @return static
+	 */
+	public function with_sqlite( bool $install = true ): static {
+		if ( ! $this->is_within_wordpress_install() ) {
+			return $this;
+		}
+
+		$this->use_sqlite_db = $install;
+
+		return $this;
+	}
+
+	/**
 	 * Maybe rsync the codebase as a plugin within WordPress.
 	 *
 	 * By default, the from path will be rsynced to `wp-content/plugins/{directory_name}`.
@@ -306,6 +332,7 @@ trait Rsync_Installation {
 				directory: $base_install_path,
 				install_vip_mu_plugins: $this->install_vip_mu_plugins,
 				install_object_cache: $this->install_object_cache,
+				use_sqlite_db: $this->use_sqlite_db,
 			);
 
 			Utils::success(
