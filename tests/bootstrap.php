@@ -17,6 +17,5 @@ putenv( 'MANTLE_CI_BRANCH=revert-9-revert-8-vip-mu-plugins' );
 
 \Mantle\Testing\manager()
 	->maybe_rsync_plugin()
-	->with_object_cache()
 	->with_vip_mu_plugins()
 	->install();
