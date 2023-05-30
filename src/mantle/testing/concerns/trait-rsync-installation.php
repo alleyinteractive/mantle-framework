@@ -218,6 +218,8 @@ trait Rsync_Installation {
 			return $this;
 		}
 
+		$this->rsync_exclusions[] = 'db.php';
+
 		$this->use_sqlite_db = $install;
 
 		return $this;
