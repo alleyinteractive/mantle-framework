@@ -285,8 +285,7 @@ class Utils {
 		bool $install_object_cache = false,
 		bool $use_sqlite_db = false,
 	): void {
-		// $branch = static::env( 'MANTLE_CI_BRANCH', 'HEAD' );
-		$branch = static::env( 'MANTLE_CI_BRANCH', 'sqlite-drop-in' );
+		$branch = static::env( 'MANTLE_CI_BRANCH', 'HEAD' );
 
 		$command = sprintf(
 			'export WP_CORE_DIR=%s WP_MULTISITE=%s WP_USE_SQLITE=%s INSTALL_WP_TEST_DEBUG=%s && curl -s %s | bash -s %s',
