@@ -214,7 +214,7 @@ trait Rsync_Installation {
 	 * @return static
 	 */
 	public function with_sqlite( bool $install = true ): static {
-		if ( ! $this->is_within_wordpress_install() ) {
+		if ( $this->is_within_wordpress_install() ) {
 			return $this;
 		}
 
