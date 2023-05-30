@@ -14,6 +14,5 @@ define( 'MANTLE_TESTING_DEBUG', true );
 
 \Mantle\Testing\manager()
 	->maybe_rsync_plugin()
-	->with_object_cache()
 	->with_vip_mu_plugins()
 	->install();

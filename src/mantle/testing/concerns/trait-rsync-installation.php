@@ -184,13 +184,7 @@ trait Rsync_Installation {
 		}
 
 		// Check if Memcached is installed.
-		if ( ! class_exists( \Memcached::class ) ) {
-			// Allow the object cache to be forcefully required.
-			if ( Utils::env( 'MANTLE_REQUIRE_OBJECT_CACHE', false ) ) {
-				Utils::error( 'Memcached is not installed. Cannot install object cache. Exiting...' );
-				exit( 1 );
-			}
-
+		if ( ! class_exists( \Memcached::class ) && ! Utils::env( 'MANTLE_REQUIRE_OBJECT_CACHE', false ) ) {
 			Utils::error( 'Memcached is not installed. Cannot install object cache. Skipping...' );
 
 			return $this;
