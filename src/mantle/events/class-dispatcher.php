@@ -116,7 +116,11 @@ class Dispatcher implements Dispatcher_Contract {
 	public function dispatch( $event, $payload = [ null ] ) {
 		[ $event, $payload ] = $this->parse_event_and_payload( $event, $payload );
 
-		return apply_filters( $event, ...$payload ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
+		if ( function_exists( 'apply_filters' ) ) {
+			return apply_filters( $event, ...$payload ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
+		}
+
+		return null;
 	}
 
 	/**

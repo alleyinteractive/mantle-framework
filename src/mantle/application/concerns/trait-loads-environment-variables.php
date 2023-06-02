@@ -1,34 +1,46 @@
 <?php
 /**
- * Load_Environment_Variables class file.
+ * Loads_Environment_Variables trait file
  *
  * @package Mantle
  */
 
-namespace Mantle\Framework\Bootstrap;
+namespace Mantle\Application\Concerns;
 
 use Dotenv\Dotenv;
 use Dotenv\Exception\InvalidFileException;
-use Mantle\Framework\Console\Kernel;
 use Mantle\Application\Application;
+use Mantle\Framework\Console\Kernel;
 use Mantle\Support\Environment;
 
 /**
- * Load Environment Variables from a private .env file.
+ * Load Environment Variables from the site.
+ *
+ * @mixin \Mantle\Application\Application
  */
-class Load_Environment_Variables {
+trait Loads_Environment_Variables {
 	/**
 	 * Load the configuration for the application.
 	 *
 	 * @todo Add cached config usage.
-	 *
-	 * @param Application $app Application instance.
 	 */
-	public function bootstrap( Application $app ) {
+	public function load_environment_variables() {
 		try {
-			$this->create_dotenv( $app )->safeLoad();
+			$this->create_dotenv( $this )->safeLoad();
 		} catch ( InvalidFileException $e ) {
-			$this->write_error_and_die( $app, $e );
+			if ( $this->is_running_in_console() ) {
+				$kernel = new Kernel( $this );
+
+				$kernel->log( __( 'The Mantle environment file is invalid!', 'mantle' ) );
+				$kernel->log( $e->getMessage() );
+				exit( 1 );
+			} else {
+				// Because this runs so early, the configuration hasn't been loaded and we
+				// can't have a fancy error message.
+				esc_html_e( 'The Mantle environment file is invalid!', 'mantle' );
+				echo esc_html( PHP_EOL . $e->getMessage() );
+				exit( 1 );
+			}
 		}
 	}
 
@@ -79,28 +91,5 @@ class Load_Environment_Variables {
 		}
 
 		return $paths;
-	}
-
-	/**
-	 * Write the error information and exit.
-	 *
-	 * @param Application          $app Application instance.
-	 * @param InvalidFileException $e Exception.
-	 * @return void
-	 */
-	protected function write_error_and_die( Application $app, InvalidFileException $e ): void {
-		if ( $app->is_running_in_console() ) {
-			$kernel = new Kernel( $app );
-
-			$kernel->log( __( 'The Mantle environment file is invalid!', 'mantle' ) );
-			$kernel->log( $e->getMessage() );
-			exit( 1 );
-		} else {
-			// Because this runs so early, the configuration hasn't been loaded and we
-			// can't have a fancy error message.
-			esc_html_e( 'The Mantle environment file is invalid!', 'mantle' );
-			echo esc_html( PHP_EOL . $e->getMessage() );
-			exit( 1 );
-		}
 	}
 }

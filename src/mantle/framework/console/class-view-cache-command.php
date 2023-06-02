@@ -7,8 +7,10 @@
 
 namespace Mantle\Framework\Console;
 
+use Illuminate\View\Compilers\BladeCompiler;
 use Mantle\Console\Command;
 use Mantle\Contracts\Application;
+use Mantle\Filesystem\Filesystem;
 use Mantle\Http\View\View_Finder;
 use Mantle\Support\Collection;
 use SplFileInfo;
@@ -35,18 +37,18 @@ class View_Cache_Command extends Command {
 	protected $description = 'Compile all Blade templates in an application';
 
 	/**
-	 * View finder instance.
+	 * Blade compiler.
+	 *
+	 * @var BladeCompiler
+	 */
+	protected BladeCompiler $blade;
+
+	/**
+	 * View finder.
 	 *
 	 * @var View_Finder
 	 */
-	protected $finder;
-
-	/**
-	 * Blade compiler.
-	 *
-	 * @var \Illuminate\View\Compilers\BladeCompiler
-	 */
-	protected $blade;
+	protected View_Finder $finder;
 
 	/**
 	 * Constructor.
@@ -74,9 +76,20 @@ class View_Cache_Command extends Command {
 		$this->blade  = $this->container['view.engine.resolver']->resolve( 'blade' )->getCompiler();
 		$this->finder = $finder;
 
+		// Clear the compiled views first.
 		$this->call( 'mantle view:clear' );
 
 		$paths = $this->finder->get_paths();
+
+		$dir        = $this->container['config']['view.compiled'] ?? null;
+		$filesystem = new Filesystem();
+
+		// Ensure cache directory exists.
+		if ( $dir && ! $filesystem->is_directory( $dir ) && ! $filesystem->make_directory( $dir ) ) {
+			$this->error( 'Unable to create the compiled view directory.' );
+
+			return Command::FAILURE;
+		}
 
 		if ( empty( $paths ) ) {
 			$this->error( 'No view paths found.' );
@@ -85,7 +98,7 @@ class View_Cache_Command extends Command {
 
 		$this->compile_views( $this->blade_files_in( $paths ) );
 
-		$this->log( 'Blade templates cached successfully.' );
+		$this->success( 'Blade templates cached successfully.' );
 
 		return Command::SUCCESS;
 	}
@@ -98,9 +111,7 @@ class View_Cache_Command extends Command {
 	 */
 	protected function compile_views( Collection $views ): void {
 		$views->map(
-			function ( SplFileInfo $file ) {
-				$this->blade->compile( $file->getRealPath() );
-			}
+			fn ( SplFileInfo $file ) => $this->blade->compile( $file->getRealPath() ),
 		);
 	}
 

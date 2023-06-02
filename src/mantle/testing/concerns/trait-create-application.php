@@ -160,7 +160,7 @@ trait Create_Application {
 	 * @todo Allow for overriding the configuration aliases and providers easily within the unit test.
 	 */
 	protected function resolve_application_core( $app ) {
-		$app->make( \Mantle\Framework\Bootstrap\Register_Facades::class )->bootstrap( $app );
+		$app->make( \Mantle\Framework\Bootstrap\Register_Aliases::class )->bootstrap( $app );
 		$app->make( \Mantle\Framework\Bootstrap\Register_Providers::class )->bootstrap( $app );
 		$app->make( \Mantle\Framework\Bootstrap\Boot_Providers::class )->bootstrap( $app );
 	}

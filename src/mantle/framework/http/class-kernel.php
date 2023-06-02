@@ -51,9 +51,8 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 * @var array
 	 */
 	protected $bootstrappers = [
-		\Mantle\Framework\Bootstrap\Load_Environment_Variables::class,
 		\Mantle\Framework\Bootstrap\Load_Configuration::class,
-		\Mantle\Framework\Bootstrap\Register_Facades::class,
+		\Mantle\Framework\Bootstrap\Register_Aliases::class,
 		\Mantle\Framework\Bootstrap\Register_Providers::class,
 		\Mantle\Framework\Bootstrap\Boot_Providers::class,
 	];
@@ -122,7 +121,22 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 			}
 		}
 
-		\add_action( 'wp_loaded', [ $this, 'handle_request' ], PHP_INT_MAX );
+		if ( did_action( 'parse_request' ) ) {
+			$this->handle_request();
+		} else {
+			\add_action( 'parse_request', fn () => $this->handle_request() );
+		}
+	}
+
+	/**
+	 * Terminate the kernel.
+	 *
+	 * @param Request $request Request instance.
+	 * @param mixed   $response Response instance.
+	 * @return void
+	 */
+	public function terminate( Request $request, mixed $response ): void {
+		$this->app->terminate();
 	}
 
 	/**
@@ -131,13 +145,16 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 * Send the request through the HTTP Router and optional send the response. Called on
 	 * the 'wp_loaded' filter.
 	 */
-	public function handle_request() {
+	protected function handle_request() {
 		$response = $this->send_request_through_router( $this->request );
+
 		if ( ! $response ) {
 			return;
 		}
 
 		$response->send();
+
+		$this->terminate( $this->request, $response );
 
 		exit;
 	}
