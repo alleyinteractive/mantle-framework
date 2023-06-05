@@ -101,10 +101,12 @@ class Route_Registrar {
 	 * Create a route group with shared attributes.
 	 *
 	 * @param  \Closure|string $callback
-	 * @return void
+	 * @return static
 	 */
-	public function group( $callback ) {
+	public function group( $callback ): static {
 		$this->router->group( $this->attributes, $callback );
+
+		return $this;
 	}
 
 	/**

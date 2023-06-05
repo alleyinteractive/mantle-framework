@@ -199,7 +199,7 @@ class Route extends Symfony_Route {
 	}
 
 	/**
-	 * Get or set the middlewares attached to the route.
+	 * Get or set the middleware attached to the route.
 	 *
 	 * @param  array|string|null $middleware Middleware to set, optional.
 	 * @return static|array
@@ -209,13 +209,33 @@ class Route extends Symfony_Route {
 			return (array) ( $this->action['middleware'] ?? [] );
 		}
 
-		if ( is_string( $middleware ) ) {
-			$middleware = func_get_args();
-		}
-
 		$this->action['middleware'] = array_merge(
 			(array) ( $this->action['middleware'] ?? [] ),
-			$middleware
+			Arr::wrap( $middleware ),
+		);
+
+		return $this;
+	}
+
+	/**
+	 * Retrieve the middleware that should be excluded from the route.
+	 *
+	 * @return array
+	 */
+	public function excluded_middleware(): array {
+		return (array) ( $this->action['excluded_middleware'] ?? [] );
+	}
+
+	/**
+	 * Exclude middleware from the route.
+	 *
+	 * @param  array|string|null $middleware Middleware to exclude, optional.
+	 * @return static
+	 */
+	public function without_middleware( $middleware = null) {
+		$this->action['excluded_middleware'] = array_merge(
+			(array) ( $this->action['excluded_middleware'] ?? [] ),
+			Arr::wrap( $middleware ),
 		);
 
 		return $this;
