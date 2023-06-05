@@ -34,7 +34,8 @@ use function Mantle\Support\Helpers\collect;
  * @method static Route_Registrar middleware( string|array $middleware )
  */
 class Router implements Router_Contract {
-	use Concerns\Route_Group, Macroable {
+	use Concerns\Route_Group;
+	use Macroable {
 		__call as macro_call;
 	}
 
@@ -452,7 +453,7 @@ class Router implements Router_Contract {
 					$reflection = new ReflectionClass( $name );
 
 					return collect( $excluded )->contains(
-						fn ($exclude) => class_exists( $exclude ) && $reflection->isSubclassOf( $exclude )
+						fn ( $exclude ) => class_exists( $exclude ) && $reflection->isSubclassOf( $exclude )
 					);
 				}
 			)
