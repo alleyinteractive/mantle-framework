@@ -107,13 +107,12 @@ class Test_Router extends Framework_Test_Case {
 		$router = $this->get_router();
 		$router->get(
 			'foo/bar',
-			array(
+			[
 				'boom'     => 'auth',
-				'callback' => function () {
-					return 'closure';
-				},
-			)
+				'callback' => fn () => 'closure',
+			]
 		);
+
 		$this->assertSame( 'closure', $router->dispatch( Request::create( 'foo/bar', 'GET' ) )->getContent() );
 	}
 

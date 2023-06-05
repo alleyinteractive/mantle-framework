@@ -247,8 +247,9 @@ class Route extends Symfony_Route {
 	 * @param callable $callback Callback to invoke.
 	 * @return static
 	 */
-	public function callback( $callback ) {
+	public function callback( callable $callback ) {
 		$this->action['callback'] = $callback;
+
 		return $this;
 	}
 
