@@ -188,23 +188,21 @@ trait Enumerates_Values {
 	 * @return void
 	 */
 	public function dd( ...$args ) {
-		call_user_func_array( [ $this, 'dump' ], $args );
+		$this->dump( ...$args );
 
-		die( 1 );
+		exit( 1 );
 	}
 
 	/**
 	 * Dump the items.
 	 *
-	 * @return $this
+	 * @return static
 	 */
 	public function dump() {
 		( new static( func_get_args() ) )
-			->push( $this )
+			->push( $this->all() )
 			->each(
-				function ( $item ) {
-					VarDumper::dump( $item );
-				}
+				fn ( $item ) => VarDumper::dump( $item ),
 			);
 
 		return $this;
