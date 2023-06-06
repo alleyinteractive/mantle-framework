@@ -29,10 +29,11 @@ interface Url_Generator {
 	/**
 	 * Generate a URL to a specific path.
 	 *
-	 * @param string $path URL Path.
-	 * @param array  $extra Extra parameters.
-	 * @param bool   $secure Flag if should be forced to be secure.
+	 * @param string               $path URL Path.
+	 * @param array<string, mixed> $extra_query Extra query parameters to be appended to the URL path.
+	 * @param array                $extra_params Extra parameters to be appended to the URL path.
+	 * @param bool                 $secure Flag if should be forced to be secure.
 	 * @return string
 	 */
-	public function to( string $path, array $extra = [], bool $secure = null );
+	public function to( string $path, array $extra_query = [], array $extra_params = [], bool $secure = null );
 }

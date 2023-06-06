@@ -11,7 +11,7 @@ use Mantle\Http\Routing\Router;
 use Mantle\Http\Routing\Url_Generator;
 use Mantle\Testing\Framework_Test_Case;
 
-class Test_URL_Generator extends Framework_Test_Case {
+class Test_Url_Generator extends Framework_Test_Case {
 	protected Router $router;
 
 	protected Url_Generator $url;
@@ -25,12 +25,34 @@ class Test_URL_Generator extends Framework_Test_Case {
 		$this->set_permalink_structure( '/%postname%/' );
 	}
 
-	public function test_basic_generation() {
-		$this->assertEquals( home_url( '/' ), $this->url->to( '/' ) );
-		$this->assertEquals( home_url( '/foo/' ), $this->url->to( '/foo/' ) );
-		$this->assertEquals( home_url( '/foo/bar' ), $this->url->to( '/foo/bar' ) );
-		$this->assertEquals( home_url( '/foo/bar/' ), $this->url->to( '/foo/bar/' ) );
-		$this->assertEquals( home_url( '/foo/bar/?example=true' ), $this->url->to( '/foo/bar/', [ 'example' => true ] ) );
+	public function test_home_url_check() {
+		// Ensure that home_url() generates the correct URL for asserting against.
+		$this->assertStringEndsNotWith( '/', home_url( '/no/trailing/slash' ) );
+		$this->assertStringEndsWith( '/', home_url( '/no/trailing/slash/' ) );
+	}
+
+	/**
+	 * @dataProvider urlGenerationProvider
+	 */
+	public function test_basic_generation( $expected, $args ) {
+		$this->assertEquals( home_url( $expected ), $this->url->to( ...$args ) );
+	}
+
+	public static function urlGenerationProvider() {
+		return [
+			'/'                              => [ '/', [ '/' ] ],
+			'/foo'                           => [ '/foo', [ '/foo' ] ],
+			'/foo/bar'                       => [ '/foo/bar', [ '/foo/bar' ] ],
+			'/foo/bar?baz=boom'              => [ '/foo/bar?baz=boom', [ '/foo/bar?baz=boom' ] ],
+			'/foo/bar?baz=boom&lim=lip'      => [ '/foo/bar?baz=boom&lim=lip', [ '/foo/bar?baz=boom', [ 'lim' => 'lip' ] ] ],
+			'/trailing/slash/'               => [ '/trailing/slash/', [ '/trailing/slash/' ] ],
+			'/no/trailing/slash'             => [ '/no/trailing/slash', [ 'no/trailing/slash' ] ],
+			'/with/query/string'             => [ '/with/query/string?foo=bar&boo=bang', [ '/with/query/string', [ 'foo' => 'bar', 'boo' => 'bang' ] ] ],
+			'/with/query/string/'            => [ '/with/query/string/?foo=bar&boo=bang', [ '/with/query/string/', [ 'foo' => 'bar', 'boo' => 'bang' ] ] ],
+			'/with/extra/params'             => [ '/with/extra/params/baz/boom', [ '/with/extra/params', [], [ 'baz', 'boom' ] ] ],
+			'/with/extra/params/'            => [ '/with/extra/params/baz/boom/', [ '/with/extra/params/', [], [ 'baz', 'boom' ] ] ],
+			'/with/extra/params/baz?foo=bar' => [ '/with/extra/params/baz?foo=bar', [ '/with/extra/params', [ 'foo' => 'bar' ], [ 'baz' ] ] ],
+		];
 	}
 
 	public function test_route_generation() {

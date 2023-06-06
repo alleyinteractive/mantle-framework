@@ -8,8 +8,10 @@
 namespace Mantle\Http\Routing;
 
 use Mantle\Contracts\Http\Routing\Url_Generator as Generator_Contract;
+use Mantle\Contracts\Http\Routing\Url_Routable;
 use Mantle\Http\Request;
 use Mantle\Support\Arr;
+use Mantle\Support\Str;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\RequestContext;
@@ -29,25 +31,25 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	protected $request;
 
 	/**
-	 * Root URL for the application.
+	 * The forced scheme for URLs.
 	 *
-	 * @var string
+	 * @var string|null
 	 */
-	protected $root_url;
+	protected ?string $force_scheme = null;
+
+	/**
+	 * A cached copy of the URL root for the current request.
+	 *
+	 * @var string|null
+	 */
+	protected ?string $cached_root;
 
 	/**
 	 * A cached copy of the URL scheme for the current request.
 	 *
 	 * @var string|null
 	 */
-	protected $cached_scheme;
-
-	/**
-	 * The forced scheme for URLs.
-	 *
-	 * @var string
-	 */
-	protected $force_scheme;
+	protected ?string $cached_scheme = null;
 
 	/**
 	 * Constructor.
@@ -57,7 +59,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 * @param Request              $request Request object.
 	 * @param LoggerInterface|null $logger Logger instance.
 	 */
-	public function __construct( string $root_url, RouteCollection $routes, Request $request, LoggerInterface $logger = null ) {
+	public function __construct( protected string $root_url, RouteCollection $routes, Request $request, LoggerInterface $logger = null ) {
 		$this->root_url = $root_url;
 		$this->routes   = $routes;
 		$this->logger   = $logger;
@@ -115,12 +117,13 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	/**
 	 * Generate a URL to a specific path.
 	 *
-	 * @param string $path URL Path.
-	 * @param array  $extra Extra parameters.
-	 * @param bool   $secure Flag if should be forced to be secure.
+	 * @param string               $path URL Path.
+	 * @param array<string, mixed> $extra_query Extra query parameters to be appended to the URL path.
+	 * @param array                $extra_params Extra parameters to be appended to the URL path.
+	 * @param bool                 $secure Flag if should be forced to be secure.
 	 * @return string
 	 */
-	public function to( string $path, array $extra = [], bool $secure = null ) {
+	public function to( string $path, array $extra_query = [], array $extra_params = [], bool $secure = null ) {
 		// First we will check if the URL is already a valid URL. If it is we will not
 		// try to generate a new one but will simply return the URL as is, which is
 		// convenient since developers do not always have to check if it's valid.
@@ -132,21 +135,32 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 			'/',
 			array_map(
 				'rawurlencode',
-				(array) $this->format_parameters( $extra )
+				(array) $this->format_parameters( $extra_params )
 			)
 		);
 
 		// Once we have the scheme we will compile the "tail" by collapsing the values
 		// into a single string delimited by slashes. This just makes it convenient
 		// for passing the array of parameters to this URL as a list of segments.
-		$root = $this->get_root_url();
+		$root = $this->format_root( $this->format_scheme( $secure ) );
 
-		[ $path, $query ] = $this->extractQueryString( $path );
+		[ $path, $query ] = $this->extract_query_string( $path );
 
-		return $this->format(
-			$root,
-			'/' . trailingslashit( trim( $path, '/' ) ),
-		) . $query;
+		// Append the tail to the path while preserving the trailing slash on the path.
+		if ( ! empty( $tail ) ) {
+			$path = rtrim( $path, '/' ) . '/' . $tail . ( Str::ends_with( $path, '/' ) ? '/' : '' );
+		}
+
+		$url = $this->format( $root, $path ) . $query;
+
+		// Append any extra query parameters.
+		if ( ! empty( $extra_query ) ) {
+			$extra_query = Arr::query( $extra_query );
+
+			$url .= ( Str::contains( $url, '?' ) ? '&' : '?' ) . $extra_query;
+		}
+
+		return $url;
 	}
 
 	/**
@@ -156,7 +170,15 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 * @return array
 	 */
 	public function format_parameters( $parameters ): array {
-		return Arr::wrap( $parameters );
+		$parameters = Arr::wrap( $parameters );
+
+		foreach ( $parameters as $key => $parameter ) {
+			if ( $parameter instanceof Url_Routable ) {
+				$parameters[ $key ] = $parameter->get_route_key();
+			}
+		}
+
+		return $parameters;
 	}
 
 	/**
@@ -170,7 +192,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 			return $secure ? 'https://' : 'http://';
 		}
 
-		if ( is_null( $this->cached_scheme ) ) {
+		if ( empty( $this->cached_scheme ) ) {
 			$this->cached_scheme = $this->force_scheme ?: $this->context->getScheme() . '://';
 		}
 
@@ -181,9 +203,9 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 * Extract the query string from the given path.
 	 *
 	 * @param  string $path URL Path.
-	 * @return array
+	 * @return array<int, string>
 	 */
-	protected function extractQueryString( $path ) {
+	protected function extract_query_string( $path ) {
 		$query_position = strpos( $path, '?' );
 		if ( false !== $query_position ) {
 			return [
@@ -211,23 +233,43 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 * @return static
 	 */
 	public function root_url( string $url ) {
+		$this->cached_root = null;
+
 		$this->root_url = $url;
 
-		$this->context->setHost( wp_parse_url( $url, PHP_URL_HOST ) );
+		$this->context->setHost( parse_url( $url, PHP_URL_HOST ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.parse_url_parse_url
 
 		return $this;
 	}
 
 	/**
+	 * Get the base URL for the request.
+	 *
+	 * @param  string      $scheme
+	 * @param  string|null $root
+	 * @return string
+	 */
+	public function format_root( string $scheme, ?string $root = null ) {
+		if ( is_null( $root ) ) {
+			$root = $this->root_url;
+		}
+
+		$start = str_starts_with( $root, 'http://' ) ? 'http://' : 'https://';
+
+		return preg_replace( '~' . $start . '~', $scheme, $root, 1 );
+	}
+
+	/**
 	 * Format the given URL segments into a single URL.
+	 *
+	 * Preserves the path's trailing slash if present.
 	 *
 	 * @param  string $root URL root.
 	 * @param  string $path URL path.
 	 * @return string
 	 */
-	public function format( $root, $path ) {
-		$path = '/' . trim( $path, '/' );
-		return trailingslashit( trim( $root . $path, '/' ) );
+	public function format( string $root, string $path ): string {
+		return trim( rtrim( $root, '/' ) . '/' . ltrim( $path, '/' ) );
 	}
 
 	/**
@@ -250,7 +292,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 * @param  string $scheme
 	 * @return void
 	 */
-	public function force_scheme( $scheme ) {
+	public function force_scheme( string $scheme ) {
 		$this->cached_scheme = null;
 
 		$this->force_scheme = $scheme . '://';
@@ -264,6 +306,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 */
 	public function set_routes( RouteCollection $routes ) {
 		$this->routes = $routes;
+
 		return $this;
 	}
 }
