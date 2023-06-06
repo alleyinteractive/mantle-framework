@@ -466,8 +466,9 @@ class Router implements Router_Contract {
 	 *
 	 * @param string          $key
 	 * @param string|callable $binder
+	 * @return void
 	 */
-	public function bind( string $key, $binder ) {
+	public function bind( string $key, $binder ): void {
 		$this->binders[ str_replace( '-', '_', $key ) ] = Route_Binding::for_callback(
 			$this->container,
 			$binder
@@ -480,8 +481,9 @@ class Router implements Router_Contract {
 	 * @param string        $key
 	 * @param string        $class
 	 * @param \Closure|null $callback
+	 * @return void
 	 */
-	public function bind_model( $key, $class, Closure $callback = null ) {
+	public function bind_model( $key, $class, Closure $callback = null ): void {
 		$this->bind( $key, Route_Binding::for_model( $this->container, $class, $callback ) );
 	}
 
