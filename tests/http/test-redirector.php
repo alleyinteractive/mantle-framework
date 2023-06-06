@@ -31,6 +31,8 @@ class Test_Redirector extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	 */
 	protected $redirect;
 
+	protected $headers;
+
 	public function setUp(): void {
 		parent::setUp();
 
@@ -48,14 +50,14 @@ class Test_Redirector extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		$this->url = m::mock( Url_Generator::class );
 		$this->url->shouldReceive( 'get_request' )->andReturn( $this->request );
-		$this->url->shouldReceive( 'to' )->with( 'bar', [], null )->andReturn( 'http://foo.com/bar' );
-		$this->url->shouldReceive( 'to' )->with( 'bar', [], true )->andReturn( 'https://foo.com/bar' );
-		$this->url->shouldReceive( 'to' )->with( 'login', [], null )->andReturn( 'http://foo.com/login' );
-		$this->url->shouldReceive( 'to' )->with( 'http://foo.com/bar', [], null )->andReturn( 'http://foo.com/bar' );
+		$this->url->shouldReceive( 'to' )->with( 'bar', [], [], null )->andReturn( 'http://foo.com/bar' );
+		$this->url->shouldReceive( 'to' )->with( 'bar', [], [], true )->andReturn( 'https://foo.com/bar' );
+		$this->url->shouldReceive( 'to' )->with( 'login', [], [], null )->andReturn( 'http://foo.com/login' );
+		$this->url->shouldReceive( 'to' )->with( 'http://foo.com/bar', [], [], null )->andReturn( 'http://foo.com/bar' );
 		// $this->url->shouldReceive( 'to' )->with( '/', array(), null )->andReturn( 'http://foo.com/' );
-		$this->url->shouldReceive( 'to' )->with( '/', [], null )->andReturn( home_url() );
-		$this->url->shouldReceive( 'to' )->with( 'http://foo.com/bar?signature=secret', [], null )->andReturn( 'http://foo.com/bar?signature=secret' );
-		$this->url->shouldReceive( 'to' )->with( 'http://example.org', [], null )->andReturn( home_url() );
+		$this->url->shouldReceive( 'to' )->with( '/', [], [], null )->andReturn( home_url() );
+		$this->url->shouldReceive( 'to' )->with( 'http://foo.com/bar?signature=secret', [], [], null )->andReturn( 'http://foo.com/bar?signature=secret' );
+		$this->url->shouldReceive( 'to' )->with( 'http://example.org', [], [], null )->andReturn( home_url() );
 
 		$this->redirect = new Redirector( $this->url );
 	}

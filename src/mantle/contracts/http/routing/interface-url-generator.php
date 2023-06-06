@@ -36,4 +36,16 @@ interface Url_Generator {
 	 * @return string
 	 */
 	public function to( string $path, array $extra_query = [], array $extra_params = [], bool $secure = null );
+
+	/**
+	 * Generate a URL for a route.
+	 *
+	 * @param string $name Route name.
+	 * @param array  $parameters Route parameters.
+	 * @param bool   $absolute Flag if should be absolute.
+	 * @return string
+	 *
+	 * @throws \Symfony\Component\Routing\Exception\RouteNotFoundException If route not found.
+	 */
+	public function route( string $name, array $parameters = [], bool $absolute = true ): string;
 }

@@ -77,6 +77,11 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 		$this->request = $request;
 		$this->context = ( new RequestContext() )->fromRequest( $request );
 
+		// Set the host for the request context if it is not already set.
+		if ( empty( $this->context->getHost() ) ) {
+			$this->context->setHost( parse_url( $this->root_url, PHP_URL_HOST ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.parse_url_parse_url
+		}
+
 		if ( ! $this->context->hasParameter( '_locale' ) ) {
 			$this->context->setParameter( '_locale', 'en' );
 		}
@@ -161,6 +166,24 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 		}
 
 		return $url;
+	}
+
+	/**
+	 * Generate a URL for a route.
+	 *
+	 * @param string $name Route name.
+	 * @param array  $parameters Route parameters.
+	 * @param bool   $absolute Flag if should be absolute.
+	 * @return string
+	 *
+	 * @throws \Symfony\Component\Routing\Exception\RouteNotFoundException If route not found.
+	 */
+	public function route( string $name, array $parameters = [], bool $absolute = true ): string {
+		return $this->generate(
+			$name,
+			$parameters,
+			$absolute ? self::ABSOLUTE_URL : self::ABSOLUTE_PATH,
+		);
 	}
 
 	/**

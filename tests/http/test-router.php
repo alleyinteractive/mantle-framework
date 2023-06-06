@@ -256,7 +256,7 @@ class Test_Router extends Framework_Test_Case {
 
 		$router->sync_routes_to_url_generator();
 
-		$this->assertEquals( '/example-route-url', route( 'test_route_name_url' ) );
+		$this->assertEquals( home_url( '/example-route-url' ), route( 'test_route_name_url' ) );
 	}
 
 	public function test_fluent_routing() {
@@ -272,9 +272,9 @@ class Test_Router extends Framework_Test_Case {
 
 		$router->sync_routes_to_url_generator();
 
-		$this->assertEquals( '/test_fluent_routing', route( 'route-name' ) );
+		$this->assertEquals( home_url( '/test_fluent_routing' ), route( 'route-name' ) );
 		$this->assertEquals(
-			'/test_fluent_routing_with_var/var_to_compare',
+			home_url( '/test_fluent_routing_with_var/var_to_compare' ),
 			route( 'route-name-with-var', [ 'var' => 'var_to_compare' ] )
 		);
 	}

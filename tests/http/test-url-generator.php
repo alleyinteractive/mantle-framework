@@ -22,7 +22,12 @@ class Test_Url_Generator extends Framework_Test_Case {
 		$this->router = $this->app['router'];
 		$this->url    = $this->app['url'];
 
-		$this->set_permalink_structure( '/%postname%/' );
+		$request = new Request( [], [], [], [], [], [
+			'SERVER_NAME' => wp_parse_url( home_url(), PHP_URL_HOST ),
+			'SERVER_PORT' => 80,
+		] );
+
+		$this->url->set_request( $request );
 	}
 
 	public function test_home_url_check() {
@@ -56,23 +61,28 @@ class Test_Url_Generator extends Framework_Test_Case {
 	}
 
 	public function test_route_generation() {
+		/** @var \Mantle\Http\Routing\Router $router */
+		$router = $this->app['router'];
 
+		$router->get( '/foo/bar', fn () => 'hello' )->name( 'get' );
+		$router->get( '/trailing/slash/', fn () => 'hello' )->name( 'trailing-slash' );
+		$router->post( '/baz/post', fn () => 'hello' )->name( 'post' );
+		$router->get( '/foo/bar/{biz}', fn () => 'hello' )->name( 'get-with-param' );
+
+		$router->sync_routes_to_url_generator();
+
+		$this->assertEquals( '/foo/bar', $this->url->route( 'get', [], false ) );
+		$this->assertEquals( home_url( '/foo/bar' ), $this->url->route( 'get', [], true ) );
+		$this->assertEquals( '/foo/bar?query=string', $this->url->route( 'get', [ 'query' => 'string' ], false ) );
+
+		// TODO: Reinforce trailing slash.
+		// $this->assertEquals( '/trailing/slash/', $this->url->route( 'trailing-slash', [], false ) );
+		// $this->assertEquals( home_url( '/trailing/slash/' ), $this->url->route( 'trailing-slash', [], true ) );
+
+		$this->assertEquals( '/baz/post', $this->url->route( 'post', [], false ) );
+		$this->assertEquals( home_url( '/baz/post' ), $this->url->route( 'post', [], true ) );
+
+		$this->assertEquals( '/foo/bar/biz', $this->url->route( 'get-with-param', [ 'biz' => 'biz' ], false ) );
+		$this->assertEquals( home_url( '/foo/bar/biz' ), $this->url->route( 'get-with-param', [ 'biz' => 'biz' ], true ) );
 	}
-
-	// public function test_trailing_slash_routing() {
-	// 	$this->set_permalink_structure( '/%postname%/' );
-
-	// 	$router = $this->get_router();
-	// 	$router->get( 'foo/bar/', fn () => 'hello' )->name( 'foo' );
-
-	// 	$router->sync_routes_to_url_generator();
-
-	// 	$this->assertSame( '/foo/bar/', route( 'foo' ) );
-
-	// 	$this->get( '/foo/bar/' )
-	// 		->assertContent( 'hello' );
-
-	// 	$this->get( '/foo/bar' )
-	// 		->assertRedirect( '/foo/bar/' );
-	// }
 }

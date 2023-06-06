@@ -8,6 +8,8 @@ use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Test_Response;
 
+use function Mantle\Support\Helpers\collect;
+
 /**
  * @group testing
  */
@@ -135,7 +137,7 @@ class Test_Makes_Http_Requests extends Framework_Test_Case {
 		$this->get( '/route-to-redirect/' )
 			->assertHeader( 'location', home_url( '/redirected/' ) )
 			->assertHeader( 'Location', home_url( '/redirected/' ) )
-			->assertRedirect( '/redirected' )
+			->assertRedirect( '/redirected/' )
 			->assertHeader( 'Other-Header', '123' );
 	}
 
@@ -178,7 +180,7 @@ class Test_Makes_Http_Requests extends Framework_Test_Case {
 
 	public function test_multiple_requests() {
 		// Re-run all test methods on this class in a single pass.
-		foreach ( get_class_methods( $this ) as $method ) {
+		foreach ( collect( get_class_methods( $this ) )->shuffle()->all() as $method ) {
 			if ( __FUNCTION__ === $method || 'test_' !== substr( $method, 0, 5 ) ) {
 				continue;
 			}
