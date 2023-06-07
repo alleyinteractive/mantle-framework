@@ -1,14 +1,19 @@
 <?php
+/**
+ * PHPDoc block generator.
+ *
+ * Borrows from Laravel's Facade generator to add @method docblocks to our Facades and other classes.
+ */
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Illuminate\Cache\Repository;
-use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Str;
-use Illuminate\Support\Traits\Conditionable;
+use Mantle\Cache\Repository;
 use Mantle\Filesystem\Filesystem;
-use Illuminate\Support\Collection;
+use Mantle\Http\Request;
+use Mantle\Support\Traits\Conditionable;
 use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\CallableTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\ConditionalTypeNode;
@@ -24,6 +29,7 @@ use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\PhpDocParser\Parser\TokenIterator;
 use PHPStan\PhpDocParser\Parser\TypeParser;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 /*
  * Update the docblocks:
@@ -36,6 +42,7 @@ use Symfony\Component\Finder\Finder;
 $linting = in_array( '--lint', $argv );
 
 $finder = ( new Finder() )
+	// ->in( [ __DIR__ . '/../src/mantle/facade', __DIR__ . '/../src/mantle/database/query' ] )
 	->in( __DIR__ . '/../src/mantle/facade' )
 	->name( 'class-*.php' )
 	->notName( 'class-facade.php' );
@@ -47,15 +54,15 @@ resolveFacades( $finder )->each(
 		// Build a list of methods that are available on the Facade...
 
 		$resolvedMethods = $proxies->map( fn ( $fqcn) => new ReflectionClass( $fqcn ) )
-		->flatMap( fn ( $class) => [ $class, ...resolveDocMixins( $class ) ] )
-		->flatMap( resolveMethods( ... ) )
-		->reject( isMagic( ... ) )
-		->reject( isInternal( ... ) )
-		->reject( isDeprecated( ... ) )
-		->reject( fulfillsBuiltinInterface( ... ) )
-		->reject( fn ( $method) => conflictsWithFacade( $facade, $method ) )
-		->unique( resolveName( ... ) )
-		->map( normaliseDetails( ... ) );
+			->flatMap( fn ( $class) => [ $class, ...resolveDocMixins( $class ) ] )
+			->flatMap( resolveMethods( ... ) )
+			->reject( isMagic( ... ) )
+			->reject( isInternal( ... ) )
+			->reject( isDeprecated( ... ) )
+			->reject( fulfillsBuiltinInterface( ... ) )
+			->reject( fn ( $method) => conflictsWithFacade( $facade, $method ) )
+			->unique( resolveName( ... ) )
+			->map( normaliseDetails( ... ) );
 
 		// Prepare the @method docblocks...
 		$methods = $resolvedMethods->map(
@@ -79,7 +86,6 @@ resolveFacades( $finder )->each(
 		);
 
 		// Fix: ensure we keep the references to the Carbon library on the Date Facade...
-
 		if ( $facade->getName() === Date::class ) {
 			$methods->prepend( ' *' )
 				->prepend( ' * @see https://github.com/briannesbitt/Carbon/blob/master/src/Carbon/Factory.php' )
@@ -133,8 +139,17 @@ function resolveFacades( Finder $finder ): Collection {
 	$filesystem = new Filesystem();
 
 	return collect( $finder )
-		->map( fn ( $file) => $file->getBaseName( '.php' ) )
-		->map( fn ( $name) => '\\Mantle\\Facade\\' . $filesystem->guess_class_name( $name ) )
+		->map( function ( SplFileInfo $file ) use ( $filesystem ) {
+			$class_name = $filesystem->guess_class_name( $file->getBaseName( '.php' ) );
+
+			$namespace = collect( str( $file->getPath() )->after( 'src/' )->explode( '/' ) )
+				->filter()
+				->map( fn ( $part ) => Str::studly( $part ) )
+				->values()
+				->join( '\\' );
+
+			return "{$namespace}\\{$class_name}";
+		} )
 		->map( fn ( $class) => new ReflectionClass( $class ) );
 }
 
