@@ -8,7 +8,7 @@
 namespace Mantle\Facade;
 
 /**
- * Log
+ * Log Facade
  *
  * @method static \Mantle\Log\Logger set_dispatcher(\Mantle\Contracts\Events\Dispatcher $dispatcher = null)
  * @method static bool addRecord(int $level, string $message, mixed[] $context = [], DateTimeImmutable $datetime = null)

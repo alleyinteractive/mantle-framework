@@ -11,7 +11,7 @@ use Mantle\Facade\Facade;
 use Mantle\Queue\Queue_Fake;
 
 /**
- * Queue
+ * Queue Facade
  *
  * @method static mixed dispatch(mixed $job)
  * @method static mixed dispatch_now(mixed $job)

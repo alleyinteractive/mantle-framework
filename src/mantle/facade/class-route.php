@@ -8,7 +8,7 @@
 namespace Mantle\Facade;
 
 /**
- * Route
+ * Route Facade
  *
  * @method static \Mantle\Http\Routing\Route get(string $uri, mixed $action = '')
  * @method static \Mantle\Http\Routing\Route post(string $uri, mixed $action = '')

@@ -8,7 +8,7 @@
 namespace Mantle\Facade;
 
 /**
- * Request
+ * Request Facade
  *
  * @method static \Mantle\Http\Request capture()
  * @method static \Mantle\Http\Request setPathInfo(string $path_info)

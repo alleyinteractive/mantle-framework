@@ -8,7 +8,7 @@
 namespace Mantle\Facade;
 
 /**
- * Config
+ * Config Facade
  *
  * @method static bool has(string $key)
  * @method static mixed get(string $key, mixed $default = null)

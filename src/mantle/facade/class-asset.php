@@ -8,7 +8,7 @@
 namespace Mantle\Facade;
 
 /**
- * Asset
+ * Asset Facade
  *
  * @method static \Mantle\Assets\Asset script(void ...$params)
  * @method static \Mantle\Assets\Asset style(void ...$params)

@@ -8,7 +8,7 @@
 namespace Mantle\Facade;
 
 /**
- * App
+ * App Facade
  *
  * @method static \Mantle\Application\Application set_base_path(string $path)
  * @method static string get_base_path(string $path = '')
