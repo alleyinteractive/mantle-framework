@@ -10,6 +10,8 @@ namespace Mantle\Facade;
 use Mantle\Http_Client\Factory;
 
 /**
+ * Http
+ *
  * @method static void macro(string $name, object|callable $macro)
  * @method static void mixin(object $mixin, bool $replace = true)
  * @method static bool has_macro(string $name)

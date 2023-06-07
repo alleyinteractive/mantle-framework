@@ -8,6 +8,8 @@
 namespace Mantle\Facade;
 
 /**
+ * Cache
+ *
  * @method static mixed store(string $name = null)
  * @method static \Mantle\Cache\Cache_Manager extend(string $name, Closure $callback)
  *

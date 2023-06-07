@@ -8,6 +8,8 @@
 namespace Mantle\Facade;
 
 /**
+ * Config
+ *
  * @method static bool has(string $key)
  * @method static mixed get(string $key, mixed $default = null)
  * @method static void set(array|string $key, mixed $value)

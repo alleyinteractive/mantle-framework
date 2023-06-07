@@ -8,6 +8,8 @@
 namespace Mantle\Facade;
 
 /**
+ * Event
+ *
  * @method static void listen(string|array $events, mixed $listener, int $priority = 10)
  * @method static bool has_listeners(string $event_name)
  * @method static void subscribe(object|string $subscriber)

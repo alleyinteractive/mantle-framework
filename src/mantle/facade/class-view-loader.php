@@ -8,6 +8,8 @@
 namespace Mantle\Facade;
 
 /**
+ * View_Loader
+ *
  * @method static \Mantle\Http\View\View_Finder add_extension(string $extension)
  * @method static string[] get_extensions()
  * @method static void set_default_paths()

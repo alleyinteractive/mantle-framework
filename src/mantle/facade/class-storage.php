@@ -8,6 +8,8 @@
 namespace Mantle\Facade;
 
 /**
+ * Storage
+ *
  * @method static \Mantle\Contracts\Filesystem\Filesystem drive(string $name = null)
  * @method static \Mantle\Filesystem\Filesystem_Manager extend(string $driver, Closure $callback)
  * @method static \Mantle\Contracts\Filesystem\Filesystem create_local_driver(array $config)

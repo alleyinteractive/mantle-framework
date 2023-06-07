@@ -8,8 +8,10 @@
 namespace Mantle\Facade;
 
 /**
+ * View
+ *
  * @method static string get_path()
- * @method static \Mantle\Http\View\View set_post(\Mantle\Database\Model\Post||int $post)
+ * @method static \Mantle\Http\View\View set_post(\Mantle\Database\Model\Post|\WP_Post|int $post)
  * @method static \Mantle\Http\View\View with(string|array $key, mixed $value = null)
  * @method static array get_variables()
  * @method static mixed get_variable(string $key, mixed $default = null)

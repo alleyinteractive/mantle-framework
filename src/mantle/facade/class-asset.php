@@ -8,6 +8,8 @@
 namespace Mantle\Facade;
 
 /**
+ * Asset
+ *
  * @method static \Mantle\Assets\Asset script(void ...$params)
  * @method static \Mantle\Assets\Asset style(void ...$params)
  * @method static void preload(string $handle, string $src, string $condition = 'global', string|null $as = null, string|null $mime_type = null, string $media = 'all', bool $crossorigin = false, string|null $version = null)

@@ -8,6 +8,8 @@
 namespace Mantle\Facade;
 
 /**
+ * App
+ *
  * @method static \Mantle\Application\Application set_base_path(string $path)
  * @method static string get_base_path(string $path = '')
  * @method static string get_app_path(string $path = '')
@@ -28,9 +30,9 @@ namespace Mantle\Facade;
  * @method static void flush()
  * @method static void bootstrap_with(string[] $bootstrappers, \Mantle\Contracts\Kernel $kernel)
  * @method static void register_configured_providers()
- * @method static |null get_provider(string $name)
- * @method static [] get_providers()
- * @method static \Mantle\Application\Application register(|string $provider)
+ * @method static \Mantle\Support\Service_Provider|null get_provider(string $name)
+ * @method static \Mantle\Support\Service_Provider[] get_providers()
+ * @method static \Mantle\Application\Application register(\Mantle\Support\Service_Provider|string $provider)
  * @method static bool is_booted()
  * @method static \Mantle\Application\Application boot()
  * @method static string environment_file(string $file = null)
@@ -77,9 +79,9 @@ namespace Mantle\Facade;
  * @method static void forget_extenders(string $abstract)
  * @method static void forget_instance(string $abstract)
  * @method static void forget_instances()
- * @method static void getInstance()
+ * @method static \Mantle\Contracts\Container getInstance()
  * @method static \Mantle\Contracts\Container get_instance()
- * @method static |null set_instance(|null $container = null)
+ * @method static \Mantle\Contracts\Container|null set_instance(\Mantle\Contracts\Container|null $container = null)
  *
  * @see \Mantle\Application\Application
  */

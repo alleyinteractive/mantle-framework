@@ -8,6 +8,8 @@
 namespace Mantle\Facade;
 
 /**
+ * Route
+ *
  * @method static \Mantle\Http\Routing\Route get(string $uri, mixed $action = '')
  * @method static \Mantle\Http\Routing\Route post(string $uri, mixed $action = '')
  * @method static \Mantle\Http\Routing\Route put(string $uri, mixed $action = '')

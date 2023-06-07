@@ -45,6 +45,7 @@ $finder = ( new Finder() )
 	// ->in( [ __DIR__ . '/../src/mantle/facade', __DIR__ . '/../src/mantle/database/query' ] )
 	->in( __DIR__ . '/../src/mantle/facade' )
 	->name( 'class-*.php' )
+	// ->name( 'class-view.php' )
 	->notName( 'class-facade.php' );
 
 resolveFacades( $finder )->each(
@@ -52,7 +53,6 @@ resolveFacades( $finder )->each(
 		$proxies = resolveDocSees( $facade );
 
 		// Build a list of methods that are available on the Facade...
-
 		$resolvedMethods = $proxies->map( fn ( $fqcn) => new ReflectionClass( $fqcn ) )
 			->flatMap( fn ( $class) => [ $class, ...resolveDocMixins( $class ) ] )
 			->flatMap( resolveMethods( ... ) )
@@ -100,6 +100,8 @@ resolveFacades( $finder )->each(
 
 		$docblock = <<< PHP
 	/**
+	 * {$facade->getShortName()}
+	 *
 	{$methods->join(PHP_EOL)}
 	 *
 	{$proxies->map(fn ($class) => " * @see {$class}")->merge($proxies->isNotEmpty() && $directMixins->isNotEmpty() ? [' *'] : [])->merge($directMixins->map(fn ($class) => " * @mixin {$class}"))->join(PHP_EOL)}
@@ -401,7 +403,13 @@ function handleUnknownIdentifierType( $method, $typeNode ) {
 		return '\\Symfony\\Component\\HttpFoundation\\Response';
 	}
 
-	echo 'Found unknown type: ' . $typeNode->name;
+	if (
+		in_array( $typeNode->name, [ '\WP_Post', 'WP_Post', '\WP_Term', 'WP_Term' ] )
+	) {
+		return '\\' . ltrim( $typeNode->name, '\\');
+	}
+
+	echo 'Found unknown type: ' . $typeNode->name . ' in method ' . $method->getDeclaringClass()->getName() . '::' . $method->getName();
 	echo PHP_EOL;
 	echo 'You may need to update the `handleUnknownIdentifierType` to handle this new type / generic.';
 	echo PHP_EOL;

@@ -8,6 +8,8 @@
 namespace Mantle\Facade;
 
 /**
+ * Log
+ *
  * @method static \Mantle\Log\Logger set_dispatcher(\Mantle\Contracts\Events\Dispatcher $dispatcher = null)
  * @method static bool addRecord(int $level, string $message, mixed[] $context = [], DateTimeImmutable $datetime = null)
  * @method static string getName()

@@ -8,9 +8,6 @@
 namespace Mantle\Application;
 
 use Mantle\Container\Container;
-use Mantle\Contracts\Application as Application_Contract;
-use Mantle\Contracts\Container as Container_Contract;
-use Mantle\Contracts\Kernel as Kernel_Contract;
 use Mantle\Contracts\Support\Isolated_Service_Provider;
 use Mantle\Events\Event_Service_Provider;
 use Mantle\Framework\Manifest\Model_Manifest;
@@ -31,7 +28,7 @@ use function Mantle\Support\Helpers\collect;
 /**
  * Mantle Application
  */
-class Application extends Container implements Application_Contract {
+class Application extends Container implements \Mantle\Contracts\Application {
 	/**
 	 * Base path of the application.
 	 *
@@ -105,7 +102,7 @@ class Application extends Container implements Application_Contract {
 	/**
 	 * All of the registered service providers.
 	 *
-	 * @var Service_Provider[]
+	 * @var \Mantle\Support\Service_Provider[]
 	 */
 	protected $service_providers = [];
 
@@ -346,7 +343,7 @@ class Application extends Container implements Application_Contract {
 
 		$this->instance( 'app', $this );
 		$this->instance( Container::class, $this );
-		$this->instance( Container_Contract::class, $this );
+		$this->instance( \Mantle\Contracts\Container::class, $this );
 		$this->instance( static::class, $this );
 
 		$this->singleton(
@@ -415,10 +412,10 @@ class Application extends Container implements Application_Contract {
 	 *
 	 * Bootstrap classes should implement `Mantle\Contracts\Bootstrapable`.
 	 *
-	 * @param string[]        $bootstrappers Class names of packages to boot.
-	 * @param Kernel_Contract $kernel Kernel instance.
+	 * @param string[]                 $bootstrappers Class names of packages to boot.
+	 * @param \Mantle\Contracts\Kernel $kernel Kernel instance.
 	 */
-	public function bootstrap_with( array $bootstrappers, Kernel_Contract $kernel ) {
+	public function bootstrap_with( array $bootstrappers, \Mantle\Contracts\Kernel $kernel ) {
 		$this->has_been_bootstrapped = true;
 
 		foreach ( $bootstrappers as $bootstrapper ) {
@@ -455,7 +452,7 @@ class Application extends Container implements Application_Contract {
 	 * Get an instance of a service provider.
 	 *
 	 * @param string $name Provider class name.
-	 * @return Service_Provider|null
+	 * @return \Mantle\Support\Service_Provider|null
 	 */
 	public function get_provider( string $name ): ?Service_Provider {
 		$providers = Arr::where(
@@ -471,7 +468,7 @@ class Application extends Container implements Application_Contract {
 	/**
 	 * Get all service providers.
 	 *
-	 * @return Service_Provider[]
+	 * @return \Mantle\Support\Service_Provider[]
 	 */
 	public function get_providers(): array {
 		return $this->service_providers;
@@ -480,7 +477,7 @@ class Application extends Container implements Application_Contract {
 	/**
 	 * Register a Service Provider
 	 *
-	 * @param Service_Provider|string $provider Provider instance or class name to register.
+	 * @param \Mantle\Support\Service_Provider|string $provider Provider instance or class name to register.
 	 * @return Application
 	 */
 	public function register( $provider ): Application {
