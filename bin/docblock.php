@@ -407,7 +407,7 @@ function handleUnknownIdentifierType( $method, $typeNode ) {
 	}
 
 	if (
-		in_array( $typeNode->name, [ '\WP_Post', 'WP_Post', '\WP_Term', 'WP_Term' ] )
+		str( $typeNode->name )->startsWith( [ 'WP', '\\WP' ] )
 	) {
 		return '\\' . ltrim( $typeNode->name, '\\');
 	}
