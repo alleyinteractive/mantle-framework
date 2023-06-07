@@ -12,6 +12,9 @@ use function Mantle\Support\Helpers\collect;
 
 /**
  * Term Query Builder
+ *
+ * @template TModel of \Mantle\Database\Model\Model
+ * @extends \Mantle\Database\Query\Builder<TModel>
  */
 class Term_Query_Builder extends Builder {
 	use Queries_Relationships;

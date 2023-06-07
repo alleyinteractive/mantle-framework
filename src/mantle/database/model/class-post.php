@@ -51,14 +51,15 @@ use function Mantle\Support\Helpers\collect;
  * @property string $status Alias to post_status.
  * @property string $title Alias to post_title.
  *
- * @method static \Mantle\Database\Query\Post_Query_Builder whereId( int $id )
- * @method static \Mantle\Database\Query\Post_Query_Builder whereName( string $name )
- * @method static \Mantle\Database\Query\Post_Query_Builder whereSlug( string $slug )
- * @method static \Mantle\Database\Query\Post_Query_Builder whereStatus( string $status )
- * @method static \Mantle\Database\Query\Post_Query_Builder whereTitle( string $title )
- * @method static \Mantle\Database\Query\Post_Query_Builder whereType( string $type )
- *
- * @mixin \Mantle\Database\Query\Post_Query_Builder
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> anyStatus()
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereId( int $id )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> where( string|array $attribute, mixed $value )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereName( string $name )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereSlug( string $slug )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereStatus( string $status )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereTitle( string $title )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereType( string $type )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereTerm( array|\WP_Term|\Mantle\Database\Model\Term|int $term, ?string $taxonomy = null, string $operator = 'IN', string $field = 'term_id' )
  */
 class Post extends Model implements Contracts\Database\Core_Object, Contracts\Database\Model_Meta, Contracts\Database\Updatable {
 	use Events\Post_Events,

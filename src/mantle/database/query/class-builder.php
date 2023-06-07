@@ -499,7 +499,7 @@ abstract class Builder {
 	/**
 	 * Get the first result of the query.
 	 *
-	 * @return \Mantle\Database\Model\Model|null
+	 * @return Model|null
 	 *
 	 * @phpstan-return TModel|null
 	 */

@@ -17,6 +17,9 @@ use function Mantle\Support\Helpers\collect;
 
 /**
  * Post Query Builder
+ *
+ * @template TModel of \Mantle\Database\Model\Model
+ * @extends \Mantle\Database\Query\Builder<TModel>
  */
 class Post_Query_Builder extends Builder {
 	use Queries_Relationships;
@@ -106,7 +109,7 @@ class Post_Query_Builder extends Builder {
 	/**
 	 * Execute the query.
 	 *
-	 * @return Collection
+	 * @return Collection<int, TModel>
 	 */
 	public function get(): Collection {
 		$query            = new \WP_Query( $this->get_query_args() );
