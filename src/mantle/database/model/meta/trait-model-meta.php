@@ -12,7 +12,7 @@ use Mantle\Database\Model\Model_Exception;
 /**
  * Interface for interfacing with a model's meta.
  *
- * @property array<string, mixed> $meta
+ * @property object $meta
  * @property array<string, mixed> $queued_meta
  */
 trait Model_Meta {

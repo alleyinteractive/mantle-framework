@@ -19,8 +19,6 @@ use function Mantle\Support\Helpers\collect;
 /**
  * Post Model
  *
- * Generate @property for all aliases and elements of WP_Post
- *
  * @property int $comment_count
  * @property int $ID
  * @property int $menu_order
@@ -52,6 +50,15 @@ use function Mantle\Support\Helpers\collect;
  * @property string $slug Alias to post_name.
  * @property string $status Alias to post_status.
  * @property string $title Alias to post_title.
+ *
+ * @method static \Mantle\Database\Query\Post_Query_Builder whereId( int $id )
+ * @method static \Mantle\Database\Query\Post_Query_Builder whereName( string $name )
+ * @method static \Mantle\Database\Query\Post_Query_Builder whereSlug( string $slug )
+ * @method static \Mantle\Database\Query\Post_Query_Builder whereStatus( string $status )
+ * @method static \Mantle\Database\Query\Post_Query_Builder whereTitle( string $title )
+ * @method static \Mantle\Database\Query\Post_Query_Builder whereType( string $type )
+ *
+ * @mixin \Mantle\Database\Query\Post_Query_Builder
  */
 class Post extends Model implements Contracts\Database\Core_Object, Contracts\Database\Model_Meta, Contracts\Database\Updatable {
 	use Events\Post_Events,
