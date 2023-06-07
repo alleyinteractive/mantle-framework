@@ -21,7 +21,7 @@ namespace Mantle\Facade;
  * @method static void log($level, string $message, array $context = [])
  * @method static \Psr\Log\LoggerInterface channel(array $channel = null)
  *
- * @see \Mantle\Log\Log
+ * @see \Mantle\Log\Logger
  */
 class Log extends Facade {
 	/**
