@@ -42,25 +42,23 @@ use Symfony\Component\Finder\SplFileInfo;
 $linting = in_array( '--lint', $argv );
 
 $finder = ( new Finder() )
-	// ->in( [ __DIR__ . '/../src/mantle/facade', __DIR__ . '/../src/mantle/database/query' ] )
 	->in( __DIR__ . '/../src/mantle/facade' )
 	->name( 'class-*.php' )
-	// ->name( 'class-view.php' )
 	->notName( 'class-facade.php' );
 
-resolveFacades( $finder )->each(
-	function ( $facade ) use ( $linting ) {
-		$proxies = resolveDocSees( $facade );
+resolveClasses( $finder )->each(
+	function ( $class ) use ( $linting ) {
+		$proxies = resolveDocSees( $class );
 
 		// Build a list of methods that are available on the Facade...
-		$resolvedMethods = $proxies->map( fn ( $fqcn) => new ReflectionClass( $fqcn ) )
+		$resolvedMethods = $proxies->map( fn ( $fqcn ) => new ReflectionClass( $fqcn ) )
 			->flatMap( fn ( $class) => [ $class, ...resolveDocMixins( $class ) ] )
 			->flatMap( resolveMethods( ... ) )
 			->reject( isMagic( ... ) )
 			->reject( isInternal( ... ) )
 			->reject( isDeprecated( ... ) )
 			->reject( fulfillsBuiltinInterface( ... ) )
-			->reject( fn ( $method) => conflictsWithFacade( $facade, $method ) )
+			->reject( fn ( $method) => conflictsWithFacade( $class, $method ) )
 			->unique( resolveName( ... ) )
 			->map( normaliseDetails( ... ) );
 
@@ -86,7 +84,7 @@ resolveFacades( $finder )->each(
 		);
 
 		// Fix: ensure we keep the references to the Carbon library on the Date Facade...
-		if ( $facade->getName() === Date::class ) {
+		if ( $class->getName() === Date::class ) {
 			$methods->prepend( ' *' )
 				->prepend( ' * @see https://github.com/briannesbitt/Carbon/blob/master/src/Carbon/Factory.php' )
 				->prepend( ' * @see https://carbon.nesbot.com/docs/' );
@@ -94,13 +92,18 @@ resolveFacades( $finder )->each(
 
 		// To support generics, we want to preserve any mixins on the class...
 
-		$directMixins = resolveDocTags( $facade->getDocComment() ?: '', '@mixin' );
+		$directMixins = resolveDocTags( $class->getDocComment() ?: '', '@mixin' );
+
+		$className = match ( true ) {
+			0 === strpos( $class->getName(), 'Mantle\\Facade\\' ) => "{$class->getShortName()} Facade",
+			default => str( $class->getShortName() )->replace('_', ' '),
+		};
 
 		// Generate the docblock...
 
 		$docblock = <<< PHP
 	/**
-	 * {$facade->getShortName()}
+	 * {$className}
 	 *
 	{$methods->join(PHP_EOL)}
 	 *
@@ -108,12 +111,12 @@ resolveFacades( $finder )->each(
 	 */
 	PHP;
 
-		if ( ( $facade->getDocComment() ?: '' ) === $docblock ) {
+		if ( ( $class->getDocComment() ?: '' ) === $docblock ) {
 			return;
 		}
 
 		if ( $linting ) {
-			echo "Did not find expected docblock for [{$facade->getName()}]." . PHP_EOL . PHP_EOL;
+			echo "Did not find expected docblock for [{$class->getName()}]." . PHP_EOL . PHP_EOL;
 			echo $docblock . PHP_EOL . PHP_EOL;
 			echo 'Run the following command to update your docblocks locally:' . PHP_EOL . 'php -f bin/facades.php';
 			exit( 1 );
@@ -121,10 +124,10 @@ resolveFacades( $finder )->each(
 
 		// Update the facade docblock...
 
-		echo "Updating docblock for [{$facade->getName()}]." . PHP_EOL;
-		$contents = file_get_contents( $facade->getFileName() );
-		$contents = Str::replace( $facade->getDocComment(), $docblock, $contents );
-		file_put_contents( $facade->getFileName(), $contents );
+		echo "Updating docblock for [{$class->getName()}]." . PHP_EOL;
+		$contents = file_get_contents( $class->getFileName() );
+		$contents = Str::replace( $class->getDocComment(), $docblock, $contents );
+		file_put_contents( $class->getFileName(), $contents );
 	}
 );
 
@@ -137,7 +140,7 @@ exit( 0 );
  * @param  \Symfony\Component\Finder\Finder $finder
  * @return \Collection<\ReflectionClass>
  */
-function resolveFacades( Finder $finder ): Collection {
+function resolveClasses( Finder $finder ): Collection {
 	$filesystem = new Filesystem();
 
 	return collect( $finder )
@@ -163,7 +166,7 @@ function resolveFacades( Finder $finder ): Collection {
  */
 function resolveDocSees( $class ) {
 	return resolveDocTags( $class->getDocComment() ?: '', '@see' )
-		->reject( fn ( $tag) => Str::startsWith( $tag, 'https://' ) );
+		->reject( fn ( $tag ) => Str::startsWith( $tag, 'https://' ) );
 }
 
 /**
