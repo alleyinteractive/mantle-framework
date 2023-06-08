@@ -241,7 +241,7 @@ abstract class Builder {
 	 * @param string|array $attribute Attribute to use or array of key => value
 	 *                                attributes to set.
 	 * @param mixed        $value Value to compare against.
-	 * @return static
+	 * @return static<TModel>
 	 */
 	public function where( $attribute, $value = '' ) {
 		if ( is_array( $attribute ) && empty( $value ) ) {
@@ -499,9 +499,7 @@ abstract class Builder {
 	/**
 	 * Get the first result of the query.
 	 *
-	 * @return Model|null
-	 *
-	 * @phpstan-return TModel|null
+	 * @return TModel|null
 	 */
 	public function first(): ?Model {
 		return $this->take( 1 )->get()->first();
