@@ -8,11 +8,7 @@
 namespace Mantle\Facade;
 
 use Closure;
-use Mantle\Console\Closure_Command;
 use Mantle\Contracts\Console\Kernel;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * Console Facade
