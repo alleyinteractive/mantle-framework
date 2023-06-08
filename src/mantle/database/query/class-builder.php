@@ -241,7 +241,7 @@ abstract class Builder {
 	 * @param string|array $attribute Attribute to use or array of key => value
 	 *                                attributes to set.
 	 * @param mixed        $value Value to compare against.
-	 * @return static<TModel>
+	 * @return static
 	 */
 	public function where( $attribute, $value = '' ) {
 		if ( is_array( $attribute ) && empty( $value ) ) {
