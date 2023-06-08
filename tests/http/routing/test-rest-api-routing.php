@@ -10,54 +10,32 @@ use WP_REST_Request;
 class Test_REST_API_Routing extends Framework_Test_Case {
 	use Refresh_Database;
 
-	protected function setUp(): void {
-		parent::setUp();
-
-		update_option( 'permalink_structure', '/%year%/%monthnum%/%day%/%postname%/' );
-	}
-
 	public function test_generic_route() {
 		Route::rest_api(
 			'namespace/v1',
 			'/example-closure-third',
-			function() {
-				return 'example-closure-third';
-			}
+			fn () => 'example-closure-third',
 		);
 
 		Route::rest_api(
 			'namespace/v1',
 			'/example-array-third',
 			[
-				'callback' => function() {
-					return 'example-array-third';
-				},
+				'callback' => fn () => 'example-array-third',
 			]
 		);
 
 		Route::rest_api(
 			'namespace/v1',
 			function() {
-				Route::get(
-					'/example-group-get',
-					function() {
-						return 'example-group-get';
-					}
-				);
+				Route::get( '/example-group-get', fn () => 'example-group-get' );
 
 				Route::get(
 					'/example-with-param/(?P<slug>[a-z\-]+)',
-					function( WP_REST_Request $request) {
-						return $request['slug'];
-					}
+					fn ( WP_REST_Request $request) => $request['slug'],
 				);
 
-				Route::post(
-					'/example-post',
-					function() {
-						return 'example-post';
-					}
-				);
+				Route::post( '/example-post', fn () => 'example-post' );
 			}
 		);
 
@@ -103,9 +81,7 @@ class Test_REST_API_Routing extends Framework_Test_Case {
 			'/example-middleware-modify-post',
 			[
 				'methods' => 'POST',
-				'callback' => function( WP_REST_Request $request ) {
-					return $request['input'];
-				}
+				'callback' => fn ( WP_REST_Request $request ) => $request['input'],
 			]
 		);
 

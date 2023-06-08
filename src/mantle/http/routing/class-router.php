@@ -32,6 +32,7 @@ use function Mantle\Support\Helpers\collect;
  * request will be dispatched to the router by the HTTP kernel.
  *
  * @method static Route_Registrar middleware( string|array $middleware )
+ * @mixin \Mantle\Http\Routing\Route_Registrar
  */
 class Router implements Router_Contract {
 	use Concerns\Route_Group;
@@ -526,33 +527,35 @@ class Router implements Router_Contract {
 	/**
 	 * Register a REST API route
 	 *
-	 * @param string         $namespace Namespace for the REST API route.
-	 * @param Closure|string $route Route to register or a callback function that
-	 *                              will register child REST API routes.
-	 * @param array|Closure  $args Arguments for the route or callback for the route.
-	 *                             Not used if $route is a callback.
-	 * @return Rest_Route_Registrar
+	 * @param string          $namespace Namespace for the REST API route.
+	 * @param callable|string $callback  Callback that will be invoked to register
+	 *                                   routes OR a string route.
+	 * @param array           $args      Callback for the route if $callback is a
+	 *                                   string route OR arguments to pass to
+	 *                                   the register_rest_route() call. Not used if $callback
+	 *                                   is a closure.
 	 */
-	public function rest_api( string $namespace, $route, $args = [] ) {
+	public function rest_api( string $namespace, callable|string $callback, callable|array $args = [] ) {
 		$registrar = new Rest_Route_Registrar( $this, $namespace );
 
-		if ( $route instanceof Closure ) {
+		if ( is_callable( $callback ) ) {
 			$this->rest_registrar = $registrar;
-			$route();
+
+			$callback();
+
 			$this->rest_registrar = null;
 		} else {
+			if ( is_callable( $args ) ) {
+				$args = [
+					'callback' => $args,
+				];
+			}
 			// Include the group attributes.
 			if ( $this->has_group_stack() ) {
-				if ( $args instanceof Closure ) {
-					$args = [
-						'callback' => $args,
-					];
-				}
-
 				$args = $this->merge_with_last_group( $args );
 			}
 
-			$registrar->register_route( $this->prefix( $route ), $args );
+			$registrar->register_route( $this->prefix( $callback ), $args );
 		}
 
 		return $registrar;
