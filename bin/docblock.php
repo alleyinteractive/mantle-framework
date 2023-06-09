@@ -406,6 +406,10 @@ function handleUnknownIdentifierType( $method, $typeNode ) {
 		return '\\Symfony\\Component\\HttpFoundation\\Response';
 	}
 
+	if ( $typeNode->name === 'Service_Provider' ) {
+		return '\\Mantle\\Support\\Service_Provider';
+	}
+
 	if (
 		str( $typeNode->name )->startsWith( [ 'WP', '\\WP' ] )
 	) {
