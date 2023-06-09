@@ -22,28 +22,12 @@ class Term_Factory extends Factory {
 	use Concerns\With_Meta;
 
 	/**
-	 * Faker instance.
-	 *
-	 * @var Generator
-	 */
-	protected $faker;
-
-	/**
-	 * Taxonomy name.
-	 *
-	 * @var string
-	 */
-	protected $taxonomy;
-
-	/**
 	 * Constructor.
 	 *
-	 * @param Generator $generator Faker generator.
+	 * @param Generator $faker Faker generator.
 	 * @param string    $taxonomy Taxonomy name.
 	 */
-	public function __construct( Generator $generator, string $taxonomy ) {
-		$this->faker    = $generator;
-		$this->taxonomy = $taxonomy;
+	public function __construct( protected Generator $faker, protected string $taxonomy ) {
 	}
 
 	/**

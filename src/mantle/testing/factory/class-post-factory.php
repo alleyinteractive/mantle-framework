@@ -26,28 +26,12 @@ class Post_Factory extends Factory {
 	use Concerns\With_Meta;
 
 	/**
-	 * Faker instance.
-	 *
-	 * @var Generator
-	 */
-	protected $faker;
-
-	/**
-	 * Post type to use.
-	 *
-	 * @var string
-	 */
-	protected string $post_type;
-
-	/**
 	 * Constructor.
 	 *
-	 * @param Generator $generator Faker generator.
+	 * @param Generator $faker Faker generator.
 	 * @param string    $post_type Post type to use.
 	 */
-	public function __construct( Generator $generator, string $post_type = 'post' ) {
-		$this->faker     = $generator;
-		$this->post_type = $post_type;
+	public function __construct( protected Generator $faker, protected string $post_type = 'post' ) {
 	}
 
 	/**
@@ -84,9 +68,12 @@ class Post_Factory extends Factory {
 	 * @return static
 	 */
 	public function with_post_type( string $post_type ): static {
-		return tap(
-			clone $this,
-			fn ( Post_Factory $factory ) => $factory->post_type = $post_type
+		return $this->with_middleware(
+			function ( array $args, Closure $next ) use ( $post_type ) {
+				$args['post_type'] = $post_type;
+
+				return $next( $args );
+			}
 		);
 	}
 
