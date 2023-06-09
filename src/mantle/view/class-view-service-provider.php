@@ -40,9 +40,7 @@ class View_Service_Provider extends Service_Provider {
 	protected function register_blade_compiler() {
 		$this->app->singleton(
 			'blade.compiler',
-			function( $app ) {
-				return new BladeCompiler( new Filesystem(), $app['config']['view.compiled'] );
-			}
+			fn( $app ) => new BladeCompiler( new Filesystem(), $app['config']['view.compiled'] ),
 		);
 	}
 
@@ -52,17 +50,15 @@ class View_Service_Provider extends Service_Provider {
 	protected function register_engine_resolver() {
 		$this->app->singleton(
 			'view.engine.resolver',
-			function() {
-				return tap(
-					new Engine_Resolver(),
-					function( Engine_Resolver $resolver ) {
-						// Register the various view engines.
-						$this->register_php_engine( $resolver );
-						$this->register_file_engine( $resolver );
-						$this->register_compiler_engine( $resolver );
-					}
-				);
-			}
+			fn() => tap(
+				new Engine_Resolver(),
+				function( Engine_Resolver $resolver ) {
+					// Register the various view engines.
+					$this->register_php_engine( $resolver );
+					$this->register_file_engine( $resolver );
+					$this->register_compiler_engine( $resolver );
+				}
+			),
 		);
 	}
 
@@ -74,9 +70,7 @@ class View_Service_Provider extends Service_Provider {
 	protected function register_php_engine( Engine_Resolver $resolver ) {
 		$resolver->register(
 			'php',
-			function() {
-				return new Php_Engine();
-			}
+			fn () => new Php_Engine(),
 		);
 	}
 
@@ -88,9 +82,7 @@ class View_Service_Provider extends Service_Provider {
 	protected function register_file_engine( Engine_Resolver $resolver ) {
 		$resolver->register(
 			'file',
-			function() {
-				return new File_Engine();
-			}
+			fn () => new File_Engine(),
 		);
 	}
 
@@ -102,9 +94,7 @@ class View_Service_Provider extends Service_Provider {
 	protected function register_compiler_engine( Engine_Resolver $resolver ) {
 		$resolver->register(
 			'blade',
-			function() {
-				return new CompilerEngine( $this->app['blade.compiler'] );
-			}
+			fn () => new CompilerEngine( $this->app['blade.compiler'] ),
 		);
 	}
 
@@ -114,15 +104,13 @@ class View_Service_Provider extends Service_Provider {
 	protected function register_loader() {
 		$this->app->singleton(
 			'view.loader',
-			function ( $app ) {
-				return tap(
-					new View_Finder( $app->get_base_path() ),
-					function ( View_Finder $loader ) {
-						// Register the base view folder for the project.
-						$loader->add_path( $this->app->get_base_path( 'views/' ) );
-					}
-				);
-			}
+			fn ( $app ) => tap(
+				new View_Finder( $app->get_base_path() ),
+				function ( View_Finder $loader ) {
+					// Register the base view folder for the project.
+					$loader->add_path( $this->app->get_base_path( 'views/' ) );
+				}
+			),
 		);
 	}
 
@@ -140,6 +128,7 @@ class View_Service_Provider extends Service_Provider {
 				);
 
 				$factory->share( 'app', $app );
+
 				return $factory;
 			}
 		);

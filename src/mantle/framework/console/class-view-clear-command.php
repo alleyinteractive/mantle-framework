@@ -45,7 +45,7 @@ class View_Clear_Command extends Command {
 			$files->delete( $file );
 		}
 
-		$this->line( 'Compiled views cleared!' );
+		$this->success( 'Compiled views cleared.' );
 
 		return Command::SUCCESS;
 	}

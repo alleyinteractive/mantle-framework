@@ -36,7 +36,7 @@ use function Mantle\Support\Helpers\collect;
  *
  * @todo Add testing to improve coverage.
  */
-abstract class Handler implements Contract {
+class Handler implements Contract {
 
 	/**
 	 * The container implementation.

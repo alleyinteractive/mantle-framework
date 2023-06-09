@@ -7,13 +7,8 @@
 
 namespace Mantle\Query_Monitor;
 
-use Mantle\Contracts\Events\Dispatcher;
-use Mantle\Http\Routing\Events\Response_Sent;
-use Mantle\Http\Routing\Events\Route_Matched;
 use Mantle\Support\Service_Provider;
 use QM_Collectors;
-
-use function Mantle\Support\Helpers\remove_action_validated;
 
 /**
  * Query Monitor Service Provider
@@ -68,7 +63,7 @@ class Query_Monitor_Service_Provider extends Service_Provider {
 
 		foreach ( $this->query_monitor_dispatches as $callback ) {
 			// Remove the dispatcher from the 'shutdown' hook.
-			remove_action_validated( 'shutdown', $callback, 0 );
+			remove_action( 'shutdown', $callback, 0 );
 			$callback();
 		}
 

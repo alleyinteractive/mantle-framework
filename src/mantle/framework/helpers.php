@@ -11,12 +11,9 @@
  * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound, Squiz.Commenting.FunctionComment
  */
 
-use Mantle\Application\Application;
-use Mantle\Contracts\Http\Routing\Response_Factory;
-use Mantle\Contracts\Http\View\Factory as View_Factory;
-use Mantle\Support\Environment;
+use Mantle\Contracts\Application;
+use Mantle\Framework\Bootloader;
 use Mantle\Framework\Exceptions\Handler as ExceptionHandler;
-use Symfony\Component\Routing\Generator\UrlGenerator;
 
 if ( ! function_exists( 'report' ) ) {
 	/**
@@ -31,5 +28,17 @@ if ( ! function_exists( 'report' ) ) {
 		}
 
 		app( ExceptionHandler::class )->report( $exception );
+	}
+}
+
+if ( ! function_exists( 'bootloader' ) ) {
+	/**
+	 * Retrieve the Bootloader instance.
+	 *
+	 * @param Application|null  $app Application instance, optional.
+	 * @return Bootloader
+	 */
+	function bootloader( ?Application $app = null ): Bootloader {
+		return Bootloader::get_instance( $app );
 	}
 }

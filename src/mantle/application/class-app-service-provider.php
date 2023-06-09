@@ -16,7 +16,7 @@ use function Mantle\Support\Helpers\tap;
 /**
  * App Service Provider
  */
-abstract class App_Service_Provider extends Service_Provider {
+class App_Service_Provider extends Service_Provider {
 	/**
 	 * Application instance.
 	 *
