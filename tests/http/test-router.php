@@ -232,7 +232,7 @@ class Test_Router extends Framework_Test_Case {
 			'{year}/{month}/{day}/{post}',
 			array(
 				'middleware' => Substitute_Bindings::class,
-				'callback'   => function ( Routing_Test_Post_Model $post ) {
+				'callback'   => function ( $year, $month, $day, Routing_Test_Post_Model $post ) {
 					$this->assertInstanceOf( Routing_Test_Post_Model::class, $post );
 
 					return $post->name();
