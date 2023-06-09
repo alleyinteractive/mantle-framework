@@ -5,16 +5,12 @@ namespace Mantle\Support;
 use Closure;
 use Mantle\Support\Traits\Macroable;
 use JsonException;
-use Ramsey\Uuid\Codec\TimestampFirstCombCodec;
-use Ramsey\Uuid\Generator\CombGenerator;
-use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\UuidFactory;
-use Symfony\Component\Uid\Ulid;
 use Traversable;
 use voku\helper\ASCII;
 
-class Str {
+use function Mantle\Support\Helpers\collect;
 
+class Str {
 	use Macroable;
 
 	/**
@@ -22,35 +18,28 @@ class Str {
 	 *
 	 * @var array
 	 */
-	protected static $snakeCache = [];
+	protected static $snake_cache = [];
 
 	/**
 	 * The cache of camel-cased words.
 	 *
 	 * @var array
 	 */
-	protected static $camelCache = [];
+	protected static $camel_cache = [];
 
 	/**
 	 * The cache of studly-cased words.
 	 *
 	 * @var array
 	 */
-	protected static $studlyCache = [];
-
-	/**
-	 * The callback that should be used to generate UUIDs.
-	 *
-	 * @var callable|null
-	 */
-	protected static $uuidFactory;
+	protected static $studly_cache = [];
 
 	/**
 	 * The callback that should be used to generate random strings.
 	 *
 	 * @var callable|null
 	 */
-	protected static $randomStringFactory;
+	protected static $random_string_factory;
 
 	/**
 	 * Get a new stringable object from the given string.
@@ -80,7 +69,7 @@ class Str {
 	 * @param  string $search
 	 * @return string
 	 */
-	public static function afterLast( $subject, $search ) {
+	public static function after_last( $subject, $search ) {
 		if ( $search === '' ) {
 			return $subject;
 		}
@@ -141,7 +130,7 @@ class Str {
 	 * @param  string $search
 	 * @return string
 	 */
-	public static function beforeLast( $subject, $search ) {
+	public static function before_last( $subject, $search ) {
 		if ( $search === '' ) {
 			return $subject;
 		}
@@ -168,7 +157,7 @@ class Str {
 			return $subject;
 		}
 
-		return static::beforeLast( static::after( $subject, $from ), $to );
+		return static::before_last( static::after( $subject, $from ), $to );
 	}
 
 	/**
@@ -179,7 +168,7 @@ class Str {
 	 * @param  string $to
 	 * @return string
 	 */
-	public static function betweenFirst( $subject, $from, $to ) {
+	public static function between_first( $subject, $from, $to ) {
 		if ( $from === '' || $to === '' ) {
 			return $subject;
 		}
@@ -194,11 +183,11 @@ class Str {
 	 * @return string
 	 */
 	public static function camel( $value ) {
-		if ( isset( static::$camelCache[ $value ] ) ) {
-			return static::$camelCache[ $value ];
+		if ( isset( static::$camel_cache[ $value ] ) ) {
+			return static::$camel_cache[ $value ];
 		}
 
-		return static::$camelCache[ $value ] = lcfirst( static::studly( $value ) );
+		return static::$camel_cache[ $value ] = lcfirst( static::studly( $value ) );
 	}
 
 	/**
@@ -208,7 +197,7 @@ class Str {
 	 * @param  int    $index
 	 * @return string|false
 	 */
-	public static function charAt( $subject, $index ) {
+	public static function char_at( $subject, $index ) {
 		$length = mb_strlen( $subject );
 
 		if ( $index < 0 ? $index < -$length : $index > $length - 1 ) {
@@ -256,7 +245,7 @@ class Str {
 	 * @param  bool             $ignoreCase
 	 * @return bool
 	 */
-	public static function containsAll( $haystack, $needles, $ignoreCase = false ) {
+	public static function contains_all( $haystack, $needles, $ignoreCase = false ) {
 		foreach ( $needles as $needle ) {
 			if ( ! static::contains( $haystack, $needle, $ignoreCase ) ) {
 				return false;
@@ -273,7 +262,7 @@ class Str {
 	 * @param  string|iterable<string> $needles
 	 * @return bool
 	 */
-	public static function endsWith( $haystack, $needles ) {
+	public static function ends_with( $haystack, $needles ) {
 		if ( ! is_iterable( $needles ) ) {
 			$needles = (array) $needles;
 		}
@@ -392,7 +381,7 @@ class Str {
 	 * @param  string $value
 	 * @return bool
 	 */
-	public static function isAscii( $value ) {
+	public static function is_ascii( $value ) {
 		return ASCII::is_ascii( (string) $value );
 	}
 
@@ -402,7 +391,7 @@ class Str {
 	 * @param  string $value
 	 * @return bool
 	 */
-	public static function isJson( $value ) {
+	public static function is_json( $value ) {
 		if ( ! is_string( $value ) ) {
 			return false;
 		}
@@ -422,26 +411,12 @@ class Str {
 	 * @param  string $value
 	 * @return bool
 	 */
-	public static function isUuid( $value ) {
+	public static function is_uuid( $value ) {
 		if ( ! is_string( $value ) ) {
 			return false;
 		}
 
 		return preg_match( '/^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/iD', $value ) > 0;
-	}
-
-	/**
-	 * Determine if a given string is a valid ULID.
-	 *
-	 * @param  string $value
-	 * @return bool
-	 */
-	public static function isUlid( $value ) {
-		if ( ! is_string( $value ) ) {
-			return false;
-		}
-
-		return Ulid::isValid( $value );
 	}
 
 	/**
@@ -568,7 +543,7 @@ class Str {
 	 * @param  string                  $value
 	 * @return bool
 	 */
-	public static function isMatch( $pattern, $value ) {
+	public static function is_match( $pattern, $value ) {
 		$value = (string) $value;
 
 		if ( ! is_iterable( $pattern ) ) {
@@ -593,7 +568,7 @@ class Str {
 	 * @param  string $subject
 	 * @return \Mantle\Support\Collection
 	 */
-	public static function matchAll( $pattern, $subject ) {
+	public static function match_all( $pattern, $subject ) {
 		preg_match_all( $pattern, $subject, $matches );
 
 		if ( empty( $matches[0] ) ) {
@@ -611,7 +586,7 @@ class Str {
 	 * @param  string $pad
 	 * @return string
 	 */
-	public static function padBoth( $value, $length, $pad = ' ' ) {
+	public static function pad_both( $value, $length, $pad = ' ' ) {
 		$short      = max( 0, $length - mb_strlen( $value ) );
 		$shortLeft  = floor( $short / 2 );
 		$shortRight = ceil( $short / 2 );
@@ -629,7 +604,7 @@ class Str {
 	 * @param  string $pad
 	 * @return string
 	 */
-	public static function padLeft( $value, $length, $pad = ' ' ) {
+	public static function pad_left( $value, $length, $pad = ' ' ) {
 		$short = max( 0, $length - mb_strlen( $value ) );
 
 		return mb_substr( str_repeat( $pad, $short ), 0, $short ) . $value;
@@ -643,7 +618,7 @@ class Str {
 	 * @param  string $pad
 	 * @return string
 	 */
-	public static function padRight( $value, $length, $pad = ' ' ) {
+	public static function pad_right( $value, $length, $pad = ' ' ) {
 		$short = max( 0, $length - mb_strlen( $value ) );
 
 		return $value . mb_substr( str_repeat( $pad, $short ), 0, $short );
@@ -656,7 +631,7 @@ class Str {
 	 * @param  string|null $default
 	 * @return array<int, string|null>
 	 */
-	public static function parseCallback( $callback, $default = null ) {
+	public static function parse_callback( $callback, $default = null ) {
 		return static::contains( $callback, '@' ) ? explode( '@', $callback, 2 ) : [ $callback, $default ];
 	}
 
@@ -667,9 +642,9 @@ class Str {
 	 * @param  int|array|\Countable $count
 	 * @return string
 	 */
-	public static function plural( $value, $count = 2 ) {
-		return Pluralizer::plural( $value, $count );
-	}
+	// public static function plural( $value, $count = 2 ) {
+	// 	return Pluralizer::plural( $value, $count );
+	// }
 
 	/**
 	 * Pluralize the last word of an English, studly caps case string.
@@ -678,13 +653,13 @@ class Str {
 	 * @param  int|array|\Countable $count
 	 * @return string
 	 */
-	public static function pluralStudly( $value, $count = 2 ) {
-		$parts = preg_split( '/(.)(?=[A-Z])/u', $value, -1, PREG_SPLIT_DELIM_CAPTURE );
+	// public static function plural_studly( $value, $count = 2 ) {
+	// 	$parts = preg_split( '/(.)(?=[A-Z])/u', $value, -1, PREG_SPLIT_DELIM_CAPTURE );
 
-		$lastWord = array_pop( $parts );
+	// 	$lastWord = array_pop( $parts );
 
-		return implode( '', $parts ) . self::plural( $lastWord, $count );
-	}
+	// 	return implode( '', $parts ) . self::plural( $lastWord, $count );
+	// }
 
 	/**
 	 * Generate a random, secure password.
@@ -700,7 +675,7 @@ class Str {
 		return ( new Collection() )
 				->when(
 					$letters,
-					fn ( $c) => $c->merge(
+					fn ( $c ) => $c->merge(
 						[
 							'a',
 							'b',
@@ -819,7 +794,7 @@ class Str {
 	 * @return string
 	 */
 	public static function random( $length = 16 ) {
-		return ( static::$randomStringFactory ?? function ( $length ) {
+		return ( static::$random_string_factory ?? function ( $length ) {
 			$string = '';
 
 			while ( ( $len = strlen( $string ) ) < $length ) {
@@ -842,8 +817,8 @@ class Str {
 	 * @param  callable|null $factory
 	 * @return void
 	 */
-	public static function createRandomStringsUsing( callable $factory = null ) {
-		static::$randomStringFactory = $factory;
+	public static function create_random_strings_using( callable $factory = null ) {
+		static::$random_string_factory = $factory;
 	}
 
 	/**
@@ -853,24 +828,24 @@ class Str {
 	 * @param  callable|null $whenMissing
 	 * @return void
 	 */
-	public static function createRandomStringsUsingSequence( array $sequence, $whenMissing = null ) {
+	public static function create_random_strings_using_sequence( array $sequence, $whenMissing = null ) {
 		$next = 0;
 
 		$whenMissing ??= function ( $length ) use ( &$next ) {
-			$factoryCache = static::$randomStringFactory;
+			$factoryCache = static::$random_string_factory;
 
-			static::$randomStringFactory = null;
+			static::$random_string_factory = null;
 
 			$randomString = static::random( $length );
 
-			static::$randomStringFactory = $factoryCache;
+			static::$random_string_factory = $factoryCache;
 
 			$next++;
 
 			return $randomString;
 		};
 
-		static::createRandomStringsUsing(
+		static::create_random_strings_using(
 			function ( $length ) use ( &$next, $sequence, $whenMissing ) {
 				if ( array_key_exists( $next, $sequence ) ) {
 					return $sequence[ $next++ ];
@@ -886,8 +861,8 @@ class Str {
 	 *
 	 * @return void
 	 */
-	public static function createRandomStringsNormally() {
-		static::$randomStringFactory = null;
+	public static function create_random_strings_normally() {
+		static::$random_string_factory = null;
 	}
 
 	/**
@@ -909,7 +884,7 @@ class Str {
 	 * @param  string           $subject
 	 * @return string
 	 */
-	public static function replaceArray( $search, $replace, $subject ) {
+	public static function replace_array( $search, $replace, $subject ) {
 		if ( $replace instanceof Traversable ) {
 			$replace = collect( $replace )->all();
 		}
@@ -960,7 +935,7 @@ class Str {
 	 * @param  string $subject
 	 * @return string
 	 */
-	public static function replaceFirst( $search, $replace, $subject ) {
+	public static function replace_first( $search, $replace, $subject ) {
 		$search = (string) $search;
 
 		if ( $search === '' ) {
@@ -984,7 +959,7 @@ class Str {
 	 * @param  string $subject
 	 * @return string
 	 */
-	public static function replaceLast( $search, $replace, $subject ) {
+	public static function replace_last( $search, $replace, $subject ) {
 		if ( $search === '' ) {
 			return $subject;
 		}
@@ -1085,9 +1060,9 @@ class Str {
 	 * @param  string $value
 	 * @return string
 	 */
-	public static function singular( $value ) {
-		return Pluralizer::singular( $value );
-	}
+	// public static function singular( $value ) {
+	// 	return Pluralizer::singular( $value );
+	// }
 
 	/**
 	 * Generate a URL friendly "slug" from a given string.
@@ -1132,8 +1107,8 @@ class Str {
 	public static function snake( $value, $delimiter = '_' ) {
 		$key = $value;
 
-		if ( isset( static::$snakeCache[ $key ][ $delimiter ] ) ) {
-			return static::$snakeCache[ $key ][ $delimiter ];
+		if ( isset( static::$snake_cache[ $key ][ $delimiter ] ) ) {
+			return static::$snake_cache[ $key ][ $delimiter ];
 		}
 
 		if ( ! ctype_lower( $value ) ) {
@@ -1142,7 +1117,7 @@ class Str {
 			$value = static::lower( preg_replace( '/(.)(?=[A-Z])/u', '$1' . $delimiter, $value ) );
 		}
 
-		return static::$snakeCache[ $key ][ $delimiter ] = $value;
+		return static::$snake_cache[ $key ][ $delimiter ] = $value;
 	}
 
 	/**
@@ -1185,15 +1160,15 @@ class Str {
 	public static function studly( $value ) {
 		$key = $value;
 
-		if ( isset( static::$studlyCache[ $key ] ) ) {
-			return static::$studlyCache[ $key ];
+		if ( isset( static::$studly_cache[ $key ] ) ) {
+			return static::$studly_cache[ $key ];
 		}
 
 		$words = explode( ' ', static::replace( [ '-', '_' ], ' ', $value ) );
 
 		$studlyWords = array_map( fn ( $word) => static::ucfirst( $word ), $words );
 
-		return static::$studlyCache[ $key ] = implode( $studlyWords );
+		return static::$studly_cache[ $key ] = implode( $studlyWords );
 	}
 
 	/**
@@ -1218,7 +1193,7 @@ class Str {
 	 * @param  int|null $length
 	 * @return int
 	 */
-	public static function substrCount( $haystack, $needle, $offset = 0, $length = null ) {
+	public static function substr_count( $haystack, $needle, $offset = 0, $length = null ) {
 		if ( ! is_null( $length ) ) {
 			return substr_count( $haystack, $needle, $offset, $length );
 		}
@@ -1235,7 +1210,7 @@ class Str {
 	 * @param  int|int[]|null  $length
 	 * @return string|string[]
 	 */
-	public static function substrReplace( $string, $replace, $offset = 0, $length = null ) {
+	public static function substr_replace( $string, $replace, $offset = 0, $length = null ) {
 		if ( $length === null ) {
 			$length = strlen( $string );
 		}
@@ -1291,137 +1266,68 @@ class Str {
 	 * @param  string|null $characters
 	 * @return int
 	 */
-	public static function wordCount( $string, $characters = null ) {
+	public static function word_count( $string, $characters = null ) {
 		return str_word_count( $string, 0, $characters );
 	}
 
+
+
 	/**
-	 * Generate a UUID (version 4).
+	 * Get the line number for a match from a character position.
 	 *
-	 * @return \Ramsey\Uuid\UuidInterface
+	 * Useful inside of a regex match to determine the line number of the
+	 * matched pair.
+	 *
+	 * The character position can be retrieved when matching against a string
+	 * by passing `PREG_OFFSET_CAPTURE` to `preg_match_all()` as a flag.
+	 *
+	 * @param string $contents Contents used to match against.
+	 * @param int    $char_pos Character position.
+	 * @return int
 	 */
-	public static function uuid() {
-		 return static::$uuidFactory
-					? call_user_func( static::$uuidFactory )
-					: Uuid::uuid4();
+	public static function line_number( string $contents, int $char_pos ): int {
+		[ $before ] = str_split( $contents, $char_pos );
+		return strlen( $before ) - strlen( str_replace( PHP_EOL, '', $before ) ) + 1;
 	}
 
 	/**
-	 * Generate a time-ordered UUID (version 4).
+	 * Add a trailing slash to a string.
 	 *
-	 * @return \Ramsey\Uuid\UuidInterface
+	 * @param string $string String to trail.
+	 * @return string
 	 */
-	public static function orderedUuid() {
-		if ( static::$uuidFactory ) {
-			return call_user_func( static::$uuidFactory );
-		}
-
-		$factory = new UuidFactory();
-
-		$factory->setRandomGenerator(
-			new CombGenerator(
-				$factory->getRandomGenerator(),
-				$factory->getNumberConverter()
-			)
-		);
-
-		$factory->setCodec(
-			new TimestampFirstCombCodec(
-				$factory->getUuidBuilder()
-			)
-		);
-
-		return $factory->uuid4();
+	public static function trailing_slash( string $string ): string {
+		return rtrim( $string, '/' ) . '/';
 	}
 
 	/**
-	 * Set the callable that will be used to generate UUIDs.
+	 * Remove a trailing slash from a string.
 	 *
-	 * @param  callable|null $factory
-	 * @return void
+	 * @param string $string String to untrail.
+	 * @return string
 	 */
-	public static function createUuidsUsing( callable $factory = null ) {
-		static::$uuidFactory = $factory;
+	public static function untrailing_slash( string $string ): string {
+		return rtrim( $string, '/' );
 	}
 
 	/**
-	 * Set the sequence that will be used to generate UUIDs.
+	 * Add a preceding slash to a string.
 	 *
-	 * @param  array         $sequence
-	 * @param  callable|null $whenMissing
-	 * @return void
+	 * @param string $string String to proceed.
+	 * @return string
 	 */
-	public static function createUuidsUsingSequence( array $sequence, $whenMissing = null ) {
-		$next = 0;
-
-		$whenMissing ??= function () use ( &$next ) {
-			$factoryCache = static::$uuidFactory;
-
-			static::$uuidFactory = null;
-
-			$uuid = static::uuid();
-
-			static::$uuidFactory = $factoryCache;
-
-			$next++;
-
-			return $uuid;
-		};
-
-		static::createUuidsUsing(
-			function () use ( &$next, $sequence, $whenMissing ) {
-				if ( array_key_exists( $next, $sequence ) ) {
-					return $sequence[ $next++ ];
-				}
-
-				return $whenMissing();
-			}
-		);
+	public static function preceding_slash( string $string ): string {
+		return '/' . static::unpreceding_slash( $string );
 	}
 
 	/**
-	 * Always return the same UUID when generating new UUIDs.
+	 * Remove a preceding slash from a string.
 	 *
-	 * @param  \Closure|null $callback
-	 * @return \Ramsey\Uuid\UuidInterface
+	 * @param string $string String to proceed.
+	 * @return string
 	 */
-	public static function freezeUuids( Closure $callback = null ) {
-		$uuid = self::uuid();
-
-		self::createUuidsUsing( fn () => $uuid );
-
-		if ( $callback !== null ) {
-			try {
-				$callback( $uuid );
-			} finally {
-				self::createUuidsNormally();
-			}
-		}
-
-		return $uuid;
-	}
-
-	/**
-	 * Indicate that UUIDs should be created normally and not using a custom factory.
-	 *
-	 * @return void
-	 */
-	public static function createUuidsNormally() {
-		static::$uuidFactory = null;
-	}
-
-	/**
-	 * Generate a ULID.
-	 *
-	 * @param  \DateTimeInterface|null $time
-	 * @return \Symfony\Component\Uid\Ulid
-	 */
-	public static function ulid( $time = null ) {
-		if ( $time === null ) {
-			return new Ulid();
-		}
-
-		return new Ulid( Ulid::generate( $time ) );
+	public static function unpreceding_slash( string $string ): string {
+		return ltrim( $string, '/\\' );
 	}
 
 	/**
@@ -1429,9 +1335,9 @@ class Str {
 	 *
 	 * @return void
 	 */
-	public static function flushCache() {
-		static::$snakeCache  = [];
-		static::$camelCache  = [];
-		static::$studlyCache = [];
+	public static function flush_cache() {
+		static::$snake_cache  = [];
+		static::$camel_cache  = [];
+		static::$studly_cache = [];
 	}
 }
