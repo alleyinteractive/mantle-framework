@@ -43,28 +43,21 @@ class Route extends Symfony_Route {
 	 *
 	 * @var array
 	 */
-	protected $action;
+	protected array $action;
 
 	/**
 	 * Container instance.
 	 *
 	 * @var Container
 	 */
-	protected $container;
+	protected Container $container;
 
 	/**
 	 * Router instance.
 	 *
 	 * @var Router|null
 	 */
-	protected $router;
-
-	/**
-	 * Name for the route.
-	 *
-	 * @var string
-	 */
-	protected $name;
+	protected ?Router $router = null;
 
 	/**
 	 * Get the route object from a Symfony route match.
@@ -121,13 +114,6 @@ class Route extends Symfony_Route {
 		}
 
 		$this->action = $action;
-
-		// Set the route name if it was passed in the action.
-		if ( ! empty( $this->action['as'] ) ) {
-			$this->name( (string) $this->action['as'] );
-		} elseif ( ! empty( $this->action['name'] ) ) {
-			$this->name( (string) $this->action['name'] );
-		}
 	}
 
 	/**
@@ -147,8 +133,10 @@ class Route extends Symfony_Route {
 	 * @return string
 	 */
 	public function get_name(): string {
-		if ( ! empty( $this->name ) ) {
-			return (string) $this->name;
+		if ( ! empty( $this->action['as'] ) ) {
+			return (string) $this->action['as'];
+		} elseif ( ! empty( $this->action['name'] ) ) {
+			return (string) $this->action['name'];
 		}
 
 		// Fallback to the default route name.
@@ -162,6 +150,10 @@ class Route extends Symfony_Route {
 	 * @return static
 	 */
 	public function name( string $name ) {
+		$previous_name = $this->get_name();
+
+		$this->action['as'] = ! empty( $this->action['as_prefix'] ) ? $this->action['as_prefix'] . $name : $name;
+
 		/**
 		 * Attempt to rename the route in the router.
 		 *
@@ -169,10 +161,8 @@ class Route extends Symfony_Route {
 		 * route name is a static key for the collection.
 		 */
 		if ( isset( $this->router ) ) {
-			$this->router->rename_route( $this->get_name(), $name );
+			$this->router->rename_route( $previous_name, $this->action['as'] );
 		}
-
-		$this->name = $name;
 
 		return $this;
 	}

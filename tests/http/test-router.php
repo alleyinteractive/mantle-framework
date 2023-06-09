@@ -314,6 +314,34 @@ class Test_Router extends Framework_Test_Case {
 		$this->assertTrue( $_SERVER['closure_middleware'] );
 	}
 
+	public function test_route_prefix() {
+		$router = $this->get_router();
+
+		$router->prefix( 'example-prefix' )->group(
+			fn () => $router->get( '/example-route-prefix', fn () => 'The response' )->name( 'example-route' ),
+		);
+
+		$router->sync_routes_to_url_generator();
+
+		$this->get( '/example-prefix/example-route-prefix' )->assertContent( 'The response' );
+
+		$this->assertStringEndsWith( '/example-prefix/example-route-prefix', route( 'example-route' ) );
+	}
+
+	public function test_route_name_prefix() {
+		$router = $this->get_router();
+
+		$router->name( 'example-prefix.' )->group(
+			fn () => $router->get( '/example-route-prefix', fn () => 'The response' )->name( 'example-route' ),
+		);
+
+		$router->sync_routes_to_url_generator();
+
+		$this->get( '/example-route-prefix' )->assertContent( 'The response' );
+
+		$this->assertStringEndsWith( '/example-route-prefix', route( 'example-prefix.example-route' ) );
+	}
+
 	protected function get_router(): Router {
 		$router = new Router( $this->app['events'], $this->app );
 

@@ -102,7 +102,7 @@ trait Route_Group {
 	 *
 	 * @param Route $route Route instance.
 	 */
-	protected function merge_group_attributes_into_route( Route $route ) {
+	protected function merge_group_attributes_into_route( Route $route ): void {
 		$route->set_action(
 			$this->merge_with_last_group(
 				$route->get_action(),
@@ -119,7 +119,7 @@ trait Route_Group {
 	 * @param  bool  $prepend_existing_prefix
 	 * @return array
 	 */
-	public static function merge( $new, $old, $prepend_existing_prefix = true ) {
+	public static function merge( $new, $old, $prepend_existing_prefix = true ): array {
 		if ( isset( $new['domain'] ) ) {
 			unset( $old['domain'] );
 		}

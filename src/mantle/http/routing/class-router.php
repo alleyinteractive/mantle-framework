@@ -205,21 +205,14 @@ class Router implements Router_Contract {
 	 * @param array  $methods Methods to register.
 	 * @param string $uri URL route.
 	 * @param mixed  $action Route callback.
-	 * @return Route|null
+	 * @return Route|null Route instance for web routes, null for REST routes.
 	 */
 	public function add_route( array $methods, string $uri, $action ) {
 		// Send the route to the REST Registrar if set.
 		if ( isset( $this->rest_registrar ) ) {
-			$args = [
-				'callback' => $action,
-				'methods'  => $methods,
-			];
+			$this->create_rest_api_route( $methods, $uri, $action );
 
-			if ( $this->has_group_stack() ) {
-				$args = $this->merge_with_last_group( $args );
-			}
-
-			return $this->rest_registrar->register_route( $this->prefix( $uri ), $args );
+			return null;
 		}
 
 		$route = $this->create_route( $methods, $uri, $action );
@@ -247,6 +240,27 @@ class Router implements Router_Contract {
 		$route->set_router( $this );
 
 		return $route;
+	}
+
+	/**
+	 * Create a REST API route.
+	 *
+	 * @param array  $methods Methods to register.
+	 * @param string $uri URL route.
+	 * @param mixed  $action Route callback.
+	 * @return void
+	 */
+	protected function create_rest_api_route( array $methods, string $uri, $action ) {
+		$args = [
+			'callback' => $action,
+			'methods'  => $methods,
+		];
+
+		if ( $this->has_group_stack() ) {
+			$args = $this->merge_with_last_group( $args );
+		}
+
+		$this->rest_registrar->register_route( $this->prefix( $uri ), $args );
 	}
 
 	/**
@@ -634,17 +648,20 @@ class Router implements Router_Contract {
 	 */
 	public function rename_route( string $old_name, string $new_name ): static {
 		$old = $this->routes->get( $old_name );
+
 		if ( ! $old ) {
 			return $this;
 		}
 
 		$new = $this->routes->get( $new_name );
+
 		if ( $new ) {
 			throw new InvalidArgumentException( "Unable to rename route, name already taken. [{$old_name} => {$new_name}]" );
 		}
 
 		$this->routes->add( $new_name, $old );
 		$this->routes->remove( $old_name );
+
 		return $this;
 	}
 }

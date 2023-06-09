@@ -14,6 +14,14 @@ use Mantle\Support\Arr;
 
 /**
  * Router Registrar
+ *
+ * @method \Mantle\Http\Routing\Route_Registrar as(string $value)
+ * @method \Mantle\Http\Routing\Route_Registrar domain(string $value)
+ * @method \Mantle\Http\Routing\Route_Registrar middleware(array|string|null $middleware)
+ * @method \Mantle\Http\Routing\Route_Registrar name(string $value)
+ * @method \Mantle\Http\Routing\Route_Registrar namespace(string $value)
+ * @method \Mantle\Http\Routing\Route_Registrar prefix(string $value)
+ * @method \Mantle\Http\Routing\Route_Registrar where(array $where)
  */
 class Route_Registrar {
 	/**
@@ -51,6 +59,7 @@ class Route_Registrar {
 	 * @var array
 	 */
 	protected $allowed_attributes = [
+		'as_prefix',
 		'as',
 		'domain',
 		'middleware',
@@ -66,7 +75,8 @@ class Route_Registrar {
 	 * @var array
 	 */
 	protected $aliases = [
-		'name' => 'as',
+		'as'   => 'as_prefix',
+		'name' => 'as_prefix',
 	];
 
 	/**
