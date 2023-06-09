@@ -85,6 +85,58 @@ class Test_Event_Dispatcher extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		$this->assertTrue( $_SERVER['__event_run'] );
 	}
+
+	public function test_dispatch_string_event_name() {
+		$events = app( 'events' );
+
+		$events->listen(
+			__FUNCTION__,
+			fn () => $_SERVER['__event_run'] = true
+		);
+
+		$events->dispatch( __FUNCTION__ );
+
+		$this->assertTrue( $_SERVER['__event_run'] );
+	}
+
+	public function test_dispatch_string_event_name_with_payload() {
+		$events = app( 'events' );
+
+		$events->listen(
+			__FUNCTION__,
+			fn ( $payload ) => $_SERVER['__event_run'] = $payload
+		);
+
+		$events->dispatch( __FUNCTION__, [ 'foo' ] );
+
+		$this->assertEquals( 'foo', $_SERVER['__event_run'] );
+	}
+
+	public function test_dispatch_string_event_name_with_single_non_array_payload() {
+		$events = app( 'events' );
+
+		$events->listen(
+			__FUNCTION__,
+			fn ( $payload ) => $_SERVER['__event_run'] = $payload
+		);
+
+		$events->dispatch( __FUNCTION__, 'foo' );
+
+		$this->assertEquals( 'foo', $_SERVER['__event_run'] );
+	}
+
+	public function test_dispatch_string_event_name_with_multiple_payloads() {
+		$events = app( 'events' );
+
+		$events->listen(
+			__FUNCTION__,
+			fn ( ...$args ) => $_SERVER['__event_run'] = implode( '', $args )
+		);
+
+		$events->dispatch( __FUNCTION__, [ 'foo', 'bar' ] );
+
+		$this->assertEquals( 'foobar', $_SERVER['__event_run'] );
+	}
 }
 
 class Example_Event {

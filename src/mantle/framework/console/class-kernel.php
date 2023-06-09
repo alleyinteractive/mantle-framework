@@ -15,7 +15,6 @@ use Mantle\Console\Events\Lightweight_Event_Dispatcher;
 use Mantle\Contracts\Application;
 use Mantle\Contracts\Console\Application as Console_Application_Contract;
 use Mantle\Contracts\Exceptions\Handler as Exception_Handler;
-use Mantle\Support\Str;
 use Mantle\Support\Traits\Loads_Classes;
 use ReflectionClass;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -43,9 +42,8 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	 * @var array
 	 */
 	protected $bootstrappers = [
-		\Mantle\Framework\Bootstrap\Load_Environment_Variables::class,
 		\Mantle\Framework\Bootstrap\Load_Configuration::class,
-		\Mantle\Framework\Bootstrap\Register_Facades::class,
+		\Mantle\Framework\Bootstrap\Register_Aliases::class,
 		\Mantle\Framework\Bootstrap\Register_Providers::class,
 		\Mantle\Framework\Bootstrap\Boot_Providers::class,
 		\Mantle\Framework\Bootstrap\Register_Cli_Commands::class,
@@ -88,7 +86,6 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 		$this->app = $app;
 
 		$this->ensure_environment_is_set();
-		$this->register_wpcli_command();
 	}
 
 	/**
@@ -299,36 +296,6 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 		}
 
 		defined( 'ABSPATH' ) || define( 'ABSPATH', preg_replace( '#/wp-content/.*$#', '/', __DIR__ ) ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
-	}
-
-	/**
-	 * Register a proxy WP-CLI command that will proxy back to the Symfony
-	 * application.
-	 */
-	protected function register_wpcli_command() {
-		if ( ! defined( 'WP_CLI' ) || ! WP_CLI ) {
-			return;
-		}
-
-		\WP_CLI::add_command(
-			Command::PREFIX,
-			function () {
-				$status = $this->handle(
-					new \Symfony\Component\Console\Input\ArgvInput(
-						collect( (array) ( $_SERVER['argv'] ?? [] ) ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-							// Remove the `wp` prefix from argv and any invalid arguments (such as --url).
-							->filter( fn ( $value, $index ) => 0 !== $index && ! Str::starts_with( $value, '--url=' ) )
-							->all()
-					),
-					new \Symfony\Component\Console\Output\ConsoleOutput(),
-				);
-
-				exit( (int) $status );
-			},
-			[
-				'shortdesc' => __( 'Mantle Framework Command Line Interface', 'mantle' ),
-			]
-		);
 	}
 
 	/**

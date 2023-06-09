@@ -76,13 +76,6 @@ class Application extends Container implements Application_Contract {
 	protected $booted = false;
 
 	/**
-	 * All of the registered service providers.
-	 *
-	 * @var Service_Provider[]
-	 */
-	protected $service_providers = [];
-
-	/**
 	 * Environment file name.
 	 *
 	 * @var string
@@ -362,7 +355,7 @@ class Application extends Container implements Application_Contract {
 	 * @return array
 	 */
 	public function get_providers(): array {
-		return $this->service_providers;
+		return [];
 	}
 
 	/**
@@ -370,9 +363,10 @@ class Application extends Container implements Application_Contract {
 	 *
 	 * @throws RuntimeException Thrown on use.
 	 *
-	 * @param object $provider Service provider to register.
+	 * @param Service_Provider|string $provider Service provider to register.
+	 * @return static
 	 */
-	public function register( $provider ): Application {
+	public function register( Service_Provider|string $provider ): static {
 		throw new RuntimeException( 'Not supported with Testkit' );
 	}
 
@@ -456,6 +450,17 @@ class Application extends Container implements Application_Contract {
 	 */
 	public function get_namespace(): string {
 		return Environment::get( 'APP_NAMESPACE', 'App' );
+	}
+
+	/**
+	 * Alias to get_namespace().
+	 *
+	 * @throws RuntimeException Thrown on error determining namespace.
+	 *
+	 * @return string
+	 */
+	public function namespace(): string {
+		return $this->get_namespace();
 	}
 
 	/**

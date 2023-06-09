@@ -1,6 +1,6 @@
 <?php
 /**
- * Register_Facades class file.
+ * Register_Aliases class file.
  *
  * @package Mantle
  */
@@ -13,19 +13,15 @@ use Mantle\Facade\Facade;
 use Mantle\Framework\Manifest\Package_Manifest;
 
 /**
- * Register the Facades for the Application
+ * Register the Aliases for the application
  */
-class Register_Facades {
+class Register_Aliases {
 	/**
 	 * Bootstrap the given application.
 	 *
 	 * @param Application $app Application instance.
 	 */
 	public function bootstrap( Application $app ) {
-		Facade::clear_resolved_instances();
-		Facade::set_facade_application( $app );
-
-		// Load the Facades from the config.
 		Alias_Loader::get_instance(
 			array_merge(
 				(array) $app->make( 'config' )->get( 'app.aliases' ),

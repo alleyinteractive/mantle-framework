@@ -12,7 +12,7 @@ use Mantle\Support\Service_Provider;
 /**
  * Asset Service Provider
  */
-abstract class Asset_Service_Provider extends Service_Provider {
+class Asset_Service_Provider extends Service_Provider {
 	/**
 	 * Register the service provider.
 	 */
