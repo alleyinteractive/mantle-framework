@@ -15,6 +15,7 @@ use WP_Post;
 
 use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\get_post_object;
+use function Mantle\Support\Helpers\tap;
 
 /**
  * Post Factory
@@ -36,7 +37,7 @@ class Post_Factory extends Factory {
 	 *
 	 * @var string
 	 */
-	protected $post_type;
+	protected string $post_type;
 
 	/**
 	 * Constructor.
@@ -55,7 +56,7 @@ class Post_Factory extends Factory {
 	 * @param array<int, \WP_Term|int|string>|\WP_Term|int|string ...$terms Terms to assign to the post.
 	 * @return static
 	 */
-	public function with_terms( ...$terms ) {
+	public function with_terms( ...$terms ): static {
 		$terms = collect( $terms )->flatten()->all();
 
 		return $this->with_middleware(
@@ -68,12 +69,35 @@ class Post_Factory extends Factory {
 	 *
 	 * @return static
 	 */
-	public function with_thumbnail() {
+	public function with_thumbnail(): static {
 		return $this->with_meta(
 			[
 				'_thumbnail_id' => ( new Attachment_Factory( $this->faker ) )->create(),
 			]
 		);
+	}
+
+	/**
+	 * Create a new factory instance to create posts for a specific post type.
+	 *
+	 * @param string $post_type Post type to use.
+	 * @return static
+	 */
+	public function with_post_type( string $post_type ): static {
+		return tap(
+			clone $this,
+			fn ( Post_Factory $factory ) => $factory->post_type = $post_type
+		);
+	}
+
+	/**
+	 * Alias for {@see Post_Factory::with_post_type()}.
+	 *
+	 * @param string $post_type Post type to use.
+	 * @return static
+	 */
+	public function for( string $post_type ): static {
+		return $this->with_post_type( $post_type );
 	}
 
 	/**
