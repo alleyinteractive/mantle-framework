@@ -94,7 +94,7 @@ class Term extends Model implements Core_Object, Model_Meta, Updatable {
 	 * @return self
 	 */
 	public static function for( string $taxonomy ): self {
-		$instance = new class extends Term {};
+		$instance = new class() extends Term {};
 
 		$instance::$object_name = $taxonomy;
 

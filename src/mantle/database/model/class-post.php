@@ -144,7 +144,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 * @return self
 	 */
 	public static function for( string $post_type ): self {
-		$instance = new class extends Post {};
+		$instance = new class() extends Post {};
 
 		$instance::$object_name = $post_type;
 
