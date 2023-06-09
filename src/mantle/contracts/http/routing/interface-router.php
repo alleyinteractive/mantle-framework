@@ -64,6 +64,14 @@ interface Router {
 	public function options( string $uri, $action = '' );
 
 	/**
+	 * Register a route for any HTTP method.
+	 *
+	 * @param string $uri URL to register for.
+	 * @param mixed  $action Callback action.
+	 */
+	public function any( string $uri, $action = '' );
+
+	/**
 	 * Dispatch a request to the registered routes.
 	 *
 	 * @param Request $request Request object.

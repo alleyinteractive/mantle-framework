@@ -176,6 +176,16 @@ class Router implements Router_Contract {
 	}
 
 	/**
+	 * Register a route for any HTTP method.
+	 *
+	 * @param string $uri URL to register for.
+	 * @param mixed  $action Callback action.
+	 */
+	public function any( string $uri, $action = '' ) {
+		return $this->add_route( [ 'GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS' ], $uri, $action );
+	}
+
+	/**
 	 * Load the provided routes.
 	 *
 	 * @param  \Closure|string $routes
@@ -332,7 +342,20 @@ class Router implements Router_Contract {
 			);
 
 		// Ensure the response is valid since the middleware can modify it after it is run through Route.
-		return Route::ensure_response( $response );
+		return static::to_response( $request, $response );
+	}
+
+	/**
+	 * Prepare a response for sending.
+	 *
+	 * @param Request $request
+	 * @param mixed   $response
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public static function to_response( Request $request, mixed $response ): \Symfony\Component\HttpFoundation\Response {
+		$response = Route::ensure_response( $response );
+
+		return $response->prepare( $request );
 	}
 
 	/**

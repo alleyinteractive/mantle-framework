@@ -421,6 +421,8 @@ class Route extends Symfony_Route {
 	/**
 	 * Ensure a proper response object.
 	 *
+	 * @todo Move this to the Router class.
+	 *
 	 * @param mixed $response Response to send.
 	 * @return Symfony_Response
 	 */

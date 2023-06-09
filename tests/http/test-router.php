@@ -67,18 +67,19 @@ class Test_Router extends Framework_Test_Case {
 		);
 		$this->assertSame( 'bar', $router->dispatch( Request::create( 'foo/bar', 'PATCH' ) )->getContent() );
 
-		// todo: fix HEAD requests.
-		// $router = $this->get_router();
-		// $router->get('foo/bar', function () {
-		// return 'hello';
-				// });
-		// $this->assertEmpty($router->dispatch(Request::create('foo/bar', 'HEAD'))->getContent());
+		$router = $this->get_router();
+		$router->get( 'head/request', fn () => 'hello' );
 
-		// $router = $this->get_router();
-		// $router->any('foo/bar', function () {
-		// return 'hello';
-		// });
-		// $this->assertEmpty($router->dispatch(Request::create('foo/bar', 'HEAD'))->getContent());
+		$this->assertEmpty(
+			$router->dispatch( Request::create('head/request', 'HEAD' ) )->getContent()
+		);
+
+		$router = $this->get_router();
+		$router->any( 'any/request', fn () => 'hello' );
+
+		$this->assertSame( 'hello', $router->dispatch( Request::create( 'any/request', 'GET' ) )->getContent() );
+		$this->assertSame( 'hello', $router->dispatch( Request::create( 'any/request', 'POST' ) )->getContent() );
+		$this->assertEmpty( $router->dispatch( Request::create( 'any/request', 'HEAD' ) )->getContent() );
 
 		$router = $this->get_router();
 		$router->get(
