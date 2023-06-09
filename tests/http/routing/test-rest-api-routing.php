@@ -2,7 +2,9 @@
 namespace Mantle\Tests\Http\Routing;
 
 use Closure;
+use InvalidArgumentException;
 use Mantle\Facade\Route;
+use Mantle\Http\Controller;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
 use WP_REST_Request;
@@ -39,6 +41,22 @@ class Test_REST_API_Routing extends Framework_Test_Case {
 			}
 		);
 
+		Route::rest_api(
+			'namespace/v1',
+			function () {
+				Route::get( '/example-invoke', Testable_Invokable_Rest_Api_Controller::class );
+
+				Route::get( '/example-controller/index', [ Testable_Rest_Api_Controller::class, 'index' ] );
+				Route::get( '/example-controller/show', [ Testable_Rest_Api_Controller::class, 'show' ] );
+			},
+		);
+
+		Route::rest_api(
+			'namespace/v1',
+			'/example-string-function',
+			__NAMESPACE__ . '\testable_function_name',
+		);
+
 		$this->get( rest_url( '/namespace/v1/example-closure-third' ) )
 			->assertOk()
 			->assertContent( json_encode( 'example-closure-third' ) );
@@ -58,6 +76,22 @@ class Test_REST_API_Routing extends Framework_Test_Case {
 		$this->post( rest_url( '/namespace/v1/example-post' ) )
 			->assertOk()
 			->assertContent( json_encode( 'example-post' ) );
+
+		$this->get( rest_url( '/namespace/v1/example-invoke' ) )
+			->assertOk()
+			->assertContent( json_encode( 'invoke-response' ) );
+
+		$this->get( rest_url( '/namespace/v1/example-controller/index' ) )
+			->assertOk()
+			->assertContent( json_encode( 'index-response' ) );
+
+		$this->get( rest_url( '/namespace/v1/example-controller/show' ) )
+			->assertOk()
+			->assertContent( json_encode( 'show-response' ) );
+
+		$this->get( rest_url( '/namespace/v1/example-string-function' ) )
+			->assertOk()
+			->assertContent( json_encode( 'function-response' ) );
 	}
 
 	public function test_middleware_route() {
@@ -111,10 +145,40 @@ class Test_REST_API_Routing extends Framework_Test_Case {
 			->assertOk()
 			->assertContent( json_encode( 'middleware-response' ) );
 	}
+
+	public function test_invalid_action() {
+		$this->expectException( InvalidArgumentException::class );
+
+		Route::rest_api(
+			'namespace/v1',
+			'/example-invalid-action',
+			'invalid-action',
+		);
+	}
 }
 
 class Testable_Before_Middleware {
 	public function handle( $request, Closure $next ) {
 		return 'middleware-response';
 	}
+}
+
+class Testable_Rest_Api_Controller extends Controller {
+	public function index() {
+		return 'index-response';
+	}
+
+	public function show() {
+		return 'show-response';
+	}
+}
+
+class Testable_Invokable_Rest_Api_Controller extends Controller {
+	public function __invoke() {
+		return 'invoke-response';
+	}
+}
+
+function testable_function_name() {
+	return 'function-response';
 }
