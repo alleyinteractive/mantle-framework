@@ -85,7 +85,9 @@ trait Route_Dependency_Resolver {
 		// the list of parameters. If it is we will just skip it as it is probably a model
 		// binding and we do not want to mess with those; otherwise, we resolve it here.
 		if ( $class_name && ! $this->already_in_parameters( $class_name, $parameters ) ) {
-			$is_enum = ( new ReflectionClass( $class_name ) )->isEnum();
+			$is_enum = PHP_VERSION_ID > 80100
+				? ( new ReflectionClass( $class_name ) )->isEnum()
+				: false;
 
 			return $parameter->isDefaultValueAvailable()
 				? ( $is_enum ? $parameter->getDefaultValue() : null )
