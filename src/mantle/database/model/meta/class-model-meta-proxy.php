@@ -8,7 +8,6 @@
 namespace Mantle\Database\Model\Meta;
 
 use Mantle\Contracts\Database\Model_Meta;
-use Mantle\Database\Model\Model;
 
 /**
  * Allow meta to be retrieve as an attribute on the object.

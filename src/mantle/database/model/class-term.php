@@ -21,6 +21,13 @@ use Mantle\Support\Helpers;
  * @property string $name
  * @property string $slug
  * @property string $taxonomy
+ *
+ * @method static \Mantle\Database\Query\Term_Query_Builder whereId( int $id )
+ * @method static \Mantle\Database\Query\Term_Query_Builder whereName( string $name )
+ * @method static \Mantle\Database\Query\Term_Query_Builder whereSlug( string $slug )
+ * @method static \Mantle\Database\Query\Term_Query_Builder whereTaxonomy( string $taxonomy )
+ *
+ * @mixin \Mantle\Database\Query\Term_Query_Builder
  */
 class Term extends Model implements Core_Object, Model_Meta, Updatable {
 	use Events\Term_Events,

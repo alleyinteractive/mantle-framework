@@ -10,7 +10,6 @@ namespace Mantle\Container;
 use ArrayAccess;
 use Closure;
 use Exception;
-use Mantle\Contracts\Container as Container_Contract;
 use LogicException;
 use Mantle\Support\Reflector;
 use ReflectionClass;
@@ -22,13 +21,13 @@ use ReflectionParameter;
 /**
  * Service Container
  */
-class Container implements ArrayAccess, Container_Contract {
+class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	/**
 	 * The current globally available container (if any).
 	 *
-	 * @var Container_Contract|null
+	 * @var \Mantle\Contracts\Container|null
 	 */
-	protected static ?Container_Contract $instance;
+	protected static ?\Mantle\Contracts\Container $instance;
 
 	/**
 	 * An array of the types that have been resolved.
@@ -1127,7 +1126,7 @@ class Container implements ArrayAccess, Container_Contract {
 	 * Get the globally available instance of the container.
 	 *
 	 * @deprecated Use `get_instance()` instead.
-	 * @return Container_Contract
+	 * @return \Mantle\Contracts\Container
 	 */
 	public static function getInstance() {
 		return static::get_instance();
@@ -1136,9 +1135,9 @@ class Container implements ArrayAccess, Container_Contract {
 	/**
 	 * Get the globally available instance of the container.
 	 *
-	 * @return Container_Contract
+	 * @return \Mantle\Contracts\Container
 	 */
-	public static function get_instance(): Container_Contract {
+	public static function get_instance(): \Mantle\Contracts\Container {
 		if ( ! isset( static::$instance ) ) {
 			static::$instance = new static();
 		}
@@ -1149,10 +1148,10 @@ class Container implements ArrayAccess, Container_Contract {
 	/**
 	 * Set the shared instance of the container.
 	 *
-	 * @param  Container_Contract|null $container
-	 * @return Container_Contract|null
+	 * @param  \Mantle\Contracts\Container|null $container
+	 * @return \Mantle\Contracts\Container|null
 	 */
-	public static function set_instance( Container_Contract|null $container = null ): ?Container_Contract {
+	public static function set_instance( \Mantle\Contracts\Container|null $container = null ): ?\Mantle\Contracts\Container {
 		static::$instance = $container;
 
 		return static::$instance;

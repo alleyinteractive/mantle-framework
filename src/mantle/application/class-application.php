@@ -8,6 +8,8 @@
 namespace Mantle\Application;
 
 use Mantle\Container\Container;
+use Mantle\Contracts\Support\Isolated_Service_Provider;
+use Mantle\Events\Event_Service_Provider;
 use Mantle\Contracts\Application as Application_Contract;
 use Mantle\Contracts\Bootstrapable;
 use Mantle\Contracts\Container as Container_Contract;
@@ -22,7 +24,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /**
  * Mantle Application
  */
-class Application extends Container implements Application_Contract {
+class Application extends Container implements \Mantle\Contracts\Application {
 	use Concerns\Loads_Base_Configuration,
 		Concerns\Loads_Environment_Variables,
 		Concerns\Loads_Facades,
@@ -92,9 +94,9 @@ class Application extends Container implements Application_Contract {
 	protected array $booted_callbacks = [];
 
 	/**
-	 * The array of terminating callbacks.
+	 * All of the registered service providers.
 	 *
-	 * @var callable[]
+	 * @var \Mantle\Support\Service_Provider[]
 	 */
 	protected array $terminating_callbacks = [];
 
@@ -385,7 +387,7 @@ class Application extends Container implements Application_Contract {
 
 		$this->instance( 'app', $this );
 		$this->instance( Container::class, $this );
-		$this->instance( Container_Contract::class, $this );
+		$this->instance( \Mantle\Contracts\Container::class, $this );
 		$this->instance( static::class, $this );
 
 		$this->singleton(
@@ -453,9 +455,9 @@ class Application extends Container implements Application_Contract {
 	 * Bootstrap classes should implement {@see \Mantle\Contracts\Bootstrapable}.
 	 *
 	 * @param array<mixed, class-string<Bootstrapable>> $bootstrappers Class names of packages to boot.
-	 * @param Kernel_Contract                           $kernel Kernel instance.
+	 * @param \Mantle\Contracts\Kernel                  $kernel Kernel instance.
 	 */
-	public function bootstrap_with( array $bootstrappers, Kernel_Contract $kernel ) {
+	public function bootstrap_with( array $bootstrappers, \Mantle\Contracts\Kernel $kernel ) {
 		$this->has_been_bootstrapped = true;
 
 		foreach ( $bootstrappers as $bootstrapper ) {

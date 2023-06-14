@@ -259,7 +259,8 @@ class Test_Post_Object extends Framework_Test_Case {
 
 	public function test_query_builder() {
 		$post_id = $this->get_random_post_id();
-		$first = Testable_Post::whereId( $post_id )->first();
+		$first = Testable_Post::where( 'id', $post_id )->first();
+
 		$this->assertEquals( $post_id, $first->id() );
 	}
 
