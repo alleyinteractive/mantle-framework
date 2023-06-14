@@ -35,11 +35,6 @@ class Test_Stringable extends TestCase {
 		$this->assertFalse( $this->stringable( '2cdc7039-65a6-4ac7-8e5d-d554a98' )->is_uuid() );
 	}
 
-	public function testIsUlid() {
-		$this->assertTrue( $this->stringable( '01GJSNW9MAF792C0XYY8RX6QFT' )->isUlid() );
-		$this->assertFalse( $this->stringable( '01GJSNW9MAF-792C0XYY8RX6ssssss-QFT' )->isUlid() );
-	}
-
 	public function testIsJson() {
 		$this->assertTrue( $this->stringable( '1' )->is_json() );
 		$this->assertTrue( $this->stringable( '[1,2,3]' )->is_json() );
@@ -103,7 +98,7 @@ class Test_Stringable extends TestCase {
 		$stringable = $this->stringable( 'bar fun bar fly' );
 
 		$this->assertEquals( [ 'un', 'ly' ], $stringable->match_all( '/f(\w*)/' )->all() );
-		$this->assertTrue( $stringable->match_all( '/nothing/' )->isEmpty() );
+		$this->assertTrue( $stringable->match_all( '/nothing/' )->is_empty() );
 	}
 
 	public function testTest() {
@@ -244,9 +239,9 @@ class Test_Stringable extends TestCase {
 	}
 
 	public function testUcsplitOnStringable() {
-		 $this->assertSame( [ 'Taylor', 'Otwell' ], $this->stringable( 'TaylorOtwell' )->ucsplit()->toArray() );
-		$this->assertSame( [ 'Hello', 'From', 'Laravel' ], $this->stringable( 'HelloFromLaravel' )->ucsplit()->toArray() );
-		$this->assertSame( [ 'He_llo_', 'World' ], $this->stringable( 'He_llo_World' )->ucsplit()->toArray() );
+		 $this->assertSame( [ 'Taylor', 'Otwell' ], $this->stringable( 'TaylorOtwell' )->ucsplit()->to_array() );
+		$this->assertSame( [ 'Hello', 'From', 'Laravel' ], $this->stringable( 'HelloFromLaravel' )->ucsplit()->to_array() );
+		$this->assertSame( [ 'He_llo_', 'World' ], $this->stringable( 'He_llo_World' )->ucsplit()->to_array() );
 	}
 
 	public function testWhenEndsWith() {
@@ -481,41 +476,6 @@ class Test_Stringable extends TestCase {
 		);
 	}
 
-	public function testWhenIsUlid() {
-		$this->assertSame(
-			'Ulid: 01GJSNW9MAF792C0XYY8RX6QFT',
-			(string) $this->stringable( '01GJSNW9MAF792C0XYY8RX6QFT' )->whenIsUlid(
-				function ( $stringable ) {
-					return $stringable->prepend( 'Ulid: ' );
-				},
-				function ( $stringable ) {
-					return $stringable->prepend( 'Not Ulid: ' );
-				}
-			)
-		);
-
-		$this->assertSame(
-			'2cdc7039-65a6-4ac7-8e5d-d554a98',
-			(string) $this->stringable( '2cdc7039-65a6-4ac7-8e5d-d554a98' )->whenIsUlid(
-				function ( $stringable ) {
-					return $stringable->prepend( 'Ulid: ' );
-				}
-			)
-		);
-
-		$this->assertSame(
-			'Not Ulid: ss-01GJSNW9MAF792C0XYY8RX6QFT',
-			(string) $this->stringable( 'ss-01GJSNW9MAF792C0XYY8RX6QFT' )->whenIsUlid(
-				function ( $stringable ) {
-					return $stringable->prepend( 'Ulid: ' );
-				},
-				function ( $stringable ) {
-					return $stringable->prepend( 'Not Ulid: ' );
-				}
-			)
-		);
-	}
-
 	public function testWhenTest() {
 		$this->assertSame(
 			'Winner: foo bar',
@@ -611,7 +571,7 @@ class Test_Stringable extends TestCase {
 			function ( $stringable ) {
 				$this->assertSame(
 					$stringable,
-					$stringable->whenEmpty(
+					$stringable->when_empty(
 						function () {
 						}
 					)
@@ -644,7 +604,7 @@ class Test_Stringable extends TestCase {
 			function ( $stringable ) {
 				$this->assertSame(
 					$stringable,
-					$stringable->whenNotEmpty(
+					$stringable->when_not_empty(
 						function ( $stringable ) {
 							return $stringable . '.';
 						}
@@ -1093,14 +1053,14 @@ class Test_Stringable extends TestCase {
 	}
 
 	public function testReplaceArray() {
-		$this->assertSame( 'foo/bar/baz', (string) $this->stringable( '?/?/?' )->replaceArray( '?', [ 'foo', 'bar', 'baz' ] ) );
-		$this->assertSame( 'foo/bar/baz/?', (string) $this->stringable( '?/?/?/?' )->replaceArray( '?', [ 'foo', 'bar', 'baz' ] ) );
-		$this->assertSame( 'foo/bar', (string) $this->stringable( '?/?' )->replaceArray( '?', [ 'foo', 'bar', 'baz' ] ) );
-		$this->assertSame( '?/?/?', (string) $this->stringable( '?/?/?' )->replaceArray( 'x', [ 'foo', 'bar', 'baz' ] ) );
-		$this->assertSame( 'foo?/bar/baz', (string) $this->stringable( '?/?/?' )->replaceArray( '?', [ 'foo?', 'bar', 'baz' ] ) );
+		$this->assertSame( 'foo/bar/baz', (string) $this->stringable( '?/?/?' )->replace_array( '?', [ 'foo', 'bar', 'baz' ] ) );
+		$this->assertSame( 'foo/bar/baz/?', (string) $this->stringable( '?/?/?/?' )->replace_array( '?', [ 'foo', 'bar', 'baz' ] ) );
+		$this->assertSame( 'foo/bar', (string) $this->stringable( '?/?' )->replace_array( '?', [ 'foo', 'bar', 'baz' ] ) );
+		$this->assertSame( '?/?/?', (string) $this->stringable( '?/?/?' )->replace_array( 'x', [ 'foo', 'bar', 'baz' ] ) );
+		$this->assertSame( 'foo?/bar/baz', (string) $this->stringable( '?/?/?' )->replace_array( '?', [ 'foo?', 'bar', 'baz' ] ) );
 		$this->assertSame(
 			'foo/bar',
-			(string) $this->stringable( '?/?' )->replaceArray(
+			(string) $this->stringable( '?/?' )->replace_array(
 				'?',
 				[
 					1 => 'foo',
@@ -1110,7 +1070,7 @@ class Test_Stringable extends TestCase {
 		);
 		$this->assertSame(
 			'foo/bar',
-			(string) $this->stringable( '?/?' )->replaceArray(
+			(string) $this->stringable( '?/?' )->replace_array(
 				'?',
 				[
 					'x' => 'foo',
@@ -1120,7 +1080,7 @@ class Test_Stringable extends TestCase {
 		);
 		$this->assertSame(
 			'foo/bar',
-			(string) $this->stringable( '?/?' )->replaceArray(
+			(string) $this->stringable( '?/?' )->replace_array(
 				'?',
 				collect(
 					[
@@ -1133,25 +1093,25 @@ class Test_Stringable extends TestCase {
 	}
 
 	public function testReplaceFirst() {
-		$this->assertSame( 'fooqux foobar', (string) $this->stringable( 'foobar foobar' )->replaceFirst( 'bar', 'qux' ) );
-		$this->assertSame( 'foo/qux? foo/bar?', (string) $this->stringable( 'foo/bar? foo/bar?' )->replaceFirst( 'bar?', 'qux?' ) );
-		$this->assertSame( 'foo foobar', (string) $this->stringable( 'foobar foobar' )->replaceFirst( 'bar', '' ) );
-		$this->assertSame( 'foobar foobar', (string) $this->stringable( 'foobar foobar' )->replaceFirst( 'xxx', 'yyy' ) );
-		$this->assertSame( 'foobar foobar', (string) $this->stringable( 'foobar foobar' )->replaceFirst( '', 'yyy' ) );
+		$this->assertSame( 'fooqux foobar', (string) $this->stringable( 'foobar foobar' )->replace_first( 'bar', 'qux' ) );
+		$this->assertSame( 'foo/qux? foo/bar?', (string) $this->stringable( 'foo/bar? foo/bar?' )->replace_first( 'bar?', 'qux?' ) );
+		$this->assertSame( 'foo foobar', (string) $this->stringable( 'foobar foobar' )->replace_first( 'bar', '' ) );
+		$this->assertSame( 'foobar foobar', (string) $this->stringable( 'foobar foobar' )->replace_first( 'xxx', 'yyy' ) );
+		$this->assertSame( 'foobar foobar', (string) $this->stringable( 'foobar foobar' )->replace_first( '', 'yyy' ) );
 		// Test for multibyte string support
-		$this->assertSame( 'Jxxxnköping Malmö', (string) $this->stringable( 'Jönköping Malmö' )->replaceFirst( 'ö', 'xxx' ) );
-		$this->assertSame( 'Jönköping Malmö', (string) $this->stringable( 'Jönköping Malmö' )->replaceFirst( '', 'yyy' ) );
+		$this->assertSame( 'Jxxxnköping Malmö', (string) $this->stringable( 'Jönköping Malmö' )->replace_first( 'ö', 'xxx' ) );
+		$this->assertSame( 'Jönköping Malmö', (string) $this->stringable( 'Jönköping Malmö' )->replace_first( '', 'yyy' ) );
 	}
 
 	public function testReplaceLast() {
-		 $this->assertSame( 'foobar fooqux', (string) $this->stringable( 'foobar foobar' )->replaceLast( 'bar', 'qux' ) );
-		$this->assertSame( 'foo/bar? foo/qux?', (string) $this->stringable( 'foo/bar? foo/bar?' )->replaceLast( 'bar?', 'qux?' ) );
-		$this->assertSame( 'foobar foo', (string) $this->stringable( 'foobar foobar' )->replaceLast( 'bar', '' ) );
-		$this->assertSame( 'foobar foobar', (string) $this->stringable( 'foobar foobar' )->replaceLast( 'xxx', 'yyy' ) );
-		$this->assertSame( 'foobar foobar', (string) $this->stringable( 'foobar foobar' )->replaceLast( '', 'yyy' ) );
+		 $this->assertSame( 'foobar fooqux', (string) $this->stringable( 'foobar foobar' )->replace_last( 'bar', 'qux' ) );
+		$this->assertSame( 'foo/bar? foo/qux?', (string) $this->stringable( 'foo/bar? foo/bar?' )->replace_last( 'bar?', 'qux?' ) );
+		$this->assertSame( 'foobar foo', (string) $this->stringable( 'foobar foobar' )->replace_last( 'bar', '' ) );
+		$this->assertSame( 'foobar foobar', (string) $this->stringable( 'foobar foobar' )->replace_last( 'xxx', 'yyy' ) );
+		$this->assertSame( 'foobar foobar', (string) $this->stringable( 'foobar foobar' )->replace_last( '', 'yyy' ) );
 		// Test for multibyte string support
-		$this->assertSame( 'Malmö Jönkxxxping', (string) $this->stringable( 'Malmö Jönköping' )->replaceLast( 'ö', 'xxx' ) );
-		$this->assertSame( 'Malmö Jönköping', (string) $this->stringable( 'Malmö Jönköping' )->replaceLast( '', 'yyy' ) );
+		$this->assertSame( 'Malmö Jönkxxxping', (string) $this->stringable( 'Malmö Jönköping' )->replace_last( 'ö', 'xxx' ) );
+		$this->assertSame( 'Malmö Jönköping', (string) $this->stringable( 'Malmö Jönköping' )->replace_last( '', 'yyy' ) );
 	}
 
 	public function testRemove() {
