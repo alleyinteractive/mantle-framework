@@ -50,9 +50,9 @@ trait Has_Relationships {
 	 * @param string $related Related model name.
 	 * @param string $foreign_key Foreign key.
 	 * @param string $local_key Local key.
-	 * @return Relation
+	 * @return Has_Many
 	 */
-	public function has_many( string $related, string $foreign_key = null, string $local_key = null ): Relation {
+	public function has_many( string $related, string $foreign_key = null, string $local_key = null ): Has_Many {
 		$instance    = new $related();
 		$foreign_key = $foreign_key ?? $this->get_foreign_key();
 		$local_key   = $local_key ?? $this->get_key_name();
@@ -69,11 +69,11 @@ trait Has_Relationships {
 	 * @param string $related Related model name.
 	 * @param string $foreign_key Foreign key.
 	 * @param string $local_key Local key.
-	 * @return Relation
+	 * @return Belongs_To
 	 *
 	 * @throws InvalidArgumentException Used on the definition of a post and term relationship.
 	 */
-	public function belongs_to( string $related, string $foreign_key = null, string $local_key = null ): Relation {
+	public function belongs_to( string $related, string $foreign_key = null, string $local_key = null ): Belongs_To {
 		// Check if this a post and term relationship.
 		if (
 			( $this instanceof Term && is_subclass_of( $related, Post::class ) )
@@ -98,11 +98,11 @@ trait Has_Relationships {
 	 * @param string $related Related model name.
 	 * @param string $foreign_key Foreign key.
 	 * @param string $local_key Local key.
-	 * @return Relation
+	 * @return Belongs_To_Many
 	 *
 	 * @throws InvalidArgumentException Used on the definition of a post and term relationship.
 	 */
-	public function belongs_to_many( string $related, string $foreign_key = null, string $local_key = null ): Relation {
+	public function belongs_to_many( string $related, string $foreign_key = null, string $local_key = null ): Belongs_To_Many {
 		// Check if this a post and term relationship.
 		if (
 			( $this instanceof Term && is_subclass_of( $related, Post::class ) )

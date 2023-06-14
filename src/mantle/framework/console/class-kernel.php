@@ -14,7 +14,6 @@ use Mantle\Console\Command;
 use Mantle\Console\Events\Lightweight_Event_Dispatcher;
 use Mantle\Contracts\Application;
 use Mantle\Contracts\Console\Application as Console_Application_Contract;
-use Mantle\Contracts\Console\Kernel as Kernel_Contract;
 use Mantle\Contracts\Exceptions\Handler as Exception_Handler;
 use Mantle\Support\Traits\Loads_Classes;
 use ReflectionClass;
@@ -27,7 +26,7 @@ use function Mantle\Support\Helpers\collect;
 /**
  * Console Kernel
  */
-class Kernel implements Kernel_Contract {
+class Kernel implements \Mantle\Contracts\Console\Kernel {
 	use Loads_Classes;
 
 	/**
@@ -143,7 +142,7 @@ class Kernel implements Kernel_Contract {
 	 *
 	 * @param string  $signature Command signature.
 	 * @param Closure $callback Command callback.
-	 * @return Closure_Command
+	 * @return \Mantle\Console\Closure_Command
 	 */
 	public function command( string $signature, Closure $callback ): Closure_Command {
 		$command = new Closure_Command( $signature, $callback );
@@ -177,9 +176,9 @@ class Kernel implements Kernel_Contract {
 	/**
 	 * Resolve the instance of the console application.
 	 *
-	 * @return Console_Application_Contract
+	 * @return \Mantle\Contracts\Console\Application
 	 */
-	public function get_console_application(): Console_Application_Contract {
+	public function get_console_application(): \Mantle\Contracts\Console\Application {
 		if ( ! isset( $this->console_application ) ) {
 			$this->console_application = new Console_Application( $this->app );
 		}
@@ -192,9 +191,9 @@ class Kernel implements Kernel_Contract {
 	 *
 	 * Set the instance of the Symfony console application.
 	 *
-	 * @param Console_Application_Contract $app Console application instance.
+	 * @param \Mantle\Contracts\Console\Application $app Console application instance.
 	 */
-	public function set_console_application( Console_Application_Contract $app ): void {
+	public function set_console_application( \Mantle\Contracts\Console\Application $app ): void {
 		$this->console_application = $app;
 	}
 

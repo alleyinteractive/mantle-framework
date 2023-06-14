@@ -24,8 +24,6 @@ use function Mantle\Support\Helpers\tap;
 
 /**
  * Database Model
- *
- * @mixin \Mantle\Database\Query\Builder
  */
 abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializable, Url_Routable {
 	use Forward_Calls,

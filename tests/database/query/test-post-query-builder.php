@@ -27,9 +27,7 @@ class Test_Post_Query_Builder extends Framework_Test_Case {
 	public function test_post_by_name() {
 		$post = static::factory()->post->create( [ 'post_name' => 'post-to-find' ] );
 
-		$first = Builder::create( Testable_Post::class )
-			->whereSlug( 'post-to-find' )
-			->first();
+		$first = Testable_Post::whereSlug( 'post-to-find' )->first();
 
 		$this->assertInstanceOf( Testable_Post::class, $first );
 		$this->assertEquals( 'post-to-find', $first->slug() );
@@ -39,9 +37,7 @@ class Test_Post_Query_Builder extends Framework_Test_Case {
 	public function test_post_by_name_not_found() {
 		static::factory()->post->create( [ 'post_name' => 'post-to-not-find' ] );
 
-		$first = Builder::create( Testable_Post::class )
-			->whereSlug( 'post-name-we-are-looking-for' )
-			->first();
+		$first = Testable_Post::whereSlug( 'post-name-we-are-looking-for' )->first();
 
 		$this->assertNull( $first );
 	}
@@ -49,8 +45,10 @@ class Test_Post_Query_Builder extends Framework_Test_Case {
 	public function test_post_by_name_override() {
 		static::factory()->post->create( [ 'post_name' => 'post-to-find' ] );
 
-		$first = Builder::create( Testable_Post::class )
-			->whereSlug( 'post-name-we-are-looking-for' )
+		$b = Testable_Post::whereSlug( 'post-name-we-are-looking-for' )
+			->whereSlug( 'post-to-find' );
+
+		$first = Testable_Post::whereSlug( 'post-name-we-are-looking-for' )
 			->whereSlug( 'post-to-find' )
 			->first();
 

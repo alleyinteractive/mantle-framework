@@ -24,19 +24,11 @@ use function Mantle\Support\Helpers\get_post_object;
  */
 class Attachment_Factory extends Post_Factory {
 	/**
-	 * Faker instance.
-	 *
-	 * @var Generator
-	 */
-	protected $faker;
-
-	/**
 	 * Constructor.
 	 *
-	 * @param Generator $generator Faker generator.
+	 * @param Generator $faker Faker generator.
 	 */
-	public function __construct( Generator $generator ) {
-		$this->faker = $generator;
+	public function __construct( protected Generator $faker ) {
 	}
 
 	/**
