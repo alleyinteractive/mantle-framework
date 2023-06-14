@@ -46,7 +46,7 @@ namespace Mantle\Facade;
  * @method static void mixin(object $mixin, bool $replace = true)
  * @method static bool has_macro(string $name)
  * @method static mixed macro_call(string $method, array $parameters)
- * @method static static Route_Registrar middleware( string|array $middleware )
+ * @method static static \Mantle\Http\Routing\Route_Registrar middleware(string|array $middleware)
  * @method static \Mantle\Http\Routing\Route_Registrar attribute(string $key, mixed $value)
  * @method static \Mantle\Http\Routing\Route_Registrar as(string $value)
  * @method static \Mantle\Http\Routing\Route_Registrar domain(string $value)
