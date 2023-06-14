@@ -187,7 +187,7 @@ trait Enumerates_Values {
 	 * @param  mixed ...$args
 	 * @return void
 	 */
-	public function dd( ...$args ) {
+	public function dd( ...$args ): void {
 		$this->dump( ...$args );
 
 		exit( 1 );
@@ -198,7 +198,7 @@ trait Enumerates_Values {
 	 *
 	 * @return static
 	 */
-	public function dump() {
+	public function dump(): static {
 		( new static( func_get_args() ) )
 			->push( $this->all() )
 			->each(

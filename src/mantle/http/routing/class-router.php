@@ -181,7 +181,7 @@ class Router implements Router_Contract {
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
 	 */
-	public function any( string $uri, $action = '' ) {
+	public function any( string $uri, $action = '' ): ?Route {
 		return $this->add_route( [ 'GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS' ], $uri, $action );
 	}
 
@@ -207,7 +207,7 @@ class Router implements Router_Contract {
 	 * @param mixed  $action Route callback.
 	 * @return Route|null Route instance for web routes, null for REST routes.
 	 */
-	public function add_route( array $methods, string $uri, $action ) {
+	public function add_route( array $methods, string $uri, $action ): ?Route {
 		// Send the route to the REST Registrar if set.
 		if ( isset( $this->rest_registrar ) ) {
 			$this->create_rest_api_route( $methods, $uri, $action );
@@ -250,7 +250,7 @@ class Router implements Router_Contract {
 	 * @param mixed  $action Route callback.
 	 * @return void
 	 */
-	protected function create_rest_api_route( array $methods, string $uri, $action ) {
+	protected function create_rest_api_route( array $methods, string $uri, $action ): void {
 		$args = [
 			'callback' => $action,
 			'methods'  => $methods,
@@ -310,7 +310,7 @@ class Router implements Router_Contract {
 	 * @param Request $request Request object.
 	 * @return array|null
 	 */
-	protected function match_route( Request $request ) {
+	protected function match_route( Request $request ): ?array {
 		$context = ( new RequestContext() )->fromRequest( $request );
 
 		return ( new UrlMatcher( $this->get_routes(), $context ) )->matchRequest( $request );

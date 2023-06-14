@@ -222,7 +222,7 @@ class Route extends Symfony_Route {
 	 * @param  array|string|null $middleware Middleware to exclude, optional.
 	 * @return static
 	 */
-	public function without_middleware( $middleware = null ) {
+	public function without_middleware( $middleware = null ): static {
 		$this->action['excluded_middleware'] = array_merge(
 			(array) ( $this->action['excluded_middleware'] ?? [] ),
 			Arr::wrap( $middleware ),
@@ -237,7 +237,7 @@ class Route extends Symfony_Route {
 	 * @param callable $callback Callback to invoke.
 	 * @return static
 	 */
-	public function callback( callable $callback ) {
+	public function callback( callable $callback ): static {
 		$this->action['callback'] = $callback;
 
 		return $this;
