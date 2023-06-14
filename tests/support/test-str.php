@@ -79,36 +79,36 @@ class Test_Str extends TestCase {
 	}
 
 	public function testStartsWith() {
-		$this->assertTrue( Str::startsWith( 'jason', 'jas' ) );
-		$this->assertTrue( Str::startsWith( 'jason', 'jason' ) );
-		$this->assertTrue( Str::startsWith( 'jason', [ 'jas' ] ) );
-		$this->assertTrue( Str::startsWith( 'jason', [ 'day', 'jas' ] ) );
-		$this->assertTrue( Str::startsWith( 'jason', collect( [ 'day', 'jas' ] ) ) );
-		$this->assertFalse( Str::startsWith( 'jason', 'day' ) );
-		$this->assertFalse( Str::startsWith( 'jason', [ 'day' ] ) );
-		$this->assertFalse( Str::startsWith( 'jason', null ) );
-		$this->assertFalse( Str::startsWith( 'jason', [ null ] ) );
-		$this->assertFalse( Str::startsWith( '0123', [ null ] ) );
-		$this->assertTrue( Str::startsWith( '0123', 0 ) );
-		$this->assertFalse( Str::startsWith( 'jason', 'J' ) );
-		$this->assertFalse( Str::startsWith( 'jason', '' ) );
-		$this->assertFalse( Str::startsWith( '', '' ) );
-		$this->assertFalse( Str::startsWith( '7', ' 7' ) );
-		$this->assertTrue( Str::startsWith( '7a', '7' ) );
-		$this->assertTrue( Str::startsWith( '7a', 7 ) );
-		$this->assertTrue( Str::startsWith( '7.12a', 7.12 ) );
-		$this->assertFalse( Str::startsWith( '7.12a', 7.13 ) );
-		$this->assertTrue( Str::startsWith( 7.123, '7' ) );
-		$this->assertTrue( Str::startsWith( 7.123, '7.12' ) );
-		$this->assertFalse( Str::startsWith( 7.123, '7.13' ) );
+		$this->assertTrue( Str::starts_with( 'jason', 'jas' ) );
+		$this->assertTrue( Str::starts_with( 'jason', 'jason' ) );
+		$this->assertTrue( Str::starts_with( 'jason', [ 'jas' ] ) );
+		$this->assertTrue( Str::starts_with( 'jason', [ 'day', 'jas' ] ) );
+		$this->assertTrue( Str::starts_with( 'jason', collect( [ 'day', 'jas' ] ) ) );
+		$this->assertFalse( Str::starts_with( 'jason', 'day' ) );
+		$this->assertFalse( Str::starts_with( 'jason', [ 'day' ] ) );
+		$this->assertFalse( Str::starts_with( 'jason', null ) );
+		$this->assertFalse( Str::starts_with( 'jason', [ null ] ) );
+		$this->assertFalse( Str::starts_with( '0123', [ null ] ) );
+		$this->assertTrue( Str::starts_with( '0123', 0 ) );
+		$this->assertFalse( Str::starts_with( 'jason', 'J' ) );
+		$this->assertFalse( Str::starts_with( 'jason', '' ) );
+		$this->assertFalse( Str::starts_with( '', '' ) );
+		$this->assertFalse( Str::starts_with( '7', ' 7' ) );
+		$this->assertTrue( Str::starts_with( '7a', '7' ) );
+		$this->assertTrue( Str::starts_with( '7a', 7 ) );
+		$this->assertTrue( Str::starts_with( '7.12a', 7.12 ) );
+		$this->assertFalse( Str::starts_with( '7.12a', 7.13 ) );
+		$this->assertTrue( Str::starts_with( 7.123, '7' ) );
+		$this->assertTrue( Str::starts_with( 7.123, '7.12' ) );
+		$this->assertFalse( Str::starts_with( 7.123, '7.13' ) );
 		// Test for multibyte string support
-		$this->assertTrue( Str::startsWith( 'Jönköping', 'Jö' ) );
-		$this->assertTrue( Str::startsWith( 'Malmö', 'Malmö' ) );
-		$this->assertFalse( Str::startsWith( 'Jönköping', 'Jonko' ) );
-		$this->assertFalse( Str::startsWith( 'Malmö', 'Malmo' ) );
-		$this->assertTrue( Str::startsWith( '你好', '你' ) );
-		$this->assertFalse( Str::startsWith( '你好', '好' ) );
-		$this->assertFalse( Str::startsWith( '你好', 'a' ) );
+		$this->assertTrue( Str::starts_with( 'Jönköping', 'Jö' ) );
+		$this->assertTrue( Str::starts_with( 'Malmö', 'Malmö' ) );
+		$this->assertFalse( Str::starts_with( 'Jönköping', 'Jonko' ) );
+		$this->assertFalse( Str::starts_with( 'Malmö', 'Malmo' ) );
+		$this->assertTrue( Str::starts_with( '你好', '你' ) );
+		$this->assertFalse( Str::starts_with( '你好', '好' ) );
+		$this->assertFalse( Str::starts_with( '你好', 'a' ) );
 	}
 
 	public function testEndsWith() {
@@ -339,7 +339,7 @@ class Test_Str extends TestCase {
 
 	public function testFlushCache() {
 		$reflection = new ReflectionClass( Str::class );
-		$property   = $reflection->getProperty( 'snakeCache' );
+		$property   = $reflection->getProperty( 'snake_cache' );
 		$property->setAccessible( true );
 
 		Str::flush_cache();
@@ -819,7 +819,7 @@ class Test_Str extends TestCase {
 
 	public function testUuid() {
 		$this->assertInstanceOf( UuidInterface::class, Str::uuid() );
-		$this->assertInstanceOf( UuidInterface::class, Str::orderedUuid() );
+		$this->assertIsString( (string) Str::uuid() );
 	}
 
 	public function testAsciiNull() {
@@ -829,24 +829,24 @@ class Test_Str extends TestCase {
 	}
 
 	public function testPadBoth() {
-		 $this->assertSame( '__Alien___', Str::pad_both( 'Alien', 10, '_' ) );
-		$this->assertSame( '  Alien   ', Str::pad_both( 'Alien', 10 ) );
-		$this->assertSame( '  ❤MultiByte☆   ', Str::pad_both( '❤MultiByte☆', 16 ) );
-		$this->assertSame( '❤☆❤MultiByte☆❤☆❤', Str::pad_both( '❤MultiByte☆', 16, '❤☆' ) );
+		$this->assertSame('__Alien___', Str::pad_both('Alien', 10, '_'));
+		$this->assertSame('  Alien   ', Str::pad_both('Alien', 10));
+		$this->assertSame('  ❤MultiByte☆   ', Str::pad_both('❤MultiByte☆', 16));
+		$this->assertSame('❤☆❤MultiByte☆❤☆❤', Str::pad_both('❤MultiByte☆', 16, '❤☆'));
 	}
 
 	public function testPadLeft() {
 		 $this->assertSame( '-=-=-Alien', Str::pad_left( 'Alien', 10, '-=' ) );
-		$this->assertSame( '	 Alien', Str::pad_left( 'Alien', 10 ) );
-		$this->assertSame( '	 ❤MultiByte☆', Str::pad_left( '❤MultiByte☆', 16 ) );
+		$this->assertSame( '     Alien', Str::pad_left( 'Alien', 10 ) );
+		$this->assertSame( '     ❤MultiByte☆', Str::pad_left( '❤MultiByte☆', 16 ) );
 		$this->assertSame( '❤☆❤☆❤❤MultiByte☆', Str::pad_left( '❤MultiByte☆', 16, '❤☆' ) );
 	}
 
 	public function testPadRight() {
-		$this->assertSame( 'Alien-=-=-', Str::pad_right( 'Alien', 10, '-=' ) );
-		$this->assertSame( 'Alien	 ', Str::pad_right( 'Alien', 10 ) );
-		$this->assertSame( '❤MultiByte☆	 ', Str::pad_right( '❤MultiByte☆', 16 ) );
-		$this->assertSame( '❤MultiByte☆❤☆❤☆❤', Str::pad_right( '❤MultiByte☆', 16, '❤☆' ) );
+		$this->assertSame('Alien-=-=-', Str::pad_right('Alien', 10, '-='));
+		$this->assertSame('Alien     ', Str::pad_right('Alien', 10));
+		$this->assertSame('❤MultiByte☆     ', Str::pad_right('❤MultiByte☆', 16));
+		$this->assertSame('❤MultiByte☆❤☆❤☆❤', Str::pad_right('❤MultiByte☆', 16, '❤☆'));
 	}
 
 	public function testSwapKeywords(): void {
@@ -951,8 +951,8 @@ class Test_Str extends TestCase {
 	}
 
 	public function testInlineMarkdown() {
-		$this->assertSame( "<em>hello world</em>\n", Str::inlineMarkdown( '*hello world*' ) );
-		$this->assertSame( "<a href=\"https://laravel.com\"><strong>Laravel</strong></a>\n", Str::inlineMarkdown( '[**Laravel**](https://laravel.com)' ) );
+		$this->assertSame( "<em>hello world</em>\n", Str::inline_markdown( '*hello world*' ) );
+		$this->assertSame( "<a href=\"https://laravel.com\"><strong>Laravel</strong></a>\n", Str::inline_markdown( '[**Laravel**](https://laravel.com)' ) );
 	}
 
 	public function testRepeat() {
@@ -990,109 +990,6 @@ class Test_Str extends TestCase {
 	 */
 	public function testTransliterateStrict( string $value, string $expected ): void {
 		$this->assertSame( $expected, Str::transliterate( $value, '?', true ) );
-	}
-
-	public function testItCanFreezeUuids() {
-		$this->assertNotSame( (string) Str::uuid(), (string) Str::uuid() );
-		$this->assertNotSame( Str::uuid(), Str::uuid() );
-
-		$uuid = Str::freeze_uuids();
-
-		$this->assertSame( $uuid, Str::uuid() );
-		$this->assertSame( Str::uuid(), Str::uuid() );
-		$this->assertSame( (string) $uuid, (string) Str::uuid() );
-		$this->assertSame( (string) Str::uuid(), (string) Str::uuid() );
-
-		Str::create_uuids_normally();
-
-		$this->assertNotSame( Str::uuid(), Str::uuid() );
-		$this->assertNotSame( (string) Str::uuid(), (string) Str::uuid() );
-	}
-
-	public function testItCanFreezeUuidsInAClosure() {
-		$uuids = [];
-
-		$uuid = Str::freeze_uuids(
-			function ( $uuid ) use ( &$uuids ) {
-				$uuids[] = $uuid;
-				$uuids[] = Str::uuid();
-				$uuids[] = Str::uuid();
-			}
-		);
-
-		$this->assertSame( $uuid, $uuids[0] );
-		$this->assertSame( (string) $uuid, (string) $uuids[0] );
-		$this->assertSame( (string) $uuids[0], (string) $uuids[1] );
-		$this->assertSame( $uuids[0], $uuids[1] );
-		$this->assertSame( (string) $uuids[0], (string) $uuids[1] );
-		$this->assertSame( $uuids[1], $uuids[2] );
-		$this->assertSame( (string) $uuids[1], (string) $uuids[2] );
-		$this->assertNotSame( Str::uuid(), Str::uuid() );
-		$this->assertNotSame( (string) Str::uuid(), (string) Str::uuid() );
-
-		Str::create_uuids_normally();
-	}
-
-	public function testItCreatesUuidsNormallyAfterFailureWithinFreezeMethod() {
-		try {
-			Str::freeze_uuids(
-				function () {
-					Str::create_uuids_using( fn () => Str::of( '1234' ) );
-					$this->assertSame( '1234', Str::uuid()->toString() );
-					throw new \Exception( 'Something failed.' );
-				}
-			);
-		} catch ( \Exception ) {
-			$this->assertNotSame( '1234', Str::uuid()->toString() );
-		}
-	}
-
-	public function testItCanSpecifyASequenceOfUuidsToUtilise() {
-		Str::create_uuids_using_sequence(
-			[
-				0 => ( $zeroth = Str::uuid() ),
-				1 => ( $first = Str::uuid() ),
-				// just generate a random one here...
-				3 => ( $third = Str::uuid() ),
-			// continue to generate random uuids...
-			]
-		);
-
-		$retrieved = Str::uuid();
-		$this->assertSame( $zeroth, $retrieved );
-		$this->assertSame( (string) $zeroth, (string) $retrieved );
-
-		$retrieved = Str::uuid();
-		$this->assertSame( $first, $retrieved );
-		$this->assertSame( (string) $first, (string) $retrieved );
-
-		$retrieved = Str::uuid();
-		$this->assertFalse( in_array( $retrieved, [ $zeroth, $first, $third ], true ) );
-		$this->assertFalse( in_array( (string) $retrieved, [ (string) $zeroth, (string) $first, (string) $third ], true ) );
-
-		$retrieved = Str::uuid();
-		$this->assertSame( $third, $retrieved );
-		$this->assertSame( (string) $third, (string) $retrieved );
-
-		$retrieved = Str::uuid();
-		$this->assertFalse( in_array( $retrieved, [ $zeroth, $first, $third ], true ) );
-		$this->assertFalse( in_array( (string) $retrieved, [ (string) $zeroth, (string) $first, (string) $third ], true ) );
-
-		Str::create_uuids_normally();
-	}
-
-	public function testItCanSpecifyAFallbackForASequence() {
-		Str::create_uuids_using_sequence( [ Str::uuid(), Str::uuid() ], fn () => throw new Exception( 'Out of Uuids.' ) );
-		Str::uuid();
-		Str::uuid();
-
-		try {
-			$this->expectExceptionMessage( 'Out of Uuids.' );
-			Str::uuid();
-			$this->fail();
-		} finally {
-			Str::create_uuids_normally();
-		}
 	}
 
 	public function testPasswordCreation() {

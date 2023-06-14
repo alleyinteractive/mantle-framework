@@ -5,9 +5,12 @@
     "require": {
         "php": "^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
+        "doctrine/inflector": "^2.0.5",
+        "league/commonmark": "^2.2.1",
         "mantle-framework/contracts": "^0.12",
         "monolog/monolog": "^2.7",
         "nesbot/carbon": "^2.53",
+        "ramsey/uuid": "^4.7",
         "symfony/finder": "^6.0",
         "symfony/var-dumper": "^6.0",
         "voku/portable-ascii": "^2.0"

@@ -886,16 +886,16 @@ class Test_Stringable extends TestCase {
 	}
 
 	public function testAfterLast() {
-		$this->assertSame( 'tte', (string) $this->stringable( 'yvette' )->afterLast( 'yve' ) );
-		$this->assertSame( 'e', (string) $this->stringable( 'yvette' )->afterLast( 't' ) );
-		$this->assertSame( 'e', (string) $this->stringable( 'ééé yvette' )->afterLast( 't' ) );
-		$this->assertSame( '', (string) $this->stringable( 'yvette' )->afterLast( 'tte' ) );
-		$this->assertSame( 'yvette', (string) $this->stringable( 'yvette' )->afterLast( 'xxxx' ) );
-		$this->assertSame( 'yvette', (string) $this->stringable( 'yvette' )->afterLast( '' ) );
-		$this->assertSame( 'te', (string) $this->stringable( 'yv0et0te' )->afterLast( '0' ) );
-		$this->assertSame( 'te', (string) $this->stringable( 'yv0et0te' )->afterLast( 0 ) );
-		$this->assertSame( 'te', (string) $this->stringable( 'yv2et2te' )->afterLast( 2 ) );
-		$this->assertSame( 'foo', (string) $this->stringable( '----foo' )->afterLast( '---' ) );
+		$this->assertSame( 'tte', (string) $this->stringable( 'yvette' )->after_last( 'yve' ) );
+		$this->assertSame( 'e', (string) $this->stringable( 'yvette' )->after_last( 't' ) );
+		$this->assertSame( 'e', (string) $this->stringable( 'ééé yvette' )->after_last( 't' ) );
+		$this->assertSame( '', (string) $this->stringable( 'yvette' )->after_last( 'tte' ) );
+		$this->assertSame( 'yvette', (string) $this->stringable( 'yvette' )->after_last( 'xxxx' ) );
+		$this->assertSame( 'yvette', (string) $this->stringable( 'yvette' )->after_last( '' ) );
+		$this->assertSame( 'te', (string) $this->stringable( 'yv0et0te' )->after_last( '0' ) );
+		$this->assertSame( 'te', (string) $this->stringable( 'yv0et0te' )->after_last( 0 ) );
+		$this->assertSame( 'te', (string) $this->stringable( 'yv2et2te' )->after_last( 2 ) );
+		$this->assertSame( 'foo', (string) $this->stringable( '----foo' )->after_last( '---' ) );
 	}
 
 	public function testContains() {
@@ -1240,14 +1240,14 @@ class Test_Stringable extends TestCase {
 
 	public function testPadLeft() {
 		 $this->assertSame( '-=-=-Alien', (string) $this->stringable( 'Alien' )->pad_left( 10, '-=' ) );
-		$this->assertSame( '	 Alien', (string) $this->stringable( 'Alien' )->pad_left( 10 ) );
-		$this->assertSame( '	 ❤MultiByte☆', (string) $this->stringable( '❤MultiByte☆' )->pad_left( 16 ) );
+		$this->assertSame( '     Alien', (string) $this->stringable( 'Alien' )->pad_left( 10 ) );
+		$this->assertSame( '     ❤MultiByte☆', (string) $this->stringable( '❤MultiByte☆' )->pad_left( 16 ) );
 	}
 
 	public function testPadRight() {
 		$this->assertSame( 'Alien-----', (string) $this->stringable( 'Alien' )->pad_right( 10, '-' ) );
-		$this->assertSame( 'Alien	 ', (string) $this->stringable( 'Alien' )->pad_right( 10 ) );
-		$this->assertSame( '❤MultiByte☆	 ', (string) $this->stringable( '❤MultiByte☆' )->pad_right( 16 ) );
+		$this->assertSame( 'Alien     ', (string) $this->stringable( 'Alien' )->pad_right( 10 ) );
+		$this->assertSame( '❤MultiByte☆     ', (string) $this->stringable( '❤MultiByte☆' )->pad_right( 16 ) );
 	}
 
 	public function testExplode() {
@@ -1298,17 +1298,17 @@ class Test_Stringable extends TestCase {
 		$this->assertSame( 'bar', (string) $this->stringable( 'foo' )->pipe( $callback ) );
 	}
 
-	// public function testMarkdown()
-	// {
-	// $this->assertEquals("<p><em>hello world</em></p>\n", $this->stringable('*hello world*')->markdown());
-	// $this->assertEquals("<h1>hello world</h1>\n", $this->stringable('# hello world')->markdown());
-	// }
+	public function testMarkdown()
+	{
+		$this->assertEquals("<p><em>hello world</em></p>\n", $this->stringable('*hello world*')->markdown());
+		$this->assertEquals("<h1>hello world</h1>\n", $this->stringable('# hello world')->markdown());
+	}
 
-	// public function testInlineMarkdown()
-	// {
-	// $this->assertEquals("<em>hello world</em>\n", $this->stringable('*hello world*')->inlineMarkdown());
-	// $this->assertEquals("<a href=\"https://laravel.com\"><strong>Laravel</strong></a>\n", $this->stringable('[**Laravel**](https://laravel.com)')->inlineMarkdown());
-	// }
+	public function testInlineMarkdown()
+	{
+		$this->assertEquals("<em>hello world</em>\n", $this->stringable('*hello world*')->inline_markdown());
+		$this->assertEquals("<a href=\"https://laravel.com\"><strong>Laravel</strong></a>\n", $this->stringable('[**Laravel**](https://laravel.com)')->inlineMarkdown());
+	}
 
 	public function testMask() {
 		$this->assertSame( 'tay*************', (string) $this->stringable( 'taylor@email.com' )->mask( '*', 3 ) );
@@ -1344,14 +1344,6 @@ class Test_Stringable extends TestCase {
 		$this->assertEquals( 'This is me!', $this->stringable( 'is' )->wrap( 'This ', ' me!' ) );
 		$this->assertEquals( '"value"', $this->stringable( 'value' )->wrap( '"' ) );
 	}
-
-	// public function testToHtmlString()
-	// {
-	// $this->assertEquals(
-	// new HtmlString('<h1>Test String</h1>'),
-	// $this->stringable('<h1>Test String</h1>')->toHtmlString()
-	// );
-	// }
 
 	public function testStripTags() {
 		$this->assertSame( 'beforeafter', (string) $this->stringable( 'before<br>after' )->strip_tags() );

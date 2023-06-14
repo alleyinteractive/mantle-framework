@@ -1,4 +1,9 @@
 <?php
+/**
+ * Stringable class file
+ *
+ * @package Mantle
+ */
 
 namespace Mantle\Support;
 
@@ -13,6 +18,11 @@ use Symfony\Component\VarDumper\VarDumper;
 
 use function Mantle\Support\Helpers\collect;
 
+/**
+ * Stringable Class
+ *
+ * Allows for the chaining of string methods.
+ */
 class Stringable implements JsonSerializable, ArrayAccess {
 
 	use Conditionable, Macroable, Tappable;
@@ -50,7 +60,7 @@ class Stringable implements JsonSerializable, ArrayAccess {
 	 * @param  string $search
 	 * @return static
 	 */
-	public function afterLast( $search ) {
+	public function after_last( $search ) {
 		return new static( Str::after_last( $this->value, $search ) );
 	}
 
@@ -68,7 +78,7 @@ class Stringable implements JsonSerializable, ArrayAccess {
 	 * Append a new line to the string.
 	 *
 	 * @param  int $count
-	 * @return $this
+	 * @return static
 	 */
 	public function newLine( $count = 1 ) {
 		return $this->append( str_repeat( PHP_EOL, $count ) );
@@ -168,22 +178,22 @@ class Stringable implements JsonSerializable, ArrayAccess {
 	 * Determine if a given string contains a given substring.
 	 *
 	 * @param  string|iterable<string> $needles
-	 * @param  bool                    $ignoreCase
+	 * @param  bool                    $ignore_case
 	 * @return bool
 	 */
-	public function contains( $needles, $ignoreCase = false ) {
-		return Str::contains( $this->value, $needles, $ignoreCase );
+	public function contains( $needles, bool $ignore_case = false ) {
+		return Str::contains( $this->value, $needles, $ignore_case );
 	}
 
 	/**
 	 * Determine if a given string contains all array values.
 	 *
 	 * @param  iterable<string> $needles
-	 * @param  bool             $ignoreCase
+	 * @param  bool             $ignore_case
 	 * @return bool
 	 */
-	public function contains_all( $needles, $ignoreCase = false ) {
-		return Str::contains_all( $this->value, $needles, $ignoreCase );
+	public function contains_all( $needles, bool $ignore_case = false ) {
+		return Str::contains_all( $this->value, $needles, $ignore_case );
 	}
 
 	/**
@@ -286,7 +296,7 @@ class Stringable implements JsonSerializable, ArrayAccess {
 	 * @return bool
 	 */
 	public function is_ascii() {
-		 return Str::is_ascii( $this->value );
+		return Str::is_ascii( $this->value );
 	}
 
 	/**
@@ -313,7 +323,7 @@ class Stringable implements JsonSerializable, ArrayAccess {
 	 * @return bool
 	 */
 	public function is_empty() {
-		 return $this->value === '';
+		return empty( $this->value );
 	}
 
 	/**
@@ -362,6 +372,26 @@ class Stringable implements JsonSerializable, ArrayAccess {
 	 */
 	public function lower() {
 		return new static( Str::lower( $this->value ) );
+	}
+
+	/**
+	 * Convert GitHub flavored Markdown into HTML.
+	 *
+	 * @param  array $options
+	 * @return static
+	 */
+	public function markdown( array $options = [] ) {
+		return new static( Str::markdown( $this->value, $options ) );
+	}
+
+	/**
+	 * Convert inline Markdown into HTML.
+	 *
+	 * @param  array $options
+	 * @return static
+	 */
+	public function inline_markdown( array $options = [] ) {
+		return new static( Str::inline_markdown( $this->value, $options ) );
 	}
 
 	/**
@@ -504,11 +534,11 @@ class Stringable implements JsonSerializable, ArrayAccess {
 	 * Remove any occurrence of the given string in the subject.
 	 *
 	 * @param  string|iterable<string> $search
-	 * @param  bool                    $caseSensitive
+	 * @param  bool                    $case_sensitive
 	 * @return static
 	 */
-	public function remove( $search, $caseSensitive = true ) {
-		return new static( Str::remove( $search, $this->value, $caseSensitive ) );
+	public function remove( $search, bool $case_sensitive = true ) {
+		return new static( Str::remove( $search, $this->value, $case_sensitive ) );
 	}
 
 	/**
@@ -517,7 +547,7 @@ class Stringable implements JsonSerializable, ArrayAccess {
 	 * @return static
 	 */
 	public function reverse() {
-		 return new static( Str::reverse( $this->value ) );
+		return new static( Str::reverse( $this->value ) );
 	}
 
 	/**
@@ -535,11 +565,11 @@ class Stringable implements JsonSerializable, ArrayAccess {
 	 *
 	 * @param  string|iterable<string> $search
 	 * @param  string|iterable<string> $replace
-	 * @param  bool                    $caseSensitive
+	 * @param  bool                    $case_sensitive
 	 * @return static
 	 */
-	public function replace( $search, $replace, $caseSensitive = true ) {
-		return new static( Str::replace( $search, $replace, $this->value, $caseSensitive ) );
+	public function replace( $search, $replace, bool $case_sensitive = true ) {
+		return new static( Str::replace( $search, $replace, $this->value, $case_sensitive ) );
 	}
 
 	/**
@@ -623,11 +653,11 @@ class Stringable implements JsonSerializable, ArrayAccess {
 	/**
 	 * Strip HTML and PHP tags from the given string.
 	 *
-	 * @param  string $allowedTags
+	 * @param  array|string $allowed_tags
 	 * @return static
 	 */
-	public function strip_tags( $allowedTags = null ) {
-		return new static( strip_tags( $this->value, $allowedTags ) );
+	public function strip_tags( array|string $allowed_tags = null ) {
+		return new static( strip_tags( $this->value, $allowed_tags ) ); // phpcs:ignore WordPressVIPMinimum.Functions.StripTags.StripTagsTwoParameters
 	}
 
 	/**
@@ -695,7 +725,7 @@ class Stringable implements JsonSerializable, ArrayAccess {
 	 * @return bool
 	 */
 	public function startsWith( $needles ) {
-		return Str::startsWith( $this->value, $needles );
+		return Str::starts_with( $this->value, $needles );
 	}
 
 	/**
@@ -789,7 +819,7 @@ class Stringable implements JsonSerializable, ArrayAccess {
 	 * @return static
 	 */
 	public function lcfirst() {
-		 return new static( Str::lcfirst( $this->value ) );
+		return new static( Str::lcfirst( $this->value ) );
 	}
 
 	/**
@@ -798,7 +828,7 @@ class Stringable implements JsonSerializable, ArrayAccess {
 	 * @return static
 	 */
 	public function ucfirst() {
-		 return new static( Str::ucfirst( $this->value ) );
+		return new static( Str::ucfirst( $this->value ) );
 	}
 
 	/**
@@ -807,7 +837,7 @@ class Stringable implements JsonSerializable, ArrayAccess {
 	 * @return \Mantle\Support\Collection<int, string>
 	 */
 	public function ucsplit() {
-		 return collect( Str::ucsplit( $this->value ) );
+		return collect( Str::ucsplit( $this->value ) );
 	}
 
 	/**
@@ -825,9 +855,9 @@ class Stringable implements JsonSerializable, ArrayAccess {
 	/**
 	 * Execute the given callback if the string contains all array values.
 	 *
-	 * @param  array<string>    $needles
-	 * @param  callable         $callback
-	 * @param  callable|null    $default
+	 * @param  array<string> $needles
+	 * @param  callable      $callback
+	 * @param  callable|null $default
 	 * @return static
 	 */
 	public function when_contains_all( array $needles, $callback, $default = null ) {
@@ -983,15 +1013,6 @@ class Stringable implements JsonSerializable, ArrayAccess {
 	}
 
 	/**
-	 * Convert the string into a `HtmlString` instance.
-	 *
-	 * @return \Mantle\Support\HtmlString
-	 */
-	public function toHtmlString() {
-		return new HtmlString( $this->value );
-	}
-
-	/**
 	 * Dump the string.
 	 *
 	 * @return $this
@@ -1004,8 +1025,6 @@ class Stringable implements JsonSerializable, ArrayAccess {
 
 	/**
 	 * Dump the string and end the script.
-	 *
-	 * @return never
 	 */
 	public function dd() {
 		$this->dump();
@@ -1046,7 +1065,7 @@ class Stringable implements JsonSerializable, ArrayAccess {
 	 * @return float
 	 */
 	public function to_float() {
-		 return floatval( $this->value );
+		return floatval( $this->value );
 	}
 
 	/**
@@ -1066,8 +1085,6 @@ class Stringable implements JsonSerializable, ArrayAccess {
 	 * @param  string|null $format
 	 * @param  string|null $tz
 	 * @return \Carbon\Carbon
-	 *
-	 * @throws \Carbon\Exceptions\InvalidFormatException
 	 */
 	public function to_date( $format = null, $tz = null ) {
 		if ( is_null( $format ) ) {
@@ -1110,6 +1127,7 @@ class Stringable implements JsonSerializable, ArrayAccess {
 	 * Set the value at the given offset.
 	 *
 	 * @param  mixed $offset
+	 * @param  mixed $value
 	 * @return void
 	 */
 	public function offsetSet( mixed $offset, mixed $value ): void {
