@@ -138,6 +138,36 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	}
 
 	/**
+	 * Create a new model instance for a given post type.
+	 *
+	 * @param string $post_type Post type to create the model for.
+	 * @return self
+	 */
+	public static function for( string $post_type ): self {
+		$instance = new class() extends Post {
+			/**
+			 * Post type for the model.
+			 *
+			 * @var string
+			 */
+			public static string $for_object_name = '';
+
+			/**
+			 * Retrieve the object name.
+			 *
+			 * @return string|null
+			 */
+			public static function get_object_name(): ?string {
+				return static::$for_object_name;
+			}
+		};
+
+		$instance::$for_object_name = $post_type;
+
+		return $instance;
+	}
+
+	/**
 	 * Query builder class to use.
 	 *
 	 * @return string|null

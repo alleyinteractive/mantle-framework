@@ -9,6 +9,8 @@ use Mantle\Database\Model\Term;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
 
+use function Mantle\Support\Helpers\factory;
+
 class Test_Post_Object extends Framework_Test_Case {
 	use Refresh_Database;
 
@@ -234,6 +236,25 @@ class Test_Post_Object extends Framework_Test_Case {
 		$post_id = $this->factory->post->create( [ 'post_type' => 'example_post_type' ] );
 
 		$this->assertNull( Testable_Post::find( $post_id ) );
+	}
+
+	public function test_dynamic_model_instance() {
+		register_post_type( 'foo_post_type' );
+
+		$post_id = $this->factory->post->for( 'foo_post_type' )->create();
+		$post_two = $this->factory->post->for( 'foo_post_type' )->create( [
+			'post_title' => 'Post Two',
+		] );
+
+		$this->assertEquals( 'foo_post_type', get_post_type( $post_id ) );
+
+		$this->assertEmpty( Post::find( $post_id ) );
+		$this->assertInstanceOf( Post::class, Post::for( 'foo_post_type' ) );
+		$this->assertEquals( $post_id, Post::for( 'foo_post_type' )->find( $post_id )->id() );
+		$this->assertEquals(
+			$post_two,
+			Post::for( 'foo_post_type' )->where( 'title', 'Post Two' )->first()->id(),
+		);
 	}
 
 	public function test_query_builder() {

@@ -88,6 +88,36 @@ class Term extends Model implements Core_Object, Model_Meta, Updatable {
 	}
 
 	/**
+	 * Create a new model instance for a given taxonomy.
+	 *
+	 * @param string $taxonomy Taxonomy to create the model for.
+	 * @return self
+	 */
+	public static function for( string $taxonomy ): self {
+		$instance = new class() extends Term {
+			/**
+			 * Object name.
+			 *
+			 * @var string
+			 */
+			public static string $for_object_name = '';
+
+			/**
+			 * Retrieve the object name.
+			 *
+			 * @return string|null
+			 */
+			public static function get_object_name(): ?string {
+				return static::$for_object_name;
+			}
+		};
+
+		$instance::$for_object_name = $taxonomy;
+
+		return $instance;
+	}
+
+	/**
 	 * Query builder class to use.
 	 *
 	 * @return string|null
