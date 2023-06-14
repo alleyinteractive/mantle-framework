@@ -31,8 +31,6 @@ use function Mantle\Support\Helpers\collect;
  * Allow registration of routes to the application. On 'parse_request', the
  * request will be dispatched to the router by the HTTP kernel.
  *
- * @method static \Mantle\Http\Routing\Route_Registrar middleware(string|array $middleware)
- *
  * @mixin \Mantle\Http\Routing\Route_Registrar
  */
 class Router implements Router_Contract {
