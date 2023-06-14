@@ -70,11 +70,13 @@ return [
 		'Config'  => Mantle\Facade\Config::class,
 		'Event'   => Mantle\Facade\Event::class,
 		'Log'     => Mantle\Facade\Log::class,
+		'Post'    => Mantle\Database\Model\Post::class,
 		'Queue'   => Mantle\Facade\Queue::class,
 		'Request' => Mantle\Facade\Request::class,
 		'Route'   => Mantle\Facade\Route::class,
-		'View'    => Mantle\Facade\View::class,
 		'Storage' => Mantle\Facade\Storage::class,
+		'Term'    => Mantle\Database\Model\Term::class,
+		'View'    => Mantle\Facade\View::class,
 	],
 
 	/*

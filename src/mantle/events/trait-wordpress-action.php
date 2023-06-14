@@ -44,7 +44,7 @@ trait WordPress_Action {
 	 * @param callable|bool $condition Condition to check.
 	 * @param string        $action Action to invoke.
 	 * @param callable      $callback Callback to invoke.
-	 * @param integer       $priority Action priority.
+	 * @param int           $priority Action priority.
 	 * @return void
 	 */
 	public function action_if( $condition, string $action, callable $callback, int $priority = 10 ): void {

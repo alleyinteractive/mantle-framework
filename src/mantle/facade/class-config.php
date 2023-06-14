@@ -9,6 +9,13 @@ namespace Mantle\Facade;
 
 /**
  * Config Facade
+ *
+ * @method static bool has(string $key)
+ * @method static mixed get(string $key, mixed $default = null)
+ * @method static void set(array|string $key, mixed $value)
+ * @method static array all()
+ *
+ * @see \Mantle\Config\Repository
  */
 class Config extends Facade {
 	/**

@@ -21,6 +21,13 @@ use Mantle\Support\Helpers;
  * @property string $name
  * @property string $slug
  * @property string $taxonomy
+ *
+ * @method static \Mantle\Database\Query\Term_Query_Builder whereId( int $id )
+ * @method static \Mantle\Database\Query\Term_Query_Builder whereName( string $name )
+ * @method static \Mantle\Database\Query\Term_Query_Builder whereSlug( string $slug )
+ * @method static \Mantle\Database\Query\Term_Query_Builder whereTaxonomy( string $taxonomy )
+ *
+ * @mixin \Mantle\Database\Query\Term_Query_Builder
  */
 class Term extends Model implements Core_Object, Model_Meta, Updatable {
 	use Events\Term_Events,
@@ -85,6 +92,36 @@ class Term extends Model implements Core_Object, Model_Meta, Updatable {
 		}
 
 		return static::new_from_existing( (array) $term );
+	}
+
+	/**
+	 * Create a new model instance for a given taxonomy.
+	 *
+	 * @param string $taxonomy Taxonomy to create the model for.
+	 * @return self
+	 */
+	public static function for( string $taxonomy ): self {
+		$instance = new class() extends Term {
+			/**
+			 * Object name.
+			 *
+			 * @var string
+			 */
+			public static string $for_object_name = '';
+
+			/**
+			 * Retrieve the object name.
+			 *
+			 * @return string|null
+			 */
+			public static function get_object_name(): ?string {
+				return static::$for_object_name;
+			}
+		};
+
+		$instance::$for_object_name = $taxonomy;
+
+		return $instance;
 	}
 
 	/**

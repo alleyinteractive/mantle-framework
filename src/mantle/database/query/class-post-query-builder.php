@@ -17,6 +17,17 @@ use function Mantle\Support\Helpers\collect;
 
 /**
  * Post Query Builder
+ *
+ * @template TModel of \Mantle\Database\Model\Model
+ * @extends \Mantle\Database\Query\Builder<TModel>
+ *
+ * @method \Mantle\Database\Query\Post_Query_Builder<TModel> anyStatus()
+ * @method \Mantle\Database\Query\Post_Query_Builder<TModel> whereId( int $id )
+ * @method \Mantle\Database\Query\Post_Query_Builder<TModel> whereName( string $name )
+ * @method \Mantle\Database\Query\Post_Query_Builder<TModel> whereSlug( string $slug )
+ * @method \Mantle\Database\Query\Post_Query_Builder<TModel> whereStatus( string $status )
+ * @method \Mantle\Database\Query\Post_Query_Builder<TModel> whereTitle( string $title )
+ * @method \Mantle\Database\Query\Post_Query_Builder<TModel> whereType( string $type )
  */
 class Post_Query_Builder extends Builder {
 	use Queries_Relationships;
@@ -106,7 +117,7 @@ class Post_Query_Builder extends Builder {
 	/**
 	 * Execute the query.
 	 *
-	 * @return Collection
+	 * @return Collection<int, TModel>
 	 */
 	public function get(): Collection {
 		$query            = new \WP_Query( $this->get_query_args() );
@@ -132,7 +143,7 @@ class Post_Query_Builder extends Builder {
 	 * Retrieve hydrated models for the post IDs.
 	 *
 	 * @param int[] $post_ids Post IDs.
-	 * @return Collection
+	 * @return Collection<int, TModel>
 	 */
 	protected function get_models( array $post_ids ): Collection {
 		if ( is_array( $this->model ) ) {
@@ -164,6 +175,7 @@ class Post_Query_Builder extends Builder {
 	 * @param string                         $taxonomy Taxonomy name.
 	 * @param string                         $operator Operator to use, defaults to 'IN'.
 	 * @param string                         $field Field to use for the query, defaults to term ID.
+	 * @return static
 	 *
 	 * @throws Query_Exception Unknown term to query against.
 	 */
@@ -216,6 +228,7 @@ class Post_Query_Builder extends Builder {
 	 * @param array|string $term Term ID/array of IDs.
 	 * @param string       $taxonomy Taxonomy name.
 	 * @param string       $operator Operator to use, defaults to 'IN'.
+	 * @return static
 	 */
 	public function andWhereTerm( ...$args ) {
 		$this->tax_query['relation'] = 'AND';
@@ -228,6 +241,7 @@ class Post_Query_Builder extends Builder {
 	 * @param array|string $term Term ID/array of IDs.
 	 * @param string       $taxonomy Taxonomy name.
 	 * @param string       $operator Operator to use, defaults to 'IN'.
+	 * @return static
 	 */
 	public function orWhereTerm( ...$args ) {
 		$this->tax_query['relation'] = 'OR';

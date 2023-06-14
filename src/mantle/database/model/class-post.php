@@ -19,8 +19,6 @@ use function Mantle\Support\Helpers\collect;
 /**
  * Post Model
  *
- * Generate @property for all aliases and elements of WP_Post
- *
  * @property int $comment_count
  * @property int $ID
  * @property int $menu_order
@@ -52,6 +50,16 @@ use function Mantle\Support\Helpers\collect;
  * @property string $slug Alias to post_name.
  * @property string $status Alias to post_status.
  * @property string $title Alias to post_title.
+ *
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> anyStatus()
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereId( int $id )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> where( string|array $attribute, mixed $value )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereName( string $name )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereSlug( string $slug )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereStatus( string $status )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereTitle( string $title )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereType( string $type )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereTerm( array|\WP_Term|\Mantle\Database\Model\Term|int $term, ?string $taxonomy = null, string $operator = 'IN', string $field = 'term_id' )
  */
 class Post extends Model implements Contracts\Database\Core_Object, Contracts\Database\Model_Meta, Contracts\Database\Updatable {
 	use Events\Post_Events,
@@ -135,6 +143,36 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 		}
 
 		return static::new_from_existing( (array) $post );
+	}
+
+	/**
+	 * Create a new model instance for a given post type.
+	 *
+	 * @param string $post_type Post type to create the model for.
+	 * @return self
+	 */
+	public static function for( string $post_type ): self {
+		$instance = new class() extends Post {
+			/**
+			 * Post type for the model.
+			 *
+			 * @var string
+			 */
+			public static string $for_object_name = '';
+
+			/**
+			 * Retrieve the object name.
+			 *
+			 * @return string|null
+			 */
+			public static function get_object_name(): ?string {
+				return static::$for_object_name;
+			}
+		};
+
+		$instance::$for_object_name = $post_type;
+
+		return $instance;
 	}
 
 	/**
