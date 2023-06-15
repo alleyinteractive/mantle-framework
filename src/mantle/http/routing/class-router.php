@@ -15,6 +15,8 @@ use Mantle\Contracts\Http\Routing\Router as Router_Contract;
 use Mantle\Http\Request;
 use Mantle\Http\Routing\Events\Route_Matched;
 use Mantle\Support\Pipeline;
+use Mantle\Support\Traits\Macroable;
+use ReflectionClass;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
@@ -24,68 +26,74 @@ use Symfony\Component\HttpFoundation\Response as Symfony_Response;
 use function Mantle\Support\Helpers\collect;
 
 /**
- * Router
+ * Mantle Router
  *
- * Allow registration of routes to the application.
+ * Allow registration of routes to the application. On 'parse_request', the
+ * request will be dispatched to the router by the HTTP kernel.
+ *
+ * @mixin \Mantle\Http\Routing\Route_Registrar
  */
 class Router implements Router_Contract {
 	use Concerns\Route_Group;
+	use Macroable {
+		__call as macro_call;
+	}
 
 	/**
 	 * Events instance.
 	 *
 	 * @var Dispatcher
 	 */
-	protected $events;
+	protected Dispatcher $events;
 
 	/**
 	 * Container instance.
 	 *
 	 * @var Container
 	 */
-	protected $container;
+	protected Container $container;
 
 	/**
 	 * Route Collection
 	 *
 	 * @var RouteCollection
 	 */
-	protected $routes;
+	protected RouteCollection $routes;
 
 	/**
 	 * All of the short-hand keys for middlewares.
 	 *
 	 * @var array
 	 */
-	protected $middleware = [];
+	protected array $middleware = [];
 
 	/**
 	 * All of the middleware groups.
 	 *
 	 * @var array
 	 */
-	protected $middleware_groups = [];
+	protected array $middleware_groups = [];
 
 	/**
 	 * The registered route value binders.
 	 *
 	 * @var array
 	 */
-	protected $binders = [];
+	protected array $binders = [];
 
 	/**
 	 * REST Route Registrar
 	 *
 	 * @var Rest_Route_Registrar|null
 	 */
-	protected $rest_registrar;
+	protected ?Rest_Route_Registrar $rest_registrar = null;
 
 	/**
 	 * Data Object Router
 	 *
 	 * @var Entity_Router
 	 */
-	protected $model_router;
+	protected Entity_Router $model_router;
 
 	/**
 	 * Constructor.
@@ -167,6 +175,16 @@ class Router implements Router_Contract {
 	}
 
 	/**
+	 * Register a route for any HTTP method.
+	 *
+	 * @param string $uri URL to register for.
+	 * @param mixed  $action Callback action.
+	 */
+	public function any( string $uri, $action = '' ): ?Route {
+		return $this->add_route( [ 'GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS' ], $uri, $action );
+	}
+
+	/**
 	 * Load the provided routes.
 	 *
 	 * @param  \Closure|string $routes
@@ -186,26 +204,20 @@ class Router implements Router_Contract {
 	 * @param array  $methods Methods to register.
 	 * @param string $uri URL route.
 	 * @param mixed  $action Route callback.
-	 * @return Route|null
+	 * @return Route|null Route instance for web routes, null for REST routes.
 	 */
-	public function add_route( array $methods, string $uri, $action ) {
+	public function add_route( array $methods, string $uri, $action ): ?Route {
 		// Send the route to the REST Registrar if set.
 		if ( isset( $this->rest_registrar ) ) {
-			$args = [
-				'callback' => $action,
-				'methods'  => $methods,
-			];
+			$this->create_rest_api_route( $methods, $uri, $action );
 
-			if ( $this->has_group_stack() ) {
-				$args = $this->merge_with_last_group( $args );
-			}
-
-			return $this->rest_registrar->register_route( $this->prefix( $uri ), $args );
+			return null;
 		}
 
 		$route = $this->create_route( $methods, $uri, $action );
 
 		$this->routes->add( $route->get_name(), $route );
+
 		return $route;
 	}
 
@@ -227,6 +239,27 @@ class Router implements Router_Contract {
 		$route->set_router( $this );
 
 		return $route;
+	}
+
+	/**
+	 * Create a REST API route.
+	 *
+	 * @param array  $methods Methods to register.
+	 * @param string $uri URL route.
+	 * @param mixed  $action Route callback.
+	 * @return void
+	 */
+	protected function create_rest_api_route( array $methods, string $uri, $action ): void {
+		$args = [
+			'callback' => $action,
+			'methods'  => $methods,
+		];
+
+		if ( $this->has_group_stack() ) {
+			$args = $this->merge_with_last_group( $args );
+		}
+
+		$this->rest_registrar->register_route( $this->prefix( $uri ), $args );
 	}
 
 	/**
@@ -276,12 +309,10 @@ class Router implements Router_Contract {
 	 * @param Request $request Request object.
 	 * @return array|null
 	 */
-	protected function match_route( Request $request ) {
-		$context = new RequestContext();
-		$context = $context->fromRequest( $request );
-		$matcher = new UrlMatcher( $this->get_routes(), $context );
+	protected function match_route( Request $request ): ?array {
+		$context = ( new RequestContext() )->fromRequest( $request );
 
-		return $matcher->matchRequest( $request );
+		return ( new UrlMatcher( $this->get_routes(), $context ) )->matchRequest( $request );
 	}
 
 	/**
@@ -324,7 +355,20 @@ class Router implements Router_Contract {
 			);
 
 		// Ensure the response is valid since the middleware can modify it after it is run through Route.
-		return Route::ensure_response( $response );
+		return static::to_response( $request, $response );
+	}
+
+	/**
+	 * Prepare a response for sending.
+	 *
+	 * @param Request $request
+	 * @param mixed   $response
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public static function to_response( Request $request, mixed $response ): \Symfony\Component\HttpFoundation\Response {
+		$response = Route::ensure_response( $response );
+
+		return $response->prepare( $request );
 	}
 
 	/**
@@ -412,21 +456,46 @@ class Router implements Router_Contract {
 	/**
 	 * Gather the middleware for the given route with resolved class names.
 	 *
-	 * @todo Add excluded middleware support.
-	 *
 	 * @param Route $route Route instance.
 	 * @return array
 	 */
 	public function gather_route_middleware( Route $route ): array {
-		return collect( $route->middleware() )
+		$excluded = collect( $route->excluded_middleware() )
 			->map(
-				function ( $name ) {
-					return (array) Middleware_Name_Resolver::resolve( $name, $this->middleware, $this->middleware_groups );
-				}
+				fn ( $name ) => Middleware_Name_Resolver::resolve( $name, $this->middleware, $this->middleware_groups ),
 			)
 			->flatten()
 			->values()
-			->to_array();
+			->all();
+
+		return collect( $route->middleware() )
+			->map(
+				fn ( $name ) => (array) Middleware_Name_Resolver::resolve( $name, $this->middleware, $this->middleware_groups ),
+			)
+			->flatten()
+			->reject(
+				function ( $name ) use ( $excluded ) {
+					if ( empty( $excluded ) ) {
+						return false;
+					}
+
+					if ( $name instanceof Closure ) {
+						return false;
+					}
+
+					if ( in_array( $name, $excluded, true ) ) {
+						return true;
+					}
+
+					$reflection = new ReflectionClass( $name );
+
+					return collect( $excluded )->contains(
+						fn ( $exclude ) => class_exists( $exclude ) && $reflection->isSubclassOf( $exclude )
+					);
+				}
+			)
+			->values()
+			->all();
 	}
 
 	/**
@@ -434,8 +503,9 @@ class Router implements Router_Contract {
 	 *
 	 * @param string          $key
 	 * @param string|callable $binder
+	 * @return void
 	 */
-	public function bind( string $key, $binder ) {
+	public function bind( string $key, $binder ): void {
 		$this->binders[ str_replace( '-', '_', $key ) ] = Route_Binding::for_callback(
 			$this->container,
 			$binder
@@ -448,8 +518,9 @@ class Router implements Router_Contract {
 	 * @param string        $key
 	 * @param string        $class
 	 * @param \Closure|null $callback
+	 * @return void
 	 */
-	public function bind_model( $key, $class, Closure $callback = null ) {
+	public function bind_model( $key, $class, Closure $callback = null ): void {
 		$this->bind( $key, Route_Binding::for_model( $this->container, $class, $callback ) );
 	}
 
@@ -492,33 +563,35 @@ class Router implements Router_Contract {
 	/**
 	 * Register a REST API route
 	 *
-	 * @param string         $namespace Namespace for the REST API route.
-	 * @param Closure|string $route Route to register or a callback function that
-	 *                              will register child REST API routes.
-	 * @param array|Closure  $args Arguments for the route or callback for the route.
-	 *                             Not used if $route is a callback.
-	 * @return Rest_Route_Registrar
+	 * @param string                $namespace Namespace for the REST API route.
+	 * @param callable|string       $callback  Callback that will be invoked to register
+	 *                                         routes OR a string route.
+	 * @param callable|array|string $args      Callback for the route if $callback is a
+	 *                                         string route OR arguments to pass to
+	 *                                         the register_rest_route() call. Not used if $callback
+	 *                                         is a closure.
 	 */
-	public function rest_api( string $namespace, $route, $args = [] ) {
+	public function rest_api( string $namespace, callable|string $callback, callable|array|string $args = [] ) {
 		$registrar = new Rest_Route_Registrar( $this, $namespace );
 
-		if ( $route instanceof Closure ) {
+		if ( is_callable( $callback ) ) {
 			$this->rest_registrar = $registrar;
-			$route();
+
+			$callback();
+
 			$this->rest_registrar = null;
 		} else {
+			if ( is_callable( $args ) ) {
+				$args = [
+					'callback' => $args,
+				];
+			}
 			// Include the group attributes.
 			if ( $this->has_group_stack() ) {
-				if ( $args instanceof Closure ) {
-					$args = [
-						'callback' => $args,
-					];
-				}
-
 				$args = $this->merge_with_last_group( $args );
 			}
 
-			$registrar->register_route( $this->prefix( $route ), $args );
+			$registrar->register_route( $this->prefix( $callback ), $args );
 		}
 
 		return $registrar;
@@ -543,6 +616,10 @@ class Router implements Router_Contract {
 	 * @return mixed
 	 */
 	public function __call( $method, $parameters ) {
+		if ( static::has_macro( $method ) ) {
+			return $this->macro_call( $method, $parameters );
+		}
+
 		if ( 'middleware' === $method ) {
 			return ( new Route_Registrar( $this ) )
 				->attribute( $method, is_array( $parameters[0] ) ? $parameters[0] : $parameters );
@@ -570,17 +647,20 @@ class Router implements Router_Contract {
 	 */
 	public function rename_route( string $old_name, string $new_name ): static {
 		$old = $this->routes->get( $old_name );
+
 		if ( ! $old ) {
 			return $this;
 		}
 
 		$new = $this->routes->get( $new_name );
+
 		if ( $new ) {
 			throw new InvalidArgumentException( "Unable to rename route, name already taken. [{$old_name} => {$new_name}]" );
 		}
 
 		$this->routes->add( $new_name, $old );
 		$this->routes->remove( $old_name );
+
 		return $this;
 	}
 }

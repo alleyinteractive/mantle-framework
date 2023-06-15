@@ -43,28 +43,21 @@ class Route extends Symfony_Route {
 	 *
 	 * @var array
 	 */
-	protected $action;
+	protected array $action;
 
 	/**
 	 * Container instance.
 	 *
 	 * @var Container
 	 */
-	protected $container;
+	protected Container $container;
 
 	/**
 	 * Router instance.
 	 *
 	 * @var Router|null
 	 */
-	protected $router;
-
-	/**
-	 * Name for the route.
-	 *
-	 * @var string
-	 */
-	protected $name;
+	protected ?Router $router = null;
 
 	/**
 	 * Get the route object from a Symfony route match.
@@ -121,13 +114,6 @@ class Route extends Symfony_Route {
 		}
 
 		$this->action = $action;
-
-		// Set the route name if it was passed in the action.
-		if ( ! empty( $this->action['as'] ) ) {
-			$this->name( (string) $this->action['as'] );
-		} elseif ( ! empty( $this->action['name'] ) ) {
-			$this->name( (string) $this->action['name'] );
-		}
 	}
 
 	/**
@@ -147,8 +133,10 @@ class Route extends Symfony_Route {
 	 * @return string
 	 */
 	public function get_name(): string {
-		if ( ! empty( $this->name ) ) {
-			return (string) $this->name;
+		if ( ! empty( $this->action['as'] ) ) {
+			return (string) $this->action['as'];
+		} elseif ( ! empty( $this->action['name'] ) ) {
+			return (string) $this->action['name'];
 		}
 
 		// Fallback to the default route name.
@@ -162,6 +150,10 @@ class Route extends Symfony_Route {
 	 * @return static
 	 */
 	public function name( string $name ) {
+		$previous_name = $this->get_name();
+
+		$this->action['as'] = ! empty( $this->action['as_prefix'] ) ? $this->action['as_prefix'] . $name : $name;
+
 		/**
 		 * Attempt to rename the route in the router.
 		 *
@@ -169,10 +161,8 @@ class Route extends Symfony_Route {
 		 * route name is a static key for the collection.
 		 */
 		if ( isset( $this->router ) ) {
-			$this->router->rename_route( $this->get_name(), $name );
+			$this->router->rename_route( $previous_name, $this->action['as'] );
 		}
-
-		$this->name = $name;
 
 		return $this;
 	}
@@ -199,7 +189,7 @@ class Route extends Symfony_Route {
 	}
 
 	/**
-	 * Get or set the middlewares attached to the route.
+	 * Get or set the middleware attached to the route.
 	 *
 	 * @param  array|string|null $middleware Middleware to set, optional.
 	 * @return static|array
@@ -209,13 +199,33 @@ class Route extends Symfony_Route {
 			return (array) ( $this->action['middleware'] ?? [] );
 		}
 
-		if ( is_string( $middleware ) ) {
-			$middleware = func_get_args();
-		}
-
 		$this->action['middleware'] = array_merge(
 			(array) ( $this->action['middleware'] ?? [] ),
-			$middleware
+			Arr::wrap( $middleware ),
+		);
+
+		return $this;
+	}
+
+	/**
+	 * Retrieve the middleware that should be excluded from the route.
+	 *
+	 * @return array
+	 */
+	public function excluded_middleware(): array {
+		return (array) ( $this->action['excluded_middleware'] ?? [] );
+	}
+
+	/**
+	 * Exclude middleware from the route.
+	 *
+	 * @param  array|string|null $middleware Middleware to exclude, optional.
+	 * @return static
+	 */
+	public function without_middleware( $middleware = null ): static {
+		$this->action['excluded_middleware'] = array_merge(
+			(array) ( $this->action['excluded_middleware'] ?? [] ),
+			Arr::wrap( $middleware ),
 		);
 
 		return $this;
@@ -227,8 +237,9 @@ class Route extends Symfony_Route {
 	 * @param callable $callback Callback to invoke.
 	 * @return static
 	 */
-	public function callback( $callback ) {
+	public function callback( callable $callback ): static {
 		$this->action['callback'] = $callback;
+
 		return $this;
 	}
 
@@ -399,6 +410,8 @@ class Route extends Symfony_Route {
 
 	/**
 	 * Ensure a proper response object.
+	 *
+	 * @todo Move this to the Router class.
 	 *
 	 * @param mixed $response Response to send.
 	 * @return Symfony_Response
