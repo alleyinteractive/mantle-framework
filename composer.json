@@ -19,7 +19,6 @@
         "dragonmantank/cron-expression": "^3.1",
         "fakerphp/faker": "^1.16",
         "filp/whoops": "^2.14",
-        "guzzlehttp/guzzle": "^6.3.1 || ^7.3",
         "illuminate/view": "^9.40",
         "laravel/serializable-closure": "^1.2",
         "league/flysystem": "^1.1",

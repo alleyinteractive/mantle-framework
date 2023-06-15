@@ -2,15 +2,10 @@
 namespace Mantle\Tests\Scheduling;
 
 use Mantle\Testing\Framework_Test_Case;
-use GuzzleHttp\Client as HttpClient;
-use GuzzleHttp\Exception\ServerException;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Response as Psr7Response;
 use Mantle\Contracts\Container;
-use Mantle\Contracts\Exceptions\Handler;
 use Mantle\Scheduling\Event;
 use Mantle\Scheduling\Schedule;
+use Mantle\Testing\Mock_Http_Response;
 use Mockery as m;
 
 class Test_Event extends Framework_Test_Case {
@@ -69,20 +64,7 @@ class Test_Event extends Framework_Test_Case {
 	}
 
 	public function testPingRescuesTransferExceptions() {
-		$this->spy( Handler::class )
-			->shouldReceive( 'report' )
-			->once()
-			->with( m::type( ServerException::class ) );
-
-		$httpMock = new HttpClient(
-			array(
-				'handler' => HandlerStack::create(
-					new MockHandler( array( new Psr7Response( 500 ) ) )
-				),
-			)
-		);
-
-		$this->swap( HttpClient::class, $httpMock );
+		$this->fake_request( fn () => Mock_Http_Response::create()->with_status( 500 ) );
 
 		$event = new Event( '' );
 
@@ -99,5 +81,7 @@ class Test_Event extends Framework_Test_Case {
 		$event->call_after_callbacks( $this->app->make( Container::class ) );
 
 		$this->assertTrue( $thenCalled );
+
+		$this->assertRequestSent( 'https://httpstat.us/500' );
 	}
 }
