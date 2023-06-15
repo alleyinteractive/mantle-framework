@@ -39,16 +39,12 @@ class Routing_Service_Provider extends Service_Provider {
 	protected function register_router() {
 		$this->app->singleton(
 			'router',
-			function( $app ) {
-				return new Router( $app['events'], $app );
-			}
+			fn ( $app ) => new Router( $app['events'], $app ),
 		);
 
 		$this->app->singleton(
 			'router.entity',
-			function( $app ) {
-				return new Entity_Router( $app );
-			},
+			fn ( $app ) => new Entity_Router( $app ),
 		);
 	}
 

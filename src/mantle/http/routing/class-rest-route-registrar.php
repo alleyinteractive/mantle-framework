@@ -7,8 +7,10 @@
 
 namespace Mantle\Http\Routing;
 
+use InvalidArgumentException;
 use Mantle\Http\Routing\Events\Route_Matched;
 use Mantle\Support\Pipeline;
+use Mantle\Support\Str;
 use WP_REST_Request;
 
 use function Mantle\Support\Helpers\add_action;
@@ -76,7 +78,7 @@ class Rest_Route_Registrar {
 	 * @return array
 	 */
 	protected function normalize_args( $args, string $route ): array {
-		if ( is_callable( $args ) ) {
+		if ( ! is_array( $args ) ) {
 			$args = [
 				'callback' => $args,
 			];
@@ -98,11 +100,13 @@ class Rest_Route_Registrar {
 	/**
 	 * Wrap the route callback with a valid WordPress REST response.
 	 *
-	 * @param callable $callback Callback to invoke.
-	 * @param string   $route Route name.
+	 * @param mixed  $callback Callback to invoke.
+	 * @param string $route Route name.
 	 * @return callable
 	 */
-	protected function wrap_callback( callable $callback, string $route ): callable {
+	protected function wrap_callback( mixed $callback, string $route ): callable {
+		$callback = $this->parse_route_action( $callback, $route );
+
 		return function( WP_REST_Request $request ) use ( $callback, $route ) {
 			$middleware = $request->get_attributes()['middleware'] ?? [];
 
@@ -178,5 +182,44 @@ class Rest_Route_Registrar {
 	 */
 	protected function should_register_now(): bool {
 		return ! ! did_action( 'rest_api_init' );
+	}
+
+	/**
+	 * Parse a route action and return the callback.
+	 *
+	 * Supports closures, invokable classes, and class methods.
+	 *
+	 * @throws InvalidArgumentException If the action is not supported.
+	 *
+	 * @param mixed  $action Route action.
+	 * @param string $route Route path.
+	 * @return callable
+	 */
+	protected function parse_route_action( mixed $action, string $route ): callable {
+		if ( is_callable( $action ) ) {
+			return $action;
+		}
+
+		if ( is_string( $action ) ) {
+			// Check for Controller@method callback.
+			if ( Str::contains( $action, '@' ) ) {
+				[ $controller, $method ] = explode( '@', $action );
+
+				return [ $this->router->get_container()->make( $controller ), $method ];
+			}
+
+			// Check for invokable classes.
+			if ( class_exists( $action ) && method_exists( $action, '__invoke' ) ) {
+				return [ $this->router->get_container()->make( $action ), '__invoke' ];
+			}
+		}
+
+		if ( is_array( $action ) ) {
+			[ $controller, $method ] = $action;
+
+			return [ $this->router->get_container()->make( $controller ), $method ];
+		}
+
+		throw new InvalidArgumentException( "Invalid REST API route action for [{$route}]: " . print_r( $action, true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 	}
 }
