@@ -1298,16 +1298,14 @@ class Test_Stringable extends TestCase {
 		$this->assertSame( 'bar', (string) $this->stringable( 'foo' )->pipe( $callback ) );
 	}
 
-	public function testMarkdown()
-	{
-		$this->assertEquals("<p><em>hello world</em></p>\n", $this->stringable('*hello world*')->markdown());
-		$this->assertEquals("<h1>hello world</h1>\n", $this->stringable('# hello world')->markdown());
+	public function testMarkdown() {
+		$this->assertEquals( "<p><em>hello world</em></p>\n", $this->stringable( '*hello world*' )->markdown() );
+		$this->assertEquals( "<h1>hello world</h1>\n", $this->stringable( '# hello world' )->markdown() );
 	}
 
-	public function testInlineMarkdown()
-	{
-		$this->assertEquals("<em>hello world</em>\n", $this->stringable('*hello world*')->inline_markdown());
-		$this->assertEquals("<a href=\"https://laravel.com\"><strong>Laravel</strong></a>\n", $this->stringable('[**Laravel**](https://laravel.com)')->inlineMarkdown());
+	public function testInlineMarkdown() {
+		$this->assertEquals( "<em>hello world</em>\n", $this->stringable( '*hello world*' )->inline_markdown() );
+		$this->assertEquals( "<a href=\"https://laravel.com\"><strong>Laravel</strong></a>\n", $this->stringable( '[**Laravel**](https://laravel.com)' )->inline_markdown() );
 	}
 
 	public function testMask() {

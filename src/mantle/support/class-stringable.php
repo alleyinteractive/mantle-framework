@@ -28,12 +28,20 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	use Conditionable, Macroable, Tappable;
 
 	/**
+	 * The underlying string value.
+	 *
+	 * @var string
+	 */
+	protected string $value = '';
+
+	/**
 	 * Create a new instance of the class.
 	 *
-	 * @param  string $value The underlying string value.
+	 * @param  string $value
 	 * @return void
 	 */
-	public function __construct( protected string $value = '' ) {
+	public function __construct( $value = '' ) {
+		$this->value = (string) $value;
 	}
 
 	/**
@@ -315,7 +323,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @return bool
 	 */
 	public function is_empty() {
-		return empty( $this->value );
+		return '' === $this->value;
 	}
 
 	/**

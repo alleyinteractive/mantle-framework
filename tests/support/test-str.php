@@ -829,10 +829,10 @@ class Test_Str extends TestCase {
 	}
 
 	public function testPadBoth() {
-		$this->assertSame('__Alien___', Str::pad_both('Alien', 10, '_'));
-		$this->assertSame('  Alien   ', Str::pad_both('Alien', 10));
-		$this->assertSame('  ❤MultiByte☆   ', Str::pad_both('❤MultiByte☆', 16));
-		$this->assertSame('❤☆❤MultiByte☆❤☆❤', Str::pad_both('❤MultiByte☆', 16, '❤☆'));
+		$this->assertSame( '__Alien___', Str::pad_both( 'Alien', 10, '_' ) );
+		$this->assertSame( '  Alien   ', Str::pad_both( 'Alien', 10 ) );
+		$this->assertSame( '  ❤MultiByte☆   ', Str::pad_both( '❤MultiByte☆', 16 ) );
+		$this->assertSame( '❤☆❤MultiByte☆❤☆❤', Str::pad_both( '❤MultiByte☆', 16, '❤☆' ) );
 	}
 
 	public function testPadLeft() {
@@ -843,10 +843,10 @@ class Test_Str extends TestCase {
 	}
 
 	public function testPadRight() {
-		$this->assertSame('Alien-=-=-', Str::pad_right('Alien', 10, '-='));
-		$this->assertSame('Alien     ', Str::pad_right('Alien', 10));
-		$this->assertSame('❤MultiByte☆     ', Str::pad_right('❤MultiByte☆', 16));
-		$this->assertSame('❤MultiByte☆❤☆❤☆❤', Str::pad_right('❤MultiByte☆', 16, '❤☆'));
+		$this->assertSame( 'Alien-=-=-', Str::pad_right( 'Alien', 10, '-=' ) );
+		$this->assertSame( 'Alien     ', Str::pad_right( 'Alien', 10 ) );
+		$this->assertSame( '❤MultiByte☆     ', Str::pad_right( '❤MultiByte☆', 16 ) );
+		$this->assertSame( '❤MultiByte☆❤☆❤☆❤', Str::pad_right( '❤MultiByte☆', 16, '❤☆' ) );
 	}
 
 	public function testSwapKeywords(): void {
