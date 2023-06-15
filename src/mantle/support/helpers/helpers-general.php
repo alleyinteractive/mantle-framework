@@ -19,6 +19,7 @@ use Mantle\Database\Factory\Factory_Builder;
 use Mantle\Support\Collection;
 use Mantle\Support\Higher_Order_Tap_Proxy;
 use Mantle\Database\Factory\Factory as MantleFactory;
+use Mantle\Support\Str;
 
 /**
  * Determine if the given value is "blank".
@@ -242,6 +243,28 @@ function retry( $times, callable $callback, $sleep = 0, $when = null ) {
 		// phpcs:ignore Generic.PHP.DiscourageGoto.Found
 		goto beginning;
 	}
+}
+
+/**
+ * Get a new stringable object from the given string.
+ *
+ * @param  string|null  $string
+ * @return \Mantle\Support\Stringable|\Stringable
+ */
+function str( $string = null ) {
+	if ( func_num_args() === 0 ) {
+		return new class() implements \Stringable {
+			public function __call( $method, $parameters ) {
+				return Str::$method( ...$parameters );
+			}
+
+			public function __toString() {
+				return '';
+			}
+		};
+	}
+
+	return Str::of( $string );
 }
 
 /**
