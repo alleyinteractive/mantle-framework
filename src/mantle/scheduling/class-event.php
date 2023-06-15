@@ -12,11 +12,11 @@ use Carbon\Carbon;
 use Closure;
 use Cron\CronExpression;
 use DateTimeZone;
-use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\TransferException;
 use Mantle\Contracts\Application;
 use Mantle\Contracts\Container;
 use Mantle\Contracts\Exceptions\Handler;
+use Mantle\Http_Client\Factory;
 use Mantle\Support\Traits\Macroable;
 use Psr\Http\Client\ClientExceptionInterface;
 use Throwable;
@@ -294,9 +294,9 @@ class Event {
 	 * @return \Closure
 	 */
 	protected function pingCallback( $url ) {
-		return function ( Container $container, HttpClient $http ) use ( $url ) {
+		return function ( Container $container, Factory $http ) use ( $url ) {
 			try {
-				$http->request( 'GET', $url );
+				$http->get( $url );
 			} catch ( ClientExceptionInterface | TransferException $e ) {
 				$container->make( Handler::class )->report( $e );
 			}
