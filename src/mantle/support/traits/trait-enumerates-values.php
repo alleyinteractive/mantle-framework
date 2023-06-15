@@ -187,24 +187,22 @@ trait Enumerates_Values {
 	 * @param  mixed ...$args
 	 * @return void
 	 */
-	public function dd( ...$args ) {
-		call_user_func_array( [ $this, 'dump' ], $args );
+	public function dd( ...$args ): void {
+		$this->dump( ...$args );
 
-		die( 1 );
+		exit( 1 );
 	}
 
 	/**
 	 * Dump the items.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function dump() {
+	public function dump(): static {
 		( new static( func_get_args() ) )
-			->push( $this )
+			->push( $this->all() )
 			->each(
-				function ( $item ) {
-					VarDumper::dump( $item );
-				}
+				fn ( $item ) => VarDumper::dump( $item ),
 			);
 
 		return $this;
