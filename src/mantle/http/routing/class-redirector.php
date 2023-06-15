@@ -51,7 +51,7 @@ class Redirector {
 	 * @return RedirectResponse
 	 */
 	public function home( int $status = self::STATUS_TEMPORARY, array $headers = [] ): RedirectResponse {
-		return $this->to( $this->generator->to( '/', [], null ), $status, $headers );
+		return $this->to( $this->generator->to( '/', [], [], null ), $status, $headers );
 	}
 
 	/**
@@ -88,7 +88,7 @@ class Redirector {
 	 */
 	public function to( string $path, int $status = self::STATUS_TEMPORARY, array $headers = [], bool $secure = null ): RedirectResponse {
 		return $this->create_redirect(
-			$this->generator->to( $path, [], $secure ),
+			$this->generator->to( $path, [], [], $secure ),
 			$status,
 			$headers
 		);

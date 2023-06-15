@@ -67,18 +67,19 @@ class Test_Router extends Framework_Test_Case {
 		);
 		$this->assertSame( 'bar', $router->dispatch( Request::create( 'foo/bar', 'PATCH' ) )->getContent() );
 
-		// todo: fix HEAD requests.
-		// $router = $this->get_router();
-		// $router->get('foo/bar', function () {
-		// return 'hello';
-				// });
-		// $this->assertEmpty($router->dispatch(Request::create('foo/bar', 'HEAD'))->getContent());
+		$router = $this->get_router();
+		$router->get( 'head/request', fn () => 'hello' );
 
-		// $router = $this->get_router();
-		// $router->any('foo/bar', function () {
-		// return 'hello';
-		// });
-		// $this->assertEmpty($router->dispatch(Request::create('foo/bar', 'HEAD'))->getContent());
+		$this->assertEmpty(
+			$router->dispatch( Request::create('head/request', 'HEAD' ) )->getContent()
+		);
+
+		$router = $this->get_router();
+		$router->any( 'any/request', fn () => 'hello' );
+
+		$this->assertSame( 'hello', $router->dispatch( Request::create( 'any/request', 'GET' ) )->getContent() );
+		$this->assertSame( 'hello', $router->dispatch( Request::create( 'any/request', 'POST' ) )->getContent() );
+		$this->assertEmpty( $router->dispatch( Request::create( 'any/request', 'HEAD' ) )->getContent() );
 
 		$router = $this->get_router();
 		$router->get(
@@ -107,13 +108,12 @@ class Test_Router extends Framework_Test_Case {
 		$router = $this->get_router();
 		$router->get(
 			'foo/bar',
-			array(
+			[
 				'boom'     => 'auth',
-				'callback' => function () {
-					return 'closure';
-				},
-			)
+				'callback' => fn () => 'closure',
+			]
 		);
+
 		$this->assertSame( 'closure', $router->dispatch( Request::create( 'foo/bar', 'GET' ) )->getContent() );
 	}
 
@@ -250,21 +250,21 @@ class Test_Router extends Framework_Test_Case {
 		$router->get(
 			'/example-route-url',
 			[
-				'callback' => function() { return 'response'; },
+				'callback' => fn () => 'response',
 				'name' => 'test_route_name_url',
 			]
 		);
 
 		$router->sync_routes_to_url_generator();
 
-		$this->assertEquals( '/example-route-url', route( 'test_route_name_url' ) );
+		$this->assertEquals( home_url( '/example-route-url' ), route( 'test_route_name_url' ) );
 	}
 
 	public function test_fluent_routing() {
 		$router = $this->get_router();
 
 		$router->get( '/test_fluent_routing' )
-		->callback( function() {} )
+			->callback( function() {} )
 			->name( 'route-name' );
 
 		$router->get( '/test_fluent_routing_with_var/{var}' )
@@ -273,19 +273,82 @@ class Test_Router extends Framework_Test_Case {
 
 		$router->sync_routes_to_url_generator();
 
-		$this->assertEquals( '/test_fluent_routing', route( 'route-name' ) );
+		$this->assertEquals( home_url( '/test_fluent_routing' ), route( 'route-name' ) );
 		$this->assertEquals(
-			'/test_fluent_routing_with_var/var_to_compare',
+			home_url( '/test_fluent_routing_with_var/var_to_compare' ),
 			route( 'route-name-with-var', [ 'var' => 'var_to_compare' ] )
 		);
 	}
 
-	protected function get_router(): Router {
-		$events = new Dispatcher( $this->app );
-		$router = new Router( $events, $this->app );
+	public function test_middleware_group_registration() {
+		$router = $this->get_router();
 
-		$this->app->instance( 'request', new Request() );
+		$router->middleware( Testable_Middleware_Router::class )->group(
+			fn () => $router->get( '/example-route-with-middleware', fn () => 'The response' )->name( 'example-route' ),
+		);
+
+		$this->get( '/example-route-with-middleware' )->assertContent( 'The response' );
+
+		$this->assertEquals( '/example-route-with-middleware', $_SERVER['__middleware'] );
+	}
+
+	public function test_without_middleware_registration() {
+		$_SERVER['__middleware'] = $_SERVER['closure_middleware'] = null;
+
+		$router = $this->get_router();
+
+		$router->middleware( Testable_Middleware_Router::class )->group(
+			fn () => $router
+				->get( '/example-route-with-middleware-without', fn () => 'The response' )
+				->middleware( function ( $request, $next ) {
+					$_SERVER['closure_middleware'] = true;
+
+					return $next( $request );
+				} )
+				->without_middleware( Testable_Middleware_Router::class )
+		);
+
+		$this->get( '/example-route-with-middleware-without' )->assertContent( 'The response' );
+
+		$this->assertEmpty( $_SERVER['__middleware'] );
+		$this->assertTrue( $_SERVER['closure_middleware'] );
+	}
+
+	public function test_route_prefix() {
+		$router = $this->get_router();
+
+		$router->prefix( 'example-prefix' )->group(
+			fn () => $router->get( '/example-route-prefix', fn () => 'The response' )->name( 'example-route' ),
+		);
+
+		$router->sync_routes_to_url_generator();
+
+		$this->get( '/example-prefix/example-route-prefix' )->assertContent( 'The response' );
+
+		$this->assertStringEndsWith( '/example-prefix/example-route-prefix', route( 'example-route' ) );
+	}
+
+	public function test_route_name_prefix() {
+		$router = $this->get_router();
+
+		$router->name( 'example-prefix.' )->group(
+			fn () => $router->get( '/example-route-prefix', fn () => 'The response' )->name( 'example-route' ),
+		);
+
+		$router->sync_routes_to_url_generator();
+
+		$this->get( '/example-route-prefix' )->assertContent( 'The response' );
+
+		$this->assertStringEndsWith( '/example-route-prefix', route( 'example-prefix.example-route' ) );
+	}
+
+	protected function get_router(): Router {
+		$router = new Router( $this->app['events'], $this->app );
+
+		$this->app['router'] = $router;
+
 		$this->app->instance( \Mantle\Contracts\Http\Routing\Router::class, $router );
+		$this->app->instance( 'request', new Request() );
 
 		return $router;
 	}
@@ -335,4 +398,12 @@ class Routing_Test_User_Model extends Post {
 
 class Routing_Test_Post_Model extends Post {
 	public static $object_name = 'post';
+}
+
+class Testable_Middleware_Router {
+	public function handle( Request $request, $next ) {
+		$_SERVER['__middleware'] = $request->getPathInfo();
+
+		return $next( $request );
+	}
 }
