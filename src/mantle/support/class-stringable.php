@@ -23,25 +23,17 @@ use function Mantle\Support\Helpers\collect;
  *
  * Allows for the chaining of string methods.
  */
-class Stringable implements JsonSerializable, ArrayAccess {
+class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 
 	use Conditionable, Macroable, Tappable;
 
 	/**
-	 * The underlying string value.
-	 *
-	 * @var string
-	 */
-	protected $value;
-
-	/**
 	 * Create a new instance of the class.
 	 *
-	 * @param  string $value
+	 * @param  string $value The underlying string value.
 	 * @return void
 	 */
-	public function __construct( $value = '' ) {
-		$this->value = (string) $value;
+	public function __construct( protected string $value = '' ) {
 	}
 
 	/**
@@ -67,11 +59,11 @@ class Stringable implements JsonSerializable, ArrayAccess {
 	/**
 	 * Append the given values to the string.
 	 *
-	 * @param  array|string ...$values
+	 * @param  array<string>|string ...$values
 	 * @return static
 	 */
 	public function append( ...$values ) {
-		return new static( $this->value . implode( '', $values ) );
+		return new static( $this->value . implode( '', $values ) ); // @phpstan-ignore-line implode expects array<string>
 	}
 
 	/**

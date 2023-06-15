@@ -636,8 +636,8 @@ class Str {
 	 */
 	public static function pad_both( $value, $length, $pad = ' ' ) {
 		$short       = max( 0, $length - mb_strlen( $value ) );
-		$short_left  = floor( $short / 2 );
-		$short_right = ceil( $short / 2 );
+		$short_left  = (int) floor( $short / 2 );
+		$short_right = (int) ceil( $short / 2 );
 
 		return mb_substr( str_repeat( $pad, $short_left ), 0, $short_left ) .
 			$value .

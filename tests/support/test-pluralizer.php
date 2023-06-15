@@ -37,7 +37,7 @@ class Test_Pluralizer extends TestCase {
 		$this->assertSame( 'IndexFields', Str::plural( 'IndexField' ) );
 		$this->assertSame( 'VertexFields', Str::plural( 'VertexField' ) );
 
-		// This is expected behavior, use "Str::pluralStudly" instead.
+		// This is expected behavior, use "Str::plural_studly" instead.
 		$this->assertSame( 'RealHumen', Str::plural( 'RealHuman' ) );
 	}
 
@@ -100,6 +100,6 @@ class Test_Pluralizer extends TestCase {
 	}
 
 	private function assertPluralStudly( $expected, $value, $count = 2 ) {
-		$this->assertSame( $expected, Str::pluralStudly( $value, $count ) );
+		$this->assertSame( $expected, Str::plural_studly( $value, $count ) );
 	}
 }
