@@ -17,6 +17,7 @@
 	<!-- todo: enable in a follow up pull request -->
 	<!-- <arg name="severity" value="1" /> -->
 
+	<exclude-pattern>bin/</exclude-pattern>
 	<exclude-pattern>tests/</exclude-pattern>
 
 	<rule ref="Alley-Interactive">

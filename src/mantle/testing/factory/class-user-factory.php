@@ -22,19 +22,11 @@ class User_Factory extends Factory {
 	use Concerns\With_Meta;
 
 	/**
-	 * Faker instance.
-	 *
-	 * @var Generator
-	 */
-	protected $faker;
-
-	/**
 	 * Constructor.
 	 *
-	 * @param Generator $generator Faker generator.
+	 * @param Generator $faker Faker generator.
 	 */
-	public function __construct( Generator $generator ) {
-		$this->faker = $generator;
+	public function __construct( protected Generator $faker ) {
 	}
 
 	/**
