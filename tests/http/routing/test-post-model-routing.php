@@ -78,7 +78,7 @@ class Testable_Post_Model extends Post {
 }
 
 class Testable_Post_Model_Controller extends Controller {
-	public function show( Testable_Post_Model $post ) {
+	public function show( string $year, string $month, string $date, Testable_Post_Model $post ) {
 		return $post->slug();
 	}
 }
