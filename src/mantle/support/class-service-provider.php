@@ -24,6 +24,21 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	use LoggerAwareTrait;
 
 	/**
+	 * The paths that should be published.
+	 *
+	 * @var array
+	 */
+	public static array $publishes = [];
+
+	/**
+	 * The paths that should be published by group.
+	 *
+	 * @var array
+	 */
+	public static array $publish_tags = [];
+
+
+	/**
 	 * The application instance.
 	 *
 	 * @var Application|\Mantle\Container\Container
@@ -132,5 +147,90 @@ abstract class Service_Provider implements LoggerAwareInterface {
 		);
 
 		return $this;
+	}
+
+	/**
+	 * Register paths to be published by the publish command.
+	 *
+	 * @param string[]                  $paths Paths to publish.
+	 * @param string|array<string>|null $tags Tags to publish.
+	 */
+	public function publishes( array $paths, $tags = null ): void {
+		$class = static::class;
+
+		if ( ! array_key_exists( $class, static::$publishes ) ) {
+			static::$publishes[ $class ] = [];
+		}
+
+		static::$publishes[ $class ] = array_merge( static::$publishes[ $class ], $paths );
+
+		foreach ( (array) $tags as $tag ) {
+			if ( ! array_key_exists( $tag, static::$publish_tags ) ) {
+				static::$publish_tags[ $tag ] = [];
+			}
+
+			static::$publish_tags[ $tag ] = array_merge(
+				static::$publish_tags[ $tag ],
+				$paths,
+			);
+		}
+	}
+
+	/**
+	 * Get the service providers available for publishing.
+	 *
+	 * @return array<class-string<Service_Provider>>
+	 */
+	public static function publishable_providers() {
+		return array_keys( static::$publishes );
+	}
+
+	/**
+	 * Get the groups available for publishing.
+	 *
+	 * @return array<string>
+	 */
+	public static function publishable_tags() {
+		return array_keys( static::$publish_tags );
+	}
+
+	/**
+	 * Get the paths to publish.
+	 *
+	 * Passing both a provider and a tag will return all paths that are
+	 * published by that provider and tag.
+	 *
+	 * @param  class-string<Service_Provider>|array<class-string<Service_Provider>>|null $providers The service provider class name.
+	 * @param  string|array<string>|null                                                 $tags      The tag name.
+	 * @return array<string, string> The paths to publish. Index is the source path, value is the destination path.
+	 */
+	public static function paths_to_publish( array|string|null $providers = null, array|string|null $tags = null ): array {
+		if ( ! $providers && ! $tags ) {
+			return [];
+		}
+
+		$provider_paths = collect();
+		$tag_paths      = collect();
+
+		if ( $providers ) {
+			foreach ( (array) $providers as $item ) {
+				$provider_paths = $provider_paths->merge( static::$publishes[ $item ] ?? [] );
+			}
+		}
+
+		if ( $tags ) {
+			foreach ( (array) $tags as $item ) {
+				$tag_paths = $tag_paths->merge( static::$publish_tags[ $item ] ?? [] );
+			}
+		}
+
+		// If both are passed, find the intersection.
+		if ( $providers && $tags ) {
+			return $provider_paths->intersect_by_keys( $tag_paths )->all();
+		} elseif ( $providers ) {
+			return $provider_paths->all();
+		} elseif ( $tags ) {
+			return $tag_paths->all();
+		}
 	}
 }

@@ -77,6 +77,106 @@ class Test_Service_Provider extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		$this->assertTrue( $_SERVER['__custom_hook_fired'] ?? false );
 	}
+
+	public function test_publishable_service_providers() {
+		$app = m::mock( Application::class )->makePartial();
+		$app->register( ServiceProviderForTestingOne::class );
+		$app->register( ServiceProviderForTestingTwo::class );
+		$app->boot();
+
+		$expected = [
+			ServiceProviderForTestingOne::class,
+			ServiceProviderForTestingTwo::class,
+		];
+
+		$this->assertEquals( $expected, Service_Provider::publishable_providers() );
+
+		$this->assertEquals(
+			[
+				'source/unmarked/one' => 'destination/unmarked/one',
+				'source/tagged/one' => 'destination/tagged/one',
+				'source/tagged/multiple' => 'destination/tagged/multiple',
+			],
+			Service_Provider::paths_to_publish(
+				providers: ServiceProviderForTestingOne::class,
+			),
+		);
+
+		$this->assertEquals(
+			[
+				'source/unmarked/two/a' => 'destination/unmarked/two/a',
+				'source/unmarked/two/b' => 'destination/unmarked/two/b',
+				'source/unmarked/two/c' => 'destination/tagged/two/a',
+				'source/tagged/two/b' => 'destination/tagged/two/b',
+				'source/tagged/two/a' => 'destination/tagged/two/a',
+			],
+			Service_Provider::paths_to_publish(
+				providers: ServiceProviderForTestingTwo::class,
+			),
+		);
+
+		$this->assertEquals(
+			[
+				'source/tagged/one' => 'destination/tagged/one',
+				'source/tagged/two/a' => 'destination/tagged/two/a',
+				'source/tagged/two/b' => 'destination/tagged/two/b',
+			],
+			Service_Provider::paths_to_publish(
+				tags: 'some_tag',
+			),
+		);
+
+		$this->assertEquals(
+			[
+				'source/tagged/multiple' => 'destination/tagged/multiple',
+			],
+			Service_Provider::paths_to_publish(
+				tags: 'tag_two',
+			),
+		);
+
+		$this->assertEquals(
+			[
+				'source/tagged/one' => 'destination/tagged/one'
+			],
+			Service_Provider::paths_to_publish(
+				providers: ServiceProviderForTestingOne::class,
+				tags: 'some_tag',
+			),
+		);
+
+		$this->assertEquals(
+			[
+				'source/tagged/one' => 'destination/tagged/one',
+				'source/tagged/multiple' => 'destination/tagged/multiple',
+				'source/tagged/two/a' => 'destination/tagged/two/a',
+				'source/tagged/two/b' => 'destination/tagged/two/b',
+			],
+			Service_Provider::paths_to_publish(
+				tags: [ 'some_tag', 'tag_two' ],
+			),
+		);
+
+		$this->assertEquals(
+			[
+				'source/tagged/two/a' => 'destination/tagged/two/a',
+				'source/tagged/two/b' => 'destination/tagged/two/b',
+			],
+			Service_Provider::paths_to_publish(
+				providers: ServiceProviderForTestingTwo::class,
+				tags: [ 'some_tag', 'tag_two' ],
+			),
+		);
+	}
+
+	public function test_publishable_tags() {
+		$app = m::mock( Application::class )->makePartial();
+		$app->register( ServiceProviderForTestingOne::class );
+		$app->register( ServiceProviderForTestingTwo::class );
+		$app->boot();
+
+		$this->assertEquals( [ 'some_tag', 'tag_one', 'tag_two' ], Service_Provider::publishable_tags() );
+	}
 }
 
 class Provider_Test_Hook extends Service_Provider {
@@ -95,5 +195,23 @@ class Provider_Test_Hook extends Service_Provider {
 
 	public function handle_custom_filter( $value ) {
 		return $value + 100;
+	}
+}
+
+class ServiceProviderForTestingOne extends Service_Provider {
+	public function boot() {
+		$this->publishes( [ 'source/unmarked/one' => 'destination/unmarked/one' ] );
+		$this->publishes( [ 'source/tagged/one' => 'destination/tagged/one' ], 'some_tag' );
+		$this->publishes( [ 'source/tagged/multiple' => 'destination/tagged/multiple' ], [ 'tag_one', 'tag_two' ] );
+	}
+}
+
+class ServiceProviderForTestingTwo extends Service_Provider {
+	public function boot() {
+		$this->publishes( [ 'source/unmarked/two/a' => 'destination/unmarked/two/a' ] );
+		$this->publishes( [ 'source/unmarked/two/b' => 'destination/unmarked/two/b' ] );
+		$this->publishes( [ 'source/unmarked/two/c' => 'destination/tagged/two/a' ] );
+		$this->publishes( [ 'source/tagged/two/a' => 'destination/tagged/two/a' ], 'some_tag' );
+		$this->publishes( [ 'source/tagged/two/b' => 'destination/tagged/two/b' ], 'some_tag' );
 	}
 }
