@@ -3,16 +3,14 @@
 namespace Mantle\Tests\Support;
 
 use ArrayObject;
-use Mantle\Support\Arr;
 use Carbon\Carbon;
 use InvalidArgumentException;
+use Mantle\Support\Arr;
+use Mantle\Support\Collection;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
-// Collection-specific tests are commented out until Collection is available.
-// use Mantle\Support\Collection;
-
-class SupportArrTest extends TestCase {
+class Test_Arr extends TestCase {
 
 	public function testAccessible() {
 		$this->assertTrue( Arr::accessible( [] ) );
@@ -25,7 +23,7 @@ class SupportArrTest extends TestCase {
 				]
 			)
 		);
-		// $this->assertTrue( Arr::accessible( new Collection() ) );
+		$this->assertTrue( Arr::accessible( new Collection() ) );
 
 		$this->assertFalse( Arr::accessible( null ) );
 		$this->assertFalse( Arr::accessible( 'abc' ) );
@@ -179,12 +177,12 @@ class SupportArrTest extends TestCase {
 		$this->assertTrue( Arr::exists( [ null ], 0 ) );
 		$this->assertTrue( Arr::exists( [ 'a' => 1 ], 'a' ) );
 		$this->assertTrue( Arr::exists( [ 'a' => null ], 'a' ) );
-		// $this->assertTrue( Arr::exists( new Collection( [ 'a' => null ] ), 'a' ) );
+		$this->assertTrue( Arr::exists( new Collection( [ 'a' => null ] ), 'a' ) );
 
 		$this->assertFalse( Arr::exists( [ 1 ], 1 ) );
 		$this->assertFalse( Arr::exists( [ null ], 1 ) );
 		$this->assertFalse( Arr::exists( [ 'a' => 1 ], 0 ) );
-		// $this->assertFalse( Arr::exists( new Collection( [ 'a' => null ] ), 'b' ) );
+		$this->assertFalse( Arr::exists( new Collection( [ 'a' => null ] ), 'b' ) );
 	}
 
 	public function testFirst() {
@@ -288,20 +286,20 @@ class SupportArrTest extends TestCase {
 		$this->assertEquals( [ '#foo', '#bar', '#baz' ], Arr::flatten( $array ) );
 
 		// Nested arrays are flattened alongside arrays
-		// $array = [ new Collection( [ '#foo', '#bar' ] ), [ '#baz' ] ];
-		// $this->assertEquals( [ '#foo', '#bar', '#baz' ], Arr::flatten( $array ) );
+		$array = [ new Collection( [ '#foo', '#bar' ] ), [ '#baz' ] ];
+		$this->assertEquals( [ '#foo', '#bar', '#baz' ], Arr::flatten( $array ) );
 
-		// // Nested arrays containing plain arrays are flattened
-		// $array = [ new Collection( [ '#foo', [ '#bar' ] ] ), [ '#baz' ] ];
-		// $this->assertEquals( [ '#foo', '#bar', '#baz' ], Arr::flatten( $array ) );
+		// Nested arrays containing plain arrays are flattened
+		$array = [ new Collection( [ '#foo', [ '#bar' ] ] ), [ '#baz' ] ];
+		$this->assertEquals( [ '#foo', '#bar', '#baz' ], Arr::flatten( $array ) );
 
-		// // Nested arrays containing arrays are flattened
-		// $array = [ [ '#foo', new Collection( [ '#bar' ] ) ], [ '#baz' ] ];
-		// $this->assertEquals( [ '#foo', '#bar', '#baz' ], Arr::flatten( $array ) );
+		// Nested arrays containing arrays are flattened
+		$array = [ [ '#foo', new Collection( [ '#bar' ] ) ], [ '#baz' ] ];
+		$this->assertEquals( [ '#foo', '#bar', '#baz' ], Arr::flatten( $array ) );
 
 		// Nested arrays containing arrays containing arrays are flattened
-		// $array = [ [ '#foo', new Collection( [ '#bar', [ '#zap' ] ] ) ], [ '#baz' ] ];
-		// $this->assertEquals( [ '#foo', '#bar', '#zap', '#baz' ], Arr::flatten( $array ) );
+		$array = [ [ '#foo', new Collection( [ '#bar', [ '#zap' ] ] ) ], [ '#baz' ] ];
+		$this->assertEquals( [ '#foo', '#bar', '#zap', '#baz' ], Arr::flatten( $array ) );
 	}
 
 	public function testFlattenWithDepth() {
@@ -992,38 +990,35 @@ class SupportArrTest extends TestCase {
 		$this->assertSame( [ 'products' => [ 'desk' => [ 'price' => 300 ] ] ], $array );
 	}
 
-	/**
-	 * Disabled until Collections is available.
-	 */
-	// public function testSort() {
-	// 	$unsorted = [
-	// 		[ 'name' => 'Desk' ],
-	// 		[ 'name' => 'Chair' ],
-	// 	];
+	public function testSort() {
+		$unsorted = [
+			[ 'name' => 'Desk' ],
+			[ 'name' => 'Chair' ],
+		];
 
-	// 	$expected = [
-	// 		[ 'name' => 'Chair' ],
-	// 		[ 'name' => 'Desk' ],
-	// 	];
+		$expected = [
+			[ 'name' => 'Chair' ],
+			[ 'name' => 'Desk' ],
+		];
 
-	// 	$sorted = array_values( Arr::sort( $unsorted ) );
-	// 	$this->assertEquals( $expected, $sorted );
+		$sorted = array_values( Arr::sort( $unsorted ) );
+		$this->assertEquals( $expected, $sorted );
 
-	// 	// sort with closure
-	// 	$sortedWithClosure = array_values(
-	// 		Arr::sort(
-	// 			$unsorted,
-	// 			function ( $value ) {
-	// 				return $value['name'];
-	// 			}
-	// 		)
-	// 	);
-	// 	$this->assertEquals( $expected, $sortedWithClosure );
+		// sort with closure
+		$sortedWithClosure = array_values(
+			Arr::sort(
+				$unsorted,
+				function ( $value ) {
+					return $value['name'];
+				}
+			)
+		);
+		$this->assertEquals( $expected, $sortedWithClosure );
 
-	// 	// sort with dot notation
-	// 	$sortedWithDotNotation = array_values( Arr::sort( $unsorted, 'name' ) );
-	// 	$this->assertEquals( $expected, $sortedWithDotNotation );
-	// }
+		// sort with dot notation
+		$sortedWithDotNotation = array_values( Arr::sort( $unsorted, 'name' ) );
+		$this->assertEquals( $expected, $sortedWithDotNotation );
+	}
 
 	public function testSortRecursive() {
 		$array = [
