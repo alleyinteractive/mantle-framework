@@ -54,7 +54,14 @@ class Console_Service_Provider extends Service_Provider implements Isolated_Serv
 			[
 				dirname( __DIR__, 4 ) . '/config' => $this->app->get_app_path( 'config' ),
 			],
-			'mantle',
+			[ 'mantle', 'config' ],
+		);
+
+		$this->publishes(
+			[
+				__DIR__ . '/../resources/application-structure' => $this->app->get_app_path(),
+			],
+			[ 'mantle', 'application-structure' ],
 		);
 	}
 }
