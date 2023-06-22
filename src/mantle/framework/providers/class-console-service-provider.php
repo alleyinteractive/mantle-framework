@@ -16,7 +16,7 @@ use ReflectionClass;
 use function Mantle\Support\Helpers\collect;
 
 /**
- * Console Service Provider
+ * Framework Console Service Provider
  *
  * Registers core commands for the framework. Not designed to be located in the
  * mantle-framework/console package.
@@ -43,6 +43,18 @@ class Console_Service_Provider extends Service_Provider implements Isolated_Serv
 					&& ( new ReflectionClass( $class ) )->isInstantiable()
 				)
 				->all()
+		);
+	}
+
+	/**
+	 * Service Provider Boot
+	 */
+	public function boot() {
+		$this->publishes(
+			[
+				dirname( __DIR__, 4 ) . '/config' => $this->app->get_app_path( 'config' ),
+			],
+			'mantle',
 		);
 	}
 }
