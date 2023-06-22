@@ -46,7 +46,11 @@ return [
 		|
 		| These are the providers that power your application. The above ones are
 		| core to Mantle. The following are designed to be implemented and extended
-		| by your application.
+		| by your application. Mantle will use the framework's version unless
+		| otherwise specified. You can export the framework's version by running the
+		| following command and switching out the provider's class name:
+		|
+		|   wp mantle vendor:publish --tags=application-structure --force
 		|
 		*/
 		Mantle\Application\App_Service_Provider::class,
