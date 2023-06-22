@@ -177,6 +177,58 @@ class Test_Service_Provider extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		$this->assertEquals( [ 'some_tag', 'tag_one', 'tag_two' ], Service_Provider::publishable_tags() );
 	}
+
+	public function test_call_after_resolving() {
+		$_SERVER['__after_resolving'] = false;
+
+		$app = m::mock( Application::class )->makePartial();
+		$app->register(
+			new class ( $app ) extends Service_Provider {
+				public function register() {
+					$this->call_after_resolving(
+						'foo',
+						function ( $resolved ) {
+							$_SERVER['__after_resolving'] = 'one';
+						}
+					);
+				}
+			}
+		);
+
+		$app->boot();
+
+		$this->assertEquals( false, $_SERVER['__after_resolving'] );
+
+		$app->bind( 'foo',  fn () => 'bar' );
+
+		$this->assertEquals( 'bar', $app->make( 'foo' ) );
+
+		$this->assertEquals( 'one', $_SERVER['__after_resolving'] );
+	}
+
+	public function test_call_after_resolving_already_resolved() {
+		$_SERVER['__after_resolving'] = false;
+
+		$app = m::mock( Application::class )->makePartial();
+		$app->register(
+			new class ( $app ) extends Service_Provider {
+				public function register() {
+					$this->call_after_resolving(
+						'foo',
+						function ( $resolved ) {
+							$_SERVER['__after_resolving'] = 'one';
+						}
+					);
+				}
+			}
+		);
+
+		$app->bind( 'foo',  fn () => 'bar' );
+
+		$this->assertEquals( 'bar', $app->make( 'foo' ) );
+
+		$this->assertEquals( 'one', $_SERVER['__after_resolving'] );
+	}
 }
 
 class Provider_Test_Hook extends Service_Provider {

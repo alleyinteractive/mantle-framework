@@ -51,7 +51,7 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	 *
 	 * @var \Mantle\Console\Command[]
 	 */
-	protected $commands;
+	protected array $commands;
 
 	/**
 	 * Create a new service provider instance.
@@ -150,6 +150,21 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	}
 
 	/**
+	 * Setup an after resolving listener, or fire immediately if already resolved.
+	 *
+	 * @param  string   $name Abstract name.
+	 * @param  callable $callback Callback.
+	 * @return void
+	 */
+	protected function call_after_resolving( string $name, callable $callback ): void {
+		$this->app->after_resolving( $name, $callback );
+
+		if ( $this->app->resolved( $name ) ) {
+			$callback( $this->app->make( $name ), $this->app );
+		}
+	}
+
+	/**
 	 * Register paths to be published by the publish command.
 	 *
 	 * @param string[]                  $paths Paths to publish.
@@ -192,6 +207,28 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	 */
 	public static function publishable_tags() {
 		return array_keys( static::$publish_tags );
+	}
+
+	/**
+	 * Load routes from the given path.
+	 *
+	 * @param string $path Path to routes file.
+	 */
+	public function load_routes_from( string $path ): void {
+		require $path;
+	}
+
+	/**
+	 * Load views from the given path.
+	 *
+	 * @param string $path Path to views directory.
+	 * @param string $alias Alias to register views under.
+	 */
+	public function load_views_from( string $path, string $alias ): void {
+		$this->call_after_resolving(
+			'view.loader',
+			fn ( \Mantle\Http\View\View_Finder $finder ) => $finder->add_path( $path, $alias ),
+		);
 	}
 
 	/**
