@@ -14,6 +14,9 @@ class Test_Service_Provider extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		remove_all_actions( 'init' );
 		remove_all_filters( 'custom_filter' );
+
+		Service_Provider::$publishes = [];
+		Service_Provider::$publish_tags = [];
 	}
 
 	public function test_service_provider_registered() {
