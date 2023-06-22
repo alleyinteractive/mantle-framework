@@ -8,11 +8,8 @@
 namespace Mantle\Framework\Console;
 
 use Mantle\Console\Command;
-use Mantle\Filesystem\Filesystem;
 use Mantle\Framework\Manifest\Model_Manifest;
 use Mantle\Framework\Manifest\Package_Manifest;
-use Mantle\Support\Service_Provider;
-use Symfony\Component\Finder\Finder;
 
 use function Mantle\Support\Helpers\collect;
 
