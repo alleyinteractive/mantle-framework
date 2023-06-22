@@ -760,6 +760,10 @@ class Collection implements ArrayAccess, Enumerable {
 		foreach ( $this->items as $key => $item ) {
 			$pair = $callback( $item, $key );
 
+			if ( is_null( $pair ) ) {
+				continue;
+			}
+
 			$key = key( $pair );
 
 			$value = reset( $pair );

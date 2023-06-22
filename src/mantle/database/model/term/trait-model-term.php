@@ -7,6 +7,7 @@
 
 namespace Mantle\Database\Model\Term;
 
+use InvalidArgumentException;
 use Mantle\Database\Model\Model_Exception;
 use Mantle\Database\Model\Term;
 use Mantle\Support\Arr;
@@ -129,7 +130,7 @@ trait Model_Term {
 		// If taxonomy is not specified, chunk the terms into taxonomy groups.
 		if ( ! $taxonomy ) {
 			$terms = $terms->map_to_dictionary(
-				function ( $term ) {
+				function ( $term, $key ) {
 					if ( $term instanceof WP_Term ) {
 						return [ $term->taxonomy => $term ];
 					}
@@ -138,9 +139,16 @@ trait Model_Term {
 						return [ $term->taxonomy => $term->core_object() ];
 					}
 
-					$term = get_term_object( $term );
+					if ( ! is_numeric( $term ) ) {
+						$term = get_term_by( 'slug', $term );
+						// throw new InvalidArgumentException( "Invalid term value passed to set_terms (expected Term/WP_Term/int): {$term}" );
+					} else {
+						$term = get_term_object( $term );
+					}
 
-					if ( $term ) {
+					dump('term', $term);
+
+					if ( $term instanceof WP_Term ) {
 						return [ $term->taxonomy => $term ];
 					}
 

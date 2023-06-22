@@ -194,6 +194,20 @@ class Test_Factory extends Framework_Test_Case {
 		$this->assertTrue( has_term( $tag->term_id, 'post_tag', $post ) );
 	}
 
+	public function test_posts_with_terms_multiple_taxonomies_and_term_slug() {
+		$tag = static::factory()->tag->create_and_get();
+
+		$post = static::factory()->post->with_terms( [
+			$category = static::factory()->category->create_and_get(),
+			[
+				'post_tag' => $tag->slug,
+			],
+		] )->create_and_get();
+
+		$this->assertTrue( has_term( $category->term_id, 'category', $post ) );
+		$this->assertTrue( has_term( $tag->term_id, 'post_tag', $post ) );
+	}
+
 	public function test_post_with_meta() {
 		$post = static::factory()->post->with_meta(
 			[
