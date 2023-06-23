@@ -28,8 +28,6 @@ class Kernel extends Console_Kernel {
 
 	/**
 	 * Register the commands for the application.
-	 *
-	 * @return void
 	 */
 	public function commands(): void {
 		$this->load( __DIR__ );

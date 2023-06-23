@@ -25,7 +25,7 @@ class About_Command extends Command {
 	protected $name = 'about';
 
 	/**
-	 * Command Description.
+	 * Command description.
 	 *
 	 * @var string
 	 */
@@ -44,7 +44,7 @@ class About_Command extends Command {
 	 * @param callable|array<string, string> $data    Data to add.
 	 * @param string                         $section Section to add the data to.
 	 */
-	public static function add( callable|array $data, string $section = 'Custom' ) {
+	public static function add( callable|array $data, string $section = 'Custom' ): void {
 		static::$sections[ $section ][] = $data;
 	}
 
@@ -80,7 +80,7 @@ class About_Command extends Command {
 	/**
 	 * Process the sections of data and fill in the default sections.
 	 */
-	protected function gather_information() {
+	protected function gather_information(): void {
 		global $wp_version;
 
 		static::add(

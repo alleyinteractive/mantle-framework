@@ -26,7 +26,7 @@ class Vendor_Publish_Command extends Command {
 	protected $name = 'vendor:publish';
 
 	/**
-	 * Command Description.
+	 * Command description.
 	 *
 	 * @var string
 	 */
@@ -230,7 +230,6 @@ class Vendor_Publish_Command extends Command {
 	 * @param  string $from
 	 * @param  string $to
 	 * @param  string $type
-	 * @return void
 	 */
 	protected function status( string $from, string $to, string $type ): void {
 		$from = str_replace( base_path() . '/', '', realpath( $from ) );

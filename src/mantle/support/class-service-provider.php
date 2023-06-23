@@ -37,7 +37,6 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	 */
 	public static array $publish_tags = [];
 
-
 	/**
 	 * The application instance.
 	 *
@@ -154,7 +153,6 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	 *
 	 * @param  string   $name Abstract name.
 	 * @param  callable $callback Callback.
-	 * @return void
 	 */
 	protected function call_after_resolving( string $name, callable $callback ): void {
 		$this->app->after_resolving( $name, $callback );
@@ -196,16 +194,16 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	 *
 	 * @return array<class-string<Service_Provider>>
 	 */
-	public static function publishable_providers() {
+	public static function publishable_providers(): array {
 		return array_keys( static::$publishes );
 	}
 
 	/**
 	 * Get the groups available for publishing.
 	 *
-	 * @return array<string>
+	 * @return string[]
 	 */
-	public static function publishable_tags() {
+	public static function publishable_tags(): array {
 		return array_keys( static::$publish_tags );
 	}
 
