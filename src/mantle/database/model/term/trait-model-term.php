@@ -163,7 +163,6 @@ trait Model_Term {
 									$carry[ $item->taxonomy ][] = $item;
 								}
 
-
 								continue;
 							}
 
