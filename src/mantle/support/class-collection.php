@@ -751,7 +751,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @template TMapToDictionaryKey of array-key
 	 * @template TMapToDictionaryValue
 	 *
-	 * @param  callable(TValue, TKey): array<TMapToDictionaryKey, TMapToDictionaryValue>|null $callback
+	 * @param  callable(TValue, TKey): array<TMapToDictionaryKey, TMapToDictionaryValue> $callback
 	 * @return static<TMapToDictionaryKey, array<int, TMapToDictionaryValue>>
 	 */
 	public function map_to_dictionary( callable $callback ) {
@@ -759,10 +759,6 @@ class Collection implements ArrayAccess, Enumerable {
 
 		foreach ( $this->items as $key => $item ) {
 			$pair = $callback( $item, $key );
-
-			if ( is_null( $pair ) ) {
-				continue;
-			}
 
 			$key = key( $pair );
 
