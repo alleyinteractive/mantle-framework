@@ -41,7 +41,12 @@ class Post_Factory extends Factory {
 	 * @return static
 	 */
 	public function with_terms( ...$terms ): static {
-		$terms = collect( $terms )->flatten()->all();
+		// Handle an array in the first argument.
+		if ( 1 === count( $terms ) && is_array( $terms[0] ) ) {
+			$terms = $terms[0];
+		}
+
+		$terms = collect( $terms )->all();
 
 		return $this->with_middleware(
 			fn ( array $args, Closure $next ) => $next( $args )->set_terms( $terms ),
