@@ -5,7 +5,7 @@
  * @package {{ namespace }}
  */
 
-namespace {{ namespace }}\Http\Middleware;
+namespace {{ namespace }};
 
 use Closure;
 

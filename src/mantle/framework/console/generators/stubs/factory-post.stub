@@ -7,7 +7,7 @@
 
 // phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment
 
-namespace {{ namespace }}\Factory;
+namespace {{ namespace }};
 
 use Faker\Generator as Faker;
 use Mantle\Support\Str;

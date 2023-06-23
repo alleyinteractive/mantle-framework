@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace {{ namespace }}\Jobs;
+namespace {{ namespace }};
 
 use Mantle\Contracts\Queue\Can_Queue;
 use Mantle\Contracts\Queue\Job;
