@@ -5,7 +5,7 @@
  * @package {{ namespace }}
  */
 
-namespace {{ namespace }}\Console\Generators;
+namespace {{ namespace }};
 
 use Mantle\Framework\Console\Generators\Stub_Generator_Command;
 

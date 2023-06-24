@@ -5,7 +5,7 @@
  * @package {{ namespace }}
  */
 
-namespace {{ namespace }}\Blocks;
+namespace {{ namespace }};
 
 use Mantle\Blocks\Block;
 use Mantle\Contracts\Block as Block_Contract;

@@ -17,6 +17,7 @@ use Mantle\Contracts\Console\Application as Console_Application_Contract;
 use Mantle\Contracts\Exceptions\Handler as Exception_Handler;
 use Mantle\Support\Traits\Loads_Classes;
 use ReflectionClass;
+use Symfony\Component\Console\Exception\CommandNotFoundException;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 use Throwable;
@@ -284,6 +285,22 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	 * @return void
 	 */
 	protected function render_exception( OutputInterface $output, Throwable $e ) {
+		if ( $e instanceof CommandNotFoundException ) {
+			$this->output->writeln( '<error>' . str( $e->getMessage() )->explode( '.' )->first() . '</error>' );
+			$this->output->writeln( '' );
+
+			if ( ! empty( $alternatives = $e->getAlternatives() ) ) {
+				$this->output->writeln( '<comment>Did you mean one of these?</comment>' );
+				$this->output->writeln( '' );
+
+				foreach ( $alternatives as $alternative ) {
+					$this->output->writeln( "  - <fg=green>{$alternative}</>" );
+				}
+			}
+
+			return;
+		}
+
 		$this->app[ Exception_Handler::class ]->render_for_console( $output, $e );
 	}
 
