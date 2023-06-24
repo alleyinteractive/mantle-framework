@@ -192,6 +192,40 @@ class Test_Factory extends Framework_Test_Case {
 
 		$this->assertTrue( has_term( $category->term_id, 'category', $post ) );
 		$this->assertTrue( has_term( $tag->term_id, 'post_tag', $post ) );
+
+		$post = static::factory()->post->with_terms( [
+			$category = static::factory()->category->create_and_get(),
+			$tag = static::factory()->tag->create_and_get(),
+		] )->create_and_get();
+
+		$this->assertTrue( has_term( $category->term_id, 'category', $post ) );
+		$this->assertTrue( has_term( $tag->term_id, 'post_tag', $post ) );
+	}
+
+	public function test_posts_with_terms_multiple_taxonomies_and_term_slug() {
+		$tag = static::factory()->tag->create_and_get();
+
+		// Test with the arguments passed as individual parameters.
+		$post = static::factory()->post->with_terms(
+			$category = static::factory()->category->create_and_get(),
+			[
+				'post_tag' => $tag->slug,
+			],
+		)->create_and_get();
+
+		$this->assertTrue( has_term( $category->term_id, 'category', $post ) );
+		$this->assertTrue( has_term( $tag->term_id, 'post_tag', $post ) );
+
+		// Test with the arguments wrapped in an array.
+		$post = static::factory()->post->with_terms( [
+			$category = static::factory()->category->create_and_get(),
+			[
+				'post_tag' => $tag->slug,
+			],
+		] )->create_and_get();
+
+		$this->assertTrue( has_term( $category->term_id, 'category', $post ) );
+		$this->assertTrue( has_term( $tag->term_id, 'post_tag', $post ) );
 	}
 
 	public function test_post_with_meta() {

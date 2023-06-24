@@ -1005,12 +1005,21 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Reduce the collection to a single value.
 	 *
-	 * @param    callable $callback
-	 * @param    mixed    $initial
-	 * @return mixed
+	 * @template TReduceInitial
+	 * @template TReduceReturnType
+	 *
+	 * @param  callable(TReduceInitial|TReduceReturnType, TValue, TKey): TReduceReturnType $callback
+	 * @param  TReduceInitial                                                              $initial
+	 * @return TReduceReturnType|TReduceInitial
 	 */
 	public function reduce( callable $callback, $initial = null ) {
-		return array_reduce( $this->items, $callback, $initial );
+		$result = $initial;
+
+		foreach ( $this as $key => $value ) {
+			$result = $callback( $result, $value, $key );
+		}
+
+		return $result;
 	}
 
 	/**
