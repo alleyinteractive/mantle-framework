@@ -249,11 +249,11 @@ function retry( $times, callable $callback, $sleep = 0, $when = null ) {
  * Get a new stringable object from the given string.
  *
  * @param  string|null  $string
- * @return \Mantle\Support\Stringable|\Stringable
+ * @return \Mantle\Support\Stringable|mixed
  */
-function str( $string = null ) {
-	if ( func_num_args() === 0 ) {
-		return new class() implements \Stringable {
+function str( ?string $string = null ) {
+	if ( is_null( $string ) ) {
+		return new class() {
 			public function __call( $method, $parameters ) {
 				return Str::$method( ...$parameters );
 			}
@@ -264,7 +264,7 @@ function str( $string = null ) {
 		};
 	}
 
-	return Str::of( $string );
+	return Str::of( (string) $string );
 }
 
 /**

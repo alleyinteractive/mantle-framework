@@ -63,4 +63,12 @@
 	<rule ref="VariableAnalysis.CodeAnalysis.VariableAnalysis.VariableRedeclaration">
 		<severity>0</severity>
 	</rule>
+
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedNamespaceFound">
+		<exclude-pattern>src/mantle/framework/resources/</exclude-pattern>
+	</rule>
+
+	<rule ref="Generic.CodeAnalysis.UselessOverridingMethod.Found">
+		<exclude-pattern>src/mantle/framework/resources/</exclude-pattern>
+	</rule>
 </ruleset>
