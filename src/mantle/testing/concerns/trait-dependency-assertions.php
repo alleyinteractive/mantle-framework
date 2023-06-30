@@ -12,12 +12,20 @@ use Mantle\Support\Collection;
 
 trait Dependency_Assertions {
 
+	/**
+	 * Asserts that the contents of an array are loaded prior to testing.
+	 *
+	 * Array can be an array of strings or an array of arrays where the first value is a string -- for instance,
+	 * a data provider.
+	 *
+	 * @param array $dependencies Dependencies array.
+	 */
 	public static function assertDependenciesLoaded( array $dependencies ) {
-		if( count( $dependencies ) === 0 ) {
+		if ( count( $dependencies ) === 0 ) {
 			PHPUnit::markTestIncomplete( 'Asserting an empty dependency array has been loaded does not assert that no dependencies have been loaded.' );
 		}
 
-		foreach( $dependencies as $dependency ) {
+		foreach ( $dependencies as $dependency ) {
 			if ( is_array( $dependency ) ) {
 				$dependency = array_shift( $dependency );
 			}
@@ -31,6 +39,11 @@ trait Dependency_Assertions {
 		}
 	}
 
+	/**
+	 * Asserts that a file is loaded.
+	 *
+	 * @param string $dependency The dependency file name.
+	 */
 	public static function assertDependencyLoaded( string $dependency ) {
 		static $includes;
 
@@ -43,7 +56,7 @@ trait Dependency_Assertions {
 
 		PHPUnit::assertTrue(
 			$includes
-				->filter(fn( $file ) => strpos( $file, $dependency ) !== false)
+				->filter( fn( $file ) => strpos( $file, $dependency ) !== false )
 				->count() > 0,
 			sprintf(
 				'%s dependency not found in included files.',
