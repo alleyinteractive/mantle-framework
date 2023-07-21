@@ -200,7 +200,9 @@ class Utils {
 	 * Define the constants that are necessary for WordPress installation.
 	 *
 	 * Mirrors the wp-tests-config-sample.php file that can optionally be loaded
-	 * before this file.
+	 * before this file. Any constant that is already defined is not overridden
+	 * with the option to use environment variables to override the default
+	 * values.
 	 */
 	public static function setup_configuration(): void {
 		global $table_prefix;
@@ -209,12 +211,12 @@ class Utils {
 		defined( 'ABSPATH' ) || define( 'ABSPATH', Str::trailing_slash( preg_replace( '#/wp-content/.*$#', '/', __DIR__ ) ) );
 		defined( 'WP_DEBUG' ) || define( 'WP_DEBUG', true );
 
-		defined( 'DB_NAME' ) || define( 'DB_NAME', static::DEFAULT_DB_NAME );
-		defined( 'DB_USER' ) || define( 'DB_USER', static::DEFAULT_DB_USER );
-		defined( 'DB_PASSWORD' ) || define( 'DB_PASSWORD', static::DEFAULT_DB_PASSWORD );
-		defined( 'DB_HOST' ) || define( 'DB_HOST', static::DEFAULT_DB_HOST );
-		defined( 'DB_CHARSET' ) || define( 'DB_CHARSET', 'utf8' );
-		defined( 'DB_COLLATE' ) || define( 'DB_COLLATE', '' );
+		defined( 'DB_NAME' ) || define( 'DB_NAME', static::env( 'WP_DB_NAME', static::DEFAULT_DB_NAME ) );
+		defined( 'DB_USER' ) || define( 'DB_USER', static::env( 'WP_DB_USER', static::DEFAULT_DB_USER ) );
+		defined( 'DB_PASSWORD' ) || define( 'DB_PASSWORD', static::env( 'WP_DB_PASSWORD', static::DEFAULT_DB_PASSWORD ) );
+		defined( 'DB_HOST' ) || define( 'DB_HOST', static::env( 'WP_DB_HOST', static::DEFAULT_DB_HOST ) );
+		defined( 'DB_CHARSET' ) || define( 'DB_CHARSET', static::ENV( 'WP_DB_CHARSET', 'utf8' ) );
+		defined( 'DB_COLLATE' ) || define( 'DB_COLLATE', static::ENV( 'WP_DB_COLLATE', '' ) );
 
 		defined( 'AUTH_KEY' ) || define( 'AUTH_KEY', 'put your unique phrase here' );
 		defined( 'SECURE_AUTH_KEY' ) || define( 'SECURE_AUTH_KEY', 'put your unique phrase here' );
