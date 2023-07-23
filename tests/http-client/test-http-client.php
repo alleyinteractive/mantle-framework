@@ -439,4 +439,11 @@ EOF
 
 		$this->assertEquals( 'Bar', $request->header( 'X-Foo' ) );
 	}
+
+	public function test_headers_as_form() {
+		$request = $this->http_factory
+			->as_form();
+
+		$this->assertEquals( 'application/x-www-form-urlencoded', $request->header( 'Content-Type' ) );
+	}
 }
