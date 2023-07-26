@@ -446,4 +446,14 @@ EOF
 
 		$this->assertEquals( 'application/x-www-form-urlencoded', $request->header( 'Content-Type' ) );
 	}
+
+	public function test_helper_function() {
+		$this->fake_request();
+
+		http_client()->get( 'https://example.com/' );
+		http_client( 'https://example.com/direct' );
+
+		$this->assertRequestSent( 'https://example.com/' );
+		$this->assertRequestSent( 'https://example.com/direct' );
+	}
 }
