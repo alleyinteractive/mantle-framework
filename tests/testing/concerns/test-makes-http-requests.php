@@ -4,6 +4,7 @@ namespace Mantle\Tests\Testing\Concerns;
 use JsonSerializable;
 use Mantle\Http\Response;
 use Mantle\Framework\Providers\Routing_Service_Provider;
+use Mantle\Http\Request;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Test_Response;
@@ -159,6 +160,20 @@ class Test_Makes_Http_Requests extends Framework_Test_Case {
 			->assertHeader( 'Location', home_url( '/redirected/' ) )
 			->assertRedirect( '/redirected/' )
 			->assertHeader( 'Other-Header', '123' );
+	}
+
+	public function test_post_json() {
+		$this->app['router']->post(
+			'/test-post-json',
+			function( Request $request ) {
+				dd($request);
+				return new Response( 'yes', 201, [ 'test-header' => 'test-value' ] );
+			}
+		);
+
+		$this->post_json( '/test-post-json', [ 'foo' => 'bar' ] )
+			->assertCreated()
+			->assertContent( 'yes' );
 	}
 
 	public function test_assert_json_structure() {

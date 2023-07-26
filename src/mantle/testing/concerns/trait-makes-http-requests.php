@@ -261,14 +261,15 @@ trait Makes_Http_Requests {
 	/**
 	 * Call the given URI and return the Response.
 	 *
-	 * @param string $method     Request method.
-	 * @param string $uri        Request URI.
-	 * @param array  $parameters Request params.
-	 * @param array  $server     Server vars.
-	 * @param array  $cookies Cookies to be sent with the request.
+	 * @param string      $method     Request method.
+	 * @param string      $uri        Request URI.
+	 * @param array       $parameters Request params.
+	 * @param array       $server     Server vars.
+	 * @param array       $cookies Cookies to be sent with the request.
+	 * @param string|null $content Request content.
 	 * @return Test_Response
 	 */
-	public function call( $method, $uri, $parameters = [], $server = [], array $cookies = [] ) {
+	public function call( string $method, string $uri, array $parameters = [], array $server = [], array $cookies = [], ?string $content = null ): Test_Response {
 		$this->reset_request_state();
 
 		if ( ! is_string( $uri ) ) {
@@ -564,7 +565,7 @@ trait Makes_Http_Requests {
 	 * @return string
 	 */
 	protected function prepare_url_for_request( $uri ) {
-		return trailingslashit( home_url( $uri ) );
+		return Str::trailing_slash( home_url( $uri ) );
 	}
 
 	/**
@@ -588,26 +589,38 @@ trait Makes_Http_Requests {
 	 *
 	 * @param string $uri     URI to "get".
 	 * @param array  $headers Request headers.
+	 * @param int    $options JSON encoding options.
 	 * @return Test_Response
 	 */
-	public function get_json( $uri, array $headers = [] ) {
-		return $this->json( 'GET', $uri, [], $headers );
+	public function get_json( $uri, array $headers = [], int $options = 0 ): Test_Response {
+		return $this->json( 'GET', $uri, [], $headers, $options );
 	}
 
 	/**
 	 * Call the given URI with a JSON request.
 	 *
-	 * @todo Reimplement this method for Mantle.
-	 *
 	 * @param string $method  Request method.
 	 * @param string $uri     Request URI.
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
+	 * @param int    $options Request options.
+	 * @return Test_Response
 	 *
 	 * @throws RuntimeException If not implemented.
 	 */
-	public function json( $method, $uri, array $data = [], array $headers = [] ) {
-		throw new RuntimeException( 'Not implemented.' );
+	public function json( string $method, string $uri, array $data = [], array $headers = [], int $options = 0 ): Test_Response {
+		$data = json_encode( $data, $options );
+
+		$headers = array_merge(
+			$headers,
+			[
+				'Accept'         => 'application/json',
+				'Content-Length' => mb_strlen( $data, '8bit' ),
+				'Content-Type'   => 'application/json',
+			]
+		);
+
+		return $this->call( $method, $uri, [],
 	}
 
 	/**
@@ -618,7 +631,7 @@ trait Makes_Http_Requests {
 	 * @param array  $headers Request headers.
 	 * @return Test_Response
 	 */
-	public function post( $uri, array $data = [], array $headers = [] ) {
+	public function post( string $uri, array $data = [], array $headers = [] ): Test_Response {
 		$server = $this->transform_headers_to_server_vars( $headers );
 
 		return $this->call( 'POST', $uri, $data, $server );
@@ -630,10 +643,11 @@ trait Makes_Http_Requests {
 	 * @param string $uri     Request URI.
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
+	 * @param int    $options JSON encoding options.
 	 * @return Test_Response
 	 */
-	public function post_json( $uri, array $data = [], array $headers = [] ) {
-		return $this->json( 'POST', $uri, $data, $headers );
+	public function post_json( string $uri, array $data = [], array $headers = [], int $options = 0 ): Test_Response {
+		return $this->json( 'POST', $uri, $data, $headers, $options );
 	}
 
 	/**
@@ -644,7 +658,7 @@ trait Makes_Http_Requests {
 	 * @param array  $headers Request headers.
 	 * @return Test_Response
 	 */
-	public function put( $uri, array $data = [], array $headers = [] ) {
+	public function put( string $uri, array $data = [], array $headers = [] ): Test_Response {
 		$server = $this->transform_headers_to_server_vars( $headers );
 
 		return $this->call( 'PUT', $uri, $data, $server );
@@ -656,10 +670,11 @@ trait Makes_Http_Requests {
 	 * @param string $uri     Request URI.
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
+	 * @param int    $options JSON encoding options.
 	 * @return Test_Response
 	 */
-	public function put_json( $uri, array $data = [], array $headers = [] ) {
-		return $this->json( 'PUT', $uri, $data, $headers );
+	public function put_json( string $uri, array $data = [], array $headers = [], int $options = 0 ): Test_Response {
+		return $this->json( 'PUT', $uri, $data, $headers, $options );
 	}
 
 	/**
@@ -670,7 +685,7 @@ trait Makes_Http_Requests {
 	 * @param array  $headers Request headers.
 	 * @return Test_Response
 	 */
-	public function patch( $uri, array $data = [], array $headers = [] ) {
+	public function patch( $uri, array $data = [], array $headers = [] ): Test_Response {
 		$server = $this->transform_headers_to_server_vars( $headers );
 
 		return $this->call( 'PATCH', $uri, $data, $server );
@@ -682,10 +697,11 @@ trait Makes_Http_Requests {
 	 * @param string $uri     Request URI.
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
+	 * @param int    $options JSON encoding options.
 	 * @return Test_Response
 	 */
-	public function patch_json( $uri, array $data = [], array $headers = [] ) {
-		return $this->json( 'PATCH', $uri, $data, $headers );
+	public function patch_json( $uri, array $data = [], array $headers = [], int $options = 0 ): Test_Response {
+		return $this->json( 'PATCH', $uri, $data, $headers, $options );
 	}
 
 	/**
@@ -696,7 +712,7 @@ trait Makes_Http_Requests {
 	 * @param array  $headers Request headers.
 	 * @return Test_Response
 	 */
-	public function delete( $uri, array $data = [], array $headers = [] ) {
+	public function delete( $uri, array $data = [], array $headers = [] ): Test_Response {
 		$server = $this->transform_headers_to_server_vars( $headers );
 
 		return $this->call( 'DELETE', $uri, $data, $server );
@@ -708,10 +724,11 @@ trait Makes_Http_Requests {
 	 * @param string $uri     Request URI.
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
+	 * @param int    $options JSON encoding options.
 	 * @return Test_Response
 	 */
-	public function delete_json( $uri, array $data = [], array $headers = [] ) {
-		return $this->json( 'DELETE', $uri, $data, $headers );
+	public function delete_json( $uri, array $data = [], array $headers = [], int $options = 0 ): Test_Response {
+		return $this->json( 'DELETE', $uri, $data, $headers, $options );
 	}
 
 	/**
@@ -722,7 +739,7 @@ trait Makes_Http_Requests {
 	 * @param array  $headers Request headers.
 	 * @return Test_Response
 	 */
-	public function options( $uri, array $data = [], array $headers = [] ) {
+	public function options( $uri, array $data = [], array $headers = [] ): Test_Response {
 		$server = $this->transform_headers_to_server_vars( $headers );
 
 		return $this->call( 'OPTIONS', $uri, $data, $server );
@@ -734,10 +751,11 @@ trait Makes_Http_Requests {
 	 * @param string $uri     Request URI.
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
+	 * @param int    $options JSON encoding options.
 	 * @return Test_Response
 	 */
-	public function options_json( $uri, array $data = [], array $headers = [] ) {
-		return $this->json( 'OPTIONS', $uri, $data, $headers );
+	public function options_json( $uri, array $data = [], array $headers = [], int $options = 0 ) {
+		return $this->json( 'OPTIONS', $uri, $data, $headers, $options );
 	}
 
 	/**
