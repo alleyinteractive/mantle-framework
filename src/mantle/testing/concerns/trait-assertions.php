@@ -196,7 +196,7 @@ trait Assertions {
 	 *
 	 * @param int $id Expected ID.
 	 */
-	public static function assertQueriedObjectId( int $id ) {
+	public static function assertQueriedObjectId( int $id ): void {
 		PHPUnit::assertSame( $id, get_queried_object_id() );
 	}
 
@@ -205,9 +205,8 @@ trait Assertions {
 	 *
 	 * @param Object $object Expected object.
 	 */
-	public static function assertQueriedObject( $object ) {
-		global $wp_query;
-		$queried_object = $wp_query->get_queried_object();
+	public static function assertQueriedObject( mixed $object ): void {
+		$queried_object = get_queried_object();
 
 		// First, assert the same object types.
 		PHPUnit::assertInstanceOf( get_class( $object ), $queried_object );
@@ -236,6 +235,46 @@ trait Assertions {
 				PHPUnit::assertSame( $object->name, $queried_object->name );
 				break;
 		}
+	}
+
+	/**
+	 * Assert that a given object is not equivalent to the global queried object.
+	 *
+	 * @param mixed $object Expected object.
+	 */
+	public static function assertNotQueriedObject( mixed $object ): void {
+		$queried_object = get_queried_object();
+
+		switch ( true ) {
+			case $object instanceof Post:
+			case $object instanceof User:
+				PHPUnit::assertNotSame( $object->id(), $queried_object->ID );
+				break;
+
+			case $object instanceof Term:
+				PHPUnit::assertNotSame( $object->id(), $queried_object->term_id );
+				break;
+
+			case $object instanceof \WP_Post:
+			case $object instanceof \WP_User:
+				PHPUnit::assertNotSame( $object->ID, $queried_object->ID );
+				break;
+
+			case $object instanceof \WP_Term:
+				PHPUnit::assertNotSame( $object->term_id, $queried_object->term_id );
+				break;
+
+			case $object instanceof \WP_Post_Type:
+				PHPUnit::assertNotSame( $object->name, $queried_object->name );
+				break;
+		}
+	}
+
+	/**
+	 * Assert that the queried object is null.
+	 */
+	public static function assertQueriedObjectNull(): void {
+		PHPUnit::assertNull( get_queried_object(), 'Expected queried object to be null.' );
 	}
 
 	/**
