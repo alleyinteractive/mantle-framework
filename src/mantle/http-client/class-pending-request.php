@@ -228,7 +228,7 @@ class Pending_Request {
 	 * @return static
 	 */
 	public function content_type( string $content_type ) {
-		return $this->with_headers( [ 'Content-Type' => $content_type ] );
+		return $this->with_header( 'Content-Type', $content_type, true );
 	}
 
 	/**
