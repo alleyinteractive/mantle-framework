@@ -520,6 +520,18 @@ class Test_Response {
 	}
 
 	/**
+	 * Assert that a given ID does not the global queried object ID.
+	 *
+	 * @param int $id Expected ID.
+	 * @return $this
+	 */
+	public function assertNotQueriedObjectId( int $id ): static {
+		Test_Case::assertNotQueriedObjectId( $id );
+
+		return $this;
+	}
+
+	/**
 	 * Assert that a given object is equivalent to the global queried object.
 	 *
 	 * @param object $object Expected object.

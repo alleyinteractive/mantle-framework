@@ -201,6 +201,15 @@ trait Assertions {
 	}
 
 	/**
+	 * Assert that a given ID does not the global queried object ID.
+	 *
+	 * @param int $id Expected ID.
+	 */
+	public static function assertNotQueriedObjectId( int $id ): void {
+		PHPUnit::assertNotSame( $id, get_queried_object_id() );
+	}
+
+	/**
 	 * Assert that a given object is equivalent to the global queried object.
 	 *
 	 * @param Object $object Expected object.
