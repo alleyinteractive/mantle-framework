@@ -20,7 +20,13 @@ global $wp_rewrite;
 require_once __DIR__ . '/preload.php';
 require_once __DIR__ . '/wordpress-bootstrap.php';
 require_once ABSPATH . '/wp-admin/includes/upgrade.php';
-require_once ABSPATH . '/wp-includes/class-wpdb.php';
+
+if ( file_exists( ABSPATH . '/wp-includes/class-wpdb.php' ) ) {
+	require_once ABSPATH . '/wp-includes/class-wpdb.php';
+} else {
+	// Back-compat for WordPress < 6.1.0.
+	require_once ABSPATH . '/wp-includes/wp-db.php';
+}
 
 $multisite = ! empty( $argv[1] );
 

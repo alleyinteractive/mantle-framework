@@ -11,6 +11,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+## v0.11.3 - 2023-07-21
+
+- Allow the default database configuration to be customized via environment
+  variables: `WP_DB_NAME`, `WP_DB_USER`, `WP_DB_PASSWORD`, `WP_DB_HOST`.
+
+## v0.11.2 - 2023-07-21
+
+- Add back-support for Wordpress 6.0 when testing.
+
+## v0.11.1 - 2023-05-31
+
+- Add support for using SQLite in tests (opt-in).
+
 ## v0.11.0 - 2023-05-30
 
 ### Added
