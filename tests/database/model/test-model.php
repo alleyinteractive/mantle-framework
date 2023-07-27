@@ -89,6 +89,78 @@ class Test_Model extends Framework_Test_Case {
 			$array
 		);
 	}
+
+	public function test_first_or_new() {
+		$existing = static::factory()->post->create( [
+			'title' => 'Original Title',
+		] );
+
+		$post = Testable_Post_For_Appending::first_or_new(
+			[ 'id' => $existing ],
+			[ 'title' => 'Updated title' ],
+		);
+
+		$this->assertEquals( $existing, $post->id );
+		$this->assertEquals( 'Original Title', $post->title );
+
+		$post_to_create = Testable_Post_For_Appending::first_or_new(
+			[ 'title' => 'A title that does not exist' ],
+			[ 'title' => 'New title' ],
+		);
+
+		$this->assertInstanceOf( Testable_Post_For_Appending::class, $post_to_create );
+		$this->assertNull( $post_to_create->id );
+		$this->assertFalse( $post_to_create->exists );
+		$this->assertEquals( 'New title', $post_to_create->title );
+	}
+
+	public function test_first_or_create() {
+		$existing = static::factory()->post->create( [
+			'title' => 'Original Title test_first_or_create',
+		] );
+
+		$post = Testable_Post_For_Appending::first_or_create(
+			[ 'id' => $existing ],
+			[ 'title' => 'Updated title test_first_or_create' ],
+		);
+
+		$this->assertEquals( $existing, $post->id );
+		$this->assertEquals( 'Original Title test_first_or_create', $post->title );
+
+		$post_to_create = Testable_Post_For_Appending::first_or_create(
+			[ 'title' => 'A title that does not exist' ],
+			[ 'title' => 'New title test_first_or_create' ],
+		);
+
+		$this->assertInstanceOf( Testable_Post_For_Appending::class, $post_to_create );
+		$this->assertNotNull( $post_to_create->id );
+		$this->assertTrue( $post_to_create->exists );
+		$this->assertEquals( 'New title test_first_or_create', $post_to_create->title );
+	}
+
+	public function test_update_or_create() {
+		$existing = static::factory()->post->create( [
+			'title' => 'Original Title test_update_or_create',
+		] );
+
+		$post = Testable_Post_For_Appending::update_or_create(
+			[ 'id' => $existing ],
+			[ 'title' => 'Updated title test_update_or_create' ],
+		);
+
+		$this->assertEquals( $existing, $post->id );
+		$this->assertEquals( 'Updated title test_update_or_create', $post->title );
+
+		$post_to_create = Testable_Post_For_Appending::update_or_create(
+			[ 'title' => 'A title that does not exist' ],
+			[ 'title' => 'New title test_update_or_create' ],
+		);
+
+		$this->assertInstanceOf( Testable_Post_For_Appending::class, $post_to_create );
+		$this->assertNotNull( $post_to_create->id );
+		$this->assertTrue( $post_to_create->exists );
+		$this->assertEquals( 'New title test_update_or_create', $post_to_create->title );
+	}
 }
 
 class Testable_Model extends Model {
