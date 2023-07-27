@@ -7,6 +7,7 @@ use Mantle\Framework\Providers\Routing_Service_Provider;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Test_Response;
+use WP_REST_Response;
 
 use function Mantle\Support\Helpers\collect;
 
@@ -120,6 +121,25 @@ class Test_Makes_Http_Requests extends Framework_Test_Case {
 			->assertJsonPath( 'title.rendered', get_the_title( $post_id ) )
 			->assertJsonPathExists( 'guid' )
 			->assertJsonPathMissing( 'example_path' );
+	}
+
+	public function test_rest_api_route_headers() {
+		$this->ignoreIncorrectUsage();
+
+		register_rest_route(
+			'/mantle/v1',
+			__FUNCTION__,
+			[
+				'methods'  => 'GET',
+				'validate_callback' => '__return_true',
+				'callback' => fn () => new WP_REST_Response( [ 'key' => 'value here' ], 201, [ 'test-header' => 'test-value' ] ),
+			]
+		);
+
+		$this->get( rest_url( '/mantle/v1/' . __FUNCTION__ ) )
+			->assertStatus( 201 )
+			->assertHeader( 'test-header', 'test-value' )
+			->assertJsonPath( 'key', 'value here' );
 	}
 
 	public function test_rest_api_route_error() {

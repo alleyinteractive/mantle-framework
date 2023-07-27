@@ -9,6 +9,7 @@ namespace Mantle\Http_Client;
 
 use Mantle\Support\Pipeline;
 use Mantle\Support\Traits\Conditionable;
+use Mantle\Support\Traits\Macroable;
 
 use function Mantle\Support\Helpers\retry;
 use function Mantle\Support\Helpers\tap;
@@ -17,7 +18,7 @@ use function Mantle\Support\Helpers\tap;
  * Pending Request to be made with the Http Client.
  */
 class Pending_Request {
-	use Conditionable;
+	use Conditionable, Macroable;
 
 	/**
 	 * Base URL for the request.

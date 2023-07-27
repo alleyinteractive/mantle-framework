@@ -11,10 +11,12 @@ use Mantle\Database\Model\Model;
 use Mantle\Framework\Http\Kernel as HttpKernel;
 use Mantle\Http\Request;
 use Mantle\Support\Str;
+use Mantle\Testing\Doubles\Spy_REST_Server;
 use Mantle\Testing\Exceptions\Exception;
 use Mantle\Testing\Exceptions\WP_Redirect_Exception;
 use Mantle\Testing\Test_Response;
 use Mantle\Testing\Utils;
+use PHPUnit\Framework\Assert;
 use RuntimeException;
 use WP;
 use WP_Query;
@@ -43,28 +45,28 @@ trait Makes_Http_Requests {
 	 *
 	 * @var bool
 	 */
-	protected $follow_redirects = false;
+	protected bool $follow_redirects = false;
 
 	/**
 	 * Store flag if the request was for the REST API.
 	 *
-	 * @var string|bool
+	 * @var array{body: string, headers: array<string, string>}|null
 	 */
-	protected $rest_api_response = false;
+	protected ?array $rest_api_response = null;
 
 	/**
 	 * The array of callbacks to be run before the event is started.
 	 *
-	 * @var array
+	 * @var array<callable>
 	 */
-	protected $before_callbacks = [];
+	protected array $before_callbacks = [];
 
 	/**
 	 * The array of callbacks to be run after the event is finished.
 	 *
-	 * @var array
+	 * @var array<callable>
 	 */
-	protected $after_callbacks = [];
+	protected array $after_callbacks = [];
 
 	/**
 	 * Setup the trait in the test case.
@@ -351,7 +353,8 @@ trait Makes_Http_Requests {
 				// Use the response from the REST API server.
 				ob_end_clean();
 
-				$response_content = $this->rest_api_response;
+				$response_content = $this->rest_api_response['body'];
+				$response_headers = array_merge( (array) $response_headers, (array) $this->rest_api_response['headers'] );
 			} else {
 				try {
 					// Execute the request, inasmuch as WordPress would.
@@ -421,7 +424,7 @@ trait Makes_Http_Requests {
 			}
 		}
 
-		$this->rest_api_response = false;
+		$this->rest_api_response = null;
 
 		// phpcs:enable
 	}
@@ -532,17 +535,25 @@ trait Makes_Http_Requests {
 			return;
 		}
 
-		// Initialize the server.
 		$server = rest_get_server();
-		$route  = untrailingslashit( $GLOBALS['wp']->query_vars['rest_route'] );
-		if ( empty( $route ) ) {
-			$route = '/';
-		}
 
-		$server->serve_request( $route );
+		if ( $server instanceof Spy_REST_Server ) {
+			$route = untrailingslashit( $GLOBALS['wp']->query_vars['rest_route'] );
 
-		if ( isset( $server->sent_body ) ) {
-			$this->rest_api_response = $server->sent_body;
+			if ( empty( $route ) ) {
+				$route = '/';
+			}
+
+			$server->serve_request( $route );
+
+			if ( isset( $server->sent_body ) ) {
+				$this->rest_api_response = [
+					'body'    => $server->sent_body,
+					'headers' => $server->sent_headers,
+				];
+			}
+		} else {
+			Assert::fail( 'Expected the Mantle Spy REST Server to be used.' );
 		}
 	}
 
