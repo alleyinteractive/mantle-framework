@@ -17,6 +17,8 @@ use WP_Error;
  * @mixin \PHPUnit\Framework\TestCase
  */
 trait Core_Shim {
+	use Refresh_Database;
+
 	/**
 	 * Fake 'set_up' method to allow for easier transition and some PHPUnit 8
 	 * compatibility.
