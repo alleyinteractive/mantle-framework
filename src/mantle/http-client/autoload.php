@@ -12,7 +12,6 @@
 
 declare( strict_types=1 );
 
-use Mantle\Http_Client\Factory;
 use Mantle\Http_Client\Pending_Request;
 use Mantle\Http_Client\Response;
 
@@ -21,9 +20,9 @@ if ( ! function_exists( 'http_client' ) ) {
 	 * Create a new pending request of the the HTTP Client.
 	 *
 	 * @param string|null $url URL to request, optional.
-	 * @return ($url is string ? Response : Factory)
+	 * @return ($url is string ? Response : Pending_Request)
 	 */
-	function http_client( ?string $url = null ): Factory|Response {
-		return $url ? Pending_Request::create()->get( $url ) : Factory::create();
+	function http_client( ?string $url = null ): Pending_Request|Response {
+		return $url ? Pending_Request::create()->get( $url ) : Pending_Request::create();
 	}
 }
