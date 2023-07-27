@@ -2,6 +2,8 @@
 /**
  * This file contains the Makes_Http_Requests trait
  *
+ * phpcs:disable WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE
+ *
  * @package Mantle
  */
 
@@ -18,6 +20,7 @@ use Mantle\Testing\Test_Response;
 use Mantle\Testing\Utils;
 use PHPUnit\Framework\Assert;
 use RuntimeException;
+use Symfony\Component\HttpFoundation\InputBag;
 use WP;
 use WP_Query;
 
@@ -326,7 +329,26 @@ trait Makes_Http_Requests {
 			$kernel = new HttpKernel( $this->app, $this->app['router'] );
 
 			// Setup the current request object.
-			$request = Request::capture();
+			$request = new Request(
+				$_GET,
+				$_POST,
+				[],
+				$_COOKIE,
+				$_FILES,
+				$_SERVER,
+				$content
+			);
+
+			// Mirror the logic from Request::createFromGlobals().
+			if (
+				str_starts_with( $request->headers->get( 'CONTENT_TYPE', '' ), 'application/x-www-form-urlencoded' )
+			&& \in_array( strtoupper( $request->server->get( 'REQUEST_METHOD', 'GET' ) ), [ 'PUT', 'DELETE', 'PATCH' ] )
+			) {
+				parse_str( $request->getContent(), $data );
+
+				$request->request = new InputBag( $data );
+			}
+
 			$this->app->instance( 'request', $request );
 
 			$response = $kernel->send_request_through_router( $request );
@@ -603,24 +625,26 @@ trait Makes_Http_Requests {
 	 * @param string $uri     Request URI.
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
-	 * @param int    $options Request options.
+	 * @param int    $options JSON encoding options.
 	 * @return Test_Response
 	 *
 	 * @throws RuntimeException If not implemented.
 	 */
-	public function json( string $method, string $uri, array $data = [], array $headers = [], int $options = 0 ): Test_Response {
-		$data = json_encode( $data, $options );
+	public function json( string $method, string $uri, array $data = [], array $headers = [], int $options = 1 ): Test_Response {
+		$content = json_encode( $data, $options ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
 
 		$headers = array_merge(
 			$headers,
 			[
 				'Accept'         => 'application/json',
-				'Content-Length' => mb_strlen( $data, '8bit' ),
+				'Content-Length' => mb_strlen( $content, '8bit' ),
 				'Content-Type'   => 'application/json',
 			]
 		);
 
-		return $this->call( $method, $uri, [],
+		$server = $this->transform_headers_to_server_vars( $headers );
+
+		return $this->call( $method, $uri, $data, $server, [], $content );
 	}
 
 	/**

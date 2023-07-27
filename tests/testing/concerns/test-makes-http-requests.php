@@ -140,6 +140,7 @@ class Test_Makes_Http_Requests extends Framework_Test_Case {
 		$this->get( rest_url( '/mantle/v1/' . __FUNCTION__ ) )
 			->assertStatus( 201 )
 			->assertHeader( 'test-header', 'test-value' )
+			->assertIsJson()
 			->assertJsonPath( 'key', 'value here' );
 	}
 
@@ -162,18 +163,33 @@ class Test_Makes_Http_Requests extends Framework_Test_Case {
 			->assertHeader( 'Other-Header', '123' );
 	}
 
-	public function test_post_json() {
+	public function test_post_json_mantle_route() {
 		$this->app['router']->post(
 			'/test-post-json',
-			function( Request $request ) {
-				dd($request);
-				return new Response( 'yes', 201, [ 'test-header' => 'test-value' ] );
-			}
+			fn ( Request $request ) => new Response( $request['foo'], 201, [ 'test-header' => 'test-value' ] ),
 		);
 
 		$this->post_json( '/test-post-json', [ 'foo' => 'bar' ] )
 			->assertCreated()
-			->assertContent( 'yes' );
+			->assertIsNotJson()
+			->assertContent( 'bar' );
+	}
+
+	public function test_post_json_wordpress_route() {
+		$this->ignoreIncorrectUsage();
+
+		register_rest_route(
+			'/mantle/v1',
+			__FUNCTION__,
+			[
+				'methods' => 'POST',
+				'validate_callback' => '__return_true',
+				'callback' => fn ( \WP_REST_Request $request ) => $request['foo'] ?? 'no foo',
+			]
+		);
+
+		$this->post_json( rest_url( '/mantle/v1/' . __FUNCTION__ ), [ 'foo' => 'bar' ] )
+			->assertContent( '"bar"' );
 	}
 
 	public function test_assert_json_structure() {
