@@ -142,9 +142,8 @@ function get_callable_fqn( $callable ): string {
 /**
  * Create a collection from the given value.
  *
- * @param mixed $value Value to collect.
- *
- * @return Collection
+ * @param  \Mantle\Contracts\Support\Arrayable<TKey, TValue>|iterable<TKey, TValue>|null  $value
+ * @return \Mantle\Support\Collection<TKey, TValue>
  */
 function collect( $value = null ) {
 	return new Collection( $value );

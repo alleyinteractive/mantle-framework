@@ -512,7 +512,7 @@ class Test_Response {
 	 * @param string ...$prop Any number of WP_Query properties that are expected
 	 *                        to be true for the current request.
 	 */
-	public function assertQueryTrue( ...$prop ) {
+	public function assertQueryTrue( ...$prop ): static {
 		Test_Case::assertQueryTrue( ...$prop );
 
 		return $this;
@@ -524,8 +524,20 @@ class Test_Response {
 	 * @param int $id Expected ID.
 	 * @return $this
 	 */
-	public function assertQueriedObjectId( int $id ) {
+	public function assertQueriedObjectId( int $id ): static {
 		Test_Case::assertQueriedObjectId( $id );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a given ID does not the global queried object ID.
+	 *
+	 * @param int $id Expected ID.
+	 * @return $this
+	 */
+	public function assertNotQueriedObjectId( int $id ): static {
+		Test_Case::assertNotQueriedObjectId( $id );
 
 		return $this;
 	}
@@ -533,11 +545,33 @@ class Test_Response {
 	/**
 	 * Assert that a given object is equivalent to the global queried object.
 	 *
-	 * @param Object $object Expected object.
+	 * @param object $object Expected object.
 	 * @return $this
 	 */
-	public function assertQueriedObject( $object ) {
+	public function assertQueriedObject( mixed $object ): static {
 		Test_Case::assertQueriedObject( $object );
+
+		return $this;
+	}
+	/**
+	 * Assert that a given object is not equivalent to the global queried object.
+	 *
+	 * @param object $object Expected object.
+	 * @return $this
+	 */
+	public function assertNotQueriedObject( mixed $object ): static {
+		Test_Case::assertNotQueriedObject( $object );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the queried object is null.
+	 *
+	 * @return $this
+	 */
+	public function assertQueriedObjectNull(): static {
+		Test_Case::assertQueriedObjectNull();
 
 		return $this;
 	}

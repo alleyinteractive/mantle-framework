@@ -8,6 +8,8 @@
 namespace Mantle\Testing;
 
 use Mantle\Contracts\Support\Arrayable;
+use Mantle\Support\Traits\Conditionable;
+use Mantle\Support\Traits\Macroable;
 
 /**
  * This class provides a mock HTTP response to be able to simulate HTTP requests
@@ -21,6 +23,8 @@ use Mantle\Contracts\Support\Arrayable;
  *         ->with_header( 'Content-Type', 'application/json' );
  */
 class Mock_Http_Response implements Arrayable {
+	use Conditionable, Macroable;
+
 	/**
 	 * Response data.
 	 *
@@ -40,11 +44,14 @@ class Mock_Http_Response implements Arrayable {
 
 	/**
 	 * Mock_Http_Response constructor.
+	 *
+	 * @param string $body    Response body.
+	 * @param array  $headers Response headers.
 	 */
-	public function __construct() {
+	public function __construct( string $body = '', array $headers = [] ) {
 		$this->response = [
-			'headers'  => [],
-			'body'     => '',
+			'headers'  => $headers,
+			'body'     => $body,
 			'response' => [
 				'code'    => 200,
 				'message' => get_status_header_desc( 200 ),
@@ -57,10 +64,12 @@ class Mock_Http_Response implements Arrayable {
 	/**
 	 * Helper method to create a response.
 	 *
+	 * @param string $body    Response body.
+	 * @param array  $headers Response headers.
 	 * @return Mock_Http_Response
 	 */
-	public static function create(): Mock_Http_Response {
-		return new static();
+	public static function create( string $body = '', array $headers = [] ): Mock_Http_Response {
+		return new static( $body, $headers );
 	}
 
 	/**
