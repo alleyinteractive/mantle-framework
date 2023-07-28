@@ -305,6 +305,30 @@ class Test_Post_Query_Builder extends Framework_Test_Case {
 		}
 	}
 
+	public function test_query_clauses() {
+		$applied_count = 0;
+		$post_id       = $this->get_random_post_id();
+
+		$first = Testable_Post::query()
+			->add_clause(
+				function ( array $clauses ) use ( &$applied_count, $post_id ) {
+					$applied_count++;
+
+					$clauses['where'] .= ' AND ID = ' . $post_id;
+
+					return $clauses;
+				}
+			)
+			->first();
+
+			$this->assertEquals( $post_id, $first->id() );
+
+			$next = Testable_Post::first();
+
+			$this->assertNotEquals( $post_id, $next->id() );
+			$this->assertEquals( 1, $applied_count ); // The clauses should only be applied once.
+	}
+
 	public function test_chunk() {
 		static::factory()->post->create_many( 101 );
 

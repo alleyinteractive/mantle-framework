@@ -122,7 +122,15 @@ class Post_Query_Builder extends Builder {
 	 * @return Collection<int, TModel>
 	 */
 	public function get(): Collection {
-		$query            = new \WP_Query( $this->get_query_args() );
+		$query = new \WP_Query();
+
+		// Store the query hash for reference by side-effects.
+		$this->query_hash = spl_object_hash( $query );
+
+		$this->with_clauses(
+			fn () => $query->query( $this->get_query_args() ),
+		);
+
 		$this->found_rows = $query->found_posts;
 		$post_ids         = $query->posts;
 

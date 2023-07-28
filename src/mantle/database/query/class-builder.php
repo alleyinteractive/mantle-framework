@@ -17,6 +17,7 @@ use Mantle\Database\Model\Model;
 use Mantle\Database\Model\Model_Not_Found_Exception;
 use Mantle\Database\Pagination\Length_Aware_Paginator;
 use Mantle\Database\Pagination\Paginator;
+use Mantle\Database\Query\Concerns\Query_Clauses;
 use Mantle\Support\Arr;
 use Mantle\Support\Collection;
 use Mantle\Support\Str;
@@ -30,7 +31,7 @@ use function Mantle\Support\Helpers\collect;
  * @template TModel of \Mantle\Database\Model\Model
  */
 abstract class Builder {
-	use Conditionable;
+	use Conditionable, Query_Clauses;
 
 	/**
 	 * Model to build on.
@@ -129,6 +130,13 @@ abstract class Builder {
 	 * @var string[]
 	 */
 	protected array $eager_load = [];
+
+	/**
+	 * Query hash for the built query.
+	 *
+	 * @var string
+	 */
+	protected string $query_hash = '';
 
 	/**
 	 * Constructor.
@@ -376,7 +384,7 @@ abstract class Builder {
 	}
 
 	/**
-	 * Alias for `removeOrderBy()`.
+	 * Alias for `removeOrder()`.
 	 *
 	 * @return static
 	 */
@@ -680,6 +688,9 @@ abstract class Builder {
 	/**
 	 * Chunk the results of the query.
 	 *
+	 * Note: this method uses pagination and not suited for operations where
+	 * data would be deleted which would affect subsequent pagination.
+	 *
 	 * @param int                                                           $count Number of items to chunk by.
 	 * @param callable(\Mantle\Support\Collection<int, TModel>, int): mixed $callback Callback to run on each chunk.
 	 * @return boolean
@@ -750,6 +761,15 @@ abstract class Builder {
 				}
 			)
 			->flip();
+	}
+
+	/**
+	 * Retrieve the hash of the query object.
+	 *
+	 * @return string
+	 */
+	public function get_query_hash(): string {
+		return $this->query_hash;
 	}
 
 	/**
