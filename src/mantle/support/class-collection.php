@@ -1347,6 +1347,16 @@ class Collection implements ArrayAccess, Enumerable {
 	}
 
 	/**
+	 * Trim all values in the collection.
+	 *
+	 * @param  string $char_list Characters to trim, optional.
+	 * @return static<TKey, string>
+	 */
+	public function trim( string $char_list = "\n\r\t\v\x00" ) {
+		return new static( $this->map( fn ( $item ) => trim( $item, $char_list ) ) );
+	}
+
+	/**
 	 * Pad collection to the specified length with a value.
 	 *
 	 * @template TPadValue
