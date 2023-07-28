@@ -302,6 +302,18 @@ class Test_Post_Query_Builder extends Framework_Test_Case {
 		}
 	}
 
+	public function test_chunk() {
+		$this->markTestIncomplete( 'This test has not been implemented yet.' );
+	}
+
+	public function test_chunk_by_id() {
+		$this->markTestIncomplete( 'This test has not been implemented yet.' );
+	}
+
+	public function test_each() {
+		$this->markTestIncomplete( 'This test has not been implemented yet.' );
+	}
+
 	/**
 	 * Get a random post ID, ensures the post ID is not the last in the set.
 	 *
