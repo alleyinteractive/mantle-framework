@@ -6,9 +6,12 @@ use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Term;
 use Mantle\Database\Query\Post_Query_Builder as Builder;
 use Mantle\Database\Query\Post_Query_Builder;
+use Mantle\Support\Collection;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Utils;
+
+use function Mantle\Support\Helpers\collect;
 
 class Test_Post_Query_Builder extends Framework_Test_Case {
 	use Refresh_Database;
@@ -56,10 +59,10 @@ class Test_Post_Query_Builder extends Framework_Test_Case {
 	}
 
 	public function test_post__in() {
-		$post_ids = static::factory()->post->create_many( 10 );
+		$post_ids = static::factory()->post->create_ordered_set( 10 );
 
 		// Shuffle to get a random order
-		shuffle( $post_ids );
+		$post_ids = collect( $post_ids )->shuffle()->values()->all();
 
 		$results = Builder::create( Testable_Post::class )
 			->whereIn( 'id', $post_ids )
@@ -303,12 +306,61 @@ class Test_Post_Query_Builder extends Framework_Test_Case {
 	}
 
 	public function test_chunk() {
-		$this->markTestIncomplete( 'This test has not been implemented yet.' );
+		static::factory()->post->create_many( 101 );
+
+		$last_page = null;
+		$count     = 0;
+		$ids       = new Collection();
+
+		$result = Testable_Post::chunk( 10, function ( Collection $results, int $page ) use ( &$count, &$last_page, &$ids ) {
+			if ( ! isset( $last_page ) ) {
+				$last_page = $page;
+			} else {
+				$this->assertGreaterThan( $last_page, $page );
+			}
+
+			$count += count( $results );
+
+			$this->assertInstanceof( Collection::class, $results );
+
+			if ( $page <= 10 ) {
+				$this->assertEquals( 10, $results->count() );
+			} else {
+				$this->assertEquals( 1, $results->count() );
+			}
+
+			// Ensure that all the posts are unique from the previous ones.
+			$new_ids = $results->pluck( 'id' );
+
+			$this->assertEmpty(
+				$new_ids->intersect( $ids )
+			);
+
+			$ids = $ids->merge( $new_ids );
+		} );
+
+		$this->assertTrue( $result );
+		$this->assertEquals( 101, $count );
 	}
 
-	public function test_chunk_by_id() {
-		$this->markTestIncomplete( 'This test has not been implemented yet.' );
+	public function test_chunk_short_circuit() {
+		static::factory()->post->create_many( 101 );
+
+		$count = 0;
+
+		$result = Testable_Post::chunk( 10, function ( Collection $results, int $page ) use ( &$count ) {
+			$count += count( $results );
+
+			return false;
+		} );
+
+		$this->assertFalse( $result );
+		$this->assertEquals( 10, $count );
 	}
+
+	// public function test_chunk_by_id() {
+	// 	$this->markTestIncomplete( 'This test has not been implemented yet.' );
+	// }
 
 	public function test_each() {
 		$this->markTestIncomplete( 'This test has not been implemented yet.' );

@@ -97,13 +97,15 @@ class Post_Query_Builder extends Builder {
 			$post_type = $this->model::get_object_name();
 		}
 
+		[ $order, $order_by ] = $this->get_builder_order( 'DESC', 'date' );
+
 		return array_merge(
 			[
 				'fields'              => 'ids',
 				'ignore_sticky_posts' => true,
 				'meta_query'          => $this->meta_query, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
-				'order'               => $this->order,
-				'orderby'             => $this->order_by,
+				'order'               => $order,
+				'orderby'             => $order_by,
 				'paged'               => $this->page,
 				'post_type'           => $post_type,
 				'posts_per_page'      => $this->limit,

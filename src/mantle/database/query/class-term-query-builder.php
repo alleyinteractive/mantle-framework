@@ -57,20 +57,6 @@ class Term_Query_Builder extends Builder {
 	];
 
 	/**
-	 * Order of the query.
-	 *
-	 * @var string
-	 */
-	protected string $order = 'ASC';
-
-	/**
-	 * Query by of the query.
-	 *
-	 * @var string
-	 */
-	protected string $order_by = 'name';
-
-	/**
 	 * Get the query arguments.
 	 *
 	 * @return array
@@ -91,14 +77,16 @@ class Term_Query_Builder extends Builder {
 			$this->limit = null;
 		}
 
+		[ $order, $order_by ] = $this->get_builder_order( 'ASC', 'name' );
+
 		return array_merge(
 			[
 				'fields'     => 'ids',
 				'hide_empty' => false,
 				'meta_query' => $this->meta_query, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				'number'     => $this->limit,
-				'order'      => $this->order,
-				'orderby'    => $this->order_by,
+				'order'      => $order,
+				'orderby'    => $order_by,
 				'taxonomy'   => $taxonomies,
 			],
 			$this->wheres,

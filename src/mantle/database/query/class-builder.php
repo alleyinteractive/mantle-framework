@@ -15,9 +15,9 @@ use Mantle\Contracts\Database\Scope;
 use Mantle\Contracts\Paginator\Paginator as PaginatorContract;
 use Mantle\Database\Model\Model;
 use Mantle\Database\Model\Model_Not_Found_Exception;
-use Mantle\Database\Model\Relations\Relation;
 use Mantle\Database\Pagination\Length_Aware_Paginator;
 use Mantle\Database\Pagination\Paginator;
+use Mantle\Support\Arr;
 use Mantle\Support\Collection;
 use Mantle\Support\Str;
 use Mantle\Support\Traits\Conditionable;
@@ -70,16 +70,16 @@ abstract class Builder {
 	/**
 	 * Order of the query.
 	 *
-	 * @var string
+	 * @var array<int, string>
 	 */
-	protected string $order = 'DESC';
+	protected array $order = [];
 
 	/**
 	 * Query by of the query.
 	 *
-	 * @var string
+	 * @var array<int, string>
 	 */
-	protected string $order_by = 'date';
+	protected array $order_by = [];
 
 	/**
 	 * Meta Query.
@@ -142,7 +142,7 @@ abstract class Builder {
 	/**
 	 * Get the query results.
 	 *
-	 * @return Collection<TModel>
+	 * @return Collection<int, TModel>
 	 */
 	abstract public function get(): Collection;
 
@@ -337,7 +337,7 @@ abstract class Builder {
 	 * @param string $direction Order direction.
 	 * @return static
 	 */
-	public function orderBy( $attribute, string $direction = 'asc' ) {
+	public function orderBy( string $attribute, string $direction = 'asc' ) {
 		if ( is_string( $this->model ) && $this->model::has_attribute_alias( $attribute ) ) {
 			$attribute = $this->model::get_attribute_alias( $attribute );
 		}
@@ -346,9 +346,42 @@ abstract class Builder {
 			$attribute = $this->query_aliases[ strtolower( $attribute ) ];
 		}
 
-		$this->order    = strtoupper( $direction );
-		$this->order_by = $attribute;
+		$this->order[]    = strtoupper( $direction );
+		$this->order_by[] = $attribute;
+
 		return $this;
+	}
+
+	/**
+	 * Alias for `orderBy()`.
+	 *
+	 * @param string $attribute Attribute name.
+	 * @param string $direction Order direction.
+	 * @return static
+	 */
+	public function order_by( string $attribute, string $direction = 'asc' ): static {
+		return $this->orderBy( $attribute, $direction );
+	}
+
+	/**
+	 * Reorder the query and remove existing order by clauses.
+	 *
+	 * @return static
+	 */
+	public function removeOrder(): static {
+		$this->order_by = [];
+		$this->order    = [];
+
+		return $this;
+	}
+
+	/**
+	 * Alias for `removeOrderBy()`.
+	 *
+	 * @return static
+	 */
+	public function remove_order(): static {
+		return $this->removeOrder();
 	}
 
 	/**
@@ -358,11 +391,42 @@ abstract class Builder {
 	 * @param array $args Method arguments.
 	 * @return static
 	 */
-	public function dynamicOrderBy( string $method, array $args ) {
+	protected function dynamicOrderBy( string $method, array $args ) {
 		$attribute = Str::snake( substr( $method, 7 ) );
 
 		$attribute = str_replace( '_in', '__in', $attribute );
+
 		return $this->orderBy( $attribute, $args[0] ?? 'asc' );
+	}
+
+	/**
+	 * Retrieve the builder order to use in the query.
+	 *
+	 * Used internally to get the order/order by for use in term/post queries.
+	 * Queries support multiple conditions to order by but run into issues in some
+	 * cases where arrays are used in place of strings (post__in for example). To
+	 * support both, we'll store the order/order by as arrays and then flatten it
+	 * here if only one pair is set.
+	 *
+	 * @param string $default_order Default order.
+	 * @param string $default_order_by Default order by.
+	 * @return array{0: string, 1: string}
+	 */
+	protected function get_builder_order( string $default_order, string $default_order_by ): array {
+		$order    = count( $this->order ) > 1 ? $this->order      : Arr::first( $this->order );
+		$order_by = count( $this->order_by ) > 1 ? $this->order_by: Arr::first( $this->order_by );
+
+		// Provide a default order by if none is set.
+		if ( empty( $order ) ) {
+			$order = $default_order;
+		}
+
+		// Provide a default order by if none is set.
+		if ( empty( $order_by ) ) {
+			$order_by = $default_order_by;
+		}
+
+		return [ $order, $order_by ];
 	}
 
 	/**
@@ -385,6 +449,16 @@ abstract class Builder {
 		}
 
 		return $this->orderBy( $attribute );
+	}
+
+	/**
+	 * Alias for `orderByWhereIn()`.
+	 *
+	 * @param string $attribute Attribute to use.
+	 * @return static
+	 */
+	public function order_by_where_in( string $attribute ): static {
+		return $this->orderByWhereIn( $attribute );
 	}
 
 	/**
@@ -497,6 +571,19 @@ abstract class Builder {
 	}
 
 	/**
+	 * Set the page and limit of the builder.
+	 *
+	 * @param int $page Page to set.
+	 * @param int $limit Limit to set.
+	 * @return static
+	 */
+	public function for_page( int $page, int $limit = 20 ): static {
+		return $this->page( $page )->take( $limit );
+	}
+
+	// public function for_page_after_id( int $per_page, ?int $last_id, string $attribute = 'id' ): static {
+
+	/**
 	 * Get the first result of the query.
 	 *
 	 * @return TModel|null
@@ -588,6 +675,38 @@ abstract class Builder {
 				'per_page'     => $per_page,
 			]
 		);
+	}
+
+	/**
+	 * Chunk the results of the query.
+	 *
+	 * @param int                                                           $count Number of items to chunk by.
+	 * @param callable(\Mantle\Support\Collection<int, TModel>, int): mixed $callback Callback to run on each chunk.
+	 * @return boolean
+	 */
+	public function chunk( int $count, callable $callback ): bool {
+		$page = 1;
+
+		do {
+			$results = $this->page( $page )->take( $count )->get();
+
+			$count_results = $results->count();
+
+			if ( $count_results === 0 ) {
+				return true;
+			}
+
+			// If the callback returns false, we'll stop traversing the results and
+			// return false from the chunk method. This is useful for selectively
+			// breaking the iteration when the callback no longer needs more data.
+			if ( false === $callback( $results, $page ) ) {
+				return false;
+			}
+
+			$page++;
+		} while ( $count_results === $count );
+
+		return true;
 	}
 
 	/**
