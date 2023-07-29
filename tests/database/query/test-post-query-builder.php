@@ -382,12 +382,69 @@ class Test_Post_Query_Builder extends Framework_Test_Case {
 		$this->assertEquals( 10, $count );
 	}
 
-	// public function test_chunk_by_id() {
-	// 	$this->markTestIncomplete( 'This test has not been implemented yet.' );
-	// }
+	public function test_chunk_by_id() {
+		$post_ids = static::factory()->post->create_many( 105 );
+		// $post_ids = static::factory()->post->create_ordered_set( 105 );
+		// dump('IDS', $post_ids);
+
+		$last_page = null;
+		$count     = 0;
+		$ids       = new Collection();
+
+		$result = Testable_Post::chunk_by_id( 10, function ( Collection $results, int $page ) use ( &$count, &$last_page, &$ids ) {
+			if ( isset( $last_page ) ) {
+				$this->assertGreaterThan( $last_page, $page );
+			}
+
+			$count += $results->count();
+
+			if ( $page <= 10 ) {
+				$this->assertEquals( 10, $results->count() );
+			} else {
+				$this->assertEquals( 5, $results->count() );
+			}
+
+			// Ensure that all the posts are unique from the previous ones.
+			$new_ids = $results->pluck( 'id' );
+
+			$this->assertEmpty( $new_ids->intersect( $ids ) );
+
+			$ids = $ids->merge( $new_ids );
+
+			// Delete all the posts that were returned for true chunk by ID.
+			$results->each->delete( true );
+
+			$last_page = $page;
+		} );
+
+		$this->assertTrue( $result );
+		$this->assertEquals( 105, $count );
+	}
 
 	public function test_each() {
-		$this->markTestIncomplete( 'This test has not been implemented yet.' );
+		$post_ids = static::factory()->post->create_many( 100 );
+
+		$ids = new Collection();
+
+		Testable_Post::each( function ( Testable_Post $post ) use ( &$ids ) {
+			$ids->push( $post->id() );
+		} );
+
+		$this->assertEquals( collect( $post_ids )->sort()->values(), $ids->sort()->values() );
+	}
+
+	public function test_each_by_id() {
+		$post_ids = static::factory()->post->create_many( 100 );
+
+		$ids = new Collection();
+
+		Testable_Post::each_by_id( function ( Testable_Post $post ) use ( &$ids ) {
+			$ids->push( $post->id() );
+
+			$post->delete( true );
+		} );
+
+		$this->assertEquals( collect( $post_ids )->sort()->values(), $ids->sort()->values() );
 	}
 
 	/**

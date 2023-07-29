@@ -2,6 +2,8 @@
 /**
  * Modifies_Query trait file
  *
+ * phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag
+ *
  * @package Mantle
  */
 
@@ -13,9 +15,9 @@ use Mantle\Database\Query\Term_Query_Builder;
 /**
  * Allow a query to be modified.
  *
- * Provides an API for modifying the subsequent query performed by
- * WP_Query/WP_Term_Query/etc. in a controlled manner and does not affect other
- * queries.
+ * Provides an way to modify the subsequent query performed by
+ * WP_Query/WP_Term_Query/etc. in a controlled manner which will not affect
+ * other queries.
  *
  * @mixin \Mantle\Database\Query\Builder
  */
@@ -52,7 +54,7 @@ trait Query_Clauses {
 	/**
 	 * Apply the query clauses to the query.
 	 *
-	 * @param array<string> $clauses The query clauses.
+	 * @param array<string>            $clauses The query clauses.
 	 * @param \WP_Query|\WP_Term_Query $query The query object.
 	 * @return array<string> The modified query clauses.
 	 */
@@ -98,7 +100,7 @@ trait Query_Clauses {
 	 * @param callable(): TReturnValue $callback The callback to execute.
 	 * @return TReturnValue The return value of the callback.
 	 */
-	public function with_clauses( callable $callback ): mixed {
+	protected function with_clauses( callable $callback ): mixed {
 		$this->register_clauses();
 
 		$result = $callback();

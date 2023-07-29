@@ -2,9 +2,11 @@
 /**
  * Builder class file.
  *
+ * phpcs:disable WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+ * phpcs:disable Squiz.Commenting.FunctionComment
+ * phpcs:disable PEAR.Functions.FunctionCallSignature.CloseBracketLine, PEAR.Functions.FunctionCallSignature.MultipleArguments, PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket
+ *
  * @package Mantle
- * @phpcs:disable WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
- * @phpcs:disable Squiz.Commenting.FunctionComment
  */
 
 namespace Mantle\Database\Query;
@@ -109,6 +111,13 @@ abstract class Builder {
 	 * @var array
 	 */
 	protected array $query_where_not_in_aliases = [];
+
+	/**
+	 * Query order by aliases.
+	 *
+	 * @var array
+	 */
+	protected array $query_order_by_aliases = [];
 
 	/**
 	 * Applied global scopes.
@@ -260,11 +269,10 @@ abstract class Builder {
 			return $this;
 		}
 
-		if ( ! empty( $this->query_aliases[ strtolower( $attribute ) ] ) ) {
-			$attribute = $this->query_aliases[ strtolower( $attribute ) ];
-		}
+		$attribute = $this->resolve_attribute( $attribute );
 
 		$this->wheres[ $attribute ] = $value;
+
 		return $this;
 	}
 
@@ -286,6 +294,21 @@ abstract class Builder {
 		}
 
 		return $this->where( $attribute, ...$args );
+	}
+
+	/**
+	 * Resolve an attribute name to the database column name with support for
+	 * query aliases.
+	 *
+	 * @param string $attribute Attribute name.
+	 * @return string
+	 */
+	protected function resolve_attribute( string $attribute ): string {
+		if ( ! empty( $this->query_aliases[ strtolower( $attribute ) ] ) ) {
+			$attribute = $this->query_aliases[ strtolower( $attribute ) ];
+		}
+
+		return $attribute;
 	}
 
 	/**
@@ -350,8 +373,8 @@ abstract class Builder {
 			$attribute = $this->model::get_attribute_alias( $attribute );
 		}
 
-		if ( ! empty( $this->query_aliases[ strtolower( $attribute ) ] ) ) {
-			$attribute = $this->query_aliases[ strtolower( $attribute ) ];
+		if ( ! empty( $this->query_order_by_aliases[ strtolower( $attribute ) ] ) ) {
+			$attribute = $this->query_order_by_aliases[ strtolower( $attribute ) ];
 		}
 
 		$this->order[]    = strtoupper( $direction );
@@ -421,8 +444,8 @@ abstract class Builder {
 	 * @return array{0: string, 1: string}
 	 */
 	protected function get_builder_order( string $default_order, string $default_order_by ): array {
-		$order    = count( $this->order ) > 1 ? $this->order      : Arr::first( $this->order );
-		$order_by = count( $this->order_by ) > 1 ? $this->order_by: Arr::first( $this->order_by );
+		$order    = count( $this->order ) > 1 ? $this->order : Arr::first( $this->order );
+		$order_by = count( $this->order_by ) > 1 ? $this->order_by : Arr::first( $this->order_by );
 
 		// Provide a default order by if none is set.
 		if ( empty( $order ) ) {
@@ -589,7 +612,33 @@ abstract class Builder {
 		return $this->page( $page )->take( $limit );
 	}
 
-	// public function for_page_after_id( int $per_page, ?int $last_id, string $attribute = 'id' ): static {
+	/**
+	 * Constrain the query to the next "page" of results after a given ID.
+	 *
+	 * @param int      $per_page Per page to set.
+	 * @param int|null $last_id Last ID to use.
+	 * @param string   $column Column to use.
+	 * @return static
+	 */
+	public function for_page_after_id( int $per_page, ?int $last_id = null, string $column = 'id' ): static {
+		if ( ! is_null( $last_id ) ) {
+			$this->add_clause(
+				function ( array $clauses, mixed $query ) use ( $column, $last_id ) {
+					global $wpdb;
+
+					$clauses['where'] .= $wpdb->prepare( " AND {$wpdb->posts}.%s > %s", $column, $last_id );
+
+					return $clauses;
+				}
+			);
+		}
+
+		return $this
+			->page( 1 ) // Ensure this query is never paged.
+			->removeOrder()
+			->orderBy( $column, 'asc' )
+			->take( $per_page );
+	}
 
 	/**
 	 * Get the first result of the query.
@@ -689,7 +738,8 @@ abstract class Builder {
 	 * Chunk the results of the query.
 	 *
 	 * Note: this method uses pagination and not suited for operations where
-	 * data would be deleted which would affect subsequent pagination.
+	 * data would be deleted which would affect subsequent pagination. For those
+	 * operations, use the {@see Builder::chunk_by_id()} method.
 	 *
 	 * @param int                                                           $count Number of items to chunk by.
 	 * @param callable(\Mantle\Support\Collection<int, TModel>, int): mixed $callback Callback to run on each chunk.
@@ -703,7 +753,7 @@ abstract class Builder {
 
 			$count_results = $results->count();
 
-			if ( $count_results === 0 ) {
+			if ( 0 === $count_results ) {
 				return true;
 			}
 
@@ -718,6 +768,93 @@ abstract class Builder {
 		} while ( $count_results === $count );
 
 		return true;
+	}
+
+	/**
+	 * Chunk the results of the query by ID.
+	 *
+	 * This query handles chunking data where the data is could be
+	 * deleted/modified during the chunking process.
+	 *
+	 * @param int                                                           $count Number of items to chunk by.
+	 * @param callable(\Mantle\Support\Collection<int, TModel>, int): mixed $callback Callback to run on each chunk.
+	 * @param string                                                        $attribute Attribute to chunk by.
+	 * @return boolean
+	 */
+	public function chunk_by_id( int $count, callable $callback, string $attribute = 'id' ): bool {
+		$last_id = null;
+		$page    = 1;
+
+		do {
+			$clone = clone $this;
+
+			$results = $clone->for_page_after_id( $count, $last_id, $attribute )->get();
+
+			$count_results = $results->count();
+
+			if ( 0 === $count_results ) {
+				return true;
+			}
+
+			// If the callback returns false, we'll stop traversing the results and
+			// return false from the chunk method. This is useful for selectively
+			// breaking the iteration when the callback no longer needs more data.
+			if ( false === $callback( $results, $page ) ) {
+				return false;
+			}
+
+			$page++;
+
+			// Get the last item in the results.
+			$last_item = $results->last();
+
+			// Get the last item's ID.
+			$last_id = $last_item->{$attribute};
+
+			// Free up memory.
+			unset( $clone, $results );
+		} while ( $count_results === $count );
+
+		return true;
+	}
+
+	/**
+	 * Execute a callback over each item while chunking.
+	 *
+	 * @param callable(\Mantle\Support\Collection<int, TModel>): mixed $callback Callback to run on each chunk.
+	 * @param int                                                       $count Number of items to chunk by.
+	 * @return boolean
+	 */
+	public function each( callable $callback, int $count = 100 ) {
+		return $this->chunk( $count, function ( Collection $results ) use ( $callback ) {
+			foreach ( $results as $result ) {
+				if ( false === $callback( $result ) ) {
+					return false;
+				}
+			}
+
+			return true;
+		} );
+	}
+
+	/**
+	 * Execute a callback over each item while chunking by ID.
+	 *
+	 * @param callable(\Mantle\Support\Collection<int, TModel>): mixed $callback Callback to run on each chunk.
+	 * @param int                                                       $count Number of items to chunk by.
+	 * @param string                                                    $attribute Attribute to chunk by.
+	 * @return boolean
+	 */
+	public function each_by_id( callable $callback, int $count = 100, string $attribute = 'id' ) {
+		return $this->chunk_by_id( $count, function ( Collection $results ) use ( $callback ) {
+			foreach ( $results as $result ) {
+				if ( false === $callback( $result ) ) {
+					return false;
+				}
+			}
+
+			return true;
+		}, $attribute );
 	}
 
 	/**

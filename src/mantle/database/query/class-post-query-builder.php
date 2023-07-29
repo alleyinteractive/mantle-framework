@@ -73,6 +73,15 @@ class Post_Query_Builder extends Builder {
 	];
 
 	/**
+	 * Query order by aliases.
+	 *
+	 * @var array
+	 */
+	protected array $query_order_by_aliases = [
+		'id' => 'ID',
+	];
+
+	/**
 	 * Tax Query.
 	 *
 	 * @var array
