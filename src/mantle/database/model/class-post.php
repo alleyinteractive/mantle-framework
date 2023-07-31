@@ -183,6 +183,15 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	}
 
 	/**
+	 * Create a new query instance.
+	 *
+	 * @return \Mantle\Database\Query\Post_Query_Builder<static>
+	 */
+	public static function query(): Post_Query_Builder {
+		return ( new static() )->new_query();
+	}
+
+	/**
 	 * Getter for Object ID.
 	 *
 	 * @return int

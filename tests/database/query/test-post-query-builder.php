@@ -321,12 +321,12 @@ class Test_Post_Query_Builder extends Framework_Test_Case {
 			)
 			->first();
 
-			$this->assertEquals( $post_id, $first->id() );
+		$this->assertEquals( $post_id, $first->id() );
 
-			$next = Testable_Post::first();
+		$next = Testable_Post::first();
 
-			$this->assertNotEquals( $post_id, $next->id() );
-			$this->assertEquals( 1, $applied_count ); // The clauses should only be applied once.
+		$this->assertNotEquals( $post_id, $next->id() );
+		$this->assertEquals( 1, $applied_count ); // The clauses should only be applied once.
 	}
 
 	public function test_chunk() {
@@ -384,8 +384,6 @@ class Test_Post_Query_Builder extends Framework_Test_Case {
 
 	public function test_chunk_by_id() {
 		$post_ids = static::factory()->post->create_many( 105 );
-		// $post_ids = static::factory()->post->create_ordered_set( 105 );
-		// dump('IDS', $post_ids);
 
 		$last_page = null;
 		$count     = 0;
@@ -419,6 +417,8 @@ class Test_Post_Query_Builder extends Framework_Test_Case {
 
 		$this->assertTrue( $result );
 		$this->assertEquals( 105, $count );
+
+		$this->assertNull( get_post( collect( $post_ids )->last() ) );
 	}
 
 	public function test_each() {
@@ -445,6 +445,8 @@ class Test_Post_Query_Builder extends Framework_Test_Case {
 		} );
 
 		$this->assertEquals( collect( $post_ids )->sort()->values(), $ids->sort()->values() );
+
+		$this->assertNull( get_post( collect( $post_ids )->last() ) );
 	}
 
 	/**

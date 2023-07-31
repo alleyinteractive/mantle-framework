@@ -57,6 +57,15 @@ class Term_Query_Builder extends Builder {
 	];
 
 	/**
+	 * Query order by aliases.
+	 *
+	 * @var array
+	 */
+	protected array $query_order_by_aliases = [
+		'id' => 'term_id',
+	];
+
+	/**
 	 * Get the query arguments.
 	 *
 	 * @return array

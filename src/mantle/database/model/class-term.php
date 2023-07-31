@@ -132,6 +132,15 @@ class Term extends Model implements Core_Object, Model_Meta, Updatable {
 	}
 
 	/**
+	 * Create a new query instance.
+	 *
+	 * @return \Mantle\Database\Query\Term_Query_Builder<static>
+	 */
+	public static function query(): Term_Query_Builder {
+		return ( new static() )->new_query();
+	}
+
+	/**
 	 * Get the meta type for the object.
 	 *
 	 * @return string

@@ -626,7 +626,12 @@ abstract class Builder {
 				function ( array $clauses, mixed $query ) use ( $column, $last_id ) {
 					global $wpdb;
 
-					$clauses['where'] .= $wpdb->prepare( " AND {$wpdb->posts}.%s > %s", $column, $last_id );
+					$table = match ( $query::class ) {
+						\WP_Tax_Query::class => $wpdb->terms,
+						default => $wpdb->posts,
+					};
+
+					$clauses['where'] .= $wpdb->prepare( " AND {$table}.{$column} > %s", $last_id ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 					return $clauses;
 				}
