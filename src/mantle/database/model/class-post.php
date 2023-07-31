@@ -58,10 +58,6 @@ use Mantle\Support\Helpers;
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereTitle( string $title )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereType( string $type )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereTerm( array|\WP_Term|\Mantle\Database\Model\Term|int $term, ?string $taxonomy = null, string $operator = 'IN', string $field = 'term_id' )
- * @method static \Mantle\Contracts\Paginator\Paginator simple_paginate(int $per_page = 20, int $current_page = null)
- * @method static \Mantle\Contracts\Paginator\Paginator paginate(int $per_page = 20, int $current_page = null)
- * @method static boolean chunk(int count, callable $callback)
- * @method static boolean chunk_by_id(int $count, callable $callback)
  */
 class Post extends Model implements Contracts\Database\Core_Object, Contracts\Database\Model_Meta, Contracts\Database\Updatable {
 	use Events\Post_Events,
