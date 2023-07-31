@@ -25,7 +25,7 @@ trait Query_Clauses {
 	/**
 	 * Query clauses to be added to the query.
 	 *
-	 * @var array<int, callable(array<string>, \WP_Query|\WP_Term_Query $query, ...): array<string>> The query clauses.
+	 * @var array<int, callable(array<string>, \WP_Query|\WP_Term_Query $query): array<string>> The query clauses.
 	 */
 	protected array $clauses = [];
 
@@ -39,7 +39,7 @@ trait Query_Clauses {
 	/**
 	 * Add a clause to the query.
 	 *
-	 * @param callable(array<string>, \WP_Query|\WP_Term_Query $query, ...): array<string> $clause The query clause.
+	 * @param callable(array<string>, \WP_Query|\WP_Term_Query $query): array<string> $clause The query clause.
 	 * @return static
 	 */
 	public function add_clause( callable $clause ): static {

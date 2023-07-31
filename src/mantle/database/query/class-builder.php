@@ -626,8 +626,12 @@ abstract class Builder {
 				function ( array $clauses, mixed $query ) use ( $column, $last_id ) {
 					global $wpdb;
 
+					if ( ! is_object( $query ) ) {
+						return $clauses;
+					}
+
 					$table = match ( $query::class ) {
-						\WP_Tax_Query::class => $wpdb->terms,
+						\WP_Term_Query::class => $wpdb->terms,
 						default => $wpdb->posts,
 					};
 
