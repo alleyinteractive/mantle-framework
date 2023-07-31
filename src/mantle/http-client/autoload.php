@@ -20,8 +20,7 @@ if ( ! function_exists( 'http_client' ) ) {
 	 * Create a new pending request of the the HTTP Client.
 	 *
 	 * @param string|null $url URL to request, optional.
-	 * @return Pending_Request|Response
-	 * @phpstan-return ($url is string ? Response : Pending_Request)
+	 * @return ($url is string ? Response : Pending_Request)
 	 */
 	function http_client( ?string $url = null ): Pending_Request|Response {
 		return $url ? Pending_Request::create()->get( $url ) : Pending_Request::create();
