@@ -4,9 +4,11 @@ namespace Mantle\Tests\Testing\Concerns;
 use JsonSerializable;
 use Mantle\Http\Response;
 use Mantle\Framework\Providers\Routing_Service_Provider;
+use Mantle\Http\Request;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Test_Response;
+use WP_REST_Response;
 
 use function Mantle\Support\Helpers\collect;
 
@@ -122,6 +124,26 @@ class Test_Makes_Http_Requests extends Framework_Test_Case {
 			->assertJsonPathMissing( 'example_path' );
 	}
 
+	public function test_rest_api_route_headers() {
+		$this->ignoreIncorrectUsage();
+
+		register_rest_route(
+			'/mantle/v1',
+			__FUNCTION__,
+			[
+				'methods'  => 'GET',
+				'validate_callback' => '__return_true',
+				'callback' => fn () => new WP_REST_Response( [ 'key' => 'value here' ], 201, [ 'test-header' => 'test-value' ] ),
+			]
+		);
+
+		$this->get( rest_url( '/mantle/v1/' . __FUNCTION__ ) )
+			->assertStatus( 201 )
+			->assertHeader( 'test-header', 'test-value' )
+			->assertIsJson()
+			->assertJsonPath( 'key', 'value here' );
+	}
+
 	public function test_rest_api_route_error() {
 		$this->get( rest_url( '/an/unknown/route' ) )
 			->assertStatus( 404 )
@@ -139,6 +161,35 @@ class Test_Makes_Http_Requests extends Framework_Test_Case {
 			->assertHeader( 'Location', home_url( '/redirected/' ) )
 			->assertRedirect( '/redirected/' )
 			->assertHeader( 'Other-Header', '123' );
+	}
+
+	public function test_post_json_mantle_route() {
+		$this->app['router']->post(
+			'/test-post-json',
+			fn ( Request $request ) => new Response( $request['foo'], 201, [ 'test-header' => 'test-value' ] ),
+		);
+
+		$this->post_json( '/test-post-json', [ 'foo' => 'bar' ] )
+			->assertCreated()
+			->assertIsNotJson()
+			->assertContent( 'bar' );
+	}
+
+	public function test_post_json_wordpress_route() {
+		$this->ignoreIncorrectUsage();
+
+		register_rest_route(
+			'/mantle/v1',
+			__FUNCTION__,
+			[
+				'methods' => 'POST',
+				'validate_callback' => '__return_true',
+				'callback' => fn ( \WP_REST_Request $request ) => $request['foo'] ?? 'no foo',
+			]
+		);
+
+		$this->post_json( rest_url( '/mantle/v1/' . __FUNCTION__ ), [ 'foo' => 'bar' ] )
+			->assertContent( '"bar"' );
 	}
 
 	public function test_assert_json_structure() {

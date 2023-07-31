@@ -345,20 +345,31 @@ class Test_Response {
 	}
 
 	/**
-	 * Asserts that the response does not contains the given header.
+	 * Asserts that the response does not contains the given header and optional
+	 * value.
 	 *
 	 * @param string $header_name Header name (key) to check.
+	 * @param mixed  $value       Header value to check, optional.
 	 * @return $this
 	 */
-	public function assertHeaderMissing( $header_name ) {
+	public function assertHeaderMissing( string $header_name, mixed $value = null ) {
 		// Enforce a lowercase header name.
 		$header_name = strtolower( $header_name );
 
-		PHPUnit::assertArrayNotHasKey(
-			$header_name,
-			$this->headers,
-			"Unexpected header [{$header_name}] is present on response."
-		);
+		// Compare the header value if one was provided.
+		if ( ! is_null( $value ) ) {
+			PHPUnit::assertNotEquals(
+				$value,
+				$this->get_header( $header_name ),
+				"Unexpected header [{$header_name}] was found with value [{$value}]."
+			);
+		} else {
+			PHPUnit::assertArrayNotHasKey(
+				$header_name,
+				$this->headers,
+				"Unexpected header [{$header_name}] is present on response."
+			);
+		}
 
 		return $this;
 	}
@@ -369,7 +380,7 @@ class Test_Response {
 	 * @param mixed $value Contents to compare.
 	 * @return $this
 	 */
-	public function assertContent( $value ) {
+	public function assertContent( mixed $value ): static {
 		PHPUnit::assertEquals( $value, $this->get_content() );
 		return $this;
 	}
@@ -501,7 +512,7 @@ class Test_Response {
 	 * @param string ...$prop Any number of WP_Query properties that are expected
 	 *                        to be true for the current request.
 	 */
-	public function assertQueryTrue( ...$prop ) {
+	public function assertQueryTrue( ...$prop ): static {
 		Test_Case::assertQueryTrue( ...$prop );
 
 		return $this;
@@ -513,8 +524,20 @@ class Test_Response {
 	 * @param int $id Expected ID.
 	 * @return $this
 	 */
-	public function assertQueriedObjectId( int $id ) {
+	public function assertQueriedObjectId( int $id ): static {
 		Test_Case::assertQueriedObjectId( $id );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a given ID does not the global queried object ID.
+	 *
+	 * @param int $id Expected ID.
+	 * @return $this
+	 */
+	public function assertNotQueriedObjectId( int $id ): static {
+		Test_Case::assertNotQueriedObjectId( $id );
 
 		return $this;
 	}
@@ -522,11 +545,86 @@ class Test_Response {
 	/**
 	 * Assert that a given object is equivalent to the global queried object.
 	 *
-	 * @param Object $object Expected object.
+	 * @param object $object Expected object.
 	 * @return $this
 	 */
-	public function assertQueriedObject( $object ) {
+	public function assertQueriedObject( mixed $object ): static {
 		Test_Case::assertQueriedObject( $object );
+
+		return $this;
+	}
+	/**
+	 * Assert that a given object is not equivalent to the global queried object.
+	 *
+	 * @param object $object Expected object.
+	 * @return $this
+	 */
+	public function assertNotQueriedObject( mixed $object ): static {
+		Test_Case::assertNotQueriedObject( $object );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the queried object is null.
+	 *
+	 * @return $this
+	 */
+	public function assertQueriedObjectNull(): static {
+		Test_Case::assertQueriedObjectNull();
+
+		return $this;
+	}
+
+	/**
+	 * Assert if the response is a JSON response.
+	 *
+	 * @return $this
+	 */
+	public function assertIsJson(): static {
+		$content_type = $this->get_header( 'Content-Type' );
+
+		if ( empty( $content_type ) ) {
+			PHPUnit::fail( 'Response is not JSON.' );
+		}
+
+		// Check that the content-type header contains 'application/json'.
+		PHPUnit::assertStringContainsString( 'application/json', $content_type );
+
+		// Decode the content and see if it's valid JSON. If it isn't, the test will
+		// fail.
+		$this->decoded_json();
+
+		return $this;
+	}
+
+	/**
+	 * Assert if the response is not a JSON response.
+	 *
+	 * @return $this
+	 */
+	public function assertIsNotJson(): static {
+		$content_type = $this->get_header( 'Content-Type' );
+
+		PHPUnit::assertStringNotContainsString( 'application/json', $content_type );
+
+		// Bail early if the content type is not JSON.
+		if ( empty( $content_type ) ) {
+			return $this;
+		}
+
+		if ( isset( $this->decoded_json ) ) {
+			PHPUnit::fail( 'Response is JSON.' );
+		}
+
+		if ( ! empty( $this->content ) ) {
+			// Attempt to parse the content and see if it's valid JSON.
+			$decoded = json_decode( $this->content, true );
+
+			if ( null !== $decoded ) {
+				PHPUnit::fail( 'Response is JSON.' );
+			}
+		}
 
 		return $this;
 	}

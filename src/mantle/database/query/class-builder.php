@@ -524,6 +524,18 @@ abstract class Builder {
 	}
 
 	/**
+	 * Alias for firstOrFail().
+	 *
+	 * @return TModel|\Mantle\Database\Model\Model
+	 * @throws Model_Not_Found_Exception Throws exception if not found.
+	 *
+	 * @phpstan-return TModel
+	 */
+	public function first_or_fail() {
+		return $this->firstOrFail();
+	}
+
+	/**
 	 * Get all the results of a query.
 	 *
 	 * @return Collection

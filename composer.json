@@ -89,6 +89,7 @@
             "src/mantle/cache/autoload.php",
             "src/mantle/config/autoload.php",
             "src/mantle/http/autoload.php",
+            "src/mantle/http-client/autoload.php",
             "src/mantle/queue/autoload.php",
             "src/mantle/support/autoload.php",
             "src/mantle/testing/autoload.php"

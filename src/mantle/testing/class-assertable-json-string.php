@@ -50,11 +50,13 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 		} elseif ( is_array( $jsonable ) ) {
 			$this->decoded = $jsonable;
 		} else {
-			$this->decoded = json_decode( $jsonable, true );
+			$decoded = json_decode( $jsonable, true );
+
+			$this->decoded = is_array( $decoded ) ? $decoded : null;
 		}
 
 		if ( is_null( $this->decoded ) || false === $this->decoded ) {
-			PHPUnit::fail( 'Invalid JSON was returned from the route.' );
+			PHPUnit::fail( 'Invalid JSON was returned from the response.' );
 		}
 	}
 

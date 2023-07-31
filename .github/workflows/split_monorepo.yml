@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - '*.*.x'
     tags:
       - 'v*.*.*'
 
@@ -58,7 +59,7 @@ jobs:
           repository_host: github.com
           user_name: "mantle-ci"
           user_email: "mantle@alley.com"
-          branch: "main"
+          branch: ${{ github.ref_name }}
 
       # with tag
       -
@@ -77,4 +78,4 @@ jobs:
           repository_host: "github.com"
           user_name: "mantle-ci"
           user_email: "mantle@alley.com"
-          branch: "main"
+          branch: ${{ github.ref_name }}

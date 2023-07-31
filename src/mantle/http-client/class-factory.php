@@ -51,6 +51,10 @@ class Factory {
 	 * @return Response|Pending_Request|Pool|mixed
 	 */
 	public static function __callStatic( string $method, array $parameters ) {
+		if ( static::has_macro( $method ) ) {
+			return ( new static() )->macro_call( $method, $parameters );
+		}
+
 		return ( new static() )->{$method}( ...$parameters );
 	}
 }
