@@ -211,22 +211,14 @@ trait Makes_Http_Requests {
 	 * @param mixed $source Source from which to infer the URL.
 	 * @return string
 	 */
-	protected function infer_url( $source ): string {
-		switch ( true ) {
-			case $source instanceof \WP_Post:
-				return get_permalink( $source );
-
-			case $source instanceof \WP_Term:
-				return get_term_link( $source );
-
-			case $source instanceof \WP_User:
-				return \get_author_posts_url( $source->ID );
-
-			case $source instanceof Model && method_exists( $source, 'permalink' ):
-				return $source->permalink();
-		}
-
-		return '';
+	protected function infer_url( mixed $source ): string {
+		return match ( true ) {
+			$source instanceof \WP_Post => get_permalink( $source ),
+			$source instanceof \WP_Term => get_term_link( $source ),
+			$source instanceof \WP_User => \get_author_posts_url( $source->ID ),
+			$source instanceof Model && method_exists( $source, 'permalink' ) => $source->permalink(),
+			default => '',
+		};
 	}
 
 	/**
@@ -264,7 +256,7 @@ trait Makes_Http_Requests {
 	/**
 	 * Call the given URI and return the Response.
 	 *
-	 * @param string      $method     Request method.
+	 * @param mixed       $method     Request method.
 	 * @param string      $uri        Request URI.
 	 * @param array       $parameters Request params.
 	 * @param array       $server     Server vars.
@@ -272,7 +264,7 @@ trait Makes_Http_Requests {
 	 * @param string|null $content Request content.
 	 * @return Test_Response
 	 */
-	public function call( string $method, string $uri, array $parameters = [], array $server = [], array $cookies = [], ?string $content = null ): Test_Response {
+	public function call( mixed $method, string $uri, array $parameters = [], array $server = [], array $cookies = [], ?string $content = null ): Test_Response {
 		$this->reset_request_state();
 
 		if ( ! is_string( $uri ) ) {
