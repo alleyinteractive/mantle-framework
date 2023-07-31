@@ -113,11 +113,11 @@ class Schedule {
 	 */
 	public function command( string $command, array $arguments = [], array $assoc_args = [] ): Event {
 		if ( ! class_exists( $command ) ) {
-			throw new RuntimeException( "Command class not found: [${command}]" );
+			throw new RuntimeException( "Command class not found: [{$command}]" );
 		}
 
 		if ( ! is_subclass_of( $command, Command::class ) ) {
-			throw new RuntimeException( "Invalid command class passed: [${command}]" );
+			throw new RuntimeException( "Invalid command class passed: [{$command}]" );
 		}
 
 		$event = new Command_Event( $command, $arguments, $assoc_args, $this->get_timezone() );
@@ -139,11 +139,11 @@ class Schedule {
 	 */
 	public function job( string $job, array $arguments = [] ): Event {
 		if ( ! class_exists( $job ) ) {
-			throw new RuntimeException( "Job class not found: [${job}]" );
+			throw new RuntimeException( "Job class not found: [{$job}]" );
 		}
 
 		if ( ! is_subclass_of( $job, Job::class ) ) {
-			throw new RuntimeException( "Invalid command class passed: [${job}]" );
+			throw new RuntimeException( "Invalid command class passed: [{$job}]" );
 		}
 
 		$event = new Job_Event( $job, $arguments, $this->get_timezone() );

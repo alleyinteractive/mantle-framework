@@ -48,7 +48,7 @@ trait Register_Rest_Fields {
 	public static function register_fields() {
 		if ( ! isset( static::$rest_registrar ) ) {
 			$class = get_called_class();
-			throw new Model_Exception( "REST field registrar is not defined for [${class}]" );
+			throw new Model_Exception( "REST field registrar is not defined for [{$class}]" );
 		}
 
 		array_map( [ static::$rest_registrar, 'register_once' ], static::$rest_fields );
@@ -68,7 +68,7 @@ trait Register_Rest_Fields {
 	public static function register_field( $attribute, $get_callback = null ): Rest_Field {
 		if ( ! isset( static::$rest_registrar ) ) {
 			$class = get_called_class();
-			throw new Model_Exception( "REST field registrar is not defined for [${class}]" );
+			throw new Model_Exception( "REST field registrar is not defined for [{$class}]" );
 		}
 
 		// Bail early if the field is a valid REST Field.
@@ -78,7 +78,7 @@ trait Register_Rest_Fields {
 		}
 
 		if ( is_null( $get_callback ) ) {
-			throw new Model_Exception( "Missing callback for REST field [${$attribute}]" );
+			throw new Model_Exception( "Missing callback for REST field [{$attribute}]" );
 		}
 
 		$field = new Rest_Field( [ static::get_object_name() ], $attribute, $get_callback );
