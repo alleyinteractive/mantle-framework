@@ -34,7 +34,7 @@ trait Has_Events {
 		if ( isset( static::$dispatcher ) ) {
 			static::$dispatcher->listen( "model.{$event}: {$name}", $callback );
 		} else {
-			throw new InvalidArgumentException( "Model event dispatcher not set: [${name}]" );
+			throw new InvalidArgumentException( "Model event dispatcher not set: [{$name}]" );
 		}
 	}
 

@@ -66,6 +66,11 @@ class Route_List_Command extends Command {
 	 * @return Collection
 	 */
 	protected function collect_routes(): Collection {
+		/**
+		 * Retrieve all routes.
+		 *
+		 * @var \Mantle\Http\Routing\Route[]
+		 */
 		$routes = $this->router->get_routes()->all();
 
 		if ( empty( $routes ) ) {

@@ -123,7 +123,7 @@ class Hook_Usage_Command extends Command {
 				return collect();
 			}
 
-			return collect( $path );
+			return collect( [ $path ] );
 		}
 
 		$cache = $this->get_cache_for_path( $path );
@@ -300,7 +300,7 @@ class Hook_Usage_Command extends Command {
 		}
 
 		$this->paths = $paths
-			->map( 'trim' )
+			->trim()
 			->unique()
 			->filter(
 				function ( $path ) {

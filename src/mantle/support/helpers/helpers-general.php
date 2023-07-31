@@ -142,7 +142,10 @@ function get_callable_fqn( $callable ): string {
 /**
  * Create a collection from the given value.
  *
- * @param  \Mantle\Contracts\Support\Arrayable<TKey, TValue>|iterable<TKey, TValue>|null  $value
+ * @template TKey of array-key
+ * @template TValue
+ *
+ * @param  \Mantle\Contracts\Support\Arrayable<TKey, TValue>|iterable<TKey, TValue>|null $value Value to convert to a collection.
  * @return \Mantle\Support\Collection<TKey, TValue>
  */
 function collect( $value = null ) {
