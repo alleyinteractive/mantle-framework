@@ -256,15 +256,15 @@ trait Makes_Http_Requests {
 	/**
 	 * Call the given URI and return the Response.
 	 *
-	 * @param mixed       $method     Request method.
-	 * @param string      $uri        Request URI.
+	 * @param string      $method     Request method.
+	 * @param mixed       $uri        Request URI.
 	 * @param array       $parameters Request params.
 	 * @param array       $server     Server vars.
 	 * @param array       $cookies Cookies to be sent with the request.
 	 * @param string|null $content Request content.
 	 * @return Test_Response
 	 */
-	public function call( mixed $method, string $uri, array $parameters = [], array $server = [], array $cookies = [], ?string $content = null ): Test_Response {
+	public function call( string $method, mixed $uri, array $parameters = [], array $server = [], array $cookies = [], ?string $content = null ): Test_Response {
 		$this->reset_request_state();
 
 		if ( ! is_string( $uri ) ) {
