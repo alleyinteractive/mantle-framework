@@ -15,13 +15,13 @@ use App\Models\{{ class }};
 /**
  * {{ class }} Factory
  *
- * @extends \Mantle\Database\Factory\Post_Factory<{{ class }}>
+ * @extends \Mantle\Database\Factory\Post_Factory<\App\Models\{{ class }}>
  */
 class {{ class }}_Factory extends \Mantle\Database\Factory\Post_Factory {
 	/**
 	 * Model to use when creating objects.
 	 *
-	 * @var string
+	 * @var class-string
 	 */
 	protected string $model = {{ class }}::class;
 

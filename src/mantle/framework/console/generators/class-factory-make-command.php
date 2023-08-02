@@ -9,6 +9,7 @@ namespace Mantle\Framework\Console\Generators;
 
 use InvalidArgumentException;
 use Mantle\Console\Command;
+use Mantle\Support\Str;
 
 /**
  * Factory Generator
@@ -33,14 +34,14 @@ class Factory_Make_Command extends Stub_Generator_Command {
 	 *
 	 * @var string
 	 */
-	protected $type = 'Factories';
+	protected $type = 'Database\Factory';
 
 	/**
 	 * Command synopsis.
 	 *
 	 * @var string
 	 */
-	protected $signature = '{name} {model_type} {--object_name=}';
+	protected $signature = '{name} {--model_type=} {--object_name=}';
 
 	/**
 	 * Get the stub file for the generator.
@@ -96,7 +97,7 @@ class Factory_Make_Command extends Stub_Generator_Command {
 	 * @todo Edit or remove this.
 	 */
 	public function complete_synopsis( string $name ) {
-		$this->log( 'You can customize this factory by editing the file in "database/factories".' );
+		$this->line( 'You can customize this factory by editing the file in "database/factory".' );
 	}
 
 	/**
@@ -106,7 +107,7 @@ class Factory_Make_Command extends Stub_Generator_Command {
 	 * @return string
 	 */
 	protected function get_folder_path( string $name ): string {
-		return untrailingslashit( $this->container->get_base_path() . '/database/' . strtolower( $this->type ) . '/' );
+		return $this->container->get_base_path() . '/database/factory';
 	}
 
 	/**
@@ -118,8 +119,8 @@ class Factory_Make_Command extends Stub_Generator_Command {
 	protected function get_file_path( string $name ): string {
 		$parts    = explode( '\\', $name );
 		$filename = array_pop( $parts );
-		$filename = sanitize_title_with_dashes( str_replace( '_', '-', $filename ) );
+		$filename = Str::slug( $filename );
 
-		return $this->get_folder_path( $name ) . '/' . $filename . '-factory.php';
+		return $this->get_folder_path( $name ) . '/class-' . $filename . '-factory.php';
 	}
 }
