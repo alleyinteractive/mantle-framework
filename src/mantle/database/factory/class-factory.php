@@ -208,7 +208,7 @@ abstract class Factory {
 	 * Creates an object and returns its object.
 	 *
 	 * @param array $args Optional. The arguments for the object to create. Default is empty array.
-	 * @return TObject|Core_Object The created object.
+	 * @return TObject The created object.
 	 */
 	public function create_and_get( array $args = [] ) {
 		return $this->get_object_by_id( $this->create( $args ) );
