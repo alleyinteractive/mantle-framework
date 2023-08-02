@@ -11,9 +11,6 @@
         "mantle-framework/console": "^0.12"
     },
     "extra": {
-        "branch-alias": {
-            "dev-main": "0.12-dev"
-        },
         "wordpress-autoloader": {
             "autoload": {
                 "Mantle\\Scheduling": "./"

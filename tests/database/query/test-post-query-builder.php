@@ -6,9 +6,12 @@ use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Term;
 use Mantle\Database\Query\Post_Query_Builder as Builder;
 use Mantle\Database\Query\Post_Query_Builder;
+use Mantle\Support\Collection;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Utils;
+
+use function Mantle\Support\Helpers\collect;
 
 class Test_Post_Query_Builder extends Framework_Test_Case {
 	use Refresh_Database;
@@ -56,10 +59,10 @@ class Test_Post_Query_Builder extends Framework_Test_Case {
 	}
 
 	public function test_post__in() {
-		$post_ids = static::factory()->post->create_many( 10 );
+		$post_ids = static::factory()->post->create_ordered_set( 10 );
 
 		// Shuffle to get a random order
-		shuffle( $post_ids );
+		$post_ids = collect( $post_ids )->shuffle()->values()->all();
 
 		$results = Builder::create( Testable_Post::class )
 			->whereIn( 'id', $post_ids )
@@ -300,6 +303,150 @@ class Test_Post_Query_Builder extends Framework_Test_Case {
 		foreach ( $post_ids as $post_id ) {
 			$this->assertEmpty( get_post( $post_id ) );
 		}
+	}
+
+	public function test_query_clauses() {
+		$applied_count = 0;
+		$post_id       = $this->get_random_post_id();
+
+		$first = Testable_Post::query()
+			->add_clause(
+				function ( array $clauses ) use ( &$applied_count, $post_id ) {
+					$applied_count++;
+
+					$clauses['where'] .= ' AND ID = ' . $post_id;
+
+					return $clauses;
+				}
+			)
+			->first();
+
+		$this->assertEquals( $post_id, $first->id() );
+
+		$next = Testable_Post::first();
+
+		$this->assertNotEquals( $post_id, $next->id() );
+		$this->assertEquals( 1, $applied_count ); // The clauses should only be applied once.
+	}
+
+	public function test_chunk() {
+		static::factory()->post->create_many( 101 );
+
+		$last_page = null;
+		$count     = 0;
+		$ids       = new Collection();
+
+		$result = Testable_Post::chunk( 10, function ( Collection $results, int $page ) use ( &$count, &$last_page, &$ids ) {
+			if ( ! isset( $last_page ) ) {
+				$last_page = $page;
+			} else {
+				$this->assertGreaterThan( $last_page, $page );
+			}
+
+			$count += count( $results );
+
+			$this->assertInstanceof( Collection::class, $results );
+
+			if ( $page <= 10 ) {
+				$this->assertEquals( 10, $results->count() );
+			} else {
+				$this->assertEquals( 1, $results->count() );
+			}
+
+			// Ensure that all the posts are unique from the previous ones.
+			$new_ids = $results->pluck( 'id' );
+
+			$this->assertEmpty(
+				$new_ids->intersect( $ids )
+			);
+
+			$ids = $ids->merge( $new_ids );
+		} );
+
+		$this->assertTrue( $result );
+		$this->assertEquals( 101, $count );
+	}
+
+	public function test_chunk_short_circuit() {
+		static::factory()->post->create_many( 101 );
+
+		$count = 0;
+
+		$result = Testable_Post::chunk( 10, function ( Collection $results, int $page ) use ( &$count ) {
+			$count += count( $results );
+
+			return false;
+		} );
+
+		$this->assertFalse( $result );
+		$this->assertEquals( 10, $count );
+	}
+
+	public function test_chunk_by_id() {
+		$post_ids = static::factory()->post->create_many( 105 );
+
+		$last_page = null;
+		$count     = 0;
+		$ids       = new Collection();
+
+		$result = Testable_Post::chunk_by_id( 10, function ( Collection $results, int $page ) use ( &$count, &$last_page, &$ids ) {
+			if ( isset( $last_page ) ) {
+				$this->assertGreaterThan( $last_page, $page );
+			}
+
+			$count += $results->count();
+
+			if ( $page <= 10 ) {
+				$this->assertEquals( 10, $results->count() );
+			} else {
+				$this->assertEquals( 5, $results->count() );
+			}
+
+			// Ensure that all the posts are unique from the previous ones.
+			$new_ids = $results->pluck( 'id' );
+
+			$this->assertEmpty( $new_ids->intersect( $ids ) );
+
+			$ids = $ids->merge( $new_ids );
+
+			// Delete all the posts that were returned for true chunk by ID.
+			$results->each->delete( true );
+
+			$last_page = $page;
+		} );
+
+		$this->assertTrue( $result );
+		$this->assertEquals( 105, $count );
+
+		$this->assertNull( get_post( collect( $post_ids )->last() ) );
+	}
+
+	public function test_each() {
+		$post_ids = static::factory()->post->create_many( 100 );
+
+		$ids = new Collection();
+
+		Testable_Post::each( function ( Testable_Post $post ) use ( &$ids ) {
+			$ids->push( $post->id() );
+		} );
+
+		$this->assertEquals( collect( $post_ids )->sort()->values(), $ids->sort()->values() );
+	}
+
+	public function test_each_by_id() {
+		$post_ids = static::factory()->post->create_many( 100 );
+
+		$ids = new Collection();
+
+		Testable_Post::each_by_id( function ( Testable_Post $post ) use ( &$ids ) {
+			$ids->push( $post->id() );
+
+			$post->delete( true );
+		} );
+
+		$this->assertEquals( collect( $post_ids )->sort()->values(), $ids->sort()->values() );
+
+		$this->assertNull( get_post( collect( $post_ids )->last() ) );
 	}
 
 	/**

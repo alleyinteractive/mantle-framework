@@ -2,9 +2,6 @@
 namespace Mantle\Tests\Database\Builder;
 
 use Mantle\Database\Model\Post;
-use Mantle\Database\Model\Term;
-use Mantle\Database\Query\Post_Query_Builder as Builder;
-use Mantle\Database\Query\Post_Query_Builder;
 use Mantle\Facade\Route;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;

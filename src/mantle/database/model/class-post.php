@@ -14,8 +14,6 @@ use Mantle\Database\Query\Builder;
 use Mantle\Database\Query\Post_Query_Builder;
 use Mantle\Support\Helpers;
 
-use function Mantle\Support\Helpers\collect;
-
 /**
  * Post Model
  *
@@ -182,6 +180,15 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 */
 	public static function get_query_builder_class(): ?string {
 		return Post_Query_Builder::class;
+	}
+
+	/**
+	 * Create a new query instance.
+	 *
+	 * @return \Mantle\Database\Query\Post_Query_Builder<static>
+	 */
+	public static function query(): Post_Query_Builder {
+		return ( new static() )->new_query();
 	}
 
 	/**
