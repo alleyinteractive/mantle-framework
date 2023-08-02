@@ -8,7 +8,6 @@
 namespace {{ namespace }};
 
 use Mantle\Database\Seeder;
-use function Mantle\Support\Helpers\factory;
 
 /**
  * {{ class }} Seeder.

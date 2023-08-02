@@ -10,8 +10,6 @@ use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Utils;
 
-use function Mantle\Support\Helpers\factory;
-
 class Test_Post_Object extends Framework_Test_Case {
 	use Refresh_Database;
 
