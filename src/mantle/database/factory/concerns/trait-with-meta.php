@@ -5,14 +5,14 @@
  * @package Mantle
  */
 
-namespace Mantle\Testing\Factory\Concerns;
+namespace Mantle\Database\Factory\Concerns;
 
 use Closure;
 
 /**
  * Support model meta within the database factory
  *
- * @mixin \Mantle\Testing\Factory\Factory
+ * @mixin \Mantle\Database\Factory\Factory
  */
 trait With_Meta {
 	/**

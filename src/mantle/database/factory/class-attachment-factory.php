@@ -5,14 +5,12 @@
  * @package Mantle
  */
 
-namespace Mantle\Testing\Factory;
+namespace Mantle\Database\Factory;
 
 use Closure;
 use Faker\Generator;
 use Mantle\Contracts\Database\Core_Object;
 use Mantle\Database\Model\Attachment;
-use Mantle\Database\Model\Model;
-use Mantle\Database\Model\Post;
 use WP_Post;
 
 use function Mantle\Support\Helpers\get_post_object;
@@ -20,27 +18,25 @@ use function Mantle\Support\Helpers\get_post_object;
 /**
  * Attachment Factory
  *
- * @template TObject
+ * @template TObject of \Mantle\Database\Model\Attachment
  */
 class Attachment_Factory extends Post_Factory {
 	/**
-	 * Constructor.
+	 * Model to use when creating objects.
 	 *
-	 * @param Generator $faker Faker generator.
+	 * @var class-string<TObject>
 	 */
-	public function __construct( protected Generator $faker ) {
-	}
+	protected string $model = Attachment::class;
 
 	/**
-	 * Creates an object.
+	 * Definition of the factory.
 	 *
-	 * @param array $args The arguments.
-	 * @return int|null
+	 * @return array<string, mixed>
 	 */
-	public function create( array $args = [] ): ?int {
-		$args['post_type'] = 'attachment';
-
-		return $this->make( $args, Attachment::class )?->id();
+	public function definition(): array {
+		return [
+			'post_type' => 'attachment',
+		];
 	}
 
 	/**

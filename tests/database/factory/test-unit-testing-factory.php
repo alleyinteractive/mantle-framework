@@ -1,5 +1,5 @@
 <?php
-namespace Mantle\Tests\Testing;
+namespace Mantle\Tests\Database\Factory;
 
 use Carbon\Carbon;
 use Closure;
@@ -9,7 +9,12 @@ use Mantle\Testing\Framework_Test_Case;
 
 use function Mantle\Support\Helpers\collect;
 
-class Test_Factory extends Framework_Test_Case {
+/**
+ * Test case with the focus of testing the unit testing factory that mirrors
+ * WordPress core's factories. The factories here should be drop-in replacements
+ * for core's factories with some sugar on top.
+ */
+class Test_Unit_Testing_Factory extends Framework_Test_Case {
 	public function test_post_factory() {
 		$this->assertInstanceOf( \WP_Post::class, static::factory()->post->create_and_get() );
 

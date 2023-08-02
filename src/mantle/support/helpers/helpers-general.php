@@ -15,10 +15,9 @@ use Countable;
 use Exception;
 use Mantle\Container\Container;
 use Mantle\Events\Dispatcher;
-use Mantle\Database\Factory\Factory_Builder;
+use Mantle\Database\Factory\Factory;
 use Mantle\Support\Collection;
 use Mantle\Support\Higher_Order_Tap_Proxy;
-use Mantle\Database\Factory\Factory as MantleFactory;
 use Mantle\Support\Str;
 
 /**
@@ -375,25 +374,6 @@ function transform( $value, callable $callback, $default = null ) {
  */
 function with( $value, callable $callback = null ) {
 	return is_null( $callback ) ? $value : $callback( $value );
-}
-
-/**
- * Create a model factory builder for a given class and amount.
- *
- * @param string $class
- * @param int    $amount
- *
- * @return Factory_Builder
- * @throws \Mantle\Container\Binding_Resolution_Exception Binding resolution exception.
- */
-function factory( $class, $amount = null ) {
-	$factory = Container::get_instance()->make( MantleFactory::class );
-
-	if ( isset( $amount ) && is_int( $amount ) ) {
-		return $factory->of( $class )->times( $amount );
-	}
-
-	return $factory->of( $class );
 }
 
 /**

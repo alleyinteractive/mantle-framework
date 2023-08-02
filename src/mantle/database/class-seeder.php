@@ -33,16 +33,17 @@ abstract class Seeder {
 	/**
 	 * Seed the given connection from the given path.
 	 *
-	 * @param string[]|string $class Seed to run.
-	 * @param bool            $silent Flag if the seed should be silent.
+	 * @param array<class-string>|string $class Seed to run.
+	 * @param bool                       $silent Flag if the seed should be silent.
+	 * @param array                      $parameters Parameters to pass to the seeder.
 	 * @return static
 	 */
-	public function call( $class, bool $silent = false ) {
+	public function call( $class, bool $silent = false, array $parameters = [] ): static {
 		$classes = Arr::wrap( $class );
 
 		foreach ( $classes as $class ) {
 			$seeder = $this->resolve( $class );
-			$name   = get_class( $seeder );
+			$name   = $seeder::class;
 
 			if ( ! $silent && isset( $this->command ) ) {
 				$this->command->line( "Seeding: {$name}" );
@@ -50,9 +51,9 @@ abstract class Seeder {
 
 			$start_time = microtime( true );
 
-			$seeder->__invoke();
+			$seeder( $parameters );
 
-			$run_time = round( microtime( true ) - $start_time, 2 );
+			$run_time = number_format( ( microtime( true ) - $start_time ) * 1000, 2 );
 
 			if ( ! $silent && isset( $this->command ) ) {
 				$this->command->line( "Seeded: {$name} ({$run_time} seconds)" );
@@ -63,12 +64,25 @@ abstract class Seeder {
 	}
 
 	/**
+	 * Run the given seeder class with the given arguments.
+	 *
+	 * @param array<class-string>|string $class Seed to run.
+	 * @param array                      $parameters Parameters to pass to the seeder.
+	 * @return static
+	 */
+	public function call_with( $class, array $parameters = [] ): static {
+		return $this->call( $class, false, $parameters );
+	}
+
+	/**
 	 * Resolve an instance of the given seeder class.
 	 *
-	 * @param  string $class
+	 * @throws InvalidArgumentException If the class is not an instance of Seeder.
+	 *
+	 * @param  class-string $class Seeder class to resolve.
 	 * @return Seeder
 	 */
-	protected function resolve( $class ) {
+	protected function resolve( string $class ): Seeder {
 		if ( isset( $this->container ) ) {
 			$instance = $this->container->make( $class );
 
@@ -77,16 +91,20 @@ abstract class Seeder {
 			$instance = new $class();
 		}
 
+		if ( ! $instance instanceof Seeder ) {
+			throw new InvalidArgumentException( "Class [{$class}] must be an instance of " . self::class );
+		}
+
 		return $instance;
 	}
 
 	/**
 	 * Set the IoC container instance.
 	 *
-	 * @param Container $container
+	 * @param Container $container IoC container.
 	 * @return static
 	 */
-	public function set_container( Container $container ) {
+	public function set_container( Container $container ): static {
 		$this->container = $container;
 
 		return $this;
@@ -98,7 +116,7 @@ abstract class Seeder {
 	 * @param Command $command
 	 * @return static
 	 */
-	public function set_command( Command $command ) {
+	public function set_command( Command $command ): static {
 		$this->command = $command;
 
 		return $this;
@@ -107,17 +125,18 @@ abstract class Seeder {
 	/**
 	 * Run the database seeds.
 	 *
+	 * @param array $parameters Parameters to pass to the seeder.
 	 * @return mixed
 	 *
 	 * @throws InvalidArgumentException Thrown on bad seeder class.
 	 */
-	public function __invoke() {
+	public function __invoke( array $parameters = [] ): mixed {
 		if ( ! method_exists( $this, 'run' ) ) {
-			throw new InvalidArgumentException( 'Method [run] missing from ' . get_class( $this ) );
+			throw new InvalidArgumentException( 'Method [run] missing from ' . $this::class );
 		}
 
 		return isset( $this->container )
-			? $this->container->call( [ $this, 'run' ] )
-			: $this->run();
+			? $this->container->call( [ $this, 'run' ], $parameters )
+			: $this->run( $parameters );
 	}
 }

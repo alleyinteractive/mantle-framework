@@ -55,16 +55,16 @@ class Factory_Service_Provider extends Service_Provider {
 			}
 		);
 
-		$this->app->singleton(
-			MantleFactory::class,
-			function ( $app ) {
-				return MantleFactory::construct(
-					$app->make(
-						FakerGenerator::class
-					),
-					$app->get_base_path() . '/database/factories'
-				);
-			}
-		);
+		// $this->app->singleton(
+		// 	MantleFactory::class,
+		// 	function ( $app ) {
+		// 		return MantleFactory::construct(
+		// 			$app->make(
+		// 				FakerGenerator::class
+		// 			),
+		// 			$app->get_base_path() . '/database/factories'
+		// 		);
+		// 	}
+		// );
 	}
 }
