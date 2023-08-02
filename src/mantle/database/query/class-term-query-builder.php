@@ -57,18 +57,13 @@ class Term_Query_Builder extends Builder {
 	];
 
 	/**
-	 * Order of the query.
+	 * Query order by aliases.
 	 *
-	 * @var string
+	 * @var array
 	 */
-	protected string $order = 'ASC';
-
-	/**
-	 * Query by of the query.
-	 *
-	 * @var string
-	 */
-	protected string $order_by = 'name';
+	protected array $query_order_by_aliases = [
+		'id' => 'term_id',
+	];
 
 	/**
 	 * Get the query arguments.
@@ -91,15 +86,18 @@ class Term_Query_Builder extends Builder {
 			$this->limit = null;
 		}
 
+		[ $order, $order_by ] = $this->get_builder_order( 'ASC', 'name' );
+
 		return array_merge(
 			[
-				'fields'     => 'ids',
-				'hide_empty' => false,
-				'meta_query' => $this->meta_query, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
-				'number'     => $this->limit,
-				'order'      => $this->order,
-				'orderby'    => $this->order_by,
-				'taxonomy'   => $taxonomies,
+				'fields'          => 'ids',
+				'hide_empty'      => false,
+				'meta_query'      => $this->meta_query, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+				'number'          => $this->limit,
+				'order'           => $order,
+				'orderby'         => $order_by,
+				'suppress_filter' => false,
+				'taxonomy'        => $taxonomies,
 			],
 			$this->wheres,
 		);
@@ -111,15 +109,22 @@ class Term_Query_Builder extends Builder {
 	 * @return Collection<int, TModel>
 	 */
 	public function get(): Collection {
-		$term_ids = \get_terms( $this->get_query_args() );
+		$query = new \WP_Term_Query();
+
+		$this->query_hash = spl_object_hash( $query );
+
+		$term_ids = $this->with_clauses(
+			fn (): array => $query->query( $this->get_query_args() ),
+		);
 
 		if ( empty( $term_ids ) ) {
 			return collect();
 		}
 
 		$models = array_map( [ $this->model, 'find' ], $term_ids );
-		$models = collect( array_filter( $models ) );
 
-		return $this->eager_load_relations( $models );
+		return $this->eager_load_relations(
+			collect( $models )->filter()->values(),
+		);
 	}
 }

@@ -72,7 +72,7 @@ class Factory_Container {
 	public $tag;
 
 	/**
-	 * Term Factory
+	 * Term Factory (alias for Tag Factory).
 	 *
 	 * @var Term_Factory<\WP_Term|\Mantle\Database\Model\Term>
 	 */

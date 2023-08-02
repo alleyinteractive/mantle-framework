@@ -2,9 +2,11 @@
 /**
  * Builder class file.
  *
+ * phpcs:disable WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+ * phpcs:disable Squiz.Commenting.FunctionComment
+ * phpcs:disable PEAR.Functions.FunctionCallSignature.CloseBracketLine, PEAR.Functions.FunctionCallSignature.MultipleArguments, PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket
+ *
  * @package Mantle
- * @phpcs:disable WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
- * @phpcs:disable Squiz.Commenting.FunctionComment
  */
 
 namespace Mantle\Database\Query;
@@ -15,9 +17,10 @@ use Mantle\Contracts\Database\Scope;
 use Mantle\Contracts\Paginator\Paginator as PaginatorContract;
 use Mantle\Database\Model\Model;
 use Mantle\Database\Model\Model_Not_Found_Exception;
-use Mantle\Database\Model\Relations\Relation;
 use Mantle\Database\Pagination\Length_Aware_Paginator;
 use Mantle\Database\Pagination\Paginator;
+use Mantle\Database\Query\Concerns\Query_Clauses;
+use Mantle\Support\Arr;
 use Mantle\Support\Collection;
 use Mantle\Support\Str;
 use Mantle\Support\Traits\Conditionable;
@@ -30,7 +33,7 @@ use function Mantle\Support\Helpers\collect;
  * @template TModel of \Mantle\Database\Model\Model
  */
 abstract class Builder {
-	use Conditionable;
+	use Conditionable, Query_Clauses;
 
 	/**
 	 * Model to build on.
@@ -70,16 +73,16 @@ abstract class Builder {
 	/**
 	 * Order of the query.
 	 *
-	 * @var string
+	 * @var array<int, string>
 	 */
-	protected string $order = 'DESC';
+	protected array $order = [];
 
 	/**
 	 * Query by of the query.
 	 *
-	 * @var string
+	 * @var array<int, string>
 	 */
-	protected string $order_by = 'date';
+	protected array $order_by = [];
 
 	/**
 	 * Meta Query.
@@ -110,6 +113,13 @@ abstract class Builder {
 	protected array $query_where_not_in_aliases = [];
 
 	/**
+	 * Query order by aliases.
+	 *
+	 * @var array
+	 */
+	protected array $query_order_by_aliases = [];
+
+	/**
 	 * Applied global scopes.
 	 *
 	 * @var array
@@ -131,6 +141,13 @@ abstract class Builder {
 	protected array $eager_load = [];
 
 	/**
+	 * Query hash for the built query.
+	 *
+	 * @var string
+	 */
+	protected string $query_hash = '';
+
+	/**
 	 * Constructor.
 	 *
 	 * @param array|string $model Model or array of model class names.
@@ -142,7 +159,7 @@ abstract class Builder {
 	/**
 	 * Get the query results.
 	 *
-	 * @return Collection<TModel>
+	 * @return Collection<int, TModel>
 	 */
 	abstract public function get(): Collection;
 
@@ -252,11 +269,10 @@ abstract class Builder {
 			return $this;
 		}
 
-		if ( ! empty( $this->query_aliases[ strtolower( $attribute ) ] ) ) {
-			$attribute = $this->query_aliases[ strtolower( $attribute ) ];
-		}
+		$attribute = $this->resolve_attribute( $attribute );
 
 		$this->wheres[ $attribute ] = $value;
+
 		return $this;
 	}
 
@@ -278,6 +294,21 @@ abstract class Builder {
 		}
 
 		return $this->where( $attribute, ...$args );
+	}
+
+	/**
+	 * Resolve an attribute name to the database column name with support for
+	 * query aliases.
+	 *
+	 * @param string $attribute Attribute name.
+	 * @return string
+	 */
+	protected function resolve_attribute( string $attribute ): string {
+		if ( ! empty( $this->query_aliases[ strtolower( $attribute ) ] ) ) {
+			$attribute = $this->query_aliases[ strtolower( $attribute ) ];
+		}
+
+		return $attribute;
 	}
 
 	/**
@@ -337,18 +368,51 @@ abstract class Builder {
 	 * @param string $direction Order direction.
 	 * @return static
 	 */
-	public function orderBy( $attribute, string $direction = 'asc' ) {
+	public function orderBy( string $attribute, string $direction = 'asc' ) {
 		if ( is_string( $this->model ) && $this->model::has_attribute_alias( $attribute ) ) {
 			$attribute = $this->model::get_attribute_alias( $attribute );
 		}
 
-		if ( ! empty( $this->query_aliases[ strtolower( $attribute ) ] ) ) {
-			$attribute = $this->query_aliases[ strtolower( $attribute ) ];
+		if ( ! empty( $this->query_order_by_aliases[ strtolower( $attribute ) ] ) ) {
+			$attribute = $this->query_order_by_aliases[ strtolower( $attribute ) ];
 		}
 
-		$this->order    = strtoupper( $direction );
-		$this->order_by = $attribute;
+		$this->order[]    = strtoupper( $direction );
+		$this->order_by[] = $attribute;
+
 		return $this;
+	}
+
+	/**
+	 * Alias for `orderBy()`.
+	 *
+	 * @param string $attribute Attribute name.
+	 * @param string $direction Order direction.
+	 * @return static
+	 */
+	public function order_by( string $attribute, string $direction = 'asc' ): static {
+		return $this->orderBy( $attribute, $direction );
+	}
+
+	/**
+	 * Reorder the query and remove existing order by clauses.
+	 *
+	 * @return static
+	 */
+	public function removeOrder(): static {
+		$this->order_by = [];
+		$this->order    = [];
+
+		return $this;
+	}
+
+	/**
+	 * Alias for `removeOrder()`.
+	 *
+	 * @return static
+	 */
+	public function remove_order(): static {
+		return $this->removeOrder();
 	}
 
 	/**
@@ -358,11 +422,42 @@ abstract class Builder {
 	 * @param array $args Method arguments.
 	 * @return static
 	 */
-	public function dynamicOrderBy( string $method, array $args ) {
+	protected function dynamicOrderBy( string $method, array $args ) {
 		$attribute = Str::snake( substr( $method, 7 ) );
 
 		$attribute = str_replace( '_in', '__in', $attribute );
+
 		return $this->orderBy( $attribute, $args[0] ?? 'asc' );
+	}
+
+	/**
+	 * Retrieve the builder order to use in the query.
+	 *
+	 * Used internally to get the order/order by for use in term/post queries.
+	 * Queries support multiple conditions to order by but run into issues in some
+	 * cases where arrays are used in place of strings (post__in for example). To
+	 * support both, we'll store the order/order by as arrays and then flatten it
+	 * here if only one pair is set.
+	 *
+	 * @param string $default_order Default order.
+	 * @param string $default_order_by Default order by.
+	 * @return array{0: string, 1: string}
+	 */
+	protected function get_builder_order( string $default_order, string $default_order_by ): array {
+		$order    = count( $this->order ) > 1 ? $this->order : Arr::first( $this->order );
+		$order_by = count( $this->order_by ) > 1 ? $this->order_by : Arr::first( $this->order_by );
+
+		// Provide a default order by if none is set.
+		if ( empty( $order ) ) {
+			$order = $default_order;
+		}
+
+		// Provide a default order by if none is set.
+		if ( empty( $order_by ) ) {
+			$order_by = $default_order_by;
+		}
+
+		return [ $order, $order_by ];
 	}
 
 	/**
@@ -385,6 +480,16 @@ abstract class Builder {
 		}
 
 		return $this->orderBy( $attribute );
+	}
+
+	/**
+	 * Alias for `orderByWhereIn()`.
+	 *
+	 * @param string $attribute Attribute to use.
+	 * @return static
+	 */
+	public function order_by_where_in( string $attribute ): static {
+		return $this->orderByWhereIn( $attribute );
 	}
 
 	/**
@@ -497,6 +602,54 @@ abstract class Builder {
 	}
 
 	/**
+	 * Set the page and limit of the builder.
+	 *
+	 * @param int $page Page to set.
+	 * @param int $limit Limit to set.
+	 * @return static
+	 */
+	public function for_page( int $page, int $limit = 20 ): static {
+		return $this->page( $page )->take( $limit );
+	}
+
+	/**
+	 * Constrain the query to the next "page" of results after a given ID.
+	 *
+	 * @param int      $per_page Per page to set.
+	 * @param int|null $last_id Last ID to use.
+	 * @param string   $column Column to use.
+	 * @return static
+	 */
+	public function for_page_after_id( int $per_page, ?int $last_id = null, string $column = 'id' ): static {
+		if ( ! is_null( $last_id ) ) {
+			$this->add_clause(
+				function ( array $clauses, mixed $query ) use ( $column, $last_id ) {
+					global $wpdb;
+
+					if ( ! is_object( $query ) ) {
+						return $clauses;
+					}
+
+					$table = match ( $query::class ) {
+						\WP_Term_Query::class => $wpdb->terms,
+						default => $wpdb->posts,
+					};
+
+					$clauses['where'] .= $wpdb->prepare( " AND {$table}.{$column} > %s", $last_id ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+					return $clauses;
+				}
+			);
+		}
+
+		return $this
+			->page( 1 ) // Ensure this query is never paged.
+			->removeOrder()
+			->orderBy( $column, 'asc' )
+			->take( $per_page );
+	}
+
+	/**
 	 * Get the first result of the query.
 	 *
 	 * @return TModel|null
@@ -591,6 +744,129 @@ abstract class Builder {
 	}
 
 	/**
+	 * Chunk the results of the query.
+	 *
+	 * Note: this method uses pagination and not suited for operations where
+	 * data would be deleted which would affect subsequent pagination. For those
+	 * operations, use the {@see Builder::chunk_by_id()} method.
+	 *
+	 * @param int                                                           $count Number of items to chunk by.
+	 * @param callable(\Mantle\Support\Collection<int, TModel>, int): mixed $callback Callback to run on each chunk.
+	 * @return boolean
+	 */
+	public function chunk( int $count, callable $callback ): bool {
+		$page = 1;
+
+		do {
+			$results = $this->page( $page )->take( $count )->get();
+
+			$count_results = $results->count();
+
+			if ( 0 === $count_results ) {
+				return true;
+			}
+
+			// If the callback returns false, we'll stop traversing the results and
+			// return false from the chunk method. This is useful for selectively
+			// breaking the iteration when the callback no longer needs more data.
+			if ( false === $callback( $results, $page ) ) {
+				return false;
+			}
+
+			$page++;
+		} while ( $count_results === $count );
+
+		return true;
+	}
+
+	/**
+	 * Chunk the results of the query by ID.
+	 *
+	 * This query handles chunking data where the data is could be
+	 * deleted/modified during the chunking process.
+	 *
+	 * @param int                                                           $count Number of items to chunk by.
+	 * @param callable(\Mantle\Support\Collection<int, TModel>, int): mixed $callback Callback to run on each chunk.
+	 * @param string                                                        $attribute Attribute to chunk by.
+	 * @return boolean
+	 */
+	public function chunk_by_id( int $count, callable $callback, string $attribute = 'id' ): bool {
+		$last_id = null;
+		$page    = 1;
+
+		do {
+			$clone = clone $this;
+
+			$results = $clone->for_page_after_id( $count, $last_id, $attribute )->get();
+
+			$count_results = $results->count();
+
+			if ( 0 === $count_results ) {
+				return true;
+			}
+
+			// If the callback returns false, we'll stop traversing the results and
+			// return false from the chunk method. This is useful for selectively
+			// breaking the iteration when the callback no longer needs more data.
+			if ( false === $callback( $results, $page ) ) {
+				return false;
+			}
+
+			$page++;
+
+			// Get the last item in the results.
+			$last_item = $results->last();
+
+			// Get the last item's ID.
+			$last_id = $last_item->{$attribute};
+
+			// Free up memory.
+			unset( $clone, $results );
+		} while ( $count_results === $count );
+
+		return true;
+	}
+
+	/**
+	 * Execute a callback over each item while chunking.
+	 *
+	 * @param callable(\Mantle\Support\Collection<int, TModel>): mixed $callback Callback to run on each chunk.
+	 * @param int                                                       $count Number of items to chunk by.
+	 * @return boolean
+	 */
+	public function each( callable $callback, int $count = 100 ) {
+		return $this->chunk( $count, function ( Collection $results ) use ( $callback ) {
+			foreach ( $results as $result ) {
+				if ( false === $callback( $result ) ) {
+					return false;
+				}
+			}
+
+			return true;
+		} );
+	}
+
+	/**
+	 * Execute a callback over each item while chunking by ID.
+	 *
+	 * @param callable(\Mantle\Support\Collection<int, TModel>): mixed $callback Callback to run on each chunk.
+	 * @param int                                                       $count Number of items to chunk by.
+	 * @param string                                                    $attribute Attribute to chunk by.
+	 * @return boolean
+	 */
+	public function each_by_id( callable $callback, int $count = 100, string $attribute = 'id' ) {
+		return $this->chunk_by_id( $count, function ( Collection $results ) use ( $callback ) {
+			foreach ( $results as $result ) {
+				if ( false === $callback( $result ) ) {
+					return false;
+				}
+			}
+
+			return true;
+		}, $attribute );
+	}
+
+	/**
 	 * Magic method to proxy to the appropriate query method.
 	 *
 	 * @param string $method Method name.
@@ -631,6 +907,15 @@ abstract class Builder {
 				}
 			)
 			->flip();
+	}
+
+	/**
+	 * Retrieve the hash of the query object.
+	 *
+	 * @return string
+	 */
+	public function get_query_hash(): string {
+		return $this->query_hash;
 	}
 
 	/**

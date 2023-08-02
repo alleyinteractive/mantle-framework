@@ -23,11 +23,9 @@ use Mantle\Support\Helpers;
  * @property string $taxonomy
  *
  * @method static \Mantle\Database\Query\Term_Query_Builder whereId( int $id )
- * @method static \Mantle\Database\Query\Term_Query_Builder whereName( string $name )
- * @method static \Mantle\Database\Query\Term_Query_Builder whereSlug( string $slug )
- * @method static \Mantle\Database\Query\Term_Query_Builder whereTaxonomy( string $taxonomy )
- *
- * @mixin \Mantle\Database\Query\Term_Query_Builder
+ * @method static \Mantle\Database\Query\Term_Query_Builder whereName(string $name)
+ * @method static \Mantle\Database\Query\Term_Query_Builder whereSlug(string $slug)
+ * @method static \Mantle\Database\Query\Term_Query_Builder whereTaxonomy(string $taxonomy)
  */
 class Term extends Model implements Core_Object, Model_Meta, Updatable {
 	use Events\Term_Events,
@@ -131,6 +129,15 @@ class Term extends Model implements Core_Object, Model_Meta, Updatable {
 	 */
 	public static function get_query_builder_class(): ?string {
 		return Term_Query_Builder::class;
+	}
+
+	/**
+	 * Create a new query instance.
+	 *
+	 * @return \Mantle\Database\Query\Term_Query_Builder<static>
+	 */
+	public static function query(): Term_Query_Builder {
+		return ( new static() )->new_query();
 	}
 
 	/**
