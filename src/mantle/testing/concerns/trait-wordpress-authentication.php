@@ -97,19 +97,7 @@ trait WordPress_Authentication {
 	 * @return User
 	 */
 	public function create_user_with_role( string $role ): User {
-		static $sequence = 1;
-
-		$model = new User(
-			[
-				'role'       => $role,
-				'user_login' => "User {$sequence}",
-				'user_pass'  => 'password',
-				'user_email' => "user_{$sequence}@example.org",
-			]
-		);
-		$model->save();
-		$sequence++;
-		return $model;
+		return User::factory()->as_models()->create_and_get( [ 'role' => $role ] );
 	}
 
 	/**
