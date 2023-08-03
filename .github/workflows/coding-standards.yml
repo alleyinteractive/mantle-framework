@@ -14,11 +14,6 @@ jobs:
     uses: alleyinteractive/.github/.github/workflows/php-coding-standards.yml@main
     with:
       php: 8.2
-  monorepo:
-    uses: alleyinteractive/.github/.github/workflows/php-code-quality.yml@main
-    with:
-      command: "validate-monorepo"
-      php: 8.2
   phpstan:
     uses: alleyinteractive/.github/.github/workflows/php-code-quality.yml@main
     with:

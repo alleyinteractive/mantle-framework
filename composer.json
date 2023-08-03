@@ -132,8 +132,7 @@
             "@phpcs",
             "@phpstan",
             "@phpunit"
-        ],
-        "validate-monorepo": "monorepo-builder validate --ansi"
+        ]
     },
     "repositories": [
         {
