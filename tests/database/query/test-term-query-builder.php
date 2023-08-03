@@ -136,7 +136,10 @@ class Test_Term_Query_Builder extends Framework_Test_Case {
 	 */
 	protected function get_random_term_id( $args = [] ): int {
 		$term_ids = static::factory()->term->create_many( 11, $args );
+
 		array_pop( $term_ids );
+		array_shift( $term_ids );
+
 		return $term_ids[ array_rand( $term_ids ) ];
 	}
 }
