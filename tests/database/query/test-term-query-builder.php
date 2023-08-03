@@ -108,6 +108,7 @@ class Test_Term_Query_Builder extends Framework_Test_Case {
 		$term_id       = $this->get_random_term_id();
 
 		$first = Testable_Tag::query()
+			->orderBy( 'id', 'asc' )
 			->add_clause(
 				function ( array $clauses ) use ( &$applied_count, $term_id ) {
 					global $wpdb;

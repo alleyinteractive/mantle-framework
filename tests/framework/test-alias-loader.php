@@ -6,6 +6,11 @@ use Mantle\Framework\Alias_Loader;
 use PHPUnit\Framework\TestCase;
 
 class Test_Alias_Loader extends TestCase {
+	protected function setUp(): void {
+		parent::setUp();
+
+		Alias_Loader::set_instance( null );
+	}
 
 	public function testLoaderCanBeCreatedAndRegisteredOnce() {
 		$loader = Alias_Loader::get_instance( [ 'foo' => 'bar' ] );
