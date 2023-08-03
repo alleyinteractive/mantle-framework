@@ -27,7 +27,7 @@ class Post_Factory extends Factory {
 	/**
 	 * Model to use when creating objects.
 	 *
-	 * @var class-string<TObject>
+	 * @var class-string
 	 */
 	protected string $model = Post::class;
 

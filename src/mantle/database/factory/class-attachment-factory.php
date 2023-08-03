@@ -24,7 +24,7 @@ class Attachment_Factory extends Post_Factory {
 	/**
 	 * Model to use when creating objects.
 	 *
-	 * @var class-string<TObject>
+	 * @var class-string
 	 */
 	protected string $model = Attachment::class;
 
