@@ -2,291 +2,247 @@
 /**
  * Factory class file.
  *
+ * phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag, Squiz.Commenting.FunctionComment.ParamNameNoMatch
+ *
  * @package Mantle
  */
 
-// phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment
-
 namespace Mantle\Database\Factory;
 
-use ArrayAccess;
-use Faker\Generator as Faker;
-use Symfony\Component\Finder\Finder;
+use Closure;
+use Faker\Generator;
+use Mantle\Contracts\Database\Core_Object;
+use Mantle\Database\Model\Model;
+use Mantle\Support\Collection;
+use Mantle\Support\Pipeline;
+use Mantle\Support\Traits\Conditionable;
+use Mantle\Support\Traits\Macroable;
+
+use function Mantle\Support\Helpers\collect;
+use function Mantle\Support\Helpers\tap;
 
 /**
- * Class Factory
+ * Base Factory
+ *
+ * @template TObject of \Mantle\Database\Model\Model
  */
-class Factory implements ArrayAccess {
-	/**
-	 * The model definitions in the container.
-	 *
-	 * @var array
-	 */
-	protected $definitions = [];
+abstract class Factory {
+	use Concerns\Resolves_Factories,
+		Conditionable,
+		Macroable;
 
 	/**
-	 * The registered model states.
+	 * Flag to return the factory as a model.
 	 *
-	 * @var array
+	 * @var bool
 	 */
-	protected $states = [];
+	protected bool $as_models = false;
 
 	/**
-	 * The registered after making callbacks.
+	 * Array of pipes (middleware) to run through.
 	 *
-	 * @var array
+	 * @var \Mantle\Support\Collection<int, callable(array $args, Closure $next): mixed>
 	 */
-	protected $after_making = [];
+	public Collection $middleware;
 
 	/**
-	 * The registered after creating callbacks.
+	 * Model to use when creating objects.
 	 *
-	 * @var array
+	 * @var class-string<TObject>
 	 */
-	protected $after_creating = [];
+	protected string $model;
 
 	/**
-	 * The Faker instance for the builder.
+	 * Constructor.
 	 *
-	 * @var Faker
+	 * @param Generator $faker The Faker instance.
 	 */
-	protected $faker;
-
-	/**
-	 * Create a new factory instance.
-	 *
-	 * @param Faker $faker
-	 *
-	 * @return void
-	 */
-	public function __construct( Faker $faker ) {
-		$this->faker = $faker;
+	public function __construct( protected Generator $faker ) {
+		$this->middleware = new Collection();
 	}
 
 	/**
-	 * Create a new factory container.
+	 * Definition of the factory.
 	 *
-	 * @param Faker       $faker
-	 * @param string|null $path_to_factories
-	 * @todo database_path needs ported over.
-	 *
-	 * @return Factory
+	 * @return array<string, mixed>
 	 */
-	public static function construct( Faker $faker, $path_to_factories = null ) {
-		$path_to_factories = $path_to_factories ? $path_to_factories : database_path( 'factories' );
-
-		return ( new static( $faker ) )->load( $path_to_factories );
-	}
+	abstract public function definition(): array;
 
 	/**
-	 * Define a class with a given set of attributes.
+	 * Retrieves an object by ID.
 	 *
-	 * @param string   $class
-	 * @param callable $attributes
-	 *
-	 * @return $this
-	 */
-	public function define( $class, callable $attributes ) { // phpcs:ignore
-		$this->definitions[ $class ] = $attributes;
-
-		return $this;
-	}
-
-	/**
-	 * Define a state with a given set of attributes.
-	 *
-	 * @param string         $class
-	 * @param string         $state
-	 * @param callable|array $attributes
-	 *
-	 * @return $this
-	 */
-	public function state( $class, $state, $attributes ) {
-		$this->states[ $class ][ $state ] = $attributes;
-
-		return $this;
-	}
-
-	/**
-	 * Define a callback to run after making a model.
-	 *
-	 * @param string   $class
-	 * @param callable $callback
-	 * @param string   $name
-	 *
-	 * @return $this
-	 */
-	public function after_making( $class, callable $callback, $name = 'default' ) {
-		$this->after_making[ $class ][ $name ][] = $callback;
-
-		return $this;
-	}
-
-	/**
-	 * Define a callback to run after making a model with given state.
-	 *
-	 * @param string   $class
-	 * @param string   $state
-	 * @param callable $callback
-	 *
-	 * @return $this
-	 */
-	public function after_making_state( $class, $state, callable $callback ) {
-		return $this->after_making( $class, $callback, $state );
-	}
-
-	/**
-	 * Define a callback to run after creating a model.
-	 *
-	 * @param string   $class
-	 * @param callable $callback
-	 * @param string   $name
-	 *
-	 * @return $this
-	 */
-	public function after_creating( $class, callable $callback, $name = 'default' ) {
-		$this->after_creating[ $class ][ $name ][] = $callback;
-
-		return $this;
-	}
-
-	/**
-	 * Define a callback to run after creating a model with given state.
-	 *
-	 * @param string   $class
-	 * @param string   $state
-	 * @param callable $callback
-	 *
-	 * @return $this
-	 */
-	public function after_creating_state( $class, $state, callable $callback ) {
-		return $this->after_creating( $class, $callback, $state );
-	}
-
-	/**
-	 * Create an instance of the given model and persist it to the database.
-	 *
-	 * @param string $class
-	 * @param array  $attributes
-	 *
+	 * @param int $object_id The object ID.
 	 * @return mixed
 	 */
-	public function create( $class, array $attributes = [] ) {
-		return $this->of( $class )->create( $attributes );
+	abstract public function get_object_by_id( int $object_id );
+
+	/**
+	 * Creates an object.
+	 *
+	 * @param array $args The arguments.
+	 * @return int|null
+	 */
+	public function create( array $args = [] ): mixed {
+		return $this->make( $args )?->id();
 	}
 
 	/**
-	 * Create an instance of the given model.
+	 * Generate models from the factory.
 	 *
-	 * @param string $class
-	 * @param array  $attributes
-	 *
-	 * @return mixed
+	 * @return static
 	 */
-	public function make( $class, array $attributes = [] ) {
-		return $this->of( $class )->make( $attributes );
-	}
-
-	/**
-	 * Get the raw attribute array for a given model.
-	 *
-	 * @param string $class
-	 * @param array  $attributes
-	 *
-	 * @return array
-	 */
-	public function raw( $class, array $attributes = [] ) {
-		return array_merge(
-			call_user_func(
-				$this->definitions[ $class ],
-				$this->faker
-			),
-			$attributes
+	public function as_models() {
+		return tap(
+			clone $this,
+			fn ( Factory $factory ) => $factory->as_models = true,
 		);
 	}
 
 	/**
-	 * Create a builder for the given model.
+	 * Generate core WordPress objects from the factory.
 	 *
-	 * @param string $class
-	 *
-	 * @return Factory_Builder
+	 * @return static
 	 */
-	public function of( $class ) {
-		return new Factory_Builder(
-			$class,
-			$this->definitions,
-			$this->states,
-			$this->after_making,
-			$this->after_creating,
-			$this->faker
+	public function as_objects() {
+		return tap(
+			clone $this,
+			fn ( Factory $factory ) => $factory->as_models = false,
 		);
 	}
 
 	/**
-	 * Load factories from path.
+	 * Create a new factory instance with middleware.
 	 *
-	 * @param string $path
-	 *
-	 * @return $this
+	 * @param callable(array $args, \Closure $next): mixed $middleware Middleware to run the factory through.
+	 * @return static
 	 */
-	public function load( $path ) {
-		$factory = $this;
+	public function with_middleware( callable $middleware ) {
+		return tap(
+			clone $this,
+			fn ( Factory $factory ) => $factory->middleware = $this->middleware->merge( $middleware ),
+		);
+	}
 
-		if ( is_dir( $path ) ) {
-			foreach ( Finder::create()->files()->name( '*.php' )->in( $path ) as $file ) {
-				require $file->getRealPath();
-			}
+	/**
+	 * Create a new factory instance without any middleware.
+	 *
+	 * This will return the factory to its original state with only the factory
+	 * definition applied.
+	 *
+	 * @return static
+	 */
+	public function without_middleware() {
+		return tap(
+			clone $this,
+			fn ( Factory $factory ) => $factory->middleware = new Collection(),
+		);
+	}
+
+	/**
+	 * Specify the model to use when creating objects.
+	 *
+	 * @throws \InvalidArgumentException If the model does not extend from the base model class.
+	 *
+	 * @param class-string<TObject> $model The model to use.
+	 * @return static
+	 */
+	public function with_model( string $model ) {
+		// Validate that model extends from the base model class.
+		if ( ! is_subclass_of( $model, Model::class ) ) {
+			throw new \InvalidArgumentException( 'Model must extend from the base model class.' );
 		}
 
-		return $factory;
-	}
-
-	/**
-	 * Determine if the given offset exists.
-	 *
-	 * @param string $offset
-	 *
-	 * @return bool
-	 */
-	public function offsetExists( $offset ) {
-		return isset( $this->definitions[ $offset ] );
-	}
-
-	/**
-	 * Get the value of the given offset.
-	 *
-	 * @param string $offset
-	 *
-	 * @return mixed
-	 */
-	public function offsetGet( $offset ) {
-		return $this->make( $offset );
-	}
-
-	/**
-	 * Set the given offset to the given value.
-	 *
-	 * @param string   $offset
-	 * @param callable $value
-	 *
-	 * @return void
-	 */
-	public function offsetSet( $offset, $value ) {
-		$this->define(
-			$offset, // phpcs:ignore
-			$value
+		return tap(
+			clone $this,
+			fn ( Factory $factory ) => $factory->model = $model,
 		);
 	}
 
 	/**
-	 * Unset the value at the given offset.
+	 * Retrieve the model to use when creating objects.
 	 *
-	 * @param string $offset
-	 *
-	 * @return void
+	 * @return class-string<TObject>
 	 */
-	public function offsetUnset( $offset ) {
-		unset( $this->definitions[ $offset ] );
+	public function get_model(): string {
+		return $this->model;
+	}
+
+	/**
+	 * Add a new state transformation to the factory. Functions the same as
+	 * middleware but supports returning an array of attributes vs a closure.
+	 *
+	 * @param (callable(array<string, mixed>): array<string, mixed>|array<string, mixed>) $state The state transformation.
+	 * @return static
+	 */
+	public function state( array|callable $state ) {
+		return $this->with_middleware(
+			function ( array $args, Closure $next ) use ( $state ) {
+				$args = array_merge(
+					$args,
+					is_callable( $state ) ? $state( $args ) : $state,
+				);
+
+				return $next( $args );
+			},
+		);
+	}
+
+	/**
+	 * Creates multiple objects.
+	 *
+	 * @param int   $count Amount of objects to create.
+	 * @param array $args  Optional. The arguments for the object to create. Default is empty array.
+	 *
+	 * @return array<int, int>
+	 */
+	public function create_many( int $count, array $args = [] ) {
+		return collect()
+			->pad( $count, null )
+			->map(
+				fn () => $this->create( $args ),
+			)
+			->to_array();
+	}
+
+	/**
+	 * Creates an object and returns its object.
+	 *
+	 * @param array $args Optional. The arguments for the object to create. Default is empty array.
+	 * @return TObject The created object.
+	 */
+	public function create_and_get( array $args = [] ) {
+		return $this->get_object_by_id( $this->create( $args ) );
+	}
+
+	/**
+	 * Pass arguments through the middleware and return a core object.
+	 *
+	 * @param array $args  Arguments to pass through the middleware.
+	 * @return TObject|Core_Object|null
+	 */
+	protected function make( array $args ) {
+		// Apply the factory definition to top of the middleware stack.
+		$this->middleware->prepend( $this->apply_definition() );
+
+		// Append the arguments passed to make() as the last state values to apply.
+		$factory = $this->state( $args );
+
+		return Pipeline::make()
+			->send( [] )
+			->through( $factory->middleware->all() )
+			->then(
+				fn ( array $args ) => $this->get_model()::create( $args ),
+			);
+	}
+
+	/**
+	 * Load the factory's definition and make a new instance of the factory.
+	 *
+	 * @return Closure
+	 */
+	public function apply_definition(): Closure {
+		return fn ( array $args, Closure $next ) => $next(
+			array_merge( $args, $this->definition() ),
+		);
 	}
 }

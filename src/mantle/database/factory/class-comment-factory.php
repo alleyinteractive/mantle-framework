@@ -5,9 +5,8 @@
  * @package Mantle
  */
 
-namespace Mantle\Testing\Factory;
+namespace Mantle\Database\Factory;
 
-use Faker\Generator;
 use Mantle\Database\Model\Comment;
 
 use function Mantle\Support\Helpers\get_comment_object;
@@ -15,35 +14,28 @@ use function Mantle\Support\Helpers\get_comment_object;
 /**
  * Term Factory
  *
- * @template TObject
+ * @template TObject of \Mantle\Database\Model\Comment
  */
 class Comment_Factory extends Factory {
 	/**
-	 * Constructor.
+	 * Model to use when creating objects.
 	 *
-	 * @param Generator $faker Faker generator.
+	 * @var class-string<TObject>
 	 */
-	public function __construct( protected Generator $faker ) {
-	}
+	protected string $model = Comment::class;
 
 	/**
-	 * Creates an object.
+	 * Definition of the factory.
 	 *
-	 * @param array $args The arguments.
-	 * @return int|null
+	 * @return array<string, mixed>
 	 */
-	public function create( $args = [] ) {
-		$args = array_merge(
-			[
-				'comment_author'     => $this->faker->name(),
-				'comment_author_url' => $this->faker->url(),
-				'comment_approved'   => 1,
-				'comment_content'    => $this->faker->sentence(),
-			],
-			$args
-		);
-
-		return $this->make( $args, Comment::class )?->id();
+	public function definition(): array {
+		return [
+			'comment_author'     => $this->faker->name(),
+			'comment_author_url' => $this->faker->url(),
+			'comment_approved'   => 1,
+			'comment_content'    => $this->faker->sentence(),
+		];
 	}
 
 	/**

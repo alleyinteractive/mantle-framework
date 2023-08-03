@@ -9,6 +9,7 @@ namespace Mantle\Testing;
 
 use Mantle\Container\Container;
 use Mantle\Contracts\Application;
+use Mantle\Database\Factory\Factory_Container;
 use Mantle\Database\Model\Model;
 use Mantle\Facade\Facade;
 use Mantle\Framework\Alias_Loader;
@@ -29,7 +30,6 @@ use Mantle\Testing\Concerns\Network_Admin_Screen;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Concerns\WordPress_Authentication;
 use Mantle\Testing\Concerns\WordPress_State;
-use Mantle\Testing\Factory\Factory_Container;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use WP;
 use WP_Query;
@@ -300,9 +300,9 @@ abstract class Test_Case extends BaseTestCase {
 	/**
 	 * Fetches the factory object for generating WordPress fixtures.
 	 *
-	 * @return \Mantle\Testing\Factory\Factory_Container
+	 * @return \Mantle\Database\Factory\Factory_Container
 	 */
-	protected static function factory() {
+	protected static function factory(): Factory_Container {
 		if ( ! isset( static::$factory ) ) {
 			static::$factory = new Factory_Container( Container::get_instance() );
 		}

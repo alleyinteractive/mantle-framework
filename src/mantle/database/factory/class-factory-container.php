@@ -5,14 +5,17 @@
  * @package Mantle
  */
 
-namespace Mantle\Testing\Factory;
+namespace Mantle\Database\Factory;
 
 use Mantle\Contracts\Container;
 
 /**
- * Collect all the Unit Test Factories for IDE Support
+ * Collect all the Database Factories for IDE Support
  *
  * Allows IDEs to type-hint the individual factories and their child methods.
+ *
+ * This method is used in unit testing primarily to mirror core's testing
+ * factories.
  */
 class Factory_Container {
 	/**

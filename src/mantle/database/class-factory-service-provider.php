@@ -9,9 +9,8 @@
 
 namespace Mantle\Database;
 
-use \Faker\Factory;
-use \Faker\Generator as FakerGenerator;
-use Mantle\Database\Factory\Factory as MantleFactory;
+use Faker\Factory;
+use Faker\Generator as FakerGenerator;
 use Mantle\Support\Service_Provider;
 
 /**
@@ -52,18 +51,6 @@ class Factory_Service_Provider extends Service_Provider {
 				static::$fakers[ $locale ]->unique( true );
 
 				return static::$fakers[ $locale ];
-			}
-		);
-
-		$this->app->singleton(
-			MantleFactory::class,
-			function ( $app ) {
-				return MantleFactory::construct(
-					$app->make(
-						FakerGenerator::class
-					),
-					$app->get_base_path() . '/database/factories'
-				);
 			}
 		);
 	}

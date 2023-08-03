@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Testing\Factory;
+namespace Mantle\Database\Factory;
 
 use Faker\Generator;
 
@@ -23,11 +23,16 @@ class Network_Factory extends Factory {
 	protected int $network_id = 2;
 
 	/**
-	 * Constructor.
+	 * Definition of the factory.
 	 *
-	 * @param Generator $faker Faker generator.
+	 * @return array<string, mixed>
 	 */
-	public function __construct( protected Generator $faker ) {
+	public function definition(): array {
+		return [
+			'domain' => $this->faker->domainName(),
+			'title'  => $this->faker->words(),
+			'path'   => $this->faker->slug(),
+		];
 	}
 
 	/**

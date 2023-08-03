@@ -41,6 +41,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 		Concerns\Has_Aliases,
 		Concerns\Has_Attributes,
 		Concerns\Has_Events,
+		Concerns\Has_Factory,
 		Concerns\Has_Global_Scopes,
 		Concerns\Has_Relationships;
 
