@@ -52,7 +52,7 @@ class Console_Service_Provider extends Service_Provider implements Isolated_Serv
 	public function boot() {
 		$this->publishes(
 			[
-				dirname( __DIR__, 4 ) . '/config' => $this->app->get_app_path( 'config' ),
+				dirname( __DIR__, 4 ) . '/config' => $this->app->get_base_path( 'config' ),
 			],
 			[ 'mantle', 'application-structure', 'config' ],
 		);
