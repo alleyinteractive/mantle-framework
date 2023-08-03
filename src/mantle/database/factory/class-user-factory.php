@@ -51,9 +51,9 @@ class User_Factory extends Factory {
 	 * Retrieves an object by ID.
 	 *
 	 * @param int $object_id The object ID.
-	 * @return \WP_User|null
+	 * @return \WP_User|\Mantle\Database\Model\User|null
 	 */
 	public function get_object_by_id( int $object_id ) {
-		return get_user_object( $object_id );
+		return $this->as_models ? $this->model::find( $object_id ) : get_user_object( $object_id );
 	}
 }
