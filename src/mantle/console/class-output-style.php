@@ -27,7 +27,7 @@ class Output_Style extends SymfonyStyle {
 			->map( fn( $row ) => array_combine( $headers, $row ) )
 			->to_array();
 
-		return $this->write( json_encode( $data, JSON_PRETTY_PRINT ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+		$this->write( json_encode( $data, JSON_PRETTY_PRINT ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
 	}
 
 	/**
@@ -76,6 +76,6 @@ class Output_Style extends SymfonyStyle {
 			}
 		}
 
-		return $this->write( $xml->asXML() );
+		$this->write( $xml->asXML() );
 	}
 }
