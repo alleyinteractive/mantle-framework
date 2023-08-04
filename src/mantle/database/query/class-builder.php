@@ -164,6 +164,27 @@ abstract class Builder {
 	abstract public function get(): Collection;
 
 	/**
+	 * Get the query arguments.
+	 *
+	 * @return array
+	 */
+	abstract public function get_query_args(): array;
+
+	/**
+	 * Dump the SQL query for the request.
+	 *
+	 * @return static
+	 */
+	abstract public function dumpSql(): static;
+
+	/**
+	 * Dump the SQL query for the request and stop execution.
+	 *
+	 * @return void
+	 */
+	abstract public function ddSql(): void;
+
+	/**
 	 * Get a model instance for the builder.
 	 *
 	 * @return string|string[]
@@ -938,5 +959,26 @@ abstract class Builder {
 	public function without( ...$relations ) {
 		$this->eager_load = array_diff_key( $this->eager_load, array_flip( $relations ) );
 		return $this;
+	}
+
+	/**
+	 * Dump the query variables being passed to WP_Query.
+	 *
+	 * @return static
+	 */
+	public function dump(): static {
+		dump( $this->get_query_args() );
+
+		return $this;
+	}
+
+	/**
+	 * Dump the query variables being passed to WP_Query and die.
+	 *
+	 * @return void
+	 */
+	public function dd(): void {
+		$this->dump();
+		die;
 	}
 }
