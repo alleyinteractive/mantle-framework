@@ -16,6 +16,7 @@ use Mantle\Contracts\Application as Application_Contract;
 use Mantle\Contracts\Container as Container_Contract;
 use Mantle\Contracts\Kernel as Kernel_Contract;
 use Mantle\Events\Dispatcher;
+use Mantle\Faker\Faker_Provider;
 use Mantle\Support\Environment;
 use Mantle\Support\Service_Provider;
 use RuntimeException;
@@ -319,6 +320,8 @@ class Application extends Container implements Application_Contract {
 				$factory = Factory::create();
 
 				$factory->unique( true );
+
+				$factory->addProvider( new Faker_Provider( $factory ) );
 
 				return $factory;
 			},
