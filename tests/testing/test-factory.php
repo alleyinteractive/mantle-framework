@@ -8,7 +8,6 @@ use Mantle\Database\Model\Term;
 use Mantle\Testing\Concerns\With_Faker;
 use Mantle\Testing\Framework_Test_Case;
 
-
 use function Mantle\Support\Helpers\collect;
 
 class Test_Factory extends Framework_Test_Case {

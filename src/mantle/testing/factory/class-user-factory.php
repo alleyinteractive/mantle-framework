@@ -45,11 +45,11 @@ class User_Factory extends Factory {
 	public function create( array $args = [] ): ?int {
 		$args = array_merge(
 			[
-				'description'  => $this->faker->sentence(),
-				'role'         => 'subscriber',
-				'user_email'   => $this->faker->email(),
-				'user_login'   => $this->faker->userName(),
-				'user_pass'    => 'password',
+				'description' => $this->faker->sentence(),
+				'role'        => 'subscriber',
+				'user_email'  => $this->faker->email(),
+				'user_login'  => $this->faker->userName(),
+				'user_pass'   => 'password',
 			],
 			$args
 		);
