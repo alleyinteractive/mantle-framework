@@ -70,7 +70,7 @@ class Term_Query_Builder extends Builder {
 	 *
 	 * @return array
 	 */
-	protected function get_query_args(): array {
+	public function get_query_args(): array {
 		if ( is_array( $this->model ) ) {
 			$taxonomies = [];
 
@@ -126,5 +126,41 @@ class Term_Query_Builder extends Builder {
 		return $this->eager_load_relations(
 			collect( $models )->filter()->values(),
 		);
+	}
+
+	/**
+	 * Dump the SQL query being executed.
+	 *
+	 * @param bool $die Whether to die after dumping the SQL.
+	 * @return static
+	 */
+	public function dumpSql( bool $die = false ): static {
+		add_filter(
+			'terms_pre_query',
+			function ( mixed $terms, \WP_Term_Query $query ) use ( $die ) {
+				if ( spl_object_hash( $query ) === $this->query_hash ) {
+					dump( $query->request );
+
+					if ( $die ) {
+						die;
+					}
+				}
+
+				return $terms;
+			},
+			10,
+			2 
+		);
+
+		return $this;
+	}
+
+	/**
+	 * Dump the SQL query being executed and die.
+	 *
+	 * @return void
+	 */
+	public function ddSql(): void {
+		$this->dumpSql( true );
 	}
 }
