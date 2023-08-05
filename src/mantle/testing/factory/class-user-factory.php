@@ -7,7 +7,6 @@
 
 namespace Mantle\Testing\Factory;
 
-use Closure;
 use Faker\Generator;
 use Mantle\Database\Model\User;
 
@@ -44,19 +43,13 @@ class User_Factory extends Factory {
 	 * @return int|null
 	 */
 	public function create( array $args = [] ): ?int {
-		$first_name = $this->faker->firstName();
-		$last_name  = $this->faker->lastName();
-
 		$args = array_merge(
 			[
-				'description'  => $this->faker->sentence(),
-				'display_name' => "{$first_name} {$last_name}",
-				'first_name'   => $first_name,
-				'last_name'    => $last_name,
-				'role'         => 'subscriber',
-				'user_email'   => $this->faker->email(),
-				'user_login'   => $this->faker->userName(),
-				'user_pass'    => 'password',
+				'description' => $this->faker->sentence(),
+				'role'        => 'subscriber',
+				'user_email'  => $this->faker->email(),
+				'user_login'  => $this->faker->userName(),
+				'user_pass'   => 'password',
 			],
 			$args
 		);
