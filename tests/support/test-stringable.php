@@ -802,7 +802,6 @@ class Test_Stringable extends TestCase {
 		$this->assertFalse( $this->stringable( 'jason' )->ends_with( [ 'no' ] ) );
 		$this->assertFalse( $this->stringable( 'jason' )->ends_with( '' ) );
 		$this->assertFalse( $this->stringable( 'jason' )->ends_with( [ null ] ) );
-		$this->assertFalse( $this->stringable( 'jason' )->ends_with( null ) );
 		$this->assertFalse( $this->stringable( 'jason' )->ends_with( 'N' ) );
 		$this->assertFalse( $this->stringable( '7' )->ends_with( ' 7' ) );
 		$this->assertTrue( $this->stringable( 'a7' )->ends_with( '7' ) );
@@ -1184,7 +1183,7 @@ class Test_Stringable extends TestCase {
 		$this->assertEquals( 'w', $this->stringable( 'Привет, world!' )->char_at( 8 ) );
 		$this->assertEquals( '界', $this->stringable( '「こんにちは世界」' )->char_at( -2 ) );
 		$this->assertEquals( null, $this->stringable( '「こんにちは世界」' )->char_at( -200 ) );
-		$this->assertEquals( null, $this->stringable( 'Привет, мир!' )->char_at( 'Привет, мир!', 100 ) );
+		$this->assertEquals( null, $this->stringable( 'Привет, мир!' )->char_at( 100 ) );
 	}
 
 	public function testSubstr() {
