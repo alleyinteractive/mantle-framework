@@ -266,4 +266,40 @@ class Post_Query_Builder extends Builder {
 		$this->tax_query['relation'] = 'OR';
 		return $this->whereTerm( ...$args );
 	}
+
+	/**
+	 * Dump the SQL query being executed.
+	 *
+	 * @param bool $die Whether to die after dumping the SQL.
+	 * @return static
+	 */
+	public function dumpSql( bool $die = false ): static {
+		add_filter(
+			'posts_request',
+			function ( string $sql, \WP_Query $query ) use ( $die ) {
+				if ( spl_object_hash( $query ) === $this->query_hash ) {
+					dump( $sql );
+
+					if ( $die ) {
+						die;
+					}
+				}
+
+				return $sql;
+			},
+			10,
+			2 
+		);
+
+		return $this;
+	}
+
+	/**
+	 * Dump the SQL query being executed and die.
+	 *
+	 * @return void
+	 */
+	public function ddSql(): void {
+		$this->dumpSql( true );
+	}
 }

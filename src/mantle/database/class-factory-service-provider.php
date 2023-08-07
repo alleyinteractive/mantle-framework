@@ -11,6 +11,7 @@ namespace Mantle\Database;
 
 use Faker\Factory;
 use Faker\Generator as FakerGenerator;
+use Mantle\Faker\Faker_Provider;
 use Mantle\Support\Service_Provider;
 
 /**
@@ -20,7 +21,7 @@ class Factory_Service_Provider extends Service_Provider {
 	/**
 	 * The array of resolved Faker instances.
 	 *
-	 * @var array
+	 * @var \Faker\Generator[]
 	 */
 	protected static $fakers = [];
 
@@ -46,6 +47,10 @@ class Factory_Service_Provider extends Service_Provider {
 
 				if ( ! isset( static::$fakers[ $locale ] ) ) {
 					static::$fakers[ $locale ] = Factory::create();
+
+					static::$fakers[ $locale ]->addProvider(
+						new Faker_Provider( static::$fakers[ $locale ] )
+					);
 				}
 
 				static::$fakers[ $locale ]->unique( true );

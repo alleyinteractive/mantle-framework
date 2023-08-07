@@ -106,7 +106,7 @@ class Post_Factory extends Factory {
 	 */
 	public function definition(): array {
 		return [
-			'post_content' => trim( $this->faker->randomHtml() ),
+			'post_content' => trim( $this->faker->paragraph_blocks( 3 ) ),
 			'post_excerpt' => trim( $this->faker->paragraph( 2 ) ),
 			'post_status'  => 'publish',
 			'post_title'   => $this->faker->sentence(),
