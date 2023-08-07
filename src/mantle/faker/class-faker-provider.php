@@ -51,22 +51,7 @@ class Faker_Provider extends Base {
 	 * @param array  $attributes Attributes for the block.
 	 * @return string
 	 */
-	public static function block( string $block_name, string $content = '', array $attributes = [] ) {
-		$attributes = ! empty( $attributes ) ? \wp_json_encode( $attributes ) . ' ' : '';
-
-		if ( empty( $content ) ) {
-			return sprintf(
-				'<!-- wp:%s %s/-->',
-				$block_name,
-				$attributes
-			);
-		}
-
-		return sprintf(
-			'<!-- wp:%1$s %2$s-->%3$s<!-- /wp:%1$s -->',
-			$block_name,
-			$attributes,
-			PHP_EOL . $content . PHP_EOL
-		);
+	public static function block( string $block_name, string $content = '', array $attributes = [] ): string {
+		return get_comment_delimited_block_content( $block_name, $attributes, $content );
 	}
 }
