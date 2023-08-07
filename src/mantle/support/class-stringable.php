@@ -571,47 +571,47 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 		return new static( Str::replace( $search, $replace, $this->value, $case_sensitive ) );
 	}
 
-		/**
-		 * Replace a given value in the string sequentially with an array.
-		 *
-		 * @param  string           $search
-		 * @param  iterable<string> $replace
-		 * @return static
-		 */
+	/**
+	 * Replace a given value in the string sequentially with an array.
+	 *
+	 * @param  string           $search
+	 * @param  iterable<string> $replace
+	 * @return static
+	 */
 	public function replace_array( $search, $replace ): static {
 		return new static( Str::replace_array( $search, $replace, $this->value ) );
 	}
 
-		/**
-		 * Replace the first occurrence of a given value in the string.
-		 *
-		 * @param  string $search
-		 * @param  string $replace
-		 * @return static
-		 */
+	/**
+	 * Replace the first occurrence of a given value in the string.
+	 *
+	 * @param  string $search
+	 * @param  string $replace
+	 * @return static
+	 */
 	public function replace_first( $search, $replace ): static {
 		return new static( Str::replace_first( $search, $replace, $this->value ) );
 	}
 
-		/**
-		 * Replace the last occurrence of a given value in the string.
-		 *
-		 * @param  string $search
-		 * @param  string $replace
-		 * @return static
-		 */
+	/**
+	 * Replace the last occurrence of a given value in the string.
+	 *
+	 * @param  string $search
+	 * @param  string $replace
+	 * @return static
+	 */
 	public function replace_last( $search, $replace ): static {
 		return new static( Str::replace_last( $search, $replace, $this->value ) );
 	}
 
-		/**
-		 * Replace the patterns matching the given regular expression.
-		 *
-		 * @param  string          $pattern
-		 * @param  \Closure|string $replace
-		 * @param  int             $limit
-		 * @return static
-		 */
+	/**
+	 * Replace the patterns matching the given regular expression.
+	 *
+	 * @param  string          $pattern
+	 * @param  \Closure|string $replace
+	 * @param  int             $limit
+	 * @return static
+	 */
 	public function replace_matches( $pattern, $replace, $limit = -1 ): static {
 		if ( $replace instanceof Closure ) {
 			return new static( preg_replace_callback( $pattern, $replace, $this->value, $limit ) );
@@ -620,154 +620,154 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 		return new static( preg_replace( $pattern, $replace, $this->value, $limit ) );
 	}
 
-		/**
-		 * Parse input from a string to a collection, according to a format.
-		 *
-		 * @param  string $format
-		 * @return \Mantle\Support\Collection
-		 */
+	/**
+	 * Parse input from a string to a collection, according to a format.
+	 *
+	 * @param  string $format
+	 * @return \Mantle\Support\Collection
+	 */
 	public function scan( $format ): \Mantle\Support\Collection {
 		return collect( sscanf( $this->value, $format ) );
 	}
 
-		/**
-		 * Remove all "extra" blank space from the given string.
-		 *
-		 * @return static
-		 */
+	/**
+	 * Remove all "extra" blank space from the given string.
+	 *
+	 * @return static
+	 */
 	public function squish(): static {
 		return new static( Str::squish( $this->value ) );
 	}
 
-		/**
-		 * Begin a string with a single instance of a given value.
-		 *
-		 * @param  string $prefix
-		 * @return static
-		 */
+	/**
+	 * Begin a string with a single instance of a given value.
+	 *
+	 * @param  string $prefix
+	 * @return static
+	 */
 	public function start( $prefix ): static {
 		return new static( Str::start( $this->value, $prefix ) );
 	}
 
-		/**
-		 * Strip HTML and PHP tags from the given string.
-		 *
-		 * @param  array|string $allowed_tags
-		 * @return static
-		 */
+	/**
+	 * Strip HTML and PHP tags from the given string.
+	 *
+	 * @param  array|string $allowed_tags
+	 * @return static
+	 */
 	public function strip_tags( array|string $allowed_tags = null ): static {
 		return new static( strip_tags( $this->value, $allowed_tags ) ); // phpcs:ignore WordPressVIPMinimum.Functions.StripTags.StripTagsTwoParameters
 	}
 
-		/**
-		 * Convert the given string to upper-case.
-		 *
-		 * @return static
-		 */
+	/**
+	 * Convert the given string to upper-case.
+	 *
+	 * @return static
+	 */
 	public function upper(): static {
 		return new static( Str::upper( $this->value ) );
 	}
 
-		/**
-		 * Convert the given string to title case.
-		 *
-		 * @return static
-		 */
+	/**
+	 * Convert the given string to title case.
+	 *
+	 * @return static
+	 */
 	public function title(): static {
 		return new static( Str::title( $this->value ) );
 	}
 
-		/**
-		 * Convert the given string to title case for each word.
-		 *
-		 * @return static
-		 */
+	/**
+	 * Convert the given string to title case for each word.
+	 *
+	 * @return static
+	 */
 	public function headline(): static {
 		return new static( Str::headline( $this->value ) );
 	}
 
-		/**
-		 * Get the singular form of an English word.
-		 *
-		 * @return static
-		 */
+	/**
+	 * Get the singular form of an English word.
+	 *
+	 * @return static
+	 */
 	public function singular(): static {
 		return new static( Str::singular( $this->value ) );
 	}
 
-		/**
-		 * Generate a URL friendly "slug" from a given string.
-		 *
-		 * @param  string                $separator
-		 * @param  string|null           $language
-		 * @param  array<string, string> $dictionary
-		 * @return static
-		 */
+	/**
+	 * Generate a URL friendly "slug" from a given string.
+	 *
+	 * @param  string                $separator
+	 * @param  string|null           $language
+	 * @param  array<string, string> $dictionary
+	 * @return static
+	 */
 	public function slug( $separator = '-', $language = 'en', $dictionary = [ '@' => 'at' ] ): static {
 		return new static( Str::slug( $this->value, $separator, $language, $dictionary ) );
 	}
 
-		/**
-		 * Convert a string to snake case.
-		 *
-		 * @param  string $delimiter
-		 * @return static
-		 */
+	/**
+	 * Convert a string to snake case.
+	 *
+	 * @param  string $delimiter
+	 * @return static
+	 */
 	public function snake( $delimiter = '_' ): static {
 		return new static( Str::snake( $this->value, $delimiter ) );
 	}
 
-		/**
-		 * Determine if a given string starts with a given substring.
-		 *
-		 * @param  string|iterable<string> $needles
-		 * @return bool
-		 */
+	/**
+	 * Determine if a given string starts with a given substring.
+	 *
+	 * @param  string|iterable<string> $needles
+	 * @return bool
+	 */
 	public function startsWith( $needles ): bool {
 		return Str::starts_with( $this->value, $needles );
 	}
 
-		/**
-		 * Convert a value to studly caps case.
-		 *
-		 * @return static
-		 */
+	/**
+	 * Convert a value to studly caps case.
+	 *
+	 * @return static
+	 */
 	public function studly(): static {
 		return new static( Str::studly( $this->value ) );
 	}
 
-		/**
-		 * Returns the portion of the string specified by the start and length parameters.
-		 *
-		 * @param  int      $start
-		 * @param  int|null $length
-		 * @param  string   $encoding
-		 * @return static
-		 */
+	/**
+	 * Returns the portion of the string specified by the start and length parameters.
+	 *
+	 * @param  int      $start
+	 * @param  int|null $length
+	 * @param  string   $encoding
+	 * @return static
+	 */
 	public function substr( $start, $length = null, $encoding = 'UTF-8' ): static {
 		return new static( Str::substr( $this->value, $start, $length, $encoding ) );
 	}
 
-		/**
-		 * Returns the number of substring occurrences.
-		 *
-		 * @param  string   $needle
-		 * @param  int      $offset
-		 * @param  int|null $length
-		 * @return int
-		 */
+	/**
+	 * Returns the number of substring occurrences.
+	 *
+	 * @param  string   $needle
+	 * @param  int      $offset
+	 * @param  int|null $length
+	 * @return int
+	 */
 	public function substr_count( $needle, $offset = 0, $length = null ): int {
 		return Str::substr_count( $this->value, $needle, $offset, $length );
 	}
 
-		/**
-		 * Replace text within a portion of a string.
-		 *
-		 * @param  string|string[] $replace
-		 * @param  int|int[]       $offset
-		 * @param  int|int[]|null  $length
-		 * @return static
-		 */
+	/**
+	 * Replace text within a portion of a string.
+	 *
+	 * @param  string|string[] $replace
+	 * @param  int|int[]       $offset
+	 * @param  int|int[]|null  $length
+	 * @return static
+	 */
 	public function substr_replace( $replace, $offset = 0, $length = null ): static {
 		return new static( Str::substr_replace( $this->value, $replace, $offset, $length ) );
 	}
