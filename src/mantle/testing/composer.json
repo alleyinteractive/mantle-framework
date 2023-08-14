@@ -29,7 +29,7 @@
         }
     ],
     "suggest": {
-        "nunomaduro/collision": "For better PHPUnit printing."
+        "nunomaduro/collision": "For better PHPUnit printing.",
         "mantle-framework/console": "Required to assert console commands.",
         "phpunit/phpunit": "Required to use assertions and run tests."
     },
