@@ -19,7 +19,7 @@ jobs:
         php: [8.0, 8.1, 8.2]
         wordpress: ["latest"]
     uses: alleyinteractive/.github/.github/workflows/php-tests.yml@main
-    name: "PHP ${{ matrix.php }} - WordPress ${{ matrix.wordpress }} - Multisite ${{ matrix.multisite }} - Dependencies ${{ matrix.dependencies }}"
+    name: "P${{ matrix.php }} - WP ${{ matrix.wordpress }} ${{ matrix.multisite && 'Multisite' || '' }} - ${{ matrix.dependencies }}"
     with:
       dependency-versions: ${{ matrix.dependencies }}
       multisite: ${{ matrix.multisite }}
