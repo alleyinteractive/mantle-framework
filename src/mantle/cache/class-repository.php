@@ -28,7 +28,7 @@ abstract class Repository {
 	 * @param TCacheValue|(\Closure(): TCacheValue) $default Default value.
 	 * @return (TCacheValue is null ? mixed : TCacheValue)
 	 */
-	abstract public function get( $key, $default = null ): mixed;
+	abstract public function get( string $key, mixed $default = null ): mixed;
 
 	/**
 	 * Remove an item from the cache.
@@ -91,7 +91,7 @@ abstract class Repository {
 	 * @param null|int|\DateInterval $ttl TTL.
 	 * @return bool
 	 */
-	public function set( $key, $value, $ttl = null ): bool {
+	public function set( string $key, mixed $value, null|int|\DateInterval $ttl = null ): bool {
 		return $this->put( $key, $value, $ttl );
 	}
 
@@ -101,7 +101,7 @@ abstract class Repository {
 	 * @param string $key Cache key.
 	 * @return bool
 	 */
-	public function delete( $key ): bool {
+	public function delete( string $key ): bool {
 		return $this->forget( $key );
 	}
 
@@ -112,7 +112,7 @@ abstract class Repository {
 	 * @param mixed    $default Default value.
 	 * @return iterable
 	 */
-	public function getMultiple( $keys, $default = null ): iterable {
+	public function getMultiple( iterable $keys, mixed $default = null ): iterable {
 		return collect( $keys )
 			->map(
 				function( $key ) use ( $default ) {
@@ -129,7 +129,7 @@ abstract class Repository {
 	 * @param null|int|\DateInterval $ttl Cache TTL.
 	 * @return bool
 	 */
-	public function setMultiple( $values, $ttl = null ): bool {
+	public function setMultiple( iterable $values, null|int|\DateInterval $ttl = null ): bool {
 		foreach ( $values as $key => $value ) {
 			$this->set( $key, $value, $ttl );
 		}
@@ -143,7 +143,7 @@ abstract class Repository {
 	 * @param iterable<string> $keys Cache keys.
 	 * @return bool
 	 */
-	public function deleteMultiple( $keys ): bool {
+	public function deleteMultiple( iterable $keys ): bool {
 		collect( $keys )->each(
 			function ( $key ) {
 				return $this->delete( $key );
@@ -159,7 +159,7 @@ abstract class Repository {
 	 * @param string $key Cache key.
 	 * @return bool
 	 */
-	public function has( $key ): bool {
+	public function has( string $key ): bool {
 		return '__default__' !== $this->get( $key, '__default__' );
 	}
 

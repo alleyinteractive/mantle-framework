@@ -26,7 +26,7 @@ interface Repository extends CacheInterface {
 	 * @param TCacheValue|(\Closure(): TCacheValue) $default Default value.
 	 * @return (TCacheValue is null ? mixed : TCacheValue)
 	 */
-	// public function get( string $key, mixed $default = null ): mixed;
+	public function get( string $key, mixed $default = null ): mixed;
 
 	/**
 	 * Retrieve an item from the cache and delete it.
