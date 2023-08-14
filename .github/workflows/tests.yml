@@ -14,11 +14,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        dependencies: ["lowest", "highest"]
+        multisite: [true, false]
         php: [8.0, 8.1, 8.2]
         wordpress: ["latest"]
-        multisite: [true, false]
     uses: alleyinteractive/.github/.github/workflows/php-tests.yml@main
+    name: "PHP ${{ matrix.php }} - WordPress ${{ matrix.wordpress }} - Multisite ${{ matrix.multisite }} - Dependencies ${{ matrix.dependencies }}"
     with:
+      dependency-versions: ${{ matrix.dependencies }}
+      multisite: ${{ matrix.multisite }}
       php: ${{ matrix.php }}
       wordpress: ${{ matrix.wordpress }}
-      multisite: ${{ matrix.multisite }}
