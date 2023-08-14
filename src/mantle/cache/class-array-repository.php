@@ -30,7 +30,7 @@ class Array_Repository extends Repository implements Repository_Contract {
 	 * @param TCacheValue|(\Closure(): TCacheValue) $default Default value.
 	 * @return (TCacheValue is null ? mixed : TCacheValue)
 	 */
-	public function get( string $key, mixed $default = null ): mixed {
+	public function get( $key, $default = null ): mixed {
 		if ( ! isset( $this->storage[ $key ] ) ) {
 			return $default;
 		}

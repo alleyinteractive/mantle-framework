@@ -60,7 +60,7 @@ class Redis_Repository extends Repository implements Taggable_Repository {
 	 * @param  mixed  $default
 	 * @return mixed
 	 */
-	public function get( string $key, mixed $default = null ): mixed {
+	public function get( $key, $default = null ): mixed {
 		$value = $this->client->get( $this->prefix . $key );
 
 		if ( is_null( $value ) ) {
