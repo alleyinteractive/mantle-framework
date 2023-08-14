@@ -70,10 +70,12 @@ class Test_Log_Manager extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->instance->info( 'Test Message' );
 		$this->instance->error( 'Error Message' );
 		$this->instance->debug( 'Debug Message to ignore' );
+		$this->instance->emergency( 'Example emergency' );
 
 		// Check if the handler received the message.
 		$this->assertTrue( $this->handler->hasRecord( 'Test Message', 'info' ) );
 		$this->assertTrue( $this->handler->hasRecord( 'Error Message', 'error' ) );
+		$this->assertTrue( $this->handler->hasRecord( 'Example emergency', 'emergency' ) );
 
 		// Logger should have ignored the debug message.
 		$this->assertFalse( $this->handler->hasRecord( 'Debug Message to ignore', 'debug' ) );
