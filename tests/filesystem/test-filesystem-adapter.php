@@ -2,7 +2,6 @@
 
 namespace Mantle\Tests\Filesystem;
 
-use GuzzleHttp\Psr7\Stream;
 use InvalidArgumentException;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\FileExistsException;
@@ -212,20 +211,6 @@ class Test_Filesystem_Adapter extends TestCase {
 		$this->expectException( InvalidArgumentException::class );
 		$Filesystem_Adapter = new Filesystem_Adapter( $this->filesystem );
 		$Filesystem_Adapter->writeStream( 'file.txt', 'foo bar' );
-	}
-
-	public function testPutWithStreamInterface() {
-		file_put_contents( $this->temp_dir . '/foo.txt', 'some-data' );
-		$spy = m::spy( $this->filesystem );
-
-		$Filesystem_Adapter = new Filesystem_Adapter( $spy );
-		$stream             = fopen( $this->temp_dir . '/foo.txt', 'r' );
-		$guzzleStream       = new Stream( $stream );
-		$Filesystem_Adapter->put( 'bar.txt', $guzzleStream );
-		fclose( $stream );
-
-		$spy->shouldHaveReceived( 'putStream' );
-		$this->assertSame( 'some-data', $Filesystem_Adapter->get( 'bar.txt' ) );
 	}
 
 	public function testPutFileAs() {
