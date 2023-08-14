@@ -379,7 +379,7 @@ class Log_Manager implements LoggerInterface {
 	 *
 	 * @throws \Psr\Log\InvalidArgumentException Thrown on invalid arguments.
 	 */
-	public function log( $level, string|\Stringable $message, array $context = [] ): void {
+	public function log( $level, $message, array $context = [] ) {
 		$this->driver()->$level( $message, $context );
 	}
 
