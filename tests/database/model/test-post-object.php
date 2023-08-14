@@ -8,15 +8,17 @@ use Mantle\Database\Model\Registration\Register_Post_Type;
 use Mantle\Database\Model\Term;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
-
-use function Mantle\Support\Helpers\factory;
+use Mantle\Testing\Utils;
 
 class Test_Post_Object extends Framework_Test_Case {
 	use Refresh_Database;
 
 	protected function setUp(): void {
 		parent::setUp();
+
 		Test_Post_Type::register_object();
+
+		Utils::delete_all_posts();
 	}
 
 	protected function tearDown(): void {

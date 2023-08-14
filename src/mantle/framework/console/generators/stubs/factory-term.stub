@@ -7,24 +7,34 @@
 
 // phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment
 
-namespace {{ namespace }}\Factory;
+namespace {{ namespace }};
 
-use Faker\Generator as Faker;
 use Mantle\Support\Str;
 use App\Models\{{ class }};
 
 /**
- * Factory definition.
+ * {{ class }} Factory
  *
- * @var \Mantle\Database\Factory\Factory $factory
+ * @extends \Mantle\Database\Factory\Term_Factory<\App\Models\{{ class }}>
  */
-$factory->define(
-	{{ class }}::class, // phpcs:ignore
-	function ( Faker $faker ) {
+class {{ class }}_Factory extends \Mantle\Database\Factory\Term_Factory {
+	/**
+	 * Model to use when creating objects.
+	 *
+	 * @var class-string
+	 */
+	protected string $model = {{ class }}::class;
+
+	/**
+	 * Define the model's default state.
+	 *
+	 * @return array
+	 */
+	public function definition(): array {
 		return [
-			'name'        => $faker->sentence,
-			'description' => $faker->paragraph,
+			'name'        => $this->faker->sentence,
+			'description' => $this->faker->paragraph,
 			'taxonomy'    => '{{ object_name }}',
 		];
 	}
-);
+}

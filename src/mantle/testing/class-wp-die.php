@@ -141,10 +141,10 @@ class WP_Die {
 				echo "Mantle can run without a configuration in place but assumes a default set of configuration.\n";
 				echo "🔍 Check if your database is configured to allow access with the default credentials:\n\n";
 
-				echo "DB_NAME: \033[36m" . Utils::DEFAULT_DB_NAME . "\033[0m\n";
-				echo "DB_USER: \033[36m" . Utils::DEFAULT_DB_USER . "\033[0m\n";
-				echo "DB_PASSWORD: \033[36m" . ( Utils::DEFAULT_DB_PASSWORD ) . "\033[0m\n";
-				echo "DB_HOST: \033[36m" . Utils::DEFAULT_DB_HOST . "\033[0m\n";
+				echo "DB_NAME: \033[36m" . Utils::env( 'WP_DB_NAME', Utils::DEFAULT_DB_NAME ) . "\033[0m\n";
+				echo "DB_USER: \033[36m" . Utils::env( 'WP_DB_USER', Utils::DEFAULT_DB_USER ) . "\033[0m\n";
+				echo "DB_PASSWORD: \033[36m" . Utils::env( 'WP_DB_PASSWORD', Utils::DEFAULT_DB_PASSWORD ) . "\033[0m\n";
+				echo "DB_HOST: \033[36m" . Utils::env( 'WP_DB_HOST', Utils::DEFAULT_DB_HOST ) . "\033[0m\n";
 
 				echo "\n";
 			} else {

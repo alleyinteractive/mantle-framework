@@ -73,6 +73,15 @@ class Post_Query_Builder extends Builder {
 	];
 
 	/**
+	 * Query order by aliases.
+	 *
+	 * @var array
+	 */
+	protected array $query_order_by_aliases = [
+		'id' => 'ID',
+	];
+
+	/**
 	 * Tax Query.
 	 *
 	 * @var array
@@ -97,13 +106,15 @@ class Post_Query_Builder extends Builder {
 			$post_type = $this->model::get_object_name();
 		}
 
+		[ $order, $order_by ] = $this->get_builder_order( 'DESC', 'date' );
+
 		return array_merge(
 			[
 				'fields'              => 'ids',
 				'ignore_sticky_posts' => true,
 				'meta_query'          => $this->meta_query, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
-				'order'               => $this->order,
-				'orderby'             => $this->order_by,
+				'order'               => $order,
+				'orderby'             => $order_by,
 				'paged'               => $this->page,
 				'post_type'           => $post_type,
 				'posts_per_page'      => $this->limit,
@@ -120,7 +131,15 @@ class Post_Query_Builder extends Builder {
 	 * @return Collection<int, TModel>
 	 */
 	public function get(): Collection {
-		$query            = new \WP_Query( $this->get_query_args() );
+		$query = new \WP_Query();
+
+		// Store the query hash for reference by side-effects.
+		$this->query_hash = spl_object_hash( $query );
+
+		$this->with_clauses(
+			fn () => $query->query( $this->get_query_args() ),
+		);
+
 		$this->found_rows = $query->found_posts;
 		$post_ids         = $query->posts;
 
@@ -246,5 +265,41 @@ class Post_Query_Builder extends Builder {
 	public function orWhereTerm( ...$args ) {
 		$this->tax_query['relation'] = 'OR';
 		return $this->whereTerm( ...$args );
+	}
+
+	/**
+	 * Dump the SQL query being executed.
+	 *
+	 * @param bool $die Whether to die after dumping the SQL.
+	 * @return static
+	 */
+	public function dumpSql( bool $die = false ): static {
+		add_filter(
+			'posts_request',
+			function ( string $sql, \WP_Query $query ) use ( $die ) {
+				if ( spl_object_hash( $query ) === $this->query_hash ) {
+					dump( $sql );
+
+					if ( $die ) {
+						die;
+					}
+				}
+
+				return $sql;
+			},
+			10,
+			2 
+		);
+
+		return $this;
+	}
+
+	/**
+	 * Dump the SQL query being executed and die.
+	 *
+	 * @return void
+	 */
+	public function ddSql(): void {
+		$this->dumpSql( true );
 	}
 }

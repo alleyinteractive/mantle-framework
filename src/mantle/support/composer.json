@@ -16,9 +16,6 @@
         "voku/portable-ascii": "^2.0"
     },
     "extra": {
-        "branch-alias": {
-            "dev-main": "0.12-dev"
-        },
         "wordpress-autoloader": {
             "autoload": {
                 "Mantle\\Support": "./"

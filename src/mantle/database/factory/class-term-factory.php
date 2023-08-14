@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Testing\Factory;
+namespace Mantle\Database\Factory;
 
 use Closure;
 use Faker\Generator;
@@ -16,10 +16,17 @@ use function Mantle\Support\Helpers\get_term_object;
 /**
  * Term Factory
  *
- * @template TObject
+ * @template TObject of \Mantle\Database\Model\Term
  */
 class Term_Factory extends Factory {
 	use Concerns\With_Meta;
+
+	/**
+	 * Model to use when creating objects.
+	 *
+	 * @var class-string
+	 */
+	protected string $model = Term::class;
 
 	/**
 	 * Constructor.
@@ -27,26 +34,21 @@ class Term_Factory extends Factory {
 	 * @param Generator $faker Faker generator.
 	 * @param string    $taxonomy Taxonomy name.
 	 */
-	public function __construct( protected Generator $faker, protected string $taxonomy ) {
+	public function __construct( Generator $faker, protected string $taxonomy ) {
+		parent::__construct( $faker );
 	}
 
 	/**
-	 * Creates an object.
+	 * Definition of the factory.
 	 *
-	 * @param array $args The arguments.
-	 * @return int|null
+	 * @return array<string, mixed>
 	 */
-	public function create( array $args = [] ) {
-		$args = array_merge(
-			[
-				'description' => trim( $this->faker->paragraph( 2 ) ),
-				'name'        => $this->faker->sentence(),
-				'taxonomy'    => $this->taxonomy,
-			],
-			$args
-		);
-
-		return $this->make( $args, Term::class )?->id();
+	public function definition(): array {
+		return [
+			'description' => trim( $this->faker->paragraph( 2 ) ),
+			'name'        => $this->faker->sentence(),
+			'taxonomy'    => $this->taxonomy,
+		];
 	}
 
 	/**

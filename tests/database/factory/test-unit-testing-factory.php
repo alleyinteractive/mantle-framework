@@ -1,5 +1,5 @@
 <?php
-namespace Mantle\Tests\Testing;
+namespace Mantle\Tests\Database\Factory;
 
 use Carbon\Carbon;
 use Closure;
@@ -9,7 +9,12 @@ use Mantle\Testing\Framework_Test_Case;
 
 use function Mantle\Support\Helpers\collect;
 
-class Test_Factory extends Framework_Test_Case {
+/**
+ * Test case with the focus of testing the unit testing factory that mirrors
+ * WordPress core's factories. The factories here should be drop-in replacements
+ * for core's factories with some sugar on top.
+ */
+class Test_Unit_Testing_Factory extends Framework_Test_Case {
 	public function test_post_factory() {
 		$this->assertInstanceOf( \WP_Post::class, static::factory()->post->create_and_get() );
 
@@ -189,6 +194,40 @@ class Test_Factory extends Framework_Test_Case {
 			$category = static::factory()->category->create_and_get(),
 			$tag = static::factory()->tag->create_and_get(),
 		)->create_and_get();
+
+		$this->assertTrue( has_term( $category->term_id, 'category', $post ) );
+		$this->assertTrue( has_term( $tag->term_id, 'post_tag', $post ) );
+
+		$post = static::factory()->post->with_terms( [
+			$category = static::factory()->category->create_and_get(),
+			$tag = static::factory()->tag->create_and_get(),
+		] )->create_and_get();
+
+		$this->assertTrue( has_term( $category->term_id, 'category', $post ) );
+		$this->assertTrue( has_term( $tag->term_id, 'post_tag', $post ) );
+	}
+
+	public function test_posts_with_terms_multiple_taxonomies_and_term_slug() {
+		$tag = static::factory()->tag->create_and_get();
+
+		// Test with the arguments passed as individual parameters.
+		$post = static::factory()->post->with_terms(
+			$category = static::factory()->category->create_and_get(),
+			[
+				'post_tag' => $tag->slug,
+			],
+		)->create_and_get();
+
+		$this->assertTrue( has_term( $category->term_id, 'category', $post ) );
+		$this->assertTrue( has_term( $tag->term_id, 'post_tag', $post ) );
+
+		// Test with the arguments wrapped in an array.
+		$post = static::factory()->post->with_terms( [
+			$category = static::factory()->category->create_and_get(),
+			[
+				'post_tag' => $tag->slug,
+			],
+		] )->create_and_get();
 
 		$this->assertTrue( has_term( $category->term_id, 'category', $post ) );
 		$this->assertTrue( has_term( $tag->term_id, 'post_tag', $post ) );

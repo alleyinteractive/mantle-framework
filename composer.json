@@ -28,11 +28,12 @@
         "monolog/monolog": "^2.7",
         "nesbot/carbon": "^2.53",
         "nette/php-generator": "^3.6",
+        "nunomaduro/collision": "^6.0",
         "nunomaduro/termwind": "^1.14",
-        "nunomaduro/collision": "^5.0",
         "psr/container": "^1.1.1 || ^2.0.1",
         "psr/log": "^1.0.1 || ^2.0 || ^3.0",
         "ramsey/uuid": "^4.7",
+        "symfony/console": "^6.0",
         "symfony/finder": "^6.0",
         "symfony/http-foundation": "^6.0",
         "symfony/http-kernel": "^6.0",
@@ -89,6 +90,7 @@
             "src/mantle/cache/autoload.php",
             "src/mantle/config/autoload.php",
             "src/mantle/http/autoload.php",
+            "src/mantle/http-client/autoload.php",
             "src/mantle/queue/autoload.php",
             "src/mantle/support/autoload.php",
             "src/mantle/testing/autoload.php"
@@ -102,9 +104,6 @@
         "sort-packages": true
     },
     "extra": {
-        "branch-alias": {
-            "dev-main": "0.12-dev"
-        },
         "wordpress-autoloader": {
             "autoload": {
                 "Mantle\\": "src/mantle/"
@@ -133,8 +132,7 @@
             "@phpcs",
             "@phpstan",
             "@phpunit"
-        ],
-        "validate-monorepo": "monorepo-builder validate --ansi"
+        ]
     },
     "repositories": [
         {

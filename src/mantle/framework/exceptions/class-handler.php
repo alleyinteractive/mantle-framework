@@ -58,11 +58,12 @@ class Handler implements Contract {
 	 * @var array
 	 */
 	protected $internal_dont_report = [
+		\Symfony\Component\Console\Exception\CommandNotFoundException::class,
+		\Symfony\Component\Console\Exception\RuntimeException::class,
 		Authentication_Error::class,
 		HttpException::class,
 		Model_Not_Found_Exception::class,
 		ResourceNotFoundException::class,
-		\Symfony\Component\Console\Exception\RuntimeException::class,
 	];
 
 	/**

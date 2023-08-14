@@ -8,9 +8,6 @@
         "mantle-framework/contracts": "^0.12"
     },
     "extra": {
-        "branch-alias": {
-            "dev-main": "0.12-dev"
-        },
         "wordpress-autoloader": {
             "autoload": {
                 "Mantle\\View": "./"

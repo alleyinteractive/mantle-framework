@@ -14,8 +14,6 @@ use Mantle\Database\Query\Builder;
 use Mantle\Database\Query\Post_Query_Builder;
 use Mantle\Support\Helpers;
 
-use function Mantle\Support\Helpers\collect;
-
 /**
  * Post Model
  *
@@ -60,6 +58,9 @@ use function Mantle\Support\Helpers\collect;
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereTitle( string $title )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereType( string $type )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereTerm( array|\WP_Term|\Mantle\Database\Model\Term|int $term, ?string $taxonomy = null, string $operator = 'IN', string $field = 'term_id' )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> andWhereTerm( array|\WP_Term|\Mantle\Database\Model\Term|int $term, ?string $taxonomy = null, string $operator = 'IN', string $field = 'term_id' )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> orWhereTerm( array|\WP_Term|\Mantle\Database\Model\Term|int $term, ?string $taxonomy = null, string $operator = 'IN', string $field = 'term_id' )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereMeta( string $key, mixed $value, string $operator = '=' )
  */
 class Post extends Model implements Contracts\Database\Core_Object, Contracts\Database\Model_Meta, Contracts\Database\Updatable {
 	use Events\Post_Events,
@@ -182,6 +183,15 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 */
 	public static function get_query_builder_class(): ?string {
 		return Post_Query_Builder::class;
+	}
+
+	/**
+	 * Create a new query instance.
+	 *
+	 * @return \Mantle\Database\Query\Post_Query_Builder<static>
+	 */
+	public static function query(): Post_Query_Builder {
+		return ( new static() )->new_query();
 	}
 
 	/**

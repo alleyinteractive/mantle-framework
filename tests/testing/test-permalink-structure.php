@@ -5,6 +5,13 @@ use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Utils;
 
 class Test_Permalink_Structure extends Framework_Test_Case {
+	protected function setUp(): void {
+		parent::setUp();
+
+		// Set the site's timezone.
+		update_option( 'timezone_string', 'America/New_York' );
+	}
+
   public function test_default_permalink_structure() {
 		$this->assertEquals(
 			Utils::DEFAULT_PERMALINK_STRUCTURE,

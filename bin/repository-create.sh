@@ -18,6 +18,11 @@ fi
 
 cwd=$(pwd)
 
+# Get the current main branch name from the host project.
+main_branch=$(gh api repos/alleyinteractive/mantle-framework --jq '.default_branch')
+
+echo "Using $main_branch as the default branch"
+
 for path in $PACKAGES; do
 	package=$(basename "$path")
 	echo "Checking $ORGANIZATION/$package..."
@@ -50,7 +55,7 @@ for path in $PACKAGES; do
 	fi
 
 	# Update the settings to disable issues and wikis.
-	gh repo edit "$ORGANIZATION/$package" --enable-issues=false --enable-wiki=false --homepage https://mantle.alley.com
+	gh repo edit "$ORGANIZATION/$package" --enable-issues=false --enable-wiki=false --homepage https://mantle.alley.com --default-branch "$main_branch"
 done
 
 echo "DONE"

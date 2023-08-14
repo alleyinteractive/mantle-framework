@@ -15,10 +15,9 @@ use Countable;
 use Exception;
 use Mantle\Container\Container;
 use Mantle\Events\Dispatcher;
-use Mantle\Database\Factory\Factory_Builder;
+use Mantle\Database\Factory\Factory;
 use Mantle\Support\Collection;
 use Mantle\Support\Higher_Order_Tap_Proxy;
-use Mantle\Database\Factory\Factory as MantleFactory;
 use Mantle\Support\Str;
 
 /**
@@ -142,9 +141,11 @@ function get_callable_fqn( $callable ): string {
 /**
  * Create a collection from the given value.
  *
- * @param mixed $value Value to collect.
+ * @template TKey of array-key
+ * @template TValue
  *
- * @return Collection
+ * @param  \Mantle\Contracts\Support\Arrayable<TKey, TValue>|iterable<TKey, TValue>|null $value Value to convert to a collection.
+ * @return \Mantle\Support\Collection<TKey, TValue>
  */
 function collect( $value = null ) {
 	return new Collection( $value );
@@ -249,11 +250,11 @@ function retry( $times, callable $callback, $sleep = 0, $when = null ) {
  * Get a new stringable object from the given string.
  *
  * @param  string|null  $string
- * @return \Mantle\Support\Stringable|\Stringable
+ * @return \Mantle\Support\Stringable|mixed
  */
-function str( $string = null ) {
-	if ( func_num_args() === 0 ) {
-		return new class() implements \Stringable {
+function str( ?string $string = null ) {
+	if ( is_null( $string ) ) {
+		return new class() {
 			public function __call( $method, $parameters ) {
 				return Str::$method( ...$parameters );
 			}
@@ -264,7 +265,7 @@ function str( $string = null ) {
 		};
 	}
 
-	return Str::of( $string );
+	return Str::of( (string) $string );
 }
 
 /**
@@ -373,25 +374,6 @@ function transform( $value, callable $callback, $default = null ) {
  */
 function with( $value, callable $callback = null ) {
 	return is_null( $callback ) ? $value : $callback( $value );
-}
-
-/**
- * Create a model factory builder for a given class and amount.
- *
- * @param string $class
- * @param int    $amount
- *
- * @return Factory_Builder
- * @throws \Mantle\Container\Binding_Resolution_Exception Binding resolution exception.
- */
-function factory( $class, $amount = null ) {
-	$factory = Container::get_instance()->make( MantleFactory::class );
-
-	if ( isset( $amount ) && is_int( $amount ) ) {
-		return $factory->of( $class )->times( $amount );
-	}
-
-	return $factory->of( $class );
 }
 
 /**

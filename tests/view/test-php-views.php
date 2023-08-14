@@ -3,8 +3,11 @@ namespace Mantle\Tests\View;
 
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Facade\View;
+use Mantle\Http\View\Factory;
 
 class Test_Php_Views extends Framework_Test_Case {
+	protected Factory $view_factory;
+
 	protected function setUp(): void {
 		parent::setUp();
 

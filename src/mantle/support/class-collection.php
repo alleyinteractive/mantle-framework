@@ -1005,12 +1005,21 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Reduce the collection to a single value.
 	 *
-	 * @param    callable $callback
-	 * @param    mixed    $initial
-	 * @return mixed
+	 * @template TReduceInitial
+	 * @template TReduceReturnType
+	 *
+	 * @param  callable(TReduceInitial|TReduceReturnType, TValue, TKey): TReduceReturnType $callback
+	 * @param  TReduceInitial                                                              $initial
+	 * @return TReduceReturnType|TReduceInitial
 	 */
 	public function reduce( callable $callback, $initial = null ) {
-		return array_reduce( $this->items, $callback, $initial );
+		$result = $initial;
+
+		foreach ( $this as $key => $value ) {
+			$result = $callback( $result, $value, $key );
+		}
+
+		return $result;
 	}
 
 	/**
@@ -1335,6 +1344,16 @@ class Collection implements ArrayAccess, Enumerable {
 		);
 
 		return new static( call_user_func_array( 'array_map', $params ) );
+	}
+
+	/**
+	 * Trim all values in the collection.
+	 *
+	 * @param  string $char_list Characters to trim, optional.
+	 * @return static<TKey, string>
+	 */
+	public function trim( string $char_list = "\n\r\t\v\x00" ) {
+		return new static( $this->map( fn ( $item ) => trim( $item, $char_list ) ) );
 	}
 
 	/**

@@ -8,12 +8,7 @@
 namespace Mantle\Application;
 
 use Mantle\Container\Container;
-use Mantle\Contracts\Support\Isolated_Service_Provider;
-use Mantle\Events\Event_Service_Provider;
-use Mantle\Contracts\Application as Application_Contract;
 use Mantle\Contracts\Bootstrapable;
-use Mantle\Contracts\Container as Container_Contract;
-use Mantle\Contracts\Kernel as Kernel_Contract;
 use Mantle\Framework\Manifest\Model_Manifest;
 use Mantle\Framework\Manifest\Package_Manifest;
 use Mantle\Support\Environment;

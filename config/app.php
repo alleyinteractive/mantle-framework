@@ -17,7 +17,7 @@ return [
 	| is shown.
 	|
 	*/
-	'debug'     => environment( 'APP_DEBUG', defined( 'WP_DEBUG' ) && WP_DEBUG ),
+	'debug'       => environment( 'APP_DEBUG', defined( 'WP_DEBUG' ) && WP_DEBUG ),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -27,7 +27,7 @@ return [
 	| Providers listed here will be autoloaded for every request on the application.
 	|
 	 */
-	'providers' => [
+	'providers'   => [
 		// Framework Providers.
 		Mantle\Filesystem\Filesystem_Service_Provider::class,
 		Mantle\Database\Factory_Service_Provider::class,
@@ -46,7 +46,11 @@ return [
 		|
 		| These are the providers that power your application. The above ones are
 		| core to Mantle. The following are designed to be implemented and extended
-		| by your application.
+		| by your application. Mantle will use the framework's version unless
+		| otherwise specified. You can export the framework's version by running the
+		| following command and switching out the provider's class name:
+		|
+		|   wp mantle vendor:publish --tags=application-structure --force
 		|
 		*/
 		Mantle\Application\App_Service_Provider::class,
@@ -64,7 +68,7 @@ return [
 	| the need use the proper namespace.
 	|
 	 */
-	'aliases'   => [
+	'aliases'     => [
 		'App'     => Mantle\Facade\App::class,
 		'Cache'   => Mantle\Facade\Cache::class,
 		'Config'  => Mantle\Facade\Config::class,
@@ -87,5 +91,16 @@ return [
 	| Used to provide a configurable namespace for class generation.
 	|
 	*/
-	'namespace' => environment( 'APP_NAMESPACE', 'App' ),
+	'namespace'   => environment( 'APP_NAMESPACE', 'App' ),
+
+	/*
+	|--------------------------------------------------------------------------
+	| Application Text Domain
+	|--------------------------------------------------------------------------
+	|
+	| The text domain used by Mantle when scaffolding files with translatable
+	| strings.
+	|
+	*/
+	'i18n_domain' => environment( 'APP_I18N_DOMAIN', 'mantle' ),
 ];

@@ -8,9 +8,6 @@
 namespace Mantle\Testing\Concerns;
 
 use ErrorException;
-use NunoMaduro\Collision\Writer;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Whoops\Exception\Inspector;
 
 use function Termwind\render;
 
@@ -100,57 +97,52 @@ trait Output_Messages {
 	}
 
 	/**
-	 * Outputs a trace message with Collision/Whoops.
+	 * Outputs a trace message to the PHPUnit printer.
+	 *
+	 * @throws ErrorException With the trace found to trigger a trace.
 	 *
 	 * @param string $message Message to output.
 	 * @param array  $trace Trace to output.
 	 * @return void
 	 */
 	public static function trace( string $message, array $trace ): void {
-		// Identify the starting frame for the trace.
-		$frame = collect( $trace )
-			->filter( fn ( $item ) => false === strpos( $item['file'], 'phpunit/phpunit' ) )
-			->last();
+		$frames = collect( $trace );
 
-		$exception = new ErrorException(
+		// Attempt to find the trace with the '_doing_it_wrong' function call.
+		$function_call_index = $frames
+			->filter(
+				fn ( array $item ) => in_array(
+					$item['function'],
+					[
+						'_doing_it_wrong',
+					],
+					true,
+				)
+			)
+			->keys()
+			->first();
+
+		if ( null !== $function_call_index ) {
+			$frame = $frames->get( $function_call_index );
+		} else {
+			// Attempt to find the first trace that is not apart of the testing
+			// frameworks or packages.
+			$frame = $frames
+				->filter(
+					fn ( array $item ) => false === strpos(
+						$item['file'],
+						'phpunit/phpunit',
+					)
+				)
+				->first();
+		}
+
+		throw new ErrorException(
 			$message,
 			E_USER_ERROR,
 			E_USER_ERROR,
 			$frame['file'],
 			$frame['line'],
 		);
-
-		$writer = ( new Writer() )->setOutput( $output = new ConsoleOutput() );
-
-		$writer->showTitle( false );
-
-		$writer->ignoreFilesIn(
-			[
-				'/vendor\/pestphp\/pest/',
-				'/vendor\/phpspec\/prophecy-phpunit/',
-				'/vendor\/phpunit\/phpunit\/src/',
-				'/vendor\/mockery\/mockery/',
-				'/vendor\/laravel\/dusk/',
-				'/vendor\/laravel\/framework\/src\/Illuminate\/Testing/',
-				'/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Testing/',
-				'/vendor\/symfony\/framework-bundle\/Test/',
-				'/vendor\/symfony\/phpunit-bridge/',
-				'/vendor\/symfony\/dom-crawler/',
-				'/vendor\/symfony\/browser-kit/',
-				'/vendor\/symfony\/css-selector/',
-				'/vendor\/alleyinteractive\/mantle-framework/',
-				'/vendor\/mantle-framework/',
-				'/vendor\/bin\/.phpunit/',
-				'/bin\/.phpunit/',
-				'/vendor\/bin\/simple-phpunit/',
-				'/bin\/phpunit/',
-				'/vendor\/coduo\/php-matcher\/src\/PHPUnit/',
-				'/vendor\/sulu\/sulu\/src\/Sulu\/Bundle\/TestBundle\/Testing/',
-			]
-		);
-
-		$writer->write( new Inspector( $exception ) );
-
-		$output->writeln( '' );
 	}
 }

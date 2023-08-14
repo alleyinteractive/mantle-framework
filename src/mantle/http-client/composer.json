@@ -8,14 +8,16 @@
         "mantle-framework/support": "^0.12"
     },
     "extra": {
-        "branch-alias": {
-            "dev-main": "0.12-dev"
-        },
         "wordpress-autoloader": {
             "autoload": {
                 "Mantle\\Http_Client": "./"
             }
         }
+    },
+    "autoload": {
+        "files": [
+            "autoload.php"
+        ]
     },
     "license": "GPL-2.0-or-later",
     "authors": [

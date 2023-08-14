@@ -22,12 +22,14 @@ use Mantle\Support\Helpers;
  * @property string $slug
  * @property string $taxonomy
  *
- * @method static \Mantle\Database\Query\Term_Query_Builder whereId( int $id )
- * @method static \Mantle\Database\Query\Term_Query_Builder whereName( string $name )
- * @method static \Mantle\Database\Query\Term_Query_Builder whereSlug( string $slug )
- * @method static \Mantle\Database\Query\Term_Query_Builder whereTaxonomy( string $taxonomy )
- *
- * @mixin \Mantle\Database\Query\Term_Query_Builder
+ * @method static \Mantle\Database\Query\Term_Query_Builder<static> whereId( int $id )
+ * @method static \Mantle\Database\Query\Term_Query_Builder<static> whereName(string $name)
+ * @method static \Mantle\Database\Query\Term_Query_Builder<static> whereSlug(string $slug)
+ * @method static \Mantle\Database\Query\Term_Query_Builder<static> whereTaxonomy(string $taxonomy)
+ * @method static \Mantle\Database\Query\Term_Query_Builder<static> whereMeta(string $key, string $value)
+ * @method static \Mantle\Database\Query\Term_Query_Builder<static> whereNotIn(string $key, array $values)
+ * @method static \Mantle\Database\Query\Term_Query_Builder<static> whereIn(string $key, array $values)
+ * @method static \Mantle\Database\Query\Term_Query_Builder<static> where(string|array $attribute, mixed $value)
  */
 class Term extends Model implements Core_Object, Model_Meta, Updatable {
 	use Events\Term_Events,
@@ -131,6 +133,15 @@ class Term extends Model implements Core_Object, Model_Meta, Updatable {
 	 */
 	public static function get_query_builder_class(): ?string {
 		return Term_Query_Builder::class;
+	}
+
+	/**
+	 * Create a new query instance.
+	 *
+	 * @return \Mantle\Database\Query\Term_Query_Builder<static>
+	 */
+	public static function query(): Term_Query_Builder {
+		return ( new static() )->new_query();
 	}
 
 	/**

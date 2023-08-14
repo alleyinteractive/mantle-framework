@@ -24,12 +24,24 @@ use function Mantle\Support\Helpers\tap;
 
 /**
  * Database Model
+ *
+ * @method static \Mantle\Support\Collection all()
+ * @method static static first()
+ * @method static static first_or_fail()
+ * @method static void delete(bool $force)
+ * @method static boolean chunk(int $count, callable $callback)
+ * @method static boolean chunk_by_id(int $count, callable $callback)
+ * @method static boolean each(callable $callback, int $count = 100)
+ * @method static boolean each_by_id(callable $callback, int $count = 100, string $attribute = 'id')
+ * @method static \Mantle\Contracts\Paginator\Paginator simple_paginate(int $per_page = 20, int $current_page = null)
+ * @method static \Mantle\Contracts\Paginator\Paginator paginate(int $per_page = 20, int $current_page = null)
  */
 abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializable, Url_Routable {
 	use Forward_Calls,
 		Concerns\Has_Aliases,
 		Concerns\Has_Attributes,
 		Concerns\Has_Events,
+		Concerns\Has_Factory,
 		Concerns\Has_Global_Scopes,
 		Concerns\Has_Relationships;
 
@@ -211,6 +223,20 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	}
 
 	/**
+	 * Fill the model with an array of attributes.
+	 *
+	 * @param array $attributes Attributes to set.
+	 * @return static
+	 */
+	public function fill( array $attributes ): static {
+		foreach ( $attributes as $key => $value ) {
+			$this->set( $key, $value );
+		}
+
+		return $this;
+	}
+
+	/**
 	 * Set an attribute model.
 	 *
 	 * @param string $attribute Attribute name.
@@ -347,6 +373,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 */
 	public function offsetUnset( mixed $offset ): void {
 		$this->set( $offset, null );
+
 		unset( $this->relations[ $offset ] );
 	}
 
@@ -555,6 +582,54 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 		}
 
 		return $instance;
+	}
+
+	/**
+	 * Get the first record matching the attributes or instantiate it.
+	 *
+	 * @param array $attributes Attributes to match.
+	 * @param array $values Values to set.
+	 * @return static
+	 */
+	public static function first_or_new( array $attributes, array $values = [] ): static {
+		$instance = static::query()->where( $attributes )->first();
+
+		if ( ! $instance ) {
+			$instance = new static( array_merge( $attributes, $values ) );
+		}
+
+		return $instance;
+	}
+
+	/**
+	 * Get the first record matching the attributes or creates it.
+	 *
+	 * @param array $attributes Attributes to match.
+	 * @param array $values Values to set.
+	 * @return static
+	 */
+	public static function first_or_create( array $attributes, array $values = [] ): static {
+		$instance = static::query()->where( $attributes )->first();
+
+		if ( ! $instance ) {
+			$instance = static::create( array_merge( $attributes, $values ) );
+		}
+
+		return $instance;
+	}
+
+	/**
+	 * Create or update a record matching the attributes, and fill it with values.
+	 *
+	 * @param array $attributes Attributes to match.
+	 * @param array $values Values to set.
+	 * @return static
+	 */
+	public static function update_or_create( array $attributes, array $values = [] ): static {
+		return tap(
+			static::first_or_new( $attributes ),
+			fn ( $instance ) => $instance->fill( $values )->save(),
+		);
 	}
 
 	/**

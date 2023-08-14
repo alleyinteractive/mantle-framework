@@ -2,6 +2,8 @@
 /**
  * This file contains the Makes_Http_Requests trait
  *
+ * phpcs:disable WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE
+ *
  * @package Mantle
  */
 
@@ -11,11 +13,14 @@ use Mantle\Database\Model\Model;
 use Mantle\Framework\Http\Kernel as HttpKernel;
 use Mantle\Http\Request;
 use Mantle\Support\Str;
+use Mantle\Testing\Doubles\Spy_REST_Server;
 use Mantle\Testing\Exceptions\Exception;
 use Mantle\Testing\Exceptions\WP_Redirect_Exception;
 use Mantle\Testing\Test_Response;
 use Mantle\Testing\Utils;
+use PHPUnit\Framework\Assert;
 use RuntimeException;
+use Symfony\Component\HttpFoundation\InputBag;
 use WP;
 use WP_Query;
 
@@ -43,28 +48,28 @@ trait Makes_Http_Requests {
 	 *
 	 * @var bool
 	 */
-	protected $follow_redirects = false;
+	protected bool $follow_redirects = false;
 
 	/**
 	 * Store flag if the request was for the REST API.
 	 *
-	 * @var string|bool
+	 * @var array{body: string, headers: array<string, string>}|null
 	 */
-	protected $rest_api_response = false;
+	protected ?array $rest_api_response = null;
 
 	/**
 	 * The array of callbacks to be run before the event is started.
 	 *
-	 * @var array
+	 * @var array<callable>
 	 */
-	protected $before_callbacks = [];
+	protected array $before_callbacks = [];
 
 	/**
 	 * The array of callbacks to be run after the event is finished.
 	 *
-	 * @var array
+	 * @var array<callable>
 	 */
-	protected $after_callbacks = [];
+	protected array $after_callbacks = [];
 
 	/**
 	 * Setup the trait in the test case.
@@ -206,22 +211,14 @@ trait Makes_Http_Requests {
 	 * @param mixed $source Source from which to infer the URL.
 	 * @return string
 	 */
-	protected function infer_url( $source ): string {
-		switch ( true ) {
-			case $source instanceof \WP_Post:
-				return get_permalink( $source );
-
-			case $source instanceof \WP_Term:
-				return get_term_link( $source );
-
-			case $source instanceof \WP_User:
-				return \get_author_posts_url( $source->ID );
-
-			case $source instanceof Model && method_exists( $source, 'permalink' ):
-				return $source->permalink();
-		}
-
-		return '';
+	protected function infer_url( mixed $source ): string {
+		return match ( true ) {
+			$source instanceof \WP_Post => get_permalink( $source ),
+			$source instanceof \WP_Term => get_term_link( $source ),
+			$source instanceof \WP_User => \get_author_posts_url( $source->ID ),
+			$source instanceof Model && method_exists( $source, 'permalink' ) => $source->permalink(),
+			default => '',
+		};
 	}
 
 	/**
@@ -259,14 +256,15 @@ trait Makes_Http_Requests {
 	/**
 	 * Call the given URI and return the Response.
 	 *
-	 * @param string $method     Request method.
-	 * @param string $uri        Request URI.
-	 * @param array  $parameters Request params.
-	 * @param array  $server     Server vars.
-	 * @param array  $cookies Cookies to be sent with the request.
+	 * @param string      $method     Request method.
+	 * @param mixed       $uri        Request URI.
+	 * @param array       $parameters Request params.
+	 * @param array       $server     Server vars.
+	 * @param array       $cookies Cookies to be sent with the request.
+	 * @param string|null $content Request content.
 	 * @return Test_Response
 	 */
-	public function call( $method, $uri, $parameters = [], $server = [], array $cookies = [] ) {
+	public function call( string $method, mixed $uri, array $parameters = [], array $server = [], array $cookies = [], ?string $content = null ): Test_Response {
 		$this->reset_request_state();
 
 		if ( ! is_string( $uri ) ) {
@@ -323,7 +321,26 @@ trait Makes_Http_Requests {
 			$kernel = new HttpKernel( $this->app, $this->app['router'] );
 
 			// Setup the current request object.
-			$request = Request::capture();
+			$request = new Request(
+				$_GET,
+				$_POST,
+				[],
+				$_COOKIE,
+				$_FILES,
+				$_SERVER,
+				$content
+			);
+
+			// Mirror the logic from Request::createFromGlobals().
+			if (
+				str_starts_with( $request->headers->get( 'CONTENT_TYPE', '' ), 'application/x-www-form-urlencoded' )
+			&& \in_array( strtoupper( $request->server->get( 'REQUEST_METHOD', 'GET' ) ), [ 'PUT', 'DELETE', 'PATCH' ] )
+			) {
+				parse_str( $request->getContent(), $data );
+
+				$request->request = new InputBag( $data );
+			}
+
 			$this->app->instance( 'request', $request );
 
 			$response = $kernel->send_request_through_router( $request );
@@ -351,7 +368,8 @@ trait Makes_Http_Requests {
 				// Use the response from the REST API server.
 				ob_end_clean();
 
-				$response_content = $this->rest_api_response;
+				$response_content = $this->rest_api_response['body'];
+				$response_headers = array_merge( (array) $response_headers, (array) $this->rest_api_response['headers'] );
 			} else {
 				try {
 					// Execute the request, inasmuch as WordPress would.
@@ -421,7 +439,7 @@ trait Makes_Http_Requests {
 			}
 		}
 
-		$this->rest_api_response = false;
+		$this->rest_api_response = null;
 
 		// phpcs:enable
 	}
@@ -532,17 +550,25 @@ trait Makes_Http_Requests {
 			return;
 		}
 
-		// Initialize the server.
 		$server = rest_get_server();
-		$route  = untrailingslashit( $GLOBALS['wp']->query_vars['rest_route'] );
-		if ( empty( $route ) ) {
-			$route = '/';
-		}
 
-		$server->serve_request( $route );
+		if ( $server instanceof Spy_REST_Server ) {
+			$route = untrailingslashit( $GLOBALS['wp']->query_vars['rest_route'] );
 
-		if ( isset( $server->sent_body ) ) {
-			$this->rest_api_response = $server->sent_body;
+			if ( empty( $route ) ) {
+				$route = '/';
+			}
+
+			$server->serve_request( $route );
+
+			if ( isset( $server->sent_body ) ) {
+				$this->rest_api_response = [
+					'body'    => $server->sent_body,
+					'headers' => $server->sent_headers,
+				];
+			}
+		} else {
+			Assert::fail( 'Expected the Mantle Spy REST Server to be used.' );
 		}
 	}
 
@@ -553,7 +579,7 @@ trait Makes_Http_Requests {
 	 * @return string
 	 */
 	protected function prepare_url_for_request( $uri ) {
-		return trailingslashit( home_url( $uri ) );
+		return Str::trailing_slash( home_url( $uri ) );
 	}
 
 	/**
@@ -577,26 +603,40 @@ trait Makes_Http_Requests {
 	 *
 	 * @param string $uri     URI to "get".
 	 * @param array  $headers Request headers.
+	 * @param int    $options JSON encoding options.
 	 * @return Test_Response
 	 */
-	public function get_json( $uri, array $headers = [] ) {
-		return $this->json( 'GET', $uri, [], $headers );
+	public function get_json( $uri, array $headers = [], int $options = 0 ): Test_Response {
+		return $this->json( 'GET', $uri, [], $headers, $options );
 	}
 
 	/**
 	 * Call the given URI with a JSON request.
 	 *
-	 * @todo Reimplement this method for Mantle.
-	 *
 	 * @param string $method  Request method.
 	 * @param string $uri     Request URI.
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
+	 * @param int    $options JSON encoding options.
+	 * @return Test_Response
 	 *
 	 * @throws RuntimeException If not implemented.
 	 */
-	public function json( $method, $uri, array $data = [], array $headers = [] ) {
-		throw new RuntimeException( 'Not implemented.' );
+	public function json( string $method, string $uri, array $data = [], array $headers = [], int $options = 1 ): Test_Response {
+		$content = json_encode( $data, $options ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+
+		$headers = array_merge(
+			$headers,
+			[
+				'Accept'         => 'application/json',
+				'Content-Length' => mb_strlen( $content, '8bit' ),
+				'Content-Type'   => 'application/json',
+			]
+		);
+
+		$server = $this->transform_headers_to_server_vars( $headers );
+
+		return $this->call( $method, $uri, $data, $server, [], $content );
 	}
 
 	/**
@@ -607,7 +647,7 @@ trait Makes_Http_Requests {
 	 * @param array  $headers Request headers.
 	 * @return Test_Response
 	 */
-	public function post( $uri, array $data = [], array $headers = [] ) {
+	public function post( string $uri, array $data = [], array $headers = [] ): Test_Response {
 		$server = $this->transform_headers_to_server_vars( $headers );
 
 		return $this->call( 'POST', $uri, $data, $server );
@@ -619,10 +659,11 @@ trait Makes_Http_Requests {
 	 * @param string $uri     Request URI.
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
+	 * @param int    $options JSON encoding options.
 	 * @return Test_Response
 	 */
-	public function post_json( $uri, array $data = [], array $headers = [] ) {
-		return $this->json( 'POST', $uri, $data, $headers );
+	public function post_json( string $uri, array $data = [], array $headers = [], int $options = 0 ): Test_Response {
+		return $this->json( 'POST', $uri, $data, $headers, $options );
 	}
 
 	/**
@@ -633,7 +674,7 @@ trait Makes_Http_Requests {
 	 * @param array  $headers Request headers.
 	 * @return Test_Response
 	 */
-	public function put( $uri, array $data = [], array $headers = [] ) {
+	public function put( string $uri, array $data = [], array $headers = [] ): Test_Response {
 		$server = $this->transform_headers_to_server_vars( $headers );
 
 		return $this->call( 'PUT', $uri, $data, $server );
@@ -645,10 +686,11 @@ trait Makes_Http_Requests {
 	 * @param string $uri     Request URI.
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
+	 * @param int    $options JSON encoding options.
 	 * @return Test_Response
 	 */
-	public function put_json( $uri, array $data = [], array $headers = [] ) {
-		return $this->json( 'PUT', $uri, $data, $headers );
+	public function put_json( string $uri, array $data = [], array $headers = [], int $options = 0 ): Test_Response {
+		return $this->json( 'PUT', $uri, $data, $headers, $options );
 	}
 
 	/**
@@ -659,7 +701,7 @@ trait Makes_Http_Requests {
 	 * @param array  $headers Request headers.
 	 * @return Test_Response
 	 */
-	public function patch( $uri, array $data = [], array $headers = [] ) {
+	public function patch( $uri, array $data = [], array $headers = [] ): Test_Response {
 		$server = $this->transform_headers_to_server_vars( $headers );
 
 		return $this->call( 'PATCH', $uri, $data, $server );
@@ -671,10 +713,11 @@ trait Makes_Http_Requests {
 	 * @param string $uri     Request URI.
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
+	 * @param int    $options JSON encoding options.
 	 * @return Test_Response
 	 */
-	public function patch_json( $uri, array $data = [], array $headers = [] ) {
-		return $this->json( 'PATCH', $uri, $data, $headers );
+	public function patch_json( $uri, array $data = [], array $headers = [], int $options = 0 ): Test_Response {
+		return $this->json( 'PATCH', $uri, $data, $headers, $options );
 	}
 
 	/**
@@ -685,7 +728,7 @@ trait Makes_Http_Requests {
 	 * @param array  $headers Request headers.
 	 * @return Test_Response
 	 */
-	public function delete( $uri, array $data = [], array $headers = [] ) {
+	public function delete( $uri, array $data = [], array $headers = [] ): Test_Response {
 		$server = $this->transform_headers_to_server_vars( $headers );
 
 		return $this->call( 'DELETE', $uri, $data, $server );
@@ -697,10 +740,11 @@ trait Makes_Http_Requests {
 	 * @param string $uri     Request URI.
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
+	 * @param int    $options JSON encoding options.
 	 * @return Test_Response
 	 */
-	public function delete_json( $uri, array $data = [], array $headers = [] ) {
-		return $this->json( 'DELETE', $uri, $data, $headers );
+	public function delete_json( $uri, array $data = [], array $headers = [], int $options = 0 ): Test_Response {
+		return $this->json( 'DELETE', $uri, $data, $headers, $options );
 	}
 
 	/**
@@ -711,7 +755,7 @@ trait Makes_Http_Requests {
 	 * @param array  $headers Request headers.
 	 * @return Test_Response
 	 */
-	public function options( $uri, array $data = [], array $headers = [] ) {
+	public function options( $uri, array $data = [], array $headers = [] ): Test_Response {
 		$server = $this->transform_headers_to_server_vars( $headers );
 
 		return $this->call( 'OPTIONS', $uri, $data, $server );
@@ -723,10 +767,11 @@ trait Makes_Http_Requests {
 	 * @param string $uri     Request URI.
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
+	 * @param int    $options JSON encoding options.
 	 * @return Test_Response
 	 */
-	public function options_json( $uri, array $data = [], array $headers = [] ) {
-		return $this->json( 'OPTIONS', $uri, $data, $headers );
+	public function options_json( $uri, array $data = [], array $headers = [], int $options = 0 ) {
+		return $this->json( 'OPTIONS', $uri, $data, $headers, $options );
 	}
 
 	/**

@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Testing\Factory;
+namespace Mantle\Database\Factory;
 
 use Carbon\Carbon;
 use Closure;
@@ -15,15 +15,21 @@ use WP_Post;
 
 use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\get_post_object;
-use function Mantle\Support\Helpers\tap;
 
 /**
  * Post Factory
  *
- * @template TObject
+ * @template TObject of \Mantle\Database\Model\Post
  */
 class Post_Factory extends Factory {
 	use Concerns\With_Meta;
+
+	/**
+	 * Model to use when creating objects.
+	 *
+	 * @var class-string
+	 */
+	protected string $model = Post::class;
 
 	/**
 	 * Constructor.
@@ -31,7 +37,8 @@ class Post_Factory extends Factory {
 	 * @param Generator $faker Faker generator.
 	 * @param string    $post_type Post type to use.
 	 */
-	public function __construct( protected Generator $faker, protected string $post_type = 'post' ) {
+	public function __construct( Generator $faker, protected string $post_type = 'post' ) {
+		parent::__construct( $faker );
 	}
 
 	/**
@@ -41,7 +48,12 @@ class Post_Factory extends Factory {
 	 * @return static
 	 */
 	public function with_terms( ...$terms ): static {
-		$terms = collect( $terms )->flatten()->all();
+		// Handle an array in the first argument.
+		if ( 1 === count( $terms ) && is_array( $terms[0] ) ) {
+			$terms = $terms[0];
+		}
+
+		$terms = collect( $terms )->all();
 
 		return $this->with_middleware(
 			fn ( array $args, Closure $next ) => $next( $args )->set_terms( $terms ),
@@ -88,24 +100,18 @@ class Post_Factory extends Factory {
 	}
 
 	/**
-	 * Creates an object.
+	 * Definition of the factory.
 	 *
-	 * @param array $args The arguments.
-	 * @return int|null
+	 * @return array<string, mixed>
 	 */
-	public function create( array $args = [] ): ?int {
-		$args = array_merge(
-			[
-				'content'   => trim( $this->faker->randomHtml() ),
-				'excerpt'   => trim( $this->faker->paragraph( 2 ) ),
-				'status'    => 'publish',
-				'title'     => $this->faker->sentence(),
-				'post_type' => $this->post_type,
-			],
-			$args
-		);
-
-		return $this->make( $args, Post::class )?->id();
+	public function definition(): array {
+		return [
+			'post_content' => trim( $this->faker->paragraph_blocks( 3 ) ),
+			'post_excerpt' => trim( $this->faker->paragraph( 2 ) ),
+			'post_status'  => 'publish',
+			'post_title'   => $this->faker->sentence(),
+			'post_type'    => $this->post_type,
+		];
 	}
 
 	/**
@@ -172,7 +178,7 @@ class Post_Factory extends Factory {
 	 */
 	public function get_object_by_id( int $object_id ) {
 		return $this->as_models
-			? Post::find( $object_id )
+			? $this->model::find( $object_id )
 			: get_post_object( $object_id );
 	}
 }

@@ -7,13 +7,16 @@
 
 namespace Mantle\Database\Model\Term;
 
+use InvalidArgumentException;
 use Mantle\Database\Model\Model_Exception;
 use Mantle\Database\Model\Term;
 use Mantle\Support\Arr;
+use Mantle\Support\Collection;
 use WP_Term;
 
 use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\get_term_object;
+use function Mantle\Support\Helpers\get_term_object_by;
 
 /**
  * Interface for interfacing with a model's terms.
@@ -128,28 +131,73 @@ trait Model_Term {
 
 		// If taxonomy is not specified, chunk the terms into taxonomy groups.
 		if ( ! $taxonomy ) {
-			$terms = $terms->map_to_dictionary(
-				function ( $term ) {
+			$terms = $terms->reduce(
+				function ( array $carry, $term ): array {
 					if ( $term instanceof WP_Term ) {
-						return [ $term->taxonomy => $term ];
+						$carry[ $term->taxonomy ][] = $term;
+
+						return $carry;
 					}
 
 					if ( $term instanceof Term ) {
-						return [ $term->taxonomy => $term->core_object() ];
+						$carry[ $term->taxonomy ][] = $term->core_object();
+
+						return $carry;
+					}
+
+					// Support an array of taxonomy => term ID/object/slug pairs.
+					if ( is_array( $term ) ) {
+						foreach ( $term as $taxonomy => $item ) {
+							if ( $item instanceof WP_Term || $item instanceof Term ) {
+								$carry[ $item->taxonomy ][] = $item instanceof Term
+									? $item->core_object()
+									: $item;
+
+								continue;
+							}
+
+							if ( is_numeric( $item ) ) {
+								$item = get_term_object( $item );
+
+								if ( $item instanceof WP_Term ) {
+									$carry[ $item->taxonomy ][] = $item;
+								}
+
+								continue;
+							}
+
+							// Attempt to infer if the key is a taxonomy slug and this is a
+							// taxonomy => term slug pair.
+							if ( ! is_string( $taxonomy ) || ! taxonomy_exists( $taxonomy ) ) {
+								continue;
+							}
+
+							$item = get_term_object_by( 'slug', $item, $taxonomy );
+
+							if ( $item ) {
+								$carry[ $taxonomy ][] = $item;
+							}
+						}
+
+						return $carry;
+					}
+
+					if ( ! is_numeric( $term ) ) {
+						throw new InvalidArgumentException( "Invalid term value passed to set_terms (expected Term/WP_Term/int): {$term}" );
 					}
 
 					$term = get_term_object( $term );
 
 					if ( $term ) {
-						return [ $term->taxonomy => $term ];
+						$carry[ $term->taxonomy ][] = $term;
 					}
 
-					return null;
-				}
-			)
-			->filter();
+					return $carry;
+				},
+				[],
+			);
 
-			foreach ( $terms as $taxonomy => $items ) {
+			foreach ( collect( $terms )->filter() as $taxonomy => $items ) {
 				$this->set_terms( Arr::pluck( $items, 'term_id' ), $taxonomy, $append );
 			}
 

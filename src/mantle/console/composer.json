@@ -8,13 +8,11 @@
         "mantle-framework/contracts": "^0.12",
         "mantle-framework/support": "^0.12",
         "nette/php-generator": "^3.6",
+        "symfony/console": "^6.0",
         "symfony/finder": "^6.0",
         "symfony/string": "^6.0"
     },
     "extra": {
-        "branch-alias": {
-            "dev-main": "0.12-dev"
-        },
         "wordpress-autoloader": {
             "autoload": {
                 "Mantle\\Console": "./"

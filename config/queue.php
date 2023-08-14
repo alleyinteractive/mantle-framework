@@ -25,7 +25,7 @@ return [
 	| The amount of items handled in one run of the queue.
 	|
 	*/
-	'batch_size' => environment( 'QUEUE_BATCH_SIZE', 5 ),
+	'batch_size' => environment( 'QUEUE_BATCH_SIZE', 100 ),
 
 	/*
 	|--------------------------------------------------------------------------
