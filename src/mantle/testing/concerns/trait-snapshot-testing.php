@@ -68,11 +68,19 @@ trait Snapshot_Testing {
 	/**
 	 * Assert that the response's JSON content matches a stored snapshot.
 	 *
+	 * @param array|null $keys Optional. The keys to include in the snapshot.
 	 * @return static
 	 */
-	public function assertMatchesSnapshotJson(): static {
+	public function assertMatchesSnapshotJson( ?array $keys = null ): static {
 		if ( $this->test_case ) {
-			$this->test_case->assertMatchesJsonSnapshot( $this->get_content() );
+			$content = $this->decoded_json()->get_decoded();
+
+			// If keys are provided, only include those keys in the snapshot.
+			if ( $keys ) {
+				$content = array_intersect_key( $content, array_flip( $keys ) );
+			}
+
+			$this->test_case->assertMatchesJsonSnapshot( $content );
 		}
 
 		return $this;
