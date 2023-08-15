@@ -47,6 +47,8 @@
     },
     "require-dev": {
         "alleyinteractive/alley-coding-standards": "^1.0",
+        "guzzlehttp/guzzle": "^7.7",
+        "league/flysystem-aws-s3-v3": "^1.0",
         "mockery/mockery": "^1.6.6",
         "php-stubs/wp-cli-stubs": "^2.8",
         "phpstan/phpdoc-parser": "^1.23.1",
