@@ -24,6 +24,10 @@ trait Snapshot_Testing {
 	 * depending on the type of response. Performs and stores two
 	 * assertions/snapshots.
 	 *
+	 * **Note:** asserting against the headers of a response can lead to leaky tests
+	 * that break not too long after they are written. `assertMatchesSnapshotContent()`
+	 * is a better alternative.
+	 *
 	 * @return static
 	 */
 	public function assertMatchesSnapshot(): static {
