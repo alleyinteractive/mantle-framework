@@ -7,7 +7,7 @@ on:
       - '*.*.x'
   pull_request:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 0 * * 0'
 
 jobs:
   php-tests:
@@ -19,7 +19,7 @@ jobs:
         php: [8.0, 8.1, 8.2]
         wordpress: ["latest"]
     uses: alleyinteractive/.github/.github/workflows/php-tests.yml@main
-    name: "P${{ matrix.php }} - WP ${{ matrix.wordpress }} ${{ matrix.multisite && 'Multisite' || '' }} - ${{ matrix.dependencies }}"
+    name: "P${{ matrix.php }} - ${{ matrix.wordpress }} ${{ matrix.multisite && 'Multisite' || '' }} - ${{ matrix.dependencies }}"
     with:
       dependency-versions: ${{ matrix.dependencies }}
       multisite: ${{ matrix.multisite }}
