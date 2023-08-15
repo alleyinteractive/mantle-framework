@@ -27,16 +27,22 @@ trait Snapshot_Testing {
 	 * @return static
 	 */
 	public function assertMatchesSnapshot(): static {
+		return $this
+			->assertStatusAndHeadersMatchSnapshot()
+			->assertMatchesSnapshotContent();
+	}
+
+	/**
+	 * Assert that the response's status code and headers match a stored snapshot.
+	 *
+	 * @return static
+	 */
+	public function assertStatusAndHeadersMatchSnapshot(): static {
 		if ( $this->test_case ) {
-			$this->test_case->assertMatchesSnapshot( [ $this->get_status_code(), $this->get_headers() ] );
-
-			$content_type = $this->get_header( 'content-type' );
-
-			return match ( true ) {
-				Str::contains( $content_type, 'application/json', true ) => $this->assertMatchesSnapshotJson(),
-				Str::contains( $content_type, 'text/html', true ) => $this->assertMatchesSnapshotHtml(),
-				default => $this->assertMatchesSnapshotContent(),
-			};
+			$this->test_case->assertMatchesSnapshot( [
+				$this->get_status_code(),
+				$this->get_headers(),
+			] );
 		}
 
 		return $this;
@@ -45,11 +51,20 @@ trait Snapshot_Testing {
 	/**
 	 * Assert that the response's content matches a stored snapshot.
 	 *
+	 * Checks the response content-type to use the proper driver to make the
+	 * assertion against.
+	 *
 	 * @return static
 	 */
 	public function assertMatchesSnapshotContent(): static {
 		if ( $this->test_case ) {
-			$this->test_case->assertMatchesSnapshot( $this->get_content() );
+			$content_type = $this->get_header( 'content-type' );
+
+			return match ( true ) {
+				Str::contains( $content_type, 'application/json', true ) => $this->assertMatchesSnapshotJson(),
+				Str::contains( $content_type, 'text/html', true ) => $this->assertMatchesSnapshotHtml(),
+				default => $this->test_case->assertMatchesSnapshot( $this->get_content() ),
+			};
 		}
 
 		return $this;
