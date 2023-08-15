@@ -18,40 +18,14 @@ use Mantle\Support\Str;
  */
 trait Snapshot_Testing {
 	/**
-	 * Assert that the response matches a stored snapshot.
+	 * Assert that the response matches a stored snapshot comparing only the content.
 	 *
-	 * Compares the response's status code/headers and then the content itself
-	 * depending on the type of response. Performs and stores two
-	 * assertions/snapshots.
-	 *
-	 * **Note:** asserting against the headers of a response can lead to leaky tests
-	 * that break not too long after they are written. `assertMatchesSnapshotContent()`
-	 * is a better alternative.
+	 * Alias to `assertMatchesSnapshotContent()`.
 	 *
 	 * @return static
 	 */
 	public function assertMatchesSnapshot(): static {
-		return $this
-			->assertStatusAndHeadersMatchSnapshot()
-			->assertMatchesSnapshotContent();
-	}
-
-	/**
-	 * Assert that the response's status code and headers match a stored snapshot.
-	 *
-	 * @return static
-	 */
-	public function assertStatusAndHeadersMatchSnapshot(): static {
-		if ( $this->test_case ) {
-			$this->test_case->assertMatchesSnapshot(
-				[
-					$this->get_status_code(),
-					$this->get_headers(),
-				]
-			);
-		}
-
-		return $this;
+		return $this->assertMatchesSnapshotContent();
 	}
 
 	/**
@@ -97,6 +71,40 @@ trait Snapshot_Testing {
 	public function assertMatchesSnapshotJson(): static {
 		if ( $this->test_case ) {
 			$this->test_case->assertMatchesJsonSnapshot( $this->get_content() );
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response matches the stored snapshot, comparing status
+	 * code, headers, and content.
+	 *
+	 * **Note:** asserting against the headers of a response can lead to leaky tests
+	 * that break not too long after they are written. `assertMatchesSnapshotContent()`
+	 * is a better alternative.
+	 *
+	 * @return static
+	 */
+	public function assertMatchesSnapshotWithStatusAndHeaders(): static {
+		return $this
+			->assertStatusAndHeadersMatchSnapshot()
+			->assertMatchesSnapshotContent();
+	}
+
+	/**
+	 * Assert that the response's status code and headers match a stored snapshot.
+	 *
+	 * @return static
+	 */
+	public function assertStatusAndHeadersMatchSnapshot(): static {
+		if ( $this->test_case ) {
+			$this->test_case->assertMatchesSnapshot(
+				[
+					$this->get_status_code(),
+					$this->get_headers(),
+				]
+			);
 		}
 
 		return $this;
