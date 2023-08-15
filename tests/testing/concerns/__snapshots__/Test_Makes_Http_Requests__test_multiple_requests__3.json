@@ -1,0 +1,26 @@
+{
+    "*.type": [
+        "post",
+        "post",
+        "post",
+        "post",
+        "post",
+        "post",
+        "post",
+        "post",
+        "post",
+        "post"
+    ],
+    "*.status": [
+        "publish",
+        "publish",
+        "publish",
+        "publish",
+        "publish",
+        "publish",
+        "publish",
+        "publish",
+        "publish",
+        "publish"
+    ]
+}

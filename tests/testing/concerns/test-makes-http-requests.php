@@ -255,9 +255,16 @@ class Test_Makes_Http_Requests extends Framework_Test_Case {
 
 		$this->get( rest_url( '/mantle/v1/' . __FUNCTION__ ) )->assertMatchesSnapshotContent();
 
-		$this->get( rest_url( '/wp/v2/posts/' . static::factory()->post->create() ) )->assertMatchesSnapshotJson( [
-			'type'
-		] );
+		$this->get( rest_url( '/wp/v2/posts/' . static::factory()->post->create() ) )->assertMatchesSnapshotJson( 'type' );
+
+		static::factory()->post->create_many( 10 );
+
+		$this
+			->get( rest_url( '/wp/v2/posts' ) )
+			->assertMatchesSnapshotJson( [
+				'*.type',
+				'*.status',
+			] );
 	}
 
 	public function test_multiple_requests() {

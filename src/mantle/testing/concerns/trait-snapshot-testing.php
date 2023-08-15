@@ -9,7 +9,11 @@
 
 namespace Mantle\Testing\Concerns;
 
+use Mantle\Support\Arr;
 use Mantle\Support\Str;
+
+use function Mantle\Support\Helpers\collect;
+use function Mantle\Support\Helpers\data_get;
 
 /**
  * Snapshot Testing
@@ -68,16 +72,22 @@ trait Snapshot_Testing {
 	/**
 	 * Assert that the response's JSON content matches a stored snapshot.
 	 *
-	 * @param array|null $keys Optional. The keys to include in the snapshot.
+	 * @param array<string>|string|null $keys Optional. The keys to include in the snapshot.
 	 * @return static
 	 */
-	public function assertMatchesSnapshotJson( ?array $keys = null ): static {
+	public function assertMatchesSnapshotJson( array|string|null $keys = null ): static {
 		if ( $this->test_case ) {
 			$content = $this->decoded_json()->get_decoded();
 
 			// If keys are provided, only include those keys in the snapshot.
 			if ( $keys ) {
-				$content = array_intersect_key( $content, array_flip( $keys ) );
+				$content = collect( Arr::wrap( $keys ) )
+					->unique()
+					->flip()
+					->map(
+						fn ( $value, string $key ) => data_get( $content, $key, [] ),
+					)
+					->to_array();
 			}
 
 			$this->test_case->assertMatchesJsonSnapshot( $content );
