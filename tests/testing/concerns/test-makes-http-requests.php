@@ -229,6 +229,18 @@ class Test_Makes_Http_Requests extends Framework_Test_Case {
 		$this->assertInstanceOf( Test_Response::class, $_SERVER['__callback_after'] );
 	}
 
+	public function test_match_snapshot() {
+		$this->assertMatchesSnapshot( [ 1, 2, 3 ] );
+	}
+
+	public function test_match_snapshot_http() {
+		$this->get( '/robots.txt' )->assertMatchesSnapshot();
+	}
+
+	public function test_match_snapshot_rest() {
+		$this->get( rest_url( '/wp/v2/posts' ) )->assertMatchesSnapshot();
+	}
+
 	public function test_multiple_requests() {
 		// Re-run all test methods on this class in a single pass.
 		foreach ( collect( get_class_methods( $this ) )->shuffle()->all() as $method ) {

@@ -1,0 +1,83 @@
+<?php
+/**
+ * Snapshot_Testing trait file
+ *
+ * phpcs:disable WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+ *
+ * @package Mantle
+ */
+
+namespace Mantle\Testing\Concerns;
+
+use Mantle\Support\Str;
+
+/**
+ * Snapshot Testing
+ *
+ * @mixin \Mantle\Testing\Test_Response
+ */
+trait Snapshot_Testing {
+	/**
+	 * Assert that the response matches a stored snapshot.
+	 *
+	 * Compares the response's status code/headers and then the content itself
+	 * depending on the type of response. Performs and stores two
+	 * assertions/snapshots.
+	 *
+	 * @return static
+	 */
+	public function assertMatchesSnapshot(): static {
+		if ( $this->test_case ) {
+			$this->test_case->assertMatchesSnapshot( [ $this->get_status_code(), $this->get_headers() ] );
+
+			$content_type = $this->get_header( 'content-type' );
+
+			return match ( true ) {
+				Str::contains( $content_type, 'application/json', true ) => $this->assertMatchesSnapshotJson(),
+				Str::contains( $content_type, 'text/html', true ) => $this->assertMatchesSnapshotHtml(),
+				default => $this->assertMatchesSnapshotContent(),
+			};
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response's content matches a stored snapshot.
+	 *
+	 * @return static
+	 */
+	public function assertMatchesSnapshotContent(): static {
+		if ( $this->test_case ) {
+			$this->test_case->assertMatchesSnapshot( $this->get_content() );
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response's HTML content matches a stored snapshot.
+	 *
+	 * @return static
+	 */
+	public function assertMatchesSnapshotHtml(): static {
+		if ( $this->test_case ) {
+			$this->test_case->assertMatchesHtmlSnapshot( $this->get_content() );
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response's JSON content matches a stored snapshot.
+	 *
+	 * @return static
+	 */
+	public function assertMatchesSnapshotJson(): static {
+		if ( $this->test_case ) {
+			$this->test_case->assertMatchesJsonSnapshot( $this->get_content() );
+		}
+
+		return $this;
+	}
+}
