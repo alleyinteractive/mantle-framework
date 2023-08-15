@@ -2,6 +2,7 @@
 namespace Mantle\Tests\Testing\Concerns;
 
 use JsonSerializable;
+use Mantle\Facade\Route;
 use Mantle\Http\Response;
 use Mantle\Framework\Providers\Routing_Service_Provider;
 use Mantle\Http\Request;
@@ -234,11 +235,25 @@ class Test_Makes_Http_Requests extends Framework_Test_Case {
 	}
 
 	public function test_match_snapshot_http() {
-		$this->get( '/robots.txt' )->assertMatchesSnapshot();
+		Route::get( '/example/', fn () => 'example' );
+
+		$this->get( '/example' )->assertMatchesSnapshotContent();
 	}
 
 	public function test_match_snapshot_rest() {
-		$this->get( rest_url( '/wp/v2/posts' ) )->assertMatchesSnapshot();
+		$this->ignoreIncorrectUsage();
+
+		register_rest_route(
+			'mantle/v1',
+			__FUNCTION__,
+			[
+				'methods' => 'GET',
+				'validate_callback' => '__return_true',
+				'callback' => fn () => new WP_REST_Response( [ 'key' => 'value here' ], 201, [ 'test-header' => 'test-value' ] ),
+			]
+		);
+
+		$this->get( rest_url( '/mantle/v1/' . __FUNCTION__ ) )->assertMatchesSnapshotContent();
 	}
 
 	public function test_multiple_requests() {
