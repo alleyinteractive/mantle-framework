@@ -7,10 +7,10 @@
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
         "mantle-framework/contracts": "^0.12",
         "mantle-framework/support": "^0.12",
-        "nette/php-generator": "^3.6",
-        "symfony/console": "^6.0",
-        "symfony/finder": "^6.0",
-        "symfony/string": "^6.0"
+        "nette/php-generator": "^3.6.9",
+        "symfony/console": "^6.0.19",
+        "symfony/finder": "^6.0.19",
+        "symfony/string": "^6.0.19"
     },
     "extra": {
         "wordpress-autoloader": {
@@ -26,8 +26,8 @@
             "email": "mantle@alley.com"
         }
     ],
-    "minimum-stability": "dev",
     "config": {
         "sort-packages": true
-    }
+    },
+    "minimum-stability": "dev"
 }
