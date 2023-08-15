@@ -14,6 +14,8 @@ use Mantle\Support\Str;
 /**
  * Snapshot Testing
  *
+ * @link https://github.com/spatie/phpunit-snapshot-assertions
+ *
  * @mixin \Mantle\Testing\Test_Response
  */
 trait Snapshot_Testing {
