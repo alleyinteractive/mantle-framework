@@ -43,10 +43,12 @@ trait Snapshot_Testing {
 	 */
 	public function assertStatusAndHeadersMatchSnapshot(): static {
 		if ( $this->test_case ) {
-			$this->test_case->assertMatchesSnapshot( [
-				$this->get_status_code(),
-				$this->get_headers(),
-			] );
+			$this->test_case->assertMatchesSnapshot(
+				[
+					$this->get_status_code(),
+					$this->get_headers(),
+				]
+			);
 		}
 
 		return $this;
