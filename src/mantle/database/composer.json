@@ -8,8 +8,8 @@
         "alleyinteractive/wp-filter-side-effects": "^2.0",
         "mantle-framework/contracts": "^0.12",
         "mantle-framework/support": "^0.12",
-        "psr/container": "^1.1.1 || ^2.0.1",
-        "symfony/finder": "^6.0"
+        "psr/container": "^1.1.1 || ^2.0.2",
+        "symfony/finder": "^6.0.19"
     },
     "extra": {
         "wordpress-autoloader": {
@@ -25,8 +25,8 @@
             "email": "mantle@alley.com"
         }
     ],
-    "minimum-stability": "dev",
     "config": {
         "sort-packages": true
-    }
+    },
+    "minimum-stability": "dev"
 }

@@ -5,10 +5,10 @@
     "require": {
         "php": "^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
-        "dragonmantank/cron-expression": "^3.1",
+        "dragonmantank/cron-expression": "^3.3.3",
+        "mantle-framework/console": "^0.12",
         "mantle-framework/contracts": "^0.12",
-        "nesbot/carbon": "^2.53",
-        "mantle-framework/console": "^0.12"
+        "nesbot/carbon": "^2.68.1"
     },
     "extra": {
         "wordpress-autoloader": {
@@ -24,8 +24,8 @@
             "email": "mantle@alley.com"
         }
     ],
-    "minimum-stability": "dev",
     "config": {
         "sort-packages": true
-    }
+    },
+    "minimum-stability": "dev"
 }

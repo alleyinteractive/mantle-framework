@@ -6,7 +6,7 @@
         "php": "^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
         "mantle-framework/http": "^0.12",
-        "symfony/http-kernel": "^6.0"
+        "symfony/http-kernel": "^6.0.20"
     },
     "extra": {
         "wordpress-autoloader": {
@@ -22,8 +22,8 @@
             "email": "mantle@alley.com"
         }
     ],
-    "minimum-stability": "dev",
     "config": {
         "sort-packages": true
-    }
+    },
+    "minimum-stability": "dev"
 }

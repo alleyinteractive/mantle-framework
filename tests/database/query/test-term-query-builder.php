@@ -120,11 +120,14 @@ class Test_Term_Query_Builder extends Framework_Test_Case {
 					return $clauses;
 				}
 			)
+			->dumpSql()
 			->firstOrFail();
 
 		$this->assertEquals( $term_id, $first->id() );
 
-		$next = Testable_Tag::first();
+		$next = Testable_Tag::query()
+			->order_by( 'id', 'asc' )
+			->first();
 
 		$this->assertNotEquals( $term_id, $next->id() );
 		$this->assertEquals( 1, $applied_count ); // The clauses should only be applied once.
