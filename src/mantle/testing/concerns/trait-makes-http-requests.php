@@ -349,7 +349,8 @@ trait Makes_Http_Requests {
 				$response = new Test_Response(
 					$response->getContent(),
 					$response->getStatusCode(),
-					$response->headers->all()
+					$response->headers->all(),
+					$this,
 				);
 			}
 		}
@@ -386,7 +387,12 @@ trait Makes_Http_Requests {
 			remove_filter( 'wp_headers', $intercept_headers, 9999 );
 			remove_filter( 'wp_redirect', $intercept_redirect, 9999 );
 
-			$response = new Test_Response( $response_content, $response_status ?? 200, $response_headers );
+			$response = new Test_Response(
+				$response_content,
+				$response_status ?? 200,
+				$response_headers,
+				$this,
+			);
 		}
 
 		$response->set_app( $this->app );

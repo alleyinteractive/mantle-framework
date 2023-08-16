@@ -8,6 +8,7 @@
 namespace Mantle\Testing;
 
 use Exception;
+use Mantle\Contracts\Application;
 use Mantle\Http\Response;
 use Mantle\Support\Traits\Macroable;
 use PHPUnit\Framework\Assert as PHPUnit;
@@ -16,36 +17,37 @@ use PHPUnit\Framework\Assert as PHPUnit;
  * Faux "Response" class for unit testing.
  */
 class Test_Response {
-	use Macroable,
-		Concerns\Element_Assertions;
+	use Concerns\Element_Assertions,
+		Concerns\Snapshot_Testing,
+		Macroable;
 
 	/**
 	 * Application instance.
 	 *
-	 * @var \Mantle\Contracts\Container|\Mantle\Container\Container
+	 * @var Application
 	 */
-	protected $app;
+	protected Application $app;
 
 	/**
 	 * Response headers.
 	 *
 	 * @var array
 	 */
-	public $headers;
+	public array $headers;
 
 	/**
 	 * Response content.
 	 *
 	 * @var string
 	 */
-	protected $content;
+	protected string $content;
 
 	/**
 	 * Response status code.
 	 *
 	 * @var int
 	 */
-	protected $status_code;
+	protected int $status_code;
 
 	/**
 	 * Assertable JSON string.
@@ -60,8 +62,14 @@ class Test_Response {
 	 * @param string|null $content HTTP response body.
 	 * @param int         $status  HTTP response status code.
 	 * @param array       $headers HTTP response headers.
+	 * @param Test_Case   $test_case Test case instance.
 	 */
-	public function __construct( ?string $content = '', int $status = 200, array $headers = [] ) {
+	public function __construct(
+		?string $content = '',
+		int $status = 200,
+		array $headers = [],
+		public ?Test_Case $test_case = null,
+	) {
 		$this->set_content( $content )
 			->set_status_code( $status )
 			->set_headers( $headers );
@@ -70,11 +78,12 @@ class Test_Response {
 	/**
 	 * Set the container instance.
 	 *
-	 * @param \Mantle\Contracts\Container|\Mantle\Container\Container $app Application instance.
+	 * @param Application $app Application instance.
 	 * @return static
 	 */
-	public function set_app( $app ) {
+	public function set_app( Application $app ) {
 		$this->app = $app;
+
 		return $this;
 	}
 
@@ -183,6 +192,7 @@ class Test_Response {
 	 */
 	public function assertSuccessful() {
 		$actual = $this->get_status_code();
+
 		PHPUnit::assertTrue(
 			$actual >= 200 && $actual < 300,
 			'Response status code [' . $actual . '] is not a successful status code.'

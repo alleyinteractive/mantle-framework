@@ -55,6 +55,7 @@
         "phpstan/phpstan": "1.10.15",
         "phpunit/phpunit": "^9.6.10",
         "predis/predis": "^2.2.0",
+        "spatie/phpunit-snapshot-assertions": "^4.2",
         "squizlabs/php_codesniffer": "^3.7",
         "symplify/monorepo-builder": "^10.3.3",
         "szepeviktor/phpstan-wordpress": "^1.3",

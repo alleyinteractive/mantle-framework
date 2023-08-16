@@ -31,8 +31,10 @@ use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Concerns\WordPress_Authentication;
 use Mantle\Testing\Concerns\WordPress_State;
 use PHPUnit\Framework\TestCase as BaseTestCase;
+use Spatie\Snapshots\MatchesSnapshots;
 use WP;
 use WP_Query;
+
 use function Mantle\Support\Helpers\class_basename;
 use function Mantle\Support\Helpers\class_uses_recursive;
 use function Mantle\Support\Helpers\collect;
@@ -54,6 +56,7 @@ abstract class Test_Case extends BaseTestCase {
 		Interacts_With_Hooks,
 		Interacts_With_Requests,
 		Makes_Http_Requests,
+		MatchesSnapshots,
 		WordPress_State,
 		WordPress_Authentication;
 

@@ -61,6 +61,15 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	}
 
 	/**
+	 * Retrieve the decoded JSON.
+	 *
+	 * @return array
+	 */
+	public function get_decoded(): array {
+		return $this->decoded;
+	}
+
+	/**
 	 * Validate and return the decoded response JSON.
 	 *
 	 * @param string|null $key Key to retrieve, optional.
