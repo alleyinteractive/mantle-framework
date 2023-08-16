@@ -32,18 +32,12 @@ class User_Factory extends Factory {
 	 * @return array<string, mixed>
 	 */
 	public function definition(): array {
-		$first_name = $this->faker->firstName();
-		$last_name  = $this->faker->lastName();
-
 		return [
-			'description'  => $this->faker->sentence(),
-			'display_name' => "{$first_name} {$last_name}",
-			'first_name'   => $first_name,
-			'last_name'    => $last_name,
-			'role'         => 'subscriber',
-			'user_email'   => $this->faker->email(),
-			'user_login'   => $this->faker->userName(),
-			'user_pass'    => 'password',
+			'description' => $this->faker->sentence(),
+			'role'        => 'subscriber',
+			'user_email'  => $this->faker->email(),
+			'user_login'  => $this->faker->userName(),
+			'user_pass'   => 'password',
 		];
 	}
 

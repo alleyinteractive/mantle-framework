@@ -5,6 +5,7 @@ use Carbon\Carbon;
 use Closure;
 use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Term;
+use Mantle\Testing\Concerns\With_Faker;
 use Mantle\Testing\Framework_Test_Case;
 
 use function Mantle\Support\Helpers\collect;
@@ -15,6 +16,8 @@ use function Mantle\Support\Helpers\collect;
  * for core's factories with some sugar on top.
  */
 class Test_Unit_Testing_Factory extends Framework_Test_Case {
+	use With_Faker;
+
 	public function test_post_factory() {
 		$this->assertInstanceOf( \WP_Post::class, static::factory()->post->create_and_get() );
 
@@ -128,6 +131,15 @@ class Test_Unit_Testing_Factory extends Framework_Test_Case {
 		)->create();
 
 		$this->assertEquals( '_test_meta_value', get_user_meta( $user_id, '_test_meta_key', true ) );
+	}
+
+	public function test_user_login_factory() {
+		$user_login = $this->faker->userName;
+		$user       = static::factory()->user
+			->create_and_get( [ 'user_login' => $user_login ] );
+
+		$this->assertSame( $user_login, $user->display_name );
+		$this->assertSame( $user_login, $user->user_login );
 	}
 
 	public function test_comment_factory() {
