@@ -46,11 +46,11 @@ trait Snapshot_Testing {
 		if ( $this->test_case ) {
 			$content_type = $this->get_header( 'content-type' );
 
-			return match ( true ) {
-				Str::contains( $content_type, 'application/json', true ) => $this->assertMatchesSnapshotJson(),
-				Str::contains( $content_type, 'text/html', true ) => $this->assertMatchesSnapshotHtml(),
-				default => $this->test_case->assertMatchesSnapshot( $this->get_content() ),
-			};
+			if ( Str::contains( $content_type, 'application/json', true ) ) {
+				return $this->assertMatchesSnapshotJson();
+			} else {
+				$this->test_case->assertMatchesSnapshot( $this->get_content() );
+			}
 		}
 
 		return $this;
