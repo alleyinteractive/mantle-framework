@@ -5,15 +5,15 @@
     "require": {
         "php": "^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
-        "doctrine/inflector": "^2.0.5",
-        "league/commonmark": "^2.2.1",
+        "doctrine/inflector": "^2.0.8",
+        "league/commonmark": "^2.4.0",
         "mantle-framework/contracts": "^0.12",
-        "monolog/monolog": "^2.7",
-        "nesbot/carbon": "^2.53",
-        "ramsey/uuid": "^4.7",
-        "symfony/finder": "^6.0",
-        "symfony/var-dumper": "^6.0",
-        "voku/portable-ascii": "^2.0"
+        "monolog/monolog": "^2.9.1",
+        "nesbot/carbon": "^2.68.1",
+        "ramsey/uuid": "^4.7.4",
+        "symfony/finder": "^6.0.19",
+        "symfony/var-dumper": "^6.0.19",
+        "voku/portable-ascii": "^2.0.1"
     },
     "extra": {
         "wordpress-autoloader": {
@@ -34,7 +34,6 @@
             "email": "mantle@alley.com"
         }
     ],
-    "minimum-stability": "dev",
     "config": {
         "sort-packages": true
     },
@@ -42,5 +41,6 @@
         "mantle-framework/console": "Required to load Mantle Console Commands",
         "mantle-framework/container": "Required to use wrapped add_action/add_filter functions",
         "vlucas/phpdotenv": "Required to use Environment class (^5.3)"
-    }
+    },
+    "minimum-stability": "dev"
 }

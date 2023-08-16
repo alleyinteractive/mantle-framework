@@ -5,7 +5,7 @@
     "require": {
         "php": "^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
-        "fakerphp/faker": "^1.16"
+        "fakerphp/faker": "^1.23"
     },
     "extra": {
         "wordpress-autoloader": {
@@ -21,8 +21,8 @@
             "email": "mantle@alley.com"
         }
     ],
-    "minimum-stability": "dev",
     "config": {
         "sort-packages": true
-    }
+    },
+    "minimum-stability": "dev"
 }

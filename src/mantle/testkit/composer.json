@@ -13,8 +13,8 @@
         "mantle-framework/faker": "^0.12",
         "mantle-framework/support": "^0.12",
         "mantle-framework/testing": "^0.12",
-        "phpunit/phpunit": "^9.3.3",
-        "symfony/http-foundation": "^6.0"
+        "phpunit/phpunit": "^9.6.10",
+        "symfony/http-foundation": "^6.0.20"
     },
     "extra": {
         "wordpress-autoloader": {
@@ -30,8 +30,8 @@
             "email": "mantle@alley.com"
         }
     ],
-    "minimum-stability": "dev",
     "config": {
         "sort-packages": true
-    }
+    },
+    "minimum-stability": "dev"
 }

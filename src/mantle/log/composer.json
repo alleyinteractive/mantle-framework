@@ -7,7 +7,7 @@
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
         "mantle-framework/contracts": "^0.12",
         "mantle-framework/support": "^0.12",
-        "monolog/monolog": "^2.7",
+        "monolog/monolog": "^2.9.1",
         "psr/log": "^1.0.1 || ^2.0 || ^3.0"
     },
     "extra": {
@@ -24,8 +24,8 @@
             "email": "mantle@alley.com"
         }
     ],
-    "minimum-stability": "dev",
     "config": {
         "sort-packages": true
-    }
+    },
+    "minimum-stability": "dev"
 }
