@@ -5,11 +5,45 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v0.12.0 - 2023-XX-XX
+## v0.12.0 - 2023-08-17
 
 ### Added
 
+- Introduce a flexible Application Bootloader.
+- Allow dynamic instance of a model to be created without defining the model class.
+- Add facade docblocks and phpdoc block generation script.
+- Stringable and updated Str class.
+- Vendor Publishable Assets.
+- Add first_or_new/first_or_create/update_or_create methods.
+- New assertion helpers.
+- Adding PHP 8.2 support.
+- Allow JSON to be POST-ed to requests when testing.
+- Adding chunk()/chunk_by_id()/each()/each_by_id() methods to the query builder, fixing order by aliases.
+- Add dump/dumpSql/dd/ddSql to the query builder.
+- Add testing for prefer-lowest.
+- Add snapshot testing.
+
+### Fixed
+
+- Fix an error when typehinting and using request variables.
+- Fix generator namespaces.
+- Fix http-client content_type method by @nlemoine.
+- Ensure that REST API headers are persisted when testing.
+
 ### Changed
+
+- Remove Guzzle HTTP and move to WordPress Http Client.
+- Refresh application routing and add tests.
+- Improve the handling of various arguments to with_terms().
+- Refactor Factories for simplicity and to combine with testing factories.
+- Updating factory generators/stubs.
+- Requiring `symfony/console`, upgrading to `psr/log` 3.0.
+- Ensure that faker can always generate Gutenberg blocks.
+
+## New Contributors
+- @nlemoine made their first contribution in https://github.com/alleyinteractive/mantle-framework/pull/409
+
+**Full Changelog**: https://github.com/alleyinteractive/mantle-framework/compare/v0.11.3...v0.12.0
 
 ## v0.11.3 - 2023-07-21
 
@@ -122,7 +156,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v0.8.0 - 2022-10-25
 
-- **Fix:** Set default to string incase of missing location.
+- **Fix:*- Set default to string incase of missing location.
 - Adding assertions for element missing/existing.
 - Middleware for testing factories.
 
@@ -161,20 +195,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v0.5.0 - 2022-07-29
 
-- Prevent external requests during unit testing by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/293
-- Adding macroable to responses by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/292
+- Prevent external requests during unit testing in https://github.com/alleyinteractive/mantle-framework/pull/293
+- Adding macroable to responses in https://github.com/alleyinteractive/mantle-framework/pull/292
 - Bump actions/cache from 3.0.4 to 3.0.5 by @dependabot in https://github.com/alleyinteractive/mantle-framework/pull/294
-- Bumping asset manager by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/295
-- Update testkit to include URL Generator by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/296
-- Add request before/after callbacks by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/298
-- Cleaning up the flag/argument, simplify to flag/argument/option by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/297
-- Including mantle-framework/http-client with testing by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/299
+- Bumping asset manager in https://github.com/alleyinteractive/mantle-framework/pull/295
+- Update testkit to include URL Generator in https://github.com/alleyinteractive/mantle-framework/pull/296
+- Add request before/after callbacks in https://github.com/alleyinteractive/mantle-framework/pull/298
+- Cleaning up the flag/argument, simplify to flag/argument/option in https://github.com/alleyinteractive/mantle-framework/pull/297
+- Including mantle-framework/http-client with testing in https://github.com/alleyinteractive/mantle-framework/pull/299
 - Fix Asset_Manager bug on asset() by @anubisthejackle in https://github.com/alleyinteractive/mantle-framework/pull/300
-- Adding an Installation_Manager to facilitate installation by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/302
-- Adding Conditionable Method Chaining by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/304
-- Adding support for Mock_Http_Sequence inside an array by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/303
-- Adding Concurrent Http Client Request Support by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/301
-- Bumping composer autoloader to v0.6 by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/306
+- Adding an Installation_Manager to facilitate installation in https://github.com/alleyinteractive/mantle-framework/pull/302
+- Adding Conditionable Method Chaining in https://github.com/alleyinteractive/mantle-framework/pull/304
+- Adding support for Mock_Http_Sequence inside an array in https://github.com/alleyinteractive/mantle-framework/pull/303
+- Adding Concurrent Http Client Request Support in https://github.com/alleyinteractive/mantle-framework/pull/301
+- Bumping composer autoloader to v0.6 in https://github.com/alleyinteractive/mantle-framework/pull/306
 
 ## v0.4.0 - 2022-06-28
 
@@ -199,9 +233,9 @@ Fixing a miss-tagged version.
 ### Added
 
 - Create new Testkit cases: Integration and Unit Test by @anubisthejackle in https://github.com/alleyinteractive/mantle-framework/pull/269
-- Adding create_ordered_set helper by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/271
-- Allow control over the temporary URL expiration by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/272
-- Allow attributes to register hooks by @srtfisher in https://github.com/alleyinteractive/mantle-framework/pull/273
+- Adding create_ordered_set helper in https://github.com/alleyinteractive/mantle-framework/pull/271
+- Allow control over the temporary URL expiration in https://github.com/alleyinteractive/mantle-framework/pull/272
+- Allow attributes to register hooks in https://github.com/alleyinteractive/mantle-framework/pull/273
 - Registering listeners with attributes in https://github.com/alleyinteractive/mantle-framework/pull/275
 
 ### Fixed
