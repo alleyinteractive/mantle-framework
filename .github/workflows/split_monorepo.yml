@@ -64,6 +64,7 @@ jobs:
       # with tag
       -
         if: "startsWith(github.ref, 'refs/tags/')"
+        name: "Extract branch name"
         id: extract-branch-name
         run: echo "branch=$(git branch -a --contains ${{ github.sha }} | grep -v 'HEAD' | sed -n 2p | awk '{ printf $1 }' | sed 's/remotes\/origin\///g')" >> $GITHUB_OUTPUT
 
