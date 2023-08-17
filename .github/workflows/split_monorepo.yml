@@ -64,6 +64,11 @@ jobs:
       # with tag
       -
         if: "startsWith(github.ref, 'refs/tags/')"
+        id: extract-branch-name
+        run: echo "branch=$(git branch -a --contains ${{ github.sha }} | grep -v 'HEAD' | sed -n 2p | awk '{ printf $1 }' | sed 's/remotes\/origin\///g')" >> $GITHUB_OUTPUT
+
+      -
+        if: "startsWith(github.ref, 'refs/tags/')"
         # Uses an action in the root directory
         name: Monorepo Tagged Split of ${{ matrix.package }}
         uses: symplify/monorepo-split-github-action@v2.3.0
@@ -78,4 +83,4 @@ jobs:
           repository_host: "github.com"
           user_name: "mantle-ci"
           user_email: "mantle@alley.com"
-          branch: ${{ github.ref_name }}
+          branch: ${{ steps.extract-branch-name.outputs.branch }}
