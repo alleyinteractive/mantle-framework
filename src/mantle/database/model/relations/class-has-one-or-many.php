@@ -165,8 +165,6 @@ abstract class Has_One_Or_Many extends Relation {
 		// Save the model if it doesn't exist.
 		if ( ! $model->exists && $model instanceof Updatable ) {
 			$model->save();
-		} elseif ( ! $model->exists && $model instanceof Updatable ) {
-			$model->save();
 		}
 
 		$append = Has_Many::class === get_class( $this ) || is_subclass_of( $this, Has_Many::class );
