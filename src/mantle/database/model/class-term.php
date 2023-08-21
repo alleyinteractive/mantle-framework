@@ -30,6 +30,10 @@ use Mantle\Support\Helpers;
  * @method static \Mantle\Database\Query\Term_Query_Builder<static> whereNotIn(string $key, array $values)
  * @method static \Mantle\Database\Query\Term_Query_Builder<static> whereIn(string $key, array $values)
  * @method static \Mantle\Database\Query\Term_Query_Builder<static> where(string|array $attribute, mixed $value)
+ * @method static \Mantle\Database\Query\Term_Query_Builder<static> whereRaw( array|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' )
+ * @method static \Mantle\Database\Query\Term_Query_Builder<static> where_raw( array|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' )
+ * @method static \Mantle\Database\Query\Term_Query_Builder<static> orWhereRaw( array|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' )
+ * @method static \Mantle\Database\Query\Term_Query_Builder<static> or_where_raw( array|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' )
  */
 class Term extends Model implements Core_Object, Model_Meta, Updatable {
 	use Events\Term_Events,

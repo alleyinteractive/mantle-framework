@@ -502,6 +502,16 @@ class Test_Post_Query_Builder extends Framework_Test_Case {
 		);
 	}
 
+	public function test_where_raw_or() {
+		$post_id = static::get_random_post_id();
+
+		$result = Testable_Post::whereRaw( 'ID', 'unknown' )
+			->orWhereRaw( 'ID', $post_id )
+			->first();
+
+		$this->assertEquals( $result->id(), $post_id );
+	}
+
 	/**
 	 * Get a random post ID, ensures the post ID is not the last in the set.
 	 *
