@@ -19,6 +19,7 @@ use Mantle\Database\Model\Model;
 use Mantle\Database\Model\Model_Not_Found_Exception;
 use Mantle\Database\Pagination\Length_Aware_Paginator;
 use Mantle\Database\Pagination\Paginator;
+use Mantle\Database\Query\Concerns\Query_Bindings;
 use Mantle\Database\Query\Concerns\Query_Clauses;
 use Mantle\Support\Arr;
 use Mantle\Support\Collection;
@@ -33,7 +34,9 @@ use function Mantle\Support\Helpers\collect;
  * @template TModel of \Mantle\Database\Model\Model
  */
 abstract class Builder {
-	use Conditionable, Query_Clauses;
+	use Conditionable,
+		Query_Bindings,
+		Query_Clauses;
 
 	/**
 	 * Model to build on.
@@ -281,7 +284,7 @@ abstract class Builder {
 	 * @param mixed        $value Value to compare against.
 	 * @return static
 	 */
-	public function where( $attribute, $value = '' ) {
+	public function where( array|string $attribute, mixed $value = '' ): static {
 		if ( is_array( $attribute ) && empty( $value ) ) {
 			foreach ( $attribute as $key => $value ) {
 				$this->where( $key, $value );
@@ -643,24 +646,7 @@ abstract class Builder {
 	 */
 	public function for_page_after_id( int $per_page, ?int $last_id = null, string $column = 'id' ): static {
 		if ( ! is_null( $last_id ) ) {
-			$this->add_clause(
-				function ( array $clauses, mixed $query ) use ( $column, $last_id ) {
-					global $wpdb;
-
-					if ( ! is_object( $query ) ) {
-						return $clauses;
-					}
-
-					$table = match ( $query::class ) {
-						\WP_Term_Query::class => $wpdb->terms,
-						default => $wpdb->posts,
-					};
-
-					$clauses['where'] .= $wpdb->prepare( " AND {$table}.{$column} > %s", $last_id ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-
-					return $clauses;
-				}
-			);
+			$this->where_raw( $column, '>', $last_id );
 		}
 
 		return $this

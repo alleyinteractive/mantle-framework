@@ -1,6 +1,6 @@
 <?php
 /**
- * Modifies_Query trait file
+ * Query_Clauses trait file
  *
  * phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag, Squiz.Commenting.FunctionComment.ParamNameNoMatch
  *

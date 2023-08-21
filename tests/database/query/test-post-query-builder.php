@@ -449,12 +449,75 @@ class Test_Post_Query_Builder extends Framework_Test_Case {
 		$this->assertNull( get_post( collect( $post_ids )->last() ) );
 	}
 
+	public function test_where_raw() {
+		$post_id = static::get_random_post_id();
+
+		$result = Testable_Post::query()
+			->where_raw( 'ID', $post_id )
+			->first();
+
+		$this->assertEquals( $result->id(), $post_id );
+	}
+
+	public function test_where_raw_like() {
+		$post_id = static::get_random_post_id();
+
+		$result = Testable_Post::query()
+			->where_raw( 'post_title', 'LIKE', get_the_title( $post_id ) )
+			->first();
+
+		$this->assertEquals( $result->id(), $post_id );
+
+		$post_id = Testable_Post::factory()->create( [
+			'post_title' => 'This is a post title',
+		] );
+
+		$result = Testable_Post::query()
+			->order_by( 'id', 'asc' )
+			->where_raw( 'post_title', 'LIKE', 'This is a%' )
+			->first();
+
+		$this->assertEquals( $result->id(), $post_id );
+	}
+
+	public function test_where_in_raw() {
+		$post_ids = static::factory()->post->create_many( 10 );
+
+		// Shuffle to get a random order
+		$post_ids = collect( $post_ids )->shuffle()->values();
+
+		$expected = $post_ids->random( 3 )->values();
+
+		$results = Builder::create( Testable_Post::class )
+			->whereRaw( 'ID', 'IN', $expected->all() )
+			->orderBy( 'id', 'asc' )
+			->get();
+
+		$this->assertNotEmpty( $results );
+
+		$this->assertCount( 3, $results );
+		$this->assertEquals(
+			$expected->sort()->values()->all(),
+			$results->pluck( 'id' )->all()
+		);
+	}
+
+	public function test_where_raw_or() {
+		$post_id = static::get_random_post_id();
+
+		$result = Testable_Post::whereRaw( 'ID', 'unknown' )
+			->orWhereRaw( 'ID', $post_id )
+			->first();
+
+		$this->assertEquals( $result->id(), $post_id );
+	}
+
 	/**
 	 * Get a random post ID, ensures the post ID is not the last in the set.
 	 *
 	 * @return integer
 	 */
-	protected function get_random_post_id( $args = [] ): int {
+	protected static function get_random_post_id( $args = [] ): int {
 		$post_ids = static::factory()->post->create_many( 11, $args );
 		array_pop( $post_ids );
 		return $post_ids[ array_rand( $post_ids ) ];
