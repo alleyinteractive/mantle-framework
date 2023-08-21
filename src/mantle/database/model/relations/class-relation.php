@@ -20,6 +20,8 @@ use Mantle\Support\Forward_Calls;
 /**
  * Relation base class.
  *
+ * @mixin \Mantle\Database\Query\Builder
+ *
  * @template TParent of Model
  */
 abstract class Relation {
