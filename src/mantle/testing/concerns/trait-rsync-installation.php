@@ -237,12 +237,22 @@ trait Rsync_Installation {
 	 *
 	 * Used to install a plugin from WordPress.org or a ZIP file to the codebase after rsyncing.
 	 *
-	 * @param string $plugin Plugin slug or ZIP file to install.
-	 * @param string $version Plugin version to install, optional.
+	 * @param string $plugin Plugin slug to install. Will be installed at /wp-content/plugins/{plugin}.
+	 * @param string $version_or_url Plugin version to install OR a URL to a ZIP file to install.
 	 * @return static
 	 */
-	public function with_plugin( string $plugin, string $version = null ): static {
-		$this->plugins[] = [ $plugin, $version ];
+	public function with_plugin( string $plugin, string $version_or_url = null ): static {
+		// Ensure that the plugin slug is not a URL.
+		if ( false !== strpos( $plugin, '://' ) ) {
+			Utils::error(
+				'Plugin slug cannot be a URL. Please provide a plugin slug and specify the URL or the version in the second argument.',
+				'Install Rsync'
+			);
+
+			exit( 1 );
+		}
+
+		$this->plugins[] = [ $plugin, $version_or_url ];
 
 		return $this;
 	}
@@ -414,11 +424,14 @@ trait Rsync_Installation {
 
 		$cwd = getcwd();
 
+		if ( ! empty( $this->plugins ) ) {
+			$this->install_plugins( $base_install_path );
+		}
+
 		Utils::success(
 			"Finished rsyncing to <em>{$this->rsync_to}</em> and working directory is now <em>{$cwd}</em>",
 			'Install Rsync'
 		);
-
 
 		$command = $this->get_phpunit_command();
 
@@ -431,6 +444,28 @@ trait Rsync_Installation {
 		system( $command, $result_code ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.system_calls_system
 
 		exit( (int) $result_code );
+	}
+
+	/**
+	 * Install the plugins after rsyncing the codebase.
+	 *
+	 * @param string $dir Directory to the WordPress installation.
+	 */
+	protected function install_plugins( string $dir ): void {
+		foreach ( $this->plugins as $item ) {
+			[ $plugin, $version_or_url ] = $item;
+
+			if ( empty( $version_or_url ) ) {
+				$version_or_url = 'latest';
+			}
+
+			Utils::info(
+				"Installing plugin <em>{$plugin}</em> ({$version_or_url})...",
+				'Install Rsync'
+			);
+
+			Utils::install_plugin( $dir, $plugin, $version_or_url );
+		}
 	}
 
 	/**
