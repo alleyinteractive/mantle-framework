@@ -75,6 +75,13 @@ trait Rsync_Installation {
 	protected bool $use_sqlite_db = false;
 
 	/**
+	 * Plugin slugs or URLs to ZIP files to install after rsyncing the codebase.
+	 *
+	 * @var array<int, array{0: string, 1: string|null}>
+	 */
+	protected array $plugins = [];
+
+	/**
 	 * Exclusions to be used when rsyncing the codebase.
 	 *
 	 * @var string[]
@@ -221,6 +228,21 @@ trait Rsync_Installation {
 		$this->rsync_exclusions[] = 'db.php';
 
 		$this->use_sqlite_db = $install;
+
+		return $this;
+	}
+
+	/**
+	 * Install a specific plugin into the codebase.
+	 *
+	 * Used to install a plugin from WordPress.org or a ZIP file to the codebase after rsyncing.
+	 *
+	 * @param string $plugin Plugin slug or ZIP file to install.
+	 * @param string $version Plugin version to install, optional.
+	 * @return static
+	 */
+	public function with_plugin( string $plugin, string $version = null ): static {
+		$this->plugins[] = [ $plugin, $version ];
 
 		return $this;
 	}
