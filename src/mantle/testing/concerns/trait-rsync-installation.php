@@ -241,7 +241,7 @@ trait Rsync_Installation {
 	 * @param string $version_or_url Plugin version to install OR a URL to a ZIP file to install.
 	 * @return static
 	 */
-	public function with_plugin( string $plugin, string $version_or_url = null ): static {
+	public function with_plugin( string $plugin, string $version_or_url = 'latest' ): static {
 		// Ensure that the plugin slug is not a URL.
 		if ( false !== strpos( $plugin, '://' ) ) {
 			Utils::error(
