@@ -17,6 +17,6 @@ define( 'MANTLE_PHPUNIT_TEMPLATE_PATH', __DIR__ . '/template-parts' );
 \Mantle\Testing\manager()
 	->maybe_rsync_plugin()
 	->with_vip_mu_plugins()
-	->with_plugin( 'logger', 'https://github.com/alleyinteractive/logger/archive/refs/heads/develop.zip' )
-	->with_plugin( 'jetpack', '12.4' )
+	->install_plugin( 'logger', 'https://github.com/alleyinteractive/logger/archive/refs/heads/develop.zip' )
+	->install_plugin( 'jetpack', '12.4' )
 	->install();
