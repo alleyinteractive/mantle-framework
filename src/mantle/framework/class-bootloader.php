@@ -217,7 +217,7 @@ class Bootloader implements Contract {
 
 		$kernel->bootstrap();
 
-		$status = $kernel->handle(
+		$status    = $kernel->handle(
 			$input = new \Symfony\Component\Console\Input\ArgvInput(),
 			new \Symfony\Component\Console\Output\ConsoleOutput(),
 		);
