@@ -215,7 +215,9 @@ class Bootloader implements Contract {
 	protected function boot_console(): void {
 		$kernel = $this->app->make( Contracts\Console\Kernel::class );
 
-		$status    = $kernel->handle(
+		$kernel->bootstrap();
+
+		$status = $kernel->handle(
 			$input = new \Symfony\Component\Console\Input\ArgvInput(),
 			new \Symfony\Component\Console\Output\ConsoleOutput(),
 		);
@@ -231,6 +233,10 @@ class Bootloader implements Contract {
 	 * @return void
 	 */
 	protected function boot_console_wp_cli(): void {
+		$kernel = $this->app->make( Contracts\Console\Kernel::class );
+
+		$kernel->bootstrap();
+
 		\WP_CLI::add_command(
 			/**
 			 * Command prefix for Mantle WP-CLI commands.
@@ -239,9 +245,7 @@ class Bootloader implements Contract {
 			 * @param \Mantle\Contracts\Application $app The application instance.
 			 */
 			(string) apply_filters( 'mantle_console_command_prefix', Command::PREFIX, $this->app ),
-			function () {
-				$kernel = $this->app->make( Contracts\Console\Kernel::class );
-
+			function () use ( $kernel ) {
 				$status    = $kernel->handle(
 					$input = new \Symfony\Component\Console\Input\ArgvInput(
 						collect( (array) ( $_SERVER['argv'] ?? [] ) ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized

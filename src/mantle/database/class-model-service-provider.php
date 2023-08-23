@@ -49,8 +49,6 @@ class Model_Service_Provider extends Service_Provider {
 	 * Bootstrap the service provider.
 	 */
 	public function boot() {
-		parent::boot();
-
 		if ( empty( $this->models ) ) {
 			return;
 		}
