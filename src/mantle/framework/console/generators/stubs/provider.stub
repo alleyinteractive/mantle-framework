@@ -17,14 +17,14 @@ class {{ class }} extends Service_Provider {
 	/**
 	 * Register the service provider.
 	 */
-	public function register() {
+	public function register(): void {
 		// Register the provider.
 	}
 
 	/**
 	 * Boot the service provider.
 	 */
-	public function boot() {
+	public function boot(): void {
 		// Boot the provider.
 	}
 }
