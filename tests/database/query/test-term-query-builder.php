@@ -120,7 +120,6 @@ class Test_Term_Query_Builder extends Framework_Test_Case {
 					return $clauses;
 				}
 			)
-			->dumpSql()
 			->firstOrFail();
 
 		$this->assertEquals( $term_id, $first->id() );
