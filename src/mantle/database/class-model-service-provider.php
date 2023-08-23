@@ -73,7 +73,7 @@ class Model_Service_Provider extends Service_Provider {
 	/**
 	 * Register the internal taxonomy for post <--> post relationships.
 	 */
-	#[Action('init', 5)]
+	#[Action( 'init', 5 )]
 	public static function register_internal_taxonomy() {
 		register_taxonomy(
 			Relation::RELATION_TAXONOMY,
