@@ -11,7 +11,7 @@ use Aws\S3\S3Client;
 use Closure;
 use InvalidArgumentException;
 use League\Flysystem\Adapter\Local;
-use League\Flysystem\AdapterInterface;
+use League\Flysystem\FilesystemAdapter;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use League\Flysystem\Cached\CachedAdapter;
 use League\Flysystem\Cached\Storage\AbstractCache;
@@ -93,8 +93,9 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 
 		// Call a custom driver callback.
 		if ( isset( $this->custom_drivers[ $driver ] ) ) {
-			$this->disks[ $name ] = $this->call_custom_driver( $driver, $config );
-			return $this->disks[ $name ];
+			return $this->disks[ $name ] = $this->call_custom_driver( $driver, $config );
+
+			// return $this->disks[ $name ];
 		}
 
 		$driver_method = 'create_' . strtolower( $driver ) . '_driver';
@@ -148,7 +149,9 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	protected function call_custom_driver( string $driver, array $config ): Filesystem {
 		$instance = $this->custom_drivers[ $driver ]( $this->app, $config );
 
-		if ( $instance instanceof AdapterInterface ) {
+		// dd('custom', $driver, $config);
+
+		if ( $instance instanceof FilesystemAdapter ) {
 			$instance = $this->create_flysystem( $instance, $config );
 		}
 
@@ -172,23 +175,23 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	/**
 	 * Create a Flysystem instance with the given adapter.
 	 *
-	 * @param AdapterInterface $adapter
+	 * @param FilesystemAdapter $adapter
 	 * @param array            $config Adapter configuration.
 	 * @return Flysystem
 	 *
 	 * @throws RuntimeException Thrown on missing CachedAdapter.
 	 */
-	protected function create_flysystem( AdapterInterface $adapter, array $config = [] ): Flysystem {
-		$cache  = Arr::pull( $config, 'cache' );
-		$config = Arr::only( $config, [ 'visibility', 'disable_asserts', 'url' ] );
+	protected function create_flysystem( FilesystemAdapter $adapter, array $config = [] ): Flysystem {
+		// $cache  = Arr::pull( $config, 'cache' );
+		// $config = Arr::only( $config, [ 'visibility', 'disable_asserts', 'url' ] );
 
-		if ( $cache ) {
-			if ( ! class_exists( CachedAdapter::class ) ) {
-				throw new RuntimeException( 'CachedAdapter class is not loaded.' );
-			}
+		// if ( $cache ) {
+		// 	if ( ! class_exists( CachedAdapter::class ) ) {
+		// 		throw new RuntimeException( 'CachedAdapter class is not loaded.' );
+		// 	}
 
-			$adapter = new CachedAdapter( $adapter, $this->create_cache_store( $cache ) );
-		}
+		// 	$adapter = new CachedAdapter( $adapter, $this->create_cache_store( $cache ) );
+		// }
 
 		return new Flysystem( $adapter, $config );
 	}
@@ -201,9 +204,9 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 *
 	 * @todo Add support for other caching adapters.
 	 */
-	protected function create_cache_store( $config ): AbstractCache {
-		return new MemoryStore();
-	}
+	// protected function create_cache_store( $config ): AbstractCache {
+	// 	return new MemoryStore();
+	// }
 
 	/**
 	 * Create an instance of the local driver.

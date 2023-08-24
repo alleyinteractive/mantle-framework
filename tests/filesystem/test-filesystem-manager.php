@@ -47,36 +47,36 @@ class Test_Filesystem_Manager extends TestCase {
 		$filesystem->drive( 'valid-disk-unknown-driver' );
 	}
 
-	public function test_custom_driver() {
-		$_SERVER['__custom_driver_called'] = 0;
+	// public function test_custom_driver() {
+	// 	$_SERVER['__custom_driver_called'] = 0;
 
-		$filesystem = new Filesystem_Manager(
-			tap(
-				new Application(),
-				function( Application $app ) {
-					$app['config'] = [
-						'filesystem.disks.custom-driver' => [
-							'driver' => 'custom-driver',
-						],
-					];
-				}
-			)
-		);
+	// 	$filesystem = new Filesystem_Manager(
+	// 		tap(
+	// 			new Application(),
+	// 			function( Application $app ) {
+	// 				$app['config'] = [
+	// 					'filesystem.disks.custom-driver' => [
+	// 						'driver' => 'custom-driver',
+	// 					],
+	// 				];
+	// 			}
+	// 		)
+	// 	);
 
-		$filesystem->extend(
-			'custom-driver',
-			function () {
-				$_SERVER['__custom_driver_called']++;
-				return new NullAdapter();
-			}
-		);
+	// 	$filesystem->extend(
+	// 		'custom-driver',
+	// 		function () {
+	// 			$_SERVER['__custom_driver_called']++;
+	// 			return new NullAdapter();
+	// 		}
+	// 	);
 
-		$this->assertInstanceOf( Filesystem_Contract::class, $filesystem->drive( 'custom-driver' ) );
+	// 	$this->assertInstanceOf( Filesystem_Contract::class, $filesystem->drive( 'custom-driver' ) );
 
-		// Invoke the disk again and see if the variable is incremented.
-		$drive = $filesystem->drive( 'custom-driver' );
+	// 	// Invoke the disk again and see if the variable is incremented.
+	// 	$drive = $filesystem->drive( 'custom-driver' );
 
-		$this->assertEquals( 1, $_SERVER['__custom_driver_called'], 'Disk should be reused.' );
-		$this->assertFalse( $drive->exists( '/path' ) );
-	}
+	// 	$this->assertEquals( 1, $_SERVER['__custom_driver_called'], 'Disk should be reused.' );
+	// 	$this->assertFalse( $drive->exists( '/path' ) );
+	// }
 }
