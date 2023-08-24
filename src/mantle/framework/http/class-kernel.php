@@ -48,7 +48,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	/**
 	 * The bootstrap classes for the application.
 	 *
-	 * @var array
+	 * @var array<int, class-string>
 	 */
 	protected $bootstrappers = [
 		\Mantle\Framework\Bootstrap\Load_Configuration::class,
@@ -60,21 +60,21 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	/**
 	 * The application's middleware stack.
 	 *
-	 * @var array
+	 * @var array<int, callable|class-string>
 	 */
 	protected $middleware = [];
 
 	/**
 	 * The application's route middleware groups.
 	 *
-	 * @var array
+	 * @var array<string, array<int, callable|class-string>>
 	 */
 	protected $middleware_groups = [];
 
 	/**
 	 * The application's route middleware.
 	 *
-	 * @var array
+	 * @var array<string, callable|class-string>
 	 */
 	protected $route_middleware = [];
 
