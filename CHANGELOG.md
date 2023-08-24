@@ -5,11 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v0.12.1 - 2023-08-21
+## v0.12.4 - 2023-08-23
 
-- Add better support for a query modifier on a relationship, fix an issue when
-  saving multiple models.
+### Fixed
+
+- Fixed an issue where the console kernel was not booting unless running `wp mantle` directly.
+
+## v0.12.3 - 2023-08-21
+
+### Added
+
+- Add better support for a query modifier on a relationship.
 - Add `whereRaw()` for querying against raw attributes in a SQL query.
+
+### Fixed
+
+- Fixed an issue when saving multiple models.
+
+## v0.12.2 / v0.12.1
+
+No changes, just a re-release to fix a bad tag.
 
 ## v0.12.0 - 2023-08-17
 
