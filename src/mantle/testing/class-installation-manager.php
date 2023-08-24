@@ -132,7 +132,12 @@ class Installation_Manager {
 	/**
 	 * Define the active plugins to be set after the installation is loaded.
 	 *
-	 * @param array<int, string> $plugins Plugin files.
+	 * To install a remote plugin to the installation during the rsync process,
+	 * use the `install_plugin()` method.
+	 *
+	 * @see \Mantle\Testing\Concerns\Rsync_Installation::install_plugin()
+	 *
+	 * @param array<int, string> $plugins Plugin files to activate in WordPress.
 	 * @return static
 	 */
 	public function plugins( array $plugins ) {
@@ -142,10 +147,20 @@ class Installation_Manager {
 	/**
 	 * Alias for `plugins()`.
 	 *
-	 * @param array<int, string> $plugins Plugin files.
+	 * @param array<int, string> $plugins Plugin files to activate in WordPress.
 	 * @return static
 	 */
 	public function with_plugins( array $plugins ) {
+		return $this->plugins( $plugins );
+	}
+
+	/**
+	 * Alias for `plugins()`.
+	 *
+	 * @param array<int, string> $plugins Plugin files to activate in WordPress.
+	 * @return static
+	 */
+	public function with_active_plugins( array $plugins ): static {
 		return $this->plugins( $plugins );
 	}
 

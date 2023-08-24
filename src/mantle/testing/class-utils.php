@@ -321,6 +321,38 @@ class Utils {
 	}
 
 	/**
+	 * Install a plugin to a WordPress codebase through a shell script.
+	 *
+	 * @param string $directory Directory to install WordPress in.
+	 * @param string $plugin Plugin slug to install.
+	 * @param string $version_or_url Plugin version to install OR URL to install from.
+	 */
+	public static function install_plugin( string $directory, string $plugin, string $version_or_url = 'latest' ): void {
+		$branch = static::env( 'MANTLE_CI_BRANCH', 'HEAD' );
+
+		$command = sprintf(
+			'export WP_CORE_DIR=%s && curl -s %s | bash -s %s',
+			$directory,
+			"https://raw.githubusercontent.com/alleyinteractive/mantle-ci/{$branch}/install-plugin.sh",
+			collect(
+				[
+					$plugin,
+					$version_or_url,
+				]
+			)->implode( ' ' ),
+		);
+
+		$retval = 0;
+		$output = static::command( $command, $retval );
+
+		if ( 0 !== $retval ) {
+			static::error( '🚨 Error installing WordPress! Output from installation:', 'Install Rsync' );
+			static::code( $output );
+			exit( 1 );
+		}
+	}
+
+	/**
 	 * Check if the command is being run in debug mode.
 	 *
 	 * @return bool
