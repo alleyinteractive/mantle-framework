@@ -137,7 +137,7 @@ class Installation_Manager {
 	 *
 	 * @see \Mantle\Testing\Concerns\Rsync_Installation::install_plugin()
 	 *
-	 * @param array<int, string> $plugins Plugin files.
+	 * @param array<int, string> $plugins Plugin files to activate in WordPress.
 	 * @return static
 	 */
 	public function plugins( array $plugins ) {
@@ -147,7 +147,7 @@ class Installation_Manager {
 	/**
 	 * Alias for `plugins()`.
 	 *
-	 * @param array<int, string> $plugins Plugin files.
+	 * @param array<int, string> $plugins Plugin files to activate in WordPress.
 	 * @return static
 	 */
 	public function with_plugins( array $plugins ) {
@@ -157,10 +157,10 @@ class Installation_Manager {
 	/**
 	 * Alias for `plugins()`.
 	 *
-	 * @param array $plugins Plugin files.
-	 * @return void
+	 * @param array<int, string> $plugins Plugin files to activate in WordPress.
+	 * @return static
 	 */
-	public function with_active_plugins( array $plugins ) {
+	public function with_active_plugins( array $plugins ): static {
 		return $this->plugins( $plugins );
 	}
 
