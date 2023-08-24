@@ -10,6 +10,7 @@ namespace Mantle\Database;
 use Mantle\Database\Model\Model;
 use Mantle\Database\Model\Relations\Relation;
 use Mantle\Framework\Manifest\Model_Manifest;
+use Mantle\Support\Attributes\Action;
 use Mantle\Support\Service_Provider;
 
 /**
@@ -49,8 +50,6 @@ class Model_Service_Provider extends Service_Provider {
 	 * Bootstrap the service provider.
 	 */
 	public function boot() {
-		parent::boot();
-
 		if ( empty( $this->models ) ) {
 			return;
 		}
@@ -72,15 +71,9 @@ class Model_Service_Provider extends Service_Provider {
 	}
 
 	/**
-	 * Use the 'init' hook with a priority of 99.
-	 */
-	public function on_init() {
-		static::register_internal_taxonomy();
-	}
-
-	/**
 	 * Register the internal taxonomy for post <--> post relationships.
 	 */
+	#[Action( 'init', 5 )]
 	public static function register_internal_taxonomy() {
 		register_taxonomy(
 			Relation::RELATION_TAXONOMY,

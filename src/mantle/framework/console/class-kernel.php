@@ -100,8 +100,6 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 		$this->output = $output;
 
 		try {
-			$this->bootstrap();
-
 			return $this->get_console_application()->run( $input, $output );
 		} catch ( Throwable $e ) {
 			$this->report_exception( $e );
