@@ -1,4 +1,10 @@
 <?php
+/**
+ * AWS_S3_Adapter class file
+ *
+ * @package Mantle
+ */
+
 namespace Mantle\Filesystem\Adapter;
 
 use Aws\S3\S3Client;
@@ -7,6 +13,9 @@ use League\Flysystem\AwsS3V3\AwsS3V3Adapter as S3Adapter;
 use League\Flysystem\FilesystemOperator;
 use Mantle\Filesystem\Filesystem_Adapter;
 
+/**
+ * AWS S3 Adapter
+ */
 class AWS_S3_Adapter extends Filesystem_Adapter {
 	/**
 	 * The AWS S3 client.
@@ -35,8 +44,6 @@ class AWS_S3_Adapter extends Filesystem_Adapter {
 	 *
 	 * @param  string $path
 	 * @return string
-	 *
-	 * @throws \RuntimeException
 	 */
 	public function url( string $path ): string {
 		// If an explicit base URL has been set on the disk configuration then we will use
@@ -57,7 +64,7 @@ class AWS_S3_Adapter extends Filesystem_Adapter {
 	 *
 	 * @return bool
 	 */
-	public function providesTemporaryUrls() {
+	public function provides_temporary_urls(): bool {
 		return true;
 	}
 
@@ -69,7 +76,7 @@ class AWS_S3_Adapter extends Filesystem_Adapter {
 	 * @param  array              $options
 	 * @return string
 	 */
-	public function temporaryUrl( $path, $expiration, array $options = [] ) {
+	public function temporary_url( string $path, $expiration, array $options = [] ): string {
 		$command = $this->client->getCommand(
 			'GetObject',
 			array_merge(
@@ -105,7 +112,7 @@ class AWS_S3_Adapter extends Filesystem_Adapter {
 	 * @param  array              $options
 	 * @return array
 	 */
-	public function temporaryUploadUrl( $path, $expiration, array $options = [] ) {
+	public function temporary_upload_url( string $path, $expiration, array $options = [] ): array {
 		$command = $this->client->getCommand(
 			'PutObject',
 			array_merge(
@@ -117,13 +124,13 @@ class AWS_S3_Adapter extends Filesystem_Adapter {
 			)
 		);
 
-		$signedRequest = $this->client->createPresignedRequest(
+		$signed_request = $this->client->createPresignedRequest(
 			$command,
 			$expiration,
 			$options
 		);
 
-		$uri = $signedRequest->getUri();
+		$uri = $signed_request->getUri();
 
 		// If an explicit base URL has been set on the disk configuration then we will use
 		// it as the base URL instead of the default path. This allows the developer to
@@ -134,7 +141,7 @@ class AWS_S3_Adapter extends Filesystem_Adapter {
 
 		return [
 			'url'     => (string) $uri,
-			'headers' => $signedRequest->getHeaders(),
+			'headers' => $signed_request->getHeaders(),
 		];
 	}
 
@@ -143,7 +150,7 @@ class AWS_S3_Adapter extends Filesystem_Adapter {
 	 *
 	 * @return \Aws\S3\S3Client
 	 */
-	public function getClient(): S3Client {
+	public function get_client(): S3Client {
 		return $this->client;
 	}
 }

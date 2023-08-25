@@ -10,12 +10,10 @@ namespace Mantle\Filesystem;
 use Aws\S3\S3Client;
 use Closure;
 use InvalidArgumentException;
-use League\Flysystem\Adapter\Local;
 use League\Flysystem\AwsS3V3\AwsS3V3Adapter as S3Adapter;
 use League\Flysystem\AwsS3V3\PortableVisibilityConverter as AwsS3PortableVisibilityConverter;
 use League\Flysystem\Filesystem as Flysystem;
 use League\Flysystem\FilesystemAdapter;
-use League\Flysystem\FilesystemInterface;
 use League\Flysystem\Local\LocalFilesystemAdapter as LocalAdapter;
 use League\Flysystem\UnixVisibility\PortableVisibilityConverter;
 use League\Flysystem\Visibility;
@@ -103,8 +101,7 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 			throw new InvalidArgumentException( "Disk [{$name}] uses a driver [{$driver}] that is not supported." );
 		}
 
-		$this->disks[ $name ] = $this->{$driver_method}( $config );
-		return $this->disks[ $name ];
+		return $this->disks[ $name ] = $this->{$driver_method}( $config );
 	}
 
 	/**
@@ -129,12 +126,13 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	/**
 	 * Add a custom driver to the filesystem.
 	 *
-	 * @param string  $driver Driver name.
-	 * @param Closure $callback Callback to invoke to create an instance of the driver.
+	 * @param string                                                                                  $driver Driver name.
+	 * @param \Closure(\Mantle\Contracts\Application, array): \Mantle\Contracts\Filesystem\Filesystem $callback Callback to create the driver.
 	 * @return static
 	 */
 	public function extend( string $driver, Closure $callback ) {
 		$this->custom_drivers[ $driver ] = $callback;
+
 		return $this;
 	}
 
@@ -146,28 +144,8 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 * @return Filesystem
 	 */
 	protected function call_custom_driver( string $driver, array $config ): Filesystem {
-		$instance = $this->custom_drivers[ $driver ]( $this->app, $config );
-
-		if ( $instance instanceof FilesystemAdapter ) {
-			$instance = $this->create_flysystem( $instance, $config );
-		}
-
-		// if ( $instance instanceof Flysystem ) {
-		// 	$instance = $this->adapt( $instance );
-		// }
-
-		return $instance;
+		return $this->custom_drivers[ $driver ]( $this->app, $config );
 	}
-
-	/**
-	 * Adapt a adapter instance.
-	 *
-	 * @param Flysystem $filesystem Filesystem instance.
-	 * @return Filesystem_Adapter
-	 */
-	// protected function adapt( Flysystem $filesystem ) {
-	// 	return new Filesystem_Adapter( $filesystem );
-	// }
 
 	/**
 	 * Create a Flysystem instance with the given adapter.
@@ -177,17 +155,6 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 * @return Flysystem
 	 */
 	protected function create_flysystem( FilesystemAdapter $adapter, array $config = [] ): Flysystem {
-		// $cache  = Arr::pull( $config, 'cache' );
-		// $config = Arr::only( $config, [ 'visibility', 'disable_asserts', 'url' ] );
-
-		// if ( $cache ) {
-		// if ( ! class_exists( CachedAdapter::class ) ) {
-		// throw new RuntimeException( 'CachedAdapter class is not loaded.' );
-		// }
-
-		// $adapter = new CachedAdapter( $adapter, $this->create_cache_store( $cache ) );
-		// }
-
 		return new Flysystem( $adapter, $config );
 	}
 
@@ -208,7 +175,10 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 			: LocalAdapter::DISALLOW_LINKS;
 
 		$adapter = new LocalAdapter(
-				$config['root'], $visibility, $config['lock'] ?? LOCK_EX, $links
+			$config['root'],
+			$visibility,
+			$config['lock'] ?? LOCK_EX,
+			$links
 		);
 
 		return new Filesystem_Adapter( $this->create_flysystem( $adapter, $config ), $adapter, $config );
@@ -229,7 +199,7 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 
 		$s3_config = $this->format_s3_config( $config );
 
-		$root = (string) ($s3_config['root'] ?? '');
+		$root = (string) ( $s3_config['root'] ?? '' );
 
 		$visibility = new AwsS3PortableVisibilityConverter(
 			$config['visibility'] ?? Visibility::PUBLIC
@@ -242,7 +212,10 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 		$adapter = new S3Adapter( $client, $s3_config['bucket'], $root, $visibility, null, $config['options'] ?? [], $stream_reads );
 
 		return new Adapter\AWS_S3_Adapter(
-			$this->create_flysystem( $adapter, $config ), $adapter, $s3_config, $client
+			$this->create_flysystem( $adapter, $config ),
+			$adapter,
+			$s3_config,
+			$client
 		);
 	}
 

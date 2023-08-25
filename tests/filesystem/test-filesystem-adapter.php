@@ -4,11 +4,8 @@ namespace Mantle\Tests\Filesystem;
 
 use InvalidArgumentException;
 use League\Flysystem\Local\LocalFilesystemAdapter;
-use League\Flysystem\FileExistsException;
-use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem as Flysystem;
 use League\Flysystem\FilesystemAdapter;
-use League\Flysystem\UnableToDeleteFile;
 use League\Flysystem\UnableToReadFile;
 use Mantle\Filesystem\Filesystem;
 use Mantle\Filesystem\Filesystem_Adapter;

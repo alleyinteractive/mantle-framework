@@ -2,12 +2,12 @@
 
 namespace Mantle\Tests\Filesystem;
 
+use Mantle\Filesystem\File_Not_Found_Exception;
 use Mantle\Filesystem\Filesystem;
 use Mantle\Testing\Assert;
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
 use SplFileInfo;
-use League\Flysystem\FileNotFoundException;
 
 class Test_Filesystem extends TestCase {
 
@@ -271,7 +271,7 @@ class Test_Filesystem extends TestCase {
 	}
 
 	public function testGetThrowsExceptionNonexisitingFile() {
-		$this->expectException( FileNotFoundException::class );
+		$this->expectException( File_Not_Found_Exception::class );
 
 		$files = new Filesystem();
 		$files->get( static::$temp_dir . '/unknown-file.txt' );
@@ -284,7 +284,7 @@ class Test_Filesystem extends TestCase {
 	}
 
 	public function testGetRequireThrowsExceptionNonExistingFile() {
-		$this->expectException( FileNotFoundException::class );
+		$this->expectException( File_Not_Found_Exception::class );
 
 		$files = new Filesystem();
 		$files->get_require( static::$temp_dir . '/file.php' );
