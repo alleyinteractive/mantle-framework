@@ -2,22 +2,19 @@
 /**
  * Filesystem_Adapter class file.
  *
+ * phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag
+ *
  * @package Mantle
  */
 
 namespace Mantle\Filesystem;
 
 use InvalidArgumentException;
-use League\Flysystem\Adapter\Ftp;
-use League\Flysystem\AdapterInterface;
-use League\Flysystem\AwsS3v3\AwsS3Adapter;
-use League\Flysystem\AwsS3V3\AwsS3V3Adapter;
-use League\Flysystem\Cached\CachedAdapter;
-use League\Flysystem\FileNotFoundException;
 use League\Flysystem\FilesystemAdapter;
 use League\Flysystem\FilesystemOperator;
-use League\Flysystem\Ftp\FtpAdapter;
 use League\Flysystem\Local\LocalFilesystemAdapter;
+use League\Flysystem\PathPrefixer;
+use League\Flysystem\StorageAttributes;
 use League\Flysystem\UnableToCopyFile;
 use League\Flysystem\UnableToCreateDirectory;
 use League\Flysystem\UnableToDeleteDirectory;
@@ -33,10 +30,10 @@ use Mantle\Support\Arr;
 use Mantle\Support\Str;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UriInterface;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\throw_if;
 
 /**
@@ -48,17 +45,31 @@ use function Mantle\Support\Helpers\throw_if;
  */
 class Filesystem_Adapter implements Filesystem {
 	/**
+	 * Path prefixer.
+	 *
+	 * @var PathPrefixer
+	 */
+	protected PathPrefixer $prefixer;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param FilesystemOperator $driver Filesystem instance.
-	 * @param FilesystemAdapter $adapter Filesystem adapter.
-	 * @param array $config Filesystem configuration.
+	 * @param FilesystemAdapter  $adapter Filesystem adapter.
+	 * @param array              $config Filesystem configuration.
 	 */
 	public function __construct(
 		protected FilesystemOperator $driver,
 		protected FilesystemAdapter $adapter,
 		protected array $config = [],
 	) {
+		$separator = $config['directory_separator'] ?? DIRECTORY_SEPARATOR;
+
+		$this->prefixer = new PathPrefixer( $this->config['root'] ?? '', $separator );
+
+		if ( isset( $config['prefix'] ) ) {
+			$this->prefixer = new PathPrefixer( $this->prefixer->prefixPath( $config['prefix'] ), $separator );
+		}
 	}
 
 	/**
@@ -114,12 +125,17 @@ class Filesystem_Adapter implements Filesystem {
 	 *
 	 * @param string $directory Directory name.
 	 * @param bool   $recursive Flag if it should be recursive.
-	 * @return array
+	 * @return array<string>
 	 */
 	public function directories( string $directory = null, bool $recursive = false ): array {
-		$contents = $this->driver->listContents( $directory, $recursive );
-
-		return $this->filter_contents_by_type( $contents, 'dir' );
+		return $this->driver->listContents( $directory, $recursive )
+			->filter(
+				fn ( StorageAttributes $attributes ) => $attributes->isDir()
+			)
+			->map(
+				fn ( StorageAttributes $attributes ) => $attributes->path()
+			)
+			->toArray();
 	}
 
 	/**
@@ -176,8 +192,15 @@ class Filesystem_Adapter implements Filesystem {
 	 * @return string[]
 	 */
 	public function files( string $directory = null, bool $recursive = false ): array {
-		$contents = $this->driver->listContents( $directory, $recursive );
-		return $this->filter_contents_by_type( $contents, 'file' );
+		return $this->driver->listContents( $directory, $recursive )
+			->filter(
+				fn ( StorageAttributes $attributes ) => $attributes->isFile()
+			)
+			->sortByPath()
+			->map(
+				fn ( StorageAttributes $attributes ) => $attributes->path()
+			)
+			->toArray();
 	}
 
 	/**
@@ -268,18 +291,14 @@ class Filesystem_Adapter implements Filesystem {
 	 * @return string
 	 */
 	public function path( string $path ): string {
-		if ( method_exists( $this->adapter, 'getPathPrefix' ) ) {
-			return $adapter->getPathPrefix() . $path;
-		}
-
-		return $path;
+		return $this->prefixer->prefixPath( $path );
 	}
 
 	/**
 	 * Get the contents of a file.
 	 *
 	 * @param string $path File path.
-	 * @return string|bool
+	 * @return string|null
 	 */
 	public function get( string $path ) {
 		try {
@@ -287,6 +306,8 @@ class Filesystem_Adapter implements Filesystem {
 		} catch ( UnableToReadFile $e ) {
 			throw_if( $this->throws_exceptions(), $e );
 		}
+
+		return null;
 	}
 
 	/**
@@ -300,27 +321,34 @@ class Filesystem_Adapter implements Filesystem {
 	 */
 	public function response( string $path, ?string $name = null, array $headers = [], string $disposition = 'inline' ): StreamedResponse {
 		$response = new StreamedResponse();
-		$filename = $name ?? basename( $path );
 
-		$disposition = $response->headers->makeDisposition(
-			$disposition,
-			$filename,
-			$this->fallback_name( $filename )
-		);
+		if ( ! array_key_exists( 'Content-Type', $headers ) ) {
+			$headers['Content-Type'] = $this->mimeType( $path );
+		}
 
-		$response->headers->replace(
-			$headers + [
-				'Content-Disposition' => $disposition,
-				'Content-Length'      => $this->size( $path ),
-				'Content-Type'        => $this->mime_type( $path ),
-			]
-		);
+		if ( ! array_key_exists( 'Content-Length', $headers ) ) {
+			$headers['Content-Length'] = $this->size( $path );
+		}
+
+		if ( ! array_key_exists( 'Content-Disposition', $headers ) ) {
+			$filename = $name ?? basename( $path );
+
+			$disposition = $response->headers->makeDisposition(
+				$disposition,
+				$filename,
+				$this->fallback_name( $filename )
+			);
+
+			$headers['Content-Disposition'] = $disposition;
+		}
+
+		$response->headers->replace( $headers );
 
 		$response->setCallback(
 			function () use ( $path ) {
 				$stream = $this->readStream( $path );
 				fpassthru( $stream );
-				fclose( $stream ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fclose
+				fclose( $stream );
 			}
 		);
 
@@ -356,7 +384,7 @@ class Filesystem_Adapter implements Filesystem {
 	 * @return int|bool
 	 */
 	public function last_modified( string $path ) {
-		return $this->driver->getTimestamp( $path );
+		return $this->driver->lastModified( $path );
 	}
 
 	/**
@@ -366,7 +394,7 @@ class Filesystem_Adapter implements Filesystem {
 	 * @return string|false
 	 */
 	public function mime_type( string $path ) {
-		return $this->driver->getMimetype( $path );
+		return $this->driver->mimeType( $path );
 	}
 
 	/**
@@ -452,7 +480,7 @@ class Filesystem_Adapter implements Filesystem {
 	 * @return int|bool
 	 */
 	public function size( string $path ) {
-		return $this->driver->getSize( $path );
+		return $this->driver->fileSize( $path );
 	}
 
 	/**
@@ -488,7 +516,7 @@ class Filesystem_Adapter implements Filesystem {
 
 		try {
 			$this->driver->writeStream( $path, $resource, $options );
-		} catch( UnableToWriteFile | UnableToSetVisibility $e ) {
+		} catch ( UnableToWriteFile | UnableToSetVisibility $e ) {
 			throw_if( $this->throws_exceptions(), $e );
 
 			return false;
@@ -516,11 +544,9 @@ class Filesystem_Adapter implements Filesystem {
 	 * @return string
 	 */
 	public function get_visibility( string $path ): string {
-		if ( $this->driver->getVisibility( $path ) === Visibility::PUBLIC ) {
-			return Filesystem::VISIBILITY_PUBLIC;
-		}
-
-		return Filesystem::VISIBILITY_PRIVATE;
+		return $this->driver->visibility( $path ) === Visibility::PUBLIC
+			? Filesystem::VISIBILITY_PUBLIC
+			: Filesystem::VISIBILITY_PRIVATE;
 	}
 
 	/**
@@ -530,8 +556,27 @@ class Filesystem_Adapter implements Filesystem {
 	 * @param string $visibility Visibility to set.
 	 * @return bool
 	 */
+	public function setVisibility( string $path, string $visibility ): bool {
+		try {
+			$this->driver->setVisibility( $path, $this->parse_visibility( $visibility ) );
+		} catch ( UnableToSetVisibility $e ) {
+			throw_if( $this->throws_exceptions(), $e );
+
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Set the visibility for a file (alias).
+	 *
+	 * @param string $path Path to set.
+	 * @param string $visibility Visibility to set.
+	 * @return bool
+	 */
 	public function set_visibility( string $path, string $visibility ): bool {
-		return $this->driver->setVisibility( $path, $this->parse_visibility( $visibility ) );
+		return $this->setVisibility( $path, $visibility );
 	}
 
 	/**
@@ -575,59 +620,21 @@ class Filesystem_Adapter implements Filesystem {
 	 * @throws RuntimeException Thrown on invalid filesystem adapter.
 	 */
 	public function url( string $path ): ?string {
+		if ( isset( $this->config['prefix'] ) ) {
+			$path = $this->concat_path_to_url( $this->config['prefix'], $path );
+		}
+
 		$adapter = $this->adapter;
 
 		if ( method_exists( $adapter, 'getUrl' ) ) {
 			return $adapter->getUrl( $path );
 		} elseif ( method_exists( $this->driver, 'getUrl' ) ) {
 			return $this->driver->getUrl( $path );
-		} elseif ( $adapter instanceof AwsS3V3Adapter ) {
-			return $this->get_aws_url( $adapter, $path );
-		} elseif ( $adapter instanceof FtpAdapter ) {
-			return $this->get_ftp_url( $path );
 		} elseif ( $adapter instanceof LocalFilesystemAdapter ) {
 			return $this->get_local_url( $path );
 		} else {
-			dd( 'no support', $adapter, $this->driver);
 			throw new RuntimeException( 'This driver does not support retrieving URLs.' );
 		}
-	}
-
-	/**
-	 * Get the URL for the file at the given path.
-	 *
-	 * @param  \League\Flysystem\AwsS3v3\AwsS3Adapter $adapter Filesystem adapter.
-	 * @param  string                                 $path File path.
-	 * @return string
-	 */
-	protected function get_aws_url( AwsS3Adapter $adapter, string $path ): string {
-		// If an explicit base URL has been set on the disk configuration then we will use
-		// it as the base URL instead of the default path. This allows the developer to
-		// have full control over the base path for this filesystem's generated
-		// URLs.
-		$url = $this->driver->getConfig()->get( 'url' );
-		if ( ! is_null( $url ) ) {
-			return $this->concatPathToUrl( $url, $adapter->getPathPrefix() . $path );
-		}
-
-		return $adapter->getClient()->getObjectUrl(
-			$adapter->getBucket(),
-			$adapter->getPathPrefix() . $path
-		);
-	}
-
-	/**
-	 * Get the URL for the file at the given path.
-	 *
-	 * @param  string $path File path.
-	 * @return string
-	 */
-	protected function get_ftp_url( $path ) {
-		$config = $this->driver->getConfig();
-
-		return $config->has( 'url' )
-			? $this->concatPathToUrl( $config->get( 'url' ), $path )
-			: $path;
 	}
 
 	/**
@@ -641,10 +648,19 @@ class Filesystem_Adapter implements Filesystem {
 		// it as the base URL instead of the default path. This allows the developer to
 		// have full control over the base path for this filesystem's generated URLs.
 		if ( ! empty( $this->config['url'] ) ) {
-			return $this->concatPathToUrl( $this->config['url'], $path );
+			return $this->concat_path_to_url( $this->config['url'], $path );
 		}
 
 		return wp_upload_dir()['baseurl'] . $path;
+	}
+
+	/**
+	 * Determine if temporary URLs can be generated.
+	 *
+	 * @return bool
+	 */
+	public function provides_temporary_urls(): bool {
+		return method_exists( $this->adapter, 'getTemporaryUrl' ) || method_exists( $this->adapter, 'get_temporary_url' );
 	}
 
 	/**
@@ -660,40 +676,11 @@ class Filesystem_Adapter implements Filesystem {
 	public function temporary_url( string $path, $expiration, array $options = [] ): string {
 		if ( method_exists( $this->adapter, 'getTemporaryUrl' ) ) {
 			return $this->adapter->getTemporaryUrl( $path, $expiration, $options );
-		} elseif ( $this->adapter instanceof AwsS3Adapter ) {
-			return $this->getAwsTemporaryUrl( $this->adapter, $path, $expiration, $options );
-		} else {
-			throw new RuntimeException( 'This driver does not support creating temporary URLs.' );
+		} elseif ( method_exists( $this->adapter, 'get_temporary_url' ) ) {
+			return $this->adapter->get_temporary_url( $path, $expiration, $options );
 		}
-	}
 
-	/**
-	 * Get a temporary URL for the file at the given path.
-	 *
-	 * @param  AwsS3V3Adapter                         $adapter
-	 * @param  string                                 $path
-	 * @param  \DateTimeInterface                     $expiration
-	 * @param  array                                  $options
-	 * @return string
-	 */
-	public function getAwsTemporaryUrl( AwsS3V3Adapter $adapter, $path, $expiration, $options ) {
-		$client = $adapter->getClient();
-
-		$command = $client->getCommand(
-			'GetObject',
-			array_merge(
-				[
-					'Bucket' => $adapter->getBucket(),
-					'Key'    => $adapter->getPathPrefix() . $path,
-				],
-				$options
-			)
-		);
-
-		return (string) $client->createPresignedRequest(
-			$command,
-			$expiration
-		)->getUri();
+		throw new RuntimeException( 'This driver does not support creating temporary URLs.' );
 	}
 
 	/**
@@ -703,8 +690,24 @@ class Filesystem_Adapter implements Filesystem {
 	 * @param  string $path
 	 * @return string
 	 */
-	protected function concatPathToUrl( $url, $path ) {
+	protected function concat_path_to_url( string $url, string $path ): string {
 		return rtrim( $url, '/' ) . '/' . ltrim( $path, '/' );
+	}
+
+	/**
+	 * Replace the scheme, host and port of the given UriInterface with values from the given URL.
+	 *
+	 * @param  \Psr\Http\Message\UriInterface $uri
+	 * @param  string                         $url
+	 * @return \Psr\Http\Message\UriInterface
+	 */
+	protected function replace_base_url( UriInterface $uri, string $url ): UriInterface {
+		$parsed = wp_parse_url( $url );
+
+		return $uri
+			->withScheme( $parsed['scheme'] )
+			->withHost( $parsed['host'] )
+			->withPort( $parsed['port'] ?? null );
 	}
 
 	/**
@@ -716,29 +719,11 @@ class Filesystem_Adapter implements Filesystem {
 	 * @throws InvalidArgumentException Thrown on invalid visibility.
 	 */
 	protected function parse_visibility( string $visibility ): string {
-		switch ( $visibility ) {
-			case Filesystem::VISIBILITY_PUBLIC:
-				return AdapterInterface::VISIBILITY_PUBLIC;
-			case Filesystem::VISIBILITY_PRIVATE:
-				return AdapterInterface::VISIBILITY_PRIVATE;
-		}
-
-		throw new InvalidArgumentException( "Unknown visibility: {$visibility}." );
-	}
-
-	/**
-	 * Filter directory contents by type.
-	 *
-	 * @param array  $contents Content sto filter.
-	 * @param string $type
-	 * @return array
-	 */
-	protected function filter_contents_by_type( array $contents, string $type ): array {
-		return collect( $contents )
-			->where( 'type', $type )
-			->pluck( 'path' )
-			->values()
-			->all();
+		return match ( $visibility ) {
+			Filesystem::VISIBILITY_PUBLIC => Visibility::PUBLIC,
+			Filesystem::VISIBILITY_PRIVATE => Visibility::PRIVATE,
+			default => throw new InvalidArgumentException( "Unknown visibility: {$visibility}." ),
+		};
 	}
 
 	/**
@@ -747,7 +732,7 @@ class Filesystem_Adapter implements Filesystem {
 	 * @return bool
 	 */
 	protected function throws_exceptions(): bool {
-		return (bool) ($this->config['throw'] ?? false);
+		return (bool) ( $this->config['throw'] ?? false );
 	}
 
 	/**
