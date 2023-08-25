@@ -30,13 +30,6 @@ use RuntimeException;
  */
 class Filesystem_Manager implements Filesystem_Manager_Contract {
 	/**
-	 * Application instance
-	 *
-	 * @var Application
-	 */
-	protected $app;
-
-	/**
 	 * Disk storage.
 	 *
 	 * @var Filesystem[]
@@ -55,9 +48,7 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 *
 	 * @param Application $app Application instance.
 	 */
-	public function __construct( Application $app ) {
-		$this->app = $app;
-	}
+	public function __construct( protected Application $app ) {}
 
 	/**
 	 * Retrieve a filesystem disk.
@@ -84,6 +75,7 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 		}
 
 		$config = $this->get_config( $name );
+
 		if ( empty( $config['driver'] ) ) {
 			throw new InvalidArgumentException( "Disk [{$name}] does not have a configured driver." );
 		}
@@ -161,10 +153,16 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	/**
 	 * Create an instance of the local driver.
 	 *
-	 * @param  array $config
+	 * @param  array $config Configuration.
 	 * @return Filesystem_Adapter
+	 *
+	 * @throws InvalidArgumentException Thrown on missing WordPress.
 	 */
 	public function create_local_driver( array $config ): Filesystem_Adapter {
+		if ( ! function_exists( 'wp_upload_dir' ) ) {
+			throw new InvalidArgumentException( 'The local filesystem cannot be used outside of a WordPress environment.' );
+		}
+
 		$visibility = PortableVisibilityConverter::fromArray(
 			$config['permissions'] ?? [],
 			$config['directory_visibility'] ?? $config['visibility'] ?? Visibility::PRIVATE
@@ -174,14 +172,39 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 			? LocalAdapter::SKIP_LINKS
 			: LocalAdapter::DISALLOW_LINKS;
 
+		$upload_dir = wp_upload_dir();
+
+		// Default the root to the WordPress uploads directory.
+		$root = (string) ( $config['root'] ?? $upload_dir['basedir'] );
+
+		/**
+		 * Filter the local filesystem root directory.
+		 *
+		 * @param string $root Root path.
+		 * @param array  $config Configuration.
+		 */
+		$root = (string) apply_filters( 'mantle_filesystem_local_root', $root, $config );
+
+		// Ensure the root configuration has a base URL.
+		$config['root']       = $root;
+		$config['url']        = $config['url'] ?? $upload_dir['baseurl'];
+		$config['visibility'] = $config['visibility'] ?? Visibility::PUBLIC;
+
+		/**
+		 * Filter the local filesystem configuration.
+		 *
+		 * @param array $config Configuration.
+		 */
+		$config = (array) apply_filters( 'mantle_filesystem_local_config', $config );
+
 		$adapter = new LocalAdapter(
-			$config['root'],
+			$root,
 			$visibility,
 			$config['lock'] ?? LOCK_EX,
 			$links
 		);
 
-		return new Filesystem_Adapter( $this->create_flysystem( $adapter, $config ), $adapter, $config );
+		return new Adapter\Local_Adapter( $this->create_flysystem( $adapter, $config ), $adapter, $config );
 	}
 
 	/**

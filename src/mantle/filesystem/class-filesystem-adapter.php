@@ -12,7 +12,6 @@ namespace Mantle\Filesystem;
 use InvalidArgumentException;
 use League\Flysystem\FilesystemAdapter;
 use League\Flysystem\FilesystemOperator;
-use League\Flysystem\Local\LocalFilesystemAdapter;
 use League\Flysystem\PathPrefixer;
 use League\Flysystem\StorageAttributes;
 use League\Flysystem\UnableToCopyFile;
@@ -38,8 +37,6 @@ use function Mantle\Support\Helpers\throw_if;
 
 /**
  * Filesystem to Flysystem Adapter
- *
- * @todo Ensure config is passed.
  *
  * @mixin \League\Flysystem\FilesystemOperator
  */
@@ -628,30 +625,15 @@ class Filesystem_Adapter implements Filesystem {
 
 		if ( method_exists( $adapter, 'getUrl' ) ) {
 			return $adapter->getUrl( $path );
+		} elseif ( method_exists( $adapter, 'get_url' ) ) {
+			return $adapter->get_url( $path );
 		} elseif ( method_exists( $this->driver, 'getUrl' ) ) {
 			return $this->driver->getUrl( $path );
-		} elseif ( $adapter instanceof LocalFilesystemAdapter ) {
-			return $this->get_local_url( $path );
+		} elseif ( method_exists( $this->driver, 'get_url' ) ) {
+			return $this->driver->get_url( $path );
 		} else {
 			throw new RuntimeException( 'This driver does not support retrieving URLs.' );
 		}
-	}
-
-	/**
-	 * Get the URL for the file at the given path.
-	 *
-	 * @param  string $path File path.
-	 * @return string
-	 */
-	protected function get_local_url( $path ) {
-		// If an explicit base URL has been set on the disk configuration then we will use
-		// it as the base URL instead of the default path. This allows the developer to
-		// have full control over the base path for this filesystem's generated URLs.
-		if ( ! empty( $this->config['url'] ) ) {
-			return $this->concat_path_to_url( $this->config['url'], $path );
-		}
-
-		return wp_upload_dir()['baseurl'] . $path;
 	}
 
 	/**

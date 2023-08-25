@@ -283,13 +283,4 @@ class Test_Filesystem_Adapter extends TestCase {
 
 		$filesystem_adapter->assertExists( $storagePath );
 	}
-
-	public function test_url() {
-		$this->assertEquals(
-			home_url( '/wp-content/uploads/foo.txt' ),
-			( new Filesystem_Adapter( $this->filesystem, $this->adapter ) )->url( '/foo.txt' )
-		);
-
-		// TODO: add test for config url.
-	}
 }
