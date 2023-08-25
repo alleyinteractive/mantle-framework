@@ -80,6 +80,41 @@ class Test_Factory extends Framework_Test_Case {
 
 		Factory\Factory::default_factory_name( $class::class ); // @phpstan-ignore-line
 	}
+
+	public function test_create_multiple_fluently() {
+		$post_ids = Testable_Post::factory()->count( 3 )->create()->all();
+
+		$this->assertIsArray( $post_ids );
+		$this->assertCount( 3, $post_ids );
+		$this->assertContainsOnly( 'int', $post_ids );
+
+		$posts = Testable_Post::factory()->count( 12 )->create_and_get()->all();
+
+		$this->assertIsArray( $posts );
+		$this->assertCount( 12, $posts );
+		$this->assertContainsOnlyInstancesOf( Testable_Post::class, $posts );
+
+		$this->assertInstanceOf(
+			Testable_Post::class,
+			Testable_Post::factory()->count( 1 )->create_and_get(),
+		);
+	}
+
+	public function test_create_multiple_fluently_with_scopes() {
+		$posts = Testable_Post_With_Factory::factory()
+			->count( 3 )
+			->custom_state()
+			->as_models()
+			->create_and_get()
+			->all();
+
+		$this->assertIsArray( $posts );
+		$this->assertCount( 3, $posts );
+		$this->assertEquals(
+			'Title from the custom state',
+			$posts[0]->title,
+		);
+	}
 }
 
 class Testable_Post extends Model\Post {
