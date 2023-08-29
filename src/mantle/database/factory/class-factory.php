@@ -25,6 +25,8 @@ use function Mantle\Support\Helpers\tap;
  * Base Factory
  *
  * @template TObject of \Mantle\Database\Model\Model
+ *
+ * @method \Mantle\Database\Factory\Fluent_Factory<TObject> count(int $count)
  */
 abstract class Factory {
 	use Concerns\Resolves_Factories,
@@ -244,5 +246,28 @@ abstract class Factory {
 		return fn ( array $args, Closure $next ) => $next(
 			array_merge( $args, $this->definition() ),
 		);
+	}
+
+	/**
+	 * Create a new fluent factory instance.
+	 *
+	 * @return Fluent_Factory
+	 */
+	protected function create_fluent_factory(): Fluent_Factory {
+		return new Fluent_Factory(
+			clone $this,
+			$this->faker,
+		);
+	}
+
+	/**
+	 * Magic method to proxy calls to the fluent factory.
+	 *
+	 * @param string $method The method name.
+	 * @param array  $args   The arguments.
+	 * @return mixed
+	 */
+	public function __call( string $method, array $args ): mixed {
+		return $this->create_fluent_factory()->$method( ...$args );
 	}
 }
