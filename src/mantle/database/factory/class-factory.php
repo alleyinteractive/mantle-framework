@@ -251,7 +251,7 @@ abstract class Factory {
 	/**
 	 * Create a new fluent factory instance.
 	 *
-	 * @return static
+	 * @return Fluent_Factory
 	 */
 	protected function create_fluent_factory(): Fluent_Factory {
 		return new Fluent_Factory(
@@ -267,7 +267,7 @@ abstract class Factory {
 	 * @param array  $args   The arguments.
 	 * @return mixed
 	 */
-	public function __call( string $method, array $args ) {
+	public function __call( string $method, array $args ): mixed {
 		return $this->create_fluent_factory()->$method( ...$args );
 	}
 }
