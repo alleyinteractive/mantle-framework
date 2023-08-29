@@ -349,11 +349,7 @@ class Arr {
 
 		$keys = (array) $keys;
 
-		if ( ! $array ) {
-			return false;
-		}
-
-		if ( [] === $keys ) {
+		if ( empty( $array ) ) {
 			return false;
 		}
 
