@@ -22,6 +22,8 @@ use function Mantle\Support\Helpers\get_post_object;
  * @template TObject of \Mantle\Database\Model\Attachment
  */
 class Attachment_Factory extends Post_Factory {
+	use Concerns\Generates_Images;
+
 	/**
 	 * Model to use when creating objects.
 	 *
@@ -54,7 +56,10 @@ class Attachment_Factory extends Post_Factory {
 	 */
 	public function with_image( string $file = null, int $parent = 0, int $width = 640, int $height = 480, bool $recycle = true ): static {
 		if ( ! $file ) {
-			static $generated_images = [];
+			static $generated_images = [
+				// Use the already generated default 600x480 image.
+				'6421c8050053a960a55c0e70f6006ca9' => __DIR__ . '/assets/factory/600x480.jpg',
+			];
 
 			$hash = md5( $width . $height );
 
@@ -66,7 +71,7 @@ class Attachment_Factory extends Post_Factory {
 			// If we're not recycling, or we haven't generated an image of this size,
 			// generate one and save it for later.
 			if ( ! $file ) {
-				$file = $generated_images[ $hash ] = $this->faker->image( get_temp_dir(), $width, $height );
+				$file = $generated_images[ $hash ] = $this->generate_image( $width, $height );
 			}
 		}
 
