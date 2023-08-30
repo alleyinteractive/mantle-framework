@@ -90,7 +90,9 @@ class Discover_Events {
 							$instance = $attribute->newInstance();
 
 							$listener_events[ $listener->name . '@' . $method->name ] = [
-								[ $instance->action ],
+								[
+									$instance->hook_name,
+								],
 								$instance->priority,
 							];
 						}
