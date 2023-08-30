@@ -295,10 +295,16 @@ class Utils {
 			[
 				[ 'WP_CORE_DIR', $directory ],
 				[ 'WP_MULTISITE', static::env( 'WP_MULTISITE', '0' ) ],
-				[ 'WP_USE_SQLITE', $use_sqlite_db ],
-				[ 'INSTALL_WP_TEST_DEBUG', static::is_debug_mode() ],
 			]
 		)
+				->when(
+					$use_sqlite_db,
+					fn ( Collection $collection ) => $collection->push( [ 'WP_USE_SQLITE', 'true' ] )
+				)
+				->when(
+					static::is_debug_mode(),
+					fn ( Collection $collection ) => $collection->push( [ 'INSTALL_WP_TEST_DEBUG', 'true' ] )
+				)
 				->when(
 					! empty( static::env( 'CACHEDIR', '' ) ),
 					fn ( Collection $collection ) => $collection->push( [ 'CACHEDIR', static::env( 'CACHEDIR', '' ) ] )
@@ -415,6 +421,8 @@ class Utils {
 		if ( is_array( $command ) ) {
 			$command = implode( ' ', $command );
 		}
+
+		$output = null;
 
 		exec( $command, $output, $exit_code ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.system_calls_exec
 
