@@ -100,6 +100,7 @@ class Test_Printer extends TestCase {
 			$path,
 			'-vsn',
 			'--no-cache',
+			'--standard=' . dirname( MANTLE_PHPUNIT_INCLUDES_PATH, 2 ) . '/phpcs.xml',
 		];
 
 		// tip: turn off the output buffering for help debugging!
