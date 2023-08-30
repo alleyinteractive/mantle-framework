@@ -18,7 +18,7 @@ jobs:
         multisite: [true, false]
         php: [8.0, 8.1, 8.2]
         wordpress: ["latest"]
-    uses: alleyinteractive/.github/.github/workflows/php-tests.yml@cache-dir
+    uses: alleyinteractive/.github/.github/workflows/php-tests.yml@main
     name: "P${{ matrix.php }} - ${{ matrix.wordpress }} ${{ matrix.multisite && 'Multisite' || '' }} - ${{ matrix.dependencies }}"
     with:
       dependency-versions: ${{ matrix.dependencies }}
