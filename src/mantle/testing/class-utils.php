@@ -7,6 +7,7 @@
 
 namespace Mantle\Testing;
 
+use Mantle\Support\Collection;
 use Mantle\Support\Str;
 use Mantle\Testing\Doubles\Spy_REST_Server;
 
@@ -289,12 +290,27 @@ class Utils {
 	): void {
 		$branch = static::env( 'MANTLE_CI_BRANCH', 'HEAD' );
 
+		// Compile the variables to pass to the shell script.
+		$variables = collect(
+			[
+				[ 'WP_CORE_DIR', $directory ],
+				[ 'WP_MULTISITE', static::env( 'WP_MULTISITE', '0' ) ],
+				[ 'WP_USE_SQLITE', $use_sqlite_db ],
+				[ 'INSTALL_WP_TEST_DEBUG', static::is_debug_mode() ],
+			]
+		)
+				->when(
+					! empty( static::env( 'CACHEDIR', '' ) ),
+					fn ( Collection $collection ) => $collection->push( [ 'CACHEDIR', static::env( 'CACHEDIR', '' ) ] )
+				)
+				->map(
+					fn ( array $item ) => sprintf( 'export %s=%s', $item[0], static::shell_safe( $item[1] ) )
+				)
+				->implode( ' && ' );
+
 		$command = sprintf(
-			'export WP_CORE_DIR=%s WP_MULTISITE=%s WP_USE_SQLITE=%s INSTALL_WP_TEST_DEBUG=%s && curl -s %s | bash -s %s',
-			$directory,
-			static::shell_safe( static::env( 'WP_MULTISITE', '0' ) ),
-			static::shell_safe( $use_sqlite_db ),
-			static::shell_safe( static::is_debug_mode() ),
+			'%s && curl -s %s | bash -s %s',
+			$variables,
 			"https://raw.githubusercontent.com/alleyinteractive/mantle-ci/{$branch}/install-wp-tests.sh",
 			collect(
 				[
