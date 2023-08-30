@@ -20,8 +20,6 @@ use function Mantle\Support\Helpers\collect;
 
 /**
  * Discover events within a specific directory.
- *
- * @todo Add support for WordPress hooks using attributes.
  */
 class Discover_Events {
 	/**
@@ -80,25 +78,22 @@ class Discover_Events {
 			}
 
 			foreach ( $listener->getMethods( ReflectionMethod::IS_PUBLIC ) as $method ) {
-				// Check for attribute support with PHP 8.
-				if ( version_compare( phpversion(), '8.0.0', '>=' ) ) {
-					// Check if the method has an attribute action.
-					$action_attributes = $method->getAttributes( Action::class );
+				// Check if the method has an attribute action.
+				$action_attributes = $method->getAttributes( Action::class );
 
-					if ( ! empty( $action_attributes ) ) {
-						foreach ( $action_attributes as $attribute ) {
-							$instance = $attribute->newInstance();
+				if ( ! empty( $action_attributes ) ) {
+					foreach ( $action_attributes as $attribute ) {
+						$instance = $attribute->newInstance();
 
-							$listener_events[ $listener->name . '@' . $method->name ] = [
-								[
-									$instance->hook_name,
-								],
-								$instance->priority,
-							];
-						}
-
-						continue;
+						$listener_events[ $listener->name . '@' . $method->name ] = [
+							[
+								$instance->hook_name,
+							],
+							$instance->priority,
+						];
 					}
+
+					continue;
 				}
 
 				// Handle WordPress hooks being registered with a listener.
