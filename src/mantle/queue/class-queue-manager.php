@@ -17,13 +17,6 @@ use Mantle\Contracts\Queue\Queue_Manager as Queue_Manager_Contract;
  */
 class Queue_Manager implements Queue_Manager_Contract {
 	/**
-	 * Container instance.
-	 *
-	 * @var Container
-	 */
-	protected Container $container;
-
-	/**
 	 * Provider class map.
 	 *
 	 * @var class-string<Provider>[]|Provider[]
@@ -42,9 +35,7 @@ class Queue_Manager implements Queue_Manager_Contract {
 	 *
 	 * @param Container $container Container instance.
 	 */
-	public function __construct( Container $container ) {
-		$this->container = $container;
-	}
+	public function __construct( protected Container $container ) {}
 
 	/**
 	 * Get a queue provider instance.
@@ -71,7 +62,7 @@ class Queue_Manager implements Queue_Manager_Contract {
 	 *
 	 * @throws InvalidArgumentException Thrown invalid provider.
 	 */
-	public function add_provider( string $name, $provider ) {
+	public function add_provider( string $name, string|Provider $provider ) {
 		if ( is_string( $provider ) && ( ! class_exists( $provider ) || ! in_array( Provider::class, class_implements( $provider ), true ) ) ) {
 			throw new InvalidArgumentException( "Provider does not implement Provider contract: [$provider]" );
 		} elseif ( is_object( $provider ) && ! ( $provider instanceof Provider ) ) { // @phpstan-ignore-line is always false
@@ -86,11 +77,11 @@ class Queue_Manager implements Queue_Manager_Contract {
 	/**
 	 * Get the default queue driver in queue.
 	 *
-	 * @return string|null
+	 * @return string
 	 */
-	protected function get_default_driver(): ?string {
+	protected function get_default_driver(): string {
 		if ( ! isset( $this->container['config'] ) ) {
-			return null;
+			return 'wordpress';
 		}
 
 		return $this->container['config']['queue.default'] ?? 'wordpress';
@@ -117,7 +108,7 @@ class Queue_Manager implements Queue_Manager_Contract {
 		}
 
 		if ( ! ( $this->connections[ $provider ] instanceof Provider ) ) {
-			throw new InvalidArgumentException( "Unknown provider instance resolved for [$provider]: " . get_class( $this->connections[ $provider ] ) );
+			throw new InvalidArgumentException( "Unknown provider instance resolved for [$provider]: " . $this->connections[ $provider ]::class );
 		}
 
 		return $this->connections[ $provider ];

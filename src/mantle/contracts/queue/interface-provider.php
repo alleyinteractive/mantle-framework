@@ -19,7 +19,7 @@ interface Provider {
 	 * @param mixed $job Job instance.
 	 * @return bool
 	 */
-	public function push( $job );
+	public function push( $job ): bool;
 
 	/**
 	 * Get the next set of jobs in the queue.
@@ -37,5 +37,5 @@ interface Provider {
 	 * @param string $queue Queue to compare against.
 	 * @return bool
 	 */
-	public function in_queue( $job, string $queue = null ): bool;
+	public function in_queue( mixed $job, string $queue = null ): bool;
 }

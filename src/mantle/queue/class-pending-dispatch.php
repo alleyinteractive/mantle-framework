@@ -17,20 +17,11 @@ use RuntimeException;
  */
 class Pending_Dispatch {
 	/**
-	 * Job instance.
-	 *
-	 * @var Closure_Job|Job
-	 */
-	protected Closure_Job|Job $job; // phpcs:ignore Squiz.Commenting.VariableComment.Missing
-
-	/**
 	 * Constructor.
 	 *
 	 * @param Job|Closure_Job $job Job instance.
 	 */
-	public function __construct( $job ) {
-		$this->job = $job;
-	}
+	public function __construct( protected Job|Closure_Job $job ) {}
 
 	/**
 	 * Add a dispatch to a specific queue.
@@ -53,20 +44,22 @@ class Pending_Dispatch {
 	/**
 	 * Set the delay before the job will be run.
 	 *
+	 * @todo Re-implement and test this.
+	 *
 	 * @throws RuntimeException If the job does not support queueing.
 	 *
 	 * @param int $delay Delay in seconds.
 	 * @return static
 	 */
-	public function delay( int $delay ): Pending_Dispatch {
-		if ( ! method_exists( $this->job, 'delay' ) ) {
-			throw new RuntimeException( 'Job does not support queueing.' );
-		}
+	// public function delay( int $delay ): Pending_Dispatch {
+	// if ( ! method_exists( $this->job, 'delay' ) ) {
+	// throw new RuntimeException( 'Job does not support queueing.' );
+	// }
 
-		$this->job->delay( $delay );
+	// $this->job->delay( $delay );
 
-		return $this;
-	}
+	// return $this;
+	// }
 
 	/**
 	 * Handle the job and send it to the queue.

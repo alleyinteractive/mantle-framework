@@ -130,7 +130,7 @@ class Testable_Provider implements Provider {
 	 * @param mixed $job Job instance.
 	 * @return bool
 	 */
-	public function push( $job ) {
+	public function push( mixed $job ): bool {
 		$this->jobs[] = $job;
 		return true;
 	}
@@ -155,7 +155,7 @@ class Testable_Provider implements Provider {
 	 * @param string $queue Queue to compare against.
 	 * @return bool
 	 */
-	public function in_queue( $job, string $queue = null ): bool {
+	public function in_queue( mixed $job, string $queue = null ): bool {
 		return false;
 	}
 }

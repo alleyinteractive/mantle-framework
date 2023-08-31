@@ -23,7 +23,8 @@ use function Mantle\Support\Helpers\collect;
  * five minutes. The cron event will process a small batch of queue items.
  *
  * @todo Add support for one off cron events that should have their own cron scheduled.
- * @todo Add support for different queue names.
+ * @todo Add support for job locks.
+ * @todo Add support for delayed jobs.
  */
 class Provider implements Provider_Contract {
 	/**
@@ -43,14 +44,14 @@ class Provider implements Provider_Contract {
 	/**
 	 * Queue of cron jobs to process.
 	 *
-	 * @var array
+	 * @var array<int, array<mixed>>
 	 */
 	protected static $pending_queue = [];
 
 	/**
-	 * 'init' callback.
+	 * Register the data types on 'init'.
 	 */
-	public static function on_init() {
+	public static function register_data_types(): void {
 		\register_post_type(
 			static::OBJECT_NAME,
 			[
@@ -80,7 +81,7 @@ class Provider implements Provider_Contract {
 	/**
 	 * Process the pending queue items that were added before `init`.
 	 */
-	protected static function process_pending_queue() {
+	protected static function process_pending_queue(): void {
 		if ( ! empty( static::$pending_queue ) ) {
 			$manager = app( Queue_Manager::class );
 
@@ -102,10 +103,11 @@ class Provider implements Provider_Contract {
 	 * @param mixed $job Job instance.
 	 * @return bool
 	 */
-	public function push( $job ) {
+	public function push( mixed $job ): bool {
 		// Account for adding to the queue before 'init'.
 		if ( ! \did_action( 'init' ) ) {
 			static::$pending_queue[] = func_get_args();
+
 			return true;
 		}
 
@@ -131,9 +133,6 @@ class Provider implements Provider_Contract {
 		}
 
 		wp_set_object_terms( $insert, static::get_queue_term_id( $queue ), static::OBJECT_NAME, false );
-
-		// Ensure that the next cron event is scheduled for this queue.
-		Scheduler::schedule( $queue );
 
 		return true;
 	}
@@ -182,7 +181,7 @@ class Provider implements Provider_Contract {
 	 * @param string $queue Queue to compare against.
 	 * @return bool
 	 */
-	public function in_queue( $job, string $queue = null ): bool {
+	public function in_queue( mixed $job, string $queue = null ): bool {
 		$queued_objects = \get_posts(
 			[
 				'fields'         => 'ids',
