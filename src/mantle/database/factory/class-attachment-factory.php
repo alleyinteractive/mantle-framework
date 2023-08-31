@@ -11,6 +11,7 @@ use Closure;
 use Faker\Generator;
 use Mantle\Contracts\Database\Core_Object;
 use Mantle\Database\Model\Attachment;
+use RuntimeException;
 use WP_Post;
 
 use function Mantle\Support\Helpers\get_post_object;
@@ -21,6 +22,8 @@ use function Mantle\Support\Helpers\get_post_object;
  * @template TObject of \Mantle\Database\Model\Attachment
  */
 class Attachment_Factory extends Post_Factory {
+	use Concerns\Generates_Images;
+
 	/**
 	 * Model to use when creating objects.
 	 *
@@ -42,15 +45,38 @@ class Attachment_Factory extends Post_Factory {
 	/**
 	 * Create an attachment object with an underlying image file.
 	 *
+	 * @throws RuntimeException If unable to generate image.
+	 *
 	 * @param string $file   The file name to create attachment object from.
 	 * @param int    $parent The parent post ID.
 	 * @param int    $width  The width of the image.
 	 * @param int    $height The height of the image.
+	 * @param bool   $recycle Whether to recycle the image file.
 	 * @return static
 	 */
-	public function with_image( string $file = null, int $parent = 0, int $width = 640, int $height = 480 ): static {
+	public function with_image( string $file = null, int $parent = 0, int $width = 640, int $height = 480, bool $recycle = true ): static {
 		if ( ! $file ) {
-			$file = $this->faker->image( sys_get_temp_dir(), $width, $height );
+			static $generated_images = [
+				// Use the already generated default 600x480 image.
+				'6421c8050053a960a55c0e70f6006ca9' => __DIR__ . '/assets/factory/600x480.jpg',
+			];
+
+			$hash = md5( $width . $height );
+
+			// If we're recycling, and we've already generated an image of this size, use it.
+			if ( $recycle && isset( $generated_images[ $hash ] ) ) {
+				$file = $generated_images[ $hash ];
+			}
+
+			// If we're not recycling, or we haven't generated an image of this size,
+			// generate one and save it for later.
+			if ( ! $file ) {
+				$file = $generated_images[ $hash ] = $this->generate_image( $width, $height );
+			}
+		}
+
+		if ( empty( $file ) ) {
+			throw new RuntimeException( "Unable to generate {$width}x{$height} image." );
 		}
 
 		return $this->with_middleware(
