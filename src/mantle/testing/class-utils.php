@@ -352,9 +352,24 @@ class Utils {
 	public static function install_plugin( string $directory, string $plugin, string $version_or_url = 'latest' ): void {
 		$branch = static::env( 'MANTLE_CI_BRANCH', 'HEAD' );
 
+		// Compile the variables to pass to the shell script.
+		$variables = collect(
+			[
+				[ 'WP_CORE_DIR', $directory ],
+			]
+		)
+			->when(
+				! empty( static::env( 'CACHEDIR', '' ) ),
+				fn ( Collection $collection ) => $collection->push( [ 'CACHEDIR', static::env( 'CACHEDIR', '' ) ] )
+			)
+			->map(
+				fn ( array $item ) => sprintf( 'export %s=%s', $item[0], static::shell_safe( $item[1] ) )
+			)
+			->implode( ' && ' );
+
 		$command = sprintf(
-			'export WP_CORE_DIR=%s && curl -s %s | bash -s %s',
-			$directory,
+			'%s && curl -s %s | bash -s %s',
+			$variables,
 			"https://raw.githubusercontent.com/alleyinteractive/mantle-ci/{$branch}/install-plugin.sh",
 			collect(
 				[
