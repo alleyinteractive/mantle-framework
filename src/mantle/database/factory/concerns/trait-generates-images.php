@@ -1,6 +1,6 @@
 <?php
 /**
- * Generates_Image trait file
+ * Generates_Images trait file
  *
  * @package Mantle
  */
