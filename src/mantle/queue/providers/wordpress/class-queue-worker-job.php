@@ -1,6 +1,6 @@
 <?php
 /**
- * Wp_Cron_Job class file.
+ * Queue_Worker_Job class file.
  *
  * @package Mantle
  */
@@ -14,19 +14,6 @@ use Throwable;
  * WordPress Cron Queue Job
  */
 class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
-	/**
-	 * Raw job callback.
-	 *
-	 * @var mixed
-	 */
-	protected $job;
-
-	/**
-	 * Queue post ID.
-	 *
-	 * @var int
-	 */
-	protected ?int $queue_post_id = null;
 
 	/**
 	 * Flag if the job failed.
@@ -41,10 +28,7 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 	 * @param mixed $job Job data.
 	 * @param int   $queue_post_id Queue post ID.
 	 */
-	public function __construct( $job, int $queue_post_id ) {
-		$this->job           = $job;
-		$this->queue_post_id = $queue_post_id;
-	}
+	public function __construct( protected mixed $job, protected ?int $queue_post_id = null ) {}
 
 	/**
 	 * Fire the job.
@@ -91,10 +75,11 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 
 		if ( $this->queue_post_id ) {
 			update_post_meta( $this->queue_post_id, '_mantle_queue_error', $e->getMessage() );
+
 			wp_update_post(
 				[
 					'ID'          => $this->queue_post_id,
-					'post_status' => 'failed',
+					'post_status' => Provider::POST_STATUS_FAILED,
 				]
 			);
 		}

@@ -9,6 +9,8 @@ namespace Mantle\Queue\Providers\WordPress;
 
 /**
  * WordPress Cron Scheduler
+ *
+ * @todo Add concurrency support to schedule multiple batches when there is a large backlog.
  */
 class Scheduler {
 	/**
@@ -21,17 +23,15 @@ class Scheduler {
 	/**
 	 * Callback for the cron event.
 	 *
-	 * @todo Abstract this a bit, allow configuration to control some of this.
-	 *
-	 * @param string $queue Queue name.
+	 * @param string $queue Queue name, optional.
 	 */
-	public static function on_queue_run( $queue ) {
+	public static function on_queue_run( ?string $queue = null ) {
 		if ( ! $queue ) {
 			$queue = 'default';
 		}
 
 		app( 'queue.worker' )->run(
-			(int) config( 'queue.batch_size', 1 ),
+			static::get_configuration_value( 'batch_size', $queue, 100 ),
 			$queue
 		);
 	}
@@ -77,7 +77,11 @@ class Scheduler {
 	 * @param string $queue Queue name.
 	 * @return bool Flag if the next run was scheduled.
 	 */
-	public static function schedule_next_run( string $queue = null ): bool {
+	public static function schedule_next_run( ?string $queue = null ): bool {
+		if ( ! $queue ) {
+			$queue = 'default';
+		}
+
 		$has_remaining = \get_posts(
 			[
 				'fields'              => 'ids',
@@ -102,17 +106,35 @@ class Scheduler {
 			return false;
 		}
 
-		if ( ! $queue ) {
-			$queue = 'default';
+		return static::schedule( $queue, static::get_configuration_value( 'delay', $queue, 0 ) );
+	}
+
+	/**
+	 * Retrieve a configuration value for a queue.
+	 *
+	 * @param string $key Configuration key.
+	 * @param string $queue Queue name.
+	 * @param mixed $default Default value.
+	 * @return mixed
+	 */
+	protected static function get_configuration_value( string $key, string $queue = null, mixed $default = null ): mixed {
+		$config = config();
+
+		// Check for a queue-specific configuration value.
+		if ( $queue && $config->has( "queue.wordpress.queues.{$queue}.{$key}" ) ) {
+			return $config->get( "queue.wordpress.queues.{$queue}.{$key}" );
 		}
 
-		$delay = config( 'queue.wordpress.delay', [] );
-
-		// Support queue-specific delay.
-		if ( is_array( $delay ) ) {
-			$delay = $delay[ $queue ] ?? 0;
+		// Check for a default configuration for the queue provider.
+		if ( $config->has( "queue.wordpress.{$key}" ) ) {
+			return $config->get( "queue.wordpress.{$key}" );
 		}
 
-		return static::schedule( $queue, $delay );
+		// Check for a default configuration for the queue configuration.
+		if ( $config->has( "queue.{$key}" ) ) {
+			return $config->get( "queue.{$key}" );
+		}
+
+		return $default;
 	}
 }

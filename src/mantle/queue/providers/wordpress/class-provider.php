@@ -1,6 +1,6 @@
 <?php
 /**
- * Wp_Cron class file.
+ * Provider class file.
  *
  * @package Mantle
  */
@@ -19,9 +19,6 @@ use function Mantle\Support\Helpers\collect;
 /**
  * WordPress Cron Queue Provider
  *
- * Supports adding cron items to a general WordPress cron event run every
- * five minutes. The cron event will process a small batch of queue items.
- *
  * @todo Add support for one off cron events that should have their own cron scheduled.
  * @todo Add support for job locks.
  * @todo Add support for delayed jobs.
@@ -33,6 +30,13 @@ class Provider implements Provider_Contract {
 	 * @var string
 	 */
 	public const OBJECT_NAME = 'mantle_queue';
+
+	/**
+	 * Post status for running jobs.
+	 *
+	 * @var string
+	 */
+	public const POST_STATUS_RUNNING = 'running';
 
 	/**
 	 * Post status for failed jobs.
@@ -67,13 +71,15 @@ class Provider implements Provider_Contract {
 			]
 		);
 
-		\register_post_status(
-			static::POST_STATUS_FAILED,
-			[
-				'internal' => true,
-				'public'   => false,
-			]
-		);
+		foreach ( [ static::POST_STATUS_RUNNING, static::POST_STATUS_FAILED ] as $status ) {
+			\register_post_status(
+				$status,
+				[
+					'internal' => true,
+					'public'   => false,
+				]
+			);
+		}
 
 		static::process_pending_queue();
 	}
@@ -116,23 +122,21 @@ class Provider implements Provider_Contract {
 		}
 
 		$queue  = $job->queue ?? 'default';
-		$insert = \wp_insert_post(
+
+		$object = new Queue_Job( [
+			'post_name'   => 'mantle_queue_' . time(),
+			'post_status' => 'publish',
+		] );
+
+		$object->meta->_mantle_queue = $job;
+
+		$object->save();
+
+		$object->set_terms(
 			[
-				'post_type'   => static::OBJECT_NAME,
-				'post_name'   => 'mantle_queue_' . time(),
-				'post_status' => 'publish',
-				'meta_input'  => [
-					'_mantle_queue' => $job,
-				],
-			],
-			true
+				static::OBJECT_NAME => static::get_queue_term_id( $queue ),
+			]
 		);
-
-		if ( is_wp_error( $insert ) ) {
-			throw new RuntimeException( 'Error adding job to queue: ' . $insert->get_error_message() );
-		}
-
-		wp_set_object_terms( $insert, static::get_queue_term_id( $queue ), static::OBJECT_NAME, false );
 
 		return true;
 	}
@@ -145,32 +149,13 @@ class Provider implements Provider_Contract {
 	 * @return Collection
 	 */
 	public function pop( string $queue = null, int $count = 1 ): Collection {
-		$post_ids = \get_posts(
-			[
-				'fields'              => 'ids',
-				'ignore_sticky_posts' => true,
-				'order'               => 'ASC',
-				'orderby'             => 'date',
-				'post_status'         => 'publish',
-				'post_type'           => static::OBJECT_NAME,
-				'posts_per_page'      => $count,
-				'suppress_filters'    => false,
-				'tax_query'           => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
-					[
-						'taxonomy' => static::OBJECT_NAME,
-						'terms'    => static::get_queue_term_id( $queue ),
-					],
-				],
-			]
-		);
-
-		if ( empty( $post_ids ) ) {
-			return collect();
-		}
-
-		return collect( $post_ids )
+		return Queue_Job::where( 'post_status', 'publish' )
+			->whereTerm( static::get_queue_term_id( $queue ), static::OBJECT_NAME )
+			->order_by( 'ID', 'ASC' )
+			->take( $count )
+			->get()
 			->map(
-				fn( int $post_id ) => new Queue_Worker_Job( \get_post_meta( $post_id, '_mantle_queue', true ), $post_id ),
+				fn ( Queue_Job $job ) => new Queue_Worker_Job( $job->meta->_mantle_queue, $job->ID ),
 			);
 	}
 
