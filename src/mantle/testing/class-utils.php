@@ -268,7 +268,7 @@ class Utils {
 			return $string ? 'true' : 'false';
 		}
 
-		return empty( trim( $string ) ) ? "''" : $string;
+		return empty( trim( $string ) ) ? "''" : "\"{$string}\"";
 	}
 
 	/**
