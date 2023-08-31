@@ -170,10 +170,7 @@ class Provider implements Provider_Contract {
 	public function in_queue( mixed $job, string $queue = null ): bool {
 		return Queue_Job::where( 'post_status', 'publish' )
 			->whereTerm( static::get_queue_term_id( $queue ), static::OBJECT_NAME )
-			->whereMeta(
-				'_mantle_queue',
-				maybe_serialize( $job ),
-			)
+			->whereMeta( '_mantle_queue', maybe_serialize( $job ) )
 			->take( 1 )
 			->get()
 			->is_not_empty();
