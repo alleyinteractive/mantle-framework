@@ -149,9 +149,10 @@ class Provider implements Provider_Contract {
 	 * @return Collection
 	 */
 	public function pop( string $queue = null, int $count = 1 ): Collection {
-		return Queue_Job::where( 'post_status', 'publish' )
+		return Queue_Job::query()
+			->where( 'post_status', 'publish' )
 			->whereTerm( static::get_queue_term_id( $queue ), static::OBJECT_NAME )
-			->order_by( 'ID', 'ASC' )
+			->orderBy( 'id', 'asc' )
 			->take( $count )
 			->get()
 			->map(
@@ -167,28 +168,15 @@ class Provider implements Provider_Contract {
 	 * @return bool
 	 */
 	public function in_queue( mixed $job, string $queue = null ): bool {
-		$queued_objects = \get_posts(
-			[
-				'fields'         => 'ids',
-				'post_status'    => 'publish',
-				'post_type'      => static::OBJECT_NAME,
-				'posts_per_page' => 100,
-				'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
-					[
-						'key'   => '_mantle_queue',
-						'value' => maybe_serialize( $job ),
-					],
-				],
-				'tax_query'      => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
-					[
-						'taxonomy' => static::OBJECT_NAME,
-						'terms'    => static::get_queue_term_id( $queue ),
-					],
-				],
-			]
-		);
-
-		return ! empty( $queued_objects );
+		return Queue_Job::where( 'post_status', 'publish' )
+			->whereTerm( static::get_queue_term_id( $queue ), static::OBJECT_NAME )
+			->whereMeta(
+				'_mantle_queue',
+				maybe_serialize( $job ),
+			)
+			->take( 1 )
+			->get()
+			->is_not_empty();
 	}
 
 	/**
