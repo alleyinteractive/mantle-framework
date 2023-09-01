@@ -149,6 +149,16 @@ class Testable_Provider implements Provider {
 	}
 
 	/**
+	 * Retrieve the number of pending jobs in the queue.
+	 *
+	 * @param string $queue Queue name, optional.
+	 * @return int
+	 */
+	public function pending_count( string $queue = null ): int {
+		return count( $this->jobs );
+	}
+
+	/**
 	 * Check if a job is in the queue.
 	 *
 	 * @param mixed  $job Job instance.

@@ -38,4 +38,12 @@ interface Provider {
 	 * @return bool
 	 */
 	public function in_queue( mixed $job, string $queue = null ): bool;
+
+	/**
+	 * Retrieve the number of pending jobs in the queue.
+	 *
+	 * @param string $queue Queue name, optional.
+	 * @return int
+	 */
+	public function pending_count( string $queue = null ): int;
 }

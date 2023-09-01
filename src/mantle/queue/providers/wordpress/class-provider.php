@@ -147,6 +147,18 @@ class Provider implements Provider_Contract {
 	}
 
 	/**
+	 * Retrieve the number of pending jobs in the queue.
+	 *
+	 * @param string $queue Queue name, optional.
+	 * @return int
+	 */
+	public function pending_count( string $queue = null ): int {
+		return Queue_Job::where( 'post_status', Post_Status::PENDING->value )
+			->whereTerm( static::get_queue_term_id( $queue ), static::OBJECT_NAME )
+			->count();
+	}
+
+	/**
 	 * Check if a job is in the queue.
 	 *
 	 * @param object $job Job instance.
