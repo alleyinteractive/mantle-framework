@@ -512,6 +512,19 @@ class Test_Post_Query_Builder extends Framework_Test_Case {
 		$this->assertEquals( $result->id(), $post_id );
 	}
 
+	public function test_count() {
+		static::factory()->post->create_many( 14, [ 'post_status' => 'draft' ] );
+		static::factory()->post->create_many( 17, [ 'post_status' => 'publish' ] );
+
+		$this->assertEquals( 14, Testable_Post::whereStatus( 'draft' )->count() );
+		$this->assertEquals( 17, Testable_Post::whereStatus( 'publish' )->count() );
+		$this->assertEquals( 31, Testable_Post::anyStatus()->count() );
+
+		$post_id = static::get_random_post_id();
+
+		$this->assertEquals( 1, Testable_Post::whereIn( 'id', [ $post_id ] )->count() );
+	}
+
 	/**
 	 * Get a random post ID, ensures the post ID is not the last in the set.
 	 *
