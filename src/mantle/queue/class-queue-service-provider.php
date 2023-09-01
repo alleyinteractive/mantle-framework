@@ -66,7 +66,9 @@ class Queue_Service_Provider extends Service_Provider {
 		$this->register_wordpress_provider( $manager );
 
 		// Allow other plugins to register their own queue providers.
-		$this->app['events']->dispatch( 'mantle_queue_register_providers', [ $manager ] );
+		$this->app['events']->dispatch(
+			new Events\Providers_Registered( $manager ),
+		);
 	}
 
 	/**
@@ -102,9 +104,8 @@ class Queue_Service_Provider extends Service_Provider {
 	 * @param Job_Queued $event Job Queued event.
 	 */
 	#[Action( Events\Job_Queued::class ) ]
-	public function handle_wordpress_job_queued_event( $job ): void {
-		// TODO: Fix typehint error once that is fixed.
-		if ( $job instanceof Events\Job_Queued && $job->provider instanceof Providers\WordPress\Provider ) {
+	public function handle_wordpress_job_queued_event( Events\Job_Queued $job ): void {
+		if ( $job->provider instanceof Providers\WordPress\Provider ) {
 			Providers\WordPress\Scheduler::schedule_next_run( $job->queue ?? 'default' );
 		}
 	}

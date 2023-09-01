@@ -56,7 +56,7 @@ class Worker {
 	 * @param int    $size Size of the batch to run.
 	 * @param string $queue Queue name.
 	 */
-	public function run( int $size, string $queue = null ) {
+	public function run( int $size, string $queue = null ): void {
 		$queue  ??= 'default';
 		$provider = $this->manager->get_provider();
 		$jobs     = $provider->pop( $queue, $size );
@@ -64,15 +64,15 @@ class Worker {
 		$this->events->dispatch( new Run_Start( $provider, $queue, $jobs ) );
 
 		$jobs->each(
-			function( $job ) use ( $provider ) {
+			function( Queue_Worker_Job $job ) use ( $provider ) {
 				$this->events->dispatch( new Job_Processing( $provider, $job ) );
 
 				try {
-					if ( $job instanceof Closure || is_callable( $job ) ) {
-						$job();
-					} else {
-						$job->fire();
-					}
+					$job->fire();
+					// if ( $job instanceof Closure || is_callable( $job ) ) {
+					// 	$job();
+					// } else {
+					// }
 
 					$this->events->dispatch( new Job_Processed( $provider, $job ) );
 				} catch ( Throwable $e ) {
@@ -80,7 +80,8 @@ class Worker {
 
 					$this->events->dispatch( new Job_Failed( $provider, $job, $e ) );
 				} finally {
-					if ( ! $job instanceof Closure && ! $job->has_failed() ) {
+					// TODO: Revisit this and don't delete the job. unlock it and let it be retried.
+					if ( ! $job->has_failed() ) {
 						$job->delete();
 					}
 				}

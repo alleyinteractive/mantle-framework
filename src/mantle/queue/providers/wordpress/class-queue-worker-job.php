@@ -33,7 +33,7 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 	/**
 	 * Fire the job.
 	 */
-	public function fire() {
+	public function fire(): void {
 		// Check if the job has a method called 'handle'.
 		if ( $this->job instanceof JobContract || method_exists( $this->job, 'handle' ) ) {
 			$this->job->handle();
@@ -58,7 +58,7 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 	 *
 	 * @return mixed
 	 */
-	public function get_id() {
+	public function get_id(): mixed {
 		return $this->get_post_id();
 	}
 
@@ -70,7 +70,7 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 	 * @param Throwable $e Exception thrown.
 	 * @return void
 	 */
-	public function failed( Throwable $e ) {
+	public function failed( Throwable $e ): void {
 		$this->failed = true;
 
 		if ( $this->queue_post_id ) {
@@ -79,7 +79,7 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 			wp_update_post(
 				[
 					'ID'          => $this->queue_post_id,
-					'post_status' => Provider::POST_STATUS_FAILED,
+					'post_status' => Post_Status::FAILED->value,
 				]
 			);
 		}
@@ -88,7 +88,7 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 	/**
 	 * Delete the job from the queue.
 	 */
-	public function delete() {
+	public function delete(): void {
 		$post_id = $this->get_post_id();
 
 		if ( $post_id && wp_delete_post( $post_id, true ) ) {

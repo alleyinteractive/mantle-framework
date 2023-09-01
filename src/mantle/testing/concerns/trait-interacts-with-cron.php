@@ -11,12 +11,15 @@ namespace Mantle\Testing\Concerns;
 use InvalidArgumentException;
 use Mantle\Contracts\Queue\Job;
 use Mantle\Contracts\Queue\Queue_Manager;
+use Mantle\Queue\Worker;
 use PHPUnit\Framework\Assert as PHPUnit;
 use stdClass;
 
 /**
  * Concern for interacting with the WordPress cron and making assertions against
  * it. Also supports queued and scheduled jobs.
+ *
+ * @mixin \Mantle\Testing\Test_Case
  */
 trait Interacts_With_Cron {
 	/**
@@ -229,7 +232,9 @@ trait Interacts_With_Cron {
 	 *
 	 * @param string $queue Queue to run.
 	 */
-	public static function dispatch_queue( string $queue = null ) {
-		app( \Mantle\Queue\Providers\WordPress\Scheduler::class )->on_queue_run( $queue );
+	public function dispatch_queue( int $size = 100, string $queue = null ): void {
+		$this->app->make( Worker::class )->run( $size, $queue );
+
+		// app( \Mantle\Queue\Providers\WordPress\Scheduler::class )->on_queue_run( $queue );
 	}
 }

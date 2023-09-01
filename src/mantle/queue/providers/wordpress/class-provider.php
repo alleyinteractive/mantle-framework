@@ -32,20 +32,6 @@ class Provider implements Provider_Contract {
 	public const OBJECT_NAME = 'mantle_queue';
 
 	/**
-	 * Post status for running jobs.
-	 *
-	 * @var string
-	 */
-	public const POST_STATUS_RUNNING = 'running';
-
-	/**
-	 * Post status for failed jobs.
-	 *
-	 * @var string
-	 */
-	public const POST_STATUS_FAILED = 'failed';
-
-	/**
 	 * Queue of cron jobs to process.
 	 *
 	 * @var array<int, array<mixed>>
@@ -71,9 +57,9 @@ class Provider implements Provider_Contract {
 			]
 		);
 
-		foreach ( [ static::POST_STATUS_RUNNING, static::POST_STATUS_FAILED ] as $status ) {
+		foreach ( Post_Status::cases() as $status ) {
 			\register_post_status(
-				$status,
+				$status->value,
 				[
 					'internal' => true,
 					'public'   => false,
@@ -121,11 +107,11 @@ class Provider implements Provider_Contract {
 			$job = serialize( $job ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
 		}
 
-		$queue  = $job->queue ?? 'default';
+		$queue = $job->queue ?? 'default';
 
 		$object = new Queue_Job( [
 			'post_name'   => 'mantle_queue_' . time(),
-			'post_status' => 'publish',
+			'post_status' => Post_Status::PENDING->value,
 		] );
 
 		$object->meta->_mantle_queue = $job;
@@ -150,7 +136,7 @@ class Provider implements Provider_Contract {
 	 */
 	public function pop( string $queue = null, int $count = 1 ): Collection {
 		return Queue_Job::query()
-			->where( 'post_status', 'publish' )
+			->where( 'post_status', Post_Status::PENDING->value )
 			->whereTerm( static::get_queue_term_id( $queue ), static::OBJECT_NAME )
 			->orderBy( 'id', 'asc' )
 			->take( $count )
@@ -168,7 +154,7 @@ class Provider implements Provider_Contract {
 	 * @return bool
 	 */
 	public function in_queue( mixed $job, string $queue = null ): bool {
-		return Queue_Job::where( 'post_status', 'publish' )
+		return Queue_Job::where( 'post_status', Post_Status::PENDING->value )
 			->whereTerm( static::get_queue_term_id( $queue ), static::OBJECT_NAME )
 			->whereMeta( '_mantle_queue', maybe_serialize( $job ) )
 			->take( 1 )

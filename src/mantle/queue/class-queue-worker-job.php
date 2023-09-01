@@ -25,14 +25,14 @@ abstract class Queue_Worker_Job {
 	/**
 	 * Fire the queue job.
 	 */
-	abstract public function fire();
+	abstract public function fire(): void;
 
 	/**
 	 * Get the queue job ID.
 	 *
 	 * @return mixed
 	 */
-	abstract public function get_id();
+	abstract public function get_id(): mixed;
 
 	/**
 	 * Handle a failed job.
@@ -40,14 +40,14 @@ abstract class Queue_Worker_Job {
 	 * @param Throwable $e
 	 * @return void
 	 */
-	abstract public function failed( Throwable $e );
+	abstract public function failed( Throwable $e ): void;
 
 	/**
 	 * Delete a job from the queue.
 	 *
 	 * @return void
 	 */
-	abstract public function delete();
+	abstract public function delete(): void;
 
 	/**
 	 * Check if the job has failed.
