@@ -167,6 +167,13 @@ abstract class Builder {
 	abstract public function get(): Collection;
 
 	/**
+	 * Get the count of the query results.
+	 *
+	 * @return int
+	 */
+	abstract public function count(): int;
+
+	/**
 	 * Get the query arguments.
 	 *
 	 * @return array
@@ -966,5 +973,32 @@ abstract class Builder {
 	public function dd(): void {
 		$this->dump();
 		die;
+	}
+
+	/**
+	 * Check if any models are found for the current query.
+	 *
+	 * @return bool
+	 */
+	public function exists(): bool {
+		return $this->count() > 0;
+	}
+
+	/**
+	 * Check if no models are found for the current query.
+	 *
+	 * @return bool
+	 */
+	public function doesntExist(): bool {
+		return ! $this->exists();
+	}
+
+	/**
+	 * Alias for `doesntExists()`.
+	 *
+	 * @return bool
+	 */
+	public function doesnt_exist(): bool {
+		return $this->doesntExist();
 	}
 }
