@@ -112,10 +112,11 @@ class Provider implements Provider_Contract {
 		$object = new Queue_Job( [
 			'post_name'   => 'mantle_queue_' . time(),
 			'post_status' => Post_Status::PENDING->value,
+			'meta' => [
+				Meta_Key::JOB->value        => $job,
+				Meta_Key::START_TIME->value => time(),
+			]
 		] );
-
-		$object->meta->{Meta_Key::START_TIME->value} = time();
-		$object->meta->{Meta_Key::JOB->value} = $job;
 
 		$object->save();
 
