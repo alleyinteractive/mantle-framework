@@ -8,11 +8,16 @@ use Mantle\Queue\Dispatchable;
 use Mantle\Queue\Events\Job_Failed;
 use Mantle\Queue\Events\Job_Queued;
 use Mantle\Queue\Events\Run_Complete;
+use Mantle\Queue\Providers\WordPress\Meta_Key;
 use Mantle\Queue\Providers\WordPress\Post_Status;
 use Mantle\Queue\Queueable;
 use Mantle\Queue\Providers\WordPress\Provider;
+use Mantle\Queue\Providers\WordPress\Queue_Job;
+use Mantle\Queue\Providers\WordPress\Queue_Worker_Job;
 use Mantle\Queue\Providers\WordPress\Scheduler;
+use Mantle\Queue\Queue_Job_Locked_Exception;
 use Mantle\Testing\Concerns\Refresh_Database;
+use PHPUnit\Framework\Assert;
 use RuntimeException;
 
 use function Mantle\Queue\dispatch;
@@ -68,7 +73,7 @@ class Test_WordPress_Cron_Queue extends Framework_Test_Case {
 
 		$_SERVER['__example_job'] = false;
 
-		Example_Job::dispatch_now();
+		Example_Job::dispatch_now( false );
 
 		$this->assertTrue( $_SERVER['__example_job'] );
 		$this->assertNotInCronQueue( Example_Job::class );
@@ -170,6 +175,70 @@ class Test_WordPress_Cron_Queue extends Framework_Test_Case {
 		] );
 	}
 
+	public function test_exception_thrown_locked_job() {
+		$this->expectException( Queue_Job_Locked_Exception::class );
+		$this->expectExceptionMessage( 'Queue job is locked: ' . Example_Job::class );
+
+		$_SERVER['__failed_run']  = false;
+
+		$this->app['events']->listen(
+			Job_Failed::class,
+			fn () => $_SERVER['__failed_run'] = true,
+		);
+
+		$model = Queue_Job::first_or_create( [
+			'post_status' => Post_Status::PENDING->value,
+		] );
+
+		$model->set_terms(
+			[
+				Provider::OBJECT_NAME => Provider::get_queue_term_id( 'default' ),
+			]
+		);
+
+		$model->set_meta( Meta_Key::LOCK_UNTIL->value, time() + 600 );
+		$model->set_meta( Meta_Key::JOB->value, new Example_Job( false ) );
+
+		$job = new Queue_Worker_Job( $model );
+
+		$job->fire();
+	}
+
+	public function test_unlocked_after_exception_thrown() {
+		$_SERVER['__failed_run']  = false;
+
+		$this->app['events']->listen(
+			Job_Failed::class,
+			fn () => $_SERVER['__failed_run'] = true,
+		);
+
+		$model = Queue_Job::first_or_create( [
+			'post_status' => Post_Status::PENDING->value,
+		] );
+
+		$model->set_terms(
+			[
+				Provider::OBJECT_NAME => Provider::get_queue_term_id( 'default' ),
+			]
+		);
+
+		$model->set_meta( Meta_Key::LOCK_UNTIL->value, time() + 600 );
+		$model->set_meta( Meta_Key::JOB->value, new Example_Job( false ) );
+
+		$job = new Queue_Worker_Job( $model );
+
+		try {
+			$job->fire();
+		} catch ( \Throwable $e ) {
+			$job->failed( $e );
+		}
+
+		$this->assertEmpty( $model->get_meta( Meta_Key::LOCK_UNTIL->value ) );
+		$this->assertNotEmpty( $model->get_meta( Meta_Key::FAILURE->value ) );
+	}
+
+	//////////////////////
+
 	// public function test_schedule_next_run_after_complete() {
 	// 	// Limit the queue batch size.
 	// 	$this->app['config']->set( 'queue.batch_size', 5 );
@@ -193,8 +262,27 @@ class Test_WordPress_Cron_Queue extends Framework_Test_Case {
 class Example_Job implements Job, Can_Queue {
 	use Queueable, Dispatchable;
 
+	public function __construct( public bool $assert = true ) {}
+
 	public function handle() {
 		$_SERVER['__example_job'] = true;
+
+		if ( ! $this->assert ) {
+			return;
+		}
+
+		// Fetch the job post.
+		$jobs = get_posts(
+			[
+				'fields'         => 'ids',
+				'post_status'    => Post_Status::RUNNING->value,
+				'post_type'      => Provider::OBJECT_NAME,
+				'posts_per_page' => 1,
+			]
+		);
+
+		Assert::assertCount( 1, $jobs );
+		Assert::assertGreaterThan( \time(), get_post_meta( $jobs[0], Meta_Key::LOCK_UNTIL->value, true ) );
 	}
 }
 

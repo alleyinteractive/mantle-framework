@@ -114,7 +114,8 @@ class Provider implements Provider_Contract {
 			'post_status' => Post_Status::PENDING->value,
 		] );
 
-		$object->meta->_mantle_queue = $job;
+		$object->meta->{Meta_Key::START_TIME->value} = time();
+		$object->meta->{Meta_Key::JOB->value} = $job;
 
 		$object->save();
 
@@ -128,21 +129,22 @@ class Provider implements Provider_Contract {
 	}
 
 	/**
-	 * Get the next set of jobs in the queue.
+	 * Get the next set of job(s) in the queue.
+	 *
+	 * @todo Lock the jobs after popping them off the queue.
 	 *
 	 * @param string $queue Queue name.
 	 * @param int    $count Number of items to fetch.
 	 * @return Collection
 	 */
 	public function pop( string $queue = null, int $count = 1 ): Collection {
-		return Queue_Job::query()
-			->where( 'post_status', Post_Status::PENDING->value )
+		return Queue_Job::where( 'post_status', Post_Status::PENDING->value )
 			->whereTerm( static::get_queue_term_id( $queue ), static::OBJECT_NAME )
 			->orderBy( 'id', 'asc' )
 			->take( $count )
 			->get()
 			->map(
-				fn ( Queue_Job $job ) => new Queue_Worker_Job( $job->meta->_mantle_queue, $job->ID ),
+				fn ( Queue_Job $job ) => new Queue_Worker_Job( $job ),
 			);
 	}
 
@@ -168,21 +170,19 @@ class Provider implements Provider_Contract {
 	public function in_queue( mixed $job, string $queue = null ): bool {
 		return Queue_Job::where( 'post_status', Post_Status::PENDING->value )
 			->whereTerm( static::get_queue_term_id( $queue ), static::OBJECT_NAME )
-			->whereMeta( '_mantle_queue', maybe_serialize( $job ) )
-			->take( 1 )
-			->get()
-			->is_not_empty();
+			->whereMeta( Meta_Key::JOB->value, maybe_serialize( $job ) )
+			->exists();
 	}
 
 	/**
 	 * Get the taxonomy term for a queue.
 	 *
-	 * @param string $name Queue name, optional.
+	 * @param string|null $name Queue name, optional.
 	 * @return int
 	 *
 	 * @throws InvalidArgumentException Thrown on invalid queue term.
 	 */
-	public static function get_queue_term_id( string $name = null ): int {
+	public static function get_queue_term_id( ?string $name = null ): int {
 		if ( ! $name ) {
 			$name = 'default';
 		}

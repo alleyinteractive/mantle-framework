@@ -69,10 +69,6 @@ class Worker {
 
 				try {
 					$job->fire();
-					// if ( $job instanceof Closure || is_callable( $job ) ) {
-					// 	$job();
-					// } else {
-					// }
 
 					$this->events->dispatch( new Job_Processed( $provider, $job ) );
 				} catch ( Throwable $e ) {

@@ -35,6 +35,13 @@ abstract class Queue_Worker_Job {
 	abstract public function get_id(): mixed;
 
 	/**
+	 * Retrieve the stored job.
+	 *
+	 * @return mixed
+	 */
+	abstract public function get_job(): mixed;
+
+	/**
 	 * Handle a failed job.
 	 *
 	 * @param Throwable $e

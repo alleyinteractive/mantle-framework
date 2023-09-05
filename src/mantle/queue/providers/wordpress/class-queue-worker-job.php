@@ -8,6 +8,7 @@
 namespace Mantle\Queue\Providers\WordPress;
 
 use Mantle\Contracts\Queue\Job as JobContract;
+use Mantle\Queue\Queue_Job_Locked_Exception;
 use Throwable;
 
 /**
@@ -25,32 +26,38 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 	/**
 	 * Constructor.
 	 *
-	 * @param mixed $job Job data.
-	 * @param int   $queue_post_id Queue post ID.
+	 * @param Queue_Job $model The queue job model.
 	 */
-	public function __construct( protected mixed $job, protected ?int $queue_post_id = null ) {}
+	public function __construct( protected Queue_Job $model ) {}
 
 	/**
 	 * Fire the job.
 	 */
 	public function fire(): void {
-		// Check if the job has a method called 'handle'.
-		if ( $this->job instanceof JobContract || method_exists( $this->job, 'handle' ) ) {
-			$this->job->handle();
-		} elseif ( is_callable( $this->job ) ) {
-			$callback = $this->job;
+		// Refresh the model once more to ensure we have the latest data.
+		$this->model->refresh();
 
-			$callback();
+		// Bail if the job is locked.
+		if ( $this->model->is_locked() ) {
+			throw new Queue_Job_Locked_Exception( $this->get_job() );
 		}
-	}
 
-	/**
-	 * Get the queue post ID.
-	 *
-	 * @return int|null
-	 */
-	public function get_post_id(): ?int {
-		return $this->queue_post_id;
+		// Mark the job as "running".
+		$this->model->save( [
+			'post_status' => Post_Status::RUNNING->value,
+		] );
+
+		$job = $this->get_job();
+
+		// Set the lock end time.
+		$this->model->set_lock_until( time() + ( $job->timeout ?? 600 ) );
+
+		// Check if the job has a method called 'handle'.
+		if ( $job instanceof JobContract || method_exists( $job, 'handle' ) ) {
+			$job->handle();
+		} elseif ( is_callable( $job ) ) {
+			$job();
+		}
 	}
 
 	/**
@@ -59,13 +66,11 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 	 * @return mixed
 	 */
 	public function get_id(): mixed {
-		return $this->get_post_id();
+		return $this->model->id();
 	}
 
 	/**
 	 * Handle a failed queue job.
-	 *
-	 * @todo Add retrying for queued jobs.
 	 *
 	 * @param Throwable $e Exception thrown.
 	 * @return void
@@ -73,26 +78,28 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 	public function failed( Throwable $e ): void {
 		$this->failed = true;
 
-		if ( $this->queue_post_id ) {
-			update_post_meta( $this->queue_post_id, '_mantle_queue_error', $e->getMessage() );
-
-			wp_update_post(
-				[
-					'ID'          => $this->queue_post_id,
-					'post_status' => Post_Status::FAILED->value,
-				]
-			);
-		}
+		$this->model->save( [
+			'meta' => [
+				Meta_Key::FAILURE->value    => $e->getMessage(),
+				Meta_Key::LOCK_UNTIL->value => '',
+			],
+			'post_status' => Post_Status::FAILED->value,
+		] );
 	}
 
 	/**
 	 * Delete the job from the queue.
 	 */
 	public function delete(): void {
-		$post_id = $this->get_post_id();
+		$this->model->delete( true );
+	}
 
-		if ( $post_id && wp_delete_post( $post_id, true ) ) {
-			$this->queue_post_id = null;
-		}
+	/**
+	 * Retrieve the stored job.
+	 *
+	 * @return mixed
+	 */
+	public function get_job(): mixed {
+		return $this->model->get_meta( Meta_Key::JOB->value, true );
 	}
 }
