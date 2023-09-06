@@ -159,6 +159,26 @@ class Post_Query_Builder extends Builder {
 	}
 
 	/**
+	 * Get the count of the query results.
+	 *
+	 * @return int
+	 */
+	public function count(): int {
+		$this->take( -1 );
+
+		$query = new \WP_Query();
+
+		// Store the query hash for reference by side-effects.
+		$this->query_hash = spl_object_hash( $query );
+
+		$this->with_clauses(
+			fn () => $query->query( $this->get_query_args() ),
+		);
+
+		return $query->found_posts;
+	}
+
+	/**
 	 * Retrieve hydrated models for the post IDs.
 	 *
 	 * @param int[] $post_ids Post IDs.
@@ -288,7 +308,7 @@ class Post_Query_Builder extends Builder {
 				return $sql;
 			},
 			10,
-			2 
+			2
 		);
 
 		return $this;
