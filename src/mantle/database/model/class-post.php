@@ -144,8 +144,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 		}
 
 		// Verify the object type matches the model type.
-		$object_name = static::get_object_name();
-		if ( $post->post_type !== $object_name ) {
+		if ( static::get_object_name() !== $post->post_type ) {
 			return null;
 		}
 
