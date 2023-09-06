@@ -9,8 +9,10 @@ namespace Mantle\Queue\Providers\WordPress;
 
 use InvalidArgumentException;
 use Laravel\SerializableClosure\SerializableClosure;
+use Mantle\Contracts\Application;
 use Mantle\Contracts\Queue\Provider as Provider_Contract;
 use Mantle\Contracts\Queue\Queue_Manager;
+use Mantle\Database\Query\Post_Query_Builder;
 use Mantle\Support\Collection;
 use RuntimeException;
 
@@ -88,6 +90,14 @@ class Provider implements Provider_Contract {
 	}
 
 	/**
+	 * Constructor
+	 *
+	 * @param Application $app Application instance.
+	 */
+	public function __construct( protected Application $app ) {
+	}
+
+	/**
 	 * Push a job to the queue.
 	 *
 	 * @throws RuntimeException Thrown on error inserting the job into the database.
@@ -109,14 +119,16 @@ class Provider implements Provider_Contract {
 
 		$queue = $job->queue ?? 'default';
 
-		$object = new Queue_Job( [
-			'post_name'   => 'mantle_queue_' . time(),
-			'post_status' => Post_Status::PENDING->value,
-			'meta' => [
-				Meta_Key::JOB->value        => $job,
-				Meta_Key::START_TIME->value => time(),
-			]
-		] );
+		$object = new Queue_Job(
+			[
+				'post_name'   => 'mantle_queue_' . time(),
+				'post_status' => Post_Status::PENDING->value,
+				'meta'        => [
+					Meta_Key::JOB->value        => $job,
+					Meta_Key::START_TIME->value => time(),
+				],
+			] 
+		);
 
 		$object->save();
 
@@ -136,17 +148,30 @@ class Provider implements Provider_Contract {
 	 *
 	 * @param string $queue Queue name.
 	 * @param int    $count Number of items to fetch.
-	 * @return Collection
+	 * @return Collection<int, \Mantle\Queue\Providers\WordPress\Queue_Worker_Job>
 	 */
 	public function pop( string $queue = null, int $count = 1 ): Collection {
-		return Queue_Job::where( 'post_status', Post_Status::PENDING->value )
-			->whereTerm( static::get_queue_term_id( $queue ), static::OBJECT_NAME )
-			->orderBy( 'id', 'asc' )
-			->take( $count )
+		$max_concurrent_batches = max( 1, $this->app['config']->get( 'queue.max_concurrent_batches', 1 ) );
+
+		return $this->query( $queue )
+			// Multiply the count times the number of concurrent batches to get the
+			// number of jobs to fetch. This accounts for job locks without needing a
+			// meta query.
+			->take( $count * $max_concurrent_batches )
 			->get()
+			// Filter out any jobs that are locked.
+			->filter( fn ( Queue_Job $job ) => ! $job->is_locked() )
 			->map(
-				fn ( Queue_Job $job ) => new Queue_Worker_Job( $job ),
-			);
+				fn ( Queue_Job $model ) => tap(
+					new Queue_Worker_Job( $model ),
+					// Lock the job until the configured timeout or 10 minutes.
+					fn ( Queue_Worker_Job $queue_job ) => $model->set_lock_until(
+						$queue_job->get_job()->timeout ?? 600
+					),
+				),
+			)
+			->take( $count )
+			->values();
 	}
 
 	/**
@@ -156,9 +181,19 @@ class Provider implements Provider_Contract {
 	 * @return int
 	 */
 	public function pending_count( string $queue = null ): int {
+		return $this->query( $queue )->count();
+	}
+
+	/**
+	 * Construct the query builder for the queue.
+	 *
+	 * @param string|null $queue Queue name, optional.
+	 * @return Post_Query_Builder<Queue_Job>
+	 */
+	protected function query( string $queue = null ): Post_Query_Builder {
 		return Queue_Job::where( 'post_status', Post_Status::PENDING->value )
 			->whereTerm( static::get_queue_term_id( $queue ), static::OBJECT_NAME )
-			->count();
+			->orderBy( 'post_date', 'asc' );
 	}
 
 	/**

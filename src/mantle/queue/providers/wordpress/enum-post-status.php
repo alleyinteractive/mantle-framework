@@ -13,5 +13,5 @@ namespace Mantle\Queue\Providers\WordPress;
 enum Post_Status: string {
 	case PENDING = 'pending';
 	case RUNNING = 'running';
-	case FAILED = 'failed';
+	case FAILED  = 'failed';
 }

@@ -114,7 +114,7 @@ class Scheduler {
 	 *
 	 * @param string $key Configuration key.
 	 * @param string $queue Queue name.
-	 * @param mixed $default Default value.
+	 * @param mixed  $default Default value.
 	 * @return mixed
 	 */
 	protected static function get_configuration_value( string $key, string $queue = null, mixed $default = null ): mixed {

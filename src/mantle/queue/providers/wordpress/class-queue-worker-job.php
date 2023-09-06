@@ -8,7 +8,6 @@
 namespace Mantle\Queue\Providers\WordPress;
 
 use Mantle\Contracts\Queue\Job as JobContract;
-use Mantle\Queue\Queue_Job_Locked_Exception;
 use Throwable;
 
 /**
@@ -26,7 +25,7 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 	/**
 	 * Constructor.
 	 *
-	 * @param Queue_Job $model The queue job model.
+	 * @param Queue_Job $model The job model used for storage.
 	 */
 	public function __construct( protected Queue_Job $model ) {}
 
@@ -37,15 +36,12 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 		// Refresh the model once more to ensure we have the latest data.
 		$this->model->refresh();
 
-		// Bail if the job is locked.
-		if ( $this->model->is_locked() ) {
-			throw new Queue_Job_Locked_Exception( $this->get_job() );
-		}
-
 		// Mark the job as "running".
-		$this->model->save( [
-			'post_status' => Post_Status::RUNNING->value,
-		] );
+		$this->model->save(
+			[
+				'post_status' => Post_Status::RUNNING->value,
+			] 
+		);
 
 		$job = $this->get_job();
 
@@ -78,13 +74,15 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 	public function failed( Throwable $e ): void {
 		$this->failed = true;
 
-		$this->model->save( [
-			'meta' => [
-				Meta_Key::FAILURE->value    => $e->getMessage(),
-				Meta_Key::LOCK_UNTIL->value => '',
-			],
-			'post_status' => Post_Status::FAILED->value,
-		] );
+		$this->model->save(
+			[
+				'meta'        => [
+					Meta_Key::FAILURE->value    => $e->getMessage(),
+					Meta_Key::LOCK_UNTIL->value => '',
+				],
+				'post_status' => Post_Status::FAILED->value,
+			] 
+		);
 	}
 
 	/**

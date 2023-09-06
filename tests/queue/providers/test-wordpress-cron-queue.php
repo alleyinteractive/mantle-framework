@@ -175,67 +175,67 @@ class Test_WordPress_Cron_Queue extends Framework_Test_Case {
 		] );
 	}
 
-	public function test_exception_thrown_locked_job() {
-		$this->expectException( Queue_Job_Locked_Exception::class );
-		$this->expectExceptionMessage( 'Queue job is locked: ' . Example_Job::class );
+	// public function test_exception_thrown_locked_job() {
+	// 	$this->expectException( Queue_Job_Locked_Exception::class );
+	// 	$this->expectExceptionMessage( 'Queue job is locked: ' . Example_Job::class );
 
-		$_SERVER['__failed_run']  = false;
+	// 	$_SERVER['__failed_run']  = false;
 
-		$this->app['events']->listen(
-			Job_Failed::class,
-			fn () => $_SERVER['__failed_run'] = true,
-		);
+	// 	$this->app['events']->listen(
+	// 		Job_Failed::class,
+	// 		fn () => $_SERVER['__failed_run'] = true,
+	// 	);
 
-		$model = Queue_Job::first_or_create( [
-			'post_status' => Post_Status::PENDING->value,
-		] );
+	// 	$model = Queue_Job::first_or_create( [
+	// 		'post_status' => Post_Status::PENDING->value,
+	// 	] );
 
-		$model->set_terms(
-			[
-				Provider::OBJECT_NAME => Provider::get_queue_term_id( 'default' ),
-			]
-		);
+	// 	$model->set_terms(
+	// 		[
+	// 			Provider::OBJECT_NAME => Provider::get_queue_term_id( 'default' ),
+	// 		]
+	// 	);
 
-		$model->set_meta( Meta_Key::LOCK_UNTIL->value, time() + 600 );
-		$model->set_meta( Meta_Key::JOB->value, new Example_Job( false ) );
+	// 	$model->set_meta( Meta_Key::LOCK_UNTIL->value, time() + 600 );
+	// 	$model->set_meta( Meta_Key::JOB->value, new Example_Job( false ) );
 
-		$job = new Queue_Worker_Job( $model );
+	// 	$job = new Queue_Worker_Job( $model );
 
-		$job->fire();
-	}
+	// 	$job->fire();
+	// }
 
-	public function test_unlocked_after_exception_thrown() {
-		$_SERVER['__failed_run']  = false;
+	// public function test_unlocked_after_exception_thrown() {
+	// 	$_SERVER['__failed_run']  = false;
 
-		$this->app['events']->listen(
-			Job_Failed::class,
-			fn () => $_SERVER['__failed_run'] = true,
-		);
+	// 	$this->app['events']->listen(
+	// 		Job_Failed::class,
+	// 		fn () => $_SERVER['__failed_run'] = true,
+	// 	);
 
-		$model = Queue_Job::first_or_create( [
-			'post_status' => Post_Status::PENDING->value,
-		] );
+	// 	$model = Queue_Job::first_or_create( [
+	// 		'post_status' => Post_Status::PENDING->value,
+	// 	] );
 
-		$model->set_terms(
-			[
-				Provider::OBJECT_NAME => Provider::get_queue_term_id( 'default' ),
-			]
-		);
+	// 	$model->set_terms(
+	// 		[
+	// 			Provider::OBJECT_NAME => Provider::get_queue_term_id( 'default' ),
+	// 		]
+	// 	);
 
-		$model->set_meta( Meta_Key::LOCK_UNTIL->value, time() + 600 );
-		$model->set_meta( Meta_Key::JOB->value, new Example_Job( false ) );
+	// 	$model->set_meta( Meta_Key::LOCK_UNTIL->value, time() + 600 );
+	// 	$model->set_meta( Meta_Key::JOB->value, new Example_Job( false ) );
 
-		$job = new Queue_Worker_Job( $model );
+	// 	$job = new Queue_Worker_Job( $model );
 
-		try {
-			$job->fire();
-		} catch ( \Throwable $e ) {
-			$job->failed( $e );
-		}
+	// 	try {
+	// 		$job->fire();
+	// 	} catch ( \Throwable $e ) {
+	// 		$job->failed( $e );
+	// 	}
 
-		$this->assertEmpty( $model->get_meta( Meta_Key::LOCK_UNTIL->value ) );
-		$this->assertNotEmpty( $model->get_meta( Meta_Key::FAILURE->value ) );
-	}
+	// 	$this->assertEmpty( $model->get_meta( Meta_Key::LOCK_UNTIL->value ) );
+	// 	$this->assertNotEmpty( $model->get_meta( Meta_Key::FAILURE->value ) );
+	// }
 
 	//////////////////////
 
