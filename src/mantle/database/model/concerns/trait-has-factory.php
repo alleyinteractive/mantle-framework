@@ -21,7 +21,7 @@ trait Has_Factory {
 	 * @param array|callable $state Default state array or callable that will be invoked to set state.
 	 * @return \Mantle\Database\Factory\Factory<static>
 	 */
-	public static function factory( array|callable|null $state = null ) {
+	public static function factory( array|callable|null $state = null ): Factory {
 		$factory = static::new_factory() ?: Factory::factory_for_model( static::class );
 
 		return $factory
