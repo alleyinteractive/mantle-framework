@@ -115,6 +115,38 @@ class Test_Factory extends Framework_Test_Case {
 			$posts[0]->title,
 		);
 	}
+
+	public function test_create_custom_post_type_model() {
+		register_post_type(
+			'custom_post_type',
+			[
+				'public' => true,
+			]
+		);
+
+		$post = Testable_Custom_Post_Type::factory()->create_and_get();
+
+		$this->assertInstanceOf( Testable_Custom_Post_Type::class, $post );
+		$this->assertEquals( 'custom_post_type', $post->post_type );
+		$this->assertNotEmpty( $post->title );
+		$this->assertNotEmpty( $post->content );
+	}
+
+	public function test_create_custom_taxonomy_model() {
+		register_taxonomy(
+			'custom_taxonomy',
+			'post',
+			[
+				'public' => true,
+			]
+		);
+
+		$post = Testable_Custom_Taxonomy::factory()->create_and_get();
+
+		$this->assertInstanceOf( Testable_Custom_Taxonomy::class, $post );
+		$this->assertEquals( 'custom_taxonomy', $post->taxonomy );
+		$this->assertNotEmpty( $post->name );
+	}
 }
 
 class Testable_Post extends Model\Post {
@@ -151,4 +183,12 @@ class Testable_Post_Factory extends Factory\Post_Factory {
 			]
 		);
 	}
+}
+
+class Testable_Custom_Post_Type extends Model\Post {
+	public static $object_name = 'custom_post_type';
+}
+
+class Testable_Custom_Taxonomy extends Model\Term {
+	public static $object_name = 'custom_taxonomy';
 }

@@ -148,10 +148,10 @@ class Test_Unit_Testing_Factory extends Framework_Test_Case {
 
 	public function test_as_models() {
 		$post = static::factory()->post->as_models()->create_and_get();
-		$term = static::factory()->term->as_models()->create_and_get();
+		$term = static::factory()->term->as_models()->with_model( Testable_Post_Tag::class )->create_and_get();
 
 		$this->assertInstanceOf( Post::class, $post );
-		$this->assertInstanceOf( Term::class, $term );
+		$this->assertInstanceOf( Testable_Post_Tag::class, $term );
 	}
 
 	public function test_factory_middleware() {
@@ -271,4 +271,8 @@ class Test_Unit_Testing_Factory extends Framework_Test_Case {
 
 		$this->assertCount( 10, $object_ids );
 	}
+}
+
+class Testable_Post_Tag extends Term {
+	public static $object_name = 'post_tag';
 }
