@@ -50,8 +50,10 @@ use Mantle\Support\Helpers;
  * @property string $title Alias to post_title.
  *
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> anyStatus()
- * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereId( int $id )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> where( string|array $attribute, mixed $value )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereId( int $id )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereNotIn(string $key, array $values)
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereIn(string $key, array $values)
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereName( string $name )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereSlug( string $slug )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereStatus( string $status )
@@ -142,8 +144,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 		}
 
 		// Verify the object type matches the model type.
-		$object_name = static::get_object_name();
-		if ( $post->post_type !== $object_name ) {
+		if ( static::get_object_name() !== $post->post_type ) {
 			return null;
 		}
 

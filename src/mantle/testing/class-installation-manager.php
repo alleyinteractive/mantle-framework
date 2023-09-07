@@ -172,6 +172,10 @@ class Installation_Manager {
 	public function install() {
 		require_once __DIR__ . '/core-polyfill.php';
 
+		if ( Utils::is_debug_mode() ) {
+			Utils::info( '🚨 Debug mode is enabled.' );
+		}
+
 		if ( $this->rsync_to ) {
 			$this->perform_rsync_testsuite();
 			return $this;

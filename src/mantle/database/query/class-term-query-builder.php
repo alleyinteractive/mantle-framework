@@ -129,6 +129,30 @@ class Term_Query_Builder extends Builder {
 	}
 
 	/**
+	 * Get the count of the query results.
+	 *
+	 * @return int
+	 */
+	public function count(): int {
+		$this->take( -1 );
+
+		$query = new \WP_Term_Query();
+
+		$this->query_hash = spl_object_hash( $query );
+
+		return $this->with_clauses(
+			fn (): int => (int) $query->query(
+				array_merge(
+					$this->get_query_args(),
+					[
+						'fields' => 'count',
+					],
+				),
+			),
+		);
+	}
+
+	/**
 	 * Dump the SQL query being executed.
 	 *
 	 * @param bool $die Whether to die after dumping the SQL.
@@ -149,7 +173,7 @@ class Term_Query_Builder extends Builder {
 				return $terms;
 			},
 			10,
-			2 
+			2
 		);
 
 		return $this;
