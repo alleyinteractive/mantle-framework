@@ -4,6 +4,7 @@ namespace Mantle\Tests\Support;
 use Mantle\Application\Application;
 use Mantle\Console\Command;
 use Mantle\Contracts\Providers as ProviderContracts;
+use Mantle\Events\Dispatcher;
 use Mantle\Support\Service_Provider;
 use Mantle\Support\Attributes\Action;
 use Mockery as m;
@@ -84,6 +85,20 @@ class Test_Service_Provider extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$value = apply_filters( 'custom_filter_dedupe', 0 );
 
 		$this->assertEquals( 10, $value );
+	}
+
+	public function test_typehint_event() {
+		$_SERVER['__custom_event_fired'] = false;
+
+		$app = m::mock( Application::class )->makePartial();
+		$app->register( Provider_Test_Hook::class );
+		$app->boot();
+
+		$app['events'] = new Dispatcher( $app );
+
+		$app['events']->dispatch( new Example_Service_Provider_Event() );
+
+		$this->assertInstanceOf( Example_Service_Provider_Event::class, $_SERVER['__custom_event_fired'] );
 	}
 
 	public function test_publishable_service_providers() {
@@ -258,6 +273,11 @@ class Provider_Test_Hook extends Service_Provider {
 	public function on_custom_filter_dedupe( $value ) {
 		return $value + 10;
 	}
+
+	#[Action(Example_Service_Provider_Event::class)]
+	public function handle_custom_event( Example_Service_Provider_Event $event ) {
+		$_SERVER['__custom_event_fired'] = $event;
+	}
 }
 
 class ServiceProviderForTestingOne extends Service_Provider {
@@ -276,4 +296,8 @@ class ServiceProviderForTestingTwo extends Service_Provider {
 		$this->publishes( [ 'source/tagged/two/a' => 'destination/tagged/two/a' ], 'some_tag' );
 		$this->publishes( [ 'source/tagged/two/b' => 'destination/tagged/two/b' ], 'some_tag' );
 	}
+}
+
+class Example_Service_Provider_Event {
+
 }
