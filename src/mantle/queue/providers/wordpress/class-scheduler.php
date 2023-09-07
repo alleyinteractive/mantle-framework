@@ -82,25 +82,11 @@ class Scheduler {
 			$queue = 'default';
 		}
 
-		$has_remaining = \get_posts(
-			[
-				'fields'              => 'ids',
-				'ignore_sticky_posts' => true,
-				'post_type'           => Provider::OBJECT_NAME,
-				'posts_per_page'      => 1,
-				'suppress_filters'    => false,
-				'post_status'         => 'publish',
-				'tax_query'           => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
-					[
-						'taxonomy' => Provider::OBJECT_NAME,
-						'terms'    => Provider::get_queue_term_id( $queue ),
-					],
-				],
-			]
-		);
+		/** @var \Mantle\Queue\Providers\WordPress\Provider */
+		$provider = app( 'queue' )->get_provider( 'wordpress' );
 
 		// Ensure the queue job isn't scheduled if there are no items in the queue.
-		if ( empty( $has_remaining ) ) {
+		if ( ! $provider->pending_count( $queue ) ) {
 			static::unschedule( $queue );
 
 			return false;

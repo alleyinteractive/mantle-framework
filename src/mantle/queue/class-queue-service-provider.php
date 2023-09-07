@@ -7,15 +7,11 @@
 
 namespace Mantle\Queue;
 
-use Mantle\Contracts\Queue\Dispatcher as Dispatcher_Contract;
 use Mantle\Contracts\Queue\Queue_Manager as Queue_Manager_Contract;
 use Mantle\Queue\Console\Run_Command;
 use Mantle\Queue\Dispatcher;
-use Mantle\Queue\Events\Job_Queued;
-use Mantle\Queue\Events\Run_Complete;
 use Mantle\Queue\Queue_Manager;
 use Mantle\Queue\Worker;
-use Mantle\Support\Attributes\Action;
 use Mantle\Support\Service_Provider;
 
 use function Mantle\Support\Helpers\tap;
@@ -43,11 +39,14 @@ class Queue_Service_Provider extends Service_Provider {
 		);
 
 		$this->app->singleton_if(
-			Dispatcher_Contract::class,
+			'queue.dispatcher',
 			fn ( $app ) => new Dispatcher( $app ),
 		);
 
 		$this->add_command( Run_Command::class );
+
+		// Register the queue service providers.
+		$this->app->register( Providers\WordPress\Service_Provider::class );
 	}
 
 	/**
@@ -60,65 +59,13 @@ class Queue_Service_Provider extends Service_Provider {
 	/**
 	 * Register Queue Providers
 	 *
+	 * Fire an event to allow other plugins to register queue providers.
+	 *
 	 * @param Queue_Manager_Contract $manager Queue Manager.
 	 */
 	protected function register_providers( Queue_Manager_Contract $manager ): void {
-		$this->register_wordpress_provider( $manager );
-
-		// Allow other plugins to register their own queue providers.
 		$this->app['events']->dispatch(
 			new Events\Providers_Registered( $manager ),
 		);
-	}
-
-	/**
-	 * Register the WordPress Cron Queue Provider
-	 *
-	 * @param Queue_Manager_Contract $manager Queue Manager.
-	 */
-	protected function register_wordpress_provider( Queue_Manager_Contract $manager ): void {
-		$manager->add_provider( 'wordpress', Providers\WordPress\Provider::class );
-	}
-
-	/**
-	 * Register the WordPress queue provider's post type and taxonomies.
-	 *
-	 * @return void
-	 */
-	#[Action( 'init' )]
-	public function register_wordpress_provider_data_types(): void {
-		Providers\WordPress\Provider::register_data_types();
-	}
-
-	/**
-	 * Handle the schedule event to run the queue via WordPress cron.
-	 */
-	#[Action( Providers\WordPress\Scheduler::EVENT )]
-	public function handle_wordpress_scheduled_run( ...$args ): void {
-		Providers\WordPress\Scheduler::on_queue_run( ...$args );
-	}
-
-	/**
-	 * Handle the Job Queued event to schedule the next cron run.
-	 *
-	 * @param Job_Queued $event Job Queued event.
-	 */
-	#[Action( Events\Job_Queued::class ) ]
-	public function handle_wordpress_job_queued_event( Events\Job_Queued $job ): void {
-		if ( $job->provider instanceof Providers\WordPress\Provider ) {
-			Providers\WordPress\Scheduler::schedule_next_run( $job->queue ?? 'default' );
-		}
-	}
-
-	/**
-	 * Handle the Run Complete event to schedule the next cron run.
-	 *
-	 * @param Run_Complete $event Run complete event.
-	 */
-	#[Action( Events\Run_Complete::class ) ]
-	public function handle_wordpress_run_complete( Run_Complete $job ): void {
-		if ( $job->provider instanceof Providers\WordPress\Provider ) {
-			Providers\WordPress\Scheduler::schedule_next_run( $job->queue ?? 'default' );
-		}
 	}
 }

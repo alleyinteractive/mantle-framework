@@ -65,8 +65,6 @@ class Queue_Manager implements Queue_Manager_Contract {
 	public function add_provider( string $name, string|Provider $provider ) {
 		if ( is_string( $provider ) && ( ! class_exists( $provider ) || ! in_array( Provider::class, class_implements( $provider ), true ) ) ) {
 			throw new InvalidArgumentException( "Provider does not implement Provider contract: [$provider]" );
-		} elseif ( is_object( $provider ) && ! ( $provider instanceof Provider ) ) { // @phpstan-ignore-line is always false
-			throw new InvalidArgumentException( "Provider does not implement Provider contract: [$provider::class]" );
 		}
 
 		$this->providers[ $name ] = $provider;

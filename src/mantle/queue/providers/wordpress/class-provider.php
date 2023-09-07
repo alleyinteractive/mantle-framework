@@ -16,8 +16,6 @@ use Mantle\Database\Query\Post_Query_Builder;
 use Mantle\Support\Collection;
 use RuntimeException;
 
-use function Mantle\Support\Helpers\collect;
-
 /**
  * WordPress Cron Queue Provider
  *
@@ -127,7 +125,7 @@ class Provider implements Provider_Contract {
 					Meta_Key::JOB->value        => $job,
 					Meta_Key::START_TIME->value => time(),
 				],
-			] 
+			]
 		);
 
 		$object->save();
