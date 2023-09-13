@@ -18,7 +18,9 @@ class Test_Post_Query_Builder extends Framework_Test_Case {
 
 	protected function setUp(): void {
 		parent::setUp();
+
 		Utils::delete_all_data();
+
 		register_post_type( Another_Testable_Post::get_object_name() );
 	}
 
@@ -523,6 +525,60 @@ class Test_Post_Query_Builder extends Framework_Test_Case {
 		$post_id = static::get_random_post_id();
 
 		$this->assertEquals( 1, Testable_Post::whereIn( 'id', [ $post_id ] )->count() );
+	}
+
+	public function test_date() {
+		$date = Carbon::now( wp_timezone() )->subMonth();
+
+		$expected = Testable_Post::factory()->create( [
+			'post_date' => $date->toDateTimeString(),
+		] );
+
+		$other = Testable_Post::factory()->create( [
+			'post_date' => $date->clone()->nowWithSameTz()->toDateTimeString(),
+		] );
+
+		// $this->assertEquals( $expected, Testable_Post::query()->dumpSql()->whereDate( $date )->first()->id );
+		// $this->assertEquals( $expected, Testable_Post::query()->whereDate( $date->toDateTimeString() )->first()->id );
+		// $this->assertFalse( Testable_Post::query()->whereDate( $date->addDay() )->exists() );
+		$this->assertEquals( $other, Testable_Post::query()->dumpSql()->whereDate( $date->toDateTimeString(), '!=' )->first()?->id );
+	}
+
+	/**
+	 * @dataProvider date_comparison_provider
+	 */
+	public function test_date_comparisons( int $expected, string $method, array $args ) {
+		$start = Carbon::now( wp_timezone() )->subMonth()->startOfDay();
+
+		static::factory()->post->create_ordered_set( 20, [], $start->clone() );
+
+		$this->assertEquals(
+			$expected,
+			Testable_Post::query()->{$method}( ...$args )->count(),
+		);
+	}
+
+	public static function date_comparison_provider(): array {
+		$start = Carbon::now( wp_timezone() )->subMonth()->startOfDay();
+
+		return [
+			// Older than now should return all posts.
+			'older_than_now' => [ 20, 'olderThan', [ Carbon::now( wp_timezone() ) ] ],
+			// Older than the start date should return no posts.
+			'older_than_start' => [ 0, 'olderThan', [ $start ] ],
+			// Older than or equal to the start date should return the first post.
+			'older_than_or_equal_to_start' => [ 1, 'olderThanOrEqualTo', [ $start ] ],
+			// Older than 5 hrs from start should return 5 posts.
+			'older_than_5_hrs' => [ 5, 'olderThan', [ $start->clone()->addHours( 5 ) ] ],
+			// Newer than 5 hrs from start should return 14 posts.
+			'newer_than_5_hrs' => [ 14, 'newerThan', [ $start->clone()->addHours( 5 ) ] ],
+			// Newer than or equal to 5 hrs from start should return 15 posts.
+			'newer_than_or_equal_to_5_hrs' => [ 15, 'newerThanOrEqualTo', [ $start->clone()->addHours( 5 ) ] ],
+			// Older than the middle post should return 10 posts.
+			'older_than_middle' => [ 10, 'olderThan', [ $start->clone()->addHours( 10 ) ] ],
+			// Newer than the middle post should return 10 posts.
+			'newer_than_middle' => [ 10, 'newerThanOrEqualTo', [ $start->clone()->addHours( 10 ) ] ],
+		];
 	}
 
 	/**
