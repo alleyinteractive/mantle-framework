@@ -7,6 +7,7 @@
 
 namespace Mantle\Queue;
 
+use DateTimeInterface;
 use Mantle\Container\Container;
 use Mantle\Contracts\Queue\Dispatcher;
 use Mantle\Contracts\Queue\Job;
@@ -44,22 +45,20 @@ class Pending_Dispatch {
 	/**
 	 * Set the delay before the job will be run.
 	 *
-	 * @todo Re-implement and test this.
-	 *
 	 * @throws RuntimeException If the job does not support queueing.
 	 *
-	 * @param int $delay Delay in seconds.
+	 * @param DateTimeInterface|int $delay Delay in seconds or DateTime instance.
 	 * @return static
 	 */
-	// public function delay( int $delay ): Pending_Dispatch {
-	// if ( ! method_exists( $this->job, 'delay' ) ) {
-	// throw new RuntimeException( 'Job does not support queueing.' );
-	// }
+	public function delay( DateTimeInterface|int $delay ): Pending_Dispatch {
+		if ( ! method_exists( $this->job, 'delay' ) ) {
+		throw new RuntimeException( $this->job::class . ' does not support delayed queueing.' );
+		}
 
-	// $this->job->delay( $delay );
+		$this->job->delay( $delay );
 
-	// return $this;
-	// }
+		return $this;
+	}
 
 	/**
 	 * Handle the job and send it to the queue.

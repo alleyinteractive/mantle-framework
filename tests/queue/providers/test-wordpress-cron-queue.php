@@ -175,6 +175,32 @@ class Test_WordPress_Cron_Queue extends Framework_Test_Case {
 		] );
 	}
 
+	public function test_dispatch_job_delay() {
+		$_SERVER['__example_job'] = false;
+
+		$start = now()->addMonth();
+
+		Example_Job::dispatch()->delay( $start );
+
+		$this->assertPostExists( [
+			'post_date'    => $start->toDateTimeString(),
+			'post_status'  => Post_Status::PENDING->value,
+			'post_type'    => Provider::OBJECT_NAME,
+			'meta_key'     => '_mantle_queue',
+		] );
+
+		$this->dispatch_queue();
+
+		$this->assertFalse( $_SERVER['__example_job'] );
+
+		$this->assertPostExists( [
+			'post_date'    => $start->toDateTimeString(),
+			'post_status'  => Post_Status::PENDING->value,
+			'post_type'    => Provider::OBJECT_NAME,
+			'meta_key'     => '_mantle_queue',
+		] );
+	}
+
 	// public function test_exception_thrown_locked_job() {
 	// 	$this->expectException( Queue_Job_Locked_Exception::class );
 	// 	$this->expectExceptionMessage( 'Queue job is locked: ' . Example_Job::class );

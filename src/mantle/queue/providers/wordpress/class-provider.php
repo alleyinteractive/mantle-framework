@@ -7,6 +7,8 @@
 
 namespace Mantle\Queue\Providers\WordPress;
 
+use Carbon\Carbon;
+use DateTimeInterface;
 use InvalidArgumentException;
 use Laravel\SerializableClosure\SerializableClosure;
 use Mantle\Contracts\Application;
@@ -14,6 +16,7 @@ use Mantle\Contracts\Queue\Provider as Provider_Contract;
 use Mantle\Contracts\Queue\Queue_Manager;
 use Mantle\Database\Query\Post_Query_Builder;
 use Mantle\Support\Collection;
+use Mantle\Support\Str;
 use RuntimeException;
 
 /**
@@ -115,21 +118,39 @@ class Provider implements Provider_Contract {
 			$job = serialize( $job ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
 		}
 
-		$queue = $job->queue ?? 'default';
+		$queue    = $job->queue ?? 'default';
+		$job_name = Str::of( $job::class )
+			->replace( '\\', '_' )
+			->replace( '_', '-' )
+			->lower()
+			->slug();
 
 		$object = new Queue_Job(
 			[
-				'post_name'   => 'mantle_queue_' . time(),
+				'post_name'   => "mantle_queue_{$job_name}_" . time(),
 				'post_status' => Post_Status::PENDING->value,
 				'meta'        => [
 					Meta_Key::JOB->value        => $job,
-					Meta_Key::START_TIME->value => time(),
+					Meta_Key::START_TIME->value => now()->getTimestamp(),
 				],
 			]
 		);
 
+		// Handle the job being delayed.
+		if ( isset( $job->delay ) ) {
+			// Translate the delay into a timestamp.
+			$delay = $job->delay instanceof DateTimeInterface
+				? $job->delay->getTimestamp()
+				: now()->addSeconds( $job->delay )->getTimestamp();
+
+			// Set the post date to the timestamp of the delay to prevent it from
+			// being started before the delay.
+			$object->post_date = Carbon::createFromTimestamp( $delay, wp_timezone() )->toDateTimeString();
+		}
+
 		$object->save();
 
+		// TODO: Convert this to a queued term setter like we do with meta.
 		$object->set_terms(
 			[
 				static::OBJECT_NAME => static::get_queue_term_id( $queue ),
@@ -205,6 +226,7 @@ class Provider implements Provider_Contract {
 		return Queue_Job::where( 'post_status', Post_Status::PENDING->value )
 			->whereTerm( static::get_queue_term_id( $queue ), static::OBJECT_NAME )
 			->whereMeta( Meta_Key::JOB->value, maybe_serialize( $job ) )
+			->dumpSql()
 			->exists();
 	}
 

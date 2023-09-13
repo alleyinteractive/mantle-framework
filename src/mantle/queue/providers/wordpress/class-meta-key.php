@@ -22,9 +22,9 @@ enum Meta_Key: string {
 	case FAILURE = '_mantle_queue_failure';
 
 	/**
-	 * Storage of the job start time.
+	 * Storage of the job storage time.
 	 */
-	case START_TIME = '_mantle_queue_start_time';
+	case START_TIME = '_mantle_queue_storage_time';
 
 	/**
 	 * Storage of the job lock end time.

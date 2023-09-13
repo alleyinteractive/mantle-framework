@@ -9,6 +9,7 @@
             "email": "mantle@alley.com"
         }
     ],
+    "version": "2.0.0",
     "require": {
         "php": "^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",

@@ -61,7 +61,7 @@ trait Interacts_With_Cron {
 	/**
 	 * Determine if a cron 'action' is actually a queued job.
 	 *
-	 * @param string $action Action name.
+	 * @param class-string|class-string<\Mantle\Contracts\Queue\Job> $action Action name.
 	 * @return bool
 	 */
 	protected function is_job_action( string $action ): bool {
