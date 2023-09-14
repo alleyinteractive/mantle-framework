@@ -18,6 +18,8 @@ use InvalidArgumentException;
  *
  * @link https://developer.wordpress.org/reference/classes/wp_query/#date-parameters
  *
+ * @todo Add support for more complex date queries (mixing AND/OR, etc.).
+ *
  * @mixin \Mantle\Database\Query\Post_Query_Builder
  */
 trait Queries_Dates {
