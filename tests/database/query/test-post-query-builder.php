@@ -527,21 +527,68 @@ class Test_Post_Query_Builder extends Framework_Test_Case {
 		$this->assertEquals( 1, Testable_Post::whereIn( 'id', [ $post_id ] )->count() );
 	}
 
-	public function test_date() {
-		$date = Carbon::now( wp_timezone() )->subMonth();
+	public function test_post_by_date() {
+		$old_date = Carbon::now( wp_timezone() )->subMonth();
+		$now      = Carbon::now( wp_timezone() );
 
-		$expected = Testable_Post::factory()->create( [
-			'post_date' => $date->toDateTimeString(),
+		$old_post_id = Testable_Post::factory()->create( [
+			'post_date' => $old_date->toDateTimeString(),
 		] );
 
-		$other = Testable_Post::factory()->create( [
-			'post_date' => $date->clone()->nowWithSameTz()->toDateTimeString(),
+		$now_post_id = Testable_Post::factory()->create( [
+			'post_date' => $now->toDateTimeString(),
 		] );
 
-		// $this->assertEquals( $expected, Testable_Post::query()->dumpSql()->whereDate( $date )->first()->id );
-		// $this->assertEquals( $expected, Testable_Post::query()->whereDate( $date->toDateTimeString() )->first()->id );
-		// $this->assertFalse( Testable_Post::query()->whereDate( $date->addDay() )->exists() );
-		$this->assertEquals( $other, Testable_Post::query()->dumpSql()->whereDate( $date->toDateTimeString(), '!=' )->first()?->id );
+		$this->assertEquals(
+			$old_post_id,
+			Testable_Post::query()->whereDate( $old_date )->first()?->id,
+		);
+
+		$this->assertEquals(
+			$now_post_id,
+			Testable_Post::query()->whereDate( $now )->first()?->id,
+		);
+
+		$this->assertEquals(
+			$now_post_id,
+			Testable_Post::query()->whereDate( $old_date, '!=' )->first()?->id,
+		);
+
+		$this->assertEquals(
+			$old_post_id,
+			Testable_Post::query()->whereDate( $now, '!=' )->first()?->id,
+		);
+	}
+
+	public function test_post_by_modified_date() {
+		$old_date = Carbon::now( wp_timezone() )->subMonth();
+		$now      = Carbon::now( wp_timezone() );
+
+		$old_post_id = Testable_Post::factory()->create();
+		$now_post_id = Testable_Post::factory()->create();
+
+		$this->update_post_modified( $old_post_id, $old_date );
+		$this->update_post_modified( $now_post_id, $now );
+
+		$this->assertEquals(
+			$old_post_id,
+			Testable_Post::query()->whereModifiedDate( $old_date )->first()?->id,
+		);
+
+		$this->assertEquals(
+			$now_post_id,
+			Testable_Post::query()->whereModifiedDate( $now )->first()?->id,
+		);
+
+		$this->assertEquals(
+			$now_post_id,
+			Testable_Post::query()->whereModifiedDate( $old_date, '!=' )->first()?->id,
+		);
+
+		$this->assertEquals(
+			$old_post_id,
+			Testable_Post::query()->whereModifiedDate( $now, '!=' )->first()?->id,
+		);
 	}
 
 	/**
