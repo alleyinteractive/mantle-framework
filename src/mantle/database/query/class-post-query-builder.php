@@ -39,7 +39,13 @@ class Post_Query_Builder extends Builder {
 	 * @var array
 	 */
 	protected array $query_aliases = [
+		'date_gmt'    => 'post_date_gmt',
+		'date_utc'    => 'post_date_gmt',
+		'date'        => 'post_date',
 		'id'          => 'p',
+		'modified_gmt' => 'post_modified_gmt',
+		'modified_utc' => 'post_modified_gmt',
+		'modified'    => 'post_modified',
 		'post_author' => 'author',
 		'post_name'   => 'name',
 		'slug'        => 'name',
