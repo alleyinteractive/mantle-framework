@@ -541,7 +541,7 @@ class Test_Post_Query_Builder extends Framework_Test_Case {
 
 		$this->assertEquals(
 			$old_post_id,
-			Testable_Post::query()->whereDate( $old_date )->first()?->id,
+			Testable_Post::whereDate( $old_date )->first()?->id,
 		);
 
 		$this->assertEquals(
