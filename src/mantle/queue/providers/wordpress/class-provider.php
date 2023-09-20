@@ -173,6 +173,10 @@ class Provider implements Provider_Contract {
 		$max_concurrent_batches = max( 1, $this->app['config']->get( 'queue.max_concurrent_batches', 1 ) );
 
 		return $this->query( $queue )
+			// Ensure the we're only retrieving jobs that are not scheduled for the
+			// future ordered by the oldest first.
+			->olderThanOrEqualTo( now() )
+			->orderBy( 'post_date', 'asc' )
 			// Multiply the count times the number of concurrent batches to get the
 			// number of jobs to fetch. This accounts for job locks without needing a
 			// meta query.
@@ -224,9 +228,10 @@ class Provider implements Provider_Contract {
 	 */
 	public function in_queue( mixed $job, string $queue = null ): bool {
 		return Queue_Job::where( 'post_status', Post_Status::PENDING->value )
+			// ->whereDate( 'post_date', '>=', now()->toDateTimeString() )
 			->whereTerm( static::get_queue_term_id( $queue ), static::OBJECT_NAME )
+			// ->dumpSql()
 			->whereMeta( Meta_Key::JOB->value, maybe_serialize( $job ) )
-			->dumpSql()
 			->exists();
 	}
 
