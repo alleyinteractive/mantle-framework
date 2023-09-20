@@ -302,6 +302,11 @@ abstract class Builder {
 
 		$attribute = $this->resolve_attribute( $attribute );
 
+		// Pass date attributes to the date query builder if available.
+		if ( method_exists( $this, 'whereDate' ) && in_array( $attribute, [ 'post_date', 'post_date_gmt', 'post_modified', 'post_modified_gmt' ], true ) ) {
+			return $this->whereDate( $value, '=', $attribute );
+		}
+
 		$this->wheres[ $attribute ] = $value;
 
 		return $this;
