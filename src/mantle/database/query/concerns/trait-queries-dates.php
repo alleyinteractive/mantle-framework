@@ -102,31 +102,44 @@ trait Queries_Dates {
 	/**
 	 * Query for objects older than the given date.
 	 *
-	 * @param DateTimeInterface|int $date
+	 * @param DateTimeInterface|int $date Date to compare against.
+	 * @param string                $column Column to compare against.
 	 * @return static
 	 */
-	public function olderThan( DateTimeInterface|int $date ): static {
-		return $this->whereDate( $date, '<' );
+	public function olderThan( DateTimeInterface|int $date, string $column = 'post_date' ): static {
+		return $this->whereDate( $date, '<', $column );
 	}
 
 	/**
 	 * Query for objects older than or equal to the given date.
 	 *
-	 * @param DateTimeInterface|int $date
+	 * @param DateTimeInterface|int $date Date to compare against.
+	 * @param string                $column Column to compare against.
 	 * @return static
 	 */
-	public function olderThanOrEqualTo( DateTimeInterface|int $date ): static {
-		return $this->whereDate( $date, '<=' );
+	public function olderThanOrEqualTo( DateTimeInterface|int $date, string $column = 'post_date' ): static {
+		return $this->whereDate( $date, '<=', $column );
+	}
+
+	/**
+	 * Query for objects older than or equal to now.
+	 *
+	 * @param string $column Column to compare against.
+	 * @return static
+	 */
+	public function olderThanNow( string $column = 'post_date' ): static {
+		return $this->olderThanOrEqualTo( now(), $column );
 	}
 
 	/**
 	 * Alias for olderThan().
 	 *
 	 * @param DateTimeInterface|int $date Date to compare against.
+	 * @param string                $column Column to compare against.
 	 * @return static
 	 */
-	public function older_than( DateTimeInterface|int $date ): static {
-		return $this->olderThan( $date );
+	public function older_than( DateTimeInterface|int $date, string $column = 'post_date' ): static {
+		return $this->olderThan( $date, $column );
 	}
 
 	/**
@@ -149,6 +162,16 @@ trait Queries_Dates {
 	 */
 	public function newerThan( DateTimeInterface|int $date, string $column = 'post_date' ): static {
 		return $this->whereDate( $date, '>', $column );
+	}
+
+	/**
+	 * Query for objects newer than now (in the future from now).
+	 *
+	 * @param string $column Column to compare against.
+	 * @return static
+	 */
+	public function newerThanNow( string $column = 'post_date' ): static {
+		return $this->newerThan( now(), $column );
 	}
 
 	/**
