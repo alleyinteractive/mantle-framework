@@ -14,8 +14,6 @@ class Test_Queue_Manager extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	protected function setUp(): void {
 		if ( PHP_VERSION_ID < 80100 ) {
 			$this->markTestSkipped( 'PHP 8.1 or greater is required for the queue' );
-
-			return;
 		}
 
 		parent::setUp();

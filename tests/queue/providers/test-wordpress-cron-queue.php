@@ -30,8 +30,6 @@ class Test_WordPress_Cron_Queue extends Framework_Test_Case {
 	protected function setUp(): void {
 		if ( PHP_VERSION_ID < 80100 ) {
 			$this->markTestSkipped( 'PHP 8.1 or greater is required for the queue' );
-
-			return;
 		}
 
 		parent::setUp();
