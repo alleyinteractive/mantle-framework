@@ -82,3 +82,21 @@ if ( ! function_exists( 'storage_path' ) ) {
 		return app()->get_storage_path( $path );
 	}
 }
+
+if ( ! function_exists( 'now' ) ) {
+	/**
+	 * Create a new Carbon instance for the current time.
+	 *
+	 * @todo Allow this to be faked and mocked during testing.
+	 *
+	 * @param DateTimeZone|string|null $tz Timezone.
+	 * @return Carbon\Carbon
+	 */
+	function now( \DateTimeZone|string|null $tz = null ): Carbon\Carbon {
+		if ( ! $tz ) {
+			$tz = function_exists( 'wp_timezone' ) ? wp_timezone() : new DateTimeZone( 'UTC' );
+		}
+
+		return Carbon\Carbon::now( $tz );
+	}
+}

@@ -9,6 +9,7 @@
 namespace Mantle\Database\Query;
 
 use Mantle\Database\Model\Term;
+use Mantle\Database\Query\Concerns\Queries_Dates;
 use Mantle\Support\Helpers;
 use Mantle\Support\Collection;
 use WP_Term;
@@ -30,7 +31,7 @@ use function Mantle\Support\Helpers\collect;
  * @method \Mantle\Database\Query\Post_Query_Builder<TModel> whereType( string $type )
  */
 class Post_Query_Builder extends Builder {
-	use Queries_Relationships;
+	use Queries_Dates, Queries_Relationships;
 
 	/**
 	 * Query Variable Aliases
@@ -38,10 +39,16 @@ class Post_Query_Builder extends Builder {
 	 * @var array
 	 */
 	protected array $query_aliases = [
-		'id'          => 'p',
-		'post_author' => 'author',
-		'post_name'   => 'name',
-		'slug'        => 'name',
+		'date_gmt'     => 'post_date_gmt',
+		'date_utc'     => 'post_date_gmt',
+		'date'         => 'post_date',
+		'id'           => 'p',
+		'modified_gmt' => 'post_modified_gmt',
+		'modified_utc' => 'post_modified_gmt',
+		'modified'     => 'post_modified',
+		'post_author'  => 'author',
+		'post_name'    => 'name',
+		'slug'         => 'name',
 	];
 
 	/**
@@ -121,6 +128,7 @@ class Post_Query_Builder extends Builder {
 				'suppress_filters'    => false,
 				'tax_query'           => $this->tax_query, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 			],
+			$this->get_date_query_args(),
 			$this->wheres,
 		);
 	}
