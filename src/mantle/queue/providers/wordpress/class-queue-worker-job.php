@@ -36,6 +36,8 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 		// Refresh the model once more to ensure we have the latest data.
 		$this->model->refresh();
 
+		$this->model->log( Event::STARTING );
+
 		// Mark the job as "running".
 		$this->model->save(
 			[
@@ -54,6 +56,8 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 		} elseif ( is_callable( $job ) ) {
 			$job();
 		}
+
+		$this->model->log( Event::FINISHED );
 	}
 
 	/**
@@ -73,6 +77,14 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 	 */
 	public function failed( Throwable $e ): void {
 		$this->failed = true;
+
+		$this->model->log(
+			Event::FAILED,
+			[
+				'exception' => $e::class,
+				'message'   => $e->getMessage(),
+			],
+		);
 
 		$this->model->save(
 			[
@@ -104,6 +116,8 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 	 * @param int $delay Delay in seconds.
 	 */
 	public function retry( int $delay = 0 ): void {
+		$this->model->log( Event::RETRYING, [ 'delay' => $delay ] );
+
 		$this->model->save(
 			[
 				'post_date'   => now()->addSeconds( $delay )->toDateTimeString(),

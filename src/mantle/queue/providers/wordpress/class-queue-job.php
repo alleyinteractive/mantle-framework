@@ -62,11 +62,11 @@ class Queue_Job extends Post {
 	/**
 	 * Log an event for the job.
 	 *
-	 * @param string $event The event to log.
-	 * @param array  $payload The event payload.
+	 * @param Event $event The event to log.
+	 * @param array $payload The event payload.
 	 * @return void
 	 */
-	public function log( string $event, array $payload = [] ): void {
+	public function log( Event $event, array $payload = [] ): void {
 		$meta = $this->get_meta( Meta_Key::LOG->value );
 
 		if ( ! is_array( $meta ) ) {
@@ -74,7 +74,7 @@ class Queue_Job extends Post {
 		}
 
 		$meta[] = [
-			'event'   => $event,
+			'event'   => $event->value,
 			'payload' => $payload,
 			'time'    => \time(),
 		];
