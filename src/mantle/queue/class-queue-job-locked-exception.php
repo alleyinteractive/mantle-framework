@@ -10,6 +10,8 @@ namespace Mantle\Queue;
 use Exception;
 /**
  * Queue Job Locked Exception
+ *
+ * @todo Remove this if we don't use it.
  */
 class Queue_Job_Locked_Exception extends Exception {
 	/**

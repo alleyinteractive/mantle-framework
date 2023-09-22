@@ -13,8 +13,6 @@ use Mantle\Support\Service_Provider as Base_Service_Provider;
 
 /**
  * WordPress Queue Service Provider Scheduler
- *
- * @todo Convert events to not need to return.
  */
 class Service_Provider extends Base_Service_Provider {
 	/**
@@ -63,7 +61,7 @@ class Service_Provider extends Base_Service_Provider {
 	#[Action( Events\Job_Queued::class ) ]
 	public function handle_job_queued_event( Events\Job_Queued $job ): Events\Job_Queued {
 		if ( $job->provider instanceof Provider ) {
-			Scheduler::schedule_next_run( $job->queue ?? 'default' );
+			Scheduler::on_job_queued( $job->queue ?? 'default' );
 		}
 
 		return $job;
@@ -81,5 +79,20 @@ class Service_Provider extends Base_Service_Provider {
 		}
 
 		return $job;
+	}
+
+	/**
+	 * Increase the concurrency of the cron job with WordPress VIP's cron.
+	 *
+	 * @link https://docs.wpvip.com/technical-references/cron-control/#h-increasing-cron-event-concurrency
+	 *
+	 * @param array<string, int> $list List of events and their concurrency.
+	 * @return array<string, int> List of events and their concurrency.
+	 */
+	#[Action( 'a8c_cron_control_concurrent_event_whitelist' )]
+	public function increase_vip_concurrency( array $list ): array {
+		$list[ Scheduler::EVENT ] = 100;
+
+		return $list;
 	}
 }

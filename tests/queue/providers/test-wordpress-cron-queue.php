@@ -1,22 +1,17 @@
 <?php
 namespace Mantle\Tests\Queue\Providers;
 
-use Mantle\Testing\Framework_Test_Case;
 use Mantle\Contracts\Queue\Can_Queue;
 use Mantle\Contracts\Queue\Job;
 use Mantle\Queue\Dispatchable;
 use Mantle\Queue\Events\Job_Failed;
-use Mantle\Queue\Events\Job_Queued;
-use Mantle\Queue\Events\Run_Complete;
 use Mantle\Queue\Providers\WordPress\Meta_Key;
 use Mantle\Queue\Providers\WordPress\Post_Status;
-use Mantle\Queue\Queueable;
 use Mantle\Queue\Providers\WordPress\Provider;
-use Mantle\Queue\Providers\WordPress\Queue_Job;
-use Mantle\Queue\Providers\WordPress\Queue_Worker_Job;
 use Mantle\Queue\Providers\WordPress\Scheduler;
-use Mantle\Queue\Queue_Job_Locked_Exception;
+use Mantle\Queue\Queueable;
 use Mantle\Testing\Concerns\Refresh_Database;
+use Mantle\Testing\Framework_Test_Case;
 use PHPUnit\Framework\Assert;
 use RuntimeException;
 
@@ -32,10 +27,6 @@ class Test_WordPress_Cron_Queue extends Framework_Test_Case {
 	use Refresh_Database;
 
 	protected function setUp(): void {
-		// TODO: Remove once typehint is fixed.
-		remove_all_filters( Run_Complete::class );
-		remove_all_filters( Job_Queued::class );
-
 		parent::setUp();
 
 		Provider::register_data_types();
@@ -55,8 +46,7 @@ class Test_WordPress_Cron_Queue extends Framework_Test_Case {
 			'post_status'  => Post_Status::PENDING->value,
 		] );
 
-		// Force the cron to be dispatched which will execute
-		// the queued job.
+		// Force the cron to be dispatched which will execute the queued job.
 		$this->dispatch_queue();
 
 		$this->assertTrue( $_SERVER['__example_job'] );
@@ -199,6 +189,29 @@ class Test_WordPress_Cron_Queue extends Framework_Test_Case {
 			'post_type'    => Provider::OBJECT_NAME,
 			'meta_key'     => '_mantle_queue',
 		] );
+	}
+
+	public function test_schedule_multiple_queue_workers() {
+		$this->app['config']->set( 'queue.max_concurrent_batches', 10 );
+		$this->app['config']->set( 'queue.batch_size', 10 );
+
+		for ( $i = 0; $i < 100; $i++ ) {
+			Example_Job::dispatch();
+		}
+
+		// Fire the "shutdown" event to schedule the queue jobs.
+		Scheduler::schedule_on_shutdown();
+
+		// With max_concurrent_batches set to 10 and 100 jobs dispatched, we should
+		// have 10 queue jobs scheduled to run.
+		$this->assertEquals( 10, Scheduler::get_scheduled_count() );
+
+		$this->dispatch_queue( 100 );
+
+		Scheduler::schedule_on_shutdown();
+
+		// Ensure the scheduled jobs are cleaned up.
+		$this->assertEquals( 0, Scheduler::get_scheduled_count() );
 	}
 
 	// public function test_exception_thrown_locked_job() {
