@@ -2,6 +2,8 @@
 /**
  * Queueable trait file.
  *
+ * phpcs:disable Squiz.Commenting.VariableComment.Missing
+ *
  * @package Mantle
  */
 
@@ -18,9 +20,9 @@ trait Queueable {
 	/**
 	 * The delay before the job will be run.
 	 *
-	 * @var DateTimeInterface|int
+	 * @var int|DateTimeInterface
 	 */
-	public DateTimeInterface|int $delay;
+	public int|DateTimeInterface $delay;
 
 	/**
 	 * The name of the queue for the job.

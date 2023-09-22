@@ -52,7 +52,7 @@ class Pending_Dispatch {
 	 */
 	public function delay( DateTimeInterface|int $delay ): Pending_Dispatch {
 		if ( ! method_exists( $this->job, 'delay' ) ) {
-		throw new RuntimeException( $this->job::class . ' does not support delayed queueing.' );
+			throw new RuntimeException( $this->job::class . ' does not support delayed queueing.' );
 		}
 
 		$this->job->delay( $delay );

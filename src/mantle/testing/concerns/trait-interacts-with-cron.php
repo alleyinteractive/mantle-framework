@@ -99,7 +99,11 @@ trait Interacts_With_Cron {
 	 * @throws InvalidArgumentException Thrown for missing job class.
 	 */
 	public function assertJobQueued( $job, array $args = [], string $queue = null ): void {
-		/** @var \Mantle\Contracts\Queue\Provider */
+		/**
+		 * Provider instance.
+		 *
+		 * @var \Mantle\Contracts\Queue\Provider
+		 */
 		$provider = app( Queue_Manager::class )->get_provider();
 
 		if ( is_string( $job ) ) {
@@ -131,7 +135,11 @@ trait Interacts_With_Cron {
 	 * @throws InvalidArgumentException Thrown for missing job class.
 	 */
 	public function assertJobNotQueued( $job, array $args = [], string $queue = null ): void {
-		/** @var \Mantle\Contracts\Queue\Provider */
+		/**
+		 * Provider instance.
+		 *
+		 * @var \Mantle\Contracts\Queue\Provider
+		 */
 		$provider = app( Queue_Manager::class )->get_provider();
 
 		if ( is_string( $job ) ) {
@@ -254,11 +262,10 @@ trait Interacts_With_Cron {
 	/**
 	 * Dispatch the WordPress cron queue.
 	 *
+	 * @param int    $size Size of the queue to run.
 	 * @param string $queue Queue to run.
 	 */
 	public function dispatch_queue( int $size = 100, string $queue = null ): void {
 		$this->app->make( Worker::class )->run( $size, $queue );
-
-		// app( \Mantle\Queue\Providers\WordPress\Scheduler::class )->on_queue_run( $queue );
 	}
 }

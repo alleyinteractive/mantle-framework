@@ -23,8 +23,6 @@ use RuntimeException;
  * WordPress Cron Queue Provider
  *
  * @todo Add support for one off cron events that should have their own cron scheduled.
- * @todo Add support for job locks.
- * @todo Add support for delayed jobs.
  */
 class Provider implements Provider_Contract {
 	/**
@@ -228,9 +226,8 @@ class Provider implements Provider_Contract {
 	 */
 	public function in_queue( mixed $job, string $queue = null ): bool {
 		return Queue_Job::where( 'post_status', Post_Status::PENDING->value )
-			// ->whereDate( 'post_date', '>=', now()->toDateTimeString() )
+			->whereDate( now()->toDateTimeString(), '>=' )
 			->whereTerm( static::get_queue_term_id( $queue ), static::OBJECT_NAME )
-			// ->dumpSql()
 			->whereMeta( Meta_Key::JOB->value, maybe_serialize( $job ) )
 			->exists();
 	}

@@ -40,7 +40,7 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 		$this->model->save(
 			[
 				'post_status' => Post_Status::RUNNING->value,
-			] 
+			]
 		);
 
 		$job = $this->get_job();
@@ -81,8 +81,14 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 					Meta_Key::LOCK_UNTIL->value => '',
 				],
 				'post_status' => Post_Status::FAILED->value,
-			] 
+			]
 		);
+
+		$job = $this->get_job();
+
+		if ( method_exists( $job, 'failed' ) ) {
+			$job->failed( $e );
+		}
 	}
 
 	/**
@@ -90,6 +96,20 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 	 */
 	public function delete(): void {
 		$this->model->delete( true );
+	}
+
+	/**
+	 * Retry a job with a specified delay.
+	 *
+	 * @param int $delay Delay in seconds.
+	 */
+	public function retry( int $delay = 0 ): void {
+		$this->model->save(
+			[
+				'post_date'   => now()->addSeconds( $delay )->toDateTimeString(),
+				'post_status' => Post_Status::PENDING->value,
+			]
+		);
 	}
 
 	/**

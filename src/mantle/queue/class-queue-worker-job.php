@@ -50,6 +50,13 @@ abstract class Queue_Worker_Job {
 	abstract public function failed( Throwable $e ): void;
 
 	/**
+	 * Retry a job with a specified delay.
+	 *
+	 * @param int $delay Delay in seconds.
+	 */
+	abstract public function retry( int $delay = 0 ): void;
+
+	/**
 	 * Delete a job from the queue.
 	 *
 	 * @return void
@@ -63,5 +70,23 @@ abstract class Queue_Worker_Job {
 	 */
 	public function has_failed(): bool {
 		return $this->failed;
+	}
+
+	/**
+	 * Check if the job can be retried.
+	 *
+	 * @return bool
+	 */
+	public function can_retry(): bool {
+		return $this->has_failed() && ( $this->get_job()->retry ?? false );
+	}
+
+	/**
+	 * Retrieve the retry backoff.
+	 *
+	 * @return int The retry backoff in seconds.
+	 */
+	public function get_retry_backoff(): int {
+		return $this->get_job()->retry_backoff ?? 0;
 	}
 }

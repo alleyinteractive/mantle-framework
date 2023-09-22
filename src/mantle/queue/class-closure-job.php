@@ -20,18 +20,11 @@ use Throwable;
  */
 class Closure_Job implements Can_Queue {
 	/**
-	 * Serializable closure instance.
-	 *
-	 * @var SerializableClosure
-	 */
-	public SerializableClosure $closure;
-
-	/**
 	 * The callbacks that should be run on failure.
 	 *
 	 * @var array
 	 */
-	public $failure_callbacks = [];
+	public array $failure_callbacks = [];
 
 	/**
 	 * Create a new job instance.
@@ -48,8 +41,7 @@ class Closure_Job implements Can_Queue {
 	 *
 	 * @param SerializableClosure $closure Serialized closure to wrap.
 	 */
-	public function __construct( SerializableClosure $closure ) {
-		$this->closure = $closure;
+	public function __construct( public SerializableClosure $closure ) {
 	}
 
 	/**

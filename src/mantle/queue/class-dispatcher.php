@@ -39,7 +39,11 @@ class Dispatcher {
 			return;
 		}
 
-		/** @var \Mantle\Contracts\Queue\Provider */
+		/**
+		 * Provider instance.
+		 *
+		 * @var \Mantle\Contracts\Queue\Provider
+		 */
 		$provider = $this->container->make( Queue_Manager::class )->get_provider();
 
 		// Send the job to the queue.

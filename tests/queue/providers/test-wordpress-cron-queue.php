@@ -33,6 +33,10 @@ class Test_WordPress_Cron_Queue extends Framework_Test_Case {
 		Provider::register_data_types();
 	}
 
+	public function test_cron_action() {
+		$this->assertTrue( has_action( Scheduler::EVENT ) );
+	}
+
 	public function test_job_dispatch() {
 		$_SERVER['__example_job'] = false;
 
@@ -215,73 +219,45 @@ class Test_WordPress_Cron_Queue extends Framework_Test_Case {
 		$this->assertEquals( 0, Scheduler::get_scheduled_count() );
 	}
 
-	// public function test_failed_job() {}
+	public function test_failed_job() {
+		$_SERVER['__failed_run'] = 0;
 
-	// public function test_retry_failed_job() {}
+		Job_To_Fail::dispatch();
 
-	// public function test_exception_thrown_locked_job() {
-	// 	$this->expectException( Queue_Job_Locked_Exception::class );
-	// 	$this->expectExceptionMessage( 'Queue job is locked: ' . Example_Job::class );
+		$this->assertInCronQueue( Job_To_Fail::class );
 
-	// 	$_SERVER['__failed_run']  = false;
+		$this->dispatch_queue();
 
-	// 	$this->app['events']->listen(
-	// 		Job_Failed::class,
-	// 		fn () => $_SERVER['__failed_run'] = true,
-	// 	);
+		$this->assertNotInCronQueue( Job_To_Fail::class );
+		$this->assertEquals( 1, $_SERVER['__failed_run'] );
 
-	// 	$model = Queue_Job::first_or_create( [
-	// 		'post_status' => Post_Status::PENDING->value,
-	// 	] );
+		$this->assertPostExists( [
+			'post_type'    => Provider::OBJECT_NAME,
+			'post_status'  => Post_Status::FAILED->value,
+		] );
 
-	// 	$model->set_terms(
-	// 		[
-	// 			Provider::OBJECT_NAME => Provider::get_queue_term_id( 'default' ),
-	// 		]
-	// 	);
+		$this->dispatch_queue();
+	}
 
-	// 	$model->set_meta( Meta_Key::LOCK_UNTIL->value, time() + 600 );
-	// 	$model->set_meta( Meta_Key::JOB->value, new Example_Job( false ) );
+	public function test_retry_failed_job() {
+		$_SERVER['__failed_run'] = 0;
 
-	// 	$job = new Queue_Worker_Job( $model );
+		Job_To_Fail_Retry::dispatch();
 
-	// 	$job->fire();
-	// }
+		$this->assertInCronQueue( Job_To_Fail_Retry::class );
 
-	// public function test_unlocked_after_exception_thrown() {
-	// 	$_SERVER['__failed_run']  = false;
+		$this->dispatch_queue();
 
-	// 	$this->app['events']->listen(
-	// 		Job_Failed::class,
-	// 		fn () => $_SERVER['__failed_run'] = true,
-	// 	);
+		// First failure.
+		$this->assertEquals( 1, $_SERVER['__failed_run'] );
+		$this->assertInCronQueue( Job_To_Fail_Retry::class );
 
-	// 	$model = Queue_Job::first_or_create( [
-	// 		'post_status' => Post_Status::PENDING->value,
-	// 	] );
+		$this->dispatch_queue();
 
-	// 	$model->set_terms(
-	// 		[
-	// 			Provider::OBJECT_NAME => Provider::get_queue_term_id( 'default' ),
-	// 		]
-	// 	);
-
-	// 	$model->set_meta( Meta_Key::LOCK_UNTIL->value, time() + 600 );
-	// 	$model->set_meta( Meta_Key::JOB->value, new Example_Job( false ) );
-
-	// 	$job = new Queue_Worker_Job( $model );
-
-	// 	try {
-	// 		$job->fire();
-	// 	} catch ( \Throwable $e ) {
-	// 		$job->failed( $e );
-	// 	}
-
-	// 	$this->assertEmpty( $model->get_meta( Meta_Key::LOCK_UNTIL->value ) );
-	// 	$this->assertNotEmpty( $model->get_meta( Meta_Key::FAILURE->value ) );
-	// }
-
-	//////////////////////
+		// Ensure it didn't run (it should be delayed 30 seconds).
+		$this->assertEquals( 1, $_SERVER['__failed_run'] );
+		$this->assertInCronQueue( Job_To_Fail_Retry::class );
+	}
 
 	public function test_schedule_next_run_after_complete() {
 		// Limit the queue batch size.
@@ -348,4 +324,14 @@ class Job_To_Fail implements Job, Can_Queue {
 	public function handle() {
 		throw new RuntimeException( 'Something went wrong' );
 	}
+
+	public function failed(): void {
+		$_SERVER['__failed_run']++;
+	}
+}
+
+class Job_To_Fail_Retry extends Job_To_Fail {
+	public bool $retry = true;
+
+	public int $retry_backoff = 30;
 }

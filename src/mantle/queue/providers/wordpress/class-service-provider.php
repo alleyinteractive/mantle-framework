@@ -2,6 +2,8 @@
 /**
  * Service_Provider class file
  *
+ * phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag
+ *
  * @package Mantle
  */
 
@@ -47,38 +49,45 @@ class Service_Provider extends Base_Service_Provider {
 
 	/**
 	 * Handle the schedule event to run the queue via WordPress cron.
+	 *
+	 * This is the listener for the cron event that will start the process of
+	 * firing off queue jobs.
+	 *
+	 * @param string|null $queue Queue name.
 	 */
 	#[Action( Scheduler::EVENT )]
-	public function handle_scheduled_run( ...$args ): void {
-		Scheduler::on_queue_run( ...$args );
+	public function handle_scheduled_run( $queue = null ): void {
+		Scheduler::run( $queue ?? 'default' );
 	}
 
 	/**
 	 * Handle the Job Queued event to schedule the next cron run.
 	 *
-	 * @param Job_Queued $event Job Queued event.
+	 * @param Events\Job_Queued $event Job Queued event.
+	 * @return Events\Job_Queued
 	 */
 	#[Action( Events\Job_Queued::class ) ]
-	public function handle_job_queued_event( Events\Job_Queued $job ): Events\Job_Queued {
-		if ( $job->provider instanceof Provider ) {
-			Scheduler::on_job_queued( $job->queue ?? 'default' );
+	public function handle_job_queued_event( Events\Job_Queued $event ): Events\Job_Queued {
+		if ( $event->provider instanceof Provider ) {
+			Scheduler::on_job_queued( $event->queue ?? 'default' );
 		}
 
-		return $job;
+		return $event;
 	}
 
 	/**
 	 * Handle the Run Complete event to schedule the next cron run.
 	 *
-	 * @param Run_Complete $event Run complete event.
+	 * @param Events\Run_Complete $event Run complete event.
+	 * @return Events\Run_Complete
 	 */
 	#[Action( Events\Run_Complete::class ) ]
-	public function handle_run_complete( Events\Run_Complete $job ): Events\Run_Complete {
-		if ( $job->provider instanceof Provider ) {
-			Scheduler::schedule_next_run( $job->queue ?? 'default' );
+	public function handle_run_complete( Events\Run_Complete $event ): Events\Run_Complete {
+		if ( $event->provider instanceof Provider ) {
+			Scheduler::schedule_next_run( $event->queue ?? 'default' );
 		}
 
-		return $job;
+		return $event;
 	}
 
 	/**

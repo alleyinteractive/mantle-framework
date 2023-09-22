@@ -46,6 +46,9 @@ class Scheduler {
 
 	/**
 	 * Schedule the next run of the queue on shutdown for all pending queues.
+	 *
+	 * Once a queue job is dispatched, the queue will be scheduled to run on
+	 * shutdown to deduplicate any scheduling calls.
 	 */
 	public static function schedule_on_shutdown(): void {
 		foreach ( static::$pending_queues as $queue ) {
@@ -60,7 +63,7 @@ class Scheduler {
 	 *
 	 * @param string $queue Queue name, optional.
 	 */
-	public static function on_queue_run( ?string $queue = null ) {
+	public static function run( ?string $queue = null ) {
 		if ( ! $queue ) {
 			$queue = 'default';
 		}
@@ -88,7 +91,7 @@ class Scheduler {
 		$schedule = \wp_schedule_single_event( time() + $delay, static::EVENT, [ $queue, time() + $delay ], true );
 
 		if ( is_wp_error( $schedule ) ) {
-			dump($schedule);
+			dump( $schedule );
 
 			return false;
 		}
@@ -122,7 +125,11 @@ class Scheduler {
 			$queue = 'default';
 		}
 
-		/** @var \Mantle\Queue\Providers\WordPress\Provider */
+		/**
+		 * Provider instance.
+		 *
+		 * @var \Mantle\Contracts\Queue\Provider
+		 */
 		$provider = app( 'queue' )->get_provider( 'wordpress' );
 
 		$pending_count = $provider->pending_count( $queue );

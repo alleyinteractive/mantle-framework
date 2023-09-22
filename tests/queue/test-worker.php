@@ -6,8 +6,6 @@ use Mantle\Config\Repository;
 use Mantle\Contracts\Queue\Provider;
 use Mantle\Queue\Queue_Service_Provider;
 use Mantle\Queue\Events;
-use Mantle\Queue\Events\Run_Complete;
-use Mantle\Queue\Events\Run_Start;
 use Mantle\Queue\Job;
 use Mantle\Support\Collection;
 use Mockery as m;
