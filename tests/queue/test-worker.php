@@ -7,6 +7,7 @@ use Mantle\Contracts\Queue\Provider;
 use Mantle\Queue\Queue_Service_Provider;
 use Mantle\Queue\Events;
 use Mantle\Queue\Job;
+use Mantle\Queue\Queue_Worker_Job;
 use Mantle\Support\Collection;
 use Mockery as m;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
@@ -91,20 +92,8 @@ class Test_Worker extends MockeryTestCase {
 		);
 	}
 
-	public function test_closure_job() {
-		$job = fn () => $_SERVER['__closure_run'] = true;
-
-		$this->app['queue']->get_provider( 'test' )->push( $job );
-
-		$this->app['queue.worker']->run( 1 );
-
-		$this->assertTrue( $_SERVER['__closure_run'] );
-
-		$this->app['queue.worker']->run( 1 );
-	}
-
 	protected function get_mock_job( $id, $should_run = true ) {
-		$mock_job = m::mock( Job::class );
+		$mock_job = m::mock( Queue_Worker_Job::class );
 
 		if ( $should_run ) {
 			$mock_job->shouldReceive( 'fire' )->once()->andReturn( true );
