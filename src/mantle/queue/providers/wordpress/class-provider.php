@@ -211,7 +211,7 @@ class Provider implements Provider_Contract {
 	 * @param string|null $queue Queue name, optional.
 	 * @return Post_Query_Builder<Queue_Job>
 	 */
-	protected function query( string $queue = null ): Post_Query_Builder {
+	public function query( string $queue = null ): Post_Query_Builder {
 		return Queue_Job::where( 'post_status', Post_Status::PENDING->value )
 			->whereTerm( static::get_queue_term_id( $queue ), static::OBJECT_NAME )
 			->orderBy( 'post_date', 'asc' );

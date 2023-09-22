@@ -8,6 +8,7 @@
 namespace Mantle\Queue\Providers\WordPress;
 
 use Mantle\Contracts\Queue\Job as JobContract;
+use Mantle\Queue\Closure_Job;
 use Throwable;
 
 /**
@@ -66,7 +67,13 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 	 * @return mixed
 	 */
 	public function get_id(): mixed {
-		return $this->model->id();
+		$job = $this->get_job();
+
+		return match ( true ) {
+			$job instanceof Closure_Job => $job->get_id(),
+			is_object( $job ) => $job::class,
+			default => $this->model->id(),
+		};
 	}
 
 	/**
