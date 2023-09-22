@@ -35,7 +35,9 @@ class Test_Dispatcher extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 	protected function setUp(): void {
 		if ( PHP_VERSION_ID < 80100 ) {
-			return $this->markTestSkipped( 'PHP 8.1 or greater is required for the queue' );
+			$this->markTestSkipped( 'PHP 8.1 or greater is required for the queue' );
+
+			return;
 		}
 
 		parent::setUp();
