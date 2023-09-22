@@ -211,7 +211,7 @@ class Provider implements Provider_Contract {
 	 * @param string|null $queue Queue name, optional.
 	 * @return Post_Query_Builder<Queue_Job>
 	 */
-	public function query( string $queue = null ): Post_Query_Builder {
+	protected function query( string $queue = null ): Post_Query_Builder {
 		return Queue_Job::where( 'post_status', Post_Status::PENDING->value )
 			->whereTerm( static::get_queue_term_id( $queue ), static::OBJECT_NAME )
 			->orderBy( 'post_date', 'asc' );
@@ -236,16 +236,21 @@ class Provider implements Provider_Contract {
 	 * Get the taxonomy term for a queue.
 	 *
 	 * @param string|null $name Queue name, optional.
+	 * @param bool        $create Whether to create the term if it doesn't exist.
 	 * @return int
 	 *
 	 * @throws InvalidArgumentException Thrown on invalid queue term.
 	 */
-	public static function get_queue_term_id( ?string $name = null ): int {
+	public static function get_queue_term_id( ?string $name = null, bool $create = true ): int {
 		if ( ! $name ) {
 			$name = 'default';
 		}
 
 		$term = \get_term_by( 'slug', $name, static::OBJECT_NAME );
+
+		if ( empty( $term ) && ! $create ) {
+			return 0;
+		}
 
 		if ( empty( $term ) ) {
 			$insert = \wp_insert_term( $name, static::OBJECT_NAME, [ 'slug' => $name ] );

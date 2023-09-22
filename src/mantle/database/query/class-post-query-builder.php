@@ -49,6 +49,7 @@ class Post_Query_Builder extends Builder {
 		'post_author'  => 'author',
 		'post_name'    => 'name',
 		'slug'         => 'name',
+		'status'       => 'post_status',
 	];
 
 	/**

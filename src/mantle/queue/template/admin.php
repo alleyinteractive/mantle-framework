@@ -8,6 +8,8 @@
 <div class="wrap">
 	<h1><?php esc_html_e( 'Mantle Queue', 'mantle' ); ?></h1>
 
+	<hr class="wp-header-end">
+
 	<?php $table->views(); ?>
 	<?php $table->display(); ?>
 </div>

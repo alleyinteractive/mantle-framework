@@ -1,43 +1,46 @@
 <?php
+/**
+ * Queue_Jobs_Table class file
+ *
+ * @package Mantle
+ */
+
 namespace Mantle\Queue\Admin;
 
 use Carbon\Carbon;
+use Mantle\Database\Query\Post_Query_Builder;
 use Mantle\Queue\Providers\WordPress\Post_Status;
+use Mantle\Queue\Providers\WordPress\Provider;
 use Mantle\Queue\Providers\WordPress\Queue_Job;
 use Mantle\Queue\Providers\WordPress\Queue_Worker_Job;
 use WP_List_Table;
+
+use function Mantle\Support\Helpers\str;
 
 /**
  * Queue Jobs Table
  *
  * @todo Abstract this to make it easier to use with other queue providers.
+ * @todo Add counts to views.
  */
 class Queue_Jobs_Table extends WP_List_Table {
+	/**
+	 * Number of items per page.
+	 *
+	 * @var int
+	 */
+	public int $per_page = 50;
+
+	/**
+	 * Constructor.
+	 */
 	public function __construct() {
 		parent::__construct( [
 			'plural'   => __( 'Jobs', 'mantle' ),
 			'singular' => __( 'Job', 'mantle' ),
 		] );
-
-		// dd('manage_' . $this->screen->id . '_columns');
-
 	}
 
-	// public function display() {
-	// 	add_filter( 'manage_' . $this->screen->id . '_columns', [ $this, 'get_columns' ] );
-
-	// 	parent::display();
-	// }
-	// function __construct() {
-	// 	if ( ! empty( $_REQUEST['s'] ) ) {
-	// 		$this->is_search = true;
-	// 	}
-
-	// 	parent::__construct( array(
-	// 		'plural' => __( 'Co-Authors', 'co-authors-plus' ),
-	// 		'singular' => __( 'Co-Author', 'co-authors-plus' ),
-	// 	) );
-	// 	}
 	/**
 	 * Gets the list of columns.
 	 *
@@ -46,6 +49,7 @@ class Queue_Jobs_Table extends WP_List_Table {
 	public function get_columns() {
 		return [
 			'job'    => __( 'Job', 'mantle' ),
+			'queue'  => __( 'Queue', 'mantle' ),
 			'date'   => __( 'Scheduled', 'mantle' ),
 			'status' => __( 'Status', 'mantle' ),
 		];
@@ -57,15 +61,24 @@ class Queue_Jobs_Table extends WP_List_Table {
 	 * @return array
 	 */
 	protected function get_views() {
+		$current = sanitize_text_field( wp_unslash( $_GET['filter'] ?? '' ) );
+
 		$links = [
 			[
-				'id'    => 'all',
-				'title' => __( 'All', 'mantle' ),
-				'count' => 0,
+				'current' => empty( $current ),
+				'label'   => __( 'All', 'mantle' ),
+				'url'     => add_query_arg( 'filter', '' ),
 			],
 		];
 
-		dump($this->get_views_links( $links ));
+		foreach ( Post_Status::cases() as $status ) {
+			$links[] = [
+				'current' => $status->value === $current,
+				'label'   => (string) str( $status->name )->title(),
+				'url'     => add_query_arg( 'filter', $status->value ),
+			];
+		}
+
 		return $this->get_views_links( $links );
 	}
 
@@ -82,55 +95,81 @@ class Queue_Jobs_Table extends WP_List_Table {
 
 		$this->_column_headers = [ $this->get_columns(), [], [] ];
 
-		// $this->filters = [
-		// 	'all' => 'All',
-		// ];
+		$statuses = array_column( Post_Status::cases(), 'value' );
 
-		// $this->active_filter = 'all';
+		$active_status_filter = sanitize_text_field( wp_unslash( $_GET['filter'] ?? '' ) );
 
-		// TODO: Apply filters
-		// TODO: Apply pagination.
-		$this->items = $queue
-			->query()
-			->take( 50 )
-			->get()
-			->map(
-				function ( Queue_Job $model ): array {
-					$job = new Queue_Worker_Job( $model );
+		// Validate that the status filter is valid.
+		if ( ! empty( $active_status_filter ) && ! in_array( $active_status_filter, $statuses, true ) ) {
+			$active_status_filter = '';
+		}
 
-					return [
-						'job'    => $job->get_id(),
-						'date'   => $model->date,
-						'status' => $model->status,
-					];
-				}
+		$active_queue_filter = sanitize_text_field( wp_unslash( $_GET['queue'] ?? '' ) );
+		$page                = (int) ( $_GET['paged'] ?? 1 );
+
+		$query = Queue_Job::query()
+			->orderBy( 'date', 'asc' )
+			// Allow the query to be filtered by status.
+			->when(
+				! empty( $active_status_filter ),
+				fn ( $query ) => $query->where( 'post_status', $active_status_filter ),
+				fn ( $query ) => $query->where( 'post_status', $statuses ),
+			)
+			// Allow the query to be filtered by queue.
+			->when(
+				! empty( $active_queue_filter ),
+				fn ( Post_Query_Builder $query ) => $query->whereTerm(
+					Provider::get_queue_term_id( $active_queue_filter, false ),
+					Provider::OBJECT_NAME,
+				),
+			)
+			->for_page( $page, $this->per_page );
+
+		// TODO: Refactor with found_posts later.
+		$this->items = $query->get()->map(
+				fn ( Queue_Job $model ) => [
+					'job'    => ( new Queue_Worker_Job( $model ) )->get_id(),
+					'queue'  => $model->get_queue(),
+					'date'   => $model->date,
+					'status' => $model->status,
+				]
 			)
 			->all();
 
-		// $this->items = [
-		// 	[
-		// 		'job' => 'Test Job',
-		// 		'created' => '2021-01-01 00:00:00',
-		// 		'status' => 'pending',
-		// 	],
-		// 	[
-		// 		'job' => 'Test Job',
-		// 		'created' => '2021-01-01 00:00:00',
-		// 		'status' => 'pending',
-		// 	],
-		// 	[
-		// 		'job' => 'Test Job',
-		// 		'created' => '2021-01-01 00:00:00',
-		// 		'status' => 'pending',
-		// 	],
-		// ];
+		$this->set_pagination_args( [
+			'total_items' => $query->get_found_rows(),
+			'per_page'    => $this->per_page,
+		] );
 	}
 
-	public function column_job( $item ) {
+	/**
+	 * Display the job column.
+	 *
+	 * @param array $item The current item.
+	 */
+	public function column_job( $item ): void {
 		echo esc_html( $item['job'] );
 	}
 
-	public function column_date( $item ) {
+	/**
+	 * Display the queue column.
+	 *
+	 * @param array $item The current item.
+	 */
+	public function column_queue( $item ): void {
+		printf(
+			'<a href="%s">%s</a>',
+			esc_url( add_query_arg( 'queue', $item['queue'] ) ),
+			esc_html( $item['queue'] ),
+		);
+	}
+
+	/**
+	 * Display the date column.
+	 *
+	 * @param array $item The current item.
+	 */
+	public function column_date( $item ): void {
 		$time = Carbon::parse( $item['date'], wp_timezone() );
 
 		printf(
@@ -141,7 +180,12 @@ class Queue_Jobs_Table extends WP_List_Table {
 		);
 	}
 
-	public function column_status( $item ) {
+	/**
+	 * Display the status column.
+	 *
+	 * @param array $item The current item.
+	 */
+	public function column_status( $item ): void {
 		switch ( $item['status'] ) {
 			case Post_Status::PENDING->value:
 				echo '<span class="dashicons dashicons-clock"></span>' . esc_html__( 'Pending', 'mantle' );
@@ -155,37 +199,6 @@ class Queue_Jobs_Table extends WP_List_Table {
 				echo '<span class="dashicons dashicons-no-alt"></span>' . esc_html__( 'Failed', 'mantle' );
 				break;
 		}
-	}
-
-	/**
-	 * Generates custom table navigation to prevent conflicting nonces.
-	 *
-	 * @param string $which The location of the bulk actions: 'top' or 'bottom'.
-	 */
-	protected function display_tablenav( $which ) {
-		?>
-		<div class="tablenav <?php echo esc_attr( $which ); ?>">
-			<div class="alignleft actions bulkactions">
-				<?php $this->bulk_actions( $which ); ?>
-			</div>
-			<?php
-			$this->extra_tablenav( $which );
-			$this->pagination( $which );
-			?>
-			<br class="clear" />
-		</div>
-		<?php
-	}
-
-	/**
-	 * Generates content for a single row of the table.
-	 *
-	 * @param array $item The current item.
-	 */
-	public function single_row( $item ) {
-		echo '<tr>';
-		$this->single_row_columns( $item );
-		echo '</tr>';
 	}
 
 	/**
