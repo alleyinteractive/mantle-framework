@@ -15,6 +15,8 @@ use Mantle\Queue\Worker;
 use PHPUnit\Framework\Assert as PHPUnit;
 use stdClass;
 
+use function Mantle\Support\Helpers\collect;
+
 /**
  * Concern for interacting with the WordPress cron and making assertions against
  * it. Also supports queued and scheduled jobs.
@@ -26,17 +28,25 @@ trait Interacts_With_Cron {
 	 * Assert that an action is in the cron queue.
 	 *
 	 * @param string $action Action hook of the event.
-	 * @param array  $args Arguments for the cron queue event.
+	 * @param array  $args Arguments for the cron queue event or null to not check
+	 *                     arguments (cron only).
 	 */
-	public function assertInCronQueue( string $action, array $args = [] ): void {
+	public function assertInCronQueue( string $action, array|null $args = [] ): void {
 		if ( $this->is_job_action( $action ) ) {
-			$this->assertJobQueued( $action, $args );
+			$this->assertJobQueued( $action, (array) $args );
 			return;
 		}
 
-		PHPUnit::assertNotFalse(
-			\wp_next_scheduled( $action, $args ),
-			"Cron action is not in cron queue: [$action]"
+		if ( ! is_null( $args ) ) {
+			PHPUnit::assertNotFalse(
+				\wp_next_scheduled( $action, $args ),
+				"Cron action is not in cron queue: [$action]"
+			);
+		}
+
+		PHPUnit::assertNotEmpty(
+			collect( static::get_cron_events() )->where( 'hook', $action )->all(),
+			"Cron action is not in cron queue: [$action] (no arguments checked)",
 		);
 	}
 
@@ -44,17 +54,25 @@ trait Interacts_With_Cron {
 	 * Assert tha an action is not in a cron queue.
 	 *
 	 * @param string $action Action hook of the event.
-	 * @param array  $args Arguments for the cron queue event.
+	 * @param array  $args Arguments for the cron queue event or null to not check
+	 *                     arguments (cron only).
 	 */
-	public function assertNotInCronQueue( string $action, array $args = [] ): void {
+	public function assertNotInCronQueue( string $action, array|null $args = [] ): void {
 		if ( $this->is_job_action( $action ) ) {
-			$this->assertJobNotQueued( $action, $args );
+			$this->assertJobNotQueued( $action, (array) $args );
 			return;
 		}
 
-		PHPUnit::assertFalse(
-			\wp_next_scheduled( $action, $args ),
-			"Cron action is in cron queue: [$action]"
+		if ( ! is_null( $args ) ) {
+			PHPUnit::assertFalse(
+				\wp_next_scheduled( $action, $args ),
+				"Cron action is in cron queue: [$action]"
+			);
+		}
+
+		PHPUnit::assertEmpty(
+			collect( static::get_cron_events() )->where( 'hook', $action )->all(),
+			"Cron action is in cron queue: [$action] (no arguments checked)",
 		);
 	}
 
@@ -81,6 +99,7 @@ trait Interacts_With_Cron {
 	 * @throws InvalidArgumentException Thrown for missing job class.
 	 */
 	public function assertJobQueued( $job, array $args = [], string $queue = null ): void {
+		/** @var \Mantle\Contracts\Queue\Provider */
 		$provider = app( Queue_Manager::class )->get_provider();
 
 		if ( is_string( $job ) ) {
@@ -91,9 +110,11 @@ trait Interacts_With_Cron {
 			$job = new $job( ...$args );
 		}
 
+		$job_name = is_object( $job ) ? $job::class : $job;
+
 		PHPUnit::assertTrue(
 			$provider->in_queue( $job, $queue ),
-			'Job is not in the queue.'
+			"Job [{$job_name}] is not in the queue.",
 		);
 	}
 
@@ -110,6 +131,7 @@ trait Interacts_With_Cron {
 	 * @throws InvalidArgumentException Thrown for missing job class.
 	 */
 	public function assertJobNotQueued( $job, array $args = [], string $queue = null ): void {
+		/** @var \Mantle\Contracts\Queue\Provider */
 		$provider = app( Queue_Manager::class )->get_provider();
 
 		if ( is_string( $job ) ) {
@@ -120,9 +142,11 @@ trait Interacts_With_Cron {
 			$job = new $job( ...$args );
 		}
 
+		$job_name = is_object( $job ) ? $job::class : $job;
+
 		PHPUnit::assertFalse(
 			$provider->in_queue( $job, $queue ),
-			'Job is in the queue.'
+			"Job [{$job_name}] is in the queue.",
 		);
 	}
 
@@ -173,7 +197,7 @@ trait Interacts_With_Cron {
 	/**
 	 * Fetches an array of scheduled cron events.
 	 *
-	 * @return array
+	 * @return array<int, object{hook: string, time: int, sig: string, args: array, schedule: false|string}>
 	 */
 	protected static function get_cron_events(): array {
 		$crons  = _get_cron_array();

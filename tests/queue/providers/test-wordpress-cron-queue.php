@@ -10,6 +10,7 @@ use Mantle\Queue\Providers\WordPress\Post_Status;
 use Mantle\Queue\Providers\WordPress\Provider;
 use Mantle\Queue\Providers\WordPress\Scheduler;
 use Mantle\Queue\Queueable;
+use Mantle\Scheduling\Schedule;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
 use PHPUnit\Framework\Assert;
@@ -214,6 +215,10 @@ class Test_WordPress_Cron_Queue extends Framework_Test_Case {
 		$this->assertEquals( 0, Scheduler::get_scheduled_count() );
 	}
 
+	// public function test_failed_job() {}
+
+	// public function test_retry_failed_job() {}
+
 	// public function test_exception_thrown_locked_job() {
 	// 	$this->expectException( Queue_Job_Locked_Exception::class );
 	// 	$this->expectExceptionMessage( 'Queue job is locked: ' . Example_Job::class );
@@ -278,24 +283,36 @@ class Test_WordPress_Cron_Queue extends Framework_Test_Case {
 
 	//////////////////////
 
-	// public function test_schedule_next_run_after_complete() {
-	// 	// Limit the queue batch size.
-	// 	$this->app['config']->set( 'queue.batch_size', 5 );
+	public function test_schedule_next_run_after_complete() {
+		// Limit the queue batch size.
+		$this->app['config']->set( 'queue.batch_size', 5 );
 
-	// 	for ( $i = 0; $i < 8; $i++ ) {
-	// 		Example_Job::dispatch();
-	// 	}
+		for ( $i = 0; $i < 8; $i++ ) {
+			Example_Job::dispatch();
+		}
 
-	// 	// $this->assertInCronQueue( Scheduler::EVENT, [ 'default' ] );
+		$this->assertJobQueued( Example_Job::class, [], 'default' );
 
-	// 	$this->dispatch_queue();
+		// Ensure the next job is scheduled.
+		Scheduler::schedule_on_shutdown();
+		$this->assertInCronQueue( Scheduler::EVENT, null );
 
-	// 	// $this->assertInCronQueue( Scheduler::EVENT, [ 'default' ] );
+		$this->dispatch_queue( 2 );
 
-	// 	$this->dispatch_queue();
+		$this->assertJobQueued( Example_Job::class, [], 'default' );
 
-	// 	// $this->assertNotInCronQueue( Scheduler::EVENT, [ 'default' ] );
-	// }
+		// Ensure the next job is scheduled.
+		Scheduler::schedule_on_shutdown();
+		$this->assertInCronQueue( Scheduler::EVENT, null );
+
+		$this->dispatch_queue( 6 );
+
+		$this->assertJobNotQueued( Example_Job::class, [], 'default' );
+
+		// Ensure the next job is not scheduled.
+		Scheduler::schedule_on_shutdown();
+		$this->assertNotInCronQueue( Scheduler::EVENT, null );
+	}
 }
 
 class Example_Job implements Job, Can_Queue {
