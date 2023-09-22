@@ -68,6 +68,8 @@ class Scheduler {
 			$queue = 'default';
 		}
 
+		wp_raise_memory_limit( 'cron' );
+
 		app( 'queue.worker' )->run(
 			static::get_configuration_value( 'batch_size', $queue, 100 ),
 			$queue

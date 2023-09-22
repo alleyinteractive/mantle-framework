@@ -11,6 +11,14 @@ use Mockery as m;
  * @group queue
  */
 class Test_Queue_Manager extends \Mockery\Adapter\Phpunit\MockeryTestCase {
+	protected function setUp(): void {
+		if ( PHP_VERSION_ID < 80100 ) {
+			return $this->markTestSkipped( 'PHP 8.1 or greater is required for the queue' );
+		}
+
+		parent::setUp();
+	}
+
 	public function test_default_connection() {
 		$provider = m::mock( Provider::class );
 

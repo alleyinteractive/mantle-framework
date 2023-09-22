@@ -34,6 +34,10 @@ class Test_Dispatcher extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	protected $app;
 
 	protected function setUp(): void {
+		if ( PHP_VERSION_ID < 80100 ) {
+			return $this->markTestSkipped( 'PHP 8.1 or greater is required for the queue' );
+		}
+
 		parent::setUp();
 
 		$this->provider = m::mock( Provider::class );
