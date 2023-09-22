@@ -30,4 +30,9 @@ enum Meta_Key: string {
 	 * Storage of the job lock end time.
 	 */
 	case LOCK_UNTIL = '_mantle_queue_lock_until';
+
+	/**
+	 * Storage of the job log.
+	 */
+	case LOG = '_mantle_queue_log';
 }

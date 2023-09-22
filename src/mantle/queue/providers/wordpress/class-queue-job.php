@@ -58,4 +58,27 @@ class Queue_Job extends Post {
 	public function clear_lock(): void {
 		$this->delete_meta( Meta_Key::LOCK_UNTIL->value );
 	}
+
+	/**
+	 * Log an event for the job.
+	 *
+	 * @param string $event The event to log.
+	 * @param array  $payload The event payload.
+	 * @return void
+	 */
+	public function log( string $event, array $payload = [] ): void {
+		$meta = $this->get_meta( Meta_Key::LOG->value );
+
+		if ( ! is_array( $meta ) ) {
+			$meta = [];
+		}
+
+		$meta[] = [
+			'event'   => $event,
+			'payload' => $payload,
+			'time'    => \time(),
+		];
+
+		$this->set_meta( Meta_Key::LOG->value, $meta );
+	}
 }
