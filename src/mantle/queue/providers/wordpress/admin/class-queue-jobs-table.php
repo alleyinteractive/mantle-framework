@@ -103,9 +103,9 @@ class Queue_Jobs_Table extends WP_List_Table {
 	 * @param Post_Status $status The status to retrieve the count for.
 	 */
 	protected function get_status_count( Post_Status $status ): int {
-		return Queue_Job::query()
-			->where( 'post_status', $status->value )
-			->count();
+		$count = wp_count_posts( Provider::OBJECT_NAME );
+
+		return $count->{$status->value} ?? 0;
 	}
 
 	/**
