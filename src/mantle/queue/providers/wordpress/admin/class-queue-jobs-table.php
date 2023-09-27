@@ -195,10 +195,10 @@ class Queue_Jobs_Table extends WP_List_Table {
 					esc_url(
 						add_query_arg(
 							[
-								'_wpnonce' => wp_create_nonce( 'retry-job_' . $item['id'] ),
+								'_wpnonce' => wp_create_nonce( 'queue-job-action-' . $item['id'] ),
 								'filter'   => false,
 								'job'      => (int) $item['id'],
-								'retry'    => true,
+								'action'   => 'retry',
 							]
 						)
 					),
@@ -212,10 +212,10 @@ class Queue_Jobs_Table extends WP_List_Table {
 					esc_url(
 						add_query_arg(
 							[
-								'_wpnonce' => wp_create_nonce( 'delete-job_' . $item['id'] ),
+								'_wpnonce' => wp_create_nonce( 'queue-job-action-' . $item['id'] ),
 								'filter'   => false,
 								'job'      => (int) $item['id'],
-								'delete'   => true,
+								'action'   => 'delete',
 							]
 						)
 					),

@@ -47,10 +47,6 @@ class Service_Provider extends Base_Service_Provider {
 	 * Render the admin page.
 	 */
 	public function render_admin_page(): void {
-		$table = new Queue_Jobs_Table();
-
-		$table->prepare_items();
-
-		include __DIR__ . '/template/admin.php';
+		( new Queue_Job_Admin_Page() )->render();
 	}
 }
