@@ -20,8 +20,7 @@ use function Mantle\Support\Helpers\str;
 /**
  * Queue Jobs Table
  *
- * @todo Abstract this to make it easier to use with other queue providers.
- * @todo Add counts to views.
+ * Display the jobs in a table with filters to view the jobs by status/queue.
  */
 class Queue_Jobs_Table extends WP_List_Table {
 	/**
@@ -75,9 +74,22 @@ class Queue_Jobs_Table extends WP_List_Table {
 		];
 
 		foreach ( Post_Status::cases() as $status ) {
+			$count = $this->get_status_count( $status );
+
 			$links[] = [
 				'current' => $status->value === $current,
-				'label'   => (string) str( $status->name )->title(),
+				'label'   => str( $status->name )
+					->title()
+					->when(
+						$count > 0,
+						fn ( $str ) => $str->append(
+							sprintf(
+								' <span class="count">(%d)</span>',
+								esc_html( number_format_i18n( $count ) ),
+							),
+						),
+					)
+					->toString(),
 				'url'     => add_query_arg( 'filter', $status->value ),
 			];
 		}
@@ -86,16 +98,20 @@ class Queue_Jobs_Table extends WP_List_Table {
 	}
 
 	/**
+	 * Retrieve the count of items on a specific status.
+	 *
+	 * @param Post_Status $status The status to retrieve the count for.
+	 */
+	protected function get_status_count( Post_Status $status ): int {
+		return Queue_Job::query()
+			->where( 'post_status', $status->value )
+			->count();
+	}
+
+	/**
 	 * Prepares the list of items for displaying.
 	 */
 	public function prepare_items() {
-		/**
-		 * Provider instance.
-		 *
-		 * @var \Mantle\Queue\Providers\WordPress\Provider
-		 */
-		$queue = app( 'queue' )->get_provider( 'wordpress' );
-
 		$this->_column_headers = [ $this->get_columns(), [], [] ];
 
 		$statuses = array_column( Post_Status::cases(), 'value' );
