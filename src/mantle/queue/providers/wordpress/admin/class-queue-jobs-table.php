@@ -148,18 +148,12 @@ class Queue_Jobs_Table extends WP_List_Table {
 		$this->items = $query->get()->map(
 			function ( Queue_Job $model ) {
 				$worker = new Queue_Worker_Job( $model );
-
-				$job = $worker->get_job();
-
-				// Retrieve the properties from the job.
-				if ( is_object( $job ) ) {
-					$arguments = get_object_vars( $job );
-				}
+				$job    = $worker->get_job();
 
 				return [
 					'id'        => $model->ID,
 					'job'       => $worker->get_id(),
-					'arguments' => $arguments ?? '',
+					'arguments' => is_object( $job ) ? get_object_vars( $job ) : '',
 					'queue'     => $model->get_queue(),
 					'date'      => $model->date,
 					'status'    => $model->status,
@@ -302,5 +296,16 @@ class Queue_Jobs_Table extends WP_List_Table {
 	 */
 	protected function get_default_primary_column_name() {
 		return 'job';
+	}
+
+	/**
+	 * Generates content for a single row of the table.
+	 *
+	 * @param array $item The current item.
+	 */
+	public function single_row( $item ) {
+		printf( '<tr class="%s">', esc_attr( 'queue-item queue-item__' . $item['status'] ) );
+		$this->single_row_columns( $item );
+		echo '</tr>';
 	}
 }

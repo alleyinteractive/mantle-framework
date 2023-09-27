@@ -15,3 +15,17 @@
 	<?php $table->views(); ?>
 	<?php $table->display(); ?>
 </div>
+
+<style type="text/css">
+	table.wp-list-table tr.queue-item__queue_running {
+		background: #FEF3C7;
+	}
+
+	table.wp-list-table tr.queue-item__queue_failed {
+		background: #FED7D7;
+	}
+
+	tr.queue-item td {
+		background: transparent
+	}
+</style>
