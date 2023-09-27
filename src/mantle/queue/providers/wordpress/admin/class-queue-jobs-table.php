@@ -181,8 +181,10 @@ class Queue_Jobs_Table extends WP_List_Table {
 				esc_url(
 					add_query_arg(
 						[
-							'job'    => (int) $item['id'],
-							'filter' => false,
+							'_wpnonce' => false,
+							'action'   => false,
+							'filter'   => false,
+							'job'      => (int) $item['id'],
 						]
 					)
 				),
@@ -208,7 +210,7 @@ class Queue_Jobs_Table extends WP_List_Table {
 				: null,
 			Post_Status::RUNNING->value !== $item['status']
 				? sprintf(
-					'<span class="trash"><a href="%s" aria-label="%s">%s</a></span>',
+					'<span class="trash"><a href="%s" aria-label="%s" onclick="%s">%s</a></span>',
 					esc_url(
 						add_query_arg(
 							[
@@ -220,6 +222,7 @@ class Queue_Jobs_Table extends WP_List_Table {
 						)
 					),
 					esc_attr__( 'Delete this job', 'mantle' ),
+					"return confirm('" . esc_attr__( 'Are you sure you want to retry this job?', 'mantle' ) . "');",
 					esc_html__( 'Delete', 'mantle' ),
 				)
 				: null,

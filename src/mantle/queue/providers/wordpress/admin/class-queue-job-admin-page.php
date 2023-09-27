@@ -7,7 +7,9 @@
 
 namespace Mantle\Queue\Providers\WordPress\Admin;
 
+use Mantle\Queue\Providers\WordPress\Post_Status;
 use Mantle\Queue\Providers\WordPress\Queue_Job;
+use Mantle\Queue\Providers\WordPress\Queue_Worker_Job;
 
 /**
  * Renders the queue admin page screen.
@@ -57,7 +59,36 @@ class Queue_Job_Admin_Page {
 			wp_die( 'Invalid nonce.' );
 		}
 
-		dd('aye');
+		$action  = sanitize_text_field( wp_unslash( $_GET['action'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$job     = Queue_Job::find( $job_id );
+		$message = '';
+
+		if ( empty( $job ) ) {
+			wp_die( esc_html__( 'Invalid job ID.', 'mantle' ) );
+		}
+
+		if ( 'retry' === $action ) {
+			if ( Post_Status::FAILED->value !== $job->status ) {
+				wp_die( esc_html__( 'Job is not in a failed state.', 'mantle' ) );
+			}
+
+			( new Queue_Worker_Job( $job ) )->retry();
+
+			$message = esc_html__( 'Job has been scheduled to be retried.', 'mantle' );
+		} elseif ( 'delete' === $action ) {
+			$job->delete( true );
+
+			$message = esc_html__( 'Job has been deleted.', 'mantle' );
+		}
+
+		if ( ! empty( $message ) ) {
+			printf(
+				'<div class="notice notice-success is-dismissible"><p>%s</p></div>',
+				esc_html( $message )
+			);
+		}
+
+		$this->render_table();
 	}
 
 	/**

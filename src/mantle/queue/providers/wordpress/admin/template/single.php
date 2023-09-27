@@ -40,8 +40,55 @@ $log = is_array( $log ) ? $log : [];
 
 	<hr class="wp-header-end">
 
-	<div class="queue-job-container">
-		<div>
+	<section class="queue-job-container">
+		<aside>
+			<div>
+				<?php if ( Post_Status::FAILED->value === $job->status ) : ?>
+					<a
+						href="
+						<?php
+						echo esc_url(
+							add_query_arg(
+								[
+									'_wpnonce' => wp_create_nonce( 'queue-job-action-' . $job->id ),
+									'filter'   => false,
+									'job'      => (int) $job->id,
+									'action'   => 'retry',
+								]
+							)
+						);
+						?>
+					"
+						aria-label="<?php esc_attr_e( 'Retry this job', 'mantle' ); ?>"
+						class="button button-primary"
+					>
+						<?php esc_html_e( 'Retry', 'mantle' ); ?>
+					</a>
+				<?php endif; ?>
+				<?php if ( Post_Status::RUNNING->value !== $job->status ) : ?>
+					<a
+						href="
+						<?php
+						echo esc_url(
+							add_query_arg(
+								[
+									'_wpnonce' => wp_create_nonce( 'queue-job-action-' . $job->id ),
+									'filter'   => false,
+									'job'      => (int) $job->id,
+									'action'   => 'delete',
+								]
+							)
+						);
+						?>
+					"
+						aria-label="<?php esc_attr_e( 'Delete this job', 'mantle' ); ?>"
+						class="button button-delete"
+						onclick="return confirm('<?php echo esc_attr__( 'Are you sure you want to delete this job?', 'mantle' ); ?>');"
+					>
+						<?php esc_html_e( 'Delete', 'mantle' ); ?>
+					</a>
+				<?php endif; ?>
+			</div>
 			<h3><?php esc_html_e( 'Job', 'mantle' ); ?></h3>
 			<p>
 				<code><?php echo esc_html( $worker_job->get_id() ); ?></code>
@@ -68,9 +115,9 @@ $log = is_array( $log ) ? $log : [];
 					<?php esc_html_e( 'Unlocked', 'mantle' ); ?>
 				<?php endif; ?>
 			</p>
-		</div>
+		</aside>
 
-		<div>
+		<section>
 			<h3><?php esc_html_e( 'Job Log', 'mantle' ); ?></h3>
 			<ol>
 				<?php foreach ( $log as $entry ) : ?>
@@ -81,13 +128,11 @@ $log = is_array( $log ) ? $log : [];
 							</strong>
 							&mdash;
 							<?php $time = Carbon::createFromTimestampUTC( $entry['time'] ?? 0 ); ?>
-							<?php if ( Carbon::now( wp_timezone() )->diffInDays( $time ) <= 1 ) : ?>
-								<span title="<?php echo esc_attr( $time->format( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) ) ); ?>">
-									<?php echo esc_html( $time->diffForHumans() ); ?>
-								</span>
-							<?php else : ?>
-								<?php echo esc_html( $time->format( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) ) ); ?>
-							<?php endif; ?>
+							<?php echo esc_html( $time->format( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) ) ); ?>
+							<span title="<?php echo esc_attr( $time->format( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) ) ); ?>">
+								&mdash;
+								<?php echo esc_html( $time->diffForHumans() ); ?>
+							</span>
 						</p>
 
 						<?php if ( ! empty( $entry['payload'] ) ) : ?>
@@ -96,20 +141,38 @@ $log = is_array( $log ) ? $log : [];
 					</li>
 				<?php endforeach; ?>
 			</ol>
-		</div>
-	</div>
+		</section>
+	</section>
 </div>
 
 <style type="text/css">
-	/* Two column grid */
-	.queue-job-container {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		grid-gap: 1rem;
+	@media screen and (min-width: 782px) {
+		.queue-job-container {
+			display: flex;
+			flex-direction: row;
+		}
+
+		.queue-job-container > * {
+			width: 50%;
+		}
 	}
+
+	.queue-job-container .button-delete {
+		border-color: #d63638;
+		background: #d63638;
+		color: white;
+	}
+
+	.queue-job-container .button-delete:hover {
+		border-color: #d63638;
+		color: #d63638;
+	}
+
 	.queue-job-container pre {
 		background: #D4D4D4;
-		padding: 1rem;
 		border-radius: 0.25rem;
+		margin: 0;
+		overflow-x: scroll;
+		padding: 1rem;
 	}
 </style>
