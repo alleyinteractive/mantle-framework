@@ -18,6 +18,16 @@ use Mantle\Support\Service_Provider as Base_Service_Provider;
  */
 class Service_Provider extends Base_Service_Provider {
 	/**
+	 * Register the service provider.
+	 */
+	public function register(): void {
+		// Register the queue admin service provider.
+		if ( $this->app['config']->get( 'queue.enable_admin', true ) ) {
+			$this->app->register( Admin\Service_Provider::class );
+		}
+	}
+
+	/**
 	 * Register the WordPress queue provider's post type and taxonomies.
 	 */
 	public function boot() {

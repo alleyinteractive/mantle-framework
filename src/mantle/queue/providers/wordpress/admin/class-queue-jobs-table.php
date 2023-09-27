@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Queue\Admin;
+namespace Mantle\Queue\Providers\WordPress\Admin;
 
 use Carbon\Carbon;
 use Mantle\Database\Query\Post_Query_Builder;
@@ -35,10 +35,12 @@ class Queue_Jobs_Table extends WP_List_Table {
 	 * Constructor.
 	 */
 	public function __construct() {
-		parent::__construct( [
-			'plural'   => __( 'Jobs', 'mantle' ),
-			'singular' => __( 'Job', 'mantle' ),
-		] );
+		parent::__construct(
+			[
+				'plural'   => __( 'Jobs', 'mantle' ),
+				'singular' => __( 'Job', 'mantle' ),
+			]
+		);
 	}
 
 	/**
@@ -48,20 +50,21 @@ class Queue_Jobs_Table extends WP_List_Table {
 	 */
 	public function get_columns() {
 		return [
-			'job'    => __( 'Job', 'mantle' ),
-			'queue'  => __( 'Queue', 'mantle' ),
-			'date'   => __( 'Scheduled', 'mantle' ),
-			'status' => __( 'Status', 'mantle' ),
+			'job'       => __( 'Job', 'mantle' ),
+			'arguments' => __( 'Arguments', 'mantle' ),
+			'queue'     => __( 'Queue', 'mantle' ),
+			'date'      => __( 'Scheduled', 'mantle' ),
+			'status'    => __( 'Status', 'mantle' ),
 		];
 	}
 
 	/**
-	 * @global array $totals
-	 * @global string $status
+	 * Collect the views for the table.
+	 *
 	 * @return array
 	 */
 	protected function get_views() {
-		$current = sanitize_text_field( wp_unslash( $_GET['filter'] ?? '' ) );
+		$current = sanitize_text_field( wp_unslash( $_GET['filter'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 		$links = [
 			[
@@ -97,15 +100,15 @@ class Queue_Jobs_Table extends WP_List_Table {
 
 		$statuses = array_column( Post_Status::cases(), 'value' );
 
-		$active_status_filter = sanitize_text_field( wp_unslash( $_GET['filter'] ?? '' ) );
+		$active_status_filter = sanitize_text_field( wp_unslash( $_GET['filter'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 		// Validate that the status filter is valid.
 		if ( ! empty( $active_status_filter ) && ! in_array( $active_status_filter, $statuses, true ) ) {
 			$active_status_filter = '';
 		}
 
-		$active_queue_filter = sanitize_text_field( wp_unslash( $_GET['queue'] ?? '' ) );
-		$page                = (int) ( $_GET['paged'] ?? 1 );
+		$active_queue_filter = sanitize_text_field( wp_unslash( $_GET['queue'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$page                = (int) ( $_GET['paged'] ?? 1 ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
 		$query = Queue_Job::query()
 			->orderBy( 'date', 'asc' )
@@ -127,19 +130,33 @@ class Queue_Jobs_Table extends WP_List_Table {
 
 		// TODO: Refactor with found_posts later.
 		$this->items = $query->get()->map(
-				fn ( Queue_Job $model ) => [
-					'job'    => ( new Queue_Worker_Job( $model ) )->get_id(),
-					'queue'  => $model->get_queue(),
-					'date'   => $model->date,
-					'status' => $model->status,
-				]
-			)
-			->all();
+			function ( Queue_Job $model ) {
+				$worker = new Queue_Worker_Job( $model );
 
-		$this->set_pagination_args( [
-			'total_items' => $query->get_found_rows(),
-			'per_page'    => $this->per_page,
-		] );
+				$job = $worker->get_job();
+
+				// Retrieve the properties from the job.
+				if ( is_object( $job ) ) {
+					$arguments = get_object_vars( $job );
+				}
+
+				return [
+					'id'        => $model->ID,
+					'job'       => $worker->get_id(),
+					'arguments' => $arguments ?? '',
+					'queue'     => $model->get_queue(),
+					'date'      => $model->date,
+					'status'    => $model->status,
+				];
+			}
+		)->all();
+
+		$this->set_pagination_args(
+			[
+				'total_items' => $query->get_found_rows(),
+				'per_page'    => $this->per_page,
+			]
+		);
 	}
 
 	/**
@@ -148,7 +165,70 @@ class Queue_Jobs_Table extends WP_List_Table {
 	 * @param array $item The current item.
 	 */
 	public function column_job( $item ): void {
-		echo esc_html( $item['job'] );
+		$actions = [
+			sprintf(
+				'<a href="%s" aria-label="%s">%s</a>',
+				esc_url(
+					add_query_arg(
+						[
+							'job'    => (int) $item['id'],
+							'filter' => false,
+						]
+					)
+				),
+				esc_attr__( 'View details about this job', 'mantle' ),
+				esc_html__( 'View', 'mantle' ),
+			),
+			Post_Status::FAILED->value === $item['status']
+				? sprintf(
+					'<a href="%s" aria-label="%s">%s</a>',
+					esc_url(
+						add_query_arg(
+							[
+								'_wpnonce' => wp_create_nonce( 'retry-job_' . $item['id'] ),
+								'filter'   => false,
+								'job'      => (int) $item['id'],
+								'retry'    => true,
+							]
+						)
+					),
+					esc_attr__( 'Retry this job', 'mantle' ),
+					esc_html__( 'Retry', 'mantle' ),
+				)
+				: null,
+			Post_Status::RUNNING->value !== $item['status']
+				? sprintf(
+					'<span class="trash"><a href="%s" aria-label="%s">%s</a></span>',
+					esc_url(
+						add_query_arg(
+							[
+								'_wpnonce' => wp_create_nonce( 'delete-job_' . $item['id'] ),
+								'filter'   => false,
+								'job'      => (int) $item['id'],
+								'delete'   => true,
+							]
+						)
+					),
+					esc_attr__( 'Delete this job', 'mantle' ),
+					esc_html__( 'Delete', 'mantle' ),
+				)
+				: null,
+		];
+
+		printf(
+			'<div><code>%s</code></div><div class="row-actions">%s</div>',
+			esc_html( $item['job'] ),
+			implode( ' | ', array_filter( $actions ) ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		);
+	}
+
+	/**
+	 * Display the arguments column.
+	 *
+	 * @param array $item The current item.
+	 */
+	public function column_arguments( $item ): void {
+		echo '<code>' . wp_json_encode( $item['arguments'] ) . '</code>';
 	}
 
 	/**

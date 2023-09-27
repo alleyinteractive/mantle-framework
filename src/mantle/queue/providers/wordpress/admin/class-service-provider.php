@@ -1,28 +1,21 @@
 <?php
 /**
- * Queue_Admin_Service_Provider class file.
+ * Admin_Service_Provider class file.
  *
  * @package Mantle
  */
 
-namespace Mantle\Queue;
+namespace Mantle\Queue\Providers\WordPress\Admin;
 
-use Mantle\Contracts\Queue\Queue_Manager as Queue_Manager_Contract;
-use Mantle\Queue\Console\Run_Command;
-use Mantle\Queue\Dispatcher;
-use Mantle\Queue\Queue_Manager;
-use Mantle\Queue\Worker;
 use Mantle\Support\Attributes\Action;
-use Mantle\Support\Service_Provider;
-
-use function Mantle\Support\Helpers\tap;
+use Mantle\Support\Service_Provider as Base_Service_Provider;
 
 /**
  * Queue Admin Service Provider
  *
- * Provides a UI for displaying the queue.
+ * Provides a UI for displaying the WordPress queue.
  */
-class Queue_Admin_Service_Provider extends Service_Provider {
+class Service_Provider extends Base_Service_Provider {
 	/**
 	 * Register the service provider.
 	 */
@@ -37,8 +30,8 @@ class Queue_Admin_Service_Provider extends Service_Provider {
 	public function register_admin_page(): void {
 		add_submenu_page(
 			'tools.php',
-			__( 'Mantle Queue', 'mantle' ),
-			__( 'Mantle Queue', 'mantle' ),
+			__( 'Queue', 'mantle' ),
+			__( 'Queue', 'mantle' ),
 			/**
 			 * Filter the capability required to view the queue admin page.
 			 *
@@ -54,7 +47,7 @@ class Queue_Admin_Service_Provider extends Service_Provider {
 	 * Render the admin page.
 	 */
 	public function render_admin_page(): void {
-		$table = new Admin\Queue_Jobs_Table();
+		$table = new Queue_Jobs_Table();
 
 		$table->prepare_items();
 

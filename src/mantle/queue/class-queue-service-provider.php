@@ -51,11 +51,6 @@ class Queue_Service_Provider extends Service_Provider {
 		// Register queue console commands.
 		$this->add_command( Run_Command::class );
 
-		// Register the queue admin service provider.
-		if ( $this->app['config']->get( 'queue.enable_admin', true ) ) {
-			$this->app->register( Queue_Admin_Service_Provider::class );
-		}
-
 		// Register the queue service providers.
 		$this->app->register( Providers\WordPress\Service_Provider::class );
 	}

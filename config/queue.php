@@ -15,7 +15,7 @@ return [
 	| Define the queue provider used in the application.
 	|
 	*/
-	'default' => environment( 'QUEUE_CONNECTION', 'wordpress' ),
+	'default'                => environment( 'QUEUE_CONNECTION', 'wordpress' ),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -25,7 +25,7 @@ return [
 	| The amount of items handled in one run of the queue.
 	|
 	*/
-	'batch_size' => environment( 'QUEUE_BATCH_SIZE', 5 ),
+	'batch_size'             => environment( 'QUEUE_BATCH_SIZE', 5 ),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -48,7 +48,7 @@ return [
 	| Enable the queue admin interface to display queue jobs.
 	|
 	*/
-	'enable_admin' => environment( 'QUEUE_ENABLE_ADMIN', true ),
+	'enable_admin'           => environment( 'QUEUE_ENABLE_ADMIN', true ),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -58,7 +58,7 @@ return [
 	| Control the configuration for the queue providers.
 	|
 	*/
-	'wordpress' => [
+	'wordpress'              => [
 		// Delay between queue runs in seconds.
 		'delay' => environment( 'QUEUE_DELAY', 0 ),
 	],

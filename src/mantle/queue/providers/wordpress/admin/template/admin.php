@@ -2,8 +2,10 @@
 /**
  * Render the admin template to display the queue.
  *
- * @var \Mantle\Queue\Admin\Queue_Jobs_Table $table The queue jobs table.
+ * @package Mantle
+ * @var \Mantle\Queue\Providers\WordPress\Admin\Queue_Jobs_Table $table The queue jobs table.
  */
+
 ?>
 <div class="wrap">
 	<h1><?php esc_html_e( 'Mantle Queue', 'mantle' ); ?></h1>
