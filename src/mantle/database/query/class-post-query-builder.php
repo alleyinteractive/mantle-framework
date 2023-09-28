@@ -313,13 +313,15 @@ class Post_Query_Builder extends Builder {
 	}
 
 	/**
-	 * Fetch the query with 'no_found_rows' set to true. This prevents counting
-	 * all the available rows for a query.
+	 * Fetch the query with 'no_found_rows' set to a value.
 	 *
+	 * Setting to 'true' prevents counting all the available rows for a query.
+	 *
+	 * @param bool $value Whether to set 'no_found_rows' to true.
 	 * @return static
 	 */
-	public function withNoFoundRows(): static {
-		return $this->where( 'no_found_rows', true );
+	public function withNoFoundRows( bool $value = true ): static {
+		return $this->where( 'no_found_rows', $value );
 	}
 
 	/**
