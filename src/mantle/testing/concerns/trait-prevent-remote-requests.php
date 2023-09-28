@@ -21,7 +21,7 @@ trait Prevent_Remote_Requests {
 	 */
 	public function prevent_remote_requests_set_up(): void {
 		if ( ! $this->prevent_remote_requests ) {
-			$this->preventing_stray_requests = new Mock_Http_Response();
+			$this->prevent_stray_requests( new Mock_Http_Response() );
 		}
 	}
 }
