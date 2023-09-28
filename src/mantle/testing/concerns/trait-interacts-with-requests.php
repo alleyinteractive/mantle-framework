@@ -153,18 +153,6 @@ trait Interacts_With_Requests {
 	}
 
 	/**
-	 * Alias for fake_request().
-	 *
-	 * @param Closure|string|array                  $url_or_callback URL to fake, array of URL and response pairs, or a closure
-	 *                                                               that will return a faked response.
-	 * @param Mock_Http_Response|Mock_Http_Sequence $response Optional response object, defaults to creating a 200 response.
-	 * @return static|Mock_Http_Response
-	 */
-	public function fake( Mock_Http_Response|Mock_Http_Sequence|Closure|string|array|null $url_or_callback = null, Mock_Http_Response|Mock_Http_Sequence|Closure $response = null ) {
-		return $this->fake_request( $url_or_callback, $response );
-	}
-
-	/**
 	 * Filters pre_http_request to intercept the request, mock a response, and
 	 * return it. If the response has already been preempted, the preempt will
 	 * be returned instead. Regardless, this object unhooks itself from the
