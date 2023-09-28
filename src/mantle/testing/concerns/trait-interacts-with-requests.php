@@ -34,14 +34,14 @@ trait Interacts_With_Requests {
 	/**
 	 * Storage of the callbacks to mock the requests.
 	 *
-	 * @var Collection
+	 * @var Collection<int, callable(string, array): Mock_Http_Response|Arrayable|WP_Error|null>
 	 */
 	protected Collection $stub_callbacks;
 
 	/**
 	 * Storage of request URLs.
 	 *
-	 * @var Collection
+	 * @var Collection<int, Request>
 	 */
 	protected Collection $recorded_requests;
 
@@ -49,14 +49,14 @@ trait Interacts_With_Requests {
 	 * Flag to prevent external requests from being made. By default, this is
 	 * false.
 	 *
-	 * @var Mock_Http_Response|Closure|bool
+	 * @var Mock_Http_Response|callable|bool
 	 */
 	protected mixed $preventing_stray_requests = false;
 
 	/**
 	 * Recorded actual HTTP requests made during the test.
 	 *
-	 * @var Collection
+	 * @var Collection<int, string>
 	 */
 	protected Collection $recorded_actual_requests;
 
