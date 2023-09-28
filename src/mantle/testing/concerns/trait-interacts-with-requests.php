@@ -349,9 +349,10 @@ trait Interacts_With_Requests {
 	 * @param int             $expected_times Number of times the request should have been
 	 *                                        sent, optional.
 	 */
-	public function assertRequestSent( $url_or_callback = null, int $expected_times = null ) {
+	public function assertRequestSent( string|callable|null $url_or_callback = null, int $expected_times = null ): void {
 		if ( is_null( $url_or_callback ) ) {
 			PHPUnit::assertTrue( $this->recorded_requests->is_not_empty(), 'A request was made.' );
+
 			return;
 		}
 
@@ -376,7 +377,7 @@ trait Interacts_With_Requests {
 	 *
 	 * @param string|callable $url_or_callback URL to check against or callback.
 	 */
-	public function assertRequestNotSent( $url_or_callback = null ) {
+	public function assertRequestNotSent( string|callable|null $url_or_callback = null ): void {
 		if ( is_string( $url_or_callback ) ) {
 			$url_or_callback = fn ( $request ) => Str::is( $url_or_callback, $request->url() );
 		}
@@ -393,7 +394,7 @@ trait Interacts_With_Requests {
 	 *
 	 * @return void
 	 */
-	public function assertNoRequestSent() {
+	public function assertNoRequestSent(): void {
 		PHPUnit::assertEmpty(
 			$this->recorded_requests,
 			'Requests were recorded',
@@ -406,7 +407,7 @@ trait Interacts_With_Requests {
 	 * @param int $count Request count.
 	 * @return void
 	 */
-	public function assertRequestCount( int $count ) {
+	public function assertRequestCount( int $count ): void {
 		PHPUnit::assertCount( $count, $this->recorded_requests );
 	}
 }
