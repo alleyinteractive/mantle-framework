@@ -26,6 +26,8 @@ use function Mantle\Support\Helpers\value;
 
 /**
  * Allow Mock HTTP Requests
+ *
+ * @mixin \PHPUnit\Framework\TestCase
  */
 trait Interacts_With_Requests {
 	/**
@@ -82,7 +84,7 @@ trait Interacts_With_Requests {
 	 *
 	 * @param Mock_Http_Response|\Closure|bool $response A default response or callback to use, boolean otherwise.
 	 */
-	public function prevent_stray_requests( $response = true ) {
+	public function prevent_stray_requests( Mock_Http_Response|Closure|bool $response = true ) {
 		$this->preventing_stray_requests = $response;
 	}
 

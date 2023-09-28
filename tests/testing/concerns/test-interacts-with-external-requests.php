@@ -5,6 +5,7 @@ use InvalidArgumentException;
 use Mantle\Facade\Http;
 use Mantle\Http_Client\Factory;
 use Mantle\Http_Client\Pending_Request;
+use Mantle\Testing\Concerns\Prevent_Remote_Requests;
 use Mantle\Testing\Mock_Http_Response;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Mock_Http_Sequence;
@@ -16,6 +17,8 @@ use RuntimeException;
  * @group testing
  */
 class Test_Interacts_With_External_Requests extends Framework_Test_Case {
+	use Prevent_Remote_Requests;
+
 	public function test_fake_request() {
 		$this->fake_request( 'https://testing.com/*' )
 			->with_response_code( 404 )
@@ -227,6 +230,13 @@ class Test_Interacts_With_External_Requests extends Framework_Test_Case {
 		$this->prevent_stray_requests();
 
 		Http::get( 'https://example.org/path/' );
+	}
+
+	public function test_prevent_remote_requests_trait() {
+		// The trait sets up the default response.
+		$this->assertInstanceOf( Mock_Http_Response::class, $this->preventing_stray_requests );
+
+		wp_remote_get( 'https://example.com/' );
 	}
 
 	public function test_file_as_response() {
