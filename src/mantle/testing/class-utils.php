@@ -480,13 +480,15 @@ class Utils {
 
 	/**
 	 * Register a shutdown function to handle errors.
+	 *
+	 * Used during the WordPress installation process to catch silent errors.
 	 */
 	public static function register_shutdown_function(): void {
 		register_shutdown_function( [ static::class, 'handle_shutdown' ] );
 	}
 
 	/**
-	 * Handle a shutdown error.
+	 * Handle a shutdown error and display it.
 	 */
 	public static function handle_shutdown(): void {
 		$error = error_get_last();
