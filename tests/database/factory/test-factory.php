@@ -6,11 +6,13 @@ use Mantle\Database\Factory;
 use Mantle\Database\Model;
 use Mantle\Testing\Framework_Test_Case;
 
+/**
+ * @group factory
+ */
 class Test_Factory extends Framework_Test_Case {
 	public function test_create_basic_model() {
 		$factory = Testable_Post::factory();
 
-		$this->assertInstanceOf( Factory\Factory::class, $factory );
 		$this->assertInstanceOf( Factory\Post_Factory::class, $factory );
 
 		$post = $factory->create_and_get();
@@ -154,7 +156,7 @@ class Testable_Post extends Model\Post {
 }
 
 /**
- * @method static Testable_Post_Factory factory()
+ * @method static Testable_Post_Factory<static, \WP_Post, static> factory()
  */
 class Testable_Post_With_Factory extends Model\Post {
 	public static $object_name = 'post';

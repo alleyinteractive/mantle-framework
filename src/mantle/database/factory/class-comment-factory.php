@@ -14,7 +14,11 @@ use function Mantle\Support\Helpers\get_comment_object;
 /**
  * Term Factory
  *
- * @template TObject of \Mantle\Database\Model\Comment
+ * @template TModel of \Mantle\Database\Model\Comment
+ * @template TObject of \WP_Comment
+ * @template TReturnValue
+ *
+ * @extends Factory<TModel, TObject, TReturnValue>
  */
 class Comment_Factory extends Factory {
 	/**
