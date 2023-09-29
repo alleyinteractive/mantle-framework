@@ -11,6 +11,8 @@ use Mantle\Testing\WP_Die;
 
 use function Mantle\Testing\tests_add_filter;
 
+defined( 'MANTLE_IS_TESTING' ) || define( 'MANTLE_IS_TESTING', true );
+
 require_once __DIR__ . '/class-utils.php';
 require_once __DIR__ . '/class-wp-die.php';
 
