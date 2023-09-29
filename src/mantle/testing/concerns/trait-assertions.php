@@ -2,6 +2,8 @@
 /**
  * This file contains the Assertions trait
  *
+ * phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_print_r
+ *
  * @package Mantle
  */
 
@@ -226,12 +228,13 @@ trait Assertions {
 		}
 
 		// Next, assert identifying data about the object.
-		match (true) {
+		match ( true ) {
 			$object instanceof Post || $object instanceof User => PHPUnit::assertSame( $object->id(), $queried_object->ID, 'Queried object ID is not the same.' ),
 			$object instanceof Term => PHPUnit::assertSame( $object->id(), $queried_object->term_id, 'Queried object ID is not the same.' ),
 			$object instanceof \WP_Post || $object instanceof \WP_User => PHPUnit::assertSame( $object->ID, $queried_object->ID, 'Queried object ID is not the same.' ),
 			$object instanceof \WP_Term => PHPUnit::assertSame( $object->term_id, $queried_object->term_id, 'Queried object ID is not the same.' ),
 			$object instanceof \WP_Post_Type => PHPUnit::assertSame( $object->name, $queried_object->name, 'Queried object ID is not the same.' ),
+			default => PHPUnit::fail( 'Unknown object type.' ),
 		};
 	}
 
@@ -249,6 +252,7 @@ trait Assertions {
 			$object instanceof \WP_Post || $object instanceof \WP_User => PHPUnit::assertNotSame( $object->ID, $queried_object->ID, 'Queried object ID is the same.' ),
 			$object instanceof \WP_Term => PHPUnit::assertNotSame( $object->term_id, $queried_object->term_id, 'Queried object ID is the same.' ),
 			$object instanceof \WP_Post_Type => PHPUnit::assertNotSame( $object->name, $queried_object->name, 'Queried object ID is the same.' ),
+			default => PHPUnit::fail( 'Unknown object type.' ),
 		};
 	}
 
