@@ -19,7 +19,8 @@ use function Mantle\Support\Helpers\get_term_object;
  * Assorted Test_Cast assertions.
  */
 trait Assertions {
-	use Asset_Assertions;
+	use Asset_Assertions,
+		Block_Assertions;
 
 	/**
 	 * Asserts that the given value is an instance of WP_Error.
