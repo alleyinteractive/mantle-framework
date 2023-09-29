@@ -136,11 +136,15 @@ trait Rsync_Installation {
 	 * Maybe rsync the codebase to the wp-content within WordPress.
 	 *
 	 * Will attempt to locate the wp-content directory relative to the current
-	 * directory. As a fallback, it will assumme it is being called from either
+	 * directory. As a fallback, it will assume it is being called from either
 	 * /wp-content/plugin/:plugin/tests OR /wp-content/themes/:theme/tests. Will
 	 * rsync the codebase from the wp-content level to the root of the WordPress
 	 * installation. Also will attempt to locate the wp-content directory relative
 	 * to the current directory.
+	 *
+	 * This isn't a perfect function and can sometimes fail to locate the proper
+	 * `wp-content` directory. If it does fail to work, manually call
+	 * `maybe_rsync()` yourself with the proper paths.
 	 */
 	public function maybe_rsync_wp_content(): static {
 		// Attempt to locate wp-content relative to the current directory.

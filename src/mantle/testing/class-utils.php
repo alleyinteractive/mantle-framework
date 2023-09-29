@@ -472,8 +472,30 @@ class Utils {
 		foreach ( $paths as $path ) {
 			if ( ! is_dir( $path ) && file_exists( $path ) ) {
 				require_once $path;
+
 				return;
 			}
 		}
+	}
+
+	/**
+	 * Register a shutdown function to handle errors.
+	 */
+	public static function register_shutdown_function(): void {
+		register_shutdown_function( [ static::class, 'handle_shutdown' ] );
+	}
+
+	/**
+	 * Handle a shutdown error.
+	 */
+	public static function handle_shutdown(): void {
+		$error = error_get_last();
+
+		if ( ! $error ) {
+			return;
+		}
+
+		static::error( '🚨 Error during test run:', 'Shutdown' );
+		static::code( $error );
 	}
 }
