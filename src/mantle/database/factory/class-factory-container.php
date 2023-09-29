@@ -7,7 +7,9 @@
 
 namespace Mantle\Database\Factory;
 
+use Faker\Generator;
 use Mantle\Contracts\Container;
+use Mantle\Faker\Faker_Provider;
 
 /**
  * Collect all the Database Factories for IDE Support
@@ -94,6 +96,8 @@ class Factory_Container {
 	 * @param Container $container Container instance.
 	 */
 	public function __construct( Container $container ) {
+		$this->setup_faker( $container );
+
 		$this->attachment = $container->make( Attachment_Factory::class );
 		$this->category   = $container->make( Term_Factory::class, [ 'taxonomy' => 'category' ] );
 		$this->comment    = $container->make( Comment_Factory::class );
@@ -107,5 +111,28 @@ class Factory_Container {
 			$this->blog    = $container->make( Blog_Factory::class );
 			$this->network = $container->make( Network_Factory::class );
 		}
+	}
+
+	/**
+	 * Set up the Faker instance in the container.
+	 *
+	 * Primarily used when faker/factory is called from a data provider and the
+	 * application hasn't been setup yet.
+	 *
+	 * @param Container $container Container instance.
+	 */
+	protected function setup_faker( Container $container ): void {
+		$container->singleton_if(
+			Generator::class,
+			function () {
+				$generator = \Faker\Factory::create();
+
+				$generator->unique();
+
+				$generator->addProvider( new Faker_Provider( $generator ) );
+
+				return $generator;
+			},
+		);
 	}
 }

@@ -272,6 +272,23 @@ class Test_Unit_Testing_Factory extends Framework_Test_Case {
 
 		$this->assertCount( 10, $object_ids );
 	}
+
+	/**
+	 * @dataProvider dataprovider_factory
+	 */
+	public function test_dataprovider_factory( $post ) {
+		$this->assertInstanceOf( \WP_Post::class, $post );
+		$this->assertStringContainsString(
+			'<!-- wp:paragraph',
+			$post->post_content,
+		);
+	}
+
+	public static function dataprovider_factory(): array {
+		return [
+			'example' => [ static::factory()->post->create_and_get() ],
+		];
+	}
 }
 
 class Testable_Post_Tag extends Term {
