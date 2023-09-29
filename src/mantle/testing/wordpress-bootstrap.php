@@ -17,9 +17,6 @@ require_once __DIR__ . '/class-wp-die.php';
 // Ensure that Composer is loaded properly in the sub-process.
 Utils::ensure_composer_loaded();
 
-// Ensure that the shutdown function is registered.
-Utils::register_shutdown_function();
-
 /*
  * Globalize some WordPress variables, because PHPUnit loads this file inside a function.
  * See: https://github.com/sebastianbergmann/phpunit/issues/325
@@ -157,6 +154,11 @@ if ( ! $installing_wp && '1' !== getenv( 'WP_TESTS_SKIP_INSTALL' ) ) {
 	} elseif ( Utils::is_debug_mode() ) {
 		Utils::info( 'WordPress installation complete.' );
 	}
+}
+
+// Ensure that the shutdown function is registered when installing WordPress.
+if ( $installing_wp ) {
+	Utils::register_shutdown_function();
 }
 
 if ( $multisite && ! $installing_wp ) {
