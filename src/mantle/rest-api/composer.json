@@ -1,7 +1,7 @@
 {
     "name": "mantle-framework/rest-api",
     "description": "The Mantle Framework REST API Package",
-    "type": "project",
+    "type": "library",
     "require": {
         "php": "^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",

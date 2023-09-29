@@ -1,7 +1,7 @@
 {
     "name": "mantle-framework/http",
     "description": "The Mantle Framework Http Package",
-    "type": "project",
+    "type": "library",
     "require": {
         "php": "^8.0",
         "illuminate/view": "^9.52.15",
