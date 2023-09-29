@@ -1,8 +1,8 @@
-<?php //phpcs:disable WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+<?php
 /**
  * Block_Assertions trait file
  *
- * phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_print_r
+ * phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_print_r, WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
  *
  * @package Mantle
  */
@@ -29,7 +29,7 @@ trait Block_Assertions {
 	 * @see \Alley\WP\match_block()
 	 *
 	 * @param string $string The string to check.
-	 * @param array $args The arguments to pass to `match_block()`.
+	 * @param array  $args The arguments to pass to `match_block()`.
 	 */
 	public function assertStringMatchesBlock( string $string, array $args ): void {
 		$this->assertNotEmpty(
@@ -46,7 +46,7 @@ trait Block_Assertions {
 	 * @see \Alley\WP\match_block()
 	 *
 	 * @param string $string The string to check.
-	 * @param array $args The arguments to pass to `match_block()`.
+	 * @param array  $args The arguments to pass to `match_block()`.
 	 */
 	public function assertStringNotMatchesBlock( string $string, array $args ): void {
 		$this->assertEmpty(
@@ -129,24 +129,28 @@ trait Block_Assertions {
 	 * @return array
 	 */
 	protected function convert_arguments_for_matching( array $args ): array {
-		return collect( $args )
-			->reduce(
-				function ( array $carry, $value, $key ) {
-					// Allow for passing an argument pair directly.
-					if ( is_array( $value ) && isset( $value['key'], $value['value'] )  ) {
-						$carry[] = $value;
+		// PHPCS is crashing on these lines for some reason. Disabling it for now
+		// until we've upgrading to WPCS 3.0.
 
-						return $carry;
-					}
-
-					$carry[] = [
-						$key   => $value,
-						'value' => $value,
-					];
+		/* phpcs:disable */
+		return collect( $args )->reduce(
+			function ( array $carry, $value, $key ) {
+				// Allow for passing an argument pair directly.
+				if ( is_array( $value ) && isset( $value['key'], $value['value'] )  ) {
+					$carry[] = $value;
 
 					return $carry;
-				},
-				[]
-			);
+				}
+
+				$carry[] = [
+					$key    => $value,
+					'value' => $value,
+				];
+
+				return $carry;
+			},
+			[]
+		);
+		/* phpcs:enable */
 	}
 }
