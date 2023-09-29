@@ -52,6 +52,11 @@ class Faker_Provider extends Base {
 	 * @return string
 	 */
 	public static function block( string $block_name, string $content = '', array $attributes = [] ): string {
+		// Add a newline before and after the content.
+		if ( ! empty( $content ) ) {
+			$content = "\n{$content}\n";
+		}
+
 		return get_comment_delimited_block_content( $block_name, $attributes, $content );
 	}
 }
