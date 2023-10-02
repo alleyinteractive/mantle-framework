@@ -1,7 +1,7 @@
 {
     "name": "mantle-framework/console",
     "description": "The Mantle Framework Console Package",
-    "type": "project",
+    "type": "library",
     "require": {
         "php": "^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
