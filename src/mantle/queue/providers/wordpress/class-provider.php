@@ -123,7 +123,7 @@ class Provider implements Provider_Contract {
 			->lower()
 			->slug();
 
-		$object = new Queue_Job(
+		$object = new Queue_Record(
 			[
 				'post_name'   => "mantle_queue_{$job_name}_" . time(),
 				'post_status' => Post_Status::PENDING->value,
@@ -181,13 +181,13 @@ class Provider implements Provider_Contract {
 			->take( $count * $max_concurrent_batches )
 			->get()
 			// Filter out any jobs that are locked.
-			->filter( fn ( Queue_Job $job ) => ! $job->is_locked() )
+			->filter( fn ( Queue_Record $record ) => ! $record->is_locked() )
 			->map(
-				fn ( Queue_Job $model ) => tap(
-					new Queue_Worker_Job( $model ),
+				fn ( Queue_Record $record ) => tap(
+					new Queue_Worker_Job( $record ),
 					// Lock the job until the configured timeout or 10 minutes.
-					fn ( Queue_Worker_Job $queue_job ) => $model->set_lock_until(
-						$queue_job->get_job()->timeout ?? 600
+					fn ( Queue_Worker_Job $job ) => $record->set_lock_until(
+						$job->get_job()->timeout ?? 600
 					),
 				),
 			)
@@ -209,10 +209,10 @@ class Provider implements Provider_Contract {
 	 * Construct the query builder for the queue.
 	 *
 	 * @param string|null $queue Queue name, optional.
-	 * @return Post_Query_Builder<Queue_Job>
+	 * @return Post_Query_Builder<Queue_Record>
 	 */
 	protected function query( string $queue = null ): Post_Query_Builder {
-		return Queue_Job::where( 'post_status', Post_Status::PENDING->value )
+		return Queue_Record::where( 'post_status', Post_Status::PENDING->value )
 			->whereTerm( static::get_queue_term_id( $queue ), static::OBJECT_NAME )
 			->orderBy( 'post_date', 'asc' );
 	}
@@ -225,7 +225,7 @@ class Provider implements Provider_Contract {
 	 * @return bool
 	 */
 	public function in_queue( mixed $job, string $queue = null ): bool {
-		return Queue_Job::where( 'post_status', Post_Status::PENDING->value )
+		return Queue_Record::where( 'post_status', Post_Status::PENDING->value )
 			->whereDate( now()->toDateTimeString(), '>=' )
 			->whereTerm( static::get_queue_term_id( $queue ), static::OBJECT_NAME )
 			->whereMeta( Meta_Key::JOB->value, maybe_serialize( $job ) )

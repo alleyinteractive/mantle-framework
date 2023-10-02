@@ -172,12 +172,14 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 		}
 
 		$instance = static::find( $this->get( 'id' ) );
+
 		if ( ! $instance ) {
 			return null;
 		}
 
 		$this->exists = true;
 		$this->set_raw_attributes( $instance->get_raw_attributes() );
+
 		return $this;
 	}
 

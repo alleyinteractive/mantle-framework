@@ -12,6 +12,8 @@ use Throwable;
 
 /**
  * WordPress Cron Queue Job
+ *
+ * Class to perform the actual queue job.
  */
 class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 
@@ -25,9 +27,9 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 	/**
 	 * Constructor.
 	 *
-	 * @param Queue_Job $model The job model used for storage.
+	 * @param Queue_Record $model The queue record.
 	 */
-	public function __construct( protected Queue_Job $model ) {}
+	public function __construct( protected Queue_Record $model ) {}
 
 	/**
 	 * Fire the job.
@@ -100,6 +102,25 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 
 		if ( method_exists( $job, 'failed' ) ) {
 			$job->failed( $e );
+		}
+	}
+
+	/**
+	 * Handle a completed job.
+	 *
+	 * @return void
+	 */
+	public function completed(): void {
+		$this->model->save(
+			[
+				'post_status' => Post_Status::COMPLETED->value,
+			]
+		);
+
+		$job = $this->get_job();
+
+		if ( method_exists( $job, 'completed' ) ) {
+			$job->completed();
 		}
 	}
 

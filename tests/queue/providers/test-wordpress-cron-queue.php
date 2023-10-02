@@ -17,6 +17,7 @@ use PHPUnit\Framework\Assert;
 use RuntimeException;
 
 use function Mantle\Queue\dispatch;
+use function Mantle\Support\Helpers\collect;
 
 /**
  * WordPress Cron Queue Provider Test
@@ -52,7 +53,7 @@ class Test_WordPress_Cron_Queue extends Framework_Test_Case {
 		// Assert that the underlying queue post exists.
 		$this->assertPostExists( [
 			'post_type'    => Provider::OBJECT_NAME,
-			'post_status'  => Post_Status::PENDING->value,
+			'post_status'  => Post_Status::PENDING,
 		] );
 
 		// Force the cron to be dispatched which will execute the queued job.
@@ -61,9 +62,9 @@ class Test_WordPress_Cron_Queue extends Framework_Test_Case {
 		$this->assertTrue( $_SERVER['__example_job'] );
 
 		// Ensure that the queued job post was deleted.
-		$this->assertPostDoesNotExists( [
+		$this->assertPostExists( [
 			'post_type'   => Provider::OBJECT_NAME,
-			'post_status' => 'any',
+			'post_status' => Post_Status::COMPLETED,
 		] );
 	}
 
@@ -79,7 +80,7 @@ class Test_WordPress_Cron_Queue extends Framework_Test_Case {
 
 		$this->assertPostDoesNotExists( [
 			'post_type'   => Provider::OBJECT_NAME,
-			'post_status' => 'any',
+			'post_status' => Post_Status::class,
 		] );
 	}
 
@@ -102,7 +103,7 @@ class Test_WordPress_Cron_Queue extends Framework_Test_Case {
 		// Ensure that the post does not exist.
 		$this->assertPostExists( [
 			'post_type'   => Provider::OBJECT_NAME,
-			'post_status' => Post_Status::FAILED->value,
+			'post_status' => Post_Status::FAILED,
 		] );
 	}
 
@@ -132,8 +133,8 @@ class Test_WordPress_Cron_Queue extends Framework_Test_Case {
 			'meta_value'   => 'SerializableClosure',
 			'meta_compare' => 'LIKE',
 			'post_status'  => [
-				Post_Status::PENDING->value,
-				Post_Status::FAILED->value,
+				Post_Status::PENDING,
+				Post_Status::FAILED,
 			],
 		] );
 	}
@@ -153,7 +154,7 @@ class Test_WordPress_Cron_Queue extends Framework_Test_Case {
 
 		// Assert the serialize queue post exists.
 		$this->assertPostExists( [
-			'post_status'  => Post_Status::PENDING->value,
+			'post_status'  => Post_Status::PENDING,
 			'post_type'    => Provider::OBJECT_NAME,
 			'meta_key'     => '_mantle_queue',
 			'meta_value'   => 'SerializableClosure',
@@ -166,7 +167,7 @@ class Test_WordPress_Cron_Queue extends Framework_Test_Case {
 		$this->assertTrue( $_SERVER['__failed_run'] );
 
 		$this->assertPostExists( [
-			'post_status'  => Post_Status::FAILED->value,
+			'post_status'  => Post_Status::FAILED,
 			'post_type'    => Provider::OBJECT_NAME,
 			'meta_key'     => '_mantle_queue',
 			'meta_value'   => 'SerializableClosure',
@@ -183,7 +184,7 @@ class Test_WordPress_Cron_Queue extends Framework_Test_Case {
 
 		$this->assertPostExists( [
 			'post_date'    => $start->toDateTimeString(),
-			'post_status'  => Post_Status::PENDING->value,
+			'post_status'  => Post_Status::PENDING,
 			'post_type'    => Provider::OBJECT_NAME,
 			'meta_key'     => '_mantle_queue',
 		] );
@@ -194,7 +195,7 @@ class Test_WordPress_Cron_Queue extends Framework_Test_Case {
 
 		$this->assertPostExists( [
 			'post_date'    => $start->toDateTimeString(),
-			'post_status'  => Post_Status::PENDING->value,
+			'post_status'  => Post_Status::PENDING,
 			'post_type'    => Provider::OBJECT_NAME,
 			'meta_key'     => '_mantle_queue',
 		] );
@@ -237,7 +238,7 @@ class Test_WordPress_Cron_Queue extends Framework_Test_Case {
 
 		$this->assertPostExists( [
 			'post_type'    => Provider::OBJECT_NAME,
-			'post_status'  => Post_Status::FAILED->value,
+			'post_status'  => Post_Status::FAILED,
 		] );
 
 		$this->dispatch_queue();

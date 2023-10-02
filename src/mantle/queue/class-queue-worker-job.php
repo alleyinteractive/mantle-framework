@@ -50,6 +50,13 @@ abstract class Queue_Worker_Job {
 	abstract public function failed( Throwable $e ): void;
 
 	/**
+	 * Handle a completed job.
+	 *
+	 * @return void
+	 */
+	abstract public function completed(): void;
+
+	/**
 	 * Retry a job with a specified delay.
 	 *
 	 * @param int $delay Delay in seconds.
