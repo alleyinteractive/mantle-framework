@@ -1,10 +1,12 @@
 <?php
 namespace Mantle\Tests\Testing\Concerns;
 
+use DateTime;
 use InvalidArgumentException;
 use Mantle\Facade\Http;
 use Mantle\Http_Client\Factory;
 use Mantle\Http_Client\Pending_Request;
+use Mantle\Testing\Concerns\Prevent_Remote_Requests;
 use Mantle\Testing\Mock_Http_Response;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Mock_Http_Sequence;
@@ -16,6 +18,8 @@ use RuntimeException;
  * @group testing
  */
 class Test_Interacts_With_External_Requests extends Framework_Test_Case {
+	use Prevent_Remote_Requests;
+
 	public function test_fake_request() {
 		$this->fake_request( 'https://testing.com/*' )
 			->with_response_code( 404 )
@@ -25,6 +29,8 @@ class Test_Interacts_With_External_Requests extends Framework_Test_Case {
 			->with_response_code( 500 )
 			->with_body( 'fake body' );
 
+		$this->fake_request( 'https://example.com/', Mock_Http_Response::create()->with_body( 'example body' ) );
+
 		$response = wp_remote_get( 'https://testing.com/' );
 		$this->assertEquals( 'test body', wp_remote_retrieve_body( $response ) );
 		$this->assertEquals( 404, wp_remote_retrieve_response_code( $response ) );
@@ -32,6 +38,9 @@ class Test_Interacts_With_External_Requests extends Framework_Test_Case {
 		$response = wp_remote_get( 'https://github.com/' );
 		$this->assertEquals( 'fake body', wp_remote_retrieve_body( $response ) );
 		$this->assertEquals( 500, wp_remote_retrieve_response_code( $response ) );
+
+		$response = wp_remote_get( 'https://example.com/' );
+		$this->assertEquals( 'example body', wp_remote_retrieve_body( $response ) );
 	}
 
 	public function test_fake_all_requests() {
@@ -47,6 +56,9 @@ class Test_Interacts_With_External_Requests extends Framework_Test_Case {
 	public function test_fake_callback() {
 		$this->fake_request(
 			function() {
+				$this->assertIsString( func_get_arg( 0 ) );
+				$this->assertIsArray( func_get_arg( 1 ) );
+
 				return Mock_Http_Response::create()
 					->with_response_code( 123 )
 					->with_body( 'apples' );
@@ -229,6 +241,13 @@ class Test_Interacts_With_External_Requests extends Framework_Test_Case {
 		Http::get( 'https://example.org/path/' );
 	}
 
+	public function test_prevent_remote_requests_trait() {
+		// The trait sets up the default response.
+		$this->assertInstanceOf( Mock_Http_Response::class, $this->preventing_stray_requests );
+
+		wp_remote_get( 'https://example.com/' );
+	}
+
 	public function test_file_as_response() {
 		$this->fake_request(
 			fn() => Mock_Http_Response::create()->with_file( MANTLE_PHPUNIT_FIXTURES_PATH . '/images/alley.jpg' )
@@ -261,5 +280,15 @@ class Test_Interacts_With_External_Requests extends Framework_Test_Case {
 		$this->fake_request(
 			Mock_Http_Response::create()->with_file( 'unknown' )
 		);
+	}
+
+	public function test_unknown_return_value_from_callback() {
+		$this->fake_request(
+			fn () => new DateTime(),
+		);
+
+		$this->expectException( RuntimeException::class );
+
+		Http::get( 'https://example.com/' );
 	}
 }
