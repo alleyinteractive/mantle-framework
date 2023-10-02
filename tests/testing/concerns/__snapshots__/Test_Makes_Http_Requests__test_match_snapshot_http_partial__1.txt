@@ -1,9 +1,0 @@
-<body>
-	<div class="another-selector-ignored">
-		<p>Another selector ignored</p>
-		4106100847
-	</div>
-	<div class="example">
-		<p>Example</p>
-	</div>
-</body>

@@ -13,6 +13,7 @@ namespace Mantle\Testing\Concerns;
 use DOMDocument;
 use Mantle\Support\Arr;
 use Mantle\Support\Str;
+use Mantle\Testing\Snapshots\HTML_Driver;
 
 use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\data_get;
@@ -74,7 +75,7 @@ trait Snapshot_Testing {
 		}
 
 		if ( empty( $selectors ) ) {
-			$this->test_case->assertMatchesHtmlSnapshot( $this->get_content() );
+			$this->test_case->assertMatchesSnapshot( $this->get_content(), new HTML_Driver() );
 
 			return $this;
 		}
@@ -93,7 +94,7 @@ trait Snapshot_Testing {
 		$document->formatOutput       = true;
 
 		// To ignore HTML5 errors.
-		@$document->loadHTML( $this->get_content(), LIBXML_HTML_NODEFDTD ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+		@$document->loadHTML( $this->get_content(), LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 
 		$nodes = ( new \DOMXPath( $document ) )->query( implode( '|', $selectors ) );
 
