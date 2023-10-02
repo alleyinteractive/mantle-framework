@@ -109,4 +109,14 @@ class Test_Interacts_With_Hooks extends Framework_Test_Case {
 
 		$this->assertIsInt( apply_filters( 'int_hook_to_add', 'not_int' ) );
 	}
+
+	public function test_hook_applied_event() {
+		$this->expectApplied( Example_Event::class )->once();
+
+		$this->app['events']->dispatch( new Example_Event() );
+
+		$this->assertHookApplied( Example_Event::class, 1 );
+	}
 }
+
+class Example_Event {}
