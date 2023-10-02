@@ -3,12 +3,14 @@
  * Snapshot_Testing trait file
  *
  * phpcs:disable WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+ * phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
  *
  * @package Mantle
  */
 
 namespace Mantle\Testing\Concerns;
 
+use DOMDocument;
 use Mantle\Support\Arr;
 use Mantle\Support\Str;
 
@@ -28,10 +30,11 @@ trait Snapshot_Testing {
 	 *
 	 * Alias to `assertMatchesSnapshotContent()`.
 	 *
+	 * @param mixed ...$args Optional. Additional arguments to pass to the snapshot assertion.
 	 * @return static
 	 */
-	public function assertMatchesSnapshot(): static {
-		return $this->assertMatchesSnapshotContent();
+	public function assertMatchesSnapshot( ...$args ): static {
+		return $this->assertMatchesSnapshotContent( ...$args );
 	}
 
 	/**
@@ -40,14 +43,17 @@ trait Snapshot_Testing {
 	 * Checks the response content-type to use the proper driver to make the
 	 * assertion against.
 	 *
+	 * @param mixed ...$args Optional. Additional arguments to pass to the snapshot assertion.
 	 * @return static
 	 */
-	public function assertMatchesSnapshotContent(): static {
+	public function assertMatchesSnapshotContent( ...$args ): static {
 		if ( $this->test_case ) {
 			$content_type = $this->get_header( 'content-type' );
 
 			if ( Str::contains( $content_type, 'application/json', true ) ) {
-				return $this->assertMatchesSnapshotJson();
+				return $this->assertMatchesSnapshotJson( ...$args );
+			} elseif ( Str::contains( $content_type, 'text/html', true ) ) {
+				return $this->assertMatchesSnapshotHtml( ...$args );
 			} else {
 				$this->test_case->assertMatchesSnapshot( $this->get_content() );
 			}
@@ -59,12 +65,49 @@ trait Snapshot_Testing {
 	/**
 	 * Assert that the response's HTML content matches a stored snapshot.
 	 *
+	 * @param array<string>|string|null $selectors Optional. The XPath selectors to include in the snapshot, or null to include the entire content. Defaults to the entire content.
 	 * @return static
 	 */
-	public function assertMatchesSnapshotHtml(): static {
-		if ( $this->test_case ) {
-			$this->test_case->assertMatchesHtmlSnapshot( $this->get_content() );
+	public function assertMatchesSnapshotHtml( array|string $selectors = null ): static {
+		if ( ! $this->test_case ) {
+			return $this;
 		}
+
+		if ( empty( $selectors ) ) {
+			$this->test_case->assertMatchesHtmlSnapshot( $this->get_content() );
+
+			return $this;
+		}
+
+		if ( ! is_array( $selectors ) ) {
+			$selectors = [ $selectors ];
+		}
+
+		// Extract from the content by the XPath selectors.
+		libxml_use_internal_errors( true );
+
+		$document = new DOMDocument( '1.0' );
+
+		// Mirror the internal HtmlDriver of the snapshot assertions package.
+		$document->preserveWhiteSpace = false;
+		$document->formatOutput       = true;
+
+		// To ignore HTML5 errors.
+		@$document->loadHTML( $this->get_content(), LIBXML_HTML_NODEFDTD ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+
+		$nodes = ( new \DOMXPath( $document ) )->query( implode( '|', $selectors ) );
+
+		if ( 0 === count( $nodes ) ) {
+			$this->test_case->fail( 'No nodes found for the given XPath selector(s): ' . print_r( $selectors, true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
+		}
+
+		$results = [];
+
+		foreach ( $nodes as $node ) {
+			$results[] = $document->saveHTML( $node );
+		}
+
+		$this->test_case->assertMatchesHtmlSnapshot( implode( "\n", $results ) );
 
 		return $this;
 	}
