@@ -108,7 +108,7 @@ trait Snapshot_Testing {
 			$results[] = $document->saveHTML( $node );
 		}
 
-		$this->test_case->assertMatchesHtmlSnapshot( implode( "\n", $results ) );
+		$this->test_case->assertMatchesSnapshot( implode( "\n", $results ), new HTML_Driver() );
 
 		return $this;
 	}
