@@ -9,7 +9,9 @@
 
 namespace Mantle\Testing\Concerns;
 
+use BackedEnum;
 use Mantle\Contracts\Database\Core_Object;
+use Mantle\Contracts\Support\Arrayable;
 use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Term;
 use Mantle\Database\Model\User;
@@ -17,6 +19,7 @@ use PHPUnit\Framework\Assert as PHPUnit;
 use WP_Post;
 use WP_Term;
 
+use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\get_term_object;
 
 /**
@@ -269,7 +272,8 @@ trait Assertions {
 	 * @param array $arguments Arguments to query against.
 	 */
 	public function assertPostExists( array $arguments ): void {
-		$arguments = array_merge(
+		$arguments = $this->serialize_arguments(
+			$arguments,
 			[
 				'fields'         => 'ids',
 				'posts_per_page' => 1,
@@ -289,7 +293,8 @@ trait Assertions {
 	 * @param array $arguments Arguments to query against.
 	 */
 	public function assertPostDoesNotExists( array $arguments ): void {
-		$arguments = array_merge(
+		$arguments = $this->serialize_arguments(
+			$arguments,
 			[
 				'fields'         => 'ids',
 				'posts_per_page' => 1,
@@ -309,7 +314,8 @@ trait Assertions {
 	 * @param array $arguments Arguments to query against.
 	 */
 	public function assertTermExists( array $arguments ): void {
-		$arguments = array_merge(
+		$arguments = $this->serialize_arguments(
+			$arguments,
 			[
 				'fields'     => 'ids',
 				'count'      => 1,
@@ -330,7 +336,8 @@ trait Assertions {
 	 * @param array $arguments Arguments to query against.
 	 */
 	public function assertTermDoesNotExists( array $arguments ): void {
-		$arguments = array_merge(
+		$arguments = $this->serialize_arguments(
+			$arguments,
 			[
 				'fields'     => 'ids',
 				'count'      => 1,
@@ -351,7 +358,8 @@ trait Assertions {
 	 * @param array $arguments Arguments to query against.
 	 */
 	public function assertUserExists( array $arguments ) {
-		$arguments = array_merge(
+		$arguments = $this->serialize_arguments(
+			$arguments,
 			[
 				'fields' => 'ids',
 				'count'  => 1,
@@ -371,7 +379,8 @@ trait Assertions {
 	 * @param array $arguments Arguments to query against.
 	 */
 	public function assertUserDoesNotExists( array $arguments ): void {
-		$arguments = array_merge(
+		$arguments = $this->serialize_arguments(
+			$arguments,
 			[
 				'fields' => 'ids',
 				'count'  => 1,
@@ -456,5 +465,47 @@ trait Assertions {
 	 */
 	public function assertPostsDoesNotHaveTerm( Post|WP_Post|int $post, Term|WP_Term|int $term ): void {
 		$this->assertPostNotHasTerm( $post, $term );
+	}
+
+	/**
+	 * Serialize arguments for use in assertions.
+	 *
+	 * Convert string-backed enums to an array of all possible values from an enumeration.
+	 *
+	 * @param array $arguments Arguments to serialize.
+	 * @param array $defaults  Default values.
+	 * @return array
+	 */
+	protected function serialize_arguments( array $arguments, array $defaults = [] ): array {
+		$arguments = array_merge( $defaults, $arguments );
+
+		foreach ( $arguments as $key => $value ) {
+			if ( $value instanceof Arrayable ) {
+				$arguments[ $key ] = $value->to_array();
+			}
+
+			// Check for PHP 8.1+ support.
+			if ( interface_exists( BackedEnum::class ) ) {
+				// Convert an enum to an array of all possible values.
+				if ( is_string( $value ) && enum_exists( $value ) && is_subclass_of( $value, BackedEnum::class ) ) {
+					$arguments[ $key ] = collect( $value::cases() )->pluck( 'value' )->all();
+				}
+
+				// Convert an enum object to its value.
+				if ( is_object( $value ) && $value instanceof BackedEnum ) {
+					$arguments[ $key ] = $value->value;
+				}
+
+				// Convert an array of enum objects to an array of their values.
+				if ( is_array( $value ) ) {
+					$arguments[ $key ] = array_map(
+						fn ( $item ) => is_object( $item ) && $item instanceof BackedEnum ? $item->value : $item,
+						$value,
+					);
+				}
+			}
+		}
+
+		return $arguments;
 	}
 }
