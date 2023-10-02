@@ -2,15 +2,19 @@
 /**
  * This file contains the Assertions trait
  *
+ * phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_print_r
+ *
  * @package Mantle
  */
 
 namespace Mantle\Testing\Concerns;
 
+use Mantle\Contracts\Database\Core_Object;
 use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Term;
 use Mantle\Database\Model\User;
 use PHPUnit\Framework\Assert as PHPUnit;
+use WP_Post;
 use WP_Term;
 
 use function Mantle\Support\Helpers\get_term_object;
@@ -84,7 +88,7 @@ trait Assertions {
 	 * @param array $expected Expected array.
 	 * @param array $actual   Array to check.
 	 */
-	public static function assertEqualSets( $expected, $actual ) {
+	public static function assertEqualSets( $expected, $actual ): void {
 		sort( $expected );
 		sort( $actual );
 		PHPUnit::assertEquals( $expected, $actual );
@@ -96,7 +100,7 @@ trait Assertions {
 	 * @param array $expected Expected array.
 	 * @param array $actual   Array to check.
 	 */
-	public static function assertEqualSetsWithIndex( $expected, $actual ) {
+	public static function assertEqualSetsWithIndex( $expected, $actual ): void {
 		ksort( $expected );
 		ksort( $actual );
 		PHPUnit::assertEquals( $expected, $actual );
@@ -107,7 +111,7 @@ trait Assertions {
 	 *
 	 * @param array $array Array to check.
 	 */
-	public static function assertNonEmptyMultidimensionalArray( $array ) {
+	public static function assertNonEmptyMultidimensionalArray( $array ): void {
 		PHPUnit::assertTrue( is_array( $array ) );
 		PHPUnit::assertNotEmpty( $array );
 
@@ -129,7 +133,7 @@ trait Assertions {
 	 * @param string ...$prop Any number of WP_Query properties that are expected
 	 *                        to be true for the current request.
 	 */
-	public static function assertQueryTrue( ...$prop ) {
+	public static function assertQueryTrue( ...$prop ): void {
 		global $wp_query;
 
 		$all = [
@@ -197,7 +201,7 @@ trait Assertions {
 	 * @param int $id Expected ID.
 	 */
 	public static function assertQueriedObjectId( int $id ): void {
-		PHPUnit::assertSame( $id, get_queried_object_id() );
+		PHPUnit::assertSame( $id, get_queried_object_id(), 'Queried object ID is not the same.' );
 	}
 
 	/**
@@ -206,44 +210,32 @@ trait Assertions {
 	 * @param int $id Expected ID.
 	 */
 	public static function assertNotQueriedObjectId( int $id ): void {
-		PHPUnit::assertNotSame( $id, get_queried_object_id() );
+		PHPUnit::assertNotSame( $id, get_queried_object_id(), 'Queried object ID is the same.' );
 	}
 
 	/**
 	 * Assert that a given object is equivalent to the global queried object.
 	 *
-	 * @param Object $object Expected object.
+	 * @param mixed $object Expected object.
+	 * @param bool  $strict Whether to assert the same object type or just the same identifying data.
 	 */
-	public static function assertQueriedObject( mixed $object ): void {
+	public static function assertQueriedObject( mixed $object, bool $strict = false ): void {
 		$queried_object = get_queried_object();
 
-		// First, assert the same object types.
-		PHPUnit::assertInstanceOf( get_class( $object ), $queried_object );
+		// Assert the same object types if strict mode.
+		if ( $strict ) {
+			PHPUnit::assertInstanceOf( get_class( $object ), $queried_object );
+		}
 
 		// Next, assert identifying data about the object.
-		switch ( true ) {
-			case $object instanceof Post:
-			case $object instanceof User:
-				PHPUnit::assertSame( $object->id(), $queried_object->ID );
-				break;
-
-			case $object instanceof Term:
-				PHPUnit::assertSame( $object->id(), $queried_object->term_id );
-				break;
-
-			case $object instanceof \WP_Post:
-			case $object instanceof \WP_User:
-				PHPUnit::assertSame( $object->ID, $queried_object->ID );
-				break;
-
-			case $object instanceof \WP_Term:
-				PHPUnit::assertSame( $object->term_id, $queried_object->term_id );
-				break;
-
-			case $object instanceof \WP_Post_Type:
-				PHPUnit::assertSame( $object->name, $queried_object->name );
-				break;
-		}
+		match ( true ) {
+			$object instanceof Post || $object instanceof User => PHPUnit::assertSame( $object->id(), $queried_object->ID, 'Queried object ID is not the same.' ),
+			$object instanceof Term => PHPUnit::assertSame( $object->id(), $queried_object->term_id, 'Queried object ID is not the same.' ),
+			$object instanceof \WP_Post || $object instanceof \WP_User => PHPUnit::assertSame( $object->ID, $queried_object->ID, 'Queried object ID is not the same.' ),
+			$object instanceof \WP_Term => PHPUnit::assertSame( $object->term_id, $queried_object->term_id, 'Queried object ID is not the same.' ),
+			$object instanceof \WP_Post_Type => PHPUnit::assertSame( $object->name, $queried_object->name, 'Queried object name is not the same.' ),
+			default => PHPUnit::fail( 'Unknown object type.' ),
+		};
 	}
 
 	/**
@@ -254,36 +246,21 @@ trait Assertions {
 	public static function assertNotQueriedObject( mixed $object ): void {
 		$queried_object = get_queried_object();
 
-		switch ( true ) {
-			case $object instanceof Post:
-			case $object instanceof User:
-				PHPUnit::assertNotSame( $object->id(), $queried_object->ID );
-				break;
-
-			case $object instanceof Term:
-				PHPUnit::assertNotSame( $object->id(), $queried_object->term_id );
-				break;
-
-			case $object instanceof \WP_Post:
-			case $object instanceof \WP_User:
-				PHPUnit::assertNotSame( $object->ID, $queried_object->ID );
-				break;
-
-			case $object instanceof \WP_Term:
-				PHPUnit::assertNotSame( $object->term_id, $queried_object->term_id );
-				break;
-
-			case $object instanceof \WP_Post_Type:
-				PHPUnit::assertNotSame( $object->name, $queried_object->name );
-				break;
-		}
+		match ( true ) {
+			$object instanceof Post || $object instanceof User => PHPUnit::assertNotSame( $object->id(), $queried_object->ID, 'Queried object ID is the same.' ),
+			$object instanceof Term => PHPUnit::assertNotSame( $object->id(), $queried_object->term_id, 'Queried object ID is the same.' ),
+			$object instanceof \WP_Post || $object instanceof \WP_User => PHPUnit::assertNotSame( $object->ID, $queried_object->ID, 'Queried object ID is the same.' ),
+			$object instanceof \WP_Term => PHPUnit::assertNotSame( $object->term_id, $queried_object->term_id, 'Queried object ID is the same.' ),
+			$object instanceof \WP_Post_Type => PHPUnit::assertNotSame( $object->name, $queried_object->name, 'Queried object name is the same.' ),
+			default => PHPUnit::fail( 'Unknown object type.' ),
+		};
 	}
 
 	/**
 	 * Assert that the queried object is null.
 	 */
 	public static function assertQueriedObjectNull(): void {
-		PHPUnit::assertNull( get_queried_object(), 'Expected queried object to be null.' );
+		PHPUnit::assertNull( get_queried_object(), 'Queried object is not null.' );
 	}
 
 	/**
@@ -291,18 +268,19 @@ trait Assertions {
 	 *
 	 * @param array $arguments Arguments to query against.
 	 */
-	public function assertPostExists( array $arguments ) {
-		$posts = \get_posts(
-			array_merge(
-				[
-					'fields'         => 'ids',
-					'posts_per_page' => 1,
-				],
-				$arguments
-			)
+	public function assertPostExists( array $arguments ): void {
+		$arguments = array_merge(
+			[
+				'fields'         => 'ids',
+				'posts_per_page' => 1,
+			],
+			$arguments
 		);
 
-		PHPUnit::assertNotEmpty( $posts );
+		PHPUnit::assertNotEmpty(
+			\get_posts( $arguments ),
+			"Post not found with arguments: \n" . print_r( $arguments, true ),
+		);
 	}
 
 	/**
@@ -310,18 +288,19 @@ trait Assertions {
 	 *
 	 * @param array $arguments Arguments to query against.
 	 */
-	public function assertPostDoesNotExists( array $arguments ) {
-		$posts = \get_posts(
-			array_merge(
-				[
-					'fields'         => 'ids',
-					'posts_per_page' => 1,
-				],
-				$arguments
-			)
+	public function assertPostDoesNotExists( array $arguments ): void {
+		$arguments = array_merge(
+			[
+				'fields'         => 'ids',
+				'posts_per_page' => 1,
+			],
+			$arguments
 		);
 
-		PHPUnit::assertEmpty( $posts );
+		PHPUnit::assertEmpty(
+			\get_posts( $arguments ),
+			"Post found with arguments: \n" . print_r( $arguments, true ),
+		);
 	}
 
 	/**
@@ -329,19 +308,20 @@ trait Assertions {
 	 *
 	 * @param array $arguments Arguments to query against.
 	 */
-	public function assertTermExists( array $arguments ) {
-		$terms = \get_terms(
-			array_merge(
-				[
-					'fields'     => 'ids',
-					'count'      => 1,
-					'hide_empty' => false,
-				],
-				$arguments
-			)
+	public function assertTermExists( array $arguments ): void {
+		$arguments = array_merge(
+			[
+				'fields'     => 'ids',
+				'count'      => 1,
+				'hide_empty' => false,
+			],
+			$arguments
 		);
 
-		PHPUnit::assertNotEmpty( $terms );
+		PHPUnit::assertNotEmpty(
+			\get_terms( $arguments ),
+			"Term not found with arguments: \n" . print_r( $arguments, true ),
+		);
 	}
 
 	/**
@@ -349,19 +329,20 @@ trait Assertions {
 	 *
 	 * @param array $arguments Arguments to query against.
 	 */
-	public function assertTermDoesNotExists( array $arguments ) {
-		$terms = \get_terms(
-			array_merge(
-				[
-					'fields'     => 'ids',
-					'count'      => 1,
-					'hide_empty' => false,
-				],
-				$arguments
-			)
+	public function assertTermDoesNotExists( array $arguments ): void {
+		$arguments = array_merge(
+			[
+				'fields'     => 'ids',
+				'count'      => 1,
+				'hide_empty' => false,
+			],
+			$arguments
 		);
 
-		PHPUnit::assertEmpty( $terms );
+		PHPUnit::assertEmpty(
+			\get_terms( $arguments ),
+			"Term found with arguments: \n" . print_r( $arguments, true ),
+		);
 	}
 
 	/**
@@ -370,17 +351,18 @@ trait Assertions {
 	 * @param array $arguments Arguments to query against.
 	 */
 	public function assertUserExists( array $arguments ) {
-		$users = \get_users(
-			array_merge(
-				[
-					'fields' => 'ids',
-					'count'  => 1,
-				],
-				$arguments
-			)
+		$arguments = array_merge(
+			[
+				'fields' => 'ids',
+				'count'  => 1,
+			],
+			$arguments
 		);
 
-		PHPUnit::assertNotEmpty( $users );
+		PHPUnit::assertNotEmpty(
+			\get_users( $arguments ),
+			"User not found with arguments: \n" . print_r( $arguments, true ),
+		);
 	}
 
 	/**
@@ -388,18 +370,19 @@ trait Assertions {
 	 *
 	 * @param array $arguments Arguments to query against.
 	 */
-	public function assertUserDoesNotExists( array $arguments ) {
-		$users = \get_users(
-			array_merge(
-				[
-					'fields' => 'ids',
-					'count'  => 1,
-				],
-				$arguments
-			)
+	public function assertUserDoesNotExists( array $arguments ): void {
+		$arguments = array_merge(
+			[
+				'fields' => 'ids',
+				'count'  => 1,
+			],
+			$arguments
 		);
 
-		PHPUnit::assertEmpty( $users );
+		PHPUnit::assertEmpty(
+			\get_users( $arguments ),
+			"User found with arguments: \n" . print_r( $arguments, true ),
+		);
 	}
 
 	/**
@@ -433,7 +416,7 @@ trait Assertions {
 	 * @param Term|\WP_Term|int $term Term to check.
 	 * @return void
 	 */
-	public function assertPostHasTerm( $post, $term ) {
+	public function assertPostHasTerm( Post|WP_Post|int $post, Term|WP_Term|int $term ): void {
 		if ( $post instanceof Post ) {
 			$post = $post->id();
 		}
@@ -441,7 +424,7 @@ trait Assertions {
 		$term = $this->get_term_from_argument( $term );
 
 		PHPUnit::assertInstanceOf( \WP_Term::class, $term, 'Term not found to assert against' );
-		PHPUnit::assertTrue( \has_term( $term->term_id, $term->taxonomy, $post ) );
+		PHPUnit::assertTrue( \has_term( $term->term_id, $term->taxonomy, $post ), 'Term not found on post' );
 	}
 
 	/**
@@ -453,7 +436,7 @@ trait Assertions {
 	 * @param Term|\WP_Term|int $term Term to check.
 	 * @return void
 	 */
-	public function assertPostNotHasTerm( $post, $term ) {
+	public function assertPostNotHasTerm( Post|WP_Post|int $post, Term|WP_Term|int $term ): void {
 		if ( $post instanceof Post ) {
 			$post = $post->id();
 		}
@@ -461,7 +444,7 @@ trait Assertions {
 		$term = $this->get_term_from_argument( $term );
 
 		if ( $term ) {
-			PHPUnit::assertFalse( \has_term( $term->term_id, $term->taxonomy, $post ) );
+			PHPUnit::assertFalse( \has_term( $term->term_id, $term->taxonomy, $post ), 'Term found on post' );
 		}
 	}
 
@@ -471,7 +454,7 @@ trait Assertions {
 	 * @param Post|\WP_Post|int $post Post to check.
 	 * @param Term|\WP_Term|int $term Term to check.
 	 */
-	public function assertPostsDoesNotHaveTerm( $post, $term ) {
+	public function assertPostsDoesNotHaveTerm( Post|WP_Post|int $post, Term|WP_Term|int $term ): void {
 		$this->assertPostNotHasTerm( $post, $term );
 	}
 }

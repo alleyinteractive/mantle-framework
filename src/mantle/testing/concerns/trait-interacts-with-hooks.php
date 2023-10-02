@@ -20,9 +20,9 @@ trait Interacts_With_Hooks {
 	/**
 	 * Storage of the hooks that have been fired.
 	 *
-	 * @var array
+	 * @var array<string, int>
 	 */
-	protected $hooks_fired = [];
+	protected array $hooks_fired = [];
 
 	/**
 	 * Expectation Container
@@ -49,6 +49,7 @@ trait Interacts_With_Hooks {
 				}
 
 				$this->hooks_fired[ $filter ]++;
+
 				return $value;
 			}
 		);
@@ -76,14 +77,25 @@ trait Interacts_With_Hooks {
 	 * @return void
 	 */
 	public function assertHookApplied( string $hook, int $count = null ): void {
-		PHPUnit::assertTrue( ! empty( $this->hooks_fired[ $hook ] ) );
+		PHPUnit::assertNotEmpty(
+			$this->hooks_fired[ $hook ] ?? [],
+			"Asserted that [{$hook}] was not fired."
+		);
 
-		if ( null !== $count ) {
+		if ( $count ) {
 			$times_fired = $this->hooks_fired[ $hook ] ?? 0;
+
 			PHPUnit::assertEquals(
 				$count,
-				$this->hooks_fired[ $hook ],
-				"Asserted that [{$hook}] was fired {$count} times when only fired {$times_fired} times."
+				$times_fired,
+				sprintf(
+					'Asserted that [%s] was applied %d %s when only applied %d %s.',
+					$hook,
+					$count,
+					1 === $count ? 'time' : 'times',
+					$times_fired,
+					1 === $times_fired ? 'time' : 'times',
+				),
 			);
 		}
 	}
@@ -95,7 +107,11 @@ trait Interacts_With_Hooks {
 	 * @return void
 	 */
 	public function assertHookNotApplied( string $hook ): void {
-		PHPUnit::assertTrue( empty( $this->hooks_fired[ $hook ] ) );
+		PHPUnit::assertEquals(
+			0,
+			$this->hooks_fired[ $hook ] ?? 0,
+			"Asserted that [{$hook}] was fired."
+		);
 	}
 
 	/**
