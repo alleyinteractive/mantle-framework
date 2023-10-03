@@ -136,7 +136,7 @@ trait Rsync_Installation {
 	 * Maybe rsync the codebase to the wp-content within WordPress.
 	 *
 	 * Will attempt to locate the wp-content directory relative to the current
-	 * directory. As a fallback, it will assumme it is being called from either
+	 * directory. As a fallback, it will assume it is being called from either
 	 * /wp-content/plugin/:plugin/tests OR /wp-content/themes/:theme/tests. Will
 	 * rsync the codebase from the wp-content level to the root of the WordPress
 	 * installation. Also will attempt to locate the wp-content directory relative
@@ -349,7 +349,7 @@ trait Rsync_Installation {
 		// Install WordPress at the base installation if it doesn't exist yet.
 		if ( ! is_dir( $base_install_path ) || ! is_file( "{$base_install_path}/wp-load.php" ) ) {
 			Utils::info(
-				"Installating WordPress at <em>{$base_install_path}</em> ...",
+				"Installing WordPress at <em>{$base_install_path}</em> ...",
 				'Install Rsync'
 			);
 
@@ -484,7 +484,7 @@ trait Rsync_Installation {
 			// Use the first argument and translate it to the rsync-ed path.
 			$executable = $this->translate_location( $args[0] );
 
-			// Attempt to fallback to the phpunit binrary reference in PHP_SELF. This
+			// Attempt to fallback to the phpunit binary reference in PHP_SELF. This
 			// would be the one used to invoke the current script. With that, we can
 			// translate it to the new location in the rsync-ed WordPress
 			// installation.

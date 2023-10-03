@@ -11,7 +11,7 @@ use Closure;
 use InvalidArgumentException;
 
 /**
- * Driver Manager for managing multiple stores and plugable drivers.
+ * Driver Manager for managing multiple stores and pluggable drivers.
  */
 abstract class Driver_Manager {
 	/**
