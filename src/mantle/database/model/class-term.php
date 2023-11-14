@@ -22,6 +22,7 @@ use Mantle\Support\Helpers;
  * @property string $slug
  * @property string $taxonomy
  *
+ * @method static \Mantle\Database\Factory\Term_Factory<static, \WP_Term, static> factory( array|callable|null $state = null )
  * @method static \Mantle\Database\Query\Term_Query_Builder<static> whereId( int $id )
  * @method static \Mantle\Database\Query\Term_Query_Builder<static> whereName(string $name)
  * @method static \Mantle\Database\Query\Term_Query_Builder<static> whereSlug(string $slug)

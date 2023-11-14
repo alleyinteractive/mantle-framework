@@ -12,6 +12,8 @@ use Mantle\Support\Helpers;
 
 /**
  * Comment Model
+ *
+ * @method static \Mantle\Database\Factory\Post_Factory<static, \WP_Comment, static> factory( array|callable|null $state = null )
  */
 class Comment extends Model implements Contracts\Database\Core_Object, Contracts\Database\Model_Meta, Contracts\Database\Updatable {
 	use Meta\Model_Meta,

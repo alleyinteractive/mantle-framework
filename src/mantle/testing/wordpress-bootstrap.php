@@ -11,6 +11,8 @@ use Mantle\Testing\WP_Die;
 
 use function Mantle\Testing\tests_add_filter;
 
+defined( 'MANTLE_IS_TESTING' ) || define( 'MANTLE_IS_TESTING', true );
+
 require_once __DIR__ . '/class-utils.php';
 require_once __DIR__ . '/class-wp-die.php';
 
@@ -173,6 +175,12 @@ tests_add_filter( 'wp_die_handler', [ WP_Die::class, 'get_toggled_handler' ] );
 
 // Use the Spy REST Server instead of default.
 tests_add_filter( 'wp_rest_server_class', [ Utils::class, 'wp_rest_server_class_filter' ], PHP_INT_MAX );
+
+// Prevent updating translations asynchronously.
+tests_add_filter( 'async_update_translation', '__return_false' );
+
+// Disable background updates.
+tests_add_filter( 'automatic_updater_disabled', '__return_true' );
 
 // Load WordPress.
 require_once ABSPATH . '/wp-settings.php';
