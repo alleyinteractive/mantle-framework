@@ -15,6 +15,32 @@ use Faker\Provider\Lorem;
  */
 class Faker_Provider extends Base {
 	/**
+	 * Compile a set of blocks.
+	 *
+	 * @param array $blocks Blocks to compile.
+	 * @return string
+	 */
+	public static function blocks( array $blocks ): string {
+		return implode( "\n\n", $blocks );
+	}
+
+	/**
+	 * Build a heading block.
+	 *
+	 * @param int $level Heading level.
+	 * @return string
+	 */
+	public static function heading_block( int $level = 2 ): string {
+		return static::block(
+			'heading',
+			sprintf( '<h%d>%s</h%d>', $level, Lorem::sentence(), $level ),
+			[
+				'level' => $level,
+			],
+		);
+	}
+
+	/**
 	 * Build a paragraph block.
 	 *
 	 * @param int $sentences Number of sentences in the block.
