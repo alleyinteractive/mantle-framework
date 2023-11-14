@@ -9,6 +9,7 @@ use Mantle\Http\Request;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Test_Response;
+use PHPUnit\Framework\AssertionFailedError;
 use WP_REST_Response;
 
 use function Mantle\Support\Helpers\collect;
@@ -238,6 +239,48 @@ class Test_Makes_Http_Requests extends Framework_Test_Case {
 		Route::get( '/example/', fn () => 'example' );
 
 		$this->get( '/example' )->assertMatchesSnapshotContent();
+	}
+
+	public function test_match_snapshot_http_partial() {
+		$random = wp_rand();
+
+		Route::get( '/example/', fn () => <<<HTML
+			<!DOCTYPE html>
+			<html lang="en">
+				<head>
+					<meta charset="UTF-8">
+					<title>Example</title>
+				</head>
+				<body>
+					<div class="selector-ignored">
+						<p>Another selector ignored</p>
+						{$random}
+					</div>
+					<div class="example">
+						<p>Example</p>
+					</div>
+					<div class="example-two">
+						<p>Example two</p>
+					</div>
+				</body>
+			</html>
+			HTML
+		);
+
+		$this->get( '/example' )->assertMatchesSnapshotHtml( [
+			'/html/body/div[@class="example"]',
+			'/html/body/div[@class="example-two"]',
+		] );
+	}
+
+	public function test_match_snapshot_no_selectors_matched() {
+		$this->expectException( AssertionFailedError::class );
+
+		Route::get( '/example/', fn () => 'example' );
+
+		$this->get( '/example' )->assertMatchesSnapshotHtml( [
+			'/html/body/div[@class="example"]',
+		] );
 	}
 
 	public function test_match_snapshot_rest() {

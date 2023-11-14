@@ -14,13 +14,17 @@ use function Mantle\Support\Helpers\get_site_object;
 /**
  * Blog Factory
  *
- * @template TObject of \Mantle\Database\Model\Site
+ * @template TModel of \Mantle\Database\Model\Site
+ * @template TObject of \WP_Site
+ * @template TReturnValue
+ *
+ * @extends Factory<TModel, TObject, TReturnValue>
  */
 class Blog_Factory extends Factory {
 	/**
 	 * Model to use when creating objects.
 	 *
-	 * @var class-string
+	 * @var class-string<TModel>
 	 */
 	protected string $model = Site::class;
 

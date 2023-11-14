@@ -7,11 +7,12 @@
 
 namespace Mantle\Database\Model;
 
-use Mantle\Contracts;
 use Mantle\Facade\Storage;
 
 /**
  * Attachment Model
+ *
+ * @method static \Mantle\Database\Factory\Post_Factory<static, \WP_Post, static> factory( array|callable|null $state = null )
  */
 class Attachment extends Post {
 	/**

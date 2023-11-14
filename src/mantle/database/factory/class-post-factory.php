@@ -19,7 +19,11 @@ use function Mantle\Support\Helpers\get_post_object;
 /**
  * Post Factory
  *
- * @template TObject of \Mantle\Database\Model\Post
+ * @template TModel of \Mantle\Database\Model\Post
+ * @template TObject
+ * @template TReturnValue
+ *
+ * @extends Factory<TModel, TObject, TReturnValue>
  */
 class Post_Factory extends Factory {
 	use Concerns\With_Meta;
@@ -27,7 +31,7 @@ class Post_Factory extends Factory {
 	/**
 	 * Model to use when creating objects.
 	 *
-	 * @var class-string
+	 * @var class-string<TModel>
 	 */
 	protected string $model = Post::class;
 
@@ -44,7 +48,7 @@ class Post_Factory extends Factory {
 	/**
 	 * Create a new factory instance to create posts with a set of terms.
 	 *
-	 * @param array<int, \WP_Term|int|string>|\WP_Term|int|string ...$terms Terms to assign to the post.
+	 * @param array<int|string, \WP_Term|int|string|array<string, mixed>>|\WP_Term|int|string ...$terms Terms to assign to the post.
 	 * @return static
 	 */
 	public function with_terms( ...$terms ): static {
@@ -172,6 +176,7 @@ class Post_Factory extends Factory {
 	 *
 	 * @param int $object_id The object ID.
 	 * @return Post|WP_Post|null
+	 * @phpstan-return TModel|TObject|null
 	 */
 	public function get_object_by_id( int $object_id ) {
 		return $this->as_models
