@@ -128,7 +128,7 @@ class Discover_Events {
 				}
 
 				$listener_events[ $listener->name . '@' . $method->name ] = [
-					Reflector::get_paramater_class_names(
+					Reflector::get_parameter_class_names(
 						$method->getParameters()[0]
 					),
 					$priority,

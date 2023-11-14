@@ -212,7 +212,7 @@ class Hook_Usage_Command extends Command {
 	}
 
 	/**
-	 * Detrmine if the cache should be used.
+	 * Determine if the cache should be used.
 	 *
 	 * @return bool
 	 */
