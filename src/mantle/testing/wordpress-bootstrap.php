@@ -158,6 +158,11 @@ if ( ! $installing_wp && '1' !== getenv( 'WP_TESTS_SKIP_INSTALL' ) ) {
 	}
 }
 
+// Ensure that the shutdown function is registered when installing WordPress.
+if ( $installing_wp ) {
+	Utils::register_shutdown_function();
+}
+
 if ( $multisite && ! $installing_wp ) {
 	Utils::info( 'Running as multisite...' );
 	defined( 'MULTISITE' ) or define( 'MULTISITE', true );

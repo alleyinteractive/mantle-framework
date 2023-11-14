@@ -141,6 +141,10 @@ trait Rsync_Installation {
 	 * rsync the codebase from the wp-content level to the root of the WordPress
 	 * installation. Also will attempt to locate the wp-content directory relative
 	 * to the current directory.
+	 *
+	 * This isn't a perfect function and can sometimes fail to locate the proper
+	 * `wp-content` directory. If it does fail to work, manually call
+	 * `maybe_rsync()` yourself with the proper paths.
 	 */
 	public function maybe_rsync_wp_content(): static {
 		// Attempt to locate wp-content relative to the current directory.
