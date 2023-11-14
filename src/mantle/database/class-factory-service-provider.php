@@ -46,7 +46,7 @@ class Factory_Service_Provider extends Service_Provider {
 				$locale = config( 'app.faker_locale', Factory::DEFAULT_LOCALE );
 
 				if ( ! isset( static::$fakers[ $locale ] ) ) {
-					static::$fakers[ $locale ] = Factory::create();
+					static::$fakers[ $locale ] = Factory::create( $locale );
 
 					static::$fakers[ $locale ]->addProvider(
 						new Faker_Provider( static::$fakers[ $locale ] )

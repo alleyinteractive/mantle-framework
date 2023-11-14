@@ -157,7 +157,7 @@ trait WordPress_Action {
 			 * to that event will pass the argument down to the callback for the action/filter.
 			 *
 			 * @param mixed               $argument Argument value.
-			 * @param ReflectionParameter $parameter Callback paramater.
+			 * @param ReflectionParameter $parameter Callback parameter.
 			 */
 			$modified_argument = $this->dispatch( 'mantle-typehint-resolve:' . $type->getName(), [ null, $argument, $parameter ] );
 

@@ -309,7 +309,7 @@ class Block_Make_Command extends Generator_Command {
 	}
 
 	/**
-	 * Get the base path for the genereated block.
+	 * Get the base path for the generated block.
 	 *
 	 * @param string $name The block name.
 	 * @return string
@@ -328,7 +328,7 @@ class Block_Make_Command extends Generator_Command {
 	}
 
 	/**
-	 * Get the base path for the genereated block.
+	 * Get the base path for the generated block.
 	 *
 	 * @param string $namespace The block namespace.
 	 * @return string

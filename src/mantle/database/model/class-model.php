@@ -25,6 +25,8 @@ use function Mantle\Support\Helpers\tap;
 /**
  * Database Model
  *
+ * @template TModelObject of object
+ *
  * @method static \Mantle\Support\Collection all()
  * @method static static first()
  * @method static static first_or_fail()
@@ -41,6 +43,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 		Concerns\Has_Aliases,
 		Concerns\Has_Attributes,
 		Concerns\Has_Events,
+		/** @use Concerns\Has_Factory<TModelObject> */
 		Concerns\Has_Factory,
 		Concerns\Has_Global_Scopes,
 		Concerns\Has_Relationships;

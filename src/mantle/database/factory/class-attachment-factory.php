@@ -8,7 +8,6 @@
 namespace Mantle\Database\Factory;
 
 use Closure;
-use Faker\Generator;
 use Mantle\Contracts\Database\Core_Object;
 use Mantle\Database\Model\Attachment;
 use RuntimeException;
@@ -19,7 +18,11 @@ use function Mantle\Support\Helpers\get_post_object;
 /**
  * Attachment Factory
  *
- * @template TObject of \Mantle\Database\Model\Attachment
+ * @template TModel of \Mantle\Database\Model\Attachment
+ * @template TObject of \WP_Post
+ * @template TReturnValue
+ *
+ * @extends Factory<TModel, TObject, TReturnValue>
  */
 class Attachment_Factory extends Post_Factory {
 	use Concerns\Generates_Images;
@@ -27,7 +30,7 @@ class Attachment_Factory extends Post_Factory {
 	/**
 	 * Model to use when creating objects.
 	 *
-	 * @var class-string
+	 * @var class-string<TModel>
 	 */
 	protected string $model = Attachment::class;
 
