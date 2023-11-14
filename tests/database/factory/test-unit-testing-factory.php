@@ -14,6 +14,8 @@ use function Mantle\Support\Helpers\collect;
  * Test case with the focus of testing the unit testing factory that mirrors
  * WordPress core's factories. The factories here should be drop-in replacements
  * for core's factories with some sugar on top.
+ *
+ * @group factory
  */
 class Test_Unit_Testing_Factory extends Framework_Test_Case {
 	use With_Faker;
@@ -21,7 +23,7 @@ class Test_Unit_Testing_Factory extends Framework_Test_Case {
 	public function test_post_factory() {
 		$this->assertInstanceOf( \WP_Post::class, static::factory()->post->create_and_get() );
 
-		$posts = static::factory()->post->create_many(
+		$post_ids = static::factory()->post->create_many(
 			10,
 			[
 				'post_type'   => 'post',
@@ -29,12 +31,12 @@ class Test_Unit_Testing_Factory extends Framework_Test_Case {
 			]
 		);
 
-		$this->assertCount( 10, $posts );
-		foreach ( $posts as $post_id ) {
+		$this->assertCount( 10, $post_ids );
+		foreach ( $post_ids as $post_id ) {
 			$this->assertIsInt( $post_id );
 		}
 
-		$this->assertEquals( 'draft', get_post_status( array_shift( $posts ) ) );
+		$this->assertEquals( 'draft', get_post_status( array_shift( $post_ids ) ) );
 	}
 
 	public function test_post_create_with_thumbnail() {
@@ -93,6 +95,7 @@ class Test_Unit_Testing_Factory extends Framework_Test_Case {
 		$this->shim_test( \WP_Post::class, 'attachment' );
 
 		$attachment = static::factory()->attachment->create_and_get();
+
 		$this->assertEquals( 'attachment', get_post_type( $attachment ) );
 	}
 
@@ -104,7 +107,6 @@ class Test_Unit_Testing_Factory extends Framework_Test_Case {
 	public function test_blog_factory() {
 		if ( ! is_multisite() ) {
 			$this->markTestSkipped( 'This test requires multisite.' );
-			return;
 		}
 
 		$this->shim_test( \WP_Site::class, 'blog' );
@@ -113,7 +115,6 @@ class Test_Unit_Testing_Factory extends Framework_Test_Case {
 	public function test_network_factory() {
 		if ( ! is_multisite() ) {
 			$this->markTestSkipped( 'This test requires multisite.' );
-			return;
 		}
 
 		$this->shim_test( \WP_Network::class, 'network' );
@@ -148,7 +149,7 @@ class Test_Unit_Testing_Factory extends Framework_Test_Case {
 
 	public function test_as_models() {
 		$post = static::factory()->post->as_models()->create_and_get();
-		$term = static::factory()->term->as_models()->with_model( Testable_Post_Tag::class )->create_and_get();
+		$term = static::factory()->term->with_model( Testable_Post_Tag::class )->as_models()->create_and_get();
 
 		$this->assertInstanceOf( Post::class, $post );
 		$this->assertInstanceOf( Testable_Post_Tag::class, $term );
@@ -270,6 +271,23 @@ class Test_Unit_Testing_Factory extends Framework_Test_Case {
 		}
 
 		$this->assertCount( 10, $object_ids );
+	}
+
+	/**
+	 * @dataProvider dataprovider_factory
+	 */
+	public function test_dataprovider_factory( $post ) {
+		$this->assertInstanceOf( \WP_Post::class, $post );
+		$this->assertStringContainsString(
+			'<!-- wp:paragraph',
+			$post->post_content,
+		);
+	}
+
+	public static function dataprovider_factory(): array {
+		return [
+			'example' => [ static::factory()->post->create_and_get() ],
+		];
 	}
 }
 

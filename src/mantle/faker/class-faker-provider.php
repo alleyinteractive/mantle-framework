@@ -15,6 +15,32 @@ use Faker\Provider\Lorem;
  */
 class Faker_Provider extends Base {
 	/**
+	 * Compile a set of blocks.
+	 *
+	 * @param array $blocks Blocks to compile.
+	 * @return string
+	 */
+	public static function blocks( array $blocks ): string {
+		return implode( "\n\n", $blocks );
+	}
+
+	/**
+	 * Build a heading block.
+	 *
+	 * @param int $level Heading level.
+	 * @return string
+	 */
+	public static function heading_block( int $level = 2 ): string {
+		return static::block(
+			'heading',
+			sprintf( '<h%d>%s</h%d>', $level, Lorem::sentence(), $level ),
+			[
+				'level' => $level,
+			],
+		);
+	}
+
+	/**
 	 * Build a paragraph block.
 	 *
 	 * @param int $sentences Number of sentences in the block.
@@ -51,22 +77,12 @@ class Faker_Provider extends Base {
 	 * @param array  $attributes Attributes for the block.
 	 * @return string
 	 */
-	public static function block( string $block_name, string $content = '', array $attributes = [] ) {
-		$attributes = ! empty( $attributes ) ? \wp_json_encode( $attributes ) . ' ' : '';
-
-		if ( empty( $content ) ) {
-			return sprintf(
-				'<!-- wp:%s %s/-->',
-				$block_name,
-				$attributes
-			);
+	public static function block( string $block_name, string $content = '', array $attributes = [] ): string {
+		// Add a newline before and after the content.
+		if ( ! empty( $content ) ) {
+			$content = "\n{$content}\n";
 		}
 
-		return sprintf(
-			'<!-- wp:%1$s %2$s-->%3$s<!-- /wp:%1$s -->',
-			$block_name,
-			$attributes,
-			PHP_EOL . $content . PHP_EOL
-		);
+		return get_comment_delimited_block_content( $block_name, $attributes, $content );
 	}
 }

@@ -17,6 +17,8 @@ use Mantle\Support\Helpers;
 /**
  * Post Model
  *
+ * @extends Model<\WP_Post>
+ *
  * @property int $comment_count
  * @property int $ID
  * @property int $menu_order
@@ -49,6 +51,7 @@ use Mantle\Support\Helpers;
  * @property string $status Alias to post_status.
  * @property string $title Alias to post_title.
  *
+ * @method static \Mantle\Database\Factory\Post_Factory<static, \WP_Post, static> factory( array|callable|null $state = null )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> anyStatus()
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> where( string|array $attribute, mixed $value )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereId( int $id )

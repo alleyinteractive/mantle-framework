@@ -24,9 +24,11 @@ use function Mantle\Support\Helpers\tap;
 /**
  * Base Factory
  *
- * @template TObject of \Mantle\Database\Model\Model
+ * @template TModel of \Mantle\Database\Model\Model
+ * @template TObject
+ * @template TReturnValue
  *
- * @method \Mantle\Database\Factory\Fluent_Factory<TObject> count(int $count)
+ * @method \Mantle\Database\Factory\Fluent_Factory<TModel, TObject, TReturnValue> count(int $count)
  */
 abstract class Factory {
 	use Concerns\Resolves_Factories,
@@ -74,7 +76,7 @@ abstract class Factory {
 	 * Retrieves an object by ID.
 	 *
 	 * @param int $object_id The object ID.
-	 * @return mixed
+	 * @return TModel|TObject|null
 	 */
 	abstract public function get_object_by_id( int $object_id );
 
@@ -91,7 +93,7 @@ abstract class Factory {
 	/**
 	 * Generate models from the factory.
 	 *
-	 * @return static
+	 * @return static<TModel, TObject, TModel>
 	 */
 	public function as_models() {
 		return tap(
@@ -103,7 +105,7 @@ abstract class Factory {
 	/**
 	 * Generate core WordPress objects from the factory.
 	 *
-	 * @return static
+	 * @return static<TModel, TObject, TObject>
 	 */
 	public function as_objects() {
 		return tap(
@@ -145,8 +147,10 @@ abstract class Factory {
 	 *
 	 * @throws \InvalidArgumentException If the model does not extend from the base model class.
 	 *
-	 * @param class-string<TObject> $model The model to use.
-	 * @return static
+	 * @template TNewModel of \Mantle\Database\Model\Model
+	 *
+	 * @param class-string<TNewModel> $model The model to use.
+	 * @return static<TNewModel, TObject, TReturnValue>
 	 */
 	public function with_model( string $model ) {
 		// Validate that model extends from the base model class.
@@ -210,7 +214,7 @@ abstract class Factory {
 	 * Creates an object and returns its object.
 	 *
 	 * @param array $args Optional. The arguments for the object to create. Default is empty array.
-	 * @return TObject The created object.
+	 * @return TReturnValue The created object.
 	 */
 	public function create_and_get( array $args = [] ) {
 		return $this->get_object_by_id( $this->create( $args ) );

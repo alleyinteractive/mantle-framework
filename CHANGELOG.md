@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v0.12.7 - 2023-10-02
+
+### Added
+
+- Adding date query builder for posts.
+- Adds a trait to easily silence remote requests during testing.
+
+### Changed
+
+- Improve the messaging of assertions when testing.
+
+### Fixed
+
+- Ensure that attribute and action methods are deduplicated in service providers.
+
 ## v0.12.6 - 2023-09-06
 
 ### Fixed
@@ -92,7 +107,7 @@ No changes, just a re-release to fix a bad tag.
 
 ## v0.11.2 - 2023-07-21
 
-- Add back-support for Wordpress 6.0 when testing.
+- Add back-support for WordPress 6.0 when testing.
 
 ## v0.11.1 - 2023-05-31
 
@@ -207,7 +222,7 @@ No changes, just a re-release to fix a bad tag.
 - Cast the item to an array inside of only_children.
 - Adding keywords to trigger --dev.
 - Separate requires based on what they include.
-- Compatibility layer for Refresh_Database and Installs_Wordpress.
+- Compatibility layer for Refresh_Database and Installs_WordPress.
 
 ## v0.6.1 - 2022-09-20
 

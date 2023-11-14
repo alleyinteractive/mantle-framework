@@ -155,7 +155,7 @@ class Bound_Method {
 	 * Get the dependency for the given call parameter.
 	 *
 	 * @param  Container            $container Container instance.
-	 * @param  \ReflectionParameter $parameter Reflect Paramater.
+	 * @param  \ReflectionParameter $parameter Reflect Parameter.
 	 * @param  array                $parameters Parameters to pass.
 	 * @param  array                $dependencies Class dependencies.
 	 * @return void
