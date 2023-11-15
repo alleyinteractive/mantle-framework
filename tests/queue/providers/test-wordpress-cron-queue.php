@@ -10,14 +10,12 @@ use Mantle\Queue\Providers\WordPress\Post_Status;
 use Mantle\Queue\Providers\WordPress\Provider;
 use Mantle\Queue\Providers\WordPress\Scheduler;
 use Mantle\Queue\Queueable;
-use Mantle\Scheduling\Schedule;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
 use PHPUnit\Framework\Assert;
 use RuntimeException;
 
 use function Mantle\Queue\dispatch;
-use function Mantle\Support\Helpers\collect;
 
 /**
  * WordPress Cron Queue Provider Test

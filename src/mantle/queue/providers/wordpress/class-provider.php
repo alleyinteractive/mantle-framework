@@ -21,8 +21,6 @@ use RuntimeException;
 
 /**
  * WordPress Cron Queue Provider
- *
- * @todo Add support for one off cron events that should have their own cron scheduled.
  */
 class Provider implements Provider_Contract {
 	/**
