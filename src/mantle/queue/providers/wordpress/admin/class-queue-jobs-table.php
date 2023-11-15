@@ -11,7 +11,7 @@ use Carbon\Carbon;
 use Mantle\Database\Query\Post_Query_Builder;
 use Mantle\Queue\Providers\WordPress\Post_Status;
 use Mantle\Queue\Providers\WordPress\Provider;
-use Mantle\Queue\Providers\WordPress\Queue_Job;
+use Mantle\Queue\Providers\WordPress\Queue_Record;
 use Mantle\Queue\Providers\WordPress\Queue_Worker_Job;
 use WP_List_Table;
 
@@ -126,7 +126,7 @@ class Queue_Jobs_Table extends WP_List_Table {
 		$active_queue_filter = sanitize_text_field( wp_unslash( $_GET['queue'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$page                = (int) ( $_GET['paged'] ?? 1 ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
-		$query = Queue_Job::query()
+		$query = Queue_Record::query()
 			->orderBy( 'date', 'asc' )
 			// Allow the query to be filtered by status.
 			->when(
@@ -146,7 +146,7 @@ class Queue_Jobs_Table extends WP_List_Table {
 
 		// TODO: Refactor with found_posts later.
 		$this->items = $query->get()->map(
-			function ( Queue_Job $model ) {
+			function ( Queue_Record $model ) {
 				$worker = new Queue_Worker_Job( $model );
 				$job    = $worker->get_job();
 

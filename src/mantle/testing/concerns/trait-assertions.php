@@ -279,7 +279,6 @@ trait Assertions {
 				'fields'         => 'ids',
 				'posts_per_page' => 1,
 			],
-			$arguments
 		);
 
 		PHPUnit::assertNotEmpty(
@@ -300,7 +299,6 @@ trait Assertions {
 				'fields'         => 'ids',
 				'posts_per_page' => 1,
 			],
-			$arguments
 		);
 
 		PHPUnit::assertEmpty(
@@ -322,7 +320,6 @@ trait Assertions {
 				'count'      => 1,
 				'hide_empty' => false,
 			],
-			$arguments
 		);
 
 		PHPUnit::assertNotEmpty(
@@ -344,7 +341,6 @@ trait Assertions {
 				'count'      => 1,
 				'hide_empty' => false,
 			],
-			$arguments
 		);
 
 		PHPUnit::assertEmpty(
@@ -365,7 +361,6 @@ trait Assertions {
 				'fields' => 'ids',
 				'count'  => 1,
 			],
-			$arguments
 		);
 
 		PHPUnit::assertNotEmpty(
@@ -386,7 +381,6 @@ trait Assertions {
 				'fields' => 'ids',
 				'count'  => 1,
 			],
-			$arguments
 		);
 
 		PHPUnit::assertEmpty(

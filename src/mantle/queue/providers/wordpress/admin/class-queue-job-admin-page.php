@@ -8,7 +8,7 @@
 namespace Mantle\Queue\Providers\WordPress\Admin;
 
 use Mantle\Queue\Providers\WordPress\Post_Status;
-use Mantle\Queue\Providers\WordPress\Queue_Job;
+use Mantle\Queue\Providers\WordPress\Queue_Record;
 use Mantle\Queue\Providers\WordPress\Queue_Worker_Job;
 
 /**
@@ -37,7 +37,7 @@ class Queue_Job_Admin_Page {
 	 * @param int $job_id The job ID.
 	 */
 	protected function render_single_job( int $job_id ): void {
-		$job = Queue_Job::find( $job_id );
+		$job = Queue_Record::find( $job_id );
 
 		if ( empty( $job ) ) {
 			wp_die( esc_html__( 'Invalid job ID.', 'mantle' ) );
@@ -60,7 +60,7 @@ class Queue_Job_Admin_Page {
 		}
 
 		$action  = sanitize_text_field( wp_unslash( $_GET['action'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$job     = Queue_Job::find( $job_id );
+		$job     = Queue_Record::find( $job_id );
 		$message = '';
 
 		if ( empty( $job ) ) {
