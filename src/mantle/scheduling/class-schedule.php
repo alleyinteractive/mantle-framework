@@ -94,7 +94,7 @@ class Schedule {
 	/**
 	 * Run the scheduled events that are due to run.
 	 */
-	public function run_due_events() {
+	public function run_due_events(): void {
 		$this
 			->due_events( $this->container )
 			->each( fn ( Event $event ) => $event->run( $this->container ) );
@@ -103,9 +103,9 @@ class Schedule {
 	/**
 	 * Add a new command event.
 	 *
-	 * @param string $command Command class to run.
-	 * @param array  $arguments Arguments for the command.
-	 * @param array  $assoc_args Assoc. arguments for the command.
+	 * @param class-string<\Mantle\Console\Command> $command Command class to run.
+	 * @param array                                $arguments Arguments for the command.
+	 * @param array                                $assoc_args Assoc. arguments for the command.
 	 * @return Event
 	 *
 	 * @throws RuntimeException Thrown on missing command.
@@ -130,8 +130,8 @@ class Schedule {
 	/**
 	 * Add a new job event.
 	 *
-	 * @param string $job Job class to run.
-	 * @param array  $arguments Arguments for the command.
+	 * @param class-string $job Job class to run.
+	 * @param array        $arguments Arguments for the command.
 	 * @return Event
 	 *
 	 * @throws RuntimeException Thrown on missing command.
@@ -156,11 +156,11 @@ class Schedule {
 	/**
 	 * Add a callback event.
 	 *
-	 * @param string $callback Callback to run.
-	 * @param array  $arguments Arguments for the callback.
+	 * @param callable $callback Callback to run.
+	 * @param array    $arguments Arguments for the callback.
 	 * @return Event
 	 */
-	public function call( $callback, array $arguments = [] ): Event {
+	public function call( callable $callback, array $arguments = [] ): Event {
 		$event = new Event( $callback, $arguments, $this->get_timezone() );
 
 		$this->events[] = $event;
@@ -185,7 +185,7 @@ class Schedule {
 	 *
 	 * @return Event[]
 	 */
-	public function events() {
+	public function events(): array {
 		return $this->events;
 	}
 }

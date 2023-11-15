@@ -10,6 +10,7 @@ use Mantle\Queue\Providers\WordPress\Post_Status;
 use Mantle\Queue\Providers\WordPress\Provider;
 use Mantle\Queue\Providers\WordPress\Scheduler;
 use Mantle\Queue\Queueable;
+use Mantle\Scheduling\Schedule;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
 use PHPUnit\Framework\Assert;
@@ -291,6 +292,14 @@ class Test_WordPress_Cron_Queue extends Framework_Test_Case {
 		// Ensure the next job is not scheduled.
 		Scheduler::schedule_on_shutdown();
 		$this->assertNotInCronQueue( Scheduler::EVENT, null );
+	}
+
+	public function test_cleanup_completed_jobs() {
+		$this->app['config']->set( 'queue.preserve_completed_jobs', 60 * 60 * 24 );
+
+		Schedule::schedule_cron_event();
+
+		do_action( 'mantle_scheduled_event' );
 	}
 }
 

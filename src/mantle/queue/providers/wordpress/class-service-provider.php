@@ -9,9 +9,11 @@
 
 namespace Mantle\Queue\Providers\WordPress;
 
+use Mantle\Queue\Console\Cleanup_Jobs_Command;
 use Mantle\Queue\Events;
 use Mantle\Support\Attributes\Action;
 use Mantle\Support\Service_Provider as Base_Service_Provider;
+use Mantle\Scheduling\Schedule;
 
 /**
  * WordPress Queue Service Provider Scheduler
@@ -29,11 +31,26 @@ class Service_Provider extends Base_Service_Provider {
 
 	/**
 	 * Register the WordPress queue provider's post type and taxonomies.
+	 *
+	 * Registers the cleanup command to run daily (by default) to remove old queue
+	 * jobs from the database.
 	 */
 	public function boot() {
 		if ( did_action( 'init' ) ) {
 			$this->register_data_types();
 		}
+
+		$this->app->resolving(
+			'scheduler',
+			fn ( Schedule $scheduler ) => $scheduler->command( Cleanup_Jobs_Command::class )->cron(
+				/**
+				 * Filter the schedule for the queue cleanup job.
+				 *
+				 * @param string $schedule Schedule cron expression. Defaults to daily at midnight.
+				 */
+				(string) apply_filters( 'mantle_queue_cleanup_schedule', '0 0 * * *' ),
+			)
+		);
 	}
 
 	/**
