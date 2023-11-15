@@ -48,6 +48,7 @@ class Queue_Service_Provider extends Service_Provider {
 			fn ( $app ) => new Dispatcher( $app ),
 		);
 
+		// Register queue console commands.
 		$this->add_command( Run_Command::class );
 
 		// Register the queue service providers.

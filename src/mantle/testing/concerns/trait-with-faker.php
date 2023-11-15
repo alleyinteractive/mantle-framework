@@ -9,6 +9,7 @@ namespace Mantle\Testing\Concerns;
 
 use Faker\Generator;
 use Faker\Factory;
+use Mantle\Faker\Faker_Provider;
 
 /**
  * This trait sets up a faker instance for use in tests.
@@ -44,6 +45,10 @@ trait With_Faker {
 			return $this->app->make( Generator::class, [ 'locale' => $locale ] );
 		}
 
-		return Factory::create( $locale );
+		$generator = Factory::create( $locale );
+
+		$generator->addProvider( new Faker_Provider( $generator ) );
+
+		return $generator;
 	}
 }

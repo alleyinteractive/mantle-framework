@@ -16,7 +16,11 @@ use function Mantle\Support\Helpers\get_term_object;
 /**
  * Term Factory
  *
- * @template TObject of \Mantle\Database\Model\Term
+ * @template TModel of \Mantle\Database\Model\Term
+ * @template TObject of \WP_Term
+ * @template TReturnValue
+ *
+ * @extends Factory<TModel, TObject, TReturnValue>
  */
 class Term_Factory extends Factory {
 	use Concerns\With_Meta;
@@ -24,7 +28,7 @@ class Term_Factory extends Factory {
 	/**
 	 * Model to use when creating objects.
 	 *
-	 * @var class-string
+	 * @var class-string<TModel>
 	 */
 	protected string $model = Term::class;
 

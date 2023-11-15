@@ -77,8 +77,8 @@ class Test_Collection extends Framework_Test_Case {
 
 		$this->assertSame('book', $data->first_where('material', 'paper')['type']);
 		$this->assertSame('gasket', $data->first_where('material', 'rubber')['type']);
-		$this->assertNull($data->first_where('material', 'nonexistant'));
-		$this->assertNull($data->first_where('nonexistant', 'key'));
+		$this->assertNull($data->first_where('material', 'nonexistent'));
+		$this->assertNull($data->first_where('nonexistent', 'key'));
 	}
 
 	/**
@@ -3623,7 +3623,7 @@ class Test_Collection extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
-	public function testSplitCollectionWithADivisableCount($collection)
+	public function testSplitCollectionWithADivisibleCount($collection)
 	{
 		$data = new $collection(['a', 'b', 'c', 'd']);
 

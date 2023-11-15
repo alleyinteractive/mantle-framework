@@ -50,7 +50,7 @@ class Reflector {
 	 * @param  \ReflectionParameter $parameter
 	 * @return array
 	 */
-	public static function get_paramater_class_names( $parameter ) {
+	public static function get_parameter_class_names( $parameter ) {
 		$type = $parameter->getType();
 
 		if ( ! $type instanceof ReflectionUnionType ) {

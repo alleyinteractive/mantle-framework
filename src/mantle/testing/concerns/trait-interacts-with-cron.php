@@ -51,7 +51,7 @@ trait Interacts_With_Cron {
 	}
 
 	/**
-	 * Assert tha an action is not in a cron queue.
+	 * Assert that an action is not in a cron queue.
 	 *
 	 * @param string $action Action hook of the event.
 	 * @param array  $args Arguments for the cron queue event or null to not check

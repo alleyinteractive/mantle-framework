@@ -107,7 +107,7 @@ No changes, just a re-release to fix a bad tag.
 
 ## v0.11.2 - 2023-07-21
 
-- Add back-support for Wordpress 6.0 when testing.
+- Add back-support for WordPress 6.0 when testing.
 
 ## v0.11.1 - 2023-05-31
 
@@ -222,7 +222,7 @@ No changes, just a re-release to fix a bad tag.
 - Cast the item to an array inside of only_children.
 - Adding keywords to trigger --dev.
 - Separate requires based on what they include.
-- Compatibility layer for Refresh_Database and Installs_Wordpress.
+- Compatibility layer for Refresh_Database and Installs_WordPress.
 
 ## v0.6.1 - 2022-09-20
 
