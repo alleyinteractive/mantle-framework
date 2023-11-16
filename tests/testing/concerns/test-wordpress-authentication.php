@@ -1,5 +1,5 @@
 <?php
-namespace Mantle\Testing\Concerns;
+namespace Mantle\Tests\Concerns;
 
 use Mantle\Console\Command;
 use Mantle\Facade\Console;

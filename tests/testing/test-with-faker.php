@@ -1,5 +1,5 @@
 <?php
-namespace Mantle\Testing;
+namespace Mantle\Tests;
 
 use Faker\Generator;
 use Mantle\Testing\Concerns\With_Faker;
