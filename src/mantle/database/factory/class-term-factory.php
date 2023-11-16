@@ -16,7 +16,11 @@ use function Mantle\Support\Helpers\get_term_object;
 /**
  * Term Factory
  *
- * @template TObject of \Mantle\Database\Model\Term
+ * @template TModel of \Mantle\Database\Model\Term
+ * @template TObject of \WP_Term
+ * @template TReturnValue
+ *
+ * @extends Factory<TModel, TObject, TReturnValue>
  */
 class Term_Factory extends Factory {
 	use Concerns\With_Meta;
@@ -24,7 +28,7 @@ class Term_Factory extends Factory {
 	/**
 	 * Model to use when creating objects.
 	 *
-	 * @var class-string
+	 * @var class-string<TModel>
 	 */
 	protected string $model = Term::class;
 
@@ -34,7 +38,7 @@ class Term_Factory extends Factory {
 	 * @param Generator $faker Faker generator.
 	 * @param string    $taxonomy Taxonomy name.
 	 */
-	public function __construct( Generator $faker, protected string $taxonomy ) {
+	public function __construct( Generator $faker, protected string $taxonomy = 'post_tag' ) {
 		parent::__construct( $faker );
 	}
 
@@ -91,12 +95,31 @@ class Term_Factory extends Factory {
 	 * @return \WP_Term|Term|null
 	 */
 	public function get_object_by_id( int $object_id ) {
-		$term = get_term_object( $object_id );
+		return $this->as_models
+			? $this->model::find( $object_id )
+			: get_term_object( $object_id );
+	}
 
-		if ( $term && $this->as_models ) {
-			return Term::new_from_existing( (array) $term );
-		}
+	/**
+	 * Create a new factory instance to create posts for a specific taxonomy.
+	 *
+	 * @param string $taxonomy Post type to use.
+	 * @return static
+	 */
+	public function with_taxonomy( string $taxonomy ): static {
+		return tap(
+			clone $this,
+			fn ( Term_Factory $factory ) => $factory->taxonomy = $taxonomy,
+		);
+	}
 
-		return $term;
+	/**
+	 * Alias for {@see Term_Factory::with_taxonomy()}.
+	 *
+	 * @param string $taxonomy Taxonomy to use.
+	 * @return static
+	 */
+	public function for( string $taxonomy ): static {
+		return $this->with_taxonomy( $taxonomy );
 	}
 }

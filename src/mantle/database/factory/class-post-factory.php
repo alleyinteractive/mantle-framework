@@ -19,7 +19,11 @@ use function Mantle\Support\Helpers\get_post_object;
 /**
  * Post Factory
  *
- * @template TObject of \Mantle\Database\Model\Post
+ * @template TModel of \Mantle\Database\Model\Post
+ * @template TObject
+ * @template TReturnValue
+ *
+ * @extends Factory<TModel, TObject, TReturnValue>
  */
 class Post_Factory extends Factory {
 	use Concerns\With_Meta;
@@ -27,7 +31,7 @@ class Post_Factory extends Factory {
 	/**
 	 * Model to use when creating objects.
 	 *
-	 * @var class-string
+	 * @var class-string<TModel>
 	 */
 	protected string $model = Post::class;
 
@@ -37,14 +41,14 @@ class Post_Factory extends Factory {
 	 * @param Generator $faker Faker generator.
 	 * @param string    $post_type Post type to use.
 	 */
-	public function __construct( Generator $faker, protected string $post_type = 'post' ) {
+	public function __construct( Generator $faker, public string $post_type = 'post' ) {
 		parent::__construct( $faker );
 	}
 
 	/**
 	 * Create a new factory instance to create posts with a set of terms.
 	 *
-	 * @param array<int, \WP_Term|int|string>|\WP_Term|int|string ...$terms Terms to assign to the post.
+	 * @param array<int|string, \WP_Term|int|string|array<string, mixed>>|\WP_Term|int|string ...$terms Terms to assign to the post.
 	 * @return static
 	 */
 	public function with_terms( ...$terms ): static {
@@ -80,12 +84,9 @@ class Post_Factory extends Factory {
 	 * @return static
 	 */
 	public function with_post_type( string $post_type ): static {
-		return $this->with_middleware(
-			function ( array $args, Closure $next ) use ( $post_type ) {
-				$args['post_type'] = $post_type;
-
-				return $next( $args );
-			}
+		return tap(
+			clone $this,
+			fn ( Post_Factory $factory ) => $factory->post_type = $post_type,
 		);
 	}
 
@@ -175,6 +176,7 @@ class Post_Factory extends Factory {
 	 *
 	 * @param int $object_id The object ID.
 	 * @return Post|WP_Post|null
+	 * @phpstan-return TModel|TObject|null
 	 */
 	public function get_object_by_id( int $object_id ) {
 		return $this->as_models

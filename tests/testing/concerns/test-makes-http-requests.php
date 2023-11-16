@@ -2,12 +2,14 @@
 namespace Mantle\Tests\Testing\Concerns;
 
 use JsonSerializable;
+use Mantle\Facade\Route;
 use Mantle\Http\Response;
 use Mantle\Framework\Providers\Routing_Service_Provider;
 use Mantle\Http\Request;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Test_Response;
+use PHPUnit\Framework\AssertionFailedError;
 use WP_REST_Response;
 
 use function Mantle\Support\Helpers\collect;
@@ -229,9 +231,93 @@ class Test_Makes_Http_Requests extends Framework_Test_Case {
 		$this->assertInstanceOf( Test_Response::class, $_SERVER['__callback_after'] );
 	}
 
+	public function test_match_snapshot() {
+		$this->assertMatchesSnapshot( [ 1, 2, 3 ] );
+	}
+
+	public function test_match_snapshot_http() {
+		Route::get( '/example/', fn () => 'example' );
+
+		$this->get( '/example' )->assertMatchesSnapshotContent();
+	}
+
+	public function test_match_snapshot_http_partial() {
+		$random = wp_rand();
+
+		Route::get( '/example/', fn () => <<<HTML
+			<!DOCTYPE html>
+			<html lang="en">
+				<head>
+					<meta charset="UTF-8">
+					<title>Example</title>
+				</head>
+				<body>
+					<div class="selector-ignored">
+						<p>Another selector ignored</p>
+						{$random}
+					</div>
+					<div class="example">
+						<p>Example</p>
+					</div>
+					<div class="example-two">
+						<p>Example two</p>
+					</div>
+				</body>
+			</html>
+			HTML
+		);
+
+		$this->get( '/example' )->assertMatchesSnapshotHtml( [
+			'/html/body/div[@class="example"]',
+			'/html/body/div[@class="example-two"]',
+		] );
+	}
+
+	public function test_match_snapshot_no_selectors_matched() {
+		$this->expectException( AssertionFailedError::class );
+
+		Route::get( '/example/', fn () => 'example' );
+
+		$this->get( '/example' )->assertMatchesSnapshotHtml( [
+			'/html/body/div[@class="example"]',
+		] );
+	}
+
+	public function test_match_snapshot_rest() {
+		$this->ignoreIncorrectUsage();
+
+		register_rest_route(
+			'mantle/v1',
+			__FUNCTION__,
+			[
+				'methods' => 'GET',
+				'validate_callback' => '__return_true',
+				'callback' => fn () => new WP_REST_Response( [ 'key' => 'value here' ], 201, [ 'test-header' => 'test-value' ] ),
+			]
+		);
+
+		$this->get( rest_url( '/mantle/v1/' . __FUNCTION__ ) )->assertMatchesSnapshotContent();
+
+		$this->get( rest_url( '/wp/v2/posts/' . static::factory()->post->create() ) )->assertMatchesSnapshotJson( 'type' );
+
+		static::factory()->post->create_many( 10 );
+
+		$this
+			->get( rest_url( '/wp/v2/posts' ) )
+			->assertMatchesSnapshotJson( [
+				'*.type',
+				'*.status',
+			] );
+	}
+
 	public function test_multiple_requests() {
+		$methods = collect( get_class_methods( $this ) )
+			->filter( fn ( $method ) => false === strpos( $method, '_snapshot_' ) )
+			->shuffle()
+			->all();
+
 		// Re-run all test methods on this class in a single pass.
-		foreach ( collect( get_class_methods( $this ) )->shuffle()->all() as $method ) {
+		foreach ( $methods as $method ) {
 			if ( __FUNCTION__ === $method || 'test_' !== substr( $method, 0, 5 ) ) {
 				continue;
 			}

@@ -1,13 +1,13 @@
 {
     "name": "mantle-framework/cache",
     "description": "The Mantle Framework Cache Package",
-    "type": "project",
+    "type": "library",
     "require": {
         "php": "^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
         "mantle-framework/contracts": "^0.12",
         "mantle-framework/support": "^0.12",
-        "nesbot/carbon": "^2.53"
+        "nesbot/carbon": "^2.68.1"
     },
     "extra": {
         "wordpress-autoloader": {
@@ -28,8 +28,8 @@
             "autoload.php"
         ]
     },
-    "minimum-stability": "dev",
     "config": {
         "sort-packages": true
-    }
+    },
+    "minimum-stability": "dev"
 }

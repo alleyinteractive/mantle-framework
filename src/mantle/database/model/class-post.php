@@ -17,6 +17,8 @@ use Mantle\Support\Helpers;
 /**
  * Post Model
  *
+ * @extends Model<\WP_Post>
+ *
  * @property int $comment_count
  * @property int $ID
  * @property int $menu_order
@@ -49,9 +51,12 @@ use Mantle\Support\Helpers;
  * @property string $status Alias to post_status.
  * @property string $title Alias to post_title.
  *
+ * @method static \Mantle\Database\Factory\Post_Factory<static, \WP_Post, static> factory( array|callable|null $state = null )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> anyStatus()
- * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereId( int $id )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> where( string|array $attribute, mixed $value )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereId( int $id )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereNotIn(string $key, array $values)
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereIn(string $key, array $values)
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereName( string $name )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereSlug( string $slug )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereStatus( string $status )
@@ -61,6 +66,22 @@ use Mantle\Support\Helpers;
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> andWhereTerm( array|\WP_Term|\Mantle\Database\Model\Term|int $term, ?string $taxonomy = null, string $operator = 'IN', string $field = 'term_id' )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> orWhereTerm( array|\WP_Term|\Mantle\Database\Model\Term|int $term, ?string $taxonomy = null, string $operator = 'IN', string $field = 'term_id' )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereMeta( string $key, mixed $value, string $operator = '=' )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereRaw( array|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> where_raw( array|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> orWhereRaw( array|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> or_where_raw( array|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereDate( DateTimeInterface|int|string $date, string $compare = '=', string $column = 'post_date' )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereUtcDate( DateTimeInterface|int|string $date, string $compare = '=' )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereModifiedDate( DateTimeInterface|int|string $date, string $compare = '=' )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereModifiedUtcDate( DateTimeInterface|int|string $date, string $compare = '=' )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> olderThan( DateTimeInterface|int $date, string $column = 'post_date' )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> olderThanOrEqualTo( DateTimeInterface|int $date, string $column = 'post_date' )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> older_than( DateTimeInterface|int $date, string $column = 'post_date' )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> older_than_or_equal_to( DateTimeInterface|int $date, string $column = 'post_date' )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> newerThan( DateTimeInterface|int $date, string $column = 'post_date' )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> newerThanOrEqualTo( DateTimeInterface|int $date, string $column = 'post_date' )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> newer_than( DateTimeInterface|int $date, string $column = 'post_date' )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> newer_than_or_equal_to( DateTimeInterface|int $date, string $column = 'post_date' )
  */
 class Post extends Model implements Contracts\Database\Core_Object, Contracts\Database\Model_Meta, Contracts\Database\Updatable {
 	use Events\Post_Events,
@@ -138,8 +159,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 		}
 
 		// Verify the object type matches the model type.
-		$object_name = static::get_object_name();
-		if ( $post->post_type !== $object_name ) {
+		if ( static::get_object_name() !== $post->post_type ) {
 			return null;
 		}
 

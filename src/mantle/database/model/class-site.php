@@ -12,6 +12,8 @@ use Mantle\Support\Helpers;
 
 /**
  * Site Model
+ *
+ * @method static \Mantle\Database\Factory\Post_Factory<static, \WP_Site, static> factory( array|callable|null $state = null )
  */
 class Site extends Model implements Contracts\Database\Core_Object, Contracts\Database\Updatable {
 	/**

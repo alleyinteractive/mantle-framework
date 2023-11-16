@@ -126,7 +126,7 @@ class Arr {
 	 * Get all of the given array except for a specified array of keys.
 	 *
 	 * @param  array        $array Array to process.
-	 * @param  array|string $keys Keys toi filter by.
+	 * @param  array|string $keys Keys to filter by.
 	 * @return array
 	 */
 	public static function except( array $array, $keys ): array {
@@ -349,11 +349,7 @@ class Arr {
 
 		$keys = (array) $keys;
 
-		if ( ! $array ) {
-			return false;
-		}
-
-		if ( [] === $keys ) {
+		if ( empty( $array ) ) {
 			return false;
 		}
 

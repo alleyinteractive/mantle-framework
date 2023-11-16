@@ -124,10 +124,27 @@ class Test_Term_Query_Builder extends Framework_Test_Case {
 
 		$this->assertEquals( $term_id, $first->id() );
 
-		$next = Testable_Tag::first();
+		$next = Testable_Tag::query()
+			->order_by( 'id', 'asc' )
+			->first();
 
 		$this->assertNotEquals( $term_id, $next->id() );
 		$this->assertEquals( 1, $applied_count ); // The clauses should only be applied once.
+	}
+
+	public function test_count() {
+		static::factory()->tag->create_many( 14 );
+
+		$this->assertEquals( 14, Testable_Tag::count() );
+		$this->assertEquals( 14, Testable_Tag::query()->count() );
+
+		$tag_id = $this->get_random_term_id();
+
+		// Ensure that query clauses are applied.
+		$this->assertEquals(
+			1,
+			Testable_Tag::whereIn( 'id', [ $tag_id ] )->count(),
+		);
 	}
 
 	/**

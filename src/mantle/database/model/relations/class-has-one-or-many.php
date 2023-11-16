@@ -16,6 +16,7 @@ use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Term;
 use Mantle\Database\Query\Builder;
 use Mantle\Database\Query\Post_Query_Builder;
+use Mantle\Support\Arr;
 use Mantle\Support\Collection;
 use RuntimeException;
 use Throwable;
@@ -155,34 +156,33 @@ abstract class Has_One_Or_Many extends Relation {
 	 * @param Model[]|Model $model Model instance to save.
 	 * @return Model
 	 */
-	public function save( $model ): Model {
+	public function save( array|Model $model ): Model {
+		if ( is_array( $model ) ) {
+			// Return the first model if saving many.
+			return collect( $this->save_many( $model ) )->first();
+		}
+
 		// Save the model if it doesn't exist.
-		if ( ! is_array( $model ) && ! $model->exists && $model instanceof Updatable ) {
+		if ( ! $model->exists && $model instanceof Updatable ) {
 			$model->save();
-		} elseif ( is_array( $model ) ) {
-			foreach ( $model as $model ) {
-				if ( ! $model->exists ) {
-					$model->save();
-				}
-			}
 		}
 
 		$append = Has_Many::class === get_class( $this ) || is_subclass_of( $this, Has_Many::class );
 
 		if ( $this->is_post_term_relationship() && $this->parent instanceof Post ) {
-			$this->parent->set_terms( $model, $model::get_object_name(), $append );
+			$this->parent->set_terms( $model, $model->first()::get_object_name(), $append );
 		} elseif ( $this->is_term_post_relationship() ) {
-			$models = is_array( $model ) ? $model : [ $model ];
-
-			foreach ( $models as $model ) {
+			if ( $model instanceof Post ) {
 				$model->set_terms( $this->parent, $this->parent::get_object_name(), $append );
 			}
 		} else {
 			// Set meta or use a hidden taxonomy if using terms.
-			if ( $this->uses_terms ) {
-				wp_set_post_terms( $model->id(), [ $this->get_term_for_relationship() ], static::RELATION_TAXONOMY, true );
+			if ( $this->uses_terms && $model instanceof Core_Object ) {
+				wp_set_object_terms( $model->id(), [ $this->get_term_for_relationship() ], static::RELATION_TAXONOMY, $append );
 			} else {
-				$model->set_meta( $this->foreign_key, $this->parent->get( $this->local_key ) );
+				if ( $model instanceof Model_Meta ) {
+					$model->set_meta( $this->foreign_key, $this->parent->get( $this->local_key ) );
+				}
 			}
 		}
 
@@ -191,6 +191,18 @@ abstract class Has_One_Or_Many extends Relation {
 		}
 
 		return $model;
+	}
+
+	/**
+	 * Save many models to the database.
+	 *
+	 * @param array<int, Model> $models Model instances to save.
+	 * @return array<int, Model>
+	 */
+	public function save_many( array $models ): array {
+		return collect( $models )
+			->map( fn ( $item ) => $this->save( $item ) )
+			->all();
 	}
 
 	/**

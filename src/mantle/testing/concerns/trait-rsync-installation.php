@@ -75,6 +75,13 @@ trait Rsync_Installation {
 	protected bool $use_sqlite_db = false;
 
 	/**
+	 * Plugin slugs or URLs to ZIP files to install after rsyncing the codebase.
+	 *
+	 * @var array<int, array{0: string, 1: string|null}>
+	 */
+	protected array $plugins = [];
+
+	/**
 	 * Exclusions to be used when rsyncing the codebase.
 	 *
 	 * @var string[]
@@ -129,11 +136,15 @@ trait Rsync_Installation {
 	 * Maybe rsync the codebase to the wp-content within WordPress.
 	 *
 	 * Will attempt to locate the wp-content directory relative to the current
-	 * directory. As a fallback, it will assumme it is being called from either
+	 * directory. As a fallback, it will assume it is being called from either
 	 * /wp-content/plugin/:plugin/tests OR /wp-content/themes/:theme/tests. Will
 	 * rsync the codebase from the wp-content level to the root of the WordPress
 	 * installation. Also will attempt to locate the wp-content directory relative
 	 * to the current directory.
+	 *
+	 * This isn't a perfect function and can sometimes fail to locate the proper
+	 * `wp-content` directory. If it does fail to work, manually call
+	 * `maybe_rsync()` yourself with the proper paths.
 	 */
 	public function maybe_rsync_wp_content(): static {
 		// Attempt to locate wp-content relative to the current directory.
@@ -221,6 +232,32 @@ trait Rsync_Installation {
 		$this->rsync_exclusions[] = 'db.php';
 
 		$this->use_sqlite_db = $install;
+
+		return $this;
+	}
+
+	/**
+	 * Install a specific plugin into the rsync-ed codebase.
+	 *
+	 * Used to install a plugin from WordPress.org or a ZIP file to the codebase
+	 * after rsyncing.
+	 *
+	 * @param string $plugin Plugin slug to install. Will be installed at /wp-content/plugins/{plugin}.
+	 * @param string $version_or_url Plugin version to install OR a URL to a ZIP file to install.
+	 * @return static
+	 */
+	public function install_plugin( string $plugin, string $version_or_url = 'latest' ): static {
+		// Ensure that the plugin slug is not a URL.
+		if ( false !== strpos( $plugin, '://' ) ) {
+			Utils::error(
+				'Plugin slug cannot be a URL. Please provide a plugin slug and specify the URL or the version in the second argument.',
+				'Install Rsync'
+			);
+
+			exit( 1 );
+		}
+
+		$this->plugins[] = [ $plugin, $version_or_url ];
 
 		return $this;
 	}
@@ -316,7 +353,7 @@ trait Rsync_Installation {
 		// Install WordPress at the base installation if it doesn't exist yet.
 		if ( ! is_dir( $base_install_path ) || ! is_file( "{$base_install_path}/wp-load.php" ) ) {
 			Utils::info(
-				"Installating WordPress at <em>{$base_install_path}</em> ...",
+				"Installing WordPress at <em>{$base_install_path}</em> ...",
 				'Install Rsync'
 			);
 
@@ -392,11 +429,14 @@ trait Rsync_Installation {
 
 		$cwd = getcwd();
 
+		if ( ! empty( $this->plugins ) ) {
+			$this->install_plugins( $base_install_path );
+		}
+
 		Utils::success(
 			"Finished rsyncing to <em>{$this->rsync_to}</em> and working directory is now <em>{$cwd}</em>",
 			'Install Rsync'
 		);
-
 
 		$command = $this->get_phpunit_command();
 
@@ -409,6 +449,28 @@ trait Rsync_Installation {
 		system( $command, $result_code ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.system_calls_system
 
 		exit( (int) $result_code );
+	}
+
+	/**
+	 * Install the plugins after rsyncing the codebase.
+	 *
+	 * @param string $dir Directory to the WordPress installation.
+	 */
+	protected function install_plugins( string $dir ): void {
+		foreach ( $this->plugins as $item ) {
+			[ $plugin, $version_or_url ] = $item;
+
+			if ( empty( $version_or_url ) ) {
+				$version_or_url = 'latest';
+			}
+
+			Utils::info(
+				"Installing plugin <em>{$plugin}</em> ({$version_or_url})...",
+				'Install Rsync'
+			);
+
+			Utils::install_plugin( $dir, $plugin, $version_or_url );
+		}
 	}
 
 	/**
@@ -426,7 +488,7 @@ trait Rsync_Installation {
 			// Use the first argument and translate it to the rsync-ed path.
 			$executable = $this->translate_location( $args[0] );
 
-			// Attempt to fallback to the phpunit binrary reference in PHP_SELF. This
+			// Attempt to fallback to the phpunit binary reference in PHP_SELF. This
 			// would be the one used to invoke the current script. With that, we can
 			// translate it to the new location in the rsync-ed WordPress
 			// installation.

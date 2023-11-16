@@ -4,6 +4,7 @@ namespace Mantle\Tests\Support;
 use Mantle\Application\Application;
 use Mantle\Console\Command;
 use Mantle\Contracts\Providers as ProviderContracts;
+use Mantle\Events\Dispatcher;
 use Mantle\Support\Service_Provider;
 use Mantle\Support\Attributes\Action;
 use Mockery as m;
@@ -14,6 +15,7 @@ class Test_Service_Provider extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		remove_all_actions( 'init' );
 		remove_all_filters( 'custom_filter' );
+		remove_all_filters( 'custom_filter_dedupe' );
 
 		Service_Provider::$publishes = [];
 		Service_Provider::$publish_tags = [];
@@ -66,12 +68,6 @@ class Test_Service_Provider extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	}
 
 	public function test_hook_attribute() {
-		// Abandon if we're not running PHP 8.
-		if ( version_compare( phpversion(), '8.0.0', '<' ) ) {
-			$this->markTestSkipped( 'Requires PHP 8.0.0 or greater.' );
-			return;
-		}
-
 		$app = m::mock( Application::class )->makePartial();
 		$app->register( Provider_Test_Hook::class );
 		$app->boot();
@@ -79,6 +75,30 @@ class Test_Service_Provider extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		do_action( 'testable-attribute-hook' );
 
 		$this->assertTrue( $_SERVER['__custom_hook_fired'] ?? false );
+	}
+
+	public function test_hook_attribute_deduplicate() {
+		$app = m::mock( Application::class )->makePartial();
+		$app->register( Provider_Test_Hook::class );
+		$app->boot();
+
+		$value = apply_filters( 'custom_filter_dedupe', 0 );
+
+		$this->assertEquals( 10, $value );
+	}
+
+	public function test_typehint_event() {
+		$_SERVER['__custom_event_fired'] = false;
+
+		$app = m::mock( Application::class )->makePartial();
+		$app->register( Provider_Test_Hook::class );
+		$app->boot();
+
+		$app['events'] = new Dispatcher( $app );
+
+		$app['events']->dispatch( new Example_Service_Provider_Event() );
+
+		$this->assertInstanceOf( Example_Service_Provider_Event::class, $_SERVER['__custom_event_fired'] );
 	}
 
 	public function test_publishable_service_providers() {
@@ -248,8 +268,15 @@ class Provider_Test_Hook extends Service_Provider {
 		$_SERVER['__custom_hook_fired'] = true;
 	}
 
-	public function handle_custom_filter( $value ) {
-		return $value + 100;
+	// Assert that only a single action is registered for this hook.
+	#[Action('custom_filter_dedupe')]
+	public function on_custom_filter_dedupe( $value ) {
+		return $value + 10;
+	}
+
+	#[Action(Example_Service_Provider_Event::class)]
+	public function handle_custom_event( Example_Service_Provider_Event $event ) {
+		$_SERVER['__custom_event_fired'] = $event;
 	}
 }
 
@@ -269,4 +296,8 @@ class ServiceProviderForTestingTwo extends Service_Provider {
 		$this->publishes( [ 'source/tagged/two/a' => 'destination/tagged/two/a' ], 'some_tag' );
 		$this->publishes( [ 'source/tagged/two/b' => 'destination/tagged/two/b' ], 'some_tag' );
 	}
+}
+
+class Example_Service_Provider_Event {
+
 }

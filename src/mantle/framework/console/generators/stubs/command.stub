@@ -42,7 +42,7 @@ class {{ class }} extends Command {
    /**
 	 * Callback for the command.
 	 */
-	public function handle() {
+	public function handle(): void {
 		//
 	}
 }

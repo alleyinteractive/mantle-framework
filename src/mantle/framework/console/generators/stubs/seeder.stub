@@ -16,7 +16,7 @@ class {{ class }} extends Seeder {
 	/**
 	 * Run the seeder.
 	 */
-	public function run() {
+	public function run(): void {
 		//
 	}
 }

@@ -1,18 +1,18 @@
 {
     "name": "mantle-framework/http",
     "description": "The Mantle Framework Http Package",
-    "type": "project",
+    "type": "library",
     "require": {
         "php": "^8.0",
-        "illuminate/view": "^9.40",
+        "illuminate/view": "^9.52.15",
         "mantle-framework/contracts": "^0.12",
         "mantle-framework/filesystem": "^0.12",
         "mantle-framework/support": "^0.12",
-        "symfony/http-foundation": "^6.0",
-        "symfony/http-kernel": "^6.0",
-        "symfony/mime": "^6.0",
-        "symfony/routing": "^6.0",
-        "symfony/var-dumper": "^6.0"
+        "symfony/http-foundation": "^6.0.20",
+        "symfony/http-kernel": "^6.0.20",
+        "symfony/mime": "^6.0.19",
+        "symfony/routing": "^6.0.19",
+        "symfony/var-dumper": "^6.0.19"
     },
     "extra": {
         "wordpress-autoloader": {
@@ -33,8 +33,8 @@
             "autoload.php"
         ]
     },
-    "minimum-stability": "dev",
     "config": {
         "sort-packages": true
-    }
+    },
+    "minimum-stability": "dev"
 }

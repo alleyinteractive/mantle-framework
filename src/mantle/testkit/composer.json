@@ -2,7 +2,7 @@
     "name": "mantle-framework/testkit",
     "description": "The Mantle Framework Teskit Package",
     "keywords": ["testing", "mantle"],
-    "type": "project",
+    "type": "library",
     "require": {
         "php": "^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
@@ -13,6 +13,7 @@
         "mantle-framework/faker": "^0.12",
         "mantle-framework/support": "^0.12",
         "mantle-framework/testing": "^0.12",
+        "nunomaduro/collision": "^7.0",
         "phpunit/phpunit": "^9.3.3|^10.0.7",
         "symfony/http-foundation": "^6.0"
     },
@@ -30,8 +31,8 @@
             "email": "mantle@alley.com"
         }
     ],
-    "minimum-stability": "dev",
     "config": {
         "sort-packages": true
-    }
+    },
+    "minimum-stability": "dev"
 }

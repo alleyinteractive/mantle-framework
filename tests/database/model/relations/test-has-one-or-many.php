@@ -4,8 +4,10 @@ namespace Mantle\Tests\Database\Model\Relations\Has_One;
 use Carbon\Carbon;
 use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Concerns\Has_Relationships as Relationships;
+use Mantle\Database\Model\Relations\Has_One;
 use Mantle\Database\Model\Relations\Relation;
 use Mantle\Database\Model\Term;
+use Mantle\Database\Model_Service_Provider;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Utils;
@@ -14,10 +16,14 @@ class Test_Has_One_Or_Many extends Framework_Test_Case {
 	use Refresh_Database;
 
 	protected function setUp(): void {
-		Utils::delete_all_posts();
 		parent::setUp();
+
 		register_post_type( 'sponsor' );
 		register_taxonomy( 'test_taxonomy', 'post' );
+
+		if ( ! taxonomy_exists( Has_One::RELATION_TAXONOMY ) ) {
+			Model_Service_Provider::register_internal_taxonomy();
+		}
 	}
 
 	protected function tearDown(): void {
@@ -94,6 +100,38 @@ class Test_Has_One_Or_Many extends Framework_Test_Case {
 
 		// Query the relationship.
 		$this->assertNull( $sponsor->posts()->first() );
+	}
+
+	public function test_has_many_post_to_post_modifier() {
+		$posts = array_map(
+			[ Testable_Post::class, 'find' ],
+			static::factory()->post->create_ordered_set( 50 ),
+		);
+
+		$sponsor = Testable_Sponsor::find( $this->get_random_post_id( [ 'post_type' => 'sponsor' ] ) );
+
+		// Save the posts to the sponsor.
+		$sponsor->posts()->save( $posts );
+
+		$this->assertCount( 50, $sponsor->posts()->get() );
+		$this->assertCount( 10, $sponsor->posts_query_modifier()->get() );
+	}
+
+	public function test_has_many_post_to_post_modifier_using_terms() {
+		$this->assertTrue( taxonomy_exists( Relation::RELATION_TAXONOMY ) );
+
+		$posts = array_map(
+			[ Testable_Post_Using_Term::class, 'find' ],
+			static::factory()->post->create_ordered_set( 50 ),
+		);
+
+		$sponsor = Testable_Sponsor_Using_Term::find( $this->get_random_post_id( [ 'post_type' => 'sponsor' ] ) );
+
+		// Save the posts to the sponsor.
+		$sponsor->posts()->save( $posts );
+
+		$this->assertCount( 50, $sponsor->posts()->get() );
+		$this->assertCount( 10, $sponsor->posts_query_modifier()->get() );
 	}
 
 	public function test_has_one_post_to_term() {
@@ -293,6 +331,10 @@ class Testable_Sponsor extends Post {
 	public function posts() {
 		return $this->has_many( Testable_Post::class );
 	}
+
+	public function posts_query_modifier() {
+		return $this->posts()->take( 10 );
+	}
 }
 
 class Testable_Term extends Term {
@@ -332,5 +374,13 @@ class Testable_Sponsor_Using_Term extends Post {
 
 	public function post() {
 		return $this->has_one( Testable_Post_Using_Term::class )->uses_terms();
+	}
+
+	public function posts() {
+		return $this->has_many( Testable_Post_Using_Term::class )->uses_terms();
+	}
+
+	public function posts_query_modifier() {
+		return $this->posts()->take( 10 );
 	}
 }

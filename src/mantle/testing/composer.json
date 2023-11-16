@@ -2,17 +2,18 @@
     "name": "mantle-framework/testing",
     "description": "The Mantle Framework Testing Package",
     "keywords": ["testing", "mantle"],
-    "type": "project",
+    "type": "library",
     "require": {
         "php": "^8.0",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
         "mantle-framework/contracts": "^0.12",
         "mantle-framework/database": "^0.12",
         "mantle-framework/faker": "^0.12",
-        "mantle-framework/http-client": "^0.12",
         "mantle-framework/http": "^0.12",
+        "mantle-framework/http-client": "^0.12",
         "mantle-framework/support": "^0.12",
-        "nunomaduro/termwind": "^1.14"
+        "nunomaduro/termwind": "^1.15.1",
+        "spatie/phpunit-snapshot-assertions": "^4.2"
     },
     "extra": {
         "wordpress-autoloader": {
@@ -33,7 +34,6 @@
         "mantle-framework/console": "Required to assert console commands.",
         "phpunit/phpunit": "Required to use assertions and run tests."
     },
-    "minimum-stability": "dev",
     "config": {
         "sort-packages": true
     },
@@ -41,5 +41,6 @@
         "files": [
             "autoload.php"
         ]
-    }
+    },
+    "minimum-stability": "dev"
 }

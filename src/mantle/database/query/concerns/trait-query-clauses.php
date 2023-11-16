@@ -1,6 +1,6 @@
 <?php
 /**
- * Modifies_Query trait file
+ * Query_Clauses trait file
  *
  * phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag, Squiz.Commenting.FunctionComment.ParamNameNoMatch
  *
@@ -116,6 +116,7 @@ trait Query_Clauses {
 	 * Execute a callback with the clauses applied only for the closure.
 	 *
 	 * @template TReturnValue
+	 *
 	 * @param callable(): TReturnValue $callback The callback to execute.
 	 * @return TReturnValue The return value of the callback.
 	 */

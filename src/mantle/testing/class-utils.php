@@ -7,6 +7,7 @@
 
 namespace Mantle\Testing;
 
+use Mantle\Support\Collection;
 use Mantle\Support\Str;
 use Mantle\Testing\Doubles\Spy_REST_Server;
 
@@ -267,7 +268,7 @@ class Utils {
 			return $string ? 'true' : 'false';
 		}
 
-		return empty( trim( $string ) ) ? "''" : $string;
+		return empty( trim( $string ) ) ? "''" : "\"{$string}\"";
 	}
 
 	/**
@@ -289,12 +290,33 @@ class Utils {
 	): void {
 		$branch = static::env( 'MANTLE_CI_BRANCH', 'HEAD' );
 
+		// Compile the variables to pass to the shell script.
+		$variables = collect(
+			[
+				[ 'WP_CORE_DIR', $directory ],
+				[ 'WP_MULTISITE', static::env( 'WP_MULTISITE', '0' ) ],
+			]
+		)
+				->when(
+					$use_sqlite_db,
+					fn ( Collection $collection ) => $collection->push( [ 'WP_USE_SQLITE', 'true' ] )
+				)
+				->when(
+					static::is_debug_mode(),
+					fn ( Collection $collection ) => $collection->push( [ 'INSTALL_WP_TEST_DEBUG', 'true' ] )
+				)
+				->when(
+					! empty( static::env( 'CACHEDIR', '' ) ),
+					fn ( Collection $collection ) => $collection->push( [ 'CACHEDIR', static::env( 'CACHEDIR', '' ) ] )
+				)
+				->map(
+					fn ( array $item ) => sprintf( 'export %s=%s', $item[0], static::shell_safe( $item[1] ) )
+				)
+				->implode( ' && ' );
+
 		$command = sprintf(
-			'export WP_CORE_DIR=%s WP_MULTISITE=%s WP_USE_SQLITE=%s INSTALL_WP_TEST_DEBUG=%s && curl -s %s | bash -s %s',
-			$directory,
-			static::shell_safe( static::env( 'WP_MULTISITE', '0' ) ),
-			static::shell_safe( $use_sqlite_db ),
-			static::shell_safe( static::is_debug_mode() ),
+			'%s && curl -s %s | bash -s %s',
+			$variables,
 			"https://raw.githubusercontent.com/alleyinteractive/mantle-ci/{$branch}/install-wp-tests.sh",
 			collect(
 				[
@@ -306,6 +328,53 @@ class Utils {
 					static::shell_safe( static::env( 'WP_SKIP_DB_CREATE', 'false' ) ),
 					static::shell_safe( $install_vip_mu_plugins ? 'true' : 'false' ),
 					static::shell_safe( $install_object_cache ? 'true' : 'false' ),
+				]
+			)->implode( ' ' ),
+		);
+
+		$retval = 0;
+		$output = static::command( $command, $retval );
+
+		if ( 0 !== $retval ) {
+			static::error( '🚨 Error installing WordPress! Output from installation:', 'Install Rsync' );
+			static::code( $output );
+			exit( 1 );
+		}
+	}
+
+	/**
+	 * Install a plugin to a WordPress codebase through a shell script.
+	 *
+	 * @param string $directory Directory to install WordPress in.
+	 * @param string $plugin Plugin slug to install.
+	 * @param string $version_or_url Plugin version to install OR URL to install from.
+	 */
+	public static function install_plugin( string $directory, string $plugin, string $version_or_url = 'latest' ): void {
+		$branch = static::env( 'MANTLE_CI_BRANCH', 'HEAD' );
+
+		// Compile the variables to pass to the shell script.
+		$variables = collect(
+			[
+				[ 'WP_CORE_DIR', $directory ],
+			]
+		)
+			->when(
+				! empty( static::env( 'CACHEDIR', '' ) ),
+				fn ( Collection $collection ) => $collection->push( [ 'CACHEDIR', static::env( 'CACHEDIR', '' ) ] )
+			)
+			->map(
+				fn ( array $item ) => sprintf( 'export %s=%s', $item[0], static::shell_safe( $item[1] ) )
+			)
+			->implode( ' && ' );
+
+		$command = sprintf(
+			'%s && curl -s %s | bash -s %s',
+			$variables,
+			"https://raw.githubusercontent.com/alleyinteractive/mantle-ci/{$branch}/install-plugin.sh",
+			collect(
+				[
+					$plugin,
+					$version_or_url,
 				]
 			)->implode( ' ' ),
 		);
@@ -368,6 +437,8 @@ class Utils {
 			$command = implode( ' ', $command );
 		}
 
+		$output = null;
+
 		exec( $command, $output, $exit_code ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.system_calls_exec
 
 		// Display the command runtime if in debug mode.
@@ -401,8 +472,32 @@ class Utils {
 		foreach ( $paths as $path ) {
 			if ( ! is_dir( $path ) && file_exists( $path ) ) {
 				require_once $path;
+
 				return;
 			}
 		}
+	}
+
+	/**
+	 * Register a shutdown function to handle errors.
+	 *
+	 * Used during the WordPress installation process to catch silent errors.
+	 */
+	public static function register_shutdown_function(): void {
+		register_shutdown_function( [ static::class, 'handle_shutdown' ] );
+	}
+
+	/**
+	 * Handle a shutdown error and display it.
+	 */
+	public static function handle_shutdown(): void {
+		$error = error_get_last();
+
+		if ( ! $error ) {
+			return;
+		}
+
+		static::error( '🚨 Error during test run:', 'Shutdown' );
+		static::code( $error );
 	}
 }
