@@ -32,8 +32,8 @@ class Service_Provider extends Base_Service_Provider {
 	/**
 	 * Register the WordPress queue provider's post type and taxonomies.
 	 *
-	 * Registers the cleanup command to run daily (by default) to remove old queue
-	 * jobs from the database.
+	 * Registers the cleanup command with the application task scheduler to run
+	 * daily (by default) to remove old queue jobs from the database.
 	 */
 	public function boot() {
 		if ( did_action( 'init' ) ) {

@@ -104,8 +104,8 @@ class Schedule {
 	 * Add a new command event.
 	 *
 	 * @param class-string<\Mantle\Console\Command> $command Command class to run.
-	 * @param array                                $arguments Arguments for the command.
-	 * @param array                                $assoc_args Assoc. arguments for the command.
+	 * @param array                                 $arguments Arguments for the command.
+	 * @param array                                 $assoc_args Assoc. arguments for the command.
 	 * @return Event
 	 *
 	 * @throws RuntimeException Thrown on missing command.

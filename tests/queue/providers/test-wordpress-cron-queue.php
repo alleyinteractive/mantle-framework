@@ -8,6 +8,7 @@ use Mantle\Queue\Events\Job_Failed;
 use Mantle\Queue\Providers\WordPress\Meta_Key;
 use Mantle\Queue\Providers\WordPress\Post_Status;
 use Mantle\Queue\Providers\WordPress\Provider;
+use Mantle\Queue\Providers\WordPress\Queue_Record;
 use Mantle\Queue\Providers\WordPress\Scheduler;
 use Mantle\Queue\Queueable;
 use Mantle\Scheduling\Schedule;
@@ -295,11 +296,30 @@ class Test_WordPress_Cron_Queue extends Framework_Test_Case {
 	}
 
 	public function test_cleanup_completed_jobs() {
-		$this->app['config']->set( 'queue.preserve_completed_jobs', 60 * 60 * 24 );
+		$this->app['config']->set( 'queue.delete_after', 60 * 60 * 24 );
 
-		Schedule::schedule_cron_event();
+		$record = Queue_Record::create( [
+			'post_status' => Post_Status::COMPLETED->value,
+			'post_date' => now()->subMonth()->format( 'Y-m-d H:i:s' ),
+		] );
 
-		do_action( 'mantle_scheduled_event' );
+		// Create a valid queue job that shouldn't be deleted.
+		Example_Job::dispatch();
+
+
+		// Perform the scheduled cleanup manually.
+		$this->command( 'mantle queue:cleanup' );
+
+		// Ensure that the expired queue job was deleted.
+		$this->assertEmpty( get_post( $record->ID ) );
+
+		// Assert that the queue post still exists.
+		$this->assertPostExists( [
+			'post_type'    => Provider::OBJECT_NAME,
+			'post_status'  => Post_Status::PENDING,
+		] );
+
+		$this->assertInCronQueue( Example_Job::class );
 	}
 }
 
