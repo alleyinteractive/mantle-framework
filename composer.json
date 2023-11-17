@@ -104,7 +104,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Mantle\\Tests\\": "tests/"
+            "Mantle\\Tests\\": "tests"
         }
     },
     "config": {
