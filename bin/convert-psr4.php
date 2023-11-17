@@ -1,5 +1,10 @@
 <?php
 /**
+ * Helper script to convert the tests/ package to PSR-4 coding standards.
+ *
+ * The eventual plan is to use this for the rest of the project when that can be
+ * converted over. Ideally this can be a reusable command in the future.
+ *
  * phpcs:disable
  */
 
