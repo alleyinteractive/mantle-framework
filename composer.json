@@ -100,9 +100,7 @@
             "src/mantle/queue/autoload.php",
             "src/mantle/support/autoload.php",
             "src/mantle/testing/autoload.php"
-        ]
-    },
-    "autoload-dev": {
+        ],
         "psr-4": {
             "Mantle\\Tests\\": "tests"
         }
