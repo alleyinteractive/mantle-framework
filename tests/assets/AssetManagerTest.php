@@ -22,7 +22,7 @@ class AssetManagerTest extends TestCase {
 			);
 
 		$this->assertStringContainsString(
-			"<script src='https://example.org/script.js' id='script-handle-js'></script>",
+			'<script src="https://example.org/script.js" id="script-handle-js"></script>',
 			$this->get_wp_head(),
 		);
 	}
@@ -37,7 +37,7 @@ class AssetManagerTest extends TestCase {
 			);
 
 		$this->assertStringContainsString(
-			"<link rel='stylesheet' id='style-handle-css' href='https://example.org/style.css' media='all' />",
+			'<link rel=\'stylesheet\' id=\'style-handle-css\' href=\'https://example.org/style.css\' media=\'all\' />',
 			$this->get_wp_head(),
 		);
 	}
@@ -53,7 +53,7 @@ class AssetManagerTest extends TestCase {
 		$manager->async( 'testsync-script-handle' );
 
 		$this->assertStringContainsString(
-			"<script async src='https://example.org/example-script.js' id='testsync-script-handle-js'></script>",
+			'<script async src="https://example.org/example-script.js" id="testsync-script-handle-js"></script>',
 			$this->get_wp_head(),
 		);
 	}
@@ -66,7 +66,7 @@ class AssetManagerTest extends TestCase {
 			->async();
 
 		$this->assertStringContainsString(
-			"<script async src='https://example.org/example-fluent.js' id='example-fluent-js'></script>",
+			'<script async src="https://example.org/example-fluent.js" id="example-fluent-js"></script>',
 			$this->get_wp_head(),
 		);
 	}
@@ -78,7 +78,7 @@ class AssetManagerTest extends TestCase {
 			->async();
 
 		$this->assertStringContainsString(
-			"<script async src='https://example.org/example-helper.js' id='example-helper-js'></script>",
+			'<script async src="https://example.org/example-helper.js" id="example-helper-js"></script>',
 			$this->get_wp_head(),
 		);
 	}
@@ -89,7 +89,6 @@ class AssetManagerTest extends TestCase {
 		// Prevent a failing test if this is removed in the future.
 		if ( ! isset( $wp_scripts->registered['swfobject'] ) ) {
 			$this->markTestSkipped( 'swfobject is not registered in core, should change the dependency tested against' );
-			return;
 		}
 
 		$version = $wp_scripts->registered['swfobject']->ver;
@@ -101,7 +100,7 @@ class AssetManagerTest extends TestCase {
 			->async();
 
 		$this->assertStringContainsString(
-			"<script async src='http://example.org/wp-includes/js/swfobject.js?ver={$version}' id='swfobject-js'></script>",
+			'<script async src="http://example.org/wp-includes/js/swfobject.js?ver=' . $version . '" id="swfobject-js"></script>',
 			$this->get_wp_head(),
 		);
 	}

@@ -48,6 +48,7 @@ abstract class TestCase extends Framework_Test_Case {
 	protected function get_wp_head(): string {
 		ob_start();
 		do_action( 'wp_head' );
+		// do_action( 'wp_footer' );
 		return ob_get_clean();
 	}
 
