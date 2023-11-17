@@ -5,6 +5,8 @@ namespace Mantle\Tests\Assets;
 use Mantle\Assets\Asset_Loader;
 use Mantle\Assets\Exception\Asset_Not_Found;
 
+require_once __DIR__ . '/TestCase.php';
+
 class AssetLoaderTest extends TestCase {
 	public string $build_dir = '';
 
