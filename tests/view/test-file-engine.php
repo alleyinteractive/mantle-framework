@@ -3,7 +3,7 @@ namespace Mantle\Tests\View;
 
 use Mantle\Testing\Framework_Test_Case;
 
-class Test_File_Views extends Framework_Test_Case {
+class Test_File_Engine extends Framework_Test_Case {
 	protected function setUp(): void {
 		parent::setUp();
 

@@ -16,7 +16,7 @@ $finder = ( new Finder() )
 	->notPath( '#fixtures|__snapshots__|template-parts#' );
 
 $index = [];
-$pass  = false;
+$pass  = true;
 
 foreach ( $finder as $file ) {
 	$filename = str( $file->getFilename() )->lower();
@@ -69,8 +69,10 @@ foreach ( $finder as $file ) {
 	// Check if the file contains the class.
 	$contents = str( file_get_contents( $file->getRealPath() ) );
 
-	if ( ! $contents->contains( "class {$old_class_name->value()} ", true ) ) {
-		echo $file->getRealPath() . ' does not contain the expected legacy class ' . $old_class_name->value() . PHP_EOL;
+	$type = $filename->startsWith( 'trait-' ) ? 'trait' : 'class';
+
+	if ( ! $contents->contains( "{$type} {$old_class_name->value()} ", true ) ) {
+		echo $file->getRealPath() . ' does not contain the expected legacy ' . $type . ' ' . $old_class_name->value() . PHP_EOL;
 
 		$pass = false;
 
@@ -78,6 +80,7 @@ foreach ( $finder as $file ) {
 	}
 
 	$index[] = [
+		$type,
 		[
 			$file->getRealPath(),
 			$old_class_name->value(),
@@ -98,7 +101,7 @@ if ( ! $pass ) {
 echo 'Processing ' . count( $index ) . ' files...';
 
 foreach ( $index as $item ) {
-	[ $old, $new ] = $item;
+	[ $type, $old, $new ] = $item;
 
 	[ $old_file, $old_class ] = $old;
 	[ $new_file, $new_class ] = $new;
@@ -106,7 +109,7 @@ foreach ( $index as $item ) {
 	// Update the file with the new class name.
 	file_put_contents(
 		$old_file,
-		str( file_get_contents( $old_file ) )->replace( "class {$old_class} ", "class {$new_class} ", false )->value(),
+		str( file_get_contents( $old_file ) )->replace( "{$type} {$old_class} ", "{$type} {$new_class} ", false )->value(),
 	);
 
 	// Update the file name.
@@ -116,7 +119,7 @@ foreach ( $index as $item ) {
 		exit( 1 );
 	}
 
-	echo "Updated {$file->getFilename()} to {$new_filename->value()}: ({$old_class_name}) -> ({$new_class_name})\n\n";
+	echo "Updated {$old_file} to {$new_file} ({$old_class} to {$new_class}).\n";
 }
 
 echo "\nDONE!\n";

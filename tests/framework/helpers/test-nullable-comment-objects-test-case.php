@@ -14,7 +14,7 @@ use function Mantle\Support\Helpers\get_comment_object;
 /**
  * Unit tests for nullable comment object functions.
  */
-class Nullable_Comment_Objects_Test_Case extends Framework_Test_Case {
+class Test_Nullable_Comment_Objects_Test_Case extends Framework_Test_Case {
 	/**
 	 * Test that `get_comment_object()` returns a comment object.
 	 */

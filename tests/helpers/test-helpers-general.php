@@ -19,7 +19,7 @@ use function Mantle\Support\Helpers\throw_unless;
 use function Mantle\Support\Helpers\transform;
 use function Mantle\Support\Helpers\with;
 
-class SupportHelpersGeneralTest extends TestCase {
+class Test_Helpers_General extends TestCase {
 	public function testClassBasename() {
 		$this->assertSame( 'Baz', class_basename( 'Foo\Bar\Baz' ) );
 		$this->assertSame( 'Baz', class_basename( 'Baz' ) );

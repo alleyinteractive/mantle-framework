@@ -7,7 +7,7 @@ use Mantle\Support\Pipeline;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-class PipelineTest extends TestCase {
+class Test_Pipeline extends TestCase {
 
 	public function testPipelineBasicUsage() {
 		$pipeTwo = function ( $piped, $next ) {

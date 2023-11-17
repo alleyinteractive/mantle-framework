@@ -6,7 +6,7 @@ use function Mantle\Support\Helpers\data_get;
 use function Mantle\Support\Helpers\data_set;
 use function Mantle\Support\Helpers\value;
 
-class SupportHelpersArrayTest extends TestCase {
+class Test_Helpers_Array extends TestCase {
 	public function testValue() {
 		$this->assertSame( 'foo', value( 'foo' ) );
 		$this->assertSame( 'foo', value( function () {

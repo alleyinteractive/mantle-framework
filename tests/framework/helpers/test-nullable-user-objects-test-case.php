@@ -14,7 +14,7 @@ use function Mantle\Support\Helpers\get_user_object_by;
 /**
  * Unit tests for nullable user object functions.
  */
-class Nullable_User_Objects_Test_Case extends Framework_Test_Case {
+class Test_Nullable_User_Objects_Test_Case extends Framework_Test_Case {
 	/**
 	 * Test that `get_user_object()` returns a user object.
 	 */

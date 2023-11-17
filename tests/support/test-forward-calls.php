@@ -7,7 +7,7 @@ use Error;
 use Mantle\Support\Forward_Calls;
 use PHPUnit\Framework\TestCase;
 
-class Forward_CallsTest extends TestCase {
+class Test_Forward_Calls extends TestCase {
 
 	public function testForward_Calls() {
 		$results = ( new Forward_CallsOne() )->forwardedTwo( 'foo', 'bar' );

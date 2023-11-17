@@ -11,7 +11,7 @@ use Mantle\Database\Model\Registration\Register_Post_Type;
 use Mockery as m;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 
-class Test_Model_Service_Provider extends MockeryTestCase {
+class Test_Model_Register_Provider extends MockeryTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 		remove_all_actions( 'init' );

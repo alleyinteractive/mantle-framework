@@ -14,7 +14,7 @@ if ( \is_multisite() ) {
 	/**
 	 * Unit tests for nullable site object functions.
 	 */
-	class Nullable_Site_Objects_Test_Case extends Framework_Test_Case {
+	class Test_Nullable_Site_Objects_Test_Case extends Framework_Test_Case {
 		/**
 		 * Test that `get_site_object()` returns a site object.
 		 */
