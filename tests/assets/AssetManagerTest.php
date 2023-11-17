@@ -4,8 +4,6 @@ namespace Mantle\Tests\Assets;
 
 use Mantle\Assets\Asset_Manager;
 
-require_once __DIR__ . '/TestCase.php';
-
 /**
  * @group assets
  */
