@@ -14,10 +14,6 @@ define( 'MANTLE_PHPUNIT_TEMPLATE_PATH', __DIR__ . '/template-parts' );
 // Enable debugging flag for local development on the testing framework.
 // define( 'MANTLE_TESTING_DEBUG', true );
 
-require_once __DIR__ . '/../vendor/autoload.php';
-dump('debuggin Mantle\Tests\Assets\TestCase', class_exists(\Mantle\Tests\Assets\TestCase::class));
-dump('vendor/composer/autoload_static.php', file_get_contents('vendor/composer/autoload_static.php'));
-
 \Mantle\Testing\manager()
 	->maybe_rsync_plugin()
 	->with_vip_mu_plugins()
