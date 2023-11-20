@@ -16,7 +16,7 @@ define( 'MANTLE_PHPUNIT_TEMPLATE_PATH', __DIR__ . '/template-parts' );
 
 require_once __DIR__ . '/../vendor/autoload.php';
 dump('debuggin Mantle\Tests\Assets\TestCase', class_exists(\Mantle\Tests\Assets\TestCase::class));
-dump('vendor/composer/autoload_psr4.php', file_get_contents('vendor/composer/autoload_psr4.php'));
+dump('vendor/composer/autoload_static.php', file_get_contents('vendor/composer/autoload_static.php'));
 
 \Mantle\Testing\manager()
 	->maybe_rsync_plugin()
