@@ -5,7 +5,6 @@
 	backupGlobals="false"
 	colors="true"
 	xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.3/phpunit.xsd"
-	cacheDirectory=".phpunit.cache"
 >
 	<testsuites>
 		<testsuite name="mantle-framework">
