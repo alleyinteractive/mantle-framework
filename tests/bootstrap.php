@@ -14,6 +14,8 @@ define( 'MANTLE_PHPUNIT_TEMPLATE_PATH', __DIR__ . '/template-parts' );
 // Enable debugging flag for local development on the testing framework.
 // define( 'MANTLE_TESTING_DEBUG', true );
 
+dump('debuggin Mantle\Tests\Assets\TestCase', class_exists(\Mantle\Tests\Assets\TestCase::class));
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 \Mantle\Testing\manager()
