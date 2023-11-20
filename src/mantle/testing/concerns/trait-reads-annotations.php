@@ -29,10 +29,10 @@ trait Reads_Annotations {
 		}
 
 		// Use the PHPUnit ^9.5 method if available.
-		if ( method_exists( Test::class, 'parseTestMethodAnnotations' ) ) {
+		if ( method_exists( Test::class, 'parseTestMethodAnnotations' ) ) { // @phpstan-ignore-line
 			return Test::parseTestMethodAnnotations(
 				static::class,
-				$this->getName()
+				$this->getName(), // @phpstan-ignore-line
 			);
 		}
 
