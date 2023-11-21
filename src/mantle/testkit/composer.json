@@ -13,9 +13,9 @@
         "mantle-framework/faker": "^0.12",
         "mantle-framework/support": "^0.12",
         "mantle-framework/testing": "^0.12",
-        "nunomaduro/collision": "^6.4",
-        "phpunit/phpunit": "^9.6.10",
-        "symfony/http-foundation": "^6.0.20"
+        "nunomaduro/collision": "^6.0 || ^7.0",
+        "phpunit/phpunit": "^9.3.3|^10.0.7",
+        "symfony/http-foundation": "^6.0"
     },
     "extra": {
         "wordpress-autoloader": {
