@@ -10,6 +10,7 @@ vendor
 # Cache files
 .phpcs/*.json
 .phpunit.result.cache
+.phpunit.cache/
 
 # Composer files
 composer.lock
