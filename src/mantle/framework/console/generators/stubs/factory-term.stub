@@ -15,7 +15,7 @@ use App\Models\{{ class }};
 /**
  * {{ class }} Factory
  *
- * @extends \Mantle\Database\Factory\Term_Factory<\App\Models\{{ class }}>
+ * @extends \Mantle\Database\Factory\Term_Factory<\App\Models\{{ class }}, \WP_Term, {{ class }}>
  */
 class {{ class }}_Factory extends \Mantle\Database\Factory\Term_Factory {
 	/**
