@@ -738,6 +738,15 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	}
 
 	/**
+	 * Convert a value to studly caps case using underscores.
+	 *
+	 * @return static
+	 */
+	public function studlyUnderscore() {
+		return new static( Str::studly_underscore( $this->value ) );
+	}
+
+	/**
 	 * Returns the portion of the string specified by the start and length parameters.
 	 *
 	 * @param  int      $start
