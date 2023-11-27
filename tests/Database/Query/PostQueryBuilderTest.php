@@ -710,7 +710,7 @@ class PostQueryBuilderTest extends Framework_Test_Case {
 
 		$this->assertEquals(
 			$post->id(),
-			Testable_Post::whereMeta( Testable_Meta_Values::Meta_Key_A->value, Testable_Meta_Values::Meta_Value_A )->first()?->id,
+			Testable_Post::whereMeta( Testable_Meta_Values::Meta_Key_A, Testable_Meta_Values::Meta_Value_A )->first()?->id,
 		);
 	}
 }
