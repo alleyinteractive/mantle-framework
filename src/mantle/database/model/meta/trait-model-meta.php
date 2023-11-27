@@ -9,7 +9,6 @@ namespace Mantle\Database\Model\Meta;
 
 use BackedEnum;
 use Mantle\Database\Model\Model_Exception;
-use UnitEnum;
 
 /**
  * Interface for interfacing with a model's meta.
