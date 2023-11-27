@@ -673,6 +673,46 @@ class PostQueryBuilderTest extends Framework_Test_Case {
 		array_pop( $post_ids );
 		return $post_ids[ array_rand( $post_ids ) ];
 	}
+
+	public function test_query_by_enum() {
+		// Check if enum is supported.
+		if ( PHP_VERSION_ID < 80100 ) {
+			$this->markTestSkipped( 'PHP 8.1+ is required for this test.' );
+		}
+
+		$post = static::factory()->post
+			->with_meta( [
+				'example-meta' => Testable_Meta_Values::Meta_Value_A,
+				Testable_Meta_Values::Meta_Key_A->value => Testable_Meta_Values::Meta_Value_A,
+				Testable_Meta_Values::Meta_Key_B->value => Testable_Meta_Values::Meta_Value_B,
+			] )
+			->as_models()
+			->create_and_get();
+
+		$this->assertEquals(
+			Testable_Meta_Values::Meta_Value_A->value,
+			$post->get_meta( 'example-meta' ),
+		);
+
+		$this->assertEquals(
+			Testable_Meta_Values::Meta_Value_B->value,
+			$post->get_meta( Testable_Meta_Values::Meta_Key_B->value ),
+		);
+
+		$this->assertEmpty(
+			Testable_Post::whereMeta( Testable_Meta_Values::Meta_Key_A->value, 'unknown' )->first(),
+		);
+
+		$this->assertEquals(
+			$post->id(),
+			Testable_Post::whereMeta( 'example-meta', Testable_Meta_Values::Meta_Value_A )->first()?->id,
+		);
+
+		$this->assertEquals(
+			$post->id(),
+			Testable_Post::whereMeta( Testable_Meta_Values::Meta_Key_A->value, Testable_Meta_Values::Meta_Value_A )->first()?->id,
+		);
+	}
 }
 
 class Testable_Post extends Post {
@@ -685,4 +725,13 @@ class Another_Testable_Post extends Post {
 
 class Testable_Tag extends Term {
 	public static $object_name = 'post_tag';
+}
+
+if ( PHP_VERSION_ID >= 80100 ) {
+	enum Testable_Meta_Values: string {
+		case Meta_Key_A = 'meta-key-a';
+		case Meta_Key_B = 'meta-key-b';
+		case Meta_Value_A = 'meta-value-a';
+		case Meta_Value_B = 'meta-value-b';
+	}
 }
