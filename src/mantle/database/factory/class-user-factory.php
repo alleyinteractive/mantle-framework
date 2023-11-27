@@ -14,7 +14,11 @@ use function Mantle\Support\Helpers\get_user_object;
 /**
  * User Factory
  *
- * @template TObject of \Mantle\Database\Model\User
+ * @template TModel of \Mantle\Database\Model\User
+ * @template TObject of \WP_User
+ * @template TReturnValue
+ *
+ * @extends Factory<TModel, TObject, TReturnValue>
  */
 class User_Factory extends Factory {
 	use Concerns\With_Meta;
@@ -22,7 +26,7 @@ class User_Factory extends Factory {
 	/**
 	 * Model to use when creating objects.
 	 *
-	 * @var class-string
+	 * @var class-string<TModel>
 	 */
 	protected string $model = User::class;
 

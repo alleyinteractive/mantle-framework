@@ -80,24 +80,36 @@ abstract class Service_Provider implements LoggerAwareInterface {
 		}
 
 		$this->boot_action_hooks();
-		$this->boot_attribute_hooks();
 		$this->boot();
 	}
 
 	/**
-	 * Boot all actions on the service provider.
+	 * Boot all actions and attribute methods on the service provider.
 	 *
-	 * Allow methods in the 'on_{hook}_at_priority' and 'on_{hook}' format
-	 * to automatically register WordPress hooks.
+	 * Collects all of the `on_{hook}` and `on_{hook}_at_{priority}` methods as
+	 * well as the attribute based `#[Action]` methods and registers them with
+	 * the respective WordPress hooks.
 	 */
-	protected function boot_action_hooks() {
-		collect( get_class_methods( static::class ) )
-			->filter(
-				function( string $method ) {
-					return Str::starts_with( $method, 'on_' );
-				}
-			)
+	protected function boot_action_hooks(): void {
+		$this->collect_action_methods()
+			->merge( $this->collect_attribute_hooks() )
+			->unique()
 			->each(
+				fn ( array $item ) => add_action( $item['hook'], [ $this, $item['method'] ], $item['priority'] ),
+			);
+	}
+
+	/**
+	 * Collect all action methods from the service provider.
+	 *
+	 * @return Collection<int, array{hook: string, method: string, priority: int}>
+	 */
+	protected function collect_action_methods(): Collection {
+		return collect( get_class_methods( static::class ) )
+			->filter(
+				fn ( string $method ) => Str::starts_with( $method, 'on_' )
+			)
+			->map(
 				function( string $method ) {
 					$hook     = Str::after( $method, 'on_' );
 					$priority = 10;
@@ -108,30 +120,42 @@ abstract class Service_Provider implements LoggerAwareInterface {
 						$hook     = Str::before_last( $hook, '_at_' );
 					}
 
-					add_action( $hook, [ $this, $method ], $priority );
+					return [
+						'hook'     => $hook,
+						'method'   => $method,
+						'priority' => $priority,
+					];
 				}
 			);
 	}
 
 	/**
-	 * Boot all attribute actions on the service provider.
+	 * Collect all attribute actions on the service provider.
+	 *
+	 * Allow methods with the `#[Action]` attribute to automatically register
+	 * WordPress hooks.
+	 *
+	 * @return Collection<int, array{hook: string, method: string, priority: int}>
 	 */
-	protected function boot_attribute_hooks() {
+	protected function collect_attribute_hooks(): Collection {
+		$items = new Collection();
 		$class = new ReflectionClass( static::class );
 
 		foreach ( $class->getMethods() as $method ) {
-			$action_attributes = $method->getAttributes( Action::class );
-
-			if ( empty( $action_attributes ) ) {
-				continue;
-			}
-
-			foreach ( $action_attributes as $attribute ) {
+			foreach ( $method->getAttributes( Action::class ) as $attribute ) {
 				$instance = $attribute->newInstance();
 
-				add_action( $instance->action, [ $this, $method->name ], $instance->priority );
+				$items->push(
+					[
+						'hook'     => $instance->hook_name,
+						'method'   => $method->getName(),
+						'priority' => $instance->priority,
+					]
+				);
 			}
 		}
+
+		return $items;
 	}
 
 	/**

@@ -18,7 +18,11 @@ use function Mantle\Support\Helpers\collect;
  * Extends upon the factory that is included with Mantle (one that is designed
  * to mirror WordPress) and builds upon it to provide a fluent interface.
  *
- * @template TObject of \Mantle\Database\Model\Model
+ * @template TModel of \Mantle\Database\Model\Model
+ * @template TObject
+ * @template TReturnValue
+ *
+ * @extends Factory<TModel, TObject, TReturnValue>
  */
 class Fluent_Factory extends Factory {
 	/**
@@ -57,7 +61,7 @@ class Fluent_Factory extends Factory {
 	 * Create one or multiple objects and return the IDs.
 	 *
 	 * @param array $args Arguments to pass to the factory.
-	 * @return \Mantle\Support\Collection<int, mixed>|mixed
+	 * @return \Mantle\Support\Collection<int, TReturnValue>|mixed
 	 */
 	public function create( array $args = [] ): mixed {
 		if ( 1 === $this->count ) {
@@ -71,7 +75,7 @@ class Fluent_Factory extends Factory {
 	 * Create one or multiple objects and return the objects.
 	 *
 	 * @param array $args Arguments to pass to the factory.
-	 * @return \Mantle\Support\Collection<int, TObject>|TObject
+	 * @return \Mantle\Support\Collection<int, TReturnValue>|TReturnValue
 	 */
 	public function create_and_get( array $args = [] ): mixed {
 		if ( 1 === $this->count ) {
@@ -98,7 +102,7 @@ class Fluent_Factory extends Factory {
 	 * Retrieves an object by ID.
 	 *
 	 * @param mixed $object_id The object ID.
-	 * @return TObject
+	 * @return TReturnValue
 	 */
 	public function get_object_by_id( mixed $object_id ): mixed {
 		return $this->factory->get_object_by_id( $object_id );

@@ -170,4 +170,24 @@ class Test_WordPress_Action_Dispatcher extends Framework_Test_Case {
 		do_action( 'test_action_to_fire' );
 		$this->assertTrue( $_SERVER['__test'] );
 	}
+
+	public function test_typehint_action_argument() {
+		$_SERVER['__test'] = false;
+
+		add_action(
+			Example_Typehint_Event::class,
+			function ( Example_Typehint_Event $event ): void {
+				$_SERVER['__test'] = $event;
+			}
+		);
+
+		$this->app['events']->dispatch( new Example_Typehint_Event( 'test' ) );
+
+		$this->assertInstanceOf( Example_Typehint_Event::class, $_SERVER['__test'] );
+		$this->assertEquals( 'test', $_SERVER['__test']->example );
+	}
+}
+
+class Example_Typehint_Event {
+	public function __construct( public string $example ) {}
 }

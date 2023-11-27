@@ -1,7 +1,7 @@
 {
     "name": "mantle-framework/http-client",
     "description": "The Mantle Framework Http Client Package",
-    "type": "project",
+    "type": "library",
     "require": {
         "php": "^8.0",
         "alleyinteractive/wp-concurrent-remote-requests": "^1.0.2",

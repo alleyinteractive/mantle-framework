@@ -7,12 +7,14 @@
 
 namespace Mantle\Database\Factory;
 
-use Faker\Generator;
-
 /**
  * Network Factory
  *
- * @template TObject
+ * @template TModel
+ * @template TObject of \WP_Network
+ * @template TReturnValue
+ *
+ * @extends Factory<TModel, TObject, TReturnValue>
  */
 class Network_Factory extends Factory {
 	/**

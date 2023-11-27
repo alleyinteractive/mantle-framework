@@ -7,7 +7,11 @@
 
 namespace Mantle\Testing\Concerns;
 
+use Carbon\Carbon;
+use DateTimeInterface;
+use Mantle\Database\Model\Post;
 use Mantle\Testing\Utils;
+use WP_Post;
 
 /**
  * This trait includes functionality for controlling WordPress state during
@@ -159,22 +163,27 @@ trait WordPress_State {
 	 *
 	 * @global \wpdb $wpdb WordPress database abstraction object.
 	 *
-	 * @param int    $post_id Post ID.
-	 * @param string $date    Post date, in the format YYYY-MM-DD HH:MM:SS.
+	 * @param WP_Post|Post|int         $post Post ID or post object.
+	 * @param DateTimeInterface|string $date Date object or string to update the
+	 *                                       post with. If a string is passed it
+	 *                                       is assumed to be local timezone.
 	 * @return int|false 1 on success, or false on error.
 	 */
-	protected function update_post_modified( $post_id, $date ) {
+	protected function update_post_modified( WP_Post|Post|int $post, DateTimeInterface|string $date ) {
 		global $wpdb;
+
+		$post = is_object( $post ) ? $post->ID : $post;
+		$date = $date instanceof DateTimeInterface ? Carbon::instance( $date ) : Carbon::parse( $date, wp_timezone() );
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
 		$update = $wpdb->update(
 			$wpdb->posts,
 			[
-				'post_modified'     => $date,
-				'post_modified_gmt' => $date,
+				'post_modified'     => $date->setTimezone( wp_timezone() )->format( 'Y-m-d H:i:s' ),
+				'post_modified_gmt' => $date->setTimezone( new \DateTimeZone( 'UTC' ) )->format( 'Y-m-d H:i:s' ),
 			],
 			[
-				'ID' => $post_id,
+				'ID' => $post,
 			],
 			[
 				'%s',
@@ -185,7 +194,7 @@ trait WordPress_State {
 			]
 		);
 
-		clean_post_cache( $post_id );
+		clean_post_cache( $post );
 
 		return $update;
 	}

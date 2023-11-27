@@ -12,17 +12,17 @@ class Test_Asset_Manager extends Test_Case {
 		$manager = new Asset_Manager();
 		$manager
 			->script(
-				'script-handle',
-				'https://example.org/script.js',
+				"script-handle",
+				"https://example.org/script.js",
 				[
-					'jquery',
+					"jquery",
 				],
-				'global',
-				'sync',
+				"global",
+				"sync",
 			);
 
 		$this->assertStringContainsString(
-			"<script src='https://example.org/script.js' id='script-handle-js'></script>",
+			"<script src=\"https://example.org/script.js\" id=\"script-handle-js\"></script>",
 			$this->get_wp_head(),
 		);
 	}
@@ -31,8 +31,8 @@ class Test_Asset_Manager extends Test_Case {
 		$manager = new Asset_Manager();
 		$manager
 			->style(
-				'style-handle',
-				'https://example.org/style.css',
+				"style-handle",
+				"https://example.org/style.css",
 				[]
 			);
 
@@ -46,14 +46,14 @@ class Test_Asset_Manager extends Test_Case {
 		$manager = new Asset_Manager();
 		$manager
 			->script(
-				'testsync-script-handle',
-				'https://example.org/example-script.js',
+				"testsync-script-handle",
+				"https://example.org/example-script.js",
 			);
 
-		$manager->async( 'testsync-script-handle' );
+		$manager->async( "testsync-script-handle" );
 
 		$this->assertStringContainsString(
-			"<script async src='https://example.org/example-script.js' id='testsync-script-handle-js'></script>",
+			"<script async src=\"https://example.org/example-script.js\" id=\"testsync-script-handle-js\"></script>",
 			$this->get_wp_head(),
 		);
 	}
@@ -61,24 +61,24 @@ class Test_Asset_Manager extends Test_Case {
 	public function test_fluent_script() {
 		$manager = new Asset_Manager();
 		$manager
-			->script( 'example-fluent' )
-			->src( 'https://example.org/example-fluent.js' )
+			->script( "example-fluent" )
+			->src( "https://example.org/example-fluent.js" )
 			->async();
 
 		$this->assertStringContainsString(
-			"<script async src='https://example.org/example-fluent.js' id='example-fluent-js'></script>",
+			"<script async src=\"https://example.org/example-fluent.js\" id=\"example-fluent-js\"></script>",
 			$this->get_wp_head(),
 		);
 	}
 
 	public function test_fluent_script_helper() {
 		asset()
-			->script( 'example-helper' )
-			->src( 'https://example.org/example-helper.js' )
+			->script( "example-helper" )
+			->src( "https://example.org/example-helper.js" )
 			->async();
 
 		$this->assertStringContainsString(
-			"<script async src='https://example.org/example-helper.js' id='example-helper-js'></script>",
+			"<script async src=\"https://example.org/example-helper.js\" id=\"example-helper-js\"></script>",
 			$this->get_wp_head(),
 		);
 	}
@@ -87,21 +87,21 @@ class Test_Asset_Manager extends Test_Case {
 		global $wp_scripts;
 
 		// Prevent a failing test if this is removed in the future.
-		if ( ! isset( $wp_scripts->registered['swfobject'] ) ) {
-			$this->markTestSkipped( 'swfobject is not registered in core, should change the dependency tested against' );
+		if ( ! isset( $wp_scripts->registered["swfobject"] ) ) {
+			$this->markTestSkipped( "swfobject is not registered in core, should change the dependency tested against" );
 			return;
 		}
 
-		$version = $wp_scripts->registered['swfobject']->ver;
+		$version = $wp_scripts->registered["swfobject"]->ver;
 
 		// Get the core version of the asset.
 		( new Asset_Manager() )
-			->script( 'swfobject' )
+			->script( "swfobject" )
 			->version( null )
 			->async();
 
 		$this->assertStringContainsString(
-			"<script async src='http://example.org/wp-includes/js/swfobject.js?ver={$version}' id='swfobject-js'></script>",
+			"<script async src=\"http://example.org/wp-includes/js/swfobject.js?ver={$version}\" id=\"swfobject-js\"></script>",
 			$this->get_wp_head(),
 		);
 	}

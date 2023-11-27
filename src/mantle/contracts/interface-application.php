@@ -191,7 +191,7 @@ interface Application extends Container {
 	public function terminating( callable $callback ): static;
 
 	/**
-	 * Termine the application.
+	 * Terminate the application.
 	 *
 	 * @return void
 	 */

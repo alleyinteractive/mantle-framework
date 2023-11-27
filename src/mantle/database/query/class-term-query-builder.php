@@ -7,9 +7,6 @@
 
 namespace Mantle\Database\Query;
 
-use Mantle\Support\Collection;
-use function Mantle\Support\Helpers\collect;
-
 /**
  * Term Query Builder
  *
@@ -90,7 +87,6 @@ class Term_Query_Builder extends Builder {
 
 		return array_merge(
 			[
-				'fields'          => 'ids',
 				'hide_empty'      => false,
 				'meta_query'      => $this->meta_query, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				'number'          => $this->limit,
@@ -100,6 +96,9 @@ class Term_Query_Builder extends Builder {
 				'taxonomy'        => $taxonomies,
 			],
 			$this->wheres,
+			[
+				'fields' => 'ids',
+			]
 		);
 	}
 
@@ -113,18 +112,23 @@ class Term_Query_Builder extends Builder {
 
 		$this->query_hash = spl_object_hash( $query );
 
+		/**
+		 * Fetch the terms IDs for the query.
+		 *
+		 * @var int[]
+		 */
 		$term_ids = $this->with_clauses(
 			fn (): array => $query->query( $this->get_query_args() ),
 		);
 
 		if ( empty( $term_ids ) ) {
-			return collect();
+			return new Collection(); // @phpstan-ignore-line should return
 		}
 
 		$models = array_map( [ $this->model, 'find' ], $term_ids );
 
 		return $this->eager_load_relations(
-			collect( $models )->filter()->values(),
+			Collection::from( $models )->filter()->values(),
 		);
 	}
 
@@ -140,7 +144,7 @@ class Term_Query_Builder extends Builder {
 
 		$this->query_hash = spl_object_hash( $query );
 
-		return $this->with_clauses(
+		return (int) $this->with_clauses(
 			fn (): int => (int) $query->query(
 				array_merge(
 					$this->get_query_args(),
