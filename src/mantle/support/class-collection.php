@@ -446,7 +446,7 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Get a flattened array of the items in the collection.
 	 *
-	 *  @param  int|float $depth
+	 * @param  int|float $depth
 	 * @return static<int, mixed>
 	 */
 	public function flatten( $depth = INF ) {
@@ -456,7 +456,7 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Flip the items in the collection.
 	 *
-	 * @return static<TValue, TKey>
+	 * @return static<int|string, TKey>
 	 */
 	public function flip() {
 		return new static( array_flip( $this->items ) );
@@ -1327,7 +1327,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @template TZipValue
 	 *
 	 * @param  \Mantle\Contracts\Support\Arrayable<array-key, TZipValue>|iterable<array-key, TZipValue> ...$items
-	 * @return static<int, static<int, TValue|TZipValue>>
+	 * @return static<int, static<TKey, TValue|TZipValue>>
 	 */
 	public function zip( ...$items ) {
 		$arrayable_items = array_map(

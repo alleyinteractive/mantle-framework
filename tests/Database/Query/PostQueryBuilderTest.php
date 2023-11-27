@@ -527,6 +527,36 @@ class PostQueryBuilderTest extends Framework_Test_Case {
 		$this->assertEquals( 1, Testable_Post::whereIn( 'id', [ $post_id ] )->count() );
 	}
 
+	public function test_found_rows() {
+		static::factory()->post->create_many( 25 );
+
+		$query = Testable_Post::query()
+			->take( 10 )
+			->get();
+
+		$this->assertInstanceOf( \Mantle\Database\Query\Collection::class, $query );
+		$this->assertEquals( 10, $query->count() );
+		$this->assertEquals( 25, $query->found_rows() );
+
+		$models = $query->models();
+
+		$this->assertNotInstanceOf( \Mantle\Database\Query\Collection::class, $models );
+		$this->assertEquals( 1, $models->count() );
+	}
+
+	public function test_no_found_rows_true() {
+		static::factory()->post->create_many( 10 );
+
+		$query = Testable_Post::query()
+			->withNoFoundRows()
+			->take( 10 )
+			->get();
+
+		$this->assertInstanceOf( \Mantle\Database\Query\Collection::class, $query );
+		$this->assertEquals( 10, $query->count() );
+		$this->assertNull( $query->found_rows() );
+	}
+
 	public function test_post_by_date() {
 		$old_date = Carbon::now( wp_timezone() )->subMonth();
 		$now      = Carbon::now( wp_timezone() );

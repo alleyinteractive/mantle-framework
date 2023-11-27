@@ -11,7 +11,7 @@ namespace Mantle\Database\Query;
 use Mantle\Database\Model\Term;
 use Mantle\Database\Query\Concerns\Queries_Dates;
 use Mantle\Support\Helpers;
-use Mantle\Support\Collection;
+use RuntimeException;
 use WP_Term;
 
 use function Mantle\Support\Helpers\collect;
@@ -117,7 +117,6 @@ class Post_Query_Builder extends Builder {
 
 		return array_merge(
 			[
-				'fields'              => 'ids',
 				'ignore_sticky_posts' => true,
 				'meta_query'          => $this->meta_query, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				'order'               => $order,
@@ -130,6 +129,9 @@ class Post_Query_Builder extends Builder {
 			],
 			$this->get_date_query_args(),
 			$this->wheres,
+			[
+				'fields' => 'ids',
+			]
 		);
 	}
 
@@ -148,14 +150,21 @@ class Post_Query_Builder extends Builder {
 			fn () => $query->query( $this->get_query_args() ),
 		);
 
-		$this->found_rows = $query->found_posts;
-		$post_ids         = $query->posts;
-
-		if ( empty( $post_ids ) ) {
-			return collect();
+		if ( empty( $query->found_posts ) && count( $query->posts ) > 0 ) {
+			$this->found_rows = null;
+		} else {
+			$this->found_rows = $query->found_posts;
 		}
 
-		$models = $this->get_models( $post_ids );
+		$post_ids = $query->posts;
+
+		if ( empty( $post_ids ) ) {
+			return ( new Collection() )->with_found_rows( $this->found_rows ); // @phpstan-ignore-line should return
+		}
+
+		$models = $this
+			->get_models( $post_ids )
+			->with_found_rows( $this->found_rows );
 
 		// Return the models if there are no models or if multiple model instances
 		// are used. Eager loading does not currently support multiple models.
@@ -195,10 +204,17 @@ class Post_Query_Builder extends Builder {
 	protected function get_models( array $post_ids ): Collection {
 		if ( is_array( $this->model ) ) {
 			$model_object_types = $this->get_model_object_names();
-			return collect( $post_ids )
+
+			return Collection::from( $post_ids )
 				->map(
 					function ( $post_id ) use ( $model_object_types ) {
 						$post_type = \get_post_type( $post_id );
+
+						if ( empty( $model_object_types[ $post_type ] ) ) {
+							throw new RuntimeException(
+								"Missing model for object type [{ $post_type }]."
+							);
+						}
 
 						if ( empty( $post_type ) ) {
 							return null;
@@ -207,12 +223,13 @@ class Post_Query_Builder extends Builder {
 						return $model_object_types[ $post_type ]::find( $post_id );
 					}
 				)
-				->filter();
-		} else {
-			return collect( $post_ids )
-				->map( [ $this->model, 'find' ] )
-				->filter();
+				->filter()
+				->values();
 		}
+
+		return Collection::from( $post_ids )
+			->map( [ $this->model, 'find' ] )
+			->filter();
 	}
 
 	/**
@@ -293,6 +310,18 @@ class Post_Query_Builder extends Builder {
 	public function orWhereTerm( ...$args ) {
 		$this->tax_query['relation'] = 'OR';
 		return $this->whereTerm( ...$args );
+	}
+
+	/**
+	 * Fetch the query with 'no_found_rows' set to a value.
+	 *
+	 * Setting to 'true' prevents counting all the available rows for a query.
+	 *
+	 * @param bool $value Whether to set 'no_found_rows' to true.
+	 * @return static
+	 */
+	public function withNoFoundRows( bool $value = true ): static {
+		return $this->where( 'no_found_rows', $value );
 	}
 
 	/**
