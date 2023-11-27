@@ -10,11 +10,12 @@
 namespace Mantle\Testing\Concerns;
 
 use Mantle\Support\Str;
+use PHPUnit\Util\Test;
 
 use function Mantle\Support\Helpers\collect;
 
 trait Deprecations {
-	use Output_Messages, Reads_Annotations;
+	use Output_Messages;
 
 	/**
 	 * Expected deprecation calls.
@@ -48,7 +49,14 @@ trait Deprecations {
 	 * Sets up the expectations for testing a deprecated call.
 	 */
 	public function deprecations_set_up() {
-		$annotations = $this->get_annotations_for_method();
+		if ( ! method_exists( $this, 'getAnnotations' ) ) {
+			$annotations = Test::parseTestMethodAnnotations(
+				static::class,
+				$this->getName()
+			);
+		} else {
+			$annotations = $this->getAnnotations();
+		}
 
 		foreach ( [ 'class', 'method' ] as $depth ) {
 			if ( ! empty( $annotations[ $depth ]['expectedDeprecated'] ) ) {

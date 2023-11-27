@@ -10,6 +10,8 @@
 namespace Mantle\Testing\Concerns;
 
 use Mantle\Support\Str;
+use PHPUnit\TextUI\XmlConfiguration\PHPUnit;
+use PHPUnit\Util\Test;
 
 use function Mantle\Support\Helpers\collect;
 
@@ -20,7 +22,7 @@ use function Mantle\Support\Helpers\collect;
  * as expected or ignored.
  */
 trait Incorrect_Usage {
-	use Output_Messages, Reads_Annotations;
+	use Output_Messages;
 
 	/**
 	 * Expected "doing it wrong" calls.
@@ -54,7 +56,14 @@ trait Incorrect_Usage {
 	 * Sets up the expectations for testing a deprecated call.
 	 */
 	public function incorrect_usage_set_up() {
-		$annotations = $this->get_annotations_for_method();
+		if ( ! method_exists( $this, 'getAnnotations' ) ) {
+			$annotations = Test::parseTestMethodAnnotations(
+				static::class,
+				$this->getName()
+			);
+		} else {
+			$annotations = $this->getAnnotations();
+		}
 
 		foreach ( [ 'class', 'method' ] as $depth ) {
 			if ( ! empty( $annotations[ $depth ]['expectedIncorrectUsage'] ) ) {
