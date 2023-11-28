@@ -50,7 +50,7 @@ return static function ( ContainerConfigurator $container_config ): void {
 		[
 			ComposerJsonSection::REQUIRE     => [
 				'alleyinteractive/composer-wordpress-autoloader' => '^1.0',
-				'php'                                            => '^8.0',
+				'php'                                            => '^8.1',
 			],
 			ComposerJsonSection::REQUIRE_DEV => [
 				'alleyinteractive/alley-coding-standards' => '^1.0',
