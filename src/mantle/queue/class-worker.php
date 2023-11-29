@@ -58,9 +58,8 @@ class Worker {
 
 					$this->events->dispatch( new Job_Failed( $provider, $job, $e ) );
 				} finally {
-					// TODO: Don't delete after completion.
 					if ( ! $job->has_failed() ) {
-						$job->delete();
+						$job->completed();
 					} elseif ( $job->can_retry() ) {
 						$job->retry( $job->get_retry_backoff() );
 					}

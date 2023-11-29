@@ -1,6 +1,6 @@
 <?php
 /**
- * Queue_Job class file
+ * Queue_ class file
  *
  * @package Mantle
  */
@@ -8,16 +8,13 @@
 namespace Mantle\Queue\Providers\WordPress;
 
 use Mantle\Database\Model\Post;
-use WordPressCS\WordPress\Sniffs\CodeAnalysis\EmptyStatementSniff;
 
 use function Mantle\Support\Helpers\collect;
 
 /**
- * Queue Job Data Model (for internal use only).
- *
- * @access private
+ * Queue Job Record
  */
-class Queue_Job extends Post {
+class Queue_Record extends Post {
 	/**
 	 * Post type for the model.
 	 *

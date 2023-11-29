@@ -414,6 +414,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 			'request'          => [ \Mantle\Http\Request::class, \Symfony\Component\HttpFoundation\Request::class ],
 			'router'           => [ \Mantle\Http\Routing\Router::class, \Mantle\Contracts\Http\Routing\Router::class ],
 			'router.entity'    => [ \Mantle\Http\Routing\Entity_Router::class, \Mantle\Contracts\Http\Routing\Entity_Router::class ],
+			'scheduler'        => [ \Mantle\Scheduling\Schedule::class ],
 			'url'              => [ \Mantle\Http\Routing\Url_Generator::class, \Mantle\Contracts\Http\Routing\Url_Generator::class ],
 			'view.loader'      => [ \Mantle\Http\View\View_Finder::class, \Mantle\Contracts\Http\View\View_Finder::class ],
 			'view'             => [ \Mantle\Http\View\Factory::class, \Mantle\Contracts\Http\View\Factory::class ],

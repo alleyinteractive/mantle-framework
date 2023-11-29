@@ -42,6 +42,16 @@ return [
 
 	/*
 	|--------------------------------------------------------------------------
+	| Delete failed or processed queue items after a set time
+	|--------------------------------------------------------------------------
+	|
+	| Delete failed or processed queue items after a set time in seconds.
+	|
+	*/
+	'delete_after'           => environment( 'QUEUE_DELETE_AFTER', 60 * 60 * 24 * 7 ),
+
+	/*
+	|--------------------------------------------------------------------------
 	| Enable the Queue Admin Interface
 	|--------------------------------------------------------------------------
 	|

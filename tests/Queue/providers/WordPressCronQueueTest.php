@@ -8,6 +8,7 @@ use Mantle\Queue\Events\Job_Failed;
 use Mantle\Queue\Providers\WordPress\Meta_Key;
 use Mantle\Queue\Providers\WordPress\Post_Status;
 use Mantle\Queue\Providers\WordPress\Provider;
+use Mantle\Queue\Providers\WordPress\Queue_Record;
 use Mantle\Queue\Providers\WordPress\Scheduler;
 use Mantle\Queue\Queueable;
 use Mantle\Scheduling\Schedule;
@@ -52,7 +53,7 @@ class WordPressCronQueueTest extends Framework_Test_Case {
 		// Assert that the underlying queue post exists.
 		$this->assertPostExists( [
 			'post_type'    => Provider::OBJECT_NAME,
-			'post_status'  => Post_Status::PENDING->value,
+			'post_status'  => Post_Status::PENDING,
 		] );
 
 		// Force the cron to be dispatched which will execute the queued job.
@@ -61,9 +62,9 @@ class WordPressCronQueueTest extends Framework_Test_Case {
 		$this->assertTrue( $_SERVER['__example_job'] );
 
 		// Ensure that the queued job post was deleted.
-		$this->assertPostDoesNotExists( [
+		$this->assertPostExists( [
 			'post_type'   => Provider::OBJECT_NAME,
-			'post_status' => 'any',
+			'post_status' => Post_Status::COMPLETED,
 		] );
 	}
 
@@ -79,7 +80,7 @@ class WordPressCronQueueTest extends Framework_Test_Case {
 
 		$this->assertPostDoesNotExists( [
 			'post_type'   => Provider::OBJECT_NAME,
-			'post_status' => 'any',
+			'post_status' => Post_Status::class,
 		] );
 	}
 
@@ -102,7 +103,7 @@ class WordPressCronQueueTest extends Framework_Test_Case {
 		// Ensure that the post does not exist.
 		$this->assertPostExists( [
 			'post_type'   => Provider::OBJECT_NAME,
-			'post_status' => Post_Status::FAILED->value,
+			'post_status' => Post_Status::FAILED,
 		] );
 	}
 
@@ -132,8 +133,8 @@ class WordPressCronQueueTest extends Framework_Test_Case {
 			'meta_value'   => 'SerializableClosure',
 			'meta_compare' => 'LIKE',
 			'post_status'  => [
-				Post_Status::PENDING->value,
-				Post_Status::FAILED->value,
+				Post_Status::PENDING,
+				Post_Status::FAILED,
 			],
 		] );
 	}
@@ -153,7 +154,7 @@ class WordPressCronQueueTest extends Framework_Test_Case {
 
 		// Assert the serialize queue post exists.
 		$this->assertPostExists( [
-			'post_status'  => Post_Status::PENDING->value,
+			'post_status'  => Post_Status::PENDING,
 			'post_type'    => Provider::OBJECT_NAME,
 			'meta_key'     => '_mantle_queue',
 			'meta_value'   => 'SerializableClosure',
@@ -166,7 +167,7 @@ class WordPressCronQueueTest extends Framework_Test_Case {
 		$this->assertTrue( $_SERVER['__failed_run'] );
 
 		$this->assertPostExists( [
-			'post_status'  => Post_Status::FAILED->value,
+			'post_status'  => Post_Status::FAILED,
 			'post_type'    => Provider::OBJECT_NAME,
 			'meta_key'     => '_mantle_queue',
 			'meta_value'   => 'SerializableClosure',
@@ -183,7 +184,7 @@ class WordPressCronQueueTest extends Framework_Test_Case {
 
 		$this->assertPostExists( [
 			'post_date'    => $start->toDateTimeString(),
-			'post_status'  => Post_Status::PENDING->value,
+			'post_status'  => Post_Status::PENDING,
 			'post_type'    => Provider::OBJECT_NAME,
 			'meta_key'     => '_mantle_queue',
 		] );
@@ -194,7 +195,7 @@ class WordPressCronQueueTest extends Framework_Test_Case {
 
 		$this->assertPostExists( [
 			'post_date'    => $start->toDateTimeString(),
-			'post_status'  => Post_Status::PENDING->value,
+			'post_status'  => Post_Status::PENDING,
 			'post_type'    => Provider::OBJECT_NAME,
 			'meta_key'     => '_mantle_queue',
 		] );
@@ -237,7 +238,7 @@ class WordPressCronQueueTest extends Framework_Test_Case {
 
 		$this->assertPostExists( [
 			'post_type'    => Provider::OBJECT_NAME,
-			'post_status'  => Post_Status::FAILED->value,
+			'post_status'  => Post_Status::FAILED,
 		] );
 
 		$this->dispatch_queue();
@@ -292,6 +293,33 @@ class WordPressCronQueueTest extends Framework_Test_Case {
 		// Ensure the next job is not scheduled.
 		Scheduler::schedule_on_shutdown();
 		$this->assertNotInCronQueue( Scheduler::EVENT, null );
+	}
+
+	public function test_cleanup_completed_jobs() {
+		$this->app['config']->set( 'queue.delete_after', 60 * 60 * 24 );
+
+		$record = Queue_Record::create( [
+			'post_status' => Post_Status::COMPLETED->value,
+			'post_date' => now()->subMonth()->format( 'Y-m-d H:i:s' ),
+		] );
+
+		// Create a valid queue job that shouldn't be deleted.
+		Example_Job::dispatch();
+
+
+		// Perform the scheduled cleanup manually.
+		$this->command( 'mantle queue:cleanup' );
+
+		// Ensure that the expired queue job was deleted.
+		$this->assertEmpty( get_post( $record->ID ) );
+
+		// Assert that the queue post still exists.
+		$this->assertPostExists( [
+			'post_type'    => Provider::OBJECT_NAME,
+			'post_status'  => Post_Status::PENDING,
+		] );
+
+		$this->assertInCronQueue( Example_Job::class );
 	}
 }
 

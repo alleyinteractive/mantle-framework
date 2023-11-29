@@ -101,7 +101,7 @@ class WorkerTest extends MockeryTestCase {
 
 		if ( $should_run ) {
 			$mock_job->shouldReceive( 'fire' )->once()->andReturn( true );
-			$mock_job->shouldReceive( 'delete' )->once();
+			$mock_job->shouldReceive( 'completed' )->once();
 			$mock_job->shouldReceive( 'has_failed' )->once()->andReturn( false );
 			$mock_job->shouldNotReceive( 'failed' );
 		}

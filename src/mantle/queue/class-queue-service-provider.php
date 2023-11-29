@@ -8,6 +8,7 @@
 namespace Mantle\Queue;
 
 use Mantle\Contracts\Queue\Queue_Manager as Queue_Manager_Contract;
+use Mantle\Queue\Console\Cleanup_Jobs_Command;
 use Mantle\Queue\Console\Run_Command;
 use Mantle\Queue\Dispatcher;
 use Mantle\Queue\Queue_Manager;
@@ -32,7 +33,7 @@ class Queue_Service_Provider extends Service_Provider {
 		$this->app->singleton_if(
 			'queue',
 			fn ( $app ) => tap(
-				// Register the Queue Manager with the supported providers when invoked.
+				// Register the Queue Manager with the supported providers when resolved.
 				new Queue_Manager( $app ),
 				fn ( Queue_Manager $manager ) => $this->register_providers( $manager ),
 			),
@@ -49,6 +50,7 @@ class Queue_Service_Provider extends Service_Provider {
 		);
 
 		// Register queue console commands.
+		$this->add_command( Cleanup_Jobs_Command::class );
 		$this->add_command( Run_Command::class );
 
 		// Register the queue service providers.

@@ -5,7 +5,7 @@
  * phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
  *
  * @package Mantle
- * @var \Mantle\Queue\Providers\WordPress\Queue_Job $job The queue job.
+ * @var \Mantle\Queue\Providers\WordPress\Queue_Record $job The queue job.
  */
 
 use Carbon\Carbon;
