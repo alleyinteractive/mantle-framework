@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Overhauled queue performance and added admin interface.
 
+### Removed
+
+- Removed support for PHP 8.0.
+
 ## v0.12.10 - 2023-11-27
 
 ### Changed
