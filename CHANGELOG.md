@@ -9,7 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added PHPUnit 10 support.
+- PHPUnit 10 support added and `nunomaduro/collision` depend on to v6-7.
+
+	**Upgrade Note:** When upgrading to Mantle v1 projects will receive PHPUnit 10
+  and `nunomaduro/collision` by default. You will need remove the
+  `printerClass="NunoMaduro\Collision\Adapters\Phpunit\Printer"` line from your
+  `phpunit.xml` file if you wish to continue with PHPUnit 10. PHPUnit 10 does
+  require tests to be written using a PSR-4 file structure
+  (`tests/Feature/MyExampleTest.php`). Consider using a
+	[helper tool](https://github.com/alleyinteractive/wp-to-psr-4/) to migrate
+	your tests to PSR-4.
+
+	If you wish to instead continue using PHPUnit 9, you will need to run the
+	following command to downgrade to PHPUnit 9/`nunomaduro/collision` 6:
+
+	`composer require --dev phpunit/phpunit:^9 nunomaduro/collision:^6`
 - Adds database-specific collections with storage of the `found_rows` value.
 
 ### Changed
