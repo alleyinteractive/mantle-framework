@@ -11,6 +11,7 @@
 
 namespace Mantle\Database\Query;
 
+use BackedEnum;
 use Closure;
 use Mantle\Container\Container;
 use Mantle\Contracts\Database\Scope;
@@ -348,12 +349,20 @@ abstract class Builder {
 	/**
 	 * Query by a meta field.
 	 *
-	 * @param string $key Meta key.
-	 * @param mixed  $value Meta value.
-	 * @param string $compare Comparison method, defaults to '='.
+	 * @param string|\BackedEnum $key Meta key.
+	 * @param mixed              $value Meta value.
+	 * @param string             $compare Comparison method, defaults to '='.
 	 * @return static
 	 */
 	public function whereMeta( $key, $value, string $compare = '=' ) {
+		if ( $key instanceof BackedEnum ) {
+			$key = $key->value;
+		}
+
+		if ( $value instanceof BackedEnum ) {
+			$value = $value->value;
+		}
+
 		$meta_query = [
 			'compare' => $compare,
 			'key'     => $key,
@@ -366,6 +375,7 @@ abstract class Builder {
 		}
 
 		$this->meta_query[] = $meta_query;
+
 		return $this;
 	}
 
@@ -379,6 +389,7 @@ abstract class Builder {
 	 */
 	public function andWhereMeta( ...$args ) {
 		$this->meta_query['relation'] = 'AND';
+
 		return $this->whereMeta( ...$args );
 	}
 
@@ -392,6 +403,7 @@ abstract class Builder {
 	 */
 	public function orWhereMeta( ...$args ) {
 		$this->meta_query['relation'] = 'OR';
+
 		return $this->whereMeta( ...$args );
 	}
 

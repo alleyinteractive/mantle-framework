@@ -65,7 +65,7 @@ use Mantle\Support\Helpers;
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereTerm( array|\WP_Term|\Mantle\Database\Model\Term|int $term, ?string $taxonomy = null, string $operator = 'IN', string $field = 'term_id' )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> andWhereTerm( array|\WP_Term|\Mantle\Database\Model\Term|int $term, ?string $taxonomy = null, string $operator = 'IN', string $field = 'term_id' )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> orWhereTerm( array|\WP_Term|\Mantle\Database\Model\Term|int $term, ?string $taxonomy = null, string $operator = 'IN', string $field = 'term_id' )
- * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereMeta( string $key, mixed $value, string $operator = '=' )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereMeta( string|\BackedEnum $key, mixed $value, string $operator = '=' )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereRaw( array|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> where_raw( array|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> orWhereRaw( array|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' )
