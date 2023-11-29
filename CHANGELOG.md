@@ -5,13 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v0.12.9 - 2023-11-27
+## v1.0.0 - YYYY-MM-DD
+
+### Added
+
+- Added PHPUnit 10 support.
+- Adds database-specific collections with storage of the `found_rows` value.
+
+### Changed
+
+- Overhauled queue performance and added admin interface.
+
+## v0.12.10 - 2023-11-27
 
 ### Changed
 
 - Removed PHPUnit 10 support to prevent a breaking change. Moved to 1.x.
 
-## v0.12.8 - 2023-11-21
+## v0.12.9 - 2023-11-21
 
 ### Changed
 

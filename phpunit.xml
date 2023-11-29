@@ -1,15 +1,14 @@
+<?xml version="1.0"?>
 <phpunit
-    bootstrap="tests/bootstrap.php"
-    backupGlobals="false"
-    colors="true"
-    convertErrorsToExceptions="true"
-    convertNoticesToExceptions="true"
-    convertWarningsToExceptions="true"
-		printerClass="NunoMaduro\Collision\Adapters\Phpunit\Printer"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	bootstrap="tests/bootstrap.php"
+	backupGlobals="false"
+	colors="true"
+	xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.3/phpunit.xsd"
 >
-    <testsuites>
-        <testsuite name="mantle-framework">
-            <directory prefix="test-" suffix=".php">./tests/</directory>
-        </testsuite>
-    </testsuites>
+	<testsuites>
+		<testsuite name="mantle-framework">
+			<directory suffix="Test.php">./tests/</directory>
+		</testsuite>
+	</testsuites>
 </phpunit>
