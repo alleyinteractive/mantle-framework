@@ -58,7 +58,7 @@ class Worker {
 
 					$this->events->dispatch( new Job_Failed( $provider, $job, $e ) );
 				} finally {
-					// TODO: Revisit this and don't delete the job. unlock it and let it be retried.
+					// TODO: Don't delete after completion.
 					if ( ! $job->has_failed() ) {
 						$job->delete();
 					} elseif ( $job->can_retry() ) {

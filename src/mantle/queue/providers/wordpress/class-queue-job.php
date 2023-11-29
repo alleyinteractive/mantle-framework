@@ -8,6 +8,9 @@
 namespace Mantle\Queue\Providers\WordPress;
 
 use Mantle\Database\Model\Post;
+use WordPressCS\WordPress\Sniffs\CodeAnalysis\EmptyStatementSniff;
+
+use function Mantle\Support\Helpers\collect;
 
 /**
  * Queue Job Data Model (for internal use only).
@@ -80,5 +83,16 @@ class Queue_Job extends Post {
 		];
 
 		$this->set_meta( Meta_Key::LOG->value, $meta );
+	}
+
+	/**
+	 * Retrieve the queue name.
+	 *
+	 * @return string
+	 */
+	public function get_queue(): string {
+		return collect( $this->get_terms( Provider::OBJECT_NAME ) )
+			->pluck( 'name' )
+			->first( null, '' );
 	}
 }

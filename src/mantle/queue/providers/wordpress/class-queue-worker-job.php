@@ -7,7 +7,12 @@
 
 namespace Mantle\Queue\Providers\WordPress;
 
+use Mantle\Application\Application;
+use Mantle\Contracts\Events\Dispatcher;
 use Mantle\Contracts\Queue\Job as JobContract;
+use Mantle\Contracts\Queue\Queue_Manager;
+use Mantle\Queue\Closure_Job;
+use Mantle\Queue\Events\Job_Queued;
 use Throwable;
 
 /**
@@ -66,7 +71,13 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 	 * @return mixed
 	 */
 	public function get_id(): mixed {
-		return $this->model->id();
+		$job = $this->get_job();
+
+		return match ( true ) {
+			$job instanceof Closure_Job => $job->get_id(),
+			is_object( $job ) => $job::class,
+			default => $this->model->id(),
+		};
 	}
 
 	/**
@@ -83,6 +94,7 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 			[
 				'exception' => $e::class,
 				'message'   => $e->getMessage(),
+				'trace'     => explode( "\n", $e->getTraceAsString() ),
 			],
 		);
 
@@ -123,6 +135,16 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 				'post_date'   => now()->addSeconds( $delay )->toDateTimeString(),
 				'post_status' => Post_Status::PENDING->value,
 			]
+		);
+
+		$app = Application::get_instance();
+
+		// Dispatch the job queued event.
+		$app['events']->dispatch(
+			new Job_Queued(
+				$app->make( Queue_Manager::class )->get_provider(),
+				$this->get_job(),
+			),
 		);
 	}
 
