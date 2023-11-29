@@ -29,10 +29,6 @@ class WordPressCronQueueTest extends Framework_Test_Case {
 	use Refresh_Database;
 
 	protected function setUp(): void {
-		if ( PHP_VERSION_ID < 80100 ) {
-			$this->markTestSkipped( 'PHP 8.1 or greater is required for the queue' );
-		}
-
 		parent::setUp();
 
 		Provider::register_data_types();

@@ -25,11 +25,6 @@ class Queue_Service_Provider extends Service_Provider {
 	 * Register the service provider.
 	 */
 	public function register() {
-		// Bail if PHP version is less than 8.1.
-		if ( PHP_VERSION_ID < 80100 ) {
-			return;
-		}
-
 		$this->app->singleton_if(
 			'queue',
 			fn ( $app ) => tap(
@@ -61,11 +56,6 @@ class Queue_Service_Provider extends Service_Provider {
 	 * Boot the service provider.
 	 */
 	public function boot() {
-		// Bail if PHP version is less than 8.1.
-		if ( PHP_VERSION_ID < 80100 ) {
-			return;
-		}
-
 		$this->app->make( Queue_Manager_Contract::class );
 	}
 
