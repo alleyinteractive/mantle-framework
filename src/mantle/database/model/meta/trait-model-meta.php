@@ -7,6 +7,7 @@
 
 namespace Mantle\Database\Model\Meta;
 
+use BackedEnum;
 use Mantle\Database\Model\Model_Exception;
 
 /**
@@ -47,7 +48,7 @@ trait Model_Meta {
 			return;
 		}
 
-		\add_metadata( $this->get_meta_type(), $this->id(), $meta_key, $meta_value );
+		\add_metadata( $this->get_meta_type(), $this->id(), $meta_key, $this->serialize_value_for_storage( $meta_value ) );
 	}
 
 	/**
@@ -63,7 +64,7 @@ trait Model_Meta {
 			return;
 		}
 
-		\update_metadata( $this->get_meta_type(), $this->id(), $meta_key, $meta_value, $prev_value );
+		\update_metadata( $this->get_meta_type(), $this->id(), $meta_key, $this->serialize_value_for_storage( $meta_value ), $prev_value );
 	}
 
 	/**
@@ -73,7 +74,7 @@ trait Model_Meta {
 	 * @param mixed  $meta_value Previous meta value to delete.
 	 */
 	public function delete_meta( string $meta_key, mixed $meta_value = '' ): void {
-		\delete_metadata( $this->get_meta_type(), $this->id(), $meta_key, $meta_value );
+		\delete_metadata( $this->get_meta_type(), $this->id(), $meta_key, $this->serialize_value_for_storage( $meta_value ) );
 	}
 
 	/**
@@ -140,5 +141,19 @@ trait Model_Meta {
 		}
 
 		$this->queued_meta = [];
+	}
+
+	/**
+	 * Serialize meta value for storage, converting all backed enums to their value.
+	 *
+	 * @param mixed $value Value to serialize.
+	 * @return mixed
+	 */
+	protected function serialize_value_for_storage( mixed $value ): mixed {
+		if ( $value instanceof BackedEnum ) {
+			return $value->value;
+		}
+
+		return $value;
 	}
 }
