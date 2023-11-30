@@ -13,6 +13,10 @@ use function Mantle\Support\Helpers\collect;
 
 /**
  * Queue Job Record
+ *
+ * Used to store the queued jobs as posts in the database. Post statuses are
+ * used to track the job state and the post meta is used to store the job
+ * details/lock.
  */
 class Queue_Record extends Post {
 	/**

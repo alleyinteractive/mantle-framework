@@ -2,6 +2,8 @@
 /**
  * Closure_Job class file
  *
+ * phpcs:disable Squiz.Commenting.VariableComment.Missing
+ *
  * @package Mantle
  */
 
@@ -15,9 +17,9 @@ use ReflectionFunction;
 use Throwable;
 
 /**
- * Abstract Queue Job
+ * Closure Job
  *
- * To be extended by provider-specific queue job classes.
+ * Storage of the closure-based queue job.
  */
 class Closure_Job implements Can_Queue {
 	/**

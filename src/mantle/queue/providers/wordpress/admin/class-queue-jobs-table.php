@@ -91,7 +91,13 @@ class Queue_Jobs_Table extends WP_List_Table {
 						),
 					)
 					->toString(),
-				'url'     => add_query_arg( 'filter', $status->value ),
+				'url'     => add_query_arg(
+					[
+						'action' => null,
+						'job'    => null,
+						'filter' => $status->value,
+					] 
+				),
 			];
 		}
 
@@ -192,6 +198,22 @@ class Queue_Jobs_Table extends WP_List_Table {
 				esc_attr__( 'View details about this job', 'mantle' ),
 				esc_html__( 'View', 'mantle' ),
 			),
+			Post_Status::PENDING->value === $item['status']
+				? sprintf(
+					'<a href="%s" aria-label="%s">%s</a>',
+					esc_url(
+						add_query_arg(
+							[
+								'_wpnonce' => wp_create_nonce( 'queue-job-action-' . $item['id'] ),
+								'job'      => (int) $item['id'],
+								'action'   => 'run',
+							]
+						)
+					),
+					esc_attr__( 'Run this job', 'mantle' ),
+					esc_html__( 'Run', 'mantle' ),
+				)
+				: null,
 			Post_Status::FAILED->value === $item['status']
 				? sprintf(
 					'<a href="%s" aria-label="%s">%s</a>',
@@ -199,7 +221,6 @@ class Queue_Jobs_Table extends WP_List_Table {
 						add_query_arg(
 							[
 								'_wpnonce' => wp_create_nonce( 'queue-job-action-' . $item['id'] ),
-								'filter'   => false,
 								'job'      => (int) $item['id'],
 								'action'   => 'retry',
 							]
@@ -216,7 +237,6 @@ class Queue_Jobs_Table extends WP_List_Table {
 						add_query_arg(
 							[
 								'_wpnonce' => wp_create_nonce( 'queue-job-action-' . $item['id'] ),
-								'filter'   => false,
 								'job'      => (int) $item['id'],
 								'action'   => 'delete',
 							]
