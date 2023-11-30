@@ -114,9 +114,10 @@ class Queue_Job_Admin_Page {
 				esc_url(
 					add_query_arg(
 						[
-							'action' => null,
-							'filter' => null,
-							'job'    => $record->id(),
+							'action'   => null,
+							'filter'   => null,
+							'job'      => $record->id(),
+							'_wpnonce' => null,
 						],
 					),
 				),
