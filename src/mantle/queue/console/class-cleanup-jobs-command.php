@@ -37,7 +37,6 @@ class Cleanup_Jobs_Command extends Command {
 		Queue_Record::query()
 			->whereStatus( [ Post_Status::RUNNING->value, Post_Status::FAILED->value, Post_Status::COMPLETED->value ] )
 			->olderThan( now()->subSeconds( (int) $this->container['config']->get( 'queue.delete_after', 60 ) ) )
-			->take( -1 )
 			->each_by_id(
 				function ( Queue_Record $record ) use ( &$count ) {
 					if ( ! $record->is_locked() ) {
