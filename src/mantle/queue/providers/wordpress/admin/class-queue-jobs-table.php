@@ -13,6 +13,7 @@ use Mantle\Queue\Providers\WordPress\Post_Status;
 use Mantle\Queue\Providers\WordPress\Provider;
 use Mantle\Queue\Providers\WordPress\Queue_Record;
 use Mantle\Queue\Providers\WordPress\Queue_Worker_Job;
+use Mantle\Support\Str;
 use WP_List_Table;
 
 use function Mantle\Support\Helpers\str;
@@ -290,6 +291,10 @@ class Queue_Jobs_Table extends WP_List_Table {
 
 			case Post_Status::FAILED->value:
 				echo '<span class="dashicons dashicons-no-alt"></span>' . esc_html__( 'Failed', 'mantle' );
+				break;
+
+			case Post_Status::COMPLETED->value:
+				echo '<span class="dashicons dashicons-yes"></span>' . esc_html__( 'Completed', 'mantle' );
 				break;
 		}
 	}
