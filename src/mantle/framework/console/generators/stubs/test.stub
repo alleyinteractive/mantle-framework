@@ -7,12 +7,12 @@
 
 namespace {{ namespace }};
 
-use App\Tests\Test_Case;
+use App\Tests\TestCase;
 
 /**
  * {{ class }} Test Case.
  */
-class Test_{{ class }} extends Test_Case {
+class Test_{{ class }} extends TestCase {
   public function test_example() {
     $this->assertTrue( true );
 	}
