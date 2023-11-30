@@ -8,6 +8,7 @@
 namespace Mantle\Queue;
 
 use Closure;
+use DateTimeInterface;
 use Laravel\SerializableClosure\SerializableClosure;
 use Mantle\Contracts\Queue\Can_Queue;
 use ReflectionFunction;
@@ -19,6 +20,13 @@ use Throwable;
  * To be extended by provider-specific queue job classes.
  */
 class Closure_Job implements Can_Queue {
+	/**
+	 * The delay before the job will be run.
+	 *
+	 * @var int|DateTimeInterface
+	 */
+	public int|DateTimeInterface $delay;
+
 	/**
 	 * The callbacks that should be run on failure.
 	 *
@@ -51,6 +59,18 @@ class Closure_Job implements Can_Queue {
 		$callback = $this->closure->getClosure();
 
 		$callback();
+	}
+
+	/**
+	 * Set the delay before the job will be run.
+	 *
+	 * @param DateTimeInterface|int $delay Delay in seconds or DateTime instance.
+	 * @return static
+	 */
+	public function delay( DateTimeInterface|int $delay ) {
+		$this->delay = $delay;
+
+		return $this;
 	}
 
 	/**
