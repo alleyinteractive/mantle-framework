@@ -14,6 +14,8 @@ use Symfony\Component\String\Inflector\EnglishInflector;
 use Symfony\Component\String\Inflector\InflectorInterface;
 use Throwable;
 
+use function Mantle\Support\Helpers\str;
+
 /**
  * Generator Command
  */
@@ -108,7 +110,7 @@ abstract class Generator_Command extends Command {
 			return Command::FAILURE;
 		}
 
-		$this->log( ( $this->type ?: 'File' ) . ' created successfully: <info>' . $file_path . '</info>' );
+		$this->log( str( $this->type ?: 'File' )->singular() . ' created successfully: <info>' . $file_path . '</info>' );
 
 		$this->complete_synopsis( $name );
 	}
