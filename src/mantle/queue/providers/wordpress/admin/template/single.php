@@ -37,6 +37,11 @@ $log = is_array( $log ) ? $log : [];
 		);
 		?>
 	</h1>
+	<p>
+		<a href="<?php menu_page_url( 'mantle-queue', true ); ?>">
+			<?php esc_html_e( 'Back to Queue Jobs', 'mantle' ); ?>
+		</a>
+	</p>
 
 	<hr class="wp-header-end">
 
@@ -65,7 +70,7 @@ $log = is_array( $log ) ? $log : [];
 						<?php esc_html_e( 'Retry', 'mantle' ); ?>
 					</a>
 				<?php endif; ?>
-				<?php if ( Post_Status::RUNNING->value !== $job->status ) : ?>
+				<?php if ( Post_Status::RUNNING->value !== $job->status && ! $job->is_locked() ) : ?>
 					<a
 						href="
 						<?php

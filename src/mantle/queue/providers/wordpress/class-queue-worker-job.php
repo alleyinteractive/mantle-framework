@@ -18,7 +18,8 @@ use Throwable;
 /**
  * WordPress Cron Queue Job
  *
- * Class to perform the actual queue job.
+ * Class to perform the actual queue job from the data stored in the queue
+ * record from the database.
  */
 class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 

@@ -45,28 +45,36 @@ class Worker {
 
 		$this->events->dispatch( new Run_Start( $provider, $queue, $jobs ) );
 
-		$jobs->each(
-			function( Queue_Worker_Job $job ) use ( $provider ) {
-				$this->events->dispatch( new Job_Processing( $provider, $job ) );
-
-				try {
-					$job->fire();
-
-					$this->events->dispatch( new Job_Processed( $provider, $job ) );
-				} catch ( Throwable $e ) {
-					$job->failed( $e );
-
-					$this->events->dispatch( new Job_Failed( $provider, $job, $e ) );
-				} finally {
-					if ( ! $job->has_failed() ) {
-						$job->completed();
-					} elseif ( $job->can_retry() ) {
-						$job->retry( $job->get_retry_backoff() );
-					}
-				}
-			}
-		);
+		$jobs->each( [ $this, 'run_single' ] );
 
 		$this->events->dispatch( new Run_Complete( $provider, $queue, $jobs ) );
+	}
+
+	/**
+	 * Run a single queue job.
+	 *
+	 * @param Queue_Worker_Job $job Job to run.
+	 * @return void
+	 */
+	public function run_single( Queue_Worker_Job $job ): void {
+		$provider = $this->manager->get_provider();
+
+		$this->events->dispatch( new Job_Processing( $provider, $job ) );
+
+		try {
+			$job->fire();
+
+			$this->events->dispatch( new Job_Processed( $provider, $job ) );
+		} catch ( Throwable $e ) {
+			$job->failed( $e );
+
+			$this->events->dispatch( new Job_Failed( $provider, $job, $e ) );
+		} finally {
+			if ( ! $job->has_failed() ) {
+				$job->completed();
+			} elseif ( $job->can_retry() ) {
+				$job->retry( $job->get_retry_backoff() );
+			}
+		}
 	}
 }
