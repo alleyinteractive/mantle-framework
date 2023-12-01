@@ -207,6 +207,16 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	}
 
 	/**
+	 * Alias to ends_with().
+	 *
+	 * @param  string|iterable<string> $needles
+	 * @return bool
+	 */
+	public function endsWith( $needles ) {
+		return $this->ends_with( $needles );
+	}
+
+	/**
 	 * Determine if a given string ends with a given substring.
 	 *
 	 * @param  string|iterable<string> $needles
@@ -278,6 +288,34 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 */
 	public function finish( $cap ) {
 		return new static( Str::finish( $this->value, $cap ) );
+	}
+
+	/**
+	 * Ensure the string has a single trailing slash.
+	 *
+	 * @return static
+	 */
+	public function trailingSlash() {
+		return new static( Str::trailing_slash( $this->value ) );
+	}
+
+	/**
+	 * Remove a trailing slash from the string.
+	 *
+	 * @return static
+	 */
+	public function untrailingSlash() {
+		return new static( Str::untrailing_slash( $this->value ) );
+	}
+
+	/**
+	 * Remove a trailing string from the string.
+	 *
+	 * @param  string $cap
+	 * @return static
+	 */
+	public function untrailing( $cap ) {
+		return new static( rtrim( $this->value, $cap ) );
 	}
 
 	/**

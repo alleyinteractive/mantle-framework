@@ -11,6 +11,8 @@ namespace Mantle\Framework\Console\Generators;
  * Test Case Generator
  */
 class Test_Make_Command extends Stub_Generator_Command {
+	use With_PSR_4_File;
+
 	/**
 	 * The console command name.
 	 *
@@ -37,7 +39,7 @@ class Test_Make_Command extends Stub_Generator_Command {
 	 *
 	 * @var string
 	 */
-	protected $prefix = 'test-';
+	protected $prefix = '';
 
 	/**
 	 * Command signature.
