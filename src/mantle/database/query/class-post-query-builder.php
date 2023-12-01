@@ -26,7 +26,7 @@ use function Mantle\Support\Helpers\collect;
  * @method \Mantle\Database\Query\Post_Query_Builder<TModel> whereId( int $id )
  * @method \Mantle\Database\Query\Post_Query_Builder<TModel> whereName( string $name )
  * @method \Mantle\Database\Query\Post_Query_Builder<TModel> whereSlug( string $slug )
- * @method \Mantle\Database\Query\Post_Query_Builder<TModel> whereStatus( string $status )
+ * @method \Mantle\Database\Query\Post_Query_Builder<TModel> whereStatus( string[]|string $status )
  * @method \Mantle\Database\Query\Post_Query_Builder<TModel> whereTitle( string $title )
  * @method \Mantle\Database\Query\Post_Query_Builder<TModel> whereType( string $type )
  */
@@ -49,6 +49,7 @@ class Post_Query_Builder extends Builder {
 		'post_author'  => 'author',
 		'post_name'    => 'name',
 		'slug'         => 'name',
+		'status'       => 'post_status',
 	];
 
 	/**

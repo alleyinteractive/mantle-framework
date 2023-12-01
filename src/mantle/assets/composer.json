@@ -3,9 +3,9 @@
     "description": "The Mantle Framework Asset Package",
     "type": "library",
     "require": {
-        "php": "^8.0",
+        "php": "^8.1",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
-        "alleyinteractive/wp-asset-manager": "^1.3.3",
+        "alleyinteractive/wp-asset-manager": "^1.3.4",
         "mantle-framework/contracts": "^0.12",
         "mantle-framework/support": "^0.12"
     },

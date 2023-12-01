@@ -7,6 +7,7 @@
 
 namespace Mantle\Queue;
 
+use DateTimeInterface;
 use Mantle\Container\Container;
 use Mantle\Contracts\Queue\Dispatcher;
 use Mantle\Contracts\Queue\Job;
@@ -17,20 +18,11 @@ use RuntimeException;
  */
 class Pending_Dispatch {
 	/**
-	 * Job instance.
-	 *
-	 * @var Closure_Job|Job
-	 */
-	protected Closure_Job|Job $job; // phpcs:ignore Squiz.Commenting.VariableComment.Missing
-
-	/**
 	 * Constructor.
 	 *
 	 * @param Job|Closure_Job $job Job instance.
 	 */
-	public function __construct( $job ) {
-		$this->job = $job;
-	}
+	public function __construct( protected Job|Closure_Job $job ) {}
 
 	/**
 	 * Add a dispatch to a specific queue.
@@ -55,12 +47,12 @@ class Pending_Dispatch {
 	 *
 	 * @throws RuntimeException If the job does not support queueing.
 	 *
-	 * @param int $delay Delay in seconds.
+	 * @param DateTimeInterface|int $delay Delay in seconds or DateTime instance.
 	 * @return static
 	 */
-	public function delay( int $delay ): Pending_Dispatch {
+	public function delay( DateTimeInterface|int $delay ): Pending_Dispatch {
 		if ( ! method_exists( $this->job, 'delay' ) ) {
-			throw new RuntimeException( 'Job does not support queueing.' );
+			throw new RuntimeException( $this->job::class . ' does not support delayed queueing.' );
 		}
 
 		$this->job->delay( $delay );

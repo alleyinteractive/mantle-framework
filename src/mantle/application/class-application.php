@@ -401,20 +401,23 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 */
 	protected function register_core_aliases() {
 		$core_aliases = [
-			'app'           => [ static::class, \Mantle\Contracts\Application::class ],
-			'config'        => [ \Mantle\Config\Repository::class, \Mantle\Contracts\Config\Repository::class ],
-			'events'        => [ \Mantle\Events\Dispatcher::class, \Mantle\Contracts\Events\Dispatcher::class ],
-			'files'         => [ \Mantle\Filesystem\Filesystem::class ],
-			'filesystem'    => [ \Mantle\Filesystem\Filesystem_Manager::class, \Mantle\Contracts\Filesystem\Filesystem_Manager::class ],
-			'log'           => [ \Mantle\Log\Log_Manager::class, \Psr\Log\LoggerInterface::class ],
-			'queue'         => [ \Mantle\Queue\Queue_Manager::class, \Mantle\Contracts\Queue\Queue_Manager::class ],
-			'redirect'      => [ \Mantle\Http\Routing\Redirector::class ],
-			'request'       => [ \Mantle\Http\Request::class, \Symfony\Component\HttpFoundation\Request::class ],
-			'router'        => [ \Mantle\Http\Routing\Router::class, \Mantle\Contracts\Http\Routing\Router::class ],
-			'router.entity' => [ \Mantle\Http\Routing\Entity_Router::class, \Mantle\Contracts\Http\Routing\Entity_Router::class ],
-			'url'           => [ \Mantle\Http\Routing\Url_Generator::class, \Mantle\Contracts\Http\Routing\Url_Generator::class ],
-			'view.loader'   => [ \Mantle\Http\View\View_Finder::class, \Mantle\Contracts\Http\View\View_Finder::class ],
-			'view'          => [ \Mantle\Http\View\Factory::class, \Mantle\Contracts\Http\View\Factory::class ],
+			'app'              => [ static::class, \Mantle\Contracts\Application::class ],
+			'config'           => [ \Mantle\Config\Repository::class, \Mantle\Contracts\Config\Repository::class ],
+			'events'           => [ \Mantle\Events\Dispatcher::class, \Mantle\Contracts\Events\Dispatcher::class ],
+			'files'            => [ \Mantle\Filesystem\Filesystem::class ],
+			'filesystem'       => [ \Mantle\Filesystem\Filesystem_Manager::class, \Mantle\Contracts\Filesystem\Filesystem_Manager::class ],
+			'log'              => [ \Mantle\Log\Log_Manager::class, \Psr\Log\LoggerInterface::class ],
+			'queue'            => [ \Mantle\Queue\Queue_Manager::class, \Mantle\Contracts\Queue\Queue_Manager::class ],
+			'queue.worker'     => [ \Mantle\Queue\Worker::class ],
+			'queue.dispatcher' => [ \Mantle\Queue\Dispatcher::class, \Mantle\Contracts\Queue\Dispatcher::class ],
+			'redirect'         => [ \Mantle\Http\Routing\Redirector::class ],
+			'request'          => [ \Mantle\Http\Request::class, \Symfony\Component\HttpFoundation\Request::class ],
+			'router'           => [ \Mantle\Http\Routing\Router::class, \Mantle\Contracts\Http\Routing\Router::class ],
+			'router.entity'    => [ \Mantle\Http\Routing\Entity_Router::class, \Mantle\Contracts\Http\Routing\Entity_Router::class ],
+			'scheduler'        => [ \Mantle\Scheduling\Schedule::class ],
+			'url'              => [ \Mantle\Http\Routing\Url_Generator::class, \Mantle\Contracts\Http\Routing\Url_Generator::class ],
+			'view.loader'      => [ \Mantle\Http\View\View_Finder::class, \Mantle\Contracts\Http\View\View_Finder::class ],
+			'view'             => [ \Mantle\Http\View\Factory::class, \Mantle\Contracts\Http\View\Factory::class ],
 		];
 
 		foreach ( $core_aliases as $key => $aliases ) {

@@ -21,7 +21,7 @@ use Mantle\Support\Traits\Macroable;
 use Throwable;
 
 /**
- * Schedulable Event
+ * Schedule-able Event
  */
 class Event {
 	use Macroable, Manages_Frequencies;
@@ -31,56 +31,49 @@ class Event {
 	 *
 	 * @var string
 	 */
-	public $expression = '* * * * *';
+	public string $expression = '* * * * *';
 
 	/**
 	 * The list of environments the command should run under.
 	 *
-	 * @var array
+	 * @var string[]
 	 */
-	public $environments = [];
-
-	/**
-	 * Indicates if the command should not overlap itself.
-	 *
-	 * @var bool
-	 */
-	public $without_overlapping = false;
+	public array $environments = [];
 
 	/**
 	 * The array of filter callbacks.
 	 *
-	 * @var array
+	 * @var callable[]
 	 */
-	protected $filters = [];
+	protected array $filters = [];
 
 	/**
 	 * The array of reject callbacks.
 	 *
-	 * @var array
+	 * @var callable[]
 	 */
-	protected $rejects = [];
+	protected array $rejects = [];
 
 	/**
 	 * The array of callbacks to be run before the event is started.
 	 *
-	 * @var array
+	 * @var callable[]
 	 */
-	protected $before_callbacks = [];
+	protected array $before_callbacks = [];
 
 	/**
 	 * The array of callbacks to be run after the event is finished.
 	 *
-	 * @var array
+	 * @var callable[]
 	 */
-	protected $after_callbacks = [];
+	protected array $after_callbacks = [];
 
 	/**
 	 * The human readable description of the event.
 	 *
 	 * @var string
 	 */
-	public $description;
+	public string $description;
 
 	/**
 	 * The exit status code of the command.
@@ -88,14 +81,14 @@ class Event {
 	 *
 	 * @var int|null
 	 */
-	public $exit_code;
+	public ?int $exit_code;
 
 	/**
 	 * Exception thrown for the command.
 	 *
 	 * @var \Throwable
 	 */
-	public $exception;
+	public \Throwable $exception;
 
 	/**
 	 * Create a new event instance.

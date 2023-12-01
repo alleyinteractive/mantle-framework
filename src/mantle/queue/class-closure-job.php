@@ -2,36 +2,39 @@
 /**
  * Closure_Job class file
  *
+ * phpcs:disable Squiz.Commenting.VariableComment.Missing
+ *
  * @package Mantle
  */
 
 namespace Mantle\Queue;
 
 use Closure;
+use DateTimeInterface;
 use Laravel\SerializableClosure\SerializableClosure;
 use Mantle\Contracts\Queue\Can_Queue;
 use ReflectionFunction;
 use Throwable;
 
 /**
- * Abstract Queue Job
+ * Closure Job
  *
- * To be extended by provider-specific queue job classes.
+ * Storage of the closure-based queue job.
  */
 class Closure_Job implements Can_Queue {
 	/**
-	 * Serializable closure instance.
+	 * The delay before the job will be run.
 	 *
-	 * @var SerializableClosure
+	 * @var int|DateTimeInterface
 	 */
-	public SerializableClosure $closure;
+	public int|DateTimeInterface $delay;
 
 	/**
 	 * The callbacks that should be run on failure.
 	 *
 	 * @var array
 	 */
-	public $failure_callbacks = [];
+	public array $failure_callbacks = [];
 
 	/**
 	 * Create a new job instance.
@@ -48,8 +51,7 @@ class Closure_Job implements Can_Queue {
 	 *
 	 * @param SerializableClosure $closure Serialized closure to wrap.
 	 */
-	public function __construct( SerializableClosure $closure ) {
-		$this->closure = $closure;
+	public function __construct( public SerializableClosure $closure ) {
 	}
 
 	/**
@@ -59,6 +61,18 @@ class Closure_Job implements Can_Queue {
 		$callback = $this->closure->getClosure();
 
 		$callback();
+	}
+
+	/**
+	 * Set the delay before the job will be run.
+	 *
+	 * @param DateTimeInterface|int $delay Delay in seconds or DateTime instance.
+	 * @return static
+	 */
+	public function delay( DateTimeInterface|int $delay ) {
+		$this->delay = $delay;
+
+		return $this;
 	}
 
 	/**
