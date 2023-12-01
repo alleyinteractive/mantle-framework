@@ -11,6 +11,7 @@ use Closure;
 use Mantle\Contracts\Container;
 use Mantle\Contracts\Queue\Can_Queue;
 use Mantle\Contracts\Queue\Queue_Manager;
+use Mantle\Queue\Events\Job_Queued;
 
 /**
  * Queue Dispatcher
@@ -19,46 +20,49 @@ use Mantle\Contracts\Queue\Queue_Manager;
  */
 class Dispatcher {
 	/**
-	 * Container instance.
-	 *
-	 * @var Container
-	 */
-	protected $container;
-
-	/**
 	 * Constructor.
 	 *
 	 * @param Container $container Container instance.
 	 */
-	public function __construct( Container $container ) {
-		$this->container = $container;
-	}
+	public function __construct( protected Container $container ) {}
 
 	/**
 	 * Dispatch the job to the queue.
 	 *
 	 * @param mixed $job Job instance.
-	 * @return mixed
+	 * @return void
 	 */
-	public function dispatch( $job ) {
+	public function dispatch( mixed $job ): void {
 		if ( ! $this->should_command_be_queued( $job ) ) {
-			return $this->dispatch_now( $job );
+			$this->dispatch_now( $job );
+
+			return;
 		}
 
-		$manager = $this->container->make( Queue_Manager::class );
+		/**
+		 * Provider instance.
+		 *
+		 * @var \Mantle\Contracts\Queue\Provider
+		 */
+		$provider = $this->container->make( Queue_Manager::class )->get_provider();
 
 		// Send the job to the queue.
-		$manager->get_provider()->push( $job );
+		$provider->push( $job );
+
+		// Dispatch the job queued event.
+		$this->container['events']->dispatch(
+			new Job_Queued( $provider, $job ),
+		);
 	}
 
 	/**
 	 * Dispatch a job in the current process.
 	 *
 	 * @param mixed $job Job instance.
-	 * @return mixed
+	 * @return void
 	 */
-	public function dispatch_now( $job ) {
-		return $this->container->call( [ $job, 'handle' ] );
+	public function dispatch_now( mixed $job ): void {
+		$this->container->call( [ $job, 'handle' ] );
 	}
 
 	/**

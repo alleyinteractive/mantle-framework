@@ -859,8 +859,8 @@ abstract class Builder {
 	/**
 	 * Execute a callback over each item while chunking.
 	 *
-	 * @param callable(\Mantle\Support\Collection<int, TModel>): mixed $callback Callback to run on each chunk.
-	 * @param int                                                       $count Number of items to chunk by.
+	 * @param callable(TModel): mixed $callback Callback to run on each chunk.
+	 * @param int                     $count Number of items to chunk by.
 	 * @return boolean
 	 */
 	public function each( callable $callback, int $count = 100 ) {
@@ -878,9 +878,9 @@ abstract class Builder {
 	/**
 	 * Execute a callback over each item while chunking by ID.
 	 *
-	 * @param callable(\Mantle\Support\Collection<int, TModel>): mixed $callback Callback to run on each chunk.
-	 * @param int                                                       $count Number of items to chunk by.
-	 * @param string                                                    $attribute Attribute to chunk by.
+	 * @param callable(TModel): mixed $callback Callback to run on each chunk.
+	 * @param int                     $count Number of items to chunk by.
+	 * @param string                  $attribute Attribute to chunk by.
 	 * @return boolean
 	 */
 	public function each_by_id( callable $callback, int $count = 100, string $attribute = 'id' ) {

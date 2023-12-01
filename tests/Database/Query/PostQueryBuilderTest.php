@@ -675,11 +675,6 @@ class PostQueryBuilderTest extends Framework_Test_Case {
 	}
 
 	public function test_query_by_enum() {
-		// Check if enum is supported.
-		if ( PHP_VERSION_ID < 80100 ) {
-			$this->markTestSkipped( 'PHP 8.1+ is required for this test.' );
-		}
-
 		$post = static::factory()->post
 			->with_meta( [
 				'example-meta' => Testable_Meta_Values::Meta_Value_A,
