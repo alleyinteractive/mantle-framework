@@ -48,7 +48,7 @@
     },
     "require-dev": {
         "alleyinteractive/alley-coding-standards": "^1.0.1",
-        "alleyinteractive/wp-match-blocks": "^1.0 || ^2.0 || ^3.0",
+        "alleyinteractive/wp-match-blocks": "^3.0",
         "guzzlehttp/guzzle": "^7.7",
         "league/flysystem-aws-s3-v3": "^1.0",
         "mockery/mockery": "^1.6.6",
