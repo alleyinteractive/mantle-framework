@@ -9,7 +9,7 @@
         "mantle-framework/contracts": "^1.0",
         "mantle-framework/support": "^1.0",
         "psr/container": "^1.1.1 || ^2.0.2",
-        "symfony/finder": "^6.0.19"
+        "symfony/finder": "^6.2"
     },
     "extra": {
         "wordpress-autoloader": {

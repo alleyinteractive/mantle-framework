@@ -8,9 +8,9 @@
         "mantle-framework/contracts": "^1.0",
         "mantle-framework/support": "^1.0",
         "nette/php-generator": "^3.6.9",
-        "symfony/console": "^6.0.19",
-        "symfony/finder": "^6.0.19",
-        "symfony/string": "^6.0.19"
+        "symfony/console": "^6.2",
+        "symfony/finder": "^6.2",
+        "symfony/string": "^6.2"
     },
     "extra": {
         "wordpress-autoloader": {
