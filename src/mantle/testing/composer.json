@@ -13,7 +13,7 @@
         "mantle-framework/http-client": "^1.0",
         "mantle-framework/support": "^1.0",
         "nunomaduro/termwind": "^1.15.1",
-        "spatie/phpunit-snapshot-assertions": "^4.2"
+        "spatie/phpunit-snapshot-assertions": "^4.2 || ^5.1"
     },
     "extra": {
         "wordpress-autoloader": {
@@ -32,6 +32,7 @@
     "suggest": {
         "nunomaduro/collision": "For better PHPUnit printing.",
         "mantle-framework/console": "Required to assert console commands.",
+        "mantle-framework/testkit": "For running tests against a WordPress install without Mantle",
         "phpunit/phpunit": "Required to use assertions and run tests."
     },
     "config": {
