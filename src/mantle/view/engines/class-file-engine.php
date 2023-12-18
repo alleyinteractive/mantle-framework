@@ -9,6 +9,8 @@ namespace Mantle\View\Engines;
 
 use Mantle\Contracts\View\Engine;
 
+use function Mantle\Support\Helpers\validate_file;
+
 /**
  * File Engine to load raw view files.
  */

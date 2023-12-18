@@ -13,6 +13,7 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
 use function Mantle\Support\Helpers\collect;
+use function Mantle\Support\Helpers\validate_file;
 
 /**
  * Mantle Asset Loader

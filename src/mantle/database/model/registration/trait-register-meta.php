@@ -3,6 +3,7 @@
  * Register_Meta trait file.
  *
  * @package Mantle
+ *
  * @phpcs:disable WordPressVIPMinimum.Variables.VariableAnalysis.StaticOutsideClass
  */
 
