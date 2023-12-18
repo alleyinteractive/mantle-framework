@@ -443,9 +443,10 @@ function hook_callable( string $hook, callable $callable, int $priority = 10 ): 
  * @return int 0 means nothing is wrong, greater than 0 means something was wrong.
  */
 function validate_file( $file, $allowed_files = [] ) {
-	// Proxy back to the core function if it exists allowing Window drive paths.
+	// Proxy back to the core function if it exists, allowing Windows drive paths.
 	if ( function_exists( 'validate_file' ) ) {
-		return in_array( \validate_file( $file, $allowed_files ), [ 0, 2 ], true ) ? 0 : 1;
+		$retval = \validate_file( $file, $allowed_files );
+		return in_array( $retval, [ 0, 2 ], true ) ? 0 : $retval;
 	}
 
 	if ( ! is_scalar( $file ) || '' === $file ) {
