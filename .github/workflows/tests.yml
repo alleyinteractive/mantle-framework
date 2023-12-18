@@ -16,6 +16,7 @@ jobs:
       matrix:
         dependencies: ["lowest", "highest"]
         multisite: [true, false]
+        os: [ubuntu-latest, windows-2019]
         php: [8.0, 8.1, 8.2]
         wordpress: ["latest"]
     uses: alleyinteractive/.github/.github/workflows/php-tests.yml@main
@@ -24,4 +25,5 @@ jobs:
       dependency-versions: ${{ matrix.dependencies }}
       multisite: ${{ matrix.multisite }}
       php: ${{ matrix.php }}
+      os: ${{ matrix.os }}
       wordpress: ${{ matrix.wordpress }}
