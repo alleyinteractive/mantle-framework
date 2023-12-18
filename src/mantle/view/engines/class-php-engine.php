@@ -10,6 +10,8 @@ namespace Mantle\View\Engines;
 use Mantle\Contracts\View\Engine;
 use Throwable;
 
+use function Mantle\Support\Helpers\validate_file;
+
 /**
  * PHP Template to load WordPress template files.
  */

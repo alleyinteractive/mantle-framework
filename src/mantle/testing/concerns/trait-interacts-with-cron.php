@@ -3,6 +3,7 @@
  * Interacts_With_Cron trait file.
  *
  * @package Mantle
+ *
  * @phpcs:disable WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
  */
 

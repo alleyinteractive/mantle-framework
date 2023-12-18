@@ -3,6 +3,7 @@
  * Manages_Frequencies trait file.
  *
  * @package Mantle
+ *
  * @phpcs:disable WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
  */
 
