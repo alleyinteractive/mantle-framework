@@ -3,6 +3,7 @@
  * Has_Global_Scopes class file.
  *
  * @package Mantle
+ *
  * @phpcs:disable WordPressVIPMinimum.Variables.VariableAnalysis.StaticOutsideClass
  */
 

@@ -3,6 +3,7 @@
  * Register_Post_Type trait file.
  *
  * @package Mantle
+ *
  * @phpcs:disable WordPressVIPMinimum.Variables.VariableAnalysis.StaticOutsideClass
  */
 

@@ -3,6 +3,7 @@
  * Schedule class file.
  *
  * @package Mantle
+ *
  * @phpcs:disable WordPress.NamingConventions.ValidVariableName.PropertyNotSnakeCase
  */
 
