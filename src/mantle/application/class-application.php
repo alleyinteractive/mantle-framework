@@ -16,6 +16,8 @@ use RuntimeException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+use function Mantle\Support\Helpers\str;
+
 /**
  * Mantle Application
  */
@@ -153,7 +155,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 * @return static
 	 */
 	public function set_base_path( string $path ) {
-		$this->base_path = $path;
+		$this->base_path = str( $path )->untrailingSlash()->value();
 
 		$this->instance( 'path', $this->get_base_path() );
 		$this->instance( 'path.bootstrap', $this->get_bootstrap_path() );
@@ -165,11 +167,22 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	/**
 	 * Getter for the base path.
 	 *
+	 * By default, this will not have a trailing slash.
+	 *
 	 * @param string $path Path to append.
 	 * @return string
 	 */
 	public function get_base_path( string $path = '' ): string {
-		return $this->base_path . ( $path ? DIRECTORY_SEPARATOR . $path : '' );
+		if ( $path ) {
+			// Ensure the path being appended has a leading slash.
+			if ( 0 !== strpos( $path, '/' ) ) {
+				$path = '/' . $path;
+			}
+
+			return str( $this->base_path )->append( $path )->value();
+		}
+
+		return $this->base_path;
 	}
 
 	/**
