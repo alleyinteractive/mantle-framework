@@ -3,6 +3,7 @@
  * Has_Events class file.
  *
  * @package Mantle
+ *
  * @phpcs:disable WordPressVIPMinimum.Variables.VariableAnalysis.StaticOutsideClass
  */
 

@@ -3,6 +3,7 @@
  * Event class file.
  *
  * @package Mantle
+ *
  * @phpcs:disable WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
  */
 
