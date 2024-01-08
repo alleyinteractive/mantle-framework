@@ -428,3 +428,51 @@ function hook_callable( string $hook, callable $callable, int $priority = 10 ): 
 		$callable();
 	}
 }
+
+/**
+ * Validates a file name and path against an allowed set of rules.
+ *
+ * A return value of `1` means the file path contains directory traversal.
+ *
+ * A return value of `3` means the file is not in the allowed files list.
+ *
+ * @see validate_file() in WordPress core.
+ *
+ * @param string   $file          File path.
+ * @param string[] $allowed_files Optional. Array of allowed files. Default empty array.
+ * @return int 0 means nothing is wrong, greater than 0 means something was wrong.
+ */
+function validate_file( $file, $allowed_files = [] ) {
+	// Proxy back to the core function if it exists, allowing Windows drive paths.
+	if ( function_exists( 'validate_file' ) ) {
+		$retval = \validate_file( $file, $allowed_files );
+		return in_array( $retval, [ 0, 2 ], true ) ? 0 : $retval;
+	}
+
+	if ( ! is_scalar( $file ) || '' === $file ) {
+		return 0;
+	}
+
+	// `../` on its own is not allowed:
+	if ( '../' === $file ) {
+		return 1;
+	}
+
+	// More than one occurrence of `../` is not allowed.
+	if ( preg_match_all( '#\.\./#', $file, $matches, PREG_SET_ORDER ) && ( count( $matches ) > 1 ) ) {
+		return 1;
+	}
+
+	// `../` which does not occur at the end of the path is not allowed.
+	if ( str_contains( $file, '../' ) && '../' !== mb_substr( $file, -3, 3 ) ) {
+		return 1;
+	}
+
+	// Files not in the allowed file list are not allowed.
+	if ( ! empty( $allowed_files ) && ! in_array( $file, $allowed_files, true ) ) {
+		return 3;
+	}
+
+	// Absolute Windows drive paths ARE allowed.
+	return 0;
+}

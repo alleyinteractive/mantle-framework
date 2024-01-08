@@ -34,6 +34,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed support for PHP 8.0.
 
+## v0.12.12 - 2024-01-08
+
+### Added
+
+- Adding support back for `alleyinteractive/wp-filter-side-effects` 1.0.
+
+## v0.12.11 - 2023-12-18
+
+### Fixed
+
+- Allow Windows drive paths.
+
 ## v0.12.10 - 2023-11-27
 
 ### Changed
