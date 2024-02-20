@@ -3,6 +3,7 @@
  * Printer class file.
  *
  * phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag
+ * phpcs:disable WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase
  *
  * @package Mantle
  */
@@ -10,10 +11,15 @@
 namespace Mantle\Framework\Console\Generators;
 
 use Nette\PhpGenerator\ClassType;
+use Nette\PhpGenerator\EnumType;
 use Nette\PhpGenerator\GlobalFunction;
+use Nette\PhpGenerator\InterfaceType;
 use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
+use Nette\PhpGenerator\TraitType;
+
+use function Mantle\Support\Helpers\str;
 
 /**
  * Generates PHP code compatible with WordPress coding standards.
@@ -25,19 +31,21 @@ class Printer extends \Nette\PhpGenerator\Printer {
 	 * @inheritDoc
 	 */
 	public function printFile( PhpFile $file ): string {
-		return str_replace(
-			[
-				"<?php\n\n",
-				'(  ) {',
-				'(  ):',
-			],
-			[
-				"<?php\n",
-				'() {',
-				'():',
-			],
-			parent::printFile( $file ),
-		);
+		return str(
+			str_replace(
+				[
+					"<?php\n\n",
+					'(  ) {',
+					'(  ):',
+				],
+				[
+					"<?php\n",
+					'() {',
+					'():',
+				],
+				parent::printFile( $file ),
+			) 
+		)->rtrim( PHP_EOL )->append( PHP_EOL );
 	}
 
 	/**
@@ -45,7 +53,7 @@ class Printer extends \Nette\PhpGenerator\Printer {
 	 *
 	 * @inheritDoc
 	 */
-	public function printClass( ClassType $class, PhpNamespace $namespace = null ): string {
+	public function printClass( ClassType|InterfaceType|TraitType|EnumType $class, PhpNamespace $namespace = null ): string {
 		return trim(
 			str_replace(
 				"\n{\n",
@@ -60,9 +68,9 @@ class Printer extends \Nette\PhpGenerator\Printer {
 	 *
 	 * @inheritDoc
 	 */
-	public function printMethod( Method $method, PhpNamespace $namespace = null ): string {
+	public function printMethod( Method $method, PhpNamespace $namespace = null, bool $isInterface = false ): string {
 		$abstract = $method->isAbstract();
-		$method   = parent::printMethod( $method, $namespace );
+		$method   = parent::printMethod( $method, $namespace, $isInterface );
 		$lines    = explode( "\n", $method );
 
 		foreach ( $lines as $i => $line ) {
