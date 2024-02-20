@@ -20,6 +20,14 @@ use RuntimeException;
 class InteractsWithExternalRequestsTest extends Framework_Test_Case {
 	use Prevent_Remote_Requests;
 
+	public function test_fake_request_default() {
+		$this->fake_request();
+
+		$response = wp_remote_get( 'https://example.com/' );
+		$this->assertEquals( 200, wp_remote_retrieve_response_code( $response ) );
+		$this->assertEmpty( wp_remote_retrieve_body( $response ) );
+	}
+
 	public function test_fake_request() {
 		$this->fake_request( 'https://testing.com/*' )
 			->with_response_code( 404 )

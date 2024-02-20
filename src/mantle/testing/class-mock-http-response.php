@@ -62,6 +62,21 @@ class Mock_Http_Response implements Arrayable {
 	}
 
 	/**
+	 * Ensure that a response is an instance of Mock_Http_Response.
+	 *
+	 * @param mixed $response Response.
+	 * @return Mock_Http_Response
+	 */
+	public static function ensure( mixed $response ): Mock_Http_Response {
+		if ( $response instanceof self ) {
+			return $response;
+		}
+
+		return static::create( $response );
+	}
+
+
+	/**
 	 * Helper method to create a response.
 	 *
 	 * @param string $body    Response body.

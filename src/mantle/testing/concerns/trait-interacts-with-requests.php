@@ -166,6 +166,17 @@ trait Interacts_With_Requests {
 	}
 
 	/**
+	 * Create a mock HTTP response.
+	 *
+	 * @param string $body   Response body.
+	 * @param array $headers Response headers.
+	 * @return Mock_Http_Response
+	 */
+	public function mock_response( string $body = '', array $headers = [] ): Mock_Http_Response {
+		return new Mock_Http_Response( $body, $headers );
+	}
+
+	/**
 	 * Filters pre_http_request to intercept the request, mock a response, and
 	 * return it. If the response has already been preempted, the preempt will
 	 * be returned instead. Regardless, this object unhooks itself from the
