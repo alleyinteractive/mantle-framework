@@ -78,7 +78,7 @@ trait Interacts_With_Mail {
 	/**
 	 * Assert that a specific number of emails were sent.
 	 *
-	 * @param int $expected_count The expected number of emails sent.
+	 * @param int                                                             $expected_count The expected number of emails sent.
 	 * @param (callable(\Mantle\Testing\Mail\Mail_Message): bool)|string|null $address_or_callback The email address to check for, or a callback to perform custom assertions.
 	 */
 	public function assertMailSentCount( int $expected_count, string|callable|null $address_or_callback = null ): void {
