@@ -76,6 +76,31 @@ trait Interacts_With_Mail {
 	}
 
 	/**
+	 * Assert that a specific number of emails were sent.
+	 *
+	 * @param int $expected_count The expected number of emails sent.
+	 * @param (callable(\Mantle\Testing\Mail\Mail_Message): bool)|string|null $address_or_callback The email address to check for, or a callback to perform custom assertions.
+	 */
+	public function assertMailSentCount( int $expected_count, string|callable|null $address_or_callback = null ): void {
+		$mailer = tests_retrieve_phpmailer_instance();
+
+		if ( ! ( $mailer instanceof Mock_Mailer ) ) {
+			$this->fail( 'Mail instance is not a MockPHPMailer instance.' );
+		}
+
+		if ( is_null( $address_or_callback ) ) {
+			$actual = count( $mailer->mock_sent );
+			$this->assertCount( $expected_count, $mailer->mock_sent, "Expected {$expected_count} emails to be sent, but only {$actual} were sent." );
+			return;
+		}
+
+		$sent_mail = $this->getSentMail( $address_or_callback );
+		$count     = count( $sent_mail );
+
+		$this->assertCount( $expected_count, $sent_mail, "Expected {$expected_count} emails to be sent, but only {$count} were sent." );
+	}
+
+	/**
 	 * Retrieve the sent mail for a given to address or callback function that
 	 * performs a match against sent mail.
 	 *
