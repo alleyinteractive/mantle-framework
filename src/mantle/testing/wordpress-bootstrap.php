@@ -117,10 +117,6 @@ $multisite = ( '1' === getenv( 'WP_MULTISITE' ) );
 $multisite = $multisite || ( defined( 'WP_TESTS_MULTISITE' ) && WP_TESTS_MULTISITE );
 $multisite = $multisite || ( defined( 'MULTISITE' ) && MULTISITE );
 
-// Override the PHPMailer.
-require_once __DIR__ . '/doubles/class-mockphpmailer.php';
-$phpmailer = new MockPHPMailer( true );
-
 // Include a WP_UnitTestCase class to allow for easier transition to the testing
 // framework.
 if ( ! Utils::env( 'DISABLE_WP_UNIT_TEST_CASE_SHIM', false ) ) {
