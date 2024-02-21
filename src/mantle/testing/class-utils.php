@@ -256,7 +256,7 @@ class Utils {
 	 * Retrieve an environment variable and check if it is truthy.
 	 *
 	 * @param string $variable Variable to get.
-	 * @param bool   $default Default value.
+	 * @param bool   $default Default value used as a fallback.
 	 * @return bool
 	 */
 	public static function env_bool( string $variable, bool $default ): bool {
