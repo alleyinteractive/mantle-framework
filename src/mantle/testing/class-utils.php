@@ -253,6 +253,19 @@ class Utils {
 	}
 
 	/**
+	 * Retrieve an environment variable and check if it is truthy.
+	 *
+	 * @param string $variable Variable to get.
+	 * @param bool   $default Default value.
+	 * @return bool
+	 */
+	public static function env_bool( string $variable, bool $default ): bool {
+		$value = static::env( $variable, $default );
+
+		return in_array( strtolower( $value ), [ 'true', '1', 'yes' ], true );
+	}
+
+	/**
 	 * Ensure an environment variable is is a valid string that can be passed to
 	 * to a shell script.
 	 *
@@ -278,16 +291,12 @@ class Utils {
 	 * not install the WordPress database.
 	 *
 	 * @param string $directory Directory to install WordPress in.
-	 * @param bool   $install_vip_mu_plugins Whether to install VIP MU plugins, defaults to false.
-	 * @param bool   $install_object_cache Whether to install the object cache drop-in, defaults to false.
-	 * @param bool   $use_sqlite_db Whether to use SQLite for the database, defaults to false.
 	 */
-	public static function install_wordpress(
-		string $directory,
-		bool $install_vip_mu_plugins = false,
-		bool $install_object_cache = false,
-		bool $use_sqlite_db = false,
-	): void {
+	public static function install_wordpress( string $directory ): void {
+		$install_vip_mu_plugins = static::env_bool( 'MANTLE_INSTALL_VIP_MU_PLUGINS', false );
+		$install_object_cache   = static::env_bool( 'MANTLE_INSTALL_OBJECT_CACHE', false );
+		$use_sqlite_db          = static::env_bool( 'MANTLE_USE_SQLITE', false );
+
 		$branch = static::env( 'MANTLE_CI_BRANCH', 'HEAD' );
 
 		// Compile the variables to pass to the shell script.
