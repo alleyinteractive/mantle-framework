@@ -13,6 +13,7 @@ use function Mantle\Support\Helpers\tap;
 
 require_once __DIR__ . '/preload.php';
 require_once __DIR__ . '/helpers/helpers-http-response.php';
+require_once __DIR__ . '/mail/helpers.php';
 
 /**
  * Retrieve an instance of the Installation Manager
