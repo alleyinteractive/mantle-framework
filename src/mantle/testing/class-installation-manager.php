@@ -40,6 +40,26 @@ class Installation_Manager {
 	protected array $after_loaded_callbacks = [];
 
 	/**
+	 * Constructor.
+	 *
+	 * Ensure that any environment variables also call the subsequent methods to
+	 * configure the installation.
+	 */
+	public function __construct() {
+		if ( Utils::env_bool( 'MANTLE_INSTALL_VIP_MU_PLUGINS', false ) ) {
+			$this->with_vip_mu_plugins();
+		}
+
+		if ( Utils::env_bool( 'MANTLE_INSTALL_OBJECT_CACHE', false ) ) {
+			$this->with_object_cache();
+		}
+
+		if ( Utils::env_bool( 'MANTLE_USE_SQLITE', false ) ) {
+			$this->with_sqlite();
+		}
+	}
+
+	/**
 	 * Define a callback to be invoked before installation.
 	 *
 	 * @param callable $callback Callback to invoke before installation.
