@@ -156,6 +156,16 @@ trait Element_Assertions {
 	}
 
 	/**
+	 * Alias for assertElementExistsByQuerySelector.
+	 *
+	 * @param string $selector
+	 * @return void
+	 */
+	public function assertQuerySelectorExists( string $selector ) {
+		return $this->assertElementExistsByQuerySelector( $selector );
+	}
+
+	/**
 	 * Assert that an element is missing by query selector.
 	 *
 	 * @param string $selector The selector to use.
@@ -163,5 +173,15 @@ trait Element_Assertions {
 	 */
 	public function assertElementMissingByQuerySelector( string $selector ) {
 		return $this->assertElementMissing( new Translator( $selector ) );
+	}
+
+	/**
+	 * Alias for assertElementMissingByQuerySelector.
+	 *
+	 * @param string $selector
+	 * @return void
+	 */
+	public function assertQuerySelectorMissing( string $selector ) {
+		return $this->assertElementMissingByQuerySelector( $selector );
 	}
 }
