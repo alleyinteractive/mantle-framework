@@ -48,4 +48,15 @@ class ElementAssertionsTest extends Framework_Test_Case {
 		$response->assertElementExistsByTagName( 'section' );
 		$response->assertElementMissingByTagName( 'article' );
 	}
+
+	public function test_element_exists_by_query_selector() {
+		$response = new Test_Response( $this->test_content );
+
+		$response->assertElementExistsByQuerySelector( 'div' );
+		$response->assertElementExistsByQuerySelector( 'section' );
+		$response->assertElementExistsByQuerySelector( '.test-class' );
+		$response->assertElementExistsByQuerySelector( '#test-id' );
+		$response->assertElementMissingByQuerySelector( 'article' );
+		$response->assertElementMissingByQuerySelector( 'aside' );
+	}
 }

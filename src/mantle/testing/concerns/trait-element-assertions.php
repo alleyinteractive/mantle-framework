@@ -10,6 +10,7 @@ namespace Mantle\Testing\Concerns;
 use PHPUnit\Framework\Assert as PHPUnit;
 use DOMDocument;
 use DOMXPath;
+use Gt\CssXPath\Translator;
 
 /**
  * Assorted Test_Cast assertions for checking for elements in a response.
@@ -142,5 +143,25 @@ trait Element_Assertions {
 	 */
 	public function assertElementMissingByTagName( string $type ) {
 		return $this->assertElementMissing( sprintf( '//*[local-name()="%s"]', $type ) );
+	}
+
+	/**
+	 * Assert that an element exists by query selector.
+	 *
+	 * @param string $selector The selector to use.
+	 * @return static
+	 */
+	public function assertElementExistsByQuerySelector( string $selector ) {
+		return $this->assertElementExists( new Translator( $selector ) );
+	}
+
+	/**
+	 * Assert that an element is missing by query selector.
+	 *
+	 * @param string $selector The selector to use.
+	 * @return static
+	 */
+	public function assertElementMissingByQuerySelector( string $selector ) {
+		return $this->assertElementMissing( new Translator( $selector ) );
 	}
 }
