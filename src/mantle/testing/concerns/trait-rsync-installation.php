@@ -213,6 +213,7 @@ trait Rsync_Installation {
 		putenv( 'WP_SKIP_DB_CREATE=1' );
 
 		$this->rsync_exclusions[] = 'db.php';
+		$this->rsync_exclusions[] = 'sqlite-database-integration';
 
 		return $this;
 	}
