@@ -13,6 +13,7 @@ use Mantle\Database\Model\Model;
 use Mantle\Framework\Http\Kernel as HttpKernel;
 use Mantle\Http\Request;
 use Mantle\Support\Str;
+use Mantle\Support\Traits\Conditionable;
 use Mantle\Testing\Doubles\Spy_REST_Server;
 use Mantle\Testing\Exceptions\Exception;
 use Mantle\Testing\Exceptions\WP_Redirect_Exception;
@@ -33,6 +34,8 @@ use WP;
  * (System Under Test) operation on WordPress and returns a response.
  */
 class Pending_Testable_Request {
+	use Conditionable;
+
 	/**
 	 * Indicates whether redirects should be followed.
 	 *
