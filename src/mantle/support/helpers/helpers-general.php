@@ -385,7 +385,11 @@ function with( $value, callable $callback = null ) {
  * @return void
  */
 function add_action( string $hook, callable $callable, int $priority = 10 ): void {
-	Container::get_instance()->make( Dispatcher::class )->listen( $hook, $callable, $priority );
+	if ( ! class_exists( Dispatcher::class ) ) {
+		\add_action( $hook, $callable, $priority, 99 );
+	} else {
+		Container::get_instance()->make( Dispatcher::class )->listen( $hook, $callable, $priority );
+	}
 }
 
 /**
@@ -397,7 +401,11 @@ function add_action( string $hook, callable $callable, int $priority = 10 ): voi
  * @return void
  */
 function add_filter( string $hook, callable $callable, int $priority = 10 ): void {
-	Container::get_instance()->make( Dispatcher::class )->listen( $hook, $callable, $priority );
+	if ( ! class_exists( Dispatcher::class ) ) {
+		\add_filter( $hook, $callable, $priority, 99 );
+	} else {
+		Container::get_instance()->make( Dispatcher::class )->listen( $hook, $callable, $priority );
+	}
 }
 
 /**
