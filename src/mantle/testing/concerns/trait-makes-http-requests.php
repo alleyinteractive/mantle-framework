@@ -9,21 +9,9 @@
 
 namespace Mantle\Testing\Concerns;
 
-use Mantle\Database\Model\Model;
-use Mantle\Framework\Http\Kernel as HttpKernel;
-use Mantle\Http\Request;
 use Mantle\Testing\Pending_Testable_Request;
-use Mantle\Support\Str;
-use Mantle\Testing\Doubles\Spy_REST_Server;
-use Mantle\Testing\Exceptions\Exception;
-use Mantle\Testing\Exceptions\WP_Redirect_Exception;
 use Mantle\Testing\Test_Response;
-use Mantle\Testing\Utils;
-use PHPUnit\Framework\Assert;
 use RuntimeException;
-use Symfony\Component\HttpFoundation\InputBag;
-use WP;
-use WP_Query;
 
 use function Mantle\Support\Helpers\tap;
 
