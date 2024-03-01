@@ -44,6 +44,8 @@ use function Mantle\Support\Helpers\collect;
  * Root Test Case for Mantle sites.
  *
  * Not designed for external use. Use {@see Mantle\Testkit\Test_Case} instead.
+ *
+ * @property Application|null $app
  */
 abstract class Test_Case extends BaseTestCase {
 	use Assertions,
@@ -316,24 +318,26 @@ abstract class Test_Case extends BaseTestCase {
 	}
 
 	/**
-	 * Allow the factory to be checked against.
+	 * Allow the factory/app to be checked against.
 	 *
 	 * @param string $name Property name.
 	 * @return boolean
 	 */
 	public function __isset( $name ) {
-		return 'factory' === $name;
+		return 'factory' === $name || 'app' === $name;
 	}
 
 	/**
-	 * Retrieve the factory instance non-statically.
+	 * Retrieve the factory/app instance non-statically.
 	 *
 	 * @param string $name Property name.
 	 * @return mixed
 	 */
 	public function __get( $name ) {
-		if ( 'factory' === $name ) {
-			return self::factory();
-		}
+		return match ( $name ) {
+			'factory' => self::factory(),
+			'app' => $this->app,
+			default => null,
+		};
 	}
 }

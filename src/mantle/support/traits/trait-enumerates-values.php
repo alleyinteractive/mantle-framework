@@ -743,10 +743,17 @@ trait Enumerates_Values {
 	 */
 	public function to_array() {
 		return $this->map(
-			function ( $value ) {
-				return $value instanceof Arrayable ? $value->to_array() : $value;
-			}
+			fn ( $value ) => $value instanceof Arrayable ? $value->to_array() : $value,
 		)->all();
+	}
+
+	/**
+	 * Alias for the "to_array" method.
+	 *
+	 * @return array<TKey, TValue>
+	 */
+	public function toArray() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+		return $this->to_array();
 	}
 
 	/**
