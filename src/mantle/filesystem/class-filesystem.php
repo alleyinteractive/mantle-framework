@@ -11,7 +11,6 @@ namespace Mantle\Filesystem;
 
 use ErrorException;
 use FilesystemIterator;
-use League\Flysystem\FileNotFoundException;
 use Mantle\Support\Str;
 use Mantle\Support\Traits\Macroable;
 use RuntimeException;
@@ -51,14 +50,14 @@ class Filesystem {
 	 * @param  bool   $lock
 	 * @return string
 	 *
-	 * @throws FileNotFoundException Thrown on missing file.
+	 * @throws File_Not_Found_Exception Thrown on missing file.
 	 */
-	public function get( $path, $lock = false ) {
+	public function get( string $path, bool $lock = false ): string {
 		if ( $this->is_file( $path ) ) {
 			return $lock ? $this->shared_get( $path ) : file_get_contents( $path ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
 		}
 
-		throw new FileNotFoundException( "File does not exist at path {$path}." );
+		throw new File_Not_Found_Exception( "File does not exist at path {$path}." );
 	}
 
 	/**
@@ -96,7 +95,7 @@ class Filesystem {
 	 * @param  array  $data
 	 * @return mixed
 	 *
-	 * @throws FileNotFoundException Thrown on missing file.
+	 * @throws File_Not_Found_Exception Thrown on missing file.
 	 */
 	public function get_require( $path, array $data = [] ) {
 		if ( $this->is_file( $path ) ) {
@@ -110,7 +109,7 @@ class Filesystem {
 			} )();
 		}
 
-		throw new FileNotFoundException( "File does not exist at path {$path}." );
+		throw new File_Not_Found_Exception( "File does not exist at path {$path}." );
 	}
 
 	/**
@@ -120,7 +119,7 @@ class Filesystem {
 	 * @param  array  $data
 	 * @return mixed
 	 *
-	 * @throws FileNotFoundException Thrown on missing file.
+	 * @throws File_Not_Found_Exception Thrown on missing file.
 	 */
 	public function require_once( $path, array $data = [] ) {
 		if ( $this->is_file( $path ) ) {
@@ -134,7 +133,7 @@ class Filesystem {
 			} )();
 		}
 
-		throw new FileNotFoundException( "File does not exist at path {$path}." );
+		throw new File_Not_Found_Exception( "File does not exist at path {$path}." );
 	}
 
 	/**
