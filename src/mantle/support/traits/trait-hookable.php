@@ -145,12 +145,13 @@ trait Hookable {
 	 * Determine if the service provider should use the event dispatcher or the
 	 * core WordPress hooks.
 	 *
+	 * By default, it is only enabled if the class is an instance of the
+	 * `Service_Provider` class. For external uses of this trait, the event
+	 * dispatcher won't be used.
+	 *
 	 * @return bool
 	 */
 	public function use_event_dispatcher(): bool {
-		// By default, it is only enabled if the class is an instance of the
-		// `Service_Provider` class. For external uses of this trait, the
-		// event dispatcher won't be used.
 		return $this instanceof Service_Provider;
 	}
 }
