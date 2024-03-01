@@ -78,7 +78,7 @@ abstract class Service_Provider implements LoggerAwareInterface {
 			$this->setLogger( $this->app['log']->driver() );
 		}
 
-		$this->register_action_hooks();
+		$this->register_hooks();
 		$this->boot();
 	}
 

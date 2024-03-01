@@ -34,7 +34,7 @@ trait Action_Hooks {
 	 * based `#[Action]` and `#[Filter]` methods and registers them with the
 	 * respective WordPress hooks.
 	 */
-	protected function register_action_hooks(): void {
+	protected function register_hooks(): void {
 		$this->collect_action_methods()
 			->merge( $this->collect_attribute_hooks() )
 			->unique()
