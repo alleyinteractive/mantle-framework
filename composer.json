@@ -30,6 +30,7 @@
         "nette/php-generator": "^4.1",
         "nunomaduro/collision": "^6.0 || ^7.0",
         "nunomaduro/termwind": "^1.15.1",
+        "phpgt/cssxpath": "^1.2",
         "psr/container": "^1.1.1 || ^2.0.2",
         "psr/log": "^1.0.1 || ^2.0 || ^3.0",
         "psr/simple-cache": "^3.0",

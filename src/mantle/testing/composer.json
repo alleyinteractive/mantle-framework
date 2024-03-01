@@ -9,10 +9,11 @@
         "mantle-framework/contracts": "^1.0",
         "mantle-framework/database": "^1.0",
         "mantle-framework/faker": "^1.0",
-        "mantle-framework/http": "^1.0",
         "mantle-framework/http-client": "^1.0",
+        "mantle-framework/http": "^1.0",
         "mantle-framework/support": "^1.0",
         "nunomaduro/termwind": "^1.15.1",
+        "phpgt/cssxpath": "^1.2",
         "spatie/phpunit-snapshot-assertions": "^4.2 || ^5.1"
     },
     "extra": {

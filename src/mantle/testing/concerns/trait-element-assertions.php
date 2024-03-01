@@ -10,6 +10,7 @@ namespace Mantle\Testing\Concerns;
 use PHPUnit\Framework\Assert as PHPUnit;
 use DOMDocument;
 use DOMXPath;
+use Gt\CssXPath\Translator;
 
 /**
  * Assorted Test_Cast assertions for checking for elements in a response.
@@ -46,7 +47,7 @@ trait Element_Assertions {
 	 * @param string $expression The XPath expression to execute.
 	 * @return static
 	 */
-	public function assertElementExists( string $expression ) {
+	public function assertElementExists( string $expression ): static {
 		$nodes = ( new DOMXPath( $this->get_dom_document() ) )->query( $expression );
 
 		PHPUnit::assertTrue( ! $nodes ? false : $nodes->length > 0 );
@@ -60,7 +61,7 @@ trait Element_Assertions {
 	 * @param string $id The ID of the element to check.
 	 * @return static
 	 */
-	public function assertElementExistsById( string $id ) {
+	public function assertElementExistsById( string $id ): static {
 		if ( 0 === strpos( $id, '#' ) ) {
 			$id = substr( $id, 1 );
 		}
@@ -74,7 +75,7 @@ trait Element_Assertions {
 	 * @param string $classname The classname of the element to check.
 	 * @return static
 	 */
-	public function assertElementExistsByClassName( string $classname ) {
+	public function assertElementExistsByClassName( string $classname ): static {
 		if ( 0 === strpos( $classname, '.' ) ) {
 			$classname = substr( $classname, 1 );
 		}
@@ -88,7 +89,7 @@ trait Element_Assertions {
 	 * @param string $expression The XPath expression to execute.
 	 * @return static
 	 */
-	public function assertElementMissing( string $expression ) {
+	public function assertElementMissing( string $expression ): static {
 		$nodes = ( new DOMXPath( $this->get_dom_document() ) )->query( $expression );
 
 		PHPUnit::assertTrue( false === $nodes || 0 === $nodes->length );
@@ -102,7 +103,7 @@ trait Element_Assertions {
 	 * @param string $id The ID of the element to check.
 	 * @return static
 	 */
-	public function assertElementMissingById( string $id ) {
+	public function assertElementMissingById( string $id ): static {
 		if ( 0 === strpos( $id, '#' ) ) {
 			$id = substr( $id, 1 );
 		}
@@ -116,7 +117,7 @@ trait Element_Assertions {
 	 * @param string $classname The classname of the element to check.
 	 * @return static
 	 */
-	public function assertElementMissingByClassName( string $classname ) {
+	public function assertElementMissingByClassName( string $classname ): static {
 		if ( 0 === strpos( $classname, '.' ) ) {
 			$classname = substr( $classname, 1 );
 		}
@@ -130,7 +131,7 @@ trait Element_Assertions {
 	 * @param string $type The type of element to check.
 	 * @return static
 	 */
-	public function assertElementExistsByTagName( string $type ) {
+	public function assertElementExistsByTagName( string $type ): static {
 		return $this->assertElementExists( sprintf( '//*[local-name()="%s"]', $type ) );
 	}
 
@@ -140,7 +141,45 @@ trait Element_Assertions {
 	 * @param string $type The type of element to check.
 	 * @return static
 	 */
-	public function assertElementMissingByTagName( string $type ) {
+	public function assertElementMissingByTagName( string $type ): static {
 		return $this->assertElementMissing( sprintf( '//*[local-name()="%s"]', $type ) );
+	}
+
+	/**
+	 * Assert that an element exists by query selector.
+	 *
+	 * @param string $selector The selector to use.
+	 * @return static
+	 */
+	public function assertElementExistsByQuerySelector( string $selector ): static {
+		return $this->assertElementExists( new Translator( $selector ) );
+	}
+
+	/**
+	 * Alias for assertElementExistsByQuerySelector.
+	 *
+	 * @param string $selector
+	 */
+	public function assertQuerySelectorExists( string $selector ): static {
+		return $this->assertElementExistsByQuerySelector( $selector );
+	}
+
+	/**
+	 * Assert that an element is missing by query selector.
+	 *
+	 * @param string $selector The selector to use.
+	 * @return static
+	 */
+	public function assertElementMissingByQuerySelector( string $selector ): static {
+		return $this->assertElementMissing( new Translator( $selector ) );
+	}
+
+	/**
+	 * Alias for assertElementMissingByQuerySelector.
+	 *
+	 * @param string $selector
+	 */
+	public function assertQuerySelectorMissing( string $selector ): static {
+		return $this->assertElementMissingByQuerySelector( $selector );
 	}
 }

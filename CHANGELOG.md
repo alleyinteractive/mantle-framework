@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 	`composer require --dev phpunit/phpunit:^9 nunomaduro/collision:^6`
 - Adds database-specific collections with storage of the `found_rows` value.
 - Added testing against `wp_mail()` calls.
+- Added assertions for elements by query selector (`assertElementExistsByQuerySelector()` and `assertElementMissingByQuerySelector()`).
 
 ### Changed
 
