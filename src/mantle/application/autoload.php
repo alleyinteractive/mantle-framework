@@ -25,10 +25,10 @@ if ( ! function_exists( 'app' ) ) {
 	 */
 	function app( string $abstract = null, array $parameters = [] ) {
 		if ( empty( $abstract ) ) {
-			return Application::getInstance();
+			return Application::get_instance();
 		}
 
-		return Application::getInstance()->make( $abstract, $parameters );
+		return Application::get_instance()->make( $abstract, $parameters );
 	}
 }
 
