@@ -7,10 +7,10 @@
 
 namespace Mantle\Support;
 
-use Mantle\Console\Command;
 use Mantle\Console\Application as Console_Application;
+use Mantle\Console\Command;
 use Mantle\Contracts\Application;
-use Mantle\Support\Traits\Action_Hooks;
+use Mantle\Support\Traits\Hookable;
 use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
 
 use function Mantle\Support\Helpers\collect;
@@ -19,7 +19,7 @@ use function Mantle\Support\Helpers\collect;
  * Application Service Provider
  */
 abstract class Service_Provider implements LoggerAwareInterface {
-	use Action_Hooks;
+	use Hookable;
 	use LoggerAwareTrait;
 
 	/**

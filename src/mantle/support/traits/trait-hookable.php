@@ -1,6 +1,6 @@
 <?php
 /**
- * Action_Hooks trait file
+ * Hookable trait file
  *
  * @package Mantle
  */
@@ -25,7 +25,7 @@ use function Mantle\Support\Helpers\collect;
  * well as the attribute based `#[Action]` methods and registers them with
  * the respective WordPress hooks.
  */
-trait Action_Hooks {
+trait Hookable {
 	/**
 	 * Boot all actions and attribute methods on the service provider.
 	 *
