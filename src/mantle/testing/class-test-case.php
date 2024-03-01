@@ -24,6 +24,7 @@ use Mantle\Testing\Concerns\Interacts_With_Console;
 use Mantle\Testing\Concerns\Interacts_With_Container;
 use Mantle\Testing\Concerns\Interacts_With_Cron;
 use Mantle\Testing\Concerns\Interacts_With_Hooks;
+use Mantle\Testing\Concerns\Interacts_With_Mail;
 use Mantle\Testing\Concerns\Interacts_With_Requests;
 use Mantle\Testing\Concerns\Makes_Http_Requests;
 use Mantle\Testing\Concerns\Network_Admin_Screen;
@@ -54,6 +55,7 @@ abstract class Test_Case extends BaseTestCase {
 		Interacts_With_Container,
 		Interacts_With_Cron,
 		Interacts_With_Hooks,
+		Interacts_With_Mail,
 		Interacts_With_Requests,
 		Makes_Http_Requests,
 		MatchesSnapshots,
