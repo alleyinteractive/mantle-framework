@@ -3,6 +3,7 @@
  * Arr class file.
  *
  * @package Mantle
+ *
  * phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.VariableRedeclaration
  */
 

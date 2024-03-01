@@ -3,6 +3,7 @@
  * Uploaded_File class file.
  *
  * @package Mantle
+ *
  * @phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment
  */
 

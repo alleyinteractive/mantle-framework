@@ -28,6 +28,7 @@
 		<exclude name="PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection" />
 		<exclude name="PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.Changed" />
 		<exclude name="Squiz.Commenting.FunctionComment.IncorrectTypeHint" />
+		<exclude name="Generic.Commenting.DocComment.SpacingAfterTagGroup" />
 		<exclude name="Generic.Commenting.DocComment.MissingShort" />
 	</rule>
 

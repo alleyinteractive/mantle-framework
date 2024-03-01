@@ -3,6 +3,7 @@
  * Post_Query_Builder class file.
  *
  * @package Mantle
+ *
  * @phpcs:disable Squiz.Commenting.FunctionComment
  */
 

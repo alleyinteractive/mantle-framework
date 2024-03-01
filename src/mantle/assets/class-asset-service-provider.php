@@ -9,6 +9,8 @@ namespace Mantle\Assets;
 
 use Mantle\Support\Service_Provider;
 
+use function Mantle\Support\Helpers\validate_file;
+
 /**
  * Asset Service Provider
  */

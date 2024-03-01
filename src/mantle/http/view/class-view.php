@@ -3,6 +3,7 @@
  * View class file.
  *
  * @package Mantle
+ *
  * @phpcs:disable WordPress.WP.GlobalVariablesOverride.Prohibited
  */
 

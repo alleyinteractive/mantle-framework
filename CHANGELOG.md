@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 	`composer require --dev phpunit/phpunit:^9 nunomaduro/collision:^6`
 - Adds database-specific collections with storage of the `found_rows` value.
+- Added testing against `wp_mail()` calls.
 
 ### Changed
 
@@ -33,6 +34,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Removed support for PHP 8.0.
+
+## v0.12.12 - 2024-01-08
+
+### Added
+
+- Adding support back for `alleyinteractive/wp-filter-side-effects` 1.0.
+
+## v0.12.11 - 2023-12-18
+
+### Fixed
+
+- Allow Windows drive paths.
 
 ## v0.12.10 - 2023-11-27
 
