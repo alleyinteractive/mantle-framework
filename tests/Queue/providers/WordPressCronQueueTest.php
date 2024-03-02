@@ -81,9 +81,9 @@ class WordPressCronQueueTest extends Framework_Test_Case {
 	}
 
 	public function test_job_failure() {
-		$_SERVER['__failed_run'] = false;
+		$_SERVER['__failed_run'] = 0;
 
-		$this->app['events']->listen( Job_Failed::class, fn () => $_SERVER['__failed_run'] = true );
+		$this->app['events']->listen( Job_Failed::class, fn () => $_SERVER['__failed_run']++ );
 
 		$this->assertNotInCronQueue( Job_To_Fail::class );
 
@@ -94,7 +94,7 @@ class WordPressCronQueueTest extends Framework_Test_Case {
 		$this->dispatch_queue();
 
 		$this->assertNotInCronQueue( Job_To_Fail::class );
-		$this->assertTrue( $_SERVER['__failed_run'] );
+		$this->assertEquals( 2, $_SERVER['__failed_run'] );
 
 		// Ensure that the post does not exist.
 		$this->assertPostExists( [

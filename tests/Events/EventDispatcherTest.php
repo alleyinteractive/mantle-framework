@@ -9,6 +9,12 @@ use Mockery as m;
  * @group events
  */
 class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
+	public function setUp(): void {
+		parent::setUp();
+
+		app()->singleton_if( 'events', fn ( $app ) => new Dispatcher( $app ) );
+	}
+
 	public function testBasicEventExecution() {
 		unset( $_SERVER['__event.test'] );
 		$d = new Dispatcher();

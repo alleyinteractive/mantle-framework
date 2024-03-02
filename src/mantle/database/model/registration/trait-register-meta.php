@@ -81,7 +81,7 @@ trait Register_Meta {
 	 * @return string|null
 	 */
 	public static function get_object_type(): ?string {
-		$parent = get_parent_class();
+		$parent = get_parent_class( static::class );
 
 		if ( Model\Post::class === $parent ) {
 			return 'post';
