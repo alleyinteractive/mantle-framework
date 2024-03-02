@@ -7,20 +7,19 @@
 
 namespace Mantle\Support;
 
-use Mantle\Console\Command;
 use Mantle\Console\Application as Console_Application;
+use Mantle\Console\Command;
 use Mantle\Contracts\Application;
-use Mantle\Support\Attributes\Action;
-use Mantle\Support\Str;
+use Mantle\Support\Traits\Hookable;
 use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
-use ReflectionClass;
-use function Mantle\Support\Helpers\add_action;
+
 use function Mantle\Support\Helpers\collect;
 
 /**
  * Application Service Provider
  */
 abstract class Service_Provider implements LoggerAwareInterface {
+	use Hookable;
 	use LoggerAwareTrait;
 
 	/**
@@ -79,83 +78,8 @@ abstract class Service_Provider implements LoggerAwareInterface {
 			$this->setLogger( $this->app['log']->driver() );
 		}
 
-		$this->boot_action_hooks();
+		$this->register_hooks();
 		$this->boot();
-	}
-
-	/**
-	 * Boot all actions and attribute methods on the service provider.
-	 *
-	 * Collects all of the `on_{hook}` and `on_{hook}_at_{priority}` methods as
-	 * well as the attribute based `#[Action]` methods and registers them with
-	 * the respective WordPress hooks.
-	 */
-	protected function boot_action_hooks(): void {
-		$this->collect_action_methods()
-			->merge( $this->collect_attribute_hooks() )
-			->unique()
-			->each(
-				fn ( array $item ) => add_action( $item['hook'], [ $this, $item['method'] ], $item['priority'] ),
-			);
-	}
-
-	/**
-	 * Collect all action methods from the service provider.
-	 *
-	 * @return Collection<int, array{hook: string, method: string, priority: int}>
-	 */
-	protected function collect_action_methods(): Collection {
-		return collect( get_class_methods( static::class ) )
-			->filter(
-				fn ( string $method ) => Str::starts_with( $method, 'on_' )
-			)
-			->map(
-				function( string $method ) {
-					$hook     = Str::after( $method, 'on_' );
-					$priority = 10;
-
-					if ( Str::contains( $hook, '_at_' ) ) {
-						// Strip the priority from the hook name.
-						$priority = (int) Str::after_last( $hook, '_at_' );
-						$hook     = Str::before_last( $hook, '_at_' );
-					}
-
-					return [
-						'hook'     => $hook,
-						'method'   => $method,
-						'priority' => $priority,
-					];
-				}
-			);
-	}
-
-	/**
-	 * Collect all attribute actions on the service provider.
-	 *
-	 * Allow methods with the `#[Action]` attribute to automatically register
-	 * WordPress hooks.
-	 *
-	 * @return Collection<int, array{hook: string, method: string, priority: int}>
-	 */
-	protected function collect_attribute_hooks(): Collection {
-		$items = new Collection();
-		$class = new ReflectionClass( static::class );
-
-		foreach ( $class->getMethods() as $method ) {
-			foreach ( $method->getAttributes( Action::class ) as $attribute ) {
-				$instance = $attribute->newInstance();
-
-				$items->push(
-					[
-						'hook'     => $instance->hook_name,
-						'method'   => $method->getName(),
-						'priority' => $instance->priority,
-					]
-				);
-			}
-		}
-
-		return $items;
 	}
 
 	/**
