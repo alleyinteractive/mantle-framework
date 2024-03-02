@@ -144,16 +144,10 @@ class Provider implements Provider_Contract {
 			$object->post_date = Carbon::createFromTimestamp( $delay, wp_timezone() )->toDateTimeString();
 		}
 
-		$object->save();
+		// Set the queue term for the job.
+		$object->terms->{static::OBJECT_NAME} = static::get_queue_term_id( $queue );
 
-		// TODO: Convert this to a queued term setter like we do with meta.
-		$object->set_terms(
-			[
-				static::OBJECT_NAME => static::get_queue_term_id( $queue ),
-			]
-		);
-
-		return true;
+		return $object->save();
 	}
 
 	/**
@@ -224,7 +218,6 @@ class Provider implements Provider_Contract {
 	 */
 	public function in_queue( mixed $job, string $queue = null ): bool {
 		return Queue_Record::where( 'post_status', Post_Status::PENDING->value )
-			->whereDate( now()->toDateTimeString(), '>=' )
 			->whereTerm( static::get_queue_term_id( $queue ), static::OBJECT_NAME )
 			->whereMeta( Meta_Key::JOB->value, maybe_serialize( $job ) )
 			->exists();
