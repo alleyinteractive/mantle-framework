@@ -188,9 +188,10 @@ class Pending_Testable_Request {
 	 * @param array $headers Headers to convert to $_SERVER vars.
 	 * @return array
 	 */
-	protected function transform_headers_to_server_vars( array $headers ) {
+	protected function transform_headers_to_server_vars( array $headers ): array {
 		$headers           = array_merge( $this->headers->all(), $headers );
 		$formatted_headers = [];
+
 		foreach ( $headers as $name => $value ) {
 			$name = strtr( strtoupper( $name ), '-', '_' );
 
@@ -373,7 +374,7 @@ class Pending_Testable_Request {
 	/**
 	 * Reset the global state related to requests.
 	 */
-	protected function reset_request_state() {
+	protected function reset_request_state(): void {
 		// phpcs:disable
 
 		/*
@@ -420,7 +421,7 @@ class Pending_Testable_Request {
 	 * @param array  $data   POST data to set.
 	 * @param array  $cookies Cookies to be sent with the request.
 	 */
-	protected function set_server_state( $method, $url, $server, $data, array $cookies = [] ) {
+	protected function set_server_state( $method, $url, $server, $data, array $cookies = [] ): void {
 		// phpcs:disable WordPress.Security.NonceVerification
 		$_SERVER['REQUEST_METHOD'] = strtoupper( $method );
 		$_SERVER['SERVER_NAME']    = WP_TESTS_DOMAIN;
@@ -461,7 +462,7 @@ class Pending_Testable_Request {
 	 * - The query variables.
 	 * - The main query.
 	 */
-	protected function setup_wordpress_query() {
+	protected function setup_wordpress_query(): void {
 		Test_Case::flush_cache();
 
 		// phpcs:disable WordPress.WP.GlobalVariablesOverride
@@ -495,7 +496,7 @@ class Pending_Testable_Request {
 	 * - Replace the REST API `rest_api_loaded` method to allow the REST response
 	 *   to be read without terminating the script.
 	 */
-	protected function replace_rest_api() {
+	protected function replace_rest_api(): void {
 		// Ensure the Mantle REST Spy Server is used.
 		add_filter( 'wp_rest_server_class', [ Utils::class, 'wp_rest_server_class_filter' ], PHP_INT_MAX );
 
@@ -512,7 +513,7 @@ class Pending_Testable_Request {
 	 * Mirroring `{@see rest_api_loaded()}`, this method fires the REST API
 	 * request and stores the response.
 	 */
-	public function serve_rest_api_request() {
+	public function serve_rest_api_request(): void {
 		if ( empty( $GLOBALS['wp']->query_vars['rest_route'] ) ) {
 			return;
 		}
@@ -545,7 +546,7 @@ class Pending_Testable_Request {
 	 * @param string $uri URI to fully-qualify.
 	 * @return string
 	 */
-	protected function prepare_url_for_request( $uri ) {
+	protected function prepare_url_for_request( $uri ): string {
 		return Str::trailing_slash( home_url( $uri ) );
 	}
 
@@ -555,7 +556,7 @@ class Pending_Testable_Request {
 	 * @param Test_Response $response Test response.
 	 * @return Test_Response
 	 */
-	protected function follow_redirects( $response ) {
+	protected function follow_redirects( $response ): Test_Response {
 		while ( $response->is_redirect() ) {
 			$response = $this->get( $response->get_header( 'Location' ) );
 		}
@@ -737,7 +738,7 @@ class Pending_Testable_Request {
 	 * @param int    $options JSON encoding options.
 	 * @return Test_Response
 	 */
-	public function options_json( $uri, array $data = [], array $headers = [], int $options = 0 ) {
+	public function options_json( $uri, array $data = [], array $headers = [], int $options = 0 ): Test_Response {
 		return $this->json( 'OPTIONS', $uri, $data, $headers, $options );
 	}
 }
