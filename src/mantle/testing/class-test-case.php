@@ -99,7 +99,6 @@ abstract class Test_Case extends BaseTestCase {
 		static::register_traits();
 
 		if ( ! empty( static::$test_uses ) ) {
-
 			static::get_test_case_traits()
 				->each(
 					function( $trait ) {
@@ -268,7 +267,7 @@ abstract class Test_Case extends BaseTestCase {
 	/**
 	 * Get an array of priority traits.
 	 *
-	 * @return array
+	 * @return array<class-string>
 	 */
 	protected static function get_priority_traits(): array {
 		return [
@@ -282,14 +281,14 @@ abstract class Test_Case extends BaseTestCase {
 	/**
 	 * Register the traits that this test case uses.
 	 */
-	public static function register_traits() {
+	public static function register_traits(): void {
 		static::$test_uses = array_flip( class_uses_recursive( static::class ) );
 	}
 
 	/**
 	 * Refresh the application instance.
 	 */
-	protected function refresh_application() {
+	protected function refresh_application(): void {
 		$this->app = $this->create_application();
 
 		if ( class_exists( Facade::class ) ) {
@@ -323,7 +322,7 @@ abstract class Test_Case extends BaseTestCase {
 	 * @param string $name Property name.
 	 * @return boolean
 	 */
-	public function __isset( $name ) {
+	public function __isset( $name ): bool {
 		return 'factory' === $name || 'app' === $name;
 	}
 
