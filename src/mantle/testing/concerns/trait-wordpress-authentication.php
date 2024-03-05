@@ -11,11 +11,11 @@ namespace Mantle\Testing\Concerns;
 
 use Mantle\Database\Model\Model_Exception;
 use Mantle\Database\Model\User;
-use Mantle\Testing\Authentication\Acting_As;
+use Mantle\Testing\Attributes\Acting_As;
 use Mantle\Testing\Exceptions\Exception;
 use PHPUnit\Framework\Assert;
-use ReflectionClass;
 use WP_User;
+
 use function Mantle\Support\Helpers\get_user_object;
 
 /**

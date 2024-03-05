@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Testing\Authentication;
+namespace Mantle\Testing\Attributes;
 
 use Attribute;
 use Mantle\Database\Model\User;

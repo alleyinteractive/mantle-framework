@@ -1,9 +1,7 @@
 <?php
 namespace Mantle\Tests\Concerns;
 
-use Mantle\Console\Command;
-use Mantle\Facade\Console;
-use Mantle\Testing\Authentication\Acting_As;
+use Mantle\Testing\Attributes\Acting_As;
 use Mantle\Testing\Framework_Test_Case;
 
 /**
