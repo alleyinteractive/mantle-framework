@@ -22,7 +22,7 @@ use function Mantle\Support\Helpers\get_post_object;
  * @template TObject of \WP_Post
  * @template TReturnValue
  *
- * @extends Factory<TModel, TObject, TReturnValue>
+ * @extends Post_Factory<TModel, TObject, TReturnValue>
  */
 class Attachment_Factory extends Post_Factory {
 	use Concerns\Generates_Images;
@@ -127,6 +127,28 @@ class Attachment_Factory extends Post_Factory {
 				return $attachment;
 			}
 		);
+	}
+
+	/**
+	 * Creates an object and returns its ID.
+	 *
+	 * @deprecated Use create() or create_and_get() instead.
+	 *
+	 * @param array $args The arguments.
+	 * @param int   $legacy_parent The parent post ID.
+	 * @param array $legacy_args The arguments.
+	 * @return int|null
+	 */
+	public function create_object( $args, $legacy_parent = 0, $legacy_args = [] ): int|null {
+		// Backward compatibility for legacy argument format.
+		if ( is_string( $args ) ) { // @phpstan-ignore-line
+			$file                = $args;
+			$args                = $legacy_args;
+			$args['post_parent'] = $legacy_parent;
+			$args['file']        = $file;
+		}
+
+		return $this->create( $args );
 	}
 
 	/**

@@ -7,6 +7,7 @@ use Mantle\Contracts\Providers as ProviderContracts;
 use Mantle\Events\Dispatcher;
 use Mantle\Support\Service_Provider;
 use Mantle\Support\Attributes\Action;
+use Mantle\Support\Attributes\Filter;
 use Mockery as m;
 
 class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
@@ -16,6 +17,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		remove_all_actions( 'init' );
 		remove_all_filters( 'custom_filter' );
 		remove_all_filters( 'custom_filter_dedupe' );
+		remove_all_filters( 'custom_filter_from_attribute' );
 
 		Service_Provider::$publishes = [];
 		Service_Provider::$publish_tags = [];
@@ -57,6 +59,18 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertTrue( $_SERVER['__hook_fired'] );
 	}
 
+	public function test_hook_method_action_alternative_name() {
+		$_SERVER['__hook_fired'] = false;
+
+		$app = m::mock( Application::class )->makePartial();
+		$app->register( Provider_Test_Hook::class );
+		$app->boot();
+
+		do_action( 'my_custom_hook' );
+
+		$this->assertTrue( $_SERVER['__hook_fired'] );
+	}
+
 	public function test_hook_method_filter() {
 		$app = m::mock( Application::class )->makePartial();
 		$app->register( Provider_Test_Hook::class );
@@ -75,6 +89,16 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		do_action( 'testable-attribute-hook' );
 
 		$this->assertTrue( $_SERVER['__custom_hook_fired'] ?? false );
+	}
+
+	public function test_filter_attribute() {
+		$app = m::mock( Application::class )->makePartial();
+		$app->register( Provider_Test_Hook::class );
+		$app->boot();
+
+		$value = apply_filters( 'custom_filter_from_attribute', 5 );
+
+		$this->assertEquals( 50, $value );
 	}
 
 	public function test_hook_attribute_deduplicate() {
@@ -259,6 +283,10 @@ class Provider_Test_Hook extends Service_Provider {
 		$_SERVER['__hook_fired'] = true;
 	}
 
+	public function action__my_custom_hook() {
+		$_SERVER['__hook_fired'] = true;
+	}
+
 	public function on_custom_filter( $value ) {
 		return $value + 10;
 	}
@@ -277,6 +305,11 @@ class Provider_Test_Hook extends Service_Provider {
 	#[Action(Example_Service_Provider_Event::class)]
 	public function handle_custom_event( Example_Service_Provider_Event $event ) {
 		$_SERVER['__custom_event_fired'] = $event;
+	}
+
+	#[Filter('custom_filter_from_attribute')]
+	public function filter_custom_filter_from_attribute( int $value ) {
+		return $value * 10;
 	}
 }
 

@@ -119,7 +119,7 @@ trait Interacts_With_Cron {
 
 		PHPUnit::assertTrue(
 			$provider->in_queue( $job, $queue ),
-			"Job [{$job_name}] is not in the queue.",
+			"Job [{$job_name}] is not in the queue [{$queue}] for " . $provider::class,
 		);
 	}
 

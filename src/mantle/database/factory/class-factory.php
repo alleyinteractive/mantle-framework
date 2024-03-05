@@ -91,6 +91,18 @@ abstract class Factory {
 	}
 
 	/**
+	 * Creates an object and returns its ID.
+	 *
+	 * @deprecated Use create() or create_and_get() instead.
+	 *
+	 * @param array $args The arguments.
+	 * @return int|null
+	 */
+	public function create_object( $args ): int|null {
+		return $this->create( $args );
+	}
+
+	/**
 	 * Generate models from the factory.
 	 *
 	 * @return static<TModel, TObject, TModel>
