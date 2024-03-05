@@ -51,7 +51,7 @@ class Rest_Route_Registrar {
 		$this->router    = $router;
 		$this->namespace = $namespace;
 
-		add_action( 'rest_api_init', $this->register_routes(...), 20 );
+		add_action( 'rest_api_init', $this->register_routes( ... ), 20 );
 	}
 
 	/**
@@ -146,11 +146,11 @@ class Rest_Route_Registrar {
 	public function gather_route_middleware( array $middleware ): array {
 		return collect( $middleware )
 			->map(
-				fn($name) => (array) Middleware_Name_Resolver::resolve(
-						$name,
-						$this->router->get_middleware(),
-						$this->router->get_middleware_groups()
-					)
+				fn( $name) => (array) Middleware_Name_Resolver::resolve(
+					$name,
+					$this->router->get_middleware(),
+					$this->router->get_middleware_groups()
+				)
 			)
 			->flatten()
 			->values()

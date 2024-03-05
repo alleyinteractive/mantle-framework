@@ -55,7 +55,7 @@ class New_Relic_Service_Provider extends Service_Provider {
 			return;
 		}
 
-		$this->events->listen( Route_Matched::class, $this->handle_route_matched(...) );
+		$this->events->listen( Route_Matched::class, $this->handle_route_matched( ... ) );
 	}
 
 	/**

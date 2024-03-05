@@ -87,13 +87,7 @@ class Router implements Router_Contract {
 	 * @param Dispatcher $events Events dispatcher.
 	 * @param Container  $container Container instance.
 	 */
-	public function __construct( /**
-	 * Events instance.
-	 */
- protected Dispatcher $events, /**
-	 * Container instance.
-	 */
- protected Container $container ) {
+	public function __construct( protected Dispatcher $events, protected Container $container ) {
 		$this->routes = new RouteCollection();
 	}
 
@@ -352,7 +346,7 @@ class Router implements Router_Contract {
 	 *
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
- public static function to_response( Request $request, mixed $response ): \Symfony\Component\HttpFoundation\Response {
+	public static function to_response( Request $request, mixed $response ): \Symfony\Component\HttpFoundation\Response {
 		$response = Route::ensure_response( $response );
 
 		return $response->prepare( $request );
@@ -491,7 +485,7 @@ class Router implements Router_Contract {
 	 * @param string|callable $binder
 	 * @return void
 	 */
- public function bind( string $key, $binder ): void {
+	public function bind( string $key, $binder ): void {
 		$this->binders[ str_replace( '-', '_', $key ) ] = Route_Binding::for_callback(
 			$this->container,
 			$binder

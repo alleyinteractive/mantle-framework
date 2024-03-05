@@ -645,7 +645,7 @@ class Test_Response {
 	 * @param  string $path
 	 * @return $this
 	 */
- public function assertJsonPath( $path, mixed $expect ) {
+	public function assertJsonPath( $path, mixed $expect ) {
 		$this->decoded_json()->assertPath( $path, $expect );
 
 		return $this;
@@ -678,7 +678,7 @@ class Test_Response {
 	 *
 	 * @return $this
 	 */
- public function assertExactJson( array $data ) {
+	public function assertExactJson( array $data ) {
 		$this->decoded_json()->assertExact( $data );
 
 		return $this;
@@ -714,7 +714,7 @@ class Test_Response {
 	 *
 	 * @return $this
 	 */
- public function assertJsonMissingExact( array $data ) {
+	public function assertJsonMissingExact( array $data ) {
 		$this->decoded_json()->assertMissingExact( $data );
 
 		return $this;
@@ -726,7 +726,7 @@ class Test_Response {
 	 * @param  string|null $key
 	 * @return $this
 	 */
- public function assertJsonCount( int $count, $key = null ) {
+	public function assertJsonCount( int $count, $key = null ) {
 		$this->decoded_json()->assertCount( $count, $key );
 
 		return $this;
@@ -737,7 +737,7 @@ class Test_Response {
 	 *
 	 * @return $this
 	 */
- public function assertJsonSimilar( array $data ) {
+	public function assertJsonSimilar( array $data ) {
 		$this->decoded_json()->assertSimilar( $data );
 
 		return $this;

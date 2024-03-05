@@ -128,7 +128,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 *
 	 * @return string
 	 */
- public function full_url_with_query( array $query ) {
+	public function full_url_with_query( array $query ) {
 		$question = $this->getBaseUrl() . $this->getPathInfo() === '/' ? '/?' : '?';
 
 		return count( $this->query() ) > 0
@@ -178,7 +178,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 		return array_values(
 			array_filter(
 				$segments,
-				fn($value) => '' !== $value
+				fn( $value) => '' !== $value
 			)
 		);
 	}
@@ -188,7 +188,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 *
 	 * @return bool
 	 */
- public function is( mixed ...$patterns ) {
+	public function is( mixed ...$patterns ) {
 		$path = $this->decoded_path();
 
 		foreach ( $patterns as $pattern ) {
@@ -205,7 +205,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 *
 	 * @return bool
 	 */
- public function full_url_is( mixed ...$patterns ) {
+	public function full_url_is( mixed ...$patterns ) {
 		$url = $this->full_url();
 
 		foreach ( $patterns as $pattern ) {
@@ -286,7 +286,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 *
 	 * @return $this
 	 */
- public function merge( array $input ) {
+	public function merge( array $input ) {
 		$this->get_input_source()->add( $input );
 
 		return $this;
@@ -297,7 +297,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 *
 	 * @return $this
 	 */
- public function replace( array $input ) {
+	public function replace( array $input ) {
 		$this->get_input_source()->replace( $input );
 
 		return $this;
@@ -322,7 +322,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * @param  string|null $key
 	 * @return \Symfony\Component\HttpFoundation\ParameterBag|mixed
 	 */
- public function json( $key = null, mixed $default = null ) {
+	public function json( $key = null, mixed $default = null ) {
 		if ( ! isset( $this->json ) ) {
 			$this->json = new ParameterBag( (array) json_decode( $this->getContent(), true ) );
 		}
@@ -390,7 +390,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 			$parameters = new ParameterBag(
 				array_filter(
 					$parameters,
-					fn ( $parameter ) => !str_starts_with($parameter, '_'),
+					fn ( $parameter ) => ! str_starts_with( $parameter, '_' ),
 					ARRAY_FILTER_USE_KEY
 				)
 			);
@@ -448,7 +448,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 *
 	 * @return bool
 	 */
- public function offsetExists( mixed $offset ): bool {
+	public function offsetExists( mixed $offset ): bool {
 		return Arr::has(
 			$this->all() + $this->get_route_parameters()->all(),
 			$offset
@@ -460,7 +460,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 *
 	 * @return mixed
 	 */
- public function offsetGet( mixed $offset ): mixed {
+	public function offsetGet( mixed $offset ): mixed {
 		return $this->__get( $offset );
 	}
 
@@ -469,7 +469,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 *
 	 * @return void
 	 */
- public function offsetSet( mixed $offset, mixed $value ): void {
+	public function offsetSet( mixed $offset, mixed $value ): void {
 		$this->get_input_source()->set( $offset, $value );
 	}
 
@@ -478,7 +478,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 *
 	 * @return void
 	 */
- public function offsetUnset( mixed $offset ): void {
+	public function offsetUnset( mixed $offset ): void {
 		$this->get_input_source()->remove( $offset );
 	}
 

@@ -23,15 +23,15 @@ interface Response_Factory {
 	 * @param  int    $status
 	 * @return Response
 	 */
- public function make( $content = '', $status = 200, array $headers = [] );
+	public function make( $content = '', $status = 200, array $headers = [] );
 
 	/**
 	 * Create a new "no content" response.
 	 *
-	 * @param  int   $status
+	 * @param  int $status
 	 * @return Response
 	 */
- public function no_content( $status = 204, array $headers = [] );
+	public function no_content( $status = 204, array $headers = [] );
 
 	/**
 	 * Create a new response for a given view.
@@ -48,10 +48,10 @@ interface Response_Factory {
 	/**
 	 * Create a new JSON response instance.
 	 *
-	 * @param  int   $status
+	 * @param  int $status
 	 * @return JsonResponse
 	 */
- public function json( mixed $data = [], $status = 200, array $headers = [] );
+	public function json( mixed $data = [], $status = 200, array $headers = [] );
 
 	/**
 	 * Create a new JSONP response instance.
@@ -60,7 +60,7 @@ interface Response_Factory {
 	 * @param  int    $status
 	 * @return JsonResponse
 	 */
- public function jsonp( $callback, mixed $data = [], $status = 200, array $headers = [] );
+	public function jsonp( $callback, mixed $data = [], $status = 200, array $headers = [] );
 
 	/**
 	 * Create a new streamed response instance.
@@ -69,7 +69,7 @@ interface Response_Factory {
 	 * @param  int      $status
 	 * @return \Symfony\Component\HttpFoundation\StreamedResponse
 	 */
- public function stream( $callback, $status = 200, array $headers = []);
+	public function stream( $callback, $status = 200, array $headers = []);
 
 	/**
 	 * Create a new streamed response instance as a file download.
@@ -79,7 +79,7 @@ interface Response_Factory {
 	 * @param  string|null $disposition
 	 * @return \Symfony\Component\HttpFoundation\StreamedResponse
 	 */
- public function stream_download( $callback, $name = null, array $headers = [], $disposition = 'attachment' );
+	public function stream_download( $callback, $name = null, array $headers = [], $disposition = 'attachment' );
 
 	/**
 	 * Create a new file download response.
@@ -89,7 +89,7 @@ interface Response_Factory {
 	 * @param  string|null         $disposition
 	 * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
 	 */
- public function download( $file, $name = null, array $headers = [], $disposition = 'attachment' );
+	public function download( $file, $name = null, array $headers = [], $disposition = 'attachment' );
 
 	/**
 	 * Return the raw contents of a binary file.
@@ -97,7 +97,7 @@ interface Response_Factory {
 	 * @param  \SplFileInfo|string $file
 	 * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
 	 */
- public function file( $file, array $headers = []);
+	public function file( $file, array $headers = []);
 
 	/**
 	 * Create a new redirect response to the given path.
@@ -118,5 +118,5 @@ interface Response_Factory {
 	 * @param  array  $headers
 	 * @return RedirectResponse
 	 */
- public function redirect_to_route( $route, mixed $parameters = [], $status = 302, $headers = [] ): RedirectResponse;
+	public function redirect_to_route( $route, mixed $parameters = [], $status = 302, $headers = [] ): RedirectResponse;
 }

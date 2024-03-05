@@ -213,7 +213,7 @@ trait Interacts_With_Input {
 	 * @param  string|null $key
 	 * @return mixed
 	 */
- public function input( $key = null, mixed $default = null ) {
+	public function input( $key = null, mixed $default = null ) {
 		return data_get(
 			$this->get_input_source()->all() + $this->query->all(),
 			$key,
@@ -353,7 +353,7 @@ trait Interacts_With_Input {
 	 *
 	 * @return array
 	 */
- protected function convert_uploaded_files( array $files ) {
+	protected function convert_uploaded_files( array $files ) {
 		return array_map(
 			function ( $file ) {
 				if ( is_null( $file ) || ( is_array( $file ) && empty( array_filter( $file ) ) ) ) {
@@ -394,7 +394,7 @@ trait Interacts_With_Input {
 	 *
 	 * @return bool
 	 */
- protected function is_valid_file( mixed $file ) {
+	protected function is_valid_file( mixed $file ) {
 		return $file instanceof Uploaded_File && $file->getPath() !== '';
 	}
 
@@ -404,7 +404,7 @@ trait Interacts_With_Input {
 	 * @param  string|null $key
 	 * @return \Mantle\Http\Uploaded_File|\Mantle\Http\Uploaded_File[]|null
 	 */
- public function file( $key = null, mixed $default = null ) {
+	public function file( $key = null, mixed $default = null ) {
 		return data_get( $this->all_files(), $key, $default );
 	}
 }

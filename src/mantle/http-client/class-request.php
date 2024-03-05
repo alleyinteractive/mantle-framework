@@ -24,13 +24,7 @@ class Request {
 	 * @param array  $args Arguments of the request.
 	 * @param string $url  URL of the request.
 	 */
-	public function __construct( /**
-	 * The request arguments.
-	 */
- protected array $args, /**
-	 * The request URL.
-	 */
- protected string $url ) {
+	public function __construct( protected array $args, protected string $url ) {
 		// Format the headers to be lowercase.
 		$this->args['headers'] = array_change_key_case( $this->args['headers'] ?? [] );
 	}

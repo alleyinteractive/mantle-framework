@@ -100,7 +100,7 @@ interface Container extends ContainerInterface {
 	 * @param  string|null     $default_method
 	 * @return mixed
 	 */
- public function call( $callback, array $parameters = [], $default_method = null );
+	public function call( $callback, array $parameters = [], $default_method = null );
 
 	/**
 	 * Resolve the given type from the container.

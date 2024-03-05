@@ -61,7 +61,7 @@ trait Resolves_Factories {
 	 *
 	 * @return string
 	 */
- public static function resolve_factory_name( string $model ): string {
+	public static function resolve_factory_name( string $model ): string {
 		$custom_factory = static::resolve_custom_factory_name( $model );
 
 		if ( class_exists( $custom_factory ) ) {

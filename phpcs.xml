@@ -29,7 +29,9 @@
 		<exclude name="PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.Changed" />
 		<exclude name="Squiz.Commenting.FunctionComment.IncorrectTypeHint" />
 		<exclude name="Generic.Commenting.DocComment.SpacingAfterTagGroup" />
+		<exclude name="Squiz.Commenting.FunctionComment.MissingParamTag" />
 		<exclude name="Generic.Commenting.DocComment.MissingShort" />
+		<exclude name="Squiz.Commenting.FunctionComment.ParamNameNoMatch" />
 	</rule>
 
 	<rule ref="Generic.Arrays.DisallowLongArraySyntax" />

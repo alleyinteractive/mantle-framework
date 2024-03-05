@@ -472,7 +472,7 @@ trait Rsync_Installation {
 				! empty( $_SERVER['PHP_SELF'] )
 				&& ! is_file( $executable )
 				&& ! is_executable( $executable )
-				&& !str_starts_with('composer ', (string) $executable)
+				&& ! str_starts_with( 'composer ', (string) $executable )
 			) {
 				$executable = $this->translate_location( $_SERVER['PHP_SELF'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			}

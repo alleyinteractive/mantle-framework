@@ -23,14 +23,7 @@ class Model_Term_Proxy {
 	 *
 	 * @param Post $model Model to reference.
 	 */
-	public function __construct(
-     /**
-      * Model to retrieve term from.
-      */
-     protected Post $model
- )
- {
- }
+	public function __construct( protected Post $model ) {}
 
 	/**
 	 * Retrieve model terms by taxonomy.

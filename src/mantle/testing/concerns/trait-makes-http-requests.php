@@ -274,7 +274,7 @@ trait Makes_Http_Requests {
 		// Build a full URL from partial URIs.
 		if ( '/' === $uri[0] ) {
 			$url = 'https://' . WP_TESTS_DOMAIN . $uri;
-		} elseif ( !str_contains( (string) $uri, '://' ) ) {
+		} elseif ( ! str_contains( (string) $uri, '://' ) ) {
 			$url = 'https://' . WP_TESTS_DOMAIN . '/' . $uri;
 		} else {
 			$url = $uri;
@@ -536,7 +536,7 @@ trait Makes_Http_Requests {
 	 */
 	protected function replace_rest_api() {
 		// Ensure the Mantle REST Spy Server is used.
-		add_filter( 'wp_rest_server_class', Utils::wp_rest_server_class_filter(...), PHP_INT_MAX );
+		add_filter( 'wp_rest_server_class', Utils::wp_rest_server_class_filter( ... ), PHP_INT_MAX );
 
 		rest_api_init();
 

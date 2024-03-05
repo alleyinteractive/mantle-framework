@@ -80,7 +80,7 @@ class Closure_Job implements Can_Queue {
 	 *
 	 * @return static
 	 */
- public function on_failure( mixed $callback ) {
+	public function on_failure( mixed $callback ) {
 		$this->failure_callbacks[] = $callback instanceof Closure
 			? new SerializableClosure( $callback )
 			: $callback;

@@ -45,7 +45,7 @@ abstract class Repository {
 	 * @param  \DateTimeInterface|\DateInterval|int|null $ttl
 	 * @return bool
 	 */
- abstract public function put( $key, mixed $value, $ttl = null ): bool;
+	abstract public function put( $key, mixed $value, $ttl = null ): bool;
 
 	/**
 	 * Retrieve an item from the cache and delete it.
@@ -53,7 +53,7 @@ abstract class Repository {
 	 * @param  string $key
 	 * @return mixed
 	 */
- public function pull( $key, mixed $default = null ) {
+	public function pull( $key, mixed $default = null ) {
 		$value = $this->get( $key );
 
 		if ( ! is_null( $value ) ) {
@@ -72,7 +72,7 @@ abstract class Repository {
 	 * @param  \DateTimeInterface|\DateInterval|int|null $ttl
 	 * @return bool
 	 */
- public function add( $key, mixed $value, $ttl = null ) {
+	public function add( $key, mixed $value, $ttl = null ) {
 		if ( is_null( $this->get( $key ) ) ) {
 			return $this->put( $key, $value, $ttl );
 		}
@@ -112,7 +112,7 @@ abstract class Repository {
 	public function getMultiple( iterable $keys, mixed $default = null ): iterable {
 		return collect( $keys )
 			->map(
-				fn($key) => $this->pull( $key, $default )
+				fn( $key) => $this->pull( $key, $default )
 			)
 			->to_array();
 	}
@@ -140,7 +140,7 @@ abstract class Repository {
 	 */
 	public function deleteMultiple( iterable $keys ): bool {
 		collect( $keys )->each(
-			fn($key) => $this->delete( $key )
+			fn( $key) => $this->delete( $key )
 		);
 
 		return true;
@@ -174,7 +174,7 @@ abstract class Repository {
 	 * @param  \DateTimeInterface|\DateInterval|int|null $ttl
 	 * @return mixed
 	 */
- public function remember( $key, $ttl, Closure $callback ) {
+	public function remember( $key, $ttl, Closure $callback ) {
 		$value = $this->get( $key );
 
 		if ( ! is_null( $value ) ) {

@@ -45,7 +45,7 @@ trait Route_Group {
 	 * @param  \Closure|string $routes
 	 * @return void
 	 */
- public function group( array $attributes, $routes ): void {
+	public function group( array $attributes, $routes ): void {
 		$this->update_group_stack( $attributes );
 
 		// Once we have updated the group stack, we'll load the provided routes and
@@ -61,7 +61,7 @@ trait Route_Group {
 	 *
 	 * @return void
 	 */
- protected function update_group_stack( array $attributes ) {
+	protected function update_group_stack( array $attributes ) {
 		if ( $this->has_group_stack() ) {
 			$attributes = $this->merge_with_last_group( $attributes );
 		}
@@ -149,7 +149,7 @@ trait Route_Group {
 	 */
 	protected static function format_namespace( $new, $old ) {
 		if ( isset( $new['namespace'] ) ) {
-			return isset( $old['namespace'] ) && !str_starts_with((string) $new['namespace'], '\\')
+			return isset( $old['namespace'] ) && ! str_starts_with( (string) $new['namespace'], '\\' )
 					? trim( (string) $old['namespace'], '\\' ) . '\\' . trim( (string) $new['namespace'], '\\' )
 					: trim( (string) $new['namespace'], '\\' );
 		}

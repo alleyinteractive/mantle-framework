@@ -91,14 +91,14 @@ class Expectation {
 	protected function setup_applied_hooks() {
 		add_action( // @phpstan-ignore-line Action callback
 			$this->hook,
-			$this->record_start(...),
+			$this->record_start( ... ),
 			-1,
 			99
 		);
 
 		add_action( // @phpstan-ignore-line Action callback
 			$this->hook,
-			$this->record_stop(...),
+			$this->record_stop( ... ),
 			PHP_INT_MAX,
 			99
 		);
@@ -181,8 +181,8 @@ class Expectation {
 			}
 
 			// Remove the actions for the hook.
-			remove_action( $this->hook, $this->record_start(...), -1 );
-			remove_action( $this->hook, $this->record_stop(...), PHP_INT_MAX );
+			remove_action( $this->hook, $this->record_start( ... ), -1 );
+			remove_action( $this->hook, $this->record_stop( ... ), PHP_INT_MAX );
 		}
 
 		// Asset if the action was added.

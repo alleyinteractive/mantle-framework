@@ -30,16 +30,9 @@ class Alias_Loader {
 	/**
 	 * Create a new Alias_Loader instance.
 	 *
-	 * @param array $aliases Aliases to set.
+	 * @param array $aliases The array of class aliases.
 	 */
-	private function __construct(
-     /**
-      * The array of class aliases.
-      */
-     protected $aliases
- )
- {
- }
+	private function __construct( protected $aliases ) {}
 
 	/**
 	 * Get or create the singleton alias loader instance.
@@ -101,7 +94,7 @@ class Alias_Loader {
 	 * @return void
 	 */
 	protected function prepend_to_loader_stack() {
-		spl_autoload_register( $this->load(...), true, true );
+		spl_autoload_register( $this->load( ... ), true, true );
 	}
 
 	/**

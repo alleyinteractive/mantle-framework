@@ -18,12 +18,5 @@ class Http_Client_Exception extends Exception {
 	 *
 	 * @param Response $response Http Response.
 	 */
-	public function __construct(
-     /**
-      * Error response.
-      */
-     public Response $response
- )
- {
- }
+	public function __construct( public Response $response ) {}
 }

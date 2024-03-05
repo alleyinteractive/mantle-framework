@@ -19,8 +19,8 @@ class Php_Engine implements Engine {
 	/**
 	 * Evaluate the contents of a view at a given path.
 	 *
-	 * @param string $path View path.
-	 * @param array<string, mixed>  $data View data.
+	 * @param string               $path View path.
+	 * @param array<string, mixed> $data View data.
 	 * @return string
 	 */
 	public function get( string $path, array $data = [] ): string {

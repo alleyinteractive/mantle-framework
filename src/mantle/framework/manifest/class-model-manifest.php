@@ -41,18 +41,8 @@ class Model_Manifest {
 	 * @param string $base_path     Base folder path for the Mantle site.
 	 * @param string $manifest_path Path to the package manifest file.
 	 */
-	public function __construct(
-     /**
-      * Base folder path.
-      */
-     protected string $base_path,
-     /**
-      * Package Manifest file path.
-      */
-     protected string $manifest_path
- )
- {
- }
+	public function __construct( protected string $base_path, protected string $manifest_path ) {
+	}
 
 	/**
 	 * Get all of the service provider class names for all packages.

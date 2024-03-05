@@ -110,7 +110,7 @@ class AWS_S3_Adapter extends Filesystem_Adapter {
 	 * @param  \DateTimeInterface $expiration
 	 * @return array
 	 */
- public function temporary_upload_url( string $path, $expiration, array $options = [] ): array {
+	public function temporary_upload_url( string $path, $expiration, array $options = [] ): array {
 		$command = $this->client->getCommand(
 			'PutObject',
 			array_merge(

@@ -145,16 +145,9 @@ abstract class Builder {
 	/**
 	 * Constructor.
 	 *
-	 * @param array|string $model Model or array of model class names.
+	 * @param array<class-string<\Mantle\Database\Model\Model>>|class-string<\Mantle\Database\Model\Model> $model Model or array of model class names.
 	 */
-	public function __construct(
-     /**
-      * Model to build on.
-      */
-     protected array|string $model
- )
- {
- }
+	public function __construct( protected array|string $model ) {}
 
 	/**
 	 * Get the query results.
@@ -173,7 +166,7 @@ abstract class Builder {
 	/**
 	 * Get the query arguments.
 	 *
-	 * @return array
+	 * @return array<string, mixed>
 	 */
 	abstract public function get_query_args(): array;
 
@@ -573,7 +566,7 @@ abstract class Builder {
 	 */
 	protected function call_named_scope( string $scope, array $parameters = [] ) {
 		return $this->call_scope(
-			fn(...$parameters) => $this->get_model_instance()->call_named_scope( $scope, $parameters ),
+			fn( ...$parameters) => $this->get_model_instance()->call_named_scope( $scope, $parameters ),
 			$parameters
 		);
 	}

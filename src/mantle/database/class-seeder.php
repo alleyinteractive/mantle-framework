@@ -115,7 +115,7 @@ abstract class Seeder {
 	 *
 	 * @return static
 	 */
- public function set_command( Command $command ): static {
+	public function set_command( Command $command ): static {
 		$this->command = $command;
 
 		return $this;

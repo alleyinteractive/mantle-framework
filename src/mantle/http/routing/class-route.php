@@ -460,7 +460,7 @@ class Route extends Symfony_Route {
 	 * @return string
 	 * @throws \UnexpectedValueException Thrown on missing method.
 	 */
- protected static function make_invokable( string $action ): string {
+	protected static function make_invokable( string $action ): string {
 		if ( ! method_exists( $action, '__invoke' ) ) {
 			throw new \UnexpectedValueException( "Invalid route action: [{$action}]." );
 		}

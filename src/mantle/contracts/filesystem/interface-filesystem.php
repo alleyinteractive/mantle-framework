@@ -106,7 +106,7 @@ interface Filesystem {
 	 *
 	 * @return bool
 	 */
- public function exists( string $path ): bool;
+	public function exists( string $path ): bool;
 
 	/**
 	 * Check if a file is missing at a given path.
@@ -193,7 +193,7 @@ interface Filesystem {
 	 *
 	 * @return string
 	 */
- public function get_visibility( string $path ): string;
+	public function get_visibility( string $path ): string;
 
 	/**
 	 * Set the visibility for a file.

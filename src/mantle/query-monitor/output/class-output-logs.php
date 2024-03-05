@@ -16,10 +16,10 @@ class Output_Logs extends \QM_Output_Html {
 	/**
 	 * Constructor.
 	 */
- public function __construct( Log_Collector $collector ) {
+	public function __construct( Log_Collector $collector ) {
 		parent::__construct( $collector );
 
-		add_filter( 'qm/output/panel_menus', $this->panel_menu(...), 20 );
+		add_filter( 'qm/output/panel_menus', $this->panel_menu( ... ), 20 );
 	}
 
 	/**

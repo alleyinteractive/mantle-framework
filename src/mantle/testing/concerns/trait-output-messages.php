@@ -129,7 +129,7 @@ trait Output_Messages {
 			// frameworks or packages.
 			$frame = $frames
 				->filter(
-					fn ( array $item ) => !str_contains(
+					fn ( array $item ) => ! str_contains(
 						(string) $item['file'],
 						'phpunit/phpunit',
 					)

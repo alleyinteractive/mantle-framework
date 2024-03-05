@@ -670,7 +670,7 @@ class Filesystem_Adapter implements Filesystem {
 	 *
 	 * @return string
 	 */
- protected function concat_path_to_url( string $url, string $path ): string {
+	protected function concat_path_to_url( string $url, string $path ): string {
 		return rtrim( $url, '/' ) . '/' . ltrim( $path, '/' );
 	}
 
@@ -679,7 +679,7 @@ class Filesystem_Adapter implements Filesystem {
 	 *
 	 * @return \Psr\Http\Message\UriInterface
 	 */
- protected function replace_base_url( UriInterface $uri, string $url ): UriInterface {
+	protected function replace_base_url( UriInterface $uri, string $url ): UriInterface {
 		$parsed = wp_parse_url( $url );
 
 		return $uri

@@ -33,21 +33,21 @@ class Str {
 	/**
 	 * The cache of snake-cased words.
 	 *
-	 * @var array
+	 * @var array<string, string>
 	 */
 	protected static $snake_cache = [];
 
 	/**
 	 * The cache of camel-cased words.
 	 *
-	 * @var array
+	 * @var array<string, string>
 	 */
 	protected static $camel_cache = [];
 
 	/**
 	 * The cache of studly-cased words.
 	 *
-	 * @var array
+	 * @var array<string, string>
 	 */
 	protected static $studly_cache = [];
 
@@ -106,7 +106,7 @@ class Str {
 	 * @param  string|null $value
 	 * @return string
 	 */
- public static function ascii( ?string $value, string $language = 'en' ) {
+	public static function ascii( ?string $value, string $language = 'en' ) {
 		return ASCII::to_ascii( (string) $value, $language );
 	}
 
@@ -199,7 +199,7 @@ class Str {
 	 * @return string
 	 */
 	public static function camel( $value ) {
-		return static::$camel_cache[ $value ] ?? (static::$camel_cache[ $value ] = lcfirst( static::studly( $value ) ));
+		return static::$camel_cache[ $value ] ?? ( static::$camel_cache[ $value ] = lcfirst( static::studly( $value ) ) );
 	}
 
 	/**
@@ -256,7 +256,7 @@ class Str {
 	 * @param  iterable<string> $needles
 	 * @return bool
 	 */
- public static function contains_all( $haystack, $needles, bool $ignore_case = false ) {
+	public static function contains_all( $haystack, $needles, bool $ignore_case = false ) {
 		foreach ( $needles as $needle ) {
 			if ( ! static::contains( $haystack, $needle, $ignore_case ) ) {
 				return false;
@@ -501,7 +501,7 @@ class Str {
 	 * @param  string $string
 	 * @return string
 	 */
- public static function markdown( $string, array $options = [] ) {
+	public static function markdown( $string, array $options = [] ) {
 		$converter = new GithubFlavoredMarkdownConverter( $options );
 
 		return (string) $converter->convert( $string );
@@ -513,7 +513,7 @@ class Str {
 	 * @param  string $string
 	 * @return string
 	 */
- public static function inline_markdown( $string, array $options = [] ) {
+	public static function inline_markdown( $string, array $options = [] ) {
 		$environment = new Environment( $options );
 
 		$environment->addExtension( new GithubFlavoredMarkdownExtension() );
@@ -606,7 +606,7 @@ class Str {
 	 *
 	 * @param  string $pattern
 	 * @param  string $subject
-	 * @return \Mantle\Support\Collection
+	 * @return \Mantle\Support\Collection<string, string>
 	 */
 	public static function match_all( $pattern, $subject ) {
 		preg_match_all( $pattern, $subject, $matches );
@@ -867,7 +867,7 @@ class Str {
 	 * @param  callable|null $when_missing
 	 * @return void
 	 */
- public static function create_random_strings_using_sequence( array $sequence, $when_missing = null ): void {
+	public static function create_random_strings_using_sequence( array $sequence, $when_missing = null ): void {
 		$next = 0;
 
 		$when_missing ??= function ( $length ) use ( &$next ) {
@@ -909,7 +909,7 @@ class Str {
 	 *
 	 * @return string
 	 */
- public static function repeat( string $string, int $times ) {
+	public static function repeat( string $string, int $times ) {
 		return str_repeat( $string, $times );
 	}
 
@@ -945,7 +945,7 @@ class Str {
 	 * @param  string|iterable<string> $subject
 	 * @return string
 	 */
- public static function replace( $search, $replace, $subject, bool $case_sensitive = true ) {
+	public static function replace( $search, $replace, $subject, bool $case_sensitive = true ) {
 		if ( $search instanceof Traversable ) {
 			$search = collect( $search )->all();
 		}
@@ -1016,7 +1016,7 @@ class Str {
 	 * @param  string                  $subject
 	 * @return string
 	 */
- public static function remove( $search, $subject, bool $case_sensitive = true ) {
+	public static function remove( $search, $subject, bool $case_sensitive = true ) {
 		if ( $search instanceof Traversable ) {
 			$search = collect( $search )->all();
 		}
@@ -1033,7 +1033,7 @@ class Str {
 	 *
 	 * @return string
 	 */
- public static function reverse( string $value ) {
+	public static function reverse( string $value ) {
 		return implode( '', array_reverse( mb_str_split( $value ) ) );
 	}
 
@@ -1065,7 +1065,7 @@ class Str {
 	 *
 	 * @return string
 	 */
- public static function title( string $value ): string {
+	public static function title( string $value ): string {
 		return mb_convert_case( $value, MB_CASE_TITLE, 'UTF-8' );
 	}
 
@@ -1074,12 +1074,12 @@ class Str {
 	 *
 	 * @return string
 	 */
- public static function headline( string $value ): string {
+	public static function headline( string $value ): string {
 		$parts = explode( ' ', $value );
 
 		$parts = count( $parts ) > 1
-			? array_map( static::title(...), $parts )
-			: array_map( static::title(...), static::ucsplit( implode( '_', $parts ) ) );
+			? array_map( static::title( ... ), $parts )
+			: array_map( static::title( ... ), static::ucsplit( implode( '_', $parts ) ) );
 
 		$collapsed = static::replace( [ '-', '_', ' ' ], '_', implode( '_', $parts ) );
 
@@ -1091,7 +1091,7 @@ class Str {
 	 *
 	 * @return string
 	 */
- public static function singular( string $value ): string {
+	public static function singular( string $value ): string {
 		return Pluralizer::singular( $value );
 	}
 
@@ -1103,7 +1103,7 @@ class Str {
 	 * @param  array<string, string> $dictionary
 	 * @return string
 	 */
- public static function slug( ?string $title, string $separator = '-', ?string $language = 'en', array $dictionary = [ '@' => 'at' ] ) {
+	public static function slug( ?string $title, string $separator = '-', ?string $language = 'en', array $dictionary = [ '@' => 'at' ] ) {
 		$title = $language ? static::ascii( $title, $language ) : $title;
 
 		// Convert all dashes/underscores into separator.
@@ -1262,10 +1262,11 @@ class Str {
 	/**
 	 * Swap multiple keywords in a string with other keywords.
 	 *
-	 * @param  string $subject
+	 * @param  array<string, string> $map
+	 * @param  string                $subject
 	 * @return string
 	 */
- public static function swap( array $map, $subject ) {
+	public static function swap( array $map, $subject ) {
 		return strtr( $subject, $map );
 	}
 

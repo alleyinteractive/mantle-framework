@@ -38,7 +38,7 @@ trait Register_Rest_Fields {
 	public static function boot_register_rest_fields(): void {
 		static::$rest_registrar = new REST_Field_Registrar();
 
-		\add_action( 'rest_api_init', self::register_fields(...) );
+		\add_action( 'rest_api_init', self::register_fields( ... ) );
 	}
 
 	/**

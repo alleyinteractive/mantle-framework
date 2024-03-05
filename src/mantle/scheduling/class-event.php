@@ -108,7 +108,7 @@ class Event {
 	/**
 	 * Run the given event, assumed to be a closure or callable callback.
 	 */
- public function run( Application $container ): void {
+	public function run( Application $container ): void {
 		if ( ! $this->filters_pass( $container ) ) {
 			return;
 		}
@@ -117,7 +117,7 @@ class Event {
 
 		try {
 			if ( is_object( $this->callback ) ) {
-				$container->call( $this->callback->__invoke(...), $this->parameters );
+				$container->call( $this->callback->__invoke( ... ), $this->parameters );
 			} else {
 				$container->call( $this->callback, $this->parameters );
 			}
@@ -138,7 +138,7 @@ class Event {
 	 *
 	 * @return void
 	 */
- public function call_before_callbacks( Container $container ): void {
+	public function call_before_callbacks( Container $container ): void {
 		foreach ( $this->before_callbacks as $callback ) {
 			$container->call( $callback );
 		}
@@ -149,7 +149,7 @@ class Event {
 	 *
 	 * @return void
 	 */
- public function call_after_callbacks( Container $container ): void {
+	public function call_after_callbacks( Container $container ): void {
 		foreach ( $this->after_callbacks as $callback ) {
 			$container->call( $callback );
 		}
@@ -160,7 +160,7 @@ class Event {
 	 *
 	 * @return bool
 	 */
- public function is_due( Application $app ) {
+	public function is_due( Application $app ) {
 		return $this->expression_passes() &&
 			$this->runs_in_environment( $app->environment() );
 	}

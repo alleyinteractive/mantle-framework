@@ -48,5 +48,5 @@ interface Url_Routable {
 	 * @param  string|null $field
 	 * @return static|null
 	 */
- public function resolve_route_binding( mixed $value, $field = null );
+	public function resolve_route_binding( mixed $value, $field = null );
 }

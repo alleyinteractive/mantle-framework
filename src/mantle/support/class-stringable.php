@@ -180,7 +180,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  string|iterable<string> $needles
 	 * @return bool
 	 */
- public function contains( $needles, bool $ignore_case = false ) {
+	public function contains( $needles, bool $ignore_case = false ) {
 		return Str::contains( $this->value, $needles, $ignore_case );
 	}
 
@@ -190,7 +190,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  iterable<string> $needles
 	 * @return bool
 	 */
- public function contains_all( $needles, bool $ignore_case = false ) {
+	public function contains_all( $needles, bool $ignore_case = false ) {
 		return Str::contains_all( $this->value, $needles, $ignore_case );
 	}
 
@@ -415,7 +415,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 *
 	 * @return static
 	 */
- public function markdown( array $options = [] ) {
+	public function markdown( array $options = [] ) {
 		return new static( Str::markdown( $this->value, $options ) );
 	}
 
@@ -424,7 +424,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 *
 	 * @return static
 	 */
- public function inline_markdown( array $options = [] ) {
+	public function inline_markdown( array $options = [] ) {
 		return new static( Str::inline_markdown( $this->value, $options ) );
 	}
 
@@ -529,7 +529,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 *
 	 * @return static
 	 */
- public function pipe( callable $callback ) {
+	public function pipe( callable $callback ) {
 		return new static( $callback( $this ) );
 	}
 
@@ -569,7 +569,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  string|iterable<string> $search
 	 * @return static
 	 */
- public function remove( $search, bool $case_sensitive = true ) {
+	public function remove( $search, bool $case_sensitive = true ) {
 		return new static( Str::remove( $search, $this->value, $case_sensitive ) );
 	}
 
@@ -587,7 +587,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 *
 	 * @return static
 	 */
- public function repeat( int $times ) {
+	public function repeat( int $times ) {
 		return new static( str_repeat( $this->value, $times ) );
 	}
 
@@ -598,7 +598,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  string|iterable<string> $replace
 	 * @return static
 	 */
- public function replace( $search, $replace, bool $case_sensitive = true ) {
+	public function replace( $search, $replace, bool $case_sensitive = true ) {
 		return new static( Str::replace( $search, $replace, $this->value, $case_sensitive ) );
 	}
 
@@ -817,7 +817,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 *
 	 * @return static
 	 */
- public function swap( array $map ) {
+	public function swap( array $map ) {
 		return new static( strtr( $this->value, $map ) );
 	}
 
@@ -1146,7 +1146,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 *
 	 * @return bool
 	 */
- public function offsetExists( mixed $offset ): bool {
+	public function offsetExists( mixed $offset ): bool {
 		return isset( $this->value[ $offset ] );
 	}
 
@@ -1155,7 +1155,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 *
 	 * @return string
 	 */
- public function offsetGet( mixed $offset ): string {
+	public function offsetGet( mixed $offset ): string {
 		return $this->value[ $offset ];
 	}
 
@@ -1164,7 +1164,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 *
 	 * @return void
 	 */
- public function offsetSet( mixed $offset, mixed $value ): void {
+	public function offsetSet( mixed $offset, mixed $value ): void {
 		$this->value[ $offset ] = $value;
 	}
 
@@ -1173,7 +1173,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 *
 	 * @return void
 	 */
- public function offsetUnset( mixed $offset ): void {
+	public function offsetUnset( mixed $offset ): void {
 		unset( $this->value[ $offset ] );
 	}
 

@@ -175,7 +175,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	public function get_base_path( string $path = '' ): string {
 		if ( $path ) {
 			// Ensure the path being appended has a leading slash.
-			if ( !str_starts_with($path, '/') ) {
+			if ( ! str_starts_with( $path, '/' ) ) {
 				$path = '/' . $path;
 			}
 

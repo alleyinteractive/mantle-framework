@@ -124,7 +124,7 @@ trait Has_Attributes {
 	 * @throws LogicException Thrown if the relationship method is not an instance
 	 *                        of Relation.
 	 */
- protected function get_relationship_from_method( string $method ) {
+	protected function get_relationship_from_method( string $method ) {
 		$relation = $this->$method();
 
 		if ( ! $relation instanceof Relation ) {
@@ -218,7 +218,7 @@ trait Has_Attributes {
 		// Retrieve all attributes, passing them through the mutators.
 		$attributes = collect( $this->get_arrayable_attributes() )
 			->map(
-				fn($value, string $attribute) => $this->get_attribute( $attribute )
+				fn( $value, string $attribute) => $this->get_attribute( $attribute )
 			)
 			->merge( $this->get_arrayable_appends() );
 
@@ -317,18 +317,17 @@ trait Has_Attributes {
 	 * @param string $cast_type Cast type.
 	 * @return mixed
 	 */
-	protected function cast_attribute(mixed $value, string $cast_type)
- {
-     return match ($cast_type) {
-         'int', 'integer' => (int) $value,
-         'real', 'float', 'double' => $this->from_float( $value ),
-         'string' => (string) $value,
-         'bool', 'boolean' => (bool) $value,
-         'object' => $this->from_json( $value, true ),
-         'array', 'json' => $this->from_json( $value ),
-         default => $value,
-     };
- }
+	protected function cast_attribute( mixed $value, string $cast_type ) {
+		return match ($cast_type) {
+			'int', 'integer' => (int) $value,
+			'real', 'float', 'double' => $this->from_float( $value ),
+			'string' => (string) $value,
+			'bool', 'boolean' => (bool) $value,
+			'object' => $this->from_json( $value, true ),
+			'array', 'json' => $this->from_json( $value ),
+			default => $value,
+		};
+	}
 
 	/**
 	 * Decode the given float.
@@ -337,12 +336,12 @@ trait Has_Attributes {
 	 * @return mixed
 	 */
 	public function from_float( mixed $value ) {
-		return match ((string) $value) {
-      'Infinity' => INF,
-      '-Infinity' => -INF,
-      'NaN' => NAN,
-      default => (float) $value,
-  };
+		return match ( (string) $value) {
+			'Infinity' => INF,
+			'-Infinity' => -INF,
+			'NaN' => NAN,
+			default => (float) $value,
+		};
 	}
 
 	/**
@@ -477,7 +476,7 @@ trait Has_Attributes {
 			collect( $this->appends )
 				->combine(
 					collect( $this->appends )->map(
-						fn(string $attribute) => $this->get_attribute( $attribute )
+						fn( string $attribute) => $this->get_attribute( $attribute )
 					)
 				)
 				->to_array()

@@ -121,7 +121,7 @@ class Queue_Fake extends Queue_Manager {
 	 * @param  string        $queue
 	 * @return void
 	 */
- public function push( $job, mixed $data = '', $queue = null ): void {
+	public function push( $job, mixed $data = '', $queue = null ): void {
 		$this->jobs[ is_object( $job ) ? $job::class : $job ][] = [
 			'data'  => $data,
 			'job'   => $job,

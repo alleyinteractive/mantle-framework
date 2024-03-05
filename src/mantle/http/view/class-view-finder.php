@@ -56,8 +56,8 @@ class View_Finder {
 
 		$this->set_default_paths();
 
-		\add_action( 'after_setup_theme', $this->set_default_paths(...) );
-		\add_action( 'switch_theme', $this->set_default_paths(...) );
+		\add_action( 'after_setup_theme', $this->set_default_paths( ... ) );
+		\add_action( 'switch_theme', $this->set_default_paths( ... ) );
 	}
 
 	/**
@@ -183,7 +183,7 @@ class View_Finder {
 		$alias = null;
 
 		// Extract the alias if passed.
-		if ( str_starts_with($slug, '@') ) {
+		if ( str_starts_with( $slug, '@' ) ) {
 			$alias = substr( Str::before( $slug, '/' ), 1 );
 			$slug  = Str::after( $slug, '/' );
 		}
@@ -216,7 +216,7 @@ class View_Finder {
 		if ( $alias ) {
 			$paths = array_filter(
 				$paths,
-				fn($path_alias) => $alias === $path_alias,
+				fn( $path_alias) => $alias === $path_alias,
 				ARRAY_FILTER_USE_KEY
 			);
 		}
@@ -246,7 +246,7 @@ class View_Finder {
 	 */
 	public function get_possible_view_files( string $name ): array {
 		return array_map(
-			fn($extension) => "{$name}.{$extension}",
+			fn( $extension) => "{$name}.{$extension}",
 			$this->extensions
 		);
 	}

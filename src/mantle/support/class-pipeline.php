@@ -46,14 +46,8 @@ class Pipeline implements PipelineContract {
 	 *
 	 * @param Container|null $container Container instance.
 	 */
-	public function __construct(
-     /**
-      * The container implementation.
-      */
-     protected ?Container $container = null
- )
- {
- }
+	public function __construct( protected ?Container $container = null ) {
+	}
 
 	/**
 	 * Set the object being sent through the pipeline.
@@ -114,7 +108,7 @@ class Pipeline implements PipelineContract {
 	 */
 	public function thenReturn() {
 		return $this->then(
-			fn($passable) => $passable
+			fn( $passable) => $passable
 		);
 	}
 
@@ -123,7 +117,7 @@ class Pipeline implements PipelineContract {
 	 *
 	 * @return \Closure
 	 */
- protected function prepare_destination( Closure $destination ) {
+	protected function prepare_destination( Closure $destination ) {
 		return function ( $passable ) use ( $destination ) {
 			try {
 				return $destination( $passable );
@@ -139,7 +133,7 @@ class Pipeline implements PipelineContract {
 	 * @return \Closure
 	 */
 	protected function carry() {
-		return fn($stack, $pipe) => function ( $passable ) use ( $stack, $pipe ) {
+		return fn( $stack, $pipe) => function ( $passable ) use ( $stack, $pipe ) {
 				try {
 					if ( is_callable( $pipe ) ) {
 						// If the pipe is a callable, then we will call it directly, but otherwise we
@@ -217,7 +211,7 @@ class Pipeline implements PipelineContract {
 	 *
 	 * @return mixed
 	 */
- protected function handle_carry( mixed $carry ) {
+	protected function handle_carry( mixed $carry ) {
 		return $carry;
 	}
 

@@ -363,7 +363,7 @@ class Asset {
 	 */
 	protected function infer_from_asset_loader() {
 		// Bail if the src is set OR if the handle doesn't include an extension.
-		if ( $this->src || !str_contains( $this->handle, '.' ) ) {
+		if ( $this->src || ! str_contains( $this->handle, '.' ) ) {
 			return;
 		}
 
@@ -386,7 +386,7 @@ class Asset {
 		$handle = str_replace( [ '/', '.' ], '-', (string) esc_attr( $this->handle ) );
 
 		// Ensure the handle doesn't start with a dash.
-		if ( str_starts_with($handle, '-') ) {
+		if ( str_starts_with( $handle, '-' ) ) {
 			$handle = substr( $handle, 1 );
 		}
 

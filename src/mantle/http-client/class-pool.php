@@ -25,14 +25,7 @@ class Pool {
 	/**
 	 * Constructor.
 	 */
- public function __construct(
-     /**
-      * Base pending request.
-      */
-     protected Pending_Request $base_request
- )
- {
- }
+	public function __construct( protected Pending_Request $base_request ) {}
 
 	/**
 	 * Create a pending request for the pool

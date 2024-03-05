@@ -50,7 +50,7 @@ class Filesystem {
 	 *
 	 * @throws File_Not_Found_Exception Thrown on missing file.
 	 */
- public function get( string $path, bool $lock = false ): string {
+	public function get( string $path, bool $lock = false ): string {
 		if ( $this->is_file( $path ) ) {
 			return $lock ? $this->shared_get( $path ) : file_get_contents( $path ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
 		}
@@ -93,7 +93,7 @@ class Filesystem {
 	 * @return mixed
 	 * @throws File_Not_Found_Exception Thrown on missing file.
 	 */
- public function get_require( $path, array $data = [] ) {
+	public function get_require( $path, array $data = [] ) {
 		if ( $this->is_file( $path ) ) {
 			$__path = $path;
 			$__data = $data;
@@ -115,7 +115,7 @@ class Filesystem {
 	 * @return mixed
 	 * @throws File_Not_Found_Exception Thrown on missing file.
 	 */
- public function require_once( $path, array $data = [] ) {
+	public function require_once( $path, array $data = [] ) {
 		if ( $this->is_file( $path ) ) {
 			$__path = $path;
 			$__data = $data;

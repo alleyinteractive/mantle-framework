@@ -20,7 +20,7 @@ class WP_Die {
 	 * @return callable The test die handler.
 	 */
 	public static function get_handler() {
-		return static::handler(...);
+		return static::handler( ... );
 	}
 
 	/**
@@ -29,7 +29,7 @@ class WP_Die {
 	 * @return callable The die handler.
 	 */
 	public static function get_toggled_handler() {
-		return static::toggled_handler(...);
+		return static::toggled_handler( ... );
 	}
 
 	/**
@@ -38,7 +38,7 @@ class WP_Die {
 	 * @return callable The die handler.
 	 */
 	public static function get_exit_handler() {
-		return static::exit_handler(...);
+		return static::exit_handler( ... );
 	}
 
 	/**

@@ -47,5 +47,5 @@ interface Handler {
 	 *
 	 * @return void
 	 */
- public function render_for_console( OutputInterface $output, Throwable $e );
+	public function render_for_console( OutputInterface $output, Throwable $e );
 }

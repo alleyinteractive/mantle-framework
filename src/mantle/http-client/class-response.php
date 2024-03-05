@@ -44,10 +44,7 @@ class Response implements ArrayAccess {
 	 *
 	 * @param array $response Raw response from `wp_remote_request()`.
 	 */
-	public function __construct( /**
-	 * Raw response from `wp_remote_request()`.
-	 */
- protected array $response ) {
+	public function __construct( protected array $response ) {
 		// Format the headers to be lower-case.
 		$this->response['headers'] = array_change_key_case( (array) ( $this->response['headers'] ?? [] ) );
 	}
@@ -240,7 +237,7 @@ class Response implements ArrayAccess {
 			return true;
 		}
 
-		return str_starts_with(trim( strtolower( $this->body() ) ), '<?xml');
+		return str_starts_with( trim( strtolower( $this->body() ) ), '<?xml' );
 	}
 
 	/**
@@ -276,7 +273,7 @@ class Response implements ArrayAccess {
 	 * @param  string|null $key
 	 * @return mixed
 	 */
- public function json( $key = null, mixed $default = null ) {
+	public function json( $key = null, mixed $default = null ) {
 		if ( ! isset( $this->decoded ) ) {
 			$this->decoded = json_decode( $this->body(), true );
 		}

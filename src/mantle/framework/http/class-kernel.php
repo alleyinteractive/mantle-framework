@@ -253,10 +253,10 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	/**
 	 * Render the exception to a response.
 	 *
-	 * @param Request   $request Request instance.
+	 * @param Request $request Request instance.
 	 * @return \Symfony\Component\HttpFoundation\Response|mixed
 	 */
- protected function render_exception( $request, Throwable $e ) {
+	protected function render_exception( $request, Throwable $e ) {
 		return $this->app[ Exception_Handler::class ]->render( $request, $e );
 	}
 }

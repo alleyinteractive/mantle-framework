@@ -175,7 +175,7 @@ abstract class Test_Case extends BaseTestCase {
 			);
 
 		remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
-		add_filter( 'wp_die_handler', WP_Die::get_handler(...) );
+		add_filter( 'wp_die_handler', WP_Die::get_handler( ... ) );
 	}
 
 	/**
@@ -229,7 +229,7 @@ abstract class Test_Case extends BaseTestCase {
 		}
 
 		$this->unregister_all_meta_keys();
-		remove_filter( 'wp_die_handler', WP_Die::get_handler(...) );
+		remove_filter( 'wp_die_handler', WP_Die::get_handler( ... ) );
 		$this->hooks_tear_down();
 		wp_set_current_user( 0 );
 		// phpcs:enable

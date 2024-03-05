@@ -112,7 +112,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  (callable(TValue, TKey): bool)|TValue|string  $key
 	 * @return bool
 	 */
- public function some( $key, mixed $operator = null, mixed $value = null );
+	public function some( $key, mixed $operator = null, mixed $value = null );
 
 	/**
 	 * Determine if an item exists, using strict comparison.
@@ -120,7 +120,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  (callable(TValue, TKey): bool)|TValue|string  $key
 	 * @return bool
 	 */
- public function contains_strict( $key, mixed $value = null );
+	public function contains_strict( $key, mixed $value = null );
 
 	/**
 	 * Get the average value of a given key.
@@ -136,14 +136,14 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  (callable(TValue, TKey): bool)|TValue|string  $key
 	 * @return bool
 	 */
- public function contains( $key, mixed $operator = null, mixed $value = null );
+	public function contains( $key, mixed $operator = null, mixed $value = null );
 
 	/**
 	 * Dump the collection and end the script.
 	 *
 	 * @return void
 	 */
- public function dd( mixed ...$args );
+	public function dd( mixed ...$args );
 
 	/**
 	 * Dump the collection.
@@ -200,7 +200,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  \Mantle\Contracts\Support\Arrayable<TKey, TValue>|iterable<TKey, TValue>  $items
 	 * @return static
 	 */
- public function diff_keys_using( $items, callable $callback);
+	public function diff_keys_using( $items, callable $callback);
 
 	/**
 	 * Retrieve duplicate items.
@@ -232,7 +232,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 *
 	 * @return static
 	 */
- public function each_spread( callable $callback);
+	public function each_spread( callable $callback);
 
 	/**
 	 * Determine if all items pass the given truth test.
@@ -240,7 +240,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  (callable(TValue, TKey): bool)|TValue|string  $key
 	 * @return bool
 	 */
- public function every( $key, mixed $operator = null, mixed $value = null );
+	public function every( $key, mixed $operator = null, mixed $value = null );
 
 	/**
 	 * Get all items except for those with the specified keys.
@@ -334,7 +334,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  string $key
 	 * @return static
 	 */
- public function where( $key, mixed $operator = null, mixed $value = null );
+	public function where( $key, mixed $operator = null, mixed $value = null );
 
 	/**
 	 * Filter items by the given key value pair using strict comparison.
@@ -342,7 +342,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  string $key
 	 * @return static
 	 */
- public function where_strict( $key, mixed $value);
+	public function where_strict( $key, mixed $value);
 
 	/**
 	 * Filter items by the given key value pair.
@@ -427,7 +427,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  string $key
 	 * @return TValue|null
 	 */
- public function first_where( $key, mixed $operator = null, mixed $value = null );
+	public function first_where( $key, mixed $operator = null, mixed $value = null );
 
 	/**
 	 * Flip the values with their keys.
@@ -549,7 +549,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 *
 	 * @return static
 	 */
- public function map_spread( callable $callback);
+	public function map_spread( callable $callback);
 
 	/**
 	 * Run a dictionary map over the items.
@@ -723,14 +723,14 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 *
 	 * @return static
 	 */
- public function replace( mixed $items );
+	public function replace( mixed $items );
 
 	/**
 	 * Recursively replace the collection items with the given items.
 	 *
 	 * @return static
 	 */
- public function replace_recursive( mixed $items );
+	public function replace_recursive( mixed $items );
 
 	/**
 	 * Reverse items order.

@@ -31,18 +31,7 @@ class Permalink_Generator implements \Stringable {
 	 * @param string     $route Route to generate for.
 	 * @param Model|null $model Model to generator for, optional.
 	 */
-	public function __construct(
-     /**
-      * Route to generate for.
-      */
-     protected ?string $route,
-     /**
-      * Model instance.
-      */
-     protected ?Model $model = null
- )
- {
- }
+	public function __construct( protected ?string $route, protected ?Model $model = null ) {}
 
 	/**
 	 * Generate a new instance.

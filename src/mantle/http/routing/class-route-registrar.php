@@ -77,14 +77,8 @@ class Route_Registrar {
 	 *
 	 * @param Router $router Router instance.
 	 */
-	public function __construct(
-     /**
-      * Router instance.
-      */
-     protected ?Router $router
- )
- {
- }
+	public function __construct( protected ?Router $router ) {
+	}
 
 	/**
 	 * Set the value for a given attribute.
@@ -93,7 +87,7 @@ class Route_Registrar {
 	 * @return $this
 	 * @throws InvalidArgumentException Thrown on unknown attribute.
 	 */
- public function attribute( $key, mixed $value ) {
+	public function attribute( $key, mixed $value ) {
 		if ( ! in_array( $key, $this->allowed_attributes ) ) {
 			throw new InvalidArgumentException( "Attribute [{$key}] does not exist." );
 		}

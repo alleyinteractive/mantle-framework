@@ -13,26 +13,13 @@ namespace Mantle\Support;
  * @mixin Enumerable
  */
 class Higher_Order_Collection_Proxy {
-
-	/**
-	 * The collection being operated on.
-	 *
-	 * @var Enumerable
-	 */
-	protected $collection;
-
 	/**
 	 * Create a new proxy instance.
 	 *
-	 * @param  string     $method
+	 * @param  string $method
 	 * @return void
 	 */
- public function __construct( Enumerable $collection, /**
-	 * The method being proxied.
-	 */
- protected $method ) {
-		$this->collection = $collection;
-	}
+	public function __construct( protected Enumerable $collection, protected $method ) {}
 
 	/**
 	 * Proxy accessing an attribute onto the collection items.
@@ -42,7 +29,7 @@ class Higher_Order_Collection_Proxy {
 	 */
 	public function __get( $key ) {
 		return $this->collection->{ $this->method }(
-			fn($value) => is_array( $value ) ? $value[ $key ] : $value->{$key}
+			fn( $value) => is_array( $value ) ? $value[ $key ] : $value->{$key}
 		);
 	}
 
@@ -55,7 +42,7 @@ class Higher_Order_Collection_Proxy {
 	 */
 	public function __call( $method, $parameters ) {
 		return $this->collection->{ $this->method }(
-			fn($value) => $value->{ $method }( ...$parameters )
+			fn( $value) => $value->{ $method }( ...$parameters )
 		);
 	}
 }

@@ -142,10 +142,10 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	/**
 	 * Create a Flysystem instance with the given adapter.
 	 *
-	 * @param array             $config Adapter configuration.
+	 * @param array $config Adapter configuration.
 	 * @return Flysystem
 	 */
- protected function create_flysystem( FilesystemAdapter $adapter, array $config = [] ): Flysystem {
+	protected function create_flysystem( FilesystemAdapter $adapter, array $config = [] ): Flysystem {
 		return new Flysystem( $adapter, $config );
 	}
 
@@ -185,8 +185,8 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 		$root = (string) apply_filters( 'mantle_filesystem_local_root', $root, $config );
 
 		// Ensure the root configuration has a base URL.
-		$config['root']       = $root;
-		$config['url'] ??= $upload_dir['baseurl'];
+		$config['root']         = $root;
+		$config['url']        ??= $upload_dir['baseurl'];
 		$config['visibility'] ??= Visibility::PUBLIC;
 
 		/**
@@ -246,7 +246,7 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 *
 	 * @return array
 	 */
- protected function format_s3_config( array $config ) {
+	protected function format_s3_config( array $config ) {
 		$config += [ 'version' => 'latest' ];
 
 		if ( ! empty( $config['key'] ) && ! empty( $config['secret'] ) ) {

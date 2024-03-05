@@ -16,14 +16,7 @@ class Higher_Order_Tap_Proxy {
 	 *
 	 * @param mixed $target Object against which to call a method.
 	 */
-	public function __construct(
-     /**
-      * The target being tapped.
-      */
-     public mixed $target
- )
- {
- }
+	public function __construct( public mixed $target ) {}
 
 	/**
 	 * Dynamically pass method calls to the target.

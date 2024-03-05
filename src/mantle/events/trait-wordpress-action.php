@@ -33,7 +33,7 @@ trait WordPress_Action {
 	 * @param callable $callback Callback to invoke.
 	 * @return void
 	 */
- public function action( string $action, callable $callback, int $priority = 10 ): void {
+	public function action( string $action, callable $callback, int $priority = 10 ): void {
 		\add_action( $action, $this->create_action_callback( $callback ), $priority, 99 );
 	}
 
@@ -63,7 +63,7 @@ trait WordPress_Action {
 	 * @param callable $callback Callback to invoke.
 	 * @return void
 	 */
- public function filter( string $action, callable $callback, int $priority = 10 ): void {
+	public function filter( string $action, callable $callback, int $priority = 10 ): void {
 		\add_filter( $action, $this->create_action_callback( $callback ), $priority, 99 );
 	}
 
@@ -72,7 +72,7 @@ trait WordPress_Action {
 	 *
 	 * @return Closure
 	 */
- protected function create_action_callback( callable $callback ): Closure {
+	protected function create_action_callback( callable $callback ): Closure {
 		return function( ...$args ) use ( $callback ) {
 			if ( is_array( $callback ) ) {
 				try {

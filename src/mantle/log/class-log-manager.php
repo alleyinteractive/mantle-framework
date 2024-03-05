@@ -50,10 +50,10 @@ class Log_Manager implements LoggerInterface {
 	 * @param Dispatcher  $dispatcher Event dispatcher.
 	 */
 	public function __construct( Application $app, /**
-	 * Dispatcher instance.
-	 */
- protected ?Dispatcher $dispatcher = null ) {
-		$this->app        = $app;
+													* Dispatcher instance.
+													*/
+	protected ?Dispatcher $dispatcher = null ) {
+		$this->app = $app;
 	}
 
 	/**
@@ -64,7 +64,7 @@ class Log_Manager implements LoggerInterface {
 	 */
 	public function channel( $channels ): Logger {
 		$handlers = collect( (array) $channels )
-			->map( $this->get_channel_handler(...) )
+			->map( $this->get_channel_handler( ... ) )
 			->filter()
 			->to_array();
 
@@ -124,7 +124,7 @@ class Log_Manager implements LoggerInterface {
 			throw new InvalidArgumentException( 'Stack channel called without any child channels.' );
 		}
 
-		$handlers = array_map( $this->get_channel_handler(...), $config['channels'] );
+		$handlers = array_map( $this->get_channel_handler( ... ), $config['channels'] );
 		return new GroupHandler( $handlers );
 	}
 
@@ -384,7 +384,7 @@ class Log_Manager implements LoggerInterface {
 	 * @return void
 	 * @throws RuntimeException Thrown on missing dispatcher.
 	 */
- public function listen( Closure $callback ): void {
+	public function listen( Closure $callback ): void {
 		if ( ! isset( $this->dispatcher ) ) {
 			throw new RuntimeException( 'Event dispatcher not set.' );
 		}

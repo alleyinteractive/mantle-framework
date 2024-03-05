@@ -119,7 +119,7 @@ trait Interacts_With_IO {
 	 * @param  int|string|null $verbosity
 	 * @return void
 	 */
- public function question( string $string, $verbosity = null ): void {
+	public function question( string $string, $verbosity = null ): void {
 		$this->line( $string, 'question', $verbosity );
 	}
 
@@ -128,7 +128,7 @@ trait Interacts_With_IO {
 	 *
 	 * @return bool
 	 */
- public function confirm( string $question, bool $default = false ) {
+	public function confirm( string $question, bool $default = false ) {
 		return $this->output->confirm( $question, $default );
 	}
 
@@ -197,7 +197,7 @@ trait Interacts_With_IO {
 	 * @param  bool            $multiple
 	 * @return string|array
 	 */
- public function choice( $question, array $choices, $default = null, $attempts = null, $multiple = false ) {
+	public function choice( $question, array $choices, $default = null, $attempts = null, $multiple = false ) {
 		$question = new ChoiceQuestion( $question, $choices, $default );
 
 		$question->setMaxAttempts( $attempts )->setMultiselect( $multiple );
@@ -237,7 +237,7 @@ trait Interacts_With_IO {
 	 * @param  \Symfony\Component\Console\Helper\TableStyle|string $table_style
 	 * @return void
 	 */
- public function table( $headers, $rows, $table_style = 'default', array $column_styles = [] ): void {
+	public function table( $headers, $rows, $table_style = 'default', array $column_styles = [] ): void {
 		$table = new Table( $this->output );
 
 		if ( $rows instanceof Arrayable ) {
@@ -259,7 +259,7 @@ trait Interacts_With_IO {
 	 * @param  iterable|int $total_steps
 	 * @return mixed|void
 	 */
- public function with_progress_bar( $total_steps, Closure $callback ) {
+	public function with_progress_bar( $total_steps, Closure $callback ) {
 		$bar = $this->output->createProgressBar(
 			is_iterable( $total_steps ) ? count( $total_steps ) : $total_steps
 		);
@@ -273,7 +273,7 @@ trait Interacts_With_IO {
 				$bar->advance();
 			}
 		} else {
-				$callback( $bar );
+			$callback( $bar );
 		}
 
 		$bar->finish();
@@ -347,7 +347,7 @@ trait Interacts_With_IO {
 	 * @param  int|string|null $verbosity
 	 * @return void
 	 */
- public function error( string $string, $verbosity = null ): void {
+	public function error( string $string, $verbosity = null ): void {
 		$this->line( $string, 'error', $verbosity );
 	}
 
@@ -357,7 +357,7 @@ trait Interacts_With_IO {
 	 * @param  int|string|null $verbosity
 	 * @return void
 	 */
- public function warn( string $string, $verbosity = null ): void {
+	public function warn( string $string, $verbosity = null ): void {
 		if ( ! $this->output->getFormatter()->hasStyle( 'warning' ) ) {
 			$style = new OutputFormatterStyle( 'yellow' );
 
@@ -373,7 +373,7 @@ trait Interacts_With_IO {
 	 * @param  int|string|null $verbosity
 	 * @return void
 	 */
- public function success( string $string, $verbosity = null ): void {
+	public function success( string $string, $verbosity = null ): void {
 		if ( ! $this->output->getFormatter()->hasStyle( 'success' ) ) {
 			$style = new OutputFormatterStyle( 'green' );
 

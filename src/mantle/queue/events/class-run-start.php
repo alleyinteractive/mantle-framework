@@ -17,9 +17,9 @@ class Run_Start {
 	/**
 	 * Constructor.
 	 *
-	 * @param Provider   $provider Queue provider.
-	 * @param string     $queue Queue name.
-	 * @param Collection $jobs Jobs to run.
+	 * @param Provider               $provider Queue provider.
+	 * @param string                 $queue Queue name.
+	 * @param Collection<int, mixed> $jobs Jobs to run.
 	 */
 	public function __construct( public Provider $provider, public string $queue, public Collection $jobs ) {
 	}

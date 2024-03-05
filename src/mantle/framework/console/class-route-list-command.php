@@ -79,13 +79,13 @@ class Route_List_Command extends Command {
 
 		return collect( $routes )
 			->map(
-				fn(Route $route, string $name) => [
-						implode( '|', $route->getMethods() ),
-						$route->getPath(),
-						$name,
-						$route->get_callback_name(),
-						implode( '|', $route->middleware() ),
-					]
+				fn( Route $route, string $name) => [
+					implode( '|', $route->getMethods() ),
+					$route->getPath(),
+					$name,
+					$route->get_callback_name(),
+					implode( '|', $route->middleware() ),
+				]
 			);
 	}
 }

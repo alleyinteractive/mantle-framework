@@ -28,7 +28,7 @@ trait Route_Dependency_Resolver {
 	 * @param  string $method
 	 * @return array
 	 */
- protected function resolve_class_method_dependencies( array $parameters, $instance, $method ) {
+	protected function resolve_class_method_dependencies( array $parameters, $instance, $method ) {
 		if ( ! method_exists( $instance, $method ) ) {
 			return $parameters;
 		}
@@ -44,7 +44,7 @@ trait Route_Dependency_Resolver {
 	 *
 	 * @return array
 	 */
- public function resolve_method_dependencies( array $parameters, ReflectionFunctionAbstract $reflector ) {
+	public function resolve_method_dependencies( array $parameters, ReflectionFunctionAbstract $reflector ) {
 		$instance_count = 0;
 
 		$values = array_values( $parameters );
@@ -74,7 +74,7 @@ trait Route_Dependency_Resolver {
 	 * @param  object               $skippable_value
 	 * @return mixed
 	 */
- protected function transform_dependency( ReflectionParameter $parameter, $parameters, $skippable_value ) {
+	protected function transform_dependency( ReflectionParameter $parameter, $parameters, $skippable_value ) {
 		$class_name = Reflector::get_parameter_class_name( $parameter );
 
 		// If the parameter has a type-hinted class, we will check to see if it is already in
@@ -97,7 +97,7 @@ trait Route_Dependency_Resolver {
 	 * @param  class-string $class
 	 * @return bool
 	 */
- protected function already_in_parameters( string $class, array $parameters ) {
+	protected function already_in_parameters( string $class, array $parameters ) {
 		return ! is_null(
 			Arr::first(
 				$parameters,
@@ -111,7 +111,7 @@ trait Route_Dependency_Resolver {
 	 *
 	 * @return void
 	 */
- protected function splice_into_parameters( array &$parameters, int $offset, mixed $value ) {
+	protected function splice_into_parameters( array &$parameters, int $offset, mixed $value ) {
 		array_splice(
 			$parameters,
 			$offset,

@@ -57,7 +57,7 @@ class Parser {
 	 *
 	 * @return array
 	 */
- protected static function parameters( array $tokens ) {
+	protected static function parameters( array $tokens ) {
 		$arguments = [];
 
 		$options = [];

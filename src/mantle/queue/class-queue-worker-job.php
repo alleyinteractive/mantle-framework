@@ -46,7 +46,7 @@ abstract class Queue_Worker_Job {
 	 *
 	 * @return void
 	 */
- abstract public function failed( Throwable $e ): void;
+	abstract public function failed( Throwable $e ): void;
 
 	/**
 	 * Handle a completed job.

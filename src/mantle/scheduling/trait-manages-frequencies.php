@@ -470,7 +470,7 @@ trait Manages_Frequencies {
 	 * @param  int|string $value
 	 * @return static
 	 */
- protected function spliceIntoPosition( int $position, int|string $value ) {
+	protected function spliceIntoPosition( int $position, int|string $value ) {
 		$segments = explode( ' ', $this->expression );
 
 		$segments[ $position - 1 ] = (string) $value;

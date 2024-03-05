@@ -128,7 +128,7 @@ class Dispatcher implements Dispatcher_Contract {
 	 *
 	 * @return array
 	 */
- protected function parse_event_and_payload( mixed $event, mixed $payload ) {
+	protected function parse_event_and_payload( mixed $event, mixed $payload ) {
 		if ( is_object( $event ) ) {
 			[ $payload, $event ] = [ [ $event ], $event::class ];
 		}
@@ -156,7 +156,7 @@ class Dispatcher implements Dispatcher_Contract {
 	 * @param  string $event_name
 	 * @return array
 	 */
- protected function add_interface_listeners( $event_name, array $listeners = [] ) {
+	protected function add_interface_listeners( $event_name, array $listeners = [] ) {
 		foreach ( class_implements( $event_name ) as $interface ) {
 			if ( isset( $this->listeners[ $interface ] ) ) {
 				foreach ( $this->listeners[ $interface ] as $names ) {
@@ -179,9 +179,9 @@ class Dispatcher implements Dispatcher_Contract {
 			return $this->create_class_listener( $listener );
 		}
 
-		return fn(...$payload) => $this->create_action_callback(
-				$listener,
-			)( ...array_values( $payload ) );
+		return fn( ...$payload) => $this->create_action_callback(
+			$listener,
+		)( ...array_values( $payload ) );
 	}
 
 	/**

@@ -26,7 +26,7 @@ class Permalink_Generated {
 	/**
 	 * Constructor.
 	 */
- public function __construct( Permalink_Generator $generator ) {
+	public function __construct( Permalink_Generator $generator ) {
 		$this->generator = $generator;
 	}
 }

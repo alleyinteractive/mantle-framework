@@ -115,7 +115,7 @@ class Hook_Usage_Command extends Command {
 	 *
 	 * @return Collection
 	 */
- protected function read_path( string $path ): Collection {
+	protected function read_path( string $path ): Collection {
 		if ( is_file( $path ) ) {
 			// Only permit PHP files through.
 			if ( 'php' !== pathinfo( $path, PATHINFO_EXTENSION ) ) {

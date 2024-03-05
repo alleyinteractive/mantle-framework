@@ -62,7 +62,7 @@ class Implicit_Route_Binding {
 	 * @param  string $name
 	 * @return string|null
 	 */
- protected static function get_parameter_name( $name, array $parameters ) {
+	protected static function get_parameter_name( $name, array $parameters ) {
 		if ( array_key_exists( $name, $parameters ) ) {
 			return $name;
 		}

@@ -19,7 +19,7 @@ interface Pipeline {
 	 *
 	 * @return $this
 	 */
- public function send( mixed $traveler );
+	public function send( mixed $traveler );
 
 	/**
 	 * Set the stops of the pipeline.
@@ -42,5 +42,5 @@ interface Pipeline {
 	 *
 	 * @return mixed
 	 */
- public function then( Closure $destination );
+	public function then( Closure $destination );
 }

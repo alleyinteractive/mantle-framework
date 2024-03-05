@@ -21,7 +21,7 @@ trait Register_Taxonomy {
 	 * Register the taxonomy.
 	 */
 	public static function boot_register_taxonomy(): void {
-		\add_action( 'init', self::register_object(...) );
+		\add_action( 'init', self::register_object( ... ) );
 	}
 
 	/**

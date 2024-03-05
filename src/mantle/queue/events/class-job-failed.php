@@ -15,33 +15,13 @@ use Throwable;
  */
 class Job_Failed {
 	/**
-	 * Queue provider.
-	 *
-	 * @var mixed
-	 */
-	public $provider;
-
-	/**
-	 * Exception
-	 *
-	 * @var Throwable
-	 */
-	public $exception;
-
-	/**
 	 * Constructor.
 	 *
 	 * @param Provider  $provider Queue provider.
 	 * @param mixed     $job      Job object.
 	 * @param Throwable $e        Exception.
 	 */
-	public function __construct( Provider $provider, /**
-	 * Job Data
-	 */
- public mixed $job, Throwable $e ) {
-		$this->provider  = $provider;
-		$this->exception = $e;
-	}
+	public function __construct( public Provider $provider, public mixed $job, public Throwable $e ) {}
 
 	/**
 	 * Get the ID for the job.

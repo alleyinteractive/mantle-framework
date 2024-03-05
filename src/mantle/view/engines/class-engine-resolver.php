@@ -34,10 +34,10 @@ class Engine_Resolver {
 	 *
 	 * The engine string typically corresponds to a file extension.
 	 *
-	 * @param  string   $engine
+	 * @param  string $engine
 	 * @return void
 	 */
- public function register( $engine, Closure $resolver ): void {
+	public function register( $engine, Closure $resolver ): void {
 			unset( $this->resolved[ $engine ] );
 
 			$this->resolvers[ $engine ] = $resolver;

@@ -131,7 +131,7 @@ interface Router {
 	 * @param  string $name
 	 * @return static
 	 */
- public function middleware_group( $name, array $middleware );
+	public function middleware_group( $name, array $middleware );
 
 	/**
 	 * Register a short-hand name for a middleware.

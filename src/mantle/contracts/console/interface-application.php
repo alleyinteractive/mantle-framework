@@ -49,5 +49,5 @@ interface Application {
 	 *
 	 * @return void
 	 */
- public function render_throwable( Throwable $e, OutputInterface $output );
+	public function render_throwable( Throwable $e, OutputInterface $output );
 }
