@@ -59,6 +59,8 @@ trait Reads_Annotations {
 	/**
 	 * Read the attributes for the current test case and method.
 	 *
+	 * Supports PHPUnit 9.5+ and 10.x.
+	 *
 	 * @param class-string $name Filter the results to include only ReflectionAttribute instances for attributes matching this class name.
 	 * @return array<\ReflectionAttribute>
 	 */
@@ -66,7 +68,19 @@ trait Reads_Annotations {
 		$class = new ReflectionClass( $this );
 
 		// Use either the PHPUnit 9.5+ method or the PHPUnit 10.x method to get the method.
-		$method = $class->getMethod( method_exists( $this, 'getName' ) ? $this->getName() : $this->name() );
+		if ( method_exists( $this, 'getName' ) ) {
+			$method = $class->getMethod( $this->getName( false ) );
+		} elseif ( method_exists( $this, 'name' ) ) {
+			$method = $class->getMethod( $this->name() );
+		} elseif ( isset( $this->name ) ) {
+			$method = $class->getMethod( $this->name );
+		} else {
+			trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
+				'Unable to read annotations for test method. Please file an issue with https://github.com/alleyinteractive/mantle-framework',
+			);
+
+			return [];
+		}
 
 		return [
 			...$class->getAttributes( $name ),
