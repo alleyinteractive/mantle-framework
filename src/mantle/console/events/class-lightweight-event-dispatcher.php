@@ -33,7 +33,7 @@ class Lightweight_Event_Dispatcher extends Dispatcher {
 	 * @param  int             $priority
 	 * @return void
 	 */
-	public function listen( $events, $listener, int $priority = 10 ) {
+	public function listen( $events, $listener, int $priority = 10 ): void {
 		foreach ( (array) $events as $event ) {
 			$this->listeners[ $event ][ $priority ][] = $this->make_listener( $listener );
 		}
@@ -101,7 +101,7 @@ class Lightweight_Event_Dispatcher extends Dispatcher {
 	 * @param int             $priority Priority of the listener.
 	 * @return void
 	 */
-	public function forget( $event, $listener = null, int $priority = 10 ) {
+	public function forget( $event, $listener = null, int $priority = 10 ): void {
 		if ( empty( $this->listeners[ $event ][ $priority ] ) ) {
 			return;
 		}

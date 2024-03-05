@@ -46,7 +46,7 @@ trait Route_Group {
 	 * @param  \Closure|string $routes
 	 * @return void
 	 */
-	public function group( array $attributes, $routes ) {
+	public function group( array $attributes, $routes ): void {
 		$this->update_group_stack( $attributes );
 
 		// Once we have updated the group stack, we'll load the provided routes and

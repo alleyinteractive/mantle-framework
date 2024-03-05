@@ -14,7 +14,7 @@ trait Multisite_Test {
 	/**
 	 * Setup the trait.
 	 */
-	public function multisite_test_set_up() {
+	public function multisite_test_set_up(): void {
 		if ( ! is_multisite() ) {
 			$this->markTestSkipped( 'This test requires multisite.' );
 		}

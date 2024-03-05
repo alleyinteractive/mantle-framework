@@ -18,7 +18,7 @@ class Boot_Providers {
 	 *
 	 * @param Application $app Application instance.
 	 */
-	public function bootstrap( Application $app ) {
+	public function bootstrap( Application $app ): void {
 		$app->boot();
 	}
 }

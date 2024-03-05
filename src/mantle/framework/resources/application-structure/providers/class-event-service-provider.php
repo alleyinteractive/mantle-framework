@@ -38,7 +38,7 @@ class Event_Service_Provider extends Service_Provider {
 	 *
 	 * @return void
 	 */
-	public function boot() {
+	public function boot(): void {
 		// ...
 	}
 

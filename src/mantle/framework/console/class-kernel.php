@@ -156,7 +156,7 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	/**
 	 * Bootstrap the console.
 	 */
-	public function bootstrap() {
+	public function bootstrap(): void {
 		if ( ! $this->app->is_running_in_console() ) {
 			return;
 		}
@@ -231,7 +231,7 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	/**
 	 * Register CLI Commands from the Application Kernel
 	 */
-	public function register_commands() {
+	public function register_commands(): void {
 		if ( ! $this->commands_loaded ) {
 			$this->commands();
 
@@ -257,7 +257,7 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	 *
 	 * @param string $message Message to log.
 	 */
-	public function log( string $message ) {
+	public function log( string $message ): void {
 		if ( isset( $this->output ) ) {
 			$this->output->writeln( $message );
 		}

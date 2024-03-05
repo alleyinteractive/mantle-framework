@@ -31,7 +31,7 @@ class Cleanup_Jobs_Command extends Command {
 	/**
 	 * Command action.
 	 */
-	public function handle() {
+	public function handle(): void {
 		$count = 0;
 
 		Queue_Record::query()

@@ -195,7 +195,7 @@ class Application extends Container implements Application_Contract {
 	 *
 	 * @param string $url Root URL to set.
 	 */
-	public function set_root_url( string $url ) {
+	public function set_root_url( string $url ): void {
 		$this->root_url = $url;
 	}
 

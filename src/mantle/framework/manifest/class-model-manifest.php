@@ -94,7 +94,7 @@ class Model_Manifest {
 	/**
 	 * Build the manifest.
 	 */
-	public function build() {
+	public function build(): void {
 		// Delete the existing manifest if it exists.
 		if ( file_exists( $this->manifest_path ) ) {
 			unlink( $this->manifest_path ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_unlink

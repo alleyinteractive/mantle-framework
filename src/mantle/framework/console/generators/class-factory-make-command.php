@@ -96,7 +96,7 @@ class Factory_Make_Command extends Stub_Generator_Command {
 	 * @param string $name Class name.
 	 * @todo Edit or remove this.
 	 */
-	public function complete_synopsis( string $name ) {
+	public function complete_synopsis( string $name ): void {
 		$this->line( 'You can customize this factory by editing the file in "database/factory".' );
 	}
 

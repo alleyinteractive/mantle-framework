@@ -24,7 +24,7 @@ trait Loads_Environment_Variables {
 	 *
 	 * @todo Add cached config usage.
 	 */
-	public function load_environment_variables() {
+	public function load_environment_variables(): void {
 		try {
 			$this->create_dotenv( $this )->safeLoad();
 		} catch ( InvalidFileException $e ) {

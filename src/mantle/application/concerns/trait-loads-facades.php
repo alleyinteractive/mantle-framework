@@ -21,7 +21,7 @@ trait Loads_Facades {
 	/**
 	 * Bootstrap the given application's Facades.
 	 */
-	public function load_facades() {
+	public function load_facades(): void {
 		Facade::clear_resolved_instances();
 		Facade::set_facade_application( $this );
 	}

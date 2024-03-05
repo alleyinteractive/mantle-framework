@@ -33,7 +33,7 @@ class Route_File_Registrar {
 	 *
 	 * @param  string $routes Routes to register.
 	 */
-	public function register( $routes ) {
+	public function register( $routes ): void {
 		$router = $this->router;
 		require $routes;
 	}

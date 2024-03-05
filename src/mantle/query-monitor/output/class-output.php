@@ -37,7 +37,7 @@ class Output extends QM_Output_Html {
 	/**
 	 * Output for the Query Monitor panel.
 	 */
-	public function output() {
+	public function output(): void {
 		$data    = $this->collector->get_data();
 		$request = $data['request'];
 		$route   = $data['route'];

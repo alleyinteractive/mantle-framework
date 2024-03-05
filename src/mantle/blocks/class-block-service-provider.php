@@ -21,7 +21,7 @@ class Block_Service_Provider extends Service_Provider {
 	 *
 	 * @return void
 	 */
-	public function register() {
+	public function register(): void {
 		$this->app->booting(
 			fn () => collect( $this->get_blocks() )->each(
 				fn ( string $block ) => ( new $block() )->register()

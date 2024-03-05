@@ -80,7 +80,7 @@ class Alias_Loader {
 	 * @param  string $class Alias class.
 	 * @param  string $alias Alias name.
 	 */
-	public function alias( $class, $alias ) {
+	public function alias( $class, $alias ): void {
 		$this->aliases[ $class ] = $alias;
 	}
 
@@ -89,7 +89,7 @@ class Alias_Loader {
 	 *
 	 * @return void
 	 */
-	public function register() {
+	public function register(): void {
 		if ( ! $this->registered ) {
 			$this->prepend_to_loader_stack();
 
@@ -121,7 +121,7 @@ class Alias_Loader {
 	 * @param array $aliases Alias to set.
 	 * @return void
 	 */
-	public function set_aliases( array $aliases ) {
+	public function set_aliases( array $aliases ): void {
 		$this->aliases = $aliases;
 	}
 
@@ -139,7 +139,7 @@ class Alias_Loader {
 	 *
 	 * @param  bool $value Value to set.
 	 */
-	public function set_registered( $value ) {
+	public function set_registered( $value ): void {
 		$this->registered = $value;
 	}
 
@@ -148,7 +148,7 @@ class Alias_Loader {
 	 *
 	 * @param Alias_Loader|null $loader Load to set.
 	 */
-	public static function set_instance( ?Alias_Loader $loader ) {
+	public static function set_instance( ?Alias_Loader $loader ): void {
 		static::$instance = $loader;
 	}
 }

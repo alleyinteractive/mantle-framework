@@ -57,7 +57,7 @@ class Closure_Job implements Can_Queue {
 	/**
 	 * Handle the queue job.
 	 */
-	public function handle() {
+	public function handle(): void {
 		$callback = $this->closure->getClosure();
 
 		$callback();
@@ -94,7 +94,7 @@ class Closure_Job implements Can_Queue {
 	 *
 	 * @param \Throwable $e Exception.
 	 */
-	public function failed( Throwable $e ) {
+	public function failed( Throwable $e ): void {
 		foreach ( $this->failure_callbacks as $callback ) {
 			$callback( $e );
 		}

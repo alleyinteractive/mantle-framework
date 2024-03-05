@@ -53,7 +53,7 @@ class Command_Make_Command extends Stub_Generator_Command {
 	 *
 	 * @param string $name Class name.
 	 */
-	public function complete_synopsis( string $name ) {
+	public function complete_synopsis( string $name ): void {
 		$this->log(
 			PHP_EOL . sprintf(
 				'This command should be automatically registered for you. If it is not you can register this command by adding "%s\\%s::class" to the "$commands" property in "app/console/class-kernel.php".',

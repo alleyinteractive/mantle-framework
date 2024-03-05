@@ -89,7 +89,7 @@ class View_Finder {
 	/**
 	 * Set the default paths to load from for WordPress sites.
 	 */
-	public function set_default_paths() {
+	public function set_default_paths(): void {
 		if ( function_exists( 'get_stylesheet_directory' ) ) {
 			$this->add_path( get_stylesheet_directory(), 'stylesheet-path' );
 			$this->add_path( get_template_directory(), 'template-path' );

@@ -46,7 +46,7 @@ trait Manages_Service_Providers {
 	/**
 	 * Register all of the configured providers.
 	 */
-	public function register_configured_providers() {
+	public function register_configured_providers(): void {
 		// Get providers from the application config.
 		$providers = collect( $this->make( 'config' )->get( 'app.providers', [] ) );
 

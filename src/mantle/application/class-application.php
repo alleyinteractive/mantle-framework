@@ -268,7 +268,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 *
 	 * @param string|null $url Root URL to set, or null to use the default.
 	 */
-	public function set_root_url( ?string $url = null ) {
+	public function set_root_url( ?string $url = null ): void {
 		if ( ! $url ) {
 			$url = function_exists( 'home_url' ) ? \home_url() : '/';
 		}
@@ -443,7 +443,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	/**
 	 * Register the base services for the application.
 	 */
-	public function register_base_services() {
+	public function register_base_services(): void {
 		$this->load_environment_variables();
 		$this->load_base_configuration();
 		$this->load_facades();
@@ -452,7 +452,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	/**
 	 * Flush the container of all bindings and resolved instances.
 	 */
-	public function flush() {
+	public function flush(): void {
 		parent::flush();
 
 		$this->booted_callbacks  = [];
@@ -468,7 +468,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 * @param array<mixed, class-string<Bootstrapable>> $bootstrappers Class names of packages to boot.
 	 * @param \Mantle\Contracts\Kernel                  $kernel Kernel instance.
 	 */
-	public function bootstrap_with( array $bootstrappers, \Mantle\Contracts\Kernel $kernel ) {
+	public function bootstrap_with( array $bootstrappers, \Mantle\Contracts\Kernel $kernel ): void {
 		$this->has_been_bootstrapped = true;
 
 		foreach ( $bootstrappers as $bootstrapper ) {
@@ -634,7 +634,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 * @throws NotFoundHttpException Thrown on 404 error.
 	 * @throws HttpException Thrown on other HTTP error.
 	 */
-	public function abort( int $code, string $message = '', array $headers = [] ) {
+	public function abort( int $code, string $message = '', array $headers = [] ): void {
 		if ( 404 === $code ) {
 			throw new NotFoundHttpException( $message, null, 404, $headers );
 		} else {

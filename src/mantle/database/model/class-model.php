@@ -247,7 +247,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 * @param string $attribute Attribute name.
 	 * @param mixed  $value Value to set.
 	 */
-	public function set( string $attribute, $value ) {
+	public function set( string $attribute, $value ): void {
 		if ( static::has_attribute_alias( $attribute ) ) {
 			$attribute = static::get_attribute_alias( $attribute );
 		}
@@ -258,7 +258,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	/**
 	 * Check if the model needs to be booted and if so, do it.
 	 */
-	public static function boot_if_not_booted() {
+	public static function boot_if_not_booted(): void {
 		if ( ! isset( static::$booted[ static::class ] ) ) {
 			static::boot_traits();
 			static::boot();

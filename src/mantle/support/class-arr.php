@@ -231,7 +231,7 @@ class Arr {
 	 * @param  array|string $keys Keys to use.
 	 * @return void
 	 */
-	public static function forget( &$array, $keys ) {
+	public static function forget( &$array, $keys ): void {
 		$original = &$array;
 
 		$keys = (array) $keys;

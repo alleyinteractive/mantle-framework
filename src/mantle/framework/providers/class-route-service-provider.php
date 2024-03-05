@@ -26,7 +26,7 @@ class Route_Service_Provider extends Service_Provider implements Route_Service_P
 	/**
 	 * Register the service provider.
 	 */
-	public function register() {
+	public function register(): void {
 		$this->register_router_service_provider();
 	}
 
@@ -40,7 +40,7 @@ class Route_Service_Provider extends Service_Provider implements Route_Service_P
 	/**
 	 * Bootstrap any application services.
 	 */
-	public function boot() {
+	public function boot(): void {
 		parent::boot();
 
 		$this->app->booted( fn () => $this->load_routes() );

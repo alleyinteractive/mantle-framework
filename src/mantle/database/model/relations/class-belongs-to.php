@@ -63,7 +63,7 @@ class Belongs_To extends Relation {
 	/**
 	 * Add constraints to the query.
 	 */
-	public function add_constraints() {
+	public function add_constraints(): void {
 		if ( ! static::$constraints ) {
 			return;
 		}

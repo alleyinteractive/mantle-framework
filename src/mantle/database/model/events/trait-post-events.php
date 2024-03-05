@@ -17,7 +17,7 @@ trait Post_Events {
 	/**
 	 * Boot the trait.
 	 */
-	public static function boot_post_events() {
+	public static function boot_post_events(): void {
 		static::subscribe_to_core_events();
 	}
 

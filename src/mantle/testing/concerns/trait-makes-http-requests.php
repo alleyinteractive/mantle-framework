@@ -74,7 +74,7 @@ trait Makes_Http_Requests {
 	/**
 	 * Setup the trait in the test case.
 	 */
-	public function makes_http_requests_set_up() {
+	public function makes_http_requests_set_up(): void {
 		global $wp_rest_server, $wp_actions;
 
 		// Clear out the existing REST Server to allow for REST API routes to be re-registered.
@@ -201,7 +201,7 @@ trait Makes_Http_Requests {
 	 * @deprecated Use {@see Mantle\Testing\Concerns\Makes_Http_Requests::get()} instead.
 	 * @param string $url The URL for the request.
 	 */
-	public function go_to( string $url ) {
+	public function go_to( string $url ): void {
 		$this->get( $url );
 	}
 
@@ -551,7 +551,7 @@ trait Makes_Http_Requests {
 	 * Mirroring `{@see rest_api_loaded()}`, this method fires the REST API
 	 * request and stores the response.
 	 */
-	public function serve_rest_api_request() {
+	public function serve_rest_api_request(): void {
 		if ( empty( $GLOBALS['wp']->query_vars['rest_route'] ) ) {
 			return;
 		}

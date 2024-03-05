@@ -529,7 +529,7 @@ class Router implements Router_Contract {
 	 *
 	 * @param Request $request Request object.
 	 */
-	public function substitute_bindings( Request $request ) {
+	public function substitute_bindings( Request $request ): void {
 		foreach ( $request->get_route_parameters() as $key => $value ) {
 			if ( ! isset( $this->binders[ $key ] ) ) {
 				continue;
@@ -556,7 +556,7 @@ class Router implements Router_Contract {
 	 *
 	 * @param Request $request Request instance.
 	 */
-	public function substitute_implicit_bindings( Request $request ) {
+	public function substitute_implicit_bindings( Request $request ): void {
 		Implicit_Route_Binding::resolve_for_route( $this->container, $request );
 	}
 
@@ -631,7 +631,7 @@ class Router implements Router_Contract {
 	/**
 	 * Sync the routes to the URL generator.
 	 */
-	public function sync_routes_to_url_generator() {
+	public function sync_routes_to_url_generator(): void {
 		$this->container['url']->set_routes( $this->routes );
 	}
 

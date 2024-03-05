@@ -131,7 +131,7 @@ class Expectation {
 	 *
 	 * @return void
 	 */
-	public function validate() {
+	public function validate(): void {
 		$exporter = new Exporter();
 
 		if ( Expectation_Container::ACTION_APPLIED === $this->action ) {

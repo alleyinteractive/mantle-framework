@@ -110,7 +110,7 @@ class Generator_Make_Command extends Stub_Generator_Command {
 	 *
 	 * @param string $name Class name.
 	 */
-	public function complete_synopsis( string $name ) {
+	public function complete_synopsis( string $name ): void {
 		$this->log(
 			PHP_EOL . sprintf(
 				'You can auto-register this generator by adding "%s\\%s::class" to the "commands" in "app/console/class-kernel.php".',

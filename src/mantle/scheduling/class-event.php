@@ -110,7 +110,7 @@ class Event {
 	 *
 	 * @param Application $container
 	 */
-	public function run( Application $container ) {
+	public function run( Application $container ): void {
 		if ( ! $this->filters_pass( $container ) ) {
 			return;
 		}
@@ -141,7 +141,7 @@ class Event {
 	 * @param  \Mantle\Contracts\Container $container
 	 * @return void
 	 */
-	public function call_before_callbacks( Container $container ) {
+	public function call_before_callbacks( Container $container ): void {
 		foreach ( $this->before_callbacks as $callback ) {
 			$container->call( $callback );
 		}
@@ -153,7 +153,7 @@ class Event {
 	 * @param  \Mantle\Contracts\Container $container
 	 * @return void
 	 */
-	public function call_after_callbacks( Container $container ) {
+	public function call_after_callbacks( Container $container ): void {
 		foreach ( $this->after_callbacks as $callback ) {
 			$container->call( $callback );
 		}

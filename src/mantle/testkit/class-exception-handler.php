@@ -23,7 +23,7 @@ class Exception_Handler implements Exceptions_Handler {
 	 *
 	 * @param Throwable $e Exception thrown.
 	 */
-	public function report( Throwable $e ) {
+	public function report( Throwable $e ): void {
 		dump( static::class . '::' . __FUNCTION__ . '()', $e );
 	}
 
@@ -55,7 +55,7 @@ class Exception_Handler implements Exceptions_Handler {
 	 * @param Throwable       $e
 	 * @return void
 	 */
-	public function render_for_console( OutputInterface $output, Throwable $e ) {
+	public function render_for_console( OutputInterface $output, Throwable $e ): void {
 		$output->writeln( "<error>Exception: {$e->getMessage()}</error>" );
 	}
 }

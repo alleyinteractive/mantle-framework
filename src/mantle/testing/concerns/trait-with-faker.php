@@ -25,7 +25,7 @@ trait With_Faker {
 	/**
 	 * Setup the Faker instance.
 	 */
-	public function with_faker_set_up() {
+	public function with_faker_set_up(): void {
 		$this->faker = $this->make_faker();
 
 		$this->faker->unique( true );

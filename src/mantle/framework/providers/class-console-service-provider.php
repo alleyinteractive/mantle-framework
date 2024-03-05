@@ -29,7 +29,7 @@ class Console_Service_Provider extends Service_Provider implements Isolated_Serv
 	 *
 	 * @return void
 	 */
-	public function register() {
+	public function register(): void {
 		// Don't bother registering the commands if the request is not for the console.
 		if ( ! $this->app->is_running_in_console() ) {
 			return;
@@ -49,7 +49,7 @@ class Console_Service_Provider extends Service_Provider implements Isolated_Serv
 	/**
 	 * Service Provider Boot
 	 */
-	public function boot() {
+	public function boot(): void {
 		$this->publishes(
 			[
 				dirname( __DIR__, 4 ) . '/config' => $this->app->get_base_path( 'config' ),

@@ -36,7 +36,7 @@ class Event_Cache_Clear_Command extends Command {
 	 * @param Filesystem $filesystem Filesystem instance.
 	 * @throws LogicException Thrown on error writing config file.
 	 */
-	public function handle( Filesystem $filesystem ) {
+	public function handle( Filesystem $filesystem ): void {
 		$filesystem->delete(
 			$this->container->get_cached_events_path(),
 		);

@@ -21,7 +21,7 @@ trait Hooks {
 	/**
 	 * Routines to run during setUp().
 	 */
-	public function hooks_set_up() {
+	public function hooks_set_up(): void {
 		if ( ! self::$hooks_saved ) {
 			$this->backup_hooks();
 		}
@@ -30,7 +30,7 @@ trait Hooks {
 	/**
 	 * Routines to run during tearDown().
 	 */
-	public function hooks_tear_down() {
+	public function hooks_tear_down(): void {
 		$this->restore_hooks();
 	}
 

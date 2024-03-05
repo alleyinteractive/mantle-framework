@@ -280,7 +280,7 @@ abstract class Test_Case extends BaseTestCase {
 	/**
 	 * Register the traits that this test case uses.
 	 */
-	public static function register_traits() {
+	public static function register_traits(): void {
 		static::$test_uses = array_flip( class_uses_recursive( static::class ) );
 	}
 

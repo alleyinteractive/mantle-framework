@@ -28,7 +28,7 @@ class REST_Field_Registrar {
 	 *
 	 * @param REST_Field $field The field definition.
 	 */
-	public function register( REST_Field $field ) {
+	public function register( REST_Field $field ): void {
 		$object_types = $field->get_object_types();
 
 		if ( ! $object_types ) {
@@ -65,7 +65,7 @@ class REST_Field_Registrar {
 	 *
 	 * @param REST_Field $field The field definition.
 	 */
-	public function register_once( REST_Field $field ) {
+	public function register_once( REST_Field $field ): void {
 		$attribute = $field->get_attribute();
 
 		foreach ( (array) $field->get_object_types() as $object_type ) {

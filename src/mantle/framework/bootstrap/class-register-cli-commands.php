@@ -21,7 +21,7 @@ class Register_Cli_Commands {
 	 * @param Application     $app    Application instance.
 	 * @param Kernel_Contract $kernel Kernel instance.
 	 */
-	public function bootstrap( Application $app, Kernel_Contract $kernel ) {
+	public function bootstrap( Application $app, Kernel_Contract $kernel ): void {
 		// Register the commands from the Console Application Kernel.
 		if ( $kernel instanceof Console_Contract ) {
 			$kernel->register_commands();

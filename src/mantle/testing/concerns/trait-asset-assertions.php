@@ -17,7 +17,7 @@ trait Asset_Assertions {
 	 * @param string $handle Script handle.
 	 * @param string $status Script status.
 	 */
-	public function assertScriptStatus( string $handle, string $status ) {
+	public function assertScriptStatus( string $handle, string $status ): void {
 		// Fire the enqueue scripts hook to ensure the scripts are loaded.
 		if ( ! did_action( 'wp_enqueue_scripts' ) ) {
 			do_action( 'wp_enqueue_scripts' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
@@ -32,7 +32,7 @@ trait Asset_Assertions {
 	 * @param string $handle Style handle.
 	 * @param string $status Style status.
 	 */
-	public function assertStyleStatus( string $handle, string $status ) {
+	public function assertStyleStatus( string $handle, string $status ): void {
 		// Fire the enqueue scripts hook to ensure the scripts are loaded.
 		if ( ! did_action( 'wp_enqueue_scripts' ) ) {
 			do_action( 'wp_enqueue_scripts' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
@@ -46,7 +46,7 @@ trait Asset_Assertions {
 	 *
 	 * @param string $handle Script handle.
 	 */
-	public function assertScriptEnqueued( string $handle ) {
+	public function assertScriptEnqueued( string $handle ): void {
 		$this->assertScriptStatus( $handle, 'enqueued' );
 	}
 
@@ -55,7 +55,7 @@ trait Asset_Assertions {
 	 *
 	 * @param string $handle Script handle.
 	 */
-	public function assertScriptNotEnqueued( string $handle ) {
+	public function assertScriptNotEnqueued( string $handle ): void {
 		$this->assertScriptStatus( $handle, 'registered' );
 	}
 
@@ -64,7 +64,7 @@ trait Asset_Assertions {
 	 *
 	 * @param string $handle Style handle.
 	 */
-	public function assertStyleEnqueued( string $handle ) {
+	public function assertStyleEnqueued( string $handle ): void {
 		$this->assertStyleStatus( $handle, 'enqueued' );
 	}
 
@@ -73,7 +73,7 @@ trait Asset_Assertions {
 	 *
 	 * @param string $handle Style handle.
 	 */
-	public function assertStyleNotEnqueued( string $handle ) {
+	public function assertStyleNotEnqueued( string $handle ): void {
 		$this->assertStyleStatus( $handle, 'registered' );
 	}
 
@@ -82,7 +82,7 @@ trait Asset_Assertions {
 	 *
 	 * @param string $handle Script handle.
 	 */
-	public function assertScriptRegistered( string $handle ) {
+	public function assertScriptRegistered( string $handle ): void {
 		$this->assertScriptStatus( $handle, 'registered' );
 	}
 
@@ -91,7 +91,7 @@ trait Asset_Assertions {
 	 *
 	 * @param string $handle Style handle.
 	 */
-	public function assertStyleRegistered( string $handle ) {
+	public function assertStyleRegistered( string $handle ): void {
 		$this->assertStyleStatus( $handle, 'registered' );
 	}
 }

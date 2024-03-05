@@ -165,7 +165,7 @@ class Filesystem {
 	 * @param  string $content
 	 * @return void
 	 */
-	public function replace( $path, $content ) {
+	public function replace( $path, $content ): void {
 		// If the path already exists and is a symlink, get the real path...
 		clearstatcache( true, $path );
 
@@ -275,7 +275,7 @@ class Filesystem {
 	 * @param  string $link
 	 * @return void
 	 */
-	public function link( $target, $link ) {
+	public function link( $target, $link ): void {
 		$mode = $this->is_directory( $target ) ? 'J' : 'H';
 
 		exec( "mklink /{$mode} " . escapeshellarg( $link ) . ' ' . escapeshellarg( $target ) ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.system_calls_exec
@@ -500,7 +500,7 @@ class Filesystem {
 	 * @param  bool   $recursive
 	 * @return void
 	 */
-	public function ensure_directory_exists( $path, $mode = 0755, $recursive = true ) {
+	public function ensure_directory_exists( $path, $mode = 0755, $recursive = true ): void {
 		if ( ! $this->is_directory( $path ) ) {
 			$this->make_directory( $path, $mode, $recursive );
 		}

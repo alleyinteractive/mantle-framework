@@ -24,7 +24,7 @@ class Query_Monitor_Service_Provider extends Service_Provider {
 	/**
 	 * Register the Service Provider
 	 */
-	public function register() {
+	public function register(): void {
 		\add_filter( 'qm/dispatchers', [ $this, 'fix_query_monitor_dispatcher' ], PHP_INT_MAX );
 		\add_filter( 'qm/collectors', [ $this, 'register_collector' ] );
 		\add_filter( 'qm/outputter/html', [ $this, 'output' ], 60, 2 );

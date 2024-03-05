@@ -46,7 +46,7 @@ class Config_Cache_Command extends Command {
 	 *
 	 * @throws LogicException Thrown on error writing config file.
 	 */
-	public function handle( Filesystem $filesystem ) {
+	public function handle( Filesystem $filesystem ): void {
 		$this->files = $filesystem;
 
 		$this->call( 'mantle config:clear' );

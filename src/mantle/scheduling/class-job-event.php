@@ -30,7 +30,7 @@ class Job_Event extends Event {
 	 *
 	 * @param Application $container Container instance.
 	 */
-	public function run( Application $container ) {
+	public function run( Application $container ): void {
 		if ( ! $this->filters_pass( $container ) ) {
 			return;
 		}

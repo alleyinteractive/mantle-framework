@@ -63,7 +63,7 @@ class Scheduler {
 	 *
 	 * @param string $queue Queue name, optional.
 	 */
-	public static function run( ?string $queue = null ) {
+	public static function run( ?string $queue = null ): void {
 		if ( ! $queue ) {
 			$queue = 'default';
 		}

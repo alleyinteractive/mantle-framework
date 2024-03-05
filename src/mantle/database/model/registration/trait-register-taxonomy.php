@@ -20,7 +20,7 @@ trait Register_Taxonomy {
 	/**
 	 * Register the taxonomy.
 	 */
-	public static function boot_register_taxonomy() {
+	public static function boot_register_taxonomy(): void {
 		\add_action( 'init', [ __CLASS__, 'register_object' ] );
 	}
 
@@ -29,7 +29,7 @@ trait Register_Taxonomy {
 	 *
 	 * @throws Model_Exception Thrown when registering a taxonomy that is already registered.
 	 */
-	public static function register_object() {
+	public static function register_object(): void {
 		$taxonomy = static::get_object_name();
 
 		if ( \taxonomy_exists( $taxonomy ) ) {
@@ -70,7 +70,7 @@ trait Register_Taxonomy {
 	 *
 	 * @param string $object_type Object type to add.
 	 */
-	public function add_to_object_type( string $object_type ) {
+	public function add_to_object_type( string $object_type ): void {
 		\register_taxonomy_for_object_type( static::get_registration_name(), $object_type );
 	}
 }

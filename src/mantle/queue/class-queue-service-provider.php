@@ -24,7 +24,7 @@ class Queue_Service_Provider extends Service_Provider {
 	/**
 	 * Register the service provider.
 	 */
-	public function register() {
+	public function register(): void {
 		$this->app->singleton_if(
 			'queue',
 			fn ( $app ) => tap(
@@ -55,7 +55,7 @@ class Queue_Service_Provider extends Service_Provider {
 	/**
 	 * Boot the service provider.
 	 */
-	public function boot() {
+	public function boot(): void {
 		$this->app->make( Queue_Manager_Contract::class );
 	}
 

@@ -18,7 +18,7 @@ class Log_Service_Provider extends Service_Provider {
 	 *
 	 * @return void
 	 */
-	public function register() {
+	public function register(): void {
 		$this->app->singleton(
 			'log',
 			function( $app ) {

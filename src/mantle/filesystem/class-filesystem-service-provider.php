@@ -20,7 +20,7 @@ class Filesystem_Service_Provider extends Service_Provider implements Isolated_S
 	/**
 	 * Register the service provider.
 	 */
-	public function register() {
+	public function register(): void {
 		$this->register_native_filesystem();
 		$this->register_flysystem();
 	}
@@ -37,7 +37,7 @@ class Filesystem_Service_Provider extends Service_Provider implements Isolated_S
 	/**
 	 * Register the Flysystem Manager
 	 */
-	public function register_flysystem() {
+	public function register_flysystem(): void {
 		$this->app->singleton( 'filesystem', fn ( $app ) => new Filesystem_Manager( $app ) );
 	}
 

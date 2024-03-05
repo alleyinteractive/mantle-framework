@@ -35,7 +35,7 @@ abstract class Event_Service_Provider extends Service_Provider implements Isolat
 	 *
 	 * @return void
 	 */
-	public function register() {
+	public function register(): void {
 		$this->app->singleton(
 			Events_Manifest::class,
 			fn ( Application $app ) => new Events_Manifest( $app->get_cached_events_path() ),

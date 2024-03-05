@@ -36,7 +36,7 @@ trait WordPress_Authentication {
 	/**
 	 * Backup the current global user.
 	 */
-	public function wordpress_authentication_set_up() {
+	public function wordpress_authentication_set_up(): void {
 		$this->backup_user = get_current_user_id();
 
 		// Set the test case up using the user from the attribute in descending order (class -> method).
@@ -48,7 +48,7 @@ trait WordPress_Authentication {
 	/**
 	 * Restore the backed up global user.
 	 */
-	public function wordpress_authentication_tear_down() {
+	public function wordpress_authentication_tear_down(): void {
 		// If the user changed, set it back.
 		if ( get_current_user_id() !== $this->backup_user ) {
 			wp_set_current_user( $this->backup_user );

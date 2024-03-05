@@ -26,7 +26,7 @@ class Load_Configuration {
 	 *
 	 * @param Application $app Application instance.
 	 */
-	public function bootstrap( Application $app ) {
+	public function bootstrap( Application $app ): void {
 		$config = $app->make( 'config' );
 
 		// Load the configuration files if not loaded from cache.

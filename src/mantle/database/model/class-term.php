@@ -275,7 +275,7 @@ class Term extends Model implements Core_Object, Model_Meta, Updatable {
 	 *
 	 * @param bool $force Force delete the mode, not used.
 	 */
-	public function delete( bool $force = false ) {
+	public function delete( bool $force = false ): void {
 		\wp_delete_term( $this->id(), $this->taxonomy() );
 	}
 
