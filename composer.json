@@ -140,7 +140,7 @@
         "phpunit:multisite": "WP_MULTISITE=1 phpunit",
         "release": "monorepo-builder release --ansi",
         "release:patch": "monorepo-builder release patch --ansi",
-        "rector": "rector src",
+        "rector": "rector",
         "test": [
             "@phpcs",
             "@phpstan",
