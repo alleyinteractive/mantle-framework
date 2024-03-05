@@ -59,7 +59,7 @@ trait Reads_Annotations {
 	/**
 	 * Read the attributes for the current test case and method.
 	 *
-	 * @param class-string<\Attribute> $name Filter the results to include only ReflectionAttribute instances for attributes matching this class name.
+	 * @param class-string $name Filter the results to include only ReflectionAttribute instances for attributes matching this class name.
 	 * @return array<\ReflectionAttribute>
 	 */
 	public function get_attributes_for_method( ?string $name = null ): array {
