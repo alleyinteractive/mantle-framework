@@ -331,7 +331,7 @@ class Test_Response {
 	 * @param mixed  $value       Header value to assert.
 	 * @return static
 	 */
-	public function assertHeader( $header_name, $value = null ) {
+	public function assertHeader( $header_name, mixed $value = null ) {
 		// Enforce a lowercase header name.
 		$header_name = strtolower( $header_name );
 
@@ -424,7 +424,7 @@ class Test_Response {
 				continue;
 			}
 
-			$value_position = mb_strpos( $content, $value, $position );
+			$value_position = mb_strpos( $content, (string) $value, $position );
 
 			if ( false === $value_position || $value_position < $position ) {
 				throw new Exception(
@@ -436,7 +436,7 @@ class Test_Response {
 				);
 			}
 
-			$position = $value_position + mb_strlen( $value );
+			$position = $value_position + mb_strlen( (string) $value );
 		}
 
 		return true;
@@ -643,10 +643,9 @@ class Test_Response {
 	 * Assert that the expected value and type exists at the given path in the response.
 	 *
 	 * @param  string $path
-	 * @param  mixed  $expect
 	 * @return $this
 	 */
-	public function assertJsonPath( $path, $expect ) {
+ public function assertJsonPath( $path, mixed $expect ) {
 		$this->decoded_json()->assertPath( $path, $expect );
 
 		return $this;
@@ -677,10 +676,9 @@ class Test_Response {
 	/**
 	 * Assert that the response has the exact given JSON.
 	 *
-	 * @param  array $data
 	 * @return $this
 	 */
-	public function assertExactJson( array $data ) {
+ public function assertExactJson( array $data ) {
 		$this->decoded_json()->assertExact( $data );
 
 		return $this;
@@ -714,10 +712,9 @@ class Test_Response {
 	/**
 	 * Assert that the response does not contain the exact JSON fragment.
 	 *
-	 * @param  array $data
 	 * @return $this
 	 */
-	public function assertJsonMissingExact( array $data ) {
+ public function assertJsonMissingExact( array $data ) {
 		$this->decoded_json()->assertMissingExact( $data );
 
 		return $this;
@@ -726,11 +723,10 @@ class Test_Response {
 	/**
 	 * Assert that the response JSON has the expected count of items at the given key.
 	 *
-	 * @param  int         $count
 	 * @param  string|null $key
 	 * @return $this
 	 */
-	public function assertJsonCount( int $count, $key = null ) {
+ public function assertJsonCount( int $count, $key = null ) {
 		$this->decoded_json()->assertCount( $count, $key );
 
 		return $this;
@@ -739,10 +735,9 @@ class Test_Response {
 	/**
 	 * Assert that the response has the similar JSON as given.
 	 *
-	 * @param  array $data
 	 * @return $this
 	 */
-	public function assertJsonSimilar( array $data ) {
+ public function assertJsonSimilar( array $data ) {
 		$this->decoded_json()->assertSimilar( $data );
 
 		return $this;

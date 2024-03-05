@@ -9,6 +9,7 @@ return RectorConfig::configure()
         __DIR__ . '/src',
         // __DIR__ . '/tests',
     ])
+		->withPhpSets(php81: true)
 		->withRules([
 			AddVoidReturnTypeWhereNoReturnRector::class,
 		]);

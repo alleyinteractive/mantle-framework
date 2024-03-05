@@ -154,7 +154,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 			return $this;
 		}
 
-		$this->path = static::strip_page_from_path( $this->request()->path() );
+		$this->path = static::strip_page_from_path( static::request()->path() );
 
 		// Ensure the path starts with a /.
 		if ( $this->path && '/' !== $this->path[0] ) {
@@ -305,7 +305,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 * @return static
 	 */
 	public function with_query_string() {
-		$this->append( $this->request()->query() );
+		$this->append( static::request()->query() );
 		return $this;
 	}
 
@@ -534,7 +534,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 * @param mixed $offset Offset to delete.
 	 * @return void
 	 */
-	public function offsetUnset( $offset ): void {
+	public function offsetUnset( mixed $offset ): void {
 		unset( $this->items[ $offset ] );
 	}
 

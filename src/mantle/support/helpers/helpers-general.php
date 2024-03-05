@@ -27,7 +27,7 @@ use Mantle\Support\Str;
  *
  * @return bool
  */
-function blank( $value ) {
+function blank( mixed $value ) {
 	if ( is_null( $value ) ) {
 		return true;
 	}
@@ -55,7 +55,7 @@ function blank( $value ) {
  * @return string
  */
 function class_basename( $class ) {
-	$class = is_object( $class ) ? get_class( $class ) : $class;
+	$class = is_object( $class ) ? $class::class : $class;
 
 	return basename( str_replace( '\\', '/', $class ) );
 }
@@ -69,7 +69,7 @@ function class_basename( $class ) {
  */
 function class_uses_recursive( $class ) {
 	if ( is_object( $class ) ) {
-		$class = get_class( $class );
+		$class = $class::class;
 	}
 
 	$results = [];
@@ -101,7 +101,7 @@ function backtickit( string $string ): string {
  * @param mixed $callable The plugin callback.
  * @return string The readable function name, or an empty string if untranslatable.
  */
-function get_callable_fqn( $callable ): string {
+function get_callable_fqn( mixed $callable ): string {
 	$function_name = '';
 
 	if ( \is_string( $callable ) ) {
@@ -113,7 +113,7 @@ function get_callable_fqn( $callable ): string {
 		$access = '';
 
 		if ( \is_object( $callable[0] ) ) {
-			$class  = \get_class( $callable[0] );
+			$class  = $callable[0]::class;
 			$access = '->';
 		}
 
@@ -128,7 +128,7 @@ function get_callable_fqn( $callable ): string {
 	}
 
 	if ( \is_object( $callable ) ) {
-		$function_name = \get_class( $callable );
+		$function_name = $callable::class;
 
 		if ( ! ( $callable instanceof \Closure ) ) {
 			$function_name .= '->__invoke()';
@@ -158,7 +158,7 @@ function collect( $value = null ) {
  *
  * @return bool
  */
-function filled( $value ) {
+function filled( mixed $value ) {
 	return ! blank( $value );
 }
 
@@ -171,7 +171,7 @@ function filled( $value ) {
  *
  * @return mixed
  */
-function object_get( $object, $key, $default = null ) {
+function object_get( $object, $key, mixed $default = null ) {
 	if ( is_null( $key ) || trim( $key ) == '' ) {
 		return $object;
 	}
@@ -276,7 +276,7 @@ function str( ?string $string = null ) {
  *
  * @return mixed
  */
-function tap( $value, $callback = null ) {
+function tap( mixed $value, $callback = null ) {
 	if ( is_null( $callback ) ) {
 		return new Higher_Order_Tap_Proxy( $value );
 	}
@@ -297,7 +297,7 @@ function tap( $value, $callback = null ) {
  * @return mixed
  * @throws \Throwable `$exception` is thrown if `$condition` is not met.
  */
-function throw_if( $condition, $exception, ...$parameters ) {
+function throw_if( mixed $condition, $exception, ...$parameters ) {
 	if ( $condition ) {
 		throw ( is_string( $exception ) ? new $exception( ...$parameters ) : $exception );
 	}
@@ -316,7 +316,7 @@ function throw_if( $condition, $exception, ...$parameters ) {
  * @return mixed
  * @throws \Throwable `$exception` is thrown unless `$condition` is not met.
  */
-function throw_unless( $condition, $exception, ...$parameters ) {
+function throw_unless( mixed $condition, $exception, ...$parameters ) {
 	if ( ! $condition ) {
 		throw ( is_string( $exception ) ? new $exception( ...$parameters ) : $exception );
 	}
@@ -352,7 +352,7 @@ function trait_uses_recursive( $trait ) {
  *
  * @return mixed|null
  */
-function transform( $value, callable $callback, $default = null ) {
+function transform( mixed $value, callable $callback, mixed $default = null ) {
 	if ( filled( $value ) ) {
 		return $callback( $value );
 	}
@@ -372,7 +372,7 @@ function transform( $value, callable $callback, $default = null ) {
  *
  * @return mixed
  */
-function with( $value, callable $callback = null ) {
+function with( mixed $value, callable $callback = null ) {
 	return is_null( $callback ) ? $value : $callback( $value );
 }
 
@@ -381,7 +381,6 @@ function with( $value, callable $callback = null ) {
  *
  * @param string   $action Action to listen to.
  * @param callable $callback Callback to invoke.
- * @param int      $priority
  * @return void
  */
 function add_action( string $hook, callable $callable, int $priority = 10 ): void {
@@ -397,7 +396,6 @@ function add_action( string $hook, callable $callable, int $priority = 10 ): voi
  *
  * @param string   $action Action to listen to.
  * @param callable $callback Callback to invoke.
- * @param int      $priority
  * @return void
  */
 function add_filter( string $hook, callable $callable, int $priority = 10 ): void {

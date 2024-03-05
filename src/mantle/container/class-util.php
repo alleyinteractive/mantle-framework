@@ -22,7 +22,7 @@ class Util {
 	 * @param mixed $value Value to wrap.
 	 * @return array
 	 */
-	public static function array_wrap( $value ) {
+	public static function array_wrap( mixed $value ) {
 		if ( is_null( $value ) ) {
 			return [];
 		}
@@ -38,7 +38,7 @@ class Util {
 	 * @param mixed $value Value to unwrap.
 	 * @return mixed
 	 */
-	public static function unwrap_if_closure( $value ) {
+	public static function unwrap_if_closure( mixed $value ) {
 		return $value instanceof Closure ? $value() : $value;
 	}
 }

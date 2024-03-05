@@ -226,12 +226,8 @@ class Vendor_Publish_Command extends Command {
 
 	/**
 	 * Write a status message to the console.
-	 *
-	 * @param  string $from
-	 * @param  string $to
-	 * @param  string $type
 	 */
-	protected function status( string $from, string $to, string $type ): void {
+ protected function status( string $from, string $to, string $type ): void {
 		$from = str_replace( base_path() . '/', '', realpath( $from ) );
 
 		$to = str_replace( base_path() . '/', '', realpath( $to ) );

@@ -34,11 +34,10 @@ class Route_Binding {
 	/**
 	 * Create a class based binding using the IoC container.
 	 *
-	 * @param  Container $container
 	 * @param  string    $binding Binding name.
 	 * @return \Closure
 	 */
-	protected static function create_class_binding( Container $container, $binding ) {
+ protected static function create_class_binding( Container $container, $binding ) {
 		return function ( $value, $route ) use ( $container, $binding ) {
 			// If the binding has an @ sign, we will assume it's being used to delimit
 			// the class name from the bind method name. This allows for bindings

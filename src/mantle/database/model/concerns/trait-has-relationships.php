@@ -38,8 +38,8 @@ trait Has_Relationships {
 	 */
 	public function has_one( string $related, string $foreign_key = null, string $local_key = null ): Relation {
 		$instance    = new $related();
-		$foreign_key = $foreign_key ?? $this->get_foreign_key();
-		$local_key   = $local_key ?? $this->get_key_name();
+		$foreign_key ??= $this->get_foreign_key();
+		$local_key ??= $this->get_key_name();
 
 		return new Has_One( $instance->new_query(), $this, $foreign_key, $local_key );
 	}
@@ -54,8 +54,8 @@ trait Has_Relationships {
 	 */
 	public function has_many( string $related, string $foreign_key = null, string $local_key = null ): Has_Many {
 		$instance    = new $related();
-		$foreign_key = $foreign_key ?? $this->get_foreign_key();
-		$local_key   = $local_key ?? $this->get_key_name();
+		$foreign_key ??= $this->get_foreign_key();
+		$local_key ??= $this->get_key_name();
 
 		return new Has_Many( $instance->new_query(), $this, $foreign_key, $local_key );
 	}
@@ -83,8 +83,8 @@ trait Has_Relationships {
 		}
 
 		$instance    = new $related();
-		$foreign_key = $foreign_key ?? $this->get_key_name();
-		$local_key   = $local_key ?? $instance->get_foreign_key();
+		$foreign_key ??= $this->get_key_name();
+		$local_key ??= $instance->get_foreign_key();
 
 		return new Belongs_To( $instance->new_query(), $this, $foreign_key, $local_key );
 	}
@@ -112,8 +112,8 @@ trait Has_Relationships {
 		}
 
 		$instance    = new $related();
-		$foreign_key = $foreign_key ?? $this->get_key_name();
-		$local_key   = $local_key ?? $instance->get_foreign_key();
+		$foreign_key ??= $this->get_key_name();
+		$local_key ??= $instance->get_foreign_key();
 
 		return new Belongs_To_Many( $instance->new_query(), $this, $foreign_key, $local_key );
 	}
@@ -135,7 +135,7 @@ trait Has_Relationships {
 	 * @param mixed  $value Value to set.
 	 * @return static
 	 */
-	public function set_relation( string $relation, $value ) {
+	public function set_relation( string $relation, mixed $value ) {
 		$this->relations[ $relation ] = $value;
 
 		return $this;

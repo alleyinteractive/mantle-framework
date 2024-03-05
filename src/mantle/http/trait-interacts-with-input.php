@@ -211,10 +211,9 @@ trait Interacts_With_Input {
 	 * Retrieve an input item from the request.
 	 *
 	 * @param  string|null $key
-	 * @param  mixed       $default
 	 * @return mixed
 	 */
-	public function input( $key = null, $default = null ) {
+ public function input( $key = null, mixed $default = null ) {
 		return data_get(
 			$this->get_input_source()->all() + $this->query->all(),
 			$key,
@@ -352,10 +351,9 @@ trait Interacts_With_Input {
 	/**
 	 * Convert the given array of Symfony Uploaded_Files to custom Mantle Uploaded_Files.
 	 *
-	 * @param  array $files
 	 * @return array
 	 */
-	protected function convert_uploaded_files( array $files ) {
+ protected function convert_uploaded_files( array $files ) {
 		return array_map(
 			function ( $file ) {
 				if ( is_null( $file ) || ( is_array( $file ) && empty( array_filter( $file ) ) ) ) {
@@ -394,10 +392,9 @@ trait Interacts_With_Input {
 	/**
 	 * Check that the given file is a valid file instance.
 	 *
-	 * @param  mixed $file
 	 * @return bool
 	 */
-	protected function is_valid_file( $file ) {
+ protected function is_valid_file( mixed $file ) {
 		return $file instanceof Uploaded_File && $file->getPath() !== '';
 	}
 
@@ -405,10 +402,9 @@ trait Interacts_With_Input {
 	 * Retrieve a file from the request.
 	 *
 	 * @param  string|null $key
-	 * @param  mixed       $default
 	 * @return \Mantle\Http\Uploaded_File|\Mantle\Http\Uploaded_File[]|null
 	 */
-	public function file( $key = null, $default = null ) {
+ public function file( $key = null, mixed $default = null ) {
 		return data_get( $this->all_files(), $key, $default );
 	}
 }

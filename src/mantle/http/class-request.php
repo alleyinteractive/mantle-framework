@@ -107,7 +107,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * @return string
 	 */
 	public function url() {
-		return rtrim( preg_replace( '/\?.*/', '', $this->getUri() ), '/' );
+		return rtrim( (string) preg_replace( '/\?.*/', '', $this->getUri() ), '/' );
 	}
 
 	/**
@@ -126,10 +126,9 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Get the full URL for the request with the added query string parameters.
 	 *
-	 * @param  array $query
 	 * @return string
 	 */
-	public function full_url_with_query( array $query ) {
+ public function full_url_with_query( array $query ) {
 		$question = $this->getBaseUrl() . $this->getPathInfo() === '/' ? '/?' : '?';
 
 		return count( $this->query() ) > 0
@@ -179,9 +178,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 		return array_values(
 			array_filter(
 				$segments,
-				function ( $value ) {
-					return '' !== $value;
-				}
+				fn($value) => '' !== $value
 			)
 		);
 	}
@@ -189,10 +186,9 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Determine if the current request URI matches a pattern.
 	 *
-	 * @param  mixed ...$patterns
 	 * @return bool
 	 */
-	public function is( ...$patterns ) {
+ public function is( mixed ...$patterns ) {
 		$path = $this->decoded_path();
 
 		foreach ( $patterns as $pattern ) {
@@ -207,10 +203,9 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Determine if the current request URL and query string matches a pattern.
 	 *
-	 * @param  mixed ...$patterns
 	 * @return bool
 	 */
-	public function full_url_is( ...$patterns ) {
+ public function full_url_is( mixed ...$patterns ) {
 		$url = $this->full_url();
 
 		foreach ( $patterns as $pattern ) {
@@ -246,8 +241,8 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * @return bool
 	 */
 	public function prefetch() {
-		return 0 === strcasecmp( $this->server->get( 'HTTP_X_MOZ' ), 'prefetch' ) ||
-			0 === strcasecmp( $this->headers->get( 'Purpose' ), 'prefetch' );
+		return 0 === strcasecmp( (string) $this->server->get( 'HTTP_X_MOZ' ), 'prefetch' ) ||
+			0 === strcasecmp( (string) $this->headers->get( 'Purpose' ), 'prefetch' );
 	}
 
 	/**
@@ -289,10 +284,9 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Merge new input into the current request's input array.
 	 *
-	 * @param  array $input
 	 * @return $this
 	 */
-	public function merge( array $input ) {
+ public function merge( array $input ) {
 		$this->get_input_source()->add( $input );
 
 		return $this;
@@ -301,10 +295,9 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Replace the input for the current request.
 	 *
-	 * @param  array $input
 	 * @return $this
 	 */
-	public function replace( array $input ) {
+ public function replace( array $input ) {
 		$this->get_input_source()->replace( $input );
 
 		return $this;
@@ -327,10 +320,9 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * Get the JSON payload for the request.
 	 *
 	 * @param  string|null $key
-	 * @param  mixed       $default
 	 * @return \Symfony\Component\HttpFoundation\ParameterBag|mixed
 	 */
-	public function json( $key = null, $default = null ) {
+ public function json( $key = null, mixed $default = null ) {
 		if ( ! isset( $this->json ) ) {
 			$this->json = new ParameterBag( (array) json_decode( $this->getContent(), true ) );
 		}
@@ -398,7 +390,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 			$parameters = new ParameterBag(
 				array_filter(
 					$parameters,
-					fn ( $parameter ) => 0 !== strpos( $parameter, '_' ),
+					fn ( $parameter ) => !str_starts_with($parameter, '_'),
 					ARRAY_FILTER_USE_KEY
 				)
 			);
@@ -425,7 +417,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * @param mixed  $value Value to set.
 	 * @return static
 	 */
-	public function set_route_parameter( string $key, $value ) {
+	public function set_route_parameter( string $key, mixed $value ) {
 		$this->route_parameters->set( $key, $value );
 		return $this;
 	}
@@ -436,7 +428,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * @return Route
 	 */
 	public function get_route(): ?Route {
-		return isset( $this->route ) ? $this->route : null;
+		return $this->route ?? null;
 	}
 
 	/**
@@ -454,10 +446,9 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Determine if the given offset exists.
 	 *
-	 * @param  mixed $offset
 	 * @return bool
 	 */
-	public function offsetExists( mixed $offset ): bool {
+ public function offsetExists( mixed $offset ): bool {
 		return Arr::has(
 			$this->all() + $this->get_route_parameters()->all(),
 			$offset
@@ -467,31 +458,27 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Get the value at the given offset.
 	 *
-	 * @param  mixed $offset
 	 * @return mixed
 	 */
-	public function offsetGet( mixed $offset ): mixed {
+ public function offsetGet( mixed $offset ): mixed {
 		return $this->__get( $offset );
 	}
 
 	/**
 	 * Set the value at the given offset.
 	 *
-	 * @param  mixed $offset
-	 * @param  mixed $value
 	 * @return void
 	 */
-	public function offsetSet( mixed $offset, mixed $value ): void {
+ public function offsetSet( mixed $offset, mixed $value ): void {
 		$this->get_input_source()->set( $offset, $value );
 	}
 
 	/**
 	 * Remove the value at the given offset.
 	 *
-	 * @param  mixed $offset
 	 * @return void
 	 */
-	public function offsetUnset( mixed $offset ): void {
+ public function offsetUnset( mixed $offset ): void {
 		$this->get_input_source()->remove( $offset );
 	}
 
@@ -515,9 +502,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 		return Arr::get(
 			$this->all(),
 			$key,
-			function () use ( $key ) {
-				return $this->get_route_parameters()->get( $key );
-			}
+			fn() => $this->get_route_parameters()->get( $key )
 		);
 	}
 

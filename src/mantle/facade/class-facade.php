@@ -78,7 +78,7 @@ abstract class Facade {
 	 *
 	 * @param mixed $instance Object instance.
 	 */
-	public static function swap( $instance ): void {
+	public static function swap( mixed $instance ): void {
 		static::$resolved_instances[ static::get_facade_accessor() ] = $instance;
 
 		if ( isset( static::$app ) ) {

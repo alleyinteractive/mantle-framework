@@ -47,9 +47,7 @@ interface Application {
 	/**
 	 * Render an exception for the console.
 	 *
-	 * @param Throwable       $e
-	 * @param OutputInterface $output
 	 * @return void
 	 */
-	public function render_throwable( Throwable $e, OutputInterface $output );
+ public function render_throwable( Throwable $e, OutputInterface $output );
 }

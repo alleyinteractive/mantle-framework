@@ -78,7 +78,7 @@ interface Paginator {
 	 * @param mixed  $value Variable value.
 	 * @return static
 	 */
-	public function append( $key, $value = null );
+	public function append( $key, mixed $value = null );
 
 	/**
 	 * Set the paginator to use the current query variables from the request.

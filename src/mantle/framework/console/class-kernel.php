@@ -76,7 +76,7 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	 *
 	 * @var OutputInterface
 	 */
-	protected ?OutputInterface $output;
+	protected ?OutputInterface $output = null;
 
 	/**
 	 * Constructor.

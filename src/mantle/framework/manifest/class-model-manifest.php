@@ -29,13 +29,6 @@ class Model_Manifest {
 	protected ?array $manifest = null;
 
 	/**
-	 * Base folder path.
-	 *
-	 * @var string
-	 */
-	protected string $base_path;
-
-	/**
 	 * Vendor folder path.
 	 *
 	 * @var string
@@ -43,22 +36,23 @@ class Model_Manifest {
 	protected string $vendor_path;
 
 	/**
-	 * Package Manifest file path.
-	 *
-	 * @var string
-	 */
-	protected string $manifest_path;
-
-	/**
 	 * Constructor.
 	 *
 	 * @param string $base_path     Base folder path for the Mantle site.
 	 * @param string $manifest_path Path to the package manifest file.
 	 */
-	public function __construct( string $base_path, string $manifest_path ) {
-		$this->base_path     = $base_path;
-		$this->manifest_path = $manifest_path;
-	}
+	public function __construct(
+     /**
+      * Base folder path.
+      */
+     protected string $base_path,
+     /**
+      * Package Manifest file path.
+      */
+     protected string $manifest_path
+ )
+ {
+ }
 
 	/**
 	 * Get all of the service provider class names for all packages.

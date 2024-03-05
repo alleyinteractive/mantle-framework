@@ -62,7 +62,7 @@ trait Element_Assertions {
 	 * @return static
 	 */
 	public function assertElementExistsById( string $id ): static {
-		if ( 0 === strpos( $id, '#' ) ) {
+		if ( str_starts_with($id, '#') ) {
 			$id = substr( $id, 1 );
 		}
 
@@ -76,7 +76,7 @@ trait Element_Assertions {
 	 * @return static
 	 */
 	public function assertElementExistsByClassName( string $classname ): static {
-		if ( 0 === strpos( $classname, '.' ) ) {
+		if ( str_starts_with($classname, '.') ) {
 			$classname = substr( $classname, 1 );
 		}
 
@@ -104,7 +104,7 @@ trait Element_Assertions {
 	 * @return static
 	 */
 	public function assertElementMissingById( string $id ): static {
-		if ( 0 === strpos( $id, '#' ) ) {
+		if ( str_starts_with($id, '#') ) {
 			$id = substr( $id, 1 );
 		}
 
@@ -118,7 +118,7 @@ trait Element_Assertions {
 	 * @return static
 	 */
 	public function assertElementMissingByClassName( string $classname ): static {
-		if ( 0 === strpos( $classname, '.' ) ) {
+		if ( str_starts_with($classname, '.') ) {
 			$classname = substr( $classname, 1 );
 		}
 
@@ -157,10 +157,8 @@ trait Element_Assertions {
 
 	/**
 	 * Alias for assertElementExistsByQuerySelector.
-	 *
-	 * @param string $selector
 	 */
-	public function assertQuerySelectorExists( string $selector ): static {
+ public function assertQuerySelectorExists( string $selector ): static {
 		return $this->assertElementExistsByQuerySelector( $selector );
 	}
 
@@ -176,10 +174,8 @@ trait Element_Assertions {
 
 	/**
 	 * Alias for assertElementMissingByQuerySelector.
-	 *
-	 * @param string $selector
 	 */
-	public function assertQuerySelectorMissing( string $selector ): static {
+ public function assertQuerySelectorMissing( string $selector ): static {
 		return $this->assertElementMissingByQuerySelector( $selector );
 	}
 }

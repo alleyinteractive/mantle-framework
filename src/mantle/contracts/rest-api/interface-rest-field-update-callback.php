@@ -21,5 +21,5 @@ interface REST_Field_Update_Callback {
 	 * @param string           $object_type Object type.
 	 * @return mixed True on success, \WP_Error object if a field cannot be updated.
 	 */
-	public function update_callback( $value, $object, string $field_name, \WP_REST_Request $request, string $object_type );
+	public function update_callback( mixed $value, mixed $object, string $field_name, \WP_REST_Request $request, string $object_type );
 }

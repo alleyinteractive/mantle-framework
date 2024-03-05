@@ -276,7 +276,7 @@ class Pending_Request {
 	 * @param bool   $replace Replace the existing header, defaults to false.
 	 * @return static
 	 */
-	public function with_header( string $key, $value, bool $replace = false ) {
+	public function with_header( string $key, mixed $value, bool $replace = false ) {
 		if ( $replace && isset( $this->options['headers'][ $key ] ) ) {
 			unset( $this->options['headers'][ $key ] );
 		}
@@ -330,11 +330,9 @@ class Pending_Request {
 	/**
 	 * Specify an authorization token for the request.
 	 *
-	 * @param  string $token
-	 * @param  string $type
 	 * @return static
 	 */
-	public function with_token( string $token, string $type = 'Bearer' ) {
+ public function with_token( string $token, string $type = 'Bearer' ) {
 		return $this->with_header( 'Authorization', trim( $type . ' ' . $token ) );
 	}
 
@@ -418,10 +416,9 @@ class Pending_Request {
 	/**
 	 * Specify the timeout (in seconds) for the request.
 	 *
-	 * @param  int $seconds
 	 * @return static
 	 */
-	public function timeout( int $seconds ) {
+ public function timeout( int $seconds ) {
 		$this->options['timeout'] = $seconds;
 		return $this;
 	}
@@ -524,11 +521,10 @@ class Pending_Request {
 	/**
 	 * Issue a HEAD request to the given URL.
 	 *
-	 * @param  string            $url
 	 * @param  array|string|null $query
 	 * @return Response|static
 	 */
-	public function head( string $url, $query = null ) {
+ public function head( string $url, $query = null ) {
 		return $this->send(
 			'HEAD',
 			$url,
@@ -541,11 +537,9 @@ class Pending_Request {
 	/**
 	 * Issue a POST request to the given URL.
 	 *
-	 * @param  string $url
-	 * @param  array  $data
 	 * @return Response|static
 	 */
-	public function post( string $url, array $data = [] ) {
+ public function post( string $url, array $data = [] ) {
 		return $this->send(
 			'POST',
 			$url,
@@ -558,11 +552,10 @@ class Pending_Request {
 	/**
 	 * Issue a PATCH request to the given URL.
 	 *
-	 * @param  string $url
 	 * @param  array  $data
 	 * @return Response|static
 	 */
-	public function patch( string $url, $data = [] ) {
+ public function patch( string $url, $data = [] ) {
 		return $this->send(
 			'PATCH',
 			$url,
@@ -575,11 +568,9 @@ class Pending_Request {
 	/**
 	 * Issue a PUT request to the given URL.
 	 *
-	 * @param  string $url
-	 * @param  array  $data
 	 * @return Response|static
 	 */
-	public function put( string $url, array $data = [] ) {
+ public function put( string $url, array $data = [] ) {
 		return $this->send(
 			'PUT',
 			$url,
@@ -592,11 +583,9 @@ class Pending_Request {
 	/**
 	 * Issue a DELETE request to the given URL.
 	 *
-	 * @param  string $url
-	 * @param  array  $data
 	 * @return Response|static
 	 */
-	public function delete( string $url, array $data = [] ) {
+ public function delete( string $url, array $data = [] ) {
 		return $this->send(
 			'DELETE',
 			$url,
@@ -620,7 +609,7 @@ class Pending_Request {
 		$this->method  = $method;
 
 		// Ensure some options are always set.
-		$this->options['throw_exception'] = $this->options['throw_exception'] ?? false;
+		$this->options['throw_exception'] ??= false;
 		$this->options['retry']           = max( 1, $this->options['retry'] ?? 1 );
 
 		$this->prepare_request_url();

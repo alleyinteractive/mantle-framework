@@ -63,7 +63,7 @@ if ( ! function_exists( 'request' ) ) {
 	 * @param  mixed             $default Default value.
 	 * @return \Mantle\Http\Request|string|array|null
 	 */
-	function request( $key = null, $default = null ) {
+	function request( $key = null, mixed $default = null ) {
 		if ( is_null( $key ) ) {
 			return app( 'request' );
 		}
@@ -197,7 +197,7 @@ if ( ! function_exists( 'mantle_get_var' ) ) {
 	 * @param mixed  $default Default value if unset.
 	 * @return mixed
 	 */
-	function mantle_get_var( string $key, $default = null ) {
+	function mantle_get_var( string $key, mixed $default = null ) {
 		return app( View_Factory::class )->get_var( $key, $default );
 	}
 }

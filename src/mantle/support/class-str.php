@@ -104,10 +104,9 @@ class Str {
 	 * Transliterate a UTF-8 value to ASCII.
 	 *
 	 * @param  string|null $value
-	 * @param  string      $language
 	 * @return string
 	 */
-	public static function ascii( ?string $value, string $language = 'en' ) {
+ public static function ascii( ?string $value, string $language = 'en' ) {
 		return ASCII::to_ascii( (string) $value, $language );
 	}
 
@@ -200,11 +199,7 @@ class Str {
 	 * @return string
 	 */
 	public static function camel( $value ) {
-		if ( isset( static::$camel_cache[ $value ] ) ) {
-			return static::$camel_cache[ $value ];
-		}
-
-		return static::$camel_cache[ $value ] = lcfirst( static::studly( $value ) );
+		return static::$camel_cache[ $value ] ?? (static::$camel_cache[ $value ] = lcfirst( static::studly( $value ) ));
 	}
 
 	/**
@@ -259,10 +254,9 @@ class Str {
 	 *
 	 * @param  string           $haystack
 	 * @param  iterable<string> $needles
-	 * @param  bool             $ignore_case
 	 * @return bool
 	 */
-	public static function contains_all( $haystack, $needles, bool $ignore_case = false ) {
+ public static function contains_all( $haystack, $needles, bool $ignore_case = false ) {
 		foreach ( $needles as $needle ) {
 			if ( ! static::contains( $haystack, $needle, $ignore_case ) ) {
 				return false;
@@ -505,10 +499,9 @@ class Str {
 	 * Converts GitHub flavored Markdown into HTML.
 	 *
 	 * @param  string $string
-	 * @param  array  $options
 	 * @return string
 	 */
-	public static function markdown( $string, array $options = [] ) {
+ public static function markdown( $string, array $options = [] ) {
 		$converter = new GithubFlavoredMarkdownConverter( $options );
 
 		return (string) $converter->convert( $string );
@@ -518,10 +511,9 @@ class Str {
 	 * Converts inline Markdown into HTML.
 	 *
 	 * @param  string $string
-	 * @param  array  $options
 	 * @return string
 	 */
-	public static function inline_markdown( $string, array $options = [] ) {
+ public static function inline_markdown( $string, array $options = [] ) {
 		$environment = new Environment( $options );
 
 		$environment->addExtension( new GithubFlavoredMarkdownExtension() );
@@ -872,11 +864,10 @@ class Str {
 	/**
 	 * Set the sequence that will be used to generate random strings.
 	 *
-	 * @param  array         $sequence
 	 * @param  callable|null $when_missing
 	 * @return void
 	 */
-	public static function create_random_strings_using_sequence( array $sequence, $when_missing = null ): void {
+ public static function create_random_strings_using_sequence( array $sequence, $when_missing = null ): void {
 		$next = 0;
 
 		$when_missing ??= function ( $length ) use ( &$next ) {
@@ -916,11 +907,9 @@ class Str {
 	/**
 	 * Repeat the given string.
 	 *
-	 * @param  string $string
-	 * @param  int    $times
 	 * @return string
 	 */
-	public static function repeat( string $string, int $times ) {
+ public static function repeat( string $string, int $times ) {
 		return str_repeat( $string, $times );
 	}
 
@@ -954,10 +943,9 @@ class Str {
 	 * @param  string|iterable<string> $search
 	 * @param  string|iterable<string> $replace
 	 * @param  string|iterable<string> $subject
-	 * @param  bool                    $case_sensitive
 	 * @return string
 	 */
-	public static function replace( $search, $replace, $subject, bool $case_sensitive = true ) {
+ public static function replace( $search, $replace, $subject, bool $case_sensitive = true ) {
 		if ( $search instanceof Traversable ) {
 			$search = collect( $search )->all();
 		}
@@ -1026,10 +1014,9 @@ class Str {
 	 *
 	 * @param  string|iterable<string> $search
 	 * @param  string                  $subject
-	 * @param  bool                    $case_sensitive
 	 * @return string
 	 */
-	public static function remove( $search, $subject, bool $case_sensitive = true ) {
+ public static function remove( $search, $subject, bool $case_sensitive = true ) {
 		if ( $search instanceof Traversable ) {
 			$search = collect( $search )->all();
 		}
@@ -1044,11 +1031,10 @@ class Str {
 	/**
 	 * Reverse the given string.
 	 *
-	 * @param  string $value
 	 * @return string
 	 */
-	public static function reverse( string $value ) {
-		return implode( array_reverse( mb_str_split( $value ) ) );
+ public static function reverse( string $value ) {
+		return implode( '', array_reverse( mb_str_split( $value ) ) );
 	}
 
 	/**
@@ -1077,25 +1063,23 @@ class Str {
 	/**
 	 * Convert the given string to title case.
 	 *
-	 * @param  string $value
 	 * @return string
 	 */
-	public static function title( string $value ): string {
+ public static function title( string $value ): string {
 		return mb_convert_case( $value, MB_CASE_TITLE, 'UTF-8' );
 	}
 
 	/**
 	 * Convert the given string to title case for each word.
 	 *
-	 * @param  string $value
 	 * @return string
 	 */
-	public static function headline( string $value ): string {
+ public static function headline( string $value ): string {
 		$parts = explode( ' ', $value );
 
 		$parts = count( $parts ) > 1
-			? array_map( [ static::class, 'title' ], $parts )
-			: array_map( [ static::class, 'title' ], static::ucsplit( implode( '_', $parts ) ) );
+			? array_map( static::title(...), $parts )
+			: array_map( static::title(...), static::ucsplit( implode( '_', $parts ) ) );
 
 		$collapsed = static::replace( [ '-', '_', ' ' ], '_', implode( '_', $parts ) );
 
@@ -1105,10 +1089,9 @@ class Str {
 	/**
 	 * Get the singular form of an English word.
 	 *
-	 * @param  string $value
 	 * @return string
 	 */
-	public static function singular( string $value ): string {
+ public static function singular( string $value ): string {
 		return Pluralizer::singular( $value );
 	}
 
@@ -1116,33 +1099,32 @@ class Str {
 	 * Generate a URL friendly "slug" from a given string.
 	 *
 	 * @param  string|null           $title
-	 * @param  string                $separator
 	 * @param  string|null           $language
 	 * @param  array<string, string> $dictionary
 	 * @return string
 	 */
-	public static function slug( ?string $title, string $separator = '-', ?string $language = 'en', array $dictionary = [ '@' => 'at' ] ) {
+ public static function slug( ?string $title, string $separator = '-', ?string $language = 'en', array $dictionary = [ '@' => 'at' ] ) {
 		$title = $language ? static::ascii( $title, $language ) : $title;
 
 		// Convert all dashes/underscores into separator.
 		$flip = '-' === $separator ? '_' : '-';
 
-		$title = preg_replace( '![' . preg_quote( $flip, null ) . ']+!u', $separator, $title );
+		$title = preg_replace( '![' . preg_quote( $flip, null ) . ']+!u', $separator, (string) $title );
 
 		// Replace dictionary words.
 		foreach ( $dictionary as $key => $value ) {
 			$dictionary[ $key ] = $separator . $value . $separator;
 		}
 
-		$title = str_replace( array_keys( $dictionary ), array_values( $dictionary ), $title );
+		$title = str_replace( array_keys( $dictionary ), array_values( $dictionary ), (string) $title );
 
 		// Remove all characters that are not the separator, letters, numbers, or whitespace.
 		$title = preg_replace( '![^' . preg_quote( $separator, null ) . '\pL\pN\s]+!u', '', static::lower( $title ) );
 
 		// Replace all separator characters and whitespace by a single separator.
-		$title = preg_replace( '![' . preg_quote( $separator, null ) . '\s]+!u', $separator, $title );
+		$title = preg_replace( '![' . preg_quote( $separator, null ) . '\s]+!u', $separator, (string) $title );
 
-		return trim( $title, $separator );
+		return trim( (string) $title, $separator );
 	}
 
 	/**
@@ -1162,7 +1144,7 @@ class Str {
 		if ( ! ctype_lower( $value ) ) {
 			$value = preg_replace( '/\s+/u', '', ucwords( $value ) );
 
-			$value = static::lower( preg_replace( '/(.)(?=[A-Z])/u', '$1' . $delimiter, $value ) );
+			$value = static::lower( preg_replace( '/(.)(?=[A-Z])/u', '$1' . $delimiter, (string) $value ) );
 		}
 
 		return static::$snake_cache[ $key ][ $delimiter ] = $value;
@@ -1175,7 +1157,7 @@ class Str {
 	 * @return string
 	 */
 	public static function squish( $value ) {
-		return preg_replace( '~(\s|\x{3164}|\x{1160})+~u', ' ', preg_replace( '~^[\s\x{FEFF}]+|[\s\x{FEFF}]+$~u', '', $value ) );
+		return preg_replace( '~(\s|\x{3164}|\x{1160})+~u', ' ', (string) preg_replace( '~^[\s\x{FEFF}]+|[\s\x{FEFF}]+$~u', '', $value ) );
 	}
 
 	/**
@@ -1216,7 +1198,7 @@ class Str {
 
 		$study_words = array_map( fn ( $word) => static::ucfirst( $word ), $words );
 
-		return static::$studly_cache[ $key ] = implode( $study_words );
+		return static::$studly_cache[ $key ] = implode( '', $study_words );
 	}
 
 	/**
@@ -1280,11 +1262,10 @@ class Str {
 	/**
 	 * Swap multiple keywords in a string with other keywords.
 	 *
-	 * @param  array  $map
 	 * @param  string $subject
 	 * @return string
 	 */
-	public static function swap( array $map, $subject ) {
+ public static function swap( array $map, $subject ) {
 		return strtr( $subject, $map );
 	}
 

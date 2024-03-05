@@ -15,7 +15,7 @@ use Mantle\Support;
  * @param mixed $value Value to check.
  * @return mixed
  */
-function value( $value ) {
+function value( mixed $value ) {
 	return $value instanceof \Closure ? $value() : $value;
 }
 
@@ -27,7 +27,7 @@ function value( $value ) {
  * @param  mixed                 $default Default value.
  * @return mixed
  */
-function data_get( $target, $key, $default = null ) {
+function data_get( mixed $target, $key, mixed $default = null ) {
 	if ( is_null( $key ) ) {
 		return $target;
 	}
@@ -78,7 +78,7 @@ function data_get( $target, $key, $default = null ) {
  * @param  bool         $overwrite Flag to overwrite the existing value.
  * @return mixed
  */
-function data_set( &$target, $key, $value, $overwrite = true ) {
+function data_set( mixed &$target, $key, mixed $value, $overwrite = true ) {
 	$segments = is_array( $key ) ? $key : explode( '.', $key );
 	$segment  = array_shift( $segments );
 
@@ -137,7 +137,7 @@ function data_set( &$target, $key, $value, $overwrite = true ) {
  * @param mixed        $value  Value with which to fill.
  * @return mixed
  */
-function data_fill( &$target, $key, $value ) {
+function data_fill( mixed &$target, $key, mixed $value ) {
 	return data_set( $target, $key, $value, false );
 }
 

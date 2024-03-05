@@ -20,7 +20,7 @@ if ( ! function_exists( 'config' ) ) {
 	 * @param mixed  $default Default configuration value.
 	 * @return mixed
 	 */
-	function config( string $key = null, $default = null ) {
+	function config( string $key = null, mixed $default = null ) {
 		if ( is_null( $key ) ) {
 			return app( 'config' );
 		}

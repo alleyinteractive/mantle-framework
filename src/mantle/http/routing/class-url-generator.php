@@ -42,7 +42,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 *
 	 * @var string|null
 	 */
-	protected ?string $cached_root;
+	protected ?string $cached_root = null;
 
 	/**
 	 * A cached copy of the URL scheme for the current request.
@@ -268,11 +268,10 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	/**
 	 * Get the base URL for the request.
 	 *
-	 * @param  string      $scheme
 	 * @param  string|null $root
 	 * @return string
 	 */
-	public function format_root( string $scheme, ?string $root = null ): string {
+ public function format_root( string $scheme, ?string $root = null ): string {
 		if ( is_null( $root ) ) {
 			$root = $this->root_url;
 		}
@@ -312,10 +311,9 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	/**
 	 * Force the scheme for URLs.
 	 *
-	 * @param  string $scheme
 	 * @return void
 	 */
-	public function force_scheme( string $scheme ): void {
+ public function force_scheme( string $scheme ): void {
 		$this->cached_scheme = null;
 
 		$this->force_scheme = $scheme . '://';

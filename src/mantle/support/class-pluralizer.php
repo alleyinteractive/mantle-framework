@@ -44,11 +44,10 @@ class Pluralizer {
 	/**
 	 * Get the plural form of an English word.
 	 *
-	 * @param  string               $value
 	 * @param  int|array|\Countable $count
 	 * @return string
 	 */
-	public static function plural( string $value, int|array|\Countable $count = 2 ): string {
+ public static function plural( string $value, int|array|\Countable $count = 2 ): string {
 		if ( is_countable( $count ) ) {
 			$count = count( $count );
 		}
@@ -65,10 +64,9 @@ class Pluralizer {
 	/**
 	 * Get the singular form of an English word.
 	 *
-	 * @param  string $value
 	 * @return string
 	 */
-	public static function singular( string $value ): string {
+ public static function singular( string $value ): string {
 		$singular = static::inflector()->singularize( $value );
 
 		return static::match_case( $singular, $value );
@@ -87,11 +85,9 @@ class Pluralizer {
 	/**
 	 * Attempt to match the case on two strings.
 	 *
-	 * @param  string $value
-	 * @param  string $comparison
 	 * @return string
 	 */
-	protected static function match_case( string $value, string $comparison ) {
+ protected static function match_case( string $value, string $comparison ) {
 		$functions = [ 'mb_strtolower', 'mb_strtoupper', 'ucfirst', 'ucwords' ];
 
 		foreach ( $functions as $function ) {
@@ -119,10 +115,9 @@ class Pluralizer {
 	/**
 	 * Specify the language that should be used by the inflector.
 	 *
-	 * @param  string $language
 	 * @return void
 	 */
-	public static function use_language( string $language ): void {
+ public static function use_language( string $language ): void {
 		static::$language = $language;
 
 		static::$inflector = null;

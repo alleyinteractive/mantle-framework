@@ -24,7 +24,7 @@ class Arr {
 	 * @param  mixed $value Value to check.
 	 * @return bool
 	 */
-	public static function accessible( $value ): bool {
+	public static function accessible( mixed $value ): bool {
 		return is_array( $value ) || $value instanceof ArrayAccess;
 	}
 
@@ -36,7 +36,7 @@ class Arr {
 	 * @param  mixed  $value Value to use.
 	 * @return array
 	 */
-	public static function add( array $array, string $key, $value ): array {
+	public static function add( array $array, string $key, mixed $value ): array {
 		if ( is_null( static::get( $array, $key ) ) ) {
 			static::set( $array, $key, $value );
 		}
@@ -159,7 +159,7 @@ class Arr {
 	 * @param  mixed         $default Default value.
 	 * @return mixed
 	 */
-	public static function first( $array, callable $callback = null, $default = null ) {
+	public static function first( $array, callable $callback = null, mixed $default = null ) {
 		if ( is_null( $callback ) ) {
 			if ( empty( $array ) ) {
 				return Helpers\value( $default );
@@ -187,7 +187,7 @@ class Arr {
 	 * @param  mixed         $default Default value.
 	 * @return mixed
 	 */
-	public static function last( $array, callable $callback = null, $default = null ) {
+	public static function last( $array, callable $callback = null, mixed $default = null ) {
 		if ( is_null( $callback ) ) {
 			return empty( $array ) ? Helpers\value( $default ) : end( $array );
 		}
@@ -248,7 +248,7 @@ class Arr {
 				continue;
 			}
 
-			$parts = explode( '.', $key );
+			$parts = explode( '.', (string) $key );
 
 			// Clean up before each pass.
 			$array = &$original;
@@ -275,7 +275,7 @@ class Arr {
 	 * @param  mixed              $default Default value.
 	 * @return mixed
 	 */
-	public static function get( $array, $key, $default = null ) {
+	public static function get( $array, $key, mixed $default = null ) {
 		if ( ! static::accessible( $array ) ) {
 			return Helpers\value( $default );
 		}
@@ -288,7 +288,7 @@ class Arr {
 			return $array[ $key ];
 		}
 
-		if ( strpos( $key, '.' ) === false ) {
+		if ( !str_contains( $key, '.' ) ) {
 			return $array[ $key ] ?? Helpers\value( $default );
 		}
 
@@ -324,7 +324,7 @@ class Arr {
 				continue;
 			}
 
-			foreach ( explode( '.', $key ) as $segment ) {
+			foreach ( explode( '.', (string) $key ) as $segment ) {
 				if ( static::accessible( $sub_key_array ) && static::exists( $sub_key_array, $segment ) ) {
 					$sub_key_array = $sub_key_array[ $segment ];
 				} else {
@@ -446,7 +446,7 @@ class Arr {
 	 * @param  mixed $key Item key.
 	 * @return array
 	 */
-	public static function prepend( array $array, $value, $key = null ): array {
+	public static function prepend( array $array, mixed $value, mixed $key = null ): array {
 		if ( is_null( $key ) ) {
 			array_unshift( $array, $value );
 		} else {
@@ -464,7 +464,7 @@ class Arr {
 	 * @param  mixed  $default Default value.
 	 * @return mixed
 	 */
-	public static function pull( array &$array, $key, $default = null ) {
+	public static function pull( array &$array, $key, mixed $default = null ) {
 		$value = static::get( $array, $key, $default );
 
 		static::forget( $array, $key );
@@ -522,7 +522,7 @@ class Arr {
 	 * @param  mixed       $value Value to set.
 	 * @return array
 	 */
-	public static function set( array &$array, $key, $value ): array {
+	public static function set( array &$array, $key, mixed $value ): array {
 		if ( is_null( $key ) ) {
 			$array = $value;
 			return $array;
@@ -631,7 +631,7 @@ class Arr {
 	 * @param  mixed $value Value to wrap by.
 	 * @return array
 	 */
-	public static function wrap( $value ): array {
+	public static function wrap( mixed $value ): array {
 		if ( is_null( $value ) ) {
 			return [];
 		}

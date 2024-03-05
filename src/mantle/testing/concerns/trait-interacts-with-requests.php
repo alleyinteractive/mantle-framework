@@ -285,7 +285,7 @@ trait Interacts_With_Requests {
 			$request_args['filename'] = get_temp_dir() . basename( $url );
 		}
 
-		if ( ! wp_is_writable( dirname( $request_args['filename'] ) ) ) {
+		if ( ! wp_is_writable( dirname( (string) $request_args['filename'] ) ) ) {
 			throw new RuntimeException( "The directory [{$request_args['filename']}] is not writable." );
 		}
 

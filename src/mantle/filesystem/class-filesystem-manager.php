@@ -87,7 +87,7 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 			return $this->disks[ $name ] = $this->call_custom_driver( $driver, $config );
 		}
 
-		$driver_method = 'create_' . strtolower( $driver ) . '_driver';
+		$driver_method = 'create_' . strtolower( (string) $driver ) . '_driver';
 
 		if ( ! method_exists( $this, $driver_method ) ) {
 			throw new InvalidArgumentException( "Disk [{$name}] uses a driver [{$driver}] that is not supported." );
@@ -142,11 +142,10 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	/**
 	 * Create a Flysystem instance with the given adapter.
 	 *
-	 * @param FilesystemAdapter $adapter
 	 * @param array             $config Adapter configuration.
 	 * @return Flysystem
 	 */
-	protected function create_flysystem( FilesystemAdapter $adapter, array $config = [] ): Flysystem {
+ protected function create_flysystem( FilesystemAdapter $adapter, array $config = [] ): Flysystem {
 		return new Flysystem( $adapter, $config );
 	}
 
@@ -187,8 +186,8 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 
 		// Ensure the root configuration has a base URL.
 		$config['root']       = $root;
-		$config['url']        = $config['url'] ?? $upload_dir['baseurl'];
-		$config['visibility'] = $config['visibility'] ?? Visibility::PUBLIC;
+		$config['url'] ??= $upload_dir['baseurl'];
+		$config['visibility'] ??= Visibility::PUBLIC;
 
 		/**
 		 * Filter the local filesystem configuration.
@@ -245,10 +244,9 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	/**
 	 * Format the given S3 configuration with the default options.
 	 *
-	 * @param  array $config
 	 * @return array
 	 */
-	protected function format_s3_config( array $config ) {
+ protected function format_s3_config( array $config ) {
 		$config += [ 'version' => 'latest' ];
 
 		if ( ! empty( $config['key'] ) && ! empty( $config['secret'] ) ) {

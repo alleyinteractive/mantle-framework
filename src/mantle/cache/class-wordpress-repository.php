@@ -118,7 +118,7 @@ class WordPress_Repository extends Repository implements Taggable_Repository {
 	public function tags( $names ) {
 		if ( is_array( $names ) ) {
 			sort( $names );
-			$names = implode( $names );
+			$names = implode( '', $names );
 		} else {
 			$names = (string) $names;
 		}

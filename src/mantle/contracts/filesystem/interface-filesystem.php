@@ -16,14 +16,14 @@ interface Filesystem {
 	 *
 	 * @var string
 	 */
-	const VISIBILITY_PUBLIC = 'public';
+	public const VISIBILITY_PUBLIC = 'public';
 
 	/**
 	 * The private visibility setting.
 	 *
 	 * @var string
 	 */
-	const VISIBILITY_PRIVATE = 'private';
+	public const VISIBILITY_PRIVATE = 'private';
 
 	/**
 	 * Get all (recursive) of the directories within a given directory.
@@ -104,10 +104,9 @@ interface Filesystem {
 	/**
 	 * Check if a file exists at a current path.
 	 *
-	 * @param string $path
 	 * @return bool
 	 */
-	public function exists( string $path ): bool;
+ public function exists( string $path ): bool;
 
 	/**
 	 * Check if a file is missing at a given path.
@@ -192,10 +191,9 @@ interface Filesystem {
 	/**
 	 * Retrieve a file's visibility.
 	 *
-	 * @param string $path
 	 * @return string
 	 */
-	public function get_visibility( string $path ): string;
+ public function get_visibility( string $path ): string;
 
 	/**
 	 * Set the visibility for a file.

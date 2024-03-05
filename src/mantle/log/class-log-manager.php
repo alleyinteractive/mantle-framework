@@ -37,18 +37,11 @@ class Log_Manager implements LoggerInterface {
 	protected $app;
 
 	/**
-	 * Dispatcher instance.
-	 *
-	 * @var Dispatcher
-	 */
-	protected ?Dispatcher $dispatcher;
-
-	/**
 	 * Default logger instance for the application.
 	 *
 	 * @var Logger|null
 	 */
-	protected ?Logger $drive;
+	protected ?Logger $drive = null;
 
 	/**
 	 * Constructor.
@@ -56,9 +49,11 @@ class Log_Manager implements LoggerInterface {
 	 * @param Application $app Application instance.
 	 * @param Dispatcher  $dispatcher Event dispatcher.
 	 */
-	public function __construct( Application $app, Dispatcher $dispatcher = null ) {
+	public function __construct( Application $app, /**
+	 * Dispatcher instance.
+	 */
+ protected ?Dispatcher $dispatcher = null ) {
 		$this->app        = $app;
-		$this->dispatcher = $dispatcher;
 	}
 
 	/**
@@ -69,7 +64,7 @@ class Log_Manager implements LoggerInterface {
 	 */
 	public function channel( $channels ): Logger {
 		$handlers = collect( (array) $channels )
-			->map( [ $this, 'get_channel_handler' ] )
+			->map( $this->get_channel_handler(...) )
 			->filter()
 			->to_array();
 
@@ -129,7 +124,7 @@ class Log_Manager implements LoggerInterface {
 			throw new InvalidArgumentException( 'Stack channel called without any child channels.' );
 		}
 
-		$handlers = array_map( [ $this, 'get_channel_handler' ], $config['channels'] );
+		$handlers = array_map( $this->get_channel_handler(...), $config['channels'] );
 		return new GroupHandler( $handlers );
 	}
 
@@ -386,11 +381,10 @@ class Log_Manager implements LoggerInterface {
 	/**
 	 * Register a new callback handler for when a log event is triggered.
 	 *
-	 * @param Closure $callback
 	 * @return void
 	 * @throws RuntimeException Thrown on missing dispatcher.
 	 */
-	public function listen( Closure $callback ): void {
+ public function listen( Closure $callback ): void {
 		if ( ! isset( $this->dispatcher ) ) {
 			throw new RuntimeException( 'Event dispatcher not set.' );
 		}

@@ -128,7 +128,7 @@ trait Rsync_Installation {
 	 */
 	public function maybe_rsync_wp_content(): static {
 		// Attempt to locate wp-content relative to the current directory.
-		if ( false !== strpos( __DIR__, '/wp-content/' ) ) {
+		if ( str_contains( __DIR__, '/wp-content/' ) ) {
 			return $this->maybe_rsync( '/', preg_replace( '/\/wp-content\/.*$/', '/wp-content', __DIR__ ) );
 		} elseif ( preg_match( '/\/(?:client-mu-plugins|mu-plugins|plugins|themes)\/.*/', __DIR__ ) ) {
 			/**
@@ -230,7 +230,7 @@ trait Rsync_Installation {
 	 */
 	public function install_plugin( string $plugin, string $version_or_url = 'latest' ): static {
 		// Ensure that the plugin slug is not a URL.
-		if ( false !== strpos( $plugin, '://' ) ) {
+		if ( str_contains( $plugin, '://' ) ) {
 			Utils::error(
 				'Plugin slug cannot be a URL. Please provide a plugin slug and specify the URL or the version in the second argument.',
 				'Install Rsync'
@@ -304,7 +304,7 @@ trait Rsync_Installation {
 	 * @return bool
 	 */
 	protected function is_within_wordpress_install(): bool {
-		return false !== strpos( __DIR__, '/wp-content/' );
+		return str_contains( __DIR__, '/wp-content/' );
 	}
 
 	/**
@@ -460,7 +460,7 @@ trait Rsync_Installation {
 
 		if ( ! empty( getenv( 'WP_PHPUNIT_PATH' ) ) ) {
 			$executable = getenv( 'WP_PHPUNIT_PATH' );
-		} elseif ( ! empty( $args[0] ) && false !== strpos( $args[0], 'phpunit' ) ) {
+		} elseif ( ! empty( $args[0] ) && str_contains( (string) $args[0], 'phpunit' ) ) {
 			// Use the first argument and translate it to the rsync-ed path.
 			$executable = $this->translate_location( $args[0] );
 
@@ -472,7 +472,7 @@ trait Rsync_Installation {
 				! empty( $_SERVER['PHP_SELF'] )
 				&& ! is_file( $executable )
 				&& ! is_executable( $executable )
-				&& 0 !== strpos( 'composer ', $executable )
+				&& !str_starts_with('composer ', (string) $executable)
 			) {
 				$executable = $this->translate_location( $_SERVER['PHP_SELF'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			}

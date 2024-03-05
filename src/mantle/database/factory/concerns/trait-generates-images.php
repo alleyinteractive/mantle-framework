@@ -97,6 +97,6 @@ trait Generates_Images {
 	 * @return string
 	 */
 	protected function generate_filename(): string {
-		return md5( wp_generate_password( 15, false ) );
+		return md5( (string) wp_generate_password( 15, false ) );
 	}
 }

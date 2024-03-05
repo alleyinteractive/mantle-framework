@@ -53,7 +53,7 @@ foreach ( $wpdb->tables( 'ms_global' ) as $table => $prefixed_table ) {
 $wpdb->query( 'SET foreign_key_checks = 1' );
 
 // Prefill a permalink structure so that WP doesn't try to determine one itself.
-add_action( 'populate_options', [ Utils::class, 'set_default_permalink_structure_for_tests' ] );
+add_action( 'populate_options', Utils::set_default_permalink_structure_for_tests(...) );
 
 wp_install( WP_TESTS_TITLE, 'admin', WP_TESTS_EMAIL, true, null, 'password' );
 
@@ -61,7 +61,7 @@ wp_install( WP_TESTS_TITLE, 'admin', WP_TESTS_EMAIL, true, null, 'password' );
 if ( ! is_multisite() ) {
 	delete_option( 'permalink_structure' );
 }
-remove_action( 'populate_options', [ Utils::class, 'set_default_permalink_structure_for_tests' ] );
+remove_action( 'populate_options', Utils::set_default_permalink_structure_for_tests(...) );
 
 if ( $multisite ) {
 	echo '... Installing network...' . PHP_EOL;

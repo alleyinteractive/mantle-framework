@@ -435,7 +435,7 @@ class Filesystem_Adapter implements Filesystem {
 	 * @param mixed                                  $options Options.
 	 * @return string|false
 	 */
-	public function put_file( string $path, $file, $options = [] ): string|bool {
+	public function put_file( string $path, $file, mixed $options = [] ): string|bool {
 		$file = is_string( $file ) ? new File( $file ) : $file;
 
 		return $this->put_file_as( $path, $file, $file->hash_name(), $options );
@@ -450,7 +450,7 @@ class Filesystem_Adapter implements Filesystem {
 	 * @param  mixed                                  $options Options.
 	 * @return string|false
 	 */
-	public function put_file_as( string $path, $file, string $name, $options = [] ): string|bool {
+	public function put_file_as( string $path, $file, string $name, mixed $options = [] ): string|bool {
 		$stream = fopen( is_string( $file ) ? $file : $file->getRealPath(), 'r' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fopen
 		$path   = trim( $path . '/' . $name, '/' );
 
@@ -668,22 +668,18 @@ class Filesystem_Adapter implements Filesystem {
 	/**
 	 * Concatenate a path to a URL.
 	 *
-	 * @param  string $url
-	 * @param  string $path
 	 * @return string
 	 */
-	protected function concat_path_to_url( string $url, string $path ): string {
+ protected function concat_path_to_url( string $url, string $path ): string {
 		return rtrim( $url, '/' ) . '/' . ltrim( $path, '/' );
 	}
 
 	/**
 	 * Replace the scheme, host and port of the given UriInterface with values from the given URL.
 	 *
-	 * @param  \Psr\Http\Message\UriInterface $uri
-	 * @param  string                         $url
 	 * @return \Psr\Http\Message\UriInterface
 	 */
-	protected function replace_base_url( UriInterface $uri, string $url ): UriInterface {
+ protected function replace_base_url( UriInterface $uri, string $url ): UriInterface {
 		$parsed = wp_parse_url( $url );
 
 		return $uri

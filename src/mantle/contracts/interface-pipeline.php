@@ -17,10 +17,9 @@ interface Pipeline {
 	/**
 	 * Set the traveler object being sent on the pipeline.
 	 *
-	 * @param  mixed $traveler
 	 * @return $this
 	 */
-	public function send( $traveler );
+ public function send( mixed $traveler );
 
 	/**
 	 * Set the stops of the pipeline.
@@ -41,8 +40,7 @@ interface Pipeline {
 	/**
 	 * Run the pipeline with a final destination callback.
 	 *
-	 * @param  \Closure $destination
 	 * @return mixed
 	 */
-	public function then( Closure $destination );
+ public function then( Closure $destination );
 }

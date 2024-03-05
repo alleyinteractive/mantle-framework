@@ -56,7 +56,7 @@ trait Dependency_Assertions {
 
 		PHPUnit::assertTrue(
 			$includes
-				->filter( fn( $file ) => strpos( $file, $dependency ) !== false )
+				->filter( fn( $file ) => str_contains( $file, $dependency ) )
 				->count() > 0,
 			sprintf(
 				'%s dependency not found in included files.',

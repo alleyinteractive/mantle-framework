@@ -45,7 +45,7 @@ class Worker {
 
 		$this->events->dispatch( new Run_Start( $provider, $queue, $jobs ) );
 
-		$jobs->each( [ $this, 'run_single' ] );
+		$jobs->each( $this->run_single(...) );
 
 		$this->events->dispatch( new Run_Complete( $provider, $queue, $jobs ) );
 	}

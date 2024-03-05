@@ -144,9 +144,7 @@ class Collection implements ArrayAccess, Enumerable {
 	public function median( $key = null ) {
 		$values = ( isset( $key ) ? $this->pluck( $key ) : $this )
 			->filter(
-				function ( $item ) {
-					return ! is_null( $item );
-				}
+				fn($item) => ! is_null( $item )
 			)->sort()->values();
 
 
@@ -196,9 +194,7 @@ class Collection implements ArrayAccess, Enumerable {
 		$highest_value = $sorted->last();
 
 		return $sorted->filter(
-			function ( $value ) use ( $highest_value ) {
-				return $value == $highest_value;
-			}
+			fn($value) => $value == $highest_value
 		)->sort()->keys()->all();
 	}
 
@@ -255,12 +251,9 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Determine if an item is not contained in the collection.
 	 *
-	 * @param  mixed $key
-	 * @param  mixed $operator
-	 * @param  mixed $value
 	 * @return bool
 	 */
-	public function doesnt_contain( $key, $operator = null, $value = null ) {
+ public function doesnt_contain( mixed $key, mixed $operator = null, mixed $value = null ) {
 			return ! $this->contains( ...func_get_args() );
 	}
 
@@ -277,7 +270,7 @@ class Collection implements ArrayAccess, Enumerable {
 		return new static(
 			Arr::cross_join(
 				$this->items,
-				...array_map( [ $this, 'get_arrayable_items' ], $lists )
+				...array_map( $this->get_arrayable_items(...), $lists )
 			)
 		);
 	}
@@ -390,14 +383,10 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	protected function duplicate_comparator( $strict ) {
 		if ( $strict ) {
-			return function ( $a, $b ) {
-				return $a === $b;
-			};
+			return fn($a, $b) => $a === $b;
 		}
 
-		return function ( $a, $b ) {
-			return $a == $b;
-		};
+		return fn($a, $b) => $a == $b;
 	}
 
 	/**
@@ -920,11 +909,9 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Push an item onto the beginning of the collection.
 	 *
-	 * @param    mixed $value
-	 * @param    mixed $key
 	 * @return $this
 	 */
-	public function prepend( $value, $key = null ) {
+ public function prepend( mixed $value, mixed $key = null ) {
 		$this->items = Arr::prepend( $this->items, $value, $key );
 
 		return $this;
@@ -1353,7 +1340,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static<TKey, string>
 	 */
 	public function trim( string $char_list = "\n\r\t\v\x00" ) {
-		return new static( $this->map( fn ( $item ) => trim( $item, $char_list ) ) );
+		return new static( $this->map( fn ( $item ) => trim( (string) $item, $char_list ) ) );
 	}
 
 	/**
@@ -1411,31 +1398,27 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Determine if an item exists at an offset.
 	 *
-	 * @param mixed $key
 	 * @return bool
 	 */
-	public function offsetExists( mixed $key ): bool {
+ public function offsetExists( mixed $key ): bool {
 		return array_key_exists( $key, $this->items );
 	}
 
 	/**
 	 * Get an item at a given offset.
 	 *
-	 * @param  mixed $key
 	 * @return mixed
 	 */
-	public function offsetGet( mixed $key ): mixed {
+ public function offsetGet( mixed $key ): mixed {
 		return $this->items[ $key ];
 	}
 
 	/**
 	 * Set the item at a given offset.
 	 *
-	 * @param    mixed $key
-	 * @param    mixed $value
 	 * @return void
 	 */
-	public function offsetSet( mixed $key, mixed $value ): void {
+ public function offsetSet( mixed $key, mixed $value ): void {
 		if ( is_null( $key ) ) {
 			$this->items[] = $value;
 		} else {
@@ -1446,10 +1429,9 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Unset the item at a given offset.
 	 *
-	 * @param mixed $key
 	 * @return void
 	 */
-	public function offsetUnset( mixed $key ): void {
+ public function offsetUnset( mixed $key ): void {
 		unset( $this->items[ $key ] );
 	}
 }

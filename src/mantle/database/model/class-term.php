@@ -301,7 +301,7 @@ class Term extends Model implements Core_Object, Model_Meta, Updatable {
 			'mantle_entity_router_term_route',
 			$route_structure,
 			static::get_object_name(),
-			get_called_class()
+			static::class
 		);
 	}
 }

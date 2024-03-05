@@ -72,7 +72,7 @@ trait Model_Term {
 	 * @param mixed  $value Terms.
 	 * @return void
 	 */
-	public function queue_term_attribute( string $taxonomy, $value ): void {
+	public function queue_term_attribute( string $taxonomy, mixed $value ): void {
 		$this->queued_terms[ $taxonomy ] = $value;
 	}
 
@@ -126,7 +126,7 @@ trait Model_Term {
 	 * @throws Model_Exception Thrown if the $taxonomy cannot be inferred from $terms.
 	 * @throws Model_Exception Thrown if error saving the post's terms.
 	 */
-	public function set_terms( $terms, ?string $taxonomy = null, bool $append = false ) {
+	public function set_terms( mixed $terms, ?string $taxonomy = null, bool $append = false ) {
 		$terms = collect( Arr::wrap( $terms ) );
 
 		// If taxonomy is not specified, chunk the terms into taxonomy groups.
@@ -237,7 +237,7 @@ trait Model_Term {
 	 *
 	 * @throws Model_Exception Thrown if the $taxonomy cannot be inferred from $terms.
 	 */
-	public function remove_terms( $terms, string $taxonomy = null ) {
+	public function remove_terms( mixed $terms, string $taxonomy = null ) {
 		$terms = collect( Arr::wrap( $terms ) )
 			->map(
 				function ( $term ) use ( &$taxonomy ) {

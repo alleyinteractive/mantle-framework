@@ -102,8 +102,8 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 *
 	 * @param mixed $object Model object.
 	 */
-	public function __construct( $object = [] ) {
-		$this->boot_if_not_booted();
+	public function __construct( mixed $object = [] ) {
+		static::boot_if_not_booted();
 		$this->initialize_traits();
 
 		$this->set_attributes( (array) $object );
@@ -131,7 +131,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 			return $find;
 		}
 
-		throw ( new Model_Not_Found_Exception() )->set_model( __CLASS__, $object );
+		throw ( new Model_Not_Found_Exception() )->set_model( self::class, $object );
 	}
 
 	/**
@@ -247,7 +247,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 * @param string $attribute Attribute name.
 	 * @param mixed  $value Value to set.
 	 */
-	public function set( string $attribute, $value ): void {
+	public function set( string $attribute, mixed $value ): void {
 		if ( static::has_attribute_alias( $attribute ) ) {
 			$attribute = static::get_attribute_alias( $attribute );
 		}
@@ -337,7 +337,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 		}
 
 		// Infer the object name from the model name.
-		$parts = explode( '\\', get_called_class() );
+		$parts = explode( '\\', static::class );
 		return str_replace( '__', '_', Str::snake( array_pop( $parts ) ) );
 	}
 
@@ -397,7 +397,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 * @param string $offset Attribute to get.
 	 * @param mixed  $value Value to set.
 	 */
-	public function __set( $offset, $value ) {
+	public function __set( $offset, mixed $value ) {
 		$this->set( $offset, $value );
 	}
 
@@ -440,11 +440,11 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 		$builder = static::get_query_builder_class();
 
 		if ( empty( $builder ) ) {
-			throw new Model_Exception( 'Unknown query builder for model: ' . get_called_class() );
+			throw new Model_Exception( 'Unknown query builder for model: ' . static::class );
 		}
 
 		return $this->register_global_scopes(
-			new $builder( get_called_class() )
+			new $builder( static::class )
 		)
 			->with( ...$this->with );
 	}

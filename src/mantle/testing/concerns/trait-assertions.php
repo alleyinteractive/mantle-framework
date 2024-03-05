@@ -35,7 +35,7 @@ trait Assertions {
 	 * @param mixed  $actual  The value to check.
 	 * @param string $message Optional. Message to display when the assertion fails.
 	 */
-	public static function assertWPError( $actual, $message = '' ): void {
+	public static function assertWPError( mixed $actual, $message = '' ): void {
 		PHPUnit::assertInstanceOf( 'WP_Error', $actual, $message );
 	}
 
@@ -45,7 +45,7 @@ trait Assertions {
 	 * @param mixed  $actual  The value to check.
 	 * @param string $message Optional. Message to display when the assertion fails.
 	 */
-	public static function assertNotWPError( $actual, $message = '' ): void {
+	public static function assertNotWPError( mixed $actual, $message = '' ): void {
 		if ( '' === $message && is_wp_error( $actual ) ) {
 			$message = $actual->get_error_message();
 		}
@@ -228,7 +228,7 @@ trait Assertions {
 
 		// Assert the same object types if strict mode.
 		if ( $strict ) {
-			PHPUnit::assertInstanceOf( get_class( $object ), $queried_object );
+			PHPUnit::assertInstanceOf( $object::class, $queried_object );
 		}
 
 		// Next, assert identifying data about the object.
@@ -395,7 +395,7 @@ trait Assertions {
 	 * @param mixed $argument Term object, term ID, or term slug.
 	 * @return WP_Term|null
 	 */
-	protected function get_term_from_argument( $argument ): ?WP_Term {
+	protected function get_term_from_argument( mixed $argument ): ?WP_Term {
 		if ( $argument instanceof Term ) {
 			return $argument->core_object();
 		}

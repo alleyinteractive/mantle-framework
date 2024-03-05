@@ -17,7 +17,7 @@ interface Dispatcher {
 	 * @param mixed $job Job instance.
 	 * @return mixed
 	 */
-	public function dispatch( $job );
+	public function dispatch( mixed $job );
 
 	/**
 	 * Dispatch the job to the queue to be executed now.
@@ -25,5 +25,5 @@ interface Dispatcher {
 	 * @param mixed $job Job instance.
 	 * @return mixed
 	 */
-	public function dispatch_now( $job );
+	public function dispatch_now( mixed $job );
 }

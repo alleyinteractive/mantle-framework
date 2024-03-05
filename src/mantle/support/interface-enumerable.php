@@ -110,20 +110,17 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * Alias for the "contains" method.
 	 *
 	 * @param  (callable(TValue, TKey): bool)|TValue|string  $key
-	 * @param  mixed $operator
-	 * @param  mixed $value
 	 * @return bool
 	 */
-	public function some( $key, $operator = null, $value = null );
+ public function some( $key, mixed $operator = null, mixed $value = null );
 
 	/**
 	 * Determine if an item exists, using strict comparison.
 	 *
 	 * @param  (callable(TValue, TKey): bool)|TValue|string  $key
-	 * @param  mixed $value
 	 * @return bool
 	 */
-	public function contains_strict( $key, $value = null );
+ public function contains_strict( $key, mixed $value = null );
 
 	/**
 	 * Get the average value of a given key.
@@ -137,19 +134,16 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * Determine if an item exists in the enumerable.
 	 *
 	 * @param  (callable(TValue, TKey): bool)|TValue|string  $key
-	 * @param  mixed $operator
-	 * @param  mixed $value
 	 * @return bool
 	 */
-	public function contains( $key, $operator = null, $value = null );
+ public function contains( $key, mixed $operator = null, mixed $value = null );
 
 	/**
 	 * Dump the collection and end the script.
 	 *
-	 * @param  mixed ...$args
 	 * @return void
 	 */
-	public function dd( ...$args );
+ public function dd( mixed ...$args );
 
 	/**
 	 * Dump the collection.
@@ -204,10 +198,9 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * Get the items whose keys are not present in the given items, using the callback.
 	 *
 	 * @param  \Mantle\Contracts\Support\Arrayable<TKey, TValue>|iterable<TKey, TValue>  $items
-	 * @param  callable $callback
 	 * @return static
 	 */
-	public function diff_keys_using( $items, callable $callback);
+ public function diff_keys_using( $items, callable $callback);
 
 	/**
 	 * Retrieve duplicate items.
@@ -237,20 +230,17 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	/**
 	 * Execute a callback over each nested chunk of items.
 	 *
-	 * @param  callable $callback
 	 * @return static
 	 */
-	public function each_spread( callable $callback);
+ public function each_spread( callable $callback);
 
 	/**
 	 * Determine if all items pass the given truth test.
 	 *
 	 * @param  (callable(TValue, TKey): bool)|TValue|string  $key
-	 * @param  mixed           $operator
-	 * @param  mixed           $value
 	 * @return bool
 	 */
-	public function every( $key, $operator = null, $value = null );
+ public function every( $key, mixed $operator = null, mixed $value = null );
 
 	/**
 	 * Get all items except for those with the specified keys.
@@ -342,20 +332,17 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * Filter items by the given key value pair.
 	 *
 	 * @param  string $key
-	 * @param  mixed  $operator
-	 * @param  mixed  $value
 	 * @return static
 	 */
-	public function where( $key, $operator = null, $value = null );
+ public function where( $key, mixed $operator = null, mixed $value = null );
 
 	/**
 	 * Filter items by the given key value pair using strict comparison.
 	 *
 	 * @param  string $key
-	 * @param  mixed  $value
 	 * @return static
 	 */
-	public function where_strict( $key, $value);
+ public function where_strict( $key, mixed $value);
 
 	/**
 	 * Filter items by the given key value pair.
@@ -438,11 +425,9 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * Get the first item by the given key value pair.
 	 *
 	 * @param  string $key
-	 * @param  mixed  $operator
-	 * @param  mixed  $value
 	 * @return TValue|null
 	 */
-	public function first_where( $key, $operator = null, $value = null );
+ public function first_where( $key, mixed $operator = null, mixed $value = null );
 
 	/**
 	 * Flip the values with their keys.
@@ -562,10 +547,9 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	/**
 	 * Run a map over each nested chunk of items.
 	 *
-	 * @param  callable $callback
 	 * @return static
 	 */
-	public function map_spread( callable $callback);
+ public function map_spread( callable $callback);
 
 	/**
 	 * Run a dictionary map over the items.
@@ -737,18 +721,16 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	/**
 	 * Replace the collection items with the given items.
 	 *
-	 * @param  mixed $items
 	 * @return static
 	 */
-	public function replace( $items );
+ public function replace( mixed $items );
 
 	/**
 	 * Recursively replace the collection items with the given items.
 	 *
-	 * @param  mixed $items
 	 * @return static
 	 */
-	public function replace_recursive( $items );
+ public function replace_recursive( mixed $items );
 
 	/**
 	 * Reverse items order.

@@ -66,7 +66,7 @@ trait Query_Clauses {
 	 * @param mixed         ...$args Other arguments passed to the filter.
 	 * @return array<string> The modified query clauses.
 	 */
-	public function apply_clauses( array $clauses, ...$args ): array {
+	public function apply_clauses( array $clauses, mixed ...$args ): array {
 		// Extract the query from the arguments.
 		$query = $args[0] ?? null;
 
@@ -91,9 +91,9 @@ trait Query_Clauses {
 	 */
 	protected function register_clauses(): void {
 		if ( $this instanceof Post_Query_Builder ) {
-			add_filter( 'posts_clauses', [ $this, 'apply_clauses' ], 10, 2 );
+			add_filter( 'posts_clauses', $this->apply_clauses(...), 10, 2 );
 		} elseif ( $this instanceof Term_Query_Builder ) {
-			add_action( 'pre_get_terms', [ $this, 'on_pre_get_terms' ] );
+			add_action( 'pre_get_terms', $this->on_pre_get_terms(...) );
 		}
 	}
 
@@ -102,10 +102,10 @@ trait Query_Clauses {
 	 */
 	protected function unregister_clauses(): void {
 		if ( $this instanceof Post_Query_Builder ) {
-			remove_filter( 'posts_clauses', [ $this, 'apply_clauses' ], 10 );
+			remove_filter( 'posts_clauses', $this->apply_clauses(...), 10 );
 		} elseif ( $this instanceof Term_Query_Builder ) {
-			remove_action( 'pre_get_terms', [ $this, 'on_pre_get_terms' ], 10 );
-			remove_filter( 'terms_clauses', [ $this, 'apply_clauses' ], 10 );
+			remove_action( 'pre_get_terms', $this->on_pre_get_terms(...), 10 );
+			remove_filter( 'terms_clauses', $this->apply_clauses(...), 10 );
 
 			// Reset the query object being stored.
 			$this->query_clause_query = null;

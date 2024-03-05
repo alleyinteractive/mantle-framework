@@ -22,13 +22,6 @@ class Job_Failed {
 	public $provider;
 
 	/**
-	 * Job Data
-	 *
-	 * @var mixed
-	 */
-	public $job;
-
-	/**
 	 * Exception
 	 *
 	 * @var Throwable
@@ -42,9 +35,11 @@ class Job_Failed {
 	 * @param mixed     $job      Job object.
 	 * @param Throwable $e        Exception.
 	 */
-	public function __construct( Provider $provider, $job, Throwable $e ) {
+	public function __construct( Provider $provider, /**
+	 * Job Data
+	 */
+ public mixed $job, Throwable $e ) {
 		$this->provider  = $provider;
-		$this->job       = $job;
 		$this->exception = $e;
 	}
 

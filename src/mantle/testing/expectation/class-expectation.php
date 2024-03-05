@@ -72,7 +72,7 @@ class Expectation {
 	 * @param string $hook Hook to listen to.
 	 * @param mixed  $args Arguments for the hook.
 	 */
-	public function __construct( string $action, string $hook, $args = null ) {
+	public function __construct( string $action, string $hook, mixed $args = null ) {
 		$this->action = $action;
 		$this->hook   = $hook;
 
@@ -91,14 +91,14 @@ class Expectation {
 	protected function setup_applied_hooks() {
 		add_action( // @phpstan-ignore-line Action callback
 			$this->hook,
-			[ $this, 'record_start' ],
+			$this->record_start(...),
 			-1,
 			99
 		);
 
 		add_action( // @phpstan-ignore-line Action callback
 			$this->hook,
-			[ $this, 'record_stop' ],
+			$this->record_stop(...),
 			PHP_INT_MAX,
 			99
 		);
@@ -181,8 +181,8 @@ class Expectation {
 			}
 
 			// Remove the actions for the hook.
-			remove_action( $this->hook, [ $this, 'record_start' ], -1 );
-			remove_action( $this->hook, [ $this, 'record_stop' ], PHP_INT_MAX );
+			remove_action( $this->hook, $this->record_start(...), -1 );
+			remove_action( $this->hook, $this->record_stop(...), PHP_INT_MAX );
 		}
 
 		// Asset if the action was added.
@@ -241,7 +241,7 @@ class Expectation {
 	 * @param mixed ...$args Arguments.
 	 * @return static
 	 */
-	public function with( ...$args ): static {
+	public function with( mixed ...$args ): static {
 		$this->args = $args;
 		return $this;
 	}

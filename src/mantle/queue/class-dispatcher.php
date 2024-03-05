@@ -71,7 +71,7 @@ class Dispatcher {
 	 * @param mixed $job Job instance.
 	 * @return bool
 	 */
-	protected function should_command_be_queued( $job ): bool {
+	protected function should_command_be_queued( mixed $job ): bool {
 		return $job instanceof Can_Queue;
 	}
 }

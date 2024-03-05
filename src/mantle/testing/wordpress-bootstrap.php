@@ -37,7 +37,7 @@ global $wpdb,
 // Load the configuration.
 if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) && ! empty( WP_TESTS_CONFIG_FILE_PATH ) && is_readable( WP_TESTS_CONFIG_FILE_PATH ) ) {
 	$config_file_path = WP_TESTS_CONFIG_FILE_PATH;
-} elseif ( false === strpos( __DIR__, '/wp-content/' ) ) {
+} elseif ( !str_contains( __DIR__, '/wp-content/' ) ) {
 	// Check if WP_CORE_DIR is defined and points to a valid installation.
 	if ( getenv( 'WP_CORE_DIR' ) && ! defined( 'WP_TESTS_INSTALL_PATH' ) && is_readable( getenv( 'WP_CORE_DIR' ) . '/wp-load.php' ) ) {
 		define( 'WP_TESTS_INSTALL_PATH', getenv( 'WP_CORE_DIR' ) );
@@ -72,7 +72,7 @@ if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) && ! empty( WP_TESTS_CONFIG_FILE_PAT
 } else {
 	// The project is being loaded from inside a WordPress installation.
 	if ( defined( 'WP_TESTS_INSTALL_PATH' ) ) {
-		$config_file_path = preg_replace( '#/wp-content/.*$#', '/wp-tests-config.php', WP_TESTS_INSTALL_PATH );
+		$config_file_path = preg_replace( '#/wp-content/.*$#', '/wp-tests-config.php', (string) WP_TESTS_INSTALL_PATH );
 	}
 
 	if ( empty( $config_file_path ) ) {
@@ -141,7 +141,7 @@ if ( ! $installing_wp && '1' !== getenv( 'WP_TESTS_SKIP_INSTALL' ) ) {
 	);
 
 	// Verify the return code and that 'Done!' is included in the output.
-	if ( 0 !== $retval || empty( $resp ) || false === strpos( implode( ' ', $resp ), 'Done!' ) ) {
+	if ( 0 !== $retval || empty( $resp ) || !str_contains( implode( ' ', $resp ), 'Done!' ) ) {
 		Utils::error(
 			'🚨 Error installing WordPress! Response from installation script:'
 		);
@@ -172,10 +172,10 @@ unset( $multisite );
 $GLOBALS['_wp_die_disabled'] = false;
 
 // Allow tests to override wp_die().
-tests_add_filter( 'wp_die_handler', [ WP_Die::class, 'get_toggled_handler' ] );
+tests_add_filter( 'wp_die_handler', WP_Die::get_toggled_handler(...) );
 
 // Use the Spy REST Server instead of default.
-tests_add_filter( 'wp_rest_server_class', [ Utils::class, 'wp_rest_server_class_filter' ], PHP_INT_MAX );
+tests_add_filter( 'wp_rest_server_class', Utils::wp_rest_server_class_filter(...), PHP_INT_MAX );
 
 // Prevent updating translations asynchronously.
 tests_add_filter( 'async_update_translation', '__return_false' );

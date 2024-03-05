@@ -120,13 +120,11 @@ trait Has_Attributes {
 	/**
 	 * Retrieve a relationship from a method.
 	 *
-	 * @param string $method
 	 * @return Relation
-	 *
 	 * @throws LogicException Thrown if the relationship method is not an instance
 	 *                        of Relation.
 	 */
-	protected function get_relationship_from_method( string $method ) {
+ protected function get_relationship_from_method( string $method ) {
 		$relation = $this->$method();
 
 		if ( ! $relation instanceof Relation ) {
@@ -158,7 +156,7 @@ trait Has_Attributes {
 	 *
 	 * @throws Model_Exception Thrown when trying to set 'id'.
 	 */
-	public function set_attribute( string $attribute, $value ) {
+	public function set_attribute( string $attribute, mixed $value ) {
 		if ( $this->is_guarded( $attribute ) ) {
 			throw new Model_Exception( "Unable to set '{$attribute} on model." );
 		}
@@ -181,7 +179,7 @@ trait Has_Attributes {
 	 * @param mixed  $value Value to set.
 	 * @return static
 	 */
-	public function set_raw_attribute( string $attribute, $value ) {
+	public function set_raw_attribute( string $attribute, mixed $value ) {
 		$this->attributes[ $attribute ] = $value;
 
 		return $this;
@@ -220,9 +218,7 @@ trait Has_Attributes {
 		// Retrieve all attributes, passing them through the mutators.
 		$attributes = collect( $this->get_arrayable_attributes() )
 			->map(
-				function( $value, string $attribute ) {
-					return $this->get_attribute( $attribute );
-				}
+				fn($value, string $attribute) => $this->get_attribute( $attribute )
 			)
 			->merge( $this->get_arrayable_appends() );
 
@@ -321,29 +317,18 @@ trait Has_Attributes {
 	 * @param string $cast_type Cast type.
 	 * @return mixed
 	 */
-	protected function cast_attribute( $value, string $cast_type ) {
-		switch ( $cast_type ) {
-			case 'int':
-			case 'integer':
-				return (int) $value;
-			case 'real':
-			case 'float':
-			case 'double':
-				return $this->from_float( $value );
-			case 'string':
-				return (string) $value;
-			case 'bool':
-			case 'boolean':
-				return (bool) $value;
-			case 'object':
-				return $this->from_json( $value, true );
-			case 'array':
-			case 'json':
-				return $this->from_json( $value );
-		}
-
-		return $value;
-	}
+	protected function cast_attribute(mixed $value, string $cast_type)
+ {
+     return match ($cast_type) {
+         'int', 'integer' => (int) $value,
+         'real', 'float', 'double' => $this->from_float( $value ),
+         'string' => (string) $value,
+         'bool', 'boolean' => (bool) $value,
+         'object' => $this->from_json( $value, true ),
+         'array', 'json' => $this->from_json( $value ),
+         default => $value,
+     };
+ }
 
 	/**
 	 * Decode the given float.
@@ -351,17 +336,13 @@ trait Has_Attributes {
 	 * @param  mixed $value Value to decode.
 	 * @return mixed
 	 */
-	public function from_float( $value ) {
-		switch ( (string) $value ) {
-			case 'Infinity':
-				return INF;
-			case '-Infinity':
-				return -INF;
-			case 'NaN':
-				return NAN;
-			default:
-				return (float) $value;
-		}
+	public function from_float( mixed $value ) {
+		return match ((string) $value) {
+      'Infinity' => INF,
+      '-Infinity' => -INF,
+      'NaN' => NAN,
+      default => (float) $value,
+  };
 	}
 
 	/**
@@ -370,7 +351,7 @@ trait Has_Attributes {
 	 * @param mixed $value Value to encode.
 	 * @return string
 	 */
-	protected function as_json( $value ): string {
+	protected function as_json( mixed $value ): string {
 		return \wp_json_encode( $value );
 	}
 
@@ -432,7 +413,7 @@ trait Has_Attributes {
 	 * @param mixed  $value Attribute value.
 	 * @return mixed
 	 */
-	public function mutate_attribute( string $attribute, $value ) {
+	public function mutate_attribute( string $attribute, mixed $value ) {
 		return $this->{ $this->get_mutator_method_name( $attribute ) }( $value );
 	}
 
@@ -443,7 +424,7 @@ trait Has_Attributes {
 	 * @param mixed  $value Attribute value.
 	 * @return mixed
 	 */
-	public function mutate_set_attribute( string $attribute, $value ) {
+	public function mutate_set_attribute( string $attribute, mixed $value ) {
 		return $this->{ $this->get_set_mutator_method_name( $attribute ) }( $value );
 	}
 
@@ -496,9 +477,7 @@ trait Has_Attributes {
 			collect( $this->appends )
 				->combine(
 					collect( $this->appends )->map(
-						function ( string $attribute ) {
-							return $this->get_attribute( $attribute );
-						}
+						fn(string $attribute) => $this->get_attribute( $attribute )
 					)
 				)
 				->to_array()

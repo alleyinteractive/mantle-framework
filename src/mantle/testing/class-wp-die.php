@@ -20,7 +20,7 @@ class WP_Die {
 	 * @return callable The test die handler.
 	 */
 	public static function get_handler() {
-		return [ static::class, 'handler' ];
+		return static::handler(...);
 	}
 
 	/**
@@ -29,7 +29,7 @@ class WP_Die {
 	 * @return callable The die handler.
 	 */
 	public static function get_toggled_handler() {
-		return [ static::class, 'toggled_handler' ];
+		return static::toggled_handler(...);
 	}
 
 	/**
@@ -38,7 +38,7 @@ class WP_Die {
 	 * @return callable The die handler.
 	 */
 	public static function get_exit_handler() {
-		return [ static::class, 'exit_handler' ];
+		return static::exit_handler(...);
 	}
 
 	/**
@@ -121,7 +121,7 @@ class WP_Die {
 		}
 
 		// Provide a helper message for database errors after displaying the error message.
-		if ( false !== strpos( $message, 'database' ) ) {
+		if ( str_contains( (string) $message, 'database' ) ) {
 			echo "\n\n";
 			printf(
 				"\033[31m%s \033[0m\n\n",

@@ -82,7 +82,7 @@ class Event {
 	 *
 	 * @var int|null
 	 */
-	public ?int $exit_code;
+	public ?int $exit_code = null;
 
 	/**
 	 * Exception thrown for the command.
@@ -107,10 +107,8 @@ class Event {
 
 	/**
 	 * Run the given event, assumed to be a closure or callable callback.
-	 *
-	 * @param Application $container
 	 */
-	public function run( Application $container ): void {
+ public function run( Application $container ): void {
 		if ( ! $this->filters_pass( $container ) ) {
 			return;
 		}
@@ -119,7 +117,7 @@ class Event {
 
 		try {
 			if ( is_object( $this->callback ) ) {
-				$container->call( [ $this->callback, '__invoke' ], $this->parameters );
+				$container->call( $this->callback->__invoke(...), $this->parameters );
 			} else {
 				$container->call( $this->callback, $this->parameters );
 			}
@@ -138,10 +136,9 @@ class Event {
 	/**
 	 * Call all of the "before" callbacks for the event.
 	 *
-	 * @param  \Mantle\Contracts\Container $container
 	 * @return void
 	 */
-	public function call_before_callbacks( Container $container ): void {
+ public function call_before_callbacks( Container $container ): void {
 		foreach ( $this->before_callbacks as $callback ) {
 			$container->call( $callback );
 		}
@@ -150,10 +147,9 @@ class Event {
 	/**
 	 * Call all of the "after" callbacks for the event.
 	 *
-	 * @param  \Mantle\Contracts\Container $container
 	 * @return void
 	 */
-	public function call_after_callbacks( Container $container ): void {
+ public function call_after_callbacks( Container $container ): void {
 		foreach ( $this->after_callbacks as $callback ) {
 			$container->call( $callback );
 		}
@@ -162,10 +158,9 @@ class Event {
 	/**
 	 * Determine if the given event should run based on the Cron expression.
 	 *
-	 * @param Application $app
 	 * @return bool
 	 */
-	public function is_due( Application $app ) {
+ public function is_due( Application $app ) {
 		return $this->expression_passes() &&
 			$this->runs_in_environment( $app->environment() );
 	}
@@ -314,9 +309,7 @@ class Event {
 	 * @return static
 	 */
 	public function when( $callback ) {
-		$this->filters[] = is_callable( $callback ) ? $callback : function () use ( $callback ) {
-			return $callback;
-		};
+		$this->filters[] = is_callable( $callback ) ? $callback : fn() => $callback;
 
 		return $this;
 	}
@@ -328,9 +321,7 @@ class Event {
 	 * @return static
 	 */
 	public function skip( $callback ) {
-		$this->rejects[] = is_callable( $callback ) ? $callback : function () use ( $callback ) {
-			return $callback;
-		};
+		$this->rejects[] = is_callable( $callback ) ? $callback : fn() => $callback;
 
 		return $this;
 	}

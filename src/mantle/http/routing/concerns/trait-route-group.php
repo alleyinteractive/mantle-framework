@@ -42,11 +42,10 @@ trait Route_Group {
 	/**
 	 * Create a route group with shared attributes.
 	 *
-	 * @param  array           $attributes
 	 * @param  \Closure|string $routes
 	 * @return void
 	 */
-	public function group( array $attributes, $routes ): void {
+ public function group( array $attributes, $routes ): void {
 		$this->update_group_stack( $attributes );
 
 		// Once we have updated the group stack, we'll load the provided routes and
@@ -60,10 +59,9 @@ trait Route_Group {
 	/**
 	 * Update the group stack with the given attributes.
 	 *
-	 * @param  array $attributes
 	 * @return void
 	 */
-	protected function update_group_stack( array $attributes ) {
+ protected function update_group_stack( array $attributes ) {
 		if ( $this->has_group_stack() ) {
 			$attributes = $this->merge_with_last_group( $attributes );
 		}
@@ -151,9 +149,9 @@ trait Route_Group {
 	 */
 	protected static function format_namespace( $new, $old ) {
 		if ( isset( $new['namespace'] ) ) {
-			return isset( $old['namespace'] ) && strpos( $new['namespace'], '\\' ) !== 0
-					? trim( $old['namespace'], '\\' ) . '\\' . trim( $new['namespace'], '\\' )
-					: trim( $new['namespace'], '\\' );
+			return isset( $old['namespace'] ) && !str_starts_with((string) $new['namespace'], '\\')
+					? trim( (string) $old['namespace'], '\\' ) . '\\' . trim( (string) $new['namespace'], '\\' )
+					: trim( (string) $new['namespace'], '\\' );
 		}
 
 		return $old['namespace'] ?? null;
@@ -171,9 +169,9 @@ trait Route_Group {
 		$old = $old['prefix'] ?? null;
 
 		if ( $prepend_existing_prefix ) {
-			return isset( $new['prefix'] ) ? trim( $old, '/' ) . '/' . trim( $new['prefix'], '/' ) : $old;
+			return isset( $new['prefix'] ) ? trim( (string) $old, '/' ) . '/' . trim( (string) $new['prefix'], '/' ) : $old;
 		} else {
-			return isset( $new['prefix'] ) ? trim( $new['prefix'], '/' ) . '/' . trim( $old, '/' ) : $old;
+			return isset( $new['prefix'] ) ? trim( (string) $new['prefix'], '/' ) . '/' . trim( (string) $old, '/' ) : $old;
 		}
 	}
 

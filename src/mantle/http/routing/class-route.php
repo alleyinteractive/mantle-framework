@@ -416,7 +416,7 @@ class Route extends Symfony_Route {
 	 * @param mixed $response Response to send.
 	 * @return Symfony_Response
 	 */
-	public static function ensure_response( $response ): Symfony_Response {
+	public static function ensure_response( mixed $response ): Symfony_Response {
 		if ( $response instanceof Response || $response instanceof Symfony_Response ) {
 			return $response;
 		}
@@ -457,12 +457,10 @@ class Route extends Symfony_Route {
 	/**
 	 * Make an action for an invokable controller.
 	 *
-	 * @param string $action
 	 * @return string
-	 *
 	 * @throws \UnexpectedValueException Thrown on missing method.
 	 */
-	protected static function make_invokable( string $action ): string {
+ protected static function make_invokable( string $action ): string {
 		if ( ! method_exists( $action, '__invoke' ) ) {
 			throw new \UnexpectedValueException( "Invalid route action: [{$action}]." );
 		}

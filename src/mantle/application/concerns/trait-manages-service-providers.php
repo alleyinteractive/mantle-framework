@@ -98,7 +98,7 @@ trait Manages_Service_Providers {
 	 * @return static
 	 */
 	public function register( Service_Provider|string $provider ): static {
-		$provider_name = is_string( $provider ) ? $provider : get_class( $provider );
+		$provider_name = is_string( $provider ) ? $provider : $provider::class;
 
 		if ( ! empty( $this->service_providers[ $provider_name ] ) ) {
 			return $this;

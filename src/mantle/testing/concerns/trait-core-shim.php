@@ -77,11 +77,11 @@ trait Core_Shim {
 			$this->markTestSkipped( 'HTTP timeout' );
 		}
 
-		if ( false !== strpos( $response->get_error_message(), 'timed out after' ) ) {
+		if ( str_contains( $response->get_error_message(), 'timed out after' ) ) {
 			$this->markTestSkipped( 'HTTP timeout' );
 		}
 
-		if ( 0 === strpos( $response->get_error_message(), 'stream_socket_client(): unable to connect to tcp://s.w.org:80' ) ) {
+		if ( str_starts_with($response->get_error_message(), 'stream_socket_client(): unable to connect to tcp://s.w.org:80') ) {
 			$this->markTestSkipped( 'HTTP timeout' );
 		}
 	}

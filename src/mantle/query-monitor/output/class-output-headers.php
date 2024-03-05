@@ -21,7 +21,7 @@ class Output_Headers extends QM_Output_Html {
 	public function __construct( \QM_Collector $collector ) {
 		parent::__construct( $collector );
 
-		add_filter( 'qm/output/panel_menus', [ $this, 'panel_menu' ], 20 );
+		add_filter( 'qm/output/panel_menus', $this->panel_menu(...), 20 );
 	}
 
 	/**

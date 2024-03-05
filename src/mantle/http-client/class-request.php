@@ -19,29 +19,18 @@ use function Mantle\Support\Helpers\data_get;
  */
 class Request {
 	/**
-	 * The request arguments.
-	 *
-	 * @var array
-	 */
-	protected array $args;
-
-	/**
-	 * The request URL.
-	 *
-	 * @var string
-	 */
-	protected string $url;
-
-	/**
 	 * Constructor
 	 *
 	 * @param array  $args Arguments of the request.
 	 * @param string $url  URL of the request.
 	 */
-	public function __construct( array $args, string $url ) {
-		$this->url  = $url;
-		$this->args = $args;
-
+	public function __construct( /**
+	 * The request arguments.
+	 */
+ protected array $args, /**
+	 * The request URL.
+	 */
+ protected string $url ) {
 		// Format the headers to be lowercase.
 		$this->args['headers'] = array_change_key_case( $this->args['headers'] ?? [] );
 	}
@@ -88,7 +77,7 @@ class Request {
 	 * @param mixed  $value Header value to compare, optional.
 	 * @return boolean
 	 */
-	public function has_header( string $header, $value = null ) {
+	public function has_header( string $header, mixed $value = null ) {
 		$header = strtolower( $header );
 
 		if ( is_null( $value ) ) {

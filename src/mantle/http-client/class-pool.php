@@ -23,20 +23,16 @@ class Pool {
 	protected array $pool = [];
 
 	/**
-	 * Base pending request.
-	 *
-	 * @var Pending_Request
-	 */
-	protected Pending_Request $base_request;
-
-	/**
 	 * Constructor.
-	 *
-	 * @param Pending_Request $base_request
 	 */
-	public function __construct( Pending_Request $base_request ) {
-		$this->base_request = $base_request;
-	}
+ public function __construct(
+     /**
+      * Base pending request.
+      */
+     protected Pending_Request $base_request
+ )
+ {
+ }
 
 	/**
 	 * Create a pending request for the pool

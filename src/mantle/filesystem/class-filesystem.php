@@ -46,13 +46,11 @@ class Filesystem {
 	/**
 	 * Get the contents of a file.
 	 *
-	 * @param  string $path
-	 * @param  bool   $lock
 	 * @return string
 	 *
 	 * @throws File_Not_Found_Exception Thrown on missing file.
 	 */
-	public function get( string $path, bool $lock = false ): string {
+ public function get( string $path, bool $lock = false ): string {
 		if ( $this->is_file( $path ) ) {
 			return $lock ? $this->shared_get( $path ) : file_get_contents( $path ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
 		}
@@ -92,12 +90,10 @@ class Filesystem {
 	 * Get the returned value of a file.
 	 *
 	 * @param  string $path
-	 * @param  array  $data
 	 * @return mixed
-	 *
 	 * @throws File_Not_Found_Exception Thrown on missing file.
 	 */
-	public function get_require( $path, array $data = [] ) {
+ public function get_require( $path, array $data = [] ) {
 		if ( $this->is_file( $path ) ) {
 			$__path = $path;
 			$__data = $data;
@@ -116,12 +112,10 @@ class Filesystem {
 	 * Require the given file once.
 	 *
 	 * @param  string $path
-	 * @param  array  $data
 	 * @return mixed
-	 *
 	 * @throws File_Not_Found_Exception Thrown on missing file.
 	 */
-	public function require_once( $path, array $data = [] ) {
+ public function require_once( $path, array $data = [] ) {
 		if ( $this->is_file( $path ) ) {
 			$__path = $path;
 			$__data = $data;
@@ -238,7 +232,7 @@ class Filesystem {
 				if ( ! @unlink( $path ) ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 					$success = false;
 				}
-			} catch ( ErrorException $e ) {
+			} catch ( ErrorException ) {
 				$success = false;
 			}
 		}

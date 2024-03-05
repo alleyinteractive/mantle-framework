@@ -246,7 +246,7 @@ class Utils {
 	 * @param mixed  $default Default value.
 	 * @return mixed
 	 */
-	public static function env( string $variable, $default ) {
+	public static function env( string $variable, mixed $default ) {
 		$value = getenv( $variable );
 
 		return false === $value ? $default : $value;
@@ -262,7 +262,7 @@ class Utils {
 	public static function env_bool( string $variable, bool $default ): bool {
 		$value = static::env( $variable, $default );
 
-		return in_array( strtolower( $value ), [ 'true', '1', 'yes' ], true );
+		return in_array( strtolower( (string) $value ), [ 'true', '1', 'yes' ], true );
 	}
 
 	/**
@@ -468,7 +468,7 @@ class Utils {
 	 * Ensure that Composer is loaded for the current environment.
 	 */
 	public static function ensure_composer_loaded(): void {
-		if ( class_exists( 'Composer\Autoload\ClassLoader' ) ) {
+		if ( class_exists( \Composer\Autoload\ClassLoader::class ) ) {
 			return;
 		}
 

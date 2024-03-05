@@ -139,7 +139,7 @@ abstract class Event_Service_Provider extends Service_Provider implements Isolat
 	 *                        and priority.
 	 * @return array
 	 */
-	protected function parse_listener( $listener ): array {
+	protected function parse_listener( mixed $listener ): array {
 		// Support the listener being an array of listener and action priority.
 		if ( is_array( $listener ) && isset( $listener[1] ) && is_numeric( $listener[1] ) ) {
 			[ $listener, $priority ] = $listener;

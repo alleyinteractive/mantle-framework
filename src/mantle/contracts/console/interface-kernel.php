@@ -20,7 +20,7 @@ interface Kernel extends \Mantle\Contracts\Kernel {
 	 * @param mixed|null $output Console output.
 	 * @return int
 	 */
-	public function handle( $input, $output = null );
+	public function handle( mixed $input, $output = null );
 
 	/**
 	 * Run the console application by command name.
@@ -30,7 +30,7 @@ interface Kernel extends \Mantle\Contracts\Kernel {
 	 * @param mixed  $output_buffer Output buffer.
 	 * @return int
 	 */
-	public function call( string $command, array $parameters = [], $output_buffer = null );
+	public function call( string $command, array $parameters = [], mixed $output_buffer = null );
 
 	/**
 	 * Test a console command by name.

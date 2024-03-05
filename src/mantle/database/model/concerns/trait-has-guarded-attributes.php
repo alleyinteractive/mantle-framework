@@ -80,11 +80,10 @@ trait Has_Guarded_Attributes {
 	/**
 	 * Run the given callable while being unguarded.
 	 *
-	 * @param callable $callback
 	 *
 	 * @return mixed
 	 */
-	public static function unguarded( callable $callback ) {
+ public static function unguarded( callable $callback ) {
 		if ( static::$unguarded ) {
 			return $callback();
 		}

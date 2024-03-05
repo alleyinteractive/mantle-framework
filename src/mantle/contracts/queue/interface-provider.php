@@ -19,7 +19,7 @@ interface Provider {
 	 * @param mixed $job Job instance.
 	 * @return bool
 	 */
-	public function push( $job ): bool;
+	public function push( mixed $job ): bool;
 
 	/**
 	 * Get the next set of jobs in the queue.

@@ -19,5 +19,5 @@ class Job_Queued {
 	 * @param Provider $provider Queue provider.
 	 * @param mixed    $job      Job object.
 	 */
-	public function __construct( public Provider $provider, public $job ) {}
+	public function __construct( public Provider $provider, public mixed $job ) {}
 }

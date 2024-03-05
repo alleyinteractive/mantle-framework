@@ -30,7 +30,7 @@ interface Factory {
 	 * @param mixed  $default Default value.
 	 * @return mixed
 	 */
-	public function shared( $key, $default = null );
+	public function shared( $key, mixed $default = null );
 
 	/**
 	 * Get all of the shared data for the environment.
@@ -84,7 +84,7 @@ interface Factory {
 	 * @param mixed  $default Default value if unset.
 	 * @return mixed
 	 */
-	public function get_var( string $key, $default = null );
+	public function get_var( string $key, mixed $default = null );
 
 	/**
 	 * Push a view onto the stack and set it as the current view.

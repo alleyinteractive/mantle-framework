@@ -25,13 +25,6 @@ use Mantle\Support\Arr;
  */
 class Route_Registrar {
 	/**
-	 * Router instance.
-	 *
-	 * @var Router|null
-	 */
-	protected ?Router $router;
-
-	/**
 	 * The attributes to pass on to the router.
 	 *
 	 * @var array
@@ -84,20 +77,23 @@ class Route_Registrar {
 	 *
 	 * @param Router $router Router instance.
 	 */
-	public function __construct( Router $router ) {
-		$this->router = $router;
-	}
+	public function __construct(
+     /**
+      * Router instance.
+      */
+     protected ?Router $router
+ )
+ {
+ }
 
 	/**
 	 * Set the value for a given attribute.
 	 *
 	 * @param  string $key
-	 * @param  mixed  $value
 	 * @return $this
-	 *
 	 * @throws InvalidArgumentException Thrown on unknown attribute.
 	 */
-	public function attribute( $key, $value ) {
+ public function attribute( $key, mixed $value ) {
 		if ( ! in_array( $key, $this->allowed_attributes ) ) {
 			throw new InvalidArgumentException( "Attribute [{$key}] does not exist." );
 		}

@@ -75,7 +75,7 @@ interface Model_Meta {
 	 * @param bool   $update Flag to update the queued meta.
 	 * @return void
 	 */
-	public function queue_meta_attribute( string $key, $value, bool $update = true ): void;
+	public function queue_meta_attribute( string $key, mixed $value, bool $update = true ): void;
 
 	/**
 	 * Store queued model meta.

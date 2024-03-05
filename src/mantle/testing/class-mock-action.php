@@ -56,7 +56,7 @@ class Mock_Action {
 	 * @param mixed ...$args Arguments passed to the callback.
 	 * @return mixed First argument.
 	 */
-	public function action( ...$args ) {
+	public function action( mixed ...$args ) {
 		$this->events[] = [
 			'action' => __FUNCTION__,
 			'tag'    => $this->current_filter(),
@@ -71,7 +71,7 @@ class Mock_Action {
 	 * @param mixed ...$args Arguments passed to the callback.
 	 * @return mixed First argument.
 	 */
-	public function filter( ...$args ) {
+	public function filter( mixed ...$args ) {
 		$this->events[] = [
 			'filter' => __FUNCTION__,
 			'tag'    => $this->current_filter(),
@@ -86,7 +86,7 @@ class Mock_Action {
 	 * @param string $tag     Action/filter tag.
 	 * @param mixed  ...$args Arguments passed to the callback.
 	 */
-	public function filter_all( $tag, ...$args ): void {
+	public function filter_all( $tag, mixed ...$args ): void {
 		// This one doesn't return the result, so it's safe to use with the 'all' filter.
 		$this->events[] = [
 			'filter' => __FUNCTION__,

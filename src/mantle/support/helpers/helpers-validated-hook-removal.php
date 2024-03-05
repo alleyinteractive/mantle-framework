@@ -13,7 +13,7 @@ namespace Mantle\Support\Helpers;
  * @param mixed ...$args Arguments for {@see remove_filter()}.
  * @return bool Whether the function was removed.
  */
-function remove_filter_validated( ...$args ) {
+function remove_filter_validated( mixed ...$args ) {
 	$result = \remove_filter( ...$args );
 
 	if ( false === $result ) {
@@ -29,7 +29,7 @@ function remove_filter_validated( ...$args ) {
  * @param mixed ...$args Arguments for {@see remove_action()}.
  * @return bool Whether the function was removed.
  */
-function remove_action_validated( ...$args ) {
+function remove_action_validated( mixed ...$args ) {
 	$result = \remove_action( ...$args );
 
 	if ( false === $result ) {

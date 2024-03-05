@@ -49,7 +49,7 @@ class Implicit_Route_Binding {
 			$model    = $instance->resolve_route_binding( $parameter_value );
 
 			if ( ! $model ) {
-				throw ( new Model_Not_Found_Exception() )->set_model( get_class( $instance ), [ $parameter_value ] );
+				throw ( new Model_Not_Found_Exception() )->set_model( $instance::class, [ $parameter_value ] );
 			}
 
 			$request->set_route_parameter( $parameter_name, $model );
@@ -60,10 +60,9 @@ class Implicit_Route_Binding {
 	 * Return the parameter name if it exists in the given parameters.
 	 *
 	 * @param  string $name
-	 * @param  array  $parameters
 	 * @return string|null
 	 */
-	protected static function get_parameter_name( $name, array $parameters ) {
+ protected static function get_parameter_name( $name, array $parameters ) {
 		if ( array_key_exists( $name, $parameters ) ) {
 			return $name;
 		}

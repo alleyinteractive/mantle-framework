@@ -189,7 +189,7 @@ trait Makes_Http_Requests {
 	 * @param array $headers Request headers.
 	 * @return Test_Response
 	 */
-	public function get( $uri, array $headers = [] ) {
+	public function get( mixed $uri, array $headers = [] ) {
 		$server = $this->transform_headers_to_server_vars( $headers );
 
 		return $this->call( 'GET', $uri, [], $server );
@@ -274,7 +274,7 @@ trait Makes_Http_Requests {
 		// Build a full URL from partial URIs.
 		if ( '/' === $uri[0] ) {
 			$url = 'https://' . WP_TESTS_DOMAIN . $uri;
-		} elseif ( false === strpos( $uri, '://' ) ) {
+		} elseif ( !str_contains( (string) $uri, '://' ) ) {
 			$url = 'https://' . WP_TESTS_DOMAIN . '/' . $uri;
 		} else {
 			$url = $uri;
@@ -305,7 +305,7 @@ trait Makes_Http_Requests {
 			return $send_headers;
 		};
 
-		$intercept_redirect = function( $location, $status ) use ( &$response_status, &$response_headers ) {
+		$intercept_redirect = function( $location, $status ) use ( &$response_status, &$response_headers ): never {
 			$response_status              = $status;
 			$response_headers['Location'] = $location;
 			throw new WP_Redirect_Exception();
@@ -333,7 +333,7 @@ trait Makes_Http_Requests {
 
 			// Mirror the logic from Request::createFromGlobals().
 			if (
-				str_starts_with( $request->headers->get( 'CONTENT_TYPE', '' ), 'application/x-www-form-urlencoded' )
+				str_starts_with( (string) $request->headers->get( 'CONTENT_TYPE', '' ), 'application/x-www-form-urlencoded' )
 			&& \in_array( strtoupper( $request->server->get( 'REQUEST_METHOD', 'GET' ) ), [ 'PUT', 'DELETE', 'PATCH' ] )
 			) {
 				parse_str( $request->getContent(), $data );
@@ -375,7 +375,7 @@ trait Makes_Http_Requests {
 				try {
 					// Execute the request, inasmuch as WordPress would.
 					require ABSPATH . WPINC . '/template-loader.php';
-				} catch ( Exception $e ) { // phpcs:ignore
+				} catch ( Exception ) { // phpcs:ignore
 					// Mantle Exceptions are thrown to prevent some code from running, e.g.
 					// the tail end of wp_redirect().
 				}
@@ -468,11 +468,11 @@ trait Makes_Http_Requests {
 
 		$parts = wp_parse_url( $url );
 		if ( isset( $parts['scheme'] ) ) {
-			$req = isset( $parts['path'] ) ? $parts['path'] : '';
+			$req = $parts['path'] ?? '';
 			if ( isset( $parts['query'] ) ) {
 				$req .= '?' . $parts['query'];
 				// Parse the URL query vars into $_GET.
-				parse_str( $parts['query'], $_GET );
+				parse_str( (string) $parts['query'], $_GET );
 			}
 		} else {
 			$req = $url;
@@ -536,7 +536,7 @@ trait Makes_Http_Requests {
 	 */
 	protected function replace_rest_api() {
 		// Ensure the Mantle REST Spy Server is used.
-		add_filter( 'wp_rest_server_class', [ Utils::class, 'wp_rest_server_class_filter' ], PHP_INT_MAX );
+		add_filter( 'wp_rest_server_class', Utils::wp_rest_server_class_filter(...), PHP_INT_MAX );
 
 		rest_api_init();
 

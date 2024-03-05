@@ -26,7 +26,7 @@ interface Repository {
 	 * @param mixed  $default Default value, optional.
 	 * @return mixed
 	 */
-	public function get( string $key, $default = null );
+	public function get( string $key, mixed $default = null );
 
 	/**
 	 * Set a configuration value.
@@ -34,7 +34,7 @@ interface Repository {
 	 * @param array|string $key Key(s) to set.
 	 * @param mixed        $value Value to set.
 	 */
-	public function set( $key, $value );
+	public function set( $key, mixed $value );
 
 	/**
 	 * Get all configuration values.

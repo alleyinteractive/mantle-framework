@@ -126,13 +126,11 @@ class Dispatcher implements Dispatcher_Contract {
 	/**
 	 * Parse the given event and payload and prepare them for dispatching.
 	 *
-	 * @param  mixed $event
-	 * @param  mixed $payload
 	 * @return array
 	 */
-	protected function parse_event_and_payload( $event, $payload ) {
+ protected function parse_event_and_payload( mixed $event, mixed $payload ) {
 		if ( is_object( $event ) ) {
-			[ $payload, $event ] = [ [ $event ], get_class( $event ) ];
+			[ $payload, $event ] = [ [ $event ], $event::class ];
 		}
 
 		return [ $event, Arr::wrap( $payload ) ];
@@ -156,10 +154,9 @@ class Dispatcher implements Dispatcher_Contract {
 	 * Add the listeners for the event's interfaces to the given array.
 	 *
 	 * @param  string $event_name
-	 * @param  array  $listeners
 	 * @return array
 	 */
-	protected function add_interface_listeners( $event_name, array $listeners = [] ) {
+ protected function add_interface_listeners( $event_name, array $listeners = [] ) {
 		foreach ( class_implements( $event_name ) as $interface ) {
 			if ( isset( $this->listeners[ $interface ] ) ) {
 				foreach ( $this->listeners[ $interface ] as $names ) {
@@ -182,11 +179,9 @@ class Dispatcher implements Dispatcher_Contract {
 			return $this->create_class_listener( $listener );
 		}
 
-		return function ( ...$payload ) use ( $listener ) {
-			return $this->create_action_callback(
+		return fn(...$payload) => $this->create_action_callback(
 				$listener,
 			)( ...array_values( $payload ) );
-		};
 	}
 
 	/**
@@ -239,7 +234,7 @@ class Dispatcher implements Dispatcher_Contract {
 	 */
 	public function forget( $event, $listener = null, int $priority = 10 ): void {
 		if ( is_object( $event ) ) {
-			$event = get_class( $event );
+			$event = $event::class;
 		}
 
 		if ( null === $listener ) {

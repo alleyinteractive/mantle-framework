@@ -26,34 +26,28 @@ class Response implements ArrayAccess {
 	use Macroable;
 
 	/**
-	 * Raw response from `wp_remote_request()`.
-	 *
-	 * @var array
-	 */
-	protected array $response;
-
-	/**
 	 * The decoded JSON response.
 	 *
 	 * @var array|null
 	 */
-	protected ?array $decoded;
+	protected ?array $decoded = null;
 
 	/**
 	 * The decoded XML Element response.
 	 *
 	 * @var SimpleXMLElement|null
 	 */
-	protected ?SimpleXMLElement $element;
+	protected ?SimpleXMLElement $element = null;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param array $response Raw response from `wp_remote_request()`.
 	 */
-	public function __construct( array $response ) {
-		$this->response = $response;
-
+	public function __construct( /**
+	 * Raw response from `wp_remote_request()`.
+	 */
+ protected array $response ) {
 		// Format the headers to be lower-case.
 		$this->response['headers'] = array_change_key_case( (array) ( $this->response['headers'] ?? [] ) );
 	}
@@ -228,7 +222,7 @@ class Response implements ArrayAccess {
 	 * @return bool
 	 */
 	public function is_json(): bool {
-		if ( false !== strpos( $this->header( 'content-type' ), 'application/json' ) ) {
+		if ( str_contains( (string) $this->header( 'content-type' ), 'application/json' ) ) {
 			return true;
 		}
 
@@ -242,11 +236,11 @@ class Response implements ArrayAccess {
 	 * @return bool
 	 */
 	public function is_xml(): bool {
-		if ( false !== strpos( $this->header( 'content-type' ), 'application/xml' ) ) {
+		if ( str_contains( (string) $this->header( 'content-type' ), 'application/xml' ) ) {
 			return true;
 		}
 
-		return 0 === strpos( trim( strtolower( $this->body() ) ), '<?xml' );
+		return str_starts_with(trim( strtolower( $this->body() ) ), '<?xml');
 	}
 
 	/**
@@ -280,10 +274,9 @@ class Response implements ArrayAccess {
 	 * Get the JSON decoded body of the response as an array or scalar value.
 	 *
 	 * @param  string|null $key
-	 * @param  mixed       $default
 	 * @return mixed
 	 */
-	public function json( $key = null, $default = null ) {
+ public function json( $key = null, mixed $default = null ) {
 		if ( ! isset( $this->decoded ) ) {
 			$this->decoded = json_decode( $this->body(), true );
 		}

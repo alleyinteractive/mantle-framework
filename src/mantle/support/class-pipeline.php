@@ -21,13 +21,6 @@ class Pipeline implements PipelineContract {
 	use Makeable;
 
 	/**
-	 * The container implementation.
-	 *
-	 * @var Container|null
-	 */
-	protected ?Container $container;
-
-	/**
 	 * The object being passed through the pipeline.
 	 *
 	 * @var mixed
@@ -53,9 +46,14 @@ class Pipeline implements PipelineContract {
 	 *
 	 * @param Container|null $container Container instance.
 	 */
-	public function __construct( Container $container = null ) {
-		$this->container = $container;
-	}
+	public function __construct(
+     /**
+      * The container implementation.
+      */
+     protected ?Container $container = null
+ )
+ {
+ }
 
 	/**
 	 * Set the object being sent through the pipeline.
@@ -116,19 +114,16 @@ class Pipeline implements PipelineContract {
 	 */
 	public function thenReturn() {
 		return $this->then(
-			function ( $passable ) {
-				return $passable;
-			}
+			fn($passable) => $passable
 		);
 	}
 
 	/**
 	 * Get the final piece of the Closure onion.
 	 *
-	 * @param  \Closure $destination
 	 * @return \Closure
 	 */
-	protected function prepare_destination( Closure $destination ) {
+ protected function prepare_destination( Closure $destination ) {
 		return function ( $passable ) use ( $destination ) {
 			try {
 				return $destination( $passable );
@@ -144,8 +139,7 @@ class Pipeline implements PipelineContract {
 	 * @return \Closure
 	 */
 	protected function carry() {
-		return function ( $stack, $pipe ) {
-			return function ( $passable ) use ( $stack, $pipe ) {
+		return fn($stack, $pipe) => function ( $passable ) use ( $stack, $pipe ) {
 				try {
 					if ( is_callable( $pipe ) ) {
 						// If the pipe is a callable, then we will call it directly, but otherwise we
@@ -177,7 +171,6 @@ class Pipeline implements PipelineContract {
 					return $this->handle_exception( $passable, $e );
 				}
 			};
-		};
 	}
 
 	/**
@@ -222,10 +215,9 @@ class Pipeline implements PipelineContract {
 	/**
 	 * Handle the value returned from each pipe before passing it to the next.
 	 *
-	 * @param  mixed $carry
 	 * @return mixed
 	 */
-	protected function handle_carry( $carry ) {
+ protected function handle_carry( mixed $carry ) {
 		return $carry;
 	}
 
@@ -238,7 +230,7 @@ class Pipeline implements PipelineContract {
 	 *
 	 * @throws Throwable Thrown when an exception is passed.
 	 */
-	protected function handle_exception( $passable, Throwable $e ) {
+	protected function handle_exception( mixed $passable, Throwable $e ): never {
 		throw $e;
 	}
 }

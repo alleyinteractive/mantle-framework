@@ -42,7 +42,7 @@ if ( ! function_exists( 'environment' ) ) {
 	 * @param  mixed  $default Default value.
 	 * @return mixed
 	 */
-	function environment( string $key, $default = null ) {
+	function environment( string $key, mixed $default = null ) {
 		return Environment::get( $key, $default );
 	}
 }

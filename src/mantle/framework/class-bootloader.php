@@ -245,7 +245,7 @@ class Bootloader implements Contract {
 			 * @param \Mantle\Contracts\Application $app The application instance.
 			 */
 			(string) apply_filters( 'mantle_console_command_prefix', Command::PREFIX, $this->app ),
-			function () use ( $kernel ) {
+			function () use ( $kernel ): never {
 				$status    = $kernel->handle(
 					$input = new \Symfony\Component\Console\Input\ArgvInput(
 						collect( (array) ( $_SERVER['argv'] ?? [] ) ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized

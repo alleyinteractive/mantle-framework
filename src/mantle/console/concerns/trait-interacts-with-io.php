@@ -96,7 +96,7 @@ trait Interacts_With_IO {
 	 * @param  mixed       $default Default value if the option does not exist.
 	 * @return string|array|bool|null
 	 */
-	public function option( $key = null, $default = null ) {
+	public function option( $key = null, mixed $default = null ) {
 		if ( is_null( $key ) ) {
 			return $this->input->getOptions();
 		}
@@ -116,22 +116,19 @@ trait Interacts_With_IO {
 	/**
 	 * Write a string as question output.
 	 *
-	 * @param  string          $string
 	 * @param  int|string|null $verbosity
 	 * @return void
 	 */
-	public function question( string $string, $verbosity = null ): void {
+ public function question( string $string, $verbosity = null ): void {
 		$this->line( $string, 'question', $verbosity );
 	}
 
 	/**
 	 * Confirm a question with the user.
 	 *
-	 * @param  string $question
-	 * @param  bool   $default
 	 * @return bool
 	 */
-	public function confirm( string $question, bool $default = false ) {
+ public function confirm( string $question, bool $default = false ) {
 		return $this->output->confirm( $question, $default );
 	}
 
@@ -195,13 +192,12 @@ trait Interacts_With_IO {
 	 * Give the user a single choice from an array of answers.
 	 *
 	 * @param  string          $question
-	 * @param  array           $choices
 	 * @param  string|int|null $default
 	 * @param  mixed|null      $attempts
 	 * @param  bool            $multiple
 	 * @return string|array
 	 */
-	public function choice( $question, array $choices, $default = null, $attempts = null, $multiple = false ) {
+ public function choice( $question, array $choices, $default = null, $attempts = null, $multiple = false ) {
 		$question = new ChoiceQuestion( $question, $choices, $default );
 
 		$question->setMaxAttempts( $attempts )->setMultiselect( $multiple );
@@ -239,10 +235,9 @@ trait Interacts_With_IO {
 	 * @param  array                                               $headers
 	 * @param  Arrayable|array                                     $rows
 	 * @param  \Symfony\Component\Console\Helper\TableStyle|string $table_style
-	 * @param  array                                               $column_styles
 	 * @return void
 	 */
-	public function table( $headers, $rows, $table_style = 'default', array $column_styles = [] ): void {
+ public function table( $headers, $rows, $table_style = 'default', array $column_styles = [] ): void {
 		$table = new Table( $this->output );
 
 		if ( $rows instanceof Arrayable ) {
@@ -262,10 +257,9 @@ trait Interacts_With_IO {
 	 * Execute a given callback while advancing a progress bar.
 	 *
 	 * @param  iterable|int $total_steps
-	 * @param  \Closure     $callback
 	 * @return mixed|void
 	 */
-	public function with_progress_bar( $total_steps, Closure $callback ) {
+ public function with_progress_bar( $total_steps, Closure $callback ) {
 		$bar = $this->output->createProgressBar(
 			is_iterable( $total_steps ) ? count( $total_steps ) : $total_steps
 		);
@@ -350,22 +344,20 @@ trait Interacts_With_IO {
 	/**
 	 * Write a string as error output.
 	 *
-	 * @param  string          $string
 	 * @param  int|string|null $verbosity
 	 * @return void
 	 */
-	public function error( string $string, $verbosity = null ): void {
+ public function error( string $string, $verbosity = null ): void {
 		$this->line( $string, 'error', $verbosity );
 	}
 
 	/**
 	 * Write a string as warning output.
 	 *
-	 * @param  string          $string
 	 * @param  int|string|null $verbosity
 	 * @return void
 	 */
-	public function warn( string $string, $verbosity = null ): void {
+ public function warn( string $string, $verbosity = null ): void {
 		if ( ! $this->output->getFormatter()->hasStyle( 'warning' ) ) {
 			$style = new OutputFormatterStyle( 'yellow' );
 
@@ -378,11 +370,10 @@ trait Interacts_With_IO {
 	/**
 	 * Write a string as success output.
 	 *
-	 * @param  string          $string
 	 * @param  int|string|null $verbosity
 	 * @return void
 	 */
-	public function success( string $string, $verbosity = null ): void {
+ public function success( string $string, $verbosity = null ): void {
 		if ( ! $this->output->getFormatter()->hasStyle( 'success' ) ) {
 			$style = new OutputFormatterStyle( 'green' );
 

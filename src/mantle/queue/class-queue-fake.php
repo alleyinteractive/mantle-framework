@@ -118,12 +118,11 @@ class Queue_Fake extends Queue_Manager {
 	 * Push a new job onto the queue.
 	 *
 	 * @param  string|object $job
-	 * @param  mixed         $data
 	 * @param  string        $queue
 	 * @return void
 	 */
-	public function push( $job, $data = '', $queue = null ): void {
-		$this->jobs[ is_object( $job ) ? get_class( $job ) : $job ][] = [
+ public function push( $job, mixed $data = '', $queue = null ): void {
+		$this->jobs[ is_object( $job ) ? $job::class : $job ][] = [
 			'data'  => $data,
 			'job'   => $job,
 			'queue' => $queue,

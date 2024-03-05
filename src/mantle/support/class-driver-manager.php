@@ -87,7 +87,7 @@ abstract class Driver_Manager {
 	 *
 	 * @throws InvalidArgumentException Thrown for unsupported driver.
 	 */
-	protected function resolve_driver( string $driver, ...$args ) {
+	protected function resolve_driver( string $driver, mixed ...$args ) {
 		if ( isset( $this->custom_creators[ $driver ] ) ) {
 			return $this->call_custom_creator( $driver, $args );
 		}

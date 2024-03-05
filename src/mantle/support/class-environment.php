@@ -23,7 +23,7 @@ class Environment {
 	 *
 	 * @var RepositoryInterface|null
 	 */
-	protected static ?RepositoryInterface $repository;
+	protected static ?RepositoryInterface $repository = null;
 
 	/**
 	 * Get the environment repository instance.
@@ -56,7 +56,7 @@ class Environment {
 	 * @param mixed  $default Default value. Supports a closure callback.
 	 * @return mixed
 	 */
-	public static function get( string $key, $default = null ) {
+	public static function get( string $key, mixed $default = null ) {
 		$value = Option::fromValue( static::get_repository()->get( $key ) );
 
 		// Fallback to the VIP environment variable if the key is not found.
@@ -74,7 +74,7 @@ class Environment {
 		return $value
 			->map(
 				function ( $value ) {
-					switch ( strtolower( $value ) ) {
+					switch ( strtolower( (string) $value ) ) {
 						case 'true':
 						case '(true)':
 							return true;
@@ -89,7 +89,7 @@ class Environment {
 							return;
 					}
 
-					if ( preg_match( '/\A([\'"])(.*)\1\z/', $value, $matches ) ) {
+					if ( preg_match( '/\A([\'"])(.*)\1\z/', (string) $value, $matches ) ) {
 						return $matches[2];
 					}
 
@@ -97,9 +97,7 @@ class Environment {
 				}
 			)
 			->getOrCall(
-				function() use ( $default ) {
-					return value( $default );
-				}
+				fn() => value( $default )
 			);
 	}
 }

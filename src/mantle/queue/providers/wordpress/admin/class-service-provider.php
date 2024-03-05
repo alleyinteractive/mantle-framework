@@ -39,7 +39,7 @@ class Service_Provider extends Base_Service_Provider {
 			 */
 			apply_filters( 'mantle_queue_admin_capability', 'manage_options' ),
 			'mantle-queue',
-			[ $this, 'render_admin_page' ],
+			$this->render_admin_page(...),
 		);
 	}
 

@@ -21,7 +21,7 @@ interface Router {
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
 	 */
-	public function get( string $uri, $action = '' );
+	public function get( string $uri, mixed $action = '' );
 
 	/**
 	 * Register a POST route.
@@ -29,7 +29,7 @@ interface Router {
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
 	 */
-	public function post( string $uri, $action = '' );
+	public function post( string $uri, mixed $action = '' );
 
 	/**
 	 * Register a PUT route.
@@ -37,7 +37,7 @@ interface Router {
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
 	 */
-	public function put( string $uri, $action = '' );
+	public function put( string $uri, mixed $action = '' );
 
 	/**
 	 * Register a DELETE route.
@@ -45,7 +45,7 @@ interface Router {
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
 	 */
-	public function delete( string $uri, $action = '' );
+	public function delete( string $uri, mixed $action = '' );
 
 	/**
 	 * Register a PATCH route.
@@ -53,7 +53,7 @@ interface Router {
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
 	 */
-	public function patch( string $uri, $action = '' );
+	public function patch( string $uri, mixed $action = '' );
 
 	/**
 	 * Register a OPTIONS route.
@@ -61,7 +61,7 @@ interface Router {
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
 	 */
-	public function options( string $uri, $action = '' );
+	public function options( string $uri, mixed $action = '' );
 
 	/**
 	 * Register a route for any HTTP method.
@@ -69,7 +69,7 @@ interface Router {
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
 	 */
-	public function any( string $uri, $action = '' );
+	public function any( string $uri, mixed $action = '' );
 
 	/**
 	 * Dispatch a request to the registered routes.
@@ -129,10 +129,9 @@ interface Router {
 	 * Register a group of middleware.
 	 *
 	 * @param  string $name
-	 * @param  array  $middleware
 	 * @return static
 	 */
-	public function middleware_group( $name, array $middleware );
+ public function middleware_group( $name, array $middleware );
 
 	/**
 	 * Register a short-hand name for a middleware.

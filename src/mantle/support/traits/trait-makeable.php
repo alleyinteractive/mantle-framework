@@ -14,7 +14,7 @@ trait Makeable {
 	 * @param mixed ...$arguments Arguments to make from.
 	 * @return static
 	 */
-	public static function make( ...$arguments ) {
+	public static function make( mixed ...$arguments ) {
 		return new static( ...$arguments );
 	}
 }

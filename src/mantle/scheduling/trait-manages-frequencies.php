@@ -467,11 +467,10 @@ trait Manages_Frequencies {
 	/**
 	 * Splice the given value into the given position of the expression.
 	 *
-	 * @param  int        $position
 	 * @param  int|string $value
 	 * @return static
 	 */
-	protected function spliceIntoPosition( int $position, int|string $value ) {
+ protected function spliceIntoPosition( int $position, int|string $value ) {
 		$segments = explode( ' ', $this->expression );
 
 		$segments[ $position - 1 ] = (string) $value;

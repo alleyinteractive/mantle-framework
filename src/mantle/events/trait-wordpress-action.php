@@ -31,10 +31,9 @@ trait WordPress_Action {
 	 *
 	 * @param string   $action Action to listen to.
 	 * @param callable $callback Callback to invoke.
-	 * @param int      $priority
 	 * @return void
 	 */
-	public function action( string $action, callable $callback, int $priority = 10 ): void {
+ public function action( string $action, callable $callback, int $priority = 10 ): void {
 		\add_action( $action, $this->create_action_callback( $callback ), $priority, 99 );
 	}
 
@@ -62,20 +61,18 @@ trait WordPress_Action {
 	 *
 	 * @param string   $action Action to listen to.
 	 * @param callable $callback Callback to invoke.
-	 * @param int      $priority
 	 * @return void
 	 */
-	public function filter( string $action, callable $callback, int $priority = 10 ): void {
+ public function filter( string $action, callable $callback, int $priority = 10 ): void {
 		\add_filter( $action, $this->create_action_callback( $callback ), $priority, 99 );
 	}
 
 	/**
 	 * Wrap the callback for an action with callback that will preserve type hints.
 	 *
-	 * @param callable $callback
 	 * @return Closure
 	 */
-	protected function create_action_callback( callable $callback ): Closure {
+ protected function create_action_callback( callable $callback ): Closure {
 		return function( ...$args ) use ( $callback ) {
 			if ( is_array( $callback ) ) {
 				try {
@@ -127,7 +124,7 @@ trait WordPress_Action {
 	 *
 	 * @throws RuntimeException Thrown when a non-builtin type-hint cannot be translated properly.
 	 */
-	protected function validate_argument_type( $argument, ReflectionParameter $parameter ) {
+	protected function validate_argument_type( mixed $argument, ReflectionParameter $parameter ) {
 		$type = $parameter->getType();
 		if ( ! $type ) {
 			return $argument;
@@ -144,7 +141,7 @@ trait WordPress_Action {
 			$class_name = Reflector::get_parameter_class_name( $parameter );
 			if (
 				$class_name
-				&& ( is_object( $argument ) && get_class( $argument ) === $class_name || is_subclass_of( $argument, $class_name ) )
+				&& ( is_object( $argument ) && $argument::class === $class_name || is_subclass_of( $argument, $class_name ) )
 			) {
 				return $argument;
 			}

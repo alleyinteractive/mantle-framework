@@ -187,11 +187,10 @@ class Uploaded_File extends SymfonyUploadedFile {
 	/**
 	 * Create a new file instance from a base instance.
 	 *
-	 * @param  \Symfony\Component\HttpFoundation\File\UploadedFile $file
 	 * @param  bool                                                $test
 	 * @return static
 	 */
-	public static function createFromBase( \Symfony\Component\HttpFoundation\File\UploadedFile $file, $test = false ) {
+ public static function createFromBase( \Symfony\Component\HttpFoundation\File\UploadedFile $file, $test = false ) {
 		return $file instanceof static ? $file : new static(
 			$file->getPathname(),
 			$file->getClientOriginalName(),

@@ -69,9 +69,9 @@ class Output extends QM_Output_Html {
 				echo '<td class="qm-ltr"><code>' . esc_html( $key ) . '</code></td>';
 
 				if ( $value instanceof Model ) {
-					echo '<td class="qm-ltr"><code>' . esc_html( get_class( $value ) ) . ' (' . esc_html( $value->id() ) . ')</code></td>';
+					echo '<td class="qm-ltr"><code>' . esc_html( $value::class ) . ' (' . esc_html( $value->id() ) . ')</code></td>';
 				} elseif ( is_object( $value ) ) {
-					echo '<td class="qm-ltr"><code>' . esc_html( get_class( $value ) ) . '</code></td>';
+					echo '<td class="qm-ltr"><code>' . esc_html( $value::class ) . '</code></td>';
 				} elseif ( is_array( $value ) ) {
 					echo '<td class="qm-ltr"><code>' . wp_json_encode( $value ) . '</code></td>';
 				} else {

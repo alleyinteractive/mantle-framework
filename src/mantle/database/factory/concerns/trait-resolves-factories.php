@@ -59,10 +59,9 @@ trait Resolves_Factories {
 	 * is not found, it will attempt to resolve the default factory name for
 	 * the given model (e.g. a post model would use Mantle\Database\Factory\Post_Factory).
 	 *
-	 * @param string $model
 	 * @return string
 	 */
-	public static function resolve_factory_name( string $model ): string {
+ public static function resolve_factory_name( string $model ): string {
 		$custom_factory = static::resolve_custom_factory_name( $model );
 
 		if ( class_exists( $custom_factory ) ) {

@@ -43,7 +43,7 @@ interface Dispatcher {
 	 * @param  mixed         $payload Event payload.
 	 * @return mixed
 	 */
-	public function dispatch( $event, $payload = [] );
+	public function dispatch( $event, mixed $payload = [] );
 
 	/**
 	 * Remove a set of listeners from the dispatcher.

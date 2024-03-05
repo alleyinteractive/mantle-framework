@@ -20,7 +20,7 @@ if ( ! function_exists( 'cache' ) ) {
 	 *
 	 * @throws \Exception
 	 */
-	function cache( ...$args ) {
+	function cache( mixed ...$args ) {
 		if ( empty( $args ) ) {
 			return app( 'cache' );
 		}

@@ -143,28 +143,21 @@ trait Enumerates_Values {
 	/**
 	 * Alias for the "contains" method.
 	 *
-	 * @param  mixed $key
-	 * @param  mixed $operator
-	 * @param  mixed $value
 	 * @return bool
 	 */
-	public function some( $key, $operator = null, $value = null ) {
+ public function some( mixed $key, mixed $operator = null, mixed $value = null ) {
 		return $this->contains( ...func_get_args() );
 	}
 
 	/**
 	 * Determine if an item exists, using strict comparison.
 	 *
-	 * @param  mixed $key
-	 * @param  mixed $value
 	 * @return bool
 	 */
-	public function contains_strict( $key, $value = null ) {
+ public function contains_strict( mixed $key, mixed $value = null ) {
 		if ( func_num_args() === 2 ) {
 			return $this->contains(
-				function ( $item ) use ( $key, $value ) {
-					return data_get( $item, $key ) === $value;
-				}
+				fn($item) => data_get( $item, $key ) === $value
 			);
 		}
 
@@ -184,10 +177,9 @@ trait Enumerates_Values {
 	/**
 	 * Dump the items and end the script.
 	 *
-	 * @param  mixed ...$args
 	 * @return void
 	 */
-	public function dd( ...$args ): void {
+ public function dd( mixed ...$args ): void {
 		$this->dump( ...$args );
 
 		exit( 1 );
@@ -244,11 +236,9 @@ trait Enumerates_Values {
 	 * Determine if all items pass the given truth test.
 	 *
 	 * @param  (callable(TValue, TKey): bool)|TValue|string $key
-	 * @param  mixed                                        $operator
-	 * @param  mixed                                        $value
 	 * @return bool
 	 */
-	public function every( $key, $operator = null, $value = null ) {
+ public function every( $key, mixed $operator = null, mixed $value = null ) {
 		if ( func_num_args() === 1 ) {
 			$callback = $this->value_retriever( $key );
 
@@ -268,11 +258,9 @@ trait Enumerates_Values {
 	 * Get the first item by the given key value pair.
 	 *
 	 * @param  string $key
-	 * @param  mixed  $operator
-	 * @param  mixed  $value
 	 * @return TValue|null
 	 */
-	public function first_where( $key, $operator = null, $value = null ) {
+ public function first_where( $key, mixed $operator = null, mixed $value = null ) {
 		return $this->first( $this->operator_for_where( ...func_get_args() ) );
 	}
 
@@ -343,9 +331,7 @@ trait Enumerates_Values {
 	 */
 	public function map_into( $class ) {
 		return $this->map(
-			function ( $value, $key ) use ( $class ) {
-				return new $class( $value, $key );
-			}
+			fn($value, $key) => new $class( $value, $key )
 		);
 	}
 
@@ -359,17 +345,11 @@ trait Enumerates_Values {
 		$callback = $this->value_retriever( $callback );
 
 		return $this->map(
-			function ( $value ) use ( $callback ) {
-				return $callback( $value );
-			}
+			fn($value) => $callback( $value )
 		)->filter(
-			function ( $value ) {
-				return ! is_null( $value );
-			}
+			fn($value) => ! is_null( $value )
 		)->reduce(
-			function ( $result, $value ) {
-				return is_null( $result ) || $value < $result ? $value : $result;
-			}
+			fn($result, $value) => is_null( $result ) || $value < $result ? $value : $result
 		);
 	}
 
@@ -383,9 +363,7 @@ trait Enumerates_Values {
 		$callback = $this->value_retriever( $callback );
 
 		return $this->filter(
-			function ( $value ) {
-				return ! is_null( $value );
-			}
+			fn($value) => ! is_null( $value )
 		)->reduce(
 			function ( $result, $item ) use ( $callback ) {
 				$value = $callback( $item );
@@ -443,17 +421,13 @@ trait Enumerates_Values {
 	 */
 	public function sum( $callback = null ) {
 		if ( is_null( $callback ) ) {
-			$callback = function ( $value ) {
-				return $value;
-			};
+			$callback = fn($value) => $value;
 		} else {
 			$callback = $this->value_retriever( $callback );
 		}
 
 		return $this->reduce(
-			function ( $result, $item ) use ( $callback ) {
-				return $result + $callback( $item );
-			},
+			fn($result, $item) => $result + $callback( $item ),
 			0
 		);
 	}
@@ -514,11 +488,9 @@ trait Enumerates_Values {
 	 * Filter items by the given key value pair.
 	 *
 	 * @param  string $key
-	 * @param  mixed  $operator
-	 * @param  mixed  $value
 	 * @return static
 	 */
-	public function where( $key, $operator = null, $value = null ) {
+ public function where( $key, mixed $operator = null, mixed $value = null ) {
 		return $this->filter( $this->operator_for_where( ...func_get_args() ) );
 	}
 
@@ -546,10 +518,9 @@ trait Enumerates_Values {
 	 * Filter items by the given key value pair using strict comparison.
 	 *
 	 * @param  string $key
-	 * @param  mixed  $value
 	 * @return static
 	 */
-	public function where_strict( $key, $value ) {
+ public function where_strict( $key, mixed $value ) {
 		return $this->where( $key, '===', $value );
 	}
 
@@ -565,9 +536,7 @@ trait Enumerates_Values {
 		$values = $this->get_arrayable_items( $values );
 
 		return $this->filter(
-			function ( $item ) use ( $key, $values, $strict ) {
-				return in_array( data_get( $item, $key ), $values, $strict );
-			}
+			fn($item) => in_array( data_get( $item, $key ), $values, $strict )
 		);
 	}
 
@@ -602,9 +571,7 @@ trait Enumerates_Values {
 	 */
 	public function where_not_between( $key, $values ) {
 		return $this->filter(
-			function ( $item ) use ( $key, $values ) {
-				return data_get( $item, $key ) < reset( $values ) || data_get( $item, $key ) > end( $values );
-			}
+			fn($item) => data_get( $item, $key ) < reset( $values ) || data_get( $item, $key ) > end( $values )
 		);
 	}
 
@@ -620,9 +587,7 @@ trait Enumerates_Values {
 		$values = $this->get_arrayable_items( $values );
 
 		return $this->reject(
-			function ( $item ) use ( $key, $values, $strict ) {
-				return in_array( data_get( $item, $key ), $values, $strict );
-			}
+			fn($item) => in_array( data_get( $item, $key ), $values, $strict )
 		);
 	}
 
@@ -685,11 +650,9 @@ trait Enumerates_Values {
 		$use_as_callable = $this->use_as_callable( $callback );
 
 		return $this->filter(
-			function ( $value, $key ) use ( $callback, $use_as_callable ) {
-				return $use_as_callable
+			fn($value, $key) => $use_as_callable
 				? ! $callback( $value, $key )
-				: $value != $callback;
-			}
+				: $value != $callback
 		);
 	}
 
@@ -743,9 +706,7 @@ trait Enumerates_Values {
 	 */
 	public function to_array() {
 		return $this->map(
-			function ( $value ) {
-				return $value instanceof Arrayable ? $value->to_array() : $value;
-			}
+			fn($value) => $value instanceof Arrayable ? $value->to_array() : $value
 		)->all();
 	}
 
@@ -789,16 +750,12 @@ trait Enumerates_Values {
 	 */
 	public function count_by( $callback = null ) {
 		if ( is_null( $callback ) ) {
-			$callback = function ( $value ) {
-				return $value;
-			};
+			$callback = fn($value) => $value;
 		}
 
 		return new static(
 			$this->group_by( $callback )->map(
-				function ( $value ) {
-					return $value->count();
-				}
+				fn($value) => $value->count()
 			)
 		);
 	}
@@ -841,10 +798,9 @@ trait Enumerates_Values {
 	/**
 	 * Results array of items from Collection or Arrayable.
 	 *
-	 * @param  mixed $items
 	 * @return array<TKey, TValue>
 	 */
-	protected function get_arrayable_items( $items ) {
+ protected function get_arrayable_items( mixed $items ) {
 		if ( is_array( $items ) ) {
 			return $items;
 		} elseif ( $items instanceof Enumerable ) {
@@ -867,10 +823,9 @@ trait Enumerates_Values {
 	 *
 	 * @param  string      $key
 	 * @param  string|null $operator
-	 * @param  mixed       $value
 	 * @return \Closure
 	 */
-	protected function operator_for_where( $key, $operator = null, $value = null ) {
+ protected function operator_for_where( $key, $operator = null, mixed $value = null ) {
 		if ( func_num_args() === 1 ) {
 			$value = true;
 
@@ -888,9 +843,7 @@ trait Enumerates_Values {
 
 			$strings = array_filter(
 				[ $retrieved, $value ],
-				function ( $value ) {
-					return is_string( $value ) || ( is_object( $value ) && method_exists( $value, '__toString' ) );
-				}
+				fn($value) => is_string( $value ) || ( is_object( $value ) && method_exists( $value, '__toString' ) )
 			);
 
 			if ( count( $strings ) < 2 && count( array_filter( [ $retrieved, $value ], 'is_object' ) ) == 1 ) {
@@ -924,10 +877,9 @@ trait Enumerates_Values {
 	/**
 	 * Determine if the given value is callable, but not a string.
 	 *
-	 * @param  mixed $value
 	 * @return bool
 	 */
-	protected function use_as_callable( $value ) {
+ protected function use_as_callable( mixed $value ) {
 		return ! is_string( $value ) && is_callable( $value );
 	}
 
@@ -948,20 +900,18 @@ trait Enumerates_Values {
 	/**
 	 * Make a function to check an item's equality.
 	 *
-	 * @param  mixed $value
 	 * @return \Closure
 	 */
-	protected function equality( $value ) {
+ protected function equality( mixed $value ) {
 		return fn ( $item ) => $item === $value;
 	}
 
 	/**
 	 * Make a function using another function, by negating its result.
 	 *
-	 * @param  \Closure $callback
 	 * @return \Closure
 	 */
-	protected function negate( Closure $callback ) {
+ protected function negate( Closure $callback ) {
 		return fn ( ...$params ) => ! $callback( ...$params );
 	}
 }

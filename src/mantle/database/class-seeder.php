@@ -113,10 +113,9 @@ abstract class Seeder {
 	/**
 	 * Set the command instance instance.
 	 *
-	 * @param Command $command
 	 * @return static
 	 */
-	public function set_command( Command $command ): static {
+ public function set_command( Command $command ): static {
 		$this->command = $command;
 
 		return $this;
@@ -132,7 +131,7 @@ abstract class Seeder {
 	 */
 	public function __invoke( array $parameters = [] ): mixed {
 		if ( ! method_exists( $this, 'run' ) ) {
-			throw new InvalidArgumentException( 'Method [run] missing from ' . $this::class );
+			throw new InvalidArgumentException( 'Method [run] missing from ' . static::class );
 		}
 
 		return isset( $this->container )

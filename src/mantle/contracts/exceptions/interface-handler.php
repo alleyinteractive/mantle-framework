@@ -45,9 +45,7 @@ interface Handler {
 	/**
 	 * Render an exception for the console.
 	 *
-	 * @param OutputInterface $output
-	 * @param Throwable       $e
 	 * @return void
 	 */
-	public function render_for_console( OutputInterface $output, Throwable $e );
+ public function render_for_console( OutputInterface $output, Throwable $e );
 }

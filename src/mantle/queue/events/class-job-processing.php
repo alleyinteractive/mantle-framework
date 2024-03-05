@@ -21,21 +21,16 @@ class Job_Processing {
 	public $provider;
 
 	/**
-	 * Job Data
-	 *
-	 * @var mixed
-	 */
-	public $job;
-
-	/**
 	 * Constructor.
 	 *
 	 * @param Provider $provider Queue provider.
 	 * @param mixed    $job Job object.
 	 */
-	public function __construct( Provider $provider, $job ) {
+	public function __construct( Provider $provider, /**
+	 * Job Data
+	 */
+ public mixed $job ) {
 		$this->provider = $provider;
-		$this->job      = $job;
 	}
 
 	/**

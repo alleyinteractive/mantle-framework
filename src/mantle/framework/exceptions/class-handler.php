@@ -39,13 +39,6 @@ use function Mantle\Support\Helpers\collect;
 class Handler implements Contract {
 
 	/**
-	 * The container implementation.
-	 *
-	 * @var Application
-	 */
-	protected Application $container;
-
-	/**
 	 * A list of the exception types that are not reported.
 	 *
 	 * @var array
@@ -68,12 +61,15 @@ class Handler implements Contract {
 
 	/**
 	 * Create a new exception handler instance.
-	 *
-	 * @param Application $container
 	 */
-	public function __construct( Application $container ) {
-		$this->container = $container;
-	}
+ public function __construct(
+     /**
+      * The container implementation.
+      */
+     protected Application $container
+ )
+ {
+ }
 
 	/**
 	 * Report or log an exception.
@@ -123,10 +119,9 @@ class Handler implements Contract {
 	/**
 	 * Determine if the exception is in the "do not report" list.
 	 *
-	 * @param  \Throwable $e
 	 * @return bool
 	 */
-	protected function shouldnt_report( Throwable $e ) {
+ protected function shouldnt_report( Throwable $e ) {
 		$dont_report = array_merge( $this->dont_report, $this->internal_dont_report );
 
 		return ! is_null(
@@ -137,10 +132,9 @@ class Handler implements Contract {
 	/**
 	 * Get the default exception context variables for logging.
 	 *
-	 * @param  \Throwable $e
 	 * @return array
 	 */
-	protected function exception_context( Throwable $e ) {
+ protected function exception_context( Throwable $e ) {
 		if ( method_exists( $e, 'context' ) ) {
 			return $e->context();
 		}
@@ -161,7 +155,7 @@ class Handler implements Contract {
 					'userId' => get_current_user_id(),
 				]
 			);
-		} catch ( Throwable $e ) {
+		} catch ( Throwable ) {
 			return [];
 		}
 	}
@@ -301,11 +295,9 @@ class Handler implements Contract {
 	/**
 	 * Map the given exception into an response.
 	 *
-	 * @param  Response   $response
-	 * @param  \Throwable $e
 	 * @return Response
 	 */
-	protected function to_mantle_response( Response $response, Throwable $e ) {
+ protected function to_mantle_response( Response $response, Throwable $e ) {
 		if ( ! $response instanceof RedirectResponse ) {
 			$response = new Response(
 				$response->getContent(),
@@ -335,19 +327,16 @@ class Handler implements Contract {
 	/**
 	 * Convert the given exception to an array.
 	 *
-	 * @param  \Throwable $e
 	 * @return array
 	 */
-	protected function convert_exception_to_array( Throwable $e ): array {
+ protected function convert_exception_to_array( Throwable $e ): array {
 		return config( 'app.debug' ) ? [
 			'message'   => $e->getMessage(),
-			'exception' => get_class( $e ),
+			'exception' => $e::class,
 			'file'      => $e->getFile(),
 			'line'      => $e->getLine(),
 			'trace'     => collect( $e->getTrace() )->map(
-				function ( $trace ) {
-					return Arr::except( $trace, [ 'args' ] );
-				}
+				fn($trace) => Arr::except( $trace, [ 'args' ] )
 			)->all(),
 		] : [
 			'message' => $this->is_http_exception( $e ) ? $e->getMessage() : __( 'Server Error', 'mantle' ),

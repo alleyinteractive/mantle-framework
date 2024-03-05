@@ -38,13 +38,6 @@ abstract class Builder {
 		Query_Clauses;
 
 	/**
-	 * Model to build on.
-	 *
-	 * @var class-string<TModel>|array<class-string<TModel>>
-	 */
-	protected array|string $model;
-
-	/**
 	 * Result limit per-page.
 	 *
 	 * @var int|null
@@ -154,9 +147,14 @@ abstract class Builder {
 	 *
 	 * @param array|string $model Model or array of model class names.
 	 */
-	public function __construct( $model ) {
-		$this->model = $model;
-	}
+	public function __construct(
+     /**
+      * Model to build on.
+      */
+     protected array|string $model
+ )
+ {
+ }
 
 	/**
 	 * Get the query results.
@@ -240,8 +238,8 @@ abstract class Builder {
 			$attribute = $this->model::get_attribute_alias( $attribute );
 		}
 
-		if ( ! empty( $this->query_where_in_aliases[ strtolower( $attribute ) ] ) ) {
-			$attribute = $this->query_where_in_aliases[ strtolower( $attribute ) ];
+		if ( ! empty( $this->query_where_in_aliases[ strtolower( (string) $attribute ) ] ) ) {
+			$attribute = $this->query_where_in_aliases[ strtolower( (string) $attribute ) ];
 		} else {
 			throw new Query_Exception( 'Unknown where in alias: ' . $attribute );
 		}
@@ -263,8 +261,8 @@ abstract class Builder {
 			$attribute = $this->model::get_attribute_alias( $attribute );
 		}
 
-		if ( ! empty( $this->query_where_not_in_aliases[ strtolower( $attribute ) ] ) ) {
-			$attribute = $this->query_where_not_in_aliases[ strtolower( $attribute ) ];
+		if ( ! empty( $this->query_where_not_in_aliases[ strtolower( (string) $attribute ) ] ) ) {
+			$attribute = $this->query_where_not_in_aliases[ strtolower( (string) $attribute ) ];
 		} else {
 			throw new Query_Exception( 'Unknown where not in alias: ' . $attribute );
 		}
@@ -354,7 +352,7 @@ abstract class Builder {
 	 * @param string             $compare Comparison method, defaults to '='.
 	 * @return static
 	 */
-	public function whereMeta( $key, $value, string $compare = '=' ) {
+	public function whereMeta( $key, mixed $value, string $compare = '=' ) {
 		if ( $key instanceof BackedEnum ) {
 			$key = $key->value;
 		}
@@ -419,8 +417,8 @@ abstract class Builder {
 			$attribute = $this->model::get_attribute_alias( $attribute );
 		}
 
-		if ( ! empty( $this->query_order_by_aliases[ strtolower( $attribute ) ] ) ) {
-			$attribute = $this->query_order_by_aliases[ strtolower( $attribute ) ];
+		if ( ! empty( $this->query_order_by_aliases[ strtolower( (string) $attribute ) ] ) ) {
+			$attribute = $this->query_order_by_aliases[ strtolower( (string) $attribute ) ];
 		}
 
 		$this->order[]    = strtoupper( $direction );
@@ -519,8 +517,8 @@ abstract class Builder {
 			$attribute = $this->model::get_attribute_alias( $attribute );
 		}
 
-		if ( ! empty( $this->query_where_in_aliases[ strtolower( $attribute ) ] ) ) {
-			$attribute = $this->query_where_in_aliases[ strtolower( $attribute ) ];
+		if ( ! empty( $this->query_where_in_aliases[ strtolower( (string) $attribute ) ] ) ) {
+			$attribute = $this->query_where_in_aliases[ strtolower( (string) $attribute ) ];
 		} else {
 			throw new Query_Exception( 'Unknown where in alias: ' . $attribute );
 		}
@@ -575,9 +573,7 @@ abstract class Builder {
 	 */
 	protected function call_named_scope( string $scope, array $parameters = [] ) {
 		return $this->call_scope(
-			function ( ...$parameters ) use ( $scope ) {
-				return $this->get_model_instance()->call_named_scope( $scope, $parameters );
-			},
+			fn(...$parameters) => $this->get_model_instance()->call_named_scope( $scope, $parameters ),
 			$parameters
 		);
 	}

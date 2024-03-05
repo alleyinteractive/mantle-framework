@@ -40,20 +40,6 @@ class Router implements Router_Contract {
 	}
 
 	/**
-	 * Events instance.
-	 *
-	 * @var Dispatcher
-	 */
-	protected Dispatcher $events;
-
-	/**
-	 * Container instance.
-	 *
-	 * @var Container
-	 */
-	protected Container $container;
-
-	/**
 	 * Route Collection
 	 *
 	 * @var RouteCollection
@@ -101,10 +87,13 @@ class Router implements Router_Contract {
 	 * @param Dispatcher $events Events dispatcher.
 	 * @param Container  $container Container instance.
 	 */
-	public function __construct( Dispatcher $events, Container $container ) {
-		$this->events    = $events;
-		$this->container = $container;
-
+	public function __construct( /**
+	 * Events instance.
+	 */
+ protected Dispatcher $events, /**
+	 * Container instance.
+	 */
+ protected Container $container ) {
 		$this->routes = new RouteCollection();
 	}
 
@@ -206,7 +195,7 @@ class Router implements Router_Contract {
 	 * @param mixed  $action Route callback.
 	 * @return Route|null Route instance for web routes, null for REST routes.
 	 */
-	public function add_route( array $methods, string $uri, $action ): ?Route {
+	public function add_route( array $methods, string $uri, mixed $action ): ?Route {
 		// Send the route to the REST Registrar if set.
 		if ( isset( $this->rest_registrar ) ) {
 			$this->create_rest_api_route( $methods, $uri, $action );
@@ -229,7 +218,7 @@ class Router implements Router_Contract {
 	 * @param mixed  $action Route callback.
 	 * @return Route
 	 */
-	protected function create_route( array $methods, string $uri, $action ): Route {
+	protected function create_route( array $methods, string $uri, mixed $action ): Route {
 		$route = new Route( $methods, $this->prefix( $uri ), $action );
 
 		if ( $this->has_group_stack() ) {
@@ -249,7 +238,7 @@ class Router implements Router_Contract {
 	 * @param mixed  $action Route callback.
 	 * @return void
 	 */
-	protected function create_rest_api_route( array $methods, string $uri, $action ): void {
+	protected function create_rest_api_route( array $methods, string $uri, mixed $action ): void {
 		$args = [
 			'callback' => $action,
 			'methods'  => $methods,
@@ -361,11 +350,9 @@ class Router implements Router_Contract {
 	/**
 	 * Prepare a response for sending.
 	 *
-	 * @param Request $request
-	 * @param mixed   $response
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
-	public static function to_response( Request $request, mixed $response ): \Symfony\Component\HttpFoundation\Response {
+ public static function to_response( Request $request, mixed $response ): \Symfony\Component\HttpFoundation\Response {
 		$response = Route::ensure_response( $response );
 
 		return $response->prepare( $request );
@@ -501,11 +488,10 @@ class Router implements Router_Contract {
 	/**
 	 * Add a new route parameter binder.
 	 *
-	 * @param string          $key
 	 * @param string|callable $binder
 	 * @return void
 	 */
-	public function bind( string $key, $binder ): void {
+ public function bind( string $key, $binder ): void {
 		$this->binders[ str_replace( '-', '_', $key ) ] = Route_Binding::for_callback(
 			$this->container,
 			$binder

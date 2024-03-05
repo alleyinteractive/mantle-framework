@@ -221,7 +221,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 		$provider = $this->app['router.service-provider'];
 
 		if ( ! ( $provider instanceof Route_Service_Provider_Contract ) ) {
-			throw new InvalidArgumentException( 'Unknown "router.service-provider" instance: ' . get_class( $provider ) );
+			throw new InvalidArgumentException( 'Unknown "router.service-provider" instance: ' . $provider::class );
 		}
 
 		try {
@@ -254,10 +254,9 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 * Render the exception to a response.
 	 *
 	 * @param Request   $request Request instance.
-	 * @param Throwable $e
 	 * @return \Symfony\Component\HttpFoundation\Response|mixed
 	 */
-	protected function render_exception( $request, Throwable $e ) {
+ protected function render_exception( $request, Throwable $e ) {
 		return $this->app[ Exception_Handler::class ]->render( $request, $e );
 	}
 }

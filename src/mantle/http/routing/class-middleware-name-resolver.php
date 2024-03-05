@@ -80,7 +80,7 @@ class Middleware_Name_Resolver {
 			}
 
 			[ $middleware, $parameters ] = array_pad(
-				explode( ':', $middleware, 2 ),
+				explode( ':', (string) $middleware, 2 ),
 				2,
 				null
 			);

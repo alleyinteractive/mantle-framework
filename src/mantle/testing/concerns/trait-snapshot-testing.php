@@ -34,7 +34,7 @@ trait Snapshot_Testing {
 	 * @param mixed ...$args Optional. Additional arguments to pass to the snapshot assertion.
 	 * @return static
 	 */
-	public function assertMatchesSnapshot( ...$args ): static {
+	public function assertMatchesSnapshot( mixed ...$args ): static {
 		return $this->assertMatchesSnapshotContent( ...$args );
 	}
 
@@ -47,7 +47,7 @@ trait Snapshot_Testing {
 	 * @param mixed ...$args Optional. Additional arguments to pass to the snapshot assertion.
 	 * @return static
 	 */
-	public function assertMatchesSnapshotContent( ...$args ): static {
+	public function assertMatchesSnapshotContent( mixed ...$args ): static {
 		if ( $this->test_case ) {
 			$content_type = $this->get_header( 'content-type' );
 

@@ -42,20 +42,18 @@ abstract class Repository {
 	 * Store an item in the cache.
 	 *
 	 * @param  string                                    $key
-	 * @param  mixed                                     $value
 	 * @param  \DateTimeInterface|\DateInterval|int|null $ttl
 	 * @return bool
 	 */
-	abstract public function put( $key, $value, $ttl = null ): bool;
+ abstract public function put( $key, mixed $value, $ttl = null ): bool;
 
 	/**
 	 * Retrieve an item from the cache and delete it.
 	 *
 	 * @param  string $key
-	 * @param  mixed  $default
 	 * @return mixed
 	 */
-	public function pull( $key, $default = null ) {
+ public function pull( $key, mixed $default = null ) {
 		$value = $this->get( $key );
 
 		if ( ! is_null( $value ) ) {
@@ -71,11 +69,10 @@ abstract class Repository {
 	 * Store an item in the cache if the key does not exist.
 	 *
 	 * @param  string                                    $key
-	 * @param  mixed                                     $value
 	 * @param  \DateTimeInterface|\DateInterval|int|null $ttl
 	 * @return bool
 	 */
-	public function add( $key, $value, $ttl = null ) {
+ public function add( $key, mixed $value, $ttl = null ) {
 		if ( is_null( $this->get( $key ) ) ) {
 			return $this->put( $key, $value, $ttl );
 		}
@@ -115,9 +112,7 @@ abstract class Repository {
 	public function getMultiple( iterable $keys, mixed $default = null ): iterable {
 		return collect( $keys )
 			->map(
-				function( $key ) use ( $default ) {
-					return $this->pull( $key, $default );
-				}
+				fn($key) => $this->pull( $key, $default )
 			)
 			->to_array();
 	}
@@ -145,9 +140,7 @@ abstract class Repository {
 	 */
 	public function deleteMultiple( iterable $keys ): bool {
 		collect( $keys )->each(
-			function ( $key ) {
-				return $this->delete( $key );
-			}
+			fn($key) => $this->delete( $key )
 		);
 
 		return true;
@@ -170,7 +163,7 @@ abstract class Repository {
 	 * @param  mixed  $value Value.
 	 * @return bool
 	 */
-	public function forever( $key, $value ) {
+	public function forever( $key, mixed $value ) {
 		return $this->put( $key, $value, null );
 	}
 
@@ -179,10 +172,9 @@ abstract class Repository {
 	 *
 	 * @param  string                                    $key
 	 * @param  \DateTimeInterface|\DateInterval|int|null $ttl
-	 * @param  \Closure                                  $callback
 	 * @return mixed
 	 */
-	public function remember( $key, $ttl, Closure $callback ) {
+ public function remember( $key, $ttl, Closure $callback ) {
 		$value = $this->get( $key );
 
 		if ( ! is_null( $value ) ) {

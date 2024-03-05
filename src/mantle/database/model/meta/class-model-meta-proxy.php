@@ -14,20 +14,18 @@ use Mantle\Contracts\Database\Model_Meta;
  */
 class Model_Meta_Proxy {
 	/**
-	 * Model to retrieve meta from.
-	 *
-	 * @var Model_Meta
-	 */
-	protected Model_Meta $model;
-
-	/**
 	 * Constructor.
 	 *
 	 * @param Model_Meta $model Model to reference.
 	 */
-	public function __construct( Model_Meta $model ) {
-		$this->model = $model;
-	}
+	public function __construct(
+     /**
+      * Model to retrieve meta from.
+      */
+     protected Model_Meta $model
+ )
+ {
+ }
 
 	/**
 	 * Retrieve model meta by key.
@@ -50,7 +48,7 @@ class Model_Meta_Proxy {
 	 * @param string $key Meta key.
 	 * @param mixed  $value Meta value.
 	 */
-	public function __set( string $key, $value ) {
+	public function __set( string $key, mixed $value ) {
 		$this->model->queue_meta_attribute( $key, $value );
 	}
 

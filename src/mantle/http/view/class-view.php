@@ -18,7 +18,7 @@ use Mantle\Support\Arr;
 /**
  * View Class
  */
-class View {
+class View implements \Stringable {
 	/**
 	 * Post object to set for the post.
 	 *
@@ -92,7 +92,7 @@ class View {
 	 * @param mixed        $value Value to set.
 	 * @return static
 	 */
-	public function with( $key, $value = null ) {
+	public function with( $key, mixed $value = null ) {
 		if ( is_array( $key ) ) {
 			$this->data = array_merge( $this->data, $key );
 		} else {
@@ -118,7 +118,7 @@ class View {
 	 * @param mixed  $default Default value, optional.
 	 * @return mixed
 	 */
-	public function get_variable( string $key, $default = null ) {
+	public function get_variable( string $key, mixed $default = null ) {
 		return Arr::get( $this->data, $key, $default );
 	}
 
@@ -258,7 +258,7 @@ class View {
 	 *
 	 * @return string
 	 */
-	public function __toString() {
+	public function __toString(): string {
 		return $this->render();
 	}
 }
