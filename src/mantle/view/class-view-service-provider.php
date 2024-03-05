@@ -27,7 +27,7 @@ class View_Service_Provider extends Service_Provider {
 	/**
 	 * Register the service provider.
 	 */
-	public function register() {
+	public function register(): void {
 		$this->register_blade_compiler();
 		$this->register_engine_resolver();
 		$this->register_loader();
@@ -37,7 +37,7 @@ class View_Service_Provider extends Service_Provider {
 	/**
 	 * Register the Blade Compiler Engine
 	 */
-	protected function register_blade_compiler() {
+	protected function register_blade_compiler(): void {
 		$this->app->singleton(
 			'blade.compiler',
 			fn( $app ) => new BladeCompiler( new Filesystem(), $app['config']['view.compiled'] ),
@@ -47,7 +47,7 @@ class View_Service_Provider extends Service_Provider {
 	/**
 	 * Register the view engine resolver.
 	 */
-	protected function register_engine_resolver() {
+	protected function register_engine_resolver(): void {
 		$this->app->singleton(
 			'view.engine.resolver',
 			fn() => tap(
@@ -67,7 +67,7 @@ class View_Service_Provider extends Service_Provider {
 	 *
 	 * @param Engine_Resolver $resolver Engine resolver.
 	 */
-	protected function register_php_engine( Engine_Resolver $resolver ) {
+	protected function register_php_engine( Engine_Resolver $resolver ): void {
 		$resolver->register(
 			'php',
 			fn () => new Php_Engine(),
@@ -79,7 +79,7 @@ class View_Service_Provider extends Service_Provider {
 	 *
 	 * @param Engine_Resolver $resolver Engine resolver.
 	 */
-	protected function register_file_engine( Engine_Resolver $resolver ) {
+	protected function register_file_engine( Engine_Resolver $resolver ): void {
 		$resolver->register(
 			'file',
 			fn () => new File_Engine(),
@@ -91,7 +91,7 @@ class View_Service_Provider extends Service_Provider {
 	 *
 	 * @param Engine_Resolver $resolver Engine resolver.
 	 */
-	protected function register_compiler_engine( Engine_Resolver $resolver ) {
+	protected function register_compiler_engine( Engine_Resolver $resolver ): void {
 		$resolver->register(
 			'blade',
 			fn () => new CompilerEngine( $this->app['blade.compiler'] ),
@@ -101,7 +101,7 @@ class View_Service_Provider extends Service_Provider {
 	/**
 	 * Register the view loader.
 	 */
-	protected function register_loader() {
+	protected function register_loader(): void {
 		$this->app->singleton(
 			'view.loader',
 			fn ( $app ) => tap(
@@ -117,7 +117,7 @@ class View_Service_Provider extends Service_Provider {
 	/**
 	 * Register the view factory.
 	 */
-	protected function register_factory() {
+	protected function register_factory(): void {
 		$this->app->singleton(
 			'view',
 			function( $app ) {
