@@ -10,6 +10,7 @@ namespace Mantle\Testing\Concerns;
 use PHPUnit\Metadata\Annotation\Parser\DocBlock;
 use PHPUnit\Metadata\Annotation\Parser\Registry;
 use PHPUnit\Util\Test;
+use ReflectionClass;
 
 /**
  * Read annotations for testing that supports multiple versions of PHPUnit.
@@ -18,7 +19,7 @@ use PHPUnit\Util\Test;
  */
 trait Reads_Annotations {
 	/**
-	 * Read annotations for the current test case and method.
+	 * Read docblock annotations for the current test case and method.
 	 *
 	 * @return array
 	 */
@@ -53,5 +54,23 @@ trait Reads_Annotations {
 		);
 
 		return [];
+	}
+
+	/**
+	 * Read the attributes for the current test case and method.
+	 *
+	 * @param class-string<\Attribute> $name Filter the results to include only ReflectionAttribute instances for attributes matching this class name.
+	 * @return array<\ReflectionAttribute>
+	 */
+	public function get_attributes_for_method( ?string $name = null ): array {
+		$class = new ReflectionClass( $this );
+
+		// Use either the PHPUnit 9.5+ method or the PHPUnit 10.x method to get the method.
+		$method = $class->getMethod( method_exists( $this, 'getName' ) ? $this->getName() : $this->name() );
+
+		return [
+			...$class->getAttributes( $name ),
+			...$method->getAttributes( $name ),
+		];
 	}
 }

@@ -11,15 +11,21 @@ namespace Mantle\Testing\Concerns;
 
 use Mantle\Database\Model\Model_Exception;
 use Mantle\Database\Model\User;
+use Mantle\Testing\Authentication\Acting_As;
 use Mantle\Testing\Exceptions\Exception;
 use PHPUnit\Framework\Assert;
+use ReflectionClass;
 use WP_User;
 use function Mantle\Support\Helpers\get_user_object;
 
 /**
  * Trait to provide authentication-related testing functionality.
+ *
+ * @mixin \PHPUnit\Framework\TestCase
  */
 trait WordPress_Authentication {
+	use Reads_Annotations;
+
 	/**
 	 * Backed up global user ID.
 	 *
@@ -32,6 +38,11 @@ trait WordPress_Authentication {
 	 */
 	public function wordpress_authentication_set_up() {
 		$this->backup_user = get_current_user_id();
+
+		// Set the test case up using the user from the attribute in descending order (class -> method).
+		foreach ( $this->get_attributes_for_method( Acting_As::class ) as $attribute ) {
+			$this->acting_as( $attribute->newInstance()->user );
+		}
 	}
 
 	/**

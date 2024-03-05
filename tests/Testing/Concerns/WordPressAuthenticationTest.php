@@ -3,6 +3,7 @@ namespace Mantle\Tests\Concerns;
 
 use Mantle\Console\Command;
 use Mantle\Facade\Console;
+use Mantle\Testing\Authentication\Acting_As;
 use Mantle\Testing\Framework_Test_Case;
 
 /**
@@ -36,5 +37,11 @@ class WordPressAuthenticationTest extends Framework_Test_Case {
 	public function test_acting_as_anonymous() {
 		$this->assertNotAuthenticated();
 		$this->assertGuest();
+	}
+
+	#[Acting_As( 'administrator' )]
+	public function test_attribute_authentication() {
+		$this->assertAuthenticated();
+		$this->assertAuthenticated( 'administrator' );
 	}
 }
