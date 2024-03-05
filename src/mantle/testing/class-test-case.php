@@ -45,7 +45,7 @@ use function Mantle\Support\Helpers\collect;
  *
  * Not designed for external use. Use {@see Mantle\Testkit\Test_Case} instead.
  *
- * @property Application|null $app
+ * @property-read Application|null $app
  */
 abstract class Test_Case extends BaseTestCase {
 	use Assertions,
