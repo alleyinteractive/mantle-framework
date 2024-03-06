@@ -141,7 +141,7 @@ trait Has_Attributes {
 
 		return tap(
 			$relation->get_results(),
-			function( $relation ) use ( $method ) {
+			function( $relation ) use ( $method ): void {
 				$this->set_relation( $method, $relation );
 			}
 		);

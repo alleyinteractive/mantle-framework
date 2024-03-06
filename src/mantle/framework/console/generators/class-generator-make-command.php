@@ -54,7 +54,6 @@ class Generator_Make_Command extends Stub_Generator_Command {
 		}
 
 		$name = $this->argument( 'name' );
-		$type = $this->argument( 'type' );
 
 		$path = $this->get_folder_path( $name );
 

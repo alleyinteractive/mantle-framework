@@ -273,7 +273,7 @@ class Event {
 	 * @return \Closure
 	 */
 	protected function pingCallback( $url ) {
-		return function ( Container $container, Factory $http ) use ( $url ) {
+		return function ( Container $container, Factory $http ) use ( $url ): void {
 			try {
 				$http->throw_exception()->get( $url );
 			} catch ( Http_Client_Exception $e ) {
@@ -363,7 +363,7 @@ class Event {
 	 */
 	public function onSuccess( Closure $callback ) {
 		return $this->then(
-			function ( Container $container ) use ( $callback ) {
+			function ( Container $container ) use ( $callback ): void {
 				if ( 0 === $this->exit_code ) {
 					$container->call( $callback, [ $this ] );
 				}
@@ -379,7 +379,7 @@ class Event {
 	 */
 	public function onFailure( Closure $callback ) {
 		return $this->then(
-			function ( Container $container ) use ( $callback ) {
+			function ( Container $container ) use ( $callback ): void {
 				if ( 0 !== $this->exit_code ) {
 					$container->call( $callback, [ $this ] );
 				}

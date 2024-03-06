@@ -40,7 +40,7 @@ abstract class Event_Service_Provider extends Service_Provider implements Isolat
 		);
 
 		$this->app->booting(
-			function() {
+			function(): void {
 				$events = $this->get_events();
 				foreach ( $events as $event => $listeners ) {
 					foreach ( $listeners as $listener ) {

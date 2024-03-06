@@ -14,7 +14,7 @@ namespace Mantle\Support\Helpers;
  *
  * @param array $args Array with the arguments for {@see remove_filter()}.
  */
-function invalid_hook_removal( $args ) {
+function invalid_hook_removal( $args ): void {
 	// PHPCS does not recognize the [ $arg1, $arg2 ] syntax.
 	list( $hook, $callable ) = $args;
 

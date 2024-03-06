@@ -444,7 +444,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	public function refresh( $abstract, $target, $method ) {
 		return $this->rebinding(
 			$abstract,
-			function ( $app, $instance ) use ( $target, $method ) {
+			function ( $app, $instance ) use ( $target, $method ): void {
 				$target->{$method}( $instance );
 			}
 		);

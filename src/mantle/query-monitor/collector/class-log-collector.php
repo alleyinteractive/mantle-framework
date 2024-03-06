@@ -39,7 +39,7 @@ class Log_Collector extends \QM_Collector {
 		$this->app = $app;
 
 		$this->app['log']->listen(
-			function( Message_Logged $event ) {
+			function( Message_Logged $event ): void {
 				$trace = new \QM_Backtrace(
 					[
 						'ignore_frames' => 6,

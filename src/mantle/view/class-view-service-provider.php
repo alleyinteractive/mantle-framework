@@ -52,7 +52,7 @@ class View_Service_Provider extends Service_Provider {
 			'view.engine.resolver',
 			fn() => tap(
 				new Engine_Resolver(),
-				function( Engine_Resolver $resolver ) {
+				function( Engine_Resolver $resolver ): void {
 					// Register the various view engines.
 					$this->register_php_engine( $resolver );
 					$this->register_file_engine( $resolver );
@@ -106,7 +106,7 @@ class View_Service_Provider extends Service_Provider {
 			'view.loader',
 			fn ( $app ) => tap(
 				new View_Finder( $app->get_base_path() ),
-				function ( View_Finder $loader ) {
+				function ( View_Finder $loader ): void {
 					// Register the base view folder for the project.
 					$loader->add_path( $this->app->get_base_path( 'views/' ) );
 				}

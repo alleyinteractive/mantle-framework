@@ -186,7 +186,7 @@ class Collection implements ArrayAccess, Enumerable {
 		$counts = new self();
 
 		$collection->each(
-			function ( $value ) use ( $counts ) {
+			function ( $value ) use ( $counts ): void {
 				$counts[ $value ] = isset( $counts[ $value ] ) ? $counts[ $value ] + 1 : 1;
 			}
 		);

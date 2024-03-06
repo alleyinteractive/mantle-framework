@@ -337,7 +337,7 @@ class Belongs_To extends Relation {
 		$dictionary = $this->build_dictionary( $results, $models );
 
 		return $models->each(
-			function( $model ) use ( $dictionary ) {
+			function( $model ) use ( $dictionary ): void {
 				$key = $model->meta->{$this->local_key};
 
 				$model->set_relation( $this->relationship, $dictionary[ $key ][0] ?? null );

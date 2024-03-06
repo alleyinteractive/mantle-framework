@@ -123,7 +123,7 @@ abstract class Block implements Block_Contract {
 
 		add_action(
 			'enqueue_block_editor_assets',
-			function() {
+			function(): void {
 				$this->register_editor_assets();
 				$this->register_frontend_assets();
 			}
@@ -131,7 +131,7 @@ abstract class Block implements Block_Contract {
 
 		add_action(
 			'init',
-			function() {
+			function(): void {
 				$args = wp_parse_args(
 					[
 						'attributes'      => $this->get_attributes(),

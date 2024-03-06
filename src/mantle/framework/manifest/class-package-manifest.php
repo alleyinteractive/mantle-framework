@@ -152,7 +152,7 @@ class Package_Manifest {
 				}
 			)
 			->each(
-				function ( $configuration ) use ( &$ignore ) {
+				function ( $configuration ) use ( &$ignore ): void {
 					$ignore = array_merge( $ignore, $configuration['dont-discover'] ?? [] );
 				}
 			)

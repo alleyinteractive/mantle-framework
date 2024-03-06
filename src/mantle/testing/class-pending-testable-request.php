@@ -251,7 +251,7 @@ class Pending_Testable_Request {
 			return $send_headers;
 		};
 
-		$intercept_redirect = function( $location, $status ) use ( &$response_status, &$response_headers ) {
+		$intercept_redirect = function( $location, $status ) use ( &$response_status, &$response_headers ): void {
 			$response_status              = $status;
 			$response_headers['Location'] = $location;
 			throw new WP_Redirect_Exception();

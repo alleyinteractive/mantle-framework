@@ -331,7 +331,7 @@ class Filesystem_Adapter implements Filesystem {
 		$response->headers->replace( $headers );
 
 		$response->setCallback(
-			function () use ( $path ) {
+			function () use ( $path ): void {
 				$stream = $this->readStream( $path );
 				fpassthru( $stream );
 				fclose( $stream );
