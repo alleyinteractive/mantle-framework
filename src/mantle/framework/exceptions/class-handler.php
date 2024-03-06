@@ -352,6 +352,7 @@ class Handler implements Contract {
 	 * @template TThrowable of Throwable
 	 *
 	 * @param Throwable $e Exception thrown.
+	 * @return bool
 	 * @phpstan-param TThrowable $e
 	 * @phpstan-return (TThrowable is HttpException ? true : false)
 	 */
