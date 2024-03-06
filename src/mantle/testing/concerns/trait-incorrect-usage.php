@@ -10,6 +10,8 @@
 namespace Mantle\Testing\Concerns;
 
 use Mantle\Support\Str;
+use Mantle\Testing\Attributes\Expected_Incorrect_Usage;
+use Mantle\Testing\Attributes\Ignore_Incorrect_Usage;
 
 use function Mantle\Support\Helpers\collect;
 
@@ -64,6 +66,15 @@ trait Incorrect_Usage {
 
 		add_action( 'doing_it_wrong_run', [ $this, 'doing_it_wrong_run' ] ); // @phpstan-ignore-line Action callback returns false
 		add_action( 'doing_it_wrong_trigger_error', '__return_false' ); // @phpstan-ignore-line Action callback returns false
+
+		// Allow attributes to define the expected and ignored incorrect usages.
+		foreach ( $this->get_attributes_for_method( Expected_Incorrect_Usage::class ) as $attribute ) {
+			$this->setExpectedIncorrectUsage( $attribute->newInstance()->name );
+		}
+
+		foreach ( $this->get_attributes_for_method( Ignore_Incorrect_Usage::class ) as $attribute ) {
+			$this->ignoreIncorrectUsage( $attribute->newInstance()->name );
+		}
 	}
 
 	/**

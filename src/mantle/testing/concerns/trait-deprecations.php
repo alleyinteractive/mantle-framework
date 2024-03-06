@@ -10,6 +10,8 @@
 namespace Mantle\Testing\Concerns;
 
 use Mantle\Support\Str;
+use Mantle\Testing\Attributes\Expected_Deprecation;
+use Mantle\Testing\Attributes\Ignore_Deprecation;
 
 use function Mantle\Support\Helpers\collect;
 
@@ -62,6 +64,15 @@ trait Deprecations {
 		add_action( 'deprecated_function_trigger_error', '__return_false' ); // @phpstan-ignore-line Action callback returns false
 		add_action( 'deprecated_argument_trigger_error', '__return_false' ); // @phpstan-ignore-line Action callback returns false
 		add_action( 'deprecated_hook_trigger_error', '__return_false' ); // @phpstan-ignore-line Action callback returns false
+
+		// Allow attributes to define the expected and ignored deprecations.
+		foreach ( $this->get_attributes_for_method( Expected_Deprecation::class ) as $attribute ) {
+			$this->setExpectedDeprecated( $attribute->newInstance()->deprecation );
+		}
+
+		foreach ( $this->get_attributes_for_method( Ignore_Deprecation::class ) as $attribute ) {
+			$this->ignoreDeprecated( $attribute->newInstance()->deprecation );
+		}
 	}
 
 	/**
@@ -134,7 +145,7 @@ trait Deprecations {
 	 *                           parameter of the `_deprecated_function()` or
 	 *                           `_deprecated_argument()` call.
 	 */
-	public function setExpectedDeprecated( $deprecated ) {
+	public function setExpectedDeprecated( string $deprecated ) {
 		$this->expected_deprecated[] = $deprecated;
 	}
 
