@@ -84,8 +84,8 @@ return RectorConfig::configure()
 			// Dead Code Set
 			///////////////////////////////////////////////////
 			// easy picks
-			// RemoveUnusedForeachKeyRector::class,
-			// RemoveDuplicatedArrayKeyRector::class,
+			RemoveUnusedForeachKeyRector::class,
+			RemoveDuplicatedArrayKeyRector::class,
 			// RecastingRemovalRector::class,
 			// RemoveAndTrueRector::class,
 			// SimplifyMirrorAssignRector::class,

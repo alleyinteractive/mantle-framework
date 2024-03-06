@@ -197,8 +197,8 @@ class Event {
 	 * @param Application $app Application instance.
 	 */
 	public function filters_pass( Application $app ): bool {
-		foreach ( $this->filters as $callback ) {
-			if ( ! $app->call( $callback ) ) {
+		foreach ( $this->filters as $filter ) {
+			if ( ! $app->call( $filter ) ) {
 				return false;
 			}
 		}

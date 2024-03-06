@@ -572,7 +572,7 @@ abstract class Builder {
 			return $this;
 		}
 
-		foreach ( $this->scopes as $identifier => $scope ) {
+		foreach ( $this->scopes as $scope ) {
 			$this->call_scope(
 				function( self $builder ) use ( $scope ) {
 					if ( $scope instanceof Closure ) {

@@ -194,7 +194,7 @@ class Hook_Usage_Command extends Command {
 				continue;
 			}
 
-			foreach ( $matches[1] as $i => $match ) {
+			foreach ( $matches[1] as $match ) {
 				[ $method, $char_pos ] = $match;
 
 				$line = Str::line_number( $contents, $char_pos );

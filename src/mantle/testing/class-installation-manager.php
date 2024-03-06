@@ -200,8 +200,8 @@ class Installation_Manager {
 			return $this;
 		}
 
-		foreach ( $this->before_install_callbacks as $callback ) {
-			$callback();
+		foreach ( $this->before_install_callbacks as $before_install_callback ) {
+			$before_install_callback();
 		}
 
 		try {
