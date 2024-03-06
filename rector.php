@@ -32,6 +32,9 @@ use Rector\EarlyReturn\Rector\Return_\PreparedValueToEarlyReturnRector;
 use Rector\EarlyReturn\Rector\Return_\ReturnBinaryOrToEarlyReturnRector;
 use Rector\EarlyReturn\Rector\StmtsAwareInterface\ReturnEarlyIfVariableRector;
 use Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchMethodCallReturnTypeRector;
+use Rector\Php80\Rector\FunctionLike\MixedTypeRector;
+use Rector\Php80\Rector\NotIdentical\StrContainsRector;
+use Rector\Php81\Rector\Array_\FirstClassCallableRector;
 
 /**
  * Rector Configuration
@@ -43,6 +46,7 @@ use Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchMethodCallRet
  *
  * - RenameForeachValueVariableToMatchMethodCallReturnTypeRector: causes variables to be converted to snakeCase
  * - RemoveUselessParamTagRector: Conflicts with WordPress Coding Standards
+ * - MixedTypeRector: Conflicts with WordPress Coding Standards
  */
 return RectorConfig::configure()
 	->withIndent( "\t" )
@@ -51,7 +55,7 @@ return RectorConfig::configure()
 		deadCode: true,
 	)
 	->withTypeCoverageLevel(2)
-	// ->withPhpSets( php81: true )
+	->withPhpSets( php81: true )
 	->withRules(
 		[
 			AddVoidReturnTypeWhereNoReturnRector::class,
@@ -75,5 +79,8 @@ return RectorConfig::configure()
 			__DIR__ . '/tests/Testing/CoreTestShimTest.php',
 		],
 		RemoveUselessParamTagRector::class,
+		MixedTypeRector::class,
 		RenameForeachValueVariableToMatchMethodCallReturnTypeRector::class,
+		FirstClassCallableRector::class,
+		StrContainsRector::class,
 	]);

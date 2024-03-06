@@ -38,13 +38,6 @@ abstract class Builder {
 		Query_Clauses;
 
 	/**
-	 * Model to build on.
-	 *
-	 * @var class-string<TModel>|array<class-string<TModel>>
-	 */
-	protected array|string $model;
-
-	/**
 	 * Result limit per-page.
 	 */
 	protected ?int $limit = 100;
@@ -128,11 +121,10 @@ abstract class Builder {
 	/**
 	 * Constructor.
 	 *
-	 * @param array|string $model Model or array of model class names.
+	 * @param string|string[] $model Model name or array of model names.
+	 * @phpstan-param class-string<TModel>|array<class-string<TModel>> $model
 	 */
-	public function __construct( $model ) {
-		$this->model = $model;
-	}
+	public function __construct( protected array|string $model ) {}
 
 	/**
 	 * Get the query results.
