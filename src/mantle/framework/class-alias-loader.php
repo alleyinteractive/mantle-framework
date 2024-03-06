@@ -29,8 +29,6 @@ class Alias_Loader {
 
 	/**
 	 * The singleton instance of the loader.
-	 *
-	 * @var Alias_Loader|null
 	 */
 	protected static ?Alias_Loader $instance = null;
 

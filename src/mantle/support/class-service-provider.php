@@ -24,15 +24,11 @@ abstract class Service_Provider implements LoggerAwareInterface {
 
 	/**
 	 * The paths that should be published.
-	 *
-	 * @var array
 	 */
 	public static array $publishes = [];
 
 	/**
 	 * The paths that should be published by group.
-	 *
-	 * @var array
 	 */
 	public static array $publish_tags = [];
 

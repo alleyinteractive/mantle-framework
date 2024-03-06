@@ -20,8 +20,6 @@ use RuntimeException;
 abstract class Facade {
 	/**
 	 * The application instance being facaded.
-	 *
-	 * @var \Mantle\Contracts\Application|null
 	 */
 	protected static ?Application $app = null;
 

@@ -28,15 +28,11 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 
 	/**
 	 * Route parameters.
-	 *
-	 * @var ParameterBag|null
 	 */
 	protected ?ParameterBag $route_parameters = null;
 
 	/**
 	 * The decoded JSON content for the request.
-	 *
-	 * @var ParameterBag|null
 	 */
 	protected ?ParameterBag $json = null;
 

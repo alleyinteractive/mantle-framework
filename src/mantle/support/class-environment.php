@@ -20,8 +20,6 @@ use function Mantle\Support\Helpers\value;
 class Environment {
 	/**
 	 * Variable repository.
-	 *
-	 * @var RepositoryInterface|null
 	 */
 	protected static ?RepositoryInterface $repository;
 

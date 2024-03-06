@@ -15,8 +15,6 @@ use Exception;
 class Http_Client_Exception extends Exception {
 	/**
 	 * Error response.
-	 *
-	 * @var Response
 	 */
 	public Response $response;
 

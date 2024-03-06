@@ -24,8 +24,6 @@ use ReflectionParameter;
 class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	/**
 	 * The current globally available container (if any).
-	 *
-	 * @var \Mantle\Contracts\Container|null
 	 */
 	protected static ?\Mantle\Contracts\Container $instance;
 

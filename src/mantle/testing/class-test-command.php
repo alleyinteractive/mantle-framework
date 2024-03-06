@@ -25,36 +25,26 @@ use Symfony\Component\Console\Exception\CommandNotFoundException;
 class Test_Command {
 	/**
 	 * Instance of the Command Tester.
-	 *
-	 * @var CommandTester
 	 */
 	protected CommandTester $tester;
 
 	/**
 	 * Flag if the command has been executed.
-	 *
-	 * @var boolean
 	 */
 	protected bool $has_executed = false;
 
 	/**
 	 * All of the expected output lines.
-	 *
-	 * @var array
 	 */
 	public array $expected_output = [];
 
 	/**
 	 * All of the output lines that aren't expected to be displayed.
-	 *
-	 * @var array
 	 */
 	public array $unexpected_output = [];
 
 	/**
 	 * Expected exit code.
-	 *
-	 * @var int
 	 */
 	public ?int $expected_exit_code = null;
 

@@ -27,22 +27,16 @@ class Asset {
 
 	/**
 	 * Enqueue on frontend.
-	 *
-	 * @var bool
 	 */
 	protected bool $frontend = true;
 
 	/**
 	 * Enqueue in the admin area.
-	 *
-	 * @var bool
 	 */
 	protected bool $admin = true;
 
 	/**
 	 * Enqueue in the block editor area.
-	 *
-	 * @var bool
 	 */
 	protected bool $block_editor = false;
 

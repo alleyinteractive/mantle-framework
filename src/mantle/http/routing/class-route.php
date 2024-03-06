@@ -40,15 +40,11 @@ class Route extends Symfony_Route {
 
 	/**
 	 * Route action.
-	 *
-	 * @var array
 	 */
 	protected array $action;
 
 	/**
 	 * Container instance.
-	 *
-	 * @var Container
 	 */
 	protected Container $container;
 

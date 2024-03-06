@@ -21,15 +21,11 @@ use Mantle\Console\Output_Style;
 trait Interacts_With_IO {
 	/**
 	 * The input implementation.
-	 *
-	 * @var InputInterface
 	 */
 	protected InputInterface $input;
 
 	/**
 	 * Output interface.
-	 *
-	 * @var Output_Style
 	 */
 	protected Output_Style $output;
 

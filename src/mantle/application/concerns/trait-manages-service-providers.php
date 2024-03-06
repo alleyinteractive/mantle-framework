@@ -106,10 +106,6 @@ trait Manages_Service_Providers {
 			$provider = new $provider( $this );
 		}
 
-		if ( ! ( $provider instanceof Service_Provider ) ) {
-			throw new InvalidArgumentException( "Provider is not instance of Service_Provider: {$provider_name}" );
-		}
-
 		$provider->register();
 
 		$this->service_providers[ $provider_name ] = $provider;

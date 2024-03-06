@@ -31,43 +31,31 @@ abstract class Block implements Block_Contract {
 
 	/**
 	 * A custom override value for the block's Editor script location.
-	 *
-	 * @var string
 	 */
 	protected string $editor_script = '';
 
 	/**
 	 * A custom override value for the block's Editor script asset file location.
-	 *
-	 * @var string
 	 */
 	protected string $editor_script_asset = '';
 
 	/**
 	 * A custom override value for the block's Editor script dependencies.
-	 *
-	 * @var array
 	 */
 	protected array $editor_script_dependencies = [];
 
 	/**
 	 * A custom override value for the block's Editor script handle.
-	 *
-	 * @var string
 	 */
 	protected string $editor_script_handle = '';
 
 	/**
 	 * A custom override value for the block's Editor style location.
-	 *
-	 * @var string
 	 */
 	protected string $editor_style = '';
 
 	/**
 	 * A custom override value for the block's Editor style handle.
-	 *
-	 * @var string
 	 */
 	protected string $editor_style_handle = '';
 
@@ -75,58 +63,42 @@ abstract class Block implements Block_Contract {
 	 * The block's entry file without the extension.
 	 *
 	 * Generally this is going to be an index file (e.g. index.js, index.jsx)
-	 *
-	 * @var string
 	 */
 	protected string $entry_filename = 'index';
 
 	/**
 	 * A custom override value for the block's Frontend script location.
-	 *
-	 * @var string
 	 */
 	protected string $frontend_script = '';
 
 	/**
 	 * A custom override value for the block's Frontend script handle.
-	 *
-	 * @var string
 	 */
 	protected string $frontend_script_handle = '';
 
 	/**
 	 * A custom override value for the block's Frontend style location.
-	 *
-	 * @var string
 	 */
 	protected string $frontend_style = '';
 
 	/**
 	 * A custom override value for the block's Frontend style handle.
-	 *
-	 * @var string
 	 */
 	protected string $frontend_style_handle = '';
 
 	/**
 	 * Whether the block is a dynamic block or not.
 	 * Default is true.
-	 *
-	 * @var bool
 	 */
 	protected bool $is_dynamic = true;
 
 	/**
 	 * The name of the block.
-	 *
-	 * @var string
 	 */
 	protected string $name = '';
 
 	/**
 	 * The namespace of the block.
-	 *
-	 * @var string
 	 */
 	protected string $namespace = '';
 

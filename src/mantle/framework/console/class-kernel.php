@@ -59,22 +59,16 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 
 	/**
 	 * Console application.
-	 *
-	 * @var Console_Application_Contract
 	 */
 	protected Console_Application_Contract $console_application;
 
 	/**
 	 * Indicates if the Closure commands have been loaded.
-	 *
-	 * @var bool
 	 */
 	protected bool $commands_loaded = false;
 
 	/**
 	 * Output interface
-	 *
-	 * @var OutputInterface
 	 */
 	protected ?OutputInterface $output;
 

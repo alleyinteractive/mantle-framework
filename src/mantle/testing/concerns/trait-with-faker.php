@@ -17,8 +17,6 @@ use Mantle\Faker\Faker_Provider;
 trait With_Faker {
 	/**
 	 * Faker instance.
-	 *
-	 * @var Generator
 	 */
 	protected Generator $faker;
 

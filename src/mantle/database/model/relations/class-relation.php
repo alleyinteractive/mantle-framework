@@ -43,8 +43,6 @@ abstract class Relation {
 
 	/**
 	 * Parent model instance.
-	 *
-	 * @var Model
 	 */
 	protected Model $parent;
 

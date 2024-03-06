@@ -22,8 +22,6 @@ class Pipeline implements PipelineContract {
 
 	/**
 	 * The container implementation.
-	 *
-	 * @var Container|null
 	 */
 	protected ?Container $container;
 

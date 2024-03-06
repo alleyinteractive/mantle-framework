@@ -43,8 +43,6 @@ abstract class Generator_Command extends Command {
 
 	/**
 	 * String replacements.
-	 *
-	 * @var String_Replacements
 	 */
 	protected String_Replacements $replacements;
 

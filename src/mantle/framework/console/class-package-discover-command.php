@@ -30,8 +30,6 @@ class Package_Discover_Command extends Command {
 
 	/**
 	 * Package Manifest.
-	 *
-	 * @var Package_Manifest
 	 */
 	protected Package_Manifest $manifest;
 

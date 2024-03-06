@@ -39,8 +39,6 @@ class Schedule {
 
 	/**
 	 * Timezone for scheduling.
-	 *
-	 * @var DateTimeZone|null
 	 */
 	protected ?DateTimeZone $timezone = null;
 

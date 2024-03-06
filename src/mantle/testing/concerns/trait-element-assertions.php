@@ -18,8 +18,6 @@ use Gt\CssXPath\Translator;
 trait Element_Assertions {
 	/**
 	 * DOM Document Storage.
-	 *
-	 * @var DOMDocument
 	 */
 	protected DOMDocument $document;
 

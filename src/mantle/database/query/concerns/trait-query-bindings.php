@@ -23,8 +23,6 @@ use function Mantle\Support\Helpers\collect;
 trait Query_Bindings {
 	/**
 	 * Raw query bindings.
-	 *
-	 * @var array
 	 */
 	protected array $bindings = [
 		'where' => [],
@@ -32,8 +30,6 @@ trait Query_Bindings {
 
 	/**
 	 * The valid operators for a raw query binding.
-	 *
-	 * @var array
 	 */
 	protected array $operators = [
 		'=',
@@ -50,8 +46,6 @@ trait Query_Bindings {
 
 	/**
 	 * Flag to indicate if a raw query clause has been added.
-	 *
-	 * @var bool
 	 */
 	protected bool $raw_query_clause_added = false;
 

@@ -43,8 +43,6 @@ use function Mantle\Support\Helpers\throw_if;
 class Filesystem_Adapter implements Filesystem {
 	/**
 	 * Path prefixer.
-	 *
-	 * @var PathPrefixer
 	 */
 	protected PathPrefixer $prefixer;
 

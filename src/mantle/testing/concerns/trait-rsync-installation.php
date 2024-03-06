@@ -34,23 +34,17 @@ trait Rsync_Installation {
 
 	/**
 	 * Storage location to rsync the codebase to.
-	 *
-	 * @var string
 	 */
 	protected ?string $rsync_to = null;
 
 	/**
 	 * Storage location to rsync the codebase from.
-	 *
-	 * @var string
 	 */
 	protected ?string $rsync_from = null;
 
 	/**
 	 * Subdirectory from the parent folder being rsync-ed to the previous working
 	 * directory.
-	 *
-	 * @var string
 	 */
 	protected ?string $rsync_subdir = '';
 

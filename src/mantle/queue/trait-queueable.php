@@ -19,15 +19,11 @@ use DateTimeInterface;
 trait Queueable {
 	/**
 	 * The delay before the job will be run.
-	 *
-	 * @var int|DateTimeInterface
 	 */
 	public int|DateTimeInterface $delay;
 
 	/**
 	 * The name of the queue for the job.
-	 *
-	 * @var string
 	 */
 	public string $queue;
 

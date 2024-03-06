@@ -17,8 +17,6 @@ class Pluralizer {
 
 	/**
 	 * The cached inflector instance.
-	 *
-	 * @var Inflector|null
 	 */
 	protected static ?Inflector $inflector = null;
 

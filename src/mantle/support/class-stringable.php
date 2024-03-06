@@ -29,8 +29,6 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 
 	/**
 	 * The underlying string value.
-	 *
-	 * @var string
 	 */
 	protected string $value = '';
 

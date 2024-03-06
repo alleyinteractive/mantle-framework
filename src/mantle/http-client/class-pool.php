@@ -24,8 +24,6 @@ class Pool {
 
 	/**
 	 * Base pending request.
-	 *
-	 * @var Pending_Request
 	 */
 	protected Pending_Request $base_request;
 

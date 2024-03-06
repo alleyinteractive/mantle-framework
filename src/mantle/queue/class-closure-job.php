@@ -24,15 +24,11 @@ use Throwable;
 class Closure_Job implements Can_Queue {
 	/**
 	 * The delay before the job will be run.
-	 *
-	 * @var int|DateTimeInterface
 	 */
 	public int|DateTimeInterface $delay;
 
 	/**
 	 * The callbacks that should be run on failure.
-	 *
-	 * @var array
 	 */
 	public array $failure_callbacks = [];
 

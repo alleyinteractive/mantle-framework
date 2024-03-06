@@ -108,8 +108,6 @@ class Term extends Model implements Core_Object, Model_Meta, Updatable {
 		$instance = new class() extends Term {
 			/**
 			 * Object name.
-			 *
-			 * @var string
 			 */
 			public static string $for_object_name = '';
 

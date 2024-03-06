@@ -38,22 +38,16 @@ class Pending_Testable_Request {
 
 	/**
 	 * Indicates whether redirects should be followed.
-	 *
-	 * @var bool
 	 */
 	public bool $follow_redirects = false;
 
 	/**
 	 * The headers for the request.
-	 *
-	 * @var HeaderBag
 	 */
 	public HeaderBag $headers;
 
 	/**
 	 * The cookies for the request.
-	 *
-	 * @var InputBag
 	 */
 	public InputBag $cookies;
 

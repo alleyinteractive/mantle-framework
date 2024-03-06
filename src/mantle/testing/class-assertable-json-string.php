@@ -30,8 +30,6 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 
 	/**
 	 * The decoded JSON contents.
-	 *
-	 * @var array|null
 	 */
 	protected ?array $decoded;
 

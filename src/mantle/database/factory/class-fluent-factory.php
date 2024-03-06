@@ -27,8 +27,6 @@ use function Mantle\Support\Helpers\collect;
 class Fluent_Factory extends Factory {
 	/**
 	 * Number of objects to create.
-	 *
-	 * @var int
 	 */
 	protected int $count = 1;
 

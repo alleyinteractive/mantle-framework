@@ -27,22 +27,16 @@ class Response implements ArrayAccess {
 
 	/**
 	 * Raw response from `wp_remote_request()`.
-	 *
-	 * @var array
 	 */
 	protected array $response;
 
 	/**
 	 * The decoded JSON response.
-	 *
-	 * @var array|null
 	 */
 	protected ?array $decoded;
 
 	/**
 	 * The decoded XML Element response.
-	 *
-	 * @var SimpleXMLElement|null
 	 */
 	protected ?SimpleXMLElement $element;
 

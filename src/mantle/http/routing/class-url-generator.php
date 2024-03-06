@@ -32,22 +32,16 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 
 	/**
 	 * The forced scheme for URLs.
-	 *
-	 * @var string|null
 	 */
 	protected ?string $force_scheme = null;
 
 	/**
 	 * A cached copy of the URL root for the current request.
-	 *
-	 * @var string|null
 	 */
 	protected ?string $cached_root;
 
 	/**
 	 * A cached copy of the URL scheme for the current request.
-	 *
-	 * @var string|null
 	 */
 	protected ?string $cached_scheme = null;
 

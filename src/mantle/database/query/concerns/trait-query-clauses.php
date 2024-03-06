@@ -31,8 +31,6 @@ trait Query_Clauses {
 
 	/**
 	 * Storage of the term query.
-	 *
-	 * @var \WP_Term_Query|null
 	 */
 	protected ?\WP_Term_Query $query_clause_query = null;
 

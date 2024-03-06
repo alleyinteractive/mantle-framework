@@ -23,29 +23,21 @@ use function Mantle\Support\Helpers\collect;
 class Model_Manifest {
 	/**
 	 * Manifest from the disk.
-	 *
-	 * @var array|null
 	 */
 	protected ?array $manifest = null;
 
 	/**
 	 * Base folder path.
-	 *
-	 * @var string
 	 */
 	protected string $base_path;
 
 	/**
 	 * Vendor folder path.
-	 *
-	 * @var string
 	 */
 	protected string $vendor_path;
 
 	/**
 	 * Package Manifest file path.
-	 *
-	 * @var string
 	 */
 	protected string $manifest_path;
 

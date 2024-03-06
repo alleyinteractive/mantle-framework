@@ -26,8 +26,6 @@ use function Mantle\Support\Helpers\str;
 class Queue_Jobs_Table extends WP_List_Table {
 	/**
 	 * Number of items per page.
-	 *
-	 * @var int
 	 */
 	public int $per_page = 50;
 

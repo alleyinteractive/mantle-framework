@@ -20,15 +20,11 @@ use function Mantle\Support\Helpers\data_get;
 class Request {
 	/**
 	 * The request arguments.
-	 *
-	 * @var array
 	 */
 	protected array $args;
 
 	/**
 	 * The request URL.
-	 *
-	 * @var string
 	 */
 	protected string $url;
 

@@ -41,57 +41,41 @@ class Router implements Router_Contract {
 
 	/**
 	 * Events instance.
-	 *
-	 * @var Dispatcher
 	 */
 	protected Dispatcher $events;
 
 	/**
 	 * Container instance.
-	 *
-	 * @var Container
 	 */
 	protected Container $container;
 
 	/**
 	 * Route Collection
-	 *
-	 * @var RouteCollection
 	 */
 	protected RouteCollection $routes;
 
 	/**
 	 * All of the short-hand keys for middlewares.
-	 *
-	 * @var array
 	 */
 	protected array $middleware = [];
 
 	/**
 	 * All of the middleware groups.
-	 *
-	 * @var array
 	 */
 	protected array $middleware_groups = [];
 
 	/**
 	 * The registered route value binders.
-	 *
-	 * @var array
 	 */
 	protected array $binders = [];
 
 	/**
 	 * REST Route Registrar
-	 *
-	 * @var Rest_Route_Registrar|null
 	 */
 	protected ?Rest_Route_Registrar $rest_registrar = null;
 
 	/**
 	 * Data Object Router
-	 *
-	 * @var Entity_Router
 	 */
 	protected Entity_Router $model_router;
 

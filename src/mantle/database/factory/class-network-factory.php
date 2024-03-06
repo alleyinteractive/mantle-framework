@@ -19,8 +19,6 @@ namespace Mantle\Database\Factory;
 class Network_Factory extends Factory {
 	/**
 	 * Network ID tracker.
-	 *
-	 * @var int
 	 */
 	protected int $network_id = 2;
 
