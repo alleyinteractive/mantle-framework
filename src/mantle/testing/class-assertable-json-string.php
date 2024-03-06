@@ -22,33 +22,27 @@ use function Mantle\Support\Helpers\data_get;
  */
 class Assertable_Json_String implements ArrayAccess, Countable {
 	/**
-	 * The original encoded JSON.
-	 *
-	 * @var string|array|Jsonable|JsonSerializable
-	 */
-	public $json;
-
-	/**
 	 * The decoded JSON contents.
 	 */
-	protected ?array $decoded;
+	protected ?array $decoded = null;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param string|array|Jsonable|JsonSerializable $jsonable
+	 * @param string|array|Jsonable|JsonSerializable $json
 	 */
-	public function __construct( $jsonable ) {
-		$this->json = $jsonable;
-
-		if ( $jsonable instanceof JsonSerializable ) {
-			$this->decoded = $jsonable->jsonSerialize();
-		} elseif ( $jsonable instanceof Jsonable ) {
-			$this->decoded = json_decode( $jsonable->to_json(), true );
-		} elseif ( is_array( $jsonable ) ) {
-			$this->decoded = $jsonable;
+	public function __construct( /**
+	 * The original encoded JSON.
+	 */
+	public $json ) {
+		if ( $this->json instanceof JsonSerializable ) {
+			$this->decoded = $this->json->jsonSerialize();
+		} elseif ( $this->json instanceof Jsonable ) {
+			$this->decoded = json_decode( $this->json->to_json(), true );
+		} elseif ( is_array( $this->json ) ) {
+			$this->decoded = $this->json;
 		} else {
-			$decoded = json_decode( $jsonable, true );
+			$decoded = json_decode( $this->json, true );
 
 			$this->decoded = is_array( $decoded ) ? $decoded : null;
 		}
@@ -304,7 +298,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 * @return array
 	 */
 	protected function json_search_strings( $key, $value ) {
-		$needle = substr( wp_json_encode( [ $key => $value ] ), 1, -1 );
+		$needle = substr( (string) wp_json_encode( [ $key => $value ] ), 1, -1 );
 
 		return [
 			$needle . ']',

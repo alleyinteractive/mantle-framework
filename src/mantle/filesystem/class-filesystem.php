@@ -236,7 +236,7 @@ class Filesystem {
 				if ( ! @unlink( $path ) ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 					$success = false;
 				}
-			} catch ( ErrorException $e ) {
+			} catch ( ErrorException ) {
 				$success = false;
 			}
 		}

@@ -279,8 +279,8 @@ class Pending_Testable_Request {
 
 			// Mirror the logic from Request::createFromGlobals().
 			if (
-				str_starts_with( $request->headers->get( 'CONTENT_TYPE', '' ), 'application/x-www-form-urlencoded' )
-			&& \in_array( strtoupper( $request->server->get( 'REQUEST_METHOD', 'GET' ) ), [ 'PUT', 'DELETE', 'PATCH' ] )
+				str_starts_with( (string) $request->headers->get( 'CONTENT_TYPE', '' ), 'application/x-www-form-urlencoded' )
+			&& \in_array( strtoupper( (string) $request->server->get( 'REQUEST_METHOD', 'GET' ) ), [ 'PUT', 'DELETE', 'PATCH' ] )
 			) {
 				parse_str( $request->getContent(), $data );
 
@@ -321,7 +321,7 @@ class Pending_Testable_Request {
 				try {
 					// Execute the request, inasmuch as WordPress would.
 					require ABSPATH . WPINC . '/template-loader.php';
-				} catch ( Exception $e ) { // phpcs:ignore
+				} catch ( Exception ) { // phpcs:ignore
 					// Mantle Exceptions are thrown to prevent some code from running, e.g.
 					// the tail end of wp_redirect().
 				}
@@ -414,11 +414,11 @@ class Pending_Testable_Request {
 
 		$parts = wp_parse_url( $url );
 		if ( isset( $parts['scheme'] ) ) {
-			$req = isset( $parts['path'] ) ? $parts['path'] : '';
+			$req = $parts['path'] ?? '';
 			if ( isset( $parts['query'] ) ) {
 				$req .= '?' . $parts['query'];
 				// Parse the URL query vars into $_GET.
-				parse_str( $parts['query'], $_GET );
+				parse_str( (string) $parts['query'], $_GET );
 			}
 		} else {
 			$req = $url;

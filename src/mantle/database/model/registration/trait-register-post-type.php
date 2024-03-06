@@ -20,7 +20,7 @@ trait Register_Post_Type {
 	 * Register the post type.
 	 */
 	public static function boot_register_post_type(): void {
-		\add_action( 'init', [ __CLASS__, 'register_object' ] );
+		\add_action( 'init', [ self::class, 'register_object' ] );
 	}
 
 	/**

@@ -35,7 +35,7 @@ trait Has_Global_Scopes {
 			static::$global_scopes[ static::class ][ spl_object_hash( $scope ) ] = $scope;
 			return true;
 		} elseif ( $scope instanceof Scope ) {
-			static::$global_scopes[ static::class ][ get_class( $scope ) ] = $scope;
+			static::$global_scopes[ static::class ][ $scope::class ] = $scope;
 			return true;
 		}
 
@@ -64,7 +64,7 @@ trait Has_Global_Scopes {
 
 		return Arr::get(
 			static::$global_scopes,
-			static::class . '.' . get_class( $scope )
+			static::class . '.' . $scope::class
 		);
 	}
 

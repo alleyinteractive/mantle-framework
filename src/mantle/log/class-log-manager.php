@@ -37,14 +37,9 @@ class Log_Manager implements LoggerInterface {
 	protected $app;
 
 	/**
-	 * Dispatcher instance.
-	 */
-	protected ?Dispatcher $dispatcher;
-
-	/**
 	 * Default logger instance for the application.
 	 */
-	protected ?Logger $drive;
+	protected ?Logger $drive = null;
 
 	/**
 	 * Constructor.
@@ -52,9 +47,8 @@ class Log_Manager implements LoggerInterface {
 	 * @param Application $app Application instance.
 	 * @param Dispatcher  $dispatcher Event dispatcher.
 	 */
-	public function __construct( Application $app, Dispatcher $dispatcher = null ) {
-		$this->app        = $app;
-		$this->dispatcher = $dispatcher;
+	public function __construct( Application $app, protected ?Dispatcher $dispatcher = null ) {
+		$this->app = $app;
 	}
 
 	/**

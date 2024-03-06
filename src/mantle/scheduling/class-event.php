@@ -76,7 +76,7 @@ class Event {
 	 * The exit status code of the command.
 	 * 0 for success and 1 for failure.
 	 */
-	public ?int $exit_code;
+	public ?int $exit_code = null;
 
 	/**
 	 * Exception thrown for the command.
@@ -300,9 +300,7 @@ class Event {
 	 * @return static
 	 */
 	public function when( $callback ) {
-		$this->filters[] = is_callable( $callback ) ? $callback : function () use ( $callback ) {
-			return $callback;
-		};
+		$this->filters[] = is_callable( $callback ) ? $callback : fn() => $callback;
 
 		return $this;
 	}
@@ -314,9 +312,7 @@ class Event {
 	 * @return static
 	 */
 	public function skip( $callback ) {
-		$this->rejects[] = is_callable( $callback ) ? $callback : function () use ( $callback ) {
-			return $callback;
-		};
+		$this->rejects[] = is_callable( $callback ) ? $callback : fn() => $callback;
 
 		return $this;
 	}

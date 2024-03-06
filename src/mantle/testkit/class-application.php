@@ -313,7 +313,7 @@ class Application extends Container implements Application_Contract {
 	 * @param string[]        $bootstrappers Class names of packages to boot.
 	 * @param Kernel_Contract $kernel Kernel instance.
 	 */
-	public function bootstrap_with( array $bootstrappers, Kernel_Contract $kernel ) {
+	public function bootstrap_with( array $bootstrappers, Kernel_Contract $kernel ): never {
 		throw new RuntimeException( 'Not supported with Testkit' );
 	}
 

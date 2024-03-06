@@ -25,11 +25,6 @@ use Mantle\Support\Arr;
  */
 class Route_Registrar {
 	/**
-	 * Router instance.
-	 */
-	protected ?Router $router;
-
-	/**
 	 * The attributes to pass on to the router.
 	 *
 	 * @var array
@@ -82,8 +77,7 @@ class Route_Registrar {
 	 *
 	 * @param Router $router Router instance.
 	 */
-	public function __construct( Router $router ) {
-		$this->router = $router;
+	public function __construct( protected ?Router $router ) {
 	}
 
 	/**

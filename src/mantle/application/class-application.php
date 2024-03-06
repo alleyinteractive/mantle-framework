@@ -100,7 +100,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	/**
 	 * Storage of the overridden environment name.
 	 */
-	protected ?string $environment;
+	protected ?string $environment = null;
 
 	/**
 	 * Indicates if the application is running in the console.
@@ -156,7 +156,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	public function get_base_path( string $path = '' ): string {
 		if ( $path ) {
 			// Ensure the path being appended has a leading slash.
-			if ( 0 !== strpos( $path, '/' ) ) {
+			if ( ! str_starts_with( $path, '/' ) ) {
 				$path = '/' . $path;
 			}
 

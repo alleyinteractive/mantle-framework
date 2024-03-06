@@ -1195,10 +1195,8 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 
 	/**
 	 * Get the raw string value.
-	 *
-	 * @return string
 	 */
-	public function __toString() {
+	public function __toString(): string {
 		return $this->value;
 	}
 }

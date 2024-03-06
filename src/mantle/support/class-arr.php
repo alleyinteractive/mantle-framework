@@ -240,7 +240,7 @@ class Arr {
 				continue;
 			}
 
-			$parts = explode( '.', $key );
+			$parts = explode( '.', (string) $key );
 
 			// Clean up before each pass.
 			$array = &$original;
@@ -315,7 +315,7 @@ class Arr {
 				continue;
 			}
 
-			foreach ( explode( '.', $key ) as $segment ) {
+			foreach ( explode( '.', (string) $key ) as $segment ) {
 				if ( static::accessible( $sub_key_array ) && static::exists( $sub_key_array, $segment ) ) {
 					$sub_key_array = $sub_key_array[ $segment ];
 				} else {

@@ -38,9 +38,7 @@ class Bound_Method {
 		return static::call_bound_method(
 			$container,
 			$callback,
-			function () use ( $container, $callback, $parameters ) {
-				return $callback( ...array_values( static::get_method_dependencies( $container, $callback, $parameters ) ) );
-			}
+			fn() => $callback( ...array_values( static::get_method_dependencies( $container, $callback, $parameters ) ) )
 		);
 	}
 
@@ -107,7 +105,7 @@ class Bound_Method {
 	 * @return string
 	 */
 	protected static function normalize_method( $callback ) {
-		$class = is_string( $callback[0] ) ? $callback[0] : get_class( $callback[0] );
+		$class = is_string( $callback[0] ) ? $callback[0] : $callback[0]::class;
 		return "{$class}@{$callback[1]}";
 	}
 

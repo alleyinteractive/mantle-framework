@@ -121,7 +121,7 @@ class WP_Die {
 		}
 
 		// Provide a helper message for database errors after displaying the error message.
-		if ( false !== strpos( $message, 'database' ) ) {
+		if ( false !== strpos( (string) $message, 'database' ) ) {
 			echo "\n\n";
 			printf(
 				"\033[31m%s \033[0m\n\n",

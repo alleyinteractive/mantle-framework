@@ -200,11 +200,7 @@ class Str {
 	 * @return string
 	 */
 	public static function camel( $value ) {
-		if ( isset( static::$camel_cache[ $value ] ) ) {
-			return static::$camel_cache[ $value ];
-		}
-
-		return static::$camel_cache[ $value ] = lcfirst( static::studly( $value ) );
+		return static::$camel_cache[ $value ] ?? ( static::$camel_cache[ $value ] = lcfirst( static::studly( $value ) ) );
 	}
 
 	/**
@@ -1042,7 +1038,7 @@ class Str {
 	 * @return string
 	 */
 	public static function reverse( string $value ) {
-		return implode( array_reverse( mb_str_split( $value ) ) );
+		return implode( '', array_reverse( mb_str_split( $value ) ) );
 	}
 
 	/**
@@ -1118,22 +1114,22 @@ class Str {
 		// Convert all dashes/underscores into separator.
 		$flip = '-' === $separator ? '_' : '-';
 
-		$title = preg_replace( '![' . preg_quote( $flip, null ) . ']+!u', $separator, $title );
+		$title = preg_replace( '![' . preg_quote( $flip, null ) . ']+!u', $separator, (string) $title );
 
 		// Replace dictionary words.
 		foreach ( $dictionary as $key => $value ) {
 			$dictionary[ $key ] = $separator . $value . $separator;
 		}
 
-		$title = str_replace( array_keys( $dictionary ), array_values( $dictionary ), $title );
+		$title = str_replace( array_keys( $dictionary ), array_values( $dictionary ), (string) $title );
 
 		// Remove all characters that are not the separator, letters, numbers, or whitespace.
 		$title = preg_replace( '![^' . preg_quote( $separator, null ) . '\pL\pN\s]+!u', '', static::lower( $title ) );
 
 		// Replace all separator characters and whitespace by a single separator.
-		$title = preg_replace( '![' . preg_quote( $separator, null ) . '\s]+!u', $separator, $title );
+		$title = preg_replace( '![' . preg_quote( $separator, null ) . '\s]+!u', $separator, (string) $title );
 
-		return trim( $title, $separator );
+		return trim( (string) $title, $separator );
 	}
 
 	/**
@@ -1153,7 +1149,7 @@ class Str {
 		if ( ! ctype_lower( $value ) ) {
 			$value = preg_replace( '/\s+/u', '', ucwords( $value ) );
 
-			$value = static::lower( preg_replace( '/(.)(?=[A-Z])/u', '$1' . $delimiter, $value ) );
+			$value = static::lower( preg_replace( '/(.)(?=[A-Z])/u', '$1' . $delimiter, (string) $value ) );
 		}
 
 		return static::$snake_cache[ $key ][ $delimiter ] = $value;
@@ -1166,7 +1162,7 @@ class Str {
 	 * @return string
 	 */
 	public static function squish( $value ) {
-		return preg_replace( '~(\s|\x{3164}|\x{1160})+~u', ' ', preg_replace( '~^[\s\x{FEFF}]+|[\s\x{FEFF}]+$~u', '', $value ) );
+		return preg_replace( '~(\s|\x{3164}|\x{1160})+~u', ' ', (string) preg_replace( '~^[\s\x{FEFF}]+|[\s\x{FEFF}]+$~u', '', $value ) );
 	}
 
 	/**
@@ -1207,7 +1203,7 @@ class Str {
 
 		$study_words = array_map( fn ( $word) => static::ucfirst( $word ), $words );
 
-		return static::$studly_cache[ $key ] = implode( $study_words );
+		return static::$studly_cache[ $key ] = implode( '', $study_words );
 	}
 
 	/**

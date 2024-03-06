@@ -40,16 +40,6 @@ class Router implements Router_Contract {
 	}
 
 	/**
-	 * Events instance.
-	 */
-	protected Dispatcher $events;
-
-	/**
-	 * Container instance.
-	 */
-	protected Container $container;
-
-	/**
 	 * Route Collection
 	 */
 	protected RouteCollection $routes;
@@ -85,10 +75,7 @@ class Router implements Router_Contract {
 	 * @param Dispatcher $events Events dispatcher.
 	 * @param Container  $container Container instance.
 	 */
-	public function __construct( Dispatcher $events, Container $container ) {
-		$this->events    = $events;
-		$this->container = $container;
-
+	public function __construct( protected Dispatcher $events, protected Container $container ) {
 		$this->routes = new RouteCollection();
 	}
 

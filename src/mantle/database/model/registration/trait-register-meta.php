@@ -21,7 +21,7 @@ trait Register_Meta {
 	 * Register the object's meta.
 	 */
 	public static function boot_register_meta(): void {
-		\add_action( 'init', [ __CLASS__, 'register_meta' ], 11 );
+		\add_action( 'init', [ self::class, 'register_meta' ], 11 );
 	}
 
 	/**

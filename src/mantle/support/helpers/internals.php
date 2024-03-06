@@ -16,7 +16,7 @@ namespace Mantle\Support\Helpers;
  */
 function invalid_hook_removal( $args ): void {
 	// PHPCS does not recognize the [ $arg1, $arg2 ] syntax.
-	list( $hook, $callable ) = $args;
+	[$hook, $callable] = $args;
 
 	$function_name = get_callable_fqn( $callable );
 

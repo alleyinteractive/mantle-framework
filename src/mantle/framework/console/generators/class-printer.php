@@ -105,7 +105,7 @@ class Printer extends \Nette\PhpGenerator\Printer {
 		$lines    = explode( "\n", $function );
 
 		foreach ( $lines as $i => $line ) {
-			if ( 0 !== strpos( $line, 'function ' ) ) {
+			if ( ! str_starts_with( $line, 'function ' ) ) {
 				continue;
 			}
 

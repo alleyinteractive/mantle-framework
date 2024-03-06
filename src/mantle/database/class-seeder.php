@@ -126,7 +126,7 @@ abstract class Seeder {
 	 */
 	public function __invoke( array $parameters = [] ): mixed {
 		if ( ! method_exists( $this, 'run' ) ) {
-			throw new InvalidArgumentException( 'Method [run] missing from ' . $this::class );
+			throw new InvalidArgumentException( 'Method [run] missing from ' . static::class );
 		}
 
 		return isset( $this->container )

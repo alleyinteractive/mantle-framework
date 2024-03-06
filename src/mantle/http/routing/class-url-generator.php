@@ -38,7 +38,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	/**
 	 * A cached copy of the URL root for the current request.
 	 */
-	protected ?string $cached_root;
+	protected ?string $cached_root = null;
 
 	/**
 	 * A cached copy of the URL scheme for the current request.

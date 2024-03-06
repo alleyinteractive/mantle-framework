@@ -103,7 +103,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * @return string
 	 */
 	public function url() {
-		return rtrim( preg_replace( '/\?.*/', '', $this->getUri() ), '/' );
+		return rtrim( (string) preg_replace( '/\?.*/', '', $this->getUri() ), '/' );
 	}
 
 	/**
@@ -175,9 +175,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 		return array_values(
 			array_filter(
 				$segments,
-				function ( $value ) {
-					return '' !== $value;
-				}
+				fn( $value) => '' !== $value
 			)
 		);
 	}
@@ -242,8 +240,8 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * @return bool
 	 */
 	public function prefetch() {
-		return 0 === strcasecmp( $this->server->get( 'HTTP_X_MOZ' ), 'prefetch' ) ||
-			0 === strcasecmp( $this->headers->get( 'Purpose' ), 'prefetch' );
+		return 0 === strcasecmp( (string) $this->server->get( 'HTTP_X_MOZ' ), 'prefetch' ) ||
+			0 === strcasecmp( (string) $this->headers->get( 'Purpose' ), 'prefetch' );
 	}
 
 	/**
@@ -391,7 +389,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 			$parameters = new ParameterBag(
 				array_filter(
 					$parameters,
-					fn ( $parameter ) => 0 !== strpos( $parameter, '_' ),
+					fn ( $parameter ) => ! str_starts_with( $parameter, '_' ),
 					ARRAY_FILTER_USE_KEY
 				)
 			);
@@ -427,7 +425,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * @return Route
 	 */
 	public function get_route(): ?Route {
-		return isset( $this->route ) ? $this->route : null;
+		return $this->route ?? null;
 	}
 
 	/**
@@ -502,9 +500,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 		return Arr::get(
 			$this->all(),
 			$key,
-			function () use ( $key ) {
-				return $this->get_route_parameters()->get( $key );
-			}
+			fn() => $this->get_route_parameters()->get( $key )
 		);
 	}
 

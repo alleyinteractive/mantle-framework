@@ -163,17 +163,17 @@ class Test_Command {
 	 */
 	protected function verify_command(): void {
 		// Remove 'wp' from the command if passed.
-		if ( 0 === strpos( $this->command, 'wp ' ) ) {
+		if ( str_starts_with( $this->command, 'wp ' ) ) {
 			$this->command = substr( $this->command, 3 );
 		}
 
 		// Ensure that the command is under the 'mantle' namespace for the time being.
-		if ( 0 !== strpos( trim( $this->command ), 'mantle ' ) && 'mantle' !== $this->command ) {
+		if ( ! str_starts_with( trim( $this->command ), 'mantle ' ) && 'mantle' !== $this->command ) {
 			throw new InvalidArgumentException( 'Command must be prefixed with "mantle" to be tested against.' );
 		}
 
 		// Remove the 'mantle' prefix from the command.
-		if ( 0 === strpos( $this->command, 'mantle ' ) ) {
+		if ( str_starts_with( $this->command, 'mantle ' ) ) {
 			$this->command = substr( $this->command, 7 );
 		}
 	}
@@ -188,7 +188,7 @@ class Test_Command {
 			$this->tester = $this->app->make(
 				\Mantle\Framework\Console\Kernel::class
 			)->test( $this->command, $this->arguments );
-		} catch ( CommandNotFoundException $e ) {
+		} catch ( CommandNotFoundException ) {
 			$this->test->fail( "Command [{$this->command}] not found." );
 		}
 

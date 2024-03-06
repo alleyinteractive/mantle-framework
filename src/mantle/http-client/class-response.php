@@ -26,28 +26,21 @@ class Response implements ArrayAccess {
 	use Macroable;
 
 	/**
-	 * Raw response from `wp_remote_request()`.
-	 */
-	protected array $response;
-
-	/**
 	 * The decoded JSON response.
 	 */
-	protected ?array $decoded;
+	protected ?array $decoded = null;
 
 	/**
 	 * The decoded XML Element response.
 	 */
-	protected ?SimpleXMLElement $element;
+	protected ?SimpleXMLElement $element = null;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param array $response Raw response from `wp_remote_request()`.
 	 */
-	public function __construct( array $response ) {
-		$this->response = $response;
-
+	public function __construct( protected array $response ) {
 		// Format the headers to be lower-case.
 		$this->response['headers'] = array_change_key_case( (array) ( $this->response['headers'] ?? [] ) );
 	}
@@ -202,7 +195,7 @@ class Response implements ArrayAccess {
 	 * Check if the response is JSON.
 	 */
 	public function is_json(): bool {
-		if ( false !== strpos( $this->header( 'content-type' ), 'application/json' ) ) {
+		if ( false !== strpos( (string) $this->header( 'content-type' ), 'application/json' ) ) {
 			return true;
 		}
 
@@ -214,11 +207,11 @@ class Response implements ArrayAccess {
 	 * XML document.
 	 */
 	public function is_xml(): bool {
-		if ( false !== strpos( $this->header( 'content-type' ), 'application/xml' ) ) {
+		if ( false !== strpos( (string) $this->header( 'content-type' ), 'application/xml' ) ) {
 			return true;
 		}
 
-		return 0 === strpos( trim( strtolower( $this->body() ) ), '<?xml' );
+		return str_starts_with( trim( strtolower( $this->body() ) ), '<?xml' );
 	}
 
 	/**

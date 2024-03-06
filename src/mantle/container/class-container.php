@@ -25,7 +25,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	/**
 	 * The current globally available container (if any).
 	 */
-	protected static ?\Mantle\Contracts\Container $instance;
+	protected static ?\Mantle\Contracts\Container $instance = null;
 
 	/**
 	 * An array of the types that have been resolved.
@@ -482,9 +482,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @return \Closure
 	 */
 	public function wrap( Closure $callback, array $parameters = [] ) {
-		return function () use ( $callback, $parameters ) {
-				return $this->call( $callback, $parameters );
-		};
+		return fn() => $this->call( $callback, $parameters );
 	}
 
 	/**
@@ -508,9 +506,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @return \Closure
 	 */
 	public function factory( $abstract ) {
-		return function () use ( $abstract ) {
-			return $this->make( $abstract );
-		};
+		return fn() => $this->make( $abstract );
 	}
 
 	/**
@@ -879,9 +875,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 		}
 
 		return array_map(
-			function ( $abstract ) {
-				return $this->resolve( $abstract );
-			},
+			fn( $abstract) => $this->resolve( $abstract ),
 			$concrete
 		);
 	}
@@ -910,11 +904,10 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * Throw an exception for an unresolvable primitive.
 	 *
 	 * @param  \ReflectionParameter $parameter
-	 * @return void
 	 *
 	 * @throws Binding_Resolution_Exception Thrown on missing resolution.
 	 */
-	protected function unresolvable_primitive( ReflectionParameter $parameter ) {
+	protected function unresolvable_primitive( ReflectionParameter $parameter ): never {
 		$message = "Unresolvable dependency resolving [$parameter] in class {$parameter->getDeclaringClass()->getName()}";
 
 		throw new Binding_Resolution_Exception( $message );
@@ -1164,9 +1157,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	public function offsetSet( mixed $key, mixed $value ): void {
 			$this->bind(
 				$key,
-				$value instanceof Closure ? $value : function () use ( $value ) {
-					return $value;
-				}
+				$value instanceof Closure ? $value : fn() => $value
 			);
 	}
 

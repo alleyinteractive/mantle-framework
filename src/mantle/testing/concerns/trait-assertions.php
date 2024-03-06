@@ -228,7 +228,7 @@ trait Assertions {
 
 		// Assert the same object types if strict mode.
 		if ( $strict ) {
-			PHPUnit::assertInstanceOf( get_class( $object ), $queried_object );
+			PHPUnit::assertInstanceOf( $object::class, $queried_object );
 		}
 
 		// Next, assert identifying data about the object.

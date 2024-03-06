@@ -21,7 +21,7 @@ class Environment {
 	/**
 	 * Variable repository.
 	 */
-	protected static ?RepositoryInterface $repository;
+	protected static ?RepositoryInterface $repository = null;
 
 	/**
 	 * Get the environment repository instance.
@@ -68,7 +68,7 @@ class Environment {
 		return $value
 			->map(
 				function ( $value ) {
-					switch ( strtolower( $value ) ) {
+					switch ( strtolower( (string) $value ) ) {
 						case 'true':
 						case '(true)':
 							return true;
@@ -83,7 +83,7 @@ class Environment {
 							return;
 					}
 
-					if ( preg_match( '/\A([\'"])(.*)\1\z/', $value, $matches ) ) {
+					if ( preg_match( '/\A([\'"])(.*)\1\z/', (string) $value, $matches ) ) {
 						return $matches[2];
 					}
 
@@ -91,9 +91,7 @@ class Environment {
 				}
 			)
 			->getOrCall(
-				function() use ( $default ) {
-					return value( $default );
-				}
+				fn() => value( $default )
 			);
 	}
 }

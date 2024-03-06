@@ -28,14 +28,14 @@ trait Custom_Post_Permalink {
 	public static function boot_custom_post_permalink(): void {
 		if ( static::get_route() ) {
 			if ( 'post' === static::get_object_name() ) {
-				add_filter( 'post_link', [ __CLASS__, 'filter_post_type_link' ] );
+				add_filter( 'post_link', [ self::class, 'filter_post_type_link' ] );
 			} else {
-				add_filter( 'post_type_link', [ __CLASS__, 'filter_post_type_link' ] );
+				add_filter( 'post_type_link', [ self::class, 'filter_post_type_link' ] );
 			}
 		}
 
 		if ( static::get_archive_route() ) {
-			add_filter( 'post_type_archive_link', [ __CLASS__, 'filter_post_type_archive_link' ] );
+			add_filter( 'post_type_archive_link', [ self::class, 'filter_post_type_archive_link' ] );
 		}
 
 		static::$using_permalinks = ! empty( get_option( 'permalink_structure' ) );

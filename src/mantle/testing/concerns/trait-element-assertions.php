@@ -56,7 +56,7 @@ trait Element_Assertions {
 	 * @param string $id The ID of the element to check.
 	 */
 	public function assertElementExistsById( string $id ): static {
-		if ( 0 === strpos( $id, '#' ) ) {
+		if ( str_starts_with( $id, '#' ) ) {
 			$id = substr( $id, 1 );
 		}
 
@@ -69,7 +69,7 @@ trait Element_Assertions {
 	 * @param string $classname The classname of the element to check.
 	 */
 	public function assertElementExistsByClassName( string $classname ): static {
-		if ( 0 === strpos( $classname, '.' ) ) {
+		if ( str_starts_with( $classname, '.' ) ) {
 			$classname = substr( $classname, 1 );
 		}
 
@@ -95,7 +95,7 @@ trait Element_Assertions {
 	 * @param string $id The ID of the element to check.
 	 */
 	public function assertElementMissingById( string $id ): static {
-		if ( 0 === strpos( $id, '#' ) ) {
+		if ( str_starts_with( $id, '#' ) ) {
 			$id = substr( $id, 1 );
 		}
 
@@ -108,7 +108,7 @@ trait Element_Assertions {
 	 * @param string $classname The classname of the element to check.
 	 */
 	public function assertElementMissingByClassName( string $classname ): static {
-		if ( 0 === strpos( $classname, '.' ) ) {
+		if ( str_starts_with( $classname, '.' ) ) {
 			$classname = substr( $classname, 1 );
 		}
 

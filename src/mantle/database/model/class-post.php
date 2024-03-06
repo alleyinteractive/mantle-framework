@@ -383,7 +383,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 					function () use ( &$index ) {
 						return ( $index++ ) % 2 ? '{' : '}';
 					},
-					$structure
+					(string) $structure
 				);
 
 				$route_structure = str_replace( '{postname}', '{post}', $structure );
@@ -405,7 +405,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 			'mantle_entity_router_post_route',
 			$route_structure,
 			static::get_object_name(),
-			get_called_class()
+			static::class
 		);
 	}
 }

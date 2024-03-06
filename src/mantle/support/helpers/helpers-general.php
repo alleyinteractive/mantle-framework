@@ -55,7 +55,7 @@ function blank( $value ) {
  * @return string
  */
 function class_basename( $class ) {
-	$class = is_object( $class ) ? get_class( $class ) : $class;
+	$class = is_object( $class ) ? $class::class : $class;
 
 	return basename( str_replace( '\\', '/', $class ) );
 }
@@ -69,7 +69,7 @@ function class_basename( $class ) {
  */
 function class_uses_recursive( $class ) {
 	if ( is_object( $class ) ) {
-		$class = get_class( $class );
+		$class = $class::class;
 	}
 
 	$results = [];
@@ -113,7 +113,7 @@ function get_callable_fqn( $callable ): string {
 		$access = '';
 
 		if ( \is_object( $callable[0] ) ) {
-			$class  = \get_class( $callable[0] );
+			$class  = $callable[0]::class;
 			$access = '->';
 		}
 
@@ -128,7 +128,7 @@ function get_callable_fqn( $callable ): string {
 	}
 
 	if ( \is_object( $callable ) ) {
-		$function_name = \get_class( $callable );
+		$function_name = $callable::class;
 
 		if ( ! ( $callable instanceof \Closure ) ) {
 			$function_name .= '->__invoke()';

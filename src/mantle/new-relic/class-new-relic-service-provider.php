@@ -109,7 +109,7 @@ class New_Relic_Service_Provider extends Service_Provider {
 	 * @param WP $wp Global WP object.
 	 */
 	public function on_wp( WP $wp ): void {
-		if ( $this->named || ! $this->is_supported() ) {
+		if ( $this->named || ! static::is_supported() ) {
 			return;
 		}
 

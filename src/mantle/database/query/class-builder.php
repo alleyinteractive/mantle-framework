@@ -522,9 +522,7 @@ abstract class Builder {
 	 */
 	protected function call_named_scope( string $scope, array $parameters = [] ) {
 		return $this->call_scope(
-			function ( ...$parameters ) use ( $scope ) {
-				return $this->get_model_instance()->call_named_scope( $scope, $parameters );
-			},
+			fn( ...$parameters) => $this->get_model_instance()->call_named_scope( $scope, $parameters ),
 			$parameters
 		);
 	}

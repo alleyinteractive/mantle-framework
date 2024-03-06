@@ -15,30 +15,22 @@ namespace Mantle\Support;
 class Higher_Order_When_Proxy {
 
 	/**
-	 * The target being conditionally operated on.
-	 *
-	 * @var mixed
-	 */
-	protected $target;
-
-	/**
-	 * The condition for proxying.
-	 *
-	 * @var bool
-	 */
-	protected $condition;
-
-	/**
 	 * Create a new proxy instance.
 	 *
 	 * @param  mixed $target
 	 * @param  bool  $condition
 	 * @return void
 	 */
-	public function __construct( $target, $condition ) {
-		$this->target    = $target;
-		$this->condition = $condition;
-	}
+	public function __construct(
+					/**
+					 * The target being conditionally operated on.
+					 */
+					protected $target,
+					/**
+					 * The condition for proxying.
+					 */
+					protected $condition
+				) {     }
 
 	/**
 	 * Proxy accessing an attribute onto the target.

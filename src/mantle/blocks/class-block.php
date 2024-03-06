@@ -158,7 +158,7 @@ abstract class Block implements Block_Contract {
 	protected function block_view_exists( $name ): bool {
 		try {
 			View_Loader::find( $name );
-		} catch ( InvalidArgumentException $e ) {
+		} catch ( InvalidArgumentException ) {
 			return false;
 		}
 
@@ -196,7 +196,7 @@ abstract class Block implements Block_Contract {
 		try {
 			$assets = $disk->get( "blocks/{$this->name}/{$this->entry_filename}.asset.json" );
 			$assets = \json_decode( $assets );
-		} catch ( Throwable $e ) {
+		} catch ( Throwable ) {
 			return new \stdClass();
 		}
 

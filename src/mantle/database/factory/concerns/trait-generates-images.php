@@ -93,6 +93,6 @@ trait Generates_Images {
 	 * Generate a random filename.
 	 */
 	protected function generate_filename(): string {
-		return md5( wp_generate_password( 15, false ) );
+		return md5( (string) wp_generate_password( 15, false ) );
 	}
 }
