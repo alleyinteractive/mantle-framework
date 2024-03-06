@@ -20,15 +20,11 @@ use function Mantle\Support\Helpers\event;
 class Permalink_Generator {
 	/**
 	 * Model instance.
-	 *
-	 * @var Model|null
 	 */
 	protected ?Model $model;
 
 	/**
 	 * Route to generate for.
-	 *
-	 * @var string|null
 	 */
 	protected ?string $route;
 

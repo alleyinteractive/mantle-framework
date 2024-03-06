@@ -84,7 +84,7 @@ class Array_Repository extends Repository implements Repository_Contract {
 	 * @return int|bool
 	 */
 	public function increment( $key, $value = 1 ) {
-		$value = (int) $this->get( $key, 0 );
+		$value = $this->get( $key, 0 );
 		return $this->set( $key, $value += $value );
 	}
 
@@ -96,7 +96,7 @@ class Array_Repository extends Repository implements Repository_Contract {
 	 * @return int|bool
 	 */
 	public function decrement( $key, $value = 1 ) {
-		$value = (int) $this->get( $key, 0 );
+		$value = $this->get( $key, 0 );
 		return $this->set( $key, $value -= $value );
 	}
 

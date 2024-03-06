@@ -23,8 +23,6 @@ class Term_Query_Builder extends Builder {
 
 	/**
 	 * Query Variable Aliases
-	 *
-	 * @var array
 	 */
 	protected array $query_aliases = [
 		'id'      => 'include',
@@ -33,8 +31,6 @@ class Term_Query_Builder extends Builder {
 
 	/**
 	 * Query Where In Aliases
-	 *
-	 * @var array
 	 */
 	protected array $query_where_in_aliases = [
 		'term_id' => 'include',
@@ -44,8 +40,6 @@ class Term_Query_Builder extends Builder {
 
 	/**
 	 * Query Where Not In Aliases
-	 *
-	 * @var array
 	 */
 	protected array $query_where_not_in_aliases = [
 		'name'    => 'name',
@@ -55,8 +49,6 @@ class Term_Query_Builder extends Builder {
 
 	/**
 	 * Query order by aliases.
-	 *
-	 * @var array
 	 */
 	protected array $query_order_by_aliases = [
 		'id' => 'term_id',
@@ -140,7 +132,7 @@ class Term_Query_Builder extends Builder {
 
 		$this->query_hash = spl_object_hash( $query );
 
-		return (int) $this->with_clauses(
+		return $this->with_clauses(
 			fn (): int => (int) $query->query(
 				array_merge(
 					$this->get_query_args(),

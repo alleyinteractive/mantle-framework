@@ -24,7 +24,7 @@ class Events_Manifest {
 	 *
 	 * @var ?array
 	 */
-	protected $manifest = null;
+	protected $manifest;
 
 	/**
 	 * Base folder path.

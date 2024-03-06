@@ -175,8 +175,6 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 		$instance = new class() extends Post {
 			/**
 			 * Post type for the model.
-			 *
-			 * @var string
 			 */
 			public static string $for_object_name = '';
 

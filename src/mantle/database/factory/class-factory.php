@@ -37,8 +37,6 @@ abstract class Factory {
 
 	/**
 	 * Flag to return the factory as a model.
-	 *
-	 * @var bool
 	 */
 	protected bool $as_models = false;
 

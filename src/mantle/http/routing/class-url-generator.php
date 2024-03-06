@@ -32,22 +32,16 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 
 	/**
 	 * The forced scheme for URLs.
-	 *
-	 * @var string|null
 	 */
 	protected ?string $force_scheme = null;
 
 	/**
 	 * A cached copy of the URL root for the current request.
-	 *
-	 * @var string|null
 	 */
 	protected ?string $cached_root;
 
 	/**
 	 * A cached copy of the URL scheme for the current request.
-	 *
-	 * @var string|null
 	 */
 	protected ?string $cached_scheme = null;
 
@@ -79,7 +73,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 
 		// Set the host for the request context if it is not already set.
 		if ( empty( $this->context->getHost() ) ) {
-			$this->context->setHost( (string) parse_url( (string) $this->root_url, PHP_URL_HOST ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.parse_url_parse_url
+			$this->context->setHost( (string) parse_url( $this->root_url, PHP_URL_HOST ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.parse_url_parse_url
 		}
 
 		if ( ! $this->context->hasParameter( '_locale' ) ) {
@@ -137,7 +131,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 			'/',
 			array_map(
 				'rawurlencode',
-				(array) $this->format_parameters( $extra_params )
+				$this->format_parameters( $extra_params )
 			)
 		);
 

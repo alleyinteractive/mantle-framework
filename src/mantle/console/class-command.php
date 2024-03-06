@@ -59,15 +59,11 @@ abstract class Command extends Symfony_Command {
 
 	/**
 	 * The command's help text.
-	 *
-	 * @var string
 	 */
 	protected string $help;
 
 	/**
 	 * Container instance.
-	 *
-	 * @var \Mantle\Contracts\Application
 	 */
 	protected \Mantle\Contracts\Application $container;
 

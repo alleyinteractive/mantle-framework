@@ -46,29 +46,21 @@ abstract class Builder {
 
 	/**
 	 * Result limit per-page.
-	 *
-	 * @var int|null
 	 */
 	protected ?int $limit = 100;
 
 	/**
 	 * Result offset.
-	 *
-	 * @var int
 	 */
 	protected int $offset = 0;
 
 	/**
 	 * Result page.
-	 *
-	 * @var int
 	 */
 	protected int $page = 1;
 
 	/**
 	 * Where arguments for the query.
-	 *
-	 * @var array
 	 */
 	protected array $wheres = [];
 
@@ -88,50 +80,36 @@ abstract class Builder {
 
 	/**
 	 * Meta Query.
-	 *
-	 * @var array
 	 */
 	protected array $meta_query = [];
 
 	/**
 	 * Query Variable Aliases
-	 *
-	 * @var array
 	 */
 	protected array $query_aliases = [];
 
 	/**
 	 * Query Where In Aliases
-	 *
-	 * @var array
 	 */
 	protected array $query_where_in_aliases = [];
 
 	/**
 	 * Query Where Not In Aliases
-	 *
-	 * @var array
 	 */
 	protected array $query_where_not_in_aliases = [];
 
 	/**
 	 * Query order by aliases.
-	 *
-	 * @var array
 	 */
 	protected array $query_order_by_aliases = [];
 
 	/**
 	 * Applied global scopes.
-	 *
-	 * @var array
 	 */
 	protected array $scopes = [];
 
 	/**
 	 * Storage of the found rows for a query.
-	 *
-	 * @var int|null
 	 */
 	protected ?int $found_rows = 0;
 
@@ -144,8 +122,6 @@ abstract class Builder {
 
 	/**
 	 * Query hash for the built query.
-	 *
-	 * @var string
 	 */
 	protected string $query_hash = '';
 
@@ -234,7 +210,7 @@ abstract class Builder {
 			throw new Query_Exception( 'Unknown where in alias: ' . $attribute );
 		}
 
-		return $this->where( $attribute, (array) $values );
+		return $this->where( $attribute, $values );
 	}
 
 	/**
@@ -572,7 +548,7 @@ abstract class Builder {
 			return $this;
 		}
 
-		foreach ( $this->scopes as $identifier => $scope ) {
+		foreach ( $this->scopes as $scope ) {
 			$this->call_scope(
 				function( self $builder ) use ( $scope ) {
 					if ( $scope instanceof Closure ) {

@@ -22,29 +22,21 @@ class Pending_Request {
 
 	/**
 	 * Base URL for the request.
-	 *
-	 * @var string
 	 */
 	protected string $base_url = '';
 
 	/**
 	 * Method for the request.
-	 *
-	 * @var string
 	 */
 	public string $method;
 
 	/**
 	 * URL for the request.
-	 *
-	 * @var string
 	 */
 	protected string $url;
 
 	/**
 	 * Options for the request.
-	 *
-	 * @var array
 	 */
 	protected array $options = [];
 
@@ -57,29 +49,21 @@ class Pending_Request {
 
 	/**
 	 * Pending files for the request.
-	 *
-	 * @var array
 	 */
 	protected array $pending_files = [];
 
 	/**
 	 * Body format.
-	 *
-	 * @var string
 	 */
 	protected string $body_format;
 
 	/**
 	 * Middleware for the request.
-	 *
-	 * @var array
 	 */
 	protected array $middleware = [];
 
 	/**
 	 * Flag if the request is for a pooled request.
-	 *
-	 * @var bool
 	 */
 	protected bool $pooled = false;
 

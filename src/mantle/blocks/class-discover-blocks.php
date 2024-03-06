@@ -81,7 +81,7 @@ class Discover_Blocks {
 			DIRECTORY_SEPARATOR,
 		);
 
-		$classname = str_replace(
+		return str_replace(
 			[
 				DIRECTORY_SEPARATOR,
 				ucfirst( basename( app()->get_app_path() ) ) . '\\',
@@ -92,7 +92,5 @@ class Discover_Blocks {
 			],
 			ucfirst( Str::replace_last( '.php', '', $class ) ),
 		);
-
-		return $classname;
 	}
 }

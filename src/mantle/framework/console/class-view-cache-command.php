@@ -38,15 +38,11 @@ class View_Cache_Command extends Command {
 
 	/**
 	 * Blade compiler.
-	 *
-	 * @var BladeCompiler
 	 */
 	protected BladeCompiler $blade;
 
 	/**
 	 * View finder.
-	 *
-	 * @var View_Finder
 	 */
 	protected View_Finder $finder;
 

@@ -200,7 +200,7 @@ function preg_replace_array( $pattern, array $replacements, $subject ) {
 	return preg_replace_callback(
 		$pattern,
 		function () use ( &$replacements ) {
-			foreach ( $replacements as $key => $value ) {
+			foreach ( $replacements as $replacement ) {
 				return array_shift( $replacements );
 			}
 		},
@@ -265,7 +265,7 @@ function str( ?string $string = null ) {
 		};
 	}
 
-	return Str::of( (string) $string );
+	return Str::of( $string );
 }
 
 /**

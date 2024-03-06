@@ -23,36 +23,26 @@ class Test_Response {
 
 	/**
 	 * Application instance.
-	 *
-	 * @var Application
 	 */
 	protected Application $app;
 
 	/**
 	 * Response headers.
-	 *
-	 * @var array
 	 */
 	public array $headers;
 
 	/**
 	 * Response content.
-	 *
-	 * @var string
 	 */
 	protected string $content;
 
 	/**
 	 * Response status code.
-	 *
-	 * @var int
 	 */
 	protected int $status_code;
 
 	/**
 	 * Assertable JSON string.
-	 *
-	 * @var Assertable_Json_String
 	 */
 	protected Assertable_Json_String $decoded_json;
 

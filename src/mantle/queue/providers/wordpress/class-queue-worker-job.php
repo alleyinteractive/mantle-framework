@@ -25,8 +25,6 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 
 	/**
 	 * Flag if the job failed.
-	 *
-	 * @var bool
 	 */
 	public bool $failed = false;
 

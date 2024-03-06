@@ -73,15 +73,11 @@ abstract class Test_Case extends BaseTestCase {
 
 	/**
 	 * Application instance.
-	 *
-	 * @var Application|null
 	 */
 	protected ?Application $app = null;
 
 	/**
 	 * Factory Instance.
-	 *
-	 * @var Factory_Container|null
 	 */
 	protected static ?Factory_Container $factory;
 

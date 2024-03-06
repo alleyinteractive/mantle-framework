@@ -26,8 +26,6 @@ use Mantle\Support\Arr;
 class Route_Registrar {
 	/**
 	 * Router instance.
-	 *
-	 * @var Router|null
 	 */
 	protected ?Router $router;
 

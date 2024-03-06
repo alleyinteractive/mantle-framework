@@ -38,15 +38,11 @@ class Log_Manager implements LoggerInterface {
 
 	/**
 	 * Dispatcher instance.
-	 *
-	 * @var Dispatcher
 	 */
 	protected ?Dispatcher $dispatcher;
 
 	/**
 	 * Default logger instance for the application.
-	 *
-	 * @var Logger|null
 	 */
 	protected ?Logger $drive;
 

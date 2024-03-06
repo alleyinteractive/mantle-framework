@@ -43,36 +43,26 @@ class Application extends Container implements \Mantle\Contracts\Application {
 
 	/**
 	 * Bootstrap path of the application.
-	 *
-	 * @var string|null
 	 */
 	protected ?string $bootstrap_path = null;
 
 	/**
 	 * Storage path of the application.
-	 *
-	 * @var string|null
 	 */
 	protected ?string $storage_path = null;
 
 	/**
 	 * Root URL of the application.
-	 *
-	 * @var string|null
 	 */
 	protected ?string $root_url = null;
 
 	/**
 	 * Indicates if the application has been bootstrapped before.
-	 *
-	 * @var bool
 	 */
 	protected bool $has_been_bootstrapped = false;
 
 	/**
 	 * Indicates if the application has "booted".
-	 *
-	 * @var bool
 	 */
 	protected bool $booted = false;
 
@@ -99,29 +89,21 @@ class Application extends Container implements \Mantle\Contracts\Application {
 
 	/**
 	 * Environment file name.
-	 *
-	 * @var string
 	 */
 	protected string $environment_file = '.env';
 
 	/**
 	 * The custom environment path defined by the developer.
-	 *
-	 * @var string
 	 */
 	protected ?string $environment_path = null;
 
 	/**
 	 * Storage of the overridden environment name.
-	 *
-	 * @var string
 	 */
 	protected ?string $environment;
 
 	/**
 	 * Indicates if the application is running in the console.
-	 *
-	 * @var bool
 	 */
 	protected ?bool $is_running_in_console = null;
 
@@ -360,7 +342,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 * Determine if the application has been bootstrapped before.
 	 */
 	public function has_been_bootstrapped(): bool {
-		return (bool) $this->has_been_bootstrapped;
+		return $this->has_been_bootstrapped;
 	}
 
 	/**
@@ -530,7 +512,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 * @param string|array ...$environments Environments to check.
 	 */
 	public function is_environment( ...$environments ): bool {
-		return in_array( $this->environment(), (array) $environments, true );
+		return in_array( $this->environment(), $environments, true );
 	}
 
 	/**

@@ -23,29 +23,21 @@ use function Mantle\Support\Helpers\collect;
 class Model_Manifest {
 	/**
 	 * Manifest from the disk.
-	 *
-	 * @var array|null
 	 */
 	protected ?array $manifest = null;
 
 	/**
 	 * Base folder path.
-	 *
-	 * @var string
 	 */
 	protected string $base_path;
 
 	/**
 	 * Vendor folder path.
-	 *
-	 * @var string
 	 */
 	protected string $vendor_path;
 
 	/**
 	 * Package Manifest file path.
-	 *
-	 * @var string
 	 */
 	protected string $manifest_path;
 
@@ -74,14 +66,14 @@ class Model_Manifest {
 	 */
 	protected function get_manifest(): array {
 		if ( isset( $this->manifest ) ) {
-			return (array) $this->manifest;
+			return $this->manifest;
 		}
 
 		// Skip when the manifest doesn't exist.
 		if ( ! file_exists( $this->manifest_path ) ) {
 			$this->manifest = [];
 
-			return (array) $this->manifest;
+			return $this->manifest;
 		}
 
 		$this->manifest = include $this->manifest_path;

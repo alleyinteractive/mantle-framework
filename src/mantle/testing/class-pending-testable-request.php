@@ -38,22 +38,16 @@ class Pending_Testable_Request {
 
 	/**
 	 * Indicates whether redirects should be followed.
-	 *
-	 * @var bool
 	 */
 	public bool $follow_redirects = false;
 
 	/**
 	 * The headers for the request.
-	 *
-	 * @var HeaderBag
 	 */
 	public HeaderBag $headers;
 
 	/**
 	 * The cookies for the request.
-	 *
-	 * @var InputBag
 	 */
 	public InputBag $cookies;
 
@@ -322,7 +316,7 @@ class Pending_Testable_Request {
 				ob_end_clean();
 
 				$response_content = $this->rest_api_response['body'];
-				$response_headers = array_merge( (array) $response_headers, (array) $this->rest_api_response['headers'] );
+				$response_headers = array_merge( (array) $response_headers, $this->rest_api_response['headers'] );
 			} else {
 				try {
 					// Execute the request, inasmuch as WordPress would.

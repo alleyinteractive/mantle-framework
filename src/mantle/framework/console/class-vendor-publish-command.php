@@ -34,8 +34,6 @@ class Vendor_Publish_Command extends Command {
 
 	/**
 	 * Filesystem instance.
-	 *
-	 * @var Filesystem
 	 */
 	protected Filesystem $filesystem;
 

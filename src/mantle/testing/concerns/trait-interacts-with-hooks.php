@@ -26,8 +26,6 @@ trait Interacts_With_Hooks {
 
 	/**
 	 * Expectation Container
-	 *
-	 * @var Expectation_Container|null
 	 */
 	protected ?Expectation_Container $expectation_container;
 

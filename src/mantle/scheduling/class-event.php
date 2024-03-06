@@ -29,8 +29,6 @@ class Event {
 
 	/**
 	 * The cron expression representing the event's frequency.
-	 *
-	 * @var string
 	 */
 	public string $expression = '* * * * *';
 
@@ -71,23 +69,17 @@ class Event {
 
 	/**
 	 * The human readable description of the event.
-	 *
-	 * @var string
 	 */
 	public string $description;
 
 	/**
 	 * The exit status code of the command.
 	 * 0 for success and 1 for failure.
-	 *
-	 * @var int|null
 	 */
 	public ?int $exit_code;
 
 	/**
 	 * Exception thrown for the command.
-	 *
-	 * @var \Throwable
 	 */
 	public \Throwable $exception;
 
@@ -197,8 +189,8 @@ class Event {
 	 * @param Application $app Application instance.
 	 */
 	public function filters_pass( Application $app ): bool {
-		foreach ( $this->filters as $callback ) {
-			if ( ! $app->call( $callback ) ) {
+		foreach ( $this->filters as $filter ) {
+			if ( ! $app->call( $filter ) ) {
 				return false;
 			}
 		}

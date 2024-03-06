@@ -23,8 +23,6 @@ use Mantle\Support\Collection as Base_Collection;
 class Collection extends Base_Collection {
 	/**
 	 * Total number of rows found for the query.
-	 *
-	 * @var int|null
 	 */
 	public ?int $found_rows = null;
 

@@ -7,8 +7,8 @@ use WP_REST_Server;
 class Spy_REST_Server extends WP_REST_Server {
 
 	public array $sent_headers  = [];
-	public $sent_body           = null;
-	public $last_request        = null;
+	public $sent_body;
+	public $last_request;
 	public $override_by_default = false;
 
 	/**

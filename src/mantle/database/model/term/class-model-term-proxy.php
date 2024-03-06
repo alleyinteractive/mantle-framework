@@ -20,8 +20,6 @@ use RuntimeException;
 class Model_Term_Proxy {
 	/**
 	 * Model to retrieve term from.
-	 *
-	 * @var Post
 	 */
 	protected Post $model;
 

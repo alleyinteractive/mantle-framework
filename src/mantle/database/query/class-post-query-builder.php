@@ -36,8 +36,6 @@ class Post_Query_Builder extends Builder {
 
 	/**
 	 * Query Variable Aliases
-	 *
-	 * @var array
 	 */
 	protected array $query_aliases = [
 		'date_gmt'     => 'post_date_gmt',
@@ -55,8 +53,6 @@ class Post_Query_Builder extends Builder {
 
 	/**
 	 * Query Where In Aliases
-	 *
-	 * @var array
 	 */
 	protected array $query_where_in_aliases = [
 		'author'      => 'author__in',
@@ -69,8 +65,6 @@ class Post_Query_Builder extends Builder {
 
 	/**
 	 * Query Where Not In Aliases
-	 *
-	 * @var array
 	 */
 	protected array $query_where_not_in_aliases = [
 		'author'      => 'author__not_in',
@@ -83,8 +77,6 @@ class Post_Query_Builder extends Builder {
 
 	/**
 	 * Query order by aliases.
-	 *
-	 * @var array
 	 */
 	protected array $query_order_by_aliases = [
 		'id' => 'ID',
@@ -92,8 +84,6 @@ class Post_Query_Builder extends Builder {
 
 	/**
 	 * Tax Query.
-	 *
-	 * @var array
 	 */
 	protected array $tax_query = [];
 

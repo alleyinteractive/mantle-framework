@@ -29,15 +29,11 @@ class Bootloader implements Contract {
 
 	/**
 	 * Current instance of the manager.
-	 *
-	 * @var Bootloader|null
 	 */
 	protected static ?Bootloader $instance = null;
 
 	/**
 	 * Application base path.
-	 *
-	 * @var string|null
 	 */
 	protected ?string $base_path = null;
 

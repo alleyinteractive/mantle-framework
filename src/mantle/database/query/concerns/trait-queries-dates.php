@@ -32,8 +32,6 @@ trait Queries_Dates {
 
 	/**
 	 * The valid comparison operators for a date query.
-	 *
-	 * @var array
 	 */
 	protected array $date_operators = [
 		'=',

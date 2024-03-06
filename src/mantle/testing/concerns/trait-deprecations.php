@@ -41,8 +41,6 @@ trait Deprecations {
 
 	/**
 	 * Trace storage for deprecated calls.
-	 *
-	 * @var array
 	 */
 	private array $caught_deprecated_traces = [];
 

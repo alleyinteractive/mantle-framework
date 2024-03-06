@@ -68,7 +68,7 @@ class Output_Style extends SymfonyStyle {
 
 		$xml = new \SimpleXMLElement( '<root/>' );
 
-		foreach ( $data as $headers => $row ) {
+		foreach ( $data as $row ) {
 			$item = $xml->addChild( 'item' );
 
 			foreach ( $row as $key => $value ) {

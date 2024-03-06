@@ -40,8 +40,6 @@ class Handler implements Contract {
 
 	/**
 	 * The container implementation.
-	 *
-	 * @var Application
 	 */
 	protected Application $container;
 
@@ -94,11 +92,7 @@ class Handler implements Contract {
 			return;
 		}
 
-		try {
-			$logger = $this->container->make( LoggerInterface::class );
-		} catch ( Exception $e ) {
-			throw $e;
-		}
+		$logger = $this->container->make( LoggerInterface::class );
 
 		$logger->error(
 			$e->getMessage(),
@@ -352,7 +346,6 @@ class Handler implements Contract {
 	 * @template TThrowable of Throwable
 	 *
 	 * @param Throwable $e Exception thrown.
-	 * @return bool
 	 * @phpstan-param TThrowable $e
 	 * @phpstan-return (TThrowable is HttpException ? true : false)
 	 */
