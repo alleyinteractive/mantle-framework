@@ -25,8 +25,6 @@ class Job_Failed {
 
 	/**
 	 * Get the ID for the job.
-	 *
-	 * @return mixed
 	 */
 	public function get_id(): mixed {
 		return $this->job->get_id();

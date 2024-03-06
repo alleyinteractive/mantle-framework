@@ -96,7 +96,7 @@ class Block_Make_Command extends Generator_Command {
 	 *
 	 * @todo Replace with a filesystem abstraction.
 	 */
-	public function handle() {
+	public function handle(): int {
 		$this->replacements = new String_Replacements();
 
 		$name            = $this->argument( 'name' );

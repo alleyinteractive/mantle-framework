@@ -754,11 +754,10 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * Resolve all of the dependencies from the ReflectionParameters.
 	 *
 	 * @param  \ReflectionParameter[] $dependencies
-	 * @return array
 	 *
 	 * @throws Binding_Resolution_Exception Thrown on missing resolution.
 	 */
-	protected function resolve_dependencies( array $dependencies ) {
+	protected function resolve_dependencies( array $dependencies ): array {
 		$results = [];
 
 		foreach ( $dependencies as $dependency ) {
@@ -989,10 +988,8 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @param  string $abstract
 	 * @param  object $object
 	 * @param  array  $callbacks_per_type
-	 *
-	 * @return array
 	 */
-	protected function get_callbacks_for_type( $abstract, $object, array $callbacks_per_type ) {
+	protected function get_callbacks_for_type( $abstract, $object, array $callbacks_per_type ): array {
 			$results = [];
 
 		foreach ( $callbacks_per_type as $type => $callbacks ) {

@@ -63,7 +63,7 @@ class Hook_Usage_Command extends Command {
 	/**
 	 * Callback for the command.
 	 */
-	public function handle() {
+	public function handle(): int {
 		$usage = $this->get_usage();
 
 		if ( $usage->is_empty() ) {

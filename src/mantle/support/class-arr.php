@@ -193,9 +193,8 @@ class Arr {
 	 *
 	 * @param  iterable  $array Array to process.
 	 * @param  int|float $depth Depth to handle.
-	 * @return array
 	 */
-	public static function flatten( iterable $array, int|float $depth = INF ) {
+	public static function flatten( iterable $array, int|float $depth = INF ): array {
 		$result = [];
 
 		foreach ( $array as $item ) {
@@ -382,9 +381,8 @@ class Arr {
 	 * @param  iterable          $array Array to process.
 	 * @param  string|array      $value Values to pluck.
 	 * @param  string|array|null $key Key to use.
-	 * @return array
 	 */
-	public static function pluck( $array, $value, $key = null ) {
+	public static function pluck( $array, $value, $key = null ): array {
 		$results = [];
 
 		[ $value, $key ] = static::explode_pluck_parameters( $value, $key );

@@ -128,7 +128,7 @@ class Utils {
 	 *
 	 * @return string The server class name.
 	 */
-	public static function wp_rest_server_class_filter() {
+	public static function wp_rest_server_class_filter(): string {
 		return Spy_REST_Server::class;
 	}
 

@@ -26,7 +26,6 @@ class Higher_Order_Collection_Proxy {
 	 * Proxy accessing an attribute onto the collection items.
 	 *
 	 * @param  string $key
-	 * @return mixed
 	 */
 	public function __get( string $key ): mixed {
 		return $this->collection->{ $this->method }(
@@ -39,7 +38,6 @@ class Higher_Order_Collection_Proxy {
 	 *
 	 * @param  string $method
 	 * @param  array  $parameters
-	 * @return mixed
 	 */
 	public function __call( string $method, array $parameters ): mixed {
 		return $this->collection->{ $this->method }(

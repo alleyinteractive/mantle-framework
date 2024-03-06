@@ -33,7 +33,7 @@ class View_Clear_Command extends Command {
 	 *
 	 * @param Filesystem $files Filesystem.
 	 */
-	public function handle( Filesystem $files ) {
+	public function handle( Filesystem $files ): int {
 		$path = config( 'view.compiled' );
 
 		if ( ! $path ) {

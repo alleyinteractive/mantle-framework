@@ -35,6 +35,7 @@ use Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchMethodCallRet
 use Rector\Php80\Rector\FunctionLike\MixedTypeRector;
 use Rector\Php80\Rector\NotIdentical\StrContainsRector;
 use Rector\Php81\Rector\Array_\FirstClassCallableRector;
+use Rector\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector;
 
 /**
  * Rector Configuration
@@ -54,7 +55,7 @@ return RectorConfig::configure()
 	->withPreparedSets(
 		deadCode: true,
 	)
-	->withTypeCoverageLevel(2)
+	->withTypeCoverageLevel(5)
 	->withPhpSets( php81: true )
 	->withRules(
 		[
@@ -83,4 +84,5 @@ return RectorConfig::configure()
 		RenameForeachValueVariableToMatchMethodCallReturnTypeRector::class,
 		FirstClassCallableRector::class,
 		StrContainsRector::class,
+		AddArrowFunctionReturnTypeRector::class,
 	]);

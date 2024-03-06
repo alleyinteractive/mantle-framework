@@ -476,9 +476,8 @@ class Filesystem {
 	 * Get all of the directories within a given directory.
 	 *
 	 * @param  string $directory
-	 * @return array
 	 */
-	public function directories( $directory ) {
+	public function directories( $directory ): array {
 		$directories = [];
 
 		foreach ( Finder::create()->in( $directory )->directories()->depth( 0 )->sortByName() as $dir ) {
