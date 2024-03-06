@@ -22,7 +22,7 @@ namespace Mantle\Testing;
  * @param int      $accepted_args   Optional. The number of arguments the function accepts. Default 1.
  * @return true
  */
-function tests_add_filter( $tag, $function_to_add, $priority = 10, $accepted_args = 1 ) {
+function tests_add_filter( $tag, $function_to_add, $priority = 10, $accepted_args = 1 ): bool {
 	global $wp_filter;
 
 	if ( function_exists( 'add_filter' ) ) {

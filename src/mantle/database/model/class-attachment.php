@@ -169,11 +169,10 @@ class Attachment extends Post {
 	 * Save the model.
 	 *
 	 * @param array $attributes Attributes to save.
-	 * @return bool
 	 *
 	 * @throws Model_Exception Thrown on error saving.
 	 */
-	public function save( array $attributes = [] ) {
+	public function save( array $attributes = [] ): bool {
 		$this->set_attributes( $attributes );
 
 		$id = $this->id();

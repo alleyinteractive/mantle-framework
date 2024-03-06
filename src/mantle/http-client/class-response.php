@@ -115,37 +115,29 @@ class Response implements ArrayAccess {
 
 	/**
 	 * Determine if the request was successful.
-	 *
-	 * @return bool
 	 */
-	public function successful() {
+	public function successful(): bool {
 		return $this->status() >= 200 && $this->status() < 300;
 	}
 
 	/**
 	 * Determine if the response code was "OK".
-	 *
-	 * @return bool
 	 */
-	public function ok() {
+	public function ok(): bool {
 		return $this->status() === 200;
 	}
 
 	/**
 	 * Determine if the response code was not found (404).
-	 *
-	 * @return bool
 	 */
-	public function not_found() {
+	public function not_found(): bool {
 		return $this->status() === 404;
 	}
 
 	/**
 	 * Determine if the response was a redirect.
-	 *
-	 * @return bool
 	 */
-	public function redirect() {
+	public function redirect(): bool {
 		return $this->status() >= 300 && $this->status() < 400;
 	}
 

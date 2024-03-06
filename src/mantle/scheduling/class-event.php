@@ -153,9 +153,8 @@ class Event {
 	 * Determine if the given event should run based on the Cron expression.
 	 *
 	 * @param Application $app
-	 * @return bool
 	 */
-	public function is_due( Application $app ) {
+	public function is_due( Application $app ): bool {
 		return $this->expression_passes() &&
 			$this->runs_in_environment( $app->environment() );
 	}

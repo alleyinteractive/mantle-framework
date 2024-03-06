@@ -104,9 +104,8 @@ class Queue_Fake extends Queue_Manager {
 	 * Determine if there are any stored jobs for a given class.
 	 *
 	 * @param  string $job
-	 * @return bool
 	 */
-	public function hasPushed( $job ) {
+	public function hasPushed( $job ): bool {
 		return isset( $this->jobs[ $job ] ) && ! empty( $this->jobs[ $job ] );
 	}
 

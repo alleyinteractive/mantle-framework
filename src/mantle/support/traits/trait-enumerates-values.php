@@ -898,9 +898,8 @@ trait Enumerates_Values {
 	 * Determine if the given value is callable, but not a string.
 	 *
 	 * @param  mixed $value
-	 * @return bool
 	 */
-	protected function use_as_callable( $value ) {
+	protected function use_as_callable( $value ): bool {
 		return ! is_string( $value ) && is_callable( $value );
 	}
 

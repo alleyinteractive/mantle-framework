@@ -24,10 +24,8 @@ use Mantle\Support\Str;
  * Determine if the given value is "blank".
  *
  * @param mixed $value Value to check.
- *
- * @return bool
  */
-function blank( $value ) {
+function blank( $value ): bool {
 	if ( is_null( $value ) ) {
 		return true;
 	}

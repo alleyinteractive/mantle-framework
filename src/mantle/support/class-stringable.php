@@ -228,9 +228,8 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * Determine if the string is an exact match with the given value.
 	 *
 	 * @param  \Mantle\Support\Stringable|string $value
-	 * @return bool
 	 */
-	public function exactly( $value ) {
+	public function exactly( $value ): bool {
 		if ( $value instanceof Stringable ) {
 			$value = $value->toString();
 		}
@@ -355,10 +354,8 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 
 	/**
 	 * Determine if the given string is empty.
-	 *
-	 * @return bool
 	 */
-	public function is_empty() {
+	public function is_empty(): bool {
 		return '' === $this->value;
 	}
 
@@ -1097,19 +1094,15 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 
 	/**
 	 * Get the underlying string value as an integer.
-	 *
-	 * @return int
 	 */
-	public function to_integer() {
+	public function to_integer(): int {
 		return intval( $this->value );
 	}
 
 	/**
 	 * Get the underlying string value as a float.
-	 *
-	 * @return float
 	 */
-	public function to_float() {
+	public function to_float(): float {
 		return floatval( $this->value );
 	}
 

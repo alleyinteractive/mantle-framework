@@ -802,7 +802,7 @@ abstract class Builder {
 	 * @return boolean
 	 */
 	public function each( callable $callback, int $count = 100 ) {
-		return $this->chunk( $count, function ( Collection $results ) use ( $callback ) {
+		return $this->chunk( $count, function ( Collection $results ) use ( $callback ): bool {
 			foreach ( $results as $result ) {
 				if ( false === $callback( $result ) ) {
 					return false;
@@ -822,7 +822,7 @@ abstract class Builder {
 	 * @return boolean
 	 */
 	public function each_by_id( callable $callback, int $count = 100, string $attribute = 'id' ) {
-		return $this->chunk_by_id( $count, function ( Collection $results ) use ( $callback ) {
+		return $this->chunk_by_id( $count, function ( Collection $results ) use ( $callback ): bool {
 			foreach ( $results as $result ) {
 				if ( false === $callback( $result ) ) {
 					return false;

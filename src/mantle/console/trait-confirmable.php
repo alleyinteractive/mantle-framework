@@ -27,7 +27,7 @@ trait Confirmable {
 	 * @param string $warning Warning to the user.
 	 * @return bool True to proceed, false otherwise.
 	 */
-	public function confirm_to_proceed( string $warning = null ) {
+	public function confirm_to_proceed( string $warning = null ): bool {
 		// Check if the command needs to be confirmed.
 		if ( 'production' !== app()->environment() ) {
 			return true;

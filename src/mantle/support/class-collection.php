@@ -558,9 +558,8 @@ class Collection implements ArrayAccess, Enumerable {
 	 * Determine if an item exists in the collection by key.
 	 *
 	 * @param  TKey|array<array-key, TKey> $key
-	 * @return bool
 	 */
-	public function has( $key ) {
+	public function has( $key ): bool {
 		$keys = is_array( $key ) ? $key : func_get_args();
 
 		foreach ( $keys as $key ) {
@@ -641,19 +640,15 @@ class Collection implements ArrayAccess, Enumerable {
 
 	/**
 	 * Determine if the collection is empty or not.
-	 *
-	 * @return bool
 	 */
-	public function is_empty() {
+	public function is_empty(): bool {
 		return empty( $this->items );
 	}
 
 	/**
 	 * Determine if the collection contains a single item.
-	 *
-	 * @return bool
 	 */
-	public function contains_one_item() {
+	public function contains_one_item(): bool {
 		return $this->count() === 1;
 	}
 

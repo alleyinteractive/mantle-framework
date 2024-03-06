@@ -324,9 +324,8 @@ trait Has_Attributes {
 	 * Decode the given float.
 	 *
 	 * @param  mixed $value Value to decode.
-	 * @return mixed
 	 */
-	public function from_float( $value ) {
+	public function from_float( $value ): float {
 		return match ( (string) $value) {
 						'Infinity' => INF,
 						'-Infinity' => -INF,

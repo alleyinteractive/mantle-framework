@@ -143,9 +143,8 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * Determine if the given abstract type has been bound.
 	 *
 	 * @param string $abstract Abstract name.
-	 * @return bool
 	 */
-	public function bound( $abstract ) {
+	public function bound( $abstract ): bool {
 		return isset( $this->bindings[ $abstract ] ) ||
 			isset( $this->instances[ $abstract ] ) ||
 			$this->is_alias( $abstract );
@@ -162,9 +161,8 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * Determine if the given abstract type has been resolved.
 	 *
 	 * @param string $abstract Abstract name.
-	 * @return bool
 	 */
-	public function resolved( $abstract ) {
+	public function resolved( $abstract ): bool {
 		if ( $this->is_alias( $abstract ) ) {
 			$abstract = $this->get_alias( $abstract );
 		}
@@ -177,9 +175,8 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * Determine if a given type is shared.
 	 *
 	 * @param string $abstract Abstract name.
-	 * @return bool
 	 */
-	public function is_shared( $abstract ) {
+	public function is_shared( $abstract ): bool {
 		return isset( $this->instances[ $abstract ] ) ||
 			( isset( $this->bindings[ $abstract ]['shared'] ) &&
 			true === $this->bindings[ $abstract ]['shared'] );
@@ -683,9 +680,8 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 *
 	 * @param  mixed  $concrete
 	 * @param  string $abstract
-	 * @return bool
 	 */
-	protected function is_buildable( $concrete, $abstract ) {
+	protected function is_buildable( $concrete, $abstract ): bool {
 		return $concrete === $abstract || $concrete instanceof Closure;
 	}
 

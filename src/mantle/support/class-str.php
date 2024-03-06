@@ -226,9 +226,8 @@ class Str {
 	 * @param  string                  $haystack
 	 * @param  string|iterable<string> $needles
 	 * @param  bool                    $ignore_case
-	 * @return bool
 	 */
-	public static function contains( $haystack, $needles, $ignore_case = false ) {
+	public static function contains( $haystack, $needles, $ignore_case = false ): bool {
 		if ( $ignore_case ) {
 			$haystack = mb_strtolower( $haystack );
 		}
@@ -256,9 +255,8 @@ class Str {
 	 * @param  string           $haystack
 	 * @param  iterable<string> $needles
 	 * @param  bool             $ignore_case
-	 * @return bool
 	 */
-	public static function contains_all( $haystack, $needles, bool $ignore_case = false ) {
+	public static function contains_all( $haystack, $needles, bool $ignore_case = false ): bool {
 		foreach ( $needles as $needle ) {
 			if ( ! static::contains( $haystack, $needle, $ignore_case ) ) {
 				return false;
@@ -273,9 +271,8 @@ class Str {
 	 *
 	 * @param  string                  $haystack
 	 * @param  string|iterable<string> $needles
-	 * @return bool
 	 */
-	public static function ends_with( $haystack, $needles ) {
+	public static function ends_with( $haystack, $needles ): bool {
 		if ( ! is_iterable( $needles ) ) {
 			$needles = (array) $needles;
 		}
@@ -354,9 +351,8 @@ class Str {
 	 *
 	 * @param  string|iterable<string> $pattern
 	 * @param  string                  $value
-	 * @return bool
 	 */
-	public static function is( $pattern, $value ) {
+	public static function is( $pattern, $value ): bool {
 		$value = (string) $value;
 
 		if ( ! is_iterable( $pattern ) ) {
@@ -402,9 +398,8 @@ class Str {
 	 * Determine if a given string is valid JSON.
 	 *
 	 * @param  string $value
-	 * @return bool
 	 */
-	public static function is_json( $value ) {
+	public static function is_json( $value ): bool {
 		if ( ! is_string( $value ) ) {
 			return false;
 		}
@@ -447,9 +442,8 @@ class Str {
 	 *
 	 * @param  string      $value
 	 * @param  string|null $encoding
-	 * @return int
 	 */
-	public static function length( $value, $encoding = null ) {
+	public static function length( $value, $encoding = null ): int {
 		return mb_strlen( $value, $encoding );
 	}
 
@@ -585,9 +579,8 @@ class Str {
 	 *
 	 * @param  string|iterable<string> $pattern
 	 * @param  string                  $value
-	 * @return bool
 	 */
-	public static function is_match( $pattern, $value ) {
+	public static function is_match( $pattern, $value ): bool {
 		$value = (string) $value;
 
 		if ( ! is_iterable( $pattern ) ) {
@@ -1170,9 +1163,8 @@ class Str {
 	 *
 	 * @param  string                  $haystack
 	 * @param  string|iterable<string> $needles
-	 * @return bool
 	 */
-	public static function starts_with( $haystack, $needles ) {
+	public static function starts_with( $haystack, $needles ): bool {
 		if ( ! is_iterable( $needles ) ) {
 			$needles = [ $needles ];
 		}
@@ -1237,9 +1229,8 @@ class Str {
 	 * @param  string   $needle
 	 * @param  int      $offset
 	 * @param  int|null $length
-	 * @return int
 	 */
-	public static function substr_count( $haystack, $needle, $offset = 0, $length = null ) {
+	public static function substr_count( $haystack, $needle, $offset = 0, $length = null ): int {
 		if ( ! is_null( $length ) ) {
 			return substr_count( $haystack, $needle, $offset, $length );
 		}

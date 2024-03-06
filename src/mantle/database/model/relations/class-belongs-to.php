@@ -305,7 +305,7 @@ class Belongs_To extends Relation {
 
 		return collect( $object_terms )
 			->filter(
-				function( WP_Term $term ) {
+				function( WP_Term $term ): bool {
 					$key = Str::before_last( $term->slug, Has_One_Or_Many::DELIMITER );
 					$id  = Str::after_last( $term->slug, Has_One_Or_Many::DELIMITER );
 

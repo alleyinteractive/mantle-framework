@@ -31,9 +31,8 @@ class Exception_Handler implements Exceptions_Handler {
 	 * Determine if the exception should be reported.
 	 *
 	 * @param Throwable $e Exception thrown.
-	 * @return bool
 	 */
-	public function should_report( Throwable $e ) {
+	public function should_report( Throwable $e ): bool {
 		return true;
 	}
 

@@ -134,7 +134,7 @@ class Comment extends Model implements Contracts\Database\Core_Object, Contracts
 	 * @param array $attributes Attributes to save.
 	 * @throws Model_Exception Thrown on error saving.
 	 */
-	public function save( array $attributes = [] ) {
+	public function save( array $attributes = [] ): bool {
 		$this->set_attributes( $attributes );
 
 		$id = $this->id();

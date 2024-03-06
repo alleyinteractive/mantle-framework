@@ -55,7 +55,7 @@ return RectorConfig::configure()
 	->withPreparedSets(
 		deadCode: true,
 	)
-	->withTypeCoverageLevel(5)
+	->withTypeCoverageLevel(7)
 	->withPhpSets( php81: true )
 	->withRules(
 		[

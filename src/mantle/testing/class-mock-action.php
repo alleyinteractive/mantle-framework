@@ -110,9 +110,8 @@ class Mock_Action {
 	 *
 	 * @param string $tag Optional. Action or filter tag. If absent, counts all
 	 *                    events.
-	 * @return int
 	 */
-	public function get_call_count( $tag = '' ) {
+	public function get_call_count( $tag = '' ): int {
 		if ( ! empty( $tag ) ) {
 			$count = 0;
 			foreach ( $this->events as $event ) {
