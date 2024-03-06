@@ -68,7 +68,7 @@ class Factory implements ViewFactory {
 	 *
 	 * @var View|null
 	 */
-	protected $current = null;
+	protected $current;
 
 	/**
 	 * The extension to engine bindings.

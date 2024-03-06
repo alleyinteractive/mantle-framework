@@ -23,7 +23,7 @@ class Asset {
 	 *
 	 * @var string
 	 */
-	protected $media = null;
+	protected $media;
 
 	/**
 	 * Enqueue on frontend.

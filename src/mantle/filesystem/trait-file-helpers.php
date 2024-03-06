@@ -18,7 +18,7 @@ trait File_Helpers {
 	 *
 	 * @var string
 	 */
-	protected $hash_name = null;
+	protected $hash_name;
 
 	/**
 	 * Get the fully qualified path to the file.
