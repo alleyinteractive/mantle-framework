@@ -19,7 +19,7 @@ class Event_Service_Provider extends Service_Provider {
 	/**
 	 * Register any application services.
 	 */
-	public function register() {
+	public function register(): void {
 		$this->app->singleton_if(
 			'events',
 			fn( $app ) => new Dispatcher( $app ),

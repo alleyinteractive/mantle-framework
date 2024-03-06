@@ -77,7 +77,7 @@ class Schedule {
 	/**
 	 * Schedule the WordPress cron event for the scheduler.
 	 */
-	public static function schedule_cron_event() {
+	public static function schedule_cron_event(): void {
 		if ( ! is_blog_installed() ) {
 			return;
 		}

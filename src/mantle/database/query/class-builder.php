@@ -732,7 +732,7 @@ abstract class Builder {
 	 * @param bool $force Flag to force delete.
 	 * @return void
 	 */
-	public function delete( bool $force = false ) {
+	public function delete( bool $force = false ): void {
 		$this->all()->each->delete( $force ); // @phpstan-ignore-line undefined method
 	}
 

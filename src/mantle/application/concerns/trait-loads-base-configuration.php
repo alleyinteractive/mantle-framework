@@ -23,7 +23,7 @@ trait Loads_Base_Configuration {
 	/**
 	 * Load the base configuration for the application.
 	 */
-	public function load_base_configuration() {
+	public function load_base_configuration(): void {
 		$cached = $this->get_cached_config_path();
 
 		// Check if a cached configuration file exists. If found, load it.

@@ -57,7 +57,7 @@ class Dispatcher implements Dispatcher_Contract {
 	 * @param int          $priority Event priority.
 	 * @param  \Closure|string $listener Listener callback.
 	 */
-	public function listen( $events, $listener, int $priority = 10 ) {
+	public function listen( $events, $listener, int $priority = 10 ): void {
 		foreach ( (array) $events as $event ) {
 			add_action(
 				$event,
@@ -84,7 +84,7 @@ class Dispatcher implements Dispatcher_Contract {
 	 * @param  object|string $subscriber
 	 * @return void
 	 */
-	public function subscribe( $subscriber ) {
+	public function subscribe( $subscriber ): void {
 		$subscriber = $this->resolve_subscriber( $subscriber );
 
 		$subscriber->subscribe( $this );
@@ -237,7 +237,7 @@ class Dispatcher implements Dispatcher_Contract {
 	 * @param int $priority Priority of the listener.
 	 * @return void
 	 */
-	public function forget( $event, $listener = null, int $priority = 10 ) {
+	public function forget( $event, $listener = null, int $priority = 10 ): void {
 		if ( is_object( $event ) ) {
 			$event = get_class( $event );
 		}

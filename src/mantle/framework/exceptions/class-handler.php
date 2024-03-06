@@ -82,7 +82,7 @@ class Handler implements Contract {
 	 *
 	 * @throws Exception Throws if logger not found.
 	 */
-	public function report( Throwable $e ) {
+	public function report( Throwable $e ): void {
 		if ( $this->shouldnt_report( $e ) ) {
 			return;
 		}
@@ -210,7 +210,7 @@ class Handler implements Contract {
 	 *
 	 * @throws Throwable Thrown in debug mode to trigger Whoops.
 	 */
-	public function render_for_console( OutputInterface $output, Throwable $e ) {
+	public function render_for_console( OutputInterface $output, Throwable $e ): void {
 		if ( config( 'app.debug' ) ) {
 			// Use Whoops to render the exception if we're in debug mode.
 			( new \NunoMaduro\Collision\Provider() )->register();

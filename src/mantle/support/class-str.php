@@ -865,7 +865,7 @@ class Str {
 	 * @param  callable|null $factory
 	 * @return void
 	 */
-	public static function create_random_strings_using( callable $factory = null ) {
+	public static function create_random_strings_using( callable $factory = null ): void {
 		static::$random_string_factory = $factory;
 	}
 
@@ -876,7 +876,7 @@ class Str {
 	 * @param  callable|null $when_missing
 	 * @return void
 	 */
-	public static function create_random_strings_using_sequence( array $sequence, $when_missing = null ) {
+	public static function create_random_strings_using_sequence( array $sequence, $when_missing = null ): void {
 		$next = 0;
 
 		$when_missing ??= function ( $length ) use ( &$next ) {
@@ -909,7 +909,7 @@ class Str {
 	 *
 	 * @return void
 	 */
-	public static function create_random_strings_normally() {
+	public static function create_random_strings_normally(): void {
 		static::$random_string_factory = null;
 	}
 
@@ -1401,7 +1401,7 @@ class Str {
 	 *
 	 * @return void
 	 */
-	public static function flush_cache() {
+	public static function flush_cache(): void {
 		static::$snake_cache  = [];
 		static::$camel_cache  = [];
 		static::$studly_cache = [];

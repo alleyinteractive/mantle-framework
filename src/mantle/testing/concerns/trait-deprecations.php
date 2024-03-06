@@ -49,7 +49,7 @@ trait Deprecations {
 	/**
 	 * Sets up the expectations for testing a deprecated call.
 	 */
-	public function deprecations_set_up() {
+	public function deprecations_set_up(): void {
 		$annotations = $this->get_annotations_for_method();
 
 		foreach ( [ 'class', 'method' ] as $depth ) {
@@ -80,7 +80,7 @@ trait Deprecations {
 	 *
 	 * The DocBlock should contain `@expectedDeprecated` to trigger this.
 	 */
-	public function deprecations_tear_down() {
+	public function deprecations_tear_down(): void {
 		$errors = [];
 
 		$not_caught_deprecated = array_diff( $this->expected_deprecated, $this->caught_deprecated );
@@ -145,7 +145,7 @@ trait Deprecations {
 	 *                           parameter of the `_deprecated_function()` or
 	 *                           `_deprecated_argument()` call.
 	 */
-	public function setExpectedDeprecated( string $deprecated ) {
+	public function setExpectedDeprecated( string $deprecated ): void {
 		$this->expected_deprecated[] = $deprecated;
 	}
 
@@ -159,7 +159,7 @@ trait Deprecations {
 	 *                           parameter of the `_deprecated_function()` or
 	 *                           `_deprecated_argument()` call.
 	 */
-	public function ignoreDeprecated( $deprecated = '*' ) {
+	public function ignoreDeprecated( $deprecated = '*' ): void {
 		$this->ignored_deprecated[] = $deprecated;
 	}
 
@@ -168,7 +168,7 @@ trait Deprecations {
 	 *
 	 * @param string $function The deprecated function.
 	 */
-	public function deprecated_function_run( $function ) {
+	public function deprecated_function_run( $function ): void {
 		if ( ! in_array( $function, $this->caught_deprecated, true ) ) {
 			$this->caught_deprecated[] = $function;
 

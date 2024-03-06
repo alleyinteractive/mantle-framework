@@ -21,7 +21,7 @@ class Register_Aliases {
 	 *
 	 * @param Application $app Application instance.
 	 */
-	public function bootstrap( Application $app ) {
+	public function bootstrap( Application $app ): void {
 		Alias_Loader::get_instance(
 			array_merge(
 				(array) $app->make( 'config' )->get( 'app.aliases' ),

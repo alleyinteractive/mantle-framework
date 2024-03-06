@@ -16,7 +16,7 @@ trait Term_Events {
 	/**
 	 * Boot the trait.
 	 */
-	public static function boot_term_events() {
+	public static function boot_term_events(): void {
 		static::subscribe_to_core_events();
 	}
 

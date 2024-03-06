@@ -19,7 +19,7 @@ class Register_Providers implements Bootstrapable_Contract {
 	 *
 	 * @param Application $app Application instance.
 	 */
-	public function bootstrap( Application $app ) {
+	public function bootstrap( Application $app ): void {
 		$app->register_configured_providers();
 	}
 }

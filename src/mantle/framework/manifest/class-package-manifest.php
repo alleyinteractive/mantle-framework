@@ -118,7 +118,7 @@ class Package_Manifest {
 	/**
 	 * Build the manifest.
 	 */
-	public function build() {
+	public function build(): void {
 		$filesystem = new Filesystem();
 
 		$installed          = [];

@@ -27,7 +27,7 @@ class Model_Service_Provider extends Service_Provider {
 	/**
 	 * Register the service provider.
 	 */
-	public function register() {
+	public function register(): void {
 		Model::set_event_dispatcher( $this->app['events'] );
 
 		// Allow the configuration to disable discovery.
@@ -49,7 +49,7 @@ class Model_Service_Provider extends Service_Provider {
 	/**
 	 * Bootstrap the service provider.
 	 */
-	public function boot() {
+	public function boot(): void {
 		if ( empty( $this->models ) ) {
 			return;
 		}
@@ -66,7 +66,7 @@ class Model_Service_Provider extends Service_Provider {
 	 *
 	 * @param string[] $models Models to register.
 	 */
-	public function set_models_to_register( array $models ) {
+	public function set_models_to_register( array $models ): void {
 		$this->models = array_unique( $models );
 	}
 
@@ -74,7 +74,7 @@ class Model_Service_Provider extends Service_Provider {
 	 * Register the internal taxonomy for post <--> post relationships.
 	 */
 	#[Action( 'init', 5 )]
-	public static function register_internal_taxonomy() {
+	public static function register_internal_taxonomy(): void {
 		register_taxonomy(
 			Relation::RELATION_TAXONOMY,
 			array_keys( get_post_types() ),

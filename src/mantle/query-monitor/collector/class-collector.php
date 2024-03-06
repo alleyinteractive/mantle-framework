@@ -49,7 +49,7 @@ class Collector extends \QM_Collector {
 	/**
 	 * Process the current request.
 	 */
-	public function process() {
+	public function process(): void {
 		$this->data['request'] = $this->app->make( Request::class );
 		$this->data['route']   = $this->data['request']->get_route();
 	}

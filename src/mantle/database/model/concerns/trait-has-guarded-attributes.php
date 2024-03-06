@@ -49,7 +49,7 @@ trait Has_Guarded_Attributes {
 	 *
 	 * @param bool $guarded Flag if the model is being guarded.
 	 */
-	public function set_model_guard( bool $guarded ) {
+	public function set_model_guard( bool $guarded ): void {
 		$this->guarded = $guarded;
 	}
 
@@ -73,7 +73,7 @@ trait Has_Guarded_Attributes {
 	 *
 	 * @param bool $guarded Flag if the model is guarded.
 	 */
-	public function guard( bool $guarded ) {
+	public function guard( bool $guarded ): void {
 		$this->guarded = $guarded;
 	}
 
@@ -105,7 +105,7 @@ trait Has_Guarded_Attributes {
 	 *
 	 * @return void
 	 */
-	public static function unguard( $state = true ) {
+	public static function unguard( $state = true ): void {
 		static::$unguarded = $state;
 	}
 
@@ -114,7 +114,7 @@ trait Has_Guarded_Attributes {
 	 *
 	 * @return void
 	 */
-	public static function reguard() {
+	public static function reguard(): void {
 		static::$unguarded = false;
 	}
 }

@@ -68,7 +68,7 @@ abstract class Has_One_Or_Many extends Relation {
 	 *
 	 * @throws Model_Exception Thrown if the parent model is not an instance of Core_Object.
 	 */
-	public function add_constraints() {
+	public function add_constraints(): void {
 		// todo: remove in PHP 8.1+.
 		if ( ! $this->parent instanceof Core_Object ) {
 			throw new Model_Exception( 'Parent model must be an instance of Core_Object.' );

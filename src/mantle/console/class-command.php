@@ -188,7 +188,7 @@ abstract class Command extends Symfony_Command {
 	 *
 	 * @param \Mantle\Contracts\Application $container Application container.
 	 */
-	public function set_container( \Mantle\Contracts\Application $container ) {
+	public function set_container( \Mantle\Contracts\Application $container ): void {
 		$this->container = $container;
 	}
 

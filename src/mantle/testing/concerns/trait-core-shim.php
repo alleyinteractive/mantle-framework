@@ -35,7 +35,7 @@ trait Core_Shim {
 	 *
 	 * @return void
 	 */
-	public function tear_down() {
+	public function tear_down(): void {
 		// Do nothing.
 	}
 
@@ -44,7 +44,7 @@ trait Core_Shim {
 	 *
 	 * Use in conjunction with the ms-required group.
 	 */
-	public function skipWithoutMultisite() {
+	public function skipWithoutMultisite(): void {
 		if ( ! is_multisite() ) {
 			$this->markTestSkipped( 'Test only runs on Multisite' );
 		}
@@ -55,7 +55,7 @@ trait Core_Shim {
 	 *
 	 * Use in conjunction with the ms-excluded group.
 	 */
-	public function skipWithMultisite() {
+	public function skipWithMultisite(): void {
 		if ( is_multisite() ) {
 			$this->markTestSkipped( 'Test does not run on Multisite' );
 		}
@@ -68,7 +68,7 @@ trait Core_Shim {
 	 *
 	 * @param array|WP_Error $response HTTP response.
 	 */
-	public function skipTestOnTimeout( $response ) {
+	public function skipTestOnTimeout( $response ): void {
 		if ( ! is_wp_error( $response ) ) {
 			return;
 		}

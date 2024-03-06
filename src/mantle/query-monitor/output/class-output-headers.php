@@ -36,7 +36,7 @@ class Output_Headers extends QM_Output_Html {
 	/**
 	 * Output for the Query Monitor panel.
 	 */
-	public function output() {
+	public function output(): void {
 		$this->output_request();
 		$this->output_response();
 	}

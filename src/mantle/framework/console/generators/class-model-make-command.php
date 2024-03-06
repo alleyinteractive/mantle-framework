@@ -120,7 +120,7 @@ class Model_Make_Command extends Stub_Generator_Command {
 	 *
 	 * @param string $name Class name.
 	 */
-	public function complete_synopsis( string $name ) {
+	public function complete_synopsis( string $name ): void {
 		if ( ! $this->option( 'registrable', false ) ) {
 			return;
 		}

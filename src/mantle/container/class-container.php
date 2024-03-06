@@ -205,7 +205,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @param  bool                 $shared
 	 * @return void
 	 */
-	public function bind( $abstract, $concrete = null, $shared = false ) {
+	public function bind( $abstract, $concrete = null, $shared = false ): void {
 		$this->drop_stale_instances( $abstract );
 
 		// If no concrete type was given, we will simply set the concrete type to the
@@ -270,7 +270,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @param  \Closure     $callback
 	 * @return void
 	 */
-	public function bind_method( $method, $callback ) {
+	public function bind_method( $method, $callback ): void {
 		$this->method_bindings[ $this->parse_bind_method( $method ) ] = $callback;
 	}
 
@@ -307,7 +307,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @param  bool                 $shared
 	 * @return void
 	 */
-	public function bind_if( $abstract, $concrete = null, $shared = false ) {
+	public function bind_if( $abstract, $concrete = null, $shared = false ): void {
 		if ( ! $this->bound( $abstract ) ) {
 				$this->bind( $abstract, $concrete, $shared );
 		}
@@ -320,7 +320,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @param  \Closure|string|null $concrete
 	 * @return void
 	 */
-	public function singleton( $abstract, $concrete = null ) {
+	public function singleton( $abstract, $concrete = null ): void {
 		$this->bind( $abstract, $concrete, true );
 	}
 
@@ -331,7 +331,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @param  \Closure|string|null $concrete
 	 * @return void
 	 */
-	public function singleton_if( $abstract, $concrete = null ) {
+	public function singleton_if( $abstract, $concrete = null ): void {
 		if ( ! $this->bound( $abstract ) ) {
 			$this->singleton( $abstract, $concrete );
 		}
@@ -346,7 +346,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 *
 	 * @throws \InvalidArgumentException Thrown on invalid argument.
 	 */
-	public function extend( $abstract, Closure $closure ) {
+	public function extend( $abstract, Closure $closure ): void {
 		$abstract = $this->get_alias( $abstract );
 
 		if ( isset( $this->instances[ $abstract ] ) ) {
@@ -417,7 +417,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 *
 	 * @throws LogicException Thrown on logic error.
 	 */
-	public function alias( $abstract, $alias ) {
+	public function alias( $abstract, $alias ): void {
 		if ( $alias === $abstract ) {
 			throw new LogicException( "[{$abstract}] is aliased to itself." );
 		}
@@ -936,7 +936,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @param  \Closure|null   $callback
 	 * @return void
 	 */
-	public function resolving( $abstract, Closure $callback = null ) {
+	public function resolving( $abstract, Closure $callback = null ): void {
 		if ( is_string( $abstract ) ) {
 			$abstract = $this->get_alias( $abstract );
 		}
@@ -955,7 +955,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @param  \Closure|null   $callback
 	 * @return void
 	 */
-	public function after_resolving( $abstract, Closure $callback = null ) {
+	public function after_resolving( $abstract, Closure $callback = null ): void {
 		if ( is_string( $abstract ) ) {
 			$abstract = $this->get_alias( $abstract );
 		}
@@ -1076,7 +1076,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @param  string $abstract
 	 * @return void
 	 */
-	public function forget_extenders( $abstract ) {
+	public function forget_extenders( $abstract ): void {
 		unset( $this->extenders[ $this->get_alias( $abstract ) ] );
 	}
 
@@ -1096,7 +1096,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @param  string $abstract
 	 * @return void
 	 */
-	public function forget_instance( $abstract ) {
+	public function forget_instance( $abstract ): void {
 		unset( $this->instances[ $abstract ] );
 	}
 
@@ -1105,7 +1105,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 *
 	 * @return void
 	 */
-	public function forget_instances() {
+	public function forget_instances(): void {
 			$this->instances = [];
 	}
 
@@ -1114,7 +1114,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 *
 	 * @return void
 	 */
-	public function flush() {
+	public function flush(): void {
 		$this->aliases          = [];
 		$this->resolved         = [];
 		$this->bindings         = [];

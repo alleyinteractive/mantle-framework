@@ -29,7 +29,7 @@ class Handler extends Base_Handler {
 	 *
 	 * @param Throwable $exception Exception thrown.
 	 */
-	public function report( Throwable $exception ) {
+	public function report( Throwable $exception ): void {
 		parent::report( $exception );
 	}
 

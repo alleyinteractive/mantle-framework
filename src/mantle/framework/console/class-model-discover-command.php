@@ -40,7 +40,7 @@ class Model_Discover_Command extends Command {
 	 *
 	 * @param Model_Manifest $manifest Package Manifest.
 	 */
-	public function handle( Model_Manifest $manifest ) {
+	public function handle( Model_Manifest $manifest ): void {
 		$this->manifest = $manifest;
 
 		$this->log( 'Discovering models...' );

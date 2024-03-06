@@ -35,7 +35,7 @@ trait Assertions {
 	 * @param mixed  $actual  The value to check.
 	 * @param string $message Optional. Message to display when the assertion fails.
 	 */
-	public static function assertWPError( $actual, $message = '' ) {
+	public static function assertWPError( $actual, $message = '' ): void {
 		PHPUnit::assertInstanceOf( 'WP_Error', $actual, $message );
 	}
 
@@ -45,7 +45,7 @@ trait Assertions {
 	 * @param mixed  $actual  The value to check.
 	 * @param string $message Optional. Message to display when the assertion fails.
 	 */
-	public static function assertNotWPError( $actual, $message = '' ) {
+	public static function assertNotWPError( $actual, $message = '' ): void {
 		if ( '' === $message && is_wp_error( $actual ) ) {
 			$message = $actual->get_error_message();
 		}
@@ -58,7 +58,7 @@ trait Assertions {
 	 * @param object $object The object to check.
 	 * @param array  $fields The fields to check.
 	 */
-	public static function assertEqualFields( $object, $fields ) {
+	public static function assertEqualFields( $object, $fields ): void {
 		foreach ( $fields as $field_name => $field_value ) {
 			if ( $object->$field_name !== $field_value ) {
 				PHPUnit::fail();
@@ -72,7 +72,7 @@ trait Assertions {
 	 * @param string $expected The expected value.
 	 * @param string $actual   The actual value.
 	 */
-	public static function assertDiscardWhitespace( $expected, $actual ) {
+	public static function assertDiscardWhitespace( $expected, $actual ): void {
 		PHPUnit::assertEquals( preg_replace( '/\s*/', '', $expected ), preg_replace( '/\s*/', '', $actual ) );
 	}
 
@@ -82,7 +82,7 @@ trait Assertions {
 	 * @param string $expected The expected value.
 	 * @param string $actual   The actual value.
 	 */
-	public static function assertEqualsIgnoreEOL( $expected, $actual ) {
+	public static function assertEqualsIgnoreEOL( $expected, $actual ): void {
 		PHPUnit::assertEquals( str_replace( "\r\n", "\n", $expected ), str_replace( "\r\n", "\n", $actual ) );
 	}
 
@@ -354,7 +354,7 @@ trait Assertions {
 	 *
 	 * @param array $arguments Arguments to query against.
 	 */
-	public function assertUserExists( array $arguments ) {
+	public function assertUserExists( array $arguments ): void {
 		$arguments = $this->serialize_arguments(
 			$arguments,
 			[

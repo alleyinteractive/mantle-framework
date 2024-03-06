@@ -16,7 +16,7 @@ class Paginator_Service_Provider extends Service_Provider {
 	/**
 	 * Register the provider
 	 */
-	public function register() {
+	public function register(): void {
 		if ( isset( $this->app['view.loader'] ) ) {
 			$this->app['view.loader']->add_path( __DIR__ . '/resources', 'paginator' );
 		}

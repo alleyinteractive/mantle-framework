@@ -28,7 +28,7 @@ class Seed_Command extends Command {
 	/**
 	 * Run Database Seeding
 	 */
-	public function handle() {
+	public function handle(): void {
 		if ( ! $this->confirm_to_proceed() ) {
 			return;
 		}

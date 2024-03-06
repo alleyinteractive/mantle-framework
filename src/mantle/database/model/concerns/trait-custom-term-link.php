@@ -18,7 +18,7 @@ trait Custom_Term_Link {
 	/**
 	 * Boot the trait and add filters for the post type link single and archive link.
 	 */
-	public static function boot_custom_term_link() {
+	public static function boot_custom_term_link(): void {
 		if ( static::get_route() ) {
 			add_filter( 'term_link', [ __CLASS__, 'filter_term_link' ], 99 );
 		}

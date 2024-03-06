@@ -22,7 +22,7 @@ trait WordPress_State {
 	/**
 	 * Cleans the global scope (e.g `$_GET` and `$_POST`).
 	 */
-	public function clean_up_global_scope() {
+	public function clean_up_global_scope(): void {
 		$_GET  = [];
 		$_POST = [];
 		self::flush_cache();
@@ -31,7 +31,7 @@ trait WordPress_State {
 	/**
 	 * Flushes the WordPress object cache.
 	 */
-	public static function flush_cache() {
+	public static function flush_cache(): void {
 		global $wp_object_cache;
 		$wp_object_cache->group_ops      = [];
 		$wp_object_cache->stats          = [];
@@ -111,7 +111,7 @@ trait WordPress_State {
 	 *
 	 * @global array $wp_meta_keys
 	 */
-	public function unregister_all_meta_keys() {
+	public function unregister_all_meta_keys(): void {
 		global $wp_meta_keys;
 		if ( ! is_array( $wp_meta_keys ) ) {
 			return;
@@ -150,7 +150,7 @@ trait WordPress_State {
 	 *
 	 * @param string $structure Optional. Permalink structure to set. Default empty.
 	 */
-	public function set_permalink_structure( $structure = '' ) {
+	public function set_permalink_structure( $structure = '' ): void {
 		global $wp_rewrite;
 
 		$wp_rewrite->init();

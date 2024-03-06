@@ -35,7 +35,7 @@ trait Register_Rest_Fields {
 	/**
 	 * Register the post type.
 	 */
-	public static function boot_register_rest_fields() {
+	public static function boot_register_rest_fields(): void {
 		static::$rest_registrar = new REST_Field_Registrar();
 
 		\add_action( 'rest_api_init', [ __CLASS__, 'register_fields' ] );
@@ -46,7 +46,7 @@ trait Register_Rest_Fields {
 	 *
 	 * @throws Model_Exception Thrown when registering a post type that is already registered.
 	 */
-	public static function register_fields() {
+	public static function register_fields(): void {
 		if ( ! isset( static::$rest_registrar ) ) {
 			$class = get_called_class();
 			throw new Model_Exception( "REST field registrar is not defined for [{$class}]" );

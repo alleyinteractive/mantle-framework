@@ -51,7 +51,7 @@ trait Makes_Http_Requests {
 	/**
 	 * Setup the trait in the test case.
 	 */
-	public function makes_http_requests_set_up() {
+	public function makes_http_requests_set_up(): void {
 		global $wp_rest_server, $wp_actions;
 
 		// Clear out the existing REST Server to allow for REST API routes to be re-registered.
@@ -400,7 +400,7 @@ trait Makes_Http_Requests {
 	/**
 	 * Call all of the "before" callbacks for the requests.
 	 */
-	public function call_before_callbacks() {
+	public function call_before_callbacks(): void {
 		foreach ( $this->before_callbacks as $callback ) {
 			$this->app->call( $callback );
 		}
@@ -411,7 +411,7 @@ trait Makes_Http_Requests {
 	 *
 	 * @param Test_Response $response Response object.
 	 */
-	public function call_after_callbacks( Test_Response $response ) {
+	public function call_after_callbacks( Test_Response $response ): void {
 		foreach ( $this->after_callbacks as $callback ) {
 			$this->app->call(
 				$callback,

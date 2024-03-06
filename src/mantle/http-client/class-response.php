@@ -374,7 +374,7 @@ class Response implements ArrayAccess {
 	 *
 	 * @return void
 	 */
-	public function dd() {
+	public function dd(): void {
 		$this->dump();
 		exit( 1 );
 	}

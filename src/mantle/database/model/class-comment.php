@@ -184,7 +184,7 @@ class Comment extends Model implements Contracts\Database\Core_Object, Contracts
 	 *
 	 * @param bool $force Force delete the mode.
 	 */
-	public function delete( bool $force = false ) {
+	public function delete( bool $force = false ): void {
 		\wp_delete_comment( $this->id(), $force );
 	}
 }

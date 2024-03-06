@@ -27,7 +27,7 @@ class View_Service_Provider extends Service_Provider {
 	/**
 	 * Register the service provider.
 	 */
-	public function register() {
+	public function register(): void {
 		$this->register_blade_compiler();
 		$this->register_engine_resolver();
 		$this->register_loader();

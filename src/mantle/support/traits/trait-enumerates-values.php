@@ -825,7 +825,7 @@ trait Enumerates_Values {
 	 * @param  string $method
 	 * @return void
 	 */
-	public static function proxy( $method ) {
+	public static function proxy( $method ): void {
 		static::$proxies[] = $method; // phpcs:ignore WordPressVIPMinimum.Variables.VariableAnalysis.StaticOutsideClass
 	}
 

@@ -35,7 +35,7 @@ class Service_Provider extends Base_Service_Provider {
 	 * Registers the cleanup command with the application task scheduler to run
 	 * daily (by default) to remove old queue jobs from the database.
 	 */
-	public function boot() {
+	public function boot(): void {
 		if ( did_action( 'init' ) ) {
 			$this->register_data_types();
 		}

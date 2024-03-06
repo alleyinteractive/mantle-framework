@@ -60,7 +60,7 @@ class Rest_Route_Registrar {
 	 * @param string         $route Route to register.
 	 * @param array|callable $args Arguments or callback for the route.
 	 */
-	public function register_route( string $route, $args = [] ) {
+	public function register_route( string $route, $args = [] ): void {
 		$args = $this->normalize_args( $args, $route );
 
 		if ( $this->should_register_now() ) {
@@ -162,7 +162,7 @@ class Rest_Route_Registrar {
 	/**
 	 * Register the queued routes.
 	 */
-	public function register_routes() {
+	public function register_routes(): void {
 		if ( empty( $this->routes ) ) {
 			return;
 		}

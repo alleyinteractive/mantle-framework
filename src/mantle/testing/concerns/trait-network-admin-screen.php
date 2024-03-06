@@ -22,7 +22,7 @@ trait Network_Admin_Screen {
 	/**
 	 * Backup the current screen.
 	 */
-	public function network_admin_screen_set_up() {
+	public function network_admin_screen_set_up(): void {
 		/** WordPress Administration Screen API */
 		if ( ! class_exists( 'WP_Screen' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/class-wp-screen.php';
@@ -48,7 +48,7 @@ trait Network_Admin_Screen {
 	/**
 	 * Restore the backed up screen.
 	 */
-	public function network_admin_screen_tear_down() {
+	public function network_admin_screen_tear_down(): void {
 		// Restore screen to state at setUp.
 		set_current_screen( $this->backup_screen );
 

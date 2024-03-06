@@ -166,7 +166,7 @@ trait Interacts_With_Cron {
 	 *                       all due tasks.
 	 * @return void
 	 */
-	public function dispatch_cron( string $action = null ) {
+	public function dispatch_cron( string $action = null ): void {
 		$events = static::get_cron_events();
 
 		if ( empty( $events ) ) {

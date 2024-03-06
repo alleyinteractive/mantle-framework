@@ -41,7 +41,7 @@ class Application extends Console_Application implements Console_Application_Con
 	 * @param Closure $callback Callback to run.
 	 * @return void
 	 */
-	public static function starting( Closure $callback ) {
+	public static function starting( Closure $callback ): void {
 		static::$bootstrappers[] = $callback;
 	}
 
@@ -50,7 +50,7 @@ class Application extends Console_Application implements Console_Application_Con
 	 *
 	 * @return void
 	 */
-	public static function forget_bootstrappers() {
+	public static function forget_bootstrappers(): void {
 		static::$bootstrappers = [];
 	}
 
@@ -177,7 +177,7 @@ class Application extends Console_Application implements Console_Application_Con
 	 * @param OutputInterface $output
 	 * @return void
 	 */
-	public function render_throwable( Throwable $e, OutputInterface $output ) {
+	public function render_throwable( Throwable $e, OutputInterface $output ): void {
 		$output->writeln(
 			sprintf(
 				'<error>Exception: %s</error>',

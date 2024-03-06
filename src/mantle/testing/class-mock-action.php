@@ -33,7 +33,7 @@ class Mock_Action {
 	/**
 	 * Reset the events.
 	 */
-	public function reset() {
+	public function reset(): void {
 		$this->events = [];
 	}
 
@@ -86,7 +86,7 @@ class Mock_Action {
 	 * @param string $tag     Action/filter tag.
 	 * @param mixed  ...$args Arguments passed to the callback.
 	 */
-	public function filter_all( $tag, ...$args ) {
+	public function filter_all( $tag, ...$args ): void {
 		// This one doesn't return the result, so it's safe to use with the 'all' filter.
 		$this->events[] = [
 			'filter' => __FUNCTION__,

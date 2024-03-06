@@ -46,7 +46,7 @@ trait Model_Term {
 	 * @param array $values Term values to set.
 	 * @throws Model_Exception Thrown on invalid value being set.
 	 */
-	public function set_terms_attribute( $values ) {
+	public function set_terms_attribute( $values ): void {
 		if ( ! is_array( $values ) ) {
 			throw new Model_Exception( 'Attribute value passed to terms is not an array.' );
 		}
