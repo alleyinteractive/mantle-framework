@@ -103,8 +103,6 @@ class Reflector {
 	public static function is_parameter_subclass_of( $parameter, $class_name ) {
 		$param_class_name = static::get_parameter_class_name( $parameter );
 
-		return ( $param_class_name && class_exists( $param_class_name ) )
-			? ( new ReflectionClass( $param_class_name ) )->isSubclassOf( $class_name )
-			: false;
+		return $param_class_name && class_exists( $param_class_name ) && ( new ReflectionClass( $param_class_name ) )->isSubclassOf( $class_name );
 	}
 }
