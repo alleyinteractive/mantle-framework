@@ -30,6 +30,7 @@
 		<exclude name="Squiz.Commenting.FunctionComment.IncorrectTypeHint" />
 		<exclude name="Generic.Commenting.DocComment.SpacingAfterTagGroup" />
 		<exclude name="Generic.Commenting.DocComment.MissingShort" />
+		<exclude name="Squiz.Commenting.VariableComment.MissingVar" />
 	</rule>
 
 	<rule ref="Generic.Arrays.DisallowLongArraySyntax" />
