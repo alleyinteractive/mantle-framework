@@ -408,7 +408,7 @@ class Application extends Container implements Application_Contract {
 	 * @param string|array ...$environments Environments to check.
 	 */
 	public function is_environment( ...$environments ): bool {
-		return in_array( $this->environment(), (array) $environments, true );
+		return in_array( $this->environment(), $environments, true );
 	}
 
 	/**

@@ -74,14 +74,14 @@ class Model_Manifest {
 	 */
 	protected function get_manifest(): array {
 		if ( isset( $this->manifest ) ) {
-			return (array) $this->manifest;
+			return $this->manifest;
 		}
 
 		// Skip when the manifest doesn't exist.
 		if ( ! file_exists( $this->manifest_path ) ) {
 			$this->manifest = [];
 
-			return (array) $this->manifest;
+			return $this->manifest;
 		}
 
 		$this->manifest = include $this->manifest_path;

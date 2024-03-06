@@ -360,7 +360,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 * Determine if the application has been bootstrapped before.
 	 */
 	public function has_been_bootstrapped(): bool {
-		return (bool) $this->has_been_bootstrapped;
+		return $this->has_been_bootstrapped;
 	}
 
 	/**
@@ -530,7 +530,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 * @param string|array ...$environments Environments to check.
 	 */
 	public function is_environment( ...$environments ): bool {
-		return in_array( $this->environment(), (array) $environments, true );
+		return in_array( $this->environment(), $environments, true );
 	}
 
 	/**

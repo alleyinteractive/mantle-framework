@@ -86,9 +86,9 @@ return RectorConfig::configure()
 			// easy picks
 			RemoveUnusedForeachKeyRector::class,
 			RemoveDuplicatedArrayKeyRector::class,
-			// RecastingRemovalRector::class,
-			// RemoveAndTrueRector::class,
-			// SimplifyMirrorAssignRector::class,
+			RecastingRemovalRector::class,
+			RemoveAndTrueRector::class,
+			SimplifyMirrorAssignRector::class,
 			// RemoveDeadContinueRector::class,
 			// RemoveUnusedNonEmptyArrayBeforeForeachRector::class,
 			// RemoveNullPropertyInitializationRector::class,

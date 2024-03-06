@@ -265,7 +265,7 @@ function str( ?string $string = null ) {
 		};
 	}
 
-	return Str::of( (string) $string );
+	return Str::of( $string );
 }
 
 /**

@@ -1201,6 +1201,6 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @return string
 	 */
 	public function __toString() {
-		return (string) $this->value;
+		return $this->value;
 	}
 }

@@ -234,7 +234,7 @@ abstract class Builder {
 			throw new Query_Exception( 'Unknown where in alias: ' . $attribute );
 		}
 
-		return $this->where( $attribute, (array) $values );
+		return $this->where( $attribute, $values );
 	}
 
 	/**

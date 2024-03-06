@@ -60,7 +60,7 @@ trait Dependency_Assertions {
 				->count() > 0,
 			sprintf(
 				'%s dependency not found in included files.',
-				(string) $dependency
+				$dependency
 			)
 		);
 	}
