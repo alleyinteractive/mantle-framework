@@ -214,7 +214,7 @@ trait Has_Attributes {
 		// Retrieve all attributes, passing them through the mutators.
 		$attributes = collect( $this->get_arrayable_attributes() )
 			->map(
-				fn( $value, string $attribute) => $this->get_attribute( $attribute )
+				fn ( $value, string $attribute) => $this->get_attribute( $attribute )
 			)
 			->merge( $this->get_arrayable_appends() );
 
@@ -458,7 +458,7 @@ trait Has_Attributes {
 			collect( $this->appends )
 				->combine(
 					collect( $this->appends )->map(
-						fn( string $attribute) => $this->get_attribute( $attribute )
+						fn ( string $attribute) => $this->get_attribute( $attribute )
 					)
 				)
 				->to_array()

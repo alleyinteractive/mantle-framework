@@ -193,7 +193,7 @@ trait Create_Application {
 
 		if ( ! empty( $overrides ) ) {
 			$providers->transform(
-				static fn( $provider) => $overrides[ $provider ] ?? $provider
+				static fn ( $provider) => $overrides[ $provider ] ?? $provider
 			);
 		}
 

@@ -360,7 +360,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 
 		$this->singleton(
 			Package_Manifest::class,
-			fn( $app ) => new Package_Manifest( $this->get_base_path(), $this->get_cached_packages_path() ),
+			fn ( $app ) => new Package_Manifest( $this->get_base_path(), $this->get_cached_packages_path() ),
 		);
 
 		$this->singleton(

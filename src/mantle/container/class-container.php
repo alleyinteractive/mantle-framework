@@ -479,7 +479,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @return \Closure
 	 */
 	public function wrap( Closure $callback, array $parameters = [] ) {
-		return fn() => $this->call( $callback, $parameters );
+		return fn () => $this->call( $callback, $parameters );
 	}
 
 	/**
@@ -503,7 +503,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @return \Closure
 	 */
 	public function factory( $abstract ) {
-		return fn() => $this->make( $abstract );
+		return fn () => $this->make( $abstract );
 	}
 
 	/**
@@ -870,7 +870,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 		}
 
 		return array_map(
-			fn( $abstract) => $this->resolve( $abstract ),
+			fn ( $abstract) => $this->resolve( $abstract ),
 			$concrete
 		);
 	}
@@ -1150,7 +1150,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	public function offsetSet( mixed $key, mixed $value ): void {
 			$this->bind(
 				$key,
-				$value instanceof Closure ? $value : fn() => $value
+				$value instanceof Closure ? $value : fn () => $value
 			);
 	}
 

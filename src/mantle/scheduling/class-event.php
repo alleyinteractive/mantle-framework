@@ -299,7 +299,7 @@ class Event {
 	 * @return static
 	 */
 	public function when( $callback ) {
-		$this->filters[] = is_callable( $callback ) ? $callback : fn() => $callback;
+		$this->filters[] = is_callable( $callback ) ? $callback : fn () => $callback;
 
 		return $this;
 	}
@@ -311,7 +311,7 @@ class Event {
 	 * @return static
 	 */
 	public function skip( $callback ) {
-		$this->rejects[] = is_callable( $callback ) ? $callback : fn() => $callback;
+		$this->rejects[] = is_callable( $callback ) ? $callback : fn () => $callback;
 
 		return $this;
 	}

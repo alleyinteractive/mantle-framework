@@ -29,8 +29,8 @@ class Query_Monitor_Service_Provider extends Service_Provider {
 		\add_filter( 'qm/collectors', [ $this, 'register_collector' ] );
 		\add_filter( 'qm/outputter/html', [ $this, 'output' ], 60, 2 );
 
-		$this->app->booting( fn() => Timing::start( 'Mantle: Booting' ) );
-		$this->app->booted( fn() => Timing::stop( 'Mantle: Booting' ) );
+		$this->app->booting( fn () => Timing::start( 'Mantle: Booting' ) );
+		$this->app->booted( fn () => Timing::stop( 'Mantle: Booting' ) );
 	}
 
 	/**

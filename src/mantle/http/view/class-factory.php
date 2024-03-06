@@ -344,7 +344,7 @@ class Factory implements ViewFactory {
 
 		return Arr::first(
 			$extensions,
-			fn( $value) => Str::ends_with( $path, '.' . $value )
+			fn ( $value) => Str::ends_with( $path, '.' . $value )
 		);
 	}
 }

@@ -40,7 +40,7 @@ class View_Service_Provider extends Service_Provider {
 	protected function register_blade_compiler() {
 		$this->app->singleton(
 			'blade.compiler',
-			fn( $app ) => new BladeCompiler( new Filesystem(), $app['config']['view.compiled'] ),
+			fn ( $app ) => new BladeCompiler( new Filesystem(), $app['config']['view.compiled'] ),
 		);
 	}
 
@@ -50,7 +50,7 @@ class View_Service_Provider extends Service_Provider {
 	protected function register_engine_resolver() {
 		$this->app->singleton(
 			'view.engine.resolver',
-			fn() => tap(
+			fn () => tap(
 				new Engine_Resolver(),
 				function( Engine_Resolver $resolver ): void {
 					// Register the various view engines.

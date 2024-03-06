@@ -111,7 +111,7 @@ class Belongs_To extends Relation {
 
 			$meta_values = $models
 				->map(
-					fn( $model) => $model->get_meta( $this->local_key, ! $append )
+					fn ( $model) => $model->get_meta( $this->local_key, ! $append )
 				)
 				->filter();
 
@@ -352,7 +352,7 @@ class Belongs_To extends Relation {
 	protected function build_dictionary( Collection $results, Collection $models ): array {
 		return $results
 			->map_to_dictionary(
-				fn( $result) => [ (string) $result[ $this->foreign_key ] => $result ]
+				fn ( $result) => [ (string) $result[ $this->foreign_key ] => $result ]
 			)
 			->all();
 	}

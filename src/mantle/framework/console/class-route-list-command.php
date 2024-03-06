@@ -77,7 +77,7 @@ class Route_List_Command extends Command {
 
 		return collect( $routes )
 			->map(
-				fn( Route $route, string $name) => [
+				fn ( Route $route, string $name) => [
 					implode( '|', $route->getMethods() ),
 					$route->getPath(),
 					$name,

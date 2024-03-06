@@ -91,7 +91,7 @@ class Environment {
 				}
 			)
 			->getOrCall(
-				fn() => value( $default )
+				fn () => value( $default )
 			);
 	}
 }

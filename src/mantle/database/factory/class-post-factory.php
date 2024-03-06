@@ -153,7 +153,7 @@ class Post_Factory extends Factory {
 		return collect()
 			->pad( $count, null )
 			->map(
-				fn() => $this->create(
+				fn () => $this->create(
 					array_merge(
 						$args,
 						[

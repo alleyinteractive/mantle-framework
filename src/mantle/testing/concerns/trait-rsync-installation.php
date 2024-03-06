@@ -362,7 +362,7 @@ trait Rsync_Installation {
 		$output = Utils::command(
 			[
 				'rsync -aWq --no-compress',
-				collect( $this->rsync_exclusions )->map( fn( $exclusion ) => "--exclude '{$exclusion}'" )->implode( ' ' ),
+				collect( $this->rsync_exclusions )->map( fn ( $exclusion ) => "--exclude '{$exclusion}'" )->implode( ' ' ),
 				'--delete',
 				"{$this->rsync_from} {$this->rsync_to}",
 			],

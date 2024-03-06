@@ -136,7 +136,7 @@ abstract class Block implements Block_Contract {
 					[
 						'attributes'      => $this->get_attributes(),
 						'editor_script'   => $this->get_editor_script_handle(),
-						'render_callback' => $this->is_dynamic ? fn( $attributes, $content ) => $this->render( $attributes, $content ) : null,
+						'render_callback' => $this->is_dynamic ? fn ( $attributes, $content ) => $this->render( $attributes, $content ) : null,
 						'editor_style'    => $this->get_editor_style_handle(),
 					]
 				);

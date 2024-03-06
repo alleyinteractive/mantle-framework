@@ -108,7 +108,7 @@ class Pipeline implements PipelineContract {
 	 */
 	public function thenReturn() {
 		return $this->then(
-			fn( $passable) => $passable
+			fn ( $passable) => $passable
 		);
 	}
 
@@ -134,7 +134,7 @@ class Pipeline implements PipelineContract {
 	 * @return \Closure
 	 */
 	protected function carry() {
-		return fn( $stack, $pipe) => function ( $passable ) use ( $stack, $pipe ) {
+		return fn ( $stack, $pipe) => function ( $passable ) use ( $stack, $pipe ) {
 				try {
 					if ( is_callable( $pipe ) ) {
 						// If the pipe is a callable, then we will call it directly, but otherwise we

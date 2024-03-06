@@ -60,7 +60,7 @@ class Belongs_To_Many extends Belongs_To {
 
 		return $dictionary
 			->map(
-				fn( $child_ids) => $results->only( $child_ids )->values()->all()
+				fn ( $child_ids) => $results->only( $child_ids )->values()->all()
 			)
 			->filter()
 			->all();

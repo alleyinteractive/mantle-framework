@@ -85,7 +85,7 @@ class Package_Manifest {
 	public function config( string $key ) {
 		return collect( $this->get_manifest() )
 			->flat_map(
-				fn( $configuration) => (array) ( $configuration[ $key ] ?? [] )
+				fn ( $configuration) => (array) ( $configuration[ $key ] ?? [] )
 			)
 			->filter()
 			->all();
@@ -143,7 +143,7 @@ class Package_Manifest {
 		 */
 		$installed = collect( $installed )
 			->map_with_keys(
-				fn( $package) => [
+				fn ( $package) => [
 					$this->format( $package['name'] ) => $package['extra']['mantle'] ?? [],
 				]
 			)

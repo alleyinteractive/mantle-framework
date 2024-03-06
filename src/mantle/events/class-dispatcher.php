@@ -179,7 +179,7 @@ class Dispatcher implements Dispatcher_Contract {
 			return $this->create_class_listener( $listener );
 		}
 
-		return fn( ...$payload) => $this->create_action_callback(
+		return fn ( ...$payload) => $this->create_action_callback(
 			$listener,
 		)( ...array_values( $payload ) );
 	}

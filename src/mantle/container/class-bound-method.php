@@ -38,7 +38,7 @@ class Bound_Method {
 		return static::call_bound_method(
 			$container,
 			$callback,
-			fn() => $callback( ...array_values( static::get_method_dependencies( $container, $callback, $parameters ) ) )
+			fn () => $callback( ...array_values( static::get_method_dependencies( $container, $callback, $parameters ) ) )
 		);
 	}
 

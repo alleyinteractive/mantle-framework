@@ -75,7 +75,7 @@ trait Manages_Service_Providers {
 	 */
 	public function get_provider( string $name ): ?Service_Provider {
 		return collect( $this->get_providers() )->first(
-			fn( Service_Provider $provider ) => $provider instanceof $name,
+			fn ( Service_Provider $provider ) => $provider instanceof $name,
 		);
 	}
 

@@ -175,7 +175,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 		return array_values(
 			array_filter(
 				$segments,
-				fn( $value) => '' !== $value
+				fn ( $value) => '' !== $value
 			)
 		);
 	}
@@ -494,7 +494,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 		return Arr::get(
 			$this->all(),
 			$key,
-			fn() => $this->get_route_parameters()->get( $key )
+			fn () => $this->get_route_parameters()->get( $key )
 		);
 	}
 
