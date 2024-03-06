@@ -32,6 +32,29 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 			->assertQueriedObjectId( $post_id );
 	}
 
+	public function test_fluent() {
+		$_SERVER['__request_headers'] = [];
+
+		add_filter(
+			'template_redirect',
+			function() {
+				$_SERVER['__request_headers'] = collect( getallheaders() )->to_array();
+			},
+		);
+
+		$this->add_default_header( 'x-default', 'default' );
+
+		$this->with_header( 'x-test', 'test' )
+			->get( home_url( '/' ) )
+			->assertQueryTrue( 'is_home', 'is_front_page' );
+
+		$this->assertNotEmpty( $_SERVER['__request_headers']['X-Test'] );
+		$this->assertEquals( 'test', $_SERVER['__request_headers']['X-Test'][0] );
+
+		$this->assertNotEmpty( $_SERVER['__request_headers']['X-Default'] );
+		$this->assertEquals( 'default', $_SERVER['__request_headers']['X-Default'][0] );
+	}
+
 	public function test_get_term() {
 		$category_id = static::factory()->category->create();
 

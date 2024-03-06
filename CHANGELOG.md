@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added support for PHP 8.3.
 - PHPUnit 10 support added and `nunomaduro/collision` depend on to v6-7.
 
 	**Upgrade Note:** When upgrading to Mantle v1 projects will receive PHPUnit 10
@@ -31,6 +32,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Overhauled queue performance and added admin interface.
+- Tests that make requests using `$this->get()` and other HTTP methods will now
+  use a fluent pending request class `Mantle\Testing\Pending_Testable_Request`
+  to allow for more complex request building.
 
 ### Removed
 
