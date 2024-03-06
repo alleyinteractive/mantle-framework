@@ -35,8 +35,6 @@ class Mock_Http_Response implements Arrayable {
 	/**
 	 * Http Sequences
 	 * Support for faking a series of fake responses in a specific order.
-	 *
-	 * @return Mock_Http_Sequence
 	 */
 	public static function sequence(): Mock_Http_Sequence {
 		return new Mock_Http_Sequence();
@@ -65,7 +63,6 @@ class Mock_Http_Response implements Arrayable {
 	 * Ensure that a response is an instance of Mock_Http_Response.
 	 *
 	 * @param mixed $response Response.
-	 * @return Mock_Http_Response
 	 */
 	public static function ensure( mixed $response ): Mock_Http_Response {
 		if ( $response instanceof self ) {
@@ -81,7 +78,6 @@ class Mock_Http_Response implements Arrayable {
 	 *
 	 * @param string $body    Response body.
 	 * @param array  $headers Response headers.
-	 * @return Mock_Http_Response
 	 */
 	public static function create( string $body = '', array $headers = [] ): Mock_Http_Response {
 		return new static( $body, $headers );
@@ -104,7 +100,6 @@ class Mock_Http_Response implements Arrayable {
 	 * Add an array of headers to the response.
 	 *
 	 * @param array<string, string> $headers Headers to append.
-	 * @return Mock_Http_Response
 	 */
 	public function with_headers( array $headers ): Mock_Http_Response {
 		foreach ( $headers as $key => $value ) {
@@ -234,7 +229,6 @@ class Mock_Http_Response implements Arrayable {
 	 * @throws \InvalidArgumentException If the file is not readable.
 	 *
 	 * @param string $file File path.
-	 * @return Mock_Http_Response
 	 */
 	public function with_file( string $file ): Mock_Http_Response {
 		if ( ! is_readable( $file ) ) {
@@ -267,8 +261,6 @@ class Mock_Http_Response implements Arrayable {
 
 	/**
 	 * Returns a Http_Client response object.
-	 *
-	 * @return \Mantle\Http_Client\Response
 	 */
 	public function to_response(): \Mantle\Http_Client\Response {
 		return \Mantle\Http_Client\Response::create( $this->response );

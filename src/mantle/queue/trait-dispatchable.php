@@ -17,7 +17,6 @@ trait Dispatchable {
 	 * Dispatch the job with the given arguments.
 	 *
 	 * @param mixed ...$args Arguments passed to the job.
-	 * @return Pending_Dispatch
 	 */
 	public static function dispatch( ...$args ): Pending_Dispatch {
 		return new Pending_Dispatch( new static( ...$args ) );

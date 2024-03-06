@@ -14,8 +14,6 @@ use Mantle\Testing\Mail\Mock_Mailer;
 
 /**
  * Helper method to return the global phpmailer instance defined in the bootstrap
- *
- * @return \PHPMailer\PHPMailer\PHPMailer|bool
  */
 function tests_retrieve_phpmailer_instance(): \PHPMailer\PHPMailer\PHPMailer|bool {
 	return $GLOBALS['phpmailer'] ?? false;

@@ -20,8 +20,6 @@ use ReflectionClass;
 trait Reads_Annotations {
 	/**
 	 * Read docblock annotations for the current test case and method.
-	 *
-	 * @return array
 	 */
 	public function get_annotations_for_method(): array {
 		// PHPUnit 9.4 and below method.

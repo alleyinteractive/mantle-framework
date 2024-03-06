@@ -128,10 +128,8 @@ class Expectation {
 
 	/**
 	 * Validate if an expectation meets its expectations.
-	 *
-	 * @return void
 	 */
-	public function validate() {
+	public function validate(): void {
 		$exporter = new Exporter();
 
 		if ( Expectation_Container::ACTION_APPLIED === $this->action ) {
@@ -228,7 +226,6 @@ class Expectation {
 	 * Assert that the action was applied a specific number of times.
 	 *
 	 * @param int $times Number of times.
-	 * @return static
 	 */
 	public function times( int $times ): static {
 		$this->times = $times;
@@ -239,7 +236,6 @@ class Expectation {
 	 * Specify the arguments for the expectation.
 	 *
 	 * @param mixed ...$args Arguments.
-	 * @return static
 	 */
 	public function with( ...$args ): static {
 		$this->args = $args;
@@ -248,8 +244,6 @@ class Expectation {
 
 	/**
 	 * Remove checking the arguments for the action.
-	 *
-	 * @return static
 	 */
 	public function withAnyArgs(): static {
 		$this->args = null;
@@ -260,7 +254,6 @@ class Expectation {
 	 * Specify that the filter returns a specific value.
 	 *
 	 * @param mixed $value Return value.
-	 * @return static
 	 */
 	public function andReturn( mixed $value ): static {
 		return $this->returnComparison(
@@ -270,8 +263,6 @@ class Expectation {
 
 	/**
 	 * Specify that the filter returns null.
-	 *
-	 * @return static
 	 */
 	public function andReturnNull(): static {
 		return $this->andReturn( null );
@@ -279,8 +270,6 @@ class Expectation {
 
 	/**
 	 * Specify that the filter returns false.
-	 *
-	 * @return static
 	 */
 	public function andReturnFalse(): static {
 		return $this->andReturn( false );
@@ -288,8 +277,6 @@ class Expectation {
 
 	/**
 	 * Specify that the filter returns true.
-	 *
-	 * @return static
 	 */
 	public function andReturnTrue(): static {
 		return $this->andReturn( true );
@@ -297,8 +284,6 @@ class Expectation {
 
 	/**
 	 * Specify that the filter returns a truthy value.
-	 *
-	 * @return static
 	 */
 	public function andReturnTruthy(): static {
 		return $this->returnComparison( fn ( $value ) => ! ! $value );
@@ -306,8 +291,6 @@ class Expectation {
 
 	/**
 	 * Specify that the filter returns a falsy value.
-	 *
-	 * @return static
 	 */
 	public function andReturnFalsy(): static {
 		return $this->returnComparison( fn ( $value ) => ! $value );
@@ -315,8 +298,6 @@ class Expectation {
 
 	/**
 	 * Specify that the filter returns an empty value.
-	 *
-	 * @return static
 	 */
 	public function andReturnEmpty(): static {
 		return $this->returnComparison( fn ( $value ) => empty( $value ) );
@@ -324,8 +305,6 @@ class Expectation {
 
 	/**
 	 * Specify that the filter returns a non-empty value.
-	 *
-	 * @return static
 	 */
 	public function andReturnNotEmpty(): static {
 		return $this->returnComparison( fn ( $value ) => ! empty( $value ) );
@@ -333,8 +312,6 @@ class Expectation {
 
 	/**
 	 * Specify that the filter returns an array value.
-	 *
-	 * @return static
 	 */
 	public function andReturnArray(): static {
 		return $this->returnComparison( fn ( $value ) => is_array( $value ) );
@@ -344,7 +321,6 @@ class Expectation {
 	 * Specify that the filter returns an instance of a class.
 	 *
 	 * @param string $class Class name.
-	 * @return static
 	 */
 	public function andReturnInstanceOf( string $class ): static {
 		return $this->returnComparison( fn ( $value ) => $value instanceof $class );
@@ -352,8 +328,6 @@ class Expectation {
 
 	/**
 	 * Specify that the filter returns a string value.
-	 *
-	 * @return static
 	 */
 	public function andReturnString(): static {
 		return $this->returnComparison( fn ( $value ) => is_string( $value ) );
@@ -361,8 +335,6 @@ class Expectation {
 
 	/**
 	 * Specify that the filter returns an integer value.
-	 *
-	 * @return static
 	 */
 	public function andReturnInteger(): static {
 		return $this->returnComparison( fn ( $value ) => is_int( $value ) );
@@ -372,7 +344,6 @@ class Expectation {
 	 * Specify the return comparison callback for the filter.
 	 *
 	 * @param callable $callback Callback.
-	 * @return static
 	 */
 	protected function returnComparison( callable $callback ): static {
 		$this->return_value_callback = $callback;

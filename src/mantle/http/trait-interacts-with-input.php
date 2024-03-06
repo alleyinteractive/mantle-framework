@@ -47,7 +47,6 @@ trait Interacts_With_Input {
 	 *
 	 * @param  string|null       $key
 	 * @param  string|array|null $default
-	 * @return string|array|null
 	 */
 	public function header( $key = null, $default = null ): string|array|null {
 		return $this->retrieve_item( 'headers', $key, $default );
@@ -55,8 +54,6 @@ trait Interacts_With_Input {
 
 	/**
 	 * Get the bearer token from the request headers.
-	 *
-	 * @return string|null
 	 */
 	public function bearer_token(): ?string {
 		$header = $this->header( 'Authorization', '' );
@@ -76,7 +73,6 @@ trait Interacts_With_Input {
 	 * Determine if the request contains a given input item key.
 	 *
 	 * @param  string|array $key
-	 * @return bool
 	 */
 	public function exists( $key ): bool {
 		return $this->has( $key );
@@ -93,8 +89,8 @@ trait Interacts_With_Input {
 
 		$input = $this->all();
 
-		foreach ( $keys as $value ) {
-			if ( ! Arr::has( $input, $value ) ) {
+		foreach ( $keys as $key ) {
+			if ( ! Arr::has( $input, $key ) ) {
 				return false;
 			}
 		}
@@ -125,8 +121,8 @@ trait Interacts_With_Input {
 	public function filled( $key ) {
 		$keys = is_array( $key ) ? $key : func_get_args();
 
-		foreach ( $keys as $value ) {
-			if ( $this->is_empty_string( $value ) ) {
+		foreach ( $keys as $key ) {
+			if ( $this->is_empty_string( $key ) ) {
 				return false;
 			}
 		}

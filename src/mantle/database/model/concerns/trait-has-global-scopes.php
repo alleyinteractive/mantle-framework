@@ -46,7 +46,6 @@ trait Has_Global_Scopes {
 	 * Determine if a model has a global scope.
 	 *
 	 * @param Scope|string $scope Scope name.
-	 * @return bool
 	 */
 	public static function has_global_scope( $scope ): bool {
 		return ! is_null( static::get_global_scope( $scope ) );
@@ -71,8 +70,6 @@ trait Has_Global_Scopes {
 
 	/**
 	 * Get the global scopes for this class instance.
-	 *
-	 * @return array
 	 */
 	public function get_global_scopes(): array {
 		return Arr::get( static::$global_scopes, static::class, [] );

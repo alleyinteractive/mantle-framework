@@ -81,7 +81,6 @@ trait Interacts_With_Cron {
 	 * Determine if a cron 'action' is actually a queued job.
 	 *
 	 * @param class-string|class-string<\Mantle\Contracts\Queue\Job> $action Action name.
-	 * @return bool
 	 */
 	protected function is_job_action( string $action ): bool {
 		return class_exists( $action ) && in_array( Job::class, class_implements( $action ), true );
@@ -164,9 +163,8 @@ trait Interacts_With_Cron {
 	 *
 	 * @param string $action Optionally run a specific cron action, otherwise run
 	 *                       all due tasks.
-	 * @return void
 	 */
-	public function dispatch_cron( string $action = null ) {
+	public function dispatch_cron( string $action = null ): void {
 		$events = static::get_cron_events();
 
 		if ( empty( $events ) ) {

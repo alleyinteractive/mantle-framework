@@ -126,7 +126,6 @@ abstract class Relation {
 	 * Set the query constraints for an eager load of the relation.
 	 *
 	 * @param Collection $models Models to eager load for.
-	 * @return void
 	 */
 	abstract public function add_eager_constraints( Collection $models ): void;
 
@@ -142,7 +141,6 @@ abstract class Relation {
 	 *
 	 * @param Collection $models Parent models.
 	 * @param Collection $results Eagerly loaded results to match.
-	 * @return Collection
 	 */
 	abstract public function match( Collection $models, Collection $results ): Collection;
 
@@ -157,8 +155,6 @@ abstract class Relation {
 
 	/**
 	 * Get the relationship for eager loading.
-	 *
-	 * @return Collection
 	 */
 	public function get_eager(): Collection {
 		return $this->query->get();
@@ -196,8 +192,6 @@ abstract class Relation {
 
 	/**
 	 * Guess the name of the relationship.
-	 *
-	 * @return string|null
 	 */
 	protected function guess_relationship() : ?string {
 		$trace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 5 ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
@@ -213,8 +207,6 @@ abstract class Relation {
 
 	/**
 	 * Determine if this is a post -> term relationship.
-	 *
-	 * @return bool
 	 */
 	protected function is_post_term_relationship(): bool {
 		return $this->parent instanceof Post && $this->query instanceof Term_Query_Builder;
@@ -222,8 +214,6 @@ abstract class Relation {
 
 	/**
 	 * Determine if this is a term -> post relationship.
-	 *
-	 * @return bool
 	 */
 	protected function is_term_post_relationship(): bool {
 		return $this->parent instanceof Term && $this->query instanceof Post_Query_Builder;

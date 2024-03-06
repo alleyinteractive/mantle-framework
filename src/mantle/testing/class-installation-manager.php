@@ -178,7 +178,6 @@ class Installation_Manager {
 	 * Alias for `plugins()`.
 	 *
 	 * @param array<int, string> $plugins Plugin files to activate in WordPress.
-	 * @return static
 	 */
 	public function with_active_plugins( array $plugins ): static {
 		return $this->plugins( $plugins );
@@ -213,8 +212,8 @@ class Installation_Manager {
 			exit( 1 );
 		}
 
-		foreach ( $this->after_install_callbacks as $callback ) {
-			$callback();
+		foreach ( $this->after_install_callbacks as $after_install_callback ) {
+			$after_install_callback();
 		}
 
 		return $this;

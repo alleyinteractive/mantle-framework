@@ -26,7 +26,7 @@ class Load_Configuration {
 	 *
 	 * @param Application $app Application instance.
 	 */
-	public function bootstrap( Application $app ) {
+	public function bootstrap( Application $app ): void {
 		$config = $app->make( 'config' );
 
 		// Load the configuration files if not loaded from cache.
@@ -40,7 +40,6 @@ class Load_Configuration {
 	 *
 	 * @param Application         $app Application instance.
 	 * @param Repository_Contract $repository Configuration Repository.
-	 * @return void
 	 */
 	protected function load_configuration_files( Application $app, Repository_Contract $repository ): void {
 		$files = $this->get_configuration_files( $app );
@@ -73,7 +72,6 @@ class Load_Configuration {
 	 * Find the configuration files to load.
 	 *
 	 * @param Application $app Application instance.
-	 * @return array
 	 */
 	protected function get_configuration_files( Application $app ): array {
 		$files = [];

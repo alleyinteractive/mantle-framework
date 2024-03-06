@@ -23,8 +23,6 @@ interface Paginator {
 
 	/**
 	 * Retrieve the paginator's path.
-	 *
-	 * @return string
 	 */
 	public function get_path(): string;
 
@@ -52,22 +50,16 @@ interface Paginator {
 
 	/**
 	 * Retrieve the current page.
-	 *
-	 * @return int
 	 */
 	public function current_page(): int;
 
 	/**
 	 * Retrieve the items in the paginator.
-	 *
-	 * @return Collection
 	 */
 	public function items(): Collection;
 
 	/**
 	 * Retrieve the count of the paginator.
-	 *
-	 * @return int
 	 */
 	public function count(): int;
 
@@ -89,22 +81,16 @@ interface Paginator {
 
 	/**
 	 * Retrieve the query variables for the paginator.
-	 *
-	 * @return array
 	 */
 	public function query(): array;
 
 	/**
 	 * Retrieve the next URL.
-	 *
-	 * @return string|null
 	 */
 	public function next_url(): ?string;
 
 	/**
 	 * Retrieve the previous URL.
-	 *
-	 * @return string|null
 	 */
 	public function previous_url(): ?string;
 }

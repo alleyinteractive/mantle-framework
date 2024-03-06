@@ -41,7 +41,7 @@ class Run_Command extends Command {
 	/**
 	 * Queue Run Command.
 	 */
-	public function handle() {
+	public function handle(): void {
 		$queue = $this->argument( 'queue' );
 
 		// Register the event listeners to pipe the events back to the console.

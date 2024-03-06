@@ -50,8 +50,6 @@ class Test_Make_Command extends Stub_Generator_Command {
 
 	/**
 	 * Get the stub file for the generator.
-	 *
-	 * @return string
 	 */
 	public function get_file_stub(): string {
 		return __DIR__ . '/stubs/test.stub';
@@ -59,8 +57,6 @@ class Test_Make_Command extends Stub_Generator_Command {
 
 	/**
 	 * Get the base path for the generated folder.
-	 *
-	 * @return string
 	 */
 	protected function get_base_path(): string {
 		return base_path( '/' );

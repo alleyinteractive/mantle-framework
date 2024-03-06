@@ -12,7 +12,6 @@ if ( ! function_exists( 'rand_str' ) ) :
 	 * Provide a random string.
 	 *
 	 * @param int $len String length.
-	 * @return string
 	 */
 	function rand_str( $len = 32 ): string {
 		return substr( md5( uniqid( (string) wp_rand() ) ), 0, $len );

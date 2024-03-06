@@ -68,7 +68,7 @@ abstract class Has_One_Or_Many extends Relation {
 	 *
 	 * @throws Model_Exception Thrown if the parent model is not an instance of Core_Object.
 	 */
-	public function add_constraints() {
+	public function add_constraints(): void {
 		// todo: remove in PHP 8.1+.
 		if ( ! $this->parent instanceof Core_Object ) {
 			throw new Model_Exception( 'Parent model must be an instance of Core_Object.' );
@@ -108,7 +108,6 @@ abstract class Has_One_Or_Many extends Relation {
 	 * Set the query constraints for an eager load of the relation.
 	 *
 	 * @param Collection $models Models to eager load for.
-	 * @return void
 	 *
 	 * @throws RuntimeException Thrown on currently unsupported query condition.
 	 */
@@ -154,7 +153,6 @@ abstract class Has_One_Or_Many extends Relation {
 	 * Attach a model to a parent model and save it.
 	 *
 	 * @param Model[]|Model $model Model instance to save.
-	 * @return Model
 	 */
 	public function save( array|Model $model ): Model {
 		if ( is_array( $model ) ) {
@@ -209,7 +207,6 @@ abstract class Has_One_Or_Many extends Relation {
 	 * Dissociate a model from a parent model.
 	 *
 	 * @param Model|array<mixed, Model> $models Model instance to save.
-	 * @return void
 	 */
 	public function remove( Model|array $models ): void {
 		$models = is_array( $models ) ? $models : [ $models ];
@@ -246,7 +243,6 @@ abstract class Has_One_Or_Many extends Relation {
 	/**
 	 * Retrieve a internal term for a post-to-post relationship.
 	 *
-	 * @return int
 	 * @throws Model_Exception Thrown on error using internal term with a post to term or term to post relationship.
 	 */
 	protected function get_term_for_relationship(): int {
@@ -272,8 +268,6 @@ abstract class Has_One_Or_Many extends Relation {
 
 	/**
 	 * Retrieve the term slug for a post-to-post relationship.
-	 *
-	 * @return string
 	 */
 	protected function get_term_slug_for_relationship(): string {
 		$delimiter = static::DELIMITER;
@@ -285,7 +279,6 @@ abstract class Has_One_Or_Many extends Relation {
 	 *
 	 * @param Collection $results Collection of results.
 	 * @param Collection $models Parent models.
-	 * @return array
 	 */
 	protected function build_dictionary( Collection $results, Collection $models ): array {
 		// Post term relationships always rely on the underlying term.
@@ -326,8 +319,8 @@ abstract class Has_One_Or_Many extends Relation {
 				$terms = get_the_terms( $result->id(), $this->parent->taxonomy() );
 				$terms = is_array( $terms ) ? wp_list_pluck( $terms, 'term_id' ) : [];
 
-				foreach ( $terms as $term_id ) {
-					$post_term_ids[ $term_id ][] = $result->id();
+				foreach ( $terms as $term ) {
+					$post_term_ids[ $term ][] = $result->id();
 				}
 			}
 

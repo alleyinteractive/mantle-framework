@@ -73,7 +73,7 @@ trait Has_Events {
 	 *
 	 * @param  \Closure|string $callback
 	 */
-	public static function created( $callback ) {
+	public static function created( $callback ): void {
 		static::register_model_event( 'created', $callback );
 	}
 
@@ -82,7 +82,7 @@ trait Has_Events {
 	 *
 	 * @param  \Closure|string $callback
 	 */
-	public static function updating( $callback ) {
+	public static function updating( $callback ): void {
 		static::register_model_event( 'updating', $callback );
 	}
 
@@ -91,7 +91,7 @@ trait Has_Events {
 	 *
 	 * @param  \Closure|string $callback
 	 */
-	public static function updated( $callback ) {
+	public static function updated( $callback ): void {
 		static::register_model_event( 'updated', $callback );
 	}
 
@@ -100,7 +100,7 @@ trait Has_Events {
 	 *
 	 * @param  \Closure|string $callback
 	 */
-	public static function trashing( $callback ) {
+	public static function trashing( $callback ): void {
 		static::register_model_event( 'trashing', $callback );
 	}
 
@@ -109,7 +109,7 @@ trait Has_Events {
 	 *
 	 * @param  \Closure|string $callback
 	 */
-	public static function trashed( $callback ) {
+	public static function trashed( $callback ): void {
 		static::register_model_event( 'trashed', $callback );
 	}
 
@@ -118,7 +118,7 @@ trait Has_Events {
 	 *
 	 * @param  \Closure|string $callback
 	 */
-	public static function deleting( $callback ) {
+	public static function deleting( $callback ): void {
 		static::register_model_event( 'deleting', $callback );
 	}
 
@@ -127,14 +127,12 @@ trait Has_Events {
 	 *
 	 * @param  \Closure|string $callback
 	 */
-	public static function deleted( $callback ) {
+	public static function deleted( $callback ): void {
 		static::register_model_event( 'deleted', $callback );
 	}
 
 	/**
 	 * Get the event dispatcher instance.
-	 *
-	 * @return Dispatcher
 	 */
 	public static function get_event_dispatcher(): Dispatcher {
 		return static::$dispatcher;
@@ -144,18 +142,15 @@ trait Has_Events {
 	 * Set the event dispatcher instance.
 	 *
 	 * @param Dispatcher $dispatcher Dispatcher instance.
-	 * @return void
 	 */
-	public static function set_event_dispatcher( Dispatcher $dispatcher ) {
+	public static function set_event_dispatcher( Dispatcher $dispatcher ): void {
 		static::$dispatcher = $dispatcher;
 	}
 
 	/**
 	 * Unset the event dispatcher for models.
-	 *
-	 * @return void
 	 */
-	public static function unset_event_dispatcher() {
+	public static function unset_event_dispatcher(): void {
 		static::$dispatcher = null;
 	}
 
@@ -179,10 +174,8 @@ trait Has_Events {
 
 	/**
 	 * Remove all of the event listeners for the model.
-	 *
-	 * @return void
 	 */
-	public static function flush_event_listeners() {
+	public static function flush_event_listeners(): void {
 		if ( ! isset( static::$dispatcher ) ) {
 			return;
 		}

@@ -38,7 +38,7 @@ class Clear_Cache_Command extends Command {
 	/**
 	 * Flush Mantle's local cache.
 	 */
-	public function handle() {
+	public function handle(): void {
 		$files = glob( $this->container->get_cache_path() . '/*.php' );
 
 		foreach ( $files as $file ) {

@@ -29,7 +29,7 @@ class Implicit_Route_Binding {
 	 *
 	 * @throws Model_Not_Found_Exception Thrown on missing model.
 	 */
-	public static function resolve_for_route( Container $container, Request $request ) {
+	public static function resolve_for_route( Container $container, Request $request ): void {
 		$route      = $request->get_route();
 		$parameters = $request->get_route_parameters()->all();
 

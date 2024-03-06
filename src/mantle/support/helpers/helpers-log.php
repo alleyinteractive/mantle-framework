@@ -26,7 +26,6 @@ function info( string $message, array $context = [] ) {
  *
  * @param  string|null $message Log message, optional.
  * @param  array       $context Log context, optional.
- * @return LoggerInterface|null
  */
 function logger( string $message = null, array $context = [] ): ?LoggerInterface {
 	if ( is_null( $message ) ) {

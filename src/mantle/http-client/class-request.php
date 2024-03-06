@@ -48,8 +48,6 @@ class Request {
 
 	/**
 	 * Retrieve the URL of the request.
-	 *
-	 * @return string
 	 */
 	public function url(): string {
 		return $this->url;
@@ -58,8 +56,6 @@ class Request {
 	/**
 	 * Retrieve the method of the request.
 	 * The method is always uppercase.
-	 *
-	 * @return string
 	 */
 	public function method(): string {
 		return strtoupper( $this->args['method'] ?? '' );
@@ -69,7 +65,6 @@ class Request {
 	 * Check if the request has a set of headers.
 	 *
 	 * @param array $headers Headers to check for.
-	 * @return bool
 	 */
 	public function has_headers( array $headers ): bool {
 		foreach ( $headers as $key => $value ) {
@@ -112,8 +107,6 @@ class Request {
 
 	/**
 	 * Retrieve the body of the request.
-	 *
-	 * @return string
 	 */
 	public function body(): string {
 		return $this->args['body'] ?? '';
@@ -130,8 +123,6 @@ class Request {
 
 	/**
 	 * Determine if the request is simple form data.
-	 *
-	 * @return bool
 	 */
 	public function is_form(): bool {
 		return $this->has_header( 'Content-Type', 'application/x-www-form-urlencoded' );
@@ -139,8 +130,6 @@ class Request {
 
 	/**
 	 * Determine if the request is JSON.
-	 *
-	 * @return bool
 	 */
 	public function is_json(): bool {
 		return $this->has_header( 'Content-Type' )
@@ -169,10 +158,8 @@ class Request {
 
 	/**
 	 * Dump the request to the screen and die.
-	 *
-	 * @return void
 	 */
-	public function dd() {
+	public function dd(): void {
 		$this->dump();
 		exit( 1 );
 	}

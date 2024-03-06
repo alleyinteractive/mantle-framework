@@ -77,14 +77,14 @@ class Utils {
 	 *
 	 * @param string $status Post status to unregister.
 	 */
-	public static function unregister_post_status( $status ) {
+	public static function unregister_post_status( $status ): void {
 		unset( $GLOBALS['wp_post_statuses'][ $status ] );
 	}
 
 	/**
 	 * Remove WP query vars from the global space.
 	 */
-	public static function cleanup_query_vars() {
+	public static function cleanup_query_vars(): void {
 		// Clean out globals to stop them polluting wp and wp_query.
 		foreach ( $GLOBALS['wp']->public_query_vars as $v ) {
 			unset( $GLOBALS[ $v ] );
@@ -110,7 +110,7 @@ class Utils {
 	/**
 	 * Reset `$_SERVER` variables
 	 */
-	public static function reset_server() {
+	public static function reset_server(): void {
 		$_SERVER['HTTP_HOST']       = WP_TESTS_DOMAIN;
 		$_SERVER['REMOTE_ADDR']     = '127.0.0.1'; // phpcs:ignore WordPressVIPMinimum.Variables
 		$_SERVER['REQUEST_METHOD']  = 'GET';
@@ -135,7 +135,7 @@ class Utils {
 	/**
 	 * Deletes all data from the database.
 	 */
-	public static function delete_all_data() {
+	public static function delete_all_data(): void {
 		// phpcs:disable WordPress.DB,WordPressVIPMinimum.Variables
 		global $wpdb;
 
@@ -167,7 +167,7 @@ class Utils {
 	/**
 	 * Deletes all posts from the database.
 	 */
-	public static function delete_all_posts() {
+	public static function delete_all_posts(): void {
 		global $wpdb;
 
 		// phpcs:ignore WordPress.DB
@@ -176,11 +176,11 @@ class Utils {
 			return;
 		}
 
-		foreach ( $all_posts as $data ) {
-			if ( 'attachment' === $data['post_type'] ) {
-				wp_delete_attachment( $data['ID'], true );
+		foreach ( $all_posts as $all_post ) {
+			if ( 'attachment' === $all_post['post_type'] ) {
+				wp_delete_attachment( $all_post['ID'], true );
 			} else {
-				wp_delete_post( $data['ID'], true );
+				wp_delete_post( $all_post['ID'], true );
 			}
 		}
 	}
@@ -193,7 +193,7 @@ class Utils {
 	 *
 	 * @since 4.2.0
 	 */
-	public static function set_default_permalink_structure_for_tests() {
+	public static function set_default_permalink_structure_for_tests(): void {
 		update_option( 'permalink_structure', static::DEFAULT_PERMALINK_STRUCTURE );
 	}
 
@@ -257,7 +257,6 @@ class Utils {
 	 *
 	 * @param string $variable Variable to get.
 	 * @param bool   $default Default value used as a fallback.
-	 * @return bool
 	 */
 	public static function env_bool( string $variable, bool $default ): bool {
 		$value = static::env( $variable, $default );
@@ -274,7 +273,6 @@ class Utils {
 	 * unquoted arguments.
 	 *
 	 * @param string|bool $string String to sanitize.
-	 * @return string
 	 */
 	public static function shell_safe( string|bool $string ): string {
 		if ( is_bool( $string ) ) {
@@ -400,8 +398,6 @@ class Utils {
 
 	/**
 	 * Check if the command is being run in debug mode.
-	 *
-	 * @return bool
 	 */
 	public static function is_debug_mode(): bool {
 		if ( defined( 'MANTLE_TESTING_DEBUG' ) && MANTLE_TESTING_DEBUG ) {
@@ -467,7 +463,7 @@ class Utils {
 	/**
 	 * Ensure that Composer is loaded for the current environment.
 	 */
-	public static function ensure_composer_loaded() {
+	public static function ensure_composer_loaded(): void {
 		if ( class_exists( 'Composer\Autoload\ClassLoader' ) ) {
 			return;
 		}

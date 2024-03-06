@@ -90,7 +90,6 @@ class Hook_Usage_Command extends Command {
 	 * @todo Account for service providers!
 	 *
 	 * @throws InvalidArgumentException Thrown on invalid search path.
-	 * @return Collection
 	 */
 	public function get_usage(): Collection {
 		$this->set_paths();
@@ -114,7 +113,6 @@ class Hook_Usage_Command extends Command {
 	 * Read a specific path for files.
 	 *
 	 * @param string $path
-	 * @return Collection
 	 */
 	protected function read_path( string $path ): Collection {
 		if ( is_file( $path ) ) {
@@ -179,7 +177,6 @@ class Hook_Usage_Command extends Command {
 	 * Read a file and extract the references inside.
 	 *
 	 * @param string $file File to parse.
-	 * @return Collection
 	 */
 	protected function read_file( string $file ): Collection {
 		$references = collect();
@@ -213,8 +210,6 @@ class Hook_Usage_Command extends Command {
 
 	/**
 	 * Determine if the cache should be used.
-	 *
-	 * @return bool
 	 */
 	protected function should_use_cache(): bool {
 		if ( ! app()->is_environment( 'local' ) ) {
@@ -228,7 +223,6 @@ class Hook_Usage_Command extends Command {
 	 * Get the cached files for a path.
 	 *
 	 * @param string $path Path to retrieve the cache for.
-	 * @return Collection|null
 	 */
 	protected function get_cache_for_path( string $path ): ?Collection {
 		if ( ! $this->should_use_cache() ) {
@@ -280,7 +274,6 @@ class Hook_Usage_Command extends Command {
 	 * @todo Move to uploads folder for non-writeable environments.
 	 *
 	 * @param string $path Path to cache against.
-	 * @return string
 	 */
 	protected function get_cache_file_for_path( string $path ): string {
 		$path = md5( $path );

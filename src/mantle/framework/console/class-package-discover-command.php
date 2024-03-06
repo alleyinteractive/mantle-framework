@@ -42,7 +42,7 @@ class Package_Discover_Command extends Command {
 	 *
 	 * @param Package_Manifest $manifest Package Manifest.
 	 */
-	public function handle( Package_Manifest $manifest ) {
+	public function handle( Package_Manifest $manifest ): void {
 		$this->manifest = $manifest;
 
 		$this->line( 'Discovering packages...' );

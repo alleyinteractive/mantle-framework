@@ -52,7 +52,6 @@ abstract class Generator_Command extends Command {
 	 * Retrieve the generated class contents.
 	 *
 	 * @param string $name Class name.
-	 * @return string
 	 */
 	abstract public function get_generated_class( string $name ): string;
 
@@ -119,7 +118,6 @@ abstract class Generator_Command extends Command {
 	 * Get the class name to use.
 	 *
 	 * @param string $name Inputted name.
-	 * @return string
 	 */
 	protected function get_class_name( string $name ): string {
 		$parts = explode( '\\', $name );
@@ -130,7 +128,6 @@ abstract class Generator_Command extends Command {
 	 * Get the class' namespace.
 	 *
 	 * @param string $name Name to use.
-	 * @return string
 	 */
 	protected function get_namespace( string $name ): string {
 		$parts = [];
@@ -153,7 +150,6 @@ abstract class Generator_Command extends Command {
 	 * Get the folder location of the file.
 	 *
 	 * @param string $name Name to use.
-	 * @return string
 	 */
 	protected function get_folder_path( string $name ): string {
 		$parts = explode( '\\', $name );
@@ -183,7 +179,6 @@ abstract class Generator_Command extends Command {
 	 * Get the location for the generated file.
 	 *
 	 * @param string $name Name to use.
-	 * @return string
 	 */
 	protected function get_file_path( string $name ): string {
 		$parts    = explode( '\\', $name );
@@ -195,8 +190,6 @@ abstract class Generator_Command extends Command {
 
 	/**
 	 * Get the base path for the generated folder.
-	 *
-	 * @return string
 	 */
 	protected function get_base_path(): string {
 		return $this->container->get_base_path() . '/app/';
@@ -204,8 +197,6 @@ abstract class Generator_Command extends Command {
 
 	/**
 	 * Get the application's i18n domain.
-	 *
-	 * @return string
 	 */
 	protected function get_i18n_domain(): string {
 		$domain = config( 'app.i18n_domain', environment( 'APP_I18N_DOMAIN', null ) );
@@ -220,8 +211,6 @@ abstract class Generator_Command extends Command {
 
 	/**
 	 * Retrieve the string inflector to use.
-	 *
-	 * @return InflectorInterface
 	 */
 	protected function inflector(): InflectorInterface {
 		// Use the bound inflector if available.

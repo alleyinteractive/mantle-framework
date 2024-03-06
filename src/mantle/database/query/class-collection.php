@@ -32,7 +32,6 @@ class Collection extends Base_Collection {
 	 * Set the total number of rows found for the query.
 	 *
 	 * @param int|null $found_rows Total number of rows found for the query.
-	 * @return static
 	 */
 	public function with_found_rows( ?int $found_rows ): static {
 		$this->found_rows = $found_rows;
@@ -42,8 +41,6 @@ class Collection extends Base_Collection {
 
 	/**
 	 * Get the total number of rows found for the query.
-	 *
-	 * @return int|null
 	 */
 	public function found_rows(): ?int {
 		return $this->found_rows;

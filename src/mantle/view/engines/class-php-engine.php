@@ -21,7 +21,6 @@ class Php_Engine implements Engine {
 	 *
 	 * @param string $path View path.
 	 * @param array  $data View data.
-	 * @return string
 	 */
 	public function get( string $path, array $data = [] ): string {
 		$ob_level = ob_get_level();

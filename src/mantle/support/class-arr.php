@@ -22,7 +22,6 @@ class Arr {
 	 * Determine whether the given value is array accessible.
 	 *
 	 * @param  mixed $value Value to check.
-	 * @return bool
 	 */
 	public static function accessible( $value ): bool {
 		return is_array( $value ) || $value instanceof ArrayAccess;
@@ -34,7 +33,6 @@ class Arr {
 	 * @param  array  $array Array to check.
 	 * @param  string $key Key to check.
 	 * @param  mixed  $value Value to use.
-	 * @return array
 	 */
 	public static function add( array $array, string $key, $value ): array {
 		if ( is_null( static::get( $array, $key ) ) ) {
@@ -70,7 +68,6 @@ class Arr {
 	 * Cross join the given arrays, returning all possible permutations.
 	 *
 	 * @param  iterable ...$arrays Arrays to join.
-	 * @return array
 	 */
 	public static function cross_join( ...$arrays ): array {
 		$results = [ [] ];
@@ -78,11 +75,11 @@ class Arr {
 		foreach ( $arrays as $index => $array ) {
 			$append = [];
 
-			foreach ( $results as $product ) {
+			foreach ( $results as $result ) {
 				foreach ( $array as $item ) {
-					$product[ $index ] = $item;
+					$result[ $index ] = $item;
 
-					$append[] = $product;
+					$append[] = $result;
 				}
 			}
 
@@ -96,7 +93,6 @@ class Arr {
 	 * Divide an array into two arrays. One with keys and the other with values.
 	 *
 	 * @param  array $array Array to divide.
-	 * @return array
 	 */
 	public static function divide( $array ): array {
 		return [ array_keys( $array ), array_values( $array ) ];
@@ -107,7 +103,6 @@ class Arr {
 	 *
 	 * @param  iterable $array Array to process.
 	 * @param  string   $prepend String to prepend, optional.
-	 * @return array
 	 */
 	public static function dot( $array, string $prepend = '' ): array {
 		$results = [];
@@ -128,7 +123,6 @@ class Arr {
 	 *
 	 * @param  array        $array Array to process.
 	 * @param  array|string $keys Keys to filter by.
-	 * @return array
 	 */
 	public static function except( array $array, $keys ): array {
 		static::forget( $array, $keys );
@@ -141,7 +135,6 @@ class Arr {
 	 *
 	 * @param  \ArrayAccess|array $array Array to process.
 	 * @param  string|int         $key Key to check if it exists.
-	 * @return bool
 	 */
 	public static function exists( $array, $key ): bool {
 		if ( $array instanceof ArrayAccess ) {
@@ -229,9 +222,8 @@ class Arr {
 	 *
 	 * @param  array        $array Array to handle.
 	 * @param  array|string $keys Keys to use.
-	 * @return void
 	 */
-	public static function forget( &$array, $keys ) {
+	public static function forget( &$array, $keys ): void {
 		$original = &$array;
 
 		$keys = (array) $keys;
@@ -308,7 +300,6 @@ class Arr {
 	 *
 	 * @param  \ArrayAccess|array $array Array to process.
 	 * @param  string|array       $keys Key to check.
-	 * @return bool
 	 */
 	public static function has( $array, $keys ): bool {
 		$keys = (array) $keys;
@@ -341,7 +332,6 @@ class Arr {
 	 *
 	 * @param  \ArrayAccess|array $array Array to process.
 	 * @param  string|array       $keys Keys to check.
-	 * @return bool
 	 */
 	public static function has_any( $array, $keys ): bool {
 		if ( empty( $keys ) ) {
@@ -369,7 +359,6 @@ class Arr {
 	 * An array is "associative" if it doesn't have sequential numerical keys beginning with zero.
 	 *
 	 * @param  array $array Array to process.
-	 * @return bool
 	 */
 	public static function is_assoc( array $array ): bool {
 		$keys = array_keys( $array );
@@ -382,7 +371,6 @@ class Arr {
 	 *
 	 * @param  array        $array Array to process.
 	 * @param  array|string $keys Keys to process by.
-	 * @return array
 	 */
 	public static function only( array $array, array|string $keys ): array {
 		return array_intersect_key( $array, array_flip( (array) $keys ) );
@@ -444,7 +432,6 @@ class Arr {
 	 * @param  array $array Array to process.
 	 * @param  mixed $value Item value.
 	 * @param  mixed $key Item key.
-	 * @return array
 	 */
 	public static function prepend( array $array, $value, $key = null ): array {
 		if ( is_null( $key ) ) {
@@ -520,7 +507,6 @@ class Arr {
 	 * @param  array       $array Array to process.
 	 * @param  string|null $key Key to set.
 	 * @param  mixed       $value Value to set.
-	 * @return array
 	 */
 	public static function set( array &$array, $key, $value ): array {
 		if ( is_null( $key ) ) {
@@ -629,7 +615,6 @@ class Arr {
 	 * If the given value is not an array and not null, wrap it in one.
 	 *
 	 * @param  mixed $value Value to wrap by.
-	 * @return array
 	 */
 	public static function wrap( $value ): array {
 		if ( is_null( $value ) ) {

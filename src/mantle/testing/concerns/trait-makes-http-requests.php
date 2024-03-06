@@ -51,7 +51,7 @@ trait Makes_Http_Requests {
 	/**
 	 * Setup the trait in the test case.
 	 */
-	public function makes_http_requests_set_up() {
+	public function makes_http_requests_set_up(): void {
 		global $wp_rest_server, $wp_actions;
 
 		// Clear out the existing REST Server to allow for REST API routes to be re-registered.
@@ -67,8 +67,6 @@ trait Makes_Http_Requests {
 
 	/**
 	 * Create a new request instance with the default headers and cookies.
-	 *
-	 * @return Pending_Testable_Request
 	 */
 	protected function create_pending_request(): Pending_Testable_Request {
 		return tap(
@@ -96,8 +94,6 @@ trait Makes_Http_Requests {
 
 	/**
 	 * Flush all the configured headers.
-	 *
-	 * @return static
 	 */
 	public function flush_default_headers(): static {
 		$this->default_headers = [];
@@ -109,7 +105,6 @@ trait Makes_Http_Requests {
 	 * Define additional headers to be sent with the request.
 	 *
 	 * @param array $headers Headers for the request.
-	 * @return Pending_Testable_Request
 	 */
 	public function with_headers( array $headers ): Pending_Testable_Request {
 		return $this->create_pending_request()->with_headers( $headers );
@@ -120,7 +115,6 @@ trait Makes_Http_Requests {
 	 *
 	 * @param string $name  Header name (key).
 	 * @param string $value Header value.
-	 * @return Pending_Testable_Request
 	 */
 	public function with_header( string $name, string $value ): Pending_Testable_Request {
 		return $this->with_headers( [ $name => $value ] );
@@ -131,7 +125,6 @@ trait Makes_Http_Requests {
 	 * a previous request.
 	 *
 	 * @param string $url URL for the referer header.
-	 * @return Pending_Testable_Request
 	 */
 	public function from( string $url ): Pending_Testable_Request {
 		return $this->with_header( 'referer', $url );
@@ -142,7 +135,6 @@ trait Makes_Http_Requests {
 	 *
 	 * @param array<string, string>|string $cookies Cookies to be sent with the request.
 	 * @param string|null                  $value   Cookie value.
-	 * @return static
 	 */
 	public function add_default_cookie( array|string $cookies, ?string $value = null ): static {
 		if ( is_array( $cookies ) ) {
@@ -156,8 +148,6 @@ trait Makes_Http_Requests {
 
 	/**
 	 * Flush the cookies for the request.
-	 *
-	 * @return static
 	 */
 	public function flush_default_cookies(): static {
 		$this->default_cookies = [];
@@ -169,7 +159,6 @@ trait Makes_Http_Requests {
 	 * Make a request with a set of cookies.
 	 *
 	 * @param array<string, string> $cookies Cookies to be sent with the request.
-	 * @return Pending_Testable_Request
 	 */
 	public function with_cookies( array $cookies ): Pending_Testable_Request {
 		return $this->create_pending_request()->with_cookies( $cookies );
@@ -180,7 +169,6 @@ trait Makes_Http_Requests {
 	 *
 	 * @param string $name  Cookie name.
 	 * @param string $value Cookie value.
-	 * @return Pending_Testable_Request
 	 */
 	public function with_cookie( string $name, string $value ): Pending_Testable_Request {
 		return $this->with_cookies( [ $name => $value ] );
@@ -190,7 +178,6 @@ trait Makes_Http_Requests {
 	 * Automatically follow any redirects returned from the response.
 	 *
 	 * @param bool $value Whether to follow redirects.
-	 * @return Pending_Testable_Request
 	 */
 	public function following_redirects( bool $value = true ): Pending_Testable_Request {
 		return $this->create_pending_request()->following_redirects( $value );
@@ -201,7 +188,6 @@ trait Makes_Http_Requests {
 	 *
 	 * @param mixed $uri     Request URI.
 	 * @param array $headers Request headers.
-	 * @return Test_Response
 	 */
 	public function get( $uri, array $headers = [] ): Test_Response {
 		return $this->create_pending_request()->get( $uri, $headers );
@@ -212,7 +198,6 @@ trait Makes_Http_Requests {
 	 *
 	 * @deprecated Use {@see Mantle\Testing\Concerns\Makes_Http_Requests::get()} instead.
 	 * @param string $url The URL for the request.
-	 * @return Test_Response
 	 */
 	public function go_to( string $url ): Test_Response {
 		return $this->create_pending_request()->get( $url );
@@ -224,7 +209,6 @@ trait Makes_Http_Requests {
 	 * @param string $uri     URI to "get".
 	 * @param array  $headers Request headers.
 	 * @param int    $options JSON encoding options.
-	 * @return Test_Response
 	 */
 	public function get_json( $uri, array $headers = [], int $options = 0 ): Test_Response {
 		return $this->create_pending_request()->get_json( $uri, $headers, $options );
@@ -238,7 +222,6 @@ trait Makes_Http_Requests {
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
 	 * @param int    $options JSON encoding options.
-	 * @return Test_Response
 	 *
 	 * @throws RuntimeException If not implemented.
 	 */
@@ -252,7 +235,6 @@ trait Makes_Http_Requests {
 	 * @param string $uri     Request URI.
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
-	 * @return Test_Response
 	 */
 	public function post( string $uri, array $data = [], array $headers = [] ): Test_Response {
 		return $this->create_pending_request()->post( $uri, $data, $headers );
@@ -265,7 +247,6 @@ trait Makes_Http_Requests {
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
 	 * @param int    $options JSON encoding options.
-	 * @return Test_Response
 	 */
 	public function post_json( string $uri, array $data = [], array $headers = [], int $options = 0 ): Test_Response {
 		return $this->create_pending_request()->json( 'POST', $uri, $data, $headers );
@@ -277,7 +258,6 @@ trait Makes_Http_Requests {
 	 * @param string $uri     Request URI.
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
-	 * @return Test_Response
 	 */
 	public function put( string $uri, array $data = [], array $headers = [] ): Test_Response {
 		return $this->create_pending_request()->put( $uri, $data, $headers );
@@ -290,7 +270,6 @@ trait Makes_Http_Requests {
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
 	 * @param int    $options JSON encoding options.
-	 * @return Test_Response
 	 */
 	public function put_json( string $uri, array $data = [], array $headers = [], int $options = 0 ): Test_Response {
 		return $this->create_pending_request()->json( 'PUT', $uri, $data, $headers, $options );
@@ -302,7 +281,6 @@ trait Makes_Http_Requests {
 	 * @param string $uri     Request URI.
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
-	 * @return Test_Response
 	 */
 	public function patch( $uri, array $data = [], array $headers = [] ): Test_Response {
 		return $this->create_pending_request()->patch( $uri, $data, $headers );
@@ -315,7 +293,6 @@ trait Makes_Http_Requests {
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
 	 * @param int    $options JSON encoding options.
-	 * @return Test_Response
 	 */
 	public function patch_json( $uri, array $data = [], array $headers = [], int $options = 0 ): Test_Response {
 		return $this->create_pending_request()->json( 'PATCH', $uri, $data, $headers, $options );
@@ -327,7 +304,6 @@ trait Makes_Http_Requests {
 	 * @param string $uri     Request URI.
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
-	 * @return Test_Response
 	 */
 	public function delete( $uri, array $data = [], array $headers = [] ): Test_Response {
 		return $this->create_pending_request()->delete( $uri, $data, $headers );
@@ -340,7 +316,6 @@ trait Makes_Http_Requests {
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
 	 * @param int    $options JSON encoding options.
-	 * @return Test_Response
 	 */
 	public function delete_json( $uri, array $data = [], array $headers = [], int $options = 0 ): Test_Response {
 		return $this->create_pending_request()->json( 'DELETE', $uri, $data, $headers, $options );
@@ -352,7 +327,6 @@ trait Makes_Http_Requests {
 	 * @param string $uri     Request URI.
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
-	 * @return Test_Response
 	 */
 	public function options( $uri, array $data = [], array $headers = [] ): Test_Response {
 		return $this->create_pending_request()->options( $uri, $data, $headers );
@@ -400,9 +374,9 @@ trait Makes_Http_Requests {
 	/**
 	 * Call all of the "before" callbacks for the requests.
 	 */
-	public function call_before_callbacks() {
-		foreach ( $this->before_callbacks as $callback ) {
-			$this->app->call( $callback );
+	public function call_before_callbacks(): void {
+		foreach ( $this->before_callbacks as $before_callback ) {
+			$this->app->call( $before_callback );
 		}
 	}
 
@@ -411,10 +385,10 @@ trait Makes_Http_Requests {
 	 *
 	 * @param Test_Response $response Response object.
 	 */
-	public function call_after_callbacks( Test_Response $response ) {
-		foreach ( $this->after_callbacks as $callback ) {
+	public function call_after_callbacks( Test_Response $response ): void {
+		foreach ( $this->after_callbacks as $after_callback ) {
 			$this->app->call(
-				$callback,
+				$after_callback,
 				[
 					'response' => $response,
 				]

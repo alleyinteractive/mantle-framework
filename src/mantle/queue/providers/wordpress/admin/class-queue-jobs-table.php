@@ -118,7 +118,7 @@ class Queue_Jobs_Table extends WP_List_Table {
 	/**
 	 * Prepares the list of items for displaying.
 	 */
-	public function prepare_items() {
+	public function prepare_items(): void {
 		$this->_column_headers = [ $this->get_columns(), [], [] ];
 
 		$statuses = array_column( Post_Status::cases(), 'value' );
@@ -331,7 +331,7 @@ class Queue_Jobs_Table extends WP_List_Table {
 	 *
 	 * @param array $item The current item.
 	 */
-	public function single_row( $item ) {
+	public function single_row( $item ): void {
 		printf( '<tr class="%s">', esc_attr( 'queue-item queue-item__' . $item['status'] ) );
 		$this->single_row_columns( $item );
 		echo '</tr>';

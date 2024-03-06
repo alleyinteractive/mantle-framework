@@ -136,8 +136,6 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
 	/**
 	 * Query builder class to use.
-	 *
-	 * @return string|null
 	 */
 	public static function get_query_builder_class(): ?string {
 		return null;
@@ -147,7 +145,6 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 * Determine if the model has a given scope.
 	 *
 	 * @param string $scope Scope name.
-	 * @return bool
 	 */
 	public function has_named_scope( string $scope ): bool {
 		return method_exists( $this, 'scope' . ucfirst( $scope ) );
@@ -231,7 +228,6 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 * Fill the model with an array of attributes.
 	 *
 	 * @param array $attributes Attributes to set.
-	 * @return static
 	 */
 	public function fill( array $attributes ): static {
 		foreach ( $attributes as $key => $value ) {
@@ -247,7 +243,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 * @param string $attribute Attribute name.
 	 * @param mixed  $value Value to set.
 	 */
-	public function set( string $attribute, $value ) {
+	public function set( string $attribute, $value ): void {
 		if ( static::has_attribute_alias( $attribute ) ) {
 			$attribute = static::get_attribute_alias( $attribute );
 		}
@@ -258,7 +254,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	/**
 	 * Check if the model needs to be booted and if so, do it.
 	 */
-	public static function boot_if_not_booted() {
+	public static function boot_if_not_booted(): void {
 		if ( ! isset( static::$booted[ static::class ] ) ) {
 			static::boot_traits();
 			static::boot();
@@ -269,8 +265,6 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
 	/**
 	 * Clear the list of booted models so they will be re-booted.
-	 *
-	 * @return void
 	 */
 	public static function clear_booted_models(): void {
 		static::$booted = [];
@@ -327,8 +321,6 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
 	/**
 	 * Infer the object type for the model.
-	 *
-	 * @return string|null
 	 */
 	public static function get_object_name(): ?string {
 		// Use the model's object name if it exists.
@@ -345,7 +337,6 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 * Check if an offset exists.
 	 *
 	 * @param mixed $offset Array offset.
-	 * @return bool
 	 */
 	public function offsetExists( mixed $offset ): bool {
 		return null !== $this->get( $offset );
@@ -355,7 +346,6 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 * Get data by the offset.
 	 *
 	 * @param mixed $offset Array offset.
-	 * @return mixed
 	 */
 	public function offsetGet( mixed $offset ): mixed {
 		return $this->get( $offset );
@@ -487,8 +477,6 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
 	/**
 	 * Get the primary key for the model.
-	 *
-	 * @return string
 	 */
 	public function get_key_name(): string {
 		return $this->primary_key;
@@ -496,8 +484,6 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
 	/**
 	 * Get the default foreign key name for the model.
-	 *
-	 * @return string
 	 */
 	public function get_foreign_key(): string {
 		return Str::snake( str_replace( '_', '', class_basename( $this ) ) ) . '_' . $this->get_key_name();
@@ -514,8 +500,6 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
 	/**
 	 * Get the route key for models.
-	 *
-	 * @return string
 	 */
 	public function get_route_key_name(): string {
 		return 'slug';
@@ -526,8 +510,6 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 * the object's archive route with the object's slug.
 	 *
 	 *     /object_name/object_slug/
-	 *
-	 * @return string|null
 	 */
 	public static function get_route(): ?string {
 		return static::get_archive_route() . '/{slug}';
@@ -538,8 +520,6 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 * the object's name:
 	 *
 	 *     /object_name/
-	 *
-	 * @return string|null
 	 */
 	public static function get_archive_route(): ?string {
 		return '/' . static::get_object_name();
@@ -565,8 +545,6 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
 	/**
 	 * Get all the models from the database.
-	 *
-	 * @return Collection
 	 */
 	public static function all(): Collection {
 		return static::query()->take( -1 )->get();
@@ -594,7 +572,6 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 *
 	 * @param array $attributes Attributes to match.
 	 * @param array $values Values to set.
-	 * @return static
 	 */
 	public static function first_or_new( array $attributes, array $values = [] ): static {
 		$instance = static::query()->where( $attributes )->first();
@@ -611,7 +588,6 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 *
 	 * @param array $attributes Attributes to match.
 	 * @param array $values Values to set.
-	 * @return static
 	 */
 	public static function first_or_create( array $attributes, array $values = [] ): static {
 		$instance = static::query()->where( $attributes )->first();
@@ -628,7 +604,6 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 *
 	 * @param array $attributes Attributes to match.
 	 * @param array $values Values to set.
-	 * @return static
 	 */
 	public static function update_or_create( array $attributes, array $values = [] ): static {
 		return tap(
@@ -639,8 +614,6 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
 	/**
 	 * Convert the model instance to an array.
-	 *
-	 * @return array
 	 */
 	public function to_array(): array {
 		return $this->attributes_to_array();
@@ -659,7 +632,6 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 * Convert the object to its JSON representation.
 	 *
 	 * @param int $options json_encode() options.
-	 * @return string
 	 */
 	public function to_json( $options = 0 ): string {
 		return wp_json_encode( $this->to_array(), $options );

@@ -91,8 +91,6 @@ class Mock_Http_Sequence {
 
 	/**
 	 * Indicates if the sequence has any responses remaining.
-	 *
-	 * @return bool
 	 */
 	public function is_empty(): bool {
 		return empty( $this->responses );

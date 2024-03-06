@@ -20,7 +20,6 @@ class File_Engine implements Engine {
 	 *
 	 * @param string $path View path.
 	 * @param array  $data View data.
-	 * @return string
 	 */
 	public function get( string $path, array $data = [] ): string {
 		if ( 0 === validate_file( $path ) && 0 === validate_file( $path ) ) {

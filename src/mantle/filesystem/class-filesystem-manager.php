@@ -54,7 +54,6 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 * Retrieve a filesystem disk.
 	 *
 	 * @param string $name Disk name.
-	 * @return \Mantle\Contracts\Filesystem\Filesystem
 	 *
 	 * @throws InvalidArgumentException Thrown on invalid disk configuration.
 	 */
@@ -100,7 +99,6 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 * Retrieve configuration for a specific filesystem disk.
 	 *
 	 * @param string $disk Disk name.
-	 * @return array
 	 */
 	protected function get_config( string $disk ): array {
 		return (array) ( $this->app['config'][ "filesystem.disks.{$disk}" ] ?? [] );
@@ -108,8 +106,6 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 
 	/**
 	 * Retrieve the default disk driver.
-	 *
-	 * @return string
 	 */
 	protected function get_default_disk(): string {
 		return (string) ( $this->app['config']['filesystem.default'] ?? 'local' );
@@ -144,7 +140,6 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 *
 	 * @param FilesystemAdapter $adapter
 	 * @param array             $config Adapter configuration.
-	 * @return Flysystem
 	 */
 	protected function create_flysystem( FilesystemAdapter $adapter, array $config = [] ): Flysystem {
 		return new Flysystem( $adapter, $config );
@@ -154,7 +149,6 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 * Create an instance of the local driver.
 	 *
 	 * @param  array $config Configuration.
-	 * @return Filesystem_Adapter
 	 *
 	 * @throws InvalidArgumentException Thrown on missing WordPress.
 	 */
@@ -211,7 +205,6 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 * Create an instance of the Amazon S3 driver.
 	 *
 	 * @param array $config S3 configuration.
-	 * @return Adapter\AWS_S3_Adapter
 	 *
 	 * @throws RuntimeException Thrown on missing dependency.
 	 */

@@ -382,7 +382,6 @@ function with( $value, callable $callback = null ) {
  * @param string   $action Action to listen to.
  * @param callable $callback Callback to invoke.
  * @param int      $priority
- * @return void
  */
 function add_action( string $hook, callable $callable, int $priority = 10 ): void {
 	if ( ! class_exists( Dispatcher::class ) ) {
@@ -398,7 +397,6 @@ function add_action( string $hook, callable $callable, int $priority = 10 ): voi
  * @param string   $action Action to listen to.
  * @param callable $callback Callback to invoke.
  * @param int      $priority
- * @return void
  */
 function add_filter( string $hook, callable $callable, int $priority = 10 ): void {
 	if ( ! class_exists( Dispatcher::class ) ) {
@@ -427,7 +425,6 @@ function event( ...$args ) {
  * @param string $hook Hook to check for.
  * @param callable $callable Callable to invoke.
  * @param int $priority Hook priority.
- * @return void
  */
 function hook_callable( string $hook, callable $callable, int $priority = 10 ): void {
 	if ( ! did_action( $hook ) && ! doing_action( $hook ) ) {

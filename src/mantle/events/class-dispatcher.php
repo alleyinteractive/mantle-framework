@@ -57,7 +57,7 @@ class Dispatcher implements Dispatcher_Contract {
 	 * @param int          $priority Event priority.
 	 * @param  \Closure|string $listener Listener callback.
 	 */
-	public function listen( $events, $listener, int $priority = 10 ) {
+	public function listen( $events, $listener, int $priority = 10 ): void {
 		foreach ( (array) $events as $event ) {
 			add_action(
 				$event,
@@ -72,7 +72,6 @@ class Dispatcher implements Dispatcher_Contract {
 	 * Determine if a given event has listeners.
 	 *
 	 * @param  string $event_name Event name.
-	 * @return bool
 	 */
 	public function has_listeners( $event_name ): bool {
 		return has_filter( $event_name );
@@ -82,9 +81,8 @@ class Dispatcher implements Dispatcher_Contract {
 	 * Register an event subscriber with the dispatcher.
 	 *
 	 * @param  object|string $subscriber
-	 * @return void
 	 */
-	public function subscribe( $subscriber ) {
+	public function subscribe( $subscriber ): void {
 		$subscriber = $this->resolve_subscriber( $subscriber );
 
 		$subscriber->subscribe( $this );
@@ -175,7 +173,6 @@ class Dispatcher implements Dispatcher_Contract {
 	 * Register an event listener with the dispatcher.
 	 *
 	 * @param  \Closure|string $listener
-	 * @return \Closure
 	 */
 	public function make_listener( $listener ): Closure {
 		if ( is_string( $listener ) ) {
@@ -193,7 +190,6 @@ class Dispatcher implements Dispatcher_Contract {
 	 * Create a class based listener using the IoC container.
 	 *
 	 * @param  string $listener
-	 * @return \Closure
 	 */
 	public function create_class_listener( $listener ): Closure {
 		return function ( ...$payload ) use ( $listener ) {
@@ -235,9 +231,8 @@ class Dispatcher implements Dispatcher_Contract {
 	 * @param string|object $event Event to remove.
 	 * @param callable|string $listener Listener to remove.
 	 * @param int $priority Priority of the listener.
-	 * @return void
 	 */
-	public function forget( $event, $listener = null, int $priority = 10 ) {
+	public function forget( $event, $listener = null, int $priority = 10 ): void {
 		if ( is_object( $event ) ) {
 			$event = get_class( $event );
 		}

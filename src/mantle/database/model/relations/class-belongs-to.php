@@ -63,7 +63,7 @@ class Belongs_To extends Relation {
 	/**
 	 * Add constraints to the query.
 	 */
-	public function add_constraints() {
+	public function add_constraints(): void {
 		if ( ! static::$constraints ) {
 			return;
 		}
@@ -100,7 +100,6 @@ class Belongs_To extends Relation {
 	 * Set the query constraints for an eager load of the relation.
 	 *
 	 * @param Collection $models Models to eager load for.
-	 * @return void
 	 *
 	 * @throws RuntimeException Thrown on eager loading term relationships.
 	 */
@@ -236,7 +235,6 @@ class Belongs_To extends Relation {
 	 * @param Builder     $builder Query builder instance.
 	 * @param string|null $compare_value Value to compare against, optional.
 	 * @param string      $compare Comparison operator (=, >, EXISTS, etc.).
-	 * @return Builder
 	 *
 	 * @throws Model_Exception Thrown on unsupported relationship method.
 	 */
@@ -256,7 +254,6 @@ class Belongs_To extends Relation {
 	 * Retrieve a internal term for a post-to-post relationship.
 	 *
 	 * @param Model|string $model Model instance/id.
-	 * @return int
 	 * @throws Model_Exception Thrown on error creating internal term with a post to term or term to post relationship.
 	 */
 	protected function get_term_for_relationship( $model ): int {
@@ -280,7 +277,6 @@ class Belongs_To extends Relation {
 	 * Retrieve the term slug for a post-to-post relationship.
 	 *
 	 * @param Model|string $model Model instance/id.
-	 * @return string
 	 */
 	protected function get_term_slug_for_relationship( $model ): string {
 		$delimiter = Has_One_Or_Many::DELIMITER;
@@ -336,7 +332,6 @@ class Belongs_To extends Relation {
 	 *
 	 * @param Collection $models Parent models.
 	 * @param Collection $results Eagerly loaded results to match.
-	 * @return Collection
 	 */
 	public function match( Collection $models, Collection $results ): Collection {
 		$dictionary = $this->build_dictionary( $results, $models );
@@ -355,7 +350,6 @@ class Belongs_To extends Relation {
 	 *
 	 * @param Collection $results Collection of results.
 	 * @param Collection $models Eagerly loaded results to match.
-	 * @return array
 	 */
 	protected function build_dictionary( Collection $results, Collection $models ): array {
 		return $results
@@ -369,8 +363,6 @@ class Belongs_To extends Relation {
 
 	/**
 	 * Flag if the meta should appended.
-	 *
-	 * @return bool
 	 */
 	protected function should_append(): bool {
 		return Belongs_To_Many::class === get_class( $this ) || is_subclass_of( $this, Belongs_To_Many::class );

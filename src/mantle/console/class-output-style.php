@@ -21,7 +21,7 @@ class Output_Style extends SymfonyStyle {
 	 * @param array $headers Headers for the data.
 	 * @param array $data Data with no keys.
 	 */
-	public function format_json( array $headers, array $data ) {
+	public function format_json( array $headers, array $data ): void {
 		// Merge the headers with the data.
 		$data = collect( $data )
 			->map( fn( $row ) => array_combine( $headers, $row ) )
@@ -36,7 +36,7 @@ class Output_Style extends SymfonyStyle {
 	 * @param array $headers Headers for the data.
 	 * @param array $data Data with no keys.
 	 */
-	public function format_csv( array $headers, array $data ) {
+	public function format_csv( array $headers, array $data ): void {
 		// Merge the headers with the data.
 		$data = collect( $data )
 			->map( fn( $row ) => array_combine( $headers, $row ) )
@@ -60,7 +60,7 @@ class Output_Style extends SymfonyStyle {
 	 * @param array $headers Headers for the data.
 	 * @param array $data Data with no keys.
 	 */
-	public function format_xml( array $headers, array $data ) {
+	public function format_xml( array $headers, array $data ): void {
 		// Merge the headers with the data.
 		$data = collect( $data )
 			->map( fn( $row ) => array_combine( $headers, $row ) )

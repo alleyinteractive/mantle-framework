@@ -21,8 +21,6 @@ class Factory {
 
 	/**
 	 * Generate a new pending request.
-	 *
-	 * @return Pending_Request
 	 */
 	protected function new_pending_request(): Pending_Request {
 		return new Pending_Request();

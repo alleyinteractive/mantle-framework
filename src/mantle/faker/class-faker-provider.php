@@ -18,7 +18,6 @@ class Faker_Provider extends Base {
 	 * Compile a set of blocks.
 	 *
 	 * @param array $blocks Blocks to compile.
-	 * @return string
 	 */
 	public static function blocks( array $blocks ): string {
 		return implode( "\n\n", $blocks );
@@ -28,7 +27,6 @@ class Faker_Provider extends Base {
 	 * Build a heading block.
 	 *
 	 * @param int $level Heading level.
-	 * @return string
 	 */
 	public static function heading_block( int $level = 2 ): string {
 		return static::block(
@@ -44,7 +42,6 @@ class Faker_Provider extends Base {
 	 * Build a paragraph block.
 	 *
 	 * @param int $sentences Number of sentences in the block.
-	 * @return string
 	 */
 	public static function paragraph_block( int $sentences = 3 ): string {
 		return static::block(
@@ -75,7 +72,6 @@ class Faker_Provider extends Base {
 	 * @param string $block_name Block name.
 	 * @param string $content Content for the block.
 	 * @param array  $attributes Attributes for the block.
-	 * @return string
 	 */
 	public static function block( string $block_name, string $content = '', array $attributes = [] ): string {
 		// Add a newline before and after the content.

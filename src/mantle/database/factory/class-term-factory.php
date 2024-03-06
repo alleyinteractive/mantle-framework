@@ -104,7 +104,6 @@ class Term_Factory extends Factory {
 	 * Create a new factory instance to create posts for a specific taxonomy.
 	 *
 	 * @param string $taxonomy Post type to use.
-	 * @return static
 	 */
 	public function with_taxonomy( string $taxonomy ): static {
 		return tap(
@@ -117,7 +116,6 @@ class Term_Factory extends Factory {
 	 * Alias for {@see Term_Factory::with_taxonomy()}.
 	 *
 	 * @param string $taxonomy Taxonomy to use.
-	 * @return static
 	 */
 	public function for( string $taxonomy ): static {
 		return $this->with_taxonomy( $taxonomy );

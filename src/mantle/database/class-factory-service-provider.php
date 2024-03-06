@@ -28,7 +28,7 @@ class Factory_Service_Provider extends Service_Provider {
 	/**
 	 * Register any application services.
 	 */
-	public function register() {
+	public function register(): void {
 		$this->add_command( Console\Seed_Command::class );
 
 		$this->register_mantle_factory();

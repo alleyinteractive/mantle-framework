@@ -19,7 +19,6 @@ trait With_PSR_4_File {
 	 * Get the class name to use.
 	 *
 	 * @param string $name Inputted name.
-	 * @return string
 	 */
 	protected function get_class_name( string $name ): string {
 		$name = str( str( $name )->explode( '\\' )->pop() )->studly();
@@ -35,7 +34,6 @@ trait With_PSR_4_File {
 	 * Get the folder location of the file.
 	 *
 	 * @param string $name Name to use.
-	 * @return string
 	 */
 	protected function get_folder_path( string $name ): string {
 		$parts = str( $name )->explode( '\\' );
@@ -57,7 +55,6 @@ trait With_PSR_4_File {
 	 * Get the location for the generated file.
 	 *
 	 * @param string $name Name to use.
-	 * @return string
 	 */
 	protected function get_file_path( string $name ): string {
 		$filename = str(

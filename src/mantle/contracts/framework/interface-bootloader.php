@@ -17,8 +17,6 @@ use Closure;
 interface Bootloader {
 	/**
 	 * Boot the application given the current context.
-	 *
-	 * @return static
 	 */
 	public function boot(): static;
 
@@ -27,7 +25,6 @@ interface Bootloader {
 	 *
 	 * @param string              $abstract Abstract to bind.
 	 * @param Closure|string|null $concrete Concrete to bind.
-	 * @return static
 	 */
 	public function bind( string $abstract, Closure|string|null $concrete ): static;
 }

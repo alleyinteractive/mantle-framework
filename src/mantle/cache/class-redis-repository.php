@@ -58,7 +58,6 @@ class Redis_Repository extends Repository implements Taggable_Repository {
 	 *
 	 * @param  string $key
 	 * @param  mixed  $default
-	 * @return mixed
 	 */
 	public function get( string $key, mixed $default = null ): mixed {
 		$value = $this->client->get( $this->prefix . $key );
@@ -78,7 +77,6 @@ class Redis_Repository extends Repository implements Taggable_Repository {
 	 * @param  string                                    $key
 	 * @param  mixed                                     $value
 	 * @param  \DateTimeInterface|\DateInterval|int|null $ttl
-	 * @return bool
 	 */
 	public function put( $key, $value, $ttl = null ): bool {
 		$value = maybe_serialize( $value );
@@ -116,7 +114,6 @@ class Redis_Repository extends Repository implements Taggable_Repository {
 	 * Remove an item from the cache.
 	 *
 	 * @param  string $key Cache key.
-	 * @return bool
 	 */
 	public function forget( $key ): bool {
 		return (bool) $this->client->del( $key );

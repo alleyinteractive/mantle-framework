@@ -17,7 +17,7 @@ trait Post_Events {
 	/**
 	 * Boot the trait.
 	 */
-	public static function boot_post_events() {
+	public static function boot_post_events(): void {
 		static::subscribe_to_core_events();
 	}
 
@@ -79,7 +79,6 @@ trait Post_Events {
 	 *
 	 * @param string $event Event name to fire.
 	 * @param string $post_type Post type to limit to.
-	 * @return Closure
 	 */
 	protected static function get_post_event_callback( string $event, string $post_type ): Closure {
 		return function( $post_id ) use ( $event, $post_type ) {

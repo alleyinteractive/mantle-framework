@@ -23,8 +23,6 @@ class Category extends Term {
 
 	/**
 	 * Retrieve the category's posts.
-	 *
-	 * @return Has_Many
 	 */
 	public function posts(): Has_Many {
 		return $this->has_many( Post::class );

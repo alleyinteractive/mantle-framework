@@ -35,18 +35,14 @@ class Event_Service_Provider extends Service_Provider {
 
 	/**
 	 * Register any other events for your application.
-	 *
-	 * @return void
 	 */
-	public function boot() {
+	public function boot(): void {
 		// ...
 	}
 
 	/**
 	 * Flag if Mantle should discover events automatically.
 	 * If removed, event discovery will be disabled.
-	 *
-	 * @return bool
 	 */
 	public function should_discover_events(): bool {
 		return true;

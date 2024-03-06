@@ -66,7 +66,6 @@ class Array_Repository extends Repository implements Repository_Contract {
 	 * @param  string                                    $key
 	 * @param  mixed                                     $value
 	 * @param  \DateTimeInterface|\DateInterval|int|null $ttl
-	 * @return bool
 	 */
 	public function put( $key, $value, $ttl = null ): bool {
 		$this->storage[ $key ] = [
@@ -105,7 +104,6 @@ class Array_Repository extends Repository implements Repository_Contract {
 	 * Remove an item from the cache.
 	 *
 	 * @param  string $key Cache key.
-	 * @return bool
 	 */
 	public function forget( $key ): bool {
 		unset( $this->storage[ $key ] );

@@ -46,7 +46,7 @@ class Config_Cache_Command extends Command {
 	 *
 	 * @throws LogicException Thrown on error writing config file.
 	 */
-	public function handle( Filesystem $filesystem ) {
+	public function handle( Filesystem $filesystem ): void {
 		$this->files = $filesystem;
 
 		$this->call( 'mantle config:clear' );
@@ -74,8 +74,6 @@ class Config_Cache_Command extends Command {
 
 	/**
 	 * Boot a fresh copy of the application configuration.
-	 *
-	 * @return array
 	 */
 	protected function get_fresh_configuration() : array {
 		$app = require $this->container->get_bootstrap_path( '/app.php' );

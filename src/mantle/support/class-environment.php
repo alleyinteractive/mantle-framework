@@ -27,8 +27,6 @@ class Environment {
 
 	/**
 	 * Get the environment repository instance.
-	 *
-	 * @return \Dotenv\Repository\RepositoryInterface
 	 */
 	public static function get_repository(): RepositoryInterface {
 		if ( ! isset( static::$repository ) ) {
@@ -42,8 +40,6 @@ class Environment {
 
 	/**
 	 * Clear the environment repository instance.
-	 *
-	 * @return void
 	 */
 	public static function clear(): void {
 		static::$repository = null;

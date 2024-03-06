@@ -45,7 +45,6 @@ class Class_Make_Command extends Generator_Command {
 	 * Build the generated file.
 	 *
 	 * @param string $name Class name to generate.
-	 * @return string
 	 */
 	public function get_generated_class( string $name ): string {
 		$class_name     = $this->get_class_name( $name );
@@ -67,7 +66,7 @@ class Class_Make_Command extends Generator_Command {
 	 *
 	 * @param string $name Class name.
 	 */
-	public function complete_synopsis( string $name ) {
+	public function complete_synopsis( string $name ): void {
 		$this->log(
 			PHP_EOL . sprintf(
 				'Class created [%s\%s]',

@@ -46,7 +46,7 @@ class String_Replacements {
 	 * @param string|string[] $search  The value or values being searched for.
 	 * @param string|string[] $replace The value or values that replaces found $search values.
 	 */
-	public function add( $search, $replace ) {
+	public function add( $search, $replace ): void {
 		// Allow passing the results of expressions that might not generate different values.
 		if ( $search === $replace ) {
 			return;

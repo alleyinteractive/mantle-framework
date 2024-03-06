@@ -52,7 +52,6 @@ trait Output_Messages {
 	 *
 	 * @param string $message Message to output.
 	 * @param string $prefix Prefix to output.
-	 * @return void
 	 */
 	public static function info( string $message, $prefix = 'Install' ): void {
 		static::message( $prefix, 'yellow-600', $message );
@@ -63,7 +62,6 @@ trait Output_Messages {
 	 *
 	 * @param string $message Message to output.
 	 * @param string $prefix Prefix to output.
-	 * @return void
 	 */
 	public static function success( string $message, $prefix = 'Install' ): void {
 		static::message( $prefix, 'lime-600', $message );
@@ -74,7 +72,6 @@ trait Output_Messages {
 	 *
 	 * @param string $message Message to output.
 	 * @param string $prefix Prefix to output.
-	 * @return void
 	 */
 	public static function error( string $message, $prefix = 'Install' ): void {
 		static::message( $prefix, 'red-800', $message, 'red-100', 'pt-1' );
@@ -86,7 +83,6 @@ trait Output_Messages {
 	 * @link https://github.com/nunomaduro/termwind#code
 	 *
 	 * @param string|string[] $code Code to display.
-	 * @return void
 	 */
 	public static function code( $code ): void {
 		if ( is_array( $code ) ) {
@@ -103,7 +99,6 @@ trait Output_Messages {
 	 *
 	 * @param string $message Message to output.
 	 * @param array  $trace Trace to output.
-	 * @return void
 	 */
 	public static function trace( string $message, array $trace ): void {
 		$frames = collect( $trace );

@@ -34,7 +34,6 @@ trait Resolves_Factories {
 	 * Get a new factory instance for the given model.
 	 *
 	 * @param class-string<\Mantle\Database\Model\Model> $model Model class name.
-	 * @return \Mantle\Database\Factory\Factory
 	 */
 	public static function factory_for_model( string $model ): Factory\Factory {
 		$factory = static::resolve_factory_name( $model );
@@ -46,7 +45,6 @@ trait Resolves_Factories {
 	 * Specify the callback that should be invoked to resolve model factories.
 	 *
 	 * @param callable(class-string<\Mantle\Database\Model\Model>): class-string<\Mantle\Database\Factory\Factory> $resolver Callable resolver.
-	 * @return void
 	 */
 	public static function resolve_factory_using( callable $resolver ): void {
 		static::$factory_name_resolver = $resolver;
@@ -60,7 +58,6 @@ trait Resolves_Factories {
 	 * the given model (e.g. a post model would use Mantle\Database\Factory\Post_Factory).
 	 *
 	 * @param string $model
-	 * @return string
 	 */
 	public static function resolve_factory_name( string $model ): string {
 		$custom_factory = static::resolve_custom_factory_name( $model );
@@ -152,8 +149,6 @@ trait Resolves_Factories {
 
 	/**
 	 * Get the application namespace for the application.
-	 *
-	 * @return string
 	 */
 	protected static function app_namespace(): string {
 		try {

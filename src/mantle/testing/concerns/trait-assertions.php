@@ -35,7 +35,7 @@ trait Assertions {
 	 * @param mixed  $actual  The value to check.
 	 * @param string $message Optional. Message to display when the assertion fails.
 	 */
-	public static function assertWPError( $actual, $message = '' ) {
+	public static function assertWPError( $actual, $message = '' ): void {
 		PHPUnit::assertInstanceOf( 'WP_Error', $actual, $message );
 	}
 
@@ -45,7 +45,7 @@ trait Assertions {
 	 * @param mixed  $actual  The value to check.
 	 * @param string $message Optional. Message to display when the assertion fails.
 	 */
-	public static function assertNotWPError( $actual, $message = '' ) {
+	public static function assertNotWPError( $actual, $message = '' ): void {
 		if ( '' === $message && is_wp_error( $actual ) ) {
 			$message = $actual->get_error_message();
 		}
@@ -58,7 +58,7 @@ trait Assertions {
 	 * @param object $object The object to check.
 	 * @param array  $fields The fields to check.
 	 */
-	public static function assertEqualFields( $object, $fields ) {
+	public static function assertEqualFields( $object, $fields ): void {
 		foreach ( $fields as $field_name => $field_value ) {
 			if ( $object->$field_name !== $field_value ) {
 				PHPUnit::fail();
@@ -72,7 +72,7 @@ trait Assertions {
 	 * @param string $expected The expected value.
 	 * @param string $actual   The actual value.
 	 */
-	public static function assertDiscardWhitespace( $expected, $actual ) {
+	public static function assertDiscardWhitespace( $expected, $actual ): void {
 		PHPUnit::assertEquals( preg_replace( '/\s*/', '', $expected ), preg_replace( '/\s*/', '', $actual ) );
 	}
 
@@ -82,7 +82,7 @@ trait Assertions {
 	 * @param string $expected The expected value.
 	 * @param string $actual   The actual value.
 	 */
-	public static function assertEqualsIgnoreEOL( $expected, $actual ) {
+	public static function assertEqualsIgnoreEOL( $expected, $actual ): void {
 		PHPUnit::assertEquals( str_replace( "\r\n", "\n", $expected ), str_replace( "\r\n", "\n", $actual ) );
 	}
 
@@ -354,7 +354,7 @@ trait Assertions {
 	 *
 	 * @param array $arguments Arguments to query against.
 	 */
-	public function assertUserExists( array $arguments ) {
+	public function assertUserExists( array $arguments ): void {
 		$arguments = $this->serialize_arguments(
 			$arguments,
 			[
@@ -393,7 +393,6 @@ trait Assertions {
 	 * Get a term object from a flexible argument.
 	 *
 	 * @param mixed $argument Term object, term ID, or term slug.
-	 * @return WP_Term|null
 	 */
 	protected function get_term_from_argument( $argument ): ?WP_Term {
 		if ( $argument instanceof Term ) {
@@ -418,7 +417,6 @@ trait Assertions {
 	 *
 	 * @param Post|\WP_Post|int $post Post to check.
 	 * @param Term|\WP_Term|int $term Term to check.
-	 * @return void
 	 */
 	public function assertPostHasTerm( Post|WP_Post|int $post, Term|WP_Term|int $term ): void {
 		if ( $post instanceof Post ) {
@@ -438,7 +436,6 @@ trait Assertions {
 	 *
 	 * @param Post|\WP_Post|int $post Post to check.
 	 * @param Term|\WP_Term|int $term Term to check.
-	 * @return void
 	 */
 	public function assertPostNotHasTerm( Post|WP_Post|int $post, Term|WP_Term|int $term ): void {
 		if ( $post instanceof Post ) {
@@ -469,7 +466,6 @@ trait Assertions {
 	 *
 	 * @param array $arguments Arguments to serialize.
 	 * @param array $defaults  Default values.
-	 * @return array
 	 */
 	protected function serialize_arguments( array $arguments, array $defaults = [] ): array {
 		$arguments = array_merge( $defaults, $arguments );

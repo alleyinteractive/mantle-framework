@@ -41,8 +41,6 @@ class Length_Aware_Paginator extends Paginator {
 
 	/**
 	 * Elements for the paginator.
-	 *
-	 * @return array
 	 */
 	public function elements(): array {
 		$elements     = [];
@@ -73,7 +71,6 @@ class Length_Aware_Paginator extends Paginator {
 	 * Determine if there are more items in the data source.
 	 *
 	 * @param bool $has_more Flag if it has more, unused.
-	 * @return bool
 	 */
 	public function has_more( bool $has_more = null ): bool {
 		if ( empty( $this->found_rows ) ) {
@@ -85,8 +82,6 @@ class Length_Aware_Paginator extends Paginator {
 
 	/**
 	 * Retrieve the max number of pages.
-	 *
-	 * @return int
 	 */
 	public function max_pages(): int {
 		if ( empty( $this->found_rows ) ) {
@@ -98,8 +93,6 @@ class Length_Aware_Paginator extends Paginator {
 
 	/**
 	 * Determine if the paginator has a previous page.
-	 *
-	 * @return bool
 	 */
 	public function has_previous(): bool {
 		return $this->current_page() > $this->max_pages();

@@ -22,8 +22,6 @@ abstract class Test_Case extends Testing_Test_Case {
 
 	/**
 	 * Add Testkit specific traits to Priority list.
-	 *
-	 * @return array
 	 */
 	protected static function get_priority_traits(): array {
 		$parent_priorities = parent::get_priority_traits();

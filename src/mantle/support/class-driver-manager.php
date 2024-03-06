@@ -30,8 +30,6 @@ abstract class Driver_Manager {
 
 	/**
 	 * Retrieve the default store from the configuration.
-	 *
-	 * @return string
 	 */
 	abstract protected function get_default_store(): string;
 
@@ -39,7 +37,6 @@ abstract class Driver_Manager {
 	 * Retrieve store configuration.
 	 *
 	 * @param string $name Store name.
-	 * @return array
 	 */
 	abstract protected function get_config( string $name ): array;
 

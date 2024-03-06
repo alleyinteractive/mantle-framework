@@ -54,7 +54,6 @@ class Worker {
 	 * Run a single queue job.
 	 *
 	 * @param Queue_Worker_Job $job Job to run.
-	 * @return void
 	 */
 	public function run_single( Queue_Worker_Job $job ): void {
 		$provider = $this->manager->get_provider();

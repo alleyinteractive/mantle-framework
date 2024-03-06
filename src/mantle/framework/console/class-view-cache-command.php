@@ -107,7 +107,6 @@ class View_Cache_Command extends Command {
 	 * Compile all views from a collection.
 	 *
 	 * @param Collection $views Collection of view paths.
-	 * @return void
 	 */
 	protected function compile_views( Collection $views ): void {
 		$views->map(
@@ -119,7 +118,6 @@ class View_Cache_Command extends Command {
 	 * Locate all blade files in a path.
 	 *
 	 * @param string[] $paths File path.
-	 * @return Collection
 	 */
 	protected function blade_files_in( array $paths ): Collection {
 		return collect(

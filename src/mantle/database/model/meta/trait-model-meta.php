@@ -29,7 +29,6 @@ trait Model_Meta {
 	 *
 	 * @param string $meta_key Meta key to retrieve.
 	 * @param bool   $single Return the first meta key, defaults to true.
-	 * @return mixed
 	 */
 	public function get_meta( string $meta_key, bool $single = true ): mixed {
 		return \get_metadata( $this->get_meta_type(), $this->id(), $meta_key, $single );
@@ -122,7 +121,6 @@ trait Model_Meta {
 	 * @param string $key Meta key.
 	 * @param mixed  $value Meta value.
 	 * @param bool   $update Flag to update the queued meta.
-	 * @return void
 	 */
 	public function queue_meta_attribute( string $key, $value, bool $update = true ): void {
 		$this->queued_meta[ $key ] = [ $value, $update ];
@@ -147,7 +145,6 @@ trait Model_Meta {
 	 * Serialize meta value for storage, converting all backed enums to their value.
 	 *
 	 * @param mixed $value Value to serialize.
-	 * @return mixed
 	 */
 	protected function serialize_value_for_storage( mixed $value ): mixed {
 		if ( $value instanceof BackedEnum ) {

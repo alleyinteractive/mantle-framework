@@ -41,7 +41,6 @@ class Network_Factory extends Factory {
 	 * Creates an object.
 	 *
 	 * @param array $args The arguments to pass to populate_network().
-	 * @return int|null
 	 */
 	public function create( array $args = [] ): ?int {
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';

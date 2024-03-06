@@ -55,7 +55,7 @@ trait Incorrect_Usage {
 	/**
 	 * Sets up the expectations for testing a deprecated call.
 	 */
-	public function incorrect_usage_set_up() {
+	public function incorrect_usage_set_up(): void {
 		$annotations = $this->get_annotations_for_method();
 
 		foreach ( [ 'class', 'method' ] as $depth ) {
@@ -80,7 +80,7 @@ trait Incorrect_Usage {
 	/**
 	 * Set up handling a _doing_it_wrong() call.
 	 */
-	public function incorrect_usage_tear_down() {
+	public function incorrect_usage_tear_down(): void {
 		$errors = [];
 
 		$not_caught_doing_it_wrong = array_diff( $this->expected_doing_it_wrong, $this->caught_doing_it_wrong );
@@ -144,7 +144,7 @@ trait Incorrect_Usage {
 	 *                               appears in the first argument of the source
 	 *                               `_doing_it_wrong()` call.
 	 */
-	public function setExpectedIncorrectUsage( $doing_it_wrong ) {
+	public function setExpectedIncorrectUsage( $doing_it_wrong ): void {
 		$this->expected_doing_it_wrong[] = $doing_it_wrong;
 	}
 
@@ -158,7 +158,7 @@ trait Incorrect_Usage {
 	 *                               `_doing_it_wrong()` call. Supports * as a
 	 *                               wildcard.
 	 */
-	public function ignoreIncorrectUsage( $doing_it_wrong = '*' ) {
+	public function ignoreIncorrectUsage( $doing_it_wrong = '*' ): void {
 		$this->ignored_doing_it_wrong[] = $doing_it_wrong;
 	}
 
@@ -167,7 +167,7 @@ trait Incorrect_Usage {
 	 *
 	 * @param string $function The function to add.
 	 */
-	public function doing_it_wrong_run( $function ) {
+	public function doing_it_wrong_run( $function ): void {
 		if ( ! in_array( $function, $this->caught_doing_it_wrong, true ) ) {
 			$this->caught_doing_it_wrong[] = $function;
 

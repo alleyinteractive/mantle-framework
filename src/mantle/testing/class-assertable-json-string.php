@@ -62,8 +62,6 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 
 	/**
 	 * Retrieve the decoded JSON.
-	 *
-	 * @return array
 	 */
 	public function get_decoded(): array {
 		return $this->decoded;
@@ -319,8 +317,6 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 
 	/**
 	 * Get the total number of items in the underlying JSON array.
-	 *
-	 * @return int
 	 */
 	public function count(): int {
 		return count( $this->decoded );
@@ -330,7 +326,6 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 * Determine whether an offset exists.
 	 *
 	 * @param  mixed  $offset
-	 * @return bool
 	 */
 	public function offsetExists( $offset ): bool {
 		return isset( $this->decoded[ $offset ] );
@@ -340,7 +335,6 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 * Get the value at the given offset.
 	 *
 	 * @param  string  $offset
-	 * @return mixed
 	 */
 	public function offsetGet( $offset ): mixed {
 		return $this->decoded[ $offset ];
@@ -351,7 +345,6 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 *
 	 * @param  string  $offset
 	 * @param  mixed  $value
-	 * @return void
 	 */
 	public function offsetSet($offset, $value): void {
 		$this->decoded[ $offset ] = $value;
@@ -361,7 +354,6 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 * Unset the value at the given offset.
 	 *
 	 * @param  string  $offset
-	 * @return void
 	 */
 	public function offsetUnset($offset): void {
 		unset( $this->decoded[ $offset ] );

@@ -1073,7 +1073,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	/**
 	 * Dump the string and end the script.
 	 */
-	public function dd() {
+	public function dd(): void {
 		$this->dump();
 
 		exit( 1 );
@@ -1143,8 +1143,6 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 
 	/**
 	 * Convert the object to a string when JSON encoded.
-	 *
-	 * @return string
 	 */
 	public function jsonSerialize(): string {
 		return $this->__toString();
@@ -1154,7 +1152,6 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * Determine if the given offset exists.
 	 *
 	 * @param  mixed $offset
-	 * @return bool
 	 */
 	public function offsetExists( mixed $offset ): bool {
 		return isset( $this->value[ $offset ] );
@@ -1164,7 +1161,6 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * Get the value at the given offset.
 	 *
 	 * @param  mixed $offset
-	 * @return string
 	 */
 	public function offsetGet( mixed $offset ): string {
 		return $this->value[ $offset ];
@@ -1175,7 +1171,6 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 *
 	 * @param  mixed $offset
 	 * @param  mixed $value
-	 * @return void
 	 */
 	public function offsetSet( mixed $offset, mixed $value ): void {
 		$this->value[ $offset ] = $value;
@@ -1185,7 +1180,6 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * Unset the value at the given offset.
 	 *
 	 * @param  mixed $offset
-	 * @return void
 	 */
 	public function offsetUnset( mixed $offset ): void {
 		unset( $this->value[ $offset ] );

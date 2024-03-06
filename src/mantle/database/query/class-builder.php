@@ -167,29 +167,21 @@ abstract class Builder {
 
 	/**
 	 * Get the count of the query results.
-	 *
-	 * @return int
 	 */
 	abstract public function count(): int;
 
 	/**
 	 * Get the query arguments.
-	 *
-	 * @return array
 	 */
 	abstract public function get_query_args(): array;
 
 	/**
 	 * Dump the SQL query for the request.
-	 *
-	 * @return static
 	 */
 	abstract public function dumpSql(): static;
 
 	/**
 	 * Dump the SQL query for the request and stop execution.
-	 *
-	 * @return void
 	 */
 	abstract public function ddSql(): void;
 
@@ -205,8 +197,6 @@ abstract class Builder {
 	/**
 	 * Get the model instance for the builder.
 	 *
-	 * @return Model
-	 *
 	 * @throws Query_Exception Thrown when trying to use with multiple models.
 	 */
 	protected function get_model_instance(): Model {
@@ -219,8 +209,6 @@ abstract class Builder {
 
 	/**
 	 * Retrieve the found rows for a query.
-	 *
-	 * @return int
 	 */
 	public function get_found_rows(): int {
 		return $this->found_rows;
@@ -288,7 +276,6 @@ abstract class Builder {
 	 * @param string|array $attribute Attribute to use or array of key => value
 	 *                                attributes to set.
 	 * @param mixed        $value Value to compare against.
-	 * @return static
 	 */
 	public function where( array|string $attribute, mixed $value = '' ): static {
 		if ( is_array( $attribute ) && empty( $value ) ) {
@@ -336,7 +323,6 @@ abstract class Builder {
 	 * query aliases.
 	 *
 	 * @param string $attribute Attribute name.
-	 * @return string
 	 */
 	protected function resolve_attribute( string $attribute ): string {
 		if ( ! empty( $this->query_aliases[ strtolower( $attribute ) ] ) ) {
@@ -434,7 +420,6 @@ abstract class Builder {
 	 *
 	 * @param string $attribute Attribute name.
 	 * @param string $direction Order direction.
-	 * @return static
 	 */
 	public function order_by( string $attribute, string $direction = 'asc' ): static {
 		return $this->orderBy( $attribute, $direction );
@@ -442,8 +427,6 @@ abstract class Builder {
 
 	/**
 	 * Reorder the query and remove existing order by clauses.
-	 *
-	 * @return static
 	 */
 	public function removeOrder(): static {
 		$this->order_by = [];
@@ -454,8 +437,6 @@ abstract class Builder {
 
 	/**
 	 * Alias for `removeOrder()`.
-	 *
-	 * @return static
 	 */
 	public function remove_order(): static {
 		return $this->removeOrder();
@@ -532,7 +513,6 @@ abstract class Builder {
 	 * Alias for `orderByWhereIn()`.
 	 *
 	 * @param string $attribute Attribute to use.
-	 * @return static
 	 */
 	public function order_by_where_in( string $attribute ): static {
 		return $this->orderByWhereIn( $attribute );
@@ -542,7 +522,6 @@ abstract class Builder {
 	 * Determine if the given model has a scope.
 	 *
 	 * @param string $scope Scope name.
-	 * @return bool
 	 */
 	public function has_named_scope( string $scope ): bool {
 		// Disable model scopes for multi-model queries.
@@ -652,7 +631,6 @@ abstract class Builder {
 	 *
 	 * @param int $page Page to set.
 	 * @param int $limit Limit to set.
-	 * @return static
 	 */
 	public function for_page( int $page, int $limit = 20 ): static {
 		return $this->page( $page )->take( $limit );
@@ -664,7 +642,6 @@ abstract class Builder {
 	 * @param int      $per_page Per page to set.
 	 * @param int|null $last_id Last ID to use.
 	 * @param string   $column Column to use.
-	 * @return static
 	 */
 	public function for_page_after_id( int $per_page, ?int $last_id = null, string $column = 'id' ): static {
 		if ( ! is_null( $last_id ) ) {
@@ -730,9 +707,8 @@ abstract class Builder {
 	 * Delete the results of this query.
 	 *
 	 * @param bool $force Flag to force delete.
-	 * @return void
 	 */
-	public function delete( bool $force = false ) {
+	public function delete( bool $force = false ): void {
 		$this->all()->each->delete( $force ); // @phpstan-ignore-line undefined method
 	}
 
@@ -741,7 +717,6 @@ abstract class Builder {
 	 *
 	 * @param int $per_page Items per page.
 	 * @param int $current_page Current page number.
-	 * @return PaginatorContract
 	 */
 	public function simple_paginate( int $per_page = 20, int $current_page = null ): PaginatorContract {
 		return Container::get_instance()->make(
@@ -759,7 +734,6 @@ abstract class Builder {
 	 *
 	 * @param int $per_page Items per page.
 	 * @param int $current_page Current page number.
-	 * @return PaginatorContract
 	 */
 	public function paginate( int $per_page = 20, int $current_page = null ): PaginatorContract {
 		return Container::get_instance()->make(
@@ -781,7 +755,6 @@ abstract class Builder {
 	 *
 	 * @param int                                                           $count Number of items to chunk by.
 	 * @param callable(\Mantle\Support\Collection<int, TModel>, int): mixed $callback Callback to run on each chunk.
-	 * @return boolean
 	 */
 	public function chunk( int $count, callable $callback ): bool {
 		$page = 1;
@@ -817,7 +790,6 @@ abstract class Builder {
 	 * @param int                                                           $count Number of items to chunk by.
 	 * @param callable(\Mantle\Support\Collection<int, TModel>, int): mixed $callback Callback to run on each chunk.
 	 * @param string                                                        $attribute Attribute to chunk by.
-	 * @return boolean
 	 */
 	public function chunk_by_id( int $count, callable $callback, string $attribute = 'id' ): bool {
 		$last_id = null;
@@ -937,8 +909,6 @@ abstract class Builder {
 
 	/**
 	 * Retrieve the hash of the query object.
-	 *
-	 * @return string
 	 */
 	public function get_query_hash(): string {
 		return $this->query_hash;
@@ -968,8 +938,6 @@ abstract class Builder {
 
 	/**
 	 * Dump the query variables being passed to WP_Query.
-	 *
-	 * @return static
 	 */
 	public function dump(): static {
 		dump( $this->get_query_args() );
@@ -979,8 +947,6 @@ abstract class Builder {
 
 	/**
 	 * Dump the query variables being passed to WP_Query and die.
-	 *
-	 * @return void
 	 */
 	public function dd(): void {
 		$this->dump();
@@ -989,8 +955,6 @@ abstract class Builder {
 
 	/**
 	 * Check if any models are found for the current query.
-	 *
-	 * @return bool
 	 */
 	public function exists(): bool {
 		return $this->count() > 0;
@@ -998,8 +962,6 @@ abstract class Builder {
 
 	/**
 	 * Check if no models are found for the current query.
-	 *
-	 * @return bool
 	 */
 	public function doesntExist(): bool {
 		return ! $this->exists();
@@ -1007,8 +969,6 @@ abstract class Builder {
 
 	/**
 	 * Alias for `doesntExists()`.
-	 *
-	 * @return bool
 	 */
 	public function doesnt_exist(): bool {
 		return $this->doesntExist();

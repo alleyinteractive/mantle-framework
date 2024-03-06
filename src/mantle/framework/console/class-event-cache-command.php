@@ -36,7 +36,7 @@ class Event_Cache_Command extends Command {
 	 *
 	 * @throws LogicException Thrown on error writing config file.
 	 */
-	public function handle() {
+	public function handle(): void {
 		$this->call( 'mantle event:clear' );
 
 		$this->container[ Events_Manifest::class ]->build();

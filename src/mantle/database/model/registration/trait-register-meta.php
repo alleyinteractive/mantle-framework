@@ -20,7 +20,7 @@ trait Register_Meta {
 	/**
 	 * Register the object's meta.
 	 */
-	public static function boot_register_meta() {
+	public static function boot_register_meta(): void {
 		\add_action( 'init', [ __CLASS__, 'register_meta' ], 11 );
 	}
 
@@ -77,8 +77,6 @@ trait Register_Meta {
 
 	/**
 	 * Retrieve the object type for the model.
-	 *
-	 * @return string|null
 	 */
 	public static function get_object_type(): ?string {
 		$parent = get_parent_class( static::class );

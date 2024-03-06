@@ -21,8 +21,6 @@ require_once __DIR__ . '/mail/helpers.php';
  * The manager can install the Mantle Testing Framework but will not by default.
  * Call {@see Installation_Manager::install()} to install or use the
  * {@see install()} helper.
- *
- * @return Installation_Manager
  */
 function manager(): Installation_Manager {
 	return Installation_Manager::instance();
@@ -32,7 +30,6 @@ function manager(): Installation_Manager {
  * Install the Mantle Testing Framework
  *
  * @param callable $callback Callback to invoke once the installation has begun.
- * @return Installation_Manager
  */
 function install( callable $callback = null ): Installation_Manager {
 	return tap(

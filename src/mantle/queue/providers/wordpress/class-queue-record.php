@@ -48,7 +48,6 @@ class Queue_Record extends Post {
 	 * Set the lock end time.
 	 *
 	 * @param int $lock_until The lock end time.
-	 * @return void
 	 */
 	public function set_lock_until( int $lock_until ): void {
 		$this->set_meta( Meta_Key::LOCK_UNTIL->value, $lock_until );
@@ -56,8 +55,6 @@ class Queue_Record extends Post {
 
 	/**
 	 * Clear the lock end time.
-	 *
-	 * @return void
 	 */
 	public function clear_lock(): void {
 		$this->delete_meta( Meta_Key::LOCK_UNTIL->value );
@@ -68,7 +65,6 @@ class Queue_Record extends Post {
 	 *
 	 * @param Event $event The event to log.
 	 * @param array $payload The event payload.
-	 * @return void
 	 */
 	public function log( Event $event, array $payload = [] ): void {
 		$meta = $this->get_meta( Meta_Key::LOG->value );
@@ -88,8 +84,6 @@ class Queue_Record extends Post {
 
 	/**
 	 * Retrieve the queue name.
-	 *
-	 * @return string
 	 */
 	public function get_queue(): string {
 		return collect( $this->get_terms( Provider::OBJECT_NAME ) )

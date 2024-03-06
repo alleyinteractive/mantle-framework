@@ -49,7 +49,6 @@ class Post_Factory extends Factory {
 	 * Create a new factory instance to create posts with a set of terms.
 	 *
 	 * @param array<int|string, \WP_Term|int|string|array<string, mixed>>|\WP_Term|int|string ...$terms Terms to assign to the post.
-	 * @return static
 	 */
 	public function with_terms( ...$terms ): static {
 		// Handle an array in the first argument.
@@ -66,8 +65,6 @@ class Post_Factory extends Factory {
 
 	/**
 	 * Create a new factory instance to create posts with a thumbnail.
-	 *
-	 * @return static
 	 */
 	public function with_thumbnail(): static {
 		return $this->with_meta(
@@ -81,7 +78,6 @@ class Post_Factory extends Factory {
 	 * Create a new factory instance to create posts for a specific post type.
 	 *
 	 * @param string $post_type Post type to use.
-	 * @return static
 	 */
 	public function with_post_type( string $post_type ): static {
 		return tap(
@@ -94,7 +90,6 @@ class Post_Factory extends Factory {
 	 * Alias for {@see Post_Factory::with_post_type()}.
 	 *
 	 * @param string $post_type Post type to use.
-	 * @return static
 	 */
 	public function for( string $post_type ): static {
 		return $this->with_post_type( $post_type );
@@ -121,7 +116,6 @@ class Post_Factory extends Factory {
 	 * @deprecated Use {@see Post_Factory::with_thumbnail()} instead.
 	 *
 	 * @param array $args The arguments.
-	 * @return int|null
 	 */
 	public function create_with_thumbnail( array $args = [] ): ?int {
 		return $this->with_thumbnail()->create( $args );

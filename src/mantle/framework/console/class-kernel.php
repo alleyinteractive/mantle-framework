@@ -128,7 +128,6 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	 *
 	 * @param string $command Command name.
 	 * @param array  $parameters Command parameters.
-	 * @return CommandTester
 	 */
 	public function test( string $command, array $parameters = [] ): CommandTester {
 		$this->bootstrap();
@@ -141,7 +140,6 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	 *
 	 * @param string  $signature Command signature.
 	 * @param Closure $callback Command callback.
-	 * @return \Mantle\Console\Closure_Command
 	 */
 	public function command( string $signature, Closure $callback ): Closure_Command {
 		$command = new Closure_Command( $signature, $callback );
@@ -156,7 +154,7 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	/**
 	 * Bootstrap the console.
 	 */
-	public function bootstrap() {
+	public function bootstrap(): void {
 		if ( ! $this->app->is_running_in_console() ) {
 			return;
 		}
@@ -174,8 +172,6 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 
 	/**
 	 * Resolve the instance of the console application.
-	 *
-	 * @return \Mantle\Contracts\Console\Application
 	 */
 	public function get_console_application(): \Mantle\Contracts\Console\Application {
 		if ( ! isset( $this->console_application ) ) {
@@ -198,8 +194,6 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 
 	/**
 	 * Register the application's commands.
-	 *
-	 * @return void
 	 */
 	public function commands(): void {}
 
@@ -231,7 +225,7 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	/**
 	 * Register CLI Commands from the Application Kernel
 	 */
-	public function register_commands() {
+	public function register_commands(): void {
 		if ( ! $this->commands_loaded ) {
 			$this->commands();
 
@@ -245,8 +239,6 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 
 	/**
 	 * Get the bootstrap classes for the application.
-	 *
-	 * @return array
 	 */
 	protected function bootstrappers(): array {
 		return $this->bootstrappers;
@@ -257,7 +249,7 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	 *
 	 * @param string $message Message to log.
 	 */
-	public function log( string $message ) {
+	public function log( string $message ): void {
 		if ( isset( $this->output ) ) {
 			$this->output->writeln( $message );
 		}
@@ -318,7 +310,6 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	 *
 	 * @param  \Symfony\Component\Console\Input\InputInterface $input
 	 * @param  int                                             $status
-	 * @return void
 	 */
 	public function terminate( $input, $status ): void {
 		if ( isset( $this->app ) ) {

@@ -40,8 +40,6 @@ class Pool {
 
 	/**
 	 * Create a pending request for the pool
-	 *
-	 * @return Pending_Request
 	 */
 	protected function create_request(): Pending_Request {
 		return ( clone $this->base_request )->pooled();
@@ -79,7 +77,6 @@ class Pool {
 	 * Call a pending request a specific index name.
 	 *
 	 * @param string $key The name of the pending request.
-	 * @return Pending_Request
 	 */
 	public function as( string $key ): Pending_Request {
 		$this->pool[ $key ] = $this->create_request();

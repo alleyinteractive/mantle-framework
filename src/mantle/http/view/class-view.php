@@ -65,8 +65,6 @@ class View {
 
 	/**
 	 * Get the view path.
-	 *
-	 * @return string
 	 */
 	public function get_path(): string {
 		return $this->path;
@@ -104,8 +102,6 @@ class View {
 
 	/**
 	 * Get the data for the view.
-	 *
-	 * @return array
 	 */
 	public function get_variables(): array {
 		return $this->data;
@@ -141,8 +137,6 @@ class View {
 
 	/**
 	 * Retrieve the cache key to use for the view.
-	 *
-	 * @return string
 	 */
 	public function get_cache_key(): string {
 		if ( ! empty( $this->cache_key ) ) {
@@ -216,8 +210,6 @@ class View {
 
 	/**
 	 * Get the string contents of the view.
-	 *
-	 * @return string
 	 */
 	public function render(): string {
 		// Check the cache for the view.

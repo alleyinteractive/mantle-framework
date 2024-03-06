@@ -23,8 +23,6 @@ class Post extends Base_Post {
 
 	/**
 	 * Retrieve categories on the post.
-	 *
-	 * @return Has_Many
 	 */
 	public function category(): Has_Many {
 		return $this->has_many( Category::class );
@@ -32,8 +30,6 @@ class Post extends Base_Post {
 
 	/**
 	 * Retrieve tags on the post.
-	 *
-	 * @return Has_Many
 	 */
 	public function tags(): Has_Many {
 		return $this->has_many( Tag::class );

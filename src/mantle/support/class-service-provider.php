@@ -73,7 +73,7 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	/**
 	 * Bootstrap services.
 	 */
-	public function boot_provider() {
+	public function boot_provider(): void {
 		if ( isset( $this->app['log'] ) ) {
 			$this->setLogger( $this->app['log']->driver() );
 		}
@@ -86,7 +86,6 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	 * Register a console command.
 	 *
 	 * @param Command[]|string[]|Command|string $command Command instance or class name to register.
-	 * @return Service_Provider
 	 */
 	public function add_command( $command ): Service_Provider {
 		Console_Application::starting(

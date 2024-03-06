@@ -49,7 +49,7 @@ class Header_Collector extends \QM_Collector {
 	/**
 	 * Setup the collector data.
 	 */
-	public function process() {
+	public function process(): void {
 		$request = $this->app->make( Request::class );
 		if ( $request ) {
 			$this->data['request_headers'] = $request->headers->all();

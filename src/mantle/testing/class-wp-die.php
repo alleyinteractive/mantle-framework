@@ -48,7 +48,7 @@ class WP_Die {
 	 * @param string $title   The title.
 	 * @param array  $args    Array with arguments.
 	 */
-	public static function toggled_handler( $message, $title = '', $args = [] ) {
+	public static function toggled_handler( $message, $title = '', $args = [] ): void {
 		if ( ! $GLOBALS['_wp_die_disabled'] ) {
 			static::txt_handler( $message, $title, $args );
 		}
@@ -61,7 +61,7 @@ class WP_Die {
 	 *
 	 * @param string|\WP_Error $message The `wp_die()` message.
 	 */
-	public static function handler( $message ) {
+	public static function handler( $message ): void {
 		if ( is_wp_error( $message ) ) {
 			$message = $message->get_error_message();
 		}
@@ -80,7 +80,7 @@ class WP_Die {
 	 * @param string           $title   The title.
 	 * @param array            $args    Array with arguments.
 	 */
-	public static function txt_handler( $message, $title, $args ) {
+	public static function txt_handler( $message, $title, $args ): void {
 		// phpcs:disable WordPress.Security.EscapeOutput
 
 		// Display fatal error information from wp_die().
@@ -162,7 +162,7 @@ class WP_Die {
 	 * @param string $title   The title.
 	 * @param array  $args    Array with arguments.
 	 */
-	public static function exit_handler( $message, $title, $args ) {
+	public static function exit_handler( $message, $title, $args ): void {
 		// phpcs:disable WordPress.Security.EscapeOutput
 		echo "\nwp_die called\n";
 		echo "Message : $message\n";
@@ -180,7 +180,7 @@ class WP_Die {
 	/**
 	 * Disables the WP die handler.
 	 */
-	public static function disable() {
+	public static function disable(): void {
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals
 		$GLOBALS['_wp_die_disabled'] = true;
 	}
@@ -188,7 +188,7 @@ class WP_Die {
 	/**
 	 * Enables the WP die handler.
 	 */
-	public static function enable() {
+	public static function enable(): void {
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals
 		$GLOBALS['_wp_die_disabled'] = false;
 	}

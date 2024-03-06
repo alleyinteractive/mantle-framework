@@ -43,8 +43,6 @@ namespace Mantle\Facade;
 class Storage extends Facade {
 	/**
 	 * Facade Accessor
-	 *
-	 * @return string
 	 */
 	protected static function get_facade_accessor(): string {
 		return 'filesystem';

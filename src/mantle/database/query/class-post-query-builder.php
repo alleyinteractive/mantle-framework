@@ -99,8 +99,6 @@ class Post_Query_Builder extends Builder {
 
 	/**
 	 * Get the query arguments.
-	 *
-	 * @return array
 	 */
 	public function get_query_args(): array {
 		$this->apply_scopes();
@@ -179,8 +177,6 @@ class Post_Query_Builder extends Builder {
 
 	/**
 	 * Get the count of the query results.
-	 *
-	 * @return int
 	 */
 	public function count(): int {
 		$this->take( -1 );
@@ -320,7 +316,6 @@ class Post_Query_Builder extends Builder {
 	 * Setting to 'true' prevents counting all the available rows for a query.
 	 *
 	 * @param bool $value Whether to set 'no_found_rows' to true.
-	 * @return static
 	 */
 	public function withNoFoundRows( bool $value = true ): static {
 		return $this->where( 'no_found_rows', $value );
@@ -330,7 +325,6 @@ class Post_Query_Builder extends Builder {
 	 * Dump the SQL query being executed.
 	 *
 	 * @param bool $die Whether to die after dumping the SQL.
-	 * @return static
 	 */
 	public function dumpSql( bool $die = false ): static {
 		add_filter(
@@ -355,8 +349,6 @@ class Post_Query_Builder extends Builder {
 
 	/**
 	 * Dump the SQL query being executed and die.
-	 *
-	 * @return void
 	 */
 	public function ddSql(): void {
 		$this->dumpSql( true );

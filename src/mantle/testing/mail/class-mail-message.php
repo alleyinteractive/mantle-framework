@@ -36,7 +36,6 @@ class Mail_Message {
 	 * Check if the email was sent to the given recipient.
 	 *
 	 * @param string $address The email address to check for.
-	 * @return bool
 	 */
 	public function sent_to( string $address ): bool {
 		return collect( $this->to )->pluck( 0 )->contains( $address );

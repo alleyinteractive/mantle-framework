@@ -52,7 +52,6 @@ class Controller_Make_Command extends Generator_Command {
 	 * Build the generated file.
 	 *
 	 * @param string $name Class name to generate.
-	 * @return string
 	 */
 	public function get_generated_class( string $name ): string {
 		$class_name     = $this->get_class_name( $name );
@@ -109,8 +108,6 @@ class Controller_Make_Command extends Generator_Command {
 
 	/**
 	 * Get the model to use for an entity controller.
-	 *
-	 * @return string
 	 */
 	protected function get_model_entity(): string {
 		// Attempt to determine the model for the entity.
@@ -129,7 +126,7 @@ class Controller_Make_Command extends Generator_Command {
 	 *
 	 * @param string $name Class name.
 	 */
-	public function complete_synopsis( string $name ) {
+	public function complete_synopsis( string $name ): void {
 		$this->log(
 			PHP_EOL . sprintf(
 				'Controller created [%s\%s]',

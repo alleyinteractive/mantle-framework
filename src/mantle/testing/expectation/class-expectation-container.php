@@ -46,7 +46,6 @@ class Expectation_Container {
 	 *
 	 * @param string $hook Hook to check.
 	 * @param array  ...$args Arguments for the hook, optional.
-	 * @return Expectation
 	 */
 	public function add_applied( string $hook, ...$args ): Expectation {
 		$expectation = new Expectation( static::ACTION_APPLIED, $hook, $args );
@@ -59,7 +58,6 @@ class Expectation_Container {
 	 *
 	 * @param string   $hook Hook to check.
 	 * @param callable $callback Callback for the hook, optional.
-	 * @return Expectation
 	 */
 	public function add_added( string $hook, callable $callback = null ): Expectation {
 		$expectation = new Expectation( static::ACTION_ADDED, $hook, $callback );

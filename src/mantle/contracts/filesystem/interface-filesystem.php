@@ -38,7 +38,6 @@ interface Filesystem {
 	 *
 	 * @param string $directory Directory name.
 	 * @param bool   $recursive Flag if it should be recursive.
-	 * @return array
 	 */
 	public function directories( string $directory = null, bool $recursive = false ): array;
 
@@ -46,7 +45,6 @@ interface Filesystem {
 	 * Create a directory.
 	 *
 	 * @param string $path Path to create.
-	 * @return bool
 	 */
 	public function make_directory( string $path ): bool;
 
@@ -54,7 +52,6 @@ interface Filesystem {
 	 * Recursively delete a directory.
 	 *
 	 * @param string $directory Directory name.
-	 * @return bool
 	 */
 	public function delete_directory( string $directory ): bool;
 
@@ -80,7 +77,6 @@ interface Filesystem {
 	 *
 	 * @param string $from From location.
 	 * @param string $to To location.
-	 * @return bool
 	 */
 	public function copy( string $from, string $to ): bool;
 
@@ -89,7 +85,6 @@ interface Filesystem {
 	 *
 	 * @param string $from From location.
 	 * @param string $to To location.
-	 * @return bool
 	 */
 	public function move( string $from, string $to ): bool;
 
@@ -97,7 +92,6 @@ interface Filesystem {
 	 * Delete a file at the given paths.
 	 *
 	 * @param string|string[] $paths File paths.
-	 * @return bool
 	 */
 	public function delete( $paths ): bool;
 
@@ -105,7 +99,6 @@ interface Filesystem {
 	 * Check if a file exists at a current path.
 	 *
 	 * @param string $path
-	 * @return bool
 	 */
 	public function exists( string $path ): bool;
 
@@ -113,7 +106,6 @@ interface Filesystem {
 	 * Check if a file is missing at a given path.
 	 *
 	 * @param string $path File path.
-	 * @return bool
 	 */
 	public function missing( string $path ): bool;
 
@@ -139,7 +131,6 @@ interface Filesystem {
 	 * @param string          $path File path.
 	 * @param string|resource $contents File contents.
 	 * @param array|string    $options  Options for the files or a string visibility.
-	 * @return bool
 	 */
 	public function put( string $path, $contents, $options = [] ): bool;
 
@@ -165,7 +156,6 @@ interface Filesystem {
 	 * @param string       $path File path.
 	 * @param resource     $resource File resource.
 	 * @param array|string $options File options or string visibility.
-	 * @return bool
 	 */
 	public function write_stream( string $path, $resource, $options = [] ): bool;
 
@@ -193,7 +183,6 @@ interface Filesystem {
 	 * Retrieve a file's visibility.
 	 *
 	 * @param string $path
-	 * @return string
 	 */
 	public function get_visibility( string $path ): string;
 
@@ -202,7 +191,6 @@ interface Filesystem {
 	 *
 	 * @param string $path Path to set.
 	 * @param string $visibility Visibility to set.
-	 * @return bool
 	 */
 	public function set_visibility( string $path, string $visibility ): bool;
 
@@ -210,7 +198,6 @@ interface Filesystem {
 	 * Get the URL for the file at the given path.
 	 *
 	 * @param string $path Path to the file.
-	 * @return string|null
 	 */
 	public function url( string $path ): ?string;
 
@@ -220,7 +207,6 @@ interface Filesystem {
 	 * @param  string             $path File path.
 	 * @param  \DateTimeInterface $expiration File expiration.
 	 * @param  array              $options Options for the URL.
-	 * @return string
 	 *
 	 * @throws \RuntimeException Thrown on missing temporary URL.
 	 */

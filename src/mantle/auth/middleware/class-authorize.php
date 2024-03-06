@@ -44,8 +44,6 @@ class Authorize {
 
 	/**
 	 * Get the error message for users who are not logged in.
-	 *
-	 * @return string
 	 */
 	public static function get_unauthenticated_error_message(): string {
 		return (string) \apply_filters( 'mantle_auth_not_logged_in_error', __( 'You are not authenticated.', 'mantle' ) );
@@ -53,8 +51,6 @@ class Authorize {
 
 	/**
 	 * Get the error message for users who are not able to access the requested resources.
-	 *
-	 * @return string
 	 */
 	public static function get_invalid_access_error_message(): string {
 		return (string) \apply_filters( 'mantle_auth_not_logged_in_error', __( 'You do not have sufficient permissions.', 'mantle' ) );

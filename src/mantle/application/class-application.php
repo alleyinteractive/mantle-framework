@@ -170,7 +170,6 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 * By default, this will not have a trailing slash.
 	 *
 	 * @param string $path Path to append.
-	 * @return string
 	 */
 	public function get_base_path( string $path = '' ): string {
 		if ( $path ) {
@@ -189,7 +188,6 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 * Get the path to the application "app" directory.
 	 *
 	 * @param string $path Path to append, optional.
-	 * @return string
 	 */
 	public function get_app_path( string $path = '' ): string {
 		$app_path = $this->app_path ?: $this->get_base_path( 'app' );
@@ -215,7 +213,6 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 * Getter for the bootstrap path.
 	 *
 	 * @param string $path Path to append.
-	 * @return string
 	 */
 	public function get_bootstrap_path( string $path = '' ): string {
 		if ( $this->bootstrap_path ) {
@@ -241,7 +238,6 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 * Getter for the storage path.
 	 *
 	 * @param string $path Path to append.
-	 * @return string
 	 */
 	public function get_storage_path( string $path = '' ): string {
 		if ( $this->storage_path ) {
@@ -268,7 +264,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 *
 	 * @param string|null $url Root URL to set, or null to use the default.
 	 */
-	public function set_root_url( ?string $url = null ) {
+	public function set_root_url( ?string $url = null ): void {
 		if ( ! $url ) {
 			$url = function_exists( 'home_url' ) ? \home_url() : '/';
 		}
@@ -281,7 +277,6 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 * This would be the root URL to the WordPress installation.
 	 *
 	 * @param string $path Path to append.
-	 * @return string
 	 */
 	public function get_root_url( string $path = '' ): string {
 		return $this->root_url . ( $path ? '/' . $path : '' );
@@ -292,7 +287,6 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 * Folder that stores all compiled server-side assets for the application.
 	 *
 	 * @param string|null $path Path to append.
-	 * @return string
 	 */
 	public function get_cache_path( ?string $path = null ): string {
 		if ( function_exists( 'apply_filters' ) ) {
@@ -314,8 +308,6 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 * Get the cached Composer packages path.
 	 *
 	 * Used to store all auto-loaded packages that are Composer dependencies.
-	 *
-	 * @return string
 	 */
 	public function get_cached_packages_path(): string {
 		return $this->get_cache_path( 'packages.php' );
@@ -324,8 +316,6 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	/**
 	 * Get the cached model manifest path.
 	 * Used to store all auto-registered models that are in the application.
-	 *
-	 * @return string
 	 */
 	public function get_cached_models_path(): string {
 		return $this->get_cache_path( 'models.php' );
@@ -333,8 +323,6 @@ class Application extends Container implements \Mantle\Contracts\Application {
 
 	/**
 	 * Determine if the application is cached.
-	 *
-	 * @return bool
 	 */
 	public function is_configuration_cached(): bool {
 		return is_file( $this->get_cached_config_path() );
@@ -342,8 +330,6 @@ class Application extends Container implements \Mantle\Contracts\Application {
 
 	/**
 	 * Retrieve the cached configuration path.
-	 *
-	 * @return string
 	 */
 	public function get_cached_config_path(): string {
 		return $this->get_bootstrap_path() . '/' . Environment::get( 'APP_CONFIG_CACHE', 'cache/config.php' );
@@ -351,8 +337,6 @@ class Application extends Container implements \Mantle\Contracts\Application {
 
 	/**
 	 * Determine if events are cached.
-	 *
-	 * @return bool
 	 */
 	public function is_events_cached(): bool {
 		return is_file( $this->get_cached_events_path() );
@@ -360,8 +344,6 @@ class Application extends Container implements \Mantle\Contracts\Application {
 
 	/**
 	 * Retrieve the cached configuration path.
-	 *
-	 * @return string
 	 */
 	public function get_cached_events_path(): string {
 		return $this->get_bootstrap_path() . '/' . Environment::get( 'APP_EVENTS_CACHE', 'cache/events.php' );
@@ -369,8 +351,6 @@ class Application extends Container implements \Mantle\Contracts\Application {
 
 	/**
 	 * Get the path to the application configuration files.
-	 *
-	 * @return string
 	 */
 	public function get_config_path(): string {
 		return $this->get_base_path( 'config' );
@@ -378,8 +358,6 @@ class Application extends Container implements \Mantle\Contracts\Application {
 
 	/**
 	 * Determine if the application has been bootstrapped before.
-	 *
-	 * @return bool
 	 */
 	public function has_been_bootstrapped(): bool {
 		return (bool) $this->has_been_bootstrapped;
@@ -443,7 +421,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	/**
 	 * Register the base services for the application.
 	 */
-	public function register_base_services() {
+	public function register_base_services(): void {
 		$this->load_environment_variables();
 		$this->load_base_configuration();
 		$this->load_facades();
@@ -452,7 +430,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	/**
 	 * Flush the container of all bindings and resolved instances.
 	 */
-	public function flush() {
+	public function flush(): void {
 		parent::flush();
 
 		$this->booted_callbacks  = [];
@@ -468,7 +446,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 * @param array<mixed, class-string<Bootstrapable>> $bootstrappers Class names of packages to boot.
 	 * @param \Mantle\Contracts\Kernel                  $kernel Kernel instance.
 	 */
-	public function bootstrap_with( array $bootstrappers, \Mantle\Contracts\Kernel $kernel ) {
+	public function bootstrap_with( array $bootstrappers, \Mantle\Contracts\Kernel $kernel ): void {
 		$this->has_been_bootstrapped = true;
 
 		foreach ( $bootstrappers as $bootstrapper ) {
@@ -478,8 +456,6 @@ class Application extends Container implements \Mantle\Contracts\Application {
 
 	/**
 	 * Determine if the application has booted.
-	 *
-	 * @return bool
 	 */
 	public function is_booted(): bool {
 		return $this->booted;
@@ -498,8 +474,8 @@ class Application extends Container implements \Mantle\Contracts\Application {
 		// Fire the 'booting' callbacks.
 		$this->fire_app_callbacks( $this->booting_callbacks );
 
-		foreach ( $this->service_providers as $provider ) {
-			$provider->boot_provider();
+		foreach ( $this->service_providers as $service_provider ) {
+			$service_provider->boot_provider();
 		}
 
 		$this->booted = true;
@@ -514,7 +490,6 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 * Set and retrieve the environment file name.
 	 *
 	 * @param string $file File name to set.
-	 * @return string
 	 */
 	public function environment_file( string $file = null ): string {
 		if ( $file ) {
@@ -540,8 +515,6 @@ class Application extends Container implements \Mantle\Contracts\Application {
 
 	/**
 	 * Get the Application's Environment
-	 *
-	 * @return string
 	 */
 	public function environment(): string {
 		if ( ! empty( $this->environment ) ) {
@@ -555,7 +528,6 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 * Check if the Application's Environment matches a list.
 	 *
 	 * @param string|array ...$environments Environments to check.
-	 * @return bool
 	 */
 	public function is_environment( ...$environments ): bool {
 		return in_array( $this->environment(), (array) $environments, true );
@@ -563,8 +535,6 @@ class Application extends Container implements \Mantle\Contracts\Application {
 
 	/**
 	 * Get the application namespace.
-	 *
-	 * @return string
 	 *
 	 * @throws RuntimeException If the config is not set yet.
 	 */
@@ -580,8 +550,6 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 * Alias to get_namespace().
 	 *
 	 * @throws RuntimeException Thrown on error determining namespace.
-	 *
-	 * @return string
 	 */
 	public function namespace(): string {
 		return $this->get_namespace();
@@ -589,8 +557,6 @@ class Application extends Container implements \Mantle\Contracts\Application {
 
 	/**
 	 * Check if the application is running in the console.
-	 *
-	 * @return bool
 	 */
 	public function is_running_in_console(): bool {
 		if ( $this->is_running_in_console_isolation() ) {
@@ -606,8 +572,6 @@ class Application extends Container implements \Mantle\Contracts\Application {
 
 	/**
 	 * Check if the application is running in console isolation mode.
-	 *
-	 * @return bool
 	 */
 	public function is_running_in_console_isolation(): bool {
 		return defined( 'MANTLE_ISOLATION_MODE' ) && MANTLE_ISOLATION_MODE;
@@ -634,7 +598,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 * @throws NotFoundHttpException Thrown on 404 error.
 	 * @throws HttpException Thrown on other HTTP error.
 	 */
-	public function abort( int $code, string $message = '', array $headers = [] ) {
+	public function abort( int $code, string $message = '', array $headers = [] ): void {
 		if ( 404 === $code ) {
 			throw new NotFoundHttpException( $message, null, 404, $headers );
 		} else {
@@ -646,7 +610,6 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 * Register a new boot listener.
 	 *
 	 * @param callable $callback Callback for the listener.
-	 * @return static
 	 */
 	public function booting( callable $callback ): static {
 		$this->booting_callbacks[] = $callback;
@@ -657,7 +620,6 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 * Register a new "booted" listener.
 	 *
 	 * @param callable $callback Callback for the listener.
-	 * @return static
 	 */
 	public function booted( callable $callback ): static {
 		$this->booted_callbacks[] = $callback;
@@ -673,7 +635,6 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 * Register a new terminating callback.
 	 *
 	 * @param callable $callback Callback for the listener.
-	 * @return static
 	 */
 	public function terminating( callable $callback ): static {
 		$this->terminating_callbacks[] = $callback;
@@ -682,8 +643,6 @@ class Application extends Container implements \Mantle\Contracts\Application {
 
 	/**
 	 * Terminate the application.
-	 *
-	 * @return void
 	 */
 	public function terminate(): void {
 		$this->fire_app_callbacks( $this->terminating_callbacks );

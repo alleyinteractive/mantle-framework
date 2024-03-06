@@ -64,8 +64,6 @@ class Term_Query_Builder extends Builder {
 
 	/**
 	 * Get the query arguments.
-	 *
-	 * @return array
 	 */
 	public function get_query_args(): array {
 		if ( is_array( $this->model ) ) {
@@ -134,8 +132,6 @@ class Term_Query_Builder extends Builder {
 
 	/**
 	 * Get the count of the query results.
-	 *
-	 * @return int
 	 */
 	public function count(): int {
 		$this->take( -1 );
@@ -160,7 +156,6 @@ class Term_Query_Builder extends Builder {
 	 * Dump the SQL query being executed.
 	 *
 	 * @param bool $die Whether to die after dumping the SQL.
-	 * @return static
 	 */
 	public function dumpSql( bool $die = false ): static {
 		add_filter(
@@ -185,8 +180,6 @@ class Term_Query_Builder extends Builder {
 
 	/**
 	 * Dump the SQL query being executed and die.
-	 *
-	 * @return void
 	 */
 	public function ddSql(): void {
 		$this->dumpSql( true );

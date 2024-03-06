@@ -317,7 +317,6 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 *
 	 * @param  string $key
 	 * @param  mixed  $default
-	 * @return mixed
 	 */
 	public function get( string $key, mixed $default = null ): mixed { // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod.Found
 		return parent::get( $key, $default );
@@ -344,8 +343,6 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 
 	/**
 	 * Determine if the request is JSON.
-	 *
-	 * @return bool
 	 */
 	public function is_json(): bool {
 		return $this->has_header( 'Content-Type' ) &&
@@ -411,8 +408,6 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 
 	/**
 	 * Get route parameters.
-	 *
-	 * @return ParameterBag|null
 	 */
 	public function get_route_parameters(): ?ParameterBag {
 		return $this->route_parameters;
@@ -455,7 +450,6 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * Determine if the given offset exists.
 	 *
 	 * @param  mixed $offset
-	 * @return bool
 	 */
 	public function offsetExists( mixed $offset ): bool {
 		return Arr::has(
@@ -468,7 +462,6 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * Get the value at the given offset.
 	 *
 	 * @param  mixed $offset
-	 * @return mixed
 	 */
 	public function offsetGet( mixed $offset ): mixed {
 		return $this->__get( $offset );
@@ -479,7 +472,6 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 *
 	 * @param  mixed $offset
 	 * @param  mixed $value
-	 * @return void
 	 */
 	public function offsetSet( mixed $offset, mixed $value ): void {
 		$this->get_input_source()->set( $offset, $value );
@@ -489,7 +481,6 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * Remove the value at the given offset.
 	 *
 	 * @param  mixed $offset
-	 * @return void
 	 */
 	public function offsetUnset( mixed $offset ): void {
 		$this->get_input_source()->remove( $offset );

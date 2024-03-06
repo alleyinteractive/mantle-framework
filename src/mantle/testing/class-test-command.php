@@ -79,7 +79,6 @@ class Test_Command {
 	 * Add expected output.
 	 *
 	 * @param string $output
-	 * @return static
 	 */
 	public function assertOutputContains( string $output ): static {
 		$this->expected_output[] = $output;
@@ -91,7 +90,6 @@ class Test_Command {
 	 * Add unexpected output.
 	 *
 	 * @param string $output
-	 * @return static
 	 */
 	public function assertOutputNotContains( string $output ): static {
 		$this->unexpected_output[] = $output;
@@ -103,7 +101,6 @@ class Test_Command {
 	 * Add an assertion for a specific exit code.
 	 *
 	 * @param int $code
-	 * @return static
 	 */
 	public function assertExitCode( int $code ): static {
 		if ( $this->has_executed ) {
@@ -118,8 +115,6 @@ class Test_Command {
 
 	/**
 	 * Assert that a command was successful.
-	 *
-	 * @return static
 	 */
 	public function assertSuccessful(): static {
 		return $this->assertExitCode( Command::SUCCESS );
@@ -127,8 +122,6 @@ class Test_Command {
 
 	/**
 	 * Assert that a command was OK.
-	 *
-	 * @return static
 	 */
 	public function assertOk(): static {
 		return $this->assertSuccessful();
@@ -136,8 +129,6 @@ class Test_Command {
 
 	/**
 	 * Assert that a command failed.
-	 *
-	 * @return static
 	 */
 	public function assertFailed(): static {
 		return $this->assertExitCode( Command::FAILURE );
@@ -145,8 +136,6 @@ class Test_Command {
 
 	/**
 	 * Assert that a command was unsuccessful.
-	 *
-	 * @return static
 	 */
 	public function assertNotSuccessful(): static {
 		return $this->assertFailed();
@@ -165,8 +154,6 @@ class Test_Command {
 
 	/**
 	 * Execute the command.
-	 *
-	 * @return static
 	 */
 	public function execute(): static {
 		return $this->run();
@@ -174,8 +161,6 @@ class Test_Command {
 
 	/**
 	 * Retrieve the Command Tester instance.
-	 *
-	 * @return CommandTester
 	 */
 	public function get_tester(): CommandTester {
 		return $this->tester;
@@ -185,7 +170,6 @@ class Test_Command {
 	 * Verify the command is formatted properly.
 	 *
 	 * @throws InvalidArgumentException Thrown on invalid command.
-	 * @return void
 	 */
 	protected function verify_command(): void {
 		// Remove 'wp' from the command if passed.
@@ -206,8 +190,6 @@ class Test_Command {
 
 	/**
 	 * Run the command.
-	 *
-	 * @return static
 	 */
 	public function run(): static {
 		$this->has_executed = true;
@@ -227,8 +209,6 @@ class Test_Command {
 
 	/**
 	 * Verify the expectations after the command has been run.
-	 *
-	 * @return void
 	 */
 	protected function verify_expectations(): void {
 		// Assert that the exit code matches the expected exit code.

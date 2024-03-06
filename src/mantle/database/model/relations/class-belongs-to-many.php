@@ -31,7 +31,6 @@ class Belongs_To_Many extends Belongs_To {
 	 *
 	 * @param Collection $models Parent models.
 	 * @param Collection $results Eagerly loaded results to match.
-	 * @return Collection
 	 */
 	public function match( Collection $models, Collection $results ): Collection {
 		$dictionary = $this->build_dictionary( $results, $models );
@@ -50,7 +49,6 @@ class Belongs_To_Many extends Belongs_To {
 	 *
 	 * @param Collection $results Collection of results.
 	 * @param Collection $models Eagerly loaded results to match.
-	 * @return array
 	 */
 	protected function build_dictionary( Collection $results, Collection $models ): array {
 		$results    = $results->key_by( $this->foreign_key );

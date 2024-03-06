@@ -52,8 +52,6 @@ trait Hides_Attributes {
 
 	/**
 	 * Get the visible attributes for the model.
-	 *
-	 * @return array
 	 */
 	public function get_visible(): array {
 		return $this->visible;

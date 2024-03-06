@@ -22,8 +22,6 @@ abstract class Stub_Generator_Command extends Generator_Command {
 
 	/**
 	 * Get the stub file for the generator.
-	 *
-	 * @return string
 	 */
 	abstract public function get_file_stub(): string;
 
@@ -31,7 +29,6 @@ abstract class Stub_Generator_Command extends Generator_Command {
 	 * Retrieve the generated class contents.
 	 *
 	 * @param string $name Class name.
-	 * @return string
 	 */
 	public function get_generated_class( string $name ): string {
 		// Register replacements for the stub file.

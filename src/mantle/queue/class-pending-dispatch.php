@@ -30,7 +30,6 @@ class Pending_Dispatch {
 	 * @throws RuntimeException If the job does not support queueing.
 	 *
 	 * @param string $queue Queue to add to.
-	 * @return static
 	 */
 	public function on_queue( string $queue ): Pending_Dispatch {
 		if ( ! method_exists( $this->job, 'on_queue' ) ) {
@@ -48,7 +47,6 @@ class Pending_Dispatch {
 	 * @throws RuntimeException If the job does not support queueing.
 	 *
 	 * @param DateTimeInterface|int $delay Delay in seconds or DateTime instance.
-	 * @return static
 	 */
 	public function delay( DateTimeInterface|int $delay ): Pending_Dispatch {
 		if ( ! method_exists( $this->job, 'delay' ) ) {

@@ -96,10 +96,8 @@ class Uploaded_File extends SymfonyUploadedFile {
 	 * @param string $path Path to store uploaded file to.
 	 * @param string $name File name.
 	 * @param array  $options Options for storage, disk name as string.
-	 * @return Attachment
 	 *
 	 * @throws RuntimeException Thrown on error storing file.
-	 *
 	 * @todo Enable proper attachment meta data indexing.
 	 */
 	public function store_as_attachment( string $path = '/', string $name = null, $options = [] ): Attachment {

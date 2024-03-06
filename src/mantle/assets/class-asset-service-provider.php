@@ -18,7 +18,7 @@ class Asset_Service_Provider extends Service_Provider {
 	/**
 	 * Register the service provider.
 	 */
-	public function register() {
+	public function register(): void {
 		$this->app->singleton_if(
 			'asset.manager',
 			fn() => new Asset_Manager(),

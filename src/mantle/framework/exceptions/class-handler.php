@@ -82,7 +82,7 @@ class Handler implements Contract {
 	 *
 	 * @throws Exception Throws if logger not found.
 	 */
-	public function report( Throwable $e ) {
+	public function report( Throwable $e ): void {
 		if ( $this->shouldnt_report( $e ) ) {
 			return;
 		}
@@ -206,11 +206,10 @@ class Handler implements Contract {
 	 *
 	 * @param OutputInterface $output
 	 * @param Throwable       $e
-	 * @return void
 	 *
 	 * @throws Throwable Thrown in debug mode to trigger Whoops.
 	 */
-	public function render_for_console( OutputInterface $output, Throwable $e ) {
+	public function render_for_console( OutputInterface $output, Throwable $e ): void {
 		if ( config( 'app.debug' ) ) {
 			// Use Whoops to render the exception if we're in debug mode.
 			( new \NunoMaduro\Collision\Provider() )->register();
@@ -225,7 +224,6 @@ class Handler implements Contract {
 	 * Prepare an exception for rendering.
 	 *
 	 * @param Throwable $e Exception thrown.
-	 * @return Throwable
 	 */
 	protected function prepare_exception( Throwable $e ): Throwable {
 		if ( $e instanceof Model_Not_Found_Exception ) {
@@ -240,19 +238,17 @@ class Handler implements Contract {
 	 *
 	 * @param  \Mantle\Http\Request $request Request object.
 	 * @param  \Throwable           $e Exception thrown.
-	 * @return Response
 	 */
 	protected function prepare_response( $request, Throwable $e ): Response {
 		if ( $e instanceof ResourceNotFoundException ) {
 			$e = new NotFoundHttpException( $e->getMessage(), $e, 404 );
-		} elseif ( ! $this->is_http_exception( $e ) ) {
+		}
+
+		if ( ! $e instanceof HttpException ) {
 			$e = new HttpException( 500, $e->getMessage() );
 		}
 
-		return $this->to_mantle_response(
-			$this->render_http_exception( $e ),
-			$e
-		);
+		return $this->to_mantle_response( $this->render_http_exception( $e ), $e );
 	}
 
 	/**
@@ -262,12 +258,10 @@ class Handler implements Contract {
 	 * error will load `/views/error-500.php` that will fallback to '/views/error.php'
 	 * if that is not found.
 	 *
-	 * @param  HttpException $e
-	 * @return Response
-	 *
+	 * @param  HttpException $e Exception thrown.
 	 * @todo Check if the view exists.
 	 */
-	protected function render_http_exception( Throwable $e ): Response {
+	protected function render_http_exception( HttpException $e ): Response {
 		global $wp_query;
 
 		// Calling a view this early doesn't work well for WordPress.
@@ -322,7 +316,6 @@ class Handler implements Contract {
 	 *
 	 * @param Request                 $request
 	 * @param Throwable|HttpException $e
-	 * @return JsonResponse
 	 */
 	protected function prepare_json_response( $request, Throwable | HttpException $e ): JsonResponse {
 		return new JsonResponse(
@@ -336,7 +329,6 @@ class Handler implements Contract {
 	 * Convert the given exception to an array.
 	 *
 	 * @param  \Throwable $e
-	 * @return array
 	 */
 	protected function convert_exception_to_array( Throwable $e ): array {
 		return config( 'app.debug' ) ? [
@@ -357,8 +349,12 @@ class Handler implements Contract {
 	/**
 	 * Determine if the given exception is an HTTP exception.
 	 *
+	 * @template TThrowable of Throwable
+	 *
 	 * @param Throwable $e Exception thrown.
-	 * @return ($e is HttpException ? true : false)
+	 * @return bool
+	 * @phpstan-param TThrowable $e
+	 * @phpstan-return (TThrowable is HttpException ? true : false)
 	 */
 	protected function is_http_exception( Throwable $e ): bool {
 		return $e instanceof HttpException;

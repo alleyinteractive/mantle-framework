@@ -170,7 +170,6 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 * Create a new model instance for a given post type.
 	 *
 	 * @param string $post_type Post type to create the model for.
-	 * @return self
 	 */
 	public static function for( string $post_type ): self {
 		$instance = new class() extends Post {
@@ -183,8 +182,6 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 
 			/**
 			 * Retrieve the object name.
-			 *
-			 * @return string|null
 			 */
 			public static function get_object_name(): ?string {
 				return static::$for_object_name;
@@ -198,8 +195,6 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 
 	/**
 	 * Query builder class to use.
-	 *
-	 * @return string|null
 	 */
 	public static function get_query_builder_class(): ?string {
 		return Post_Query_Builder::class;
@@ -216,8 +211,6 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 
 	/**
 	 * Getter for Object ID.
-	 *
-	 * @return int
 	 */
 	public function id(): int {
 		return (int) $this->get( 'id' );
@@ -225,8 +218,6 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 
 	/**
 	 * Getter for Object Name.
-	 *
-	 * @return string
 	 */
 	public function name(): string {
 		return (string) $this->get( 'name' );
@@ -234,8 +225,6 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 
 	/**
 	 * Getter for Object Slug.
-	 *
-	 * @return string
 	 */
 	public function slug(): string {
 		return (string) $this->get( 'slug' );
@@ -243,8 +232,6 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 
 	/**
 	 * Getter for Parent Object (if any)
-	 *
-	 * @return Contracts\Database\Core_Object|null
 	 */
 	public function parent(): ?Contracts\Database\Core_Object {
 		if ( ! empty( $this->attributes['post_parent'] ) ) {
@@ -256,8 +243,6 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 
 	/**
 	 * Getter for Object Description
-	 *
-	 * @return string
 	 */
 	public function description(): string {
 		return (string) $this->get( 'description' );
@@ -274,8 +259,6 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 
 	/**
 	 * Getter for the Object Permalink
-	 *
-	 * @return string|null
 	 */
 	public function permalink(): ?string {
 		return (string) \get_permalink( $this->id() );
@@ -283,8 +266,6 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 
 	/**
 	 * Retrieve the core object for the underlying object.
-	 *
-	 * @return \WP_Post|null
 	 */
 	public function core_object(): ?\WP_Post {
 		$id = $this->id();
@@ -307,7 +288,6 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 * Schedule a post for publication.
 	 *
 	 * @param string|DateTime $date Date to schedule the post for.
-	 * @return bool
 	 */
 	public function schedule( $date ) : bool {
 		if ( $date instanceof DateTime ) {
@@ -383,7 +363,6 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 * use the 'any' post_status attribute.
 	 *
 	 * @param Builder $builder Query builder instance.
-	 * @return Builder
 	 */
 	public function scopeAnyStatus( Builder $builder ): Builder {
 		return $builder->where(
@@ -394,8 +373,6 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 
 	/**
 	 * Get the registerable route for the model.
-	 *
-	 * @return string|null
 	 */
 	public static function get_route(): ?string {
 		if ( 'post' === static::get_object_name() ) {

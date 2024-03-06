@@ -110,7 +110,7 @@ class Event {
 	 *
 	 * @param Application $container
 	 */
-	public function run( Application $container ) {
+	public function run( Application $container ): void {
 		if ( ! $this->filters_pass( $container ) ) {
 			return;
 		}
@@ -139,11 +139,10 @@ class Event {
 	 * Call all of the "before" callbacks for the event.
 	 *
 	 * @param  \Mantle\Contracts\Container $container
-	 * @return void
 	 */
-	public function call_before_callbacks( Container $container ) {
-		foreach ( $this->before_callbacks as $callback ) {
-			$container->call( $callback );
+	public function call_before_callbacks( Container $container ): void {
+		foreach ( $this->before_callbacks as $before_callback ) {
+			$container->call( $before_callback );
 		}
 	}
 
@@ -151,11 +150,10 @@ class Event {
 	 * Call all of the "after" callbacks for the event.
 	 *
 	 * @param  \Mantle\Contracts\Container $container
-	 * @return void
 	 */
-	public function call_after_callbacks( Container $container ) {
-		foreach ( $this->after_callbacks as $callback ) {
-			$container->call( $callback );
+	public function call_after_callbacks( Container $container ): void {
+		foreach ( $this->after_callbacks as $after_callback ) {
+			$container->call( $after_callback );
 		}
 	}
 
@@ -172,8 +170,6 @@ class Event {
 
 	/**
 	 * Determine if the Cron expression passes.
-	 *
-	 * @return bool
 	 */
 	protected function expression_passes(): bool {
 		$date = Carbon::now();
@@ -190,7 +186,6 @@ class Event {
 	 * Determine if the event runs in the given environment.
 	 *
 	 * @param string $environment Environment to check against.
-	 * @return bool
 	 */
 	public function runs_in_environment( $environment ): bool {
 		return empty( $this->environments ) || in_array( $environment, $this->environments );
@@ -200,7 +195,6 @@ class Event {
 	 * Determine if the filters pass for the event.
 	 *
 	 * @param Application $app Application instance.
-	 * @return bool
 	 */
 	public function filters_pass( Application $app ): bool {
 		foreach ( $this->filters as $callback ) {
@@ -209,8 +203,8 @@ class Event {
 			}
 		}
 
-		foreach ( $this->rejects as $callback ) {
-			if ( $app->call( $callback ) ) {
+		foreach ( $this->rejects as $reject ) {
+			if ( $app->call( $reject ) ) {
 				return false;
 			}
 		}

@@ -44,9 +44,8 @@ trait Route_Group {
 	 *
 	 * @param  array           $attributes
 	 * @param  \Closure|string $routes
-	 * @return void
 	 */
-	public function group( array $attributes, $routes ) {
+	public function group( array $attributes, $routes ): void {
 		$this->update_group_stack( $attributes );
 
 		// Once we have updated the group stack, we'll load the provided routes and
@@ -76,7 +75,6 @@ trait Route_Group {
 	 *
 	 * @param array $new New route attributes.
 	 * @param bool  $prepend_existing_prefix Prepend the existing prefix.
-	 * @return array
 	 */
 	public function merge_with_last_group( $new, $prepend_existing_prefix = true ): array {
 		return static::merge( $new, end( $this->group_stack ), $prepend_existing_prefix );
@@ -84,8 +82,6 @@ trait Route_Group {
 
 	/**
 	 * Get the prefix from the last group on the stack.
-	 *
-	 * @return string
 	 */
 	protected function get_last_group_prefix(): string {
 		if ( $this->has_group_stack() ) {
@@ -117,7 +113,6 @@ trait Route_Group {
 	 * @param  array $new
 	 * @param  array $old
 	 * @param  bool  $prepend_existing_prefix
-	 * @return array
 	 */
 	public static function merge( $new, $old, $prepend_existing_prefix = true ): array {
 		if ( isset( $new['domain'] ) ) {

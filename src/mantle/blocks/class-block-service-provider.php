@@ -18,10 +18,8 @@ use Mantle\Support\Service_Provider;
 class Block_Service_Provider extends Service_Provider {
 	/**
 	 * Register the application's blocks.
-	 *
-	 * @return void
 	 */
-	public function register() {
+	public function register(): void {
 		$this->app->booting(
 			fn () => collect( $this->get_blocks() )->each(
 				fn ( string $block ) => ( new $block() )->register()
@@ -48,8 +46,6 @@ class Block_Service_Provider extends Service_Provider {
 
 	/**
 	 * The array of locations to discover blocks within.
-	 *
-	 * @return array
 	 */
 	protected function discover_blocks_within(): array {
 		return [

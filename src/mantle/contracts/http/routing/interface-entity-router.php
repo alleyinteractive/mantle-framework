@@ -17,7 +17,6 @@ interface Entity_Router {
 	 * @param Router $router Router instance.
 	 * @param string $entity Entity class name.
 	 * @param string $controller Controller class name.
-	 * @return void
 	 */
 	public function add( Router $router, string $entity, string $controller ): void;
 }

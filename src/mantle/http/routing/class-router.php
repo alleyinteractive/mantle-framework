@@ -227,7 +227,6 @@ class Router implements Router_Contract {
 	 * @param array  $methods Methods to register.
 	 * @param string $uri URL route.
 	 * @param mixed  $action Route callback.
-	 * @return Route
 	 */
 	protected function create_route( array $methods, string $uri, $action ): Route {
 		$route = new Route( $methods, $this->prefix( $uri ), $action );
@@ -247,7 +246,6 @@ class Router implements Router_Contract {
 	 * @param array  $methods Methods to register.
 	 * @param string $uri URL route.
 	 * @param mixed  $action Route callback.
-	 * @return void
 	 */
 	protected function create_rest_api_route( array $methods, string $uri, $action ): void {
 		$args = [
@@ -274,8 +272,6 @@ class Router implements Router_Contract {
 
 	/**
 	 * Get registered routes.
-	 *
-	 * @return RouteCollection
 	 */
 	public function get_routes(): RouteCollection {
 		return $this->routes;
@@ -283,8 +279,6 @@ class Router implements Router_Contract {
 
 	/**
 	 * Retrieve the container/application instance.
-	 *
-	 * @return Container
 	 */
 	public function get_container(): Container {
 		return $this->container;
@@ -294,7 +288,6 @@ class Router implements Router_Contract {
 	 * Dispatch a request to the registered routes.
 	 *
 	 * @param Request $request Request object.
-	 * @return Symfony_Response|null
 	 */
 	public function dispatch( Request $request ): ?Symfony_Response {
 		return $this->execute_route_match(
@@ -307,7 +300,6 @@ class Router implements Router_Contract {
 	 * Match a request to a registered route.
 	 *
 	 * @param Request $request Request object.
-	 * @return array|null
 	 */
 	protected function match_route( Request $request ): ?array {
 		$context = ( new RequestContext() )->fromRequest( $request );
@@ -320,7 +312,6 @@ class Router implements Router_Contract {
 	 *
 	 * @param array   $match Route match.
 	 * @param Request $request Request object.
-	 * @return Symfony_Response|null
 	 *
 	 * @throws HttpException Thrown on unknown route callback.
 	 */
@@ -363,7 +354,6 @@ class Router implements Router_Contract {
 	 *
 	 * @param Request $request
 	 * @param mixed   $response
-	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	public static function to_response( Request $request, mixed $response ): \Symfony\Component\HttpFoundation\Response {
 		$response = Route::ensure_response( $response );
@@ -457,7 +447,6 @@ class Router implements Router_Contract {
 	 * Gather the middleware for the given route with resolved class names.
 	 *
 	 * @param Route $route Route instance.
-	 * @return array
 	 */
 	public function gather_route_middleware( Route $route ): array {
 		$excluded = collect( $route->excluded_middleware() )
@@ -503,7 +492,6 @@ class Router implements Router_Contract {
 	 *
 	 * @param string          $key
 	 * @param string|callable $binder
-	 * @return void
 	 */
 	public function bind( string $key, $binder ): void {
 		$this->binders[ str_replace( '-', '_', $key ) ] = Route_Binding::for_callback(
@@ -518,7 +506,6 @@ class Router implements Router_Contract {
 	 * @param string        $key
 	 * @param string        $class
 	 * @param \Closure|null $callback
-	 * @return void
 	 */
 	public function bind_model( $key, $class, Closure $callback = null ): void {
 		$this->bind( $key, Route_Binding::for_model( $this->container, $class, $callback ) );
@@ -529,7 +516,7 @@ class Router implements Router_Contract {
 	 *
 	 * @param Request $request Request object.
 	 */
-	public function substitute_bindings( Request $request ) {
+	public function substitute_bindings( Request $request ): void {
 		foreach ( $request->get_route_parameters() as $key => $value ) {
 			if ( ! isset( $this->binders[ $key ] ) ) {
 				continue;
@@ -556,7 +543,7 @@ class Router implements Router_Contract {
 	 *
 	 * @param Request $request Request instance.
 	 */
-	public function substitute_implicit_bindings( Request $request ) {
+	public function substitute_implicit_bindings( Request $request ): void {
 		Implicit_Route_Binding::resolve_for_route( $this->container, $request );
 	}
 
@@ -602,7 +589,6 @@ class Router implements Router_Contract {
 	 *
 	 * @param string $model Model class name.
 	 * @param string $controller Controller class name.
-	 * @return void
 	 */
 	public function model( string $model, string $controller ): void {
 		$this->container->make( Entity_Router::class )->add( $this, $model, $controller );
@@ -631,7 +617,7 @@ class Router implements Router_Contract {
 	/**
 	 * Sync the routes to the URL generator.
 	 */
-	public function sync_routes_to_url_generator() {
+	public function sync_routes_to_url_generator(): void {
 		$this->container['url']->set_routes( $this->routes );
 	}
 
@@ -640,7 +626,6 @@ class Router implements Router_Contract {
 	 *
 	 * @param string $old_name Old route name.
 	 * @param string $new_name New route name.
-	 * @return static
 	 *
 	 * @throws \InvalidArgumentException Thrown when attempting to rename a route
 	 *                                  a name that is already taken.

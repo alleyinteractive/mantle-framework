@@ -65,7 +65,6 @@ class Log_Manager implements LoggerInterface {
 	 * Write to a specific channel.
 	 *
 	 * @param array|string $channels Channel(s) to log to.
-	 * @return Logger
 	 */
 	public function channel( $channels ): Logger {
 		$handlers = collect( (array) $channels )
@@ -80,7 +79,6 @@ class Log_Manager implements LoggerInterface {
 	 * Get a Log Handler for a Channel.
 	 *
 	 * @param string $channel Channel name.
-	 * @return HandlerInterface|null
 	 *
 	 * @throws InvalidArgumentException Thrown on invalid configuration.
 	 * @throws Throwable Thrown on error getting the logging handler for a channel.
@@ -139,7 +137,6 @@ class Log_Manager implements LoggerInterface {
 	 * @link https://github.com/alleyinteractive/logger/
 	 *
 	 * @param array $config Configuration.
-	 * @return \AI_Logger\Handler\Post_Handler
 	 */
 	protected function create_ai_logger_handler( array $config ): \AI_Logger\Handler\Post_Handler {
 		return new \AI_Logger\Handler\Post_Handler( $this->level( $config ) );
@@ -149,7 +146,6 @@ class Log_Manager implements LoggerInterface {
 	 * Create a New Relic Handler
 	 *
 	 * @param array $config Configuration.
-	 * @return NewRelicHandler
 	 */
 	protected function create_new_relic_handler( array $config ): NewRelicHandler {
 		return new NewRelicHandler( $this->level( $config ) );
@@ -159,7 +155,6 @@ class Log_Manager implements LoggerInterface {
 	 * Create a Slack handler.
 	 *
 	 * @param array $config Handler configuration.
-	 * @return SlackWebhookHandler
 	 */
 	protected function create_slack_handler( array $config ): SlackWebhookHandler {
 		return new SlackWebhookHandler(
@@ -182,7 +177,6 @@ class Log_Manager implements LoggerInterface {
 	 * @throws InvalidArgumentException Thrown on invalid configuration.
 	 *
 	 * @param array $config Handler configuration.
-	 * @return AbstractHandler
 	 */
 	protected function create_custom_handler( array $config ): AbstractHandler {
 		if ( empty( $config['handler'] ) ) {
@@ -200,7 +194,6 @@ class Log_Manager implements LoggerInterface {
 	 * Create an Error Log Handler.
 	 *
 	 * @param array $config Handler configuration.
-	 * @return ErrorLogHandler
 	 */
 	protected function create_error_log_handler( array $config ): ErrorLogHandler {
 		return new ErrorLogHandler( ErrorLogHandler::OPERATING_SYSTEM, $this->level( $config ) );
@@ -208,8 +201,6 @@ class Log_Manager implements LoggerInterface {
 
 	/**
 	 * Get the default channel for the application.
-	 *
-	 * @return string
 	 */
 	public function get_default_channel(): string {
 		return (string) $this->app['config']->get( 'logging.default' );
@@ -217,8 +208,6 @@ class Log_Manager implements LoggerInterface {
 
 	/**
 	 * Get the default logger instance.
-	 *
-	 * @return Logger
 	 */
 	public function driver(): Logger {
 		if ( isset( $this->drive ) ) {
@@ -233,10 +222,8 @@ class Log_Manager implements LoggerInterface {
 	 * Parse the string level into a Monolog constant.
 	 *
 	 * @param  array $config Handler configuration.
-	 * @return int
 	 *
 	 * @phpstan-return Level
-	 *
 	 * @throws \InvalidArgumentException Thrown for unknown log.
 	 */
 	protected function level( array $config ):int {
@@ -266,8 +253,6 @@ class Log_Manager implements LoggerInterface {
 	 *
 	 * @param string|\Stringable $message Log message.
 	 * @param mixed[]            $context Log context.
-	 *
-	 * @return void
 	 */
 	public function emergency( $message, array $context = [] ): void {
 		$this->driver()->emergency( $message, $context );
@@ -281,8 +266,6 @@ class Log_Manager implements LoggerInterface {
 	 *
 	 * @param string|\Stringable $message Log message.
 	 * @param mixed[]            $context Log context.
-	 *
-	 * @return void
 	 */
 	public function alert( $message, array $context = [] ): void {
 		$this->driver()->alert( $message, $context );
@@ -295,8 +278,6 @@ class Log_Manager implements LoggerInterface {
 	 *
 	 * @param string  $message Log message.
 	 * @param mixed[] $context Log context.
-	 *
-	 * @return void
 	 */
 	public function critical( $message, array $context = [] ): void {
 		$this->driver()->critical( $message, $context );
@@ -308,8 +289,6 @@ class Log_Manager implements LoggerInterface {
 	 *
 	 * @param string  $message Log message.
 	 * @param mixed[] $context Log context.
-	 *
-	 * @return void
 	 */
 	public function error( $message, array $context = [] ): void {
 		$this->driver()->error( $message, $context );
@@ -323,8 +302,6 @@ class Log_Manager implements LoggerInterface {
 	 *
 	 * @param string  $message Log message.
 	 * @param mixed[] $context Log context.
-	 *
-	 * @return void
 	 */
 	public function warning( $message, array $context = [] ): void {
 		$this->driver()->warning( $message, $context );
@@ -335,8 +312,6 @@ class Log_Manager implements LoggerInterface {
 	 *
 	 * @param string  $message Log message.
 	 * @param mixed[] $context Log context.
-	 *
-	 * @return void
 	 */
 	public function notice( $message, array $context = [] ): void {
 		$this->driver()->notice( $message, $context );
@@ -349,8 +324,6 @@ class Log_Manager implements LoggerInterface {
 	 *
 	 * @param string  $message Log message.
 	 * @param mixed[] $context Log context.
-	 *
-	 * @return void
 	 */
 	public function info( $message, array $context = [] ): void {
 		$this->driver()->info( $message, $context );
@@ -361,8 +334,6 @@ class Log_Manager implements LoggerInterface {
 	 *
 	 * @param string  $message Log message.
 	 * @param mixed[] $context Log context.
-	 *
-	 * @return void
 	 */
 	public function debug( $message, array $context = [] ): void {
 		$this->driver()->debug( $message, $context );
@@ -375,7 +346,6 @@ class Log_Manager implements LoggerInterface {
 	 * @param string  $message Log message.
 	 * @param mixed[] $context Log context.
 	 *
-	 * @return void
 	 *
 	 * @throws \Psr\Log\InvalidArgumentException Thrown on invalid arguments.
 	 */
@@ -387,10 +357,9 @@ class Log_Manager implements LoggerInterface {
 	 * Register a new callback handler for when a log event is triggered.
 	 *
 	 * @param Closure $callback
-	 * @return void
 	 * @throws RuntimeException Thrown on missing dispatcher.
 	 */
-	public function listen( Closure $callback ) {
+	public function listen( Closure $callback ): void {
 		if ( ! isset( $this->dispatcher ) ) {
 			throw new RuntimeException( 'Event dispatcher not set.' );
 		}
