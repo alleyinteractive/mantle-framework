@@ -381,9 +381,8 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * Return the length of the given string.
 	 *
 	 * @param  string|null $encoding
-	 * @return int
 	 */
-	public function length( $encoding = null ) {
+	public function length( $encoding = null ): int {
 		return Str::length( $this->value, $encoding );
 	}
 
@@ -797,9 +796,8 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  string   $needle
 	 * @param  int      $offset
 	 * @param  int|null $length
-	 * @return int
 	 */
-	public function substr_count( $needle, $offset = 0, $length = null ) {
+	public function substr_count( $needle, $offset = 0, $length = null ): int {
 		return Str::substr_count( $this->value, $needle, $offset, $length );
 	}
 
