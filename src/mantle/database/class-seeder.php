@@ -36,7 +36,6 @@ abstract class Seeder {
 	 * @param array<class-string>|string $class Seed to run.
 	 * @param bool                       $silent Flag if the seed should be silent.
 	 * @param array                      $parameters Parameters to pass to the seeder.
-	 * @return static
 	 */
 	public function call( $class, bool $silent = false, array $parameters = [] ): static {
 		$classes = Arr::wrap( $class );
@@ -68,7 +67,6 @@ abstract class Seeder {
 	 *
 	 * @param array<class-string>|string $class Seed to run.
 	 * @param array                      $parameters Parameters to pass to the seeder.
-	 * @return static
 	 */
 	public function call_with( $class, array $parameters = [] ): static {
 		return $this->call( $class, false, $parameters );
@@ -80,7 +78,6 @@ abstract class Seeder {
 	 * @throws InvalidArgumentException If the class is not an instance of Seeder.
 	 *
 	 * @param  class-string $class Seeder class to resolve.
-	 * @return Seeder
 	 */
 	protected function resolve( string $class ): Seeder {
 		if ( isset( $this->container ) ) {
@@ -102,7 +99,6 @@ abstract class Seeder {
 	 * Set the IoC container instance.
 	 *
 	 * @param Container $container IoC container.
-	 * @return static
 	 */
 	public function set_container( Container $container ): static {
 		$this->container = $container;
@@ -114,7 +110,6 @@ abstract class Seeder {
 	 * Set the command instance instance.
 	 *
 	 * @param Command $command
-	 * @return static
 	 */
 	public function set_command( Command $command ): static {
 		$this->command = $command;
@@ -126,7 +121,6 @@ abstract class Seeder {
 	 * Run the database seeds.
 	 *
 	 * @param array $parameters Parameters to pass to the seeder.
-	 * @return mixed
 	 *
 	 * @throws InvalidArgumentException Thrown on bad seeder class.
 	 */

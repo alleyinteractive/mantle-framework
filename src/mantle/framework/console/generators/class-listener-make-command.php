@@ -45,7 +45,6 @@ class Listener_Make_Command extends Generator_Command {
 	 * Build the generated file.
 	 *
 	 * @param string $name Class name to generate.
-	 * @return string
 	 */
 	public function get_generated_class( string $name ): string {
 		$class_name             = $this->get_class_name( $name );

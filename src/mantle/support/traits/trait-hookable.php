@@ -148,8 +148,6 @@ trait Hookable {
 	 * By default, it is only enabled if the class is an instance of the
 	 * `Service_Provider` class. For external uses of this trait, the event
 	 * dispatcher won't be used.
-	 *
-	 * @return bool
 	 */
 	public function use_event_dispatcher(): bool {
 		return $this instanceof Service_Provider;

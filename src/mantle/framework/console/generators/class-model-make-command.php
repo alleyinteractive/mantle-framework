@@ -46,8 +46,6 @@ class Model_Make_Command extends Stub_Generator_Command {
 
 	/**
 	 * Get the stub file for the generator.
-	 *
-	 * @return string
 	 */
 	public function get_file_stub(): string {
 		$type        = $this->option( 'model_type' );
@@ -97,8 +95,6 @@ class Model_Make_Command extends Stub_Generator_Command {
 
 	/**
 	 * Get the default object name.
-	 *
-	 * @return string
 	 */
 	protected function get_default_object_name(): string {
 		$class_name = $this->get_class_name( $this->argument( 'name' ) );
@@ -107,8 +103,6 @@ class Model_Make_Command extends Stub_Generator_Command {
 
 	/**
 	 * Get the default label.
-	 *
-	 * @return string
 	 */
 	protected function get_default_label(): string {
 		$class_name = str_replace( [ '_', '-' ], ' ', $this->get_class_name( $this->argument( 'name' ) ) );

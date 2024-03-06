@@ -50,7 +50,6 @@ trait Interacts_With_IO {
 	 * Determine if the given argument is present.
 	 *
 	 * @param  string|int $name
-	 * @return bool
 	 */
 	public function has_argument( string|int $name ): bool {
 		return $this->input->hasArgument( $name );
@@ -118,7 +117,6 @@ trait Interacts_With_IO {
 	 *
 	 * @param  string          $string
 	 * @param  int|string|null $verbosity
-	 * @return void
 	 */
 	public function question( string $string, $verbosity = null ): void {
 		$this->line( $string, 'question', $verbosity );
@@ -240,7 +238,6 @@ trait Interacts_With_IO {
 	 * @param  Arrayable|array                                     $rows
 	 * @param  \Symfony\Component\Console\Helper\TableStyle|string $table_style
 	 * @param  array                                               $column_styles
-	 * @return void
 	 */
 	public function table( $headers, $rows, $table_style = 'default', array $column_styles = [] ): void {
 		$table = new Table( $this->output );
@@ -273,8 +270,8 @@ trait Interacts_With_IO {
 		$bar->start();
 
 		if ( is_iterable( $total_steps ) ) {
-			foreach ( $total_steps as $value ) {
-				$callback( $value, $bar );
+			foreach ( $total_steps as $total_step ) {
+				$callback( $total_step, $bar );
 
 				$bar->advance();
 			}
@@ -294,7 +291,6 @@ trait Interacts_With_IO {
 	 *
 	 * @param  string          $string
 	 * @param  int|string|null $verbosity
-	 * @return void
 	 */
 	public function info( $string, $verbosity = null ): void {
 		$this->line( $string, 'info', $verbosity );
@@ -316,7 +312,6 @@ trait Interacts_With_IO {
 	 *
 	 * @param string $string String to colorize.
 	 * @param string $color Color to use.
-	 * @return string
 	 */
 	public function colorize( string $string, string $color ): string {
 		return sprintf( '<fg=%s>%s</>', $color, $string );
@@ -328,7 +323,6 @@ trait Interacts_With_IO {
 	 * @param  string          $string
 	 * @param  string|null     $style
 	 * @param  int|string|null $verbosity
-	 * @return void
 	 */
 	public function line( $string, $style = null, $verbosity = null ): void {
 		$styled = $style ? "<$style>$string</$style>" : $string;
@@ -341,7 +335,6 @@ trait Interacts_With_IO {
 	 *
 	 * @param  string          $string
 	 * @param  int|string|null $verbosity
-	 * @return void
 	 */
 	public function comment( $string, $verbosity = null ): void {
 		$this->line( $string, 'comment', $verbosity );
@@ -352,7 +345,6 @@ trait Interacts_With_IO {
 	 *
 	 * @param  string          $string
 	 * @param  int|string|null $verbosity
-	 * @return void
 	 */
 	public function error( string $string, $verbosity = null ): void {
 		$this->line( $string, 'error', $verbosity );
@@ -363,7 +355,6 @@ trait Interacts_With_IO {
 	 *
 	 * @param  string          $string
 	 * @param  int|string|null $verbosity
-	 * @return void
 	 */
 	public function warn( string $string, $verbosity = null ): void {
 		if ( ! $this->output->getFormatter()->hasStyle( 'warning' ) ) {
@@ -380,7 +371,6 @@ trait Interacts_With_IO {
 	 *
 	 * @param  string          $string
 	 * @param  int|string|null $verbosity
-	 * @return void
 	 */
 	public function success( string $string, $verbosity = null ): void {
 		if ( ! $this->output->getFormatter()->hasStyle( 'success' ) ) {
@@ -397,7 +387,6 @@ trait Interacts_With_IO {
 	 *
 	 * @param  string          $string
 	 * @param  int|string|null $verbosity
-	 * @return void
 	 */
 	public function alert( $string, $verbosity = null ): void {
 		$length = Str::length( strip_tags( $string ) ) + 12; // phpcs:ignore WordPressVIPMinimum.Functions.StripTags.StripTagsOneParameter
@@ -423,8 +412,6 @@ trait Interacts_With_IO {
 
 	/**
 	 * Get the input implementation.
-	 *
-	 * @return InputInterface
 	 */
 	public function input(): InputInterface {
 		return $this->input;
@@ -465,7 +452,6 @@ trait Interacts_With_IO {
 	 * Get the verbosity level in terms of Symfony's OutputInterface level.
 	 *
 	 * @param  string|int|null $level
-	 * @return int
 	 */
 	protected function parse_verbosity( $level = null ): int {
 		if ( isset( $this->verbosity_map[ $level ] ) ) {

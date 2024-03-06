@@ -34,8 +34,6 @@ abstract class Facade {
 
 	/**
 	 * Get the name of the Facade Accessor
-	 *
-	 * @return string
 	 */
 	abstract protected static function get_facade_accessor(): string;
 
@@ -57,8 +55,6 @@ abstract class Facade {
 
 	/**
 	 * Get the application instance for the Facade.
-	 *
-	 * @return \Mantle\Contracts\Application|null
 	 */
 	public static function get_facade_application(): ?Application {
 		return static::$app;

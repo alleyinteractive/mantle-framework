@@ -51,8 +51,6 @@ class Query_Monitor_Service_Provider extends Service_Provider {
 
 	/**
 	 * Fire the Query Monitor dispatches and return the response.
-	 *
-	 * @return string|null
 	 */
 	public function fire_query_monitor_dispatches(): ?string {
 		if ( empty( $this->query_monitor_dispatches ) ) {
@@ -61,10 +59,10 @@ class Query_Monitor_Service_Provider extends Service_Provider {
 
 		ob_start();
 
-		foreach ( $this->query_monitor_dispatches as $callback ) {
+		foreach ( $this->query_monitor_dispatches as $query_monitor_dispatch ) {
 			// Remove the dispatcher from the 'shutdown' hook.
-			remove_action( 'shutdown', $callback, 0 );
-			$callback();
+			remove_action( 'shutdown', $query_monitor_dispatch, 0 );
+			$query_monitor_dispatch();
 		}
 
 		return (string) ob_get_clean();

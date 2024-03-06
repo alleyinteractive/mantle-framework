@@ -38,7 +38,6 @@ trait Term_Events {
 	 *
 	 * @param string $event Event name to fire.
 	 * @param string $taxonomy Taxonomy to limit to.
-	 * @return Closure
 	 */
 	protected static function get_term_event_callback( string $event, string $taxonomy ): Closure {
 		return function( $term_id, $tt_id, $term_taxonomy = null, $term = null ) use ( $event, $taxonomy ) {

@@ -116,7 +116,6 @@ interface Response_Factory {
 	 * @param  int       $status
 	 * @param  array     $headers
 	 * @param  bool|null $secure
-	 * @return RedirectResponse
 	 */
 	public function redirect_to( $path, $status = 302, $headers = [], $secure = null ): RedirectResponse;
 
@@ -127,7 +126,6 @@ interface Response_Factory {
 	 * @param  mixed  $parameters
 	 * @param  int    $status
 	 * @param  array  $headers
-	 * @return RedirectResponse
 	 */
 	public function redirect_to_route( $route, $parameters = [], $status = 302, $headers = [] ): RedirectResponse;
 }

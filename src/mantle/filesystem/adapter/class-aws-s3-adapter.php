@@ -43,7 +43,6 @@ class AWS_S3_Adapter extends Filesystem_Adapter {
 	 * Get the URL for the file at the given path.
 	 *
 	 * @param  string $path
-	 * @return string
 	 */
 	public function url( string $path ): string {
 		// If an explicit base URL has been set on the disk configuration then we will use
@@ -61,8 +60,6 @@ class AWS_S3_Adapter extends Filesystem_Adapter {
 
 	/**
 	 * Determine if temporary URLs can be generated.
-	 *
-	 * @return bool
 	 */
 	public function provides_temporary_urls(): bool {
 		return true;
@@ -74,7 +71,6 @@ class AWS_S3_Adapter extends Filesystem_Adapter {
 	 * @param  string             $path
 	 * @param  \DateTimeInterface $expiration
 	 * @param  array              $options
-	 * @return string
 	 */
 	public function temporary_url( string $path, $expiration, array $options = [] ): string {
 		$command = $this->client->getCommand(
@@ -110,7 +106,6 @@ class AWS_S3_Adapter extends Filesystem_Adapter {
 	 * @param  string             $path
 	 * @param  \DateTimeInterface $expiration
 	 * @param  array              $options
-	 * @return array
 	 */
 	public function temporary_upload_url( string $path, $expiration, array $options = [] ): array {
 		$command = $this->client->getCommand(
@@ -147,8 +142,6 @@ class AWS_S3_Adapter extends Filesystem_Adapter {
 
 	/**
 	 * Get the underlying S3 client.
-	 *
-	 * @return \Aws\S3\S3Client
 	 */
 	public function get_client(): S3Client {
 		return $this->client;

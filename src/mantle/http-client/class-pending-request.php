@@ -196,7 +196,6 @@ class Pending_Request {
 	 *
 	 * @param array $options Options for the request.
 	 * @param bool  $merge Merge the options with the existing options, default true.
-	 * @return static
 	 */
 	public function with_options( array $options, bool $merge = true ): static {
 		if ( $merge ) {
@@ -286,8 +285,6 @@ class Pending_Request {
 
 	/**
 	 * Retrieve the headers for the request.
-	 *
-	 * @return array
 	 */
 	public function headers(): array {
 		return $this->options['headers'] ?? [];
@@ -687,8 +684,6 @@ class Pending_Request {
 
 	/**
 	 * Prepare the request URL.
-	 *
-	 * @return void
 	 */
 	protected function prepare_request_url(): void {
 		if ( isset( $this->options['query'] ) ) {
@@ -703,8 +698,6 @@ class Pending_Request {
 
 	/**
 	 * Prepare the request arguments to pass to `wp_remote_request()`.
-	 *
-	 * @return array
 	 */
 	public function get_request_args(): array {
 		if ( isset( $this->options[ $this->body_format ] ) ) {

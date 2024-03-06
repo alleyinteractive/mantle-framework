@@ -23,22 +23,16 @@ interface Url_Routable {
 
 	/**
 	 * Get the route key for the model.
-	 *
-	 * @return string
 	 */
 	public function get_route_key_name(): string;
 
 	/**
 	 * Get route for the model.
-	 *
-	 * @return string|null
 	 */
 	public static function get_route(): ?string;
 
 	/**
 	 * Get archive route for the model.
-	 *
-	 * @return string|null
 	 */
 	public static function get_archive_route(): ?string;
 

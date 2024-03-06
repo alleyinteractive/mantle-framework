@@ -18,8 +18,6 @@ class Asset_Service_Provider extends Service_Provider {
 	 * Boot the service provider.
 	 *
 	 * Register any asset conditions that need to be loaded.
-	 *
-	 * @return void
 	 */
 	public function boot(): void {
 		/*
@@ -61,7 +59,6 @@ class Asset_Service_Provider extends Service_Provider {
 	 * Filter the asset conditions for the site.
 	 *
 	 * @param array $conditions Conditions to filter.
-	 * @return array
 	 */
 	public function on_am_asset_conditions( array $conditions ): array {
 		// Perform any modifications here.

@@ -34,8 +34,6 @@ class Seeder_Make_Command extends Stub_Generator_Command {
 
 	/**
 	 * Get the stub file for the generator.
-	 *
-	 * @return string
 	 */
 	public function get_file_stub(): string {
 		$filename = 'seeder.stub';
@@ -45,8 +43,6 @@ class Seeder_Make_Command extends Stub_Generator_Command {
 
 	/**
 	 * Get the base path for the generated folder.
-	 *
-	 * @return string
 	 */
 	protected function get_base_path(): string {
 		return $this->container->get_base_path() . '/';

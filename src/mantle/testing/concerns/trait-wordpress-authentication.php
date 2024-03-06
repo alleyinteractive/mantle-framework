@@ -105,7 +105,6 @@ trait WordPress_Authentication {
 	 * @throws Model_Exception If the user could not be saved to the database.
 	 *
 	 * @param string $role Role.
-	 * @return User
 	 */
 	public function create_user_with_role( string $role ): User {
 		return User::factory()->as_models()->create_and_get( [ 'role' => $role ] );

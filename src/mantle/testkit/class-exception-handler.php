@@ -53,7 +53,6 @@ class Exception_Handler implements Exceptions_Handler {
 	 *
 	 * @param OutputInterface $output
 	 * @param Throwable       $e
-	 * @return void
 	 */
 	public function render_for_console( OutputInterface $output, Throwable $e ): void {
 		$output->writeln( "<error>Exception: {$e->getMessage()}</error>" );

@@ -26,8 +26,6 @@ class Console_Service_Provider extends Service_Provider implements Isolated_Serv
 
 	/**
 	 * Register the commands from the framework.
-	 *
-	 * @return void
 	 */
 	public function register(): void {
 		// Don't bother registering the commands if the request is not for the console.

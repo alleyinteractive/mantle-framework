@@ -42,7 +42,6 @@ class Asset_Loader {
 	 * Check if a asset exists.
 	 *
 	 * @param string $path Asset path.
-	 * @return bool
 	 */
 	public function exists( string $path ): bool {
 		return file_exists( $this->build_directory . $path );
@@ -52,7 +51,6 @@ class Asset_Loader {
 	 * Get the path to a versioned asset.
 	 *
 	 * @param  string $path Asset file path.
-	 * @return string|null
 	 *
 	 * @throws Asset_Not_Found Thrown on missing manifest or asset.
 	 */
@@ -82,7 +80,6 @@ class Asset_Loader {
 	 * Get a URL to the versioned asset.
 	 *
 	 * @param string $path Asset path.
-	 * @return string|null
 	 */
 	public function url( string $path ): ?string {
 		$path = $this->path( $path );
@@ -98,7 +95,6 @@ class Asset_Loader {
 	 * Retrieve the dependencies for an asset.
 	 *
 	 * @param string $path Asset path.
-	 * @return array
 	 */
 	public function dependencies( string $path ): array {
 		return $this->details( $path )['dependencies'] ?? [];
@@ -108,7 +104,6 @@ class Asset_Loader {
 	 * Retrieve the version for an asset.
 	 *
 	 * @param string $path Asset path.
-	 * @return string
 	 */
 	public function version( string $path ): string {
 		return (string) ( $this->details( $path )['version'] ?? '' );
@@ -122,7 +117,6 @@ class Asset_Loader {
 	 * is a PHP file with the asset's path suffixed with `.asset.php`.
 	 *
 	 * @param string $path Asset path.
-	 * @return array
 	 */
 	protected function details( string $path ): array {
 		// Attempt to cleanup the asset "path" to match the manifest name for the
@@ -177,7 +171,6 @@ class Asset_Loader {
 	 *
 	 * @param string $path Asset path.
 	 * @param string $build_directory Build directory, optional.
-	 * @return string
 	 */
 	public function __invoke( string $path, ?string $build_directory = null ): string {
 		if ( $build_directory ) {

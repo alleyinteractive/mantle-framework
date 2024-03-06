@@ -37,7 +37,6 @@ if ( ! function_exists( 'bootloader' ) ) {
 	 * Retrieve the Bootloader instance.
 	 *
 	 * @param Application|null  $app Application instance, optional.
-	 * @return Bootloader
 	 */
 	function bootloader( ?Application $app = null ): Bootloader {
 		return Bootloader::get_instance( $app );

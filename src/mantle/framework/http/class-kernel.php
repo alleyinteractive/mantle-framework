@@ -133,7 +133,6 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 *
 	 * @param Request $request Request instance.
 	 * @param mixed   $response Response instance.
-	 * @return void
 	 */
 	public function terminate( Request $request, mixed $response ): void {
 		$this->app->terminate();
@@ -170,8 +169,6 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 
 	/**
 	 * Get the bootstrap classes for the application.
-	 *
-	 * @return array
 	 */
 	protected function bootstrappers(): array {
 		return $this->bootstrappers;
@@ -196,7 +193,6 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 * Send the request through the router.
 	 *
 	 * @param Request $request Request object.
-	 * @return Response|null
 	 *
 	 * @throws InvalidArgumentException Thrown on invalid router service provider instance.
 	 */

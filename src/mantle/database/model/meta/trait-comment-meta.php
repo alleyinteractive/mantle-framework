@@ -13,8 +13,6 @@ namespace Mantle\Database\Model\Meta;
 trait Comment_Meta {
 	/**
 	 * Get the meta type for the object.
-	 *
-	 * @return string
 	 */
 	public function get_meta_type(): string {
 		return 'comment';

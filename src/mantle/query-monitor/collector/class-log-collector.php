@@ -77,8 +77,6 @@ class Log_Collector extends \QM_Collector {
 
 	/**
 	 * Retrieve log levels.
-	 *
-	 * @return array
 	 */
 	public function get_levels(): array {
 		return Logger::getLevels();
@@ -86,8 +84,6 @@ class Log_Collector extends \QM_Collector {
 
 	/**
 	 * Retrieve warning log levels.
-	 *
-	 * @return array
 	 */
 	public function get_warning_levels(): array {
 		return [

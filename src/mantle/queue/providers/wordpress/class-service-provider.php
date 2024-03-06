@@ -91,7 +91,6 @@ class Service_Provider extends Base_Service_Provider {
 	 * Handle the Job Queued event to schedule the next cron run.
 	 *
 	 * @param Events\Job_Queued $event Job Queued event.
-	 * @return Events\Job_Queued
 	 */
 	#[Action( Events\Job_Queued::class ) ]
 	public function handle_job_queued_event( Events\Job_Queued $event ): Events\Job_Queued {
@@ -106,7 +105,6 @@ class Service_Provider extends Base_Service_Provider {
 	 * Handle the Run Complete event to schedule the next cron run.
 	 *
 	 * @param Events\Run_Complete $event Run complete event.
-	 * @return Events\Run_Complete
 	 */
 	#[Action( Events\Run_Complete::class ) ]
 	public function handle_run_complete( Events\Run_Complete $event ): Events\Run_Complete {

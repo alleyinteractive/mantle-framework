@@ -46,8 +46,8 @@ trait Hooks {
 	 */
 	protected function backup_hooks() {
 		$globals = [ 'wp_actions', 'wp_current_filter' ];
-		foreach ( $globals as $key ) {
-			self::$hooks_saved[ $key ] = $GLOBALS[ $key ];
+		foreach ( $globals as $global ) {
+			self::$hooks_saved[ $global ] = $GLOBALS[ $global ];
 		}
 		self::$hooks_saved['wp_filter'] = [];
 		foreach ( $GLOBALS['wp_filter'] as $hook_name => $hook_object ) {
@@ -66,9 +66,9 @@ trait Hooks {
 	protected function restore_hooks() {
 		// phpcs:disable WordPress.WP.GlobalVariablesOverride,WordPress.NamingConventions.PrefixAllGlobals
 		$globals = [ 'wp_actions', 'wp_current_filter' ];
-		foreach ( $globals as $key ) {
-			if ( isset( self::$hooks_saved[ $key ] ) ) {
-				$GLOBALS[ $key ] = self::$hooks_saved[ $key ];
+		foreach ( $globals as $global ) {
+			if ( isset( self::$hooks_saved[ $global ] ) ) {
+				$GLOBALS[ $global ] = self::$hooks_saved[ $global ];
 			}
 		}
 		if ( isset( self::$hooks_saved['wp_filter'] ) ) {

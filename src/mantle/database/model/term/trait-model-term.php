@@ -70,7 +70,6 @@ trait Model_Term {
 	 *
 	 * @param string $taxonomy Taxonomy name.
 	 * @param mixed  $value Terms.
-	 * @return void
 	 */
 	public function queue_term_attribute( string $taxonomy, $value ): void {
 		$this->queued_terms[ $taxonomy ] = $value;

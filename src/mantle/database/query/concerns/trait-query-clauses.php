@@ -40,7 +40,6 @@ trait Query_Clauses {
 	 * Add a clause to the query.
 	 *
 	 * @param callable(array<string>, \WP_Query|\WP_Term_Query $query): array<string> $clause The query clause.
-	 * @return static
 	 */
 	public function add_clause( callable $clause ): static {
 		$this->clauses[] = $clause;
@@ -50,8 +49,6 @@ trait Query_Clauses {
 
 	/**
 	 * Remove all clauses from the query.
-	 *
-	 * @return static
 	 */
 	public function clear_clauses(): static {
 		$this->clauses = [];

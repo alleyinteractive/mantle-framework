@@ -40,7 +40,6 @@ class Closure_Job implements Can_Queue {
 	 * Create a new job instance.
 	 *
 	 * @param Closure $closure Closure to wrap.
-	 * @return self
 	 */
 	public static function create( Closure $closure ): Closure_Job {
 		return new self( new SerializableClosure( $closure ) );
@@ -95,8 +94,8 @@ class Closure_Job implements Can_Queue {
 	 * @param \Throwable $e Exception.
 	 */
 	public function failed( Throwable $e ): void {
-		foreach ( $this->failure_callbacks as $callback ) {
-			$callback( $e );
+		foreach ( $this->failure_callbacks as $failure_callback ) {
+			$failure_callback( $e );
 		}
 	}
 

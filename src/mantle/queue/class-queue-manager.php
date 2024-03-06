@@ -41,7 +41,6 @@ class Queue_Manager implements Queue_Manager_Contract {
 	 * Get a queue provider instance.
 	 *
 	 * @param string $name Provider name, optional.
-	 * @return Provider
 	 */
 	public function get_provider( string $name = null ): Provider {
 		$name = $name ?: $this->get_default_driver();
@@ -74,8 +73,6 @@ class Queue_Manager implements Queue_Manager_Contract {
 
 	/**
 	 * Get the default queue driver in queue.
-	 *
-	 * @return string
 	 */
 	protected function get_default_driver(): string {
 		if ( ! isset( $this->container['config'] ) ) {
@@ -89,7 +86,6 @@ class Queue_Manager implements Queue_Manager_Contract {
 	 * Resolve a connection to a queue provider.
 	 *
 	 * @param string $provider Provider name.
-	 * @return Provider
 	 *
 	 * @throws InvalidArgumentException Thrown on invalid provider name.
 	 * @throws InvalidArgumentException Thrown on invalid provider instance resolved.

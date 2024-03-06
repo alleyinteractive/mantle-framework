@@ -30,7 +30,6 @@ class Dispatcher {
 	 * Dispatch the job to the queue.
 	 *
 	 * @param mixed $job Job instance.
-	 * @return void
 	 */
 	public function dispatch( mixed $job ): void {
 		if ( ! $this->should_command_be_queued( $job ) ) {
@@ -59,7 +58,6 @@ class Dispatcher {
 	 * Dispatch a job in the current process.
 	 *
 	 * @param mixed $job Job instance.
-	 * @return void
 	 */
 	public function dispatch_now( mixed $job ): void {
 		$this->container->call( [ $job, 'handle' ] );
@@ -69,7 +67,6 @@ class Dispatcher {
 	 * Check if the command should be queued.
 	 *
 	 * @param mixed $job Job instance.
-	 * @return bool
 	 */
 	protected function should_command_be_queued( $job ): bool {
 		return $job instanceof Can_Queue;

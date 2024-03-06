@@ -36,8 +36,6 @@ class Command_Make_Command extends Stub_Generator_Command {
 
 	/**
 	 * Get the stub file for the generator.
-	 *
-	 * @return string
 	 */
 	public function get_file_stub(): string {
 		$this->replacements->add(

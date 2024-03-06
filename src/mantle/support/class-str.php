@@ -863,7 +863,6 @@ class Str {
 	 * Set the callable that will be used to generate random strings.
 	 *
 	 * @param  callable|null $factory
-	 * @return void
 	 */
 	public static function create_random_strings_using( callable $factory = null ): void {
 		static::$random_string_factory = $factory;
@@ -874,7 +873,6 @@ class Str {
 	 *
 	 * @param  array         $sequence
 	 * @param  callable|null $when_missing
-	 * @return void
 	 */
 	public static function create_random_strings_using_sequence( array $sequence, $when_missing = null ): void {
 		$next = 0;
@@ -906,8 +904,6 @@ class Str {
 
 	/**
 	 * Indicate that random strings should be created normally and not using a custom factory.
-	 *
-	 * @return void
 	 */
 	public static function create_random_strings_normally(): void {
 		static::$random_string_factory = null;
@@ -1078,7 +1074,6 @@ class Str {
 	 * Convert the given string to title case.
 	 *
 	 * @param  string $value
-	 * @return string
 	 */
 	public static function title( string $value ): string {
 		return mb_convert_case( $value, MB_CASE_TITLE, 'UTF-8' );
@@ -1088,7 +1083,6 @@ class Str {
 	 * Convert the given string to title case for each word.
 	 *
 	 * @param  string $value
-	 * @return string
 	 */
 	public static function headline( string $value ): string {
 		$parts = explode( ' ', $value );
@@ -1106,7 +1100,6 @@ class Str {
 	 * Get the singular form of an English word.
 	 *
 	 * @param  string $value
-	 * @return string
 	 */
 	public static function singular( string $value ): string {
 		return Pluralizer::singular( $value );
@@ -1331,8 +1324,6 @@ class Str {
 
 	/**
 	 * Generate a UUID (version 4).
-	 *
-	 * @return \Ramsey\Uuid\UuidInterface
 	 */
 	public static function uuid(): UuidInterface {
 		return Uuid::uuid4();
@@ -1349,7 +1340,6 @@ class Str {
 	 *
 	 * @param string $contents Contents used to match against.
 	 * @param int    $char_pos Character position.
-	 * @return int
 	 */
 	public static function line_number( string $contents, int $char_pos ): int {
 		[ $before ] = str_split( $contents, $char_pos );
@@ -1360,7 +1350,6 @@ class Str {
 	 * Add a trailing slash to a string.
 	 *
 	 * @param string $string String to trail.
-	 * @return string
 	 */
 	public static function trailing_slash( string $string ): string {
 		return rtrim( $string, '/' ) . '/';
@@ -1370,7 +1359,6 @@ class Str {
 	 * Remove a trailing slash from a string.
 	 *
 	 * @param string $string String to untrail.
-	 * @return string
 	 */
 	public static function untrailing_slash( string $string ): string {
 		return rtrim( $string, '/' );
@@ -1380,7 +1368,6 @@ class Str {
 	 * Add a preceding slash to a string.
 	 *
 	 * @param string $string String to proceed.
-	 * @return string
 	 */
 	public static function preceding_slash( string $string ): string {
 		return '/' . static::unpreceding_slash( $string );
@@ -1390,7 +1377,6 @@ class Str {
 	 * Remove a preceding slash from a string.
 	 *
 	 * @param string $string String to proceed.
-	 * @return string
 	 */
 	public static function unpreceding_slash( string $string ): string {
 		return ltrim( $string, '/\\' );
@@ -1398,8 +1384,6 @@ class Str {
 
 	/**
 	 * Remove all strings from the casing caches.
-	 *
-	 * @return void
 	 */
 	public static function flush_cache(): void {
 		static::$snake_cache  = [];

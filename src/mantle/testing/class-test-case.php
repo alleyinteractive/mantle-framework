@@ -87,8 +87,6 @@ abstract class Test_Case extends BaseTestCase {
 
 	/**
 	 * Creates the application.
-	 *
-	 * @return Application
 	 */
 	abstract public function create_application(): Application;
 
@@ -225,8 +223,8 @@ abstract class Test_Case extends BaseTestCase {
 			'more',
 			'numpages',
 		];
-		foreach ( $post_globals as $global ) {
-			$GLOBALS[ $global ] = null;
+		foreach ( $post_globals as $post_global ) {
+			$GLOBALS[ $post_global ] = null;
 		}
 
 		$this->unregister_all_meta_keys();
@@ -248,8 +246,6 @@ abstract class Test_Case extends BaseTestCase {
 
 	/**
 	 * Get the test case traits.
-	 *
-	 * @return Collection
 	 */
 	protected static function get_test_case_traits(): Collection {
 		// Boot traits on the test case.
@@ -305,8 +301,6 @@ abstract class Test_Case extends BaseTestCase {
 
 	/**
 	 * Fetches the factory object for generating WordPress fixtures.
-	 *
-	 * @return \Mantle\Database\Factory\Factory_Container
 	 */
 	protected static function factory(): Factory_Container {
 		if ( ! isset( static::$factory ) ) {
@@ -320,7 +314,6 @@ abstract class Test_Case extends BaseTestCase {
 	 * Allow the factory/app to be checked against.
 	 *
 	 * @param string $name Property name.
-	 * @return boolean
 	 */
 	public function __isset( $name ): bool {
 		return 'factory' === $name || 'app' === $name;

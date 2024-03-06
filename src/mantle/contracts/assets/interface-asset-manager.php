@@ -55,7 +55,6 @@ interface Asset_Manager {
 	 * @param string      $media Media to preload, defaults to 'all'.
 	 * @param bool        $crossorigin Flag to load as cross origin, defaults to false.
 	 * @param string|null $version Handle version, optional.
-	 * @return void
 	 */
 	public function preload(
 		string $handle,
@@ -72,7 +71,6 @@ interface Asset_Manager {
 	 * Asynchronously load a script file.
 	 *
 	 * @param string $handle Handle to change.
-	 * @return void
 	 */
 	public function async( string $handle ): void;
 
@@ -80,7 +78,6 @@ interface Asset_Manager {
 	 * Defer a script file
 	 *
 	 * @param string $handle Handle to change.
-	 * @return void
 	 */
 	public function defer( string $handle ): void;
 
@@ -89,7 +86,6 @@ interface Asset_Manager {
 	 *
 	 * @param string $handle Handle to change.
 	 * @param string $load_method Load method to change to.
-	 * @return void
 	 */
 	public function load_method( string $handle, string $load_method = Load_Method::SYNC ): void;
 }

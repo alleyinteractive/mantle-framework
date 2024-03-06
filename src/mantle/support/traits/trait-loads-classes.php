@@ -42,7 +42,6 @@ trait Loads_Classes {
 	 *
 	 * @param SplFileInfo $file File instance.
 	 * @param string      $root_namespace Root namespace.
-	 * @return string|null
 	 */
 	public static function classname_from_path( SplFileInfo $file, string $root_namespace ): ?string {
 		// Append the relative path as a namespace to the root namespace.

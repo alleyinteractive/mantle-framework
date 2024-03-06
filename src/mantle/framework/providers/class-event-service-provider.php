@@ -32,8 +32,6 @@ abstract class Event_Service_Provider extends Service_Provider implements Isolat
 
 	/**
 	 * Register the application's event listeners.
-	 *
-	 * @return void
 	 */
 	public function register(): void {
 		$this->app->singleton(
@@ -59,8 +57,6 @@ abstract class Event_Service_Provider extends Service_Provider implements Isolat
 
 	/**
 	 * Get discovered events and listeners for the application.
-	 *
-	 * @return array
 	 */
 	public function get_events(): array {
 		if ( $this->app->is_events_cached() ) {
@@ -77,8 +73,6 @@ abstract class Event_Service_Provider extends Service_Provider implements Isolat
 
 	/**
 	 * Get discovered events for the application.
-	 *
-	 * @return array
 	 */
 	protected function get_discovered_events(): array {
 		return $this->should_discover_events()
@@ -88,8 +82,6 @@ abstract class Event_Service_Provider extends Service_Provider implements Isolat
 
 	/**
 	 * Discover events and listeners for the application.
-	 *
-	 * @return array
 	 */
 	protected function discover_events(): array {
 		return collect( $this->discover_events_within() )
@@ -105,8 +97,6 @@ abstract class Event_Service_Provider extends Service_Provider implements Isolat
 
 	/**
 	 * Get event events and handlers.
-	 *
-	 * @return array
 	 */
 	protected function get_listen(): array {
 		return $this->listen;
@@ -114,8 +104,6 @@ abstract class Event_Service_Provider extends Service_Provider implements Isolat
 
 	/**
 	 * Flag if Mantle should discover events automatically.
-	 *
-	 * @return bool
 	 */
 	public function should_discover_events(): bool {
 		return false;
@@ -137,7 +125,6 @@ abstract class Event_Service_Provider extends Service_Provider implements Isolat
 	 *
 	 * @param mixed $listener Event listener, optionally an array with a listener
 	 *                        and priority.
-	 * @return array
 	 */
 	protected function parse_listener( $listener ): array {
 		// Support the listener being an array of listener and action priority.

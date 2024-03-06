@@ -15,43 +15,31 @@ namespace Mantle\Contracts\Database;
 interface Core_Object {
 	/**
 	 * Getter for Object ID
-	 *
-	 * @return int
 	 */
 	public function id(): int;
 
 	/**
 	 * Getter for Object Name
-	 *
-	 * @return string
 	 */
 	public function name(): string;
 
 	/**
 	 * Getter for Object Slug
-	 *
-	 * @return string
 	 */
 	public function slug(): string;
 
 	/**
 	 * Getter for Object Description
-	 *
-	 * @return string
 	 */
 	public function description(): string;
 
 	/**
 	 * Getter for Parent Object (if any)
-	 *
-	 * @return Core_Object|null
 	 */
 	public function parent(): ?Core_Object;
 
 	/**
 	 * Getter for the Object Permalink
-	 *
-	 * @return string|null
 	 */
 	public function permalink(): ?string;
 

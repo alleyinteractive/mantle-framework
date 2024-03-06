@@ -25,8 +25,6 @@ trait Element_Assertions {
 
 	/**
 	 * Retrieve the DOM Document for the response.
-	 *
-	 * @return DOMDocument
 	 */
 	protected function get_dom_document(): DOMDocument {
 		if ( isset( $this->document ) ) {
@@ -45,7 +43,6 @@ trait Element_Assertions {
 	 * Assert that an element exists in the response.
 	 *
 	 * @param string $expression The XPath expression to execute.
-	 * @return static
 	 */
 	public function assertElementExists( string $expression ): static {
 		$nodes = ( new DOMXPath( $this->get_dom_document() ) )->query( $expression );
@@ -59,7 +56,6 @@ trait Element_Assertions {
 	 * Assert that an element exists by its ID.
 	 *
 	 * @param string $id The ID of the element to check.
-	 * @return static
 	 */
 	public function assertElementExistsById( string $id ): static {
 		if ( 0 === strpos( $id, '#' ) ) {
@@ -73,7 +69,6 @@ trait Element_Assertions {
 	 * Assert that an element exists by its class name.
 	 *
 	 * @param string $classname The classname of the element to check.
-	 * @return static
 	 */
 	public function assertElementExistsByClassName( string $classname ): static {
 		if ( 0 === strpos( $classname, '.' ) ) {
@@ -87,7 +82,6 @@ trait Element_Assertions {
 	 * Assert that an element is missing in the response.
 	 *
 	 * @param string $expression The XPath expression to execute.
-	 * @return static
 	 */
 	public function assertElementMissing( string $expression ): static {
 		$nodes = ( new DOMXPath( $this->get_dom_document() ) )->query( $expression );
@@ -101,7 +95,6 @@ trait Element_Assertions {
 	 * Assert that an element is missing by its ID.
 	 *
 	 * @param string $id The ID of the element to check.
-	 * @return static
 	 */
 	public function assertElementMissingById( string $id ): static {
 		if ( 0 === strpos( $id, '#' ) ) {
@@ -115,7 +108,6 @@ trait Element_Assertions {
 	 * Assert that an element is missing by its class name.
 	 *
 	 * @param string $classname The classname of the element to check.
-	 * @return static
 	 */
 	public function assertElementMissingByClassName( string $classname ): static {
 		if ( 0 === strpos( $classname, '.' ) ) {
@@ -129,7 +121,6 @@ trait Element_Assertions {
 	 * Assert that an element exists by tag name.
 	 *
 	 * @param string $type The type of element to check.
-	 * @return static
 	 */
 	public function assertElementExistsByTagName( string $type ): static {
 		return $this->assertElementExists( sprintf( '//*[local-name()="%s"]', $type ) );
@@ -139,7 +130,6 @@ trait Element_Assertions {
 	 * Assert that an element is missing by tag name.
 	 *
 	 * @param string $type The type of element to check.
-	 * @return static
 	 */
 	public function assertElementMissingByTagName( string $type ): static {
 		return $this->assertElementMissing( sprintf( '//*[local-name()="%s"]', $type ) );
@@ -149,7 +139,6 @@ trait Element_Assertions {
 	 * Assert that an element exists by query selector.
 	 *
 	 * @param string $selector The selector to use.
-	 * @return static
 	 */
 	public function assertElementExistsByQuerySelector( string $selector ): static {
 		return $this->assertElementExists( new Translator( $selector ) );
@@ -168,7 +157,6 @@ trait Element_Assertions {
 	 * Assert that an element is missing by query selector.
 	 *
 	 * @param string $selector The selector to use.
-	 * @return static
 	 */
 	public function assertElementMissingByQuerySelector( string $selector ): static {
 		return $this->assertElementMissing( new Translator( $selector ) );

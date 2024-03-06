@@ -60,7 +60,6 @@ trait Custom_Post_Permalink {
 	 *
 	 * @param string $link Post type archive link.
 	 * @param string $post_type Post type.
-	 * @return string
 	 */
 	public static function filter_post_type_archive_link( string $link, string $post_type ): string {
 		if ( 'post' === $post_type || ! static::$using_permalinks || static::get_object_name() !== $post_type ) {

@@ -185,7 +185,6 @@ trait Enumerates_Values {
 	 * Dump the items and end the script.
 	 *
 	 * @param  mixed ...$args
-	 * @return void
 	 */
 	public function dd( ...$args ): void {
 		$this->dump( ...$args );
@@ -195,8 +194,6 @@ trait Enumerates_Values {
 
 	/**
 	 * Dump the items.
-	 *
-	 * @return static
 	 */
 	public function dump(): static {
 		( new static( func_get_args() ) )
@@ -823,7 +820,6 @@ trait Enumerates_Values {
 	 * Add a method to the list of proxied methods.
 	 *
 	 * @param  string $method
-	 * @return void
 	 */
 	public static function proxy( $method ): void {
 		static::$proxies[] = $method; // phpcs:ignore WordPressVIPMinimum.Variables.VariableAnalysis.StaticOutsideClass

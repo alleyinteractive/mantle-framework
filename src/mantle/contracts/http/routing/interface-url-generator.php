@@ -22,7 +22,6 @@ interface Url_Generator {
 	 * Get the URL for the previous request.
 	 *
 	 * @param string $fallback Fallback value, optional.
-	 * @return string
 	 */
 	public function previous( string $fallback = null ): string;
 
@@ -43,7 +42,6 @@ interface Url_Generator {
 	 * @param string $name Route name.
 	 * @param array  $parameters Route parameters.
 	 * @param bool   $absolute Flag if should be absolute.
-	 * @return string
 	 *
 	 * @throws \Symfony\Component\Routing\Exception\RouteNotFoundException If route not found.
 	 */

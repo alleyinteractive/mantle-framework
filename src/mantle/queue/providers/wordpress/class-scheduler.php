@@ -51,8 +51,8 @@ class Scheduler {
 	 * shutdown to deduplicate any scheduling calls.
 	 */
 	public static function schedule_on_shutdown(): void {
-		foreach ( static::$pending_queues as $queue ) {
-			static::schedule_next_run( $queue );
+		foreach ( static::$pending_queues as $pending_queue ) {
+			static::schedule_next_run( $pending_queue );
 		}
 
 		static::$pending_queues = [];
@@ -83,7 +83,6 @@ class Scheduler {
 	 *
 	 * @param string $queue Queue name.
 	 * @param int    $delay Delay in seconds, defaults to none.
-	 * @return bool
 	 */
 	public static function schedule( string $queue = null, int $delay = 0 ): bool {
 		if ( ! $queue ) {
@@ -208,7 +207,6 @@ class Scheduler {
 	 * Retrieve the number of already-scheduled queue jobs for a queue.
 	 *
 	 * @param string $queue Queue name.
-	 * @return int
 	 */
 	public static function get_scheduled_count( string $queue = null ): int {
 		return static::get_scheduled_cron_jobs( $queue )->count();
@@ -220,7 +218,6 @@ class Scheduler {
 	 * @param string $key Configuration key.
 	 * @param string $queue Queue name.
 	 * @param mixed  $default Default value.
-	 * @return mixed
 	 */
 	protected static function get_configuration_value( string $key, string $queue = null, mixed $default = null ): mixed {
 		$config = config();

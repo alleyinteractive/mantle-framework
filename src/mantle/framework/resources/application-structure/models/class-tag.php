@@ -23,8 +23,6 @@ class Tag extends Term {
 
 	/**
 	 * Retrieve the tag's posts.
-	 *
-	 * @return Has_Many
 	 */
 	public function posts(): Has_Many {
 		return $this->has_many( Post::class );

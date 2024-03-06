@@ -152,8 +152,6 @@ class View_Finder {
 
 	/**
 	 * Get the registered paths.
-	 *
-	 * @return array
 	 */
 	public function get_paths(): array {
 		return array_unique( $this->paths );
@@ -226,9 +224,9 @@ class View_Finder {
 		foreach ( $templates as $template ) {
 			$possible_view_files = $this->get_possible_view_files( $template );
 
-			foreach ( $possible_view_files as $view_file ) {
+			foreach ( $possible_view_files as $possible_view_file ) {
 				foreach ( $this->get_paths() as $path ) {
-					$path = "{$path}/{$view_file}";
+					$path = "{$path}/{$possible_view_file}";
 
 					if ( file_exists( $path ) ) {
 						return $path;

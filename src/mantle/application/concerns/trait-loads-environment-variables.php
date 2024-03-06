@@ -48,7 +48,6 @@ trait Loads_Environment_Variables {
 	 * Create a Dotenv instance.
 	 *
 	 * @param Application $app Application instance.
-	 * @return Dotenv
 	 */
 	protected function create_dotenv( Application $app ): Dotenv {
 		return Dotenv::create(
@@ -66,7 +65,6 @@ trait Loads_Environment_Variables {
 	 * read-able.
 	 *
 	 * @param Application $app Application instance.
-	 * @return array
 	 */
 	protected function get_environment_paths( Application $app ): array {
 		// Use the application path if set.

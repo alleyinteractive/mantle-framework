@@ -81,7 +81,6 @@ class Response extends HttpFoundationResponse {
 	 * Determine if the given content should be turned into JSON.
 	 *
 	 * @param  Arrayable|Jsonable|ArrayObject|JsonSerializable|array|mixed $content
-	 * @return bool
 	 */
 	protected function should_be_json( $content ): bool {
 		return $content instanceof Arrayable ||

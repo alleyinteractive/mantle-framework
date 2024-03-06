@@ -17,7 +17,6 @@ class Local_Adapter extends Filesystem_Adapter {
 	 * Get the URL for the file at the given path.
 	 *
 	 * @param  string $path
-	 * @return string
 	 */
 	public function url( string $path ): string {
 		// If an explicit base URL has been set on the disk configuration then we

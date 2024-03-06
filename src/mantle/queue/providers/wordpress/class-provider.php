@@ -100,7 +100,6 @@ class Provider implements Provider_Contract {
 	 * @throws RuntimeException Thrown on error inserting the job into the database.
 	 *
 	 * @param mixed $job Job instance.
-	 * @return bool
 	 */
 	public function push( mixed $job ): bool {
 		// Account for adding to the queue before 'init'.
@@ -191,7 +190,6 @@ class Provider implements Provider_Contract {
 	 * Retrieve the number of pending jobs in the queue.
 	 *
 	 * @param string $queue Queue name, optional.
-	 * @return int
 	 */
 	public function pending_count( string $queue = null ): int {
 		return $this->query( $queue )->count();
@@ -214,7 +212,6 @@ class Provider implements Provider_Contract {
 	 *
 	 * @param object $job Job instance.
 	 * @param string $queue Queue to compare against.
-	 * @return bool
 	 */
 	public function in_queue( mixed $job, string $queue = null ): bool {
 		return Queue_Record::where( 'post_status', Post_Status::PENDING->value )
@@ -228,7 +225,6 @@ class Provider implements Provider_Contract {
 	 *
 	 * @param string|null $name Queue name, optional.
 	 * @param bool        $create Whether to create the term if it doesn't exist.
-	 * @return int
 	 *
 	 * @throws InvalidArgumentException Thrown on invalid queue term.
 	 */

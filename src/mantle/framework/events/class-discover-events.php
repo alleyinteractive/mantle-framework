@@ -27,7 +27,6 @@ class Discover_Events {
 	 *
 	 * @param string $path Listener path.
 	 * @param string $base_path Base path of the application.
-	 * @return array
 	 */
 	public static function within( string $path, string $base_path ): array {
 		$listeners = collect(
@@ -59,7 +58,6 @@ class Discover_Events {
 	 *
 	 * @param iterable $listeners Listener files.
 	 * @param string   $base_path Base path.
-	 * @return array
 	 */
 	protected static function get_listener_events( $listeners, string $base_path ): array {
 		$listener_events = [];
@@ -82,8 +80,8 @@ class Discover_Events {
 				$action_attributes = $method->getAttributes( Action::class );
 
 				if ( ! empty( $action_attributes ) ) {
-					foreach ( $action_attributes as $attribute ) {
-						$instance = $attribute->newInstance();
+					foreach ( $action_attributes as $action_attribute ) {
+						$instance = $action_attribute->newInstance();
 
 						$listener_events[ $listener->name . '@' . $method->name ] = [
 							[
@@ -144,7 +142,6 @@ class Discover_Events {
 	 *
 	 * @param SplFileInfo $file File.
 	 * @param string      $base_path Base path.
-	 * @return string
 	 */
 	protected static function class_from_file( SplFileInfo $file, string $base_path ): string {
 		$class = trim(

@@ -45,7 +45,6 @@ class Bootloader implements Contract {
 	 * Retrieve the instance of the manager.
 	 *
 	 * @param Contracts\Application|null $app Application instance.
-	 * @return Bootloader
 	 */
 	public static function get_instance( ?Contracts\Application $app = null ): Bootloader {
 		if ( is_null( static::$instance ) ) {
@@ -59,7 +58,6 @@ class Bootloader implements Contract {
 	 * Alias to `get_instance()` method.
 	 *
 	 * @param Contracts\Application|null $app Application instance.
-	 * @return Bootloader
 	 */
 	public static function instance( ?Contracts\Application $app = null ): Bootloader {
 		return static::get_instance( $app );
@@ -69,7 +67,6 @@ class Bootloader implements Contract {
 	 * Set the instance of the manager.
 	 *
 	 * @param Bootloader|null $instance Instance of the manager.
-	 * @return void
 	 */
 	public static function set_instance( ?Bootloader $instance = null ): void {
 		static::$instance = $instance;
@@ -89,7 +86,6 @@ class Bootloader implements Contract {
 	 *
 	 * @param string              $abstract Abstract to bind.
 	 * @param Closure|string|null $concrete Concrete to bind.
-	 * @return static
 	 */
 	public function bind( string $abstract, Closure|string|null $concrete ): static {
 		if ( is_null( $this->app ) ) {
@@ -103,8 +99,6 @@ class Bootloader implements Contract {
 
 	/**
 	 * Boot the application given the current context.
-	 *
-	 * @return static
 	 */
 	public function boot(): static {
 		$this->boot_application();
@@ -127,8 +121,6 @@ class Bootloader implements Contract {
 
 	/**
 	 * Boot the application and attach the relevant container classes.
-	 *
-	 * @return void
 	 */
 	protected function boot_application(): void {
 		if ( is_null( $this->app ) ) {
@@ -169,8 +161,6 @@ class Bootloader implements Contract {
 
 	/**
 	 * Retrieve the application instance.
-	 *
-	 * @return Contracts\Application|null
 	 */
 	public function get_application(): ?Contracts\Application {
 		return $this->app;
@@ -180,8 +170,6 @@ class Bootloader implements Contract {
 	 * Get the calculated base path for the application.
 	 *
 	 * @todo Calculate a better default path from the plugin file.
-	 *
-	 * @return string|null
 	 */
 	public function get_base_path(): ?string {
 		if ( ! empty( $this->base_path ) ) {
@@ -199,7 +187,6 @@ class Bootloader implements Contract {
 	 * Set the base path for the application.
 	 *
 	 * @param string|null $base_path Base path for the application.
-	 * @return static
 	 */
 	public function set_base_path( ?string $base_path = null ): static {
 		$this->base_path = $base_path;
@@ -209,8 +196,6 @@ class Bootloader implements Contract {
 
 	/**
 	 * Boot the application in the console context.
-	 *
-	 * @return void
 	 */
 	protected function boot_console(): void {
 		$kernel = $this->app->make( Contracts\Console\Kernel::class );
@@ -229,8 +214,6 @@ class Bootloader implements Contract {
 
 	/**
 	 * Boot the application in the WP-CLI context.
-	 *
-	 * @return void
 	 */
 	protected function boot_console_wp_cli(): void {
 		$kernel = $this->app->make( Contracts\Console\Kernel::class );

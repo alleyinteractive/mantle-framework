@@ -54,7 +54,6 @@ trait Queries_Dates {
 	 * @param DateTimeInterface|int|string $date
 	 * @param string                       $compare Comparison operator, defaults to '='.
 	 * @param string                       $column Column to compare against, defaults to 'post_date'.
-	 * @return static
 	 */
 	public function whereDate( DateTimeInterface|int|string $date, string $compare = '=', string $column = 'post_date' ): static {
 		if ( ! in_array( $compare, $this->date_operators, true ) ) {
@@ -71,7 +70,6 @@ trait Queries_Dates {
 	 *
 	 * @param DateTimeInterface|int|string $date Date to compare against.
 	 * @param string                       $compare Comparison operator, defaults to '='.
-	 * @return static
 	 */
 	public function whereUtcDate( DateTimeInterface|int|string $date, string $compare = '=' ): static {
 		return $this->whereDate( $date, $compare, 'post_date_gmt' );
@@ -82,7 +80,6 @@ trait Queries_Dates {
 	 *
 	 * @param DateTimeInterface|int|string $date Date to compare against.
 	 * @param string                       $compare Comparison operator, defaults to '='.
-	 * @return static
 	 */
 	public function whereModifiedDate( DateTimeInterface|int|string $date, string $compare = '=' ): static {
 		return $this->whereDate( $date, $compare, 'post_modified' );
@@ -93,7 +90,6 @@ trait Queries_Dates {
 	 *
 	 * @param DateTimeInterface|int|string $date Date to compare against.
 	 * @param string                       $compare Comparison operator, defaults to '='.
-	 * @return static
 	 */
 	public function whereModifiedUtcDate( DateTimeInterface|int|string $date, string $compare = '=' ): static {
 		return $this->whereDate( $date, $compare, 'post_modified_gmt' );
@@ -104,7 +100,6 @@ trait Queries_Dates {
 	 *
 	 * @param DateTimeInterface|int $date Date to compare against.
 	 * @param string                $column Column to compare against.
-	 * @return static
 	 */
 	public function olderThan( DateTimeInterface|int $date, string $column = 'post_date' ): static {
 		return $this->whereDate( $date, '<', $column );
@@ -115,7 +110,6 @@ trait Queries_Dates {
 	 *
 	 * @param DateTimeInterface|int $date Date to compare against.
 	 * @param string                $column Column to compare against.
-	 * @return static
 	 */
 	public function olderThanOrEqualTo( DateTimeInterface|int $date, string $column = 'post_date' ): static {
 		return $this->whereDate( $date, '<=', $column );
@@ -125,7 +119,6 @@ trait Queries_Dates {
 	 * Query for objects older than or equal to now.
 	 *
 	 * @param string $column Column to compare against.
-	 * @return static
 	 */
 	public function olderThanNow( string $column = 'post_date' ): static {
 		return $this->olderThanOrEqualTo( now(), $column );
@@ -136,7 +129,6 @@ trait Queries_Dates {
 	 *
 	 * @param DateTimeInterface|int $date Date to compare against.
 	 * @param string                $column Column to compare against.
-	 * @return static
 	 */
 	public function older_than( DateTimeInterface|int $date, string $column = 'post_date' ): static {
 		return $this->olderThan( $date, $column );
@@ -147,7 +139,6 @@ trait Queries_Dates {
 	 *
 	 * @param DateTimeInterface|int $date Date to compare against.
 	 * @param string                $column Column to compare against.
-	 * @return static
 	 */
 	public function older_than_or_equal_to( DateTimeInterface|int $date, string $column = 'post_date' ): static {
 		return $this->whereDate( $date, '<=', $column );
@@ -158,7 +149,6 @@ trait Queries_Dates {
 	 *
 	 * @param DateTimeInterface|int $date
 	 * @param string                $column Column to compare against.
-	 * @return static
 	 */
 	public function newerThan( DateTimeInterface|int $date, string $column = 'post_date' ): static {
 		return $this->whereDate( $date, '>', $column );
@@ -168,7 +158,6 @@ trait Queries_Dates {
 	 * Query for objects newer than now (in the future from now).
 	 *
 	 * @param string $column Column to compare against.
-	 * @return static
 	 */
 	public function newerThanNow( string $column = 'post_date' ): static {
 		return $this->newerThan( now(), $column );
@@ -179,7 +168,6 @@ trait Queries_Dates {
 	 *
 	 * @param DateTimeInterface|int $date
 	 * @param string                $column Column to compare against.
-	 * @return static
 	 */
 	public function newerThanOrEqualTo( DateTimeInterface|int $date, string $column = 'post_date' ): static {
 		return $this->whereDate( $date, '>=', $column );
@@ -190,7 +178,6 @@ trait Queries_Dates {
 	 *
 	 * @param DateTimeInterface|int $date Date to compare against.
 	 * @param string                $column Column to compare against.
-	 * @return static
 	 */
 	public function newer_than( DateTimeInterface|int $date, string $column = 'post_date' ): static {
 		return $this->newerThan( $date, $column );
@@ -201,7 +188,6 @@ trait Queries_Dates {
 	 *
 	 * @param DateTimeInterface|int $date Date to compare against.
 	 * @param string                $column Column to compare against.
-	 * @return static
 	 */
 	public function newer_than_or_equal_to( DateTimeInterface|int $date, string $column = 'post_date' ): static {
 		return $this->newerThanOrEqualTo( $date, $column );
@@ -209,8 +195,6 @@ trait Queries_Dates {
 
 	/**
 	 * Calculate the arguments for the date query to pass to either WP_Query.
-	 *
-	 * @return array
 	 */
 	protected function get_date_query_args(): array {
 		if ( empty( $this->date_constraints ) ) {
@@ -219,8 +203,8 @@ trait Queries_Dates {
 
 		$date_query = [];
 
-		foreach ( $this->date_constraints as $constraint ) {
-			$date = $constraint['date'];
+		foreach ( $this->date_constraints as $date_constraint ) {
+			$date = $date_constraint['date'];
 
 			if ( is_int( $date ) ) {
 				$date = Carbon::createFromTimestamp( $date, wp_timezone() );
@@ -230,17 +214,17 @@ trait Queries_Dates {
 				$date = Carbon::instance( $date );
 			}
 
-			switch ( $constraint['compare'] ) {
+			switch ( $date_constraint['compare'] ) {
 				case '<':
 					$date_query[] = [
-						'column' => $constraint['column'],
+						'column' => $date_constraint['column'],
 						'before' => $date->toDateTimeString(),
 					];
 					break;
 
 				case '<=':
 					$date_query[] = [
-						'column'    => $constraint['column'],
+						'column'    => $date_constraint['column'],
 						'before'    => $date->toDateTimeString(),
 						'inclusive' => true,
 					];
@@ -248,14 +232,14 @@ trait Queries_Dates {
 
 				case '>':
 					$date_query[] = [
-						'column' => $constraint['column'],
+						'column' => $date_constraint['column'],
 						'after'  => $date->toDateTimeString(),
 					];
 					break;
 
 				case '>=':
 					$date_query[] = [
-						'column'    => $constraint['column'],
+						'column'    => $date_constraint['column'],
 						'after'     => $date->toDateTimeString(),
 						'inclusive' => true,
 					];
@@ -266,12 +250,12 @@ trait Queries_Dates {
 					$date_query[] = [
 						'relation' => 'and',
 						[
-							'column'    => $constraint['column'],
+							'column'    => $date_constraint['column'],
 							'before'    => $date->toDateTimeString(),
 							'inclusive' => true,
 						],
 						[
-							'column'    => $constraint['column'],
+							'column'    => $date_constraint['column'],
 							'after'     => $date->toDateTimeString(),
 							'inclusive' => true,
 						],
@@ -282,12 +266,12 @@ trait Queries_Dates {
 					$date_query[] = [
 						'relation' => 'or',
 						[
-							'column'    => $constraint['column'],
+							'column'    => $date_constraint['column'],
 							'before'    => $date->toDateTimeString(),
 							'inclusive' => false,
 						],
 						[
-							'column'    => $constraint['column'],
+							'column'    => $date_constraint['column'],
 							'after'     => $date->toDateTimeString(),
 							'inclusive' => false,
 						],

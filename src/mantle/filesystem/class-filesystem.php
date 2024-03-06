@@ -48,7 +48,6 @@ class Filesystem {
 	 *
 	 * @param  string $path
 	 * @param  bool   $lock
-	 * @return string
 	 *
 	 * @throws File_Not_Found_Exception Thrown on missing file.
 	 */
@@ -163,7 +162,6 @@ class Filesystem {
 	 *
 	 * @param  string $path
 	 * @param  string $content
-	 * @return void
 	 */
 	public function replace( $path, $content ): void {
 		// If the path already exists and is a symlink, get the real path...
@@ -273,7 +271,6 @@ class Filesystem {
 	 *
 	 * @param  string $target
 	 * @param  string $link
-	 * @return void
 	 */
 	public function link( $target, $link ): void {
 		$mode = $this->is_directory( $target ) ? 'J' : 'H';
@@ -343,7 +340,6 @@ class Filesystem {
 	 * Guess the class name for a file path.
 	 *
 	 * @param string $path File path.
-	 * @return string|null
 	 */
 	public function guess_class_name( string $path ): ?string {
 		$name = $this->name( $path );
@@ -498,7 +494,6 @@ class Filesystem {
 	 * @param  string $path
 	 * @param  int    $mode
 	 * @param  bool   $recursive
-	 * @return void
 	 */
 	public function ensure_directory_exists( $path, $mode = 0755, $recursive = true ): void {
 		if ( ! $this->is_directory( $path ) ) {
@@ -630,8 +625,8 @@ class Filesystem {
 		$all_directories = $this->directories( $directory );
 
 		if ( ! empty( $all_directories ) ) {
-			foreach ( $all_directories as $directory_name ) {
-				$this->delete_directory( $directory_name );
+			foreach ( $all_directories as $all_directory ) {
+				$this->delete_directory( $all_directory );
 			}
 
 			return true;

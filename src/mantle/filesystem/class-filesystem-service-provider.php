@@ -46,7 +46,6 @@ class Filesystem_Service_Provider extends Service_Provider implements Isolated_S
 	 *
 	 * @param string $url Attachment URL.
 	 * @param int    $post_id Attachment ID.
-	 * @return string
 	 */
 	public function on_wp_get_attachment_url( string $url, int $post_id ): string {
 		static $doing_wp_get_attachment_url = false;

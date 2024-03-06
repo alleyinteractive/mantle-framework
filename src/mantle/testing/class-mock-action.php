@@ -115,8 +115,8 @@ class Mock_Action {
 	public function get_call_count( $tag = '' ) {
 		if ( ! empty( $tag ) ) {
 			$count = 0;
-			foreach ( $this->events as $e ) {
-				if ( $e['action'] === $tag ) {
+			foreach ( $this->events as $event ) {
+				if ( $event['action'] === $tag ) {
 					++$count;
 				}
 			}

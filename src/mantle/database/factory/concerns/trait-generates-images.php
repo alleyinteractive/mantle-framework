@@ -24,7 +24,6 @@ trait Generates_Images {
 	 * @param int         $height The height of the image.
 	 * @param string|null $directory The directory to store the image to, defaults to the system temp directory.
 	 * @param string|null $filename The filename to save the image as.
-	 * @return string
 	 */
 	public function generate_image( int $width, int $height, ?string $directory = null, ?string $filename = null ): string {
 		if ( ! $directory ) {
@@ -64,7 +63,6 @@ trait Generates_Images {
 	 * @param int         $height The height of the image.
 	 * @param string|null $directory The directory to save the image to.
 	 * @param string|null $filename The filename to save the image as.
-	 * @return string
 	 */
 	public function generate_remote_image( int $width, int $height, ?string $directory = null, ?string $filename = null ): string {
 		if ( ! $directory ) {
@@ -93,8 +91,6 @@ trait Generates_Images {
 
 	/**
 	 * Generate a random filename.
-	 *
-	 * @return string
 	 */
 	protected function generate_filename(): string {
 		return md5( wp_generate_password( 15, false ) );

@@ -21,7 +21,6 @@ class HTML_Driver extends HtmlDriver {
 	 * Serialize data to html
 	 *
 	 * @param mixed $data Data to serialize.
-	 * @return string
 	 * @throws CantBeSerialized If data cannot be serialized.
 	 */
 	public function serialize( mixed $data ): string {

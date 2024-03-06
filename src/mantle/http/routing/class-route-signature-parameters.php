@@ -54,7 +54,6 @@ class Route_Signature_Parameters {
 	 * Get the parameters for the given class / method by string.
 	 *
 	 * @param  string $uses Route callback.
-	 * @return array
 	 */
 	protected static function from_class_method_string( $uses ): array {
 		[ $class, $method ] = Str::parse_callback( $uses );

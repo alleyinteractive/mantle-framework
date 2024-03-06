@@ -393,7 +393,6 @@ trait Assertions {
 	 * Get a term object from a flexible argument.
 	 *
 	 * @param mixed $argument Term object, term ID, or term slug.
-	 * @return WP_Term|null
 	 */
 	protected function get_term_from_argument( $argument ): ?WP_Term {
 		if ( $argument instanceof Term ) {
@@ -418,7 +417,6 @@ trait Assertions {
 	 *
 	 * @param Post|\WP_Post|int $post Post to check.
 	 * @param Term|\WP_Term|int $term Term to check.
-	 * @return void
 	 */
 	public function assertPostHasTerm( Post|WP_Post|int $post, Term|WP_Term|int $term ): void {
 		if ( $post instanceof Post ) {
@@ -438,7 +436,6 @@ trait Assertions {
 	 *
 	 * @param Post|\WP_Post|int $post Post to check.
 	 * @param Term|\WP_Term|int $term Term to check.
-	 * @return void
 	 */
 	public function assertPostNotHasTerm( Post|WP_Post|int $post, Term|WP_Term|int $term ): void {
 		if ( $post instanceof Post ) {
@@ -469,7 +466,6 @@ trait Assertions {
 	 *
 	 * @param array $arguments Arguments to serialize.
 	 * @param array $defaults  Default values.
-	 * @return array
 	 */
 	protected function serialize_arguments( array $arguments, array $defaults = [] ): array {
 		$arguments = array_merge( $defaults, $arguments );

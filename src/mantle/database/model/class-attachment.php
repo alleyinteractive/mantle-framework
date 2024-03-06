@@ -33,7 +33,6 @@ class Attachment extends Post {
 	 * Get an attachment's URL by size.
 	 *
 	 * @param array|string $size Image URL.
-	 * @return string|null
 	 *
 	 * @throws Model_Exception Thrown when getting image.
 	 */
@@ -47,8 +46,6 @@ class Attachment extends Post {
 
 	/**
 	 * Get the full-size attachment URL.
-	 *
-	 * @return string|null
 	 */
 	public function url(): ?string {
 		$settings = $this->get_cloud_settings();
@@ -72,7 +69,6 @@ class Attachment extends Post {
 	 * Retrieve a temporary URL for a file.
 	 *
 	 * @param \DateTimeInterface $expiration File expiration.
-	 * @return string|null
 	 */
 	public function get_temporary_url( $expiration = null ): ?string {
 		$settings = $this->get_cloud_settings();
@@ -92,8 +88,6 @@ class Attachment extends Post {
 
 	/**
 	 * Get the stored cloud settings for an attachment.
-	 *
-	 * @return array|null
 	 */
 	protected function get_cloud_settings(): ?array {
 		return (array) $this->get_meta( static::META_KEY_CLOUD_STORAGE, true );
@@ -121,7 +115,6 @@ class Attachment extends Post {
 	 *        @type null|string $title          Title text. Null defaults to the
 	 *                                          sanitized filename.
 	 * }
-	 * @return Model
 	 * @throws Model_Exception Thrown on error sideloading image.
 	 */
 	public static function create_from_url( string $url, array $args = [] ): Model {

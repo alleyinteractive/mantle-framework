@@ -33,8 +33,6 @@ trait With_Faker {
 
 	/**
 	 * Create a faker instance.
-	 *
-	 * @return Generator
 	 */
 	protected function make_faker(): Generator {
 		$locale = isset( $this->app['config'] )

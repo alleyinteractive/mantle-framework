@@ -133,8 +133,6 @@ trait Has_Events {
 
 	/**
 	 * Get the event dispatcher instance.
-	 *
-	 * @return Dispatcher
 	 */
 	public static function get_event_dispatcher(): Dispatcher {
 		return static::$dispatcher;
@@ -144,7 +142,6 @@ trait Has_Events {
 	 * Set the event dispatcher instance.
 	 *
 	 * @param Dispatcher $dispatcher Dispatcher instance.
-	 * @return void
 	 */
 	public static function set_event_dispatcher( Dispatcher $dispatcher ): void {
 		static::$dispatcher = $dispatcher;
@@ -152,8 +149,6 @@ trait Has_Events {
 
 	/**
 	 * Unset the event dispatcher for models.
-	 *
-	 * @return void
 	 */
 	public static function unset_event_dispatcher(): void {
 		static::$dispatcher = null;
@@ -179,8 +174,6 @@ trait Has_Events {
 
 	/**
 	 * Remove all of the event listeners for the model.
-	 *
-	 * @return void
 	 */
 	public static function flush_event_listeners(): void {
 		if ( ! isset( static::$dispatcher ) ) {

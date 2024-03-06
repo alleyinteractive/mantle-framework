@@ -29,15 +29,11 @@ abstract class Queue_Worker_Job {
 
 	/**
 	 * Get the queue job ID.
-	 *
-	 * @return mixed
 	 */
 	abstract public function get_id(): mixed;
 
 	/**
 	 * Retrieve the stored job.
-	 *
-	 * @return mixed
 	 */
 	abstract public function get_job(): mixed;
 
@@ -45,14 +41,11 @@ abstract class Queue_Worker_Job {
 	 * Handle a failed job.
 	 *
 	 * @param Throwable $e
-	 * @return void
 	 */
 	abstract public function failed( Throwable $e ): void;
 
 	/**
 	 * Handle a completed job.
-	 *
-	 * @return void
 	 */
 	abstract public function completed(): void;
 
@@ -65,15 +58,11 @@ abstract class Queue_Worker_Job {
 
 	/**
 	 * Delete a job from the queue.
-	 *
-	 * @return void
 	 */
 	abstract public function delete(): void;
 
 	/**
 	 * Check if the job has failed.
-	 *
-	 * @return bool
 	 */
 	public function has_failed(): bool {
 		return $this->failed;
@@ -81,8 +70,6 @@ abstract class Queue_Worker_Job {
 
 	/**
 	 * Check if the job can be retried.
-	 *
-	 * @return bool
 	 */
 	public function can_retry(): bool {
 		return $this->has_failed() && ( $this->get_job()->retry ?? false );

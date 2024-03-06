@@ -67,8 +67,6 @@ class Schedule {
 
 	/**
 	 * Get the timezone instance for scheduling.
-	 *
-	 * @return DateTimeZone
 	 */
 	protected function get_timezone(): DateTimeZone {
 		return $this->timezone ?? \wp_timezone();
@@ -107,7 +105,6 @@ class Schedule {
 	 * @param class-string<\Mantle\Console\Command> $command Command class to run.
 	 * @param array                                 $arguments Arguments for the command.
 	 * @param array                                 $assoc_args Assoc. arguments for the command.
-	 * @return Event
 	 *
 	 * @throws RuntimeException Thrown on missing command.
 	 * @throws RuntimeException Thrown invalid command class.
@@ -133,7 +130,6 @@ class Schedule {
 	 *
 	 * @param class-string $job Job class to run.
 	 * @param array        $arguments Arguments for the command.
-	 * @return Event
 	 *
 	 * @throws RuntimeException Thrown on missing command.
 	 * @throws RuntimeException Thrown invalid command class..
@@ -159,7 +155,6 @@ class Schedule {
 	 *
 	 * @param callable $callback Callback to run.
 	 * @param array    $arguments Arguments for the callback.
-	 * @return Event
 	 */
 	public function call( callable $callback, array $arguments = [] ): Event {
 		$event = new Event( $callback, $arguments, $this->get_timezone() );

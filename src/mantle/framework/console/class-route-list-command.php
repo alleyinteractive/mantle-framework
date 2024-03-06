@@ -62,8 +62,6 @@ class Route_List_Command extends Command {
 
 	/**
 	 * Collect the routes in the application.
-	 *
-	 * @return Collection
 	 */
 	protected function collect_routes(): Collection {
 		/**

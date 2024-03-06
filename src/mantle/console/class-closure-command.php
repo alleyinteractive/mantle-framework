@@ -59,7 +59,6 @@ class Closure_Command extends Command {
 	 * Set the description for the command.
 	 *
 	 * @param string $description Command description.
-	 * @return static
 	 */
 	public function describe( string $description ): static {
 		$this->setDescription( $description );

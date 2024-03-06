@@ -30,7 +30,6 @@ class Queue_Fake extends Queue_Manager {
 	 *
 	 * @param  string|\Closure   $job
 	 * @param  callable|int|null $callback
-	 * @return void
 	 */
 	public function assertPushed( $job, $callback = null ): void {
 		if ( is_numeric( $callback ) ) {
@@ -66,7 +65,6 @@ class Queue_Fake extends Queue_Manager {
 	 *
 	 * @param  string|\Closure $job
 	 * @param  callable|null   $callback
-	 * @return void
 	 */
 	public function assertNotPushed( $job, $callback = null ): void {
 			PHPUnit::assertCount(
@@ -78,8 +76,6 @@ class Queue_Fake extends Queue_Manager {
 
 	/**
 	 * Assert that no jobs were pushed.
-	 *
-	 * @return void
 	 */
 	public function assertNothingPushed(): void {
 		PHPUnit::assertEmpty( $this->jobs, 'Jobs were pushed unexpectedly.' );
@@ -120,7 +116,6 @@ class Queue_Fake extends Queue_Manager {
 	 * @param  string|object $job
 	 * @param  mixed         $data
 	 * @param  string        $queue
-	 * @return void
 	 */
 	public function push( $job, $data = '', $queue = null ): void {
 		$this->jobs[ is_object( $job ) ? get_class( $job ) : $job ][] = [

@@ -64,7 +64,6 @@ trait Query_Bindings {
 	 * @param string|null  $operator The operator OR the value if no value is provided.
 	 * @param mixed        $value The value.
 	 * @param string       $boolean The boolean operator (AND/OR) used to concatenate the clause.
-	 * @return static
 	 */
 	public function where_raw( array|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' ): static {
 		if ( is_array( $column ) ) {
@@ -99,7 +98,6 @@ trait Query_Bindings {
 	 * @param string|null  $operator The operator OR the value if no value is provided.
 	 * @param mixed        $value The value.
 	 * @param string       $boolean The boolean operator (AND/OR) used to concatenate the clause.
-	 * @return static
 	 */
 	public function whereRaw( array|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' ): static {
 		return $this->where_raw( $column, $operator, $value, $boolean );
@@ -111,7 +109,6 @@ trait Query_Bindings {
 	 * @param array|string $column The column name or array of bindings.
 	 * @param string|null  $operator The operator OR the value if no value is provided.
 	 * @param mixed        $value The value.
-	 * @return static
 	 */
 	public function or_where_raw( array|string $column, ?string $operator = null, mixed $value = null ): static {
 		if ( is_array( $column ) ) {
@@ -131,7 +128,6 @@ trait Query_Bindings {
 	 * @param array|string $column The column name or array of bindings.
 	 * @param string|null  $operator The operator OR the value if no value is provided.
 	 * @param mixed        $value The value.
-	 * @return static
 	 */
 	public function orWhereRaw( array|string $column, ?string $operator = null, mixed $value = null ): static {
 		return $this->or_where_raw( $column, $operator, $value );

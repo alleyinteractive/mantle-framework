@@ -77,8 +77,6 @@ trait Register_Meta {
 
 	/**
 	 * Retrieve the object type for the model.
-	 *
-	 * @return string|null
 	 */
 	public static function get_object_type(): ?string {
 		$parent = get_parent_class( static::class );

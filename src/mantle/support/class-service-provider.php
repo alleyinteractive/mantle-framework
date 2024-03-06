@@ -86,7 +86,6 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	 * Register a console command.
 	 *
 	 * @param Command[]|string[]|Command|string $command Command instance or class name to register.
-	 * @return Service_Provider
 	 */
 	public function add_command( $command ): Service_Provider {
 		Console_Application::starting(

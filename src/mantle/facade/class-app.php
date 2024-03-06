@@ -93,8 +93,6 @@ namespace Mantle\Facade;
 class App extends Facade {
 	/**
 	 * Facade Accessor
-	 *
-	 * @return string
 	 */
 	protected static function get_facade_accessor(): string {
 		return 'app';

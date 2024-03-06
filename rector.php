@@ -56,7 +56,6 @@ use Rector\EarlyReturn\Rector\Return_\PreparedValueToEarlyReturnRector;
 use Rector\EarlyReturn\Rector\Return_\ReturnBinaryOrToEarlyReturnRector;
 use Rector\EarlyReturn\Rector\StmtsAwareInterface\ReturnEarlyIfVariableRector;
 use Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchExprVariableRector;
-use Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchMethodCallReturnTypeRector;
 use Rector\Php80\Rector\FunctionLike\MixedTypeRector;
 use Rector\Set\ValueObject\SetList;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
@@ -66,6 +65,10 @@ use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRect
  *
  * Overtime this file will have more rules enabled for it. Right now, most of
  * them are commented out. They will be spread out over multiple pull requests.
+ *
+ * Rules that are known to cause issues and should not be used:
+ *
+ * - RenameForeachValueVariableToMatchMethodCallReturnTypeRector: causes variables to be converted to snakeCase
  */
 return RectorConfig::configure()
 	->withIndent( "\t" )
@@ -74,9 +77,8 @@ return RectorConfig::configure()
 	->withRules(
 		[
 			AddVoidReturnTypeWhereNoReturnRector::class,
-			// RemoveUselessReturnTagRector::class,
-			// RenameForeachValueVariableToMatchExprVariableRector::class,
-			// RenameForeachValueVariableToMatchMethodCallReturnTypeRector::class,
+			RemoveUselessReturnTagRector::class,
+			RenameForeachValueVariableToMatchExprVariableRector::class,
 
 			///////////////////////////////////////////////////
 			// Dead Code Set

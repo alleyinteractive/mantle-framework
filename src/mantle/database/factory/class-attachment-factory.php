@@ -55,7 +55,6 @@ class Attachment_Factory extends Post_Factory {
 	 * @param int    $width  The width of the image.
 	 * @param int    $height The height of the image.
 	 * @param bool   $recycle Whether to recycle the image file.
-	 * @return static
 	 */
 	public function with_image( string $file = null, int $parent = 0, int $width = 640, int $height = 480, bool $recycle = true ): static {
 		if ( ! $file ) {
@@ -137,7 +136,6 @@ class Attachment_Factory extends Post_Factory {
 	 * @param array $args The arguments.
 	 * @param int   $legacy_parent The parent post ID.
 	 * @param array $legacy_args The arguments.
-	 * @return int|null
 	 */
 	public function create_object( $args, $legacy_parent = 0, $legacy_args = [] ): int|null {
 		// Backward compatibility for legacy argument format.
@@ -169,7 +167,6 @@ class Attachment_Factory extends Post_Factory {
 	 * Retrieves an object by ID.
 	 *
 	 * @param int $object_id The object ID.
-	 * @return Attachment|WP_Post|int|null
 	 */
 	public function get_object_by_id( int $object_id ): Attachment|WP_Post|int|null {
 		return $this->as_models

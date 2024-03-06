@@ -78,7 +78,6 @@ class Pending_Testable_Request {
 	 * Define additional headers to be sent with the request.
 	 *
 	 * @param array $headers Headers for the request.
-	 * @return static
 	 */
 	public function with_headers( array $headers ): static {
 		$this->headers->add( $headers );
@@ -91,7 +90,6 @@ class Pending_Testable_Request {
 	 *
 	 * @param string $name  Header name (key).
 	 * @param string $value Header value.
-	 * @return static
 	 */
 	public function with_header( string $name, string $value ): static {
 		return $this->with_headers( [ $name => $value ] );
@@ -102,7 +100,6 @@ class Pending_Testable_Request {
 	 * a previous request.
 	 *
 	 * @param string $url URL for the referer header.
-	 * @return static
 	 */
 	public function from( string $url ): static {
 		return $this->with_header( 'referer', $url );
@@ -112,7 +109,6 @@ class Pending_Testable_Request {
 	 * Make a request with a set of cookies.
 	 *
 	 * @param array<string, string> $cookies Cookies to be sent with the request.
-	 * @return static
 	 */
 	public function with_cookies( array $cookies ): static {
 		$this->cookies->add( $cookies );
@@ -125,7 +121,6 @@ class Pending_Testable_Request {
 	 *
 	 * @param string $name  Cookie name.
 	 * @param string $value Cookie value.
-	 * @return static
 	 */
 	public function with_cookie( string $name, string $value ): static {
 		return $this->with_cookies( [ $name => $value ] );
@@ -135,7 +130,6 @@ class Pending_Testable_Request {
 	 * Automatically follow any redirects returned from the response.
 	 *
 	 * @param bool $value Whether to follow redirects.
-	 * @return static
 	 */
 	public function following_redirects( bool $value = true ): static {
 		$this->follow_redirects = $value;
@@ -148,7 +142,6 @@ class Pending_Testable_Request {
 	 *
 	 * @param mixed $uri     Request URI.
 	 * @param array $headers Request headers.
-	 * @return Test_Response
 	 */
 	public function get( $uri, array $headers = [] ): Test_Response {
 		$server = $this->transform_headers_to_server_vars( $headers );
@@ -170,7 +163,6 @@ class Pending_Testable_Request {
 	 * Infer the request URL from an object like a post or term.
 	 *
 	 * @param mixed $source Source from which to infer the URL.
-	 * @return string
 	 */
 	protected function infer_url( mixed $source ): string {
 		return match ( true ) {
@@ -186,7 +178,6 @@ class Pending_Testable_Request {
 	 * Transform headers array to array of $_SERVER vars with HTTP_* format.
 	 *
 	 * @param array $headers Headers to convert to $_SERVER vars.
-	 * @return array
 	 */
 	protected function transform_headers_to_server_vars( array $headers ): array {
 		$headers           = array_merge( $this->headers->all(), $headers );
@@ -224,7 +215,6 @@ class Pending_Testable_Request {
 	 * @param array       $server     Server vars.
 	 * @param array       $cookies Cookies to be sent with the request.
 	 * @param string|null $content Request content.
-	 * @return Test_Response
 	 */
 	public function call( string $method, mixed $uri, array $parameters = [], array $server = [], array $cookies = [], ?string $content = null ): Test_Response {
 		$this->reset_request_state();
@@ -544,7 +534,6 @@ class Pending_Testable_Request {
 	 * Turn the given URI into a fully qualified URL.
 	 *
 	 * @param string $uri URI to fully-qualify.
-	 * @return string
 	 */
 	protected function prepare_url_for_request( $uri ): string {
 		return Str::trailing_slash( home_url( $uri ) );
@@ -554,7 +543,6 @@ class Pending_Testable_Request {
 	 * Follow a redirect chain until a non-redirect is received.
 	 *
 	 * @param Test_Response $response Test response.
-	 * @return Test_Response
 	 */
 	protected function follow_redirects( $response ): Test_Response {
 		while ( $response->is_redirect() ) {
@@ -572,7 +560,6 @@ class Pending_Testable_Request {
 	 * @param string $uri     URI to "get".
 	 * @param array  $headers Request headers.
 	 * @param int    $options JSON encoding options.
-	 * @return Test_Response
 	 */
 	public function get_json( $uri, array $headers = [], int $options = 0 ): Test_Response {
 		return $this->json( 'GET', $uri, [], $headers, $options );
@@ -586,7 +573,6 @@ class Pending_Testable_Request {
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
 	 * @param int    $options JSON encoding options.
-	 * @return Test_Response
 	 *
 	 * @throws RuntimeException If not implemented.
 	 */
@@ -613,7 +599,6 @@ class Pending_Testable_Request {
 	 * @param string $uri     Request URI.
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
-	 * @return Test_Response
 	 */
 	public function post( string $uri, array $data = [], array $headers = [] ): Test_Response {
 		$server = $this->transform_headers_to_server_vars( $headers );
@@ -628,7 +613,6 @@ class Pending_Testable_Request {
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
 	 * @param int    $options JSON encoding options.
-	 * @return Test_Response
 	 */
 	public function post_json( string $uri, array $data = [], array $headers = [], int $options = 0 ): Test_Response {
 		return $this->json( 'POST', $uri, $data, $headers, $options );
@@ -640,7 +624,6 @@ class Pending_Testable_Request {
 	 * @param string $uri     Request URI.
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
-	 * @return Test_Response
 	 */
 	public function put( string $uri, array $data = [], array $headers = [] ): Test_Response {
 		$server = $this->transform_headers_to_server_vars( $headers );
@@ -655,7 +638,6 @@ class Pending_Testable_Request {
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
 	 * @param int    $options JSON encoding options.
-	 * @return Test_Response
 	 */
 	public function put_json( string $uri, array $data = [], array $headers = [], int $options = 0 ): Test_Response {
 		return $this->json( 'PUT', $uri, $data, $headers, $options );
@@ -667,7 +649,6 @@ class Pending_Testable_Request {
 	 * @param string $uri     Request URI.
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
-	 * @return Test_Response
 	 */
 	public function patch( $uri, array $data = [], array $headers = [] ): Test_Response {
 		$server = $this->transform_headers_to_server_vars( $headers );
@@ -682,7 +663,6 @@ class Pending_Testable_Request {
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
 	 * @param int    $options JSON encoding options.
-	 * @return Test_Response
 	 */
 	public function patch_json( $uri, array $data = [], array $headers = [], int $options = 0 ): Test_Response {
 		return $this->json( 'PATCH', $uri, $data, $headers, $options );
@@ -694,7 +674,6 @@ class Pending_Testable_Request {
 	 * @param string $uri     Request URI.
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
-	 * @return Test_Response
 	 */
 	public function delete( $uri, array $data = [], array $headers = [] ): Test_Response {
 		$server = $this->transform_headers_to_server_vars( $headers );
@@ -709,7 +688,6 @@ class Pending_Testable_Request {
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
 	 * @param int    $options JSON encoding options.
-	 * @return Test_Response
 	 */
 	public function delete_json( $uri, array $data = [], array $headers = [], int $options = 0 ): Test_Response {
 		return $this->json( 'DELETE', $uri, $data, $headers, $options );
@@ -721,7 +699,6 @@ class Pending_Testable_Request {
 	 * @param string $uri     Request URI.
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
-	 * @return Test_Response
 	 */
 	public function options( $uri, array $data = [], array $headers = [] ): Test_Response {
 		$server = $this->transform_headers_to_server_vars( $headers );
@@ -736,7 +713,6 @@ class Pending_Testable_Request {
 	 * @param array  $data    Request data.
 	 * @param array  $headers Request headers.
 	 * @param int    $options JSON encoding options.
-	 * @return Test_Response
 	 */
 	public function options_json( $uri, array $data = [], array $headers = [], int $options = 0 ): Test_Response {
 		return $this->json( 'OPTIONS', $uri, $data, $headers, $options );

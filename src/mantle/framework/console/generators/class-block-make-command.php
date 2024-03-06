@@ -57,7 +57,6 @@ class Block_Make_Command extends Generator_Command {
 	 * Retrieve the generated PHP class contents.
 	 *
 	 * @param string $name Unused.
-	 * @return string
 	 */
 	public function get_generated_class( string $name ): string {
 		$contents = file_get_contents( __DIR__ . '/stubs/block-class.stub' ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
@@ -67,8 +66,6 @@ class Block_Make_Command extends Generator_Command {
 
 	/**
 	 * Return the generated index.js stub for this block.
-	 *
-	 * @return string
 	 */
 	protected function get_generated_entry(): string {
 		$contents = file_get_contents( __DIR__ . '/stubs/block-entry.stub' ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
@@ -78,8 +75,6 @@ class Block_Make_Command extends Generator_Command {
 
 	/**
 	 * Return the generated edit.jsx stub for this block.
-	 *
-	 * @return string
 	 */
 	protected function get_generated_edit(): string {
 		$contents = file_get_contents( __DIR__ . '/stubs/block-edit.stub' ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
@@ -89,8 +84,6 @@ class Block_Make_Command extends Generator_Command {
 
 	/**
 	 * Return the generated edit.jsx stub for this block.
-	 *
-	 * @return string
 	 */
 	protected function get_generated_view(): string {
 		$contents = file_get_contents( __DIR__ . '/stubs/block-view.stub' ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
@@ -161,7 +154,6 @@ class Block_Make_Command extends Generator_Command {
 	 * Generate the attributes file for the block.
 	 *
 	 * @param string $block_name The block to generate attributes for.
-	 * @return void
 	 */
 	protected function generate_block_attributes( string $block_name ): void {
 		$entry_attributes_path = $this->get_block_path( $block_name ) . '/attributes.json';
@@ -183,7 +175,6 @@ class Block_Make_Command extends Generator_Command {
 	 * Generate the PHP file for the Gutenberg block.
 	 *
 	 * @param string $name The name of the class to generate the file for.
-	 * @return void
 	 */
 	protected function generate_block_class( string $name ): void {
 		$path = $this->get_folder_path( $name );
@@ -211,7 +202,6 @@ class Block_Make_Command extends Generator_Command {
 	 * Generate the index.js file for the Gutenberg block.
 	 *
 	 * @param string $block_name The name of the block to generate the file for.
-	 * @return void
 	 */
 	protected function generate_block_entry( string $block_name ): void {
 		/**
@@ -246,7 +236,6 @@ class Block_Make_Command extends Generator_Command {
 	 * Generate the edit.jsx file for the Gutenberg block.
 	 *
 	 * @param string $block_name The name of the block to generate the file for.
-	 * @return void
 	 */
 	protected function generate_block_edit( string $block_name ): void {
 		$entry_edit_path = $this->get_block_path( $block_name ) . '/edit.jsx';
@@ -268,7 +257,6 @@ class Block_Make_Command extends Generator_Command {
 	 *
 	 * @param string $block_namespace The namespace of the block to generate the file for.
 	 * @param string $block_name      The name of the block to generate the file for.
-	 * @return void
 	 */
 	protected function generate_block_view( string $block_namespace, string $block_name ): void {
 		/**
@@ -301,8 +289,6 @@ class Block_Make_Command extends Generator_Command {
 
 	/**
 	 * Get the base path for the generated blocks folder.
-	 *
-	 * @return string
 	 */
 	protected function get_blocks_path(): string {
 		return "{$this->container->get_base_path()}/src/js/blocks/";
@@ -312,7 +298,6 @@ class Block_Make_Command extends Generator_Command {
 	 * Get the base path for the generated block.
 	 *
 	 * @param string $name The block name.
-	 * @return string
 	 */
 	protected function get_block_path( string $name ): string {
 		return $this->get_blocks_path() . $name;
@@ -320,8 +305,6 @@ class Block_Make_Command extends Generator_Command {
 
 	/**
 	 * Get the base path for the generated blocks folder.
-	 *
-	 * @return string
 	 */
 	protected function get_views_path(): string {
 		return "{$this->container->get_base_path()}/views/blocks/";
@@ -331,7 +314,6 @@ class Block_Make_Command extends Generator_Command {
 	 * Get the base path for the generated block.
 	 *
 	 * @param string $namespace The block namespace.
-	 * @return string
 	 */
 	protected function get_view_path( string $namespace ): string {
 		return $this->get_views_path() . $namespace;
@@ -347,7 +329,6 @@ class Block_Make_Command extends Generator_Command {
 	 *
 	 * @param string  $question The question to ask in the input.
 	 * @param ?string $default The optional default value for the response.
-	 * @return string
 	 */
 	protected function require_input( string $question, ?string $default = null ): string {
 		$response = $this->ask( $question );

@@ -47,7 +47,6 @@ class Alias_Loader {
 	 * Get or create the singleton alias loader instance.
 	 *
 	 * @param array $aliases Alias to load.
-	 * @return Alias_Loader
 	 */
 	public static function get_instance( array $aliases = [] ): Alias_Loader {
 		if ( is_null( static::$instance ) ) {
@@ -66,7 +65,6 @@ class Alias_Loader {
 	 * Load a class alias if it is registered.
 	 *
 	 * @param  string $alias Alias to load.
-	 * @return void
 	 */
 	public function load( $alias ): void {
 		if ( isset( $this->aliases[ $alias ] ) ) {
@@ -86,8 +84,6 @@ class Alias_Loader {
 
 	/**
 	 * Register the loader on the auto-loader stack.
-	 *
-	 * @return void
 	 */
 	public function register(): void {
 		if ( ! $this->registered ) {
@@ -119,7 +115,6 @@ class Alias_Loader {
 	 * Set the registered aliases.
 	 *
 	 * @param array $aliases Alias to set.
-	 * @return void
 	 */
 	public function set_aliases( array $aliases ): void {
 		$this->aliases = $aliases;

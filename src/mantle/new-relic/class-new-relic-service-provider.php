@@ -60,8 +60,6 @@ class New_Relic_Service_Provider extends Service_Provider {
 
 	/**
 	 * Check if the extension is supported.
-	 *
-	 * @return bool
 	 */
 	protected static function is_supported(): bool {
 		return extension_loaded( 'newrelic' )

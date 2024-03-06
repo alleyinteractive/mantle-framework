@@ -111,8 +111,6 @@ abstract class Command extends Symfony_Command {
 
 	/**
 	 * Getter for the command name.
-	 *
-	 * @return string
 	 */
 	public function get_name(): string {
 		return $this->name;
@@ -193,9 +191,7 @@ abstract class Command extends Symfony_Command {
 	}
 
 	/**
-	 * Retrieve the application container.
-	 *
-	 * @return \Mantle\Contracts\Application     */
+	 * Retrieve the application container.     */
 	public function get_container(): \Mantle\Contracts\Application {
 		return $this->container;
 	}

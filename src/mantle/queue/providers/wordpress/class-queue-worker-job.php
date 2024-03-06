@@ -70,8 +70,6 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 
 	/**
 	 * Get the queue job ID.
-	 *
-	 * @return mixed
 	 */
 	public function get_id(): mixed {
 		$job = $this->get_job();
@@ -87,7 +85,6 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 	 * Handle a failed queue job.
 	 *
 	 * @param Throwable $e Exception thrown.
-	 * @return void
 	 */
 	public function failed( Throwable $e ): void {
 		$this->failed = true;
@@ -120,8 +117,6 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 
 	/**
 	 * Handle a completed job.
-	 *
-	 * @return void
 	 */
 	public function completed(): void {
 		$this->model->save(
@@ -172,8 +167,6 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 
 	/**
 	 * Retrieve the stored job.
-	 *
-	 * @return mixed
 	 */
 	public function get_job(): mixed {
 		return $this->model->get_meta( Meta_Key::JOB->value, true );

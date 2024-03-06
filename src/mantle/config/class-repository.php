@@ -37,7 +37,6 @@ class Repository implements ArrayAccess, Config_Contract {
 	 * Check if a configuration value exists.
 	 *
 	 * @param string $key Key to get, period-delimited.
-	 * @return bool
 	 */
 	public function has( string $key ): bool {
 		return Arr::has( $this->items, $key );
@@ -70,8 +69,6 @@ class Repository implements ArrayAccess, Config_Contract {
 
 	/**
 	 * Get all configuration values.
-	 *
-	 * @return array
 	 */
 	public function all(): array {
 		return $this->items;
@@ -81,7 +78,6 @@ class Repository implements ArrayAccess, Config_Contract {
 	 * Check if a offset exists.
 	 *
 	 * @param mixed $offset Offset to retrieve.
-	 * @return bool
 	 */
 	public function offsetExists( mixed $offset ): bool {
 		return $this->has( $offset );
@@ -91,7 +87,6 @@ class Repository implements ArrayAccess, Config_Contract {
 	 * Get an offset.
 	 *
 	 * @param mixed $offset Offset to retrieve.
-	 * @return mixed
 	 */
 	public function offsetGet( mixed $offset ): mixed {
 		return $this->get( $offset );

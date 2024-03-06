@@ -19,8 +19,6 @@ use Mantle\Assets\Asset_Manager;
 if ( ! function_exists( 'asset' ) ) {
 	/**
 	 * Retrieve an instance of the Asset Manager.
-	 *
-	 * @return \Mantle\Assets\Asset_Manager
 	 */
 	function asset(): Asset_Manager {
 		return app( Asset_Manager::class );

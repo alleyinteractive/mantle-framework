@@ -68,8 +68,6 @@ class Test_Config_Install_Command extends Command {
 
 	/**
 	 * Retrieve the test config path.
-	 *
-	 * @return string
 	 */
 	public static function get_test_config_path(): string {
 		return ABSPATH . '/wp-tests-config.php';

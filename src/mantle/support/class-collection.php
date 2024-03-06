@@ -571,8 +571,8 @@ class Collection implements ArrayAccess, Enumerable {
 	public function has( $key ) {
 		$keys = is_array( $key ) ? $key : func_get_args();
 
-		foreach ( $keys as $value ) {
-			if ( ! $this->offsetExists( $value ) ) {
+		foreach ( $keys as $key ) {
+			if ( ! $this->offsetExists( $key ) ) {
 				return false;
 			}
 		}
@@ -1380,8 +1380,6 @@ class Collection implements ArrayAccess, Enumerable {
 
 	/**
 	 * Count the number of items in the collection.
-	 *
-	 * @return int
 	 */
 	public function count(): int {
 		return count( $this->items );
@@ -1412,7 +1410,6 @@ class Collection implements ArrayAccess, Enumerable {
 	 * Determine if an item exists at an offset.
 	 *
 	 * @param mixed $key
-	 * @return bool
 	 */
 	public function offsetExists( mixed $key ): bool {
 		return array_key_exists( $key, $this->items );
@@ -1422,7 +1419,6 @@ class Collection implements ArrayAccess, Enumerable {
 	 * Get an item at a given offset.
 	 *
 	 * @param  mixed $key
-	 * @return mixed
 	 */
 	public function offsetGet( mixed $key ): mixed {
 		return $this->items[ $key ];
@@ -1433,7 +1429,6 @@ class Collection implements ArrayAccess, Enumerable {
 	 *
 	 * @param    mixed $key
 	 * @param    mixed $value
-	 * @return void
 	 */
 	public function offsetSet( mixed $key, mixed $value ): void {
 		if ( is_null( $key ) ) {
@@ -1447,7 +1442,6 @@ class Collection implements ArrayAccess, Enumerable {
 	 * Unset the item at a given offset.
 	 *
 	 * @param mixed $key
-	 * @return void
 	 */
 	public function offsetUnset( mixed $key ): void {
 		unset( $this->items[ $key ] );

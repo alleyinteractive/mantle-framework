@@ -41,8 +41,6 @@ class Cache_Manager extends Driver_Manager implements Factory {
 
 	/**
 	 * Retrieve the default store name.
-	 *
-	 * @return string
 	 */
 	protected function get_default_store(): string {
 		return (string) $this->app['config']['cache.default'];
@@ -52,7 +50,6 @@ class Cache_Manager extends Driver_Manager implements Factory {
 	 * Retrieve a store's config.
 	 *
 	 * @param string $name Store name.
-	 * @return array
 	 */
 	protected function get_config( string $name ): array {
 		return (array) $this->app['config'][ "cache.stores.{$name}" ];

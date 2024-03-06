@@ -71,8 +71,6 @@ class Model_Manifest {
 
 	/**
 	 * Get the compiled manifest.
-	 *
-	 * @return array
 	 */
 	protected function get_manifest(): array {
 		if ( isset( $this->manifest ) ) {

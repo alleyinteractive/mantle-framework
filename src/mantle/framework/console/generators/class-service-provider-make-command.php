@@ -34,8 +34,6 @@ class Service_Provider_Make_Command extends Stub_Generator_Command {
 
 	/**
 	 * Get the stub file for the generator.
-	 *
-	 * @return string
 	 */
 	public function get_file_stub(): string {
 		return __DIR__ . '/stubs/provider.stub';

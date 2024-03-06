@@ -95,8 +95,6 @@ class Package_Manifest {
 
 	/**
 	 * Get the compiled manifest.
-	 *
-	 * @return array
 	 */
 	public function get_manifest(): array {
 		if ( isset( $this->manifest ) ) {
@@ -209,8 +207,6 @@ class Package_Manifest {
 
 	/**
 	 * Get all of the package names that should be ignored.
-	 *
-	 * @return array
 	 */
 	protected function packages_to_ignore(): array {
 		if ( ! file_exists( $this->base_path . '/composer.json' ) ) {

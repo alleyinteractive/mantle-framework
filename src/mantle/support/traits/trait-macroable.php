@@ -28,8 +28,6 @@ trait Macroable {
 	 *
 	 * @param string          $name
 	 * @param object|callable $macro
-	 *
-	 * @return void
 	 */
 	public static function macro( $name, $macro ): void {
 		static::$macros[ $name ] = $macro;
@@ -41,7 +39,6 @@ trait Macroable {
 	 * @param object $mixin
 	 * @param bool   $replace
 	 *
-	 * @return void
 	 *
 	 * @throws \ReflectionException
 	 */

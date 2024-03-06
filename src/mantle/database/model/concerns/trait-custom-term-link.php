@@ -30,7 +30,6 @@ trait Custom_Term_Link {
 	 * @param string   $term_link Term link to filter.
 	 * @param \WP_Term $term Term object.
 	 * @param string   $taxonomy Taxonomy name.
-	 * @return string
 	 */
 	public static function filter_term_link( string $term_link, \WP_Term $term, string $taxonomy ): string {
 		if ( static::get_object_name() !== $taxonomy ) {

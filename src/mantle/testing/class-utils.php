@@ -176,11 +176,11 @@ class Utils {
 			return;
 		}
 
-		foreach ( $all_posts as $data ) {
-			if ( 'attachment' === $data['post_type'] ) {
-				wp_delete_attachment( $data['ID'], true );
+		foreach ( $all_posts as $all_post ) {
+			if ( 'attachment' === $all_post['post_type'] ) {
+				wp_delete_attachment( $all_post['ID'], true );
 			} else {
-				wp_delete_post( $data['ID'], true );
+				wp_delete_post( $all_post['ID'], true );
 			}
 		}
 	}
@@ -257,7 +257,6 @@ class Utils {
 	 *
 	 * @param string $variable Variable to get.
 	 * @param bool   $default Default value used as a fallback.
-	 * @return bool
 	 */
 	public static function env_bool( string $variable, bool $default ): bool {
 		$value = static::env( $variable, $default );
@@ -274,7 +273,6 @@ class Utils {
 	 * unquoted arguments.
 	 *
 	 * @param string|bool $string String to sanitize.
-	 * @return string
 	 */
 	public static function shell_safe( string|bool $string ): string {
 		if ( is_bool( $string ) ) {
@@ -400,8 +398,6 @@ class Utils {
 
 	/**
 	 * Check if the command is being run in debug mode.
-	 *
-	 * @return bool
 	 */
 	public static function is_debug_mode(): bool {
 		if ( defined( 'MANTLE_TESTING_DEBUG' ) && MANTLE_TESTING_DEBUG ) {
