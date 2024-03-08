@@ -48,7 +48,7 @@
 	</rule>
 
 	<rule ref="Squiz.Commenting.FunctionCommentThrowTag.Missing">
-		<exclude-pattern>src/mantle/framework/console/generators/</exclude-pattern>
+		<exclude-pattern>src/Mantle/Framework/console/generators/</exclude-pattern>
 	</rule>
 
 	<rule ref="Internal.NoCodeFound">
@@ -68,10 +68,10 @@
 	</rule>
 
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedNamespaceFound">
-		<exclude-pattern>src/mantle/framework/resources/</exclude-pattern>
+		<exclude-pattern>src/Mantle/Framework/resources/</exclude-pattern>
 	</rule>
 
 	<rule ref="Generic.CodeAnalysis.UselessOverridingMethod.Found">
-		<exclude-pattern>src/mantle/framework/resources/</exclude-pattern>
+		<exclude-pattern>src/Mantle/Framework/resources/</exclude-pattern>
 	</rule>
 </ruleset>

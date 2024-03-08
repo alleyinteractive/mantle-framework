@@ -42,7 +42,7 @@ use Symfony\Component\Finder\SplFileInfo;
 $linting = in_array( '--lint', $argv );
 
 $finder = ( new Finder() )
-	->in( __DIR__ . '/../src/mantle/facade' )
+	->in( __DIR__ . '/../src/Mantle/Facade' )
 	->name( 'class-*.php' )
 	->notName( 'class-facade.php' );
 

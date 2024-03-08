@@ -3,13 +3,15 @@
 # Creates all the packages on packagist.org.
 # Requires 'curl'
 
+# TODO Update to camel case
+
 echo "Packagist Username?"
 read username
 
 echo "API Key? <https://packagist.org/profile/>"
 read -s api_key
 
-PACKAGES=$(find src/mantle -type d -exec test -e '{}'/composer.json \;  -print)
+PACKAGES=$(find src/Mantle -type d -exec test -e '{}'/composer.json \;  -print)
 ORGANIZATION="mantle-framework"
 for path in $PACKAGES; do
 	package=$(basename "$path")

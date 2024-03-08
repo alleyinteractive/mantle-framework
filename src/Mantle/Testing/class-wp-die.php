@@ -135,8 +135,8 @@ class WP_Die {
 				echo "Try creating a \033[36mwp-tests-config.php\033[0m file in your project root.\n\n";
 				echo "Mantle can help with that. Either run `wp mantle test-config` to generate a configuration or download the latest\n";
 				echo "copy to the project root to \033[36m{$path}\033[0m: \n\n";
-				echo "    \033[33mhttps://raw.githubusercontent.com/alleyinteractive/mantle-framework/HEAD/src/mantle/testing/wp-tests-config-sample.php\033[0m \n\n";
-				echo "    \033[33mwget https://raw.githubusercontent.com/alleyinteractive/mantle-framework/HEAD/src/mantle/testing/wp-tests-config-sample.php -O $path\033[0m \n\n";
+				echo "    \033[33mhttps://raw.githubusercontent.com/alleyinteractive/mantle-framework/HEAD/src/Mantle/Testing/wp-tests-config-sample.php\033[0m \n\n";
+				echo "    \033[33mwget https://raw.githubusercontent.com/alleyinteractive/mantle-framework/HEAD/src/Mantle/Testing/wp-tests-config-sample.php -O $path\033[0m \n\n";
 
 				echo "Mantle can run without a configuration in place but assumes a default set of configuration.\n";
 				echo "🔍 Check if your database is configured to allow access with the default credentials:\n\n";

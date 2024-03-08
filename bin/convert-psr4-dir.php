@@ -23,6 +23,11 @@ foreach ( [ 'src' ] as $base ) {
 		->directories()
 		->notPath( '#fixtures|__snapshots__|template-parts#' );
 
+	// Only rename the packages themselves.
+	if ( 'src' === $base ) {
+		$finder->depth( 1 );
+	}
+
 	$base = Str::trailing_slash( realpath( __DIR__ . "/../{$base}" ) );
 
 	foreach ( $finder as $dir ) {
@@ -42,8 +47,8 @@ foreach ( [ 'src' ] as $base ) {
 
 		dump( "Moving {$old_dir} to {$new_dir}" );
 
-		// shell_exec( "git mv {$old_dir} {$old_dir}-tmp" );
-		// shell_exec( "git mv {$old_dir}-tmp {$new_dir}" );
+		shell_exec( "git mv {$old_dir} {$old_dir}-tmp" );
+		shell_exec( "git mv {$old_dir}-tmp {$new_dir}" );
 	}
 }
 

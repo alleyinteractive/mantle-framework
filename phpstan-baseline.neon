@@ -3,44 +3,44 @@ parameters:
 		-
 			message: "#^Method Mantle\\\\Support\\\\Collection\\:\\:map_to_groups\\(\\) should return Mantle\\\\Support\\\\Collection\\<TMapToGroupsKey of \\(int\\|string\\), Mantle\\\\Support\\\\Collection\\<int, TMapToGroupsValue\\>\\> but returns Mantle\\\\Support\\\\Collection\\<TMapToGroupsKey of \\(int\\|string\\), Mantle\\\\Support\\\\Collection\\<TMakeKey of \\(int\\|string\\), TMakeValue\\>\\>\\.$#"
 			count: 1
-			path: src/mantle/support/class-collection.php
+			path: src/Mantle/Support/class-collection.php
 
 		-
 			message: "#^Parameter \\#1 \\$callback of method Mantle\\\\Support\\\\Collection\\<TKey of \\(int\\|string\\),TValue\\>\\:\\:when_empty\\(\\) expects callable\\(Mantle\\\\Support\\\\Collection\\<TKey, TValue\\>\\)\\: TUnlessNotEmptyReturnType, callable\\(\\$this\\)\\: TUnlessNotEmptyReturnType given\\.$#"
 			count: 1
-			path: src/mantle/support/class-collection.php
+			path: src/Mantle/Support/class-collection.php
 
 		-
 			message: "#^Parameter \\#1 \\$callback of method Mantle\\\\Support\\\\Collection\\<TKey of \\(int\\|string\\),TValue\\>\\:\\:when_not_empty\\(\\) expects callable\\(Mantle\\\\Support\\\\Collection\\<TKey, TValue\\>\\)\\: TUnlessEmptyReturnType, callable\\(\\$this\\)\\: TUnlessEmptyReturnType given\\.$#"
 			count: 1
-			path: src/mantle/support/class-collection.php
+			path: src/Mantle/Support/class-collection.php
 
 		-
 			message: "#^Parameter \\#2 \\$callback of method Mantle\\\\Support\\\\Collection\\<TKey of \\(int\\|string\\),TValue\\>\\:\\:when\\(\\) expects \\(callable\\(Mantle\\\\Support\\\\Collection\\<TKey, TValue\\>, bool\\)\\: TWhenEmptyReturnType\\)\\|null, callable\\(\\$this\\)\\: TWhenEmptyReturnType given\\.$#"
 			count: 1
-			path: src/mantle/support/class-collection.php
+			path: src/Mantle/Support/class-collection.php
 
 		-
 			message: "#^Parameter \\#2 \\$callback of method Mantle\\\\Support\\\\Collection\\<TKey of \\(int\\|string\\),TValue\\>\\:\\:when\\(\\) expects \\(callable\\(Mantle\\\\Support\\\\Collection\\<TKey, TValue\\>, bool\\)\\: TWhenNotEmptyReturnType\\)\\|null, callable\\(\\$this\\)\\: TWhenNotEmptyReturnType given\\.$#"
 			count: 1
-			path: src/mantle/support/class-collection.php
+			path: src/Mantle/Support/class-collection.php
 
 		-
 			message: "#^Parameter \\#2 \\$default of method Mantle\\\\Support\\\\Collection\\<TKey of \\(int\\|string\\),TValue\\>\\:\\:when_empty\\(\\) expects \\(callable\\(Mantle\\\\Support\\\\Collection\\<TKey, TValue\\>\\)\\: TUnlessNotEmptyReturnType\\)\\|null, \\(callable\\(\\$this\\)\\: TUnlessNotEmptyReturnType\\)\\|null given\\.$#"
 			count: 1
-			path: src/mantle/support/class-collection.php
+			path: src/Mantle/Support/class-collection.php
 
 		-
 			message: "#^Parameter \\#2 \\$default of method Mantle\\\\Support\\\\Collection\\<TKey of \\(int\\|string\\),TValue\\>\\:\\:when_not_empty\\(\\) expects \\(callable\\(Mantle\\\\Support\\\\Collection\\<TKey, TValue\\>\\)\\: TUnlessEmptyReturnType\\)\\|null, \\(callable\\(\\$this\\)\\: TUnlessEmptyReturnType\\)\\|null given\\.$#"
 			count: 1
-			path: src/mantle/support/class-collection.php
+			path: src/Mantle/Support/class-collection.php
 
 		-
 			message: "#^Parameter \\#3 \\$default of method Mantle\\\\Support\\\\Collection\\<TKey of \\(int\\|string\\),TValue\\>\\:\\:when\\(\\) expects \\(callable\\(Mantle\\\\Support\\\\Collection\\<TKey, TValue\\>, bool\\)\\: TWhenEmptyReturnType\\)\\|null, \\(callable\\(\\$this\\)\\: TWhenEmptyReturnType\\)\\|null given\\.$#"
 			count: 1
-			path: src/mantle/support/class-collection.php
+			path: src/Mantle/Support/class-collection.php
 
 		-
 			message: "#^Parameter \\#3 \\$default of method Mantle\\\\Support\\\\Collection\\<TKey of \\(int\\|string\\),TValue\\>\\:\\:when\\(\\) expects \\(callable\\(Mantle\\\\Support\\\\Collection\\<TKey, TValue\\>, bool\\)\\: TWhenNotEmptyReturnType\\)\\|null, \\(callable\\(\\$this\\)\\: TWhenNotEmptyReturnType\\)\\|null given\\.$#"
 			count: 1
-			path: src/mantle/support/class-collection.php
+			path: src/Mantle/Support/class-collection.php

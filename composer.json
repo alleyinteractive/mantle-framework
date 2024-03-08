@@ -93,16 +93,16 @@
     "prefer-stable": true,
     "autoload": {
         "files": [
-            "src/mantle/framework/helpers.php",
-            "src/mantle/application/autoload.php",
-            "src/mantle/assets/autoload.php",
-            "src/mantle/cache/autoload.php",
-            "src/mantle/config/autoload.php",
-            "src/mantle/http/autoload.php",
-            "src/mantle/http-client/autoload.php",
-            "src/mantle/queue/autoload.php",
-            "src/mantle/support/autoload.php",
-            "src/mantle/testing/autoload.php"
+            "src/Mantle/Framework/helpers.php",
+            "src/Mantle/Application/autoload.php",
+            "src/Mantle/Assets/autoload.php",
+            "src/Mantle/Cache/autoload.php",
+            "src/Mantle/Config/autoload.php",
+            "src/Mantle/Http/autoload.php",
+            "src/Mantle/Http_Client/autoload.php",
+            "src/Mantle/Queue/autoload.php",
+            "src/Mantle/Support/autoload.php",
+            "src/Mantle/Testing/autoload.php"
         ]
     },
     "autoload-dev": {
@@ -121,7 +121,7 @@
     "extra": {
         "wordpress-autoloader": {
             "autoload": {
-                "Mantle\\": "src/mantle/"
+                "Mantle\\": "src/Mantle/"
             },
             "autoload-dev": {
                 "Mantle\\Tests\\": "tests/"

@@ -32,7 +32,7 @@ return static function ( ContainerConfigurator $container_config ): void {
 	$parameters->set(
 		Option::PACKAGE_DIRECTORIES,
 		[
-			__DIR__ . '/src/mantle',
+			__DIR__ . '/src/Mantle',
 		],
 	);
 
@@ -40,7 +40,7 @@ return static function ( ContainerConfigurator $container_config ): void {
 	$parameters->set(
 		Option::PACKAGE_DIRECTORIES_EXCLUDES,
 		[
-			__DIR__ . '/src/mantle/framework',
+			__DIR__ . '/src/Mantle/Framework',
 		],
 	);
 

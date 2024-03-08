@@ -6,7 +6,7 @@ parameters:
 	level: 5
 
 	paths:
-		- src/mantle
+		- src
 		- mantle.php
 
 	ignoreErrors:
@@ -21,15 +21,15 @@ parameters:
 		- tests/fixtures/phpstan
 
 	excludePaths:
-		- src/mantle/database/factory
-		- src/mantle/blocks
-		- src/mantle/query-monitor
-		- src/mantle/testing/class-mock-action.php
-		- src/mantle/testing/doubles/class-mockphpmailer.php
-		- src/mantle/testing/install-wordpress.php
-		- src/mantle/testing/preload.php
-		- src/mantle/testing/wordpress-bootstrap.php
-		- src/mantle/testing/wp-tests-config-sample.php
+		- src/Mantle/Database/factory
+		- src/Mantle/Blocks
+		- src/Mantle/QueryMonitor
+		- src/Mantle/Testing/class-mock-action.php
+		- src/Mantle/Testing/doubles/class-mockphpmailer.php
+		- src/Mantle/Testing/install-wordpress.php
+		- src/Mantle/Testing/preload.php
+		- src/Mantle/Testing/wordpress-bootstrap.php
+		- src/Mantle/Testing/wp-tests-config-sample.php
 
 	type_coverage:
 		return_type: 50
