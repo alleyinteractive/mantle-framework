@@ -9,6 +9,7 @@ namespace Mantle\Testing\Concerns;
 
 use ErrorException;
 
+use function Mantle\Support\Helpers\collect;
 use function Termwind\render;
 
 /**
