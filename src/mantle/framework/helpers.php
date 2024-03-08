@@ -21,9 +21,8 @@ if ( ! function_exists( 'report' ) ) {
 	 * Report an exception.
 	 *
 	 * @param  \Throwable|string  $exception
-	 * @return void
 	 */
-	function report( $exception ) {
+	function report( $exception ): void {
 		if ( is_string( $exception ) ) {
 			$exception = new Exception( $exception );
 		}

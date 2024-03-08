@@ -16,14 +16,14 @@ interface Filesystem {
 	 *
 	 * @var string
 	 */
-	const VISIBILITY_PUBLIC = 'public';
+	public const VISIBILITY_PUBLIC = 'public';
 
 	/**
 	 * The private visibility setting.
 	 *
 	 * @var string
 	 */
-	const VISIBILITY_PRIVATE = 'private';
+	public const VISIBILITY_PRIVATE = 'private';
 
 	/**
 	 * Get all (recursive) of the directories within a given directory.

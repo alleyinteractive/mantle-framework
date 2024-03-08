@@ -14,16 +14,10 @@ use Exception;
  */
 class Http_Client_Exception extends Exception {
 	/**
-	 * Error response.
-	 */
-	public Response $response;
-
-	/**
 	 * Constructor.
 	 *
 	 * @param Response $response Http Response.
 	 */
-	public function __construct( Response $response ) {
-		$this->response = $response;
+	public function __construct( public Response $response ) {
 	}
 }

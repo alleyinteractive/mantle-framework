@@ -63,7 +63,7 @@ class Hook_Usage_Command extends Command {
 	/**
 	 * Callback for the command.
 	 */
-	public function handle() {
+	public function handle(): int {
 		$usage = $this->get_usage();
 
 		if ( $usage->is_empty() ) {
@@ -144,7 +144,7 @@ class Hook_Usage_Command extends Command {
 		$dir   = new RecursiveDirectoryIterator( $path );
 		$files = new RecursiveCallbackFilterIterator(
 			$dir,
-			function( \SplFileInfo $current, $key, RecursiveDirectoryIterator $iterator ) use ( $paths_to_ignore ) {
+			function( \SplFileInfo $current, $key, RecursiveDirectoryIterator $iterator ) use ( $paths_to_ignore ): bool {
 				if ( Str::is( $paths_to_ignore, $current->getRealPath() ) ) {
 					return false;
 				}
@@ -296,7 +296,7 @@ class Hook_Usage_Command extends Command {
 			->trim()
 			->unique()
 			->filter(
-				function ( $path ) {
+				function ( $path ): bool {
 					if ( ! is_file( $path ) && ! is_dir( $path ) ) {
 						return false;
 					}

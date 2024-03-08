@@ -43,7 +43,7 @@ class Test_Config_Install_Command extends Command {
 	/**
 	 * Test Config Install Command.
 	 */
-	public function handle() {
+	public function handle(): int {
 		$path = static::get_test_config_path();
 
 		if ( file_exists( $path ) ) {

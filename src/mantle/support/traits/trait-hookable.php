@@ -39,7 +39,7 @@ trait Hookable {
 			->merge( $this->collect_attribute_hooks() )
 			->unique()
 			->each(
-				function ( array $item ) {
+				function ( array $item ): void {
 					if ( $this->use_event_dispatcher() ) {
 						if ( 'action' === $item['type'] ) {
 							\Mantle\Support\Helpers\add_action( $item['hook'], [ $this, $item['method'] ], $item['priority'] );

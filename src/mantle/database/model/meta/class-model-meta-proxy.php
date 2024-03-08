@@ -14,20 +14,11 @@ use Mantle\Contracts\Database\Model_Meta;
  */
 class Model_Meta_Proxy {
 	/**
-	 * Model to retrieve meta from.
-	 *
-	 * @var Model_Meta
-	 */
-	protected Model_Meta $model;
-
-	/**
 	 * Constructor.
 	 *
 	 * @param Model_Meta $model Model to reference.
 	 */
-	public function __construct( Model_Meta $model ) {
-		$this->model = $model;
-	}
+	public function __construct( protected Model_Meta $model ) {}
 
 	/**
 	 * Retrieve model meta by key.

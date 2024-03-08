@@ -72,7 +72,7 @@ if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) && ! empty( WP_TESTS_CONFIG_FILE_PAT
 } else {
 	// The project is being loaded from inside a WordPress installation.
 	if ( defined( 'WP_TESTS_INSTALL_PATH' ) ) {
-		$config_file_path = preg_replace( '#/wp-content/.*$#', '/wp-tests-config.php', WP_TESTS_INSTALL_PATH );
+		$config_file_path = preg_replace( '#/wp-content/.*$#', '/wp-tests-config.php', (string) WP_TESTS_INSTALL_PATH );
 	}
 
 	if ( empty( $config_file_path ) ) {

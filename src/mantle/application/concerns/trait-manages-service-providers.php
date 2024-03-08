@@ -75,7 +75,7 @@ trait Manages_Service_Providers {
 	 */
 	public function get_provider( string $name ): ?Service_Provider {
 		return collect( $this->get_providers() )->first(
-			fn( Service_Provider $provider ) => $provider instanceof $name,
+			fn ( Service_Provider $provider ) => $provider instanceof $name,
 		);
 	}
 
@@ -96,7 +96,7 @@ trait Manages_Service_Providers {
 	 * @param Service_Provider|class-string<Service_Provider> $provider Provider instance or class name to register.
 	 */
 	public function register( Service_Provider|string $provider ): static {
-		$provider_name = is_string( $provider ) ? $provider : get_class( $provider );
+		$provider_name = is_string( $provider ) ? $provider : $provider::class;
 
 		if ( ! empty( $this->service_providers[ $provider_name ] ) ) {
 			return $this;

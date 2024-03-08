@@ -30,7 +30,7 @@ if ( ! function_exists( 'rand_long_str' ) ) :
 		$string = '';
 
 		for ( $i = 0; $i < $length; $i++ ) {
-			$rand    = rand( 0, strlen( $chars ) - 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.rand_rand
+			$rand    = random_int( 0, strlen( $chars ) - 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.rand_rand
 			$string .= substr( $chars, $rand, 1 );
 		}
 

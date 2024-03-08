@@ -181,7 +181,7 @@ class View_Finder {
 		$alias = null;
 
 		// Extract the alias if passed.
-		if ( 0 === strpos( $slug, '@' ) ) {
+		if ( str_starts_with( $slug, '@' ) ) {
 			$alias = substr( Str::before( $slug, '/' ), 1 );
 			$slug  = Str::after( $slug, '/' );
 		}
@@ -214,9 +214,7 @@ class View_Finder {
 		if ( $alias ) {
 			$paths = array_filter(
 				$paths,
-				function( $path_alias ) use ( $alias ) {
-					return $alias === $path_alias;
-				},
+				fn ( $path_alias) => $alias === $path_alias,
 				ARRAY_FILTER_USE_KEY
 			);
 		}
@@ -246,9 +244,7 @@ class View_Finder {
 	 */
 	public function get_possible_view_files( string $name ): array {
 		return array_map(
-			function ( $extension ) use ( $name ) {
-				return "{$name}.{$extension}";
-			},
+			fn ( $extension) => "{$name}.{$extension}",
 			$this->extensions
 		);
 	}

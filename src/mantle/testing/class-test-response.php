@@ -410,7 +410,7 @@ class Test_Response {
 				continue;
 			}
 
-			$value_position = mb_strpos( $content, $value, $position );
+			$value_position = mb_strpos( $content, (string) $value, $position );
 
 			if ( false === $value_position || $value_position < $position ) {
 				throw new Exception(
@@ -422,7 +422,7 @@ class Test_Response {
 				);
 			}
 
-			$position = $value_position + mb_strlen( $value );
+			$position = $value_position + mb_strlen( (string) $value );
 		}
 
 		return true;

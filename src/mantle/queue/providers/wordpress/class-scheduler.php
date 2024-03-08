@@ -39,8 +39,8 @@ class Scheduler {
 			static::$pending_queues[] = $queue;
 		}
 
-		if ( ! has_action( 'shutdown', [ __CLASS__, 'schedule_on_shutdown' ] ) ) {
-			add_action( 'shutdown', [ __CLASS__, 'schedule_on_shutdown' ] );
+		if ( ! has_action( 'shutdown', [ self::class, 'schedule_on_shutdown' ] ) ) {
+			add_action( 'shutdown', [ self::class, 'schedule_on_shutdown' ] );
 		}
 	}
 

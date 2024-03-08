@@ -18,7 +18,7 @@ use Mantle\Support\Arr;
 /**
  * View Class
  */
-class View {
+class View implements \Stringable {
 	/**
 	 * Post object to set for the post.
 	 *
@@ -247,10 +247,8 @@ class View {
 
 	/**
 	 * Get the string contents of the view.
-	 *
-	 * @return string
 	 */
-	public function __toString() {
+	public function __toString(): string {
 		return $this->render();
 	}
 }

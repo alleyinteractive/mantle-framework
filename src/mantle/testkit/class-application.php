@@ -289,7 +289,7 @@ class Application extends Container implements Application_Contract {
 	 * Register the base service providers.
 	 */
 	protected function register_base_service_providers() {
-		$this->singleton( 'events', fn( $app ) => new Dispatcher( $app ) );
+		$this->singleton( 'events', fn ( $app ) => new Dispatcher( $app ) );
 
 		$this->singleton(
 			Generator::class,
@@ -313,7 +313,7 @@ class Application extends Container implements Application_Contract {
 	 * @param string[]        $bootstrappers Class names of packages to boot.
 	 * @param Kernel_Contract $kernel Kernel instance.
 	 */
-	public function bootstrap_with( array $bootstrappers, Kernel_Contract $kernel ) {
+	public function bootstrap_with( array $bootstrappers, Kernel_Contract $kernel ): never {
 		throw new RuntimeException( 'Not supported with Testkit' );
 	}
 

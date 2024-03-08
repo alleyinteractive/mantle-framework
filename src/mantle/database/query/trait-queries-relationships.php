@@ -29,7 +29,7 @@ trait Queries_Relationships {
 		}
 
 		if ( ! method_exists( $relation, 'get_relation_query' ) ) {
-			throw new Query_Exception( 'Relationship does not support querying against it: ' . get_class( $relation ) );
+			throw new Query_Exception( 'Relationship does not support querying against it: ' . $relation::class );
 		}
 
 		return $relation->get_relation_query( $this, $compare );
@@ -51,7 +51,7 @@ trait Queries_Relationships {
 		}
 
 		if ( ! method_exists( $relation, 'get_relation_query' ) ) {
-			throw new Query_Exception( 'Relationship does not support querying against it: ' . get_class( $relation ) );
+			throw new Query_Exception( 'Relationship does not support querying against it: ' . $relation::class );
 		}
 
 		$comparison = $compare ? '!=' : 'NOT EXISTS';

@@ -14,9 +14,10 @@ use Mantle\Support\Traits\Singleton;
  * Installation Manager
  */
 class Installation_Manager {
-	use Conditionable,
-		Concerns\Rsync_Installation,
-		Singleton;
+	use Conditionable;
+	use Concerns\PHPUnit_Upgrade_Warning;
+	use Concerns\Rsync_Installation;
+	use Singleton;
 
 	/**
 	 * Callbacks for before installation.
@@ -189,6 +190,8 @@ class Installation_Manager {
 	 * @return static
 	 */
 	public function install() {
+		$this->warn_if_phpunit_10_or_higher();
+
 		require_once __DIR__ . '/core-polyfill.php';
 
 		if ( Utils::is_debug_mode() ) {

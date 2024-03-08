@@ -12,20 +12,11 @@ namespace Mantle\Support;
  */
 class Higher_Order_Tap_Proxy {
 	/**
-	 * The target being tapped.
-	 *
-	 * @var mixed
-	 */
-	public $target;
-
-	/**
 	 * Create a new tap proxy instance.
 	 *
-	 * @param mixed $target Object against which to call a method.
+	 * @param mixed $target The target being tapped.
 	 */
-	public function __construct( $target ) {
-		$this->target = $target;
-	}
+	public function __construct( public mixed $target ) {}
 
 	/**
 	 * Dynamically pass method calls to the target.
@@ -34,7 +25,7 @@ class Higher_Order_Tap_Proxy {
 	 * @param array  $parameters Params to provide to the method.
 	 * @return mixed
 	 */
-	public function __call( $method, $parameters ) {
+	public function __call( string $method, array $parameters ) {
 		$this->target->{$method}( ...$parameters );
 
 		return $this->target;

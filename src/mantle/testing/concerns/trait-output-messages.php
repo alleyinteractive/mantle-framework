@@ -9,6 +9,7 @@ namespace Mantle\Testing\Concerns;
 
 use ErrorException;
 
+use function Mantle\Support\Helpers\collect;
 use function Termwind\render;
 
 /**
@@ -125,7 +126,7 @@ trait Output_Messages {
 			$frame = $frames
 				->filter(
 					fn ( array $item ) => false === strpos(
-						$item['file'],
+						(string) $item['file'],
 						'phpunit/phpunit',
 					)
 				)

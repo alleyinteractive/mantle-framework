@@ -140,7 +140,7 @@ trait WordPress_Action {
 			$class_name = Reflector::get_parameter_class_name( $parameter );
 			if (
 				$class_name
-				&& ( is_object( $argument ) && get_class( $argument ) === $class_name || is_subclass_of( $argument, $class_name ) )
+				&& ( is_object( $argument ) && $argument::class === $class_name || is_subclass_of( $argument, $class_name ) )
 			) {
 				return $argument;
 			}

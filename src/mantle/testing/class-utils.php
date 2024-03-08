@@ -128,7 +128,7 @@ class Utils {
 	 *
 	 * @return string The server class name.
 	 */
-	public static function wp_rest_server_class_filter() {
+	public static function wp_rest_server_class_filter(): string {
 		return Spy_REST_Server::class;
 	}
 
@@ -261,7 +261,7 @@ class Utils {
 	public static function env_bool( string $variable, bool $default ): bool {
 		$value = static::env( $variable, $default );
 
-		return in_array( strtolower( $value ), [ 'true', '1', 'yes' ], true );
+		return in_array( strtolower( (string) $value ), [ 'true', '1', 'yes' ], true );
 	}
 
 	/**
@@ -464,7 +464,7 @@ class Utils {
 	 * Ensure that Composer is loaded for the current environment.
 	 */
 	public static function ensure_composer_loaded(): void {
-		if ( class_exists( 'Composer\Autoload\ClassLoader' ) ) {
+		if ( class_exists( \Composer\Autoload\ClassLoader::class ) ) {
 			return;
 		}
 

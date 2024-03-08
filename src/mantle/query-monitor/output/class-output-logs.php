@@ -74,7 +74,7 @@ class Output_Logs extends \QM_Output_Html {
 
 			$row_attr                      = [];
 			$row_attr['data-qm-component'] = $component->name;
-			$row_attr['data-qm-type']      = ucfirst( $row['level'] );
+			$row_attr['data-qm-type']      = ucfirst( (string) $row['level'] );
 
 			$attr = '';
 
@@ -100,7 +100,7 @@ class Output_Logs extends \QM_Output_Html {
 				echo '<span class="dashicons" aria-hidden="true"></span>';
 			}
 
-			echo esc_html( ucfirst( $row['level'] ) );
+			echo esc_html( ucfirst( (string) $row['level'] ) );
 			echo '</td>';
 
 			printf(

@@ -46,7 +46,7 @@ class Generator_Make_Command extends Stub_Generator_Command {
 	 *
 	 * @todo Replace with a filesystem abstraction.
 	 */
-	public function handle() {
+	public function handle(): int {
 		// Prevent command being run in non-local environments.
 		if ( 'local' !== $this->container->environment() ) {
 			$this->error( 'Generator cannot be used outside of local environment.' );
@@ -54,7 +54,6 @@ class Generator_Make_Command extends Stub_Generator_Command {
 		}
 
 		$name = $this->argument( 'name' );
-		$type = $this->argument( 'type' );
 
 		$path = $this->get_folder_path( $name );
 

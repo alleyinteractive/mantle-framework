@@ -36,7 +36,7 @@ class Belongs_To_Many extends Belongs_To {
 		$dictionary = $this->build_dictionary( $results, $models );
 
 		return $models->each(
-			function( $model ) use ( $dictionary ) {
+			function( $model ) use ( $dictionary ): void {
 				$key = $model->{$this->foreign_key};
 
 				$model->set_relation( $this->relationship, $dictionary[ $key ] ?? null );
@@ -60,9 +60,7 @@ class Belongs_To_Many extends Belongs_To {
 
 		return $dictionary
 			->map(
-				function ( $child_ids ) use ( $results ) {
-					return $results->only( $child_ids )->values()->all();
-				}
+				fn ( $child_ids) => $results->only( $child_ids )->values()->all()
 			)
 			->filter()
 			->all();

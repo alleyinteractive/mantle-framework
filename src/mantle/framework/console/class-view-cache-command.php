@@ -63,7 +63,7 @@ class View_Cache_Command extends Command {
 	 *
 	 * @param View_Finder $finder Finder instance.
 	 */
-	public function handle( View_Finder $finder ) {
+	public function handle( View_Finder $finder ): int {
 		if ( ! isset( $this->container['view.engine.resolver'] ) ) {
 			$this->error( 'Missing view engine resolver from the view service provider.' );
 			return Command::FAILURE;

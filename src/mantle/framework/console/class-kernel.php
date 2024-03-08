@@ -70,7 +70,7 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	/**
 	 * Output interface
 	 */
-	protected ?OutputInterface $output;
+	protected ?OutputInterface $output = null;
 
 	/**
 	 * Constructor.
@@ -88,9 +88,8 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	 *
 	 * @param \Symfony\Component\Console\Input\InputInterface   $input
 	 * @param \Symfony\Component\Console\Output\OutputInterface $output
-	 * @return int
 	 */
-	public function handle( $input = null, $output = null ) {
+	public function handle( $input = null, $output = null ): int {
 		$this->output = $output;
 
 		try {
@@ -109,9 +108,8 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	 * @param string $command Command name.
 	 * @param array  $parameters Command parameters.
 	 * @param mixed  $output_buffer Output buffer.
-	 * @return int
 	 */
-	public function call( string $command, array $parameters = [], $output_buffer = null ) {
+	public function call( string $command, array $parameters = [], $output_buffer = null ): int {
 		$this->bootstrap();
 
 		return $this->get_console_application()->call( $command, $parameters, $output_buffer );

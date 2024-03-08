@@ -48,9 +48,8 @@ class Reflector {
 	 * Get the class names of the given parameter's type, including union types.
 	 *
 	 * @param  \ReflectionParameter $parameter
-	 * @return array
 	 */
-	public static function get_parameter_class_names( $parameter ) {
+	public static function get_parameter_class_names( $parameter ): array {
 		$type = $parameter->getType();
 
 		if ( ! $type instanceof ReflectionUnionType ) {
@@ -98,9 +97,8 @@ class Reflector {
 	 *
 	 * @param  \ReflectionParameter $parameter
 	 * @param  string               $class_name
-	 * @return bool
 	 */
-	public static function is_parameter_subclass_of( $parameter, $class_name ) {
+	public static function is_parameter_subclass_of( $parameter, $class_name ): bool {
 		$param_class_name = static::get_parameter_class_name( $parameter );
 
 		return $param_class_name && class_exists( $param_class_name ) && ( new ReflectionClass( $param_class_name ) )->isSubclassOf( $class_name );

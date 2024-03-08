@@ -601,8 +601,8 @@ class Pending_Request {
 		$this->method  = $method;
 
 		// Ensure some options are always set.
-		$this->options['throw_exception'] = $this->options['throw_exception'] ?? false;
-		$this->options['retry']           = max( 1, $this->options['retry'] ?? 1 );
+		$this->options['throw_exception'] ??= false;
+		$this->options['retry']             = max( 1, $this->options['retry'] ?? 1 );
 
 		$this->prepare_request_url();
 

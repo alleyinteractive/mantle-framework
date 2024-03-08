@@ -102,7 +102,7 @@ class Post_Factory extends Factory {
 	 */
 	public function definition(): array {
 		return [
-			'post_content' => trim( $this->faker->paragraph_blocks( 3 ) ),
+			'post_content' => trim( (string) $this->faker->paragraph_blocks( 3 ) ),
 			'post_excerpt' => trim( $this->faker->paragraph( 2 ) ),
 			'post_status'  => 'publish',
 			'post_title'   => $this->faker->sentence(),
@@ -153,7 +153,7 @@ class Post_Factory extends Factory {
 		return collect()
 			->pad( $count, null )
 			->map(
-				fn() => $this->create(
+				fn () => $this->create(
 					array_merge(
 						$args,
 						[
