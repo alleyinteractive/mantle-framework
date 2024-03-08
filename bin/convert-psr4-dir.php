@@ -16,32 +16,35 @@ use function Mantle\Support\Helpers\str;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$finder = ( new Finder() )
-	->in( realpath( __DIR__ . '/../tests' ) )
-	->directories()
-	->notPath( '#fixtures|__snapshots__|template-parts#' );
+// foreach ( [ 'src', 'tests' ] as $base ) {
+foreach ( [ 'src' ] as $base ) {
+	$finder = ( new Finder() )
+		->in( realpath( __DIR__ . "/../{$base}" ) )
+		->directories()
+		->notPath( '#fixtures|__snapshots__|template-parts#' );
 
-$base = Str::trailing_slash( realpath( __DIR__ . '/../tests/' ) );
+	$base = Str::trailing_slash( realpath( __DIR__ . "/../{$base}" ) );
 
-foreach ( $finder as $dir ) {
-	$old_dir = $dir->getRealPath();
+	foreach ( $finder as $dir ) {
+		$old_dir = $dir->getRealPath();
 
-	if ( ! is_dir( $old_dir ) ) {
-		continue;
+		if ( ! is_dir( $old_dir ) ) {
+			continue;
+		}
+
+		$parts = str( $old_dir )->after( $base )->explode( '/' );
+
+		$parts = $parts->map(
+			fn ( string $part ) => str( $part )->studly()->value(),
+		);
+
+		$new_dir = $base . $parts->implode( '/' );
+
+		dump( "Moving {$old_dir} to {$new_dir}" );
+
+		// shell_exec( "git mv {$old_dir} {$old_dir}-tmp" );
+		// shell_exec( "git mv {$old_dir}-tmp {$new_dir}" );
 	}
-
-	$parts = str( $old_dir )->after( $base )->explode( '/' );
-
-	$parts = $parts->map(
-		fn ( string $part ) => str( $part )->studly()->value(),
-	);
-
-	$new_dir = $base . $parts->implode( '/' );
-
-	dump( "Moving {$old_dir} to {$new_dir}" );
-
-	shell_exec( "git mv {$old_dir} {$old_dir}-tmp" );
-	shell_exec( "git mv {$old_dir}-tmp {$new_dir}" );
 }
 
 echo "\nDONE!\n";
