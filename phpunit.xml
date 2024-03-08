@@ -6,6 +6,9 @@
 	colors="true"
 	xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.3/phpunit.xsd"
 	displayDetailsOnTestsThatTriggerDeprecations="true"
+	displayDetailsOnTestsThatTriggerWarnings="true"
+	failOnNotice="true"
+	failOnDeprecation="true"
 >
 	<testsuites>
 		<testsuite name="mantle-framework">
