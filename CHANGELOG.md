@@ -38,7 +38,7 @@ the following command:
 To upgrade an existing test suite to PHPUnit 10 and PSR-4 standards, consider
 using a [helper tool](https://github.com/alleyinteractive/wp-to-psr-4/). You will also need to adjust your `phpunit.xml` file:
 
-```xml
+```diff
 <phpunit
 	bootstrap="tests/bootstrap.php"
 	backupGlobals="false"
