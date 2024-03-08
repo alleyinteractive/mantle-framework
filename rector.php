@@ -76,8 +76,9 @@ return RectorConfig::configure()
 	)
 	->withSkip([
 		AddVoidReturnTypeWhereNoReturnRector::class => [
-			__DIR__ . '/src/Mantle/testing/concerns/trait-core-shim.php',
+			__DIR__ . '/src/mantle/testing/concerns/trait-core-shim.php',
 			__DIR__ . '/tests/Testing/CoreTestShimTest.php',
+			__DIR__ . '/tests/testing/CoreTestShimTest.php',
 		],
 		RemoveUselessParamTagRector::class,
 		MixedTypeRector::class,
