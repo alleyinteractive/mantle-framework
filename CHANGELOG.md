@@ -10,21 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added support for PHP 8.3.
-- PHPUnit 10 support added and `nunomaduro/collision` depend on to v6-7.
-
-	**Upgrade Note:** When upgrading to Mantle v1 projects will receive PHPUnit 10
-  and `nunomaduro/collision` v7 by default. With the upgrade to PHPUnit 10/Collision 7,
-  you will need remove the
-  `printerClass="NunoMaduro\Collision\Adapters\Phpunit\Printer"` line from your
-  `phpunit.xml` file if you wish to continue. **PHPUnit 10 does require tests to be
-  written using a PSR-4 file structure** (`tests/Feature/MyExampleTest.php`).
-  Consider using a [helper tool](https://github.com/alleyinteractive/wp-to-psr-4/)
-  to migrate your tests to PSR-4.
-
-	If you wish to instead continue using PHPUnit 9, you will need to run the
-	following command to downgrade to PHPUnit 9/Collision 6:
-
-	`composer require --dev phpunit/phpunit:^9 nunomaduro/collision:^6`
+- PHPUnit 10 support added and `nunomaduro/collision` depend on to v6-7. See
+  [PHPUnit 10 Migration](#phpunit-10-migration) for more information.
 - Adds database-specific collections with storage of the `found_rows` value.
 - Added testing against `wp_mail()` calls.
 - Added assertions for elements by query selector (`assertElementExistsByQuerySelector()` and `assertElementMissingByQuerySelector()`).
@@ -35,6 +22,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tests that make requests using `$this->get()` and other HTTP methods will now
   use a fluent pending request class `Mantle\Testing\Pending_Testable_Request`
   to allow for more complex request building.
+
+### PHPUnit 10 Migration
+
+**Upgrade Note about PHPUnit 10:** When upgrading to Mantle v1 projects will
+receive `phpunit/phpunit` v10 and `nunomaduro/collision` v7. PHPUnit 10 requires
+PSR-4 file structure for tests (`tests/Feature/MyExampleTest.php` vs
+`tests/feature/test-my-example.php`). If you have tests written in the old
+style, you will need to migrate them to PSR-4. If you wish to continue using
+PHPUnit 9, you will need to downgrade to PHPUnit 9/Collision 6. To do so, run
+the following command:
+
+	composer require --dev phpunit/phpunit:^9 nunomaduro/collision:^6
+
+To upgrade an existing test suite to PHPUnit 10 and PSR-4 standards, consider
+using a [helper tool](https://github.com/alleyinteractive/wp-to-psr-4/). You will also need to adjust your `phpunit.xml` file:
+
+```xml
+<phpunit
+	bootstrap="tests/bootstrap.php"
+	backupGlobals="false"
+	colors="true"
+	convertErrorsToExceptions="true"
+	convertNoticesToExceptions="true"
+	convertWarningsToExceptions="true"
+-	printerClass="NunoMaduro\Collision\Adapters\Phpunit\Printer"
+>
+	<testsuites>
+		<testsuite name="general">
+-			<directory prefix="test-" suffix=".php">tests</directory>
++			<directory suffix="Test.php">tests</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>
+```
 
 ### Removed
 
