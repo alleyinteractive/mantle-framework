@@ -28,15 +28,11 @@ use function Termwind\render;
 trait PHPUnit_Upgrade_Warning {
 	/**
 	 * Whether to silence the PHPUnit 10+ warning.
-	 *
-	 * @var bool
 	 */
 	public bool $silence_phpunit_warning = false;
 
 	/**
 	 * Check if the current codebase is running PHPUnit 10 or higher.
-	 *
-	 * @return bool
 	 */
 	protected function is_running_phpunit_10_or_higher(): bool {
 		// Prevent conflicts if the internal class API changes.
@@ -120,8 +116,6 @@ trait PHPUnit_Upgrade_Warning {
 
 	/**
 	 * Silence the PHPUnit 10+ warning.
-	 *
-	 * @return static
 	 */
 	public function silence_phpunit_warning(): static {
 		$this->silence_phpunit_warning = true;
