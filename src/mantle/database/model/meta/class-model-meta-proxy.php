@@ -59,7 +59,6 @@ class Model_Meta_Proxy implements ArrayAccess {
 	 * Check if model meta exists.
 	 *
 	 * @param mixed $offset Meta key.
-	 * @return bool
 	 */
 	public function offsetExists( mixed $offset ): bool {
 		return null !== $this->model->get_meta( $offset );
@@ -69,7 +68,6 @@ class Model_Meta_Proxy implements ArrayAccess {
 	 * Retrieve the value of a model meta by key.
 	 *
 	 * @param mixed $offset Meta key.
-	 * @return mixed
 	 */
 	public function offsetGet( mixed $offset ): mixed {
 		return $this->__get( $offset );
