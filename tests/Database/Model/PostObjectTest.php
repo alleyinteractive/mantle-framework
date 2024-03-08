@@ -318,6 +318,12 @@ class PostObjectTest extends Framework_Test_Case {
 		$this->assertNotEmpty( $object->id() );
 		$this->assertEquals( 'meta_value_to_check', $object->get_meta( 'meta_key' ) );
 		$this->assertEquals( 'meta_value_to_check', $object->meta['meta_key'] );
+
+		$object->meta['meta_key'] = 'Updated meta value';
+
+		$object->save();
+
+		$this->assertEquals( 'Updated meta value', $object->get_meta( 'meta_key' ) );
 	}
 
 	public function test_terms_attribute() {
