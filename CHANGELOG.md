@@ -23,6 +23,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   use a fluent pending request class `Mantle\Testing\Pending_Testable_Request`
   to allow for more complex request building.
 
+### Removed
+
+- Removed support for PHP 8.0.
+
 ### PHPUnit 10 Migration
 
 **Upgrade Note about PHPUnit 10:** When upgrading to Mantle v1 projects will
@@ -56,10 +60,6 @@ using a [helper tool](https://github.com/alleyinteractive/wp-to-psr-4/). You wil
 	</testsuites>
 </phpunit>
 ```
-
-### Removed
-
-- Removed support for PHP 8.0.
 
 ## v0.12.12 - 2024-01-08
 
