@@ -83,7 +83,7 @@ trait PHPUnit_Upgrade_Warning {
 					For more information and tips on how to upgrade your codebase to PHPUnit 10, please refer to the 1.0 Release Changelog:
 
 					<div class="ml-2 my-1 italic">
-						https://github.com/alleyinteractive/mantle-framework/blob/1.x/CHANGELOG.md
+						https://github.com/alleyinteractive/mantle-framework/blob/1.x/CHANGELOG.md#phpunit-10-migration
 					</div>
 				</div>
 			</div>
