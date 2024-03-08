@@ -30,12 +30,7 @@ class Alias_Loader {
 	 *
 	 * @param array $aliases Aliases to set.
 	 */
-	private function __construct(
-					/**
-					 * The array of class aliases.
-					 */
-					protected $aliases
-				) {     }
+	private function __construct( protected array $aliases ) {}
 
 	/**
 	 * Get or create the singleton alias loader instance.

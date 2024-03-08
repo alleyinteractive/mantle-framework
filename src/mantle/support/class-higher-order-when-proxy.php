@@ -17,28 +17,18 @@ class Higher_Order_When_Proxy {
 	/**
 	 * Create a new proxy instance.
 	 *
-	 * @param  mixed $target
-	 * @param  bool  $condition
+	 * @param  mixed $target The target being conditionally operated on.
+	 * @param  bool  $condition The condition for proxying.
 	 * @return void
 	 */
-	public function __construct(
-					/**
-					 * The target being conditionally operated on.
-					 */
-					protected $target,
-					/**
-					 * The condition for proxying.
-					 */
-					protected $condition
-				) {     }
+	public function __construct( protected mixed $target, protected bool $condition ) {}
 
 	/**
 	 * Proxy accessing an attribute onto the target.
 	 *
-	 * @param  string $key
-	 * @return mixed
+	 * @param  string $key The attribute key.
 	 */
-	public function __get( $key ) {
+	public function __get( string $key ): mixed {
 		return $this->condition
 			? $this->target->{$key}
 			: $this->target;
@@ -49,9 +39,8 @@ class Higher_Order_When_Proxy {
 	 *
 	 * @param  string $method
 	 * @param  array  $parameters
-	 * @return mixed
 	 */
-	public function __call( $method, $parameters ) {
+	public function __call( string $method, array $parameters ): mixed {
 		return $this->condition
 			? $this->target->{$method}( ...$parameters )
 			: $this->target;
