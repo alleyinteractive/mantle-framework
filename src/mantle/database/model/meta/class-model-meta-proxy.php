@@ -18,12 +18,7 @@ class Model_Meta_Proxy {
 	 *
 	 * @param Model_Meta $model Model to reference.
 	 */
-	public function __construct(
-					/**
-					 * Model to retrieve meta from.
-					 */
-					protected Model_Meta $model
-				) {     }
+	public function __construct( protected Model_Meta $model ) {}
 
 	/**
 	 * Retrieve model meta by key.
