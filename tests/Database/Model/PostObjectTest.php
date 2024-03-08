@@ -304,6 +304,22 @@ class PostObjectTest extends Framework_Test_Case {
 		$this->assertEquals( 'Updated meta value', $object->meta->meta_key );
 	}
 
+	public function test_meta_as_array() {
+		$object = new Testable_Post(
+			[
+				'name' => 'Test Post with Meta',
+			]
+		);
+
+		$object->meta['meta_key'] = 'meta_value_to_check';
+
+		$object->save();
+
+		$this->assertNotEmpty( $object->id() );
+		$this->assertEquals( 'meta_value_to_check', $object->get_meta( 'meta_key' ) );
+		$this->assertEquals( 'meta_value_to_check', $object->meta['meta_key'] );
+	}
+
 	public function test_terms_attribute() {
 		$post = static::factory()->post->as_models()->create_and_get();
 		$category = static::factory()->category->create_and_get();
