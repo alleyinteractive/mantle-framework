@@ -15,7 +15,6 @@ use Countable;
 use Exception;
 use Mantle\Container\Container;
 use Mantle\Events\Dispatcher;
-use Mantle\Database\Factory\Factory;
 use Mantle\Support\Collection;
 use Mantle\Support\Higher_Order_Tap_Proxy;
 use Mantle\Support\Str;
@@ -52,7 +51,7 @@ function blank( $value ): bool {
  *
  * @return string
  */
-function class_basename( $class ) {
+function class_basename( string|object $class ): string {
 	$class = is_object( $class ) ? $class::class : $class;
 
 	return basename( str_replace( '\\', '/', $class ) );
@@ -65,7 +64,7 @@ function class_basename( $class ) {
  *
  * @return array
  */
-function class_uses_recursive( $class ) {
+function class_uses_recursive( string|object $class ): array {
 	if ( is_object( $class ) ) {
 		$class = $class::class;
 	}
@@ -99,7 +98,7 @@ function backtickit( string $string ): string {
  * @param mixed $callable The plugin callback.
  * @return string The readable function name, or an empty string if untranslatable.
  */
-function get_callable_fqn( $callable ): string {
+function get_callable_fqn( mixed $callable ): string {
 	$function_name = '';
 
 	if ( \is_string( $callable ) ) {
@@ -145,7 +144,7 @@ function get_callable_fqn( $callable ): string {
  * @param  \Mantle\Contracts\Support\Arrayable<TKey, TValue>|iterable<TKey, TValue>|null $value Value to convert to a collection.
  * @return \Mantle\Support\Collection<TKey, TValue>
  */
-function collect( $value = null ) {
+function collect( $value = null ): Collection {
 	return new Collection( $value );
 }
 
@@ -156,7 +155,7 @@ function collect( $value = null ) {
  *
  * @return bool
  */
-function filled( $value ) {
+function filled( mixed $value ): bool {
 	return ! blank( $value );
 }
 

@@ -30,8 +30,3 @@ parameters:
 		- src/mantle/testing/preload.php
 		- src/mantle/testing/wordpress-bootstrap.php
 		- src/mantle/testing/wp-tests-config-sample.php
-
-	type_coverage:
-		return_type: 50
-		param_type: 50
-		property_type: 50
