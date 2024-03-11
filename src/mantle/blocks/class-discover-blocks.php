@@ -49,7 +49,7 @@ class Discover_Blocks {
 				$block = new ReflectionClass(
 					static::class_from_file( $block, $base_path ),
 				);
-			} catch ( ReflectionException $e ) {
+			} catch ( ReflectionException ) {
 				continue;
 			}
 
@@ -84,7 +84,7 @@ class Discover_Blocks {
 		return str_replace(
 			[
 				DIRECTORY_SEPARATOR,
-				ucfirst( basename( app()->get_app_path() ) ) . '\\',
+				ucfirst( basename( (string) app()->get_app_path() ) ) . '\\',
 			],
 			[
 				'\\',

@@ -111,9 +111,7 @@ class Belongs_To extends Relation {
 
 			$meta_values = $models
 				->map(
-					function ( $model ) use ( $append ) {
-						return $model->get_meta( $this->local_key, ! $append );
-					}
+					fn ( $model) => $model->get_meta( $this->local_key, ! $append )
 				)
 				->filter();
 
@@ -161,7 +159,7 @@ class Belongs_To extends Relation {
 			throw new Model_Exception( 'Parent model must be an instance of Model_Meta.' );
 		}
 
-		$append = Belongs_To_Many::class === $this::class || is_subclass_of( $this, Belongs_To_Many::class );
+		$append = Belongs_To_Many::class === static::class || is_subclass_of( $this, Belongs_To_Many::class );
 
 		if ( $this->uses_terms ) {
 			$set = wp_set_post_terms( $this->parent->id(), [ $this->get_term_for_relationship( $model ) ], static::RELATION_TAXONOMY, $append );
@@ -307,7 +305,7 @@ class Belongs_To extends Relation {
 
 		return collect( $object_terms )
 			->filter(
-				function( WP_Term $term ) {
+				function( WP_Term $term ): bool {
 					$key = Str::before_last( $term->slug, Has_One_Or_Many::DELIMITER );
 					$id  = Str::after_last( $term->slug, Has_One_Or_Many::DELIMITER );
 
@@ -337,7 +335,7 @@ class Belongs_To extends Relation {
 		$dictionary = $this->build_dictionary( $results, $models );
 
 		return $models->each(
-			function( $model ) use ( $dictionary ) {
+			function( $model ) use ( $dictionary ): void {
 				$key = $model->meta->{$this->local_key};
 
 				$model->set_relation( $this->relationship, $dictionary[ $key ][0] ?? null );
@@ -354,9 +352,7 @@ class Belongs_To extends Relation {
 	protected function build_dictionary( Collection $results, Collection $models ): array {
 		return $results
 			->map_to_dictionary(
-				function ( $result ) {
-					return [ (string) $result[ $this->foreign_key ] => $result ];
-				}
+				fn ( $result) => [ (string) $result[ $this->foreign_key ] => $result ]
 			)
 			->all();
 	}
@@ -365,6 +361,6 @@ class Belongs_To extends Relation {
 	 * Flag if the meta should appended.
 	 */
 	protected function should_append(): bool {
-		return Belongs_To_Many::class === get_class( $this ) || is_subclass_of( $this, Belongs_To_Many::class );
+		return Belongs_To_Many::class === static::class || is_subclass_of( $this, Belongs_To_Many::class );
 	}
 }

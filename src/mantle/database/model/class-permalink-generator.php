@@ -17,17 +17,7 @@ use function Mantle\Support\Helpers\event;
  *
  * Generate a model's permalink using attributes and aliases from the model.
  */
-class Permalink_Generator {
-	/**
-	 * Model instance.
-	 */
-	protected ?Model $model;
-
-	/**
-	 * Route to generate for.
-	 */
-	protected ?string $route;
-
+class Permalink_Generator implements \Stringable {
 	/**
 	 * Attributes for the generator.
 	 *
@@ -41,9 +31,7 @@ class Permalink_Generator {
 	 * @param string     $route Route to generate for.
 	 * @param Model|null $model Model to generator for, optional.
 	 */
-	public function __construct( string $route, Model $model = null ) {
-		$this->route = $route;
-		$this->model = $model;
+	public function __construct( protected ?string $route, protected ?Model $model = null ) {
 	}
 
 	/**
@@ -69,7 +57,7 @@ class Permalink_Generator {
 
 				return $this->get_attribute( $attribute );
 			},
-			$this->route
+			(string) $this->route
 		);
 
 		return home_url( $route );
@@ -134,10 +122,8 @@ class Permalink_Generator {
 
 	/**
 	 * Convert the class to string.
-	 *
-	 * @return string
 	 */
-	public function __toString() {
+	public function __toString(): string {
 		return $this->permalink();
 	}
 }

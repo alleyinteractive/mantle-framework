@@ -21,7 +21,7 @@ trait Register_Taxonomy {
 	 * Register the taxonomy.
 	 */
 	public static function boot_register_taxonomy(): void {
-		\add_action( 'init', [ __CLASS__, 'register_object' ] );
+		\add_action( 'init', [ self::class, 'register_object' ] );
 	}
 
 	/**
@@ -51,7 +51,7 @@ trait Register_Taxonomy {
 
 		foreach ( $object_types as &$object_type ) {
 			// Detect a class name being used.
-			if ( false !== strpos( $object_type, '\\' ) ) {
+			if ( false !== strpos( (string) $object_type, '\\' ) ) {
 				// Ensure the class name uses the Registrable Contract.
 				if ( ! in_array( Registrable_Contract::class, class_implements( $object_type ), true ) ) {
 					throw new Model_Exception( 'Unknown object type class provided: ' . $object_type );

@@ -67,7 +67,7 @@ trait Refresh_Database {
 	 * @return string The altered query.
 	 */
 	public function create_temporary_tables( $query ) {
-		if ( 0 === strpos( trim( $query ), 'CREATE TABLE' ) ) {
+		if ( str_starts_with( trim( $query ), 'CREATE TABLE' ) ) {
 			return substr_replace( trim( $query ), 'CREATE TEMPORARY TABLE', 0, 12 );
 		}
 		return $query;
@@ -80,7 +80,7 @@ trait Refresh_Database {
 	 * @return string The altered query.
 	 */
 	public function drop_temporary_tables( $query ) {
-		if ( 0 === strpos( trim( $query ), 'DROP TABLE' ) ) {
+		if ( str_starts_with( trim( $query ), 'DROP TABLE' ) ) {
 			return substr_replace( trim( $query ), 'DROP TEMPORARY TABLE', 0, 10 );
 		}
 		return $query;

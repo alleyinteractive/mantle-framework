@@ -45,9 +45,8 @@ trait Route_Dependency_Resolver {
 	 *
 	 * @param  array                       $parameters
 	 * @param  \ReflectionFunctionAbstract $reflector
-	 * @return array
 	 */
-	public function resolve_method_dependencies( array $parameters, ReflectionFunctionAbstract $reflector ) {
+	public function resolve_method_dependencies( array $parameters, ReflectionFunctionAbstract $reflector ): array {
 		$instance_count = 0;
 
 		$values = array_values( $parameters );

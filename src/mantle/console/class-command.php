@@ -90,7 +90,7 @@ abstract class Command extends Symfony_Command {
 	 */
 	protected function set_definition_from_signature() {
 		// Prefix the signature with the name if defined separately.
-		if ( ! empty( $this->name ) && 0 !== strpos( $this->signature, $this->name ) ) {
+		if ( ! empty( $this->name ) && ! str_starts_with( $this->signature, $this->name ) ) {
 			$this->signature = $this->name . ' ' . $this->signature;
 		}
 
@@ -161,7 +161,7 @@ abstract class Command extends Symfony_Command {
 	 * @throws InvalidArgumentException Thrown on invalid command.
 	 */
 	public function call( string $command, array $options = [], OutputInterface $output = null ) {
-		if ( 0 === strpos( $command, static::PREFIX . ' ' ) ) {
+		if ( str_starts_with( $command, static::PREFIX . ' ' ) ) {
 			$command = substr( $command, strlen( static::PREFIX ) + 1 );
 
 			// Attempt to resolve the command from the container and run it.

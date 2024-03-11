@@ -123,7 +123,7 @@ abstract class Block implements Block_Contract {
 
 		add_action(
 			'enqueue_block_editor_assets',
-			function() {
+			function(): void {
 				$this->register_editor_assets();
 				$this->register_frontend_assets();
 			}
@@ -131,12 +131,12 @@ abstract class Block implements Block_Contract {
 
 		add_action(
 			'init',
-			function() {
+			function(): void {
 				$args = wp_parse_args(
 					[
 						'attributes'      => $this->get_attributes(),
 						'editor_script'   => $this->get_editor_script_handle(),
-						'render_callback' => $this->is_dynamic ? fn( $attributes, $content ) => $this->render( $attributes, $content ) : null,
+						'render_callback' => $this->is_dynamic ? fn ( $attributes, $content ) => $this->render( $attributes, $content ) : null,
 						'editor_style'    => $this->get_editor_style_handle(),
 					]
 				);
@@ -158,7 +158,7 @@ abstract class Block implements Block_Contract {
 	protected function block_view_exists( $name ): bool {
 		try {
 			View_Loader::find( $name );
-		} catch ( InvalidArgumentException $e ) {
+		} catch ( InvalidArgumentException ) {
 			return false;
 		}
 
@@ -196,7 +196,7 @@ abstract class Block implements Block_Contract {
 		try {
 			$assets = $disk->get( "blocks/{$this->name}/{$this->entry_filename}.asset.json" );
 			$assets = \json_decode( $assets );
-		} catch ( Throwable $e ) {
+		} catch ( Throwable ) {
 			return new \stdClass();
 		}
 

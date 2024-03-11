@@ -95,7 +95,7 @@ abstract class Test_Case extends BaseTestCase {
 		if ( ! empty( static::$test_uses ) ) {
 			static::get_test_case_traits()
 				->each(
-					function( $trait ) {
+					function( $trait ): void {
 						$method = strtolower( class_basename( $trait ) ) . '_set_up_before_class';
 
 						if ( method_exists( static::class, $method ) ) {
@@ -160,7 +160,7 @@ abstract class Test_Case extends BaseTestCase {
 		// Boot traits on the test case.
 		static::get_test_case_traits()
 			->each(
-				function( $trait ) {
+				function( $trait ): void {
 					$method = strtolower( class_basename( $trait ) ) . '_set_up';
 
 					if ( method_exists( $this, $method ) ) {
@@ -189,7 +189,7 @@ abstract class Test_Case extends BaseTestCase {
 			// Tearing down requires performing priority traits in opposite order.
 			->reverse()
 			->each(
-				function( $trait ) {
+				function( $trait ): void {
 					$method = strtolower( class_basename( $trait ) ) . '_tear_down';
 
 					if ( method_exists( $this, $method ) ) {

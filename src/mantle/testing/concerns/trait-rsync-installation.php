@@ -362,7 +362,7 @@ trait Rsync_Installation {
 		$output = Utils::command(
 			[
 				'rsync -aWq --no-compress',
-				collect( $this->rsync_exclusions )->map( fn( $exclusion ) => "--exclude '{$exclusion}'" )->implode( ' ' ),
+				collect( $this->rsync_exclusions )->map( fn ( $exclusion ) => "--exclude '{$exclusion}'" )->implode( ' ' ),
 				'--delete',
 				"{$this->rsync_from} {$this->rsync_to}",
 			],
@@ -442,7 +442,7 @@ trait Rsync_Installation {
 
 		if ( ! empty( getenv( 'WP_PHPUNIT_PATH' ) ) ) {
 			$executable = getenv( 'WP_PHPUNIT_PATH' );
-		} elseif ( ! empty( $args[0] ) && false !== strpos( $args[0], 'phpunit' ) ) {
+		} elseif ( ! empty( $args[0] ) && false !== strpos( (string) $args[0], 'phpunit' ) ) {
 			// Use the first argument and translate it to the rsync-ed path.
 			$executable = $this->translate_location( $args[0] );
 
@@ -454,7 +454,7 @@ trait Rsync_Installation {
 				! empty( $_SERVER['PHP_SELF'] )
 				&& ! is_file( $executable )
 				&& ! is_executable( $executable )
-				&& 0 !== strpos( 'composer ', $executable )
+				&& ! str_starts_with( 'composer ', (string) $executable )
 			) {
 				$executable = $this->translate_location( $_SERVER['PHP_SELF'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			}

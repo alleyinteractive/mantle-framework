@@ -86,7 +86,7 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 			return $this->disks[ $name ] = $this->call_custom_driver( $driver, $config );
 		}
 
-		$driver_method = 'create_' . strtolower( $driver ) . '_driver';
+		$driver_method = 'create_' . strtolower( (string) $driver ) . '_driver';
 
 		if ( ! method_exists( $this, $driver_method ) ) {
 			throw new InvalidArgumentException( "Disk [{$name}] uses a driver [{$driver}] that is not supported." );
@@ -180,9 +180,9 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 		$root = (string) apply_filters( 'mantle_filesystem_local_root', $root, $config );
 
 		// Ensure the root configuration has a base URL.
-		$config['root']       = $root;
-		$config['url']        = $config['url'] ?? $upload_dir['baseurl'];
-		$config['visibility'] = $config['visibility'] ?? Visibility::PUBLIC;
+		$config['root']         = $root;
+		$config['url']        ??= $upload_dir['baseurl'];
+		$config['visibility'] ??= Visibility::PUBLIC;
 
 		/**
 		 * Filter the local filesystem configuration.

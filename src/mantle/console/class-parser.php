@@ -64,7 +64,7 @@ class Parser {
 		$options = [];
 
 		foreach ( $tokens as $token ) {
-			if ( preg_match( '/-{2,}(.*)/', $token, $matches ) ) {
+			if ( preg_match( '/-{2,}(.*)/', (string) $token, $matches ) ) {
 				$options[] = static::parse_option( $matches[1] );
 			} else {
 				$arguments[] = static::parse_argument( $token );
@@ -84,15 +84,15 @@ class Parser {
 		[$token, $description] = static::extract_description( $token );
 
 		switch ( true ) {
-			case str_ends_with( $token, '?*' ):
-				return new InputArgument( trim( $token, '?*' ), InputArgument::IS_ARRAY, $description );
-			case str_ends_with( $token, '*' ):
-				return new InputArgument( trim( $token, '*' ), InputArgument::IS_ARRAY | InputArgument::REQUIRED, $description );
-			case str_ends_with( $token, '?' ):
-				return new InputArgument( trim( $token, '?' ), InputArgument::OPTIONAL, $description );
-			case preg_match( '/(.+)\=\*(.+)/', $token, $matches ):
+			case str_ends_with( (string) $token, '?*' ):
+				return new InputArgument( trim( (string) $token, '?*' ), InputArgument::IS_ARRAY, $description );
+			case str_ends_with( (string) $token, '*' ):
+				return new InputArgument( trim( (string) $token, '*' ), InputArgument::IS_ARRAY | InputArgument::REQUIRED, $description );
+			case str_ends_with( (string) $token, '?' ):
+				return new InputArgument( trim( (string) $token, '?' ), InputArgument::OPTIONAL, $description );
+			case preg_match( '/(.+)\=\*(.+)/', (string) $token, $matches ):
 				return new InputArgument( $matches[1], InputArgument::IS_ARRAY, $description, preg_split( '/,\s?/', $matches[2] ) );
-			case preg_match( '/(.+)\=(.+)/', $token, $matches ):
+			case preg_match( '/(.+)\=(.+)/', (string) $token, $matches ):
 				return new InputArgument( $matches[1], InputArgument::OPTIONAL, $description, $matches[2] );
 			default:
 				return new InputArgument( $token, InputArgument::REQUIRED, $description );
@@ -108,7 +108,7 @@ class Parser {
 	protected static function parse_option( $token ) {
 		[$token, $description] = static::extract_description( $token );
 
-		$matches = preg_split( '/\s*\|\s*/', $token, 2 );
+		$matches = preg_split( '/\s*\|\s*/', (string) $token, 2 );
 
 		if ( isset( $matches[1] ) ) {
 			$shortcut = $matches[0];
@@ -118,13 +118,13 @@ class Parser {
 		}
 
 		switch ( true ) {
-			case str_ends_with( $token, '=' ):
-				return new InputOption( trim( $token, '=' ), $shortcut, InputOption::VALUE_OPTIONAL, $description );
-			case str_ends_with( $token, '=*' ):
-				return new InputOption( trim( $token, '=*' ), $shortcut, InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, $description );
-			case preg_match( '/(.+)\=\*(.+)/', $token, $matches ):
+			case str_ends_with( (string) $token, '=' ):
+				return new InputOption( trim( (string) $token, '=' ), $shortcut, InputOption::VALUE_OPTIONAL, $description );
+			case str_ends_with( (string) $token, '=*' ):
+				return new InputOption( trim( (string) $token, '=*' ), $shortcut, InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, $description );
+			case preg_match( '/(.+)\=\*(.+)/', (string) $token, $matches ):
 				return new InputOption( $matches[1], $shortcut, InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, $description, preg_split( '/,\s?/', $matches[2] ) );
-			case preg_match( '/(.+)\=(.+)/', $token, $matches ):
+			case preg_match( '/(.+)\=(.+)/', (string) $token, $matches ):
 				return new InputOption( $matches[1], $shortcut, InputOption::VALUE_OPTIONAL, $description, $matches[2] );
 			default:
 				return new InputOption( $token, $shortcut, InputOption::VALUE_NONE, $description );

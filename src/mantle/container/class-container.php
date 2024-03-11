@@ -25,7 +25,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	/**
 	 * The current globally available container (if any).
 	 */
-	protected static ?\Mantle\Contracts\Container $instance;
+	protected static ?\Mantle\Contracts\Container $instance = null;
 
 	/**
 	 * An array of the types that have been resolved.
@@ -143,9 +143,8 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * Determine if the given abstract type has been bound.
 	 *
 	 * @param string $abstract Abstract name.
-	 * @return bool
 	 */
-	public function bound( $abstract ) {
+	public function bound( $abstract ): bool {
 		return isset( $this->bindings[ $abstract ] ) ||
 			isset( $this->instances[ $abstract ] ) ||
 			$this->is_alias( $abstract );
@@ -162,9 +161,8 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * Determine if the given abstract type has been resolved.
 	 *
 	 * @param string $abstract Abstract name.
-	 * @return bool
 	 */
-	public function resolved( $abstract ) {
+	public function resolved( $abstract ): bool {
 		if ( $this->is_alias( $abstract ) ) {
 			$abstract = $this->get_alias( $abstract );
 		}
@@ -177,9 +175,8 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * Determine if a given type is shared.
 	 *
 	 * @param string $abstract Abstract name.
-	 * @return bool
 	 */
-	public function is_shared( $abstract ) {
+	public function is_shared( $abstract ): bool {
 		return isset( $this->instances[ $abstract ] ) ||
 			( isset( $this->bindings[ $abstract ]['shared'] ) &&
 			true === $this->bindings[ $abstract ]['shared'] );
@@ -444,7 +441,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	public function refresh( $abstract, $target, $method ) {
 		return $this->rebinding(
 			$abstract,
-			function ( $app, $instance ) use ( $target, $method ) {
+			function ( $app, $instance ) use ( $target, $method ): void {
 				$target->{$method}( $instance );
 			}
 		);
@@ -482,9 +479,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @return \Closure
 	 */
 	public function wrap( Closure $callback, array $parameters = [] ) {
-		return function () use ( $callback, $parameters ) {
-				return $this->call( $callback, $parameters );
-		};
+		return fn () => $this->call( $callback, $parameters );
 	}
 
 	/**
@@ -508,9 +503,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @return \Closure
 	 */
 	public function factory( $abstract ) {
-		return function () use ( $abstract ) {
-			return $this->make( $abstract );
-		};
+		return fn () => $this->make( $abstract );
 	}
 
 	/**
@@ -687,9 +680,8 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 *
 	 * @param  mixed  $concrete
 	 * @param  string $abstract
-	 * @return bool
 	 */
-	protected function is_buildable( $concrete, $abstract ) {
+	protected function is_buildable( $concrete, $abstract ): bool {
 		return $concrete === $abstract || $concrete instanceof Closure;
 	}
 
@@ -758,11 +750,10 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * Resolve all of the dependencies from the ReflectionParameters.
 	 *
 	 * @param  \ReflectionParameter[] $dependencies
-	 * @return array
 	 *
 	 * @throws Binding_Resolution_Exception Thrown on missing resolution.
 	 */
-	protected function resolve_dependencies( array $dependencies ) {
+	protected function resolve_dependencies( array $dependencies ): array {
 		$results = [];
 
 		foreach ( $dependencies as $dependency ) {
@@ -879,9 +870,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 		}
 
 		return array_map(
-			function ( $abstract ) {
-				return $this->resolve( $abstract );
-			},
+			fn ( $abstract) => $this->resolve( $abstract ),
 			$concrete
 		);
 	}
@@ -910,11 +899,10 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * Throw an exception for an unresolvable primitive.
 	 *
 	 * @param  \ReflectionParameter $parameter
-	 * @return void
 	 *
 	 * @throws Binding_Resolution_Exception Thrown on missing resolution.
 	 */
-	protected function unresolvable_primitive( ReflectionParameter $parameter ) {
+	protected function unresolvable_primitive( ReflectionParameter $parameter ): never {
 		$message = "Unresolvable dependency resolving [$parameter] in class {$parameter->getDeclaringClass()->getName()}";
 
 		throw new Binding_Resolution_Exception( $message );
@@ -996,10 +984,8 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @param  string $abstract
 	 * @param  object $object
 	 * @param  array  $callbacks_per_type
-	 *
-	 * @return array
 	 */
-	protected function get_callbacks_for_type( $abstract, $object, array $callbacks_per_type ) {
+	protected function get_callbacks_for_type( $abstract, $object, array $callbacks_per_type ): array {
 			$results = [];
 
 		foreach ( $callbacks_per_type as $type => $callbacks ) {
@@ -1164,9 +1150,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	public function offsetSet( mixed $key, mixed $value ): void {
 			$this->bind(
 				$key,
-				$value instanceof Closure ? $value : function () use ( $value ) {
-					return $value;
-				}
+				$value instanceof Closure ? $value : fn () => $value
 			);
 	}
 

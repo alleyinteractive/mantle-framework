@@ -39,11 +39,6 @@ use function Mantle\Support\Helpers\collect;
 class Handler implements Contract {
 
 	/**
-	 * The container implementation.
-	 */
-	protected Application $container;
-
-	/**
 	 * A list of the exception types that are not reported.
 	 *
 	 * @var array
@@ -69,8 +64,7 @@ class Handler implements Contract {
 	 *
 	 * @param Application $container
 	 */
-	public function __construct( Application $container ) {
-		$this->container = $container;
+	public function __construct( protected Application $container ) {
 	}
 
 	/**
@@ -155,7 +149,7 @@ class Handler implements Contract {
 					'userId' => get_current_user_id(),
 				]
 			);
-		} catch ( Throwable $e ) {
+		} catch ( Throwable ) {
 			return [];
 		}
 	}
@@ -327,13 +321,11 @@ class Handler implements Contract {
 	protected function convert_exception_to_array( Throwable $e ): array {
 		return config( 'app.debug' ) ? [
 			'message'   => $e->getMessage(),
-			'exception' => get_class( $e ),
+			'exception' => $e::class,
 			'file'      => $e->getFile(),
 			'line'      => $e->getLine(),
 			'trace'     => collect( $e->getTrace() )->map(
-				function ( $trace ) {
-					return Arr::except( $trace, [ 'args' ] );
-				}
+				fn ( $trace) => Arr::except( $trace, [ 'args' ] )
 			)->all(),
 		] : [
 			'message' => $this->is_http_exception( $e ) ? $e->getMessage() : __( 'Server Error', 'mantle' ),

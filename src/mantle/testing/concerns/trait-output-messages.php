@@ -126,7 +126,7 @@ trait Output_Messages {
 			$frame = $frames
 				->filter(
 					fn ( array $item ) => false === strpos(
-						$item['file'],
+						(string) $item['file'],
 						'phpunit/phpunit',
 					)
 				)

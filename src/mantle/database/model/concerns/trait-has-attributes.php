@@ -141,7 +141,7 @@ trait Has_Attributes {
 
 		return tap(
 			$relation->get_results(),
-			function( $relation ) use ( $method ) {
+			function( $relation ) use ( $method ): void {
 				$this->set_relation( $method, $relation );
 			}
 		);
@@ -214,9 +214,7 @@ trait Has_Attributes {
 		// Retrieve all attributes, passing them through the mutators.
 		$attributes = collect( $this->get_arrayable_attributes() )
 			->map(
-				function( $value, string $attribute ) {
-					return $this->get_attribute( $attribute );
-				}
+				fn ( $value, string $attribute) => $this->get_attribute( $attribute )
 			)
 			->merge( $this->get_arrayable_appends() );
 
@@ -311,46 +309,29 @@ trait Has_Attributes {
 	 * @return mixed
 	 */
 	protected function cast_attribute( $value, string $cast_type ) {
-		switch ( $cast_type ) {
-			case 'int':
-			case 'integer':
-				return (int) $value;
-			case 'real':
-			case 'float':
-			case 'double':
-				return $this->from_float( $value );
-			case 'string':
-				return (string) $value;
-			case 'bool':
-			case 'boolean':
-				return (bool) $value;
-			case 'object':
-				return $this->from_json( $value, true );
-			case 'array':
-			case 'json':
-				return $this->from_json( $value );
-		}
-
-		return $value;
+					return match ($cast_type) {
+									'int', 'integer' => (int) $value,
+									'real', 'float', 'double' => $this->from_float( $value ),
+									'string' => (string) $value,
+									'bool', 'boolean' => (bool) $value,
+									'object' => $this->from_json( $value, true ),
+									'array', 'json' => $this->from_json( $value ),
+									default => $value,
+					};
 	}
 
 	/**
 	 * Decode the given float.
 	 *
 	 * @param  mixed $value Value to decode.
-	 * @return mixed
 	 */
-	public function from_float( $value ) {
-		switch ( (string) $value ) {
-			case 'Infinity':
-				return INF;
-			case '-Infinity':
-				return -INF;
-			case 'NaN':
-				return NAN;
-			default:
-				return (float) $value;
-		}
+	public function from_float( $value ): float {
+		return match ( (string) $value) {
+						'Infinity' => INF,
+						'-Infinity' => -INF,
+						'NaN' => NAN,
+						default => (float) $value,
+		};
 	}
 
 	/**
@@ -477,9 +458,7 @@ trait Has_Attributes {
 			collect( $this->appends )
 				->combine(
 					collect( $this->appends )->map(
-						function ( string $attribute ) {
-							return $this->get_attribute( $attribute );
-						}
+						fn ( string $attribute) => $this->get_attribute( $attribute )
 					)
 				)
 				->to_array()

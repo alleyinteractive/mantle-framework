@@ -236,7 +236,7 @@ class Filesystem {
 				if ( ! @unlink( $path ) ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 					$success = false;
 				}
-			} catch ( ErrorException $e ) {
+			} catch ( ErrorException ) {
 				$success = false;
 			}
 		}
@@ -476,9 +476,8 @@ class Filesystem {
 	 * Get all of the directories within a given directory.
 	 *
 	 * @param  string $directory
-	 * @return array
 	 */
-	public function directories( $directory ) {
+	public function directories( $directory ): array {
 		$directories = [];
 
 		foreach ( Finder::create()->in( $directory )->directories()->depth( 0 )->sortByName() as $dir ) {
@@ -519,9 +518,8 @@ class Filesystem {
 	 * @param  string $from
 	 * @param  string $to
 	 * @param  bool   $overwrite
-	 * @return bool
 	 */
-	public function move_directory( $from, $to, $overwrite = false ) {
+	public function move_directory( $from, $to, $overwrite = false ): bool {
 		if ( $overwrite && $this->is_directory( $to ) && ! $this->delete_directory( $to ) ) {
 			return false;
 		}
@@ -535,9 +533,8 @@ class Filesystem {
 	 * @param  string   $directory
 	 * @param  string   $destination
 	 * @param  int|null $options
-	 * @return bool
 	 */
-	public function copy_directory( $directory, $destination, $options = null ) {
+	public function copy_directory( $directory, $destination, $options = null ): bool {
 		if ( ! $this->is_directory( $directory ) ) {
 			return false;
 		}
@@ -584,9 +581,8 @@ class Filesystem {
 	 *
 	 * @param  string $directory
 	 * @param  bool   $preserve
-	 * @return bool
 	 */
-	public function delete_directory( $directory, $preserve = false ) {
+	public function delete_directory( $directory, $preserve = false ): bool {
 		if ( ! $this->is_directory( $directory ) ) {
 			return false;
 		}
@@ -619,9 +615,8 @@ class Filesystem {
 	 * Remove all of the directories within a given directory.
 	 *
 	 * @param  string $directory
-	 * @return bool
 	 */
-	public function delete_directories( $directory ) {
+	public function delete_directories( $directory ): bool {
 		$all_directories = $this->directories( $directory );
 
 		if ( ! empty( $all_directories ) ) {

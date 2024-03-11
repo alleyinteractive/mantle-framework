@@ -88,7 +88,7 @@ trait Deprecations {
 
 		$unexpected_deprecated = collect( $this->caught_deprecated )
 			->filter(
-				function ( string $caught ) {
+				function ( string $caught ): bool {
 					$ignored_and_expected = array_merge( $this->expected_deprecated, $this->ignored_deprecated );
 
 					if ( in_array( $caught, $ignored_and_expected, true ) ) {

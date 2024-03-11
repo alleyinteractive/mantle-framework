@@ -14,13 +14,6 @@ namespace Mantle\Framework;
  */
 class Alias_Loader {
 	/**
-	 * The array of class aliases.
-	 *
-	 * @var array
-	 */
-	protected $aliases;
-
-	/**
 	 * Indicates if a loader has been registered.
 	 *
 	 * @var bool
@@ -37,9 +30,7 @@ class Alias_Loader {
 	 *
 	 * @param array $aliases Aliases to set.
 	 */
-	private function __construct( $aliases ) {
-		$this->aliases = $aliases;
-	}
+	private function __construct( protected array $aliases ) {}
 
 	/**
 	 * Get or create the singleton alias loader instance.

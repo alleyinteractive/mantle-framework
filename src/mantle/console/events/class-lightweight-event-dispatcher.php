@@ -105,9 +105,7 @@ class Lightweight_Event_Dispatcher extends Dispatcher {
 		} else {
 			$this->listeners[ $event ][ $priority ] = array_filter(
 				$this->listeners[ $event ][ $priority ],
-				function ( $value ) use ( $listener ) {
-					return $value !== $listener;
-				}
+				fn ( $value) => $value !== $listener
 			);
 		}
 	}

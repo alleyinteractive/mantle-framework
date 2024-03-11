@@ -58,7 +58,7 @@ class Mock_Mailer extends \PHPMailer\PHPMailer\PHPMailer {
 	 * @return object|false
 	 */
 	public function get_sent( $index = 0 ) {
-		return isset( $this->mock_sent[ $index ] ) ? $this->mock_sent[ $index ] : false;
+		return $this->mock_sent[ $index ] ?? false;
 	}
 
 	/**

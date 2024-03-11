@@ -77,9 +77,7 @@ class Routing_Service_Provider extends Service_Provider {
 	protected function register_redirector() {
 		$this->app->singleton(
 			'redirect',
-			function( $app ) {
-				return new Redirector( $app['url'] );
-			}
+			fn ( $app) => new Redirector( $app['url'] )
 		);
 	}
 
@@ -89,9 +87,7 @@ class Routing_Service_Provider extends Service_Provider {
 	protected function register_response_factory() {
 		$this->app->singleton(
 			Response_Factory_Contract::class,
-			function( $app ) {
-				return new Response_Factory( $app['redirect'], $app['view'] );
-			}
+			fn ( $app) => new Response_Factory( $app['redirect'], $app['view'] )
 		);
 	}
 }

@@ -14,36 +14,17 @@ use Mantle\Contracts\Queue\Provider;
  */
 class Job_Processing {
 	/**
-	 * Queue provider.
-	 *
-	 * @var mixed
-	 */
-	public $provider;
-
-	/**
-	 * Job Data
-	 *
-	 * @var mixed
-	 */
-	public $job;
-
-	/**
 	 * Constructor.
 	 *
 	 * @param Provider $provider Queue provider.
 	 * @param mixed    $job Job object.
 	 */
-	public function __construct( Provider $provider, $job ) {
-		$this->provider = $provider;
-		$this->job      = $job;
-	}
+	public function __construct( public Provider $provider, public mixed $job ) {}
 
 	/**
 	 * Get the ID for the job.
-	 *
-	 * @return mixed
 	 */
-	public function get_id() {
+	public function get_id(): mixed {
 		return $this->job->get_id();
 	}
 }

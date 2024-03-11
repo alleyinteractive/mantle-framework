@@ -20,7 +20,7 @@ trait Custom_Term_Link {
 	 */
 	public static function boot_custom_term_link(): void {
 		if ( static::get_route() ) {
-			add_filter( 'term_link', [ __CLASS__, 'filter_term_link' ], 99 );
+			add_filter( 'term_link', [ self::class, 'filter_term_link' ], 99 );
 		}
 	}
 

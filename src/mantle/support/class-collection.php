@@ -144,9 +144,7 @@ class Collection implements ArrayAccess, Enumerable {
 	public function median( $key = null ) {
 		$values = ( isset( $key ) ? $this->pluck( $key ) : $this )
 			->filter(
-				function ( $item ) {
-					return ! is_null( $item );
-				}
+				fn ( $item) => ! is_null( $item )
 			)->sort()->values();
 
 
@@ -186,7 +184,7 @@ class Collection implements ArrayAccess, Enumerable {
 		$counts = new self();
 
 		$collection->each(
-			function ( $value ) use ( $counts ) {
+			function ( $value ) use ( $counts ): void {
 				$counts[ $value ] = isset( $counts[ $value ] ) ? $counts[ $value ] + 1 : 1;
 			}
 		);
@@ -196,9 +194,7 @@ class Collection implements ArrayAccess, Enumerable {
 		$highest_value = $sorted->last();
 
 		return $sorted->filter(
-			function ( $value ) use ( $highest_value ) {
-				return $value == $highest_value;
-			}
+			fn ( $value) => $value == $highest_value
 		)->sort()->keys()->all();
 	}
 
@@ -390,14 +386,10 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	protected function duplicate_comparator( $strict ) {
 		if ( $strict ) {
-			return function ( $a, $b ) {
-				return $a === $b;
-			};
+			return fn ( $a, $b) => $a === $b;
 		}
 
-		return function ( $a, $b ) {
-			return $a == $b;
-		};
+		return fn ( $a, $b) => $a == $b;
 	}
 
 	/**
@@ -566,9 +558,8 @@ class Collection implements ArrayAccess, Enumerable {
 	 * Determine if an item exists in the collection by key.
 	 *
 	 * @param  TKey|array<array-key, TKey> $key
-	 * @return bool
 	 */
-	public function has( $key ) {
+	public function has( $key ): bool {
 		$keys = is_array( $key ) ? $key : func_get_args();
 
 		foreach ( $keys as $key ) {
@@ -649,19 +640,15 @@ class Collection implements ArrayAccess, Enumerable {
 
 	/**
 	 * Determine if the collection is empty or not.
-	 *
-	 * @return bool
 	 */
-	public function is_empty() {
+	public function is_empty(): bool {
 		return empty( $this->items );
 	}
 
 	/**
 	 * Determine if the collection contains a single item.
-	 *
-	 * @return bool
 	 */
-	public function contains_one_item() {
+	public function contains_one_item(): bool {
 		return $this->count() === 1;
 	}
 
@@ -1353,7 +1340,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static<TKey, string>
 	 */
 	public function trim( string $char_list = "\n\r\t\v\x00" ) {
-		return new static( $this->map( fn ( $item ) => trim( $item, $char_list ) ) );
+		return new static( $this->map( fn ( $item ) => trim( (string) $item, $char_list ) ) );
 	}
 
 	/**

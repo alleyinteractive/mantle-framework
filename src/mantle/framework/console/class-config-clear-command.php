@@ -41,7 +41,7 @@ class Config_Clear_Command extends Command {
 	 *
 	 * @param Filesystem $filesystem Filesystem instance.
 	 */
-	public function handle( Filesystem $filesystem ) {
+	public function handle( Filesystem $filesystem ): int {
 		$this->files = $filesystem;
 
 		$this->container['events']->dispatch( 'config-cache:clearing' );

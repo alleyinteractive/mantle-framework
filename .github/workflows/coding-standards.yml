@@ -20,3 +20,8 @@ jobs:
     with:
       command: "phpstan"
       php: 8.2
+  rector:
+    uses: alleyinteractive/.github/.github/workflows/php-code-quality.yml@main
+    with:
+      command: "rector"
+      php: 8.2

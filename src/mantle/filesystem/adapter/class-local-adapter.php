@@ -27,6 +27,6 @@ class Local_Adapter extends Filesystem_Adapter {
 			return $this->concat_path_to_url( $this->config['url'], $path );
 		}
 
-		return rtrim( wp_upload_dir()['baseurl'], '/' ) . '/' . ltrim( $path, '/' );
+		return rtrim( (string) wp_upload_dir()['baseurl'], '/' ) . '/' . ltrim( $path, '/' );
 	}
 }

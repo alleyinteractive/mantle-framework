@@ -71,7 +71,7 @@ trait Makes_Http_Requests {
 	protected function create_pending_request(): Pending_Testable_Request {
 		return tap(
 			new Pending_Testable_Request( $this ),
-			function ( Pending_Testable_Request $request ) {
+			function ( Pending_Testable_Request $request ): void {
 				$request->cookies->add( $this->default_cookies );
 				$request->headers->add( $this->default_headers );
 			},

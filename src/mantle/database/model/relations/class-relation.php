@@ -42,11 +42,6 @@ abstract class Relation {
 	protected $query;
 
 	/**
-	 * Parent model instance.
-	 */
-	protected Model $parent;
-
-	/**
 	 * The related model (child).
 	 *
 	 * @var string
@@ -82,9 +77,8 @@ abstract class Relation {
 	 * @param bool|null $uses_terms Flag if the relation uses terms.
 	 * @param string    $relationship Relationship name, optional.
 	 */
-	public function __construct( Builder $query, Model $parent, ?bool $uses_terms = null, string $relationship = null ) {
+	public function __construct( Builder $query, protected Model $parent, ?bool $uses_terms = null, string $relationship = null ) {
 		$this->query   = $query;
-		$this->parent  = $parent;
 		$this->related = $query->get_model();
 
 		if ( ! is_null( $uses_terms ) ) {

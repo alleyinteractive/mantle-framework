@@ -331,7 +331,7 @@ class Filesystem_Adapter implements Filesystem {
 		$response->headers->replace( $headers );
 
 		$response->setCallback(
-			function () use ( $path ) {
+			function () use ( $path ): void {
 				$stream = $this->readStream( $path );
 				fpassthru( $stream );
 				fclose( $stream );
@@ -365,9 +365,8 @@ class Filesystem_Adapter implements Filesystem {
 	 * Get the file's last modification time.
 	 *
 	 * @param string $path File path.
-	 * @return int|bool
 	 */
-	public function last_modified( string $path ) {
+	public function last_modified( string $path ): int {
 		return $this->driver->lastModified( $path );
 	}
 
@@ -460,9 +459,8 @@ class Filesystem_Adapter implements Filesystem {
 	 * Retrieve the size of the file.
 	 *
 	 * @param string $path File path.
-	 * @return int|bool
 	 */
-	public function size( string $path ) {
+	public function size( string $path ): int {
 		return $this->driver->fileSize( $path );
 	}
 

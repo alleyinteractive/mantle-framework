@@ -215,7 +215,7 @@ class Term extends Model implements Core_Object, Model_Meta, Updatable {
 	 * @param array $attributes Attributes to save.
 	 * @throws Model_Exception Thrown on error saving.
 	 */
-	public function save( array $attributes = [] ) {
+	public function save( array $attributes = [] ): bool {
 		$this->set_attributes( $attributes );
 
 		$id = $this->id();
@@ -274,7 +274,7 @@ class Term extends Model implements Core_Object, Model_Meta, Updatable {
 			'mantle_entity_router_term_route',
 			$route_structure,
 			static::get_object_name(),
-			get_called_class()
+			static::class
 		);
 	}
 }

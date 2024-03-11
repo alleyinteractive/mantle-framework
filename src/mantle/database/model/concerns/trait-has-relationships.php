@@ -36,9 +36,9 @@ trait Has_Relationships {
 	 * @param string $local_key Local key.
 	 */
 	public function has_one( string $related, string $foreign_key = null, string $local_key = null ): Relation {
-		$instance    = new $related();
-		$foreign_key = $foreign_key ?? $this->get_foreign_key();
-		$local_key   = $local_key ?? $this->get_key_name();
+		$instance      = new $related();
+		$foreign_key ??= $this->get_foreign_key();
+		$local_key   ??= $this->get_key_name();
 
 		return new Has_One( $instance->new_query(), $this, $foreign_key, $local_key );
 	}
@@ -51,9 +51,9 @@ trait Has_Relationships {
 	 * @param string $local_key Local key.
 	 */
 	public function has_many( string $related, string $foreign_key = null, string $local_key = null ): Has_Many {
-		$instance    = new $related();
-		$foreign_key = $foreign_key ?? $this->get_foreign_key();
-		$local_key   = $local_key ?? $this->get_key_name();
+		$instance      = new $related();
+		$foreign_key ??= $this->get_foreign_key();
+		$local_key   ??= $this->get_key_name();
 
 		return new Has_Many( $instance->new_query(), $this, $foreign_key, $local_key );
 	}
@@ -79,9 +79,9 @@ trait Has_Relationships {
 			throw new InvalidArgumentException( 'Post and term relationships must always use has_one() or has_many()' );
 		}
 
-		$instance    = new $related();
-		$foreign_key = $foreign_key ?? $this->get_key_name();
-		$local_key   = $local_key ?? $instance->get_foreign_key();
+		$instance      = new $related();
+		$foreign_key ??= $this->get_key_name();
+		$local_key   ??= $instance->get_foreign_key();
 
 		return new Belongs_To( $instance->new_query(), $this, $foreign_key, $local_key );
 	}
@@ -107,9 +107,9 @@ trait Has_Relationships {
 			throw new InvalidArgumentException( 'Post and term relationships must always use has_one() or has_many()' );
 		}
 
-		$instance    = new $related();
-		$foreign_key = $foreign_key ?? $this->get_key_name();
-		$local_key   = $local_key ?? $instance->get_foreign_key();
+		$instance      = new $related();
+		$foreign_key ??= $this->get_key_name();
+		$local_key   ??= $instance->get_foreign_key();
 
 		return new Belongs_To_Many( $instance->new_query(), $this, $foreign_key, $local_key );
 	}

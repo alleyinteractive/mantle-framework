@@ -130,7 +130,7 @@ class Dispatcher implements Dispatcher_Contract {
 	 */
 	protected function parse_event_and_payload( $event, $payload ) {
 		if ( is_object( $event ) ) {
-			[ $payload, $event ] = [ [ $event ], get_class( $event ) ];
+			[ $payload, $event ] = [ [ $event ], $event::class ];
 		}
 
 		return [ $event, Arr::wrap( $payload ) ];
@@ -179,11 +179,9 @@ class Dispatcher implements Dispatcher_Contract {
 			return $this->create_class_listener( $listener );
 		}
 
-		return function ( ...$payload ) use ( $listener ) {
-			return $this->create_action_callback(
-				$listener,
-			)( ...array_values( $payload ) );
-		};
+		return fn ( ...$payload) => $this->create_action_callback(
+			$listener,
+		)( ...array_values( $payload ) );
 	}
 
 	/**
@@ -234,7 +232,7 @@ class Dispatcher implements Dispatcher_Contract {
 	 */
 	public function forget( $event, $listener = null, int $priority = 10 ): void {
 		if ( is_object( $event ) ) {
-			$event = get_class( $event );
+			$event = $event::class;
 		}
 
 		if ( null === $listener ) {

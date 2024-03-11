@@ -47,28 +47,28 @@ class Run_Command extends Command {
 		// Register the event listeners to pipe the events back to the console.
 		$this->container['events']->listen(
 			Run_Start::class,
-			function( Run_Start $event ) {
+			function( Run_Start $event ): void {
 				$this->log( 'Run started: ' . $event->queue );
 			}
 		);
 
 		$this->container['events']->listen(
 			Job_Processing::class,
-			function( Job_Processing $job ) {
+			function( Job_Processing $job ): void {
 				$this->log( 'Queue item started: ' . $job->get_id() );
 			}
 		);
 
 		$this->container['events']->listen(
 			Job_Processed::class,
-			function( Job_Processed $job ) {
+			function( Job_Processed $job ): void {
 				$this->log( 'Queue item complete: ' . $job->get_id() );
 			}
 		);
 
 		$this->container['events']->listen(
 			Run_Complete::class,
-			function( Run_Complete $event ) {
+			function( Run_Complete $event ): void {
 				$this->log( 'Run complete: ' . $event->queue );
 			}
 		);

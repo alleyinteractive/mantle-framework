@@ -67,7 +67,7 @@ class Discover_Events {
 				$listener = new ReflectionClass(
 					static::class_from_file( $listener, $base_path ),
 				);
-			} catch ( ReflectionException $e ) {
+			} catch ( ReflectionException ) {
 				continue;
 			}
 
@@ -154,7 +154,7 @@ class Discover_Events {
 		return str_replace(
 			[
 				DIRECTORY_SEPARATOR,
-				ucfirst( basename( app()->get_app_path() ) ) . '\\',
+				ucfirst( basename( (string) app()->get_app_path() ) ) . '\\',
 			],
 			[
 				'\\',

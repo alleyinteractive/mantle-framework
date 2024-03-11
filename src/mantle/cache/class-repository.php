@@ -110,9 +110,7 @@ abstract class Repository {
 	public function getMultiple( iterable $keys, mixed $default = null ): iterable {
 		return collect( $keys )
 			->map(
-				function( $key ) use ( $default ) {
-					return $this->pull( $key, $default );
-				}
+				fn ( $key) => $this->pull( $key, $default )
 			)
 			->to_array();
 	}
@@ -138,9 +136,7 @@ abstract class Repository {
 	 */
 	public function deleteMultiple( iterable $keys ): bool {
 		collect( $keys )->each(
-			function ( $key ) {
-				return $this->delete( $key );
-			}
+			fn ( $key) => $this->delete( $key )
 		);
 
 		return true;

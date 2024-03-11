@@ -22,7 +22,7 @@ class Event_Service_Provider extends Service_Provider {
 	public function register(): void {
 		$this->app->singleton_if(
 			'events',
-			fn( $app ) => new Dispatcher( $app ),
+			fn ( $app ) => new Dispatcher( $app ),
 		);
 	}
 }

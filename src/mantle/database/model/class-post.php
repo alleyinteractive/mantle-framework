@@ -306,11 +306,10 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 * Save the model.
 	 *
 	 * @param array $attributes Attributes to save.
-	 * @return bool
 	 *
 	 * @throws Model_Exception Thrown on error saving.
 	 */
-	public function save( array $attributes = [] ) {
+	public function save( array $attributes = [] ): bool {
 		$this->set_attributes( $attributes );
 
 		$id = $this->id();
@@ -383,10 +382,10 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 					function () use ( &$index ) {
 						return ( $index++ ) % 2 ? '{' : '}';
 					},
-					$structure
+					(string) $structure
 				);
 
-				$route_structure = str_replace( '{postname}', '{post}', $structure );
+				$route_structure = str_replace( '{postname}', '{post}', (string) $structure );
 			} else {
 				$route_structure = null;
 			}
@@ -405,7 +404,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 			'mantle_entity_router_post_route',
 			$route_structure,
 			static::get_object_name(),
-			get_called_class()
+			static::class
 		);
 	}
 }

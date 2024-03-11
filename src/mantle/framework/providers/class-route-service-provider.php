@@ -69,7 +69,7 @@ class Route_Service_Provider extends Service_Provider implements Route_Service_P
 	 * @param Request $request Request instance.
 	 */
 	public function should_pass_through_requests( Request $request ): bool {
-		if ( 0 === strpos( $request->path(), 'wp-json' ) ) {
+		if ( str_starts_with( $request->path(), 'wp-json' ) ) {
 			return true;
 		}
 

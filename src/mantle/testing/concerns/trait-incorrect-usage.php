@@ -90,7 +90,7 @@ trait Incorrect_Usage {
 
 		$unexpected_doing_it_wrong = collect( $this->caught_doing_it_wrong )
 			->filter(
-				function ( string $caught ) {
+				function ( string $caught ): bool {
 					$ignored_and_expected = array_merge( $this->expected_doing_it_wrong, $this->ignored_doing_it_wrong );
 
 					if ( in_array( $caught, $ignored_and_expected, true ) ) {

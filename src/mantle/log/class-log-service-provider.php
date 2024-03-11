@@ -19,9 +19,7 @@ class Log_Service_Provider extends Service_Provider {
 	public function register(): void {
 		$this->app->singleton(
 			'log',
-			function( $app ) {
-				return new Log_Manager( $app, $app['events'] );
-			}
+			fn ( $app) => new Log_Manager( $app, $app['events'] )
 		);
 	}
 }
