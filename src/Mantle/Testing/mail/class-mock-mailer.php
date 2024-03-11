@@ -32,7 +32,7 @@ class Mock_Mailer extends \PHPMailer\PHPMailer\PHPMailer {
 	public function preSend() {
 		$this->Encoding = '8bit';
 
-		return parent::preSend();
+		return (bool) parent::preSend();
 	}
 
 	/**

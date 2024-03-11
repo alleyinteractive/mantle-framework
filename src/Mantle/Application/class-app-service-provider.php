@@ -18,13 +18,6 @@ use function Mantle\Support\Helpers\tap;
  */
 class App_Service_Provider extends Service_Provider {
 	/**
-	 * Application instance.
-	 *
-	 * @var Application
-	 */
-	protected $app;
-
-	/**
 	 * Constructor.
 	 *
 	 * @param Application $app Application instance.

@@ -38,6 +38,6 @@ class Mail_Message {
 	 * @param string $address The email address to check for.
 	 */
 	public function sent_to( string $address ): bool {
-		return collect( $this->to )->pluck( 0 )->contains( $address );
+		return (bool) collect( $this->to )->pluck( 0 )->contains( $address );
 	}
 }

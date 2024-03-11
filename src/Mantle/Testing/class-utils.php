@@ -66,7 +66,7 @@ class Utils {
 	 * @param array    $args     Arguments to pass to the callable.
 	 * @return false|string Rendered output on success, false on failure.
 	 */
-	public static function get_echo( $callable, $args = [] ) {
+	public static function get_echo( callable $callable, array $args = [] ): false|string {
 		ob_start();
 		call_user_func_array( $callable, $args );
 		return ob_get_clean();
