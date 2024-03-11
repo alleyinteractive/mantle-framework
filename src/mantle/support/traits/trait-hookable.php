@@ -14,8 +14,6 @@ use Mantle\Support\Service_Provider;
 use Mantle\Support\Str;
 use ReflectionClass;
 
-use function Mantle\Support\Helpers\add_action;
-use function Mantle\Support\Helpers\add_filter;
 use function Mantle\Support\Helpers\collect;
 
 /**
@@ -150,6 +148,6 @@ trait Hookable {
 	 * dispatcher won't be used.
 	 */
 	public function use_event_dispatcher(): bool {
-		return $this instanceof Service_Provider;
+		return class_exists( Service_Provider::class ) && $this instanceof Service_Provider;
 	}
 }
