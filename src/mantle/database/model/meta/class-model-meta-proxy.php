@@ -7,12 +7,13 @@
 
 namespace Mantle\Database\Model\Meta;
 
+use ArrayAccess;
 use Mantle\Contracts\Database\Model_Meta;
 
 /**
  * Allow meta to be retrieve as an attribute on the object.
  */
-class Model_Meta_Proxy {
+class Model_Meta_Proxy implements ArrayAccess {
 	/**
 	 * Constructor.
 	 *
@@ -52,5 +53,42 @@ class Model_Meta_Proxy {
 	 */
 	public function __unset( string $key ) {
 		$this->model->delete_meta( $key );
+	}
+
+	/**
+	 * Check if model meta exists.
+	 *
+	 * @param mixed $offset Meta key.
+	 */
+	public function offsetExists( mixed $offset ): bool {
+		return null !== $this->model->get_meta( $offset );
+	}
+
+	/**
+	 * Retrieve the value of a model meta by key.
+	 *
+	 * @param mixed $offset Meta key.
+	 */
+	public function offsetGet( mixed $offset ): mixed {
+		return $this->__get( $offset );
+	}
+
+	/**
+	 * Set the value of a model meta.
+	 *
+	 * @param mixed $offset Meta key.
+	 * @param mixed $value Meta value.
+	 */
+	public function offsetSet( mixed $offset, mixed $value ): void {
+		$this->__set( $offset, $value );
+	}
+
+	/**
+	 * Delete a model meta.
+	 *
+	 * @param mixed $offset Meta key.
+	 */
+	public function offsetUnset( mixed $offset ): void {
+		$this->__unset( $offset );
 	}
 }
