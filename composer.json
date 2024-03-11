@@ -121,6 +121,10 @@
     "extra": {
         "wordpress-autoloader": {
             "autoload": {
+                "Mantle\\Http_Client\\": "src/Mantle/HttpClient/",
+                "Mantle\\New_Relic\\": "src/Mantle/NewRelic/",
+                "Mantle\\Query_Monitor\\": "src/Mantle/QueryMonitor/",
+                "Mantle\\REST_API": "src/Mantle/RestApi/",
                 "Mantle\\": "src/Mantle/"
             },
             "autoload-dev": {
