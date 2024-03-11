@@ -5,7 +5,6 @@
  * @package Mantle
  */
 
-use Mantle\Testing\Doubles\MockPHPMailer;
 use Mantle\Testing\Utils;
 use Mantle\Testing\WP_Die;
 

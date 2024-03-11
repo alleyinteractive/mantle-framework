@@ -16,8 +16,7 @@ use function Mantle\Support\Helpers\str;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-// foreach ( [ 'src', 'tests' ] as $base ) {
-foreach ( [ 'src' ] as $base ) {
+foreach ( [ 'src', 'tests' ] as $base ) {
 	$finder = ( new Finder() )
 		->in( realpath( __DIR__ . "/../{$base}" ) )
 		->directories()

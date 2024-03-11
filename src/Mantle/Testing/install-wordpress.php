@@ -17,7 +17,7 @@ $_SERVER['PHP_SELF'] = '/index.php';
 
 global $wp_rewrite;
 
-require_once __DIR__ . '/preload.php';
+// require_once __DIR__ . '/preload.php';
 require_once __DIR__ . '/wordpress-bootstrap.php';
 require_once ABSPATH . '/wp-admin/includes/upgrade.php';
 
