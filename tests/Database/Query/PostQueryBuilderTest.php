@@ -451,6 +451,21 @@ class PostQueryBuilderTest extends Framework_Test_Case {
 		$this->assertNull( get_post( collect( $post_ids )->last() ) );
 	}
 
+	public function test_map() {
+		$post_ids = static::factory()->post->create_many( 100 );
+
+		$ids = Testable_Post::map( function ( Testable_Post $post ) {
+			return [ 'id' => $post->id() ];
+		} );
+
+		$this->assertEquals(
+			collect( $post_ids )->map( function ( $id ) {
+				return [ 'id' => $id ];
+			} )->sort()->values(),
+			$ids->sort()->values()
+		);
+	}
+
 	public function test_where_raw() {
 		$post_id = static::get_random_post_id();
 

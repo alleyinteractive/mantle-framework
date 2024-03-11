@@ -834,6 +834,27 @@ abstract class Builder {
 	}
 
 	/**
+	 * Map the query results to a new collection.
+	 *
+	 * @template TMapValue
+	 *
+	 * @param callable(TModel): TMapValue $callback Callback to run on each chunk.
+	 * @param int                     $count Number of items to chunk by.
+	 * @return Collection<int, TMapValue>
+	 */
+	public function map( callable $callback, int $count = 100 ) {
+		$results = new Collection();
+
+		$this->chunk( $count, function ( Collection $items ) use ( $callback, $results ): bool {
+			$results->push( ...$items->map( $callback ) );
+
+			return true;
+		} );
+
+		return $results;
+	}
+
+	/**
 	 * Magic method to proxy to the appropriate query method.
 	 *
 	 * @param string $method Method name.
