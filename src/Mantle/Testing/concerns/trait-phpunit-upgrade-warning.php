@@ -48,7 +48,16 @@ trait PHPUnit_Upgrade_Warning {
 	 *
 	 * @param TestSuite $test_suite Test suite configuration.
 	 */
-	protected function warn_if_test_suite_contains_legacy_test_cases( TestSuite $test_suite ): bool {
+	protected function warn_if_test_suite_contains_legacy_test_cases( TestSuite $test_suite ): void {
+		if ( $this->silence_phpunit_warning ) {
+			return;
+		}
+
+		// Prevent conflicts if the internal class API changes.
+		if ( ! method_exists( $test_suite, 'directories' ) ) {
+			return;
+		}
+
 		// Check if the test suite contains directories with a 'test-' prefix. That
 		// is a clear sign of a legacy test suite.
 		$legacy_test_cases = collect( $test_suite->directories() )
@@ -57,7 +66,7 @@ trait PHPUnit_Upgrade_Warning {
 			);
 
 		if ( $legacy_test_cases->is_empty() ) {
-			return false;
+			return;
 		}
 
 		render(
@@ -86,18 +95,14 @@ trait PHPUnit_Upgrade_Warning {
 			HTML,
 		);
 
-		return true;
+		$this->silence_phpunit_warning();
 	}
 
 	/**
 	 * Warn the user if they're running PHPUnit 10+ against an incompatible codebase.
 	 */
 	protected function warn_if_phpunit_10_or_higher(): void {
-		if ( $this->silence_phpunit_warning ) {
-			return;
-		}
-
-		if ( ! $this->is_running_phpunit_10_or_higher() ) {
+		if ( $this->silence_phpunit_warning || ! $this->is_running_phpunit_10_or_higher() ) {
 			return;
 		}
 
@@ -108,8 +113,8 @@ trait PHPUnit_Upgrade_Warning {
 		$registry = Registry::get();
 
 		foreach ( $registry->testSuite()->asArray() as $test_suite ) {
-			if ( $test_suite instanceof TestSuite && $this->warn_if_test_suite_contains_legacy_test_cases( $test_suite ) ) {
-				return;
+			if ( $test_suite instanceof TestSuite ) {
+				$this->warn_if_test_suite_contains_legacy_test_cases( $test_suite );
 			}
 		}
 	}
