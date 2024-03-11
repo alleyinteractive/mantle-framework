@@ -99,7 +99,7 @@
             "src/Mantle/Cache/autoload.php",
             "src/Mantle/Config/autoload.php",
             "src/Mantle/Http/autoload.php",
-            "src/Mantle/Http_Client/autoload.php",
+            "src/Mantle/HttpClient/autoload.php",
             "src/Mantle/Queue/autoload.php",
             "src/Mantle/Support/autoload.php",
             "src/Mantle/Testing/autoload.php"
