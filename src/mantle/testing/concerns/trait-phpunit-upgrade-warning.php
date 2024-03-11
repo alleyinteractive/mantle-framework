@@ -49,6 +49,11 @@ trait PHPUnit_Upgrade_Warning {
 	 * @param TestSuite $test_suite Test suite configuration.
 	 */
 	protected function warn_if_test_suite_contains_legacy_test_cases( TestSuite $test_suite ): bool {
+		// Prevent conflicts if the internal class API changes.
+		if ( ! method_exists( $test_suite, 'directories' ) ) {
+			return false;
+		}
+
 		// Check if the test suite contains directories with a 'test-' prefix. That
 		// is a clear sign of a legacy test suite.
 		$legacy_test_cases = collect( $test_suite->directories() )
