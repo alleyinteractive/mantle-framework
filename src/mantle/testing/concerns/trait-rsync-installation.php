@@ -64,8 +64,6 @@ trait Rsync_Installation {
 
 	/**
 	 * Add the default set of exclusions to the list of exclusions to be used when rsyncing the codebase.
-	 *
-	 * @return static
 	 */
 	public function with_default_exclusions(): static {
 		return $this->exclusions(
@@ -299,7 +297,6 @@ trait Rsync_Installation {
 	 * Add an exclusion to the list of exclusions to be used when rsyncing the codebase.
 	 *
 	 * @param string $exclusion Exclusion to add to the list of exclusions.
-	 * @return static
 	 */
 	public function add_exclusion( string $exclusion ): static {
 		return $this->exclusions( [ $exclusion ], true );
@@ -309,7 +306,6 @@ trait Rsync_Installation {
 	 * Remove an exclusion from the list of exclusions to be used when rsyncing the codebase.
 	 *
 	 * @param string $exclusion Exclusion to remove from the list of exclusions.
-	 * @return static
 	 */
 	public function remove_exclusion( string $exclusion ): static {
 		$this->rsync_exclusions = collect( $this->rsync_exclusions )
