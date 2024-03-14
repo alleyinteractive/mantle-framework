@@ -68,17 +68,19 @@ trait Rsync_Installation {
 	 * @return static
 	 */
 	public function with_default_exclusions(): static {
-		return $this->exclusions( [
-			'.buddy',
-			'.git',
-			'.github',
-			'.npm',
-			'.phpcs',
-			'.turbo',
-			'.phpunit.result.cache',
-			'node_modules',
-			'phpstan.neon',
-		] );
+		return $this->exclusions(
+			[
+				'.buddy',
+				'.git',
+				'.github',
+				'.npm',
+				'.phpcs',
+				'.turbo',
+				'.phpunit.result.cache',
+				'node_modules',
+				'phpstan.neon',
+			] 
+		);
 	}
 
 	/**
