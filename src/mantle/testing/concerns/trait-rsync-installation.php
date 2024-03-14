@@ -60,17 +60,26 @@ trait Rsync_Installation {
 	 *
 	 * @var string[]
 	 */
-	protected array $rsync_exclusions = [
-		'.buddy',
-		'.git',
-		'.github',
-		'.npm',
-		'.phpcs',
-		'.turbo',
-		'.phpunit.result.cache',
-		'node_modules',
-		'phpstan.neon',
-	];
+	protected array $rsync_exclusions = [];
+
+	/**
+	 * Add the default set of exclusions to the list of exclusions to be used when rsyncing the codebase.
+	 *
+	 * @return static
+	 */
+	public function with_default_exclusions(): static {
+		return $this->exclusions( [
+			'.buddy',
+			'.git',
+			'.github',
+			'.npm',
+			'.phpcs',
+			'.turbo',
+			'.phpunit.result.cache',
+			'node_modules',
+			'phpstan.neon',
+		] );
+	}
 
 	/**
 	 * Rsync the code base to be located under a valid WordPress installation.
