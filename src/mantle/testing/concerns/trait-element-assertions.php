@@ -10,7 +10,7 @@ namespace Mantle\Testing\Concerns;
 use PHPUnit\Framework\Assert as PHPUnit;
 use DOMDocument;
 use DOMXPath;
-use Gt\CssXPath\Translator;
+use Symfony\Component\CssSelector\CssSelectorConverter;
 
 /**
  * Assorted Test_Cast assertions for checking for elements in a response.
@@ -35,6 +35,17 @@ trait Element_Assertions {
 		$this->document->loadHTML( $this->get_content() );
 
 		return $this->document;
+	}
+
+	/**
+	 * Convert a CSS selector to an XPath query.
+	 *
+	 * @param string $selector The selector to convert.
+	 */
+	protected function convert_query_selector( string $selector ): string {
+		$converter = new CssSelectorConverter( true );
+
+		return $converter->toXPath( $selector );
 	}
 
 	/**
@@ -139,7 +150,7 @@ trait Element_Assertions {
 	 * @param string $selector The selector to use.
 	 */
 	public function assertElementExistsByQuerySelector( string $selector ): static {
-		return $this->assertElementExists( new Translator( $selector ) );
+		return $this->assertElementExists( $this->convert_query_selector( $selector ) );
 	}
 
 	/**
@@ -157,7 +168,7 @@ trait Element_Assertions {
 	 * @param string $selector The selector to use.
 	 */
 	public function assertElementMissingByQuerySelector( string $selector ): static {
-		return $this->assertElementMissing( new Translator( $selector ) );
+		return $this->assertElementMissing( $this->convert_query_selector( $selector ) );
 	}
 
 	/**

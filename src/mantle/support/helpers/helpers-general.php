@@ -48,8 +48,6 @@ function blank( $value ): bool {
  * Get the class "basename" of the given object / class.
  *
  * @param string|object $class Class or object to basename.
- *
- * @return string
  */
 function class_basename( string|object $class ): string {
 	$class = is_object( $class ) ? $class::class : $class;
@@ -61,8 +59,6 @@ function class_basename( string|object $class ): string {
  * Returns all traits used by a class, its parent classes and trait of their traits.
  *
  * @param object|string $class Class or object to analyze.
- *
- * @return array
  */
 function class_uses_recursive( string|object $class ): array {
 	if ( is_object( $class ) ) {
@@ -152,8 +148,6 @@ function collect( $value = null ): Collection {
  * Determine if a value is "filled".
  *
  * @param mixed $value Value to check.
- *
- * @return bool
  */
 function filled( mixed $value ): bool {
 	return ! blank( $value );
