@@ -60,17 +60,26 @@ trait Rsync_Installation {
 	 *
 	 * @var string[]
 	 */
-	protected array $rsync_exclusions = [
-		'.buddy-tests',
-		'.buddy',
-		'.composer',
-		'.git',
-		'.npm',
-		'.phpcs',
-		'.turbo',
-		'node_modules',
-		'phpstan.neon',
-	];
+	protected array $rsync_exclusions = [];
+
+	/**
+	 * Add the default set of exclusions to the list of exclusions to be used when rsyncing the codebase.
+	 */
+	public function with_default_exclusions(): static {
+		return $this->exclusions(
+			[
+				'.buddy',
+				'.git',
+				'.github',
+				'.npm',
+				'.phpcs',
+				'.turbo',
+				'.phpunit.result.cache',
+				'node_modules',
+				'phpstan.neon',
+			] 
+		);
+	}
 
 	/**
 	 * Rsync the code base to be located under a valid WordPress installation.
@@ -151,7 +160,7 @@ trait Rsync_Installation {
 			return $this;
 		}
 
-		$this->rsync_exclusions[] = 'mu-plugins';
+		$this->add_exclusion( 'mu-plugins' );
 
 		putenv( 'MANTLE_INSTALL_VIP_MU_PLUGINS=' . ( $install ? '1' : '0' ) );
 
@@ -178,7 +187,7 @@ trait Rsync_Installation {
 			return $this;
 		}
 
-		$this->rsync_exclusions[] = 'object-cache.php';
+		$this->add_exclusion( 'object-cache.php' );
 
 		putenv( 'MANTLE_INSTALL_OBJECT_CACHE=' . ( $install ? '1' : '0' ) );
 
@@ -201,8 +210,12 @@ trait Rsync_Installation {
 		putenv( 'MANTLE_USE_SQLITE=' . ( $install ? '1' : '0' ) );
 		putenv( 'WP_SKIP_DB_CREATE=1' );
 
-		$this->rsync_exclusions[] = 'db.php';
-		$this->rsync_exclusions[] = 'sqlite-database-integration';
+		$this->exclusions(
+			[
+				'db.php',
+				'sqlite-database-integration',
+			]
+		);
 
 		return $this;
 	}
@@ -271,7 +284,35 @@ trait Rsync_Installation {
 	 * @param bool     $merge Whether to merge the exclusions with the default exclusions.
 	 */
 	public function exclusions( array $exclusions, bool $merge = true ): static {
-		$this->rsync_exclusions = $merge ? array_merge( $this->rsync_exclusions, $exclusions ) : $exclusions;
+		$this->rsync_exclusions = collect( $merge ? $this->rsync_exclusions : [] )
+			->merge( $exclusions )
+			->unique()
+			->values()
+			->all();
+
+		return $this;
+	}
+
+	/**
+	 * Add an exclusion to the list of exclusions to be used when rsyncing the codebase.
+	 *
+	 * @param string $exclusion Exclusion to add to the list of exclusions.
+	 */
+	public function add_exclusion( string $exclusion ): static {
+		return $this->exclusions( [ $exclusion ], true );
+	}
+
+	/**
+	 * Remove an exclusion from the list of exclusions to be used when rsyncing the codebase.
+	 *
+	 * @param string $exclusion Exclusion to remove from the list of exclusions.
+	 */
+	public function remove_exclusion( string $exclusion ): static {
+		$this->rsync_exclusions = collect( $this->rsync_exclusions )
+			->filter( fn ( $item ) => $item !== $exclusion )
+			->unique()
+			->values()
+			->all();
 
 		return $this;
 	}

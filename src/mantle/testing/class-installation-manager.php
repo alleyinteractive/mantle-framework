@@ -47,6 +47,8 @@ class Installation_Manager {
 	 * configure the installation.
 	 */
 	public function __construct() {
+		$this->with_default_exclusions();
+
 		if ( Utils::env_bool( 'MANTLE_INSTALL_VIP_MU_PLUGINS', false ) ) {
 			$this->with_vip_mu_plugins();
 		}
