@@ -417,6 +417,23 @@ class PostObjectTest extends Framework_Test_Case {
 		}
 	}
 
+	public function test_modified_date() {
+		$original = now()->subYear()->toDateTimeString();
+
+		$post = static::factory()->post->as_models()->create_and_get( [
+			'modified' => $original,
+		] );
+
+		$this->assertEquals( $original, $post->modified );
+
+		$date = now()->subWeek()->toDateTimeString();
+
+		$post->modified = $date;
+		$post->save();
+
+		$this->assertEquals( $date, $post->modified );
+	}
+
 	/**
 	 * Get a random post ID, ensures the post ID is not the last in the set.
 	 *

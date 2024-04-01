@@ -9,6 +9,7 @@ namespace Mantle\Database\Model;
 
 use Carbon\Carbon;
 use DateTime;
+use DateTimeInterface;
 use Mantle\Contracts;
 use Mantle\Database\Query\Builder;
 use Mantle\Database\Query\Post_Query_Builder;
@@ -44,6 +45,9 @@ use Mantle\Support\Helpers;
  * @property string $to_ping
  * @property string $content Alias to post_content.
  * @property string $date Alias to post_date.
+ * @property string $date_gmt Alias to post_date_gmt.
+ * @property string $modified Alias to post_modified.
+ * @property string $modified_gmt Alias to post_modified_gmt.
  * @property string $description Alias to post_excerpt.
  * @property string $id Alias to ID.
  * @property string $name Alias to post_title.
@@ -95,14 +99,17 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 * @var array<string, string>
 	 */
 	protected static $aliases = [
-		'content'     => 'post_content',
-		'date'        => 'post_date',
-		'description' => 'post_excerpt',
-		'id'          => 'ID',
-		'title'       => 'post_title',
-		'name'        => 'post_title',
-		'slug'        => 'post_name',
-		'status'      => 'post_status',
+		'content'      => 'post_content',
+		'date'         => 'post_date',
+		'date_gmt'     => 'post_date_gmt',
+		'modified'     => 'post_modified',
+		'modified_gmt' => 'post_modified_gmt',
+		'description'  => 'post_excerpt',
+		'id'           => 'ID',
+		'title'        => 'post_title',
+		'name'         => 'post_title',
+		'slug'         => 'post_name',
+		'status'       => 'post_status',
 	];
 
 	/**
@@ -316,6 +323,10 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 
 		if ( empty( $id ) ) {
 			$save = \wp_insert_post( $this->get_attributes(), true );
+
+			if ( \is_wp_error( $save ) ) {
+				throw new Model_Exception( 'Error saving model: ' . $save->get_error_message() );
+			}
 		} else {
 			$save = \wp_update_post(
 				array_merge(
@@ -335,6 +346,13 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 		// Set the post ID attribute.
 		$this->set_raw_attribute( 'ID', $save );
 
+		// Update the post modified date if it has been modified.
+		if ( $this->is_attribute_modified( 'post_modified' ) ) {
+			$this->update_post_modified( $this->get_attribute( 'post_modified' ) );
+		} elseif ( $this->is_attribute_modified( 'post_modified_gmt' ) ) {
+			$this->update_post_modified( Carbon::parse( $this->get_attribute( 'post_modified_gmt' ), new \DateTimeZone( 'UTC' ) ) );
+		}
+
 		$this->store_queued_meta();
 		$this->store_queued_terms();
 		$this->refresh();
@@ -347,7 +365,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 * Delete the model.
 	 *
 	 * @param bool $force Force delete the mode.
-	 * @return mixed
+	 * @return \WP_Post|false|mixed
 	 */
 	public function delete( bool $force = false ) {
 		return \wp_delete_post( $this->id(), $force );
@@ -406,5 +424,41 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 			static::get_object_name(),
 			static::class
 		);
+	}
+
+	/**
+	 * Set the post's modified date.
+	 *
+	 * Not designed to be called directly, but rather through the model's attributes.
+	 *
+	 * @param DateTimeInterface|string $date Date to set the post's modified date to.
+	 */
+	protected function update_post_modified( DateTimeInterface|string $date ): void {
+		global $wpdb;
+
+		$date = $date instanceof DateTimeInterface
+			? Carbon::instance( $date )
+			: Carbon::parse( $date, wp_timezone() );
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$wpdb->update(
+			$wpdb->posts,
+			[
+				'post_modified'     => $date->setTimezone( wp_timezone() )->format( 'Y-m-d H:i:s' ),
+				'post_modified_gmt' => $date->setTimezone( new \DateTimeZone( 'UTC' ) )->format( 'Y-m-d H:i:s' ),
+			],
+			[
+				'ID' => $this->id(),
+			],
+			[
+				'%s',
+				'%s',
+			],
+			[
+				'%d',
+			]
+		);
+
+		clean_post_cache( $this->id() );
 	}
 }
