@@ -271,7 +271,6 @@ trait Has_Attributes {
 	 * Check if an attribute has been modified.
 	 *
 	 * @param string $attribute Attribute to check.
-	 * @return bool
 	 */
 	public function is_attribute_modified( string $attribute ): bool {
 		return in_array( $attribute, $this->modified_attributes, true );
