@@ -429,7 +429,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	/**
 	 * Set the post's modified date.
 	 *
-	 * Not designed to be called directly, but rather through the model's attributes.
+	 * Not designed to be called directly but rather through the model's attributes.
 	 *
 	 * @param DateTimeInterface|string $date Date to set the post's modified date to.
 	 */
