@@ -133,7 +133,10 @@
             "@phpstan",
             "@rector"
         ],
-        "lint:fix": "@phpcbf",
+        "lint:fix": [
+            "@rector:fix",
+            "@phpcbf"
+        ],
         "merge": "monorepo-builder merge",
         "phpcbf": "phpcbf --standard=./phpcs.xml .",
         "phpcs": "phpcs --standard=./phpcs.xml .",
