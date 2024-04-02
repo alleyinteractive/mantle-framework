@@ -165,7 +165,6 @@ trait WordPress_State {
 	 * @param DateTimeInterface|string $date Date object or string to update the
 	 *                                       post with. If a string is passed it
 	 *                                       is assumed to be local timezone.
-	 * @return bool
 	 */
 	protected function update_post_modified( WP_Post|Post|int $post, DateTimeInterface|string $date ): bool {
 		$post = match ( true ) {

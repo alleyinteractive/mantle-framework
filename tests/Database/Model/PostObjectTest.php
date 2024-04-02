@@ -3,6 +3,7 @@ namespace Mantle\Tests\Database\Model;
 
 use Carbon\Carbon;
 use Mantle\Contracts\Database\Registrable;
+use Mantle\Database\Model\Dates\Model_Date_Proxy;
 use Mantle\Database\Model\Model_Exception;
 use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Registration\Register_Post_Type;
@@ -438,6 +439,37 @@ class PostObjectTest extends Framework_Test_Case {
 		$post->save( [ 'content' => 'Updated Title' ] );
 
 		$this->assertTrue( Carbon::parse( $post->modified )->gt( $date ) );
+	}
+
+	public function test_dates_attribute() {
+		$post = static::factory()->post->as_models()->create_and_get();
+
+		$this->assertInstanceOf( Model_Date_Proxy::class, $post->dates );
+
+		$this->assertInstanceOf( Carbon::class, $post->dates->created );
+		$this->assertInstanceOf( Carbon::class, $post->dates->created_utc );
+		$this->assertInstanceOf( Carbon::class, $post->dates->modified );
+		$this->assertInstanceOf( Carbon::class, $post->dates->modified_utc );
+
+		// Test that the dates are the same as the post object.
+		$this->assertEquals( $post->post_date, $post->dates->created->toDateTimeString() );
+		$this->assertEquals( $post->post_date_gmt, $post->dates->created_utc->toDateTimeString() );
+		$this->assertEquals( $post->post_modified, $post->dates->modified->toDateTimeString() );
+		$this->assertEquals( $post->post_modified_gmt, $post->dates->modified_utc->toDateTimeString() );
+
+		$newDate = now()->subWeek();
+
+		// Test updating the date.
+		$post->dates->created = $newDate;
+		$post->save();
+
+		$this->assertEquals( $newDate->toDateTimeString(), $post->dates->created->toDateTimeString() );
+
+		// Test updating the date with as an array.
+		$post->dates['modified'] = $newDate;
+		$post->save();
+
+		$this->assertEquals( $newDate->toDateTimeString(), $post->dates->modified->toDateTimeString() );
 	}
 
 	/**

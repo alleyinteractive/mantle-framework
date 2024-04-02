@@ -88,7 +88,8 @@ use Mantle\Support\Helpers;
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> newer_than_or_equal_to( DateTimeInterface|int $date, string $column = 'post_date' )
  */
 class Post extends Model implements Contracts\Database\Core_Object, Contracts\Database\Model_Meta, Contracts\Database\Updatable {
-	use Events\Post_Events,
+	use Dates\Has_Dates,
+		Events\Post_Events,
 		Meta\Model_Meta,
 		Meta\Post_Meta,
 		Term\Model_Term;
@@ -426,6 +427,8 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 
 	/**
 	 * Set the post's modified date on save via the 'wp_insert_post_data' filter.
+	 *
+	 * @param array<string, mixed> $data Data to save.
 	 */
 	public function set_post_modified_date_on_save( array $data ) {
 		// Only update the post modified date if the post ID matches the current model.
