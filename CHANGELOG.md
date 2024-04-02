@@ -10,22 +10,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added support for PHP 8.3.
+- Add support for querying against against enum values in the database.
 - PHPUnit 10 support added and `nunomaduro/collision` depend on to v6-7. See
   [PHPUnit 10 Migration](#phpunit-10-migration) for more information.
 - Adds database-specific collections with storage of the `found_rows` value.
 - Added testing against `wp_mail()` calls.
 - Added assertions for elements by query selector (`assertElementExistsByQuerySelector()` and `assertElementMissingByQuerySelector()`).
+- Added `Hookable` support trait.
+- Added support for authentication via an attribute on a test case/method.
+- Added new `map()` method to the query builder.
 
 ### Changed
 
+- Database queries against models now return an instance of
+  `Mantle\Database\Query\Collection` which includes the `found_rows` value.
 - Overhauled queue performance and added admin interface.
 - Tests that make requests using `$this->get()` and other HTTP methods will now
   use a fluent pending request class `Mantle\Testing\Pending_Testable_Request`
   to allow for more complex request building.
+- Upgraded Symfony components to 6.2.
+- Allow meta to be set as an array on a model.
 
 ### Removed
 
-- Removed support for PHP 8.0.
+- Removed support for PHP 8.0. The minimum PHP version is now 8.1.
 
 ### PHPUnit 10 Migration
 
