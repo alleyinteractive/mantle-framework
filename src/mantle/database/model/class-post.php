@@ -312,7 +312,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	/**
 	 * Save the model.
 	 *
-	 * @param array $attributes Attributes to save.
+	 * @param array<string, mixed> $attributes Attributes to save.
 	 *
 	 * @throws Model_Exception Thrown on error saving.
 	 */
@@ -320,6 +320,11 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 		$this->set_attributes( $attributes );
 
 		$id = $this->id();
+
+		// Update the post modified date if it has been modified.
+		if ( $this->is_attribute_modified( 'post_modified' ) || $this->is_attribute_modified( 'post_modified_gmt' ) ) {
+			add_filter( 'wp_insert_post_data', [ $this, 'set_post_modified_date_on_save' ] );
+		}
 
 		if ( empty( $id ) ) {
 			$save = \wp_insert_post( $this->get_attributes(), true );
@@ -345,13 +350,6 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 
 		// Set the post ID attribute.
 		$this->set_raw_attribute( 'ID', $save );
-
-		// Update the post modified date if it has been modified.
-		if ( $this->is_attribute_modified( 'post_modified' ) ) {
-			$this->update_post_modified( $this->get_attribute( 'post_modified' ) );
-		} elseif ( $this->is_attribute_modified( 'post_modified_gmt' ) ) {
-			$this->update_post_modified( Carbon::parse( $this->get_attribute( 'post_modified_gmt' ), new \DateTimeZone( 'UTC' ) ) );
-		}
 
 		$this->store_queued_meta();
 		$this->store_queued_terms();
@@ -427,38 +425,28 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	}
 
 	/**
-	 * Set the post's modified date.
-	 *
-	 * Not designed to be called directly but rather through the model's attributes.
-	 *
-	 * @param DateTimeInterface|string $date Date to set the post's modified date to.
+	 * Set the post's modified date on save via the 'wp_insert_post_data' filter.
 	 */
-	protected function update_post_modified( DateTimeInterface|string $date ): void {
-		global $wpdb;
+	public function set_post_modified_date_on_save( array $data ) {
+		// Only update the post modified date if the post ID matches the current model.
+		if ( isset( $data['ID'] ) && $this->id() !== (int) $data['ID'] ) {
+			return $data;
+		}
 
-		$date = $date instanceof DateTimeInterface
-			? Carbon::instance( $date )
-			: Carbon::parse( $date, wp_timezone() );
+		if ( $this->is_attribute_modified( 'post_modified' ) ) {
+			$date = Carbon::parse( $this->get_attribute( 'post_modified' ), wp_timezone() );
+		} elseif ( $this->is_attribute_modified( 'post_modified_gmt' ) ) {
+			$date = Carbon::parse( $this->get_attribute( 'post_modified_gmt' ), new \DateTimeZone( 'UTC' ) );
+		} else {
+			return $data;
+		}
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
-		$wpdb->update(
-			$wpdb->posts,
-			[
-				'post_modified'     => $date->setTimezone( wp_timezone() )->format( 'Y-m-d H:i:s' ),
-				'post_modified_gmt' => $date->setTimezone( new \DateTimeZone( 'UTC' ) )->format( 'Y-m-d H:i:s' ),
-			],
-			[
-				'ID' => $this->id(),
-			],
-			[
-				'%s',
-				'%s',
-			],
-			[
-				'%d',
-			]
-		);
+		$data['post_modified']     = $date->setTimezone( wp_timezone() )->format( 'Y-m-d H:i:s' );
+		$data['post_modified_gmt'] = $date->setTimezone( new \DateTimeZone( 'UTC' ) )->format( 'Y-m-d H:i:s' );
 
-		clean_post_cache( $this->id() );
+		// Unhook the filter after it has been used.
+		remove_filter( 'wp_insert_post_data', [ $this, 'set_post_modified_date_on_save' ] );
+
+		return $data;
 	}
 }

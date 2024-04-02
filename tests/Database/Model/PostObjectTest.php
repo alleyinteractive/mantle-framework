@@ -1,6 +1,7 @@
 <?php
 namespace Mantle\Tests\Database\Model;
 
+use Carbon\Carbon;
 use Mantle\Contracts\Database\Registrable;
 use Mantle\Database\Model\Model_Exception;
 use Mantle\Database\Model\Post;
@@ -432,6 +433,11 @@ class PostObjectTest extends Framework_Test_Case {
 		$post->save();
 
 		$this->assertEquals( $date, $post->modified );
+
+		// Test that an update to the post object will update the modified date.
+		$post->save( [ 'content' => 'Updated Title' ] );
+
+		$this->assertTrue( Carbon::parse( $post->modified )->gt( $date ) );
 	}
 
 	/**
