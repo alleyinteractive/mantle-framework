@@ -37,18 +37,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### PHPUnit 10 Migration
 
-**Upgrade Note about PHPUnit 10:** When upgrading to Mantle v1 projects will
-receive `phpunit/phpunit` v10 and `nunomaduro/collision` v7. PHPUnit 10 requires
-PSR-4 file structure for tests (`tests/Feature/MyExampleTest.php` vs
-`tests/feature/test-my-example.php`). If you have tests written in the old
-style, you will need to migrate them to PSR-4. If you wish to continue using
-PHPUnit 9, you will need to downgrade to PHPUnit 9/Collision 6. To do so, run
-the following command:
+When upgrading to Mantle v1 projects will receive `phpunit/phpunit` v10 and
+`nunomaduro/collision` v7. PHPUnit 10 requires PSR-4 file structure for tests
+(`tests/Feature/MyExampleTest.php` vs `tests/feature/test-my-example.php`). If
+you have tests written in the old style, you will need to migrate them to PSR-4.
+If you wish to continue using PHPUnit 9, you will need to downgrade to PHPUnit
+9/Collision 6. To do so, run the following command:
 
 	composer require --dev phpunit/phpunit:^9 nunomaduro/collision:^6
 
 To upgrade an existing test suite to PHPUnit 10 and PSR-4 standards, consider
-using a [helper tool](https://github.com/alleyinteractive/wp-to-psr-4/). You will also need to adjust your `phpunit.xml` file:
+using a [helper tool](https://github.com/alleyinteractive/wp-to-psr-4/). You
+will also need to adjust your `phpunit.xml` file:
 
 ```diff
 <phpunit
@@ -68,6 +68,10 @@ using a [helper tool](https://github.com/alleyinteractive/wp-to-psr-4/). You wil
 	</testsuites>
 </phpunit>
 ```
+
+If you plan on using PHPUnit 10 and previously declared the `phpunit/phpunit`
+version in your `composer.json` file, now would be a good time to remove it and
+allow Mantle to manage that.
 
 ## v0.12.12 - 2024-01-08
 
