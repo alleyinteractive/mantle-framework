@@ -18,10 +18,12 @@ jobs:
         multisite: [true, false]
         php: [8.0, 8.1, 8.2]
         wordpress: ["latest"]
-    uses: alleyinteractive/.github/.github/workflows/php-tests.yml@main
+        object: ["memcached", "redis"]
+    uses: alleyinteractive/.github/.github/workflows/php-tests.yml@feature/object-cache
     name: "P${{ matrix.php }} - ${{ matrix.wordpress }} ${{ matrix.multisite && 'Multisite' || '' }} - ${{ matrix.dependencies }}"
     with:
       dependency-versions: ${{ matrix.dependencies }}
       multisite: ${{ matrix.multisite }}
       php: ${{ matrix.php }}
       wordpress: ${{ matrix.wordpress }}
+      object-cache: ${{ matrix.object }}
