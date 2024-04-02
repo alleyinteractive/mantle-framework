@@ -42,8 +42,8 @@ class Model_Date_Proxy implements ArrayAccess {
 	 */
 	public function __get( string $key ): Carbon {
 		return match ( $key ) {
-			'created', 'created_at' => Carbon::parse( $this->model->post_date, wp_timezone() ),
-			'created_gmt', 'created_utc', 'created_at_gmt', 'created_at_utc' => Carbon::parse( $this->model->post_date_gmt, new DateTimeZone( 'UTC' ) ),
+			'date', 'created', 'created_at' => Carbon::parse( $this->model->post_date, wp_timezone() ),
+			'date_gmt', 'created_gmt', 'created_utc', 'created_at_gmt', 'created_at_utc' => Carbon::parse( $this->model->post_date_gmt, new DateTimeZone( 'UTC' ) ),
 			'modified', 'modified_at', 'updated', 'updated_at' => Carbon::parse( $this->model->post_modified, wp_timezone() ),
 			'modified_gmt', 'modified_utc', 'modified_at_gmt', 'modified_at_utc' => Carbon::parse( $this->model->post_modified_gmt, new DateTimeZone( 'UTC' ) ),
 			default => throw new InvalidArgumentException( "Invalid date attribute: {$key}" ),
@@ -74,8 +74,8 @@ class Model_Date_Proxy implements ArrayAccess {
 		}
 
 		match ( $key ) {
-			'created', 'created_at' => $this->model->set_attribute( 'post_date', $value->format( 'Y-m-d H:i:s' ) ),
-			'created_gmt', 'created_utc', 'created_at_gmt', 'created_at_utc' => $this->model->set_attribute( 'post_date_gmt', $value->format( 'Y-m-d H:i:s' ) ),
+			'date', 'created', 'created_at' => $this->model->set_attribute( 'post_date', $value->format( 'Y-m-d H:i:s' ) ),
+			'date_gmt', 'created_gmt', 'created_utc', 'created_at_gmt', 'created_at_utc' => $this->model->set_attribute( 'post_date_gmt', $value->format( 'Y-m-d H:i:s' ) ),
 			'modified', 'modified_at', 'updated', 'updated_at' => $this->model->set_attribute( 'post_modified', $value->format( 'Y-m-d H:i:s' ) ),
 			'modified_gmt', 'modified_utc', 'modified_at_gmt', 'modified_at_utc' => $this->model->set_attribute( 'post_modified_gmt', $value->format( 'Y-m-d H:i:s' ) ),
 			default => throw new InvalidArgumentException( "Invalid date attribute: {$key}" ),
