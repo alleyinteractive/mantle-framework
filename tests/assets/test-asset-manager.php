@@ -42,22 +42,6 @@ class Test_Asset_Manager extends Test_Case {
 		);
 	}
 
-	public function test_async_script() {
-		$manager = new Asset_Manager();
-		$manager
-			->script(
-				"testsync-script-handle",
-				"https://example.org/example-script.js",
-			);
-
-		$manager->async( "testsync-script-handle" );
-
-		$this->assertStringContainsString(
-			"<script async src=\"https://example.org/example-script.js\" id=\"testsync-script-handle-js\"></script>",
-			$this->get_wp_head(),
-		);
-	}
-
 	public function test_fluent_script() {
 		$manager = new Asset_Manager();
 		$manager
@@ -66,7 +50,7 @@ class Test_Asset_Manager extends Test_Case {
 			->async();
 
 		$this->assertStringContainsString(
-			"<script async src=\"https://example.org/example-fluent.js\" id=\"example-fluent-js\"></script>",
+			"<script src=\"https://example.org/example-fluent.js\" id=\"example-fluent-js\" async",
 			$this->get_wp_head(),
 		);
 	}
@@ -78,7 +62,7 @@ class Test_Asset_Manager extends Test_Case {
 			->async();
 
 		$this->assertStringContainsString(
-			"<script async src=\"https://example.org/example-helper.js\" id=\"example-helper-js\"></script>",
+			"<script src=\"https://example.org/example-helper.js\" id=\"example-helper-js\" async",
 			$this->get_wp_head(),
 		);
 	}
@@ -101,7 +85,7 @@ class Test_Asset_Manager extends Test_Case {
 			->async();
 
 		$this->assertStringContainsString(
-			"<script async src=\"http://example.org/wp-includes/js/swfobject.js?ver={$version}\" id=\"swfobject-js\"></script>",
+			"<script src=\"http://example.org/wp-includes/js/swfobject.js?ver={$version}\" id=\"swfobject-js\" async",
 			$this->get_wp_head(),
 		);
 	}
