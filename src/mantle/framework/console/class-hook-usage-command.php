@@ -287,7 +287,7 @@ class Hook_Usage_Command extends Command {
 	 */
 	protected function set_paths() {
 		if ( ! $this->option( 'search-path' ) ) {
-			$paths = collect( defined( 'WP_CONTENT_DIR' ) ? WP_CONTENT_DIR : getcwd() );
+			$paths = collect( [ defined( 'WP_CONTENT_DIR' ) ? WP_CONTENT_DIR : getcwd() ] );
 		} else {
 			$paths = collect( explode( ',', $this->option( 'search-path' ) ) );
 		}
