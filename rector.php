@@ -32,10 +32,12 @@ use Rector\EarlyReturn\Rector\Return_\PreparedValueToEarlyReturnRector;
 use Rector\EarlyReturn\Rector\Return_\ReturnBinaryOrToEarlyReturnRector;
 use Rector\EarlyReturn\Rector\StmtsAwareInterface\ReturnEarlyIfVariableRector;
 use Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchMethodCallReturnTypeRector;
+use Rector\Php54\Rector\Array_\LongArrayToShortArrayRector;
 use Rector\Php80\Rector\FunctionLike\MixedTypeRector;
 use Rector\Php80\Rector\NotIdentical\StrContainsRector;
 use Rector\Php81\Rector\Array_\FirstClassCallableRector;
 use Rector\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector;
+use Rector\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInstanceOfRector;
 
 /**
  * Rector Configuration
@@ -48,12 +50,15 @@ use Rector\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector
  * - RenameForeachValueVariableToMatchMethodCallReturnTypeRector: causes variables to be converted to snakeCase
  * - RemoveUselessParamTagRector: Conflicts with WordPress Coding Standards
  * - MixedTypeRector: Conflicts with WordPress Coding Standards
+ * - ChangeOrIfContinueToMultiContinueRector: doesn't make sense.
  */
 return RectorConfig::configure()
 	->withIndent( "\t" )
 	->withPaths( [ __DIR__ . '/src' ] )
 	->withPreparedSets(
+		earlyReturn: true,
 		deadCode: true,
+		instanceOf: true,
 	)
 	->withTypeCoverageLevel(7)
 	->withPhpSets( php81: true )
@@ -61,17 +66,7 @@ return RectorConfig::configure()
 		[
 			AddVoidReturnTypeWhereNoReturnRector::class,
 			RenameForeachValueVariableToMatchExprVariableRector::class,
-
-			// Early Return
-			// ChangeNestedForeachIfsToEarlyContinueRector::class,
-			// ChangeAndIfToEarlyReturnRector::class,
-			// ChangeIfElseValueAssignToEarlyReturnRector::class,
-			// ChangeNestedIfsToEarlyReturnRector::class,
-			// RemoveAlwaysElseRector::class,
-			// ChangeOrIfContinueToMultiContinueRector::class,
-			// PreparedValueToEarlyReturnRector::class,
-			// ReturnBinaryOrToEarlyReturnRector::class,
-			// ReturnEarlyIfVariableRector::class,
+			LongArrayToShortArrayRector::class,
 		]
 	)
 	->withSkip([
@@ -86,4 +81,11 @@ return RectorConfig::configure()
 		FirstClassCallableRector::class,
 		StrContainsRector::class,
 		AddArrowFunctionReturnTypeRector::class,
+		ChangeAndIfToEarlyReturnRector::class,
+		ChangeOrIfContinueToMultiContinueRector::class,
+		RemoveAlwaysElseRector::class,
+		EmptyOnNullableObjectToInstanceOfRector::class,
+		ReturnBinaryOrToEarlyReturnRector::class => [
+			__DIR__ . '/src/mantle/http-client/class-response.php',
+		],
 	]);

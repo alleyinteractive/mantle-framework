@@ -294,7 +294,7 @@ abstract class Builder {
 	 */
 	protected function resolve_attribute( string $attribute ): string {
 		if ( ! empty( $this->query_aliases[ strtolower( $attribute ) ] ) ) {
-			$attribute = $this->query_aliases[ strtolower( $attribute ) ];
+			return $this->query_aliases[ strtolower( $attribute ) ];
 		}
 
 		return $attribute;

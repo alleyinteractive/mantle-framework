@@ -256,7 +256,10 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 * Determine if there are enough items to split into multiple pages.
 	 */
 	public function has_pages(): bool {
-		return 1 !== $this->current_page() || $this->has_more();
+		if ( 1 !== $this->current_page() ) {
+						return true;
+		}
+								return $this->has_more();
 	}
 
 	/**
@@ -358,7 +361,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 		preg_match_all( '/page\/(\d*)\/?/', $path, $matches );
 
 		if ( ! empty( $matches[0][0] ) ) {
-			$path = str_replace( $matches[0][0], '', $path );
+			return str_replace( $matches[0][0], '', $path );
 		}
 
 		return $path;

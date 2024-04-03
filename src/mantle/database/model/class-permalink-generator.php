@@ -101,7 +101,7 @@ class Permalink_Generator implements \Stringable {
 			$value = $this->model->slug();
 		}
 
-		if ( ! $value && $this->model ) {
+		if ( ! $value && $this->model instanceof \Mantle\Database\Model\Model ) {
 			$value = $this->model[ $attribute ] ?? null;
 		}
 

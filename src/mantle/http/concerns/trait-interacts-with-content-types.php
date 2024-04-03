@@ -45,7 +45,11 @@ trait Interacts_With_Content_Types {
 	 * Determine if the current request probably expects a JSON response.
 	 */
 	public function expects_json(): bool {
-		return ( $this->ajax() && ! $this->pjax() && $this->accepts_any_content_type() ) || $this->wants_json();
+		if ( $this->ajax() && ! $this->pjax() && $this->accepts_any_content_type() ) {
+			return true;
+		}
+
+		return (bool) $this->wants_json();
 	}
 
 	/**

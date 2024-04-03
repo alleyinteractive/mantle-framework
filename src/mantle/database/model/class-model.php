@@ -588,7 +588,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 		$instance = static::query()->where( $attributes )->first();
 
 		if ( ! $instance ) {
-			$instance = new static( array_merge( $attributes, $values ) );
+			return new static( array_merge( $attributes, $values ) );
 		}
 
 		return $instance;
@@ -604,7 +604,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 		$instance = static::query()->where( $attributes )->first();
 
 		if ( ! $instance ) {
-			$instance = static::create( array_merge( $attributes, $values ) );
+			return static::create( array_merge( $attributes, $values ) );
 		}
 
 		return $instance;

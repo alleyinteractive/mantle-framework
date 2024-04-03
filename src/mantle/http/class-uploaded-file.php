@@ -176,7 +176,7 @@ class Uploaded_File extends SymfonyUploadedFile {
 	 */
 	protected function parse_options( $options ) {
 		if ( is_string( $options ) ) {
-			$options = [ 'disk' => $options ];
+			return [ 'disk' => $options ];
 		}
 
 		return $options;

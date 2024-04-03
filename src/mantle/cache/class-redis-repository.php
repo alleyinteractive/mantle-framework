@@ -63,12 +63,10 @@ class Redis_Repository extends Repository implements Taggable_Repository {
 		$value = $this->client->get( $this->prefix . $key );
 
 		if ( is_null( $value ) ) {
-			$value = $default;
-		} else {
-			$value = maybe_unserialize( $value );
+			return $default;
 		}
 
-		return $value;
+		return maybe_unserialize( $value );
 	}
 
 	/**
