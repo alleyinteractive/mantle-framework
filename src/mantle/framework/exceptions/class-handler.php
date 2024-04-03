@@ -215,7 +215,7 @@ class Handler implements Contract {
 	 */
 	protected function prepare_exception( Throwable $e ): Throwable {
 		if ( $e instanceof Model_Not_Found_Exception ) {
-			$e = new NotFoundHttpException( $e->getMessage(), $e, 404 );
+			return new NotFoundHttpException( $e->getMessage(), $e, 404 );
 		}
 
 		return $e;
@@ -289,7 +289,7 @@ class Handler implements Contract {
 	 */
 	protected function to_mantle_response( Response $response, Throwable $e ) {
 		if ( ! $response instanceof RedirectResponse ) {
-			$response = new Response(
+			return new Response(
 				$response->getContent(),
 				$response->getStatusCode(),
 				$response->headers->all()

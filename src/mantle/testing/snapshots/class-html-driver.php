@@ -43,7 +43,7 @@ class HTML_Driver extends HtmlDriver {
 
 		// Normalize line endings for cross-platform tests.
 		if ( PHP_OS_FAMILY === 'Windows' ) {
-			$value = implode( "\n", explode( "\r\n", $value ) );
+			return implode( "\n", explode( "\r\n", $value ) );
 		}
 
 		return $value;

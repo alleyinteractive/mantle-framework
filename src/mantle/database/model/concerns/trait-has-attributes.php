@@ -238,7 +238,7 @@ trait Has_Attributes {
 		}
 
 		if ( ! empty( $hidden ) ) {
-			$values = array_diff_key( $values, array_flip( $hidden ) );
+			return array_diff_key( $values, array_flip( $hidden ) );
 		}
 
 		return $values;
