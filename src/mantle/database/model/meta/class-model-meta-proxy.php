@@ -11,7 +11,7 @@ use ArrayAccess;
 use Mantle\Contracts\Database\Model_Meta;
 
 /**
- * Allow meta to be retrieve as an attribute on the object.
+ * Allow meta to be retrieved as an attribute on the object.
  */
 class Model_Meta_Proxy implements ArrayAccess {
 	/**

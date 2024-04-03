@@ -9,6 +9,7 @@ namespace Mantle\Database\Model;
 
 use Carbon\Carbon;
 use DateTime;
+use DateTimeInterface;
 use Mantle\Contracts;
 use Mantle\Database\Query\Builder;
 use Mantle\Database\Query\Post_Query_Builder;
@@ -44,6 +45,9 @@ use Mantle\Support\Helpers;
  * @property string $to_ping
  * @property string $content Alias to post_content.
  * @property string $date Alias to post_date.
+ * @property string $date_gmt Alias to post_date_gmt.
+ * @property string $modified Alias to post_modified.
+ * @property string $modified_gmt Alias to post_modified_gmt.
  * @property string $description Alias to post_excerpt.
  * @property string $id Alias to ID.
  * @property string $name Alias to post_title.
@@ -84,7 +88,8 @@ use Mantle\Support\Helpers;
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> newer_than_or_equal_to( DateTimeInterface|int $date, string $column = 'post_date' )
  */
 class Post extends Model implements Contracts\Database\Core_Object, Contracts\Database\Model_Meta, Contracts\Database\Updatable {
-	use Events\Post_Events,
+	use Dates\Has_Dates,
+		Events\Post_Events,
 		Meta\Model_Meta,
 		Meta\Post_Meta,
 		Term\Model_Term;
@@ -95,14 +100,17 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 * @var array<string, string>
 	 */
 	protected static $aliases = [
-		'content'     => 'post_content',
-		'date'        => 'post_date',
-		'description' => 'post_excerpt',
-		'id'          => 'ID',
-		'title'       => 'post_title',
-		'name'        => 'post_title',
-		'slug'        => 'post_name',
-		'status'      => 'post_status',
+		'content'      => 'post_content',
+		'date'         => 'post_date',
+		'date_gmt'     => 'post_date_gmt',
+		'modified'     => 'post_modified',
+		'modified_gmt' => 'post_modified_gmt',
+		'description'  => 'post_excerpt',
+		'id'           => 'ID',
+		'title'        => 'post_title',
+		'name'         => 'post_title',
+		'slug'         => 'post_name',
+		'status'       => 'post_status',
 	];
 
 	/**
@@ -305,7 +313,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	/**
 	 * Save the model.
 	 *
-	 * @param array $attributes Attributes to save.
+	 * @param array<string, mixed> $attributes Attributes to save.
 	 *
 	 * @throws Model_Exception Thrown on error saving.
 	 */
@@ -314,8 +322,17 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 
 		$id = $this->id();
 
+		// Update the post modified date if it has been modified.
+		if ( $this->is_attribute_modified( 'post_modified' ) || $this->is_attribute_modified( 'post_modified_gmt' ) ) {
+			add_filter( 'wp_insert_post_data', [ $this, 'set_post_modified_date_on_save' ] );
+		}
+
 		if ( empty( $id ) ) {
 			$save = \wp_insert_post( $this->get_attributes(), true );
+
+			if ( \is_wp_error( $save ) ) {
+				throw new Model_Exception( 'Error saving model: ' . $save->get_error_message() );
+			}
 		} else {
 			$save = \wp_update_post(
 				array_merge(
@@ -347,7 +364,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 * Delete the model.
 	 *
 	 * @param bool $force Force delete the mode.
-	 * @return mixed
+	 * @return \WP_Post|false|mixed
 	 */
 	public function delete( bool $force = false ) {
 		return \wp_delete_post( $this->id(), $force );
@@ -406,5 +423,33 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 			static::get_object_name(),
 			static::class
 		);
+	}
+
+	/**
+	 * Set the post's modified date on save via the 'wp_insert_post_data' filter.
+	 *
+	 * @param array<string, mixed> $data Data to save.
+	 */
+	public function set_post_modified_date_on_save( array $data ) {
+		// Only update the post modified date if the post ID matches the current model.
+		if ( isset( $data['ID'] ) && $this->id() !== (int) $data['ID'] ) {
+			return $data;
+		}
+
+		if ( $this->is_attribute_modified( 'post_modified' ) ) {
+			$date = Carbon::parse( $this->get_attribute( 'post_modified' ), wp_timezone() );
+		} elseif ( $this->is_attribute_modified( 'post_modified_gmt' ) ) {
+			$date = Carbon::parse( $this->get_attribute( 'post_modified_gmt' ), new \DateTimeZone( 'UTC' ) );
+		} else {
+			return $data;
+		}
+
+		$data['post_modified']     = $date->setTimezone( wp_timezone() )->format( 'Y-m-d H:i:s' );
+		$data['post_modified_gmt'] = $date->setTimezone( new \DateTimeZone( 'UTC' ) )->format( 'Y-m-d H:i:s' );
+
+		// Unhook the filter after it has been used.
+		remove_filter( 'wp_insert_post_data', [ $this, 'set_post_modified_date_on_save' ] );
+
+		return $data;
 	}
 }

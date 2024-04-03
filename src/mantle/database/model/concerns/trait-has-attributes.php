@@ -268,6 +268,15 @@ trait Has_Attributes {
 	}
 
 	/**
+	 * Check if an attribute has been modified.
+	 *
+	 * @param string $attribute Attribute to check.
+	 */
+	public function is_attribute_modified( string $attribute ): bool {
+		return in_array( $attribute, $this->modified_attributes, true );
+	}
+
+	/**
 	 * Set an array of attributes.
 	 *
 	 * @param array $attributes Attributes to set.
@@ -309,15 +318,15 @@ trait Has_Attributes {
 	 * @return mixed
 	 */
 	protected function cast_attribute( $value, string $cast_type ) {
-					return match ($cast_type) {
-									'int', 'integer' => (int) $value,
-									'real', 'float', 'double' => $this->from_float( $value ),
-									'string' => (string) $value,
-									'bool', 'boolean' => (bool) $value,
-									'object' => $this->from_json( $value, true ),
-									'array', 'json' => $this->from_json( $value ),
-									default => $value,
-					};
+		return match ($cast_type) {
+			'int', 'integer' => (int) $value,
+			'real', 'float', 'double' => $this->from_float( $value ),
+			'string' => (string) $value,
+			'bool', 'boolean' => (bool) $value,
+			'object' => $this->from_json( $value, true ),
+			'array', 'json' => $this->from_json( $value ),
+			default => $value,
+		};
 	}
 
 	/**
@@ -327,10 +336,10 @@ trait Has_Attributes {
 	 */
 	public function from_float( $value ): float {
 		return match ( (string) $value) {
-						'Infinity' => INF,
-						'-Infinity' => -INF,
-						'NaN' => NAN,
-						default => (float) $value,
+			'Infinity' => INF,
+			'-Infinity' => -INF,
+			'NaN' => NAN,
+			default => (float) $value,
 		};
 	}
 

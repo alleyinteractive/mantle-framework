@@ -184,6 +184,17 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	}
 
 	/**
+	 * Reload a fresh model instance from the database.
+	 */
+	public function fresh(): ?static {
+		if ( ! $this->get( 'id' ) ) {
+			return null;
+		}
+
+		return static::find( $this->get( 'id' ) );
+	}
+
+	/**
 	 * Create an instance of a model from another.
 	 *
 	 * @param Model $instance Instance to clone.
