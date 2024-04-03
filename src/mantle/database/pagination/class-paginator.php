@@ -255,13 +255,12 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	/**
 	 * Determine if there are enough items to split into multiple pages.
 	 */
-	public function has_pages(): bool
-	{
-					if (1 !== $this->current_page()) {
-									return true;
-								}
+	public function has_pages(): bool {
+		if ( 1 !== $this->current_page() ) {
+						return true;
+		}
 								return $this->has_more();
-							}
+	}
 
 	/**
 	 * Count the number of items.
