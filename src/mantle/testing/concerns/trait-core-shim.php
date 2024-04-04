@@ -22,8 +22,6 @@ trait Core_Shim {
 	/**
 	 * Fake 'set_up' method to allow for easier transition and some PHPUnit 8
 	 * compatibility.
-	 *
-	 * @return void
 	 */
 	public function set_up() {
 		// Do nothing.
@@ -33,7 +31,7 @@ trait Core_Shim {
 	 * Fake 'tear_down' method to allow for easier transition and some PHPUnit 8
 	 * compatibility.
 	 */
-	public function tear_down(): void {
+	public function tear_down() {
 		// Do nothing.
 	}
 
