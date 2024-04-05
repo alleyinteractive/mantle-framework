@@ -55,7 +55,12 @@ for path in $PACKAGES; do
 	fi
 
 	# Update the settings to disable issues and wikis.
-	gh repo edit "$ORGANIZATION/$package" --enable-issues=false --enable-wiki=false --homepage https://mantle.alley.com --default-branch "$main_branch"
+	gh repo edit "$ORGANIZATION/$package" \
+		--enable-issues=false \
+		--enable-wiki=false \
+		--homepage https://mantle.alley.com \
+		--default-branch "$main_branch" \
+		--description "[READ ONLY] Subtree split of the Mantle $package package. See https://github.com/alleyinteractive/mantle-framework for the main repository."
 done
 
 echo "DONE"
