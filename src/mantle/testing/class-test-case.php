@@ -178,7 +178,7 @@ abstract class Test_Case extends BaseTestCase {
 	 */
 	protected function tearDown(): void {
 		// phpcs:disable WordPress.WP.GlobalVariablesOverride,WordPress.NamingConventions.PrefixAllGlobals
-		global $wp_query, $wp;
+		global $wp_query, $wp_the_query, $wp;
 
 		// Call the test case's "tear_down" method if it exists.
 		if ( method_exists( $this, 'tear_down' ) ) {
@@ -203,8 +203,10 @@ abstract class Test_Case extends BaseTestCase {
 				restore_current_blog();
 			}
 		}
-		$wp_query = new WP_Query();
-		$wp       = new WP();
+
+		$wp_query      = new WP_Query();
+		$$wp_the_query = $wp_query;
+		$wp            = new WP();
 
 		// Reset globals related to the post loop and `setup_postdata()`.
 		$post_globals = [
