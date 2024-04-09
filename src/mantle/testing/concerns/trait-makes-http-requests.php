@@ -39,14 +39,14 @@ trait Makes_Http_Requests {
 	 *
 	 * @var array<callable>
 	 */
-	public array $before_callbacks = [];
+	protected array $before_callbacks = [];
 
 	/**
 	 * The array of callbacks to be run after the event is finished.
 	 *
 	 * @var array<callable>
 	 */
-	public array $after_callbacks = [];
+	protected array $after_callbacks = [];
 
 	/**
 	 * Setup the trait in the test case.

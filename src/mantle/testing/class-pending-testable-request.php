@@ -238,9 +238,7 @@ class Pending_Testable_Request {
 		$response_headers = [];
 
 		$intercept_status = function( $status_header, $code ) use ( &$response_status ): int {
-			if ( ! $response_status ) {
-				$response_status = $code;
-			}
+			$response_status = $code;
 
 			return $code;
 		};
