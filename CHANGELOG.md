@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.0.1 - 2024-04-09
+
+### Fixed
+
+- Changed the timing of the `set_up` method being called in tests to be after
+  the database transaction is started.
+- Allow other use of the `pre_http_request` filter when preventing external
+	requests during testing.
+- Fixed an issue with the streamed HTTP response not being converted to a
+  `WP_Error` when needed.
+
 ## v1.0.0 - 2024-04-04
 
 ### Added

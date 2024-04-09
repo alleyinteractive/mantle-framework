@@ -176,7 +176,7 @@ trait WordPress_Action {
 			throw new RuntimeException( $type::class . ' is not a supported type-hint.' );
 		}
 
-		if ( $type instanceof ReflectionNamedType && $argument_type === $type->getName() ) {
+		if ( $argument_type === $type->getName() ) {
 			return $argument;
 		}
 
