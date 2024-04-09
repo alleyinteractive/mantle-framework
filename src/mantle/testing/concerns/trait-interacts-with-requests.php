@@ -189,6 +189,11 @@ trait Interacts_With_Requests {
 	 * @throws RuntimeException If the request was made without a matching faked request.
 	 */
 	public function pre_http_request( $preempt, $request_args, $url ) {
+		// Bail early if the preemption is already set.
+		if ( false !== $preempt ) {
+			return $preempt;
+		}
+
 		$request = new Request( $request_args, $url );
 
 		$this->recorded_requests[] = $request;
@@ -199,7 +204,11 @@ trait Interacts_With_Requests {
 			// If the request is for streaming the response to a file, store the
 			// response body in the requested file.
 			if ( ! is_wp_error( $stub ) && ! empty( $request_args['stream'] ) ) {
-				return $this->store_streamed_response( $url, $stub, $request_args );
+				try {
+					return $this->store_streamed_response( $url, $stub, $request_args );
+				} catch ( RuntimeException $e ) {
+					return new WP_Error( 'http_request_failed', $e->getMessage() );
+				}
 			}
 
 			return $stub;

@@ -141,11 +141,6 @@ abstract class Test_Case extends BaseTestCase {
 
 		parent::setUp();
 
-		// Call the PHPUnit 8 'set_up' method if it exists.
-		if ( method_exists( $this, 'set_up' ) ) {
-			$this->set_up();
-		}
-
 		if ( ! isset( $this->app ) ) {
 			$this->refresh_application();
 		}
@@ -171,6 +166,11 @@ abstract class Test_Case extends BaseTestCase {
 
 		remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
 		add_filter( 'wp_die_handler', [ WP_Die::class, 'get_handler' ] );
+
+		// Call the PHPUnit 8 'set_up' method if it exists.
+		if ( method_exists( $this, 'set_up' ) ) {
+			$this->set_up();
+		}
 	}
 
 	/**
@@ -231,6 +231,7 @@ abstract class Test_Case extends BaseTestCase {
 
 		parent::tearDown();
 
+		// Reset the application instance after everything else.
 		if ( $this->app ) {
 			$this->app = null;
 
