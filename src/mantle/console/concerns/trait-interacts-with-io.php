@@ -424,8 +424,6 @@ trait Interacts_With_IO {
 
 	/**
 	 * Retrieve the output interface.
-	 *
-	 * @return OutputInterface|Output_Style
 	 */
 	public function output(): OutputInterface|Output_Style {
 		return $this->output;
