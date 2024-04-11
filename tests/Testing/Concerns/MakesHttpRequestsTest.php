@@ -188,6 +188,16 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 			->assertHeader( 'Other-Header', '123' );
 	}
 
+	public function test_redirect_wp_redirect() {
+		add_action(
+			'template_redirect',
+			fn () => wp_redirect( home_url( '/redirected/' ), 302 ),
+		);
+
+		$this->get( '/' )
+			->assertRedirect( home_url( '/redirected/' ) );
+	}
+
 	public function test_post_json_mantle_route() {
 		$this->app['router']->post(
 			'/test-post-json',
