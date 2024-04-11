@@ -35,7 +35,7 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 	public function test_fluent() {
 		$_SERVER['__request_headers'] = [];
 
-		add_filter(
+		add_action(
 			'template_redirect',
 			function() {
 				$_SERVER['__request_headers'] = collect( getallheaders() )->to_array();
@@ -48,6 +48,7 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 			->get( home_url( '/' ) )
 			->assertQueryTrue( 'is_home', 'is_front_page' );
 
+		// @phpstan-ignore-next-line
 		$this->assertNotEmpty( $_SERVER['__request_headers']['X-Test'] );
 		$this->assertEquals( 'test', $_SERVER['__request_headers']['X-Test'][0] );
 
@@ -191,7 +192,9 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 	public function test_redirect_wp_redirect() {
 		add_action(
 			'template_redirect',
-			fn () => wp_redirect( home_url( '/redirected/' ), 302 ),
+			function () {
+				wp_redirect( home_url( '/redirected/' ), 302 );
+			},
 		);
 
 		$this->get( '/' )
@@ -314,6 +317,34 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 		$this->get( '/example' )->assertMatchesSnapshotHtml( [
 			'/html/body/div[@class="example"]',
 		] );
+	}
+
+	public function test_wp_is_rest_endpoint() {
+		$this->ignoreIncorrectUsage();
+
+		if ( ! function_exists( 'wp_is_rest_endpoint' ) ) {
+			$this->markTestSkipped( 'wp_is_rest_endpoint() is not available.' );
+		}
+
+		$this->assertFalse( wp_is_rest_endpoint() );
+
+		register_rest_route(
+			'mantle/v1',
+			__FUNCTION__,
+			[
+				'methods' => 'GET',
+				'validate_callback' => '__return_true',
+				'callback' => function () {
+					$this->assertTrue( wp_is_rest_endpoint() );
+
+					return [ 'key' => 'value here' ];
+				},
+			]
+		);
+
+		$this->get( rest_url( '/mantle/v1/' . __FUNCTION__ ) );
+
+		$this->assertFalse( wp_is_rest_endpoint() );
 	}
 
 	public function test_match_snapshot_rest() {
