@@ -49,7 +49,7 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 			->assertQueryTrue( 'is_home', 'is_front_page' );
 
 		// @phpstan-ignore-next-line
-		$this->assertNotEmpty( $_SERVER['__request_headers']['X-Test'] );
+		$this->assertNotEmpty( $_SERVER['__request_headers']['X-Test'] ?? null );
 		$this->assertEquals( 'test', $_SERVER['__request_headers']['X-Test'][0] );
 
 		$this->assertNotEmpty( $_SERVER['__request_headers']['X-Default'] );
