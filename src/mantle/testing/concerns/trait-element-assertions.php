@@ -9,6 +9,7 @@ namespace Mantle\Testing\Concerns;
 
 use PHPUnit\Framework\Assert as PHPUnit;
 use DOMDocument;
+use DOMNode;
 use DOMXPath;
 use Symfony\Component\CssSelector\CssSelectorConverter;
 
@@ -178,5 +179,98 @@ trait Element_Assertions {
 	 */
 	public function assertQuerySelectorMissing( string $selector ): static {
 		return $this->assertElementMissingByQuerySelector( $selector );
+	}
+
+	/**
+	 * Assert against the expected number of elements for an expression.
+	 *
+	 * @param string $expression The XPath expression to execute.
+	 * @param int $expected The expected number of elements.
+	 * @return static
+	 */
+	public function assertElementCount( string $expression, int $expected ): static {
+		$nodes = ( new DOMXPath( $this->get_dom_document() ) )->query( $expression );
+
+		PHPUnit::assertEquals( $expected, $nodes->length );
+
+		return $this;
+	}
+
+	/**
+	 * Assert against the expected number of elements for a query selector.
+	 *
+	 * @param string $selector The selector to use.
+	 * @param int $expected The expected number of elements.
+	 * @return static
+	 */
+	public function assertQuerySelectorCount( string $selector, int $expected ): static {
+		return $this->assertElementCount( $this->convert_query_selector( $selector ), $expected );
+	}
+
+	/**
+	 * Assert an element exists by test ID.
+	 *
+	 * @param string $test_id The test ID to check.
+	 * @return static
+	 */
+	public function assertElementExistsByTestId( string $test_id ): static {
+		return $this->assertQuerySelectorExists( "[data-testid=\"$test_id\"]" );
+	}
+
+	/**
+	 * Assert an element is missing by test ID.
+	 *
+	 * @param string $test_id The test ID to check.
+	 * @return static
+	 */
+	public function assertElementMissingByTestId( string $test_id ): static {
+		return $this->assertQuerySelectorMissing( "[data-testid=\"$test_id\"]" );
+	}
+
+	/**
+	 * Assert that an element passes a custom assertion.
+	 *
+	 * The assertion will be called for each node found by the expression.
+	 *
+	 * @param string $expression The XPath expression to execute.
+	 * @param callable(DOMNode $node): bool $assertion The assertion to run.
+	 * @param bool $pass_any Pass if any of the nodes pass the assertion. Otherwise, all must pass.
+	 * @return static
+	 */
+	public function assertElement( string $expression, callable $assertion, bool $pass_any = false ): static {
+		$nodes = ( new DOMXPath( $this->get_dom_document() ) )->query( $expression );
+
+		if ( ! $nodes ) {
+			PHPUnit::fail( 'No nodes found for expression: ' . $expression );
+		}
+
+		foreach ( $nodes as $node ) {
+			if ( $assertion( $node ) ) {
+				// If we're passing on any, we can return early.
+				if ( $pass_any ) {
+					return $this;
+				}
+			} elseif ( ! $pass_any ) {
+				PHPUnit::fail( 'Assertion failed for node: ' . $node->nodeName );
+			}
+		}
+
+		PHPUnit::assertTrue( true, 'All nodes passed assertion.' );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that an element passes a custom assertion by query selector.
+	 *
+	 * The assertion will be called for each node found by the selector.
+	 *
+	 * @param string $selector The selector to use.
+	 * @param callable(DOMNode $node): bool $assertion The assertion to run.
+	 * @param bool $pass_any Pass if any of the nodes pass the assertion. Otherwise, all must pass.
+	 * @return static
+	 */
+	public function assertQuerySelector( string $selector, callable $assertion, bool $pass_any = false ): static {
+		return $this->assertElement( $this->convert_query_selector( $selector ), $assertion, $pass_any );
 	}
 }
