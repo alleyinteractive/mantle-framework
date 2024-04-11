@@ -3,6 +3,7 @@
 namespace Mantle\Tests\Database\Factory;
 
 use Mantle\Database\Factory;
+use Mantle\Database\Factory\Post_Factory;
 use Mantle\Database\Model;
 use Mantle\Testing\Framework_Test_Case;
 
@@ -116,6 +117,17 @@ class FactoryTest extends Framework_Test_Case {
 			'Title from the custom state',
 			$posts[0]->title,
 		);
+	}
+
+	public function test_factory_macro() {
+		Post_Factory::macro(
+			'with_custom_meta',
+			fn () => $this->with_meta( [ 'custom_meta_key' => 'custom_meta_value' ] ),
+		);
+
+		$post_id = Testable_Post::factory()->with_custom_meta()->create();
+
+		$this->assertEquals( 'custom_meta_value', get_post_meta( $post_id, 'custom_meta_key', true ) );
 	}
 
 	public function test_create_custom_post_type_model() {
