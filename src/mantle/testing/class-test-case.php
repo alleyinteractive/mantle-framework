@@ -204,9 +204,9 @@ abstract class Test_Case extends BaseTestCase {
 			}
 		}
 
-		$wp_query      = new WP_Query();
-		$$wp_the_query = $wp_query;
-		$wp            = new WP();
+		$wp_query     = new WP_Query();
+		$wp_the_query = $wp_query;
+		$wp           = new WP();
 
 		// Reset globals related to the post loop and `setup_postdata()`.
 		$post_globals = [

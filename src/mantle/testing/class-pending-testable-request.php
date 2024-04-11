@@ -54,7 +54,7 @@ class Pending_Testable_Request {
 	/**
 	 * Store flag if the request was for the REST API.
 	 *
-	 * @var array{body: string, headers: array<string, string>}|null
+	 * @var array{body: string, headers: array<string, string>, status: int}|null
 	 */
 	protected ?array $rest_api_response = null;
 
@@ -315,6 +315,7 @@ class Pending_Testable_Request {
 
 				$response_content = $this->rest_api_response['body'];
 				$response_headers = array_merge( (array) $response_headers, $this->rest_api_response['headers'] );
+				$response_status  = $this->rest_api_response['status'];
 			} else {
 				try {
 					// Execute the request, inasmuch as WordPress would.
@@ -421,6 +422,7 @@ class Pending_Testable_Request {
 		} else {
 			$req = $url;
 		}
+
 		$_SERVER['REQUEST_URI'] = $req;
 
 		$_POST = $data;
@@ -503,6 +505,9 @@ class Pending_Testable_Request {
 		$server = rest_get_server();
 
 		if ( $server instanceof Spy_REST_Server ) {
+			// Reset the spy to ensure we're not using any previous data.
+			$server->reset_spy();
+
 			$route = untrailingslashit( $GLOBALS['wp']->query_vars['rest_route'] );
 
 			if ( empty( $route ) ) {
@@ -515,10 +520,14 @@ class Pending_Testable_Request {
 				$this->rest_api_response = [
 					'body'    => $server->sent_body,
 					'headers' => $server->sent_headers,
+					'status'  => $server->sent_status,
 				];
 			}
 		} else {
-			Assert::fail( 'Expected the Mantle Spy REST Server to be used.' );
+			trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
+				'Expected the Mantle Spy REST Server to be used. Not able to be tested against.',
+				E_USER_WARNING,
+			);
 		}
 	}
 
