@@ -20,6 +20,13 @@ use function Mantle\Support\Helpers\collect;
 class MakesHttpRequestsTest extends Framework_Test_Case {
 	use Refresh_Database;
 
+	protected function setUp(): void {
+		parent::setUp();
+
+		remove_all_actions( 'template_redirect' );
+
+	}
+
 	public function test_get_home() {
 		$this->get( home_url( '/' ) );
 		$this->assertQueryTrue( 'is_home', 'is_front_page' );
@@ -35,7 +42,7 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 	public function test_fluent() {
 		$_SERVER['__request_headers'] = [];
 
-		add_filter(
+		add_action(
 			'template_redirect',
 			function() {
 				$_SERVER['__request_headers'] = collect( getallheaders() )->to_array();
@@ -48,11 +55,14 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 			->get( home_url( '/' ) )
 			->assertQueryTrue( 'is_home', 'is_front_page' );
 
-		$this->assertNotEmpty( $_SERVER['__request_headers']['X-Test'] );
+		// @phpstan-ignore-next-line
+		$this->assertNotEmpty( $_SERVER['__request_headers']['X-Test'] ?? null );
 		$this->assertEquals( 'test', $_SERVER['__request_headers']['X-Test'][0] );
 
 		$this->assertNotEmpty( $_SERVER['__request_headers']['X-Default'] );
 		$this->assertEquals( 'default', $_SERVER['__request_headers']['X-Default'][0] );
+
+		remove_all_actions( 'template_redirect' );
 	}
 
 	public function test_get_term() {
@@ -188,6 +198,19 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 			->assertHeader( 'Other-Header', '123' );
 	}
 
+	public function test_redirect_wp_redirect() {
+		add_action(
+			'template_redirect',
+			function () {
+				wp_redirect( home_url( '/redirected/' ), 302 );
+			},
+		);
+
+		$this->get( '/' )->assertRedirect( home_url( '/redirected/' ) );
+
+		remove_all_actions( 'template_redirect' );
+	}
+
 	public function test_post_json_mantle_route() {
 		$this->app['router']->post(
 			'/test-post-json',
@@ -304,6 +327,34 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 		$this->get( '/example' )->assertMatchesSnapshotHtml( [
 			'/html/body/div[@class="example"]',
 		] );
+	}
+
+	public function test_wp_is_rest_endpoint() {
+		$this->ignoreIncorrectUsage();
+
+		if ( ! function_exists( 'wp_is_rest_endpoint' ) ) {
+			$this->markTestSkipped( 'wp_is_rest_endpoint() is not available.' );
+		}
+
+		$this->assertFalse( wp_is_rest_endpoint() );
+
+		register_rest_route(
+			'mantle/v1',
+			__FUNCTION__,
+			[
+				'methods' => 'GET',
+				'validate_callback' => '__return_true',
+				'callback' => function () {
+					$this->assertTrue( wp_is_rest_endpoint() );
+
+					return [ 'key' => 'value here' ];
+				},
+			]
+		);
+
+		$this->get( rest_url( '/mantle/v1/' . __FUNCTION__ ) );
+
+		$this->assertFalse( wp_is_rest_endpoint() );
 	}
 
 	public function test_match_snapshot_rest() {

@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `html_string()` helper to make assertions against a HTML string easier in testing.
 - Added new assertion methods to test against elements.
 
+### Fixed
+
+- Fixed incorrect status code when testing.
+- Properly tear down the `$wp_the_query` global.
+
 ## v1.0.1 - 2024-04-09
 
 ### Fixed
