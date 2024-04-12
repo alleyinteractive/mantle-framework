@@ -14,7 +14,7 @@ use Mantle\Testing\Concerns\Element_Assertions;
  *
  * Perform assertions against a HTML string.
  */
-class HTML_String {
+class Assertable_HTML_String {
 	use Element_Assertions;
 
 	/**
