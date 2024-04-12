@@ -2,6 +2,8 @@
 /**
  * Element_Assertions trait file
  *
+ * phpcs:disable Squiz.Commenting.FunctionComment.ParamNameNoMatch, Squiz.Commenting.FunctionComment.MissingParamTag
+ *
  * @package Mantle
  */
 
@@ -185,8 +187,7 @@ trait Element_Assertions {
 	 * Assert against the expected number of elements for an expression.
 	 *
 	 * @param string $expression The XPath expression to execute.
-	 * @param int $expected The expected number of elements.
-	 * @return static
+	 * @param int    $expected The expected number of elements.
 	 */
 	public function assertElementCount( string $expression, int $expected ): static {
 		$nodes = ( new DOMXPath( $this->get_dom_document() ) )->query( $expression );
@@ -200,8 +201,7 @@ trait Element_Assertions {
 	 * Assert against the expected number of elements for a query selector.
 	 *
 	 * @param string $selector The selector to use.
-	 * @param int $expected The expected number of elements.
-	 * @return static
+	 * @param int    $expected The expected number of elements.
 	 */
 	public function assertQuerySelectorCount( string $selector, int $expected ): static {
 		return $this->assertElementCount( $this->convert_query_selector( $selector ), $expected );
@@ -211,7 +211,6 @@ trait Element_Assertions {
 	 * Assert an element exists by test ID.
 	 *
 	 * @param string $test_id The test ID to check.
-	 * @return static
 	 */
 	public function assertElementExistsByTestId( string $test_id ): static {
 		return $this->assertQuerySelectorExists( "[data-testid=\"$test_id\"]" );
@@ -221,7 +220,6 @@ trait Element_Assertions {
 	 * Assert an element is missing by test ID.
 	 *
 	 * @param string $test_id The test ID to check.
-	 * @return static
 	 */
 	public function assertElementMissingByTestId( string $test_id ): static {
 		return $this->assertQuerySelectorMissing( "[data-testid=\"$test_id\"]" );
@@ -232,10 +230,9 @@ trait Element_Assertions {
 	 *
 	 * The assertion will be called for each node found by the expression.
 	 *
-	 * @param string $expression The XPath expression to execute.
+	 * @param string           $expression The XPath expression to execute.
 	 * @param callable(DOMNode $node): bool $assertion The assertion to run.
-	 * @param bool $pass_any Pass if any of the nodes pass the assertion. Otherwise, all must pass.
-	 * @return static
+	 * @param bool             $pass_any Pass if any of the nodes pass the assertion. Otherwise, all must pass.
 	 */
 	public function assertElement( string $expression, callable $assertion, bool $pass_any = false ): static {
 		$nodes = ( new DOMXPath( $this->get_dom_document() ) )->query( $expression );
@@ -251,7 +248,7 @@ trait Element_Assertions {
 					return $this;
 				}
 			} elseif ( ! $pass_any ) {
-				PHPUnit::fail( 'Assertion failed for node: ' . $node->nodeName );
+				PHPUnit::fail( 'Assertion failed for node: ' . $node->nodeName ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 			}
 		}
 
@@ -265,10 +262,9 @@ trait Element_Assertions {
 	 *
 	 * The assertion will be called for each node found by the selector.
 	 *
-	 * @param string $selector The selector to use.
+	 * @param string           $selector The selector to use.
 	 * @param callable(DOMNode $node): bool $assertion The assertion to run.
-	 * @param bool $pass_any Pass if any of the nodes pass the assertion. Otherwise, all must pass.
-	 * @return static
+	 * @param bool             $pass_any Pass if any of the nodes pass the assertion. Otherwise, all must pass.
 	 */
 	public function assertQuerySelector( string $selector, callable $assertion, bool $pass_any = false ): static {
 		return $this->assertElement( $this->convert_query_selector( $selector ), $assertion, $pass_any );
