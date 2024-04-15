@@ -12,6 +12,7 @@ use Faker\Generator;
 use Mantle\Database\Model\Term;
 
 use function Mantle\Support\Helpers\get_term_object;
+use function Mantle\Support\Helpers\tap;
 
 /**
  * Term Factory
