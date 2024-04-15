@@ -392,6 +392,13 @@ class Pending_Testable_Request {
 
 		$this->rest_api_response = null;
 
+		// Remove all HTTP_* headers from $_SERVER.
+		foreach ( $_SERVER as $key => $value ) {
+			if ( str_starts_with( $key, 'HTTP_' ) ) {
+				unset( $_SERVER[ $key ] );
+			}
+		}
+
 		// phpcs:enable
 	}
 
