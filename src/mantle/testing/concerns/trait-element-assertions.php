@@ -55,11 +55,15 @@ trait Element_Assertions {
 	 * Assert that an element exists in the response.
 	 *
 	 * @param string $expression The XPath expression to execute.
+	 * @param string $message Optional message to display on failure.
 	 */
-	public function assertElementExists( string $expression ): static {
+	public function assertElementExists( string $expression, string $message = null ): static {
 		$nodes = ( new DOMXPath( $this->get_dom_document() ) )->query( $expression );
 
-		PHPUnit::assertTrue( ! $nodes ? false : $nodes->length > 0 );
+		PHPUnit::assertTrue(
+			! $nodes ? false : $nodes->length > 0,
+			$message ?? 'Element not found for expression: ' . $expression,
+		);
 
 		return $this;
 	}
@@ -74,7 +78,7 @@ trait Element_Assertions {
 			$id = substr( $id, 1 );
 		}
 
-		return $this->assertElementExists( sprintf( '//*[@id="%s"]', $id ) );
+		return $this->assertElementExists( sprintf( '//*[@id="%s"]', $id ), "Element not found for ID: $id" );
 	}
 
 	/**
@@ -87,18 +91,25 @@ trait Element_Assertions {
 			$classname = substr( $classname, 1 );
 		}
 
-		return $this->assertElementExists( sprintf( '//*[contains(concat(" ", normalize-space(@class), " "), " %s ")]', $classname ) );
+		return $this->assertElementExists(
+			sprintf( '//*[contains(concat(" ", normalize-space(@class), " "), " %s ")]', $classname ),
+			"Element not found for class: $classname"
+		);
 	}
 
 	/**
 	 * Assert that an element is missing in the response.
 	 *
 	 * @param string $expression The XPath expression to execute.
+	 * @param string $message    The message to display if the assertion fails.
 	 */
-	public function assertElementMissing( string $expression ): static {
+	public function assertElementMissing( string $expression, string $message = null ): static {
 		$nodes = ( new DOMXPath( $this->get_dom_document() ) )->query( $expression );
 
-		PHPUnit::assertTrue( false === $nodes || 0 === $nodes->length );
+		PHPUnit::assertTrue(
+			false === $nodes || 0 === $nodes->length,
+			$message ?? "Element found for expression: $expression"
+		);
 
 		return $this;
 	}
@@ -113,7 +124,7 @@ trait Element_Assertions {
 			$id = substr( $id, 1 );
 		}
 
-		return $this->assertElementMissing( sprintf( '//*[@id="%s"]', $id ) );
+		return $this->assertElementMissing( sprintf( '//*[@id="%s"]', $id ), "Element found for ID: $id" );
 	}
 
 	/**
@@ -135,7 +146,7 @@ trait Element_Assertions {
 	 * @param string $type The type of element to check.
 	 */
 	public function assertElementExistsByTagName( string $type ): static {
-		return $this->assertElementExists( sprintf( '//*[local-name()="%s"]', $type ) );
+		return $this->assertElementExists( sprintf( '//*[local-name()="%s"]', $type ), "Element not found for tag: $type" );
 	}
 
 	/**
@@ -144,7 +155,7 @@ trait Element_Assertions {
 	 * @param string $type The type of element to check.
 	 */
 	public function assertElementMissingByTagName( string $type ): static {
-		return $this->assertElementMissing( sprintf( '//*[local-name()="%s"]', $type ) );
+		return $this->assertElementMissing( sprintf( '//*[local-name()="%s"]', $type ), "Element found for tag: $type" );
 	}
 
 	/**
@@ -153,7 +164,7 @@ trait Element_Assertions {
 	 * @param string $selector The selector to use.
 	 */
 	public function assertElementExistsByQuerySelector( string $selector ): static {
-		return $this->assertElementExists( $this->convert_query_selector( $selector ) );
+		return $this->assertElementExists( $this->convert_query_selector( $selector ), "Element not found for selector: $selector" );
 	}
 
 	/**
@@ -162,7 +173,7 @@ trait Element_Assertions {
 	 * @param string $selector
 	 */
 	public function assertQuerySelectorExists( string $selector ): static {
-		return $this->assertElementExistsByQuerySelector( $selector );
+		return $this->assertElementExistsByQuerySelector( $selector, "Element not found for selector: $selector" );
 	}
 
 	/**
@@ -171,7 +182,7 @@ trait Element_Assertions {
 	 * @param string $selector The selector to use.
 	 */
 	public function assertElementMissingByQuerySelector( string $selector ): static {
-		return $this->assertElementMissing( $this->convert_query_selector( $selector ) );
+		return $this->assertElementMissing( $this->convert_query_selector( $selector ), "Element found for selector: $selector" );
 	}
 
 	/**
@@ -180,7 +191,7 @@ trait Element_Assertions {
 	 * @param string $selector
 	 */
 	public function assertQuerySelectorMissing( string $selector ): static {
-		return $this->assertElementMissingByQuerySelector( $selector );
+		return $this->assertElementMissingByQuerySelector( $selector, "Element found for selector: $selector" );
 	}
 
 	/**
@@ -192,7 +203,7 @@ trait Element_Assertions {
 	public function assertElementCount( string $expression, int $expected ): static {
 		$nodes = ( new DOMXPath( $this->get_dom_document() ) )->query( $expression );
 
-		PHPUnit::assertEquals( $expected, $nodes->length );
+		PHPUnit::assertEquals( $expected, $nodes->length, 'Unexpected number of elements found.' );
 
 		return $this;
 	}

@@ -40,7 +40,7 @@ class ElementAssertionsTest extends Framework_Test_Case {
 			->assertElementExistsById( '#test-id' )
 			->assertElementMissingById( 'missing-id' )
 			->assertElementMissingById( '#missing-id' )
-			->assertElementMissingById( '.test-it' ); // A class selector should not match an ID.
+			->assertElementMissingById( '.test-id' ); // A class selector should not match an ID.
 	}
 
 	public function test_element_exists_by_class() {
