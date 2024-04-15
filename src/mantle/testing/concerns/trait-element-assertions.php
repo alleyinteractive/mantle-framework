@@ -173,7 +173,7 @@ trait Element_Assertions {
 	 * @param string $selector
 	 */
 	public function assertQuerySelectorExists( string $selector ): static {
-		return $this->assertElementExistsByQuerySelector( $selector, "Element not found for selector: $selector" );
+		return $this->assertElementExistsByQuerySelector( $selector );
 	}
 
 	/**
@@ -191,7 +191,7 @@ trait Element_Assertions {
 	 * @param string $selector
 	 */
 	public function assertQuerySelectorMissing( string $selector ): static {
-		return $this->assertElementMissingByQuerySelector( $selector, "Element found for selector: $selector" );
+		return $this->assertElementMissingByQuerySelector( $selector );
 	}
 
 	/**
