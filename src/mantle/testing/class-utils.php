@@ -464,10 +464,6 @@ class Utils {
 	 * Ensure that Composer is loaded for the current environment.
 	 */
 	public static function ensure_composer_loaded(): void {
-		if ( class_exists( \Composer\Autoload\ClassLoader::class ) ) {
-			return;
-		}
-
 		$paths = [
 			preg_replace( '#/vendor/.*$#', '/vendor/autoload.php', __DIR__ ),
 			__DIR__ . '/../../../vendor/autoload.php',

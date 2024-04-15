@@ -12,6 +12,7 @@ namespace Mantle\Testing;
 use function Mantle\Support\Helpers\tap;
 
 require_once __DIR__ . '/preload.php';
+require_once __DIR__ . '/helpers/helpers-element-assertions.php';
 require_once __DIR__ . '/helpers/helpers-http-response.php';
 require_once __DIR__ . '/mail/helpers.php';
 

@@ -31,9 +31,11 @@ use function Mantle\Support\Helpers\tap;
  * @method \Mantle\Database\Factory\Fluent_Factory<TModel, TObject, TReturnValue> count(int $count)
  */
 abstract class Factory {
-	use Concerns\Resolves_Factories,
-		Conditionable,
-		Macroable;
+	use Concerns\Resolves_Factories;
+	use Conditionable;
+	use Macroable {
+		__call as macro_call;
+	}
 
 	/**
 	 * Flag to return the factory as a model.
@@ -276,6 +278,10 @@ abstract class Factory {
 	 * @param array  $args   The arguments.
 	 */
 	public function __call( string $method, array $args ): mixed {
+		if ( static::has_macro( $method ) ) {
+			return $this->macro_call( $method, $args );
+		}
+
 		return $this->create_fluent_factory()->$method( ...$args );
 	}
 }
