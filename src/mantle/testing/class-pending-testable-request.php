@@ -394,8 +394,16 @@ class Pending_Testable_Request {
 
 		// Remove all HTTP_* headers from $_SERVER.
 		foreach ( $_SERVER as $key => $value ) {
-			if ( str_starts_with( $key, 'HTTP_' ) ) {
+			if ( str_starts_with( $key, 'HTTP_' ) && 'HTTP_HOST' !== $key ) {
 				unset( $_SERVER[ $key ] );
+			}
+
+			if ( isset( $_SERVER['CONTENT_TYPE'] ) ) {
+				unset( $_SERVER['CONTENT_TYPE'] );
+			}
+
+			if ( isset( $_SERVER['REMOTE_ADDR'] ) ) {
+				unset( $_SERVER['REMOTE_ADDR'] );
 			}
 		}
 
