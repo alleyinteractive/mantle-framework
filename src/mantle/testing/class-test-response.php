@@ -773,6 +773,13 @@ class Test_Response {
 	public function dump(): static {
 		$content = $this->get_content();
 
+		// If the content is not JSON, dump it as is.
+		if ( 'application/json' !== $this->get_header( 'Content-Type' ) ) {
+			dump( $content );
+
+			return $this;
+		}
+
 		$json = json_decode( $content );
 
 		if ( json_last_error() === JSON_ERROR_NONE ) {
