@@ -94,6 +94,11 @@ Utils::reset_server();
 define( 'WP_TESTS_TABLE_PREFIX', $table_prefix );
 define( 'DIR_TESTDATA', __DIR__ . '/data' );
 
+// Set the core test constant.
+if ( ! defined( 'WP_RUN_CORE_TESTS' ) ) {
+	define( 'WP_RUN_CORE_TESTS', true );
+}
+
 /*
  * Cron tries to make an HTTP request to the site, which always fails,
  * because tests are run in CLI mode only.
