@@ -65,6 +65,20 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 		remove_all_actions( 'template_redirect' );
 	}
 
+	public function test_assert_query() {
+		$this->get( '/' )
+			->assertQueryTrue( 'is_home', 'is_front_page' )
+			->assertQueryTrueAny( 'is_home', 'is_singular' );
+
+		$term = static::factory()->category->create( [ 'name' => 'News' ] );
+
+		$this->get( get_term_link( $term, 'category' ) )
+			->assertQueryTrue( 'is_archive', 'is_category' )
+			->assertQueryTrueAny( 'is_archive', 'is_category', 'is_tag' )
+			->assertQueryTrue( [ 'is_category', 'news' ], 'is_archive' )
+			->assertQueryTrueAny( [ 'is_tag', 'other' ], [ 'is_category', 'news' ] );
+	}
+
 	public function test_get_term() {
 		$category_id = static::factory()->category->create();
 

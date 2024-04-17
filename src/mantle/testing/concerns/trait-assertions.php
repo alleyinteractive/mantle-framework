@@ -17,6 +17,7 @@ use Mantle\Database\Model\Term;
 use Mantle\Database\Model\User;
 use PHPUnit\Framework\Assert as PHPUnit;
 use WP_Post;
+use WP_Query;
 use WP_Term;
 
 use function Mantle\Support\Helpers\collect;
@@ -134,69 +135,120 @@ trait Assertions {
 	 * assertQueryTrue( 'is_single', 'is_feed' ) means is_single() and is_feed()
 	 * must be true and everything else must be false to pass.
 	 *
-	 * @param string ...$prop Any number of WP_Query properties that are expected
+	 * Passing an array as a property allows you to check for a conditional with
+	 * arguments. For example, assertQueryTrue( [ 'is_page', 'about' ] ) will
+	 * check if is_page( 'about' ) is true.
+	 *
+	 * @param string|array<mixed> ...$prop Any number of WP_Query properties that are expected
 	 *                        to be true for the current request.
 	 */
 	public static function assertQueryTrue( ...$prop ): void {
 		global $wp_query;
 
-		$all = [
-			'is_404',
-			'is_admin',
-			'is_archive',
-			'is_attachment',
-			'is_author',
-			'is_category',
-			'is_comment_feed',
-			'is_date',
-			'is_day',
-			'is_embed',
-			'is_feed',
-			'is_front_page',
-			'is_home',
-			'is_privacy_policy',
-			'is_month',
-			'is_page',
-			'is_paged',
-			'is_post_type_archive',
-			'is_posts_page',
-			'is_preview',
-			'is_robots',
-			'is_favicon',
-			'is_search',
-			'is_single',
-			'is_singular',
-			'is_tag',
-			'is_tax',
-			'is_time',
-			'is_trackback',
-			'is_year',
-		];
-
-		foreach ( $prop as $true_thing ) {
-			PHPUnit::assertContains( $true_thing, $all, "Unknown conditional: {$true_thing}." );
+		if ( ! $wp_query instanceof WP_Query ) {
+			PHPUnit::fail( 'No WP_Query object found.' );
 		}
 
-		$passed  = true;
-		$message = '';
+		// Get all methods from WP_Query that start with 'is_'.
+		$all = collect( get_class_methods( $wp_query ) )
+			->filter( fn ( $method ) => str_starts_with( $method, 'is_' ) )
+			->diff( [ 'is_main_query', 'is_comments_popup' ] )
+			->all();
 
-		foreach ( $all as $query_thing ) {
-			$result = is_callable( $query_thing ) ? call_user_func( $query_thing ) : $wp_query->$query_thing;
+		$passed_conditions = [];
 
-			if ( in_array( $query_thing, $prop, true ) ) {
-				if ( ! $result ) {
-					$message .= $query_thing . ' is false but is expected to be true. ' . PHP_EOL;
-					$passed   = false;
+		foreach ( $prop as $thing ) {
+			if ( is_array( $thing ) ) {
+				$true_thing = array_shift( $thing );
+				$args       = $thing;
+			} else {
+				$true_thing = $thing;
+				$args       = [];
+			}
+
+			// Validate the conditional.
+			if ( ! str_starts_with( (string) $true_thing, 'is_' ) ) {
+				PHPUnit::fail( "Invalid conditional: {$true_thing}." );
+			}
+
+			// Ensure the conditional exists on the WP_Query object.
+			if ( ! method_exists( $wp_query, $true_thing ) ) {
+				PHPUnit::fail( "Unknown conditional: {$true_thing}." );
+			}
+
+			// Check if the conditional passes.
+			if ( ! $wp_query->$true_thing( ...$args ) ) {
+				if ( count( $args ) > 0 ) {
+					$args = wp_json_encode( $args );
+					PHPUnit::fail( "{$true_thing} is false with arguments {$args} but is expected to be true." );
+				} else {
+					PHPUnit::fail( "{$true_thing} is false but is expected to be true." );
 				}
-			} elseif ( $result ) {
-				$message .= $query_thing . ' is true but is expected to be false. ' . PHP_EOL;
-				$passed   = false;
+			}
+
+			$passed_conditions[] = $true_thing;
+		}
+
+		$messages = [];
+
+		// Verify that all other conditionals are false.
+		foreach ( $all as $query_thing ) {
+			if ( in_array( $query_thing, $passed_conditions, true ) ) {
+				continue;
+			}
+
+			if ( $wp_query->$query_thing() ) {
+				$messages[] = "{$query_thing} is true but is expected to be false.";
 			}
 		}
 
-		if ( ! $passed ) {
-			PHPUnit::fail( $message );
+		if ( ! empty( $messages ) ) {
+			PHPUnit::fail( implode( PHP_EOL, $messages ) );
+		} else {
+			PHPUnit::assertTrue( true, 'All expected conditionals are true.' );
 		}
+	}
+
+	/**
+	 * Checks that any of the WP_Query is_* functions/properties are true.
+	 *
+	 * Any properties that are listed by name as parameters will be expected to be
+	 * true; at least one of them must be true for the assertion to pass.
+	 *
+	 * Passing an array as a property allows you to check for a conditional with
+	 * arguments. For example, assertQueryTrueAny( [ 'is_page', 'about' ] ) will
+	 * check if is_page( 'about' ) is true.
+	 *
+	 * @param string|array<mixed> ...$prop Any number of WP_Query properties that are expected
+	 *                        to be true for the current request.
+	 */
+	public static function assertQueryTrueAny( ...$prop ): void {
+		global $wp_query;
+
+		foreach ( $prop as $thing ) {
+			if ( is_array( $thing ) ) {
+				$true_thing = array_shift( $thing );
+				$args       = $thing;
+			} else {
+				$true_thing = $thing;
+				$args       = [];
+			}
+
+			if ( ! str_starts_with( (string) $true_thing, 'is_' ) ) {
+				PHPUnit::fail( "Invalid conditional: {$true_thing}." );
+			}
+
+			if ( ! method_exists( $wp_query, $true_thing ) ) {
+				PHPUnit::fail( "Unknown conditional: {$true_thing}." );
+			}
+
+			if ( $wp_query->$true_thing( ...$args ) ) {
+				PHPUnit::assertTrue( true );
+				return;
+			}
+		}
+
+		PHPUnit::fail( 'None of the expected conditionals were true.' );
 	}
 
 	/**

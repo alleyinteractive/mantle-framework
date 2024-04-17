@@ -20,7 +20,6 @@ use Mantle\Testing\Exceptions\WP_Redirect_Exception;
 use Mantle\Testing\Test_Case;
 use Mantle\Testing\Test_Response;
 use Mantle\Testing\Utils;
-use PHPUnit\Framework\Assert;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\InputBag;

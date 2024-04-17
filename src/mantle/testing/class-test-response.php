@@ -505,11 +505,25 @@ class Test_Response {
 	 *
 	 * @see Test_Case::assertQueryTrue()
 	 *
-	 * @param string ...$prop Any number of WP_Query properties that are expected
-	 *                        to be true for the current request.
+	 * @param string|array<int, mixed> ...$prop Any number of WP_Query properties that are expected
+	 *                                     to be true for the current request.
 	 */
 	public function assertQueryTrue( ...$prop ): static {
 		Test_Case::assertQueryTrue( ...$prop );
+
+		return $this;
+	}
+
+	/**
+	 * Checks that any of the WP_Query is_* functions/properties are true.
+	 *
+	 * @see Test_Case::assertQueryTrueAny()
+	 *
+	 * @param string|array<int, mixed> ...$prop Any number of WP_Query properties that are expected
+	 *                                     to be true for the current request.
+	 */
+	public function assertQueryTrueAny( ...$prop ): static {
+		Test_Case::assertQueryTrueAny( ...$prop );
 
 		return $this;
 	}
