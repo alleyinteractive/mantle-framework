@@ -17,6 +17,13 @@ $_SERVER['PHP_SELF'] = '/index.php';
 
 global $wp_rewrite;
 
+if ( ! empty( getenv( 'TEST_TOKEN' ) ) ) {
+	$GLOBALS['table_prefix'] = 'wptests_parallel_' . getenv('TEST_TOKEN') . '_';
+	ray('table_prefix: ' . $GLOBALS['table_prefix']);
+} else {
+	ray('install-wordpress not parallel');
+}
+
 require_once __DIR__ . '/preload.php';
 require_once __DIR__ . '/wordpress-bootstrap.php';
 require_once ABSPATH . '/wp-admin/includes/upgrade.php';

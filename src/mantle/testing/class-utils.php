@@ -501,4 +501,13 @@ class Utils {
 		static::error( '🚨 Error during test run:', 'Shutdown' );
 		static::code( $error );
 	}
+
+	/**
+	 * Check if we are running the tests in parallel.
+	 *
+	 * @return bool
+	 */
+	public static function is_running_parallel(): bool {
+		return false !== getenv( 'TEST_TOKEN' );
+	}
 }

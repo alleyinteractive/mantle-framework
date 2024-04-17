@@ -9,6 +9,7 @@ use Mantle\Testing\Doubles\MockPHPMailer;
 use Mantle\Testing\Utils;
 use Mantle\Testing\WP_Die;
 
+use function Mantle\Support\Helpers\collect;
 use function Mantle\Testing\tests_add_filter;
 
 defined( 'MANTLE_IS_TESTING' ) || define( 'MANTLE_IS_TESTING', true );
@@ -132,11 +133,14 @@ $installing_wp        = defined( 'WP_INSTALLING' ) && WP_INSTALLING;
 
 if ( ! $installing_wp && '1' !== getenv( 'WP_TESTS_SKIP_INSTALL' ) ) {
 	$resp = Utils::command(
-		[
-			WP_PHP_BINARY,
-			escapeshellarg( __DIR__ . '/install-wordpress.php' ),
-			$multisite,
-		],
+		collect(
+			[
+				getenv( 'TEST_TOKEN' ) ? 'TEST_TOKEN=' . Utils::shell_safe( getenv( 'TEST_TOKEN' ) ) : '',
+				WP_PHP_BINARY,
+				escapeshellarg( __DIR__ . '/install-wordpress.php' ),
+				$multisite,
+			]
+		)->filter(),
 		$retval,
 	);
 
