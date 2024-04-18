@@ -205,3 +205,6 @@ if ( isset( $_SERVER['REQUEST_TIME_FLOAT'] ) ) {
 if ( is_blog_installed() ) {
 	Utils::delete_all_posts();
 }
+
+// Disable VIP's alloptions protections during unit testing.
+remove_filter( 'pre_wp_load_alloptions', 'Automattic\\VIP\\Core\\OptionsAPI\\pre_wp_load_alloptions_protections', 999 );
