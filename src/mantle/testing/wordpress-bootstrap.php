@@ -201,6 +201,9 @@ if ( isset( $_SERVER['REQUEST_TIME_FLOAT'] ) ) {
 	$_SERVER['REQUEST_TIME_FLOAT'] = (float) $_SERVER['REQUEST_TIME_FLOAT'];
 }
 
+// Disable VIP's alloptions protections during unit testing.
+remove_filter( 'pre_wp_load_alloptions', 'Automattic\\VIP\\Core\\OptionsAPI\\pre_wp_load_alloptions_protections', 999 );
+
 // Delete any default posts & related data.
 if ( is_blog_installed() ) {
 	Utils::delete_all_posts();
