@@ -67,6 +67,23 @@ class Faker_Provider extends Base {
 	}
 
 	/**
+	 * Build an image block.
+	 *
+	 * @param string|null $url Image URL.
+	 * @param string|null $alt Image alt text.
+	 * @param array       $attributes Additional attributes for the block.
+	 */
+	public function image_block( ?string $url = null, ?string $alt = null, array $attributes = [] ) {
+		$image = sprintf(
+			'<figure class="wp-block-image"><img src="%s"%s/></figure>',
+			$url ?? 'https://picsum.photos/' . rand( 100, 1000 ) . '/' . rand( 100, 1000 ),
+			$alt ? ' alt="' . esc_attr( $alt ) . '"' : '',
+		);
+
+		return static::block( 'image', $image, $attributes );
+	}
+
+	/**
 	 * Build a block for Gutenberg.
 	 *
 	 * @param string $block_name Block name.
