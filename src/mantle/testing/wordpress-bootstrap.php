@@ -5,7 +5,6 @@
  * @package Mantle
  */
 
-use Mantle\Testing\Doubles\MockPHPMailer;
 use Mantle\Testing\Utils;
 use Mantle\Testing\WP_Die;
 
@@ -29,7 +28,6 @@ global $wpdb,
        $wp_rewrite,
        $shortcode_tags,
        $wp,
-       $phpmailer,
        $table_prefix,
        $wp_theme_directories,
        $PHP_SELF;
@@ -121,6 +119,9 @@ $_SERVER['PHP_SELF'] = '/index.php';
 $multisite = ( '1' === getenv( 'WP_MULTISITE' ) );
 $multisite = $multisite || ( defined( 'WP_TESTS_MULTISITE' ) && WP_TESTS_MULTISITE );
 $multisite = $multisite || ( defined( 'MULTISITE' ) && MULTISITE );
+
+// Replace the global phpmailer instance with a mock instance.
+reset_phpmailer_instance();
 
 // Include a WP_UnitTestCase class to allow for easier transition to the testing
 // framework.

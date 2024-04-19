@@ -10,7 +10,6 @@
 namespace Mantle\Testing\Concerns;
 
 use Mantle\Support\Collection;
-use Mantle\Testing\Doubles\MockPHPMailer;
 use Mantle\Testing\Mail\Mail_Message;
 use Mantle\Testing\Mail\Mock_Mailer;
 
