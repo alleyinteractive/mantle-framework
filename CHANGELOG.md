@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Prevent sending mail during the install `wp_install()` call in unit tests by
   mocking the `$phpmailer` global earlier.
+- Allow anonymous models to define events via `Model::created()` methods.
 
 ## v1.0.6 - 2024-04-19
 
