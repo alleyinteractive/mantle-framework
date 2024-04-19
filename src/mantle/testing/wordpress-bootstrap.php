@@ -188,6 +188,11 @@ tests_add_filter( 'async_update_translation', '__return_false' );
 // Disable background updates.
 tests_add_filter( 'automatic_updater_disabled', '__return_true' );
 
+// Disable VIP's alloptions protections during unit testing.
+tests_add_filter( 'vip_mu_plugins_loaded', function (): void {
+	remove_filter( 'pre_wp_load_alloptions', 'Automattic\\VIP\\Core\\OptionsAPI\\pre_wp_load_alloptions_protections', 999 );
+} );
+
 // Load WordPress.
 require_once ABSPATH . '/wp-settings.php';
 
