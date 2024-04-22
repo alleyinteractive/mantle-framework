@@ -101,7 +101,8 @@
             "src/mantle/http-client/autoload.php",
             "src/mantle/queue/autoload.php",
             "src/mantle/support/autoload.php",
-            "src/mantle/testing/autoload.php"
+            "src/mantle/testing/autoload.php",
+            "src/mantle/testkit/autoload.php"
         ]
     },
     "autoload-dev": {
