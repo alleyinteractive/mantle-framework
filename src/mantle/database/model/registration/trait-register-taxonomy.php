@@ -13,6 +13,8 @@ use Mantle\Database\Model\Model_Exception;
 
 /**
  * Model Trait to allow a taxonomy to be registered for a model.
+ *
+ * @mixin \Mantle\Database\Model\Term
  */
 trait Register_Taxonomy {
 	use Custom_Term_Link;
@@ -47,18 +49,20 @@ trait Register_Taxonomy {
 	 * @throws Model_Exception Thrown on invalid class name being passed to object types.
 	 */
 	protected static function get_taxonomy_object_types(): array {
-		$object_types = (array) ( static::$object_types ?? [] ); // phpcs:ignore WordPressVIPMinimum.Variables.VariableAnalysis.StaticOutsideClass
+		if ( empty( static::$object_types ) || ! is_array( static::$object_types ) ) {
+			return [];
+		}
 
-		foreach ( $object_types as &$object_type ) {
+		foreach ( static::$object_types as $key => $object_type ) {
 			// Detect a class name being used.
-			if ( false !== strpos( (string) $object_type, '\\' ) ) {
+			if ( false !== strpos( (string) $object_type, '\\' ) && class_exists( $object_type ) ) {
 				// Ensure the class name uses the Registrable Contract.
 				if ( ! in_array( Registrable_Contract::class, class_implements( $object_type ), true ) ) {
 					throw new Model_Exception( 'Unknown object type class provided: ' . $object_type );
 				}
 
 				// Convert the object type to the object's registration name.
-				$object_type = $object_type::get_registration_name();
+				static::$object_types[ $key ] = $object_type::get_registration_name();
 			}
 		}
 

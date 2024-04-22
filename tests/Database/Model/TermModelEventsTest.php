@@ -15,6 +15,12 @@ class TermModelEventsTest extends Framework_Test_Case {
 		Testable_Term_Model_Event::boot_term_events();
 	}
 
+	public function tearDown(): void {
+		parent::tearDown();
+
+		unregister_taxonomy( 'test-taxonomy' );
+	}
+
 	public function test_closure_event() {
 		$_SERVER['__test_creating_event_fired'] = false;
 		$_SERVER['__test_created_event_fired'] = false;
@@ -93,6 +99,37 @@ class TermModelEventsTest extends Framework_Test_Case {
 
 		$this->assertTrue( $_SERVER['__test_non_model_created_event_fired'] < $_SERVER['__test_non_model_updated_event_fired'] );
 		$this->assertTrue( $_SERVER['__test_non_model_updated_event_fired'] < $_SERVER['__test_non_model_deleted_event_fired'] );
+	}
+
+	public function test_model_event_via_for() {
+		$_SERVER['__test_model_event_via_for_created_event_fired'] = false;
+		$_SERVER['__test_model_event_via_for_updated_event_fired'] = false;
+		$_SERVER['__test_model_event_via_for_deleted_event_fired'] = false;
+
+		register_taxonomy( 'test-taxonomy', 'post' );
+
+		$model = Term::for( 'test-taxonomy' );
+
+		$model->created( fn () => $_SERVER['__test_model_event_via_for_created_event_fired'] = microtime( true ) );
+		$model->updated( fn () => $_SERVER['__test_model_event_via_for_updated_event_fired'] = microtime( true ) );
+		$model->deleted( fn () => $_SERVER['__test_model_event_via_for_deleted_event_fired'] = microtime( true ) );
+
+		$insert  = \wp_insert_term( 'Inserted Term', 'test-taxonomy' );
+		$term_id = $insert['term_id'];
+
+		\wp_update_term(
+			$term_id,
+			'test-taxonomy',
+			[
+				'name' => 'Updated Title',
+			]
+		);
+
+		wp_delete_term( $term_id, 'test-taxonomy' );
+
+		$this->assertNotEmpty( $_SERVER['__test_model_event_via_for_created_event_fired'] );
+		$this->assertNotEmpty( $_SERVER['__test_model_event_via_for_updated_event_fired'] );
+		$this->assertNotEmpty( $_SERVER['__test_model_event_via_for_deleted_event_fired'] );
 	}
 }
 

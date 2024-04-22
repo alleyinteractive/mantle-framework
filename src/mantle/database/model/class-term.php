@@ -60,6 +60,15 @@ class Term extends Model implements Core_Object, Model_Meta, Updatable {
 	];
 
 	/**
+	 * Object type for the model when registering the taxonomy.
+	 *
+	 * Used to associate a taxonomy with another object (post type).
+	 *
+	 * @var string[]
+	 */
+	protected static $object_types = [];
+
+	/**
 	 * Constructor.
 	 *
 	 * @param mixed $object Model object.
@@ -107,19 +116,26 @@ class Term extends Model implements Core_Object, Model_Meta, Updatable {
 	public static function for( string $taxonomy ): self {
 		$instance = new class() extends Term {
 			/**
-			 * Object name.
+			 * Constructor.
 			 */
-			public static string $for_object_name = '';
+			public function __construct() {}
 
 			/**
-			 * Retrieve the object name.
+			 * Boot the model if it has not been booted.
+			 *
+			 * Prevent booting the model unless the object name is set.
 			 */
-			public static function get_object_name(): ?string {
-				return static::$for_object_name;
+			public static function boot_if_not_booted(): void {
+				if ( empty( static::$object_name ) ) {
+					return;
+				}
+
+				parent::boot_if_not_booted();
 			}
 		};
 
-		$instance::$for_object_name = $taxonomy;
+		$instance::$object_name = $taxonomy;
+		$instance::boot_if_not_booted();
 
 		return $instance;
 	}

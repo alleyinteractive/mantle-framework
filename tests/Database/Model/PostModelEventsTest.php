@@ -15,6 +15,12 @@ class PostModelEventsTest extends Framework_Test_Case {
 		Testable_Model_Event::boot_post_events();
 	}
 
+	public function tearDown(): void {
+		parent::tearDown();
+
+		unregister_post_type( 'test-post-type' );
+	}
+
 	public function test_closure_event() {
 		$_SERVER['__test_creating_event_fired'] = false;
 		$_SERVER['__test_created_event_fired'] = false;
@@ -107,6 +113,40 @@ class PostModelEventsTest extends Framework_Test_Case {
 
 		$this->assertTrue( $_SERVER['__test_non_model_created_event_fired'] < $_SERVER['__test_non_model_updated_event_fired'] );
 		$this->assertTrue( $_SERVER['__test_non_model_updated_event_fired'] < $_SERVER['__test_non_model_deleted_event_fired'] );
+	}
+
+	public function test_model_event_via_for() {
+		$_SERVER['__test_model_event_via_for_created_event_fired'] = false;
+		$_SERVER['__test_model_event_via_for_updated_event_fired'] = false;
+		$_SERVER['__test_model_event_via_for_deleted_event_fired'] = false;
+
+		register_post_type( 'test-post-type', [ 'public' => true ] );
+
+		$model = Post::for( 'test-post-type' );
+
+		$model->created( fn () => $_SERVER['__test_model_event_via_for_created_event_fired'] = microtime( true ) );
+		$model->updated( fn () => $_SERVER['__test_model_event_via_for_updated_event_fired'] = microtime( true ) );
+		$model->deleted( fn () => $_SERVER['__test_model_event_via_for_deleted_event_fired'] = microtime( true ) );
+
+		$post_id = \wp_insert_post(
+			[
+				'post_type' => 'test-post-type',
+				'post_title' => 'Inserted By Hand',
+			]
+		);
+
+		wp_update_post(
+			[
+				'ID'         => $post_id,
+				'post_title' => 'Updated Title',
+			]
+		);
+
+		wp_delete_post( $post_id, true );
+
+		$this->assertNotEmpty( $_SERVER['__test_model_event_via_for_created_event_fired'] );
+		$this->assertNotEmpty( $_SERVER['__test_model_event_via_for_updated_event_fired'] );
+		$this->assertNotEmpty( $_SERVER['__test_model_event_via_for_deleted_event_fired'] );
 	}
 }
 

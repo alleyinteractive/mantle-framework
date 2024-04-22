@@ -182,6 +182,11 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	public static function for( string $post_type ): self {
 		$instance = new class() extends Post {
 			/**
+			 * Constructor.
+			 */
+			public function __construct() {}
+
+			/**
 			 * Post type for the model.
 			 */
 			public static string $for_object_name = '';
@@ -192,9 +197,23 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 			public static function get_object_name(): ?string {
 				return static::$for_object_name;
 			}
+
+			/**
+			 * Boot the model if it has not been booted.
+			 *
+			 * Prevent booting the model unless the object name is set.
+			 */
+			public static function boot_if_not_booted(): void {
+				if ( empty( static::$for_object_name ) ) {
+					return;
+				}
+
+				parent::boot_if_not_booted();
+			}
 		};
 
 		$instance::$for_object_name = $post_type;
+		$instance::boot_if_not_booted();
 
 		return $instance;
 	}

@@ -37,6 +37,7 @@ trait Post_Events {
 
 				$updating = ! empty( $postarr['ID'] );
 				$model    = static::find( $postarr['ID'] );
+
 				if ( ! $model ) {
 					return;
 				}

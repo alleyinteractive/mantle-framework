@@ -14,6 +14,7 @@ class RegisterTaxonomyTest extends Framework_Test_Case {
 
 	protected function tearDown(): void {
 		parent::tearDown();
+		unregister_taxonomy( 'test-taxonomy' );
 		m::close();
 	}
 
