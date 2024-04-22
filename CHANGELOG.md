@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v1.0.7 - 2024-04-19
 
+### Added
+
+- Added a `block_factory()` helper to generate blocks in tests.
+
 ### Fixed
 
 - Prevent sending mail during the install `wp_install()` call in unit tests by
