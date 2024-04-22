@@ -15,6 +15,12 @@ class PostModelEventsTest extends Framework_Test_Case {
 		Testable_Model_Event::boot_post_events();
 	}
 
+	public function tearDown(): void {
+		parent::tearDown();
+
+		unregister_post_type( 'test-post-type' );
+	}
+
 	public function test_closure_event() {
 		$_SERVER['__test_creating_event_fired'] = false;
 		$_SERVER['__test_created_event_fired'] = false;

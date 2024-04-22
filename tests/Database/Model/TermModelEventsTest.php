@@ -15,6 +15,12 @@ class TermModelEventsTest extends Framework_Test_Case {
 		Testable_Term_Model_Event::boot_term_events();
 	}
 
+	public function tearDown(): void {
+		parent::tearDown();
+
+		unregister_taxonomy( 'test-taxonomy' );
+	}
+
 	public function test_closure_event() {
 		$_SERVER['__test_creating_event_fired'] = false;
 		$_SERVER['__test_created_event_fired'] = false;
