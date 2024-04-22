@@ -1,4 +1,9 @@
 <?php
+/**
+ * Block_Factory class file
+ *
+ * @package Mantle
+ */
 
 namespace Mantle\Testing;
 
@@ -54,6 +59,8 @@ class Block_Factory {
 	/**
 	 * Apply a preset.
 	 *
+	 * @throws InvalidArgumentException If the preset is not found.
+	 *
 	 * @param string $name Name of the preset.
 	 * @param array  $arguments Arguments to pass to the preset.
 	 */
@@ -74,9 +81,10 @@ class Block_Factory {
 	/**
 	 * Magic method to generate blocks from a preset.
 	 *
+	 * @throws InvalidArgumentException If the block method is not found.
+	 *
 	 * @param string $name Name of the preset.
 	 * @param array  $arguments Arguments to pass to the preset.
-	 * @return string
 	 */
 	public function __call( string $name, array $arguments ): string {
 		if ( isset( static::$presets[ $name ] ) ) {
@@ -100,7 +108,6 @@ class Block_Factory {
 	 * Generate a collection of blocks.
 	 *
 	 * @param array $blocks Blocks to generate.
-	 * @return string
 	 */
 	public function blocks( array $blocks ): string {
 		return collect( $blocks )

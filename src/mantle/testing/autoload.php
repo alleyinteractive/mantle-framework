@@ -70,8 +70,6 @@ function mock_http_sequence(): Mock_Http_Sequence {
 
 /**
  * Create a new block factory instance.
- *
- * @return Block_Factory
  */
 function block_factory(): Block_Factory {
 	$container = Container::get_instance();
