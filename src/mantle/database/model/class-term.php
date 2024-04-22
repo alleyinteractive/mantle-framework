@@ -106,6 +106,9 @@ class Term extends Model implements Core_Object, Model_Meta, Updatable {
 	 */
 	public static function for( string $taxonomy ): self {
 		$instance = new class() extends Term {
+			/**
+			 * Constructor.
+			 */
 			public function __construct() {}
 
 			/**

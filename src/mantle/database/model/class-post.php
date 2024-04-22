@@ -181,6 +181,9 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 */
 	public static function for( string $post_type ): self {
 		$instance = new class() extends Post {
+			/**
+			 * Constructor.
+			 */
 			public function __construct() {}
 
 			/**
