@@ -82,7 +82,7 @@ trait PHPUnit_Upgrade_Warning {
 					<br />
 					Fear not, you don't have to upgrade to PHPUnit 10 right away. You can still use PHPUnit 9 by running the following code:
 
-					<div class="ml-2 mt-1 italic">composer require --dev phpunit/phpunit:^9 nunomaduro/collision:^6</div>
+					<div class="ml-2 mt-1 italic">composer require --dev phpunit/phpunit:^9 nunomaduro/collision:^6 -W</div>
 				</div>
 				<div>
 					For more information and tips on how to upgrade your codebase to PHPUnit 10, please refer to the 1.0 Release Changelog:

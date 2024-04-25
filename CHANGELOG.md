@@ -109,7 +109,7 @@ you have tests written in the old style, you will need to migrate them to PSR-4.
 If you wish to continue using PHPUnit 9, you will need to downgrade to PHPUnit
 9/Collision 6. To do so, run the following command:
 
-	composer require --dev phpunit/phpunit:^9 nunomaduro/collision:^6
+	composer require --dev phpunit/phpunit:^9 nunomaduro/collision:^6 -W
 
 To upgrade an existing test suite to PHPUnit 10 and PSR-4 standards, consider
 using a [helper tool](https://github.com/alleyinteractive/wp-to-psr-4/). You
