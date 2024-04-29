@@ -15,6 +15,7 @@ use WP_Post;
 
 use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\get_post_object;
+use function Mantle\Support\Helpers\tap;
 
 /**
  * Post Factory

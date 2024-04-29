@@ -47,9 +47,9 @@ trait Hookable {
 					} else {
 						// Use the default WordPress action/filter methods.
 						if ( 'action' === $item['type'] ) {
-							\add_action( $item['hook'], [ $this, $item['method'] ], $item['priority'] );
+							\add_action( $item['hook'], [ $this, $item['method'] ], $item['priority'], 999 );
 						} else {
-							\add_filter( $item['hook'], [ $this, $item['method'] ], $item['priority'] );
+							\add_filter( $item['hook'], [ $this, $item['method'] ], $item['priority'], 999 );
 						}
 					}
 				},
