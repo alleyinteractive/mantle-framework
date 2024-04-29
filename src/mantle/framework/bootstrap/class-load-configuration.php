@@ -22,6 +22,22 @@ use function Mantle\Support\Helpers\collect;
  */
 class Load_Configuration {
 	/**
+	 * Additional service configuration to register from the bootloader.
+	 *
+	 * @var array<string, mixed>
+	 */
+	protected static $merge = [];
+
+	/**
+	 * Merge additional service providers to the list of providers.
+	 *
+	 * @param array<class-string<\Mantle\Support\Service_Provider>> $providers List of service providers.
+	 */
+	public static function merge( array $providers ): void {
+		static::$merge = array_merge( static::$merge, $providers );
+	}
+
+	/**
 	 * Load the configuration for the application.
 	 *
 	 * @param Application $app Application instance.
@@ -32,6 +48,10 @@ class Load_Configuration {
 		// Load the configuration files if not loaded from cache.
 		if ( ! $config->get( 'config.loaded_from_cache' ) ) {
 			$this->load_configuration_files( $app, $config );
+		}
+
+		if ( ! empty( static::$merge ) ) {
+			$this->load_merge_configuration( $config );
 		}
 	}
 
@@ -164,6 +184,26 @@ class Load_Configuration {
 			}
 
 			$repository->set( $key, $existing_config );
+		}
+	}
+
+	/**
+	 * Load the additional configuration from the bootloader to the repository.
+	 *
+	 * @param Repository_Contract $repository Configuration Repository.
+	 */
+	protected function load_merge_configuration( Repository_Contract $repository ): void {
+		foreach ( static::$merge as $key => $value ) {
+			$existing = $repository->get( $key, [] );
+
+			// Merge the configuration recursively.
+			$dot_config = Arr::dot( $value );
+
+			foreach ( $dot_config as $config_key => $config_value ) {
+				Helpers\data_set( $existing, $config_key, $config_value, true );
+			}
+
+			$repository->set( $key, $existing );
 		}
 	}
 }

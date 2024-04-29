@@ -17,7 +17,7 @@ class BootloaderTest extends TestCase {
 	public function setUp(): void {
 		parent::setUp();
 
-		Bootloader::set_instance( null );
+		Bootloader::clear_instance();
 		Register_Providers::flush();
 
 		$this->interacts_with_hooks_set_up();
@@ -26,7 +26,7 @@ class BootloaderTest extends TestCase {
 	public function tearDown(): void {
 		$this->interacts_with_hooks_tear_down();
 
-		Bootloader::set_instance( null );
+		Bootloader::clear_instance();
 		Register_Providers::flush();
 
 		parent::tearDown();
@@ -54,20 +54,20 @@ class BootloaderTest extends TestCase {
 	}
 
 	public function test_it_can_bind_custom_kernel() {
-		Bootloader::instance( $app = new Application() )
-			->bind( \Mantle\Contracts\Http\Kernel::class, Testable_Http_Kernel::class )
+		bootloader()
+			->with_kernels( http_kernel: Testable_Http_Kernel::class )
 			->boot();
 
 		// Ensure the custom kernel was bound.
 		$this->assertInstanceOf(
 			Testable_Http_Kernel::class,
-			$app->make( \Mantle\Contracts\Http\Kernel::class ),
+			app( \Mantle\Contracts\Http\Kernel::class ),
 		);
 
 		// Ensure the standard console kernel was still bound.
 		$this->assertInstanceOf(
 			\Mantle\Framework\Console\Kernel::class,
-			$app->make( \Mantle\Contracts\Console\Kernel::class ),
+			app( \Mantle\Contracts\Console\Kernel::class ),
 		);
 	}
 
@@ -80,25 +80,21 @@ class BootloaderTest extends TestCase {
 		$this->expectApplied( 'mantle_cache_path' )->andReturnString();
 		$this->expectApplied( 'mantle_storage_path' )->once()->andReturnString();
 
-		$manager = new Bootloader();
-
-		$manager->boot();
-
-		$app = $manager->get_application();
+		( new Bootloader() )->boot();
 
 		$this->assertNotEmpty(
-			$app->make( \Mantle\Contracts\Console\Kernel::class ),
+			app()->make( \Mantle\Contracts\Console\Kernel::class ),
 		);
 
 		$this->assertNotEmpty(
-			$app->make( \Mantle\Contracts\Http\Kernel::class ),
+			app()->make( \Mantle\Contracts\Http\Kernel::class ),
 		);
 
 		$this->assertNotEmpty(
-			$app->make( \Mantle\Contracts\Exceptions\Handler::class ),
+			app()->make( \Mantle\Contracts\Exceptions\Handler::class ),
 		);
 
-		$this->assertTrue( $app->has_been_bootstrapped() );
+		$this->assertTrue( app()->has_been_bootstrapped() );
 	}
 
 	public function test_it_can_setup_routing() {
@@ -139,6 +135,20 @@ class BootloaderTest extends TestCase {
 
 		$this->assertTrue( $_SERVER['__test_service_provider_register__'] );
 		$this->assertTrue( $_SERVER['__test_service_provider_boot__'] );
+	}
+
+	public function test_it_can_setup_config() {
+		( new Bootloader() )
+			->with_config( [
+				'app' => [
+					'merged' => 'value',
+					'debug' => false,
+				],
+			] )
+			->boot();
+
+		$this->assertEquals( 'value', config( 'app.merged' ) );
+		$this->assertFalse( config( 'app.debug' ) );
 	}
 }
 

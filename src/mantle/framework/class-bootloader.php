@@ -12,6 +12,7 @@ use Mantle\Application\Application;
 use Mantle\Console\Command;
 use Mantle\Contracts;
 use Mantle\Contracts\Framework\Bootloader as Contract;
+use Mantle\Framework\Bootstrap\Load_Configuration;
 use Mantle\Framework\Bootstrap\Register_Providers;
 use Mantle\Http\Request;
 use Mantle\Support\Str;
@@ -31,7 +32,7 @@ class Bootloader implements Contract {
 	/**
 	 * Current instance of the manager.
 	 */
-	protected static ?Bootloader $instance = null;
+	protected static ?Bootloader $instance;
 
 	/**
 	 * Application base path.
@@ -44,7 +45,7 @@ class Bootloader implements Contract {
 	 * @param Contracts\Application|null $app Application instance.
 	 */
 	public static function get_instance( ?Contracts\Application $app = null ): Bootloader {
-		if ( is_null( static::$instance ) ) {
+		if ( ! isset( static::$instance ) || ( $app && $app !== static::$instance->get_application() ) ) {
 			static::$instance = new static( $app );
 		}
 
@@ -70,16 +71,104 @@ class Bootloader implements Contract {
 	}
 
 	/**
+	 * Clear the instance of the manager.
+	 */
+	public static function clear_instance(): void {
+		static::$instance = null;
+	}
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Contracts\Application|null $app Application instance.
 	 */
 	public function __construct( protected ?Contracts\Application $app = null ) {
 		static::set_instance( $this );
+
+		$this
+			->with_application( new Application( $this->get_base_path() ) )
+			->with_kernels()
+			->with_exception_handler();
 	}
 
+	/**
+	 * Set the application instance to be booted.
+	 *
+	 * @param Contracts\Application $app Application instance.
+	 */
+	public function with_application( Contracts\Application $app ): static {
+		$this->app = $app;
+
+		return $this;
+	}
+
+	/**
+	 * Merge additional configuration to the existing configuration.
+	 *
+	 * Configuration passed will be merged recursively with the existing
+	 * configuration after all application configuration has been loaded.
+	 *
+	 * @param array<string, mixed> $config Configuration to merge.
+	 * @return static
+	 */
 	public function with_config( array $config ): static {
-		//
+		Load_Configuration::merge( $config );
+
+		return $this;
+	}
+
+	/**
+	 * Bind the application with the default kernels.
+	 *
+	 * @param class-string<Contracts\Console\Kernel>|null $console_kernel Console kernel class.
+	 * @param class-string<Contracts\Http\Kernel>|null    $http_kernel    HTTP kernel class.
+	 * @return static
+	 */
+	public function with_kernels( string $console_kernel = null, string $http_kernel = null ): static {
+		if ( $console_kernel && ! in_array( Contracts\Console\Kernel::class, class_implements( $console_kernel ), true ) ) {
+			throw new \InvalidArgumentException(
+				'Console kernel must implement the Contracts\Console\Kernel interface.',
+			);
+		}
+
+		if ( $http_kernel && ! in_array( Contracts\Http\Kernel::class, class_implements( $http_kernel ), true ) ) {
+			throw new \InvalidArgumentException(
+				'HTTP kernel must implement the Contracts\Http\Kernel interface.',
+			);
+		}
+
+		$this->app->singleton(
+			Contracts\Console\Kernel::class,
+			$console_kernel ?? \Mantle\Framework\Console\Kernel::class,
+		);
+
+		$this->app->singleton(
+			Contracts\Http\Kernel::class,
+			$http_kernel ?? \Mantle\Framework\Http\Kernel::class,
+		);
+
+		return $this;
+	}
+
+	/**
+	 * Bind the application with a exception handler.
+	 *
+	 * @param class-string<Contracts\Exceptions\Handler>|null $handler Exception handler class.
+	 * @return static
+	 */
+	public function with_exception_handler( string $handler = null ): static {
+		if ( $handler && ! in_array( Contracts\Exceptions\Handler::class, class_implements( $handler ), true ) ) {
+			throw new \InvalidArgumentException(
+				'Exception handler must implement the Contracts\Exceptions\Handler interface.',
+			);
+		}
+
+		$this->app->singleton_if(
+			Contracts\Exceptions\Handler::class,
+			$handler ?? \Mantle\Framework\Exceptions\Handler::class,
+		);
+
+		return $this;
 	}
 
 	/**
@@ -100,10 +189,6 @@ class Bootloader implements Contract {
 	 * @param Closure|string|null $concrete Concrete to bind.
 	 */
 	public function bind( string $abstract, Closure|string|null $concrete ): static {
-		if ( is_null( $this->app ) ) {
-			$this->boot_application();
-		}
-
 		$this->app->bind( $abstract, $concrete );
 
 		return $this;
@@ -114,11 +199,6 @@ class Bootloader implements Contract {
 	 */
 	public function boot(): static {
 		$this->boot_application();
-
-		// Bail if the application is already booted.
-		if ( $this->app->is_booted() ) {
-			return $this;
-		}
 
 		if ( $this->app->is_running_in_console_isolation() ) {
 			$this->boot_console();
@@ -135,8 +215,8 @@ class Bootloader implements Contract {
 	 * Boot the application and attach the relevant container classes.
 	 */
 	protected function boot_application(): void {
-		if ( is_null( $this->app ) ) {
-			$this->app = new Application( $this->get_base_path() );
+		if ( $this->app->is_booted() ) {
+			return;
 		}
 
 		if ( function_exists( 'do_action' ) ) {
@@ -147,21 +227,6 @@ class Bootloader implements Contract {
 			 */
 			do_action( 'mantle_bootloader_before_boot', $this->app );
 		}
-
-		$this->app->singleton_if(
-			Contracts\Console\Kernel::class,
-			\Mantle\Framework\Console\Kernel::class,
-		);
-
-		$this->app->singleton_if(
-			Contracts\Http\Kernel::class,
-			\Mantle\Framework\Http\Kernel::class,
-		);
-
-		$this->app->singleton_if(
-			Contracts\Exceptions\Handler::class,
-			\Mantle\Framework\Exceptions\Handler::class,
-		);
 
 		/**
 		 * Fired after the application is booted.
@@ -179,23 +244,6 @@ class Bootloader implements Contract {
 	}
 
 	/**
-	 * Get the calculated base path for the application.
-	 *
-	 * @todo Calculate a better default path from the plugin file.
-	 */
-	public function get_base_path(): ?string {
-		if ( ! empty( $this->base_path ) ) {
-			return $this->base_path;
-		}
-
-		return match ( true ) {
-			! empty( $_ENV['MANTLE_BASE_PATH'] ) => $_ENV['MANTLE_BASE_PATH'],
-			defined( 'MANTLE_BASE_PATH' ) => constant( 'MANTLE_BASE_PATH' ),
-			default => dirname( __DIR__, 3 ),
-		};
-	}
-
-	/**
 	 * Set the base path for the application.
 	 *
 	 * @param string|null $base_path Base path for the application.
@@ -207,6 +255,15 @@ class Bootloader implements Contract {
 	}
 
 	/**
+	 * Alias to `set_base_path()` method.
+	 *
+	 * @param string|null $base_path Base path for the application.
+	 */
+	public function with_base_path( ?string $base_path = null ): static {
+		return $this->set_base_path( $base_path );
+	}
+
+	/**
 	 * Boot the application in the console context.
 	 */
 	protected function boot_console(): void {
@@ -214,7 +271,7 @@ class Bootloader implements Contract {
 
 		$kernel->bootstrap();
 
-		$status    = $kernel->handle(
+		$status = $kernel->handle(
 			$input = new \Symfony\Component\Console\Input\ArgvInput(),
 			new \Symfony\Component\Console\Output\ConsoleOutput(),
 		);
@@ -270,5 +327,20 @@ class Bootloader implements Contract {
 		$kernel = $this->app->make( Contracts\Http\Kernel::class );
 
 		$kernel->handle( Request::capture() );
+	}
+
+	/**
+	 * Get the calculated base path for the application.
+	 */
+	public function get_base_path(): ?string {
+		if ( ! empty( $this->base_path ) ) {
+			return $this->base_path;
+		}
+
+		return match ( true ) {
+			! empty( $_ENV['MANTLE_BASE_PATH'] ) => $_ENV['MANTLE_BASE_PATH'],
+			defined( 'MANTLE_BASE_PATH' ) => constant( 'MANTLE_BASE_PATH' ),
+			default => dirname( __DIR__, 3 ),
+		};
 	}
 }
