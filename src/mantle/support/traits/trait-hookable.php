@@ -40,9 +40,9 @@ trait Hookable {
 				function ( array $item ): void {
 					if ( $this->use_event_dispatcher() ) {
 						if ( 'action' === $item['type'] ) {
-							\Mantle\Support\Helpers\add_action( $item['hook'], [ $this, $item['method'] ], $item['priority'], 999 );
+							\Mantle\Support\Helpers\add_action( $item['hook'], [ $this, $item['method'] ], $item['priority'] );
 						} else {
-							\Mantle\Support\Helpers\add_filter( $item['hook'], [ $this, $item['method'] ], $item['priority'], 999 );
+							\Mantle\Support\Helpers\add_filter( $item['hook'], [ $this, $item['method'] ], $item['priority'] );
 						}
 					} else {
 						// Use the default WordPress action/filter methods.
