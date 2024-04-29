@@ -4,8 +4,10 @@ namespace Mantle\Tests\Framework;
 
 use Mantle\Application\Application;
 use Mantle\Framework\Bootloader;
+use Mantle\Framework\Bootstrap\Register_Providers;
 use Mantle\Http\Request;
 use Mantle\Http\Response;
+use Mantle\Support\Service_Provider;
 use Mantle\Testing\Concerns\Interacts_With_Hooks;
 use PHPUnit\Framework\TestCase;
 
@@ -16,6 +18,7 @@ class BootloaderTest extends TestCase {
 		parent::setUp();
 
 		Bootloader::set_instance( null );
+		Register_Providers::flush();
 
 		$this->interacts_with_hooks_set_up();
 	}
@@ -24,6 +27,7 @@ class BootloaderTest extends TestCase {
 		$this->interacts_with_hooks_tear_down();
 
 		Bootloader::set_instance( null );
+		Register_Providers::flush();
 
 		parent::tearDown();
 	}
@@ -123,6 +127,19 @@ class BootloaderTest extends TestCase {
 		$this->assertInstanceof( Response::class, $response );
 		$this->assertSame( 'Hello World', $response->getContent() );
 	}
+
+	public function test_it_can_setup_providers() {
+		$_SERVER['__test_service_provider_register__'] = false;
+		$_SERVER['__test_service_provider_boot__']    = false;
+
+		$manager = new Bootloader();
+		$manager->with_providers( [ Test_Service_Provider::class ] );
+
+		$manager->boot();
+
+		$this->assertTrue( $_SERVER['__test_service_provider_register__'] );
+		$this->assertTrue( $_SERVER['__test_service_provider_boot__'] );
+	}
 }
 
 class Testable_Http_Kernel implements \Mantle\Contracts\Http\Kernel {
@@ -144,5 +161,15 @@ class Testable_Http_Kernel implements \Mantle\Contracts\Http\Kernel {
 	 */
 	public function terminate( Request $request, mixed $response ): void {
 		$_SERVER['__testable_http_kernel_terminate__'] = $request;
+	}
+}
+
+class Test_Service_Provider extends Service_Provider {
+	public function register() {
+		$_SERVER['__test_service_provider_register__'] = true;
+	}
+
+	public function boot() {
+		$_SERVER['__test_service_provider_boot__'] = true;
 	}
 }

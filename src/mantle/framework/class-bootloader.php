@@ -12,6 +12,7 @@ use Mantle\Application\Application;
 use Mantle\Console\Command;
 use Mantle\Contracts;
 use Mantle\Contracts\Framework\Bootloader as Contract;
+use Mantle\Framework\Bootstrap\Register_Providers;
 use Mantle\Http\Request;
 use Mantle\Support\Str;
 use Mantle\Support\Traits\Conditionable;
@@ -75,6 +76,21 @@ class Bootloader implements Contract {
 	 */
 	public function __construct( protected ?Contracts\Application $app = null ) {
 		static::set_instance( $this );
+	}
+
+	public function with_config( array $config ): static {
+		//
+	}
+
+	/**
+	 * Merge additional service providers to the list of providers.
+	 *
+	 * @param array<class-string<\Mantle\Support\Service_Provider>> $providers List of service providers.
+	 */
+	public function with_providers( array $providers ): static {
+		Register_Providers::merge( $providers );
+
+		return $this;
 	}
 
 	/**
