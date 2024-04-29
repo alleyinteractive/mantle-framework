@@ -183,6 +183,49 @@ class Bootloader implements Contract {
 	}
 
 	/**
+	 * Setup routing from files for the application.
+	 *
+	 * @param string|null $web Web routes file.
+	 * @param string|null $rest_api REST API routes file.
+	 * @param bool|null   $pass_through Pass through requests to WordPress.
+	 * @return static
+	 */
+	public function with_routing(
+		?string $web = null,
+		?string $rest_api = null,
+		?bool $pass_through = null,
+	): static {
+		$this->app->booted(
+			function ( Application $app ) use ( $web, $rest_api, $pass_through ) {
+				// todo: remove the need for this.//
+				if ( ! isset( $app['router.service-provider'] ) ) {
+					throw new \RuntimeException(
+						'Router service provider not registered. Please ensure the Route_Service_Provider (router.service-provider) is registered.',
+					);
+				}
+
+				$router = $app['router'];
+
+				if ( $web ) {
+					$router->middleware( 'web' )->group( $web );
+					// $router->group( $web );
+				}
+
+				if ( $rest_api ) {
+					$router->middleware( 'rest-api' )->group( $rest_api );
+					// $router->group( $rest_api );
+				}
+
+				if ( ! is_null( $pass_through ) ) {
+					$router->set_pass_through_callback( $pass_through );
+				}
+			}
+		);
+
+		return $this;
+	}
+
+	/**
 	 * Bind to the container before booting.
 	 *
 	 * @param string              $abstract Abstract to bind.

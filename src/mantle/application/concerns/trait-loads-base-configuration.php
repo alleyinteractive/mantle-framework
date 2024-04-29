@@ -7,12 +7,7 @@
 
 namespace Mantle\Application\Concerns;
 
-use Dotenv\Dotenv;
-use Dotenv\Exception\InvalidFileException;
-use Mantle\Application\Application;
 use Mantle\Config\Repository;
-use Mantle\Framework\Console\Kernel;
-use Mantle\Support\Environment;
 
 /**
  * Load a base configuration for Mantle to operate.

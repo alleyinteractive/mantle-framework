@@ -100,25 +100,26 @@ class BootloaderTest extends TestCase {
 	public function test_it_can_setup_routing() {
 		add_filter( 'wp_using_themes', fn () => true, 99 );
 
-		$manager = new Bootloader();
+		bootloader()
+			->with_providers( [
+				\Mantle\Framework\Providers\Route_Service_Provider::class,
+			] )
+			->with_routing(
+				web: __DIR__ . '/../fixtures/routes/web.php',
+				rest_api: __DIR__ . '/../fixtures/routes/rest-api.php',
+			)
+			->boot();
 
-		$manager->boot();
-
-		$app = $manager->get_application();
+		$app = app();
 
 		$this->assertTrue( $app->bound( 'router' ) );
-
-		// Register the route.
-		$app->make( 'router' )->get( '/example-router', fn () => 'Hello World' );
 
 		$request = Request::create( '/example-router' );
 
 		$app->instance( 'request', $request );
 
-		$kernel = $app->make( \Mantle\Contracts\Http\Kernel::class );
-
 		// Make the request through the kernel.
-		$response = $kernel->send_request_through_router( $request );
+		$response = $app->make( \Mantle\Contracts\Http\Kernel::class )->send_request_through_router( $request );
 
 		$this->assertInstanceof( Response::class, $response );
 		$this->assertSame( 'Hello World', $response->getContent() );

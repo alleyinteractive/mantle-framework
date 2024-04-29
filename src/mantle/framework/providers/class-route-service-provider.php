@@ -21,7 +21,7 @@ class Route_Service_Provider extends Service_Provider implements Route_Service_P
 	 *
 	 * @var bool|callable
 	 */
-	protected $pass_requests_to_wp = true;
+	protected mixed $pass_requests_to_wp = true;
 
 	/**
 	 * Register the service provider.
@@ -87,10 +87,10 @@ class Route_Service_Provider extends Service_Provider implements Route_Service_P
 	/**
 	 * Set a callback to determine if a request should be passed down to WordPress.
 	 *
-	 * @param callable $callback Callback to invoke.
+	 * @param bool|callable $callback Callback to invoke.
 	 */
-	protected function set_pass_through_callback( callable $callback ) {
-		$this->pass_requests_to_wp = $callback;
+	protected function set_pass_through_callback( bool|callable $callback ) {
+		$this->pass_requests_to_wp = is_callable( $callback ) ? $callback : (bool) $callback;
 	}
 
 	/**
@@ -100,6 +100,7 @@ class Route_Service_Provider extends Service_Provider implements Route_Service_P
 	 */
 	protected function allow_pass_through_requests() {
 		$this->pass_requests_to_wp = true;
+
 		return $this;
 	}
 
@@ -110,6 +111,7 @@ class Route_Service_Provider extends Service_Provider implements Route_Service_P
 	 */
 	protected function prevent_pass_through_requests() {
 		$this->pass_requests_to_wp = false;
+
 		return $this;
 	}
 }

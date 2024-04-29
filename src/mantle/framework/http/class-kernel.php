@@ -69,14 +69,23 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 *
 	 * @var array<string, array<int, callable|class-string>>
 	 */
-	protected $middleware_groups = [];
+	protected $middleware_groups = [
+		'web'      => [
+			\Mantle\Http\Routing\Middleware\Setup_WordPress::class,
+			\Mantle\Http\Routing\Middleware\Substitute_Bindings::class,
+			\Mantle\Http\Routing\Middleware\Wrap_Template::class,
+		],
+		'rest-api' => [],
+	];
 
 	/**
 	 * The application's route middleware.
 	 *
 	 * @var array<string, callable|class-string>
 	 */
-	protected $route_middleware = [];
+	protected $route_middleware = [
+		'can' => \Mantle\Auth\Middleware\Authorize::class,
+	];
 
 	/**
 	 * Constructor.
