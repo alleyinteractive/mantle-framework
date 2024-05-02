@@ -35,9 +35,15 @@ if ( ! function_exists( 'bootloader' ) ) {
 	/**
 	 * Retrieve the Bootloader instance.
 	 *
-	 * @param Application|null  $app Application instance, optional.
+	 * @param Application|Bootloader|null  $app Application instance, optional.
 	 */
-	function bootloader( ?Application $app = null ): Bootloader {
+	function bootloader( Application|Bootloader|null $app = null ): Bootloader {
+		// Handle legacy usage of the bootloader() function being passed an instance
+		// of the bootloader from bootstrap/app.php. Can be removed in 2.0.
+		if ( $app instanceof Bootloader ) {
+			return $app;
+		}
+
 		return Bootloader::get_instance( $app );
 	}
 }
