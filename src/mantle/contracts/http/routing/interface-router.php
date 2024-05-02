@@ -128,7 +128,7 @@ interface Router {
 	 * @param  array  $middleware
 	 * @return static
 	 */
-	public function middleware_group( $name, array $middleware );
+	public function middleware_group( string $name, array $middleware ): static;
 
 	/**
 	 * Register a short-hand name for a middleware.
@@ -137,5 +137,21 @@ interface Router {
 	 * @param  string $class
 	 * @return static
 	 */
-	public function alias_middleware( $name, $class );
+	public function alias_middleware( string $name, string $class ): static;
+
+	/**
+	 * Determine if the request should pass through to WordPress.
+	 *
+	 * @param (callable(Request): bool)|bool $callback Callback to determine if the request should pass through to WordPress.
+	 * @return static
+	 */
+	public function pass_requests_to_wordpress( $callback ): static;
+
+	/**
+	 * Determine if the request should pass through to WordPress.
+	 *
+	 * @param Request $request Request object.
+	 * @return bool
+	 */
+	public function should_pass_through_request( Request $request ): bool;
 }

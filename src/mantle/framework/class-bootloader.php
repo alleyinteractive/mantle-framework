@@ -25,6 +25,9 @@ use Mantle\Support\Traits\Conditionable;
  * context. Removes the need for boilerplate code to be included in projects
  * (ala laravel/laravel) but still allows for the flexibility to do so if they
  * so choose.
+ *
+ * @todo Add support for console commands.
+ * @todo Ensure only one app service provider is loaded.
  */
 class Bootloader implements Contract {
 	use Conditionable;
@@ -120,18 +123,18 @@ class Bootloader implements Contract {
 	/**
 	 * Bind the application with the default kernels.
 	 *
-	 * @param class-string<Contracts\Console\Kernel>|null $console_kernel Console kernel class.
-	 * @param class-string<Contracts\Http\Kernel>|null    $http_kernel    HTTP kernel class.
+	 * @param class-string<Contracts\Console\Kernel>|null $console Console kernel class.
+	 * @param class-string<Contracts\Http\Kernel>|null    $http    HTTP kernel class.
 	 * @return static
 	 */
-	public function with_kernels( string $console_kernel = null, string $http_kernel = null ): static {
-		if ( $console_kernel && ! in_array( Contracts\Console\Kernel::class, class_implements( $console_kernel ), true ) ) {
+	public function with_kernels( string $console = null, string $http = null ): static {
+		if ( $console && ! in_array( Contracts\Console\Kernel::class, class_implements( $console ), true ) ) {
 			throw new \InvalidArgumentException(
 				'Console kernel must implement the Contracts\Console\Kernel interface.',
 			);
 		}
 
-		if ( $http_kernel && ! in_array( Contracts\Http\Kernel::class, class_implements( $http_kernel ), true ) ) {
+		if ( $http && ! in_array( Contracts\Http\Kernel::class, class_implements( $http ), true ) ) {
 			throw new \InvalidArgumentException(
 				'HTTP kernel must implement the Contracts\Http\Kernel interface.',
 			);
@@ -139,12 +142,12 @@ class Bootloader implements Contract {
 
 		$this->app->singleton(
 			Contracts\Console\Kernel::class,
-			$console_kernel ?? \Mantle\Framework\Console\Kernel::class,
+			$console ?? \Mantle\Framework\Console\Kernel::class,
 		);
 
 		$this->app->singleton(
 			Contracts\Http\Kernel::class,
-			$http_kernel ?? \Mantle\Framework\Http\Kernel::class,
+			$http ?? \Mantle\Framework\Http\Kernel::class,
 		);
 
 		return $this;
@@ -163,7 +166,7 @@ class Bootloader implements Contract {
 			);
 		}
 
-		$this->app->singleton_if(
+		$this->app->singleton(
 			Contracts\Exceptions\Handler::class,
 			$handler ?? \Mantle\Framework\Exceptions\Handler::class,
 		);
@@ -185,39 +188,36 @@ class Bootloader implements Contract {
 	/**
 	 * Setup routing from files for the application.
 	 *
+	 * @param Closure(\Mantle\Contracts\Http\Routing\Router):void|null $callback Callback to setup routes.
 	 * @param string|null $web Web routes file.
 	 * @param string|null $rest_api REST API routes file.
-	 * @param bool|null   $pass_through Pass through requests to WordPress.
+	 * @param bool|callable(\Mantle\Http\Request):bool|null $pass_through Pass requests through to WordPress (or a callback to determine if it should).
 	 * @return static
 	 */
 	public function with_routing(
+		?Closure $callback = null,
 		?string $web = null,
 		?string $rest_api = null,
-		?bool $pass_through = null,
+		bool|callable|null $pass_through = null,
 	): static {
 		$this->app->booted(
-			function ( Application $app ) use ( $web, $rest_api, $pass_through ) {
-				// todo: remove the need for this.//
-				if ( ! isset( $app['router.service-provider'] ) ) {
-					throw new \RuntimeException(
-						'Router service provider not registered. Please ensure the Route_Service_Provider (router.service-provider) is registered.',
-					);
-				}
-
+			function ( Application $app ) use ( $callback, $web, $rest_api, $pass_through ) {
 				$router = $app['router'];
+
+				if ( $callback ) {
+					$callback( $router );
+				}
 
 				if ( $web ) {
 					$router->middleware( 'web' )->group( $web );
-					// $router->group( $web );
 				}
 
 				if ( $rest_api ) {
 					$router->middleware( 'rest-api' )->group( $rest_api );
-					// $router->group( $rest_api );
 				}
 
 				if ( ! is_null( $pass_through ) ) {
-					$router->set_pass_through_callback( $pass_through );
+					$router->pass_requests_to_wordpress( $pass_through );
 				}
 			}
 		);

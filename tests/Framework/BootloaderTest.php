@@ -3,6 +3,7 @@
 namespace Mantle\Tests\Framework;
 
 use Mantle\Application\Application;
+use Mantle\Facade\Route;
 use Mantle\Framework\Bootloader;
 use Mantle\Framework\Bootstrap\Register_Providers;
 use Mantle\Http\Request;
@@ -55,7 +56,7 @@ class BootloaderTest extends TestCase {
 
 	public function test_it_can_bind_custom_kernel() {
 		bootloader()
-			->with_kernels( http_kernel: Testable_Http_Kernel::class )
+			->with_kernels( http: Testable_Http_Kernel::class )
 			->boot();
 
 		// Ensure the custom kernel was bound.
@@ -101,9 +102,6 @@ class BootloaderTest extends TestCase {
 		add_filter( 'wp_using_themes', fn () => true, 99 );
 
 		bootloader()
-			->with_providers( [
-				\Mantle\Framework\Providers\Route_Service_Provider::class,
-			] )
 			->with_routing(
 				web: __DIR__ . '/../fixtures/routes/web.php',
 				rest_api: __DIR__ . '/../fixtures/routes/rest-api.php',
@@ -123,6 +121,26 @@ class BootloaderTest extends TestCase {
 
 		$this->assertInstanceof( Response::class, $response );
 		$this->assertSame( 'Hello World', $response->getContent() );
+	}
+
+	public function test_it_can_setup_routing_closure() {
+		bootloader()
+			->with_routing( fn () => Route::get( '/example-closure', fn () => 'Hello Closure' ) )
+			->boot();
+
+		$app = app();
+
+		$this->assertTrue( $app->bound( 'router' ) );
+
+		$request = Request::create( '/example-closure' );
+
+		$app->instance( 'request', $request );
+
+		// Make the request through the kernel.
+		$response = $app->make( \Mantle\Contracts\Http\Kernel::class )->send_request_through_router( $request );
+
+		$this->assertInstanceof( Response::class, $response );
+		$this->assertSame( 'Hello Closure', $response->getContent() );
 	}
 
 	public function test_it_can_setup_providers() {

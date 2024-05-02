@@ -213,27 +213,11 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 		// Strip the trailing slash from the request.
 		$request->setPathInfo( \untrailingslashit( $request->getPathInfo() ) );
 
-		// Check if the router service provider exists.
-		if ( ! isset( $this->app['router.service-provider'] ) ) {
-			// Flag the missing router service provider if not running testkit.
-			if ( ! ( $this->app instanceof \Mantle\Testkit\Application ) ) {
-				throw new InvalidArgumentException( 'Router service provider not found.' );
-			}
-
-			return null;
-		}
-
-		$provider = $this->app['router.service-provider'];
-
-		if ( ! ( $provider instanceof Route_Service_Provider_Contract ) ) {
-			throw new InvalidArgumentException( 'Unknown "router.service-provider" instance: ' . $provider::class );
-		}
-
 		try {
 			$response = $this->router->dispatch( $request );
 		} catch ( Throwable $e ) {
 			// If no route found, allow the request to be passed down to WordPress.
-			if ( $e instanceof ResourceNotFoundException && $provider->should_pass_through_requests( $request ) ) {
+			if ( $e instanceof ResourceNotFoundException && $this->router->should_pass_through_request( $request ) ) {
 				return null;
 			}
 

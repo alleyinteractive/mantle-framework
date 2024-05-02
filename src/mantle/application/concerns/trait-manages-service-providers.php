@@ -30,17 +30,19 @@ trait Manages_Service_Providers {
 	 *
 	 * @var Service_Provider[]
 	 */
-	protected $service_providers = [];
+	protected array $service_providers = [];
 
 	/**
 	 * Register the base service providers.
 	 */
-	protected function register_base_service_providers() {
-		$this->register( Console_Service_Provider::class );
-		$this->register( Event_Service_Provider::class );
-		$this->register( Log_Service_Provider::class );
-		$this->register( View_Service_Provider::class );
-		$this->register( Routing_Service_Provider::class );
+	protected function register_base_service_providers(): void {
+		$this->register( [
+			Console_Service_Provider::class,
+			Event_Service_Provider::class,
+			Log_Service_Provider::class,
+			View_Service_Provider::class,
+			Routing_Service_Provider::class,
+		] );
 	}
 
 	/**
@@ -93,11 +95,21 @@ trait Manages_Service_Providers {
 	 *
 	 * @throws InvalidArgumentException If the provider is not an instance of Service_Provider.
 	 *
-	 * @param Service_Provider|class-string<Service_Provider> $provider Provider instance or class name to register.
+	 * @param array<Service_Provider|class-string<Service_Provider>>|Service_Provider|class-string<Service_Provider> $provider Provider instance or class name to register.
 	 */
-	public function register( Service_Provider|string $provider ): static {
+	public function register( array|Service_Provider|string $provider ): static {
+		if ( is_array( $provider ) ) {
+			foreach ( $provider as $p ) {
+				$this->register( $p );
+			}
+
+			return $this;
+		}
+
 		$provider_name = is_string( $provider ) ? $provider : $provider::class;
 
+		// If the provider is already registered, return early.
+		// Future consideration: should this throw an error?
 		if ( ! empty( $this->service_providers[ $provider_name ] ) ) {
 			return $this;
 		}

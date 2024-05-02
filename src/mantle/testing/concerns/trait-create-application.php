@@ -62,16 +62,15 @@ trait Create_Application {
 		return [
 			'app'        => [
 				'debug'     => true,
-				'providers' => [
-					\Mantle\Database\Model_Service_Provider::class,
-					\Mantle\Queue\Queue_Service_Provider::class,
-					\Mantle\Database\Factory_Service_Provider::class,
-					\Mantle\Framework\Providers\Route_Service_Provider::class,
-					\Mantle\Filesystem\Filesystem_Service_Provider::class,
-					\Mantle\Database\Pagination\Paginator_Service_Provider::class,
-					\Mantle\Cache\Cache_Service_Provider::class,
-					\Mantle\Application\App_Service_Provider::class,
-				],
+				// 'providers' => [
+				// 	\Mantle\Database\Model_Service_Provider::class,
+				// 	\Mantle\Queue\Queue_Service_Provider::class,
+				// 	\Mantle\Database\Factory_Service_Provider::class,
+				// 	\Mantle\Filesystem\Filesystem_Service_Provider::class,
+				// 	\Mantle\Database\Pagination\Paginator_Service_Provider::class,
+				// 	\Mantle\Cache\Cache_Service_Provider::class,
+				// 	\Mantle\Application\App_Service_Provider::class,
+				// ],
 			],
 			'queue'      => [
 				'batch_size' => 25,

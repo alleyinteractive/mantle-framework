@@ -8,6 +8,7 @@ class TestkitTestCaseTest extends Test_Case {
 	use ExampleOverload;
 
 	public function test_create_application() {
+		$this->assertInstanceOf( \Mantle\Testkit\Application::class, $this->create_application() );
 		$this->assertInstanceOf( \Mantle\Contracts\Application::class, $this->create_application() );
 	}
 
