@@ -107,7 +107,7 @@ class Bootloader implements Contract {
 	 * Configuration passed will be merged recursively with the existing
 	 * configuration after all application configuration has been loaded.
 	 *
-	 * @param array<string, mixed> $config Configuration to merge.
+	 * @param array<string, array<mixed>> $config Configuration to merge.
 	 */
 	public function with_config( array $config ): static {
 		Load_Configuration::merge( $config );
@@ -117,6 +117,8 @@ class Bootloader implements Contract {
 
 	/**
 	 * Bind the application with the default kernels.
+	 *
+	 * @throws \InvalidArgumentException If the console or HTTP kernel does not implement the correct interface.
 	 *
 	 * @param class-string<Contracts\Console\Kernel>|null $console Console kernel class.
 	 * @param class-string<Contracts\Http\Kernel>|null    $http    HTTP kernel class.
@@ -150,6 +152,8 @@ class Bootloader implements Contract {
 	/**
 	 * Bind the application with a exception handler.
 	 *
+	 * @throws \InvalidArgumentException If the handler does not implement the correct interface.
+	 *
 	 * @param class-string<Contracts\Exceptions\Handler>|null $handler Exception handler class.
 	 */
 	public function with_exception_handler( string $handler = null ): static {
@@ -182,9 +186,9 @@ class Bootloader implements Contract {
 	 * Setup routing from files for the application.
 	 *
 	 * @param Closure(\Mantle\Contracts\Http\Routing\Router):void|null $callback Callback to setup routes.
-	 * @param string|null $web Web routes file.
-	 * @param string|null $rest_api REST API routes file.
-	 * @param bool|callable(\Mantle\Http\Request):bool|null $pass_through Pass requests through to WordPress (or a callback to determine if it should).
+	 * @param string|null                                              $web Web routes file.
+	 * @param string|null                                              $rest_api REST API routes file.
+	 * @param bool|callable(\Mantle\Http\Request):bool|null            $pass_through Pass requests through to WordPress (or a callback to determine if it should).
 	 */
 	public function with_routing(
 		?Closure $callback = null,
@@ -284,7 +288,7 @@ class Bootloader implements Contract {
 
 		$kernel->bootstrap();
 
-		$status = $kernel->handle(
+		$status    = $kernel->handle(
 			$input = new \Symfony\Component\Console\Input\ArgvInput(),
 			new \Symfony\Component\Console\Output\ConsoleOutput(),
 		);

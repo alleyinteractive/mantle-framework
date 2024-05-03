@@ -7,6 +7,7 @@
 
 namespace Mantle\Framework\Bootstrap;
 
+use InvalidArgumentException;
 use Mantle\Application\Application;
 use Mantle\Contracts\Config\Repository as Repository_Contract;
 use Mantle\Filesystem\Filesystem;
@@ -24,7 +25,7 @@ class Load_Configuration {
 	/**
 	 * Additional service configuration to register from the bootloader.
 	 *
-	 * @var array<string, mixed>
+	 * @var array<string, array<mixed>>
 	 */
 	protected static $merge = [];
 
@@ -56,6 +57,45 @@ class Load_Configuration {
 	}
 
 	/**
+	 * Load specific configuration files to a repository.
+	 *
+	 * Will replace the configuration for each key as it processes the files and
+	 * will merge configuration for those configuration keys that are mergeable.
+	 *
+	 * @param array<string, string[]> $files Files to load.
+	 * @param Repository_Contract     $repository Repository to load to.
+	 */
+	protected function load_configuration_to_repository( array $files, Repository_Contract $repository ) {
+		$filesystem = new Filesystem();
+
+		foreach ( $files as $key => $config_files ) {
+			foreach ( $config_files as $config_file ) {
+				$config = $filesystem->get_require( $config_file );
+
+				// Skip if the configuration is not an array.
+				if ( ! is_array( $config ) ) {
+					continue;
+				}
+
+				// If the configuration key does not exist, set it and continue early.
+				if ( ! $repository->has( $key ) ) {
+					$repository->set( $key, $config );
+
+					continue;
+				}
+
+				$existing_config = $repository->get( $key );
+
+				foreach ( $this->get_mergeable_options( $key ) as $option ) {
+					$config[ $option ] = array_merge( $existing_config[ $option ] ?? [], $config[ $option ] ?? [] );
+				}
+
+				$repository->set( $key, $config );
+			}
+		}
+	}
+
+	/**
 	 * Load the configuration from the files.
 	 *
 	 * @param Application         $app Application instance.
@@ -64,63 +104,20 @@ class Load_Configuration {
 	protected function load_configuration_files( Application $app, Repository_Contract $repository ): void {
 		$files = $this->get_configuration_files( $app );
 
-		// Bail early if 'app' is not found.
-		if ( empty( $files['app'] ) ) {
+		// Bail early if 'global.app' is not found.
+		if ( empty( $files['global']['app'] ) ) {
 			return;
 		}
 
-		// Filter the environment config files from the root-level ones.
-		$environment_config = array_filter( $files, 'is_array' );
-		$root_config_files  = array_filter( $files, 'is_string' );
-
-		// Sort them to ensure a similar experience across all hosting environments.
-		ksort( $environment_config, SORT_NATURAL );
-		ksort( $root_config_files, SORT_NATURAL );
-
 		// Load the root-level config.
-		$this->load_configuration_to_repository( $root_config_files, $repository );
+		$this->load_configuration_to_repository( $files['global'], $repository );
 
 		$env = $app->environment();
 
 		// Load the environment-specific configurations if one exists.
-		if ( ! empty( $environment_config[ $env ] ) ) {
-			$this->load_configuration_to_repository( $environment_config[ $env ], $repository, true );
+		if ( ! empty( $files['env'][ $env ] ) ) {
+			$this->load_configuration_to_repository( $files['env'][ $env ], $repository );
 		}
-	}
-
-	/**
-	 * Find the configuration files to load.
-	 *
-	 * @param Application $app Application instance.
-	 */
-	protected function get_configuration_files( Application $app ): array {
-		$files = [];
-
-		$finder = Finder::create()
-			->files()
-			->name( '*.php' )
-			->depth( '< 2' ) // Only descend two levels.
-			->in( $this->get_configuration_directories( $app ) );
-
-		foreach ( $finder as $file ) {
-			$name = basename( $file->getRealPath(), '.php' );
-
-			// Get the environment the configuration file is from.
-			$environment = basename( dirname( $file->getRealPath() ) );
-
-			// Ignore the 'config' directory as an environment.
-			if ( in_array( $environment, [ 'config', 'configuration' ], true ) ) {
-				$environment = null;
-			}
-
-			if ( empty( $environment ) ) {
-				$files[ $name ] = $file->getRealPath();
-			} else {
-				$files[ Str::untrailing_slash( $environment ) ][ $name ] = $file->getRealPath();
-			}
-		}
-
-		return $files;
 	}
 
 	/**
@@ -157,53 +154,94 @@ class Load_Configuration {
 	}
 
 	/**
-	 * Load specific configuration files to a repository
+	 * Find the configuration files to load.
 	 *
-	 * @param string[]            $files Files to load.
-	 * @param Repository_Contract $repository Repository to load to.
-	 * @param bool                $merge Flag to merge the configuration instead of overwriting.
+	 * @param Application $app Application instance.
+	 * @return array{global: array<string, string[]>, env: array<string, array<string, string[]>>}
 	 */
-	protected function load_configuration_to_repository( array $files, Repository_Contract $repository, bool $merge = false ) {
-		$filesystem = new Filesystem();
+	protected function get_configuration_files( Application $app ): array {
+		$files = [
+			'global' => [],
+			'env'    => [],
+		];
 
-		foreach ( $files as $key => $root_config_file ) {
-			$config = $filesystem->get_require( $root_config_file );
+		$finder = Finder::create()
+			->files()
+			->name( '*.php' )
+			->depth( '< 2' ) // Only descend two levels.
+			->in( $this->get_configuration_directories( $app ) );
 
-			if ( ! $merge || ! $repository->has( $key ) ) {
-				$repository->set( $key, $config );
-				continue;
+		foreach ( $finder as $file ) {
+			$name = basename( $file->getRealPath(), '.php' );
+
+			$dirname     = basename( dirname( $file->getRealPath() ) );
+			$environment = match ( $dirname ) {
+				// Ignore the 'config' directory as an environment.
+				'config', 'configuration' => null,
+				default => $dirname,
+			};
+
+			if ( $environment ) {
+				$files['env'][ $environment ][ $name ][] = $file->getRealPath();
+			} else {
+				$files['global'][ $name ][] = $file->getRealPath();
 			}
-
-			$existing_config = $repository->get( $key );
-
-			// Merge the configuration recursively.
-			$dot_config = Arr::dot( $config );
-
-			foreach ( $dot_config as $config_key => $config_value ) {
-				Helpers\data_set( $existing_config, $config_key, $config_value, true );
-			}
-
-			$repository->set( $key, $existing_config );
 		}
+
+		// Sort them to ensure a similar experience across all hosting environments.
+		foreach ( $files as $type => $config_files ) {
+			ksort( $files[ $type ], SORT_NATURAL );
+		}
+
+		return $files;
 	}
 
 	/**
 	 * Load the additional configuration from the bootloader to the repository.
 	 *
+	 * @throws InvalidArgumentException If the configuration value is not an array.
+	 * @throws InvalidArgumentException If the mergeable option is not an array.
+	 *
 	 * @param Repository_Contract $repository Configuration Repository.
 	 */
 	protected function load_merge_configuration( Repository_Contract $repository ): void {
-		foreach ( static::$merge as $key => $value ) {
-			$existing = $repository->get( $key, [] );
-
-			// Merge the configuration recursively.
-			$dot_config = Arr::dot( $value );
-
-			foreach ( $dot_config as $config_key => $config_value ) {
-				Helpers\data_set( $existing, $config_key, $config_value, true );
+		foreach ( static::$merge as $config_key => $values ) {
+			if ( ! is_array( $values ) ) {
+				throw new InvalidArgumentException( "The bootstrap-loaded configuration value for key '{$config_key}' must be an array." );
 			}
 
-			$repository->set( $key, $existing );
+			$config            = $repository->get( $config_key, [] );
+			$mergeable_options = $this->get_mergeable_options( $config_key );
+
+			foreach ( $values as $key => $value ) {
+				if ( in_array( $key, $mergeable_options, true ) ) {
+					if ( ! is_array( $value ) ) {
+						throw new InvalidArgumentException( "The mergeable option '{$key}' for key '{$config_key}' must be an array." );
+					}
+
+					$config[ $key ] = array_merge( $config[ $key ] ?? [], $value );
+				} else {
+					$config[ $key ] = $value;
+				}
+			}
+
+			$repository->set( $config_key, $config );
+
+			static::$merge = [];
 		}
+	}
+
+	/**
+	 * Retrieve the mergeable options for the configuration.
+	 *
+	 * These configuration keys can be merged from across all configuration files.
+	 *
+	 * @param string $name Configuration name.
+	 * @return array<string>
+	 */
+	protected function get_mergeable_options( string $name ): array {
+		return [
+			'app' => [ 'providers' ],
+		][ $name ] ?? [];
 	}
 }

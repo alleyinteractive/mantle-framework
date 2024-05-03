@@ -529,7 +529,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 		}
 
 		// If the namespace is not set, attempt to infer it from the composer.json file.
-		if ( empty( $this->namespace ) && file_exists(  $this->get_base_path( 'composer.json' ) ) ) {
+		if ( empty( $this->namespace ) && file_exists( $this->get_base_path( 'composer.json' ) ) ) {
 			$composer = json_decode( file_get_contents( $this->get_base_path( 'composer.json' ) ), true );
 			$autoload = data_get( $composer, 'extra.wordpress-autoloader.autoload', [] );
 

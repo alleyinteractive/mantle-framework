@@ -57,20 +57,22 @@ trait Create_Application {
 
 	/**
 	 * Default configuration for the test.
+	 *
+	 * @todo Review why this is needed still with the base configuration in place.
 	 */
 	protected function get_application_config(): array {
 		return [
 			'app'        => [
 				'debug'     => true,
-				// 'providers' => [
-				// 	\Mantle\Database\Model_Service_Provider::class,
-				// 	\Mantle\Queue\Queue_Service_Provider::class,
-				// 	\Mantle\Database\Factory_Service_Provider::class,
-				// 	\Mantle\Filesystem\Filesystem_Service_Provider::class,
-				// 	\Mantle\Database\Pagination\Paginator_Service_Provider::class,
-				// 	\Mantle\Cache\Cache_Service_Provider::class,
-				// 	\Mantle\Application\App_Service_Provider::class,
-				// ],
+				'providers' => [
+					\Mantle\Database\Model_Service_Provider::class,
+					\Mantle\Queue\Queue_Service_Provider::class,
+					\Mantle\Database\Factory_Service_Provider::class,
+					\Mantle\Filesystem\Filesystem_Service_Provider::class,
+					\Mantle\Database\Pagination\Paginator_Service_Provider::class,
+					\Mantle\Cache\Cache_Service_Provider::class,
+					\Mantle\Application\App_Service_Provider::class,
+				],
 			],
 			'queue'      => [
 				'batch_size' => 25,

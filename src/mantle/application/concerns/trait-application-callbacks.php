@@ -2,8 +2,11 @@
 /**
  * Application_Callbacks trait file
  *
+ * phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag, Squiz.Commenting.FunctionComment.ParamNameNoMatch
+ *
  * @package Mantle
  */
+
 namespace Mantle\Application\Concerns;
 
 /**
@@ -74,8 +77,8 @@ trait Application_Callbacks {
 	 * Flush the application's callbacks.
 	 */
 	protected function flush_callbacks(): void {
-		$this->booting_callbacks = [];
-		$this->booted_callbacks = [];
+		$this->booting_callbacks     = [];
+		$this->booted_callbacks      = [];
 		$this->terminating_callbacks = [];
 	}
 

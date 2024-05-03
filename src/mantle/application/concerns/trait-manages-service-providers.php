@@ -36,13 +36,15 @@ trait Manages_Service_Providers {
 	 * Register the base service providers.
 	 */
 	protected function register_base_service_providers(): void {
-		$this->register( [
-			Console_Service_Provider::class,
-			Event_Service_Provider::class,
-			Log_Service_Provider::class,
-			View_Service_Provider::class,
-			Routing_Service_Provider::class,
-		] );
+		$this->register(
+			[
+				Console_Service_Provider::class,
+				Event_Service_Provider::class,
+				Log_Service_Provider::class,
+				View_Service_Provider::class,
+				Routing_Service_Provider::class,
+			] 
+		);
 	}
 
 	/**
