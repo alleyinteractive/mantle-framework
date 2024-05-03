@@ -30,4 +30,8 @@ class TestkitTestCaseTest extends Test_Case {
 		$this->assertNotEmpty( static::$overloaded_methods );
 		$this->assertContains( 'setUpBeforeClass', static::$overloaded_methods );
 	}
+
+	public function test_router_not_registered() {
+		$this->assertTrue( empty( $this->app['router'] ) );
+	}
 }

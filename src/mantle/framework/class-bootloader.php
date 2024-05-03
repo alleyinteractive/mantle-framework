@@ -38,9 +38,11 @@ class Bootloader implements Contract {
 
 	/**
 	 * Create a new instance of the application.
+	 *
+	 * @param Contracts\Application|null $app Application instance.
 	 */
-	public static function create(): static {
-		return new static();
+	public static function create( ?Contracts\Application $app = null ): static {
+		return new static( $app );
 	}
 
 	/**
@@ -91,7 +93,7 @@ class Bootloader implements Contract {
 		static::set_instance( $this );
 
 		$this
-			->with_application( new Application( $base_path ) )
+			->with_application( $app ?? new Application( $base_path ) )
 			->with_kernels()
 			->with_exception_handler();
 	}

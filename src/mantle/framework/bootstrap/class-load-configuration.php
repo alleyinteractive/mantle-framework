@@ -8,13 +8,10 @@
 namespace Mantle\Framework\Bootstrap;
 
 use InvalidArgumentException;
-use Mantle\Application\Application;
+use Mantle\Contracts\Application;
 use Mantle\Contracts\Config\Repository as Repository_Contract;
 use Mantle\Filesystem\Filesystem;
-use Mantle\Support\Arr;
 use Symfony\Component\Finder\Finder;
-use Mantle\Support\Helpers;
-use Mantle\Support\Str;
 
 use function Mantle\Support\Helpers\collect;
 

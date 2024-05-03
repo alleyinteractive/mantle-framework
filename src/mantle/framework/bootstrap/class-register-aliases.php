@@ -8,8 +8,7 @@
 namespace Mantle\Framework\Bootstrap;
 
 use Mantle\Framework\Alias_Loader;
-use Mantle\Application\Application;
-use Mantle\Facade\Facade;
+use Mantle\Contracts\Application;
 use Mantle\Framework\Manifest\Package_Manifest;
 
 /**

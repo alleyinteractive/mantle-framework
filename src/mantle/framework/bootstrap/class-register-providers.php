@@ -7,8 +7,7 @@
 
 namespace Mantle\Framework\Bootstrap;
 
-use Mantle\Application\App_Service_Provider as Framework_App_Service_Provider;
-use Mantle\Application\Application;
+use Mantle\Contracts\Application;
 use Mantle\Support\Service_Provider as Base_Service_Provider;
 use Mantle\Contracts\Bootstrapable as Bootstrapable_Contract;
 use RuntimeException;

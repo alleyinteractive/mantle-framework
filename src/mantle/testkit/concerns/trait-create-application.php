@@ -8,16 +8,20 @@
 namespace Mantle\Testkit\Concerns;
 
 use Mantle\Testkit\Application;
-use Mantle\Config\Repository;
 use Mantle\Contracts\Exceptions\Handler as Handler_Contract;
+use Mantle\Framework\Bootloader;
 use Mantle\Http\Request;
 use Mantle\Http\Routing\Url_Generator;
-use Mantle\Support\Collection;
 use Mantle\Testkit\Exception_Handler;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
- * Concern for creating the application instance.
+ * Concern for creating the application instance for Mantle TestKit.
+ *
+ * This trait is used to create a semi-isolated instance of the Mantle
+ * Application that doesn't have all the bells and whistles of a full Mantle
+ * Application. Notably, the service providers are never registered or booted
+ * here.
  */
 trait Create_Application {
 	/**
@@ -26,12 +30,32 @@ trait Create_Application {
 	 * @return Application
 	 */
 	public function create_application(): \Mantle\Contracts\Application {
-		$app = new Application();
+		Bootloader::create( $app = new Application() )
+			->with_config(
+				[
+					'view' => [
+						'compiled' => sys_get_temp_dir(),
+					],
+					...$this->override_application_config( $app ),
+				]
+			);
 
-		$this->resolve_application_bindings( $app );
-		$this->resolve_application_config( $app );
+			$this->resolve_application_core( $app );
+			$this->resolve_application_bindings( $app );
 
 		return $app;
+	}
+
+	/**
+	 * Resolve application core configuration.
+	 *
+	 * @todo Review if we can add Register_Providers bootstrap here.
+	 *
+	 * @param Application $app Application instance.
+	 */
+	protected function resolve_application_core( $app ): void {
+		$app->make( \Mantle\Framework\Bootstrap\Load_Configuration::class )->bootstrap( $app );
+		$app->make( \Mantle\Framework\Bootstrap\Boot_Providers::class )->bootstrap( $app );
 	}
 
 	/**
@@ -50,6 +74,7 @@ trait Create_Application {
 	 * @param Application $app Application instance.
 	 */
 	final protected function resolve_application_bindings( $app ): void {
+		// Register the TestKit exception handler.
 		$app->singleton( Handler_Contract::class, Exception_Handler::class );
 
 		foreach ( $this->override_application_bindings( $app ) as $original => $replacement ) {
@@ -67,96 +92,11 @@ trait Create_Application {
 	}
 
 	/**
-	 * Default configuration for the test.
-	 */
-	protected function get_application_config(): array {
-		return [
-			'app'        => [
-				'debug'     => true,
-				'providers' => [],
-			],
-			'queue'      => [
-				'batch_size' => 100,
-				'default'    => 'wordpress',
-			],
-			'logging'    => [
-				'default'  => 'error_log',
-				'channels' => [
-					'error_log' => [
-						'driver' => 'error_log',
-					],
-				],
-			],
-			'view'       => [
-				'compiled' => sys_get_temp_dir(),
-			],
-			'filesystem' => [],
-			'cache'      => [],
-		];
-	}
-
-	/**
 	 * Configuration for the test.
 	 *
 	 * @param Application $app Application instance.
 	 */
 	protected function override_application_config( $app ): array {
 		return [];
-	}
-
-	/**
-	 * Resolve application core configuration.
-	 *
-	 * @param Application $app Application instance.
-	 * @todo Allow for overriding the configuration aliases and providers easily within the unit test.
-	 */
-	protected function resolve_application_config( $app ) {
-		$config = new Repository(
-			array_merge(
-				$this->get_application_config(),
-				$this->override_application_config( $app )
-			)
-		);
-
-		$app->instance( 'config', $config );
-		$app['config']['app.providers'] = $this->resolve_application_providers( $app );
-	}
-
-	/**
-	 * Get application providers.
-	 *
-	 * @param Application $app Application instance.
-	 * @return array
-	 */
-	protected function get_application_providers( $app ) {
-		return $app['config']['app.providers'];
-	}
-
-	/**
-	 * Override application aliases.
-	 *
-	 * @param Application $app Application instance.
-	 * @return array
-	 */
-	protected function override_application_providers( $app ) {
-		return [];
-	}
-
-	/**
-	 * Resolve application aliases.
-	 *
-	 * @param Application $app Application instance.
-	 */
-	final protected function resolve_application_providers( $app ): array {
-		$providers = new Collection( $this->get_application_providers( $app ) );
-		$overrides = $this->override_application_providers( $app );
-
-		if ( ! empty( $overrides ) ) {
-			$providers->transform(
-				static fn ( $provider) => $overrides[ $provider ] ?? $provider
-			);
-		}
-
-		return $providers->all();
 	}
 }
