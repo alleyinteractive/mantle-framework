@@ -33,8 +33,6 @@ use function Mantle\Support\Helpers\collect;
  *
  * Provides logging back to the logging service provider for exceptions thrown and
  * graceful handling of errors.
- *
- * @todo Add testing to improve coverage.
  */
 class Handler implements Contract {
 
@@ -199,7 +197,7 @@ class Handler implements Contract {
 	 */
 	public function render_for_console( OutputInterface $output, Throwable $e ): void {
 		if ( config( 'app.debug' ) ) {
-			// Use Whoops to render the exception if we're in debug mode.
+			// Use collision to render the exception if we're in debug mode.
 			( new \NunoMaduro\Collision\Provider() )->register();
 
 			throw $e;

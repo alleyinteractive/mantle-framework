@@ -31,7 +31,6 @@ return [
 		// Framework Providers.
 		Mantle\Filesystem\Filesystem_Service_Provider::class,
 		Mantle\Database\Factory_Service_Provider::class,
-		Mantle\Framework\Providers\Error_Service_Provider::class,
 		Mantle\Database\Model_Service_Provider::class,
 		Mantle\Queue\Queue_Service_Provider::class,
 		Mantle\Query_Monitor\Query_Monitor_Service_Provider::class,

@@ -50,6 +50,11 @@ class Wrap_Template {
 
 		$response = $next( $request );
 
+		// If the response is not a Response object, we can't wrap it.
+		if ( ! $response instanceof \Symfony\Component\HttpFoundation\Response ) {
+			return $response;
+		}
+
 		/**
 		 * Filter the template for wrapping the content.
 		 *
