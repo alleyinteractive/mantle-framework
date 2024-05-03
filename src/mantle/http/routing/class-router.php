@@ -353,7 +353,6 @@ class Router implements Router_Contract {
 	 *
 	 * @param  string $name
 	 * @param  string $class
-	 * @return static
 	 */
 	public function alias_middleware( string $name, string $class ): static {
 		$this->middleware[ $name ] = $class;
@@ -375,7 +374,6 @@ class Router implements Router_Contract {
 	 *
 	 * @param  string $name
 	 * @param  array  $middleware
-	 * @return static
 	 */
 	public function middleware_group( string $name, array $middleware ): static {
 		$this->middleware_groups[ $name ] = $middleware;
@@ -631,7 +629,6 @@ class Router implements Router_Contract {
 	 * Determine if the request should pass through to WordPress.
 	 *
 	 * @param (callable(\Mantle\Http\Request): bool)|bool $callback Callback to determine if the request should pass through to WordPress.
-	 * @return static
 	 */
 	public function pass_requests_to_wordpress( $callback ): static {
 		$this->pass_requests_to_wordpress = $callback;
@@ -643,7 +640,6 @@ class Router implements Router_Contract {
 	 * Determine if the request should pass through to WordPress.
 	 *
 	 * @param Request $request Request object.
-	 * @return bool
 	 */
 	public function should_pass_through_request( Request $request ): bool {
 		// Early checks to always allow the REST API and prevent routing when not using themes.
@@ -657,6 +653,6 @@ class Router implements Router_Contract {
 
 		$status = $this->pass_requests_to_wordpress;
 
-		return is_callable( $status ) ? (bool) $status( $request ) : (bool) $status;
+		return is_callable( $status ) ? (bool) $status( $request ) : $status;
 	}
 }

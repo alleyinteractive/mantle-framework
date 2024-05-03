@@ -32,15 +32,11 @@ class Application extends Container implements \Mantle\Contracts\Application {
 
 	/**
 	 * Base path of the application.
-	 *
-	 * @var string
 	 */
 	protected string $base_path;
 
 	/**
 	 * Application path of the application.
-	 *
-	 * @var string
 	 */
 	protected string $app_path;
 
@@ -91,20 +87,22 @@ class Application extends Container implements \Mantle\Contracts\Application {
 
 	/**
 	 * Storage of the application's namespace.
-	 *
-	 * @var string
 	 */
 	protected string $namespace;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param string $base_path Base path to set.
-	 * @param string $root_url Root URL of the application.
+	 * @param string|null $base_path Base path to set.
+	 * @param string      $root_url Root URL of the application.
 	 */
-	public function __construct( string $base_path = '', string $root_url = null ) {
-		if ( empty( $base_path ) && defined( 'MANTLE_BASE_DIR' ) ) {
-			$base_path = \MANTLE_BASE_DIR;
+	public function __construct( ?string $base_path = null, string $root_url = null ) {
+		if ( empty( $base_path ) ) {
+			$base_path = match ( true ) {
+				isset( $_ENV['MANTLE_BASE_PATH'] ) => $_ENV['MANTLE_BASE_PATH'],
+				defined( 'MANTLE_BASE_DIR' ) => MANTLE_BASE_DIR,
+				default => '',
+			};
 		}
 
 		if ( ! $root_url ) {

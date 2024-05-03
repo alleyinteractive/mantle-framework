@@ -43,7 +43,7 @@ class Bootloader implements Contract {
 	 * @param Contracts\Application|null $app Application instance.
 	 */
 	public static function get_instance( ?Contracts\Application $app = null ): Bootloader {
-		if ( ! isset( static::$instance ) || ( $app && $app !== static::$instance->get_application() ) ) {
+		if ( ! isset( static::$instance ) || ( $app instanceof \Mantle\Contracts\Application && $app !== static::$instance->get_application() ) ) {
 			static::$instance = new static( $app );
 		}
 
@@ -79,12 +79,13 @@ class Bootloader implements Contract {
 	 * Constructor.
 	 *
 	 * @param Contracts\Application|null $app Application instance.
+	 * @param string|null                $base_path Base path for the application.
 	 */
-	public function __construct( protected ?Contracts\Application $app = null ) {
+	public function __construct( protected ?Contracts\Application $app = null, ?string $base_path = null ) {
 		static::set_instance( $this );
 
 		$this
-			->with_application( new Application() )
+			->with_application( new Application( $base_path ) )
 			->with_kernels()
 			->with_exception_handler();
 	}
@@ -107,7 +108,6 @@ class Bootloader implements Contract {
 	 * configuration after all application configuration has been loaded.
 	 *
 	 * @param array<string, mixed> $config Configuration to merge.
-	 * @return static
 	 */
 	public function with_config( array $config ): static {
 		Load_Configuration::merge( $config );
@@ -120,7 +120,6 @@ class Bootloader implements Contract {
 	 *
 	 * @param class-string<Contracts\Console\Kernel>|null $console Console kernel class.
 	 * @param class-string<Contracts\Http\Kernel>|null    $http    HTTP kernel class.
-	 * @return static
 	 */
 	public function with_kernels( string $console = null, string $http = null ): static {
 		if ( $console && ! in_array( Contracts\Console\Kernel::class, class_implements( $console ), true ) ) {
@@ -152,7 +151,6 @@ class Bootloader implements Contract {
 	 * Bind the application with a exception handler.
 	 *
 	 * @param class-string<Contracts\Exceptions\Handler>|null $handler Exception handler class.
-	 * @return static
 	 */
 	public function with_exception_handler( string $handler = null ): static {
 		if ( $handler && ! in_array( Contracts\Exceptions\Handler::class, class_implements( $handler ), true ) ) {
@@ -187,7 +185,6 @@ class Bootloader implements Contract {
 	 * @param string|null $web Web routes file.
 	 * @param string|null $rest_api REST API routes file.
 	 * @param bool|callable(\Mantle\Http\Request):bool|null $pass_through Pass requests through to WordPress (or a callback to determine if it should).
-	 * @return static
 	 */
 	public function with_routing(
 		?Closure $callback = null,
@@ -196,7 +193,7 @@ class Bootloader implements Contract {
 		bool|callable|null $pass_through = null,
 	): static {
 		$this->app->booted(
-			function ( Application $app ) use ( $callback, $web, $rest_api, $pass_through ) {
+			function ( Application $app ) use ( $callback, $web, $rest_api, $pass_through ): void {
 				$router = $app['router'];
 
 				if ( $callback ) {
@@ -280,26 +277,6 @@ class Bootloader implements Contract {
 	}
 
 	/**
-	 * Set the base path for the application.
-	 *
-	 * @param string|null $base_path Base path for the application.
-	 */
-	public function set_base_path( ?string $base_path = null ): static {
-		$this->app->set_base_path( $base_path );
-
-		return $this;
-	}
-
-	/**
-	 * Alias to `set_base_path()` method.
-	 *
-	 * @param string|null $base_path Base path for the application.
-	 */
-	public function with_base_path( ?string $base_path = null ): static {
-		return $this->set_base_path( $base_path );
-	}
-
-	/**
 	 * Boot the application in the console context.
 	 */
 	protected function boot_console(): void {
@@ -366,17 +343,16 @@ class Bootloader implements Contract {
 	}
 
 	/**
-	 * Get the calculated base path for the application.
+	 * Pass through any unknown methods to the application.
+	 *
+	 * Previously bootstrap/app.php would have return an application instance. To
+	 * preserve backwards compatibility, we need to pass through any unknown
+	 * methods to the application instance.
+	 *
+	 * @param string $method Method to call.
+	 * @param array  $args Arguments to pass to the method.
 	 */
-	public function get_base_path(): ?string {
-		if ( ! empty( $this->base_path ) ) {
-			return $this->base_path;
-		}
-
-		return match ( true ) {
-			! empty( $_ENV['MANTLE_BASE_PATH'] ) => $_ENV['MANTLE_BASE_PATH'],
-			defined( 'MANTLE_BASE_PATH' ) => constant( 'MANTLE_BASE_PATH' ),
-			default => dirname( __DIR__, 3 ),
-		};
+	public function __call( string $method, array $args ): mixed {
+		return $this->get_application()?->$method( ...$args );
 	}
 }
