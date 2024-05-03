@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.1.0 - ____-__-__
+
+### Changed
+
+- Overhauled the bootloader to be more flexible and allow for more
+  customization. Supports passing configuration, custom kernels, exception
+  handlers, etc. via the bootloader when configuring the application.
+- Ensure that framework configuration is properly merge into application
+  configuration when booting the application. This allows for more slimmer
+	configuration files in the application. Provider service providers will always
+	load without needing to be declared in the application configuration.
+
 ## v1.0.7 - 2024-04-29
 
 ### Added
