@@ -27,7 +27,6 @@ use Mantle\Support\Traits\Conditionable;
  * so choose.
  *
  * @todo Add support for console commands.
- * @todo Ensure only one app service provider is loaded.
  */
 class Bootloader implements Contract {
 	use Conditionable;
@@ -36,6 +35,13 @@ class Bootloader implements Contract {
 	 * Current instance of the manager.
 	 */
 	protected static ?Bootloader $instance;
+
+	/**
+	 * Create a new instance of the application.
+	 */
+	public static function create(): static {
+		return new static();
+	}
 
 	/**
 	 * Retrieve the instance of the manager.
