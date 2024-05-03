@@ -516,8 +516,6 @@ class Application extends Container implements \Mantle\Contracts\Application {
 
 	/**
 	 * Get the application namespace.
-	 *
-	 * @throws RuntimeException If the namespace cannot be determined.
 	 */
 	public function get_namespace(): string {
 		if ( ! empty( $this->namespace ) ) {
@@ -539,7 +537,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 		}
 
 		if ( empty( $this->namespace ) ) {
-			throw new RuntimeException( 'Unable to determine application namespace.' );
+			return 'App';
 		}
 
 		return $this->namespace;
