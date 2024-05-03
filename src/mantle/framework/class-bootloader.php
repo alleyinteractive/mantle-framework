@@ -38,11 +38,6 @@ class Bootloader implements Contract {
 	protected static ?Bootloader $instance;
 
 	/**
-	 * Application base path.
-	 */
-	protected ?string $base_path = null;
-
-	/**
 	 * Retrieve the instance of the manager.
 	 *
 	 * @param Contracts\Application|null $app Application instance.
@@ -89,7 +84,7 @@ class Bootloader implements Contract {
 		static::set_instance( $this );
 
 		$this
-			->with_application( new Application( $this->get_base_path() ) )
+			->with_application( new Application() )
 			->with_kernels()
 			->with_exception_handler();
 	}
@@ -243,13 +238,11 @@ class Bootloader implements Contract {
 	public function boot(): static {
 		$this->boot_application();
 
-		if ( $this->app->is_running_in_console_isolation() ) {
-			$this->boot_console();
-		} elseif ( $this->app->is_running_in_console() ) {
-			$this->boot_console_wp_cli();
-		} else {
-			$this->boot_http();
-		}
+		match ( true ) {
+			$this->app->is_running_in_console_isolation() => $this->boot_console(),
+			$this->app->is_running_in_console() => $this->boot_console_wp_cli(),
+			default => $this->boot_http(),
+		};
 
 		return $this;
 	}
@@ -292,7 +285,7 @@ class Bootloader implements Contract {
 	 * @param string|null $base_path Base path for the application.
 	 */
 	public function set_base_path( ?string $base_path = null ): static {
-		$this->base_path = $base_path;
+		$this->app->set_base_path( $base_path );
 
 		return $this;
 	}

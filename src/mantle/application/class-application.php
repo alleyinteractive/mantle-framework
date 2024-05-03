@@ -16,13 +16,16 @@ use RuntimeException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+use function Mantle\Support\Helpers\collect;
+use function Mantle\Support\Helpers\data_get;
 use function Mantle\Support\Helpers\str;
 
 /**
  * Mantle Application
  */
 class Application extends Container implements \Mantle\Contracts\Application {
-	use Concerns\Loads_Base_Configuration,
+	use Concerns\Application_Callbacks,
+		Concerns\Loads_Base_Configuration,
 		Concerns\Loads_Environment_Variables,
 		Concerns\Loads_Facades,
 		Concerns\Manages_Service_Providers;
@@ -32,14 +35,14 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 *
 	 * @var string
 	 */
-	protected $base_path;
+	protected string $base_path;
 
 	/**
 	 * Application path of the application.
 	 *
 	 * @var string
 	 */
-	protected $app_path;
+	protected string $app_path;
 
 	/**
 	 * Bootstrap path of the application.
@@ -67,27 +70,6 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	protected bool $booted = false;
 
 	/**
-	 * The array of booting callbacks.
-	 *
-	 * @var callable[]
-	 */
-	protected array $booting_callbacks = [];
-
-	/**
-	 * The array of booted callbacks.
-	 *
-	 * @var callable[]
-	 */
-	protected array $booted_callbacks = [];
-
-	/**
-	 * All of the registered service providers.
-	 *
-	 * @var \Mantle\Support\Service_Provider[]
-	 */
-	protected array $terminating_callbacks = [];
-
-	/**
 	 * Environment file name.
 	 */
 	protected string $environment_file = '.env';
@@ -106,6 +88,13 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 * Indicates if the application is running in the console.
 	 */
 	protected ?bool $is_running_in_console = null;
+
+	/**
+	 * Storage of the application's namespace.
+	 *
+	 * @var string
+	 */
+	protected string $namespace;
 
 	/**
 	 * Constructor.
@@ -172,9 +161,11 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 * @param string $path Path to append, optional.
 	 */
 	public function get_app_path( string $path = '' ): string {
-		$app_path = $this->app_path ?: $this->get_base_path( 'app' );
+		if ( ! isset( $this->app_path ) ) {
+			$this->app_path = $this->get_base_path( 'app' );
+		}
 
-		return $app_path . ( $path ? DIRECTORY_SEPARATOR . $path : $path );
+		return $this->app_path . ( $path ? DIRECTORY_SEPARATOR . $path : $path );
 	}
 
 	/**
@@ -415,9 +406,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	public function flush(): void {
 		parent::flush();
 
-		$this->booted_callbacks  = [];
-		$this->booting_callbacks = [];
-		$this->service_providers = [];
+		$this->flush_callbacks();
 	}
 
 	/**
@@ -509,23 +498,53 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	/**
 	 * Check if the Application's Environment matches a list.
 	 *
-	 * @param string|array ...$environments Environments to check.
+	 * @param string ...$environments Environments to check.
 	 */
 	public function is_environment( ...$environments ): bool {
 		return in_array( $this->environment(), $environments, true );
 	}
 
 	/**
+	 * Set the environment for the application.
+	 *
+	 * @param string $environment Environment to set.
+	 * @return static
+	 */
+	public function set_environment( string $environment ) {
+		$this->environment = $environment;
+
+		return $this;
+	}
+
+	/**
 	 * Get the application namespace.
 	 *
-	 * @throws RuntimeException If the config is not set yet.
+	 * @throws RuntimeException If the namespace cannot be determined.
 	 */
 	public function get_namespace(): string {
-		if ( ! isset( $this['config'] ) ) {
-			throw new RuntimeException( 'Configurations not set yet.' );
+		if ( ! empty( $this->namespace ) ) {
+			return $this->namespace;
 		}
 
-		return (string) $this['config']->get( 'app.namespace', 'App' );
+		if ( isset( $this['config'] ) ) {
+			$this->namespace = (string) $this['config']->get( 'app.namespace' );
+		}
+
+		// If the namespace is not set, attempt to infer it from the composer.json file.
+		if ( empty( $this->namespace ) && file_exists(  $this->get_base_path( 'composer.json' ) ) ) {
+			$composer = json_decode( file_get_contents( $this->get_base_path( 'composer.json' ) ), true );
+			$autoload = data_get( $composer, 'extra.wordpress-autoloader.autoload', [] );
+
+			if ( ! empty( $autoload ) ) {
+				$this->namespace = str( collect( $autoload )->keys()->first() )->rtrim( '\\' )->value();
+			}
+		}
+
+		if ( empty( $this->namespace ) ) {
+			throw new RuntimeException( 'Unable to determine application namespace.' );
+		}
+
+		return $this->namespace;
 	}
 
 	/**
@@ -560,17 +579,6 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	}
 
 	/**
-	 * Set the environment for the application.
-	 *
-	 * @param string $environment Environment to set.
-	 * @return static
-	 */
-	public function set_environment( string $environment ) {
-		$this->environment = $environment;
-		return $this;
-	}
-
-	/**
 	 * Throw an HttpException with the given data.
 	 *
 	 * @param int    $code HTTP status code.
@@ -589,55 +597,9 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	}
 
 	/**
-	 * Register a new boot listener.
-	 *
-	 * @param callable $callback Callback for the listener.
-	 */
-	public function booting( callable $callback ): static {
-		$this->booting_callbacks[] = $callback;
-		return $this;
-	}
-
-	/**
-	 * Register a new "booted" listener.
-	 *
-	 * @param callable $callback Callback for the listener.
-	 */
-	public function booted( callable $callback ): static {
-		$this->booted_callbacks[] = $callback;
-
-		if ( $this->is_booted() ) {
-			$this->fire_app_callbacks( [ $callback ] );
-		}
-
-		return $this;
-	}
-
-	/**
-	 * Register a new terminating callback.
-	 *
-	 * @param callable $callback Callback for the listener.
-	 */
-	public function terminating( callable $callback ): static {
-		$this->terminating_callbacks[] = $callback;
-		return $this;
-	}
-
-	/**
 	 * Terminate the application.
 	 */
 	public function terminate(): void {
 		$this->fire_app_callbacks( $this->terminating_callbacks );
-	}
-
-	/**
-	 * Call the booting callbacks for the application.
-	 *
-	 * @param callable[] $callbacks Callbacks to fire.
-	 */
-	protected function fire_app_callbacks( array $callbacks ) {
-		foreach ( $callbacks as $callback ) {
-			$callback( $this );
-		}
 	}
 }
