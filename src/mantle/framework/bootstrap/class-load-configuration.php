@@ -20,7 +20,7 @@ use function Mantle\Support\Helpers\collect;
  */
 class Load_Configuration {
 	/**
-	 * Additional service configuration to register from the bootloader.
+	 * Additional configuration to register from the bootloader.
 	 *
 	 * @var array<string, array<mixed>>
 	 */
@@ -31,8 +31,8 @@ class Load_Configuration {
 	 *
 	 * @param array<string, array<mixed>> $config Configuration to merge.
 	 */
-	public static function merge( array $providers ): void {
-		static::$merge = array_merge( static::$merge, $providers );
+	public static function merge( array $config ): void {
+		static::$merge = array_merge( static::$merge, $config );
 	}
 
 	/**
