@@ -27,9 +27,9 @@ class Load_Configuration {
 	protected static $merge = [];
 
 	/**
-	 * Merge additional service providers to the list of providers.
+	 * Merge additional configuration.
 	 *
-	 * @param array<class-string<\Mantle\Support\Service_Provider>> $providers List of service providers.
+	 * @param array<string, array<mixed>> $config Configuration to merge.
 	 */
 	public static function merge( array $providers ): void {
 		static::$merge = array_merge( static::$merge, $providers );
