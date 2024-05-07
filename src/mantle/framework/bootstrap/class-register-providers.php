@@ -50,7 +50,9 @@ class Register_Providers implements Bootstrapable_Contract {
 		$this->merge_additional_providers( $app );
 		$this->purge_framework_providers( $app );
 
-		$app->register_configured_providers();
+		if ( method_exists( $app, 'register_configured_providers' ) ) {
+			$app->register_configured_providers();
+		}
 	}
 
 	/**
