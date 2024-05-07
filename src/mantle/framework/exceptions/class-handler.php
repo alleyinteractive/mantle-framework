@@ -78,11 +78,10 @@ class Handler implements Contract {
 	/**
 	 * Set the log level for the given exception type.
 	 *
-	 * @param  class-string<\Throwable>  $type
-	 * @param  \Psr\Log\LogLevel::*  $level
-	 * @return $this
+	 * @param  class-string<\Throwable> $type
+	 * @param  \Psr\Log\LogLevel::*     $level
 	 */
-	public function level( string $type, string $level) {
+	public function level( string $type, string $level ): static {
 		$this->levels[ $type ] = $level;
 
 		return $this;
