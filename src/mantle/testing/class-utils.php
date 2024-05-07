@@ -459,7 +459,7 @@ class Utils {
 	 * Ensure that Composer is loaded for the current environment.
 	 */
 	public static function ensure_composer_loaded() {
-		if ( class_exists( 'Composer\Autoload\ClassLoader' ) ) {
+		if ( class_exists( \Composer\Autoload\ClassLoader::class ) && class_exists( Str::class ) ) {
 			return;
 		}
 
