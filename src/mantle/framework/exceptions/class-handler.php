@@ -213,8 +213,11 @@ class Handler implements Contract {
 	 * @param  \Throwable           $e Exception thrown.
 	 */
 	protected function prepare_http_response( $request, Throwable $e ): Response {
-		if ( ! $e instanceof HttpException ) {
-			$e = new HttpException( 500, $e->getMessage() );
+		if ( ! $this->is_http_exception( $e ) && config( 'app.debug' ) ) {
+			return $this->to_mantle_response(
+				$this->convert_exception_to_response( $e ),
+				$e,
+			);
 		}
 
 		return $this->to_mantle_response(
@@ -227,7 +230,25 @@ class Handler implements Contract {
 	}
 
 	/**
-	 * Render the given HttpException with a view.
+	 * Create a response for the given exception.
+	 *
+	 * @param Throwable $e Exception thrown.
+	 * @return Response
+	 */
+	protected function convert_exception_to_response( Throwable $e ): Response {
+		if ( $e instanceof HttpException ) {
+			return new Response(
+				$this->render_http_exception( $e ),
+				$e->getStatusCode(),
+				$e->getHeaders(),
+			);
+		}
+
+		return new Response( $this->render_http_exception( $e ), 500, [] );
+	}
+
+	/**
+	 * Render the given exception with a view.
 	 *
 	 * Will attempt to load an error relative to the HTTP code. For example, a 500
 	 * error will load `/views/error-500.php` that will fallback to '/views/error.php'
@@ -235,10 +256,14 @@ class Handler implements Contract {
 	 *
 	 * This is not used when debugging is enabled.
 	 *
-	 * @param  HttpException $e Exception thrown.
+	 * @param  Throwable $e Exception thrown.
 	 * @todo Check if the view exists.
 	 */
-	protected function render_http_exception( HttpException $e ): Response {
+	protected function render_http_exception( Throwable $e ): Response {
+		if ( config( 'app.debug' ) ) {
+			return $this->render_symfony_http_exception( $e );
+		}
+
 		global $wp_query;
 
 		// Calling a view this early doesn't work well for WordPress.
@@ -246,20 +271,20 @@ class Handler implements Contract {
 			$wp_query = new \WP_Query(); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 		}
 
-		$view = $this->get_http_exception_view( $e );
-
 		try {
+			$view = $this->get_http_exception_view( $e );
+
 			return response()->view(
 				$view[0],
 				$view[1],
 				[
-					'code'      => $e->getStatusCode(),
+					'code'      => $e instanceof HttpExceptionInterface ? $e->getStatusCode() : 500,
 					'exception' => $e,
 				],
-				$e->getStatusCode(),
+				$e instanceof HttpExceptionInterface ? $e->getStatusCode() : 500,
 			);
 		} catch ( Throwable ) {
-			// If the view fails to load, render the exception with Symfony.
+			// If there is an error rendering the view, fall back to the Symfony error renderer.
 			return $this->render_symfony_http_exception( $e );
 		}
 	}
@@ -267,23 +292,33 @@ class Handler implements Contract {
 	/**
 	 * Render the error with Symfony.
 	 *
-	 * @param HttpException $e Exception thrown.
+	 * @param Throwable $e Exception thrown.
 	 * @return Response
 	 */
-	protected function render_symfony_http_exception( HttpException $e ): Response {
-		$renderer = new HtmlErrorRenderer( config( 'app.debug' ) );
+	protected function render_symfony_http_exception( Throwable $e ): Response {
+		$renderer = ( new HtmlErrorRenderer( config( 'app.debug' ) ) )->render( $e );
 
-		return Route::ensure_response( $renderer->render( $e )->getAsString() );
+		// Change the trace to skip a few frames
+		// $trace = collect( $e->getTrace() );
+
+		// //
+		// dd($trace);
+
+		return Route::ensure_response( $renderer->getAsString() );
 	}
 
 	/**
 	 * Get the view used to render HTTP exceptions.
 	 *
-	 * @param \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface $e Exception thrown.
+	 * @param Throwable $e Exception thrown.
 	 * @return array{0: string, 1: string}
 	 */
-	protected function get_http_exception_view( HttpExceptionInterface $e ) {
-		return [ 'error/error', (string) $e->getStatusCode() ];
+	protected function get_http_exception_view( Throwable $e ) {
+		if ( $e instanceof HttpExceptionInterface ) {
+			return [ 'error/error', (string) $e->getStatusCode() ];
+		};
+
+		return [ 'error/error', '500' ];
 	}
 
 	/**
@@ -334,7 +369,20 @@ class Handler implements Contract {
 				fn ( $trace) => Arr::except( $trace, [ 'args' ] )
 			)->all(),
 		] : [
-			'message' => $e instanceof HttpException ? $e->getMessage() : __( 'Server Error', 'mantle' ),
+			'message' => $this->is_http_exception( $e ) ? $e->getMessage() : __( 'Server Error', 'mantle' ),
 		];
+	}
+
+	/**
+	 * Determine if the given exception is an HTTP exception.
+	 *
+	 * @template TThrowable of Throwable
+	 *
+	 * @param Throwable $e Exception thrown.
+	 * @phpstan-param TThrowable $e
+	 * @phpstan-return (TThrowable is HttpException ? true : false)
+	 */
+	protected function is_http_exception( Throwable $e ): bool {
+		return $e instanceof HttpException;
 	}
 }
