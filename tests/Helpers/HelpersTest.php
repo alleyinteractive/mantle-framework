@@ -8,8 +8,10 @@ use Mantle\Facade\Facade;
 use Mantle\Application\Application;
 use Mantle\Log\Log_Manager;
 use Monolog\Handler\TestHandler;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
+use function Mantle\Support\Helpers\classname;
 use function Mantle\Support\Helpers\info;
 use function Mantle\Support\Helpers\is_hosted_env;
 use function Mantle\Support\Helpers\is_local_env;
@@ -78,5 +80,56 @@ class HelpersTest extends TestCase {
 
 		$this->assertTrue( $this->handler->hasRecord( 'This is a helper debug message.', 'debug' ) );
 		$this->assertTrue( $this->handler->hasRecord( 'This is a warning.', 'warning' ) );
+	}
+
+	#[DataProvider('classname_provider')]
+	public function test_classname( $input, string $expected ) {
+		$this->assertEquals( $expected, classname( $input ) );
+	}
+
+	public static function classname_provider() {
+		return [
+			'single' => ['foo', 'foo'],
+			'single with space' => ['foo ', 'foo'],
+			'multiple' => [['foo', 'bar'], 'foo bar'],
+			'multiple with non-string' => [[1, 'foo', true], '1 foo true'],
+			'conditional' => [
+				[
+					[
+						'conditional' => true,
+					],
+					[
+						'falsey' => false,
+					],
+				],
+				'conditional',
+			],
+			'conditional with multiple' => [
+				[
+					[
+						'conditional' => true,
+					],
+					[
+						'second' => 'conditional',
+					],
+					[
+						'third' => false,
+					],
+				],
+				'conditional second',
+			],
+			'conditional with non-conditionals' => [
+				[
+					[
+						'conditional' => true,
+					],
+					[
+						'falsey' => false,
+					],
+					'foo',
+				],
+				'conditional foo',
+			],
+		];
 	}
 }
