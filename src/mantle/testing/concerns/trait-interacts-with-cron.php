@@ -159,6 +159,22 @@ trait Interacts_With_Cron {
 	}
 
 	/**
+	 * Assert the count of the events in the cron queue.
+	 *
+	 * Supports passing a hook name to compare against the number of cron events
+	 * scheduled against that cron hook. Does not support queue jobs.
+	 *
+	 * @param string|class-string $action Cron hook name.
+	 */
+	public function assertCronCount( string $action, int $expected_count ): void {
+		PHPUnit::assertEquals(
+			$expected_count,
+			collect( static::get_cron_events() )->where( 'hook', $action )->count(),
+			"Cron action count is not as expected: [$action]",
+		);
+	}
+
+	/**
 	 * Dispatch the cron.
 	 *
 	 * @param string $action Optionally run a specific cron action, otherwise run
