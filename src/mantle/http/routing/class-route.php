@@ -210,9 +210,9 @@ class Route extends Symfony_Route {
 	/**
 	 * Exclude middleware from the route.
 	 *
-	 * @param  array|string|null $middleware Middleware to exclude, optional.
+	 * @param  array|string $middleware Middleware to exclude, optional.
 	 */
-	public function without_middleware( $middleware = null ): static {
+	public function without_middleware( array|string $middleware = '*' ): static {
 		$this->action['excluded_middleware'] = array_merge(
 			(array) ( $this->action['excluded_middleware'] ?? [] ),
 			Arr::wrap( $middleware ),
