@@ -342,5 +342,7 @@ class Post_Query_Builder extends Builder {
 	 */
 	public function ddSql(): never {
 		$this->dumpSql( true )->get();
+
+		die( 1 );
 	}
 }
