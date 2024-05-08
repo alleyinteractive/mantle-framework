@@ -13,8 +13,8 @@ use Mantle\Queue\Queue_Fake;
 /**
  * Queue Facade
  *
- * @method static mixed dispatch(mixed $job)
- * @method static mixed dispatch_now(mixed $job)
+ * @method static void dispatch(mixed $job)
+ * @method static void dispatch_now(mixed $job)
  *
  * @see \Mantle\Queue\Dispatcher
  */
