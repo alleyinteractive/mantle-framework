@@ -165,6 +165,7 @@ trait Interacts_With_Cron {
 	 * scheduled against that cron hook. Does not support queue jobs.
 	 *
 	 * @param string|class-string $action Cron hook name.
+	 * @param int                 $expected_count Expected count of cron events.
 	 */
 	public function assertCronCount( string $action, int $expected_count ): void {
 		PHPUnit::assertEquals(
