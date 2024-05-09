@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Added a `classname`/`the_classname` helper to generate complex class names.
+
 ## Fixed
 
 - Fixed issue with command jobs not working properly.
