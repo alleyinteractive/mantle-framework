@@ -500,5 +500,7 @@ class Utils {
 
 		static::error( '🚨 Error during test run:', 'Shutdown' );
 		static::code( $error );
+
+		exit( 1 );
 	}
 }
