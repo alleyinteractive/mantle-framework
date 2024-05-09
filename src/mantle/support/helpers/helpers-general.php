@@ -385,7 +385,10 @@ function classname( ...$args ): string {
 				$classes[] = classname( ...$arg );
 			} else {
 				foreach ( $arg as $key => $value ) {
-					if ( $value ) {
+					// If the key is numeric, it's a value. Otherwise, check if it's truthy.
+					if ( is_int( $key ) ) {
+						$classes[] = $value;
+					} elseif ( $value ) {
 						$classes[] = $key;
 					}
 				}

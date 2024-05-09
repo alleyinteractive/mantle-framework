@@ -88,14 +88,40 @@ class HelpersTest extends TestCase {
 	#[DataProvider('classname_provider')]
 	public function test_classname( $input, string $expected ) {
 		$this->assertEquals( $expected, classname( $input ) );
+		$this->assertEquals( $expected, classname( ...$input ) );
 	}
 
 	public static function classname_provider() {
 		return [
-			'single' => ['foo', 'foo'],
-			'single with space' => ['foo ', 'foo'],
-			'multiple' => [['foo', 'bar'], 'foo bar'],
-			'multiple with non-string' => [[1, 'foo', true], '1 foo true'],
+			'single' => [
+				[
+					'foo',
+				],
+				'foo',
+			],
+			'single with space' => [
+				[
+					'foo ',
+				],
+				'foo',
+			],
+			'multiple' => [
+				[
+					'foo',
+					'bar',
+				],
+				'foo bar',
+			],
+			'multiple with non-string' => [
+				[
+					1,
+					'foo',
+					'bar',
+					true,
+					false,
+				],
+				'1 foo bar true false',
+			],
 			'conditional' => [
 				[
 					[
@@ -132,6 +158,19 @@ class HelpersTest extends TestCase {
 					'foo',
 				],
 				'conditional foo',
+			],
+			'conditional mixed with mixed in non-conditionals' => [
+				[
+					[
+						'non-conditional',
+						'conditional' => true,
+					],
+					'foo',
+					[
+						'falsey' => false,
+					],
+				],
+				'non-conditional conditional foo',
 			],
 		];
 	}
