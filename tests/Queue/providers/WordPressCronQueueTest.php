@@ -302,7 +302,6 @@ class WordPressCronQueueTest extends Framework_Test_Case {
 		// Create a valid queue job that shouldn't be deleted.
 		Example_Job::dispatch();
 
-
 		// Perform the scheduled cleanup manually.
 		$this->command( 'mantle queue:cleanup' );
 
@@ -316,6 +315,14 @@ class WordPressCronQueueTest extends Framework_Test_Case {
 		] );
 
 		$this->assertInCronQueue( Example_Job::class );
+	}
+
+	public function test_cron_event_count_assertions() {
+		for ( $i = 0; $i < 5; $i++ ) {
+			wp_schedule_single_event( time() + $i, 'example_hook', [ $i ] );
+		}
+
+		$this->assertCronCount( 'example_hook', 5 );
 	}
 }
 
