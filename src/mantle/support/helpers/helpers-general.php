@@ -368,6 +368,53 @@ function with( $value, callable $callback = null ) {
 }
 
 /**
+ * Manage the concatenation of class names based on conditions.
+ *
+ * A port of the classnames npm package.
+ *
+ * @param mixed ...$args Class names to concatenate.
+ */
+function classname( ...$args ): string {
+	$classes = [];
+
+	foreach ( $args as $arg ) {
+		if ( is_string( $arg ) ) {
+			$classes[] = $arg;
+		} elseif ( is_array( $arg ) ) {
+			if ( array_is_list( $arg ) ) {
+				$classes[] = classname( ...$arg );
+			} else {
+				foreach ( $arg as $key => $value ) {
+					// If the key is numeric, it's a value. Otherwise, check if it's truthy.
+					if ( is_int( $key ) ) {
+						$classes[] = $value;
+					} elseif ( $value ) {
+						$classes[] = $key;
+					}
+				}
+			}
+		} elseif ( is_object( $arg ) ) {
+			$classes[] = classname( ...class_uses_recursive( $arg ) );
+		} elseif ( is_int( $arg ) ) {
+			$classes[] = (string) $arg;
+		} elseif ( is_bool( $arg ) ) {
+			$classes[] = $arg ? 'true' : 'false';
+		}
+	}
+
+	return collect( $classes )->filter()->implode_str( ' ' )->trim();
+}
+
+/**
+ * Display the class names based on conditions.
+ *
+ * @param mixed ...$args Class names to concatenate.
+ */
+function the_classnames( ...$args ): void {
+	echo esc_attr( classname( ...$args ) );
+}
+
+/**
  * Add a WordPress action with type-hint support.
  *
  * @param string   $action Action to listen to.

@@ -7,8 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-### Fixed
+### Added
 
+- Added a `classname`/`the_classname` helper to generate complex class names.
+
+## Fixed
+
+- Fixed issue with command jobs not working properly.
 - Ensure that unit tests fail when a project's installation script fails.
 
 ## v1.0.7 - 2024-04-29
