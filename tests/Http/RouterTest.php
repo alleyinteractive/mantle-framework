@@ -314,6 +314,28 @@ class RouterTest extends Framework_Test_Case {
 		$this->assertTrue( $_SERVER['closure_middleware'] );
 	}
 
+	public function test_without_middleware_all() {
+		$_SERVER['__middleware'] = $_SERVER['closure_middleware'] = null;
+
+		$router = $this->get_router();
+
+		$router->middleware( Testable_Middleware_Router::class )->group(
+			fn () => $router
+				->get( '/example-route-with-middleware-without', fn () => 'The response' )
+				->middleware( function ( $request, $next ) {
+					$_SERVER['closure_middleware'] = true;
+
+					return $next( $request );
+				} )
+				->without_middleware()
+		);
+
+		$this->get( '/example-route-with-middleware-without' )->assertContent( 'The response' );
+
+		$this->assertEmpty( $_SERVER['__middleware'] );
+		$this->assertEmpty( $_SERVER['closure_middleware'] );
+	}
+
 	public function test_route_prefix() {
 		$router = $this->get_router();
 
