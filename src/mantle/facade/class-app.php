@@ -42,9 +42,9 @@ namespace Mantle\Facade;
  * @method static bool is_running_in_console_isolation()
  * @method static \Mantle\Application\Application set_environment(string $environment)
  * @method static void abort(int $code, string $message = '', array $headers = [])
- * @method static \Mantle\Application\Application booting(callable $callback)
- * @method static \Mantle\Application\Application booted(callable $callback)
- * @method static \Mantle\Application\Application terminating(callable $callback)
+ * @method static \static booting(callable $callback)
+ * @method static \static booted(callable $callback)
+ * @method static \static terminating(callable $callback)
  * @method static void terminate()
  * @method static bool bound(string $abstract)
  * @method static bool has(string $id)
@@ -86,7 +86,7 @@ namespace Mantle\Facade;
  * @method static void register_configured_providers()
  * @method static \Mantle\Support\Service_Provider|null get_provider(string $name)
  * @method static \Mantle\Support\Service_Provider[] get_providers()
- * @method static \Mantle\Application\Application register(\Mantle\Support\Service_Provider|string $provider)
+ * @method static \static register(\Mantle\Support\Service_Provider|string $provider)
  *
  * @see \Mantle\Application\Application
  */
