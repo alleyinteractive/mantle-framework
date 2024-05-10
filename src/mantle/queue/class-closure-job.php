@@ -38,6 +38,10 @@ class Closure_Job implements Can_Queue {
 	 * @param Closure $closure Closure to wrap.
 	 */
 	public static function create( Closure $closure ): Closure_Job {
+		// Check if the closure is bound to WP_CLI\Runner. If so, unbind it because
+		// this will cause a serialization error.
+		$reflectionClosure = new \ReflectionFunction($closure);
+    dd($reflectionClosure->getClosureScopeClass()->getName());
 		return new self( new SerializableClosure( $closure ) );
 	}
 

@@ -109,6 +109,7 @@ class Provider implements Provider_Contract {
 			return true;
 		}
 
+		dd(serialize($job));
 		if ( $job instanceof SerializableClosure ) {
 			$job = serialize( $job ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
 		}
