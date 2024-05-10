@@ -55,6 +55,8 @@ class Installation_Manager {
 
 		if ( Utils::env_bool( 'MANTLE_INSTALL_OBJECT_CACHE', false ) ) {
 			$this->with_object_cache();
+		} elseif ( $object_cache = Utils::env( 'MANTLE_INSTALL_OBJECT_CACHE', false ) ) {
+			$this->with_object_cache( $object_cache );
 		}
 
 		if ( Utils::env_bool( 'MANTLE_USE_SQLITE', false ) ) {

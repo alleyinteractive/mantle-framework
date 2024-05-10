@@ -77,7 +77,7 @@ trait Rsync_Installation {
 				'.phpunit.result.cache',
 				'node_modules',
 				'phpstan.neon',
-			] 
+			]
 		);
 	}
 
@@ -173,23 +173,41 @@ trait Rsync_Installation {
 	 * Will only be applied if the codebase is not already within a WordPress and
 	 * is being rsync-ed to one.
 	 *
-	 * @param bool $install Install the object cache drop-in into the codebase.
+	 * @param bool|string $install The object cache provider to install (redis/memcached)
+	 *                             or true to install the default Memcached object cache (legacy).
 	 */
-	public function with_object_cache( bool $install = true ): static {
+	public function with_object_cache( bool|string $install = true ): static {
 		if ( $this->is_within_wordpress_install() ) {
 			return $this;
 		}
 
-		// Check if Memcached is installed.
-		if ( ! class_exists( \Memcached::class ) && ! Utils::env( 'MANTLE_REQUIRE_OBJECT_CACHE', false ) ) {
-			Utils::error( 'Memcached is not installed. Cannot install object cache. Skipping...' );
+		// Allow object cache to be disabled.
+		if ( ! $install ) {
+			putenv( 'MANTLE_INSTALL_OBJECT_CACHE=' );
+
+			return $this;
+		} elseif ( true === $install ) {
+			$install = 'memcached';
+		}
+
+		if ( ! in_array( $install, [ 'redis', 'memcached' ], true ) ) {
+			Utils::error( 'Invalid object cache provider. Must be either "redis" or "memcached". Skipping...' );
 
 			return $this;
 		}
 
+		if ( 'memcached' === $install ) {
+			// Check if Memcached is installed before proceeding.
+			if ( ! class_exists( \Memcached::class ) && ! Utils::env( 'MANTLE_REQUIRE_OBJECT_CACHE', false ) ) {
+				Utils::error( 'Memcached is not installed. Cannot install object cache. Skipping...' );
+
+				return $this;
+			}
+		}
+
 		$this->add_exclusion( 'object-cache.php' );
 
-		putenv( 'MANTLE_INSTALL_OBJECT_CACHE=' . ( $install ? '1' : '0' ) );
+		putenv( 'MANTLE_INSTALL_OBJECT_CACHE=' . $install );
 
 		return $this;
 	}

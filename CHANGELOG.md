@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added a `classname`/`the_classname` helper to generate complex class names.
+- Added support for installing the Redis `object-cache.php` drop-in during
+  testing with `with_object_cache()`.
 
 ## Fixed
 
