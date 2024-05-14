@@ -19,7 +19,8 @@ trait With_Meta {
 	/**
 	 * Create a new factory instance to create posts with a set of meta.
 	 *
-	 * @param array<string, mixed> $meta Meta to assign to the post.
+	 * @param array<string, mixed>|string $meta Meta to assign to the post.
+	 * @param mixed                       $value Optional. Value to assign to the meta key.
 	 * @return static
 	 */
 	public function with_meta( array|string $meta, mixed $value = '' ) {
