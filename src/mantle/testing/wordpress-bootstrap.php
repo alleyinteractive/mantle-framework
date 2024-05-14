@@ -87,8 +87,12 @@ if ( is_readable( $config_file_path ) ) {
 }
 
 // Attempt to load the vip-config.php file if it exists to play nicely with VIP Go.
-if ( Utils::env_bool( 'MANTLE_LOAD_VIP_CONFIG', true ) && file_exists( ABSPATH . '/wp-content/vip-config/vip-config.php' ) ) {
-	require_once ABSPATH . '/wp-content/vip-config/vip-config.php';
+if ( Utils::env_bool( 'MANTLE_LOAD_VIP_CONFIG', true ) ) {
+	if ( file_exists( ABSPATH . '/wp-content/vip-config/vip-config.php' ) ) {
+		require_once( ABSPATH . '/wp-content/vip-config/vip-config.php' );
+	} elseif ( file_exists( ABSPATH . '/vip-config/vip-config.php' ) ) {
+		require_once( ABSPATH . '/vip-config/vip-config.php' );
+	}
 }
 
 Utils::setup_configuration();
