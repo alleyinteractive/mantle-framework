@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Changed
 
 - Load the `wp-content/vip-config/vip-config.php` file if it exists during
-	testing.
+  testing to integrate better with VIP Go projects.
 
 ## v1.0.7 - 2024-04-29
 
