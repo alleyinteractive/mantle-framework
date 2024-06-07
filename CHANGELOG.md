@@ -19,6 +19,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ensure that unit tests fail when a project's installation script fails.
 - Fix anonymous queue jobs from WP-CLI failing to run.
 
+## Changed
+
+- Load the `wp-content/vip-config/vip-config.php` file if it exists during
+  testing to integrate better with VIP Go projects.
+
 ## v1.0.7 - 2024-04-29
 
 ### Added
