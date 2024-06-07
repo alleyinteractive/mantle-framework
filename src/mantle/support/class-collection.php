@@ -593,6 +593,16 @@ class Collection implements ArrayAccess, Enumerable {
 	}
 
 	/**
+	 * Concatenate values of a given key as a string and returns a stringable class.
+	 *
+	 * @param callable|string|null $value
+	 * @param string|null          $glue
+	 */
+	public function implode_str( $value, $glue = null ): Stringable {
+		return new Stringable( $this->implode( $value, $glue ) );
+	}
+
+	/**
 	 * Intersect the collection with the given items.
 	 *
 	 * @param \Mantle\Contracts\Support\Arrayable<TKey, TValue>|iterable<TKey, TValue> $items

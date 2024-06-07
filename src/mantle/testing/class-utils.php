@@ -292,8 +292,20 @@ class Utils {
 	 */
 	public static function install_wordpress( string $directory ): void {
 		$install_vip_mu_plugins = static::env_bool( 'MANTLE_INSTALL_VIP_MU_PLUGINS', false );
-		$install_object_cache   = static::env_bool( 'MANTLE_INSTALL_OBJECT_CACHE', false );
 		$use_sqlite_db          = static::env_bool( 'MANTLE_USE_SQLITE', false );
+
+		// Handle the legacy values for MANTLE_INSTALL_OBJECT_CACHE.
+		if ( static::env_bool( 'MANTLE_INSTALL_OBJECT_CACHE', false ) ) {
+			$install_object_cache = 'memcached';
+		} else {
+			$install_object_cache = static::env( 'MANTLE_INSTALL_OBJECT_CACHE', false );
+
+			if ( $install_object_cache && ! in_array( $install_object_cache, [ 'memcached', 'redis' ], true ) ) {
+				static::error( '🚨 Invalid value for MANTLE_INSTALL_OBJECT_CACHE (' . $install_object_cache . '). Ignoring...' );
+
+				$install_object_cache = false;
+			}
+		}
 
 		$branch = static::env( 'MANTLE_CI_BRANCH', 'HEAD' );
 
@@ -334,7 +346,7 @@ class Utils {
 					static::shell_safe( static::env( 'WP_VERSION', 'latest' ) ),
 					static::shell_safe( static::env( 'WP_SKIP_DB_CREATE', 'false' ) ),
 					static::shell_safe( $install_vip_mu_plugins ? 'true' : 'false' ),
-					static::shell_safe( $install_object_cache ? 'true' : 'false' ),
+					static::shell_safe( $install_object_cache ),
 				]
 			)->implode( ' ' ),
 		);
@@ -500,5 +512,7 @@ class Utils {
 
 		static::error( '🚨 Error during test run:', 'Shutdown' );
 		static::code( $error );
+
+		exit( 1 );
 	}
 }

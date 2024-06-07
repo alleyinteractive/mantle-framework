@@ -24,7 +24,7 @@ use Mantle\Http_Client\Factory;
  * @method static \Mantle\Http_Client\Pending_Request|string method(string $method = null)
  * @method static \Mantle\Http_Client\Pending_Request with_body(string $content, string $content_type)
  * @method static mixed body()
- * @method static \Mantle\Http_Client\Pending_Request with_options(array $options, bool $merge = true)
+ * @method static \static with_options(array $options, bool $merge = true)
  * @method static \Mantle\Http_Client\Pending_Request body_format(string $format)
  * @method static \Mantle\Http_Client\Pending_Request content_type(string $content_type)
  * @method static \Mantle\Http_Client\Pending_Request accept_json()

@@ -19,6 +19,7 @@ use Mantle\Support\Arr;
 use Mantle\Support\Str;
 use ReflectionFunction;
 use Mantle\Http\Response;
+use Mantle\Http\Routing\Middleware\Wrap_Template;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Route as Symfony_Route;
 use Symfony\Component\HttpFoundation\Response as Symfony_Response;
@@ -210,15 +211,22 @@ class Route extends Symfony_Route {
 	/**
 	 * Exclude middleware from the route.
 	 *
-	 * @param  array|string|null $middleware Middleware to exclude, optional.
+	 * @param  array|string $middleware Middleware to exclude, optional.
 	 */
-	public function without_middleware( $middleware = null ): static {
+	public function without_middleware( array|string $middleware = '*' ): static {
 		$this->action['excluded_middleware'] = array_merge(
 			(array) ( $this->action['excluded_middleware'] ?? [] ),
 			Arr::wrap( $middleware ),
 		);
 
 		return $this;
+	}
+
+	/**
+	 * Exclude the wrap template middleware from the route.
+	 */
+	public function without_wrap_template(): static {
+		return $this->without_middleware( Wrap_Template::class );
 	}
 
 	/**

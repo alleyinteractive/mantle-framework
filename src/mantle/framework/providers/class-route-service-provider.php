@@ -13,9 +13,30 @@ use Mantle\Support\Service_Provider;
 /**
  * Route Service Provider
  *
- * @deprecated No longer needed in Mantle 1.1.0 but kept around for backwards compatibility. Remove in Mantle 2.0.0.
+ * @deprecated No longer needed in Mantle >= 1.1 but kept around for backwards compatibility. Will be removed in in Mantle 2.0.
  */
 class Route_Service_Provider extends Service_Provider implements Isolated_Service_Provider {
+	/**
+	 * Bootstrap any application services.
+	 */
+	public function boot(): void {
+		parent::boot();
+
+		$this->app->booted( fn () => $this->load_routes() );
+	}
+
+	/**
+	 * Load routes from the application service provider.
+	 */
+	protected function load_routes() {
+		if ( method_exists( $this, 'map' ) ) {
+			$this->app->call( [ $this, 'map' ] );
+		}
+
+		// Sync the loaded routes to the URL generator.
+		$this->app['router']->sync_routes_to_url_generator();
+	}
+
 	/**
 	 * Set a callback to determine if a request should be passed down to WordPress.
 	 * Pass through to the new router method.
@@ -28,7 +49,6 @@ class Route_Service_Provider extends Service_Provider implements Isolated_Servic
 
 	/**
 	 * Allow pass through requests to WordPress.
-	 * Pass through to the new router method.
 	 *
 	 * @return static
 	 */
@@ -40,7 +60,6 @@ class Route_Service_Provider extends Service_Provider implements Isolated_Servic
 
 	/**
 	 * Prevent pass through requests to WordPress.
-	 * Pass through to the new router method.
 	 *
 	 * @return static
 	 */

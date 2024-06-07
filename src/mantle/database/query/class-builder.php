@@ -151,7 +151,7 @@ abstract class Builder {
 	/**
 	 * Dump the SQL query for the request and stop execution.
 	 */
-	abstract public function ddSql(): void;
+	abstract public function ddSql(): never;
 
 	/**
 	 * Get a model instance for the builder.
