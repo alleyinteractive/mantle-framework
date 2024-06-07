@@ -6,10 +6,13 @@ use Mantle\Database\Factory;
 use Mantle\Database\Factory\Post_Factory;
 use Mantle\Database\Model;
 use Mantle\Testing\Framework_Test_Case;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * @group factory
  */
+#[Group( 'factory' )]
 class FactoryTest extends Framework_Test_Case {
 	public function test_create_basic_model() {
 		$factory = Testable_Post::factory();
@@ -43,6 +46,7 @@ class FactoryTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider factory_resolve_custom_names
 	 */
+	#[DataProvider( 'factory_resolve_custom_names' )]
 	public function test_resolve_custom_names( string $model, string $expected ) {
 		$this->assertEquals( $expected, Factory\Factory::resolve_custom_factory_name( $model ) );
 	}
@@ -59,6 +63,7 @@ class FactoryTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider factory_resolve_default
 	 */
+	#[DataProvider( 'factory_resolve_default' )]
 	public function test_resolve_default( string $model, string $expected ) {
 		$this->assertEquals( $expected, Factory\Factory::default_factory_name( $model ) );
 	}

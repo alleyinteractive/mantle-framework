@@ -15,6 +15,7 @@ use Mantle\Scheduling\Schedule;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\Attributes\Group;
 use RuntimeException;
 
 use function Mantle\Queue\dispatch;
@@ -25,6 +26,8 @@ use function Mantle\Queue\dispatch;
  * @group queue
  * @group wordpress-queue
  */
+#[Group( 'queue' )]
+#[Group( 'wordpress-queue' )]
 class WordPressCronQueueTest extends Framework_Test_Case {
 	use Refresh_Database;
 

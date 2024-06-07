@@ -10,6 +10,7 @@ use Mantle\Http\Routing\Middleware\Substitute_Bindings;
 use Mantle\Http\Routing\Router;
 use Mantle\Http\Routing\Url_Generator;
 use Mantle\Testing\Framework_Test_Case;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class UrlGeneratorTest extends Framework_Test_Case {
 	protected Router $router;
@@ -39,6 +40,7 @@ class UrlGeneratorTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider urlGenerationProvider
 	 */
+	#[DataProvider( 'urlGenerationProvider' )]
 	public function test_basic_generation( $expected, $args ) {
 		$this->assertEquals( home_url( $expected ), $this->url->to( ...$args ) );
 	}

@@ -2,10 +2,12 @@
 namespace Mantle\Tests\Testing\Concerns;
 
 use Mantle\Testing\Framework_Test_Case;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * @group testing
  */
+#[Group( 'testing' )]
 class InteractsWithHooksTest extends Framework_Test_Case {
 	public function test_hook_applied() {
 		$this->assertHookNotApplied( 'hook_to_check' );

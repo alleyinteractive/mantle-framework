@@ -4,12 +4,14 @@ namespace Mantle\Tests\Testing\Concerns;
 use Mantle\Testing\Attributes\Expected_Deprecation;
 use Mantle\Testing\Attributes\Ignore_Deprecation;
 use Mantle\Testing\Framework_Test_Case;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Test for deprecation errors being thrown and handled.
  *
  * @group testing
  */
+#[Group( 'testing' )]
 class DeprecationsTest extends Framework_Test_Case {
 	/**
 	 * @expectedDeprecated test_deprecation_annotation

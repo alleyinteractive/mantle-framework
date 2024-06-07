@@ -3,6 +3,7 @@
 namespace Mantle\Tests\Helpers;
 
 use Mockery as m;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use stdClass;
@@ -202,6 +203,7 @@ class HelpersGeneralTest extends TestCase {
 	}
 
 	/** @dataProvider providesPregReplaceArrayData */
+	#[DataProvider( 'providesPregReplaceArrayData' )]
 	public function testPregReplaceArray( $pattern, $replacements, $subject, $expectedOutput ) {
 		$this->assertSame(
 			$expectedOutput,

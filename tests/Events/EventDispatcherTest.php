@@ -4,10 +4,12 @@ namespace Mantle\Tests\Events;
 use Mantle\Events\Dispatcher;
 use Mantle\Container\Container;
 use Mockery as m;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * @group events
  */
+#[Group( 'events' )]
 class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	public function setUp(): void {
 		parent::setUp();

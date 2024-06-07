@@ -4,6 +4,7 @@ namespace Mantle\Tests\Events;
 use Mantle\Events\Dispatcher;
 use Mantle\Support\Collection;
 use Mantle\Testing\Framework_Test_Case;
+use PHPUnit\Framework\Attributes\Group;
 
 use function Mantle\Support\Helpers\add_action;
 use function Mantle\Support\Helpers\add_filter;
@@ -12,6 +13,7 @@ use function Mantle\Support\Helpers\collect;
 /**
  * @group events
  */
+#[Group( 'events' )]
 class WordPressActionDispatcherTest extends Framework_Test_Case {
 	public function test_action_handler() {
 		$_SERVER['__action_fired'] = false;

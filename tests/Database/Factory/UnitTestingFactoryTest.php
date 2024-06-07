@@ -7,6 +7,8 @@ use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Term;
 use Mantle\Testing\Concerns\With_Faker;
 use Mantle\Testing\Framework_Test_Case;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 
 use function Mantle\Support\Helpers\collect;
 
@@ -17,6 +19,7 @@ use function Mantle\Support\Helpers\collect;
  *
  * @group factory
  */
+#[Group( 'factory' )]
 class UnitTestingFactoryTest extends Framework_Test_Case {
 	use With_Faker;
 
@@ -287,6 +290,7 @@ class UnitTestingFactoryTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider dataprovider_factory
 	 */
+	#[DataProvider( 'dataprovider_factory' )]
 	public function test_dataprovider_factory( $post ) {
 		$this->assertInstanceOf( \WP_Post::class, $post );
 		$this->assertStringContainsString(

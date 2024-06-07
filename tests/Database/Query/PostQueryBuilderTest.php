@@ -10,6 +10,7 @@ use Mantle\Support\Collection;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Utils;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function Mantle\Support\Helpers\collect;
 
@@ -644,6 +645,7 @@ class PostQueryBuilderTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider date_comparison_provider
 	 */
+	#[DataProvider( 'date_comparison_provider' )]
 	public function test_date_comparisons( int $expected, string $method, array $args ) {
 		$start = Carbon::now( wp_timezone() )->subMonth()->startOfDay();
 

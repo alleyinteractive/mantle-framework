@@ -4,6 +4,8 @@ namespace Mantle\Tests\Support;
 
 use Exception;
 use Mantle\Support\Str;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\UuidInterface;
 use ReflectionClass;
@@ -69,7 +71,7 @@ class StrTest extends TestCase {
 	}
 
 	public function testStringAscii() {
-		 $this->assertSame( '@', Str::ascii( '@' ) );
+		$this->assertSame( '@', Str::ascii( '@' ) );
 		$this->assertSame( 'u', Str::ascii( 'ü' ) );
 	}
 
@@ -295,6 +297,7 @@ class StrTest extends TestCase {
 	/**
 	 * @dataProvider strContainsProvider
 	 */
+	#[DataProvider( 'strContainsProvider' )]
 	public function testStrContains( $haystack, $needles, $expected, $ignoreCase = false ) {
 		$this->assertEquals( $expected, Str::contains( $haystack, $needles, $ignoreCase ) );
 	}
@@ -302,6 +305,7 @@ class StrTest extends TestCase {
 	/**
 	 * @dataProvider strContainsAllProvider
 	 */
+	#[DataProvider( 'strContainsAllProvider' )]
 	public function testStrContainsAll( $haystack, $needles, $expected, $ignoreCase = false ) {
 		$this->assertEquals( $expected, Str::contains_all( $haystack, $needles, $ignoreCase ) );
 	}
@@ -406,6 +410,7 @@ class StrTest extends TestCase {
 	/**
 	 * @dataProvider validUuidList
 	 */
+	#[DataProvider( 'validUuidList' )]
 	public function testIsUuidWithValidUuid( $uuid ) {
 		$this->assertTrue( Str::is_uuid( $uuid ) );
 	}
@@ -413,6 +418,7 @@ class StrTest extends TestCase {
 	/**
 	 * @dataProvider invalidUuidList
 	 */
+	#[DataProvider( 'invalidUuidList' )]
 	public function testIsUuidWithInvalidUuid( $uuid ) {
 		$this->assertFalse( Str::is_uuid( $uuid ) );
 	}
@@ -492,6 +498,7 @@ class StrTest extends TestCase {
 	}
 
 	/** @test */
+	#[Test]
 	public function TestWhetherTheNumberOfGeneratedCharactersIsEquallyDistributed() {
 		$results = [];
 		// take 6.200.000 samples, because there are 62 different characters
@@ -963,6 +970,7 @@ class StrTest extends TestCase {
 	/**
 	 * @dataProvider specialCharacterProvider
 	 */
+	#[DataProvider( 'specialCharacterProvider' )]
 	public function testTransliterate( string $value, string $expected ): void {
 		$this->assertSame( $expected, Str::transliterate( $value ) );
 	}
@@ -988,6 +996,7 @@ class StrTest extends TestCase {
 	/**
 	 * @dataProvider specialCharacterProvider
 	 */
+	#[DataProvider( 'specialCharacterProvider' )]
 	public function testTransliterateStrict( string $value, string $expected ): void {
 		$this->assertSame( $expected, Str::transliterate( $value, '?', true ) );
 	}

@@ -16,6 +16,7 @@ use InvalidArgumentException;
 use JsonSerializable;
 use Mantle\Testing\Framework_Test_Case;
 use Mockery as m;
+use PHPUnit\Framework\Attributes\DataProvider;
 use ReflectionClass;
 use stdClass;
 
@@ -25,6 +26,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testFirstReturnsFirstItemInCollection($collection)
 	{
 		$c = new $collection(['foo', 'bar']);
@@ -34,6 +36,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testFirstWithCallback($collection)
 	{
 		$data = new $collection(['foo', 'bar', 'baz']);
@@ -46,6 +49,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testFirstWithCallbackAndDefault($collection)
 	{
 		$data = new $collection(['foo', 'bar']);
@@ -58,6 +62,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testFirstWithDefaultAndWithoutCallback($collection)
 	{
 		$data = new $collection;
@@ -68,6 +73,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testFirstWhere($collection)
 	{
 		$data = new $collection([
@@ -84,6 +90,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testLastReturnsLastItemInCollection($collection)
 	{
 		$c = new $collection(['foo', 'bar']);
@@ -93,6 +100,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testLastWithCallback($collection)
 	{
 		$data = new $collection([100, 200, 300]);
@@ -109,6 +117,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testLastWithCallbackAndDefault($collection)
 	{
 		$data = new $collection(['foo', 'bar']);
@@ -121,6 +130,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testLastWithDefaultAndWithoutCallback($collection)
 	{
 		$data = new $collection;
@@ -149,6 +159,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testEmptyCollectionIsEmpty($collection)
 	{
 		$c = new $collection;
@@ -159,6 +170,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testEmptyCollectionIsNotEmpty($collection)
 	{
 		$c = new $collection(['foo', 'bar']);
@@ -170,6 +182,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testCollectionIsConstructed($collection)
 	{
 		$data = new $collection('foo');
@@ -191,6 +204,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 //	public function testCollectionShuffleWithSeed($collection)
 //	{
 //		$data = new $collection(range(0, 100, 10));
@@ -204,6 +218,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testSkipMethod($collection)
 	{
 		$data = new $collection([1, 2, 3, 4, 5, 6]);
@@ -216,6 +231,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 //	public function testSkipUntil($collection)
 //	{
 //		$data = new $collection([1, 1, 2, 2, 3, 3, 4, 4]);
@@ -234,6 +250,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 //	public function testSkipWhile($collection)
 //	{
 //		$data = new $collection([1, 1, 2, 2, 3, 3, 4, 4]);
@@ -252,6 +269,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testGetArrayableItems($collection)
 	{
 		$data = new $collection;
@@ -288,6 +306,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testToArrayCallsToArrayOnEachItemInCollection($collection)
 	{
 		$item1 = m::mock(Arrayable::class);
@@ -303,6 +322,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testJsonSerializeCallsToArrayOrJsonSerializeOnEachItemInCollection($collection)
 	{
 		$item1 = m::mock(JsonSerializable::class);
@@ -318,6 +338,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testToJsonEncodesTheJsonSerializeResult($collection)
 	{
 		$c = $this->getMockBuilder($collection)->onlyMethods(['jsonSerialize'])->getMock();
@@ -329,6 +350,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testCastingToStringJsonEncodesTheToArrayResult($collection)
 	{
 		$c = $this->getMockBuilder($collection)->onlyMethods(['jsonSerialize'])->getMock();
@@ -413,6 +435,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testCountable($collection)
 	{
 		$c = new $collection(['foo', 'bar']);
@@ -422,6 +445,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testCountableByWithoutPredicate($collection)
 	{
 		$c = new $collection(['foo', 'foo', 'foo', 'bar', 'bar', 'foobar']);
@@ -437,6 +461,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testCountableByWithPredicate($collection)
 	{
 		$c = new $collection(['alice', 'aaron', 'bob', 'carla']);
@@ -460,6 +485,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testFilter($collection)
 	{
 		$c = new $collection([['id' => 1, 'name' => 'Hello'], ['id' => 2, 'name' => 'World']]);
@@ -479,6 +505,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 //	public function testHigherOrderKeyBy($collection)
 //	{
 //		$c = new $collection([
@@ -492,6 +519,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 //	public function testHigherOrderUnique($collection)
 //	{
 //		$c = new $collection([
@@ -505,6 +533,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 //	public function testHigherOrderFilter($collection)
 //	{
 //		$c = new $collection([
@@ -532,6 +561,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 //	public function testWhere($collection)
 //	{
 //		$c = new $collection([['v' => 1], ['v' => 2], ['v' => 3], ['v' => '3'], ['v' => 4]]);
@@ -651,6 +681,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereStrict($collection)
 	{
 		$c = new $collection([['v' => 3], ['v' => '3']]);
@@ -664,6 +695,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereInstanceOf($collection)
 	{
 		$c = new $collection([new stdClass, new stdClass, new $collection, new stdClass]);
@@ -673,6 +705,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereIn($collection)
 	{
 		$c = new $collection([['v' => 1], ['v' => 2], ['v' => 3], ['v' => '3'], ['v' => 4]]);
@@ -682,6 +715,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereInStrict($collection)
 	{
 		$c = new $collection([['v' => 1], ['v' => 2], ['v' => 3], ['v' => '3'], ['v' => 4]]);
@@ -691,6 +725,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereNotIn($collection)
 	{
 		$c = new $collection([['v' => 1], ['v' => 2], ['v' => 3], ['v' => '3'], ['v' => 4]]);
@@ -700,6 +735,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereNotInStrict($collection)
 	{
 		$c = new $collection([['v' => 1], ['v' => 2], ['v' => 3], ['v' => '3'], ['v' => 4]]);
@@ -709,6 +745,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testValues($collection)
 	{
 		$c = new $collection([['id' => 1, 'name' => 'Hello'], ['id' => 2, 'name' => 'World']]);
@@ -720,6 +757,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testBetween($collection)
 	{
 		$c = new $collection([['v' => 1], ['v' => 2], ['v' => 3], ['v' => '3'], ['v' => 4]]);
@@ -733,6 +771,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereNotBetween($collection)
 	{
 		$c = new $collection([['v' => 1], ['v' => 2], ['v' => 3], ['v' => '3'], ['v' => 4]]);
@@ -745,6 +784,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testFlatten($collection)
 	{
 		// Flat arrays are unaffected
@@ -783,6 +823,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testFlattenWithDepth($collection)
 	{
 		// No depth flattens recursively
@@ -800,6 +841,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testFlattenIgnoresKeys($collection)
 	{
 		// No depth ignores keys
@@ -814,6 +856,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testMergeNull($collection)
 	{
 		$c = new $collection(['name' => 'Hello']);
@@ -823,6 +866,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testMergeArray($collection)
 	{
 		$c = new $collection(['name' => 'Hello']);
@@ -832,6 +876,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testMergeCollection($collection)
 	{
 		$c = new $collection(['name' => 'Hello']);
@@ -841,6 +886,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testMergeRecursiveNull($collection)
 	{
 		$c = new $collection(['name' => 'Hello']);
@@ -850,6 +896,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testMergeRecursiveArray($collection)
 	{
 		$c = new $collection(['name' => 'Hello', 'id' => 1]);
@@ -859,6 +906,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testMergeRecursiveCollection($collection)
 	{
 		$c = new $collection(['name' => 'Hello', 'id' => 1, 'meta' => ['tags' => ['a', 'b'], 'roles' => 'admin']]);
@@ -871,6 +919,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testReplaceNull($collection)
 	{
 		$c = new $collection(['a', 'b', 'c']);
@@ -880,6 +929,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testReplaceArray($collection)
 	{
 		$c = new $collection(['a', 'b', 'c']);
@@ -889,6 +939,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testReplaceCollection($collection)
 	{
 		$c = new $collection(['a', 'b', 'c']);
@@ -901,6 +952,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testReplaceRecursiveNull($collection)
 	{
 		$c = new $collection(['a', 'b', ['c', 'd']]);
@@ -910,6 +962,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testReplaceRecursiveArray($collection)
 	{
 		$c = new $collection(['a', 'b', ['c', 'd']]);
@@ -919,6 +972,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testReplaceRecursiveCollection($collection)
 	{
 		$c = new $collection(['a', 'b', ['c', 'd']]);
@@ -931,6 +985,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnionNull($collection)
 	{
 		$c = new $collection(['name' => 'Hello']);
@@ -940,6 +995,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnionArray($collection)
 	{
 		$c = new $collection(['name' => 'Hello']);
@@ -949,6 +1005,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnionCollection($collection)
 	{
 		$c = new $collection(['name' => 'Hello']);
@@ -958,6 +1015,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testDiffCollection($collection)
 	{
 		$c = new $collection(['id' => 1, 'first_word' => 'Hello']);
@@ -967,6 +1025,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testDiffUsingWithCollection($collection)
 	{
 		$c = new $collection(['en_GB', 'fr', 'HR']);
@@ -979,6 +1038,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testDiffUsingWithNull($collection)
 	{
 		$c = new $collection(['en_GB', 'fr', 'HR']);
@@ -988,6 +1048,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testDiffNull($collection)
 	{
 		$c = new $collection(['id' => 1, 'first_word' => 'Hello']);
@@ -997,6 +1058,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testDiffKeys($collection)
 	{
 		$c1 = new $collection(['id' => 1, 'first_word' => 'Hello']);
@@ -1007,6 +1069,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testDiffKeysUsing($collection)
 	{
 		$c1 = new $collection(['id' => 1, 'first_word' => 'Hello']);
@@ -1020,6 +1083,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testDiffAssoc($collection)
 	{
 		$c1 = new $collection(['id' => 1, 'first_word' => 'Hello', 'not_affected' => 'value']);
@@ -1030,6 +1094,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testDiffAssocUsing($collection)
 	{
 		$c1 = new $collection(['a' => 'green', 'b' => 'brown', 'c' => 'blue', 'red']);
@@ -1043,6 +1108,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testDuplicates($collection)
 	{
 		$duplicates = $collection::make([1, 2, 1, 'laravel', null, 'laravel', 'php', null])->duplicates()->all();
@@ -1065,6 +1131,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testDuplicatesWithKey($collection)
 	{
 		$items = [['framework' => 'vue'], ['framework' => 'laravel'], ['framework' => 'laravel']];
@@ -1075,6 +1142,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testDuplicatesWithCallback($collection)
 	{
 		$items = [['framework' => 'vue'], ['framework' => 'laravel'], ['framework' => 'laravel']];
@@ -1087,6 +1155,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testDuplicatesWithStrict($collection)
 	{
 		$duplicates = $collection::make([1, 2, 1, 'laravel', null, 'laravel', 'php', null])->duplicates_strict()->all();
@@ -1109,6 +1178,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testEach($collection)
 	{
 		$c = new $collection($original = [1, 2, 'foo' => 'bar', 'bam' => 'baz']);
@@ -1132,6 +1202,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testEachSpread($collection)
 	{
 		$c = new $collection([[1, 'a'], [2, 'b']]);
@@ -1167,6 +1238,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testIntersectNull($collection)
 	{
 		$c = new $collection(['id' => 1, 'first_word' => 'Hello']);
@@ -1176,6 +1248,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testIntersectCollection($collection)
 	{
 		$c = new $collection(['id' => 1, 'first_word' => 'Hello']);
@@ -1185,6 +1258,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testIntersectByKeysNull($collection)
 	{
 		$c = new $collection(['name' => 'Mateus', 'age' => 18]);
@@ -1194,6 +1268,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testIntersectByKeys($collection)
 	{
 		$c = new $collection(['name' => 'Mateus', 'age' => 18]);
@@ -1203,6 +1278,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnique($collection)
 	{
 		$c = new $collection(['Hello', 'World', 'World']);
@@ -1215,6 +1291,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testUniqueWithCallback($collection)
 	{
 		$c = new $collection([
@@ -1250,6 +1327,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testUniqueStrict($collection)
 	{
 		$c = new $collection([
@@ -1282,6 +1360,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testCollapse($collection)
 	{
 		$data = new $collection([[$object1 = new stdClass], [$object2 = new stdClass]]);
@@ -1291,6 +1370,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testCollapseWithNestedCollections($collection)
 	{
 		$data = new $collection([new $collection([1, 2, 3]), new $collection([4, 5, 6])]);
@@ -1300,6 +1380,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testJoin($collection)
 	{
 		$this->assertSame('a, b, c', (new $collection(['a', 'b', 'c']))->join(', '));
@@ -1316,6 +1397,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testCrossJoin($collection)
 	{
 		// Cross join with an array
@@ -1348,6 +1430,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testSort($collection)
 	{
 		$data = (new $collection([5, 3, 1, 2, 4]))->sort();
@@ -1369,6 +1452,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testSortDesc($collection)
 	{
 		$data = (new $collection([5, 3, 1, 2, 4]))->sort_desc();
@@ -1390,6 +1474,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testSortWithCallback($collection)
 	{
 		$data = (new $collection([5, 3, 1, 2, 4]))->sort(function ($a, $b) {
@@ -1406,6 +1491,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testSortBy($collection)
 	{
 		$data = new $collection(['taylor', 'dayle']);
@@ -1426,6 +1512,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testSortByString($collection)
 	{
 		$data = new $collection([['name' => 'taylor'], ['name' => 'dayle']]);
@@ -1442,6 +1529,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testSortByAlwaysReturnsAssoc($collection)
 	{
 		$data = new $collection(['a' => 'taylor', 'b' => 'dayle']);
@@ -1462,6 +1550,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testSortKeys($collection)
 	{
 		$data = new $collection(['b' => 'dayle', 'a' => 'taylor']);
@@ -1472,6 +1561,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testSortKeysDesc($collection)
 	{
 		$data = new $collection(['a' => 'taylor', 'b' => 'dayle']);
@@ -1482,6 +1572,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testReverse($collection)
 	{
 		$data = new $collection(['zaeed', 'alan']);
@@ -1498,6 +1589,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testFlip($collection)
 	{
 		$data = new $collection(['name' => 'taylor', 'framework' => 'laravel']);
@@ -1507,6 +1599,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testChunk($collection)
 	{
 		$data = new $collection([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
@@ -1522,6 +1615,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testChunkWhenGivenZeroAsSize($collection)
 	{
 		$data = new $collection([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
@@ -1535,6 +1629,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testChunkWhenGivenLessThanZero($collection)
 	{
 		$data = new $collection([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
@@ -1548,6 +1643,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 //	public function testEvery($collection)
 //	{
 //		$c = new $collection([]);
@@ -1580,6 +1676,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 //	public function testExcept($collection)
 //	{
 //		$data = new $collection(['first' => 'Taylor', 'last' => 'Otwell', 'email' => 'taylorotwell@gmail.com']);
@@ -1595,6 +1692,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testExceptSelf($collection)
 	{
 		$data = new $collection(['first' => 'Taylor', 'last' => 'Otwell']);
@@ -1604,6 +1702,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testPluckWithArrayAndObjectValues($collection)
 	{
 		$data = new $collection([(object) ['name' => 'taylor', 'email' => 'foo'], ['name' => 'dayle', 'email' => 'bar']]);
@@ -1614,6 +1713,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testPluckWithArrayAccessValues($collection)
 	{
 		$data = new $collection([
@@ -1628,6 +1728,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testHas($collection)
 	{
 		$data = new $collection(['id' => 1, 'first' => 'Hello', 'second' => 'World']);
@@ -1640,6 +1741,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testImplode($collection)
 	{
 		$data = new $collection([['name' => 'taylor', 'email' => 'foo'], ['name' => 'dayle', 'email' => 'bar']]);
@@ -1654,6 +1756,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testTake($collection)
 	{
 		$data = new $collection(['taylor', 'dayle', 'shawn']);
@@ -1678,6 +1781,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 //	public function testRandom($collection)
 //	{
 //		$data = new $collection([1, 2, 3, 4, 5, 6]);
@@ -1714,6 +1818,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testRandomOnEmptyCollection($collection)
 	{
 		$data = new $collection;
@@ -1730,6 +1835,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testTakeLast($collection)
 	{
 		$data = new $collection(['taylor', 'dayle', 'shawn']);
@@ -1740,6 +1846,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 //	public function testTakeUntilUsingValue($collection)
 //	{
 //		$data = new $collection([1, 2, 3, 4]);
@@ -1752,6 +1859,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 //	public function testTakeUntilUsingCallback($collection)
 //	{
 //		$data = new $collection([1, 2, 3, 4]);
@@ -1766,6 +1874,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 //	public function testTakeUntilReturnsAllItemsForUnmetValue($collection)
 //	{
 //		$data = new $collection([1, 2, 3, 4]);
@@ -1784,6 +1893,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 //	public function testTakeUntilCanBeProxied($collection)
 //	{
 //		$data = new $collection([
@@ -1802,6 +1912,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 //	public function testTakeWhileUsingValue($collection)
 //	{
 //		$data = new $collection([1, 1, 2, 2, 3, 3]);
@@ -1814,6 +1925,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 //	public function testTakeWhileUsingCallback($collection)
 //	{
 //		$data = new $collection([1, 2, 3, 4]);
@@ -1828,6 +1940,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 //	public function testTakeWhileReturnsNoItemsForUnmetValue($collection)
 //	{
 //		$data = new $collection([1, 2, 3, 4]);
@@ -1846,6 +1959,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 //	public function testTakeWhileCanBeProxied($collection)
 //	{
 //		$data = new $collection([
@@ -1865,6 +1979,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 //	public function testMacroable($collection)
 //	{
 //		// Foo() macro : unique values starting with A
@@ -1884,6 +1999,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 //	public function testCanAddMethodsToProxy($collection)
 //	{
 //		$collection::macro('adults', function ($callback) {
@@ -1902,6 +2018,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testMakeMethod($collection)
 	{
 		$data = $collection::make('foo');
@@ -1911,6 +2028,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testMakeMethodFromNull($collection)
 	{
 		$data = $collection::make(null);
@@ -1923,6 +2041,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testMakeMethodFromCollection($collection)
 	{
 		$firstCollection = $collection::make(['foo' => 'bar']);
@@ -1933,6 +2052,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testMakeMethodFromArray($collection)
 	{
 		$data = $collection::make(['foo' => 'bar']);
@@ -1942,6 +2062,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testWrapWithScalar($collection)
 	{
 		$data = $collection::wrap('foo');
@@ -1951,6 +2072,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testWrapWithArray($collection)
 	{
 		$data = $collection::wrap(['foo']);
@@ -1960,6 +2082,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testWrapWithArrayable($collection)
 	{
 		$data = $collection::wrap($o = new TestArrayableObject);
@@ -1969,6 +2092,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testWrapWithJsonable($collection)
 	{
 		$data = $collection::wrap($o = new TestJsonableObject);
@@ -1978,6 +2102,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testWrapWithJsonSerialize($collection)
 	{
 		$data = $collection::wrap($o = new TestJsonSerializeObject);
@@ -1987,6 +2112,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 //	public function testWrapWithCollectionClass($collection)
 //	{
 //		$data = $collection::wrap($collection::make(['foo']));
@@ -1996,6 +2122,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 //	public function testWrapWithCollectionSubclass($collection)
 //	{
 //		$data = TestCollectionSubclass::wrap($collection::make(['foo']));
@@ -2006,6 +2133,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 //	public function testUnwrapCollection($collection)
 //	{
 //		$data = new $collection(['foo']);
@@ -2015,6 +2143,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnwrapCollectionWithArray($collection)
 	{
 		$this->assertEquals(['foo'], $collection::unwrap(['foo']));
@@ -2023,6 +2152,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnwrapCollectionWithScalar($collection)
 	{
 		$this->assertSame('foo', $collection::unwrap('foo'));
@@ -2031,6 +2161,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testTimesMethod($collection)
 	{
 		$two = $collection::times(2, function ($number) {
@@ -2056,6 +2187,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testConstructMakeFromObject($collection)
 	{
 		$object = new stdClass;
@@ -2067,6 +2199,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testConstructMethod($collection)
 	{
 		$data = new $collection('foo');
@@ -2076,6 +2209,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testConstructMethodFromNull($collection)
 	{
 		$data = new $collection(null);
@@ -2088,6 +2222,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testConstructMethodFromCollection($collection)
 	{
 		$firstCollection = new $collection(['foo' => 'bar']);
@@ -2098,6 +2233,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testConstructMethodFromArray($collection)
 	{
 		$data = new $collection(['foo' => 'bar']);
@@ -2107,6 +2243,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testConstructMethodFromObject($collection)
 	{
 		$object = new stdClass;
@@ -2138,6 +2275,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testGetPluckValueWithAccessors($collection)
 	{
 		$model = new TestAccessorEloquentTestStub(['some' => 'foo']);
@@ -2150,6 +2288,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testMap($collection)
 	{
 		$data = new $collection(['first' => 'taylor', 'last' => 'otwell']);
@@ -2162,6 +2301,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapSpread($collection)
 	{
 		$c = new $collection([[1, 'a'], [2, 'b']]);
@@ -2186,6 +2326,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testFlatMap($collection)
 	{
 		$data = new $collection([
@@ -2201,6 +2342,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 //	public function testMapToDictionary($collection)
 //	{
 //		$data = new $collection([
@@ -2222,6 +2364,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapToDictionaryWithNumericKeys($collection)
 	{
 		$data = new $collection([1, 2, 3, 2, 1]);
@@ -2236,6 +2379,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapToGroups($collection)
 	{
 		$data = new $collection([
@@ -2257,6 +2401,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapToGroupsWithNumericKeys($collection)
 	{
 		$data = new $collection([1, 2, 3, 2, 1]);
@@ -2271,6 +2416,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapWithKeys($collection)
 	{
 		$data = new $collection([
@@ -2290,6 +2436,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapWithKeysIntegerKeys($collection)
 	{
 		$data = new $collection([
@@ -2309,6 +2456,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapWithKeysMultipleRows($collection)
 	{
 		$data = new $collection([
@@ -2335,6 +2483,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapWithKeysCallbackKey($collection)
 	{
 		$data = new $collection([
@@ -2354,6 +2503,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapInto($collection)
 	{
 		$data = new $collection([
@@ -2369,6 +2519,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testNth($collection)
 	{
 		$data = new $collection([
@@ -2389,6 +2540,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapWithKeysOverwritingKeys($collection)
 	{
 		$data = new $collection([
@@ -2420,6 +2572,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testGroupByAttribute($collection)
 	{
 		$data = new $collection([['rating' => 1, 'url' => '1'], ['rating' => 1, 'url' => '1'], ['rating' => 2, 'url' => '2']]);
@@ -2434,6 +2587,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testGroupByCallable($collection)
 	{
 		$data = new $collection([['rating' => 1, 'url' => '1'], ['rating' => 1, 'url' => '1'], ['rating' => 2, 'url' => '2']]);
@@ -2458,6 +2612,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testGroupByAttributePreservingKeys($collection)
 	{
 		$data = new $collection([10 => ['rating' => 1, 'url' => '1'],	 20 => ['rating' => 1, 'url' => '1'],	 30 => ['rating' => 2, 'url' => '2']]);
@@ -2475,6 +2630,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testGroupByClosureWhereItemsHaveSingleGroup($collection)
 	{
 		$data = new $collection([['rating' => 1, 'url' => '1'], ['rating' => 1, 'url' => '1'], ['rating' => 2, 'url' => '2']]);
@@ -2489,6 +2645,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testGroupByClosureWhereItemsHaveSingleGroupPreservingKeys($collection)
 	{
 		$data = new $collection([10 => ['rating' => 1, 'url' => '1'], 20 => ['rating' => 1, 'url' => '1'], 30 => ['rating' => 2, 'url' => '2']]);
@@ -2508,6 +2665,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testGroupByClosureWhereItemsHaveMultipleGroups($collection)
 	{
 		$data = new $collection([
@@ -2540,6 +2698,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testGroupByClosureWhereItemsHaveMultipleGroupsPreservingKeys($collection)
 	{
 		$data = new $collection([
@@ -2572,6 +2731,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 //	public function testGroupByMultiLevelAndClosurePreservingKeys($collection)
 //	{
 //		$data = new $collection([
@@ -2617,6 +2777,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testKeyByAttribute($collection)
 	{
 		$data = new $collection([['rating' => 1, 'name' => '1'], ['rating' => 2, 'name' => '2'], ['rating' => 3, 'name' => '3']]);
@@ -2633,6 +2794,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testKeyByClosure($collection)
 	{
 		$data = new $collection([
@@ -2651,6 +2813,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testKeyByObject($collection)
 	{
 		$data = new $collection([
@@ -2669,6 +2832,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 //	public function testContains($collection)
 //	{
 //		$c = new $collection([1, 3, 5]);
@@ -2730,6 +2894,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 //	public function testSome($collection)
 //	{
 //		$c = new $collection([1, 3, 5]);
@@ -2771,6 +2936,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testContainsStrict($collection)
 	{
 		$c = new $collection([1, 3, 5, '02']);
@@ -2819,6 +2985,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testContainsWithOperator($collection)
 	{
 		$c = new $collection([['v' => 1], ['v' => 3], ['v' => '4'], ['v' => 5]]);
@@ -2832,6 +2999,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testGettingSumFromCollection($collection)
 	{
 		$c = new $collection([(object) ['foo' => 50], (object) ['foo' => 50]]);
@@ -2846,6 +3014,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testCanSumValuesWithoutACallback($collection)
 	{
 		$c = new $collection([1, 2, 3, 4, 5]);
@@ -2855,6 +3024,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testGettingSumFromEmptyCollection($collection)
 	{
 		$c = new $collection;
@@ -2864,6 +3034,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testValueRetrieverAcceptsDotNotation($collection)
 	{
 		$c = new $collection([
@@ -2898,6 +3069,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testRejectRemovesElementsPassingTruthTest($collection)
 	{
 		$c = new $collection(['foo', 'bar']);
@@ -2928,6 +3100,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testRejectWithoutAnArgumentRemovesTruthyValues($collection)
 	{
 		$data1 = new $collection([
@@ -2951,6 +3124,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testSearchReturnsIndexOfFirstFoundItem($collection)
 	{
 		$c = new $collection([1, 2, 3, 4, 5, 2, 5, 'foo' => 'bar']);
@@ -2969,6 +3143,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testSearchInStrictMode($collection)
 	{
 		$c = new $collection([false, 0, 1, [], '']);
@@ -2984,6 +3159,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testSearchReturnsFalseWhenItemIsNotFound($collection)
 	{
 		$c = new $collection([1, 2, 3, 4, 5, 'foo' => 'bar']);
@@ -3001,6 +3177,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testKeys($collection)
 	{
 		$c = new $collection(['name' => 'taylor', 'framework' => 'laravel']);
@@ -3010,6 +3187,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testPaginate($collection)
 	{
 		$c = new $collection(['one', 'two', 'three', 'four']);
@@ -3076,6 +3254,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testZip($collection)
 	{
 		$c = new $collection([1, 2, 3]);
@@ -3107,6 +3286,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testPadPadsArrayWithValue($collection)
 	{
 		$c = new $collection([1, 2, 3]);
@@ -3129,6 +3309,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testGettingMaxItemsFromCollection($collection)
 	{
 		$c = new $collection([(object) ['foo' => 10], (object) ['foo' => 20]]);
@@ -3152,6 +3333,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testGettingMinItemsFromCollection($collection)
 	{
 		$c = new $collection([(object) ['foo' => 10], (object) ['foo' => 20]]);
@@ -3185,6 +3367,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testOnly($collection)
 	{
 		$data = new $collection( [
@@ -3206,6 +3389,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testOnlyChildren($collection)
 	{
 		$data = new $collection( [
@@ -3261,6 +3445,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testGettingAvgItemsFromCollection($collection)
 	{
 		$c = new $collection([(object) ['foo' => 10], (object) ['foo' => 20]]);
@@ -3291,6 +3476,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testJsonSerialize($collection)
 	{
 		$c = new $collection([
@@ -3311,6 +3497,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testCombineWithArray($collection)
 	{
 		$expected = [
@@ -3328,6 +3515,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testCombineWithCollection($collection)
 	{
 		$expected = [
@@ -3346,6 +3534,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testConcatWithArray($collection)
 	{
 		$expected = [
@@ -3374,6 +3563,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testConcatWithCollection($collection)
 	{
 		$expected = [
@@ -3404,6 +3594,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testReduce($collection)
 	{
 		$data = new $collection([1, 2, 3]);
@@ -3415,6 +3606,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testRandomThrowsAnExceptionUsingAmountBiggerThanCollectionSize($collection)
 	{
 		$this->expectException(InvalidArgumentException::class);
@@ -3426,6 +3618,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testPipe($collection)
 	{
 		$data = new $collection([1, 2, 3]);
@@ -3438,6 +3631,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testMedianValueWithArrayCollection($collection)
 	{
 		$data = new $collection([1, 2, 2, 4]);
@@ -3448,6 +3642,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testMedianValueByKey($collection)
 	{
 		$data = new $collection([
@@ -3462,6 +3657,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testMedianOnCollectionWithNull($collection)
 	{
 		$data = new $collection([
@@ -3476,6 +3672,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testEvenMedianCollection($collection)
 	{
 		$data = new $collection([
@@ -3488,6 +3685,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testMedianOutOfOrderCollection($collection)
 	{
 		$data = new $collection([
@@ -3501,6 +3699,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testMedianOnEmptyCollectionReturnsNull($collection)
 	{
 		$data = new $collection;
@@ -3510,6 +3709,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testModeOnNullCollection($collection)
 	{
 		$data = new $collection;
@@ -3519,6 +3719,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testMode($collection)
 	{
 		$data = new $collection([1, 2, 3, 4, 4, 5]);
@@ -3528,6 +3729,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testModeValueByKey($collection)
 	{
 		$data = new $collection([
@@ -3542,6 +3744,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testWithMultipleModeValues($collection)
 	{
 		$data = new $collection([1, 2, 2, 1]);
@@ -3551,6 +3754,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testSliceOffset($collection)
 	{
 		$data = new $collection([1, 2, 3, 4, 5, 6, 7, 8]);
@@ -3560,6 +3764,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testSliceNegativeOffset($collection)
 	{
 		$data = new $collection([1, 2, 3, 4, 5, 6, 7, 8]);
@@ -3569,6 +3774,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testSliceOffsetAndLength($collection)
 	{
 		$data = new $collection([1, 2, 3, 4, 5, 6, 7, 8]);
@@ -3578,6 +3784,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testSliceOffsetAndNegativeLength($collection)
 	{
 		$data = new $collection([1, 2, 3, 4, 5, 6, 7, 8]);
@@ -3587,6 +3794,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testSliceNegativeOffsetAndLength($collection)
 	{
 		$data = new $collection([1, 2, 3, 4, 5, 6, 7, 8]);
@@ -3596,6 +3804,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testSliceNegativeOffsetAndNegativeLength($collection)
 	{
 		$data = new $collection([1, 2, 3, 4, 5, 6, 7, 8]);
@@ -3605,6 +3814,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testCollectionFromTraversable($collection)
 	{
 		$data = new $collection(new ArrayObject([1, 2, 3]));
@@ -3614,6 +3824,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testCollectionFromTraversableWithKeys($collection)
 	{
 		$data = new $collection(new ArrayObject(['foo' => 1, 'bar' => 2, 'baz' => 3]));
@@ -3623,6 +3834,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testSplitCollectionWithADivisibleCount($collection)
 	{
 		$data = new $collection(['a', 'b', 'c', 'd']);
@@ -3647,6 +3859,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testSplitCollectionWithAnUndivisableCount($collection)
 	{
 		$data = new $collection(['a', 'b', 'c']);
@@ -3662,6 +3875,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testSplitCollectionWithCountLessThenDivisor($collection)
 	{
 		$data = new $collection(['a']);
@@ -3677,6 +3891,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testSplitCollectionIntoThreeWithCountOfFour($collection)
 	{
 		$data = new $collection(['a', 'b', 'c', 'd']);
@@ -3692,6 +3907,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testSplitCollectionIntoThreeWithCountOfFive($collection)
 	{
 		$data = new $collection(['a', 'b', 'c', 'd', 'e']);
@@ -3707,6 +3923,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testSplitCollectionIntoSixWithCountOfTen($collection)
 	{
 		$data = new $collection(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']);
@@ -3722,6 +3939,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testSplitEmptyCollection($collection)
 	{
 		$data = new $collection;
@@ -3737,6 +3955,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testHigherOrderCollectionGroupBy($collection)
 	{
 		$data = new $collection([
@@ -3760,6 +3979,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testHigherOrderCollectionMap($collection)
 	{
 		$person1 = (object) ['name' => 'Taylor'];
@@ -3777,6 +3997,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testHigherOrderCollectionMapFromArrays($collection)
 	{
 		$person1 = ['name' => 'Taylor'];
@@ -3794,6 +4015,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testPartition($collection)
 	{
 		$data = new $collection(range(1, 10));
@@ -3809,6 +4031,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testPartitionCallbackWithKey($collection)
 	{
 		$data = new $collection(['zero', 'one', 'two', 'three']);
@@ -3824,6 +4047,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testPartitionByKey($collection)
 	{
 		$courses = new $collection([
@@ -3839,6 +4063,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testPartitionWithOperators($collection)
 	{
 		$data = new $collection([
@@ -3876,6 +4101,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testPartitionPreservesKeys($collection)
 	{
 		$courses = new $collection([
@@ -3891,6 +4117,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testPartitionEmptyCollection($collection)
 	{
 		$data = new $collection;
@@ -3903,6 +4130,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 //	public function testHigherOrderPartition($collection)
 //	{
 //		$courses = new $collection([
@@ -3919,6 +4147,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testTap($collection)
 	{
 		$data = new $collection([1, 2, 3]);
@@ -3935,6 +4164,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhen($collection)
 	{
 		$data = new $collection(['michael', 'tom']);
@@ -3957,6 +4187,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhenDefault($collection)
 	{
 		$data = new $collection(['michael', 'tom']);
@@ -3973,6 +4204,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhenEmpty($collection)
 	{
 		$data = new $collection(['michael', 'tom']);
@@ -3995,6 +4227,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhenEmptyDefault($collection)
 	{
 		$data = new $collection(['michael', 'tom']);
@@ -4011,6 +4244,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhenNotEmpty($collection)
 	{
 		$data = new $collection(['michael', 'tom']);
@@ -4033,6 +4267,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhenNotEmptyDefault($collection)
 	{
 		$data = new $collection(['michael', 'tom']);
@@ -4049,6 +4284,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnless($collection)
 	{
 		$data = new $collection(['michael', 'tom']);
@@ -4071,6 +4307,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnlessDefault($collection)
 	{
 		$data = new $collection(['michael', 'tom']);
@@ -4087,6 +4324,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnlessEmpty($collection)
 	{
 		$data = new $collection(['michael', 'tom']);
@@ -4109,6 +4347,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnlessEmptyDefault($collection)
 	{
 		$data = new $collection(['michael', 'tom']);
@@ -4125,6 +4364,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnlessNotEmpty($collection)
 	{
 		$data = new $collection(['michael', 'tom']);
@@ -4147,6 +4387,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnlessNotEmptyDefault($collection)
 	{
 		$data = new $collection(['michael', 'tom']);
@@ -4163,6 +4404,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testHasReturnsValidResults($collection)
 	{
 		$data = new $collection(['foo' => 'one', 'bar' => 'two', 1 => 'three']);
@@ -4187,6 +4429,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testItThrowsExceptionWhenTryingToAccessNoProxyProperty($collection)
 	{
 		$data = new $collection;
@@ -4198,6 +4441,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testGetWithNullReturnsNull($collection)
 	{
 		$data = new $collection([1, 2, 3]);
@@ -4207,6 +4451,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereNull($collection)
 	{
 		$data = new $collection([
@@ -4227,6 +4472,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereNullWithoutKey($collection)
 	{
 		$collection = new $collection([1, null, 3, 'null', false, true]);
@@ -4238,6 +4484,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereNotNull($collection)
 	{
 		$data = new $collection($originalData = [
@@ -4261,6 +4508,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereNotNullWithoutKey($collection)
 	{
 		$data = new $collection([1, null, 3, 'null', false, true]);
@@ -4277,6 +4525,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function testCollect($collection)
 	{
 		$data = $collection::make([
@@ -4297,6 +4546,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function test_from_wp_query( $collection ) {
 		static::factory()->post->create_many( 5 );
 		$query = new \WP_Query(
@@ -4316,6 +4566,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function test_from_empty_wp_query( $collection ) {
 		$query = new \WP_Query();
 		$c = $collection::from( $query );
@@ -4325,6 +4576,7 @@ class CollectionTest extends Framework_Test_Case {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
+	#[DataProvider( 'collectionClassProvider' )]
 	public function test_from_fallback( $collection ) {
 		$c = $collection::from( ['a', 'b'] );
 		$this->assertSame( 2, count( $c->all() ) );

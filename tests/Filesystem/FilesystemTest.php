@@ -6,6 +6,9 @@ use Mantle\Filesystem\File_Not_Found_Exception;
 use Mantle\Filesystem\Filesystem;
 use Mantle\Testing\Assert;
 use Mockery as m;
+use PHPUnit\Framework\Attributes\AfterClass;
+use PHPUnit\Framework\Attributes\BeforeClass;
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use PHPUnit\Framework\TestCase;
 use SplFileInfo;
 
@@ -16,6 +19,7 @@ class FilesystemTest extends TestCase {
 	/**
 	 * @beforeClass
 	 */
+	#[BeforeClass]
 	public static function setUptemp_dir() {
 		static::$temp_dir = get_temp_dir() . '/mantle-fs';
 
@@ -27,6 +31,7 @@ class FilesystemTest extends TestCase {
 	/**
 	 * @afterClass
 	 */
+	#[AfterClass]
 	public static function tearDowntemp_dir() {
 		$files = new Filesystem();
 		$files->delete_directory( static::$temp_dir );
@@ -352,6 +357,7 @@ class FilesystemTest extends TestCase {
 	/**
 	 * @requires extension fileinfo
 	 */
+	#[RequiresPhpExtension( 'fileinfo' )]
 	public function testMimeTypeOutputsMimeType() {
 		file_put_contents( static::$temp_dir . '/foo.txt', 'foo' );
 		$files = new Filesystem();
