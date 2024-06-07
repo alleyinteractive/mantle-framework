@@ -251,9 +251,20 @@ class UnitTestingFactoryTest extends Framework_Test_Case {
 			[
 				'_test_meta_key' => '_test_meta_value',
 			],
-		)->create_and_get();
+		)->with_meta( '_test_string', 'the value' )->create_and_get();
 
 		$this->assertEquals( '_test_meta_value', get_post_meta( $post->ID, '_test_meta_key', true ) );
+		$this->assertEquals( 'the value', get_post_meta( $post->ID, '_test_string', true ) );
+
+		$post_ids = static::factory()->post->with_meta(
+			[
+				'_test_meta_key' => '_test_meta_value',
+			],
+		)->create_many( 10 );
+
+		foreach ( $post_ids as $post_id ) {
+			$this->assertEquals( '_test_meta_value', get_post_meta( $post_id, '_test_meta_key', true ) );
+		}
 	}
 
 	public function test_attachment_with_image() {

@@ -340,7 +340,9 @@ class Post_Query_Builder extends Builder {
 	/**
 	 * Dump the SQL query being executed and die.
 	 */
-	public function ddSql(): void {
-		$this->dumpSql( true );
+	public function ddSql(): never {
+		$this->dumpSql( true )->get();
+
+		die( 1 );
 	}
 }

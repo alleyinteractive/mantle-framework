@@ -54,8 +54,7 @@ class Command_Event extends Event {
 		$instance = $container->make( $this->callback );
 
 		try {
-			// todo: revisit this and test the command to run.
-			$instance->callback( $this->parameters, $this->assoc_args );
+			$instance->handle( $this->parameters, $this->assoc_args );
 
 			$this->exit_code = 0;
 		} catch ( Throwable $e ) {

@@ -195,7 +195,7 @@ abstract class Block implements Block_Contract {
 
 		try {
 			$assets = $disk->get( "blocks/{$this->name}/{$this->entry_filename}.asset.json" );
-			$assets = \json_decode( $assets );
+			$assets = \json_decode( (string) $assets );
 		} catch ( Throwable ) {
 			return new \stdClass();
 		}

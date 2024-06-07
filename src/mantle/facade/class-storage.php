@@ -11,9 +11,9 @@ namespace Mantle\Facade;
  * Storage Facade
  *
  * @method static \Mantle\Contracts\Filesystem\Filesystem drive(string $name = null)
- * @method static \Mantle\Filesystem\Filesystem_Manager extend(string $driver, Closure $callback)
- * @method static \Mantle\Contracts\Filesystem\Filesystem create_local_driver(array $config)
- * @method static \Mantle\Filesystem\Filesystem_Adapter create_s3_driver(array $config)
+ * @method static \Mantle\Filesystem\Filesystem_Manager extend(string $driver, \Closure $callback)
+ * @method static \Mantle\Filesystem\Filesystem_Adapter create_local_driver(array $config)
+ * @method static \Mantle\Filesystem\Adapter\AWS_S3_Adapter create_s3_driver(array $config)
  * @method static string[] all_directories(string $directory = null)
  * @method static array directories(string $directory = null, bool $recursive = false)
  * @method static bool make_directory(string $path)

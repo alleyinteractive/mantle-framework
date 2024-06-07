@@ -425,6 +425,13 @@ class Router implements Router_Contract {
 	 * @param Route $route Route instance.
 	 */
 	public function gather_route_middleware( Route $route ): array {
+		$middleware = $route->excluded_middleware();
+
+		// If the route has a wildcard, we will just skip the middleware gathering.
+		if ( in_array( '*', $middleware, true ) ) {
+			return [];
+		}
+
 		$excluded = collect( $route->excluded_middleware() )
 			->map(
 				fn ( $name ) => Middleware_Name_Resolver::resolve( $name, $this->middleware, $this->middleware_groups ),
