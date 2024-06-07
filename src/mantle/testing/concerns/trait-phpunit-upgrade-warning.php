@@ -76,11 +76,11 @@ trait PHPUnit_Upgrade_Warning {
 					<strong>🚨 Warning:</strong> You are running PHPUnit 10+ against a test suite that contains legacy test cases.
 				</div>
 				<div>
-					<span class="text-blue-300">Mantle Testing Framework 1.0</span> includes <span class="text-yellow-500 font-bold">✨ PHPUnit 10 ✨</span> which requires test cases to follow PSR-4 standards.
+					<span class="text-blue-300">Mantle Testing Framework 1.1</span> includes <span class="text-yellow-500 font-bold">✨ PHPUnit 11 ✨</span> which requires test cases to follow PSR-4 standards.
 					<br />
 					For example, that would be <span class="italic">tests/Feature/MyExampleTest.php</span> instead of <span class="italic">tests/feature/test-my-example.php</span>.
 					<br />
-					Fear not, you don't have to upgrade to PHPUnit 10 right away. You can still use PHPUnit 9 by running the following code:
+					Fear not, you don't have to upgrade to PHPUnit 11 right away. You can still keep your test suite as-is and use PHPUnit 9 by running the following code:
 
 					<div class="ml-2 mt-1 italic">composer require --dev phpunit/phpunit:^9 nunomaduro/collision:^6 -W</div>
 				</div>
