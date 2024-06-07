@@ -10,6 +10,7 @@ use Mantle\Testing\Concerns\Prevent_Remote_Requests;
 use Mantle\Testing\Mock_Http_Response;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Mock_Http_Sequence;
+use PHPUnit\Framework\Attributes\Group;
 use RuntimeException;
 
 /**
@@ -17,6 +18,7 @@ use RuntimeException;
  *
  * @group testing
  */
+#[Group( 'testing' )]
 class InteractsWithExternalRequestsTest extends Framework_Test_Case {
 	use Prevent_Remote_Requests;
 

@@ -10,6 +10,7 @@ use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Test_Response;
 use PHPUnit\Framework\AssertionFailedError;
+use PHPUnit\Framework\Attributes\Group;
 use WP_REST_Response;
 
 use function Mantle\Support\Helpers\collect;
@@ -17,6 +18,7 @@ use function Mantle\Support\Helpers\collect;
 /**
  * @group testing
  */
+#[Group( 'testing' )]
 class MakesHttpRequestsTest extends Framework_Test_Case {
 	use Refresh_Database;
 

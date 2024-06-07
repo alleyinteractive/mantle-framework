@@ -4,12 +4,14 @@ namespace Mantle\Tests\Testing\Concerns;
 use Mantle\Testing\Attributes\Expected_Incorrect_Usage;
 use Mantle\Testing\Attributes\Ignore_Incorrect_Usage;
 use Mantle\Testing\Framework_Test_Case;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Test for incorrect usage errors being thrown and handled.
  *
  * @group testing
  */
+#[Group( 'testing' )]
 class IncorrectUsageTest extends Framework_Test_Case {
 	/**
 	 * @expectedIncorrectUsage test_incorrect_usage_annotation

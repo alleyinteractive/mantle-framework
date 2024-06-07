@@ -11,12 +11,14 @@ use Mantle\Queue\Queue_Worker_Job;
 use Mantle\Support\Collection;
 use Mockery as m;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
+use PHPUnit\Framework\Attributes\Group;
 
 use function Mantle\Support\Helpers\collect;
 
 /**
  * @group queue
  */
+#[Group( 'queue' )]
 class WorkerTest extends MockeryTestCase {
 
 	/**

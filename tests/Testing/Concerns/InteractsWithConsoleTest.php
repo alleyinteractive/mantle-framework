@@ -3,10 +3,12 @@ namespace Mantle\Tests\Concerns;
 
 use Mantle\Facade\Console;
 use Mantle\Testing\Framework_Test_Case;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * @group testing
  */
+#[Group( 'testing' )]
 class InteractsWithConsoleTest extends Framework_Test_Case {
 	protected function setUp(): void {
 		parent::setUp();

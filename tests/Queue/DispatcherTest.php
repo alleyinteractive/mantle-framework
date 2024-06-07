@@ -12,10 +12,12 @@ use Mantle\Queue\Dispatchable;
 use Mantle\Queue\Dispatcher;
 use Mantle\Queue\Queue_Manager;
 use Mockery as m;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * @group queue
  */
+#[Group( 'queue' )]
 class DispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	/**
 	 * Provider instance.

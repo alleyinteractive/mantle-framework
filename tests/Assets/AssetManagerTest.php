@@ -3,10 +3,12 @@
 namespace Mantle\Tests\Assets;
 
 use Mantle\Assets\Asset_Manager;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * @group assets
  */
+#[Group( 'assets' )]
 class AssetManagerTest extends TestCase {
 	public function test_register_script() {
 		$manager = new Asset_Manager();

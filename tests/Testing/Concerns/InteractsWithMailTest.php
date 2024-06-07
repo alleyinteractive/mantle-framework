@@ -3,10 +3,12 @@ namespace Mantle\Tests\Testing\Concerns;
 
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Mail\Mail_Message;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * @group testing
  */
+#[Group( 'testing' )]
 class InteractsWithMailTest extends Framework_Test_Case {
 	protected function setUp(): void {
 		parent::setUp();
