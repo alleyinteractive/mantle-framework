@@ -13,13 +13,15 @@ use Mantle\Contracts\Application;
 use Mantle\Contracts\Exceptions\Handler as Contract;
 use Mantle\Database\Model\Model_Not_Found_Exception;
 use Mantle\Http\Request;
+use Mantle\Http\Response;
 use Mantle\Http\Routing\Route;
 use Mantle\Support\Arr;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\ErrorHandler\ErrorRenderer\HtmlErrorRenderer;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -34,7 +36,7 @@ use function Mantle\Support\Helpers\collect;
  * Provides logging back to the logging service provider for exceptions thrown and
  * graceful handling of errors.
  *
- * @todo Add testing to improve coverage.
+ * @todo Allow for custom handling of errors.
  */
 class Handler implements Contract {
 
@@ -60,18 +62,35 @@ class Handler implements Contract {
 	];
 
 	/**
+	 * The levels of exceptions to report.
+	 *
+	 * @var array<class-string<\Throwable>, \Psr\Log\LogLevel::*>
+	 */
+	protected array $levels = [];
+
+	/**
 	 * Create a new exception handler instance.
 	 *
 	 * @param Application $container
 	 */
-	public function __construct( protected Application $container ) {
+	public function __construct( protected Application $container ) {}
+
+	/**
+	 * Set the log level for the given exception type.
+	 *
+	 * @param  class-string<\Throwable> $type
+	 * @param  \Psr\Log\LogLevel::*     $level
+	 */
+	public function level( string $type, string $level ): static {
+		$this->levels[ $type ] = $level;
+
+		return $this;
 	}
 
 	/**
 	 * Report or log an exception.
 	 *
 	 * @param Throwable $e Exception thrown.
-	 *
 	 * @throws Exception Throws if logger not found.
 	 */
 	public function report( Throwable $e ): void {
@@ -81,19 +100,26 @@ class Handler implements Contract {
 
 		// Send the report method to the exception if it exists.
 		$report_callable = [ $e, 'report' ];
+
 		if ( is_callable( $report_callable ) ) {
 			$this->container->call( $report_callable );
+
 			return;
 		}
 
 		$logger = $this->container->make( LoggerInterface::class );
+		$level  = Arr::first(
+			$this->levels,
+			fn ( $level, $type ) => $e instanceof $type,
+			LogLevel::ERROR,
+		);
 
-		$logger->error(
+		$logger->{$level}(
 			$e->getMessage(),
 			array_merge(
-				$this->exception_context( $e ),
+				method_exists( $e, 'context' ) ? $e->context() : [],
 				$this->context(),
-				[ 'exception' => $e ]
+				[ 'exception' => $e ],
 			)
 		);
 	}
@@ -123,20 +149,6 @@ class Handler implements Contract {
 	}
 
 	/**
-	 * Get the default exception context variables for logging.
-	 *
-	 * @param  \Throwable $e
-	 * @return array
-	 */
-	protected function exception_context( Throwable $e ) {
-		if ( method_exists( $e, 'context' ) ) {
-			return $e->context();
-		}
-
-		return [];
-	}
-
-	/**
 	 * Get the default context variables for logging.
 	 *
 	 * @return array
@@ -159,34 +171,19 @@ class Handler implements Contract {
 	 *
 	 * @param Request   $request Request object.
 	 * @param Throwable $e Exception thrown.
-	 * @return Response|mixed
-	 * @throws \Throwable Thrown on catch.
+	 * @return SymfonyResponse
 	 */
 	public function render( $request, Throwable $e ) {
-		// Check if the exception has a render method.
-		if ( method_exists( $e, 'render' ) ) {
-			$response = $e->render( $request );
-
-			if ( $response ) {
-				return Route::ensure_response( $response );
-			}
-		}
-
-		/**
-		 * Allow the whoops page handler to handle this automatically except for
-		 * JSON requests which returns an error in JSON instead.
-		 *
-		 * @see Mantle\Framework\Providers\Error_Service_Provider
-		 */
-		if ( config( 'app.debug' ) && ! $request->expects_json() ) {
-			throw $e;
+		// Check if the exception has a render method and use that.
+		if ( method_exists( $e, 'render' ) && $response = $e->render( $request ) ) {
+			return Route::ensure_response( $response );
 		}
 
 		$e = $this->prepare_exception( $e );
 
 		return $request->expects_json()
 			? $this->prepare_json_response( $request, $e )
-			: $this->prepare_response( $request, $e );
+			: $this->prepare_http_response( $request, $e );
 	}
 
 	/**
@@ -199,7 +196,7 @@ class Handler implements Contract {
 	 */
 	public function render_for_console( OutputInterface $output, Throwable $e ): void {
 		if ( config( 'app.debug' ) ) {
-			// Use Whoops to render the exception if we're in debug mode.
+			// Use collision to render the exception if we're in debug mode.
 			( new \NunoMaduro\Collision\Provider() )->register();
 
 			throw $e;
@@ -214,11 +211,11 @@ class Handler implements Contract {
 	 * @param Throwable $e Exception thrown.
 	 */
 	protected function prepare_exception( Throwable $e ): Throwable {
-		if ( $e instanceof Model_Not_Found_Exception ) {
-			return new NotFoundHttpException( $e->getMessage(), $e, 404 );
-		}
-
-		return $e;
+		return match ( true ) {
+			$e instanceof Model_Not_Found_Exception => new NotFoundHttpException( $e->getMessage(), $e, 404 ),
+			$e instanceof ResourceNotFoundException => new NotFoundHttpException( $e->getMessage(), $e, 404 ),
+			default => $e,
+		};
 	}
 
 	/**
@@ -227,29 +224,30 @@ class Handler implements Contract {
 	 * @param  \Mantle\Http\Request $request Request object.
 	 * @param  \Throwable           $e Exception thrown.
 	 */
-	protected function prepare_response( $request, Throwable $e ): Response {
-		if ( $e instanceof ResourceNotFoundException ) {
-			$e = new NotFoundHttpException( $e->getMessage(), $e, 404 );
-		}
-
-		if ( ! $e instanceof HttpException ) {
-			$e = new HttpException( 500, $e->getMessage() );
-		}
-
-		return $this->to_mantle_response( $this->render_http_exception( $e ), $e );
+	protected function prepare_http_response( $request, Throwable $e ): Response {
+		return new Response(
+			$this->render_http_exception( $e ),
+			$e instanceof HttpExceptionInterface ? $e->getStatusCode() : 500,
+			$e instanceof HttpExceptionInterface ? $e->getHeaders() : [],
+		);
 	}
 
 	/**
-	 * Render the given HttpException with a view.
+	 * Render the given exception with a view.
 	 *
 	 * Will attempt to load an error relative to the HTTP code. For example, a 500
 	 * error will load `/views/error-500.php` that will fallback to '/views/error.php'
 	 * if that is not found.
 	 *
-	 * @param  HttpException $e Exception thrown.
-	 * @todo Check if the view exists.
+	 * This is not used when debugging is enabled.
+	 *
+	 * @param Throwable $e Exception thrown.
 	 */
-	protected function render_http_exception( HttpException $e ): Response {
+	protected function render_http_exception( Throwable $e ): string {
+		if ( config( 'app.debug' ) ) {
+			return $this->render_symfony_http_exception( $e );
+		}
+
 		global $wp_query;
 
 		// Calling a view this early doesn't work well for WordPress.
@@ -257,46 +255,66 @@ class Handler implements Contract {
 			$wp_query = new \WP_Query(); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 		}
 
-		$view = $this->get_http_exception_view( $e );
+		try {
+			$view = $this->get_http_exception_view( $e );
 
-		return response()->view(
-			$view[0],
-			$view[1],
-			[
-				'code'      => $e->getStatusCode(),
-				'exception' => $e,
-			],
-			$e->getStatusCode(),
-		);
+			return view(
+				$view[0],
+				$view[1],
+				[
+					'code'      => $e instanceof HttpExceptionInterface ? $e->getStatusCode() : 500,
+					'exception' => $e,
+				],
+				$e instanceof HttpExceptionInterface ? $e->getStatusCode() : 500,
+			);
+		} catch ( Throwable ) {
+			// If there is an error rendering the view, fall back to the Symfony error renderer.
+			return $this->render_symfony_http_exception( $e );
+		}
+	}
+
+	/**
+	 * Render the error with Symfony.
+	 *
+	 * @param Throwable $e Exception thrown.
+	 */
+	protected function render_symfony_http_exception( Throwable $e ): string {
+		$renderer = ( new HtmlErrorRenderer( config( 'app.debug' ) ) )->render( $e );
+
+		return $renderer->getAsString();
 	}
 
 	/**
 	 * Get the view used to render HTTP exceptions.
 	 *
-	 * @param \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface $e Exception thrown.
+	 * @param Throwable $e Exception thrown.
 	 * @return array{0: string, 1: string}
 	 */
-	protected function get_http_exception_view( HttpExceptionInterface $e ) {
-		return [ 'error/error', (string) $e->getStatusCode() ];
-	}
+	protected function get_http_exception_view( Throwable $e ): array {
+		$default_view = $view = [ 'error/error', '500' ];
 
-	/**
-	 * Map the given exception into an response.
-	 *
-	 * @param  Response   $response
-	 * @param  \Throwable $e
-	 * @return Response
-	 */
-	protected function to_mantle_response( Response $response, Throwable $e ) {
-		if ( ! $response instanceof RedirectResponse ) {
-			return new Response(
-				$response->getContent(),
-				$response->getStatusCode(),
-				$response->headers->all()
-			);
+		if ( $e instanceof HttpExceptionInterface ) {
+			$view = [ 'error/error', (string) $e->getStatusCode() ];
 		}
 
-		return $response;
+		try {
+			/**
+			 * Filter the view used to render HTTP exceptions.
+			 *
+			 * @param array{0: string, 1: string} $view Default view.
+			 * @param Throwable $e Exception thrown.
+			 */
+			$view = $this->container['events']->dispatch( 'mantle_exception_view', [ $view ], $e );
+		} catch ( Throwable ) {
+			// If there is an error dispatching the event, fall back to the default view.
+			$view = $default_view;
+		} finally {
+			if ( ! is_array( $view ) ) {
+				$view = $default_view;
+			}
+		}
+
+		return $view;
 	}
 
 	/**
@@ -319,7 +337,7 @@ class Handler implements Contract {
 	 * @param  \Throwable $e
 	 */
 	protected function convert_exception_to_array( Throwable $e ): array {
-		return config( 'app.debug' ) ? [
+		$payload = config( 'app.debug' ) ? [
 			'message'   => $e->getMessage(),
 			'exception' => $e::class,
 			'file'      => $e->getFile(),
@@ -328,20 +346,19 @@ class Handler implements Contract {
 				fn ( $trace) => Arr::except( $trace, [ 'args' ] )
 			)->all(),
 		] : [
-			'message' => $this->is_http_exception( $e ) ? $e->getMessage() : __( 'Server Error', 'mantle' ),
+			'message' => $e instanceof HttpException ? $e->getMessage() : __( 'Server Error', 'mantle' ),
 		];
-	}
 
-	/**
-	 * Determine if the given exception is an HTTP exception.
-	 *
-	 * @template TThrowable of Throwable
-	 *
-	 * @param Throwable $e Exception thrown.
-	 * @phpstan-param TThrowable $e
-	 * @phpstan-return (TThrowable is HttpException ? true : false)
-	 */
-	protected function is_http_exception( Throwable $e ): bool {
-		return $e instanceof HttpException;
+		try {
+			/**
+			 * Filter the exception array before it is converted to JSON.
+			 *
+			 * @param array $payload Exception array.
+			 * @param Throwable $e Exception thrown.
+			 */
+			return (array) $this->container['events']->dispatch( 'mantle_exception_array', [ $payload, $e ] );
+		} catch ( Throwable ) {
+			return $payload;
+		}
 	}
 }

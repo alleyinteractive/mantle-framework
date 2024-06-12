@@ -22,6 +22,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 	configuration files in the application. Service providers will always
 	load without needing to be declared in the application configuration.
 
+### Changed
+
+- Overhauled the bootloader to be more flexible and allow for more
+  customization. Supports passing configuration, custom kernels, exception
+  handlers, etc. via the bootloader when configuring the application.
+- Ensure that framework configuration is properly merge into application
+  configuration when booting the application. This allows for more slimmer
+	configuration files in the application. Provider service providers will always
+	load without needing to be declared in the application configuration.
+
 ## Fixed
 
 - Fixed issue with command jobs not working properly.

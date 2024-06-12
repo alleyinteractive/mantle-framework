@@ -19,7 +19,6 @@
         "doctrine/inflector": "^2.0.8",
         "dragonmantank/cron-expression": "^3.3.3",
         "fakerphp/faker": "^1.23",
-        "filp/whoops": "^2.15.3",
         "illuminate/view": "^9.52.15",
         "laravel/serializable-closure": "^1.3.1",
         "league/commonmark": "^2.4.0",

@@ -49,6 +49,10 @@ trait Interacts_With_Content_Types {
 			return true;
 		}
 
+		if ( function_exists( 'wp_is_serving_rest_request' ) && wp_is_serving_rest_request() ) {
+			return true;
+		}
+
 		return (bool) $this->wants_json();
 	}
 

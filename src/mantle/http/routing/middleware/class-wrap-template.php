@@ -12,6 +12,7 @@ use Mantle\Contracts\Application;
 use Mantle\Http\Request;
 use Mantle\Http\Response;
 use Mantle\Http\View\Factory;
+use Symfony\Component\HttpFoundation\Response as Symfony_Response;
 
 /**
  * Wrap the current response with a template.
@@ -50,6 +51,11 @@ class Wrap_Template {
 
 		$response = $next( $request );
 
+		// If the response is not a Response object, we can't wrap it.
+		if ( ! $response instanceof \Symfony\Component\HttpFoundation\Response ) {
+			return $response;
+		}
+
 		/**
 		 * Filter the template for wrapping the content.
 		 *
@@ -80,10 +86,10 @@ class Wrap_Template {
 	 * Fallback to running get_header()/get_footer() around the content if a wrapper
 	 * template is not specified.
 	 *
-	 * @param Response $response Response object.
-	 * @return Response
+	 * @param Symfony_Response $response Response object.
+	 * @return Symfony_Response
 	 */
-	protected function wrap_fallback( $response ) {
+	protected function wrap_fallback( Symfony_Response $response ) {
 		ob_start();
 		\get_header();
 		// Assumed to be sanitized.
@@ -91,6 +97,7 @@ class Wrap_Template {
 		\get_footer();
 
 		$response->setContent( ob_get_clean() );
+
 		return $response;
 	}
 }
