@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed issue with command jobs not working properly.
 - Ensure that unit tests fail when a project's installation script fails.
 - Fix anonymous queue jobs from WP-CLI failing to run.
+- Fixed issue with HTTP Client not returning the proper headers.
 
 ## Changed
 
