@@ -56,7 +56,6 @@ return [
 		Mantle\Application\App_Service_Provider::class,
 		Mantle\Assets\Asset_Service_Provider::class,
 		Mantle\Events\Event_Service_Provider::class,
-		Mantle\Framework\Providers\Route_Service_Provider::class,
 	],
 
 	/*

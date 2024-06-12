@@ -28,8 +28,12 @@ class Model_Service_Provider extends Service_Provider {
 	 * Register the service provider.
 	 */
 	public function register(): void {
-		Model::set_event_dispatcher( $this->app['events'] );
+	}
 
+	/**
+	 * Bootstrap the service provider.
+	 */
+	public function boot(): void {
 		// Allow the configuration to disable discovery.
 		if ( $this->app['config']->get( 'models.disable_discovery', false ) ) {
 			return;
@@ -44,12 +48,7 @@ class Model_Service_Provider extends Service_Provider {
 				$this->app[ Model_Manifest::class ]->models()
 			)
 		);
-	}
 
-	/**
-	 * Bootstrap the service provider.
-	 */
-	public function boot(): void {
 		if ( empty( $this->models ) ) {
 			return;
 		}

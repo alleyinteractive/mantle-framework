@@ -8,6 +8,7 @@
 namespace Mantle\Framework\Providers;
 
 use Mantle\Contracts\Http\Routing\Response_Factory as Response_Factory_Contract;
+use Mantle\Http\Request;
 use Mantle\Http\Routing\Entity_Router;
 use Mantle\Http\Routing\Redirector;
 use Mantle\Http\Routing\Response_Factory;
@@ -31,6 +32,11 @@ class Routing_Service_Provider extends Service_Provider {
 		$this->register_url_generator();
 		$this->register_redirector();
 		$this->register_response_factory();
+
+		// Setup the default request object.
+		if ( ! isset( $this->app['request'] ) ) {
+			$this->app['request'] = new Request();
+		}
 	}
 
 	/**

@@ -70,6 +70,13 @@ class Router implements Router_Contract {
 	protected Entity_Router $model_router;
 
 	/**
+	 * Flag or callback to determine if requests should pass through to WordPress.
+	 *
+	 * @var bool|callable
+	 */
+	protected mixed $pass_requests_to_wordpress = true;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Dispatcher $events Events dispatcher.
@@ -346,9 +353,8 @@ class Router implements Router_Contract {
 	 *
 	 * @param  string $name
 	 * @param  string $class
-	 * @return static
 	 */
-	public function alias_middleware( $name, $class ) {
+	public function alias_middleware( string $name, string $class ): static {
 		$this->middleware[ $name ] = $class;
 
 		return $this;
@@ -368,9 +374,8 @@ class Router implements Router_Contract {
 	 *
 	 * @param  string $name
 	 * @param  array  $middleware
-	 * @return static
 	 */
-	public function middleware_group( $name, array $middleware ) {
+	public function middleware_group( string $name, array $middleware ): static {
 		$this->middleware_groups[ $name ] = $middleware;
 
 		return $this;
@@ -625,5 +630,36 @@ class Router implements Router_Contract {
 		$this->routes->remove( $old_name );
 
 		return $this;
+	}
+
+	/**
+	 * Determine if the request should pass through to WordPress.
+	 *
+	 * @param (callable(\Mantle\Http\Request): bool)|bool $callback Callback to determine if the request should pass through to WordPress.
+	 */
+	public function pass_requests_to_wordpress( $callback ): static {
+		$this->pass_requests_to_wordpress = $callback;
+
+		return $this;
+	}
+
+	/**
+	 * Determine if the request should pass through to WordPress.
+	 *
+	 * @param Request $request Request object.
+	 */
+	public function should_pass_through_request( Request $request ): bool {
+		// Early checks to always allow the REST API and prevent routing when not using themes.
+		if ( str_starts_with( $request->path(), 'wp-json' ) ) {
+			return true;
+		}
+
+		if ( ! wp_using_themes() ) {
+			return true;
+		}
+
+		$status = $this->pass_requests_to_wordpress;
+
+		return is_callable( $status ) ? (bool) $status( $request ) : $status;
 	}
 }

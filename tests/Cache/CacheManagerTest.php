@@ -17,7 +17,7 @@ class CacheManagerTest extends Framework_Test_Case {
 
 	public function test_unknown_driver() {
 		$this->expectException( InvalidArgumentException::class );
-		$this->expectExceptionMessage( 'Driver [unknown-driver] not supported.' );
+		$this->expectExceptionMessage( 'Driver not specified for [unknown-driver]' );
 
 		Cache::store( 'unknown-driver' );
 	}

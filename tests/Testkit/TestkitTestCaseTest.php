@@ -8,6 +8,7 @@ class TestkitTestCaseTest extends Test_Case {
 	use ExampleOverload;
 
 	public function test_create_application() {
+		$this->assertInstanceOf( \Mantle\Testkit\Application::class, $this->create_application() );
 		$this->assertInstanceOf( \Mantle\Contracts\Application::class, $this->create_application() );
 	}
 
@@ -28,5 +29,9 @@ class TestkitTestCaseTest extends Test_Case {
 	public function test_trait_setup_process() {
 		$this->assertNotEmpty( static::$overloaded_methods );
 		$this->assertContains( 'setUpBeforeClass', static::$overloaded_methods );
+	}
+
+	public function test_router_not_registered() {
+		$this->assertTrue( empty( $this->app['router'] ) );
 	}
 }

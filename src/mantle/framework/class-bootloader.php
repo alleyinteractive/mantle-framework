@@ -12,6 +12,8 @@ use Mantle\Application\Application;
 use Mantle\Console\Command;
 use Mantle\Contracts;
 use Mantle\Contracts\Framework\Bootloader as Contract;
+use Mantle\Framework\Bootstrap\Load_Configuration;
+use Mantle\Framework\Bootstrap\Register_Providers;
 use Mantle\Http\Request;
 use Mantle\Support\Str;
 use Mantle\Support\Traits\Conditionable;
@@ -23,6 +25,8 @@ use Mantle\Support\Traits\Conditionable;
  * context. Removes the need for boilerplate code to be included in projects
  * (ala laravel/laravel) but still allows for the flexibility to do so if they
  * so choose.
+ *
+ * @todo Add support for console commands.
  */
 class Bootloader implements Contract {
 	use Conditionable;
@@ -30,12 +34,16 @@ class Bootloader implements Contract {
 	/**
 	 * Current instance of the manager.
 	 */
-	protected static ?Bootloader $instance = null;
+	protected static ?Bootloader $instance;
 
 	/**
-	 * Application base path.
+	 * Create a new instance of the application.
+	 *
+	 * @param Contracts\Application|null $app Application instance.
 	 */
-	protected ?string $base_path = null;
+	public static function create( ?Contracts\Application $app = null ): static {
+		return new static( $app );
+	}
 
 	/**
 	 * Retrieve the instance of the manager.
@@ -43,7 +51,7 @@ class Bootloader implements Contract {
 	 * @param Contracts\Application|null $app Application instance.
 	 */
 	public static function get_instance( ?Contracts\Application $app = null ): Bootloader {
-		if ( is_null( static::$instance ) ) {
+		if ( ! isset( static::$instance ) || ( $app instanceof \Mantle\Contracts\Application && $app !== static::$instance->get_application() ) ) {
 			static::$instance = new static( $app );
 		}
 
@@ -69,12 +77,156 @@ class Bootloader implements Contract {
 	}
 
 	/**
+	 * Clear the instance of the manager.
+	 */
+	public static function clear_instance(): void {
+		static::$instance = null;
+	}
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Contracts\Application|null $app Application instance.
+	 * @param string|null                $base_path Base path for the application.
 	 */
-	public function __construct( protected ?Contracts\Application $app = null ) {
+	public function __construct( protected ?Contracts\Application $app = null, ?string $base_path = null ) {
 		static::set_instance( $this );
+
+		$this
+			->with_application( $app ?? new Application( $base_path ) )
+			->with_kernels()
+			->with_exception_handler();
+	}
+
+	/**
+	 * Set the application instance to be booted.
+	 *
+	 * @param Contracts\Application $app Application instance.
+	 */
+	public function with_application( Contracts\Application $app ): static {
+		$this->app = $app;
+
+		return $this;
+	}
+
+	/**
+	 * Merge additional configuration to the existing configuration.
+	 *
+	 * Configuration passed will be merged recursively with the existing
+	 * configuration after all application configuration has been loaded.
+	 *
+	 * @param array<string, array<mixed>> $config Configuration to merge.
+	 */
+	public function with_config( array $config ): static {
+		Load_Configuration::merge( $config );
+
+		return $this;
+	}
+
+	/**
+	 * Bind the application with the default kernels.
+	 *
+	 * @throws \InvalidArgumentException If the console or HTTP kernel does not implement the correct interface.
+	 *
+	 * @param class-string<Contracts\Console\Kernel>|null $console Console kernel class.
+	 * @param class-string<Contracts\Http\Kernel>|null    $http    HTTP kernel class.
+	 */
+	public function with_kernels( string $console = null, string $http = null ): static {
+		if ( $console && ! in_array( Contracts\Console\Kernel::class, class_implements( $console ), true ) ) {
+			throw new \InvalidArgumentException(
+				'Console kernel must implement the Contracts\Console\Kernel interface.',
+			);
+		}
+
+		if ( $http && ! in_array( Contracts\Http\Kernel::class, class_implements( $http ), true ) ) {
+			throw new \InvalidArgumentException(
+				'HTTP kernel must implement the Contracts\Http\Kernel interface.',
+			);
+		}
+
+		$this->app->singleton(
+			Contracts\Console\Kernel::class,
+			$console ?? \Mantle\Framework\Console\Kernel::class,
+		);
+
+		$this->app->singleton(
+			Contracts\Http\Kernel::class,
+			$http ?? \Mantle\Framework\Http\Kernel::class,
+		);
+
+		return $this;
+	}
+
+	/**
+	 * Bind the application with a exception handler.
+	 *
+	 * @throws \InvalidArgumentException If the handler does not implement the correct interface.
+	 *
+	 * @param class-string<Contracts\Exceptions\Handler>|null $handler Exception handler class.
+	 */
+	public function with_exception_handler( string $handler = null ): static {
+		if ( $handler && ! in_array( Contracts\Exceptions\Handler::class, class_implements( $handler ), true ) ) {
+			throw new \InvalidArgumentException(
+				'Exception handler must implement the Contracts\Exceptions\Handler interface.',
+			);
+		}
+
+		$this->app->singleton(
+			Contracts\Exceptions\Handler::class,
+			$handler ?? \Mantle\Framework\Exceptions\Handler::class,
+		);
+
+		return $this;
+	}
+
+	/**
+	 * Merge additional service providers to the list of providers.
+	 *
+	 * @param array<class-string<\Mantle\Support\Service_Provider>> $providers List of service providers.
+	 */
+	public function with_providers( array $providers ): static {
+		Register_Providers::merge( $providers );
+
+		return $this;
+	}
+
+	/**
+	 * Setup routing from files for the application.
+	 *
+	 * @param Closure(\Mantle\Contracts\Http\Routing\Router):void|null $callback Callback to setup routes.
+	 * @param string|null                                              $web Web routes file.
+	 * @param string|null                                              $rest_api REST API routes file.
+	 * @param bool|callable(\Mantle\Http\Request):bool|null            $pass_through Pass requests through to WordPress (or a callback to determine if it should).
+	 */
+	public function with_routing(
+		?Closure $callback = null,
+		?string $web = null,
+		?string $rest_api = null,
+		bool|callable|null $pass_through = null,
+	): static {
+		$this->app->booted(
+			function ( Application $app ) use ( $callback, $web, $rest_api, $pass_through ): void {
+				$router = $app['router'];
+
+				if ( $callback ) {
+					$callback( $router );
+				}
+
+				if ( $web ) {
+					$router->middleware( 'web' )->group( $web );
+				}
+
+				if ( $rest_api ) {
+					$router->middleware( 'rest-api' )->group( $rest_api );
+				}
+
+				if ( ! is_null( $pass_through ) ) {
+					$router->pass_requests_to_wordpress( $pass_through );
+				}
+			}
+		);
+
+		return $this;
 	}
 
 	/**
@@ -84,10 +236,6 @@ class Bootloader implements Contract {
 	 * @param Closure|string|null $concrete Concrete to bind.
 	 */
 	public function bind( string $abstract, Closure|string|null $concrete ): static {
-		if ( is_null( $this->app ) ) {
-			$this->boot_application();
-		}
-
 		$this->app->bind( $abstract, $concrete );
 
 		return $this;
@@ -99,18 +247,11 @@ class Bootloader implements Contract {
 	public function boot(): static {
 		$this->boot_application();
 
-		// Bail if the application is already booted.
-		if ( $this->app->is_booted() ) {
-			return $this;
-		}
-
-		if ( $this->app->is_running_in_console_isolation() ) {
-			$this->boot_console();
-		} elseif ( $this->app->is_running_in_console() ) {
-			$this->boot_console_wp_cli();
-		} else {
-			$this->boot_http();
-		}
+		match ( true ) {
+			$this->app->is_running_in_console_isolation() => $this->boot_console(),
+			$this->app->is_running_in_console() => $this->boot_console_wp_cli(),
+			default => $this->boot_http(),
+		};
 
 		return $this;
 	}
@@ -119,8 +260,8 @@ class Bootloader implements Contract {
 	 * Boot the application and attach the relevant container classes.
 	 */
 	protected function boot_application(): void {
-		if ( is_null( $this->app ) ) {
-			$this->app = new Application( $this->get_base_path() );
+		if ( $this->app->is_booted() ) {
+			return;
 		}
 
 		if ( function_exists( 'do_action' ) ) {
@@ -131,21 +272,6 @@ class Bootloader implements Contract {
 			 */
 			do_action( 'mantle_bootloader_before_boot', $this->app );
 		}
-
-		$this->app->singleton_if(
-			Contracts\Console\Kernel::class,
-			\Mantle\Framework\Console\Kernel::class,
-		);
-
-		$this->app->singleton_if(
-			Contracts\Http\Kernel::class,
-			\Mantle\Framework\Http\Kernel::class,
-		);
-
-		$this->app->singleton_if(
-			Contracts\Exceptions\Handler::class,
-			\Mantle\Framework\Exceptions\Handler::class,
-		);
 
 		/**
 		 * Fired after the application is booted.
@@ -160,34 +286,6 @@ class Bootloader implements Contract {
 	 */
 	public function get_application(): ?Contracts\Application {
 		return $this->app;
-	}
-
-	/**
-	 * Get the calculated base path for the application.
-	 *
-	 * @todo Calculate a better default path from the plugin file.
-	 */
-	public function get_base_path(): ?string {
-		if ( ! empty( $this->base_path ) ) {
-			return $this->base_path;
-		}
-
-		return match ( true ) {
-			! empty( $_ENV['MANTLE_BASE_PATH'] ) => $_ENV['MANTLE_BASE_PATH'],
-			defined( 'MANTLE_BASE_PATH' ) => constant( 'MANTLE_BASE_PATH' ),
-			default => dirname( __DIR__, 3 ),
-		};
-	}
-
-	/**
-	 * Set the base path for the application.
-	 *
-	 * @param string|null $base_path Base path for the application.
-	 */
-	public function set_base_path( ?string $base_path = null ): static {
-		$this->base_path = $base_path;
-
-		return $this;
 	}
 
 	/**
@@ -254,5 +352,19 @@ class Bootloader implements Contract {
 		$kernel = $this->app->make( Contracts\Http\Kernel::class );
 
 		$kernel->handle( Request::capture() );
+	}
+
+	/**
+	 * Pass through any unknown methods to the application.
+	 *
+	 * Previously bootstrap/app.php would have return an application instance. To
+	 * preserve backwards compatibility, we need to pass through any unknown
+	 * methods to the application instance.
+	 *
+	 * @param string $method Method to call.
+	 * @param array  $args Arguments to pass to the method.
+	 */
+	public function __call( string $method, array $args ): mixed {
+		return $this->get_application()?->$method( ...$args );
 	}
 }
