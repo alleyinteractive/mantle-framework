@@ -15,6 +15,7 @@ use Mantle\Support\Traits\Macroable;
 use SimpleXMLElement;
 use WP_Error;
 use WP_Http_Cookie;
+use WpOrg\Requests\Utility\CaseInsensitiveDictionary;
 
 use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\data_get;
@@ -41,6 +42,11 @@ class Response implements ArrayAccess {
 	 * @param array $response Raw response from `wp_remote_request()`.
 	 */
 	public function __construct( protected array $response ) {
+		// Serialize the headers from a CaseInsensitiveDictionary to an array.
+		if ( isset( $this->response['headers'] ) && $this->response['headers'] instanceof CaseInsensitiveDictionary ) {
+			$this->response['headers'] = $this->response['headers']->getAll();
+		}
+
 		// Format the headers to be lower-case.
 		$this->response['headers'] = array_change_key_case( (array) ( $this->response['headers'] ?? [] ) );
 	}
