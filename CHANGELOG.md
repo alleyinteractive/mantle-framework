@@ -10,8 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add support for dispatching jobs to the queue after the current response has
-	been sent.
-
+  been sent.
 ## v1.1.0
 
 ### Added
@@ -28,8 +27,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   handlers, etc. via the bootloader when configuring the application.
 - Ensure that framework configuration is properly merged into application
   configuration when booting the application. This allows for slimmer
-	configuration files in the application. Service providers will always
-	load without needing to be declared in the application configuration.
+  configuration files in the application. Service providers will always
+  load without needing to be declared in the application configuration.
 - Load the `wp-content/vip-config/vip-config.php` file if it exists during
   testing to integrate better with VIP Go projects.
 
@@ -49,7 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Changed `Hookable` to accept all arguments passed to the `add_action()` and
-	`add_filter()` functions.
+  `add_filter()` functions.
 
 ### Fixed
 
@@ -106,7 +105,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed the timing of the `set_up` method being called in tests to be after
   the database transaction is started.
 - Allow other use of the `pre_http_request` filter when preventing external
-	requests during testing.
+  requests during testing.
 - Fixed an issue with the streamed HTTP response not being converted to a
   `WP_Error` when needed.
 
@@ -149,7 +148,7 @@ you have tests written in the old style, you will need to migrate them to PSR-4.
 If you wish to continue using PHPUnit 9, you will need to downgrade to PHPUnit
 9/Collision 6. To do so, run the following command:
 
-	composer require --dev phpunit/phpunit:^9 nunomaduro/collision:^6 -W
+  composer require --dev phpunit/phpunit:^9 nunomaduro/collision:^6 -W
 
 To upgrade an existing test suite to PHPUnit 10 and PSR-4 standards, consider
 using a [helper tool](https://github.com/alleyinteractive/wp-to-psr-4/). You
@@ -234,7 +233,7 @@ allow Mantle to manage that.
 ### Fixed
 
 - Fix issue with custom post types/taxonomies and factories not resuming the
-	correct post type/taxonomy after creation.
+  correct post type/taxonomy after creation.
 
 ## v0.12.5 - 2023-09-01
 
