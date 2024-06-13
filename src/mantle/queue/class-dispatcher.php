@@ -7,8 +7,7 @@
 
 namespace Mantle\Queue;
 
-use Closure;
-use Mantle\Contracts\Container;
+use Mantle\Contracts\Application;
 use Mantle\Contracts\Queue\Can_Queue;
 use Mantle\Contracts\Queue\Queue_Manager;
 use Mantle\Queue\Events\Job_Queued;
@@ -22,9 +21,9 @@ class Dispatcher {
 	/**
 	 * Constructor.
 	 *
-	 * @param Container $container Container instance.
+	 * @param Application $container Container instance.
 	 */
-	public function __construct( protected Container $container ) {}
+	public function __construct( protected Application $container ) {}
 
 	/**
 	 * Dispatch the job to the queue.
@@ -52,6 +51,15 @@ class Dispatcher {
 		$this->container['events']->dispatch(
 			new Job_Queued( $provider, $job ),
 		);
+	}
+
+	/**
+	 * Dispatch the job after sending the given response.
+	 *
+	 * @param mixed $job Job instance.
+	 */
+	public function dispatch_after_response( mixed $job ): void {
+		$this->container->terminating( fn () => $this->dispatch_now( $job ) );
 	}
 
 	/**

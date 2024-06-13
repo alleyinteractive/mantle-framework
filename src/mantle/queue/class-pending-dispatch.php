@@ -18,6 +18,11 @@ use RuntimeException;
  */
 class Pending_Dispatch {
 	/**
+	 * Flag to run the job after the response is sent.
+	 */
+	protected bool $after_response = false;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Job|Closure_Job $job Job instance.
@@ -59,7 +64,16 @@ class Pending_Dispatch {
 	}
 
 	/**
-	 * Handle the job and send it to the queue.
+	 * Flag the job to be run after the response is sent.
+	 */
+	public function after_response(): Pending_Dispatch {
+		$this->after_response = true;
+
+		return $this;
+	}
+
+	/**
+	 * Handle the job and send it to the queue or run it immediately.
 	 */
 	public function __destruct() {
 		if ( ! isset( $this->job ) ) {
@@ -68,9 +82,15 @@ class Pending_Dispatch {
 
 		// Allow the queue package to be run independent of the application.
 		if ( ! class_exists( \Mantle\Application\Application::class ) ) {
-			Container::get_instance()->make( Dispatcher::class )->dispatch( $this->job );
+			$dispatcher = Container::get_instance()->make( Dispatcher::class );
 		} else {
-			app( Dispatcher::class )->dispatch( $this->job );
+			$dispatcher = app( Dispatcher::class );
+		}
+
+		if ( $this->after_response ) {
+			$dispatcher->dispatch_after_response( $this->job );
+		} else {
+			$dispatcher->dispatch( $this->job );
 		}
 	}
 }

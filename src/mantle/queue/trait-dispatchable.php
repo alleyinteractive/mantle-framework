@@ -54,4 +54,15 @@ trait Dispatchable {
 			new static( ...$args )
 		);
 	}
+
+	/**
+	 * Dispatch after sending the response.
+	 *
+	 * @param mixed ...$args Dispatch arguments.
+	 */
+	public static function dispatch_after_response( ...$args ): void {
+		app( Dispatcher::class )->dispatch_after_response(
+			new static( ...$args )
+		);
+	}
 }
