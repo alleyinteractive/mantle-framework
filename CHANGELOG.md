@@ -19,20 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Overhauled the bootloader to be more flexible and allow for more
   customization. Supports passing configuration, custom kernels, exception
   handlers, etc. via the bootloader when configuring the application.
-- Ensure that framework configuration is properly merge into application
+- Ensure that framework configuration is properly merged into application
   configuration when booting the application. This allows for slimmer
 	configuration files in the application. Service providers will always
 	load without needing to be declared in the application configuration.
-
-### Changed
-
-- Overhauled the bootloader to be more flexible and allow for more
-  customization. Supports passing configuration, custom kernels, exception
-  handlers, etc. via the bootloader when configuring the application.
-- Ensure that framework configuration is properly merge into application
-  configuration when booting the application. This allows for more slimmer
-	configuration files in the application. Provider service providers will always
-	load without needing to be declared in the application configuration.
+- Load the `wp-content/vip-config/vip-config.php` file if it exists during
+  testing to integrate better with VIP Go projects.
 
 ## Fixed
 
@@ -40,11 +32,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ensure that unit tests fail when a project's installation script fails.
 - Fix anonymous queue jobs from WP-CLI failing to run.
 - Fixed issue with HTTP Client not returning the proper headers.
-
-## Changed
-
-- Load the `wp-content/vip-config/vip-config.php` file if it exists during
-  testing to integrate better with VIP Go projects.
 
 ## v1.0.7 - 2024-04-29
 
