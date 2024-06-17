@@ -1,6 +1,6 @@
 <?php
 /**
- * Test_Redirector test file.
+ * HttpClientTest test file.
  *
  * @package Mantle
  */
@@ -102,6 +102,16 @@ class HttpClientTest extends Framework_Test_Case {
 			fn ( Request $request ) => 'https://example.com/' === $request->url()
 				&& $request->is_json()
 				&& $request->json() === [ 'example' => 'value' ]
+		);
+
+		// Use the with_json method.
+		$this->http_factory->with_json( [ 'example' => 'value-2' ] )
+			->post( 'https://example.com/with-json' );
+
+		$this->assertRequestSent(
+			fn ( Request $request ) => 'https://example.com/with-json' === $request->url()
+				&& $request->is_json()
+				&& $request->json() === [ 'example' => 'value-2' ]
 		);
 	}
 

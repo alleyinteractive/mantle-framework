@@ -85,10 +85,8 @@ class Pending_Request {
 
 	/**
 	 * Indicate the request contains form parameters.
-	 *
-	 * @return static
 	 */
-	public function as_form() {
+	public function as_form(): static {
 		return $this
 			->body_format( 'form' )
 			->content_type( 'application/x-www-form-urlencoded' );
@@ -96,10 +94,8 @@ class Pending_Request {
 
 	/**
 	 * Indicate the request contains JSON.
-	 *
-	 * @return static
 	 */
-	public function as_json() {
+	public function as_json(): static {
 		return $this
 			->body_format( 'json' )
 			->content_type( 'application/json' );
@@ -109,9 +105,8 @@ class Pending_Request {
 	 * Set the base URL for the pending request.
 	 *
 	 * @param string $url Base URL.
-	 * @return static
 	 */
-	public function base_url( string $url ) {
+	public function base_url( string $url ): static {
 		$this->base_url = $url;
 
 		return $this;
@@ -154,9 +149,8 @@ class Pending_Request {
 	 *
 	 * @param  string $content Content to attach.
 	 * @param  string $content_type Content mime type.
-	 * @return static
 	 */
-	public function with_body( string $content, string $content_type ) {
+	public function with_body( string $content, string $content_type ): static {
 		$this->body_format( 'body' );
 
 		$this->pending_body = $content;
@@ -167,11 +161,22 @@ class Pending_Request {
 	}
 
 	/**
-	 * Retrieve the body for the request.
+	 * Attach JSON data to the request.
 	 *
-	 * @return mixed
+	 * @param array $data Data to attach.
 	 */
-	public function body() {
+	public function with_json( array $data ): static {
+		$this->as_json();
+
+		$this->options[ $this->body_format ] = $data;
+
+		return $this;
+	}
+
+	/**
+	 * Retrieve the body for the request.
+	 */
+	public function body(): mixed {
 		return $this->options[ $this->body_format ] ?? $this->pending_body;
 	}
 
@@ -209,18 +214,15 @@ class Pending_Request {
 	 * Specify the request's content type.
 	 *
 	 * @param string $content_type Content type.
-	 * @return static
 	 */
-	public function content_type( string $content_type ) {
+	public function content_type( string $content_type ): static {
 		return $this->with_header( 'Content-Type', $content_type, true );
 	}
 
 	/**
 	 * Indicate that JSON should be returned by the server.
-	 *
-	 * @return static
 	 */
-	public function accept_json() {
+	public function accept_json(): static {
 		return $this->accept( 'application/json' );
 	}
 
@@ -228,19 +230,17 @@ class Pending_Request {
 	 * Indicate the type of content that should be returned by the server.
 	 *
 	 * @param  string $content_type Content type.
-	 * @return static
 	 */
-	public function accept( $content_type ) {
+	public function accept( $content_type ): static {
 		return $this->with_headers( [ 'Accept' => $content_type ] );
 	}
 
 	/**
 	 * Add the given headers to the request.
 	 *
-	 * @param  array $headers Headers to add.
-	 * @return static
+	 * @param  array<string, mixed> $headers Headers to add.
 	 */
-	public function with_headers( array $headers ) {
+	public function with_headers( array $headers ): static {
 		$this->options = array_merge_recursive(
 			$this->options,
 			[
@@ -257,9 +257,8 @@ class Pending_Request {
 	 * @param string $key Header key.
 	 * @param mixed  $value Header value.
 	 * @param bool   $replace Replace the existing header, defaults to false.
-	 * @return static
 	 */
-	public function with_header( string $key, $value, bool $replace = false ) {
+	public function with_header( string $key, $value, bool $replace = false ): static {
 		if ( $replace && isset( $this->options['headers'][ $key ] ) ) {
 			unset( $this->options['headers'][ $key ] );
 		}
@@ -269,6 +268,8 @@ class Pending_Request {
 
 	/**
 	 * Retrieve the headers for the request.
+	 *
+	 * @return array<string, mixed>
 	 */
 	public function headers(): array {
 		return $this->options['headers'] ?? [];
@@ -276,11 +277,10 @@ class Pending_Request {
 
 	/**
 	 * Clear the headers for the request.
-	 *
-	 * @return static
 	 */
-	public function clear_headers() {
+	public function clear_headers(): static {
 		$this->options['headers'] = [];
+
 		return $this;
 	}
 
@@ -288,9 +288,8 @@ class Pending_Request {
 	 * Retrieve a specific header for the request.
 	 *
 	 * @param  string $key Header key.
-	 * @return mixed
 	 */
-	public function header( string $key ) {
+	public function header( string $key ): mixed {
 		return $this->headers()[ $key ] ?? null;
 	}
 
@@ -299,9 +298,8 @@ class Pending_Request {
 	 *
 	 * @param string $username Username.
 	 * @param string $password Password.
-	 * @return static
 	 */
-	public function with_basic_auth( string $username, string $password ) {
+	public function with_basic_auth( string $username, string $password ): static {
 		return $this->with_header(
 			'Authorization',
 			'Basic ' . base64_encode( $username . ':' . $password )
@@ -313,9 +311,8 @@ class Pending_Request {
 	 *
 	 * @param  string $token
 	 * @param  string $type
-	 * @return static
 	 */
-	public function with_token( string $token, string $type = 'Bearer' ) {
+	public function with_token( string $token, string $type = 'Bearer' ): static {
 		return $this->with_header( 'Authorization', trim( $type . ' ' . $token ) );
 	}
 
@@ -323,19 +320,16 @@ class Pending_Request {
 	 * Specify the user agent for the request.
 	 *
 	 * @param  string $user_agent User agent to set.
-	 * @return static
 	 */
-	public function with_user_agent( string $user_agent ) {
+	public function with_user_agent( string $user_agent ): static {
 		$this->options['user-agent'] = $user_agent;
 		return $this;
 	}
 
 	/**
 	 * Clear the cookies included with the request.
-	 *
-	 * @return static
 	 */
-	public function clear_cookies() {
+	public function clear_cookies(): static {
 		$this->options['cookies'] = [];
 		return $this;
 	}
@@ -344,9 +338,8 @@ class Pending_Request {
 	 * Specify the cookies that should be included with the request.
 	 *
 	 * @param  \WP_Http_Cookie[] $cookies Cookies to pass.
-	 * @return static
 	 */
-	public function with_cookies( array $cookies ) {
+	public function with_cookies( array $cookies ): static {
 		$this->options['cookies'] = array_merge_recursive(
 			$this->options['cookies'] ?? [],
 			$cookies,
@@ -359,18 +352,15 @@ class Pending_Request {
 	 * Specify a single cookie that should be included with the request.
 	 *
 	 * @param \WP_Http_Cookie $cookie Cookie to include.
-	 * @return static
 	 */
-	public function with_cookie( \WP_Http_Cookie $cookie ) {
+	public function with_cookie( \WP_Http_Cookie $cookie ): static {
 		return $this->with_cookies( [ $cookie ] );
 	}
 
 	/**
 	 * Indicate that redirects should not be followed.
-	 *
-	 * @return static
 	 */
-	public function without_redirecting() {
+	public function without_redirecting(): static {
 		$this->options['allow_redirects'] = false;
 		return $this;
 	}
@@ -379,19 +369,16 @@ class Pending_Request {
 	 * Indicate that redirects should be followed.
 	 *
 	 * @param int $times Number of redirects to allow.
-	 * @return static
 	 */
-	public function with_redirecting( int $times = 5 ) {
+	public function with_redirecting( int $times = 5 ): static {
 		$this->options['allow_redirects'] = $times;
 		return $this;
 	}
 
 	/**
 	 * Indicate that TLS certificates should not be verified.
-	 *
-	 * @return static
 	 */
-	public function without_verifying() {
+	public function without_verifying(): static {
 		$this->options['verify'] = false;
 		return $this;
 	}
@@ -400,9 +387,8 @@ class Pending_Request {
 	 * Specify the timeout (in seconds) for the request.
 	 *
 	 * @param  int $seconds
-	 * @return static
 	 */
-	public function timeout( int $seconds ) {
+	public function timeout( int $seconds ): static {
 		$this->options['timeout'] = $seconds;
 		return $this;
 	}
@@ -411,19 +397,16 @@ class Pending_Request {
 	 * Add middleware for the request.
 	 *
 	 * @param callable $middleware Middleware to call.
-	 * @return static
 	 */
-	public function middleware( $middleware ) {
+	public function middleware( $middleware ): static {
 		$this->middleware[] = $middleware;
 		return $this;
 	}
 
 	/**
 	 * Clear all middleware for the request.
-	 *
-	 * @return static
 	 */
-	public function without_middleware() {
+	public function without_middleware(): static {
 		$this->middleware = [];
 		return $this;
 	}
@@ -444,10 +427,8 @@ class Pending_Request {
 
 	/**
 	 * Don't stream the response body to a file.
-	 *
-	 * @return static
 	 */
-	public function dont_stream() {
+	public function dont_stream(): static {
 		return $this->with_options( [ 'stream' => false ] );
 	}
 
@@ -456,9 +437,8 @@ class Pending_Request {
 	 *
 	 * @param int $retry Number of retries.
 	 * @param int $delay Number of milliseconds to delay between retries, defaults to none.
-	 * @return static
 	 */
-	public function retry( int $retry, int $delay = 0 ) {
+	public function retry( int $retry, int $delay = 0 ): static {
 		$this->options['retry'] = $retry;
 		$this->options['delay'] = $delay;
 
@@ -467,21 +447,18 @@ class Pending_Request {
 
 	/**
 	 * Flag to throw an Http_Client_Exception on failure.
-	 *
-	 * @return static
 	 */
-	public function throw_exception() {
+	public function throw_exception(): static {
 		$this->options['throw_exception'] = true;
 		return $this;
 	}
 
 	/**
 	 * Flag to not throw an Http_Client_Exception on failure.
-	 *
-	 * @return static
 	 */
-	public function dont_throw_exception() {
+	public function dont_throw_exception(): static {
 		$this->options['throw_exception'] = false;
+
 		return $this;
 	}
 
@@ -492,13 +469,11 @@ class Pending_Request {
 	 * @param  array|string|null $query Query parameters (assumed to be urlencoded).
 	 * @return Response|static
 	 */
-	public function get( string $url, $query = null ) {
+	public function get( string $url, array|string|null $query = null ) {
 		return $this->send(
 			'GET',
 			$url,
-			[
-				'query' => $query,
-			]
+			! is_null( $query ) ? [ 'query' => $query ] : [],
 		);
 	}
 
@@ -509,13 +484,11 @@ class Pending_Request {
 	 * @param  array|string|null $query
 	 * @return Response|static
 	 */
-	public function head( string $url, $query = null ) {
+	public function head( string $url, array|string|null $query = null ) {
 		return $this->send(
 			'HEAD',
 			$url,
-			[
-				'query' => $query,
-			]
+			! is_null( $query ) ? [ 'query' => $query ] : [],
 		);
 	}
 
@@ -526,13 +499,11 @@ class Pending_Request {
 	 * @param  array  $data
 	 * @return Response|static
 	 */
-	public function post( string $url, array $data = [] ) {
+	public function post( string $url, ?array $data = null ) {
 		return $this->send(
 			'POST',
 			$url,
-			[
-				$this->body_format => $data,
-			]
+			! is_null( $data ) ? [ $this->body_format => $data ] : [],
 		);
 	}
 
@@ -543,13 +514,11 @@ class Pending_Request {
 	 * @param  array  $data
 	 * @return Response|static
 	 */
-	public function patch( string $url, $data = [] ) {
+	public function patch( string $url, ?array $data = null ) {
 		return $this->send(
 			'PATCH',
 			$url,
-			[
-				$this->body_format => $data,
-			]
+			! is_null( $data ) ? [ $this->body_format => $data ] : [],
 		);
 	}
 
@@ -560,13 +529,11 @@ class Pending_Request {
 	 * @param  array  $data
 	 * @return Response|static
 	 */
-	public function put( string $url, array $data = [] ) {
+	public function put( string $url, ?array $data = null ) {
 		return $this->send(
 			'PUT',
 			$url,
-			[
-				$this->body_format => $data,
-			]
+			! is_null( $data ) ? [ $this->body_format => $data ] : [],
 		);
 	}
 
@@ -577,13 +544,11 @@ class Pending_Request {
 	 * @param  array  $data
 	 * @return Response|static
 	 */
-	public function delete( string $url, array $data = [] ) {
+	public function delete( string $url, ?array $data = [] ) {
 		return $this->send(
 			'DELETE',
 			$url,
-			empty( $data ) ? [] : [
-				$this->body_format => $data,
-			]
+			! is_null( $data ) ? [ $this->body_format => $data ] : [],
 		);
 	}
 
@@ -648,9 +613,8 @@ class Pending_Request {
 	 * Determine if this is a pooled request.
 	 *
 	 * @param bool $pooled Whether this is a pooled request.
-	 * @return static
 	 */
-	public function pooled( bool $pooled = true ) {
+	public function pooled( bool $pooled = true ): static {
 		$this->pooled = $pooled;
 
 		return $this;
