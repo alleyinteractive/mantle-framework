@@ -86,6 +86,8 @@ if ( is_readable( $config_file_path ) ) {
 	Utils::info( 'No wp-tests-config.php file found, using default configuration.' );
 }
 
+Utils::setup_configuration();
+
 // Attempt to load the vip-config.php file if it exists to play nicely with VIP Go.
 if ( Utils::env_bool( 'MANTLE_LOAD_VIP_CONFIG', true ) ) {
 	if ( file_exists( ABSPATH . '/wp-content/vip-config/vip-config.php' ) ) {
@@ -95,7 +97,6 @@ if ( Utils::env_bool( 'MANTLE_LOAD_VIP_CONFIG', true ) ) {
 	}
 }
 
-Utils::setup_configuration();
 Utils::reset_server();
 
 define( 'WP_TESTS_TABLE_PREFIX', $table_prefix );
