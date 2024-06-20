@@ -8,11 +8,11 @@
 namespace Mantle\Testkit\Concerns;
 
 use Mantle\Config\Repository;
-use Mantle\Testkit\Application;
 use Mantle\Contracts\Exceptions\Handler as Handler_Contract;
 use Mantle\Http\Request;
 use Mantle\Http\Routing\Url_Generator;
 use Mantle\Support\Collection;
+use Mantle\Testkit\Application;
 use Mantle\Testkit\Exception_Handler;
 use Symfony\Component\Routing\RouteCollection;
 
