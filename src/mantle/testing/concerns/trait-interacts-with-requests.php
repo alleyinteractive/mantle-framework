@@ -10,9 +10,9 @@
 namespace Mantle\Testing\Concerns;
 
 use Closure;
+use InvalidArgumentException;
 use Mantle\Contracts\Support\Arrayable;
 use Mantle\Http_Client\Request;
-use Mantle\Http_Client\Response;
 use Mantle\Support\Collection;
 use Mantle\Support\Str;
 use Mantle\Testing\Mock_Http_Response;
@@ -111,24 +111,32 @@ trait Interacts_With_Requests {
 	 *   $this->fake_request( 'https://testing.com/*' );
 	 *   $this->fake_request( 'https://testing.com/*' )->with_response_code( 404 )->with_body( 'test body' );
 	 *   $this->fake_request( fn () => Mock_Http_Response::create()->with_body( 'test body' ) );
+	 *   $this->fake_request( 'https://testing.com/', fn () => Mock_Http_Response::create()->with_body( 'test body' ) );
+	 *   $this->fake_request( [ 'https://example.org' => Mock_Http_Response::create()->with_body( 'test body' ) ] );
 	 *
 	 * @link https://mantle.alley.com/docs/testing/remote-requests#faking-requests Documentation
 	 *
-	 * @throws \InvalidArgumentException Thrown on invalid argument.
+	 * @throws InvalidArgumentException Thrown on invalid argument when response object passed twice.
+	 * @throws InvalidArgumentException Thrown on invalid argument.
+	 * @throws InvalidArgumentException Thrown on invalid response type.
 	 *
-	 * @template TCallableReturn of Mock_Http_Sequence|Mock_Http_Response|Arrayable
+	 * @template TCallableReturn of Mock_Http_Sequence|Mock_Http_Response|Arrayable|null
 	 *
 	 * @param (callable(string, array): TCallableReturn)|Mock_Http_Response|string|array<string, Mock_Http_Response|callable> $url_or_callback URL to fake, array of URL and response pairs, or a closure
 	 *                                                                                                                                         that will return a faked response.
 	 * @param Mock_Http_Response|callable $response Optional response object, defaults to a 200 response with no body.
+	 * @param string $method Optional request method to apply to, defaults to all. Does not apply to array of URL and response pairs OR callbacks.
 	 */
-	public function fake_request( Mock_Http_Response|callable|string|array|null $url_or_callback = null, Mock_Http_Response|callable $response = null ): static|Mock_Http_Response {
+	public function fake_request(
+		Mock_Http_Response|callable|string|array|null $url_or_callback = null,
+		Mock_Http_Response|callable $response = null,
+		?string $method = null
+	): static|Mock_Http_Response {
 		if ( is_array( $url_or_callback ) ) {
 			$this->stub_callbacks = $this->stub_callbacks->merge(
-				collect( $url_or_callback )
-					->map(
-						fn ( $response, $url_or_callback ) => $this->create_stub_request_callback( $url_or_callback, $response ),
-					)
+				collect( $url_or_callback )->map(
+					fn ( $response, $url_or_callback ) => $this->create_stub_request_callback( $url_or_callback, $response, $method ),
+				)
 			);
 
 			return $this;
@@ -141,9 +149,21 @@ trait Interacts_With_Requests {
 			return $this;
 		}
 
+		// Prevent duplicate responses from being passed.
+		if ( $url_or_callback instanceof Mock_Http_Response && $response instanceof Mock_Http_Response ) {
+			throw new InvalidArgumentException( 'Response object passed twice, only one response object should be passed.' );
+		}
+
+		// Allow for a catch-all response to be passed in the first argument.
+		if ( $url_or_callback instanceof Mock_Http_Response && ! $response ) {
+			$this->stub_callbacks->push( $this->create_stub_request_callback( '*', $url_or_callback, $method ) );
+
+			return $url_or_callback;
+		}
+
 		// Throw an exception on an unknown argument.
 		if ( ! is_string( $url_or_callback ) && ! is_null( $url_or_callback ) ) {
-			throw new \InvalidArgumentException(
+			throw new InvalidArgumentException(
 				sprintf(
 					'Expected a URL string or a callback, got %s.',
 					gettype( $url_or_callback )
@@ -159,9 +179,30 @@ trait Interacts_With_Requests {
 			$response = new Mock_Http_Response();
 		}
 
-		$this->stub_callbacks->push( $this->create_stub_request_callback( $url, $response ) );
+		// Ensure that the response is an instance of Mock_Http_Response.
+		if ( ! $response instanceof Mock_Http_Response ) {
+			throw new InvalidArgumentException( 'Response must be an instance of Mock_Http_Response or callable, ' . gettype( $response ) . ' given.' );
+		}
+
+		$this->stub_callbacks->push(
+			$this->create_stub_request_callback( $url, $response, $method ),
+		);
 
 		return $response;
+	}
+
+	/**
+	 * Fluently build a fake request sequence.
+	 *
+	 * @param string             $url URL to fake (supports * for wildcard matching).
+	 * @param string|null        $method Request method, optional.
+	 */
+	public function fake_request_sequence( string $url, ?string $method = null ): Mock_Http_Sequence {
+		$sequence = Mock_Http_Sequence::create();
+
+		$this->fake_request( [ $url => $sequence ], method: $method );
+
+		return $sequence;
 	}
 
 	/**
@@ -229,7 +270,7 @@ trait Interacts_With_Requests {
 	 * @param string $url          Request URL.
 	 * @param array  $request_args Request arguments.
 	 */
-	protected function get_stub_response( $url, $request_args ): array|WP_Error|null {
+	protected function get_stub_response( string $url, array $request_args ): array|WP_Error|null {
 		if ( ! $this->stub_callbacks->is_empty() ) {
 			foreach ( $this->stub_callbacks as $stub_callback ) {
 				$response = $stub_callback( $url, $request_args );
@@ -312,10 +353,16 @@ trait Interacts_With_Requests {
 	 *
 	 * @param string                      $url URL to stub.
 	 * @param callable|Mock_Http_Response $response Response to send.
+	 * @param string                      $method Request method, optional.
 	 */
-	protected function create_stub_request_callback( string $url, Mock_Http_Response|callable $response ): callable {
-		return function( string $request_url, array $request_args ) use ( $url, $response ) {
+	protected function create_stub_request_callback( string $url, Mock_Http_Response|callable $response, ?string $method = null ): callable {
+		return function( string $request_url, array $request_args ) use ( $url, $response, $method ) {
 			if ( ! Str::is( Str::start( $url, '*' ), $request_url ) ) {
+				return;
+			}
+
+			// Validate the request method for the stub callback.
+			if ( $method && isset( $request_args['method'] ) && strtoupper( $method ) !== strtoupper( (string) $request_args['method'] ) ) {
 				return;
 			}
 
