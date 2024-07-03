@@ -276,6 +276,12 @@ class UnitTestingFactoryTest extends Framework_Test_Case {
 		$this->assertNotEmpty( wp_get_attachment_image_url( $attachment ) );
 	}
 
+	public function test_post_with_real_image() {
+		$post = static::factory()->post->with_real_thumbnail()->create();
+
+		$this->assertNotEmpty( wp_get_attachment_image_url( get_post_thumbnail_id( $post ) ) );
+	}
+
 	protected function shim_test( string $class_name, string $property ) {
 		$this->assertInstanceOf( $class_name, static::factory()->$property->create_and_get() );
 
