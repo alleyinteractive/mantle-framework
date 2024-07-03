@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Added `with_real_thumbnail()` method to post factory for creating posts with
+  real underlying thumbnail files.
+
 ### Changed
 
 - Added support for faking specific HTTP requests by method.
