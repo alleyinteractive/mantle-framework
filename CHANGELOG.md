@@ -11,6 +11,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add support for dispatching jobs to the queue after the current response has
   been sent.
+
+## v1.1.2 - 2024-06-20
+
+### Fixed
+
+- Fixed issue with the `mantle-framework/testkit` package depending on classes
+  that do not exist for that package (introduced in v1.1.0).
+
+## v1.1.1 - 2024-06-20
+
+### Added
+
+- Add a `with_json()` helper to the HTTP client to send JSON data in a request.
+
+### Changed
+
+- Added types to the HTTP client methods.
+
+### Fixed
+
+- Fix the order of the `vip-config.php` loading that was added during 1.0.
+
 ## v1.1.0
 
 ### Added

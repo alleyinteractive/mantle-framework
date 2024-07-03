@@ -11,7 +11,6 @@ namespace Mantle\Testkit;
 
 use Faker\Generator;
 use Faker\Factory;
-use Mantle\Application\Concerns\Loads_Base_Configuration;
 use Mantle\Container\Container;
 use Mantle\Contracts\Application as Application_Contract;
 use Mantle\Contracts\Container as Container_Contract;
@@ -28,8 +27,6 @@ use RuntimeException;
  * For use of the Mantle testing framework entirely independent of the Mantle framework.
  */
 class Application extends Container implements Application_Contract {
-	use Loads_Base_Configuration;
-
 	/**
 	 * Base path of the application.
 	 *
@@ -286,8 +283,6 @@ class Application extends Container implements Application_Contract {
 		$this->instance( Container::class, $this );
 		$this->instance( Container_Contract::class, $this );
 		$this->instance( static::class, $this );
-
-		$this->load_base_configuration();
 	}
 
 	/**
