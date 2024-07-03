@@ -54,13 +54,38 @@ class Mock_Http_Sequence {
 	 *
 	 * @param int   $status Http Status.
 	 * @param array $headers Http Headers.
-	 * @return static
 	 */
-	public function push_status( int $status, array $headers = [] ) {
+	public function push_status( int $status, array $headers = [] ): static {
 		return $this->push(
 			Mock_Http_Response::create()
 				->with_response_code( $status )
 				->with_headers( $headers )
+		);
+	}
+
+	/**
+	 * Push a response with a specific body to the sequence.
+	 *
+	 * @param string $body    Response body.
+	 * @param array  $headers Response headers.
+	 */
+	public function push_body( string $body, array $headers = [] ): static {
+		return $this->push(
+			Mock_Http_Response::create( $body, $headers )
+		);
+	}
+
+	/**
+	 * Push a JSON response to the sequence.
+	 *
+	 * @param array|string $payload Data to encode as JSON.
+	 * @param array        $headers Headers to include in the response.
+	 */
+	public function push_json( array|string $payload, array $headers = [] ): static {
+		return $this->push(
+			Mock_Http_Response::create( '', $headers )
+				->with_json( $payload )
+				->with_headers( [ 'Content-Type' => 'application/json' ] )
 		);
 	}
 
