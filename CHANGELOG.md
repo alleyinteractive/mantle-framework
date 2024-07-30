@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+
+- Fixed an issue with taxonomy registration not returning an array.
+
 ### Changed
 
 - Added support for faking specific HTTP requests by method.

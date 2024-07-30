@@ -66,7 +66,7 @@ trait Register_Taxonomy {
 			}
 		}
 
-		return $object_types;
+		return static::$object_types;
 	}
 
 	/**
