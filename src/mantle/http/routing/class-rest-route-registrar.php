@@ -174,7 +174,7 @@ class Rest_Route_Registrar {
 	 * was already fired.
 	 */
 	protected function should_register_now(): bool {
-		return ! ! did_action( 'rest_api_init' );
+		return function_exists( 'did_action' ) && ! ! did_action( 'rest_api_init' );
 	}
 
 	/**
