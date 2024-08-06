@@ -229,10 +229,15 @@ class Mock_Http_Response implements Arrayable {
 	 * @throws \InvalidArgumentException If the file is not readable.
 	 *
 	 * @param string $file File path.
+	 * @param string $filename Optional. Filename to use in the Content-Disposition header.
 	 */
-	public function with_file( string $file ): Mock_Http_Response {
+	public function with_file( string $file, ?string $filename = null ): Mock_Http_Response {
 		if ( ! is_readable( $file ) ) {
 			throw new \InvalidArgumentException( "File '{$file}' is not readable." );
+		}
+
+		if ( ! $filename ) {
+			$filename = basename( $file );
 		}
 
 		// Determine the mime type.
@@ -244,10 +249,34 @@ class Mock_Http_Response implements Arrayable {
 		}
 
 		if ( ! empty( $mime_type['ext'] ) ) {
-			$this->with_header( 'Content-Disposition', "attachment; filename={$file}.{$mime_type['ext']}" );
+			$this->with_header(
+				'Content-Disposition',
+				sprintf(
+					'attachment; filename="%s.%s"',
+					pathinfo( $filename, PATHINFO_FILENAME ),
+					$mime_type['ext'],
+				),
+			);
 		}
 
-		return $this->with_body( file_get_contents( $file ) ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
+		return $this
+			->with_filename( $file )
+			->with_body( file_get_contents( $file ) ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
+	}
+
+	/**
+	 * Create a response with an image file as the body.
+	 *
+	 * The image will be a JPEG file.
+	 *
+	 * @param string|null $filename Optional. Filename to use in the Content-Disposition header.
+	 * @return Mock_Http_Response
+	 */
+	public function with_image( ?string $filename = null ): Mock_Http_Response {
+		return $this->with_file(
+			__DIR__ . '/data/images/canola.jpg',
+			$filename,
+		);
 	}
 
 	/**

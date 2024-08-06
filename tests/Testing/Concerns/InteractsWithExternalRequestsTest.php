@@ -335,6 +335,34 @@ class InteractsWithExternalRequestsTest extends Framework_Test_Case {
 		$this->assertEquals( 'image/jpeg', $response->header( 'Content-Type' ) );
 	}
 
+	public function test_fake_request_with_file() {
+		$file = __DIR__ . '/../../../src/mantle/testing/data/images/wordpress-gsoc-flyer.pdf';
+
+		$this->fake_request( 'https://example.org/images/file.pdf' )->with_file( $file );
+
+		$response = Http::get( 'https://example.org/images/file.pdf' );
+
+		$this->assertTrue( $response->ok() );
+		$this->assertEquals( 'application/pdf', $response->header( 'Content-Type' ) );
+		$this->assertEquals(
+			'attachment; filename="wordpress-gsoc-flyer.pdf"',
+			$response->header( 'Content-Disposition' )
+		);
+		$this->assertEquals( file_get_contents( $file ), $response->body() );
+	}
+
+	public function test_fake_request_with_image() {
+		$this->fake_request( 'https://example.org/images/alley.jpg' )->with_image();
+
+		$response = Http::get( 'https://example.org/images/alley.jpg' );
+
+		$this->assertTrue( $response->ok() );
+		$this->assertEquals( 'image/jpeg', $response->header( 'Content-Type' ) );
+		$this->assertNotEmpty( $response->body() );
+		$this->assertTrue( $response->is_blob() );
+		$this->assertTrue( $response->is_file() );
+	}
+
 	public function test_unknown_file_as_response() {
 		$this->expectException( InvalidArgumentException::class );
 

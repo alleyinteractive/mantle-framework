@@ -213,6 +213,22 @@ class Response implements ArrayAccess {
 	}
 
 	/**
+	 * Check if the response body is a file download (a Binary Large OBject).
+	 *
+	 * @return bool
+	 */
+	public function is_blob(): bool {
+		return false === mb_detect_encoding( $this->body(), 'UTF-8', true ) && ! ctype_print( $this->body() );
+	}
+
+	/**
+	 * Check if the response is a file download.
+	 */
+	public function is_file(): bool {
+		return ! empty( $this->response['filename'] ) && $this->is_blob();
+	}
+
+	/**
 	 * Get the raw body of the response.
 	 *
 	 * @return string
