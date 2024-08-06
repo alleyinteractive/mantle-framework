@@ -11,15 +11,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added a `with_image()` helper to mocked HTTP responses.
 - Added a `is_blob()` and `is_file()` helper to `Mantle\Http_Client\Response`.
-
-### Fixed
-
-- Fixed an issue with taxonomy registration not returning an array.
+- Added `with_real_thumbnail()` method to post factory for creating posts with
+  real underlying thumbnail files.
 
 ### Changed
 
 - Added support for faking specific HTTP requests by method.
 - Added helper for fluently building HTTP sequence responses.
+
+### Fixed
+
+- Fixed an issue with taxonomy registration not returning an array.
 
 ## v1.1.2 - 2024-06-20
 
