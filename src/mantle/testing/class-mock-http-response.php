@@ -270,7 +270,6 @@ class Mock_Http_Response implements Arrayable {
 	 * The image will be a JPEG file.
 	 *
 	 * @param string|null $filename Optional. Filename to use in the Content-Disposition header.
-	 * @return Mock_Http_Response
 	 */
 	public function with_image( ?string $filename = null ): Mock_Http_Response {
 		return $this->with_file(
