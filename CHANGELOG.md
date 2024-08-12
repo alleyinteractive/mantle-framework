@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added a `with_image()` helper to mocked HTTP responses.
+- Added a `is_blob()` and `is_file()` helper to `Mantle\Http_Client\Response`.
 - Added `with_real_thumbnail()` method to post factory for creating posts with
   real underlying thumbnail files.
 
