@@ -26,10 +26,15 @@ class Faker_Provider extends Base {
 	/**
 	 * Build a heading block.
 	 *
-	 * @param string|null $text Heading text.
-	 * @param int         $level Heading level.
+	 * @param string|int|null $text Heading text.
+	 * @param int             $level Heading level.
 	 */
-	public static function heading_block( string|null $text = null, int $level = 2 ): string {
+	public static function heading_block( string|null|int $text = null, int $level = 2 ): string {
+		if ( is_int( $text ) ) {
+			$level = $text;
+			$text  = null;
+		}
+
 		return static::block(
 			'heading',
 			sprintf( '<h%d>%s</h%d>', $level, $text ?: Lorem::sentence(), $level ),
@@ -42,10 +47,15 @@ class Faker_Provider extends Base {
 	/**
 	 * Build a paragraph block.
 	 *
-	 * @param string|null $text Text for the block.
-	 * @param int         $sentences Number of sentences in the block.
+	 * @param string|int|null $text Text for the block.
+	 * @param int             $sentences Number of sentences in the block.
 	 */
-	public static function paragraph_block( ?string $text = null, int $sentences = 3 ): string {
+	public static function paragraph_block( string|null|int $text = null, int $sentences = 3 ): string {
+		if ( is_int( $text ) ) {
+			$sentences = $text;
+			$text      = null;
+		}
+
 		return static::block(
 			'paragraph',
 			sprintf( '<p>%s</p>', $text ?: Lorem::sentences( $sentences, true ) )
