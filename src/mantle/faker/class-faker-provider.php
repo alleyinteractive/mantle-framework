@@ -26,7 +26,8 @@ class Faker_Provider extends Base {
 	/**
 	 * Build a heading block.
 	 *
-	 * @param int $level Heading level.
+	 * @param string|null $text Heading text.
+	 * @param int         $level Heading level.
 	 */
 	public static function heading_block( string|null $text = null, int $level = 2 ): string {
 		return static::block(
