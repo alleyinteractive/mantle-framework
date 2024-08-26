@@ -19,8 +19,8 @@ use function Mantle\Support\Helpers\collect;
  *
  * @method string block(string $name = 'paragraph', string $content = '', array $attributes = [])
  * @method string image(?string $url = null, ?string $alt = null, array $attributes = [])
- * @method string heading(int $level = 2)
- * @method string paragraph(int $sentences = 3)
+ * @method string heading(?string $text = null, int $level = 2)
+ * @method string paragraph(?string $text = null, int $sentences = 3)
  * @method string paragraphs(int $count = 3, bool $as_text = true)
  */
 class Block_Factory {
