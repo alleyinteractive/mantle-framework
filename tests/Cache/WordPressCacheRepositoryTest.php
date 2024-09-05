@@ -1,7 +1,7 @@
 <?php
 namespace Mantle\Tests\Cache;
 
-use InvalidArgumentException;
+use Mantle\Cache\SWR_Storage;
 use Mantle\Facade\Cache;
 use Mantle\Testing\Framework_Test_Case;
 
@@ -47,6 +47,111 @@ class WordPressCacheRepositoryTest extends Framework_Test_Case {
 		$this->assertEquals( 2, Cache::increment( 'increment' ) );
 		$this->assertEquals( 1, Cache::decrement( 'increment' ) );
 		$this->assertEquals( 0, Cache::decrement( 'increment' ) );
+	}
+
+	public function test_flexible_fresh() {
+		$_SERVER['__CALLED'] = false;
+
+		$fresh = Cache::flexible(
+			key: 'flexible-key',
+			stale: now()->addHour(),
+			expire: now()->addHours( 2 ),
+			callback: function () {
+				$_SERVER['__CALLED'] = true;
+				return 'flexible-value';
+			},
+		);
+
+		$this->assertTrue( $_SERVER['__CALLED'] );
+		$this->assertEquals( 'flexible-value', $fresh );
+	}
+
+	public function test_flexible_stale_valid() {
+		$_SERVER['__CALLED'] = false;
+
+		wp_cache_set(
+			'flexible-key',
+			new SWR_Storage(
+				'original-value',
+				time() + 30
+			),
+			'',
+			HOUR_IN_SECONDS,
+		);
+
+		$stale = Cache::flexible(
+			key: 'flexible-key',
+			stale: now()->subHour(),
+			expire: now()->addHours( 2 ),
+			callback: function () {
+				$_SERVER['__CALLED'] = true;
+				return 'new-value';
+			},
+		);
+
+		$this->assertFalse( $_SERVER['__CALLED'] );
+		$this->assertEquals( 'original-value', $stale );
+
+		// Ensure it wasn't scheduled for refresh.
+		$this->app->terminate();
+
+		$this->assertFalse( $_SERVER['__CALLED'] );
+	}
+
+	public function test_flexible_stale_revalidate() {
+		$_SERVER['__CALLED'] = false;
+
+		wp_cache_set(
+			'flexible-key',
+			new SWR_Storage(
+				'original-value',
+				time() - 30
+			),
+			'',
+			HOUR_IN_SECONDS,
+		);
+		$this->assertInstanceOf( SWR_Storage::class, wp_cache_get( 'flexible-key', '' ) );
+
+		$stale = Cache::flexible(
+			key: 'flexible-key',
+			stale: now()->subHour(),
+			expire: now()->addHours( 2 ),
+			callback: function () {
+				$_SERVER['__CALLED'] = true;
+				return 'updated-value';
+			},
+		);
+
+		$this->assertFalse( $_SERVER['__CALLED'] );
+		$this->assertEquals( 'original-value', $stale );
+
+		// Ensure it was scheduled for refresh.
+		$this->app->terminate();
+
+		$this->assertTrue( $_SERVER['__CALLED'] );
+		$this->assertEquals( 'updated-value', Cache::flexible(
+			key: 'flexible-key',
+			stale: now()->subHour(),
+			expire: now()->addHours( 2 ),
+			callback: function () {
+				$_SERVER['__CALLED'] = true;
+				return 'updated-value';
+			},
+		) );
+	}
+
+	public function test_flexible_stored_called_with_get() {
+		wp_cache_set(
+			'flexible-key',
+			new SWR_Storage(
+				'original-value',
+				time() - 30
+			),
+			'',
+			HOUR_IN_SECONDS,
+		);
+
+		$this->assertEquals( 'original-value', Cache::get( 'flexible-key' ) );
 	}
 
 	public function test_tags() {

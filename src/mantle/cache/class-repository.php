@@ -38,6 +38,19 @@ abstract class Repository implements CacheInterface {
 	abstract public function get_multiple( iterable $keys, mixed $default = null ): iterable;
 
 	/**
+	 * Retrieve a value from cache. Return it if it exists and if stale, refresh it after the response is sent.
+	 *
+	 * @template TCacheValue
+	 *
+	 * @param string                                    $key
+	 * @param int|\DateInterval|\DateTimeInterface|null $stale
+	 * @param int|\DateInterval|\DateTimeInterface|null $expire
+	 * @param Closure(): TCacheValue                    $callback
+	 * @return (TCacheValue is null ? mixed : TCacheValue)
+	 */
+	abstract public function flexible( string $key, int|\DateInterval|\DateTimeInterface|null $stale, int|\DateInterval|\DateTimeInterface|null $expire, callable $callback ): mixed;
+
+	/**
 	 * Set a cache item.
 	 *
 	 * @param string                 $key Cache key.
@@ -67,6 +80,21 @@ abstract class Repository implements CacheInterface {
 	 * @param iterable<string> $keys Cache keys.
 	 */
 	abstract public function delete_multiple( iterable $keys ): bool;
+
+	/**
+	 * Alias for flexible.
+	 *
+	 * @template TCacheValue
+	 *
+	 * @param string                                    $key
+	 * @param int|\DateInterval|\DateTimeInterface|null $stale
+	 * @param int|\DateInterval|\DateTimeInterface|null $expire
+	 * @param Closure(): TCacheValue                    $callback
+	 * @return (TCacheValue is null ? mixed : TCacheValue)
+	 */
+	public function swr( string $key, int|\DateInterval|\DateTimeInterface|null $stale, int|\DateInterval|\DateTimeInterface|null $expire, Closure $callback ): mixed {
+		return $this->flexible( $key, $stale, $expire, $callback );
+	}
 
 	/**
 	 * Retrieve an item from the cache and delete it.

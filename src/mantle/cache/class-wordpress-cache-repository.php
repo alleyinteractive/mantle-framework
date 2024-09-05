@@ -7,6 +7,7 @@
 
 namespace Mantle\Cache;
 
+use Mantle\Contracts\Application;
 use Mantle\Contracts\Cache\Taggable_Repository;
 
 /**
@@ -16,9 +17,10 @@ class WordPress_Cache_Repository extends Repository implements Taggable_Reposito
 	/**
 	 * Constructor.
 	 *
-	 * @param string $prefix Prefix for caching.
+	 * @param Application $app Application instance.
+	 * @param string      $prefix Prefix for caching.
 	 */
-	public function __construct( protected string $prefix = '' ) {}
+	public function __construct( protected Application $app, protected string $prefix = '' ) {}
 
 	/**
 	 * Retrieve a value from cache.
@@ -28,6 +30,10 @@ class WordPress_Cache_Repository extends Repository implements Taggable_Reposito
 	 */
 	public function get( string $key, mixed $default = null ): mixed {
 		$value = \wp_cache_get( $key, $this->prefix );
+
+		if ( $value instanceof SWR_Storage ) {
+			return $value->value;
+		}
 
 		return false === $value ? $default : $value;
 	}
@@ -41,6 +47,57 @@ class WordPress_Cache_Repository extends Repository implements Taggable_Reposito
 	public function get_multiple( iterable $keys, mixed $default = null ): iterable {
 		return \wp_cache_get_multiple( $keys, $this->prefix );
 	}
+
+	/**
+	 * Retrieve a value from cache. Return it if it exists and if stale, refresh it after the response is sent.
+	 *
+	 * @throws \InvalidArgumentException If the value in cache is not an array.
+	 *
+	 * @param string                                    $key
+	 * @param int|\DateInterval|\DateTimeInterface|null $stale
+	 * @param int|\DateInterval|\DateTimeInterface|null $expire
+	 * @param callable                                  $callback
+	 */
+	public function flexible( string $key, int|\DateInterval|\DateTimeInterface|null $stale, int|\DateInterval|\DateTimeInterface|null $expire, callable $callback ): mixed {
+		$storage = \wp_cache_get( $key, $this->prefix );
+
+		// If the value is missing, refresh it and store it.
+		if ( false === $storage ) {
+			$value = $callback();
+
+			$this->set(
+				key: $key,
+				value: new SWR_Storage(
+					value: $value,
+					stale_time: time() + $this->normalize_ttl( $stale ),
+				),
+				ttl: $expire,
+			);
+
+			return $value;
+		}
+
+		if ( ! $storage instanceof SWR_Storage ) {
+			throw new \InvalidArgumentException( 'Invalid value in cache. Expected an instance of SWR_Storage.' );
+		}
+
+		// Check if the value is stale. If it is, refresh it after the response is sent but return the stale value.
+		if ( time() >= $storage->stale_time ) {
+			$this->app->terminating(
+				fn () => $this->set(
+					key: $key,
+					value: new SWR_Storage(
+						value: $callback(),
+						stale_time: time() + $this->normalize_ttl( $stale ),
+					),
+					ttl: $expire,
+				),
+			);
+		}
+
+		return $storage->value;
+	}
+
 
 	/**
 	 * Retrieve an item from the cache and delete it.
@@ -139,7 +196,7 @@ class WordPress_Cache_Repository extends Repository implements Taggable_Reposito
 			$names = implode( '', $names );
 		}
 
-		return new static( $this->prefix . $names );
+		return new static( $this->app, $this->prefix . $names );
 	}
 
 	/**

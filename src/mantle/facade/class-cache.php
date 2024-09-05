@@ -10,9 +10,10 @@ namespace Mantle\Facade;
 /**
  * Cache Facade
  *
- * @method static mixed|null get(string $key, mixed $default = null)
+ * @method static mixed get(string $key, mixed $default = null)
  * @method static iterable get_multiple(iterable $keys, mixed $default = null)
- * @method static mixed pull(string $key, mixed $default = null)
+ * @method static mixed flexible(string $key, int|\DateInterval|\DateTimeInterface|null $stale, int|\DateInterval|\DateTimeInterface|null $expire, callable $callback)
+ * @method static mixed|null pull(string $key, mixed $default = null)
  * @method static bool set(string $key, mixed $value, null|int|\DateInterval $ttl = null)
  * @method static bool set_multiple(iterable $values, null|int|\DateInterval|\DateTimeInterface $ttl = null)
  * @method static int|bool increment(string $key, int $value = 1)
@@ -20,7 +21,8 @@ namespace Mantle\Facade;
  * @method static bool delete(string $key)
  * @method static bool delete_multiple(iterable $keys)
  * @method static bool clear()
- * @method static \Mantle\Cache\WordPress_Cache_Repository tags(string[]|string $names)
+ * @method static \static tags(string[]|string $names)
+ * @method static mixed|null swr(string $key, int|\DateInterval|\DateTimeInterface|null $stale, int|\DateInterval|\DateTimeInterface|null $expire, Closure $callback)
  * @method static iterable getMultiple(iterable $keys, mixed $default = null)
  * @method static bool setMultiple(iterable $values, null|int|\DateInterval $ttl = null)
  * @method static bool deleteMultiple(iterable $keys)
@@ -29,9 +31,9 @@ namespace Mantle\Facade;
  * @method static bool forget(string $key)
  * @method static bool has(string $key)
  * @method static bool forever(string $key, mixed $value)
- * @method static mixed remember(string $key, \DateTimeInterface|\DateInterval|int|null $ttl, \Closure $callback)
- * @method static mixed remember_forever(string $key, \Closure $callback)
- * @method static mixed sear(string $key, \Closure $callback)
+ * @method static mixed|null remember(string $key, \DateTimeInterface|\DateInterval|int|null $ttl, \Closure $callback)
+ * @method static mixed|null remember_forever(string $key, \Closure $callback)
+ * @method static mixed|null sear(string $key, \Closure $callback)
  *
  * @see \Mantle\Cache\WordPress_Cache_Repository
  */
