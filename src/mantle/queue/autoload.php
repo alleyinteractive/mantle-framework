@@ -7,7 +7,7 @@
 
 namespace Mantle\Queue;
 
-if ( ! function_exists( 'dispatch' ) ) {
+if ( ! function_exists( __NAMESPACE__ . '\dispatch' ) ) {
 	/**
 	 * Dispatch a job to the queue.
 	 *
@@ -22,5 +22,16 @@ if ( ! function_exists( 'dispatch' ) ) {
 		return $job instanceof \Closure
 			? new Pending_Closure_Dispatch( Closure_Job::create( $job ) )
 			: new Pending_Dispatch( $job );
+	}
+}
+
+if ( ! function_exists( __NAMESPACE__ . '\defer' ) ) {
+	/**
+	 * Defer the execution of a function until after the response is sent to the page.
+	 *
+	 * @param callable $callback Callback to defer.
+	 */
+	function defer( callable $callback ): void {
+		app()->terminating( $callback );
 	}
 }
