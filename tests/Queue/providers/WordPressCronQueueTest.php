@@ -327,6 +327,18 @@ class WordPressCronQueueTest extends Framework_Test_Case {
 
 		$this->assertCronCount( 'example_hook', 5 );
 	}
+
+	public function test_dispatch_after_response() {
+		$_SERVER['__example_job'] = false;
+
+		dispatch( fn () => $_SERVER['__example_job'] = true )->after_response();
+
+		$this->assertFalse( $_SERVER['__example_job'] );
+
+		$this->app->terminate();
+
+		$this->assertTrue( $_SERVER['__example_job'] );
+	}
 }
 
 class Example_Job implements Job, Can_Queue {

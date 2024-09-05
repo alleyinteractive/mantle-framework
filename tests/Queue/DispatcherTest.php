@@ -104,4 +104,15 @@ class DispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		get_class( $job )::dispatch_if( true, [] );
 		get_class( $job )::dispatch_if( false, [] );
 	}
+
+	public function test_dispatch_after_response() {
+		$job = m::mock( Job::class, Dispatchable::class, Can_Queue::class, [ 'handle' => null ] );
+		$job->shouldReceive( 'handle' )->once();
+
+		$dispatcher = new Dispatcher( $this->app );
+		$dispatcher->dispatch_after_response( $job );
+
+		// Terminating the application should dispatch the job.
+		$this->app->terminate();
+	}
 }

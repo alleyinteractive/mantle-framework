@@ -144,6 +144,14 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 * @param mixed   $response Response instance.
 	 */
 	public function terminate( Request $request, mixed $response ): void {
+		// Send the request early to allow for the termination callback to be fired
+		// after the response is sent.
+		if ( function_exists( 'fastcgi_finish_request' ) ) {
+			fastcgi_finish_request();
+		} elseif ( function_exists( 'litespeed_finish_request' ) ) {
+			litespeed_finish_request();
+		}
+
 		$this->app->terminate();
 	}
 
@@ -157,6 +165,9 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 		$response = $this->send_request_through_router( $this->request );
 
 		if ( ! $response ) {
+			// Register the termination callback to be called on shutdown.
+			add_action( 'shutdown', fn () => $this->terminate( $this->request, null ), 100 );
+
 			return;
 		}
 
