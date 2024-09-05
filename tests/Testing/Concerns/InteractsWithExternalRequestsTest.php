@@ -22,12 +22,21 @@ use RuntimeException;
 class InteractsWithExternalRequestsTest extends Framework_Test_Case {
 	use Prevent_Remote_Requests;
 
-	public function test_fake_request_default() {
+	public function test_fake_request_no_arguments() {
 		$this->fake_request();
 
 		$response = wp_remote_get( 'https://example.com/' );
 		$this->assertEquals( 200, wp_remote_retrieve_response_code( $response ) );
 		$this->assertEmpty( wp_remote_retrieve_body( $response ) );
+	}
+
+	public function test_fake_request_catch_all() {
+		$this->fake_request( $this->mock_response()->with_status( 201 )->with_json( [ 'name' => 'John Doe' ] ) );
+
+		$response = wp_remote_get( 'https://example.com/' );
+
+		$this->assertEquals( 201, wp_remote_retrieve_response_code( $response ) );
+		$this->assertEquals( 'John Doe', json_decode( wp_remote_retrieve_body( $response ) )->name );
 	}
 
 	public function test_fake_request() {
@@ -53,6 +62,41 @@ class InteractsWithExternalRequestsTest extends Framework_Test_Case {
 		$this->assertEquals( 'example body', wp_remote_retrieve_body( $response ) );
 	}
 
+	public function test_fake_request_with_method() {
+		$this->fake_request( 'https://example.org/api/v1/users', method: 'POST' )
+			->with_status( 201 )
+			->with_json( [ 'name' => 'John Doe' ] );
+
+		$this->fake_request_sequence( 'https://example.org/api/v1/users', method: 'GET' )
+			->push_json( [
+				'items' => [],
+			] )
+			->push_json( [
+				'items' => [
+					[
+						'name' => 'John Doe',
+					],
+				],
+			] );
+
+		$users = Http::get( 'https://example.org/api/v1/users' );
+
+		$this->assertEquals( 200, $users->status() );
+		$this->assertEmpty( $users->json( 'items' ) );
+
+		// Create the user.
+		$user = Http::post( 'https://example.org/api/v1/users', [ 'name' => 'John Doe' ] );
+
+		$this->assertEquals( 201, $user->status() );
+		$this->assertEquals( 'John Doe', $user->json( 'name' ) );
+
+		// Get the users.
+		$users = Http::get( 'https://example.org/api/v1/users' );
+
+		$this->assertEquals( 200, $users->status() );
+		$this->assertEquals( 'John Doe', $users->json( 'items.0.name' ) );
+	}
+
 	public function test_fake_all_requests() {
 		$this->fake_request()
 			->with_response_code( 206 )
@@ -61,6 +105,13 @@ class InteractsWithExternalRequestsTest extends Framework_Test_Case {
 		$response = wp_remote_get( 'https://github.com/' );
 		$this->assertEquals( 'another fake body', wp_remote_retrieve_body( $response ) );
 		$this->assertEquals( 206, wp_remote_retrieve_response_code( $response ) );
+	}
+
+	public function test_fake_request_double_response_invalid_argument() {
+		$this->expectException( InvalidArgumentException::class );
+		$this->expectExceptionMessage( 'Response object passed twice, only one response object should be passed.' );
+
+		$this->fake_request( $this->mock_response(), $this->mock_response() );
 	}
 
 	public function test_fake_callback() {
@@ -282,6 +333,34 @@ class InteractsWithExternalRequestsTest extends Framework_Test_Case {
 		$this->assertEquals( 200, $response->status() );
 		$this->assertNotEmpty( $response->file_contents() );
 		$this->assertEquals( 'image/jpeg', $response->header( 'Content-Type' ) );
+	}
+
+	public function test_fake_request_with_file() {
+		$file = __DIR__ . '/../../../src/mantle/testing/data/images/wordpress-gsoc-flyer.pdf';
+
+		$this->fake_request( 'https://example.org/images/file.pdf' )->with_file( $file );
+
+		$response = Http::get( 'https://example.org/images/file.pdf' );
+
+		$this->assertTrue( $response->ok() );
+		$this->assertEquals( 'application/pdf', $response->header( 'Content-Type' ) );
+		$this->assertEquals(
+			'attachment; filename="wordpress-gsoc-flyer.pdf"',
+			$response->header( 'Content-Disposition' )
+		);
+		$this->assertEquals( file_get_contents( $file ), $response->body() );
+	}
+
+	public function test_fake_request_with_image() {
+		$this->fake_request( 'https://example.org/images/alley.jpg' )->with_image();
+
+		$response = Http::get( 'https://example.org/images/alley.jpg' );
+
+		$this->assertTrue( $response->ok() );
+		$this->assertEquals( 'image/jpeg', $response->header( 'Content-Type' ) );
+		$this->assertNotEmpty( $response->body() );
+		$this->assertTrue( $response->is_blob() );
+		$this->assertTrue( $response->is_file() );
 	}
 
 	public function test_unknown_file_as_response() {

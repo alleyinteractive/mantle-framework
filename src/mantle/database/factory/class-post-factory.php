@@ -65,13 +65,47 @@ class Post_Factory extends Factory {
 	}
 
 	/**
-	 * Create a new factory instance to create posts with a thumbnail.
+	 * Attach a post thumbnail to the post.
+	 *
+	 * Note: the underlying attachment does not actually exist for performance.
+	 * You can use `with_real_thumbnail()` to create a real underlying attachment
+	 * for the post thumbnail.
 	 */
 	public function with_thumbnail(): static {
 		return $this->with_meta(
 			[
 				'_thumbnail_id' => ( new Attachment_Factory( $this->faker ) )->create(),
 			]
+		);
+	}
+
+	/**
+	 * Attach a thumbnail to the post with an underlying file attachment.
+	 *
+	 * @param string $file   The file name to create attachment object from.
+	 * @param int    $width  The width of the image.
+	 * @param int    $height The height of the image.
+	 * @param bool   $recycle Whether to recycle the image file.
+	 */
+	public function with_real_thumbnail( string $file = null, int $width = 640, int $height = 480, bool $recycle = true ): static {
+		return $this->with_middleware(
+			function ( array $args, Closure $next ) use ( $file, $width, $height, $recycle ) {
+				$post = $next( $args );
+
+				update_post_meta(
+					$post->ID,
+					'_thumbnail_id',
+					( new Attachment_Factory( $this->faker ) )->with_image(
+						file: $file,
+						width: $width,
+						parent: $post->ID,
+						height: $height,
+						recycle: $recycle
+					)->create(),
+				);
+
+				return $post;
+			}
 		);
 	}
 
