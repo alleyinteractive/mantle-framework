@@ -65,9 +65,11 @@ class Pending_Dispatch {
 
 	/**
 	 * Flag the job to be run after the response is sent.
+	 *
+	 * @param bool $after_response Flag to run the job after the response is sent.
 	 */
-	public function after_response(): Pending_Dispatch {
-		$this->after_response = true;
+	public function after_response( bool $after_response = true ): Pending_Dispatch {
+		$this->after_response = $after_response;
 
 		return $this;
 	}

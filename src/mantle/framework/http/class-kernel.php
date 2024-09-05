@@ -166,7 +166,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 
 		if ( ! $response ) {
 			// Register the termination callback to be called on shutdown.
-			add_action( 'shutdown', fn () => $this->terminate( $this->request, null ), PHP_INT_MAX );
+			add_action( 'shutdown', fn () => $this->terminate( $this->request, null ), 100 );
 
 			return;
 		}
