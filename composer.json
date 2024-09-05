@@ -34,7 +34,7 @@
         "ramsey/uuid": "^4.7.4",
         "spatie/phpunit-snapshot-assertions": "^4.2 || ^5.1",
         "symfony/console": "^6.2",
-        "symfony/css-selector": "^6.2",
+        "symfony/css-selector": "^6.2 || ^7.0",
         "symfony/finder": "^6.2",
         "symfony/http-foundation": "^6.0.20",
         "symfony/http-kernel": "^6.0.20",
