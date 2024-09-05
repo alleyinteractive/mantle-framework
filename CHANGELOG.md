@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add support for dispatching jobs to the queue after the current response has
   been sent.
 - Allow the block factory to override text when generating blocks.
+- Added new `defer()` helper.
 
 ## v1.1.3 - 2024-08-14
 
