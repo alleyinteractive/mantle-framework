@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add support for dispatching jobs to the queue after the current response has
   been sent.
 - Allow the block factory to override text when generating blocks.
+- Added new `defer()` helper.
 - Added `Cache::flexible()` method to add SWR support to the cache.
 
 ### Changed

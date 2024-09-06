@@ -10,7 +10,6 @@
 namespace Mantle\Testing\Concerns;
 
 use BackedEnum;
-use Mantle\Contracts\Database\Core_Object;
 use Mantle\Contracts\Support\Arrayable;
 use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Term;
@@ -36,7 +35,7 @@ trait Assertions {
 	 * @param string $message Optional. Message to display when the assertion fails.
 	 */
 	public static function assertWPError( $actual, $message = '' ): void {
-		PHPUnit::assertInstanceOf( 'WP_Error', $actual, $message );
+		PHPUnit::assertInstanceOf( \WP_Error::class, $actual, $message );
 	}
 
 	/**
@@ -49,7 +48,37 @@ trait Assertions {
 		if ( '' === $message && is_wp_error( $actual ) ) {
 			$message = $actual->get_error_message();
 		}
-		PHPUnit::assertNotInstanceOf( 'WP_Error', $actual, $message );
+		PHPUnit::assertNotInstanceOf( \WP_Error::class, $actual, $message );
+	}
+
+	/**
+	 * Asserts that the given value is an instance of WP_Post.
+	 *
+	 * @param mixed  $actual  The value to check.
+	 * @param string $message Optional. Message to display when the assertion fails.
+	 */
+	public function assertWPPost( $actual, $message = '' ): void {
+		PHPUnit::assertInstanceOf( \WP_Post::class, $actual, $message );
+	}
+
+	/**
+	 * Asserts that the given value is an instance of WP_Term.
+	 *
+	 * @param mixed  $actual  The value to check.
+	 * @param string $message Optional. Message to display when the assertion fails.
+	 */
+	public function assertWPTerm( $actual, $message = '' ): void {
+		PHPUnit::assertInstanceOf( \WP_Term::class, $actual, $message );
+	}
+
+	/**
+	 * Asserts that the given value is an instance of WP_User.
+	 *
+	 * @param mixed  $actual  The value to check.
+	 * @param string $message Optional. Message to display when the assertion fails.
+	 */
+	public function assertWPUser( $actual, $message = '' ): void {
+		PHPUnit::assertInstanceOf( \WP_User::class, $actual, $message );
 	}
 
 	/**
