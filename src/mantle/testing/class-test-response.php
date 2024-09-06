@@ -175,9 +175,9 @@ class Test_Response {
 	/**
 	 * Assert that the response has a successful status code.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function assertSuccessful() {
+	public function assertSuccessful(): static {
 		$actual = $this->get_status_code();
 
 		PHPUnit::assertTrue(
@@ -191,9 +191,9 @@ class Test_Response {
 	/**
 	 * Assert that the response has a 200 status code.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function assertOk() {
+	public function assertOk(): static {
 		return $this->assertStatus( 200 );
 	}
 
@@ -201,9 +201,9 @@ class Test_Response {
 	 * Assert that the response has the given status code.
 	 *
 	 * @param int $status Status code to assert.
-	 * @return $this
+	 * @return static
 	 */
-	public function assertStatus( $status ) {
+	public function assertStatus( $status ): static {
 		$actual = $this->get_status_code();
 
 		PHPUnit::assertSame(
@@ -218,9 +218,9 @@ class Test_Response {
 	/**
 	 * Assert that the response has a 201 status code.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function assertCreated() {
+	public function assertCreated(): static {
 		return $this->assertStatus( 201 );
 	}
 
@@ -228,9 +228,9 @@ class Test_Response {
 	 * Assert that the response has the given status code and no content.
 	 *
 	 * @param int $status Status code to assert. Defaults to 204.
-	 * @return $this
+	 * @return static
 	 */
-	public function assertNoContent( $status = 204 ) {
+	public function assertNoContent( $status = 204 ): static {
 		$this->assertStatus( $status );
 
 		PHPUnit::assertEmpty( $this->get_content(), 'Response content is not empty.' );
@@ -241,28 +241,60 @@ class Test_Response {
 	/**
 	 * Assert that the response has a not found status code.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function assertNotFound() {
+	public function assertNotFound(): static {
 		return $this->assertStatus( 404 );
 	}
 
 	/**
 	 * Assert that the response has a forbidden status code.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function assertForbidden() {
+	public function assertForbidden(): static {
 		return $this->assertStatus( 403 );
 	}
 
 	/**
 	 * Assert that the response has an unauthorized status code.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function assertUnauthorized() {
+	public function assertUnauthorized(): static {
 		return $this->assertStatus( 401 );
+	}
+
+	/**
+	 * Assert that the response has a client error status code.
+	 *
+	 * @return static
+	 */
+	public function assertClientError(): static {
+		$status = $this->get_status_code();
+
+		PHPUnit::assertTrue(
+			$status >= 400 && $status < 500,
+			"Response status code [{$status}] is not a client error status code.",
+		);
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response has a server error status code.
+	 *
+	 * @return static
+	 */
+	public function assertServerError(): static {
+		$status = $this->get_status_code();
+
+		PHPUnit::assertTrue(
+			$status >= 500 && $status < 600,
+			"Response status code [{$status}] is not a server error status code.",
+		);
+
+		return $this;
 	}
 
 	/**
@@ -271,7 +303,7 @@ class Test_Response {
 	 * @param string|null $uri URI to assert redirection to.
 	 * @return static
 	 */
-	public function assertRedirect( ?string $uri = null ) {
+	public function assertRedirect( ?string $uri = null ): static {
 		PHPUnit::assertTrue(
 			$this->is_redirect(),
 			'Response status code [' . $this->get_status_code() . '] is not a redirect status code.'
