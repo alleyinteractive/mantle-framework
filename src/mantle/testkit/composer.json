@@ -1,6 +1,6 @@
 {
     "name": "mantle-framework/testkit",
-    "description": "The Mantle Framework Teskit Package",
+    "description": "The Mantle Framework Testkit Package",
     "keywords": ["testing", "mantle"],
     "type": "library",
     "require": {
