@@ -14,6 +14,7 @@ use Mantle\Queue\Queue_Fake;
  * Queue Facade
  *
  * @method static void dispatch(mixed $job)
+ * @method static void dispatch_after_response(mixed $job)
  * @method static void dispatch_now(mixed $job)
  *
  * @see \Mantle\Queue\Dispatcher

@@ -17,5 +17,5 @@ interface Taggable_Repository extends Repository {
 	 * @param string[]|string $names Cache names.
 	 * @return static
 	 */
-	public function tags( $names );
+	public function tags( array|string $names );
 }

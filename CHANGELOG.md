@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   been sent.
 - Allow the block factory to override text when generating blocks.
 - Added new `defer()` helper.
+- Added `Cache::flexible()` method to add SWR support to the cache.
+
+### Changed
+
+- Dropped support for Redis as a cache backend in favor of the default object
+  cache drop-in.
 
 ## v1.1.3 - 2024-08-14
 
