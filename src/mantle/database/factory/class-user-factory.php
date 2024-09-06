@@ -37,10 +37,10 @@ class User_Factory extends Factory {
 	 */
 	public function definition(): array {
 		return [
-			'description' => 'sentence', // $this->faker->sentence(),
+			'description' => $this->faker->sentence(),
 			'role'        => 'subscriber',
-			'user_email'  => 'email' . wp_rand().'@email.com', // $this->faker->email(),
-			'user_login'  => 'user_' . wp_rand(), // $this->faker->userName(),
+			'user_email'  => $this->faker->email(),
+			'user_login'  => $this->faker->userName(),
 			'user_pass'   => 'password',
 		];
 	}

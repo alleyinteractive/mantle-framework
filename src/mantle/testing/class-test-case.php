@@ -148,7 +148,7 @@ abstract class Test_Case extends BaseTestCase {
 		// Clear the test factory.
 		static::$factory = null;
 
-		// $this->hooks_set_up();
+		$this->hooks_set_up();
 
 		$this->clean_up_global_scope();
 

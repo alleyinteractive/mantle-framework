@@ -533,18 +533,20 @@ class Utils {
 	}
 
 	/**
-	 * Check if the current test run is the paratest bootstrap.
-	 */
-	public static function is_parallel_bootstrap(): bool {
-		return empty( static::parallel_token() ) && isset( $_SERVER['SCRIPT_NAME'] ) && str_contains( (string) $_SERVER['SCRIPT_NAME'], 'paratest' );
-	}
-
-	/**
 	 * Retrieve the parallel token for the current test run.
 	 *
 	 * @return string
 	 */
 	public static function parallel_token(): ?string {
 		return static::env( 'TEST_TOKEN', null );
+	}
+
+	/**
+	 * Check if the current test run is the paratest bootstrap.
+	 *
+	 * The parallel token will not be set in the initial bootstrap.
+	 */
+	public static function is_parallel_bootstrap(): bool {
+		return empty( static::parallel_token() ) && isset( $_SERVER['SCRIPT_NAME'] ) && str_contains( (string) $_SERVER['SCRIPT_NAME'], 'paratest' ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 	}
 }
