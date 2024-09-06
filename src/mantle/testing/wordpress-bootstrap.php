@@ -130,8 +130,6 @@ $multisite = ( '1' === getenv( 'WP_MULTISITE' ) );
 $multisite = $multisite || ( defined( 'WP_TESTS_MULTISITE' ) && WP_TESTS_MULTISITE );
 $multisite = $multisite || ( defined( 'MULTISITE' ) && MULTISITE );
 
-$parallel = Utils::is_parallel();
-
 // Replace the global phpmailer instance with a mock instance.
 reset_phpmailer_instance();
 
@@ -154,7 +152,6 @@ if ( ! $installing_wp && '1' !== getenv( 'WP_TESTS_SKIP_INSTALL' ) ) {
 			WP_PHP_BINARY,
 			escapeshellarg( __DIR__ . '/install-wordpress.php' ),
 			$multisite,
-			// Utils::get_parallel_token() ?: '',
 		],
 		$retval,
 	);

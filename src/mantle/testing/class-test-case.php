@@ -29,7 +29,6 @@ use Mantle\Testing\Concerns\Interacts_With_Requests;
 use Mantle\Testing\Concerns\Makes_Http_Requests;
 use Mantle\Testing\Concerns\Network_Admin_Screen;
 use Mantle\Testing\Concerns\Refresh_Database;
-use Mantle\Testing\Concerns\Runs_In_Parallel;
 use Mantle\Testing\Concerns\WordPress_Authentication;
 use Mantle\Testing\Concerns\WordPress_State;
 use PHPUnit\Framework\TestCase as BaseTestCase;
@@ -62,7 +61,6 @@ abstract class Test_Case extends BaseTestCase {
 		Interacts_With_Requests,
 		Makes_Http_Requests,
 		MatchesSnapshots,
-		Runs_In_Parallel,
 		WordPress_State,
 		WordPress_Authentication;
 

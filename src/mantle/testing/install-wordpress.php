@@ -28,8 +28,6 @@ if ( file_exists( ABSPATH . '/wp-includes/class-wpdb.php' ) ) {
 	require_once ABSPATH . '/wp-includes/wp-db.php';
 }
 
-ray('install wordpress', getenv('TEST_TOKEN'));
-
 $multisite = ! empty( $argv[1] );
 
 $wpdb->query( 'SET default_storage_engine = InnoDB' );
