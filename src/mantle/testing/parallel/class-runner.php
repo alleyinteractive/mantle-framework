@@ -8,7 +8,10 @@
 namespace Mantle\Testing\Parallel;
 
 use Closure;
+use Mantle\Container\Container;
+use Mantle\Contracts\Application;
 use Mantle\Facade\Parallel_Testing;
+use Mantle\Framework\Bootloader;
 use ParaTest\RunnerInterface;
 use PHPUnit\Runner\Version;
 use PHPUnit\TextUI\Configuration\PhpHandler;
@@ -21,6 +24,8 @@ use function Mantle\Support\Helpers\tap;
 
 /**
  * Parallel Runner
+ *
+ * This may not be needed.
  */
 class Runner implements RunnerInterface {
 	/**
@@ -83,38 +88,13 @@ class Runner implements RunnerInterface {
 	}
 
 	/**
-	 * Runs the test suite.
-	 *
-	 * @return int
-	 */
-	public function execute(): int {
-			$configuration = $this->options->configuration;
-
-			( new PhpHandler() )->handle( $configuration->php() );
-
-			$this->forEachProcess( fn () => Parallel_Testing::callSetUpProcessCallbacks() );
-
-		try {
-			$potentialExitCode = $this->runner->run();
-		} finally {
-			$this->forEachProcess( fn () => Parallel_Testing::callTearDownProcessCallbacks() );
-		}
-
-			return $potentialExitCode;
-
-			// return $potentialExitCode === null
-			// ? $this->getExitCode()
-			// : $potentialExitCode;
-	}
-
-	/**
 	 * Returns the highest exit code encountered throughout the course of test execution.
 	 *
 	 * @return int
 	 */
-	public function getExitCode(): int {
-		return $this->runner->getExitCode();
-	}
+	// public function getExitCode(): int {
+	// 	return $this->runner->getExitCode();
+	// }
 
 	/**
 	 * Apply the given callback for each process.
@@ -122,16 +102,17 @@ class Runner implements RunnerInterface {
 	 * @param  callable $callback
 	 * @return void
 	 */
-	protected function forEachProcess( callable $callback ): void {
+	protected function each_process( callable $callback ): void {
 		collect( range( 1, $this->options->processes ) )->each(
 			function ( $token ) use ( $callback ) {
 				tap(
-					$this->create_application(),
+					Container::get_instance(),
+					// $this->create_application(),
 					function ( $app ) use ( $callback, $token ) {
-						Parallel_Testing::resolveTokenUsing( fn () => $token );
+						Parallel_Testing::resolve_token_using( fn () => $token );
 
 						$callback( $app );
-					} 
+					}
 				)->flush();
 			}
 		);
@@ -144,28 +125,35 @@ class Runner implements RunnerInterface {
 	 *
 	 * @throws \RuntimeException
 	 */
-	protected function create_application() {
-		dd( 'create app' );
-		$applicationResolver = static::$application_resolver ?: function () {
-			if ( trait_exists( \Tests\CreatesApplication::class ) ) {
-				$applicationCreator = new class()
-				{
-						use \Tests\CreatesApplication;
-				};
+	protected function create_application(): Application {
+		$bootloader = Bootloader::instance();
 
-				return $applicationCreator->createApplication();
-			} elseif ( file_exists( $path = ( Application::inferBasePath() . '/bootstrap/app.php' ) ) ) {
-				$app = require $path;
+		$bootloader->make( \Mantle\Framework\Http\Kernel::class )->bootstrap();
 
-				$app->make( Kernel::class )->bootstrap();
+		return $bootloader->get_application();
 
-				return $app;
-			}
+		// dd($kernel);
+		// dd( 'create app' );
+		// $applicationResolver = static::$application_resolver ?: function () {
+		// 	if ( trait_exists( \Tests\CreatesApplication::class ) ) {
+		// 		$applicationCreator = new class()
+		// 		{
+		// 				use \Tests\CreatesApplication;
+		// 		};
 
-			throw new RuntimeException( 'Parallel Runner unable to resolve application.' );
-		};
+		// 		return $applicationCreator->createApplication();
+		// 	} elseif ( file_exists( $path = ( Application::inferBasePath() . '/bootstrap/app.php' ) ) ) {
+		// 		$app = require $path;
 
-		return $applicationResolver();
+		// 		$app->make( Kernel::class )->bootstrap();
+
+		// 		return $app;
+		// 	}
+
+		// 	throw new RuntimeException( 'Parallel Runner unable to resolve application.' );
+		// };
+
+		// return $applicationResolver();
 	}
 
 	/**
@@ -174,6 +162,26 @@ class Runner implements RunnerInterface {
 	 * @return int
 	 */
 	public function run(): int {
-		return $this->execute();
+		$configuration = $this->options->configuration;
+
+		( new PhpHandler() )->handle( $configuration->php() );
+
+
+		// Create the application with bootloader.
+		// TODO: make this use bootstrap/app.php if exists.
+		Bootloader::instance();
+
+		$this->each_process( fn () => Parallel_Testing::call_set_up_process_callbacks() );
+
+		return $this->runner->run();
+		// $result = $this->runner->run();
+
+		// try {
+		// } finally {
+		// 	$this->each_process( fn () => Parallel_Testing::call_tear_down_process_callbacks() );
+		// }
+
+
+		// return $result;
 	}
 }

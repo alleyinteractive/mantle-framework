@@ -143,6 +143,12 @@ if ( ! defined( 'WP_DEFAULT_THEME' ) ) {
 	define( 'WP_DEFAULT_THEME', Utils::env( 'WP_DEFAULT_THEME', 'default' ) );
 }
 
+// Bail early if this is this is a parallel test bootstrap: installation of
+// WordPress is handled in each process.
+if ( Utils::is_parallel_bootstrap() ) {
+	return;
+}
+
 $wp_theme_directories = [];
 $installing_wp        = defined( 'WP_INSTALLING' ) && WP_INSTALLING;
 

@@ -10,19 +10,17 @@ namespace Mantle\Facade;
 /**
  * Parallel_Testing Facade
  *
- * @method static void resolveOptionsUsing(\Closure|null $resolver)
- * @method static void resolveTokenUsing(\Closure|null $resolver)
- * @method static void setUpProcess(callable $callback)
- * @method static void setUpTestCase(callable $callback)
- * @method static void setUpTestDatabase(callable $callback)
- * @method static void tearDownProcess(callable $callback)
- * @method static void tearDownTestCase(callable $callback)
- * @method static void callSetUpProcessCallbacks()
- * @method static void callSetUpTestCaseCallbacks(void $testCase)
- * @method static void callSetUpTestDatabaseCallbacks(string $database)
- * @method static void callTearDownProcessCallbacks()
- * @method static void callTearDownTestCaseCallbacks(void $testCase)
- * @method static mixed option(string $option)
+ * @method static void resolve_token_using(Closure|null $resolver)
+ * @method static void set_up_process(Closure $callback)
+ * @method static void set_up_test_case(Closure $callback)
+ * @method static void set_up_test_database(Closure $callback)
+ * @method static void tear_down_process(Closure $callback)
+ * @method static void tear_down_test_case(Closure $callback)
+ * @method static void call_set_up_process_callbacks()
+ * @method static void call_set_up_test_case_callbacks(\Mantle\Testing\Test_Case $test_case)
+ * @method static void call_set_up_test_database_callbacks(string $database)
+ * @method static void call_tear_down_process_callbacks()
+ * @method static void call_tear_down_test_case_callbacks(\Mantle\Testing\Test_Case $test_case)
  * @method static string|false token()
  *
  * @see \Mantle\Testing\Parallel\Parallel_Testing
