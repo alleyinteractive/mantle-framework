@@ -236,6 +236,15 @@ class Utils {
 		defined( 'WP_PHP_BINARY' ) || define( 'WP_PHP_BINARY', 'php' );
 		defined( 'WPLANG' ) || define( 'WPLANG', '' );
 
+		// Setup the table prefix when running in parallel.
+		if ( static::is_parallel() && $token = static::parallel_token() ) {
+			$table_prefix .= "{$token}_"; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+
+			if ( static::is_debug_mode() ) {
+				static::info( "Using parallel table prefix: {$table_prefix}" );
+			}
+		}
+
 		// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
 	}
 
@@ -514,5 +523,21 @@ class Utils {
 		static::code( $error );
 
 		exit( 1 );
+	}
+
+	/**
+	 * Check if the current test run is parallel with paratest.
+	 */
+	public static function is_parallel(): bool {
+		return ! empty( static::parallel_token() );
+	}
+
+	/**
+	 * Retrieve the parallel token for the current test run.
+	 *
+	 * @return string
+	 */
+	public static function parallel_token(): ?string {
+		return getenv( 'TEST_TOKEN' ) ?: null;
 	}
 }
