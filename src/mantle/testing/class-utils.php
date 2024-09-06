@@ -536,7 +536,7 @@ class Utils {
 	 * Check if the current test run is the paratest bootstrap.
 	 */
 	public static function is_parallel_bootstrap(): bool {
-		return empty( static::parallel_token() ) && isset( $_SERVER['SCRIPT_NAME'] ) && str_contains( $_SERVER['SCRIPT_NAME'], 'paratest' );
+		return empty( static::parallel_token() ) && isset( $_SERVER['SCRIPT_NAME'] ) && str_contains( (string) $_SERVER['SCRIPT_NAME'], 'paratest' );
 	}
 
 	/**
@@ -545,6 +545,6 @@ class Utils {
 	 * @return string
 	 */
 	public static function parallel_token(): ?string {
-		return getenv( 'TEST_TOKEN' ) ?: null;
+		return static::env( 'TEST_TOKEN', null );
 	}
 }
