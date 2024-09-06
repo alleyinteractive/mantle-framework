@@ -162,6 +162,10 @@ class TermQueryBuilderTest extends Framework_Test_Case {
 	}
 }
 
+class Testable_Tag extends Term {
+	public static $object_name = 'post_tag';
+}
+
 class Testable_Category extends Term {
 	public static $object_name = 'category';
 }
