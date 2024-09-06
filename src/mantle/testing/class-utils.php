@@ -238,7 +238,7 @@ class Utils {
 
 		// Setup the table prefix when running in parallel.
 		if ( static::is_parallel() && $token = static::parallel_token() ) {
-			$table_prefix .= "{$token}_"; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+			$table_prefix .= "para_{$token}_"; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 
 			if ( static::is_debug_mode() ) {
 				static::info( "Using parallel table prefix: {$table_prefix}" );
@@ -530,6 +530,13 @@ class Utils {
 	 */
 	public static function is_parallel(): bool {
 		return ! empty( static::parallel_token() );
+	}
+
+	/**
+	 * Check if the current test run is the paratest bootstrap.
+	 */
+	public static function is_parallel_bootstrap(): bool {
+		return empty( static::parallel_token() ) && isset( $_SERVER['SCRIPT_NAME'] ) && str_contains( $_SERVER['SCRIPT_NAME'], 'paratest' );
 	}
 
 	/**
