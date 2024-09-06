@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Allow the block factory to override text when generating blocks.
 - Added new `defer()` helper.
 - Added `Cache::flexible()` method to add SWR support to the cache.
+- Added support for parallel unit testing with `brianium/paratest` (in beta).
 
 ### Changed
 
