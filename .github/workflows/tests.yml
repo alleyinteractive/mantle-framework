@@ -17,11 +17,12 @@ jobs:
       matrix:
         dependencies: ["lowest", "highest"]
         multisite: [true, false]
-        php: [8.1, 8.2, 8.3]
+        php: [8.2, 8.3]
         wordpress: ["latest"]
     uses: alleyinteractive/.github/.github/workflows/php-tests.yml@main
     name: "P${{ matrix.php }} - ${{ matrix.wordpress }} ${{ matrix.multisite && 'Multisite' || '' }} - ${{ matrix.dependencies }}"
     with:
+      command: 'phpunit:parallel'
       dependency-versions: ${{ matrix.dependencies }}
       multisite: ${{ matrix.multisite }}
       php: ${{ matrix.php }}
