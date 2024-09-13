@@ -152,7 +152,7 @@ class Attachment extends Post {
 
 		// If error storing permanently, unlink.
 		if ( \is_wp_error( $attachment_id ) ) {
-			@unlink( $file_array['tmp_name'] ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_unlink
+			@unlink( $file_array['tmp_name'] ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_unlink, Generic.PHP.NoSilencedErrors.Forbidden
 			throw new Model_Exception( $attachment_id->get_error_message() );
 		}
 

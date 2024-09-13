@@ -14,8 +14,7 @@
 	<arg name="parallel" value="20" />
 
 	<!-- Set severity to 1 to see everything that isn't effectively turned off. -->
-	<!-- todo: enable in a follow up pull request -->
-	<!-- <arg name="severity" value="1" /> -->
+	<arg name="severity" value="1" />
 
 	<exclude-pattern>bin/</exclude-pattern>
 	<exclude-pattern>tests/</exclude-pattern>

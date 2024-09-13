@@ -168,7 +168,7 @@ class Router implements Router_Contract {
 	 * @param  \Closure|string $routes
 	 * @return void
 	 */
-	protected function load_routes( $routes ) {
+	protected function load_routes( \Closure|string $routes ) {
 		if ( $routes instanceof \Closure ) {
 			$routes( $this );
 		} else {
