@@ -21,6 +21,7 @@
 
 	<rule ref="Alley-Interactive">
 		<exclude name="WordPress.Security.EscapeOutput.ExceptionNotEscaped" />
+		<exclude name="WordPress.WP.CapitalPDangit.MisspelledInText" />
 		<exclude name="PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection" />
 		<exclude name="PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.Changed" />
 		<exclude name="Squiz.Commenting.FunctionComment.IncorrectTypeHint" />

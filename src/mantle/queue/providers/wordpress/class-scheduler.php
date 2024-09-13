@@ -131,7 +131,7 @@ class Scheduler {
 		 *
 		 * @var \Mantle\Contracts\Queue\Provider
 		 */
-		$provider = app( 'queue' )->get_provider( 'WordPress' );
+		$provider = app( 'queue' )->get_provider( 'wordpress' );
 
 		$pending_count = $provider->pending_count( $queue );
 

@@ -76,10 +76,10 @@ class Queue_Manager implements Queue_Manager_Contract {
 	 */
 	protected function get_default_driver(): string {
 		if ( ! isset( $this->container['config'] ) ) {
-			return 'WordPress';
+			return 'wordpress';
 		}
 
-		return $this->container['config']['queue.default'] ?? 'WordPress';
+		return $this->container['config']['queue.default'] ?? 'wordpress';
 	}
 
 	/**

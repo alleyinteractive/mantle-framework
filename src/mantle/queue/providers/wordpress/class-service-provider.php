@@ -69,7 +69,7 @@ class Service_Provider extends Base_Service_Provider {
 	 */
 	#[Action( Events\Providers_Registered::class )]
 	public function register_queue_provider( Events\Providers_Registered $event ): Events\Providers_Registered {
-		$event->manager->add_provider( 'WordPress', Provider::class );
+		$event->manager->add_provider( 'wordpress', Provider::class );
 
 		return $event;
 	}
