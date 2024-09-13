@@ -663,7 +663,7 @@ trait Enumerates_Values {
 		return $this->filter(
 			fn ( $value, $key ) => $use_as_callable
 				? ! $callback( $value, $key )
-				: $value !== $callback
+				: $value != $callback // phpcs:ignore Universal.Operators.StrictComparisons.LooseNotEqual, WordPress.PHP.StrictComparisons.LooseComparison
 		);
 	}
 
