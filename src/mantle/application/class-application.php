@@ -97,6 +97,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 * @param string      $root_url Root URL of the application.
 	 */
 	public function __construct( ?string $base_path = null, string $root_url = null ) {
+		ray('constrct', static::class, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS));
 		if ( empty( $base_path ) ) {
 			$base_path = match ( true ) {
 				isset( $_ENV['MANTLE_BASE_PATH'] ) => $_ENV['MANTLE_BASE_PATH'],

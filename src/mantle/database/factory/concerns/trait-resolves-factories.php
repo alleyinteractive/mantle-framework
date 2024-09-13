@@ -37,6 +37,7 @@ trait Resolves_Factories {
 	 */
 	public static function factory_for_model( string $model ): Factory\Factory {
 		$factory = static::resolve_factory_name( $model );
+		dd($factory, Container::get_instance());
 
 		return Container::get_instance()->make( $factory );
 	}
