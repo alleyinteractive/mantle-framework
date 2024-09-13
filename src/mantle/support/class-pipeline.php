@@ -140,7 +140,7 @@ class Pipeline implements PipelineContract {
 					// the appropriate method and arguments, returning the results back out.
 					return $pipe( $passable, $stack );
 				} elseif ( ! is_object( $pipe ) ) {
-					[ $name, $parameters ] = $this->parse_pipe_string( $pipe );
+					[ $name, $parameters] = $this->parse_pipe_string( $pipe );
 
 					// If the pipe is a string we will parse the string and resolve the class out
 					// of the dependency injection container. We can then build a callable and
@@ -163,7 +163,7 @@ class Pipeline implements PipelineContract {
 			} catch ( Throwable $e ) {
 				return $this->handle_exception( $passable, $e );
 			}
-		};
+		}; // phpcs:disable Generic.CodeAnalysis.EmptyPHPStatement.SemicolonWithoutCodeDetected
 	}
 
 	/**

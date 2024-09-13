@@ -44,7 +44,7 @@ trait Hookable {
 						} else {
 							\Mantle\Support\Helpers\add_filter( $item['hook'], [ $this, $item['method'] ], $item['priority'] );
 						}
-					} else {
+					} else { // phpcs:ignore Universal.ControlStructures.DisallowLonelyIf.Found
 						// Use the default WordPress action/filter methods.
 						if ( 'action' === $item['type'] ) {
 							\add_action( $item['hook'], [ $this, $item['method'] ], $item['priority'], 999 );

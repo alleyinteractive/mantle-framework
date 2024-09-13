@@ -218,8 +218,8 @@ function retry( $times, callable $callback, $sleep = 0, $when = null ) {
 
 	// phpcs:ignore Generic.PHP.DiscourageGoto.Found
 	beginning:
-	$attempts ++;
-	$times --;
+	$attempts++;
+	$times--;
 
 	try {
 		return $callback( $attempts );
@@ -280,9 +280,9 @@ function tap( $value, $callback = null ) {
 /**
  * Throw the given exception if the given condition is true.
  *
- * @param mixed             $condition Condition to check.
- * @param \Throwable|string $exception Exception to throw.
- * @param array             ...$parameters Params to pass to a new $exception if
+ * @param mixed                               $condition Condition to check.
+ * @param \Throwable|class-string<\Throwable> $exception Exception to throw.
+ * @param array                               ...$parameters Params to pass to a new $exception if
  *                                         $exception is a string (classname).
  *
  * @return mixed
@@ -290,7 +290,13 @@ function tap( $value, $callback = null ) {
  */
 function throw_if( $condition, $exception, ...$parameters ) {
 	if ( $condition ) {
-		throw ( is_string( $exception ) ? new $exception( ...$parameters ) : $exception );
+		if ( is_string( $exception ) ) {
+			$e = new $exception( ...$parameters );
+		} else {
+			$e = $exception;
+		}
+
+		throw $e;
 	}
 
 	return $condition;
@@ -300,7 +306,7 @@ function throw_if( $condition, $exception, ...$parameters ) {
  * Throw the given exception unless the given condition is true.
  *
  * @param mixed             $condition Condition to check.
- * @param \Throwable|string $exception Exception to throw.
+ * @param \Throwable|class-string<\Throwable> $exception Exception to throw.
  * @param array             ...$parameters Params to pass to a new $exception if
  *                                         $exception is a string (classname).
  *
@@ -309,7 +315,13 @@ function throw_if( $condition, $exception, ...$parameters ) {
  */
 function throw_unless( $condition, $exception, ...$parameters ) {
 	if ( ! $condition ) {
-		throw ( is_string( $exception ) ? new $exception( ...$parameters ) : $exception );
+		if ( is_string( $exception ) ) {
+			$e = new $exception( ...$parameters );
+		} else {
+			$e = $exception;
+		}
+
+		throw $e;
 	}
 
 	return $condition;
