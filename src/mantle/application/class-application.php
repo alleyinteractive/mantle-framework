@@ -99,7 +99,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	public function __construct( ?string $base_path = null, string $root_url = null ) {
 		if ( empty( $base_path ) ) {
 			$base_path = match ( true ) {
-				isset( $_ENV['MANTLE_BASE_PATH'] ) => $_ENV['MANTLE_BASE_PATH'],
+				isset( $_ENV['MANTLE_BASE_PATH'] ) => $_ENV['MANTLE_BASE_PATH'], // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 				defined( 'MANTLE_BASE_DIR' ) => MANTLE_BASE_DIR,
 				default => '',
 			};

@@ -2,25 +2,23 @@
 /**
  * Collections class file.
  *
+ * phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment, Squiz.Commenting.FunctionComment.MissingParamTag
+ *
  * @package Mantle
  */
-
-// phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment
-
-// phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag
 
 namespace Mantle\Support;
 
 use ArrayAccess;
 use ArrayIterator;
 use Mantle\Contracts\Support\Arrayable;
-use Mantle\Support\Traits\Enumerates_Values;
 use Mantle\Database\Model;
+use Mantle\Support\Traits\Enumerates_Values;
+use stdClass;
+use Traversable;
 
 use function Mantle\Support\Helpers\data_get;
 use function Mantle\Support\Helpers\value;
-use stdClass;
-use Traversable;
 
 /**
  * Collection

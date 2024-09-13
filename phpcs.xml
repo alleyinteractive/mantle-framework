@@ -33,6 +33,7 @@
 		<exclude name="Generic.Commenting.DocComment.MissingShort" />
 		<exclude name="Squiz.Commenting.VariableComment.MissingVar" />
 		<exclude name="Squiz.Functions.MultiLineFunctionDeclaration.ContentAfterBrace" />
+		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.Found" />
 	</rule>
 
 	<rule ref="Generic.Arrays.DisallowLongArraySyntax" />

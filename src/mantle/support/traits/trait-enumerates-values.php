@@ -2,14 +2,13 @@
 /**
  * Enumerates_Values trait file.
  *
+ * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+ * phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment
+ * phpcs:disable Squiz.Commenting.FunctionComment.ParamNameNoMatch
+ * phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag
+ *
  * @package Mantle
  */
-
-// phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment
-
-// phpcs:disable Squiz.Commenting.FunctionComment.ParamNameNoMatch
-
-// phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag
 
 namespace Mantle\Support\Traits;
 
@@ -17,7 +16,6 @@ use Closure;
 use Exception;
 use Mantle\Contracts\Support\Arrayable;
 use Mantle\Contracts\Support\Jsonable;
-use function Mantle\Support\Helpers\data_get;
 use Mantle\Support\Arr;
 use Mantle\Support\Collection;
 use Mantle\Support\Enumerable;
@@ -25,6 +23,8 @@ use JsonSerializable;
 use Mantle\Support\Higher_Order_Collection_Proxy;
 use Symfony\Component\VarDumper\VarDumper;
 use Traversable;
+
+use function Mantle\Support\Helpers\data_get;
 
 /**
  * Enumerate_Values trait.

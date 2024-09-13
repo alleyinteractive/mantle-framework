@@ -68,14 +68,14 @@ class Filesystem {
 	public function shared_get( $path ) {
 		$contents = '';
 
-		$handle = fopen( $path, 'rb' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fopen
+		$handle = fopen( $path, 'rb' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen
 
 		if ( $handle ) {
 			try {
 				if ( flock( $handle, LOCK_SH ) ) {
 					clearstatcache( true, $path );
 
-					$contents = fread( $handle, $this->size( $path ) ?: 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fread
+					$contents = fread( $handle, $this->size( $path ) ?: 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fread
 
 					flock( $handle, LOCK_UN );
 				}
@@ -560,14 +560,11 @@ class Filesystem {
 				if ( ! $this->copy_directory( $path, $target, $options ) ) {
 					return false;
 				}
-			} else {
-
+			} elseif ( ! $this->copy( $item->getPathname(), $target ) ) {
 				// If the current items is just a regular file, we will just copy this to the new
 				// location and keep looping. If for some reason the copy fails we'll bail out
 				// and return false, so the developer is aware that the copy process failed.
-				if ( ! $this->copy( $item->getPathname(), $target ) ) {
-					return false;
-				}
+				return false;
 			}
 		}
 
