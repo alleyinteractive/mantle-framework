@@ -174,8 +174,6 @@ class Test_Response {
 
 	/**
 	 * Assert that the response has a successful status code.
-	 *
-	 * @return static
 	 */
 	public function assertSuccessful(): static {
 		$actual = $this->get_status_code();
@@ -190,8 +188,6 @@ class Test_Response {
 
 	/**
 	 * Assert that the response has a 200 status code.
-	 *
-	 * @return static
 	 */
 	public function assertOk(): static {
 		return $this->assertStatus( 200 );
@@ -201,7 +197,6 @@ class Test_Response {
 	 * Assert that the response has the given status code.
 	 *
 	 * @param int $status Status code to assert.
-	 * @return static
 	 */
 	public function assertStatus( $status ): static {
 		$actual = $this->get_status_code();
@@ -217,8 +212,6 @@ class Test_Response {
 
 	/**
 	 * Assert that the response has a 201 status code.
-	 *
-	 * @return static
 	 */
 	public function assertCreated(): static {
 		return $this->assertStatus( 201 );
@@ -228,7 +221,6 @@ class Test_Response {
 	 * Assert that the response has the given status code and no content.
 	 *
 	 * @param int $status Status code to assert. Defaults to 204.
-	 * @return static
 	 */
 	public function assertNoContent( $status = 204 ): static {
 		$this->assertStatus( $status );
@@ -240,8 +232,6 @@ class Test_Response {
 
 	/**
 	 * Assert that the response has a not found status code.
-	 *
-	 * @return static
 	 */
 	public function assertNotFound(): static {
 		return $this->assertStatus( 404 );
@@ -249,8 +239,6 @@ class Test_Response {
 
 	/**
 	 * Assert that the response has a forbidden status code.
-	 *
-	 * @return static
 	 */
 	public function assertForbidden(): static {
 		return $this->assertStatus( 403 );
@@ -258,8 +246,6 @@ class Test_Response {
 
 	/**
 	 * Assert that the response has an unauthorized status code.
-	 *
-	 * @return static
 	 */
 	public function assertUnauthorized(): static {
 		return $this->assertStatus( 401 );
@@ -267,8 +253,6 @@ class Test_Response {
 
 	/**
 	 * Assert that the response has a client error status code.
-	 *
-	 * @return static
 	 */
 	public function assertClientError(): static {
 		$status = $this->get_status_code();
@@ -283,8 +267,6 @@ class Test_Response {
 
 	/**
 	 * Assert that the response has a server error status code.
-	 *
-	 * @return static
 	 */
 	public function assertServerError(): static {
 		$status = $this->get_status_code();
@@ -301,7 +283,6 @@ class Test_Response {
 	 * Assert whether the response is redirecting to a given URI.
 	 *
 	 * @param string|null $uri URI to assert redirection to.
-	 * @return static
 	 */
 	public function assertRedirect( ?string $uri = null ): static {
 		PHPUnit::assertTrue(

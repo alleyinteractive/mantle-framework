@@ -1066,7 +1066,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	/**
 	 * Dump the string and end the script.
 	 */
-	public function dd(): void {
+	public function dd(): never {
 		$this->dump();
 
 		exit( 1 );

@@ -184,7 +184,7 @@ trait Enumerates_Values {
 	 *
 	 * @param  mixed ...$args
 	 */
-	public function dd( ...$args ): void {
+	public function dd( ...$args ): never {
 		$this->dump( ...$args );
 
 		exit( 1 );
