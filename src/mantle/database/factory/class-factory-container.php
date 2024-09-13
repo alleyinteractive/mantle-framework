@@ -143,6 +143,9 @@ class Factory_Container {
 	/**
 	 * Magic method to retrieve a custom post type/taxonomy factory.
 	 *
+	 * @throws InvalidArgumentException If the post type or taxonomy does not exist.
+	 * @throws InvalidArgumentException If both post type and taxonomy exist.
+	 *
 	 * @param string $name Factory name.
 	 * @return Post_Factory|Term_Factory Factory instance.
 	 */
