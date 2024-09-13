@@ -8,6 +8,7 @@
 namespace Mantle\Database\Factory;
 
 use Faker\Generator;
+use InvalidArgumentException;
 use Mantle\Contracts\Container;
 use Mantle\Faker\Faker_Provider;
 
@@ -134,5 +135,27 @@ class Factory_Container {
 				return $generator;
 			},
 		);
+	}
+
+	/**
+	 * Magic method to retrieve a custom post type/taxonomy factory.
+	 *
+	 * @param string $name Factory name.
+	 * @return Post_Factory|Term_Factory Factory instance.
+	 */
+	public function __get( string $name ) {
+		if ( post_type_exists( $name ) && taxonomy_exists( $name ) ) {
+			throw new InvalidArgumentException( "Error creating dynamic factory for {$name}. Both post type and taxonomy exist." );
+		}
+
+		if ( post_type_exists( $name ) ) {
+			return $this->post->with_post_type( $name );
+		}
+
+		if ( taxonomy_exists( $name ) ) {
+			return $this->term->with_taxonomy( $name );
+		}
+
+		throw new InvalidArgumentException( "Error creating dynamic factory for {$name}. Post type or taxonomy does not exist." );
 	}
 }
