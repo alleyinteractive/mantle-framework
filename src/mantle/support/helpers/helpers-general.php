@@ -163,7 +163,7 @@ function filled( mixed $value ): bool {
  * @return mixed
  */
 function object_get( $object, $key, $default = null ) {
-	if ( is_null( $key ) || trim( $key ) == '' ) {
+	if ( is_null( $key ) || trim( $key ) === '' ) {
 		return $object;
 	}
 

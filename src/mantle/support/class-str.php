@@ -820,7 +820,7 @@ class Str {
 					)
 				)
 				->when( $spaces, fn ( $c ) => $c->merge( [ ' ' ] ) )
-				->pipe( fn ( $c ) => Collection::times( $length, fn () => $c[ random_int( 0, $c->count() - 1 ) ] ) )
+				->pipe( fn ( $c ) => Collection::times( $length, fn () => $c[ random_int( 0, $c->count() - 1 ) ] ) ) // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable, Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition
 				->implode( '' );
 	}
 
@@ -834,7 +834,7 @@ class Str {
 		return ( static::$random_string_factory ?? function ( $length ) {
 			$string = '';
 
-			while ( ( $len = strlen( $string ) ) < $length ) { // phpcs:ignore WordPress.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition, Squiz.PHP.DisallowSizeFunctionsInLoops.Found
+			while ( ( $len = strlen( $string ) ) < $length ) { // phpcs:ignore WordPress.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition, Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition, Squiz.PHP.DisallowSizeFunctionsInLoops.Found
 				$size = $length - $len;
 
 				$bytes_size = (int) ceil( $size / 3 ) * 3;

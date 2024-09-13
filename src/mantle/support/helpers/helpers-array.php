@@ -54,7 +54,7 @@ function data_get( $target, $key, $default = null ) {
 				$result[] = data_get( $item, $key );
 			}
 
-			return in_array( '*', $key ) ? Support\Arr::collapse( $result ) : $result;
+			return in_array( '*', $key, true ) ? Support\Arr::collapse( $result ) : $result;
 		}
 
 		if ( Support\Arr::accessible( $target ) && Support\Arr::exists( $target, $segment ) ) {

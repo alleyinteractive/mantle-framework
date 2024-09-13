@@ -294,7 +294,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 			$trait_method = strtolower( class_basename( $trait ) );
 			$method       = 'boot_' . $trait_method;
 
-			if ( method_exists( $class, $method ) && ! in_array( $method, $booted ) ) {
+			if ( method_exists( $class, $method ) && ! in_array( $method, $booted, true ) ) {
 				forward_static_call( [ $class, $method ] );
 
 				$booted[] = $method;

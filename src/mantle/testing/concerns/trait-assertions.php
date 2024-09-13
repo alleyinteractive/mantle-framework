@@ -2,7 +2,7 @@
 /**
  * This file contains the Assertions trait
  *
- * phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_print_r
+ * phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_print_r, WordPressVIPMinimum.Functions.RestrictedFunctions.get_posts_get_posts
  *
  * @package Mantle
  */
@@ -305,8 +305,9 @@ trait Assertions {
 		$arguments = $this->serialize_arguments(
 			$arguments,
 			[
-				'fields'         => 'ids',
-				'posts_per_page' => 1,
+				'fields'           => 'ids',
+				'posts_per_page'   => 1,
+				'suppress_filters' => false,
 			],
 		);
 
@@ -325,8 +326,9 @@ trait Assertions {
 		$arguments = $this->serialize_arguments(
 			$arguments,
 			[
-				'fields'         => 'ids',
-				'posts_per_page' => 1,
+				'fields'           => 'ids',
+				'posts_per_page'   => 1,
+				'suppress_filters' => false,
 			],
 		);
 

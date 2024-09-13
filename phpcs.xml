@@ -27,6 +27,7 @@
 		<exclude name="Generic.Commenting.DocComment.MissingShort" />
 		<exclude name="Squiz.Commenting.VariableComment.MissingVar" />
 		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.Found" />
+		<exclude name="Generic.CodeAnalysis.AssignmentInCondition.Found" />
 	</rule>
 
 	<rule ref="Generic.Arrays.DisallowLongArraySyntax" />

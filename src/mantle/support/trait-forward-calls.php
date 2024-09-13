@@ -37,7 +37,7 @@ trait Forward_Calls {
 
 			if (
 				$object::class !== $matches['class']
-				|| $matches['method'] != $method
+				|| $matches['method'] !== $method
 			) {
 				throw $e;
 			}

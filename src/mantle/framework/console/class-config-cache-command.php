@@ -60,7 +60,7 @@ class Config_Cache_Command extends Command {
 		);
 
 		try {
-			require $path;
+			require $path; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 		} catch ( Throwable $e ) {
 			$this->files->delete( $path );
 
@@ -76,7 +76,7 @@ class Config_Cache_Command extends Command {
 	 * Boot a fresh copy of the application configuration.
 	 */
 	protected function get_fresh_configuration(): array {
-		$app = require $this->container->get_bootstrap_path( '/app.php' );
+		$app = require $this->container->get_bootstrap_path( '/app.php' ); // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 		$app->set_base_path( $this->container->get_base_path() );
 		$app->make( Kernel::class )->bootstrap();
 

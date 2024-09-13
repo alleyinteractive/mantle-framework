@@ -67,7 +67,8 @@ class View_Finder {
 	 * @return static
 	 */
 	public function add_extension( $extension ) {
-		$index = array_search( $extension, $this->extensions );
+		$index = array_search( $extension, $this->extensions, true );
+
 		if ( false !== $index ) {
 			unset( $this->extensions[ $index ] );
 		}

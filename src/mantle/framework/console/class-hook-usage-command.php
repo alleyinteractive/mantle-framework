@@ -237,11 +237,12 @@ class Hook_Usage_Command extends Command {
 		// Check if the file is stale (older than today).
 		if ( filemtime( $file ) < ( time() - DAY_IN_SECONDS ) ) {
 			// Delete the cached file if it is stale.
-			@unlink( $file ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_unlink
+			@unlink( $file ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_unlink, Generic.PHP.NoSilencedErrors.Forbidden
 			return null;
 		}
 
-		$files = require_once $file;
+		$files = require_once $file; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
+
 		return collect( $files );
 	}
 

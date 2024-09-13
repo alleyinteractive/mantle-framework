@@ -278,7 +278,7 @@ class Pending_Testable_Request {
 			// Mirror the logic from Request::createFromGlobals().
 			if (
 				str_starts_with( (string) $request->headers->get( 'CONTENT_TYPE', '' ), 'application/x-www-form-urlencoded' )
-			&& \in_array( strtoupper( (string) $request->server->get( 'REQUEST_METHOD', 'GET' ) ), [ 'PUT', 'DELETE', 'PATCH' ] )
+			&& \in_array( strtoupper( (string) $request->server->get( 'REQUEST_METHOD', 'GET' ) ), [ 'PUT', 'DELETE', 'PATCH' ], true )
 			) {
 				parse_str( $request->getContent(), $data );
 

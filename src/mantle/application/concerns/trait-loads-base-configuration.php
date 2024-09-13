@@ -23,7 +23,7 @@ trait Loads_Base_Configuration {
 
 		// Check if a cached configuration file exists. If found, load it.
 		if ( is_file( $cached ) ) {
-			$items = require $cached;
+			$items = require $cached; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 
 			$loaded_from_cache = true;
 		} else {

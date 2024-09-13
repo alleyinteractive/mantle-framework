@@ -180,7 +180,7 @@ class Event {
 	 * @param string $environment Environment to check against.
 	 */
 	public function runs_in_environment( $environment ): bool {
-		return empty( $this->environments ) || in_array( $environment, $this->environments );
+		return empty( $this->environments ) || in_array( $environment, $this->environments, true );
 	}
 
 	/**

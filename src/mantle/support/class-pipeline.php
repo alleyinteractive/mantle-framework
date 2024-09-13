@@ -163,7 +163,7 @@ class Pipeline implements PipelineContract {
 			} catch ( Throwable $e ) {
 				return $this->handle_exception( $passable, $e );
 			}
-		}; // phpcs:disable Generic.CodeAnalysis.EmptyPHPStatement.SemicolonWithoutCodeDetected
+		}; // phpcs:ignore Generic.CodeAnalysis.EmptyPHPStatement.SemicolonWithoutCodeDetected
 	}
 
 	/**

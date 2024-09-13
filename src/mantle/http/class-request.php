@@ -227,7 +227,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * Determine if the request is the result of an PJAX call.
 	 */
 	public function pjax(): bool {
-		return $this->headers->get( 'X-PJAX' ) == true;
+		return (bool) $this->headers->get( 'X-PJAX' );
 	}
 
 	/**
@@ -347,7 +347,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 			return $this->json();
 		}
 
-		return in_array( $this->getRealMethod(), [ 'GET', 'HEAD' ] ) ? $this->query : $this->request;
+		return in_array( $this->getRealMethod(), [ 'GET', 'HEAD' ], true ) ? $this->query : $this->request;
 	}
 
 	/**

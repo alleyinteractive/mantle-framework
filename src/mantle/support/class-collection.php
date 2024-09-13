@@ -192,7 +192,7 @@ class Collection implements ArrayAccess, Enumerable {
 		$highest_value = $sorted->last();
 
 		return $sorted->filter(
-			fn ( $value ) => $value == $highest_value
+			fn ( $value ) => $value == $highest_value // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison, Universal.Operators.StrictComparisons.LooseEqual
 		)->sort()->keys()->all();
 	}
 
@@ -221,7 +221,7 @@ class Collection implements ArrayAccess, Enumerable {
 				return $this->first( $key, $placeholder ) !== $placeholder;
 			}
 
-			return in_array( $key, $this->items );
+			return in_array( $key, $this->items ); // phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
 		}
 
 		return $this->contains( $this->operator_for_where( ...func_get_args() ) );
@@ -384,10 +384,10 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	protected function duplicate_comparator( $strict ) {
 		if ( $strict ) {
-			return fn ( $a, $b ) => $a === $b;
+			return fn ( $a, $b ) => $a == $b; // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison, Universal.Operators.StrictComparisons.LooseEqual
 		}
 
-		return fn ( $a, $b ) => $a == $b;
+		return fn ( $a, $b ) => $a === $b;
 	}
 
 	/**
@@ -1055,7 +1055,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	public function search( $value, $strict = false ) {
 		if ( ! $this->use_as_callable( $value ) ) {
-			return array_search( $value, $this->items, $strict );
+			return array_search( $value, $this->items, $strict ); // phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
 		}
 
 		foreach ( $this->items as $key => $item ) {

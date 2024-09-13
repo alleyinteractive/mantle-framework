@@ -102,9 +102,9 @@ class Filesystem {
 			$__data = $data;
 
 			return ( static function () use ( $__path, $__data ) {
-				extract( $__data, EXTR_SKIP );
+				extract( $__data, EXTR_SKIP ); // phpcs:ignore WordPress.PHP.DontExtract.extract_extract, WordPress.PHP.DiscouragedPHPFunctions.extract_extract
 
-				return require $__path;
+				return require $__path; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 			} )();
 		}
 
@@ -126,9 +126,9 @@ class Filesystem {
 			$__data = $data;
 
 			return ( static function () use ( $__path, $__data ) {
-				extract( $__data, EXTR_SKIP );
+				extract( $__data, EXTR_SKIP ); // phpcs:ignore WordPress.PHP.DontExtract.extract_extract, WordPress.PHP.DiscouragedPHPFunctions.extract_extract
 
-				return require_once $__path;
+				return require_once $__path; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 			} )();
 		}
 
@@ -233,7 +233,7 @@ class Filesystem {
 
 		foreach ( $paths as $path ) {
 			try {
-				if ( ! @unlink( $path ) ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+				if ( ! @unlink( $path ) ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, Generic.PHP.NoSilencedErrors.Forbidden
 					$success = false;
 				}
 			} catch ( ErrorException ) {
@@ -524,7 +524,7 @@ class Filesystem {
 			return false;
 		}
 
-		return @rename( $from, $to ) === true; // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+		return @rename( $from, $to ) === true; // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, Generic.PHP.NoSilencedErrors.Forbidden
 	}
 
 	/**
@@ -602,7 +602,7 @@ class Filesystem {
 		}
 
 		if ( ! $preserve ) {
-			@rmdir( $directory ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+			@rmdir( $directory ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, Generic.PHP.NoSilencedErrors.Forbidden
 		}
 
 		return true;

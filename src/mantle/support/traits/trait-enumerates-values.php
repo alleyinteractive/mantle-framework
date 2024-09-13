@@ -6,6 +6,7 @@
  * phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment
  * phpcs:disable Squiz.Commenting.FunctionComment.ParamNameNoMatch
  * phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag
+ * phpcs:disable WordPress.PHP.StrictInArray.MissingTrueStrict
  *
  * @package Mantle
  */
@@ -546,7 +547,7 @@ trait Enumerates_Values {
 		$values = $this->get_arrayable_items( $values );
 
 		return $this->filter(
-			fn ( $item ) => in_array( data_get( $item, $key ), $values, $strict )
+			fn ( $item ) => in_array( data_get( $item, $key ), $values, $strict ) // phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
 		);
 	}
 
@@ -597,7 +598,7 @@ trait Enumerates_Values {
 		$values = $this->get_arrayable_items( $values );
 
 		return $this->reject(
-			fn ( $item ) => in_array( data_get( $item, $key ), $values, $strict )
+			fn ( $item ) => in_array( data_get( $item, $key ), $values, $strict ) // phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
 		);
 	}
 
@@ -662,7 +663,7 @@ trait Enumerates_Values {
 		return $this->filter(
 			fn ( $value, $key ) => $use_as_callable
 				? ! $callback( $value, $key )
-				: $value != $callback
+				: $value !== $callback
 		);
 	}
 
@@ -866,7 +867,7 @@ trait Enumerates_Values {
 				fn ( $value ) => is_string( $value ) || ( is_object( $value ) && method_exists( $value, '__toString' ) )
 			);
 
-			if ( count( $strings ) < 2 && count( array_filter( [ $retrieved, $value ], 'is_object' ) ) == 1 ) {
+			if ( count( $strings ) < 2 && count( array_filter( [ $retrieved, $value ], 'is_object' ) ) === 1 ) {
 				return in_array( $operator, [ '!=', '<>', '!==' ] );
 			}
 
@@ -874,10 +875,10 @@ trait Enumerates_Values {
 				default:
 				case '=':
 				case '==':
-					return $retrieved == $value;
+					return $retrieved == $value; // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 				case '!=':
 				case '<>':
-					return $retrieved != $value;
+					return $retrieved !== $value;
 				case '<':
 					return $retrieved < $value;
 				case '>':
