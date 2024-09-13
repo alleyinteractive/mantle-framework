@@ -16,8 +16,8 @@ use Mantle\Support\Helpers;
  * @method static \Mantle\Database\Factory\User_Factory<static, \WP_User, static> factory( array|callable|null $state = null )
  */
 class User extends Model implements Contracts\Database\Core_Object, Contracts\Database\Model_Meta, Contracts\Database\Updatable {
-	use Meta\Model_Meta,
-		Meta\User_Meta;
+	use Meta\Model_Meta;
+	use Meta\User_Meta;
 
 	/**
 	 * Attributes for the model from the object

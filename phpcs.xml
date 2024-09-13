@@ -31,6 +31,7 @@
 		<exclude name="Generic.Commenting.DocComment.SpacingAfterTagGroup" />
 		<exclude name="Generic.Commenting.DocComment.MissingShort" />
 		<exclude name="Squiz.Commenting.VariableComment.MissingVar" />
+		<exclude name="Squiz.Functions.MultiLineFunctionDeclaration.ContentAfterBrace" />
 	</rule>
 
 	<rule ref="Generic.Arrays.DisallowLongArraySyntax" />

@@ -64,5 +64,4 @@ trait Dependency_Assertions {
 			)
 		);
 	}
-
 }

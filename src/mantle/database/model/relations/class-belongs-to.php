@@ -111,7 +111,7 @@ class Belongs_To extends Relation {
 
 			$meta_values = $models
 				->map(
-					fn ( $model) => $model->get_meta( $this->local_key, ! $append )
+					fn ( $model ) => $model->get_meta( $this->local_key, ! $append )
 				)
 				->filter();
 
@@ -305,7 +305,7 @@ class Belongs_To extends Relation {
 
 		return collect( $object_terms )
 			->filter(
-				function( WP_Term $term ): bool {
+				function ( WP_Term $term ): bool {
 					$key = Str::before_last( $term->slug, Has_One_Or_Many::DELIMITER );
 					$id  = Str::after_last( $term->slug, Has_One_Or_Many::DELIMITER );
 
@@ -313,7 +313,7 @@ class Belongs_To extends Relation {
 				}
 			)
 			->map(
-				function( WP_Term $term ) use ( $return_term_ids ) {
+				function ( WP_Term $term ) use ( $return_term_ids ) {
 					if ( $return_term_ids ) {
 						return $term->term_id;
 					}
@@ -335,7 +335,7 @@ class Belongs_To extends Relation {
 		$dictionary = $this->build_dictionary( $results, $models );
 
 		return $models->each(
-			function( $model ) use ( $dictionary ): void {
+			function ( $model ) use ( $dictionary ): void {
 				$key = $model->meta->{$this->local_key};
 
 				$model->set_relation( $this->relationship, $dictionary[ $key ][0] ?? null );
@@ -352,7 +352,7 @@ class Belongs_To extends Relation {
 	protected function build_dictionary( Collection $results, Collection $models ): array {
 		return $results
 			->map_to_dictionary(
-				fn ( $result) => [ (string) $result[ $this->foreign_key ] => $result ]
+				fn ( $result ) => [ (string) $result[ $this->foreign_key ] => $result ]
 			)
 			->all();
 	}

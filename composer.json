@@ -46,7 +46,7 @@
         "voku/portable-ascii": "^2.0.1"
     },
     "require-dev": {
-        "alleyinteractive/alley-coding-standards": "^1.0.1",
+        "alleyinteractive/alley-coding-standards": "^2.0",
         "alleyinteractive/wp-match-blocks": "^1.0 || ^2.0 || ^3.0",
         "guzzlehttp/guzzle": "^7.7",
         "league/flysystem-aws-s3-v3": "^3.15",

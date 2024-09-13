@@ -870,7 +870,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 		}
 
 		return array_map(
-			fn ( $abstract) => $this->resolve( $abstract ),
+			fn ( $abstract ) => $this->resolve( $abstract ),
 			$concrete
 		);
 	}

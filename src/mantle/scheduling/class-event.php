@@ -25,7 +25,8 @@ use Throwable;
  * Schedule-able Event
  */
 class Event {
-	use Macroable, Manages_Frequencies;
+	use Macroable;
+	use Manages_Frequencies;
 
 	/**
 	 * The cron expression representing the event's frequency.

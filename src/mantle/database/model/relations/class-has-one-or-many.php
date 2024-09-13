@@ -177,10 +177,8 @@ abstract class Has_One_Or_Many extends Relation {
 			// Set meta or use a hidden taxonomy if using terms.
 			if ( $this->uses_terms && $model instanceof Core_Object ) {
 				wp_set_object_terms( $model->id(), [ $this->get_term_for_relationship() ], static::RELATION_TAXONOMY, $append );
-			} else {
-				if ( $model instanceof Model_Meta ) {
+			} elseif ( $model instanceof Model_Meta ) {
 					$model->set_meta( $this->foreign_key, $this->parent->get( $this->local_key ) );
-				}
 			}
 		}
 

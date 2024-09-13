@@ -41,7 +41,7 @@ class Higher_Order_Collection_Proxy {
 	 */
 	public function __call( string $method, array $parameters ): mixed {
 		return $this->collection->{ $this->method }(
-			fn ( $value) => $value->{ $method }( ...$parameters )
+			fn ( $value ) => $value->{ $method }( ...$parameters )
 		);
 	}
 }

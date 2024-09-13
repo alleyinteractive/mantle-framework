@@ -293,7 +293,7 @@ class Application extends Container implements Application_Contract {
 
 		$this->singleton(
 			Generator::class,
-			function() {
+			function () {
 				$factory = Factory::create();
 
 				$factory->unique( true );

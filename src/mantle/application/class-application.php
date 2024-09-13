@@ -24,11 +24,11 @@ use function Mantle\Support\Helpers\str;
  * Mantle Application
  */
 class Application extends Container implements \Mantle\Contracts\Application {
-	use Concerns\Application_Callbacks,
-		Concerns\Loads_Base_Configuration,
-		Concerns\Loads_Environment_Variables,
-		Concerns\Loads_Facades,
-		Concerns\Manages_Service_Providers;
+	use Concerns\Application_Callbacks;
+	use Concerns\Loads_Base_Configuration;
+	use Concerns\Loads_Environment_Variables;
+	use Concerns\Loads_Facades;
+	use Concerns\Manages_Service_Providers;
 
 	/**
 	 * Base path of the application.

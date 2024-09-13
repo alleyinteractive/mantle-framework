@@ -72,7 +72,7 @@ trait WordPress_Action {
 	 * @param callable $callback
 	 */
 	protected function create_action_callback( callable $callback ): Closure {
-		return function( ...$args ) use ( $callback ) {
+		return function ( ...$args ) use ( $callback ) {
 			if ( is_array( $callback ) ) {
 				try {
 					$class      = new ReflectionClass( $callback[0] );

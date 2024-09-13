@@ -18,7 +18,8 @@ use function Mantle\Support\Helpers\tap;
  * Pending Request to be made with the Http Client.
  */
 class Pending_Request {
-	use Conditionable, Macroable;
+	use Conditionable;
+	use Macroable;
 
 	/**
 	 * Base URL for the request.
@@ -578,7 +579,7 @@ class Pending_Request {
 
 		return retry(
 			$this->options['retry'],
-			function( int $attempts ) {
+			function ( int $attempts ) {
 				$response = ( new Pipeline() )
 					->send( $this )
 					->through( $this->middleware )

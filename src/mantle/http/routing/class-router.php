@@ -315,7 +315,7 @@ class Router implements Router_Contract {
 			->send( $this->container['request'] )
 			->through( $middleware )
 			->then(
-				function( Request $request ) use ( $route ) {
+				function ( Request $request ) use ( $route ) {
 					// Refresh the request object in the container with modifications from the middleware.
 					$this->container['request'] = $request;
 

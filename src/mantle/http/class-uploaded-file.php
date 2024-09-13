@@ -24,7 +24,8 @@ use Symfony\Component\HttpFoundation\File\UploadedFile as SymfonyUploadedFile;
  * Handles Uploaded Files
  */
 class Uploaded_File extends SymfonyUploadedFile {
-	use File_Helpers, Macroable;
+	use File_Helpers;
+	use Macroable;
 
 	/**
 	 * Store the uploaded file on a filesystem disk.

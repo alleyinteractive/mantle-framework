@@ -94,11 +94,11 @@ trait Queries_Relationships {
 	 * @param string     $name Relation name to eager load.
 	 * @return Collection
 	 */
-	protected function eager_load_relation( Collection $models, string $name ) : Collection {
+	protected function eager_load_relation( Collection $models, string $name ): Collection {
 		$relation = $this->get_relation( $name );
 
 		$results = Relation::no_constraints(
-			function() use ( $models, $relation ) {
+			function () use ( $models, $relation ) {
 				// Add the eager constraints from the relation to the query.
 				$relation->add_eager_constraints( $models );
 

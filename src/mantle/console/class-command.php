@@ -19,8 +19,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  * CLI Command for Service Providers
  */
 abstract class Command extends Symfony_Command {
-	use Concerns\Interacts_With_IO,
-		Macroable;
+	use Concerns\Interacts_With_IO;
+	use Macroable;
 
 	/**
 	 * Prefix for the command.

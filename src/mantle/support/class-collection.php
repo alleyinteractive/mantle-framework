@@ -144,7 +144,7 @@ class Collection implements ArrayAccess, Enumerable {
 	public function median( $key = null ) {
 		$values = ( isset( $key ) ? $this->pluck( $key ) : $this )
 			->filter(
-				fn ( $item) => ! is_null( $item )
+				fn ( $item ) => ! is_null( $item )
 			)->sort()->values();
 
 
@@ -194,7 +194,7 @@ class Collection implements ArrayAccess, Enumerable {
 		$highest_value = $sorted->last();
 
 		return $sorted->filter(
-			fn ( $value) => $value == $highest_value
+			fn ( $value ) => $value == $highest_value
 		)->sort()->keys()->all();
 	}
 
@@ -238,7 +238,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	public function contains_strict( $key, $value = null ) {
 		if ( func_num_args() === 2 ) {
-			return $this->contains( fn ( $item) => data_get( $item, $key ) === $value );
+			return $this->contains( fn ( $item ) => data_get( $item, $key ) === $value );
 		}
 
 		if ( $this->use_as_callable( $key ) ) {
@@ -386,10 +386,10 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	protected function duplicate_comparator( $strict ) {
 		if ( $strict ) {
-			return fn ( $a, $b) => $a === $b;
+			return fn ( $a, $b ) => $a === $b;
 		}
 
-		return fn ( $a, $b) => $a == $b;
+		return fn ( $a, $b ) => $a == $b;
 	}
 
 	/**

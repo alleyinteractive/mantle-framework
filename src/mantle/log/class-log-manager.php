@@ -216,7 +216,7 @@ class Log_Manager implements LoggerInterface {
 	 * @phpstan-return Level
 	 * @throws \InvalidArgumentException Thrown for unknown log.
 	 */
-	protected function level( array $config ):int {
+	protected function level( array $config ): int {
 		$level  = strtoupper( $config['level'] ?? 'debug' );
 		$levels = Logger::getLevels();
 

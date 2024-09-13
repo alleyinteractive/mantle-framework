@@ -18,7 +18,8 @@ use function Mantle\Support\Helpers\tap;
  * Model Attributes
  */
 trait Has_Attributes {
-	use Has_Guarded_Attributes, Hides_Attributes;
+	use Has_Guarded_Attributes;
+	use Hides_Attributes;
 
 	/**
 	 * Attributes for the model from the object
@@ -141,7 +142,7 @@ trait Has_Attributes {
 
 		return tap(
 			$relation->get_results(),
-			function( $relation ) use ( $method ): void {
+			function ( $relation ) use ( $method ): void {
 				$this->set_relation( $method, $relation );
 			}
 		);
@@ -214,7 +215,7 @@ trait Has_Attributes {
 		// Retrieve all attributes, passing them through the mutators.
 		$attributes = collect( $this->get_arrayable_attributes() )
 			->map(
-				fn ( $value, string $attribute) => $this->get_attribute( $attribute )
+				fn ( $value, string $attribute ) => $this->get_attribute( $attribute )
 			)
 			->merge( $this->get_arrayable_appends() );
 
@@ -318,7 +319,7 @@ trait Has_Attributes {
 	 * @return mixed
 	 */
 	protected function cast_attribute( $value, string $cast_type ) {
-		return match ($cast_type) {
+		return match ( $cast_type ) {
 			'int', 'integer' => (int) $value,
 			'real', 'float', 'double' => $this->from_float( $value ),
 			'string' => (string) $value,
@@ -335,7 +336,7 @@ trait Has_Attributes {
 	 * @param  mixed $value Value to decode.
 	 */
 	public function from_float( $value ): float {
-		return match ( (string) $value) {
+		return match ( (string) $value ) {
 			'Infinity' => INF,
 			'-Infinity' => -INF,
 			'NaN' => NAN,
@@ -467,7 +468,7 @@ trait Has_Attributes {
 			collect( $this->appends )
 				->combine(
 					collect( $this->appends )->map(
-						fn ( string $attribute) => $this->get_attribute( $attribute )
+						fn ( string $attribute ) => $this->get_attribute( $attribute )
 					)
 				)
 				->to_array()

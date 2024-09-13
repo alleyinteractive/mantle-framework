@@ -48,21 +48,21 @@ use function Mantle\Support\Helpers\collect;
  * @property-read Application|null $app
  */
 abstract class Test_Case extends BaseTestCase {
-	use Assertions,
-		Core_Shim,
-		Deprecations,
-		Hooks,
-		Incorrect_Usage,
-		Interacts_With_Console,
-		Interacts_With_Container,
-		Interacts_With_Cron,
-		Interacts_With_Hooks,
-		Interacts_With_Mail,
-		Interacts_With_Requests,
-		Makes_Http_Requests,
-		MatchesSnapshots,
-		WordPress_State,
-		WordPress_Authentication;
+	use Assertions;
+	use Core_Shim;
+	use Deprecations;
+	use Hooks;
+	use Incorrect_Usage;
+	use Interacts_With_Console;
+	use Interacts_With_Container;
+	use Interacts_With_Cron;
+	use Interacts_With_Hooks;
+	use Interacts_With_Mail;
+	use Interacts_With_Requests;
+	use Makes_Http_Requests;
+	use MatchesSnapshots;
+	use WordPress_State;
+	use WordPress_Authentication;
 
 	/**
 	 * Array of traits that this class uses, with trait names as keys.
@@ -95,7 +95,7 @@ abstract class Test_Case extends BaseTestCase {
 		if ( ! empty( static::$test_uses ) ) {
 			static::get_test_case_traits()
 				->each(
-					function( $trait ): void {
+					function ( $trait ): void {
 						$method = strtolower( class_basename( $trait ) ) . '_set_up_before_class';
 
 						if ( method_exists( static::class, $method ) ) {
@@ -155,7 +155,7 @@ abstract class Test_Case extends BaseTestCase {
 		// Boot traits on the test case.
 		static::get_test_case_traits()
 			->each(
-				function( $trait ): void {
+				function ( $trait ): void {
 					$method = strtolower( class_basename( $trait ) ) . '_set_up';
 
 					if ( method_exists( $this, $method ) ) {
@@ -189,7 +189,7 @@ abstract class Test_Case extends BaseTestCase {
 			// Tearing down requires performing priority traits in opposite order.
 			->reverse()
 			->each(
-				function( $trait ): void {
+				function ( $trait ): void {
 					$method = strtolower( class_basename( $trait ) ) . '_tear_down';
 
 					if ( method_exists( $this, $method ) ) {

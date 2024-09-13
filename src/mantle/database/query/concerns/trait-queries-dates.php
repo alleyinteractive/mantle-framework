@@ -55,7 +55,7 @@ trait Queries_Dates {
 	 */
 	public function whereDate( DateTimeInterface|int|string $date, string $compare = '=', string $column = 'post_date' ): static {
 		if ( ! in_array( $compare, $this->date_operators, true ) ) {
-			throw new InvalidArgumentException( 'Invalid date comparison operator: ' . $compare );
+			throw new InvalidArgumentException( esc_html( 'Invalid date comparison operator: ' . $compare ) );
 		}
 
 		$this->date_constraints[] = compact( 'date', 'compare', 'column' );

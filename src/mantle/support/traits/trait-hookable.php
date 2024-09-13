@@ -67,7 +67,7 @@ trait Hookable {
 				fn ( string $method ) => Str::starts_with( $method, [ 'on_', 'action__', 'filter__' ] )
 			)
 			->map(
-				function( string $method ) {
+				function ( string $method ) {
 					$type = match ( true ) {
 						Str::starts_with( $method, 'filter__' ) => 'filter',
 						default => 'action',
