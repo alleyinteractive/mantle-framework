@@ -1,4 +1,9 @@
 <?php
+/**
+ * Jsonable interface file.
+ *
+ * @package Mantle
+ */
 
 namespace Mantle\Contracts\Support;
 

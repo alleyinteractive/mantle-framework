@@ -64,7 +64,7 @@ trait Has_Events {
 	 * @param  \Closure|string $callback
 	 * @throws \RuntimeException Thrown on use.
 	 */
-	public static function creating( $callback ): never {
+	public static function creating( $callback ): never { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
 		throw new \RuntimeException( 'Listening to the "creating" event on a model is not supported at this time.' );
 	}
 

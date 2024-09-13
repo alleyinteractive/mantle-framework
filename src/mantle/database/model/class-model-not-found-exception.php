@@ -34,7 +34,7 @@ class Model_Not_Found_Exception extends Model_Exception {
 	 * @param int|array $ids Model ID(s).
 	 * @return static
 	 */
-	public function set_model( string $model, $ids = [] ) {
+	public function set_model( string $model, $ids = [] ): static {
 		$this->model = $model;
 		$this->ids   = Arr::wrap( $ids );
 
