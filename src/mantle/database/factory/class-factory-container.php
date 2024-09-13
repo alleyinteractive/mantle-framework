@@ -11,6 +11,7 @@ use Faker\Generator;
 use InvalidArgumentException;
 use Mantle\Contracts\Container;
 use Mantle\Faker\Faker_Provider;
+use Mantle\Support\Traits\Macroable;
 
 /**
  * Collect all the Database Factories for IDE Support
@@ -21,6 +22,8 @@ use Mantle\Faker\Faker_Provider;
  * factories.
  */
 class Factory_Container {
+	use Macroable;
+
 	/**
 	 * Attachment Factory
 	 *
