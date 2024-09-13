@@ -21,18 +21,12 @@
 	<exclude-pattern>tests/</exclude-pattern>
 
 	<rule ref="Alley-Interactive">
-		<exclude name="WordPress.NamingConventions.ValidPostTypeSlug.NotStringLiteral" />
-		<exclude name="WordPress.PHP.DisallowShortTernary.Found" />
-		<exclude name="WordPress.WP.CapitalPDangit.Misspelled" />
 		<exclude name="WordPress.Security.EscapeOutput.ExceptionNotEscaped" />
-
 		<exclude name="PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection" />
 		<exclude name="PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.Changed" />
 		<exclude name="Squiz.Commenting.FunctionComment.IncorrectTypeHint" />
-		<exclude name="Generic.Commenting.DocComment.SpacingAfterTagGroup" />
 		<exclude name="Generic.Commenting.DocComment.MissingShort" />
 		<exclude name="Squiz.Commenting.VariableComment.MissingVar" />
-		<exclude name="Squiz.Functions.MultiLineFunctionDeclaration.ContentAfterBrace" />
 		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.Found" />
 	</rule>
 

@@ -336,7 +336,6 @@ class Log_Manager implements LoggerInterface {
 	 * @param string  $message Log message.
 	 * @param mixed[] $context Log context.
 	 *
-	 *
 	 * @throws \Psr\Log\InvalidArgumentException Thrown on invalid arguments.
 	 */
 	public function log( $level, $message, array $context = [] ): void {

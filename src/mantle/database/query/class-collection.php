@@ -2,7 +2,7 @@
 /**
  * Collection class file
  *
- * phpcs:disable Generic.Functions.OpeningFunctionBraceKernighanRitchie.ContentAfterBrace
+ * phpcs:disable Squiz.Functions.MultiLineFunctionDeclaration.ContentAfterBrace
  *
  * @package Mantle
  */
