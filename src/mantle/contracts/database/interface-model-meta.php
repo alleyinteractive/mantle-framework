@@ -26,9 +26,8 @@ interface Model_Meta {
 	 *
 	 * @param string $meta_key Meta key.
 	 * @param mixed  $meta_value Meta value to store.
-	 * @param string $prev_value Optional, previous meta value.
 	 */
-	public function add_meta( string $meta_key, mixed $meta_value, mixed $prev_value = '' ): void;
+	public function add_meta( string $meta_key, mixed $meta_value ): void;
 
 	/**
 	 * Update meta value for the object.

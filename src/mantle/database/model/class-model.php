@@ -131,7 +131,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 			return $find;
 		}
 
-		throw new Model_Not_Found_Exception( static::class, $object );
+		throw new Model_Not_Found_Exception( static::class, [ $object ] );
 	}
 
 	/**
