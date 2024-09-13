@@ -33,9 +33,9 @@ use Mantle\Support\Traits\Conditionable;
  * @template TModel of \Mantle\Database\Model\Model
  */
 abstract class Builder {
-	use Conditionable,
-		Query_Bindings,
-		Query_Clauses;
+	use Conditionable;
+	use Query_Bindings;
+	use Query_Clauses;
 
 	/**
 	 * Result limit per-page.
@@ -522,7 +522,7 @@ abstract class Builder {
 	 */
 	protected function call_named_scope( string $scope, array $parameters = [] ) {
 		return $this->call_scope(
-			fn ( ...$parameters) => $this->get_model_instance()->call_named_scope( $scope, $parameters ),
+			fn ( ...$parameters ) => $this->get_model_instance()->call_named_scope( $scope, $parameters ),
 			$parameters
 		);
 	}
@@ -540,7 +540,7 @@ abstract class Builder {
 
 		foreach ( $this->scopes as $scope ) {
 			$this->call_scope(
-				function( self $builder ) use ( $scope ) {
+				function ( self $builder ) use ( $scope ) {
 					if ( $scope instanceof Closure ) {
 						return $scope( $builder );
 					}
@@ -642,7 +642,7 @@ abstract class Builder {
 		$model = $this->first();
 
 		if ( ! $model ) {
-			throw ( new Model_Not_Found_Exception() )->set_model( $this->model );
+			throw new Model_Not_Found_Exception( $this->model );
 		}
 
 		return $model;

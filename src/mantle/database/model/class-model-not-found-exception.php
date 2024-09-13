@@ -14,18 +14,14 @@ use Mantle\Support\Arr;
  */
 class Model_Not_Found_Exception extends Model_Exception {
 	/**
-	 * Name of the affected Eloquent model.
+	 * Constructor.
 	 *
-	 * @var string
+	 * @param array|string $model Name of the affected Eloquent model(s).
+	 * @param array        $ids Model ID(s).
 	 */
-	protected $model;
-
-	/**
-	 * The affected model IDs.
-	 *
-	 * @var int|array
-	 */
-	protected $ids;
+	public function __construct( public array|string $model, public array $ids = [] ) {
+		$this->set_message();
+	}
 
 	/**
 	 * Set the affected Eloquent model and instance ids.
@@ -38,13 +34,7 @@ class Model_Not_Found_Exception extends Model_Exception {
 		$this->model = $model;
 		$this->ids   = Arr::wrap( $ids );
 
-		$this->message = "No query results for model [{$model}]";
-
-		if ( count( $this->ids ) > 0 ) {
-			$this->message .= ' ' . implode( ', ', $this->ids );
-		} else {
-			$this->message .= '.';
-		}
+		$this->set_message();
 
 		return $this;
 	}
@@ -63,5 +53,20 @@ class Model_Not_Found_Exception extends Model_Exception {
 	 */
 	public function get_ids() {
 		return $this->ids;
+	}
+
+	/**
+	 * Set the exception message.
+	 */
+	protected function set_message(): void {
+		$model = is_array( $this->model ) ? implode( ', ', $this->model ) : $this->model;
+
+		$this->message = "No query results for model [{$model}]";
+
+		if ( count( $this->ids ) > 0 ) {
+			$this->message .= ' ' . implode( ', ', $this->ids );
+		} else {
+			$this->message .= '.';
+		}
 	}
 }

@@ -49,10 +49,7 @@ class Implicit_Route_Binding {
 			$model    = $instance->resolve_route_binding( $parameter_value );
 
 			if ( ! $model ) {
-				$e = new Model_Not_Found_Exception();
-				$e->set_model( $instance::class, [ $parameter_value ] );
-
-				throw $e;
+				throw new Model_Not_Found_Exception( $instance::class, [ $parameter_value ] );
 			}
 
 			$request->set_route_parameter( $parameter_name, $model );
