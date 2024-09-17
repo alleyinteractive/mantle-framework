@@ -310,6 +310,52 @@ class UnitTestingFactoryTest extends Framework_Test_Case {
 			'example' => [ static::factory()->post->create_and_get() ],
 		];
 	}
+
+	public function test_custom_post_type() {
+		register_post_type( 'custom-post' );
+
+		$post = static::factory()->post->for( 'custom-post' )->create_and_get();
+
+		$this->assertEquals( 'custom-post', get_post_type( $post ) );
+	}
+
+	public function test_custom_taxonomy() {
+		register_taxonomy( 'custom-taxonomy', 'post' );
+
+		$term = static::factory()->term->for( 'custom-taxonomy' )->create_and_get();
+
+		$this->assertEquals( 'custom-taxonomy', get_taxonomy( $term->taxonomy )->name );
+	}
+
+	public function test_dynamic_factory() {
+		register_post_type( 'events' );
+		register_taxonomy( 'event-category', 'events' );
+
+		$event = static::factory()->events->create_and_get();
+
+		$this->assertInstanceOf( \WP_Post::class, $event );
+		$this->assertEquals( 'events', get_post_type( $event ) );
+
+		$term = static::factory()->{'event-category'}->create_and_get();
+
+		$this->assertInstanceOf( \WP_Term::class, $term );
+		$this->assertEquals( 'event-category', get_taxonomy( $term->taxonomy )->name );
+	}
+
+	public function test_dynamic_factory_unknown() {
+		$this->expectException( \InvalidArgumentException::class );
+
+		static::factory()->unknown->create_and_get();
+	}
+
+	public function test_dynamic_factory_conflict() {
+		register_post_type( 'conflict' );
+		register_taxonomy( 'conflict', 'conflict' );
+
+		$this->expectException( \InvalidArgumentException::class );
+
+		static::factory()->conflict->create_and_get();
+	}
 }
 
 class Testable_Post_Tag extends Term {
