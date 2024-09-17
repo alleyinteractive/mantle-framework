@@ -186,7 +186,7 @@ class Expectation {
 		// Asset if the action was added.
 		if ( Expectation_Container::ACTION_ADDED === $this->action ) {
 			PHPUnit::assertTrue(
-				! ! has_action( $this->hook, $this->args ?? false ),
+				(bool) has_action( $this->hook, $this->args ?? false ),
 				"Expected that hook [{$this->hook}] would have action added."
 			);
 		}
@@ -286,7 +286,7 @@ class Expectation {
 	 * Specify that the filter returns a truthy value.
 	 */
 	public function andReturnTruthy(): static {
-		return $this->returnComparison( fn ( $value ) => ! ! $value );
+		return $this->returnComparison( fn ( $value ) => (bool) $value );
 	}
 
 	/**

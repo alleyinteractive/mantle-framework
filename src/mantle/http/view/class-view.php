@@ -144,7 +144,7 @@ class View implements \Stringable {
 		}
 
 		$filtered_data = array_map(
-			function( $value, $key ) {
+			function ( $value, $key ) {
 				// Internal class references do not serialize well.
 				if ( '__env' === $key ) {
 					return 'app';

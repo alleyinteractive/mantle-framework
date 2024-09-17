@@ -41,7 +41,7 @@ class Asset_Service_Provider extends Service_Provider {
 	protected function load_blocks(): void {
 		foreach ( $this->app['asset.loader']->blocks() as $file ) {
 			if ( file_exists( $file ) && 0 === validate_file( $file ) ) {
-				require_once $file;
+				require_once $file; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 			}
 		}
 	}

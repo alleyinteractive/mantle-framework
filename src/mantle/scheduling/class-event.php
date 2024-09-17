@@ -25,7 +25,8 @@ use Throwable;
  * Schedule-able Event
  */
 class Event {
-	use Macroable, Manages_Frequencies;
+	use Macroable;
+	use Manages_Frequencies;
 
 	/**
 	 * The cron expression representing the event's frequency.
@@ -179,7 +180,7 @@ class Event {
 	 * @param string $environment Environment to check against.
 	 */
 	public function runs_in_environment( $environment ): bool {
-		return empty( $this->environments ) || in_array( $environment, $this->environments );
+		return empty( $this->environments ) || in_array( $environment, $this->environments, true );
 	}
 
 	/**

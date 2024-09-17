@@ -37,9 +37,9 @@ use Mantle\Support\Helpers;
  * @method static \Mantle\Database\Query\Term_Query_Builder<static> or_where_raw( array|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' )
  */
 class Term extends Model implements Core_Object, Model_Meta, Updatable {
-	use Events\Term_Events,
-		Meta\Model_Meta,
-		Meta\Term_Meta;
+	use Events\Term_Events;
+	use Meta\Model_Meta;
+	use Meta\Term_Meta;
 
 	/**
 	 * Attributes for the model from the object
@@ -126,7 +126,7 @@ class Term extends Model implements Core_Object, Model_Meta, Updatable {
 			 * Prevent booting the model unless the object name is set.
 			 */
 			public static function boot_if_not_booted(): void {
-				if ( empty( static::$object_name ) ) {
+				if ( empty( self::$object_name ) ) {
 					return;
 				}
 

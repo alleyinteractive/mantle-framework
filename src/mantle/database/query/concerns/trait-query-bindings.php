@@ -185,7 +185,7 @@ trait Query_Bindings {
 		$value    = $binding['value'];
 
 		if ( ! in_array( $operator, $this->operators, true ) ) {
-			throw new InvalidArgumentException( "Invalid operator for raw query binding: {$operator}" );
+			throw new InvalidArgumentException( esc_html( "Invalid operator for raw query binding: {$operator}" ) );
 		}
 
 		// Handle an array of values, commonly used with IN/NOT IN.

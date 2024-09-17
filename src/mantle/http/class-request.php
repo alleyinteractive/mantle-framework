@@ -23,8 +23,8 @@ use function Mantle\Support\Helpers\data_get;
  * Request Object
  */
 class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
-	use Interacts_With_Input,
-		Concerns\Interacts_With_Content_Types;
+	use Interacts_With_Input;
+	use Concerns\Interacts_With_Content_Types;
 
 	/**
 	 * Route parameters.
@@ -175,7 +175,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 		return array_values(
 			array_filter(
 				$segments,
-				fn ( $value) => '' !== $value
+				fn ( $value ) => '' !== $value
 			)
 		);
 	}
@@ -227,7 +227,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * Determine if the request is the result of an PJAX call.
 	 */
 	public function pjax(): bool {
-		return $this->headers->get( 'X-PJAX' ) == true;
+		return (bool) $this->headers->get( 'X-PJAX' );
 	}
 
 	/**
@@ -347,7 +347,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 			return $this->json();
 		}
 
-		return in_array( $this->getRealMethod(), [ 'GET', 'HEAD' ] ) ? $this->query : $this->request;
+		return in_array( $this->getRealMethod(), [ 'GET', 'HEAD' ], true ) ? $this->query : $this->request;
 	}
 
 	/**
@@ -497,5 +497,4 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 			fn () => $this->get_route_parameters()->get( $key )
 		);
 	}
-
 }

@@ -249,7 +249,7 @@ trait Makes_Http_Requests {
 	 * @param int    $options JSON encoding options.
 	 */
 	public function post_json( string $uri, array $data = [], array $headers = [], int $options = 0 ): Test_Response {
-		return $this->create_pending_request()->json( 'POST', $uri, $data, $headers );
+		return $this->create_pending_request()->json( 'POST', $uri, $data, $headers, $options );
 	}
 
 	/**

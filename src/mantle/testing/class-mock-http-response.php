@@ -23,7 +23,8 @@ use Mantle\Support\Traits\Macroable;
  *         ->with_header( 'Content-Type', 'application/json' );
  */
 class Mock_Http_Response implements Arrayable {
-	use Conditionable, Macroable;
+	use Conditionable;
+	use Macroable;
 
 	/**
 	 * Response data.

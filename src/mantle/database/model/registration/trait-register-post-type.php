@@ -35,7 +35,7 @@ trait Register_Post_Type {
 			throw new Model_Exception( 'Unable to register post type (post type already exists): ' . $post_type );
 		}
 
-		$register = \register_post_type( $post_type, static::get_registration_args() );
+		$register = \register_post_type( $post_type, static::get_registration_args() ); // phpcs:ignore WordPress.NamingConventions.ValidPostTypeSlug.NotStringLiteral
 
 		if ( is_wp_error( $register ) ) {
 			throw new Model_Exception( 'Error registering post type: ' . $register->get_error_message() );

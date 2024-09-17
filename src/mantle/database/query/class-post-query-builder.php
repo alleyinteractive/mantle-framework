@@ -32,7 +32,8 @@ use function Mantle\Support\Helpers\collect;
  * @method \Mantle\Database\Query\Post_Query_Builder<TModel> whereType( string $type )
  */
 class Post_Query_Builder extends Builder {
-	use Queries_Dates, Queries_Relationships;
+	use Queries_Dates;
+	use Queries_Relationships;
 
 	/**
 	 * Query Variable Aliases

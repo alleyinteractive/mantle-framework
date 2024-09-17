@@ -39,14 +39,14 @@ use function Mantle\Support\Helpers\tap;
  * @method static \Mantle\Contracts\Paginator\Paginator paginate(int $per_page = 20, int $current_page = null)
  */
 abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializable, Url_Routable {
-	use Forward_Calls,
-		Concerns\Has_Aliases,
-		Concerns\Has_Attributes,
-		Concerns\Has_Events,
-		/** @use Concerns\Has_Factory<TModelObject> */
-		Concerns\Has_Factory,
-		Concerns\Has_Global_Scopes,
-		Concerns\Has_Relationships;
+	use Forward_Calls;
+	use Concerns\Has_Aliases;
+	use Concerns\Has_Attributes;
+	use Concerns\Has_Events;
+	/** @use Concerns\Has_Factory<TModelObject> */
+	use Concerns\Has_Factory;
+	use Concerns\Has_Global_Scopes;
+	use Concerns\Has_Relationships;
 
 	/**
 	 * The array of booted models.
@@ -131,7 +131,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 			return $find;
 		}
 
-		throw ( new Model_Not_Found_Exception() )->set_model( self::class, $object );
+		throw new Model_Not_Found_Exception( static::class, [ $object ] );
 	}
 
 	/**
@@ -294,7 +294,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 			$trait_method = strtolower( class_basename( $trait ) );
 			$method       = 'boot_' . $trait_method;
 
-			if ( method_exists( $class, $method ) && ! in_array( $method, $booted ) ) {
+			if ( method_exists( $class, $method ) && ! in_array( $method, $booted, true ) ) {
 				forward_static_call( [ $class, $method ] );
 
 				$booted[] = $method;

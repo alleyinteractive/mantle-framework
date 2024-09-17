@@ -771,7 +771,7 @@ class Str {
 				)
 				->when(
 					$numbers,
-					fn ( $c) => $c->merge(
+					fn ( $c ) => $c->merge(
 						[
 							'0',
 							'1',
@@ -788,7 +788,7 @@ class Str {
 				)
 				->when(
 					$symbols,
-					fn ( $c) => $c->merge(
+					fn ( $c ) => $c->merge(
 						[
 							'~',
 							'!',
@@ -819,8 +819,8 @@ class Str {
 						]
 					)
 				)
-				->when( $spaces, fn ( $c) => $c->merge( [ ' ' ] ) )
-				->pipe( fn ( $c) => Collection::times( $length, fn () => $c[ random_int( 0, $c->count() - 1 ) ] ) )
+				->when( $spaces, fn ( $c ) => $c->merge( [ ' ' ] ) )
+				->pipe( fn ( $c ) => Collection::times( $length, fn () => $c[ random_int( 0, $c->count() - 1 ) ] ) ) // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable, Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition
 				->implode( '' );
 	}
 
@@ -834,7 +834,7 @@ class Str {
 		return ( static::$random_string_factory ?? function ( $length ) {
 			$string = '';
 
-			while ( ( $len = strlen( $string ) ) < $length ) { // phpcs:ignore WordPress.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition, Squiz.PHP.DisallowSizeFunctionsInLoops.Found
+			while ( ( $len = strlen( $string ) ) < $length ) { // phpcs:ignore WordPress.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition, Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition, Squiz.PHP.DisallowSizeFunctionsInLoops.Found
 				$size = $length - $len;
 
 				$bytes_size = (int) ceil( $size / 3 ) * 3;
@@ -1193,7 +1193,7 @@ class Str {
 
 		$words = explode( ' ', static::replace( [ '-', '_' ], ' ', $value ) );
 
-		$study_words = array_map( fn ( $word) => static::ucfirst( $word ), $words );
+		$study_words = array_map( fn ( $word ) => static::ucfirst( $word ), $words );
 
 		return static::$studly_cache[ $key ] = implode( '', $study_words );
 	}

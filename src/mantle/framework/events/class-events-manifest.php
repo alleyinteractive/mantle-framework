@@ -80,7 +80,7 @@ class Events_Manifest {
 			return (array) $this->manifest;
 		}
 
-		$this->manifest = include $this->manifest_path;
+		$this->manifest = include $this->manifest_path; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 
 		return (array) $this->manifest;
 	}

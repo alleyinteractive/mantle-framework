@@ -72,7 +72,7 @@ class PrinterTest extends TestCase {
 			->addComment( '' )
 			// For some reason these rules need to be disabled by the generated code
 			// doesn't have any issues.
-			->addComment( 'phpcs:disable WordPress.WhiteSpace.PrecisionAlignment.Found' )
+			->addComment( 'phpcs:disable WordPress.WhiteSpace.PrecisionAlignment.Found, Universal.WhiteSpace.PrecisionAlignment.Found' )
 			->addComment( 'phpcs:disable Generic.WhiteSpace.ScopeIndent.Incorrect' )
 			->addComment( '' )
 			->addComment( '@package App' )
@@ -112,9 +112,10 @@ class PrinterTest extends TestCase {
 		if ( 0 !== $exit_code ) {
 			echo "Output from phpcs:\n";
 			dump( $output );
+			echo "File output:\n";
+			dump( $code );
 		}
 
 		$this->assertEquals( 0, $exit_code, 'phpcs exit code should be 0 for no errors.' );
-
 	}
 }

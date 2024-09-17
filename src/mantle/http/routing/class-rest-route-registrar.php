@@ -105,7 +105,7 @@ class Rest_Route_Registrar {
 	protected function wrap_callback( mixed $callback, string $route ): callable {
 		$callback = $this->parse_route_action( $callback, $route );
 
-		return function( WP_REST_Request $request ) use ( $callback, $route ) {
+		return function ( WP_REST_Request $request ) use ( $callback, $route ) {
 			$middleware = $request->get_attributes()['middleware'] ?? [];
 
 			if ( empty( $middleware ) ) {
@@ -143,7 +143,7 @@ class Rest_Route_Registrar {
 	public function gather_route_middleware( array $middleware ): array {
 		return collect( $middleware )
 			->map(
-				fn ( $name) => (array) Middleware_Name_Resolver::resolve(
+				fn ( $name ) => (array) Middleware_Name_Resolver::resolve(
 					$name,
 					$this->router->get_middleware(),
 					$this->router->get_middleware_groups()
@@ -174,7 +174,7 @@ class Rest_Route_Registrar {
 	 * was already fired.
 	 */
 	protected function should_register_now(): bool {
-		return function_exists( 'did_action' ) && ! ! did_action( 'rest_api_init' );
+		return function_exists( 'did_action' ) && (bool) did_action( 'rest_api_init' );
 	}
 
 	/**

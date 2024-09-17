@@ -16,8 +16,8 @@ use Mantle\Support\Helpers;
  * @method static \Mantle\Database\Factory\Post_Factory<static, \WP_Comment, static> factory( array|callable|null $state = null )
  */
 class Comment extends Model implements Contracts\Database\Core_Object, Contracts\Database\Model_Meta, Contracts\Database\Updatable {
-	use Meta\Model_Meta,
-		Meta\Comment_Meta;
+	use Meta\Model_Meta;
+	use Meta\Comment_Meta;
 
 	/**
 	 * Attributes for the model from the object

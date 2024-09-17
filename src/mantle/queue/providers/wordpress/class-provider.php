@@ -41,7 +41,7 @@ class Provider implements Provider_Contract {
 	 * Register the data types on 'init'.
 	 */
 	public static function register_data_types(): void {
-		\register_post_type(
+		\register_post_type( // phpcs:ignore WordPress.NamingConventions.ValidPostTypeSlug.NotStringLiteral
 			static::OBJECT_NAME,
 			[
 				'public' => false,
@@ -177,7 +177,7 @@ class Provider implements Provider_Contract {
 				fn ( Queue_Record $record ) => tap(
 					new Queue_Worker_Job( $record ),
 					// Lock the job until the configured timeout or 10 minutes.
-					fn ( Queue_Worker_Job $job ) => $record->set_lock_until(
+					fn ( Queue_Worker_Job $job ) => $record->set_lock_until( // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable
 						$job->get_job()->timeout ?? 600
 					),
 				),

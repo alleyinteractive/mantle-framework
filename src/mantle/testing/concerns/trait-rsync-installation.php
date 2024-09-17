@@ -417,6 +417,8 @@ trait Rsync_Installation {
 			exit( 1 );
 		}
 
+		$retval = -1;
+
 		// Rsync the from folder to the destination.
 		$output = Utils::command(
 			[

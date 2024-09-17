@@ -106,7 +106,7 @@ trait Interacts_With_Content_Types {
 		$content_types = (array) $content_types;
 
 		foreach ( $accepts as $accept ) {
-			if ( in_array( $accept, [ '*/*', '*' ] ) ) {
+			if ( in_array( $accept, [ '*/*', '*' ], true ) ) {
 				return $content_types[0];
 			}
 

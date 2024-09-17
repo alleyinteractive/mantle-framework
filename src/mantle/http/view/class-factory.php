@@ -24,9 +24,9 @@ use WP_Query;
  * View Factory
  */
 class Factory implements ViewFactory {
-	use ManagesLayouts,
-		ManagesLoops,
-		ManagesStacks;
+	use ManagesLayouts;
+	use ManagesLoops;
+	use ManagesStacks;
 
 	/**
 	 * The IoC container instance.
@@ -331,7 +331,6 @@ class Factory implements ViewFactory {
 		}
 
 		return $this->engines->resolve( $this->extensions[ $extension ] );
-
 	}
 
 	/**
@@ -344,7 +343,7 @@ class Factory implements ViewFactory {
 
 		return Arr::first(
 			$extensions,
-			fn ( $value) => Str::ends_with( $path, '.' . $value )
+			fn ( $value ) => Str::ends_with( $path, '.' . $value )
 		);
 	}
 }

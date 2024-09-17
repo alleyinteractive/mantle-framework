@@ -52,7 +52,7 @@ class View_Service_Provider extends Service_Provider {
 			'view.engine.resolver',
 			fn () => tap(
 				new Engine_Resolver(),
-				function( Engine_Resolver $resolver ): void {
+				function ( Engine_Resolver $resolver ): void {
 					// Register the various view engines.
 					$this->register_php_engine( $resolver );
 					$this->register_file_engine( $resolver );
@@ -120,7 +120,7 @@ class View_Service_Provider extends Service_Provider {
 	protected function register_factory() {
 		$this->app->singleton(
 			'view',
-			function( $app ) {
+			function ( $app ) {
 				$factory = new Factory(
 					$app,
 					$app['view.engine.resolver'],

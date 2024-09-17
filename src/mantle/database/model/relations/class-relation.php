@@ -185,7 +185,7 @@ abstract class Relation {
 	/**
 	 * Guess the name of the relationship.
 	 */
-	protected function guess_relationship() : ?string {
+	protected function guess_relationship(): ?string {
 		$trace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 5 ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
 
 		foreach ( $trace as $item ) {

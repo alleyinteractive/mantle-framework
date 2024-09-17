@@ -356,7 +356,7 @@ trait Interacts_With_Requests {
 	 * @param string                      $method Request method, optional.
 	 */
 	protected function create_stub_request_callback( string $url, Mock_Http_Response|callable $response, ?string $method = null ): callable {
-		return function( string $request_url, array $request_args ) use ( $url, $response, $method ) {
+		return function ( string $request_url, array $request_args ) use ( $url, $response, $method ) {
 			if ( ! Str::is( Str::start( $url, '*' ), $request_url ) ) {
 				return;
 			}

@@ -91,7 +91,7 @@ trait Snapshot_Testing {
 		$document->formatOutput       = true;
 
 		// To ignore HTML5 errors.
-		@$document->loadHTML( $this->get_content(), LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+		@$document->loadHTML( $this->get_content(), LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, Generic.PHP.NoSilencedErrors.Forbidden
 
 		$nodes = ( new \DOMXPath( $document ) )->query( implode( '|', $selectors ) );
 

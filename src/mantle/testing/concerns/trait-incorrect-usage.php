@@ -22,7 +22,8 @@ use function Mantle\Support\Helpers\collect;
  * as expected or ignored.
  */
 trait Incorrect_Usage {
-	use Output_Messages, Reads_Annotations;
+	use Output_Messages;
+	use Reads_Annotations;
 
 	/**
 	 * Expected "doing it wrong" calls.

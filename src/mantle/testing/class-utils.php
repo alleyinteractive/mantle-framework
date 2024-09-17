@@ -484,7 +484,7 @@ class Utils {
 
 		foreach ( $paths as $path ) {
 			if ( ! is_dir( $path ) && file_exists( $path ) ) {
-				require_once $path;
+				require_once $path; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 
 				return;
 			}

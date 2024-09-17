@@ -25,7 +25,9 @@ use function Mantle\Support\Helpers\collect;
  */
 class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 
-	use Conditionable, Macroable, Tappable;
+	use Conditionable;
+	use Macroable;
+	use Tappable;
 
 	/**
 	 * The underlying string value.

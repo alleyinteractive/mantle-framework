@@ -16,7 +16,8 @@ use Mantle\Testing\Attributes\Ignore_Deprecation;
 use function Mantle\Support\Helpers\collect;
 
 trait Deprecations {
-	use Output_Messages, Reads_Annotations;
+	use Output_Messages;
+	use Reads_Annotations;
 
 	/**
 	 * Expected deprecation calls.

@@ -235,7 +235,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 */
 	protected function get_closure( $abstract, $concrete ) {
 		return function ( $container, $parameters = [] ) use ( $abstract, $concrete ) {
-			if ( $abstract == $concrete ) {
+			if ( $abstract === $concrete ) {
 				return $container->build( $concrete );
 			}
 
@@ -390,7 +390,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 
 		foreach ( $this->abstract_aliases as $abstract => $aliases ) {
 			foreach ( $aliases as $index => $alias ) {
-				if ( $alias == $searched ) {
+				if ( $alias === $searched ) {
 					unset( $this->abstract_aliases[ $abstract ][ $index ] );
 				}
 			}
@@ -870,7 +870,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 		}
 
 		return array_map(
-			fn ( $abstract) => $this->resolve( $abstract ),
+			fn ( $abstract ) => $this->resolve( $abstract ),
 			$concrete
 		);
 	}

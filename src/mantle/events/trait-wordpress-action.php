@@ -72,7 +72,7 @@ trait WordPress_Action {
 	 * @param callable $callback
 	 */
 	protected function create_action_callback( callable $callback ): Closure {
-		return function( ...$args ) use ( $callback ) {
+		return function ( ...$args ) use ( $callback ) {
 			if ( is_array( $callback ) ) {
 				try {
 					$class      = new ReflectionClass( $callback[0] );
@@ -140,7 +140,7 @@ trait WordPress_Action {
 			$class_name = Reflector::get_parameter_class_name( $parameter );
 			if (
 				$class_name
-				&& ( is_object( $argument ) && $argument::class === $class_name || is_subclass_of( $argument, $class_name ) )
+				&& ( is_object( $argument ) && ( $argument::class === $class_name || is_subclass_of( $argument, $class_name ) ) ) // @phpstan-ignore-line always true
 			) {
 				return $argument;
 			}

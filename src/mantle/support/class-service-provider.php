@@ -156,7 +156,7 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	 * @param string $path Path to routes file.
 	 */
 	public function load_routes_from( string $path ): void {
-		require $path;
+		require $path; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 	}
 
 	/**

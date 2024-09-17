@@ -1,5 +1,7 @@
 <?php
 /**
+ * Rector Configuration
+ *
  * phpcs:disable
  */
 
