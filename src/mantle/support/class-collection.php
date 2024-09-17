@@ -755,6 +755,10 @@ class Collection implements ArrayAccess, Enumerable {
 		foreach ( $this->items as $key => $item ) {
 			$pair = $callback( $item, $key );
 
+			if ( ! $pair || ! is_array( $pair ) ) {
+				continue;
+			}
+
 			$key = key( $pair );
 
 			$value = reset( $pair );
@@ -785,6 +789,10 @@ class Collection implements ArrayAccess, Enumerable {
 
 		foreach ( $this->items as $key => $value ) {
 			$assoc = $callback( $value, $key );
+
+			if ( ! is_array( $assoc ) ) {
+				continue;
+			}
 
 			foreach ( $assoc as $map_key => $map_value ) {
 				$result[ $map_key ] = $map_value;

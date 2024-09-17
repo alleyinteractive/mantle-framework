@@ -107,9 +107,17 @@ class Block_Factory {
 	/**
 	 * Generate a collection of blocks.
 	 *
-	 * @param array $blocks Blocks to generate.
+	 * Blocks can be passed as an array or as individual arguments.
+	 *
+	 * @param array|string ...$blocks Blocks to generate.
 	 */
-	public function blocks( array $blocks ): string {
+	public function blocks( array|string ...$blocks ): string {
+		$blocks = isset( $blocks[0] ) && is_array( $blocks[0] ) ? $blocks[0] : $blocks;
+
+		if ( ! is_array( $blocks ) ) {
+			$blocks = [ $blocks ];
+		}
+
 		return collect( $blocks )
 			->map( fn ( $block ) => is_array( $block ) ? serialize_blocks( $block ) : $block )
 			->implode( "\n\n" );

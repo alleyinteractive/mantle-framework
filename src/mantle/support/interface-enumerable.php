@@ -147,9 +147,8 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * Dump the collection and end the script.
 	 *
 	 * @param  mixed ...$args
-	 * @return void
 	 */
-	public function dd( ...$args );
+	public function dd( ...$args ): never;
 
 	/**
 	 * Dump the collection.

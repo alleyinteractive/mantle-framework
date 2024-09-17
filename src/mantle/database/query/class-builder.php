@@ -935,7 +935,7 @@ abstract class Builder {
 	/**
 	 * Dump the query variables being passed to WP_Query and die.
 	 */
-	public function dd(): void {
+	public function dd(): never {
 		$this->dump();
 		die;
 	}

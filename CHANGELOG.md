@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Dropped support for Redis as a cache backend in favor of the default object
   cache drop-in.
+- Allow returning falsey from `Collection::map_to_dictionary()`.
 
 ## v1.1.3 - 2024-08-14
 

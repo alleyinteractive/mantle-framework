@@ -25,6 +25,13 @@ use function Mantle\Support\Helpers\collect;
  */
 trait Hookable {
 	/**
+	 * Constructor (can be overridden by the trait user).
+	 */
+	public function __construct() {
+		$this->register_hooks();
+	}
+
+	/**
 	 * Boot all actions and attribute methods on the service provider.
 	 *
 	 * Collects all of the `on_{hook}`, `on_{hook}_at_{priority}`,
