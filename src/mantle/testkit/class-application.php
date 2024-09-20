@@ -104,6 +104,8 @@ class Application extends Container implements Application_Contract {
 	 * @param string $root_url Root URL of the application.
 	 */
 	public function __construct( string $base_path = '', string $root_url = null ) {
+		static::$instance = $this;
+
 		if ( empty( $base_path ) && defined( 'MANTLE_BASE_DIR' ) ) {
 			$base_path = \MANTLE_BASE_DIR;
 		}
