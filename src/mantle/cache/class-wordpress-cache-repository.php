@@ -118,9 +118,9 @@ class WordPress_Cache_Repository extends Repository implements Taggable_Reposito
 	/**
 	 * Set a cache item.
 	 *
-	 * @param string                 $key Cache key.
-	 * @param mixed                  $value Item value.
-	 * @param null|int|\DateInterval $ttl TTL.
+	 * @param string                                    $key Cache key.
+	 * @param mixed                                     $value Item value.
+	 * @param null|int|\DateInterval|\DateTimeInterface $ttl TTL.
 	 */
 	public function set( string $key, mixed $value, int|\DateInterval|\DateTimeInterface|null $ttl = null ): bool {
 		return \wp_cache_set( $key, $value, $this->prefix, $this->normalize_ttl( $ttl ) ); // phpcs:ignore WordPressVIPMinimum.Performance.LowExpiryCacheTime.CacheTimeUndetermined
