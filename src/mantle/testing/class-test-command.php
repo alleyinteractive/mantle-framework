@@ -230,11 +230,11 @@ class Test_Command {
 
 		// todo: add output substring assertions.
 		// if ( ! empty( $this->expected_output_substrings ) ) {
-		// 	$output = $this->tester->getDisplay();
+		//  $output = $this->tester->getDisplay();
 
-		// 	foreach ( $this->expected_output_substrings as $expected_output_substring ) {
-		// 		$this->test->assertStringContainsString( $expected_output_substring, $output );
-		// 	}
+		//  foreach ( $this->expected_output_substrings as $expected_output_substring ) {
+		//      $this->test->assertStringContainsString( $expected_output_substring, $output );
+		//  }
 		// }
 	}
 

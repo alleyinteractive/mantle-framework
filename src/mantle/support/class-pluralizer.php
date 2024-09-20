@@ -50,7 +50,7 @@ class Pluralizer {
 			$count = count( $count );
 		}
 
-		if ( abs( $count ) === 1 || static::uncountable( $value ) || preg_match( '/^(.*)[A-Za-z0-9\x{0080}-\x{FFFF}]$/u', $value ) == 0 ) {
+		if ( abs( $count ) === 1 || static::uncountable( $value ) || preg_match( '/^(.*)[A-Za-z0-9\x{0080}-\x{FFFF}]$/u', $value ) === 0 ) {
 			return $value;
 		}
 
@@ -77,7 +77,7 @@ class Pluralizer {
 	 * @return bool
 	 */
 	protected static function uncountable( $value ) {
-		return in_array( strtolower( $value ), static::$uncountable );
+		return in_array( strtolower( $value ), static::$uncountable, true );
 	}
 
 	/**

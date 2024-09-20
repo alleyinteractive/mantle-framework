@@ -168,7 +168,7 @@ class Router implements Router_Contract {
 	 * @param  \Closure|string $routes
 	 * @return void
 	 */
-	protected function load_routes( $routes ) {
+	protected function load_routes( \Closure|string $routes ) {
 		if ( $routes instanceof \Closure ) {
 			$routes( $this );
 		} else {
@@ -315,7 +315,7 @@ class Router implements Router_Contract {
 			->send( $this->container['request'] )
 			->through( $middleware )
 			->then(
-				function( Request $request ) use ( $route ) {
+				function ( Request $request ) use ( $route ) {
 					// Refresh the request object in the container with modifications from the middleware.
 					$this->container['request'] = $request;
 
@@ -391,7 +391,7 @@ class Router implements Router_Contract {
 	 * @return static
 	 */
 	public function prepend_middleware_to_group( $group, $middleware ) {
-		if ( isset( $this->middleware_groups[ $group ] ) && ! in_array( $middleware, $this->middleware_groups[ $group ] ) ) {
+		if ( isset( $this->middleware_groups[ $group ] ) && ! in_array( $middleware, $this->middleware_groups[ $group ], true ) ) {
 			array_unshift( $this->middleware_groups[ $group ], $middleware );
 		}
 
@@ -412,7 +412,7 @@ class Router implements Router_Contract {
 				$this->middleware_groups[ $group ] = [];
 		}
 
-		if ( ! in_array( $middleware, $this->middleware_groups[ $group ] ) ) {
+		if ( ! in_array( $middleware, $this->middleware_groups[ $group ], true ) ) {
 				$this->middleware_groups[ $group ][] = $middleware;
 		}
 

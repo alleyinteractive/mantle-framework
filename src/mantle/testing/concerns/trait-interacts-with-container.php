@@ -2,6 +2,8 @@
 /**
  * Interacts_With_Container trait file.
  *
+ * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+ *
  * @package Mantle
  */
 

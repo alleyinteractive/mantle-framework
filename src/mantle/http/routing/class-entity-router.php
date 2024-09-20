@@ -68,7 +68,7 @@ class Entity_Router implements Entity_Router_Contract {
 			throw new InvalidArgumentException( "Unknown entity type: [{$entity}]" );
 		}
 
-		if ( ! in_array( Url_Routable::class, class_implements( $entity ) ) ) {
+		if ( ! in_array( Url_Routable::class, class_implements( $entity ), true ) ) {
 			throw new InvalidArgumentException( "Unroutable entity: [{$entity}]" );
 		}
 

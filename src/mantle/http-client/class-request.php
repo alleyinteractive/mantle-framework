@@ -142,7 +142,7 @@ class Request {
 	/**
 	 * Dump the request to the screen and die.
 	 */
-	public function dd(): void {
+	public function dd(): never {
 		$this->dump();
 		exit( 1 );
 	}

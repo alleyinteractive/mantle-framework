@@ -323,7 +323,7 @@ class Handler implements Contract {
 	 * @param Request                 $request
 	 * @param Throwable|HttpException $e
 	 */
-	protected function prepare_json_response( $request, Throwable | HttpException $e ): JsonResponse {
+	protected function prepare_json_response( $request, Throwable|HttpException $e ): JsonResponse {
 		return new JsonResponse(
 			$this->convert_exception_to_array( $e ),
 			$e instanceof HttpException ? $e->getStatusCode() : 500,
@@ -343,7 +343,7 @@ class Handler implements Contract {
 			'file'      => $e->getFile(),
 			'line'      => $e->getLine(),
 			'trace'     => collect( $e->getTrace() )->map(
-				fn ( $trace) => Arr::except( $trace, [ 'args' ] )
+				fn ( $trace ) => Arr::except( $trace, [ 'args' ] )
 			)->all(),
 		] : [
 			'message' => $e instanceof HttpException ? $e->getMessage() : __( 'Server Error', 'mantle' ),

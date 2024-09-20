@@ -436,7 +436,7 @@ class Filesystem_Adapter implements Filesystem {
 	 * @return string|false
 	 */
 	public function put_file_as( string $path, $file, string $name, $options = [] ): string|bool {
-		$stream = fopen( is_string( $file ) ? $file : $file->getRealPath(), 'r' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fopen
+		$stream = fopen( is_string( $file ) ? $file : $file->getRealPath(), 'r' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen
 		$path   = trim( $path . '/' . $name, '/' );
 
 		// Next, we will format the path of the file and store the file using a stream since

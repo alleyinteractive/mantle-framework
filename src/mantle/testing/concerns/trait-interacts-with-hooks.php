@@ -37,7 +37,7 @@ trait Interacts_With_Hooks {
 
 		\add_filter(
 			'all',
-			function( $value ) {
+			function ( $value ) {
 				$filter = current_filter();
 
 				if ( ! isset( $this->hooks_fired[ $filter ] ) ) {

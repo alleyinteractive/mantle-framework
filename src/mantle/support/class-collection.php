@@ -2,25 +2,23 @@
 /**
  * Collections class file.
  *
+ * phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment, Squiz.Commenting.FunctionComment.MissingParamTag
+ *
  * @package Mantle
  */
-
-// phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment
-
-// phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag
 
 namespace Mantle\Support;
 
 use ArrayAccess;
 use ArrayIterator;
 use Mantle\Contracts\Support\Arrayable;
-use Mantle\Support\Traits\Enumerates_Values;
 use Mantle\Database\Model;
+use Mantle\Support\Traits\Enumerates_Values;
+use stdClass;
+use Traversable;
 
 use function Mantle\Support\Helpers\data_get;
 use function Mantle\Support\Helpers\value;
-use stdClass;
-use Traversable;
 
 /**
  * Collection
@@ -144,7 +142,7 @@ class Collection implements ArrayAccess, Enumerable {
 	public function median( $key = null ) {
 		$values = ( isset( $key ) ? $this->pluck( $key ) : $this )
 			->filter(
-				fn ( $item) => ! is_null( $item )
+				fn ( $item ) => ! is_null( $item )
 			)->sort()->values();
 
 
@@ -194,7 +192,7 @@ class Collection implements ArrayAccess, Enumerable {
 		$highest_value = $sorted->last();
 
 		return $sorted->filter(
-			fn ( $value) => $value == $highest_value
+			fn ( $value ) => $value == $highest_value // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison, Universal.Operators.StrictComparisons.LooseEqual
 		)->sort()->keys()->all();
 	}
 
@@ -223,7 +221,7 @@ class Collection implements ArrayAccess, Enumerable {
 				return $this->first( $key, $placeholder ) !== $placeholder;
 			}
 
-			return in_array( $key, $this->items );
+			return in_array( $key, $this->items ); // phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
 		}
 
 		return $this->contains( $this->operator_for_where( ...func_get_args() ) );
@@ -238,7 +236,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	public function contains_strict( $key, $value = null ) {
 		if ( func_num_args() === 2 ) {
-			return $this->contains( fn ( $item) => data_get( $item, $key ) === $value );
+			return $this->contains( fn ( $item ) => data_get( $item, $key ) === $value );
 		}
 
 		if ( $this->use_as_callable( $key ) ) {
@@ -386,10 +384,10 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	protected function duplicate_comparator( $strict ) {
 		if ( $strict ) {
-			return fn ( $a, $b) => $a === $b;
+			return fn ( $a, $b ) => $a == $b; // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison, Universal.Operators.StrictComparisons.LooseEqual
 		}
 
-		return fn ( $a, $b) => $a == $b;
+		return fn ( $a, $b ) => $a === $b;
 	}
 
 	/**
@@ -757,6 +755,10 @@ class Collection implements ArrayAccess, Enumerable {
 		foreach ( $this->items as $key => $item ) {
 			$pair = $callback( $item, $key );
 
+			if ( ! $pair || ! is_array( $pair ) ) {
+				continue;
+			}
+
 			$key = key( $pair );
 
 			$value = reset( $pair );
@@ -787,6 +789,10 @@ class Collection implements ArrayAccess, Enumerable {
 
 		foreach ( $this->items as $key => $value ) {
 			$assoc = $callback( $value, $key );
+
+			if ( ! is_array( $assoc ) ) {
+				continue;
+			}
 
 			foreach ( $assoc as $map_key => $map_value ) {
 				$result[ $map_key ] = $map_value;
@@ -1057,7 +1063,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	public function search( $value, $strict = false ) {
 		if ( ! $this->use_as_callable( $value ) ) {
-			return array_search( $value, $this->items, $strict );
+			return array_search( $value, $this->items, $strict ); // phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
 		}
 
 		foreach ( $this->items as $key => $item ) {

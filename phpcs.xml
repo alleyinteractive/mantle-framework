@@ -14,23 +14,21 @@
 	<arg name="parallel" value="20" />
 
 	<!-- Set severity to 1 to see everything that isn't effectively turned off. -->
-	<!-- todo: enable in a follow up pull request -->
-	<!-- <arg name="severity" value="1" /> -->
+	<arg name="severity" value="1" />
 
 	<exclude-pattern>bin/</exclude-pattern>
 	<exclude-pattern>tests/</exclude-pattern>
 
 	<rule ref="Alley-Interactive">
-		<exclude name="WordPress.NamingConventions.ValidPostTypeSlug.NotStringLiteral" />
-		<exclude name="WordPress.PHP.DisallowShortTernary.Found" />
-		<exclude name="WordPress.WP.CapitalPDangit.Misspelled" />
-
+		<exclude name="WordPress.Security.EscapeOutput.ExceptionNotEscaped" />
+		<exclude name="WordPress.WP.CapitalPDangit.MisspelledInText" />
 		<exclude name="PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection" />
 		<exclude name="PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.Changed" />
 		<exclude name="Squiz.Commenting.FunctionComment.IncorrectTypeHint" />
-		<exclude name="Generic.Commenting.DocComment.SpacingAfterTagGroup" />
 		<exclude name="Generic.Commenting.DocComment.MissingShort" />
 		<exclude name="Squiz.Commenting.VariableComment.MissingVar" />
+		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.Found" />
+		<exclude name="Generic.CodeAnalysis.AssignmentInCondition.Found" />
 	</rule>
 
 	<rule ref="Generic.Arrays.DisallowLongArraySyntax" />

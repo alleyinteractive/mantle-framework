@@ -29,7 +29,7 @@ trait Post_Events {
 
 		add_filter_side_effect(
 			'wp_insert_post_data',
-			function( $data, $postarr ) use ( $post_type ): void {
+			function ( $data, $postarr ) use ( $post_type ): void {
 				// Skip if the ID isn't found or the post type is incorrect.
 				if ( empty( $postarr['ID'] ) || empty( $data['post_type'] ) || $post_type !== $data['post_type'] ) {
 					return;
@@ -50,7 +50,7 @@ trait Post_Events {
 
 		\add_action(
 			'save_post',
-			function( $post_id, \WP_Post $post, $update ) use ( $post_type ): void {
+			function ( $post_id, \WP_Post $post, $update ) use ( $post_type ): void {
 				if ( $post_type !== $post->post_type ) {
 					return;
 				}
@@ -82,7 +82,7 @@ trait Post_Events {
 	 * @param string $post_type Post type to limit to.
 	 */
 	protected static function get_post_event_callback( string $event, string $post_type ): Closure {
-		return function( $post_id ) use ( $event, $post_type ): void {
+		return function ( $post_id ) use ( $event, $post_type ): void {
 			$post = \get_post( $post_id );
 			if ( empty( $post ) || $post_type !== $post->post_type ) {
 				return;

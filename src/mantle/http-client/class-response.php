@@ -344,7 +344,7 @@ class Response implements ArrayAccess {
 	/**
 	 * Dump the response to the screen and exit.
 	 */
-	public function dd(): void {
+	public function dd(): never {
 		$this->dump();
 		exit( 1 );
 	}

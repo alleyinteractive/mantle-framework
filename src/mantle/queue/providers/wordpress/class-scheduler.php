@@ -223,13 +223,13 @@ class Scheduler {
 		$config = config();
 
 		// Check for a queue-specific configuration value.
-		if ( $queue && $config->has( "queue.wordpress.queues.{$queue}.{$key}" ) ) {
-			return $config->get( "queue.wordpress.queues.{$queue}.{$key}" );
+		if ( $queue && $config->has( "queue.WordPress.queues.{$queue}.{$key}" ) ) {
+			return $config->get( "queue.WordPress.queues.{$queue}.{$key}" );
 		}
 
 		// Check for a default configuration for the queue provider.
-		if ( $config->has( "queue.wordpress.{$key}" ) ) {
-			return $config->get( "queue.wordpress.{$key}" );
+		if ( $config->has( "queue.WordPress.{$key}" ) ) {
+			return $config->get( "queue.WordPress.{$key}" );
 		}
 
 		// Check for a default configuration for the queue configuration.

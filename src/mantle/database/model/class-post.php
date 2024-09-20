@@ -88,11 +88,11 @@ use Mantle\Support\Helpers;
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> newer_than_or_equal_to( DateTimeInterface|int $date, string $column = 'post_date' )
  */
 class Post extends Model implements Contracts\Database\Core_Object, Contracts\Database\Model_Meta, Contracts\Database\Updatable {
-	use Dates\Has_Dates,
-		Events\Post_Events,
-		Meta\Model_Meta,
-		Meta\Post_Meta,
-		Term\Model_Term;
+	use Dates\Has_Dates;
+	use Events\Post_Events;
+	use Meta\Model_Meta;
+	use Meta\Post_Meta;
+	use Term\Model_Term;
 
 	/**
 	 * Attributes for the model from the object
@@ -195,7 +195,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 			 * Retrieve the object name.
 			 */
 			public static function get_object_name(): ?string {
-				return static::$for_object_name;
+				return self::$for_object_name;
 			}
 
 			/**
@@ -204,7 +204,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 			 * Prevent booting the model unless the object name is set.
 			 */
 			public static function boot_if_not_booted(): void {
-				if ( empty( static::$for_object_name ) ) {
+				if ( empty( self::$for_object_name ) ) {
 					return;
 				}
 
@@ -305,7 +305,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	/**
 	 * Publish a post.
 	 */
-	public function publish() : bool {
+	public function publish(): bool {
 		return $this->save( [ 'status' => 'publish' ] );
 	}
 
@@ -314,7 +314,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 *
 	 * @param string|DateTime $date Date to schedule the post for.
 	 */
-	public function schedule( $date ) : bool {
+	public function schedule( $date ): bool {
 		if ( $date instanceof DateTime ) {
 			$date = $date->format( 'Y-m-d H:i:s' );
 		} else {

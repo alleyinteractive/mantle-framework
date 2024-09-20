@@ -2343,23 +2343,35 @@ class CollectionTest extends Framework_Test_Case {
 	 * @dataProvider collectionClassProvider
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
-//	public function testMapToDictionary($collection)
-//	{
-//		$data = new $collection([
-//			['id' => 1, 'name' => 'A'],
-//			['id' => 2, 'name' => 'B'],
-//			['id' => 3, 'name' => 'C'],
-//			['id' => 4, 'name' => 'B'],
-//		]);
-//
-//		$groups = $data->map_to_dictionary(function ($item, $key) {
-//			return [$item['name'] => $item['id']];
-//		});
-//
-//		$this->assertInstanceOf($collection, $groups);
-//		$this->assertEquals(['A' => [1], 'B' => [2, 4], 'C' => [3]], $groups->to_array());
-//		$this->assertIsArray($groups->get('A'));
-//	}
+	public function testMapToDictionary($collection)
+	{
+		$data = new $collection([
+			['id' => 1, 'name' => 'A'],
+			['id' => 2, 'name' => 'B'],
+			['id' => 3, 'name' => 'C'],
+			['id' => 4, 'name' => 'B'],
+		]);
+
+		$groups = $data->map_to_dictionary(function ($item, $key) {
+			return [$item['name'] => $item['id']];
+		});
+
+		$this->assertInstanceOf($collection, $groups);
+		$this->assertEquals(['A' => [1], 'B' => [2, 4], 'C' => [3]], $groups->to_array());
+		$this->assertIsArray($groups->get('A'));
+	}
+
+	public function testMapToDictionaryReturnFalsy() {
+		$groups = ( new Collection([1, 2, 3, 4, 5]) )->map_to_dictionary(function ($item, $key) {
+			if (2 === $item) {
+				return null;
+			}
+
+			return ['key' => $item];
+		});
+
+		$this->assertEquals(['key' => [1, 3, 4, 5]], $groups->to_array());
+	}
 
 	/**
 	 * @dataProvider collectionClassProvider

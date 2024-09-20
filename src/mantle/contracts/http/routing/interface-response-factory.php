@@ -76,7 +76,7 @@ interface Response_Factory {
 	 * @param  array    $headers
 	 * @return \Symfony\Component\HttpFoundation\StreamedResponse
 	 */
-	public function stream( $callback, $status = 200, array $headers = []);
+	public function stream( $callback, $status = 200, array $headers = [] );
 
 	/**
 	 * Create a new streamed response instance as a file download.
@@ -107,7 +107,7 @@ interface Response_Factory {
 	 * @param  array               $headers
 	 * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
 	 */
-	public function file( $file, array $headers = []);
+	public function file( $file, array $headers = [] );
 
 	/**
 	 * Create a new redirect response to the given path.

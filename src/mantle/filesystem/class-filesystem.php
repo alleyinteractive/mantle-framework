@@ -68,14 +68,14 @@ class Filesystem {
 	public function shared_get( $path ) {
 		$contents = '';
 
-		$handle = fopen( $path, 'rb' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fopen
+		$handle = fopen( $path, 'rb' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen
 
 		if ( $handle ) {
 			try {
 				if ( flock( $handle, LOCK_SH ) ) {
 					clearstatcache( true, $path );
 
-					$contents = fread( $handle, $this->size( $path ) ?: 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fread
+					$contents = fread( $handle, $this->size( $path ) ?: 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fread
 
 					flock( $handle, LOCK_UN );
 				}
@@ -102,9 +102,9 @@ class Filesystem {
 			$__data = $data;
 
 			return ( static function () use ( $__path, $__data ) {
-				extract( $__data, EXTR_SKIP );
+				extract( $__data, EXTR_SKIP ); // phpcs:ignore WordPress.PHP.DontExtract.extract_extract, WordPress.PHP.DiscouragedPHPFunctions.extract_extract
 
-				return require $__path;
+				return require $__path; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 			} )();
 		}
 
@@ -126,9 +126,9 @@ class Filesystem {
 			$__data = $data;
 
 			return ( static function () use ( $__path, $__data ) {
-				extract( $__data, EXTR_SKIP );
+				extract( $__data, EXTR_SKIP ); // phpcs:ignore WordPress.PHP.DontExtract.extract_extract, WordPress.PHP.DiscouragedPHPFunctions.extract_extract
 
-				return require_once $__path;
+				return require_once $__path; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 			} )();
 		}
 
@@ -233,7 +233,7 @@ class Filesystem {
 
 		foreach ( $paths as $path ) {
 			try {
-				if ( ! @unlink( $path ) ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+				if ( ! @unlink( $path ) ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, Generic.PHP.NoSilencedErrors.Forbidden
 					$success = false;
 				}
 			} catch ( ErrorException ) {
@@ -524,7 +524,7 @@ class Filesystem {
 			return false;
 		}
 
-		return @rename( $from, $to ) === true; // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+		return @rename( $from, $to ) === true; // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, Generic.PHP.NoSilencedErrors.Forbidden
 	}
 
 	/**
@@ -560,14 +560,11 @@ class Filesystem {
 				if ( ! $this->copy_directory( $path, $target, $options ) ) {
 					return false;
 				}
-			} else {
-
+			} elseif ( ! $this->copy( $item->getPathname(), $target ) ) {
 				// If the current items is just a regular file, we will just copy this to the new
 				// location and keep looping. If for some reason the copy fails we'll bail out
 				// and return false, so the developer is aware that the copy process failed.
-				if ( ! $this->copy( $item->getPathname(), $target ) ) {
-					return false;
-				}
+				return false;
 			}
 		}
 
@@ -605,7 +602,7 @@ class Filesystem {
 		}
 
 		if ( ! $preserve ) {
-			@rmdir( $directory ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+			@rmdir( $directory ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, Generic.PHP.NoSilencedErrors.Forbidden
 		}
 
 		return true;

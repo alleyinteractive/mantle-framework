@@ -70,7 +70,7 @@ interface Container extends ContainerInterface {
 	 * @param string   $abstract Abstract name.
 	 * @param \Closure $closure Closure callback.
 	 */
-	public function extend( $abstract, Closure $closure);
+	public function extend( $abstract, Closure $closure );
 
 	/**
 	 * Register an existing instance as shared in the container.

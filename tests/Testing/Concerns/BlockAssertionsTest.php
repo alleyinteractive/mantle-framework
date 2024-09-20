@@ -25,6 +25,13 @@ class BlockAssertionsTest extends Framework_Test_Case {
 				$this->faker->paragraph_block,
 				$this->faker->heading_block( 4 ),
 				$this->faker->paragraph_block,
+				$this->faker->block(
+					'vendor/example-name',
+					'',
+					[
+						'moduleId' => 1234,
+					]
+					),
 			] ),
 		] );
 	}
@@ -33,6 +40,7 @@ class BlockAssertionsTest extends Framework_Test_Case {
 		$this->assertStringHasBlock( $this->post->post_content, 'core/paragraph' );
 		$this->assertStringHasBlock( $this->post->post_content, 'core/heading' );
 		$this->assertStringHasBlock( $this->post->post_content, 'core/heading', [ 'level' => 3 ] );
+		$this->assertStringHasBlock( $this->post->post_content, 'vendor/example-name', [ 'moduleId' => 1234 ] );
 		$this->assertStringNotHasBlock( $this->post->post_content, 'core/heading', [ 'level' => 5 ] );
 	}
 
@@ -40,6 +48,7 @@ class BlockAssertionsTest extends Framework_Test_Case {
 		$this->assertPostHasBlock( $this->post, 'core/paragraph' );
 		$this->assertPostHasBlock( $this->post, 'core/heading' );
 		$this->assertPostHasBlock( $this->post, 'core/heading', [ 'level' => 3 ] );
+		$this->assertPostHasBlock( $this->post, 'vendor/example-name', [ 'moduleId' => 1234 ] );
 		$this->assertPostNotHasBlock( $this->post, 'core/heading', [ 'level' => 5 ] );
 	}
 }

@@ -17,9 +17,9 @@ use PHPUnit\Framework\Assert as PHPUnit;
  * Faux "Response" class for unit testing.
  */
 class Test_Response {
-	use Concerns\Element_Assertions,
-		Concerns\Snapshot_Testing,
-		Macroable;
+	use Concerns\Element_Assertions;
+	use Concerns\Snapshot_Testing;
+	use Macroable;
 
 	/**
 	 * Application instance.

@@ -237,19 +237,19 @@ class Pending_Testable_Request {
 		$response_status  = null;
 		$response_headers = [];
 
-		$intercept_status = function( $status_header, $code ) use ( &$response_status ): int {
+		$intercept_status = function ( $status_header, $code ) use ( &$response_status ): int {
 			$response_status = $code;
 
 			return $code;
 		};
 
-		$intercept_headers = function( $send_headers ) use ( &$response_headers ): array {
+		$intercept_headers = function ( $send_headers ) use ( &$response_headers ): array {
 			$response_headers = $send_headers;
 
 			return $send_headers;
 		};
 
-		$intercept_redirect = function( $location, $status ) use ( &$response_status, &$response_headers ): void {
+		$intercept_redirect = function ( $location, $status ) use ( &$response_status, &$response_headers ): void {
 			$response_status              = $status;
 			$response_headers['Location'] = $location;
 			throw new WP_Redirect_Exception();
@@ -278,7 +278,7 @@ class Pending_Testable_Request {
 			// Mirror the logic from Request::createFromGlobals().
 			if (
 				str_starts_with( (string) $request->headers->get( 'CONTENT_TYPE', '' ), 'application/x-www-form-urlencoded' )
-			&& \in_array( strtoupper( (string) $request->server->get( 'REQUEST_METHOD', 'GET' ) ), [ 'PUT', 'DELETE', 'PATCH' ] )
+			&& \in_array( strtoupper( (string) $request->server->get( 'REQUEST_METHOD', 'GET' ) ), [ 'PUT', 'DELETE', 'PATCH' ], true )
 			) {
 				parse_str( $request->getContent(), $data );
 

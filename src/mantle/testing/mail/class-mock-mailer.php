@@ -23,7 +23,11 @@ require_once ABSPATH . '/wp-includes/PHPMailer/PHPMailer.php';
  * @package Mantle
  */
 class Mock_Mailer extends \PHPMailer\PHPMailer\PHPMailer {
-	/** @var Mail_Message[] */
+	/**
+	 * Mock sent emails.
+	 *
+	 * @var Mail_Message[]
+	 */
 	public array $mock_sent = [];
 
 	/**

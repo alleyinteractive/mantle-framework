@@ -177,7 +177,7 @@ interface Filesystem {
 	 * @param string $separator Separator from existing data.
 	 * @return bool
 	 */
-	public function append( $path, $data, $separator = PHP_EOL);
+	public function append( $path, $data, $separator = PHP_EOL );
 
 	/**
 	 * Retrieve a file's visibility.

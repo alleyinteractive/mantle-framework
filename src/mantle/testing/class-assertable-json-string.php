@@ -2,6 +2,8 @@
 /**
  * Assertable_Json_String class file
  *
+ * phpcs:disable WordPress.WP.AlternativeFunctions.json_encode_json_encode
+ *
  * @package Mantle
  */
 
@@ -29,12 +31,9 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	/**
 	 * Constructor.
 	 *
-	 * @param string|array|Jsonable|JsonSerializable $json
+	 * @param string|array|Jsonable|JsonSerializable $json The original encoded JSON.
 	 */
-	public function __construct( /**
-	 * The original encoded JSON.
-	 */
-	public $json ) {
+	public function __construct( public $json ) {
 		if ( $this->json instanceof JsonSerializable ) {
 			$this->decoded = $this->json->jsonSerialize();
 		} elseif ( $this->json instanceof Jsonable ) {
@@ -107,7 +106,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	/**
 	 * Assert that the response has the similar JSON as given.
 	 *
-	 * @param  array  $data
+	 * @param  array $data
 	 * @return $this
 	 */
 	public function assertSimilar( array $data ) {
@@ -123,8 +122,8 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	/**
 	 * Assert that the response has a given JSON structure.
 	 *
-	 * @param  array|null  $structure
-	 * @param  array|null  $response_data
+	 * @param  array|null $structure
+	 * @param  array|null $response_data
 	 * @return $this
 	 */
 	public function assertStructure( array $structure = null, $response_data = null ) {
@@ -138,13 +137,13 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 
 		foreach ( $structure as $key => $value ) {
 			if ( is_array( $value ) && '*' === $key ) {
-				PHPUnit::assertIsArray($this->decoded);
+				PHPUnit::assertIsArray( $this->decoded );
 
 				foreach ( $this->decoded as $item ) {
 					$this->assertStructure( $structure['*'], $item );
 				}
 			} elseif ( is_array( $value ) ) {
-				PHPUnit::assertArrayHasKey($key, $this->decoded);
+				PHPUnit::assertArrayHasKey( $key, $this->decoded );
 
 				$this->assertStructure( $structure[ $key ], $this->decoded[ $key ] );
 			} else {
@@ -317,7 +316,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	/**
 	 * Determine whether an offset exists.
 	 *
-	 * @param  mixed  $offset
+	 * @param  mixed $offset
 	 */
 	public function offsetExists( $offset ): bool {
 		return isset( $this->decoded[ $offset ] );
@@ -326,7 +325,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	/**
 	 * Get the value at the given offset.
 	 *
-	 * @param  string  $offset
+	 * @param  string $offset
 	 */
 	public function offsetGet( $offset ): mixed {
 		return $this->decoded[ $offset ];
@@ -335,19 +334,19 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	/**
 	 * Set the value at the given offset.
 	 *
-	 * @param  string  $offset
+	 * @param  string $offset
 	 * @param  mixed  $value
 	 */
-	public function offsetSet($offset, $value): void {
+	public function offsetSet( $offset, $value ): void {
 		$this->decoded[ $offset ] = $value;
 	}
 
 	/**
 	 * Unset the value at the given offset.
 	 *
-	 * @param  string  $offset
+	 * @param  string $offset
 	 */
-	public function offsetUnset($offset): void {
+	public function offsetUnset( $offset ): void {
 		unset( $this->decoded[ $offset ] );
 	}
 }

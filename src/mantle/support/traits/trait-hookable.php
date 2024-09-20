@@ -25,6 +25,13 @@ use function Mantle\Support\Helpers\collect;
  */
 trait Hookable {
 	/**
+	 * Constructor (can be overridden by the trait user).
+	 */
+	public function __construct() {
+		$this->register_hooks();
+	}
+
+	/**
 	 * Boot all actions and attribute methods on the service provider.
 	 *
 	 * Collects all of the `on_{hook}`, `on_{hook}_at_{priority}`,
@@ -44,7 +51,7 @@ trait Hookable {
 						} else {
 							\Mantle\Support\Helpers\add_filter( $item['hook'], [ $this, $item['method'] ], $item['priority'] );
 						}
-					} else {
+					} else { // phpcs:ignore Universal.ControlStructures.DisallowLonelyIf.Found
 						// Use the default WordPress action/filter methods.
 						if ( 'action' === $item['type'] ) {
 							\add_action( $item['hook'], [ $this, $item['method'] ], $item['priority'], 999 );
@@ -67,7 +74,7 @@ trait Hookable {
 				fn ( string $method ) => Str::starts_with( $method, [ 'on_', 'action__', 'filter__' ] )
 			)
 			->map(
-				function( string $method ) {
+				function ( string $method ) {
 					$type = match ( true ) {
 						Str::starts_with( $method, 'filter__' ) => 'filter',
 						default => 'action',

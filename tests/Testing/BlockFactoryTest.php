@@ -23,6 +23,43 @@ class BlockFactoryTest extends TestCase {
 			"<!-- wp:image -->\n<figure class=\"wp-block-image\"><img src=\"https://picsum.photos/353/580\"/></figure>\n<!-- /wp:image -->",
 			block_factory()->image( 'https://picsum.photos/353/580' ),
 		);
+
+		$this->assertEquals(
+			'<!-- wp:heading {"level":2} -->
+<h2>Heading Here</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Paragraph here.</p>
+<!-- /wp:paragraph -->',
+			block_factory()->blocks( [
+				block_factory()->heading( 'Heading Here' ),
+				block_factory()->paragraph( 'Paragraph here.' ),
+			] ),
+		);
+
+		$this->assertEquals(
+			'<!-- wp:heading {"level":2} -->
+<h2>Heading Here</h2>
+<!-- /wp:heading -->',
+			block_factory()->blocks(
+				block_factory()->heading( 'Heading Here' ),
+			),
+		);
+
+		$this->assertEquals(
+			'<!-- wp:heading {"level":2} -->
+<h2>Heading Here</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Paragraph here.</p>
+<!-- /wp:paragraph -->',
+			block_factory()->blocks(
+				block_factory()->heading( 'Heading Here' ),
+				block_factory()->paragraph( 'Paragraph here.' ),
+			),
+		);
 	}
 
 	public function test_it_throws_an_exception_for_invalid_blocks() {

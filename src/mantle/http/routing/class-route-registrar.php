@@ -90,7 +90,7 @@ class Route_Registrar {
 	 * @throws InvalidArgumentException Thrown on unknown attribute.
 	 */
 	public function attribute( $key, $value ) {
-		if ( ! in_array( $key, $this->allowed_attributes ) ) {
+		if ( ! in_array( $key, $this->allowed_attributes, true ) ) {
 			throw new InvalidArgumentException( "Attribute [{$key}] does not exist." );
 		}
 
@@ -175,11 +175,11 @@ class Route_Registrar {
 	 * @throws BadMethodCallException Thrown on missing method.
 	 */
 	public function __call( $method, $parameters ) {
-		if ( in_array( $method, $this->passthru ) ) {
+		if ( in_array( $method, $this->passthru, true ) ) {
 			return $this->register_route( $method, ...$parameters );
 		}
 
-		if ( in_array( $method, $this->allowed_attributes ) ) {
+		if ( in_array( $method, $this->allowed_attributes, true ) ) {
 			if ( 'middleware' === $method ) {
 				return $this->attribute( $method, is_array( $parameters[0] ) ? $parameters[0] : $parameters );
 			}

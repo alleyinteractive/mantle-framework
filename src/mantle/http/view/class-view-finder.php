@@ -67,7 +67,8 @@ class View_Finder {
 	 * @return static
 	 */
 	public function add_extension( $extension ) {
-		$index = array_search( $extension, $this->extensions );
+		$index = array_search( $extension, $this->extensions, true );
+
 		if ( false !== $index ) {
 			unset( $this->extensions[ $index ] );
 		}
@@ -214,7 +215,7 @@ class View_Finder {
 		if ( $alias ) {
 			$paths = array_filter(
 				$paths,
-				fn ( $path_alias) => $alias === $path_alias,
+				fn ( $path_alias ) => $alias === $path_alias,
 				ARRAY_FILTER_USE_KEY
 			);
 		}
@@ -244,7 +245,7 @@ class View_Finder {
 	 */
 	public function get_possible_view_files( string $name ): array {
 		return array_map(
-			fn ( $extension) => "{$name}.{$extension}",
+			fn ( $extension ) => "{$name}.{$extension}",
 			$this->extensions
 		);
 	}

@@ -21,7 +21,7 @@ trait Refresh_Database {
 		$wpdb->show_errors     = true;
 		$wpdb->db_connect();
 
-		ini_set( 'display_errors', '1' ); // phpcs:ignore WordPress.PHP.IniSet.display_errors_Blacklisted
+		ini_set( 'display_errors', '1' ); // phpcs:ignore WordPress.PHP.IniSet.display_errors_Disallowed
 	}
 
 	/**

@@ -20,7 +20,6 @@ class Service_Provider extends Base_Service_Provider {
 	 * Register the service provider.
 	 */
 	public function register() {
-
 	}
 
 	/**
