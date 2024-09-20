@@ -531,3 +531,14 @@ function validate_file( $file, $allowed_files = [] ) {
 	// Absolute Windows drive paths ARE allowed.
 	return 0;
 }
+
+if ( ! function_exists( __NAMESPACE__ . '\defer' ) ) {
+	/**
+	 * Defer the execution of a function until after the response is sent to the page.
+	 *
+	 * @param callable $callback Callback to defer.
+	 */
+	function defer( callable $callback ): void {
+		app()->terminating( $callback );
+	}
+}
