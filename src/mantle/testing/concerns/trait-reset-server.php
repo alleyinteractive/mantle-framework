@@ -21,4 +21,11 @@ trait Reset_Server {
 	public function reset_server_set_up(): void {
 		Utils::reset_server();
 	}
+
+	/**
+	 * Tear down the trait after the test class.
+	 */
+	public static function reset_server_tear_down_after_class(): void {
+		Utils::reset_server();
+	}
 }

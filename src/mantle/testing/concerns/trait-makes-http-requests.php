@@ -21,6 +21,13 @@ use function Mantle\Support\Helpers\tap;
  */
 trait Makes_Http_Requests {
 	/**
+	 * Additional cookies for the request.
+	 *
+	 * @var array<string, string>
+	 */
+	protected array $default_cookies = [];
+
+	/**
 	 * Additional headers for the request.
 	 *
 	 * @var array<string, string>
@@ -28,11 +35,11 @@ trait Makes_Http_Requests {
 	protected array $default_headers = [];
 
 	/**
-	 * Additional cookies for the request.
+	 * Whether to use HTTPS by default.
 	 *
-	 * @var array<string, string>
+	 * @var bool|null
 	 */
-	protected array $default_cookies = [];
+	protected bool|null $default_https = null;
 
 	/**
 	 * The array of callbacks to be run before the event is started.
@@ -74,6 +81,7 @@ trait Makes_Http_Requests {
 			function ( Pending_Testable_Request $request ): void {
 				$request->cookies->add( $this->default_cookies );
 				$request->headers->add( $this->default_headers );
+				$request->with_https( $this->default_https ?? false );
 			},
 		);
 	}
@@ -93,6 +101,15 @@ trait Makes_Http_Requests {
 	}
 
 	/**
+	 * Set the default HTTPS setting for all requests.
+	 *
+	 * @param bool|null $value Whether to use HTTPS by default.
+	 */
+	public function set_default_https( bool|null $value = true ): void {
+		$this->default_https = $value;
+	}
+
+	/**
 	 * Flush all the configured headers.
 	 */
 	public function flush_default_headers(): static {
@@ -102,7 +119,7 @@ trait Makes_Http_Requests {
 	}
 
 	/**
-	 * Define additional headers to be sent with the request.
+	 * Create a pending request with a specific headers included.
 	 *
 	 * @param array $headers Headers for the request.
 	 */
@@ -111,13 +128,23 @@ trait Makes_Http_Requests {
 	}
 
 	/**
-	 * Define additional header to be sent with the request.
+	 * Create a pending request with a specific header included.
 	 *
 	 * @param string $name  Header name (key).
 	 * @param string $value Header value.
 	 */
 	public function with_header( string $name, string $value ): Pending_Testable_Request {
 		return $this->with_headers( [ $name => $value ] );
+	}
+
+	/**
+	 * Create a pending request with the HTTPS enabled/disabled.
+	 *
+	 * @param bool $value Whether to use HTTPS.
+	 * @return Pending_Testable_Request
+	 */
+	public function with_https( bool $value = true ): Pending_Testable_Request {
+		return $this->create_pending_request()->with_https( $value );
 	}
 
 	/**

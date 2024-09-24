@@ -7,6 +7,7 @@ use Mantle\Http\Response;
 use Mantle\Framework\Providers\Routing_Service_Provider;
 use Mantle\Http\Request;
 use Mantle\Testing\Concerns\Refresh_Database;
+use Mantle\Testing\Concerns\Reset_Server;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Test_Response;
 use PHPUnit\Framework\AssertionFailedError;
@@ -21,6 +22,7 @@ use function Mantle\Support\Helpers\collect;
 #[Group( 'testing' )]
 class MakesHttpRequestsTest extends Framework_Test_Case {
 	use Refresh_Database;
+	use Reset_Server;
 
 	protected function setUp(): void {
 		parent::setUp();
@@ -384,6 +386,16 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 				'*.type',
 				'*.status',
 			] );
+	}
+
+	public function test_https_request() {
+		$this->get( '/' )->assertOk();
+
+		$this->assertEmpty( $_SERVER['HTTPS'] ?? '' );
+
+		$this->with_https()->get( 'https://example.com' )->assertOk();
+
+		$this->assertEquals( 'on', $_SERVER['HTTPS'] );
 	}
 
 	public function test_multiple_requests() {
