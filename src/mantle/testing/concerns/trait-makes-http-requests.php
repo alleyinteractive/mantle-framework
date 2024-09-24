@@ -36,8 +36,6 @@ trait Makes_Http_Requests {
 
 	/**
 	 * Whether to use HTTPS by default.
-	 *
-	 * @var bool|null
 	 */
 	protected bool|null $default_https = null;
 
@@ -141,7 +139,6 @@ trait Makes_Http_Requests {
 	 * Create a pending request with the HTTPS enabled/disabled.
 	 *
 	 * @param bool $value Whether to use HTTPS.
-	 * @return Pending_Testable_Request
 	 */
 	public function with_https( bool $value = true ): Pending_Testable_Request {
 		return $this->create_pending_request()->with_https( $value );
