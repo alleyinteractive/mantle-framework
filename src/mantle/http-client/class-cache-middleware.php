@@ -55,7 +55,6 @@ class Cache_Middleware {
 	 * Purge the cache for a request.
 	 *
 	 * @param Pending_Request $request Request to purge the cache for.
-	 * @return bool
 	 */
 	public function purge( Pending_Request $request ): bool {
 		return wp_cache_delete( $this->get_cache_key( $request ), self::CACHE_GROUP );
