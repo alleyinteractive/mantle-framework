@@ -47,6 +47,11 @@ class Pending_Testable_Request {
 	public HeaderBag $headers;
 
 	/**
+	 * Indicates whether the request should be made over HTTPS.
+	 */
+	public bool $https = false;
+
+	/**
 	 * The cookies for the request.
 	 */
 	public InputBag $cookies;
@@ -87,6 +92,17 @@ class Pending_Testable_Request {
 	 */
 	public function with_header( string $name, string $value ): static {
 		return $this->with_headers( [ $name => $value ] );
+	}
+
+	/**
+	 * Define whether the request should be made over HTTPS.
+	 *
+	 * @param bool $value Whether to use HTTPS.
+	 */
+	public function with_https( bool $value ): static {
+		$this->https = $value;
+
+		return $this;
 	}
 
 	/**
@@ -405,6 +421,12 @@ class Pending_Testable_Request {
 			if ( isset( $_SERVER['REMOTE_ADDR'] ) ) {
 				unset( $_SERVER['REMOTE_ADDR'] );
 			}
+		}
+
+		if ( $this->https ) {
+			$_SERVER['HTTPS'] = 'on';
+		} else {
+			unset( $_SERVER['HTTPS'] );
 		}
 
 		// phpcs:enable
