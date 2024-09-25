@@ -37,8 +37,7 @@ class Cache_Middleware {
 	 */
 	public function __invoke( Pending_Request $request, Closure $next ): Response {
 		$cache_key = $this->get_cache_key( $request );
-
-		$cache = wp_cache_get( $cache_key, self::CACHE_GROUP );
+		$cache     = wp_cache_get( $cache_key, self::CACHE_GROUP );
 
 		if ( $cache && $cache instanceof Response ) {
 			return $cache;
@@ -71,6 +70,7 @@ class Cache_Middleware {
 			$request->url(),
 			$request->method(),
 			$request->body(),
+			$request->headers(),
 		] ) );
 	}
 
