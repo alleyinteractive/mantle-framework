@@ -2,15 +2,20 @@
 /**
  * Pending_Request class file
  *
+ * phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag, Squiz.Commenting.FunctionComment.ParamNameNoMatch
+ *
  * @package Mantle
  */
 
 namespace Mantle\Http_Client;
 
+use DateTimeInterface;
+use InvalidArgumentException;
 use Mantle\Support\Pipeline;
 use Mantle\Support\Traits\Conditionable;
 use Mantle\Support\Traits\Macroable;
 
+use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\retry;
 use function Mantle\Support\Helpers\tap;
 
@@ -103,11 +108,47 @@ class Pending_Request {
 	}
 
 	/**
+	 * Enable caching for the request.
+	 *
+	 * @param int|DateTimeInterface|callable(Pending_Request $request): int $ttl Time to live for the cache.
+	 */
+	public function cache( int|DateTimeInterface|callable $ttl = 3600 ): static {
+		// Check if there is a caching middleware.
+		if ( collect( $this->middleware )->contains( fn ( $middleware ) => $middleware instanceof Cache_Middleware ) ) {
+			return $this;
+		}
+
+		return $this->prepend_middleware( new Cache_Middleware( $ttl ) );
+	}
+
+	/**
+	 * Purge the cache for the request.
+	 *
+	 * @throws InvalidArgumentException If the request has no URL or is not cached.
+	 */
+	public function purge(): bool {
+		if ( empty( $this->url ) ) {
+			throw new InvalidArgumentException( 'Cannot purge cache for a request that has no URL. Call url() first.' );
+		}
+		$middleware = collect( $this->middleware )->first( fn ( $middleware ) => $middleware instanceof Cache_Middleware );
+
+		if ( ! $middleware ) {
+			throw new InvalidArgumentException( 'Cannot purge cache for a request that is not cached. Call cache() first.' );
+		}
+
+		return $middleware->purge( $this );
+	}
+
+	/**
 	 * Set the base URL for the pending request.
 	 *
-	 * @param string $url Base URL.
+	 * @param string|null $url Base URL.
 	 */
-	public function base_url( string $url ): static {
+	public function base_url( string $url = null ): static|string {
+		if ( is_null( $url ) ) {
+			return $this->base_url;
+		}
+
 		$this->base_url = $url;
 
 		return $this;
@@ -116,10 +157,9 @@ class Pending_Request {
 	/**
 	 * Set or get the URL for the request.
 	 *
-	 * @param string $url URL for the request, optional.
-	 * @return static|string
+	 * @param string|null $url URL for the request, optional.
 	 */
-	public function url( string $url = null ) {
+	public function url( string|null $url = null ): static|string {
 		if ( is_null( $url ) ) {
 			return $this->url;
 		}
@@ -132,10 +172,9 @@ class Pending_Request {
 	/**
 	 * Set or get the method for the request.
 	 *
-	 * @param string $method Http Method for the request, optional.
-	 * @return static|string
+	 * @param string|null $method Http Method for the request, optional.
 	 */
-	public function method( string $method = null ) {
+	public function method( string|null $method = null ): static|string {
 		if ( is_null( $method ) ) {
 			return $this->method;
 		}
@@ -395,13 +434,32 @@ class Pending_Request {
 	}
 
 	/**
-	 * Add middleware for the request.
+	 * Add middleware for the request to the end of the stack.
 	 *
 	 * @param callable $middleware Middleware to call.
 	 */
-	public function middleware( $middleware ): static {
+	public function middleware( callable $middleware ): static {
 		$this->middleware[] = $middleware;
+
 		return $this;
+	}
+
+	/**
+	 * Prepend middleware for the request to the beginning of the stack.
+	 *
+	 * @param callable $middleware Middleware to call.
+	 */
+	public function prepend_middleware( callable $middleware ): static {
+		array_unshift( $this->middleware, $middleware );
+
+		return $this;
+	}
+
+	/**
+	 * Retrieve the middleware for the request.
+	 */
+	public function get_middleware(): array {
+		return $this->middleware;
 	}
 
 	/**
@@ -409,6 +467,7 @@ class Pending_Request {
 	 */
 	public function without_middleware(): static {
 		$this->middleware = [];
+
 		return $this;
 	}
 

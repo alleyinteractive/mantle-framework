@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added dynamic creation of post type/taxonomy factories.
 - Added `Reset_Server` trait to reset the server between tests.
 - Add `with_https()` to control if the request being tested is over HTTPS.
+- Add cached HTTP response support using the `cache()` method.
 
 ### Changed
 

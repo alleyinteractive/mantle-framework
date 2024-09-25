@@ -18,6 +18,8 @@ use Mantle\Http_Client\Response;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Mock_Http_Response;
 
+use function Mantle\Http_Client\http_client;
+
 class HttpClientTest extends Framework_Test_Case {
 	protected Factory $http_factory;
 
