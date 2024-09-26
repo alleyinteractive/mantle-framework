@@ -547,7 +547,7 @@ class Pending_Request {
 	 */
 	public function get( string $url, array|string|null $query = null ): Response {
 		if ( $this->pooled ) {
-			throw new InvalidArgumentException( 'Cannot call get() on a pooled request. Call method()/url() instead.' );
+			throw new InvalidArgumentException( 'Cannot call get() on a pooled request.' );
 		}
 
 		return $this->send(
@@ -565,7 +565,7 @@ class Pending_Request {
 	 */
 	public function head( string $url, array|string|null $query = null ): Response {
 		if ( $this->pooled ) {
-			throw new InvalidArgumentException( 'Cannot call head() on a pooled request. Call method()/url() instead.' );
+			throw new InvalidArgumentException( 'Cannot call head() on a pooled request.' );
 		}
 
 		return $this->send(
@@ -583,7 +583,7 @@ class Pending_Request {
 	 */
 	public function post( string $url, ?array $data = null ): Response {
 		if ( $this->pooled ) {
-			throw new InvalidArgumentException( 'Cannot call post() on a pooled request. Call method()/url() instead.' );
+			throw new InvalidArgumentException( 'Cannot call post() on a pooled request.' );
 		}
 
 		return $this->send(
@@ -601,7 +601,7 @@ class Pending_Request {
 	 */
 	public function patch( string $url, ?array $data = null ): Response {
 		if ( $this->pooled ) {
-			throw new InvalidArgumentException( 'Cannot call patch() on a pooled request. Call method()/url() instead.' );
+			throw new InvalidArgumentException( 'Cannot call patch() on a pooled request.' );
 		}
 
 		return $this->send(
@@ -619,7 +619,7 @@ class Pending_Request {
 	 */
 	public function put( string $url, ?array $data = null ): Response {
 		if ( $this->pooled ) {
-			throw new InvalidArgumentException( 'Cannot call put() on a pooled request. Call method()/url() instead.' );
+			throw new InvalidArgumentException( 'Cannot call put() on a pooled request.' );
 		}
 
 		return $this->send(
@@ -637,7 +637,7 @@ class Pending_Request {
 	 */
 	public function delete( string $url, ?array $data = [] ): Response {
 		if ( $this->pooled ) {
-			throw new InvalidArgumentException( 'Cannot call delete() on a pooled request. Call method()/url() instead.' );
+			throw new InvalidArgumentException( 'Cannot call delete() on a pooled request.' );
 		}
 
 		return $this->send(
