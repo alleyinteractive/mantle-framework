@@ -125,6 +125,9 @@ class Pending_Request {
 	 * Purge the cache for the request.
 	 *
 	 * @throws InvalidArgumentException If the request has no URL or is not cached.
+	 *
+	 * @param string|null $url URL to purge, optional.
+	 * @param string|null $method Method to purge, optional.
 	 */
 	public function purge( ?string $url = null, ?string $method = null ): bool {
 		if ( ! is_null( $url ) ) {
