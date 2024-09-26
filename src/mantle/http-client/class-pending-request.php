@@ -34,7 +34,7 @@ class Pending_Request {
 	/**
 	 * Method for the request.
 	 */
-	public string $method = 'GET';
+	public Http_Method $method = Http_Method::GET;
 
 	/**
 	 * URL for the request.
@@ -183,11 +183,15 @@ class Pending_Request {
 	/**
 	 * Set or get the method for the request.
 	 *
-	 * @param string|null $method Http Method for the request, optional.
+	 * @param string|Http_Method|null $method Http Method for the request, optional.
 	 */
-	public function method( string|null $method = null ): static|string {
+	public function method( string|Http_Method|null $method = null ): static|Http_Method {
 		if ( is_null( $method ) ) {
 			return $this->method;
+		}
+
+		if ( is_string( $method ) ) {
+			$method = Http_Method::from( strtoupper( $method ) );
 		}
 
 		$this->method = $method;
@@ -626,15 +630,28 @@ class Pending_Request {
 	/**
 	 * Issue a single request to the given URL.
 	 *
-	 * @param  string $method HTTP Method.
-	 * @param  string $url URL for the request.
-	 * @param  array  $options Options for the request.
+	 * @throws InvalidArgumentException If the request does not have a URL set.
+	 *
+	 * @param  string|Http_Method|null $method HTTP Method, optional.
+	 * @param  string                  $url URL for the request, optional.
+	 * @param  array                   $options Options for the request.
 	 * @return Response|static
 	 */
-	public function send( string $method, string $url, array $options = [] ) {
-		$this->url     = ltrim( rtrim( $this->base_url, '/' ) . '/' . ltrim( $url, '/' ), '/' );
+	public function send( string|Http_Method|null $method = null, ?string $url = null, array $options = [] ) {
+		if ( $url ) {
+			$this->url( $url );
+		}
+
+		if ( ! $this->url ) {
+			throw new InvalidArgumentException( 'A URL must be provided for the request.' );
+		}
+
+		if ( $method ) {
+			$this->method( $method );
+		}
+
+		$this->url     = ltrim( rtrim( $this->base_url, '/' ) . '/' . ltrim( $this->url, '/' ), '/' );
 		$this->options = array_merge( $this->options, $options );
-		$this->method  = $method;
 
 		// Ensure some options are always set.
 		$this->options['throw_exception'] ??= false;
@@ -744,7 +761,7 @@ class Pending_Request {
 		$args = [
 			'cookies'     => $this->options['cookies'] ?? [],
 			'headers'     => $this->options['headers'] ?? [],
-			'method'      => $this->method,
+			'method'      => $this->method->value,
 			'redirection' => $this->options['allow_redirects'],
 			'sslverify'   => $this->options['verify'] ?? true,
 			'timeout'     => $this->options['timeout'] ?? 5,

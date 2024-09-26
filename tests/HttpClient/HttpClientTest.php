@@ -11,6 +11,7 @@ use Closure;
 use Mantle\Facade\Http;
 use Mantle\Http_Client\Factory;
 use Mantle\Http_Client\Http_Client_Exception;
+use Mantle\Http_Client\Http_Method;
 use Mantle\Http_Client\Pending_Request;
 use Mantle\Http_Client\Pool;
 use Mantle\Http_Client\Request;
@@ -69,6 +70,19 @@ class HttpClientTest extends Framework_Test_Case {
 		$this->assertRequestSent( 'https://example.com/?example=value' );
 		$this->assertRequestSent(
 			fn ( Request $request ) => 'https://example.com/?example=value' === $request->url()
+		);
+	}
+
+	public function test_make_request_enum() {
+		$this->fake_request();
+
+		$this->http_factory->method( Http_Method::PUT )->url( 'https://example.com/' )->send();
+
+		$this->assertRequestSent( 'https://example.com/' );
+		$this->assertRequestSent(
+			fn ( Request $request ) => 'https://example.com/' === $request->url()
+				&& 'PUT' === $request->method()
+				&& Http_Method::PUT === $request->enum_method()
 		);
 	}
 
@@ -350,8 +364,8 @@ EOF
 		] );
 
 		$response = $this->http_factory->pool( fn ( Pool $pool ) => [
-			$pool->get( 'https://example.com/async/' ),
-			$pool->get( 'https://example.com/second-async/' ),
+			$pool->method( 'get' )->url( 'https://example.com/async/' ),
+			$pool->method( 'get' )->url( 'https://example.com/second-async/' ),
 		] );
 
 		$this->assertEquals( 200, $response[0]->status() );
