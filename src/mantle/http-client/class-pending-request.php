@@ -175,7 +175,7 @@ class Pending_Request {
 			return $this->url;
 		}
 
-		$this->url = $url;
+		$this->url = ltrim( rtrim( $this->base_url, '/' ) . '/' . ltrim( $url, '/' ), '/' );
 
 		return $this;
 	}
@@ -540,13 +540,18 @@ class Pending_Request {
 	/**
 	 * Issue a GET request to the given URL.
 	 *
+	 * @throws InvalidArgumentException If the request is pooled.
+	 *
 	 * @param  string            $url URL to retrieve.
 	 * @param  array|string|null $query Query parameters (assumed to be urlencoded).
-	 * @return Response|static
 	 */
-	public function get( string $url, array|string|null $query = null ) {
+	public function get( string $url, array|string|null $query = null ): Response {
+		if ( $this->pooled ) {
+			throw new InvalidArgumentException( 'Cannot call get() on a pooled request. Call method()/url() instead.' );
+		}
+
 		return $this->send(
-			'GET',
+			Http_Method::GET,
 			$url,
 			! is_null( $query ) ? [ 'query' => $query ] : [],
 		);
@@ -557,11 +562,14 @@ class Pending_Request {
 	 *
 	 * @param  string            $url
 	 * @param  array|string|null $query
-	 * @return Response|static
 	 */
-	public function head( string $url, array|string|null $query = null ) {
+	public function head( string $url, array|string|null $query = null ): Response {
+		if ( $this->pooled ) {
+			throw new InvalidArgumentException( 'Cannot call head() on a pooled request. Call method()/url() instead.' );
+		}
+
 		return $this->send(
-			'HEAD',
+			Http_Method::HEAD,
 			$url,
 			! is_null( $query ) ? [ 'query' => $query ] : [],
 		);
@@ -572,11 +580,14 @@ class Pending_Request {
 	 *
 	 * @param  string $url
 	 * @param  array  $data
-	 * @return Response|static
 	 */
-	public function post( string $url, ?array $data = null ) {
+	public function post( string $url, ?array $data = null ): Response {
+		if ( $this->pooled ) {
+			throw new InvalidArgumentException( 'Cannot call post() on a pooled request. Call method()/url() instead.' );
+		}
+
 		return $this->send(
-			'POST',
+			Http_Method::POST,
 			$url,
 			! is_null( $data ) ? [ $this->body_format => $data ] : [],
 		);
@@ -587,11 +598,14 @@ class Pending_Request {
 	 *
 	 * @param  string $url
 	 * @param  array  $data
-	 * @return Response|static
 	 */
-	public function patch( string $url, ?array $data = null ) {
+	public function patch( string $url, ?array $data = null ): Response {
+		if ( $this->pooled ) {
+			throw new InvalidArgumentException( 'Cannot call patch() on a pooled request. Call method()/url() instead.' );
+		}
+
 		return $this->send(
-			'PATCH',
+			Http_Method::PATCH,
 			$url,
 			! is_null( $data ) ? [ $this->body_format => $data ] : [],
 		);
@@ -602,11 +616,14 @@ class Pending_Request {
 	 *
 	 * @param  string $url
 	 * @param  array  $data
-	 * @return Response|static
 	 */
-	public function put( string $url, ?array $data = null ) {
+	public function put( string $url, ?array $data = null ): Response {
+		if ( $this->pooled ) {
+			throw new InvalidArgumentException( 'Cannot call put() on a pooled request. Call method()/url() instead.' );
+		}
+
 		return $this->send(
-			'PUT',
+			Http_Method::PUT,
 			$url,
 			! is_null( $data ) ? [ $this->body_format => $data ] : [],
 		);
@@ -617,11 +634,14 @@ class Pending_Request {
 	 *
 	 * @param  string $url
 	 * @param  array  $data
-	 * @return Response|static
 	 */
-	public function delete( string $url, ?array $data = [] ) {
+	public function delete( string $url, ?array $data = [] ): Response {
+		if ( $this->pooled ) {
+			throw new InvalidArgumentException( 'Cannot call delete() on a pooled request. Call method()/url() instead.' );
+		}
+
 		return $this->send(
-			'DELETE',
+			Http_Method::DELETE,
 			$url,
 			! is_null( $data ) ? [ $this->body_format => $data ] : [],
 		);
@@ -630,6 +650,7 @@ class Pending_Request {
 	/**
 	 * Issue a single request to the given URL.
 	 *
+	 * @throws InvalidArgumentException If the request is pooled.
 	 * @throws InvalidArgumentException If the request does not have a URL set.
 	 *
 	 * @param  string|Http_Method|null $method HTTP Method, optional.
@@ -637,7 +658,7 @@ class Pending_Request {
 	 * @param  array                   $options Options for the request.
 	 * @return Response|static
 	 */
-	public function send( string|Http_Method|null $method = null, ?string $url = null, array $options = [] ) {
+	public function send( string|Http_Method|null $method = null, ?string $url = null, array $options = [] ): mixed {
 		if ( $url ) {
 			$this->url( $url );
 		}
@@ -650,7 +671,6 @@ class Pending_Request {
 			$this->method( $method );
 		}
 
-		$this->url     = ltrim( rtrim( $this->base_url, '/' ) . '/' . ltrim( $this->url, '/' ), '/' );
 		$this->options = array_merge( $this->options, $options );
 
 		// Ensure some options are always set.

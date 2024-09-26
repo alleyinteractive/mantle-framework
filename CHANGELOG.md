@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Breaking:** Http Client pools should now be built using `->method()` and `->url()` instead.
 - Dropped support for Redis as a cache backend in favor of the default object
   cache drop-in.
 - Allow returning falsey from `Collection::map_to_dictionary()`.

@@ -379,8 +379,8 @@ EOF
 		] );
 
 		$response = $this->http_factory->pool( fn ( Pool $pool ) => [
-			$pool->as( 'first' )->get( 'https://example.com/async/' ),
-			$pool->as( 'second' )->post( 'https://example.com/second-async/' ),
+			$pool->as( 'first' )->url( 'https://example.com/async/' ),
+			$pool->as( 'second' )->method( 'post' )->url( 'https://example.com/second-async/' ),
 		] );
 
 		$this->assertEquals( 200, $response['first']->status() );
@@ -407,8 +407,8 @@ EOF
 			->with_header( 'X-Foo', 'Bar' );
 
 		$response = $githubClient->pool( fn ( Pool $githubPool ) => [
-			$githubPool->get( '/endpoint-a/' ),
-			$githubPool->post( '/endpoint-b/' ),
+			$githubPool->url( '/endpoint-a/' ),
+			$githubPool->url( '/endpoint-b/' )->method( 'post' ),
 		] );
 
 		$this->assertEquals( 200, $response[0]->status() );
