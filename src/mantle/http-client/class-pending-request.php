@@ -126,7 +126,15 @@ class Pending_Request {
 	 *
 	 * @throws InvalidArgumentException If the request has no URL or is not cached.
 	 */
-	public function purge(): bool {
+	public function purge( ?string $url = null, ?string $method = null ): bool {
+		if ( ! is_null( $url ) ) {
+			$this->url( $url );
+		}
+
+		if ( ! is_null( $method ) ) {
+			$this->method( $method );
+		}
+
 		if ( empty( $this->url ) ) {
 			throw new InvalidArgumentException( 'Cannot purge cache for a request that has no URL. Call url() first.' );
 		}
