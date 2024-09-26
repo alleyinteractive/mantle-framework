@@ -53,6 +53,8 @@ class InteractsWithHooksTest extends Framework_Test_Case {
 	public function test_hook_return_boolean() {
 		$this->expectApplied( 'true_hook_to_add' )->once()->andReturnTrue();
 		$this->expectApplied( 'false_hook_to_add' )->once()->andReturnFalse();
+		$this->expectApplied( 'true_hook_to_add' )->once()->andReturnBoolean();
+		$this->expectApplied( 'false_hook_to_add' )->once()->andReturnBoolean();
 
 		add_filter( 'true_hook_to_add', '__return_true' );
 		add_filter( 'false_hook_to_add', '__return_false' );
@@ -118,6 +120,22 @@ class InteractsWithHooksTest extends Framework_Test_Case {
 		$this->app['events']->dispatch( new Example_Event() );
 
 		$this->assertHookApplied( Example_Event::class, 1 );
+	}
+
+	public function test_hook_returns_callback() {
+		$passed_value = null;
+
+		$this->expectApplied( 'callback_hook_to_add' )->once()->andReturn(
+			function ( $value ) use ( &$passed_value ) {
+				$passed_value = $value;
+
+				return 'filtered-value' === $value;
+			}
+		);
+
+		add_filter( 'callback_hook_to_add', fn () => 'filtered-value' );
+
+		apply_filters( 'callback_hook_to_add', 'passed-value' );
 	}
 }
 
