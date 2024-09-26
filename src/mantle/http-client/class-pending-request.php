@@ -560,6 +560,8 @@ class Pending_Request {
 	/**
 	 * Issue a HEAD request to the given URL.
 	 *
+	 * @throws InvalidArgumentException If the request is pooled.
+	 *
 	 * @param  string            $url
 	 * @param  array|string|null $query
 	 */
@@ -577,6 +579,8 @@ class Pending_Request {
 
 	/**
 	 * Issue a POST request to the given URL.
+	 *
+	 * @throws InvalidArgumentException If the request is pooled.
 	 *
 	 * @param  string $url
 	 * @param  array  $data
@@ -596,6 +600,8 @@ class Pending_Request {
 	/**
 	 * Issue a PATCH request to the given URL.
 	 *
+	 * @throws InvalidArgumentException If the request is pooled.
+	 *
 	 * @param  string $url
 	 * @param  array  $data
 	 */
@@ -614,6 +620,8 @@ class Pending_Request {
 	/**
 	 * Issue a PUT request to the given URL.
 	 *
+	 * @throws InvalidArgumentException If the request is pooled.
+	 *
 	 * @param  string $url
 	 * @param  array  $data
 	 */
@@ -631,6 +639,8 @@ class Pending_Request {
 
 	/**
 	 * Issue a DELETE request to the given URL.
+	 *
+	 * @throws InvalidArgumentException If the request is pooled.
 	 *
 	 * @param  string $url
 	 * @param  array  $data
