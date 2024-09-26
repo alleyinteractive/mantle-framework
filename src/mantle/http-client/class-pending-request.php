@@ -34,7 +34,7 @@ class Pending_Request {
 	/**
 	 * Method for the request.
 	 */
-	public string $method;
+	public string $method = 'GET';
 
 	/**
 	 * URL for the request.
