@@ -17,20 +17,6 @@ use SebastianBergmann\Exporter\Exporter;
  */
 class Expectation {
 	/**
-	 * Action to expect.
-	 *
-	 * @var string
-	 */
-	protected $action;
-
-	/**
-	 * Hook to compare.
-	 *
-	 * @var string
-	 */
-	protected $hook;
-
-	/**
 	 * Arguments for the hook.
 	 *
 	 * @var mixed
@@ -39,10 +25,8 @@ class Expectation {
 
 	/**
 	 * Number of times for the hook to execute.
-	 *
-	 * @var int|null
 	 */
-	protected $times;
+	protected int|null $times = null;
 
 	/**
 	 * Return value comparison callback.
@@ -72,10 +56,7 @@ class Expectation {
 	 * @param string $hook Hook to listen to.
 	 * @param mixed  $args Arguments for the hook.
 	 */
-	public function __construct( string $action, string $hook, $args = null ) {
-		$this->action = $action;
-		$this->hook   = $hook;
-
+	public function __construct( protected readonly string $action, protected readonly string $hook, $args = null ) {
 		if ( ! empty( $args ) ) {
 			$this->args = $args;
 		}
@@ -92,7 +73,7 @@ class Expectation {
 		add_action( // @phpstan-ignore-line Action callback
 			$this->hook,
 			[ $this, 'record_start' ],
-			-1,
+			PHP_INT_MIN,
 			99
 		);
 
@@ -112,6 +93,7 @@ class Expectation {
 	 */
 	public function record_start( ...$args ) {
 		$this->record_start[] = $args;
+
 		return array_shift( $args );
 	}
 
@@ -123,6 +105,7 @@ class Expectation {
 	 */
 	public function record_stop( ...$args ) {
 		$this->record_stop[] = $args;
+
 		return array_shift( $args );
 	}
 
@@ -179,7 +162,7 @@ class Expectation {
 			}
 
 			// Remove the actions for the hook.
-			remove_action( $this->hook, [ $this, 'record_start' ], -1 );
+			remove_action( $this->hook, [ $this, 'record_start' ], PHP_INT_MIN );
 			remove_action( $this->hook, [ $this, 'record_stop' ], PHP_INT_MAX );
 		}
 
@@ -199,6 +182,7 @@ class Expectation {
 	 */
 	public function never() {
 		$this->times = 0;
+
 		return $this;
 	}
 
@@ -209,6 +193,7 @@ class Expectation {
 	 */
 	public function once() {
 		$this->times = 1;
+
 		return $this;
 	}
 
@@ -219,6 +204,7 @@ class Expectation {
 	 */
 	public function twice() {
 		$this->times = 2;
+
 		return $this;
 	}
 
@@ -229,6 +215,7 @@ class Expectation {
 	 */
 	public function times( int $times ): static {
 		$this->times = $times;
+
 		return $this;
 	}
 
@@ -239,6 +226,7 @@ class Expectation {
 	 */
 	public function with( ...$args ): static {
 		$this->args = $args;
+
 		return $this;
 	}
 
@@ -247,17 +235,30 @@ class Expectation {
 	 */
 	public function withAnyArgs(): static {
 		$this->args = null;
+
 		return $this;
 	}
 
 	/**
 	 * Specify that the filter returns a specific value.
 	 *
-	 * @param mixed $value Return value.
+	 * @param mixed ...$values Values to return.
 	 */
-	public function andReturn( mixed $value ): static {
+	public function andReturn( mixed ...$values ): static {
 		return $this->returnComparison(
-			fn ( $return_value ) => $return_value === $value
+			function ( $value ) use ( $values ) {
+				foreach ( $values as $expected ) {
+					if ( is_callable( $expected ) ) {
+						return (bool) $expected( $value );
+					}
+
+					if ( $value === $expected ) {
+						return true;
+					}
+				}
+
+				return false;
+			}
 		);
 	}
 
@@ -294,6 +295,13 @@ class Expectation {
 	 */
 	public function andReturnFalsy(): static {
 		return $this->returnComparison( fn ( $value ) => ! $value );
+	}
+
+	/**
+	 * Specify that the filter returns a boolean value.
+	 */
+	public function andReturnBoolean(): static {
+		return $this->andReturn( true, false );
 	}
 
 	/**
