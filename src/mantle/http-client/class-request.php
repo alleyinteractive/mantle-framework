@@ -45,6 +45,13 @@ class Request {
 	}
 
 	/**
+	 * Retrieve the enum method of the request.
+	 */
+	public function enum_method(): Http_Method {
+		return Http_Method::from( $this->method() );
+	}
+
+	/**
 	 * Check if the request has a set of headers.
 	 *
 	 * @param array $headers Headers to check for.

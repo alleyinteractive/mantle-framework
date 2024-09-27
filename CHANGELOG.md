@@ -19,9 +19,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `with_https()` to control if the request being tested is over HTTPS.
 - Add `andReturnBoolean()` and `andReturn( fn ( $value ) => ... )` support to
   action/filter expectations
+- Add cached HTTP response support using the `cache()` method.
 
 ### Changed
 
+- **Breaking:** Http Client pools should now be built using `->method()` and `->url()` instead.
 - Dropped support for Redis as a cache backend in favor of the default object
   cache drop-in.
 - Allow returning falsey from `Collection::map_to_dictionary()`.
