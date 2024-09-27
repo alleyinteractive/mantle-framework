@@ -11,12 +11,15 @@ use Closure;
 use Mantle\Facade\Http;
 use Mantle\Http_Client\Factory;
 use Mantle\Http_Client\Http_Client_Exception;
+use Mantle\Http_Client\Http_Method;
 use Mantle\Http_Client\Pending_Request;
 use Mantle\Http_Client\Pool;
 use Mantle\Http_Client\Request;
 use Mantle\Http_Client\Response;
 use Mantle\Testing\Framework_Test_Case;
 use Mantle\Testing\Mock_Http_Response;
+
+use function Mantle\Http_Client\http_client;
 
 class HttpClientTest extends Framework_Test_Case {
 	protected Factory $http_factory;
@@ -67,6 +70,19 @@ class HttpClientTest extends Framework_Test_Case {
 		$this->assertRequestSent( 'https://example.com/?example=value' );
 		$this->assertRequestSent(
 			fn ( Request $request ) => 'https://example.com/?example=value' === $request->url()
+		);
+	}
+
+	public function test_make_request_enum() {
+		$this->fake_request();
+
+		$this->http_factory->method( Http_Method::PUT )->url( 'https://example.com/' )->send();
+
+		$this->assertRequestSent( 'https://example.com/' );
+		$this->assertRequestSent(
+			fn ( Request $request ) => 'https://example.com/' === $request->url()
+				&& 'PUT' === $request->method()
+				&& Http_Method::PUT === $request->enum_method()
 		);
 	}
 
@@ -348,8 +364,8 @@ EOF
 		] );
 
 		$response = $this->http_factory->pool( fn ( Pool $pool ) => [
-			$pool->get( 'https://example.com/async/' ),
-			$pool->get( 'https://example.com/second-async/' ),
+			$pool->method( 'get' )->url( 'https://example.com/async/' ),
+			$pool->method( 'get' )->url( 'https://example.com/second-async/' ),
 		] );
 
 		$this->assertEquals( 200, $response[0]->status() );
@@ -363,8 +379,8 @@ EOF
 		] );
 
 		$response = $this->http_factory->pool( fn ( Pool $pool ) => [
-			$pool->as( 'first' )->get( 'https://example.com/async/' ),
-			$pool->as( 'second' )->post( 'https://example.com/second-async/' ),
+			$pool->as( 'first' )->url( 'https://example.com/async/' ),
+			$pool->as( 'second' )->method( 'post' )->url( 'https://example.com/second-async/' ),
 		] );
 
 		$this->assertEquals( 200, $response['first']->status() );
@@ -391,8 +407,8 @@ EOF
 			->with_header( 'X-Foo', 'Bar' );
 
 		$response = $githubClient->pool( fn ( Pool $githubPool ) => [
-			$githubPool->get( '/endpoint-a/' ),
-			$githubPool->post( '/endpoint-b/' ),
+			$githubPool->url( '/endpoint-a/' ),
+			$githubPool->url( '/endpoint-b/' )->method( 'post' ),
 		] );
 
 		$this->assertEquals( 200, $response[0]->status() );
