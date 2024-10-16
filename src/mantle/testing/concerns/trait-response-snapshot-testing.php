@@ -19,13 +19,13 @@ use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\data_get;
 
 /**
- * Snapshot Testing
+ * Response Snapshot Testing
  *
  * @link https://github.com/spatie/phpunit-snapshot-assertions
  *
  * @mixin \Mantle\Testing\Test_Response
  */
-trait Snapshot_Testing {
+trait Response_Snapshot_Testing {
 	/**
 	 * Assert that the response matches a stored snapshot comparing only the content.
 	 *

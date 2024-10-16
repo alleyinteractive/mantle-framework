@@ -93,16 +93,15 @@ abstract class Test_Case extends BaseTestCase {
 		static::register_traits();
 
 		if ( ! empty( static::$test_uses ) ) {
-			static::get_test_case_traits()
-				->each(
-					function ( $trait ): void {
-						$method = strtolower( class_basename( $trait ) ) . '_set_up_before_class';
+			static::get_test_case_traits()->each(
+				function ( $trait ): void {
+					$method = strtolower( class_basename( $trait ) ) . '_set_up_before_class';
 
-						if ( method_exists( static::class, $method ) ) {
-							call_user_func( [ static::class, $method ] );
-						}
+					if ( method_exists( static::class, $method ) ) {
+						call_user_func( [ static::class, $method ] );
 					}
-				);
+				}
+			);
 		}
 
 		parent::setUpBeforeClass();
@@ -116,6 +115,18 @@ abstract class Test_Case extends BaseTestCase {
 	 * Runs the routine after all tests have been run.
 	 */
 	public static function tearDownAfterClass(): void {
+		if ( ! empty( static::$test_uses ) ) {
+			static::get_test_case_traits()->each(
+				function ( $trait ): void {
+					$method = strtolower( class_basename( $trait ) ) . '_tear_down_after_class';
+
+					if ( method_exists( static::class, $method ) ) {
+						call_user_func( [ static::class, $method ] );
+					}
+				}
+			);
+		}
+
 		parent::tearDownAfterClass();
 
 		if ( isset( static::$test_uses[ Refresh_Database::class ] ) ) {

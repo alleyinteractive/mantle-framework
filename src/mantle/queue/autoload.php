@@ -24,14 +24,3 @@ if ( ! function_exists( __NAMESPACE__ . '\dispatch' ) ) {
 			: new Pending_Dispatch( $job );
 	}
 }
-
-if ( ! function_exists( __NAMESPACE__ . '\defer' ) ) {
-	/**
-	 * Defer the execution of a function until after the response is sent to the page.
-	 *
-	 * @param callable $callback Callback to defer.
-	 */
-	function defer( callable $callback ): void {
-		app()->terminating( $callback );
-	}
-}

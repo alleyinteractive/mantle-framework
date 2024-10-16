@@ -18,7 +18,7 @@ use PHPUnit\Framework\Assert as PHPUnit;
  */
 class Test_Response {
 	use Concerns\Element_Assertions;
-	use Concerns\Snapshot_Testing;
+	use Concerns\Response_Snapshot_Testing;
 	use Macroable;
 
 	/**

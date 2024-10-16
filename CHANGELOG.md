@@ -16,10 +16,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `Cache::flexible()` method to add SWR support to the cache.
 - Added support for parallel unit testing with `brianium/paratest` (in beta).
 - Added dynamic creation of post type/taxonomy factories.
+- Added `Reset_Server` trait to reset the server between tests.
+- Add `with_https()` to control if the request being tested is over HTTPS.
+- Add `andReturnBoolean()` and `andReturn( fn ( $value ) => ... )` support to
+  action/filter expectations
+- Add cached HTTP response support using the `cache()` method.
 
 ### Changed
 
-- Upgraded minimum PHP version to 8.2.
+- **Breaking:** Http Client pools should now be built using `->method()` and `->url()` instead.
 - Dropped support for Redis as a cache backend in favor of the default object
   cache drop-in.
 - Allow returning falsey from `Collection::map_to_dictionary()`.

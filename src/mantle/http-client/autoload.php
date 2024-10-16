@@ -12,6 +12,8 @@
 
 declare( strict_types=1 );
 
+namespace Mantle\Http_Client;
+
 use Mantle\Http_Client\Pending_Request;
 use Mantle\Http_Client\Response;
 
