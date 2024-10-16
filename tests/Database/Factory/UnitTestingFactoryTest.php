@@ -297,7 +297,9 @@ class UnitTestingFactoryTest extends Framework_Test_Case {
 	 * @dataProvider dataprovider_factory
 	 */
 	#[DataProvider( 'dataprovider_factory' )]
-	public function test_dataprovider_factory( $post ) {
+	public function test_dataprovider_factory( callable $fn ) {
+		$post = $fn();
+
 		$this->assertInstanceOf( \WP_Post::class, $post );
 		$this->assertStringContainsString(
 			'<!-- wp:paragraph',
@@ -307,7 +309,7 @@ class UnitTestingFactoryTest extends Framework_Test_Case {
 
 	public static function dataprovider_factory(): array {
 		return [
-			'example' => [ static::factory()->post->create_and_get() ],
+			'example' => [ fn () => static::factory()->post->create_and_get() ],
 		];
 	}
 
