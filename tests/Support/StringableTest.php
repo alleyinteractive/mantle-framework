@@ -4,9 +4,10 @@ namespace Mantle\Tests\Support;
 
 use Carbon\Carbon;
 use Mantle\Support\Collection;
-// use Mantle\Support\HtmlString;
 use Mantle\Support\Stringable;
 use PHPUnit\Framework\TestCase;
+
+require_once __DIR__ . '/StrTest.php';
 
 class StringableTest extends TestCase {
 

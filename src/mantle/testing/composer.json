@@ -34,6 +34,7 @@
         "nunomaduro/collision": "For better PHPUnit printing.",
         "mantle-framework/console": "Required to assert console commands.",
         "mantle-framework/testkit": "For running tests against a WordPress install without Mantle",
+        "brianium/paratest": "For running tests in parallel.",
         "phpunit/phpunit": "Required to use assertions and run tests."
     },
     "config": {

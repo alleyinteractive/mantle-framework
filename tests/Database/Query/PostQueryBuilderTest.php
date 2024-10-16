@@ -194,7 +194,7 @@ class PostQueryBuilderTest extends Framework_Test_Case {
 	public function test_term_query_from_term_model() {
 		$post_id = $this->get_random_post_id();
 		$term_other = static::factory()->term->create();
-		$term = Testable_Tag::find( static::factory()->term->create() );
+		$term = Testable_Post_Tag::find( static::factory()->term->create() );
 
 		wp_set_object_terms( $post_id, $term->id(), $term->taxonomy(), true );
 
@@ -735,15 +735,13 @@ class Another_Testable_Post extends Post {
 	public static $object_name = 'example-post-type';
 }
 
-class Testable_Tag extends Term {
+class Testable_Post_Tag extends Term {
 	public static $object_name = 'post_tag';
 }
 
-if ( PHP_VERSION_ID >= 80100 ) {
-	enum Testable_Meta_Values: string {
-		case Meta_Key_A = 'meta-key-a';
-		case Meta_Key_B = 'meta-key-b';
-		case Meta_Value_A = 'meta-value-a';
-		case Meta_Value_B = 'meta-value-b';
-	}
+enum Testable_Meta_Values: string {
+	case Meta_Key_A = 'meta-key-a';
+	case Meta_Key_B = 'meta-key-b';
+	case Meta_Value_A = 'meta-value-a';
+	case Meta_Value_B = 'meta-value-b';
 }

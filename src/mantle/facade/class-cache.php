@@ -10,9 +10,9 @@ namespace Mantle\Facade;
 /**
  * Cache Facade
  *
- * @method static mixed get(string $key, mixed $default = null)
+ * @method static mixed|null get(string $key, mixed $default = null)
  * @method static iterable get_multiple(iterable $keys, mixed $default = null)
- * @method static mixed flexible(string $key, int|\DateInterval|\DateTimeInterface|null $stale, int|\DateInterval|\DateTimeInterface|null $expire, callable $callback)
+ * @method static mixed|null flexible(string $key, int|\DateInterval|\DateTimeInterface|null $stale, int|\DateInterval|\DateTimeInterface|null $expire, callable $callback)
  * @method static mixed|null pull(string $key, mixed $default = null)
  * @method static bool set(string $key, mixed $value, null|int|\DateInterval $ttl = null)
  * @method static bool set_multiple(iterable $values, null|int|\DateInterval|\DateTimeInterface $ttl = null)

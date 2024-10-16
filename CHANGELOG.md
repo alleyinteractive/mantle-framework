@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## v1.1.0 - 2024-09-23
 
 ### Added
 
@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Allow the block factory to override text when generating blocks.
 - Added new `defer()` helper.
 - Added `Cache::flexible()` method to add SWR support to the cache.
+- Added support for parallel unit testing with `brianium/paratest` (in beta).
 - Added dynamic creation of post type/taxonomy factories.
 - Added `Reset_Server` trait to reset the server between tests.
 - Add `with_https()` to control if the request being tested is over HTTPS.

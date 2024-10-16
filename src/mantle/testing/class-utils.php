@@ -236,6 +236,15 @@ class Utils {
 		defined( 'WP_PHP_BINARY' ) || define( 'WP_PHP_BINARY', 'php' );
 		defined( 'WPLANG' ) || define( 'WPLANG', '' );
 
+		// Setup the table prefix when running in parallel.
+		if ( static::is_parallel() && $token = static::parallel_token() ) {
+			$table_prefix .= "para_{$token}_"; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+
+			if ( static::is_debug_mode() ) {
+				static::info( "Using parallel table prefix: {$table_prefix}" );
+			}
+		}
+
 		// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
 	}
 
@@ -514,5 +523,30 @@ class Utils {
 		static::code( $error );
 
 		exit( 1 );
+	}
+
+	/**
+	 * Check if the current test run is parallel with paratest.
+	 */
+	public static function is_parallel(): bool {
+		return ! empty( static::parallel_token() );
+	}
+
+	/**
+	 * Retrieve the parallel token for the current test run.
+	 *
+	 * @return string
+	 */
+	public static function parallel_token(): ?string {
+		return static::env( 'TEST_TOKEN', null );
+	}
+
+	/**
+	 * Check if the current test run is the paratest bootstrap.
+	 *
+	 * The parallel token will not be set in the initial bootstrap.
+	 */
+	public static function is_parallel_bootstrap(): bool {
+		return empty( static::parallel_token() ) && isset( $_SERVER['SCRIPT_NAME'] ) && str_contains( (string) $_SERVER['SCRIPT_NAME'], 'paratest' ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 	}
 }

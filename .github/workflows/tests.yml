@@ -22,6 +22,7 @@ jobs:
     uses: alleyinteractive/.github/.github/workflows/php-tests.yml@main
     name: "P${{ matrix.php }} - ${{ matrix.wordpress }} ${{ matrix.multisite && 'Multisite' || '' }} - ${{ matrix.dependencies }}"
     with:
+      command: 'phpunit'
       dependency-versions: ${{ matrix.dependencies }}
       multisite: ${{ matrix.multisite }}
       php: ${{ matrix.php }}

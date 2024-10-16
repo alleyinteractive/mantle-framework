@@ -8,7 +8,7 @@
 namespace Mantle\Database\Factory\Concerns;
 
 use InvalidArgumentException;
-use Mantle\Application\Application;
+use Mantle\Contracts\Application;
 use Mantle\Container\Container;
 use Mantle\Database\Factory;
 use Mantle\Database\Model;
@@ -152,9 +152,13 @@ trait Resolves_Factories {
 	 */
 	protected static function app_namespace(): string {
 		try {
-			return str(
-				Container::get_instance()->make( Application::class )->get_namespace()
-			)->rtrim( '\\' )->append( '\\' );
+			$container = Container::get_instance();
+
+			if ( $container instanceof Application ) {
+				return str( $container->get_namespace() )->rtrim( '\\' )->append( '\\' );
+			}
+
+			return 'App\\';
 		} catch ( \Throwable ) {
 			return 'App\\';
 		}
