@@ -14,6 +14,7 @@ use Mantle\Database\Model\User;
 use Mantle\Testing\Attributes\Acting_As;
 use Mantle\Testing\Exceptions\Exception;
 use PHPUnit\Framework\Assert;
+use ReflectionAttribute;
 use WP_User;
 
 use function Mantle\Support\Helpers\get_user_object;
@@ -24,14 +25,12 @@ use function Mantle\Support\Helpers\get_user_object;
  * @mixin \PHPUnit\Framework\TestCase
  */
 trait WordPress_Authentication {
-	use Reads_Annotations;
+	use Interacts_With_Attributes;
 
 	/**
 	 * Backed up global user ID.
-	 *
-	 * @var int
 	 */
-	protected $backup_user;
+	protected int $backup_user;
 
 	/**
 	 * Backup the current global user.
@@ -40,9 +39,10 @@ trait WordPress_Authentication {
 		$this->backup_user = get_current_user_id();
 
 		// Set the test case up using the user from the attribute in descending order (class -> method).
-		foreach ( $this->get_attributes_for_method( Acting_As::class ) as $attribute ) {
-			$this->acting_as( $attribute->newInstance()->user );
-		}
+		$this->register_attribute(
+			Acting_As::class,
+			fn ( ReflectionAttribute $attribute ) => $this->acting_as( $attribute->newInstance()->user ),
+		);
 	}
 
 	/**
