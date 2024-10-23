@@ -562,8 +562,8 @@ class Pending_Request {
 	 *
 	 * @throws InvalidArgumentException If the request is pooled.
 	 *
-	 * @param  string            $url
-	 * @param  array|string|null $query
+	 * @param  string            $url URL to retrieve.
+	 * @param  array|string|null $query Query parameters (assumed to be urlencoded).
 	 */
 	public function head( string $url, array|string|null $query = null ): Response {
 		if ( $this->pooled ) {
@@ -582,8 +582,8 @@ class Pending_Request {
 	 *
 	 * @throws InvalidArgumentException If the request is pooled.
 	 *
-	 * @param  string $url
-	 * @param  array  $data
+	 * @param  string     $url URL to post.
+	 * @param  array|null $data Data to send with the request.
 	 */
 	public function post( string $url, ?array $data = null ): Response {
 		if ( $this->pooled ) {
@@ -602,8 +602,8 @@ class Pending_Request {
 	 *
 	 * @throws InvalidArgumentException If the request is pooled.
 	 *
-	 * @param  string $url
-	 * @param  array  $data
+	 * @param  string     $url URL to patch.
+	 * @param  array|null $data Data to send with the request.
 	 */
 	public function patch( string $url, ?array $data = null ): Response {
 		if ( $this->pooled ) {
@@ -622,8 +622,8 @@ class Pending_Request {
 	 *
 	 * @throws InvalidArgumentException If the request is pooled.
 	 *
-	 * @param  string $url
-	 * @param  array  $data
+	 * @param  string     $url URL to put.
+	 * @param  array|null $data Data to send with the request.
 	 */
 	public function put( string $url, ?array $data = null ): Response {
 		if ( $this->pooled ) {
@@ -642,10 +642,10 @@ class Pending_Request {
 	 *
 	 * @throws InvalidArgumentException If the request is pooled.
 	 *
-	 * @param  string $url
-	 * @param  array  $data
+	 * @param  string     $url URL to delete.
+	 * @param  array|null $data Data to send with the request.
 	 */
-	public function delete( string $url, ?array $data = [] ): Response {
+	public function delete( string $url, ?array $data = null ): Response {
 		if ( $this->pooled ) {
 			throw new InvalidArgumentException( 'Cannot call delete() on a pooled request.' );
 		}
