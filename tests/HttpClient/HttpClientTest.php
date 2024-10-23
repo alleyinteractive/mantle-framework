@@ -73,6 +73,19 @@ class HttpClientTest extends Framework_Test_Case {
 		);
 	}
 
+	public function test_delete_request() {
+		$this->fake_request();
+
+		$this->http_factory->delete( 'https://example.com/delete/' );
+
+		$this->assertRequestSent( 'https://example.com/delete/' );
+		$this->assertRequestSent(
+			fn ( Request $request ) => 'https://example.com/delete/' === $request->url()
+				&& 'DELETE' === $request->method()
+				&& is_null( $request->body() )
+		);
+	}
+
 	public function test_make_request_enum() {
 		$this->fake_request();
 
