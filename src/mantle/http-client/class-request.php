@@ -98,8 +98,8 @@ class Request {
 	/**
 	 * Retrieve the body of the request.
 	 */
-	public function body(): string {
-		return $this->args['body'] ?? '';
+	public function body(): ?string {
+		return $this->args['body'] ?? null;
 	}
 
 	/**
@@ -108,7 +108,7 @@ class Request {
 	 * @return array|null
 	 */
 	public function json() {
-		return json_decode( $this->body(), true );
+		return json_decode( (string) $this->body(), true );
 	}
 
 	/**
