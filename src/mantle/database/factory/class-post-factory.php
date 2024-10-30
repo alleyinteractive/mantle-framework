@@ -42,6 +42,11 @@ class Post_Factory extends Factory {
 	protected bool $create_terms = true;
 
 	/**
+	 * Flag to append terms by default.
+	 */
+	protected bool $append_terms = true;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Generator $faker Faker generator.
@@ -61,6 +66,15 @@ class Post_Factory extends Factory {
 	}
 
 	/**
+	 * Change the default appending of terms with the post factory.
+	 *
+	 * @param bool $value Value to set.
+	 */
+	public function append_terms( bool $value = true ): void {
+		$this->append_terms = $value;
+	}
+
+	/**
 	 * Create a new factory instance to create posts with a set of terms.
 	 *
 	 * Any slugs passed that are not found will be created. If you want to
@@ -77,7 +91,7 @@ class Post_Factory extends Factory {
 		$terms = collect( $terms )->all();
 
 		return $this->with_middleware(
-			fn ( array $args, Closure $next ) => $next( $args )->set_terms( $terms, append: true, create: $this->create_terms ),
+			fn ( array $args, Closure $next ) => $next( $args )->set_terms( $terms, append: $this->append_terms, create: $this->create_terms ),
 		);
 	}
 
@@ -96,7 +110,7 @@ class Post_Factory extends Factory {
 		$terms = collect( $terms )->all();
 
 		return $this->with_middleware(
-			fn ( array $args, Closure $next ) => $next( $args )->set_terms( $terms, append: true, create: false ),
+			fn ( array $args, Closure $next ) => $next( $args )->set_terms( $terms, append: $this->append_terms, create: false ),
 		);
 	}
 
