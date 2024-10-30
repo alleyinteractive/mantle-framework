@@ -10,9 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Post factories that are passed a term slug to `with_terms()` will create the
-	term if it doesn't exist by default. This can be disabled by calling the
-	`create_terms()` method on the factory or replacing the with terms method call
-	with `with_terms_only_existing()`.
+  term if it doesn't exist by default. This can be disabled by calling the
+  `create_terms()` method on the factory or replacing the with terms method call
+  with `with_terms_only_existing()`.
 
 ### Fixed
 
