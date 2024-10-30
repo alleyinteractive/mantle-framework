@@ -280,8 +280,8 @@ class UnitTestingFactoryTest extends Framework_Test_Case {
 		);
 	}
 
-	#[Group( 'with_terms' )]
 	#[DataProvider( 'slug_id_dataprovider' )]
+	#[Group( 'with_terms' )]
 	public function test_posts_with_multiple_terms_single_array( string $field ) {
 		$tags = collect( static::factory()->tag->create_many( 5 ) )
 			->map( fn ( $term_id ) => get_term( $term_id ) )
@@ -300,7 +300,14 @@ class UnitTestingFactoryTest extends Framework_Test_Case {
 
 	#[Group( 'with_terms' )]
 	public function test_posts_with_terms_create_unknown_term() {
-		$this->markTestIncomplete( 'This test is incomplete.' );
+		$post = static::factory()->post->with_terms( [
+			'post_tag' => [ 'unknown-term' ],
+		] )->create_and_get();
+
+		$post_tags = get_the_terms( $post, 'post_tag' );
+
+		$this->assertCount( 1, $post_tags );
+		$this->assertEquals( 'unknown-term', $post_tags[0]->slug );
 	}
 
 	public function test_terms_with_posts() {

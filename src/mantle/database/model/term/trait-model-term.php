@@ -12,6 +12,7 @@ use Mantle\Database\Model\Model_Exception;
 use Mantle\Database\Model\Term;
 use Mantle\Support\Arr;
 use Mantle\Support\Collection;
+use Mantle\Support\Str;
 use WP_Term;
 
 use function Mantle\Support\Helpers\collect;
@@ -120,18 +121,19 @@ trait Model_Term {
 	 * @param mixed  $terms Accepts an array of or a single instance of terms.
 	 * @param string $taxonomy Taxonomy name, optional.
 	 * @param bool   $append Append to the object's terms, defaults to false.
+	 * @param bool   $create Create the term if it does not exist, defaults to false.
 	 * @return static
 	 *
 	 * @throws Model_Exception Thrown if the $taxonomy cannot be inferred from $terms.
 	 * @throws Model_Exception Thrown if error saving the post's terms.
 	 */
-	public function set_terms( $terms, ?string $taxonomy = null, bool $append = false ) {
+	public function set_terms( $terms, ?string $taxonomy = null, bool $append = false, bool $create = false ) {
 		$terms = collect( Arr::wrap( $terms ) );
 
 		// If taxonomy is not specified, chunk the terms into taxonomy groups.
 		if ( ! $taxonomy ) {
 			$terms = $terms->reduce(
-				function ( array $carry, $term, $index ): array {
+				function ( array $carry, $term, $index ) use ( $create ): array {
 					if ( $term instanceof WP_Term ) {
 						$carry[ $term->taxonomy ][] = $term;
 
@@ -177,10 +179,21 @@ trait Model_Term {
 								continue;
 							}
 
-							$item = get_term_object_by( 'slug', $item, $taxonomy );
+							$term = get_term_object_by( 'slug', $item, $taxonomy );
 
-							if ( $item ) {
-								$carry[ $taxonomy ][] = $item;
+							// Optionally create the term if it does not exist.
+							if ( ! $term && $create ) {
+								$term = wp_insert_term( Str::headline( $item ), $taxonomy, [ 'slug' => $item ] );
+
+								if ( is_wp_error( $term ) ) {
+									throw new Model_Exception( "Error creating term: [{$term->get_error_message()}]" );
+								}
+
+								$term = get_term( $term['term_id'], $taxonomy );
+							}
+
+							if ( $term instanceof WP_Term ) {
+								$carry[ $taxonomy ][] = $term;
 							}
 						}
 

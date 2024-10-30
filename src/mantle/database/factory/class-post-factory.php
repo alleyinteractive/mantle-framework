@@ -37,6 +37,11 @@ class Post_Factory extends Factory {
 	protected string $model = Post::class;
 
 	/**
+	 * Flag to create terms by default.
+	 */
+	protected bool $create_terms = true;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Generator $faker Faker generator.
@@ -47,7 +52,19 @@ class Post_Factory extends Factory {
 	}
 
 	/**
+	 * Change the default creation of terms with the post factory.
+	 *
+	 * @param bool $value Value to set.
+	 */
+	public function create_terms( bool $value = true ): void {
+		$this->create_terms = $value;
+	}
+
+	/**
 	 * Create a new factory instance to create posts with a set of terms.
+	 *
+	 * Any slugs passed that are not found will be created. If you want to
+	 * only use existing terms, use `with_terms_only_existing()`.
 	 *
 	 * @param array<int|string, \WP_Term|int|string|array<string, mixed>>|\WP_Term|int|string ...$terms Terms to assign to the post.
 	 */
@@ -60,7 +77,26 @@ class Post_Factory extends Factory {
 		$terms = collect( $terms )->all();
 
 		return $this->with_middleware(
-			fn ( array $args, Closure $next ) => $next( $args )->set_terms( $terms ),
+			fn ( array $args, Closure $next ) => $next( $args )->set_terms( $terms, append: true, create: $this->create_terms ),
+		);
+	}
+
+	/**
+	 * Create a new factory instance to create posts with a set of terms without creating
+	 * any unknown terms.
+	 *
+	 * @param array<int|string, \WP_Term|int|string|array<string, mixed>>|\WP_Term|int|string ...$terms Terms to assign to the post.
+	 */
+	public function with_terms_only_existing( ...$terms ): static {
+		// Handle an array in the first argument.
+		if ( 1 === count( $terms ) && isset( $terms[0] ) && is_array( $terms[0] ) ) {
+			$terms = $terms[0];
+		}
+
+		$terms = collect( $terms )->all();
+
+		return $this->with_middleware(
+			fn ( array $args, Closure $next ) => $next( $args )->set_terms( $terms, append: true, create: false ),
 		);
 	}
 
