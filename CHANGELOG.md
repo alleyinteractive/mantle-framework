@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Ensure that the `delete()` method of the HTTP Client doesn't set a body by default.
+- Ensure that `with_terms()` can support an array of term slugs when passed with a
+  taxonomy index.
 
 ## v1.2.0 - 2024-09-23
 
