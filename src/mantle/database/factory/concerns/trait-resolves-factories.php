@@ -125,8 +125,10 @@ trait Resolves_Factories {
 		}
 
 		// Handle one-off models.
-		if ( Model\Site::class === $parent_class ) {
+		if ( in_array( Model\Site::class, [ $model_name, $parent_class ], true ) ) {
 			return Factory\Blog_Factory::class;
+		} elseif ( in_array( Model\Attachment::class, [ $model_name, $parent_class ], true ) ) {
+			return Factory\Attachment_Factory::class;
 		}
 
 		$parent_class = Str::after_last( $parent_class, '\\' );
