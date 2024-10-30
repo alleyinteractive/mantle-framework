@@ -131,7 +131,7 @@ trait Model_Term {
 		// If taxonomy is not specified, chunk the terms into taxonomy groups.
 		if ( ! $taxonomy ) {
 			$terms = $terms->reduce(
-				function ( array $carry, $term ): array {
+				function ( array $carry, $term, $index ): array {
 					if ( $term instanceof WP_Term ) {
 						$carry[ $term->taxonomy ][] = $term;
 
@@ -163,6 +163,12 @@ trait Model_Term {
 								}
 
 								continue;
+							}
+
+							// Use the parent array key as the taxonomy if the parent array
+							// key is a string and the current array index is not.
+							if ( ! is_string( $taxonomy ) && is_string( $index ) ) {
+								$taxonomy = $index;
 							}
 
 							// Attempt to infer if the key is a taxonomy slug and this is a

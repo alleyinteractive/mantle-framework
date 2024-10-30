@@ -172,6 +172,7 @@ class UnitTestingFactoryTest extends Framework_Test_Case {
 		$this->assertEquals( '_test_meta_value', get_post_meta( $post->ID, '_test_meta_key', true ) );
 	}
 
+	#[Group( 'with_terms' )]
 	public function test_posts_with_terms() {
 		$post = static::factory()->post->with_terms(
 			[
@@ -183,6 +184,7 @@ class UnitTestingFactoryTest extends Framework_Test_Case {
 		$this->assertTrue( has_term( $category->term_id, 'category', $post ) );
 	}
 
+	#[Group( 'with_terms' )]
 	public function test_posts_with_term_ids() {
 		$post = static::factory()->post->with_terms(
 			[
@@ -196,15 +198,7 @@ class UnitTestingFactoryTest extends Framework_Test_Case {
 		$this->assertTrue( has_term( $category->term_id, 'category', $post ) );
 	}
 
-	public function test_terms_with_posts() {
-		$post_ids = static::factory()->post->create_many( 2 );
-
-		$category = static::factory()->category->with_posts( $post_ids )->create_and_get();
-
-		$this->assertTrue( has_term( $category->term_id, 'category', $post_ids[0] ) );
-		$this->assertTrue( has_term( $category->term_id, 'category', $post_ids[1] ) );
-	}
-
+	#[Group( 'with_terms' )]
 	public function test_posts_with_terms_multiple_taxonomies() {
 		$post = static::factory()->post->with_terms(
 			$category = static::factory()->category->create_and_get(),
@@ -223,7 +217,8 @@ class UnitTestingFactoryTest extends Framework_Test_Case {
 		$this->assertTrue( has_term( $tag->term_id, 'post_tag', $post ) );
 	}
 
-	public function test_posts_with_terms_multiple_taxonomies_and_term_slug() {
+	#[Group( 'with_terms' )]
+	public function test_posts_with_multiple_taxonomies_with_mixed_objects() {
 		$tag = static::factory()->tag->create_and_get();
 
 		// Test with the arguments passed as individual parameters.
@@ -247,6 +242,74 @@ class UnitTestingFactoryTest extends Framework_Test_Case {
 
 		$this->assertTrue( has_term( $category->term_id, 'category', $post ) );
 		$this->assertTrue( has_term( $tag->term_id, 'post_tag', $post ) );
+	}
+
+	#[Group( 'with_terms' )]
+	public function test_posts_with_multiple_terms_single_array_argument() {
+		$tags = collect( static::factory()->tag->create_many( 5 ) )
+			->map( fn ( $term_id ) => get_term( $term_id ) )
+			->pluck( 'term_id' )
+			->all();
+
+		$post = static::factory()->post->with_terms( $tags )->create_and_get();
+
+		$post_tags = get_the_terms( $post, 'post_tag' );
+
+		$this->assertCount( 5, $post_tags );
+		$this->assertEquals(
+			collect( $tags )->sort()->values()->all(),
+			collect( $post_tags )->pluck( 'term_id' )->sort()->values()->all(),
+		);
+	}
+
+	#[Group( 'with_terms' )]
+	public function test_posts_with_multiple_terms_spread_array_argument() {
+		$tags = collect( static::factory()->tag->create_many( 5 ) )
+			->map( fn ( $term_id ) => get_term( $term_id ) )
+			->pluck( 'term_id' )
+			->all();
+
+		$post = static::factory()->post->with_terms( ...$tags )->create_and_get();
+
+		$post_tags = get_the_terms( $post, 'post_tag' );
+
+		$this->assertCount( 5, $post_tags );
+		$this->assertEquals(
+			collect( $tags )->sort()->values()->all(),
+			collect( $post_tags )->pluck( 'term_id' )->sort()->values()->all(),
+		);
+	}
+
+	#[Group( 'with_terms' )]
+	#[DataProvider( 'slug_id_dataprovider' )]
+	public function test_posts_with_multiple_terms_single_array( string $field ) {
+		$tags = collect( static::factory()->tag->create_many( 5 ) )
+			->map( fn ( $term_id ) => get_term( $term_id ) )
+			->pluck( $field )
+			->all();
+
+		$post = static::factory()->post->with_terms( [ 'post_tag' => $tags ] )->create_and_get();
+		$post_tags = get_the_terms( $post, 'post_tag' );
+
+		$this->assertCount( 5, $post_tags );
+		$this->assertEquals(
+			collect( $tags )->sort()->values()->all(),
+			collect( $post_tags )->pluck( $field )->sort()->values()->all(),
+		);
+	}
+
+	#[Group( 'with_terms' )]
+	public function test_posts_with_terms_create_unknown_term() {
+		$this->markTestIncomplete( 'This test is incomplete.' );
+	}
+
+	public function test_terms_with_posts() {
+		$post_ids = static::factory()->post->create_many( 2 );
+
+		$category = static::factory()->category->with_posts( $post_ids )->create_and_get();
+
+		$this->assertTrue( has_term( $category->term_id, 'category', $post_ids[0] ) );
+		$this->assertTrue( has_term( $category->term_id, 'category', $post_ids[1] ) );
 	}
 
 	public function test_post_with_meta() {
@@ -357,6 +420,13 @@ class UnitTestingFactoryTest extends Framework_Test_Case {
 		$this->expectException( \InvalidArgumentException::class );
 
 		static::factory()->conflict->create_and_get();
+	}
+
+	public static function slug_id_dataprovider(): array {
+		return [
+			'term_id' => [ 'term_id' ],
+			'slug'    => [ 'slug' ],
+		];
 	}
 }
 

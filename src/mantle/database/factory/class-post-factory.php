@@ -53,7 +53,7 @@ class Post_Factory extends Factory {
 	 */
 	public function with_terms( ...$terms ): static {
 		// Handle an array in the first argument.
-		if ( 1 === count( $terms ) && is_array( $terms[0] ) ) {
+		if ( 1 === count( $terms ) && isset( $terms[0] ) && is_array( $terms[0] ) ) {
 			$terms = $terms[0];
 		}
 
