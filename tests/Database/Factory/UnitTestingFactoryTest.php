@@ -280,6 +280,9 @@ class UnitTestingFactoryTest extends Framework_Test_Case {
 		);
 	}
 
+	/**
+	 * @dataProvider slug_id_dataprovider
+	 */
 	#[DataProvider( 'slug_id_dataprovider' )]
 	#[Group( 'with_terms' )]
 	public function test_posts_with_multiple_terms_single_array( string $field ) {
