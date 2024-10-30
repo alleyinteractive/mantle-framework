@@ -11,7 +11,12 @@ on:
     - cron: '0 0 * * 0'
 
 jobs:
-  php-tests:
+  lint:
+    uses: alleyinteractive/.github/.github/workflows/php-composer-command.yml@main
+    with:
+      command: "lint"
+      php: 8.2
+  phpunit:
     strategy:
       fail-fast: false
       matrix:
@@ -27,3 +32,24 @@ jobs:
       multisite: ${{ matrix.multisite }}
       php: ${{ matrix.php }}
       wordpress: ${{ matrix.wordpress }}
+  # This required job ensures that all PR checks have passed before merging.
+  all-pr-checks-passed:
+    name: All PR checks passed
+    needs:
+      - lint
+      - phpunit
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Check job statuses
+        run: |
+          if [[ "${{ contains(needs.*.result, 'failure') }}" == "true" ]]; then
+            echo "One or more jobs failed"
+            exit 1
+          elif [[ "${{ contains(needs.*.result, 'cancelled') }}" == "true" ]]; then
+            echo "One or more jobs were cancelled"
+            exit 1
+          else
+            echo "All jobs passed or were skipped"
+            exit 0
+          fi
