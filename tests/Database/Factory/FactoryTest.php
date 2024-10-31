@@ -70,7 +70,7 @@ class FactoryTest extends Framework_Test_Case {
 
 	public static function factory_resolve_default(): array {
 		return [
-			Model\Attachment::class => [ Model\Attachment::class, Factory\Post_Factory::class ],
+			Model\Attachment::class => [ Model\Attachment::class, Factory\Attachment_Factory::class ],
 			Model\Post::class => [ Model\Post::class, Factory\Post_Factory::class ],
 			Model\Term::class => [ Model\Term::class, Factory\Term_Factory::class ],
 			Model\User::class => [ Model\User::class, Factory\User_Factory::class ],

@@ -10,6 +10,7 @@ namespace Mantle\Database\Factory;
 use Carbon\Carbon;
 use Closure;
 use Faker\Generator;
+use Mantle\Database\Model\Attachment;
 use Mantle\Database\Model\Post;
 use WP_Post;
 
@@ -145,7 +146,7 @@ class Post_Factory extends Factory {
 				update_post_meta(
 					$post->ID,
 					'_thumbnail_id',
-					( new Attachment_Factory( $this->faker ) )->with_image(
+					Attachment::factory()->with_image(
 						file: $file,
 						width: $width,
 						parent: $post->ID,
