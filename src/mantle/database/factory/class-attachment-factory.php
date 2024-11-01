@@ -75,6 +75,8 @@ class Attachment_Factory extends Post_Factory {
 			if ( ! $file ) {
 				$file = $generated_images[ $hash ] = $this->generate_image( $width, $height );
 			}
+		} elseif ( ! file_exists( $file ) ) {
+			throw new RuntimeException( "File {$file} does not exist." );
 		}
 
 		if ( empty( $file ) ) {

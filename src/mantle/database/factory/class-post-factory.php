@@ -10,6 +10,7 @@ namespace Mantle\Database\Factory;
 use Carbon\Carbon;
 use Closure;
 use Faker\Generator;
+use Mantle\Database\Model\Attachment;
 use Mantle\Database\Model\Post;
 use WP_Post;
 
@@ -37,6 +38,16 @@ class Post_Factory extends Factory {
 	protected string $model = Post::class;
 
 	/**
+	 * Flag to create terms by default.
+	 */
+	protected bool $create_terms = true;
+
+	/**
+	 * Flag to append terms by default.
+	 */
+	protected bool $append_terms = true;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Generator $faker Faker generator.
@@ -47,20 +58,60 @@ class Post_Factory extends Factory {
 	}
 
 	/**
+	 * Change the default creation of terms with the post factory.
+	 *
+	 * @param bool $value Value to set.
+	 */
+	public function create_terms( bool $value = true ): void {
+		$this->create_terms = $value;
+	}
+
+	/**
+	 * Change the default appending of terms with the post factory.
+	 *
+	 * @param bool $value Value to set.
+	 */
+	public function append_terms( bool $value = true ): void {
+		$this->append_terms = $value;
+	}
+
+	/**
 	 * Create a new factory instance to create posts with a set of terms.
+	 *
+	 * Any slugs passed that are not found will be created. If you want to
+	 * only use existing terms, use `with_terms_only_existing()`.
 	 *
 	 * @param array<int|string, \WP_Term|int|string|array<string, mixed>>|\WP_Term|int|string ...$terms Terms to assign to the post.
 	 */
 	public function with_terms( ...$terms ): static {
 		// Handle an array in the first argument.
-		if ( 1 === count( $terms ) && is_array( $terms[0] ) ) {
+		if ( 1 === count( $terms ) && isset( $terms[0] ) && is_array( $terms[0] ) ) {
 			$terms = $terms[0];
 		}
 
 		$terms = collect( $terms )->all();
 
 		return $this->with_middleware(
-			fn ( array $args, Closure $next ) => $next( $args )->set_terms( $terms ),
+			fn ( array $args, Closure $next ) => $next( $args )->set_terms( $terms, append: $this->append_terms, create: $this->create_terms ),
+		);
+	}
+
+	/**
+	 * Create a new factory instance to create posts with a set of terms without creating
+	 * any unknown terms.
+	 *
+	 * @param array<int|string, \WP_Term|int|string|array<string, mixed>>|\WP_Term|int|string ...$terms Terms to assign to the post.
+	 */
+	public function with_terms_only_existing( ...$terms ): static {
+		// Handle an array in the first argument.
+		if ( 1 === count( $terms ) && isset( $terms[0] ) && is_array( $terms[0] ) ) {
+			$terms = $terms[0];
+		}
+
+		$terms = collect( $terms )->all();
+
+		return $this->with_middleware(
+			fn ( array $args, Closure $next ) => $next( $args )->set_terms( $terms, append: $this->append_terms, create: false ),
 		);
 	}
 
@@ -95,7 +146,7 @@ class Post_Factory extends Factory {
 				update_post_meta(
 					$post->ID,
 					'_thumbnail_id',
-					( new Attachment_Factory( $this->faker ) )->with_image(
+					Attachment::factory()->with_image(
 						file: $file,
 						width: $width,
 						parent: $post->ID,
