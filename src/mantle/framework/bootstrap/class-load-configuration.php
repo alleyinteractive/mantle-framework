@@ -43,13 +43,13 @@ class Load_Configuration {
 	public function bootstrap( Application $app ): void {
 		$config = $app->make( 'config' );
 
-		// Load the configuration files if not loaded from cache.
+		// Load the configuration files if not already loaded from cache.
 		if ( ! $config->get( 'config.loaded_from_cache' ) ) {
 			$this->load_configuration_files( $app, $config );
 		}
 
 		if ( ! empty( static::$merge ) ) {
-			$this->load_merge_configuration( $config );
+			$this->load_late_configuration( $config );
 		}
 	}
 
@@ -81,13 +81,7 @@ class Load_Configuration {
 					continue;
 				}
 
-				$existing_config = $repository->get( $key );
-
-				foreach ( $this->get_mergeable_options( $key ) as $option ) {
-					$config[ $option ] = array_merge( $existing_config[ $option ] ?? [], $config[ $option ] ?? [] );
-				}
-
-				$repository->set( $key, $config );
+				$repository->set( $key, $this->merge_configuration( $key, $repository->get( $key ), $config ) );
 			}
 		}
 	}
@@ -106,14 +100,13 @@ class Load_Configuration {
 			return;
 		}
 
-		// Load the root-level config.
 		$this->load_configuration_to_repository( $files['global'], $repository );
 
 		$env = $app->environment();
 
 		// Load the environment-specific configurations if one exists.
-		if ( ! empty( $files['env'][ $env ] ) ) {
-			$this->load_configuration_to_repository( $files['env'][ $env ], $repository );
+		if ( ! empty( $files['environment'][ $env ] ) ) {
+			$this->load_configuration_to_repository( $files['environment'][ $env ], $repository );
 		}
 	}
 
@@ -154,18 +147,18 @@ class Load_Configuration {
 	 * Find the configuration files to load.
 	 *
 	 * @param Application $app Application instance.
-	 * @return array{global: array<string, string[]>, env: array<string, array<string, string[]>>}
+	 * @return array{global: array<string, string[]>, environment: array<string, array<string, string[]>>}
 	 */
 	protected function get_configuration_files( Application $app ): array {
 		$files = [
-			'global' => [],
-			'env'    => [],
+			'global'      => [],
+			'environment' => [],
 		];
 
 		$finder = Finder::create()
 			->files()
 			->name( '*.php' )
-			->depth( '< 2' ) // Only descend two levels.
+			->depth( '< 2' )
 			->in( $this->get_configuration_directories( $app ) );
 
 		foreach ( $finder as $file ) {
@@ -179,50 +172,52 @@ class Load_Configuration {
 			};
 
 			if ( $environment ) {
-				$files['env'][ $environment ][ $name ][] = $file->getRealPath();
+				$files['environment'][ $environment ][ $name ][] = $file->getRealPath();
 			} else {
 				$files['global'][ $name ][] = $file->getRealPath();
 			}
-		}
-
-		// Sort them to ensure a similar experience across all hosting environments.
-		foreach ( $files as $type => $config_files ) {
-			ksort( $files[ $type ], SORT_NATURAL );
 		}
 
 		return $files;
 	}
 
 	/**
+	 * Retrieve the base configuration.
+	 *
+	 * @return array<string, array<mixed>>
+	 */
+	protected function get_base_configuration(): array {
+		$config = [];
+
+		foreach ( Finder::create()->files()->name( '*.php' )->depth( '< 2' )->in( dirname( __DIR__, 4 ) . '/config' ) as $file ) {
+			$name = basename( $file->getRealPath(), '.php' );
+
+			$config[ $name ] = $this->merge_configuration(
+				$name, $config[ $name ] ?? [],
+				require $file->getRealPath() // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
+			);
+		}
+
+		return $config;
+	}
+
+	/**
 	 * Load the additional configuration from the bootloader to the repository.
 	 *
 	 * @throws InvalidArgumentException If the configuration value is not an array.
-	 * @throws InvalidArgumentException If the mergeable option is not an array.
 	 *
 	 * @param Repository_Contract $repository Configuration Repository.
 	 */
-	protected function load_merge_configuration( Repository_Contract $repository ): void {
+	protected function load_late_configuration( Repository_Contract $repository ): void {
 		foreach ( static::$merge as $config_key => $values ) {
 			if ( ! is_array( $values ) ) {
-				throw new InvalidArgumentException( "The bootstrap-loaded configuration value for key '{$config_key}' must be an array." );
+				throw new InvalidArgumentException( "The bootloader configuration value for key '{$config_key}' must be an array." );
 			}
 
-			$config            = $repository->get( $config_key, [] );
-			$mergeable_options = $this->get_mergeable_options( $config_key );
-
-			foreach ( $values as $key => $value ) {
-				if ( in_array( $key, $mergeable_options, true ) ) {
-					if ( ! is_array( $value ) ) {
-						throw new InvalidArgumentException( "The mergeable option '{$key}' for key '{$config_key}' must be an array." );
-					}
-
-					$config[ $key ] = array_merge( $config[ $key ] ?? [], $value );
-				} else {
-					$config[ $key ] = $value;
-				}
-			}
-
-			$repository->set( $config_key, $config );
+			$repository->set(
+				$config_key,
+				$this->merge_configuration( $config_key, $repository->get( $config_key, [] ), $values ),
+			);
 
 			static::$merge = [];
 		}
@@ -240,5 +235,35 @@ class Load_Configuration {
 		return [
 			'app' => [ 'providers' ],
 		][ $name ] ?? [];
+	}
+
+	/**
+	 * Merge two configurations together.
+	 *
+	 * Will merge the two configurations together and merge any mergeable options.
+	 *
+	 * @throws InvalidArgumentException If the mergeable option is not an array.
+	 * @see Load_Configuration::get_mergeable_options()
+	 *
+	 * @param string $config_name Configuration name.
+	 * @param array  $config_a    First configuration.
+	 * @param array  $config_b    Second configuration.
+	 */
+	protected function merge_configuration( string $config_name, array $config_a, array $config_b ): array {
+		$new_config = array_merge( $config_a, $config_b );
+
+		foreach ( $this->get_mergeable_options( $config_name ) as $option ) {
+			if ( ! isset( $config_a[ $option ] ) || ! isset( $config_b[ $option ] ) ) {
+				continue;
+			}
+
+			if ( ! is_array( $config_a[ $option ] ) || ! is_array( $config_b[ $option ] ) ) {
+				throw new InvalidArgumentException( "The mergeable option '{$option}' for key '{$config_name}' must be an array." );
+			}
+
+			$new_config[ $option ] = array_merge( $config_a[ $option ] ?? [], $config_b[ $option ] ?? [] );
+		}
+
+		return $new_config;
 	}
 }
