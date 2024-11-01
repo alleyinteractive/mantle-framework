@@ -154,15 +154,20 @@ abstract class Has_One_Or_Many extends Relation {
 	 *
 	 * @param Model[]|Model $model Model instance to save.
 	 */
-	public function save( array|Model $model ): Model {
+	public function save( array|Model|int $model ): Model {
 		if ( is_array( $model ) ) {
 			// Return the first model if saving many.
 			return collect( $this->save_many( $model ) )->first();
 		}
 
 		// Save the model if it doesn't exist.
-		if ( ! $model->exists && $model instanceof Updatable ) {
+		if ( $model instanceof Model && ! $model->exists && $model instanceof Updatable ) {
 			$model->save();
+		}
+
+		// Resolve the model to the object if it's an ID.
+		if ( is_int( $model ) ) {
+			$model = $this->related::find_or_fail( $model );
 		}
 
 		$append = Has_Many::class === static::class || is_subclass_of( $this, Has_Many::class );

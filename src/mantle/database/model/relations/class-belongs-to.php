@@ -137,12 +137,16 @@ class Belongs_To extends Relation {
 	/**
 	 * Associate a model with a relationship.
 	 *
-	 * @param Model $model Model to save to.
+	 * @param int|Model $model Model to save to.
 	 * @return Model
 	 *
 	 * @throws Model_Exception Thrown on error setting term for relationship.
 	 */
-	public function associate( Model $model ) {
+	public function associate( int|Model $model ) {
+		if ( is_int( $model ) ) {
+			$model = $this->related::find_or_fail( $model );
+		}
+
 		if ( ! $model->exists && $model instanceof Updatable ) {
 			$model->save();
 		}
@@ -185,10 +189,10 @@ class Belongs_To extends Relation {
 	/**
 	 * Proxy to `Belongs_To::associate()`.
 	 *
-	 * @param Model $model Model to save to.
+	 * @param int|Model $model Model to save to.
 	 * @return Model
 	 */
-	public function save( Model $model ) {
+	public function save( int|Model $model ) {
 		return $this->associate( $model );
 	}
 

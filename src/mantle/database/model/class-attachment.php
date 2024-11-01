@@ -32,11 +32,11 @@ class Attachment extends Post {
 	/**
 	 * Get an attachment's URL by size.
 	 *
-	 * @param array|string $size Image URL.
+	 * @param array|string $size Image size or array of dimensions.
 	 *
 	 * @throws Model_Exception Thrown when getting image.
 	 */
-	public function image_url( $size ): ?string {
+	public function image_url( array|string $size ): ?string {
 		if ( ! $this->id() ) {
 			throw new Model_Exception( 'Unable to get attachment URL for unsaved attachment.' );
 		}
