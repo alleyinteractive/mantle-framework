@@ -132,7 +132,6 @@ class About_Command extends Command {
 
 		static::add(
 			fn () => [
-				'Cache'      => config( 'cache.default' ),
 				'Filesystem' => config( 'filesystem.default' ),
 				'Logging'    => config( 'logging.default' ),
 				'Queue'      => config( 'queue.default' ),
