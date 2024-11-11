@@ -145,6 +145,10 @@ class Belongs_To extends Relation {
 	public function associate( int|Model $model ) {
 		if ( is_int( $model ) ) {
 			$model = $this->related::find_or_fail( $model );
+
+			if ( ! $model instanceof Model ) {
+				throw new Model_Exception( 'Model must be an instance of Core_Object.' );
+			}
 		}
 
 		if ( ! $model->exists && $model instanceof Updatable ) {
