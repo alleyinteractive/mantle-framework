@@ -3,6 +3,7 @@ namespace Mantle\Tests\Database\Model;
 
 use Carbon\Carbon;
 use Mantle\Contracts\Database\Registrable;
+use Mantle\Database\Model\Attachment;
 use Mantle\Database\Model\Dates\Model_Date_Proxy;
 use Mantle\Database\Model\Model_Exception;
 use Mantle\Database\Model\Post;
@@ -470,6 +471,24 @@ class PostObjectTest extends Framework_Test_Case {
 		$post->save();
 
 		$this->assertEquals( $newDate->toDateTimeString(), $post->dates->modified->toDateTimeString() );
+	}
+
+	public function test_thumbnail_relationship() {
+		$post          = static::factory()->post->as_models()->create_and_get();
+		$attachment_id = static::factory()->attachment->with_real_thumbnail()->create();
+
+		$this->assertInstanceOf( Post::class, $post );
+
+		$post->thumbnail()->save( $attachment_id );
+
+		$this->assertInstanceOf( Attachment::class, $post->thumbnail );
+		$this->assertEquals( $attachment_id, $post->thumbnail->id );
+		$this->assertEquals( $attachment_id, get_post_thumbnail_id( $post->id() ) );
+
+		$post->thumbnail()->dissociate();
+
+		$this->assertEmpty( $post->thumbnail );
+		$this->assertEmpty( get_post_thumbnail_id( $post->id() ) );
 	}
 
 	/**

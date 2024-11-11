@@ -11,6 +11,8 @@ use Carbon\Carbon;
 use DateTime;
 use DateTimeInterface;
 use Mantle\Contracts;
+use Mantle\Database\Model\Relations\Belongs_To;
+use Mantle\Database\Model\Relations\Has_One;
 use Mantle\Database\Query\Builder;
 use Mantle\Database\Query\Post_Query_Builder;
 use Mantle\Support\Helpers;
@@ -54,6 +56,7 @@ use Mantle\Support\Helpers;
  * @property string $slug Alias to post_name.
  * @property string $status Alias to post_status.
  * @property string $title Alias to post_title.
+ * @property \Mantle\Database\Model\Attachment|null $thumbnail
  *
  * @method static \Mantle\Database\Factory\Post_Factory<static, \WP_Post, static> factory( array|callable|null $state = null )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> anyStatus()
@@ -290,6 +293,13 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	}
 
 	/**
+	 * Post thumbnail relationship.
+	 */
+	public function thumbnail(): Belongs_To {
+		return $this->belongs_to( Attachment::class, local_key: '_thumbnail_id' );
+	}
+
+	/**
 	 * Retrieve the core object for the underlying object.
 	 */
 	public function core_object(): ?\WP_Post {
@@ -312,10 +322,10 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	/**
 	 * Schedule a post for publication.
 	 *
-	 * @param string|DateTime $date Date to schedule the post for.
+	 * @param DateTimeInterface|string $date Date to schedule the post for.
 	 */
-	public function schedule( $date ): bool {
-		if ( $date instanceof DateTime ) {
+	public function schedule( DateTimeInterface|string $date ): bool {
+		if ( $date instanceof DateTimeInterface ) {
 			$date = $date->format( 'Y-m-d H:i:s' );
 		} else {
 			$date = Carbon::parse( $date )->format( 'Y-m-d H:i:s' );
