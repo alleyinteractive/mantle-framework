@@ -13,6 +13,7 @@ use Carbon\Carbon as Date;
 use Mantle\Support\Traits\Conditionable;
 use Mantle\Support\Traits\Macroable;
 use JsonSerializable;
+use Mantle\Support\Traits\Makeable;
 use Mantle\Support\Traits\Tappable;
 use Symfony\Component\VarDumper\VarDumper;
 
@@ -24,9 +25,9 @@ use function Mantle\Support\Helpers\collect;
  * Allows for the chaining of string methods.
  */
 class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
-
 	use Conditionable;
 	use Macroable;
+	use Makeable;
 	use Tappable;
 
 	/**
