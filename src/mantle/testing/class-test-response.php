@@ -387,10 +387,10 @@ class Test_Response {
 	 * Asset that the contents matches an expected value.
 	 *
 	 * @param mixed $value Contents to compare.
-	 * @return $this
 	 */
 	public function assertContent( mixed $value ): static {
 		PHPUnit::assertEquals( $value, $this->get_content() );
+
 		return $this;
 	}
 
@@ -398,12 +398,24 @@ class Test_Response {
 	 * Assert that the given string is contained within the response.
 	 *
 	 * @param string $value String to search for.
-	 * @return $this
 	 */
-	public function assertSee( $value ) {
-		PHPUnit::assertStringContainsString( (string) $value, $this->get_content() );
+	public function assertSee( string $value, ?int $count = null ): static {
+		PHPUnit::assertStringContainsString( $value, $this->get_content() );
+
+		if ( null !== $count ) {
+			PHPUnit::assertEquals( $count, substr_count( $this->get_content(), $value ), "Content does not contain the expected string {$count} times." );
+		}
 
 		return $this;
+	}
+
+	/**
+	 * Alias for assertSee().
+	 *
+	 * @param string $value String to search for.
+	 */
+	public function assertContains( string $value, ?int $count = null ): static {
+		return $this->assertSee( $value, $count );
 	}
 
 	/**
