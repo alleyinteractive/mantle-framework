@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ensure that `with_terms()` can support an array of term slugs when passed with a
   taxonomy index.
 - Ensure that framework configuration respects the application configuration.
+- Ensure that collections can properly implode `Stringable` objects.
 
 ## v1.2.0 - 2024-09-23
 
