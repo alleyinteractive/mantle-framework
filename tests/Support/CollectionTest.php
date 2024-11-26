@@ -1768,6 +1768,11 @@ class CollectionTest extends Framework_Test_Case {
 
 		$this->assertSame( 'example string here', $data->implode( ' ' ) );
 		$this->assertSame( 'example,string,here', $data->implode( ',' ) );
+
+		$this->assertEquals(
+			'another-example-here',
+			Stringable::make( 'another example here' )->explode( ' ' )->implode( '-' ),
+		);
 	}
 
 	/**
