@@ -398,6 +398,7 @@ class Test_Response {
 	 * Assert that the given string is contained within the response.
 	 *
 	 * @param string $value String to search for.
+	 * @param int    $count Number of times the string should appear.
 	 */
 	public function assertSee( string $value, ?int $count = null ): static {
 		PHPUnit::assertStringContainsString( $value, $this->get_content() );
@@ -413,6 +414,7 @@ class Test_Response {
 	 * Alias for assertSee().
 	 *
 	 * @param string $value String to search for.
+	 * @param int    $count Number of times the string should appear.
 	 */
 	public function assertContains( string $value, ?int $count = null ): static {
 		return $this->assertSee( $value, $count );
