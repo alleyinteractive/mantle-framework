@@ -397,14 +397,23 @@ class Test_Response {
 	/**
 	 * Assert that the given string is contained within the response.
 	 *
-	 * @param string $value String to search for.
-	 * @param int    $count Number of times the string should appear.
+	 * @param string   $needle String to search for.
+	 * @param int|null $count Number of times the string should appear.
 	 */
-	public function assertSee( string $value, ?int $count = null ): static {
-		PHPUnit::assertStringContainsString( $value, $this->get_content() );
+	public function assertSee( string $needle, ?int $count = null ): static {
+		PHPUnit::assertStringContainsString( $needle, $this->get_content() );
 
 		if ( null !== $count ) {
-			PHPUnit::assertEquals( $count, substr_count( $this->get_content(), $value ), "Content does not contain the expected string {$count} times." );
+			PHPUnit::assertEquals(
+				$count,
+				substr_count( $this->get_content(), $needle ),
+				sprintf(
+					'The content does not contain the the expected string (%s) %d %s.',
+					$needle,
+					$count,
+					1 === $count ? 'time' : 'times',
+				),
+			);
 		}
 
 		return $this;
@@ -413,11 +422,11 @@ class Test_Response {
 	/**
 	 * Alias for assertSee().
 	 *
-	 * @param string $value String to search for.
-	 * @param int    $count Number of times the string should appear.
+	 * @param string   $needle String to search for.
+	 * @param int|null $count Number of times the string should appear.
 	 */
-	public function assertContains( string $value, ?int $count = null ): static {
-		return $this->assertSee( $value, $count );
+	public function assertContains( string $needle, ?int $count = null ): static {
+		return $this->assertSee( $needle, $count );
 	}
 
 	/**

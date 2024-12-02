@@ -44,7 +44,16 @@ class Assertable_HTML_String {
 		Assert::assertStringContainsString( $needle, $this->content, 'The content does not contain the expected string: ' . $needle );
 
 		if ( null !== $count ) {
-			Assert::assertEquals( $count, substr_count( $this->content, $needle ), "The content does not contain the the expected string ({$needle}) {$count} times." );
+			Assert::assertEquals(
+				$count,
+				substr_count( $this->content, $needle ),
+				sprintf(
+					'The content does not contain the the expected string (%s) %d %s.',
+					$needle,
+					$count,
+					1 === $count ? 'time' : 'times',
+				),
+			);
 		}
 
 		return $this;
