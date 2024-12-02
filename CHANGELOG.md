@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v1.3.0 - 2024-12-02
+
 ### Added
 
 - Define a `thumbnail` relationship on the post model that when defined will return an attachment model.
