@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Define a `thumbnail` relationship on the post model that when defined will return an attachment model.
+- Added count support to `assertSee()` for responses and `assertContains()` for HTML string assertions.
+- Added `assertContains()` to response assertions.
 
 ### Changed
 

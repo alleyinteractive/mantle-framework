@@ -96,6 +96,7 @@ class ElementAssertionsTest extends Framework_Test_Case {
 	public function test_html_string() {
 		html_string( $this->test_content )
 			->assertContains( 'Example Section' )
+			->assertContains( 'Example Section', 1 )
 			->assertElementExists( '//div' )
 			->assertElementExists( '//section' )
 			->assertElementMissing( '//article' );

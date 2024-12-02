@@ -25,7 +25,7 @@ class Assertable_HTML_String {
 	 *
 	 * @param string $content The HTML content to test.
 	 */
-	public function __construct( protected string $content ) {}
+	public function __construct( protected readonly string $content ) {}
 
 	/**
 	 * Retrieve the content.
@@ -37,10 +37,24 @@ class Assertable_HTML_String {
 	/**
 	 * Assert that the content contains the expected string.
 	 *
-	 * @param string $needle The $needle to assert against.
+	 * @param string   $needle The $needle to assert against.
+	 * @param int|null $count The number of times the $needle should appear in the content.
 	 */
-	public function assertContains( string $needle ): static {
-		Assert::assertStringContainsString( $needle, $this->content, 'The content does not contain the expected string.' );
+	public function assertContains( string $needle, ?int $count = null ): static {
+		Assert::assertStringContainsString( $needle, $this->content, 'The content does not contain the expected string: ' . $needle );
+
+		if ( null !== $count ) {
+			Assert::assertEquals(
+				$count,
+				substr_count( $this->content, $needle ),
+				sprintf(
+					'The content does not contain the the expected string (%s) %d %s.',
+					$needle,
+					$count,
+					1 === $count ? 'time' : 'times',
+				),
+			);
+		}
 
 		return $this;
 	}

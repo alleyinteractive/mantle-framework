@@ -40,7 +40,8 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 		$post_id = static::factory()->post->create();
 		$this->get( get_permalink( $post_id ) )
 			->assertQueryTrue( 'is_single', 'is_singular' )
-			->assertQueriedObjectId( $post_id );
+			->assertQueriedObjectId( $post_id )
+			->assertSee( get_the_title( $post_id ) );
 	}
 
 	public function test_fluent() {
