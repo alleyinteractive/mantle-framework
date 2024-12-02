@@ -17,11 +17,18 @@ use SebastianBergmann\Exporter\Exporter;
  */
 class Expectation {
 	/**
-	 * Arguments for the hook.
+	 * Arguments applied with the hook.
 	 *
 	 * @var mixed
 	 */
-	protected $args;
+	// protected $args;
+
+	/**
+	 * Callback to validate the arguments match expectations.
+	 *
+	 * @var callable|null
+	 */
+	protected $argument_value_callback = null;
 
 	/**
 	 * Number of times for the hook to execute.
@@ -56,7 +63,7 @@ class Expectation {
 	 * @param string $hook Hook to listen to.
 	 * @param mixed  $args Arguments for the hook.
 	 */
-	public function __construct( protected readonly string $action, protected readonly string $hook, $args = null ) {
+	public function __construct( protected readonly string $action, protected readonly string $hook, protected ?array $args = null ) {
 		if ( ! empty( $args ) ) {
 			$this->args = $args;
 		}
@@ -132,18 +139,27 @@ class Expectation {
 			}
 
 			// Compare the arguments for the hook.
-			if ( null !== $this->args ) {
+			if ( null !== $this->args && isset( $this->argument_value_callback ) ) {
 				foreach ( $this->record_start as $record ) {
-					PHPUnit::assertSame(
-						$this->args,
-						$record,
+					PHPUnit::assertTrue(
+						call_user_func_array( $this->argument_value_callback, $record ),
 						sprintf(
-							'Failed asserting that hook [%s] argument passed %s is identical to %s.',
+							'Failed asserting that hook [%s] argument passed %s matches the expected arguments.',
 							$this->hook,
 							$exporter->export( $record ),
-							$exporter->export( $this->args )
-						),
+						)
 					);
+
+					// PHPUnit::assertSame(
+					// 	$this->args,
+					// 	$record,
+					// 	sprintf(
+					// 		'Failed asserting that hook [%s] argument passed %s is identical to %s.',
+					// 		$this->hook,
+					// 		$exporter->export( $record ),
+					// 		$exporter->export( $this->args )
+					// 	),
+					// );
 				}
 			}
 
@@ -222,19 +238,48 @@ class Expectation {
 	/**
 	 * Specify the arguments for the expectation.
 	 *
-	 * @param mixed ...$args Arguments.
+	 * @param mixed ...$values Values to check.
 	 */
-	public function with( ...$args ): static {
-		$this->args = $args;
+	public function with( mixed ...$values ): static {
+		// If a single callable is passed, use it as the argument comparison.
+		if ( 1 === count( $values ) && isset( $values[0] ) && is_callable( $values[0] ) ) {
+			return $this->argument_comparison( $values[0] );
+		}
 
-		return $this;
+		return $this->argument_comparison(
+			function ( $arguments ) use ( $values ) {
+				dd('ARGUMENTS', $arguments, $values);
+
+				// foreach ( $arguments as $value ) {
+				// 	PHPUnit::assertSame(
+				// 		$expected,
+				// 	)
+				// 	if ( $value === $expected ) {
+				// 		return true;
+				// 	}
+				// }
+
+				return false;
+			}
+		);
 	}
 
 	/**
 	 * Remove checking the arguments for the action.
 	 */
 	public function withAnyArgs(): static {
-		$this->args = null;
+		unset( $this->argument_value_callback );
+
+		return $this;
+	}
+
+	/**
+	 * Specify the arguments comparison callback for the filter.
+	 *
+	 * @param mixed ...$values Values to return.
+	 */
+	protected function argument_comparison( callable $callback ): static {
+		$this->argument_value_callback = $callback;
 
 		return $this;
 	}
@@ -245,7 +290,7 @@ class Expectation {
 	 * @param mixed ...$values Values to return.
 	 */
 	public function andReturn( mixed ...$values ): static {
-		return $this->returnComparison(
+		return $this->return_comparison(
 			function ( $value ) use ( $values ) {
 				foreach ( $values as $expected ) {
 					if ( is_callable( $expected ) ) {
@@ -287,14 +332,14 @@ class Expectation {
 	 * Specify that the filter returns a truthy value.
 	 */
 	public function andReturnTruthy(): static {
-		return $this->returnComparison( fn ( $value ) => (bool) $value );
+		return $this->return_comparison( fn ( $value ) => (bool) $value );
 	}
 
 	/**
 	 * Specify that the filter returns a falsy value.
 	 */
 	public function andReturnFalsy(): static {
-		return $this->returnComparison( fn ( $value ) => ! $value );
+		return $this->return_comparison( fn ( $value ) => ! $value );
 	}
 
 	/**
@@ -308,21 +353,21 @@ class Expectation {
 	 * Specify that the filter returns an empty value.
 	 */
 	public function andReturnEmpty(): static {
-		return $this->returnComparison( fn ( $value ) => empty( $value ) );
+		return $this->return_comparison( fn ( $value ) => empty( $value ) );
 	}
 
 	/**
 	 * Specify that the filter returns a non-empty value.
 	 */
 	public function andReturnNotEmpty(): static {
-		return $this->returnComparison( fn ( $value ) => ! empty( $value ) );
+		return $this->return_comparison( fn ( $value ) => ! empty( $value ) );
 	}
 
 	/**
 	 * Specify that the filter returns an array value.
 	 */
 	public function andReturnArray(): static {
-		return $this->returnComparison( fn ( $value ) => is_array( $value ) );
+		return $this->return_comparison( fn ( $value ) => is_array( $value ) );
 	}
 
 	/**
@@ -331,30 +376,31 @@ class Expectation {
 	 * @param string $class Class name.
 	 */
 	public function andReturnInstanceOf( string $class ): static {
-		return $this->returnComparison( fn ( $value ) => $value instanceof $class );
+		return $this->return_comparison( fn ( $value ) => $value instanceof $class );
 	}
 
 	/**
 	 * Specify that the filter returns a string value.
 	 */
 	public function andReturnString(): static {
-		return $this->returnComparison( fn ( $value ) => is_string( $value ) );
+		return $this->return_comparison( fn ( $value ) => is_string( $value ) );
 	}
 
 	/**
 	 * Specify that the filter returns an integer value.
 	 */
 	public function andReturnInteger(): static {
-		return $this->returnComparison( fn ( $value ) => is_int( $value ) );
+		return $this->return_comparison( fn ( $value ) => is_int( $value ) );
 	}
 
 	/**
 	 * Specify the return comparison callback for the filter.
 	 *
-	 * @param callable $callback Callback.
+	 * @param callable(mixed $value): bool $callback Callback called to compare the return value.
 	 */
-	protected function returnComparison( callable $callback ): static {
+	protected function return_comparison( callable $callback ): static {
 		$this->return_value_callback = $callback;
+
 		return $this;
 	}
 }

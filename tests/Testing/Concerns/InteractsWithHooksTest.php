@@ -38,6 +38,13 @@ class InteractsWithHooksTest extends Framework_Test_Case {
 		apply_filters( 'falsey_filter_to_check', true );
 	}
 
+	public function test_hook_applied_arguments() {
+		$this->expectApplied( 'example_action' )
+			->with( fn ( $value_a, $value_b ) => 'value' === $value_a && 'second argument' === $value_b );
+
+		apply_filters( 'example_action', 'value', 'second argument' );
+	}
+
 	public function test_hook_added_declaration() {
 		$this->expectAdded( 'hook_to_add' )
 			->once()
