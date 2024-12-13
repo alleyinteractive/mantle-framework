@@ -219,12 +219,14 @@ class Pending_Testable_Request {
 	/**
 	 * Call the given URI and return the Response.
 	 *
+	 * @throws \Exception Exceptions thrown while setting up the WordPress query are re-thrown to the caller.
+	 *
 	 * @param string      $method     Request method.
 	 * @param mixed       $uri        Request URI.
 	 * @param array       $parameters Request params.
 	 * @param array       $server     Server vars.
-	 * @param array       $cookies Cookies to be sent with the request.
-	 * @param string|null $content Request content.
+	 * @param array       $cookies    Cookies to be sent with the request.
+	 * @param string|null $content    Request content.
 	 */
 	public function call( string $method, mixed $uri, array $parameters = [], array $server = [], array $cookies = [], ?string $content = null ): Test_Response {
 		$this->reset_request_state();
@@ -323,7 +325,13 @@ class Pending_Testable_Request {
 
 			ob_start();
 
-			$this->setup_wordpress_query();
+			try {
+				$this->setup_wordpress_query();
+			} catch ( \Exception $e ) {
+				// If an exception occurs, make sure the output buffer is closed before the exception continues to the caller.
+				ob_end_clean();
+				throw $e;
+			}
 
 			if ( $this->rest_api_response ) {
 				// Use the response from the REST API server.
