@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v1.3.1 - 2024-12-13
+
+### Fixed
+
+- Fixed issue where output buffers were left open when an exception occurred during setup.
+
 ## v1.3.0 - 2024-12-02
 
 ### Added
