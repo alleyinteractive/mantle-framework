@@ -387,23 +387,46 @@ class Test_Response {
 	 * Asset that the contents matches an expected value.
 	 *
 	 * @param mixed $value Contents to compare.
-	 * @return $this
 	 */
 	public function assertContent( mixed $value ): static {
 		PHPUnit::assertEquals( $value, $this->get_content() );
+
 		return $this;
 	}
 
 	/**
 	 * Assert that the given string is contained within the response.
 	 *
-	 * @param string $value String to search for.
-	 * @return $this
+	 * @param string   $needle String to search for.
+	 * @param int|null $count Number of times the string should appear.
 	 */
-	public function assertSee( $value ) {
-		PHPUnit::assertStringContainsString( (string) $value, $this->get_content() );
+	public function assertSee( string $needle, ?int $count = null ): static {
+		PHPUnit::assertStringContainsString( $needle, $this->get_content() );
+
+		if ( null !== $count ) {
+			PHPUnit::assertEquals(
+				$count,
+				substr_count( $this->get_content(), $needle ),
+				sprintf(
+					'The content does not contain the the expected string (%s) %d %s.',
+					$needle,
+					$count,
+					1 === $count ? 'time' : 'times',
+				),
+			);
+		}
 
 		return $this;
+	}
+
+	/**
+	 * Alias for assertSee().
+	 *
+	 * @param string   $needle String to search for.
+	 * @param int|null $count Number of times the string should appear.
+	 */
+	public function assertContains( string $needle, ?int $count = null ): static {
+		return $this->assertSee( $needle, $count );
 	}
 
 	/**

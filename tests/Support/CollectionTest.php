@@ -14,6 +14,7 @@ use Mantle\Support\HtmlString;
 use Mantle\Database\Model;
 use InvalidArgumentException;
 use JsonSerializable;
+use Mantle\Support\Stringable;
 use Mantle\Testing\Framework_Test_Case;
 use Mockery as m;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -1751,6 +1752,43 @@ class CollectionTest extends Framework_Test_Case {
 		$data = new $collection(['taylor', 'dayle']);
 		$this->assertSame('taylordayle', $data->implode(''));
 		$this->assertSame('taylor,dayle', $data->implode(','));
+	}
+
+	/**
+	 * @dataProvider collectionClassProvider
+	 */
+	#[DataProvider( 'collectionClassProvider' )]
+	public function testImplodeStringable($collection)
+	{
+		$data = new $collection( [
+			Stringable::make( 'example' ),
+			Stringable::make( 'string' ),
+			Stringable::make( 'here' ),
+		] );
+
+		$this->assertSame( 'example string here', $data->implode( ' ' ) );
+		$this->assertSame( 'example,string,here', $data->implode( ',' ) );
+
+		$this->assertEquals(
+			'another-example-here',
+			Stringable::make( 'another example here' )->explode( ' ' )->implode( '-' ),
+		);
+	}
+
+	/**
+	 * @dataProvider collectionClassProvider
+	 */
+	#[DataProvider( 'collectionClassProvider' )]
+	public function testImplodeStr($collection)
+	{
+		$data = new $collection( [
+			Stringable::make( 'example' ),
+			Stringable::make( 'string' ),
+			Stringable::make( 'here' ),
+		] );
+
+		$this->assertInstanceof( \Mantle\Support\Stringable::class, $data->implode_str( ' ' ) );
+		$this->assertSame( 'example string here', $data->implode_str( ' ' )->value() );
 	}
 
 	/**
