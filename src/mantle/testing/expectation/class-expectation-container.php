@@ -9,24 +9,12 @@ namespace Mantle\Testing\Expectation;
 
 use Mantle\Support\Collection;
 
+use function Mantle\Support\Helpers\tap;
+
 /**
  * Container for the expectation checking.
  */
 class Expectation_Container {
-	/**
-	 * Name for adding an action.
-	 *
-	 * @var string
-	 */
-	public const ACTION_ADDED = 'added';
-
-	/**
-	 * Name for applying an action.
-	 *
-	 * @var string
-	 */
-	public const ACTION_APPLIED = 'applied';
-
 	/**
 	 * Expectations
 	 *
@@ -45,12 +33,12 @@ class Expectation_Container {
 	 * Create an expectation for checking if a hook was fired.
 	 *
 	 * @param string $hook Hook to check.
-	 * @param array  ...$args Arguments for the hook, optional.
 	 */
-	public function add_applied( string $hook, ...$args ): Expectation {
-		$expectation = new Expectation( static::ACTION_APPLIED, $hook, $args );
-		$this->expectations->push( $expectation );
-		return $expectation;
+	public function add_applied( string $hook ): Expectation {
+		return tap(
+			new Expectation( Action::APPLIED, $hook ),
+			fn ( Expectation $expectation ) => $this->expectations->push( $expectation ),
+		);
 	}
 
 	/**
@@ -60,9 +48,16 @@ class Expectation_Container {
 	 * @param callable $callback Callback for the hook, optional.
 	 */
 	public function add_added( string $hook, callable $callback = null ): Expectation {
-		$expectation = new Expectation( static::ACTION_ADDED, $hook, $callback );
-		$this->expectations->push( $expectation );
-		return $expectation;
+		return tap(
+			new Expectation( Action::ADDED, $hook ),
+			function ( Expectation $expectation ) use ( $callback ) {
+				if ( $callback ) {
+					$expectation->with( $callback );
+				}
+
+				$this->expectations->push( $expectation );
+			},
+		);
 	}
 
 	/**

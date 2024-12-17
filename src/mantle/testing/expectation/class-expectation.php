@@ -9,6 +9,7 @@
 
 namespace Mantle\Testing\Expectation;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\Assert as PHPUnit;
 use SebastianBergmann\Exporter\Exporter;
 
@@ -24,51 +25,55 @@ class Expectation {
 	// protected $args;
 
 	/**
-	 * Callback to validate the arguments match expectations.
+	 * Callback to validate the arguments match given expectations.
 	 *
-	 * @var callable|null
+	 * @var null|callable(...$args): bool
 	 */
-	protected $argument_value_callback = null;
+	protected $argument_comparison_callback = null;
 
 	/**
-	 * Number of times for the hook to execute.
+	 * Expected number of times for the hook to execute.
 	 */
 	protected int|null $times = null;
 
 	/**
 	 * Return value comparison callback.
 	 *
-	 * @var callable|null
+	 * @var null|callable(...$args): bool
 	 */
-	protected $return_value_callback;
+	protected $return_comparison_callback;
 
 	/**
 	 * Record of the start value of the hook
 	 *
-	 * @var array
+	 * @var array<array>
 	 */
 	protected $record_start = [];
 
 	/**
 	 * Record of the return value for a hook.
 	 *
-	 * @var array
+	 * @var array<array>
 	 */
 	protected $record_stop = [];
 
 	/**
 	 * Constructor.
 	 *
-	 * @param string $action Action to expect.
+	 * @param Action $action Action type to check (added/applied).
 	 * @param string $hook Hook to listen to.
 	 * @param mixed  $args Arguments for the hook.
 	 */
-	public function __construct( protected readonly string $action, protected readonly string $hook, protected ?array $args = null ) {
-		if ( ! empty( $args ) ) {
-			$this->args = $args;
-		}
+	public function __construct(
+		protected readonly Action $action,
+		protected readonly string $hook,
+		// protected ?array $args = null,
+	) {
+		// if ( ! empty( $args ) ) {
+		// 	$this->args = $args;
+		// }
 
-		if ( Expectation_Container::ACTION_APPLIED === $action ) {
+		if ( Action::APPLIED === $action ) {
 			$this->setup_applied_hooks();
 		}
 	}
@@ -120,74 +125,86 @@ class Expectation {
 	 * Validate if an expectation meets its expectations.
 	 */
 	public function validate(): void {
+		match ( $this->action ) {
+			Action::APPLIED => $this->validate_applied(),
+			Action::ADDED   => $this->validate_added(),
+		};
+	}
+
+	/**
+	 * Validate the applied action.
+	 */
+	protected function validate_applied(): void {
 		$exporter = new Exporter();
 
-		if ( Expectation_Container::ACTION_APPLIED === $this->action ) {
-			if ( null !== $this->times ) {
-				$count = count( $this->record_start );
+		if ( null !== $this->times ) {
+			$count = count( $this->record_start );
 
-				PHPUnit::assertEquals(
-					$this->times,
-					$count,
-					"Expected that hook [{$this->hook}] ({$count}) would be applied [{$this->times}] times."
-				);
-			} else {
-				PHPUnit::assertTrue(
-					! empty( $this->record_start ),
-					"Expected that hook [{$this->hook}] would be applied at least once."
-				);
-			}
-
-			// Compare the arguments for the hook.
-			if ( null !== $this->args && isset( $this->argument_value_callback ) ) {
-				foreach ( $this->record_start as $record ) {
-					PHPUnit::assertTrue(
-						call_user_func_array( $this->argument_value_callback, $record ),
-						sprintf(
-							'Failed asserting that hook [%s] argument passed %s matches the expected arguments.',
-							$this->hook,
-							$exporter->export( $record ),
-						)
-					);
-
-					// PHPUnit::assertSame(
-					// 	$this->args,
-					// 	$record,
-					// 	sprintf(
-					// 		'Failed asserting that hook [%s] argument passed %s is identical to %s.',
-					// 		$this->hook,
-					// 		$exporter->export( $record ),
-					// 		$exporter->export( $this->args )
-					// 	),
-					// );
-				}
-			}
-
-			// Compare the return value of the hook.
-			if ( isset( $this->return_value_callback ) ) {
-				foreach ( $this->record_stop as $record ) {
-					PHPUnit::assertTrue(
-						call_user_func_array( $this->return_value_callback, $record ),
-						sprintf(
-							'Failed asserting that hook\'s [%s] return value %s matches the expected return value.',
-							$this->hook,
-							$exporter->export( $record ),
-						)
-					);
-				}
-			}
-
-			// Remove the actions for the hook.
-			remove_action( $this->hook, [ $this, 'record_start' ], PHP_INT_MIN );
-			remove_action( $this->hook, [ $this, 'record_stop' ], PHP_INT_MAX );
+			PHPUnit::assertEquals(
+				$this->times,
+				$count,
+				"Expected that hook [{$this->hook}] ({$count}) would be applied [{$this->times}] times."
+			);
+		} else {
+			PHPUnit::assertTrue(
+				! empty( $this->record_start ),
+				"Expected that hook [{$this->hook}] would be applied at least once."
+			);
 		}
 
-		// Asset if the action was added.
-		if ( Expectation_Container::ACTION_ADDED === $this->action ) {
-			PHPUnit::assertTrue(
-				(bool) has_action( $this->hook, $this->args ?? false ),
-				"Expected that hook [{$this->hook}] would have action added."
-			);
+		// Compare the arguments for the hook.
+		if ( isset( $this->argument_comparison_callback ) ) {
+			foreach ( $this->record_start as $record ) {
+				PHPUnit::assertTrue(
+					call_user_func( $this->argument_comparison_callback, $record ),
+					sprintf(
+						'Failed asserting that hook [%s] argument passed %s matches the expected arguments.',
+						$this->hook,
+						$exporter->export( $record ),
+					),
+				);
+			}
+		}
+
+		// Compare the return value of the hook.
+		if ( isset( $this->return_comparison_callback ) ) {
+			foreach ( $this->record_stop as $record ) {
+				PHPUnit::assertTrue(
+					call_user_func_array( $this->return_comparison_callback, $record ),
+					sprintf(
+						'Failed asserting that hook\'s [%s] return value %s matches the expected return value.',
+						$this->hook,
+						$exporter->export( $record ),
+					)
+				);
+			}
+		}
+
+		// Remove the actions for the hook.
+		remove_action( $this->hook, [ $this, 'record_start' ], PHP_INT_MIN );
+		remove_action( $this->hook, [ $this, 'record_stop' ], PHP_INT_MAX );
+	}
+
+	/**
+	 * Validate if a hook was added with an optional given callback.
+	 *
+	 * @todo Validate callback/args.
+	 */
+	protected function validate_added(): void {
+		PHPUnit::assertTrue(
+			(bool) has_action( $this->hook, $this->args ?? false ),
+			"Expected that hook [{$this->hook}] would have action added."
+		);
+
+		global $wp_filter;
+		if ( isset( $this->argument_comparison_callback ) ) {
+			dd($wp_filter[$this->hook], $this->argument_comparison_callback);
+			// foreach
+			// PHPUnit::assertTrue(
+			// 	call_user_func()
+			// 	$this->args === current_filter(),
+			// 	"Expected that hook [{$this->hook}] would have action added with the given callback."
+			// );
 		}
 	}
 
@@ -238,48 +255,45 @@ class Expectation {
 	/**
 	 * Specify the arguments for the expectation.
 	 *
+	 * If you want to specify a callback to check the arguments, use the
+	 * `withArgs` method instead.
+	 *
 	 * @param mixed ...$values Values to check.
 	 */
 	public function with( mixed ...$values ): static {
-		// If a single callable is passed, use it as the argument comparison.
-		if ( 1 === count( $values ) && isset( $values[0] ) && is_callable( $values[0] ) ) {
-			return $this->argument_comparison( $values[0] );
-		}
+		return $this->withArgs(
+			function ( array $arguments ) use ( $values ): bool {
+				PHPUnit::assertSame(
+					$values,
+					$arguments,
+					sprintf(
+						'Failed asserting that hook\'s [%s] arguments %s matches the expected arguments.',
+						$this->hook,
+						( new Exporter() )->export( $arguments ),
+					)
+				);
 
-		return $this->argument_comparison(
-			function ( $arguments ) use ( $values ) {
-				dd('ARGUMENTS', $arguments, $values);
-
-				// foreach ( $arguments as $value ) {
-				// 	PHPUnit::assertSame(
-				// 		$expected,
-				// 	)
-				// 	if ( $value === $expected ) {
-				// 		return true;
-				// 	}
-				// }
-
-				return false;
-			}
+				return true;
+			},
 		);
+	}
+
+	/**
+	 * Specify the callback that will be used to compare the arguments for the action.
+	 *
+	 * @param callable(array $args): bool $callback Callback to compare the arguments.
+	 */
+	public function withArgs( callable $callback ): static {
+		$this->argument_comparison_callback = $callback;
+
+		return $this;
 	}
 
 	/**
 	 * Remove checking the arguments for the action.
 	 */
 	public function withAnyArgs(): static {
-		unset( $this->argument_value_callback );
-
-		return $this;
-	}
-
-	/**
-	 * Specify the arguments comparison callback for the filter.
-	 *
-	 * @param mixed ...$values Values to return.
-	 */
-	protected function argument_comparison( callable $callback ): static {
-		$this->argument_value_callback = $callback;
+		unset( $this->argument_comparison_callback );
 
 		return $this;
 	}
@@ -399,7 +413,7 @@ class Expectation {
 	 * @param callable(mixed $value): bool $callback Callback called to compare the return value.
 	 */
 	protected function return_comparison( callable $callback ): static {
-		$this->return_value_callback = $callback;
+		$this->return_comparison_callback = $callback;
 
 		return $this;
 	}

@@ -20,16 +20,32 @@ class InteractsWithHooksTest extends Framework_Test_Case {
 		$this->assertHookApplied( 'filter_to_check', 1 );
 	}
 
-	public function test_hook_applied_declaration() {
+	public function test_hook_applied_times() {
+		$this->expectApplied( 'action_to_check' )->twice();
+
+		do_action( 'action_to_check', 'value_to_check', 'secondary_value_to_check' );
+		do_action( 'action_to_check', 'value_to_check', 'secondary_value_to_check' );
+	}
+
+	public function test_hook_applied_arguments() {
 		$this->expectApplied( 'action_to_check' )
 			->twice()
 			->with( 'value_to_check', 'secondary_value_to_check' );
 
-		$this->expectApplied( 'action_that_shouldnt_fire' )->never();
-
 		do_action( 'action_to_check', 'value_to_check', 'secondary_value_to_check' );
 		do_action( 'action_to_check', 'value_to_check', 'secondary_value_to_check' );
+	}
 
+	public function test_hook_applied_arguments_callback() {
+		$this->expectApplied( 'action_to_check' )
+			->twice()
+			->withArgs( fn ( $args ) => 'value' === $args[0] && 'second argument' === $args[1] );
+
+		do_action( 'action_to_check', 'value', 'second argument' );
+		do_action( 'action_to_check', 'value', 'second argument' );
+	}
+
+	public function test_hook_applied_times_and_returns_false() {
 		$this->expectApplied( 'falsey_filter_to_check' )
 			->once()
 			->andReturnFalse();
@@ -38,26 +54,11 @@ class InteractsWithHooksTest extends Framework_Test_Case {
 		apply_filters( 'falsey_filter_to_check', true );
 	}
 
-	public function test_hook_applied_arguments() {
-		$this->expectApplied( 'example_action' )
-			->with( fn ( $value_a, $value_b ) => 'value' === $value_a && 'second argument' === $value_b );
-
-		apply_filters( 'example_action', 'value', 'second argument' );
+	public function test_hook_not_applied() {
+		$this->expectApplied( 'action_that_shouldnt_fire' )->never();
 	}
 
-	public function test_hook_added_declaration() {
-		$this->expectAdded( 'hook_to_add' )
-			->once()
-			->andReturn( true );
-
-		add_action( 'hook_to_add', '__return_true' );
-
-		$this->expectAdded( 'filter_to_add', '__return_true' );
-
-		add_filter( 'filter_to_add', '__return_true' );
-	}
-
-	public function test_hook_return_boolean() {
+	public function test_hook_applied_return_boolean() {
 		$this->expectApplied( 'true_hook_to_add' )->once()->andReturnTrue();
 		$this->expectApplied( 'false_hook_to_add' )->once()->andReturnFalse();
 		$this->expectApplied( 'true_hook_to_add' )->once()->andReturnBoolean();
@@ -70,7 +71,7 @@ class InteractsWithHooksTest extends Framework_Test_Case {
 		$this->assertFalse( apply_filters( 'false_hook_to_add', true ) );
 	}
 
-	public function test_hook_return_truthy_falsy() {
+	public function test_hook_applied_return_truthy_falsy() {
 		$this->expectApplied( 'truthy_hook_to_add' )->once()->andReturnTruthy();
 		$this->expectApplied( 'falsy_hook_to_add' )->once()->andReturnFalsy();
 
@@ -81,7 +82,7 @@ class InteractsWithHooksTest extends Framework_Test_Case {
 		apply_filters( 'falsy_hook_to_add', true );
 	}
 
-	public function test_hook_return_null() {
+	public function test_hook_applied_return_null() {
 		$this->expectApplied( 'null_hook_to_add' )->once()->andReturnNull();
 
 		add_filter( 'null_hook_to_add', '__return_null' );
@@ -89,7 +90,7 @@ class InteractsWithHooksTest extends Framework_Test_Case {
 		$this->assertNull( apply_filters( 'null_hook_to_add', 'not_null' ) );
 	}
 
-	public function test_hook_return_empty() {
+	public function test_hook_applied_return_empty() {
 		$this->expectApplied( 'empty_hook_to_add' )->once()->andReturnEmpty();
 
 		add_filter( 'empty_hook_to_add', fn () => '' );
@@ -97,7 +98,7 @@ class InteractsWithHooksTest extends Framework_Test_Case {
 		$this->assertEmpty( apply_filters( 'empty_hook_to_add', 'not_empty' ) );
 	}
 
-	public function test_hook_return_array() {
+	public function test_hook_applied_return_array() {
 		$this->expectApplied( 'array_hook_to_add' )->once()->andReturnArray();
 
 		add_filter( 'array_hook_to_add', fn () => [] );
@@ -105,7 +106,7 @@ class InteractsWithHooksTest extends Framework_Test_Case {
 		$this->assertIsArray( apply_filters( 'array_hook_to_add', 'not_array' ) );
 	}
 
-	public function test_hook_return_string() {
+	public function test_hook_applied_return_string() {
 		$this->expectApplied( 'string_hook_to_add' )->once()->andReturnString();
 
 		add_filter( 'string_hook_to_add', fn () => 'string' );
@@ -113,7 +114,7 @@ class InteractsWithHooksTest extends Framework_Test_Case {
 		$this->assertIsString( apply_filters( 'string_hook_to_add', 'not_string' ) );
 	}
 
-	public function test_hook_return_int() {
+	public function test_hook_applied_return_int() {
 		$this->expectApplied( 'int_hook_to_add' )->once()->andReturnInteger();
 
 		add_filter( 'int_hook_to_add', fn () => 123 );
@@ -129,7 +130,7 @@ class InteractsWithHooksTest extends Framework_Test_Case {
 		$this->assertHookApplied( Example_Event::class, 1 );
 	}
 
-	public function test_hook_returns_callback() {
+	public function test_hook_applied_returns_callback() {
 		$passed_value = null;
 
 		$this->expectApplied( 'callback_hook_to_add' )->once()->andReturn(
@@ -144,6 +145,31 @@ class InteractsWithHooksTest extends Framework_Test_Case {
 
 		apply_filters( 'callback_hook_to_add', 'passed-value' );
 	}
+
+	public function test_hook_added() {
+		$this->expectAdded( 'hook_to_add' );
+
+		add_action( 'hook_to_add', '__return_true' );
+	}
+
+	public function test_hook_added_with_callback() {
+		$this->expectAdded( 'hook_to_add', '__return_true' );
+
+		add_action( 'hook_to_add', '__return_fatrue' );
+	}
+
+	// public function test_hook_added_declaration() {
+	// 	$this->expectAdded( 'hook_to_add' )
+	// 		->once()
+	// 		->andReturn( true );
+
+	// 	add_action( 'hook_to_add', '__return_true' );
+
+	// 	$this->expectAdded( 'filter_to_add', '__return_true' );
+
+	// 	add_filter( 'filter_to_add', '__return_true' );
+	// }
+
 }
 
 class Example_Event {}
