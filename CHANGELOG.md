@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v1.3.2 - 2024-12-17
 
-- Allow stray requests to be ignored and pass through when being prevented.
+- Allow stray requests to be ignored and pass through when stray requests are being prevented.
 
 ## v1.3.1 - 2024-12-13
 
