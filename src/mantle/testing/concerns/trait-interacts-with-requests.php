@@ -13,6 +13,7 @@ use Closure;
 use InvalidArgumentException;
 use Mantle\Contracts\Support\Arrayable;
 use Mantle\Http_Client\Request;
+use Mantle\Support\Arr;
 use Mantle\Support\Collection;
 use Mantle\Support\Str;
 use Mantle\Testing\Mock_Http_Response;
@@ -54,6 +55,13 @@ trait Interacts_With_Requests {
 	protected mixed $preventing_stray_requests = false;
 
 	/**
+	 * Stray requests that should be ignored (not reported).
+	 *
+	 * @var Collection<int, string>
+	 */
+	protected Collection $ignored_strayed_requests;
+
+	/**
 	 * Recorded actual HTTP requests made during the test.
 	 *
 	 * @var Collection<int, string>
@@ -66,6 +74,7 @@ trait Interacts_With_Requests {
 	public function interacts_with_requests_set_up(): void {
 		$this->stub_callbacks           = collect();
 		$this->recorded_requests        = collect();
+		$this->ignored_strayed_requests = collect();
 		$this->recorded_actual_requests = collect();
 
 		\add_filter( 'pre_http_request', [ $this, 'pre_http_request' ], PHP_INT_MAX, 3 );
@@ -94,6 +103,15 @@ trait Interacts_With_Requests {
 	 */
 	public function allow_stray_requests(): void {
 		$this->preventing_stray_requests = false;
+	}
+
+	/**
+	 * Ignore a stray request.
+	 *
+	 * @param array<string>|string $url URL to ignore. Supports wildcard matching with *.
+	 */
+	public function ignore_stray_request( array|string $url ): void {
+		$this->ignored_strayed_requests = $this->ignored_strayed_requests->merge( $url );
 	}
 
 	/**
@@ -304,6 +322,11 @@ trait Interacts_With_Requests {
 
 			if ( $prevent instanceof Mock_Http_Response || $prevent instanceof Arrayable ) {
 				return $prevent->to_array();
+			}
+
+			// Check if the stray request should be ignored.
+			if ( $this->ignored_strayed_requests->contains( fn ( $ignored_url ) => Str::is( $ignored_url, $url ) ) ) {
+				return null;
 			}
 
 			throw new RuntimeException( "Attempted request to [{$url}] without a matching fake." );
