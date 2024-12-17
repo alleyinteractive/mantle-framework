@@ -302,6 +302,24 @@ class InteractsWithExternalRequestsTest extends Framework_Test_Case {
 		Http::get( 'https://example.org/path/' );
 	}
 
+	// Note: This test will require a working internet connection and alley.com to be up.
+	public function test_prevent_stray_requests_but_ignore_some() {
+		$this->prevent_stray_requests();
+
+		$this->ignore_stray_request( 'https://alley.com/*' );
+
+		$request = Http::get( 'https://alley.com/' );
+
+		$this->assertEquals( 200, $request->status() );
+		$this->assertStringContainsString( 'Alley', $request->body() );
+
+		$this->assertRequestSent( 'https://alley.com/' );
+
+		// A non-ignored request will throw an exception.
+		$this->expectException( RuntimeException::class );
+		Http::get( 'https://example.com/' );
+	}
+
 	public function test_prevent_remote_requests_trait() {
 		// The trait sets up the default response.
 		$this->assertInstanceOf( Mock_Http_Response::class, $this->preventing_stray_requests );
