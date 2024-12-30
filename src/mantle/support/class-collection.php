@@ -24,7 +24,8 @@ use function Mantle\Support\Helpers\value;
  * Collection
  *
  * @template TKey of array-key
- * @template TValue
+ *
+ * @template-covariant TValue
  *
  * @implements \ArrayAccess<TKey, TValue>
  * @implements \Mantle\Support\Enumerable<TKey, TValue>

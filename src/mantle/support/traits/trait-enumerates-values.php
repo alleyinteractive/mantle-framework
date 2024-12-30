@@ -32,7 +32,7 @@ use function Mantle\Support\Helpers\data_get;
  * Enumerate_Values trait.
  *
  * @template TKey of array-key
- * @template TValue
+ * @template-covariant TValue
  *
  * @property-read Higher_Order_Collection_Proxy $average
  * @property-read Higher_Order_Collection_Proxy $avg
@@ -503,8 +503,8 @@ trait Enumerates_Values {
 	 *
 	 * @template TWhenEmptyReturnType
 	 *
-	 * @param  (callable( $this): TWhenEmptyReturnType)  $callback
-	 * @param  (callable( $this): TWhenEmptyReturnType)|null  $default
+	 * @param  (callable($this): TWhenEmptyReturnType)  $callback
+	 * @param  (callable($this): TWhenEmptyReturnType)|null  $default
 	 * @return $this|TWhenEmptyReturnType
 	 */
 	public function when_empty( callable $callback, ?callable $default = null ) {
@@ -516,8 +516,8 @@ trait Enumerates_Values {
 	 *
 	 * @template TWhenNotEmptyReturnType
 	 *
-	 * @param  callable(  $this): TWhenNotEmptyReturnType  $callback
-	 * @param  (callable( $this): TWhenNotEmptyReturnType)|null  $default
+	 * @param  callable($this): TWhenNotEmptyReturnType  $callback
+	 * @param  (callable($this): TWhenNotEmptyReturnType)|null  $default
 	 * @return $this|TWhenNotEmptyReturnType
 	 */
 	public function when_not_empty( callable $callback, ?callable $default = null ) {
@@ -529,8 +529,8 @@ trait Enumerates_Values {
 	 *
 	 * @template TUnlessEmptyReturnType
 	 *
-	 * @param  callable(  $this): TUnlessEmptyReturnType  $callback
-	 * @param  (callable( $this): TUnlessEmptyReturnType)|null  $default
+	 * @param  callable($this): TUnlessEmptyReturnType  $callback
+	 * @param  (callable($this): TUnlessEmptyReturnType)|null  $default
 	 * @return $this|TUnlessEmptyReturnType
 	 */
 	public function unless_empty( callable $callback, ?callable $default = null ) {
@@ -542,8 +542,8 @@ trait Enumerates_Values {
 	 *
 	 * @template TUnlessNotEmptyReturnType
 	 *
-	 * @param  callable(  $this): TUnlessNotEmptyReturnType  $callback
-	 * @param  (callable( $this): TUnlessNotEmptyReturnType)|null  $default
+	 * @param  callable($this): TUnlessNotEmptyReturnType  $callback
+	 * @param  (callable($this): TUnlessNotEmptyReturnType)|null  $default
 	 * @return $this|TUnlessNotEmptyReturnType
 	 */
 	public function unless_not_empty( callable $callback, ?callable $default = null ) {
@@ -696,7 +696,7 @@ trait Enumerates_Values {
 	 *
 	 * @template TPipeReturnType
 	 *
-	 * @param  callable( $this): TPipeReturnType  $callback
+	 * @param  callable($this): TPipeReturnType  $callback
 	 * @return TPipeReturnType
 	 */
 	public function pipe( callable $callback ) {
@@ -805,7 +805,7 @@ trait Enumerates_Values {
 	/**
 	 * Pass the collection to the given callback and then return it.
 	 *
-	 * @param  callable( $this): mixed  $callback
+	 * @param  callable($this): mixed  $callback
 	 * @return $this
 	 */
 	public function tap( callable $callback ) {

@@ -275,7 +275,7 @@ class Lazy_Collection implements Enumerable {
 	/**
 	 * Cross join the given iterables, returning all possible permutations.
 	 *
-	 * @template TCrossJoinKey
+	 * @template TCrossJoinKey of array-key
 	 * @template TCrossJoinValue
 	 *
 	 * @param  \Mantle\Contracts\Support\Arrayable<TCrossJoinKey, TCrossJoinValue>|iterable<TCrossJoinKey, TCrossJoinValue> ...$arrays
@@ -890,12 +890,12 @@ class Lazy_Collection implements Enumerable {
 	public function only( $keys ) {
 		if ( $keys instanceof Enumerable ) {
 			$keys = $keys->all();
-		} elseif ( ! is_null( $keys ) ) {
+		} elseif ( ! is_null( $keys ) ) { // @phpstan-ignore-line always evaluate to false
 			$keys = is_array( $keys ) ? $keys : func_get_args();
 		}
 
 		return new static( function () use ( $keys ) {
-			if ( is_null( $keys ) ) {
+			if ( is_null( $keys ) ) { // @phpstan-ignore-line always evaluate to false
 				yield from $this;
 			} else {
 				$keys = array_flip( $keys );
