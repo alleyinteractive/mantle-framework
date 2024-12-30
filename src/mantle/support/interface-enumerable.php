@@ -960,6 +960,14 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	public function collect();
 
 	/**
+	 * Indicate that the model's string representation should be escaped when __toString is invoked.
+	 *
+	 * @param  bool  $escape
+	 * @return $this
+	 */
+	public function escape_when_casting_to_string( bool $escape = true ): static;
+
+	/**
 	 * Convert the collection to its string representation.
 	 *
 	 * @return string

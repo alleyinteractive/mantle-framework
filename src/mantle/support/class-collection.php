@@ -110,6 +110,15 @@ class Collection implements ArrayAccess, Enumerable {
 	}
 
 	/**
+	 * Get a lazy collection for the items in this collection.
+	 *
+	 * @return Lazy_Collection<TKey, TValue>
+	 */
+	public function lazy(): Lazy_Collection {
+		return new Lazy_Collection( $this->items );
+	}
+
+	/**
 	 * Get the average value of a given key.
 	 *
 	 * @param  (callable(TValue): float|int)|string|null $callback
@@ -221,7 +230,7 @@ class Collection implements ArrayAccess, Enumerable {
 				return $this->first( $key, $placeholder ) !== $placeholder;
 			}
 
-			return in_array( $key, $this->items ); // phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
+			return in_array( $key, $this->items, false ); // phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
 		}
 
 		return $this->contains( $this->operator_for_where( ...func_get_args() ) );
@@ -243,7 +252,7 @@ class Collection implements ArrayAccess, Enumerable {
 			return ! is_null( $this->first( $key ) );
 		}
 
-			return in_array( $key, $this->items, true );
+		return in_array( $key, $this->items, true );
 	}
 
 	/**
@@ -255,7 +264,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return bool
 	 */
 	public function doesnt_contain( $key, $operator = null, $value = null ) {
-			return ! $this->contains( ...func_get_args() );
+		return ! $this->contains( ...func_get_args() );
 	}
 
 	/**
@@ -1289,7 +1298,7 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Take the first or last {$limit} items.
 	 *
-	 * @param    int $limit
+	 * @param int $limit
 	 * @return static
 	 */
 	public function take( $limit ) {
@@ -1301,12 +1310,31 @@ class Collection implements ArrayAccess, Enumerable {
 	}
 
 	/**
+	 * Take items in the collection until the given condition is met.
+	 *
+	 * @param  TValue|callable(TValue,TKey): bool $value
+	 * @return static
+	 */
+	public function take_until( $value ) {
+		return new static( $this->lazy()->take_until( $value )->all() );
+	}
+
+	/**
+	 * Take items in the collection while the given condition is met.
+	 *
+	 * @param  TValue|callable(TValue,TKey): bool $value
+	 * @return static
+	 */
+	public function take_while( $value ) {
+		return new static( $this->lazy()->take_while( $value )->all() );
+	}
+
+	/**
 	 * Transform each item in the collection using a callback.
 	 *
 	 * @param  callable(TValue, TKey): TValue $callback
-	 * @return $this
 	 */
-	public function transform( callable $callback ) {
+	public function transform( callable $callback ): static {
 		$this->items = $this->map( $callback )->all();
 
 		return $this;
@@ -1386,6 +1414,16 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	public function count(): int {
 		return count( $this->items );
+	}
+
+	/**
+	 * Count the number of items in the collection by a field or using a callback.
+	 *
+	 * @param  (callable(TValue, TKey): array-key)|string|null $count_by
+	 * @return static<array-key, int>
+	 */
+	public function count_by( $count_by = null ) {
+		return new static( $this->lazy()->count_by( $count_by )->all() );
 	}
 
 	/**
