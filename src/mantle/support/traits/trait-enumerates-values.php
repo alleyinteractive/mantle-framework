@@ -1001,7 +1001,7 @@ trait Enumerates_Values {
 		}
 
 		return function ( $item ) use ( $key, $operator, $value ) {
-			$retrieved = data_get( $item, $key);
+			$retrieved = data_get( $item, $key );
 
 			$strings = array_filter(
 				[ $retrieved, $value ],
