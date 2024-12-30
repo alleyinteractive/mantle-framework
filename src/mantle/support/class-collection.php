@@ -532,7 +532,7 @@ class Collection implements ArrayAccess, Enumerable {
 		$result = new static( $results );
 
 		if ( ! empty( $next_groups ) ) {
-			return $result->map->groupBy( $next_groups, $preserve_keys ); // @phpstan-ignore-line undefined method
+			return $result->map->group_by( $next_groups, $preserve_keys );
 		}
 
 		return $result;
@@ -1112,6 +1112,26 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	public function skip( $count ) {
 		return $this->slice( $count );
+	}
+
+	/**
+	 * Skip items in the collection until the given condition is met.
+	 *
+	 * @param  TValue|callable(TValue,TKey): bool $value
+	 * @return static
+	 */
+	public function skip_until( $value ) {
+		return new static( $this->lazy()->skip_until( $value )->all() );
+	}
+
+	/**
+	 * Skip items in the collection while the given condition is met.
+	 *
+	 * @param  TValue|callable(TValue,TKey): bool $value
+	 * @return static
+	 */
+	public function skip_while( $value ) {
+		return new static( $this->lazy()->skip_while( $value )->all() );
 	}
 
 	/**

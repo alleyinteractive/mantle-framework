@@ -196,6 +196,16 @@ parameters:
 			path: src/mantle/support/class-collection.php
 
 		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter value of method Mantle\\\\Support\\\\Collection\\:\\:skip_until\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter value of method Mantle\\\\Support\\\\Collection\\:\\:skip_while\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
 			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter value of method Mantle\\\\Support\\\\Collection\\:\\:take_until\\(\\)\\.$#"
 			count: 1
 			path: src/mantle/support/class-collection.php
