@@ -2,6 +2,8 @@
 /**
  * Enumerates_Values trait file.
  *
+ * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter, Squiz.Commenting.FunctionComment, WordPress.NamingConventions.ValidVariableName, WordPress.PHP.StrictInArray.MissingTrueStrict, WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+ *
  * @package Mantle
  */
 
@@ -797,7 +799,7 @@ trait Enumerates_Values {
 
 		return $this->filter( fn ( $value, $key ) => $use_as_callable
 			? ! $callback( $value, $key )
-			: $value != $callback );
+			: $value != $callback ); // phpcs:ignore Universal.Operators.StrictComparisons.LooseNotEqual
 	}
 
 	/**
@@ -951,6 +953,8 @@ trait Enumerates_Values {
 	/**
 	 * Results array of items from Collection or Arrayable.
 	 *
+	 * @throws \InvalidArgumentException if the items are not an array or iterable
+	 *
 	 * @param  mixed $items
 	 * @return array<TKey, TValue>
 	 */
@@ -996,16 +1000,21 @@ trait Enumerates_Values {
 			$operator = '=';
 		}
 
-		return function ($item) use ($key, $operator, $value) {
-			$retrieved = data_get($item, $key);
+		return function ( $item ) use ( $key, $operator, $value ) {
+			$retrieved = data_get( $item, $key);
 
-			$strings = array_filter([$retrieved, $value], fn($value) => is_string($value) || (is_object($value) && method_exists($value, '__toString')));
+			$strings = array_filter(
+				[ $retrieved, $value ],
+				fn ( $value ) => is_string( $value ) || ( is_object( $value ) && method_exists( $value, '__toString' ) ),
+			);
 
-			if (count($strings) < 2 && count(array_filter([$retrieved, $value], 'is_object')) == 1) {
-					return in_array($operator, ['!=', '<>', '!==']);
+			if ( count( $strings ) < 2 && count( array_filter( [ $retrieved, $value ], 'is_object' ) ) == 1 ) { // phpcs:ignore Universal.Operators.StrictComparisons
+				return in_array( $operator, [ '!=', '<>', '!==' ] ); // phpcs:ignore Universal.Operators.StrictComparisons
 			}
 
-			return match ($operator) {
+			/* phpcs:disable Universal.Operators.StrictComparisons */
+
+			return match ( $operator ) {
 				'!=', '<>', 'not' => $retrieved != $value,
 				'<' => $retrieved < $value,
 				'>' => $retrieved > $value,
@@ -1016,6 +1025,8 @@ trait Enumerates_Values {
 				'!==' => $retrieved !== $value,
 				default => $retrieved == $value,
 			};
+
+			/* phpcs:enable Universal.Operators.StrictComparisons */
 		};
 	}
 

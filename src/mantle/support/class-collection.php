@@ -230,7 +230,7 @@ class Collection implements ArrayAccess, Enumerable {
 				return $this->first( $key, $placeholder ) !== $placeholder;
 			}
 
-			return in_array( $key, $this->items, false ); // phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
+			return in_array( $key, $this->items, false ); // phpcs:ignore WordPress.PHP.StrictInArray.FoundNonStrictFalse
 		}
 
 		return $this->contains( $this->operator_for_where( ...func_get_args() ) );

@@ -2,8 +2,11 @@
 /**
  * Lazy_Collection class file.
  *
+ * phpcs:disable WordPress.NamingConventions.ValidVariableName, Squiz.Commenting.FunctionComment.MissingParamTag, Squiz.Commenting.FunctionComment
+ *
  * @package Mantle
  */
+
 namespace Mantle\Support;
 
 use ArrayIterator;
@@ -42,6 +45,8 @@ class Lazy_Collection implements Enumerable {
 	/**
 	 * Create a new lazy collection instance.
 	 *
+	 * @throws \InvalidArgumentException
+	 *
 	 * @param  \Mantle\Contracts\Support\Arrayable<TKey, TValue>|iterable<TKey, TValue>|(Closure(): \Generator<TKey, TValue, mixed, void>)|self<TKey, TValue>|array<TKey, TValue>|null $source
 	 * @return void
 	 */
@@ -52,7 +57,7 @@ class Lazy_Collection implements Enumerable {
 			$this->source = static::empty();
 		} elseif ( $source instanceof Generator ) {
 			throw new InvalidArgumentException(
-				'Generators should not be passed directly to LazyCollection. Instead, pass a generator function.'
+				'Generators should not be passed directly to Lazy_Collection. Instead, pass a generator function.'
 			);
 		} else {
 			$this->source = $this->get_arrayable_items( $source );
@@ -219,7 +224,7 @@ class Lazy_Collection implements Enumerable {
 			$needle = $key;
 
 			foreach ( $this as $value ) {
-				if ( $value == $needle ) {
+				if ( $value == $needle ) { // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 					return true;
 				}
 			}
@@ -825,11 +830,11 @@ class Lazy_Collection implements Enumerable {
 		return new static( function () use ( $values ) {
 			$values = $this->make_iterator( $values );
 
-			$errorMessage = 'Both parameters should have an equal number of elements';
+			$error_message = 'Both parameters should have an equal number of elements';
 
 			foreach ( $this as $key ) {
 				if ( ! $values->valid() ) {
-					trigger_error( $errorMessage, E_USER_WARNING );
+					trigger_error( esc_html( $error_message ), E_USER_WARNING ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 
 					break;
 				}
@@ -840,7 +845,7 @@ class Lazy_Collection implements Enumerable {
 			}
 
 			if ( $values->valid() ) {
-				trigger_error( $errorMessage, E_USER_WARNING );
+				trigger_error( esc_html( $error_message ), E_USER_WARNING ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 			}
 		} );
 	}
@@ -1030,7 +1035,7 @@ class Lazy_Collection implements Enumerable {
 		/** @var (callable(TValue,TKey): bool) $predicate */
 		$predicate = $this->use_as_callable( $value )
 			? $value
-			: fn( $item ) => $strict ? $item === $value : $item == $value;
+			: ( fn ( $item ) => $strict ? $item === $value : $item == $value ); // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 
 		foreach ( $this as $key => $item ) {
 			if ( $predicate( $item, $key ) ) {
@@ -1077,7 +1082,7 @@ class Lazy_Collection implements Enumerable {
 					if ( $step > $size ) {
 						$skip = $step - $size;
 
-						for ( $i = 0; $i < $skip && $iterator->valid(); $i++ ) {
+						for ( $i = 0; $i < $skip && $iterator->valid(); $i++ ) { // phpcs:ignore Generic.CodeAnalysis.ForLoopWithTestFunctionCall.NotAllowed
 							$iterator->next();
 						}
 					}
@@ -1393,7 +1398,7 @@ class Lazy_Collection implements Enumerable {
 
 				foreach ( $this as $key => $value ) {
 					$ringBuffer[ $position ] = [ $key, $value ];
-					$position                = ( $position + 1 ) % $limit;
+					$position                = ( $position + 1 ) % $limit; // phpcs:ignore Squiz.Operators.IncrementDecrementUsage.Found
 				}
 
 				for ( $i = 0, $end = min( $limit, count( $ringBuffer ) ); $i < $end; $i++ ) {
@@ -1547,7 +1552,7 @@ class Lazy_Collection implements Enumerable {
 			$exists = [];
 
 			foreach ( $this as $key => $item ) {
-				if ( ! in_array( $id = $callback( $item, $key ), $exists, $strict ) ) {
+				if ( ! in_array( $id = $callback( $item, $key ), $exists, $strict ) ) { // phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
 					yield $key => $item;
 
 					$exists[] = $id;
@@ -1572,8 +1577,10 @@ class Lazy_Collection implements Enumerable {
 	/**
 	 * Zip the collection together with one or more arrays.
 	 *
-	 * e.g. new LazyCollection([1, 2, 3])->zip([4, 5, 6]);
-	 *      => [[1, 4], [2, 5], [3, 6]]
+	 * Example:
+	 *
+	 *   new Lazy_Collection([1, 2, 3])->zip([4, 5, 6]);
+	 *     => [[1, 4], [2, 5], [3, 6]]
 	 *
 	 * @template TZipValue
 	 *
