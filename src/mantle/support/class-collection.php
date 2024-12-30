@@ -65,7 +65,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param iterable<TKeyFrom, TValueFrom>|\WP_Query $value
 	 * @return static<TKeyFrom, TValueFrom>
 	 */
-	public static function from( $value ) {
+	public static function from( mixed $value ) {
 		global $post;
 		if ( $value instanceof \WP_Query ) {
 			$items = [];

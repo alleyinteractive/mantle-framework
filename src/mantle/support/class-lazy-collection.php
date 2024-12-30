@@ -219,7 +219,7 @@ class Lazy_Collection implements Enumerable {
 			$needle = $key;
 
 			foreach ( $this as $value ) {
-				if ( $value === $needle ) {
+				if ( $value == $needle ) {
 					return true;
 				}
 			}
@@ -586,6 +586,17 @@ class Lazy_Collection implements Enumerable {
 	 */
 	public function implode( $value, $glue = null ) {
 		return $this->collect()->implode( ...func_get_args() );
+	}
+
+	/**
+	 * Concatenate values of a given key as a string and returns a stringable class.
+	 *
+	 * @param  callable|string $value
+	 * @param  string|null     $glue
+	 * @return string
+	 */
+	public function implode_str( $value, $glue = null ) {
+		return $this->collect()->implode_str( ...func_get_args() );
 	}
 
 	/**
@@ -1019,7 +1030,7 @@ class Lazy_Collection implements Enumerable {
 		/** @var (callable(TValue,TKey): bool) $predicate */
 		$predicate = $this->use_as_callable( $value )
 			? $value
-			: fn( $item ) => $strict ? $item === $value : $item === $value;
+			: fn( $item ) => $strict ? $item === $value : $item == $value;
 
 		foreach ( $this as $key => $item ) {
 			if ( $predicate( $item, $key ) ) {

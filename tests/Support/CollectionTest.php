@@ -3238,11 +3238,9 @@ class CollectionTest extends Framework_Test_Case {
 		$this->assertEquals( [ 'first' => 'Taylor', 'email' => 'taylorotwell@gmail.com' ], $data->only( collect( [ 'first', 'email' ] ) )->all() );
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
-	#[DataProvider( 'collectionClassProvider' )]
-	public function testOnlyChildren( $collection ) {
+	public function testOnlyChildren() {
+		$collection = Collection::class;
+
 		$data = new $collection( [
 			[
 				'first' => 'Taylor',
@@ -4330,11 +4328,9 @@ class CollectionTest extends Framework_Test_Case {
 		], $data->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
-	#[DataProvider( 'collectionClassProvider' )]
-	public function test_from_wp_query( $collection ) {
+	public function test_from_wp_query() {
+		$collection = Collection::class;
+
 		static::factory()->post->create_many( 5 );
 		$query = new \WP_Query(
 			[
@@ -4350,21 +4346,17 @@ class CollectionTest extends Framework_Test_Case {
 		} ) );
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
-	#[DataProvider( 'collectionClassProvider' )]
-	public function test_from_empty_wp_query( $collection ) {
+	public function test_from_empty_wp_query() {
+		$collection = Collection::class;
+
 		$query = new \WP_Query();
 		$c = $collection::from( $query );
 		$this->assertTrue( $c->is_empty() );
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
-	#[DataProvider( 'collectionClassProvider' )]
-	public function test_from_fallback( $collection ) {
+	public function test_from_fallback() {
+		$collection = Collection::class;
+
 		$c = $collection::from( ['a', 'b'] );
 		$this->assertSame( 2, count( $c->all() ) );
 		$this->assertEquals( ['a', 'b'], $c->intersect( ['a', 'b'] )->all() );
@@ -4379,7 +4371,7 @@ class CollectionTest extends Framework_Test_Case {
 	{
 		return [
 			[Collection::class],
-			// [Lazy_Collection::class],
+			[Lazy_Collection::class],
 		];
 	}
 }
