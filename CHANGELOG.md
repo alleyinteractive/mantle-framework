@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- Add Lazy Collection and bring Collection/Enumerable Values trait up-to-date with Laravel.
+
 ## v1.3.2 - 2024-12-17
 
 - Allow stray requests to be ignored and pass through when stray requests are being prevented.
