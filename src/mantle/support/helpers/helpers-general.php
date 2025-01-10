@@ -427,6 +427,17 @@ function the_classnames( ...$args ): void {
 }
 
 /**
+ * Capture the output of a callback.
+ *
+ * @param callable $callback
+ */
+function capture( callable $callback ): string {
+	ob_start();
+	$callback();
+	return ob_get_clean();
+}
+
+/**
  * Add a WordPress action with type-hint support.
  *
  * @param string   $action Action to listen to.
@@ -532,13 +543,32 @@ function validate_file( $file, $allowed_files = [] ) {
 	return 0;
 }
 
-if ( ! function_exists( __NAMESPACE__ . '\defer' ) ) {
-	/**
-	 * Defer the execution of a function until after the response is sent to the page.
-	 *
-	 * @param callable $callback Callback to defer.
-	 */
-	function defer( callable $callback ): void {
-		app()->terminating( $callback );
+/**
+ * Defer the execution of a function until after the response is sent to the
+ * page.
+ *
+ * When used outside of the Mantle Framework, the callback will be added to the
+ * 'shutdown' hook after sending the response to the client.
+ *
+ * @param callable $callback Callback to defer.
+ */
+function defer( callable $callback ): void {
+	if ( ! function_exists( 'app' ) ) {
+		\add_action(
+			'shutdown',
+			function () use ( $callback ): void {
+				if ( function_exists( 'fastcgi_finish_request' ) ) {
+					fastcgi_finish_request();
+				} elseif ( function_exists( 'litespeed_finish_request' ) ) {
+					litespeed_finish_request();
+				}
+
+				$callback();
+			},
+		);
+
+		return;
 	}
+
+	app()->terminating( $callback );
 }

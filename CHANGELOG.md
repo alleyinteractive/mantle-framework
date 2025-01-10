@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v1.3.3 - 2025-01-10
 
+### Added
+
+- Added `Mantle\Support\Helpers\capture` helper to capture output from a callback using output buffering.
+
+### Changed
+
+- Updated the `Mantle\Support\Helpers\defer` helper to be able to used outside
+  of the Mantle Framework via the `shutdown` hook.
+
 ### Fixed
 
 - Allow `Filter`/`Action` attributes to be used multiple times on the same method.
