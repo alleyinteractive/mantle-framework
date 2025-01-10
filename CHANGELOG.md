@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v1.3.3 - 2025-01-10
+
+### Added
+
+- Added `Mantle\Support\Helpers\capture` helper to capture output from a callback using output buffering.
+
+### Changed
+
+- Updated the `Mantle\Support\Helpers\defer` helper to be able to used outside
+  of the Mantle Framework via the `shutdown` hook.
+
 ## v1.3.2 - 2024-12-17
 
 - Allow stray requests to be ignored and pass through when stray requests are being prevented.
