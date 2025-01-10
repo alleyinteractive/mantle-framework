@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated the `Mantle\Support\Helpers\defer` helper to be able to used outside
   of the Mantle Framework via the `shutdown` hook.
 
+### Fixed
+
+- Allow `Filter`/`Action` attributes to be used multiple times on the same method.
+
 ## v1.3.2 - 2024-12-17
 
 - Allow stray requests to be ignored and pass through when stray requests are being prevented.
