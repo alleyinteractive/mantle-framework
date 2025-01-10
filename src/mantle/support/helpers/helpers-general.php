@@ -430,7 +430,6 @@ function the_classnames( ...$args ): void {
  * Capture the output of a callback.
  *
  * @param callable $callback
- * @return string
  */
 function capture( callable $callback ): string {
 	ob_start();
@@ -557,7 +556,7 @@ function defer( callable $callback ): void {
 	if ( ! function_exists( 'app' ) ) {
 		\add_action(
 			'shutdown',
-			function () use ( $callback ) {
+			function () use ( $callback ): void {
 				if ( function_exists( 'fastcgi_finish_request' ) ) {
 					fastcgi_finish_request();
 				} elseif ( function_exists( 'litespeed_finish_request' ) ) {
