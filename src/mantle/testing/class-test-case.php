@@ -92,7 +92,18 @@ abstract class Test_Case extends BaseTestCase {
 	 * Runs the routine before setting up all tests.
 	 */
 	public static function setUpBeforeClass(): void {
+		parent::setUpBeforeClass();
+
 		static::register_traits();
+
+		// Set the default permalink structure on each test before setUp() to allow
+		// the tests to override it.
+		static::set_permalink_structure( Utils::DEFAULT_PERMALINK_STRUCTURE );
+
+		// Create the initial post types/taxonomies after the default permalink
+		// structure is set.
+		create_initial_post_types();
+		create_initial_taxonomies();
 
 		if ( ! empty( static::$test_uses ) ) {
 			static::get_test_case_traits()->each(
@@ -105,8 +116,6 @@ abstract class Test_Case extends BaseTestCase {
 				}
 			);
 		}
-
-		parent::setUpBeforeClass();
 
 		if ( isset( static::$test_uses[ Refresh_Database::class ] ) && method_exists( static::class, 'commit_transaction' ) ) {
 			static::commit_transaction();
@@ -147,10 +156,6 @@ abstract class Test_Case extends BaseTestCase {
 	 */
 	protected function setUp(): void {
 		set_time_limit( 0 );
-
-		// Set the default permalink structure on each test before setUp() to allow
-		// the tests to override it.
-		$this->set_permalink_structure( Utils::DEFAULT_PERMALINK_STRUCTURE );
 
 		parent::setUp();
 

@@ -150,7 +150,7 @@ trait WordPress_State {
 	 *
 	 * @param string $structure Optional. Permalink structure to set. Default empty.
 	 */
-	public function set_permalink_structure( $structure = '' ): void {
+	public static function set_permalink_structure( $structure = '' ): void {
 		global $wp_rewrite;
 
 		$wp_rewrite->init();
