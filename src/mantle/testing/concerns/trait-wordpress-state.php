@@ -35,7 +35,7 @@ trait WordPress_State {
 	/**
 	 * Cleans the global scope (e.g `$_GET` and `$_POST`).
 	 */
-	public function clean_up_global_scope(): void {
+	public static function clean_up_global_scope(): void {
 		$_GET  = [];
 		$_POST = [];
 		self::flush_cache();
@@ -181,9 +181,9 @@ trait WordPress_State {
 	 */
 	protected function update_post_modified( WP_Post|Post|int $post, DateTimeInterface|string $date ): bool {
 		$post = match ( true ) {
-			$post instanceof WP_Post => Post::for( $post->post_type )->find( $post->ID ),
+			$post instanceof WP_Post => Post::for( $post->post_type )->find_or_fail( $post->ID ),
 			$post instanceof Post    => $post,
-			default                  => Post::for( get_post_type( $post ) )->find( $post ),
+			default                  => Post::for( get_post_type( $post ) )->find_or_fail( $post ),
 		};
 
 		return $post->save(

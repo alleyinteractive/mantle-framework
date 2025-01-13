@@ -9,30 +9,16 @@
 
 namespace Mantle\Testing\Concerns;
 
+/**
+ * Trait for backing up and restoring hooks during tests.
+ */
 trait Hooks {
-
 	/**
 	 * Saved hooks.
 	 *
 	 * @var array
 	 */
 	protected static $hooks_saved = [];
-
-	/**
-	 * Routines to run during setUp().
-	 */
-	public function hooks_set_up(): void {
-		if ( ! self::$hooks_saved ) {
-			$this->backup_hooks();
-		}
-	}
-
-	/**
-	 * Routines to run during tearDown().
-	 */
-	public function hooks_tear_down(): void {
-		$this->restore_hooks();
-	}
 
 	/**
 	 * Saves the action and filter-related globals so they can be restored later.
@@ -44,9 +30,8 @@ trait Hooks {
 	 * @global array $wp_current_filter
 	 * @global array $wp_filter
 	 */
-	protected function backup_hooks() {
-		$globals = [ 'wp_actions', 'wp_current_filter' ];
-		foreach ( $globals as $global ) {
+	protected static function backup_hooks() {
+		foreach ( [ 'wp_actions', 'wp_current_filter' ] as $global ) {
 			self::$hooks_saved[ $global ] = $GLOBALS[ $global ];
 		}
 		self::$hooks_saved['wp_filter'] = [];
@@ -63,10 +48,9 @@ trait Hooks {
 	 * @global array $wp_current_filter
 	 * @global array $wp_filter
 	 */
-	protected function restore_hooks() {
+	protected static function restore_hooks() {
 		// phpcs:disable WordPress.WP.GlobalVariablesOverride,WordPress.NamingConventions.PrefixAllGlobals
-		$globals = [ 'wp_actions', 'wp_current_filter' ];
-		foreach ( $globals as $global ) {
+		foreach ( [ 'wp_actions', 'wp_current_filter' ] as $global ) {
 			if ( isset( self::$hooks_saved[ $global ] ) ) {
 				$GLOBALS[ $global ] = self::$hooks_saved[ $global ];
 			}
