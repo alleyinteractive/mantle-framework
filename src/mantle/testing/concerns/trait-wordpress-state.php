@@ -20,8 +20,6 @@ use WP_Post;
 trait WordPress_State {
 	/**
 	 * Whether the initial data structures have been created.
-	 *
-	 * @var bool
 	 */
 	protected static bool $initial_data_structures_created = false;
 

@@ -239,8 +239,8 @@ abstract class Test_Case extends BaseTestCase {
 			'wp_stylesheet_path',
 			'wp_template_path',
 		];
-		foreach ( $globals as $post_global ) {
-			$GLOBALS[ $post_global ] = null;
+		foreach ( $globals as $global ) {
+			$GLOBALS[ $global ] = null;
 		}
 
 		$this->unregister_all_meta_keys();
