@@ -157,8 +157,6 @@ abstract class Test_Case extends BaseTestCase {
 		// Clear the test factory.
 		static::$factory = null;
 
-		static::backup_hooks();
-
 		static::clean_up_global_scope();
 
 		// Boot traits on the test case.
@@ -287,6 +285,7 @@ abstract class Test_Case extends BaseTestCase {
 	protected static function get_priority_traits(): array {
 		return [
 			// This order is deliberate.
+			Hooks::class,
 			Refresh_Database::class,
 			WordPress_Authentication::class,
 			Admin_Screen::class,

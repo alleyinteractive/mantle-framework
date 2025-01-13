@@ -31,9 +31,9 @@ trait WordPress_State {
 	public static function wordpress_state_set_up_before_class(): void {
 		// Set the default permalink structure on each test before setUp() to allow
 		// the tests to override it.
-		static::set_permalink_structure( Utils::DEFAULT_PERMALINK_STRUCTURE );
+		self::set_permalink_structure( Utils::DEFAULT_PERMALINK_STRUCTURE );
 
-		if ( ! static::$initial_data_structures_created ) {
+		if ( ! self::$initial_data_structures_created ) {
 			// Create the initial post types/taxonomies after the default permalink
 			// structure is set.
 			create_initial_post_types();
@@ -41,7 +41,7 @@ trait WordPress_State {
 
 			flush_rewrite_rules();
 
-			static::$initial_data_structures_created = true;
+			self::$initial_data_structures_created = true;
 		}
 	}
 
