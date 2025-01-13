@@ -19,9 +19,20 @@ use WP_Post;
  */
 trait WordPress_State {
 	/**
+	 * Whether the initial data structures have been created.
+	 *
+	 * @var bool
+	 */
+	protected static bool $initial_data_structures_created = false;
+
+	/**
 	 * Setup the WordPress State before the class is set up.
 	 */
-	public function wordpress_state_set_up(): void {
+	public static function wordpress_state_set_up_before_class(): void {
+		if ( static::$initial_data_structures_created ) {
+			return;
+		}
+
 		// Set the default permalink structure on each test before setUp() to allow
 		// the tests to override it.
 		static::set_permalink_structure( Utils::DEFAULT_PERMALINK_STRUCTURE );
@@ -32,6 +43,8 @@ trait WordPress_State {
 		create_initial_taxonomies();
 
 		flush_rewrite_rules();
+
+		static::$initial_data_structures_created = true;
 	}
 
 	/**
