@@ -96,15 +96,6 @@ abstract class Test_Case extends BaseTestCase {
 
 		static::register_traits();
 
-		// Set the default permalink structure on each test before setUp() to allow
-		// the tests to override it.
-		static::set_permalink_structure( Utils::DEFAULT_PERMALINK_STRUCTURE );
-
-		// Create the initial post types/taxonomies after the default permalink
-		// structure is set.
-		create_initial_post_types();
-		create_initial_taxonomies();
-
 		if ( ! empty( static::$test_uses ) ) {
 			static::get_test_case_traits()->each(
 				function ( $trait ): void {
