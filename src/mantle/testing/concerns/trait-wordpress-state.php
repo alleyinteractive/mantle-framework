@@ -39,7 +39,7 @@ trait WordPress_State {
 			create_initial_post_types();
 			create_initial_taxonomies();
 
-			flush_rewrite_rules();
+			flush_rewrite_rules(); // phpcs:ignore
 
 			self::$initial_data_structures_created = true;
 		}
