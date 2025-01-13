@@ -36,8 +36,10 @@ trait WordPress_State {
 	 * Cleans the global scope (e.g `$_GET` and `$_POST`).
 	 */
 	public static function clean_up_global_scope(): void {
-		$_GET  = [];
-		$_POST = [];
+		$_GET     = [];
+		$_POST    = [];
+		$_REQUEST = [];
+
 		self::flush_cache();
 	}
 
