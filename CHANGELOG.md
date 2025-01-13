@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- ✨ Experimental feature ✨: Use the home URL as the base URL for testing rather
+  than `WP_TESTS_DOMAIN`. This can be enabled by calling the
+  `with_experimental_testing_url_host()` method of the installation manager or
+  by setting the `MANTLE_EXPERIMENTAL_TESTING_USE_HOME_URL_HOST` environment
+  variable.
+
+	Once enabled, the home URL will be used as the base URL for testing rather
+	the hard-coded `WP_TESTS_DOMAIN`. It will also infer the HTTPS status from
+	the home URL.
+- Added `with_option()`/`with_home_url()`/`with_site_url()` methods to the installation manager.
+
 ## v1.3.3 - 2025-01-10
 
 ### Added
