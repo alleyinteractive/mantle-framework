@@ -96,7 +96,7 @@ abstract class Test_Case extends BaseTestCase {
 
 		// Disable the Spatie once cache for tests.
 		if ( class_exists( \Spatie\Once\Once::class ) ) {
-			\Spatie\Once\Cache::getInstance()->disable(); // @phpstan-ignore-line unknown class
+			\Spatie\Once\Cache::getInstance()->disable();
 		}
 
 		static::register_traits();
