@@ -189,6 +189,52 @@ class Installation_Manager {
 	}
 
 	/**
+	 * Define if the testing suite should use the experimental feature that will
+	 * use the site's home URL host as the HTTP host when making requests.
+	 *
+	 * Without enabling this feature, the HTTP host will be set to the value of
+	 * the WP_TESTS_DOMAIN constant and all relative URLs will be calculated from
+	 * that domain.
+	 *
+	 * In the next major release of Mantle, this feature will be enabled by default.
+	 *
+	 * @param bool $enable Whether to enable the experimental feature.
+	 */
+	public function with_experimental_testing_url_host( bool $enable = true ): static {
+		return $this->before(
+			fn () => putenv( 'MANTLE_EXPERIMENTAL_TESTING_USE_HOME_URL_HOST=' . ( $enable ? '1' : '0' ) ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_putenv
+		);
+	}
+
+	/**
+	 * Define a custom option to be set after the installation is loaded.
+	 *
+	 * @param string $option Option name.
+	 * @param mixed  $value Option value.
+	 */
+	public function with_option( string $option, mixed $value ): static {
+		return $this->loaded( fn () => update_option( $option, $value ) );
+	}
+
+	/**
+	 * Define the home URL to be set after the installation is loaded.
+	 *
+	 * @param string $url Home URL.
+	 */
+	public function with_home_url( string $url ): static {
+		return $this->with_option( 'home', $url );
+	}
+
+	/**
+	 * Define the site URL to be set after the installation is loaded.
+	 *
+	 * @param string $url Site URL.
+	 */
+	public function with_site_url( string $url ): static {
+		return $this->with_option( 'siteurl', $url );
+	}
+
+	/**
 	 * Install the Mantle Testing Framework.
 	 *
 	 * @return static

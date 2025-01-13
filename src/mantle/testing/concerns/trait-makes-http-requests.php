@@ -138,9 +138,9 @@ trait Makes_Http_Requests {
 	/**
 	 * Create a pending request with the HTTPS enabled/disabled.
 	 *
-	 * @param bool $value Whether to use HTTPS.
+	 * @param bool|null $value Whether to use HTTPS.
 	 */
-	public function with_https( bool $value = true ): Pending_Testable_Request {
+	public function with_https( ?bool $value = true ): Pending_Testable_Request {
 		return $this->create_pending_request()->with_https( $value );
 	}
 
