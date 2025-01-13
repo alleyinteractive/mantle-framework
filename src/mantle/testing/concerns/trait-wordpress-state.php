@@ -29,22 +29,20 @@ trait WordPress_State {
 	 * Setup the WordPress State before the class is set up.
 	 */
 	public static function wordpress_state_set_up_before_class(): void {
-		if ( static::$initial_data_structures_created ) {
-			return;
-		}
-
 		// Set the default permalink structure on each test before setUp() to allow
 		// the tests to override it.
 		static::set_permalink_structure( Utils::DEFAULT_PERMALINK_STRUCTURE );
 
-		// Create the initial post types/taxonomies after the default permalink
-		// structure is set.
-		create_initial_post_types();
-		create_initial_taxonomies();
+		if ( ! static::$initial_data_structures_created ) {
+			// Create the initial post types/taxonomies after the default permalink
+			// structure is set.
+			create_initial_post_types();
+			create_initial_taxonomies();
 
-		flush_rewrite_rules();
+			flush_rewrite_rules();
 
-		static::$initial_data_structures_created = true;
+			static::$initial_data_structures_created = true;
+		}
 	}
 
 	/**
