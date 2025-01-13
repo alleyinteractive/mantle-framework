@@ -29,6 +29,7 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 
 		remove_all_actions( 'template_redirect' );
 
+		update_option( 'home', 'http://' . WP_TESTS_DOMAIN );
 	}
 
 	public function test_get_home() {
@@ -389,7 +390,13 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 			] );
 	}
 
-	public function test_https_request() {
+	public function test_url_scheme_http_by_default() {
+		$this->get( '/' )->assertOk();
+
+		$this->assertEmpty( $_SERVER['HTTPS'] ?? '' );
+	}
+
+	public function test_url_scheme_https_opt_in() {
 		$this->get( '/' )->assertOk();
 
 		$this->assertEmpty( $_SERVER['HTTPS'] ?? '' );
@@ -397,6 +404,21 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 		$this->with_https()->get( 'https://example.com' )->assertOk();
 
 		$this->assertEquals( 'on', $_SERVER['HTTPS'] );
+	}
+
+	public function test_url_scheme_https_by_home_url() {
+		$home_url = get_option( 'home' );
+
+		$this->assertEquals( 'http://' . WP_TESTS_DOMAIN, $home_url );
+		$this->assertEquals( 'http://' . WP_TESTS_DOMAIN, home_url() );
+
+		update_option( 'home', 'https://' . WP_TESTS_DOMAIN );
+
+		$this->assertEquals( 'https://' . WP_TESTS_DOMAIN, home_url() );
+
+		$this->get( '/' )->assertOk();
+
+		$this->assertEquals( 'on', $_SERVER['HTTPS'] ?? '' );
 	}
 
 	public function test_multiple_requests() {

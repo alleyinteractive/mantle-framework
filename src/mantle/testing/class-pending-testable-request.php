@@ -49,7 +49,7 @@ class Pending_Testable_Request {
 	/**
 	 * Indicates whether the request should be made over HTTPS.
 	 */
-	public bool $https = false;
+	public ?bool $https = null;
 
 	/**
 	 * The cookies for the request.
@@ -96,6 +96,9 @@ class Pending_Testable_Request {
 
 	/**
 	 * Define whether the request should be made over HTTPS.
+	 *
+	 * This method will override the protocol of the URL passed when creating a
+	 * testable request.
 	 *
 	 * @param bool $value Whether to use HTTPS.
 	 */
@@ -235,11 +238,13 @@ class Pending_Testable_Request {
 			$uri = $this->infer_url( $uri );
 		}
 
+		$scheme = $this->get_default_url_scheme();
+
 		// Build a full URL from partial URIs.
 		if ( '/' === $uri[0] ) {
-			$url = 'https://' . WP_TESTS_DOMAIN . $uri;
+			$url = $scheme . '://' . WP_TESTS_DOMAIN . $uri;
 		} elseif ( false === strpos( $uri, '://' ) ) {
-			$url = 'https://' . WP_TESTS_DOMAIN . '/' . $uri;
+			$url = $scheme . '://' . WP_TESTS_DOMAIN . '/' . $uri;
 		} else {
 			$url = $uri;
 		}
@@ -468,6 +473,10 @@ class Pending_Testable_Request {
 			$req = $url;
 		}
 
+		if ( ! is_null( $this->https ) && isset( $parts['scheme'] ) && 'https' === $parts['scheme'] ) {
+			$_SERVER['HTTPS'] = 'on';
+		}
+
 		$_SERVER['REQUEST_URI'] = $req;
 
 		$_POST = $data;
@@ -534,6 +543,21 @@ class Pending_Testable_Request {
 		// Replace the `rest_api_loaded()` method with one we can control.
 		remove_filter( 'parse_request', 'rest_api_loaded' );
 		add_action( 'parse_request', [ $this, 'serve_rest_api_request' ] );
+	}
+
+	/**
+	 * Get the default URL scheme.
+	 *
+	 * If the request is being overridden to use HTTPS via {@see with_https()},
+	 * this will return 'https'. Otherwise, it will return the scheme of the home
+	 * URL of the WordPress installation.
+	 */
+	protected function get_default_url_scheme(): string {
+		if ( $this->https ) {
+			return 'https';
+		}
+
+		return wp_parse_url( home_url(), PHP_URL_SCHEME );
 	}
 
 	/**
