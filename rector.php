@@ -62,7 +62,7 @@ return RectorConfig::configure()
 		deadCode: true,
 		instanceOf: true,
 	)
-	->withTypeCoverageLevel(7)
+	->withTypeCoverageLevel(10)
 	->withRules(
 		[
 			AddVoidReturnTypeWhereNoReturnRector::class,
