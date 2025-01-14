@@ -10,6 +10,19 @@ parameters:
 		- mantle.php
 
 	ignoreErrors:
+		-
+			identifier: trait.unused
+		-
+			identifier: staticMethod.resultUnused
+		-
+			identifier: require.fileNotFound
+		-
+			identifier: requireOnce.fileNotFound
+		-
+			identifier: function.alreadyNarrowedType
+			paths:
+				- src/mantle/support
+				- src/mantle/testing
 		- "#Unsafe usage of new static#"
 		- "#PHPDoc tag @param references unknown parameter#"
 		- "#@return is not subtype of template type TKey#"
@@ -25,7 +38,6 @@ parameters:
 		- src/mantle/blocks
 		- src/mantle/query-monitor
 		- src/mantle/testing/class-mock-action.php
-		- src/mantle/testing/doubles/class-mockphpmailer.php
 		- src/mantle/testing/install-wordpress.php
 		- src/mantle/testing/preload.php
 		- src/mantle/testing/wordpress-bootstrap.php

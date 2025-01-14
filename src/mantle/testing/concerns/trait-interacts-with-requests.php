@@ -477,7 +477,7 @@ trait Interacts_With_Requests {
 	 */
 	public function assertNoRequestSent(): void {
 		PHPUnit::assertEmpty(
-			$this->recorded_requests,
+			$this->recorded_requests->all(),
 			'Requests were recorded',
 		);
 	}

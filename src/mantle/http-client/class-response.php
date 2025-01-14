@@ -54,18 +54,15 @@ class Response implements ArrayAccess {
 	/**
 	 * Create a response object from a `wp_remote_request()` response.
 	 *
-	 * @throws InvalidArgumentException If the response is not an array or WP_Error.
 	 * @param array|WP_Error $response Raw response from `wp_remote_request()`.
 	 * @return static
 	 */
 	public static function create( $response ) {
-		if ( is_array( $response ) ) {
-			return new static( $response );
-		}
-
 		if ( $response instanceof WP_Error ) {
 			return static::create_from_wp_error( $response );
 		}
+
+		return new static( $response );
 	}
 
 	/**

@@ -90,11 +90,7 @@ trait Model_Meta {
 	 * @param array $meta_values Meta values to set.
 	 * @throws Model_Exception Thrown on invalid value being set.
 	 */
-	public function set_meta_attribute( $meta_values ): void {
-		if ( ! is_array( $meta_values ) ) {
-			throw new Model_Exception( 'Attribute value passed to meta is not an array.' );
-		}
-
+	public function set_meta_attribute( array $meta_values ): void {
 		foreach ( $meta_values as $key => $value ) {
 			$this->queued_meta[ $key ] = $value;
 			$this->set_meta( $key, $value );

@@ -90,7 +90,7 @@ class Route extends Symfony_Route {
 				'callback' => $action,
 			];
 		} elseif (
-			is_array( $action )
+			is_array( $action ) // @phpstan-ignore-line function.alreadyNarrowedType
 			&& ! empty( $action[0] )
 			&& ! empty( $action[1] )
 			&& is_string( $action[0] )
@@ -347,7 +347,7 @@ class Route extends Symfony_Route {
 	/**
 	 * Get the controller's closure callback.
 	 *
-	 * @return callable:null
+	 * @return callable|null
 	 */
 	protected function get_callback(): ?callable {
 		return $this->has_callback() ? $this->action['callback'] : null;

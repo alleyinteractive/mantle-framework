@@ -454,7 +454,7 @@ class Utils {
 	 * Run a system command and return the output.
 	 *
 	 * @param string|string[] $command Command to run.
-	 * @param int             $exit_code Exit code.
+	 * @param-out int         $exit_code Exit code.
 	 * @return string[]
 	 */
 	public static function command( $command, &$exit_code = null ) {
@@ -533,7 +533,7 @@ class Utils {
 		}
 
 		static::error( '🚨 Error during test run:', 'Shutdown' );
-		static::code( $error );
+		static::code( $error ); // @phpstan-ignore-line argument.type
 
 		exit( 1 );
 	}
