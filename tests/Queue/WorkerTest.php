@@ -131,7 +131,7 @@ class Testable_Provider implements Provider {
 	 * @param int    $count Number of items to return.
 	 * @return Collection
 	 */
-	public function pop( string $queue = null, int $count = 1 ): Collection {
+	public function pop( ?string $queue = null, int $count = 1 ): Collection {
 		return collect(
 			array_slice( $this->jobs, 0, $count )
 		);
@@ -143,7 +143,7 @@ class Testable_Provider implements Provider {
 	 * @param string $queue Queue name, optional.
 	 * @return int
 	 */
-	public function pending_count( string $queue = null ): int {
+	public function pending_count( ?string $queue = null ): int {
 		return count( $this->jobs );
 	}
 
@@ -154,7 +154,7 @@ class Testable_Provider implements Provider {
 	 * @param string $queue Queue to compare against.
 	 * @return bool
 	 */
-	public function in_queue( mixed $job, string $queue = null ): bool {
+	public function in_queue( mixed $job, ?string $queue = null ): bool {
 		return false;
 	}
 }

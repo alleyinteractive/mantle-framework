@@ -8,7 +8,7 @@
         "dragonmantank/cron-expression": "^3.3.3",
         "mantle-framework/console": "^1.0",
         "mantle-framework/contracts": "^1.0",
-        "nesbot/carbon": "^2.68.1"
+        "nesbot/carbon": "^3.8.4"
     },
     "extra": {
         "wordpress-autoloader": {

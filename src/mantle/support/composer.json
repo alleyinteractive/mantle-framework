@@ -9,7 +9,7 @@
         "league/commonmark": "^2.4.0",
         "mantle-framework/contracts": "^1.0",
         "monolog/monolog": "^2.9.1",
-        "nesbot/carbon": "^2.68.1",
+        "nesbot/carbon": "^3.8.4",
         "ramsey/uuid": "^4.7.4",
         "symfony/finder": "^6.2",
         "symfony/var-dumper": "^6.2",
