@@ -7,8 +7,8 @@
 
 namespace Mantle\Assets;
 
-use Asset_Manager_Scripts;
-use Asset_Manager_Styles;
+use Alley\WP\Asset_Manager\Scripts as Asset_Manager_Scripts;
+use Alley\WP\Asset_Manager\Styles as Asset_Manager_Styles;
 use Mantle\Contracts\Assets\Load_Hook;
 use Mantle\Contracts\Assets\Load_Method;
 
