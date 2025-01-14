@@ -483,7 +483,7 @@ trait Rsync_Installation {
 
 		system( $command, $result_code ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.system_calls_system
 
-		exit( (int) $result_code );
+		exit( $result_code );
 	}
 
 	/**

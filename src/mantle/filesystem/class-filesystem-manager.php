@@ -65,7 +65,6 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 * Retrieve a disk by name.
 	 *
 	 * @param string $name Disk name.
-	 * @return Filesystem
 	 * @throws InvalidArgumentException Thrown on invalid disk/driver configuration.
 	 */
 	protected function resolve_disk( string $name ): Filesystem {
