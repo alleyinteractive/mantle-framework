@@ -222,7 +222,7 @@ class Installation_Manager {
 	 * @param string|null $home Home URL.
 	 * @param string|null $site Site URL.
 	 */
-	public function with_urls( ?string $home = null, ?string $site = null ): static {
+	public function with_url( ?string $home = null, ?string $site = null ): static {
 		if ( $home ) {
 			$this->with_option( 'home', $home );
 		}
