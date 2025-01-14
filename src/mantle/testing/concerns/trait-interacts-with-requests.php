@@ -147,7 +147,7 @@ trait Interacts_With_Requests {
 	 */
 	public function fake_request(
 		Mock_Http_Response|callable|string|array|null $url_or_callback = null,
-		Mock_Http_Response|callable $response = null,
+		Mock_Http_Response|callable|null $response = null,
 		?string $method = null
 	): static|Mock_Http_Response {
 		if ( is_array( $url_or_callback ) ) {
@@ -432,7 +432,7 @@ trait Interacts_With_Requests {
 	 * @param int             $expected_times Number of times the request should have been
 	 *                                        sent, optional.
 	 */
-	public function assertRequestSent( string|callable|null $url_or_callback = null, int $expected_times = null ): void {
+	public function assertRequestSent( string|callable|null $url_or_callback = null, ?int $expected_times = null ): void {
 		if ( is_null( $url_or_callback ) ) {
 			PHPUnit::assertTrue( $this->recorded_requests->is_not_empty(), 'A request was made.' );
 

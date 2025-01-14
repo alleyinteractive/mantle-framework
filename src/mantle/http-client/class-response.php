@@ -275,7 +275,7 @@ class Response implements ArrayAccess {
 	 * @param string $default Default value to return if the path does not exist.
 	 * @return SimpleXMLElement|string|null Returns a specific SimpleXMLElement if path is specified, otherwise the entire document.
 	 */
-	public function xml( string $xpath = null, $default = null ) {
+	public function xml( ?string $xpath = null, $default = null ) {
 		if ( ! isset( $this->element ) ) {
 			$previous = libxml_use_internal_errors( true );
 

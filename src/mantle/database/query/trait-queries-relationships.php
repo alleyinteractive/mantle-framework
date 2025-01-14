@@ -22,7 +22,7 @@ trait Queries_Relationships {
 	 *
 	 * @throws Query_Exception Thrown on invalid arguments.
 	 */
-	public function has( string $relation, string $compare = null ): Builder {
+	public function has( string $relation, ?string $compare = null ): Builder {
 		$relation = $this->get_relation( $relation );
 		if ( ! $relation ) {
 			throw new Query_Exception( 'Unknown relation on model: ' . $relation );
@@ -44,7 +44,7 @@ trait Queries_Relationships {
 	 *
 	 * @throws Query_Exception Thrown on invalid arguments.
 	 */
-	public function doesnt_have( string $relation, string $compare = null ) {
+	public function doesnt_have( string $relation, ?string $compare = null ) {
 		$relation = $this->get_relation( $relation );
 		if ( ! $relation ) {
 			throw new Query_Exception( 'Unknown relation on model: ' . $relation );

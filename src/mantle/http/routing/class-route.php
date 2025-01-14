@@ -165,7 +165,7 @@ class Route extends Symfony_Route {
 	 * @param string|null $key Key to get.
 	 * @return mixed
 	 */
-	public function get_action( string $key = null ) {
+	public function get_action( ?string $key = null ) {
 		return Arr::get( $this->action, $key );
 	}
 
@@ -431,7 +431,7 @@ class Route extends Symfony_Route {
 	 * @param string|null $sub_class Subclass to verify the parameter is an instance of.
 	 * @return array
 	 */
-	public function get_signature_parameters( string $sub_class = null ) {
+	public function get_signature_parameters( ?string $sub_class = null ) {
 		return Route_Signature_Parameters::from_action( $this->action, $sub_class );
 	}
 

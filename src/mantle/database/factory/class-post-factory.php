@@ -138,7 +138,7 @@ class Post_Factory extends Factory {
 	 * @param int    $height The height of the image.
 	 * @param bool   $recycle Whether to recycle the image file.
 	 */
-	public function with_real_thumbnail( string $file = null, int $width = 640, int $height = 480, bool $recycle = true ): static {
+	public function with_real_thumbnail( ?string $file = null, int $width = 640, int $height = 480, bool $recycle = true ): static {
 		return $this->with_middleware(
 			function ( array $args, Closure $next ) use ( $file, $width, $height, $recycle ) {
 				$post = $next( $args );

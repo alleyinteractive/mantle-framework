@@ -154,7 +154,7 @@ class Test_Response {
 	 * @param string      $key     Header to return.
 	 * @param string|null $default If the header is not set, default to return.
 	 */
-	public function get_header( string $key, string $default = null ): ?string {
+	public function get_header( string $key, ?string $default = null ): ?string {
 		// Enforce a lowercase header name.
 		$key = strtolower( $key );
 
@@ -302,7 +302,7 @@ class Test_Response {
 	 *
 	 * @param string|null $location Location to check with the redirect.
 	 */
-	public function is_redirect( string $location = null ): bool {
+	public function is_redirect( ?string $location = null ): bool {
 		return in_array( $this->get_status_code(), [ 201, 301, 302, 303, 307, 308 ], true )
 			&& ( null === $location ?: $location === $this->get_header( 'Location' ) ); // phpcs:ignore WordPress.PHP.DisallowShortTernary.Found
 	}
@@ -776,7 +776,7 @@ class Test_Response {
 	 * @param  array|null $structure Structure to check.
 	 * @return $this
 	 */
-	public function assertJsonStructure( array $structure = null ) {
+	public function assertJsonStructure( ?array $structure = null ) {
 		$this->decoded_json()->assertStructure( $structure );
 
 		return $this;

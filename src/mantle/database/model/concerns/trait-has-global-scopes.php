@@ -28,7 +28,7 @@ trait Has_Global_Scopes {
 	 * @param Scope|\Closure|string $scope Scope instance/name.
 	 * @param Closure|null          $implementation Scope callback.
 	 */
-	public static function add_global_scope( $scope, Closure $implementation = null ): bool {
+	public static function add_global_scope( $scope, ?Closure $implementation = null ): bool {
 		if ( is_string( $scope ) && ! is_null( $implementation ) ) {
 			static::$global_scopes[ static::class ][ $scope ] = $implementation;
 			return true;

@@ -111,7 +111,7 @@ class Filesystem_Adapter implements Filesystem {
 	 * @param  string $directory Directory name.
 	 * @return string[]
 	 */
-	public function all_directories( string $directory = null ): array {
+	public function all_directories( ?string $directory = null ): array {
 		return $this->directories( $directory, true );
 	}
 
@@ -122,7 +122,7 @@ class Filesystem_Adapter implements Filesystem {
 	 * @param bool   $recursive Flag if it should be recursive.
 	 * @return array<string>
 	 */
-	public function directories( string $directory = null, bool $recursive = false ): array {
+	public function directories( ?string $directory = null, bool $recursive = false ): array {
 		return $this->driver->listContents( $directory, $recursive )
 			->filter(
 				fn ( StorageAttributes $attributes ) => $attributes->isDir()
@@ -173,7 +173,7 @@ class Filesystem_Adapter implements Filesystem {
 	 * @param string $directory Directory name.
 	 * @return string[]
 	 */
-	public function all_files( string $directory = null ): array {
+	public function all_files( ?string $directory = null ): array {
 		return $this->files( $directory, true );
 	}
 
@@ -184,7 +184,7 @@ class Filesystem_Adapter implements Filesystem {
 	 * @param bool   $recursive Flag if recursive.
 	 * @return string[]
 	 */
-	public function files( string $directory = null, bool $recursive = false ): array {
+	public function files( ?string $directory = null, bool $recursive = false ): array {
 		return $this->driver->listContents( $directory, $recursive )
 			->filter(
 				fn ( StorageAttributes $attributes ) => $attributes->isFile()

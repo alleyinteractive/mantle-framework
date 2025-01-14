@@ -84,7 +84,7 @@ class Scheduler {
 	 * @param string $queue Queue name.
 	 * @param int    $delay Delay in seconds, defaults to none.
 	 */
-	public static function schedule( string $queue = null, int $delay = 0 ): bool {
+	public static function schedule( ?string $queue = null, int $delay = 0 ): bool {
 		if ( ! $queue ) {
 			$queue = 'default';
 		}
@@ -105,7 +105,7 @@ class Scheduler {
 	 *
 	 * @param string $queue Queue name.
 	 */
-	public static function unschedule( string $queue = null ): void {
+	public static function unschedule( ?string $queue = null ): void {
 		static::get_scheduled_cron_jobs( $queue )
 			->each(
 				fn ( array $job ) => wp_unschedule_event( $job['timestamp'], static::EVENT, $job['args'] ?? [] ),
@@ -175,7 +175,7 @@ class Scheduler {
 	 * @param string $queue Queue name.
 	 * @return Collection<int, array>
 	 */
-	protected static function get_scheduled_cron_jobs( string $queue = null ): Collection {
+	protected static function get_scheduled_cron_jobs( ?string $queue = null ): Collection {
 		if ( ! $queue ) {
 			$queue = 'default';
 		}
@@ -208,7 +208,7 @@ class Scheduler {
 	 *
 	 * @param string $queue Queue name.
 	 */
-	public static function get_scheduled_count( string $queue = null ): int {
+	public static function get_scheduled_count( ?string $queue = null ): int {
 		return static::get_scheduled_cron_jobs( $queue )->count();
 	}
 
@@ -219,7 +219,7 @@ class Scheduler {
 	 * @param string $queue Queue name.
 	 * @param mixed  $default Default value.
 	 */
-	protected static function get_configuration_value( string $key, string $queue = null, mixed $default = null ): mixed {
+	protected static function get_configuration_value( string $key, ?string $queue = null, mixed $default = null ): mixed {
 		$config = config();
 
 		// Check for a queue-specific configuration value.

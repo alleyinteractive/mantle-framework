@@ -44,5 +44,5 @@ interface View_Finder {
 	 * @param string $name Template name.
 	 * @return string The template filename if one is located.
 	 */
-	public function load( string $slug, string $name = null ): string;
+	public function load( string $slug, ?string $name = null ): string;
 }

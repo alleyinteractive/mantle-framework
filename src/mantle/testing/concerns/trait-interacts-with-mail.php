@@ -106,7 +106,7 @@ trait Interacts_With_Mail {
 	 * @param (callable(\Mantle\Testing\Mail\Mail_Message): bool)|string $address_or_callback The email address to check for, or a callback to perform custom assertions.
 	 * @return Collection<int, \Mantle\Testing\Mail\Mail_Message>
 	 */
-	protected function getSentMail( string|callable $address_or_callback = null ): Collection {
+	protected function getSentMail( string|callable|null $address_or_callback = null ): Collection {
 		$mailer = tests_retrieve_phpmailer_instance();
 
 		if ( ! ( $mailer instanceof Mock_Mailer ) ) {

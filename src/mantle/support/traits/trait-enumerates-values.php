@@ -449,7 +449,7 @@ trait Enumerates_Values {
 	 * @param  (callable( $this): TWhenEmptyReturnType)|null  $default The callback to apply if the collection is not empty.
 	 * @return $this|TWhenEmptyReturnType
 	 */
-	public function when_empty( callable $callback, callable $default = null ) {
+	public function when_empty( callable $callback, ?callable $default = null ) {
 		return $this->when( $this->is_empty(), $callback, $default );
 	}
 
@@ -462,7 +462,7 @@ trait Enumerates_Values {
 	 * @param  (callable( $this): TWhenNotEmptyReturnType)|null  $default The callback to apply if the collection is empty.
 	 * @return $this|TWhenNotEmptyReturnType
 	 */
-	public function when_not_empty( callable $callback, callable $default = null ) {
+	public function when_not_empty( callable $callback, ?callable $default = null ) {
 		return $this->when( $this->is_not_empty(), $callback, $default );
 	}
 
@@ -475,7 +475,7 @@ trait Enumerates_Values {
 	 * @param  (callable( $this): TUnlessEmptyReturnType)|null  $default The callback to apply if the collection is empty.
 	 * @return $this|TUnlessEmptyReturnType
 	 */
-	public function unless_empty( callable $callback, callable $default = null ) {
+	public function unless_empty( callable $callback, ?callable $default = null ) {
 		return $this->when_not_empty( $callback, $default );
 	}
 
@@ -488,7 +488,7 @@ trait Enumerates_Values {
 	 * @param  (callable( $this): TUnlessNotEmptyReturnType)|null  $default The callback to apply if the collection is not empty.
 	 * @return $this|TUnlessNotEmptyReturnType
 	 */
-	public function unless_not_empty( callable $callback, callable $default = null ) {
+	public function unless_not_empty( callable $callback, ?callable $default = null ) {
 		return $this->when_empty( $callback, $default );
 	}
 

@@ -255,7 +255,7 @@ trait Model_Term {
 	 *
 	 * @throws Model_Exception Thrown if the $taxonomy cannot be inferred from $terms.
 	 */
-	public function remove_terms( $terms, string $taxonomy = null ) {
+	public function remove_terms( $terms, ?string $taxonomy = null ) {
 		$terms = collect( Arr::wrap( $terms ) )
 			->map(
 				function ( $term ) use ( &$taxonomy ) {

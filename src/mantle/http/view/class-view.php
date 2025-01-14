@@ -125,7 +125,7 @@ class View implements \Stringable {
 	 * @param string   $cache_key Cache key to use, optional.
 	 * @return static
 	 */
-	public function cache( $cache_ttl = 900, string $cache_key = null ) {
+	public function cache( $cache_ttl = 900, ?string $cache_key = null ) {
 		if ( false === $cache_ttl ) {
 			$cache_ttl = -1;
 		}

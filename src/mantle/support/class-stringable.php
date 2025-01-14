@@ -691,7 +691,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  array|string $allowed_tags
 	 * @return static
 	 */
-	public function strip_tags( array|string $allowed_tags = null ) {
+	public function strip_tags( array|string|null $allowed_tags = null ) {
 		return new static( strip_tags( $this->value, $allowed_tags ) ); // phpcs:ignore WordPressVIPMinimum.Functions.StripTags.StripTagsTwoParameters
 	}
 

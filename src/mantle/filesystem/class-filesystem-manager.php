@@ -57,7 +57,7 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 *
 	 * @throws InvalidArgumentException Thrown on invalid disk configuration.
 	 */
-	public function drive( string $name = null ): Filesystem {
+	public function drive( ?string $name = null ): Filesystem {
 		return $this->resolve_disk( $name ?: $this->get_default_disk() );
 	}
 

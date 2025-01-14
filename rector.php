@@ -37,6 +37,7 @@ use Rector\Php54\Rector\Array_\LongArrayToShortArrayRector;
 use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
 use Rector\Php80\Rector\NotIdentical\StrContainsRector;
 use Rector\Php81\Rector\Array_\FirstClassCallableRector;
+use Rector\Php84\Rector\Param\ExplicitNullableParamTypeRector;
 use Rector\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector;
 use Rector\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInstanceOfRector;
 use Rector\ValueObject\PhpVersion;
@@ -53,7 +54,7 @@ use Rector\ValueObject\PhpVersion;
  * - ChangeOrIfContinueToMultiContinueRector: doesn't make sense.
  */
 return RectorConfig::configure()
-	->withPhpVersion( PhpVersion::PHP_82)
+	->withPhpVersion( PhpVersion::PHP_84 )
 	->withPhpSets()
 	->withIndent( "\t" )
 	->withPaths( [ __DIR__ . '/src' ] )
@@ -68,6 +69,7 @@ return RectorConfig::configure()
 			AddVoidReturnTypeWhereNoReturnRector::class,
 			RenameForeachValueVariableToMatchExprVariableRector::class,
 			LongArrayToShortArrayRector::class,
+			ExplicitNullableParamTypeRector::class,
 		]
 	)
 	->withSkip([
