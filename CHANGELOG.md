@@ -7,12 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+Minimum PHP version is now 8.2. The framework supports 8.2 - 8.4.
+
 ### Added
 
 - Add a `without_local_object_cache()` method to prevent the `object-cache.php` drop-in from being loaded locally.
 
 ### Changed
 
+- Removed support for PHP 8.1. The minimum PHP version is now 8.2.
 - Disable `spatie/once`'s cache if found during unit testing.
 
 ## v1.3.3 - 2025-01-10

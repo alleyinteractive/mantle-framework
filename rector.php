@@ -63,7 +63,7 @@ return RectorConfig::configure()
 		instanceOf: true,
 	)
 	->withTypeCoverageLevel(7)
-	->withPhpSets( php81: true )
+	->withPhpSets( php82: true )
 	->withRules(
 		[
 			AddVoidReturnTypeWhereNoReturnRector::class,
