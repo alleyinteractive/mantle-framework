@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Add a `without_local_object_cache()` method to prevent the `object-cache.php` drop-in from being loaded locally.
+
 ### Changed
 
 - Disable `spatie/once`'s cache if found during unit testing.

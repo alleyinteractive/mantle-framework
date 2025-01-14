@@ -1,8 +1,6 @@
 <?php // phpcs:disable
 /**
- * Installs WordPress for the purpose of the unit-tests
- *
- * @todo Reuse the init/load code in init.php
+ * Installs WordPress for the purpose of the unit-tests.
  */
 
 use Mantle\Testing\Utils;
