@@ -662,8 +662,6 @@ abstract class Builder {
 
 	/**
 	 * Get all the results of a query.
-	 *
-	 * @return Collection
 	 */
 	public function all(): Collection {
 		return $this->take( -1 )->get();

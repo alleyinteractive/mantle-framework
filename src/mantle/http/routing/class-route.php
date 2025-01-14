@@ -51,8 +51,6 @@ class Route extends Symfony_Route {
 
 	/**
 	 * Router instance.
-	 *
-	 * @var Router|null
 	 */
 	protected ?Router $router = null;
 

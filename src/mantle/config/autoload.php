@@ -18,7 +18,6 @@ if ( ! function_exists( 'config' ) ) {
 	 *
 	 * @param string|null $key Key to retrieve.
 	 * @param mixed       $default Default configuration value.
-	 * @return mixed
 	 */
 	function config( ?string $key = null, mixed $default = null ): mixed {
 		if ( is_null( $key ) ) {
