@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Disable `spatie/once`'s cache if found during unit testing.
 - Ensure that the `QUERY_STRING` server variable is set when testing HTTP
 	requests.
 
