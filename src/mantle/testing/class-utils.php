@@ -532,6 +532,11 @@ class Utils {
 			return;
 		}
 
+		// Ignore deprecated errors.
+		if ( E_DEPRECATED === $error['type'] || E_USER_DEPRECATED === $error['type'] ) {
+			return;
+		}
+
 		static::error( '🚨 Error during test run:', 'Shutdown' );
 		static::code( $error );
 
