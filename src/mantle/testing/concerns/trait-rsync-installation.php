@@ -213,6 +213,19 @@ trait Rsync_Installation {
 	}
 
 	/**
+	 * Skip the local object cache when running the tests.
+	 *
+	 * Useful for local development where the object cache may be causing issues.
+	 *
+	 * @param bool $skip Whether to skip the local object cache.
+	 */
+	public function without_local_object_cache( bool $skip = true ): static {
+		putenv( 'MANTLE_SKIP_LOCAL_OBJECT_CACHE=' . ( $skip ? '1' : '0' ) );
+
+		return $this;
+	}
+
+	/**
 	 * Install SQLite db.php drop-in into the codebase.
 	 *
 	 * This will only be applied if the codebase is being rsync-ed to a WordPress

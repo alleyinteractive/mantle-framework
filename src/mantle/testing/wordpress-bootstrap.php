@@ -210,6 +210,17 @@ tests_add_filter( 'vip_mu_plugins_loaded', function (): void {
 	remove_filter( 'pre_wp_load_alloptions', 'Automattic\\VIP\\Core\\OptionsAPI\\pre_wp_load_alloptions_protections', 999 );
 } );
 
+// Disable the object-cache.php drop if the MANTLE_SKIP_LOCAL_OBJECT_CACHE
+// environment variable is set. This should only apply locally and not when run
+// through GitHub Actions.
+tests_add_filter( 'enable_loading_object_cache_dropin', function ( $enable_object_cache ) {
+	if ( Utils::env_bool( 'MANTLE_SKIP_LOCAL_OBJECT_CACHE', false ) ) {
+		return false;
+	}
+
+	return $enable_object_cache;
+} );
+
 // Load WordPress.
 require_once ABSPATH . '/wp-settings.php';
 
