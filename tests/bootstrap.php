@@ -14,9 +14,6 @@ define( 'MANTLE_PHPUNIT_TEMPLATE_PATH', __DIR__ . '/template-parts' );
 // Enable debugging flag for local development on the testing framework.
 // define( 'MANTLE_TESTING_DEBUG', true );
 
-// List all environment variables.
-dd( $_ENV, $_SERVER );
-
 \Mantle\Testing\manager()
 	->maybe_rsync_plugin()
 	->with_vip_mu_plugins()

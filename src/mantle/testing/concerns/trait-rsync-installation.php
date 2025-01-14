@@ -216,6 +216,7 @@ trait Rsync_Installation {
 	 * Skip the local object cache when running the tests.
 	 *
 	 * Useful for local development where the object cache may be causing issues.
+	 * Will not disable the object cache drop-in when run in GitHub Actions.
 	 *
 	 * @param bool $skip Whether to skip the local object cache.
 	 */

@@ -211,10 +211,13 @@ tests_add_filter( 'vip_mu_plugins_loaded', function (): void {
 } );
 
 // Disable the object-cache.php drop if the MANTLE_SKIP_LOCAL_OBJECT_CACHE
-// environment variable is set. This should only apply locally and not when run
-// through GitHub Actions.
+// environment variable is set.
 tests_add_filter( 'enable_loading_object_cache_dropin', function ( $enable_object_cache ) {
-	if ( Utils::env_bool( 'MANTLE_SKIP_LOCAL_OBJECT_CACHE', false ) ) {
+	if ( Utils::env_bool( 'MANTLE_SKIP_LOCAL_OBJECT_CACHE', false ) && ! Utils::is_ci() ) {
+		if ( Utils::is_debug_mode() ) {
+			Utils::info( 'Skipping local object cache drop-in.' );
+		}
+
 		return false;
 	}
 
@@ -234,7 +237,7 @@ if ( isset( $_SERVER['REQUEST_TIME_FLOAT'] ) ) {
 	$_SERVER['REQUEST_TIME_FLOAT'] = (float) $_SERVER['REQUEST_TIME_FLOAT'];
 }
 
-// Disable VIP's alloptions protections during unit testing.
+// Remove the disabling of VIP's alloptions protections during unit testing.
 remove_filter( 'pre_wp_load_alloptions', 'Automattic\\VIP\\Core\\OptionsAPI\\pre_wp_load_alloptions_protections', 999 );
 
 // Delete any default posts & related data.
