@@ -20,11 +20,11 @@ class BlockAssertionsTest extends Framework_Test_Case {
 
 		$this->post = static::factory()->post->create_and_get( [
 			'post_content' => $this->faker->blocks( [
-				$this->faker->paragraph_block,
+				$this->faker->paragraph_block(),
 				$this->faker->heading_block( 3 ),
-				$this->faker->paragraph_block,
+				$this->faker->paragraph_block(),
 				$this->faker->heading_block( 4 ),
-				$this->faker->paragraph_block,
+				$this->faker->paragraph_block(),
 				$this->faker->block(
 					'vendor/example-name',
 					'',
