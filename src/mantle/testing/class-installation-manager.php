@@ -217,21 +217,21 @@ class Installation_Manager {
 	}
 
 	/**
-	 * Define the home URL to be set after the installation is loaded.
+	 * Define the site/home URLs to be set after the installation is loaded.
 	 *
-	 * @param string $url Home URL.
+	 * @param string|null $home_url Home URL.
+	 * @param string|null $site_url Site URL.
 	 */
-	public function with_home_url( string $url ): static {
-		return $this->with_option( 'home', $url );
-	}
+	public function with_urls( ?string $home_url = null, ?string $site_url = null ): static {
+		if ( $home_url ) {
+			$this->with_option( 'home', $home_url );
+		}
 
-	/**
-	 * Define the site URL to be set after the installation is loaded.
-	 *
-	 * @param string $url Site URL.
-	 */
-	public function with_site_url( string $url ): static {
-		return $this->with_option( 'siteurl', $url );
+		if ( $site_url ) {
+			$this->with_option( 'siteurl', $site_url );
+		}
+
+		return $this;
 	}
 
 	/**
