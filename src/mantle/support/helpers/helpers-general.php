@@ -375,7 +375,7 @@ function transform( $value, callable $callback, $default = null ) {
  *
  * @return mixed
  */
-function with( $value, callable $callback = null ) {
+function with( mixed $value, ?callable $callback = null ) {
 	return is_null( $callback ) ? $value : $callback( $value );
 }
 
