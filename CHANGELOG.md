@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Added a better `dump()` method to the response object when testing HTTP
+  requests that will dump the request/response to the console.
+
 ## v1.3.3 - 2025-01-10
 
 ### Added

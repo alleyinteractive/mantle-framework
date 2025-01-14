@@ -9,6 +9,7 @@ namespace Mantle\Testing;
 
 use Exception;
 use Mantle\Contracts\Application;
+use Mantle\Http\Request;
 use Mantle\Http\Response;
 use Mantle\Support\Traits\Macroable;
 use PHPUnit\Framework\Assert as PHPUnit;
@@ -18,6 +19,7 @@ use PHPUnit\Framework\Assert as PHPUnit;
  */
 class Test_Response {
 	use Concerns\Element_Assertions;
+	use Concerns\Response_Dumper;
 	use Concerns\Response_Snapshot_Testing;
 	use Macroable;
 
@@ -28,6 +30,8 @@ class Test_Response {
 
 	/**
 	 * Response headers.
+	 *
+	 * @var array<string, string|array<string>>
 	 */
 	public array $headers;
 
@@ -45,6 +49,11 @@ class Test_Response {
 	 * Assertable JSON string.
 	 */
 	protected Assertable_Json_String $decoded_json;
+
+	/**
+	 * Request that generated the response.
+	 */
+	protected Request $request;
 
 	/**
 	 * Create a new test response instance.
@@ -69,12 +78,29 @@ class Test_Response {
 	 * Set the container instance.
 	 *
 	 * @param Application $app Application instance.
-	 * @return static
 	 */
-	public function set_app( Application $app ) {
+	public function set_app( Application $app ): static {
 		$this->app = $app;
 
 		return $this;
+	}
+
+	/**
+	 * Set the request that generated the response.
+	 *
+	 * @param Request $request Request instance.
+	 */
+	public function set_request( Request $request ): static {
+		$this->request = $request;
+
+		return $this;
+	}
+
+	/**
+	 * Get the request that generated the response.
+	 */
+	public function get_request(): ?Request {
+		return $this->request ?? null;
 	}
 
 	/**
@@ -801,110 +827,5 @@ class Test_Response {
 	 */
 	public function json( ?string $key = null ) {
 		return $this->decoded_json()->json( $key );
-	}
-
-	/**
-	 * Dump the contents of the response to the screen.
-	 */
-	public function dump(): static {
-		$content = $this->get_content();
-
-		// If the content is not JSON, dump it as is.
-		if ( 'application/json' !== $this->get_header( 'Content-Type' ) ) {
-			dump( $content );
-
-			return $this;
-		}
-
-		$json = json_decode( $content );
-
-		if ( json_last_error() === JSON_ERROR_NONE ) {
-			$content = $json;
-		}
-
-		dump( $content );
-
-		return $this;
-	}
-
-	/**
-	 * Dump the headers of the response to the screen.
-	 */
-	public function dump_headers(): static {
-		dump( $this->headers );
-
-		return $this;
-	}
-
-	/**
-	 * Camel-case alias to dump_headers().
-	 */
-	public function dumpHeaders(): static {
-		return $this->dump_headers();
-	}
-
-	/**
-	 * Dump the JSON, optionally by path, to the screen.
-	 *
-	 * @param string|null $path
-	 */
-	public function dump_json( ?string $path = null ): static {
-		dump( $this->json( $path ) );
-
-		return $this;
-	}
-
-	/**
-	 * Camel-case alias to dump_json().
-	 *
-	 * @param string|null $path
-	 */
-	public function dumpJson( ?string $path = null ): static {
-		return $this->dump_json( $path );
-	}
-
-	/**
-	 * Dump the content from the response and end the script.
-	 */
-	public function dd(): void {
-		$this->dump();
-
-		exit( 1 );
-	}
-
-	/**
-	 * Dump the headers from the response and end the script.
-	 */
-	public function dd_headers(): void {
-		$this->dump_headers();
-
-		exit( 1 );
-	}
-
-	/**
-	 * Camel-case alias to dd_headers().
-	 */
-	public function ddHeaders(): void {
-		$this->dd_headers();
-	}
-
-	/**
-	 * Dump the JSON from the response and end the script.
-	 *
-	 * @param string|null $path
-	 */
-	public function dd_json( ?string $path = null ): void {
-		$this->dump_json( $path );
-
-		exit( 1 );
-	}
-
-	/**
-	 * Camel-case alias to dd_json().
-	 *
-	 * @param string|null $path
-	 */
-	public function ddJson( ?string $path = null ): void {
-		$this->dd_json( $path );
 	}
 }
