@@ -92,6 +92,13 @@ abstract class Test_Case extends BaseTestCase {
 	 * Runs the routine before setting up all tests.
 	 */
 	public static function setUpBeforeClass(): void {
+		parent::setUpBeforeClass();
+
+		// Disable the Spatie once cache for tests.
+		if ( class_exists( \Spatie\Once\Cache::class ) ) {
+			\Spatie\Once\Cache::getInstance()->disable();
+		}
+
 		static::register_traits();
 
 		if ( ! empty( static::$test_uses ) ) {
@@ -105,8 +112,6 @@ abstract class Test_Case extends BaseTestCase {
 				}
 			);
 		}
-
-		parent::setUpBeforeClass();
 
 		if ( isset( static::$test_uses[ Refresh_Database::class ] ) && method_exists( static::class, 'commit_transaction' ) ) {
 			static::commit_transaction();
@@ -148,10 +153,6 @@ abstract class Test_Case extends BaseTestCase {
 	protected function setUp(): void {
 		set_time_limit( 0 );
 
-		// Set the default permalink structure on each test before setUp() to allow
-		// the tests to override it.
-		$this->set_permalink_structure( Utils::DEFAULT_PERMALINK_STRUCTURE );
-
 		parent::setUp();
 
 		if ( ! isset( $this->app ) ) {
@@ -161,21 +162,18 @@ abstract class Test_Case extends BaseTestCase {
 		// Clear the test factory.
 		static::$factory = null;
 
-		$this->hooks_set_up();
-
-		$this->clean_up_global_scope();
+		static::clean_up_global_scope();
 
 		// Boot traits on the test case.
-		static::get_test_case_traits()
-			->each(
-				function ( $trait ): void {
-					$method = strtolower( class_basename( $trait ) ) . '_set_up';
+		static::get_test_case_traits()->each(
+			function ( $trait ): void {
+				$method = strtolower( class_basename( $trait ) ) . '_set_up';
 
-					if ( method_exists( $this, $method ) ) {
-						$this->{$method}();
-					}
+				if ( method_exists( $this, $method ) ) {
+					$this->{$method}();
 				}
-			);
+			}
+		);
 
 		remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
 		add_filter( 'wp_die_handler', [ WP_Die::class, 'get_handler' ] );
@@ -221,8 +219,8 @@ abstract class Test_Case extends BaseTestCase {
 		$wp_the_query = $wp_query;
 		$wp           = new WP();
 
-		// Reset globals related to the post loop and `setup_postdata()`.
-		$post_globals = [
+		$globals = [
+			// Reset globals related to the post loop and `setup_postdata()`.
 			'post',
 			'id',
 			'authordata',
@@ -233,14 +231,26 @@ abstract class Test_Case extends BaseTestCase {
 			'multipage',
 			'more',
 			'numpages',
+
+			// Comment globals.
+			'comment_alt',
+			'comment_depth',
+			'comment_thread_alt',
+
+			// Sitemap globals.
+			'wp_sitemaps',
+
+			// Template globals.
+			'wp_stylesheet_path',
+			'wp_template_path',
 		];
-		foreach ( $post_globals as $post_global ) {
-			$GLOBALS[ $post_global ] = null;
+		foreach ( $globals as $global ) {
+			$GLOBALS[ $global ] = null;
 		}
 
 		$this->unregister_all_meta_keys();
 		remove_filter( 'wp_die_handler', [ WP_Die::class, 'get_handler' ] );
-		$this->hooks_tear_down();
+		static::restore_hooks();
 		wp_set_current_user( 0 );
 		// phpcs:enable
 
@@ -280,6 +290,7 @@ abstract class Test_Case extends BaseTestCase {
 	protected static function get_priority_traits(): array {
 		return [
 			// This order is deliberate.
+			Hooks::class,
 			Refresh_Database::class,
 			WordPress_Authentication::class,
 			Admin_Screen::class,

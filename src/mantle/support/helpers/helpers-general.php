@@ -375,7 +375,7 @@ function transform( $value, callable $callback, $default = null ) {
  *
  * @return mixed
  */
-function with( $value, callable $callback = null ) {
+function with( mixed $value, ?callable $callback = null ) {
 	return is_null( $callback ) ? $value : $callback( $value );
 }
 
@@ -424,6 +424,17 @@ function classname( ...$args ): string {
  */
 function the_classnames( ...$args ): void {
 	echo esc_attr( classname( ...$args ) );
+}
+
+/**
+ * Capture the output of a callback.
+ *
+ * @param callable $callback
+ */
+function capture( callable $callback ): string {
+	ob_start();
+	$callback();
+	return ob_get_clean();
 }
 
 /**
@@ -504,7 +515,7 @@ function validate_file( $file, $allowed_files = [] ) {
 		return in_array( $retval, [ 0, 2 ], true ) ? 0 : $retval;
 	}
 
-	if ( ! is_scalar( $file ) || '' === $file ) {
+	if ( ! is_scalar( $file ) || '' === $file ) { // @phpstan-ignore-line function.alreadyNarrowedType
 		return 0;
 	}
 
@@ -532,13 +543,32 @@ function validate_file( $file, $allowed_files = [] ) {
 	return 0;
 }
 
-if ( ! function_exists( __NAMESPACE__ . '\defer' ) ) {
-	/**
-	 * Defer the execution of a function until after the response is sent to the page.
-	 *
-	 * @param callable $callback Callback to defer.
-	 */
-	function defer( callable $callback ): void {
-		app()->terminating( $callback );
+/**
+ * Defer the execution of a function until after the response is sent to the
+ * page.
+ *
+ * When used outside of the Mantle Framework, the callback will be added to the
+ * 'shutdown' hook after sending the response to the client.
+ *
+ * @param callable $callback Callback to defer.
+ */
+function defer( callable $callback ): void {
+	if ( ! function_exists( 'app' ) ) {
+		\add_action(
+			'shutdown',
+			function () use ( $callback ): void {
+				if ( function_exists( 'fastcgi_finish_request' ) ) {
+					fastcgi_finish_request();
+				} elseif ( function_exists( 'litespeed_finish_request' ) ) {
+					litespeed_finish_request();
+				}
+
+				$callback();
+			},
+		);
+
+		return;
 	}
+
+	app()->terminating( $callback );
 }

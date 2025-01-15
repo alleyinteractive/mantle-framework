@@ -57,7 +57,7 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 *
 	 * @throws InvalidArgumentException Thrown on invalid disk configuration.
 	 */
-	public function drive( string $name = null ): Filesystem {
+	public function drive( ?string $name = null ): Filesystem {
 		return $this->resolve_disk( $name ?: $this->get_default_disk() );
 	}
 
@@ -65,7 +65,6 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 * Retrieve a disk by name.
 	 *
 	 * @param string $name Disk name.
-	 * @return Filesystem
 	 * @throws InvalidArgumentException Thrown on invalid disk/driver configuration.
 	 */
 	protected function resolve_disk( string $name ): Filesystem {
@@ -116,9 +115,8 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 *
 	 * @param string                                                                                  $driver Driver name.
 	 * @param \Closure(\Mantle\Contracts\Application, array): \Mantle\Contracts\Filesystem\Filesystem $callback Callback to create the driver.
-	 * @return static
 	 */
-	public function extend( string $driver, Closure $callback ) {
+	public function extend( string $driver, Closure $callback ): static {
 		$this->custom_drivers[ $driver ] = $callback;
 
 		return $this;
@@ -129,7 +127,6 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 *
 	 * @param string $driver Driver name.
 	 * @param array  $config Configuration from disk.
-	 * @return Filesystem
 	 */
 	protected function call_custom_driver( string $driver, array $config ): Filesystem {
 		return $this->custom_drivers[ $driver ]( $this->app, $config );

@@ -5,9 +5,56 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+- Add Lazy Collection and bring Collection/Enumerable Values trait up-to-date with Laravel.
+
 ## Unreleased
 
-- Add Lazy Collection and bring Collection/Enumerable Values trait up-to-date with Laravel.
+📢 Minimum PHP version is now 8.2. The framework supports 8.2 - 8.4.
+
+### Added
+
+- ✨ Experimental feature ✨: Use the home URL as the base URL for testing rather
+  than `WP_TESTS_DOMAIN`. This can be enabled by calling the
+  `with_experimental_testing_url_host()` method of the installation manager or
+  by setting the `MANTLE_EXPERIMENTAL_TESTING_USE_HOME_URL_HOST` environment
+  variable.
+
+	Once enabled, the home URL will be used as the base URL for testing rather
+	the hard-coded `WP_TESTS_DOMAIN`. It will also infer the HTTPS status from
+	the home URL.
+- Added `with_option()`/`with_home_url()`/`with_site_url()` methods to the installation manager.
+- Add a `without_local_object_cache()` method to prevent the `object-cache.php` drop-in from being loaded locally.
+- Added a better `dump()` method to the response object when testing HTTP
+  requests that will dump the request/response to the console.
+
+### Changed
+
+- Removed support for PHP 8.1. The minimum PHP version is now 8.2.
+- For projects that require PHPUnit 9, the `phpunit/phpunit` version is now set to `^9.6.22`.
+- Upgraded to Symfony 7.0 packages.
+- Disable `spatie/once`'s cache if found during unit testing.
+- Ensure that the `QUERY_STRING` server variable is set when testing HTTP
+	requests.
+
+### Fixed
+
+- Ensure that built-in taxonomies properly register their rewrite rules during testing.
+
+## v1.3.3 - 2025-01-10
+
+### Added
+
+- Added `Mantle\Support\Helpers\capture` helper to capture output from a callback using output buffering.
+
+### Changed
+
+- Updated the `Mantle\Support\Helpers\defer` helper to be able to used outside
+  of the Mantle Framework via the `shutdown` hook.
+
+### Fixed
+
+- Allow `Filter`/`Action` attributes to be used multiple times on the same method.
+>>>>>>> @{-1}
 
 ## v1.3.2 - 2024-12-17
 

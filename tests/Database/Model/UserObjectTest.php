@@ -35,13 +35,13 @@ class UserObjectTest extends Framework_Test_Case {
 	}
 
 	public function test_create_user() {
-		$email = static::$faker->email;
+		$email = static::$faker->email();
 
 		$user = new User(
 			[
 				'email' => $email,
-				'slug'  => static::$faker->userName,
-				'password' => static::$faker->password,
+				'slug'  => static::$faker->userName(),
+				'password' => static::$faker->password(),
 			]
 		);
 
@@ -58,7 +58,7 @@ class UserObjectTest extends Framework_Test_Case {
 		$user_id = $this->get_random_user_id();
 		$user    = User::find( $user_id );
 
-		$email = static::$faker->email;
+		$email = static::$faker->email();
 		$user->email = $email;
 		$user->save();
 

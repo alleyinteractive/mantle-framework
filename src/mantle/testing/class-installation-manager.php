@@ -67,7 +67,7 @@ class Installation_Manager {
 	/**
 	 * Define a callback to be invoked before installation.
 	 *
-	 * @param callable $callback Callback to invoke before installation.
+	 * @param callable|null $callback Callback to invoke before installation.
 	 * @return static
 	 */
 	public function before( ?callable $callback ) {
@@ -186,6 +186,52 @@ class Installation_Manager {
 	 */
 	public function with_active_plugins( array $plugins ): static {
 		return $this->plugins( $plugins );
+	}
+
+	/**
+	 * Define if the testing suite should use the experimental feature that will
+	 * use the site's home URL host as the HTTP host when making requests.
+	 *
+	 * Without enabling this feature, the HTTP host will be set to the value of
+	 * the WP_TESTS_DOMAIN constant and all relative URLs will be calculated from
+	 * that domain.
+	 *
+	 * In the next major release of Mantle, this feature will be enabled by default.
+	 *
+	 * @param bool $enable Whether to enable the experimental feature.
+	 */
+	public function with_experimental_testing_url_host( bool $enable = true ): static {
+		return $this->before(
+			fn () => putenv( 'MANTLE_EXPERIMENTAL_TESTING_USE_HOME_URL_HOST=' . ( $enable ? '1' : '0' ) ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_putenv
+		);
+	}
+
+	/**
+	 * Define a custom option to be set after the installation is loaded.
+	 *
+	 * @param string $option Option name.
+	 * @param mixed  $value Option value.
+	 */
+	public function with_option( string $option, mixed $value ): static {
+		return $this->loaded( fn () => update_option( $option, $value ) );
+	}
+
+	/**
+	 * Define the site/home URLs to be set after the installation is loaded.
+	 *
+	 * @param string|null $home Home URL.
+	 * @param string|null $site Site URL.
+	 */
+	public function with_url( ?string $home = null, ?string $site = null ): static {
+		if ( $home ) {
+			$this->with_option( 'home', $home );
+		}
+
+		if ( $site ) {
+			$this->with_option( 'siteurl', $site );
+		}
+
+		return $this;
 	}
 
 	/**

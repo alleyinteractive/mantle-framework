@@ -25,6 +25,11 @@ use function Mantle\Support\Helpers\collect;
  */
 trait Hookable {
 	/**
+	 * Flag to determine if the hooks have been registered.
+	 */
+	protected bool $hooks_registered = false;
+
+	/**
 	 * Constructor (can be overridden by the trait user).
 	 */
 	public function __construct() {
@@ -40,6 +45,10 @@ trait Hookable {
 	 * respective WordPress hooks.
 	 */
 	protected function register_hooks(): void {
+		if ( $this->hooks_registered ) {
+			return;
+		}
+
 		$this->collect_action_methods()
 			->merge( $this->collect_attribute_hooks() )
 			->unique()
@@ -51,16 +60,20 @@ trait Hookable {
 						} else {
 							\Mantle\Support\Helpers\add_filter( $item['hook'], [ $this, $item['method'] ], $item['priority'] );
 						}
-					} else { // phpcs:ignore Universal.ControlStructures.DisallowLonelyIf.Found
-						// Use the default WordPress action/filter methods.
-						if ( 'action' === $item['type'] ) {
-							\add_action( $item['hook'], [ $this, $item['method'] ], $item['priority'], 999 );
-						} else {
-							\add_filter( $item['hook'], [ $this, $item['method'] ], $item['priority'], 999 );
-						}
+
+						return;
+					}
+
+					// Use the default WordPress action/filter methods.
+					if ( 'action' === $item['type'] ) {
+						\add_action( $item['hook'], [ $this, $item['method'] ], $item['priority'], 999 );
+					} else {
+						\add_filter( $item['hook'], [ $this, $item['method'] ], $item['priority'], 999 );
 					}
 				},
 			);
+
+		$this->hooks_registered = true;
 	}
 
 	/**

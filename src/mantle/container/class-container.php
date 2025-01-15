@@ -914,7 +914,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @param  \Closure|string $abstract
 	 * @param  \Closure|null   $callback
 	 */
-	public function resolving( $abstract, Closure $callback = null ): void {
+	public function resolving( $abstract, ?Closure $callback = null ): void {
 		if ( is_string( $abstract ) ) {
 			$abstract = $this->get_alias( $abstract );
 		}
@@ -932,7 +932,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @param  \Closure|string $abstract
 	 * @param  \Closure|null   $callback
 	 */
-	public function after_resolving( $abstract, Closure $callback = null ): void {
+	public function after_resolving( $abstract, ?Closure $callback = null ): void {
 		if ( is_string( $abstract ) ) {
 			$abstract = $this->get_alias( $abstract );
 		}

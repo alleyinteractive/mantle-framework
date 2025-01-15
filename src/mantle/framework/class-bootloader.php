@@ -131,7 +131,7 @@ class Bootloader implements Contract {
 	 * @param class-string<Contracts\Console\Kernel>|null $console Console kernel class.
 	 * @param class-string<Contracts\Http\Kernel>|null    $http    HTTP kernel class.
 	 */
-	public function with_kernels( string $console = null, string $http = null ): static {
+	public function with_kernels( ?string $console = null, ?string $http = null ): static {
 		if ( $console && ! in_array( Contracts\Console\Kernel::class, class_implements( $console ), true ) ) {
 			throw new \InvalidArgumentException(
 				'Console kernel must implement the Contracts\Console\Kernel interface.',
@@ -164,7 +164,7 @@ class Bootloader implements Contract {
 	 *
 	 * @param class-string<Contracts\Exceptions\Handler>|null $handler Exception handler class.
 	 */
-	public function with_exception_handler( string $handler = null ): static {
+	public function with_exception_handler( ?string $handler = null ): static {
 		if ( $handler && ! in_array( Contracts\Exceptions\Handler::class, class_implements( $handler ), true ) ) {
 			throw new \InvalidArgumentException(
 				'Exception handler must implement the Contracts\Exceptions\Handler interface.',

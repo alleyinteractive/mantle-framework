@@ -4,7 +4,7 @@
     "keywords": ["testing", "mantle"],
     "type": "library",
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
         "mantle-framework/config": "^1.0",
         "mantle-framework/container": "^1.0",
@@ -14,7 +14,7 @@
         "mantle-framework/support": "^1.0",
         "mantle-framework/testing": "^1.0",
         "nunomaduro/collision": "^6.0 || ^7.0",
-        "phpunit/phpunit": "^9.3.3 || ^10.0.7 || ^11.0",
+        "phpunit/phpunit": "^9.6.22 || ^10.0.7 || ^11.0",
         "symfony/http-foundation": "^6.0"
     },
     "extra": {

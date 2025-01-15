@@ -26,7 +26,7 @@ trait Has_Factory {
 	public static function factory( array|callable|null $state = null ): Factory {
 		$factory = static::new_factory() ?: Factory::factory_for_model( static::class );
 
-		return $factory
+		return $factory // @phpstan-ignore-line should return
 			->as_models()
 			->with_model( static::class )
 			->when(

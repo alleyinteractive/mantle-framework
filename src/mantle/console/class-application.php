@@ -87,7 +87,7 @@ class Application extends Console_Application implements Console_Application_Con
 	 * @param InputInterface|null  $input Input interface.
 	 * @param OutputInterface|null $output Output interface.
 	 */
-	public function run( InputInterface $input = null, OutputInterface $output = null ): int { // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod.Found
+	public function run( ?InputInterface $input = null, ?OutputInterface $output = null ): int { // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod.Found
 		return parent::run( $input, $output );
 	}
 

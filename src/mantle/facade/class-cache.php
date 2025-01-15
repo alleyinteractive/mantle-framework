@@ -7,6 +7,8 @@
 
 namespace Mantle\Facade;
 
+use Closure;
+
 /**
  * Cache Facade
  *
@@ -21,7 +23,7 @@ namespace Mantle\Facade;
  * @method static bool delete(string $key)
  * @method static bool delete_multiple(iterable $keys)
  * @method static bool clear()
- * @method static \static tags(string[]|string $names)
+ * @method static \Mantle\Cache\WordPress_Cache_Repository tags(string[]|string $names)
  * @method static mixed|null swr(string $key, int|\DateInterval|\DateTimeInterface|null $stale, int|\DateInterval|\DateTimeInterface|null $expire, Closure $callback)
  * @method static iterable getMultiple(iterable $keys, mixed $default = null)
  * @method static bool setMultiple(iterable $values, null|int|\DateInterval $ttl = null)

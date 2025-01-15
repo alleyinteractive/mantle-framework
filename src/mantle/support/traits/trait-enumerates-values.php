@@ -364,7 +364,7 @@ trait Enumerates_Values {
 	public function map_to_groups( callable $callback ) {
 		$groups = $this->map_to_dictionary( $callback );
 
-		return $groups->map( [ $this, 'make' ] );
+		return $groups->map( [ $this, 'make' ] ); // @phpstan-ignore-line return.type
 	}
 
 	/**

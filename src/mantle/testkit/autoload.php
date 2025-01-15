@@ -26,7 +26,7 @@ if (
 	&& empty( getenv( 'COLLISION_DISABLE' ) ) // A kill switch for disabling the printer.
 	&& class_exists( PHPUnitFacade::class )
 	&& class_exists( EnsurePrinterIsRegisteredSubscriber::class )
-	&& method_exists( PHPUnitFacade::class, 'registerSubscriber' )
-) {
+	&& method_exists( PHPUnitFacade::class, 'registerSubscriber' ) // @phpstan-ignore-line already
+) { // phpcs:ignore WordPress.WhiteSpace.ControlStructureSpacing.NoSpaceBeforeCloseParenthesis
 	PHPUnitFacade::instance()->registerSubscriber( new EnsurePrinterIsRegisteredSubscriber() );
 }

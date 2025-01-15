@@ -102,9 +102,8 @@ class Bound_Method {
 	 * Normalize the given callback into a Class@method string.
 	 *
 	 * @param callable $callback Callback function.
-	 * @return string
 	 */
-	protected static function normalize_method( $callback ) {
+	protected static function normalize_method( callable $callback ): string {
 		$class = is_string( $callback[0] ) ? $callback[0] : $callback[0]::class;
 		return "{$class}@{$callback[1]}";
 	}

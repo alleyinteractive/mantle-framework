@@ -49,7 +49,7 @@ class Pending_Testable_Request {
 	/**
 	 * Indicates whether the request should be made over HTTPS.
 	 */
-	public bool $https = false;
+	public ?bool $forced_https = null;
 
 	/**
 	 * The cookies for the request.
@@ -95,12 +95,15 @@ class Pending_Testable_Request {
 	}
 
 	/**
-	 * Define whether the request should be made over HTTPS.
+	 * Define whether the request should be forced to be made over HTTPS.
 	 *
-	 * @param bool $value Whether to use HTTPS.
+	 * This method will override the protocol of the URL passed when creating a
+	 * testable request.
+	 *
+	 * @param bool|null $value Whether to use HTTPS.
 	 */
-	public function with_https( bool $value ): static {
-		$this->https = $value;
+	public function with_https( ?bool $value ): static {
+		$this->forced_https = $value;
 
 		return $this;
 	}
@@ -235,11 +238,14 @@ class Pending_Testable_Request {
 			$uri = $this->infer_url( $uri );
 		}
 
+		$scheme = $this->get_default_url_scheme();
+		$host   = $this->get_default_url_host();
+
 		// Build a full URL from partial URIs.
 		if ( '/' === $uri[0] ) {
-			$url = 'https://' . WP_TESTS_DOMAIN . $uri;
+			$url = "{$scheme}://{$host}{$uri}";
 		} elseif ( false === strpos( $uri, '://' ) ) {
-			$url = 'https://' . WP_TESTS_DOMAIN . '/' . $uri;
+			$url = "{$scheme}://{$host}/{uri}";
 		} else {
 			$url = $uri;
 		}
@@ -278,20 +284,20 @@ class Pending_Testable_Request {
 
 		$this->test_case->call_before_callbacks();
 
+		// Setup the current request object.
+		$request = new Request(
+			$_GET,
+			$_POST,
+			[],
+			$_COOKIE,
+			$_FILES,
+			$_SERVER,
+			$content
+		);
+
 		// Attempt to run the query through the Mantle router.
 		if ( isset( $this->test_case->app['router'] ) ) {
 			$kernel = new HttpKernel( $this->test_case->app, $this->test_case->app['router'] );
-
-			// Setup the current request object.
-			$request = new Request(
-				$_GET,
-				$_POST,
-				[],
-				$_COOKIE,
-				$_FILES,
-				$_SERVER,
-				$content
-			);
 
 			// Mirror the logic from Request::createFromGlobals().
 			if (
@@ -330,6 +336,7 @@ class Pending_Testable_Request {
 			} catch ( \Exception $e ) {
 				// If an exception occurs, make sure the output buffer is closed before the exception continues to the caller.
 				ob_end_clean();
+
 				throw $e;
 			}
 
@@ -364,7 +371,9 @@ class Pending_Testable_Request {
 			);
 		}
 
-		$response->set_app( $this->test_case->app );
+		$response
+			->set_app( $this->test_case->app )
+			->set_request( $request );
 
 		$this->test_case->call_after_callbacks( $response );
 
@@ -421,21 +430,16 @@ class Pending_Testable_Request {
 			if ( str_starts_with( $key, 'HTTP_' ) && 'HTTP_HOST' !== $key ) {
 				unset( $_SERVER[ $key ] );
 			}
+		}
 
-			if ( isset( $_SERVER['CONTENT_TYPE'] ) ) {
-				unset( $_SERVER['CONTENT_TYPE'] );
-			}
-
-			if ( isset( $_SERVER['REMOTE_ADDR'] ) ) {
-				unset( $_SERVER['REMOTE_ADDR'] );
+		foreach ( [ 'CONTENT_TYPE', 'QUERY_STRING', 'REMOTE_ADDR' ] as $header ) {
+			if ( isset( $_SERVER[ $header ] ) ) {
+				unset( $_SERVER[ $header ] );
 			}
 		}
 
-		if ( $this->https ) {
-			$_SERVER['HTTPS'] = 'on';
-		} else {
-			unset( $_SERVER['HTTPS'] );
-		}
+		// Clear the HTTPS flag which will be set as-needed by the call method.
+		unset( $_SERVER['HTTPS'] );
 
 		// phpcs:enable
 	}
@@ -452,8 +456,12 @@ class Pending_Testable_Request {
 	protected function set_server_state( $method, $url, $server, $data, array $cookies = [] ): void {
 		// phpcs:disable WordPress.Security.NonceVerification
 		$_SERVER['REQUEST_METHOD'] = strtoupper( $method );
-		$_SERVER['SERVER_NAME']    = WP_TESTS_DOMAIN;
 		$_SERVER['SERVER_PORT']    = '80';
+
+		$_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'] = $this->is_experimental_use_home_url_host_enabled()
+			? wp_parse_url( home_url(), PHP_URL_HOST )
+			: WP_TESTS_DOMAIN;
+
 		unset( $_SERVER['PATH_INFO'] );
 
 		$parts = wp_parse_url( $url );
@@ -467,6 +475,13 @@ class Pending_Testable_Request {
 		} else {
 			$req = $url;
 		}
+
+		// Set HTTPS if it is being forced or if the URL being requested is HTTPS.
+		if ( $this->forced_https || ( isset( $parts['scheme'] ) && 'https' === $parts['scheme'] ) ) {
+			$_SERVER['HTTPS'] = 'on';
+		}
+
+		$_SERVER['QUERY_STRING'] = $parts['query'] ?? '';
 
 		$_SERVER['REQUEST_URI'] = $req;
 
@@ -534,6 +549,48 @@ class Pending_Testable_Request {
 		// Replace the `rest_api_loaded()` method with one we can control.
 		remove_filter( 'parse_request', 'rest_api_loaded' );
 		add_action( 'parse_request', [ $this, 'serve_rest_api_request' ] );
+	}
+
+	/**
+	 * Get the default URL scheme.
+	 *
+	 * If the request is being overridden to use HTTPS via {@see with_https()},
+	 * this will return 'https'. Otherwise, it will return the scheme of the home
+	 * URL of the WordPress installation.
+	 */
+	protected function get_default_url_scheme(): string {
+		if ( $this->forced_https ) {
+			return 'https';
+		}
+
+		if ( ! $this->is_experimental_use_home_url_host_enabled() ) {
+			return 'http';
+		}
+
+		return wp_parse_url( home_url(), PHP_URL_SCHEME );
+	}
+
+	/**
+	 * Get the default URL host.
+	 *
+	 * If the `MANTLE_EXPERIMENTAL_TESTING_USE_HOME_URL_HOST` environment variable
+	 * is set, this will return the host of the home URL. Otherwise, it will
+	 * return the host defined in the WordPress tests configuration.
+	 *
+	 * With the next major release of Mantle, we will be shifting to using the
+	 * home URL host by default.
+	 */
+	protected function get_default_url_host(): string {
+		return $this->is_experimental_use_home_url_host_enabled()
+			? wp_parse_url( home_url(), PHP_URL_HOST )
+			: WP_TESTS_DOMAIN;
+	}
+
+	/**
+	 * Check if the experimental testing URL host feature is enabled.
+	 */
+	protected function is_experimental_use_home_url_host_enabled(): bool {
+		return Utils::env_bool( 'MANTLE_EXPERIMENTAL_TESTING_USE_HOME_URL_HOST', false );
 	}
 
 	/**
