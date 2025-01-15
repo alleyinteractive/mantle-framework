@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        dependencies: ["lowest", "highest"]
+        dependencies: ["prefer-lowest", "prefer-stable"]
         multisite: [true, false]
         php: [8.2, 8.3, 8.4]
         wordpress: ["latest"]
@@ -41,7 +41,7 @@ jobs:
         # See https://github.com/alleyinteractive/action-test-php for more options
         uses: alleyinteractive/action-test-php@develop
         with:
-          install-command: ${{ matrix.dependencies == 'lowest' && 'composer update --prefer-dist --no-interaction --no-progress --prefer-lowest' || 'composer update --prefer-dist --no-interaction --no-progress --prefer-stable' }}
+          install-command: composer update --${{ matrix.dependencies }} --prefer-dist --no-interaction --no-progress
           php-version: '${{ matrix.php }}'
           skip-wordpress-install: 'true'
           wordpress-host: 'false'
