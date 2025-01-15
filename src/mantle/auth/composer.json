@@ -6,7 +6,7 @@
         "php": "^8.2",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
         "mantle-framework/http": "^1.0",
-        "symfony/http-kernel": "^6.0.20"
+        "symfony/http-kernel": "^7.0"
     },
     "extra": {
         "wordpress-autoloader": {

@@ -13,7 +13,7 @@
         "mantle-framework/http": "^1.0",
         "mantle-framework/support": "^1.0",
         "nunomaduro/termwind": "^1.15.1",
-        "symfony/css-selector": "^6.2",
+        "symfony/css-selector": "^7.0",
         "spatie/phpunit-snapshot-assertions": "^4.2 || ^5.1"
     },
     "extra": {
