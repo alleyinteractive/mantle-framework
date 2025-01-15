@@ -37,7 +37,7 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 
 	public function test_get_singular() {
 		$post_id = static::factory()->post->create();
-		$this->get( get_permalink( $post_id ) )
+		$this->get( get_permalink( $post_id ) . '?test=asda' )
 			->assertQueryTrue( 'is_single', 'is_singular' )
 			->assertQueriedObjectId( $post_id )
 			->assertSee( get_the_title( $post_id ) );
@@ -145,7 +145,7 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 			}
 		);
 
-		$this->post( '/test-post' )
+		$this->post( '/test-post', [ 'request-param' => 'bar' ], [ 'test-header' => 'test-value' ] )
 			->assertCreated()
 			->assertHeader( 'test-header', 'test-value' )
 			->assertContent( 'yes' );

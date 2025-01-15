@@ -278,20 +278,20 @@ class Pending_Testable_Request {
 
 		$this->test_case->call_before_callbacks();
 
+		// Setup the current request object.
+		$request = new Request(
+			$_GET,
+			$_POST,
+			[],
+			$_COOKIE,
+			$_FILES,
+			$_SERVER,
+			$content
+		);
+
 		// Attempt to run the query through the Mantle router.
 		if ( isset( $this->test_case->app['router'] ) ) {
 			$kernel = new HttpKernel( $this->test_case->app, $this->test_case->app['router'] );
-
-			// Setup the current request object.
-			$request = new Request(
-				$_GET,
-				$_POST,
-				[],
-				$_COOKIE,
-				$_FILES,
-				$_SERVER,
-				$content
-			);
 
 			// Mirror the logic from Request::createFromGlobals().
 			if (
@@ -330,6 +330,7 @@ class Pending_Testable_Request {
 			} catch ( \Exception $e ) {
 				// If an exception occurs, make sure the output buffer is closed before the exception continues to the caller.
 				ob_end_clean();
+
 				throw $e;
 			}
 
@@ -364,7 +365,9 @@ class Pending_Testable_Request {
 			);
 		}
 
-		$response->set_app( $this->test_case->app );
+		$response
+			->set_app( $this->test_case->app )
+			->set_request( $request );
 
 		$this->test_case->call_after_callbacks( $response );
 
@@ -421,13 +424,11 @@ class Pending_Testable_Request {
 			if ( str_starts_with( $key, 'HTTP_' ) && 'HTTP_HOST' !== $key ) {
 				unset( $_SERVER[ $key ] );
 			}
+		}
 
-			if ( isset( $_SERVER['CONTENT_TYPE'] ) ) {
-				unset( $_SERVER['CONTENT_TYPE'] );
-			}
-
-			if ( isset( $_SERVER['REMOTE_ADDR'] ) ) {
-				unset( $_SERVER['REMOTE_ADDR'] );
+		foreach ( [ 'CONTENT_TYPE', 'QUERY_STRING', 'REMOTE_ADDR' ] as $header ) {
+			if ( isset( $_SERVER[ $header ] ) ) {
+				unset( $_SERVER[ $header ] );
 			}
 		}
 
@@ -467,6 +468,8 @@ class Pending_Testable_Request {
 		} else {
 			$req = $url;
 		}
+
+		$_SERVER['QUERY_STRING'] = $parts['query'] ?? '';
 
 		$_SERVER['REQUEST_URI'] = $req;
 
