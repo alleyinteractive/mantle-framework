@@ -476,16 +476,13 @@ class Pending_Testable_Request {
 			$req = $url;
 		}
 
-<<<<<<< HEAD
 		// Set HTTPS if it is being forced or if the URL being requested is HTTPS.
 		if ( $this->forced_https || ( isset( $parts['scheme'] ) && 'https' === $parts['scheme'] ) ) {
 			$_SERVER['HTTPS'] = 'on';
 		}
-=======
-		$_SERVER['QUERY_STRING'] = $parts['query'] ?? '';
->>>>>>> origin/1.x
 
-		$_SERVER['REQUEST_URI'] = $req;
+		$_SERVER['QUERY_STRING'] = $parts['query'] ?? '';
+		$_SERVER['REQUEST_URI']  = $req;
 
 		$_POST = $data;
 
