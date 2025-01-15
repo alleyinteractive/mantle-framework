@@ -227,7 +227,6 @@ class Filesystem {
 	 * @return bool
 	 */
 	public function delete( ...$paths ): bool {
-
 		$success = true;
 
 		foreach ( $paths as $path ) {
