@@ -233,9 +233,6 @@ class Post_Factory extends Factory {
 				: Carbon::now()->subSeconds( $separation * $count )->startOfMinute();
 		}
 
-		// Set the date for the first post (seconds added before each run).
-		$date = $starting_date->subSeconds( $separation );
-
 		return collect()
 			->pad( $count, null )
 			->map(

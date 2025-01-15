@@ -224,7 +224,6 @@ class Filesystem {
 	 * Delete the file at a given path.
 	 *
 	 * @param  string ...$paths
-	 * @return bool
 	 */
 	public function delete( ...$paths ): bool {
 		$success = true;
