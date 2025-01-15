@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     # Cancel any existing runs of this workflow
     concurrency:
-      group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}-P${{ matrix.php }}-WP${{ matrix.wordpress }}
+      group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}-P${{ matrix.php }}-WP${{ matrix.wordpress }}-MS${{ matrix.multisite && '1' || '0' }}-D${{ matrix.dependencies }}
       cancel-in-progress: true
     # Name the job in the matrix
     name: "PR Tests PHP ${{ matrix.php }} WordPress ${{ matrix.wordpress }} ${{ matrix.multisite && 'Multisite' || '' }} Dependencies ${{ matrix.dependencies }}"
@@ -41,7 +41,7 @@ jobs:
         # See https://github.com/alleyinteractive/action-test-php for more options
         uses: alleyinteractive/action-test-php@develop
         with:
-          install-command: '${{ matrix.dependencies == "lowest" && "composer install --prefer-dist --no-interaction --no-progress --prefer-lowest" || "composer install --prefer-dist --no-interaction --no-progress" }}'
+          install-command: ${{ matrix.dependencies == 'lowest' && 'composer install --prefer-dist --no-interaction --no-progress --prefer-lowest' || 'composer install --prefer-dist --no-interaction --no-progress' }}
           php-version: '${{ matrix.php }}'
           wordpress-version: '${{ matrix.wordpress }}'
           skip-wordpress-install: 'true'
