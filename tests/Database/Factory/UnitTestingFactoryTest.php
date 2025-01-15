@@ -65,15 +65,13 @@ class UnitTestingFactoryTest extends Framework_Test_Case {
 
 		$dates = collect( $post_ids )
 			->map( fn ( $post_id ) => Carbon::parse( get_post( $post_id )->post_date ) )
+			// ->dd()
 			->to_array();
 
 		foreach ( $dates as $i => $date ) {
-			if ( isset( $dates[ $i - 1 ] ) ) {
-				$this->assertEquals(
-					3600,
-					$date->diffInSeconds( $dates[ $i - 1 ] ),
-					'Distance between posts not expected 3600 seconds',
-				);
+			// Check that the dates are in descending order and spaced by 1 hour.
+			if ( $i > 0 ) {
+				$this->assertEquals( 3600, $dates[ $i - 1 ]->diffInSeconds( $date ) );
 			}
 		}
 
