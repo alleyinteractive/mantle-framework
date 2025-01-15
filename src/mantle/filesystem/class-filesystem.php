@@ -230,7 +230,9 @@ class Filesystem {
 
 		foreach ( $paths as $path ) {
 			try {
-				if ( file_exists( $path ) && ! @unlink( $path ) ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, Generic.PHP.NoSilencedErrors.Forbidden
+				if ( @unlink( $path ) ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, Generic.PHP.NoSilencedErrors.Forbidden
+					clearstatcache( false, $path );
+				} else {
 					$success = false;
 				}
 			} catch ( ErrorException ) {
@@ -491,7 +493,7 @@ class Filesystem {
 	 * @param  int    $mode
 	 * @param  bool   $recursive
 	 */
-	public function ensure_directory_exists( $path, $mode = 0755, $recursive = true ): void {
+	public function ensure_directory_exists( string $path, int $mode = 0755, bool $recursive = true ): void {
 		if ( ! $this->is_directory( $path ) ) {
 			$this->make_directory( $path, $mode, $recursive );
 		}
@@ -505,7 +507,7 @@ class Filesystem {
 	 * @param  bool   $recursive
 	 * @return bool
 	 */
-	public function make_directory( $path, $mode = 0755, $recursive = false ) {
+	public function make_directory( string $path, int $mode = 0755, bool $recursive = false ) {
 		return mkdir( $path, $mode, $recursive );
 	}
 
@@ -516,7 +518,7 @@ class Filesystem {
 	 * @param  string $to
 	 * @param  bool   $overwrite
 	 */
-	public function move_directory( $from, $to, $overwrite = false ): bool {
+	public function move_directory( string $from, string $to, bool $overwrite = false ): bool {
 		if ( $overwrite && $this->is_directory( $to ) && ! $this->delete_directory( $to ) ) {
 			return false;
 		}
@@ -531,7 +533,7 @@ class Filesystem {
 	 * @param  string   $destination
 	 * @param  int|null $options
 	 */
-	public function copy_directory( $directory, $destination, $options = null ): bool {
+	public function copy_directory( string $directory, string $destination, ?int $options = null ): bool {
 		if ( ! $this->is_directory( $directory ) ) {
 			return false;
 		}
@@ -590,13 +592,14 @@ class Filesystem {
 			if ( $item->isDir() && ! $item->isLink() ) {
 				$this->delete_directory( $item->getPathname() );
 			} else {
-
 				// If the item is just a file, we can go ahead and delete it since we're
 				// just looping through and waxing all of the files in this directory
 				// and calling directories recursively, so we delete the real path.
 				$this->delete( $item->getPathname() );
 			}
 		}
+
+		unset( $items );
 
 		if ( ! $preserve ) {
 			@rmdir( $directory ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, Generic.PHP.NoSilencedErrors.Forbidden

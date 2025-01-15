@@ -6,6 +6,7 @@ use Mantle\Facade\Route;
 use Mantle\Http\Response;
 use Mantle\Framework\Providers\Routing_Service_Provider;
 use Mantle\Http\Request;
+use Mantle\Support\Str;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Concerns\Reset_Server;
 use Mantle\Testing\Framework_Test_Case;
@@ -456,7 +457,7 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 
 	public function test_multiple_requests() {
 		$methods = collect( get_class_methods( $this ) )
-			->filter( fn ( $method ) => false === strpos( $method, '_snapshot_' ) )
+			->filter( fn ( string $method ) => ! Str::contains( $method, [ 'experimental', '_snapshot_' ] ) && 0 === strpos( $method, 'test_' ) )
 			->shuffle()
 			->all();
 
