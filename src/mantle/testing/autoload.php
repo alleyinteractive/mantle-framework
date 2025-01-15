@@ -33,9 +33,9 @@ function manager(): Installation_Manager {
 /**
  * Install the Mantle Testing Framework
  *
- * @param callable $callback Callback to invoke once the installation has begun.
+ * @param callable|null $callback Callback to invoke once the installation has begun.
  */
-function install( callable $callback = null ): Installation_Manager {
+function install( ?callable $callback = null ): Installation_Manager {
 	return tap(
 		manager(),
 		fn ( Installation_Manager $manager ) => $manager->before( $callback ),

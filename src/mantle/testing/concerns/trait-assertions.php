@@ -145,7 +145,7 @@ trait Assertions {
 	 * @param array $array Array to check.
 	 */
 	public static function assertNonEmptyMultidimensionalArray( $array ): void {
-		PHPUnit::assertTrue( is_array( $array ) );
+		PHPUnit::assertTrue( is_array( $array ) ); // @phpstan-ignore-line function.alreadyNarrowedType
 		PHPUnit::assertNotEmpty( $array );
 
 		foreach ( $array as $sub_array ) {

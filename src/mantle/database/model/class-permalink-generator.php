@@ -40,7 +40,7 @@ class Permalink_Generator implements \Stringable {
 	 * @param string     $route Route to generate for.
 	 * @param Model|null $model Model to generator for, optional.
 	 */
-	public static function create( string $route, Model $model = null ): Permalink_Generator {
+	public static function create( string $route, ?Model $model = null ): Permalink_Generator {
 		return new static( $route, $model );
 	}
 

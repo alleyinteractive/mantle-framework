@@ -101,7 +101,7 @@ class Uploaded_File extends SymfonyUploadedFile {
 	 * @throws RuntimeException Thrown on error storing file.
 	 * @todo Enable proper attachment meta data indexing.
 	 */
-	public function store_as_attachment( string $path = '/', string $name = null, $options = [] ): Attachment {
+	public function store_as_attachment( string $path = '/', ?string $name = null, $options = [] ): Attachment {
 		$options = $this->parse_options( $options );
 
 		// Set the default visibility for attachments to public.

@@ -72,8 +72,8 @@ trait Hides_Attributes {
 	/**
 	 * Make the given, typically hidden, attributes visible.
 	 *
-	 * @param array|string ...$attributes Attributes to make visible.
-	 * @return $this
+	 * @param string ...$attributes Attributes to make visible.
+	 * @return static
 	 */
 	public function make_visible( ...$attributes ) {
 		$this->hidden = array_diff( $this->hidden, $attributes );
@@ -88,8 +88,8 @@ trait Hides_Attributes {
 	/**
 	 * Make the given, typically hidden, attributes visible if the given truth test passes.
 	 *
-	 * @param  bool|Closure         $condition Condition to check.
-	 * @param  string[]|string|null ...$attributes Attributes to make visible.
+	 * @param  bool|Closure $condition Condition to check.
+	 * @param  string|null  ...$attributes Attributes to make visible.
 	 * @return static
 	 */
 	public function make_visible_if( $condition, ...$attributes ) {

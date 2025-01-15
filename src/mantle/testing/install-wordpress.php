@@ -1,13 +1,11 @@
 <?php // phpcs:disable
 /**
- * Installs WordPress for the purpose of the unit-tests
- *
- * @todo Reuse the init/load code in init.php
+ * Installs WordPress for the purpose of the unit-tests.
  */
 
 use Mantle\Testing\Utils;
 
-error_reporting( E_ALL & ~E_DEPRECATED & ~E_STRICT );
+error_reporting( E_ALL & ~E_DEPRECATED );
 
 define( 'WP_INSTALLING', true );
 

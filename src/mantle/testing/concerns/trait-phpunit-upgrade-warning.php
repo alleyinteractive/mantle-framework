@@ -36,7 +36,7 @@ trait PHPUnit_Upgrade_Warning {
 	 */
 	protected function is_running_phpunit_10_or_higher(): bool {
 		// Prevent conflicts if the internal class API changes.
-		if ( ! class_exists( Version::class ) || ! method_exists( Version::class, 'id' ) ) {
+		if ( ! class_exists( Version::class ) || ! method_exists( Version::class, 'id' ) ) { // @phpstan-ignore-line function.alreadyNarrowedType
 			return false;
 		}
 
@@ -54,7 +54,7 @@ trait PHPUnit_Upgrade_Warning {
 		}
 
 		// Prevent conflicts if the internal class API changes.
-		if ( ! method_exists( $test_suite, 'directories' ) ) {
+		if ( ! method_exists( $test_suite, 'directories' ) ) { // @phpstan-ignore-line function.alreadyNarrowedType
 			return;
 		}
 
@@ -62,7 +62,7 @@ trait PHPUnit_Upgrade_Warning {
 		// is a clear sign of a legacy test suite.
 		$legacy_test_cases = collect( $test_suite->directories() )
 			->filter(
-				fn ( $directory ) => method_exists( $directory, 'prefix' ) && 'test-' === $directory->prefix(),
+				fn ( $directory ) => method_exists( $directory, 'prefix' ) && 'test-' === $directory->prefix(), // @phpstan-ignore-line function.alreadyNarrowedType
 			);
 
 		if ( $legacy_test_cases->is_empty() ) {
@@ -106,14 +106,14 @@ trait PHPUnit_Upgrade_Warning {
 			return;
 		}
 
-		if ( ! class_exists( Registry::class ) || ! method_exists( Registry::class, 'get' ) ) {
+		if ( ! class_exists( Registry::class ) || ! method_exists( Registry::class, 'get' ) ) { // @phpstan-ignore-line function.alreadyNarrowedType{
 			return;
 		}
 
 		$registry = Registry::get();
 
 		foreach ( $registry->testSuite()->asArray() as $test_suite ) {
-			if ( $test_suite instanceof TestSuite ) {
+			if ( $test_suite instanceof TestSuite ) { // @phpstan-ignore-line true
 				$this->warn_if_test_suite_contains_legacy_test_cases( $test_suite );
 			}
 		}

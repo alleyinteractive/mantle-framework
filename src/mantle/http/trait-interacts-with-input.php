@@ -231,9 +231,8 @@ trait Interacts_With_Input {
 	 * Get a subset containing the provided keys with values from the input data.
 	 *
 	 * @param  array|mixed $keys
-	 * @return array
 	 */
-	public function only( $keys ) {
+	public function only( $keys ): array {
 		$results = [];
 
 		$input = $this->all();

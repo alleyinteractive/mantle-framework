@@ -39,6 +39,12 @@ class TermModelRoutingTest extends Framework_Test_Case {
 			->assertQueryTrue( 'is_archive', 'is_category', 'is_tax' );
 	}
 
+	public function test_tag_url() {
+		$tag = static::factory()->tag->create( [ 'name' => 'Example Tag' ] );
+
+		$this->assertEquals( home_url( '/tag/example-tag/' ), get_term_link( $tag ) );
+	}
+
 	public function test_custom_taxonomy() {
 		Testable_Custom_Taxonomy_Model::register_object();
 

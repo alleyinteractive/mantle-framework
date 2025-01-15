@@ -16,5 +16,5 @@ interface Filesystem_Manager {
 	 *
 	 * @param string $name Disk name.
 	 */
-	public function drive( string $name = null ): Filesystem;
+	public function drive( ?string $name = null ): Filesystem;
 }

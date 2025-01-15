@@ -32,8 +32,8 @@ class {{ class }}_Factory extends \Mantle\Database\Factory\Term_Factory {
 	 */
 	public function definition(): array {
 		return [
-			'name'        => $this->faker->sentence,
-			'description' => $this->faker->paragraph,
+			'name'        => $this->faker->sentence(),
+			'description' => $this->faker->paragraph(),
 			'taxonomy'    => '{{ object_name }}',
 		];
 	}

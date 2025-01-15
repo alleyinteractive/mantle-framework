@@ -28,7 +28,6 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 		parent::setUp();
 
 		remove_all_actions( 'template_redirect' );
-
 	}
 
 	public function test_get_home() {
@@ -73,9 +72,10 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 	public function test_get_term() {
 		$category_id = static::factory()->category->create();
 
-		$this->get( get_term_link( $category_id, 'category' ) );
-		$this->assertQueryTrue( 'is_archive', 'is_category' );
-		$this->assertQueriedObjectId( $category_id );
+		$this
+			->get( get_term_link( $category_id, 'category' ) )
+			->assertQueryTrue( 'is_archive', 'is_category' )
+			->assertQueriedObjectId( $category_id );
 	}
 
 	public function test_wordpress_404() {

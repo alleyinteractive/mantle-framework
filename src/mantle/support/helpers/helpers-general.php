@@ -375,7 +375,7 @@ function transform( $value, callable $callback, $default = null ) {
  *
  * @return mixed
  */
-function with( $value, callable $callback = null ) {
+function with( mixed $value, ?callable $callback = null ) {
 	return is_null( $callback ) ? $value : $callback( $value );
 }
 
@@ -515,7 +515,7 @@ function validate_file( $file, $allowed_files = [] ) {
 		return in_array( $retval, [ 0, 2 ], true ) ? 0 : $retval;
 	}
 
-	if ( ! is_scalar( $file ) || '' === $file ) {
+	if ( ! is_scalar( $file ) || '' === $file ) { // @phpstan-ignore-line function.alreadyNarrowedType
 		return 0;
 	}
 

@@ -9,8 +9,8 @@
 
 namespace Mantle\Assets;
 
-use Asset_Manager_Preload;
-use Asset_Manager_Scripts;
+use Alley\WP\Asset_Manager\Preload as Asset_Manager_Preload;
+use Alley\WP\Asset_Manager\Scripts as Asset_Manager_Scripts;
 use Mantle\Contracts\Assets\Asset_Manager as Asset_Manager_Contract;
 use Mantle\Contracts\Assets\Load_Method;
 

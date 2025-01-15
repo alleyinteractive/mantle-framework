@@ -32,7 +32,7 @@ class Logger extends MonologLogger {
 	 * @param Dispatcher $dispatcher Dispatcher instance.
 	 * @return static
 	 */
-	public function set_dispatcher( Dispatcher $dispatcher = null ) {
+	public function set_dispatcher( ?Dispatcher $dispatcher = null ) {
 		$this->dispatcher = $dispatcher;
 		return $this;
 	}
@@ -48,7 +48,7 @@ class Logger extends MonologLogger {
 	 *
 	 * @phpstan-param Level $level
 	 */
-	public function addRecord( int $level, string $message, array $context = [], DateTimeImmutable $datetime = null ): bool {
+	public function addRecord( int $level, string $message, array $context = [], ?DateTimeImmutable $datetime = null ): bool {
 		$this->fire_log_event( $this->getLevelName( $level ), $message, $context );
 
 		return parent::addRecord( $level, $message, $context, $datetime );

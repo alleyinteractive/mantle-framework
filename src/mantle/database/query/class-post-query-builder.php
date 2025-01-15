@@ -150,7 +150,7 @@ class Post_Query_Builder extends Builder {
 		$post_ids = $query->posts;
 
 		if ( empty( $post_ids ) ) {
-			return ( new Collection() )->with_found_rows( $this->found_rows ); // @phpstan-ignore-line should return
+			return ( new Collection() )->with_found_rows( $this->found_rows );
 		}
 
 		$models = $this

@@ -22,7 +22,7 @@ interface Application {
 	 * @param InputInterface|null  $input Input interface.
 	 * @param OutputInterface|null $output Output interface.
 	 */
-	public function run( InputInterface $input = null, OutputInterface $output = null ): int;
+	public function run( ?InputInterface $input = null, ?OutputInterface $output = null ): int;
 
 	/**
 	 * Run a command through the console application by name.
