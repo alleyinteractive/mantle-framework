@@ -114,7 +114,7 @@ class Block_Factory {
 	public function blocks( array|string ...$blocks ): string {
 		$blocks = isset( $blocks[0] ) && is_array( $blocks[0] ) ? $blocks[0] : $blocks;
 
-		if ( ! is_array( $blocks ) ) {
+		if ( ! is_array( $blocks ) ) { // @phpstan-ignore-line function.alreadyNarrowedType
 			$blocks = [ $blocks ];
 		}
 

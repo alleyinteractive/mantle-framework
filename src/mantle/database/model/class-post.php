@@ -197,7 +197,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 			/**
 			 * Retrieve the object name.
 			 */
-			public static function get_object_name(): ?string {
+			public static function get_object_name(): string {
 				return self::$for_object_name;
 			}
 

@@ -66,7 +66,7 @@ class WP_Die {
 			$message = $message->get_error_message();
 		}
 
-		if ( ! is_scalar( $message ) ) {
+		if ( ! is_scalar( $message ) ) { // @phpstan-ignore-line alreadyNarrowedType
 			$message = '0';
 		}
 

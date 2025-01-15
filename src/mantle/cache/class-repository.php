@@ -184,7 +184,7 @@ abstract class Repository implements CacheInterface {
 	 * @param string $key Cache key.
 	 */
 	public function has( string $key ): bool {
-		return '__default__' !== $this->get( $key, '__default__' );
+		return '__default__' !== $this->get( $key, '__default__' ); // @phpstan-ignore-line always evaluate
 	}
 
 	/**

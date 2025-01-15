@@ -46,7 +46,7 @@ trait Interacts_With_Mail {
 		}
 
 		$this->assertNotEmpty(
-			$this->getSentMail( $address_or_callback ),
+			$this->get_sent_mail( $address_or_callback )->all(),
 			is_string( $address_or_callback ) ? "No email was sent to [{$address_or_callback}]." : 'No email was sent matching the given callback function.'
 		);
 	}
@@ -69,7 +69,7 @@ trait Interacts_With_Mail {
 		}
 
 		$this->assertEmpty(
-			$this->getSentMail( $address_or_callback ),
+			$this->get_sent_mail( $address_or_callback )->all(),
 			is_string( $address_or_callback ) ? "An email was sent to [{$address_or_callback}]." : 'An email was sent matching the given callback function.'
 		);
 	}
@@ -93,7 +93,7 @@ trait Interacts_With_Mail {
 			return;
 		}
 
-		$sent_mail = $this->getSentMail( $address_or_callback );
+		$sent_mail = $this->get_sent_mail( $address_or_callback );
 		$count     = count( $sent_mail );
 
 		$this->assertCount( $expected_count, $sent_mail, "Expected {$expected_count} emails to be sent, but only {$count} were sent." );
@@ -103,10 +103,10 @@ trait Interacts_With_Mail {
 	 * Retrieve the sent mail for a given to address or callback function that
 	 * performs a match against sent mail.
 	 *
-	 * @param (callable(\Mantle\Testing\Mail\Mail_Message): bool)|string $address_or_callback The email address to check for, or a callback to perform custom assertions.
+	 * @param (callable(\Mantle\Testing\Mail\Mail_Message): bool)|string|null $address_or_callback The email address to check for, or a callback to perform custom assertions.
 	 * @return Collection<int, \Mantle\Testing\Mail\Mail_Message>
 	 */
-	protected function getSentMail( string|callable|null $address_or_callback = null ): Collection {
+	protected function get_sent_mail( string|callable|null $address_or_callback = null ): Collection {
 		$mailer = tests_retrieve_phpmailer_instance();
 
 		if ( ! ( $mailer instanceof Mock_Mailer ) ) {

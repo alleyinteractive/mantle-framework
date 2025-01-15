@@ -59,7 +59,7 @@
         "spatie/ray": "^1.41",
         "squizlabs/php_codesniffer": "^3.7",
         "symplify/monorepo-builder": "^10.3.3",
-        "szepeviktor/phpstan-wordpress": "^2.0"
+        "szepeviktor/phpstan-wordpress": "^2.0.1"
     },
     "replace": {
         "mantle-framework/assets": "self.version",

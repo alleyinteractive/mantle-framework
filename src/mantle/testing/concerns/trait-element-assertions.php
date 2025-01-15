@@ -263,7 +263,7 @@ trait Element_Assertions {
 			}
 		}
 
-		PHPUnit::assertTrue( true, 'All nodes passed assertion.' );
+		PHPUnit::assertTrue( true, 'All nodes passed assertion.' ); // @phpstan-ignore-line alreadyNarrowedType
 
 		return $this;
 	}

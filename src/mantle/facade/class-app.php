@@ -77,16 +77,16 @@ namespace Mantle\Facade;
  * @method static \Mantle\Contracts\Container getInstance()
  * @method static \Mantle\Contracts\Container get_instance()
  * @method static \Mantle\Contracts\Container|null set_instance(\Mantle\Contracts\Container|null $container = null)
- * @method static \static booting(callable $callback)
- * @method static \static booted(callable $callback)
- * @method static \static terminating(callable $callback)
+ * @method static \Mantle\Application\Application booting(callable $callback)
+ * @method static \Mantle\Application\Application booted(callable $callback)
+ * @method static \Mantle\Application\Application terminating(callable $callback)
  * @method static void load_base_configuration()
  * @method static void load_environment_variables()
  * @method static void load_facades()
  * @method static void register_configured_providers()
  * @method static \Mantle\Support\Service_Provider|null get_provider(string $name)
  * @method static \Mantle\Support\Service_Provider[] get_providers()
- * @method static \static register(array|\Mantle\Support\Service_Provider|string $provider)
+ * @method static \Mantle\Application\Application register(array|\Mantle\Support\Service_Provider|string $provider)
  *
  * @see \Mantle\Application\Application
  */

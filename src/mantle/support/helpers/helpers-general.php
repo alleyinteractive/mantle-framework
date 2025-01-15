@@ -515,7 +515,7 @@ function validate_file( $file, $allowed_files = [] ) {
 		return in_array( $retval, [ 0, 2 ], true ) ? 0 : $retval;
 	}
 
-	if ( ! is_scalar( $file ) || '' === $file ) {
+	if ( ! is_scalar( $file ) || '' === $file ) { // @phpstan-ignore-line function.alreadyNarrowedType
 		return 0;
 	}
 

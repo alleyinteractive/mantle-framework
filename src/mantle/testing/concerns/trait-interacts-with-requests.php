@@ -30,12 +30,14 @@ use function Mantle\Support\Helpers\value;
  * Allow Mock HTTP Requests
  *
  * @mixin \PHPUnit\Framework\TestCase
+ *
+ * @phpstan-type StubCallback \Closure(string, array): (Mock_Http_Response|Arrayable|null)
  */
 trait Interacts_With_Requests {
 	/**
 	 * Storage of the callbacks to mock the requests.
 	 *
-	 * @var Collection<int, callable(string, array): Mock_Http_Response|Arrayable|WP_Error|null>
+	 * @var Collection<int, StubCallback>
 	 */
 	protected Collection $stub_callbacks;
 
@@ -377,8 +379,9 @@ trait Interacts_With_Requests {
 	 * @param string                      $url URL to stub.
 	 * @param callable|Mock_Http_Response $response Response to send.
 	 * @param string                      $method Request method, optional.
+	 * @phpstan-return StubCallback
 	 */
-	protected function create_stub_request_callback( string $url, Mock_Http_Response|callable $response, ?string $method = null ): callable {
+	protected function create_stub_request_callback( string $url, Mock_Http_Response|callable $response, ?string $method = null ): Closure {
 		return function ( string $request_url, array $request_args ) use ( $url, $response, $method ) {
 			if ( ! Str::is( Str::start( $url, '*' ), $request_url ) ) {
 				return;
@@ -477,7 +480,7 @@ trait Interacts_With_Requests {
 	 */
 	public function assertNoRequestSent(): void {
 		PHPUnit::assertEmpty(
-			$this->recorded_requests,
+			$this->recorded_requests->all(),
 			'Requests were recorded',
 		);
 	}
