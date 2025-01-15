@@ -9,6 +9,7 @@ namespace Mantle\Facade;
 
 use Closure;
 use Mantle\Contracts\Console\Kernel;
+use SplFileInfo;
 
 /**
  * Console Facade

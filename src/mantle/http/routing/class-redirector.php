@@ -60,7 +60,7 @@ class Redirector {
 	 * @param array  $headers Additional headers.
 	 * @param string $fallback Fallback URL.
 	 */
-	public function back( int $status = self::STATUS_TEMPORARY, array $headers = [], string $fallback = null ): RedirectResponse {
+	public function back( int $status = self::STATUS_TEMPORARY, array $headers = [], ?string $fallback = null ): RedirectResponse {
 		return $this->to( $this->generator->previous( $fallback ), $status, $headers );
 	}
 
@@ -82,7 +82,7 @@ class Redirector {
 	 * @param array  $headers Additional headers.
 	 * @param bool   $secure Flag if the redirect should be secured with HTTPS.
 	 */
-	public function to( string $path, int $status = self::STATUS_TEMPORARY, array $headers = [], bool $secure = null ): RedirectResponse {
+	public function to( string $path, int $status = self::STATUS_TEMPORARY, array $headers = [], ?bool $secure = null ): RedirectResponse {
 		return $this->create_redirect(
 			$this->generator->to( $path, [], [], $secure ),
 			$status,

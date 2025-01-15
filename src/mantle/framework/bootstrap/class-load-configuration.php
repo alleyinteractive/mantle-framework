@@ -210,7 +210,7 @@ class Load_Configuration {
 	 */
 	protected function load_late_configuration( Repository_Contract $repository ): void {
 		foreach ( static::$merge as $config_key => $values ) {
-			if ( ! is_array( $values ) ) {
+			if ( ! is_array( $values ) ) { // @phpstan-ignore-line function.alreadyNarrowedType
 				throw new InvalidArgumentException( "The bootloader configuration value for key '{$config_key}' must be an array." );
 			}
 

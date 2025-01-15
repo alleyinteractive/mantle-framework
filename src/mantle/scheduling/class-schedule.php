@@ -55,7 +55,7 @@ class Schedule {
 	 * @param Application  $container Application container instance.
 	 * @param DateTimeZone $timezone Timezone instance, optional.
 	 */
-	public function __construct( Application $container, DateTimeZone $timezone = null ) {
+	public function __construct( Application $container, ?DateTimeZone $timezone = null ) {
 		$this->container = $container;
 
 		if ( $timezone ) {
@@ -112,7 +112,7 @@ class Schedule {
 			throw new RuntimeException( "Command class not found: [{$command}]" );
 		}
 
-		if ( ! is_subclass_of( $command, Command::class ) ) {
+		if ( ! is_subclass_of( $command, Command::class ) ) { // @phpstan-ignore-line function.alreadyNarrowedType
 			throw new RuntimeException( "Invalid command class passed: [{$command}]" );
 		}
 

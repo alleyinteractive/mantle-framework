@@ -77,7 +77,7 @@ abstract class Relation {
 	 * @param bool|null $uses_terms Flag if the relation uses terms.
 	 * @param string    $relationship Relationship name, optional.
 	 */
-	public function __construct( Builder $query, protected Model $parent, ?bool $uses_terms = null, string $relationship = null ) {
+	public function __construct( Builder $query, protected Model $parent, ?bool $uses_terms = null, ?string $relationship = null ) {
 		$this->query   = $query;
 		$this->related = $query->get_model();
 
@@ -138,8 +138,6 @@ abstract class Relation {
 
 	/**
 	 * Retrieve the query for a relation.
-	 *
-	 * @return Builder;
 	 */
 	public function get_query(): Builder {
 		return $this->query;

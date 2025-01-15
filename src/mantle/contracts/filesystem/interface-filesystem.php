@@ -31,7 +31,7 @@ interface Filesystem {
 	 * @param  string $directory Directory name.
 	 * @return string[]
 	 */
-	public function all_directories( string $directory = null ): array;
+	public function all_directories( ?string $directory = null ): array;
 
 	/**
 	 * Get all the directories within a given directory.
@@ -39,7 +39,7 @@ interface Filesystem {
 	 * @param string $directory Directory name.
 	 * @param bool   $recursive Flag if it should be recursive.
 	 */
-	public function directories( string $directory = null, bool $recursive = false ): array;
+	public function directories( ?string $directory = null, bool $recursive = false ): array;
 
 	/**
 	 * Create a directory.
@@ -61,7 +61,7 @@ interface Filesystem {
 	 * @param string $directory Directory name.
 	 * @return string[]
 	 */
-	public function all_files( string $directory = null ): array;
+	public function all_files( ?string $directory = null ): array;
 
 	/**
 	 * Get an array of all files in a directory.
@@ -70,7 +70,7 @@ interface Filesystem {
 	 * @param bool   $recursive Flag if recursive.
 	 * @return string[]
 	 */
-	public function files( string $directory = null, bool $recursive = false ): array;
+	public function files( ?string $directory = null, bool $recursive = false ): array;
 
 	/**
 	 * Copy a file from one location to another.

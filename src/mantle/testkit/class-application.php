@@ -103,7 +103,7 @@ class Application extends Container implements Application_Contract {
 	 * @param string $base_path Base path to set.
 	 * @param string $root_url Root URL of the application.
 	 */
-	public function __construct( string $base_path = '', string $root_url = null ) {
+	public function __construct( string $base_path = '', ?string $root_url = null ) {
 		static::$instance = $this;
 
 		if ( empty( $base_path ) && defined( 'MANTLE_BASE_DIR' ) ) {
@@ -371,7 +371,7 @@ class Application extends Container implements Application_Contract {
 	 *
 	 * @param string $file File name to set.
 	 */
-	public function environment_file( string $file = null ): string {
+	public function environment_file( ?string $file = null ): string {
 		if ( $file ) {
 			$this->environment_file = $file;
 		}
@@ -385,7 +385,7 @@ class Application extends Container implements Application_Contract {
 	 * @param string $path Path to set, optional.
 	 * @return string
 	 */
-	public function environment_path( string $path = null ): ?string {
+	public function environment_path( ?string $path = null ): ?string {
 		if ( $path ) {
 			$this->environment_path = $path;
 		}

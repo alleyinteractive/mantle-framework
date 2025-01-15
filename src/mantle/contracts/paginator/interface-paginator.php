@@ -19,7 +19,7 @@ interface Paginator {
 	 * @param string $path Path to set.
 	 * @return static
 	 */
-	public function path( string $path = null );
+	public function path( ?string $path = null );
 
 	/**
 	 * Retrieve the paginator's path.
@@ -46,7 +46,7 @@ interface Paginator {
 	 * @param int $current_page Page to set.
 	 * @return static
 	 */
-	public function set_current_page( int $current_page = null );
+	public function set_current_page( ?int $current_page = null );
 
 	/**
 	 * Retrieve the current page.

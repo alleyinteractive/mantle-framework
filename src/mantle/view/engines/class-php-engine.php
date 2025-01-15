@@ -28,7 +28,7 @@ class Php_Engine implements Engine {
 		ob_start();
 
 		try {
-			if ( 0 === validate_file( $path ) && 0 === validate_file( $path ) ) {
+			if ( 0 === validate_file( $path ) ) {
 				load_template( $path, false );
 			}
 		} catch ( Throwable $e ) {

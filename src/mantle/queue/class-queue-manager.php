@@ -42,7 +42,7 @@ class Queue_Manager implements Queue_Manager_Contract {
 	 *
 	 * @param string $name Provider name, optional.
 	 */
-	public function get_provider( string $name = null ): Provider {
+	public function get_provider( ?string $name = null ): Provider {
 		$name = $name ?: $this->get_default_driver();
 
 		if ( ! isset( $this->connections[ $name ] ) ) {

@@ -126,7 +126,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 * @param  array|null $response_data
 	 * @return $this
 	 */
-	public function assertStructure( array $structure = null, $response_data = null ) {
+	public function assertStructure( ?array $structure = null, $response_data = null ) {
 		if ( is_null( $structure ) ) {
 			return $this->assertSimilar( $this->decoded );
 		}

@@ -33,13 +33,14 @@ use Rector\EarlyReturn\Rector\If_\RemoveAlwaysElseRector;
 use Rector\EarlyReturn\Rector\Return_\PreparedValueToEarlyReturnRector;
 use Rector\EarlyReturn\Rector\Return_\ReturnBinaryOrToEarlyReturnRector;
 use Rector\EarlyReturn\Rector\StmtsAwareInterface\ReturnEarlyIfVariableRector;
-use Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchMethodCallReturnTypeRector;
 use Rector\Php54\Rector\Array_\LongArrayToShortArrayRector;
-use Rector\Php80\Rector\FunctionLike\MixedTypeRector;
+use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
 use Rector\Php80\Rector\NotIdentical\StrContainsRector;
 use Rector\Php81\Rector\Array_\FirstClassCallableRector;
+use Rector\Php84\Rector\Param\ExplicitNullableParamTypeRector;
 use Rector\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector;
 use Rector\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInstanceOfRector;
+use Rector\ValueObject\PhpVersion;
 
 /**
  * Rector Configuration
@@ -49,12 +50,12 @@ use Rector\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInstanceOfRector
  *
  * Rules that are known to cause issues and should not be used:
  *
- * - RenameForeachValueVariableToMatchMethodCallReturnTypeRector: causes variables to be converted to snakeCase
  * - RemoveUselessParamTagRector: Conflicts with WordPress Coding Standards
- * - MixedTypeRector: Conflicts with WordPress Coding Standards
  * - ChangeOrIfContinueToMultiContinueRector: doesn't make sense.
  */
 return RectorConfig::configure()
+	->withPhpVersion( PhpVersion::PHP_84 )
+	->withPhpSets()
 	->withIndent( "\t" )
 	->withPaths( [ __DIR__ . '/src' ] )
 	->withPreparedSets(
@@ -62,13 +63,13 @@ return RectorConfig::configure()
 		deadCode: true,
 		instanceOf: true,
 	)
-	->withTypeCoverageLevel(7)
-	->withPhpSets( php81: true )
+	->withTypeCoverageLevel(10)
 	->withRules(
 		[
 			AddVoidReturnTypeWhereNoReturnRector::class,
 			RenameForeachValueVariableToMatchExprVariableRector::class,
 			LongArrayToShortArrayRector::class,
+			ExplicitNullableParamTypeRector::class,
 		]
 	)
 	->withSkip([
@@ -78,16 +79,16 @@ return RectorConfig::configure()
 			__DIR__ . '/tests/testing/CoreTestShimTest.php',
 		],
 		RemoveUselessParamTagRector::class,
-		MixedTypeRector::class,
-		RenameForeachValueVariableToMatchMethodCallReturnTypeRector::class,
 		FirstClassCallableRector::class,
 		StrContainsRector::class,
 		AddArrowFunctionReturnTypeRector::class,
-		ChangeAndIfToEarlyReturnRector::class,
 		ChangeOrIfContinueToMultiContinueRector::class,
 		RemoveAlwaysElseRector::class,
 		EmptyOnNullableObjectToInstanceOfRector::class,
 		ReturnBinaryOrToEarlyReturnRector::class => [
 			__DIR__ . '/src/mantle/http-client/class-response.php',
+		],
+		RemoveExtraParametersRector::class => [
+			__DIR__ . '/src/mantle/support/helpers/helpers-general.php',
 		],
 	]);

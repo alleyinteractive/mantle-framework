@@ -68,7 +68,7 @@ trait Reads_Annotations {
 		// Use either the PHPUnit 9.5+ method or the PHPUnit 10.x method to get the method.
 		if ( method_exists( $this, 'getName' ) ) {
 			$method = $class->getMethod( $this->getName( false ) );
-		} elseif ( method_exists( $this, 'name' ) ) {
+		} elseif ( method_exists( $this, 'name' ) ) { // @phpstan-ignore-line function.alreadyNarrowedType
 			$method = $class->getMethod( $this->name() );
 		} elseif ( isset( $this->name ) ) {
 			$method = $class->getMethod( $this->name );

@@ -134,7 +134,7 @@ class Discover_Events {
 			}
 		}
 
-		return array_filter( $listener_events );
+		return array_filter( $listener_events ); // @phpstan-ignore-line arrayFilter.same
 	}
 
 	/**

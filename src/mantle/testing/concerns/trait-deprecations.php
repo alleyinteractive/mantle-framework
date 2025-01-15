@@ -127,7 +127,7 @@ trait Deprecations {
 			if ( ! empty( $errors ) ) {
 				$this->fail( 'Unexpected deprecated notices: ' . implode( ', ', $errors ) );
 			} else {
-				$this->assertTrue( true );
+				$this->assertTrue( true ); // @phpstan-ignore-line alreadyNarrowedType
 			}
 		}
 	}

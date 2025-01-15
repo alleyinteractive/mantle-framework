@@ -91,7 +91,7 @@ trait Model_Meta {
 	 * @throws Model_Exception Thrown on invalid value being set.
 	 */
 	public function set_meta_attribute( $meta_values ): void {
-		if ( ! is_array( $meta_values ) ) {
+		if ( ! is_array( $meta_values ) ) { // @phpstan-ignore-line function.alreadyNarrowedType
 			throw new Model_Exception( 'Attribute value passed to meta is not an array.' );
 		}
 

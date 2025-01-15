@@ -158,7 +158,7 @@ class Route_Registrar {
 			];
 		}
 
-		if ( is_array( $args ) ) {
+		if ( is_array( $args ) ) { // @phpstan-ignore-line function.alreadyNarrowedType
 			$args = array_merge( $this->attributes, $args );
 		}
 

@@ -38,7 +38,7 @@ class Worker {
 	 * @param int    $size Size of the batch to run.
 	 * @param string $queue Queue name.
 	 */
-	public function run( int $size, string $queue = null ): void {
+	public function run( int $size, ?string $queue = null ): void {
 		$queue  ??= 'default';
 		$provider = $this->manager->get_provider();
 		$jobs     = $provider->pop( $queue, $size );

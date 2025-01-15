@@ -69,7 +69,7 @@ trait Interacts_With_Hooks {
 	 * @param string $hook Hook to check against.
 	 * @param int    $count Count to compare.
 	 */
-	public function assertHookApplied( string $hook, int $count = null ): void {
+	public function assertHookApplied( string $hook, ?int $count = null ): void {
 		PHPUnit::assertNotEmpty(
 			$this->hooks_fired[ $hook ] ?? [],
 			"Asserted that [{$hook}] was not fired."
@@ -122,7 +122,7 @@ trait Interacts_With_Hooks {
 	 * @param callable $callback Callback to check was added, optional.
 	 * @return Expectation
 	 */
-	public function expectAdded( string $hook, callable $callback = null ) {
+	public function expectAdded( string $hook, ?callable $callback = null ) {
 		return $this->expectation_container->add_added( $hook, $callback );
 	}
 }

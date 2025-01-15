@@ -853,7 +853,7 @@ class Str {
 	 *
 	 * @param  callable|null $factory
 	 */
-	public static function create_random_strings_using( callable $factory = null ): void {
+	public static function create_random_strings_using( ?callable $factory = null ): void {
 		static::$random_string_factory = $factory;
 	}
 

@@ -160,7 +160,7 @@ abstract class Command extends Symfony_Command {
 	 *
 	 * @throws InvalidArgumentException Thrown on invalid command.
 	 */
-	public function call( string $command, array $options = [], OutputInterface $output = null ) {
+	public function call( string $command, array $options = [], ?OutputInterface $output = null ) {
 		if ( str_starts_with( $command, static::PREFIX . ' ' ) ) {
 			$command = substr( $command, strlen( static::PREFIX ) + 1 );
 
