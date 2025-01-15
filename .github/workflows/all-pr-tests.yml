@@ -43,8 +43,10 @@ jobs:
         with:
           install-command: ${{ matrix.dependencies == 'lowest' && 'composer install --prefer-dist --no-interaction --no-progress --prefer-lowest' || 'composer install --prefer-dist --no-interaction --no-progress' }}
           php-version: '${{ matrix.php }}'
-          wordpress-version: '${{ matrix.wordpress }}'
           skip-wordpress-install: 'true'
+          wordpress-host: 'false'
+          wordpress-multisite: '${{ matrix.multisite }}'
+          wordpress-version: '${{ matrix.wordpress }}'
 
   # This required job ensures that all PR checks have passed before merging.
   all-pr-checks-passed:
