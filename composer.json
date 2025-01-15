@@ -55,7 +55,7 @@
         "phpstan/extension-installer": "^1.4",
         "phpunit/phpunit": "^9.3.3 || ^10.0.7 || ^11.0",
         "rector/rector": "^2.0",
-        "spatie/once": "^3.1",
+        "spatie/once": "*",
         "spatie/ray": "^1.41",
         "squizlabs/php_codesniffer": "^3.7",
         "symplify/monorepo-builder": "^10.3.3",

@@ -11,7 +11,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 
 use function Mantle\Support\Helpers\collect;
-use function Mantle\Support\Helpers\retry;
 
 /**
  * Test case with the focus of testing the unit testing factory that mirrors
@@ -56,45 +55,43 @@ class UnitTestingFactoryTest extends Framework_Test_Case {
 	}
 
 	public function test_create_ordered_set() {
-		retry( 3, function () {
-			$post_ids = static::factory()->post->create_ordered_set( 10, [
-				'meta' => [
-					'_test_date_meta_key' => '_test_meta_value',
-				],
-			] );
+		$post_ids = static::factory()->post->create_ordered_set( 10, [
+			'meta' => [
+				'_test_date_meta_key' => '_test_meta_value',
+			],
+		] );
 
-			$this->assertCount( 10, $post_ids );
+		$this->assertCount( 10, $post_ids );
 
-			$dates = collect( $post_ids )
-				->map( fn ( $post_id ) => Carbon::parse( get_post( $post_id )->post_date ) )
-				->to_array();
+		$dates = collect( $post_ids )
+			->map( fn ( $post_id ) => Carbon::parse( get_post( $post_id )->post_date ) )
+			->to_array();
 
-			foreach ( $dates as $i => $date ) {
-				if ( isset( $dates[ $i - 1 ] ) ) {
-					$this->assertEquals(
-						3600,
-						$date->diffInSeconds( $dates[ $i - 1 ] ),
-						'Distance between posts not expected 3600 seconds',
-					);
-				}
+		foreach ( $dates as $i => $date ) {
+			if ( isset( $dates[ $i - 1 ] ) ) {
+				$this->assertEquals(
+					3600,
+					$date->diffInSeconds( $dates[ $i - 1 ] ),
+					'Distance between posts not expected 3600 seconds',
+				);
 			}
+		}
 
-			// Query the posts and ensure the order matches.
-			$queried_post_ids = get_posts( [
-				'fields'           => 'ids',
-				'meta_key'         => '_test_date_meta_key',
-				'meta_value'       => '_test_meta_value',
-				'order'            => 'DESC',
-				'orderby'          => 'post_date',
-				'posts_per_page'   => 50,
-				'suppress_filters' => false,
-			] );
+		// Query the posts and ensure the order matches.
+		$queried_post_ids = get_posts( [
+			'fields'           => 'ids',
+			'meta_key'         => '_test_date_meta_key',
+			'meta_value'       => '_test_meta_value',
+			'order'            => 'DESC',
+			'orderby'          => 'post_date',
+			'posts_per_page'   => 50,
+			'suppress_filters' => false,
+		] );
 
-			$this->assertCount( 10, $queried_post_ids );
+		$this->assertCount( 10, $queried_post_ids );
 
-			// Posts should be in the opposite order since we're sorting by descending date.
-			$this->assertEquals( array_reverse( $post_ids ), $queried_post_ids );
-		} );
+		// Posts should be in the opposite order since we're sorting by descending date.
+		$this->assertEquals( array_reverse( $post_ids ), $queried_post_ids );
 	}
 
 	public function test_attachment_factory() {

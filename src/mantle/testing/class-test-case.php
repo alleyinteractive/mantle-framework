@@ -95,7 +95,7 @@ abstract class Test_Case extends BaseTestCase {
 		parent::setUpBeforeClass();
 
 		// Disable the Spatie once cache for tests.
-		if ( class_exists( \Spatie\Once\Once::class ) ) {
+		if ( class_exists( \Spatie\Once\Cache::class ) ) {
 			\Spatie\Once\Cache::getInstance()->disable();
 		}
 
