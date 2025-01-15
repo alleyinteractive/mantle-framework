@@ -4,10 +4,7 @@ namespace Mantle\Tests\Filesystem;
 
 use Mantle\Filesystem\File_Not_Found_Exception;
 use Mantle\Filesystem\Filesystem;
-use Mantle\Testing\Assert;
 use Mockery as m;
-use PHPUnit\Framework\Attributes\AfterClass;
-use PHPUnit\Framework\Attributes\BeforeClass;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use PHPUnit\Framework\TestCase;
 use SplFileInfo;
@@ -16,11 +13,9 @@ class FilesystemTest extends TestCase {
 
 	private static $temp_dir;
 
-	/**
-	 * @beforeClass
-	 */
-	#[BeforeClass]
-	public static function setUptemp_dir() {
+	protected function setUp(): void {
+		parent::setUp();
+
 		static::$temp_dir = get_temp_dir() . '/mantle-fs';
 
 		$files = new Filesystem();
@@ -28,21 +23,15 @@ class FilesystemTest extends TestCase {
 		$files->clean_directory( static::$temp_dir );
 	}
 
-	/**
-	 * @afterClass
-	 */
-	#[AfterClass]
-	public static function tearDowntemp_dir() {
-		$files = new Filesystem();
-		$files->delete_directory( static::$temp_dir );
-		static::$temp_dir = null;
-	}
-
 	protected function tearDown(): void {
+		parent::tearDown();
+
 		m::close();
 
 		$files = new Filesystem();
-		$files->clean_directory( static::$temp_dir );
+		$files->delete_directory( static::$temp_dir );
+
+		static::$temp_dir = null;
 	}
 
 	public function testGetRetrievesFiles() {

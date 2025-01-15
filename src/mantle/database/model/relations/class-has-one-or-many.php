@@ -340,7 +340,7 @@ abstract class Has_One_Or_Many extends Relation {
 				function ( $result ) {
 					try {
 						return [ $result->meta->{$this->foreign_key} => $result ];
-					} catch ( Throwable ) {
+					} catch ( Throwable ) { // @phpstan-ignore-line catch.neverThrown
 						return [];
 					}
 				}
