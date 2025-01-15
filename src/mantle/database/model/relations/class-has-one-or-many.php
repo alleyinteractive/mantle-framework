@@ -337,13 +337,7 @@ abstract class Has_One_Or_Many extends Relation {
 
 		return $results
 			->map_to_dictionary(
-				function ( $result ) {
-					try {
-						return [ $result->meta->{$this->foreign_key} => $result ];
-					} catch ( Throwable ) { // @phpstan-ignore-line catch.neverThrown
-						return [];
-					}
-				}
+				fn ( $result ): array => [ $result->meta->{$this->foreign_key} => $result ],
 			)
 			->all();
 	}
