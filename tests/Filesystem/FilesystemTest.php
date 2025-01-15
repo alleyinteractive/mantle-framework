@@ -71,7 +71,10 @@ class FilesystemTest extends TestCase {
 		$symlinkDir = static::$temp_dir . '/symlink_dir';
 		$symlink    = "{$symlinkDir}/symlink.txt";
 
-		mkdir( $symlinkDir );
+		if ( ! is_dir( $symlinkDir ) ) {
+			mkdir( $symlinkDir );
+		}
+
 		symlink( $tempFile, $symlink );
 
 		// Prevent changes to symlink_dir

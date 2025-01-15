@@ -54,7 +54,7 @@ return static function ( ContainerConfigurator $container_config ): void {
 			],
 			ComposerJsonSection::REQUIRE_DEV => [
 				'alleyinteractive/alley-coding-standards' => '^2.0',
-				'phpunit/phpunit'                         => '^9.3.3 || ^10.0.7 || ^11.0',
+				'phpunit/phpunit'                         => '^9.6.22 || ^10.0.7 || ^11.0',
 			],
 		],
 	);
