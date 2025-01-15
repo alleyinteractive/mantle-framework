@@ -50,7 +50,11 @@ class Collection extends Base_Collection {
 	 * @return \Mantle\Support\Collection<int, class-string<TModel>>
 	 */
 	public function models(): Base_Collection {
-		return $this->map( fn ( $model ) => $model::class )->values()->unique();
+		return $this
+			->where_instance_of( Model::class )
+			->map( fn ( $model ) => $model::class )
+			->values()
+			->unique();
 	}
 
 	/**
