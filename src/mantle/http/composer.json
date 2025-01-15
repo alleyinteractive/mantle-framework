@@ -7,11 +7,11 @@
         "mantle-framework/contracts": "^1.0",
         "mantle-framework/filesystem": "^1.0",
         "mantle-framework/support": "^1.0",
-        "symfony/http-foundation": "^6.0.20",
-        "symfony/http-kernel": "^6.0.20",
-        "symfony/mime": "^6.2",
-        "symfony/routing": "^6.2",
-        "symfony/var-dumper": "^6.2"
+        "symfony/http-foundation": "^7.2.0",
+        "symfony/http-kernel": "^7.0",
+        "symfony/mime": "^7.0",
+        "symfony/routing": "^7.0",
+        "symfony/var-dumper": "^7.0"
     },
     "extra": {
         "wordpress-autoloader": {

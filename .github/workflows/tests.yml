@@ -1,43 +1,65 @@
-name: Testing Suite
+name: "All Pull Request Tests"
 
 on:
-  push:
+  pull_request:
     branches:
       - main
       - '*.x'
       - '*.*.x'
-  pull_request:
-  schedule:
-    - cron: '0 0 * * 0'
 
 jobs:
-  lint:
-    uses: alleyinteractive/.github/.github/workflows/php-composer-command.yml@main
-    with:
-      command: "lint"
-      php: 8.4
-  phpunit:
+  lint-tests:
+    runs-on: ubuntu-latest
+    name: "Lint Tests"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run General Tests
+        uses: alleyinteractive/action-test-general@develop
+
+      - name: Run Linter
+        uses: alleyinteractive/action-test-php@develop
+        with:
+          php-version: '8.4'
+          skip-services: 'true'
+          skip-wordpress-install: 'true'
+          test-command: 'composer lint'
+
+  unit-tests:
+    if: github.event.pull_request.draft == false
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
-        dependencies: ["lowest", "highest"]
+        dependencies: ["prefer-lowest", "prefer-stable"]
         multisite: [true, false]
         php: [8.2, 8.3, 8.4]
         wordpress: ["latest"]
-    uses: alleyinteractive/.github/.github/workflows/php-tests.yml@main
-    name: "P${{ matrix.php }} - ${{ matrix.wordpress }} ${{ matrix.multisite && 'Multisite' || '' }} - ${{ matrix.dependencies }}"
-    with:
-      command: 'phpunit'
-      dependency-versions: ${{ matrix.dependencies }}
-      multisite: ${{ matrix.multisite }}
-      php: ${{ matrix.php }}
-      wordpress: ${{ matrix.wordpress }}
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}-P${{ matrix.php }}-WP${{ matrix.wordpress }}-MS${{ matrix.multisite && '1' || '0' }}-D${{ matrix.dependencies }}
+      cancel-in-progress: true
+    name: "PR Tests PHP ${{ matrix.php }} WordPress ${{ matrix.wordpress }} ${{ matrix.multisite && 'Multisite' || '' }} Dependencies ${{ matrix.dependencies }}"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run PHP Tests
+        uses: alleyinteractive/action-test-php@develop
+        with:
+          install-command: composer update --${{ matrix.dependencies }} --prefer-dist --no-interaction --no-progress
+          php-version: '${{ matrix.php }}'
+          skip-wordpress-install: 'true'
+          test-command: 'composer phpunit'
+          wordpress-host: 'false'
+          wordpress-multisite: '${{ matrix.multisite }}'
+          wordpress-version: '${{ matrix.wordpress }}'
+
   # This required job ensures that all PR checks have passed before merging.
   all-pr-checks-passed:
     name: All PR checks passed
     needs:
-      - lint
-      - phpunit
+      - lint-tests
+      - unit-tests
     runs-on: ubuntu-latest
     if: always()
     steps:
