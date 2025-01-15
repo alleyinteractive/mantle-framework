@@ -65,7 +65,6 @@ class UnitTestingFactoryTest extends Framework_Test_Case {
 
 		$dates = collect( $post_ids )
 			->map( fn ( $post_id ) => Carbon::parse( get_post( $post_id )->post_date ) )
-			// ->dd()
 			->to_array();
 
 		foreach ( $dates as $i => $date ) {

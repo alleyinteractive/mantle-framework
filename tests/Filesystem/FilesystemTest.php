@@ -132,7 +132,7 @@ class FilesystemTest extends TestCase {
 		$files->delete( static::$temp_dir . '/file1.txt' );
 		$this->assertFileDoesNotExist( static::$temp_dir . '/file1.txt' );
 
-		$files->delete( [ static::$temp_dir . '/file2.txt', static::$temp_dir . '/file3.txt' ] );
+		$files->delete( static::$temp_dir . '/file2.txt', static::$temp_dir . '/file3.txt' );
 		$this->assertFileDoesNotExist( static::$temp_dir . '/file2.txt' );
 		$this->assertFileDoesNotExist( static::$temp_dir . '/file3.txt' );
 	}
