@@ -103,10 +103,10 @@ trait Interacts_With_Mail {
 	 * Retrieve the sent mail for a given to address or callback function that
 	 * performs a match against sent mail.
 	 *
-	 * @param (callable(\Mantle\Testing\Mail\Mail_Message): bool)|string $address_or_callback The email address to check for, or a callback to perform custom assertions.
+	 * @param (callable(\Mantle\Testing\Mail\Mail_Message): bool)|string|null $address_or_callback The email address to check for, or a callback to perform custom assertions.
 	 * @return Collection<int, \Mantle\Testing\Mail\Mail_Message>
 	 */
-	protected function get_sent_mail( string|callable $address_or_callback = null ): Collection {
+	protected function get_sent_mail( string|callable|null $address_or_callback = null ): Collection {
 		$mailer = tests_retrieve_phpmailer_instance();
 
 		if ( ! ( $mailer instanceof Mock_Mailer ) ) {

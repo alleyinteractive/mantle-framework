@@ -125,7 +125,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 * @param int       $per_page Items per-page.
 	 * @param int       $current_page Current page to set.
 	 */
-	public function __construct( Container $container, Builder $builder, int $per_page = 20, int $current_page = null ) {
+	public function __construct( Container $container, Builder $builder, int $per_page = 20, ?int $current_page = null ) {
 		$this->container = $container;
 		$this->builder   = $builder;
 		$this->per_page  = $per_page;
@@ -143,7 +143,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 * @param string $path Path to use.
 	 * @return static
 	 */
-	public function path( string $path = null ) {
+	public function path( ?string $path = null ) {
 		if ( $path ) {
 			$this->path = $path;
 			return $this;
@@ -197,7 +197,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 * @param int $current_page Current page to set, optional.
 	 * @return static
 	 */
-	public function set_current_page( int $current_page = null ) {
+	public function set_current_page( ?int $current_page = null ) {
 		if ( $current_page && $current_page > 0 ) {
 			$this->current_page = $current_page;
 		} else {
@@ -244,7 +244,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 *
 	 * @param bool $has_more Flag if there should be more pages.
 	 */
-	public function has_more( bool $has_more = null ): bool {
+	public function has_more( ?bool $has_more = null ): bool {
 		if ( null !== $has_more ) {
 			$this->has_more = $has_more;
 		}
@@ -525,7 +525,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 * @param string $view View name to load, optional.
 	 * @param array  $data View data.
 	 */
-	public function render( string $view = null, array $data = [] ): ?View {
+	public function render( ?string $view = null, array $data = [] ): ?View {
 		try {
 			return $this->container['view']->make(
 				$view ?: $this->view,
@@ -548,7 +548,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 * @param string $view View name to load, optional.
 	 * @param array  $data View data.
 	 */
-	public function links( string $view = null, array $data = [] ): string {
+	public function links( ?string $view = null, array $data = [] ): string {
 		return (string) $this->render( $view, $data );
 	}
 
@@ -558,7 +558,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 * @param string $view View name to load, optional.
 	 * @param array  $data View data.
 	 */
-	public function to_html( string $view = null, array $data = [] ): string {
+	public function to_html( ?string $view = null, array $data = [] ): string {
 		return (string) $this->render( $view, $data );
 	}
 }

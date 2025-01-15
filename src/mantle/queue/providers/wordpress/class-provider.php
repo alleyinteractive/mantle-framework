@@ -158,7 +158,7 @@ class Provider implements Provider_Contract {
 	 * @param int    $count Number of items to fetch.
 	 * @return Collection<int, \Mantle\Queue\Providers\WordPress\Queue_Worker_Job>
 	 */
-	public function pop( string $queue = null, int $count = 1 ): Collection {
+	public function pop( ?string $queue = null, int $count = 1 ): Collection {
 		$max_concurrent_batches = max( 1, $this->app['config']->get( 'queue.max_concurrent_batches', 1 ) );
 
 		return $this->query( $queue )
@@ -191,7 +191,7 @@ class Provider implements Provider_Contract {
 	 *
 	 * @param string $queue Queue name, optional.
 	 */
-	public function pending_count( string $queue = null ): int {
+	public function pending_count( ?string $queue = null ): int {
 		return $this->query( $queue )->count();
 	}
 
@@ -201,7 +201,7 @@ class Provider implements Provider_Contract {
 	 * @param string|null $queue Queue name, optional.
 	 * @return Post_Query_Builder<Queue_Record>
 	 */
-	protected function query( string $queue = null ): Post_Query_Builder {
+	protected function query( ?string $queue = null ): Post_Query_Builder {
 		return Queue_Record::where( 'post_status', Post_Status::PENDING->value )
 			->whereTerm( static::get_queue_term_id( $queue ), static::OBJECT_NAME )
 			->orderBy( 'post_date', 'asc' );
@@ -213,7 +213,7 @@ class Provider implements Provider_Contract {
 	 * @param object $job Job instance.
 	 * @param string $queue Queue to compare against.
 	 */
-	public function in_queue( mixed $job, string $queue = null ): bool {
+	public function in_queue( mixed $job, ?string $queue = null ): bool {
 		return Queue_Record::where( 'post_status', Post_Status::PENDING->value )
 			->whereTerm( static::get_queue_term_id( $queue ), static::OBJECT_NAME )
 			->whereMeta( Meta_Key::JOB->value, maybe_serialize( $job ) )

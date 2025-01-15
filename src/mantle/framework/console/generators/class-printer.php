@@ -53,7 +53,7 @@ class Printer extends \Nette\PhpGenerator\Printer {
 	 *
 	 * @inheritDoc
 	 */
-	public function printClass( ClassType|InterfaceType|TraitType|EnumType $class, PhpNamespace $namespace = null ): string {
+	public function printClass( ClassType|InterfaceType|TraitType|EnumType $class, ?PhpNamespace $namespace = null ): string {
 		return trim(
 			str_replace(
 				"\n{\n",
@@ -68,7 +68,7 @@ class Printer extends \Nette\PhpGenerator\Printer {
 	 *
 	 * @inheritDoc
 	 */
-	public function printMethod( Method $method, PhpNamespace $namespace = null, bool $isInterface = false ): string {
+	public function printMethod( Method $method, ?PhpNamespace $namespace = null, bool $isInterface = false ): string {
 		$abstract = $method->isAbstract();
 		$method   = parent::printMethod( $method, $namespace, $isInterface );
 		$lines    = explode( "\n", $method );
@@ -100,7 +100,7 @@ class Printer extends \Nette\PhpGenerator\Printer {
 	 *
 	 * @inheritDoc
 	 */
-	public function printFunction( GlobalFunction $function, PhpNamespace $namespace = null ): string {
+	public function printFunction( GlobalFunction $function, ?PhpNamespace $namespace = null ): string {
 		$function = parent::printFunction( $function, $namespace );
 		$lines    = explode( "\n", $function );
 

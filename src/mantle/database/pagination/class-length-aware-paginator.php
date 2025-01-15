@@ -72,7 +72,7 @@ class Length_Aware_Paginator extends Paginator {
 	 *
 	 * @param bool $has_more Flag if it has more, unused.
 	 */
-	public function has_more( bool $has_more = null ): bool {
+	public function has_more( ?bool $has_more = null ): bool {
 		if ( empty( $this->found_rows ) ) {
 			return false;
 		}

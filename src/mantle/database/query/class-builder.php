@@ -662,8 +662,6 @@ abstract class Builder {
 
 	/**
 	 * Get all the results of a query.
-	 *
-	 * @return Collection
 	 */
 	public function all(): Collection {
 		return $this->take( -1 )->get();
@@ -684,7 +682,7 @@ abstract class Builder {
 	 * @param int $per_page Items per page.
 	 * @param int $current_page Current page number.
 	 */
-	public function simple_paginate( int $per_page = 20, int $current_page = null ): PaginatorContract {
+	public function simple_paginate( int $per_page = 20, ?int $current_page = null ): PaginatorContract {
 		return Container::get_instance()->make(
 			Paginator::class,
 			[
@@ -701,7 +699,7 @@ abstract class Builder {
 	 * @param int $per_page Items per page.
 	 * @param int $current_page Current page number.
 	 */
-	public function paginate( int $per_page = 20, int $current_page = null ): PaginatorContract {
+	public function paginate( int $per_page = 20, ?int $current_page = null ): PaginatorContract {
 		return Container::get_instance()->make(
 			Length_Aware_Paginator::class,
 			[

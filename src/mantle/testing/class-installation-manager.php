@@ -67,7 +67,7 @@ class Installation_Manager {
 	/**
 	 * Define a callback to be invoked before installation.
 	 *
-	 * @param callable $callback Callback to invoke before installation.
+	 * @param callable|null $callback Callback to invoke before installation.
 	 * @return static
 	 */
 	public function before( ?callable $callback ) {

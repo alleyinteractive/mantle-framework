@@ -55,7 +55,7 @@ class Schedule {
 	 * @param Application  $container Application container instance.
 	 * @param DateTimeZone $timezone Timezone instance, optional.
 	 */
-	public function __construct( Application $container, DateTimeZone $timezone = null ) {
+	public function __construct( Application $container, ?DateTimeZone $timezone = null ) {
 		$this->container = $container;
 
 		if ( $timezone ) {

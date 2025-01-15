@@ -155,7 +155,7 @@ class Pending_Request {
 	 *
 	 * @param string|null $url Base URL.
 	 */
-	public function base_url( string $url = null ): static|string {
+	public function base_url( ?string $url = null ): static|string {
 		if ( is_null( $url ) ) {
 			return $this->base_url;
 		}
@@ -491,7 +491,7 @@ class Pending_Request {
 	 *
 	 * @param string|null $file File to stream to, optional.
 	 */
-	public function stream( string $file = null ): static {
+	public function stream( ?string $file = null ): static {
 		return $this->with_options(
 			[
 				'filename' => $file,

@@ -5,7 +5,7 @@
 
 use Mantle\Testing\Utils;
 
-error_reporting( E_ALL & ~E_DEPRECATED & ~E_STRICT );
+error_reporting( E_ALL & ~E_DEPRECATED );
 
 define( 'WP_INSTALLING', true );
 

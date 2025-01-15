@@ -57,7 +57,7 @@ trait Element_Assertions {
 	 * @param string $expression The XPath expression to execute.
 	 * @param string $message Optional message to display on failure.
 	 */
-	public function assertElementExists( string $expression, string $message = null ): static {
+	public function assertElementExists( string $expression, ?string $message = null ): static {
 		$nodes = ( new DOMXPath( $this->get_dom_document() ) )->query( $expression );
 
 		PHPUnit::assertTrue(
@@ -103,7 +103,7 @@ trait Element_Assertions {
 	 * @param string $expression The XPath expression to execute.
 	 * @param string $message    The message to display if the assertion fails.
 	 */
-	public function assertElementMissing( string $expression, string $message = null ): static {
+	public function assertElementMissing( string $expression, ?string $message = null ): static {
 		$nodes = ( new DOMXPath( $this->get_dom_document() ) )->query( $expression );
 
 		PHPUnit::assertTrue(

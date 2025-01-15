@@ -96,7 +96,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 * @param string|null $base_path Base path to set.
 	 * @param string      $root_url Root URL of the application.
 	 */
-	public function __construct( ?string $base_path = null, string $root_url = null ) {
+	public function __construct( ?string $base_path = null, ?string $root_url = null ) {
 		if ( empty( $base_path ) ) {
 			$base_path = match ( true ) {
 				isset( $_ENV['MANTLE_BASE_PATH'] ) => $_ENV['MANTLE_BASE_PATH'], // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
@@ -460,7 +460,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 *
 	 * @param string $file File name to set.
 	 */
-	public function environment_file( string $file = null ): string {
+	public function environment_file( ?string $file = null ): string {
 		if ( $file ) {
 			$this->environment_file = $file;
 		}
@@ -474,7 +474,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 * @param string $path Path to set, optional.
 	 * @return string
 	 */
-	public function environment_path( string $path = null ): ?string {
+	public function environment_path( ?string $path = null ): ?string {
 		if ( $path ) {
 			$this->environment_path = $path;
 		}

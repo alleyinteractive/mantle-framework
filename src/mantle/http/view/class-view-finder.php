@@ -120,7 +120,7 @@ class View_Finder {
 	 *
 	 * @throws InvalidArgumentException Thrown on invalid alias.
 	 */
-	public function add_path( string $path, string $alias = null ) {
+	public function add_path( string $path, ?string $alias = null ) {
 		if ( $alias && Str::contains( $alias, [ '/', '\\', '@' ] ) ) {
 			throw new InvalidArgumentException( 'Alias cannot contain invalid characters.' );
 		}
@@ -178,7 +178,7 @@ class View_Finder {
 	 * @param string $name Template name.
 	 * @return string The template filename if one is located.
 	 */
-	public function find( string $slug, string $name = null ): string {
+	public function find( string $slug, ?string $name = null ): string {
 		$alias = null;
 
 		// Extract the alias if passed.
@@ -209,7 +209,7 @@ class View_Finder {
 	 *
 	 * @throws InvalidArgumentException Thrown on unknown view to locate.
 	 */
-	public function locate_template( array $templates, string $alias = null ): string {
+	public function locate_template( array $templates, ?string $alias = null ): string {
 		$paths = $this->get_paths();
 
 		if ( $alias ) {

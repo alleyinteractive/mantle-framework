@@ -138,7 +138,7 @@ class Post_Factory extends Factory {
 	 * @param int    $height The height of the image.
 	 * @param bool   $recycle Whether to recycle the image file.
 	 */
-	public function with_real_thumbnail( string $file = null, int $width = 640, int $height = 480, bool $recycle = true ): static {
+	public function with_real_thumbnail( ?string $file = null, int $width = 640, int $height = 480, bool $recycle = true ): static {
 		return $this->with_middleware(
 			function ( array $args, Closure $next ) use ( $file, $width, $height, $recycle ) {
 				$post = $next( $args );
@@ -215,7 +215,7 @@ class Post_Factory extends Factory {
 	 * default of which is equal to 1 hour.
 	 *
 	 * @param int           $count The number of posts to create.
-	 * @param array         $args The arguments.
+	 * @param array<mixed>  $args The arguments.
 	 * @param Carbon|string $starting_date The starting date for the posts, defaults to
 	 *                                     a month ago.
 	 * @param int           $separation The number of seconds between each post.
@@ -224,17 +224,17 @@ class Post_Factory extends Factory {
 	public function create_ordered_set(
 		int $count = 10,
 		array $args = [],
-		$starting_date = null,
+		Carbon|string|null $starting_date = null,
 		int $separation = 3600
 	): array {
 		if ( ! ( $starting_date instanceof Carbon ) ) {
 			$starting_date = $starting_date
 				? Carbon::parse( $starting_date )
-				: Carbon::now()->subMonth();
+				: Carbon::now()->subSeconds( $separation * $count )->startOfMinute();
 		}
 
 		// Set the date for the first post (seconds added before each run).
-		$date = $starting_date->subSeconds( $separation );
+		$starting_date->subSeconds( $separation );
 
 		return collect()
 			->pad( $count, null )
@@ -243,7 +243,7 @@ class Post_Factory extends Factory {
 					array_merge(
 						$args,
 						[
-							'date' => $date->addSeconds( $separation )->format( 'Y-m-d H:i:s' ),
+							'date' => $starting_date->addSeconds( $separation )->format( 'Y-m-d H:i:s' ),
 						]
 					)
 				)

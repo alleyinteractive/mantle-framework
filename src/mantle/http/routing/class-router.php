@@ -490,7 +490,7 @@ class Router implements Router_Contract {
 	 * @param string        $class
 	 * @param \Closure|null $callback
 	 */
-	public function bind_model( $key, $class, Closure $callback = null ): void {
+	public function bind_model( $key, $class, ?Closure $callback = null ): void {
 		$this->bind( $key, Route_Binding::for_model( $this->container, $class, $callback ) );
 	}
 

@@ -29,7 +29,7 @@ trait Conditionable {
 	 * @param  (callable($this, TWhenParameter): TWhenReturnType)|null  $default
 	 * @return static|TWhenReturnType
 	 */
-	public function when( $value, callable $callback = null, callable $default = null ) {
+	public function when( $value, ?callable $callback = null, ?callable $default = null ) {
 			$value = $value instanceof Closure ? $value( $this ) : $value;
 
 		if ( func_num_args() === 1 ) {
@@ -56,7 +56,7 @@ trait Conditionable {
 	 * @param  (callable( $this, TUnlessParameter): TUnlessReturnType)|null  $default
 	 * @return $this|TUnlessReturnType
 	 */
-	public function unless( $value, callable $callback = null, callable $default = null ) {
+	public function unless( $value, ?callable $callback = null, ?callable $default = null ) {
 		$value = $value instanceof Closure ? $value( $this ) : $value;
 
 		if ( func_num_args() === 1 ) {
