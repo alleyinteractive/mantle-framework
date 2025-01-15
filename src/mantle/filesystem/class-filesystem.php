@@ -223,17 +223,16 @@ class Filesystem {
 	/**
 	 * Delete the file at a given path.
 	 *
-	 * @param  string|array $paths
+	 * @param  string ...$paths
 	 * @return bool
 	 */
-	public function delete( $paths ) {
-		$paths = is_array( $paths ) ? $paths : func_get_args();
+	public function delete( ...$paths ): bool {
 
 		$success = true;
 
 		foreach ( $paths as $path ) {
 			try {
-				if ( ! @unlink( $path ) ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, Generic.PHP.NoSilencedErrors.Forbidden
+				if ( file_exists( $path ) && ! @unlink( $path ) ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, Generic.PHP.NoSilencedErrors.Forbidden
 					$success = false;
 				}
 			} catch ( ErrorException ) {
