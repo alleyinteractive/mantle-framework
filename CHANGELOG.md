@@ -16,6 +16,7 @@ Minimum PHP version is now 8.2. The framework supports 8.2 - 8.4.
 ### Changed
 
 - Removed support for PHP 8.1. The minimum PHP version is now 8.2.
+- For projects that require PHPUnit 9, the `phpunit/phpunit` version is now set to `^9.6.22`.
 - Upgraded to Symfony 7.0 packages.
 - Disable `spatie/once`'s cache if found during unit testing.
 
