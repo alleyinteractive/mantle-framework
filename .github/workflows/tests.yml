@@ -41,7 +41,7 @@ jobs:
         # See https://github.com/alleyinteractive/action-test-php for more options
         uses: alleyinteractive/action-test-php@develop
         with:
-          install-command: ${{ matrix.dependencies == 'lowest' && 'composer install --prefer-dist --no-interaction --no-progress --prefer-lowest' || 'composer install --prefer-dist --no-interaction --no-progress' }}
+          install-command: ${{ matrix.dependencies == 'lowest' && 'composer update --prefer-dist --no-interaction --no-progress --prefer-lowest' || 'composer update --prefer-dist --no-interaction --no-progress --prefer-stable' }}
           php-version: '${{ matrix.php }}'
           skip-wordpress-install: 'true'
           wordpress-host: 'false'
