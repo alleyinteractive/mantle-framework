@@ -94,6 +94,11 @@ abstract class Test_Case extends BaseTestCase {
 	public static function setUpBeforeClass(): void {
 		parent::setUpBeforeClass();
 
+		// Disable the Spatie once cache for tests.
+		if ( class_exists( \Spatie\Once\Cache::class ) ) {
+			\Spatie\Once\Cache::getInstance()->disable();
+		}
+
 		static::register_traits();
 
 		if ( ! empty( static::$test_uses ) ) {

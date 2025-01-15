@@ -2,9 +2,9 @@
 
 namespace Mantle\Tests\Assets;
 
-use Asset_Manager_Scripts;
-use Asset_Manager_Styles;
-use Asset_Manager_Preload;
+use Alley\WP\Asset_Manager\Scripts as Asset_Manager_Scripts;
+use Alley\WP\Asset_Manager\Styles as Asset_Manager_Styles;
+use Alley\WP\Asset_Manager\Preload as Asset_Manager_Preload;
 use Mantle\Assets\Asset_Manager;
 use Mantle\Testing\Framework_Test_Case;
 use WP_Scripts;

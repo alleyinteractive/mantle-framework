@@ -14,11 +14,10 @@ define( 'MANTLE_PHPUNIT_TEMPLATE_PATH', __DIR__ . '/template-parts' );
 // Enable debugging flag for local development on the testing framework.
 // define( 'MANTLE_TESTING_DEBUG', true );
 
-( new \NunoMaduro\Collision\Provider() )->register();
-
 \Mantle\Testing\manager()
 	->maybe_rsync_plugin()
 	->with_vip_mu_plugins()
 	->install_plugin( 'logger', 'https://github.com/alleyinteractive/logger/archive/refs/heads/develop.zip' )
 	->install_plugin( 'jetpack', '12.4' )
+	->without_local_object_cache()
 	->install();
