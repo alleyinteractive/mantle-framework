@@ -30,11 +30,6 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 		putenv( 'MANTLE_EXPERIMENTAL_TESTING_USE_HOME_URL_HOST=' );
 
 		remove_all_actions( 'template_redirect' );
-<<<<<<< HEAD
-
-		update_option( 'home', 'http://' . WP_TESTS_DOMAIN );
-=======
->>>>>>> origin/1.x
 	}
 
 	public function test_get_home() {
