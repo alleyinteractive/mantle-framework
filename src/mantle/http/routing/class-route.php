@@ -344,8 +344,6 @@ class Route extends Symfony_Route {
 
 	/**
 	 * Get the controller's closure callback.
-	 *
-	 * @return callable|null
 	 */
 	protected function get_callback(): ?callable {
 		return $this->has_callback() ? $this->action['callback'] : null;

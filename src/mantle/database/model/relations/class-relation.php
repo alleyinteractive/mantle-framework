@@ -138,8 +138,6 @@ abstract class Relation {
 
 	/**
 	 * Retrieve the query for a relation.
-	 *
-	 * @return Builder
 	 */
 	public function get_query(): Builder {
 		return $this->query;
