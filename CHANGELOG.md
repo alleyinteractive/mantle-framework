@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Disable `spatie/once`'s cache if found during unit testing.
 
+### Fixed
+
+- Ensure that built-in taxonomies properly register their rewrite rules during testing.
+
 ## v1.3.3 - 2025-01-10
 
 ### Added
