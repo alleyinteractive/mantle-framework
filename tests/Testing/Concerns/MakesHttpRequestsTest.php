@@ -27,6 +27,8 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 	protected function setUp(): void {
 		parent::setUp();
 
+		putenv( 'MANTLE_EXPERIMENTAL_TESTING_USE_HOME_URL_HOST=' );
+
 		remove_all_actions( 'template_redirect' );
 	}
 
@@ -357,7 +359,9 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 			]
 		);
 
-		$this->get( rest_url( '/mantle/v1/' . __FUNCTION__ ) );
+		$this
+			->get( rest_url( '/mantle/v1/' . __FUNCTION__ ) )
+			->assertJsonPath( 'key', 'value here' );
 
 		$this->assertFalse( wp_is_rest_endpoint() );
 	}
@@ -389,7 +393,13 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 			] );
 	}
 
-	public function test_https_request() {
+	public function test_url_scheme_http_by_default() {
+		$this->get( '/' )->assertOk();
+
+		$this->assertEmpty( $_SERVER['HTTPS'] ?? '' );
+	}
+
+	public function test_url_scheme_https_opt_in() {
 		$this->get( '/' )->assertOk();
 
 		$this->assertEmpty( $_SERVER['HTTPS'] ?? '' );
@@ -397,6 +407,51 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 		$this->with_https()->get( 'https://example.com' )->assertOk();
 
 		$this->assertEquals( 'on', $_SERVER['HTTPS'] );
+	}
+
+	public function test_url_scheme_https_by_home_url() {
+		putenv( 'MANTLE_EXPERIMENTAL_TESTING_USE_HOME_URL_HOST=1' );
+
+		$home_url = get_option( 'home' );
+
+		$this->assertEquals( 'http://' . WP_TESTS_DOMAIN, $home_url );
+		$this->assertEquals( 'http://' . WP_TESTS_DOMAIN, home_url() );
+
+		update_option( 'home', 'https://' . WP_TESTS_DOMAIN );
+
+		$this->assertEquals( 'https://' . WP_TESTS_DOMAIN, home_url() );
+
+		$this->get( '/' )->assertOk();
+
+		$this->assertEquals( 'on', $_SERVER['HTTPS'] ?? '' );
+	}
+
+	#[Group( 'experimental' )]
+	#[Group( 'experiment-testing-url-host' )]
+	public function test_experimental_default_url_host() {
+		$this->get( '/' )->assertOk();
+
+		$this->assertEquals( 'http://' . WP_TESTS_DOMAIN, home_url() );
+		$this->assertEquals( WP_TESTS_DOMAIN, $_SERVER['HTTP_HOST'] );
+
+		$this->setup_experiment_testing_url_host();
+
+		$this->get( '/' )->assertOk();
+
+		$this->assertEquals( 'subdomain.' . WP_TESTS_DOMAIN, $_SERVER['HTTP_HOST'] );
+	}
+
+	#[Group( 'experimental' )]
+	#[Group( 'experiment-testing-url-host' )]
+	public function test_experimental_redirect_to() {
+		$this->setup_experiment_testing_url_host();
+
+		$this->app['router']->get(
+			'/route-to-redirect/',
+			fn () => redirect()->to( '/redirected/' ),
+		);
+
+		$this->get( '/route-to-redirect/' )->assertRedirect( '/redirected/' );
 	}
 
 	public function test_multiple_requests() {
@@ -411,8 +466,19 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 				continue;
 			}
 
+			$this->setUp();
+
 			$this->$method();
+
+			$this->tearDown();
 		}
+	}
+
+	protected function setup_experiment_testing_url_host() {
+		putenv( 'MANTLE_EXPERIMENTAL_TESTING_USE_HOME_URL_HOST=1' );
+
+		update_option( 'home', 'https://subdomain.' . WP_TESTS_DOMAIN );
+		$this->assertEquals( 'https://subdomain.' . WP_TESTS_DOMAIN, home_url() );
 	}
 }
 

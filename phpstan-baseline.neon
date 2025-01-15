@@ -1,0 +1,691 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^PHPDoc tag @param has invalid value \\(callable\\(\\.\\.\\.mixed\\)\\: mixed  \\$callback\\)\\: Unexpected token \"\\(\", expected variable at offset 84$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Parameter \\#1 \\$callback of method Mantle\\\\Support\\\\Collection\\<TKey of \\(int\\|string\\),TValue\\>\\:\\:when_empty\\(\\) expects callable\\(Mantle\\\\Support\\\\Collection\\<TKey, TValue\\>\\)\\: TUnlessNotEmptyReturnType, callable\\(\\$this\\)\\: TUnlessNotEmptyReturnType given\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Parameter \\#1 \\$callback of method Mantle\\\\Support\\\\Collection\\<TKey of \\(int\\|string\\),TValue\\>\\:\\:when_not_empty\\(\\) expects callable\\(Mantle\\\\Support\\\\Collection\\<TKey, TValue\\>\\)\\: TUnlessEmptyReturnType, callable\\(\\$this\\)\\: TUnlessEmptyReturnType given\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Parameter \\#2 \\$callback of method Mantle\\\\Support\\\\Collection\\<TKey of \\(int\\|string\\),TValue\\>\\:\\:when\\(\\) expects \\(callable\\(Mantle\\\\Support\\\\Collection\\<TKey, TValue\\>, bool\\)\\: TWhenEmptyReturnType\\)\\|null, callable\\(\\$this\\)\\: TWhenEmptyReturnType given\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Parameter \\#2 \\$callback of method Mantle\\\\Support\\\\Collection\\<TKey of \\(int\\|string\\),TValue\\>\\:\\:when\\(\\) expects \\(callable\\(Mantle\\\\Support\\\\Collection\\<TKey, TValue\\>, bool\\)\\: TWhenNotEmptyReturnType\\)\\|null, callable\\(\\$this\\)\\: TWhenNotEmptyReturnType given\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Parameter \\#2 \\$default of method Mantle\\\\Support\\\\Collection\\<TKey of \\(int\\|string\\),TValue\\>\\:\\:when_empty\\(\\) expects \\(callable\\(Mantle\\\\Support\\\\Collection\\<TKey, TValue\\>\\)\\: TUnlessNotEmptyReturnType\\)\\|null, \\(callable\\(\\$this\\)\\: TUnlessNotEmptyReturnType\\)\\|null given\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Parameter \\#2 \\$default of method Mantle\\\\Support\\\\Collection\\<TKey of \\(int\\|string\\),TValue\\>\\:\\:when_not_empty\\(\\) expects \\(callable\\(Mantle\\\\Support\\\\Collection\\<TKey, TValue\\>\\)\\: TUnlessEmptyReturnType\\)\\|null, \\(callable\\(\\$this\\)\\: TUnlessEmptyReturnType\\)\\|null given\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Parameter \\#2 \\$flags of class CachingIterator constructor expects 0\\|1\\|2\\|3\\|4\\|5\\|6\\|7\\|8\\|9\\|10\\|11\\|12\\|13\\|14\\|15\\|16\\|17\\|18\\|19\\|20\\|21\\|22\\|23\\|24\\|25\\|26\\|27\\|28\\|29\\|30\\|31\\|256\\|257\\|258\\|259\\|260\\|261\\|262\\|263\\|264\\|265\\|266\\|267\\|268\\|269\\|270\\|271\\|272\\|273\\|274\\|275\\|276\\|277\\|278\\|279\\|280\\|281\\|282\\|283\\|284\\|285\\|286\\|287, int given\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Parameter \\#3 \\$default of method Mantle\\\\Support\\\\Collection\\<TKey of \\(int\\|string\\),TValue\\>\\:\\:when\\(\\) expects \\(callable\\(Mantle\\\\Support\\\\Collection\\<TKey, TValue\\>, bool\\)\\: TWhenEmptyReturnType\\)\\|null, \\(callable\\(\\$this\\)\\: TWhenEmptyReturnType\\)\\|null given\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Parameter \\#3 \\$default of method Mantle\\\\Support\\\\Collection\\<TKey of \\(int\\|string\\),TValue\\>\\:\\:when\\(\\) expects \\(callable\\(Mantle\\\\Support\\\\Collection\\<TKey, TValue\\>, bool\\)\\: TWhenNotEmptyReturnType\\)\\|null, \\(callable\\(\\$this\\)\\: TWhenNotEmptyReturnType\\)\\|null given\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter callback of method Mantle\\\\Support\\\\Collection\\:\\:reject\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter callback of method Mantle\\\\Support\\\\Collection\\:\\:transform\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter item of method Mantle\\\\Support\\\\Collection\\:\\:add\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter items of method Mantle\\\\Support\\\\Collection\\:\\:diff\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter items of method Mantle\\\\Support\\\\Collection\\:\\:diff_assoc\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter items of method Mantle\\\\Support\\\\Collection\\:\\:diff_assoc_using\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter items of method Mantle\\\\Support\\\\Collection\\:\\:diff_keys\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter items of method Mantle\\\\Support\\\\Collection\\:\\:diff_keys_using\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter items of method Mantle\\\\Support\\\\Collection\\:\\:diff_using\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter items of method Mantle\\\\Support\\\\Collection\\:\\:intersect\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter items of method Mantle\\\\Support\\\\Collection\\:\\:intersect_assoc\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter items of method Mantle\\\\Support\\\\Collection\\:\\:intersect_assoc_using\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter items of method Mantle\\\\Support\\\\Collection\\:\\:intersect_by_keys\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter items of method Mantle\\\\Support\\\\Collection\\:\\:merge\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter items of method Mantle\\\\Support\\\\Collection\\:\\:replace\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter items of method Mantle\\\\Support\\\\Collection\\:\\:replace_recursive\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter items of method Mantle\\\\Support\\\\Collection\\:\\:union\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter key of method Mantle\\\\Support\\\\Collection\\:\\:contains\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter key of method Mantle\\\\Support\\\\Collection\\:\\:contains_strict\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter key of method Mantle\\\\Support\\\\Collection\\:\\:every\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter key of method Mantle\\\\Support\\\\Collection\\:\\:partition\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter key of method Mantle\\\\Support\\\\Collection\\:\\:some\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter operator of method Mantle\\\\Support\\\\Collection\\:\\:partition\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter replacement of method Mantle\\\\Support\\\\Collection\\:\\:splice\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter source of method Mantle\\\\Support\\\\Collection\\:\\:concat\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter value of method Mantle\\\\Support\\\\Collection\\:\\:contains_strict\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter value of method Mantle\\\\Support\\\\Collection\\:\\:partition\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter value of method Mantle\\\\Support\\\\Collection\\:\\:put\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter value of method Mantle\\\\Support\\\\Collection\\:\\:search\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter value of method Mantle\\\\Support\\\\Collection\\:\\:skip_until\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter value of method Mantle\\\\Support\\\\Collection\\:\\:skip_while\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter value of method Mantle\\\\Support\\\\Collection\\:\\:take_until\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter value of method Mantle\\\\Support\\\\Collection\\:\\:take_while\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter values of method Mantle\\\\Support\\\\Collection\\:\\:push\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in return type of method Mantle\\\\Support\\\\Collection\\:\\:duplicate_comparator\\(\\)\\.$#"
+			count: 2
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in implemented type ArrayAccess\\<TKey of \\(int\\|string\\), TValue\\> of class Mantle\\\\Support\\\\Collection\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in implemented type Mantle\\\\Support\\\\Enumerable\\<TKey of \\(int\\|string\\), TValue\\> of class Mantle\\\\Support\\\\Collection\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in parameter items of method Mantle\\\\Support\\\\Collection\\:\\:diff\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in parameter items of method Mantle\\\\Support\\\\Collection\\:\\:diff_assoc\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in parameter items of method Mantle\\\\Support\\\\Collection\\:\\:diff_assoc_using\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in parameter items of method Mantle\\\\Support\\\\Collection\\:\\:diff_keys\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in parameter items of method Mantle\\\\Support\\\\Collection\\:\\:diff_keys_using\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in parameter items of method Mantle\\\\Support\\\\Collection\\:\\:diff_using\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in parameter items of method Mantle\\\\Support\\\\Collection\\:\\:intersect\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in parameter items of method Mantle\\\\Support\\\\Collection\\:\\:intersect_assoc\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in parameter items of method Mantle\\\\Support\\\\Collection\\:\\:intersect_assoc_using\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in parameter items of method Mantle\\\\Support\\\\Collection\\:\\:intersect_by_keys\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in parameter items of method Mantle\\\\Support\\\\Collection\\:\\:merge\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in parameter items of method Mantle\\\\Support\\\\Collection\\:\\:replace\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in parameter items of method Mantle\\\\Support\\\\Collection\\:\\:replace_recursive\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in parameter items of method Mantle\\\\Support\\\\Collection\\:\\:union\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in return type of method Mantle\\\\Support\\\\Collection\\:\\:combine\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: "#^Call to an undefined method Mantle\\\\Support\\\\Higher_Order_Collection_Proxy\\:\\:current\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Call to an undefined method Mantle\\\\Support\\\\Higher_Order_Collection_Proxy\\:\\:next\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Call to an undefined method Mantle\\\\Support\\\\Higher_Order_Collection_Proxy\\:\\:valid\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Call to an undefined method Traversable\\<\\(int\\|string\\), TCombineValue\\>\\:\\:current\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Call to an undefined method Traversable\\<\\(int\\|string\\), TCombineValue\\>\\:\\:next\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Call to an undefined method Traversable\\<\\(int\\|string\\), TCombineValue\\>\\:\\:valid\\(\\)\\.$#"
+			count: 2
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Call to an undefined method Traversable\\<TKey of \\(int\\|string\\), TValue\\>\\:\\:current\\(\\)\\.$#"
+			count: 11
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Call to an undefined method Traversable\\<TKey of \\(int\\|string\\), TValue\\>\\:\\:key\\(\\)\\.$#"
+			count: 10
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Call to an undefined method Traversable\\<TKey of \\(int\\|string\\), TValue\\>\\:\\:next\\(\\)\\.$#"
+			count: 12
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Call to an undefined method Traversable\\<TKey of \\(int\\|string\\), TValue\\>\\:\\:valid\\(\\)\\.$#"
+			count: 14
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Call to function is_null\\(\\) with array will always evaluate to false\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Call to function is_null\\(\\) with array\\<TKey of \\(int\\|string\\)\\>\\|string will always evaluate to false\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Callable callable\\(TValue\\)\\: bool invoked with 2 parameters, 1 required\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Default value of the parameter \\#1 \\$depth \\(float\\) of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:flatten\\(\\) is incompatible with type int\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^PHPDoc tag @param has invalid value \\(callable\\(\\.\\.\\.mixed\\)\\: mixed  \\$callback\\)\\: Unexpected token \"\\(\", expected variable at offset 84$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^PHPDoc tag @throws with type Mantle\\\\Support\\\\ItemNotFoundException is not subtype of Throwable$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^PHPDoc tag @throws with type Mantle\\\\Support\\\\ItemNotFoundException\\|Mantle\\\\Support\\\\MultipleItemsFoundException is not subtype of Throwable$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Parameter \\#1 \\$callback of method Mantle\\\\Support\\\\Lazy_Collection\\<TKey of \\(int\\|string\\),TValue\\>\\:\\:when_empty\\(\\) expects callable\\(Mantle\\\\Support\\\\Lazy_Collection\\<TKey, TValue\\>\\)\\: TUnlessNotEmptyReturnType, callable\\(\\$this\\)\\: TUnlessNotEmptyReturnType given\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Parameter \\#1 \\$callback of method Mantle\\\\Support\\\\Lazy_Collection\\<TKey of \\(int\\|string\\),TValue\\>\\:\\:when_not_empty\\(\\) expects callable\\(Mantle\\\\Support\\\\Lazy_Collection\\<TKey, TValue\\>\\)\\: TUnlessEmptyReturnType, callable\\(\\$this\\)\\: TUnlessEmptyReturnType given\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Parameter \\#1 \\$size of method Mantle\\\\Support\\\\Lazy_Collection\\<TKey of \\(int\\|string\\),TValue\\>\\:\\:chunk\\(\\) expects int, float given\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Parameter \\#2 \\$callback of method Mantle\\\\Support\\\\Lazy_Collection\\<TKey of \\(int\\|string\\),TValue\\>\\:\\:when\\(\\) expects \\(callable\\(Mantle\\\\Support\\\\Lazy_Collection\\<TKey, TValue\\>, bool\\)\\: TWhenEmptyReturnType\\)\\|null, callable\\(\\$this\\)\\: TWhenEmptyReturnType given\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Parameter \\#2 \\$callback of method Mantle\\\\Support\\\\Lazy_Collection\\<TKey of \\(int\\|string\\),TValue\\>\\:\\:when\\(\\) expects \\(callable\\(Mantle\\\\Support\\\\Lazy_Collection\\<TKey, TValue\\>, bool\\)\\: TWhenNotEmptyReturnType\\)\\|null, callable\\(\\$this\\)\\: TWhenNotEmptyReturnType given\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Parameter \\#2 \\$default of method Mantle\\\\Support\\\\Lazy_Collection\\<TKey of \\(int\\|string\\),TValue\\>\\:\\:when_empty\\(\\) expects \\(callable\\(Mantle\\\\Support\\\\Lazy_Collection\\<TKey, TValue\\>\\)\\: TUnlessNotEmptyReturnType\\)\\|null, \\(callable\\(\\$this\\)\\: TUnlessNotEmptyReturnType\\)\\|null given\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Parameter \\#2 \\$default of method Mantle\\\\Support\\\\Lazy_Collection\\<TKey of \\(int\\|string\\),TValue\\>\\:\\:when_not_empty\\(\\) expects \\(callable\\(Mantle\\\\Support\\\\Lazy_Collection\\<TKey, TValue\\>\\)\\: TUnlessEmptyReturnType\\)\\|null, \\(callable\\(\\$this\\)\\: TUnlessEmptyReturnType\\)\\|null given\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Parameter \\#2 \\$flags of class CachingIterator constructor expects 0\\|1\\|2\\|3\\|4\\|5\\|6\\|7\\|8\\|9\\|10\\|11\\|12\\|13\\|14\\|15\\|16\\|17\\|18\\|19\\|20\\|21\\|22\\|23\\|24\\|25\\|26\\|27\\|28\\|29\\|30\\|31\\|256\\|257\\|258\\|259\\|260\\|261\\|262\\|263\\|264\\|265\\|266\\|267\\|268\\|269\\|270\\|271\\|272\\|273\\|274\\|275\\|276\\|277\\|278\\|279\\|280\\|281\\|282\\|283\\|284\\|285\\|286\\|287, int given\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Parameter \\#3 \\$default of method Mantle\\\\Support\\\\Lazy_Collection\\<TKey of \\(int\\|string\\),TValue\\>\\:\\:when\\(\\) expects \\(callable\\(Mantle\\\\Support\\\\Lazy_Collection\\<TKey, TValue\\>, bool\\)\\: TWhenEmptyReturnType\\)\\|null, \\(callable\\(\\$this\\)\\: TWhenEmptyReturnType\\)\\|null given\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Parameter \\#3 \\$default of method Mantle\\\\Support\\\\Lazy_Collection\\<TKey of \\(int\\|string\\),TValue\\>\\:\\:when\\(\\) expects \\(callable\\(Mantle\\\\Support\\\\Lazy_Collection\\<TKey, TValue\\>, bool\\)\\: TWhenNotEmptyReturnType\\)\\|null, \\(callable\\(\\$this\\)\\: TWhenNotEmptyReturnType\\)\\|null given\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter callback of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:reject\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:diff\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:diff_assoc\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:diff_assoc_using\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:diff_keys\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:diff_keys_using\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:diff_using\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:intersect\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:intersect_assoc\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:intersect_assoc_using\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:intersect_by_keys\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:intersect_using\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:merge\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:replace\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:replace_recursive\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:union\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter key of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:contains\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter key of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:contains_strict\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter key of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:every\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter key of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:partition\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter key of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:some\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter operator of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:partition\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter value of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:contains_strict\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter value of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:partition\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter value of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:search\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter value of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:skip_until\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter value of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:skip_while\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter value of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:take_until\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in contravariant position in parameter value of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:take_while\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in implemented type Mantle\\\\Support\\\\Enumerable\\<TKey of \\(int\\|string\\), TValue\\> of class Mantle\\\\Support\\\\Lazy_Collection\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:diff\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:diff_assoc\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:diff_assoc_using\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:diff_keys\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:diff_keys_using\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:diff_using\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:intersect\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:intersect_assoc\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:intersect_assoc_using\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:intersect_by_keys\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:intersect_using\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:merge\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:replace\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:replace_recursive\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in parameter items of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:union\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in return type of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:combine\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Template type TValue is declared as covariant, but occurs in invariant position in return type of method Mantle\\\\Support\\\\Lazy_Collection\\:\\:flip\\(\\)\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: src/mantle/support/class-lazy-collection.php

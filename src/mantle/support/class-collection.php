@@ -24,7 +24,8 @@ use function Mantle\Support\Helpers\value;
  * Collection
  *
  * @template TKey of array-key
- * @template TValue
+ *
+ * @template-covariant TValue
  *
  * @implements \ArrayAccess<TKey, TValue>
  * @implements \Mantle\Support\Enumerable<TKey, TValue>
@@ -65,7 +66,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param iterable<TKeyFrom, TValueFrom>|\WP_Query $value
 	 * @return static<TKeyFrom, TValueFrom>
 	 */
-	public static function from( $value ) {
+	public static function from( mixed $value ) {
 		global $post;
 		if ( $value instanceof \WP_Query ) {
 			$items = [];
@@ -107,6 +108,15 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	public function all() {
 		return $this->items;
+	}
+
+	/**
+	 * Get a lazy collection for the items in this collection.
+	 *
+	 * @return Lazy_Collection<TKey, TValue>
+	 */
+	public function lazy(): Lazy_Collection {
+		return new Lazy_Collection( $this->items );
 	}
 
 	/**
@@ -221,7 +231,7 @@ class Collection implements ArrayAccess, Enumerable {
 				return $this->first( $key, $placeholder ) !== $placeholder;
 			}
 
-			return in_array( $key, $this->items ); // phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
+			return in_array( $key, $this->items, false ); // phpcs:ignore WordPress.PHP.StrictInArray.FoundNonStrictFalse
 		}
 
 		return $this->contains( $this->operator_for_where( ...func_get_args() ) );
@@ -243,7 +253,7 @@ class Collection implements ArrayAccess, Enumerable {
 			return ! is_null( $this->first( $key ) );
 		}
 
-			return in_array( $key, $this->items, true );
+		return in_array( $key, $this->items, true );
 	}
 
 	/**
@@ -255,7 +265,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return bool
 	 */
 	public function doesnt_contain( $key, $operator = null, $value = null ) {
-			return ! $this->contains( ...func_get_args() );
+		return ! $this->contains( ...func_get_args() );
 	}
 
 	/**
@@ -522,7 +532,7 @@ class Collection implements ArrayAccess, Enumerable {
 		$result = new static( $results );
 
 		if ( ! empty( $next_groups ) ) {
-			return $result->map->groupBy( $next_groups, $preserve_keys ); // @phpstan-ignore-line undefined method
+			return $result->map->group_by( $next_groups, $preserve_keys );
 		}
 
 		return $result;
@@ -1105,6 +1115,26 @@ class Collection implements ArrayAccess, Enumerable {
 	}
 
 	/**
+	 * Skip items in the collection until the given condition is met.
+	 *
+	 * @param  TValue|callable(TValue,TKey): bool $value
+	 * @return static
+	 */
+	public function skip_until( $value ) {
+		return new static( $this->lazy()->skip_until( $value )->all() );
+	}
+
+	/**
+	 * Skip items in the collection while the given condition is met.
+	 *
+	 * @param  TValue|callable(TValue,TKey): bool $value
+	 * @return static
+	 */
+	public function skip_while( $value ) {
+		return new static( $this->lazy()->skip_while( $value )->all() );
+	}
+
+	/**
 	 * Slice the underlying collection array.
 	 *
 	 * @param    int      $offset
@@ -1289,7 +1319,7 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Take the first or last {$limit} items.
 	 *
-	 * @param    int $limit
+	 * @param int $limit
 	 * @return static
 	 */
 	public function take( $limit ) {
@@ -1301,12 +1331,31 @@ class Collection implements ArrayAccess, Enumerable {
 	}
 
 	/**
+	 * Take items in the collection until the given condition is met.
+	 *
+	 * @param  TValue|callable(TValue,TKey): bool $value
+	 * @return static
+	 */
+	public function take_until( $value ) {
+		return new static( $this->lazy()->take_until( $value )->all() );
+	}
+
+	/**
+	 * Take items in the collection while the given condition is met.
+	 *
+	 * @param  TValue|callable(TValue,TKey): bool $value
+	 * @return static
+	 */
+	public function take_while( $value ) {
+		return new static( $this->lazy()->take_while( $value )->all() );
+	}
+
+	/**
 	 * Transform each item in the collection using a callback.
 	 *
 	 * @param  callable(TValue, TKey): TValue $callback
-	 * @return $this
 	 */
-	public function transform( callable $callback ) {
+	public function transform( callable $callback ): static {
 		$this->items = $this->map( $callback )->all();
 
 		return $this;
@@ -1386,6 +1435,16 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	public function count(): int {
 		return count( $this->items );
+	}
+
+	/**
+	 * Count the number of items in the collection by a field or using a callback.
+	 *
+	 * @param  (callable(TValue, TKey): array-key)|string|null $count_by
+	 * @return static<array-key, int>
+	 */
+	public function count_by( $count_by = null ) {
+		return new static( $this->lazy()->count_by( $count_by )->all() );
 	}
 
 	/**
