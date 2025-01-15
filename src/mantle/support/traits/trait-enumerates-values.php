@@ -307,7 +307,7 @@ trait Enumerates_Values {
 	 * @template TMapToGroupsKey of array-key
 	 * @template TMapToGroupsValue
 	 *
-	 * @param  callable(TValue, TKey): array<TMapToGroupsKey, TMapToGroupsValue>  $callback
+	 * @param  callable(TValue, TKey): array<TMapToGroupsKey, TMapToGroupsValue> $callback
 	 * @return static<TMapToGroupsKey, static<int, TMapToGroupsValue>>
 	 */
 	public function map_to_groups( callable $callback ) {

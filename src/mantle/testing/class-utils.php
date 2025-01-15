@@ -454,6 +454,7 @@ class Utils {
 	 * Run a system command and return the output.
 	 *
 	 * @param string|string[] $command Command to run.
+	 * @param int|null        $exit_code Exit code.
 	 * @param-out int         $exit_code Exit code.
 	 * @return string[]
 	 */

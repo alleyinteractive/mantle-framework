@@ -2,6 +2,8 @@
 /**
  * Unit_Test_Case class file
  *
+ * phpcs:disable Squiz.Functions.MultiLineFunctionDeclaration.ContentAfterBrace
+ *
  * @package Mantle
  */
 
