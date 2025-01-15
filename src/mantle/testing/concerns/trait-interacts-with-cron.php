@@ -98,7 +98,7 @@ trait Interacts_With_Cron {
 	 *
 	 * @throws InvalidArgumentException Thrown for missing job class.
 	 */
-	public function assertJobQueued( $job, array $args = [], string $queue = null ): void {
+	public function assertJobQueued( $job, array $args = [], ?string $queue = null ): void {
 		/**
 		 * Provider instance.
 		 *
@@ -134,7 +134,7 @@ trait Interacts_With_Cron {
 	 *
 	 * @throws InvalidArgumentException Thrown for missing job class.
 	 */
-	public function assertJobNotQueued( $job, array $args = [], string $queue = null ): void {
+	public function assertJobNotQueued( $job, array $args = [], ?string $queue = null ): void {
 		/**
 		 * Provider instance.
 		 *
@@ -181,7 +181,7 @@ trait Interacts_With_Cron {
 	 * @param string $action Optionally run a specific cron action, otherwise run
 	 *                       all due tasks.
 	 */
-	public function dispatch_cron( string $action = null ): void {
+	public function dispatch_cron( ?string $action = null ): void {
 		$events = static::get_cron_events();
 
 		if ( empty( $events ) ) {
@@ -281,7 +281,7 @@ trait Interacts_With_Cron {
 	 * @param int    $size Size of the queue to run.
 	 * @param string $queue Queue to run.
 	 */
-	public function dispatch_queue( int $size = 100, string $queue = null ): void {
+	public function dispatch_queue( int $size = 100, ?string $queue = null ): void {
 		$this->app->make( Worker::class )->run( $size, $queue );
 	}
 }

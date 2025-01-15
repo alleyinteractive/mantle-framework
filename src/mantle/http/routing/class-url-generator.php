@@ -53,7 +53,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 * @param Request              $request Request object.
 	 * @param LoggerInterface|null $logger Logger instance.
 	 */
-	public function __construct( protected string $root_url, RouteCollection $routes, Request $request, LoggerInterface $logger = null ) {
+	public function __construct( protected string $root_url, RouteCollection $routes, Request $request, ?LoggerInterface $logger = null ) {
 		$this->root_url = $root_url;
 		$this->routes   = $routes;
 		$this->logger   = $logger;
@@ -104,7 +104,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 *
 	 * @param string $fallback Fallback value, optional.
 	 */
-	public function previous( string $fallback = null ): string {
+	public function previous( ?string $fallback = null ): string {
 		return $this->to(
 			$this->request->headers->get( 'referer', $fallback ?? '/' )
 		);
@@ -119,7 +119,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 * @param bool                 $secure Flag if should be forced to be secure.
 	 * @return string
 	 */
-	public function to( string $path, array $extra_query = [], array $extra_params = [], bool $secure = null ) {
+	public function to( string $path, array $extra_query = [], array $extra_params = [], ?bool $secure = null ) {
 		// First we will check if the URL is already a valid URL. If it is we will not
 		// try to generate a new one but will simply return the URL as is, which is
 		// convenient since developers do not always have to check if it's valid.

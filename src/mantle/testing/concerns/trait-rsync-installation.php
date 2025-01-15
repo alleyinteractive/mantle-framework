@@ -90,7 +90,7 @@ trait Rsync_Installation {
 	 * @param string $to Location to rsync to within `wp-content`.
 	 * @param string $from Location to rsync from.
 	 */
-	public function rsync( string $to = null, string $from = null ): static {
+	public function rsync( ?string $to = null, ?string $from = null ): static {
 		$this->rsync_to   = $to ?: '/';
 		$this->rsync_from = $from ?: getcwd() . '/';
 
@@ -104,7 +104,7 @@ trait Rsync_Installation {
 	 * @param string $to Location to rsync to.
 	 * @param string $from Location to rsync from.
 	 */
-	public function maybe_rsync( string $to = null, string $from = null ): static {
+	public function maybe_rsync( ?string $to = null, ?string $from = null ): static {
 		// Check if we are under an existing WordPress installation.
 		if ( $this->is_within_wordpress_install() ) {
 			return $this;
@@ -213,6 +213,20 @@ trait Rsync_Installation {
 	}
 
 	/**
+	 * Skip the local object cache when running the tests.
+	 *
+	 * Useful for local development where the object cache may be causing issues.
+	 * Will not disable the object cache drop-in when run in GitHub Actions.
+	 *
+	 * @param bool $skip Whether to skip the local object cache.
+	 */
+	public function without_local_object_cache( bool $skip = true ): static {
+		putenv( 'MANTLE_SKIP_LOCAL_OBJECT_CACHE=' . ( $skip ? '1' : '0' ) );
+
+		return $this;
+	}
+
+	/**
 	 * Install SQLite db.php drop-in into the codebase.
 	 *
 	 * This will only be applied if the codebase is being rsync-ed to a WordPress
@@ -271,7 +285,7 @@ trait Rsync_Installation {
 	 * @param string $name Name of the plugin folder, optional.
 	 * @param string $from Location to rsync from.
 	 */
-	public function maybe_rsync_plugin( string $name = null, string $from = null ): static {
+	public function maybe_rsync_plugin( ?string $name = null, ?string $from = null ): static {
 		if ( ! $name ) {
 			$name = basename( getcwd() );
 		}
@@ -287,7 +301,7 @@ trait Rsync_Installation {
 	 * @param string $name Name of the theme folder, optional.
 	 * @param string $from Location to rsync from.
 	 */
-	public function maybe_rsync_theme( string $name = null, string $from = null ): static {
+	public function maybe_rsync_theme( ?string $name = null, ?string $from = null ): static {
 		if ( ! $name ) {
 			$name = basename( getcwd() );
 		}
@@ -469,7 +483,7 @@ trait Rsync_Installation {
 
 		system( $command, $result_code ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.system_calls_system
 
-		exit( (int) $result_code );
+		exit( $result_code ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	/**

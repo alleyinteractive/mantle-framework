@@ -66,7 +66,7 @@ trait Response_Snapshot_Testing {
 	 *
 	 * @param array<string>|string|null $selectors Optional. The XPath selectors to include in the snapshot, or null to include the entire content. Defaults to the entire content.
 	 */
-	public function assertMatchesSnapshotHtml( array|string $selectors = null ): static {
+	public function assertMatchesSnapshotHtml( array|string|null $selectors = null ): static {
 		if ( ! $this->test_case ) {
 			return $this;
 		}

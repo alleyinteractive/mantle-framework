@@ -71,7 +71,10 @@ class FilesystemTest extends TestCase {
 		$symlinkDir = static::$temp_dir . '/symlink_dir';
 		$symlink    = "{$symlinkDir}/symlink.txt";
 
-		mkdir( $symlinkDir );
+		if ( ! is_dir( $symlinkDir ) ) {
+			mkdir( $symlinkDir );
+		}
+
 		symlink( $tempFile, $symlink );
 
 		// Prevent changes to symlink_dir
@@ -132,7 +135,7 @@ class FilesystemTest extends TestCase {
 		$files->delete( static::$temp_dir . '/file1.txt' );
 		$this->assertFileDoesNotExist( static::$temp_dir . '/file1.txt' );
 
-		$files->delete( [ static::$temp_dir . '/file2.txt', static::$temp_dir . '/file3.txt' ] );
+		$files->delete( static::$temp_dir . '/file2.txt', static::$temp_dir . '/file3.txt' );
 		$this->assertFileDoesNotExist( static::$temp_dir . '/file2.txt' );
 		$this->assertFileDoesNotExist( static::$temp_dir . '/file3.txt' );
 	}

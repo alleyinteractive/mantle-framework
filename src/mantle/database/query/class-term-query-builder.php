@@ -112,7 +112,7 @@ class Term_Query_Builder extends Builder {
 		);
 
 		if ( empty( $term_ids ) ) {
-			return new Collection(); // @phpstan-ignore-line should return
+			return new Collection();
 		}
 
 		$models = array_map( [ $this->model, 'find' ], $term_ids );

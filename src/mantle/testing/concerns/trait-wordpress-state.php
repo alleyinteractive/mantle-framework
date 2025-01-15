@@ -18,13 +18,39 @@ use WP_Post;
  * testing.
  */
 trait WordPress_State {
+	/**
+	 * Whether the initial data structures have been created.
+	 */
+	protected static bool $initial_data_structures_created = false;
+
+	/**
+	 * Setup the WordPress State before the class is set up.
+	 */
+	public static function wordpress_state_set_up_before_class(): void {
+		// Set the default permalink structure on each test before setUp() to allow
+		// the tests to override it.
+		self::set_permalink_structure( Utils::DEFAULT_PERMALINK_STRUCTURE );
+
+		if ( ! self::$initial_data_structures_created ) {
+			// Create the initial post types/taxonomies after the default permalink
+			// structure is set.
+			create_initial_post_types();
+			create_initial_taxonomies();
+
+			flush_rewrite_rules(); // phpcs:ignore
+
+			self::$initial_data_structures_created = true;
+		}
+	}
 
 	/**
 	 * Cleans the global scope (e.g `$_GET` and `$_POST`).
 	 */
-	public function clean_up_global_scope(): void {
-		$_GET  = [];
-		$_POST = [];
+	public static function clean_up_global_scope(): void {
+		$_GET     = [];
+		$_POST    = [];
+		$_REQUEST = [];
+
 		self::flush_cache();
 	}
 
@@ -150,7 +176,7 @@ trait WordPress_State {
 	 *
 	 * @param string $structure Optional. Permalink structure to set. Default empty.
 	 */
-	public function set_permalink_structure( $structure = '' ): void {
+	public static function set_permalink_structure( $structure = '' ): void {
 		global $wp_rewrite;
 
 		$wp_rewrite->init();
@@ -168,9 +194,9 @@ trait WordPress_State {
 	 */
 	protected function update_post_modified( WP_Post|Post|int $post, DateTimeInterface|string $date ): bool {
 		$post = match ( true ) {
-			$post instanceof WP_Post => Post::for( $post->post_type )->find( $post->ID ),
+			$post instanceof WP_Post => Post::for( $post->post_type )->find_or_fail( $post->ID ),
 			$post instanceof Post    => $post,
-			default                  => Post::for( get_post_type( $post ) )->find( $post ),
+			default                  => Post::for( get_post_type( $post ) )->find_or_fail( $post ),
 		};
 
 		return $post->save(

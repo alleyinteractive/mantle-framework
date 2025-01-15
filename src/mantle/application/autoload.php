@@ -23,7 +23,7 @@ if ( ! function_exists( 'app' ) ) {
 	 * @param array<mixed> $parameters Parameters.
 	 * @return mixed|Application
 	 */
-	function app( string $abstract = null, array $parameters = [] ) {
+	function app( ?string $abstract = null, array $parameters = [] ) {
 		if ( empty( $abstract ) ) {
 			return Application::get_instance();
 		}

@@ -129,7 +129,7 @@ trait Incorrect_Usage {
 			if ( ! empty( $errors ) ) {
 				$this->fail( 'Unexpected incorrect usage notice(s) triggered: ' . implode( ', ', $errors ) );
 			} else {
-				$this->assertTrue( true );
+				$this->assertTrue( true ); // @phpstan-ignore-line alreadyNarrowedType
 			}
 		}
 	}

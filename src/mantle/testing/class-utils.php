@@ -438,10 +438,24 @@ class Utils {
 	}
 
 	/**
+	 * Check if we're running in a CI (Continuous Integration) environment.
+	 */
+	public static function is_ci(): bool {
+		return (
+			! empty( $_SERVER['GITHUB_ENV'] )
+			|| ( ! empty( $_SERVER['CI'] ) && in_array( $_SERVER['CI'], [ 'true', '1' ], true ) )
+			|| ! empty( $_SERVER['GITHUB_REPOSITORY_OWNER'] )
+			|| ! empty( $_SERVER['GITHUB_WORKFLOW'] )
+			|| ! empty( $_SERVER['GITHUB_EVENT_NAME'] )
+		);
+	}
+
+	/**
 	 * Run a system command and return the output.
 	 *
 	 * @param string|string[] $command Command to run.
-	 * @param int             $exit_code Exit code.
+	 * @param int|null        $exit_code Exit code.
+	 * @param-out int         $exit_code Exit code.
 	 * @return string[]
 	 */
 	public static function command( $command, &$exit_code = null ) {
@@ -519,8 +533,13 @@ class Utils {
 			return;
 		}
 
+		// Ignore deprecated errors.
+		if ( E_DEPRECATED === $error['type'] || E_USER_DEPRECATED === $error['type'] ) {
+			return;
+		}
+
 		static::error( '🚨 Error during test run:', 'Shutdown' );
-		static::code( $error );
+		static::code( $error ); // @phpstan-ignore-line argument.type
 
 		exit( 1 );
 	}

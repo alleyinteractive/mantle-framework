@@ -39,7 +39,7 @@ trait File_Helpers {
 	 *
 	 * @param string|null $path File path.
 	 */
-	public function hash_name( string $path = null ): string {
+	public function hash_name( ?string $path = null ): string {
 		if ( $path ) {
 			$path = rtrim( $path, '/' ) . '/';
 		}

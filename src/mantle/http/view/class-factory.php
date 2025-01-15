@@ -230,7 +230,7 @@ class Factory implements ViewFactory {
 	 * @param string $name Template name.
 	 * @return string|null File path, null otherwise.
 	 */
-	protected function resolve_view_path( string $slug, string $name = null ): ?string {
+	protected function resolve_view_path( string $slug, ?string $name = null ): ?string {
 		// Prepend the current view if the requested slug is a child template.
 		if ( Str::starts_with( $slug, '_' ) && $this->current ) {
 			return $this->resolve_child_view_path_from_parent( $slug );

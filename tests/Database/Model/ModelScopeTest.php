@@ -68,8 +68,8 @@ class ModelScopeTest extends Framework_Test_Case {
 		for ( $i = 0; $i <= 5; $i++ ) {
 			$post_ids[] = Testable_Post_For_Scope::create(
 				[
-					'content' => $faker->paragraph,
-					'name'    => $faker->name,
+					'content' => $faker->paragraph(),
+					'name'    => $faker->name(),
 					'status'  => 'publish',
 				]
 			)->id();

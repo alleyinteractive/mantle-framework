@@ -16,18 +16,19 @@ use Mantle\Support\Arr;
 
 /**
  * Query Global Scope
+ *
+ * @mixin \Mantle\Database\Model
  */
 trait Has_Global_Scopes {
 	/**
 	 * Register a new global scope on the model.
 	 *
+	 * @throws InvalidArgumentException Thrown on invalid global scope.
+	 *
 	 * @param Scope|\Closure|string $scope Scope instance/name.
 	 * @param Closure|null          $implementation Scope callback.
-	 * @return mixed
-	 *
-	 * @throws InvalidArgumentException Thrown on invalid global scope.
 	 */
-	public static function add_global_scope( $scope, Closure $implementation = null ) {
+	public static function add_global_scope( $scope, ?Closure $implementation = null ): bool {
 		if ( is_string( $scope ) && ! is_null( $implementation ) ) {
 			static::$global_scopes[ static::class ][ $scope ] = $implementation;
 			return true;
