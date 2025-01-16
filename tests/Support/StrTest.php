@@ -149,8 +149,8 @@ class StrTest extends TestCase {
 		$this->assertSame( 'This is a...', Str::excerpt( 'This is a beautiful morning', 'this', [ 'radius' => 5 ] ) );
 		$this->assertSame( '...iful morning', Str::excerpt( 'This is a beautiful morning', 'morning', [ 'radius' => 5 ] ) );
 		$this->assertNull( Str::excerpt( 'This is a beautiful morning', 'day' ) );
-		$this->assertSame( '...is a beautiful! more...', Str::excerpt( 'This is a beautiful! morning', 'Beautiful', [ 'radius' => 5 ] ) );
-		$this->assertSame( '...is a beautiful? more...', Str::excerpt( 'This is a beautiful? morning', 'beautiful', [ 'radius' => 5 ] ) );
+		$this->assertSame( '...is a beautiful! more...', Str::excerpt( 'This is a beautiful! morning', 'Beautiful', [ 'radius' => 6 ] ) );
+		$this->assertSame( '...is a beautiful? more...', Str::excerpt( 'This is a beautiful? morning', 'beautiful', [ 'radius' => 6 ] ) );
 		$this->assertSame( '', Str::excerpt( '', '', [ 'radius' => 0 ] ) );
 		$this->assertSame( 'a', Str::excerpt( 'a', 'a', [ 'radius' => 0 ] ) );
 		$this->assertSame( '...b...', Str::excerpt( 'abc', 'B', [ 'radius' => 0 ] ) );
