@@ -39,7 +39,7 @@ class {{ class }} extends Command {
 	 */
 	protected $signature = '';
 
-   /**
+	/**
 	 * Callback for the command.
 	 */
 	public function handle(): void {

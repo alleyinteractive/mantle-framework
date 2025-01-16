@@ -94,7 +94,7 @@ class Queue_Jobs_Table extends WP_List_Table {
 						'action' => null,
 						'job'    => null,
 						'filter' => $status->value,
-					] 
+					]
 				),
 			];
 		}

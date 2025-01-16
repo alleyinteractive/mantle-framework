@@ -7,20 +7,20 @@ import edit from './edit';
 /* eslint-disable quotes */
 
 registerBlockType(
-  '{{ block_namespace }}/{{ block_name }}',
-  {
-    attributes,
-    apiVersion: 2,
-    category: '{{ block_category }}',
-    description: __(
-      '{{ block_description }}',
-      '{{ domain }}',
-    ),
-    edit,
-    icon: '{{ block_icon }}',
-    keywords: [
-      __('{{ block_name }}', '{{ domain }}'),
-    ],
-    title: __('{{ block_title }}', '{{ domain }}'),
-  }
+	'{{ block_namespace }}/{{ block_name }}',
+	{
+		attributes,
+		apiVersion: 2,
+		category: '{{ block_category }}',
+		description: __(
+			'{{ block_description }}',
+			'{{ domain }}',
+		),
+		edit,
+		icon: '{{ block_icon }}',
+		keywords: [
+			__('{{ block_name }}', '{{ domain }}'),
+		],
+		title: __('{{ block_title }}', '{{ domain }}'),
+	}
 );
