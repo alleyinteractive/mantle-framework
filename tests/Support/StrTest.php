@@ -149,8 +149,8 @@ class StrTest extends TestCase {
 		$this->assertSame( 'This is a...', Str::excerpt( 'This is a beautiful morning', 'this', [ 'radius' => 5 ] ) );
 		$this->assertSame( '...iful morning', Str::excerpt( 'This is a beautiful morning', 'morning', [ 'radius' => 5 ] ) );
 		$this->assertNull( Str::excerpt( 'This is a beautiful morning', 'day' ) );
-		$this->assertSame( '...is a beautiful! mor...', Str::excerpt( 'This is a beautiful! morning', 'Beautiful', [ 'radius' => 5 ] ) );
-		$this->assertSame( '...is a beautiful? mor...', Str::excerpt( 'This is a beautiful? morning', 'beautiful', [ 'radius' => 5 ] ) );
+		$this->assertSame( '...is a beautiful! morn...', Str::excerpt( 'This is a beautiful! morning', 'Beautiful', [ 'radius' => 6 ] ) );
+		$this->assertSame( '...is a beautiful? morn...', Str::excerpt( 'This is a beautiful? morning', 'beautiful', [ 'radius' => 6 ] ) );
 		$this->assertSame( '', Str::excerpt( '', '', [ 'radius' => 0 ] ) );
 		$this->assertSame( 'a', Str::excerpt( 'a', 'a', [ 'radius' => 0 ] ) );
 		$this->assertSame( '...b...', Str::excerpt( 'abc', 'B', [ 'radius' => 0 ] ) );
@@ -173,9 +173,9 @@ class StrTest extends TestCase {
 			)
 		);
 		$this->assertSame(
-			'This is the ultimate supercalifragilisticexpialidoceous very looooooooooooooooooong looooooooooooong beautiful morning with amazing sunshine and awesome tempera[...]',
+			'This is the ultimate supercalifragilisticexpialidocious very looooooooooooooooooong looooooooooooong beautiful morning with amazing sunshine and awesome tempera[...]',
 			Str::excerpt(
-				'This is the ultimate supercalifragilisticexpialidoceous very looooooooooooooooooong looooooooooooong beautiful morning with amazing sunshine and awesome temperatures. So what are you gonna do about it?',
+				'This is the ultimate supercalifragilisticexpialidocious very looooooooooooooooooong looooooooooooong beautiful morning with amazing sunshine and awesome temperatures. So what are you gonna do about it?',
 				'very',
 				[ 'omission' => '[...]' ],
 			)
