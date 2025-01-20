@@ -208,8 +208,10 @@ class Utils {
 	public static function setup_configuration(): void {
 		global $table_prefix;
 
+		$dir = defined( 'WP_TESTS_INSTALL_PATH' ) ? WP_TESTS_INSTALL_PATH : __DIR__;
+
 		// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
-		defined( 'ABSPATH' ) || define( 'ABSPATH', Str::trailing_slash( preg_replace( '#/wp-content/.*$#', '/', WP_TESTS_INSTALL_PATH ?? __DIR__ ) ) );
+		defined( 'ABSPATH' ) || define( 'ABSPATH', Str::trailing_slash( preg_replace( '#/wp-content/.*$#', '/', $dir ) ) );
 		defined( 'WP_DEBUG' ) || define( 'WP_DEBUG', true );
 
 		defined( 'DB_NAME' ) || define( 'DB_NAME', static::env( 'WP_DB_NAME', static::DEFAULT_DB_NAME ) );
