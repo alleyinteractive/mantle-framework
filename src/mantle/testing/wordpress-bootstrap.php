@@ -93,7 +93,7 @@ if ( Utils::env_bool( 'MANTLE_LOAD_VIP_CONFIG', true ) ) {
 	if ( defined( 'WP_CONTENT_DIR' ) && file_exists( WP_CONTENT_DIR . '/vip-config/vip-config.php' ) ) {
 		require_once( WP_CONTENT_DIR . '/vip-config/vip-config.php' );
 	} elseif ( defined( 'ABSPATH' ) && file_exists( ABSPATH . '/wp-content/vip-config/vip-config.php' ) ) {
-		require_once( ABSPATH . '/wp-content//vip-config.php' );
+		require_once( ABSPATH . '/wp-content/vip-config/vip-config.php' );
 	} elseif ( file_exists( ABSPATH . '/vip-config/vip-config.php' ) ) {
 		require_once( ABSPATH . '/vip-config/vip-config.php' );
 	}
