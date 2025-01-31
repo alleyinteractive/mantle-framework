@@ -236,7 +236,21 @@ class Installation_Manager {
 
 		if ( $site ) {
 			$this->with_option( 'siteurl', $site );
+
+			// Setup the default HTTP_HOST and HTTPS to make sure the site is installed properly.
+			$this->before( function () use ( $site ) {
+				$_SERVER['HTTP_HOST'] = $_SERVER['SERVER_NAME'] = parse_url( $site, PHP_URL_HOST );
+
+				if ( 'https' === parse_url( $site, PHP_URL_SCHEME ) ) {
+					$_SERVER['HTTPS'] = 'on';
+
+					defined( 'WP_TESTS_USE_HTTPS' ) || define( 'WP_TESTS_USE_HTTPS', true );
+				} else {
+					unset( $_SERVER['HTTPS'] );
+				}
+			} );
 		}
+
 
 		return $this;
 	}

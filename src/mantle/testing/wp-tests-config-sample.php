@@ -53,6 +53,7 @@ define( 'NONCE_SALT',       'put your unique phrase here' );
 $table_prefix = 'wptests_';   // Only numbers, letters, and underscores please!
 
 defined( 'WP_TESTS_DOMAIN' ) || define( 'WP_TESTS_DOMAIN', 'example.org' );
+defined( 'WP_TESTS_USE_HTTPS' ) || define( 'WP_TESTS_USE_HTTPS', false );
 defined( 'WP_TESTS_EMAIL' ) || define( 'WP_TESTS_EMAIL', 'admin@example.org' );
 defined( 'WP_TESTS_TITLE' ) || define( 'WP_TESTS_TITLE', 'Test Site' );
 

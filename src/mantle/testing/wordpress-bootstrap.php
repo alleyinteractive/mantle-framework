@@ -127,6 +127,8 @@ $PHP_SELF            = '/index.php';
 $GLOBALS['PHP_SELF'] = '/index.php';
 $_SERVER['PHP_SELF'] = '/index.php';
 
+dd($_SERVER);
+
 // Should we run in multisite mode?
 $multisite = ( '1' === getenv( 'WP_MULTISITE' ) );
 $multisite = $multisite || ( defined( 'WP_TESTS_MULTISITE' ) && WP_TESTS_MULTISITE );
@@ -160,6 +162,8 @@ if ( ! $installing_wp && '1' !== getenv( 'WP_TESTS_SKIP_INSTALL' ) ) {
 			WP_PHP_BINARY,
 			escapeshellarg( __DIR__ . '/install-wordpress.php' ),
 			$multisite,
+			WP_TESTS_DOMAIN,
+			! empty( $_SERVER['HTTPS'] ) ? '1' : '0',
 		],
 		$retval,
 	);
