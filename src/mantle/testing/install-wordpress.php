@@ -31,6 +31,10 @@ if ( ! empty( $argv[2] ) ) {
 
 if ( ! empty( $argv[3] ) ) {
 	$_SERVER['HTTPS'] = 'on';
+
+	defined( 'WP_TESTS_USE_HTTPS' ) || define( 'WP_TESTS_USE_HTTPS', true );
+} else {
+	unset( $_SERVER['HTTPS'] );
 }
 
 global $wp_rewrite;
