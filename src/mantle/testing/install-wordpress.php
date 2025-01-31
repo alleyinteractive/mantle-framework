@@ -17,8 +17,6 @@ $PHP_SELF            = '/index.php';
 $GLOBALS['PHP_SELF'] = '/index.php';
 $_SERVER['PHP_SELF'] = '/index.php';
 
-var_dump($argv);exit;
-
 if ( ! empty( $argv[1] ) ) {
 	putenv( 'WP_MULTISITE=' . $argv[1] );
 }
