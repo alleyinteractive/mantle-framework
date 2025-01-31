@@ -229,7 +229,7 @@ class Installation_Manager {
 
 			if ( $set_tests_domain ) {
 				$this->before(
-					fn () => defined( 'WP_TESTS_DOMAIN' ) || define( 'WP_TESTS_DOMAIN', parse_url( $home, PHP_URL_HOST ) ),
+					fn () => defined( 'WP_TESTS_DOMAIN' ) || define( 'WP_TESTS_DOMAIN', parse_url( $home, PHP_URL_HOST ) ), // phpcs:ignore WordPress.WP.AlternativeFunctions.parse_url_parse_url
 				);
 			}
 		}
