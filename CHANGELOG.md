@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Ensure that when setting the home URL for testing with `Installation_Manager::with_url()` also sets the test domain.
+- When setting a HTTPS home URL for testing, ensure that the site is installed using HTTPS.
 
 ## v1.4.3 - 2025-01-31
 
