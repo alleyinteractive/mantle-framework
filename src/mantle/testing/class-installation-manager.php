@@ -238,13 +238,13 @@ class Installation_Manager {
 			$this->with_option( 'siteurl', $site );
 
 			// Setup the default HTTP_HOST and HTTPS to make sure the site is installed properly.
-			$this->before( function () use ( $site ) {
-				$_SERVER['HTTP_HOST'] = $_SERVER['SERVER_NAME'] = parse_url( $site, PHP_URL_HOST );
+			$this->before( function () use ( $site ): void {
+				$_SERVER['HTTP_HOST'] = $_SERVER['SERVER_NAME'] = parse_url( $site, PHP_URL_HOST ); // phpcs:ignore WordPress.WP.AlternativeFunctions.parse_url_parse_url
 
-				if ( 'https' === parse_url( $site, PHP_URL_SCHEME ) ) {
+				if ( 'https' === parse_url( $site, PHP_URL_SCHEME ) ) { // phpcs:ignore WordPress.WP.AlternativeFunctions.parse_url_parse_url
 					$_SERVER['HTTPS'] = 'on';
 
-					defined( 'WP_TESTS_USE_HTTPS' ) || define( 'WP_TESTS_USE_HTTPS', true );
+					defined( 'WP_TESTS_USE_HTTPS' ) || define( 'WP_TESTS_USE_HTTPS', true ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
 				} else {
 					unset( $_SERVER['HTTPS'] );
 				}

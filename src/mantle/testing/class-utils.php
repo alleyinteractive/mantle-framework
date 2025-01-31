@@ -121,7 +121,7 @@ class Utils {
 
 		unset( $_SERVER['HTTP_REFERER'] );
 
-		if ( WP_TESTS_USE_HTTPS ) {
+		if ( defined( 'WP_TESTS_USE_HTTPS' ) && WP_TESTS_USE_HTTPS ) {
 			$_SERVER['HTTPS'] = 'on';
 		} else {
 			unset( $_SERVER['HTTPS'] );
