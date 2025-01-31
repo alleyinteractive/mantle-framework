@@ -221,10 +221,17 @@ class Installation_Manager {
 	 *
 	 * @param string|null $home Home URL.
 	 * @param string|null $site Site URL.
+	 * @param bool        $set_tests_domain Whether to set WP_TESTS_DOMAIN constant to match the home URL.
 	 */
-	public function with_url( ?string $home = null, ?string $site = null ): static {
+	public function with_url( ?string $home = null, ?string $site = null, bool $set_tests_domain = true ): static {
 		if ( $home ) {
 			$this->with_option( 'home', $home );
+
+			if ( $set_tests_domain ) {
+				$this->before(
+					fn () => defined( 'WP_TESTS_DOMAIN' ) || define( 'WP_TESTS_DOMAIN', parse_url( $home, PHP_URL_HOST ) ),
+				);
+			}
 		}
 
 		if ( $site ) {

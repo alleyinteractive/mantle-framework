@@ -52,10 +52,10 @@ define( 'NONCE_SALT',       'put your unique phrase here' );
 
 $table_prefix = 'wptests_';   // Only numbers, letters, and underscores please!
 
-define( 'WP_TESTS_DOMAIN', 'example.org' );
-define( 'WP_TESTS_EMAIL', 'admin@example.org' );
-define( 'WP_TESTS_TITLE', 'Test Site' );
+defined( 'WP_TESTS_DOMAIN' ) || define( 'WP_TESTS_DOMAIN', 'example.org' );
+defined( 'WP_TESTS_EMAIL' ) || define( 'WP_TESTS_EMAIL', 'admin@example.org' );
+defined( 'WP_TESTS_TITLE' ) || define( 'WP_TESTS_TITLE', 'Test Site' );
 
-define( 'WP_PHP_BINARY', 'php' );
+defined( 'WP_PHP_BINARY' ) || define( 'WP_PHP_BINARY', 'php' );
 
-define( 'WPLANG', '' );
+defined( 'WPLANG' ) || define( 'WPLANG', '' );
