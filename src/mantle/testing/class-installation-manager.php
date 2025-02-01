@@ -221,7 +221,7 @@ class Installation_Manager {
 	 *
 	 * @param string|null $home Home URL.
 	 * @param string|null $site Site URL.
-	 * @param bool        $set_tests_domain Whether to set WP_TESTS_DOMAIN constant to match the home URL and WP_TESTS_USE_HTTPS to match the scheme.
+	 * @param bool        $set_tests_domain Whether to set WP_TESTS_DOMAIN constant to match the home URL.
 	 */
 	public function with_url( ?string $home = null, ?string $site = null, bool $set_tests_domain = true ): static {
 		if ( $home ) {
