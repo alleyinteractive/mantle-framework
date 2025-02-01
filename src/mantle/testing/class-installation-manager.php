@@ -219,12 +219,18 @@ class Installation_Manager {
 	/**
 	 * Define the site/home URLs to be set after the installation is loaded.
 	 *
+	 * @throws \InvalidArgumentException If the home or site URL is invalid.
+	 *
 	 * @param string|null $home Home URL.
 	 * @param string|null $site Site URL.
 	 * @param bool        $set_tests_domain Whether to set WP_TESTS_DOMAIN constant to match the home URL.
 	 */
 	public function with_url( ?string $home = null, ?string $site = null, bool $set_tests_domain = true ): static {
 		if ( $home ) {
+			if ( ! filter_var( $home, FILTER_VALIDATE_URL ) ) {
+				throw new \InvalidArgumentException( 'Invalid home URL.' );
+			}
+
 			$this->with_option( 'home', $home );
 
 			if ( $set_tests_domain ) {
@@ -235,6 +241,10 @@ class Installation_Manager {
 		}
 
 		if ( $site ) {
+			if ( ! filter_var( $site, FILTER_VALIDATE_URL ) ) {
+				throw new \InvalidArgumentException( 'Invalid site URL.' );
+			}
+
 			$this->with_option( 'siteurl', $site );
 
 			// Setup the default HTTP_HOST and HTTPS to make sure the site is installed properly.
