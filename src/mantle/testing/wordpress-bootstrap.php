@@ -159,7 +159,7 @@ if ( ! $installing_wp && '1' !== getenv( 'WP_TESTS_SKIP_INSTALL' ) ) {
 		[
 			WP_PHP_BINARY,
 			escapeshellarg( __DIR__ . '/install-wordpress.php' ),
-			$multisite,
+			$multisite ? '1' : '0',
 			WP_TESTS_DOMAIN,
 			! empty( $_SERVER['HTTPS'] ) ? '1' : '0',
 		],
