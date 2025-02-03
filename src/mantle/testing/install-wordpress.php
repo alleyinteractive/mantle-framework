@@ -1,6 +1,10 @@
 <?php // phpcs:disable
 /**
  * Installs WordPress for the purpose of the unit-tests.
+ *
+ * Called from wordpress-bootstrap.php:
+ *
+ *   php install-wordpress.php [multisite] [domain] [https]
  */
 
 use Mantle\Testing\Utils;
@@ -12,6 +16,26 @@ define( 'WP_INSTALLING', true );
 $PHP_SELF            = '/index.php';
 $GLOBALS['PHP_SELF'] = '/index.php';
 $_SERVER['PHP_SELF'] = '/index.php';
+
+if ( ! empty( $argv[1] ) ) {
+	putenv( 'WP_MULTISITE=' . $argv[1] );
+}
+
+// Set the HTTP_HOST and HTTPS server variables to ensure the site is installed
+// properly in the installation subprocess.
+if ( ! empty( $argv[2] ) ) {
+	$_SERVER['HTTP_HOST'] = $argv[2];
+
+	defined( 'WP_TESTS_DOMAIN' ) || define('WP_TESTS_DOMAIN', $argv[2] );
+}
+
+if ( ! empty( $argv[3] ) ) {
+	$_SERVER['HTTPS'] = 'on';
+
+	defined( 'WP_TESTS_USE_HTTPS' ) || define( 'WP_TESTS_USE_HTTPS', true );
+} else {
+	unset( $_SERVER['HTTPS'] );
+}
 
 global $wp_rewrite;
 
@@ -26,6 +50,8 @@ if ( file_exists( ABSPATH . '/wp-includes/class-wpdb.php' ) ) {
 	require_once ABSPATH . '/wp-includes/wp-db.php';
 }
 
+// Define the multisite variable. Unable to move this variable up the file as
+// wordpress-bootstrap.php will unset it.
 $multisite = ! empty( $argv[1] );
 
 $wpdb->query( 'SET default_storage_engine = InnoDB' );
