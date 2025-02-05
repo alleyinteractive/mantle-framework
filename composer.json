@@ -161,6 +161,7 @@
         ]
     },
     "suggest": {
-        "brianium/paratest": "Run PHPUnit tests in parallel"
+        "brianium/paratest": "Run PHPUnit tests in parallel",
+        "illuminate/view": "For Blade templating"
     }
 }
