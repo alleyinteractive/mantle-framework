@@ -74,6 +74,7 @@
         "mantle-framework/facade": "self.version",
         "mantle-framework/faker": "self.version",
         "mantle-framework/filesystem": "self.version",
+        "mantle-framework/framework": "self.version",
         "mantle-framework/http": "self.version",
         "mantle-framework/http-client": "self.version",
         "mantle-framework/log": "self.version",

@@ -39,9 +39,7 @@ return static function ( ContainerConfigurator $container_config ): void {
 	// Ignore specific packages.
 	$parameters->set(
 		Option::PACKAGE_DIRECTORIES_EXCLUDES,
-		[
-			__DIR__ . '/src/mantle/framework',
-		],
+		[],
 	);
 
 	// Append specific items to the composer.json.

@@ -1,0 +1,43 @@
+{
+    "name": "mantle-framework/framework",
+    "description": "The Mantle Framework Package",
+    "type": "library",
+    "require": {
+        "php": "^8.2",
+        "alleyinteractive/composer-wordpress-autoloader": "^1.0",
+        "mantle-framework/application": "^1.0",
+        "mantle-framework/contracts": "^1.0",
+        "mantle-framework/facade": "^1.0",
+        "mantle-framework/filesystem": "^1.0",
+        "mantle-framework/support": "^1.0",
+        "psr/log": "^1.0.1 || ^2.0 || ^3.0",
+        "symfony/console": "^6.2 || ^7.0",
+        "symfony/finder": "^7.0",
+        "symfony/http-foundation": "^7.2.0",
+        "symfony/http-kernel": "^7.0",
+        "symfony/routing": "^7.0"
+    },
+    "extra": {
+        "wordpress-autoloader": {
+            "autoload": {
+                "Mantle\\Framework": "./"
+            }
+        }
+    },
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Alley",
+            "email": "mantle@alley.com"
+        }
+    ],
+    "autoload": {
+        "files": [
+            "helpers.php"
+        ]
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev"
+}
