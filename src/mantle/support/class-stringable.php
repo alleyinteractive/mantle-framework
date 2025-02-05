@@ -1130,7 +1130,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 			return Date::parse( $this->value, $tz );
 		}
 
-		return Date::createFromFormat( $format, $this->value, $tz );
+		return Date::createFromFormat( $format, $this->value, $tz ?? wp_timezone() );
 	}
 
 	/**
