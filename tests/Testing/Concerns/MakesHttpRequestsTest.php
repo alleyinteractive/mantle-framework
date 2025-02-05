@@ -459,7 +459,7 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 	public function test_multiple_requests() {
 		$methods = collect( get_class_methods( $this ) )
 			->filter( fn ( string $method ) => ! Str::contains( $method, [ 'experimental', '_snapshot_' ] ) && 0 === strpos( $method, 'test_' ) )
-			->shuffle()
+			->sort()
 			->all();
 
 		// Re-run all test methods on this class in a single pass.
