@@ -11,8 +11,8 @@
         "monolog/monolog": "^2.9.1",
         "nesbot/carbon": "^3.8.4",
         "ramsey/uuid": "^4.7.4",
-        "symfony/finder": "^7.0",
-        "symfony/var-dumper": "^7.0",
+        "symfony/finder": "^7.2.0",
+        "symfony/var-dumper": "^7.2.0",
         "voku/portable-ascii": "^2.0.1"
     },
     "extra": {
