@@ -463,19 +463,19 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 			->all();
 
 		// Re-run all test methods on this class in a single pass.
-		retry( 3, function () use ( $methods ) {
-			foreach ( $methods as $method ) {
-				if ( __FUNCTION__ === $method || 'test_' !== substr( $method, 0, 5 ) ) {
-					continue;
-				}
+		foreach ( $methods as $method ) {
+			if ( __FUNCTION__ === $method || 'test_' !== substr( $method, 0, 5 ) ) {
+				continue;
+			}
 
+			retry( 3, function () use ( $method ) {
 				$this->setUp();
 
 				$this->$method();
 
 				$this->tearDown();
-			}
-		} );
+			} );
+		}
 	}
 
 	protected function setup_experiment_testing_url_host() {
