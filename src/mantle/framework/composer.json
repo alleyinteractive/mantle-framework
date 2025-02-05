@@ -39,5 +39,8 @@
     "config": {
         "sort-packages": true
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "suggest": {
+        "alleyinteractive/mantle-framework": "For the full Mantle Framework package. This package is only a subtree split of the Mantle Framework monorepo."
+    }
 }
