@@ -9,6 +9,7 @@
         "mantle-framework/contracts": "^1.0",
         "mantle-framework/facade": "^1.0",
         "mantle-framework/filesystem": "^1.0",
+        "mantle-framework/http": "^1.0",
         "mantle-framework/support": "^1.0",
         "psr/log": "^1.0.1 || ^2.0 || ^3.0",
         "symfony/console": "^7.2",
