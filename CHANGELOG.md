@@ -7,8 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v1.4.6 - 2025-02-05
 
-No changes, releasing the `mantle-framework/framework` package independently
-along with other sub-packages in the monorepo.
+### Added
+
+- Releasing the `mantle-framework/framework` package independently along with
+  other sub-packages in the monorepo.
+
+### Changed
+
+- Upgraded `mantle-framework/testkit` to support `nunomaduro/collision` v8 (which requires PHP 8.2 and PHPUnit 10+).
+- Drop support for `symfony/console` v6.2.
 
 ## v1.4.5 - 2025-02-03
 
