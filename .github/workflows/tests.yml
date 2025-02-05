@@ -60,6 +60,9 @@ jobs:
         multisite: [true, false]
         php: [8.2, 8.3, 8.4]
         wordpress: ["latest"]
+        exclude:
+          - php: 8.4
+            dependencies: "prefer-lowest"
     runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}-P${{ matrix.php }}-WP${{ matrix.wordpress }}-MS${{ matrix.multisite && '1' || '0' }}-D${{ matrix.dependencies }}
