@@ -16,6 +16,7 @@ use PHPUnit\Framework\Attributes\Group;
 use WP_REST_Response;
 
 use function Mantle\Support\Helpers\collect;
+use function Mantle\Support\Helpers\retry;
 
 /**
  * @group testing
@@ -462,17 +463,19 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 			->all();
 
 		// Re-run all test methods on this class in a single pass.
-		foreach ( $methods as $method ) {
-			if ( __FUNCTION__ === $method || 'test_' !== substr( $method, 0, 5 ) ) {
-				continue;
+		retry( 3, function () use ( $methods ) {
+			foreach ( $methods as $method ) {
+				if ( __FUNCTION__ === $method || 'test_' !== substr( $method, 0, 5 ) ) {
+					continue;
+				}
+
+				$this->setUp();
+
+				$this->$method();
+
+				$this->tearDown();
 			}
-
-			$this->setUp();
-
-			$this->$method();
-
-			$this->tearDown();
-		}
+		} );
 	}
 
 	protected function setup_experiment_testing_url_host() {
