@@ -5,7 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v1.5.0 - 2025-02-05
+## v1.5.1 - 2025-02-06
+
+### Changed
+
+- Dropped `nunomaduro/collision` from the main
+  `alleyinteractive/mantle-framework` package in favor of making the package a
+  dependency on `alleyinteractive/mantle`. It still remains a dependency of
+  `mantle-framework/testkit`.
+
+## v1.5.0 - 2025-02-06
 
 ### Changed
 
