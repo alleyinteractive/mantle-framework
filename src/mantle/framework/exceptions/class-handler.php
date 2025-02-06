@@ -195,7 +195,7 @@ class Handler implements Contract {
 	 * @throws Throwable Thrown in debug mode to trigger Whoops.
 	 */
 	public function render_for_console( OutputInterface $output, Throwable $e ): void {
-		if ( config( 'app.debug' ) ) {
+		if ( config( 'app.debug' ) && class_exists( \NunoMaduro\Collision\Provider::class ) ) {
 			// Use collision to render the exception if we're in debug mode.
 			( new \NunoMaduro\Collision\Provider() )->register();
 

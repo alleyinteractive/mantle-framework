@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.5.0 - 2025-02-05
+
+### Changed
+
+- Dropped `illuminate/view` from the `alleyinteractive/mantle-framework`
+  package. There is a conflict between the dependent package
+  `illuminate/support` and `spatie/once`. `alleyinteractive/mantle` will be
+  updated to require `illuminate/view` directly.
+- Upgraded `mantle-framework/testkit` to support `nunomaduro/collision` v8 (which requires PHP 8.2 and PHPUnit 10+).
+- Drop support for `symfony/console` v6.2. All Symfony components are now at v7.0.
+
 ## v1.4.5 - 2025-02-03
 
 ### Fixed

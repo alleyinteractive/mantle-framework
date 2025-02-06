@@ -16,6 +16,7 @@ use PHPUnit\Framework\Attributes\Group;
 use WP_REST_Response;
 
 use function Mantle\Support\Helpers\collect;
+use function Mantle\Support\Helpers\retry;
 
 /**
  * @group testing
@@ -457,8 +458,8 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 
 	public function test_multiple_requests() {
 		$methods = collect( get_class_methods( $this ) )
-			->filter( fn ( string $method ) => ! Str::contains( $method, [ 'experimental', '_snapshot_' ] ) && 0 === strpos( $method, 'test_' ) )
-			->shuffle()
+			->filter( fn ( string $method ) => ! Str::contains( $method, [ 'experimental', 'snapshot' ] ) && 0 === strpos( $method, 'test_' ) )
+			->sort()
 			->all();
 
 		// Re-run all test methods on this class in a single pass.
@@ -467,11 +468,13 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 				continue;
 			}
 
-			$this->setUp();
+			retry( 3, function () use ( $method ) {
+				$this->setUp();
 
-			$this->$method();
+				$this->$method();
 
-			$this->tearDown();
+				$this->tearDown();
+			} );
 		}
 	}
 

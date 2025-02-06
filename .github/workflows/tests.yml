@@ -13,6 +13,24 @@ on:
       - '*.*.x'
 
 jobs:
+  monorepo-validate:
+    if: github.event.pull_request.draft == false
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    name: "Lint Tests"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run General Tests
+        uses: alleyinteractive/action-test-general@develop
+
+      - name: Run Linter
+        uses: alleyinteractive/action-test-php@develop
+        with:
+          php-version: '8.4'
+          skip-services: 'true'
+          skip-wordpress-install: 'true'
+          test-command: 'composer monorepo-validate'
   lint-tests:
     if: github.event.pull_request.draft == false
     timeout-minutes: 10
@@ -42,6 +60,9 @@ jobs:
         multisite: [true, false]
         php: [8.2, 8.3, 8.4]
         wordpress: ["latest"]
+        exclude:
+          - php: 8.4
+            dependencies: "prefer-lowest"
     runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}-P${{ matrix.php }}-WP${{ matrix.wordpress }}-MS${{ matrix.multisite && '1' || '0' }}-D${{ matrix.dependencies }}
@@ -65,6 +86,7 @@ jobs:
   all-pr-checks-passed:
     name: All PR checks passed
     needs:
+      - monorepo-validate
       - lint-tests
       - unit-tests
     runs-on: ubuntu-latest
