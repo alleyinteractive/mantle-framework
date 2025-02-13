@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Allow multiple `Ignore_Deprecation`/`Ignore_Incorrect_Usage` attribute usages on the same method.
+- Allow multiple
+  `Ignore_Deprecation`/`Ignore_Incorrect_Usage`/`Expected_Deprecation`/`Expected_Incorrect_Usage`
+  attributes on a test method/class.
 
 ## v1.5.2 - 2025-02-06
 
