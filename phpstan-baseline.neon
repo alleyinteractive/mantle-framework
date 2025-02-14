@@ -1,0 +1,85 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Instanceof between TModel of Mantle\\Database\\Model\\Model and Mantle\\Database\\Model\\Model will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 2
+			path: src/mantle/database/query/class-collection.php
+
+		-
+			message: '#^Instanceof between static\(Mantle\\Database\\Query\\Collection\<TKey of \(int\|string\), TMapValue\>\) and Mantle\\Database\\Query\\Collection will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: src/mantle/database/query/class-collection.php
+
+		-
+			message: '#^Instanceof between static\(Mantle\\Database\\Query\\Collection\<TMapWithKeysKey of \(int\|string\), TMapWithKeysValue\>\) and Mantle\\Database\\Query\\Collection will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: src/mantle/database/query/class-collection.php
+
+		-
+			message: '#^Method Mantle\\Database\\Query\\Collection\:\:zip\(\) should return static\(Mantle\\Database\\Query\\Collection\<int, static\(Mantle\\Database\\Query\\Collection\<TKey of \(int\|string\), \(TModel of Mantle\\Database\\Model\\Model\)\|TZipValue\>\)\>\) but returns Mantle\\Support\\Collection\<int, Mantle\\Support\\Collection\<\(int\|string\), mixed\>\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/mantle/database/query/class-collection.php
+
+		-
+			message: '#^Method Mantle\\Support\\Collection\:\:chunk\(\) should return static\(Mantle\\Support\\Collection\<int, static\(Mantle\\Support\\Collection\<TKey of \(int\|string\), TValue\>\)\>\) but returns static\(Mantle\\Support\\Collection\<int, static\(Mantle\\Support\\Collection\<TKey of \(int\|string\), TValue\>\)\>\)\.$#'
+			identifier: return.type
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: '#^Method Mantle\\Support\\Collection\:\:combine\(\) should return static\(Mantle\\Support\\Collection\<TValue, TCombineValue\>\) but returns static\(Mantle\\Support\\Collection\<\(int\|string\), TValue\>\)\.$#'
+			identifier: return.type
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: '#^Method Mantle\\Support\\Collection\:\:filter\(\) should return static\(Mantle\\Support\\Collection\<TKey of \(int\|string\), TValue\>\) but returns static\(Mantle\\Support\\Collection\<TKey of \(int\|string\), TValue of mixed\>\)\.$#'
+			identifier: return.type
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: '#^Method Mantle\\Support\\Collection\:\:from\(\) should return static\(Mantle\\Support\\Collection\<TKeyFrom of \(int\|string\), TValueFrom\>\) but returns static\(Mantle\\Support\\Collection\<int, Mantle\\Database\\Model\\Post\|null\>\)\.$#'
+			identifier: return.type
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: '#^Method Mantle\\Support\\Collection\:\:group_by\(\) should return static\(Mantle\\Support\\Collection\<\(int\|string\), static\(Mantle\\Support\\Collection\<\(int\|string\), TValue\>\)\>\) but returns static\(Mantle\\Support\\Collection\<\(int\|string\), static\(Mantle\\Support\\Collection\<\*NEVER\*, \*NEVER\*\>\)\>\)\.$#'
+			identifier: return.type
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: '#^Method Mantle\\Support\\Collection\:\:map_to_dictionary\(\) should return static\(Mantle\\Support\\Collection\<TMapToDictionaryKey of \(int\|string\), array\<int, TMapToDictionaryValue\>\>\) but returns static\(Mantle\\Support\\Collection\<TMapToDictionaryKey of \(int\|string\), non\-empty\-list\<TMapToDictionaryValue\>\>\)\.$#'
+			identifier: return.type
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: '#^Method Mantle\\Support\\Collection\:\:only_children\(\) should return static\(Mantle\\Support\\Collection\<TKey of \(int\|string\), array\>\) but returns static\(Mantle\\Support\\Collection\<TKey of \(int\|string\), TValue\>\)\.$#'
+			identifier: return.type
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: '#^Method Mantle\\Support\\Collection\:\:partition\(\) should return static\(Mantle\\Support\\Collection\<int\<0, 1\>, static\(Mantle\\Support\\Collection\<TKey of \(int\|string\), TValue\>\)\>\) but returns static\(Mantle\\Support\\Collection\<int, static\(Mantle\\Support\\Collection\<\(int\|string\), mixed\>\)\>\)\.$#'
+			identifier: return.type
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: '#^Method Mantle\\Support\\Collection\:\:times\(\) should return static\(Mantle\\Support\\Collection\<int, TTimesValue\>\) but returns static\(Mantle\\Support\\Collection\<int, int\<1, max\>\>\)\.$#'
+			identifier: return.type
+			count: 1
+			path: src/mantle/support/class-collection.php
+
+		-
+			message: '#^Method Mantle\\Support\\Collection\:\:where_instance_of\(\) should return static\(Mantle\\Support\\Collection\<TKey of \(int\|string\), TWhereInstanceOf\>\) but returns static\(Mantle\\Support\\Collection\<TKey of \(int\|string\), TValue\>\)\.$#'
+			identifier: return.type
+			count: 1
+			path: src/mantle/support/class-collection.php
