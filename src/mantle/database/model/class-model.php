@@ -565,9 +565,9 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 * Create a new instance of a model and save it.
 	 *
 	 * @param array $args Model arguments.
-	 * @return static
+	 * @return static<TModelObject>
 	 */
-	public static function create( array $args ) {
+	public static function create( array $args ): static {
 		$instance = new static();
 
 		if ( $instance instanceof Updatable ) {
@@ -575,7 +575,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 			$instance->refresh();
 		}
 
-		return $instance;
+		return $instance; // @phpstan-ignore-line return.type
 	}
 
 	/**
@@ -583,15 +583,16 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 *
 	 * @param array $attributes Attributes to match.
 	 * @param array $values Values to set.
+	 * @return static<TModelObject>
 	 */
 	public static function first_or_new( array $attributes, array $values = [] ): static {
 		$instance = static::query()->where( $attributes )->first();
 
 		if ( ! $instance ) {
-			return new static( array_merge( $attributes, $values ) );
+			return new static( array_merge( $attributes, $values ) ); // @phpstan-ignore-line return.type
 		}
 
-		return $instance;
+		return $instance; // @phpstan-ignore-line return.type
 	}
 
 	/**

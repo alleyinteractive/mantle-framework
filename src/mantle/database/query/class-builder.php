@@ -232,10 +232,10 @@ abstract class Builder {
 	 * Create a query builder for a model.
 	 *
 	 * @param array|string $model Model name or array of model names.
-	 * @return static
+	 * @return static<TModel>
 	 */
 	public static function create( $model ) {
-		return new static( $model );
+		return new static( $model ); // @phpstan-ignore-line return.type
 	}
 
 	/**
