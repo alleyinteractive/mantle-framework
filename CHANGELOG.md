@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Change `str()` helper to only accept a string and always return a Stringable object.
 - Allow multiple
   `Ignore_Deprecation`/`Ignore_Incorrect_Usage`/`Expected_Deprecation`/`Expected_Incorrect_Usage`
   attributes on a test method/class.
