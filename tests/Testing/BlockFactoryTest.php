@@ -97,6 +97,17 @@ class BlockFactoryTest extends TestCase {
 			),
 		);
 
+		Block_Factory::register_preset(
+			'title_with_arguments',
+			fn ( Block_Factory $factory, string $title ) => $factory->block(
+				'namespace/multititle',
+				'',
+				[
+					'seo' => $title,
+				]
+			),
+		);
+
 		$this->assertStringStartsWith(
 			'<!-- wp:heading {"level":2} -->',
 			block_factory()->test(),
@@ -119,6 +130,11 @@ class BlockFactoryTest extends TestCase {
 		$this->assertEquals(
 			'<!-- wp:namespace/multititle {"seo":"Attribute on the block"} /-->',
 			block_factory()->preset( 'title_block' ),
+		);
+
+		$this->assertEquals(
+			'<!-- wp:namespace/multititle {"seo":"Title Here"} /-->',
+			block_factory()->title_with_arguments( 'Title Here' ),
 		);
 	}
 }
