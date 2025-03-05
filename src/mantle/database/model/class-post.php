@@ -8,12 +8,9 @@
 namespace Mantle\Database\Model;
 
 use Carbon\Carbon;
-use DateTime;
 use DateTimeInterface;
-use GuzzleHttp\Handler\Proxy;
 use Mantle\Contracts;
 use Mantle\Database\Model\Relations\Belongs_To;
-use Mantle\Database\Model\Relations\Has_One;
 use Mantle\Database\Query\Builder;
 use Mantle\Database\Query\Post_Query_Builder;
 use Mantle\Support\Helpers;
