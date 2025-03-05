@@ -164,7 +164,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 */
 	public static function find( $object ) {
 		$post = Helpers\get_post_object( $object );
-
+		dump('found', $post, 'from', $object);
 		if ( empty( $post ) ) {
 			return null;
 		}

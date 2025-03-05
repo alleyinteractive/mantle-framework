@@ -21,5 +21,8 @@ define( 'MANTLE_PHPUNIT_TEMPLATE_PATH', __DIR__ . '/template-parts' );
 	->install_plugin( 'byline-manager', 'https://github.com/alleyinteractive/byline-manager/archive/refs/heads/production.zip' )
 	->install_plugin( 'jetpack', '12.4' )
 	->install_plugin( 'co-authors-plus' )
+	->plugins( [
+		'co-authors-plus/co-authors-plus.php',
+	] )
 	->without_local_object_cache()
 	->install();
