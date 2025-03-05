@@ -5,6 +5,7 @@ use Closure;
 use Faker\Generator;
 use Mantle\Database\Factory\Concerns\With_Meta;
 use Mantle\Database\Factory\Factory;
+use Mantle\Database\Model\Model_Exception;
 use Mantle\Database\Model\Post;
 use Mantle\Support\Pipeline;
 use RuntimeException;
@@ -37,21 +38,17 @@ class Co_Authors_Plus_Factory extends Factory {
 	protected string $model = Post::class;
 
 	/**
-	 * Constructor.
+	 * Pass along a user ID to associate with the guest author.
 	 *
-	 * @param Generator $faker Faker generator.
+	 * @param int $user_id The user ID.
+	 * @return static
 	 */
-	public function __construct( Generator $faker ) {
-		parent::__construct( $faker );
-
-		// $this->middleware->push( function ( array $args, Closure $next ) {
-		// 	// Check if a display name is provided.
-		// 	$display_name = $args['post_title'] ?? $this->faker->name();
-
-		// 	$args['post_title'] = $display_name;
-		// 	$args['post_name']  = stringable( $display_name )->slugify()->prepend( 'cap-')
-		// 	dd($args);
-		// } );
+	public function with_user( int $user_id ): static {
+		return $this->state(
+			[
+				'user_id' => $user_id,
+			]
+		);
 	}
 
 	/**
@@ -59,11 +56,16 @@ class Co_Authors_Plus_Factory extends Factory {
 	 *
 	 * @return array<string, string>
 	 */
-	public function definition(): array
-	{
+	public function definition(): array {
 		return [];
 	}
 
+	/**
+	 * Make the underlying guest author object.
+	 *
+	 * @param array<mixed> $args Arguments to pass to the factory.
+	 * @return Post
+	 */
 	public function make( array $args = [] ): Post {
 		global $coauthors_plus;
 
@@ -84,25 +86,54 @@ class Co_Authors_Plus_Factory extends Factory {
 				function ( array $args ) {
 					global $coauthors_plus;
 
+					$user_id = $args['user_id'] ?? 0;
+					$user    = null;
+
+					if ( $user_id ) {
+						$user = get_userdata( $user_id );
+
+						if ( ! $user ) {
+							throw new Model_Exception( 'User not found: ' . $user_id );
+						}
+					}
+
 					if ( empty( $args['display_name'] ) ) {
-						$args['first_name']   = $this->faker->firstName();
-						$args['last_name']    = $this->faker->lastName();
-						$args['display_name'] = $args['first_name'] . ' ' . $args['last_name'];
+						// Get the user display name from the user if set.
+						if ( $user ) {
+							$args['display_name'] = $user->display_name;
+						} else {
+							$args['first_name']   = $this->faker->firstName();
+							$args['last_name']    = $this->faker->lastName();
+							$args['display_name'] = $args['first_name'] . ' ' . $args['last_name'];
+						}
+					}
+
+					if ( empty( $args['first_name'] ) ) {
+						$args['first_name'] = stringable( $args['display_name'] )->explode( ' ' )->first();
+					}
+
+					if ( empty( $args['last_name'] ) ) {
+						$args['last_name'] = stringable( $args['display_name'] )->explode( ' ' )->last();
 					}
 
 					if ( empty( $args['user_email'] ) ) {
 						$args['user_email'] = $this->faker->email();
 					}
 
-					if ( empty( $args['user_login'] ) ) {
+					if ( $user ) {
+						$args['user_login']     = $user->user_login;
+						$args['linked_account'] = $user->user_login;
+					} elseif ( empty( $args['user_login'] ) ) {
 						$args['user_login'] = stringable( $args['display_name'] )->slugify()->prepend( 'cap-' );
 					}
 
 					$author = $coauthors_plus->guest_authors->create( $args );
 
-					dump("created author: {$author}", get_post($author));
+					if ( is_wp_error( $author ) ) {
+						throw new Model_Exception( $author->get_error_message() );
+					}
 
-					dd('model', Post::for( self::POST_TYPE ), Post::for( self::POST_TYPE )::find( $author->ID ));
+					return Post::for( self::POST_TYPE )->find( $author );
 				}
 			);
 	}
