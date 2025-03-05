@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.5.4 - 2025-03-06
+
+### Fixed
+
+- Fix the `Post::for()`/`Term::for()` methods to properly set the post
+  type/taxonomy for the model when creating a new instance. Previously, the
+  model would always be created with the default post type/taxonomy.
+
 ## v1.5.3 - 2025-03-04
 
 ### Changed
@@ -18,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fixed bad configuration file caling `env()` vs `environment()`.
+- Fixed bad configuration file calling `env()` vs `environment()`.
 
 ## v1.5.1 - 2025-02-06
 

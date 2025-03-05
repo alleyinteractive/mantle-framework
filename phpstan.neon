@@ -19,6 +19,8 @@ parameters:
 		-
 			identifier: requireOnce.fileNotFound
 		-
+			identifier: unset.possiblyHookedProperty
+		-
 			identifier: function.alreadyNarrowedType
 			paths:
 				- src/mantle/support

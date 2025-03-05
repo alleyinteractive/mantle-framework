@@ -13,6 +13,8 @@ use Mantle\Contracts\Database\Updatable;
 use Mantle\Database\Query\Term_Query_Builder;
 use Mantle\Support\Helpers;
 
+use function Mantle\Support\Helpers\stringable;
+
 /**
  * Term Model
  *
@@ -114,30 +116,27 @@ class Term extends Model implements Core_Object, Model_Meta, Updatable {
 	 * @param string $taxonomy Taxonomy to create the model for.
 	 */
 	public static function for( string $taxonomy ): self {
-		$instance = new class() extends Term {
-			/**
-			 * Constructor.
-			 */
-			public function __construct() {}
+		$taxonomy   = sanitize_key( $taxonomy );
+		$class_name = 'Term_' . stringable( $taxonomy )->studly()->replace( '-', '_' )->__toString();
+		$namespace  = __NAMESPACE__;
 
-			/**
-			 * Boot the model if it has not been booted.
-			 *
-			 * Prevent booting the model unless the object name is set.
-			 */
-			public static function boot_if_not_booted(): void {
-				if ( empty( self::$object_name ) ) {
-					return;
-				}
+		if ( ! class_exists( "{$namespace}\\{$class_name}" ) ) {
+			// Similar to how Mockery creates classes on the fly for testing. No other
+			// solution was found to create a class on the fly.
+			eval( // phpcs:ignore Squiz.PHP.Eval.Discouraged
+				<<<PHP
+namespace {$namespace} {
+	class {$class_name} extends Term {
+		public static \$object_name = '{$taxonomy}';
+	}
+}
+PHP
+			);
+		}
 
-				parent::boot_if_not_booted();
-			}
-		};
+		$full_class_name = "{$namespace}\\{$class_name}";
 
-		$instance::$object_name = $taxonomy;
-		$instance::boot_if_not_booted();
-
-		return $instance;
+		return new $full_class_name();
 	}
 
 	/**

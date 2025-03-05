@@ -8,14 +8,14 @@
 namespace Mantle\Database\Model;
 
 use Carbon\Carbon;
-use DateTime;
 use DateTimeInterface;
 use Mantle\Contracts;
 use Mantle\Database\Model\Relations\Belongs_To;
-use Mantle\Database\Model\Relations\Has_One;
 use Mantle\Database\Query\Builder;
 use Mantle\Database\Query\Post_Query_Builder;
 use Mantle\Support\Helpers;
+
+use function Mantle\Support\Helpers\stringable;
 
 /**
  * Post Model
@@ -182,43 +182,28 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 *
 	 * @param string $post_type Post type to create the model for.
 	 */
-	public static function for( string $post_type ): self {
-		$instance = new class() extends Post {
-			/**
-			 * Constructor.
-			 */
-			public function __construct() {}
+	public static function for( string $post_type ): Post {
+		$post_type  = sanitize_key( $post_type );
+		$class_name = 'Post_' . stringable( $post_type )->studly()->replace( '-', '_' )->__toString();
+		$namespace  = __NAMESPACE__;
 
-			/**
-			 * Post type for the model.
-			 */
-			public static string $for_object_name = '';
+		if ( ! class_exists( "{$namespace}\\{$class_name}" ) ) {
+			// Similar to how Mockery creates classes on the fly for testing. No other
+			// solution was found to create a class on the fly.
+			eval( // phpcs:ignore Squiz.PHP.Eval.Discouraged
+				<<<PHP
+namespace {$namespace} {
+	class {$class_name} extends Post {
+		public static \$object_name = '{$post_type}';
+	}
+}
+PHP
+			);
+		}
 
-			/**
-			 * Retrieve the object name.
-			 */
-			public static function get_object_name(): string {
-				return self::$for_object_name;
-			}
+		$full_class_name = "{$namespace}\\{$class_name}";
 
-			/**
-			 * Boot the model if it has not been booted.
-			 *
-			 * Prevent booting the model unless the object name is set.
-			 */
-			public static function boot_if_not_booted(): void {
-				if ( empty( self::$for_object_name ) ) {
-					return;
-				}
-
-				parent::boot_if_not_booted();
-			}
-		};
-
-		$instance::$for_object_name = $post_type;
-		$instance::boot_if_not_booted();
-
-		return $instance;
+		return new $full_class_name();
 	}
 
 	/**
