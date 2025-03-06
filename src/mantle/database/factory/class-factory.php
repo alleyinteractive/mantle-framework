@@ -129,9 +129,8 @@ abstract class Factory {
 	 * Create a new factory instance with middleware.
 	 *
 	 * @param callable(array $args, \Closure $next): mixed $middleware Middleware to run the factory through.
-	 * @return static
 	 */
-	public function with_middleware( callable $middleware ) {
+	public function with_middleware( callable $middleware ): static {
 		return tap(
 			clone $this,
 			fn ( Factory $factory ) => $factory->middleware = $this->middleware->merge( $middleware ),
@@ -189,17 +188,16 @@ abstract class Factory {
 	 * middleware but supports returning an array of attributes vs a closure.
 	 *
 	 * @param (callable(array<string, mixed>): array<string, mixed>|array<string, mixed>) $state The state transformation.
-	 * @return static
 	 */
-	public function state( array|callable $state ) {
+	public function state( array|callable $state ): static {
 		return $this->with_middleware(
 			function ( array $args, Closure $next ) use ( $state ) {
-				$args = array_merge(
-					$args,
-					is_callable( $state ) ? $state( $args ) : $state,
-				);
+							$args = array_merge(
+								$args,
+								is_callable( $state ) ? $state( $args ) : $state,
+							);
 
-				return $next( $args );
+							return $next( $args );
 			},
 		);
 	}

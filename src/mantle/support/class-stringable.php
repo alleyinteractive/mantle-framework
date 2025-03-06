@@ -748,7 +748,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 *
 	 * @param string $separator Default is '-'.
 	 * @param string $language  Default is 'en'.
-	 * @param array $dictionary Default is [ '@' => 'at' ].
+	 * @param array  $dictionary Default is [ '@' => 'at' ].
 	 * @return static
 	 */
 	public function slugify( $separator = '-', $language = 'en', $dictionary = [ '@' => 'at' ] ) {

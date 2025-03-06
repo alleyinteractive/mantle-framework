@@ -2,11 +2,7 @@
 
 namespace Mantle\Tests\Database\Factory;
 
-use Mantle\Database\Factory;
-use Mantle\Database\Factory\Post_Factory;
-use Mantle\Database\Model;
 use Mantle\Testing\Framework_Test_Case;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use WP_Post;
 
@@ -47,10 +43,30 @@ class CoAuthorsPlusFactoryTest extends Framework_Test_Case {
 	public function test_create_guest_author_linked(): void {
 		// TODO Improve user.
 		$user   = static::factory()->user->create_and_get();
-		$author = static::factory()->cap_guest_author->with_user( $user->ID )->create_and_get();
+		$author = static::factory()->cap_guest_author->with_linked_user( $user->ID )->create_and_get();
 
 		$this->assertInstanceOf( WP_Post::class, $author );
 		$this->assertEquals( $user->user_login, get_post_meta( $author->ID, 'cap-user_login', true ) );
-		// TODO: Check other fields.
+
+		// Compare the other fields.
+		$this->assertEquals(
+			get_post_meta( $author->ID, 'cap-first_name', true ),
+			get_user_meta( $user->ID, 'first_name', true )
+		);
+
+		$this->assertEquals(
+			get_post_meta( $author->ID, 'cap-last_name', true ),
+			get_user_meta( $user->ID, 'last_name', true )
+		);
+
+		$this->assertEquals(
+			get_post_meta( $author->ID, 'cap-display_name', true ),
+			$user->display_name,
+		);
+
+		$this->assertEquals(
+			get_post_meta( $author->ID, 'cap-user_email', true ),
+			$user->user_email,
+		);
 	}
 }
