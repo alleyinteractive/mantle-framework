@@ -379,20 +379,20 @@ will also need to adjust your `phpunit.xml` file:
 
 ```diff
 <phpunit
-  bootstrap="tests/bootstrap.php"
-  backupGlobals="false"
-  colors="true"
-  convertErrorsToExceptions="true"
-  convertNoticesToExceptions="true"
-  convertWarningsToExceptions="true"
--  printerClass="NunoMaduro\Collision\Adapters\Phpunit\Printer"
+	bootstrap="tests/bootstrap.php"
+	backupGlobals="false"
+	colors="true"
+	convertErrorsToExceptions="true"
+	convertNoticesToExceptions="true"
+	convertWarningsToExceptions="true"
+-	printerClass="NunoMaduro\Collision\Adapters\Phpunit\Printer"
 >
-  <testsuites>
-    <testsuite name="general">
--      <directory prefix="test-" suffix=".php">tests</directory>
-+      <directory suffix="Test.php">tests</directory>
-    </testsuite>
-  </testsuites>
+	<testsuites>
+		<testsuite name="general">
+-			<directory prefix="test-" suffix=".php">tests</directory>
++			<directory suffix="Test.php">tests</directory>
+		</testsuite>
+	</testsuites>
 </phpunit>
 ```
 
