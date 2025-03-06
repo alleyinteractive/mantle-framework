@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v1.5.4 - 2025-03-06
 
+### Added
+
+- Added a unit testing factory for Co-Authors-Plus guest authors.
+
 ### Fixed
 
 - Fix the `Post::for()`/`Term::for()` methods to properly set the post
