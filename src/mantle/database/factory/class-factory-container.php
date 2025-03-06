@@ -131,8 +131,8 @@ class Factory_Container {
 		}
 
 		// Plugin-specific factories.
-		$this->byline_manager_profile   = $container->make( Plugins\Byline_Manager_Factory::class );
-		$this->cap_guest_author = $container->make( Plugins\Co_Authors_Plus_Factory::class );
+		$this->byline_manager_profile = $container->make( Plugins\Byline_Manager_Factory::class );
+		$this->cap_guest_author       = $container->make( Plugins\Co_Authors_Plus_Factory::class );
 	}
 
 	/**

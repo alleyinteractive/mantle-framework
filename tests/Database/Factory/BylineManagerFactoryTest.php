@@ -3,9 +3,9 @@
 namespace Mantle\Tests\Database\Factory;
 
 use Byline_Manager\Models\Profile;
+use Byline_Manager\Utils;
 use Mantle\Testing\Framework_Test_Case;
 use PHPUnit\Framework\Attributes\Group;
-use stdClass;
 use WP_Post;
 
 /**
@@ -49,34 +49,52 @@ class BylineManagerFactoryTest extends Framework_Test_Case {
 		$this->assertEquals( $user->ID, get_post_meta( $author->post->ID, 'user_id', true ) );
 	}
 
-	// public function test_create_post_with_guest_author(): void {
-	// 	$author   = static::factory()->cap_guest_author->create_and_get();
-	// 	$author_2 = static::factory()->cap_guest_author->create_and_get();
-	// 	$post   = static::factory()->post->with_cap_authors( $author->ID, $author_2 )->create_and_get();
+	public function test_create_post_with_guest_author(): void {
+		$author   = static::factory()->byline_manager_profile->create_and_get();
+		$author_2 = static::factory()->byline_manager_profile->create_and_get();
+		$post     = static::factory()->post->with_byline_manager_authors( $author->post->ID, $author_2 )->create_and_get();
 
-	// 	$this->assertInstanceOf( WP_Post::class, $post );
+		$this->assertInstanceOf( WP_Post::class, $post );
 
-	// 	$guest_authors = get_coauthors( $post->ID );
+		$byline_entries = Utils::get_byline_entries_for_post( $post );
 
-	// 	$this->assertCount( 2, $guest_authors );
-	// 	$this->assertEquals(
-	// 		collect( [ $author, $author_2 ] )->pluck( 'display_name' )->sort()->all(),
-	// 		collect( $guest_authors )->pluck( 'display_name' )->sort()->all(),
-	// 	);
-	// }
+		$this->assertCount( 2, $byline_entries );
+		$this->assertEquals(
+			collect( [ $author, $author_2 ] )->pluck( 'post.post_title' )->all(),
+			collect( $byline_entries )->pluck( 'post.post_title' )->all(),
+		);
+	}
 
-	// public function test_create_post_with_guest_author_and_user(): void {
-	// 	$user   = static::factory()->user->create_and_get();
-	// 	$author = static::factory()->cap_guest_author->create_and_get();
+	public function test_create_post_with_profile_and_user(): void {
+		$author   = static::factory()->byline_manager_profile->create_and_get();
+		$user     = static::factory()->user->create_and_get();
+		$post     = static::factory()->post->with_byline_manager_authors( $author, $user )->create_and_get();
 
-	// 	$post = static::factory()->post->with_cap_authors( $user, $author )->create_and_get();
+		$this->assertInstanceOf( WP_Post::class, $post );
 
-	// 	$guest_authors = get_coauthors( $post->ID );
+		$byline_entries = Utils::get_byline_entries_for_post( $post );
 
-	// 	$this->assertCount( 2, $guest_authors );
-	// 	$this->assertEquals(
-	// 		collect( [ $author->display_name, $user->display_name ] )->sort()->all(),
-	// 		collect( $guest_authors )->pluck( 'display_name' )->sort()->all(),
-	// 	);
-	// }
+		$this->assertCount( 2, $byline_entries );
+		$this->assertEquals(
+			[ $author->post->post_title, $user->display_name ],
+			collect( $byline_entries )->pluck( 'post.post_title' )->all(),
+		);
+	}
+
+	public function test_create_post_with_profile_and_text_byline(): void {
+		$author   = static::factory()->byline_manager_profile->create_and_get();
+		$post     = static::factory()->post->with_byline_manager_authors( $author, 'John Doe' )->create_and_get();
+
+		$this->assertInstanceOf( WP_Post::class, $post );
+
+		$byline_entries = Utils::get_byline_entries_for_post( $post );
+
+		$this->assertCount( 2, $byline_entries );
+		$this->assertEquals(
+			[ $author->post->post_title, 'John Doe' ],
+			collect( $byline_entries )->map(
+				fn ( $entry ) => $entry instanceof Profile ? $entry->post->post_title : $entry->atts['text']
+			)->all(),
+		);
+	}
 }

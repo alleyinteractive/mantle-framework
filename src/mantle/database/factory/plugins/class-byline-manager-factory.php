@@ -15,6 +15,8 @@ use Mantle\Database\Model\Post;
 use Mantle\Support\Pipeline;
 use RuntimeException;
 
+use const Byline_Manager\PROFILE_POST_TYPE;
+
 /**
  * Byline Manager Factory
  *
@@ -38,6 +40,48 @@ class Byline_Manager_Factory extends Factory {
 	 * @var class-string<TModel>
 	 */
 	protected string $model = Post::class;
+
+	/**
+	 * Get the Byline Manager profile by user ID.
+	 *
+	 * Profile::get_by_user_id() is not finished yet in the plugin so we have to
+	 * make this meta query manually.
+	 *
+	 * @throws RuntimeException If Byline Manager is not installed.
+	 *
+	 * @param int  $user_id The user ID.
+	 * @param bool $create Whether to create the profile if it doesn't exist.
+	 */
+	public static function get_byline_manager_profile_by_user_id( int $user_id, bool $create = false ): ?Profile {
+		$profiles = get_posts( [ // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.get_posts_get_posts
+			'post_status'      => 'publish',
+			'post_type'        => PROFILE_POST_TYPE,
+			'posts_per_page'   => 1,
+			'meta_query'       => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+				[
+					'key'   => 'user_id',
+					'value' => $user_id,
+				],
+			],
+			'suppress_filters' => false,
+		] );
+
+		if ( ! empty( $profiles ) ) {
+			return new Profile( array_shift( $profiles ) );
+		}
+
+		if ( $create ) {
+			$profile = Profile::create_from_user( $user_id );
+
+			if ( is_wp_error( $profile ) ) {
+				throw new RuntimeException( 'Error creating profile: ' . $profile->get_error_message() );
+			}
+
+			return $profile;
+		}
+
+		return null;
+	}
 
 	/**
 	 * Pass along a user ID to associate with the profile.
@@ -85,7 +129,7 @@ class Byline_Manager_Factory extends Factory {
 			->then(
 				function ( array $args ) {
 					if ( ! empty( $args['user_id'] ) ) {
-						$profile = Profile::create_from_user( $args['user_id'] );
+						$profile = self::get_byline_manager_profile_by_user_id( $args['user_id'], create: true );
 
 						if ( is_wp_error( $profile ) ) {
 							throw new Model_Exception( 'Error creating profile: ' . $profile->get_error_message() );
@@ -106,7 +150,7 @@ class Byline_Manager_Factory extends Factory {
 							throw new Model_Exception( 'Error creating profile: ' . $profile->get_error_message() );
 						}
 
-						[ $first, $last ] = explode( ' ', $profile->post->post_title );
+						[ $first, $last ] = explode( ' ', (string) $profile->post->post_title );
 
 						update_post_meta( $profile->post->ID, 'first_name', $first );
 						update_post_meta( $profile->post->ID, 'last_name', $last );

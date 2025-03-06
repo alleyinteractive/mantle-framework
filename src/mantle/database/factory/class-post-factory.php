@@ -28,6 +28,7 @@ use function Mantle\Support\Helpers\tap;
  * @extends Factory<TModel, TObject, TReturnValue>
  */
 class Post_Factory extends Factory {
+	use Concerns\With_Byline_Manager_Profiles;
 	use Concerns\With_Guest_Authors;
 	use Concerns\With_Meta;
 
