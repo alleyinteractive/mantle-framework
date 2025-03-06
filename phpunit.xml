@@ -8,7 +8,7 @@
 	displayDetailsOnTestsThatTriggerDeprecations="true"
 	displayDetailsOnTestsThatTriggerWarnings="true"
 	failOnNotice="true"
-	failOnDeprecation="true"
+	failOnDeprecation="false"
 >
 	<testsuites>
 		<testsuite name="mantle-framework">

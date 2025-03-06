@@ -43,7 +43,7 @@ trait With_Byline_Manager_Profiles {
 				$profile->id(),
 				[
 					'byline_entries' => collect( $authors )
-						->map( fn ( $author ) => $this->resolve_byline_manager_entry( $author ) )
+						->map( $this->resolve_byline_manager_entry( ... ) )
 						->filter()
 						->values()
 						->all(),

@@ -37,7 +37,7 @@ trait With_Guest_Authors {
 		}
 
 		$authors = collect( $authors )
-			->map( fn ( $author ) => $this->resolve_guest_author( $author ) )
+			->map( $this->resolve_guest_author( ... ) )
 			->filter()
 			->values();
 
