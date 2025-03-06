@@ -56,6 +56,15 @@ class Co_Authors_Plus_Factory extends Factory {
 	}
 
 	/**
+	 * Noop.
+	 *
+	 * @throws InvalidArgumentException Thrown on use.
+	 */
+	public function as_models(): never {
+		throw new InvalidArgumentException( 'Co-Authors Plus guest authors are not supported as models.' );
+	}
+
+	/**
 	 * Model definition.
 	 *
 	 * @return array<string, string>
@@ -152,13 +161,15 @@ class Co_Authors_Plus_Factory extends Factory {
 	/**
 	 * Retrieves an object by ID.
 	 *
+	 * Returning a model is not supported by this factory.
+	 *
 	 * @param int $object_id The object ID.
-	 * @return Post|WP_Post|null
-	 * @phpstan-return TModel|TObject|null
+	 * @return \stdClass|null
+	 * @phpstan-return TObject|null
 	 */
 	public function get_object_by_id( int $object_id ) {
-		return $this->as_models
-			? Post::for( self::POST_TYPE )::find( $object_id )
-			: get_post_object( $object_id );
+		global $coauthors_plus;
+
+		return $coauthors_plus->guest_authors->get_guest_author_by( 'ID', $object_id );
 	}
 }

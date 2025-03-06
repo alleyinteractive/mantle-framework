@@ -28,6 +28,7 @@ use function Mantle\Support\Helpers\tap;
  * @extends Factory<TModel, TObject, TReturnValue>
  */
 class Post_Factory extends Factory {
+	use Concerns\With_Guest_Authors;
 	use Concerns\With_Meta;
 
 	/**
@@ -92,7 +93,11 @@ class Post_Factory extends Factory {
 		$terms = collect( $terms )->all();
 
 		return $this->with_middleware(
-			fn ( array $args, Closure $next ) => $next( $args )->set_terms( $terms, append: $this->append_terms, create: $this->create_terms ),
+			fn ( array $args, Closure $next ) => $next( $args )->set_terms(
+				terms: $terms,
+				append: $this->append_terms,
+				create: $this->create_terms,
+			),
 		);
 	}
 

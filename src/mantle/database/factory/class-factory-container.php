@@ -41,7 +41,7 @@ class Factory_Container {
 	/**
 	 * Co Author Guest Author Factory
 	 *
-	 * @var Plugins\Co_Authors_Plus_Factory<\Mantle\Database\Model\Post, \WP_Post, \WP_Post>
+	 * @var Plugins\Co_Authors_Plus_Factory<\Mantle\Database\Model\Post, \stdClass, \stdClass>
 	 */
 	public Plugins\Co_Authors_Plus_Factory $cap_guest_author;
 
