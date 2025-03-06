@@ -41,7 +41,6 @@ class CoAuthorsPlusFactoryTest extends Framework_Test_Case {
 	}
 
 	public function test_create_guest_author_linked(): void {
-		// TODO Improve user.
 		$user   = static::factory()->user->create_and_get();
 		$author = static::factory()->cap_guest_author->with_linked_user( $user->ID )->create_and_get();
 
