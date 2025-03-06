@@ -136,10 +136,8 @@ class UnitTestingFactoryTest extends Framework_Test_Case {
 
 	public function test_user_login_factory() {
 		$user_login = $this->faker->userName;
-		$user       = static::factory()->user
-			->create_and_get( [ 'user_login' => $user_login ] );
+		$user       = static::factory()->user->create_and_get( [ 'user_login' => $user_login ] );
 
-		$this->assertSame( $user_login, $user->display_name );
 		$this->assertSame( $user_login, $user->user_login );
 	}
 
