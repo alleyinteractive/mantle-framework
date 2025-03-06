@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added a unit testing factory for Co-Authors-Plus guest authors.
 
+### Changed
+
+- Passing a `\Stringable` as a model attribute will now be cast to a string
+	before being set on the model.
+
 ### Fixed
 
 - Fix the `Post::for()`/`Term::for()` methods to properly set the post

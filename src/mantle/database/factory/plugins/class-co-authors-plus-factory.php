@@ -85,68 +85,68 @@ class Co_Authors_Plus_Factory extends Factory {
 		$factory = $this->state( $args );
 
 		return Pipeline::make()
-		->send( [] )
-		->through( $factory->middleware->all() )
-		->then(
-			function ( array $args ) {
-				global $coauthors_plus;
+			->send( [] )
+			->through( $factory->middleware->all() )
+			->then(
+				function ( array $args ) {
+					global $coauthors_plus;
 
-				$user_id = $args['user_id'] ?? 0;
-				$user    = null;
+					$user_id = $args['user_id'] ?? 0;
+					$user    = null;
 
-				if ( $user_id ) {
-					$user = get_userdata( $user_id );
+					if ( $user_id ) {
+						$user = get_userdata( $user_id );
 
-					if ( ! $user ) {
-						throw new InvalidArgumentException( 'User not found: ' . $user_id );
-					}
+						if ( ! $user ) {
+							throw new InvalidArgumentException( 'User not found: ' . $user_id );
+						}
 
-					$args['user_login']     = $user->user_login;
-					$args['linked_account'] = $user->user_login;
+						$args['user_login']     = $user->user_login;
+						$args['linked_account'] = $user->user_login;
 
-					// Inherit data from the user if not passed.
-					if ( empty( $args['first_name'] ) ) {
-						$args['first_name'] = get_user_meta( $user_id, 'first_name', true );
-					}
+						// Inherit data from the user if not passed.
+						if ( empty( $args['first_name'] ) ) {
+							$args['first_name'] = get_user_meta( $user_id, 'first_name', true );
+						}
 
-					if ( empty( $args['last_name'] ) ) {
-						$args['last_name'] = get_user_meta( $user_id, 'last_name', true );
+						if ( empty( $args['last_name'] ) ) {
+							$args['last_name'] = get_user_meta( $user_id, 'last_name', true );
+						}
+
+						if ( empty( $args['display_name'] ) ) {
+							$args['display_name'] = $user->display_name;
+						}
+
+						if ( empty( $args['user_email'] ) ) {
+							$args['user_email'] = $user->user_email;
+						}
 					}
 
 					if ( empty( $args['display_name'] ) ) {
-						$args['display_name'] = $user->display_name;
+						$args['first_name'] ??= $this->faker->firstName();
+						$args['last_name']  ??= $this->faker->lastName();
+						$args['display_name'] = $args['first_name'] . ' ' . $args['last_name'];
 					}
 
-					if ( empty( $args['user_email'] ) ) {
-						$args['user_email'] = $user->user_email;
+					$args = array_merge(
+						[
+							'first_name' => stringable( $args['display_name'] )->explode( ' ' )->first(),
+							'last_name'  => stringable( $args['display_name'] )->explode( ' ' )->last(),
+							'user_email' => $this->faker->email(),
+							'user_login' => stringable( $args['display_name'] )->slugify()->prepend( 'cap-' ),
+						],
+						$args
+					);
+
+					$author = $coauthors_plus->guest_authors->create( $args );
+
+					if ( is_wp_error( $author ) ) {
+						throw new Model_Exception( $author->get_error_message() );
 					}
+
+					return Post::for( self::POST_TYPE )->find( $author );
 				}
-
-				if ( empty( $args['display_name'] ) ) {
-					$args['first_name'] ??= $this->faker->firstName();
-					$args['last_name']  ??= $this->faker->lastName();
-					$args['display_name'] = $args['first_name'] . ' ' . $args['last_name'];
-				}
-
-				$args = array_merge(
-					[
-						'first_name' => stringable( $args['display_name'] )->explode( ' ' )->first(),
-						'last_name'  => stringable( $args['display_name'] )->explode( ' ' )->last(),
-						'user_email' => $this->faker->email(),
-						'user_login' => stringable( $args['display_name'] )->slugify()->prepend( 'cap-' ),
-					],
-					$args
-				);
-
-				$author = $coauthors_plus->guest_authors->create( $args );
-
-				if ( is_wp_error( $author ) ) {
-					throw new Model_Exception( $author->get_error_message() );
-				}
-
-				return Post::for( self::POST_TYPE )->find( $author );
-			}
-		);
+			);
 	}
 
 	/**

@@ -192,12 +192,12 @@ abstract class Factory {
 	public function state( array|callable $state ): static {
 		return $this->with_middleware(
 			function ( array $args, Closure $next ) use ( $state ) {
-							$args = array_merge(
-								$args,
-								is_callable( $state ) ? $state( $args ) : $state,
-							);
+				$args = array_merge(
+					$args,
+					is_callable( $state ) ? $state( $args ) : $state,
+				);
 
-							return $next( $args );
+				return $next( $args );
 			},
 		);
 	}
