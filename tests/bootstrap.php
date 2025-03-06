@@ -22,6 +22,7 @@ define( 'MANTLE_PHPUNIT_TEMPLATE_PATH', __DIR__ . '/template-parts' );
 	->install_plugin( 'jetpack', '12.4' )
 	->install_plugin( 'co-authors-plus' )
 	->plugins( [
+		'byline-manager/byline-manager.php',
 		'co-authors-plus/co-authors-plus.php',
 	] )
 	->without_local_object_cache()
