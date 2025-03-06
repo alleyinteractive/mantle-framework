@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added a unit testing factory for Co-Authors-Plus guest authors.
+- Added a unit testing factory for Byline Manager profiles and Co-Authors-Plus guest authors.
 
 ### Changed
 
