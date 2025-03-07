@@ -433,6 +433,10 @@ class Utils {
 			return true;
 		}
 
+		if ( self::env_bool( 'MANTLE_TESTING_DEBUG', false ) ) {
+			return true;
+		}
+
 		return ! empty(
 			array_intersect(
 				(array) ( $_SERVER['argv'] ?? [] ), // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
