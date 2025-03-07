@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added a unit testing factory for Byline Manager profiles and Co-Authors-Plus guest authors.
+
+### Changed
+
+- Passing a `\Stringable` as a model attribute will now be cast to a string
+  before being set on the model.
 - Added `with_debug()` and `with_multisite()` methods to the installation manager.
 
 ### Fixed
@@ -96,9 +102,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   by setting the `MANTLE_EXPERIMENTAL_TESTING_USE_HOME_URL_HOST` environment
   variable.
 
-	Once enabled, the home URL will be used as the base URL for testing rather
-	the hard-coded `WP_TESTS_DOMAIN`. It will also infer the HTTPS status from
-	the home URL.
+  Once enabled, the home URL will be used as the base URL for testing rather
+  the hard-coded `WP_TESTS_DOMAIN`. It will also infer the HTTPS status from
+  the home URL.
 - Added `with_option()`/`with_home_url()`/`with_site_url()` methods to the installation manager.
 - Add a `without_local_object_cache()` method to prevent the `object-cache.php` drop-in from being loaded locally.
 - Added a better `dump()` method to the response object when testing HTTP
@@ -111,7 +117,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Upgraded to Symfony 7.0 packages.
 - Disable `spatie/once`'s cache if found during unit testing.
 - Ensure that the `QUERY_STRING` server variable is set when testing HTTP
-	requests.
+  requests.
 
 ### Fixed
 

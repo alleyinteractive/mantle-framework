@@ -148,15 +148,14 @@
         "phpcs": "phpcs --standard=./phpcs.xml .",
         "phpstan": "phpstan --memory-limit=1536M",
         "phpunit:multisite": "WP_MULTISITE=1 phpunit",
+        "phpunit-9": "phpunit --configuration=phpunit-9.xml",
         "phpunit": "phpunit",
         "rector:fix": "rector process",
         "rector": "rector process --dry-run",
         "release:patch": "monorepo-builder release patch --ansi",
         "release": "monorepo-builder release --ansi",
         "test": [
-            "@phpcs",
-            "@phpstan",
-            "@rector",
+            "@lint",
             "@phpunit"
         ]
     },

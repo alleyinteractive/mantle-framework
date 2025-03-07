@@ -39,6 +39,20 @@ class Factory_Container {
 	public Blog_Factory $blog;
 
 	/**
+	 * Byline Manager Factory
+	 *
+	 * @var Plugins\Byline_Manager_Factory<\Mantle\Database\Model\Post, \Byline_Manager\Models\Profile, \Byline_Manager\Models\Profile>
+	 */
+	public Plugins\Byline_Manager_Factory $byline_manager_profile;
+
+	/**
+	 * Co Author Guest Author Factory
+	 *
+	 * @var Plugins\Co_Authors_Plus_Factory<\Mantle\Database\Model\Post, \stdClass, \stdClass>
+	 */
+	public Plugins\Co_Authors_Plus_Factory $cap_guest_author;
+
+	/**
 	 * Category Factory
 	 *
 	 * @var Term_Factory<\Mantle\Database\Model\Term, \WP_Term, \WP_Term>
@@ -115,6 +129,10 @@ class Factory_Container {
 			$this->blog    = $container->make( Blog_Factory::class );
 			$this->network = $container->make( Network_Factory::class );
 		}
+
+		// Plugin-specific factories.
+		$this->byline_manager_profile = $container->make( Plugins\Byline_Manager_Factory::class );
+		$this->cap_guest_author       = $container->make( Plugins\Co_Authors_Plus_Factory::class );
 	}
 
 	/**
