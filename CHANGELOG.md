@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v1.5.4 - 2025-03-06
 
+### Added
+
+- Added `with_debug()` and `with_multisite()` methods to the installation manager.
+
 ### Fixed
 
 - Fix the `Post::for()`/`Term::for()` methods to properly set the post

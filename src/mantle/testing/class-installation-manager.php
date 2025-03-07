@@ -266,6 +266,38 @@ class Installation_Manager {
 	}
 
 	/**
+	 * Enable or disable the debug mode.
+	 *
+	 * @param bool $enable Whether to enable debug mode.
+	 */
+	public function with_debug( bool $enable = true ): static {
+		return $this->before(
+			fn () => putenv( 'MANTLE_TESTING_DEBUG=' . ( $enable ? '1' : '0' ) ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_putenv
+		);
+	}
+
+	/**
+	 * Enable or disable multisite mode.
+	 *
+	 * This is commonly set on the CI matrix but made available here as well.
+	 *
+	 * @param bool $enable Whether to enable multisite.
+	 */
+	public function with_multisite( bool $enable = true ): static {
+		return $this->before(
+			function () use ( $enable ): void {
+				if ( $enable ) {
+					putenv( 'WP_MULTISITE=1' ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_putenv
+					putenv( 'WP_TESTS_MULTISITE=1' ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_putenv
+				} else {
+					putenv( 'WP_MULTISITE=0' ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_putenv
+					putenv( 'WP_TESTS_MULTISITE=0' ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_putenv
+				}
+			},
+		);
+	}
+
+	/**
 	 * Install the Mantle Testing Framework.
 	 *
 	 * @return static
