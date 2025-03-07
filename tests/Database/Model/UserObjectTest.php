@@ -2,6 +2,7 @@
 namespace Mantle\Tests\Database\Model;
 
 use Faker\Factory;
+use ftp;
 use Mantle\Database\Model\User;
 use Mantle\Testing\Framework_Test_Case;
 
@@ -13,7 +14,19 @@ class UserObjectTest extends Framework_Test_Case {
 
 	public static function setUpBeforeClass(): void {
 		parent::setUpBeforeClass();
+
 		static::$faker = Factory::create();
+	}
+
+	protected function setUp(): void {
+		parent::setUp();
+
+		global $coauthors_plus;
+
+		// Fix a notice being thrown in CAP.
+		if ( isset( $coauthors_plus ) && $coauthors_plus instanceof \CoAuthors_Plus ) {
+			remove_action( 'delete_user', [ $coauthors_plus, 'delete_user_action' ] );
+		}
 	}
 
 	public function test_find_user() {
