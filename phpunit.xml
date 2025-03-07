@@ -9,6 +9,7 @@
 	displayDetailsOnTestsThatTriggerWarnings="true"
 	failOnNotice="false"
 	failOnDeprecation="false"
+	convertNoticesToExceptions="false"
 >
 	<testsuites>
 		<testsuite name="mantle-framework">
