@@ -48,7 +48,7 @@ class User_Factory extends Factory {
 			'user_email'  => $this->faker->email(),
 			'user_login'  => stringable( "{$first_name} {$last_name}" )->slugify(),
 			'user_pass'   => 'password',
-			'user_url'    => $this->faker->url(),
+			'user_url'    => substr( $this->faker->url(), 0, 100 ),
 		];
 	}
 
