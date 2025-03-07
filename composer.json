@@ -148,6 +148,7 @@
         "phpcs": "phpcs --standard=./phpcs.xml .",
         "phpstan": "phpstan --memory-limit=1536M",
         "phpunit:multisite": "WP_MULTISITE=1 phpunit",
+        "phpunit-9": "phpunit --configuration=phpunit-9.xml",
         "phpunit": "phpunit",
         "rector:fix": "rector process",
         "rector": "rector process --dry-run",

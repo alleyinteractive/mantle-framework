@@ -4,13 +4,11 @@
 	bootstrap="tests/bootstrap.php"
 	backupGlobals="false"
 	colors="true"
-	xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.5/phpunit.xsd"
-	displayDetailsOnTestsThatTriggerDeprecations="true"
-	displayDetailsOnTestsThatTriggerWarnings="true"
-	failOnNotice="true"
-	failOnPhpunitDeprecation="true"
-	failOnWarning="true"
-	failOnDeprecation="true"
+	xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.6/phpunit.xsd"
+	convertErrorsToExceptions="true"
+  convertNoticesToExceptions="true"
+  convertWarningsToExceptions="true"
+	convertDeprecationsToExceptions="true"
 >
 	<testsuites>
 		<testsuite name="mantle-framework">
