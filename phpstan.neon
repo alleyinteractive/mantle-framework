@@ -18,6 +18,9 @@ parameters:
 			identifier: require.fileNotFound
 		-
 			identifier: requireOnce.fileNotFound
+		# Will be fixed in PHPStan soon.
+		-
+			identifier: unset.possiblyHookedProperty
 		-
 			identifier: function.alreadyNarrowedType
 			paths:
