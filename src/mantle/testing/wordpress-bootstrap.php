@@ -23,14 +23,14 @@ Utils::ensure_composer_loaded();
  * See: https://github.com/sebastianbergmann/phpunit/issues/325
  */
 global $wpdb,
-       $current_site,
-       $current_blog,
-       $wp_rewrite,
-       $shortcode_tags,
-       $wp,
-       $table_prefix,
-       $wp_theme_directories,
-       $PHP_SELF;
+	$current_site,
+	$current_blog,
+	$wp_rewrite,
+	$shortcode_tags,
+	$wp,
+	$table_prefix,
+	$wp_theme_directories,
+	$PHP_SELF;
 
 // Load the configuration.
 if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) && ! empty( WP_TESTS_CONFIG_FILE_PATH ) && is_readable( WP_TESTS_CONFIG_FILE_PATH ) ) {

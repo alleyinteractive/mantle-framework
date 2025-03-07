@@ -26,12 +26,12 @@ class StrTest extends TestCase {
 	}
 
 	public function testStringTrimmedOnlyWhereNecessary() {
-		 $this->assertSame( ' Taylor Otwell ', Str::words( ' Taylor Otwell ', 3 ) );
+		$this->assertSame( ' Taylor Otwell ', Str::words( ' Taylor Otwell ', 3 ) );
 		$this->assertSame( ' Taylor...', Str::words( ' Taylor Otwell ', 1 ) );
 	}
 
 	public function testStringTitle() {
-		 $this->assertSame( 'Jefferson Costella', Str::title( 'jefferson costella' ) );
+		$this->assertSame( 'Jefferson Costella', Str::title( 'jefferson costella' ) );
 		$this->assertSame( 'Jefferson Costella', Str::title( 'jefFErson coSTella' ) );
 	}
 
@@ -257,7 +257,7 @@ class StrTest extends TestCase {
 	}
 
 	public function testStrBetweenFirst() {
-		 $this->assertSame( 'abc', Str::between_first( 'abc', '', 'c' ) );
+		$this->assertSame( 'abc', Str::between_first( 'abc', '', 'c' ) );
 		$this->assertSame( 'abc', Str::between_first( 'abc', 'a', '' ) );
 		$this->assertSame( 'abc', Str::between_first( 'abc', '', '' ) );
 		$this->assertSame( 'b', Str::between_first( 'abc', 'a', 'c' ) );
@@ -441,7 +441,7 @@ class StrTest extends TestCase {
 	}
 
 	public function testIsMatch() {
-		 $this->assertTrue( Str::is_match( '/.*,.*!/', 'Hello, Laravel!' ) );
+		$this->assertTrue( Str::is_match( '/.*,.*!/', 'Hello, Laravel!' ) );
 		$this->assertTrue( Str::is_match( '/^.*$(.*)/', 'Hello, Laravel!' ) );
 		$this->assertTrue( Str::is_match( '/laravel/i', 'Hello, Laravel!' ) );
 		$this->assertTrue( Str::is_match( '/^(.*(.*(.*)))/', 'Hello, Laravel!' ) );
@@ -514,7 +514,7 @@ class StrTest extends TestCase {
 	}
 
 	public function testRandomStringFactoryCanBeSet() {
-		 Str::create_random_strings_using( fn ( $length) => 'length:' . $length );
+		Str::create_random_strings_using( fn ( $length) => 'length:' . $length );
 
 		$this->assertSame( 'length:7', Str::random( 7 ) );
 		$this->assertSame( 'length:7', Str::random( 7 ) );
@@ -560,7 +560,7 @@ class StrTest extends TestCase {
 	}
 
 	public function testReplace() {
-		 $this->assertSame( 'foo bar laravel', Str::replace( 'baz', 'laravel', 'foo bar baz' ) );
+		$this->assertSame( 'foo bar laravel', Str::replace( 'baz', 'laravel', 'foo bar baz' ) );
 		$this->assertSame( 'foo bar laravel', Str::replace( 'baz', 'laravel', 'foo bar Baz', false ) );
 		$this->assertSame( 'foo bar baz 8.x', Str::replace( '?', '8.x', 'foo bar baz ?' ) );
 		$this->assertSame( 'foo bar baz 8.x', Str::replace( 'x', '8.x', 'foo bar baz X', false ) );
@@ -614,7 +614,7 @@ class StrTest extends TestCase {
 	}
 
 	public function testReplaceLast() {
-		 $this->assertSame( 'foobar fooqux', Str::replace_last( 'bar', 'qux', 'foobar foobar' ) );
+		$this->assertSame( 'foobar fooqux', Str::replace_last( 'bar', 'qux', 'foobar foobar' ) );
 		$this->assertSame( 'foo/bar? foo/qux?', Str::replace_last( 'bar?', 'qux?', 'foo/bar? foo/bar?' ) );
 		$this->assertSame( 'foobar foo', Str::replace_last( 'bar', '', 'foobar foobar' ) );
 		$this->assertSame( 'foobar foobar', Str::replace_last( 'xxx', 'yyy', 'foobar foobar' ) );
@@ -638,7 +638,7 @@ class StrTest extends TestCase {
 	}
 
 	public function testReverse() {
-		 $this->assertSame( 'FooBar', Str::reverse( 'raBooF' ) );
+		$this->assertSame( 'FooBar', Str::reverse( 'raBooF' ) );
 		$this->assertSame( 'Teniszütő', Str::reverse( 'őtüzsineT' ) );
 		$this->assertSame( '❤MultiByte☆', Str::reverse( '☆etyBitluM❤' ) );
 	}
@@ -781,7 +781,7 @@ class StrTest extends TestCase {
 	}
 
 	public function testSubstrCount() {
-		 $this->assertSame( 3, Str::substr_count( 'laravelPHPFramework', 'a' ) );
+		$this->assertSame( 3, Str::substr_count( 'laravelPHPFramework', 'a' ) );
 		$this->assertSame( 0, Str::substr_count( 'laravelPHPFramework', 'z' ) );
 		$this->assertSame( 1, Str::substr_count( 'laravelPHPFramework', 'l', 2 ) );
 		$this->assertSame( 0, Str::substr_count( 'laravelPHPFramework', 'z', 2 ) );
@@ -800,21 +800,21 @@ class StrTest extends TestCase {
 	}
 
 	public function testLcfirst() {
-		 $this->assertSame( 'laravel', Str::lcfirst( 'Laravel' ) );
+		$this->assertSame( 'laravel', Str::lcfirst( 'Laravel' ) );
 		$this->assertSame( 'laravel framework', Str::lcfirst( 'Laravel framework' ) );
 		$this->assertSame( 'мама', Str::lcfirst( 'Мама' ) );
 		$this->assertSame( 'мама мыла раму', Str::lcfirst( 'Мама мыла раму' ) );
 	}
 
 	public function testUcfirst() {
-		 $this->assertSame( 'Laravel', Str::ucfirst( 'laravel' ) );
+		$this->assertSame( 'Laravel', Str::ucfirst( 'laravel' ) );
 		$this->assertSame( 'Laravel framework', Str::ucfirst( 'laravel framework' ) );
 		$this->assertSame( 'Мама', Str::ucfirst( 'мама' ) );
 		$this->assertSame( 'Мама мыла раму', Str::ucfirst( 'мама мыла раму' ) );
 	}
 
 	public function testUcsplit() {
-		 $this->assertSame( [ 'Laravel_p_h_p_framework' ], Str::ucsplit( 'Laravel_p_h_p_framework' ) );
+		$this->assertSame( [ 'Laravel_p_h_p_framework' ], Str::ucsplit( 'Laravel_p_h_p_framework' ) );
 		$this->assertSame( [ 'Laravel_', 'P_h_p_framework' ], Str::ucsplit( 'Laravel_P_h_p_framework' ) );
 		$this->assertSame( [ 'laravel', 'P', 'H', 'P', 'Framework' ], Str::ucsplit( 'laravelPHPFramework' ) );
 		$this->assertSame( [ 'Laravel-ph', 'P-framework' ], Str::ucsplit( 'Laravel-phP-framework' ) );
@@ -843,7 +843,7 @@ class StrTest extends TestCase {
 	}
 
 	public function testPadLeft() {
-		 $this->assertSame( '-=-=-Alien', Str::pad_left( 'Alien', 10, '-=' ) );
+		$this->assertSame( '-=-=-Alien', Str::pad_left( 'Alien', 10, '-=' ) );
 		$this->assertSame( '     Alien', Str::pad_left( 'Alien', 10 ) );
 		$this->assertSame( '     ❤MultiByte☆', Str::pad_left( '❤MultiByte☆', 16 ) );
 		$this->assertSame( '❤☆❤☆❤❤MultiByte☆', Str::pad_left( '❤MultiByte☆', 16, '❤☆' ) );

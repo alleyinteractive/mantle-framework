@@ -43,7 +43,7 @@ trait Manages_Service_Providers {
 				Log_Service_Provider::class,
 				View_Service_Provider::class,
 				Routing_Service_Provider::class,
-			] 
+			]
 		);
 	}
 
