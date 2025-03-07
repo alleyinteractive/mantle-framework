@@ -78,7 +78,7 @@ jobs:
           php-version: '${{ matrix.php }}'
           skip-wordpress-install: 'true'
           # Only run PHPUnit for the lowest dependencies.
-          test-command: ${{ matrix.dependencies == 'prefer-lowest' && 'composer phpunit-9' || 'composer test' }}
+          test-command: ${{ matrix.dependencies == 'prefer-lowest' && 'composer phpunit-9' || 'composer phpunit' }}
           wordpress-host: 'false'
           wordpress-multisite: '${{ matrix.multisite }}'
           wordpress-version: '${{ matrix.wordpress }}'

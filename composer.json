@@ -155,9 +155,7 @@
         "release:patch": "monorepo-builder release patch --ansi",
         "release": "monorepo-builder release --ansi",
         "test": [
-            "@phpcs",
-            "@phpstan",
-            "@rector",
+            "@lint",
             "@phpunit"
         ]
     },
