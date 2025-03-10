@@ -7,6 +7,7 @@
 
 namespace App\Console;
 
+use Mantle\Console\Command;
 use Mantle\Facade\Console;
 use Mantle\Framework\Console\Kernel as Console_Kernel;
 
@@ -20,7 +21,7 @@ class Kernel extends Console_Kernel {
 	/**
 	 * The commands provided by the application.
 	 *
-	 * @var array
+	 * @var array<class-string<Command>|Command>
 	 */
 	protected $commands = [
 		// ...

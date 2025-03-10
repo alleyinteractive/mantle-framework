@@ -31,16 +31,9 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	use Loads_Classes;
 
 	/**
-	 * The application implementation.
-	 *
-	 * @var Application|null
-	 */
-	protected $app;
-
-	/**
 	 * The bootstrap classes for the application.
 	 *
-	 * @var array
+	 * @var array<class-string>
 	 */
 	protected $bootstrappers = [
 		\Mantle\Framework\Bootstrap\Load_Configuration::class,
@@ -53,7 +46,7 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	/**
 	 * The commands provided by the application.
 	 *
-	 * @var array
+	 * @var array<class-string<\Mantle\Console\Command>|Command>
 	 */
 	protected $commands = [];
 
@@ -77,9 +70,7 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	 *
 	 * @param Application $app Application instance.
 	 */
-	public function __construct( Application $app ) {
-		$this->app = $app;
-
+	public function __construct( protected Application $app ) {
 		$this->ensure_environment_is_set();
 	}
 
@@ -125,6 +116,23 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 		$this->bootstrap();
 
 		return $this->get_console_application()->test( $command, $parameters );
+	}
+
+	/**
+	 * Register a new command with the console application.
+	 *
+	 * @throws \InvalidArgumentException Thrown if the command is not a valid command.
+	 *
+	 * @param Command|class-string<Command> $command Command instance or class name.
+	 */
+	public function register( Command|string $command ): void {
+		if ( ! class_exists( $command ) || ! is_subclass_of( $command, Command::class ) ) { // @phpstan-ignore-line function.alreadyNarrowedType
+			throw new \InvalidArgumentException( "Command [{$command}] is not a valid command." );
+		}
+
+		Console_Application::starting(
+			fn ( Console_Application $app ) => $app->resolve( $command )
+		);
 	}
 
 	/**

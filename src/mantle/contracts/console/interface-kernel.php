@@ -7,6 +7,8 @@
 
 namespace Mantle\Contracts\Console;
 
+use Closure;
+use Mantle\Console\Command;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
@@ -44,6 +46,21 @@ interface Kernel extends \Mantle\Contracts\Kernel {
 	 * Register the application's commands.
 	 */
 	public function register_commands();
+
+	/**
+	 * Register a new command with the console application.
+	 *
+	 * @param Command|class-string<Command> $command Command instance or class name.
+	 */
+	public function register( Command|string $command );
+
+	/**
+	 * Register a new Closure based command with a signature.
+	 *
+	 * @param string  $signature Command signature.
+	 * @param Closure $callback Command callback.
+	 */
+	public function command( string $signature, Closure $callback );
 
 	/**
 	 * Log to the console.

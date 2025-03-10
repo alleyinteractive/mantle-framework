@@ -1,6 +1,7 @@
 <?php
 namespace Mantle\Tests\Concerns;
 
+use Mantle\Console\Command;
 use Mantle\Facade\Console;
 use Mantle\Testing\Framework_Test_Case;
 use PHPUnit\Framework\Attributes\Group;
@@ -46,6 +47,22 @@ class InteractsWithConsoleTest extends Framework_Test_Case {
 
 		$this->command( 'wp mantle hello', [ 'name' => 'john' ] )
 			->assertOutputContains( 'Hello john' )
+			->assertOk();
+	}
+
+	public function test_class_command(): void {
+		$command = new class() extends Command {
+			protected $signature = 'test:class-command';
+
+			public function __invoke() {
+				$this->info( 'Hello World' );
+			}
+		};
+
+		Console::register( $command::class );
+
+		$this->command( 'wp mantle test:class-command' )
+			->assertOutputContains( 'Hello World' )
 			->assertOk();
 	}
 
