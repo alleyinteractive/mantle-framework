@@ -17,6 +17,7 @@ use Mantle\Container\Container;
 use Mantle\Events\Dispatcher;
 use Mantle\Support\Collection;
 use Mantle\Support\Higher_Order_Tap_Proxy;
+use Mantle\Support\Option;
 use Mantle\Support\Str;
 use Mantle\Support\Stringable;
 
@@ -568,4 +569,14 @@ function defer( callable $callback ): void {
 	}
 
 	app()->terminating( $callback );
+}
+
+/**
+ * Get the value of an option from the database in a fluent and type-safe manner.
+ *
+ * @param string $option Option name.
+ * @param mixed  $default Default value. Default is null.
+ */
+function option( string $option, mixed $default = null ): Option {
+	return Option::of( $option, $default );
 }
