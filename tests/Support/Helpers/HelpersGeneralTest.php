@@ -1,6 +1,6 @@
 <?php
 
-namespace Mantle\Tests\Helpers;
+namespace Mantle\Tests\Support\Helpers;
 
 use Mockery as m;
 use PHPUnit\Framework\Attributes\DataProvider;

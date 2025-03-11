@@ -1,6 +1,6 @@
 <?php
 
-namespace Mantle\Tests\Helpers;
+namespace Mantle\Tests\Support\Helpers;
 
 use Mantle\Config\Repository;
 use Mantle\Container\Container;
