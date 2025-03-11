@@ -197,4 +197,21 @@ class OptionTest extends Framework_Test_Case {
 		$this->assertFalse( $option->has_any( 'key3', 'key4' ) );
 		$this->assertFalse( $option->has_any( 'key3', 'key4', 'key5' ) );
 	}
+
+	public function test_throw_on_array_to_string(): void {
+		$this->expectException( \InvalidArgumentException::class );
+		$this->expectExceptionMessage( 'Option value of test_option is not scalar and cannot be cast to a string.' );
+
+		update_option( 'test_option', [ 'test' ] );
+		Option::of( 'test_option' )->throw()->string();
+	}
+
+	public function test_throw_on_string_to_int(): void {
+		$this->expectException( \InvalidArgumentException::class );
+		$this->expectExceptionMessage( 'Option value of test_option is not numeric and cannot be cast to an integer.' );
+
+		update_option( 'test_option', 'string here 1234' );
+
+		Option::of( 'test_option' )->throw()->int();
+	}
 }
