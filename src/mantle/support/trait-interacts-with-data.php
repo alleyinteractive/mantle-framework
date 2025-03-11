@@ -111,6 +111,13 @@ trait Interacts_With_Data {
 	}
 
 	/**
+	 * Alias for bool().
+	 */
+	public function boolean(): bool {
+		return $this->bool();
+	}
+
+	/**
 	 * Retrieve the value as an array.
 	 */
 	public function array(): array {
