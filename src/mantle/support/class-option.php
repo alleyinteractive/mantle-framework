@@ -282,6 +282,19 @@ class Option implements ArrayAccess, Jsonable, \JsonSerializable, \Stringable {
 	}
 
 	/**
+	 * Delete the option.
+	 *
+	 * @throws InvalidArgumentException If the option is a sub-property of an option.
+	 */
+	public function delete(): void {
+		if ( ! $this->option ) {
+			throw new InvalidArgumentException( 'Unable to delete option on a sub-property of an option.' );
+		}
+
+		delete_option( $this->option );
+	}
+
+	/**
 	 * Convert the object to its JSON representation.
 	 *
 	 * @param int $options json_encode() options.
