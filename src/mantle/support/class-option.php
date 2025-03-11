@@ -139,7 +139,7 @@ class Option implements ArrayAccess, Jsonable, \JsonSerializable, \Stringable {
 	 * @param DateTimeZone|string|int|null $timezone Timezone.
 	 */
 	public function date( ?string $format = null, DateTimeZone|string|int|null $timezone = null ): ?Carbon {
-		if ( $this->empty() ) {
+		if ( $this->is_empty() ) {
 			return null;
 		}
 
@@ -160,7 +160,7 @@ class Option implements ArrayAccess, Jsonable, \JsonSerializable, \Stringable {
 	/**
 	 * Check if the option is empty.
 	 */
-	public function empty(): bool {
+	public function is_empty(): bool {
 		return empty( $this->value );
 	}
 
@@ -232,7 +232,7 @@ class Option implements ArrayAccess, Jsonable, \JsonSerializable, \Stringable {
 	 */
 	public function has( string ...$property ): bool {
 		foreach ( $property as $prop ) {
-			if ( $this->get( $prop )->empty() ) {
+			if ( $this->get( $prop )->is_empty() ) {
 				return false;
 			}
 		}
@@ -247,7 +247,7 @@ class Option implements ArrayAccess, Jsonable, \JsonSerializable, \Stringable {
 	 */
 	public function has_any( string ...$property ): bool {
 		foreach ( $property as $prop ) {
-			if ( ! $this->get( $prop )->empty() ) {
+			if ( ! $this->get( $prop )->is_empty() ) {
 				return true;
 			}
 		}
