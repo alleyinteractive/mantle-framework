@@ -8,13 +8,14 @@
 namespace Mantle\Support;
 
 use ArrayAccess;
+use Carbon\Carbon;
+use DateTimeZone;
 use InvalidArgumentException;
-use JsonSerializable;
 use Mantle\Contracts\Support\Jsonable;
-use Stringable;
 
 use function Mantle\Support\Helpers\data_get;
 use function Mantle\Support\Helpers\data_set;
+use function Mantle\Support\Helpers\value;
 
 /**
  * Fluent class for retrieving options as type-safe objects.
@@ -22,7 +23,7 @@ use function Mantle\Support\Helpers\data_set;
  * When retrieving options from the database, get_option() has a return value of
  * mixed. This class allows you to retrieve options with a specific type.
  */
-class Option implements ArrayAccess, Jsonable, JsonSerializable, Stringable {
+class Option implements ArrayAccess, Jsonable, \JsonSerializable, \Stringable {
 	/**
 	 * Retrieve an option from the database.
 	 *
@@ -57,6 +58,13 @@ class Option implements ArrayAccess, Jsonable, JsonSerializable, Stringable {
 		}
 
 		return (string) $this->value;
+	}
+
+	/**
+	 * Retrieve the option as a Stringable object.
+	 */
+	public function stringable(): Stringable {
+		return new Stringable( $this->string() );
 	}
 
 	/**
@@ -118,6 +126,31 @@ class Option implements ArrayAccess, Jsonable, JsonSerializable, Stringable {
 	}
 
 	/**
+	 * Alias for collection().
+	 */
+	public function collect(): Collection {
+		return $this->collection();
+	}
+
+	/**
+	 * Retrieve the option as a Carbon instance.
+	 *
+	 * @param string|null                  $format Date format.
+	 * @param DateTimeZone|string|int|null $timezone Timezone.
+	 */
+	public function date( ?string $format = null, DateTimeZone|string|int|null $timezone = null ): ?Carbon {
+		if ( $this->empty() ) {
+			return null;
+		}
+
+		if ( $format ) {
+			return Carbon::createFromFormat( $format, $this->string(), $timezone );
+		}
+
+		return Carbon::parse( $this->string(), $timezone );
+	}
+
+	/**
 	 * Retrieve the option as an object.
 	 */
 	public function object(): object {
@@ -139,6 +172,44 @@ class Option implements ArrayAccess, Jsonable, JsonSerializable, Stringable {
 	}
 
 	/**
+	 * Dump the option value.
+	 */
+	public function dump(): static {
+		dump( $this->value );
+
+		return $this;
+	}
+
+	/**
+	 * Dump the option value and exit.
+	 */
+	public function dd(): never {
+		dd( $this->value );
+	}
+
+	/**
+	 * Set whether to throw an exception if the option is not a compatible type.
+	 *
+	 * @param bool $throw Whether to throw an exception.
+	 */
+	public function throw( bool $throw = true ): static {
+		$this->throw = $throw;
+
+		return $this;
+	}
+
+	/**
+	 * Set whether to throw an exception if the condition is met.
+	 *
+	 * @param (callable(): bool)|bool $condition Condition to check.
+	 */
+	public function throw_if( callable|bool $condition ): static {
+		$this->throw = (bool) value( $condition );
+
+		return $this;
+	}
+
+	/**
 	 * Retrieve a property from an array option.
 	 *
 	 * @throws InvalidArgumentException If the option value is not an array and $throw is true.
@@ -152,6 +223,36 @@ class Option implements ArrayAccess, Jsonable, JsonSerializable, Stringable {
 		}
 
 		return new static( null, data_get( $this->value, $property, $default ) );
+	}
+
+	/**
+	 * Check if a property or a set of properties exists in the option's value.
+	 *
+	 * @param string ...$property Property name. Supports dot notation.
+	 */
+	public function has( string ...$property ): bool {
+		foreach ( $property as $prop ) {
+			if ( $this->get( $prop )->empty() ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Check if any of the properties exist in the option's value.
+	 *
+	 * @param string ...$property Property name. Supports dot notation.
+	 */
+	public function has_any( string ...$property ): bool {
+		foreach ( $property as $prop ) {
+			if ( ! $this->get( $prop )->empty() ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**

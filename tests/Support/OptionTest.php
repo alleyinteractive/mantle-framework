@@ -14,6 +14,18 @@ class OptionTest extends Framework_Test_Case {
 		$this->assertEquals( 'test', Option::of( 'test_option' )->string() );
 	}
 
+	public function test_as_stringable(): void {
+		update_option( 'test_option', 'test' );
+
+		$option = Option::of( 'test_option' );
+
+		$this->assertInstanceOf( \Mantle\Support\Stringable::class, $option->stringable() );
+		$this->assertEquals(
+			'test',
+			$option->stringable()->value(),
+		);
+	}
+
 	public function test_as_int(): void {
 		update_option( 'test_option', 1 );
 
@@ -50,6 +62,14 @@ class OptionTest extends Framework_Test_Case {
 		update_option( 'test_option', [ 'test' ] );
 
 		$this->assertEquals( [ 'test' ], Option::of( 'test_option' )->collection()->toArray() );
+	}
+
+	public function test_as_date(): void {
+		$this->assertNull( Option::of( 'unknown' )->date() );
+
+		update_option( 'test_option', '2020-01-01' );
+
+		$this->assertEquals( '2020-01-01', Option::of( 'test_option' )->date()->format( 'Y-m-d' ) );
 	}
 
 	public function test_as_object(): void {
@@ -148,5 +168,33 @@ class OptionTest extends Framework_Test_Case {
 
 		$this->assertTrue( isset( $option[0] ) );
 		$this->assertFalse( isset( $option[2] ) );
+	}
+
+	public function test_array_has(): void {
+		update_option( 'test_option', [
+			'key' => 'test',
+			'key2' => 'test2',
+		] );
+
+		$option = Option::of( 'test_option' );
+
+		$this->assertTrue( $option->has( 'key' ) );
+		$this->assertTrue( $option->has( 'key', 'key2' ) );
+		$this->assertFalse( $option->has( 'key3' ) );
+		$this->assertFalse( $option->has( 'key2', 'key3' ) );
+	}
+
+	public function test_array_has_any(): void {
+		update_option( 'test_option', [
+			'key' => 'test',
+			'key2' => 'test2',
+		] );
+
+		$option = Option::of( 'test_option' );
+
+		$this->assertTrue( $option->has_any( 'key' ) );
+		$this->assertTrue( $option->has_any( 'key', 'key3' ) );
+		$this->assertFalse( $option->has_any( 'key3', 'key4' ) );
+		$this->assertFalse( $option->has_any( 'key3', 'key4', 'key5' ) );
 	}
 }
