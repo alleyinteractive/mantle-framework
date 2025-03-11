@@ -12,6 +12,9 @@ use Carbon\Carbon;
 use DateTimeZone;
 use InvalidArgumentException;
 use Mantle\Contracts\Support\Jsonable;
+use Mantle\Support\Traits\Conditionable;
+use Mantle\Support\Traits\Macroable;
+use Mantle\Support\Traits\Tappable;
 
 use function Mantle\Support\Helpers\data_get;
 use function Mantle\Support\Helpers\data_set;
@@ -24,6 +27,10 @@ use function Mantle\Support\Helpers\value;
  * mixed. This class allows you to retrieve options with a specific type.
  */
 class Option implements ArrayAccess, Jsonable, \JsonSerializable, \Stringable {
+	use Conditionable;
+	use Macroable;
+	use Tappable;
+
 	/**
 	 * Retrieve an option from the database.
 	 *
