@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added a `Option` support class and `option()` helper to retrieve options in a type-safe manner.
+- Added a `Option` and `Object_Metadata` support classes as well as `option()`,
+  `post_meta()`, `term_meta()`, `user_meta()`, and `comment_meta()` helpers to
+  retrieve options and object metadata in a type-safe manner.
 
 ## v1.5.4 - 2025-03-06
 

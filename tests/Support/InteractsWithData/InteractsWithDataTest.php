@@ -159,13 +159,7 @@ class TestableInteractsWithData implements \ArrayAccess, Jsonable, \JsonSerializ
 		return new static( $value );
 	}
 
-	public function __construct( public mixed $value ) {}
-
-	public function value(): mixed {
-		return $this->value;
-	}
-
-	public function set( mixed $value ): void {
+	public function __construct( mixed $value ) {
 		$this->value = $value;
 	}
 }

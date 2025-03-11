@@ -35,16 +35,9 @@ trait Interacts_With_Data {
 	protected bool $throw = false;
 
 	/**
-	 * Retrieve the raw value of the value.
+	 * Value.
 	 */
-	abstract public function value(): mixed;
-
-	/**
-	 * Set the value.
-	 *
-	 * @param mixed $value Value.
-	 */
-	abstract public function set( mixed $value ): void;
+	protected mixed $value;
 
 	/**
 	 * Create a new instance of the class.
@@ -59,11 +52,11 @@ trait Interacts_With_Data {
 	 * @throws InvalidArgumentException If the value is not scalar and $throw is true.
 	 */
 	public function string(): string {
-		if ( ! is_scalar( $this->value() ) && $this->throw ) {
+		if ( ! is_scalar( $this->value ) && $this->throw ) {
 			throw new InvalidArgumentException( 'Value is not scalar and cannot be cast to a string.' );
 		}
 
-		return (string) $this->value();
+		return (string) $this->value;
 	}
 
 	/**
@@ -79,11 +72,11 @@ trait Interacts_With_Data {
 	 * @throws InvalidArgumentException If the value is not numeric and $throw is true.
 	 */
 	public function int(): int {
-		if ( ! is_numeric( $this->value() ) && $this->throw ) {
+		if ( ! is_numeric( $this->value ) && $this->throw ) {
 			throw new InvalidArgumentException( 'Value is not numeric and cannot be cast to an integer.' );
 		}
 
-		return (int) $this->value();
+		return (int) $this->value;
 	}
 
 	/**
@@ -99,36 +92,36 @@ trait Interacts_With_Data {
 	 * @throws InvalidArgumentException If the value is not numeric and $throw is true.
 	 */
 	public function float(): float {
-		if ( ! is_numeric( $this->value() ) && $this->throw ) {
+		if ( ! is_numeric( $this->value ) && $this->throw ) {
 			throw new InvalidArgumentException( 'Value is not numeric and cannot be cast to a float.' );
 		}
 
-		return (float) $this->value();
+		return (float) $this->value;
 	}
 
 	/**
 	 * Retrieve the value as a boolean.
 	 */
 	public function bool(): bool {
-		if ( is_bool( $this->value() ) ) {
-			return $this->value();
+		if ( is_bool( $this->value ) ) {
+			return $this->value;
 		}
 
-		return ! empty( $this->value() );
+		return ! empty( $this->value );
 	}
 
 	/**
 	 * Retrieve the value as an array.
 	 */
 	public function array(): array {
-		return (array) $this->value();
+		return (array) $this->value;
 	}
 
 	/**
 	 * Retrieve the value as a collection.
 	 */
 	public function collection(): Collection {
-		return new Collection( $this->value() );
+		return new Collection( $this->value );
 	}
 
 	/**
@@ -164,14 +157,14 @@ trait Interacts_With_Data {
 	 * Retrieve the value as an object.
 	 */
 	public function object(): object {
-		return (object) $this->value();
+		return (object) $this->value;
 	}
 
 	/**
 	 * Check if the value is empty.
 	 */
 	public function is_empty(): bool {
-		return empty( $this->value() );
+		return empty( $this->value );
 	}
 
 	/**
@@ -185,7 +178,7 @@ trait Interacts_With_Data {
 	 * Check if the value is null.
 	 */
 	public function is_null(): bool {
-		return null === $this->value();
+		return null === $this->value;
 	}
 
 	/**
@@ -201,7 +194,7 @@ trait Interacts_With_Data {
 	 * @param string $type Type to check.
 	 */
 	public function is_type( string $type ): bool {
-		return gettype( $this->value() ) === $type;
+		return gettype( $this->value ) === $type;
 	}
 
 	/**
@@ -217,7 +210,7 @@ trait Interacts_With_Data {
 	 * Check if the value is an array.
 	 */
 	public function is_array(): bool {
-		return is_array( $this->value() );
+		return is_array( $this->value );
 	}
 
 	/**
@@ -231,7 +224,7 @@ trait Interacts_With_Data {
 	 * Check if the value is an object.
 	 */
 	public function is_object(): bool {
-		return is_object( $this->value() );
+		return is_object( $this->value );
 	}
 
 	/**
@@ -242,10 +235,26 @@ trait Interacts_With_Data {
 	}
 
 	/**
+	 * Retrieve the raw value of the option.
+	 */
+	public function value(): mixed {
+		return $this->value;
+	}
+
+	/**
+	 * Set the option value.
+	 *
+	 * @param mixed $value Option value.
+	 */
+	public function set( mixed $value ): void {
+		$this->value = $value;
+	}
+
+	/**
 	 * Dump the value.
 	 */
 	public function dump(): static {
-		dump( $this->value() );
+		dump( $this->value );
 
 		return $this;
 	}
@@ -254,7 +263,7 @@ trait Interacts_With_Data {
 	 * Dump the value and exit.
 	 */
 	public function dd(): never {
-		dd( $this->value() );
+		dd( $this->value );
 	}
 
 	/**
@@ -292,7 +301,7 @@ trait Interacts_With_Data {
 			throw new InvalidArgumentException( 'Value is not an array or object and cannot retrieve a sub-property.' );
 		}
 
-		return static::create( data_get( $this->value(), $property, $default ) );
+		return static::create( data_get( $this->value, $property, $default ) );
 	}
 
 	/**
@@ -331,14 +340,14 @@ trait Interacts_With_Data {
 	 * @param int $options json_encode() options.
 	 */
 	public function to_json( $options = 0 ): string {
-		return json_encode( $this->value(), $options ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+		return json_encode( $this->value, $options ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
 	}
 
 	/**
 	 * Convert the value to its JSON representation.
 	 */
 	public function jsonSerialize(): mixed {
-		return $this->value();
+		return $this->value;
 	}
 
 	/**
@@ -354,7 +363,7 @@ trait Interacts_With_Data {
 	 * @param mixed $offset
 	 */
 	public function offsetExists( mixed $offset ): bool {
-		return '__not_found__' !== $this->get( $offset, '__not_found__' )->value();
+		return '__not_found__' !== $this->get( $offset, '__not_found__' )->value;
 	}
 
 	/**
@@ -363,7 +372,7 @@ trait Interacts_With_Data {
 	 * @param mixed $offset Offset name.
 	 */
 	public function offsetGet( mixed $offset ): mixed {
-		return data_get( $this->value(), $offset );
+		return data_get( $this->value, $offset );
 	}
 
 	/**
@@ -373,7 +382,7 @@ trait Interacts_With_Data {
 	 * @param mixed $value value.
 	 */
 	public function offsetSet( mixed $offset, mixed $value ): void {
-		$data = $this->value();
+		$data = $this->value;
 
 		data_set( $data, $offset, $value );
 
@@ -388,7 +397,7 @@ trait Interacts_With_Data {
 	 * @param mixed $offset Offset name.
 	 */
 	public function offsetUnset( mixed $offset ): void {
-		$data = $this->value();
+		$data = $this->value;
 
 		unset( $data[ $offset ] );
 

@@ -46,24 +46,9 @@ class Option implements ArrayAccess, Jsonable, \JsonSerializable, \Stringable {
 	 * @param mixed       $value Option value.
 	 * @param bool        $throw Whether to throw an exception if the option is not a compatible type.
 	 */
-	public function __construct( protected readonly ?string $option, protected mixed $value, bool $throw = false ) {
-		$this->throw = $throw;
-	}
-
-	/**
-	 * Retrieve the raw value of the option.
-	 */
-	public function value(): mixed {
-		return $this->value;
-	}
-
-	/**
-	 * Set the option value.
-	 *
-	 * @param mixed $value Option value.
-	 */
-	public function set( mixed $value ): void {
+	public function __construct( protected readonly ?string $option, mixed $value, bool $throw = false ) {
 		$this->value = $value;
+		$this->throw = $throw;
 	}
 
 	/**
