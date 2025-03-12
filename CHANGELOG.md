@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added a `Option` support class and `option()` helper to retrieve options in a type-safe manner.
+- Added `fail()` method to commands to allow for a command to fail with a message.
+
+### Fixed
+
+- Fixed command testing to proper handle failed commands.
 
 ## v1.5.4 - 2025-03-06
 
