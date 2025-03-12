@@ -29,6 +29,20 @@ class InteractsWithConsoleTest extends Framework_Test_Case {
 			->assertOk();
 	}
 
+	public function test_command_failure(): void {
+		Console::command( 'fail', fn () => $this->fail() );
+
+		$this->command( 'wp mantle fail' )
+			->assertOutputContains( 'Command manually failed' )
+			->assertFailed();
+
+		Console::command( 'fail:message', fn () => $this->fail( 'With message' ) );
+
+		$this->command( 'wp mantle fail:message' )
+			->assertOutputContains( 'With message' )
+			->assertFailed();
+	}
+
 	public function test_closure_command() {
 		Console::command( 'hello-world', fn () => $this->info( 'Hello World' ) )
 			->describe( 'Command description' );

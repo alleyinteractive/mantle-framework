@@ -14,6 +14,7 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
+use Throwable;
 
 /**
  * CLI Command for Service Providers
@@ -186,8 +187,28 @@ abstract class Command extends Symfony_Command {
 	}
 
 	/**
-	 * Retrieve the application container.     */
+	 * Retrieve the application container.
+	 */
 	public function get_container(): \Mantle\Contracts\Application {
 		return $this->container;
+	}
+
+	/**
+	 * Fail the command.
+	 *
+	 * @param Throwable|string|null $exception Exception to throw.
+	 *
+	 * @throws Manually_Failed_Exception|Throwable Thrown exception.
+	 */
+	public function fail( Throwable|string|null $exception = null ): void {
+		if ( is_null( $exception ) ) {
+			$exception = 'Command manually failed.';
+		}
+
+		if ( is_string( $exception ) ) {
+			$exception = new Manually_Failed_Exception( $exception );
+		}
+
+		throw $exception;
 	}
 }
