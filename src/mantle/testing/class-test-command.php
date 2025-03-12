@@ -253,30 +253,21 @@ class Test_Command {
 	 * Retrieve the output of the command.
 	 */
 	public function get_output(): string {
-		if ( isset( $this->exception ) ) {
-			return $this->exception->getMessage();
-		}
-
-		if ( isset( $this->tester ) ) {
-			return $this->tester->getDisplay();
-		}
-
-		return '';
+		return match ( true ) {
+			isset( $this->exception ) => $this->exception->getMessage(),
+			isset( $this->tester ) => $this->tester->getDisplay(),
+			default => '',
+		};
 	}
 
 	/**
 	 * Retrieve the status code of the command.
 	 */
 	public function get_status_code(): int {
-		if ( isset( $this->exception ) ) {
-			return Command::FAILURE;
-		}
-
-
-		if ( isset( $this->tester ) ) {
-			return $this->tester->getStatusCode();
-		}
-
-		return Command::FAILURE;
+		return match ( true ) {
+			isset( $this->exception ) => Command::FAILURE,
+			isset( $this->tester ) => $this->tester->getStatusCode(),
+			default => Command::FAILURE,
+		};
 	}
 }
