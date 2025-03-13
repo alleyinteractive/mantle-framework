@@ -309,6 +309,17 @@ class UnitTestingFactoryTest extends Framework_Test_Case {
 	}
 
 	public function test_post_with_terms_do_not_include_default_category(): void {
+		$default_category_id = get_option( 'default_category' );
+
+		$this->assertTermExists( [ 'include' => $default_category_id ] );
+
+		// Test that a post was created with a default category by default.
+		$post = static::factory()->post->create_and_get();
+
+		$categories = get_the_category( $post->ID );
+		$this->assertCount( 1, $categories );
+		$this->assertEquals( $default_category_id, $categories[0]->term_id );
+
 		// Test that the default category was not included on a post.
 		$category = static::factory()->category->create_and_get();
 		$post     = static::factory()->post->with_terms( $category )->create_and_get();
@@ -319,10 +330,6 @@ class UnitTestingFactoryTest extends Framework_Test_Case {
 		$this->assertEquals( $category->term_id, $categories[0]->term_id );
 
 		// Test that the default category was included if explicitly set.
-		$default_category_id = get_option( 'default_category' );
-
-		$this->assertTermExists( [ 'include' => $default_category_id ] );
-
 		$post       = static::factory()->post->with_terms( $default_category_id )->create_and_get();
 		$categories = get_the_category( $post->ID );
 
