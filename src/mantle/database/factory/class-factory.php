@@ -128,7 +128,8 @@ abstract class Factory {
 	/**
 	 * Create a new factory instance with middleware.
 	 *
-	 * @param callable(array $args, \Closure $next): mixed $middleware Middleware to run the factory through.
+	 * @param callable $middleware Middleware to run the factory through.
+	 * @phpstan-param (callable(array $args, \Closure $next): TModel) $middleware
 	 */
 	public function with_middleware( callable $middleware ): static {
 		return tap(

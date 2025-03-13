@@ -12,10 +12,13 @@ use Closure;
 use Faker\Generator;
 use Mantle\Database\Model\Attachment;
 use Mantle\Database\Model\Post;
+use Mantle\Database\Model\Term;
 use WP_Post;
+use WP_Term;
 
 use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\get_post_object;
+use function Mantle\Support\Helpers\get_term_object;
 use function Mantle\Support\Helpers\tap;
 
 /**
@@ -94,11 +97,58 @@ class Post_Factory extends Factory {
 		$terms = collect( $terms )->all();
 
 		return $this->with_middleware(
-			fn ( array $args, Closure $next ) => $next( $args )->set_terms(
-				terms: $terms,
-				append: $this->append_terms,
-				create: $this->create_terms,
-			),
+			function ( array $args, Closure $next ) use ( $terms ): Post {
+				$category_ids = [];
+
+				// Attempt to find all the categories passed to the method.
+				foreach ( $terms as $term_argument ) {
+					if (
+						( $term_argument instanceof WP_Term || $term_argument instanceof Term )
+						&& 'category' === $term_argument->taxonomy
+					) {
+						$category_ids[] = $term_argument->term_id;
+
+						continue;
+					}
+
+					if ( is_numeric( $term_argument ) ) {
+						$term = get_term_object( $term_argument );
+
+						if ( $term instanceof \WP_Term && 'category' === $term->taxonomy ) {
+							$category_ids[] = $term->term_id;
+						}
+
+						continue;
+					}
+
+					if ( is_string( $term_argument ) ) {
+						$term = get_term_object( $term_argument, 'category' );
+
+						if ( $term ) {
+							$category_ids[] = $term->term_id;
+						}
+
+						continue;
+					}
+				}
+
+				// Pass categories to the creation of the post model if passed. This
+				// will prevent a post from being created with a default category and an
+				// additional one added on top.
+				if ( ! empty( $category_ids ) ) {
+					if ( ! isset( $args['post_category'] ) || ! is_array( $args['post_category'] ) ) {
+						$args['post_category'] = [];
+					}
+
+					$args['post_category'] = array_merge( $args['post_category'], $category_ids );
+				}
+
+				return $next( $args )->set_terms(
+					terms: $terms,
+					append: $this->append_terms,
+					create: $this->create_terms,
+				);
+			},
 		);
 	}
 
