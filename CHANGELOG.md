@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Added a `mixed()` helper function to return a `Interacts_With_Data` instance
+  for a mixed value that isn't associated with meta or an option.
+
 ### Fixed
 
 - Prevent the site's default category from being added to a post when using the

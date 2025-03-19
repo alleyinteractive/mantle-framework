@@ -7,6 +7,7 @@
 
 namespace Mantle\Support\Helpers;
 
+use Mantle\Support\Mixed_Data;
 use Mantle\Support\Object_Metadata;
 use Mantle\Support\Option;
 
@@ -58,4 +59,13 @@ function user_meta( int $user_id, string $meta_key ): Object_Metadata {
  */
 function comment_meta( int $comment_id, string $meta_key ): Object_Metadata {
 	return Object_Metadata::of( 'comment', $comment_id, $meta_key );
+}
+
+/**
+ * Manage and manipulate mixed data in a type-safe manner.
+ *
+ * @param mixed $value Value to be wrapped.
+ */
+function mixed( mixed $value ): Mixed_Data {
+	return Mixed_Data::of( $value );
 }

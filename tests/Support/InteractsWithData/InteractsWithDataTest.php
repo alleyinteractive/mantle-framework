@@ -150,6 +150,14 @@ class InteractsWithDataTest extends TestCase {
 
 		TestableInteractsWithData::create( 'test' )->throw()->int();
 	}
+
+	public function test_mixed_helper(): void {
+		$this->assertEquals( 'test', \Mantle\Support\Helpers\mixed( 'test' )->string() );
+		$this->assertEquals( [ 'test' ], \Mantle\Support\Helpers\mixed( 'test' )->array() );
+		$this->assertEquals( '1234', \Mantle\Support\Helpers\mixed( 1234 )->string() );
+		$this->assertEquals( 1234, \Mantle\Support\Helpers\mixed( '1234' )->string() );
+		$this->assertEquals( '1.1', \Mantle\Support\Helpers\mixed( 1.1 )->string() );
+	}
 }
 
 class TestableInteractsWithData implements \ArrayAccess, Jsonable, \JsonSerializable, \Stringable {
