@@ -58,7 +58,6 @@ class Handler implements Contract {
 		\Symfony\Component\Console\Exception\RuntimeException::class,
 		Authentication_Error::class,
 		HttpException::class,
-		Manually_Failed_Exception::class,
 		Model_Not_Found_Exception::class,
 		ResourceNotFoundException::class,
 	];
