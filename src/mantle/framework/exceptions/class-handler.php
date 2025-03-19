@@ -9,6 +9,7 @@ namespace Mantle\Framework\Exceptions;
 
 use Exception;
 use Mantle\Auth\Authentication_Error;
+use Mantle\Console\Manually_Failed_Exception;
 use Mantle\Contracts\Application;
 use Mantle\Contracts\Exceptions\Handler as Contract;
 use Mantle\Database\Model\Model_Not_Found_Exception;
@@ -57,6 +58,7 @@ class Handler implements Contract {
 		\Symfony\Component\Console\Exception\RuntimeException::class,
 		Authentication_Error::class,
 		HttpException::class,
+		Manually_Failed_Exception::class,
 		Model_Not_Found_Exception::class,
 		ResourceNotFoundException::class,
 	];
