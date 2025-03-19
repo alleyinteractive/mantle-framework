@@ -38,7 +38,7 @@ class Mixed_Data implements ArrayAccess, Jsonable, \JsonSerializable, \Stringabl
 	 * Constructor
 	 *
 	 * @param mixed $value Value.
-	 * @param bool  $throw Whether to throw an exception if the value is not a compatible type.
+	 * @param bool  $throw Optional. Whether to throw an exception if the value is not a compatible type.
 	 */
 	public function __construct( mixed $value, bool $throw = false ) {
 		$this->throw = $throw;
