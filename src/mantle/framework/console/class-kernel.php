@@ -23,6 +23,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 use Throwable;
 
 use function Mantle\Support\Helpers\collect;
+use function Mantle\Support\Helpers\stringable;
 
 /**
  * Console Kernel
@@ -276,7 +277,7 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	 */
 	protected function render_exception( OutputInterface $output, Throwable $e ) {
 		if ( $e instanceof CommandNotFoundException ) {
-			$this->output->writeln( '<error>' . str( $e->getMessage() )->explode( '.' )->first() . '</error>' );
+			$this->output->writeln( '<error>' . stringable( $e->getMessage() )->explode( '.' )->first() . '</error>' );
 			$this->output->writeln( '' );
 
 			if ( ! empty( $alternatives = $e->getAlternatives() ) ) {
