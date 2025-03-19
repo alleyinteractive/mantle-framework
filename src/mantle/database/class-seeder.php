@@ -19,12 +19,12 @@ abstract class Seeder {
 	/**
 	 * The container instance.
 	 */
-	protected ?Container $container;
+	protected ?Container $container = null;
 
 	/**
 	 * The console command instance.
 	 */
-	protected ?Command $command;
+	protected ?Command $command = null;
 
 	/**
 	 * Seed the given connection from the given path.

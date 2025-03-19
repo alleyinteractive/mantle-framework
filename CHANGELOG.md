@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Prevent the site's default category from being added to a post when using the
   `with_terms()` method on a post factory if a category is being set.
+- Fixed an issue where the output would not pass back to the console when
+  calling a command with `Console::call()`.
 
 ## v1.5.5 - 2025-03-12
 

@@ -18,6 +18,7 @@ use Mantle\Contracts\Exceptions\Handler as Exception_Handler;
 use Mantle\Support\Traits\Loads_Classes;
 use ReflectionClass;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 use Throwable;
@@ -78,14 +79,14 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	/**
 	 * Run the console application
 	 *
-	 * @param \Symfony\Component\Console\Input\InputInterface   $input
-	 * @param \Symfony\Component\Console\Output\OutputInterface $output
+	 * @param InputInterface|null  $input Console input.
+	 * @param OutputInterface|null $output Console output.
 	 */
-	public function handle( $input = null, $output = null ): int {
+	public function handle( ?InputInterface $input = null, ?OutputInterface $output = null ): int {
 		$this->output = $output;
 
 		try {
-			return $this->get_console_application()->run( $input, $output );
+			return $this->get_console_application()->run( $input, $output ?? $this->output );
 		} catch ( Throwable $e ) {
 			$this->report_exception( $e );
 			$this->render_exception( $output, $e );
@@ -97,14 +98,14 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	/**
 	 * Run the console application by command name.
 	 *
-	 * @param string $command Command name.
-	 * @param array  $parameters Command parameters.
-	 * @param mixed  $output_buffer Output buffer.
+	 * @param string               $command Command name.
+	 * @param array                $parameters Command parameters.
+	 * @param OutputInterface|null $output_buffer Output buffer.
 	 */
-	public function call( string $command, array $parameters = [], $output_buffer = null ): int {
+	public function call( string $command, array $parameters = [], ?OutputInterface $output_buffer = null ): int {
 		$this->bootstrap();
 
-		return $this->get_console_application()->call( $command, $parameters, $output_buffer );
+		return $this->get_console_application()->call( $command, $parameters, $output_buffer ?? $this->output );
 	}
 
 	/**
