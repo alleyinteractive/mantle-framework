@@ -19,6 +19,7 @@ use Mantle\Support\Traits\Loads_Classes;
 use ReflectionClass;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 use Throwable;
@@ -106,6 +107,16 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 		$this->bootstrap();
 
 		return $this->get_console_application()->call( $command, $parameters, $output_buffer ?? $this->output );
+	}
+
+	/**
+	 * Run the console application by command name without output.
+	 *
+	 * @param string $command Command name.
+	 * @param array  $parameters Command parameters.
+	 */
+	public function call_silently( string $command, array $parameters = [] ): int {
+		return $this->call( $command, $parameters, new NullOutput() );
 	}
 
 	/**

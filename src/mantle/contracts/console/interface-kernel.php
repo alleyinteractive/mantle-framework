@@ -35,6 +35,14 @@ interface Kernel extends \Mantle\Contracts\Kernel {
 	public function call( string $command, array $parameters = [], ?OutputInterface $output_buffer = null ): int;
 
 	/**
+	 * Run the console application by command name without output.
+	 *
+	 * @param string $command Command name.
+	 * @param array  $parameters Command parameters.
+	 */
+	public function call_silently( string $command, array $parameters = [] ): int;
+
+	/**
 	 * Test a console command by name.
 	 *
 	 * @param string $command Command name.
