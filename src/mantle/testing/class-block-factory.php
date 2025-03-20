@@ -17,7 +17,7 @@ use function Mantle\Support\Helpers\collect;
  *
  * Used to generate blocks and create presets of blocks for testing.
  *
- * @method string block(string $name = 'paragraph', string $content = '', array $attributes = [])
+ * @method string block(string $name = 'paragraph', ?string $content = null, array $attributes = [])
  * @method string image(?string $url = null, ?string $alt = null, array $attributes = [])
  * @method string heading(?string $text = null, int $level = 2)
  * @method string paragraph(?string $text = null, int $sentences = 3)
@@ -47,7 +47,6 @@ class Block_Factory {
 	public static function clear_presets(): void {
 		static::$presets = [];
 	}
-
 
 	/**
 	 * Constructor.
