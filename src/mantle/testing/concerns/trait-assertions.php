@@ -501,6 +501,16 @@ trait Assertions {
 	}
 
 	/**
+	 * Assert that two strings are equal, with whitespace removed from both.
+	 *
+	 * @param string $expected Expected string.
+	 * @param string $actual   Actual string.
+	 */
+	public function assertStringsEqualsWithoutWhitespace( string $expected, string $actual ): void {
+		PHPUnit::assertEquals( preg_replace( '/\s+/', '', $expected ), preg_replace( '/\s+/', '', $actual ) );
+	}
+
+	/**
 	 * Serialize arguments for use in assertions.
 	 *
 	 * Convert string-backed enums to an array of all possible values from an enumeration.
