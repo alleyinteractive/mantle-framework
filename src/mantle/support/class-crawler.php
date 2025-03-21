@@ -144,27 +144,14 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	}
 
 	/**
-	 * Modify the elements matching a given selector using a callback function.
+	 * Modify the elements using a callback function.
 	 *
 	 * @param string   $selector CSS selector to match.
 	 * @param callable $callback A callback function that receives the matched element and its index.
 	 * @phpstan-param callable(Crawler $crawler, int $i): (DOMNode|string|null) $callback
 	 */
-	public function modify( string $selector, callable $callback ): static {
-		$converter = new CssSelectorConverter( true );
-
-		return $this->modify_xpath( $converter->toXPath( $selector ), $callback );
-	}
-
-	/**
-	 * Modify the elements matching a given XPath expression using a callback function.
-	 *
-	 * @param string   $xpath XPath expression to match.
-	 * @param callable $callback A callback function that receives the matched element and its index.
-	 * @phpstan-param callable(Crawler $crawler, int $i): (DOMNode|string|null) $callback
-	 */
-	public function modify_xpath( string $path, callable $callback ): static {
-		$this->filterXPath( $path )->each( function ( Crawler $item, int $index ) use ( $callback ): Crawler {
+	public function modify( callable $callback ): static {
+		$this->each( function ( Crawler $item, int $index ) use ( $callback ): Crawler {
 			$result = $callback( $item, $index );
 
 			// If the callback returns null, we can assume the callback modified the

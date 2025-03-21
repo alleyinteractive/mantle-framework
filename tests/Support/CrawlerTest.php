@@ -83,8 +83,7 @@ class CrawlerTest extends TestCase {
 	public function test_it_can_modify_an_element_in_the_document(): void {
 		$crawler = new Crawler( self::TEST_CONTENT );
 
-		$crawler->modify(
-			'.test-class',
+		$crawler->filter( '.test-class' )->modify(
 			fn ( Crawler $element ) => $element->set_data( 'modified', 'true' ),
 		);
 
@@ -108,8 +107,7 @@ class CrawlerTest extends TestCase {
 	public function test_it_can_add_a_class_to_an_element_in_the_document(): void {
 		$crawler = new Crawler( self::TEST_CONTENT );
 
-		$crawler->modify(
-			'.test-class',
+		$crawler->filter( '.test-class' )->modify(
 			fn ( Crawler $element ) => $element->add_class( 'class1', 'class2' ),
 		);
 
@@ -133,8 +131,7 @@ class CrawlerTest extends TestCase {
 	public function test_it_can_remove_a_class_from_an_element_in_the_document(): void {
 		$crawler = new Crawler( self::TEST_CONTENT );
 
-		$crawler->modify(
-			'.test-class',
+		$crawler->filter( '.test-class' )->modify(
 			fn ( Crawler $element ) => $element->remove_class( 'test-class' ),
 		);
 
@@ -158,8 +155,7 @@ class CrawlerTest extends TestCase {
 	public function test_it_can_modify_by_xpath(): void {
 		$crawler = new Crawler( self::TEST_CONTENT );
 
-		$crawler->modify_xpath(
-			'//div[@id="test-id"]',
+		$crawler->filterXPath( '//div[@id="test-id"]' )->modify(
 			fn ( Crawler $element ) => $element->set_attribute( 'data-modified', 'true' ),
 		);
 
@@ -194,8 +190,7 @@ class CrawlerTest extends TestCase {
 	public function test_it_can_replace_an_element_in_the_document(): void {
 		$crawler = new Crawler( self::TEST_CONTENT );
 
-		$crawler->modify(
-			'.test-class',
+		$crawler->filter( '.test-class' )->modify(
 			function ( Crawler $element ): DOMElement {
 				// Create a new DOMElement to replace the existing one.
 				$crawler = new Crawler( '<span class="replaced-class">Replaced Element</span>' );
@@ -224,8 +219,7 @@ class CrawlerTest extends TestCase {
 	public function test_it_can_replace_an_element_in_the_document_with_a_string(): void {
 		$crawler = new Crawler( self::TEST_CONTENT );
 
-		$crawler->modify(
-			'.test-class',
+		$crawler->filter( '.test-class' )->modify(
 			fn () => '<span class="replaced-class">Replaced Element</span>',
 		);
 
@@ -266,8 +260,6 @@ class CrawlerTest extends TestCase {
 			$crawler->to_html(),
 		);
 	}
-
-	// public function test_it_can_modify_links(): void
 
 	/**
 	 * @dataProvider wrap_data_provider
