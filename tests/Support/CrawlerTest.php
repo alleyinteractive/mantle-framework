@@ -448,7 +448,6 @@ class CrawlerTest extends TestCase {
 	 */
 	#[DataProvider( 'append_dataprovider' )]
 	public function test_it_can_append_elements( string $base, string|Crawler|DOMNode $element, string $expected ): void {
-		$base = trim($base);
 		$crawler = new Crawler( $base );
 		$crawler->filter( 'p' )->append( $element );
 
@@ -494,51 +493,53 @@ class CrawlerTest extends TestCase {
 		];
 	}
 
-	public function test_it_can_append_text(): void {
-		$crawler = new Crawler(
-			'<ul>
-				<li>Item 1</li>
-				<li>Item 2</li>
-				<li>Item 3</li>
-			</ul>'
-		);
+	/**
+	 * @dataProvider prepend_dataprovider
+	 */
+	#[DataProvider( 'prepend_dataprovider' )]
+	public function test_it_can_prepend_elements( string $base, string|Crawler|DOMNode $element, string $expected ): void {
+		$crawler = new Crawler( $base );
+		$crawler->filter( 'p' )->prepend( $element );
 
-		$crawler->filter( 'li' )->append_text( ' Appended Text' );
-		$this->assertTrimmedStringEquals(
-			'<ul>
-				<li>Item 1 Appended Text</li>
-				<li>Item 2 Appended Text</li>
-				<li>Item 3 Appended Text</li>
-			</ul>',
-			$crawler->to_html(),
-		);
+		$this->assertStringsEqualsWithoutWhitespace( $expected, $crawler->to_html() );
 	}
 
-	public function test_it_can_prepend_text(): void {
-		$crawler = new Crawler(
-			'<ul>
-				<li>Item 1</li>
-				<li>Item 2</li>
-				<li>Item 3</li>
-			</ul>'
-		);
+	public static function prepend_dataprovider(): array {
+		$base = '
+		<div>
+			<p>Paragraph 1</p>
+			<p>Paragraph 2</p>
+			<p>Paragraph 3</p>
+		</div>';
 
-		$crawler->filter( 'li' )->prepend_text( 'Prepended Text ' );
-		$this->assertTrimmedStringEquals(
-			'<ul>
-				<li>Prepended Text Item 1</li>
-				<li>Prepended Text Item 2</li>
-				<li>Prepended Text Item 3</li>
-			</ul>',
-			$crawler->to_html(),
-		);
+		return [
+			'element string' => [
+				$base,
+				'<span>prepended Text</span>',
+				'<div>
+					<p><span>prepended Text</span>Paragraph 1</p>
+					<p><span>prepended Text</span>Paragraph 2</p>
+					<p><span>prepended Text</span>Paragraph 3</p>
+				</div>'
+			],
+			'text string' => [
+				$base,
+				'prepended Text ',
+				'<div>
+					<p>prepended Text Paragraph 1</p>
+					<p>prepended Text Paragraph 2</p>
+					<p>prepended Text Paragraph 3</p>
+				</div>',
+			],
+			'text string with br' => [
+				$base,
+				'prepended Text<br>',
+				'<div>
+					<p>prepended Text<br>Paragraph 1</p>
+					<p>prepended Text<br>Paragraph 2</p>
+					<p>prepended Text<br>Paragraph 3</p>
+				</div>',
+			],
+		];
 	}
-
-	// public function test_it_can_append_to_elements(): void {
-	// 	$c = new Crawler( '<div id="content"><h1>Title</h1><em>Big</em></div>' );
-	// 	$c->filter( 'em' )->appendTo( $c->filter( 'h1' ) );
-	// 	$this->assertStringsEqualsWithoutWhitespace( '<div id="content"><h1>Title<em>Big</em></h1></div>', $c->to_html() );
-	// }
-
-	// public function test_it_can_assert_against_elements(): void {}
 }

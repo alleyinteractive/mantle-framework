@@ -24,6 +24,8 @@ readonly class Crawler_Helpers {
 	 * Helper function for getting a body element
 	 * from an HTML fragment
 	 *
+	 * @access private
+	 *
 	 * @param string $html A fragment of HTML code
 	 * @param string $charset
 	 * @return \DOMNode The body node containing child nodes created from the HTML fragment
@@ -38,6 +40,8 @@ readonly class Crawler_Helpers {
 	 * Function originally taken from Symfony\Component\DomCrawler\Crawler
 	 * (c) Fabien Potencier <fabien@symfony.com>
 	 * License: MIT
+	 *
+	 * @access private
 	 */
 	private static function parseXhtml( string $htmlContent, string $charset = 'UTF-8' ): \DOMDocument {
 		$htmlContent = self::convertToHtmlEntities( $htmlContent, $charset );
@@ -61,6 +65,8 @@ readonly class Crawler_Helpers {
 
 	/**
 	 * Converts charset to HTML-entities to ensure valid parsing.
+	 *
+	 * @access private
 	 */
 	private static function convertToHtmlEntities( string $htmlContent, string $charset = 'UTF-8' ): string {
 		set_error_handler( static fn () => throw new \Exception() );

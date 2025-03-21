@@ -20,6 +20,7 @@ use Mantle\Support\Traits\Macroable;
 use Mantle\Support\Traits\Tappable;
 use Symfony\Component\DomCrawler\Crawler as SymfonyCrawler;
 use Mantle\Support\Crawler_Helpers as Helpers;
+use Override;
 
 use function Mantle\Support\Helpers\classname;
 use function Mantle\Support\Helpers\stringable;
@@ -48,6 +49,19 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	private const FRAGMENT_ROOT_TAGNAME = '_root';
 
 	/**
+	 * Get an Crawler object from a variety of types.
+	 *
+	 * @param string|Crawler|SymfonyCrawler|DOMNode|DOMNodeList|array $content
+	 */
+	public static function create( string|Crawler|SymfonyCrawler|DOMNode|DOMNodeList $content ): static {
+		return match ( true ) {
+			$content instanceof self => $content,
+			$content instanceof SymfonyCrawler => new static( iterator_to_array( $content ) ),
+			default => new static( $content ),
+		};
+	}
+
+	/**
 	 * Convert the Crawler instance to an HTML string.
 	 */
 	public function to_html(): string {
@@ -73,12 +87,9 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	 * This method uses the appropriate specialized add*() method based
 	 * on the type of the argument.
 	 *
-	 * Overwritten from parent to allow Crawler to be added.
-	 *
 	 * @param \DOMNodeList|\DOMNode|array|string|Crawler|null $node A node.
-	 *
-	 * @api
 	 */
+	#[Override]
 	public function add( \DOMNodeList|\DOMNode|array|string|SymfonyCrawler|null $node ): void {
 		if ( $node instanceof SymfonyCrawler ) {
 			foreach ( $node as $childnode ) {
@@ -381,8 +392,38 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 		return $this;
 	}
 
-	// TODO
-	// public function prepend()
+	/**
+	 * Prepend a new element to all elements in the Crawler instance.
+	 *
+	 * @throws InvalidArgumentException If the provided element is invalid.
+	 *
+	 * @param string|Crawler|DOMNode $element
+	 */
+	public function prepend( string|Crawler|DOMNode $element ): static {
+		$content = self::create( $element );
+		$nodes   = [];
+
+		foreach ( $this as $node ) {
+			$ref_node = $node->firstChild;
+
+			foreach ( $content as $new_node ) {
+				$new_node = static::import_new_node( $new_node, $node );
+
+				if ( ! $ref_node instanceof \DOMNode ) {
+					$node->appendChild( $new_node );
+				} elseif ( $ref_node !== $new_node ) {
+					$node->insertBefore( $new_node, $ref_node );
+				}
+
+				$nodes[] = $new_node;
+			}
+		}
+
+		$content->clear();
+		$content->add( $nodes );
+
+		return $this;
+	}
 
 	/**
 	 * Append a new element to all elements in the Crawler instance.
@@ -390,62 +431,23 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	 * @throws InvalidArgumentException If the provided element is invalid.
 	 *
 	 * @param string|Crawler|DOMNode $element
-	 * @return static
 	 */
 	public function append( string|Crawler|DOMNode $element ): static {
-		$element = $this->resolve_mixed_argument( $element );
-
-		if ( is_null( $element ) ) {
-			throw new InvalidArgumentException( 'Invalid element provided for appending.' );
-		}
-
-		if ( ! $this->has_nodes() ) {
-			return $this;
-		}
+		$element = self::create( $element );
+		$nodes   = [];
 
 		foreach ( $this as $node ) {
-			if ( ! $node instanceof DOMElement ) {
-				continue;
-			}
+			foreach ( $element as $new_node ) {
+				$new_node = static::import_new_node( $new_node, $node );
 
-			$new_node = static::import_new_node( $element, $node, true );
+				$node->appendChild( $new_node );
 
-			$node->appendChild( $new_node );
-		}
-
-		return $this;
-	}
-
-	/**
-	 * Append text to all elements in the Crawler instance.
-	 *
-	 * @param string $text The text to append to each element.
-	 */
-	public function append_text( string $text ): static {
-		foreach ( $this as $node ) {
-			if ( $node instanceof DOMElement ) {
-				$node->append( $text );
-			} else {
-				$node->appendChild( $node->ownerDocument->createTextNode( $text ) );
+				$nodes[] = $new_node;
 			}
 		}
 
-		return $this;
-	}
-
-	/**
-	 * Prepend text to all elements in the Crawler instance.
-	 *
-	 * @param string $text The text to append to each element.
-	 */
-	public function prepend_text( string $text ): static {
-		foreach ( $this as $node ) {
-			if ( $node instanceof DOMElement ) {
-				$node->prepend( $text );
-			} else {
-				$node->insertBefore( $node->ownerDocument->createTextNode( $text ), $node->firstChild );
-			}
-		}
+		$element->clear();
+		$element->add( $nodes );
 
 		return $this;
 	}
@@ -707,6 +709,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	 * @param string      $content A string to parse as HTML/XML.
 	 * @param null|string $type    The content type of the string.
 	 */
+	#[Override]
 	public function addContent( string $content, ?string $type = null ): void {
 		if ( empty( $type ) ) {
 			$type = 'text/html;charset=UTF-8';
@@ -714,7 +717,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 
 		// The string contains no <html> Tag => no complete document but an HTML fragment.
 		if ( str_starts_with( $type, 'text/html' ) && ! preg_match( '/<html\b[^>]*>/i', $content ) ) {
-			$this->addHtmlFragment( $content );
+			$this->add_html_fragment( $content );
 		} else {
 			parent::addContent( $content, $type );
 		}
@@ -729,7 +732,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	 * @param string $content The HTML fragment to add.
 	 * @param string $charset The character set to use for parsing (default: 'UTF-8').
 	 */
-	public function addHtmlFragment( string $content, string $charset = 'UTF-8' ): void {
+	public function add_html_fragment( string $content, string $charset = 'UTF-8' ): void {
 		$document                     = new \DOMDocument( '1.0', $charset );
 		$document->preserveWhiteSpace = false;
 
