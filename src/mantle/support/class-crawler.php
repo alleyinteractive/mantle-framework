@@ -51,11 +51,11 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	/**
 	 * Get an Crawler object from a variety of types.
 	 *
-	 * @param string|Crawler|SymfonyCrawler|DOMNode|DOMNodeList|array $content
+	 * @param string|\Symfony\Component\DomCrawler\Crawler|DOMNode|DOMNodeList $content
 	 */
-	public static function create( string|Crawler|SymfonyCrawler|DOMNode|DOMNodeList $content ): static {
+	public static function create( string|\Symfony\Component\DomCrawler\Crawler|DOMNode|DOMNodeList $content ): static {
 		return match ( true ) {
-			$content instanceof self => $content,
+			$content instanceof static => $content,
 			$content instanceof SymfonyCrawler => new static( iterator_to_array( $content ) ),
 			default => new static( $content ),
 		};
@@ -189,7 +189,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	 * Modify the elements using a callback function.
 	 *
 	 * @param callable $callback A callback function that receives the matched element and its index.
-	 * @phpstan-param callable(Crawler $crawler, int $i): (DOMNode|string|null) $callback
+	 * @phpstan-param callable(Crawler $crawler, int $i): (DOMNode|string|Crawler|null) $callback
 	 */
 	public function modify( callable $callback ): static {
 		$this->each( function ( Crawler $item, int $index ) use ( $callback ): Crawler {
@@ -453,6 +453,64 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	}
 
 	/**
+	 * Insert content, specified by the parameter, after each element in the set of matched elements.
+	 *
+	 * @param string|self|DOMNode|DOMNodeList $content
+	 */
+	public function after( string|self|DOMNode|DOMNodeList $content ): static {
+		$content = self::create( $content );
+		$nodes   = [];
+
+		foreach ( $this as $node ) {
+			$ref_node = $node->nextSibling;
+
+			foreach ( $content as $new_node ) {
+				$new_node = static::import_new_node( $new_node, $node );
+
+				if ( ! $ref_node instanceof \DOMNode ) {
+					$node->parentNode->appendChild( $new_node );
+				} else {
+					$node->parentNode->insertBefore( $new_node, $ref_node );
+				}
+
+				$nodes[] = $new_node;
+			}
+		}
+
+		$content->clear();
+		$content->add( $nodes );
+
+		return $this;
+	}
+
+	/**
+	 * Insert content, specified by the parameter, before each element in the set of matched elements.
+	 *
+	 * @param string|self|DOMNode|DOMNodeList $content
+	 */
+	public function before( string|self|DOMNode|DOMNodeList $content ): static {
+		$content = self::create( $content );
+		$nodes   = [];
+
+		foreach ( $this as $node ) {
+			foreach ( $content as $newnode ) {
+				if ( $node !== $newnode ) {
+					$newnode = static::import_new_node( $newnode, $node );
+
+					$node->parentNode->insertBefore( $newnode, $node );
+
+					$nodes[] = $newnode;
+				}
+			}
+		}
+
+		$content->clear();
+		$content->add( $nodes );
+
+		return $this;
+	}
+
+	/**
 	 * Retrieve the next elements but not including the current in the Crawler
 	 * instance after the callback matches.
 	 *
@@ -518,7 +576,6 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	 * @throws InvalidArgumentException If the wrapping element is invalid.
 	 *
 	 * @param string|Crawler|DOMNode $element The wrapping element to use. Can be a string, a Crawler instance, or a DOMNode.
-	 * @return string
 	 */
 	public function wrap( string|Crawler|DOMNode $element ): static {
 		$element = $this->resolve_mixed_argument( $element );
@@ -742,9 +799,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 		foreach ( $body_node->childNodes as $child ) {
 			$inode = $root->appendChild( $document->importNode( $child, true ) );
 
-			if ( $inode ) {
-				$this->addNode( $inode );
-			}
+			$this->addNode( $inode );
 		}
 	}
 

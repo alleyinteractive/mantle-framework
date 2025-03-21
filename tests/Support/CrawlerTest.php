@@ -542,4 +542,26 @@ class CrawlerTest extends TestCase {
 			],
 		];
 	}
+
+	public function test_it_can_insert_before(): void {
+		$crawler = new Crawler( '<div id="test"><p>Test</p></div>' );
+
+		$crawler->filter( 'div p' )->before( '<h1>Inserted Before</h1>' );
+
+		$this->assertEquals(
+			'<div id="test"><h1>Inserted Before</h1><p>Test</p></div>',
+			$crawler->to_html(),
+		);
+	}
+
+	public function test_it_can_insert_after(): void {
+		$crawler = new Crawler( '<div id="test"><p>Test</p></div>' );
+
+		$crawler->filter( 'div p' )->after( '<h1>Inserted After</h1>' );
+
+		$this->assertEquals(
+			'<div id="test"><p>Test</p><h1>Inserted After</h1></div>',
+			$crawler->to_html(),
+		);
+	}
 }

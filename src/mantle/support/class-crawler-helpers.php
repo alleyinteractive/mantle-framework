@@ -2,8 +2,7 @@
 /**
  * Crawler_Helpers class file
  *
- * phpcs:disable WordPress.NamingConventions
- * phpcs:disable Squiz.Commenting.FunctionComment
+ * phpcs:disable
  *
  * @package Mantle
  */
@@ -54,7 +53,7 @@ readonly class Crawler_Helpers {
 		if ( '' !== trim( $htmlContent ) ) {
 			// PHP DOMDocument->loadHTML method tends to "eat" closing tags in html strings within script elements
 			// Option LIBXML_SCHEMA_CREATE seems to prevent this
-			// see https://stackoverflow.com/questions/24575136/domdocument-removes-html-tags-in-javascript-string
+			// see https://stackoverflow.com/questions/24575136/domdocument-removes-html-tags-in-javascript-string.
 			@$dom->loadHTML( $htmlContent, \LIBXML_SCHEMA_CREATE );
 		}
 
@@ -66,6 +65,7 @@ readonly class Crawler_Helpers {
 	/**
 	 * Converts charset to HTML-entities to ensure valid parsing.
 	 *
+	 * @throws \Exception Thrown on internal error.
 	 * @access private
 	 */
 	private static function convertToHtmlEntities( string $htmlContent, string $charset = 'UTF-8' ): string {
@@ -77,8 +77,7 @@ readonly class Crawler_Helpers {
 			try {
 					$htmlContent = iconv( $charset, 'UTF-8', $htmlContent );
 					$htmlContent = mb_encode_numericentity( $htmlContent, [ 0x80, 0x10FFFF, 0, 0x1FFFFF ], 'UTF-8' );
-			} catch ( \Exception | \ValueError ) {
-			}
+			} catch ( \Exception | \ValueError ) {}
 
 			return $htmlContent;
 		} finally {
