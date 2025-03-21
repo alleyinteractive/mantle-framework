@@ -16,7 +16,6 @@ use Mantle\Contracts\Support\Htmlable;
 use Mantle\Support\Traits\Conditionable;
 use Mantle\Support\Traits\Macroable;
 use Mantle\Support\Traits\Tappable;
-use Symfony\Component\CssSelector\CssSelectorConverter;
 use Symfony\Component\DomCrawler\Crawler as SymfonyCrawler;
 use Mantle\Support\Crawler_Helpers as Helpers;
 
@@ -78,15 +77,15 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	 *
 	 * @api
 	 */
-	// public function add( \DOMNodeList|\DOMNode|array|string|SymfonyCrawler|null $node ): void {
-	// if ( $node instanceof SymfonyCrawler ) {
-	// foreach ( $node as $childnode ) {
-	// $this->addNode( $childnode );
-	// }
-	// } else {
-	// parent::add( $node );
-	// }
-	// }
+	public function add( \DOMNodeList|\DOMNode|array|string|SymfonyCrawler|null $node ): void {
+		if ( $node instanceof SymfonyCrawler ) {
+			foreach ( $node as $childnode ) {
+				$this->addNode( $childnode );
+			}
+		} else {
+			parent::add( $node );
+		}
+	}
 
 	/**
 	 * Query the document for all elements matching a CSS selector.
