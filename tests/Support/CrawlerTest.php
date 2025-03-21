@@ -85,7 +85,7 @@ class CrawlerTest extends TestCase {
 
 		$crawler->modify(
 			'.test-class',
-			fn ( Crawler $element ) => $element->set_attribute( 'data-modified', 'true' ),
+			fn ( Crawler $element ) => $element->set_data( 'modified', 'true' ),
 		);
 
 		$this->assertTrimmedStringEquals(
@@ -352,26 +352,25 @@ class CrawlerTest extends TestCase {
 	 * @dataProvider inner_wrap_data_provider
 	 */
 	#[DataProvider( 'inner_wrap_data_provider' )]
-	// public function test_it_can_inner_wrap_elements( string|Crawler|DOMNode $wrapping_element ): void {
-	// 	$crawler = new Crawler( self::TEST_CONTENT );
+	public function test_it_can_inner_wrap_elements( string|Crawler|DOMNode $wrapping_element ): void {
+		$crawler = new Crawler( self::TEST_CONTENT );
 
-	// 	$crawler->filter( 'li' )->wrap_inner( $wrapping_element );
-	// 	dd($crawler->to_html());
+		$crawler->filter( 'li' )->wrap_inner( $wrapping_element );
 
-	// 	$this->assertTrimmedStringEquals( '
-	// <div>
-	// 	<section>Example Section</section>
-	// 	<div class="test-class">Example Div By Class</div>
-	// 	<div id="test-id">Example Div By ID</div>
-	// 	<ul>
-	// 		<li><span class="li-wrapper">Item 1</span></li>
-	// 		<li><span class="li-wrapper">Item 2</span></li>
-	// 		<li data-testid="test-item"><span class="li-wrapper">Item 3</span></li>
-	// 	</ul></div>
-	// </div>',
-	// 		$crawler->to_html(),
-	// 	);
-	// }
+		$this->assertStringsEqualsWithoutWhitespace( '
+	<div>
+		<section>Example Section</section>
+		<div class="test-class">Example Div By Class</div>
+		<div id="test-id">Example Div By ID</div>
+		<ul>
+			<li><span class="li-wrapper">Item 1</span></li>
+			<li><span class="li-wrapper">Item 2</span></li>
+			<li data-testid="test-item"><span class="li-wrapper">Item 3</span></li>
+		</ul>
+	</div>',
+			$crawler->to_html(),
+		);
+	}
 
 	public static function inner_wrap_data_provider(): array {
 		$html = '<span class="li-wrapper"></span>';

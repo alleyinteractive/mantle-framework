@@ -13,6 +13,9 @@ use DOMNode;
 use DOMNodeList;
 use InvalidArgumentException;
 use Mantle\Contracts\Support\Htmlable;
+use Mantle\Support\Traits\Conditionable;
+use Mantle\Support\Traits\Macroable;
+use Mantle\Support\Traits\Tappable;
 use Symfony\Component\CssSelector\CssSelectorConverter;
 use Symfony\Component\DomCrawler\Crawler as SymfonyCrawler;
 
@@ -31,6 +34,10 @@ use function Mantle\Support\Helpers\stringable;
  * @link https://symfony.com/doc/current/components/dom_crawler.html
  */
 class Crawler extends SymfonyCrawler implements Htmlable {
+	use Conditionable;
+	use Macroable;
+	use Tappable;
+
 	/**
 	 * Constructor.
 	 *
@@ -349,7 +356,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 		$this->filter( $selector )->each( function ( Crawler $item ): void {
 			$node = $item->getNode( 0 );
 
-			if ( $node && $node->parentNode ) {
+			if ( $node instanceof \DOMNode && $node->parentNode instanceof \DOMNode ) {
 				$node->parentNode->removeChild( $node );
 			}
 		} );
@@ -381,12 +388,11 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 		}
 
 		// Bail out if there are no nodes to wrap.
-		if ( 0 === $this->count() ) {
+		if ( ! $this->has_nodes() ) {
 			return $this;
 		}
 
 		foreach ( $this as $node ) {
-			// if ( ! $node instanceof DOMElement || ! $node->parentNode instanceof DOMElement ) {
 			if ( ! $node instanceof DOMElement ) {
 				continue;
 			}
@@ -421,18 +427,17 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	 *
 	 * ```php
 	 * <div>
-	 * 	<h3>Title</h3>
+	 *  <h3>Title</h3>
 	 *  <div class="wrapper">
-	 * 		<p>Content</p>
-	 * 		<p>More content</p>
-	 * 		<p>Even more content</p>
-	 * 	</div>
+	 *      <p>Content</p>
+	 *      <p>More content</p>
+	 *      <p>Even more content</p>
+	 *  </div>
 	 * </div>
 	 * ```
 	 *
 	 * @throws InvalidArgumentException If the wrapping element is invalid.
 	 * @param string|Crawler|DOMNode $wrapping_element
-	 * @return static
 	 */
 	public function wrap_all( string|Crawler|DOMNode $wrapping_element ): static {
 		$wrapping_element = $this->resolve_wrapping_element( $wrapping_element );
@@ -443,7 +448,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 
 
 		// Bail out if there are no nodes to wrap.
-		if ( 0 === $this->count() ) {
+		if ( ! $this->has_nodes() ) {
 			return $this;
 		}
 
@@ -467,6 +472,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 			$new_node->appendChild( $node );
 		}
 
+		// Remove the wrapping element if it has no child nodes after wrapping.
 		if ( ! $parent->hasChildNodes() ) {
 			$parent->parentNode->removeChild( $parent );
 		}
@@ -479,7 +485,6 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	 * specified wrapping element.
 	 *
 	 * @param string|Crawler|DOMNode $wrapping_element The wrapping element to use.
-	 * @return static
 	 */
 	public function wrap_inner( string|Crawler|DOMNode $wrapping_element ): static {
 		$wrapping_element = $this->resolve_wrapping_element( $wrapping_element );
@@ -489,6 +494,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 		}
 
 		foreach ( $this as $node ) {
+			( new static( $node->childNodes ) )->wrap_all( $wrapping_element );
 		}
 
 		return $this;
@@ -499,8 +505,6 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	 *
 	 * This method sets the nodeValue of each element to an empty string,
 	 * effectively removing all child nodes and text content.
-	 *
-	 * @return static
 	 */
 	public function empty(): static {
 		foreach ( $this as $node ) {
@@ -508,6 +512,13 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 		}
 
 		return $this;
+	}
+
+	/**
+	 * Check if the Crawler instance has any nodes.
+	 */
+	public function has_nodes(): bool {
+		return $this->count() > 0;
 	}
 
 	/**
@@ -533,6 +544,11 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 		return $new_node;
 	}
 
+	/**
+	 * Resolve the wrapping element to a DOMNode.
+	 *
+	 * @param string|Crawler|DOMNode $wrapping_element The wrapping element to resolve.
+	 */
 	protected function resolve_wrapping_element( string|Crawler|DOMNode $wrapping_element ): ?DOMNode {
 		if ( is_string( $wrapping_element ) ) {
 			return ( new static( $wrapping_element ) )->getNode( 0 );
@@ -542,10 +558,6 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 			return $wrapping_element->getNode( 0 );
 		}
 
-		if ( $wrapping_element instanceof DOMNode ) {
-			return $wrapping_element;
-		}
-
-		throw new InvalidArgumentException( 'Invalid wrapping element provided.' );
+		return $wrapping_element;
 	}
 }
