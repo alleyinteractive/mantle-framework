@@ -17,6 +17,7 @@ use Mantle\Container\Container;
 use Mantle\Events\Dispatcher;
 use Mantle\Support\Collection;
 use Mantle\Support\Higher_Order_Tap_Proxy;
+use Mantle\Support\HTML;
 use Mantle\Support\Str;
 use Mantle\Support\Stringable;
 
@@ -568,4 +569,13 @@ function defer( callable $callback ): void {
 	}
 
 	app()->terminating( $callback );
+}
+
+/**
+ * Create a new HTML instance.
+ *
+ * @param string $html The HTML string to test.
+ */
+function html_string( string $html ): HTML {
+	return new HTML( $html );
 }

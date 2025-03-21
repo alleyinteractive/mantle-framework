@@ -20,6 +20,7 @@ use Mantle\Support\Traits\Macroable;
 use Mantle\Support\Traits\Tappable;
 use Symfony\Component\DomCrawler\Crawler as SymfonyCrawler;
 use Mantle\Support\Internal\HTML_Helpers as Helpers;
+use Mantle\Testing\Concerns\Element_Assertions;
 use Override;
 
 use function Mantle\Support\Helpers\classname;
@@ -40,6 +41,7 @@ use function Mantle\Support\Helpers\stringable;
  */
 class HTML extends SymfonyCrawler implements Htmlable {
 	use Conditionable;
+	use Element_Assertions;
 	use Macroable;
 	use Tappable;
 

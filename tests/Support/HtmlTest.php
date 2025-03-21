@@ -562,4 +562,11 @@ class HtmlTest extends TestCase {
 			$crawler->to_html(),
 		);
 	}
+
+	public function test_element_assertions(): void {
+		( new HTML( self::TEST_CONTENT ) )
+			->assertQuerySelectorExists( '.test-class' )
+			->assertElementExistsByTestId( 'test-item' )
+			->assertQuerySelectorMissing( '.non-existent-class' );
+	}
 }

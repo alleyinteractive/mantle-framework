@@ -13,6 +13,7 @@ use PHPUnit\Framework\Assert as PHPUnit;
 use DOMDocument;
 use DOMNode;
 use DOMXPath;
+use Mantle\Support\HTML;
 use Symfony\Component\CssSelector\CssSelectorConverter;
 
 /**
@@ -25,40 +26,13 @@ trait Element_Assertions {
 	protected DOMDocument $document;
 
 	/**
-	 * Retrieve the DOM Document for the response.
-	 */
-	protected function get_dom_document(): DOMDocument {
-		if ( isset( $this->document ) ) {
-			return $this->document;
-		}
-
-		libxml_use_internal_errors( true );
-
-		$this->document = new DOMDocument();
-		$this->document->loadHTML( $this->get_content() );
-
-		return $this->document;
-	}
-
-	/**
-	 * Convert a CSS selector to an XPath query.
-	 *
-	 * @param string $selector The selector to convert.
-	 */
-	protected function convert_query_selector( string $selector ): string {
-		$converter = new CssSelectorConverter( true );
-
-		return $converter->toXPath( $selector );
-	}
-
-	/**
 	 * Assert that an element exists in the response.
 	 *
 	 * @param string $expression The XPath expression to execute.
 	 * @param string $message Optional message to display on failure.
 	 */
 	public function assertElementExists( string $expression, ?string $message = null ): static {
-		$nodes = ( new DOMXPath( $this->get_dom_document() ) )->query( $expression );
+		$nodes = ( new DOMXPath( $this->get_internal_dom_document() ) )->query( $expression );
 
 		PHPUnit::assertTrue(
 			! $nodes ? false : $nodes->length > 0,
@@ -104,7 +78,7 @@ trait Element_Assertions {
 	 * @param string $message    The message to display if the assertion fails.
 	 */
 	public function assertElementMissing( string $expression, ?string $message = null ): static {
-		$nodes = ( new DOMXPath( $this->get_dom_document() ) )->query( $expression );
+		$nodes = ( new DOMXPath( $this->get_internal_dom_document() ) )->query( $expression );
 
 		PHPUnit::assertTrue(
 			false === $nodes || 0 === $nodes->length,
@@ -201,7 +175,7 @@ trait Element_Assertions {
 	 * @param int    $expected The expected number of elements.
 	 */
 	public function assertElementCount( string $expression, int $expected ): static {
-		$nodes = ( new DOMXPath( $this->get_dom_document() ) )->query( $expression );
+		$nodes = ( new DOMXPath( $this->get_internal_dom_document() ) )->query( $expression );
 
 		PHPUnit::assertEquals( $expected, $nodes->length, 'Unexpected number of elements found.' );
 
@@ -246,7 +220,7 @@ trait Element_Assertions {
 	 * @param bool             $pass_any Pass if any of the nodes pass the assertion. Otherwise, all must pass.
 	 */
 	public function assertElement( string $expression, callable $assertion, bool $pass_any = false ): static {
-		$nodes = ( new DOMXPath( $this->get_dom_document() ) )->query( $expression );
+		$nodes = ( new DOMXPath( $this->get_internal_dom_document() ) )->query( $expression );
 
 		if ( ! $nodes ) {
 			PHPUnit::fail( 'No nodes found for expression: ' . $expression );
@@ -279,5 +253,77 @@ trait Element_Assertions {
 	 */
 	public function assertQuerySelector( string $selector, callable $assertion, bool $pass_any = false ): static {
 		return $this->assertElement( $this->convert_query_selector( $selector ), $assertion, $pass_any );
+	}
+
+	/**
+	 * Assert that the content contains the expected string.
+	 *
+	 * @param string   $needle The $needle to assert against.
+	 * @param int|null $count The number of times the $needle should appear in the content.
+	 */
+	public function assertContains( string $needle, ?int $count = null ): static {
+		PHPUnit::assertStringContainsString( $needle, $this->get_internal_content(), 'The content does not contain the expected string: ' . $needle );
+
+		if ( null !== $count ) {
+			PHPUnit::assertEquals(
+				$count,
+				substr_count( $this->get_internal_content(), $needle ),
+				sprintf(
+					'The content does not contain the the expected string (%s) %d %s.',
+					$needle,
+					$count,
+					1 === $count ? 'time' : 'times',
+				),
+			);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the content does not contain the expected string.
+	 *
+	 * @param string $needle The $needle to assert against.
+	 */
+	public function assertNotContains( string $needle ): static {
+		PHPUnit::assertStringNotContainsString( $needle, $this->get_internal_content(), 'The content contains the unexpected string.' );
+
+		return $this;
+	}
+
+	/**
+	 * Retrieve the DOM Document for the response.
+	 */
+	private function get_internal_dom_document(): DOMDocument {
+		if ( isset( $this->document ) ) {
+			return $this->document;
+		}
+
+		libxml_use_internal_errors( true );
+
+		$this->document = new DOMDocument();
+		$this->document->loadHTML( $this->get_internal_content(), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
+
+		return $this->document;
+	}
+
+	/**
+	 * Retrieve the content for the response.
+	 *
+	 * @return string The content of the response.
+	 */
+	private function get_internal_content(): string {
+		return $this instanceof HTML ? $this->to_html() : $this->get_content();
+	}
+
+	/**
+	 * Convert a CSS selector to an XPath query.
+	 *
+	 * @param string $selector The selector to convert.
+	 */
+	private function convert_query_selector( string $selector ): string {
+		$converter = new CssSelectorConverter( true );
+
+		return $converter->toXPath( $selector );
 	}
 }
