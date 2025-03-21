@@ -9,6 +9,8 @@ namespace Mantle\Contracts\Console;
 
 use Closure;
 use Mantle\Console\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
@@ -18,21 +20,27 @@ interface Kernel extends \Mantle\Contracts\Kernel {
 	/**
 	 * Run the console application.
 	 *
-	 * @param mixed      $input Console input.
-	 * @param mixed|null $output Console output.
-	 * @return int
+	 * @param InputInterface       $input Console input.
+	 * @param OutputInterface|null $output Console output.
 	 */
-	public function handle( $input, $output = null );
+	public function handle( InputInterface $input, ?OutputInterface $output = null ): int;
 
 	/**
 	 * Run the console application by command name.
 	 *
+	 * @param string               $command Command name.
+	 * @param array                $parameters Command parameters.
+	 * @param OutputInterface|null $output_buffer Output buffer.
+	 */
+	public function call( string $command, array $parameters = [], ?OutputInterface $output_buffer = null ): int;
+
+	/**
+	 * Run the console application by command name without output.
+	 *
 	 * @param string $command Command name.
 	 * @param array  $parameters Command parameters.
-	 * @param mixed  $output_buffer Output buffer.
-	 * @return int
 	 */
-	public function call( string $command, array $parameters = [], $output_buffer = null );
+	public function call_silently( string $command, array $parameters = [] ): int;
 
 	/**
 	 * Test a console command by name.

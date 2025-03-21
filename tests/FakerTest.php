@@ -6,7 +6,7 @@ use Mantle\Faker\Faker_Provider;
 
 class FakerTest extends \PHPUnit\Framework\TestCase {
 	/**
-	 * @var Factory
+	 * @var Factory&Faker_Provider
 	 */
 	protected $faker;
 
@@ -25,7 +25,7 @@ class FakerTest extends \PHPUnit\Framework\TestCase {
 
 		$this->assertEquals(
 			'<!-- wp:namespace/block {"exampleAttr":true,"another":false} /-->',
-			$this->faker->block( 'namespace/block', '', [ 'exampleAttr' => true, 'another' => false ] )
+			$this->faker->block( 'namespace/block', null, [ 'exampleAttr' => true, 'another' => false ] )
 		);
 
 		$this->assertEquals(
