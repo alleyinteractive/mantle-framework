@@ -26,19 +26,26 @@ class CrawlerTest extends TestCase {
 		</ul>
 	</div>';
 
+	public function test_is_html_document(): void {
+		$this->assertFalse( ( new Crawler( self::TEST_CONTENT ) )->is_html_document() );
+		$this->assertTrue( ( new Crawler( '<html></html>' ) )->is_html_document() );
+		$this->assertTrue( ( new Crawler( '<html>' . self::TEST_CONTENT . '</html>' ) )->is_html_document() );
+	}
+
 	public function test_it_can_make_a_document_from_a_string(): void {
-		$html = "<html>
+		$html = "<!DOCTYPE html>
+<html>
 <head>
 <title>Test</title>
 </head>
 <body>
 <p>Hello, World!</p>
 </body>
-</html>";
+</html>
+";
 		$crawler = new Crawler( $html );
 
-		$this->assertInstanceOf( Crawler::class, $crawler );
-		$this->assertEquals( $html, $crawler->to_html() );
+		$this->assertStringsEqualsWithoutWhitespace( $html, $crawler->to_html() );
 	}
 
 	public function test_it_can_convert_html_back_to_the_original_html(): void {
@@ -416,7 +423,7 @@ class CrawlerTest extends TestCase {
 	public function test_it_can_traverse_elements_using_prev_until(): void {
 		$crawler = new Crawler( self::TEST_CONTENT );
 
-		$elements = $crawler->filter( 'li' )->prev_until(
+		$elements = $crawler->filter( 'li' )->previous_until(
 			fn ( Crawler $element ) => $element->text() === 'Item 2',
 		);
 
@@ -426,7 +433,7 @@ class CrawlerTest extends TestCase {
 		// Include the first element.
 		$crawler = new Crawler( self::TEST_CONTENT );
 
-		$elements = $crawler->filter( 'li' )->prev_until(
+		$elements = $crawler->filter( 'li' )->previous_until(
 			fn ( Crawler $element ) => $element->text() === 'Item 2',
 			include: true,
 		);
@@ -435,4 +442,103 @@ class CrawlerTest extends TestCase {
 		$this->assertEquals( 'Item 1', $elements->first()->text() );
 		$this->assertEquals( 'Item 2', $elements->last()->text() );
 	}
+
+	/**
+	 * @dataProvider append_dataprovider
+	 */
+	#[DataProvider( 'append_dataprovider' )]
+	public function test_it_can_append_elements( string $base, string|Crawler|DOMNode $element, string $expected ): void {
+		$base = trim($base);
+		$crawler = new Crawler( $base );
+		$crawler->filter( 'p' )->append( $element );
+
+		$this->assertStringsEqualsWithoutWhitespace( $expected, $crawler->to_html() );
+	}
+
+	public static function append_dataprovider(): array {
+		$base = '
+		<div>
+			<p>Paragraph 1</p>
+			<p>Paragraph 2</p>
+			<p>Paragraph 3</p>
+		</div>';
+
+		return [
+			'element string' => [
+				$base,
+				'<span>Appended Text</span>',
+				'<div>
+					<p>Paragraph 1<span>Appended Text</span></p>
+					<p>Paragraph 2<span>Appended Text</span></p>
+					<p>Paragraph 3<span>Appended Text</span></p>
+				</div>'
+			],
+			'text string' => [
+				$base,
+				' Appended Text',
+				'<div>
+					<p>Paragraph 1 Appended Text</p>
+					<p>Paragraph 2 Appended Text</p>
+					<p>Paragraph 3 Appended Text</p>
+				</div>',
+			],
+			'text string with br' => [
+				$base,
+				'<br>Appended Text',
+				'<div>
+					<p>Paragraph 1<br>Appended Text</p>
+					<p>Paragraph 2<br>Appended Text</p>
+					<p>Paragraph 3<br>Appended Text</p>
+				</div>',
+			],
+		];
+	}
+
+	public function test_it_can_append_text(): void {
+		$crawler = new Crawler(
+			'<ul>
+				<li>Item 1</li>
+				<li>Item 2</li>
+				<li>Item 3</li>
+			</ul>'
+		);
+
+		$crawler->filter( 'li' )->append_text( ' Appended Text' );
+		$this->assertTrimmedStringEquals(
+			'<ul>
+				<li>Item 1 Appended Text</li>
+				<li>Item 2 Appended Text</li>
+				<li>Item 3 Appended Text</li>
+			</ul>',
+			$crawler->to_html(),
+		);
+	}
+
+	public function test_it_can_prepend_text(): void {
+		$crawler = new Crawler(
+			'<ul>
+				<li>Item 1</li>
+				<li>Item 2</li>
+				<li>Item 3</li>
+			</ul>'
+		);
+
+		$crawler->filter( 'li' )->prepend_text( 'Prepended Text ' );
+		$this->assertTrimmedStringEquals(
+			'<ul>
+				<li>Prepended Text Item 1</li>
+				<li>Prepended Text Item 2</li>
+				<li>Prepended Text Item 3</li>
+			</ul>',
+			$crawler->to_html(),
+		);
+	}
+
+	// public function test_it_can_append_to_elements(): void {
+	// 	$c = new Crawler( '<div id="content"><h1>Title</h1><em>Big</em></div>' );
+	// 	$c->filter( 'em' )->appendTo( $c->filter( 'h1' ) );
+	// 	$this->assertStringsEqualsWithoutWhitespace( '<div id="content"><h1>Title<em>Big</em></h1></div>', $c->to_html() );
+	// }
+
+	// public function test_it_can_assert_against_elements(): void {}
 }

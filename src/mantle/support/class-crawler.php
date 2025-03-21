@@ -18,6 +18,7 @@ use Mantle\Support\Traits\Macroable;
 use Mantle\Support\Traits\Tappable;
 use Symfony\Component\CssSelector\CssSelectorConverter;
 use Symfony\Component\DomCrawler\Crawler as SymfonyCrawler;
+use Mantle\Support\Crawler_Helpers as Helpers;
 
 use function Mantle\Support\Helpers\classname;
 use function Mantle\Support\Helpers\stringable;
@@ -31,6 +32,8 @@ use function Mantle\Support\Helpers\stringable;
  * removing attributes, adding and removing classes, and modifying
  * elements using callback functions.
  *
+ * Inspired by {@see https://github.com/wasinger/htmlpagedom}.
+ *
  * @link https://symfony.com/doc/current/components/dom_crawler.html
  */
 class Crawler extends SymfonyCrawler implements Htmlable {
@@ -39,28 +42,51 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	use Tappable;
 
 	/**
-	 * Constructor.
-	 *
-	 * @param \DOMNodeList|\DOMNode|array|string|null|null $node The DOM node, list, or HTML string to initialize the crawler with.
+	 * The internal root element name used when importing html fragments.
+	 * */
+	private const FRAGMENT_ROOT_TAGNAME = '_root';
+
+	/**
+	 * Convert the Crawler instance to an HTML string.
 	 */
-	public function __construct( \DOMNodeList|\DOMNode|array|string|null $node = null, ...$args ) {
-		if ( is_string( $node ) ) {
-			$document = new DOMDocument( '1.0' );
-
-			$previous = libxml_use_internal_errors( true ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
-
-			$document->preserveWhiteSpace = false; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-			$document->formatOutput       = true; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-
-			@$document->loadHTML( $node, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, Generic.PHP.NoSilencedErrors.Forbidden
-
-			libxml_use_internal_errors( $previous );
-
-			$node = $document->documentElement;
+	public function to_html(): string {
+		if ( $this->is_html_document() ) {
+			return $this->get_dom_document()->saveHTML();
 		}
 
-		parent::__construct( $node, ...$args );
+		$doc  = new \DOMDocument( '1.0', 'UTF-8' );
+		$root = $doc->appendChild( $doc->createElement( self::FRAGMENT_ROOT_TAGNAME ) );
+
+		foreach ( $this as $node ) {
+			$root->appendChild( $doc->importNode( $node, true ) );
+		}
+
+		$html = trim( $doc->saveHTML() );
+
+		return preg_replace( '@^<' . self::FRAGMENT_ROOT_TAGNAME . '[^>]*>|</' . self::FRAGMENT_ROOT_TAGNAME . '>$@', '', $html );
 	}
+
+	/**
+	 * Adds a node to the current list of nodes.
+	 *
+	 * This method uses the appropriate specialized add*() method based
+	 * on the type of the argument.
+	 *
+	 * Overwritten from parent to allow Crawler to be added.
+	 *
+	 * @param \DOMNodeList|\DOMNode|array|string|Crawler|null $node A node
+	 *
+	 * @api
+	 */
+	// public function add( \DOMNodeList|\DOMNode|array|string|SymfonyCrawler|null $node ): void {
+	// if ( $node instanceof SymfonyCrawler ) {
+	// foreach ( $node as $childnode ) {
+	// $this->addNode( $childnode );
+	// }
+	// } else {
+	// parent::add( $node );
+	// }
+	// }
 
 	/**
 	 * Query the document for all elements matching a CSS selector.
@@ -351,9 +377,66 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 		return $this;
 	}
 
+	// TODO
 	// public function prepend()
 
-	// public function append()
+	public function append( string|Crawler|DOMNode $element ): static {
+		$element = $this->resolve_mixed_argument( $element );
+
+		if ( is_null( $element ) ) {
+			throw new InvalidArgumentException( 'Invalid element provided for appending.' );
+		}
+
+		if ( ! $this->has_nodes() ) {
+			return $this;
+		}
+
+		foreach ( $this as $node ) {
+			if ( ! $node instanceof DOMElement ) {
+				continue;
+			}
+
+			$new_node = static::import_new_node( $element, $node, true );
+
+			$node->appendChild( $new_node );
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Append text to all elements in the Crawler instance.
+	 *
+	 * @param string $text The text to append to each element.
+	 */
+	public function append_text( string $text ): static {
+		foreach ( $this as $node ) {
+			if ( $node instanceof DOMElement ) {
+				$node->append( $text );
+			} else {
+				$node->appendChild( $node->ownerDocument->createTextNode( $text ) );
+			}
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Prepend text to all elements in the Crawler instance.
+	 *
+	 * @param string $text The text to append to each element.
+	 */
+	public function prepend_text( string $text ): static {
+		foreach ( $this as $node ) {
+			if ( $node instanceof DOMElement ) {
+				$node->prepend( $text );
+			} else {
+				$node->insertBefore( $node->ownerDocument->createTextNode( $text ), $node->firstChild );
+			}
+		}
+
+		return $this;
+	}
 
 	/**
 	 * Retrieve the next elements but not including the current in the Crawler
@@ -392,9 +475,8 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	 * @param callable $callback Callback to determine when to stop adding elements.
 	 * @phpstan-param callable(Crawler $crawler): bool $callback
 	 * @param bool     $include Whether to include the current/last element in the result.
-	 * @return static
 	 */
-	public function prev_until( callable $callback, bool $include = false ): static {
+	public function previous_until( callable $callback, bool $include = false ): static {
 		$crawler = new static( null );
 
 		foreach ( $this as $node ) {
@@ -421,13 +503,13 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	 *
 	 * @throws InvalidArgumentException If the wrapping element is invalid.
 	 *
-	 * @param string|Crawler|DOMNode $wrapping_element The wrapping element to use. Can be a string, a Crawler instance, or a DOMNode.
+	 * @param string|Crawler|DOMNode $element The wrapping element to use. Can be a string, a Crawler instance, or a DOMNode.
 	 * @return string
 	 */
-	public function wrap( string|Crawler|DOMNode $wrapping_element ): static {
-		$wrapping_element = $this->resolve_wrapping_element( $wrapping_element );
+	public function wrap( string|Crawler|DOMNode $element ): static {
+		$element = $this->resolve_mixed_argument( $element );
 
-		if ( is_null( $wrapping_element ) ) {
+		if ( is_null( $element ) ) {
 			throw new InvalidArgumentException( 'Invalid wrapping element provided.' );
 		}
 
@@ -441,7 +523,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 				continue;
 			}
 
-			$new_node = static::import_new_node( $wrapping_element, $node );
+			$new_node = static::import_new_node( $element, $node );
 
 			$node->parentNode->insertBefore( $new_node, $node );
 			$new_node->appendChild( $node );
@@ -481,15 +563,14 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	 * ```
 	 *
 	 * @throws InvalidArgumentException If the wrapping element is invalid.
-	 * @param string|Crawler|DOMNode $wrapping_element
+	 * @param string|Crawler|DOMNode $element
 	 */
-	public function wrap_all( string|Crawler|DOMNode $wrapping_element ): static {
-		$wrapping_element = $this->resolve_wrapping_element( $wrapping_element );
+	public function wrap_all( string|Crawler|DOMNode $element ): static {
+		$element = $this->resolve_mixed_argument( $element );
 
-		if ( is_null( $wrapping_element ) ) {
+		if ( is_null( $element ) ) {
 			throw new InvalidArgumentException( 'Invalid wrapping element provided.' );
 		}
-
 
 		// Bail out if there are no nodes to wrap.
 		if ( ! $this->has_nodes() ) {
@@ -509,7 +590,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 		}
 
 		// Create a new wrapping element and insert it before the first node.
-		$new_node = static::import_new_node( $wrapping_element, $this->getNode( 0 ) );
+		$new_node = static::import_new_node( $element, $this->getNode( 0 ) );
 		$parent->insertBefore( $new_node, $this->getNode( 0 ) );
 
 		foreach ( $this as $node ) {
@@ -528,17 +609,17 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	 * Wrap all the inner content of the elements in the Crawler instance with a
 	 * specified wrapping element.
 	 *
-	 * @param string|Crawler|DOMNode $wrapping_element The wrapping element to use.
+	 * @param string|Crawler|DOMNode $element The wrapping element to use.
 	 */
-	public function wrap_inner( string|Crawler|DOMNode $wrapping_element ): static {
-		$wrapping_element = $this->resolve_wrapping_element( $wrapping_element );
+	public function wrap_inner( string|Crawler|DOMNode $element ): static {
+		$element = $this->resolve_mixed_argument( $element );
 
-		if ( is_null( $wrapping_element ) ) {
+		if ( is_null( $element ) ) {
 			throw new InvalidArgumentException( 'Invalid wrapping element provided.' );
 		}
 
 		foreach ( $this as $node ) {
-			( new static( $node->childNodes ) )->wrap_all( $wrapping_element );
+			( new static( $node->childNodes ) )->wrap_all( $element );
 		}
 
 		return $this;
@@ -566,10 +647,88 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	}
 
 	/**
-	 * Convert the Crawler instance to an HTML string.
+	 * Dump the HTML representation of the Crawler instance.
 	 */
-	public function to_html(): string {
-		return $this->outerHtml();
+	public function dump(): static {
+		dump( $this->to_html() );
+
+		return $this;
+	}
+
+	/**
+	 * Dump the HTML representation of the Crawler instance and stop execution.
+	 */
+	public function dd(): never {
+		dd( $this->to_html() );
+	}
+
+	/**
+	 * Check if the first node in the Crawler instance is an HTML document.
+	 */
+	public function is_html_document(): bool {
+		$node = $this->getNode( 0 );
+		return ( $node instanceof \DOMElement
+			&& $node->ownerDocument instanceof \DOMDocument
+			&& $node->ownerDocument->documentElement === $node
+			&& $node->nodeName === 'html'
+		);
+	}
+
+	/**
+	 * Get ownerDocument of the first element.
+	 */
+	public function get_dom_document(): ?DOMDocument {
+		$node = $this->getNode( 0 );
+
+		return $node instanceof \DOMElement && $node->ownerDocument instanceof DOMDocument
+			? $node->ownerDocument
+			: null;
+	}
+
+	/**
+	 * Adds HTML/XML content to the HtmlPageCrawler object (but not to the DOM of an already attached node).
+	 *
+	 * Function overriden from Crawler because HTML fragments are always added as complete documents there
+	 *
+	 * @param string      $content A string to parse as HTML/XML
+	 * @param null|string $type    The content type of the string
+	 */
+	public function addContent( string $content, ?string $type = null ): void {
+		if ( empty( $type ) ) {
+			$type = 'text/html;charset=UTF-8';
+		}
+
+		// The string contains no <html> Tag => no complete document but an HTML fragment.
+		if ( str_starts_with( $type, 'text/html' ) && ! preg_match( '/<html\b[^>]*>/i', $content ) ) {
+			$this->addHtmlFragment( $content );
+		} else {
+			parent::addContent( $content, $type );
+		}
+	}
+
+	/**
+	 * Adds an HTML fragment to the Crawler object.
+	 *
+	 * This method parses the provided HTML fragment and appends its child nodes
+	 * to the root of the current Crawler instance.
+	 *
+	 * @param string $content The HTML fragment to add.
+	 * @param string $charset The character set to use for parsing (default: 'UTF-8').
+	 */
+	public function addHtmlFragment( string $content, string $charset = 'UTF-8' ): void {
+		$document                     = new \DOMDocument( '1.0', $charset );
+		$document->preserveWhiteSpace = false;
+
+		$root      = $document->appendChild( $document->createElement( self::FRAGMENT_ROOT_TAGNAME ) );
+		$body_node = Helpers::get_body_node_from_html_fragment( $content, $charset );
+
+		foreach ( $body_node->childNodes as $child ) {
+			$inode = $root->appendChild( $document->importNode( $child, true ) );
+
+			if ( $inode ) {
+				$this->addNode( $inode );
+			}
+		}
 	}
 
 	/**
@@ -577,12 +736,15 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	 *
 	 * @param DOMNode $new_node The new node to import.
 	 * @param DOMNode $existing_node The existing node to replace.
+	 * @param bool    $clone Whether to clone the new node if it belongs to the same document.
 	 */
-	protected static function import_new_node( DOMNode $new_node, DOMNode $existing_node ): DOMNode {
+	protected static function import_new_node( DOMNode $new_node, DOMNode $existing_node, bool $clone = false ): DOMNode {
 		if ( $new_node->ownerDocument !== $existing_node->ownerDocument ) {
 			$existing_node->ownerDocument->preserveWhiteSpace = false;
 
 			$new_node = $existing_node->ownerDocument->importNode( $new_node, true );
+		} elseif ( $clone ) {
+			$new_node = $new_node->cloneNode( true );
 		}
 
 		return $new_node;
@@ -593,7 +755,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	 *
 	 * @param string|Crawler|DOMNode $wrapping_element The wrapping element to resolve.
 	 */
-	protected function resolve_wrapping_element( string|Crawler|DOMNode $wrapping_element ): ?DOMNode {
+	protected function resolve_mixed_argument( string|Crawler|DOMNode $wrapping_element ): ?DOMNode {
 		if ( is_string( $wrapping_element ) ) {
 			return ( new static( $wrapping_element ) )->getNode( 0 );
 		}
@@ -603,23 +765,5 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 		}
 
 		return $wrapping_element;
-	}
-
-	/**
-	 * Creates a crawler for some subnodes.
-	 *
-	 * Protected version of Symfony\Component\DomCrawler\Crawler::createSubCrawler().
-	 *
-	 * @param \DOMNodeList|\DOMNode|\DOMNode[]|string|null $nodes
-	 */
-	protected function create_sub_crawler(\DOMNodeList|\DOMNode|array|string|null $nodes): static {
-		$crawler = new static($nodes, $this->uri, $this->baseHref);
-		$crawler->isHtml = $this->isHtml;
-		$crawler->document = $this->document;
-		$crawler->namespaces = $this->namespaces;
-		$crawler->cachedNamespaces = $this->cachedNamespaces;
-		$crawler->html5Parser = $this->html5Parser;
-
-		return $crawler;
 	}
 }
