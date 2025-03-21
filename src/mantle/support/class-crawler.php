@@ -355,9 +355,66 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 
 	// public function append()
 
-	// public function nextUntil()
+	/**
+	 * Retrieve the next elements but not including the current in the Crawler
+	 * instance after the callback matches.
+	 *
+	 * @param callable $callback Callback to determine when to stop skipping elements.
+	 * @phpstan-param callable(Crawler $crawler): bool $callback
+	 * @param bool     $include Whether to include the current/first element in the result.
+	 */
+	public function next_until( callable $callback, bool $include = false ): static {
+		$matched = false;
+		$crawler = new static( null );
 
-	// public function prevUntil()
+		foreach ( $this as $node ) {
+			if ( ! $node instanceof DOMElement ) {
+				continue;
+			}
+
+			if ( $matched ) {
+				$crawler->add( $node );
+			} elseif ( $callback( new static( $node ) ) ) {
+				$matched = true;
+
+				if ( $include ) {
+					$crawler->add( $node );
+				}
+			}
+		}
+
+		return $crawler;
+	}
+
+	/**
+	 * Retrieve all elements until the callback matches, but not including the matched element.
+	 *
+	 * @param callable $callback Callback to determine when to stop adding elements.
+	 * @phpstan-param callable(Crawler $crawler): bool $callback
+	 * @param bool     $include Whether to include the current/last element in the result.
+	 * @return static
+	 */
+	public function prev_until( callable $callback, bool $include = false ): static {
+		$crawler = new static( null );
+
+		foreach ( $this as $node ) {
+			if ( ! $node instanceof DOMElement ) {
+				continue;
+			}
+
+			$matches = $callback( new static( $node ) );
+
+			if ( ! $matches || $include ) {
+				$crawler->add( $node );
+			}
+
+			if ( $matches ) {
+				break;
+			}
+		}
+
+		return $crawler;
+	}
 
 	/**
 	 * Wrap all the elements in the Crawler instance with a specified wrapping element.
@@ -546,5 +603,23 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 		}
 
 		return $wrapping_element;
+	}
+
+	/**
+	 * Creates a crawler for some subnodes.
+	 *
+	 * Protected version of Symfony\Component\DomCrawler\Crawler::createSubCrawler().
+	 *
+	 * @param \DOMNodeList|\DOMNode|\DOMNode[]|string|null $nodes
+	 */
+	protected function create_sub_crawler(\DOMNodeList|\DOMNode|array|string|null $nodes): static {
+		$crawler = new static($nodes, $this->uri, $this->baseHref);
+		$crawler->isHtml = $this->isHtml;
+		$crawler->document = $this->document;
+		$crawler->namespaces = $this->namespaces;
+		$crawler->cachedNamespaces = $this->cachedNamespaces;
+		$crawler->html5Parser = $this->html5Parser;
+
+		return $crawler;
 	}
 }

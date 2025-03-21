@@ -389,4 +389,50 @@ class CrawlerTest extends TestCase {
 			$crawler->to_html(),
 		);
 	}
+
+	public function test_it_can_traverse_elements_using_next_until(): void {
+		$crawler = new Crawler( self::TEST_CONTENT );
+
+		$elements = $crawler->filter( 'li' )->next_until(
+			fn ( Crawler $element ) => $element->text() === 'Item 2',
+		);
+
+		$this->assertCount( 1, $elements );
+		$this->assertEquals( 'Item 3', $elements->text() );
+
+		// Include the first element.
+		$crawler = new Crawler( self::TEST_CONTENT );
+
+		$elements = $crawler->filter( 'li' )->next_until(
+			fn ( Crawler $element ) => $element->text() === 'Item 2',
+			include: true,
+		);
+
+		$this->assertCount( 2, $elements );
+		$this->assertEquals( 'Item 2', $elements->first()->text() );
+		$this->assertEquals( 'Item 3', $elements->last()->text() );
+	}
+
+	public function test_it_can_traverse_elements_using_prev_until(): void {
+		$crawler = new Crawler( self::TEST_CONTENT );
+
+		$elements = $crawler->filter( 'li' )->prev_until(
+			fn ( Crawler $element ) => $element->text() === 'Item 2',
+		);
+
+		$this->assertCount( 1, $elements );
+		$this->assertEquals( 'Item 1', $elements->text() );
+
+		// Include the first element.
+		$crawler = new Crawler( self::TEST_CONTENT );
+
+		$elements = $crawler->filter( 'li' )->prev_until(
+			fn ( Crawler $element ) => $element->text() === 'Item 2',
+			include: true,
+		);
+
+		$this->assertCount( 2, $elements );
+		$this->assertEquals( 'Item 1', $elements->first()->text() );
+		$this->assertEquals( 'Item 2', $elements->last()->text() );
+	}
 }
