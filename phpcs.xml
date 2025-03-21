@@ -29,6 +29,7 @@
 		<exclude name="Squiz.Commenting.VariableComment.MissingVar" />
 		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.Found" />
 		<exclude name="Generic.CodeAnalysis.AssignmentInCondition.Found" />
+		<exclude name="WordPress.PHP.YodaConditions.NotYoda" />
 	</rule>
 
 	<rule ref="Generic.Arrays.DisallowLongArraySyntax" />

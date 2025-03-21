@@ -2,6 +2,9 @@
 /**
  * Crawler_Helpers class file
  *
+ * phpcs:disable WordPress.NamingConventions
+ * phpcs:disable Squiz.Commenting.FunctionComment
+ *
  * @package Mantle
  */
 

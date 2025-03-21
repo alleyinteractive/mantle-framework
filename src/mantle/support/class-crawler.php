@@ -2,6 +2,8 @@
 /**
  * Crawler class file
  *
+ * phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+ *
  * @package Mantle
  */
 
@@ -73,7 +75,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	 *
 	 * Overwritten from parent to allow Crawler to be added.
 	 *
-	 * @param \DOMNodeList|\DOMNode|array|string|Crawler|null $node A node
+	 * @param \DOMNodeList|\DOMNode|array|string|Crawler|null $node A node.
 	 *
 	 * @api
 	 */
@@ -99,9 +101,13 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	/**
 	 * Query the document for a single element matching a CSS selector.
 	 *
-	 * @param string $selector
+	 * @param string $id The id to match (without the #).
 	 */
 	public function first_by_id( string $id ): static {
+		if ( '#' === $id[0] ) {
+			$id = substr( $id, 1 );
+		}
+
 		return $this->filter( "#{$id}" )->first();
 	}
 
@@ -117,7 +123,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	/**
 	 * Query the document for a single element using a class name.
 	 *
-	 * @param string $class The class name to match.
+	 * @param string $test_id The test ID.
 	 */
 	public function first_by_testid( string $test_id ): static {
 		return $this->filter( "[data-testid=\"{$test_id}\"]" )->first();
@@ -153,7 +159,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	/**
 	 * Retrieve all elements matching a specific test ID (data-testid) attribute.
 	 *
-	 * @param string $xpath XPath expression to match.
+	 * @param string $test_id The test ID.
 	 */
 	public function get_by_testid( string $test_id ): static {
 		return $this->filter( "[data-testid=\"{$test_id}\"]" );
@@ -171,7 +177,6 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	/**
 	 * Modify the elements using a callback function.
 	 *
-	 * @param string   $selector CSS selector to match.
 	 * @param callable $callback A callback function that receives the matched element and its index.
 	 * @phpstan-param callable(Crawler $crawler, int $i): (DOMNode|string|null) $callback
 	 */
@@ -379,6 +384,14 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	// TODO
 	// public function prepend()
 
+	/**
+	 * Append a new element to all elements in the Crawler instance.
+	 *
+	 * @throws InvalidArgumentException If the provided element is invalid.
+	 *
+	 * @param string|Crawler|DOMNode $element
+	 * @return static
+	 */
 	public function append( string|Crawler|DOMNode $element ): static {
 		$element = $this->resolve_mixed_argument( $element );
 
@@ -608,6 +621,8 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	 * Wrap all the inner content of the elements in the Crawler instance with a
 	 * specified wrapping element.
 	 *
+	 * @throws InvalidArgumentException If the wrapping element is invalid.
+	 *
 	 * @param string|Crawler|DOMNode $element The wrapping element to use.
 	 */
 	public function wrap_inner( string|Crawler|DOMNode $element ): static {
@@ -687,10 +702,10 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	/**
 	 * Adds HTML/XML content to the HtmlPageCrawler object (but not to the DOM of an already attached node).
 	 *
-	 * Function overriden from Crawler because HTML fragments are always added as complete documents there
+	 * Function overridden from Crawler because HTML fragments are always added as complete documents there
 	 *
-	 * @param string      $content A string to parse as HTML/XML
-	 * @param null|string $type    The content type of the string
+	 * @param string      $content A string to parse as HTML/XML.
+	 * @param null|string $type    The content type of the string.
 	 */
 	public function addContent( string $content, ?string $type = null ): void {
 		if ( empty( $type ) ) {
