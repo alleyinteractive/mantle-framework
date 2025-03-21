@@ -7,7 +7,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Support;
+namespace Mantle\Support\Internal;
 
 /**
  * Helpers that exist in Symfony's DomCrawler but are not accessible because
@@ -18,7 +18,7 @@ namespace Mantle\Support;
  *
  * @access private
  */
-readonly class Crawler_Helpers {
+readonly class HTML_Helpers {
 	/**
 	 * Helper function for getting a body element
 	 * from an HTML fragment

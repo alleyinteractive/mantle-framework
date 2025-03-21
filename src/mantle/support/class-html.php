@@ -1,6 +1,6 @@
 <?php
 /**
- * Crawler class file
+ * HTML class file
  *
  * phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
  *
@@ -19,16 +19,16 @@ use Mantle\Support\Traits\Conditionable;
 use Mantle\Support\Traits\Macroable;
 use Mantle\Support\Traits\Tappable;
 use Symfony\Component\DomCrawler\Crawler as SymfonyCrawler;
-use Mantle\Support\Crawler_Helpers as Helpers;
+use Mantle\Support\Internal\HTML_Helpers as Helpers;
 use Override;
 
 use function Mantle\Support\Helpers\classname;
 use function Mantle\Support\Helpers\stringable;
 
 /**
- * HTML Crawler class for parsing and manipulating HTML documents.
+ * HTML class for parsing and manipulating HTML documents.
  *
- * This class extends the Symfony DomCrawler and provides additional
+ * This class extends the Symfony DomHTML and provides additional
  * methods for querying and modifying HTML elements using CSS selectors
  * and XPath expressions. It also includes methods for setting and
  * removing attributes, adding and removing classes, and modifying
@@ -38,7 +38,7 @@ use function Mantle\Support\Helpers\stringable;
  *
  * @link https://symfony.com/doc/current/components/dom_crawler.html
  */
-class Crawler extends SymfonyCrawler implements Htmlable {
+class HTML extends SymfonyCrawler implements Htmlable {
 	use Conditionable;
 	use Macroable;
 	use Tappable;
@@ -49,7 +49,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	private const FRAGMENT_ROOT_TAGNAME = '_root';
 
 	/**
-	 * Get an Crawler object from a variety of types.
+	 * Get an HTML object from a variety of types.
 	 *
 	 * @param string|\Symfony\Component\DomCrawler\Crawler|DOMNode|DOMNodeList $content
 	 */
@@ -62,7 +62,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	}
 
 	/**
-	 * Convert the Crawler instance to an HTML string.
+	 * Convert the HTML instance to an HTML string.
 	 */
 	public function to_html(): string {
 		if ( $this->is_html_document() ) {
@@ -87,7 +87,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	 * This method uses the appropriate specialized add*() method based
 	 * on the type of the argument.
 	 *
-	 * @param \DOMNodeList|\DOMNode|array|string|Crawler|null $node A node.
+	 * @param \DOMNodeList|\DOMNode|array|string|HTML|null $node A node.
 	 */
 	#[Override]
 	public function add( \DOMNodeList|\DOMNode|array|string|SymfonyCrawler|null $node ): void {
@@ -189,10 +189,10 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	 * Modify the elements using a callback function.
 	 *
 	 * @param callable $callback A callback function that receives the matched element and its index.
-	 * @phpstan-param callable(Crawler $crawler, int $i): (DOMNode|string|Crawler|null) $callback
+	 * @phpstan-param callable(HTML $crawler, int $i): (DOMNode|string|HTML|null) $callback
 	 */
 	public function modify( callable $callback ): static {
-		$this->each( function ( Crawler $item, int $index ) use ( $callback ): Crawler {
+		$this->each( function ( HTML $item, int $index ) use ( $callback ): HTML {
 			$result = $callback( $item, $index );
 
 			// If the callback returns null, we can assume the callback modified the
@@ -228,7 +228,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	}
 
 	/**
-	 * Set an attribute for all elements in the Crawler instance.
+	 * Set an attribute for all elements in the HTML instance.
 	 *
 	 * @param string $name  The name of the attribute to set.
 	 * @param string $value The value to set for the attribute.
@@ -244,7 +244,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	}
 
 	/**
-	 * Set a data attribute for all elements in the Crawler instance.
+	 * Set a data attribute for all elements in the HTML instance.
 	 *
 	 * @param string $name  The name of the data attribute to set (without "data-" prefix).
 	 * @param string $value The value to set for the data attribute.
@@ -254,7 +254,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	}
 
 	/**
-	 * Remove an attribute from all elements in the Crawler instance.
+	 * Remove an attribute from all elements in the HTML instance.
 	 *
 	 * @param string $name
 	 */
@@ -269,7 +269,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	}
 
 	/**
-	 * Remove a data attribute from all elements in the Crawler instance.
+	 * Remove a data attribute from all elements in the HTML instance.
 	 *
 	 * @param string $name The name of the data attribute to remove (without "data-" prefix).
 	 */
@@ -278,7 +278,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	}
 
 	/**
-	 * Get the value of a data attribute for the first element in the Crawler instance.
+	 * Get the value of a data attribute for the first element in the HTML instance.
 	 *
 	 * @param string $name The name of the data attribute to retrieve (without "data-" prefix).
 	 * @return string|null The value of the data attribute, or null if not found.
@@ -288,7 +288,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	}
 
 	/**
-	 * Add a class to all elements in the Crawler instance.
+	 * Add a class to all elements in the HTML instance.
 	 *
 	 * @param string ...$class
 	 */
@@ -305,7 +305,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	}
 
 	/**
-	 * Remove a class from all elements in the Crawler instance.
+	 * Remove a class from all elements in the HTML instance.
 	 *
 	 * @param string ...$class Class names to remove from the elements.
 	 */
@@ -333,7 +333,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	}
 
 	/**
-	 * Check if any of the elements in the Crawler instance have a specific class.
+	 * Check if any of the elements in the HTML instance have a specific class.
 	 *
 	 * @param string ...$class Class names to check for.
 	 */
@@ -354,7 +354,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	}
 
 	/**
-	 * Check if any of the elements in the Crawler instance have any of the
+	 * Check if any of the elements in the HTML instance have any of the
 	 * specified classes.
 	 *
 	 * @param string ...$class Class names to check for.
@@ -381,7 +381,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	 * @param string $selector CSS selector to match.
 	 */
 	public function remove( string $selector ): static {
-		$this->filter( $selector )->each( function ( Crawler $item ): void {
+		$this->filter( $selector )->each( function ( HTML $item ): void {
 			$node = $item->getNode( 0 );
 
 			if ( $node instanceof \DOMNode && $node->parentNode instanceof \DOMNode ) {
@@ -393,13 +393,13 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	}
 
 	/**
-	 * Prepend a new element to all elements in the Crawler instance.
+	 * Prepend a new element to all elements in the HTML instance.
 	 *
 	 * @throws InvalidArgumentException If the provided element is invalid.
 	 *
-	 * @param string|Crawler|DOMNode $element
+	 * @param string|HTML|DOMNode $element
 	 */
-	public function prepend( string|Crawler|DOMNode $element ): static {
+	public function prepend( string|HTML|DOMNode $element ): static {
 		$content = self::create( $element );
 		$nodes   = [];
 
@@ -426,13 +426,13 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	}
 
 	/**
-	 * Append a new element to all elements in the Crawler instance.
+	 * Append a new element to all elements in the HTML instance.
 	 *
 	 * @throws InvalidArgumentException If the provided element is invalid.
 	 *
-	 * @param string|Crawler|DOMNode $element
+	 * @param string|HTML|DOMNode $element
 	 */
-	public function append( string|Crawler|DOMNode $element ): static {
+	public function append( string|HTML|DOMNode $element ): static {
 		$element = self::create( $element );
 		$nodes   = [];
 
@@ -511,11 +511,11 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	}
 
 	/**
-	 * Retrieve the next elements but not including the current in the Crawler
+	 * Retrieve the next elements but not including the current in the HTML
 	 * instance after the callback matches.
 	 *
 	 * @param callable $callback Callback to determine when to stop skipping elements.
-	 * @phpstan-param callable(Crawler $crawler): bool $callback
+	 * @phpstan-param callable(HTML $crawler): bool $callback
 	 * @param bool     $include Whether to include the current/first element in the result.
 	 */
 	public function next_until( callable $callback, bool $include = false ): static {
@@ -545,7 +545,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	 * Retrieve all elements until the callback matches, but not including the matched element.
 	 *
 	 * @param callable $callback Callback to determine when to stop adding elements.
-	 * @phpstan-param callable(Crawler $crawler): bool $callback
+	 * @phpstan-param callable(HTML $crawler): bool $callback
 	 * @param bool     $include Whether to include the current/last element in the result.
 	 */
 	public function previous_until( callable $callback, bool $include = false ): static {
@@ -571,13 +571,13 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	}
 
 	/**
-	 * Wrap all the elements in the Crawler instance with a specified wrapping element.
+	 * Wrap all the elements in the HTML instance with a specified wrapping element.
 	 *
 	 * @throws InvalidArgumentException If the wrapping element is invalid.
 	 *
-	 * @param string|Crawler|DOMNode $element The wrapping element to use. Can be a string, a Crawler instance, or a DOMNode.
+	 * @param string|HTML|DOMNode $element The wrapping element to use. Can be a string, a HTML instance, or a DOMNode.
 	 */
-	public function wrap( string|Crawler|DOMNode $element ): static {
+	public function wrap( string|HTML|DOMNode $element ): static {
 		$element = $this->resolve_mixed_argument( $element );
 
 		if ( is_null( $element ) ) {
@@ -604,7 +604,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	}
 
 	/**
-	 * Wrap all elements that match the Crawler instance with a single wrapping
+	 * Wrap all elements that match the HTML instance with a single wrapping
 	 * element.
 	 *
 	 * Example:
@@ -634,9 +634,9 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	 * ```
 	 *
 	 * @throws InvalidArgumentException If the wrapping element is invalid.
-	 * @param string|Crawler|DOMNode $element
+	 * @param string|HTML|DOMNode $element
 	 */
-	public function wrap_all( string|Crawler|DOMNode $element ): static {
+	public function wrap_all( string|HTML|DOMNode $element ): static {
 		$element = $this->resolve_mixed_argument( $element );
 
 		if ( is_null( $element ) ) {
@@ -677,14 +677,14 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	}
 
 	/**
-	 * Wrap all the inner content of the elements in the Crawler instance with a
+	 * Wrap all the inner content of the elements in the HTML instance with a
 	 * specified wrapping element.
 	 *
 	 * @throws InvalidArgumentException If the wrapping element is invalid.
 	 *
-	 * @param string|Crawler|DOMNode $element The wrapping element to use.
+	 * @param string|HTML|DOMNode $element The wrapping element to use.
 	 */
-	public function wrap_inner( string|Crawler|DOMNode $element ): static {
+	public function wrap_inner( string|HTML|DOMNode $element ): static {
 		$element = $this->resolve_mixed_argument( $element );
 
 		if ( is_null( $element ) ) {
@@ -699,7 +699,7 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	}
 
 	/**
-	 * Empty the content of all elements in the Crawler instance.
+	 * Empty the content of all elements in the HTML instance.
 	 *
 	 * This method sets the nodeValue of each element to an empty string,
 	 * effectively removing all child nodes and text content.
@@ -713,14 +713,14 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	}
 
 	/**
-	 * Check if the Crawler instance has any nodes.
+	 * Check if the HTML instance has any nodes.
 	 */
 	public function has_nodes(): bool {
 		return $this->count() > 0;
 	}
 
 	/**
-	 * Dump the HTML representation of the Crawler instance.
+	 * Dump the HTML representation of the HTML instance.
 	 */
 	public function dump(): static {
 		dump( $this->to_html() );
@@ -729,14 +729,14 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	}
 
 	/**
-	 * Dump the HTML representation of the Crawler instance and stop execution.
+	 * Dump the HTML representation of the HTML instance and stop execution.
 	 */
 	public function dd(): never {
 		dd( $this->to_html() );
 	}
 
 	/**
-	 * Check if the first node in the Crawler instance is an HTML document.
+	 * Check if the first node in the HTML instance is an HTML document.
 	 */
 	public function is_html_document(): bool {
 		$node = $this->getNode( 0 );
@@ -759,9 +759,9 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	}
 
 	/**
-	 * Adds HTML/XML content to the HtmlPageCrawler object (but not to the DOM of an already attached node).
+	 * Adds HTML/XML content to the HtmlPageHTML object (but not to the DOM of an already attached node).
 	 *
-	 * Function overridden from Crawler because HTML fragments are always added as complete documents there
+	 * Function overridden from HTML because HTML fragments are always added as complete documents there
 	 *
 	 * @param string      $content A string to parse as HTML/XML.
 	 * @param null|string $type    The content type of the string.
@@ -781,10 +781,10 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	}
 
 	/**
-	 * Adds an HTML fragment to the Crawler object.
+	 * Adds an HTML fragment to the HTML object.
 	 *
 	 * This method parses the provided HTML fragment and appends its child nodes
-	 * to the root of the current Crawler instance.
+	 * to the root of the current HTML instance.
 	 *
 	 * @param string $content The HTML fragment to add.
 	 * @param string $charset The character set to use for parsing (default: 'UTF-8').
@@ -825,14 +825,14 @@ class Crawler extends SymfonyCrawler implements Htmlable {
 	/**
 	 * Resolve the wrapping element to a DOMNode.
 	 *
-	 * @param string|Crawler|DOMNode $wrapping_element The wrapping element to resolve.
+	 * @param string|HTML|DOMNode $wrapping_element The wrapping element to resolve.
 	 */
-	protected function resolve_mixed_argument( string|Crawler|DOMNode $wrapping_element ): ?DOMNode {
+	protected function resolve_mixed_argument( string|HTML|DOMNode $wrapping_element ): ?DOMNode {
 		if ( is_string( $wrapping_element ) ) {
 			return ( new static( $wrapping_element ) )->getNode( 0 );
 		}
 
-		if ( $wrapping_element instanceof Crawler ) {
+		if ( $wrapping_element instanceof HTML ) {
 			return $wrapping_element->getNode( 0 );
 		}
 
