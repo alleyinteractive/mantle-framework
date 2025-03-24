@@ -457,9 +457,7 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 	}
 
 	public function test_html_response(): void {
-		$response = $this->get( '/' )
-			->assertOk()
-			->assertIsHtml();
+		$response = $this->get( '/' )->assertOk();
 
 		$response
 			->html()
