@@ -188,6 +188,13 @@ class HTML extends SymfonyCrawler implements Htmlable {
 	}
 
 	/**
+	 * Get the tag name of the first element in the HTML instance.
+	 */
+	public function tag_name(): string {
+		return $this->nodeName();
+	}
+
+	/**
 	 * Modify the elements using a callback function.
 	 *
 	 * @param callable $callback A callback function that receives the matched element and its index.
@@ -243,6 +250,16 @@ class HTML extends SymfonyCrawler implements Htmlable {
 		}
 
 		return $this;
+	}
+
+	/**
+	 * Get the value of an attribute for the first element in the HTML instance.
+	 *
+	 * @param string      $name    The name of the attribute to retrieve.
+	 * @param string|null $default The default value to return if the attribute is not found.
+	 */
+	public function get_attribute( string $name, ?string $default = null ): ?string {
+		return $this->attr( $name, $default );
 	}
 
 	/**
