@@ -46,8 +46,6 @@ function install( ?callable $callback = null ): Installation_Manager {
 /**
  * Create a new HTML_String instance.
  *
- * @deprecated Moved to \Mantle\Support\Helpers\html_string()
- *
  * @param string $html The HTML string to test.
  */
 function html_string( string $html ): HTML {
