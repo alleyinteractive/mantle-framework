@@ -42,6 +42,7 @@ use function Mantle\Support\Helpers\stringable;
 class HTML extends SymfonyCrawler implements Htmlable {
 	use Conditionable;
 	use Element_Assertions;
+	use HTML\Assertions;
 	use Macroable;
 	use Tappable;
 

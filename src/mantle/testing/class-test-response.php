@@ -11,6 +11,7 @@ use Exception;
 use Mantle\Contracts\Application;
 use Mantle\Http\Request;
 use Mantle\Http\Response;
+use Mantle\Support\HTML;
 use Mantle\Support\Traits\Macroable;
 use PHPUnit\Framework\Assert as PHPUnit;
 
@@ -688,6 +689,24 @@ class Test_Response {
 	}
 
 	/**
+	 * Assert that the response is an HTML response.
+	 */
+	public function assertIsHtml(): static {
+		PHPUnit::assertStringContainsString( 'text/html', $this->get_header( 'Content-Type' ) );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response is not an HTML response.
+	 */
+	public function assertIsNotHtml(): static {
+		PHPUnit::assertStringNotContainsString( 'text/html', $this->get_header( 'Content-Type' ) );
+
+		return $this;
+	}
+
+	/**
 	 * Assert that the expected value and type exists at the given path in the response.
 	 *
 	 * @param  string $path
@@ -827,5 +846,14 @@ class Test_Response {
 	 */
 	public function json( ?string $key = null ) {
 		return $this->decoded_json()->json( $key );
+	}
+
+	/**
+	 * Return the response content as an HTML object.
+	 */
+	public function html(): HTML {
+		$this->assertIsHtml();
+
+		return new HTML( $this->get_content() );
 	}
 }

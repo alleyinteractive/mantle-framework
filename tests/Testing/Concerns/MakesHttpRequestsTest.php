@@ -456,6 +456,20 @@ class MakesHttpRequestsTest extends Framework_Test_Case {
 		$this->get( '/route-to-redirect/' )->assertRedirect( '/redirected/' );
 	}
 
+	public function test_html_response(): void {
+		$response = $this->get( '/' )
+			->assertOk()
+			->assertIsHtml();
+
+		$response
+			->html()
+			->filter( 'body' )
+			->assertHasNodes()
+			->assertHasNodes( 1 )
+			->assertHasChildren()
+			->assertNodeHasClass( 'home' );
+	}
+
 	public function test_multiple_requests() {
 		$methods = collect( get_class_methods( $this ) )
 			->filter( fn ( string $method ) => ! Str::contains( $method, [ 'experimental', 'snapshot' ] ) && 0 === strpos( $method, 'test_' ) )
