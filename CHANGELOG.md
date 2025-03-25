@@ -11,11 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added a `HTML` class to help with HTML querying, assertions, and manipulation.
 
+## v1.5.7
+
 ### Changed
 
 - Updated `block_factory()->block()` to require `null` to be passed as `$content`
-  if no content is desired. This prevents the block factory from generating a
-  an empty block when `$content` is just an empty string.
+  if no content is desired. This prevents the block factory from generating an
+  empty block when `$content` is just an empty string.
 
 ## v1.5.6
 
