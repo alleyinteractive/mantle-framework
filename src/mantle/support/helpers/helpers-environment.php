@@ -18,5 +18,19 @@ function is_hosted_env(): bool {
  * Check if the current environment is a local developer environment.
  */
 function is_local_env(): bool {
-	return ! is_hosted_env();
+	return app()->is_environment( 'local' );
+}
+
+/**
+ * Determine if the current request is from WP-CLI.
+ */
+function is_wp_cli(): bool {
+	return defined( 'WP_CLI' ) && WP_CLI;
+}
+
+/**
+ * Determine if we are unit testing with Mantle.
+ */
+function is_unit_testing(): bool {
+	return defined( 'MANTLE_IS_TESTING' ) && MANTLE_IS_TESTING;
 }
