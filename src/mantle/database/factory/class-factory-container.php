@@ -78,7 +78,7 @@ class Factory_Container {
 	 *
 	 * @var Post_Factory<\Mantle\Database\Model\Post, \WP_Post, \WP_Post>
 	 */
-	public $page;
+	public Post_Factory $page;
 
 	/**
 	 * Post Factory

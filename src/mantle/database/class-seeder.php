@@ -10,6 +10,7 @@ namespace Mantle\Database;
 use InvalidArgumentException;
 use Mantle\Console\Command;
 use Mantle\Contracts\Container;
+use Mantle\Database\Factory\Factory_Container;
 use Mantle\Support\Arr;
 
 /**
@@ -25,6 +26,11 @@ abstract class Seeder {
 	 * The console command instance.
 	 */
 	protected ?Command $command = null;
+
+	/**
+	 * Factory Instance.
+	 */
+	protected static ?Factory_Container $factory = null;
 
 	/**
 	 * Seed the given connection from the given path.
@@ -78,19 +84,20 @@ abstract class Seeder {
 	protected function resolve( string $class ): Seeder {
 		if ( isset( $this->container ) ) {
 			$instance = $this->container->make( $class );
-
-			$instance->set_container( $this->container );
-			$instance->set_command( $this->command );
 		} else {
 			$instance = new $class();
-
-			if ( isset( $this->command ) ) {
-				$instance->set_command( $this->command );
-			}
 		}
 
 		if ( ! $instance instanceof Seeder ) {
 			throw new InvalidArgumentException( "Class [{$class}] must be an instance of " . self::class );
+		}
+
+		if ( isset( $this->container ) ) {
+			$instance->set_container( $this->container );
+		}
+
+		if ( isset( $this->command ) ) {
+			$instance->set_command( $this->command );
 		}
 
 		return $instance;
@@ -133,5 +140,18 @@ abstract class Seeder {
 		return isset( $this->container )
 			? $this->container->call( [ $this, 'run' ], $parameters )
 			: $this->run( $parameters );
+	}
+
+	/**
+	 * Fetches the factory object for generating WordPress fixtures.
+	 *
+	 * @throws InvalidArgumentException If the container is not set.
+	 */
+	protected function factory(): Factory_Container {
+		if ( ! isset( $this->container ) ) {
+			throw new InvalidArgumentException( 'Container not set to instantiate factory.' );
+		}
+
+		return $this->container->make( Factory_Container::class );
 	}
 }

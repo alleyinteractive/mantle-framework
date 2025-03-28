@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added a `HTML` class to help with HTML querying, assertions, and manipulation.
+- Added `factory()` method to database seeder.
 
 ## v1.5.7
 
