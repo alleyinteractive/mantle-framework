@@ -3,10 +3,10 @@ namespace Mantle\Tests\Database\Model\Registration;
 
 use Mantle\Database\Model\Model_Exception;
 use Mantle\Database\Model\Registration\Register_Taxonomy;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use Mockery as m;
 
-class RegisterTaxonomyTest extends Framework_Test_Case {
+class RegisterTaxonomyTest extends FrameworkTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 		remove_all_actions( 'init' );

@@ -8,7 +8,7 @@
 namespace Mantle\Testkit;
 
 use Mantle\Testkit\Concerns\Installs_WordPress;
-use Mantle\Testkit\Test_Case as Testing_Test_Case;
+use Mantle\Testkit\TestCase as Testing_Test_Case;
 
 /**
  * Testkit Integration Test Case

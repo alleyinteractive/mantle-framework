@@ -2,7 +2,7 @@
 namespace Mantle\Tests\Testing\Concerns;
 
 use Mantle\Testing\Concerns\Reset_Server;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use Mantle\Testing\Utils;
 use PHPUnit\Framework\Attributes\Group;
 
@@ -10,7 +10,7 @@ use PHPUnit\Framework\Attributes\Group;
  * @group testing
  */
 #[Group( 'testing' )]
-class ResetServerTest extends Framework_Test_Case {
+class ResetServerTest extends FrameworkTestCase {
 	use Reset_Server;
 
 	public static function tearDownAfterClass(): void {

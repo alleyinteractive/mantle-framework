@@ -6,10 +6,10 @@ use Alley\WP\Asset_Manager\Scripts as Asset_Manager_Scripts;
 use Alley\WP\Asset_Manager\Styles as Asset_Manager_Styles;
 use Alley\WP\Asset_Manager\Preload as Asset_Manager_Preload;
 use Mantle\Assets\Asset_Manager;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use WP_Scripts;
 
-abstract class TestCase extends Framework_Test_Case {
+abstract class TestCase extends FrameworkTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 

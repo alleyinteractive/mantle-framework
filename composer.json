@@ -95,6 +95,9 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "autoload": {
+        "psr-4": {
+            "Mantle\\": "src/mantle/"
+        },
         "files": [
             "src/mantle/framework/helpers.php",
             "src/mantle/application/autoload.php",

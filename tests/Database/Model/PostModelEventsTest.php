@@ -2,12 +2,12 @@
 namespace Mantle\Tests\Database\Model;
 
 use Mantle\Database\Model\Post;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 
 /**
  * Test non-WordPress specific logic of the model
  */
-class PostModelEventsTest extends Framework_Test_Case {
+class PostModelEventsTest extends FrameworkTestCase {
 	public function setUp(): void {
 		parent::setUp();
 

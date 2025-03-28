@@ -7,9 +7,9 @@ use Mantle\Database\Model\Model;
 use Mantle\Database\Model\Post;
 use Mantle\Database\Query\Builder;
 use Mantle\Database\Query\Post_Query_Builder;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 
-class ModelScopeTest extends Framework_Test_Case {
+class ModelScopeTest extends FrameworkTestCase {
 	public function test_local_scope() {
 		$post_id = $this->get_random_post_id();
 

@@ -2,7 +2,7 @@
 namespace Mantle\Tests\Testing\Concerns;
 
 use Mantle\Testing\Concerns\With_Faker;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use WP_Post;
 
@@ -10,7 +10,7 @@ use WP_Post;
  * @group testing
  */
 #[Group( 'testing' )]
-class BlockAssertionsTest extends Framework_Test_Case {
+class BlockAssertionsTest extends FrameworkTestCase {
 	use With_Faker;
 
 	protected WP_Post $post;

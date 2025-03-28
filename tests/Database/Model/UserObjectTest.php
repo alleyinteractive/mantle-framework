@@ -4,9 +4,9 @@ namespace Mantle\Tests\Database\Model;
 use Faker\Factory;
 use ftp;
 use Mantle\Database\Model\User;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 
-class UserObjectTest extends Framework_Test_Case {
+class UserObjectTest extends FrameworkTestCase {
 	/**
 	 * @var Factory
 	 */

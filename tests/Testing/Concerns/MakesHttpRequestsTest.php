@@ -9,7 +9,7 @@ use Mantle\Http\Request;
 use Mantle\Support\Str;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Concerns\Reset_Server;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use Mantle\Testing\Test_Response;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Attributes\Group;
@@ -22,7 +22,7 @@ use function Mantle\Support\Helpers\retry;
  * @group testing
  */
 #[Group( 'testing' )]
-class MakesHttpRequestsTest extends Framework_Test_Case {
+class MakesHttpRequestsTest extends FrameworkTestCase {
 	use Refresh_Database;
 	use Reset_Server;
 

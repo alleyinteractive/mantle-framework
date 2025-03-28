@@ -1,14 +1,14 @@
 <?php
 namespace Mantle\Tests\Scheduling;
 
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use Mantle\Contracts\Container;
 use Mantle\Scheduling\Event;
 use Mantle\Scheduling\Schedule;
 use Mantle\Testing\Mock_Http_Response;
 use Mockery as m;
 
-class EventTest extends Framework_Test_Case {
+class EventTest extends FrameworkTestCase {
 	protected function tearDown(): void {
 		parent::tearDown();
 

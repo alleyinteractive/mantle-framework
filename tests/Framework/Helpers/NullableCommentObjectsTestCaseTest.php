@@ -7,14 +7,14 @@
 
 namespace Mantle\Tests\Framework\Helpers;
 
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 
 use function Mantle\Support\Helpers\get_comment_object;
 
 /**
  * Unit tests for nullable comment object functions.
  */
-class NullableCommentObjectsTestCaseTest extends Framework_Test_Case {
+class NullableCommentObjectsTestCaseTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_comment_object()` returns a comment object.
 	 */

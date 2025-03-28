@@ -6,7 +6,7 @@ use Closure;
 use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Term;
 use Mantle\Testing\Concerns\With_Faker;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 
@@ -20,7 +20,7 @@ use function Mantle\Support\Helpers\collect;
  * @group factory
  */
 #[Group( 'factory' )]
-class UnitTestingFactoryTest extends Framework_Test_Case {
+class UnitTestingFactoryTest extends FrameworkTestCase {
 	use With_Faker;
 
 	public function test_post_factory() {

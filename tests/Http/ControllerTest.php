@@ -11,9 +11,9 @@ use Mantle\Contracts\Http\Routing\Router;
 use Mantle\Facade\Route;
 use Mantle\Http\Controller;
 use Mantle\Http\Request;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 
-class ControllerTest extends Framework_Test_Case {
+class ControllerTest extends FrameworkTestCase {
 	public function test_controller_at_method() {
 		Route::get( '/example-controller-at-route', Example_Controller::class . '@example_method' );
 

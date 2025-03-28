@@ -9,9 +9,9 @@ use Mantle\Facade\Route;
 use Mantle\Http\Controller;
 use Mantle\Http\Routing\Middleware\Substitute_Bindings;
 use Mantle\Http\Routing\Middleware\Wrap_Template;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 
-class PostModelRoutingTest extends Framework_Test_Case {
+class PostModelRoutingTest extends FrameworkTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 

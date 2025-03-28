@@ -1,10 +1,10 @@
 <?php
 namespace Mantle\Tests\Testing;
 
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use Mantle\Testing\Utils;
 
-class PermalinkStructureTest extends Framework_Test_Case {
+class PermalinkStructureTest extends FrameworkTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 

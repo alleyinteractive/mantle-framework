@@ -15,7 +15,7 @@ use Mantle\Database\Model;
 use InvalidArgumentException;
 use JsonSerializable;
 use Mantle\Support\Stringable;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use Mockery as m;
 use PHPUnit\Framework\Attributes\DataProvider;
 use ReflectionClass;
@@ -23,7 +23,7 @@ use stdClass;
 
 use function Mantle\Support\Helpers\collect;
 
-class CollectionTest extends Framework_Test_Case {
+class CollectionTest extends FrameworkTestCase {
 	/**
 	 * @dataProvider collectionClassProvider
 	 */

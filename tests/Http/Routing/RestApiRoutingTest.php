@@ -6,10 +6,10 @@ use InvalidArgumentException;
 use Mantle\Facade\Route;
 use Mantle\Http\Controller;
 use Mantle\Testing\Concerns\Refresh_Database;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use WP_REST_Request;
 
-class RestApiRoutingTest extends Framework_Test_Case {
+class RestApiRoutingTest extends FrameworkTestCase {
 	use Refresh_Database;
 
 	public function test_generic_route() {

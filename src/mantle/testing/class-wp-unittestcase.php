@@ -9,7 +9,7 @@
  */
 
 use Mantle\Testing\Concerns\Core_Shim;
-use Mantle\Testkit\Test_Case;
+use Mantle\Testkit\TestCase;
 
 if ( ! class_exists( 'WP_UnitTestCase' ) ) {
 	/**
@@ -18,7 +18,7 @@ if ( ! class_exists( 'WP_UnitTestCase' ) ) {
 	 * Acts as a extension of the TestKit TestCase to make it easier to switch to
 	 * the Mantle Testing Framework.
 	 */
-	class WP_UnitTestCase extends Test_Case {
+	class WP_UnitTestCase extends TestCase {
 		use Core_Shim;
 	}
 }

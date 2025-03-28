@@ -7,14 +7,14 @@
 
 namespace Mantle\Tests\Framework\Helpers;
 
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use function Mantle\Support\Helpers\get_user_object;
 use function Mantle\Support\Helpers\get_user_object_by;
 
 /**
  * Unit tests for nullable user object functions.
  */
-class NullableUserObjectsTestCaseTest extends Framework_Test_Case {
+class NullableUserObjectsTestCaseTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_user_object()` returns a user object.
 	 */

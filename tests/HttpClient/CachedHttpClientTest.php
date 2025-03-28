@@ -16,13 +16,13 @@ use Mantle\Http_Client\Pending_Request;
 use Mantle\Http_Client\Pool;
 use Mantle\Http_Client\Request;
 use Mantle\Http_Client\Response;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use Mantle\Testing\Mock_Http_Response;
 
 use function Mantle\Support\Helpers\collect;
 use function Mantle\Testing\mock_http_response;
 
-class CachedHttpClientTest extends Framework_Test_Case {
+class CachedHttpClientTest extends FrameworkTestCase {
 	protected Pending_Request $client;
 
 	protected function setUp(): void {

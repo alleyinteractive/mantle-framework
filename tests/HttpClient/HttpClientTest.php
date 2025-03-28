@@ -16,12 +16,12 @@ use Mantle\Http_Client\Pending_Request;
 use Mantle\Http_Client\Pool;
 use Mantle\Http_Client\Request;
 use Mantle\Http_Client\Response;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use Mantle\Testing\Mock_Http_Response;
 
 use function Mantle\Http_Client\http_client;
 
-class HttpClientTest extends Framework_Test_Case {
+class HttpClientTest extends FrameworkTestCase {
 	protected Factory $http_factory;
 
 	protected function setUp(): void {

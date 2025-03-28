@@ -3,11 +3,11 @@ namespace Mantle\Tests\Database\Builder;
 
 use Mantle\Database\Model\Term;
 use Mantle\Database\Query\Term_Query_Builder as Builder;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 
 use function Mantle\Support\Helpers\collect;
 
-class TermQueryBuilderTest extends Framework_Test_Case {
+class TermQueryBuilderTest extends FrameworkTestCase {
 	public function test_term_by_name() {
 		$tag_id = $this->get_random_term_id();
 		$tag    = \get_term( $tag_id );

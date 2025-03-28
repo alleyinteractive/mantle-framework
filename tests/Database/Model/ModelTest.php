@@ -3,13 +3,13 @@ namespace Mantle\Tests\Database\Model;
 
 use Mantle\Database\Model\Model;
 use Mantle\Database\Model\Post;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Test non-WordPress specific logic of the model
  */
-class ModelTest extends Framework_Test_Case {
+class ModelTest extends FrameworkTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 

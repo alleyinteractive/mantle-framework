@@ -3,9 +3,9 @@ namespace Mantle\Tests\Database\Model;
 
 use Mantle\Database\Model\Permalink_Generator;
 use Mantle\Database\Model\Post;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 
-class PermalinkGeneratorTest extends Framework_Test_Case {
+class PermalinkGeneratorTest extends FrameworkTestCase {
 	public function test_generate_permalink() {
 		$post  = static::factory()->post->create_and_get();
 		$model = Testable_Post_Generator::find( $post->ID );

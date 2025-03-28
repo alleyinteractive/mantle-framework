@@ -2,10 +2,10 @@
 namespace Mantle\Tests\Database\Model;
 
 use Mantle\Database\Model\Comment;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 
 
-class CommentObjectTest extends Framework_Test_Case {
+class CommentObjectTest extends FrameworkTestCase {
 	public function test_comment_object() {
 		$comment = $this->factory->comment->create_and_get();
 		$object  = Comment::find( $comment );

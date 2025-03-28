@@ -3,7 +3,7 @@ namespace Mantle\Tests\Database\Model\Relations\Belongs_To;
 
 use Carbon\Carbon;
 use InvalidArgumentException;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use Mantle\Database\Model\Concerns\Has_Relationships as Relationships;
 use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Relations\Has_One;
@@ -11,7 +11,7 @@ use Mantle\Database\Model\Relations\Has_One_Or_Many;
 use Mantle\Database\Model\Term;
 use Mantle\Database\Model_Service_Provider;
 
-class BelongsToOneOrManyTest extends Framework_Test_Case {
+class BelongsToOneOrManyTest extends FrameworkTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 

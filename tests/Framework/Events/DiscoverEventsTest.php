@@ -3,14 +3,14 @@ namespace Mantle\Tests\Framework\Tests;
 
 use Mantle\Framework\Events\Discover_Events;
 use Mantle\Support\Environment;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use Mantle\Tests\Framework\Events\Fixtures\Events\Event_One;
 use Mantle\Tests\Framework\Events\Fixtures\Events\Event_Two;
 use Mantle\Tests\Framework\Events\Fixtures\Listeners\Example_Listener;
 
 use function Mantle\Support\Helpers\collect;
 
-class DiscoverEventsTest extends Framework_Test_Case {
+class DiscoverEventsTest extends FrameworkTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 

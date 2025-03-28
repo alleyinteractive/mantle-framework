@@ -10,10 +10,10 @@ use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Registration\Register_Post_Type;
 use Mantle\Database\Model\Term;
 use Mantle\Testing\Concerns\Refresh_Database;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use Mantle\Testing\Utils;
 
-class PostObjectTest extends Framework_Test_Case {
+class PostObjectTest extends FrameworkTestCase {
 	use Refresh_Database;
 
 	protected function setUp(): void {

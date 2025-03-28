@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added a `HTML` class to help with HTML querying, assertions, and manipulation.
 
+### Changed
+
+- Renamed the base test cases for testing and testkit to `TestCase` (previously
+  was `Test_Case`). A shim is provided for backwards compatibility. The old
+  class names are not yet deprecated.
+
 ## v1.5.7
 
 ### Changed

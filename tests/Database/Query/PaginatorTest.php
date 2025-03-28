@@ -4,10 +4,10 @@ namespace Mantle\Tests\Database\Builder;
 use Mantle\Database\Model\Post;
 use Mantle\Facade\Route;
 use Mantle\Testing\Concerns\Refresh_Database;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 
 
-class PaginatorTest extends Framework_Test_Case {
+class PaginatorTest extends FrameworkTestCase {
 	use Refresh_Database;
 
 	public function test_simple_paginate_url_query_string() {
