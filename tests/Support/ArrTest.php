@@ -39,7 +39,7 @@ class ArrTest extends TestCase {
 	}
 
 	public function testAdd() {
-		 $array = Arr::add( [ 'name' => 'Desk' ], 'price', 100 );
+		$array = Arr::add( [ 'name' => 'Desk' ], 'price', 100 );
 		$this->assertEquals(
 			[
 				'name'  => 'Desk',
@@ -119,7 +119,7 @@ class ArrTest extends TestCase {
 	}
 
 	public function testDot() {
-		 $array = Arr::dot( [ 'foo' => [ 'bar' => 'baz' ] ] );
+		$array = Arr::dot( [ 'foo' => [ 'bar' => 'baz' ] ] );
 		$this->assertEquals( [ 'foo.bar' => 'baz' ], $array );
 
 		$array = Arr::dot( [] );
@@ -265,7 +265,7 @@ class ArrTest extends TestCase {
 	}
 
 	public function testFlatten() {
-		 // Flat arrays are unaffected
+		// Flat arrays are unaffected
 		$array = [ '#foo', '#bar', '#baz' ];
 		$this->assertEquals( [ '#foo', '#bar', '#baz' ], Arr::flatten( $array ) );
 
@@ -316,7 +316,7 @@ class ArrTest extends TestCase {
 	}
 
 	public function testGet() {
-		 $array = [ 'products.desk' => [ 'price' => 100 ] ];
+		$array = [ 'products.desk' => [ 'price' => 100 ] ];
 		$this->assertEquals( [ 'price' => 100 ], Arr::get( $array, 'products.desk' ) );
 
 		$array = [ 'products' => [ 'desk' => [ 'price' => 100 ] ] ];
@@ -414,7 +414,7 @@ class ArrTest extends TestCase {
 	}
 
 	public function testHas() {
-		 $array = [ 'products.desk' => [ 'price' => 100 ] ];
+		$array = [ 'products.desk' => [ 'price' => 100 ] ];
 		$this->assertTrue( Arr::has( $array, 'products.desk' ) );
 
 		$array = [ 'products' => [ 'desk' => [ 'price' => 100 ] ] ];
@@ -625,12 +625,12 @@ class ArrTest extends TestCase {
 	}
 
 	public function testPluckWithArrayValue() {
-		 $array = [
-			 [ 'developer' => [ 'name' => 'Taylor' ] ],
-			 [ 'developer' => [ 'name' => 'Abigail' ] ],
-		 ];
-		 $array = Arr::pluck( $array, [ 'developer', 'name' ] );
-		 $this->assertEquals( [ 'Taylor', 'Abigail' ], $array );
+		$array = [
+			[ 'developer' => [ 'name' => 'Taylor' ] ],
+			[ 'developer' => [ 'name' => 'Abigail' ] ],
+		];
+		$array = Arr::pluck( $array, [ 'developer', 'name' ] );
+		$this->assertEquals( [ 'Taylor', 'Abigail' ], $array );
 	}
 
 	public function testPluckWithKeys() {
@@ -672,14 +672,14 @@ class ArrTest extends TestCase {
 	}
 
 	public function testPluckWithCarbonKeys() {
-		 $array = [
-			 [
-				 'start' => new Carbon( '2017-07-25 00:00:00' ),
-				 'end'   => new Carbon( '2017-07-30 00:00:00' ),
-			 ],
-		 ];
-		 $array = Arr::pluck( $array, 'end', 'start' );
-		 $this->assertEquals( [ '2017-07-25 00:00:00' => '2017-07-30 00:00:00' ], $array );
+		$array = [
+			[
+				'start' => new Carbon( '2017-07-25 00:00:00' ),
+				'end'   => new Carbon( '2017-07-30 00:00:00' ),
+			],
+		];
+		$array = Arr::pluck( $array, 'end', 'start' );
+		$this->assertEquals( [ '2017-07-25 00:00:00' => '2017-07-30 00:00:00' ], $array );
 	}
 
 	public function testArrayPluckWithArrayAndObjectValues() {
@@ -765,7 +765,7 @@ class ArrTest extends TestCase {
 	}
 
 	public function testPrepend() {
-		 $array = Arr::prepend( [ 'one', 'two', 'three', 'four' ], 'zero' );
+		$array = Arr::prepend( [ 'one', 'two', 'three', 'four' ], 'zero' );
 		$this->assertEquals( [ 'zero', 'one', 'two', 'three', 'four' ], $array );
 
 		$array = Arr::prepend(
@@ -935,7 +935,7 @@ class ArrTest extends TestCase {
 	}
 
 	public function testSet() {
-		 $array = [ 'products' => [ 'desk' => [ 'price' => 100 ] ] ];
+		$array = [ 'products' => [ 'desk' => [ 'price' => 100 ] ] ];
 		Arr::set( $array, 'products.desk.price', 200 );
 		$this->assertEquals( [ 'products' => [ 'desk' => [ 'price' => 200 ] ] ], $array );
 
