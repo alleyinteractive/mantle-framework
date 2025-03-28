@@ -16,6 +16,8 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
+use Symfony\Component\Console\Exception\ExceptionInterface;
+use Throwable;
 
 /**
  * Faux "PendingCommand" class for unit testing.
@@ -27,6 +29,11 @@ class Test_Command {
 	 * Instance of the Command Tester.
 	 */
 	protected CommandTester $tester;
+
+	/**
+	 * Exception thrown during command execution.
+	 */
+	protected Throwable $exception;
 
 	/**
 	 * Flag if the command has been executed.
@@ -139,6 +146,10 @@ class Test_Command {
 			$this->run();
 		}
 
+		if ( isset( $this->exception ) ) {
+			dd( $this->exception );
+		}
+
 		dd( $this->tester->getDisplay() );
 	}
 
@@ -179,7 +190,7 @@ class Test_Command {
 	}
 
 	/**
-	 * Run the command.
+	 * Run the command and verify the expectations.
 	 */
 	public function run(): static {
 		$this->has_executed = true;
@@ -188,8 +199,8 @@ class Test_Command {
 			$this->tester = $this->app->make(
 				\Mantle\Framework\Console\Kernel::class
 			)->test( $this->command, $this->arguments );
-		} catch ( CommandNotFoundException ) {
-			$this->test->fail( "Command [{$this->command}] not found." );
+		} catch ( Throwable $e ) {
+			$this->exception = $e;
 		}
 
 		$this->verify_expectations();
@@ -203,7 +214,7 @@ class Test_Command {
 	protected function verify_expectations(): void {
 		// Assert that the exit code matches the expected exit code.
 		if ( null !== $this->expected_exit_code ) {
-			$exit_code = $this->tester->getStatusCode();
+			$exit_code = $this->get_status_code();
 
 			$this->test->assertEquals(
 				$this->expected_exit_code,
@@ -213,7 +224,7 @@ class Test_Command {
 		}
 
 		if ( ! empty( $this->expected_output ) ) {
-			$output = $this->tester->getDisplay();
+			$output = $this->get_output();
 
 			foreach ( $this->expected_output as $expected_output ) {
 				$this->test->assertStringContainsString( $expected_output, $output );
@@ -221,21 +232,12 @@ class Test_Command {
 		}
 
 		if ( ! empty( $this->unexpected_output ) ) {
-			$output = $this->tester->getDisplay();
+			$output = $this->get_output();
 
 			foreach ( $this->unexpected_output as $unexpected_output ) {
 				$this->test->assertStringNotContainsString( $unexpected_output, $output );
 			}
 		}
-
-		// todo: add output substring assertions.
-		// if ( ! empty( $this->expected_output_substrings ) ) {
-		//  $output = $this->tester->getDisplay();
-
-		//  foreach ( $this->expected_output_substrings as $expected_output_substring ) {
-		//      $this->test->assertStringContainsString( $expected_output_substring, $output );
-		//  }
-		// }
 	}
 
 	/**
@@ -245,5 +247,27 @@ class Test_Command {
 		if ( ! $this->has_executed ) {
 			$this->run();
 		}
+	}
+
+	/**
+	 * Retrieve the output of the command.
+	 */
+	public function get_output(): string {
+		return match ( true ) {
+			isset( $this->exception ) => $this->exception->getMessage(),
+			isset( $this->tester ) => $this->tester->getDisplay(),
+			default => '',
+		};
+	}
+
+	/**
+	 * Retrieve the status code of the command.
+	 */
+	public function get_status_code(): int {
+		return match ( true ) {
+			isset( $this->exception ) => Command::FAILURE,
+			isset( $this->tester ) => $this->tester->getStatusCode(),
+			default => Command::FAILURE,
+		};
 	}
 }

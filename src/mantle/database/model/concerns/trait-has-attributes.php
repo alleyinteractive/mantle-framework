@@ -167,6 +167,10 @@ trait Has_Attributes {
 		if ( $this->has_set_mutator( $attribute ) ) {
 			$value = $this->mutate_set_attribute( $attribute, $value );
 		} else {
+			if ( $value instanceof \Stringable ) {
+				$value = (string) $value;
+			}
+
 			$this->attributes[ $attribute ] = $value;
 		}
 

@@ -436,7 +436,7 @@ trait Rsync_Installation {
 		// Rsync the from folder to the destination.
 		$output = Utils::command(
 			[
-				'rsync -aWq --no-compress',
+				'rsync -aWq',
 				collect( $this->rsync_exclusions )->map( fn ( $exclusion ) => "--exclude '{$exclusion}'" )->implode( ' ' ),
 				'--delete',
 				"{$this->rsync_from} {$this->rsync_to}",

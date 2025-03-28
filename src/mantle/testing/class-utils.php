@@ -120,7 +120,12 @@ class Utils {
 		$_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
 
 		unset( $_SERVER['HTTP_REFERER'] );
-		unset( $_SERVER['HTTPS'] );
+
+		if ( defined( 'WP_TESTS_USE_HTTPS' ) && WP_TESTS_USE_HTTPS ) {
+			$_SERVER['HTTPS'] = 'on';
+		} else {
+			unset( $_SERVER['HTTPS'] );
+		}
 	}
 
 	/**
@@ -208,8 +213,10 @@ class Utils {
 	public static function setup_configuration(): void {
 		global $table_prefix;
 
+		$dir = defined( 'WP_TESTS_INSTALL_PATH' ) ? WP_TESTS_INSTALL_PATH : __DIR__;
+
 		// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
-		defined( 'ABSPATH' ) || define( 'ABSPATH', Str::trailing_slash( preg_replace( '#/wp-content/.*$#', '/', __DIR__ ) ) );
+		defined( 'ABSPATH' ) || define( 'ABSPATH', Str::trailing_slash( preg_replace( '#/wp-content/.*$#', '/', (string) $dir ) ) );
 		defined( 'WP_DEBUG' ) || define( 'WP_DEBUG', true );
 
 		defined( 'DB_NAME' ) || define( 'DB_NAME', static::env( 'WP_DB_NAME', static::DEFAULT_DB_NAME ) );
@@ -230,7 +237,8 @@ class Utils {
 
 		$table_prefix = 'wptests_'; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 
-		defined( 'WP_TESTS_DOMAIN' ) || define( 'WP_TESTS_DOMAIN', 'example.org' );
+		defined( 'WP_TESTS_DOMAIN' ) || define( 'WP_TESTS_DOMAIN', static::env( 'WP_TESTS_DOMAIN', 'example.org' ) );
+		defined( 'WP_TESTS_USE_HTTPS' ) || define( 'WP_TESTS_USE_HTTPS', static::env_bool( 'WP_TESTS_USE_HTTPS', false ) );
 		defined( 'WP_TESTS_EMAIL' ) || define( 'WP_TESTS_EMAIL', 'admin@example.org' );
 		defined( 'WP_TESTS_TITLE' ) || define( 'WP_TESTS_TITLE', 'Test Site' );
 		defined( 'WP_PHP_BINARY' ) || define( 'WP_PHP_BINARY', 'php' );
@@ -422,6 +430,10 @@ class Utils {
 	 */
 	public static function is_debug_mode(): bool {
 		if ( defined( 'MANTLE_TESTING_DEBUG' ) && MANTLE_TESTING_DEBUG ) {
+			return true;
+		}
+
+		if ( self::env_bool( 'MANTLE_TESTING_DEBUG', false ) ) {
 			return true;
 		}
 

@@ -18,6 +18,8 @@ use Mantle\Http\Request;
 use Mantle\Support\Str;
 use Mantle\Support\Traits\Conditionable;
 
+use function Mantle\Support\Helpers\collect;
+
 /**
  * Boot Manager
  *
@@ -35,6 +37,16 @@ class Bootloader implements Contract {
 	 * Current instance of the manager.
 	 */
 	protected static ?Bootloader $instance;
+
+	/**
+	 * The application instance.
+	 */
+	protected string $wp_cli_command_prefix = 'mantle';
+
+	/**
+	 * The description of the WP-CLI command.
+	 */
+	protected string $wp_cli_command_description = '';
 
 	/**
 	 * Create a new instance of the application.
@@ -95,7 +107,8 @@ class Bootloader implements Contract {
 		$this
 			->with_application( $app ?? new Application( $base_path ) )
 			->with_kernels()
-			->with_exception_handler();
+			->with_exception_handler()
+			->with_wp_cli_options( Command::PREFIX, __( 'Mantle Framework Command Line Interface', 'mantle' ) );
 	}
 
 	/**
@@ -230,6 +243,24 @@ class Bootloader implements Contract {
 	}
 
 	/**
+	 * Setup the WP-CLI command prefix and description.
+	 *
+	 * @param string|null $prefix Command prefix.
+	 * @param string|null $description Command description.
+	 */
+	public function with_wp_cli_options( ?string $prefix = null, ?string $description = null ): static {
+		if ( $prefix ) {
+			$this->wp_cli_command_prefix = $prefix;
+		}
+
+		if ( $description ) {
+			$this->wp_cli_command_description = $description;
+		}
+
+		return $this;
+	}
+
+	/**
 	 * Bind to the container before booting.
 	 *
 	 * @param string              $abstract Abstract to bind.
@@ -315,13 +346,7 @@ class Bootloader implements Contract {
 		$kernel->bootstrap();
 
 		\WP_CLI::add_command(
-			/**
-			 * Command prefix for Mantle WP-CLI commands.
-			 *
-			 * @param string $prefix The command prefix.
-			 * @param \Mantle\Contracts\Application $app The application instance.
-			 */
-			(string) apply_filters( 'mantle_console_command_prefix', Command::PREFIX, $this->app ),
+			$this->wp_cli_command_prefix,
 			function () use ( $kernel ): void {
 				$status    = $kernel->handle(
 					$input = new \Symfony\Component\Console\Input\ArgvInput(
@@ -338,7 +363,7 @@ class Bootloader implements Contract {
 				exit( (int) $status );
 			},
 			[
-				'shortdesc' => __( 'Mantle Framework Command Line Interface', 'mantle' ),
+				'shortdesc' => $this->wp_cli_command_description,
 			]
 		);
 	}

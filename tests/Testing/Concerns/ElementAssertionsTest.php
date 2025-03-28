@@ -93,7 +93,7 @@ class ElementAssertionsTest extends Framework_Test_Case {
 			->assertQuerySelector( 'li', fn ( DOMNode $node ) => $node->textContent === 'Item 2', pass_any: true );
 	}
 
-	public function test_html_string() {
+	public function test_deprecated_html_string() {
 		html_string( $this->test_content )
 			->assertContains( 'Example Section' )
 			->assertContains( 'Example Section', 1 )

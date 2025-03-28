@@ -17,7 +17,9 @@ use Mantle\Container\Container;
 use Mantle\Events\Dispatcher;
 use Mantle\Support\Collection;
 use Mantle\Support\Higher_Order_Tap_Proxy;
+use Mantle\Support\HTML;
 use Mantle\Support\Str;
+use Mantle\Support\Stringable;
 
 /**
  * Determine if the given value is "blank".
@@ -240,22 +242,18 @@ function retry( $times, callable $callback, $sleep = 0, $when = null ) {
 /**
  * Get a new stringable object from the given string.
  *
- * @param  string|null  $string
- * @return \Mantle\Support\Stringable|mixed
+ * @param string $string
  */
-function str( ?string $string = null ) {
-	if ( is_null( $string ) ) {
-		return new class() {
-			public function __call( $method, $parameters ) {
-				return Str::$method( ...$parameters );
-			}
+function str( string $string = '' ): Stringable {
+	return Str::of( $string );
+}
 
-			public function __toString() {
-				return '';
-			}
-		};
-	}
-
+/**
+ * Alias to `str()`.
+ *
+ * @param string $string
+ */
+function stringable( string $string = '' ): Stringable {
 	return Str::of( $string );
 }
 
@@ -571,4 +569,13 @@ function defer( callable $callback ): void {
 	}
 
 	app()->terminating( $callback );
+}
+
+/**
+ * Create a new HTML instance.
+ *
+ * @param string $html The HTML string to test.
+ */
+function html_string( string $html ): HTML {
+	return new HTML( $html );
 }

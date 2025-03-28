@@ -151,7 +151,7 @@ class Application extends Console_Application implements Console_Application_Con
 	/**
 	 * Resolve an array of commands through the console application.
 	 *
-	 * @param array|string|Symfony_Command|Command $commands
+	 * @param array|class-string<Command|Symfony_Command>|Symfony_Command|Command $commands
 	 */
 	public function resolve_commands( $commands ): static {
 		$commands = Arr::wrap( $commands );

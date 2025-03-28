@@ -14,7 +14,7 @@ use Attribute;
  *
  * Used to mark a test as expecting a deprecation notice.
  */
-#[Attribute]
+#[Attribute( Attribute::TARGET_CLASS | Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE )]
 class Expected_Deprecation {
 	/**
 	 * Constructor.

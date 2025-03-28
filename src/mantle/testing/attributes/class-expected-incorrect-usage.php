@@ -14,7 +14,7 @@ use Attribute;
  *
  * Used to mark a test as expecting a specific doing it wrong call. Supports * as a wildcard.
  */
-#[Attribute]
+#[Attribute( Attribute::TARGET_CLASS | Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE )]
 class Expected_Incorrect_Usage {
 	/**
 	 * Constructor.

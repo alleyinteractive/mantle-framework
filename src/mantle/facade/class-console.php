@@ -18,6 +18,7 @@ use SplFileInfo;
  * @method static int call(string $command, array $parameters = [], mixed $output_buffer = null)
  * @method static \Symfony\Component\Console\Tester\CommandTester test(string $command, array $parameters = [])
  * @method static \Mantle\Console\Closure_Command command(string $signature, Closure $callback)
+ * @method static void register(string|\Mantle\Console\Command $command)
  * @method static void bootstrap()
  * @method static \Mantle\Contracts\Console\Application get_console_application()
  * @method static void set_console_application(\Mantle\Contracts\Console\Application $app)

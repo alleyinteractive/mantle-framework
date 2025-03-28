@@ -18,11 +18,14 @@ use Mantle\Contracts\Exceptions\Handler as Exception_Handler;
 use Mantle\Support\Traits\Loads_Classes;
 use ReflectionClass;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 use Throwable;
 
 use function Mantle\Support\Helpers\collect;
+use function Mantle\Support\Helpers\stringable;
 
 /**
  * Console Kernel
@@ -31,16 +34,9 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	use Loads_Classes;
 
 	/**
-	 * The application implementation.
-	 *
-	 * @var Application|null
-	 */
-	protected $app;
-
-	/**
 	 * The bootstrap classes for the application.
 	 *
-	 * @var array
+	 * @var array<class-string>
 	 */
 	protected $bootstrappers = [
 		\Mantle\Framework\Bootstrap\Load_Configuration::class,
@@ -53,7 +49,7 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	/**
 	 * The commands provided by the application.
 	 *
-	 * @var array
+	 * @var array<class-string<\Mantle\Console\Command>|Command>
 	 */
 	protected $commands = [];
 
@@ -77,23 +73,21 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	 *
 	 * @param Application $app Application instance.
 	 */
-	public function __construct( Application $app ) {
-		$this->app = $app;
-
+	public function __construct( protected Application $app ) {
 		$this->ensure_environment_is_set();
 	}
 
 	/**
 	 * Run the console application
 	 *
-	 * @param \Symfony\Component\Console\Input\InputInterface   $input
-	 * @param \Symfony\Component\Console\Output\OutputInterface $output
+	 * @param InputInterface|null  $input Console input.
+	 * @param OutputInterface|null $output Console output.
 	 */
-	public function handle( $input = null, $output = null ): int {
+	public function handle( ?InputInterface $input = null, ?OutputInterface $output = null ): int {
 		$this->output = $output;
 
 		try {
-			return $this->get_console_application()->run( $input, $output );
+			return $this->get_console_application()->run( $input, $output ?? $this->output );
 		} catch ( Throwable $e ) {
 			$this->report_exception( $e );
 			$this->render_exception( $output, $e );
@@ -105,14 +99,24 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	/**
 	 * Run the console application by command name.
 	 *
-	 * @param string $command Command name.
-	 * @param array  $parameters Command parameters.
-	 * @param mixed  $output_buffer Output buffer.
+	 * @param string               $command Command name.
+	 * @param array                $parameters Command parameters.
+	 * @param OutputInterface|null $output_buffer Output buffer.
 	 */
-	public function call( string $command, array $parameters = [], $output_buffer = null ): int {
+	public function call( string $command, array $parameters = [], ?OutputInterface $output_buffer = null ): int {
 		$this->bootstrap();
 
-		return $this->get_console_application()->call( $command, $parameters, $output_buffer );
+		return $this->get_console_application()->call( $command, $parameters, $output_buffer ?? $this->output );
+	}
+
+	/**
+	 * Run the console application by command name without output.
+	 *
+	 * @param string $command Command name.
+	 * @param array  $parameters Command parameters.
+	 */
+	public function call_silently( string $command, array $parameters = [] ): int {
+		return $this->call( $command, $parameters, new NullOutput() );
 	}
 
 	/**
@@ -125,6 +129,23 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 		$this->bootstrap();
 
 		return $this->get_console_application()->test( $command, $parameters );
+	}
+
+	/**
+	 * Register a new command with the console application.
+	 *
+	 * @throws \InvalidArgumentException Thrown if the command is not a valid command.
+	 *
+	 * @param Command|class-string<Command> $command Command instance or class name.
+	 */
+	public function register( Command|string $command ): void {
+		if ( ! class_exists( $command ) || ! is_subclass_of( $command, Command::class ) ) { // @phpstan-ignore-line function.alreadyNarrowedType
+			throw new \InvalidArgumentException( "Command [{$command}] is not a valid command." );
+		}
+
+		Console_Application::starting(
+			fn ( Console_Application $app ) => $app->resolve( $command )
+		);
 	}
 
 	/**
@@ -268,7 +289,7 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	 */
 	protected function render_exception( OutputInterface $output, Throwable $e ) {
 		if ( $e instanceof CommandNotFoundException ) {
-			$this->output->writeln( '<error>' . str( $e->getMessage() )->explode( '.' )->first() . '</error>' );
+			$this->output->writeln( '<error>' . stringable( $e->getMessage() )->explode( '.' )->first() . '</error>' );
 			$this->output->writeln( '' );
 
 			if ( ! empty( $alternatives = $e->getAlternatives() ) ) {

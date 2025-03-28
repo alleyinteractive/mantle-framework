@@ -245,7 +245,7 @@ class Pending_Testable_Request {
 		if ( '/' === $uri[0] ) {
 			$url = "{$scheme}://{$host}{$uri}";
 		} elseif ( false === strpos( $uri, '://' ) ) {
-			$url = "{$scheme}://{$host}/{uri}";
+			$url = "{$scheme}://{$host}/{$uri}";
 		} else {
 			$url = $uri;
 		}

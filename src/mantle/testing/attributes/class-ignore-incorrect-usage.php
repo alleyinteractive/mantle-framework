@@ -14,7 +14,7 @@ use Attribute;
  *
  * Used to mark a test as ignoring a specific doing it wrong call. Supports * as a wildcard.
  */
-#[Attribute]
+#[Attribute( Attribute::TARGET_CLASS | Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE )]
 class Ignore_Incorrect_Usage {
 	/**
 	 * Constructor.

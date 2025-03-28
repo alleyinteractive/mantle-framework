@@ -52,7 +52,7 @@ jobs:
         name: Monorepo Split of ${{ matrix.package }}
         uses: symplify/monorepo-split-github-action@v2.3.0
         env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ALLEY_CI_KEY }}
         with:
           package_directory: 'src/mantle/${{ matrix.package }}'
           repository_organization: 'mantle-framework'
@@ -75,7 +75,7 @@ jobs:
         name: Monorepo Tagged Split of ${{ matrix.package }}
         uses: symplify/monorepo-split-github-action@v2.3.0
         env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ALLEY_CI_KEY }}
         with:
           tag: ${GITHUB_REF#refs/tags/}
 

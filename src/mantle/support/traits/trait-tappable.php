@@ -20,6 +20,6 @@ trait Tappable {
 	 * @return $this|\Mantle\Support\Higher_Order_Tap_Proxy
 	 */
 	public function tap( $callback = null ) {
-			return tap( $this, $callback );
+		return tap( $this, $callback );
 	}
 }

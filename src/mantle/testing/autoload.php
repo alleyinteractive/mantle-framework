@@ -13,6 +13,7 @@ use Faker\Factory;
 use Faker\Generator;
 use Mantle\Container\Container;
 use Mantle\Faker\Faker_Provider;
+use Mantle\Support\HTML;
 
 use function Mantle\Support\Helpers\tap;
 
@@ -47,8 +48,8 @@ function install( ?callable $callback = null ): Installation_Manager {
  *
  * @param string $html The HTML string to test.
  */
-function html_string( string $html ): Assertable_HTML_String {
-	return new Assertable_HTML_String( $html );
+function html_string( string $html ): HTML {
+	return new HTML( $html );
 }
 
 /**

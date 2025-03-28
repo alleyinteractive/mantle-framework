@@ -253,13 +253,27 @@ class PostObjectTest extends Framework_Test_Case {
 
 		$this->assertEquals( 'foo_post_type', get_post_type( $post_id ) );
 
+		$dynamic_model = Post::for( 'foo_post_type' );
+
 		$this->assertEmpty( Post::find( $post_id ) );
-		$this->assertInstanceOf( Post::class, Post::for( 'foo_post_type' ) );
-		$this->assertEquals( $post_id, Post::for( 'foo_post_type' )->find( $post_id )->id() );
+		$this->assertInstanceOf( Post::class, $dynamic_model );
+		$this->assertEquals( $post_id, $dynamic_model->find( $post_id )->id() );
 		$this->assertEquals(
 			$post_two,
-			Post::for( 'foo_post_type' )->where( 'title', 'Post Two' )->first()->id(),
+			$dynamic_model->where( 'title', 'Post Two' )->first()->id(),
 		);
+
+		// Test creating a post via the dynamic model.
+		$new_post = $dynamic_model->create(
+			[
+				'post_title' => 'New Post',
+			]
+		);
+
+		$post = get_post( $new_post->id() );
+
+		$this->assertEquals( 'foo_post_type', $post->post_type );
+		$this->assertEquals( 'New Post', $post->post_title );
 	}
 
 	public function test_query_builder() {

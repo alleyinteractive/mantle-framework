@@ -98,16 +98,16 @@ class Faker_Provider extends Base {
 	/**
 	 * Build a block for Gutenberg.
 	 *
-	 * @param string $block_name Block name.
-	 * @param string $content Content for the block.
-	 * @param array  $attributes Attributes for the block.
+	 * @param string       $name Block name.
+	 * @param string|null  $content Content for the block.
+	 * @param array<mixed> $attributes Attributes for the block.
 	 */
-	public static function block( string $block_name, string $content = '', array $attributes = [] ): string {
+	public static function block( string $name, ?string $content = null, array $attributes = [] ): string {
 		// Add a newline before and after the content.
-		if ( ! empty( $content ) ) {
+		if ( ! is_null( $content ) ) {
 			$content = "\n{$content}\n";
 		}
 
-		return get_comment_delimited_block_content( $block_name, $attributes, $content );
+		return get_comment_delimited_block_content( $name, $attributes, $content ?? '' );
 	}
 }

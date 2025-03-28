@@ -1,6 +1,7 @@
 <?php
 namespace Mantle\Tests\Concerns;
 
+use Mantle\Console\Command;
 use Mantle\Facade\Console;
 use Mantle\Testing\Framework_Test_Case;
 use PHPUnit\Framework\Attributes\Group;
@@ -28,6 +29,20 @@ class InteractsWithConsoleTest extends Framework_Test_Case {
 			->assertOk();
 	}
 
+	public function test_command_failure(): void {
+		Console::command( 'fail', fn () => $this->fail() );
+
+		$this->command( 'wp mantle fail' )
+			->assertOutputContains( 'Command manually failed' )
+			->assertFailed();
+
+		Console::command( 'fail:message', fn () => $this->fail( 'With message' ) );
+
+		$this->command( 'wp mantle fail:message' )
+			->assertOutputContains( 'With message' )
+			->assertFailed();
+	}
+
 	public function test_closure_command() {
 		Console::command( 'hello-world', fn () => $this->info( 'Hello World' ) )
 			->describe( 'Command description' );
@@ -46,6 +61,22 @@ class InteractsWithConsoleTest extends Framework_Test_Case {
 
 		$this->command( 'wp mantle hello', [ 'name' => 'john' ] )
 			->assertOutputContains( 'Hello john' )
+			->assertOk();
+	}
+
+	public function test_class_command(): void {
+		$command = new class() extends Command {
+			protected $signature = 'test:class-command';
+
+			public function __invoke() {
+				$this->info( 'Hello World' );
+			}
+		};
+
+		Console::register( $command::class );
+
+		$this->command( 'wp mantle test:class-command' )
+			->assertOutputContains( 'Hello World' )
 			->assertOk();
 	}
 

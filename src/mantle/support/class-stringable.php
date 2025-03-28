@@ -744,6 +744,18 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	}
 
 	/**
+	 * Alias for slug().
+	 *
+	 * @param string $separator Default is '-'.
+	 * @param string $language  Default is 'en'.
+	 * @param array  $dictionary Default is [ '@' => 'at' ].
+	 * @return static
+	 */
+	public function slugify( $separator = '-', $language = 'en', $dictionary = [ '@' => 'at' ] ) {
+		return $this->slug( $separator, $language, $dictionary );
+	}
+
+	/**
 	 * Convert a string to snake case.
 	 *
 	 * @param  string $delimiter
@@ -1127,10 +1139,10 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 */
 	public function to_date( $format = null, $tz = null ) {
 		if ( is_null( $format ) ) {
-			return Date::parse( $this->value, $tz );
+			return Date::parse( $this->value, $tz ?: wp_timezone() );
 		}
 
-		return Date::createFromFormat( $format, $this->value, $tz );
+		return Date::createFromFormat( $format, $this->value, $tz ?: wp_timezone() );
 	}
 
 	/**

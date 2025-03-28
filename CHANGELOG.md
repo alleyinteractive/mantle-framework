@@ -5,7 +5,127 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v1.4.0 - 2025-01-17
+## Unreleased
+
+### Added
+
+- Added a `HTML` class to help with HTML querying, assertions, and manipulation.
+
+## v1.5.7
+
+### Changed
+
+- Updated `block_factory()->block()` to require `null` to be passed as `$content`
+  if no content is desired. This prevents the block factory from generating an
+  empty block when `$content` is just an empty string.
+
+## v1.5.6
+
+### Added
+
+- Added a `mixed()` helper function to return a `Interacts_With_Data` instance
+  for a mixed value that isn't associated with meta or an option.
+
+### Fixed
+
+- Prevent the site's default category from being added to a post when using the
+  `with_terms()` method on a post factory if a category is being set.
+- Fixed an issue where the output would not pass back to the console when
+  calling a command with `Console::call()`.
+
+## v1.5.5 - 2025-03-12
+
+No changes, just a re-release to fix a bad tag.
+
+## v1.5.4 - 2025-03-12
+
+### Added
+
+- Added a unit testing factory for Byline Manager profiles and Co-Authors-Plus guest authors.
+- Added a `Option` and `Object_Metadata` support classes as well as `option()`, `post_meta()`, `term_meta()`, `user_meta()`, and `comment_meta()` helpers to retrieve options and object metadata in a type-safe manner.
+- Added a `Option` support class and `option()` helper to retrieve options in a type-safe manner.
+- Added `fail()` method to commands to allow for a command to fail with a message.
+- Added `with_debug()` and `with_multisite()` methods to the installation manager.
+
+### Changed
+
+- Passing a `\Stringable` as a model attribute will now be cast to a string before being set on the model.
+
+### Fixed
+
+- Fix the `Post::for()`/`Term::for()` methods to properly set the post
+  type/taxonomy for the model when creating a new instance. Previously, the
+  model would always be created with the default post type/taxonomy.
+- Fixed command testing to proper handle failed commands.
+
+## v1.5.3 - 2025-03-04
+
+### Changed
+
+- Change `str()` helper to only accept a string and always return a Stringable object.
+- Allow multiple
+  `Ignore_Deprecation`/`Ignore_Incorrect_Usage`/`Expected_Deprecation`/`Expected_Incorrect_Usage`
+  attributes on a test method/class.
+
+## v1.5.2 - 2025-02-06
+
+### Fixed
+
+- Fixed bad configuration file calling `env()` vs `environment()`.
+
+## v1.5.1 - 2025-02-06
+
+### Changed
+
+- Dropped `nunomaduro/collision` from the main
+  `alleyinteractive/mantle-framework` package in favor of making the package a
+  dependency on `alleyinteractive/mantle`. It still remains a dependency of
+  `mantle-framework/testkit`.
+
+## v1.5.0 - 2025-02-06
+
+### Changed
+
+- Dropped `illuminate/view` from the `alleyinteractive/mantle-framework`
+  package. There is a conflict between the dependent package
+  `illuminate/support` and `spatie/once`. `alleyinteractive/mantle` will be
+  updated to require `illuminate/view` directly.
+- Upgraded `mantle-framework/testkit` to support `nunomaduro/collision` v8 (which requires PHP 8.2 and PHPUnit 10+).
+- Drop support for `symfony/console` v6.2. All Symfony components are now at v7.0.
+
+## v1.4.5 - 2025-02-03
+
+### Fixed
+
+- Fixed issue setting the domain during installation.
+
+## v1.4.4 - 2025-02-03
+
+### Fixed
+
+- Ensure that when setting the home URL for testing with `Installation_Manager::with_url()` also sets the test domain.
+- When setting a HTTPS home URL for testing, ensure that the site is installed using HTTPS.
+
+## v1.4.3 - 2025-01-31
+
+### Fixed
+
+- Fixed issue when making HTTP requests in tests using partial URL paths.
+
+## v1.4.2 - 2025-01-28
+
+### Fixed
+
+- Fix path to load the vip-config.php file during testing.
+
+## v1.4.1 - 2025-01-21
+
+### Changed
+
+- Load `vip-config.php` during testing using the `WP_CONTENT_DIR` constant.
+- Use the testing directory (`WP_TESTS_INSTALL_PATH`) for `ABSPATH` if not set.
+
+## v1.4.0 - 2025-01-20
 
 📢 Minimum PHP version is now 8.2. The framework supports 8.2 - 8.4.
 

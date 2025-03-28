@@ -1,0 +1,53 @@
+name: Release from Changelog
+
+on:
+  push:
+    branches:
+      - '*.x'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract latest version from CHANGELOG.md
+        id: get_version
+        run: |
+          VERSION=$(grep -oP '(?<=## v)\d+\.\d+\.\d+' CHANGELOG.md | head -1)
+          echo "Latest version found: $VERSION"
+          echo "version=v$VERSION" >> $GITHUB_ENV
+
+      - name: Get latest GitHub release
+        id: latest_release
+        run: |
+          LATEST_RELEASE=$(gh release list --limit 1 --exclude-drafts --json tagName --jq '.[0].tagName' || echo "")
+          echo "Latest GitHub release: $LATEST_RELEASE"
+          echo "latest_release=$LATEST_RELEASE" >> $GITHUB_ENV
+        env:
+          GH_TOKEN: ${{ secrets.ALLEY_CI_CHANGELOG_KEY }}
+
+      - name: Extract release notes
+        id: extract_notes
+        run: |
+          sed -n '/^## '"$version"'/,/^## /p' CHANGELOG.md | sed '1d;$d' > RELEASE_NOTES.md
+          echo "Release notes:"
+          cat RELEASE_NOTES.md
+        shell: bash
+
+      - name: Create new GitHub release if version is new
+        if: env.version != env.latest_release && env.version != '' && env.latest_release != 'Unreleased'
+        run: |
+          # Check if $version is a semver version (vX.Y.Z)
+          if [[ ! "$version" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid version: $version"
+            exit 1
+          fi
+          gh auth status
+          gh release create "$version" --title "$version" --notes-file RELEASE_NOTES.md
+        env:
+          GH_TOKEN: ${{ secrets.ALLEY_CI_CHANGELOG_KEY }}

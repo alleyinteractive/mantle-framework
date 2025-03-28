@@ -18,17 +18,13 @@ use Mantle\Support\Arr;
 abstract class Seeder {
 	/**
 	 * The container instance.
-	 *
-	 * @var Container|null
 	 */
-	protected $container;
+	protected ?Container $container = null;
 
 	/**
 	 * The console command instance.
-	 *
-	 * @var Command|null
 	 */
-	protected $command;
+	protected ?Command $command = null;
 
 	/**
 	 * Seed the given connection from the given path.
@@ -84,8 +80,13 @@ abstract class Seeder {
 			$instance = $this->container->make( $class );
 
 			$instance->set_container( $this->container );
+			$instance->set_command( $this->command );
 		} else {
 			$instance = new $class();
+
+			if ( isset( $this->command ) ) {
+				$instance->set_command( $this->command );
+			}
 		}
 
 		if ( ! $instance instanceof Seeder ) {

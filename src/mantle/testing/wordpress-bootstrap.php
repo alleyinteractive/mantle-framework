@@ -90,7 +90,9 @@ Utils::setup_configuration();
 
 // Attempt to load the vip-config.php file if it exists to play nicely with VIP Go.
 if ( Utils::env_bool( 'MANTLE_LOAD_VIP_CONFIG', true ) ) {
-	if ( file_exists( ABSPATH . '/wp-content/vip-config/vip-config.php' ) ) {
+	if ( defined( 'WP_CONTENT_DIR' ) && file_exists( WP_CONTENT_DIR . '/vip-config/vip-config.php' ) ) {
+		require_once( WP_CONTENT_DIR . '/vip-config/vip-config.php' );
+	} elseif ( defined( 'ABSPATH' ) && file_exists( ABSPATH . '/wp-content/vip-config/vip-config.php' ) ) {
 		require_once( ABSPATH . '/wp-content/vip-config/vip-config.php' );
 	} elseif ( file_exists( ABSPATH . '/vip-config/vip-config.php' ) ) {
 		require_once( ABSPATH . '/vip-config/vip-config.php' );
@@ -157,7 +159,9 @@ if ( ! $installing_wp && '1' !== getenv( 'WP_TESTS_SKIP_INSTALL' ) ) {
 		[
 			WP_PHP_BINARY,
 			escapeshellarg( __DIR__ . '/install-wordpress.php' ),
-			$multisite,
+			$multisite ? '1' : '0',
+			WP_TESTS_DOMAIN,
+			! empty( $_SERVER['HTTPS'] ) ? '1' : '0',
 		],
 		$retval,
 	);
