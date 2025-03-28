@@ -63,7 +63,7 @@ class RedirectorTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	}
 
 	public function testBasicRedirectTo() {
-		 $response = $this->redirect->to( 'bar' );
+		$response = $this->redirect->to( 'bar' );
 
 		$this->assertInstanceOf( RedirectResponse::class, $response );
 		$this->assertSame( 'http://foo.com/bar', $response->getTargetUrl() );

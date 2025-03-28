@@ -750,7 +750,7 @@ class ReflectionMethodDecorator {
 	 * @return \ReflectionClass
 	 */
 	public function sourceClass() {
-		 return new ReflectionClass( $this->sourceClass );
+		return new ReflectionClass( $this->sourceClass );
 	}
 }
 
@@ -766,7 +766,7 @@ class DynamicParameter {
 	 * @return string
 	 */
 	public function getName() {
-		 return Str::of( $this->definition )
+		return Str::of( $this->definition )
 			->after( '$' )
 			->before( ' ' )
 			->toString();
@@ -790,13 +790,13 @@ class DynamicParameter {
 	 * @return bool
 	 */
 	public function isDefaultValueAvailable() {
-		 return true;
+		return true;
 	}
 
 	/**
 	 * @return null
 	 */
 	public function getDefaultValue() {
-		 return null;
+		return null;
 	}
 }

@@ -118,7 +118,7 @@ class RouterTest extends Framework_Test_Case {
 	}
 
 	public function testClosureMiddleware() {
-		   $router      = $this->get_router();
+			$router     = $this->get_router();
 			$middleware = function ( $request, $next ) {
 					return 'caught';
 			};
