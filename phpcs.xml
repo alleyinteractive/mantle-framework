@@ -30,6 +30,8 @@
 		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.Found" />
 		<exclude name="Generic.CodeAnalysis.AssignmentInCondition.Found" />
 		<exclude name="WordPress.PHP.YodaConditions.NotYoda" />
+		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
 	</rule>
 
 	<rule ref="Generic.Arrays.DisallowLongArraySyntax" />

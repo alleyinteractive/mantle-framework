@@ -12,7 +12,7 @@ use Mantle\Testing\Utils;
 /**
  * Reset the server for each test case.
  *
- * @mixin \Mantle\Testing\Test_Case
+ * @mixin \Mantle\Testing\TestCase
  */
 trait Reset_Server {
 	/**

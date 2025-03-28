@@ -22,7 +22,7 @@ use function Mantle\Support\Helpers\collect;
  * Concern for interacting with the WordPress cron and making assertions against
  * it. Also supports queued and scheduled jobs.
  *
- * @mixin \Mantle\Testing\Test_Case
+ * @mixin \Mantle\Testing\TestCase
  */
 trait Interacts_With_Cron {
 	/**

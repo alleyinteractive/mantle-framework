@@ -62,13 +62,13 @@ class Test_Response {
 	 * @param string|null $content HTTP response body.
 	 * @param int         $status  HTTP response status code.
 	 * @param array       $headers HTTP response headers.
-	 * @param Test_Case   $test_case Test case instance.
+	 * @param TestCase    $test_case Test case instance.
 	 */
 	public function __construct(
 		?string $content = '',
 		int $status = 200,
 		array $headers = [],
-		public ?Test_Case $test_case = null,
+		public ?TestCase $test_case = null,
 	) {
 		$this->set_content( $content )
 			->set_status_code( $status )
@@ -566,13 +566,13 @@ class Test_Response {
 	 * Checks each of the WP_Query is_* functions/properties against expected
 	 * boolean value.
 	 *
-	 * @see Test_Case::assertQueryTrue()
+	 * @see TestCase::assertQueryTrue()
 	 *
 	 * @param string ...$prop Any number of WP_Query properties that are expected
 	 *                        to be true for the current request.
 	 */
 	public function assertQueryTrue( ...$prop ): static {
-		Test_Case::assertQueryTrue( ...$prop );
+		TestCase::assertQueryTrue( ...$prop );
 
 		return $this;
 	}
@@ -584,7 +584,7 @@ class Test_Response {
 	 * @return $this
 	 */
 	public function assertQueriedObjectId( int $id ): static {
-		Test_Case::assertQueriedObjectId( $id );
+		TestCase::assertQueriedObjectId( $id );
 
 		return $this;
 	}
@@ -596,7 +596,7 @@ class Test_Response {
 	 * @return $this
 	 */
 	public function assertNotQueriedObjectId( int $id ): static {
-		Test_Case::assertNotQueriedObjectId( $id );
+		TestCase::assertNotQueriedObjectId( $id );
 
 		return $this;
 	}
@@ -608,7 +608,7 @@ class Test_Response {
 	 * @return $this
 	 */
 	public function assertQueriedObject( mixed $object ): static {
-		Test_Case::assertQueriedObject( $object );
+		TestCase::assertQueriedObject( $object );
 
 		return $this;
 	}
@@ -619,7 +619,7 @@ class Test_Response {
 	 * @return $this
 	 */
 	public function assertNotQueriedObject( mixed $object ): static {
-		Test_Case::assertNotQueriedObject( $object );
+		TestCase::assertNotQueriedObject( $object );
 
 		return $this;
 	}
@@ -630,7 +630,7 @@ class Test_Response {
 	 * @return $this
 	 */
 	public function assertQueriedObjectNull(): static {
-		Test_Case::assertQueriedObjectNull();
+		TestCase::assertQueriedObjectNull();
 
 		return $this;
 	}

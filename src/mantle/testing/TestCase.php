@@ -1,6 +1,6 @@
 <?php
 /**
- * This file contains the Test_Case class.
+ * This file contains the TestCase class.
  *
  * @package Mantle
  */

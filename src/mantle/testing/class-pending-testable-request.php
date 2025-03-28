@@ -17,7 +17,7 @@ use Mantle\Support\Traits\Conditionable;
 use Mantle\Testing\Doubles\Spy_REST_Server;
 use Mantle\Testing\Exceptions\Exception;
 use Mantle\Testing\Exceptions\WP_Redirect_Exception;
-use Mantle\Testing\Test_Case;
+use Mantle\Testing\TestCase;
 use Mantle\Testing\Test_Response;
 use Mantle\Testing\Utils;
 use PHPUnit\Framework\Assert;
@@ -66,9 +66,9 @@ class Pending_Testable_Request {
 	/**
 	 * Create a new pending testable request instance.
 	 *
-	 * @param Test_Case $test_case Test case instance.
+	 * @param TestCase $test_case Test case instance.
 	 */
-	public function __construct( public Test_Case $test_case ) {
+	public function __construct( public TestCase $test_case ) {
 		$this->headers = new HeaderBag();
 		$this->cookies = new InputBag();
 	}
@@ -506,7 +506,7 @@ class Pending_Testable_Request {
 	 * - The main query.
 	 */
 	protected function setup_wordpress_query(): void {
-		Test_Case::flush_cache();
+		TestCase::flush_cache();
 
 		// phpcs:disable WordPress.WP.GlobalVariablesOverride
 		unset( $GLOBALS['wp_query'], $GLOBALS['wp_the_query'] );

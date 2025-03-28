@@ -18,7 +18,7 @@ use function Mantle\Support\Helpers\collect;
 /**
  * Concern for interacting with the WordPress wp_mail() function.
  *
- * @mixin \Mantle\Testing\Test_Case
+ * @mixin \Mantle\Testing\TestCase
  */
 trait Interacts_With_Mail {
 	/**

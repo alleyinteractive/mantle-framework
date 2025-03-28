@@ -9,7 +9,7 @@ namespace Mantle\Testkit;
 
 use Mantle\Testkit\Concerns\Create_Application;
 use Mantle\Testkit\Concerns\Installs_WordPress;
-use Mantle\Testing\Test_Case as Testing_Test_Case;
+use Mantle\Testing\TestCase as TestingTestCase;
 
 /**
  * Testkit Test Case
@@ -17,7 +17,7 @@ use Mantle\Testing\Test_Case as Testing_Test_Case;
  * For use of the Mantle testing framework independent of the Mantle framework.
  * Inspired by `Orchestra\Testbench`.
  */
-abstract class TestCase extends Testing_Test_Case {
+abstract class TestCase extends TestingTestCase {
 	use Create_Application;
 
 	/**
