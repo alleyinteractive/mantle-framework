@@ -7,6 +7,7 @@
 
 namespace Mantle\Database\Model\Term;
 
+use Carbon\Carbon;
 use InvalidArgumentException;
 use Mantle\Database\Model\Model_Exception;
 use Mantle\Database\Model\Term;
@@ -156,124 +157,11 @@ trait Model_Term {
 			return $this;
 		}
 
-		// If a taxonomy was not passed, we need to infer it from the terms.
-		// This is a bit tricky since we need to support both a single taxonomy
-		// and multiple taxonomies. Thankfully, we have tests.
+		// If a taxonomy was not passed, we need to infer it from the terms. This is
+		// a bit tricky since we need to support both a single taxonomy and multiple
+		// taxonomies. Thankfully, we have tests.
 		$terms = $terms->reduce(
-			function ( array $carry, $argument, $parent_index ) use ( $create ): array {
-				$argument = Arr::wrap( $argument );
-
-				foreach ( $argument as $index => $item ) {
-					if ( $item instanceof WP_Term || $item instanceof Term ) {
-						$carry[ $item->taxonomy ][] = $item instanceof Term
-							? $item->core_object()
-							: $item;
-
-						continue;
-					}
-
-					$taxonomy = match ( true ) {
-						is_string( $index ) => $index,
-						is_string( $parent_index ) => $parent_index,
-						default => null,
-					};
-
-					// Support an array of term slugs.
-					if ( is_array( $item ) ) {
-						foreach ( $item as $sub_index => $slug ) {
-							if ( ! $taxonomy && $sub_index ) {
-								$taxonomy = $sub_index;
-							}
-
-							if ( is_numeric( $slug ) ) {
-								$term = get_term_object( (int) $slug );
-
-								if ( $term instanceof WP_Term ) {
-									$carry[ $term->taxonomy ][] = $term;
-								}
-
-								continue;
-							}
-
-							if ( ! is_string( $slug ) ) {
-								throw new Model_Exception(
-									'Invalid array sub-item passed to set_terms (expected term slug): ' .
-									print_r( $slug, true ), // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
-								);
-							}
-
-							$term = get_term_by( 'slug', $slug, $taxonomy ?? '' );
-
-							if ( ! $term && $create ) {
-								$term = wp_insert_term( Str::headline( $slug ), $taxonomy, [ 'slug' => $slug ] );
-
-								if ( is_wp_error( $term ) ) {
-									throw new Model_Exception( "Error creating term: [{$term->get_error_message()}]" );
-								}
-
-								$term = get_term( $term['term_id'], $taxonomy );
-							}
-
-							if ( $term ) {
-								$carry[ $term->taxonomy ][] = $term;
-							}
-						}
-
-						continue;
-					}
-
-					if ( ! is_numeric( $item ) && ! is_string( $item ) ) {
-						throw new InvalidArgumentException(
-							sprintf(
-								'Invalid term value passed to set_terms (expected Term/WP_Term/int/string): %s',
-								gettype( $item ),
-							),
-						);
-					}
-
-					// Support an array of taxonomy => term ID/slug pairs.
-					if ( is_numeric( $item ) ) {
-						$term = get_term_object( (int) $item );
-
-						if ( $term instanceof WP_Term ) {
-							$carry[ $term->taxonomy ][] = $term;
-						}
-
-						continue;
-					}
-
-					// Ensure a taxonomy was valid if passed.
-					if ( is_string( $taxonomy ) && ! taxonomy_exists( $taxonomy ) ) {
-						throw new Model_Exception(
-							"Invalid taxonomy passed to set_terms (expected taxonomy string): {$taxonomy}",
-						);
-					}
-
-					$term = get_term_object_by( 'slug', $item, $taxonomy ?? '' );
-
-					// Optionally create the term if it does not exist.
-					if ( ! $term && $create ) {
-						// Skip creating a term if a taxonomy was not passed.
-						if ( ! is_string( $taxonomy ) ) {
-							continue;
-						}
-
-						$term = wp_insert_term( Str::headline( $item ), $taxonomy, [ 'slug' => $item ] );
-
-						if ( is_wp_error( $term ) ) {
-							throw new Model_Exception( "Error creating term: [{$term->get_error_message()}]" );
-						}
-
-						$term = get_term( $term['term_id'], $index );
-					}
-
-					if ( $term instanceof WP_Term ) {
-						$carry[ $index ][] = $term;
-					}
-				}
-
-				return $carry;
-			},
+			fn ( array $carry, $argument, $parent_index ) => $this->resolve_mixed_term( $carry, $argument, $parent_index, $create ),
 			[],
 		);
 
@@ -284,6 +172,72 @@ trait Model_Term {
 		return $this;
 	}
 
+	/**
+	 * Resolve a term from a mixed value.
+	 *
+	 * @throws Model_Exception Thrown if the term cannot be created.
+	 *
+	 * @param array<string, WP_Term[]> $carry Array of terms to resolve.
+	 * @param mixed                    $value Term value to resolve. Supports Term, WP_Term, int, string, or array of each.
+	 * @param string|null              $taxonomy Taxonomy name, optional.
+	 * @param bool                     $create Create the term if it does not exist, defaults to false.
+	 */
+	private function resolve_mixed_term( array $carry, mixed $value, ?string $taxonomy = null, bool $create = false ): array {
+		if ( $value instanceof WP_Term || $value instanceof Term ) {
+			$carry[ $value->taxonomy ][] = $value instanceof Term ? $value->core_object() : $value;
+
+			return $carry;
+		}
+
+		if ( ! is_string( $taxonomy ) || is_numeric( $taxonomy ) ) {
+			$taxonomy = null;
+		}
+
+		if ( is_numeric( $value ) ) {
+			$term = get_term_object( (int) $value, $taxonomy ?: '' );
+
+			if ( $term ) {
+				$carry[ $term->taxonomy ][] = $term;
+			}
+
+			return $carry;
+		}
+
+		if ( is_string( $value ) ) {
+			$term = get_term_by( 'slug', $value, $taxonomy ?? '' );
+
+			if ( ! $term && $create ) {
+				// Skip creating a term if a taxonomy was not passed.
+				if ( ! is_string( $taxonomy ) ) {
+					return $carry;
+				}
+
+				$term = wp_insert_term( Str::headline( $value ), $taxonomy, [ 'slug' => $value ] );
+
+				if ( is_wp_error( $term ) ) {
+					throw new Model_Exception( "Error creating term: [{$term->get_error_message()}]" );
+				}
+
+				$term = get_term( $term['term_id'], $taxonomy );
+			}
+
+			if ( $term ) {
+				$carry[ $term->taxonomy ][] = $term;
+			}
+
+			return $carry;
+		}
+
+		if ( is_array( $value ) ) {
+			foreach ( $value as $index => $item ) {
+				$sub_taxonomy = is_string( $index ) ? $index : $taxonomy;
+
+				$carry = $this->resolve_mixed_term( $carry, $item, $sub_taxonomy, $create );
+			}
+		}
+
+		return $carry;
+	}
 
 	/**
 	 * Remove terms from a post.
