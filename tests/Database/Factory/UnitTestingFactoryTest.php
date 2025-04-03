@@ -289,6 +289,7 @@ class UnitTestingFactoryTest extends Framework_Test_Case {
 		$post = static::factory()->post->with_terms( [ 'post_tag' => $tags ] )->create_and_get();
 		$post_tags = get_the_terms( $post, 'post_tag' );
 
+		$this->assertIsArray( $post_tags );
 		$this->assertCount( 5, $post_tags );
 		$this->assertEquals(
 			collect( $tags )->sort()->values()->all(),
@@ -304,8 +305,52 @@ class UnitTestingFactoryTest extends Framework_Test_Case {
 
 		$post_tags = get_the_terms( $post, 'post_tag' );
 
+		$this->assertIsArray( $post_tags );
 		$this->assertCount( 1, $post_tags );
 		$this->assertEquals( 'unknown-term', $post_tags[0]->slug );
+	}
+
+	#[Group( 'with_terms' )]
+	public function test_posts_with_terms_array_of_slugs() {
+		$post = static::factory()->post->with_terms(
+			[
+				'post_tag' => [
+					'another-term',
+					'unknown-term',
+				],
+			],
+		)->create_and_get();
+
+		$post_tags = get_the_terms( $post, 'post_tag' );
+
+		$this->assertIsArray( $post_tags );
+		$this->assertCount( 2, $post_tags );
+		$this->assertEquals(
+			[ 'another-term', 'unknown-term' ],
+			collect( $post_tags )->pluck( 'slug' )->sort()->values()->all(),
+		);
+	}
+
+	#[Group( 'with_terms' )]
+	public function test_posts_with_terms_array_of_slugs_and_mixed() {
+		$post = static::factory()->post->with_terms(
+			static::factory()->category->create_and_get(),
+			// static::factory()->tag->create(),
+			[
+				'post_tag' => [
+					'unknown-term',
+					'another-term',
+				],
+			],
+		)->create_and_get();
+
+		$post_tags = get_the_terms( $post, 'post_tag' );
+
+		$this->assertCount( 2, $post_tags );
+		$this->assertEquals(
+			[ 'another-term', 'unknown-term' ],
+			collect( $post_tags )->pluck( 'slug' )->sort()->values()->all(),
+		);
 	}
 
 	public function test_post_with_terms_do_not_include_default_category(): void {

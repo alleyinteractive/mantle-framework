@@ -124,60 +124,88 @@ trait Model_Term {
 	public function set_terms( $terms, ?string $taxonomy = null, bool $append = false, bool $create = false ) {
 		$terms = collect( Arr::wrap( $terms ) );
 
-		// If taxonomy is not specified, chunk the terms into taxonomy groups.
-		if ( ! $taxonomy ) {
-			$terms = $terms->reduce(
-				function ( array $carry, $term, $index ) use ( $create ): array {
+		if ( $taxonomy ) {
+			$terms = $terms->map( function ( mixed $term ) use ( $taxonomy ): int {
+				if ( $term instanceof WP_Term || $term instanceof Term ) {
+					return $term->term_id;
+				}
+
+				if ( is_string( $term ) ) {
+					$term = get_term_by( 'slug', $term, $taxonomy );
+
 					if ( $term instanceof WP_Term ) {
-						$carry[ $term->taxonomy ][] = $term;
+						return $term->term_id;
+					}
+				}
 
-						return $carry;
+				if ( ! is_numeric( $term ) ) {
+					throw new InvalidArgumentException(
+						"Invalid term value passed to set_terms (expected Term/WP_Term/int): {$term}",
+					);
+				}
+
+				return (int) $term;
+			} )->filter()->values()->all();
+
+			$update = \wp_set_object_terms( $this->id(), $terms, $taxonomy, $append );
+
+			if ( \is_wp_error( $update ) ) {
+				throw new Model_Exception( "Error setting model terms: [{$update->get_error_message()}]" );
+			}
+
+			return $this;
+		}
+
+		// If a taxonomy was not passed, we need to infer it from the terms.
+		// This is a bit tricky since we need to support both a single taxonomy
+		// and multiple taxonomies. Thankfully, we have tests.
+		$terms = $terms->reduce(
+			function ( array $carry, $argument, $parent_index ) use ( $create ): array {
+				$argument = Arr::wrap( $argument );
+
+				foreach ( $argument as $index => $item ) {
+					if ( $item instanceof WP_Term || $item instanceof Term ) {
+						$carry[ $item->taxonomy ][] = $item instanceof Term
+							? $item->core_object()
+							: $item;
+
+						continue;
 					}
 
-					if ( $term instanceof Term ) {
-						$carry[ $term->taxonomy ][] = $term->core_object();
+					$taxonomy = match ( true ) {
+						is_string( $index ) => $index,
+						is_string( $parent_index ) => $parent_index,
+						default => null,
+					};
 
-						return $carry;
-					}
-
-					// Support an array of taxonomy => term ID/object/slug pairs.
-					if ( is_array( $term ) ) {
-						foreach ( $term as $taxonomy => $item ) {
-							if ( $item instanceof WP_Term || $item instanceof Term ) {
-								$carry[ $item->taxonomy ][] = $item instanceof Term
-									? $item->core_object()
-									: $item;
-
-								continue;
+					// Support an array of term slugs.
+					if ( is_array( $item ) ) {
+						foreach ( $item as $sub_index => $slug ) {
+							if ( ! $taxonomy && $sub_index ) {
+								$taxonomy = $sub_index;
 							}
 
-							if ( is_numeric( $item ) ) {
-								$item = get_term_object( $item );
+							if ( is_numeric( $slug ) ) {
+								$term = get_term_object( (int) $slug );
 
-								if ( $item instanceof WP_Term ) {
-									$carry[ $item->taxonomy ][] = $item;
+								if ( $term instanceof WP_Term ) {
+									$carry[ $term->taxonomy ][] = $term;
 								}
 
 								continue;
 							}
 
-							// Use the parent array key as the taxonomy if the parent array
-							// key is a string and the current array index is not.
-							if ( ! is_string( $taxonomy ) && is_string( $index ) ) {
-								$taxonomy = $index;
+							if ( ! is_string( $slug ) ) {
+								throw new Model_Exception(
+									'Invalid array sub-item passed to set_terms (expected term slug): ' .
+									print_r( $slug, true ), // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
+								);
 							}
 
-							// Attempt to infer if the key is a taxonomy slug and this is a
-							// taxonomy => term slug pair.
-							if ( ! is_string( $taxonomy ) || ! taxonomy_exists( $taxonomy ) ) {
-								continue;
-							}
+							$term = get_term_by( 'slug', $slug, $taxonomy ?? '' );
 
-							$term = get_term_object_by( 'slug', $item, $taxonomy );
-
-							// Optionally create the term if it does not exist.
 							if ( ! $term && $create ) {
-								$term = wp_insert_term( Str::headline( $item ), $taxonomy, [ 'slug' => $item ] );
+								$term = wp_insert_term( Str::headline( $slug ), $taxonomy, [ 'slug' => $slug ] );
 
 								if ( is_wp_error( $term ) ) {
 									throw new Model_Exception( "Error creating term: [{$term->get_error_message()}]" );
@@ -186,54 +214,71 @@ trait Model_Term {
 								$term = get_term( $term['term_id'], $taxonomy );
 							}
 
-							if ( $term instanceof WP_Term ) {
-								$carry[ $taxonomy ][] = $term;
+							if ( $term ) {
+								$carry[ $term->taxonomy ][] = $term;
 							}
 						}
 
-						return $carry;
+						continue;
 					}
 
-					if ( ! is_numeric( $term ) ) {
-						throw new InvalidArgumentException( "Invalid term value passed to set_terms (expected Term/WP_Term/int): {$term}" );
+					if ( ! is_numeric( $item ) && ! is_string( $item ) ) {
+						throw new InvalidArgumentException(
+							sprintf(
+								'Invalid term value passed to set_terms (expected Term/WP_Term/int/string): %s',
+								gettype( $item ),
+							),
+						);
 					}
 
-					$term = get_term_object( $term );
+					// Support an array of taxonomy => term ID/slug pairs.
+					if ( is_numeric( $item ) ) {
+						$term = get_term_object( (int) $item );
 
-					if ( $term ) {
-						$carry[ $term->taxonomy ][] = $term;
+						if ( $term instanceof WP_Term ) {
+							$carry[ $term->taxonomy ][] = $term;
+						}
+
+						continue;
 					}
 
-					return $carry;
-				},
-				[],
-			);
-
-			foreach ( collect( $terms )->filter() as $taxonomy => $items ) {
-				$this->set_terms( Arr::pluck( $items, 'term_id' ), $taxonomy, $append );
-			}
-
-			return $this;
-		}
-
-		// Convert the terms to a array of term IDs.
-		$terms = $terms
-			->map(
-				function ( $term ) {
-					if ( $term instanceof WP_Term || $term instanceof Term ) {
-						return $term->term_id;
+					// Ensure a taxonomy was valid if passed.
+					if ( is_string( $taxonomy ) && ! taxonomy_exists( $taxonomy ) ) {
+						throw new Model_Exception(
+							"Invalid taxonomy passed to set_terms (expected taxonomy string): {$taxonomy}",
+						);
 					}
 
-					return $term;
+					$term = get_term_object_by( 'slug', $item, $taxonomy ?? '' );
+
+					// Optionally create the term if it does not exist.
+					if ( ! $term && $create ) {
+						// Skip creating a term if a taxonomy was not passed.
+						if ( ! is_string( $taxonomy ) ) {
+							continue;
+						}
+
+						$term = wp_insert_term( Str::headline( $item ), $taxonomy, [ 'slug' => $item ] );
+
+						if ( is_wp_error( $term ) ) {
+							throw new Model_Exception( "Error creating term: [{$term->get_error_message()}]" );
+						}
+
+						$term = get_term( $term['term_id'], $index );
+					}
+
+					if ( $term instanceof WP_Term ) {
+						$carry[ $index ][] = $term;
+					}
 				}
-			)
-			->filter()
-			->all();
 
-		$update = \wp_set_object_terms( $this->id(), $terms, $taxonomy, $append );
+				return $carry;
+			},
+			[],
+		);
 
-		if ( \is_wp_error( $update ) ) {
-			throw new Model_Exception( "Error setting model terms: [{$update->get_error_message()}]" );
+		foreach ( collect( $terms )->filter() as $taxonomy => $items ) {
+			$this->set_terms( Arr::pluck( $items, 'term_id' ), $taxonomy, $append );
 		}
 
 		return $this;

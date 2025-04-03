@@ -13,6 +13,7 @@ use Faker\Generator;
 use Mantle\Database\Model\Attachment;
 use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Term;
+use Mantle\Support\Arr;
 use WP_Post;
 use WP_Term;
 
@@ -89,12 +90,7 @@ class Post_Factory extends Factory {
 	 * @param array<int|string, \WP_Term|int|string|array<string, mixed>>|\WP_Term|int|string ...$terms Terms to assign to the post.
 	 */
 	public function with_terms( ...$terms ): static {
-		// Handle an array in the first argument.
-		if ( 1 === count( $terms ) && isset( $terms[0] ) && is_array( $terms[0] ) ) {
-			$terms = $terms[0];
-		}
-
-		$terms = collect( $terms )->all();
+		$terms = collect( Arr::wrap( $terms ) )->all();
 
 		return $this->with_middleware(
 			function ( array $args, Closure $next ) use ( $terms ): Post {
