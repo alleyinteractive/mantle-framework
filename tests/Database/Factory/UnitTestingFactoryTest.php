@@ -344,7 +344,7 @@ class UnitTestingFactoryTest extends Framework_Test_Case {
 			],
 			[
 				'post_tag' => [
-					'unknown-term',
+					'another-new-tag',
 					'another-term',
 				],
 			],
@@ -352,9 +352,9 @@ class UnitTestingFactoryTest extends Framework_Test_Case {
 
 		$post_tags = get_the_terms( $post, 'post_tag' );
 
-		$this->assertCount( 3, $post_tags );
+		$this->assertCount( 4, $post_tags );
 		$this->assertEquals(
-			[ 'another-term', 'existing', 'unknown-term' ],
+			[ 'another-new-tag', 'another-term', 'existing', 'unknown-term' ],
 			collect( $post_tags )->pluck( 'slug' )->sort()->values()->all(),
 		);
 	}
