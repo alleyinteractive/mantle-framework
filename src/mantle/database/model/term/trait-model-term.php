@@ -7,7 +7,6 @@
 
 namespace Mantle\Database\Model\Term;
 
-use Carbon\Carbon;
 use InvalidArgumentException;
 use Mantle\Database\Model\Model_Exception;
 use Mantle\Database\Model\Term;
@@ -17,7 +16,6 @@ use WP_Term;
 
 use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\get_term_object;
-use function Mantle\Support\Helpers\get_term_object_by;
 
 /**
  * Interface for interfacing with a model's terms.
