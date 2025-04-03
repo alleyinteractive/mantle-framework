@@ -335,7 +335,13 @@ class UnitTestingFactoryTest extends Framework_Test_Case {
 	public function test_posts_with_terms_array_of_slugs_and_mixed() {
 		$post = static::factory()->post->with_terms(
 			static::factory()->category->create_and_get(),
-			// static::factory()->tag->create(),
+			static::factory()->tag->create( [ 'name' => 'Existing' ] ),
+			[
+				'post_tag' => [
+					'another-term',
+					'unknown-term',
+				],
+			],
 			[
 				'post_tag' => [
 					'unknown-term',
@@ -346,9 +352,9 @@ class UnitTestingFactoryTest extends Framework_Test_Case {
 
 		$post_tags = get_the_terms( $post, 'post_tag' );
 
-		$this->assertCount( 2, $post_tags );
+		$this->assertCount( 3, $post_tags );
 		$this->assertEquals(
-			[ 'another-term', 'unknown-term' ],
+			[ 'another-term', 'existing', 'unknown-term' ],
 			collect( $post_tags )->pluck( 'slug' )->sort()->values()->all(),
 		);
 	}
