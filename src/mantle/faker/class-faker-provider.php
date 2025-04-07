@@ -69,7 +69,6 @@ class Faker_Provider extends Base {
 	 *
 	 * @param int  $count Number of paragraph blocks to generate.
 	 * @param bool $as_text Return as text or an array of blocks.
-	 * @return string|array
 	 */
 	public static function paragraph_blocks( int $count = 3, bool $as_text = true ): string|array {
 		$paragraphs = [];
