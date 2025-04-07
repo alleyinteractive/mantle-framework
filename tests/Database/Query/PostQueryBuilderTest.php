@@ -8,13 +8,13 @@ use Mantle\Database\Query\Post_Query_Builder as Builder;
 use Mantle\Database\Query\Post_Query_Builder;
 use Mantle\Support\Collection;
 use Mantle\Testing\Concerns\Refresh_Database;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use Mantle\Testing\Utils;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 use function Mantle\Support\Helpers\collect;
 
-class PostQueryBuilderTest extends Framework_Test_Case {
+class PostQueryBuilderTest extends FrameworkTestCase {
 	use Refresh_Database;
 
 	protected function setUp(): void {

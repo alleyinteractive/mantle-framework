@@ -8,7 +8,7 @@ use Mantle\Http_Client\Factory;
 use Mantle\Http_Client\Pending_Request;
 use Mantle\Testing\Concerns\Prevent_Remote_Requests;
 use Mantle\Testing\Mock_Http_Response;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use Mantle\Testing\Mock_Http_Sequence;
 use PHPUnit\Framework\Attributes\Group;
 use RuntimeException;
@@ -19,7 +19,7 @@ use RuntimeException;
  * @group testing
  */
 #[Group( 'testing' )]
-class InteractsWithExternalRequestsTest extends Framework_Test_Case {
+class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 	use Prevent_Remote_Requests;
 
 	public function test_fake_request_no_arguments() {

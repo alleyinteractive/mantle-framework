@@ -1,9 +1,9 @@
 <?php
 namespace Mantle\Tests\View;
 
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 
-class FileEngineTest extends Framework_Test_Case {
+class FileEngineTest extends FrameworkTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 

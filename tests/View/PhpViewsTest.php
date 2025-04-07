@@ -1,11 +1,11 @@
 <?php
 namespace Mantle\Tests\View;
 
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use Mantle\Facade\View;
 use Mantle\Http\View\Factory;
 
-class PhpViewsTest extends Framework_Test_Case {
+class PhpViewsTest extends FrameworkTestCase {
 	protected Factory $view_factory;
 
 	protected function setUp(): void {

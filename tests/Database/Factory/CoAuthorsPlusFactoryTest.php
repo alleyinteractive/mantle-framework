@@ -2,7 +2,7 @@
 
 namespace Mantle\Tests\Database\Factory;
 
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use stdClass;
 use WP_Post;
@@ -11,7 +11,7 @@ use WP_Post;
  * @group factory
  */
 #[Group( 'factory' )]
-class CoAuthorsPlusFactoryTest extends Framework_Test_Case {
+class CoAuthorsPlusFactoryTest extends FrameworkTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 

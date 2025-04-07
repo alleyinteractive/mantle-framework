@@ -3,7 +3,7 @@ namespace Mantle\Tests\Testing\Concerns;
 
 use Mantle\Testing\Attributes\Expected_Incorrect_Usage;
 use Mantle\Testing\Attributes\Ignore_Incorrect_Usage;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\Group;
 
 /**
@@ -12,7 +12,7 @@ use PHPUnit\Framework\Attributes\Group;
  * @group testing
  */
 #[Group( 'testing' )]
-class IncorrectUsageTest extends Framework_Test_Case {
+class IncorrectUsageTest extends FrameworkTestCase {
 	/**
 	 * @expectedIncorrectUsage test_incorrect_usage_annotation
 	 */

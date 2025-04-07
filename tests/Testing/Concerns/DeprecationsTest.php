@@ -3,7 +3,7 @@ namespace Mantle\Tests\Testing\Concerns;
 
 use Mantle\Testing\Attributes\Expected_Deprecation;
 use Mantle\Testing\Attributes\Ignore_Deprecation;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\Group;
 
 /**
@@ -12,7 +12,7 @@ use PHPUnit\Framework\Attributes\Group;
  * @group testing
  */
 #[Group( 'testing' )]
-class DeprecationsTest extends Framework_Test_Case {
+class DeprecationsTest extends FrameworkTestCase {
 	/**
 	 * @expectedDeprecated test_deprecation_annotation
 	 */

@@ -3,9 +3,9 @@
 namespace Mantle\Tests\Support;
 
 use Mantle\Support\Environment;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 
-class EnvironmentTest extends Framework_Test_Case {
+class EnvironmentTest extends FrameworkTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 		Environment::clear();

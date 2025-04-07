@@ -5,10 +5,10 @@ use Mantle\Contracts\Database\Registrable;
 use Mantle\Database\Model\Model_Exception;
 use Mantle\Database\Model\Registration\Register_Taxonomy;
 use Mantle\Database\Model\Term;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 
 
-class TermObjectTest extends Framework_Test_Case {
+class TermObjectTest extends FrameworkTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 		Example_Taxonomy::register_object();

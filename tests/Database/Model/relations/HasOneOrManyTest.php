@@ -9,10 +9,10 @@ use Mantle\Database\Model\Relations\Relation;
 use Mantle\Database\Model\Term;
 use Mantle\Database\Model_Service_Provider;
 use Mantle\Testing\Concerns\Refresh_Database;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use Mantle\Testing\Utils;
 
-class HasOneOrManyTest extends Framework_Test_Case {
+class HasOneOrManyTest extends FrameworkTestCase {
 	use Refresh_Database;
 
 	protected function setUp(): void {

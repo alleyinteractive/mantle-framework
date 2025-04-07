@@ -3,9 +3,9 @@ namespace Mantle\Tests\Cache;
 
 use Mantle\Cache\SWR_Storage;
 use Mantle\Facade\Cache;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 
-class WordPressCacheRepositoryTest extends Framework_Test_Case {
+class WordPressCacheRepositoryTest extends FrameworkTestCase {
 	public function test_cache() {
 		$this->assertFalse( Cache::has( 'cache-key' ) );
 		$this->assertEquals( 'default', Cache::get( 'cache-key', 'default' ) );

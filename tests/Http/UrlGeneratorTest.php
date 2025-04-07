@@ -9,10 +9,10 @@ use Mantle\Http\Request;
 use Mantle\Http\Routing\Middleware\Substitute_Bindings;
 use Mantle\Http\Routing\Router;
 use Mantle\Http\Routing\Url_Generator;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class UrlGeneratorTest extends Framework_Test_Case {
+class UrlGeneratorTest extends FrameworkTestCase {
 	protected Router $router;
 
 	protected Url_Generator $url;

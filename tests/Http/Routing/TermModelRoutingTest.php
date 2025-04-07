@@ -12,9 +12,9 @@ use Mantle\Facade\Route;
 use Mantle\Http\Controller;
 use Mantle\Http\Routing\Middleware\Substitute_Bindings;
 use Mantle\Http\Routing\Middleware\Wrap_Template;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 
-class TermModelRoutingTest extends Framework_Test_Case {
+class TermModelRoutingTest extends FrameworkTestCase {
 	public function test_category_term() {
 		Testable_Category_Model::boot_if_not_booted();
 

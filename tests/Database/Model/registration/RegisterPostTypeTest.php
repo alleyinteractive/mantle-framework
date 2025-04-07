@@ -9,9 +9,9 @@ use Mantle\Database\Model\Registration\Register_Post_Type;
 use Mantle\Database\Model\Registration\Register_Rest_Fields;
 use Mockery as m;
 use Mantle\REST_API\Registered_REST_Field;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 
-class RegisterPostTypeTest extends Framework_Test_Case {
+class RegisterPostTypeTest extends FrameworkTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 		remove_all_actions( 'init' );

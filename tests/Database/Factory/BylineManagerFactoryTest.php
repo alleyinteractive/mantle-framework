@@ -4,7 +4,7 @@ namespace Mantle\Tests\Database\Factory;
 
 use Byline_Manager\Models\Profile;
 use Byline_Manager\Utils;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use WP_Post;
 
@@ -12,7 +12,7 @@ use WP_Post;
  * @group factory
  */
 #[Group( 'factory' )]
-class BylineManagerFactoryTest extends Framework_Test_Case {
+class BylineManagerFactoryTest extends FrameworkTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 

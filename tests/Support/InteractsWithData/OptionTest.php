@@ -2,14 +2,14 @@
 namespace Mantle\Tests\Support\InteractsWithDataTest;
 
 use Mantle\Support\Option;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Option test case.
  */
 #[Group('interactsWithData')]
-class OptionTest extends Framework_Test_Case {
+class OptionTest extends FrameworkTestCase {
 	public function test_as_string(): void {
 		update_option( 'test_option', 'test' );
 

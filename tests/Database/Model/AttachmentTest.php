@@ -2,9 +2,9 @@
 namespace Mantle\Tests\Database\Model;
 
 use Mantle\Database\Model\Attachment;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 
-class AttachmentTest extends Framework_Test_Case {
+class AttachmentTest extends FrameworkTestCase {
 	/**
 	 * @var int
 	 */

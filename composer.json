@@ -95,6 +95,10 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "autoload": {
+        "psr-4": {
+            "Mantle\\Testing\\": "src/mantle/testing/",
+            "Mantle\\Testkit\\": "src/mantle/testkit/"
+        },
         "files": [
             "src/mantle/framework/helpers.php",
             "src/mantle/application/autoload.php",

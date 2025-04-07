@@ -7,13 +7,13 @@
 
 namespace Mantle\Tests\Framework\Helpers;
 
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use function Mantle\Support\Helpers\get_site_object;
 
 /**
  * Unit tests for nullable site object functions.
  */
-class NullableSiteObjectsTestCaseTest extends Framework_Test_Case {
+class NullableSiteObjectsTestCaseTest extends FrameworkTestCase {
 	public function setUp(): void {
 		parent::setUp();
 

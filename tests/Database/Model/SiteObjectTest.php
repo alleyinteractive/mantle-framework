@@ -3,10 +3,10 @@ namespace Mantle\Tests\Database\Model;
 
 use Mantle\Database\Model\Site;
 use Mantle\Testing\Concerns\Multisite_Test;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 
 
-class SiteObjectTest extends Framework_Test_Case {
+class SiteObjectTest extends FrameworkTestCase {
 	use Multisite_Test;
 
 	public function test_site_attributes() {

@@ -8,9 +8,9 @@ use Mantle\Events\Dispatcher;
 use Mantle\Http\Request;
 use Mantle\Http\Routing\Middleware\Substitute_Bindings;
 use Mantle\Http\Routing\Router;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 
-class RouterTest extends Framework_Test_Case {
+class RouterTest extends FrameworkTestCase {
 	public function test_basic_dispatching() {
 		$router = $this->get_router();
 		$router->get(
@@ -118,7 +118,7 @@ class RouterTest extends Framework_Test_Case {
 	}
 
 	public function testClosureMiddleware() {
-		   $router      = $this->get_router();
+			$router     = $this->get_router();
 			$middleware = function ( $request, $next ) {
 					return 'caught';
 			};

@@ -5,13 +5,13 @@ use InvalidArgumentException;
 use Mantle\Application\Application;
 use Mantle\Filesystem\Filesystem;
 use Mantle\Filesystem\Filesystem_Manager;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\TestCase;
 use Mockery as m;
 
 use function Mantle\Support\Helpers\tap;
 
-class FilesystemManagerTest extends Framework_Test_Case {
+class FilesystemManagerTest extends FrameworkTestCase {
 	protected function tearDown(): void {
 		parent::tearDown();
 

@@ -4,9 +4,9 @@ namespace Mantle\Tests\Database\Model\Registration;
 use Mantle\Contracts\Database\Registrable_Meta;
 use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Registration\Register_Meta;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 
-class RegisterMetaTest extends Framework_Test_Case {
+class RegisterMetaTest extends FrameworkTestCase {
 	public function test_register_meta() {
 		$this->expectApplied( 'mantle_register_meta_default_args' )->once()->andReturn(
 			[

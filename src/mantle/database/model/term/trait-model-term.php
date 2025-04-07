@@ -16,7 +16,6 @@ use WP_Term;
 
 use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\get_term_object;
-use function Mantle\Support\Helpers\get_term_object_by;
 
 /**
  * Interface for interfacing with a model's terms.
@@ -124,121 +123,119 @@ trait Model_Term {
 	public function set_terms( $terms, ?string $taxonomy = null, bool $append = false, bool $create = false ) {
 		$terms = collect( Arr::wrap( $terms ) );
 
-		// If taxonomy is not specified, chunk the terms into taxonomy groups.
-		if ( ! $taxonomy ) {
-			$terms = $terms->reduce(
-				function ( array $carry, $term, $index ) use ( $create ): array {
+		if ( $taxonomy ) {
+			$terms = $terms->map( function ( mixed $term ) use ( $taxonomy ): int {
+				if ( $term instanceof WP_Term || $term instanceof Term ) {
+					return $term->term_id;
+				}
+
+				if ( is_string( $term ) ) {
+					$term = get_term_by( 'slug', $term, $taxonomy );
+
 					if ( $term instanceof WP_Term ) {
-						$carry[ $term->taxonomy ][] = $term;
-
-						return $carry;
+						return $term->term_id;
 					}
+				}
 
-					if ( $term instanceof Term ) {
-						$carry[ $term->taxonomy ][] = $term->core_object();
+				if ( ! is_numeric( $term ) ) {
+					throw new InvalidArgumentException(
+						"Invalid term value passed to set_terms (expected Term/WP_Term/int): {$term}",
+					);
+				}
 
-						return $carry;
-					}
+				return (int) $term;
+			} )->filter()->values()->all();
 
-					// Support an array of taxonomy => term ID/object/slug pairs.
-					if ( is_array( $term ) ) {
-						foreach ( $term as $taxonomy => $item ) {
-							if ( $item instanceof WP_Term || $item instanceof Term ) {
-								$carry[ $item->taxonomy ][] = $item instanceof Term
-									? $item->core_object()
-									: $item;
+			$update = \wp_set_object_terms( $this->id(), $terms, $taxonomy, $append );
 
-								continue;
-							}
-
-							if ( is_numeric( $item ) ) {
-								$item = get_term_object( $item );
-
-								if ( $item instanceof WP_Term ) {
-									$carry[ $item->taxonomy ][] = $item;
-								}
-
-								continue;
-							}
-
-							// Use the parent array key as the taxonomy if the parent array
-							// key is a string and the current array index is not.
-							if ( ! is_string( $taxonomy ) && is_string( $index ) ) {
-								$taxonomy = $index;
-							}
-
-							// Attempt to infer if the key is a taxonomy slug and this is a
-							// taxonomy => term slug pair.
-							if ( ! is_string( $taxonomy ) || ! taxonomy_exists( $taxonomy ) ) {
-								continue;
-							}
-
-							$term = get_term_object_by( 'slug', $item, $taxonomy );
-
-							// Optionally create the term if it does not exist.
-							if ( ! $term && $create ) {
-								$term = wp_insert_term( Str::headline( $item ), $taxonomy, [ 'slug' => $item ] );
-
-								if ( is_wp_error( $term ) ) {
-									throw new Model_Exception( "Error creating term: [{$term->get_error_message()}]" );
-								}
-
-								$term = get_term( $term['term_id'], $taxonomy );
-							}
-
-							if ( $term instanceof WP_Term ) {
-								$carry[ $taxonomy ][] = $term;
-							}
-						}
-
-						return $carry;
-					}
-
-					if ( ! is_numeric( $term ) ) {
-						throw new InvalidArgumentException( "Invalid term value passed to set_terms (expected Term/WP_Term/int): {$term}" );
-					}
-
-					$term = get_term_object( $term );
-
-					if ( $term ) {
-						$carry[ $term->taxonomy ][] = $term;
-					}
-
-					return $carry;
-				},
-				[],
-			);
-
-			foreach ( collect( $terms )->filter() as $taxonomy => $items ) {
-				$this->set_terms( Arr::pluck( $items, 'term_id' ), $taxonomy, $append );
+			if ( \is_wp_error( $update ) ) {
+				throw new Model_Exception( "Error setting model terms: [{$update->get_error_message()}]" );
 			}
 
 			return $this;
 		}
 
-		// Convert the terms to a array of term IDs.
-		$terms = $terms
-			->map(
-				function ( $term ) {
-					if ( $term instanceof WP_Term || $term instanceof Term ) {
-						return $term->term_id;
-					}
+		// If a taxonomy was not passed, we need to infer it from the terms. This is
+		// a bit tricky since we need to support both a single taxonomy and multiple
+		// taxonomies. Thankfully, we have tests.
+		$terms = $terms->reduce(
+			fn ( array $carry, $argument, $parent_index ) => $this->resolve_mixed_term( $carry, $argument, $parent_index, $create ),
+			[],
+		);
 
-					return $term;
-				}
-			)
-			->filter()
-			->all();
-
-		$update = \wp_set_object_terms( $this->id(), $terms, $taxonomy, $append );
-
-		if ( \is_wp_error( $update ) ) {
-			throw new Model_Exception( "Error setting model terms: [{$update->get_error_message()}]" );
+		foreach ( collect( $terms )->filter() as $taxonomy => $items ) {
+			$this->set_terms( Arr::pluck( $items, 'term_id' ), $taxonomy, $append );
 		}
 
 		return $this;
 	}
 
+	/**
+	 * Resolve a term from a mixed value.
+	 *
+	 * @throws Model_Exception Thrown if the term cannot be created.
+	 *
+	 * @param array<string, WP_Term[]> $carry Array of terms to resolve.
+	 * @param mixed                    $value Term value to resolve. Supports Term, WP_Term, int, string, or array of each.
+	 * @param string|null              $taxonomy Taxonomy name, optional.
+	 * @param bool                     $create Create the term if it does not exist, defaults to false.
+	 */
+	private function resolve_mixed_term( array $carry, mixed $value, ?string $taxonomy = null, bool $create = false ): array {
+		if ( $value instanceof WP_Term || $value instanceof Term ) {
+			$carry[ $value->taxonomy ][] = $value instanceof Term ? $value->core_object() : $value;
+
+			return $carry;
+		}
+
+		if ( ! is_string( $taxonomy ) || is_numeric( $taxonomy ) ) {
+			$taxonomy = null;
+		}
+
+		if ( is_numeric( $value ) ) {
+			$term = get_term_object( (int) $value, $taxonomy ?: '' );
+
+			if ( $term ) {
+				$carry[ $term->taxonomy ][] = $term;
+			}
+
+			return $carry;
+		}
+
+		if ( is_string( $value ) ) {
+			$term = get_term_by( 'slug', $value, $taxonomy ?? '' );
+
+			if ( ! $term && $create ) {
+				// Skip creating a term if a taxonomy was not passed.
+				if ( ! is_string( $taxonomy ) ) {
+					return $carry;
+				}
+
+				$term = wp_insert_term( Str::headline( $value ), $taxonomy, [ 'slug' => $value ] );
+
+				if ( is_wp_error( $term ) ) {
+					throw new Model_Exception( "Error creating term: [{$term->get_error_message()}]" );
+				}
+
+				$term = get_term( $term['term_id'], $taxonomy );
+			}
+
+			if ( $term ) {
+				$carry[ $term->taxonomy ][] = $term;
+			}
+
+			return $carry;
+		}
+
+		if ( is_array( $value ) ) {
+			foreach ( $value as $index => $item ) {
+				$sub_taxonomy = is_string( $index ) ? $index : $taxonomy;
+
+				$carry = $this->resolve_mixed_term( $carry, $item, $sub_taxonomy, $create );
+			}
+		}
+
+		return $carry;
+	}
 
 	/**
 	 * Remove terms from a post.

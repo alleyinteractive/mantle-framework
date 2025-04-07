@@ -3,9 +3,9 @@ namespace Mantle\Tests\Database\Model;
 
 use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Registration\Register_Rest_Fields;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 
-class RestFieldTest extends Framework_Test_Case {
+class RestFieldTest extends FrameworkTestCase {
 	public function test_rest_field() {
 		Testable_Model_With_Rest_Field::boot_if_not_booted();
 

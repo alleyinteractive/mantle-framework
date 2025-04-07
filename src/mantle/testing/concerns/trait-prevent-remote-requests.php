@@ -13,7 +13,7 @@ use Mantle\Testing\Mock_Http_Response;
  * Prevent remote requests from being made by providing a default response to
  * the remote request.
  *
- * @mixin \Mantle\Testing\Test_Case
+ * @mixin \Mantle\Testing\TestCase
  */
 trait Prevent_Remote_Requests {
 	/**

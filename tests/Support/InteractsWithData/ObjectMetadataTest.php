@@ -2,7 +2,7 @@
 namespace Mantle\Tests\Support\InteractsWithDataTest;
 
 use Mantle\Support\Object_Metadata;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 
@@ -10,7 +10,7 @@ use PHPUnit\Framework\Attributes\Group;
  * Object Meta Data test case.
  */
 #[Group('interactsWithData')]
-class ObjectMetadataTest extends Framework_Test_Case {
+class ObjectMetadataTest extends FrameworkTestCase {
 	#[DataProvider('objectTypeProvider')]
 	public function test_get_data( string $object_type ): void {
 		$object_id = static::factory()->{$object_type}->create();

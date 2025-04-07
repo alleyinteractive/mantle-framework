@@ -2,9 +2,9 @@
 namespace Mantle\Tests\View;
 
 use Mantle\Facade\View_Loader;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 
-class ViewFinderTest extends Framework_Test_Case {
+class ViewFinderTest extends FrameworkTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 

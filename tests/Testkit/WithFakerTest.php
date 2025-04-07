@@ -3,9 +3,9 @@ namespace Mantle\Tests\Testkit;
 
 use Faker\Generator;
 use Mantle\Testing\Concerns\With_Faker;
-use Mantle\Testkit\Test_Case;
+use Mantle\Testkit\TestCase;
 
-class WithFakerTest extends Test_Case {
+class WithFakerTest extends TestCase {
 	use With_Faker;
 
 	public function test_creates_faker() {

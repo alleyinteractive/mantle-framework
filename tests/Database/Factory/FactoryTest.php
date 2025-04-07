@@ -5,7 +5,7 @@ namespace Mantle\Tests\Database\Factory;
 use Mantle\Database\Factory;
 use Mantle\Database\Factory\Post_Factory;
 use Mantle\Database\Model;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 
@@ -13,7 +13,7 @@ use PHPUnit\Framework\Attributes\Group;
  * @group factory
  */
 #[Group( 'factory' )]
-class FactoryTest extends Framework_Test_Case {
+class FactoryTest extends FrameworkTestCase {
 	public function test_create_basic_model() {
 		$factory = Testable_Post::factory();
 

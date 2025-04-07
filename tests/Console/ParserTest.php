@@ -69,7 +69,7 @@ class ParserTest extends TestCase {
 	}
 
 	public function testShortcutNameParsing() {
-		 $results = Parser::parse( 'command:name {--o|option}' );
+		$results = Parser::parse( 'command:name {--o|option}' );
 
 		$this->assertSame( 'o', $results[2][0]->getShortcut() );
 		$this->assertSame( 'option', $results[2][0]->getName() );

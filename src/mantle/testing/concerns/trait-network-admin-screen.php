@@ -27,7 +27,7 @@ trait Network_Admin_Screen {
 		if ( ! class_exists( 'WP_Screen' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/class-wp-screen.php';
 		}
-		
+
 		if ( ! function_exists( 'get_current_screen' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/screen.php';
 		}

@@ -3,10 +3,10 @@
 namespace Mantle\Tests\Scheduling;
 
 use Mantle\Scheduling\Event;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use Mockery as m;
 
-class FrequencyTest extends Framework_Test_Case {
+class FrequencyTest extends FrameworkTestCase {
 
 	/*
 	 * @var Event

@@ -13,7 +13,7 @@ use Mantle\Queue\Providers\WordPress\Scheduler;
 use Mantle\Queue\Queueable;
 use Mantle\Scheduling\Schedule;
 use Mantle\Testing\Concerns\Refresh_Database;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\Group;
 use RuntimeException;
@@ -28,7 +28,7 @@ use function Mantle\Queue\dispatch;
  */
 #[Group( 'queue' )]
 #[Group( 'wordpress-queue' )]
-class WordPressCronQueueTest extends Framework_Test_Case {
+class WordPressCronQueueTest extends FrameworkTestCase {
 	use Refresh_Database;
 
 	protected function setUp(): void {

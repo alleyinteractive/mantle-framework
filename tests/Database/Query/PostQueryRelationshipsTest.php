@@ -6,10 +6,10 @@ use Mantle\Database\Model\Concerns\Has_Relationships as Relationships;
 use Mantle\Database\Model\Relations\Relation;
 use Mantle\Database\Model\Term;
 use Mantle\Database\Model_Service_Provider;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use Mantle\Testing\Utils;
 
-class PostQueryRelationshipsTest extends Framework_Test_Case {
+class PostQueryRelationshipsTest extends FrameworkTestCase {
 	protected function setUp(): void {
 		Utils::delete_all_posts();
 		parent::setUp();

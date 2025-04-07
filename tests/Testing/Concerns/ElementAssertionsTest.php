@@ -2,7 +2,7 @@
 namespace Mantle\Tests\Testing\Concerns;
 
 use DOMNode;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use Mantle\Testing\Test_Response;
 use PHPUnit\Framework\Attributes\Group;
 
@@ -12,7 +12,7 @@ use function Mantle\Testing\html_string;
  * @group testing
  */
 #[Group( 'testing' )]
-class ElementAssertionsTest extends Framework_Test_Case {
+class ElementAssertionsTest extends FrameworkTestCase {
 	public string $test_content = '
 	<div>
 		<section>Example Section</section>

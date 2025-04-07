@@ -44,7 +44,7 @@ class Printer extends \Nette\PhpGenerator\Printer {
 					'():',
 				],
 				parent::printFile( $file ),
-			) 
+			)
 		)->rtrim( PHP_EOL )->append( PHP_EOL );
 	}
 

@@ -2,9 +2,9 @@
 namespace Mantle\Tests\Testkit;
 
 use Mantle\Tests\Testkit\Concerns\ExampleOverload;
-use Mantle\Testkit\Test_Case;
+use Mantle\Testkit\TestCase;
 
-class TestkitTestCaseTest extends Test_Case {
+class TestkitTestCaseTest extends TestCase {
 	use ExampleOverload;
 
 	public function test_create_application() {

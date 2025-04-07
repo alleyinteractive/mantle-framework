@@ -1,9 +1,9 @@
 <?php
 namespace Mantle\Tests\View;
 
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 
-class BladeViewsTest extends Framework_Test_Case {
+class BladeViewsTest extends FrameworkTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 

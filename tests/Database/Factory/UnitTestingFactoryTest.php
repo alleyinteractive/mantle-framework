@@ -6,7 +6,7 @@ use Closure;
 use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Term;
 use Mantle\Testing\Concerns\With_Faker;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 
@@ -20,7 +20,7 @@ use function Mantle\Support\Helpers\collect;
  * @group factory
  */
 #[Group( 'factory' )]
-class UnitTestingFactoryTest extends Framework_Test_Case {
+class UnitTestingFactoryTest extends FrameworkTestCase {
 	use With_Faker;
 
 	public function test_post_factory() {
@@ -289,6 +289,7 @@ class UnitTestingFactoryTest extends Framework_Test_Case {
 		$post = static::factory()->post->with_terms( [ 'post_tag' => $tags ] )->create_and_get();
 		$post_tags = get_the_terms( $post, 'post_tag' );
 
+		$this->assertIsArray( $post_tags );
 		$this->assertCount( 5, $post_tags );
 		$this->assertEquals(
 			collect( $tags )->sort()->values()->all(),
@@ -304,8 +305,58 @@ class UnitTestingFactoryTest extends Framework_Test_Case {
 
 		$post_tags = get_the_terms( $post, 'post_tag' );
 
+		$this->assertIsArray( $post_tags );
 		$this->assertCount( 1, $post_tags );
 		$this->assertEquals( 'unknown-term', $post_tags[0]->slug );
+	}
+
+	#[Group( 'with_terms' )]
+	public function test_posts_with_terms_array_of_slugs() {
+		$post = static::factory()->post->with_terms(
+			[
+				'post_tag' => [
+					'another-term',
+					'unknown-term',
+				],
+			],
+		)->create_and_get();
+
+		$post_tags = get_the_terms( $post, 'post_tag' );
+
+		$this->assertIsArray( $post_tags );
+		$this->assertCount( 2, $post_tags );
+		$this->assertEquals(
+			[ 'another-term', 'unknown-term' ],
+			collect( $post_tags )->pluck( 'slug' )->sort()->values()->all(),
+		);
+	}
+
+	#[Group( 'with_terms' )]
+	public function test_posts_with_terms_array_of_slugs_and_mixed() {
+		$post = static::factory()->post->with_terms(
+			static::factory()->category->create_and_get(),
+			static::factory()->tag->create( [ 'name' => 'Existing' ] ),
+			[
+				'post_tag' => [
+					'another-term',
+					'unknown-term',
+				],
+			],
+			[
+				'post_tag' => [
+					'another-new-tag',
+					'another-term',
+				],
+			],
+		)->create_and_get();
+
+		$post_tags = get_the_terms( $post, 'post_tag' );
+
+		$this->assertCount( 4, $post_tags );
+		$this->assertEquals(
+			[ 'another-new-tag', 'another-term', 'existing', 'unknown-term' ],
+			collect( $post_tags )->pluck( 'slug' )->sort()->values()->all(),
+		);
 	}
 
 	public function test_post_with_terms_do_not_include_default_category(): void {

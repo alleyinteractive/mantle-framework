@@ -2,14 +2,14 @@
 namespace Mantle\Tests\Concerns;
 
 use Mantle\Testing\Attributes\Acting_As;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\Group;
 
 /**
  * @group testing
  */
 #[Group( 'testing' )]
-class WordPressAuthenticationTest extends Framework_Test_Case {
+class WordPressAuthenticationTest extends FrameworkTestCase {
 	public function test_acting_as_role() {
 		$user = $this->acting_as( 'administrator' );
 
