@@ -385,10 +385,8 @@ class Event {
 
 	/**
 	 * Get the Cron expression for the event.
-	 *
-	 * @return string
 	 */
-	public function get_expression() {
+	public function get_expression(): string {
 		return $this->expression;
 	}
 }

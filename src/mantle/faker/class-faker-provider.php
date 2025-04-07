@@ -85,7 +85,7 @@ class Faker_Provider extends Base {
 	 * @param string|null $alt Image alt text.
 	 * @param array       $attributes Additional attributes for the block.
 	 */
-	public function image_block( ?string $url = null, ?string $alt = null, array $attributes = [] ) {
+	public function image_block( ?string $url = null, ?string $alt = null, array $attributes = [] ): string {
 		$image = sprintf(
 			'<figure class="wp-block-image"><img src="%s"%s/></figure>',
 			$url ?? 'https://picsum.photos/' . wp_rand( 100, 1000 ) . '/' . wp_rand( 100, 1000 ),

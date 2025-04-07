@@ -26,7 +26,6 @@ trait Interacts_With_Input {
 	 *
 	 * @param  string|null       $key
 	 * @param  string|array|null $default
-	 * @return string|array|null
 	 */
 	public function server( ?string $key = null, mixed $default = null ): string|array|null {
 		return $this->retrieve_item( 'server', $key, $default );
@@ -179,7 +178,6 @@ trait Interacts_With_Input {
 	 * Get all of the input and files for the request.
 	 *
 	 * @param  string|string[]|null $keys
-	 * @return array
 	 */
 	public function all( string|array|null $keys = null ): array {
 		$input = $this->input();
@@ -202,7 +200,6 @@ trait Interacts_With_Input {
 	 *
 	 * @param  string|null $key
 	 * @param  mixed       $default
-	 * @return mixed
 	 */
 	public function input( ?string $key = null, mixed $default = null ): mixed {
 		return data_get(
@@ -219,7 +216,6 @@ trait Interacts_With_Input {
 	 *
 	 * @param  string|null $key
 	 * @param  bool        $default
-	 * @return bool
 	 */
 	public function boolean( ?string $key = null, mixed $default = false ): bool {
 		return filter_var( $this->input( $key, $default ), FILTER_VALIDATE_BOOLEAN );

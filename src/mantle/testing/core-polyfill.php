@@ -25,7 +25,7 @@ if ( ! function_exists( 'rand_long_str' ) ) :
 	 * @param int $length The required length.
 	 * @return string The string.
 	 */
-	function rand_long_str( $length ) {
+	function rand_long_str( $length ): string {
 		$chars  = 'abcdefghijklmnopqrstuvwxyz';
 		$string = '';
 
@@ -45,7 +45,7 @@ if ( ! function_exists( 'strip_ws' ) ) :
 	 * @param string $txt The text.
 	 * @return string Text with line-leading and line-trailing whitespace stripped.
 	 */
-	function strip_ws( $txt ) {
+	function strip_ws( $txt ): string {
 		$lines  = explode( "\n", $txt );
 		$result = [];
 		foreach ( $lines as $line ) {
@@ -63,9 +63,8 @@ if ( ! function_exists( 'ensure_trailingslash' ) ) :
 	 * Appends a trailing slash.
 	 *
 	 * @param string $string String to append a trailing slash to.
-	 * @return string
 	 */
-	function ensure_trailingslash( $string ) {
+	function ensure_trailingslash( $string ): string {
 		return remove_trailingslash( $string ) . '/';
 	}
 endif;
@@ -77,7 +76,7 @@ if ( ! function_exists( 'remove_trailingslash' ) ) :
 	 * @param string $string What to remove the trailing slashes from.
 	 * @return string String without the trailing slashes.
 	 */
-	function remove_trailingslash( $string ) {
+	function remove_trailingslash( $string ): string {
 		return rtrim( $string, '/\\' );
 	}
 endif;

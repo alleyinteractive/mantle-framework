@@ -81,28 +81,22 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 
 	/**
 	 * Get the request method.
-	 *
-	 * @return string
 	 */
-	public function method() {
+	public function method(): string {
 		return $this->getMethod();
 	}
 
 	/**
 	 * Get the root URL for the application.
-	 *
-	 * @return string
 	 */
-	public function root() {
+	public function root(): string {
 		return rtrim( $this->getSchemeAndHttpHost() . $this->getBaseUrl(), '/' );
 	}
 
 	/**
 	 * Get the URL (no query string) for the request.
-	 *
-	 * @return string
 	 */
-	public function url() {
+	public function url(): string {
 		return rtrim( (string) preg_replace( '/\?.*/', '', $this->getUri() ), '/' );
 	}
 
@@ -123,22 +117,19 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * Get the full URL for the request with the added query string parameters.
 	 *
 	 * @param  array $query
-	 * @return string
 	 */
-	public function full_url_with_query( array $query ) {
+	public function full_url_with_query( array $query ): string {
 		$question = $this->getBaseUrl() . $this->getPathInfo() === '/' ? '/?' : '?';
 
 		return count( $this->query() ) > 0
-			? $this->url() . $question . Arr::query( array_merge( $this->query(), $query ) )
-			: $this->full_url() . $question . Arr::query( $query );
+		? $this->url() . $question . Arr::query( array_merge( $this->query(), $query ) )
+		: $this->full_url() . $question . Arr::query( $query );
 	}
 
 	/**
 	 * Get the current path info for the request.
-	 *
-	 * @return string
 	 */
-	public function path() {
+	public function path(): string {
 		$pattern = trim( $this->getPathInfo(), '/' );
 
 		return '' === $pattern ? '/' : $pattern;
@@ -146,10 +137,8 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 
 	/**
 	 * Get the current decoded path info for the request.
-	 *
-	 * @return string
 	 */
-	public function decoded_path() {
+	public function decoded_path(): string {
 		return rawurldecode( $this->path() );
 	}
 

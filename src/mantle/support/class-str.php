@@ -105,9 +105,8 @@ class Str {
 	 *
 	 * @param  string|null $value
 	 * @param  string      $language
-	 * @return string
 	 */
-	public static function ascii( ?string $value, string $language = 'en' ) {
+	public static function ascii( ?string $value, string $language = 'en' ): string {
 		return ASCII::to_ascii( (string) $value, $language );
 	}
 
@@ -117,9 +116,8 @@ class Str {
 	 * @param  string      $string
 	 * @param  string|null $unknown
 	 * @param  bool|null   $strict
-	 * @return string
 	 */
-	public static function transliterate( $string, $unknown = '?', $strict = false ) {
+	public static function transliterate( $string, $unknown = '?', $strict = false ): string {
 		return ASCII::to_transliterate( $string, $unknown, $strict );
 	}
 
@@ -340,9 +338,8 @@ class Str {
 	 * @param  string      $value
 	 * @param  string      $before
 	 * @param  string|null $after
-	 * @return string
 	 */
-	public static function wrap( $value, $before, $after = null ) {
+	public static function wrap( $value, $before, $after = null ): string {
 		return $before . $value . ( $after ??= $before );
 	}
 
@@ -467,9 +464,8 @@ class Str {
 	 * Convert the given string to lower-case.
 	 *
 	 * @param  string $value
-	 * @return string
 	 */
-	public static function lower( $value ) {
+	public static function lower( $value ): string {
 		return mb_strtolower( $value, 'UTF-8' );
 	}
 
@@ -496,9 +492,8 @@ class Str {
 	 *
 	 * @param  string $string
 	 * @param  array  $options
-	 * @return string
 	 */
-	public static function markdown( $string, array $options = [] ) {
+	public static function markdown( $string, array $options = [] ): string {
 		$converter = new GithubFlavoredMarkdownConverter( $options );
 
 		return (string) $converter->convert( $string );
@@ -509,9 +504,8 @@ class Str {
 	 *
 	 * @param  string $string
 	 * @param  array  $options
-	 * @return string
 	 */
-	public static function inline_markdown( $string, array $options = [] ) {
+	public static function inline_markdown( $string, array $options = [] ): string {
 		$environment = new Environment( $options );
 
 		$environment->addExtension( new GithubFlavoredMarkdownExtension() );
@@ -562,9 +556,8 @@ class Str {
 	 *
 	 * @param  string $pattern
 	 * @param  string $subject
-	 * @return string
 	 */
-	public static function match( $pattern, $subject ) {
+	public static function match( $pattern, $subject ): string {
 		preg_match( $pattern, $subject, $matches );
 
 		if ( ! $matches ) {
@@ -621,16 +614,15 @@ class Str {
 	 * @param  string $value
 	 * @param  int    $length
 	 * @param  string $pad
-	 * @return string
 	 */
-	public static function pad_both( $value, $length, $pad = ' ' ) {
+	public static function pad_both( $value, $length, $pad = ' ' ): string {
 		$short       = max( 0, $length - mb_strlen( $value ) );
 		$short_left  = (int) floor( $short / 2 );
 		$short_right = (int) ceil( $short / 2 );
 
 		return mb_substr( str_repeat( $pad, $short_left ), 0, $short_left ) .
-			$value .
-			mb_substr( str_repeat( $pad, $short_right ), 0, $short_right );
+		$value .
+		mb_substr( str_repeat( $pad, $short_right ), 0, $short_right );
 	}
 
 	/**
@@ -639,9 +631,8 @@ class Str {
 	 * @param  string $value
 	 * @param  int    $length
 	 * @param  string $pad
-	 * @return string
 	 */
-	public static function pad_left( $value, $length, $pad = ' ' ) {
+	public static function pad_left( $value, $length, $pad = ' ' ): string {
 		$short = max( 0, $length - mb_strlen( $value ) );
 
 		return mb_substr( str_repeat( $pad, $short ), 0, $short ) . $value;
@@ -653,9 +644,8 @@ class Str {
 	 * @param  string $value
 	 * @param  int    $length
 	 * @param  string $pad
-	 * @return string
 	 */
-	public static function pad_right( $value, $length, $pad = ' ' ) {
+	public static function pad_right( $value, $length, $pad = ' ' ): string {
 		$short = max( 0, $length - mb_strlen( $value ) );
 
 		return $value . mb_substr( str_repeat( $pad, $short ), 0, $short );
@@ -677,9 +667,8 @@ class Str {
 	 *
 	 * @param  string               $value
 	 * @param  int|array|\Countable $count
-	 * @return string
 	 */
-	public static function plural( $value, $count = 2 ) {
+	public static function plural( $value, $count = 2 ): string {
 		return Pluralizer::plural( $value, $count );
 	}
 
@@ -688,9 +677,8 @@ class Str {
 	 *
 	 * @param  string               $value
 	 * @param  int|array|\Countable $count
-	 * @return string
 	 */
-	public static function plural_studly( $value, $count = 2 ) {
+	public static function plural_studly( $value, $count = 2 ): string {
 		$parts = preg_split( '/(.)(?=[A-Z])/u', $value, -1, PREG_SPLIT_DELIM_CAPTURE );
 
 		$last_word = array_pop( $parts );
@@ -903,9 +891,8 @@ class Str {
 	 *
 	 * @param  string $string
 	 * @param  int    $times
-	 * @return string
 	 */
-	public static function repeat( string $string, int $times ) {
+	public static function repeat( string $string, int $times ): string {
 		return str_repeat( $string, $times );
 	}
 
@@ -1028,9 +1015,8 @@ class Str {
 	 * Reverse the given string.
 	 *
 	 * @param  string $value
-	 * @return string
 	 */
-	public static function reverse( string $value ) {
+	public static function reverse( string $value ): string {
 		return implode( '', array_reverse( mb_str_split( $value ) ) );
 	}
 
@@ -1051,9 +1037,8 @@ class Str {
 	 * Convert the given string to upper-case.
 	 *
 	 * @param  string $value
-	 * @return string
 	 */
-	public static function upper( $value ) {
+	public static function upper( $value ): string {
 		return mb_strtoupper( $value, 'UTF-8' );
 	}
 
@@ -1099,9 +1084,8 @@ class Str {
 	 * @param  string                $separator
 	 * @param  string|null           $language
 	 * @param  array<string, string> $dictionary
-	 * @return string
 	 */
-	public static function slug( ?string $title, string $separator = '-', ?string $language = 'en', array $dictionary = [ '@' => 'at' ] ) {
+	public static function slug( ?string $title, string $separator = '-', ?string $language = 'en', array $dictionary = [ '@' => 'at' ] ): string {
 		$title = $language ? static::ascii( $title, $language ) : $title;
 
 		// Convert all dashes/underscores into separator.
@@ -1202,9 +1186,8 @@ class Str {
 	 * Convert a value to studly caps case while preserving spaces as underscores.
 	 *
 	 * @param string $value Value to studly.
-	 * @return string
 	 */
-	public static function studly_underscore( $value ) {
+	public static function studly_underscore( $value ): string {
 		$value = ucwords( str_replace( [ '-', '_' ], ' ', $value ) );
 		return str_replace( ' ', '_', $value );
 	}
@@ -1216,9 +1199,8 @@ class Str {
 	 * @param  int      $start
 	 * @param  int|null $length
 	 * @param  string   $encoding
-	 * @return string
 	 */
-	public static function substr( $string, $start, $length = null, $encoding = 'UTF-8' ) {
+	public static function substr( $string, $start, $length = null, $encoding = 'UTF-8' ): string {
 		return mb_substr( $string, $start, $length, $encoding );
 	}
 
@@ -1260,9 +1242,8 @@ class Str {
 	 *
 	 * @param  array  $map
 	 * @param  string $subject
-	 * @return string
 	 */
-	public static function swap( array $map, $subject ) {
+	public static function swap( array $map, $subject ): string {
 		return strtr( $subject, $map );
 	}
 
@@ -1270,9 +1251,8 @@ class Str {
 	 * Make a string's first character lowercase.
 	 *
 	 * @param  string $string
-	 * @return string
 	 */
-	public static function lcfirst( $string ) {
+	public static function lcfirst( $string ): string {
 		return static::lower( static::substr( $string, 0, 1 ) ) . static::substr( $string, 1 );
 	}
 
@@ -1280,9 +1260,8 @@ class Str {
 	 * Make a string's first character uppercase.
 	 *
 	 * @param  string $string
-	 * @return string
 	 */
-	public static function ucfirst( $string ) {
+	public static function ucfirst( $string ): string {
 		return static::upper( static::substr( $string, 0, 1 ) ) . static::substr( $string, 1 );
 	}
 
@@ -1301,9 +1280,8 @@ class Str {
 	 *
 	 * @param  string      $string
 	 * @param  string|null $characters
-	 * @return int
 	 */
-	public static function word_count( $string, $characters = null ) {
+	public static function word_count( $string, $characters = null ): int {
 		return str_word_count( $string, 0, $characters );
 	}
 

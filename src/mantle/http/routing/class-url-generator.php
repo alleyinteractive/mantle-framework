@@ -117,9 +117,8 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 * @param array<string, mixed> $extra_query Extra query parameters to be appended to the URL path.
 	 * @param array                $extra_params Extra parameters to be appended to the URL path.
 	 * @param bool                 $secure Flag if should be forced to be secure.
-	 * @return string
 	 */
-	public function to( string $path, array $extra_query = [], array $extra_params = [], ?bool $secure = null ) {
+	public function to( string $path, array $extra_query = [], array $extra_params = [], ?bool $secure = null ): string {
 		// First we will check if the URL is already a valid URL. If it is we will not
 		// try to generate a new one but will simply return the URL as is, which is
 		// convenient since developers do not always have to check if it's valid.

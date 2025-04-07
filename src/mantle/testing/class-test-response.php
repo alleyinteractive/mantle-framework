@@ -150,7 +150,7 @@ class Test_Response {
 	 *
 	 * @return string|false
 	 */
-	public function get_content() {
+	public function get_content(): string {
 		return $this->content;
 	}
 

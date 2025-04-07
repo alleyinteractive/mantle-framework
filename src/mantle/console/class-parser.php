@@ -40,11 +40,10 @@ class Parser {
 	 * Extract the name of the command from the expression.
 	 *
 	 * @param  string $expression
-	 * @return string
 	 *
 	 * @throws \InvalidArgumentException
 	 */
-	protected static function name( $expression ) {
+	protected static function name( $expression ): string {
 		if ( ! preg_match( '/[^\s]+/', $expression, $matches ) ) {
 			throw new InvalidArgumentException( 'Unable to determine command name from signature.' );
 		}

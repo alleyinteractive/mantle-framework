@@ -195,9 +195,8 @@ class Package_Manifest {
 	 * Format the given package name.
 	 *
 	 * @param string $package Package name.
-	 * @return string
 	 */
-	protected function format( string $package ) {
+	protected function format( string $package ): string {
 		return str_replace( $this->vendor_path . '/', '', $package );
 	}
 

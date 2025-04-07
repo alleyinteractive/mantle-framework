@@ -277,9 +277,8 @@ class Filesystem {
 	 * Extract the file name from a file path.
 	 *
 	 * @param  string $path
-	 * @return string
 	 */
-	public function name( $path ) {
+	public function name( $path ): string {
 		return pathinfo( $path, PATHINFO_FILENAME );
 	}
 
@@ -287,9 +286,8 @@ class Filesystem {
 	 * Extract the trailing name component from a file path.
 	 *
 	 * @param  string $path
-	 * @return string
 	 */
-	public function basename( $path ) {
+	public function basename( $path ): string {
 		return pathinfo( $path, PATHINFO_BASENAME );
 	}
 
@@ -297,9 +295,8 @@ class Filesystem {
 	 * Extract the parent directory from a file path.
 	 *
 	 * @param  string $path
-	 * @return string
 	 */
-	public function dirname( $path ) {
+	public function dirname( $path ): string {
 		return pathinfo( $path, PATHINFO_DIRNAME );
 	}
 
@@ -307,9 +304,8 @@ class Filesystem {
 	 * Extract the file extension from a file path.
 	 *
 	 * @param  string $path
-	 * @return string
 	 */
-	public function extension( $path ) {
+	public function extension( $path ): string {
 		return pathinfo( $path, PATHINFO_EXTENSION );
 	}
 

@@ -64,7 +64,7 @@ return RectorConfig::configure()
 		deadCode: true,
 		instanceOf: true,
 	)
-	->withTypeCoverageLevel(11)
+	->withTypeCoverageLevel(13)
 	->withRules(
 		[
 			RenameForeachValueVariableToMatchExprVariableRector::class,

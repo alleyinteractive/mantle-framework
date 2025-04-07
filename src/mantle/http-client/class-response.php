@@ -225,10 +225,8 @@ class Response implements ArrayAccess {
 
 	/**
 	 * Get the raw body of the response.
-	 *
-	 * @return string
 	 */
-	public function body() {
+	public function body(): string {
 		return (string) ( $this->response['body'] ?? '' );
 	}
 

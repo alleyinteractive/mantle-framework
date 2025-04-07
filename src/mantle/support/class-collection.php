@@ -573,9 +573,8 @@ class Collection implements ArrayAccess, Enumerable {
 	 *
 	 * @param callable|string|null $value
 	 * @param string|null          $glue
-	 * @return string
 	 */
-	public function implode( $value, $glue = null ) {
+	public function implode( $value, $glue = null ): string {
 		if ( $this->use_as_callable( $value ) ) {
 			return implode( $glue ?? '', $this->map( $value )->all() );
 		}

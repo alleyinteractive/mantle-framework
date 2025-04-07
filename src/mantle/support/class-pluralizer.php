@@ -84,9 +84,8 @@ class Pluralizer {
 	 *
 	 * @param  string $value
 	 * @param  string $comparison
-	 * @return string
 	 */
-	protected static function match_case( string $value, string $comparison ) {
+	protected static function match_case( string $value, string $comparison ): string {
 		$functions = [ 'mb_strtolower', 'mb_strtoupper', 'ucfirst', 'ucwords' ];
 
 		foreach ( $functions as $function ) {

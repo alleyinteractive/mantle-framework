@@ -172,9 +172,8 @@ class Response_Factory implements Factory_Contract {
 	 * Convert the string to ASCII characters that are equivalent to the given name.
 	 *
 	 * @param  string $name
-	 * @return string
 	 */
-	protected function fallbackName( $name ) {
+	protected function fallbackName( $name ): string {
 		return str_replace( '%', '', Str::ascii( $name ) );
 	}
 

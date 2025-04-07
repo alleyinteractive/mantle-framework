@@ -242,9 +242,8 @@ class Router implements Router_Contract {
 	 * Prefix the given URI with the last prefix.
 	 *
 	 * @param string $uri Uri to prefix.
-	 * @return string
 	 */
-	protected function prefix( string $uri ) {
+	protected function prefix( string $uri ): string {
 		return trim( trim( $this->get_last_group_prefix(), '/' ) . '/' . trim( $uri, '/' ), '/' ) ?: '/';
 	}
 

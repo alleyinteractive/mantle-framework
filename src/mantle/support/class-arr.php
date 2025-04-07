@@ -592,9 +592,8 @@ class Arr {
 	 * Convert the array into a query string.
 	 *
 	 * @param  array $array Array to process.
-	 * @return string
 	 */
-	public static function query( $array ) {
+	public static function query( $array ): string {
 		return http_build_query( $array, '', '&', PHP_QUERY_RFC3986 );
 	}
 

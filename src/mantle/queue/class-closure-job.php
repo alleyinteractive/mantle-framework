@@ -106,10 +106,8 @@ class Closure_Job implements Can_Queue {
 
 	/**
 	 * Get the queue job ID.
-	 *
-	 * @return mixed
 	 */
-	public function get_id() {
+	public function get_id(): string {
 		$closure = $this->closure->getClosure();
 
 		if ( ! $closure ) { // @phpstan-ignore-line negated

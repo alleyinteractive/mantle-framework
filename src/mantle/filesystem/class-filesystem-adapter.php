@@ -376,7 +376,7 @@ class Filesystem_Adapter implements Filesystem {
 	 * @param string $path File path.
 	 * @return string|false
 	 */
-	public function mime_type( string $path ) {
+	public function mime_type( string $path ): string {
 		return $this->driver->mimeType( $path );
 	}
 
