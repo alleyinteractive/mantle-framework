@@ -10,6 +10,8 @@ namespace Mantle\Faker;
 use Faker\Provider\Base;
 use Faker\Provider\Lorem;
 
+use function Mantle\Support\Helpers\collect;
+
 /**
  * Faker Block Provider
  */
@@ -69,7 +71,7 @@ class Faker_Provider extends Base {
 	 * @param bool $as_text Return as text or an array of blocks.
 	 * @return string|array
 	 */
-	public function paragraph_blocks( int $count = 3, bool $as_text = true ) {
+	public static function paragraph_blocks( int $count = 3, bool $as_text = true ): string {
 		$paragraphs = [];
 		for ( $i = 0; $i < $count; $i++ ) {
 			$paragraphs[] = static::paragraph_block();
@@ -85,7 +87,7 @@ class Faker_Provider extends Base {
 	 * @param string|null $alt Image alt text.
 	 * @param array       $attributes Additional attributes for the block.
 	 */
-	public function image_block( ?string $url = null, ?string $alt = null, array $attributes = [] ) {
+	public static function image_block( ?string $url = null, ?string $alt = null, array $attributes = [] ): string {
 		$image = sprintf(
 			'<figure class="wp-block-image"><img src="%s"%s/></figure>',
 			$url ?? 'https://picsum.photos/' . wp_rand( 100, 1000 ) . '/' . wp_rand( 100, 1000 ),
@@ -93,6 +95,42 @@ class Faker_Provider extends Base {
 		);
 
 		return static::block( 'image', $image, $attributes );
+	}
+
+	/**
+	 * Generate a list block.
+	 *
+	 * @param string[]             $items List items.
+	 * @param bool                 $ordered Whether the list is ordered or unordered.
+	 * @param array<string, mixed> $attributes Block attributes.
+	 */
+	public static function list_block( array $items = [], bool $ordered = false, array $attributes = [] ): string {
+		$list_type  = $ordered ? 'ol' : 'ul';
+		$list_items = collect( $items )->map(
+			static fn ( string $item ) => static::block(
+				name: 'list-item',
+				content: "<li>{$item}</li>",
+			),
+		)->implode( "\n" );
+
+		if ( $ordered ) {
+			$attributes['ordered'] = true;
+		}
+
+		return static::block(
+			attributes: $attributes,
+			name: 'list',
+			content: sprintf( "<%s class=\"wp-block-list\">\n%s\n</%s>", $list_type, $list_items, $list_type ),
+		);
+	}
+
+	/**
+	 * Build a reusable block.
+	 *
+	 * @param int $id Block ID.
+	 */
+	public static function reusable_block( int $id ): string {
+		return static::block( 'block', null, [ 'ref' => $id ] );
 	}
 
 	/**

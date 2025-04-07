@@ -144,6 +144,76 @@ class BlockFactoryTest extends TestCase {
 		);
 	}
 
+	public function test_it_can_generate_a_list_block(): void {
+		$this->assertEquals(
+			<<<"HTML"
+<!-- wp:list -->
+<ul class="wp-block-list">
+<!-- wp:list-item -->
+<li>example</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>another</li>
+<!-- /wp:list-item -->
+</ul>
+<!-- /wp:list -->
+HTML,
+			block_factory()->list( [
+				'example',
+				'another',
+			] ),
+		);
+
+		$expected = <<<"HTML"
+<!-- wp:list {"ordered":true} -->
+<ol class="wp-block-list">
+<!-- wp:list-item -->
+<li>example</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>another</li>
+<!-- /wp:list-item -->
+</ol>
+<!-- /wp:list -->
+HTML;
+
+		$this->assertEquals(
+			$expected,
+			block_factory()->list( [
+				'example',
+				'another',
+			], true ),
+		);
+
+		$this->assertEquals(
+			$expected,
+			block_factory()->list( [
+				'example',
+				'another',
+			], ordered: true ),
+		);
+
+		$this->assertEquals(
+			$expected,
+			block_factory()->ordered_list( [
+				'example',
+				'another',
+			] ),
+		);
+	}
+
+	public function test_it_can_generate_a_reusable_block(): void {
+		$this->assertEquals(
+			'<!-- wp:block {"ref":123} /-->',
+			block_factory()->reusable( 123 ),
+		);
+
+		$this->assertEquals(
+			'<!-- wp:block {"ref":123} /-->',
+			block_factory()->reusable( id: 123 ),
+		);
+	}
+
 	public function test_it_can_create_multiple_blocks(): void {
 		$this->assertEquals(
 			'<!-- wp:heading {"level":2} -->
