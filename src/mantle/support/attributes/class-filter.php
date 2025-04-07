@@ -22,5 +22,5 @@ class Filter {
 	 * @param string $hook_name Hook name.
 	 * @param int    $priority Priority, defaults to 10.
 	 */
-	public function __construct( public string $hook_name, public int $priority = 10 ) {}
+	public function __construct( public readonly string $hook_name, public readonly int $priority = 10 ) {}
 }
