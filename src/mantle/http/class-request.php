@@ -102,10 +102,8 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 
 	/**
 	 * Get the full URL for the request.
-	 *
-	 * @return string
 	 */
-	public function full_url() {
+	public function full_url(): string {
 		$query = $this->getQueryString();
 
 		$question = $this->getBaseUrl() . $this->getPathInfo() === '/' ? '/?' : '?';

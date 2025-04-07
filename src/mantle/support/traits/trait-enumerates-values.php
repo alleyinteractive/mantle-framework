@@ -112,7 +112,7 @@ trait Enumerates_Values {
 	 * @param  iterable<array-key, TWrapValue>|TWrapValue $value
 	 * @return static<array-key, TWrapValue>
 	 */
-	public static function wrap( $value ) {
+	public static function wrap( $value ): static {
 		return $value instanceof Enumerable
 			? new static( $value )
 			: new static( Arr::wrap( $value ) );

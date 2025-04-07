@@ -53,9 +53,8 @@ class User extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 * Find a model by Object ID.
 	 *
 	 * @param \WP_User|int $object User to retrieve for.
-	 * @return User|null
 	 */
-	public static function find( $object ) {
+	public static function find( mixed $object ): ?static {
 		$user = Helpers\get_user_object( $object );
 
 		if ( empty( $user ) ) {

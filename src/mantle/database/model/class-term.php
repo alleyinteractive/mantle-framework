@@ -93,9 +93,8 @@ class Term extends Model implements Core_Object, Model_Meta, Updatable {
 	 * Find a model by Object ID.
 	 *
 	 * @param \WP_Term|string|int $object Term to retrieve.
-	 * @return Term|null
 	 */
-	public static function find( $object ) {
+	public static function find( mixed $object ): ?static {
 		$term = Helpers\get_term_object( $object );
 
 		if ( empty( $term ) ) {

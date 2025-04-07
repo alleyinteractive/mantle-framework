@@ -166,7 +166,7 @@ class ModelTest extends FrameworkTestCase {
 class Testable_Model extends Model {
 	use Model_Trait_To_Test;
 
-	public static function find( $object ) { }
+	public static function find( mixed $object ): ?static { }
 
 	public static function boot() {
 		$_SERVER['__testable_model_boot']++;

@@ -1048,9 +1048,8 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * Get the number of words a string contains.
 	 *
 	 * @param  string|null $characters
-	 * @return int
 	 */
-	public function word_count( $characters = null ) {
+	public function word_count( $characters = null ): int {
 		return Str::word_count( $this->value, $characters );
 	}
 
@@ -1087,10 +1086,8 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 
 	/**
 	 * Get the underlying string value.
-	 *
-	 * @return string
 	 */
-	public function value() {
+	public function value(): string {
 		return $this->toString();
 	}
 

@@ -14,6 +14,7 @@ use Mantle\Database\Model\Relations\Belongs_To;
 use Mantle\Database\Query\Builder;
 use Mantle\Database\Query\Post_Query_Builder;
 use Mantle\Support\Helpers;
+use WP_Post;
 
 use function Mantle\Support\Helpers\stringable;
 
@@ -160,9 +161,8 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 *       to verify the object type as well.
 	 *
 	 * @param \WP_Post|int $object Post to retrieve for.
-	 * @return static|null
 	 */
-	public static function find( $object ) {
+	public static function find( mixed $object ): ?static {
 		$post = Helpers\get_post_object( $object );
 
 		if ( empty( $post ) ) {

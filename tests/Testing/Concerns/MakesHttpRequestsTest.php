@@ -461,8 +461,6 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 
 		$response = $this->get( '/' )->assertOk();
 
-		$response->dd();
-
 		$response
 			->html()
 			->filter( 'body' )

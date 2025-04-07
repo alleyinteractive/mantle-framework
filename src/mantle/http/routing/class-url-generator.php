@@ -92,10 +92,8 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 
 	/**
 	 * Get the current URL for the request.
-	 *
-	 * @return string
 	 */
-	public function current() {
+	public function current(): string {
 		return $this->to( $this->request->getPathInfo() );
 	}
 
