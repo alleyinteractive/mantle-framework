@@ -3,10 +3,13 @@ namespace Mantle\Tests\Testing;
 
 use Mantle\Testing\Block_Factory;
 use PHPUnit\Framework\TestCase;
+use Spatie\Snapshots\MatchesSnapshots;
 
 use function Mantle\Testing\block_factory;
 
 class BlockFactoryTest extends TestCase {
+	use MatchesSnapshots;
+
 	public static function tearDownAfterClass(): void {
 		Block_Factory::clear_presets();
 
@@ -211,6 +214,12 @@ HTML;
 		$this->assertEquals(
 			'<!-- wp:block {"ref":123} /-->',
 			block_factory()->reusable( id: 123 ),
+		);
+	}
+
+	public function test_it_generate_a_button(): void {
+		$this->assertMatchesSnapshot(
+			block_factory()->button( 'Button text', 'https://example.com' ),
 		);
 	}
 

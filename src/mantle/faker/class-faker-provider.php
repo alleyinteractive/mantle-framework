@@ -134,6 +134,23 @@ class Faker_Provider extends Base {
 	}
 
 	/**
+	 * Build a button block (or rather a buttons block with a button inside).
+	 *
+	 * @param string $text Button text.
+	 * @param string $url Button URL.
+	 * @param array  $attributes Additional attributes for the block.
+	 */
+	public static function button_block( string $text, string $url, array $attributes = [] ): string {
+		return static::block(
+			name: 'buttons',
+			content: '<div class="wp-block-buttons">' . static::block(
+				name: 'button',
+				content: '<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="' . esc_url( $url ) . '">' . esc_html( $text ) . '</a></div>',
+			) . '</div>',
+		);
+	}
+
+	/**
 	 * Build a block for Gutenberg.
 	 *
 	 * @param string       $name Block name.
