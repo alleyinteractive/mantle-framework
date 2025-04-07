@@ -22,13 +22,6 @@ use function Mantle\Support\Helpers\tap;
  */
 class App_Service_Provider extends Service_Provider {
 	/**
-	 * Application instance.
-	 *
-	 * @var Application
-	 */
-	protected $app;
-
-	/**
 	 * Constructor.
 	 *
 	 * @param Application $app Application instance.
@@ -44,7 +37,7 @@ class App_Service_Provider extends Service_Provider {
 	/**
 	 * Boot the scheduler service.
 	 */
-	protected function boot_scheduler() {
+	protected function boot_scheduler(): void {
 		$this->app->singleton(
 			'scheduler',
 			fn ( $app ) => tap(
@@ -61,5 +54,5 @@ class App_Service_Provider extends Service_Provider {
 	 *
 	 * @param Schedule $schedule Schedule instance.
 	 */
-	protected function schedule( $schedule ) { }
+	protected function schedule( Schedule $schedule ): void { }
 }
