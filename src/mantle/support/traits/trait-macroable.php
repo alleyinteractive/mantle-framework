@@ -56,13 +56,11 @@ trait Macroable {
 	}
 
 	/**
-	 * Checks if macro is registered.
-	 *
-	 * @param string $name
-	 *
-	 * @return bool
-	 */
-	public static function has_macro( $name ) {
+				 * Checks if macro is registered.
+				 *
+				 * @param string $name
+				 */
+				public static function has_macro( $name ): bool {
 		return isset( static::$macros[ $name ] );
 	}
 

@@ -364,10 +364,8 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 
 	/**
 	 * Determine if the given string is not empty.
-	 *
-	 * @return bool
 	 */
-	public function is_not_empty() {
+	public function is_not_empty(): bool {
 		return ! $this->is_empty();
 	}
 

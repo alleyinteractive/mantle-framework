@@ -99,9 +99,8 @@ trait Route_Dependency_Resolver {
 	 *
 	 * @param  class-string $class
 	 * @param  array        $parameters
-	 * @return bool
 	 */
-	protected function already_in_parameters( string $class, array $parameters ) {
+	protected function already_in_parameters( string $class, array $parameters ): bool {
 		return ! is_null(
 			Arr::first(
 				$parameters,

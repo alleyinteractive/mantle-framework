@@ -129,9 +129,8 @@ class Handler implements Contract {
 	 * Determine if the exception should be reported.
 	 *
 	 * @param  \Throwable $e
-	 * @return bool
 	 */
-	public function should_report( Throwable $e ) {
+	public function should_report( Throwable $e ): bool {
 		return ! $this->shouldnt_report( $e );
 	}
 
@@ -139,9 +138,8 @@ class Handler implements Contract {
 	 * Determine if the exception is in the "do not report" list.
 	 *
 	 * @param  \Throwable $e
-	 * @return bool
 	 */
-	protected function shouldnt_report( Throwable $e ) {
+	protected function shouldnt_report( Throwable $e ): bool {
 		$dont_report = array_merge( $this->dont_report, $this->internal_dont_report );
 
 		return ! is_null(

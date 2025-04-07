@@ -71,9 +71,8 @@ class Request {
 	 *
 	 * @param string $header Header to compare.
 	 * @param mixed  $value Header value to compare, optional.
-	 * @return boolean
 	 */
-	public function has_header( string $header, $value = null ) {
+	public function has_header( string $header, $value = null ): bool {
 		$header = strtolower( $header );
 
 		if ( is_null( $value ) ) {

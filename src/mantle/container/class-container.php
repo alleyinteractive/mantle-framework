@@ -186,9 +186,8 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * Determine if a given string is an alias.
 	 *
 	 * @param  string $name Alias name.
-	 * @return bool
 	 */
-	public function is_alias( $name ) {
+	public function is_alias( $name ): bool {
 		return isset( $this->aliases[ $name ] );
 	}
 
@@ -251,9 +250,8 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * Determine if the container has a method binding.
 	 *
 	 * @param string $method Method name.
-	 * @return bool
 	 */
-	public function has_method_binding( $method ) {
+	public function has_method_binding( $method ): bool {
 		return isset( $this->method_bindings[ $method ] );
 	}
 
@@ -781,9 +779,8 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * Determine if the given dependency has a parameter override.
 	 *
 	 * @param  \ReflectionParameter $dependency
-	 * @return bool
 	 */
-	protected function has_parameter_override( $dependency ) {
+	protected function has_parameter_override( $dependency ): bool {
 		return array_key_exists(
 			$dependency->name,
 			$this->get_last_parameter_override()

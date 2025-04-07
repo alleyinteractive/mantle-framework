@@ -74,9 +74,8 @@ class Pluralizer {
 	 * Determine if the given value is uncountable.
 	 *
 	 * @param  string $value
-	 * @return bool
 	 */
-	protected static function uncountable( $value ) {
+	protected static function uncountable( $value ): bool {
 		return in_array( strtolower( $value ), static::$uncountable, true );
 	}
 

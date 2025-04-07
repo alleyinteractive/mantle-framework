@@ -23,10 +23,8 @@ trait Route_Group {
 
 	/**
 	 * Determine if the router currently has a group stack.
-	 *
-	 * @return bool
 	 */
-	public function has_group_stack() {
+	public function has_group_stack(): bool {
 		return ! empty( $this->group_stack );
 	}
 

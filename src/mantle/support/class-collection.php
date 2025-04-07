@@ -252,10 +252,9 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param  mixed $key
 	 * @param  mixed $operator
 	 * @param  mixed $value
-	 * @return bool
 	 */
-	public function doesnt_contain( $key, $operator = null, $value = null ) {
-			return ! $this->contains( ...func_get_args() );
+	public function doesnt_contain( $key, $operator = null, $value = null ): bool {
+		return ! $this->contains( ...func_get_args() );
 	}
 
 	/**
