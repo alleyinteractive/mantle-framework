@@ -71,7 +71,7 @@ class Faker_Provider extends Base {
 	 * @param bool $as_text Return as text or an array of blocks.
 	 * @return string|array
 	 */
-	public static function paragraph_blocks( int $count = 3, bool $as_text = true ): string {
+	public static function paragraph_blocks( int $count = 3, bool $as_text = true ): string|array {
 		$paragraphs = [];
 		for ( $i = 0; $i < $count; $i++ ) {
 			$paragraphs[] = static::paragraph_block();
