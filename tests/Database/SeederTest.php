@@ -3,9 +3,9 @@
 namespace Mantle\Tests\Database;
 
 use Mantle\Database\Seeder;
-use Mantle\Testing\Framework_Test_Case;
+use Mantle\Testing\FrameworkTestCase;
 
-class SeederTest extends Framework_Test_Case {
+class SeederTest extends FrameworkTestCase {
 	public function test_it_can_seed_data(): void {
 		$_SERVER['__seeder_run'] = false;
 
