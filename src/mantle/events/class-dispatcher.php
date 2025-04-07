@@ -126,9 +126,8 @@ class Dispatcher implements Dispatcher_Contract {
 	 *
 	 * @param  mixed $event
 	 * @param  mixed $payload
-	 * @return array
 	 */
-	protected function parse_event_and_payload( $event, $payload ) {
+	protected function parse_event_and_payload( $event, $payload ): array {
 		if ( is_object( $event ) ) {
 			[ $payload, $event ] = [ [ $event ], $event::class ];
 		}
@@ -205,7 +204,7 @@ class Dispatcher implements Dispatcher_Contract {
 	 * @param  string $listener
 	 * @return callable
 	 */
-	protected function create_class_callable( $listener ) {
+	protected function create_class_callable( $listener ): array {
 		[ $class, $method ] = $this->parse_class_callable( $listener );
 
 		// todo: add queued callback support.

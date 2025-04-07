@@ -294,9 +294,8 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 *
 	 * @param  string $key
 	 * @param  string $value
-	 * @return array
 	 */
-	protected function json_search_strings( $key, $value ) {
+	protected function json_search_strings( $key, $value ): array {
 		$needle = substr( (string) wp_json_encode( [ $key => $value ] ), 1, -1 );
 
 		return [

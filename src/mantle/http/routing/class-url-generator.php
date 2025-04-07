@@ -213,7 +213,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 * @param  string $path URL Path.
 	 * @return array<int, string>
 	 */
-	protected function extract_query_string( $path ) {
+	protected function extract_query_string( $path ): array {
 		$query_position = strpos( $path, '?' );
 		if ( false !== $query_position ) {
 			return [

@@ -22,11 +22,10 @@ class Parser {
 	 * Parse the given console command definition into an array.
 	 *
 	 * @param  string $expression
-	 * @return array
 	 *
 	 * @throws \InvalidArgumentException
 	 */
-	public static function parse( $expression ) {
+	public static function parse( $expression ): array {
 		$name = static::name( $expression );
 
 		if ( preg_match_all( '/\{\s*(.*?)\s*\}/', $expression, $matches ) && count( $matches[1] ) ) {
@@ -55,9 +54,8 @@ class Parser {
 	 * Extract all of the parameters from the tokens.
 	 *
 	 * @param  array $tokens
-	 * @return array
 	 */
-	protected static function parameters( array $tokens ) {
+	protected static function parameters( array $tokens ): array {
 		$arguments = [];
 
 		$options = [];

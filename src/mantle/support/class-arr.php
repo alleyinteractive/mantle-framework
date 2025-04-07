@@ -414,9 +414,8 @@ class Arr {
 	 *
 	 * @param  string|array      $value Value to pluck.
 	 * @param  string|array|null $key Key to use.
-	 * @return array
 	 */
-	protected static function explode_pluck_parameters( $value, $key ) {
+	protected static function explode_pluck_parameters( $value, $key ): array {
 		$value = is_string( $value ) ? explode( '.', $value ) : $value;
 
 		$key = is_null( $key ) || is_array( $key ) ? $key : explode( '.', $key );

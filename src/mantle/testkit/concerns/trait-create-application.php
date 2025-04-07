@@ -50,9 +50,8 @@ trait Create_Application {
 	 * Override application bindings, to be overridden by the child unit test.
 	 *
 	 * @param Application $app Application instance.
-	 * @return array
 	 */
-	protected function override_application_bindings( $app ) {
+	protected function override_application_bindings( $app ): array {
 		return [];
 	}
 
@@ -148,9 +147,8 @@ trait Create_Application {
 	 * Override application aliases.
 	 *
 	 * @param Application $app Application instance.
-	 * @return array
 	 */
-	protected function override_application_providers( $app ) {
+	protected function override_application_providers( $app ): array {
 		return [];
 	}
 

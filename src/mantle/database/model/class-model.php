@@ -120,7 +120,6 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 * Find a model or throw an exception.
 	 *
 	 * @param object|string|int $object Object to retrieve.
-	 * @return static
 	 *
 	 * @throws Model_Not_Found_Exception Thrown on missing resource.
 	 */

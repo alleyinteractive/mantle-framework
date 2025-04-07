@@ -156,10 +156,8 @@ trait Has_Events {
 
 	/**
 	 * Get the observable event names.
-	 *
-	 * @return array
 	 */
-	public function get_observable_events() {
+	public function get_observable_events(): array {
 		return [
 			'creating',
 			'created',
