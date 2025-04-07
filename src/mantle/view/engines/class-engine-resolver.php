@@ -18,16 +18,16 @@ class Engine_Resolver {
 	/**
 	 * The array of engine resolvers.
 	 *
-	 * @var array
+	 * @var array<string, \Closure>
 	 */
-	protected $resolvers = [];
+	protected array $resolvers = [];
 
 	/**
 	 * The resolved engine instances.
 	 *
-	 * @var array
+	 * @var array<string, Engine>
 	 */
-	protected $resolved = [];
+	protected array $resolved = [];
 
 	/**
 	 * Register a new engine resolver.
