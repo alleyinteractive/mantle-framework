@@ -77,10 +77,8 @@ trait Model_Meta {
 
 	/**
 	 * Retrieve the meta 'attribute'.
-	 *
-	 * @return Model_Meta_Proxy
 	 */
-	public function get_meta_attribute() {
+	public function get_meta_attribute(): \Mantle\Database\Model\Meta\Model_Meta_Proxy {
 		return new Model_Meta_Proxy( $this );
 	}
 

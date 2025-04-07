@@ -18,6 +18,7 @@ use Rector\Php81\Rector\Array_\FirstClassCallableRector;
 use Rector\Php84\Rector\Param\ExplicitNullableParamTypeRector;
 use Rector\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector;
 use Rector\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInstanceOfRector;
 use Rector\ValueObject\PhpVersion;
 
@@ -42,7 +43,7 @@ return RectorConfig::configure()
 		deadCode: true,
 		instanceOf: true,
 	)
-	->withTypeCoverageLevel( 16 )
+	->withTypeCoverageLevel( 18 ) // Out of 49.
 	->withRules(
 		[
 			RenameForeachValueVariableToMatchExprVariableRector::class,
@@ -67,5 +68,9 @@ return RectorConfig::configure()
 		],
 		RemoveExtraParametersRector::class => [
 			__DIR__ . '/src/mantle/support/helpers/helpers-general.php',
+		],
+		ReturnTypeFromReturnNewRector::class => [
+			__DIR__ . '/src/mantle/support/class-collection.php',
+			__DIR__ . '/src/mantle/support/traits/trait-enumerates-values.php',
 		],
 	] );

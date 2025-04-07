@@ -153,7 +153,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	/**
 	 * Dump the collection.
 	 *
-	 * @return $this
+	 * @return static
 	 */
 	public function dump();
 
@@ -229,7 +229,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * Execute a callback over each item.
 	 *
 	 * @param  callable(TValue, TKey): mixed  $callback
-	 * @return $this
+	 * @return static
 	 */
 	public function each( callable $callback );
 
@@ -287,7 +287,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 *
 	 * @param  (callable($this): TWhenEmptyReturnType)  $callback
 	 * @param  (callable($this): TWhenEmptyReturnType)|null  $default
-	 * @return $this|TWhenEmptyReturnType
+	 * @return static|TWhenEmptyReturnType
 	 */
 	public function when_empty( callable $callback, ?callable $default = null );
 
@@ -298,7 +298,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 *
 	 * @param  (callable($this): TWhenEmptyReturnType)  $callback
 	 * @param  (callable($this): TWhenEmptyReturnType)|null  $default
-	 * @return $this|TWhenEmptyReturnType
+	 * @return static|TWhenEmptyReturnType
 	 */
 	public function when_not_empty( callable $callback, ?callable $default = null );
 
@@ -311,7 +311,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  (\Closure( $this): TUnlessParameter)|TUnlessParameter  $value
 	 * @param  (callable( $this, TUnlessParameter): TUnlessReturnType)|null  $callback
 	 * @param  (callable( $this, TUnlessParameter): TUnlessReturnType)|null  $default
-	 * @return $this|TUnlessReturnType
+	 * @return static|TUnlessReturnType
 	 */
 	public function unless( $value, ?callable $callback = null, ?callable $default = null );
 
@@ -322,7 +322,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 *
 	 * @param  callable($this): TUnlessEmptyReturnType  $callback
 	 * @param  (callable($this): TUnlessEmptyReturnType)|null  $default
-	 * @return $this|TUnlessEmptyReturnType
+	 * @return static|TUnlessEmptyReturnType
 	 */
 	public function unless_empty( callable $callback, ?callable $default = null );
 
@@ -333,7 +333,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 *
 	 * @param  callable($this): TUnlessNotEmptyReturnType  $callback
 	 * @param  (callable($this): TUnlessNotEmptyReturnType)|null  $default
-	 * @return $this|TUnlessNotEmptyReturnType
+	 * @return static|TUnlessNotEmptyReturnType
 	 */
 	public function unless_not_empty( callable $callback, ?callable $default = null );
 
@@ -878,7 +878,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * Pass the collection to the given callback and then return it.
 	 *
 	 * @param  callable(TValue): mixed  $callback
-	 * @return $this
+	 * @return static
 	 */
 	public function tap( callable $callback );
 

@@ -22,10 +22,8 @@ use Mantle\Queue\Queue_Fake;
 class Queue extends Facade {
 	/**
 	 * Replace the bound instance with a fake.
-	 *
-	 * @return Queue_Fake
 	 */
-	public static function fake() {
+	public static function fake(): \Mantle\Queue\Queue_Fake {
 		$fake = new Queue_Fake( static::$app );
 
 		static::swap( $fake );

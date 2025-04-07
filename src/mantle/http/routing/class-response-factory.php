@@ -51,9 +51,8 @@ class Response_Factory implements Factory_Contract {
 	 * @param  string $content
 	 * @param  int    $status
 	 * @param  array  $headers
-	 * @return Response
 	 */
-	public function make( $content = '', $status = 200, array $headers = [] ) {
+	public function make( $content = '', $status = 200, array $headers = [] ): \Mantle\Http\Response {
 		return new Response( $content, $status, $headers );
 	}
 
@@ -92,9 +91,8 @@ class Response_Factory implements Factory_Contract {
 	 * @param  mixed $data
 	 * @param  int   $status
 	 * @param  array $headers
-	 * @return JsonResponse
 	 */
-	public function json( $data = [], $status = 200, array $headers = [] ) {
+	public function json( $data = [], $status = 200, array $headers = [] ): \Symfony\Component\HttpFoundation\JsonResponse {
 		return new JsonResponse( $data, $status, $headers, is_string( $data ) );
 	}
 
@@ -117,9 +115,8 @@ class Response_Factory implements Factory_Contract {
 	 * @param  \Closure $callback
 	 * @param  int      $status
 	 * @param  array    $headers
-	 * @return \Symfony\Component\HttpFoundation\StreamedResponse
 	 */
-	public function stream( $callback, $status = 200, array $headers = [] ) {
+	public function stream( $callback, $status = 200, array $headers = [] ): \Symfony\Component\HttpFoundation\StreamedResponse {
 		return new StreamedResponse( $callback, $status, $headers );
 	}
 
@@ -130,9 +127,8 @@ class Response_Factory implements Factory_Contract {
 	 * @param  string|null $name
 	 * @param  array       $headers
 	 * @param  string|null $disposition
-	 * @return \Symfony\Component\HttpFoundation\StreamedResponse
 	 */
-	public function stream_download( $callback, $name = null, array $headers = [], $disposition = 'attachment' ) {
+	public function stream_download( $callback, $name = null, array $headers = [], $disposition = 'attachment' ): \Symfony\Component\HttpFoundation\StreamedResponse {
 		$response = new StreamedResponse( $callback, 200, $headers );
 
 		if ( ! is_null( $name ) ) {
@@ -182,9 +178,8 @@ class Response_Factory implements Factory_Contract {
 	 *
 	 * @param  \SplFileInfo|string $file
 	 * @param  array               $headers
-	 * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
 	 */
-	public function file( $file, array $headers = [] ) {
+	public function file( $file, array $headers = [] ): \Symfony\Component\HttpFoundation\BinaryFileResponse {
 		return new BinaryFileResponse( $file, 200, $headers );
 	}
 

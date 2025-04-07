@@ -41,9 +41,8 @@ class Exception_Handler implements Exceptions_Handler {
 	 *
 	 * @param \Mantle\Http\Request $request
 	 * @param \Throwable           $e Exception thrown.
-	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
-	public function render( $request, Throwable $e ) {
+	public function render( $request, Throwable $e ): \Symfony\Component\HttpFoundation\Response {
 		return new Response();
 	}
 

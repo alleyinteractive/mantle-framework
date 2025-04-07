@@ -455,7 +455,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * Remove an item from the collection by key.
 	 *
 	 * @param  TKey|array<array-key, TKey> $keys
-	 * @return $this
+	 * @return static
 	 */
 	public function forget( $keys ) {
 		foreach ( (array) $keys as $key ) {
@@ -923,7 +923,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 *
 	 * @param    mixed $value
 	 * @param    mixed $key
-	 * @return $this
+	 * @return static
 	 */
 	public function prepend( $value, $key = null ) {
 		$this->items = Arr::prepend( $this->items, $value, $key );
@@ -935,7 +935,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * Push one or more items onto the end of the collection.
 	 *
 	 * @param  TValue ...$values
-	 * @return $this
+	 * @return static
 	 */
 	public function push( ...$values ) {
 		foreach ( $values as $value ) {
@@ -979,7 +979,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 *
 	 * @param    TKey   $key
 	 * @param    TValue $value
-	 * @return $this
+	 * @return static
 	 */
 	public function put( $key, $value ) {
 		$this->offsetSet( $key, $value );
@@ -1302,7 +1302,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * Transform each item in the collection using a callback.
 	 *
 	 * @param  callable(TValue, TKey): TValue $callback
-	 * @return $this
+	 * @return static
 	 */
 	public function transform( callable $callback ) {
 		$this->items = $this->map( $callback )->all();
@@ -1390,7 +1390,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * Add an item to the collection.
 	 *
 	 * @param  TValue $item
-	 * @return $this
+	 * @return static
 	 */
 	public function add( $item ) {
 		$this->items[] = $item;

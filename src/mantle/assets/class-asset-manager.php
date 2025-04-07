@@ -30,9 +30,8 @@ class Asset_Manager implements Asset_Manager_Contract {
 	 * @param string          $load_method Load method.
 	 * @param string          $load_hook Load hook.
 	 * @param string|null     $version Script version.
-	 * @return Asset
 	 */
-	public function script( ...$params ) {
+	public function script( ...$params ): \Mantle\Assets\Asset {
 		return new Asset( 'script', ...$params );
 	}
 

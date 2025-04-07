@@ -540,7 +540,7 @@ class Router implements Router_Contract {
 	 *                                         the register_rest_route() call. Not used if $callback
 	 *                                         is a closure.
 	 */
-	public function rest_api( string $namespace, callable|string $callback, callable|array|string $args = [] ) {
+	public function rest_api( string $namespace, callable|string $callback, callable|array|string $args = [] ): \Mantle\Http\Routing\Rest_Route_Registrar {
 		$registrar = new Rest_Route_Registrar( $this, $namespace );
 
 		if ( is_callable( $callback ) ) {

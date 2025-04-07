@@ -69,9 +69,8 @@ class Response implements ArrayAccess {
 	 * Create a response from a WP_Error object.
 	 *
 	 * @param WP_Error $error WP_Error object.
-	 * @return static
 	 */
-	protected static function create_from_wp_error( WP_Error $error ) {
+	protected static function create_from_wp_error( WP_Error $error ): static {
 		return new static(
 			[
 				'body'        => $error->get_error_message(),

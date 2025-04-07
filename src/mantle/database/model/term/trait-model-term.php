@@ -32,10 +32,8 @@ trait Model_Term {
 
 	/**
 	 * Retrieve the terms 'attribute'.
-	 *
-	 * @return Model_Term_Proxy
 	 */
-	public function get_terms_attribute() {
+	public function get_terms_attribute(): \Mantle\Database\Model\Term\Model_Term_Proxy {
 		return new Model_Term_Proxy( $this );
 	}
 

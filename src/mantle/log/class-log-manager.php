@@ -109,10 +109,9 @@ class Log_Manager implements LoggerInterface {
 	 * Create a stack handler that combines multiple channels into a single handler.
 	 *
 	 * @param array $config Configuration.
-	 * @return GroupHandler
 	 * @throws InvalidArgumentException Thrown on invalid configuration.
 	 */
-	protected function create_stack_handler( array $config ) {
+	protected function create_stack_handler( array $config ): \Monolog\Handler\GroupHandler {
 		if ( empty( $config['channels'] ) ) {
 			throw new InvalidArgumentException( 'Stack channel called without any child channels.' );
 		}

@@ -15,10 +15,8 @@ namespace Mantle\Http_Client;
 class Http_Client {
 	/**
 	 * Create an instance of the Http Client
-	 *
-	 * @return Factory
 	 */
-	public static function create() {
+	public static function create(): \Mantle\Http_Client\Factory {
 		return new Factory();
 	}
 }

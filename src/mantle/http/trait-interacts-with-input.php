@@ -248,7 +248,7 @@ trait Interacts_With_Input {
 	/**
 	 * Get all of the input except for a specified array of items.
 	 *
-	 * @param  array|mixed $keys
+	 * @param  array|string $keys
 	 * @return array<mixed>
 	 */
 	public function except( array|string $keys ): array {

@@ -85,11 +85,10 @@ class Route_Registrar {
 	 *
 	 * @param  string $key
 	 * @param  mixed  $value
-	 * @return $this
 	 *
 	 * @throws InvalidArgumentException Thrown on unknown attribute.
 	 */
-	public function attribute( $key, $value ) {
+	public function attribute( string $key, mixed $value ): static {
 		if ( ! in_array( $key, $this->allowed_attributes, true ) ) {
 			throw new InvalidArgumentException( "Attribute [{$key}] does not exist." );
 		}
@@ -170,7 +169,7 @@ class Route_Registrar {
 	 *
 	 * @param  string $method
 	 * @param  array  $parameters
-	 * @return \Mantle\Http\Routing\Route|$this
+	 * @return \Mantle\Http\Routing\Route|static
 	 *
 	 * @throws BadMethodCallException Thrown on missing method.
 	 */
@@ -181,7 +180,8 @@ class Route_Registrar {
 
 		if ( in_array( $method, $this->allowed_attributes, true ) ) {
 			if ( 'middleware' === $method ) {
-				return $this->attribute( $method, is_array( $parameters[0] ) ? $parameters[0] : $parameters );
+				// @phpstan-ignore return.type
+				return $this->attribute( $method, is_array( $parameters[0] ) ? $parameters[0] : $parameters )->attributes;
 			}
 
 			return $this->attribute( $method, $parameters[0] );

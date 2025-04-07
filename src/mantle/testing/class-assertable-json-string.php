@@ -73,7 +73,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 *
 	 * @param  string $path
 	 * @param  mixed  $expect
-	 * @return $this
+	 * @return static
 	 */
 	public function assertPath( $path, $expect ) {
 		PHPUnit::assertSame( $expect, $this->json( $path ) );
@@ -107,7 +107,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 * Assert that the response has the similar JSON as given.
 	 *
 	 * @param  array $data
-	 * @return $this
+	 * @return static
 	 */
 	public function assertSimilar( array $data ) {
 		$actual = json_encode( Arr::sort_recursive(
@@ -124,7 +124,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 *
 	 * @param  array|null $structure
 	 * @param  array|null $response_data
-	 * @return $this
+	 * @return static
 	 */
 	public function assertStructure( ?array $structure = null, $response_data = null ) {
 		if ( is_null( $structure ) ) {
@@ -158,7 +158,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 * Assert that the response has the exact given JSON.
 	 *
 	 * @param  array $data
-	 * @return $this
+	 * @return static
 	 */
 	public function assertExact( array $data ) {
 		$actual = wp_json_encode(
@@ -176,7 +176,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 * Assert that the response contains the given JSON fragment.
 	 *
 	 * @param  array $data Data to compare.
-	 * @return $this
+	 * @return static
 	 */
 	public function assertFragment( array $data ) {
 		$actual = wp_json_encode(
@@ -205,7 +205,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 *
 	 * @param  array $data Data to compare.
 	 * @param  bool  $exact Flag for exact match, defaults to false.
-	 * @return $this
+	 * @return static
 	 */
 	public function assertMissing( array $data, $exact = false ) {
 		if ( $exact ) {
@@ -237,7 +237,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 * Assert that the response does not contain the exact JSON fragment.
 	 *
 	 * @param  array $data
-	 * @return $this
+	 * @return static
 	 */
 	public function assertMissingExact( array $data ) {
 		$actual = wp_json_encode(
@@ -267,7 +267,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 *
 	 * @param  int         $count
 	 * @param  string|null $key
-	 * @return $this
+	 * @return static
 	 */
 	public function assertCount( int $count, $key = null ) {
 		if ( ! is_null( $key ) ) {

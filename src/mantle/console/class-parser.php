@@ -75,9 +75,8 @@ class Parser {
 	 * Parse an argument expression.
 	 *
 	 * @param  string $token
-	 * @return \Symfony\Component\Console\Input\InputArgument
 	 */
-	protected static function parse_argument( $token ) {
+	protected static function parse_argument( $token ): \Symfony\Component\Console\Input\InputArgument {
 		[$token, $description] = static::extract_description( $token );
 
 		switch ( true ) {
@@ -100,9 +99,8 @@ class Parser {
 	 * Parse an option expression.
 	 *
 	 * @param  string $token
-	 * @return \Symfony\Component\Console\Input\InputOption
 	 */
-	protected static function parse_option( $token ) {
+	protected static function parse_option( $token ): \Symfony\Component\Console\Input\InputOption {
 		[$token, $description] = static::extract_description( $token );
 
 		$matches = preg_split( '/\s*\|\s*/', (string) $token, 2 );

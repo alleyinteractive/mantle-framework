@@ -31,10 +31,8 @@ class Mock_Http_Sequence {
 
 	/**
 	 * Create a Mock_Http_Sequence instance.
-	 *
-	 * @return static
 	 */
-	public static function create() {
+	public static function create(): static {
 		return new static();
 	}
 

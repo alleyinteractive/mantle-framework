@@ -398,7 +398,7 @@ trait Interacts_With_IO {
 	 * Write a blank line.
 	 *
 	 * @param  int $count
-	 * @return $this
+	 * @return static
 	 */
 	public function new_line( $count = 1 ) {
 		$this->output->newLine( $count );

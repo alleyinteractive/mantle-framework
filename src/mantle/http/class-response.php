@@ -50,7 +50,6 @@ class Response extends HttpFoundationResponse {
 	 * Set the content on the response.
 	 *
 	 * @param  mixed $content
-	 * @return $this
 	 *
 	 * @throws InvalidArgumentException When the HTTP status code is not valid.
 	 */

@@ -54,7 +54,7 @@ trait Conditionable {
 	 * @param  (\Closure( $this): TUnlessParameter)|TUnlessParameter  $value
 	 * @param  (callable( $this, TUnlessParameter): TUnlessReturnType)|null  $callback
 	 * @param  (callable( $this, TUnlessParameter): TUnlessReturnType)|null  $default
-	 * @return $this|TUnlessReturnType
+	 * @return static|TUnlessReturnType
 	 */
 	public function unless( $value, ?callable $callback = null, ?callable $default = null ) {
 		$value = $value instanceof Closure ? $value( $this ) : $value;

@@ -108,9 +108,8 @@ class Test_Response {
 	 * Create a response from a base response instance.
 	 *
 	 * @param Response $response Base response instance.
-	 * @return static
 	 */
-	public static function from_base_response( Response $response ) {
+	public static function from_base_response( Response $response ): static {
 		return new static( $response->getContent(), $response->getStatusCode(), $response->headers->all() );
 	}
 
@@ -118,9 +117,8 @@ class Test_Response {
 	 * Sets the response status code.
 	 *
 	 * @param int $code Status code.
-	 * @return $this
 	 */
-	public function set_status_code( int $code ): object {
+	public function set_status_code( int $code ): static {
 		$this->status_code = $code;
 
 		return $this;
@@ -137,9 +135,8 @@ class Test_Response {
 	 * Sets the response content.
 	 *
 	 * @param string|null $content Response content.
-	 * @return $this
 	 */
-	public function set_content( ?string $content ): object {
+	public function set_content( ?string $content ): static {
 		$this->content = $content ?? '';
 
 		return $this;
@@ -147,20 +144,17 @@ class Test_Response {
 
 	/**
 	 * Gets the current response content.
-	 *
-	 * @return string|false
 	 */
-	public function get_content(): string {
-		return $this->content;
+	public function get_content(): ?string {
+		return $this->content ?? null;
 	}
 
 	/**
 	 * Sets the response headers.
 	 *
 	 * @param array $headers Headers to set, as key => value pairs.
-	 * @return $this
 	 */
-	public function set_headers( array $headers ): object {
+	public function set_headers( array $headers ): static {
 		$this->headers = array_change_key_case( $headers, CASE_LOWER );
 
 		return $this;
@@ -386,7 +380,7 @@ class Test_Response {
 	 *
 	 * @param string $header_name Header name (key) to check.
 	 * @param mixed  $value       Header value to check, optional.
-	 * @return $this
+	 * @return static
 	 */
 	public function assertHeaderMissing( string $header_name, mixed $value = null ) {
 		// Enforce a lowercase header name.
@@ -433,7 +427,7 @@ class Test_Response {
 		if ( null !== $count ) {
 			PHPUnit::assertEquals(
 				$count,
-				substr_count( $this->get_content(), $needle ),
+				substr_count( (string) $this->get_content(), $needle ),
 				sprintf(
 					'The content does not contain the the expected string (%s) %d %s.',
 					$needle,
@@ -495,7 +489,7 @@ class Test_Response {
 	 * Assert that the given strings are contained in order within the response.
 	 *
 	 * @param array $values Values to check.
-	 * @return $this
+	 * @return static
 	 */
 	public function assertSeeInOrder( array $values ) {
 		try {
@@ -511,7 +505,7 @@ class Test_Response {
 	 * Assert that the given string is contained within the response text.
 	 *
 	 * @param string $value Value to check.
-	 * @return $this
+	 * @return static
 	 */
 	public function assertSeeText( $value ) {
 		PHPUnit::assertStringContainsString( (string) $value, wp_strip_all_tags( $this->get_content() ) );
@@ -524,7 +518,7 @@ class Test_Response {
 	 * text.
 	 *
 	 * @param array $values Values to check.
-	 * @return $this
+	 * @return static
 	 */
 	public function assertSeeTextInOrder( array $values ) {
 		try {
@@ -542,7 +536,7 @@ class Test_Response {
 	 * Assert that the given string is not contained within the response.
 	 *
 	 * @param string $value Value to check.
-	 * @return $this
+	 * @return static
 	 */
 	public function assertDontSee( $value ) {
 		PHPUnit::assertStringNotContainsString( (string) $value, $this->get_content() );
@@ -554,7 +548,7 @@ class Test_Response {
 	 * Assert that the given string is not contained within the response text.
 	 *
 	 * @param string $value Value to check.
-	 * @return $this
+	 * @return static
 	 */
 	public function assertDontSeeText( $value ) {
 		PHPUnit::assertStringNotContainsString( (string) $value, wp_strip_all_tags( $this->get_content() ) );
@@ -581,7 +575,6 @@ class Test_Response {
 	 * Assert that a given ID matches the global queried object ID.
 	 *
 	 * @param int $id Expected ID.
-	 * @return $this
 	 */
 	public function assertQueriedObjectId( int $id ): static {
 		TestCase::assertQueriedObjectId( $id );
@@ -593,7 +586,6 @@ class Test_Response {
 	 * Assert that a given ID does not the global queried object ID.
 	 *
 	 * @param int $id Expected ID.
-	 * @return $this
 	 */
 	public function assertNotQueriedObjectId( int $id ): static {
 		TestCase::assertNotQueriedObjectId( $id );
@@ -605,7 +597,6 @@ class Test_Response {
 	 * Assert that a given object is equivalent to the global queried object.
 	 *
 	 * @param object $object Expected object.
-	 * @return $this
 	 */
 	public function assertQueriedObject( mixed $object ): static {
 		TestCase::assertQueriedObject( $object );
@@ -616,7 +607,6 @@ class Test_Response {
 	 * Assert that a given object is not equivalent to the global queried object.
 	 *
 	 * @param object $object Expected object.
-	 * @return $this
 	 */
 	public function assertNotQueriedObject( mixed $object ): static {
 		TestCase::assertNotQueriedObject( $object );
@@ -626,8 +616,6 @@ class Test_Response {
 
 	/**
 	 * Assert that the queried object is null.
-	 *
-	 * @return $this
 	 */
 	public function assertQueriedObjectNull(): static {
 		TestCase::assertQueriedObjectNull();
@@ -637,8 +625,6 @@ class Test_Response {
 
 	/**
 	 * Assert if the response is a JSON response.
-	 *
-	 * @return $this
 	 */
 	public function assertIsJson(): static {
 		$content_type = $this->get_header( 'Content-Type' );
@@ -659,8 +645,6 @@ class Test_Response {
 
 	/**
 	 * Assert if the response is not a JSON response.
-	 *
-	 * @return $this
 	 */
 	public function assertIsNotJson(): static {
 		$content_type = $this->get_header( 'Content-Type' );
@@ -711,7 +695,7 @@ class Test_Response {
 	 *
 	 * @param  string $path
 	 * @param  mixed  $expect
-	 * @return $this
+	 * @return static
 	 */
 	public function assertJsonPath( $path, $expect ) {
 		$this->decoded_json()->assertPath( $path, $expect );
@@ -745,7 +729,7 @@ class Test_Response {
 	 * Assert that the response has the exact given JSON.
 	 *
 	 * @param  array $data
-	 * @return $this
+	 * @return static
 	 */
 	public function assertExactJson( array $data ) {
 		$this->decoded_json()->assertExact( $data );
@@ -757,7 +741,7 @@ class Test_Response {
 	 * Assert that the response contains the given JSON fragment.
 	 *
 	 * @param  array $data Data to compare.
-	 * @return $this
+	 * @return static
 	 */
 	public function assertJsonFragment( array $data ) {
 		$this->decoded_json()->assertFragment( $data );
@@ -770,7 +754,7 @@ class Test_Response {
 	 *
 	 * @param  array $data Data to compare.
 	 * @param  bool  $exact Flag for exact match, defaults to false.
-	 * @return $this
+	 * @return static
 	 */
 	public function assertJsonMissing( array $data, $exact = false ) {
 		$this->decoded_json()->assertMissing( $data, $exact );
@@ -782,7 +766,7 @@ class Test_Response {
 	 * Assert that the response does not contain the exact JSON fragment.
 	 *
 	 * @param  array $data
-	 * @return $this
+	 * @return static
 	 */
 	public function assertJsonMissingExact( array $data ) {
 		$this->decoded_json()->assertMissingExact( $data );
@@ -795,7 +779,7 @@ class Test_Response {
 	 *
 	 * @param  int         $count
 	 * @param  string|null $key
-	 * @return $this
+	 * @return static
 	 */
 	public function assertJsonCount( int $count, $key = null ) {
 		$this->decoded_json()->assertCount( $count, $key );
@@ -807,7 +791,7 @@ class Test_Response {
 	 * Assert that the response has the similar JSON as given.
 	 *
 	 * @param  array $data
-	 * @return $this
+	 * @return static
 	 */
 	public function assertJsonSimilar( array $data ) {
 		$this->decoded_json()->assertSimilar( $data );
@@ -819,7 +803,7 @@ class Test_Response {
 	 * Assert that the response has a given JSON structure.
 	 *
 	 * @param  array|null $structure Structure to check.
-	 * @return $this
+	 * @return static
 	 */
 	public function assertJsonStructure( ?array $structure = null ) {
 		$this->decoded_json()->assertStructure( $structure );

@@ -62,9 +62,8 @@ class Str {
 	 * Get a new stringable object from the given string.
 	 *
 	 * @param  string $string
-	 * @return \Mantle\Support\Stringable
 	 */
-	public static function of( $string ) {
+	public static function of( $string ): \Mantle\Support\Stringable {
 		return new Stringable( $string );
 	}
 

@@ -12,9 +12,8 @@ trait Makeable {
 	 * Create a new static instance from arguments.
 	 *
 	 * @param mixed ...$arguments Arguments to make from.
-	 * @return static
 	 */
-	public static function make( ...$arguments ) {
+	public static function make( ...$arguments ): static {
 		return new static( ...$arguments );
 	}
 }

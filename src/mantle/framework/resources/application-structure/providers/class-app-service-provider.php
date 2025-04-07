@@ -8,6 +8,7 @@
 namespace App\Providers;
 
 use Mantle\Application\App_Service_Provider as Service_Provider;
+use Mantle\Scheduling\Schedule;
 
 /**
  * Application Service Provider
@@ -32,7 +33,7 @@ class App_Service_Provider extends Service_Provider {
 	 *
 	 * @param \Mantle\Scheduling\Schedule $schedule Scheduler instance.
 	 */
-	protected function schedule( $schedule ) {
+	protected function schedule( Schedule $schedule ): void {
 		// Schedule any commands, jobs, callbacks, etc. here.
 	}
 }

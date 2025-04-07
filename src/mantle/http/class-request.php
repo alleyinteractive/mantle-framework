@@ -265,7 +265,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * Merge new input into the current request's input array.
 	 *
 	 * @param  array $input
-	 * @return $this
+	 * @return static
 	 */
 	public function merge( array $input ) {
 		$this->get_input_source()->add( $input );
@@ -277,7 +277,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * Replace the input for the current request.
 	 *
 	 * @param  array $input
-	 * @return $this
+	 * @return static
 	 */
 	public function replace( array $input ) {
 		$this->get_input_source()->replace( $input );
@@ -341,7 +341,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * Set the JSON payload for the request.
 	 *
 	 * @param  \Symfony\Component\HttpFoundation\ParameterBag $json
-	 * @return $this
+	 * @return static
 	 */
 	public function set_json( $json ) {
 		$this->json = $json;
