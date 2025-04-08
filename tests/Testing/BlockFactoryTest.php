@@ -3,10 +3,13 @@ namespace Mantle\Tests\Testing;
 
 use Mantle\Testing\Block_Factory;
 use PHPUnit\Framework\TestCase;
+use Spatie\Snapshots\MatchesSnapshots;
 
 use function Mantle\Testing\block_factory;
 
 class BlockFactoryTest extends TestCase {
+	use MatchesSnapshots;
+
 	public static function tearDownAfterClass(): void {
 		Block_Factory::clear_presets();
 
@@ -141,6 +144,82 @@ class BlockFactoryTest extends TestCase {
 					'id' => 'block-id',
 				],
 			),
+		);
+	}
+
+	public function test_it_can_generate_a_list_block(): void {
+		$this->assertEquals(
+			<<<"HTML"
+<!-- wp:list -->
+<ul class="wp-block-list">
+<!-- wp:list-item -->
+<li>example</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>another</li>
+<!-- /wp:list-item -->
+</ul>
+<!-- /wp:list -->
+HTML,
+			block_factory()->list( [
+				'example',
+				'another',
+			] ),
+		);
+
+		$expected = <<<"HTML"
+<!-- wp:list {"ordered":true} -->
+<ol class="wp-block-list">
+<!-- wp:list-item -->
+<li>example</li>
+<!-- /wp:list-item -->
+<!-- wp:list-item -->
+<li>another</li>
+<!-- /wp:list-item -->
+</ol>
+<!-- /wp:list -->
+HTML;
+
+		$this->assertEquals(
+			$expected,
+			block_factory()->list( [
+				'example',
+				'another',
+			], true ),
+		);
+
+		$this->assertEquals(
+			$expected,
+			block_factory()->list( [
+				'example',
+				'another',
+			], ordered: true ),
+		);
+
+		$this->assertEquals(
+			$expected,
+			block_factory()->ordered_list( [
+				'example',
+				'another',
+			] ),
+		);
+	}
+
+	public function test_it_can_generate_a_reusable_block(): void {
+		$this->assertEquals(
+			'<!-- wp:block {"ref":123} /-->',
+			block_factory()->reusable( 123 ),
+		);
+
+		$this->assertEquals(
+			'<!-- wp:block {"ref":123} /-->',
+			block_factory()->reusable( id: 123 ),
+		);
+	}
+
+	public function test_it_generate_a_button(): void {
+		$this->assertMatchesSnapshot(
+			block_factory()->button( 'Button text', 'https://example.com' ),
 		);
 	}
 

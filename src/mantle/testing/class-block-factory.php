@@ -17,11 +17,15 @@ use function Mantle\Support\Helpers\collect;
  *
  * Used to generate blocks and create presets of blocks for testing.
  *
+ * @method string button(string $text, string $url, array $attributes = [])
  * @method string block(string $name = 'paragraph', ?string $content = null, array $attributes = [])
- * @method string image(?string $url = null, ?string $alt = null, array $attributes = [])
  * @method string heading(?string $text = null, int $level = 2)
+ * @method string image(?string $url = null, ?string $alt = null, array $attributes = [])
+ * @method string list(array $items = [], bool $ordered = false, array $attributes = [])
+ * @method string ordered_list(array $items = [], bool $ordered = false, array $attributes = [])
  * @method string paragraph(?string $text = null, int $sentences = 3)
  * @method string paragraphs(int $count = 3, bool $as_text = true)
+ * @method string reusable(int $id)
  */
 class Block_Factory {
 	/**
@@ -90,10 +94,16 @@ class Block_Factory {
 			return static::preset( $name, $arguments );
 		}
 
+		if ( 'ordered_list' === $name ) {
+			$name = 'list';
+
+			$arguments['ordered'] = true;
+		}
+
 		$method = match ( $name ) {
 			'paragraphs' => 'paragraph_blocks',
 			'block' => 'block',
-			default => "{$name}_block",
+			default => str_ends_with( $name, '_block' ) ? $name : "{$name}_block",
 		};
 
 		try {
