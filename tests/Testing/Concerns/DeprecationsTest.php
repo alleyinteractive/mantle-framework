@@ -5,6 +5,7 @@ use Mantle\Testing\Attributes\Expected_Deprecation;
 use Mantle\Testing\Attributes\Ignore_Deprecation;
 use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Runner\Version;
 
 /**
  * Test for deprecation errors being thrown and handled.
@@ -17,6 +18,10 @@ class DeprecationsTest extends FrameworkTestCase {
 	 * @expectedDeprecated test_deprecation_annotation
 	 */
 	public function test_deprecation_with_annotation() {
+		if ( class_exists( Version::class ) && version_compare( Version::id(), '12.0.0', '>=' ) ) {
+			$this->markTestSkipped( 'PHPUnit 12.0.0+ does not support annotations.' );
+		}
+
 		_deprecated_function( 'test_deprecation_annotation', '1.0.0', 'test_deprecation_with_annotation' );
 	}
 

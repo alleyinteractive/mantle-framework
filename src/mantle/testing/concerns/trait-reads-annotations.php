@@ -9,6 +9,7 @@ namespace Mantle\Testing\Concerns;
 
 use PHPUnit\Metadata\Annotation\Parser\DocBlock;
 use PHPUnit\Metadata\Annotation\Parser\Registry;
+use PHPUnit\Runner\Version;
 use PHPUnit\Util\Test;
 use ReflectionClass;
 
@@ -45,6 +46,12 @@ trait Reads_Annotations {
 			];
 		}
 
+		// If we are using PHPUnit 12.0.0 or greater, we can bail because
+		// annotations are no longer supported. Attributes must be used instead.
+		if ( class_exists( Version::class ) && version_compare( Version::id(), '12.0.0', '>=' ) ) {
+			return [];
+		}
+
 		// Throw a warning if we can't read annotations.
 		trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 			'Unable to read annotations for test method. Please file an issue with https://github.com/alleyinteractive/mantle-framework',
@@ -57,7 +64,7 @@ trait Reads_Annotations {
 	/**
 	 * Read the attributes for the current test case and method.
 	 *
-	 * Supports PHPUnit 9.5+ and 10.x.
+	 * Supports PHPUnit 9.5+.
 	 *
 	 * @param class-string $name Filter the results to include only ReflectionAttribute instances for attributes matching this class name.
 	 * @return array<\ReflectionAttribute>
@@ -74,7 +81,7 @@ trait Reads_Annotations {
 			$method = $class->getMethod( $this->name );
 		} else {
 			trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
-				'Unable to read annotations for test method. Please file an issue with https://github.com/alleyinteractive/mantle-framework',
+				'Unable to read attributes for test method. Please file an issue with https://github.com/alleyinteractive/mantle-framework',
 			);
 
 			return [];

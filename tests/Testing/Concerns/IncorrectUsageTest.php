@@ -17,6 +17,8 @@ class IncorrectUsageTest extends FrameworkTestCase {
 	 * @expectedIncorrectUsage test_incorrect_usage_annotation
 	 */
 	public function test_incorrect_usage_with_annotation() {
+		$this->skip_for_phpunit_12( 'PHPUnit 12.0.0+ does not support annotations.' );
+
 		_doing_it_wrong( 'test_incorrect_usage_annotation', 'This is a test', '1.0.0' );
 	}
 

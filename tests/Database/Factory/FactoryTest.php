@@ -94,7 +94,11 @@ class FactoryTest extends FrameworkTestCase {
 
 		$this->assertIsArray( $post_ids );
 		$this->assertCount( 3, $post_ids );
-		$this->assertContainsOnly( 'int', $post_ids );
+		if ( method_exists( $this, 'assertContainsOnlyInt' ) ) {
+			$this->assertContainsOnlyInt( $post_ids );
+		} else {
+			$this->assertContainsOnly( 'int', $post_ids );
+		}
 
 		$posts = Testable_Post::factory()->count( 12 )->create_and_get()->all();
 
