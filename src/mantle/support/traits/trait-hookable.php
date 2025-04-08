@@ -9,9 +9,11 @@ namespace Mantle\Support\Traits;
 
 use Mantle\Support\Attributes\Action;
 use Mantle\Support\Attributes\Filter;
+use Mantle\Support\Attributes\Hookable\Allow_Legacy_Duplicate_Registration;
 use Mantle\Support\Collection;
 use Mantle\Support\Service_Provider;
 use Mantle\Support\Str;
+use ReflectionAttribute;
 use ReflectionClass;
 
 use function Mantle\Support\Helpers\collect;
@@ -19,15 +21,26 @@ use function Mantle\Support\Helpers\collect;
 /**
  * Register all hooks on a class.
  *
- * Collects all of the `on_{hook}` and `on_{hook}_at_{priority}` methods as
- * well as the attribute based `#[Action]` methods and registers them with
- * the respective WordPress hooks.
+ * Collects all of the `Action`/`Filter` attribute methods as well as the
+ * `on_{hook}` and `on_{hook}_at_{priority}` methods and registers them with the
+ * respective WordPress hooks.
+ *
+ * Attributes are the preferred way to register hooks but the method naming
+ * convention to define the hook name is still supported for backwards
+ * compatibility.
+ *
+ * @phpstan-type HookItem array{type: string, hook: string, method: string, priority: int}
  */
 trait Hookable {
 	/**
 	 * Flag to determine if the hooks have been registered.
 	 */
 	protected bool $hooks_registered = false;
+
+	/**
+	 * Reflection class instance.
+	 */
+	private ReflectionClass $reflection;
 
 	/**
 	 * Constructor (can be overridden by the trait user).
@@ -48,6 +61,8 @@ trait Hookable {
 		if ( $this->hooks_registered ) {
 			return;
 		}
+
+		$this->reflection = new ReflectionClass( static::class );
 
 		$this->collect_action_methods()
 			->merge( $this->collect_attribute_hooks() )
@@ -79,15 +94,31 @@ trait Hookable {
 	/**
 	 * Collect all action methods from the service provider.
 	 *
-	 * @return Collection<int, array{type: string, hook: string, method: string, priority: int}>
+	 * @phpstan-return Collection<int, HookItem>
 	 */
-	protected function collect_action_methods(): Collection {
+	private function collect_action_methods(): Collection {
+		// Determine if the legacy attribute is on the class to allow for duplicate
+		// hook registration when a action method has an attribute.
+		$has_legacy_attribute = collect(
+			( $this->reflection )->getAttributes( Allow_Legacy_Duplicate_Registration::class ),
+		)->is_not_empty();
+
 		return collect( get_class_methods( static::class ) )
 			->filter(
-				fn ( string $method ) => Str::starts_with( $method, [ 'on_', 'action__', 'filter__' ] )
+				static fn ( string $method ) => Str::starts_with( $method, [ 'on_', 'action__', 'filter__' ] )
 			)
 			->map(
-				function ( string $method ) {
+				function ( string $method ) use ( $has_legacy_attribute ) {
+					// Check if the method has any Action or Filter attributes. If it does
+					// and the legacy attribute is not present on the class, ignore the
+					// method name.
+					if (
+						! $has_legacy_attribute
+						&& collect( $this->reflection->getMethod( $method )->getAttributes( Filter::class, ReflectionAttribute::IS_INSTANCEOF ) )->is_not_empty()
+					) {
+						return null;
+					}
+
 					$type = match ( true ) {
 						Str::starts_with( $method, 'filter__' ) => 'filter',
 						default => 'action',
@@ -113,7 +144,9 @@ trait Hookable {
 						'priority' => $priority,
 					];
 				}
-			);
+			)
+			->filter()
+			->values();
 	}
 
 	/**
@@ -122,13 +155,12 @@ trait Hookable {
 	 * Allow methods with the `#[Action]` attribute to automatically register
 	 * WordPress hooks.
 	 *
-	 * @return Collection<int, array{type: string, hook: string, method: string, priority: int}>
+	 * @phpstan-return Collection<int, HookItem>
 	 */
-	protected function collect_attribute_hooks(): Collection {
+	private function collect_attribute_hooks(): Collection {
 		$items = new Collection();
-		$class = new ReflectionClass( static::class );
 
-		foreach ( $class->getMethods() as $method ) {
+		foreach ( $this->reflection->getMethods() as $method ) {
 			foreach ( $method->getAttributes( Action::class ) as $attribute ) {
 				$instance = $attribute->newInstance();
 

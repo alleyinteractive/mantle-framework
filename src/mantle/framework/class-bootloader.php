@@ -19,6 +19,8 @@ use Mantle\Support\Str;
 use Mantle\Support\Traits\Conditionable;
 
 use function Mantle\Support\Helpers\collect;
+use function Mantle\Support\Helpers\mixed;
+use function Mantle\Support\Helpers\value;
 
 /**
  * Boot Manager
@@ -46,7 +48,7 @@ class Bootloader implements Contract {
 	/**
 	 * The description of the WP-CLI command.
 	 */
-	protected string $wp_cli_command_description = '';
+	protected string|Closure|null $wp_cli_command_description = '';
 
 	/**
 	 * Create a new instance of the application.
@@ -108,7 +110,7 @@ class Bootloader implements Contract {
 			->with_application( $app ?? new Application( $base_path ) )
 			->with_kernels()
 			->with_exception_handler()
-			->with_wp_cli_options( Command::PREFIX, __( 'Mantle Framework Command Line Interface', 'mantle' ) );
+			->with_wp_cli_options( Command::PREFIX, fn () => __( 'Mantle Framework Command Line Interface', 'mantle' ) );
 	}
 
 	/**
@@ -245,10 +247,10 @@ class Bootloader implements Contract {
 	/**
 	 * Setup the WP-CLI command prefix and description.
 	 *
-	 * @param string|null $prefix Command prefix.
-	 * @param string|null $description Command description.
+	 * @param string|null         $prefix Command prefix.
+	 * @param string|Closure|null $description Command description.
 	 */
-	public function with_wp_cli_options( ?string $prefix = null, ?string $description = null ): static {
+	public function with_wp_cli_options( ?string $prefix = null, string|Closure|null $description = null ): static {
 		if ( $prefix ) {
 			$this->wp_cli_command_prefix = $prefix;
 		}
@@ -363,7 +365,7 @@ class Bootloader implements Contract {
 				exit( (int) $status );
 			},
 			[
-				'shortdesc' => $this->wp_cli_command_description,
+				'shortdesc' => mixed( value( $this->wp_cli_command_description ) )->string(),
 			]
 		);
 	}

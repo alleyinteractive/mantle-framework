@@ -3,16 +3,20 @@
 namespace Mantle\Tests\Support;
 
 use Mantle\Support\Traits\Hookable;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
-class HookableTest extends TestCase {
+#[Group('hookable')]
+class HookableMethodNameTest extends TestCase {
 	public function setUp(): void {
 		parent::setUp();
 
 		remove_all_actions( 'example_action' );
+
+		$_SERVER['__hook_fired'] = [];
 	}
 
-	public function test_action_from_method_name(): void {
+	public function test_action(): void {
 		$_SERVER['__hook_fired'] = false;
 
 		$class = new class {
@@ -32,7 +36,7 @@ class HookableTest extends TestCase {
 		$this->assertSame( 'foo', $_SERVER['__hook_fired'] );
 	}
 
-	public function test_action_from_method_name_with_priority(): void {
+	public function test_action_with_priority(): void {
 
 		$_SERVER['__hook_fired'] = [];
 
@@ -60,7 +64,7 @@ class HookableTest extends TestCase {
 		$this->assertSame( [ 10, 20 ], $_SERVER['__hook_fired'] );
 	}
 
-	public function test_filter_from_method_name(): void {
+	public function test_filter(): void {
 		$_SERVER['__hook_fired'] = false;
 
 		$class = new class {
@@ -85,7 +89,7 @@ class HookableTest extends TestCase {
 		$this->assertSame( 'bar', $value );
 	}
 
-	public function test_filter_from_method_name_with_priority(): void {
+	public function test_filter_with_priority(): void {
 		$_SERVER['__hook_fired'] = [];
 
 		$class = new class {
