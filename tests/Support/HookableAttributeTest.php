@@ -4,17 +4,22 @@ namespace Mantle\Tests\Support;
 
 use Mantle\Support\Attributes\Action;
 use Mantle\Support\Attributes\Filter;
+use Mantle\Support\Attributes\Hookable\Allow_Legacy_Duplicate_Registration;
 use Mantle\Support\Traits\Hookable;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
+#[Group('hookable')]
 class HookableAttributeTest extends TestCase {
 	public function setUp(): void {
 		parent::setUp();
 
 		remove_all_actions( 'example_action' );
+
+		$_SERVER['__hook_fired'] = [];
 	}
 
-	public function test_action_from_method_name(): void {
+	public function test_action(): void {
 		$_SERVER['__hook_fired'] = false;
 
 		$class = new class {
@@ -35,7 +40,7 @@ class HookableAttributeTest extends TestCase {
 		$this->assertSame( 'foo', $_SERVER['__hook_fired'] );
 	}
 
-	public function test_action_from_method_name_with_priority(): void {
+	public function test_action_with_priority(): void {
 
 		$_SERVER['__hook_fired'] = [];
 
@@ -66,7 +71,7 @@ class HookableAttributeTest extends TestCase {
 		$this->assertSame( [ 10, 20 ], $_SERVER['__hook_fired'] );
 	}
 
-	public function test_filter_from_method_name(): void {
+	public function test_filter(): void {
 		$_SERVER['__hook_fired'] = false;
 
 		$class = new class {
@@ -92,7 +97,7 @@ class HookableAttributeTest extends TestCase {
 		$this->assertSame( 'bar', $value );
 	}
 
-	public function test_filter_from_method_name_with_priority(): void {
+	public function test_filter_with_priority(): void {
 		$_SERVER['__hook_fired'] = [];
 
 		$class = new class {
@@ -164,5 +169,55 @@ class HookableAttributeTest extends TestCase {
 
 		$this->assertSame( [ 10 ], $_SERVER['__hook_fired'] );
 		$this->assertSame( 30, $value );
+	}
+
+	/**
+	 * @link https://github.com/alleyinteractive/mantle-framework/issues/657
+	 */
+	public function test_ignore_method_name_hook_registration_when_an_action_attribute_is_used(): void {
+		$class = new class {
+			use Hookable;
+
+			#[Action( 'example_action', priority: 5 )]
+			public function action__example_action( string $value ): void {
+				$_SERVER['__hook_fired'][] = $value;
+			}
+		};
+
+		// Remove the action that was added by creating the anonymous class.
+		remove_all_actions( 'example_action' );
+
+		new $class;
+
+		$this->assertEmpty( $_SERVER['__hook_fired'] );
+
+		do_action( 'example_action', 'foo' );
+
+		$this->assertEquals( [ 'foo' ], $_SERVER['__hook_fired'] );
+	}
+
+	/**
+	 * @link https://github.com/alleyinteractive/mantle-framework/issues/657
+	 */
+	public function test_allow_duplicate_method_name_hook_registration_when_legacy_attribute_is_used(): void {
+		$class = new #[Allow_Legacy_Duplicate_Registration] class {
+			use Hookable;
+
+			#[Action( 'example_action', priority: 5 )]
+			public function action__example_action( string $value ): void {
+				$_SERVER['__hook_fired'][] = $value;
+			}
+		};
+
+		// Remove the action that was added by creating the anonymous class.
+		remove_all_actions( 'example_action' );
+
+		new $class;
+
+		$this->assertEmpty( $_SERVER['__hook_fired'] );
+
+		do_action( 'example_action', 'foo' );
+
+		$this->assertEquals( [ 'foo', 'foo' ], $_SERVER['__hook_fired'] );
 	}
 }

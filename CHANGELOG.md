@@ -13,6 +13,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   annotations. To easily upgrade your project to use attributes, try
   [Rector](https://getrector.com/documentation).
 
+### Changed
+
+- When using the `Hookable` trait, any `action__{method}`/`on_{method}` will be
+  ignored when the method uses a `Action`/`Filter` attribute. To allow for
+  legacy behavior, the
+  `Mantle\Support\Attributes\Hookable\Allow_Legacy_Duplicate_Registration`
+  attribute can be used on the class to allow for duplicate registration of the
+  methods.
+
 ## v1.5.8
 
 ### Added
