@@ -50,7 +50,7 @@ class Model_Not_Found_Exception extends Model_Exception {
 	 *
 	 * @return int|array
 	 */
-	public function get_ids() {
+	public function get_ids(): array {
 		return $this->ids;
 	}
 

@@ -119,9 +119,8 @@ class Mock_Http_Sequence {
 	 * Get the nex response in the sequence.
 	 *
 	 * @throws \RuntimeException Thrown on empty sequence.
-	 * @return mixed
 	 */
-	public function __invoke() {
+	public function __invoke(): ?\Mantle\Testing\Mock_Http_Response {
 		if ( empty( $this->responses ) ) {
 			if ( $this->fail_when_empty ) {
 				throw new \RuntimeException( 'No more responses in sequence.' );

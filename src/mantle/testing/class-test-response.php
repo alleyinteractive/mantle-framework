@@ -162,10 +162,8 @@ class Test_Response {
 
 	/**
 	 * Gets the current response headers.
-	 *
-	 * @return array
 	 */
-	public function get_headers() {
+	public function get_headers(): array {
 		return $this->headers;
 	}
 

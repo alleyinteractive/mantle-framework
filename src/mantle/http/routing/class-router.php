@@ -93,7 +93,7 @@ class Router implements Router_Contract {
 	 * @param mixed  $action Callback action.
 	 * @return Route
 	 */
-	public function get( string $uri, $action = '' ) {
+	public function get( string $uri, $action = '' ): ?Route {
 		return $this->add_route( [ 'GET', 'HEAD' ], $uri, $action );
 	}
 
@@ -104,7 +104,7 @@ class Router implements Router_Contract {
 	 * @param mixed  $action Callback action.
 	 * @return Route
 	 */
-	public function post( string $uri, $action = '' ) {
+	public function post( string $uri, $action = '' ): ?Route {
 		return $this->add_route( [ 'POST' ], $uri, $action );
 	}
 
@@ -115,7 +115,7 @@ class Router implements Router_Contract {
 	 * @param mixed  $action Callback action.
 	 * @return Route
 	 */
-	public function put( string $uri, $action = '' ) {
+	public function put( string $uri, $action = '' ): ?Route {
 		return $this->add_route( [ 'PUT' ], $uri, $action );
 	}
 
@@ -126,7 +126,7 @@ class Router implements Router_Contract {
 	 * @param mixed  $action Callback action.
 	 * @return Route
 	 */
-	public function delete( string $uri, $action = '' ) {
+	public function delete( string $uri, $action = '' ): ?Route {
 		return $this->add_route( [ 'DELETE' ], $uri, $action );
 	}
 
@@ -137,7 +137,7 @@ class Router implements Router_Contract {
 	 * @param mixed  $action Callback action.
 	 * @return Route
 	 */
-	public function patch( string $uri, $action = '' ) {
+	public function patch( string $uri, $action = '' ): ?Route {
 		return $this->add_route( [ 'PATCH' ], $uri, $action );
 	}
 
@@ -148,7 +148,7 @@ class Router implements Router_Contract {
 	 * @param mixed  $action Callback action.
 	 * @return Route
 	 */
-	public function options( string $uri, $action = '' ) {
+	public function options( string $uri, $action = '' ): ?Route {
 		return $this->add_route( [ 'OPTIONS' ], $uri, $action );
 	}
 
@@ -340,10 +340,8 @@ class Router implements Router_Contract {
 
 	/**
 	 * Get all of the defined middleware short-hand names.
-	 *
-	 * @return array
 	 */
-	public function get_middleware() {
+	public function get_middleware(): array {
 		return $this->middleware;
 	}
 
@@ -361,10 +359,8 @@ class Router implements Router_Contract {
 
 	/**
 	 * Get all of the defined middleware groups.
-	 *
-	 * @return array
 	 */
-	public function get_middleware_groups() {
+	public function get_middleware_groups(): array {
 		return $this->middleware_groups;
 	}
 

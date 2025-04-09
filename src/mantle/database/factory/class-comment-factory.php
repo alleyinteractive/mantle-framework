@@ -60,9 +60,8 @@ class Comment_Factory extends Factory {
 	 * Retrieves an object by ID.
 	 *
 	 * @param int $object_id The object ID.
-	 * @return \WP_Comment|null
 	 */
-	public function get_object_by_id( int $object_id ) {
+	public function get_object_by_id( int $object_id ): ?\WP_Comment {
 		return get_comment_object( $object_id );
 	}
 }

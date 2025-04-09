@@ -285,9 +285,8 @@ class Filesystem_Adapter implements Filesystem {
 	 * Get the contents of a file.
 	 *
 	 * @param string $path File path.
-	 * @return string|null
 	 */
-	public function get( string $path ) {
+	public function get( string $path ): ?string {
 		try {
 			return $this->driver->read( $path );
 		} catch ( UnableToReadFile $e ) {

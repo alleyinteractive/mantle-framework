@@ -1055,7 +1055,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  string|null $tz
 	 * @return \Carbon\Carbon
 	 */
-	public function to_date( $format = null, $tz = null ) {
+	public function to_date( $format = null, $tz = null ): ?\Carbon\Carbon {
 		if ( is_null( $format ) ) {
 			return Date::parse( $this->value, $tz ?: wp_timezone() );
 		}

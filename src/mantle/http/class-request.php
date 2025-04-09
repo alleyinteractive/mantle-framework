@@ -236,10 +236,8 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 
 	/**
 	 * Get the client IP address.
-	 *
-	 * @return string|null
 	 */
-	public function ip() {
+	public function ip(): ?string {
 		return $this->getClientIp();
 	}
 
@@ -254,10 +252,8 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 
 	/**
 	 * Get the client user agent.
-	 *
-	 * @return string|null
 	 */
-	public function user_agent() {
+	public function user_agent(): ?string {
 		return $this->headers->get( 'User-Agent' );
 	}
 

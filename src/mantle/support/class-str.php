@@ -1137,7 +1137,7 @@ class Str {
 	 * @param  string $value
 	 * @return string
 	 */
-	public static function squish( $value ) {
+	public static function squish( $value ): ?string {
 		return preg_replace( '~(\s|\x{3164}|\x{1160})+~u', ' ', (string) preg_replace( '~^[\s\x{FEFF}]+|[\s\x{FEFF}]+$~u', '', $value ) );
 	}
 

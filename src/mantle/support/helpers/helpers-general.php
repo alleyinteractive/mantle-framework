@@ -189,7 +189,7 @@ function object_get( $object, $key, $default = null ) {
  *
  * @return string
  */
-function preg_replace_array( $pattern, array $replacements, $subject ) {
+function preg_replace_array( $pattern, array $replacements, $subject ): ?string {
 	return preg_replace_callback(
 		$pattern,
 		function () use ( &$replacements ) {

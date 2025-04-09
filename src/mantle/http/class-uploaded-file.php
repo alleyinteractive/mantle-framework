@@ -165,7 +165,7 @@ class Uploaded_File extends SymfonyUploadedFile {
 	 *
 	 * @return string
 	 */
-	public function clientExtension() {
+	public function clientExtension(): ?string {
 		return $this->guessClientExtension();
 	}
 

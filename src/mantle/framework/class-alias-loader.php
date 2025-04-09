@@ -93,10 +93,8 @@ class Alias_Loader {
 
 	/**
 	 * Get the registered aliases.
-	 *
-	 * @return array
 	 */
-	public function get_aliases() {
+	public function get_aliases(): array {
 		return $this->aliases;
 	}
 
