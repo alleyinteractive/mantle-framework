@@ -129,13 +129,12 @@ if ( ! function_exists( 'loop' ) ) {
 	 * @param string           $slug View slug.
 	 * @param array|string     $name View name, optional. Supports passing variables in if
 	 *                           $variables is not used.
-	 * @return string
 	 */
-	function loop( ...$args ) {
+	function loop( ...$args ): string {
 		return view()
-			->loop( ...$args )
-			->map( fn ( View $item ) => $item->render() )
-			->implode( '' );
+		->loop( ...$args )
+		->map( fn ( View $item ) => $item->render() )
+		->implode( '' );
 	}
 }
 
@@ -162,13 +161,12 @@ if ( ! function_exists( 'iterate' ) ) {
 	 * @param string           $slug View slug.
 	 * @param array|string     $name View name, optional. Supports passing variables in if
 	 *                           $variables is not used.
-	 * @return string
 	 */
-	function iterate( ...$args ) {
+	function iterate( ...$args ): string {
 		return view()
-			->iterate( ...$args )
-			->map( fn ( View $item ) => $item->render() )
-			->implode( '' );
+		->iterate( ...$args )
+		->map( fn ( View $item ) => $item->render() )
+		->implode( '' );
 	}
 }
 

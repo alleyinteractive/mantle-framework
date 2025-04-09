@@ -560,9 +560,8 @@ class Filesystem_Adapter implements Filesystem {
 	 * @param string $path File to prepend.
 	 * @param string $data Data to prepend.
 	 * @param string $separator Separator from existing data.
-	 * @return bool
 	 */
-	public function prepend( string $path, string $data, string $separator = PHP_EOL ) {
+	public function prepend( string $path, string $data, string $separator = PHP_EOL ): bool {
 		if ( $this->exists( $path ) ) {
 			return $this->put( $path, $data . $separator . $this->get( $path ) );
 		}
@@ -576,9 +575,8 @@ class Filesystem_Adapter implements Filesystem {
 	 * @param string $path File to append.
 	 * @param string $data Data to append.
 	 * @param string $separator Separator from existing data.
-	 * @return bool
 	 */
-	public function append( $path, $data, $separator = PHP_EOL ) {
+	public function append( $path, $data, $separator = PHP_EOL ): bool {
 		if ( $this->exists( $path ) ) {
 			return $this->put( $path, $this->get( $path ) . $separator . $data );
 		}

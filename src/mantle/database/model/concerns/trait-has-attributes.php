@@ -362,9 +362,8 @@ trait Has_Attributes {
 	 *
 	 * @param string $value Value to convert.
 	 * @param bool   $as_object Flag as an object.
-	 * @return mixed
 	 */
-	public function from_json( string $value, bool $as_object = false ) {
+	public function from_json( string $value, bool $as_object = false ): mixed {
 		return json_decode( $value, ! $as_object );
 	}
 

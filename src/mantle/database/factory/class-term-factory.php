@@ -64,7 +64,7 @@ class Term_Factory extends Factory {
 	 * @param array<int, \WP_Post|int>|\WP_Post|int ...$posts Posts to assign to the term.
 	 * @return static
 	 */
-	public function with_posts( ...$posts ) {
+	public function with_posts( ...$posts ): \Mantle\Database\Factory\Factory {
 		$posts = collect( $posts )->flatten()->all();
 
 		return $this->with_middleware(

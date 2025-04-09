@@ -914,7 +914,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 *
 	 * @return static<int, TValue>|TValue|null
 	 */
-	public function pop() {
+	public function pop(): mixed {
 		return array_pop( $this->items );
 	}
 
@@ -1078,7 +1078,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 *
 	 * @return TValue|null
 	 */
-	public function shift() {
+	public function shift(): mixed {
 		return array_shift( $this->items );
 	}
 

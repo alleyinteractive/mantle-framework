@@ -22,6 +22,7 @@ use Rector\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector
 use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnNullableTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector;
 use Rector\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInstanceOfRector;
 use Rector\ValueObject\PhpVersion;
 
@@ -46,7 +47,7 @@ return RectorConfig::configure()
 		deadCode: true,
 		instanceOf: true,
 	)
-	->withTypeCoverageLevel( 24 ) // Out of 49.
+	->withTypeCoverageLevel( 30 ) // Out of 49.
 	->withRules(
 		[
 			RenameForeachValueVariableToMatchExprVariableRector::class,
@@ -66,6 +67,9 @@ return RectorConfig::configure()
 			__DIR__ . '/src/mantle/database/model/relations',
 		],
 		ReturnNullableTypeRector::class => [
+			__DIR__ . '/src/mantle/database/model/relations',
+		],
+		ReturnTypeFromStrictTypedCallRector::class => [
 			__DIR__ . '/src/mantle/database/model/relations',
 		],
 		RemoveUselessParamTagRector::class,

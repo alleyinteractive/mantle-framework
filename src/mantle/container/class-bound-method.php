@@ -114,11 +114,10 @@ class Bound_Method {
 	 * @param  Container       $container Container instance.
 	 * @param  callable|string $callback Callback function.
 	 * @param  array           $parameters Parameters to pass.
-	 * @return array
 	 *
 	 * @throws \ReflectionException Throw on invalid arguments.
 	 */
-	protected static function get_method_dependencies( $container, $callback, array $parameters = [] ) {
+	protected static function get_method_dependencies( $container, $callback, array $parameters = [] ): array {
 		$dependencies = [];
 
 		foreach ( static::get_call_reflector( $callback )->getParameters() as $parameter ) {

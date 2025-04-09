@@ -55,7 +55,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 *
 	 * @return static
 	 */
-	public static function capture() {
+	public static function capture(): \Symfony\Component\HttpFoundation\Request {
 		return static::createFromGlobals();
 	}
 
@@ -203,10 +203,8 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 
 	/**
 	 * Determine if the request is the result of an AJAX call.
-	 *
-	 * @return bool
 	 */
-	public function ajax() {
+	public function ajax(): bool {
 		return $this->isXmlHttpRequest();
 	}
 
@@ -227,10 +225,8 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 
 	/**
 	 * Determine if the request is over HTTPS.
-	 *
-	 * @return bool
 	 */
-	public function secure() {
+	public function secure(): bool {
 		return $this->isSecure();
 	}
 
@@ -243,10 +239,8 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 
 	/**
 	 * Get the client IP addresses.
-	 *
-	 * @return array
 	 */
-	public function ips() {
+	public function ips(): array {
 		return $this->getClientIps();
 	}
 
@@ -347,10 +341,8 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 
 	/**
 	 * Get all of the input and files for the request.
-	 *
-	 * @return array
 	 */
-	public function to_array() {
+	public function to_array(): array {
 		return $this->all();
 	}
 

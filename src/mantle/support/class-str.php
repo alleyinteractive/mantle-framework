@@ -384,9 +384,8 @@ class Str {
 	 * Determine if a given string is 7 bit ASCII.
 	 *
 	 * @param  string $value
-	 * @return bool
 	 */
-	public static function is_ascii( $value ) {
+	public static function is_ascii( $value ): bool {
 		return ASCII::is_ascii( (string) $value );
 	}
 
@@ -595,9 +594,8 @@ class Str {
 	 *
 	 * @param  string $pattern
 	 * @param  string $subject
-	 * @return \Mantle\Support\Collection
 	 */
-	public static function match_all( $pattern, $subject ) {
+	public static function match_all( $pattern, $subject ): \Mantle\Support\Collection {
 		preg_match_all( $pattern, $subject, $matches );
 
 		if ( empty( $matches[0] ) ) {
@@ -693,122 +691,121 @@ class Str {
 	 * @param  bool $numbers
 	 * @param  bool $symbols
 	 * @param  bool $spaces
-	 * @return string
 	 */
-	public static function password( $length = 32, $letters = true, $numbers = true, $symbols = true, $spaces = false ) {
+	public static function password( $length = 32, $letters = true, $numbers = true, $symbols = true, $spaces = false ): string {
 		return ( new Collection() )
-				->when(
-					$letters,
-					fn ( $c ) => $c->merge(
-						[
-							'a',
-							'b',
-							'c',
-							'd',
-							'e',
-							'f',
-							'g',
-							'h',
-							'i',
-							'j',
-							'k',
-							'l',
-							'm',
-							'n',
-							'o',
-							'p',
-							'q',
-							'r',
-							's',
-							't',
-							'u',
-							'v',
-							'w',
-							'x',
-							'y',
-							'z',
-							'A',
-							'B',
-							'C',
-							'D',
-							'E',
-							'F',
-							'G',
-							'H',
-							'I',
-							'J',
-							'K',
-							'L',
-							'M',
-							'N',
-							'O',
-							'P',
-							'Q',
-							'R',
-							'S',
-							'T',
-							'U',
-							'V',
-							'W',
-							'X',
-							'Y',
-							'Z',
-						]
-					)
-				)
-				->when(
-					$numbers,
-					fn ( $c ) => $c->merge(
-						[
-							'0',
-							'1',
-							'2',
-							'3',
-							'4',
-							'5',
-							'6',
-							'7',
-							'8',
-							'9',
-						]
-					)
-				)
-				->when(
-					$symbols,
-					fn ( $c ) => $c->merge(
-						[
-							'~',
-							'!',
-							'#',
-							'$',
-							'%',
-							'^',
-							'&',
-							'*',
-							'(',
-							')',
-							'-',
-							'_',
-							'.',
-							',',
-							'<',
-							'>',
-							'?',
-							'/',
-							'\\',
-							'{',
-							'}',
-							'[',
-							']',
-							'|',
-							':',
-							';',
-						]
-					)
-				)
-				->when( $spaces, fn ( $c ) => $c->merge( [ ' ' ] ) )
-				->pipe( fn ( $c ) => Collection::times( $length, fn () => $c[ random_int( 0, $c->count() - 1 ) ] ) ) // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable, Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition
-				->implode( '' );
+		->when(
+			$letters,
+			fn ( $c ) => $c->merge(
+				[
+					'a',
+					'b',
+					'c',
+					'd',
+					'e',
+					'f',
+					'g',
+					'h',
+					'i',
+					'j',
+					'k',
+					'l',
+					'm',
+					'n',
+					'o',
+					'p',
+					'q',
+					'r',
+					's',
+					't',
+					'u',
+					'v',
+					'w',
+					'x',
+					'y',
+					'z',
+					'A',
+					'B',
+					'C',
+					'D',
+					'E',
+					'F',
+					'G',
+					'H',
+					'I',
+					'J',
+					'K',
+					'L',
+					'M',
+					'N',
+					'O',
+					'P',
+					'Q',
+					'R',
+					'S',
+					'T',
+					'U',
+					'V',
+					'W',
+					'X',
+					'Y',
+					'Z',
+				]
+			)
+		)
+		->when(
+			$numbers,
+			fn ( $c ) => $c->merge(
+				[
+					'0',
+					'1',
+					'2',
+					'3',
+					'4',
+					'5',
+					'6',
+					'7',
+					'8',
+					'9',
+				]
+			)
+		)
+		->when(
+			$symbols,
+			fn ( $c ) => $c->merge(
+				[
+					'~',
+					'!',
+					'#',
+					'$',
+					'%',
+					'^',
+					'&',
+					'*',
+					'(',
+					')',
+					'-',
+					'_',
+					'.',
+					',',
+					'<',
+					'>',
+					'?',
+					'/',
+					'\\',
+					'{',
+					'}',
+					'[',
+					']',
+					'|',
+					':',
+					';',
+				]
+			)
+		)
+		->when( $spaces, fn ( $c ) => $c->merge( [ ' ' ] ) )
+		->pipe( fn ( $c ) => Collection::times( $length, fn () => $c[ random_int( 0, $c->count() - 1 ) ] ) ) // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable, Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition
+		->implode( '' );
 	}
 
 	/**
@@ -1228,7 +1225,7 @@ class Str {
 	 * @param  int|int[]|null  $length
 	 * @return string|string[]
 	 */
-	public static function substr_replace( $string, $replace, $offset = 0, $length = null ) {
+	public static function substr_replace( $string, $replace, $offset = 0, $length = null ): array|string {
 		if ( is_null( $length ) ) {
 			$length = strlen( $string );
 		}

@@ -99,7 +99,7 @@ if ( ! function_exists( 'tests_add_filter' ) ) :
 	 * @param int      $accepted_args   Optional. The number of arguments the function accepts. Default 1.
 	 * @return true
 	 */
-	function tests_add_filter( $tag, $function_to_add, $priority = 10, $accepted_args = 1 ) {
+	function tests_add_filter( $tag, $function_to_add, $priority = 10, $accepted_args = 1 ): bool {
 		return \Mantle\Testing\tests_add_filter( $tag, $function_to_add, $priority, $accepted_args );
 	}
 endif;

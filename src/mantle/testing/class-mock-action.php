@@ -126,19 +126,15 @@ class Mock_Action {
 
 	/**
 	 * Return an array of the tags that triggered calls to this action.
-	 *
-	 * @return array
 	 */
-	public function get_tags() {
+	public function get_tags(): array {
 		return array_column( $this->events, 'tag' );
 	}
 
 	/**
 	 * Return an array of args passed in calls to this action.
-	 *
-	 * @return array
 	 */
-	public function get_args() {
+	public function get_args(): array {
 		return array_column( $this->events, 'args' );
 	}
 }

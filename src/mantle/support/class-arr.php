@@ -46,9 +46,8 @@ class Arr {
 	 * Collapse an array of arrays into a single array.
 	 *
 	 * @param iterable $array Array to use.
-	 * @return array
 	 */
-	public static function collapse( $array ) {
+	public static function collapse( $array ): array {
 		$results = [];
 
 		foreach ( $array as $values ) {
@@ -601,9 +600,8 @@ class Arr {
 	 *
 	 * @param  array    $array Array to process.
 	 * @param  callable $callback Callback to filter by.
-	 * @return array
 	 */
-	public static function where( $array, callable $callback ) {
+	public static function where( $array, callable $callback ): array {
 		return array_filter( $array, $callback, ARRAY_FILTER_USE_BOTH );
 	}
 

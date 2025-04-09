@@ -99,9 +99,8 @@ trait Interacts_With_Input {
 	 * Determine if the request contains any of the given inputs.
 	 *
 	 * @param  string|array<string> $keys
-	 * @return bool
 	 */
-	public function has_any( $keys ) {
+	public function has_any( $keys ): bool {
 		$keys = is_array( $keys ) ? $keys : func_get_args();
 
 		$input = $this->all();
@@ -340,7 +339,7 @@ trait Interacts_With_Input {
 	 * @param  array<mixed> $files
 	 * @return array<\Mantle\Http\Uploaded_File>
 	 */
-	protected function convert_uploaded_files( array $files ) {
+	protected function convert_uploaded_files( array $files ): array {
 		return array_map(
 			function ( $file ) {
 				if ( is_null( $file ) || ( is_array( $file ) && empty( array_filter( $file ) ) ) ) {

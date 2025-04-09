@@ -149,10 +149,8 @@ class Handler implements Contract {
 
 	/**
 	 * Get the default context variables for logging.
-	 *
-	 * @return array
 	 */
-	protected function context() {
+	protected function context(): array {
 		try {
 			return array_filter(
 				[

@@ -106,7 +106,7 @@ class Request {
 	 *
 	 * @return array|null
 	 */
-	public function json() {
+	public function json(): mixed {
 		return json_decode( (string) $this->body(), true );
 	}
 

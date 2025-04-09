@@ -284,9 +284,8 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 *
 	 * @param  string $method
 	 * @param  mixed  $instance
-	 * @return mixed
 	 */
-	public function call_method_binding( $method, $instance ) {
+	public function call_method_binding( $method, $instance ): mixed {
 		return call_user_func( $this->method_bindings[ $method ], $instance, $this );
 	}
 
@@ -1092,9 +1091,8 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * Get the globally available instance of the container.
 	 *
 	 * @deprecated Use `get_instance()` instead.
-	 * @return \Mantle\Contracts\Container
 	 */
-	public static function getInstance() {
+	public static function getInstance(): \Mantle\Contracts\Container {
 		return static::get_instance();
 	}
 

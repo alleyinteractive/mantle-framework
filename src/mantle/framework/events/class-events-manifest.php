@@ -53,7 +53,7 @@ class Events_Manifest {
 	 *
 	 * @return string[]
 	 */
-	public function events() {
+	public function events(): array {
 		return $this->get_manifest();
 	}
 

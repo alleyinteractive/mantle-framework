@@ -145,9 +145,8 @@ function data_fill( &$target, $key, $value ) {
  * Get the first element of an array. Useful for method chaining.
  *
  * @param array $array Array from which to get first element.
- * @return mixed
  */
-function head( $array ) {
+function head( $array ): mixed {
 	return reset( $array );
 }
 
@@ -155,8 +154,7 @@ function head( $array ) {
  * Get the last element from an array.
  *
  * @param array $array Array from which to get last element.
- * @return mixed
  */
-function last( $array ) {
+function last( $array ): mixed {
 	return end( $array );
 }

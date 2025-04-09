@@ -149,9 +149,8 @@ class Filesystem {
 	 * @param  string $path
 	 * @param  string $contents
 	 * @param  bool   $lock
-	 * @return int|bool
 	 */
-	public function put( $path, $contents, $lock = false ) {
+	public function put( $path, $contents, $lock = false ): int|false {
 		return file_put_contents( $path, $contents, $lock ? LOCK_EX : 0 );
 	}
 
@@ -199,7 +198,7 @@ class Filesystem {
 	 * @param  string $data
 	 * @return int
 	 */
-	public function append( $path, $data ) {
+	public function append( $path, $data ): int|false {
 		return file_put_contents( $path, $data, FILE_APPEND );
 	}
 
@@ -208,9 +207,8 @@ class Filesystem {
 	 *
 	 * @param  string   $path
 	 * @param  int|null $mode
-	 * @return mixed
 	 */
-	public function chmod( $path, $mode = null ) {
+	public function chmod( $path, $mode = null ): bool|string {
 		if ( $mode ) {
 			return chmod( $path, $mode );
 		}
@@ -350,7 +348,7 @@ class Filesystem {
 	 * @param  string $path
 	 * @return string
 	 */
-	public function type( $path ) {
+	public function type( $path ): string|false {
 		return filetype( $path );
 	}
 
@@ -360,7 +358,7 @@ class Filesystem {
 	 * @param  string $path
 	 * @return string|false
 	 */
-	public function mime_type( $path ) {
+	public function mime_type( $path ): string|false {
 		return finfo_file( finfo_open( FILEINFO_MIME_TYPE ), $path );
 	}
 
@@ -370,7 +368,7 @@ class Filesystem {
 	 * @param  string $path
 	 * @return int
 	 */
-	public function size( $path ) {
+	public function size( $path ): int|false {
 		return filesize( $path );
 	}
 
@@ -380,7 +378,7 @@ class Filesystem {
 	 * @param  string $path
 	 * @return int
 	 */
-	public function last_modified( $path ) {
+	public function last_modified( $path ): int|false {
 		return filemtime( $path );
 	}
 
@@ -438,7 +436,7 @@ class Filesystem {
 	 * @param  bool   $hidden
 	 * @return \Symfony\Component\Finder\SplFileInfo[]
 	 */
-	public function files( $directory, $hidden = false ) {
+	public function files( $directory, $hidden = false ): array {
 		return iterator_to_array(
 			Finder::create()->files()->ignoreDotFiles( ! $hidden )->in( $directory )->depth( 0 )->sortByName(),
 			false
@@ -452,7 +450,7 @@ class Filesystem {
 	 * @param  bool   $hidden
 	 * @return \Symfony\Component\Finder\SplFileInfo[]
 	 */
-	public function all_files( $directory, $hidden = false ) {
+	public function all_files( $directory, $hidden = false ): array {
 		return iterator_to_array(
 			Finder::create()->files()->ignoreDotFiles( ! $hidden )->in( $directory )->sortByName(),
 			false
@@ -618,9 +616,8 @@ class Filesystem {
 	 * Empty the specified directory of all files and folders.
 	 *
 	 * @param  string $directory
-	 * @return bool
 	 */
-	public function clean_directory( $directory ) {
+	public function clean_directory( $directory ): bool {
 		return $this->delete_directory( $directory, true );
 	}
 }

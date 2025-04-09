@@ -34,10 +34,8 @@ trait Interacts_With_Content_Types {
 
 	/**
 	 * Determine if the request is sending JSON.
-	 *
-	 * @return bool
 	 */
-	public function is_json() {
+	public function is_json(): bool {
 		return Str::contains( $this->header( 'CONTENT_TYPE' ), [ '/json', '+json' ] );
 	}
 

@@ -291,7 +291,7 @@ class Response implements ArrayAccess {
 	 *
 	 * @return object
 	 */
-	public function object() {
+	public function object(): mixed {
 		return json_decode( $this->body(), false );
 	}
 

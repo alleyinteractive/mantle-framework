@@ -175,9 +175,8 @@ trait Route_Group {
 	 *
 	 * @param  array $new
 	 * @param  array $old
-	 * @return array
 	 */
-	protected static function format_where( $new, $old ) {
+	protected static function format_where( $new, $old ): array {
 		return array_merge(
 			$old['where'] ?? [],
 			$new['where'] ?? []

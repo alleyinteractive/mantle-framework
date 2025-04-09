@@ -42,10 +42,8 @@ class Model_Manifest {
 
 	/**
 	 * Get all of the service provider class names for all packages.
-	 *
-	 * @return array
 	 */
-	public function models() {
+	public function models(): array {
 		return $this->get_manifest();
 	}
 

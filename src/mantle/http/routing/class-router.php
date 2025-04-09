@@ -510,9 +510,8 @@ class Router implements Router_Contract {
 	 * @param  string  $key Route key.
 	 * @param  string  $value Value.
 	 * @param  Request $request Request object.
-	 * @return mixed
 	 */
-	protected function perform_binding( string $key, $value, Request $request ) {
+	protected function perform_binding( string $key, $value, Request $request ): mixed {
 		return call_user_func( $this->binders[ $key ], $value, $request );
 	}
 
