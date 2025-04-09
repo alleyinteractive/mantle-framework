@@ -30,13 +30,6 @@ use function Mantle\Support\Helpers\collect;
  */
 class Log_Manager implements LoggerInterface {
 	/**
-	 * Application instance.
-	 *
-	 * @var Application
-	 */
-	protected $app;
-
-	/**
 	 * Default logger instance for the application.
 	 */
 	protected ?Logger $drive = null;
@@ -47,8 +40,7 @@ class Log_Manager implements LoggerInterface {
 	 * @param Application $app Application instance.
 	 * @param Dispatcher  $dispatcher Event dispatcher.
 	 */
-	public function __construct( Application $app, protected ?Dispatcher $dispatcher = null ) {
-		$this->app = $app;
+	public function __construct( protected Application $app, protected ?Dispatcher $dispatcher = null ) {
 	}
 
 	/**

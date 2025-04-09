@@ -9,6 +9,7 @@ namespace Mantle\Support;
 
 use Mantle\Console\Application as Console_Application;
 use Mantle\Console\Command;
+use Mantle\Container\Container;
 use Mantle\Contracts\Application;
 use Mantle\Support\Traits\Hookable;
 use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
@@ -34,10 +35,8 @@ abstract class Service_Provider implements LoggerAwareInterface {
 
 	/**
 	 * The application instance.
-	 *
-	 * @var Application|\Mantle\Container\Container
 	 */
-	protected $app;
+	protected Application|Container $app;
 
 	/**
 	 * Commands to register.

@@ -7,17 +7,20 @@
 
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
+use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
 use Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchExprVariableRector;
 
 use Rector\EarlyReturn\Rector\If_\ChangeOrIfContinueToMultiContinueRector;
 use Rector\EarlyReturn\Rector\If_\RemoveAlwaysElseRector;
 use Rector\EarlyReturn\Rector\Return_\ReturnBinaryOrToEarlyReturnRector;
 use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
+use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\Php80\Rector\NotIdentical\StrContainsRector;
 use Rector\Php81\Rector\Array_\FirstClassCallableRector;
 use Rector\Php84\Rector\Param\ExplicitNullableParamTypeRector;
 use Rector\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\ReturnNullableTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector;
 use Rector\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInstanceOfRector;
 use Rector\ValueObject\PhpVersion;
@@ -43,7 +46,7 @@ return RectorConfig::configure()
 		deadCode: true,
 		instanceOf: true,
 	)
-	->withTypeCoverageLevel( 22 ) // Out of 49.
+	->withTypeCoverageLevel( 24 ) // Out of 49.
 	->withRules(
 		[
 			RenameForeachValueVariableToMatchExprVariableRector::class,
@@ -55,6 +58,15 @@ return RectorConfig::configure()
 			__DIR__ . '/src/mantle/testing/concerns/trait-core-shim.php',
 			__DIR__ . '/tests/Testing/CoreTestShimTest.php',
 			__DIR__ . '/tests/testing/CoreTestShimTest.php',
+		],
+		ClassPropertyAssignToConstructorPromotionRector::class => [
+			__DIR__ . '/src/mantle/support/class-service-provider.php',
+		],
+		RemoveUselessReturnTagRector::class => [
+			__DIR__ . '/src/mantle/database/model/relations',
+		],
+		ReturnNullableTypeRector::class => [
+			__DIR__ . '/src/mantle/database/model/relations',
 		],
 		RemoveUselessParamTagRector::class,
 		FirstClassCallableRector::class,

@@ -24,20 +24,11 @@ class Log_Collector extends \QM_Collector {
 	public $id = 'mantle-logs';
 
 	/**
-	 * Application instance.
-	 *
-	 * @var Application
-	 */
-	protected $app;
-
-	/**
 	 * Constructor.
 	 *
 	 * @param Application $app Application instance.
 	 */
-	public function __construct( Application $app ) {
-		$this->app = $app;
-
+	public function __construct( protected Application $app ) {
 		$this->app['log']->listen(
 			function ( Message_Logged $event ): void {
 				$trace = new \QM_Backtrace(

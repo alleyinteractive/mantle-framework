@@ -36,20 +36,6 @@ class Factory implements ViewFactory {
 	protected $container;
 
 	/**
-	 * The view engine resolver.
-	 *
-	 * @var Engine_Resolver
-	 */
-	protected $engines;
-
-	/**
-	 * The view finder.
-	 *
-	 * @var View_Finder
-	 */
-	protected $finder;
-
-	/**
 	 * Data that should be available to all templates.
 	 *
 	 * @var array
@@ -89,10 +75,7 @@ class Factory implements ViewFactory {
 	 * @param Engine_Resolver $engines Engine Resolver.
 	 * @param View_Finder     $finder View Finder.
 	 */
-	public function __construct( Container $container, Engine_Resolver $engines, View_Finder $finder ) {
-		$this->engines = $engines;
-		$this->finder  = $finder;
-
+	public function __construct( Container $container, protected Engine_Resolver $engines, protected View_Finder $finder ) {
 		$this->set_container( $container );
 		$this->share( '__env', $this );
 	}

@@ -22,19 +22,11 @@ use Symfony\Component\HttpFoundation\Response as Symfony_Response;
  */
 class Wrap_Template {
 	/**
-	 * Application instance.
-	 *
-	 * @var Application
-	 */
-	protected $app;
-
-	/**
 	 * Constructor.
 	 *
 	 * @param Application $app Application instance.
 	 */
-	public function __construct( Application $app ) {
-		$this->app = $app;
+	public function __construct( protected Application $app ) {
 	}
 
 	/**

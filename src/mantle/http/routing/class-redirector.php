@@ -28,19 +28,11 @@ class Redirector {
 	public const STATUS_TEMPORARY = 302;
 
 	/**
-	 * URL Generator instance.
-	 *
-	 * @var Url_Generator
-	 */
-	protected $generator;
-
-	/**
 	 * Constructor.
 	 *
 	 * @param Url_Generator $generator Generator instance.
 	 */
-	public function __construct( Url_Generator $generator ) {
-		$this->generator = $generator;
+	public function __construct( protected Url_Generator $generator ) {
 	}
 
 	/**

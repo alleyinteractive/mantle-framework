@@ -35,13 +35,6 @@ abstract class Relation {
 	public const RELATION_TAXONOMY = 'mantle_relationship';
 
 	/**
-	 * Query Builder instance.
-	 *
-	 * @var Builder
-	 */
-	protected $query;
-
-	/**
 	 * The related model (child).
 	 *
 	 * @var string
@@ -57,10 +50,8 @@ abstract class Relation {
 
 	/**
 	 * Model's relationship name.
-	 *
-	 * @var string|null
 	 */
-	protected $relationship;
+	protected ?string $relationship;
 
 	/**
 	 * Indicates if the relation is adding constraints.
@@ -77,9 +68,8 @@ abstract class Relation {
 	 * @param bool|null $uses_terms Flag if the relation uses terms.
 	 * @param string    $relationship Relationship name, optional.
 	 */
-	public function __construct( Builder $query, protected Model $parent, ?bool $uses_terms = null, ?string $relationship = null ) {
-		$this->query   = $query;
-		$this->related = $query->get_model();
+	public function __construct( protected Builder $query, protected Model $parent, ?bool $uses_terms = null, ?string $relationship = null ) {
+		$this->related = $this->query->get_model();
 
 		if ( ! is_null( $uses_terms ) ) {
 			$this->uses_terms( $uses_terms );

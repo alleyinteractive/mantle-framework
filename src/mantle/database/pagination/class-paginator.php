@@ -34,32 +34,11 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	protected $current_page;
 
 	/**
-	 * Container instance.
-	 *
-	 * @var Container
-	 */
-	protected $container;
-
-	/**
-	 * Query builder instance.
-	 *
-	 * @var Builder
-	 */
-	protected $builder;
-
-	/**
 	 * Items being paginate.
 	 *
 	 * @var \Mantle\Support\Collection
 	 */
 	protected $items;
-
-	/**
-	 * Number of items per page.
-	 *
-	 * @var int
-	 */
-	protected $per_page;
 
 	/**
 	 * Path for URLs.
@@ -125,12 +104,8 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 * @param int       $per_page Items per-page.
 	 * @param int       $current_page Current page to set.
 	 */
-	public function __construct( Container $container, Builder $builder, int $per_page = 20, ?int $current_page = null ) {
-		$this->container = $container;
-		$this->builder   = $builder;
-		$this->per_page  = $per_page;
-
-		$this->builder->take( $per_page );
+	public function __construct( protected Container $container, protected Builder $builder, protected int $per_page = 20, ?int $current_page = null ) {
+		$this->builder->take( $this->per_page );
 
 		$this->set_current_page( $current_page );
 		$this->path();

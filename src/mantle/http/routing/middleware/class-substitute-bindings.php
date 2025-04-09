@@ -19,19 +19,11 @@ use function Mantle\Support\Helpers\event;
  */
 class Substitute_Bindings {
 	/**
-	 * Router Instance
-	 *
-	 * @var Router
-	 */
-	protected $router;
-
-	/**
 	 * Constructor.
 	 *
 	 * @param Router $router Router instance.
 	 */
-	public function __construct( Router $router ) {
-		$this->router = $router;
+	public function __construct( protected Router $router ) {
 	}
 
 	/**

@@ -7,6 +7,7 @@
 
 namespace Mantle\Console;
 
+use Mantle\Contracts\Application as Application_Contract;
 use InvalidArgumentException;
 use Mantle\Support\Traits\Macroable;
 use Symfony\Component\Console\Command\Command as Symfony_Command;
@@ -66,7 +67,7 @@ abstract class Command extends Symfony_Command {
 	/**
 	 * Container instance.
 	 */
-	protected \Mantle\Contracts\Application $container;
+	protected Application_Contract $container;
 
 	/**
 	 * Constructor.
@@ -180,16 +181,16 @@ abstract class Command extends Symfony_Command {
 	/**
 	 * Set the application container.
 	 *
-	 * @param \Mantle\Contracts\Application $container Application container.
+	 * @param Application_Contract $container Application container.
 	 */
-	public function set_container( \Mantle\Contracts\Application $container ): void {
+	public function set_container( Application_Contract $container ): void {
 		$this->container = $container;
 	}
 
 	/**
 	 * Retrieve the application container.
 	 */
-	public function get_container(): \Mantle\Contracts\Application {
+	public function get_container(): Application_Contract {
 		return $this->container;
 	}
 

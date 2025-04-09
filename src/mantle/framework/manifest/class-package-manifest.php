@@ -26,25 +26,9 @@ class Package_Manifest {
 	protected $manifest;
 
 	/**
-	 * Base folder path.
-	 *
-	 * @var string
-	 */
-	protected $base_path;
-
-	/**
 	 * Vendor folder path.
-	 *
-	 * @var string
 	 */
-	protected $vendor_path;
-
-	/**
-	 * Package Manifest file path.
-	 *
-	 * @var string
-	 */
-	protected $manifest_path;
+	protected string $vendor_path;
 
 	/**
 	 * Constructor.
@@ -52,10 +36,8 @@ class Package_Manifest {
 	 * @param string $base_path     Base folder path for the Mantle site.
 	 * @param string $manifest_path Path to the package manifest file.
 	 */
-	public function __construct( string $base_path, string $manifest_path ) {
-		$this->base_path     = $base_path;
-		$this->vendor_path   = $base_path . '/vendor';
-		$this->manifest_path = $manifest_path;
+	public function __construct( protected string $base_path, protected string $manifest_path ) {
+		$this->vendor_path = $this->base_path . '/vendor';
 	}
 
 	/**

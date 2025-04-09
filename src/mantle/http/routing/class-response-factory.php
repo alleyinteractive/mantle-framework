@@ -21,29 +21,12 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  */
 class Response_Factory implements Factory_Contract {
 	/**
-	 * The redirector instance.
-	 *
-	 * @var Redirector
-	 */
-	protected $redirector;
-
-	/**
-	 * The view factory instance.
-	 *
-	 * @var View_Factory
-	 */
-	protected $view;
-
-	/**
 	 * Create a new response factory instance.
 	 *
 	 * @param Redirector   $redirector Redirector instance.
 	 * @param View_Factory $view View factory.
 	 */
-	public function __construct( Redirector $redirector, View_Factory $view ) {
-		$this->redirector = $redirector;
-		$this->view       = $view;
-	}
+	public function __construct( protected Redirector $redirector, protected View_Factory $view ) {}
 
 	/**
 	 * Create a new response instance.

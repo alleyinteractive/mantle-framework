@@ -31,13 +31,6 @@ class Schedule {
 	public const CRON_HOOK = 'mantle_scheduled_event';
 
 	/**
-	 * Container instance.
-	 *
-	 * @var Application
-	 */
-	protected $container;
-
-	/**
 	 * Timezone for scheduling.
 	 */
 	protected ?DateTimeZone $timezone = null;
@@ -55,9 +48,7 @@ class Schedule {
 	 * @param Application  $container Application container instance.
 	 * @param DateTimeZone $timezone Timezone instance, optional.
 	 */
-	public function __construct( Application $container, ?DateTimeZone $timezone = null ) {
-		$this->container = $container;
-
+	public function __construct( protected Application $container, ?DateTimeZone $timezone = null ) {
 		if ( $timezone ) {
 			$this->timezone = $timezone;
 		}

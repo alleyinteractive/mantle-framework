@@ -21,13 +21,6 @@ use function Mantle\Support\Helpers\event;
  */
 class View_Finder {
 	/**
-	 * Base path for the application.
-	 *
-	 * @var string
-	 */
-	protected $base_path;
-
-	/**
 	 * Paths to check against when loading a template.
 	 *
 	 * @var string[]
@@ -51,9 +44,7 @@ class View_Finder {
 	 *
 	 * @param string $base_path Base path.
 	 */
-	public function __construct( string $base_path ) {
-		$this->base_path = $base_path;
-
+	public function __construct( protected string $base_path ) {
 		$this->set_default_paths();
 
 		\add_action( 'after_setup_theme', [ $this, 'set_default_paths' ] );

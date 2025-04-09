@@ -26,10 +26,8 @@ class Dispatcher implements Dispatcher_Contract {
 
 	/**
 	 * The IoC container instance.
-	 *
-	 * @var Container
 	 */
-	protected $container;
+	protected \Mantle\Container\Container $container;
 
 	/**
 	 * The queue resolver instance.

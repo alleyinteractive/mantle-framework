@@ -22,20 +22,11 @@ class Collector extends \QM_Collector {
 	public $id = 'mantle';
 
 	/**
-	 * Application instance.
-	 *
-	 * @var Application
-	 */
-	protected $app;
-
-	/**
 	 * Constructor.
 	 *
 	 * @param Application $app Application instance.
 	 */
-	public function __construct( Application $app ) {
-		$this->app = $app;
-	}
+	public function __construct( protected Application $app ) {}
 
 	/**
 	 * Collector name.

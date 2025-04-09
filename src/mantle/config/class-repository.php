@@ -18,19 +18,11 @@ use Mantle\Support\Arr;
  */
 class Repository implements ArrayAccess, Config_Contract {
 	/**
-	 * Configuration Items
-	 *
-	 * @var array
-	 */
-	protected $items = [];
-
-	/**
 	 * Constructor.
 	 *
 	 * @param array $items Configuration items for the repository.
 	 */
-	public function __construct( array $items = [] ) {
-		$this->items = $items;
+	public function __construct( protected array $items = [] ) {
 	}
 
 	/**

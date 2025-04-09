@@ -13,19 +13,11 @@ namespace Mantle\Http\Routing;
 class Route_File_Registrar {
 
 	/**
-	 * The router instance.
-	 *
-	 * @var Router
-	 */
-	protected $router;
-
-	/**
 	 * Create a new route file registrar instance.
 	 *
 	 * @param Router $router Router instance.
 	 */
-	public function __construct( Router $router ) {
-		$this->router = $router;
+	public function __construct( protected Router $router ) {
 	}
 
 	/**

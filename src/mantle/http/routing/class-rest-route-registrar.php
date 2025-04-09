@@ -21,13 +21,6 @@ use function Mantle\Support\Helpers\collect;
  */
 class Rest_Route_Registrar {
 	/**
-	 * Router instance.
-	 *
-	 * @var Router
-	 */
-	protected $router;
-
-	/**
 	 * Queued routes to register.
 	 *
 	 * @var array
@@ -35,22 +28,12 @@ class Rest_Route_Registrar {
 	protected $routes;
 
 	/**
-	 * Namespace to register to.
-	 *
-	 * @var string
-	 */
-	protected $namespace;
-
-	/**
 	 * Constructor.
 	 *
 	 * @param Router $router Router instance.
 	 * @param string $namespace Namespace to register to.
 	 */
-	public function __construct( Router $router, string $namespace ) {
-		$this->router    = $router;
-		$this->namespace = $namespace;
-
+	public function __construct( protected Router $router, protected string $namespace ) {
 		add_action( 'rest_api_init', [ $this, 'register_routes' ], 20 );
 	}
 

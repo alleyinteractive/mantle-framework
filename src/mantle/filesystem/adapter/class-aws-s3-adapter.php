@@ -18,13 +18,6 @@ use Mantle\Filesystem\Filesystem_Adapter;
  */
 class AWS_S3_Adapter extends Filesystem_Adapter {
 	/**
-	 * The AWS S3 client.
-	 *
-	 * @var \Aws\S3\S3Client
-	 */
-	protected $client;
-
-	/**
 	 * Create a new AwsS3V3FilesystemAdapter instance.
 	 *
 	 * @param  \League\Flysystem\FilesystemOperator     $driver
@@ -33,10 +26,8 @@ class AWS_S3_Adapter extends Filesystem_Adapter {
 	 * @param  \Aws\S3\S3Client                         $client
 	 * @return void
 	 */
-	public function __construct( FilesystemOperator $driver, S3Adapter $adapter, array $config, S3Client $client ) {
+	public function __construct( FilesystemOperator $driver, S3Adapter $adapter, array $config, protected \Aws\S3\S3Client $client ) {
 		parent::__construct( $driver, $adapter, $config );
-
-		$this->client = $client;
 	}
 
 	/**

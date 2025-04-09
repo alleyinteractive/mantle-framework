@@ -18,10 +18,8 @@ use SebastianBergmann\Exporter\Exporter;
 class Expectation {
 	/**
 	 * Arguments for the hook.
-	 *
-	 * @var mixed
 	 */
-	protected mixed $args;
+	protected mixed $args = null;
 
 	/**
 	 * Number of times for the hook to execute.
