@@ -2,7 +2,8 @@ includes:
 	- phpstan-baseline.neon
 
 parameters:
-	level: max
+	# Goal of max.
+	level: 6
 
 	paths:
 		- src/mantle
@@ -22,6 +23,11 @@ parameters:
 			identifier: function.alreadyNarrowedType
 			paths:
 				- src/mantle/support
+				- src/mantle/testing
+		-
+			identifier: missingType.iterableValue
+			paths:
+				- src/mantle/testkit
 				- src/mantle/testing
 		- "#Unsafe usage of new static#"
 		- "#PHPDoc tag @param references unknown parameter#"

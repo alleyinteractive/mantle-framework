@@ -53,6 +53,7 @@ interface Container extends ContainerInterface {
 	 *
 	 * @param string               $abstract Abstract name.
 	 * @param \Closure|string|null $concrete Concrete to bind.
+	 * @phpstan-param (\Closure(self, array): mixed)|string|null $concrete
 	 */
 	public function singleton( $abstract, $concrete = null );
 
@@ -61,6 +62,7 @@ interface Container extends ContainerInterface {
 	 *
 	 * @param string               $abstract Abstract name.
 	 * @param \Closure|string|null $concrete Concrete name.
+	 * @phpstan-param (\Closure(self, array): mixed)|string|null $concrete
 	 */
 	public function singleton_if( $abstract, $concrete = null );
 

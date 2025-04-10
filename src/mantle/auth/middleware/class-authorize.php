@@ -11,6 +11,8 @@ use Closure;
 use Mantle\Auth\Authentication_Error;
 use Mantle\Http\Request;
 
+use function Mantle\Support\Helpers\mixed;
+
 /**
  * Authorize Middleware
  *
@@ -26,7 +28,7 @@ class Authorize {
 	 *
 	 * @throws Authentication_Error Thrown on invalid access.
 	 */
-	public function handle( Request $request, Closure $next, string $ability = '' ) {
+	public function handle( Request $request, Closure $next, string $ability = '' ): mixed {
 		if ( ! \is_user_logged_in() ) {
 			throw new Authentication_Error( 403, static::get_unauthenticated_error_message() );
 		}
@@ -46,13 +48,13 @@ class Authorize {
 	 * Get the error message for users who are not logged in.
 	 */
 	public static function get_unauthenticated_error_message(): string {
-		return (string) \apply_filters( 'mantle_auth_not_logged_in_error', __( 'You are not authenticated.', 'mantle' ) );
+		return mixed( \apply_filters( 'mantle_auth_not_logged_in_error', __( 'You are not authenticated.', 'mantle' ) ) )->string();
 	}
 
 	/**
 	 * Get the error message for users who are not able to access the requested resources.
 	 */
 	public static function get_invalid_access_error_message(): string {
-		return (string) \apply_filters( 'mantle_auth_not_logged_in_error', __( 'You do not have sufficient permissions.', 'mantle' ) );
+		return mixed( \apply_filters( 'mantle_auth_not_logged_in_error', __( 'You do not have sufficient permissions.', 'mantle' ) ) )->string();
 	}
 }

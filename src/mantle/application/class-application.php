@@ -9,6 +9,7 @@ namespace Mantle\Application;
 
 use Mantle\Container\Container;
 use Mantle\Contracts\Bootstrapable;
+use Mantle\Contracts\Kernel;
 use Mantle\Framework\Manifest\Model_Manifest;
 use Mantle\Framework\Manifest\Package_Manifest;
 use Mantle\Support\Environment;
@@ -412,9 +413,9 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	 * Bootstrap classes should implement {@see \Mantle\Contracts\Bootstrapable}.
 	 *
 	 * @param array<mixed, class-string<Bootstrapable>> $bootstrappers Class names of packages to boot.
-	 * @param \Mantle\Contracts\Kernel                  $kernel Kernel instance.
+	 * @param \Mantle\Contracts\Kernel|null             $kernel Kernel instance.
 	 */
-	public function bootstrap_with( array $bootstrappers, \Mantle\Contracts\Kernel $kernel ): void {
+	public function bootstrap_with( array $bootstrappers, ?Kernel $kernel ): void {
 		$this->has_been_bootstrapped = true;
 
 		foreach ( $bootstrappers as $bootstrapper ) {

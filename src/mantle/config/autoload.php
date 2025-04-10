@@ -12,6 +12,8 @@
 
 declare( strict_types=1 );
 
+use Mantle\Support\Mixed_Data;
+
 if ( ! function_exists( 'config' ) ) {
 	/**
 	 * Get a configuration value from the Configuration Repository.
@@ -34,7 +36,7 @@ if ( ! function_exists( 'config_mixed' ) ) {
 	 * @param string $key Key to retrieve.
 	 * @param mixed  $default Default configuration value.
 	 */
-	function config_mixed( string $key, mixed $default = null ): mixed {
+	function config_mixed( string $key, mixed $default = null ): Mixed_Data {
 		return config()->get_mixed( $key, $default );
 	}
 }

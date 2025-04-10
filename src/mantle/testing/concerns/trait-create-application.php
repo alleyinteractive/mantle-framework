@@ -79,10 +79,10 @@ trait Create_Application {
 	 * @param Application $app Application instance.
 	 */
 	protected function resolve_application_core( $app ) {
-		$app->make( \Mantle\Framework\Bootstrap\Load_Configuration::class )->bootstrap( $app );
-		$app->make( \Mantle\Framework\Bootstrap\Register_Aliases::class )->bootstrap( $app );
-		$app->make( \Mantle\Framework\Bootstrap\Register_Providers::class )->bootstrap( $app );
-		$app->make( \Mantle\Framework\Bootstrap\Boot_Providers::class )->bootstrap( $app );
+		$app->make( \Mantle\Framework\Bootstrap\Load_Configuration::class )->bootstrap( $app, null );
+		$app->make( \Mantle\Framework\Bootstrap\Register_Aliases::class )->bootstrap( $app, null );
+		$app->make( \Mantle\Framework\Bootstrap\Register_Providers::class )->bootstrap( $app, null );
+		$app->make( \Mantle\Framework\Bootstrap\Boot_Providers::class )->bootstrap( $app, null );
 	}
 
 	/**

@@ -399,13 +399,13 @@ class Application extends Container implements Application_Contract {
 			return $this->environment;
 		}
 
-		return Environment::get( 'ENV', wp_get_environment_type() );
+		return Environment::get_mixed( 'ENV', wp_get_environment_type() )->string();
 	}
 
 	/**
 	 * Check if the Application's Environment matches a list.
 	 *
-	 * @param string|array ...$environments Environments to check.
+	 * @param string|array<string> ...$environments Environments to check.
 	 */
 	public function is_environment( ...$environments ): bool {
 		return in_array( $this->environment(), $environments, true );
@@ -417,7 +417,7 @@ class Application extends Container implements Application_Contract {
 	 * @throws RuntimeException Thrown on error determining namespace.
 	 */
 	public function get_namespace(): string {
-		return Environment::get( 'APP_NAMESPACE', 'App' );
+		return Environment::get_mixed( 'APP_NAMESPACE', 'App' )->string();
 	}
 
 	/**

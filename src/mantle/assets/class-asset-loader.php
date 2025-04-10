@@ -17,6 +17,8 @@ use function Mantle\Support\Helpers\validate_file;
 
 /**
  * Mantle Asset Loader
+ *
+ * @phpstan-type AssetDetails array{dependencies?: string[], version?: string}
  */
 class Asset_Loader {
 	/**
@@ -58,7 +60,7 @@ class Asset_Loader {
 		if ( ! file_exists( $this->build_directory . $path ) ) {
 			$exception = new Asset_Not_Found( "Unable to locate asset file: {$path} in {$this->build_directory}{$path }." );
 
-			if ( ! app( 'config' )->get( 'app.debug' ) ) {
+			if ( ! config( 'app.debug' ) ) {
 				report( $exception );
 
 				return null;
@@ -95,6 +97,7 @@ class Asset_Loader {
 	 * Retrieve the dependencies for an asset.
 	 *
 	 * @param string $path Asset path.
+	 * @return array<string>
 	 */
 	public function dependencies( string $path ): array {
 		return $this->details( $path )['dependencies'] ?? [];
@@ -117,6 +120,7 @@ class Asset_Loader {
 	 * is a PHP file with the asset's path suffixed with `.asset.php`.
 	 *
 	 * @param string $path Asset path.
+	 * @phpstan-return AssetDetails
 	 */
 	protected function details( string $path ): array {
 		// Attempt to cleanup the asset "path" to match the manifest name for the
@@ -129,6 +133,7 @@ class Asset_Loader {
 
 		$details_file = "{$this->build_directory}/{$path}.asset.php";
 
+		/** @var array<string, AssetDetails> */
 		static $cache = [];
 
 		if ( isset( $cache[ $details_file ] ) ) {
@@ -136,7 +141,10 @@ class Asset_Loader {
 		}
 
 		if ( file_exists( $details_file ) && 0 === validate_file( $details_file ) ) {
-			$cache[ $details_file ] = require $details_file; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
+			/** @var AssetDetails $file */
+			$file = require $details_file; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
+
+			$cache[ $details_file ] = $file;
 
 			return $cache[ $details_file ];
 		}
@@ -150,7 +158,7 @@ class Asset_Loader {
 	 * @return string[]
 	 */
 	public function blocks(): array {
-		if ( ! is_dir( $this->build_directory ) ) {
+		if ( ! $this->build_directory || ! is_dir( $this->build_directory ) ) {
 			return [];
 		}
 
@@ -172,7 +180,7 @@ class Asset_Loader {
 	 * @param string $path Asset path.
 	 * @param string $build_directory Build directory, optional.
 	 */
-	public function __invoke( string $path, ?string $build_directory = null ): string {
+	public function __invoke( string $path, ?string $build_directory = null ): ?string {
 		if ( $build_directory ) {
 			return ( new static( $build_directory ) )->url( $path );
 		}

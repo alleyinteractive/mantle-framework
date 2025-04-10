@@ -16,7 +16,9 @@ use Mantle\Database\Model\Term;
 use Mantle\Database\Model\User;
 use PHPUnit\Framework\Assert as PHPUnit;
 use WP_Post;
+use WP_Post_Type;
 use WP_Term;
+use WP_User;
 
 use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\get_term_object;
@@ -34,7 +36,7 @@ trait Assertions {
 	 * @param mixed  $actual  The value to check.
 	 * @param string $message Optional. Message to display when the assertion fails.
 	 */
-	public static function assertWPError( $actual, $message = '' ): void {
+	public static function assertWPError( mixed $actual, string $message = '' ): void {
 		PHPUnit::assertInstanceOf( \WP_Error::class, $actual, $message );
 	}
 
@@ -44,7 +46,7 @@ trait Assertions {
 	 * @param mixed  $actual  The value to check.
 	 * @param string $message Optional. Message to display when the assertion fails.
 	 */
-	public static function assertNotWPError( $actual, $message = '' ): void {
+	public static function assertNotWPError( mixed $actual, string $message = '' ): void {
 		if ( '' === $message && is_wp_error( $actual ) ) {
 			$message = $actual->get_error_message();
 		}
@@ -58,7 +60,7 @@ trait Assertions {
 	 * @param mixed  $actual  The value to check.
 	 * @param string $message Optional. Message to display when the assertion fails.
 	 */
-	public function assertWPPost( $actual, $message = '' ): void {
+	public function assertWPPost( mixed $actual, string $message = '' ): void {
 		PHPUnit::assertInstanceOf( \WP_Post::class, $actual, $message );
 	}
 
@@ -68,7 +70,7 @@ trait Assertions {
 	 * @param mixed  $actual  The value to check.
 	 * @param string $message Optional. Message to display when the assertion fails.
 	 */
-	public function assertWPTerm( $actual, $message = '' ): void {
+	public function assertWPTerm( mixed $actual, string $message = '' ): void {
 		PHPUnit::assertInstanceOf( \WP_Term::class, $actual, $message );
 	}
 
@@ -78,17 +80,17 @@ trait Assertions {
 	 * @param mixed  $actual  The value to check.
 	 * @param string $message Optional. Message to display when the assertion fails.
 	 */
-	public function assertWPUser( $actual, $message = '' ): void {
+	public function assertWPUser( mixed $actual, string $message = '' ): void {
 		PHPUnit::assertInstanceOf( \WP_User::class, $actual, $message );
 	}
 
 	/**
 	 * Asserts that the given fields are present in the given object.
 	 *
-	 * @param object $object The object to check.
-	 * @param array  $fields The fields to check.
+	 * @param object                  $object The object to check.
+	 * @param array<array-key, mixed> $fields The fields to check.
 	 */
-	public static function assertEqualFields( $object, $fields ): void {
+	public static function assertEqualFields( object $object, array $fields ): void {
 		foreach ( $fields as $field_name => $field_value ) {
 			if ( $object->$field_name !== $field_value ) {
 				PHPUnit::fail();
@@ -102,7 +104,7 @@ trait Assertions {
 	 * @param string $expected The expected value.
 	 * @param string $actual   The actual value.
 	 */
-	public static function assertDiscardWhitespace( $expected, $actual ): void {
+	public static function assertDiscardWhitespace( string $expected, string $actual ): void {
 		PHPUnit::assertEquals( preg_replace( '/\s*/', '', $expected ), preg_replace( '/\s*/', '', $actual ) );
 	}
 
@@ -112,17 +114,17 @@ trait Assertions {
 	 * @param string $expected The expected value.
 	 * @param string $actual   The actual value.
 	 */
-	public static function assertEqualsIgnoreEOL( $expected, $actual ): void {
+	public static function assertEqualsIgnoreEOL( string $expected, string $actual ): void {
 		PHPUnit::assertEquals( str_replace( "\r\n", "\n", $expected ), str_replace( "\r\n", "\n", $actual ) );
 	}
 
 	/**
 	 * Asserts that the contents of two un-keyed, single arrays are equal, without accounting for the order of elements.
 	 *
-	 * @param array $expected Expected array.
-	 * @param array $actual   Array to check.
+	 * @param array<mixed> $expected Expected array.
+	 * @param array<mixed> $actual   Array to check.
 	 */
-	public static function assertEqualSets( $expected, $actual ): void {
+	public static function assertEqualSets( array $expected, array $actual ): void {
 		sort( $expected );
 		sort( $actual );
 		PHPUnit::assertEquals( $expected, $actual );
@@ -131,10 +133,10 @@ trait Assertions {
 	/**
 	 * Asserts that the contents of two keyed, single arrays are equal, without accounting for the order of elements.
 	 *
-	 * @param array $expected Expected array.
-	 * @param array $actual   Array to check.
+	 * @param array<mixed> $expected Expected array.
+	 * @param array<mixed> $actual   Array to check.
 	 */
-	public static function assertEqualSetsWithIndex( $expected, $actual ): void {
+	public static function assertEqualSetsWithIndex( array $expected, array $actual ): void {
 		ksort( $expected );
 		ksort( $actual );
 		PHPUnit::assertEquals( $expected, $actual );
@@ -143,9 +145,9 @@ trait Assertions {
 	/**
 	 * Asserts that the given variable is a multidimensional array, and that all arrays are non-empty.
 	 *
-	 * @param array $array Array to check.
+	 * @param array<mixed> $array Array to check.
 	 */
-	public static function assertNonEmptyMultidimensionalArray( $array ): void {
+	public static function assertNonEmptyMultidimensionalArray( array $array ): void {
 		PHPUnit::assertTrue( is_array( $array ) ); // @phpstan-ignore-line function.alreadyNarrowedType
 		PHPUnit::assertNotEmpty( $array );
 
@@ -169,6 +171,8 @@ trait Assertions {
 	 */
 	public static function assertQueryTrue( ...$prop ): void {
 		global $wp_query;
+
+		assert( $wp_query instanceof \WP_Query );
 
 		$all = [
 			'is_404',
@@ -211,7 +215,11 @@ trait Assertions {
 		$message = '';
 
 		foreach ( $all as $query_thing ) {
-			$result = is_callable( $query_thing ) ? call_user_func( $query_thing ) : $wp_query->$query_thing;
+			if ( is_callable( $query_thing ) ) {
+				$result = $query_thing();
+			} else {
+				$result = property_exists( $wp_query, $query_thing ) ? $wp_query->{$query_thing} : false;
+			}
 
 			if ( in_array( $query_thing, $prop, true ) ) {
 				if ( ! $result ) {
@@ -258,17 +266,23 @@ trait Assertions {
 
 		// Assert the same object types if strict mode.
 		if ( $strict ) {
+			if ( ! is_object( $object ) ) {
+				PHPUnit::fail( 'Expected object is not an object.' );
+			}
+
 			PHPUnit::assertInstanceOf( $object::class, $queried_object );
 		}
 
 		// Next, assert identifying data about the object.
 		match ( true ) {
-			$object instanceof Post || $object instanceof User => PHPUnit::assertSame( $object->id(), $queried_object->ID, 'Queried object ID is not the same.' ),
-			$object instanceof Term => PHPUnit::assertSame( $object->id(), $queried_object->term_id, 'Queried object ID is not the same.' ),
-			$object instanceof \WP_Post || $object instanceof \WP_User => PHPUnit::assertSame( $object->ID, $queried_object->ID, 'Queried object ID is not the same.' ),
-			$object instanceof \WP_Term => PHPUnit::assertSame( $object->term_id, $queried_object->term_id, 'Queried object ID is not the same.' ),
-			$object instanceof \WP_Post_Type => PHPUnit::assertSame( $object->name, $queried_object->name, 'Queried object name is not the same.' ),
-			default => PHPUnit::fail( 'Unknown object type.' ),
+			$object instanceof Post && $queried_object instanceof WP_Post => PHPUnit::assertSame( $object->id(), $queried_object->ID, 'Queried object ID is not the same.' ),
+			$object instanceof User && $queried_object instanceof WP_User => PHPUnit::assertSame( $object->id(), $queried_object->ID, 'Queried object ID is not the same.' ),
+			$object instanceof Term && $queried_object instanceof WP_Term => PHPUnit::assertSame( $object->id(), $queried_object->term_id, 'Queried object ID is not the same.' ),
+			$object instanceof WP_Post && $queried_object instanceof WP_Post => PHPUnit::assertSame( $object->ID, $queried_object->ID, 'Queried object ID is not the same.' ),
+			$object instanceof WP_User && $queried_object instanceof WP_User => PHPUnit::assertSame( $object->ID, $queried_object->ID, 'Queried object ID is not the same.' ),
+			$object instanceof WP_Term && $queried_object instanceof WP_Term => PHPUnit::assertSame( $object->term_id, $queried_object->term_id, 'Queried object ID is not the same.' ),
+			$object instanceof WP_Post_Type && $queried_object instanceof WP_Post_Type => PHPUnit::assertSame( $object->name, $queried_object->name, 'Queried object name is not the same.' ),
+			default => PHPUnit::fail( 'Unknown object type:' . gettype( $object ) ),
 		};
 	}
 
@@ -281,12 +295,14 @@ trait Assertions {
 		$queried_object = get_queried_object();
 
 		match ( true ) {
-			$object instanceof Post || $object instanceof User => PHPUnit::assertNotSame( $object->id(), $queried_object->ID, 'Queried object ID is the same.' ),
-			$object instanceof Term => PHPUnit::assertNotSame( $object->id(), $queried_object->term_id, 'Queried object ID is the same.' ),
-			$object instanceof \WP_Post || $object instanceof \WP_User => PHPUnit::assertNotSame( $object->ID, $queried_object->ID, 'Queried object ID is the same.' ),
-			$object instanceof \WP_Term => PHPUnit::assertNotSame( $object->term_id, $queried_object->term_id, 'Queried object ID is the same.' ),
-			$object instanceof \WP_Post_Type => PHPUnit::assertNotSame( $object->name, $queried_object->name, 'Queried object name is the same.' ),
-			default => PHPUnit::fail( 'Unknown object type.' ),
+			$object instanceof Post && $queried_object instanceof WP_Post => PHPUnit::assertNotSame( $object->id(), $queried_object->ID, 'Queried object ID is the same.' ),
+			$object instanceof User && $queried_object instanceof WP_User => PHPUnit::assertNotSame( $object->id(), $queried_object->ID, 'Queried object ID is the same.' ),
+			$object instanceof Term && $queried_object instanceof WP_Term => PHPUnit::assertNotSame( $object->id(), $queried_object->term_id, 'Queried object ID is the same.' ),
+			$object instanceof WP_Post && $queried_object instanceof WP_Post => PHPUnit::assertNotSame( $object->ID, $queried_object->ID, 'Queried object ID is the same.' ),
+			$object instanceof WP_User && $queried_object instanceof WP_User => PHPUnit::assertNotSame( $object->ID, $queried_object->ID, 'Queried object ID is the same.' ),
+			$object instanceof WP_Term && $queried_object instanceof WP_Term => PHPUnit::assertNotSame( $object->term_id, $queried_object->term_id, 'Queried object ID is the same.' ),
+			$object instanceof WP_Post_Type && $queried_object instanceof WP_Post_Type => PHPUnit::assertNotSame( $object->name, $queried_object->name, 'Queried object name is the same.' ),
+			default => PHPUnit::fail( 'Unknown object type:' . gettype( $object ) ),
 		};
 	}
 
@@ -300,7 +316,7 @@ trait Assertions {
 	/**
 	 * Assert if a post exists given a set of arguments.
 	 *
-	 * @param array $arguments Arguments to query against.
+	 * @param array<string, mixed> $arguments Arguments to query against.
 	 */
 	public function assertPostExists( array $arguments ): void {
 		$arguments = $this->serialize_arguments(
@@ -313,7 +329,7 @@ trait Assertions {
 		);
 
 		PHPUnit::assertNotEmpty(
-			\get_posts( $arguments ),
+			\get_posts( $arguments ), // @phpstan-ignore-line argument.type
 			"Post not found with arguments: \n" . print_r( $arguments, true ),
 		);
 	}
@@ -321,7 +337,7 @@ trait Assertions {
 	/**
 	 * Assert if a post does not exist given a set of arguments.
 	 *
-	 * @param array $arguments Arguments to query against.
+	 * @param array<string, mixed> $arguments Arguments to query against.
 	 */
 	public function assertPostDoesNotExists( array $arguments ): void {
 		$arguments = $this->serialize_arguments(
@@ -334,7 +350,7 @@ trait Assertions {
 		);
 
 		PHPUnit::assertEmpty(
-			\get_posts( $arguments ),
+			\get_posts( $arguments ), // @phpstan-ignore-line argument.type
 			"Post found with arguments: \n" . print_r( $arguments, true ),
 		);
 	}
@@ -342,7 +358,7 @@ trait Assertions {
 	/**
 	 * Assert if a term exists given a set of arguments.
 	 *
-	 * @param array $arguments Arguments to query against.
+	 * @param array<string, mixed> $arguments Arguments to query against.
 	 */
 	public function assertTermExists( array $arguments ): void {
 		$arguments = $this->serialize_arguments(
@@ -355,7 +371,7 @@ trait Assertions {
 		);
 
 		PHPUnit::assertNotEmpty(
-			\get_terms( $arguments ),
+			\get_terms( $arguments ), // @phpstan-ignore-line argument.type
 			"Term not found with arguments: \n" . print_r( $arguments, true ),
 		);
 	}
@@ -363,7 +379,7 @@ trait Assertions {
 	/**
 	 * Assert if a term does not exist given a set of arguments.
 	 *
-	 * @param array $arguments Arguments to query against.
+	 * @param array<string, mixed> $arguments Arguments to query against.
 	 */
 	public function assertTermDoesNotExists( array $arguments ): void {
 		$arguments = $this->serialize_arguments(
@@ -376,7 +392,7 @@ trait Assertions {
 		);
 
 		PHPUnit::assertEmpty(
-			\get_terms( $arguments ),
+			\get_terms( $arguments ), // @phpstan-ignore-line argument.type
 			"Term found with arguments: \n" . print_r( $arguments, true ),
 		);
 	}
@@ -384,7 +400,7 @@ trait Assertions {
 	/**
 	 * Assert if a user exists given a set of arguments.
 	 *
-	 * @param array $arguments Arguments to query against.
+	 * @param array<string, mixed> $arguments Arguments to query against.
 	 */
 	public function assertUserExists( array $arguments ): void {
 		$arguments = $this->serialize_arguments(
@@ -396,7 +412,7 @@ trait Assertions {
 		);
 
 		PHPUnit::assertNotEmpty(
-			\get_users( $arguments ),
+			\get_users( $arguments ), // @phpstan-ignore-line argument.type
 			"User not found with arguments: \n" . print_r( $arguments, true ),
 		);
 	}
@@ -404,7 +420,7 @@ trait Assertions {
 	/**
 	 * Assert if a user does not exist given a set of arguments.
 	 *
-	 * @param array $arguments Arguments to query against.
+	 * @param array<string, mixed> $arguments Arguments to query against.
 	 */
 	public function assertUserDoesNotExists( array $arguments ): void {
 		$arguments = $this->serialize_arguments(
@@ -416,7 +432,7 @@ trait Assertions {
 		);
 
 		PHPUnit::assertEmpty(
-			\get_users( $arguments ),
+			\get_users( $arguments ), // @phpstan-ignore-line argument.type
 			"User found with arguments: \n" . print_r( $arguments, true ),
 		);
 	}
@@ -516,8 +532,9 @@ trait Assertions {
 	 *
 	 * Convert string-backed enums to an array of all possible values from an enumeration.
 	 *
-	 * @param array $arguments Arguments to serialize.
-	 * @param array $defaults  Default values.
+	 * @param array<string, mixed> $arguments Arguments to serialize.
+	 * @param array<string, mixed> $defaults  Default values.
+	 * @return array<string, mixed>
 	 */
 	protected function serialize_arguments( array $arguments, array $defaults = [] ): array {
 		$arguments = array_merge( $defaults, $arguments );

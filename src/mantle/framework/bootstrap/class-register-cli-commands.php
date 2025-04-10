@@ -20,9 +20,9 @@ class Register_Cli_Commands implements Bootstrapable {
 	 * Register any CLI Commands from the Service Providers
 	 *
 	 * @param Application $app    Application instance.
-	 * @param Kernel      $kernel Kernel instance.
+	 * @param Kernel|null $kernel Kernel instance.
 	 */
-	public function bootstrap( Application $app, Kernel $kernel ): void {
+	public function bootstrap( Application $app, ?Kernel $kernel ): void {
 		// Register the commands from the Console Application Kernel.
 		if ( $kernel instanceof Console_Contract ) {
 			$kernel->register_commands();

@@ -41,9 +41,9 @@ class Load_Configuration implements Bootstrapable {
 	 * Load the configuration for the application.
 	 *
 	 * @param Application $app Application instance.
-	 * @param Kernel      $kernel Kernel instance.
+	 * @param Kernel|null $kernel Kernel instance.
 	 */
-	public function bootstrap( Application $app, Kernel $kernel ): void {
+	public function bootstrap( Application $app, ?Kernel $kernel ): void {
 		$config = $app->make( 'config' );
 
 		// Load the configuration files if not already loaded from cache.

@@ -19,9 +19,9 @@ class Boot_Providers implements Bootstrapable {
 	 * Bootstrap the given application.
 	 *
 	 * @param Application $app Application instance.
-	 * @param Kernel      $kernel Kernel instance.
+	 * @param Kernel|null $kernel Kernel instance.
 	 */
-	public function bootstrap( Application $app, Kernel $kernel ): void {
+	public function bootstrap( Application $app, ?Kernel $kernel ): void {
 		$app->boot();
 	}
 }
