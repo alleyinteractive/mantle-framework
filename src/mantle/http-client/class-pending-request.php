@@ -671,7 +671,7 @@ class Pending_Request {
 			$this->url( $url );
 		}
 
-		if ( ! $this->url ) {
+		if ( empty( $this->url ) ) {
 			throw new InvalidArgumentException( 'A URL must be provided for the request.' );
 		}
 
