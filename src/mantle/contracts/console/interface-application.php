@@ -27,17 +27,17 @@ interface Application {
 	/**
 	 * Run a command through the console application by name.
 	 *
-	 * @param string               $command Command name.
-	 * @param array                $parameters Command parameters.
+	 * @param string                $command Command name.
+	 * @param array<string, string> $parameters Command parameters.
 	 * @param OutputInterface|null $output_buffer Output buffer.
 	 */
-	public function call( string $command, array $parameters = [], $output_buffer = null ): int;
+	public function call( string $command, array $parameters = [], ?OutputInterface $output_buffer = null ): int;
 
 	/**
 	 * Test a console command by name.
 	 *
-	 * @param string $command Command name.
-	 * @param array  $parameters Command parameters.
+	 * @param string                $command Command name.
+	 * @param array<string, string> $parameters Command parameters.
 	 */
 	public function test( string $command, array $parameters = [] ): CommandTester;
 

@@ -52,7 +52,7 @@ trait Manages_Service_Providers {
 	 */
 	public function register_configured_providers(): void {
 		// Get providers from the application config.
-		$providers = collect( $this->make( 'config' )->get( 'app.providers', [] ) );
+		$providers = collect( $this->make( 'config' )->get( 'app.providers', [] ) ); // @phpstan-ignore-line argument.templateType
 
 		// Include providers from the package manifest.
 		$providers->push( ...$this->make( Package_Manifest::class )->providers() );

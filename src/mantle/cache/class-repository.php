@@ -32,8 +32,9 @@ abstract class Repository implements CacheInterface {
 	/**
 	 * Retrieve multiple cache keys.
 	 *
-	 * @param iterable $keys Cache keys.
+	 * @param iterable<string> $keys Cache keys.
 	 * @param mixed    $default Default value.
+	 * @return iterable<string, mixed>
 	 */
 	abstract public function get_multiple( iterable $keys, mixed $default = null ): iterable;
 
@@ -62,8 +63,8 @@ abstract class Repository implements CacheInterface {
 	/**
 	 * Set multiple keys.
 	 *
-	 * @param iterable               $values Key value pair of values to set.
-	 * @param null|int|\DateInterval $ttl Cache TTL.
+	 * @param iterable<string, mixed> $values Key value pair of values to set.
+	 * @param null|int|\DateInterval  $ttl Cache TTL.
 	 */
 	abstract public function set_multiple( iterable $values, null|int|\DateInterval $ttl = null ): bool;
 
@@ -117,8 +118,9 @@ abstract class Repository implements CacheInterface {
 	/**
 	 * Alias for get_multiple for the PSR interface.
 	 *
-	 * @param iterable $keys Cache keys.
+	 * @param iterable<string> $keys Cache keys.
 	 * @param mixed    $default Default value.
+	 * @return iterable<string, mixed>
 	 */
 	public function getMultiple( iterable $keys, mixed $default = null ): iterable {
 		return $this->get_multiple( $keys, $default );
@@ -127,7 +129,7 @@ abstract class Repository implements CacheInterface {
 	/**
 	 * Alias for set_multiple for the PSR interface.
 	 *
-	 * @param iterable               $values Key value pair of values to set.
+	 * @param iterable<string, mixed> $values Key value pair of values to set.
 	 * @param null|int|\DateInterval $ttl Cache TTL.
 	 */
 	public function setMultiple( iterable $values, null|int|\DateInterval $ttl = null ): bool {

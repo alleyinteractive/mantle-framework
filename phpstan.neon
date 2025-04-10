@@ -29,6 +29,11 @@ parameters:
 			paths:
 				- src/mantle/testkit
 				- src/mantle/testing
+		-
+			message: "#implements generic interface ArrayAccess but does not specify its types#"
+			paths:
+				- src/mantle/testkit
+				- src/mantle/testing
 		- "#Unsafe usage of new static#"
 		- "#PHPDoc tag @param references unknown parameter#"
 		- "#@return is not subtype of template type TKey#"

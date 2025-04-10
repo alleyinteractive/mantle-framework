@@ -65,6 +65,7 @@ trait Loads_Environment_Variables {
 	 * read-able.
 	 *
 	 * @param Application $app Application instance.
+	 * @return string[]
 	 */
 	protected function get_environment_paths( Application $app ): array {
 		// Use the application path if set.

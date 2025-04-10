@@ -90,7 +90,7 @@ abstract class Command extends Symfony_Command {
 	/**
 	 * Setup the definition from the signature.
 	 */
-	protected function set_definition_from_signature() {
+	protected function set_definition_from_signature(): void {
 		// Prefix the signature with the name if defined separately.
 		if ( ! empty( $this->name ) && ! str_starts_with( $this->signature, $this->name ) ) {
 			$this->signature = $this->name . ' ' . $this->signature;

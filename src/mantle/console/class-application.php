@@ -71,7 +71,7 @@ class Application extends Console_Application implements Console_Application_Con
 	/**
 	 * Bootstrap the console application.
 	 */
-	protected function bootstrap() {
+	protected function bootstrap(): void {
 		// Fire off a starting event for the application to listen to.
 		$this->container['events']->dispatch( 'console.starting', $this );
 
@@ -96,13 +96,13 @@ class Application extends Console_Application implements Console_Application_Con
 	 *
 	 * @todo Add support for non-Mantle commands (e.g. WP-CLI).
 	 *
-	 * @param string               $command Command name.
-	 * @param array                $parameters Command parameters.
-	 * @param OutputInterface|null $output_buffer Output buffer.
+	 * @param string                $command Command name.
+	 * @param array<string, string> $parameters Command parameters.
+	 * @param OutputInterface|null  $output_buffer Output buffer.
 	 *
 	 * @throws InvalidArgumentException Thrown if the command is not a Mantle command.
 	 */
-	public function call( string $command, array $parameters = [], $output_buffer = null ): int {
+	public function call( string $command, array $parameters = [], ?OutputInterface $output_buffer = null ): int {
 		if ( ! $this->has( $command ) ) {
 			throw new InvalidArgumentException( "Command [{$command}] does not exist." );
 		}
@@ -116,8 +116,8 @@ class Application extends Console_Application implements Console_Application_Con
 	/**
 	 * Test a console command by name.
 	 *
-	 * @param string $command Command name.
-	 * @param array  $parameters Command parameters.
+	 * @param string                $command Command name.
+	 * @param array<string, string> $parameters Command parameters.
 	 */
 	public function test( string $command, array $parameters = [] ): CommandTester {
 		$command = $this->find( $command );
@@ -151,9 +151,9 @@ class Application extends Console_Application implements Console_Application_Con
 	/**
 	 * Resolve an array of commands through the console application.
 	 *
-	 * @param array|class-string<Command|Symfony_Command>|Symfony_Command|Command $commands
+	 * @param array<class-string<Command|Symfony_Command>>|class-string<Command|Symfony_Command>|Symfony_Command|Command $commands
 	 */
-	public function resolve_commands( $commands ): static {
+	public function resolve_commands( array|string|Symfony_Command|Command $commands ): static {
 		$commands = Arr::wrap( $commands );
 
 		foreach ( $commands as $command ) {

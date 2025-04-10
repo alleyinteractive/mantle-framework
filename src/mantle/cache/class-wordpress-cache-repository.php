@@ -41,8 +41,9 @@ class WordPress_Cache_Repository extends Repository implements Taggable_Reposito
 	/**
 	 * Retrieve multiple cache keys.
 	 *
-	 * @param iterable $keys Cache keys.
+	 * @param iterable<string> $keys Cache keys.
 	 * @param mixed    $default Default value.
+	 * @return iterable<string, mixed>
 	 */
 	public function get_multiple( iterable $keys, mixed $default = null ): iterable {
 		return \wp_cache_get_multiple( $keys, $this->prefix );
@@ -129,7 +130,7 @@ class WordPress_Cache_Repository extends Repository implements Taggable_Reposito
 	/**
 	 * Set multiple keys.
 	 *
-	 * @param iterable                                  $values Key value pair of values to set.
+	 * @param iterable<string, mixed>                   $values Key value pair of values to set.
 	 * @param null|int|\DateInterval|\DateTimeInterface $ttl Cache TTL.
 	 */
 	public function set_multiple( iterable $values, null|int|\DateInterval|\DateTimeInterface $ttl = null ): bool {
