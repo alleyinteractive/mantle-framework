@@ -194,9 +194,8 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * Alias to ends_with().
 	 *
 	 * @param  string|iterable<string> $needles
-	 * @return bool
 	 */
-	public function endsWith( $needles ) {
+	public function endsWith( $needles ): bool {
 		return $this->ends_with( $needles );
 	}
 
@@ -305,10 +304,8 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 
 	/**
 	 * Determine if a given string is 7 bit ASCII.
-	 *
-	 * @return bool
 	 */
-	public function is_ascii() {
+	public function is_ascii(): bool {
 		return Str::is_ascii( $this->value );
 	}
 
@@ -427,9 +424,8 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * Get the string matching the given pattern.
 	 *
 	 * @param  string $pattern
-	 * @return \Mantle\Support\Collection
 	 */
-	public function match_all( $pattern ) {
+	public function match_all( $pattern ): \Mantle\Support\Collection {
 		return Str::match_all( $pattern, $this->value );
 	}
 
@@ -437,9 +433,8 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * Determine if the string matches the given pattern.
 	 *
 	 * @param  string $pattern
-	 * @return bool
 	 */
-	public function test( $pattern ) {
+	public function test( $pattern ): bool {
 		return $this->is_match( $pattern );
 	}
 
