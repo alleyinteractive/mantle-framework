@@ -208,9 +208,8 @@ class Event {
 	 * Register a callback to ping a given URL before the job runs.
 	 *
 	 * @param  string $url URL to ping.
-	 * @return static
 	 */
-	public function pingBefore( $url ) {
+	public function pingBefore( string $url ): static {
 		return $this->before( $this->pingCallback( $url ) );
 	}
 
@@ -219,9 +218,8 @@ class Event {
 	 *
 	 * @param  bool   $value Value to compare.
 	 * @param  string $url URL to ping.
-	 * @return static
 	 */
-	public function pingBeforeIf( $value, $url ) {
+	public function pingBeforeIf( $value, $url ): static {
 		return $value ? $this->pingBefore( $url ) : $this;
 	}
 
@@ -229,9 +227,8 @@ class Event {
 	 * Register a callback to ping a given URL after the job runs.
 	 *
 	 * @param string $url URL to ping.
-	 * @return static
 	 */
-	public function thenPing( $url ) {
+	public function thenPing( string $url ): static {
 		return $this->then( $this->pingCallback( $url ) );
 	}
 
@@ -240,9 +237,8 @@ class Event {
 	 *
 	 * @param  bool   $value Value to compare.
 	 * @param  string $url URL to ping.
-	 * @return static
 	 */
-	public function thenPingIf( $value, $url ) {
+	public function thenPingIf( $value, $url ): static {
 		return $value ? $this->thenPing( $url ) : $this;
 	}
 
@@ -250,9 +246,8 @@ class Event {
 	 * Register a callback to ping a given URL if the operation succeeds.
 	 *
 	 * @param string $url URL to ping.
-	 * @return static
 	 */
-	public function pingOnSuccess( $url ) {
+	public function pingOnSuccess( string $url ): static {
 		return $this->onSuccess( $this->pingCallback( $url ) );
 	}
 
@@ -260,9 +255,8 @@ class Event {
 	 * Register a callback to ping a given URL if the operation fails.
 	 *
 	 * @param  string $url
-	 * @return static
 	 */
-	public function pingOnFailure( $url ) {
+	public function pingOnFailure( string $url ): static {
 		return $this->onFailure( $this->pingCallback( $url ) );
 	}
 
@@ -272,7 +266,7 @@ class Event {
 	 * @param string $url URL to ping.
 	 * @return \Closure
 	 */
-	protected function pingCallback( $url ) {
+	protected function pingCallback( string $url ) {
 		return function ( Container $container, Factory $http ) use ( $url ): void {
 			try {
 				$http->throw_exception()->get( $url );
@@ -286,9 +280,8 @@ class Event {
 	 * Limit the environments the command should run in.
 	 *
 	 * @param  array|mixed ...$environments Environments to run on.
-	 * @return static
 	 */
-	public function environments( ...$environments ) {
+	public function environments( ...$environments ): static {
 		$this->environments = $environments;
 		return $this;
 	}
@@ -297,9 +290,8 @@ class Event {
 	 * Register a callback to further filter the schedule.
 	 *
 	 * @param \Closure|bool $callback Callback to be invoked.
-	 * @return static
 	 */
-	public function when( $callback ) {
+	public function when( $callback ): static {
 		$this->filters[] = is_callable( $callback ) ? $callback : fn () => $callback;
 
 		return $this;
@@ -309,9 +301,8 @@ class Event {
 	 * Register a callback to further filter the schedule.
 	 *
 	 * @param \Closure|bool $callback Callback to be invoked.
-	 * @return static
 	 */
-	public function skip( $callback ) {
+	public function skip( $callback ): static {
 		$this->rejects[] = is_callable( $callback ) ? $callback : fn () => $callback;
 
 		return $this;
@@ -321,9 +312,8 @@ class Event {
 	 * Register a callback to be called before the operation.
 	 *
 	 * @param \Closure $callback Callback to be invoked.
-	 * @return static
 	 */
-	public function before( Closure $callback ) {
+	public function before( Closure $callback ): static {
 		$this->before_callbacks[] = $callback;
 
 		return $this;
@@ -333,9 +323,8 @@ class Event {
 	 * Register a callback to be called after the operation.
 	 *
 	 * @param \Closure $callback  Callback to be invoked.
-	 * @return static
 	 */
-	public function after( Closure $callback ) {
+	public function after( Closure $callback ): static {
 		return $this->then( $callback );
 	}
 
@@ -343,9 +332,8 @@ class Event {
 	 * Register a callback to be called after the operation.
 	 *
 	 * @param \Closure $callback Callback to be invoked.
-	 * @return static
 	 */
-	public function then( Closure $callback ) {
+	public function then( Closure $callback ): static {
 		$this->after_callbacks[] = $callback;
 
 		return $this;
@@ -355,9 +343,8 @@ class Event {
 	 * Register a callback to be called if the operation succeeds.
 	 *
 	 * @param \Closure $callback Callback to be invoked.
-	 * @return static
 	 */
-	public function onSuccess( Closure $callback ) {
+	public function onSuccess( Closure $callback ): static {
 		return $this->then(
 			function ( Container $container ) use ( $callback ): void {
 				if ( 0 === $this->exit_code ) {
@@ -371,9 +358,8 @@ class Event {
 	 * Register a callback to be called if the operation fails.
 	 *
 	 * @param \Closure $callback Callback to be invoked.
-	 * @return static
 	 */
-	public function onFailure( Closure $callback ) {
+	public function onFailure( Closure $callback ): static {
 		return $this->then(
 			function ( Container $container ) use ( $callback ): void {
 				if ( 0 !== $this->exit_code ) {

@@ -65,9 +65,8 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 * Set the request object.
 	 *
 	 * @param Request $request Request object to set.
-	 * @return static
 	 */
-	public function set_request( Request $request ) {
+	public function set_request( Request $request ): static {
 		$this->request = $request;
 		$this->context = ( new RequestContext() )->fromRequest( $request );
 
@@ -236,9 +235,8 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 * Set the root URL.
 	 *
 	 * @param string $url Root URL to set.
-	 * @return static
 	 */
-	public function root_url( string $url ) {
+	public function root_url( string $url ): static {
 		$this->cached_root = null;
 
 		$this->root_url = $url;
@@ -304,9 +302,8 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 * Set the routes in the generator.
 	 *
 	 * @param RouteCollection $routes Route collection.
-	 * @return static
 	 */
-	public function set_routes( RouteCollection $routes ) {
+	public function set_routes( RouteCollection $routes ): static {
 		$this->routes = $routes;
 
 		return $this;

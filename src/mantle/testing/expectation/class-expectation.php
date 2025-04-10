@@ -173,10 +173,8 @@ class Expectation {
 
 	/**
 	 * Assert that the action was never applied.
-	 *
-	 * @return static
 	 */
-	public function never() {
+	public function never(): static {
 		$this->times = 0;
 
 		return $this;
@@ -184,10 +182,8 @@ class Expectation {
 
 	/**
 	 * Assert that the action was applied once.
-	 *
-	 * @return static
 	 */
-	public function once() {
+	public function once(): static {
 		$this->times = 1;
 
 		return $this;
@@ -195,10 +191,8 @@ class Expectation {
 
 	/**
 	 * Assert that the action was applied twice.
-	 *
-	 * @return static
 	 */
-	public function twice() {
+	public function twice(): static {
 		$this->times = 2;
 
 		return $this;

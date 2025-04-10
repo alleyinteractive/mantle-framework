@@ -53,9 +53,8 @@ class Pipeline implements PipelineContract {
 	 * Set the object being sent through the pipeline.
 	 *
 	 * @param mixed $passable Data to send through the pipeline.
-	 * @return static
 	 */
-	public function send( $passable ) {
+	public function send( $passable ): static {
 		$this->passable = $passable;
 
 		return $this;
@@ -65,9 +64,8 @@ class Pipeline implements PipelineContract {
 	 * Set the array of pipes.
 	 *
 	 * @param  array<callable>|null $pipes
-	 * @return static
 	 */
-	public function through( $pipes ) {
+	public function through( $pipes ): static {
 		$this->pipes = is_array( $pipes ) ? $pipes : func_get_args();
 
 		return $this;
@@ -77,9 +75,8 @@ class Pipeline implements PipelineContract {
 	 * Set the method to call on the pipes.
 	 *
 	 * @param  string $method
-	 * @return static
 	 */
-	public function via( $method ) {
+	public function via( $method ): static {
 		$this->method = $method;
 
 		return $this;

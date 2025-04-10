@@ -114,9 +114,9 @@ class Str {
 	 *
 	 * @param  string      $string
 	 * @param  string|null $unknown
-	 * @param  bool|null   $strict
+	 * @param  bool        $strict
 	 */
-	public static function transliterate( $string, $unknown = '?', $strict = false ): string {
+	public static function transliterate( string $string, ?string $unknown = '?', bool $strict = false ): string {
 		return ASCII::to_transliterate( $string, $unknown, $strict );
 	}
 
@@ -125,14 +125,13 @@ class Str {
 	 *
 	 * @param  string $subject
 	 * @param  string $search
-	 * @return string
 	 */
-	public static function before( $subject, $search ) {
+	public static function before( string $subject, string $search ): string {
 		if ( '' === $search ) {
 			return $subject;
 		}
 
-		$result = strstr( $subject, (string) $search, true );
+		$result = strstr( $subject, $search, true );
 
 		return $result === false ? $subject : $result;
 	}
@@ -142,9 +141,8 @@ class Str {
 	 *
 	 * @param  string $subject
 	 * @param  string $search
-	 * @return string
 	 */
-	public static function before_last( $subject, $search ) {
+	public static function before_last( string $subject, string $search ): string {
 		if ( $search === '' ) {
 			return $subject;
 		}
@@ -164,9 +162,8 @@ class Str {
 	 * @param  string $subject
 	 * @param  string $from
 	 * @param  string $to
-	 * @return string
 	 */
-	public static function between( $subject, $from, $to ) {
+	public static function between( string $subject, string $from, string $to ): string {
 		if ( $from === '' || $to === '' ) {
 			return $subject;
 		}
@@ -180,9 +177,8 @@ class Str {
 	 * @param  string $subject
 	 * @param  string $from
 	 * @param  string $to
-	 * @return string
 	 */
-	public static function between_first( $subject, $from, $to ) {
+	public static function between_first( string $subject, string $from, string $to ): string {
 		if ( $from === '' || $to === '' ) {
 			return $subject;
 		}
@@ -194,9 +190,8 @@ class Str {
 	 * Convert a value to camel case.
 	 *
 	 * @param  string $value
-	 * @return string
 	 */
-	public static function camel( $value ) {
+	public static function camel( string $value ): string {
 		return static::$camel_cache[ $value ] ?? ( static::$camel_cache[ $value ] = lcfirst( static::studly( $value ) ) );
 	}
 
@@ -488,7 +483,7 @@ class Str {
 	 * @param  string $string
 	 * @param  array  $options
 	 */
-	public static function markdown( $string, array $options = [] ): string {
+	public static function markdown( string $string, array $options = [] ): string {
 		$converter = new GithubFlavoredMarkdownConverter( $options );
 
 		return (string) $converter->convert( $string );
@@ -500,7 +495,7 @@ class Str {
 	 * @param  string $string
 	 * @param  array  $options
 	 */
-	public static function inline_markdown( $string, array $options = [] ): string {
+	public static function inline_markdown( string $string, array $options = [] ): string {
 		$environment = new Environment( $options );
 
 		$environment->addExtension( new GithubFlavoredMarkdownExtension() );
@@ -662,7 +657,7 @@ class Str {
 	 * @param  string               $value
 	 * @param  int|array|\Countable $count
 	 */
-	public static function plural( $value, $count = 2 ): string {
+	public static function plural( string $value, int|array|\Countable $count = 2 ): string {
 		return Pluralizer::plural( $value, $count );
 	}
 
@@ -672,7 +667,7 @@ class Str {
 	 * @param  string               $value
 	 * @param  int|array|\Countable $count
 	 */
-	public static function plural_studly( $value, $count = 2 ): string {
+	public static function plural_studly( $value, int|array|\Countable $count = 2 ): string {
 		$parts = preg_split( '/(.)(?=[A-Z])/u', $value, -1, PREG_SPLIT_DELIM_CAPTURE );
 
 		$last_word = array_pop( $parts );

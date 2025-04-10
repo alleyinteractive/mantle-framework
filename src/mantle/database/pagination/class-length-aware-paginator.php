@@ -27,10 +27,8 @@ class Length_Aware_Paginator extends Paginator {
 
 	/**
 	 * Set the items for the paginator.
-	 *
-	 * @return static
 	 */
-	protected function set_items() {
+	protected function set_items(): static {
 		$builder = $this->builder;
 
 		$this->items      = $builder->get();

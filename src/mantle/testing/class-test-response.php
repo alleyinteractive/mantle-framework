@@ -330,9 +330,8 @@ class Test_Response {
 	 * Assert that the current location header matches the given URI.
 	 *
 	 * @param string $uri URI to assert that the location header is set to.
-	 * @return static
 	 */
-	public function assertLocation( $uri ) {
+	public function assertLocation( $uri ): static {
 		PHPUnit::assertEquals(
 			$this->app['url']->to( $uri ),
 			$this->app['url']->to( $this->get_header( 'location', '' ) ),
@@ -347,9 +346,8 @@ class Test_Response {
 	 *
 	 * @param string $header_name Header name (key) to assert.
 	 * @param mixed  $value       Header value to assert.
-	 * @return static
 	 */
-	public function assertHeader( $header_name, $value = null ) {
+	public function assertHeader( $header_name, $value = null ): static {
 		// Enforce a lowercase header name.
 		$header_name = strtolower( $header_name );
 
@@ -378,9 +376,8 @@ class Test_Response {
 	 *
 	 * @param string $header_name Header name (key) to check.
 	 * @param mixed  $value       Header value to check, optional.
-	 * @return static
 	 */
-	public function assertHeaderMissing( string $header_name, mixed $value = null ) {
+	public function assertHeaderMissing( string $header_name, mixed $value = null ): static {
 		// Enforce a lowercase header name.
 		$header_name = strtolower( $header_name );
 
@@ -487,9 +484,8 @@ class Test_Response {
 	 * Assert that the given strings are contained in order within the response.
 	 *
 	 * @param array $values Values to check.
-	 * @return static
 	 */
-	public function assertSeeInOrder( array $values ) {
+	public function assertSeeInOrder( array $values ): static {
 		try {
 			PHPUnit::assertTrue( $this->see_in_order( $values, $this->get_content() ) );
 		} catch ( Exception $exception ) {
@@ -503,9 +499,8 @@ class Test_Response {
 	 * Assert that the given string is contained within the response text.
 	 *
 	 * @param string $value Value to check.
-	 * @return static
 	 */
-	public function assertSeeText( $value ) {
+	public function assertSeeText( $value ): static {
 		PHPUnit::assertStringContainsString( (string) $value, wp_strip_all_tags( $this->get_content() ) );
 
 		return $this;
@@ -516,9 +511,8 @@ class Test_Response {
 	 * text.
 	 *
 	 * @param array $values Values to check.
-	 * @return static
 	 */
-	public function assertSeeTextInOrder( array $values ) {
+	public function assertSeeTextInOrder( array $values ): static {
 		try {
 			PHPUnit::assertTrue(
 				$this->see_in_order( $values, wp_strip_all_tags( $this->get_content() ) )
@@ -534,9 +528,8 @@ class Test_Response {
 	 * Assert that the given string is not contained within the response.
 	 *
 	 * @param string $value Value to check.
-	 * @return static
 	 */
-	public function assertDontSee( $value ) {
+	public function assertDontSee( $value ): static {
 		PHPUnit::assertStringNotContainsString( (string) $value, $this->get_content() );
 
 		return $this;
@@ -546,9 +539,8 @@ class Test_Response {
 	 * Assert that the given string is not contained within the response text.
 	 *
 	 * @param string $value Value to check.
-	 * @return static
 	 */
-	public function assertDontSeeText( $value ) {
+	public function assertDontSeeText( $value ): static {
 		PHPUnit::assertStringNotContainsString( (string) $value, wp_strip_all_tags( $this->get_content() ) );
 
 		return $this;
@@ -693,9 +685,8 @@ class Test_Response {
 	 *
 	 * @param  string $path
 	 * @param  mixed  $expect
-	 * @return static
 	 */
-	public function assertJsonPath( $path, $expect ) {
+	public function assertJsonPath( $path, $expect ): static {
 		$this->decoded_json()->assertPath( $path, $expect );
 
 		return $this;
@@ -706,7 +697,7 @@ class Test_Response {
 	 *
 	 * @param string $path Path to check.
 	 */
-	public function assertJsonPathExists( string $path ) {
+	public function assertJsonPathExists( string $path ): static {
 		$this->decoded_json()->assertPathExists( $path );
 
 		return $this;
@@ -717,7 +708,7 @@ class Test_Response {
 	 *
 	 * @param string $path Path to check.
 	 */
-	public function assertJsonPathMissing( string $path ) {
+	public function assertJsonPathMissing( string $path ): static {
 		$this->decoded_json()->assertPathMissing( $path );
 
 		return $this;
@@ -727,9 +718,8 @@ class Test_Response {
 	 * Assert that the response has the exact given JSON.
 	 *
 	 * @param  array $data
-	 * @return static
 	 */
-	public function assertExactJson( array $data ) {
+	public function assertExactJson( array $data ): static {
 		$this->decoded_json()->assertExact( $data );
 
 		return $this;
@@ -739,9 +729,8 @@ class Test_Response {
 	 * Assert that the response contains the given JSON fragment.
 	 *
 	 * @param  array $data Data to compare.
-	 * @return static
 	 */
-	public function assertJsonFragment( array $data ) {
+	public function assertJsonFragment( array $data ): static {
 		$this->decoded_json()->assertFragment( $data );
 
 		return $this;
@@ -752,9 +741,8 @@ class Test_Response {
 	 *
 	 * @param  array $data Data to compare.
 	 * @param  bool  $exact Flag for exact match, defaults to false.
-	 * @return static
 	 */
-	public function assertJsonMissing( array $data, $exact = false ) {
+	public function assertJsonMissing( array $data, $exact = false ): static {
 		$this->decoded_json()->assertMissing( $data, $exact );
 
 		return $this;
@@ -764,9 +752,8 @@ class Test_Response {
 	 * Assert that the response does not contain the exact JSON fragment.
 	 *
 	 * @param  array $data
-	 * @return static
 	 */
-	public function assertJsonMissingExact( array $data ) {
+	public function assertJsonMissingExact( array $data ): static {
 		$this->decoded_json()->assertMissingExact( $data );
 
 		return $this;
@@ -777,9 +764,8 @@ class Test_Response {
 	 *
 	 * @param  int         $count
 	 * @param  string|null $key
-	 * @return static
 	 */
-	public function assertJsonCount( int $count, $key = null ) {
+	public function assertJsonCount( int $count, $key = null ): static {
 		$this->decoded_json()->assertCount( $count, $key );
 
 		return $this;
@@ -789,9 +775,8 @@ class Test_Response {
 	 * Assert that the response has the similar JSON as given.
 	 *
 	 * @param  array $data
-	 * @return static
 	 */
-	public function assertJsonSimilar( array $data ) {
+	public function assertJsonSimilar( array $data ): static {
 		$this->decoded_json()->assertSimilar( $data );
 
 		return $this;
@@ -801,9 +786,8 @@ class Test_Response {
 	 * Assert that the response has a given JSON structure.
 	 *
 	 * @param  array|null $structure Structure to check.
-	 * @return static
 	 */
-	public function assertJsonStructure( ?array $structure = null ) {
+	public function assertJsonStructure( ?array $structure = null ): static {
 		$this->decoded_json()->assertStructure( $structure );
 
 		return $this;

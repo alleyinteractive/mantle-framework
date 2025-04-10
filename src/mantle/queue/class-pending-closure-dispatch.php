@@ -19,9 +19,8 @@ class Pending_Closure_Dispatch extends Pending_Dispatch {
 	 * Add a callback to be executed on failure.
 	 *
 	 * @param Closure $callback Callback to invoke.
-	 * @return static
 	 */
-	public function catch( Closure $callback ) {
+	public function catch( Closure $callback ): static {
 		$this->job->on_failure( $callback );
 
 		return $this;

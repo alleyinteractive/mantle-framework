@@ -85,7 +85,7 @@ class Factory implements ViewFactory {
 	 *
 	 * @param Container $container Container instance.
 	 */
-	public function set_container( Container $container ) {
+	public function set_container( Container $container ): static {
 		$this->container = $container;
 		return $this;
 	}
@@ -143,9 +143,8 @@ class Factory implements ViewFactory {
 	 * Push a view onto the stack and set it as the current view.
 	 *
 	 * @param View $view View being loaded.
-	 * @return static
 	 */
-	public function push( View $view ) {
+	public function push( View $view ): static {
 		$this->stack[] = $view;
 		$this->current = $view;
 
@@ -155,10 +154,8 @@ class Factory implements ViewFactory {
 	/**
 	 * Pop a partial off the top of the stack and set the current partial to the
 	 * next one down.
-	 *
-	 * @return static
 	 */
-	public function pop() {
+	public function pop(): static {
 		array_pop( $this->stack );
 
 		$this->current = end( $this->stack );

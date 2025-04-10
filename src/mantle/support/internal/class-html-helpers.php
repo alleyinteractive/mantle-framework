@@ -29,7 +29,7 @@ readonly class HTML_Helpers {
 	 * @param string $charset
 	 * @return \DOMNode The body node containing child nodes created from the HTML fragment
 	 */
-	public static function get_body_node_from_html_fragment( $html, $charset = 'UTF-8' ): \DOMNode {
+	public static function get_body_node_from_html_fragment( $html, string $charset = 'UTF-8' ): \DOMNode {
 		$html = '<html><body>' . $html . '</body></html>';
 
 		return self::parseXhtml( $html, $charset )->getElementsByTagName( 'body' )->item( 0 );

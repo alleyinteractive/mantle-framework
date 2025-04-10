@@ -63,19 +63,16 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * Set the path info for the request.
 	 *
 	 * @param string $path_info Path info.
-	 * @return static
 	 */
-	public function setPathInfo( string $path_info ) {
+	public function setPathInfo( string $path_info ): static {
 		$this->pathInfo = $path_info; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		return $this;
 	}
 
 	/**
 	 * Return the Request instance.
-	 *
-	 * @return static
 	 */
-	public function instance() {
+	public function instance(): static {
 		return $this;
 	}
 
@@ -255,9 +252,8 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * Merge new input into the current request's input array.
 	 *
 	 * @param  array $input
-	 * @return static
 	 */
-	public function merge( array $input ) {
+	public function merge( array $input ): static {
 		$this->get_input_source()->add( $input );
 
 		return $this;
@@ -267,9 +263,8 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * Replace the input for the current request.
 	 *
 	 * @param  array $input
-	 * @return static
 	 */
-	public function replace( array $input ) {
+	public function replace( array $input ): static {
 		$this->get_input_source()->replace( $input );
 
 		return $this;
@@ -331,9 +326,8 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * Set the JSON payload for the request.
 	 *
 	 * @param  \Symfony\Component\HttpFoundation\ParameterBag $json
-	 * @return static
 	 */
-	public function set_json( ?\Symfony\Component\HttpFoundation\ParameterBag $json ) {
+	public function set_json( ?\Symfony\Component\HttpFoundation\ParameterBag $json ): static {
 		$this->json = $json;
 
 		return $this;
@@ -350,9 +344,8 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * Set route parameters.
 	 *
 	 * @param ParameterBag|array $parameters Route parameters to set.
-	 * @return static
 	 */
-	public function set_route_parameters( $parameters ) {
+	public function set_route_parameters( $parameters ): static {
 		if ( ! ( $parameters instanceof ParameterBag ) ) {
 			// Remove internal route parameters.
 			$parameters = new ParameterBag(
@@ -381,9 +374,8 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 *
 	 * @param string $key Parameter to set.
 	 * @param mixed  $value Value to set.
-	 * @return static
 	 */
-	public function set_route_parameter( string $key, $value ) {
+	public function set_route_parameter( string $key, $value ): static {
 		$this->route_parameters->set( $key, $value );
 		return $this;
 	}
@@ -401,9 +393,8 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * Set a route match for the current request.
 	 *
 	 * @param Route $route Route instance to set.
-	 * @return static
 	 */
-	public function set_route( Route $route ) {
+	public function set_route( Route $route ): static {
 		$this->route = $route;
 
 		return $this;

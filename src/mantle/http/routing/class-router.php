@@ -383,9 +383,8 @@ class Router implements Router_Contract {
 	 *
 	 * @param  string $group
 	 * @param  string $middleware
-	 * @return static
 	 */
-	public function prepend_middleware_to_group( $group, $middleware ) {
+	public function prepend_middleware_to_group( $group, $middleware ): static {
 		if ( isset( $this->middleware_groups[ $group ] ) && ! in_array( $middleware, $this->middleware_groups[ $group ], true ) ) {
 			array_unshift( $this->middleware_groups[ $group ], $middleware );
 		}
@@ -400,9 +399,8 @@ class Router implements Router_Contract {
 	 *
 	 * @param  string $group
 	 * @param  string $middleware
-	 * @return static
 	 */
-	public function push_middleware_to_group( $group, $middleware ) {
+	public function push_middleware_to_group( $group, $middleware ): static {
 		if ( ! array_key_exists( $group, $this->middleware_groups ) ) {
 				$this->middleware_groups[ $group ] = [];
 		}
@@ -411,7 +409,7 @@ class Router implements Router_Contract {
 				$this->middleware_groups[ $group ][] = $middleware;
 		}
 
-			return $this;
+		return $this;
 	}
 
 	/**
@@ -485,7 +483,7 @@ class Router implements Router_Contract {
 	 * @param string        $class
 	 * @param \Closure|null $callback
 	 */
-	public function bind_model( $key, $class, ?Closure $callback = null ): void {
+	public function bind_model( string $key, string $class, ?Closure $callback = null ): void {
 		$this->bind( $key, Route_Binding::for_model( $this->container, $class, $callback ) );
 	}
 

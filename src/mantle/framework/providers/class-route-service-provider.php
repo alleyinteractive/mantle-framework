@@ -49,10 +49,8 @@ class Route_Service_Provider extends Service_Provider implements Isolated_Servic
 
 	/**
 	 * Allow pass through requests to WordPress.
-	 *
-	 * @return static
 	 */
-	protected function allow_pass_through_requests() {
+	protected function allow_pass_through_requests(): static {
 		$this->app['router']->pass_requests_to_wordpress( true );
 
 		return $this;
@@ -60,10 +58,8 @@ class Route_Service_Provider extends Service_Provider implements Isolated_Servic
 
 	/**
 	 * Prevent pass through requests to WordPress.
-	 *
-	 * @return static
 	 */
-	protected function prevent_pass_through_requests() {
+	protected function prevent_pass_through_requests(): static {
 		$this->app['router']->pass_requests_to_wordpress( false );
 
 		return $this;

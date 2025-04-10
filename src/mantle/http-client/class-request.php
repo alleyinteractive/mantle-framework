@@ -137,10 +137,8 @@ class Request {
 
 	/**
 	 * Dump the request to the screen.
-	 *
-	 * @return static
 	 */
-	public function dump() {
+	public function dump(): static {
 		dump( $this->args, $this->url );
 		return $this;
 	}

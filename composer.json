@@ -147,7 +147,8 @@
             "@phpcbf"
         ],
         "fix-and-test": [
-            "@lint:fix",
+            "@rector:fix",
+            "composer run phpcbf || true",
             "@test"
         ],
         "merge": "monorepo-builder merge",

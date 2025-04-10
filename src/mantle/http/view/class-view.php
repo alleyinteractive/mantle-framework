@@ -76,9 +76,8 @@ class View implements \Stringable {
 	 * Allows the global WordPress post object to be adjusted when rendering the view.
 	 *
 	 * @param Post|\WP_Post|int $post Post object.
-	 * @return static
 	 */
-	public function set_post( $post ) {
+	public function set_post( $post ): static {
 		$this->post = $post;
 		return $this;
 	}
@@ -88,9 +87,8 @@ class View implements \Stringable {
 	 *
 	 * @param string|array $key Key to set.
 	 * @param mixed        $value Value to set.
-	 * @return static
 	 */
-	public function with( $key, $value = null ) {
+	public function with( $key, $value = null ): static {
 		if ( is_array( $key ) ) {
 			$this->data = array_merge( $this->data, $key );
 		} else {
@@ -123,9 +121,8 @@ class View implements \Stringable {
 	 *
 	 * @param int|bool $cache_ttl Cache TTL or false to disable. Defaults to 15 minutes.
 	 * @param string   $cache_key Cache key to use, optional.
-	 * @return static
 	 */
-	public function cache( $cache_ttl = 900, ?string $cache_key = null ) {
+	public function cache( $cache_ttl = 900, ?string $cache_key = null ): static {
 		if ( false === $cache_ttl ) {
 			$cache_ttl = -1;
 		}

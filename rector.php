@@ -21,6 +21,7 @@ use Rector\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector
 use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnNullableTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictFluentReturnRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector;
 use Rector\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInstanceOfRector;
@@ -47,7 +48,7 @@ return RectorConfig::configure()
 		deadCode: true,
 		instanceOf: true,
 	)
-	->withTypeCoverageLevel( 40 ) // Out of 49.
+	->withTypeCoverageLevel( 45 ) // Out of 49.
 	->withRules(
 		[
 			RenameForeachValueVariableToMatchExprVariableRector::class,
@@ -90,5 +91,10 @@ return RectorConfig::configure()
 		],
 		ReturnUnionTypeRector::class => [
 			__DIR__ . '/src/mantle/framework/exceptions/class-handler.php',
+		],
+		ReturnTypeFromStrictFluentReturnRector::class => [
+			__DIR__ . '/src/mantle/database/query/class-collection.php',
+			__DIR__ . '/src/mantle/support/class-collection.php',
+			__DIR__ . '/src/mantle/support/traits/trait-enumerates-values.php',
 		],
 	] );

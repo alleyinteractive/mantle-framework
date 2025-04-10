@@ -55,9 +55,8 @@ class View_Finder {
 	 * Register an extension with the view finder.
 	 *
 	 * @param string $extension Extension to add.
-	 * @return static
 	 */
-	public function add_extension( $extension ) {
+	public function add_extension( $extension ): static {
 		$index = array_search( $extension, $this->extensions, true );
 
 		if ( false !== $index ) {
@@ -107,11 +106,10 @@ class View_Finder {
 	 *
 	 * @param string $path Path to add.
 	 * @param string $alias Alias to set it as, defaults to none.
-	 * @return static
 	 *
 	 * @throws InvalidArgumentException Thrown on invalid alias.
 	 */
-	public function add_path( string $path, ?string $alias = null ) {
+	public function add_path( string $path, ?string $alias = null ): static {
 		if ( $alias && Str::contains( $alias, [ '/', '\\', '@' ] ) ) {
 			throw new InvalidArgumentException( 'Alias cannot contain invalid characters.' );
 		}
@@ -131,9 +129,8 @@ class View_Finder {
 	 * Remove a path to check against when loading a template.
 	 *
 	 * @param string $path Path to remove.
-	 * @return static
 	 */
-	public function remove_path( string $path ) {
+	public function remove_path( string $path ): static {
 		$index = array_search( $path, $this->paths, true );
 		if ( false !== $index ) {
 			unset( $this->paths[ $index ] );
@@ -151,10 +148,8 @@ class View_Finder {
 
 	/**
 	 * Remove all paths to check against.
-	 *
-	 * @return static
 	 */
-	public function clear_paths() {
+	public function clear_paths(): static {
 		$this->paths = [];
 		return $this;
 	}

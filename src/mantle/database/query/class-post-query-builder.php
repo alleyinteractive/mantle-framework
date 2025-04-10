@@ -228,11 +228,10 @@ class Post_Query_Builder extends Builder {
 	 * @param string                         $taxonomy Taxonomy name.
 	 * @param string                         $operator Operator to use, defaults to 'IN'.
 	 * @param string                         $field Field to use for the query, defaults to term ID.
-	 * @return static
 	 *
 	 * @throws Query_Exception Unknown term to query against.
 	 */
-	public function whereTerm( $term, $taxonomy = null, string $operator = 'IN', string $field = 'term_id' ) {
+	public function whereTerm( $term, $taxonomy = null, string $operator = 'IN', string $field = 'term_id' ): static {
 		if ( $term instanceof Term ) {
 			$taxonomy = $term->taxonomy();
 			$term     = $term->id();
@@ -281,9 +280,8 @@ class Post_Query_Builder extends Builder {
 	 * @param array|string $term Term ID/array of IDs.
 	 * @param string       $taxonomy Taxonomy name.
 	 * @param string       $operator Operator to use, defaults to 'IN'.
-	 * @return static
 	 */
-	public function andWhereTerm( ...$args ) {
+	public function andWhereTerm( ...$args ): static {
 		$this->tax_query['relation'] = 'AND';
 		return $this->whereTerm( ...$args );
 	}
@@ -294,9 +292,8 @@ class Post_Query_Builder extends Builder {
 	 * @param array|string $term Term ID/array of IDs.
 	 * @param string       $taxonomy Taxonomy name.
 	 * @param string       $operator Operator to use, defaults to 'IN'.
-	 * @return static
 	 */
-	public function orWhereTerm( ...$args ) {
+	public function orWhereTerm( ...$args ): static {
 		$this->tax_query['relation'] = 'OR';
 		return $this->whereTerm( ...$args );
 	}

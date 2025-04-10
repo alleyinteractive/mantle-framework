@@ -55,9 +55,8 @@ class Response implements ArrayAccess {
 	 * Create a response object from a `wp_remote_request()` response.
 	 *
 	 * @param array|WP_Error $response Raw response from `wp_remote_request()`.
-	 * @return static
 	 */
-	public static function create( $response ) {
+	public static function create( $response ): static {
 		if ( $response instanceof WP_Error ) {
 			return static::create_from_wp_error( $response );
 		}
@@ -327,10 +326,8 @@ class Response implements ArrayAccess {
 
 	/**
 	 * Dump the response to the screen.
-	 *
-	 * @return static
 	 */
-	public function dump() {
+	public function dump(): static {
 		dump( $this->response );
 		return $this;
 	}

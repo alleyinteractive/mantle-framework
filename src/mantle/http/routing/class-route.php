@@ -114,9 +114,8 @@ class Route extends Symfony_Route {
 	 * Set the route container.
 	 *
 	 * @param Router $router Router interface.
-	 * @return static
 	 */
-	public function set_router( Router $router ) {
+	public function set_router( Router $router ): static {
 		$this->router = $router;
 		return $this;
 	}
@@ -137,9 +136,8 @@ class Route extends Symfony_Route {
 	 * Set the name for a route.
 	 *
 	 * @param string $name Name for the route.
-	 * @return static
 	 */
-	public function name( string $name ) {
+	public function name( string $name ): static {
 		$previous_name = $this->get_name();
 
 		$this->action['as'] = ! empty( $this->action['as_prefix'] ) ? $this->action['as_prefix'] . $name : $name;
@@ -171,9 +169,8 @@ class Route extends Symfony_Route {
 	 * Set the action array for the route.
 	 *
 	 * @param array $action Action for the route.
-	 * @return static
 	 */
-	public function set_action( array $action ) {
+	public function set_action( array $action ): static {
 		$this->action = $action;
 		return $this;
 	}

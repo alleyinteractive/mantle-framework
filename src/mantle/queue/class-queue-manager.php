@@ -57,11 +57,10 @@ class Queue_Manager implements Queue_Manager_Contract {
 	 *
 	 * @param string                          $name Provider name.
 	 * @param Provider|class-string<Provider> $provider Provider class name/instance.
-	 * @return static
 	 *
 	 * @throws InvalidArgumentException Thrown invalid provider.
 	 */
-	public function add_provider( string $name, string|Provider $provider ) {
+	public function add_provider( string $name, string|Provider $provider ): static {
 		if ( is_string( $provider ) && ( ! class_exists( $provider ) || ! in_array( Provider::class, class_implements( $provider ), true ) ) ) {
 			throw new InvalidArgumentException( "Provider does not implement Provider contract: [$provider]" );
 		}

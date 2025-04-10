@@ -97,7 +97,7 @@ abstract class Factory {
 	 *
 	 * @param array $args The arguments.
 	 */
-	public function create_object( $args ): int|null {
+	public function create_object( array $args ): int|null {
 		return $this->create( $args );
 	}
 

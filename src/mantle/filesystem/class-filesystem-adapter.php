@@ -71,9 +71,8 @@ class Filesystem_Adapter implements Filesystem {
 	 * Assert that the given file exists.
 	 *
 	 * @param string[]|string $path File path.
-	 * @return static
 	 */
-	public function assertExists( $path ) {
+	public function assertExists( $path ): static {
 		$paths = Arr::wrap( $path );
 
 		foreach ( $paths as $path ) {
@@ -90,9 +89,8 @@ class Filesystem_Adapter implements Filesystem {
 	 * Assert that the given file does not exist.
 	 *
 	 * @param  string[]|string $path File path.
-	 * @return static
 	 */
-	public function assertMissing( $path ) {
+	public function assertMissing( $path ): static {
 		$paths = Arr::wrap( $path );
 
 		foreach ( $paths as $path ) {
@@ -347,7 +345,7 @@ class Filesystem_Adapter implements Filesystem {
 	 * @param string|null $name File name.
 	 * @param array       $headers HTTP headers.
 	 */
-	public function download( $path, $name = null, array $headers = [] ): StreamedResponse {
+	public function download( string $path, ?string $name = null, array $headers = [] ): StreamedResponse {
 		return $this->response( $path, $name, $headers, 'attachment' );
 	}
 
@@ -465,7 +463,7 @@ class Filesystem_Adapter implements Filesystem {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function readStream( $path ) {
+	public function readStream( string $path ) {
 		try {
 			return $this->driver->readStream( $path );
 		} catch ( UnableToReadFile $e ) {

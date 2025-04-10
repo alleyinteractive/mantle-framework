@@ -130,7 +130,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 *
 	 * @param  string $search
 	 */
-	public function before_last( $search ): static {
+	public function before_last( string $search ): static {
 		return new static( Str::before_last( $this->value, $search ) );
 	}
 
@@ -492,7 +492,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 *
 	 * @param  int|array|\Countable $count
 	 */
-	public function plural( $count = 2 ): static {
+	public function plural( int|array|\Countable $count = 2 ): static {
 		return new static( Str::plural( $this->value, $count ) );
 	}
 
@@ -501,7 +501,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 *
 	 * @param  int|array|\Countable $count
 	 */
-	public function plural_studly( $count = 2 ): static {
+	public function plural_studly( int|array|\Countable $count = 2 ): static {
 		return new static( Str::plural_studly( $this->value, $count ) );
 	}
 
@@ -665,7 +665,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  string|null           $language
 	 * @param  array<string, string> $dictionary
 	 */
-	public function slug( $separator = '-', $language = 'en', $dictionary = [ '@' => 'at' ] ): static {
+	public function slug( string $separator = '-', ?string $language = 'en', array $dictionary = [ '@' => 'at' ] ): static {
 		return new static( Str::slug( $this->value, $separator, $language, $dictionary ) );
 	}
 
@@ -676,7 +676,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param string $language  Default is 'en'.
 	 * @param array  $dictionary Default is [ '@' => 'at' ].
 	 */
-	public function slugify( $separator = '-', $language = 'en', $dictionary = [ '@' => 'at' ] ): static {
+	public function slugify( string $separator = '-', ?string $language = 'en', array $dictionary = [ '@' => 'at' ] ): static {
 		return $this->slug( $separator, $language, $dictionary );
 	}
 
@@ -812,7 +812,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  callable|null           $default
 	 * @return static
 	 */
-	public function when_contains( $needles, $callback, $default = null ) {
+	public function when_contains( string|iterable $needles, ?callable $callback, ?callable $default = null ) {
 		return $this->when( $this->contains( $needles ), $callback, $default );
 	}
 
@@ -824,7 +824,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  callable|null $default
 	 * @return static
 	 */
-	public function when_contains_all( array $needles, $callback, $default = null ) {
+	public function when_contains_all( array $needles, ?callable $callback, ?callable $default = null ) {
 		return $this->when( $this->contains_all( $needles ), $callback, $default );
 	}
 
@@ -835,7 +835,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  callable|null $default
 	 * @return static
 	 */
-	public function when_empty( $callback, $default = null ) {
+	public function when_empty( ?callable $callback, ?callable $default = null ) {
 		return $this->when( $this->is_empty(), $callback, $default );
 	}
 
@@ -846,7 +846,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  callable|null $default
 	 * @return static
 	 */
-	public function when_not_empty( $callback, $default = null ) {
+	public function when_not_empty( ?callable $callback, ?callable $default = null ) {
 		return $this->when( $this->is_not_empty(), $callback, $default );
 	}
 
@@ -858,7 +858,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  callable|null           $default
 	 * @return static
 	 */
-	public function when_ends_with( $needles, $callback, $default = null ) {
+	public function when_ends_with( $needles, ?callable $callback, ?callable $default = null ) {
 		return $this->when( $this->ends_with( $needles ), $callback, $default );
 	}
 
@@ -870,7 +870,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  callable|null $default
 	 * @return static
 	 */
-	public function when_exactly( $value, $callback, $default = null ) {
+	public function when_exactly( $value, ?callable $callback, ?callable $default = null ) {
 		return $this->when( $this->exactly( $value ), $callback, $default );
 	}
 
@@ -882,7 +882,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  callable|null $default
 	 * @return static
 	 */
-	public function when_not_exactly( $value, $callback, $default = null ) {
+	public function when_not_exactly( $value, ?callable $callback, ?callable $default = null ) {
 		return $this->when( ! $this->exactly( $value ), $callback, $default );
 	}
 
@@ -894,7 +894,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  callable|null           $default
 	 * @return static
 	 */
-	public function when_is( $pattern, $callback, $default = null ) {
+	public function when_is( string|iterable $pattern, ?callable $callback, ?callable $default = null ) {
 		return $this->when( $this->is( $pattern ), $callback, $default );
 	}
 
@@ -905,7 +905,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  callable|null $default
 	 * @return static
 	 */
-	public function when_is_ascii( $callback, $default = null ) {
+	public function when_is_ascii( ?callable $callback, ?callable $default = null ) {
 		return $this->when( $this->is_ascii(), $callback, $default );
 	}
 
@@ -916,7 +916,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  callable|null $default
 	 * @return static
 	 */
-	public function when_is_uuid( $callback, $default = null ) {
+	public function when_is_uuid( ?callable $callback, ?callable $default = null ) {
 		return $this->when( $this->is_uuid(), $callback, $default );
 	}
 
@@ -928,7 +928,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  callable|null           $default
 	 * @return static
 	 */
-	public function when_starts_with( $needles, $callback, $default = null ) {
+	public function when_starts_with( $needles, ?callable $callback, ?callable $default = null ) {
 		return $this->when( $this->startsWith( $needles ), $callback, $default );
 	}
 
@@ -940,7 +940,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  callable|null $default
 	 * @return static
 	 */
-	public function when_test( $pattern, $callback, $default = null ) {
+	public function when_test( $pattern, ?callable $callback, ?callable $default = null ) {
 		return $this->when( $this->test( $pattern ), $callback, $default );
 	}
 
@@ -975,10 +975,8 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 
 	/**
 	 * Dump the string.
-	 *
-	 * @return static
 	 */
-	public function dump() {
+	public function dump(): static {
 		VarDumper::dump( $this->value );
 
 		return $this;

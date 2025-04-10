@@ -386,7 +386,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 *
 	 * @param string $offset Attribute to get.
 	 */
-	public function __get( $offset ) {
+	public function __get( string $offset ) {
 		return $this->get( $offset );
 	}
 
@@ -396,7 +396,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 * @param string $offset Attribute to get.
 	 * @param mixed  $value Value to set.
 	 */
-	public function __set( $offset, $value ) {
+	public function __set( string $offset, $value ) {
 		$this->set( $offset, $value );
 	}
 

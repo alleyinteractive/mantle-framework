@@ -23,7 +23,7 @@ class Route_Binding {
 	 * @param \Closure|string $binder Route binding.
 	 * @return \Closure
 	 */
-	public static function for_callback( $container, $binder ) {
+	public static function for_callback( \Mantle\Contracts\Container $container, $binder ) {
 		if ( is_string( $binder ) ) {
 			return static::create_class_binding( $container, $binder );
 		}

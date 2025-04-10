@@ -68,9 +68,8 @@ class Installation_Manager {
 	 * Define a callback to be invoked before installation.
 	 *
 	 * @param callable|null $callback Callback to invoke before installation.
-	 * @return static
 	 */
-	public function before( ?callable $callback ) {
+	public function before( ?callable $callback ): static {
 		if ( is_callable( $callback ) ) {
 			$this->before_install_callbacks[] = $callback;
 		}
@@ -83,9 +82,8 @@ class Installation_Manager {
 	 *
 	 * @param callable|null $callback Callback to invoke after installation.
 	 * @param bool          $append Whether to append the callback to the list or prepend it.
-	 * @return static
 	 */
-	public function after( ?callable $callback, bool $append = true ) {
+	public function after( ?callable $callback, bool $append = true ): static {
 		if ( is_callable( $callback ) ) {
 			$append
 				? $this->after_install_callbacks[] = $callback
@@ -102,9 +100,8 @@ class Installation_Manager {
 	 * @param callable $callback Callback to invoke.
 	 * @param int      $priority Priority.
 	 * @param int      $accepted_args Number of accepted arguments.
-	 * @return static
 	 */
-	public function on( string $hook, ?callable $callback, int $priority = 10, int $accepted_args = 1 ) {
+	public function on( string $hook, ?callable $callback, int $priority = 10, int $accepted_args = 1 ): static {
 		if ( is_callable( $callback ) ) {
 			tests_add_filter( $hook, $callback, $priority, $accepted_args );
 		}
@@ -116,9 +113,8 @@ class Installation_Manager {
 	 * Define a callback to be invoked using the 'muplugins_loaded' hook.
 	 *
 	 * @param callable $callback Callback to invoke on 'muplugins_loaded'.
-	 * @return static
 	 */
-	public function loaded( ?callable $callback ) {
+	public function loaded( ?callable $callback ): static {
 		return $this->on( 'muplugins_loaded', $callback );
 	}
 
@@ -126,9 +122,8 @@ class Installation_Manager {
 	 * Define a callback to be invoked on 'init'.
 	 *
 	 * @param callable $callback Callback to invoke on 'init'.
-	 * @return static
 	 */
-	public function init( ?callable $callback ) {
+	public function init( ?callable $callback ): static {
 		return $this->loaded(
 			fn () => $this->on( 'init', $callback )
 		);
@@ -138,9 +133,8 @@ class Installation_Manager {
 	 * Define the active theme to be set after the installation is loaded.
 	 *
 	 * @param string $theme Theme name.
-	 * @return static
 	 */
-	public function theme( string $theme ) {
+	public function theme( string $theme ): static {
 		return $this->loaded( fn () => switch_theme( $theme ) );
 	}
 
@@ -148,9 +142,8 @@ class Installation_Manager {
 	 * Alias for `theme()`.
 	 *
 	 * @param string $theme Theme name.
-	 * @return static
 	 */
-	public function with_theme( string $theme ) {
+	public function with_theme( string $theme ): static {
 		return $this->theme( $theme );
 	}
 
@@ -163,9 +156,8 @@ class Installation_Manager {
 	 * @see \Mantle\Testing\Concerns\Rsync_Installation::install_plugin()
 	 *
 	 * @param array<int, string> $plugins Plugin files to activate in WordPress.
-	 * @return static
 	 */
-	public function plugins( array $plugins ) {
+	public function plugins( array $plugins ): static {
 		return $this->loaded( fn () => update_option( 'active_plugins', $plugins ) );
 	}
 
@@ -173,9 +165,8 @@ class Installation_Manager {
 	 * Alias for `plugins()`.
 	 *
 	 * @param array<int, string> $plugins Plugin files to activate in WordPress.
-	 * @return static
 	 */
-	public function with_plugins( array $plugins ) {
+	public function with_plugins( array $plugins ): static {
 		return $this->plugins( $plugins );
 	}
 
@@ -299,10 +290,8 @@ class Installation_Manager {
 
 	/**
 	 * Install the Mantle Testing Framework.
-	 *
-	 * @return static
 	 */
-	public function install() {
+	public function install(): static {
 		$this->warn_if_phpunit_10_or_higher();
 
 		require_once __DIR__ . '/core-polyfill.php';

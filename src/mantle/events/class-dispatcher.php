@@ -186,7 +186,7 @@ class Dispatcher implements Dispatcher_Contract {
 	 *
 	 * @param  string $listener
 	 */
-	public function create_class_listener( $listener ): Closure {
+	public function create_class_listener( string $listener ): Closure {
 		return function ( ...$payload ) use ( $listener ) {
 			$callable = $this->create_action_callback(
 				$this->create_class_callable( $listener ),

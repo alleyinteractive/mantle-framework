@@ -663,7 +663,7 @@ class Pending_Testable_Request {
 	 * @param array  $headers Request headers.
 	 * @param int    $options JSON encoding options.
 	 */
-	public function get_json( $uri, array $headers = [], int $options = 0 ): Test_Response {
+	public function get_json( string $uri, array $headers = [], int $options = 0 ): Test_Response {
 		return $this->json( 'GET', $uri, [], $headers, $options );
 	}
 
@@ -766,7 +766,7 @@ class Pending_Testable_Request {
 	 * @param array  $headers Request headers.
 	 * @param int    $options JSON encoding options.
 	 */
-	public function patch_json( $uri, array $data = [], array $headers = [], int $options = 0 ): Test_Response {
+	public function patch_json( string $uri, array $data = [], array $headers = [], int $options = 0 ): Test_Response {
 		return $this->json( 'PATCH', $uri, $data, $headers, $options );
 	}
 
@@ -791,7 +791,7 @@ class Pending_Testable_Request {
 	 * @param array  $headers Request headers.
 	 * @param int    $options JSON encoding options.
 	 */
-	public function delete_json( $uri, array $data = [], array $headers = [], int $options = 0 ): Test_Response {
+	public function delete_json( string $uri, array $data = [], array $headers = [], int $options = 0 ): Test_Response {
 		return $this->json( 'DELETE', $uri, $data, $headers, $options );
 	}
 
@@ -816,7 +816,7 @@ class Pending_Testable_Request {
 	 * @param array  $headers Request headers.
 	 * @param int    $options JSON encoding options.
 	 */
-	public function options_json( $uri, array $data = [], array $headers = [], int $options = 0 ): Test_Response {
+	public function options_json( string $uri, array $data = [], array $headers = [], int $options = 0 ): Test_Response {
 		return $this->json( 'OPTIONS', $uri, $data, $headers, $options );
 	}
 }

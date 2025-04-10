@@ -88,9 +88,8 @@ class REST_Field implements REST_Field_Contract, REST_Field_Schema, REST_Field_G
 	 * Get the attribute name.
 	 *
 	 * @param string[] $object_types Object types for the field.
-	 * @return static
 	 */
-	public function set_object_types( array $object_types ) {
+	public function set_object_types( array $object_types ): static {
 		$this->object_types = $object_types;
 		return $this;
 	}
@@ -108,9 +107,8 @@ class REST_Field implements REST_Field_Contract, REST_Field_Schema, REST_Field_G
 	 * Get the attribute name.
 	 *
 	 * @param string $attribute Attribute name.
-	 * @return static
 	 */
-	public function set_attribute( string $attribute ) {
+	public function set_attribute( string $attribute ): static {
 		$this->attribute = $attribute;
 		return $this;
 	}
@@ -163,9 +161,8 @@ class REST_Field implements REST_Field_Contract, REST_Field_Schema, REST_Field_G
 	 * Set the get callback.
 	 *
 	 * @param Closure|string $callback Callback to set.
-	 * @return static
 	 */
-	public function set_callback( $callback ) {
+	public function set_callback( $callback ): static {
 		$this->get_callback = $callback;
 		return $this;
 	}
@@ -183,9 +180,8 @@ class REST_Field implements REST_Field_Contract, REST_Field_Schema, REST_Field_G
 	 * Set the update callback.
 	 *
 	 * @param Closure|string $callback Callback to set.
-	 * @return static
 	 */
-	public function set_update_callback( $callback ) {
+	public function set_update_callback( $callback ): static {
 		$this->update_callback = $callback;
 		return $this;
 	}
@@ -203,9 +199,8 @@ class REST_Field implements REST_Field_Contract, REST_Field_Schema, REST_Field_G
 	 * Get the field description.
 	 *
 	 * @param string $description Field description.
-	 * @return static
 	 */
-	public function set_description( string $description ) {
+	public function set_description( string $description ): static {
 		$this->description = $description;
 		return $this;
 	}

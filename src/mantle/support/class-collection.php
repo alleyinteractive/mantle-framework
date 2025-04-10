@@ -437,7 +437,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param  int|float $depth
 	 * @return static<int, mixed>
 	 */
-	public function flatten( $depth = INF ) {
+	public function flatten( int|float $depth = INF ) {
 		return new static( Arr::flatten( $this->items, $depth ) );
 	}
 

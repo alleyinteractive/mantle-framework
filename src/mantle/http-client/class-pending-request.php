@@ -256,9 +256,8 @@ class Pending_Request {
 	 * Specify the body format for the request
 	 *
 	 * @param string $format Body format.
-	 * @return static
 	 */
-	public function body_format( string $format ) {
+	public function body_format( string $format ): static {
 		$this->body_format = $format;
 		return $this;
 	}

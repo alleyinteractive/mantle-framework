@@ -71,9 +71,8 @@ class Closure_Job implements Can_Queue {
 	 * Set the delay before the job will be run.
 	 *
 	 * @param DateTimeInterface|int $delay Delay in seconds or DateTime instance.
-	 * @return static
 	 */
-	public function delay( DateTimeInterface|int $delay ) {
+	public function delay( DateTimeInterface|int $delay ): static {
 		$this->delay = $delay;
 
 		return $this;
@@ -83,12 +82,11 @@ class Closure_Job implements Can_Queue {
 	 * Add a callback to be executed if the job fails.
 	 *
 	 * @param mixed $callback
-	 * @return static
 	 */
-	public function on_failure( $callback ) {
+	public function on_failure( $callback ): static {
 		$this->failure_callbacks[] = $callback instanceof Closure
-			? new SerializableClosure( $callback )
-			: $callback;
+		? new SerializableClosure( $callback )
+		: $callback;
 
 		return $this;
 	}

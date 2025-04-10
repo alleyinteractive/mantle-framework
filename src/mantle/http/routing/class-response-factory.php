@@ -149,7 +149,7 @@ class Response_Factory implements Factory_Contract {
 	 *
 	 * @param  string $name
 	 */
-	protected function fallbackName( $name ): string {
+	protected function fallbackName( ?string $name ): string {
 		return str_replace( '%', '', Str::ascii( $name ) );
 	}
 

@@ -189,7 +189,7 @@ class Belongs_To extends Relation {
 	 *
 	 * @return static
 	 */
-	public function dissociate() {
+	public function dissociate(): static {
 		// todo: remove in PHP 8.1+.
 		if ( ! $this->parent instanceof Core_Object ) {
 			throw new Model_Exception( 'Parent model must be an instance of Core_Object.' );

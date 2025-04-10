@@ -113,9 +113,8 @@ class Permalink_Generator implements \Stringable {
 	 *
 	 * @param string $attribute Attribute to set.
 	 * @param string $value Value to set.
-	 * @return static
 	 */
-	public function set_attribute( string $attribute, string $value ) {
+	public function set_attribute( string $attribute, string $value ): static {
 		$this->attributes[ $attribute ] = $value;
 		return $this;
 	}

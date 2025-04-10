@@ -40,9 +40,8 @@ class Mock_Http_Sequence {
 	 * Push a specific response to the sequence
 	 *
 	 * @param Mock_Http_Response $response Response to push.
-	 * @return static
 	 */
-	public function push( Mock_Http_Response $response ) {
+	public function push( Mock_Http_Response $response ): static {
 		$this->responses[] = $response;
 		return $this;
 	}
@@ -91,9 +90,8 @@ class Mock_Http_Sequence {
 	 * Make the sequence return a default response when empty.
 	 *
 	 * @param Mock_Http_Response $response Response to return when empty.
-	 * @return static
 	 */
-	public function when_empty( Mock_Http_Response $response ) {
+	public function when_empty( Mock_Http_Response $response ): static {
 		$this->fail_when_empty = false;
 		$this->empty_response  = $response;
 		return $this;
@@ -101,10 +99,8 @@ class Mock_Http_Sequence {
 
 	/**
 	 * Don't throw an exception when empty.
-	 *
-	 * @return static
 	 */
-	public function dont_fail_when_empty() {
+	public function dont_fail_when_empty(): static {
 		return $this->when_empty( Mock_Http_Response::create() );
 	}
 
