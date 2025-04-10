@@ -49,6 +49,8 @@ return RectorConfig::configure()
 		instanceOf: true,
 		typeDeclarations: true,
 	)
+	// ->withCodingStyleLevel( 1 ) // Out of 25.
+	->withCodeQualityLevel( 20 ) // Out of 71.
 	->withRules(
 		[
 			RenameForeachValueVariableToMatchExprVariableRector::class,
@@ -73,8 +75,8 @@ return RectorConfig::configure()
 		ReturnTypeFromStrictTypedCallRector::class => [
 			__DIR__ . '/src/mantle/database/model/relations',
 		],
-		RemoveUselessParamTagRector::class,
 		FirstClassCallableRector::class,
+		RemoveUselessParamTagRector::class,
 		StrContainsRector::class,
 		AddArrowFunctionReturnTypeRector::class,
 		ChangeOrIfContinueToMultiContinueRector::class,
