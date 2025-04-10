@@ -19,13 +19,10 @@ if ( ! function_exists( 'app' ) ) {
 	/**
 	 * Get the available container instance.
 	 *
-	 * @template TAbstract
-	 *
 	 * @param string|null $abstract Abstract to resolve.
-	 * @phpstan-param class-string<TAbstract>|null $abstract
 	 * @param array<mixed> $parameters Parameters.
 	 * @return mixed|Application
-	 * @phpstan-return ($abstract is null ? Application : TAbstract)
+	 * @phpstan-return ($abstract is null ? Application : mixed)
 	 */
 	function app( ?string $abstract = null, array $parameters = [] ) {
 		if ( is_null( $abstract ) ) {

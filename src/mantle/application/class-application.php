@@ -418,7 +418,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 		$this->has_been_bootstrapped = true;
 
 		foreach ( $bootstrappers as $bootstrapper ) {
-			$this->make( $bootstrapper )->bootstrap( $this );
+			$this->class( $bootstrapper )->bootstrap( $this, $kernel );
 		}
 	}
 
@@ -527,8 +527,8 @@ class Application extends Container implements \Mantle\Contracts\Application {
 			$composer = json_decode( (string) ( file_get_contents( $this->get_base_path( 'composer.json' ) ) ?: '' ), true );
 			$autoload = data_get( $composer, 'extra.wordpress-autoloader.autoload', [] );
 
-			if ( ! empty( $autoload ) ) {
-				$this->namespace = str( collect( $autoload )->keys()->first() )->rtrim( '\\' )->value();
+			if ( ! empty( $autoload ) && is_array( $autoload ) ) {
+				$this->namespace = str( (string) collect( $autoload )->keys()->first( default: '' ) )->rtrim( '\\' )->value();
 			}
 		}
 
@@ -573,9 +573,9 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	/**
 	 * Throw an HttpException with the given data.
 	 *
-	 * @param int    $code HTTP status code.
-	 * @param string $message Response message.
-	 * @param array  $headers Response headers.
+	 * @param int                   $code HTTP status code.
+	 * @param string                $message Response message.
+	 * @param array<string, string> $headers Response headers.
 	 *
 	 * @throws NotFoundHttpException Thrown on 404 error.
 	 * @throws HttpException Thrown on other HTTP error.

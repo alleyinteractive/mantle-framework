@@ -18,12 +18,23 @@ if ( ! function_exists( 'config' ) ) {
 	 *
 	 * @param string|null $key Key to retrieve.
 	 * @param mixed       $default Default configuration value.
+	 * @phpstan-return ($key is null ? \Mantle\Config\Repository : mixed)
 	 */
 	function config( ?string $key = null, mixed $default = null ): mixed {
-		if ( is_null( $key ) ) {
-			return app( 'config' );
-		}
+		/** @var \Mantle\Config\Repository $config */
+		$config = app( 'config' );
 
-		return app( 'config' )->get( $key, $default );
+		return is_null( $key ) ? $config : $config->get( $key, $default );
+	}
+}
+if ( ! function_exists( 'config_mixed' ) ) {
+	/**
+	 * Get a configuration value from the Configuration Repository as a mixed data object.
+	 *
+	 * @param string $key Key to retrieve.
+	 * @param mixed  $default Default configuration value.
+	 */
+	function config_mixed( string $key, mixed $default = null ): mixed {
+		return config()->get_mixed( $key, $default );
 	}
 }

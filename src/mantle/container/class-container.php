@@ -310,6 +310,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 *
 	 * @param  string               $abstract
 	 * @param  \Closure|string|null $concrete
+	 * @phpstan-param (\Closure(self, array): mixed)|string|null $concrete
 	 */
 	public function singleton( $abstract, $concrete = null ): void {
 		$this->bind( $abstract, $concrete, true );
@@ -522,17 +523,35 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	/**
 	 * Resolve the given type from the container.
 	 *
-	 * @template TAbstract of class-string
-	 *
-	 * @param  string $abstract
-	 * @phpstan-param class-string<TAbstract> $abstract
-	 * @param  array<mixed>  $parameters
-	 * @phpstan-return TAbstract
+	 * @param  string       $abstract
+	 * @param  array<mixed> $parameters
 	 *
 	 * @throws Binding_Resolution_Exception Thrown on missing resolution.
 	 */
 	public function make( $abstract, array $parameters = [] ) {
 		return $this->resolve( $abstract, $parameters );
+	}
+
+	/**
+	 * Create a new class instance from the container.
+	 *
+	 * Similar to make() but specifically for passing a class name and returning an instance of it.
+	 *
+	 * @template TAbstract of object
+	 *
+	 * @param  string       $class
+	 * @phpstan-param class-string<TAbstract> $class
+	 * @param  array<mixed> $parameters
+	 * @phpstan-return TAbstract
+	 *
+	 * @throws Binding_Resolution_Exception Thrown on missing resolution.
+	 */
+	public function class( string $class, array $parameters = [] ): object {
+		$instance = $this->resolve( $class, $parameters );
+
+		assert( $instance instanceof $class );
+
+		return $instance;
 	}
 
 	/**
@@ -559,11 +578,10 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @param  string $abstract
 	 * @param  array  $parameters
 	 * @param  bool   $raise_events
-	 * @return mixed
 	 *
 	 * @throws Binding_Resolution_Exception Thrown on missing resolution.
 	 */
-	protected function resolve( $abstract, $parameters = [], $raise_events = true ) {
+	protected function resolve( string $abstract, array $parameters = [], bool $raise_events = true ): mixed {
 		$abstract = $this->get_alias( $abstract );
 
 		$needs_contextual_build = ! empty( $parameters ) || ! is_null(

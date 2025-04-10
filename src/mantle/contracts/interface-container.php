@@ -113,6 +113,21 @@ interface Container extends ContainerInterface {
 	public function make( $abstract, array $parameters = [] );
 
 	/**
+	 * Create a new class instance from the container.
+	 *
+	 * Similar to make() but specifically for passing a class name and returning
+	 * an instance of it. This is useful for PHPStan.
+	 *
+	 * @template TAbstract of object
+	 *
+	 * @param  string       $class
+	 * @phpstan-param class-string<TAbstract> $class
+	 * @param  array<mixed> $parameters
+	 * @phpstan-return TAbstract
+	 */
+	public function class( string $class, array $parameters = [] ): object;
+
+	/**
 	 * Determine if the given abstract type has been resolved.
 	 *
 	 * @param string $abstract Abstract name.

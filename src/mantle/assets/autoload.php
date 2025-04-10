@@ -21,7 +21,7 @@ if ( ! function_exists( 'asset' ) ) {
 	 * Retrieve an instance of the Asset Manager.
 	 */
 	function asset(): Asset_Manager {
-		return app( Asset_Manager::class );
+		return app()->class( Asset_Manager::class );
 	}
 }
 
@@ -33,9 +33,9 @@ if ( ! function_exists( 'asset_loader' ) ) {
 	 */
 	function asset_loader( ?string $path = null ): Asset_Loader|string|null {
 		if ( $path ) {
-			return app( Asset_Loader::class )->url( $path );
+			return app()->class( Asset_Loader::class )->url( $path );
 		}
 
-		return app( Asset_Loader::class );
+		return app()->class( Asset_Loader::class );
 	}
 }

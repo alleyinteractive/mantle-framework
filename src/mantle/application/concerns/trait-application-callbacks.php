@@ -87,7 +87,7 @@ trait Application_Callbacks {
 	 *
 	 * @param callable[] $callbacks Callbacks to fire.
 	 */
-	protected function fire_app_callbacks( array $callbacks ) {
+	protected function fire_app_callbacks( array $callbacks ): void {
 		foreach ( $callbacks as $callback ) {
 			$callback( $this );
 		}

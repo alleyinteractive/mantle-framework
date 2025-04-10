@@ -15,27 +15,37 @@ if ( ! function_exists( 'cache' ) ) {
 	 *
 	 * If an array is passed, we'll assume you want to put to the cache.
 	 *
-	 * @param  mixed $args Arguments.
-	 * @return mixed|\Mantle\Framework\Cache\Cache_Manager
+	 * @param  array<mixed>|string|null $key Cache key or array of a key / value pair to set.
+	 * @param  mixed                    $default Default value to return if the key does not exist.
+	 * @phpstan-return ($key is null ? \Mantle\Cache\Repository : mixed)
 	 *
 	 * @throws \Exception
 	 */
-	function cache( ...$args ) {
-		if ( empty( $args ) ) {
-			return app( 'cache' );
+	function cache( array|string|null $key = null, mixed $default = null ) {
+		/** @var \Mantle\Cache\Repository $cache */
+		$cache = app( 'cache' );
+
+		if ( is_null( $key ) ) {
+			return $cache;
 		}
 
-		if ( isset( $args[0] ) && is_string( $args[0] ) ) {
-			return app( 'cache' )->get( ...$args );
+		if ( is_string( $key ) ) {
+			return $cache->get( $key, $default );
 		}
 
-		if ( ! is_array( $args[0] ) ) {
+		if ( 0 === count( $key ) || ! is_string( key( $key ) ) ) {
 			throw new Exception(
 				'When setting a value in the cache, you must pass an array of key / value pairs.'
 			);
 		}
 
-		return app( 'cache' )->put( key( $args[0] ), reset( $args[0] ), $args[1] ?? null );
+		if ( ! $default instanceof DateTimeInterface && ! is_int( $default ) ) {
+			throw new Exception(
+				'When setting a value in the cache, the expiration passed to $default must be a DateTimeInterface or an integer.'
+			);
+		}
+
+		return $cache->put( key( $key ), reset( $key ), $default );
 	}
 }
 
@@ -49,6 +59,6 @@ if ( ! function_exists( 'remember' ) ) {
 	 * @return mixed
 	 */
 	function remember( string $key, $ttl, Closure $closure ) {
-		return app( 'cache' )->remember( $key, $ttl, $closure );
+		return cache()->remember( $key, $ttl, $closure );
 	}
 }

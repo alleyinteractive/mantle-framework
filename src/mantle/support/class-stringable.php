@@ -23,6 +23,8 @@ use function Mantle\Support\Helpers\collect;
  * Stringable Class
  *
  * Allows for the chaining of string methods.
+ *
+ * @implements ArrayAccess<int, string>
  */
 class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	use Conditionable;
