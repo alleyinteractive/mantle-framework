@@ -129,9 +129,8 @@ class Request {
 	 * Retrieve a specific value from the request.
 	 *
 	 * @param string $key Key to retrieve.
-	 * @return mixed
 	 */
-	public function get( string $key ) {
+	public function get( string $key ): mixed {
 		return data_get( $this->args, $key );
 	}
 

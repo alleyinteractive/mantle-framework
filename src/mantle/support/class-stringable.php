@@ -361,7 +361,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  int    $limit
 	 * @param  string $end
 	 */
-	public function limit( $limit = 100, $end = '...' ): static {
+	public function limit( $limit = 100, string $end = '...' ): static {
 		return new static( Str::limit( $this->value, $limit, $end ) );
 	}
 
@@ -617,7 +617,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 *
 	 * @param  string $prefix
 	 */
-	public function start( $prefix ): static {
+	public function start( string $prefix ): static {
 		return new static( Str::start( $this->value, $prefix ) );
 	}
 
@@ -685,7 +685,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 *
 	 * @param  string $delimiter
 	 */
-	public function snake( $delimiter = '_' ): static {
+	public function snake( string $delimiter = '_' ): static {
 		return new static( Str::snake( $this->value, $delimiter ) );
 	}
 
@@ -950,7 +950,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  int    $words
 	 * @param  string $end
 	 */
-	public function words( $words = 100, $end = '...' ): static {
+	public function words( $words = 100, string $end = '...' ): static {
 		return new static( Str::words( $this->value, $words, $end ) );
 	}
 
@@ -969,7 +969,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  string      $before
 	 * @param  string|null $after
 	 */
-	public function wrap( $before, $after = null ): static {
+	public function wrap( string $before, $after = null ): static {
 		return new static( Str::wrap( $this->value, $before, $after ) );
 	}
 

@@ -390,7 +390,7 @@ trait Interacts_With_Input {
 	 * @param  mixed       $default
 	 * @return \Mantle\Http\Uploaded_File|\Mantle\Http\Uploaded_File[]|null
 	 */
-	public function file( ?string $key = null, mixed $default = null ) {
+	public function file( ?string $key = null, mixed $default = null ): mixed {
 		return data_get( $this->all_files(), $key, $default );
 	}
 }

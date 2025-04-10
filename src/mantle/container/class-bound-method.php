@@ -81,9 +81,8 @@ class Bound_Method {
 	 * @param  Container $container Container instance.
 	 * @param  callable  $callback Callback function.
 	 * @param  mixed     $default Default value.
-	 * @return mixed
 	 */
-	protected static function call_bound_method( $container, $callback, $default ) {
+	protected static function call_bound_method( $container, $callback, $default ): mixed {
 		if ( ! is_array( $callback ) ) {
 			return value( $default );
 		}

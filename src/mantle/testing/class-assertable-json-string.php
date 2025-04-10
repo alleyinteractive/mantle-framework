@@ -62,9 +62,8 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 * Validate and return the decoded response JSON.
 	 *
 	 * @param string|null $key Key to retrieve, optional.
-	 * @return mixed
 	 */
-	public function json( $key = null ) {
+	public function json( string|array|int|null $key = null ): mixed {
 		return data_get( $this->decoded, $key );
 	}
 
@@ -74,7 +73,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 * @param  string $path
 	 * @param  mixed  $expect
 	 */
-	public function assertPath( $path, $expect ): static {
+	public function assertPath( string $path, mixed $expect ): static {
 		PHPUnit::assertSame( $expect, $this->json( $path ) );
 
 		return $this;
