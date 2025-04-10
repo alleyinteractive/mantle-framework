@@ -299,6 +299,7 @@ abstract class TestCase extends BaseTestCase {
 			Network_Admin_Screen::class,
 		];
 	}
+
 	/**
 	 * Register the traits that this test case uses.
 	 */

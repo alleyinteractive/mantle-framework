@@ -53,10 +53,10 @@ class Class_Make_Command extends Generator_Command {
 		$file = new PhpFile();
 
 		$file
-			->addComment( "$class_name class file.\n\n@package $namespace_name" )
+			->addComment( "{$class_name} class file.\n\n@package {$namespace_name}" )
 			->addNamespace( $namespace_name )
 			->addClass( $class_name )
-			->addComment( "$class_name class." );
+			->addComment( "{$class_name} class." );
 
 		return ( new Printer() )->printFile( $file );
 	}

@@ -80,7 +80,7 @@ class Co_Authors_Plus_Factory extends Factory {
 	 *
 	 * @param array<mixed> $args Arguments to pass to the factory.
 	 */
-	public function make( array $args = [] ): Post {
+	protected function make( array $args = [] ): Post {
 		global $coauthors_plus;
 
 		if ( ! isset( $coauthors_plus ) || ! $coauthors_plus instanceof \CoAuthors_Plus ) {

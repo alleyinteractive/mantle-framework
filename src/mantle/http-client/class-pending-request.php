@@ -139,6 +139,7 @@ class Pending_Request {
 		if ( empty( $this->url ) ) {
 			throw new InvalidArgumentException( 'Cannot purge cache for a request that has no URL. Call url() first.' );
 		}
+
 		$middleware = collect( $this->middleware )->first( fn ( $middleware ) => $middleware instanceof Cache_Middleware );
 
 		if ( ! $middleware ) {

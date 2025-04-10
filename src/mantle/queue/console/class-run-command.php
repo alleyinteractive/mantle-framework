@@ -24,6 +24,7 @@ class Run_Command extends Command {
 	 * @var string
 	 */
 	protected $name = 'queue:run';
+
 	/**
 	 * Command Description.
 	 *

@@ -195,6 +195,7 @@ if ( $multisite && ! $installing_wp ) {
 } elseif ( ! $installing_wp ) {
 	Utils::info( "Running as single site...\n<br>ℹ️ To run multisite, pass <span class=\"text-orange-500\">WP_MULTISITE=1</span> or set the <span class=\"text-orange-500\">WP_TESTS_MULTISITE=1</span> constant." );
 }
+
 unset( $multisite );
 
 $GLOBALS['_wp_die_disabled'] = false;
@@ -239,6 +240,7 @@ require_once ABSPATH . '/wp-settings.php';
 if ( isset( $_SERVER['REQUEST_TIME'] ) ) {
 	$_SERVER['REQUEST_TIME'] = (int) $_SERVER['REQUEST_TIME'];
 }
+
 if ( isset( $_SERVER['REQUEST_TIME_FLOAT'] ) ) {
 	$_SERVER['REQUEST_TIME_FLOAT'] = (float) $_SERVER['REQUEST_TIME_FLOAT'];
 }

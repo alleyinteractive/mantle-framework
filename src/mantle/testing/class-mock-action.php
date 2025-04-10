@@ -46,6 +46,7 @@ class Mock_Action {
 		if ( is_callable( 'current_filter' ) ) {
 			return current_filter();
 		}
+
 		global $wp_actions;
 		return end( $wp_actions );
 	}
@@ -119,8 +120,10 @@ class Mock_Action {
 					++$count;
 				}
 			}
+
 			return $count;
 		}
+
 		return count( $this->events );
 	}
 

@@ -238,6 +238,7 @@ function retry( $times, callable $callback, $sleep = 0, $when = null ) {
 		// phpcs:ignore Generic.PHP.DiscourageGoto.Found
 		goto beginning;
 	}
+
 				return null;
 }
 

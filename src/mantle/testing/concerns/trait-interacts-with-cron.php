@@ -41,13 +41,13 @@ trait Interacts_With_Cron {
 		if ( ! is_null( $args ) ) {
 			PHPUnit::assertNotFalse(
 				\wp_next_scheduled( $action, $args ),
-				"Cron action is not in cron queue: [$action]"
+				"Cron action is not in cron queue: [{$action}]"
 			);
 		}
 
 		PHPUnit::assertNotEmpty(
 			collect( static::get_cron_events() )->where( 'hook', $action )->all(),
-			"Cron action is not in cron queue: [$action] (no arguments checked)",
+			"Cron action is not in cron queue: [{$action}] (no arguments checked)",
 		);
 	}
 
@@ -67,13 +67,13 @@ trait Interacts_With_Cron {
 		if ( ! is_null( $args ) ) {
 			PHPUnit::assertFalse(
 				\wp_next_scheduled( $action, $args ),
-				"Cron action is in cron queue: [$action]"
+				"Cron action is in cron queue: [{$action}]"
 			);
 		}
 
 		PHPUnit::assertEmpty(
 			collect( static::get_cron_events() )->where( 'hook', $action )->all(),
-			"Cron action is in cron queue: [$action] (no arguments checked)",
+			"Cron action is in cron queue: [{$action}] (no arguments checked)",
 		);
 	}
 
@@ -108,7 +108,7 @@ trait Interacts_With_Cron {
 
 		if ( is_string( $job ) ) {
 			if ( ! class_exists( $job ) ) {
-				throw new InvalidArgumentException( "Job class not found: [$job]" );
+				throw new InvalidArgumentException( "Job class not found: [{$job}]" );
 			}
 
 			$job = new $job( ...$args );
@@ -144,7 +144,7 @@ trait Interacts_With_Cron {
 
 		if ( is_string( $job ) ) {
 			if ( ! class_exists( $job ) ) {
-				throw new InvalidArgumentException( "Job class not found: [$job]" );
+				throw new InvalidArgumentException( "Job class not found: [{$job}]" );
 			}
 
 			$job = new $job( ...$args );
@@ -171,7 +171,7 @@ trait Interacts_With_Cron {
 		PHPUnit::assertEquals(
 			$expected_count,
 			collect( static::get_cron_events() )->where( 'hook', $action )->count(),
-			"Cron action count is not as expected: [$action]",
+			"Cron action count is not as expected: [{$action}]",
 		);
 	}
 
@@ -266,7 +266,7 @@ trait Interacts_With_Cron {
 
 		if ( false !== $event->schedule ) {
 			$new_args = [ $event->time, $event->schedule, $event->hook, $event->args ];
-			call_user_func_array( 'wp_reschedule_event', $new_args );
+			wp_reschedule_event( ...$new_args );
 		}
 
 		\wp_unschedule_event( $event->time, $event->hook, $event->args );

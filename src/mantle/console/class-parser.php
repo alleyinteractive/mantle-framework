@@ -118,15 +118,19 @@ class Parser {
 		} else {
 			$shortcut = null;
 		}
+
 		if ( str_ends_with( (string) $token, '=' ) ) {
 			return new InputOption( trim( (string) $token, '=' ), $shortcut, InputOption::VALUE_OPTIONAL, $description );
 		}
+
 		if ( str_ends_with( (string) $token, '=*' ) ) {
 			return new InputOption( trim( (string) $token, '=*' ), $shortcut, InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, $description );
 		}
+
 		if ( preg_match( '/(.+)\=\*(.+)/', (string) $token, $matches ) ) {
 			return new InputOption( $matches[1], $shortcut, InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, $description, preg_split( '/,\s?/', $matches[2] ) );
 		}
+
 		if ( preg_match( '/(.+)\=(.+)/', (string) $token, $matches ) ) {
 			return new InputOption( $matches[1], $shortcut, InputOption::VALUE_OPTIONAL, $description, $matches[2] );
 		}

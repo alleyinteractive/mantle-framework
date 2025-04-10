@@ -7,6 +7,9 @@
 
 use Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector;
 use Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector;
+use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
+use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
+use Rector\CodingStyle\Rector\If_\NullableCompareToNullRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
@@ -48,13 +51,12 @@ return RectorConfig::configure()
 	->withPaths( [ __DIR__ . '/src' ] )
 	->withPreparedSets(
 		deadCode: true,
+		codingStyle: true,
 		codeQuality: true,
 		earlyReturn: true,
 		instanceOf: true,
 		typeDeclarations: true,
 	)
-	// ->withCodingStyleLevel( 1 ) // Out of 25.
-	// ->withCodeQualityLevel( 40 ) // Out of 71.
 	->withRules(
 		[
 			RenameForeachValueVariableToMatchExprVariableRector::class,
@@ -111,4 +113,7 @@ return RectorConfig::configure()
 		],
 		SimplifyEmptyCheckOnEmptyArrayRector::class,
 		DisallowedEmptyRuleFixerRector::class,
+		NullableCompareToNullRector::class,
+		CatchExceptionNameMatchingTypeRector::class,
+		EncapsedStringsToSprintfRector::class,
 	] );

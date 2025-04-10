@@ -48,6 +48,7 @@ trait Assertions {
 		if ( '' === $message && is_wp_error( $actual ) ) {
 			$message = $actual->get_error_message();
 		}
+
 		PHPUnit::assertNotInstanceOf( \WP_Error::class, $actual, $message );
 	}
 

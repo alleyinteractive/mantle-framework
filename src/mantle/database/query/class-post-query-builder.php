@@ -197,7 +197,7 @@ class Post_Query_Builder extends Builder {
 
 						if ( empty( $model_object_types[ $post_type ] ) ) {
 							throw new RuntimeException(
-								"Missing model for object type [{ $post_type }]."
+								"Missing model for object type [{ {$post_type} }]."
 							);
 						}
 

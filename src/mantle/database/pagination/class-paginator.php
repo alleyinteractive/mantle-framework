@@ -222,6 +222,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 		if ( 1 !== $this->current_page() ) {
 						return true;
 		}
+
 								return $this->has_more();
 	}
 
@@ -305,6 +306,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 		if ( ! Str::is( 'page/*', $path ) ) {
 			return 1;
 		}
+
 		preg_match_all( '/page\/(\d*)\/?/', $path, $matches );
 		return (int) ( $matches[1][0] ?? 1 );
 	}
@@ -318,6 +320,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 		if ( ! Str::is( 'page/*', $path ) ) {
 			return $path;
 		}
+
 		preg_match_all( '/page\/(\d*)\/?/', $path, $matches );
 
 		if ( ! empty( $matches[0][0] ) ) {

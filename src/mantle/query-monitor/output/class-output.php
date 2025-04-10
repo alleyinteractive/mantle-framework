@@ -77,6 +77,7 @@ class Output extends QM_Output_Html {
 				} else {
 					echo '<td class="qm-ltr"><code>' . esc_html( (string) $value ) . '</code></td>';
 				}
+
 				echo '</tr>';
 			}
 

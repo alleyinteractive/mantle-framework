@@ -104,6 +104,7 @@ abstract class Facade {
 			static::$resolved_instances[ $name ] = static::$app[ $name ];
 			return static::$resolved_instances[ $name ];
 		}
+
 								return null;
 	}
 

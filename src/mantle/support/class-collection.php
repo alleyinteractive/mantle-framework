@@ -73,6 +73,7 @@ class Collection implements ArrayAccess, Enumerable {
 				$value->the_post();
 				$items[] = Model\Post::find( $post );
 			}
+
 			return new static( $items );
 		}
 
@@ -1343,7 +1344,7 @@ class Collection implements ArrayAccess, Enumerable {
 			$arrayable_items
 		);
 
-		return new static( call_user_func_array( 'array_map', $params ) );
+		return new static( array_map( ...$params ) );
 	}
 
 	/**

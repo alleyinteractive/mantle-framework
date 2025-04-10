@@ -548,6 +548,7 @@ class Router implements Router_Contract {
 					'callback' => $args,
 				];
 			}
+
 			// Include the group attributes.
 			if ( $this->has_group_stack() ) {
 				$args = $this->merge_with_last_group( $args );

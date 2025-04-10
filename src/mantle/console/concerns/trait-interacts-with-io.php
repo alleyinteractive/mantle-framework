@@ -314,7 +314,7 @@ trait Interacts_With_IO {
 	 * @param  int|string|null $verbosity
 	 */
 	public function line( $string, $style = null, $verbosity = null ): void {
-		$styled = $style ? "<$style>$string</$style>" : $string;
+		$styled = $style ? "<{$style}>{$string}</{$style}>" : $string;
 
 		$this->output->writeln( $styled, $this->parse_verbosity( $verbosity ) );
 	}

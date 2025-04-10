@@ -30,7 +30,7 @@ trait Interacts_With_PHPUnit {
 		}
 
 		if ( version_compare( \PHPUnit\Runner\Version::id(), $version, $compare ) ) {
-			$this->markTestSkipped( $message ?: "PHPUnit version $version not met." );
+			$this->markTestSkipped( $message ?: "PHPUnit version {$version} not met." );
 		}
 	}
 

@@ -226,7 +226,7 @@ class Arr {
 
 		$keys = (array) $keys;
 
-		if ( count( $keys ) === 0 ) {
+		if ( $keys === [] ) {
 			return;
 		}
 

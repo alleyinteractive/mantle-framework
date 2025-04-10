@@ -86,7 +86,7 @@ trait Incorrect_Usage {
 
 		$not_caught_doing_it_wrong = array_diff( $this->expected_doing_it_wrong, $this->caught_doing_it_wrong );
 		foreach ( $not_caught_doing_it_wrong as $not_caught ) {
-			$errors[] = "Failed to assert that $not_caught triggered an incorrect usage notice";
+			$errors[] = "Failed to assert that {$not_caught} triggered an incorrect usage notice";
 		}
 
 		$unexpected_doing_it_wrong = collect( $this->caught_doing_it_wrong )
@@ -115,7 +115,7 @@ trait Incorrect_Usage {
 
 			if ( ! empty( $this->caught_doing_it_wrong_traces[ $index ] ) ) {
 				static::trace(
-					message: "Unexpected incorrect usage notice for $unexpected",
+					message: "Unexpected incorrect usage notice for {$unexpected}",
 					trace: $this->caught_doing_it_wrong_traces[ $index ],
 				);
 			}

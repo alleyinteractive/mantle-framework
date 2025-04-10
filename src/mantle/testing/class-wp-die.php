@@ -101,8 +101,8 @@ class WP_Die {
 		[ $message, $title, $args ] = _wp_die_process_input( $message, $title, $args );
 
 		echo "\nwp_die called\n";
-		echo "Message : $message\n";
-		echo "Title : $title\n";
+		echo "Message : {$message}\n";
+		echo "Title : {$title}\n";
 		if ( ! empty( $args ) ) {
 			echo "Args: \n";
 			foreach ( $args as $k => $v ) {
@@ -110,7 +110,7 @@ class WP_Die {
 					continue;
 				}
 
-				echo "\t $k : $v\n";
+				echo "\t {$k} : {$v}\n";
 			}
 		}
 
@@ -130,7 +130,7 @@ class WP_Die {
 				echo "Mantle can help with that. Either run `wp mantle test-config` to generate a configuration or download the latest\n";
 				echo "copy to the project root to \033[36m{$path}\033[0m: \n\n";
 				echo "    \033[33mhttps://raw.githubusercontent.com/alleyinteractive/mantle-framework/HEAD/src/mantle/testing/wp-tests-config-sample.php\033[0m \n\n";
-				echo "    \033[33mwget https://raw.githubusercontent.com/alleyinteractive/mantle-framework/HEAD/src/mantle/testing/wp-tests-config-sample.php -O $path\033[0m \n\n";
+				echo "    \033[33mwget https://raw.githubusercontent.com/alleyinteractive/mantle-framework/HEAD/src/mantle/testing/wp-tests-config-sample.php -O {$path}\033[0m \n\n";
 
 				echo "Mantle can run without a configuration in place but assumes a default set of configuration.\n";
 				echo "🔍 Check if your database is configured to allow access with the default credentials:\n\n";
@@ -159,14 +159,15 @@ class WP_Die {
 	public static function exit_handler( $message, $title, $args ): void {
 		// phpcs:disable WordPress.Security.EscapeOutput
 		echo "\nwp_die called\n";
-		echo "Message : $message\n";
-		echo "Title : $title\n";
+		echo "Message : {$message}\n";
+		echo "Title : {$title}\n";
 		if ( ! empty( $args ) ) {
 			echo "Args: \n";
 			foreach ( $args as $k => $v ) {
-				echo "\t $k : $v\n";
+				echo "\t {$k} : {$v}\n";
 			}
 		}
+
 		exit( 1 );
 		// phpcs:enable
 	}

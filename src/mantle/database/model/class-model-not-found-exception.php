@@ -62,7 +62,7 @@ class Model_Not_Found_Exception extends Model_Exception {
 
 		$this->message = "No query results for model [{$model}]";
 
-		if ( count( $this->ids ) > 0 ) {
+		if ( $this->ids !== [] ) {
 			$this->message .= ' ' . implode( ', ', $this->ids );
 		} else {
 			$this->message .= '.';

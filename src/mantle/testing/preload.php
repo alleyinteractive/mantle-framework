@@ -36,6 +36,7 @@ function tests_add_filter( $tag, $function_to_add, $priority = 10, $accepted_arg
 			'accepted_args' => $accepted_args,
 		];
 	}
+
 	return true;
 }
 
@@ -69,5 +70,6 @@ function _test_filter_build_unique_id( $tag, $function ): ?string {
 		// Static calling.
 		return $function[0] . '::' . $function[1];
 	}
+
 				return null;
 }

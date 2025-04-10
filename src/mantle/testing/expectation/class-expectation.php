@@ -149,7 +149,7 @@ class Expectation {
 					PHPUnit::assertTrue(
 						call_user_func_array( $this->return_value_callback, $record ),
 						sprintf(
-							'Failed asserting that hook\'s [%s] return value %s matches the expected return value.',
+							"Failed asserting that hook's [%s] return value %s matches the expected return value.",
 							$this->hook,
 							$exporter->export( $record ),
 						)

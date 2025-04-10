@@ -428,6 +428,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 		if ( $this->bound( $abstract ) ) {
 			return $this->make( $abstract );
 		}
+
 								return null;
 	}
 
@@ -701,7 +702,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 		try {
 			$reflector = new ReflectionClass( $concrete );
 		} catch ( ReflectionException $e ) {
-			throw new Binding_Resolution_Exception( "Target class [$concrete] does not exist.", 0, $e );
+			throw new Binding_Resolution_Exception( "Target class [{$concrete}] does not exist.", 0, $e );
 		}
 
 			// If the type is not instantiable, the developer is attempting to resolve
@@ -883,9 +884,9 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 		if ( ! empty( $this->build_stack ) ) {
 			$previous = implode( ', ', $this->build_stack );
 
-			$message = "Target [$concrete] is not instantiable while building [$previous].";
+			$message = "Target [{$concrete}] is not instantiable while building [{$previous}].";
 		} else {
-			$message = "Target [$concrete] is not instantiable.";
+			$message = "Target [{$concrete}] is not instantiable.";
 		}
 
 		throw new Binding_Resolution_Exception( $message );
@@ -899,7 +900,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @throws Binding_Resolution_Exception Thrown on missing resolution.
 	 */
 	protected function unresolvable_primitive( ReflectionParameter $parameter ): never {
-		$message = "Unresolvable dependency resolving [$parameter] in class {$parameter->getDeclaringClass()->getName()}";
+		$message = "Unresolvable dependency resolving [{$parameter}] in class {$parameter->getDeclaringClass()->getName()}";
 
 		throw new Binding_Resolution_Exception( $message );
 	}

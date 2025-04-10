@@ -70,6 +70,7 @@ trait Refresh_Database {
 		if ( str_starts_with( trim( $query ), 'CREATE TABLE' ) ) {
 			return substr_replace( trim( $query ), 'CREATE TEMPORARY TABLE', 0, 12 );
 		}
+
 		return $query;
 	}
 
@@ -83,7 +84,9 @@ trait Refresh_Database {
 		if ( str_starts_with( trim( $query ), 'DROP TABLE' ) ) {
 			return substr_replace( trim( $query ), 'DROP TEMPORARY TABLE', 0, 10 );
 		}
+
 		return $query;
 	}
 }
+
 // phpcs:enable

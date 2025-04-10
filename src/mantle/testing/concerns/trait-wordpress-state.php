@@ -66,6 +66,7 @@ trait WordPress_State {
 		if ( method_exists( $wp_object_cache, '__remoteset' ) ) {
 			$wp_object_cache->__remoteset();
 		}
+
 		wp_cache_flush();
 		wp_cache_add_global_groups(
 			[
@@ -104,6 +105,7 @@ trait WordPress_State {
 				unregister_post_type( $pt->name );
 			}
 		}
+
 		create_initial_post_types();
 	}
 
@@ -118,6 +120,7 @@ trait WordPress_State {
 		foreach ( get_taxonomies() as $tax ) {
 			unregister_taxonomy( $tax );
 		}
+
 		create_initial_taxonomies();
 	}
 
@@ -142,6 +145,7 @@ trait WordPress_State {
 		if ( ! is_array( $wp_meta_keys ) ) {
 			return;
 		}
+
 		foreach ( $wp_meta_keys as $object_type => $type_keys ) {
 			foreach ( $type_keys as $object_subtype => $subtype_keys ) {
 				foreach ( $subtype_keys as $key => $value ) {
