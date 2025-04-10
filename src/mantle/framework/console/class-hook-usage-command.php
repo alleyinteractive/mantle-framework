@@ -199,7 +199,11 @@ class Hook_Usage_Command extends Command {
 
 				$line = Str::line_number( $contents, $char_pos );
 
-				$references->add( compact( 'file', 'line', 'method' ) );
+				$references->add( [
+					'file'   => $file,
+					'line'   => $line,
+					'method' => $method,
+				] );
 			}
 		}
 

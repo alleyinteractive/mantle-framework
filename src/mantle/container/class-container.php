@@ -215,7 +215,10 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 			$concrete = $this->get_closure( $abstract, $concrete );
 		}
 
-		$this->bindings[ $abstract ] = compact( 'concrete', 'shared' );
+		$this->bindings[ $abstract ] = [
+			'concrete' => $concrete,
+			'shared'   => $shared,
+		];
 
 		// If the abstract type was already resolved in this container we'll fire the
 		// rebound listener so that any objects which have already gotten resolved
@@ -425,6 +428,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 		if ( $this->bound( $abstract ) ) {
 			return $this->make( $abstract );
 		}
+								return null;
 	}
 
 	/**
@@ -705,7 +709,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 			// no binding registered for the abstractions so we need to bail out.
 		if ( ! $reflector->isInstantiable() ) {
 			$this->not_instantiable( $concrete );
-			return;
+			return null;
 		}
 
 		$this->build_stack[] = $concrete;

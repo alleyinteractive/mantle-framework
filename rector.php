@@ -51,11 +51,14 @@ return RectorConfig::configure()
 		typeDeclarations: true,
 	)
 	// ->withCodingStyleLevel( 1 ) // Out of 25.
-	->withCodeQualityLevel( 20 ) // Out of 71.
+	->withCodeQualityLevel( 40 ) // Out of 71.
 	->withRules(
 		[
 			RenameForeachValueVariableToMatchExprVariableRector::class,
 			ExplicitNullableParamTypeRector::class,
+
+			// TODO:
+			// - AddParamTypeDeclarationRector
 		]
 	)
 	->withSkip( [

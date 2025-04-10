@@ -78,16 +78,13 @@ class Mock_Mailer extends \PHPMailer\PHPMailer\PHPMailer {
 		$retval = false;
 		$mock   = $this->get_sent( $mock_sent_index );
 
-		if ( $mock ) {
-			if ( isset( $mock->{$address_type}[ $recipient_index ] ) ) {
-				$address_index  = $mock->{$address_type}[ $recipient_index ];
-				$recipient_data = [
-					'address' => ( isset( $address_index[0] ) && ! empty( $address_index[0] ) ) ? $address_index[0] : 'No address set',
-					'name'    => ( isset( $address_index[1] ) && ! empty( $address_index[1] ) ) ? $address_index[1] : 'No name set',
-				];
-
-				$retval = (object) $recipient_data;
-			}
+		if ( $mock && isset( $mock->{$address_type}[ $recipient_index ] ) ) {
+												$address_index  = $mock->{$address_type}[ $recipient_index ];
+												$recipient_data = [
+													'address' => ( isset( $address_index[0] ) && ! empty( $address_index[0] ) ) ? $address_index[0] : 'No address set',
+													'name' => ( isset( $address_index[1] ) && ! empty( $address_index[1] ) ) ? $address_index[1] : 'No name set',
+												];
+												$retval         = (object) $recipient_data;
 		}
 
 		return $retval;

@@ -199,13 +199,10 @@ trait Rsync_Installation {
 			return $this;
 		}
 
-		if ( 'memcached' === $install ) {
-			// Check if Memcached is installed before proceeding.
-			if ( ! class_exists( \Memcached::class ) && ! Utils::env( 'MANTLE_REQUIRE_OBJECT_CACHE', false ) ) {
-				Utils::error( 'Memcached is not installed. Cannot install object cache. Skipping...' );
-
-				return $this;
-			}
+		// Check if Memcached is installed before proceeding.
+		if ( 'memcached' === $install && ( ! class_exists( \Memcached::class ) && ! Utils::env( 'MANTLE_REQUIRE_OBJECT_CACHE', false ) ) ) {
+						Utils::error( 'Memcached is not installed. Cannot install object cache. Skipping...' );
+						return $this;
 		}
 
 		$this->add_exclusion( 'object-cache.php' );
