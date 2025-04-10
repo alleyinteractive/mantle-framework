@@ -8,20 +8,21 @@
 namespace Mantle\Framework\Bootstrap;
 
 use Mantle\Contracts\Application;
+use Mantle\Contracts\Bootstrapable;
 use Mantle\Contracts\Console\Kernel as Console_Contract;
-use Mantle\Contracts\Kernel as Kernel_Contract;
+use Mantle\Contracts\Kernel;
 
 /**
  * Register CLI Commands from Service Providers
  */
-class Register_Cli_Commands {
+class Register_Cli_Commands implements Bootstrapable {
 	/**
 	 * Register any CLI Commands from the Service Providers
 	 *
-	 * @param Application     $app    Application instance.
-	 * @param Kernel_Contract $kernel Kernel instance.
+	 * @param Application $app    Application instance.
+	 * @param Kernel      $kernel Kernel instance.
 	 */
-	public function bootstrap( Application $app, Kernel_Contract $kernel ): void {
+	public function bootstrap( Application $app, Kernel $kernel ): void {
 		// Register the commands from the Console Application Kernel.
 		if ( $kernel instanceof Console_Contract ) {
 			$kernel->register_commands();

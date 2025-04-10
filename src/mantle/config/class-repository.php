@@ -10,6 +10,7 @@ namespace Mantle\Config;
 use ArrayAccess;
 use Mantle\Contracts\Config\Repository as Config_Contract;
 use Mantle\Support\Arr;
+use Mantle\Support\Mixed_Data;
 
 /**
  * Configuration Repository
@@ -39,10 +40,20 @@ class Repository implements ArrayAccess, Config_Contract {
 	 *
 	 * @param string $key Configuration key to get, period-delimited.
 	 * @param mixed  $default Default value, optional.
-	 * @return mixed
 	 */
-	public function get( string $key, $default = null ) {
+	public function get( string $key, mixed $default = null ): mixed {
 		return Arr::get( $this->items, $key, $default );
+	}
+
+	/**
+	 * Retrieve a configuration value as Mixed_Data.
+	 *
+	 * @param string $key Configuration key to get, period-delimited.
+	 * @param mixed  $default Default value, optional.
+	 * @return Mixed_Data
+	 */
+	public function get_mixed( string $key, mixed $default = null ): Mixed_Data {
+		return Mixed_Data::of( $this->get( $key, $default ) );
 	}
 
 	/**

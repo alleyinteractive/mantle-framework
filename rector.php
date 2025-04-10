@@ -24,6 +24,8 @@ use Rector\Php81\Rector\Array_\FirstClassCallableRector;
 use Rector\Php84\Rector\Param\ExplicitNullableParamTypeRector;
 use Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector;
 use Rector\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeDeclarationRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnArrayDocblockBasedOnArrayMapRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnNullableTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector;
@@ -61,9 +63,8 @@ return RectorConfig::configure()
 		[
 			RenameForeachValueVariableToMatchExprVariableRector::class,
 			ExplicitNullableParamTypeRector::class,
-
-			// TODO:
-			// - AddParamTypeDeclarationRector
+			AddParamTypeDeclarationRector::class,
+			AddReturnArrayDocblockBasedOnArrayMapRector::class,
 		]
 	)
 	->withSkip( [

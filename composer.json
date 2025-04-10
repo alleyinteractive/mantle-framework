@@ -157,6 +157,10 @@
         "phpcs-modified": "./bin/phpcs-modified-files.sh",
         "phpcs": "phpcs --standard=./phpcs.xml .",
         "phpstan": "phpstan --memory-limit=1536M",
+        "phpstan:pro": [
+            "Composer\\Config::disableProcessTimeout",
+            "@phpstan --pro"
+        ],
         "phpunit:multisite": "WP_MULTISITE=1 phpunit",
         "phpunit-9": "phpunit --configuration=phpunit-9.xml",
         "phpunit": "phpunit",

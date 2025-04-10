@@ -9,18 +9,21 @@ namespace Mantle\Framework\Bootstrap;
 
 use Mantle\Framework\Alias_Loader;
 use Mantle\Contracts\Application;
+use Mantle\Contracts\Bootstrapable;
+use Mantle\Contracts\Kernel;
 use Mantle\Framework\Manifest\Package_Manifest;
 
 /**
  * Register the Aliases for the application
  */
-class Register_Aliases {
+class Register_Aliases implements Bootstrapable {
 	/**
 	 * Bootstrap the given application.
 	 *
 	 * @param Application $app Application instance.
+	 * @param Kernel      $kernel Kernel instance.
 	 */
-	public function bootstrap( Application $app ): void {
+	public function bootstrap( Application $app, Kernel $kernel ): void {
 		Alias_Loader::get_instance(
 			array_merge(
 				(array) $app->make( 'config' )->get( 'app.aliases' ),

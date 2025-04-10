@@ -9,7 +9,8 @@ namespace Mantle\Framework\Bootstrap;
 
 use Mantle\Contracts\Application;
 use Mantle\Support\Service_Provider as Base_Service_Provider;
-use Mantle\Contracts\Bootstrapable as Bootstrapable_Contract;
+use Mantle\Contracts\Bootstrapable;
+use Mantle\Contracts\Kernel;
 use RuntimeException;
 
 use function Mantle\Support\Helpers\collect;
@@ -17,7 +18,7 @@ use function Mantle\Support\Helpers\collect;
 /**
  * Register the Service Providers with the Application from the config.
  */
-class Register_Providers implements Bootstrapable_Contract {
+class Register_Providers implements Bootstrapable {
 	/**
 	 * Additional service providers to register from the bootloader.
 	 *
@@ -45,8 +46,9 @@ class Register_Providers implements Bootstrapable_Contract {
 	 * Bootstrap the given application.
 	 *
 	 * @param Application $app Application instance.
+	 * @param Kernel      $kernel Kernel instance.
 	 */
-	public function bootstrap( Application $app ): void {
+	public function bootstrap( Application $app, Kernel $kernel ): void {
 		$this->merge_additional_providers( $app );
 		$this->purge_framework_providers( $app );
 

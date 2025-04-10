@@ -25,7 +25,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	/**
 	 * The current globally available container (if any).
 	 */
-	protected static ?\Mantle\Contracts\Container $instance = null;
+	protected static ?Container $instance = null;
 
 	/**
 	 * An array of the types that have been resolved.
@@ -522,9 +522,12 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	/**
 	 * Resolve the given type from the container.
 	 *
+	 * @template TAbstract of class-string
+	 *
 	 * @param  string $abstract
-	 * @param  array  $parameters
-	 * @return mixed
+	 * @phpstan-param class-string<TAbstract> $abstract
+	 * @param  array<mixed>  $parameters
+	 * @phpstan-return TAbstract
 	 *
 	 * @throws Binding_Resolution_Exception Thrown on missing resolution.
 	 */
@@ -1093,14 +1096,14 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 *
 	 * @deprecated Use `get_instance()` instead.
 	 */
-	public static function getInstance(): \Mantle\Contracts\Container {
+	public static function getInstance(): static {
 		return static::get_instance();
 	}
 
 	/**
 	 * Get the globally available instance of the container.
 	 */
-	public static function get_instance(): \Mantle\Contracts\Container {
+	public static function get_instance(): static {
 		if ( ! isset( static::$instance ) ) {
 			static::$instance = new static();
 		}
@@ -1111,9 +1114,9 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	/**
 	 * Set the shared instance of the container.
 	 *
-	 * @param  \Mantle\Contracts\Container|null $container
+	 * @param self|null $container
 	 */
-	public static function set_instance( \Mantle\Contracts\Container|null $container = null ): ?\Mantle\Contracts\Container {
+	public static function set_instance( self|null $container = null ): ?self {
 		static::$instance = $container;
 
 		return static::$instance;

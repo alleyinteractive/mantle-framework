@@ -40,7 +40,7 @@ class App_Service_Provider extends Service_Provider {
 	protected function boot_scheduler(): void {
 		$this->app->singleton(
 			'scheduler',
-			fn ( $app ) => tap(
+			fn ( Application $app ) => tap(
 				new Schedule( $app ),
 				fn ( Schedule $schedule ) => $this->schedule( $schedule ),
 			),

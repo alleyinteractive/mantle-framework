@@ -9,7 +9,9 @@ namespace Mantle\Framework\Bootstrap;
 
 use InvalidArgumentException;
 use Mantle\Contracts\Application;
+use Mantle\Contracts\Bootstrapable;
 use Mantle\Contracts\Config\Repository as Repository_Contract;
+use Mantle\Contracts\Kernel;
 use Mantle\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
@@ -18,7 +20,7 @@ use function Mantle\Support\Helpers\collect;
 /**
  * Load the Application's Configuration from the filesystem.
  */
-class Load_Configuration {
+class Load_Configuration implements Bootstrapable {
 	/**
 	 * Additional configuration to register from the bootloader.
 	 *
@@ -39,8 +41,9 @@ class Load_Configuration {
 	 * Load the configuration for the application.
 	 *
 	 * @param Application $app Application instance.
+	 * @param Kernel      $kernel Kernel instance.
 	 */
-	public function bootstrap( Application $app ): void {
+	public function bootstrap( Application $app, Kernel $kernel ): void {
 		$config = $app->make( 'config' );
 
 		// Load the configuration files if not already loaded from cache.
