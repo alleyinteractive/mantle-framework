@@ -44,7 +44,7 @@ class Route_List_Command extends Command {
 	 *
 	 * @param Router $router Router instance.
 	 */
-	public function handle( Router $router ) {
+	public function handle( Router $router ): mixed {
 		$this->router = $router;
 
 		return $this->format_data(

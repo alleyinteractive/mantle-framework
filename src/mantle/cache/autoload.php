@@ -33,7 +33,7 @@ if ( ! function_exists( 'cache' ) ) {
 			return $cache->get( $key, $default );
 		}
 
-		if ( 0 === count( $key ) || ! is_string( key( $key ) ) ) {
+		if ( [] === $key || ! is_string( key( $key ) ) ) {
 			throw new Exception(
 				'When setting a value in the cache, you must pass an array of key / value pairs.'
 			);
@@ -56,9 +56,8 @@ if ( ! function_exists( 'remember' ) ) {
 	 * @param  string                                    $key Cache key.
 	 * @param  \DateTimeInterface|\DateInterval|int|null $ttl Cache TTL.
 	 * @param  \Closure                                  $callback Closure to invoke.
-	 * @return mixed
 	 */
-	function remember( string $key, $ttl, Closure $closure ) {
+	function remember( string $key, $ttl, Closure $closure ): mixed {
 		return cache()->remember( $key, $ttl, $closure );
 	}
 }

@@ -116,4 +116,16 @@ interface Repository extends CacheInterface {
 	 * @param  string $key
 	 */
 	public function forget( string $key ): bool;
+
+	/**
+	 * Retrieve a value from cache. Return it if it exists and if stale, refresh it after the response is sent.
+	 *
+	 * @throws \InvalidArgumentException If the value in cache is not an array.
+	 *
+	 * @param string                                    $key
+	 * @param int|\DateInterval|\DateTimeInterface|null $stale
+	 * @param int|\DateInterval|\DateTimeInterface|null $expire
+	 * @param callable                                  $callback
+	 */
+	public function flexible( string $key, int|\DateInterval|\DateTimeInterface|null $stale, int|\DateInterval|\DateTimeInterface|null $expire, callable $callback ): mixed;
 }

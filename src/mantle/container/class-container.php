@@ -528,7 +528,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 *
 	 * @throws Binding_Resolution_Exception Thrown on missing resolution.
 	 */
-	public function make( $abstract, array $parameters = [] ) {
+	public function make( $abstract, array $parameters = [] ): mixed {
 		return $this->resolve( $abstract, $parameters );
 	}
 

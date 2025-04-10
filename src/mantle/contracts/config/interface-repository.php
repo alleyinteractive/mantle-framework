@@ -25,7 +25,6 @@ interface Repository {
 	 *
 	 * @param string $key Configuration key to get, period-delimited.
 	 * @param mixed  $default Default value, optional.
-	 * @return mixed
 	 */
 	public function get( string $key, mixed $default = null ): mixed;
 
@@ -34,7 +33,6 @@ interface Repository {
 	 *
 	 * @param string $key Configuration key to get, period-delimited.
 	 * @param mixed  $default Default value, optional.
-	 * @return Mixed_Data
 	 */
 	public function get_mixed( string $key, mixed $default = null ): Mixed_Data;
 

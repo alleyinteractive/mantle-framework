@@ -16,12 +16,14 @@ use Mantle\Support\Mixed_Data;
  * Configuration Repository
  *
  * Used to store configuration items for the application.
+ *
+ * @implements ArrayAccess<string, mixed>
  */
 class Repository implements ArrayAccess, Config_Contract {
 	/**
 	 * Constructor.
 	 *
-	 * @param array $items Configuration items for the repository.
+	 * @param array<string, array<mixed>> $items Configuration items for the repository.
 	 */
 	public function __construct( protected array $items = [] ) {
 	}
@@ -50,7 +52,6 @@ class Repository implements ArrayAccess, Config_Contract {
 	 *
 	 * @param string $key Configuration key to get, period-delimited.
 	 * @param mixed  $default Default value, optional.
-	 * @return Mixed_Data
 	 */
 	public function get_mixed( string $key, mixed $default = null ): Mixed_Data {
 		return Mixed_Data::of( $this->get( $key, $default ) );
@@ -59,8 +60,8 @@ class Repository implements ArrayAccess, Config_Contract {
 	/**
 	 * Set a configuration value.
 	 *
-	 * @param array|string $key Key(s) to set.
-	 * @param mixed        $value Value to set.
+	 * @param array<string, mixed>|string $key Key(s) to set.
+	 * @param mixed                       $value Value to set.
 	 */
 	public function set( $key, $value ): void {
 		$keys = is_array( $key ) ? $key : [ $key => $value ];
@@ -72,6 +73,8 @@ class Repository implements ArrayAccess, Config_Contract {
 
 	/**
 	 * Get all configuration values.
+	 *
+	 * @return array<string, array<mixed>>
 	 */
 	public function all(): array {
 		return $this->items;

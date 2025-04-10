@@ -106,8 +106,8 @@ class Block_Make_Command extends Generator_Command {
 		/**
 		 * Normalize block namespace and name to lowercase.
 		 */
-		$block_namespace = strtolower( $block_namespace );
-		$block_name      = strtolower( $block_name );
+		$block_namespace = strtolower( (string) $block_namespace );
+		$block_name      = strtolower( (string) $block_name );
 
 		// Register replacements for the stub files.
 		$this->replacements->add( '{{ class }}', $this->get_class_name( $name ) );

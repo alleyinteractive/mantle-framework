@@ -31,7 +31,7 @@ class Asset_Manager implements Asset_Manager_Contract {
 	 * @param string          $load_hook Load hook.
 	 * @param string|null     $version Script version.
 	 */
-	public function script( ...$params ): \Mantle\Assets\Asset {
+	public function script( mixed ...$params ): \Mantle\Assets\Asset {
 		return new Asset( 'script', ...$params );
 	}
 
@@ -46,7 +46,7 @@ class Asset_Manager implements Asset_Manager_Contract {
 	 * @param string          $load_hook Load hook.
 	 * @param string|null     $version Script version.
 	 */
-	public function style( ...$params ): Asset {
+	public function style( mixed ...$params ): Asset {
 		return new Asset( 'style', ...$params );
 	}
 

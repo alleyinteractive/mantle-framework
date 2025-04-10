@@ -17,7 +17,7 @@ interface Bootstrapable {
 	 * Bootstrap method.
 	 *
 	 * @param Application $app Application instance.
-	 * @param Kernel|null      $kernel Kernel instance.
+	 * @param Kernel|null $kernel Kernel instance.
 	 */
 	public function bootstrap( Application $app, ?Kernel $kernel ): void;
 }

@@ -29,6 +29,7 @@ if ( ! function_exists( 'config' ) ) {
 		return is_null( $key ) ? $config : $config->get( $key, $default );
 	}
 }
+
 if ( ! function_exists( 'config_mixed' ) ) {
 	/**
 	 * Get a configuration value from the Configuration Repository as a mixed data object.

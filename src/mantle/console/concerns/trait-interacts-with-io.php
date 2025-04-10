@@ -17,6 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 use Mantle\Console\Output_Style;
+use Symfony\Component\Console\Helper\TableStyle;
 
 trait Interacts_With_IO {
 	/**
@@ -32,9 +33,9 @@ trait Interacts_With_IO {
 	/**
 	 * The mapping between human readable verbosity levels and Symfony's OutputInterface.
 	 *
-	 * @var array
+	 * @var array<string, int>
 	 */
-	protected $verbosity_map = [
+	protected array $verbosity_map = [
 		'v'      => OutputInterface::VERBOSITY_VERBOSE,
 		'vv'     => OutputInterface::VERBOSITY_VERY_VERBOSE,
 		'vvv'    => OutputInterface::VERBOSITY_DEBUG,
@@ -55,7 +56,7 @@ trait Interacts_With_IO {
 	 * Get the value of a command argument.
 	 *
 	 * @param  string|null $key
-	 * @return array|string|bool|null
+	 * @return string|mixed
 	 */
 	public function argument( $key = null ) {
 		if ( is_null( $key ) ) {
@@ -68,7 +69,7 @@ trait Interacts_With_IO {
 	/**
 	 * Get all of the arguments passed to the command.
 	 *
-	 * @return array
+	 * @return array<string, string>
 	 */
 	public function arguments() {
 		return $this->input->getArguments();
@@ -89,7 +90,7 @@ trait Interacts_With_IO {
 	 *
 	 * @param  string|null $key The option name.
 	 * @param  mixed       $default Default value if the option does not exist.
-	 * @return string|array|bool|null
+	 * @return string|array<mixed>|bool|null
 	 */
 	public function option( $key = null, $default = null ) {
 		if ( is_null( $key ) ) {
@@ -102,7 +103,7 @@ trait Interacts_With_IO {
 	/**
 	 * Get all of the options passed to the command.
 	 *
-	 * @return array
+	 * @return array<mixed>
 	 */
 	public function options() {
 		return $this->input->getOptions();
@@ -143,29 +144,27 @@ trait Interacts_With_IO {
 	/**
 	 * Prompt the user for input with auto completion.
 	 *
-	 * @param  string         $question
-	 * @param  array|callable $choices
-	 * @param  string|null    $default
-	 * @return mixed
+	 * @param  string                                       $question
+	 * @param  array<string>|array<string, string>|callable $choices
+	 * @param  string|null                                  $default
 	 */
-	public function anticipate( $question, $choices, $default = null ) {
+	public function anticipate( $question, $choices, $default = null ): mixed {
 		return $this->ask_with_completion( $question, $choices, $default );
 	}
 
 	/**
 	 * Prompt the user for input with auto completion.
 	 *
-	 * @param  string         $question
-	 * @param  array|callable $choices
-	 * @param  string|null    $default
-	 * @return mixed
+	 * @param  string                                       $question
+	 * @param  array<string>|array<string, string>|callable $choices
+	 * @param  string|null                                  $default
 	 */
-	public function ask_with_completion( $question, $choices, $default = null ) {
+	public function ask_with_completion( $question, $choices, $default = null ): mixed {
 		$question = new Question( $question, $default );
 
 		is_callable( $choices )
-				? $question->setAutocompleterCallback( $choices )
-				: $question->setAutocompleterValues( $choices );
+		? $question->setAutocompleterCallback( $choices )
+		: $question->setAutocompleterValues( $choices );
 
 		return $this->output->askQuestion( $question );
 	}
@@ -175,9 +174,8 @@ trait Interacts_With_IO {
 	 *
 	 * @param  string $question
 	 * @param  bool   $fallback
-	 * @return mixed
 	 */
-	public function secret( $question, $fallback = true ) {
+	public function secret( string $question, bool $fallback = true ): mixed {
 		$question = new Question( $question );
 
 		$question->setHidden( true )->setHiddenFallback( $fallback );
@@ -189,13 +187,12 @@ trait Interacts_With_IO {
 	 * Give the user a single choice from an array of answers.
 	 *
 	 * @param  string          $question
-	 * @param  array           $choices
+	 * @param  array<string>   $choices
 	 * @param  string|int|null $default
 	 * @param  mixed|null      $attempts
 	 * @param  bool            $multiple
-	 * @return string|array
 	 */
-	public function choice( $question, array $choices, $default = null, $attempts = null, $multiple = false ) {
+	public function choice( string $question, array $choices, mixed $default = null, ?int $attempts = null, bool $multiple = false ): mixed {
 		$question = new ChoiceQuestion( $question, $choices, $default );
 
 		$question->setMaxAttempts( $attempts )->setMultiselect( $multiple );
@@ -209,10 +206,9 @@ trait Interacts_With_IO {
 	 * @param string          $format Format to return (json, xml, count, csv, or table).
 	 * @param array           $headers Headers for the table.
 	 * @param array|Arrayable $data    Data for the table.
-	 * @return mixed
 	 */
-	public function format_data( string $format, array $headers, $data ) {
-		$data = $data instanceof Arrayable ? $data->to_array() : (array) $data;
+	public function format_data( string $format, array $headers, array|Arrayable $data ): mixed {
+		$data = $data instanceof Arrayable ? $data->to_array() : $data;
 
 		return match ( $format ) {
 			'count'  => count( $data ),
@@ -226,19 +222,19 @@ trait Interacts_With_IO {
 	/**
 	 * Format input to textual table.
 	 *
-	 * @param  array                                               $headers
-	 * @param  Arrayable|array                                     $rows
+	 * @param  array<string>                                       $headers
+	 * @param  Arrayable|array<string[]>                           $rows
 	 * @param  \Symfony\Component\Console\Helper\TableStyle|string $table_style
-	 * @param  array                                               $column_styles
+	 * @param  array<mixed>                                        $column_styles
 	 */
-	public function table( $headers, $rows, $table_style = 'default', array $column_styles = [] ): void {
+	public function table( array $headers, array|Arrayable $rows, TableStyle|string $table_style = 'default', array $column_styles = [] ): void {
 		$table = new Table( $this->output );
 
 		if ( $rows instanceof Arrayable ) {
 			$rows = $rows->to_array();
 		}
 
-		$table->setHeaders( (array) $headers )->setRows( $rows )->setStyle( $table_style );
+		$table->setHeaders( $headers )->setRows( $rows )->setStyle( $table_style );
 
 		foreach ( $column_styles as $column_index => $column_style ) {
 			$table->setColumnStyle( $column_index, $column_style );
@@ -250,8 +246,8 @@ trait Interacts_With_IO {
 	/**
 	 * Execute a given callback while advancing a progress bar.
 	 *
-	 * @param  iterable|int $total_steps
-	 * @param  \Closure     $callback
+	 * @param  iterable<mixed>|int $total_steps
+	 * @param  \Closure            $callback
 	 */
 	public function with_progress_bar( iterable|int $total_steps, Closure $callback ): ?iterable {
 		$bar = $this->output->createProgressBar(

@@ -29,7 +29,7 @@ interface Application {
 	 *
 	 * @param string                $command Command name.
 	 * @param array<string, string> $parameters Command parameters.
-	 * @param OutputInterface|null $output_buffer Output buffer.
+	 * @param OutputInterface|null  $output_buffer Output buffer.
 	 */
 	public function call( string $command, array $parameters = [], ?OutputInterface $output_buffer = null ): int;
 

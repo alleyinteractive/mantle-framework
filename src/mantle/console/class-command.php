@@ -155,7 +155,7 @@ abstract class Command extends Symfony_Command {
 	 * Run another command.
 	 *
 	 * @param string          $command Command to run.
-	 * @param array           $options Options for the command.
+	 * @param array<string>   $options Options for the command.
 	 * @param OutputInterface $output Output interface.
 	 * @return int|mixed
 	 *

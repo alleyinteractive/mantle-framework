@@ -82,7 +82,7 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	 *
 	 * @param Command[]|string[]|Command|string $command Command instance or class name to register.
 	 */
-	public function add_command( $command ): Service_Provider {
+	public function add_command( array|string|Command|\Symfony\Component\Console\Command\Command $command ): Service_Provider {
 		Console_Application::starting(
 			fn ( Console_Application $console ) => $console->resolve_commands( $command )
 		);

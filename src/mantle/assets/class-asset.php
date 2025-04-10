@@ -106,7 +106,7 @@ class Asset {
 	/**
 	 * Condition to load the asset.
 	 *
-	 * @param string|array $condition Condition to load.
+	 * @param string|string[] $condition Condition to load.
 	 */
 	public function condition( string|array $condition ): Asset {
 		$this->condition = $condition;
@@ -328,7 +328,7 @@ class Asset {
 	 * is found, it will set the src to the URL of the asset and rename the handle to
 	 * a sanitized version (folder-app-js).
 	 */
-	protected function infer_from_asset_loader() {
+	protected function infer_from_asset_loader(): void {
 		// Bail if the src is set OR if the handle doesn't include an extension.
 		if ( $this->src || false === strpos( $this->handle, '.' ) ) {
 			return;

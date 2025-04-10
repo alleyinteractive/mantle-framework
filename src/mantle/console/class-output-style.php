@@ -18,8 +18,8 @@ class Output_Style extends SymfonyStyle {
 	/**
 	 * Format JSON for output.
 	 *
-	 * @param array $headers Headers for the data.
-	 * @param array $data Data with no keys.
+	 * @param array<mixed> $headers Headers for the data.
+	 * @param array<mixed> $data Data with no keys.
 	 */
 	public function format_json( array $headers, array $data ): void {
 		// Merge the headers with the data.
@@ -33,8 +33,8 @@ class Output_Style extends SymfonyStyle {
 	/**
 	 * Format data for output in a CSV.
 	 *
-	 * @param array $headers Headers for the data.
-	 * @param array $data Data with no keys.
+	 * @param array<mixed> $headers Headers for the data.
+	 * @param array<mixed> $data Data with no keys.
 	 */
 	public function format_csv( array $headers, array $data ): void {
 		// Merge the headers with the data.
@@ -57,8 +57,8 @@ class Output_Style extends SymfonyStyle {
 	/**
 	 * Format data for output in XML format.
 	 *
-	 * @param array $headers Headers for the data.
-	 * @param array $data Data with no keys.
+	 * @param array<mixed> $headers Headers for the data.
+	 * @param array<mixed> $data Data with no keys.
 	 */
 	public function format_xml( array $headers, array $data ): void {
 		// Merge the headers with the data.

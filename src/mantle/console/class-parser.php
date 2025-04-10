@@ -22,6 +22,7 @@ class Parser {
 	 * Parse the given console command definition into an array.
 	 *
 	 * @param  string $expression
+	 * @return array<mixed>
 	 *
 	 * @throws \InvalidArgumentException
 	 */
@@ -53,7 +54,7 @@ class Parser {
 	/**
 	 * Extract all of the parameters from the tokens.
 	 *
-	 * @param  array $tokens
+	 * @param  array<string, string> $tokens
 	 */
 	protected static function parameters( array $tokens ): array {
 		$arguments = [];
@@ -142,7 +143,7 @@ class Parser {
 	 * Parse the token into its token and description segments.
 	 *
 	 * @param  string $token
-	 * @return array
+	 * @return array<string>
 	 */
 	protected static function extract_description( $token ) {
 		$parts = preg_split( '/\s+:\s+/', trim( $token ), 2 );

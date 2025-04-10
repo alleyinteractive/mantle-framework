@@ -42,7 +42,7 @@ class WordPress_Cache_Repository extends Repository implements Taggable_Reposito
 	 * Retrieve multiple cache keys.
 	 *
 	 * @param iterable<string> $keys Cache keys.
-	 * @param mixed    $default Default value.
+	 * @param mixed            $default Default value.
 	 * @return iterable<string, mixed>
 	 */
 	public function get_multiple( iterable $keys, mixed $default = null ): iterable {

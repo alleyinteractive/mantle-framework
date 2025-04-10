@@ -25,7 +25,7 @@ interface Asset_Manager {
 	 * @param string|null     $version Script version.
 	 * @return void
 	 */
-	public function script( ...$params );
+	public function script( mixed ...$params );
 
 	/**
 	 * Load an external stylesheet file.
@@ -40,7 +40,7 @@ interface Asset_Manager {
 	 * @param string          $media Style media.
 	 * @return void
 	 */
-	public function style( ...$params );
+	public function style( mixed ...$params );
 
 	/**
 	 * Preload content by URL.
