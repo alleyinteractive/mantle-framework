@@ -78,7 +78,7 @@ return RectorConfig::configure()
 		StrContainsRector::class,
 		AddArrowFunctionReturnTypeRector::class,
 		ChangeOrIfContinueToMultiContinueRector::class,
-		RemoveAlwaysElseRector::class,
+		// RemoveAlwaysElseRector::class,
 		EmptyOnNullableObjectToInstanceOfRector::class,
 		ReturnBinaryOrToEarlyReturnRector::class => [
 			__DIR__ . '/src/mantle/http-client/class-response.php',

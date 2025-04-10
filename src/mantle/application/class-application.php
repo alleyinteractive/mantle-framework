@@ -587,9 +587,9 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	public function abort( int $code, string $message = '', array $headers = [] ): void {
 		if ( 404 === $code ) {
 			throw new NotFoundHttpException( $message, null, 404, $headers );
-		} else {
-			throw new HttpException( $code, $message, null, $headers );
 		}
+
+		throw new HttpException( $code, $message, null, $headers );
 	}
 
 	/**

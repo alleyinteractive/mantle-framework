@@ -81,7 +81,7 @@ class Response extends HttpFoundationResponse {
 	 *
 	 * @param  Arrayable|Jsonable|ArrayObject|JsonSerializable|array|mixed $content
 	 */
-	protected function should_be_json( $content ): bool {
+	protected function should_be_json( mixed $content ): bool {
 		return $content instanceof Arrayable ||
 			$content instanceof Jsonable ||
 			$content instanceof ArrayObject ||
@@ -93,15 +93,12 @@ class Response extends HttpFoundationResponse {
 	 * Morph the given content into JSON.
 	 *
 	 * @param  Arrayable|Jsonable|ArrayObject|JsonSerializable|array|mixed $content
-	 * @return string|false
 	 */
-	protected function morph_to_json( $content ) {
-		if ( $content instanceof Jsonable ) {
-			return $content->to_json();
-		} elseif ( $content instanceof Arrayable ) {
-			return json_encode( $content->to_array() ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
-		}
-
-		return json_encode( $content ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+	protected function morph_to_json( $content ): string|false {
+		return match ( true ) {
+			$content instanceof JsonSerializable => json_encode( $content->jsonSerialize() ), // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+			$content instanceof ArrayObject => json_encode( $content->getArrayCopy() ), // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+			default => json_encode( $content ), // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+		};
 	}
 }

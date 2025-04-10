@@ -819,21 +819,15 @@ trait Enumerates_Values {
 	 * @return array<TKey, TValue>
 	 */
 	protected function get_arrayable_items( $items ) {
-		if ( is_array( $items ) ) {
-			return $items;
-		} elseif ( $items instanceof Enumerable ) {
-			return $items->all();
-		} elseif ( $items instanceof Arrayable ) {
-			return $items->to_array();
-		} elseif ( $items instanceof Jsonable ) {
-			return json_decode( $items->to_json(), true );
-		} elseif ( $items instanceof JsonSerializable ) {
-			return (array) $items->jsonSerialize();
-		} elseif ( $items instanceof Traversable ) {
-			return iterator_to_array( $items );
-		}
-
-		return (array) $items;
+		return match ( true ) {
+			is_array( $items ) => $items,
+			$items instanceof Enumerable => $items->all(),
+			$items instanceof Arrayable => $items->to_array(),
+			$items instanceof Jsonable => json_decode( $items->to_json(), true ),
+			$items instanceof JsonSerializable => (array) $items->jsonSerialize(),
+			$items instanceof Traversable => iterator_to_array( $items ),
+			default => (array) $items,
+		};
 	}
 
 	/**

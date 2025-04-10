@@ -201,13 +201,12 @@ abstract class Service_Provider implements LoggerAwareInterface {
 			}
 		}
 
-		// If both are passed, find the intersection.
-		if ( $providers && $tags ) {
-			return $provider_paths->intersect_by_keys( $tag_paths )->all();
-		} elseif ( $providers ) {
-			return $provider_paths->all();
-		} elseif ( $tags ) {
-			return $tag_paths->all();
-		}
+		return match ( true ) {
+			// If both are passed, find the intersection.
+			$providers && $tags => $provider_paths->intersect_by_keys( $tag_paths )->all(),
+			$providers => $provider_paths->all(),
+			$tags      => $tag_paths->all(),
+			default    => [],
+		};
 	}
 }

@@ -598,17 +598,13 @@ class Filesystem_Adapter implements Filesystem {
 
 		$adapter = $this->adapter;
 
-		if ( method_exists( $adapter, 'getUrl' ) ) {
-			return $adapter->getUrl( $path );
-		} elseif ( method_exists( $adapter, 'get_url' ) ) {
-			return $adapter->get_url( $path );
-		} elseif ( method_exists( $this->driver, 'getUrl' ) ) {
-			return $this->driver->getUrl( $path );
-		} elseif ( method_exists( $this->driver, 'get_url' ) ) {
-			return $this->driver->get_url( $path );
-		} else {
-			throw new RuntimeException( 'This driver does not support retrieving URLs.' );
-		}
+		return match ( true ) {
+			method_exists( $adapter, 'getUrl' ) => $adapter->getUrl( $path ),
+			method_exists( $adapter, 'get_url' ) => $adapter->get_url( $path ),
+			method_exists( $this->driver, 'getUrl' ) => $this->driver->getUrl( $path ),
+			method_exists( $this->driver, 'get_url' ) => $this->driver->get_url( $path ),
+			default => throw new RuntimeException( 'This driver does not support retrieving URLs.' ),
+		};
 	}
 
 	/**
@@ -628,13 +624,11 @@ class Filesystem_Adapter implements Filesystem {
 	 * @throws RuntimeException Thrown on missing temporary URL.
 	 */
 	public function temporary_url( string $path, $expiration, array $options = [] ): string {
-		if ( method_exists( $this->adapter, 'getTemporaryUrl' ) ) {
-			return $this->adapter->getTemporaryUrl( $path, $expiration, $options );
-		} elseif ( method_exists( $this->adapter, 'get_temporary_url' ) ) {
-			return $this->adapter->get_temporary_url( $path, $expiration, $options );
-		}
-
-		throw new RuntimeException( 'This driver does not support creating temporary URLs.' );
+		return match ( true ) {
+			method_exists( $this->adapter, 'getTemporaryUrl' ) => $this->get_temporary_url( $path, $expiration, $options ),
+			method_exists( $this->adapter, 'get_temporary_url' ) => $this->get_temporary_url( $path, $expiration, $options ),
+			default => throw new RuntimeException( 'This driver does not support creating temporary URLs.' ),
+		};
 	}
 
 	/**

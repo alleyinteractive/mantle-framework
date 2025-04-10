@@ -32,10 +32,14 @@ trait Has_Global_Scopes {
 		if ( is_string( $scope ) && ! is_null( $implementation ) ) {
 			static::$global_scopes[ static::class ][ $scope ] = $implementation;
 			return true;
-		} elseif ( $scope instanceof Closure ) {
+		}
+
+		if ( $scope instanceof Closure ) {
 			static::$global_scopes[ static::class ][ spl_object_hash( $scope ) ] = $scope;
 			return true;
-		} elseif ( $scope instanceof Scope ) {
+		}
+
+		if ( $scope instanceof Scope ) {
 			static::$global_scopes[ static::class ][ $scope::class ] = $scope;
 			return true;
 		}

@@ -63,7 +63,9 @@ class Belongs_To extends Relation {
 			}
 
 			return;
-		} elseif ( $this->parent instanceof Model_Meta ) {
+		}
+
+		if ( $this->parent instanceof Model_Meta ) {
 			$meta_value = $this->parent->get_meta( $this->local_key );
 
 			if ( empty( $meta_value ) ) {

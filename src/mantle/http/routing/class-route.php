@@ -125,14 +125,12 @@ class Route extends Symfony_Route {
 	 * Get the route's name.
 	 */
 	public function get_name(): string {
-		if ( ! empty( $this->action['as'] ) ) {
-			return (string) $this->action['as'];
-		} elseif ( ! empty( $this->action['name'] ) ) {
-			return (string) $this->action['name'];
-		}
-
-		// Fallback to the default route name.
-		return strtolower( implode( '.', $this->getMethods() ) . ".{$this->getPath()}" );
+		return match ( true ) {
+			! empty( $this->action['as'] ) => (string) $this->action['as'],
+			! empty( $this->action['name'] ) => (string) $this->action['name'],
+			// Fallback to the default route name.
+			default => strtolower( implode( '.', $this->getMethods() ) . ".{$this->getPath()}" ),
+		};
 	}
 
 	/**
@@ -271,7 +269,9 @@ class Route extends Symfony_Route {
 			$method     = $this->get_controller_method();
 
 			return get_callable_fqn( [ $controller, $method ] );
-		} elseif ( $this->has_callback() ) {
+		}
+
+		if ( $this->has_callback() ) {
 			return get_callable_fqn( $this->action['callback'] );
 		}
 

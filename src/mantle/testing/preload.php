@@ -63,7 +63,9 @@ function _test_filter_build_unique_id( $tag, $function ) {
 	if ( is_object( $function[0] ) ) {
 		// Object class calling.
 		return spl_object_hash( $function[0] ) . $function[1];
-	} elseif ( is_string( $function[0] ) ) {
+	}
+
+	if ( is_string( $function[0] ) ) {
 		// Static calling.
 		return $function[0] . '::' . $function[1];
 	}
