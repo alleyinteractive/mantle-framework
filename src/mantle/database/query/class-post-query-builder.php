@@ -320,7 +320,7 @@ class Post_Query_Builder extends Builder {
 	public function dumpSql( bool $die = false ): static {
 		add_filter(
 			'posts_request',
-			function ( string $sql, \WP_Query $query ) use ( $die ) {
+			function ( string $sql, \WP_Query $query ) use ( $die ): string {
 				if ( spl_object_hash( $query ) === $this->query_hash ) {
 					dump( $sql );
 

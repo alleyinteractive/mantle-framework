@@ -207,7 +207,7 @@ class Str {
 	 * @param  int    $index
 	 * @return string|false
 	 */
-	public static function char_at( $subject, $index ): false|string {
+	public static function char_at( string $subject, int $index ): false|string {
 		$length = mb_strlen( $subject );
 
 		if ( $index < 0 ? $index < -$length : $index > $length - 1 ) {
@@ -348,16 +348,12 @@ class Str {
 	 * @param  string|iterable<string> $pattern
 	 * @param  string                  $value
 	 */
-	public static function is( $pattern, $value ): bool {
-		$value = (string) $value;
-
+	public static function is( string|iterable $pattern, ?string $value ): bool {
 		if ( ! is_iterable( $pattern ) ) {
 			$pattern = [ $pattern ];
 		}
 
 		foreach ( $pattern as $pattern ) {
-			$pattern = (string) $pattern;
-
 			// If the given value is an exact match we can of course return true right
 			// from the beginning. Otherwise, we will translate asterisks and do an
 			// actual pattern match against the two strings to see if they match.
@@ -365,6 +361,7 @@ class Str {
 				return true;
 			}
 
+			$pattern = (string) $pattern;
 			$pattern = preg_quote( $pattern, '#' );
 
 			// Asterisks are translated into zero-or-more regular expression wildcards
@@ -372,7 +369,7 @@ class Str {
 			// pattern such as "library/*", making any string check convenient.
 			$pattern = str_replace( '\*', '.*', $pattern );
 
-			if ( preg_match( '#^' . $pattern . '\z#u', $value ) === 1 ) {
+			if ( preg_match( '#^' . $pattern . '\z#u', (string) $value ) === 1 ) {
 				return true;
 			}
 		}
@@ -423,7 +420,7 @@ class Str {
 	}
 
 	/**
-	 * Convert a string to kebab case.
+	 * Convert a string to kebab case (hyphen case).
 	 *
 	 * @param  string $value
 	 * @return string
@@ -815,7 +812,7 @@ class Str {
 	 * @return string
 	 */
 	public static function random( $length = 16 ) {
-		return ( static::$random_string_factory ?? function ( $length ) {
+		return ( static::$random_string_factory ?? function ( $length ): string {
 			$string = '';
 
 			while ( ( $len = strlen( $string ) ) < $length ) { // phpcs:ignore WordPress.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition, Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition, Squiz.PHP.DisallowSizeFunctionsInLoops.Found

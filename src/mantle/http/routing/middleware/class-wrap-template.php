@@ -79,9 +79,8 @@ class Wrap_Template {
 	 * template is not specified.
 	 *
 	 * @param Symfony_Response $response Response object.
-	 * @return Symfony_Response
 	 */
-	protected function wrap_fallback( Symfony_Response $response ) {
+	protected function wrap_fallback( Symfony_Response $response ): Symfony_Response {
 		ob_start();
 		\get_header();
 		// Assumed to be sanitized.

@@ -52,7 +52,7 @@ class Permalink_Generator implements \Stringable {
 
 		$route = preg_replace_callback(
 			'/({[A-Za-z0-9-_]*})/',
-			function ( $match ) {
+			function ( $match ): string {
 				$attribute = substr( $match[0], 1, strlen( $match[0] ) - 2 );
 
 				return $this->get_attribute( $attribute );

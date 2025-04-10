@@ -108,7 +108,7 @@ trait Hookable {
 				static fn ( string $method ) => Str::starts_with( $method, [ 'on_', 'action__', 'filter__' ] )
 			)
 			->map(
-				function ( string $method ) use ( $has_legacy_attribute ) {
+				function ( string $method ) use ( $has_legacy_attribute ): ?array {
 					// Check if the method has any Action or Filter attributes. If it does
 					// and the legacy attribute is not present on the class, ignore the
 					// method name.

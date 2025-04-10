@@ -108,7 +108,7 @@ class Asset {
 	 *
 	 * @param string|array $condition Condition to load.
 	 */
-	public function condition( $condition ): Asset {
+	public function condition( string|array $condition ): Asset {
 		$this->condition = $condition;
 		return $this;
 	}

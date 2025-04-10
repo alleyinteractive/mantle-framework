@@ -86,7 +86,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 *
 	 * @param  string $language
 	 */
-	public function ascii( $language = 'en' ): static {
+	public function ascii( string $language = 'en' ): static {
 		return new static( Str::ascii( $this->value, $language ) );
 	}
 
@@ -95,7 +95,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 *
 	 * @param  string $suffix
 	 */
-	public function basename( $suffix = '' ): static {
+	public function basename( string $suffix = '' ): static {
 		return new static( basename( $this->value, $suffix ) );
 	}
 
@@ -105,7 +105,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  int $index
 	 * @return string|false
 	 */
-	public function char_at( $index ) {
+	public function char_at( int $index ): string|false {
 		return Str::char_at( $this->value, $index );
 	}
 
@@ -121,7 +121,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 *
 	 * @param  string $search
 	 */
-	public function before( $search ): static {
+	public function before( string $search ): static {
 		return new static( Str::before( $this->value, $search ) );
 	}
 
@@ -140,7 +140,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  string $from
 	 * @param  string $to
 	 */
-	public function between( $from, $to ): static {
+	public function between( string $from, string $to ): static {
 		return new static( Str::between( $this->value, $from, $to ) );
 	}
 
@@ -150,7 +150,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  string $from
 	 * @param  string $to
 	 */
-	public function between_first( $from, $to ): static {
+	public function between_first( string $from, string $to ): static {
 		return new static( Str::between_first( $this->value, $from, $to ) );
 	}
 
@@ -167,7 +167,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  string|iterable<string> $needles
 	 * @param  bool                    $ignore_case
 	 */
-	public function contains( $needles, bool $ignore_case = false ): bool {
+	public function contains( string|iterable $needles, bool $ignore_case = false ): bool {
 		return Str::contains( $this->value, $needles, $ignore_case );
 	}
 
@@ -177,7 +177,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  iterable<string> $needles
 	 * @param  bool             $ignore_case
 	 */
-	public function contains_all( $needles, bool $ignore_case = false ): bool {
+	public function contains_all( string|iterable $needles, bool $ignore_case = false ): bool {
 		return Str::contains_all( $this->value, $needles, $ignore_case );
 	}
 
@@ -186,34 +186,34 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 *
 	 * @param  int $levels
 	 */
-	public function dirname( $levels = 1 ): static {
+	public function dirname( int $levels = 1 ): static {
 		return new static( dirname( $this->value, $levels ) );
 	}
 
 	/**
 	 * Alias to ends_with().
 	 *
-	 * @param  string|iterable<string> $needles
+	 * @param  string|iterable<string>|mixed $needles
 	 */
-	public function endsWith( $needles ): bool {
+	public function endsWith( mixed $needles ): bool {
 		return $this->ends_with( $needles );
 	}
 
 	/**
 	 * Determine if a given string ends with a given substring.
 	 *
-	 * @param  string|iterable<string> $needles
+	 * @param  string|iterable<string>|mixed $needles
 	 */
-	public function ends_with( $needles ): bool {
+	public function ends_with( mixed $needles ): bool {
 		return Str::ends_with( $this->value, $needles );
 	}
 
 	/**
 	 * Determine if the string is an exact match with the given value.
 	 *
-	 * @param  \Mantle\Support\Stringable|string $value
+	 * @param mixed $value
 	 */
-	public function exactly( $value ): bool {
+	public function exactly( mixed $value ): bool {
 		if ( $value instanceof Stringable ) {
 			$value = $value->toString();
 		}
@@ -228,7 +228,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  array  $options
 	 * @return string|null
 	 */
-	public function excerpt( $phrase = '', $options = [] ) {
+	public function excerpt( string $phrase = '', array $options = [] ) {
 		return Str::excerpt( $this->value, $phrase, $options );
 	}
 
@@ -239,7 +239,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  int    $limit
 	 * @return Collection<int, string>
 	 */
-	public function explode( $delimiter, $limit = PHP_INT_MAX ): Collection {
+	public function explode( string $delimiter, int $limit = PHP_INT_MAX ): Collection {
 		return collect( explode( $delimiter, $this->value, $limit ) );
 	}
 
@@ -251,7 +251,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  int        $flags
 	 * @return Collection<int, string>
 	 */
-	public function split( $pattern, $limit = -1, $flags = 0 ) {
+	public function split( string|int $pattern, int $limit = -1, int $flags = 0 ) {
 		if ( filter_var( $pattern, FILTER_VALIDATE_INT ) !== false ) {
 			return collect( mb_str_split( $this->value, $pattern ) );
 		}
@@ -266,7 +266,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 *
 	 * @param  string $cap
 	 */
-	public function finish( $cap ): static {
+	public function finish( string $cap ): static {
 		return new static( Str::finish( $this->value, $cap ) );
 	}
 
@@ -289,7 +289,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 *
 	 * @param  string $cap
 	 */
-	public function untrailing( $cap ): static {
+	public function untrailing( string $cap ): static {
 		return new static( rtrim( $this->value, $cap ) );
 	}
 
@@ -298,7 +298,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 *
 	 * @param  string|iterable<string> $pattern
 	 */
-	public function is( $pattern ): bool {
+	public function is( string|iterable $pattern ): bool {
 		return Str::is( $pattern, $this->value );
 	}
 

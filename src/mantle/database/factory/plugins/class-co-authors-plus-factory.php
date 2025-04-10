@@ -97,7 +97,7 @@ class Co_Authors_Plus_Factory extends Factory {
 			->send( [] )
 			->through( $factory->middleware->all() )
 			->then(
-				function ( array $args ) {
+				function ( array $args ): ?Post {
 					global $coauthors_plus;
 
 					$user_id = $args['user_id'] ?? 0;

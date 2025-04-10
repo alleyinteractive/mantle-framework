@@ -120,7 +120,7 @@ class View_Service_Provider extends Service_Provider {
 	protected function register_factory() {
 		$this->app->singleton(
 			'view',
-			function ( $app ) {
+			function ( $app ): \Mantle\Http\View\Factory {
 				$factory = new Factory(
 					$app,
 					$app['view.engine.resolver'],

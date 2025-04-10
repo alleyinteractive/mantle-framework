@@ -23,6 +23,7 @@ use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRect
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnNullableTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector;
 use Rector\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInstanceOfRector;
 use Rector\ValueObject\PhpVersion;
 
@@ -47,7 +48,7 @@ return RectorConfig::configure()
 		deadCode: true,
 		instanceOf: true,
 	)
-	->withTypeCoverageLevel( 35 ) // Out of 49.
+	->withTypeCoverageLevel( 40 ) // Out of 49.
 	->withRules(
 		[
 			RenameForeachValueVariableToMatchExprVariableRector::class,
@@ -88,5 +89,8 @@ return RectorConfig::configure()
 		ReturnTypeFromReturnNewRector::class => [
 			__DIR__ . '/src/mantle/support/class-collection.php',
 			__DIR__ . '/src/mantle/support/traits/trait-enumerates-values.php',
+		],
+		ReturnUnionTypeRector::class => [
+			__DIR__ . '/src/mantle/framework/exceptions/class-handler.php',
 		],
 	] );

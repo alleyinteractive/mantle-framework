@@ -410,7 +410,7 @@ PHP
 				$index     = 1;
 				$structure = preg_replace_callback(
 					'/\%/',
-					function () use ( &$index ) {
+					function () use ( &$index ): string {
 						return ( $index++ ) % 2 ? '{' : '}';
 					},
 					(string) $structure

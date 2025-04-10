@@ -127,7 +127,7 @@ class Byline_Manager_Factory extends Factory {
 			->send( [] )
 			->through( $factory->middleware->all() )
 			->then(
-				function ( array $args ) {
+				function ( array $args ): ?Post {
 					if ( ! empty( $args['user_id'] ) ) {
 						$profile = self::get_byline_manager_profile_by_user_id( $args['user_id'], create: true );
 

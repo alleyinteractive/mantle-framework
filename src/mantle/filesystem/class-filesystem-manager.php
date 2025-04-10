@@ -236,9 +236,8 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 * Format the given S3 configuration with the default options.
 	 *
 	 * @param  array $config
-	 * @return array
 	 */
-	protected function format_s3_config( array $config ) {
+	protected function format_s3_config( array $config ): array {
 		$config += [ 'version' => 'latest' ];
 
 		if ( ! empty( $config['key'] ) && ! empty( $config['secret'] ) ) {

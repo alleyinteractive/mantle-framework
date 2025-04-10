@@ -242,7 +242,7 @@ class Expectation {
 	 */
 	public function andReturn( mixed ...$values ): static {
 		return $this->returnComparison(
-			function ( $value ) use ( $values ) {
+			function ( $value ) use ( $values ): bool {
 				foreach ( $values as $expected ) {
 					if ( is_callable( $expected ) ) {
 						return (bool) $expected( $value );

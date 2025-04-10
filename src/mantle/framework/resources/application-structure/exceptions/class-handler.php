@@ -8,6 +8,7 @@
 namespace App\Exceptions;
 
 use Mantle\Framework\Exceptions\Handler as Base_Handler;
+use Mantle\Http\Request;
 use Throwable;
 
 /**
@@ -36,8 +37,8 @@ class Handler extends Base_Handler {
 	/**
 	 * Render an exception into an HTTP response.
 	 *
-	 * @param  \Mantle\Http\Request $request Request object.
-	 * @param  \Throwable           $exception Exception thrown.
+	 * @param  Request   $request Request object.
+	 * @param  Throwable $exception Exception thrown.
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	public function render( $request, Throwable $exception ) {

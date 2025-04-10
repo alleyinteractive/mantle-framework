@@ -151,7 +151,7 @@ class Queue_Jobs_Table extends WP_List_Table {
 
 		// TODO: Refactor with found_posts later.
 		$this->items = $query->get()->map(
-			function ( Queue_Record $model ) {
+			function ( Queue_Record $model ): array {
 				$worker = new Queue_Worker_Job( $model );
 				$job    = $worker->get_job();
 

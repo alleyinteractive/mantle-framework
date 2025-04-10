@@ -72,9 +72,8 @@ class Query_Monitor_Service_Provider extends Service_Provider {
 	 * Register collector to Query Monitor.
 	 *
 	 * @param array $collectors Collectors.
-	 * @return array
 	 */
-	public function register_collector( array $collectors ) {
+	public function register_collector( array $collectors ): array {
 		$collectors['mantle']         = new Collector\Collector( $this->app );
 		$collectors['mantle-headers'] = new Collector\Header_Collector( $this->app );
 		$collectors['mantle-logs']    = new Collector\Log_Collector( $this->app );

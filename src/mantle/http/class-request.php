@@ -333,7 +333,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * @param  \Symfony\Component\HttpFoundation\ParameterBag $json
 	 * @return static
 	 */
-	public function set_json( $json ) {
+	public function set_json( ?\Symfony\Component\HttpFoundation\ParameterBag $json ) {
 		$this->json = $json;
 
 		return $this;

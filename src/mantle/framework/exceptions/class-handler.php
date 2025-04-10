@@ -169,7 +169,7 @@ class Handler implements Contract {
 	 * @param Request   $request Request object.
 	 * @param Throwable $e Exception thrown.
 	 */
-	public function render( $request, Throwable $e ): \Symfony\Component\HttpFoundation\Response|\Symfony\Component\HttpFoundation\JsonResponse|\Mantle\Http\Response {
+	public function render( $request, Throwable $e ) {
 		// Check if the exception has a render method and use that.
 		if ( method_exists( $e, 'render' ) && $response = $e->render( $request ) ) {
 			return Route::ensure_response( $response );

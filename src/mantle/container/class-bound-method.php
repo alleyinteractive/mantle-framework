@@ -133,8 +133,6 @@ class Bound_Method {
 	 * Get the proper reflection instance for the given callback.
 	 *
 	 * @param  callable|string $callback Callback to get from.
-	 * @return \ReflectionFunctionAbstract
-	 *
 	 * @throws \ReflectionException Throw on invalid arguments.
 	 */
 	protected static function get_call_reflector( $callback ): \ReflectionMethod|\ReflectionFunction {
