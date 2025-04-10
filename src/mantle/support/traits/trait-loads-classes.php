@@ -45,7 +45,9 @@ trait Loads_Classes {
 	 */
 	public static function classname_from_path( SplFileInfo $file, string $root_namespace ): ?string {
 		// Append the relative path as a namespace to the root namespace.
-		if ( $relative_path = $file->getRelativePath() ) {
+								$relative_path = $file->getRelativePath();
+								// Append the relative path as a namespace to the root namespace.
+		if ( $relative_path !== '' && $relative_path !== '0' ) {
 			$root_namespace .= '\\' . str_replace( '/', '\\', $relative_path );
 		}
 

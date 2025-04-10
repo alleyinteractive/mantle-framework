@@ -287,8 +287,8 @@ class Handler implements Contract {
 	 * @return array{0: string, 1: string}
 	 */
 	protected function get_http_exception_view( Throwable $e ): array {
-		$default_view = $view = [ 'error/error', '500' ];
-
+		$default_view                 = [ 'error/error', '500' ];
+								$view = [ 'error/error', '500' ];
 		if ( $e instanceof HttpExceptionInterface ) {
 			$view = [ 'error/error', (string) $e->getStatusCode() ];
 		}

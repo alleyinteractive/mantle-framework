@@ -35,6 +35,7 @@ trait Conditionable {
 		if ( func_num_args() === 1 ) {
 				return new Higher_Order_When_Proxy( $this, $value );
 		}
+
 		if ( $value ) {
 						return $callback( $this, $value ) ?? $this;
 		}
@@ -63,6 +64,7 @@ trait Conditionable {
 		if ( func_num_args() === 1 ) {
 			return new Higher_Order_When_Proxy( $this, ! $value );
 		}
+
 		if ( ! $value ) {
 						return $callback( $this, $value ) ?? $this;
 		}

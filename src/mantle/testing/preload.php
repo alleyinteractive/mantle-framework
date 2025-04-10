@@ -36,6 +36,7 @@ function tests_add_filter( $tag, $function_to_add, $priority = 10, $accepted_arg
 			'accepted_args' => $accepted_args,
 		];
 	}
+
 	return true;
 }
 
@@ -48,7 +49,7 @@ function tests_add_filter( $tag, $function_to_add, $priority = 10, $accepted_arg
  * @param callable $function The function to generate ID for.
  * @return string Unique function ID for usage as array key.
  */
-function _test_filter_build_unique_id( $tag, $function ) {
+function _test_filter_build_unique_id( $tag, $function ): ?string {
 	if ( is_string( $function ) ) {
 		return $function;
 	}
@@ -69,4 +70,6 @@ function _test_filter_build_unique_id( $tag, $function ) {
 		// Static calling.
 		return $function[0] . '::' . $function[1];
 	}
+
+				return null;
 }

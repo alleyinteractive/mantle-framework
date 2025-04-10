@@ -141,11 +141,7 @@ class Post_Query_Builder extends Builder {
 			fn () => $query->query( $this->get_query_args() ),
 		);
 
-		if ( empty( $query->found_posts ) && count( $query->posts ) > 0 ) {
-			$this->found_rows = null;
-		} else {
-			$this->found_rows = $query->found_posts;
-		}
+		$this->found_rows = empty( $query->found_posts ) && count( $query->posts ) > 0 ? null : $query->found_posts;
 
 		$post_ids = $query->posts;
 
@@ -201,7 +197,7 @@ class Post_Query_Builder extends Builder {
 
 						if ( empty( $model_object_types[ $post_type ] ) ) {
 							throw new RuntimeException(
-								"Missing model for object type [{ $post_type }]."
+								"Missing model for object type [{ {$post_type} }]."
 							);
 						}
 

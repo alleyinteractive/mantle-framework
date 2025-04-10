@@ -192,7 +192,7 @@ trait Model_Term {
 		if ( is_numeric( $value ) ) {
 			$term = get_term_object( (int) $value, $taxonomy ?: '' );
 
-			if ( $term ) {
+			if ( $term instanceof \WP_Term ) {
 				$carry[ $term->taxonomy ][] = $term;
 			}
 

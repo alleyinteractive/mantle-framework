@@ -125,11 +125,7 @@ class New_Relic_Service_Provider extends Service_Provider {
 		switch ( true ) {
 			case is_feed():
 				$feed_type = get_query_var( 'feed' );
-				if ( 'feed' !== $feed_type ) {
-					$name = "feed.{$feed_type}";
-				} else {
-					$name = 'feed';
-				}
+				$name      = 'feed' !== $feed_type ? "feed.{$feed_type}" : 'feed';
 
 				newrelic_add_custom_parameter( 'feed', 'true' );
 				break;
@@ -164,6 +160,7 @@ class New_Relic_Service_Provider extends Service_Provider {
 					newrelic_add_custom_parameter( 'term_id', $term->term_id );
 					newrelic_add_custom_parameter( 'slug', $term->slug );
 				}
+
 				break;
 			case is_attachment():
 				$name = 'attachment';
@@ -180,6 +177,7 @@ class New_Relic_Service_Provider extends Service_Provider {
 
 					newrelic_add_custom_parameter( 'post_id', $post->ID );
 				}
+
 				break;
 			case is_author():
 				$name = 'author_archive';

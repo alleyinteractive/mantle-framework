@@ -21,7 +21,7 @@ trait Dependency_Assertions {
 	 * @param array $dependencies Dependencies array.
 	 */
 	public static function assertDependenciesLoaded( array $dependencies ): void {
-		if ( count( $dependencies ) === 0 ) {
+		if ( $dependencies === [] ) {
 			PHPUnit::markTestIncomplete( 'Asserting an empty dependency array has been loaded does not assert that no dependencies have been loaded.' );
 		}
 

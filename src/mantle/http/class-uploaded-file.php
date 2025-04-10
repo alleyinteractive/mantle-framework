@@ -109,11 +109,7 @@ class Uploaded_File extends SymfonyUploadedFile {
 			$options['visibility'] = 'public';
 		}
 
-		if ( $name ) {
-			$uploaded_file = $this->store_as( $path, $name, $options );
-		} else {
-			$uploaded_file = $this->store( $path, $options );
-		}
+		$uploaded_file = $name ? $this->store_as( $path, $name, $options ) : $this->store( $path, $options );
 
 		if ( empty( $uploaded_file ) ) {
 			throw new RuntimeException( "Error uploading file to [{$path}]: [{$this->getFilename()}]" );

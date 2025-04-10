@@ -313,7 +313,7 @@ class Pending_Testable_Request {
 
 			$response = $kernel->send_request_through_router( $request );
 
-			if ( $response ) {
+			if ( $response instanceof \Symfony\Component\HttpFoundation\Response ) {
 				$response = new Test_Response(
 					$response->getContent(),
 					$response->getStatusCode(),
@@ -426,7 +426,7 @@ class Pending_Testable_Request {
 		$this->rest_api_response = null;
 
 		// Remove all HTTP_* headers from $_SERVER.
-		foreach ( $_SERVER as $key => $value ) {
+		foreach ( array_keys($_SERVER) as $key ) {
 			if ( str_starts_with( $key, 'HTTP_' ) && 'HTTP_HOST' !== $key ) {
 				unset( $_SERVER[ $key ] );
 			}
@@ -617,7 +617,7 @@ class Pending_Testable_Request {
 
 			$server->serve_request( $route );
 
-			if ( isset( $server->sent_body ) ) {
+			if ( $server->sent_body !== null ) {
 				$this->rest_api_response = [
 					'body'    => $server->sent_body,
 					'headers' => $server->sent_headers,

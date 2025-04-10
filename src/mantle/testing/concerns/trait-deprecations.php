@@ -84,7 +84,7 @@ trait Deprecations {
 
 		$not_caught_deprecated = array_diff( $this->expected_deprecated, $this->caught_deprecated );
 		foreach ( $not_caught_deprecated as $not_caught ) {
-			$errors[] = "Failed to assert that $not_caught triggered a deprecated notice";
+			$errors[] = "Failed to assert that {$not_caught} triggered a deprecated notice";
 		}
 
 		$unexpected_deprecated = collect( $this->caught_deprecated )
@@ -111,7 +111,7 @@ trait Deprecations {
 		foreach ( $unexpected_deprecated as $index => $unexpected ) {
 			if ( ! empty( $this->caught_deprecated_traces[ $index ] ) ) {
 				static::trace(
-					"Unexpected deprecated notice for $unexpected",
+					"Unexpected deprecated notice for {$unexpected}",
 					$this->caught_deprecated_traces[ $index ],
 				);
 			}

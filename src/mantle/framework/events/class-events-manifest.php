@@ -61,7 +61,7 @@ class Events_Manifest {
 	 * Get the compiled manifest.
 	 */
 	protected function get_manifest(): array {
-		if ( isset( $this->manifest ) ) {
+		if ( $this->manifest !== null ) {
 			return (array) $this->manifest;
 		}
 

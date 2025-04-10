@@ -508,7 +508,7 @@ class Filesystem {
 			return false;
 		}
 
-		return @rename( $from, $to ) === true; // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, Generic.PHP.NoSilencedErrors.Forbidden
+		return @rename( $from, $to ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, Generic.PHP.NoSilencedErrors.Forbidden
 	}
 
 	/**

@@ -35,7 +35,7 @@ trait Element_Assertions {
 		$nodes = ( new DOMXPath( $this->get_internal_dom_document() ) )->query( $expression );
 
 		PHPUnit::assertTrue(
-			! $nodes ? false : $nodes->length > 0,
+			$nodes && $nodes->length > 0,
 			$message ?? 'Element not found for expression: ' . $expression,
 		);
 
@@ -52,7 +52,7 @@ trait Element_Assertions {
 			$id = substr( $id, 1 );
 		}
 
-		return $this->assertElementExists( sprintf( '//*[@id="%s"]', $id ), "Element not found for ID: $id" );
+		return $this->assertElementExists( sprintf( '//*[@id="%s"]', $id ), "Element not found for ID: {$id}" );
 	}
 
 	/**
@@ -67,7 +67,7 @@ trait Element_Assertions {
 
 		return $this->assertElementExists(
 			sprintf( '//*[contains(concat(" ", normalize-space(@class), " "), " %s ")]', $classname ),
-			"Element not found for class: $classname"
+			"Element not found for class: {$classname}"
 		);
 	}
 
@@ -82,7 +82,7 @@ trait Element_Assertions {
 
 		PHPUnit::assertTrue(
 			false === $nodes || 0 === $nodes->length,
-			$message ?? "Element found for expression: $expression"
+			$message ?? "Element found for expression: {$expression}"
 		);
 
 		return $this;
@@ -98,7 +98,7 @@ trait Element_Assertions {
 			$id = substr( $id, 1 );
 		}
 
-		return $this->assertElementMissing( sprintf( '//*[@id="%s"]', $id ), "Element found for ID: $id" );
+		return $this->assertElementMissing( sprintf( '//*[@id="%s"]', $id ), "Element found for ID: {$id}" );
 	}
 
 	/**
@@ -120,7 +120,7 @@ trait Element_Assertions {
 	 * @param string $type The type of element to check.
 	 */
 	public function assertElementExistsByTagName( string $type ): static {
-		return $this->assertElementExists( sprintf( '//*[local-name()="%s"]', $type ), "Element not found for tag: $type" );
+		return $this->assertElementExists( sprintf( '//*[local-name()="%s"]', $type ), "Element not found for tag: {$type}" );
 	}
 
 	/**
@@ -129,7 +129,7 @@ trait Element_Assertions {
 	 * @param string $type The type of element to check.
 	 */
 	public function assertElementMissingByTagName( string $type ): static {
-		return $this->assertElementMissing( sprintf( '//*[local-name()="%s"]', $type ), "Element found for tag: $type" );
+		return $this->assertElementMissing( sprintf( '//*[local-name()="%s"]', $type ), "Element found for tag: {$type}" );
 	}
 
 	/**
@@ -138,7 +138,7 @@ trait Element_Assertions {
 	 * @param string $selector The selector to use.
 	 */
 	public function assertElementExistsByQuerySelector( string $selector ): static {
-		return $this->assertElementExists( $this->convert_query_selector( $selector ), "Element not found for selector: $selector" );
+		return $this->assertElementExists( $this->convert_query_selector( $selector ), "Element not found for selector: {$selector}" );
 	}
 
 	/**
@@ -156,7 +156,7 @@ trait Element_Assertions {
 	 * @param string $selector The selector to use.
 	 */
 	public function assertElementMissingByQuerySelector( string $selector ): static {
-		return $this->assertElementMissing( $this->convert_query_selector( $selector ), "Element found for selector: $selector" );
+		return $this->assertElementMissing( $this->convert_query_selector( $selector ), "Element found for selector: {$selector}" );
 	}
 
 	/**
@@ -198,7 +198,7 @@ trait Element_Assertions {
 	 * @param string $test_id The test ID to check.
 	 */
 	public function assertElementExistsByTestId( string $test_id ): static {
-		return $this->assertQuerySelectorExists( "[data-testid=\"$test_id\"]" );
+		return $this->assertQuerySelectorExists( "[data-testid=\"{$test_id}\"]" );
 	}
 
 	/**
@@ -207,7 +207,7 @@ trait Element_Assertions {
 	 * @param string $test_id The test ID to check.
 	 */
 	public function assertElementMissingByTestId( string $test_id ): static {
-		return $this->assertQuerySelectorMissing( "[data-testid=\"$test_id\"]" );
+		return $this->assertQuerySelectorMissing( "[data-testid=\"{$test_id}\"]" );
 	}
 
 	/**

@@ -20,6 +20,8 @@ use RuntimeException;
 class Lightweight_Event_Dispatcher extends Dispatcher {
 	/**
 	 * Event listeners.
+	 *
+	 * @var array<string, mixed>
 	 */
 	protected array $listeners = [];
 

@@ -46,7 +46,7 @@ abstract class Seeder {
 			$seeder = $this->resolve( $class );
 			$name   = $seeder::class;
 
-			if ( ! $silent && isset( $this->command ) ) {
+			if ( ! $silent && $this->command instanceof \Mantle\Console\Command ) {
 				$this->command->line( "Seeding: {$name}" );
 			}
 
@@ -56,7 +56,7 @@ abstract class Seeder {
 
 			$run_time = number_format( ( microtime( true ) - $start_time ) * 1000, 2 );
 
-			if ( ! $silent && isset( $this->command ) ) {
+			if ( ! $silent && $this->command instanceof \Mantle\Console\Command ) {
 				$this->command->line( "Seeded: {$name} ({$run_time} seconds)" );
 			}
 		}
@@ -82,21 +82,17 @@ abstract class Seeder {
 	 * @param  class-string $class Seeder class to resolve.
 	 */
 	protected function resolve( string $class ): Seeder {
-		if ( isset( $this->container ) ) {
-			$instance = $this->container->make( $class );
-		} else {
-			$instance = new $class();
-		}
+		$instance = $this->container instanceof \Mantle\Contracts\Container ? $this->container->make( $class ) : new $class();
 
 		if ( ! $instance instanceof Seeder ) {
 			throw new InvalidArgumentException( "Class [{$class}] must be an instance of " . self::class );
 		}
 
-		if ( isset( $this->container ) ) {
+		if ( $this->container instanceof \Mantle\Contracts\Container ) {
 			$instance->set_container( $this->container );
 		}
 
-		if ( isset( $this->command ) ) {
+		if ( $this->command instanceof \Mantle\Console\Command ) {
 			$instance->set_command( $this->command );
 		}
 
@@ -137,7 +133,7 @@ abstract class Seeder {
 			throw new InvalidArgumentException( 'Method [run] missing from ' . static::class );
 		}
 
-		return isset( $this->container )
+		return $this->container instanceof \Mantle\Contracts\Container
 			? $this->container->call( [ $this, 'run' ], $parameters )
 			: $this->run( $parameters );
 	}
@@ -148,7 +144,7 @@ abstract class Seeder {
 	 * @throws InvalidArgumentException If the container is not set.
 	 */
 	protected function factory(): Factory_Container {
-		if ( ! isset( $this->container ) ) {
+		if ( ! $this->container instanceof \Mantle\Contracts\Container ) {
 			throw new InvalidArgumentException( 'Container not set to instantiate factory.' );
 		}
 

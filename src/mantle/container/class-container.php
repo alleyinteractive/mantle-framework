@@ -215,7 +215,10 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 			$concrete = $this->get_closure( $abstract, $concrete );
 		}
 
-		$this->bindings[ $abstract ] = compact( 'concrete', 'shared' );
+		$this->bindings[ $abstract ] = [
+			'concrete' => $concrete,
+			'shared'   => $shared,
+		];
 
 		// If the abstract type was already resolved in this container we'll fire the
 		// rebound listener so that any objects which have already gotten resolved
@@ -425,6 +428,8 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 		if ( $this->bound( $abstract ) ) {
 			return $this->make( $abstract );
 		}
+
+								return null;
 	}
 
 	/**
@@ -576,11 +581,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 		// We're ready to instantiate an instance of the concrete type registered for
 		// the binding. This will instantiate the types, as well as resolve any of
 		// its "nested" dependencies recursively until all have gotten resolved.
-		if ( $this->is_buildable( $concrete, $abstract ) ) {
-			$object = $this->build( $concrete );
-		} else {
-			$object = $this->make( $concrete );
-		}
+		$object = $this->is_buildable( $concrete, $abstract ) ? $this->build( $concrete ) : $this->make( $concrete );
 
 		// If we defined any extenders for this type, we'll need to spin through them
 		// and apply them to the object being built. This allows for the extension
@@ -701,7 +702,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 		try {
 			$reflector = new ReflectionClass( $concrete );
 		} catch ( ReflectionException $e ) {
-			throw new Binding_Resolution_Exception( "Target class [$concrete] does not exist.", 0, $e );
+			throw new Binding_Resolution_Exception( "Target class [{$concrete}] does not exist.", 0, $e );
 		}
 
 			// If the type is not instantiable, the developer is attempting to resolve
@@ -709,7 +710,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 			// no binding registered for the abstractions so we need to bail out.
 		if ( ! $reflector->isInstantiable() ) {
 			$this->not_instantiable( $concrete );
-			return;
+			return null;
 		}
 
 		$this->build_stack[] = $concrete;
@@ -883,9 +884,9 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 		if ( ! empty( $this->build_stack ) ) {
 			$previous = implode( ', ', $this->build_stack );
 
-			$message = "Target [$concrete] is not instantiable while building [$previous].";
+			$message = "Target [{$concrete}] is not instantiable while building [{$previous}].";
 		} else {
-			$message = "Target [$concrete] is not instantiable.";
+			$message = "Target [{$concrete}] is not instantiable.";
 		}
 
 		throw new Binding_Resolution_Exception( $message );
@@ -899,7 +900,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @throws Binding_Resolution_Exception Thrown on missing resolution.
 	 */
 	protected function unresolvable_primitive( ReflectionParameter $parameter ): never {
-		$message = "Unresolvable dependency resolving [$parameter] in class {$parameter->getDeclaringClass()->getName()}";
+		$message = "Unresolvable dependency resolving [{$parameter}] in class {$parameter->getDeclaringClass()->getName()}";
 
 		throw new Binding_Resolution_Exception( $message );
 	}

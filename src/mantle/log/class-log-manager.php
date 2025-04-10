@@ -191,7 +191,7 @@ class Log_Manager implements LoggerInterface {
 	 * Get the default logger instance.
 	 */
 	public function driver(): Logger {
-		if ( isset( $this->drive ) ) {
+		if ( $this->drive instanceof \Mantle\Log\Logger ) {
 			return $this->drive;
 		}
 

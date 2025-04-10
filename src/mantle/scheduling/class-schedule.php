@@ -49,7 +49,7 @@ class Schedule {
 	 * @param DateTimeZone $timezone Timezone instance, optional.
 	 */
 	public function __construct( protected Application $container, ?DateTimeZone $timezone = null ) {
-		if ( $timezone ) {
+		if ( $timezone instanceof \DateTimeZone ) {
 			$this->timezone = $timezone;
 		}
 	}

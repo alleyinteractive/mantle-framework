@@ -207,7 +207,7 @@ PHP
 	 */
 	public function permalink(): ?string {
 		$term_link = \get_term_link( $this->id() );
-		return ! \is_wp_error( $term_link ) ? (string) $term_link : null;
+		return \is_wp_error( $term_link ) ? null : (string) $term_link;
 	}
 
 	/**
@@ -216,7 +216,7 @@ PHP
 	public function core_object(): ?\WP_Term {
 		$id = $this->id();
 
-		if ( $id ) {
+		if ( $id !== 0 ) {
 			return Helpers\get_term_object( $id );
 		}
 

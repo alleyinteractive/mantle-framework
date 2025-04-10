@@ -132,6 +132,7 @@ trait Rsync_Installation {
 		if ( false !== strpos( __DIR__, '/wp-content/' ) ) {
 						return $this->maybe_rsync( '/', preg_replace( '/\/wp-content\/.*$/', '/wp-content', __DIR__ ) );
 		}
+
 											// Attempt to locate wp-content relative to the current directory.
 		if ( preg_match( '/\/(?:client-mu-plugins|mu-plugins|plugins|themes)\/.*/', __DIR__ ) ) {
 															/**
@@ -182,6 +183,7 @@ trait Rsync_Installation {
 		if ( $this->is_within_wordpress_install() ) {
 			return $this;
 		}
+
 								// Allow object cache to be disabled.
 		if ( ! $install ) {
 						putenv( 'MANTLE_INSTALL_OBJECT_CACHE=' );
@@ -199,13 +201,10 @@ trait Rsync_Installation {
 			return $this;
 		}
 
-		if ( 'memcached' === $install ) {
-			// Check if Memcached is installed before proceeding.
-			if ( ! class_exists( \Memcached::class ) && ! Utils::env( 'MANTLE_REQUIRE_OBJECT_CACHE', false ) ) {
-				Utils::error( 'Memcached is not installed. Cannot install object cache. Skipping...' );
-
-				return $this;
-			}
+		// Check if Memcached is installed before proceeding.
+		if ( 'memcached' === $install && ( ! class_exists( \Memcached::class ) && ! Utils::env( 'MANTLE_REQUIRE_OBJECT_CACHE', false ) ) ) {
+						Utils::error( 'Memcached is not installed. Cannot install object cache. Skipping...' );
+						return $this;
 		}
 
 		$this->add_exclusion( 'object-cache.php' );
@@ -381,7 +380,7 @@ trait Rsync_Installation {
 		// Normalize the rsync paths. Ensure that both have a trailing slash to be
 		// inclusive of the directory's contents and not just the directory itself.
 		$this->rsync_from = rtrim( $this->rsync_from, '/' ) . '/';
-		$this->rsync_to   = rtrim( "$base_install_path/wp-content/{$this->rsync_to}", '/' ) . '/';
+		$this->rsync_to   = rtrim( "{$base_install_path}/wp-content/{$this->rsync_to}", '/' ) . '/';
 
 		// Store the subdirectory of the current working directory relative to the
 		// from rsync path.

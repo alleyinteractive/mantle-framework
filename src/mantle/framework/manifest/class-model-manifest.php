@@ -51,7 +51,7 @@ class Model_Manifest {
 	 * Get the compiled manifest.
 	 */
 	protected function get_manifest(): array {
-		if ( isset( $this->manifest ) ) {
+		if ( $this->manifest !== null ) {
 			return $this->manifest;
 		}
 
@@ -106,14 +106,10 @@ class Model_Manifest {
 	protected function write_manifest( array $manifest ) {
 		$dir = dirname( $this->manifest_path );
 
-		// Ensure the cached folder exists.
-		if ( ! is_dir( $dir ) ) {
-			// Create the folder if it doesn't exist.
-			if ( ! mkdir( $dir ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.directory_mkdir
-				throw new Application_Exception( 'Unable to create path ' . $dir );
-			}
+		// Ensure the cached folder exists. Create the folder if it doesn't exist.
+		if ( ! is_dir( $dir ) && ! mkdir( $dir ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.directory_mkdir
+			throw new Application_Exception( 'Unable to create path ' . $dir );
 		}
-
 
 		if ( ! file_put_contents( // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents
 			$this->manifest_path,

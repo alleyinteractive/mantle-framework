@@ -58,7 +58,11 @@ trait Queries_Dates {
 			throw new InvalidArgumentException( esc_html( 'Invalid date comparison operator: ' . $compare ) );
 		}
 
-		$this->date_constraints[] = compact( 'date', 'compare', 'column' );
+		$this->date_constraints[] = [
+			'date'    => $date,
+			'compare' => $compare,
+			'column'  => $column,
+		];
 
 		return $this;
 	}

@@ -158,7 +158,7 @@ function default_from_rest_schema( array $schema ) {
 			}
 		}
 
-		if ( ! $default ) {
+		if ( $default === [] ) {
 			$default = (object) $default;
 		}
 	}

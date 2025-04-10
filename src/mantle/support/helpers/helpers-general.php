@@ -238,6 +238,8 @@ function retry( $times, callable $callback, $sleep = 0, $when = null ) {
 		// phpcs:ignore Generic.PHP.DiscourageGoto.Found
 		goto beginning;
 	}
+
+				return null;
 }
 
 /**
@@ -287,11 +289,7 @@ function tap( $value, $callback = null ) {
  */
 function throw_if( mixed $condition, string|Throwable $exception, ...$parameters ): mixed {
 	if ( $condition ) {
-		if ( is_string( $exception ) ) {
-			$e = new $exception( ...$parameters );
-		} else {
-			$e = $exception;
-		}
+		$e = is_string( $exception ) ? new $exception( ...$parameters ) : $exception;
 
 		throw $e;
 	}
@@ -311,11 +309,7 @@ function throw_if( mixed $condition, string|Throwable $exception, ...$parameters
  */
 function throw_unless( mixed $condition, string|Throwable $exception, ...$parameters ): mixed {
 	if ( ! $condition ) {
-		if ( is_string( $exception ) ) {
-			$e = new $exception( ...$parameters );
-		} else {
-			$e = $exception;
-		}
+		$e = is_string( $exception ) ? new $exception( ...$parameters ) : $exception;
 
 		throw $e;
 	}

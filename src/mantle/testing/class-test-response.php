@@ -593,6 +593,7 @@ class Test_Response {
 
 		return $this;
 	}
+
 	/**
 	 * Assert that a given object is not equivalent to the global queried object.
 	 *

@@ -157,7 +157,7 @@ abstract class TestCase extends BaseTestCase {
 
 		parent::setUp();
 
-		if ( ! isset( $this->app ) ) {
+		if ( $this->app === null ) {
 			$this->refresh_application();
 		}
 
@@ -299,6 +299,7 @@ abstract class TestCase extends BaseTestCase {
 			Network_Admin_Screen::class,
 		];
 	}
+
 	/**
 	 * Register the traits that this test case uses.
 	 */

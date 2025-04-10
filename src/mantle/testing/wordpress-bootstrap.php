@@ -161,7 +161,7 @@ if ( ! $installing_wp && '1' !== getenv( 'WP_TESTS_SKIP_INSTALL' ) ) {
 			escapeshellarg( __DIR__ . '/install-wordpress.php' ),
 			$multisite ? '1' : '0',
 			WP_TESTS_DOMAIN,
-			! empty( $_SERVER['HTTPS'] ) ? '1' : '0',
+			empty( $_SERVER['HTTPS'] ) ? '0' : '1',
 		],
 		$retval,
 	);
@@ -189,12 +189,13 @@ if ( $installing_wp ) {
 
 if ( $multisite && ! $installing_wp ) {
 	Utils::info( 'Running as multisite...' );
-	defined( 'MULTISITE' ) or define( 'MULTISITE', true );
-	defined( 'SUBDOMAIN_INSTALL' ) or define( 'SUBDOMAIN_INSTALL', false );
+	defined( 'MULTISITE' ) || define( 'MULTISITE', true );
+	defined( 'SUBDOMAIN_INSTALL' ) || define( 'SUBDOMAIN_INSTALL', false );
 	$GLOBALS['base'] = '/';
 } elseif ( ! $installing_wp ) {
 	Utils::info( "Running as single site...\n<br>ℹ️ To run multisite, pass <span class=\"text-orange-500\">WP_MULTISITE=1</span> or set the <span class=\"text-orange-500\">WP_TESTS_MULTISITE=1</span> constant." );
 }
+
 unset( $multisite );
 
 $GLOBALS['_wp_die_disabled'] = false;
@@ -239,6 +240,7 @@ require_once ABSPATH . '/wp-settings.php';
 if ( isset( $_SERVER['REQUEST_TIME'] ) ) {
 	$_SERVER['REQUEST_TIME'] = (int) $_SERVER['REQUEST_TIME'];
 }
+
 if ( isset( $_SERVER['REQUEST_TIME_FLOAT'] ) ) {
 	$_SERVER['REQUEST_TIME_FLOAT'] = (float) $_SERVER['REQUEST_TIME_FLOAT'];
 }

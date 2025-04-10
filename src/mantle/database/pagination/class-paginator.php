@@ -167,11 +167,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 * @param int $current_page Current page to set, optional.
 	 */
 	public function set_current_page( ?int $current_page = null ): static {
-		if ( $current_page && $current_page > 0 ) {
-			$this->current_page = $current_page;
-		} else {
-			$this->current_page = static::resolve_current_page();
-		}
+		$this->current_page = $current_page && $current_page > 0 ? $current_page : static::resolve_current_page();
 
 		$this->builder->page( $this->current_page );
 		return $this;
@@ -226,6 +222,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 		if ( 1 !== $this->current_page() ) {
 						return true;
 		}
+
 								return $this->has_more();
 	}
 
@@ -309,6 +306,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 		if ( ! Str::is( 'page/*', $path ) ) {
 			return 1;
 		}
+
 		preg_match_all( '/page\/(\d*)\/?/', $path, $matches );
 		return (int) ( $matches[1][0] ?? 1 );
 	}
@@ -322,6 +320,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 		if ( ! Str::is( 'page/*', $path ) ) {
 			return $path;
 		}
+
 		preg_match_all( '/page\/(\d*)\/?/', $path, $matches );
 
 		if ( ! empty( $matches[0][0] ) ) {

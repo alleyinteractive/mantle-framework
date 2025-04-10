@@ -112,7 +112,7 @@ class Byline_Manager_Factory extends Factory {
 	 *
 	 * @param array<mixed> $args Arguments to pass to the factory.
 	 */
-	public function make( array $args = [] ): Post {
+	protected function make( array $args = [] ): Post {
 		if ( ! class_exists( Profile::class ) ) {
 			throw new RuntimeException( 'Byline Manager is not installed.' );
 		}

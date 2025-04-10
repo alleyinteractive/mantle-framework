@@ -110,6 +110,7 @@ abstract class Generator_Command extends Command {
 		$this->log( str( $this->type ?: 'File' )->singular() . ' created successfully: <info>' . $file_path . '</info>' );
 
 		$this->complete_synopsis( $name );
+								return null;
 	}
 
 	/**
@@ -154,21 +155,9 @@ abstract class Generator_Command extends Command {
 
 		array_pop( $parts );
 
-		if ( ! empty( $parts ) ) {
-			$parts = strtolower( str_replace( '_', '-', join( '/', $parts ) ) ) . '/';
-		} else {
-			$parts = '';
-		}
+		$parts = empty( $parts ) ? '' : strtolower( str_replace( '_', '-', implode( '/', $parts ) ) ) . '/';
 
-		$parts = array_merge(
-			[
-				Str::untrailing_slash( $this->get_base_path() ),
-				strtolower( str_replace( '\\', '/', $this->type ) ),
-			],
-			[
-				$parts,
-			],
-		);
+		$parts = [ Str::untrailing_slash( $this->get_base_path() ), strtolower( str_replace( '\\', '/', $this->type ) ), $parts ];
 
 		return Str::untrailing_slash( implode( '/', array_filter( $parts ) ) );
 	}

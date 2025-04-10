@@ -49,7 +49,7 @@ if ( ! function_exists( 'strip_ws' ) ) :
 		$lines  = explode( "\n", $txt );
 		$result = [];
 		foreach ( $lines as $line ) {
-			if ( trim( $line ) ) {
+			if ( trim( $line ) !== '' && trim( $line ) !== '0' ) {
 				$result[] = trim( $line );
 			}
 		}

@@ -25,6 +25,13 @@ class Dispatcher implements Dispatcher_Contract {
 	use WordPress_Action;
 
 	/**
+	 * The registered event listeners.
+	 *
+	 * @var array<string, mixed>
+	 */
+	protected array $listeners = [];
+
+	/**
 	 * The IoC container instance.
 	 */
 	protected \Mantle\Container\Container $container;

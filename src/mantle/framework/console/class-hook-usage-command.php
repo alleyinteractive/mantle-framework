@@ -125,7 +125,7 @@ class Hook_Usage_Command extends Command {
 		}
 
 		$cache = $this->get_cache_for_path( $path );
-		if ( $cache ) {
+		if ( $cache instanceof \Mantle\Support\Collection ) {
 			return $cache;
 		}
 
@@ -199,7 +199,11 @@ class Hook_Usage_Command extends Command {
 
 				$line = Str::line_number( $contents, $char_pos );
 
-				$references->add( compact( 'file', 'line', 'method' ) );
+				$references->add( [
+					'file'   => $file,
+					'line'   => $line,
+					'method' => $method,
+				] );
 			}
 		}
 
@@ -297,13 +301,7 @@ class Hook_Usage_Command extends Command {
 			->trim()
 			->unique()
 			->filter(
-				function ( $path ): bool {
-					if ( ! is_file( $path ) && ! is_dir( $path ) ) {
-						return false;
-					}
-
-					return true;
-				}
+				fn( $path ): bool => ! ( ! is_file( $path ) && ! is_dir( $path ) )
 			)
 			->values();
 	}

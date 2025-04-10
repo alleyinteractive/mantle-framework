@@ -139,6 +139,7 @@ class Pending_Request {
 		if ( empty( $this->url ) ) {
 			throw new InvalidArgumentException( 'Cannot purge cache for a request that has no URL. Call url() first.' );
 		}
+
 		$middleware = collect( $this->middleware )->first( fn ( $middleware ) => $middleware instanceof Cache_Middleware );
 
 		if ( ! $middleware ) {
@@ -240,14 +241,10 @@ class Pending_Request {
 	 * @param bool  $merge Merge the options with the existing options, default true.
 	 */
 	public function with_options( array $options, bool $merge = true ): static {
-		if ( $merge ) {
-			$this->options['options'] = array_merge(
-				$this->options['options'] ?? [],
-				$options
-			);
-		} else {
-			$this->options['options'] = $options;
-		}
+		$this->options['options'] = $merge ? array_merge(
+			$this->options['options'] ?? [],
+			$options
+		) : $options;
 
 		return $this;
 	}
@@ -550,7 +547,7 @@ class Pending_Request {
 		return $this->send(
 			Http_Method::GET,
 			$url,
-			! is_null( $query ) ? [ 'query' => $query ] : [],
+			is_null( $query ) ? [] : [ 'query' => $query ],
 		);
 	}
 
@@ -570,7 +567,7 @@ class Pending_Request {
 		return $this->send(
 			Http_Method::HEAD,
 			$url,
-			! is_null( $query ) ? [ 'query' => $query ] : [],
+			is_null( $query ) ? [] : [ 'query' => $query ],
 		);
 	}
 
@@ -590,7 +587,7 @@ class Pending_Request {
 		return $this->send(
 			Http_Method::POST,
 			$url,
-			! is_null( $data ) ? [ $this->body_format => $data ] : [],
+			is_null( $data ) ? [] : [ $this->body_format => $data ],
 		);
 	}
 
@@ -610,7 +607,7 @@ class Pending_Request {
 		return $this->send(
 			Http_Method::PATCH,
 			$url,
-			! is_null( $data ) ? [ $this->body_format => $data ] : [],
+			is_null( $data ) ? [] : [ $this->body_format => $data ],
 		);
 	}
 
@@ -630,7 +627,7 @@ class Pending_Request {
 		return $this->send(
 			Http_Method::PUT,
 			$url,
-			! is_null( $data ) ? [ $this->body_format => $data ] : [],
+			is_null( $data ) ? [] : [ $this->body_format => $data ],
 		);
 	}
 
@@ -650,7 +647,7 @@ class Pending_Request {
 		return $this->send(
 			Http_Method::DELETE,
 			$url,
-			! is_null( $data ) ? [ $this->body_format => $data ] : [],
+			is_null( $data ) ? [] : [ $this->body_format => $data ],
 		);
 	}
 

@@ -56,7 +56,7 @@ class Comment extends Model implements Contracts\Database\Core_Object, Contracts
 	 */
 	public static function find( mixed $object ): ?static {
 		$post = Helpers\get_comment_object( $object );
-		return $post ? new static( $post ) : null;
+		return $post instanceof \WP_Comment ? new static( $post ) : null;
 	}
 
 	/**
@@ -120,7 +120,7 @@ class Comment extends Model implements Contracts\Database\Core_Object, Contracts
 	public function core_object(): ?\WP_Comment {
 		$id = $this->id();
 
-		if ( $id ) {
+		if ( $id !== 0 ) {
 			return Helpers\get_comment_object( $id );
 		}
 

@@ -31,7 +31,7 @@ class Authorize {
 			throw new Authentication_Error( 403, static::get_unauthenticated_error_message() );
 		}
 
-		if ( $ability ) {
+		if ( $ability !== '' && $ability !== '0' ) {
 			foreach ( explode( ',', $ability ) as $cap ) {
 				if ( ! \current_user_can( $cap ) ) {
 					throw new Authentication_Error( 403, static::get_invalid_access_error_message() );

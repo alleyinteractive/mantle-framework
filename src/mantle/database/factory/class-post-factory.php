@@ -120,7 +120,7 @@ class Post_Factory extends Factory {
 					if ( is_string( $term_argument ) ) {
 						$term = get_term_object( $term_argument, 'category' );
 
-						if ( $term ) {
+						if ( $term instanceof \WP_Term ) {
 							$category_ids[] = $term->term_id;
 						}
 

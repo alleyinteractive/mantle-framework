@@ -48,6 +48,7 @@ trait Hooks {
 		foreach ( [ 'wp_actions', 'wp_current_filter' ] as $global ) {
 			self::$hooks_saved[ $global ] = $GLOBALS[ $global ];
 		}
+
 		self::$hooks_saved['wp_filter'] = [];
 		foreach ( $GLOBALS['wp_filter'] as $hook_name => $hook_object ) {
 			self::$hooks_saved['wp_filter'][ $hook_name ] = clone $hook_object;
@@ -69,12 +70,14 @@ trait Hooks {
 				$GLOBALS[ $global ] = self::$hooks_saved[ $global ];
 			}
 		}
+
 		if ( isset( self::$hooks_saved['wp_filter'] ) ) {
 			$GLOBALS['wp_filter'] = [];
 			foreach ( self::$hooks_saved['wp_filter'] as $hook_name => $hook_object ) {
 				$GLOBALS['wp_filter'][ $hook_name ] = clone $hook_object;
 			}
 		}
+
 		// phpcs:enable
 	}
 }

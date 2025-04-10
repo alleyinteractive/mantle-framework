@@ -126,7 +126,7 @@ class User extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	public function core_object(): ?\WP_User {
 		$id = $this->id();
 
-		if ( $id ) {
+		if ( $id !== 0 ) {
 			return Helpers\get_user_object( $id );
 		}
 

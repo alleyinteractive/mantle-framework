@@ -55,13 +55,13 @@ class Listener_Make_Command extends Generator_Command {
 		$file = new PhpFile();
 
 		$namespace = $file
-			->addComment( "$class_name class file.\n\n@package $namespace_name" )
+			->addComment( "{$class_name} class file.\n\n@package {$namespace_name}" )
 			->addNamespace( $namespace_name )
 			->addUse( $event_class_namespaced );
 
 		$class = $namespace
 			->addClass( $class_name )
-			->addComment( "$class_name class." );
+			->addComment( "{$class_name} class." );
 
 		$class
 			->addMethod( '__construct' )

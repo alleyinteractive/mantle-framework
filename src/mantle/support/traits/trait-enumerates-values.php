@@ -426,11 +426,7 @@ trait Enumerates_Values {
 	 * @return mixed
 	 */
 	public function sum( $callback = null ) {
-		if ( is_null( $callback ) ) {
-			$callback = fn ( $value ) => $value;
-		} else {
-			$callback = $this->value_retriever( $callback );
-		}
+		$callback = is_null( $callback ) ? fn ( $value ) => $value : $this->value_retriever( $callback );
 
 		return $this->reduce(
 			fn ( $result, $item ) => $result + $callback( $item ),

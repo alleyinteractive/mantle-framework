@@ -37,7 +37,7 @@ class REST_Field_Registrar {
 
 		$attribute = $field->get_attribute();
 
-		if ( ! $attribute ) {
+		if ( $attribute === '' || $attribute === '0' ) {
 			throw new \BadMethodCallException( \__( 'Please define the attribute name.', 'mantle' ) );
 		}
 
@@ -69,7 +69,7 @@ class REST_Field_Registrar {
 		$attribute = $field->get_attribute();
 
 		foreach ( (array) $field->get_object_types() as $object_type ) {
-			if ( Registered_REST_Field::get_instance( $object_type, $attribute ) ) {
+			if ( Registered_REST_Field::get_instance( $object_type, $attribute ) instanceof \Mantle\REST_API\Registered_REST_Field ) {
 				throw new \LogicException(
 					\sprintf(
 						/* translators: 1: attribute, 2: object type */

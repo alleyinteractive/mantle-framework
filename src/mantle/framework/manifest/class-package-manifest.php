@@ -77,7 +77,7 @@ class Package_Manifest {
 	 * Get the compiled manifest.
 	 */
 	public function get_manifest(): array {
-		if ( isset( $this->manifest ) ) {
+		if ( $this->manifest !== null ) {
 			return (array) $this->manifest;
 		}
 
@@ -155,11 +155,10 @@ class Package_Manifest {
 		$dir = dirname( $this->manifest_path );
 
 		// Ensure the cached folder exists.
-		if ( ! $filesystem->is_directory( $dir ) ) {
-			// Create the folder if it doesn't exist.
-			if ( ! $filesystem->make_directory( $dir ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.directory_mkdir
-				throw new Application_Exception( 'Unable to create path ' . $dir );
-			}
+								// Create the folder if it doesn't exist.
+		if ( ! $filesystem->is_directory( $dir ) && ! $filesystem->make_directory( $dir ) ) {
+			// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.directory_mkdir
+						throw new Application_Exception( 'Unable to create path ' . $dir );
 		}
 
 		if ( ! $filesystem->put(

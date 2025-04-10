@@ -23,7 +23,7 @@ class Queue_Job_Admin_Page {
 	 * Render the admin page.
 	 */
 	public function render(): void {
-		$job_id = ! empty( $_GET['job'] ) ? absint( $_GET['job'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$job_id = empty( $_GET['job'] ) ? 0 : absint( $_GET['job'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 		match ( true ) {
 			! empty( $_GET['action'] ) && $job_id => $this->render_action( $job_id ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended

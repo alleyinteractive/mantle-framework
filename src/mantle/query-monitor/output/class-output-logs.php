@@ -84,11 +84,7 @@ class Output_Logs extends \QM_Output_Html {
 
 			$is_warning = in_array( $row['level'], $this->collector->get_warning_levels(), true );
 
-			if ( $is_warning ) {
-				$class = 'qm-warn';
-			} else {
-				$class = '';
-			}
+			$class = $is_warning ? 'qm-warn' : '';
 
 			echo '<tr' . $attr . ' class="' . esc_attr( $class ) . '">'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 

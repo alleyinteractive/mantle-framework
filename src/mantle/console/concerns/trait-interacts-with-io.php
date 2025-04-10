@@ -212,11 +212,7 @@ trait Interacts_With_IO {
 	 * @return mixed
 	 */
 	public function format_data( string $format, array $headers, $data ) {
-		if ( $data instanceof Arrayable ) {
-			$data = $data->to_array();
-		} else {
-			$data = (array) $data;
-		}
+		$data = $data instanceof Arrayable ? $data->to_array() : (array) $data;
 
 		return match ( $format ) {
 			'count'  => count( $data ),
@@ -256,9 +252,8 @@ trait Interacts_With_IO {
 	 *
 	 * @param  iterable|int $total_steps
 	 * @param  \Closure     $callback
-	 * @return mixed|void
 	 */
-	public function with_progress_bar( $total_steps, Closure $callback ) {
+	public function with_progress_bar( iterable|int $total_steps, Closure $callback ): ?iterable {
 		$bar = $this->output->createProgressBar(
 			is_iterable( $total_steps ) ? count( $total_steps ) : $total_steps
 		);
@@ -272,14 +267,12 @@ trait Interacts_With_IO {
 				$bar->advance();
 			}
 		} else {
-				$callback( $bar );
+			$callback( $bar );
 		}
 
 		$bar->finish();
 
-		if ( is_iterable( $total_steps ) ) {
-			return $total_steps;
-		}
+		return is_iterable( $total_steps ) ? $total_steps : null;
 	}
 
 	/**
@@ -321,7 +314,7 @@ trait Interacts_With_IO {
 	 * @param  int|string|null $verbosity
 	 */
 	public function line( $string, $style = null, $verbosity = null ): void {
-		$styled = $style ? "<$style>$string</$style>" : $string;
+		$styled = $style ? "<{$style}>{$string}</{$style}>" : $string;
 
 		$this->output->writeln( $styled, $this->parse_verbosity( $verbosity ) );
 	}

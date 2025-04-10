@@ -37,7 +37,7 @@ class Attachment extends Post {
 	 * @throws Model_Exception Thrown when getting image.
 	 */
 	public function image_url( array|string $size ): ?string {
-		if ( ! $this->id() ) {
+		if ( $this->id() === 0 ) {
 			throw new Model_Exception( 'Unable to get attachment URL for unsaved attachment.' );
 		}
 
@@ -132,7 +132,7 @@ class Attachment extends Post {
 
 		preg_match( '/[^\?]+\.(jpe?g|jpe|gif|png|pdf)\b/i', $url, $matches );
 
-		if ( ! $matches ) {
+		if ( $matches === [] ) {
 			throw new Model_Exception( __( 'Invalid URL to create from.', 'mantle' ) );
 		}
 

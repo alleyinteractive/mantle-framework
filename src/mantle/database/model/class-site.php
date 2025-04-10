@@ -52,7 +52,7 @@ class Site extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 */
 	public static function find( mixed $object ): ?static {
 		$site = Helpers\get_site_object( $object );
-		return $site ? new static( $site ) : null;
+		return $site instanceof \WP_Site ? new static( $site ) : null;
 	}
 
 	/**
@@ -103,7 +103,7 @@ class Site extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	public function core_object(): ?\WP_Site {
 		$id = $this->id();
 
-		if ( $id ) {
+		if ( $id !== 0 ) {
 			return Helpers\get_site_object( $id );
 		}
 

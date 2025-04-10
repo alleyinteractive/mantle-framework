@@ -641,7 +641,7 @@ abstract class Builder {
 	public function firstOrFail() {
 		$model = $this->first();
 
-		if ( ! $model ) {
+		if ( ! $model instanceof \Mantle\Database\Model\Model ) {
 			throw new Model_Not_Found_Exception( $this->model );
 		}
 

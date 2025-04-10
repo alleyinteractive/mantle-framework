@@ -147,7 +147,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	protected function handle_request() {
 		$response = $this->send_request_through_router( $this->request );
 
-		if ( ! $response ) {
+		if ( ! $response instanceof \Symfony\Component\HttpFoundation\Response ) {
 			// Register the termination callback to be called on shutdown.
 			add_action( 'shutdown', fn () => $this->terminate( $this->request, null ), 100 );
 
