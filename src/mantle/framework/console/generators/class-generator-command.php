@@ -110,7 +110,8 @@ abstract class Generator_Command extends Command {
 		$this->log( str( $this->type ?: 'File' )->singular() . ' created successfully: <info>' . $file_path . '</info>' );
 
 		$this->complete_synopsis( $name );
-								return null;
+
+		return null;
 	}
 
 	/**
