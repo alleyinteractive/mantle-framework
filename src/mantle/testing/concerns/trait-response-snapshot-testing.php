@@ -51,11 +51,13 @@ trait Response_Snapshot_Testing {
 
 			if ( Str::contains( $content_type, 'application/json', true ) ) {
 				return $this->assertMatchesSnapshotJson( ...$args );
-			} elseif ( Str::contains( $content_type, 'text/html', true ) ) {
-				return $this->assertMatchesSnapshotHtml( ...$args );
-			} else {
-				$this->test_case->assertMatchesSnapshot( $this->get_content() );
 			}
+
+			if ( Str::contains( $content_type, 'text/html', true ) ) {
+				return $this->assertMatchesSnapshotHtml( ...$args );
+			}
+
+			$this->test_case->assertMatchesSnapshot( $this->get_content() );
 		}
 
 		return $this;

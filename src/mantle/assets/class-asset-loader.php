@@ -62,9 +62,9 @@ class Asset_Loader {
 				report( $exception );
 
 				return null;
-			} else {
-				throw $exception;
 			}
+
+			throw $exception;
 		}
 
 		$version = $this->version( $path );

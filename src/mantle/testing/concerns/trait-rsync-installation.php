@@ -130,18 +130,20 @@ trait Rsync_Installation {
 	public function maybe_rsync_wp_content(): static {
 		// Attempt to locate wp-content relative to the current directory.
 		if ( false !== strpos( __DIR__, '/wp-content/' ) ) {
-			return $this->maybe_rsync( '/', preg_replace( '/\/wp-content\/.*$/', '/wp-content', __DIR__ ) );
-		} elseif ( preg_match( '/\/(?:client-mu-plugins|mu-plugins|plugins|themes)\/.*/', __DIR__ ) ) {
-			/**
-			 * Attempt to locate the wp-content directory relative to the current
-			 * directory by finding the WordPress-parent folder after wp-content. Used
-			 * when the directory structure doesn't contain wp-content but contains a
-			 * subfolder that we can use to locate the WordPress installation such as
-			 * plugins, themes, etc. This is common for wp-content-rooted projects
-			 * that have the root of their directory structure as the wp-content
-			 * folder.
-			 */
-			return $this->maybe_rsync( '/', preg_replace( '/\/(?:client-mu-plugins|mu-plugins|plugins|themes)\/.*/', '', __DIR__ ) );
+						return $this->maybe_rsync( '/', preg_replace( '/\/wp-content\/.*$/', '/wp-content', __DIR__ ) );
+		}
+											// Attempt to locate wp-content relative to the current directory.
+		if ( preg_match( '/\/(?:client-mu-plugins|mu-plugins|plugins|themes)\/.*/', __DIR__ ) ) {
+															/**
+															 * Attempt to locate the wp-content directory relative to the current
+															 * directory by finding the WordPress-parent folder after wp-content. Used
+															 * when the directory structure doesn't contain wp-content but contains a
+															 * subfolder that we can use to locate the WordPress installation such as
+															 * plugins, themes, etc. This is common for wp-content-rooted projects
+															 * that have the root of their directory structure as the wp-content
+															 * folder.
+															 */
+															return $this->maybe_rsync( '/', preg_replace( '/\/(?:client-mu-plugins|mu-plugins|plugins|themes)\/.*/', '', __DIR__ ) );
 		}
 
 		return $this->maybe_rsync( '/', dirname( getcwd(), 3 ) );
@@ -180,14 +182,15 @@ trait Rsync_Installation {
 		if ( $this->is_within_wordpress_install() ) {
 			return $this;
 		}
+								// Allow object cache to be disabled.
+		if ( ! $install ) {
+						putenv( 'MANTLE_INSTALL_OBJECT_CACHE=' );
+						return $this;
+		}
 
 		// Allow object cache to be disabled.
-		if ( ! $install ) {
-			putenv( 'MANTLE_INSTALL_OBJECT_CACHE=' );
-
-			return $this;
-		} elseif ( true === $install ) {
-			$install = 'memcached';
+		if ( true === $install ) {
+												$install = 'memcached';
 		}
 
 		if ( ! in_array( $install, [ 'redis', 'memcached' ], true ) ) {

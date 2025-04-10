@@ -146,6 +146,10 @@
             "@rector:fix",
             "@phpcbf"
         ],
+        "fix-and-test": [
+            "@lint:fix",
+            "@test"
+        ],
         "merge": "monorepo-builder merge",
         "monorepo-validate": "monorepo-builder validate",
         "phpcbf": "phpcbf --standard=./phpcs.xml .",

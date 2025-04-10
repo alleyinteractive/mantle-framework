@@ -63,9 +63,9 @@ class Fluent_Factory extends Factory {
 	public function create( array $args = [] ): mixed {
 		if ( 1 === $this->count ) {
 			return $this->factory->create( $args );
-		} else {
-			return collect( $this->factory->create_many( $this->count, $args ) );
 		}
+
+		return collect( $this->factory->create_many( $this->count, $args ) );
 	}
 
 	/**

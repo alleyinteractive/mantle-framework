@@ -91,21 +91,16 @@ class Belongs_To extends Relation {
 	public function add_eager_constraints( Collection $models ): void {
 		if ( $this->uses_terms ) {
 			throw new RuntimeException( 'Eager loading relationships with terms is not supported yet.' );
-		} else {
-			$append = $this->should_append();
-
-			$meta_values = $models
-				->map(
-					fn ( $model ) => $model->get_meta( $this->local_key, ! $append )
-				)
-				->filter();
-
-			if ( $append ) {
-				$meta_values = $meta_values->collapse();
-			}
-
-			$this->query->whereIn( $this->foreign_key, $meta_values->unique()->all() );
 		}
+
+		$append      = $this->should_append();
+		$meta_values = $models->map( fn ( $model ) => $model->get_meta( $this->local_key, ! $append ) )->filter();
+
+		if ( $append ) {
+			$meta_values = $meta_values->collapse();
+		}
+
+		$this->query->whereIn( $this->foreign_key, $meta_values->unique()->all() );
 	}
 
 	/**
@@ -156,11 +151,12 @@ class Belongs_To extends Relation {
 
 		if ( $this->uses_terms ) {
 			$set = wp_set_post_terms( $this->parent->id(), [ $this->get_term_for_relationship( $model ) ], static::RELATION_TAXONOMY, $append );
-
 			if ( is_wp_error( $set ) ) {
-				throw new Model_Exception( "Error associating term relationship for [{$this->parent->id()}]: [{$set->get_error_message()}]" );
-			} elseif ( false === $set ) {
-				throw new Model_Exception( "Unknown error associating term relationship for [{$this->parent->id()}]" );
+							throw new Model_Exception( "Error associating term relationship for [{$this->parent->id()}]: [{$set->get_error_message()}]" );
+			}
+
+			if ( false === $set ) {
+																throw new Model_Exception( "Unknown error associating term relationship for [{$this->parent->id()}]" );
 			}
 		} elseif ( $append ) {
 			$this->parent->add_meta( $this->local_key, $model->id() );

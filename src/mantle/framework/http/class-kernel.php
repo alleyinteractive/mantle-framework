@@ -108,9 +108,9 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 			if ( $response instanceof Response ) {
 				$response->send();
 				exit;
-			} else {
-				\wp_die( 'Error booting HTTP Kernel: ' . $e->getMessage() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			}
+
+			\wp_die( 'Error booting HTTP Kernel: ' . $e->getMessage() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
 		if ( did_action( 'parse_request' ) ) {

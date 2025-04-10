@@ -34,13 +34,13 @@ trait Loads_Environment_Variables {
 				$kernel->log( __( 'The Mantle environment file is invalid!', 'mantle' ) );
 				$kernel->log( $e->getMessage() );
 				exit( 1 );
-			} else {
-				// Because this runs so early, the configuration hasn't been loaded and we
-				// can't have a fancy error message.
-				esc_html_e( 'The Mantle environment file is invalid!', 'mantle' );
-				echo esc_html( PHP_EOL . $e->getMessage() );
-				exit( 1 );
 			}
+
+			// Because this runs so early, the configuration hasn't been loaded and we
+			// can't have a fancy error message.
+			esc_html_e( 'The Mantle environment file is invalid!', 'mantle' );
+			echo esc_html( PHP_EOL . $e->getMessage() );
+			exit( 1 );
 		}
 	}
 

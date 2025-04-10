@@ -11,7 +11,6 @@ use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
 use Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchExprVariableRector;
 
 use Rector\EarlyReturn\Rector\If_\ChangeOrIfContinueToMultiContinueRector;
-use Rector\EarlyReturn\Rector\If_\RemoveAlwaysElseRector;
 use Rector\EarlyReturn\Rector\Return_\ReturnBinaryOrToEarlyReturnRector;
 use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
@@ -78,7 +77,6 @@ return RectorConfig::configure()
 		StrContainsRector::class,
 		AddArrowFunctionReturnTypeRector::class,
 		ChangeOrIfContinueToMultiContinueRector::class,
-		// RemoveAlwaysElseRector::class,
 		EmptyOnNullableObjectToInstanceOfRector::class,
 		ReturnBinaryOrToEarlyReturnRector::class => [
 			__DIR__ . '/src/mantle/http-client/class-response.php',

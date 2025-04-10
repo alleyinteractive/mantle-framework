@@ -165,9 +165,9 @@ trait Route_Group {
 
 		if ( $prepend_existing_prefix ) {
 			return isset( $new['prefix'] ) ? trim( (string) $old, '/' ) . '/' . trim( (string) $new['prefix'], '/' ) : $old;
-		} else {
-			return isset( $new['prefix'] ) ? trim( (string) $new['prefix'], '/' ) . '/' . trim( (string) $old, '/' ) : $old;
 		}
+
+		return isset( $new['prefix'] ) ? trim( (string) $new['prefix'], '/' ) . '/' . trim( (string) $old, '/' ) : $old;
 	}
 
 	/**

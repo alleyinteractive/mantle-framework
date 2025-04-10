@@ -289,10 +289,12 @@ abstract class Has_One_Or_Many extends Relation {
 			}
 
 			return $dictionary;
-		} elseif ( $this->is_term_post_relationship() ) {
-			// Term post relationships also always rely on the underlying term.
-			$dictionary = [];
+		}
 
+		// Post term relationships always rely on the underlying term.
+		if ( $this->is_term_post_relationship() ) {
+			// Term post relationships also always rely on the underlying term.
+			$dictionary    = [];
 			$post_term_ids = [];
 
 			foreach ( $results as $result ) {

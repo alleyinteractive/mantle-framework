@@ -625,8 +625,8 @@ class Filesystem_Adapter implements Filesystem {
 	 */
 	public function temporary_url( string $path, $expiration, array $options = [] ): string {
 		return match ( true ) {
-			method_exists( $this->adapter, 'getTemporaryUrl' ) => $this->get_temporary_url( $path, $expiration, $options ),
-			method_exists( $this->adapter, 'get_temporary_url' ) => $this->get_temporary_url( $path, $expiration, $options ),
+			method_exists( $this->adapter, 'getTemporaryUrl' ) => $this->adapter->getTemporaryUrl( $path, $expiration, $options ),
+			method_exists( $this->adapter, 'get_temporary_url' ) => $this->adapter->get_temporary_url( $path, $expiration, $options ),
 			default => throw new RuntimeException( 'This driver does not support creating temporary URLs.' ),
 		};
 	}

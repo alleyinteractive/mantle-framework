@@ -35,11 +35,12 @@ trait Conditionable {
 		if ( func_num_args() === 1 ) {
 				return new Higher_Order_When_Proxy( $this, $value );
 		}
-
 		if ( $value ) {
-			return $callback( $this, $value ) ?? $this;
-		} elseif ( $default ) {
-			return $default( $this, $value ) ?? $this;
+						return $callback( $this, $value ) ?? $this;
+		}
+
+		if ( $default ) {
+												return $default( $this, $value ) ?? $this;
 		}
 
 		return $this;
@@ -62,11 +63,12 @@ trait Conditionable {
 		if ( func_num_args() === 1 ) {
 			return new Higher_Order_When_Proxy( $this, ! $value );
 		}
-
 		if ( ! $value ) {
-			return $callback( $this, $value ) ?? $this;
-		} elseif ( $default ) {
-			return $default( $this, $value ) ?? $this;
+						return $callback( $this, $value ) ?? $this;
+		}
+
+		if ( $default ) {
+												return $default( $this, $value ) ?? $this;
 		}
 
 		return $this;

@@ -68,9 +68,9 @@ class Config_Clear_Command extends Command {
 		if ( $this->files->delete( $path ) ) {
 			$this->success( 'Config cache file deleted.' );
 			return Command::SUCCESS;
-		} else {
-			$this->error( 'File not deleted.' );
-			return Command::FAILURE;
 		}
+
+		$this->error( 'File not deleted.' );
+		return Command::FAILURE;
 	}
 }
