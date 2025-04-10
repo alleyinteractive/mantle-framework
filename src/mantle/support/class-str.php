@@ -550,7 +550,7 @@ class Str {
 	public static function match( $pattern, $subject ): string {
 		preg_match( $pattern, $subject, $matches );
 
-		if ( ! $matches ) {
+		if ( $matches === [] ) {
 			return '';
 		}
 

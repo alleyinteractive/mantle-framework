@@ -392,7 +392,7 @@ class Filesystem_Adapter implements Filesystem {
 			$contents instanceof File
 			|| $contents instanceof Uploaded_File
 		) {
-			return $this->put_file( $path, $contents, $options ) ? true : false;
+			return (bool) $this->put_file( $path, $contents, $options );
 		}
 
 		if ( $contents instanceof StreamInterface ) {

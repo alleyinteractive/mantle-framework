@@ -43,11 +43,7 @@ class Network_Factory extends Factory {
 	public function create( array $args = [] ): ?int {
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-		if ( ! isset( $args['user'] ) ) {
-			$email = $this->faker->email();
-		} else {
-			$email = get_userdata( $args['user'] )->user_email;
-		}
+		$email = ! isset( $args['user'] ) ? $this->faker->email() : get_userdata( $args['user'] )->user_email;
 
 		$args = array_merge(
 			[

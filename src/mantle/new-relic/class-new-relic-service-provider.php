@@ -125,11 +125,7 @@ class New_Relic_Service_Provider extends Service_Provider {
 		switch ( true ) {
 			case is_feed():
 				$feed_type = get_query_var( 'feed' );
-				if ( 'feed' !== $feed_type ) {
-					$name = "feed.{$feed_type}";
-				} else {
-					$name = 'feed';
-				}
+				$name      = 'feed' !== $feed_type ? "feed.{$feed_type}" : 'feed';
 
 				newrelic_add_custom_parameter( 'feed', 'true' );
 				break;

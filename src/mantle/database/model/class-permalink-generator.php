@@ -81,7 +81,7 @@ class Permalink_Generator implements \Stringable {
 	 * Set the attributes for the generator.
 	 */
 	protected function set_attributes(): void {
-		if ( $this->model ) {
+		if ( $this->model instanceof \Mantle\Database\Model\Model ) {
 			foreach ( $this->model->get_attributes() as $attribute => $value ) {
 				$this->set_attribute( $attribute, $value );
 			}

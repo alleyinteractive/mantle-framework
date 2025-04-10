@@ -100,7 +100,7 @@ abstract class Facade {
 			return static::$resolved_instances[ $name ];
 		}
 
-		if ( static::$app ) {
+		if ( static::$app instanceof \Mantle\Contracts\Application ) {
 			static::$resolved_instances[ $name ] = static::$app[ $name ];
 			return static::$resolved_instances[ $name ];
 		}

@@ -51,11 +51,7 @@ trait Term_Events {
 			}
 
 			// Use the term object passed from the action for 'deleting'.
-			if ( 'deleted' === $event && $term ) {
-				$model = static::new_from_existing( (array) $term );
-			} else {
-				$model = static::find( $term_id );
-			}
+			$model = 'deleted' === $event && $term ? static::new_from_existing( (array) $term ) : static::find( $term_id );
 
 			if ( $model ) {
 				$model->fire_model_event( $event );

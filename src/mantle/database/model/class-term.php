@@ -216,7 +216,7 @@ PHP
 	public function core_object(): ?\WP_Term {
 		$id = $this->id();
 
-		if ( $id ) {
+		if ( $id !== 0 ) {
 			return Helpers\get_term_object( $id );
 		}
 

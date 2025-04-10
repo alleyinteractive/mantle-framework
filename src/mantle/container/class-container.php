@@ -576,11 +576,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 		// We're ready to instantiate an instance of the concrete type registered for
 		// the binding. This will instantiate the types, as well as resolve any of
 		// its "nested" dependencies recursively until all have gotten resolved.
-		if ( $this->is_buildable( $concrete, $abstract ) ) {
-			$object = $this->build( $concrete );
-		} else {
-			$object = $this->make( $concrete );
-		}
+		$object = $this->is_buildable( $concrete, $abstract ) ? $this->build( $concrete ) : $this->make( $concrete );
 
 		// If we defined any extenders for this type, we'll need to spin through them
 		// and apply them to the object being built. This allows for the extension

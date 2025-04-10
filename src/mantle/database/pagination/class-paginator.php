@@ -167,11 +167,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 * @param int $current_page Current page to set, optional.
 	 */
 	public function set_current_page( ?int $current_page = null ): static {
-		if ( $current_page && $current_page > 0 ) {
-			$this->current_page = $current_page;
-		} else {
-			$this->current_page = static::resolve_current_page();
-		}
+		$this->current_page = $current_page && $current_page > 0 ? $current_page : static::resolve_current_page();
 
 		$this->builder->page( $this->current_page );
 		return $this;

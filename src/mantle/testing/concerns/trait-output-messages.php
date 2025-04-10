@@ -107,13 +107,7 @@ trait Output_Messages {
 		// Attempt to find the trace with the '_doing_it_wrong' function call.
 		$function_call_index = $frames
 			->filter(
-				fn ( array $item ) => in_array(
-					$item['function'],
-					[
-						'_doing_it_wrong',
-					],
-					true,
-				)
+				fn ( array $item ) => $item['function'] === '_doing_it_wrong'
 			)
 			->keys()
 			->first();

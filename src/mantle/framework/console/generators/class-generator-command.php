@@ -154,11 +154,7 @@ abstract class Generator_Command extends Command {
 
 		array_pop( $parts );
 
-		if ( ! empty( $parts ) ) {
-			$parts = strtolower( str_replace( '_', '-', join( '/', $parts ) ) ) . '/';
-		} else {
-			$parts = '';
-		}
+		$parts = ! empty( $parts ) ? strtolower( str_replace( '_', '-', implode( '/', $parts ) ) ) . '/' : '';
 
 		$parts = array_merge(
 			[

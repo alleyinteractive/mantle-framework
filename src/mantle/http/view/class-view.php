@@ -172,11 +172,7 @@ class View implements \Stringable {
 
 		$this->preserve_post();
 
-		if ( $this->post instanceof Post ) {
-			$post = \get_post( $this->post->id() );
-		} else {
-			$post = \get_post( $this->post );
-		}
+		$post = $this->post instanceof Post ? \get_post( $this->post->id() ) : \get_post( $this->post );
 
 		\setup_postdata( $post );
 	}

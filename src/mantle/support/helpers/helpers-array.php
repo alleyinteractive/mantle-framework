@@ -84,7 +84,7 @@ function data_set( mixed &$target, string|array $key, mixed $value, bool $overwr
 			$target = [];
 		}
 
-		if ( $segments ) {
+		if ( $segments !== [] ) {
 			foreach ( $target as &$inner ) {
 				data_set( $inner, $segments, $value, $overwrite );
 			}
@@ -94,7 +94,7 @@ function data_set( mixed &$target, string|array $key, mixed $value, bool $overwr
 			}
 		}
 	} elseif ( Support\Arr::accessible( $target ) ) {
-		if ( $segments ) {
+		if ( $segments !== [] ) {
 			if ( ! Support\Arr::exists( $target, $segment ) ) {
 				$target[ $segment ] = [];
 			}
@@ -104,7 +104,7 @@ function data_set( mixed &$target, string|array $key, mixed $value, bool $overwr
 			$target[ $segment ] = $value;
 		}
 	} elseif ( is_object( $target ) ) {
-		if ( $segments ) {
+		if ( $segments !== [] ) {
 			if ( ! isset( $target->{$segment} ) ) {
 				$target->{$segment} = [];
 			}
@@ -116,7 +116,7 @@ function data_set( mixed &$target, string|array $key, mixed $value, bool $overwr
 	} else {
 		$target = [];
 
-		if ( $segments ) {
+		if ( $segments !== [] ) {
 			data_set( $target[ $segment ], $segments, $value, $overwrite );
 		} elseif ( $overwrite ) {
 			$target[ $segment ] = $value;

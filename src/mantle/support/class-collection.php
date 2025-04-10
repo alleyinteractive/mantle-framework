@@ -153,7 +153,7 @@ class Collection implements ArrayAccess, Enumerable {
 
 		$middle = (int) ( $count / 2 );
 
-		if ( $count % 2 ) {
+		if ( $count % 2 !== 0 ) {
 			return $values->get( $middle );
 		}
 
@@ -1138,7 +1138,7 @@ class Collection implements ArrayAccess, Enumerable {
 				$size++;
 			}
 
-			if ( $size ) {
+			if ( $size !== 0.0 ) {
 				$groups->push( new static( array_slice( $this->items, $start, (int) $size ) ) );
 
 				$start += $size;

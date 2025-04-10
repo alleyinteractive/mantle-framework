@@ -141,11 +141,7 @@ class Post_Query_Builder extends Builder {
 			fn () => $query->query( $this->get_query_args() ),
 		);
 
-		if ( empty( $query->found_posts ) && count( $query->posts ) > 0 ) {
-			$this->found_rows = null;
-		} else {
-			$this->found_rows = $query->found_posts;
-		}
+		$this->found_rows = empty( $query->found_posts ) && count( $query->posts ) > 0 ? null : $query->found_posts;
 
 		$post_ids = $query->posts;
 

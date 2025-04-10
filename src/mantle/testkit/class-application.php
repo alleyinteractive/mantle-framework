@@ -141,7 +141,7 @@ class Application extends Container implements Application_Contract {
 	 * @param string $path Path to append.
 	 */
 	public function get_base_path( string $path = '' ): string {
-		return $this->base_path . ( $path ? DIRECTORY_SEPARATOR . $path : '' );
+		return $this->base_path . ( $path !== '' && $path !== '0' ? DIRECTORY_SEPARATOR . $path : '' );
 	}
 
 	/**
@@ -152,7 +152,7 @@ class Application extends Container implements Application_Contract {
 	public function get_app_path( string $path = '' ): string {
 		$app_path = $this->app_path ?: $this->get_base_path( 'app' );
 
-		return $app_path . ( $path ? DIRECTORY_SEPARATOR . $path : $path );
+		return $app_path . ( $path !== '' && $path !== '0' ? DIRECTORY_SEPARATOR . $path : $path );
 	}
 
 	/**
@@ -201,7 +201,7 @@ class Application extends Container implements Application_Contract {
 	 * @param string $path Path to append.
 	 */
 	public function get_root_url( string $path = '' ): string {
-		return $this->root_url . ( $path ? DIRECTORY_SEPARATOR . $path : '' );
+		return $this->root_url . ( $path !== '' && $path !== '0' ? DIRECTORY_SEPARATOR . $path : '' );
 	}
 
 	/**

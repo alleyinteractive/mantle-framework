@@ -20,7 +20,7 @@ function invalid_hook_removal( $args ): void {
 
 	$function_name = get_callable_fqn( $callable );
 
-	if ( $function_name ) {
+	if ( $function_name !== '' && $function_name !== '0' ) {
 		\_doing_it_wrong(
 			__FUNCTION__,
 			\esc_html(
@@ -35,7 +35,7 @@ function invalid_hook_removal( $args ): void {
 		);
 	}
 
-	if ( ! $function_name ) {
+	if ( $function_name === '' || $function_name === '0' ) {
 		\_doing_it_wrong(
 			__FUNCTION__,
 			\esc_html(

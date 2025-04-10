@@ -313,7 +313,7 @@ class Pending_Testable_Request {
 
 			$response = $kernel->send_request_through_router( $request );
 
-			if ( $response ) {
+			if ( $response instanceof \Symfony\Component\HttpFoundation\Response ) {
 				$response = new Test_Response(
 					$response->getContent(),
 					$response->getStatusCode(),

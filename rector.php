@@ -5,6 +5,7 @@
  * phpcs:disable
  */
 
+use Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
@@ -99,4 +100,7 @@ return RectorConfig::configure()
 			__DIR__ . '/src/mantle/support/class-collection.php',
 			__DIR__ . '/src/mantle/support/traits/trait-enumerates-values.php',
 		],
+		ExplicitBoolCompareRector::class => [
+			__DIR__ . '/src/mantle/database/model/class-post.php',
+		]
 	] );

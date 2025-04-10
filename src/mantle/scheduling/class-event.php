@@ -166,7 +166,7 @@ class Event {
 	protected function expression_passes(): bool {
 		$date = Carbon::now();
 
-		if ( $this->timezone ) {
+		if ( $this->timezone instanceof \DateTimeZone ) {
 			$date->setTimezone( $this->timezone );
 		}
 

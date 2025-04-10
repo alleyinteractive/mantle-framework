@@ -212,11 +212,7 @@ trait Interacts_With_IO {
 	 * @return mixed
 	 */
 	public function format_data( string $format, array $headers, $data ) {
-		if ( $data instanceof Arrayable ) {
-			$data = $data->to_array();
-		} else {
-			$data = (array) $data;
-		}
+		$data = $data instanceof Arrayable ? $data->to_array() : (array) $data;
 
 		return match ( $format ) {
 			'count'  => count( $data ),

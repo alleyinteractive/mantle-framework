@@ -82,11 +82,7 @@ abstract class Seeder {
 	 * @param  class-string $class Seeder class to resolve.
 	 */
 	protected function resolve( string $class ): Seeder {
-		if ( isset( $this->container ) ) {
-			$instance = $this->container->make( $class );
-		} else {
-			$instance = new $class();
-		}
+		$instance = isset( $this->container ) ? $this->container->make( $class ) : new $class();
 
 		if ( ! $instance instanceof Seeder ) {
 			throw new InvalidArgumentException( "Class [{$class}] must be an instance of " . self::class );

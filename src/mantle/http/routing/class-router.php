@@ -299,7 +299,7 @@ class Router implements Router_Contract {
 
 		$route = Route::get_route_from_match( $match );
 
-		if ( ! $route ) {
+		if ( ! $route instanceof \Mantle\Http\Routing\Route ) {
 			throw new HttpException( 500, 'Unknown route method: ' . \wp_json_encode( $match ) );
 		}
 
@@ -608,13 +608,13 @@ class Router implements Router_Contract {
 	public function rename_route( string $old_name, string $new_name ): static {
 		$old = $this->routes->get( $old_name );
 
-		if ( ! $old ) {
+		if ( ! $old instanceof \Symfony\Component\Routing\Route ) {
 			return $this;
 		}
 
 		$new = $this->routes->get( $new_name );
 
-		if ( $new ) {
+		if ( $new instanceof \Symfony\Component\Routing\Route ) {
 			throw new InvalidArgumentException( "Unable to rename route, name already taken. [{$old_name} => {$new_name}]" );
 		}
 

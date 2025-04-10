@@ -287,11 +287,7 @@ function tap( $value, $callback = null ) {
  */
 function throw_if( mixed $condition, string|Throwable $exception, ...$parameters ): mixed {
 	if ( $condition ) {
-		if ( is_string( $exception ) ) {
-			$e = new $exception( ...$parameters );
-		} else {
-			$e = $exception;
-		}
+		$e = is_string( $exception ) ? new $exception( ...$parameters ) : $exception;
 
 		throw $e;
 	}
@@ -311,11 +307,7 @@ function throw_if( mixed $condition, string|Throwable $exception, ...$parameters
  */
 function throw_unless( mixed $condition, string|Throwable $exception, ...$parameters ): mixed {
 	if ( ! $condition ) {
-		if ( is_string( $exception ) ) {
-			$e = new $exception( ...$parameters );
-		} else {
-			$e = $exception;
-		}
+		$e = is_string( $exception ) ? new $exception( ...$parameters ) : $exception;
 
 		throw $e;
 	}

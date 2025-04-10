@@ -240,14 +240,10 @@ class Pending_Request {
 	 * @param bool  $merge Merge the options with the existing options, default true.
 	 */
 	public function with_options( array $options, bool $merge = true ): static {
-		if ( $merge ) {
-			$this->options['options'] = array_merge(
-				$this->options['options'] ?? [],
-				$options
-			);
-		} else {
-			$this->options['options'] = $options;
-		}
+		$this->options['options'] = $merge ? array_merge(
+			$this->options['options'] ?? [],
+			$options
+		) : $options;
 
 		return $this;
 	}
