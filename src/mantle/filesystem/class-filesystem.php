@@ -63,7 +63,7 @@ class Filesystem {
 	 * @param  string $path
 	 * @return string
 	 */
-	public function shared_get( $path ) {
+	public function shared_get( $path ): string|false {
 		$contents = '';
 
 		$handle = fopen( $path, 'rb' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen

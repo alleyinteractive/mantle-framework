@@ -207,7 +207,7 @@ class Str {
 	 * @param  int    $index
 	 * @return string|false
 	 */
-	public static function char_at( $subject, $index ) {
+	public static function char_at( $subject, $index ): false|string {
 		$length = mb_strlen( $subject );
 
 		if ( $index < 0 ? $index < -$length : $index > $length - 1 ) {
@@ -925,7 +925,7 @@ class Str {
 	 * @param  bool                    $case_sensitive
 	 * @return string
 	 */
-	public static function replace( $search, $replace, $subject, bool $case_sensitive = true ) {
+	public static function replace( $search, $replace, $subject, bool $case_sensitive = true ): string|array {
 		if ( $search instanceof Traversable ) {
 			$search = collect( $search )->all();
 		}
@@ -997,7 +997,7 @@ class Str {
 	 * @param  bool                    $case_sensitive
 	 * @return string
 	 */
-	public static function remove( $search, $subject, bool $case_sensitive = true ) {
+	public static function remove( $search, $subject, bool $case_sensitive = true ): string|array {
 		if ( $search instanceof Traversable ) {
 			$search = collect( $search )->all();
 		}

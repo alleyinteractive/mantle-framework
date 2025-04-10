@@ -20,6 +20,7 @@ use Mantle\Support\Higher_Order_Tap_Proxy;
 use Mantle\Support\HTML;
 use Mantle\Support\Str;
 use Mantle\Support\Stringable;
+use Throwable;
 
 /**
  * Determine if the given value is "blank".
@@ -282,11 +283,9 @@ function tap( $value, $callback = null ) {
  * @param \Throwable|class-string<\Throwable> $exception Exception to throw.
  * @param array                               ...$parameters Params to pass to a new $exception if
  *                                         $exception is a string (classname).
- *
- * @return mixed
  * @throws \Throwable `$exception` is thrown if `$condition` is not met.
  */
-function throw_if( $condition, $exception, ...$parameters ) {
+function throw_if( mixed $condition, string|Throwable $exception, ...$parameters ): mixed {
 	if ( $condition ) {
 		if ( is_string( $exception ) ) {
 			$e = new $exception( ...$parameters );
@@ -308,10 +307,9 @@ function throw_if( $condition, $exception, ...$parameters ) {
  * @param array             ...$parameters Params to pass to a new $exception if
  *                                         $exception is a string (classname).
  *
- * @return mixed
  * @throws \Throwable `$exception` is thrown unless `$condition` is not met.
  */
-function throw_unless( $condition, $exception, ...$parameters ) {
+function throw_unless( mixed $condition, string|Throwable $exception, ...$parameters ): mixed {
 	if ( ! $condition ) {
 		if ( is_string( $exception ) ) {
 			$e = new $exception( ...$parameters );
@@ -328,11 +326,11 @@ function throw_unless( $condition, $exception, ...$parameters ) {
 /**
  * Returns all traits used by a trait and its traits.
  *
- * @param string $trait Trait to check.
+ * @param class-string $trait Trait to check.
  *
- * @return array
+ * @return array<string>
  */
-function trait_uses_recursive( $trait ) {
+function trait_uses_recursive( string $trait ): array|false {
 	$traits = class_uses( $trait );
 
 	foreach ( $traits as $trait ) {
@@ -353,7 +351,7 @@ function trait_uses_recursive( $trait ) {
  *
  * @return mixed|null
  */
-function transform( $value, callable $callback, $default = null ) {
+function transform( mixed $value, callable $callback, $default = null ): mixed {
 	if ( filled( $value ) ) {
 		return $callback( $value );
 	}
@@ -370,10 +368,8 @@ function transform( $value, callable $callback, $default = null ) {
  *
  * @param mixed         $value Value to return.
  * @param callable|null $callback Callable to pass `$value` through.
- *
- * @return mixed
  */
-function with( mixed $value, ?callable $callback = null ) {
+function with( mixed $value, ?callable $callback = null ): mixed {
 	return is_null( $callback ) ? $value : $callback( $value );
 }
 
@@ -425,6 +421,15 @@ function the_classnames( ...$args ): void {
 }
 
 /**
+ * Create a new HTML instance.
+ *
+ * @param string $html The HTML string to test.
+ */
+function html_string( string $html ): HTML {
+	return new HTML( $html );
+}
+
+/**
  * Capture the output of a callback.
  *
  * @param callable $callback
@@ -471,9 +476,8 @@ function add_filter( string $hook, callable $callable, int $priority = 10 ): voi
  * @param  string|object  $event Event object.
  * @param  mixed  $payload Event payload.
  * @param  bool  $halt Flag if the event should halt on a returned value.
- * @return array|null
  */
-function event( ...$args ) {
+function event( ...$args ): mixed {
 	return Container::get_instance()->make( 'events' )->dispatch( ...$args );
 }
 
@@ -569,13 +573,4 @@ function defer( callable $callback ): void {
 	}
 
 	app()->terminating( $callback );
-}
-
-/**
- * Create a new HTML instance.
- *
- * @param string $html The HTML string to test.
- */
-function html_string( string $html ): HTML {
-	return new HTML( $html );
 }

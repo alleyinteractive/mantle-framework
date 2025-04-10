@@ -22,9 +22,8 @@ class Middleware_Name_Resolver {
 	 * @param  \Closure|string $name
 	 * @param  array           $map
 	 * @param  array           $middleware_groups
-	 * @return \Closure|string|array
 	 */
-	public static function resolve( $name, $map, $middleware_groups ) {
+	public static function resolve( $name, $map, $middleware_groups ): \Closure|array|string {
 		// When the middleware is simply a Closure, we will return this Closure instance
 		// directly so that Closures can be registered as middleware inline, which is
 		// convenient on occasions when the developers are experimenting with them.

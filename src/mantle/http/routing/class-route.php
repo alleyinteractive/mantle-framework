@@ -186,7 +186,7 @@ class Route extends Symfony_Route {
 	 * @param  array|string|null $middleware Middleware to set, optional.
 	 * @return static|array
 	 */
-	public function middleware( $middleware = null ) {
+	public function middleware( $middleware = null ): array|self {
 		if ( is_null( $middleware ) ) {
 			return (array) ( $this->action['middleware'] ?? [] );
 		}
