@@ -686,7 +686,7 @@ class Test_Response {
 	 * @param  string $path
 	 * @param  mixed  $expect
 	 */
-	public function assertJsonPath( $path, $expect ): static {
+	public function assertJsonPath( string $path, $expect ): static {
 		$this->decoded_json()->assertPath( $path, $expect );
 
 		return $this;
@@ -808,9 +808,8 @@ class Test_Response {
 	 * Return the decoded response JSON.
 	 *
 	 * @param string|null $key Key to retrieve, optional.
-	 * @return mixed
 	 */
-	public function json( ?string $key = null ) {
+	public function json( ?string $key = null ): mixed {
 		return $this->decoded_json()->json( $key );
 	}
 
