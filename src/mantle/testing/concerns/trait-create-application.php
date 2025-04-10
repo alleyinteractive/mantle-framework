@@ -91,7 +91,7 @@ trait Create_Application {
 	 * @param Application $app Application instance.
 	 * @return array
 	 */
-	protected function get_application_providers( $app ) {
+	protected function get_application_providers( Application $app ) {
 		return $app['config']['app.providers'];
 	}
 

@@ -183,7 +183,7 @@ class Filesystem {
 	 * @param  string $data
 	 * @return int
 	 */
-	public function prepend( $path, $data ): int|false {
+	public function prepend( $path, string $data ): int|false {
 		if ( $this->exists( $path ) ) {
 			return $this->put( $path, $data . $this->get( $path ) );
 		}

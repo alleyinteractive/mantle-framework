@@ -44,11 +44,11 @@ return RectorConfig::configure()
 	->withIndent( "\t" )
 	->withPaths( [ __DIR__ . '/src' ] )
 	->withPreparedSets(
-		earlyReturn: true,
 		deadCode: true,
+		earlyReturn: true,
 		instanceOf: true,
+		typeDeclarations: true,
 	)
-	->withTypeCoverageLevel( 45 ) // Out of 49.
 	->withRules(
 		[
 			RenameForeachValueVariableToMatchExprVariableRector::class,

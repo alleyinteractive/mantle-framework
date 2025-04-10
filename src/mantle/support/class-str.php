@@ -320,7 +320,7 @@ class Str {
 	 * @param  string $cap
 	 * @return string
 	 */
-	public static function finish( $value, $cap ) {
+	public static function finish( $value, string $cap ) {
 		$quoted = preg_quote( $cap, '/' );
 
 		return preg_replace( '/(?:' . $quoted . ')+$/u', '', $value ) . $cap;
@@ -333,7 +333,7 @@ class Str {
 	 * @param  string      $before
 	 * @param  string|null $after
 	 */
-	public static function wrap( $value, $before, $after = null ): string {
+	public static function wrap( string $value, string $before, $after = null ): string {
 		return $before . $value . ( $after ??= $before );
 	}
 
@@ -442,7 +442,7 @@ class Str {
 	 * @param  string $end
 	 * @return string
 	 */
-	public static function limit( $value, $limit = 100, $end = '...' ) {
+	public static function limit( $value, $limit = 100, string $end = '...' ) {
 		if ( mb_strwidth( $value, 'UTF-8' ) <= $limit ) {
 			return $value;
 		}
@@ -467,7 +467,7 @@ class Str {
 	 * @param  string $end
 	 * @return string
 	 */
-	public static function words( $value, $words = 100, $end = '...' ) {
+	public static function words( $value, $words = 100, string $end = '...' ) {
 		preg_match( '/^\s*+(?:\S++\s*+){1,' . $words . '}/u', $value, $matches );
 
 		if ( ! isset( $matches[0] ) || static::length( $value ) === static::length( $matches[0] ) ) {
@@ -604,7 +604,7 @@ class Str {
 	 * @param  int    $length
 	 * @param  string $pad
 	 */
-	public static function pad_both( $value, $length, $pad = ' ' ): string {
+	public static function pad_both( string $value, $length, $pad = ' ' ): string {
 		$short       = max( 0, $length - mb_strlen( $value ) );
 		$short_left  = (int) floor( $short / 2 );
 		$short_right = (int) ceil( $short / 2 );
@@ -621,7 +621,7 @@ class Str {
 	 * @param  int    $length
 	 * @param  string $pad
 	 */
-	public static function pad_left( $value, $length, $pad = ' ' ): string {
+	public static function pad_left( string $value, $length, $pad = ' ' ): string {
 		$short = max( 0, $length - mb_strlen( $value ) );
 
 		return mb_substr( str_repeat( $pad, $short ), 0, $short ) . $value;
@@ -634,7 +634,7 @@ class Str {
 	 * @param  int    $length
 	 * @param  string $pad
 	 */
-	public static function pad_right( $value, $length, $pad = ' ' ): string {
+	public static function pad_right( string $value, $length, $pad = ' ' ): string {
 		$short = max( 0, $length - mb_strlen( $value ) );
 
 		return $value . mb_substr( str_repeat( $pad, $short ), 0, $short );
@@ -1015,7 +1015,7 @@ class Str {
 	 * @param  string $prefix
 	 * @return string
 	 */
-	public static function start( $value, $prefix ) {
+	public static function start( $value, string $prefix ) {
 		$quoted = preg_quote( $prefix, '/' );
 
 		return $prefix . preg_replace( '/^(?:' . $quoted . ')+/u', '', $value );
@@ -1104,7 +1104,7 @@ class Str {
 	 * @param  string $delimiter
 	 * @return string
 	 */
-	public static function snake( $value, $delimiter = '_' ) {
+	public static function snake( $value, string $delimiter = '_' ) {
 		$key = $value;
 
 		if ( isset( static::$snake_cache[ $key ][ $delimiter ] ) ) {

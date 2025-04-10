@@ -84,9 +84,8 @@ class Query_Monitor_Service_Provider extends Service_Provider {
 	 * Register the output class.
 	 *
 	 * @param array $output Output classes.
-	 * @return array
 	 */
-	public function output( $output ) {
+	public function output( array $output ): array {
 		$collector = QM_Collectors::get( 'mantle' );
 
 		if ( $collector ) {

@@ -63,7 +63,7 @@ class Routing_Service_Provider extends Service_Provider {
 	protected function register_url_generator() {
 		$this->app->singleton(
 			'url',
-			function ( $app ): \Mantle\Http\Routing\Url_Generator {
+			function ( \Mantle\Contracts\Application $app ): \Mantle\Http\Routing\Url_Generator {
 				$routes = $app['router']->get_routes();
 				$routes = $app->instance( 'routes', $routes );
 
