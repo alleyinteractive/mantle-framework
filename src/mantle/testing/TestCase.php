@@ -157,7 +157,7 @@ abstract class TestCase extends BaseTestCase {
 
 		parent::setUp();
 
-		if ( ! isset( $this->app ) ) {
+		if ( $this->app === null ) {
 			$this->refresh_application();
 		}
 

@@ -35,7 +35,7 @@ trait Element_Assertions {
 		$nodes = ( new DOMXPath( $this->get_internal_dom_document() ) )->query( $expression );
 
 		PHPUnit::assertTrue(
-			! $nodes ? false : $nodes->length > 0,
+			$nodes && $nodes->length > 0,
 			$message ?? 'Element not found for expression: ' . $expression,
 		);
 

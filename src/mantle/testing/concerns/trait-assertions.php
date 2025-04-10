@@ -534,14 +534,14 @@ trait Assertions {
 				}
 
 				// Convert an enum object to its value.
-				if ( is_object( $value ) && $value instanceof BackedEnum ) {
+				if ( $value instanceof BackedEnum ) {
 					$arguments[ $key ] = $value->value;
 				}
 
 				// Convert an array of enum objects to an array of their values.
 				if ( is_array( $value ) ) {
 					$arguments[ $key ] = array_map(
-						fn ( $item ) => is_object( $item ) && $item instanceof BackedEnum ? $item->value : $item,
+						fn ( $item ) => $item instanceof BackedEnum ? $item->value : $item,
 						$value,
 					);
 				}

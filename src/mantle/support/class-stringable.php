@@ -258,7 +258,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 
 		$segments = preg_split( $pattern, $this->value, $limit, $flags );
 
-		return ! empty( $segments ) ? collect( $segments ) : collect();
+		return empty( $segments ) ? collect() : collect( $segments );
 	}
 
 	/**

@@ -263,7 +263,7 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	 * @param string $message Message to log.
 	 */
 	public function log( string $message ): void {
-		if ( isset( $this->output ) ) {
+		if ( $this->output instanceof \Symfony\Component\Console\Output\OutputInterface ) {
 			$this->output->writeln( $message );
 		}
 	}

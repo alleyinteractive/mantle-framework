@@ -186,7 +186,7 @@ class Router implements Router_Contract {
 	 */
 	public function add_route( array $methods, string $uri, $action ): ?Route {
 		// Send the route to the REST Registrar if set.
-		if ( isset( $this->rest_registrar ) ) {
+		if ( $this->rest_registrar instanceof \Mantle\Http\Routing\Rest_Route_Registrar ) {
 			$this->create_rest_api_route( $methods, $uri, $action );
 
 			return null;

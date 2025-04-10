@@ -5,6 +5,7 @@
  * phpcs:disable
  */
 
+use Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector;
 use Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
@@ -18,6 +19,7 @@ use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\Php80\Rector\NotIdentical\StrContainsRector;
 use Rector\Php81\Rector\Array_\FirstClassCallableRector;
 use Rector\Php84\Rector\Param\ExplicitNullableParamTypeRector;
+use Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector;
 use Rector\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnNullableTypeRector;
@@ -46,12 +48,13 @@ return RectorConfig::configure()
 	->withPaths( [ __DIR__ . '/src' ] )
 	->withPreparedSets(
 		deadCode: true,
+		codeQuality: true,
 		earlyReturn: true,
 		instanceOf: true,
 		typeDeclarations: true,
 	)
 	// ->withCodingStyleLevel( 1 ) // Out of 25.
-	->withCodeQualityLevel( 40 ) // Out of 71.
+	// ->withCodeQualityLevel( 40 ) // Out of 71.
 	->withRules(
 		[
 			RenameForeachValueVariableToMatchExprVariableRector::class,
@@ -105,5 +108,7 @@ return RectorConfig::configure()
 		],
 		ExplicitBoolCompareRector::class => [
 			__DIR__ . '/src/mantle/database/model/class-post.php',
-		]
+		],
+		SimplifyEmptyCheckOnEmptyArrayRector::class,
+		DisallowedEmptyRuleFixerRector::class,
 	] );

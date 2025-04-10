@@ -181,7 +181,7 @@ class Mock_Http_Response implements Arrayable {
 	 */
 	public function with_json( $payload ): Mock_Http_Response {
 		return $this
-			->with_body( ! is_string( $payload ) ? wp_json_encode( $payload ) : $payload )
+			->with_body( is_string( $payload ) ? $payload : wp_json_encode( $payload ) )
 			->with_header( 'Content-Type', 'application/json' );
 	}
 

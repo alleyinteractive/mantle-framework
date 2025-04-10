@@ -546,7 +546,7 @@ class Pending_Request {
 		return $this->send(
 			Http_Method::GET,
 			$url,
-			! is_null( $query ) ? [ 'query' => $query ] : [],
+			is_null( $query ) ? [] : [ 'query' => $query ],
 		);
 	}
 
@@ -566,7 +566,7 @@ class Pending_Request {
 		return $this->send(
 			Http_Method::HEAD,
 			$url,
-			! is_null( $query ) ? [ 'query' => $query ] : [],
+			is_null( $query ) ? [] : [ 'query' => $query ],
 		);
 	}
 
@@ -586,7 +586,7 @@ class Pending_Request {
 		return $this->send(
 			Http_Method::POST,
 			$url,
-			! is_null( $data ) ? [ $this->body_format => $data ] : [],
+			is_null( $data ) ? [] : [ $this->body_format => $data ],
 		);
 	}
 
@@ -606,7 +606,7 @@ class Pending_Request {
 		return $this->send(
 			Http_Method::PATCH,
 			$url,
-			! is_null( $data ) ? [ $this->body_format => $data ] : [],
+			is_null( $data ) ? [] : [ $this->body_format => $data ],
 		);
 	}
 
@@ -626,7 +626,7 @@ class Pending_Request {
 		return $this->send(
 			Http_Method::PUT,
 			$url,
-			! is_null( $data ) ? [ $this->body_format => $data ] : [],
+			is_null( $data ) ? [] : [ $this->body_format => $data ],
 		);
 	}
 
@@ -646,7 +646,7 @@ class Pending_Request {
 		return $this->send(
 			Http_Method::DELETE,
 			$url,
-			! is_null( $data ) ? [ $this->body_format => $data ] : [],
+			is_null( $data ) ? [] : [ $this->body_format => $data ],
 		);
 	}
 

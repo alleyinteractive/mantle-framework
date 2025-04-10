@@ -144,7 +144,7 @@ class Expectation {
 			}
 
 			// Compare the return value of the hook.
-			if ( isset( $this->return_value_callback ) ) {
+			if ( $this->return_value_callback !== null ) {
 				foreach ( $this->record_stop as $record ) {
 					PHPUnit::assertTrue(
 						call_user_func_array( $this->return_value_callback, $record ),

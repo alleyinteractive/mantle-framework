@@ -71,9 +71,9 @@ trait Block_Assertions {
 					'name'  => $block_name,
 				],
 			),
-			! empty( $attrs )
-				? "Failed asserting that string has block [{$block_name}] with attributes " . print_r( $attrs, true )
-				: "Failed asserting that string has block [{$block_name}]."
+			empty( $attrs )
+				? "Failed asserting that string has block [{$block_name}]."
+				: "Failed asserting that string has block [{$block_name}] with attributes " . print_r( $attrs, true )
 		);
 	}
 
@@ -93,9 +93,9 @@ trait Block_Assertions {
 					'name'  => $block_name,
 				],
 			),
-			! empty( $attrs )
-				? "Failed asserting that string does not have block [{$block_name}] with attributes " . print_r( $attrs, true )
-				: "Failed asserting that string does not have block [{$block_name}]",
+			empty( $attrs )
+				? "Failed asserting that string does not have block [{$block_name}]"
+				: "Failed asserting that string does not have block [{$block_name}] with attributes " . print_r( $attrs, true ),
 		);
 	}
 

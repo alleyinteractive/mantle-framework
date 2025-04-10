@@ -78,21 +78,22 @@ class Parser {
 	 */
 	protected static function parse_argument( $token ): \Symfony\Component\Console\Input\InputArgument {
 		[$token, $description] = static::extract_description( $token );
-
-		switch ( true ) {
-			case str_ends_with( (string) $token, '?*' ):
-				return new InputArgument( trim( (string) $token, '?*' ), InputArgument::IS_ARRAY, $description );
-			case str_ends_with( (string) $token, '*' ):
-				return new InputArgument( trim( (string) $token, '*' ), InputArgument::IS_ARRAY | InputArgument::REQUIRED, $description );
-			case str_ends_with( (string) $token, '?' ):
-				return new InputArgument( trim( (string) $token, '?' ), InputArgument::OPTIONAL, $description );
-			case preg_match( '/(.+)\=\*(.+)/', (string) $token, $matches ):
-				return new InputArgument( $matches[1], InputArgument::IS_ARRAY, $description, preg_split( '/,\s?/', $matches[2] ) );
-			case preg_match( '/(.+)\=(.+)/', (string) $token, $matches ):
-				return new InputArgument( $matches[1], InputArgument::OPTIONAL, $description, $matches[2] );
-			default:
-				return new InputArgument( $token, InputArgument::REQUIRED, $description );
+		if ( str_ends_with( (string) $token, '?*' ) ) {
+						return new InputArgument( trim( (string) $token, '?*' ), InputArgument::IS_ARRAY, $description );
 		}
+		if ( str_ends_with( (string) $token, '*' ) ) {
+						return new InputArgument( trim( (string) $token, '*' ), InputArgument::IS_ARRAY | InputArgument::REQUIRED, $description );
+		}
+		if ( str_ends_with( (string) $token, '?' ) ) {
+						return new InputArgument( trim( (string) $token, '?' ), InputArgument::OPTIONAL, $description );
+		}
+		if ( preg_match( '/(.+)\=\*(.+)/', (string) $token, $matches ) ) {
+						return new InputArgument( $matches[1], InputArgument::IS_ARRAY, $description, preg_split( '/,\s?/', $matches[2] ) );
+		}
+		if ( preg_match( '/(.+)\=(.+)/', (string) $token, $matches ) ) {
+						return new InputArgument( $matches[1], InputArgument::OPTIONAL, $description, $matches[2] );
+		}
+								return new InputArgument( $token, InputArgument::REQUIRED, $description );
 	}
 
 	/**
@@ -111,19 +112,19 @@ class Parser {
 		} else {
 			$shortcut = null;
 		}
-
-		switch ( true ) {
-			case str_ends_with( (string) $token, '=' ):
-				return new InputOption( trim( (string) $token, '=' ), $shortcut, InputOption::VALUE_OPTIONAL, $description );
-			case str_ends_with( (string) $token, '=*' ):
-				return new InputOption( trim( (string) $token, '=*' ), $shortcut, InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, $description );
-			case preg_match( '/(.+)\=\*(.+)/', (string) $token, $matches ):
-				return new InputOption( $matches[1], $shortcut, InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, $description, preg_split( '/,\s?/', $matches[2] ) );
-			case preg_match( '/(.+)\=(.+)/', (string) $token, $matches ):
-				return new InputOption( $matches[1], $shortcut, InputOption::VALUE_OPTIONAL, $description, $matches[2] );
-			default:
-				return new InputOption( $token, $shortcut, InputOption::VALUE_NONE, $description );
+		if ( str_ends_with( (string) $token, '=' ) ) {
+						return new InputOption( trim( (string) $token, '=' ), $shortcut, InputOption::VALUE_OPTIONAL, $description );
 		}
+		if ( str_ends_with( (string) $token, '=*' ) ) {
+						return new InputOption( trim( (string) $token, '=*' ), $shortcut, InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, $description );
+		}
+		if ( preg_match( '/(.+)\=\*(.+)/', (string) $token, $matches ) ) {
+						return new InputOption( $matches[1], $shortcut, InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, $description, preg_split( '/,\s?/', $matches[2] ) );
+		}
+		if ( preg_match( '/(.+)\=(.+)/', (string) $token, $matches ) ) {
+						return new InputOption( $matches[1], $shortcut, InputOption::VALUE_OPTIONAL, $description, $matches[2] );
+		}
+								return new InputOption( $token, $shortcut, InputOption::VALUE_NONE, $description );
 	}
 
 	/**

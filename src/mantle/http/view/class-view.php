@@ -166,7 +166,7 @@ class View implements \Stringable {
 	protected function setup_post_object() {
 		global $post;
 
-		if ( ! isset( $this->post ) ) {
+		if ( $this->post === null ) {
 			return;
 		}
 
@@ -206,7 +206,7 @@ class View implements \Stringable {
 	 */
 	public function render(): string {
 		// Check the cache for the view.
-		if ( isset( $this->cache_ttl ) ) {
+		if ( $this->cache_ttl !== null ) {
 			$cache_key = $this->get_cache_key();
 			$contents  = \get_transient( $cache_key );
 
@@ -216,7 +216,7 @@ class View implements \Stringable {
 		}
 
 		// Setup the post object if needed.
-		if ( isset( $this->post ) ) {
+		if ( $this->post !== null ) {
 			$this->setup_post_object();
 		}
 
@@ -227,11 +227,11 @@ class View implements \Stringable {
 
 		$this->factory->pop();
 
-		if ( isset( $this->post ) ) {
+		if ( $this->post !== null ) {
 			$this->restore_post();
 		}
 
-		if ( isset( $this->cache_ttl ) ) {
+		if ( $this->cache_ttl !== null ) {
 			\set_transient( $cache_key, $contents, $this->cache_ttl );
 		}
 

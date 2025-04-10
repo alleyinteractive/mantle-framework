@@ -41,7 +41,7 @@ trait Dispatchable {
 	 * @return Pending_Dispatch|false
 	 */
 	public static function dispatch_unless( $boolean, ...$args ): Pending_Dispatch|bool {
-		return ! $boolean ? static::dispatch( ...$args ) : false;
+		return $boolean ? false : static::dispatch( ...$args );
 	}
 
 	/**

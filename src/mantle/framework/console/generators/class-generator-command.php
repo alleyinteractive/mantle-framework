@@ -155,7 +155,7 @@ abstract class Generator_Command extends Command {
 
 		array_pop( $parts );
 
-		$parts = ! empty( $parts ) ? strtolower( str_replace( '_', '-', implode( '/', $parts ) ) ) . '/' : '';
+		$parts = empty( $parts ) ? '' : strtolower( str_replace( '_', '-', implode( '/', $parts ) ) ) . '/';
 
 		$parts = [ Str::untrailing_slash( $this->get_base_path() ), strtolower( str_replace( '\\', '/', $this->type ) ), $parts ];
 

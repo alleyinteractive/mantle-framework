@@ -77,7 +77,7 @@ class Package_Manifest {
 	 * Get the compiled manifest.
 	 */
 	public function get_manifest(): array {
-		if ( isset( $this->manifest ) ) {
+		if ( $this->manifest !== null ) {
 			return (array) $this->manifest;
 		}
 

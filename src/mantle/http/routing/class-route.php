@@ -140,7 +140,7 @@ class Route extends Symfony_Route {
 	public function name( string $name ): static {
 		$previous_name = $this->get_name();
 
-		$this->action['as'] = ! empty( $this->action['as_prefix'] ) ? $this->action['as_prefix'] . $name : $name;
+		$this->action['as'] = empty( $this->action['as_prefix'] ) ? $name : $this->action['as_prefix'] . $name;
 
 		/**
 		 * Attempt to rename the route in the router.
@@ -148,7 +148,7 @@ class Route extends Symfony_Route {
 		 * The route object is stored in a route collection as a reference but the
 		 * route name is a static key for the collection.
 		 */
-		if ( isset( $this->router ) ) {
+		if ( $this->router instanceof \Mantle\Contracts\Http\Routing\Router ) {
 			$this->router->rename_route( $previous_name, $this->action['as'] );
 		}
 

@@ -290,7 +290,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * @return \Symfony\Component\HttpFoundation\ParameterBag|mixed
 	 */
 	public function json( $key = null, $default = null ) {
-		if ( ! isset( $this->json ) ) {
+		if ( ! $this->json instanceof \Symfony\Component\HttpFoundation\ParameterBag ) {
 			$this->json = new ParameterBag( (array) json_decode( $this->getContent(), true ) );
 		}
 

@@ -44,9 +44,9 @@ trait Response_Dumper {
 				<code>{$request_body}</code>
 			HTML;
 		} else {
-			$request_body = ! empty( $this->request->all() )
-				? $this->compile_data_table( $this->request->all() )
-				: '<em class="pt-1">No request body.</em>';
+			$request_body = empty( $this->request->all() )
+				? '<em class="pt-1">No request body.</em>'
+				: $this->compile_data_table( $this->request->all() );
 
 			$request_body = <<<HTML
 				<h3 class="font-bold">Request Body</h3>
