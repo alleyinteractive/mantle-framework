@@ -429,7 +429,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 			return $this->make( $abstract );
 		}
 
-								return null;
+		return null;
 	}
 
 	/**
