@@ -195,7 +195,7 @@ class Pipeline implements PipelineContract {
 	 *
 	 * @throws RuntimeException Thrown on missing container instance.
 	 */
-	protected function get_container(): \Mantle\Contracts\Container {
+	protected function get_container(): Container {
 		if ( ! isset( $this->container ) ) {
 			throw new RuntimeException( 'A container instance has not been passed to the Pipeline.' );
 		}

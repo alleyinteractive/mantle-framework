@@ -63,7 +63,7 @@ class Str {
 	 *
 	 * @param  string $string
 	 */
-	public static function of( $string ): \Mantle\Support\Stringable {
+	public static function of( $string ): Stringable {
 		return new Stringable( $string );
 	}
 
@@ -595,7 +595,7 @@ class Str {
 	 * @param  string $pattern
 	 * @param  string $subject
 	 */
-	public static function match_all( $pattern, $subject ): \Mantle\Support\Collection {
+	public static function match_all( $pattern, $subject ): Collection {
 		preg_match_all( $pattern, $subject, $matches );
 
 		if ( empty( $matches[0] ) ) {

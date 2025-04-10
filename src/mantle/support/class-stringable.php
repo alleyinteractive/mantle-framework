@@ -237,9 +237,9 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 *
 	 * @param  string $delimiter
 	 * @param  int    $limit
-	 * @return \Mantle\Support\Collection<int, string>
+	 * @return Collection<int, string>
 	 */
-	public function explode( $delimiter, $limit = PHP_INT_MAX ): \Mantle\Support\Collection {
+	public function explode( $delimiter, $limit = PHP_INT_MAX ): Collection {
 		return collect( explode( $delimiter, $this->value, $limit ) );
 	}
 
@@ -249,7 +249,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  string|int $pattern
 	 * @param  int        $limit
 	 * @param  int        $flags
-	 * @return \Mantle\Support\Collection<int, string>
+	 * @return Collection<int, string>
 	 */
 	public function split( $pattern, $limit = -1, $flags = 0 ) {
 		if ( filter_var( $pattern, FILTER_VALIDATE_INT ) !== false ) {
@@ -425,7 +425,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 *
 	 * @param  string $pattern
 	 */
-	public function match_all( $pattern ): \Mantle\Support\Collection {
+	public function match_all( $pattern ): Collection {
 		return Str::match_all( $pattern, $this->value );
 	}
 
@@ -601,7 +601,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 *
 	 * @param  string $format
 	 */
-	public function scan( $format ): \Mantle\Support\Collection {
+	public function scan( $format ): Collection {
 		return collect( sscanf( $this->value, $format ) );
 	}
 
@@ -798,9 +798,9 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	/**
 	 * Split a string by uppercase characters.
 	 *
-	 * @return \Mantle\Support\Collection<int, string>
+	 * @return Collection<int, string>
 	 */
-	public function ucsplit(): \Mantle\Support\Collection {
+	public function ucsplit(): Collection {
 		return collect( Str::ucsplit( $this->value ) );
 	}
 
