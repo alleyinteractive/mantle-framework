@@ -14,13 +14,12 @@ use Mantle\Database\Model\Model_Exception;
  * Interface for interfacing with a model's meta.
  *
  * @property object $meta
- * @property array<string, mixed> $queued_meta
  */
 trait Model_Meta {
 	/**
 	 * Meta queued for saving.
 	 *
-	 * @var array
+	 * @var array<string, mixed>
 	 */
 	protected $queued_meta = [];
 
@@ -85,7 +84,7 @@ trait Model_Meta {
 	/**
 	 * Allow setting meta through an array via an attribute mutator.
 	 *
-	 * @param array $meta_values Meta values to set.
+	 * @param array<string, mixed> $meta_values Meta values to set.
 	 * @throws Model_Exception Thrown on invalid value being set.
 	 */
 	public function set_meta_attribute( $meta_values ): void {

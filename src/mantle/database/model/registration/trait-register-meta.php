@@ -52,6 +52,19 @@ trait Register_Meta {
 	 *                                         When registering complex meta values this argument may optionally be an
 	 *                                         array with 'schema' or 'prepare_callback' keys instead of a boolean.
 	 * }
+	 * @phpstan-param array{
+	 *   object_subtype: string,
+	 *   type: string,
+	 *   description: string,
+	 *   single: bool,
+	 *   default: mixed,
+	 *   sanitize_callback: callable,
+	 *   auth_callback: callable,
+	 *   show_in_rest: bool|array{
+	 *      schema: array<mixed>,
+	 *      prepare_callback: callable,
+	 *   }
+	 * } $args
 	 * @return bool True if the meta key was successfully registered in the global array, false if not.
 	 *              Registering a meta key with distinct sanitize and auth callbacks will fire those callbacks,
 	 *              but will not add to the global registry.

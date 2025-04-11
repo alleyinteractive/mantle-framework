@@ -19,7 +19,8 @@ use Mantle\Database\Query\Term_Query_Builder;
  * WP_Query/WP_Term_Query/etc. in a controlled manner which will not affect
  * other queries.
  *
- * @mixin \Mantle\Database\Query\Builder
+ * @template TModel of \Mantle\Database\Model\Model
+ * @mixin \Mantle\Database\Query\Builder<TModel>
  */
 trait Query_Clauses {
 	/**

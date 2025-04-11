@@ -17,6 +17,7 @@ use Mantle\Container\Container;
 use Mantle\Contracts\Database\Scope;
 use Mantle\Contracts\Paginator\Paginator as PaginatorContract;
 use Mantle\Database\Model\Model;
+use Mantle\Database\Model\Model_Exception;
 use Mantle\Database\Model\Model_Not_Found_Exception;
 use Mantle\Database\Pagination\Length_Aware_Paginator;
 use Mantle\Database\Pagination\Paginator;
@@ -34,7 +35,9 @@ use Mantle\Support\Traits\Conditionable;
  */
 abstract class Builder {
 	use Conditionable;
+	/** @use Query_Bindings<TModel> */
 	use Query_Bindings;
+	/** @use Query_Clauses<TModel> */
 	use Query_Clauses;
 
 	/**
@@ -54,6 +57,8 @@ abstract class Builder {
 
 	/**
 	 * Where arguments for the query.
+	 *
+	 * @var array<string, mixed>
 	 */
 	protected array $wheres = [];
 
@@ -73,31 +78,43 @@ abstract class Builder {
 
 	/**
 	 * Meta Query.
+	 *
+	 * @var array<string|int, array<string, mixed>|string>
 	 */
 	protected array $meta_query = [];
 
 	/**
 	 * Query Variable Aliases
+	 *
+	 * @var array<string, string>
 	 */
 	protected array $query_aliases = [];
 
 	/**
 	 * Query Where In Aliases
+	 *
+	 * @var array<string, string>
 	 */
 	protected array $query_where_in_aliases = [];
 
 	/**
 	 * Query Where Not In Aliases
+	 *
+	 * @var array<string, string>
 	 */
 	protected array $query_where_not_in_aliases = [];
 
 	/**
 	 * Query order by aliases.
+	 *
+	 * @var array<string, string>
 	 */
 	protected array $query_order_by_aliases = [];
 
 	/**
 	 * Applied global scopes.
+	 *
+	 * @var array<string, Scope|\Closure>
 	 */
 	protected array $scopes = [];
 
@@ -140,6 +157,8 @@ abstract class Builder {
 
 	/**
 	 * Get the query arguments.
+	 *
+	 * @return array<string, mixed>
 	 */
 	abstract public function get_query_args(): array;
 
@@ -166,6 +185,7 @@ abstract class Builder {
 	 * Get the model instance for the builder.
 	 *
 	 * @throws Query_Exception Thrown when trying to use with multiple models.
+	 * @return TModel
 	 */
 	protected function get_model_instance(): Model {
 		if ( is_array( $this->model ) ) {
@@ -186,7 +206,7 @@ abstract class Builder {
 	 * Query an attribute against a list.
 	 *
 	 * @param string $attribute Attribute to query against.
-	 * @param array  $values List of values.
+	 * @param array<mixed>  $values List of values.
 	 * @return static
 	 *
 	 * @throws Query_Exception Thrown on an unmapped attribute being used.
@@ -209,7 +229,7 @@ abstract class Builder {
 	 * Query an where an attribute is not in a list.
 	 *
 	 * @param string $attribute Attribute to query against.
-	 * @param array  $values List of values.
+	 * @param array<mixed>  $values List of values.
 	 * @return static
 	 *
 	 * @throws Query_Exception Thrown on an unmapped attribute being used.
@@ -231,8 +251,10 @@ abstract class Builder {
 	/**
 	 * Create a query builder for a model.
 	 *
-	 * @param array|string $model Model name or array of model names.
-	 * @return static<TModel>
+	 * @template TCreateModel of \Mantle\Database\Model\Model
+	 *
+	 * @param array<class-string<TCreateModel>>|class-string<TCreateModel> $model Model name or array of model names.
+	 * @return static<TCreateModel>
 	 */
 	public static function create( $model ) {
 		return new static( $model ); // @phpstan-ignore-line return.type
@@ -241,7 +263,7 @@ abstract class Builder {
 	/**
 	 * Add a where clause to the query.
 	 *
-	 * @param string|array $attribute Attribute to use or array of key => value
+	 * @param string|array<string, mixed> $attribute Attribute to use or array of key => value
 	 *                                attributes to set.
 	 * @param mixed        $value Value to compare against.
 	 */
@@ -270,7 +292,7 @@ abstract class Builder {
 	 * Support a dynamic where query.
 	 *
 	 * @param string $method Method name.
-	 * @param array  $args Arguments.
+	 * @param array<string, mixed>  $args Arguments.
 	 * @return static
 	 */
 	public function dynamicWhere( $method, $args ) {
@@ -303,14 +325,19 @@ abstract class Builder {
 	/**
 	 * Query by a meta field.
 	 *
+	 * @throws Model_Exception Thrown when the key is not a string or BackedEnum of type string.
+	 *
 	 * @param string|\BackedEnum $key Meta key.
 	 * @param mixed              $value Meta value.
 	 * @param string             $compare Comparison method, defaults to '='.
-	 * @return static
 	 */
-	public function whereMeta( $key, $value, string $compare = '=' ) {
+	public function whereMeta( string|BackedEnum $key, mixed $value, string $compare = '=' ): static {
 		if ( $key instanceof BackedEnum ) {
 			$key = $key->value;
+
+			if ( ! is_string( $key ) ) {
+				throw new Model_Exception( 'Meta key must be a string or BackedEnum of type string.' );
+			}
 		}
 
 		if ( $value instanceof BackedEnum ) {
@@ -341,10 +368,10 @@ abstract class Builder {
 	 * @param string $compare Comparison method, defaults to '='.
 	 * @return static
 	 */
-	public function andWhereMeta( ...$args ) {
+	public function andWhereMeta( string $key, mixed $value, string $compare = '=' ): static {
 		$this->meta_query['relation'] = 'AND';
 
-		return $this->whereMeta( ...$args );
+		return $this->whereMeta( $key, $value, $compare );
 	}
 
 	/**
@@ -355,10 +382,10 @@ abstract class Builder {
 	 * @param string $compare Comparison method, defaults to '='.
 	 * @return static
 	 */
-	public function orWhereMeta( ...$args ) {
+	public function orWhereMeta( string $key, mixed $value, string $compare = '=' ): static {
 		$this->meta_query['relation'] = 'OR';
 
-		return $this->whereMeta( ...$args );
+		return $this->whereMeta( $key, $value, $compare );
 	}
 
 	/**
@@ -414,7 +441,7 @@ abstract class Builder {
 	 * Support a dynamic order by (orderByName(...)).
 	 *
 	 * @param string $method Method name. Attribute name.
-	 * @param array $args Method arguments.
+	 * @param array<mixed> $args Method arguments.
 	 * @return static
 	 */
 	protected function dynamicOrderBy( string $method, array $args ) {
@@ -504,10 +531,10 @@ abstract class Builder {
 	 * Apply the given scope on the current builder instance.
 	 *
 	 * @param callable $scope Scope callback.
-	 * @param array    $parameters Scope parameters.
+	 * @param array<mixed>    $parameters Scope parameters.
 	 * @return mixed
 	 */
-	protected function call_scope( callable $scope, array $parameters = [] ) {
+	protected function call_scope( callable $scope, array $parameters = [] ): mixed {
 		array_unshift( $parameters, $this );
 
 		return $scope( ...array_values( $parameters ) ) ?? $this;
@@ -517,10 +544,10 @@ abstract class Builder {
 	 * Apply the given named scope on the current builder instance.
 	 *
 	 * @param string $scope Scope name.
-	 * @param array  $parameters Scope parameters.
+	 * @param array<mixed>  $parameters Scope parameters.
 	 * @return mixed
 	 */
-	protected function call_named_scope( string $scope, array $parameters = [] ) {
+	protected function call_named_scope( string $scope, array $parameters = [] ): mixed {
 		return $this->call_scope(
 			fn ( ...$parameters ) => $this->get_model_instance()->call_named_scope( $scope, $parameters ),
 			$parameters
@@ -529,10 +556,8 @@ abstract class Builder {
 
 	/**
 	 * Apply the scopes to the Eloquent builder instance and return it.
-	 *
-	 * @return static
 	 */
-	protected function apply_scopes() {
+	protected function apply_scopes(): static {
 		// Ignore query builders across multiple models.
 		if ( is_array( $this->model ) || empty( $this->scopes ) ) {
 			return $this;
@@ -545,7 +570,7 @@ abstract class Builder {
 						return $scope( $builder );
 					}
 
-					if ( $scope instanceof Scope ) {
+					if ( $scope instanceof Scope ) { // @phpstan-ignore-line instanceof.alwaysTrue
 						return $scope->apply( $builder, $this->get_model_instance() );
 					}
 				}
@@ -662,6 +687,8 @@ abstract class Builder {
 
 	/**
 	 * Get all the results of a query.
+	 *
+	 * @return Collection<int, TModel>
 	 */
 	public function all(): Collection {
 		return $this->take( -1 )->get();
@@ -856,7 +883,7 @@ abstract class Builder {
 	 * Magic method to proxy to the appropriate query method.
 	 *
 	 * @param string $method Method name.
-	 * @param array  $args Method arguments.
+	 * @param array<mixed>  $args Method arguments.
 	 * @return mixed
 	 *
 	 * @throws Query_Exception Unknown query method called.
@@ -881,7 +908,7 @@ abstract class Builder {
 	/**
 	 * Collect all the model object names in an associative Collection.
 	 *
-	 * @return Collection<string, class-string<\Mantle\Database\Model\Model>> Collection of model class names keyed by object name.
+	 * @return Collection<string, class-string<TModel>> Collection of model class names keyed by object name.
 	 */
 	public function get_model_object_names(): Collection {
 		return ( new Collection( (array) $this->model ) ) // @phpstan-ignore-line should return

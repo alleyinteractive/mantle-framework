@@ -14,14 +14,14 @@ interface Updatable {
 	/**
 	 * Save the model.
 	 *
-	 * @param array $attributes Attributes to save.
+	 * @param array<mixed> $attributes Attributes to save.
 	 */
-	public function save( array $attributes = [] );
+	public function save( array $attributes = [] ): bool;
 
 	/**
 	 * Delete the model.
 	 *
 	 * @param bool $force Force delete the mode.
 	 */
-	public function delete( bool $force = false );
+	public function delete( bool $force = false ): mixed;
 }

@@ -28,9 +28,9 @@ class Lightweight_Event_Dispatcher extends Dispatcher {
 	/**
 	 * Register an event listener with the dispatcher.
 	 *
-	 * @param  string|string[]  $events
-	 * @param  \Closure|string  $listener
-	 * @param  int              $priority
+	 * @param  string|string[] $events
+	 * @param  \Closure|string $listener
+	 * @param  int             $priority
 	 */
 	public function listen( $events, $listener, int $priority = 10 ): void {
 		foreach ( (array) $events as $event ) {

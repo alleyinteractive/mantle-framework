@@ -115,7 +115,7 @@ class Testable_Post_For_Scope_Global_Scope_Class extends Testable_Post_For_Scope
 }
 
 class Test_Scope implements Scope {
-	public function apply( Builder $builder, Model $model ) {
+	public function apply( Builder $builder, Model $model ): Builder {
 		return $builder->whereMeta( 'global_scope_named_active', '1' );
 	}
 }

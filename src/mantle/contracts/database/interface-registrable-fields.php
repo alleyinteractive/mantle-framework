@@ -16,5 +16,5 @@ interface Registrable_Fields {
 	/**
 	 * Method to register the model's fields.
 	 */
-	public static function register_fields();
+	public static function register_fields(): void;
 }

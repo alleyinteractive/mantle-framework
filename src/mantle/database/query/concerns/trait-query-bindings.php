@@ -18,11 +18,14 @@ use function Mantle\Support\Helpers\collect;
  *
  * @todo Add nested queries.
  *
- * @mixin \Mantle\Database\Query\Builder
+ * @template TModel of \Mantle\Database\Model\Model
+ * @mixin \Mantle\Database\Query\Builder<TModel>
  */
 trait Query_Bindings {
 	/**
 	 * Raw query bindings.
+	 *
+	 * @var array<string, array<string, mixed>>
 	 */
 	protected array $bindings = [
 		'where' => [],
@@ -30,6 +33,8 @@ trait Query_Bindings {
 
 	/**
 	 * The valid operators for a raw query binding.
+	 *
+	 * @var array<string>
 	 */
 	protected array $operators = [
 		'=',
@@ -54,7 +59,7 @@ trait Query_Bindings {
 	 *
 	 * Allows the query to be built with raw SQL bindings.
 	 *
-	 * @param array|string $column The column name or array of bindings.
+	 * @param array<string, mixed>|string $column The column name or array of bindings.
 	 * @param string|null  $operator The operator OR the value if no value is provided.
 	 * @param mixed        $value The value.
 	 * @param string       $boolean The boolean operator (AND/OR) used to concatenate the clause.
@@ -100,7 +105,7 @@ trait Query_Bindings {
 	/**
 	 * Construct a WHERE clause with a boolean OR.
 	 *
-	 * @param array|string $column The column name or array of bindings.
+	 * @param array<string, mixed>|string $column The column name or array of bindings.
 	 * @param string|null  $operator The operator OR the value if no value is provided.
 	 * @param mixed        $value The value.
 	 */
@@ -119,7 +124,7 @@ trait Query_Bindings {
 	/**
 	 * Alias for or_where_raw().
 	 *
-	 * @param array|string $column The column name or array of bindings.
+	 * @param array<string, mixed>|string $column The column name or array of bindings.
 	 * @param string|null  $operator The operator OR the value if no value is provided.
 	 * @param mixed        $value The value.
 	 */

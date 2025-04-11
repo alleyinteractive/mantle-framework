@@ -63,7 +63,7 @@ class Repository implements ArrayAccess, Config_Contract {
 	 * @param array<string, mixed>|string $key Key(s) to set.
 	 * @param mixed                       $value Value to set.
 	 */
-	public function set( $key, $value ): void {
+	public function set( array|string $key, mixed $value ): void {
 		$keys = is_array( $key ) ? $key : [ $key => $value ];
 
 		foreach ( $keys as $key => $value ) {

@@ -24,35 +24,35 @@ trait Has_Attributes {
 	/**
 	 * Attributes for the model from the object
 	 *
-	 * @var array
+	 * @var array<string, mixed>
 	 */
-	protected $attributes = [];
+	protected array $attributes = [];
 
 	/**
 	 * Keep track of attributes that have been modified.
 	 *
-	 * @var array
+	 * @var array<string>
 	 */
-	protected $modified_attributes = [];
+	protected array $modified_attributes = [];
 
 	/**
 	 * The attributes that should be cast.
 	 *
-	 * @var array
+	 * @var array<string, string>
 	 */
 	protected $casts = [];
 
 	/**
 	 * The accessors to append to the model's array form.
 	 *
-	 * @var array
+	 * @var array<string>
 	 */
 	protected $appends = [];
 
 	/**
 	 * The built-in, primitive cast types supported by the model.
 	 *
-	 * @var array
+	 * @var array<string>
 	 */
 	protected static $supported_cast_types = [
 		'array',
@@ -194,6 +194,8 @@ trait Has_Attributes {
 
 	/**
 	 * Get all model attributes.
+	 *
+	 * @return array<string, mixed>
 	 */
 	public function get_attributes(): array {
 		$attributes = [];
@@ -207,6 +209,8 @@ trait Has_Attributes {
 
 	/**
 	 * Get an attribute array of all arrayable attributes.
+	 *
+	 * @return array<string, mixed>
 	 */
 	protected function get_arrayable_attributes(): array {
 		return $this->get_arrayable_items( $this->get_attributes() );
@@ -214,6 +218,8 @@ trait Has_Attributes {
 
 	/**
 	 * Convert the models' attributes to an array.
+	 *
+	 * @return array<string, mixed>
 	 */
 	public function attributes_to_array(): array {
 		// Retrieve all attributes, passing them through the mutators.
@@ -251,6 +257,8 @@ trait Has_Attributes {
 
 	/**
 	 * Get the raw model attributes.
+	 *
+	 * @return array<string, mixed>
 	 */
 	public function get_raw_attributes(): array {
 		return $this->attributes;
@@ -258,6 +266,8 @@ trait Has_Attributes {
 
 	/**
 	 * Get all modified attributes.
+	 *
+	 * @return array<string, mixed>
 	 */
 	public function get_modified_attributes(): array {
 		if ( empty( $this->modified_attributes ) ) {
@@ -298,10 +308,9 @@ trait Has_Attributes {
 	/**
 	 * Set the raw attributes on the model.
 	 *
-	 * @param array $attributes Raw attributes to set.
-	 * @return static
+	 * @param array<string, mixed> $attributes Raw attributes to set.
 	 */
-	public function set_raw_attributes( array $attributes ) {
+	public function set_raw_attributes( array $attributes ): static {
 		$this->attributes = $attributes;
 		return $this;
 	}
@@ -309,7 +318,7 @@ trait Has_Attributes {
 	/**
 	 * Reset the modified attributes.
 	 */
-	protected function reset_modified_attributes() {
+	protected function reset_modified_attributes(): void {
 		$this->modified_attributes = [];
 	}
 
@@ -320,9 +329,8 @@ trait Has_Attributes {
 	 *
 	 * @param mixed  $value Attribute value.
 	 * @param string $cast_type Cast type.
-	 * @return mixed
 	 */
-	protected function cast_attribute( $value, string $cast_type ) {
+	protected function cast_attribute( mixed $value, string $cast_type ): mixed {
 		return match ( $cast_type ) {
 			'int', 'integer' => (int) $value,
 			'real', 'float', 'double' => $this->from_float( $value ),
@@ -339,7 +347,7 @@ trait Has_Attributes {
 	 *
 	 * @param  mixed $value Value to decode.
 	 */
-	public function from_float( $value ): float {
+	public function from_float( mixed $value ): float {
 		return match ( (string) $value ) {
 			'Infinity' => INF,
 			'-Infinity' => -INF,
@@ -353,8 +361,8 @@ trait Has_Attributes {
 	 *
 	 * @param mixed $value Value to encode.
 	 */
-	protected function as_json( $value ): string {
-		return \wp_json_encode( $value );
+	protected function as_json( mixed $value ): string {
+		return \wp_json_encode( $value ) ?: '';
 	}
 
 	/**
@@ -461,6 +469,8 @@ trait Has_Attributes {
 
 	/**
 	 * Retrieve all the appendable values in an array.
+	 *
+	 * @return array<string, mixed>
 	 */
 	public function get_arrayable_appends(): array {
 		if ( empty( $this->appends ) ) {

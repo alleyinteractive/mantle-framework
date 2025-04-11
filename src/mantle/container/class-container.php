@@ -266,7 +266,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * Bind a callback to resolve with Container::call.
 	 *
 	 * @param  string[]|string $method
-	 * @param  \Closure     $callback
+	 * @param  \Closure        $callback
 	 */
 	public function bind_method( array|string $method, Closure $callback ): void {
 		$this->method_bindings[ $this->parse_bind_method( $method ) ] = $callback;
@@ -313,7 +313,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 *
 	 * @param  string               $abstract
 	 * @param  \Closure|string|null $concrete
-	 * @phpstan-param (\Closure(self, array<mixed>): mixed)|string|null $concrete
+	 * @phpstan-param (\Closure(static, array<mixed>): mixed)|string|null $concrete
 	 */
 	public function singleton( string $abstract, Closure|string|null $concrete = null ): void {
 		$this->bind( $abstract, $concrete, true );
@@ -324,7 +324,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 *
 	 * @param  string               $abstract
 	 * @param  \Closure|string|null $concrete
-	 * @phpstan-param (\Closure(self, array<mixed>): mixed)|string|null $concrete
+	 * @phpstan-param (\Closure(static, array<mixed>): mixed)|string|null $concrete
 	 */
 	public function singleton_if( string $abstract, Closure|string|null $concrete = null ): void {
 		if ( ! $this->bound( $abstract ) ) {
@@ -480,8 +480,8 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	/**
 	 * Wrap the given closure such that its dependencies will be injected when executed.
 	 *
-	 * @param  \Closure $callback
-	 * @param  array<mixed>    $parameters
+	 * @param  \Closure     $callback
+	 * @param  array<mixed> $parameters
 	 * @return \Closure
 	 */
 	public function wrap( Closure $callback, array $parameters = [] ) {
@@ -515,8 +515,8 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	/**
 	 * An alias function name for make().
 	 *
-	 * @param  string $abstract
-	 * @param  array<mixed>  $parameters
+	 * @param  string       $abstract
+	 * @param  array<mixed> $parameters
 	 */
 	public function make_with( $abstract, array $parameters = [] ): mixed {
 		return $this->make( $abstract, $parameters );
@@ -577,9 +577,9 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	/**
 	 * Resolve the given type from the container.
 	 *
-	 * @param  string $abstract
-	 * @param  array<mixed>  $parameters
-	 * @param  bool   $raise_events
+	 * @param  string       $abstract
+	 * @param  array<mixed> $parameters
+	 * @param  bool         $raise_events
 	 *
 	 * @throws Binding_Resolution_Exception Thrown on missing resolution.
 	 */
@@ -1002,9 +1002,9 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	/**
 	 * Get all callbacks for a given type.
 	 *
-	 * @param  string $abstract
-	 * @param  object $object
-	 * @param  array<mixed>  $callbacks_per_type
+	 * @param  string       $abstract
+	 * @param  object       $object
+	 * @param  array<mixed> $callbacks_per_type
 	 * @return array<callable>
 	 */
 	protected function get_callbacks_for_type( $abstract, $object, array $callbacks_per_type ): array {
@@ -1022,7 +1022,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	/**
 	 * Fire an array of callbacks with an object.
 	 *
-	 * @param  mixed $object
+	 * @param  mixed           $object
 	 * @param  array<callable> $callbacks
 	 */
 	protected function fire_callback_array( $object, array $callbacks ): void {

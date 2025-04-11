@@ -59,25 +59,25 @@ use function Mantle\Support\Helpers\stringable;
  * @property string $title Alias to post_title.
  * @property \Mantle\Database\Model\Attachment|null $thumbnail
  *
- * @method static \Mantle\Database\Factory\Post_Factory<static, \WP_Post, static> factory( array|callable|null $state = null )
+ * @method static \Mantle\Database\Factory\Post_Factory<static, \WP_Post, static> factory( array<mixed>|callable|null $state = null )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> anyStatus()
- * @method static \Mantle\Database\Query\Post_Query_Builder<static> where( string|array $attribute, mixed $value )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> where( string|array<mixed> $attribute, mixed $value )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereId( int $id )
- * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereNotIn(string $key, array $values)
- * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereIn(string $key, array $values)
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereNotIn(string $key, array<int> $values)
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereIn(string $key, array<int> $values)
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereName( string $name )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereSlug( string $slug )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereStatus( string $status )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereTitle( string $title )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereType( string $type )
- * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereTerm( array|\WP_Term|\Mantle\Database\Model\Term|int $term, ?string $taxonomy = null, string $operator = 'IN', string $field = 'term_id' )
- * @method static \Mantle\Database\Query\Post_Query_Builder<static> andWhereTerm( array|\WP_Term|\Mantle\Database\Model\Term|int $term, ?string $taxonomy = null, string $operator = 'IN', string $field = 'term_id' )
- * @method static \Mantle\Database\Query\Post_Query_Builder<static> orWhereTerm( array|\WP_Term|\Mantle\Database\Model\Term|int $term, ?string $taxonomy = null, string $operator = 'IN', string $field = 'term_id' )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereTerm( array<mixed>|\WP_Term|\Mantle\Database\Model\Term|int $term, ?string $taxonomy = null, string $operator = 'IN', string $field = 'term_id' )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> andWhereTerm( array<mixed>|\WP_Term|\Mantle\Database\Model\Term|int $term, ?string $taxonomy = null, string $operator = 'IN', string $field = 'term_id' )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> orWhereTerm( array<mixed>|\WP_Term|\Mantle\Database\Model\Term|int $term, ?string $taxonomy = null, string $operator = 'IN', string $field = 'term_id' )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereMeta( string|\BackedEnum $key, mixed $value, string $operator = '=' )
- * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereRaw( array|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' )
- * @method static \Mantle\Database\Query\Post_Query_Builder<static> where_raw( array|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' )
- * @method static \Mantle\Database\Query\Post_Query_Builder<static> orWhereRaw( array|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' )
- * @method static \Mantle\Database\Query\Post_Query_Builder<static> or_where_raw( array|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereRaw( array<string>|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> where_raw( array<string>|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> orWhereRaw( array<string>|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' )
+ * @method static \Mantle\Database\Query\Post_Query_Builder<static> or_where_raw( array<string>|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereDate( DateTimeInterface|int|string $date, string $compare = '=', string $column = 'post_date' )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereUtcDate( DateTimeInterface|int|string $date, string $compare = '=' )
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> whereModifiedDate( DateTimeInterface|int|string $date, string $compare = '=' )
@@ -120,7 +120,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	/**
 	 * Attributes that are guarded.
 	 *
-	 * @var array
+	 * @var array<string>
 	 */
 	protected $guarded_attributes = [
 		'ID',
@@ -380,7 +380,7 @@ PHP
 	 * @param bool $force Force delete the mode.
 	 * @return \WP_Post|false|mixed
 	 */
-	public function delete( bool $force = false ) {
+	public function delete( bool $force = false ): mixed {
 		return \wp_delete_post( $this->id(), $force );
 	}
 
@@ -390,7 +390,8 @@ PHP
 	 * This will check against _any_ post status that is registered and does not
 	 * use the 'any' post_status attribute.
 	 *
-	 * @param Builder $builder Query builder instance.
+	 * @param Builder<static> $builder Query builder instance.
+	 * @return Builder<static>
 	 */
 	public function scopeAnyStatus( Builder $builder ): Builder {
 		return $builder->where(
@@ -443,6 +444,7 @@ PHP
 	 * Set the post's modified date on save via the 'wp_insert_post_data' filter.
 	 *
 	 * @param array<string, mixed> $data Data to save.
+	 * @return array<string, mixed>
 	 */
 	public function set_post_modified_date_on_save( array $data ) {
 		// Only update the post modified date if the post ID matches the current model.

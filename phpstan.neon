@@ -25,13 +25,20 @@ parameters:
 				- src/mantle/support
 				- src/mantle/testing
 		-
+			identifier: missingType.generics
+			paths:
+				- src/mantle/contracts
+		-
 			identifier: missingType.iterableValue
 			paths:
+				- src/mantle/contracts
+				- src/mantle/facade
 				- src/mantle/testkit
 				- src/mantle/testing
 		-
 			identifier: missingType.return
 			paths:
+				- src/mantle/contracts
 				- src/mantle/testing/concerns/trait-core-shim.php
 		-
 			message: "#implements generic interface ArrayAccess but does not specify its types#"
@@ -40,6 +47,11 @@ parameters:
 				- src/mantle/testing
 		- "#Unsafe usage of new static#"
 		- "#PHPDoc tag @param references unknown parameter#"
+		- "#Arrayable but does not specify its types#"
+		- "#interface ArrayAccess but does not specify#"
+		- "#ReflectionClass does not specify its types#"
+		- "#ReflectionAttribute does not specify its types#"
+		- "#ReflectionAttribute but does not specify its types#"
 		- "#@return is not subtype of template type TKey#"
 
 	scanFiles:

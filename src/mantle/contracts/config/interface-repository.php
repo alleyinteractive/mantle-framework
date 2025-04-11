@@ -39,13 +39,15 @@ interface Repository {
 	/**
 	 * Set a configuration value.
 	 *
-	 * @param array|string $key Key(s) to set.
-	 * @param mixed        $value Value to set.
+	 * @param array<string, mixed>|string $key Key(s) to set.
+	 * @param mixed                       $value Value to set.
 	 */
-	public function set( $key, $value );
+	public function set( array|string $key, mixed $value ): void;
 
 	/**
 	 * Get all configuration values.
+	 *
+	 * @return array<string, array<mixed>>
 	 */
 	public function all(): array;
 }

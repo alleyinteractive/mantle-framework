@@ -13,7 +13,9 @@ use Mantle\Support\Helpers;
 /**
  * User Model
  *
- * @method static \Mantle\Database\Factory\User_Factory<static, \WP_User, static> factory( array|callable|null $state = null )
+ * @extends Model<\WP_User>
+ *
+ * @method static \Mantle\Database\Factory\User_Factory<static, \WP_User, static> factory( array<mixed>|callable|null $state = null )
  */
 class User extends Model implements Contracts\Database\Core_Object, Contracts\Database\Model_Meta, Contracts\Database\Updatable {
 	use Meta\Model_Meta;
@@ -36,7 +38,7 @@ class User extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	/**
 	 * Attributes that are guarded.
 	 *
-	 * @var array
+	 * @var array<string>
 	 */
 	protected $guarded_attributes = [
 		'ID',
@@ -136,7 +138,7 @@ class User extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	/**
 	 * Save the model.
 	 *
-	 * @param array $attributes Attributes to save.
+	 * @param array<string, mixed> $attributes Attributes to save.
 	 *
 	 * @throws Model_Exception Thrown on error saving.
 	 */
@@ -176,7 +178,7 @@ class User extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 * @param bool $force Force delete the model, unused.
 	 * @return bool Returns value of wp_delete_user().
 	 */
-	public function delete( bool $force = false ) {
+	public function delete( bool $force = false ): mixed {
 		// Include user admin functions to get access to wp_delete_user().
 		require_once ABSPATH . 'wp-admin/includes/user.php';
 

@@ -53,7 +53,7 @@ interface Container extends ContainerInterface {
 	 *
 	 * @param string               $abstract Abstract name.
 	 * @param \Closure|string|null $concrete Concrete to bind.
-	 * @phpstan-param (\Closure(self, array<mixed>): mixed)|string|null $concrete
+	 * @phpstan-param (\Closure(static, array<mixed>): mixed)|string|null $concrete
 	 */
 	public function singleton( string $abstract, Closure|string|null $concrete = null ): void;
 
@@ -62,7 +62,7 @@ interface Container extends ContainerInterface {
 	 *
 	 * @param string               $abstract Abstract name.
 	 * @param \Closure|string|null $concrete Concrete name.
-	 * @phpstan-param (\Closure(self, array<mixed>): mixed)|string|null $concrete
+	 * @phpstan-param (\Closure(static, array<mixed>): mixed)|string|null $concrete
 	 */
 	public function singleton_if( string $abstract, Closure|string|null $concrete = null ): void;
 
@@ -99,7 +99,7 @@ interface Container extends ContainerInterface {
 	 * Call the given Closure / class@method and inject its dependencies.
 	 *
 	 * @param  callable|string $callback
-	 * @param  array<mixed>           $parameters
+	 * @param  array<mixed>    $parameters
 	 * @param  string|null     $default_method
 	 * @return mixed
 	 */
@@ -108,8 +108,8 @@ interface Container extends ContainerInterface {
 	/**
 	 * Resolve the given type from the container.
 	 *
-	 * @param string $abstract Abstract name.
-	 * @param array<mixed>  $parameters Parameters to pass.
+	 * @param string       $abstract Abstract name.
+	 * @param array<mixed> $parameters Parameters to pass.
 	 * @return mixed
 	 */
 	public function make( $abstract, array $parameters = [] ): mixed;

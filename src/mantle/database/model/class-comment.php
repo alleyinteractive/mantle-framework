@@ -13,7 +13,9 @@ use Mantle\Support\Helpers;
 /**
  * Comment Model
  *
- * @method static \Mantle\Database\Factory\Comment_Factory<static, \WP_Comment, static> factory( array|callable|null $state = null )
+ * @extends Model<\WP_Comment>
+ *
+ * @method static \Mantle\Database\Factory\Comment_Factory<static, \WP_Comment, static> factory( array<mixed>|callable|null $state = null )
  */
 class Comment extends Model implements Contracts\Database\Core_Object, Contracts\Database\Model_Meta, Contracts\Database\Updatable {
 	use Meta\Model_Meta;
@@ -34,7 +36,7 @@ class Comment extends Model implements Contracts\Database\Core_Object, Contracts
 	/**
 	 * Attributes that are guarded.
 	 *
-	 * @var array
+	 * @var array<string>
 	 */
 	protected $guarded_attributes = [
 		'comment_ID',
@@ -130,7 +132,7 @@ class Comment extends Model implements Contracts\Database\Core_Object, Contracts
 	/**
 	 * Save the model.
 	 *
-	 * @param array $attributes Attributes to save.
+	 * @param array<string, mixed> $attributes Attributes to save.
 	 * @throws Model_Exception Thrown on error saving.
 	 */
 	public function save( array $attributes = [] ): bool {
@@ -167,7 +169,7 @@ class Comment extends Model implements Contracts\Database\Core_Object, Contracts
 	 *
 	 * @param bool $force Force delete the mode.
 	 */
-	public function delete( bool $force = false ): void {
-		\wp_delete_comment( $this->id(), $force );
+	public function delete( bool $force = false ): mixed {
+		return \wp_delete_comment( $this->id(), $force );
 	}
 }

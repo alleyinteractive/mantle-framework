@@ -25,6 +25,9 @@ use function Mantle\Support\Helpers\collect;
 
 /**
  * Has One or Many Relationship
+ *
+ * @template TParent of \Mantle\Database\Model\Model
+ * @extends Relation<TParent>
  */
 abstract class Has_One_Or_Many extends Relation {
 	/**

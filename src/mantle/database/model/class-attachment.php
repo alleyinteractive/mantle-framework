@@ -12,7 +12,7 @@ use Mantle\Facade\Storage;
 /**
  * Attachment Model
  *
- * @method static \Mantle\Database\Factory\Attachment_Factory<static, \WP_Post, static> factory( array|callable|null $state = null )
+ * @method static \Mantle\Database\Factory\Attachment_Factory<static, \WP_Post, static> factory( array<mixed>|callable|null $state = null )
  */
 class Attachment extends Post {
 	/**
@@ -32,7 +32,7 @@ class Attachment extends Post {
 	/**
 	 * Get an attachment's URL by size.
 	 *
-	 * @param array|string $size Image size or array of dimensions.
+	 * @param array<mixed>|string $size Image size or array of dimensions.
 	 *
 	 * @throws Model_Exception Thrown when getting image.
 	 */
@@ -88,6 +88,8 @@ class Attachment extends Post {
 
 	/**
 	 * Get the stored cloud settings for an attachment.
+	 *
+	 * @return array<string, mixed>|null
 	 */
 	protected function get_cloud_settings(): ?array {
 		return (array) $this->get_meta( static::META_KEY_CLOUD_STORAGE, true );
@@ -115,6 +117,15 @@ class Attachment extends Post {
 	 *        @type null|string $title          Title text. Null defaults to the
 	 *                                          sanitized filename.
 	 * }
+	 * @phpstan-param array{
+	 *   alt?: string,
+	 *   caption?: string,
+	 *   description?: string,
+	 *   meta?: array<string, mixed>,
+	 *   parent_post_id?: int|null,
+	 *   title?: string|null,
+	 * } $args
+	 * @return Model<\WP_Post>
 	 * @throws Model_Exception Thrown on error sideloading image.
 	 */
 	public static function create_from_url( string $url, array $args = [] ): Model {
@@ -168,7 +179,7 @@ class Attachment extends Post {
 	/**
 	 * Save the model.
 	 *
-	 * @param array $attributes Attributes to save.
+	 * @param array<string, mixed> $attributes Attributes to save.
 	 *
 	 * @throws Model_Exception Thrown on error saving.
 	 */
@@ -209,7 +220,7 @@ class Attachment extends Post {
 	 * @param bool $force Force delete the model.
 	 * @return mixed
 	 */
-	public function delete( bool $force = false ) {
+	public function delete( bool $force = false ): mixed {
 		return \wp_delete_attachment( $this->id(), $force );
 	}
 }

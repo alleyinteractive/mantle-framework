@@ -62,6 +62,7 @@ function class_basename( string|object $class ): string {
  * Returns all traits used by a class, its parent classes and trait of their traits.
  *
  * @param object|string $class Class or object to analyze.
+ * @return array<string>
  */
 function class_uses_recursive( string|object $class ): array {
 	if ( is_object( $class ) ) {
@@ -137,13 +138,13 @@ function get_callable_fqn( mixed $callable ): string {
 /**
  * Create a collection from the given value.
  *
- * @template TKey of array-key
- * @template TValue
+ * @template TKey of array-key = string|int
+ * @template TValue of mixed = mixed
  *
  * @param  \Mantle\Contracts\Support\Arrayable<TKey, TValue>|iterable<TKey, TValue>|null $value Value to convert to a collection.
  * @return \Mantle\Support\Collection<TKey, TValue>
  */
-function collect( $value = null ): Collection {
+function collect( $value = [] ): Collection {
 	return new Collection( $value );
 }
 

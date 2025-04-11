@@ -47,10 +47,10 @@ class Bound_Method {
 	/**
 	 * Call a string reference to a class using Class@method syntax.
 	 *
-	 * @param  Container   $container Container instance.
-	 * @param  string      $target Target to call.
-	 * @param  array<mixed>       $parameters Parameters for the class.
-	 * @param  string|null $default_method Default method to call.
+	 * @param  Container    $container Container instance.
+	 * @param  string       $target Target to call.
+	 * @param  array<mixed> $parameters Parameters for the class.
+	 * @param  string|null  $default_method Default method to call.
 	 * @return mixed
 	 *
 	 * @throws \InvalidArgumentException Throw on invalid arguments.
@@ -113,7 +113,7 @@ class Bound_Method {
 	 *
 	 * @param  Container       $container Container instance.
 	 * @param  callable|string $callback Callback function.
-	 * @param  array<mixed>           $parameters Parameters to pass.
+	 * @param  array<mixed>    $parameters Parameters to pass.
 	 * @return array<mixed>
 	 *
 	 * @throws \ReflectionException Throw on invalid arguments.
@@ -151,8 +151,8 @@ class Bound_Method {
 	 *
 	 * @param  Container            $container Container instance.
 	 * @param  \ReflectionParameter $parameter Reflect Parameter.
-	 * @param  array<mixed>                $parameters Parameters to pass.
-	 * @param  array<mixed>                $dependencies Class dependencies.
+	 * @param  array<mixed>         $parameters Parameters to pass.
+	 * @param  array<mixed>         $dependencies Class dependencies.
 	 * @return void
 	 *
 	 * @throws Binding_Resolution_Exception Thrown for invalid binding resolution.

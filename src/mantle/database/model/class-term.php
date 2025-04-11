@@ -18,25 +18,27 @@ use function Mantle\Support\Helpers\stringable;
 /**
  * Term Model
  *
+ * @extends Model<\WP_Term>
+ *
  * @property int    $id
  * @property int    $term_id
  * @property string $name
  * @property string $slug
  * @property string $taxonomy
  *
- * @method static \Mantle\Database\Factory\Term_Factory<static, \WP_Term, static> factory( array|callable|null $state = null )
+ * @method static \Mantle\Database\Factory\Term_Factory<static, \WP_Term, static> factory( array<mixed>|callable|null $state = null )
  * @method static \Mantle\Database\Query\Term_Query_Builder<static> whereId( int $id )
  * @method static \Mantle\Database\Query\Term_Query_Builder<static> whereName(string $name)
  * @method static \Mantle\Database\Query\Term_Query_Builder<static> whereSlug(string $slug)
  * @method static \Mantle\Database\Query\Term_Query_Builder<static> whereTaxonomy(string $taxonomy)
  * @method static \Mantle\Database\Query\Term_Query_Builder<static> whereMeta(string $key, string $value)
- * @method static \Mantle\Database\Query\Term_Query_Builder<static> whereNotIn(string $key, array $values)
- * @method static \Mantle\Database\Query\Term_Query_Builder<static> whereIn(string $key, array $values)
- * @method static \Mantle\Database\Query\Term_Query_Builder<static> where(string|array $attribute, mixed $value)
- * @method static \Mantle\Database\Query\Term_Query_Builder<static> whereRaw( array|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' )
- * @method static \Mantle\Database\Query\Term_Query_Builder<static> where_raw( array|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' )
- * @method static \Mantle\Database\Query\Term_Query_Builder<static> orWhereRaw( array|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' )
- * @method static \Mantle\Database\Query\Term_Query_Builder<static> or_where_raw( array|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' )
+ * @method static \Mantle\Database\Query\Term_Query_Builder<static> whereNotIn(string $key, array<int> $values)
+ * @method static \Mantle\Database\Query\Term_Query_Builder<static> whereIn(string $key, array<int> $values)
+ * @method static \Mantle\Database\Query\Term_Query_Builder<static> where(string|array<string, string> $attribute, mixed $value)
+ * @method static \Mantle\Database\Query\Term_Query_Builder<static> whereRaw( array<string, string>|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' )
+ * @method static \Mantle\Database\Query\Term_Query_Builder<static> where_raw( array<string, string>|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' )
+ * @method static \Mantle\Database\Query\Term_Query_Builder<static> orWhereRaw( array<string, string>|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' )
+ * @method static \Mantle\Database\Query\Term_Query_Builder<static> or_where_raw( array<string, string>|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' )
  */
 class Term extends Model implements Core_Object, Model_Meta, Updatable {
 	use Events\Term_Events;
@@ -55,7 +57,7 @@ class Term extends Model implements Core_Object, Model_Meta, Updatable {
 	/**
 	 * Attributes that are guarded.
 	 *
-	 * @var array
+	 * @var array<string>
 	 */
 	protected $guarded_attributes = [
 		'term_id',
@@ -226,7 +228,7 @@ PHP
 	/**
 	 * Save the model.
 	 *
-	 * @param array $attributes Attributes to save.
+	 * @param array<string, mixed> $attributes Attributes to save.
 	 * @throws Model_Exception Thrown on error saving.
 	 */
 	public function save( array $attributes = [] ): bool {
@@ -264,8 +266,8 @@ PHP
 	 *
 	 * @param bool $force Force delete the mode, not used.
 	 */
-	public function delete( bool $force = false ): void {
-		\wp_delete_term( $this->id(), $this->taxonomy() );
+	public function delete( bool $force = false ): mixed {
+		return \wp_delete_term( $this->id(), $this->taxonomy() );
 	}
 
 	/**

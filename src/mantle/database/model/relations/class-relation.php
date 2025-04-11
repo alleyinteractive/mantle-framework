@@ -20,9 +20,9 @@ use Mantle\Support\Forward_Calls;
 /**
  * Relation base class.
  *
- * @mixin \Mantle\Database\Query\Builder
- *
  * @template TParent of Model
+ *
+ * @mixin \Mantle\Database\Query\Builder<TParent>
  */
 abstract class Relation {
 	use Forward_Calls;
@@ -63,10 +63,10 @@ abstract class Relation {
 	/**
 	 * Create a new relation instance.
 	 *
-	 * @param Builder   $query Query builder instance.
-	 * @param Model     $parent Model instance.
-	 * @param bool|null $uses_terms Flag if the relation uses terms.
-	 * @param string    $relationship Relationship name, optional.
+	 * @param Builder<TParent> $query Query builder instance.
+	 * @param Model<TParent>   $parent Model instance.
+	 * @param bool|null        $uses_terms Flag if the relation uses terms.
+	 * @param string           $relationship Relationship name, optional.
 	 */
 	public function __construct( protected Builder $query, protected Model $parent, ?bool $uses_terms = null, ?string $relationship = null ) {
 		$this->related = $this->query->get_model();
@@ -107,7 +107,7 @@ abstract class Relation {
 	/**
 	 * Set the query constraints for an eager load of the relation.
 	 *
-	 * @param Collection $models Models to eager load for.
+	 * @param Collection<int, TParent> $models Models to eager load for.
 	 */
 	abstract public function add_eager_constraints( Collection $models ): void;
 
@@ -121,13 +121,16 @@ abstract class Relation {
 	/**
 	 * Match the eagerly loaded results to their parents.
 	 *
-	 * @param Collection $models Parent models.
-	 * @param Collection $results Eagerly loaded results to match.
+	 * @param Collection<int, TParent> $models Parent models.
+	 * @param Collection<int, TParent> $results Eagerly loaded results to match.
+	 * @return Collection<int, TParent>
 	 */
 	abstract public function match( Collection $models, Collection $results ): Collection;
 
 	/**
 	 * Retrieve the query for a relation.
+	 *
+	 * @return Builder<TParent>
 	 */
 	public function get_query(): Builder {
 		return $this->query;
@@ -135,6 +138,8 @@ abstract class Relation {
 
 	/**
 	 * Get the relationship for eager loading.
+	 *
+	 * @return Collection<int, TParent>
 	 */
 	public function get_eager(): Collection {
 		return $this->query->get();
@@ -143,8 +148,8 @@ abstract class Relation {
 	/**
 	 * Handle dynamic method calls to the relationship.
 	 *
-	 * @param string $method Method name.
-	 * @param array  $parameters Method arguments.
+	 * @param string               $method Method name.
+	 * @param array<string, mixed> $parameters Method arguments.
 	 * @return mixed
 	 */
 	public function __call( string $method, array $parameters ) {

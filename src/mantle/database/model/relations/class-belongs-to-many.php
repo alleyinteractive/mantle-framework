@@ -13,12 +13,15 @@ use function Mantle\Support\Helpers\collect;
 
 /**
  * Creates a 'Belongs To Many' relationship.
+ *
+ * @template TParent of \Mantle\Database\Model\Model
+ * @extends Belongs_To<TParent>
  */
 class Belongs_To_Many extends Belongs_To {
 	/**
 	 * Retrieve the results of the query.
 	 *
-	 * @return Collection|null
+	 * @return Collection<int, TParent>|null
 	 */
 	public function get_results() {
 		$this->add_constraints();
@@ -29,8 +32,8 @@ class Belongs_To_Many extends Belongs_To {
 	/**
 	 * Match the eagerly loaded results to their parents.
 	 *
-	 * @param Collection $models Parent models.
-	 * @param Collection $results Eagerly loaded results to match.
+	 * @param Collection<int, TParent> $models Parent models.
+	 * @param Collection<int, TParent> $results Eagerly loaded results to match.
 	 */
 	public function match( Collection $models, Collection $results ): Collection {
 		$dictionary = $this->build_dictionary( $results, $models );
@@ -47,8 +50,9 @@ class Belongs_To_Many extends Belongs_To {
 	/**
 	 * Build a model dictionary keyed by the relation's foreign key.
 	 *
-	 * @param Collection $results Collection of results.
-	 * @param Collection $models Eagerly loaded results to match.
+	 * @param Collection<int, TParent> $results Collection of results.
+	 * @param Collection<int, TParent> $models Eagerly loaded results to match.
+	 * @return array<string, array<int, TParent>>
 	 */
 	protected function build_dictionary( Collection $results, Collection $models ): array {
 		$results    = $results->key_by( $this->foreign_key );

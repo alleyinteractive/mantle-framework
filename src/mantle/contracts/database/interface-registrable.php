@@ -17,10 +17,12 @@ interface Registrable {
 	/**
 	 * Method to register the model.
 	 */
-	public static function register_object();
+	public static function register_object(): void;
 
 	/**
 	 * Arguments to register the model with.
+	 *
+	 * @return array<mixed>
 	 */
 	public static function get_registration_args(): array;
 }

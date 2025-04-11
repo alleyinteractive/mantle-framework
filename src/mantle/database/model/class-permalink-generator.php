@@ -30,6 +30,7 @@ class Permalink_Generator implements \Stringable {
 	 *
 	 * @param string     $route Route to generate for.
 	 * @param Model|null $model Model to generator for, optional.
+	 * @phpstan-ignore missingType.generics
 	 */
 	public function __construct( protected ?string $route, protected ?Model $model = null ) {
 	}
@@ -39,6 +40,7 @@ class Permalink_Generator implements \Stringable {
 	 *
 	 * @param string     $route Route to generate for.
 	 * @param Model|null $model Model to generator for, optional.
+	 * @phpstan-ignore missingType.generics
 	 */
 	public static function create( string $route, ?Model $model = null ): Permalink_Generator {
 		return new static( $route, $model );
@@ -65,6 +67,8 @@ class Permalink_Generator implements \Stringable {
 
 	/**
 	 * Retrieve the model instance.
+	 *
+	 * @phpstan-ignore missingType.generics
 	 */
 	public function get_model(): ?Model {
 		return $this->model;

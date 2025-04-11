@@ -17,7 +17,7 @@ trait Has_Guarded_Attributes {
 	/**
 	 * Attributes that are guarded.
 	 *
-	 * @var array
+	 * @var array<string>
 	 */
 	protected $guarded_attributes = [];
 

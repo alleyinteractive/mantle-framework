@@ -13,7 +13,9 @@ use Mantle\Support\Helpers;
 /**
  * Site Model
  *
- * @method static \Mantle\Database\Factory\Blog_Factory<static, \WP_Site, static> factory( array|callable|null $state = null )
+ * @extends Model<\WP_Site>
+ *
+ * @method static \Mantle\Database\Factory\Blog_Factory<static, \WP_Site, static> factory( array<mixed>|callable|null $state = null )
  */
 class Site extends Model implements Contracts\Database\Core_Object, Contracts\Database\Updatable {
 	/**
@@ -30,7 +32,7 @@ class Site extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	/**
 	 * Attributes that are guarded.
 	 *
-	 * @var array
+	 * @var array<string>
 	 */
 	protected $guarded_attributes = [
 		'site_ID',
@@ -113,7 +115,7 @@ class Site extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	/**
 	 * Save the model.
 	 *
-	 * @param array $attributes Attributes to save.
+	 * @param array<string, mixed> $attributes Attributes to save.
 	 *
 	 * @throws Model_Exception Thrown on error saving.
 	 */
@@ -155,7 +157,7 @@ class Site extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 * @param bool $force Force delete the mode.
 	 * @return \WP_Site|\WP_Error The deleted site object on success, or error object on failure.
 	 */
-	public function delete( bool $force = false ) {
+	public function delete( bool $force = false ): mixed {
 		return \wp_delete_site( $this->id() );
 	}
 }
