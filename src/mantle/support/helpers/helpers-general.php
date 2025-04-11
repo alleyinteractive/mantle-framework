@@ -186,7 +186,7 @@ function object_get( $object, $key, $default = null ) {
  * Replace a given pattern with each value in the array in sequentially.
  *
  * @param string $pattern Pattern for which to search.
- * @param array  $replacements Strings in which to replace sequentially.
+ * @param array<string>  $replacements Strings in which to replace sequentially.
  * @param string $subject Subject in which to search/replace.
  *
  * @return string
@@ -284,7 +284,7 @@ function tap( $value, $callback = null ) {
  *
  * @param mixed                               $condition Condition to check.
  * @param \Throwable|class-string<\Throwable> $exception Exception to throw.
- * @param array                               ...$parameters Params to pass to a new $exception if
+ * @param array<mixed>                               ...$parameters Params to pass to a new $exception if
  *                                         $exception is a string (classname).
  * @throws \Throwable `$exception` is thrown if `$condition` is not met.
  */
@@ -303,7 +303,7 @@ function throw_if( mixed $condition, string|Throwable $exception, ...$parameters
  *
  * @param mixed             $condition Condition to check.
  * @param \Throwable|class-string<\Throwable> $exception Exception to throw.
- * @param array             ...$parameters Params to pass to a new $exception if
+ * @param array<mixed>             ...$parameters Params to pass to a new $exception if
  *                                         $exception is a string (classname).
  *
  * @throws \Throwable `$exception` is thrown unless `$condition` is not met.
@@ -472,8 +472,8 @@ function add_filter( string $hook, callable $callable, int $priority = 10 ): voi
  * @param  mixed  $payload Event payload.
  * @param  bool  $halt Flag if the event should halt on a returned value.
  */
-function event( ...$args ): mixed {
-	return Container::get_instance()->make( 'events' )->dispatch( ...$args );
+function event( string|object $event, mixed $payload = [], bool $halt = false ): mixed {
+	return Container::get_instance()->make( 'events' )->dispatch( $event, $payload, $halt );
 }
 
 /**

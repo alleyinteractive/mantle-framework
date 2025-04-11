@@ -39,6 +39,8 @@ class Length_Aware_Paginator extends Paginator {
 
 	/**
 	 * Elements for the paginator.
+	 *
+	 * @return array<int, array<int, string>>
 	 */
 	public function elements(): array {
 		$elements     = [];

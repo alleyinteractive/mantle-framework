@@ -22,12 +22,37 @@ use function Mantle\Support\Helpers\data_get;
 
 /**
  * Response object from WordPress HTTP API.
+ *
+ * @phpstan-type CoreResponse array{
+ *   body?: string,
+ *   cookies?: \WP_Http_Cookie[],
+ *   filename?: string|null,
+ *   headers?: \WpOrg\Requests\Utility\CaseInsensitiveDictionary,
+ *   response?: array{
+ *     code: int,
+ *     message: string,
+ *   },
+ * }
+ *
+ * @phpstan-type InternalResponse array{
+ *   body?: string,
+ *   cookies?: \WP_Http_Cookie[],
+ *   filename?: string|null,
+ *   headers?: array<string, string>,
+ *   is_wp_error?: bool,
+ *   response?: array{
+ *     code: int,
+ *     message: string,
+ *   },
+ * }
  */
 class Response implements ArrayAccess {
 	use Macroable;
 
 	/**
 	 * The decoded JSON response.
+	 *
+	 * @var array<string, mixed>|null
 	 */
 	protected ?array $decoded = null;
 
@@ -37,24 +62,34 @@ class Response implements ArrayAccess {
 	protected ?SimpleXMLElement $element = null;
 
 	/**
+	 * Processed response from `wp_remote_request()`.
+	 *
+	 * @var InternalResponse
+	 */
+	protected array $response = [];
+
+	/**
 	 * Constructor.
 	 *
-	 * @param array $response Raw response from `wp_remote_request()`.
+	 * @param CoreResponse $response Raw response from `wp_remote_request()`.
 	 */
-	public function __construct( protected array $response ) {
+	public function __construct( array $response ) {
 		// Serialize the headers from a CaseInsensitiveDictionary to an array.
-		if ( isset( $this->response['headers'] ) && $this->response['headers'] instanceof CaseInsensitiveDictionary ) {
-			$this->response['headers'] = $this->response['headers']->getAll();
+		// @phpstan-ignore instanceof.alwaysTrue
+		if ( isset( $response['headers'] ) && $response['headers'] instanceof CaseInsensitiveDictionary ) {
+			$response['headers'] = $response['headers']->getAll();
 		}
 
 		// Format the headers to be lower-case.
-		$this->response['headers'] = array_change_key_case( (array) ( $this->response['headers'] ?? [] ) );
+		$response['headers'] = array_change_key_case( (array) ( $response['headers'] ?? [] ) );
+
+		$this->response = $response;
 	}
 
 	/**
 	 * Create a response object from a `wp_remote_request()` response.
 	 *
-	 * @param array|WP_Error $response Raw response from `wp_remote_request()`.
+	 * @param CoreResponse|WP_Error $response Raw response from `wp_remote_request()`.
 	 */
 	public static function create( $response ): static {
 		if ( $response instanceof WP_Error ) {
@@ -84,6 +119,8 @@ class Response implements ArrayAccess {
 
 	/**
 	 * Retrieve the raw response from `wp_remote_request()`.
+	 *
+	 * @return InternalResponse
 	 */
 	public function response(): array {
 		return $this->response;
@@ -91,6 +128,8 @@ class Response implements ArrayAccess {
 
 	/**
 	 * Retrieve all the headers from a response.
+	 *
+	 * @return array<string, string> Headers from the response.
 	 */
 	public function headers(): array {
 		return (array) ( $this->response['headers'] ?? [] );
@@ -298,10 +337,10 @@ class Response implements ArrayAccess {
 	 * Get the JSON decoded body of the response as a collection.
 	 *
 	 * @param  string|null $key
-	 * @return Collection
+	 * @return Collection<array-key, mixed>
 	 */
 	public function collect( $key = null ) {
-		return Collection::make( $this->json( $key ) );
+		return new Collection( $this->json( $key ) );
 	}
 
 	/**

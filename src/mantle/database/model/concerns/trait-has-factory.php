@@ -20,7 +20,7 @@ trait Has_Factory {
 	/**
 	 * Create a builder for the model.
 	 *
-	 * @param array|callable $state Default state array or callable that will be invoked to set state.
+	 * @param array<mixed>|callable $state Default state array or callable that will be invoked to set state.
 	 * @return \Mantle\Database\Factory\Factory<static, TObject, static>
 	 */
 	public static function factory( array|callable|null $state = null ): Factory {

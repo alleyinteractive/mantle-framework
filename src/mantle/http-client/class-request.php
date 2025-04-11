@@ -21,7 +21,7 @@ class Request {
 	/**
 	 * Constructor
 	 *
-	 * @param array  $args Arguments of the request.
+	 * @param array<string, mixed>  $args Arguments of the request.
 	 * @param string $url  URL of the request.
 	 */
 	public function __construct( protected array $args, protected string $url ) {
@@ -54,7 +54,7 @@ class Request {
 	/**
 	 * Check if the request has a set of headers.
 	 *
-	 * @param array $headers Headers to check for.
+	 * @param array<string, string> $headers Headers to check for.
 	 */
 	public function has_headers( array $headers ): bool {
 		foreach ( $headers as $key => $value ) {
@@ -104,7 +104,7 @@ class Request {
 	/**
 	 * Retrieve the JSON decoded body of the request.
 	 *
-	 * @return array|null
+	 * @return array<mixed>|null
 	 */
 	public function json(): mixed {
 		return json_decode( (string) $this->body(), true );

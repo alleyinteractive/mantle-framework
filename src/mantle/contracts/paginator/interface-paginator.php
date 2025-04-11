@@ -11,6 +11,8 @@ use Mantle\Support\Collection;
 
 /**
  * Paginator Contract
+ *
+ * @template TModel of \Mantle\Database\Model\Model = object
  */
 interface Paginator {
 	/**

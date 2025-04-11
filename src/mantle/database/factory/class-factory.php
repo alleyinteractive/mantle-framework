@@ -24,9 +24,9 @@ use function Mantle\Support\Helpers\tap;
 /**
  * Base Factory
  *
- * @template TModel of \Mantle\Database\Model\Model
- * @template TObject
- * @template TReturnValue
+ * @template TModel of \Mantle\Database\Model\Model = \Mantle\Database\Model\Model
+ * @template TObject = object
+ * @template TReturnValue = mixed
  *
  * @method \Mantle\Database\Factory\Fluent_Factory<TModel, TObject, TReturnValue> count(int $count)
  */

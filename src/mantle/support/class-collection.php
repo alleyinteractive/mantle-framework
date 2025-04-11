@@ -23,8 +23,8 @@ use function Mantle\Support\Helpers\value;
 /**
  * Collection
  *
- * @template TKey of array-key
- * @template TValue
+ * @template TKey of array-key = array-key
+ * @template TValue = mixed
  *
  * @implements \ArrayAccess<TKey, TValue>
  * @implements \Mantle\Support\Enumerable<TKey, TValue>

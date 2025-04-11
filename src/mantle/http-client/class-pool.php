@@ -80,7 +80,7 @@ class Pool {
 	 * Add a request to the pool with a numeric index.
 	 *
 	 * @param string $method Method name.
-	 * @param array  $args   Arguments for the method.
+	 * @param array<mixed>  $args   Arguments for the method.
 	 * @return Pending_Request
 	 */
 	public function __call( string $method, array $args = [] ) {

@@ -25,7 +25,7 @@ use function Mantle\Support\Helpers\tap;
 /**
  * Database Model
  *
- * @template TModelObject of object
+ * @template TModelObject of object = object
  *
  * @implements Arrayable<string, mixed>
  * @implements ArrayAccess<string, mixed>
@@ -66,13 +66,6 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 * @var array<array<string>>
 	 */
 	protected static $trait_initializers = [];
-
-	/**
-	 * The array of global scopes on the model.
-	 *
-	 * @var array<string>
-	 */
-	protected static $global_scopes = [];
 
 	/**
 	 * An object's registerable name (post type, taxonomy, etc.).

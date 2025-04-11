@@ -24,6 +24,9 @@ use Mantle\Support\Str;
 
 /**
  * Paginator for query results.
+ *
+ * @template TModel of \Mantle\Database\Model\Model = object
+ * @implements PaginatorContract<TModel>
  */
 class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSerializable, Htmlable, PaginatorContract {
 	/**
@@ -36,7 +39,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	/**
 	 * Items being paginate.
 	 *
-	 * @var \Mantle\Support\Collection
+	 * @var \Mantle\Support\Collection<int, TModel>
 	 */
 	protected $items;
 
@@ -57,7 +60,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	/**
 	 * Set of query string values to use on every URL.
 	 *
-	 * @var array
+	 * @var array<string, string>
 	 */
 	protected $query = [];
 
@@ -100,7 +103,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 * Constructor.
 	 *
 	 * @param Container $container Application instance.
-	 * @param Builder   $builder Query builder instance.
+	 * @param Builder<TModel>   $builder Query builder instance.
 	 * @param int       $per_page Items per-page.
 	 * @param int       $current_page Current page to set.
 	 */
@@ -197,6 +200,8 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 
 	/**
 	 * Retrieve the items for the paginator.
+	 *
+	 * @return \Mantle\Support\Collection<int, TModel>
 	 */
 	public function items(): Collection {
 		return $this->items;
@@ -220,10 +225,10 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 */
 	public function has_pages(): bool {
 		if ( 1 !== $this->current_page() ) {
-						return true;
+			return true;
 		}
 
-								return $this->has_more();
+		return $this->has_more();
 	}
 
 	/**
@@ -236,7 +241,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	/**
 	 * Append query string value to the paginator.
 	 *
-	 * @param string|array $key Query string key or array of key value pairs.
+	 * @param string|array<string, string> $key Query string key or array of key value pairs.
 	 * @param mixed        $value Query string value.
 	 */
 	public function append( $key, $value = null ): static {
@@ -262,6 +267,8 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 
 	/**
 	 * Retrieve the query strings for the paginator.
+	 *
+	 * @return array<string, string>
 	 */
 	public function query(): array {
 		return $this->query;
@@ -417,7 +424,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	/**
 	 * Convert the object into something JSON serializable.
 	 *
-	 * @return array
+	 * @return array<string, mixed>
 	 */
 	public function jsonSerialize(): mixed {
 		return $this->to_array();
@@ -485,7 +492,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 * Render the paginator
 	 *
 	 * @param string $view View name to load, optional.
-	 * @param array  $data View data.
+	 * @param array<string, mixed>  $data View data.
 	 */
 	public function render( ?string $view = null, array $data = [] ): ?View {
 		try {
@@ -508,7 +515,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 * Render the links
 	 *
 	 * @param string $view View name to load, optional.
-	 * @param array  $data View data.
+	 * @param array<string, mixed>  $data View data.
 	 */
 	public function links( ?string $view = null, array $data = [] ): string {
 		return (string) $this->render( $view, $data );
@@ -518,7 +525,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 * Convert the paginator to HTML.
 	 *
 	 * @param string $view View name to load, optional.
-	 * @param array  $data View data.
+	 * @param array<string, mixed>  $data View data.
 	 */
 	public function to_html( ?string $view = null, array $data = [] ): string {
 		return (string) $this->render( $view, $data );

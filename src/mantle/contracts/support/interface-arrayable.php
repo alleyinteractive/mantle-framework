@@ -10,8 +10,8 @@ namespace Mantle\Contracts\Support;
 /**
  * Arrayable interface.
  *
- * @template TKey of array-key
- * @template TValue
+ * @template TKey of array-key = array-key
+ * @template TValue = mixed
  */
 interface Arrayable {
 	/**

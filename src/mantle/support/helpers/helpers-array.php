@@ -21,9 +21,9 @@ function value( mixed $value ): mixed {
 /**
  * Get an item from an array or object using "dot" notation.
  *
- * @param  mixed                 $target Target to get from.
- * @param  string|array|int|null $key Key to retrieve.
- * @param  mixed                 $default Default value.
+ * @param  mixed                        $target Target to get from.
+ * @param  string|array<mixed>|int|null $key Key to retrieve.
+ * @param  mixed                        $default Default value.
  */
 function data_get( mixed $target, string|array|int|null $key, mixed $default = null ): mixed {
 	if ( is_null( $key ) ) {
@@ -70,10 +70,10 @@ function data_get( mixed $target, string|array|int|null $key, mixed $default = n
 /**
  * Set an item on an array or object using dot notation.
  *
- * @param  mixed        $target Array to update.
- * @param  string|array $key Key to set.
- * @param  mixed        $value Value to set.
- * @param  bool         $overwrite Flag to overwrite the existing value.
+ * @param  mixed               $target Array to update.
+ * @param  string|array<mixed> $key Key to set.
+ * @param  mixed               $value Value to set.
+ * @param  bool                $overwrite Flag to overwrite the existing value.
  */
 function data_set( mixed &$target, string|array $key, mixed $value, bool $overwrite = true ): mixed {
 	$segments = is_array( $key ) ? $key : explode( '.', $key );
@@ -129,9 +129,9 @@ function data_set( mixed &$target, string|array $key, mixed $value, bool $overwr
 /**
  * Fill in data where it's missing.
  *
- * @param mixed        $target Subject to fill into.
- * @param string|array $key    Key(s) to fill.
- * @param mixed        $value  Value with which to fill.
+ * @param mixed               $target Subject to fill into.
+ * @param string|array<mixed> $key    Key(s) to fill.
+ * @param mixed               $value  Value with which to fill.
  */
 function data_fill( mixed &$target, string|array $key, mixed $value ): mixed {
 	return data_set( $target, $key, $value, false );
@@ -140,7 +140,7 @@ function data_fill( mixed &$target, string|array $key, mixed $value ): mixed {
 /**
  * Get the first element of an array. Useful for method chaining.
  *
- * @param array $array Array from which to get first element.
+ * @param array<mixed> $array Array from which to get first element.
  */
 function head( array $array ): mixed {
 	return reset( $array );
@@ -149,7 +149,7 @@ function head( array $array ): mixed {
 /**
  * Get the last element from an array.
  *
- * @param array $array Array from which to get last element.
+ * @param array<mixed> $array Array from which to get last element.
  */
 function last( array $array ): mixed {
 	return end( $array );

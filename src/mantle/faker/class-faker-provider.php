@@ -84,9 +84,9 @@ class Faker_Provider extends Base {
 	/**
 	 * Build an image block.
 	 *
-	 * @param string|null $url Image URL.
-	 * @param string|null $alt Image alt text.
-	 * @param array<mixed>       $attributes Additional attributes for the block.
+	 * @param string|null  $url Image URL.
+	 * @param string|null  $alt Image alt text.
+	 * @param array<mixed> $attributes Additional attributes for the block.
 	 */
 	public static function image_block( ?string $url = null, ?string $alt = null, array $attributes = [] ): string {
 		$image = sprintf(
@@ -137,9 +137,9 @@ class Faker_Provider extends Base {
 	/**
 	 * Build a button block (or rather a buttons block with a button inside).
 	 *
-	 * @param string $text Button text.
-	 * @param string $url Button URL.
-	 * @param array<mixed>  $attributes Additional attributes for the block.
+	 * @param string       $text Button text.
+	 * @param string       $url Button URL.
+	 * @param array<mixed> $attributes Additional attributes for the block.
 	 */
 	public static function button_block( string $text, string $url, array $attributes = [] ): string {
 		return static::block(

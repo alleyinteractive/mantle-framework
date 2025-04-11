@@ -39,7 +39,7 @@ class Spy_REST_Server extends WP_REST_Server {
 	 * Allow calling protected methods from tests.
 	 *
 	 * @param string $method Method to call.
-	 * @param array  $args   Arguments to pass to the method.
+	 * @param array<mixed>  $args   Arguments to pass to the method.
 	 * @return mixed
 	 */
 	public function __call( $method, $args ) {

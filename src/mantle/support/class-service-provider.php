@@ -25,11 +25,15 @@ abstract class Service_Provider implements LoggerAwareInterface {
 
 	/**
 	 * The paths that should be published.
+	 *
+	 * @var array<class-string<Service_Provider>, string[]>
 	 */
 	public static array $publishes = [];
 
 	/**
 	 * The paths that should be published by group.
+	 *
+	 * @var array<string, string[]>
 	 */
 	public static array $publish_tags = [];
 
@@ -57,11 +61,15 @@ abstract class Service_Provider implements LoggerAwareInterface {
 
 	/**
 	 * Register the service provider.
+	 *
+	 * @phpstan-ignore missingType.return
 	 */
 	public function register() {}
 
 	/**
 	 * Boot the service provider.
+	 *
+	 * @phpstan-ignore missingType.return
 	 */
 	public function boot() {}
 

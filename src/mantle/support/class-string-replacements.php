@@ -14,14 +14,14 @@ class String_Replacements {
 	/**
 	 * Collected strings to search for.
 	 *
-	 * @var array
+	 * @var string[]|string[][]
 	 */
 	protected $search = [];
 
 	/**
 	 * Collected strings to replace found search values.
 	 *
-	 * @var array
+	 * @var string[]|string[][]
 	 */
 	protected $replace = [];
 
