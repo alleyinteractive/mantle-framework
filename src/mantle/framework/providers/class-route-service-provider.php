@@ -28,7 +28,7 @@ class Route_Service_Provider extends Service_Provider implements Isolated_Servic
 	/**
 	 * Load routes from the application service provider.
 	 */
-	protected function load_routes() {
+	protected function load_routes(): void {
 		if ( method_exists( $this, 'map' ) ) {
 			$this->app->call( [ $this, 'map' ] );
 		}
@@ -43,7 +43,7 @@ class Route_Service_Provider extends Service_Provider implements Isolated_Servic
 	 *
 	 * @param callable $callback Callback to invoke.
 	 */
-	protected function set_pass_through_callback( callable $callback ) {
+	protected function set_pass_through_callback( callable $callback ): void {
 		$this->app['router']->pass_requests_to_wordpress( $callback );
 	}
 

@@ -40,9 +40,8 @@ interface Dispatcher {
 	 *
 	 * @param  string|object $event Event name.
 	 * @param  mixed         $payload Event payload.
-	 * @return mixed
 	 */
-	public function dispatch( $event, $payload = [] );
+	public function dispatch( string|object $event, mixed $payload = [] ): mixed;
 
 	/**
 	 * Remove a set of listeners from the dispatcher.

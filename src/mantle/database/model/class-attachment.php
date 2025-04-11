@@ -218,7 +218,6 @@ class Attachment extends Post {
 	 * Delete the attachment.
 	 *
 	 * @param bool $force Force delete the model.
-	 * @return mixed
 	 */
 	public function delete( bool $force = false ): mixed {
 		return \wp_delete_attachment( $this->id(), $force );

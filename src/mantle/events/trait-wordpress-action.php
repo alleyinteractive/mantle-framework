@@ -97,11 +97,11 @@ trait WordPress_Action {
 	/**
 	 * Validate arguments for a type-hint
 	 *
-	 * @param array                 $arguments Arguments passed to the hook.
+	 * @param array<mixed>          $arguments Arguments passed to the hook.
 	 * @param ReflectionParameter[] $parameters parameters for the callback.
-	 * @return array
+	 * @return array<mixed>
 	 */
-	protected function validate_arguments( $arguments, array $parameters ) {
+	protected function validate_arguments( array $arguments, array $parameters ): array {
 		foreach ( $arguments as $i => &$argument ) {
 			$parameter = $parameters[ $i ] ?? null;
 			if ( ! $parameter ) {

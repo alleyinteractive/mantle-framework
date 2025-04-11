@@ -366,7 +366,6 @@ abstract class Builder {
 	 * @param string $key Meta key.
 	 * @param mixed  $value Meta value.
 	 * @param string $compare Comparison method, defaults to '='.
-	 * @return static
 	 */
 	public function andWhereMeta( string $key, mixed $value, string $compare = '=' ): static {
 		$this->meta_query['relation'] = 'AND';
@@ -380,7 +379,6 @@ abstract class Builder {
 	 * @param string $key Meta key.
 	 * @param mixed  $value Meta value.
 	 * @param string $compare Comparison method, defaults to '='.
-	 * @return static
 	 */
 	public function orWhereMeta( string $key, mixed $value, string $compare = '=' ): static {
 		$this->meta_query['relation'] = 'OR';
@@ -532,7 +530,6 @@ abstract class Builder {
 	 *
 	 * @param callable $scope Scope callback.
 	 * @param array<mixed>    $parameters Scope parameters.
-	 * @return mixed
 	 */
 	protected function call_scope( callable $scope, array $parameters = [] ): mixed {
 		array_unshift( $parameters, $this );
@@ -545,7 +542,6 @@ abstract class Builder {
 	 *
 	 * @param string $scope Scope name.
 	 * @param array<mixed>  $parameters Scope parameters.
-	 * @return mixed
 	 */
 	protected function call_named_scope( string $scope, array $parameters = [] ): mixed {
 		return $this->call_scope(

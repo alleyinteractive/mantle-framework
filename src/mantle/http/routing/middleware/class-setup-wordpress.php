@@ -38,7 +38,6 @@ class Setup_WordPress {
 	 *
 	 * @param Request  $request Request instance.
 	 * @param \Closure $next Callback for the middleware.
-	 * @return mixed
 	 */
 	public function handle( Request $request, Closure $next ): mixed {
 		global $wp;

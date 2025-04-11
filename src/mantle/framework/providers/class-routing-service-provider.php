@@ -42,7 +42,7 @@ class Routing_Service_Provider extends Service_Provider {
 	/**
 	 * Register the routing service provider instance.
 	 */
-	protected function register_router() {
+	protected function register_router(): void {
 		$this->app->singleton(
 			'router',
 			fn ( $app ) => new Router( $app['events'], $app ),
@@ -60,7 +60,7 @@ class Routing_Service_Provider extends Service_Provider {
 	 * @todo Improve on this URL generator to allow the routes to be shared
 	 * instantly from the router.
 	 */
-	protected function register_url_generator() {
+	protected function register_url_generator(): void {
 		$this->app->singleton(
 			'url',
 			function ( \Mantle\Contracts\Application $app ): \Mantle\Http\Routing\Url_Generator {
@@ -80,7 +80,7 @@ class Routing_Service_Provider extends Service_Provider {
 	/**
 	 * Register the redirect service.
 	 */
-	protected function register_redirector() {
+	protected function register_redirector(): void {
 		$this->app->singleton(
 			'redirect',
 			fn ( $app ) => new Redirector( $app['url'] )
@@ -90,7 +90,7 @@ class Routing_Service_Provider extends Service_Provider {
 	/**
 	 * Register the response factory.
 	 */
-	protected function register_response_factory() {
+	protected function register_response_factory(): void {
 		$this->app->singleton(
 			Response_Factory_Contract::class,
 			fn ( $app ) => new Response_Factory( $app['redirect'], $app['view'] )

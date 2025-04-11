@@ -12,8 +12,8 @@ use Mantle\Support\Collection;
 /**
  * Has One Relationship
  *
- * @template TParent of \Mantle\Database\Model\Model
- * @template TModel of \Mantle\Database\Model\Model
+ * @template TParent of \Mantle\Database\Model\Model = \Mantle\Database\Model\Model
+ * @template TModel of \Mantle\Database\Model\Model = \Mantle\Database\Model\Model
  *
  * @extends Has_One_Or_Many<TParent, TModel>
  */
@@ -34,7 +34,7 @@ class Has_One extends Has_One_Or_Many {
 	 * Match the eagerly loaded results to their parents.
 	 *
 	 * @param Collection<int, TParent> $models Parent models.
-	 * @param Collection<int, TModel> $results Eagerly loaded results to match.
+	 * @param Collection<int, TModel>  $results Eagerly loaded results to match.
 	 * @return Collection<int, TParent>
 	 */
 	public function match( Collection $models, Collection $results ): Collection {

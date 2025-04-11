@@ -30,7 +30,7 @@ trait Has_Events {
 	 * @param  \Closure|string $callback
 	 * @throws InvalidArgumentException Thrown on a missing dispatcher.
 	 */
-	protected static function register_model_event( $event, $callback ) {
+	protected static function register_model_event( string $event, \Closure|string $callback ): void {
 		$name = static::class;
 		if ( isset( static::$dispatcher ) ) {
 			static::$dispatcher->listen( "model.{$event}: {$name}", $callback );
@@ -156,6 +156,8 @@ trait Has_Events {
 
 	/**
 	 * Get the observable event names.
+	 *
+	 * @return array<string> List of observable event names.
 	 */
 	public function get_observable_events(): array {
 		return [

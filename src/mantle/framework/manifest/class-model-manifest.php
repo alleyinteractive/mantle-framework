@@ -23,6 +23,8 @@ use function Mantle\Support\Helpers\collect;
 class Model_Manifest {
 	/**
 	 * Manifest from the disk.
+	 *
+	 * @var array<string, string>|null
 	 */
 	protected ?array $manifest = null;
 
@@ -42,6 +44,8 @@ class Model_Manifest {
 
 	/**
 	 * Get all of the service provider class names for all packages.
+	 *
+	 * @return array<string, string>
 	 */
 	public function models(): array {
 		return $this->get_manifest();
@@ -49,6 +53,8 @@ class Model_Manifest {
 
 	/**
 	 * Get the compiled manifest.
+	 *
+	 * @return array<string, string>
 	 */
 	protected function get_manifest(): array {
 		if ( $this->manifest !== null ) {
@@ -100,10 +106,10 @@ class Model_Manifest {
 	/**
 	 * Write the manifest to the disk
 	 *
-	 * @param array $manifest Manifest to write.
+	 * @param array<mixed> $manifest Manifest to write.
 	 * @throws Application_Exception Thrown on error writing file.
 	 */
-	protected function write_manifest( array $manifest ) {
+	protected function write_manifest( array $manifest ): void {
 		$dir = dirname( $this->manifest_path );
 
 		// Ensure the cached folder exists. Create the folder if it doesn't exist.

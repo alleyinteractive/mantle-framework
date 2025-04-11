@@ -153,7 +153,6 @@ class Bound_Method {
 	 * @param  \ReflectionParameter $parameter Reflect Parameter.
 	 * @param  array<mixed>         $parameters Parameters to pass.
 	 * @param  array<mixed>         $dependencies Class dependencies.
-	 * @return void
 	 *
 	 * @throws Binding_Resolution_Exception Thrown for invalid binding resolution.
 	 */

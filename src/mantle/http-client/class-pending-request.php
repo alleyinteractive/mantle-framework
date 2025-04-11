@@ -43,6 +43,8 @@ class Pending_Request {
 
 	/**
 	 * Options for the request.
+	 *
+	 * @var array<string, mixed>
 	 */
 	protected array $options = [];
 
@@ -55,6 +57,8 @@ class Pending_Request {
 
 	/**
 	 * Pending files for the request.
+	 *
+	 * @var array<string, string>
 	 */
 	protected array $pending_files = [];
 
@@ -65,6 +69,8 @@ class Pending_Request {
 
 	/**
 	 * Middleware for the request.
+	 *
+	 * @var array<int, callable>
 	 */
 	protected array $middleware = [];
 
@@ -146,6 +152,8 @@ class Pending_Request {
 			throw new InvalidArgumentException( 'Cannot purge cache for a request that is not cached. Call cache() first.' );
 		}
 
+		assert( $middleware instanceof Cache_Middleware );
+
 		return $middleware->purge( $this );
 	}
 
@@ -217,7 +225,7 @@ class Pending_Request {
 	/**
 	 * Attach JSON data to the request.
 	 *
-	 * @param array $data Data to attach.
+	 * @param array<mixed> $data Data to attach.
 	 */
 	public function with_json( array $data ): static {
 		$this->as_json();
@@ -237,8 +245,8 @@ class Pending_Request {
 	/**
 	 * Pass raw options to the request (passed to `wp_remote_request()`).
 	 *
-	 * @param array $options Options for the request.
-	 * @param bool  $merge Merge the options with the existing options, default true.
+	 * @param array<string, mixed> $options Options for the request.
+	 * @param bool                 $merge Merge the options with the existing options, default true.
 	 */
 	public function with_options( array $options, bool $merge = true ): static {
 		$this->options['options'] = $merge ? array_merge(
@@ -466,6 +474,8 @@ class Pending_Request {
 
 	/**
 	 * Retrieve the middleware for the request.
+	 *
+	 * @return array<int, callable>
 	 */
 	public function get_middleware(): array {
 		return $this->middleware;
@@ -536,8 +546,8 @@ class Pending_Request {
 	 *
 	 * @throws InvalidArgumentException If the request is pooled.
 	 *
-	 * @param  string            $url URL to retrieve.
-	 * @param  array|string|null $query Query parameters (assumed to be urlencoded).
+	 * @param  string                           $url URL to retrieve.
+	 * @param  array<string, mixed>|string|null $query Query parameters (assumed to be urlencoded).
 	 */
 	public function get( string $url, array|string|null $query = null ): Response {
 		if ( $this->pooled ) {
@@ -556,8 +566,8 @@ class Pending_Request {
 	 *
 	 * @throws InvalidArgumentException If the request is pooled.
 	 *
-	 * @param  string            $url URL to retrieve.
-	 * @param  array|string|null $query Query parameters (assumed to be urlencoded).
+	 * @param  string                           $url URL to retrieve.
+	 * @param  array<string, mixed>|string|null $query Query parameters (assumed to be urlencoded).
 	 */
 	public function head( string $url, array|string|null $query = null ): Response {
 		if ( $this->pooled ) {
@@ -576,8 +586,8 @@ class Pending_Request {
 	 *
 	 * @throws InvalidArgumentException If the request is pooled.
 	 *
-	 * @param  string     $url URL to post.
-	 * @param  array|null $data Data to send with the request.
+	 * @param  string                    $url URL to post.
+	 * @param  array<string, mixed>|null $data Data to send with the request.
 	 */
 	public function post( string $url, ?array $data = null ): Response {
 		if ( $this->pooled ) {
@@ -596,8 +606,8 @@ class Pending_Request {
 	 *
 	 * @throws InvalidArgumentException If the request is pooled.
 	 *
-	 * @param  string     $url URL to patch.
-	 * @param  array|null $data Data to send with the request.
+	 * @param  string                    $url URL to patch.
+	 * @param  array<string, mixed>|null $data Data to send with the request.
 	 */
 	public function patch( string $url, ?array $data = null ): Response {
 		if ( $this->pooled ) {
@@ -616,8 +626,8 @@ class Pending_Request {
 	 *
 	 * @throws InvalidArgumentException If the request is pooled.
 	 *
-	 * @param  string     $url URL to put.
-	 * @param  array|null $data Data to send with the request.
+	 * @param  string                    $url URL to put.
+	 * @param  array<string, mixed>|null $data Data to send with the request.
 	 */
 	public function put( string $url, ?array $data = null ): Response {
 		if ( $this->pooled ) {
@@ -636,8 +646,8 @@ class Pending_Request {
 	 *
 	 * @throws InvalidArgumentException If the request is pooled.
 	 *
-	 * @param  string     $url URL to delete.
-	 * @param  array|null $data Data to send with the request.
+	 * @param  string                    $url URL to delete.
+	 * @param  array<string, mixed>|null $data Data to send with the request.
 	 */
 	public function delete( string $url, ?array $data = null ): Response {
 		if ( $this->pooled ) {
@@ -659,7 +669,7 @@ class Pending_Request {
 	 *
 	 * @param  string|Http_Method|null $method HTTP Method, optional.
 	 * @param  string                  $url URL for the request, optional.
-	 * @param  array                   $options Options for the request.
+	 * @param  array<string, mixed>    $options Options for the request.
 	 * @return Response|static
 	 */
 	public function send( string|Http_Method|null $method = null, ?string $url = null, array $options = [] ): mixed {
@@ -758,6 +768,8 @@ class Pending_Request {
 
 	/**
 	 * Prepare the request arguments to pass to `wp_remote_request()`.
+	 *
+	 * @return array<string, mixed>
 	 */
 	public function get_request_args(): array {
 		if ( isset( $this->options[ $this->body_format ] ) ) {

@@ -114,9 +114,8 @@ class Dispatcher implements Dispatcher_Contract {
 	 *
 	 * @param  string|object $event Event name.
 	 * @param  mixed         $payload Event payload.
-	 * @return mixed
 	 */
-	public function dispatch( $event, $payload = [ null ] ) {
+	public function dispatch( string|object $event, mixed $payload = [ null ] ): mixed {
 		[ $event, $payload ] = $this->parse_event_and_payload( $event, $payload );
 
 		if ( function_exists( 'apply_filters' ) ) {
@@ -129,10 +128,11 @@ class Dispatcher implements Dispatcher_Contract {
 	/**
 	 * Parse the given event and payload and prepare them for dispatching.
 	 *
-	 * @param  mixed $event
+	 * @param  string|object $event
 	 * @param  mixed $payload
+	 * @return array{0: string, 1: mixed}
 	 */
-	protected function parse_event_and_payload( $event, $payload ): array {
+	protected function parse_event_and_payload( string|object $event, mixed $payload ): array {
 		if ( is_object( $event ) ) {
 			[ $payload, $event ] = [ [ $event ], $event::class ];
 		}
@@ -144,9 +144,9 @@ class Dispatcher implements Dispatcher_Contract {
 	 * Get all of the listeners for a given event name.
 	 *
 	 * @param  string $event_name
-	 * @return array
+	 * @return array<mixed>
 	 */
-	public function get_listeners( $event_name ) {
+	public function get_listeners( string $event_name ): array {
 		$listeners = $this->listeners[ $event_name ] ?? [];
 
 		return class_exists( $event_name, false )
@@ -158,10 +158,10 @@ class Dispatcher implements Dispatcher_Contract {
 	 * Add the listeners for the event's interfaces to the given array.
 	 *
 	 * @param  string $event_name
-	 * @param  array  $listeners
-	 * @return array
+	 * @param  array<mixed>  $listeners
+	 * @return array<mixed>
 	 */
-	protected function add_interface_listeners( $event_name, array $listeners = [] ) {
+	protected function add_interface_listeners( string $event_name, array $listeners = [] ): array {
 		foreach ( class_implements( $event_name ) as $interface ) {
 			if ( isset( $this->listeners[ $interface ] ) ) {
 				foreach ( $this->listeners[ $interface ] as $names ) {
@@ -178,7 +178,7 @@ class Dispatcher implements Dispatcher_Contract {
 	 *
 	 * @param  \Closure|string $listener
 	 */
-	public function make_listener( $listener ): Closure {
+	public function make_listener( \Closure|string $listener ): Closure {
 		if ( is_string( $listener ) ) {
 			return $this->create_class_listener( $listener );
 		}
@@ -207,6 +207,7 @@ class Dispatcher implements Dispatcher_Contract {
 	 * Create the class based event callable.
 	 *
 	 * @param  string $listener
+	 * @return array{0: object, 1: string}
 	 */
 	protected function create_class_callable( string $listener ): array {
 		[ $class, $method ] = $this->parse_class_callable( $listener );
@@ -220,6 +221,7 @@ class Dispatcher implements Dispatcher_Contract {
 	 * Parse the class listener into class and method.
 	 *
 	 * @param  string $listener
+	 * @return array{0: string, 1: string}
 	 */
 	protected function parse_class_callable( string $listener ): array {
 		return Str::parse_callback( $listener, 'handle' );

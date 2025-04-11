@@ -21,7 +21,7 @@ class Package_Manifest {
 	/**
 	 * Manifest from the disk.
 	 *
-	 * @var array|null
+	 * @var array<string, array<string, mixed>>|null
 	 */
 	protected $manifest;
 
@@ -43,7 +43,7 @@ class Package_Manifest {
 	/**
 	 * Get all of the service provider class names for all packages.
 	 *
-	 * @return array
+	 * @return array<string, string>
 	 */
 	public function providers() {
 		return $this->config( 'providers' );
@@ -52,7 +52,7 @@ class Package_Manifest {
 	/**
 	 * Get all of the aliases for all packages.
 	 *
-	 * @return array
+	 * @return array<string, string>
 	 */
 	public function aliases() {
 		return $this->config( 'aliases' );
@@ -62,7 +62,7 @@ class Package_Manifest {
 	 * Get all of the values for all packages for the given configuration name.
 	 *
 	 * @param string $key Key to retrieve.
-	 * @return array
+	 * @return array<string, string>
 	 */
 	public function config( string $key ) {
 		return collect( $this->get_manifest() )
@@ -75,6 +75,8 @@ class Package_Manifest {
 
 	/**
 	 * Get the compiled manifest.
+	 *
+	 * @return array<string, array<string, mixed>>
 	 */
 	public function get_manifest(): array {
 		if ( $this->manifest !== null ) {
@@ -146,19 +148,17 @@ class Package_Manifest {
 	/**
 	 * Write the manifest to the disk
 	 *
-	 * @param array $manifest Manifest to write.
+	 * @param array<mixed> $manifest Manifest to write.
 	 * @throws Application_Exception Thrown on error writing file.
 	 */
-	protected function write_manifest( array $manifest ) {
+	protected function write_manifest( array $manifest ): void {
 		$filesystem = new Filesystem();
 
 		$dir = dirname( $this->manifest_path );
 
-		// Ensure the cached folder exists.
-								// Create the folder if it doesn't exist.
+		// Ensure the cached folder exists. Create the folder if it doesn't exist.
 		if ( ! $filesystem->is_directory( $dir ) && ! $filesystem->make_directory( $dir ) ) {
-			// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.directory_mkdir
-						throw new Application_Exception( 'Unable to create path ' . $dir );
+			throw new Application_Exception( 'Unable to create path ' . $dir );
 		}
 
 		if ( ! $filesystem->put(
@@ -183,10 +183,12 @@ class Package_Manifest {
 
 	/**
 	 * Get all of the package names that should be ignored.
+	 *
+	 * @return array<string>
 	 */
 	protected function packages_to_ignore(): array {
 		if ( ! file_exists( $this->base_path . '/composer.json' ) ) {
-				return [];
+			return [];
 		}
 
 		return json_decode(

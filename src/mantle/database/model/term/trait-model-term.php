@@ -70,7 +70,7 @@ trait Model_Term {
 	/**
 	 * Store queued model terms.
 	 */
-	protected function store_queued_terms() {
+	protected function store_queued_terms(): void {
 		if ( empty( $this->queued_terms ) ) {
 			return;
 		}
@@ -177,6 +177,7 @@ trait Model_Term {
 	 * @param mixed                    $value Term value to resolve. Supports Term, WP_Term, int, string, or array of each.
 	 * @param string|null              $taxonomy Taxonomy name, optional.
 	 * @param bool                     $create Create the term if it does not exist, defaults to false.
+	 * @return array<string, WP_Term[]>
 	 */
 	private function resolve_mixed_term( array $carry, mixed $value, ?string $taxonomy = null, bool $create = false ): array {
 		if ( $value instanceof WP_Term || $value instanceof Term ) {

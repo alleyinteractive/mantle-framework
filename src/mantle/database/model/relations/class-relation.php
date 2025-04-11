@@ -20,8 +20,8 @@ use Mantle\Support\Forward_Calls;
 /**
  * Relation base class.
  *
- * @template TParent of \Mantle\Database\Model\Model
- * @template TModel of \Mantle\Database\Model\Model
+ * @template TParent of \Mantle\Database\Model\Model = \Mantle\Database\Model\Model
+ * @template TModel of \Mantle\Database\Model\Model = \Mantle\Database\Model\Model
  *
  * @mixin \Mantle\Database\Query\Builder<TModel>
  */
@@ -65,9 +65,9 @@ abstract class Relation {
 	 * Create a new relation instance.
 	 *
 	 * @param Builder<TModel> $query Query builder instance.
-	 * @param Model<TParent>   $parent Model instance.
-	 * @param bool|null        $uses_terms Flag if the relation uses terms.
-	 * @param string           $relationship Relationship name, optional.
+	 * @param Model<TParent>  $parent Model instance.
+	 * @param bool|null       $uses_terms Flag if the relation uses terms.
+	 * @param string          $relationship Relationship name, optional.
 	 */
 	public function __construct( protected Builder $query, protected Model $parent, ?bool $uses_terms = null, ?string $relationship = null ) {
 		$this->related = $this->query->get_model();

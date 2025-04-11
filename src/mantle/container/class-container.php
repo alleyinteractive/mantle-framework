@@ -29,7 +29,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 *
 	 * @var static|null
 	 */
-	protected static $instance = null;
+	protected static $instance;
 
 	/**
 	 * An array of the types that have been resolved.
@@ -494,7 +494,6 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @param  callable|string $callback Callback to execute.
 	 * @param  string[]        $parameters Parameters to pass.
 	 * @param  string|null     $default_method Default method.
-	 * @return mixed
 	 *
 	 * @throws \InvalidArgumentException Throw for invalid arguments.
 	 */
@@ -506,7 +505,6 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * Get a closure to resolve the given type from the container.
 	 *
 	 * @param  string $abstract Abstract name.
-	 * @return \Closure
 	 */
 	public function factory( string $abstract ): Closure {
 		return fn () => $this->make( $abstract );
@@ -1036,7 +1034,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 *
 	 * @return array<string, array<string, mixed>>
 	 */
-	public function get_bindings() {
+	public function get_bindings(): array {
 		return $this->bindings;
 	}
 
@@ -1071,7 +1069,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 *
 	 * @param  string $abstract
 	 */
-	public function forget_extenders( $abstract ): void {
+	public function forget_extenders( string $abstract ): void {
 		unset( $this->extenders[ $this->get_alias( $abstract ) ] );
 	}
 

@@ -18,7 +18,6 @@ interface Container extends ContainerInterface {
 	 * Determine if the given abstract type has been bound.
 	 *
 	 * @param string $abstract Abstract name.
-	 * @return bool
 	 */
 	public function bound( string $abstract ): bool;
 
@@ -86,7 +85,6 @@ interface Container extends ContainerInterface {
 	 * Get a closure to resolve the given type from the container.
 	 *
 	 * @param string $abstract Abstract name.
-	 * @return \Closure
 	 */
 	public function factory( string $abstract ): Closure;
 
@@ -101,7 +99,6 @@ interface Container extends ContainerInterface {
 	 * @param  callable|string $callback
 	 * @param  array<mixed>    $parameters
 	 * @param  string|null     $default_method
-	 * @return mixed
 	 */
 	public function call( $callback, array $parameters = [], $default_method = null ): mixed;
 
@@ -110,7 +107,6 @@ interface Container extends ContainerInterface {
 	 *
 	 * @param string       $abstract Abstract name.
 	 * @param array<mixed> $parameters Parameters to pass.
-	 * @return mixed
 	 */
 	public function make( $abstract, array $parameters = [] ): mixed;
 
@@ -133,7 +129,6 @@ interface Container extends ContainerInterface {
 	 * Determine if the given abstract type has been resolved.
 	 *
 	 * @param string $abstract Abstract name.
-	 * @return bool
 	 */
 	public function resolved( string $abstract ): bool;
 

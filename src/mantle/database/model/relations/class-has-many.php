@@ -12,8 +12,8 @@ use Mantle\Support\Collection;
 /**
  * Has Many Relationship
  *
- * @template TParent of \Mantle\Database\Model\Model
- * @template TModel of \Mantle\Database\Model\Model
+ * @template TParent of \Mantle\Database\Model\Model = \Mantle\Database\Model\Model
+ * @template TModel of \Mantle\Database\Model\Model = \Mantle\Database\Model\Model
  *
  * @extends Has_One_Or_Many<TParent, TModel>
  */

@@ -17,7 +17,7 @@ class Event_Service_Provider extends Service_Provider {
 	/**
 	 * The event listener mappings for the application.
 	 *
-	 * @var array
+	 * @var array<string, class-string[]>
 	 */
 	protected $listen = [
 		/**

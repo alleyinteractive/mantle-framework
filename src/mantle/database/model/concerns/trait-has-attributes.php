@@ -102,7 +102,7 @@ trait Has_Attributes {
 	 * Retrieve a relationship value.
 	 *
 	 * @param string $key Relation name.
-	 * @return \Mantle\Database\Model\Relations\Relation<TModel>|null
+	 * @return \Mantle\Database\Model\Relations\Relation<TModel, \Mantle\Database\Model\Model>|null
 	 */
 	public function get_relation_value( string $key ): ?Relation {
 		if ( 'ID' === $key ) {
@@ -124,7 +124,7 @@ trait Has_Attributes {
 	 * Retrieve a relationship from a method.
 	 *
 	 * @param string $method
-	 * @return Relation<TModel>
+	 * @return Relation<TModel, \Mantle\Database\Model\Model>
 	 *
 	 * @throws LogicException Thrown if the relationship method is not an instance
 	 *                        of Relation.
@@ -157,7 +157,6 @@ trait Has_Attributes {
 	 *
 	 * @param string $attribute Attribute name.
 	 * @param mixed  $value Value to set.
-	 * @return static
 	 *
 	 * @throws Model_Exception Thrown when trying to set 'id'.
 	 */
@@ -186,7 +185,6 @@ trait Has_Attributes {
 	 *
 	 * @param string $attribute Attribute name.
 	 * @param mixed  $value Value to set.
-	 * @return static
 	 */
 	public function set_raw_attribute( string $attribute, mixed $value ): static {
 		$this->attributes[ $attribute ] = $value;

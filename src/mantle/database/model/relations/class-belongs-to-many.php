@@ -14,8 +14,8 @@ use function Mantle\Support\Helpers\collect;
 /**
  * Creates a 'Belongs To Many' relationship.
  *
- * @template TParent of \Mantle\Database\Model\Model
- * @template TModel of \Mantle\Database\Model\Model
+ * @template TParent of \Mantle\Database\Model\Model = \Mantle\Database\Model\Model
+ * @template TModel of \Mantle\Database\Model\Model = \Mantle\Database\Model\Model
  *
  * @extends Belongs_To<TParent, TModel>
  */
@@ -53,7 +53,7 @@ class Belongs_To_Many extends Belongs_To {
 	 * Build a model dictionary keyed by the relation's foreign key.
 	 *
 	 * @param Collection<int, TParent> $results Collection of results.
-	 * @param Collection<int, TModel> $models Eagerly loaded results to match.
+	 * @param Collection<int, TModel>  $models Eagerly loaded results to match.
 	 * @return array<string, array<int, TParent>>
 	 */
 	protected function build_dictionary( Collection $results, Collection $models ): array {

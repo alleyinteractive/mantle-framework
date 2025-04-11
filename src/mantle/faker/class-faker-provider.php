@@ -19,7 +19,7 @@ class Faker_Provider extends Base {
 	/**
 	 * Compile a set of blocks.
 	 *
-	 * @param array $blocks Blocks to compile.
+	 * @param string[] $blocks Blocks to compile.
 	 */
 	public static function blocks( array $blocks ): string {
 		return implode( "\n\n", $blocks );
@@ -69,6 +69,8 @@ class Faker_Provider extends Base {
 	 *
 	 * @param int  $count Number of paragraph blocks to generate.
 	 * @param bool $as_text Return as text or an array of blocks.
+	 * @return string|string[]
+	 * @phpstan-return ($as_text is true ? string : array<string>)
 	 */
 	public static function paragraph_blocks( int $count = 3, bool $as_text = true ): string|array {
 		$paragraphs = [];
@@ -84,7 +86,7 @@ class Faker_Provider extends Base {
 	 *
 	 * @param string|null $url Image URL.
 	 * @param string|null $alt Image alt text.
-	 * @param array       $attributes Additional attributes for the block.
+	 * @param array<mixed>       $attributes Additional attributes for the block.
 	 */
 	public static function image_block( ?string $url = null, ?string $alt = null, array $attributes = [] ): string {
 		$image = sprintf(
@@ -137,7 +139,7 @@ class Faker_Provider extends Base {
 	 *
 	 * @param string $text Button text.
 	 * @param string $url Button URL.
-	 * @param array  $attributes Additional attributes for the block.
+	 * @param array<mixed>  $attributes Additional attributes for the block.
 	 */
 	public static function button_block( string $text, string $url, array $attributes = [] ): string {
 		return static::block(

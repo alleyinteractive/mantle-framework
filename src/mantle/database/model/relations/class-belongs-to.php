@@ -30,8 +30,8 @@ use function Mantle\Support\Helpers\collect;
  * For relationships between posts and term models, the Belongs To relationship
  * is not supported for performance reasons.
  *
- * @template TParent of \Mantle\Database\Model\Model
- * @template TModel of \Mantle\Database\Model\Model
+ * @template TParent of \Mantle\Database\Model\Model = \Mantle\Database\Model\Model
+ * @template TModel of \Mantle\Database\Model\Model = \Mantle\Database\Model\Model
  *
  * @extends Relation<TParent, TModel>
  */
@@ -40,9 +40,9 @@ class Belongs_To extends Relation {
 	 * Create a new has one or many relationship instance.
 	 *
 	 * @param Builder<TModel> $query Query builder object.
-	 * @param TParent            $parent Parent model.
-	 * @param string           $foreign_key Foreign key.
-	 * @param string           $local_key Local key.
+	 * @param TParent         $parent Parent model.
+	 * @param string          $foreign_key Foreign key.
+	 * @param string          $local_key Local key.
 	 */
 	public function __construct( Builder $query, Model $parent, protected string $foreign_key, protected ?string $local_key = null ) {
 		parent::__construct( $query, $parent );

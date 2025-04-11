@@ -36,8 +36,8 @@ class Factory {
 	/**
 	 * Forward the call to a new pending request.
 	 *
-	 * @param string $method Method name.
-	 * @param array  $parameters Method parameters.
+	 * @param string       $method Method name.
+	 * @param array<mixed> $parameters Method parameters.
 	 * @return Response|Pending_Request|mixed
 	 */
 	public function __call( string $method, array $parameters ) {
@@ -51,8 +51,8 @@ class Factory {
 	/**
 	 * Forward a static call to a new pending request.
 	 *
-	 * @param string $method Method name.
-	 * @param array  $parameters Method parameters.
+	 * @param string       $method Method name.
+	 * @param array<mixed> $parameters Method parameters.
 	 * @return Response|Pending_Request|Pool|mixed
 	 */
 	public static function __callStatic( string $method, array $parameters ) {

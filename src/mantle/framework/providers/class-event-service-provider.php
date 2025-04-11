@@ -26,7 +26,7 @@ abstract class Event_Service_Provider extends Service_Provider implements Isolat
 	/**
 	 * The event listener mappings for the application.
 	 *
-	 * @var array
+	 * @var array<string, class-string[]>
 	 */
 	protected $listen = [];
 
@@ -57,6 +57,8 @@ abstract class Event_Service_Provider extends Service_Provider implements Isolat
 
 	/**
 	 * Get discovered events and listeners for the application.
+	 *
+	 * @return array<string, array<string|array<string>>>
 	 */
 	public function get_events(): array {
 		if ( $this->app->is_events_cached() ) {
@@ -73,6 +75,8 @@ abstract class Event_Service_Provider extends Service_Provider implements Isolat
 
 	/**
 	 * Get discovered events for the application.
+	 *
+	 * @return array<string, array<string|array<string>>>
 	 */
 	protected function get_discovered_events(): array {
 		return $this->should_discover_events()
@@ -82,6 +86,8 @@ abstract class Event_Service_Provider extends Service_Provider implements Isolat
 
 	/**
 	 * Discover events and listeners for the application.
+	 *
+	 * @return array<string, array<string|array<string>>>
 	 */
 	protected function discover_events(): array {
 		return collect( $this->discover_events_within() )
@@ -97,6 +103,8 @@ abstract class Event_Service_Provider extends Service_Provider implements Isolat
 
 	/**
 	 * Get event events and handlers.
+	 *
+	 * @return array<string, array<string|array<string>>>
 	 */
 	protected function get_listen(): array {
 		return $this->listen;
@@ -125,6 +133,7 @@ abstract class Event_Service_Provider extends Service_Provider implements Isolat
 	 *
 	 * @param mixed $listener Event listener, optionally an array with a listener
 	 *                        and priority.
+	 * @return array<string, int>
 	 */
 	protected function parse_listener( $listener ): array {
 		// Support the listener being an array of listener and action priority.
