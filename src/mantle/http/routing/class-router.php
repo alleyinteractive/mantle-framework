@@ -185,9 +185,9 @@ class Router implements Router_Contract {
 	/**
 	 * Register a route.
 	 *
-	 * @param string[]  $methods Methods to register.
-	 * @param string $uri URL route.
-	 * @param mixed  $action Route callback.
+	 * @param string[] $methods Methods to register.
+	 * @param string   $uri URL route.
+	 * @param mixed    $action Route callback.
 	 * @return Route|null Route instance for web routes, null for REST routes.
 	 */
 	public function add_route( array $methods, string $uri, $action ): ?Route {
@@ -208,9 +208,9 @@ class Router implements Router_Contract {
 	/**
 	 * Create a new route instance.
 	 *
-	 * @param string[]  $methods Methods to register.
-	 * @param string $uri URL route.
-	 * @param mixed  $action Route callback.
+	 * @param string[] $methods Methods to register.
+	 * @param string   $uri URL route.
+	 * @param mixed    $action Route callback.
 	 */
 	protected function create_route( array $methods, string $uri, $action ): Route {
 		$route = new Route( $methods, $this->prefix( $uri ), $action );
@@ -227,9 +227,9 @@ class Router implements Router_Contract {
 	/**
 	 * Create a REST API route.
 	 *
-	 * @param string[]  $methods Methods to register.
-	 * @param string $uri URL route.
-	 * @param mixed  $action Route callback.
+	 * @param string[] $methods Methods to register.
+	 * @param string   $uri URL route.
+	 * @param mixed    $action Route callback.
 	 */
 	protected function create_rest_api_route( array $methods, string $uri, $action ): void {
 		$args = [
@@ -294,8 +294,8 @@ class Router implements Router_Contract {
 	/**
 	 * Execute a route match and retrieve the response.
 	 *
-	 * @param array<mixed>   $match Route match.
-	 * @param Request $request Request object.
+	 * @param array<mixed> $match Route match.
+	 * @param Request      $request Request object.
 	 *
 	 * @throws HttpException Thrown on unknown route callback.
 	 */
@@ -378,8 +378,8 @@ class Router implements Router_Contract {
 	/**
 	 * Register a group of middleware.
 	 *
-	 * @param  string $name
-	 * @param  array<class-string>  $middleware
+	 * @param  string              $name
+	 * @param  array<class-string> $middleware
 	 */
 	public function middleware_group( string $name, array $middleware ): static {
 		$this->middleware_groups[ $name ] = $middleware;
@@ -537,9 +537,9 @@ class Router implements Router_Contract {
 	/**
 	 * Register a REST API route
 	 *
-	 * @param string                $namespace Namespace for the REST API route.
-	 * @param callable|string       $callback  Callback that will be invoked to register
-	 *                                         routes OR a string route.
+	 * @param string                       $namespace Namespace for the REST API route.
+	 * @param callable|string              $callback  Callback that will be invoked to register
+	 *                                                routes OR a string route.
 	 * @param callable|array<mixed>|string $args      Callback for the route if $callback is a
 	 *                                         string route OR arguments to pass to
 	 *                                         the register_rest_route() call. Not used if $callback
@@ -585,11 +585,10 @@ class Router implements Router_Contract {
 	/**
 	 * Dynamically handle calls into the router instance.
 	 *
-	 * @param string $method Method name.
-	 * @param array<mixed>  $parameters Parameters for the method.
-	 * @return mixed
+	 * @param string       $method Method name.
+	 * @param array<mixed> $parameters Parameters for the method.
 	 */
-	public function __call( string $method, array $parameters ) {
+	public function __call( string $method, array $parameters ): mixed {
 		if ( static::has_macro( $method ) ) {
 			return $this->macro_call( $method, $parameters );
 		}

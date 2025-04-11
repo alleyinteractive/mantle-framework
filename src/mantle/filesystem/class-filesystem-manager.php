@@ -98,6 +98,7 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 * Retrieve configuration for a specific filesystem disk.
 	 *
 	 * @param string $disk Disk name.
+	 * @return array<mixed>
 	 */
 	protected function get_config( string $disk ): array {
 		return (array) ( $this->app['config'][ "filesystem.disks.{$disk}" ] ?? [] );
@@ -113,8 +114,8 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	/**
 	 * Add a custom driver to the filesystem.
 	 *
-	 * @param string                                                                                  $driver Driver name.
-	 * @param \Closure(\Mantle\Contracts\Application, array): \Mantle\Contracts\Filesystem\Filesystem $callback Callback to create the driver.
+	 * @param string                                                                                         $driver Driver name.
+	 * @param \Closure(\Mantle\Contracts\Application, array<mixed>): \Mantle\Contracts\Filesystem\Filesystem $callback Callback to create the driver.
 	 */
 	public function extend( string $driver, Closure $callback ): static {
 		$this->custom_drivers[ $driver ] = $callback;
@@ -125,8 +126,8 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	/**
 	 * Call a custom driver.
 	 *
-	 * @param string $driver Driver name.
-	 * @param array  $config Configuration from disk.
+	 * @param string       $driver Driver name.
+	 * @param array<mixed> $config Configuration from disk.
 	 */
 	protected function call_custom_driver( string $driver, array $config ): Filesystem {
 		return $this->custom_drivers[ $driver ]( $this->app, $config );
@@ -136,7 +137,7 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 * Create a Flysystem instance with the given adapter.
 	 *
 	 * @param FilesystemAdapter $adapter
-	 * @param array             $config Adapter configuration.
+	 * @param array<mixed>      $config Adapter configuration.
 	 */
 	protected function create_flysystem( FilesystemAdapter $adapter, array $config = [] ): Flysystem {
 		return new Flysystem( $adapter, $config );
@@ -145,7 +146,7 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	/**
 	 * Create an instance of the local driver.
 	 *
-	 * @param  array $config Configuration.
+	 * @param  array<mixed> $config Configuration.
 	 *
 	 * @throws InvalidArgumentException Thrown on missing WordPress.
 	 */
@@ -201,7 +202,7 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	/**
 	 * Create an instance of the Amazon S3 driver.
 	 *
-	 * @param array $config S3 configuration.
+	 * @param array<mixed> $config S3 configuration.
 	 *
 	 * @throws RuntimeException Thrown on missing dependency.
 	 */
@@ -235,7 +236,8 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	/**
 	 * Format the given S3 configuration with the default options.
 	 *
-	 * @param  array $config
+	 * @param  array<mixed> $config
+	 * @return array<mixed>
 	 */
 	protected function format_s3_config( array $config ): array {
 		$config += [ 'version' => 'latest' ];
@@ -250,8 +252,8 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	/**
 	 * Pass the method calls to the default disk.
 	 *
-	 * @param string $method Method to invoke.
-	 * @param array  $arguments Arguments for the method.
+	 * @param string       $method Method to invoke.
+	 * @param array<mixed> $arguments Arguments for the method.
 	 * @return mixed
 	 */
 	public function __call( string $method, array $arguments ) {

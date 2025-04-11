@@ -53,7 +53,7 @@ class View implements \Stringable {
 	 * @param Factory_Contract                               $factory View Factory.
 	 * @param Engine|\Illuminate\View\Engines\CompilerEngine $engine View Engine.
 	 * @param string                                         $path View path.
-	 * @param array<string, mixed>                                          $data Variables for the view, optional.
+	 * @param array<string, mixed>                           $data Variables for the view, optional.
 	 */
 	public function __construct(
 		protected Factory_Contract $factory,
@@ -86,7 +86,7 @@ class View implements \Stringable {
 	 * Add a piece of data to the view.
 	 *
 	 * @param string|array<string, mixed> $key Key to set.
-	 * @param mixed        $value Value to set.
+	 * @param mixed                       $value Value to set.
 	 */
 	public function with( $key, $value = null ): static {
 		if ( is_array( $key ) ) {
@@ -112,9 +112,8 @@ class View implements \Stringable {
 	 *
 	 * @param string $key Key to get.
 	 * @param mixed  $default Default value, optional.
-	 * @return mixed
 	 */
-	public function get_variable( string $key, $default = null ) {
+	public function get_variable( string $key, $default = null ): mixed {
 		return Arr::get( $this->data, $key, $default );
 	}
 

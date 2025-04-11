@@ -42,8 +42,8 @@ class Pluralizer {
 	/**
 	 * Get the plural form of an English word.
 	 *
-	 * @param  string               $value
-	 * @param  int|array|\Countable $count
+	 * @param  string                      $value
+	 * @param  int|array<mixed>|\Countable $count
 	 */
 	public static function plural( string $value, int|array|\Countable $count = 2 ): string {
 		if ( is_countable( $count ) ) {

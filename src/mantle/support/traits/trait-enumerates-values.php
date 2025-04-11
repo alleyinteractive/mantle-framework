@@ -416,7 +416,6 @@ trait Enumerates_Values {
 			}
 		}
 
-		/** @var static<int, static<TKey, TValue>> */
 		return new static( [
 			new static( $passed ),
 			new static( $failed ),
@@ -616,10 +615,11 @@ trait Enumerates_Values {
 	 *
 	 * @template TWhereInstanceOf
 	 *
-	 * @param  class-string<TWhereInstanceOf>|array<array-key, class-string<TWhereInstanceOf>> $type
+	 * @param  class-string<TWhereInstanceOf>|array<class-string<TWhereInstanceOf>> $type
 	 * @return static<TKey, TWhereInstanceOf>
 	 */
-	public function where_instance_of( $type ) {
+	public function where_instance_of( string|array $type ) {
+		// @phpstan-ignore return.type
 		return $this->filter(
 			fn ( $value ) => $value instanceof $type,
 		);

@@ -173,7 +173,7 @@ class Scheduler {
 	 * Retrieve all the scheduled cron jobs for a queue from the cron API.
 	 *
 	 * @param string $queue Queue name.
-	 * @return Collection<int, array>
+	 * @return Collection<int, array<mixed>>
 	 */
 	protected static function get_scheduled_cron_jobs( ?string $queue = null ): Collection {
 		if ( ! $queue ) {

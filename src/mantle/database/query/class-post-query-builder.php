@@ -224,14 +224,14 @@ class Post_Query_Builder extends Builder {
 	/**
 	 * Include a taxonomy query.
 	 *
-	 * @param array<mixed>|string|Term|\WP_Term|int $term Term ID/array of IDs.
-	 * @param string                         $taxonomy Taxonomy name.
+	 * @param array<string|int>|string|Term|\WP_Term|int $term Term ID/array of IDs.
+	 * @param string|null                         $taxonomy Taxonomy name.
 	 * @param string                         $operator Operator to use, defaults to 'IN'.
 	 * @param string                         $field Field to use for the query, defaults to term ID.
 	 *
 	 * @throws Query_Exception Unknown term to query against.
 	 */
-	public function whereTerm( $term, $taxonomy = null, string $operator = 'IN', string $field = 'term_id' ): static {
+	public function whereTerm( array|int|string|Term|WP_Term $term, ?string $taxonomy = null, string $operator = 'IN', string $field = 'term_id' ): static {
 		if ( $term instanceof Term ) {
 			$taxonomy = $term->taxonomy();
 			$term     = $term->id();
@@ -277,11 +277,11 @@ class Post_Query_Builder extends Builder {
 	/**
 	 * Include a taxonomy query with the relation set to 'AND'.
 	 *
-	 * @param array<mixed>|string $term Term ID/array of IDs.
-	 * @param string       $taxonomy Taxonomy name.
+	 * @param array<string|int>|string|Term|\WP_Term|int $term Term ID/array of IDs.
+	 * @param string|null       $taxonomy Taxonomy name.
 	 * @param string       $operator Operator to use, defaults to 'IN'.
 	 */
-	public function andWhereTerm( array|string $term, string $taxonomy, string $operator = 'IN' ): static {
+	public function andWhereTerm( array|int|string|Term|WP_Term $term, ?string $taxonomy = null, string $operator = 'IN' ): static {
 		$this->tax_query['relation'] = 'AND';
 		return $this->whereTerm( $term, $taxonomy, $operator );
 	}
@@ -289,11 +289,11 @@ class Post_Query_Builder extends Builder {
 	/**
 	 * Include a taxonomy query with the relation set to 'OR'.
 	 *
-	 * @param array<mixed>|string $term Term ID/array of IDs.
-	 * @param string       $taxonomy Taxonomy name.
+	 * @param array<string|int>|string|Term|\WP_Term|int $term Term ID/array of IDs.
+	 * @param string|null       $taxonomy Taxonomy name.
 	 * @param string       $operator Operator to use, defaults to 'IN'.
 	 */
-	public function orWhereTerm( array|string $term, string $taxonomy, string $operator = 'IN' ): static {
+	public function orWhereTerm( array|int|string|Term|WP_Term $term, ?string $taxonomy = null, string $operator = 'IN' ): static {
 		$this->tax_query['relation'] = 'OR';
 		return $this->whereTerm( $term, $taxonomy, $operator );
 	}

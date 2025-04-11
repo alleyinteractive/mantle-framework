@@ -63,8 +63,8 @@ class Queue_Record extends Post {
 	/**
 	 * Log an event for the job.
 	 *
-	 * @param Event $event The event to log.
-	 * @param array $payload The event payload.
+	 * @param Event        $event The event to log.
+	 * @param array<mixed> $payload The event payload.
 	 */
 	public function log( Event $event, array $payload = [] ): void {
 		$meta = $this->get_meta( Meta_Key::LOG->value );

@@ -35,9 +35,9 @@ class Message_Logged {
 	/**
 	 * Constructor.
 	 *
-	 * @param string $level Log level.
-	 * @param string $message Message.
-	 * @param array<mixed>  $context Log context.
+	 * @param string       $level Log level.
+	 * @param string       $message Message.
+	 * @param array<mixed> $context Log context.
 	 */
 	public function __construct( string $level, string $message, array $context = [] ) {
 		$this->level   = $level;

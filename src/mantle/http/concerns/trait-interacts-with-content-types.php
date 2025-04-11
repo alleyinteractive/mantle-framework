@@ -66,7 +66,7 @@ trait Interacts_With_Content_Types {
 	/**
 	 * Determines whether the current requests accepts a given content type.
 	 *
-	 * @param  string|array $content_types
+	 * @param  string|string[] $content_types
 	 */
 	public function accepts( $content_types ): bool {
 		$accepts = $this->getAcceptableContentTypes();
@@ -95,10 +95,9 @@ trait Interacts_With_Content_Types {
 	/**
 	 * Return the most suitable content type from the given array based on content negotiation.
 	 *
-	 * @param  string|array $content_types
-	 * @return string|null
+	 * @param  string|string[] $content_types
 	 */
-	public function prefers( $content_types ) {
+	public function prefers( array|string $content_types ): ?string {
 		$accepts = $this->getAcceptableContentTypes();
 
 		$content_types = (array) $content_types;

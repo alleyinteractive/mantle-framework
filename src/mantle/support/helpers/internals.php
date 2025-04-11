@@ -12,9 +12,9 @@ namespace Mantle\Support\Helpers;
  *
  * Internals are not subject to semantic-versioning constraints.
  *
- * @param array $args Array with the arguments for {@see remove_filter()}.
+ * @param array<mixed> $args Array with the arguments for {@see remove_filter()}.
  */
-function invalid_hook_removal( $args ): void {
+function invalid_hook_removal( array $args ): void {
 	// PHPCS does not recognize the [ $arg1, $arg2 ] syntax.
 	[$hook, $callable] = $args;
 

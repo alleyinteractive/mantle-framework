@@ -93,10 +93,10 @@ trait Query_Bindings {
 	/**
 	 * Alias for where_raw().
 	 *
-	 * @param array|string $column The column name or array of bindings.
-	 * @param string|null  $operator The operator OR the value if no value is provided.
-	 * @param mixed        $value The value.
-	 * @param string       $boolean The boolean operator (AND/OR) used to concatenate the clause.
+	 * @param array<string, mixed>|string $column The column name or array of bindings.
+	 * @param string|null                 $operator The operator OR the value if no value is provided.
+	 * @param mixed                       $value The value.
+	 * @param string                      $boolean The boolean operator (AND/OR) used to concatenate the clause.
 	 */
 	public function whereRaw( array|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' ): static {
 		return $this->where_raw( $column, $operator, $value, $boolean );
@@ -152,9 +152,9 @@ trait Query_Bindings {
 	 *
 	 * @throws InvalidArgumentException If the query class is invalid.
 	 *
-	 * @param array                    $clauses The query clauses.
+	 * @param array<mixed>             $clauses The query clauses.
 	 * @param \WP_Query|\WP_Term_Query $query The query object.
-	 * @return array The modified query clauses.
+	 * @return array<mixed> The modified query clauses.
 	 */
 	protected function apply_query_bindings( array $clauses, \WP_Query|\WP_Term_Query $query ): array {
 		global $wpdb;
@@ -177,8 +177,8 @@ trait Query_Bindings {
 	 *
 	 * @throws InvalidArgumentException If the operator is invalid.
 	 *
-	 * @param string $table The table name.
-	 * @param array  $binding The binding.
+	 * @param string       $table The table name.
+	 * @param array<mixed> $binding The binding.
 	 * @return string The where clause.
 	 */
 	protected function get_where_clause( string $table, array $binding ): string {

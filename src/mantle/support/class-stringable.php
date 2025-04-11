@@ -226,11 +226,10 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	/**
 	 * Extracts an excerpt from text that matches the first instance of a phrase.
 	 *
-	 * @param  string $phrase
-	 * @param  array  $options
-	 * @return string|null
+	 * @param  string       $phrase
+	 * @param  array<mixed> $options
 	 */
-	public function excerpt( string $phrase = '', array $options = [] ) {
+	public function excerpt( string $phrase = '', array $options = [] ): ?string {
 		return Str::excerpt( $this->value, $phrase, $options );
 	}
 
@@ -377,7 +376,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	/**
 	 * Convert GitHub flavored Markdown into HTML.
 	 *
-	 * @param  array $options
+	 * @param  array<mixed> $options
 	 */
 	public function markdown( array $options = [] ): static {
 		return new static( Str::markdown( $this->value, $options ) );
@@ -386,7 +385,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	/**
 	 * Convert inline Markdown into HTML.
 	 *
-	 * @param  array $options
+	 * @param  array<mixed> $options
 	 */
 	public function inline_markdown( array $options = [] ): static {
 		return new static( Str::inline_markdown( $this->value, $options ) );
@@ -492,7 +491,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	/**
 	 * Get the plural form of an English word.
 	 *
-	 * @param  int|array|\Countable $count
+	 * @param  int|array<mixed>|\Countable $count
 	 */
 	public function plural( int|array|\Countable $count = 2 ): static {
 		return new static( Str::plural( $this->value, $count ) );
@@ -501,7 +500,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	/**
 	 * Pluralize the last word of an English, studly caps case string.
 	 *
-	 * @param  int|array|\Countable $count
+	 * @param  int|array<mixed>|\Countable $count
 	 */
 	public function plural_studly( int|array|\Countable $count = 2 ): static {
 		return new static( Str::plural_studly( $this->value, $count ) );
@@ -626,7 +625,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	/**
 	 * Strip HTML and PHP tags from the given string.
 	 *
-	 * @param  array|string $allowed_tags
+	 * @param  string[]|string $allowed_tags
 	 */
 	public function strip_tags( array|string|null $allowed_tags = null ): static {
 		return new static( strip_tags( $this->value, $allowed_tags ) ); // phpcs:ignore WordPressVIPMinimum.Functions.StripTags.StripTagsTwoParameters
@@ -674,9 +673,9 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	/**
 	 * Alias for slug().
 	 *
-	 * @param string $separator Default is '-'.
-	 * @param string $language  Default is 'en'.
-	 * @param array  $dictionary Default is [ '@' => 'at' ].
+	 * @param string                $separator Default is '-'.
+	 * @param string                $language  Default is 'en'.
+	 * @param array<string, string> $dictionary Default is [ '@' => 'at' ].
 	 */
 	public function slugify( string $separator = '-', ?string $language = 'en', array $dictionary = [ '@' => 'at' ] ): static {
 		return $this->slug( $separator, $language, $dictionary );
@@ -750,7 +749,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	/**
 	 * Swap multiple keywords in a string with other keywords.
 	 *
-	 * @param  array $map
+	 * @param  array<mixed> $map
 	 */
 	public function swap( array $map ): static {
 		return new static( strtr( $this->value, $map ) );

@@ -38,8 +38,8 @@ class Redirector {
 	/**
 	 * Generate a redirect to the homepage of the site.
 	 *
-	 * @param int   $status Status code.
-	 * @param array $headers Additional headers.
+	 * @param int                   $status Status code.
+	 * @param array<string, string> $headers Additional headers.
 	 */
 	public function home( int $status = self::STATUS_TEMPORARY, array $headers = [] ): RedirectResponse {
 		return $this->to( $this->generator->to( '/', [], [], null ), $status, $headers );
@@ -48,9 +48,9 @@ class Redirector {
 	/**
 	 * Generate a redirect to the previous page the user was on.
 	 *
-	 * @param int    $status Status code.
-	 * @param array  $headers Additional headers.
-	 * @param string $fallback Fallback URL.
+	 * @param int                   $status Status code.
+	 * @param array<string, string> $headers Additional headers.
+	 * @param string                $fallback Fallback URL.
 	 */
 	public function back( int $status = self::STATUS_TEMPORARY, array $headers = [], ?string $fallback = null ): RedirectResponse {
 		return $this->to( $this->generator->previous( $fallback ), $status, $headers );
@@ -59,8 +59,8 @@ class Redirector {
 	/**
 	 * Generate a redirect to the current URL.
 	 *
-	 * @param int   $status Status code.
-	 * @param array $headers Additional headers.
+	 * @param int                   $status Status code.
+	 * @param array<string, string> $headers Additional headers.
 	 */
 	public function refresh( int $status = self::STATUS_TEMPORARY, array $headers = [] ): RedirectResponse {
 		return $this->to( $this->generator->get_request()->path(), $status, $headers );
@@ -69,10 +69,10 @@ class Redirector {
 	/**
 	 * Generate a redirect to a specific path on the current site.
 	 *
-	 * @param string $path URL path to redirect to.
-	 * @param int    $status Status code.
-	 * @param array  $headers Additional headers.
-	 * @param bool   $secure Flag if the redirect should be secured with HTTPS.
+	 * @param string                $path URL path to redirect to.
+	 * @param int                   $status Status code.
+	 * @param array<string, string> $headers Additional headers.
+	 * @param bool                  $secure Flag if the redirect should be secured with HTTPS.
 	 */
 	public function to( string $path, int $status = self::STATUS_TEMPORARY, array $headers = [], ?bool $secure = null ): RedirectResponse {
 		return $this->create_redirect(
@@ -85,9 +85,9 @@ class Redirector {
 	/**
 	 * Generate a redirect to a URL off the site.
 	 *
-	 * @param string $url URL to redirect to.
-	 * @param int    $status Status code.
-	 * @param array  $headers Additional headers.
+	 * @param string                $url URL to redirect to.
+	 * @param int                   $status Status code.
+	 * @param array<string, string> $headers Additional headers.
 	 */
 	public function away( string $url, int $status = self::STATUS_TEMPORARY, array $headers = [] ): RedirectResponse {
 		return $this->create_redirect(
@@ -100,9 +100,9 @@ class Redirector {
 	/**
 	 * Generate a secure redirect.
 	 *
-	 * @param string $path URL path to redirect to.
-	 * @param int    $status Status code.
-	 * @param array  $headers Additional headers.
+	 * @param string                $path URL path to redirect to.
+	 * @param int                   $status Status code.
+	 * @param array<string, string> $headers Additional headers.
 	 */
 	public function secure( string $path, int $status = self::STATUS_TEMPORARY, array $headers = [] ): RedirectResponse {
 		return $this->to( $path, $status, $headers, true );
@@ -111,10 +111,10 @@ class Redirector {
 	/**
 	 * Generate a redirect to a specific route.
 	 *
-	 * @param string $route Route to generate to.
-	 * @param array  $parameters Parameters for the route.
-	 * @param int    $status Status code.
-	 * @param array  $headers Additional headers.
+	 * @param string                $route Route to generate to.
+	 * @param array<mixed>          $parameters Parameters for the route.
+	 * @param int                   $status Status code.
+	 * @param array<string, string> $headers Additional headers.
 	 */
 	public function route( string $route, array $parameters = [], int $status = self::STATUS_TEMPORARY, array $headers = [] ): RedirectResponse {
 		return $this->to( $this->generator->generate( $route, $parameters ), $status, $headers );
@@ -123,9 +123,9 @@ class Redirector {
 	/**
 	 * Create a redirect response.
 	 *
-	 * @param string $path URL path.
-	 * @param int    $status HTTP status code.
-	 * @param array  $headers Array of headers, optional.
+	 * @param string                $path URL path.
+	 * @param int                   $status HTTP status code.
+	 * @param array<string, string> $headers Array of headers, optional.
 	 */
 	protected function create_redirect( string $path, int $status, array $headers = [] ): RedirectResponse {
 		return new RedirectResponse( $path, $status, $headers );

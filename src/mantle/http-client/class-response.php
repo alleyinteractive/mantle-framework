@@ -75,8 +75,7 @@ class Response implements ArrayAccess {
 	 */
 	public function __construct( array $response ) {
 		// Serialize the headers from a CaseInsensitiveDictionary to an array.
-		// @phpstan-ignore instanceof.alwaysTrue
-		if ( isset( $response['headers'] ) && $response['headers'] instanceof CaseInsensitiveDictionary ) {
+		if ( isset( $response['headers'] ) && $response['headers'] instanceof CaseInsensitiveDictionary ) { // @phpstan-ignore-line instanceof.alwaysTrue
 			$response['headers'] = $response['headers']->getAll();
 		}
 

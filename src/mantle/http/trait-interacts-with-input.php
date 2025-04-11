@@ -24,10 +24,10 @@ trait Interacts_With_Input {
 	/**
 	 * Retrieve a server variable from the request.
 	 *
-	 * @param  string|null       $key
-	 * @param  string|array|null $default
+	 * @param  string|null $key
+	 * @param  mixed       $default
 	 */
-	public function server( ?string $key = null, mixed $default = null ): string|array|null {
+	public function server( ?string $key = null, mixed $default = null ): mixed {
 		return $this->retrieve_item( 'server', $key, $default );
 	}
 
@@ -43,10 +43,10 @@ trait Interacts_With_Input {
 	/**
 	 * Retrieve a header from the request.
 	 *
-	 * @param  string|null       $key
-	 * @param  string|array|null $default
+	 * @param  string|null $key
+	 * @param  mixed       $default
 	 */
-	public function header( $key = null, mixed $default = null ): string|array|null {
+	public function header( $key = null, mixed $default = null ): mixed {
 		return $this->retrieve_item( 'headers', $key, $default );
 	}
 
@@ -177,6 +177,7 @@ trait Interacts_With_Input {
 	 * Get all of the input and files for the request.
 	 *
 	 * @param  string|string[]|null $keys
+	 * @return array<mixed>
 	 */
 	public function all( string|array|null $keys = null ): array {
 		$input = $this->input();
@@ -223,7 +224,7 @@ trait Interacts_With_Input {
 	/**
 	 * Get a subset containing the provided keys with values from the input data.
 	 *
-	 * @param  array|string $keys
+	 * @param  string[]|string $keys
 	 * @return array<mixed>
 	 */
 	public function only( array|string $keys ): array {
@@ -247,7 +248,7 @@ trait Interacts_With_Input {
 	/**
 	 * Get all of the input except for a specified array of items.
 	 *
-	 * @param  array|string $keys
+	 * @param  string[]|string $keys
 	 * @return array<mixed>
 	 */
 	public function except( array|string $keys ): array {
@@ -263,9 +264,8 @@ trait Interacts_With_Input {
 	/**
 	 * Retrieve a query string item from the request.
 	 *
-	 * @param  string|null       $key
-	 * @param  string|array|null $default
-	 * @return string|array|null
+	 * @param  string|null $key
+	 * @param  mixed       $default
 	 */
 	public function query( ?string $key = null, mixed $default = null ): mixed {
 		return $this->retrieve_item( 'query', $key, $default );
@@ -274,9 +274,8 @@ trait Interacts_With_Input {
 	/**
 	 * Retrieve a request payload item from the request.
 	 *
-	 * @param  string|null       $key
-	 * @param  string|array|null $default
-	 * @return string|array|null
+	 * @param  string|null $key
+	 * @param  mixed       $default
 	 */
 	public function post( ?string $key = null, mixed $default = null ): mixed {
 		return $this->retrieve_item( 'request', $key, $default );
@@ -287,18 +286,17 @@ trait Interacts_With_Input {
 	 *
 	 * @param  string $key
 	 */
-	public function has_cookie( $key ): bool {
+	public function has_cookie( string $key ): bool {
 		return ! is_null( $this->cookie( $key ) );
 	}
 
 	/**
 	 * Retrieve a cookie from the request.
 	 *
-	 * @param  string|null       $key
-	 * @param  string|array|null $default
-	 * @return string|array|null
+	 * @param  string|null $key
+	 * @param  mixed       $default
 	 */
-	public function cookie( $key = null, $default = null ) {
+	public function cookie( $key = null, mixed $default = null ): mixed {
 		return $this->retrieve_item( 'cookies', $key, $default );
 	}
 
@@ -308,9 +306,8 @@ trait Interacts_With_Input {
 	 * @param  string $source
 	 * @param  string $key
 	 * @param  mixed  $default
-	 * @return string|array|null
 	 */
-	protected function retrieve_item( string $source, string|null $key, mixed $default ) {
+	protected function retrieve_item( string $source, string|null $key, mixed $default ): mixed {
 		if ( empty( $key ) ) {
 			return $this->$source->all();
 		}

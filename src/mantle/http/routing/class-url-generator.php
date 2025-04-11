@@ -112,7 +112,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 *
 	 * @param string               $path URL Path.
 	 * @param array<string, mixed> $extra_query Extra query parameters to be appended to the URL path.
-	 * @param array                $extra_params Extra parameters to be appended to the URL path.
+	 * @param array<string, mixed> $extra_params Extra parameters to be appended to the URL path.
 	 * @param bool                 $secure Flag if should be forced to be secure.
 	 */
 	public function to( string $path, array $extra_query = [], array $extra_params = [], ?bool $secure = null ): string {
@@ -158,9 +158,9 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	/**
 	 * Generate a URL for a route.
 	 *
-	 * @param string $name Route name.
-	 * @param array  $parameters Route parameters.
-	 * @param bool   $absolute Flag if should be absolute.
+	 * @param string               $name Route name.
+	 * @param array<string, mixed> $parameters Route parameters.
+	 * @param bool                 $absolute Flag if should be absolute.
 	 *
 	 * @throws \Symfony\Component\Routing\Exception\RouteNotFoundException If route not found.
 	 */
@@ -175,7 +175,8 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	/**
 	 * Format the array of URL parameters.
 	 *
-	 * @param  mixed|array $parameters
+	 * @param  mixed|array<string, mixed> $parameters
+	 * @return array<string, mixed>
 	 */
 	public function format_parameters( $parameters ): array {
 		$parameters = Arr::wrap( $parameters );

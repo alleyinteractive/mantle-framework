@@ -51,7 +51,7 @@ class Filesystem_Adapter implements Filesystem {
 	 *
 	 * @param FilesystemOperator $driver Filesystem instance.
 	 * @param FilesystemAdapter  $adapter Filesystem adapter.
-	 * @param array              $config Filesystem configuration.
+	 * @param array<mixed>       $config Filesystem configuration.
 	 */
 	public function __construct(
 		protected FilesystemOperator $driver,
@@ -297,10 +297,10 @@ class Filesystem_Adapter implements Filesystem {
 	/**
 	 * Create a streamed response for a given file.
 	 *
-	 * @param string      $path File path.
-	 * @param string|null $name File name.
-	 * @param array       $headers Headers to include.
-	 * @param string      $disposition File disposition.
+	 * @param string       $path File path.
+	 * @param string|null  $name File name.
+	 * @param array<mixed> $headers Headers to include.
+	 * @param string       $disposition File disposition.
 	 */
 	public function response( string $path, ?string $name = null, array $headers = [], string $disposition = 'inline' ): StreamedResponse {
 		$response = new StreamedResponse();
@@ -341,9 +341,9 @@ class Filesystem_Adapter implements Filesystem {
 	/**
 	 * Create a streamed download response for a given file.
 	 *
-	 * @param string      $path File path.
-	 * @param string|null $name File name.
-	 * @param array       $headers HTTP headers.
+	 * @param string                $path File path.
+	 * @param string|null           $name File name.
+	 * @param array<string, string> $headers HTTP headers.
 	 */
 	public function download( string $path, ?string $name = null, array $headers = [] ): StreamedResponse {
 		return $this->response( $path, $name, $headers, 'attachment' );
@@ -381,7 +381,7 @@ class Filesystem_Adapter implements Filesystem {
 	 *
 	 * @param string                                             $path File path.
 	 * @param string|File|Uploaded_File|StreamInterface|resource $contents File contents.
-	 * @param array|string                                       $options  Options for the files or a string visibility.
+	 * @param array<mixed>|string                                $options  Options for the files or a string visibility.
 	 */
 	public function put( string $path, $contents, $options = [] ): bool {
 		$options = is_string( $options )
@@ -463,7 +463,7 @@ class Filesystem_Adapter implements Filesystem {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function readStream( string $path ) {
+	public function readStream( string $path ): mixed {
 		try {
 			return $this->driver->readStream( $path );
 		} catch ( UnableToReadFile $e ) {
@@ -479,7 +479,7 @@ class Filesystem_Adapter implements Filesystem {
 	 * @param string $path File path.
 	 * @return resource|false The path resource or false on failure.
 	 */
-	public function read_stream( string $path ) {
+	public function read_stream( string $path ): mixed {
 		return $this->readStream( $path );
 	}
 

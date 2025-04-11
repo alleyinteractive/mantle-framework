@@ -16,9 +16,9 @@ namespace Mantle\Support\Helpers;
  * @throws \BadFunctionCallException For unmet requirements.
  * @throws \InvalidArgumentException For incorrect argument types.
  *
- * @param string|array $description Attribute description or schema array.
- * @param array        $args        Remaining schema definition, if any.
- * @return array Completed schema definition.
+ * @param string|array<mixed> $description Attribute description or schema array.
+ * @param array<mixed>        $args        Remaining schema definition, if any.
+ * @return array<mixed> Completed schema definition.
  */
 function fill_rest_schema( $description, array $args = [] ): array {
 	// Pass a string to use it as the description and get all the defaults.
@@ -106,7 +106,7 @@ function fill_rest_schema( $description, array $args = [] ): array {
  *
  * @throws \InvalidArgumentException For unmet requirements.
  *
- * @param array $schema Schema.
+ * @param array<mixed> $schema Schema.
  * @return mixed Default based on the schema.
  */
 function default_from_rest_schema( array $schema ) {

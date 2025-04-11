@@ -191,8 +191,8 @@ class View_Finder {
 	 *
 	 * Acts as a replacement to `locate_template()`.
 	 *
-	 * @param string[]  $templates Template files to search for.
-	 * @param string $alias Alias to load, optional.
+	 * @param string[] $templates Template files to search for.
+	 * @param string   $alias Alias to load, optional.
 	 * @return string The template filename if one is located.
 	 *
 	 * @throws InvalidArgumentException Thrown on unknown view to locate.

@@ -281,16 +281,15 @@ class Str {
 	/**
 	 * Extracts an excerpt from text that matches the first instance of a phrase.
 	 *
-	 * @param  string $text
-	 * @param  string $phrase
-	 * @param  array  $options
-	 * @return string|null
+	 * @param  string                                 $text
+	 * @param  string                                 $phrase
+	 * @param  array{radius?: int, omission?: string} $options
 	 */
-	public static function excerpt( $text, $phrase = '', $options = [] ) {
+	public static function excerpt( string $text, string $phrase = '', array $options = [] ): ?string {
 		$radius   = $options['radius'] ?? 100;
 		$omission = $options['omission'] ?? '...';
 
-		preg_match( '/^(.*?)(' . preg_quote( (string) $phrase, null ) . ')(.*)$/iu', (string) $text, $matches );
+		preg_match( '/^(.*?)(' . preg_quote( $phrase, null ) . ')(.*)$/iu', $text, $matches );
 
 		if ( empty( $matches ) ) {
 			return null;
@@ -480,8 +479,8 @@ class Str {
 	/**
 	 * Converts GitHub flavored Markdown into HTML.
 	 *
-	 * @param  string $string
-	 * @param  array  $options
+	 * @param  string       $string
+	 * @param  array<mixed> $options Options for the Markdown environment.
 	 */
 	public static function markdown( string $string, array $options = [] ): string {
 		$converter = new GithubFlavoredMarkdownConverter( $options );
@@ -492,8 +491,8 @@ class Str {
 	/**
 	 * Converts inline Markdown into HTML.
 	 *
-	 * @param  string $string
-	 * @param  array  $options
+	 * @param  string       $string
+	 * @param  array<mixed> $options Options for the Markdown environment.
 	 */
 	public static function inline_markdown( string $string, array $options = [] ): string {
 		$environment = new Environment( $options );
@@ -654,8 +653,8 @@ class Str {
 	/**
 	 * Get the plural form of an English word.
 	 *
-	 * @param  string               $value
-	 * @param  int|array|\Countable $count
+	 * @param  string                      $value
+	 * @param  int|array<mixed>|\Countable $count
 	 */
 	public static function plural( string $value, int|array|\Countable $count = 2 ): string {
 		return Pluralizer::plural( $value, $count );
@@ -664,8 +663,8 @@ class Str {
 	/**
 	 * Pluralize the last word of an English, studly caps case string.
 	 *
-	 * @param  string               $value
-	 * @param  int|array|\Countable $count
+	 * @param  string                      $value
+	 * @param  int|array<mixed>|\Countable $count
 	 */
 	public static function plural_studly( $value, int|array|\Countable $count = 2 ): string {
 		$parts = preg_split( '/(.)(?=[A-Z])/u', $value, -1, PREG_SPLIT_DELIM_CAPTURE );
@@ -836,7 +835,7 @@ class Str {
 	/**
 	 * Set the sequence that will be used to generate random strings.
 	 *
-	 * @param  array         $sequence
+	 * @param  string[]      $sequence
 	 * @param  callable|null $when_missing
 	 */
 	public static function create_random_strings_using_sequence( array $sequence, $when_missing = null ): void {
@@ -915,7 +914,7 @@ class Str {
 	 * @param  string|iterable<string> $replace
 	 * @param  string|iterable<string> $subject
 	 * @param  bool                    $case_sensitive
-	 * @return string
+	 * @return string|array<string>
 	 */
 	public static function replace( $search, $replace, $subject, bool $case_sensitive = true ): string|array {
 		if ( $search instanceof Traversable ) {
@@ -987,7 +986,7 @@ class Str {
 	 * @param  string|iterable<string> $search
 	 * @param  string                  $subject
 	 * @param  bool                    $case_sensitive
-	 * @return string
+	 * @return string|array<string>
 	 */
 	public static function remove( $search, $subject, bool $case_sensitive = true ): string|array {
 		if ( $search instanceof Traversable ) {
@@ -1228,8 +1227,8 @@ class Str {
 	/**
 	 * Swap multiple keywords in a string with other keywords.
 	 *
-	 * @param  array  $map
-	 * @param  string $subject
+	 * @param  array<string, string> $map
+	 * @param  string                $subject
 	 */
 	public static function swap( array $map, $subject ): string {
 		return strtr( $subject, $map );

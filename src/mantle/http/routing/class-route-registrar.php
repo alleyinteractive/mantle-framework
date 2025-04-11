@@ -17,11 +17,11 @@ use Mantle\Support\Arr;
  *
  * @method \Mantle\Http\Routing\Route_Registrar as(string $value)
  * @method \Mantle\Http\Routing\Route_Registrar domain(string $value)
- * @method \Mantle\Http\Routing\Route_Registrar middleware(array|string|null $middleware)
+ * @method \Mantle\Http\Routing\Route_Registrar middleware(array<string>|string|null $middleware)
  * @method \Mantle\Http\Routing\Route_Registrar name(string $value)
  * @method \Mantle\Http\Routing\Route_Registrar namespace(string $value)
  * @method \Mantle\Http\Routing\Route_Registrar prefix(string $value)
- * @method \Mantle\Http\Routing\Route_Registrar where(array $where)
+ * @method \Mantle\Http\Routing\Route_Registrar where(array<mixed> $where)
  */
 class Route_Registrar {
 	/**
@@ -112,9 +112,9 @@ class Route_Registrar {
 	/**
 	 * Register a new route with the router.
 	 *
-	 * @param  string                     $method
-	 * @param  string                     $uri
-	 * @param  \Closure|array|string|null $action
+	 * @param  string                            $method
+	 * @param  string                            $uri
+	 * @param  \Closure|array<mixed>|string|null $action
 	 * @return \Mantle\Http\Routing\Route
 	 */
 	protected function register_route( $method, $uri, $action = null ) {
@@ -128,7 +128,7 @@ class Route_Registrar {
 	/**
 	 * Compile the action into an array including the attributes.
 	 *
-	 * @param  \Closure|array|string|null $action
+	 * @param  \Closure|array<mixed>|string|null $action
 	 * @return array<mixed>
 	 */
 	protected function compile_action( $action ) {
@@ -146,9 +146,9 @@ class Route_Registrar {
 	/**
 	 * Pass the REST API method back to the REST API registrar.
 	 *
-	 * @param string         $namespace Route namespace.
-	 * @param Closure|string $route Route name or callback to register more routes.
-	 * @param array|Closure  $args Route arguments.
+	 * @param string               $namespace Route namespace.
+	 * @param Closure|string       $route Route name or callback to register more routes.
+	 * @param array<mixed>|Closure $args Route arguments.
 	 */
 	public function rest_api( string $namespace, $route, $args = [] ): Rest_Route_Registrar {
 		if ( $args instanceof Closure ) {

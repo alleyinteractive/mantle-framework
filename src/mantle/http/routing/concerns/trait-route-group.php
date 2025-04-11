@@ -40,7 +40,7 @@ trait Route_Group {
 	/**
 	 * Create a route group with shared attributes.
 	 *
-	 * @param  array           $attributes
+	 * @param  array<mixed>    $attributes
 	 * @param  \Closure|string $routes
 	 */
 	public function group( array $attributes, $routes ): void {
@@ -57,7 +57,7 @@ trait Route_Group {
 	/**
 	 * Update the group stack with the given attributes.
 	 *
-	 * @param  array $attributes
+	 * @param  array<mixed> $attributes
 	 * @return void
 	 */
 	protected function update_group_stack( array $attributes ) {
@@ -71,8 +71,9 @@ trait Route_Group {
 	/**
 	 * Merge the given array with the last group stack.
 	 *
-	 * @param array $new New route attributes.
-	 * @param bool  $prepend_existing_prefix Prepend the existing prefix.
+	 * @param array<mixed> $new New route attributes.
+	 * @param bool         $prepend_existing_prefix Prepend the existing prefix.
+	 * @return array<mixed> Merged route attributes.
 	 */
 	public function merge_with_last_group( $new, $prepend_existing_prefix = true ): array {
 		return static::merge( $new, end( $this->group_stack ), $prepend_existing_prefix );
@@ -108,9 +109,9 @@ trait Route_Group {
 	/**
 	 * Merge route groups into a new array.
 	 *
-	 * @param  array $new
-	 * @param  array $old
-	 * @param  bool  $prepend_existing_prefix
+	 * @param  array<mixed> $new
+	 * @param  array<mixed> $old
+	 * @param  bool         $prepend_existing_prefix
 	 */
 	public static function merge( $new, array $old, $prepend_existing_prefix = true ): array {
 		if ( isset( $new['domain'] ) ) {
@@ -138,8 +139,8 @@ trait Route_Group {
 	/**
 	 * Format the namespace for the new group attributes.
 	 *
-	 * @param  array $new
-	 * @param  array $old
+	 * @param  array<mixed> $new
+	 * @param  array<mixed> $old
 	 * @return string|null
 	 */
 	protected static function format_namespace( $new, $old ) {
@@ -155,9 +156,9 @@ trait Route_Group {
 	/**
 	 * Format the prefix for the new group attributes.
 	 *
-	 * @param  array $new
-	 * @param  array $old
-	 * @param  bool  $prepend_existing_prefix
+	 * @param  array<mixed> $new
+	 * @param  array<mixed> $old
+	 * @param  bool         $prepend_existing_prefix
 	 * @return string|null
 	 */
 	protected static function format_prefix( $new, $old, $prepend_existing_prefix = true ) {
@@ -173,8 +174,9 @@ trait Route_Group {
 	/**
 	 * Format the "wheres" for the new group attributes.
 	 *
-	 * @param  array $new
-	 * @param  array $old
+	 * @param  array<mixed> $new
+	 * @param  array<mixed> $old
+	 * @return array<mixed>
 	 */
 	protected static function format_where( $new, $old ): array {
 		return array_merge(
@@ -186,8 +188,8 @@ trait Route_Group {
 	/**
 	 * Format the "as" clause of the new group attributes.
 	 *
-	 * @param  array $new
-	 * @param  array $old
+	 * @param  array<mixed> $new
+	 * @param  array<mixed> $old
 	 * @return array<mixed>
 	 */
 	protected static function format_as( $new, $old ) {

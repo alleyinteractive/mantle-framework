@@ -417,10 +417,10 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 *
 	 * @template TWhereInstanceOf
 	 *
-	 * @param  class-string<TWhereInstanceOf>|array<array-key, class-string<TWhereInstanceOf>>  $type
+	 * @param  class-string<TWhereInstanceOf>|array<class-string<TWhereInstanceOf>>  $type
 	 * @return static<TKey, TWhereInstanceOf>
 	 */
-	public function where_instance_of( $type );
+	public function where_instance_of( array|string $type );
 
 	/**
 	 * Get the first item from the enumerable passing the given truth test.
@@ -463,13 +463,17 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 
 	/**
 	 * Group an associative array by a field or using a callback.
+	 *
+	 * @param  (callable(TValue, TKey): array-key)|array<mixed>|string $group_by The field or callback to group by.
+	 * @param  bool                                             $preserve_keys Whether to preserve the keys of the original array.
+	 * @return static<array-key, static<array-key, TValue>>
 	 */
 	public function group_by( $group_by, $preserve_keys = false );
 
 	/**
 	 * Key an associative array by a field or using a callback.
 	 *
-	 * @param  (callable(TValue, TKey): array-key)|array|string  $keyBy
+	 * @param  (callable(TValue, TKey): array-key)|string[]|string  $key_by
 	 * @return static<array-key, TValue>
 	 */
 	public function key_by( $key_by );
@@ -699,7 +703,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	public function for_page( $page, $per_page );
 
 	/**
-	 * Partition the collection into two arrays using the given callback or key.\
+	 * Partition the collection into two arrays using the given callback or key.
 	 */
 	public function partition( $key, $operator = null, $value = null );
 

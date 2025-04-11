@@ -19,9 +19,10 @@ class Middleware_Name_Resolver {
 	/**
 	 * Resolve the middleware name to a class name(s) preserving passed parameters.
 	 *
-	 * @param  \Closure|string $name
-	 * @param  array           $map
-	 * @param  array           $middleware_groups
+	 * @param  \Closure|string                $name
+	 * @param  array<string, \Closure|string> $map
+	 * @param  array<string, array<string>>   $middleware_groups
+	 * @return \Closure|array<string, \Closure|string>|string
 	 */
 	public static function resolve( $name, $map, $middleware_groups ): \Closure|array|string {
 		// When the middleware is simply a Closure, we will return this Closure instance
@@ -53,9 +54,10 @@ class Middleware_Name_Resolver {
 	/**
 	 * Parse the middleware group and format it for usage.
 	 *
-	 * @param  string $name
-	 * @param  array  $map
-	 * @param  array  $middleware_groups
+	 * @param  string       $name
+	 * @param  array<mixed> $map
+	 * @param  array<mixed> $middleware_groups
+	 * @return array<string>
 	 */
 	protected static function parse_middleware_group( $name, $map, $middleware_groups ): array {
 		$results = [];

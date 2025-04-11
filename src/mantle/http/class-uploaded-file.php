@@ -30,18 +30,18 @@ class Uploaded_File extends SymfonyUploadedFile {
 	/**
 	 * Store the uploaded file on a filesystem disk.
 	 *
-	 * @param  string       $path
+	 * @param  string              $path
 	 * @param  array<mixed>|string $options
 	 * @return string|false
 	 */
-	public function store( $path, $options = [] ) {
+	public function store( $path, array|string $options = [] ) {
 		return $this->store_as( $path, $this->hash_name(), $this->parse_options( $options ) );
 	}
 
 	/**
 	 * Store the uploaded file on a filesystem disk with public visibility.
 	 *
-	 * @param  string       $path
+	 * @param  string              $path
 	 * @param  array<mixed>|string $options
 	 * @return string|false
 	 */
@@ -56,8 +56,8 @@ class Uploaded_File extends SymfonyUploadedFile {
 	/**
 	 * Store the uploaded file on a filesystem disk with public visibility.
 	 *
-	 * @param  string       $path
-	 * @param  string       $name
+	 * @param  string              $path
+	 * @param  string              $name
 	 * @param  array<mixed>|string $options
 	 * @return string|false
 	 */
@@ -72,8 +72,8 @@ class Uploaded_File extends SymfonyUploadedFile {
 	/**
 	 * Store the uploaded file on a filesystem disk.
 	 *
-	 * @param  string       $path
-	 * @param  string       $name
+	 * @param  string              $path
+	 * @param  string              $name
 	 * @param  array<mixed>|string $options
 	 * @return string|false
 	 */
@@ -94,9 +94,9 @@ class Uploaded_File extends SymfonyUploadedFile {
 	/**
 	 * Store the file as a WordPress attachment.
 	 *
-	 * @param string $path Path to store uploaded file to.
-	 * @param string $name File name.
-	 * @param array<mixed>  $options Options for storage, disk name as string.
+	 * @param string       $path Path to store uploaded file to.
+	 * @param string       $name File name.
+	 * @param array<mixed> $options Options for storage, disk name as string.
 	 *
 	 * @throws RuntimeException Thrown on error storing file.
 	 * @todo Enable proper attachment meta data indexing.
@@ -169,7 +169,7 @@ class Uploaded_File extends SymfonyUploadedFile {
 	 * @param  array<mixed>|string $options
 	 * @return array<mixed>
 	 */
-	protected function parse_options( array|string $options ) {
+	protected function parse_options( array|string $options ): array {
 		if ( is_string( $options ) ) {
 			return [ 'disk' => $options ];
 		}

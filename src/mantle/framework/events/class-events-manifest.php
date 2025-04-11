@@ -22,9 +22,9 @@ class Events_Manifest {
 	/**
 	 * Manifest from the disk.
 	 *
-	 * @var ?array<string,
+	 * @var array<string, string>|null
 	 */
-	protected $manifest;
+	protected ?array $manifest = null;
 
 	/**
 	 * Base folder path.
@@ -59,17 +59,19 @@ class Events_Manifest {
 
 	/**
 	 * Get the compiled manifest.
+	 *
+	 * @return array<string, string>
 	 */
 	protected function get_manifest(): array {
 		if ( $this->manifest !== null ) {
-			return (array) $this->manifest;
+			return $this->manifest;
 		}
 
 		// Skip when the manifest doesn't exist.
 		if ( ! file_exists( $this->manifest_path ) ) {
 			$this->manifest = [];
 
-			return (array) $this->manifest;
+			return $this->manifest;
 		}
 
 		$this->manifest = include $this->manifest_path; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
@@ -104,10 +106,10 @@ class Events_Manifest {
 	/**
 	 * Write the manifest to the disk
 	 *
-	 * @param array $manifest Manifest to write.
+	 * @param array<mixed> $manifest Manifest to write.
 	 * @throws Application_Exception Thrown on error writing file.
 	 */
-	protected function write_manifest( array $manifest ) {
+	protected function write_manifest( array $manifest ): void {
 		$dir        = dirname( $this->manifest_path );
 		$filesystem = new Filesystem();
 

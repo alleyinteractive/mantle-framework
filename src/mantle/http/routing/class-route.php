@@ -72,8 +72,8 @@ class Route extends Symfony_Route {
 	/**
 	 * Constructor.
 	 *
-	 * @param string[]                 $methods HTTP methods the route responds to.
-	 * @param string                $path The path the route responds to.
+	 * @param string[]                     $methods HTTP methods the route responds to.
+	 * @param string                       $path The path the route responds to.
 	 * @param \Closure|array<mixed>|string $action The route callback or array of actions.
 	 */
 	public function __construct( array $methods, string $path, $action ) {
@@ -161,9 +161,8 @@ class Route extends Symfony_Route {
 	 * Get the action array or one of its properties for the route.
 	 *
 	 * @param string|null $key Key to get.
-	 * @return mixed
 	 */
-	public function get_action( ?string $key = null ) {
+	public function get_action( ?string $key = null ): mixed {
 		return Arr::get( $this->action, $key );
 	}
 
@@ -180,11 +179,11 @@ class Route extends Symfony_Route {
 	/**
 	 * Get or set the middleware attached to the route.
 	 *
-	 * @param  array<class-string>|string|null $middleware Middleware to set, optional.
-	 * @return static|array<class-string>
+	 * @param  array<class-string>|string|callable|null $middleware Middleware to set, optional.
+	 * @return static|array<class-string|callable>
 	 * @phpstan-return ($middleware is null ? array<class-string> : static)
 	 */
-	public function middleware( array|string|null $middleware = null ): array|static {
+	public function middleware( array|string|callable|null $middleware = null ): array|static {
 		if ( is_null( $middleware ) ) {
 			return (array) ( $this->action['middleware'] ?? [] );
 		}
@@ -433,7 +432,7 @@ class Route extends Symfony_Route {
 	 * @param string|null $sub_class Subclass to verify the parameter is an instance of.
 	 * @return array<mixed>
 	 */
-	public function get_signature_parameters( ?string $sub_class = null ) {
+	public function get_signature_parameters( ?string $sub_class = null ): array {
 		return Route_Signature_Parameters::from_action( $this->action, $sub_class );
 	}
 

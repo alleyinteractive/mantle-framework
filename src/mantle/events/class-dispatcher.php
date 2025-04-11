@@ -34,7 +34,7 @@ class Dispatcher implements Dispatcher_Contract {
 	/**
 	 * The IoC container instance.
 	 */
-	protected \Mantle\Container\Container $container;
+	protected Container $container;
 
 	/**
 	 * The queue resolver instance.
@@ -49,7 +49,7 @@ class Dispatcher implements Dispatcher_Contract {
 	 * @param Container|null $container Container instance.
 	 */
 	public function __construct( ?Container $container = null ) {
-		$this->container = $container ?: new Container();
+		$this->container = $container ?: new \Mantle\Container\Container();
 	}
 
 	/**

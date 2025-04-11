@@ -64,7 +64,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * Mirrors Symfony's version but will create a static instance of the class.
 	 */
 	public static function createFromGlobals(): static {
-		$request = new static( $_GET, $_POST, [], $_COOKIE, $_FILES, $_SERVER );
+		$request = new static( $_GET, $_POST, [], $_COOKIE, $_FILES, $_SERVER ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPressVIPMinimum.Variables.RestrictedVariables, WordPress.Security.NonceVerification.Missing
 
 		if ( str_starts_with( (string) $request->headers->get( 'CONTENT_TYPE', '' ), 'application/x-www-form-urlencoded' ) && \in_array( strtoupper( (string) $request->server->get( 'REQUEST_METHOD', 'GET' ) ), [ 'PUT', 'DELETE', 'PATCH' ], true ) ) {
 			parse_str( $request->getContent(), $data );
@@ -159,7 +159,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * @param  string|null $default
 	 * @return string|null
 	 */
-	public function segment( $index, $default = null ) {
+	public function segment( $index, $default = null ): mixed {
 		return Arr::get( $this->segments(), $index - 1, $default );
 	}
 

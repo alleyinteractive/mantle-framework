@@ -93,8 +93,8 @@ class Registered_REST_Field {
 	 *
 	 * @throws \BadMethodCallException For unimplemented or invalid callbacks.
 	 *
-	 * @param string $name      Name of the method being called.
-	 * @param array  $arguments Enumerated array containing the parameters passed to $name.
+	 * @param string       $name      Name of the method being called.
+	 * @param array<mixed> $arguments Enumerated array containing the parameters passed to $name.
 	 * @return mixed
 	 */
 	public function __call( $name, $arguments ) {

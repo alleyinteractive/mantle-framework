@@ -24,13 +24,13 @@ class Route_Signature_Parameters {
 	/**
 	 * Extract the route action's signature parameters.
 	 *
-	 * @param  array       $action Route action.
-	 * @param  string|null $sub_class Route subclass to compare against.
+	 * @param  array<mixed> $action Route action.
+	 * @param  string|null  $sub_class Route subclass to compare against.
 	 * @return array<mixed>
 	 *
 	 * @throws HttpException Thrown on missing callback.
 	 */
-	public static function from_action( array $action, $sub_class = null ) {
+	public static function from_action( array $action, ?string $sub_class = null ): array {
 		if ( ! isset( $action['callback'] ) ) {
 			throw new HttpException( 500, 'Unknown route callback.' );
 		}
@@ -54,8 +54,9 @@ class Route_Signature_Parameters {
 	 * Get the parameters for the given class / method by string.
 	 *
 	 * @param  string $uses Route callback.
+	 * @return array<\ReflectionParameter>
 	 */
-	protected static function from_class_method_string( $uses ): array {
+	protected static function from_class_method_string( string $uses ): array {
 		[ $class, $method ] = Str::parse_callback( $uses );
 
 		// Use the invoke method if it found.

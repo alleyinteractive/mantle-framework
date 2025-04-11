@@ -30,9 +30,9 @@ class Arr {
 	/**
 	 * Add an element to an array using "dot" notation if it doesn't exist.
 	 *
-	 * @param  array<mixed>  $array Array to check.
-	 * @param  string $key Key to check.
-	 * @param  mixed  $value Value to use.
+	 * @param  array<mixed> $array Array to check.
+	 * @param  string       $key Key to check.
+	 * @param  mixed        $value Value to use.
 	 * @return array<mixed>
 	 */
 	public static function add( array $array, string $key, $value ): array {
@@ -105,7 +105,7 @@ class Arr {
 	 * Flatten a multi-dimensional associative array with dots.
 	 *
 	 * @param iterable<mixed> $array Array to process.
-	 * @param  string   $prepend String to prepend, optional.
+	 * @param  string          $prepend String to prepend, optional.
 	 * @return array<mixed>
 	 */
 	public static function dot( $array, string $prepend = '' ): array {
@@ -125,7 +125,7 @@ class Arr {
 	/**
 	 * Get all of the given array except for a specified array of keys.
 	 *
-	 * @param  array<mixed>        $array Array to process.
+	 * @param  array<mixed>    $array Array to process.
 	 * @param  string[]|string $keys Keys to filter by.
 	 * @return array<mixed>
 	 */
@@ -139,7 +139,7 @@ class Arr {
 	 * Determine if the given key exists in the provided array.
 	 *
 	 * @param  \ArrayAccess|array<mixed> $array Array to process.
-	 * @param  string|int         $key Key to check if it exists.
+	 * @param  string|int                $key Key to check if it exists.
 	 */
 	public static function exists( $array, $key ): bool {
 		if ( $array instanceof ArrayAccess ) {
@@ -152,10 +152,9 @@ class Arr {
 	/**
 	 * Return the first element in an array passing a given truth test.
 	 *
-	 * @param iterable<mixed>      $array Array to process.
-	 * @param  callable|null $callback Callback filter on, optional.
-	 * @param  mixed         $default Default value.
-	 * @return mixed
+	 * @param iterable<mixed> $array Array to process.
+	 * @param  callable|null   $callback Callback filter on, optional.
+	 * @param  mixed           $default Default value.
 	 */
 	public static function first( $array, ?callable $callback = null, $default = null ): mixed {
 		if ( is_null( $callback ) ) {
@@ -180,7 +179,7 @@ class Arr {
 	/**
 	 * Return the last element in an array passing a given truth test.
 	 *
-	 * @param  array<mixed>         $array Array to process.
+	 * @param  array<mixed>  $array Array to process.
 	 * @param  callable|null $callback Callback to filter by, optional.
 	 * @param  mixed         $default Default value.
 	 */
@@ -195,8 +194,8 @@ class Arr {
 	/**
 	 * Flatten a multi-dimensional array into a single level.
 	 *
-	 * @param iterable<mixed>  $array Array to process.
-	 * @param  int|float $depth Depth to handle.
+	 * @param iterable<mixed> $array Array to process.
+	 * @param  int|float       $depth Depth to handle.
 	 * @return array<mixed>
 	 */
 	public static function flatten( iterable $array, int|float $depth = INF ): array {
@@ -224,7 +223,7 @@ class Arr {
 	/**
 	 * Remove one or many array items from a given array using "dot" notation.
 	 *
-	 * @param  array<mixed>        $array Array to handle.
+	 * @param  array<mixed>    $array Array to handle.
 	 * @param  string[]|string $keys Keys to use.
 	 */
 	public static function forget( &$array, $keys ): void {
@@ -267,8 +266,8 @@ class Arr {
 	 * Get an item from an array using "dot" notation.
 	 *
 	 * @param  \ArrayAccess|array<mixed> $array Array to process.
-	 * @param  string|int|null    $key Key to retrieve.
-	 * @param  mixed              $default Default value.
+	 * @param  string|int|null           $key Key to retrieve.
+	 * @param  mixed                     $default Default value.
 	 */
 	public static function get( $array, $key, $default = null ): mixed {
 		if ( ! static::accessible( $array ) ) {
@@ -302,7 +301,7 @@ class Arr {
 	 * Check if an item or items exist in an array using "dot" notation.
 	 *
 	 * @param  \ArrayAccess|array<mixed> $array Array to process.
-	 * @param  string|string[]       $keys Key to check.
+	 * @param  string|string[]           $keys Key to check.
 	 */
 	public static function has( $array, $keys ): bool {
 		$keys = (array) $keys;
@@ -334,7 +333,7 @@ class Arr {
 	 * Determine if any of the keys exist in an array using "dot" notation.
 	 *
 	 * @param  \ArrayAccess|array<mixed> $array Array to process.
-	 * @param  string|string[]       $keys Keys to check.
+	 * @param  string|string[]           $keys Keys to check.
 	 */
 	public static function has_any( $array, $keys ): bool {
 		if ( empty( $keys ) ) {
@@ -418,7 +417,7 @@ class Arr {
 	/**
 	 * Explode the "value" and "key" arguments passed to "pluck".
 	 *
-	 * @param  string|array<mixed>      $value Value to pluck.
+	 * @param  string|array<mixed>  $value Value to pluck.
 	 * @param  string|string[]|null $key Key to use.
 	 * @return array<mixed>
 	 */
@@ -434,8 +433,8 @@ class Arr {
 	 * Push an item onto the beginning of an array.
 	 *
 	 * @param  array<mixed> $array Array to process.
-	 * @param  mixed $value Item value.
-	 * @param  mixed $key Item key.
+	 * @param  mixed        $value Item value.
+	 * @param  mixed        $key Item key.
 	 * @return array<mixed>
 	 */
 	public static function prepend( array $array, $value, $key = null ): array {
@@ -451,9 +450,9 @@ class Arr {
 	/**
 	 * Get a value from the array, and remove it.
 	 *
-	 * @param  array<mixed>  $array Array to process.
-	 * @param  string $key Key to pull by.
-	 * @param  mixed  $default Default value.
+	 * @param  array<mixed> $array Array to process.
+	 * @param  string       $key Key to pull by.
+	 * @param  mixed        $default Default value.
 	 * @return mixed
 	 */
 	public static function pull( array &$array, $key, $default = null ) {
@@ -467,8 +466,8 @@ class Arr {
 	/**
 	 * Get one or a specified number of random values from an array.
 	 *
-	 * @param  array<mixed>    $array Array to process.
-	 * @param  int|null $number Number to pull.
+	 * @param  array<mixed> $array Array to process.
+	 * @param  int|null     $number Number to pull.
 	 * @return mixed
 	 *
 	 * @throws InvalidArgumentException Thrown when the requested number of items is greater
@@ -489,7 +488,7 @@ class Arr {
 			return $array[ array_rand( $array ) ];
 		}
 
-		if ( 0 === (int) $number ) {
+		if ( 0 === $number ) {
 			return [];
 		}
 
@@ -509,9 +508,9 @@ class Arr {
 	 *
 	 * If no key is given to the method, the entire array will be replaced.
 	 *
-	 * @param  array<mixed>       $array Array to process.
-	 * @param  string|null $key Key to set.
-	 * @param  mixed       $value Value to set.
+	 * @param  array<mixed> $array Array to process.
+	 * @param  string|null  $key Key to set.
+	 * @param  mixed        $value Value to set.
 	 * @return array<mixed>
 	 */
 	public static function set( array &$array, ?string $key, mixed $value ): array {
@@ -548,7 +547,7 @@ class Arr {
 	 * Shuffle the given array and return the result.
 	 *
 	 * @param  array<mixed> $array Array to process.
-	 * @param  int   $seed Seed to use.
+	 * @param  int          $seed Seed to use.
 	 * @return array<mixed>
 	 */
 	public static function shuffle( $array, ?int $seed = null ) {
@@ -566,7 +565,7 @@ class Arr {
 	/**
 	 * Sort the array using the given callback or "dot" notation.
 	 *
-	 * @param  array<mixed>                $array Array to sort.
+	 * @param  array<mixed>         $array Array to sort.
 	 * @param  callable|string|null $callback Callback to sort by.
 	 * @return array<mixed>
 	 */
@@ -608,8 +607,8 @@ class Arr {
 	/**
 	 * Filter the array using the given callback.
 	 *
-	 * @param  array<mixed>    $array Array to process.
-	 * @param  callable $callback Callback to filter by.
+	 * @param  array<mixed> $array Array to process.
+	 * @param  callable     $callback Callback to filter by.
 	 * @return array<mixed>
 	 */
 	public static function where( $array, callable $callback ): array {

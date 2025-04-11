@@ -40,8 +40,8 @@ class Rest_Route_Registrar {
 	/**
 	 * Register a REST API Route.
 	 *
-	 * @param string         $route Route to register.
-	 * @param array|callable $args Arguments or callback for the route.
+	 * @param string                $route Route to register.
+	 * @param array<mixed>|callable $args Arguments or callback for the route.
 	 */
 	public function register_route( string $route, $args = [] ): void {
 		$args = $this->normalize_args( $args, $route );
@@ -56,8 +56,9 @@ class Rest_Route_Registrar {
 	/**
 	 * Normalize the arguments that are registered.
 	 *
-	 * @param array|callable $args Arguments for the route or callback function.
-	 * @param string         $route Route name.
+	 * @param array<mixed>|callable $args Arguments for the route or callback function.
+	 * @param string                $route Route name.
+	 * @return array<mixed>
 	 */
 	protected function normalize_args( $args, string $route ): array {
 		if ( ! is_array( $args ) ) {
@@ -122,6 +123,7 @@ class Rest_Route_Registrar {
 	 * Gather the middleware for the given route with resolved class names.
 	 *
 	 * @param string[] $middleware Middleware for the route.
+	 * @return array<string>
 	 */
 	public function gather_route_middleware( array $middleware ): array {
 		return collect( $middleware )

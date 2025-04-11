@@ -1,5 +1,5 @@
-# includes:
-# 	- phpstan-baseline.neon
+includes:
+	- phpstan-baseline.neon
 
 parameters:
 	# Goal of max.
@@ -34,6 +34,7 @@ parameters:
 				- src/mantle/contracts
 				- src/mantle/facade
 				- src/mantle/filesystem/class-filesystem.php
+				- src/mantle/filesystem/class-filesystem-adapter.php
 				- src/mantle/testing
 				- src/mantle/testkit
 		-
@@ -45,6 +46,7 @@ parameters:
 			identifier: missingType.parameter
 			paths:
 				- **/autoload.php
+				- src/mantle/filesystem/class-filesystem-adapter.php
 		-
 			message: "#implements generic interface ArrayAccess but does not specify its types#"
 			paths:
@@ -70,6 +72,9 @@ parameters:
 		- src/mantle/database/factory
 		- src/mantle/framework/console/class-hook-usage-command.php
 		- src/mantle/query-monitor
+		- src/mantle/queue/providers/wordpress/admin/class-queue-jobs-table.php
+		- src/mantle/queue/providers/wordpress/admin/class-service-provider.php
+		- src/mantle/support/interface-enumerable.php
 		- src/mantle/testing/class-mock-action.php
 		- src/mantle/testing/install-wordpress.php
 		- src/mantle/testing/preload.php

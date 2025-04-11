@@ -17,15 +17,14 @@ trait Forward_Calls {
 	/**
 	 * Forward a method call to the given object.
 	 *
-	 * @param mixed  $object Object to use.
-	 * @param string $method Method to call.
-	 * @param array  $parameters Method parameters.
-	 * @return mixed
+	 * @param mixed        $object Object to use.
+	 * @param string       $method Method to call.
+	 * @param array<mixed> $parameters Method parameters.
 	 *
 	 * @throws \BadMethodCallException Thrown on method exception.
 	 * @throws \Error Thrown on method exception.
 	 */
-	protected function forward_call_to( $object, $method, $parameters ) {
+	protected function forward_call_to( mixed $object, string $method, array $parameters ): mixed {
 		try {
 			return $object->{ $method }( ...$parameters );
 		} catch ( Error | BadMethodCallException $e ) {

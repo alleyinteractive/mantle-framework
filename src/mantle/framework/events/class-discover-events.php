@@ -58,7 +58,7 @@ class Discover_Events {
 	 * Get all of the listeners and their corresponding events.
 	 *
 	 * @param iterable<\SplFileInfo> $listeners Listener files.
-	 * @param string           $base_path Base path.
+	 * @param string                 $base_path Base path.
 	 * @return array<mixed>
 	 */
 	protected static function get_listener_events( $listeners, string $base_path ): array {

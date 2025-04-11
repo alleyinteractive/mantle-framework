@@ -59,11 +59,10 @@ class Collection implements ArrayAccess, Enumerable {
 	 *
 	 * Falls back to the normal constructor if $value is unrecognized.
 	 *
-	 * @template TKeyFrom of array-key
 	 * @template TValueFrom
 	 *
-	 * @param iterable<TKeyFrom, TValueFrom>|\WP_Query $value
-	 * @return static<TKeyFrom, TValueFrom>
+	 * @param iterable<array-key, TValueFrom>|\WP_Query $value
+	 * @return static<int, TValueFrom>
 	 */
 	public static function from( $value ) {
 		global $post;
@@ -71,13 +70,18 @@ class Collection implements ArrayAccess, Enumerable {
 			$items = [];
 			while ( $value->have_posts() ) {
 				$value->the_post();
-				$items[] = Model\Post::find( $post );
+
+				$model = Model\Post::find( $post );
+
+				if ( $model instanceof \Mantle\Database\Model\Post ) {
+					$items[] = $model;
+				}
 			}
 
 			return new static( $items );
 		}
 
-		return new static( $value );
+		return ( new static( $value ) )->values();
 	}
 
 	/**
@@ -428,7 +432,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param  TFirstDefault|(\Closure(): TFirstDefault) $default
 	 * @return TValue|TFirstDefault
 	 */
-	public function first( ?callable $callback = null, $default = null ) {
+	public function first( ?callable $callback = null, $default = null ): mixed {
 		return Arr::first( $this->items, $callback, $default );
 	}
 
@@ -485,8 +489,8 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Group an associative array by a field or using a callback.
 	 *
-	 * @param  (callable(TValue, TKey): array-key)|array|string $group_by The field or callback to group by.
-	 * @param  bool                                             $preserve_keys Whether to preserve the keys of the original array.
+	 * @param  (callable(TValue, TKey): array-key)|array<mixed>|string $group_by The field or callback to group by.
+	 * @param  bool                                                    $preserve_keys Whether to preserve the keys of the original array.
 	 * @return static<array-key, static<array-key, TValue>>
 	 */
 	public function group_by( $group_by, $preserve_keys = false ) {
@@ -530,7 +534,7 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Key an associative array by a field or using a callback.
 	 *
-	 * @param  (callable(TValue, TKey): array-key)|array|string $key_by The field or callback to key by.
+	 * @param  (callable(TValue, TKey): array-key)|string[]|string $key_by The field or callback to key by.
 	 * @return static<array-key, TValue>
 	 */
 	public function key_by( $key_by ) {
@@ -705,7 +709,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param  TLastDefault|(\Closure(): TLastDefault) $default
 	 * @return TValue|TLastDefault
 	 */
-	public function last( ?callable $callback = null, $default = null ) {
+	public function last( ?callable $callback = null, $default = null ): mixed {
 		return Arr::last( $this->items, $callback, $default );
 	}
 
