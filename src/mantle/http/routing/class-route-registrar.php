@@ -168,7 +168,7 @@ class Route_Registrar {
 	 * Dynamically handle calls into the route registrar.
 	 *
 	 * @param  string $method
-	 * @param  array  $parameters
+	 * @param  array<mixed>  $parameters
 	 * @return \Mantle\Http\Routing\Route|static
 	 *
 	 * @throws BadMethodCallException Thrown on missing method.

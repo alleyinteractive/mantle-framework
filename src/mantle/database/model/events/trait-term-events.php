@@ -23,7 +23,7 @@ trait Term_Events {
 	/**
 	 * Subscribe to the core WordPress events for the model.
 	 */
-	protected static function subscribe_to_core_events() {
+	protected static function subscribe_to_core_events(): void {
 		$object_name = static::get_object_name();
 
 		add_action( 'created_term', static::get_term_event_callback( 'created', $object_name ), 10, 3 );

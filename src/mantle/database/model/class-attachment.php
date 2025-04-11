@@ -101,7 +101,7 @@ class Attachment extends Post {
 	 * Mirrors 'media_sideload_image()' with the ability to also load PDFs.
 	 *
 	 * @param string $url Image URL.
-	 * @param array  $args  {
+	 * @param array<mixed>  $args  {
 	 *        Optional. Arguments for the attachment. Default empty array.
 	 *
 	 *        @type string      $alt            Alt text.

@@ -202,7 +202,7 @@ if ( ! function_exists( 'route' ) ) {
 	 * Generate a URL to a named route.
 	 *
 	 * @param string $name Route name.
-	 * @param array  $args Route arguments.
+	 * @param array<mixed>  $args Route arguments.
 	 * @return string
 	 */
 	function route( string $name, array $args = [], bool $relative = false ) {

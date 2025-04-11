@@ -109,7 +109,7 @@ class Fluent_Factory extends Factory {
 	 * factory for scopes and other methods.
 	 *
 	 * @param string $method The method name.
-	 * @param array  $args   The arguments.
+	 * @param array<mixed>  $args   The arguments.
 	 *
 	 * @throws BadMethodCallException If the method does not exist.
 	 */

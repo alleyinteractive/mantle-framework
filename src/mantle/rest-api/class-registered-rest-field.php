@@ -60,7 +60,7 @@ class Registered_REST_Field {
 	 *
 	 * @param string $object_type Object type.
 	 * @param string $attribute   Attribute name.
-	 * @param array  $args        Additional registration arguments.
+	 * @param array<mixed>  $args        Additional registration arguments.
 	 */
 	private function __construct( string $object_type, string $attribute, array $args ) {
 		$this->object_type = $object_type;

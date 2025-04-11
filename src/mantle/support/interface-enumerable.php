@@ -20,8 +20,8 @@ use JsonSerializable;
 /**
  * Enumerable interface.
  *
- * @template TKey of array-key
- * @template TValue
+ * @template TKey of array-key = array-key
+ * @template TValue = mixed
  *
  * @extends \Mantle\Contracts\Support\Arrayable<TKey, TValue>
  * @extends \IteratorAggregate<TKey, TValue>

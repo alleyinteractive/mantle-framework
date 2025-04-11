@@ -38,7 +38,7 @@ class Higher_Order_When_Proxy {
 	 * Proxy a method call on the target.
 	 *
 	 * @param  string $method
-	 * @param  array  $parameters
+	 * @param  array<mixed>  $parameters
 	 */
 	public function __call( string $method, array $parameters ): mixed {
 		return $this->condition

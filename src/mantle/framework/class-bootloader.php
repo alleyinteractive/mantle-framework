@@ -389,7 +389,7 @@ class Bootloader implements Contract {
 	 * methods to the application instance.
 	 *
 	 * @param string $method Method to call.
-	 * @param array  $args Arguments to pass to the method.
+	 * @param array<mixed>  $args Arguments to pass to the method.
 	 */
 	public function __call( string $method, array $args ): mixed {
 		return $this->get_application()?->$method( ...$args );

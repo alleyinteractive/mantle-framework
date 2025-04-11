@@ -67,7 +67,7 @@ class Expectation {
 	/**
 	 * Setup listeners for the applied action.
 	 */
-	protected function setup_applied_hooks() {
+	protected function setup_applied_hooks(): void {
 		add_action( // @phpstan-ignore-line Action callback
 			$this->hook,
 			[ $this, 'record_start' ],

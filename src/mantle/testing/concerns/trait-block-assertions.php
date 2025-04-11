@@ -29,7 +29,7 @@ trait Block_Assertions {
 	 * @see \Alley\WP\match_block()
 	 *
 	 * @param string $string The string to check.
-	 * @param array  $args The arguments to pass to `match_block()`.
+	 * @param array<mixed>  $args The arguments to pass to `match_block()`.
 	 */
 	public function assertStringMatchesBlock( string $string, array $args ): void {
 		$this->assertNotEmpty(
@@ -46,7 +46,7 @@ trait Block_Assertions {
 	 * @see \Alley\WP\match_block()
 	 *
 	 * @param string $string The string to check.
-	 * @param array  $args The arguments to pass to `match_block()`.
+	 * @param array<mixed>  $args The arguments to pass to `match_block()`.
 	 */
 	public function assertStringNotMatchesBlock( string $string, array $args ): void {
 		$this->assertEmpty(

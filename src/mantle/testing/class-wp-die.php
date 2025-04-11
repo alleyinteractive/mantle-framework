@@ -40,7 +40,7 @@ class WP_Die {
 	 *
 	 * @param string $message The message.
 	 * @param string $title   The title.
-	 * @param array  $args    Array with arguments.
+	 * @param array<mixed>  $args    Array with arguments.
 	 */
 	public static function toggled_handler( $message, $title = '', $args = [] ): void {
 		if ( ! $GLOBALS['_wp_die_disabled'] ) {
@@ -154,7 +154,7 @@ class WP_Die {
 	 *
 	 * @param string $message The message.
 	 * @param string $title   The title.
-	 * @param array  $args    Array with arguments.
+	 * @param array<mixed>  $args    Array with arguments.
 	 */
 	public static function exit_handler( $message, $title, $args ): void {
 		// phpcs:disable WordPress.Security.EscapeOutput

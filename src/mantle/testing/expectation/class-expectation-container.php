@@ -30,7 +30,7 @@ class Expectation_Container {
 	/**
 	 * Expectations
 	 *
-	 * @var Collection<Expectation>
+	 * @var Collection<int, Expectation>
 	 */
 	protected Collection $expectations;
 

@@ -60,7 +60,7 @@ class Implicit_Route_Binding {
 	 * Return the parameter name if it exists in the given parameters.
 	 *
 	 * @param  string $name
-	 * @param  array  $parameters
+	 * @param  array<mixed>  $parameters
 	 */
 	protected static function get_parameter_name( $name, array $parameters ): ?string {
 		if ( array_key_exists( $name, $parameters ) ) {

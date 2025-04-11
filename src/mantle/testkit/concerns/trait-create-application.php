@@ -121,7 +121,7 @@ trait Create_Application {
 	 * @param Application $app Application instance.
 	 * @todo Allow for overriding the configuration aliases and providers easily within the unit test.
 	 */
-	protected function resolve_application_config( $app ) {
+	protected function resolve_application_config( Application $app ): void {
 		$config = new Repository(
 			array_merge(
 				$this->get_application_config(),

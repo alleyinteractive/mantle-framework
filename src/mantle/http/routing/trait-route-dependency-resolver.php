@@ -24,7 +24,7 @@ trait Route_Dependency_Resolver {
 	/**
 	 * Resolve the object method's type-hinted dependencies.
 	 *
-	 * @param  array  $parameters
+	 * @param  array<mixed>  $parameters
 	 * @param  object $instance
 	 * @param  string $method
 	 * @return array
@@ -112,7 +112,7 @@ trait Route_Dependency_Resolver {
 	/**
 	 * Splice the given value into the parameter list.
 	 *
-	 * @param  array  $parameters
+	 * @param  array<mixed>  $parameters
 	 * @param  int    $offset
 	 * @param  mixed  $value
 	 * @return void
