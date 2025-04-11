@@ -86,12 +86,10 @@ class Environment {
 					return $matches[2];
 				}
 
-							return $value;
+				return $value;
 			}
 		)
-		->getOrCall(
-			fn () => value( $default )
-		);
+		->getOrCall( fn () => value( $default ) );
 	}
 
 	/**
