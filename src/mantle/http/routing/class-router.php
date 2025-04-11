@@ -46,16 +46,22 @@ class Router implements Router_Contract {
 
 	/**
 	 * All of the short-hand keys for middlewares.
+	 *
+	 * @var array<string, class-string>
 	 */
 	protected array $middleware = [];
 
 	/**
 	 * All of the middleware groups.
+	 *
+	 * @var array<string, array<string>>
 	 */
 	protected array $middleware_groups = [];
 
 	/**
 	 * The registered route value binders.
+	 *
+	 * @var array<string, \Closure>
 	 */
 	protected array $binders = [];
 
@@ -179,7 +185,7 @@ class Router implements Router_Contract {
 	/**
 	 * Register a route.
 	 *
-	 * @param array  $methods Methods to register.
+	 * @param string[]  $methods Methods to register.
 	 * @param string $uri URL route.
 	 * @param mixed  $action Route callback.
 	 * @return Route|null Route instance for web routes, null for REST routes.
@@ -202,7 +208,7 @@ class Router implements Router_Contract {
 	/**
 	 * Create a new route instance.
 	 *
-	 * @param array  $methods Methods to register.
+	 * @param string[]  $methods Methods to register.
 	 * @param string $uri URL route.
 	 * @param mixed  $action Route callback.
 	 */
@@ -221,7 +227,7 @@ class Router implements Router_Contract {
 	/**
 	 * Create a REST API route.
 	 *
-	 * @param array  $methods Methods to register.
+	 * @param string[]  $methods Methods to register.
 	 * @param string $uri URL route.
 	 * @param mixed  $action Route callback.
 	 */
@@ -277,6 +283,7 @@ class Router implements Router_Contract {
 	 * Match a request to a registered route.
 	 *
 	 * @param Request $request Request object.
+	 * @return array<mixed>|null Route match.
 	 */
 	protected function match_route( Request $request ): ?array {
 		$context = ( new RequestContext() )->fromRequest( $request );
@@ -287,7 +294,7 @@ class Router implements Router_Contract {
 	/**
 	 * Execute a route match and retrieve the response.
 	 *
-	 * @param array   $match Route match.
+	 * @param array<mixed>   $match Route match.
 	 * @param Request $request Request object.
 	 *
 	 * @throws HttpException Thrown on unknown route callback.
@@ -340,6 +347,8 @@ class Router implements Router_Contract {
 
 	/**
 	 * Get all of the defined middleware short-hand names.
+	 *
+	 * @return array<string, class-string>
 	 */
 	public function get_middleware(): array {
 		return $this->middleware;
@@ -359,6 +368,8 @@ class Router implements Router_Contract {
 
 	/**
 	 * Get all of the defined middleware groups.
+	 *
+	 * @return array<string, array<class-string>>
 	 */
 	public function get_middleware_groups(): array {
 		return $this->middleware_groups;
@@ -368,7 +379,7 @@ class Router implements Router_Contract {
 	 * Register a group of middleware.
 	 *
 	 * @param  string $name
-	 * @param  array  $middleware
+	 * @param  array<class-string>  $middleware
 	 */
 	public function middleware_group( string $name, array $middleware ): static {
 		$this->middleware_groups[ $name ] = $middleware;
@@ -416,6 +427,7 @@ class Router implements Router_Contract {
 	 * Gather the middleware for the given route with resolved class names.
 	 *
 	 * @param Route $route Route instance.
+	 * @return array<string|class-string>
 	 */
 	public function gather_route_middleware( Route $route ): array {
 		$middleware = $route->excluded_middleware();
@@ -528,7 +540,7 @@ class Router implements Router_Contract {
 	 * @param string                $namespace Namespace for the REST API route.
 	 * @param callable|string       $callback  Callback that will be invoked to register
 	 *                                         routes OR a string route.
-	 * @param callable|array|string $args      Callback for the route if $callback is a
+	 * @param callable|array<mixed>|string $args      Callback for the route if $callback is a
 	 *                                         string route OR arguments to pass to
 	 *                                         the register_rest_route() call. Not used if $callback
 	 *                                         is a closure.
@@ -574,10 +586,10 @@ class Router implements Router_Contract {
 	 * Dynamically handle calls into the router instance.
 	 *
 	 * @param string $method Method name.
-	 * @param array  $parameters Parameters for the method.
+	 * @param array<mixed>  $parameters Parameters for the method.
 	 * @return mixed
 	 */
-	public function __call( $method, $parameters ) {
+	public function __call( string $method, array $parameters ) {
 		if ( static::has_macro( $method ) ) {
 			return $this->macro_call( $method, $parameters );
 		}

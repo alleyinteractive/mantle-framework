@@ -29,6 +29,8 @@ class Closure_Job implements Can_Queue {
 
 	/**
 	 * The callbacks that should be run on failure.
+	 *
+	 * @var array<Closure|SerializableClosure>
 	 */
 	public array $failure_callbacks = [];
 
@@ -85,8 +87,8 @@ class Closure_Job implements Can_Queue {
 	 */
 	public function on_failure( $callback ): static {
 		$this->failure_callbacks[] = $callback instanceof Closure
-		? new SerializableClosure( $callback )
-		: $callback;
+			? new SerializableClosure( $callback )
+			: $callback;
 
 		return $this;
 	}

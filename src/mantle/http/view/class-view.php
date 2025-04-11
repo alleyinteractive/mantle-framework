@@ -53,7 +53,7 @@ class View implements \Stringable {
 	 * @param Factory_Contract                               $factory View Factory.
 	 * @param Engine|\Illuminate\View\Engines\CompilerEngine $engine View Engine.
 	 * @param string                                         $path View path.
-	 * @param array                                          $data Variables for the view, optional.
+	 * @param array<string, mixed>                                          $data Variables for the view, optional.
 	 */
 	public function __construct(
 		protected Factory_Contract $factory,
@@ -85,7 +85,7 @@ class View implements \Stringable {
 	/**
 	 * Add a piece of data to the view.
 	 *
-	 * @param string|array $key Key to set.
+	 * @param string|array<string, mixed> $key Key to set.
 	 * @param mixed        $value Value to set.
 	 */
 	public function with( $key, $value = null ): static {
@@ -100,6 +100,8 @@ class View implements \Stringable {
 
 	/**
 	 * Get the data for the view.
+	 *
+	 * @return array<string, mixed>
 	 */
 	public function get_variables(): array {
 		return $this->data;
@@ -163,7 +165,7 @@ class View implements \Stringable {
 	/**
 	 * Set the global post object for the view.
 	 */
-	protected function setup_post_object() {
+	protected function setup_post_object(): void {
 		global $post;
 
 		if ( $this->post === null ) {
@@ -180,7 +182,7 @@ class View implements \Stringable {
 	/**
 	 * Backup the current global `$post`.
 	 */
-	protected function preserve_post() {
+	protected function preserve_post(): void {
 		$this->original_post = $GLOBALS['post'] ?? null;
 	}
 
@@ -194,7 +196,7 @@ class View implements \Stringable {
 	 *
 	 * @access protected
 	 */
-	protected function restore_post() {
+	protected function restore_post(): void {
 		global $post;
 
 		$post = $this->original_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
@@ -231,7 +233,7 @@ class View implements \Stringable {
 			$this->restore_post();
 		}
 
-		if ( $this->cache_ttl !== null ) {
+		if ( $this->cache_ttl !== null && isset( $cache_key ) ) {
 			\set_transient( $cache_key, $contents, $this->cache_ttl );
 		}
 

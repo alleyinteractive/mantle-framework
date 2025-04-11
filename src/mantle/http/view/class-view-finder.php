@@ -141,6 +141,8 @@ class View_Finder {
 
 	/**
 	 * Get the registered paths.
+	 *
+	 * @return string[]
 	 */
 	public function get_paths(): array {
 		return array_unique( $this->paths );
@@ -189,7 +191,7 @@ class View_Finder {
 	 *
 	 * Acts as a replacement to `locate_template()`.
 	 *
-	 * @param array  $templates Template files to search for.
+	 * @param string[]  $templates Template files to search for.
 	 * @param string $alias Alias to load, optional.
 	 * @return string The template filename if one is located.
 	 *

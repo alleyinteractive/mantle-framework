@@ -107,18 +107,15 @@ class Factory implements ViewFactory {
 	/**
 	 * Add a piece of shared data to the environment.
 	 *
-	 * @param array|string $key Key to share.
+	 * @param array<string, mixed>|string $key Key to share.
 	 * @param mixed|null   $value Value to share.
-	 * @return mixed
 	 */
-	public function share( $key, $value = null ) {
+	public function share( $key, $value = null ): void {
 		$keys = is_array( $key ) ? $key : [ $key => $value ];
 
 		foreach ( $keys as $key => $value ) {
 			$this->shared[ $key ] = $value;
 		}
-
-		return $value;
 	}
 
 	/**
@@ -134,6 +131,8 @@ class Factory implements ViewFactory {
 
 	/**
 	 * Get all of the shared data for the environment.
+	 *
+	 * @return array<string, mixed>
 	 */
 	public function get_shared(): array {
 		return $this->shared;
@@ -186,9 +185,9 @@ class Factory implements ViewFactory {
 	 * Get the rendered contents of a view.
 	 *
 	 * @param string       $slug View slug.
-	 * @param array|string $name View name, optional. Supports passing variables in if
+	 * @param array<mixed>|string $name View name, optional. Supports passing variables in if
 	 *                           $variables is not used.
-	 * @param array        $variables Variables for the view, optional.
+	 * @param array<mixed>        $variables Variables for the view, optional.
 	 */
 	public function make( string $slug, $name = null, array $variables = [] ): View {
 		if ( is_array( $name ) ) {
@@ -243,11 +242,11 @@ class Factory implements ViewFactory {
 	 *
 	 * While iterating over the data, the proper post data is setup for each item.
 	 *
-	 * @param array|\ArrayAccess $data Array of WordPress data to loop over.
+	 * @param array<mixed>|\ArrayAccess<array-key, mixed> $data Array of WordPress data to loop over.
 	 * @param string             $slug View slug.
-	 * @param array|string       $name View name, optional. Supports passing variables in if
+	 * @param array<mixed>|string       $name View name, optional. Supports passing variables in if
 	 *                                 $variables is not used.
-	 * @param array              $variables Variables for the view, optional.
+	 * @param array<mixed>              $variables Variables for the view, optional.
 	 */
 	public function loop( $data, string $slug, $name = null, array $variables = [] ): Collection {
 		$results = new Collection();
@@ -272,11 +271,11 @@ class Factory implements ViewFactory {
 	 * Iterate over an array, loading a given template part for each item in the
 	 * array.
 	 *
-	 * @param array|\ArrayAccess $data Array of data to iterate over over.
+	 * @param array<mixed>|\ArrayAccess $data Array of data to iterate over over.
 	 * @param string             $slug View slug.
-	 * @param array|string       $name View name, optional. Supports passing variables in if
+	 * @param array<mixed>|string       $name View name, optional. Supports passing variables in if
 	 *                                 $variables is not used.
-	 * @param array              $variables Variables for the view, optional.
+	 * @param array<string, mixed>              $variables Variables for the view, optional.
 	 */
 	public function iterate( $data, string $slug, $name = null, array $variables = [] ): Collection {
 		if ( is_array( $name ) ) {

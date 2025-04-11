@@ -398,7 +398,7 @@ trait Enumerates_Values {
 	 * @param  (callable(TValue, TKey): bool)|TValue|string $key
 	 * @param  TValue|string|null                           $operator
 	 * @param  TValue|null                                  $value
-	 * @return static<int<0, 1>, static<TKey, TValue>>
+	 * @return static<int, static<TKey, TValue>>
 	 */
 	public function partition( $key, $operator = null, $value = null ) {
 		$passed = [];
@@ -416,7 +416,11 @@ trait Enumerates_Values {
 			}
 		}
 
-		return new static( [ new static( $passed ), new static( $failed ) ] );
+		/** @var static<int, static<TKey, TValue>> */
+		return new static( [
+			new static( $passed ),
+			new static( $failed ),
+		] );
 	}
 
 	/**

@@ -49,22 +49,25 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 *
 	 * @var array<\Mantle\Http\Uploaded_File>|null
 	 */
-	protected $converted_files;
+	protected ?array $converted_files = null;
 
 	/**
 	 * Create a request object.
-	 *
-	 * @return static
 	 */
-	public static function capture(): \Symfony\Component\HttpFoundation\Request {
+	public static function capture(): static {
 		return static::createFromGlobals();
 	}
 
+	/**
+	 * Create a new request instance from current global parameters.
+	 *
+	 * Mirrors Symfony's version but will create a static instance of the class.
+	 */
 	public static function createFromGlobals(): static {
 		$request = new static( $_GET, $_POST, [], $_COOKIE, $_FILES, $_SERVER );
 
-		if (str_starts_with($request->headers->get('CONTENT_TYPE', ''), 'application/x-www-form-urlencoded') && \in_array(strtoupper($request->server->get('REQUEST_METHOD', 'GET')), ['PUT', 'DELETE', 'PATCH'], true) ) {
-			parse_str($request->getContent(), $data);
+		if ( str_starts_with( (string) $request->headers->get( 'CONTENT_TYPE', '' ), 'application/x-www-form-urlencoded' ) && \in_array( strtoupper( (string) $request->server->get( 'REQUEST_METHOD', 'GET' ) ), [ 'PUT', 'DELETE', 'PATCH' ], true ) ) {
+			parse_str( $request->getContent(), $data );
 			$request->request = new InputBag( $data );
 		}
 
@@ -123,7 +126,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Get the full URL for the request with the added query string parameters.
 	 *
-	 * @param  array $query
+	 * @param  array<string, string> $query
 	 */
 	public function full_url_with_query( array $query ): string {
 		$question = $this->getBaseUrl() . $this->getPathInfo() === '/' ? '/?' : '?';
@@ -248,6 +251,8 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 
 	/**
 	 * Get the client IP addresses.
+	 *
+	 * @return string[]
 	 */
 	public function ips(): array {
 		return $this->getClientIps();
@@ -263,7 +268,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Merge new input into the current request's input array.
 	 *
-	 * @param  array $input
+	 * @param  array<mixed> $input
 	 */
 	public function merge( array $input ): static {
 		$this->get_input_source()->add( $input );
@@ -274,7 +279,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Replace the input for the current request.
 	 *
-	 * @param  array $input
+	 * @param  array<mixed> $input
 	 */
 	public function replace( array $input ): static {
 		$this->get_input_source()->replace( $input );
@@ -355,7 +360,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Set route parameters.
 	 *
-	 * @param ParameterBag|array $parameters Route parameters to set.
+	 * @param ParameterBag|array<string, mixed> $parameters Route parameters to set.
 	 */
 	public function set_route_parameters( $parameters ): static {
 		if ( ! ( $parameters instanceof ParameterBag ) ) {

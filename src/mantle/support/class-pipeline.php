@@ -169,6 +169,7 @@ class Pipeline implements PipelineContract {
 	 * Parse full pipe string to get name and parameters.
 	 *
 	 * @param  string $pipe
+	 * @return array{0: string, 1: array<mixed>}
 	 */
 	protected function parse_pipe_string( $pipe ): array {
 		[$name, $parameters] = array_pad( explode( ':', $pipe, 2 ), 2, [] );

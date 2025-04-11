@@ -54,7 +54,7 @@ class HTML extends SymfonyCrawler implements Htmlable {
 	/**
 	 * Get an HTML object from a variety of types.
 	 *
-	 * @param string|\Symfony\Component\DomCrawler\Crawler|DOMNode|DOMNodeList $content
+	 * @param string|\Symfony\Component\DomCrawler\Crawler|DOMNode|DOMNodeList<DOMNode> $content
 	 */
 	public static function create( string|\Symfony\Component\DomCrawler\Crawler|DOMNode|DOMNodeList $content ): static {
 		return match ( true ) {
@@ -90,7 +90,7 @@ class HTML extends SymfonyCrawler implements Htmlable {
 	 * This method uses the appropriate specialized add*() method based
 	 * on the type of the argument.
 	 *
-	 * @param \DOMNodeList|\DOMNode|array|string|HTML|null $node A node.
+	 * @param \DOMNodeList<DOMNode>|\DOMNode|array<mixed>|string|HTML|null $node A node.
 	 */
 	#[Override]
 	public function add( \DOMNodeList|\DOMNode|array|string|SymfonyCrawler|null $node ): void {
@@ -475,7 +475,7 @@ class HTML extends SymfonyCrawler implements Htmlable {
 	/**
 	 * Insert content, specified by the parameter, after each element in the set of matched elements.
 	 *
-	 * @param string|self|DOMNode|DOMNodeList $content
+	 * @param string|self|DOMNode|DOMNodeList<DOMNode> $content
 	 */
 	public function after( string|self|DOMNode|DOMNodeList $content ): static {
 		$content = self::create( $content );
@@ -506,7 +506,7 @@ class HTML extends SymfonyCrawler implements Htmlable {
 	/**
 	 * Insert content, specified by the parameter, before each element in the set of matched elements.
 	 *
-	 * @param string|self|DOMNode|DOMNodeList $content
+	 * @param string|self|DOMNode|DOMNodeList<DOMNode> $content
 	 */
 	public function before( string|self|DOMNode|DOMNodeList $content ): static {
 		$content = self::create( $content );

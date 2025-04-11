@@ -119,6 +119,8 @@ trait Interacts_With_Data {
 
 	/**
 	 * Retrieve the value as an array.
+	 *
+	 * @return array<mixed>
 	 */
 	public function array(): array {
 		return (array) $this->value;

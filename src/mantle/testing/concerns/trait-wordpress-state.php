@@ -99,7 +99,7 @@ trait WordPress_State {
 	 * a test forgets to unregister a post type on its own, or fails before
 	 * it has a chance to do so.
 	 */
-	protected function reset_post_types() {
+	protected function reset_post_types(): void {
 		foreach ( get_post_types( [], 'objects' ) as $pt ) {
 			if ( empty( $pt->tests_no_auto_unregister ) ) {
 				unregister_post_type( $pt->name );
@@ -116,7 +116,7 @@ trait WordPress_State {
 	 * a test forgets to unregister a taxonomy on its own, or fails before
 	 * it has a chance to do so.
 	 */
-	protected function reset_taxonomies() {
+	protected function reset_taxonomies(): void {
 		foreach ( get_taxonomies() as $tax ) {
 			unregister_taxonomy( $tax );
 		}
@@ -127,7 +127,7 @@ trait WordPress_State {
 	/**
 	 * Unregister non-built-in post statuses.
 	 */
-	protected function reset_post_statuses() {
+	protected function reset_post_statuses(): void {
 		foreach ( get_post_stati( [ '_builtin' => false ] ) as $post_status ) {
 			Utils::unregister_post_status( $post_status );
 		}
@@ -163,7 +163,7 @@ trait WordPress_State {
 	 * @param int $user_id User ID.
 	 * @return bool True if the user was deleted.
 	 */
-	public static function delete_user( $user_id ) {
+	public static function delete_user( $user_id ): bool {
 		if ( is_multisite() ) {
 			return wpmu_delete_user( $user_id );
 		}

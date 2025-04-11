@@ -58,7 +58,7 @@ class Logger extends MonologLogger {
 	 *
 	 * @param string $level Log level.
 	 * @param string $message Message.
-	 * @param array  $context Log context.
+	 * @param array<mixed>  $context Log context.
 	 */
 	protected function fire_log_event( string $level, string $message, array $context = [] ): void {
 		if ( $this->dispatcher !== null ) {

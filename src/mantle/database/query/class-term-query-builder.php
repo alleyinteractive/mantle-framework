@@ -19,7 +19,7 @@ namespace Mantle\Database\Query;
  * @method \Mantle\Database\Query\Term_Query_Builder<TModel> whereTaxonomy( string $taxonomy )
  */
 class Term_Query_Builder extends Builder {
-	/* @uses Queries_Relationships<TModel> */
+	/** @use Queries_Relationships<TModel> */
 	use Queries_Relationships;
 
 	/**

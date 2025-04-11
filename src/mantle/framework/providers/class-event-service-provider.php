@@ -133,7 +133,7 @@ abstract class Event_Service_Provider extends Service_Provider implements Isolat
 	 *
 	 * @param mixed $listener Event listener, optionally an array with a listener
 	 *                        and priority.
-	 * @return array<string, int>
+	 * @return array{0: mixed, 1: int}
 	 */
 	protected function parse_listener( $listener ): array {
 		// Support the listener being an array of listener and action priority.

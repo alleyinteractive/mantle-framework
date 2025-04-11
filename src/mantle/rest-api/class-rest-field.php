@@ -78,7 +78,7 @@ class REST_Field implements REST_Field_Contract, REST_Field_Schema, REST_Field_G
 	/**
 	 * Get the object(s) the field is being registered to.
 	 *
-	 * @return array Object types for the field.
+	 * @return string[] Object types for the field.
 	 */
 	public function get_object_types(): array {
 		return $this->object_types;
@@ -116,7 +116,7 @@ class REST_Field implements REST_Field_Contract, REST_Field_Schema, REST_Field_G
 	/**
 	 * The callback function used to retrieve the field value.
 	 *
-	 * @param array            $object      REST API object.
+	 * @param array<mixed>     $object      REST API object.
 	 * @param string           $field_name  Field name.
 	 * @param \WP_REST_Request $request     REST API request.
 	 * @param string           $object_type Object type.
@@ -208,11 +208,11 @@ class REST_Field implements REST_Field_Contract, REST_Field_Schema, REST_Field_G
 	/**
 	 * Convenience proxy for `fill_rest_schema()`.
 	 *
-	 * @param string|array $description Attribute description or schema array.
-	 * @param array        $args        Remaining schema definition, if any.
-	 * @return array Completed schema definition.
+	 * @param string|array<string, mixed> $description Attribute description or schema array.
+	 * @param array<string, mixed>        $args        Remaining schema definition, if any.
+	 * @return array<string, mixed> Completed schema definition.
 	 */
-	protected function fill_schema( $description, array $args = [] ): array {
+	protected function fill_schema( string|array $description, array $args = [] ): array {
 		return fill_rest_schema( $description, $args );
 	}
 
@@ -222,7 +222,7 @@ class REST_Field implements REST_Field_Contract, REST_Field_Schema, REST_Field_G
 	 * This method is final because overridden methods would have no effect
 	 * on the recursive calls within `default_from_rest_schema()`.
 	 *
-	 * @param array $schema Schema.
+	 * @param array<string, mixed> $schema Schema.
 	 * @return mixed Default based on the schema.
 	 */
 	protected function default_from_schema( array $schema ) {
@@ -232,7 +232,7 @@ class REST_Field implements REST_Field_Contract, REST_Field_Schema, REST_Field_G
 	/**
 	 * Get the field schema.
 	 *
-	 * @return array Schema.
+	 * @return array<string, mixed> Schema.
 	 */
 	public function get_schema(): array {
 		$schema            = $this->fill_schema( $this->description );

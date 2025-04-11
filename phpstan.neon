@@ -1,5 +1,5 @@
-includes:
-	- phpstan-baseline.neon
+# includes:
+# 	- phpstan-baseline.neon
 
 parameters:
 	# Goal of max.
@@ -48,17 +48,16 @@ parameters:
 		-
 			message: "#implements generic interface ArrayAccess but does not specify its types#"
 			paths:
-				- src/mantle/testkit
 				- src/mantle/testing
 		- "#Unsafe usage of new static#"
 		- "#PHPDoc tag @param references unknown parameter#"
-		- "#Arrayable but does not specify its types#"
 		- "#interface ArrayAccess but does not specify#"
 		- "#ReflectionClass does not specify its types#"
 		- "#ReflectionAttribute does not specify its types#"
 		- "#ReflectionAttribute but does not specify its types#"
 		- "#@return is not subtype of template type TKey#"
 		- "#WP_REST_Request does not specify its types#"
+		- "#WP_REST_Request but does not specify its types#"
 
 	scanFiles:
 		- %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-stubs.php

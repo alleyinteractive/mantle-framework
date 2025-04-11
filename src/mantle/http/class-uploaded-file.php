@@ -31,7 +31,7 @@ class Uploaded_File extends SymfonyUploadedFile {
 	 * Store the uploaded file on a filesystem disk.
 	 *
 	 * @param  string       $path
-	 * @param  array|string $options
+	 * @param  array<mixed>|string $options
 	 * @return string|false
 	 */
 	public function store( $path, $options = [] ) {
@@ -42,7 +42,7 @@ class Uploaded_File extends SymfonyUploadedFile {
 	 * Store the uploaded file on a filesystem disk with public visibility.
 	 *
 	 * @param  string       $path
-	 * @param  array|string $options
+	 * @param  array<mixed>|string $options
 	 * @return string|false
 	 */
 	public function store_publicly( $path, $options = [] ) {
@@ -58,7 +58,7 @@ class Uploaded_File extends SymfonyUploadedFile {
 	 *
 	 * @param  string       $path
 	 * @param  string       $name
-	 * @param  array|string $options
+	 * @param  array<mixed>|string $options
 	 * @return string|false
 	 */
 	public function store_publicly_as( $path, $name, $options = [] ) {
@@ -74,7 +74,7 @@ class Uploaded_File extends SymfonyUploadedFile {
 	 *
 	 * @param  string       $path
 	 * @param  string       $name
-	 * @param  array|string $options
+	 * @param  array<mixed>|string $options
 	 * @return string|false
 	 */
 	public function store_as( $path, $name, $options = [] ) {
@@ -96,7 +96,7 @@ class Uploaded_File extends SymfonyUploadedFile {
 	 *
 	 * @param string $path Path to store uploaded file to.
 	 * @param string $name File name.
-	 * @param array  $options Options for storage, disk name as string.
+	 * @param array<mixed>  $options Options for storage, disk name as string.
 	 *
 	 * @throws RuntimeException Thrown on error storing file.
 	 * @todo Enable proper attachment meta data indexing.
@@ -166,10 +166,10 @@ class Uploaded_File extends SymfonyUploadedFile {
 	/**
 	 * Parse and format the given options.
 	 *
-	 * @param  array|string $options
+	 * @param  array<mixed>|string $options
 	 * @return array<mixed>
 	 */
-	protected function parse_options( $options ) {
+	protected function parse_options( array|string $options ) {
 		if ( is_string( $options ) ) {
 			return [ 'disk' => $options ];
 		}

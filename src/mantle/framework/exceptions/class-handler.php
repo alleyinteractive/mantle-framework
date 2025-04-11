@@ -149,9 +149,12 @@ class Handler implements Contract {
 
 	/**
 	 * Get the default context variables for logging.
+	 *
+	 * @return array<string, string>
 	 */
 	protected function context(): array {
 		try {
+			// @phpstan-ignore return.type
 			return array_filter(
 				[
 					'blogId' => get_current_blog_id(),
@@ -331,6 +334,7 @@ class Handler implements Contract {
 	 * Convert the given exception to an array.
 	 *
 	 * @param  \Throwable $e
+	 * @return array<string, mixed>
 	 */
 	protected function convert_exception_to_array( Throwable $e ): array {
 		$payload = config( 'app.debug' ) ? [

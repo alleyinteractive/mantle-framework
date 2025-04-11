@@ -372,7 +372,7 @@ trait Rsync_Installation {
 	 * This allows the plugin/theme project to properly situate itself within a
 	 * WordPress installation without needing to rsync it manually.
 	 */
-	protected function perform_rsync_testsuite() {
+	protected function perform_rsync_testsuite(): void {
 		require_once __DIR__ . '/../class-utils.php';
 
 		$base_install_path = $this->get_installation_path();

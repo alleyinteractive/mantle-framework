@@ -46,7 +46,7 @@ class Log_Manager implements LoggerInterface {
 	/**
 	 * Write to a specific channel.
 	 *
-	 * @param array|string $channels Channel(s) to log to.
+	 * @param string[]|string $channels Channel(s) to log to.
 	 */
 	public function channel( $channels ): Logger {
 		$handlers = collect( (array) $channels )
@@ -100,7 +100,7 @@ class Log_Manager implements LoggerInterface {
 	/**
 	 * Create a stack handler that combines multiple channels into a single handler.
 	 *
-	 * @param array $config Configuration.
+	 * @param array<mixed> $config Configuration.
 	 * @throws InvalidArgumentException Thrown on invalid configuration.
 	 */
 	protected function create_stack_handler( array $config ): \Monolog\Handler\GroupHandler {
@@ -117,7 +117,7 @@ class Log_Manager implements LoggerInterface {
 	 *
 	 * @link https://github.com/alleyinteractive/logger/
 	 *
-	 * @param array $config Configuration.
+	 * @param array<mixed> $config Configuration.
 	 */
 	protected function create_ai_logger_handler( array $config ): \AI_Logger\Handler\Post_Handler {
 		return new \AI_Logger\Handler\Post_Handler( $this->level( $config ) );
@@ -126,7 +126,7 @@ class Log_Manager implements LoggerInterface {
 	/**
 	 * Create a New Relic Handler
 	 *
-	 * @param array $config Configuration.
+	 * @param array<mixed> $config Configuration.
 	 */
 	protected function create_new_relic_handler( array $config ): NewRelicHandler {
 		return new NewRelicHandler( $this->level( $config ) );
@@ -135,7 +135,7 @@ class Log_Manager implements LoggerInterface {
 	/**
 	 * Create a Slack handler.
 	 *
-	 * @param array $config Handler configuration.
+	 * @param array<mixed> $config Handler configuration.
 	 */
 	protected function create_slack_handler( array $config ): SlackWebhookHandler {
 		return new SlackWebhookHandler(
@@ -157,7 +157,7 @@ class Log_Manager implements LoggerInterface {
 	 *
 	 * @throws InvalidArgumentException Thrown on invalid configuration.
 	 *
-	 * @param array $config Handler configuration.
+	 * @param array<mixed> $config Handler configuration.
 	 */
 	protected function create_custom_handler( array $config ): AbstractHandler {
 		if ( empty( $config['handler'] ) ) {
@@ -174,7 +174,7 @@ class Log_Manager implements LoggerInterface {
 	/**
 	 * Create an Error Log Handler.
 	 *
-	 * @param array $config Handler configuration.
+	 * @param array<mixed> $config Handler configuration.
 	 */
 	protected function create_error_log_handler( array $config ): ErrorLogHandler {
 		return new ErrorLogHandler( ErrorLogHandler::OPERATING_SYSTEM, $this->level( $config ) );
@@ -202,7 +202,7 @@ class Log_Manager implements LoggerInterface {
 	/**
 	 * Parse the string level into a Monolog constant.
 	 *
-	 * @param  array $config Handler configuration.
+	 * @param  array<mixed> $config Handler configuration.
 	 *
 	 * @phpstan-return Level
 	 * @throws \InvalidArgumentException Thrown for unknown log.
