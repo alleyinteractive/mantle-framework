@@ -27,7 +27,9 @@ use function Mantle\Support\Helpers\collect;
  * Has One or Many Relationship
  *
  * @template TParent of \Mantle\Database\Model\Model
- * @extends Relation<TParent>
+ * @template TModel of \Mantle\Database\Model\Model
+ *
+ * @extends Relation<TParent, TModel>
  */
 abstract class Has_One_Or_Many extends Relation {
 	/**
@@ -40,8 +42,8 @@ abstract class Has_One_Or_Many extends Relation {
 	/**
 	 * Create a new has one or many relationship instance.
 	 *
-	 * @param Builder $query Query builder object.
-	 * @param Model   $parent Parent model.
+	 * @param Builder<TModel> $query Query builder object.
+	 * @param TParent    $parent Parent model.
 	 * @param string  $foreign_key Foreign key.
 	 * @param string  $local_key Local key.
 	 */
@@ -93,7 +95,7 @@ abstract class Has_One_Or_Many extends Relation {
 	/**
 	 * Set the query constraints for an eager load of the relation.
 	 *
-	 * @param Collection $models Models to eager load for.
+	 * @param Collection<int, TModel> $models Models to eager load for.
 	 *
 	 * @throws RuntimeException Thrown on currently unsupported query condition.
 	 */
@@ -138,7 +140,8 @@ abstract class Has_One_Or_Many extends Relation {
 	/**
 	 * Attach a model to a parent model and save it.
 	 *
-	 * @param Model[]|Model $model Model instance to save.
+	 * @param TModel[]|TModel $model Model instance to save.
+	 * @return TModel
 	 */
 	public function save( array|Model|int $model ): Model {
 		if ( is_array( $model ) ) {
@@ -181,8 +184,8 @@ abstract class Has_One_Or_Many extends Relation {
 	/**
 	 * Save many models to the database.
 	 *
-	 * @param array<int, Model> $models Model instances to save.
-	 * @return array<int, Model>
+	 * @param array<int, TModel> $models Model instances to save.
+	 * @return array<int, TModel>
 	 */
 	public function save_many( array $models ): array {
 		return collect( $models )
@@ -193,7 +196,7 @@ abstract class Has_One_Or_Many extends Relation {
 	/**
 	 * Dissociate a model from a parent model.
 	 *
-	 * @param Model|array<mixed, Model> $models Model instance to save.
+	 * @param TModel|array<TModel> $models Model instance to save.
 	 */
 	public function remove( Model|array $models ): void {
 		$models = is_array( $models ) ? $models : [ $models ];
@@ -264,8 +267,8 @@ abstract class Has_One_Or_Many extends Relation {
 	/**
 	 * Build a model dictionary keyed by the relation's foreign key.
 	 *
-	 * @param Collection $results Collection of results.
-	 * @param Collection $models Parent models.
+	 * @param Collection<int, TModel> $results Collection of results.
+	 * @param Collection<int, TParent> $models Parent models.
 	 */
 	protected function build_dictionary( Collection $results, Collection $models ): array {
 		// Post term relationships always rely on the underlying term.

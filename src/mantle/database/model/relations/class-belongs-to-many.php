@@ -15,13 +15,15 @@ use function Mantle\Support\Helpers\collect;
  * Creates a 'Belongs To Many' relationship.
  *
  * @template TParent of \Mantle\Database\Model\Model
- * @extends Belongs_To<TParent>
+ * @template TModel of \Mantle\Database\Model\Model
+ *
+ * @extends Belongs_To<TParent, TModel>
  */
 class Belongs_To_Many extends Belongs_To {
 	/**
 	 * Retrieve the results of the query.
 	 *
-	 * @return Collection<int, TParent>|null
+	 * @return Collection<int, TModel>|null
 	 */
 	public function get_results() {
 		$this->add_constraints();
@@ -32,8 +34,8 @@ class Belongs_To_Many extends Belongs_To {
 	/**
 	 * Match the eagerly loaded results to their parents.
 	 *
-	 * @param Collection<int, TParent> $models Parent models.
-	 * @param Collection<int, TParent> $results Eagerly loaded results to match.
+	 * @param Collection<int, TModel> $models Parent models.
+	 * @param Collection<int, TModel> $results Eagerly loaded results to match.
 	 */
 	public function match( Collection $models, Collection $results ): Collection {
 		$dictionary = $this->build_dictionary( $results, $models );
@@ -51,7 +53,7 @@ class Belongs_To_Many extends Belongs_To {
 	 * Build a model dictionary keyed by the relation's foreign key.
 	 *
 	 * @param Collection<int, TParent> $results Collection of results.
-	 * @param Collection<int, TParent> $models Eagerly loaded results to match.
+	 * @param Collection<int, TModel> $models Eagerly loaded results to match.
 	 * @return array<string, array<int, TParent>>
 	 */
 	protected function build_dictionary( Collection $results, Collection $models ): array {

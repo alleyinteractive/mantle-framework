@@ -13,14 +13,16 @@ use Mantle\Support\Collection;
  * Has One Relationship
  *
  * @template TParent of \Mantle\Database\Model\Model
- * @extends Has_One_Or_Many<TParent>
+ * @template TModel of \Mantle\Database\Model\Model
+ *
+ * @extends Has_One_Or_Many<TParent, TModel>
  */
 class Has_One extends Has_One_Or_Many {
 	/**
 	 * Get the results of the relationship.
 	 *
 	 * @return \Mantle\Database\Model\Model|null
-	 * @phpstan-return TParent|null
+	 * @phpstan-return TModel|null
 	 */
 	public function get_results() {
 		$this->add_constraints();
@@ -32,7 +34,7 @@ class Has_One extends Has_One_Or_Many {
 	 * Match the eagerly loaded results to their parents.
 	 *
 	 * @param Collection<int, TParent> $models Parent models.
-	 * @param Collection<int, TParent> $results Eagerly loaded results to match.
+	 * @param Collection<int, TModel> $results Eagerly loaded results to match.
 	 * @return Collection<int, TParent>
 	 */
 	public function match( Collection $models, Collection $results ): Collection {

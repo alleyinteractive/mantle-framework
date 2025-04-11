@@ -20,9 +20,10 @@ use Mantle\Support\Forward_Calls;
 /**
  * Relation base class.
  *
- * @template TParent of Model
+ * @template TParent of \Mantle\Database\Model\Model
+ * @template TModel of \Mantle\Database\Model\Model
  *
- * @mixin \Mantle\Database\Query\Builder<TParent>
+ * @mixin \Mantle\Database\Query\Builder<TModel>
  */
 abstract class Relation {
 	use Forward_Calls;
@@ -63,7 +64,7 @@ abstract class Relation {
 	/**
 	 * Create a new relation instance.
 	 *
-	 * @param Builder<TParent> $query Query builder instance.
+	 * @param Builder<TModel> $query Query builder instance.
 	 * @param Model<TParent>   $parent Model instance.
 	 * @param bool|null        $uses_terms Flag if the relation uses terms.
 	 * @param string           $relationship Relationship name, optional.
@@ -130,7 +131,7 @@ abstract class Relation {
 	/**
 	 * Retrieve the query for a relation.
 	 *
-	 * @return Builder<TParent>
+	 * @return Builder<TModel>
 	 */
 	public function get_query(): Builder {
 		return $this->query;
@@ -139,7 +140,7 @@ abstract class Relation {
 	/**
 	 * Get the relationship for eager loading.
 	 *
-	 * @return Collection<int, TParent>
+	 * @return Collection<int, TModel>
 	 */
 	public function get_eager(): Collection {
 		return $this->query->get();

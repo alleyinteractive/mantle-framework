@@ -279,6 +279,8 @@ PHP
 
 	/**
 	 * Post thumbnail relationship.
+	 *
+	 * @return Belongs_To<\Mantle\Database\Model\Attachment>
 	 */
 	public function thumbnail(): Belongs_To {
 		return $this->belongs_to( Attachment::class, local_key: '_thumbnail_id' );

@@ -26,17 +26,19 @@ trait Has_Relationships {
 	/**
 	 * The loaded relationships for the model.
 	 *
-	 * @var array<string, Relation<TModel>>
+	 * @var array<string, Relation<TModel, \Mantle\Database\Model\Model>>
 	 */
 	protected $relations = [];
 
 	/**
 	 * Define a Has One Relationship
 	 *
-	 * @param string $related Related model name.
+	 * @template TRelated of \Mantle\Database\Model\Model
+	 *
+	 * @param class-string<TRelated> $related Related model name.
 	 * @param string $foreign_key Foreign key.
 	 * @param string $local_key Local key.
-	 * @return Has_One<TModel>
+	 * @return Has_One<TModel, TRelated>
 	 */
 	public function has_one( string $related, ?string $foreign_key = null, ?string $local_key = null ): Has_One {
 		$instance      = new $related();
@@ -49,10 +51,12 @@ trait Has_Relationships {
 	/**
 	 * Define a Has Many Relationship
 	 *
-	 * @param string $related Related model name.
+	 * @template TRelated of \Mantle\Database\Model\Model
+	 *
+	 * @param class-string<TRelated>  $related Related model name.
 	 * @param string $foreign_key Foreign key.
 	 * @param string $local_key Local key.
-	 * @return Has_Many<TModel>
+	 * @return Has_Many<TModel, TRelated>
 	 */
 	public function has_many( string $related, ?string $foreign_key = null, ?string $local_key = null ): Has_Many {
 		$instance      = new $related();
@@ -68,10 +72,12 @@ trait Has_Relationships {
 	 * Defines a relationship between two models with the reference stored on the remote
 	 * model's meta.
 	 *
-	 * @param string $related Related model name.
+	 * @template TRelated of \Mantle\Database\Model\Model
+	 *
+	 * @param class-string<TRelated>  $related Related model name.
 	 * @param string $foreign_key Foreign key.
 	 * @param string $local_key Local key.
-	 * @return Belongs_To<TModel>
+	 * @return Belongs_To<TModel, TRelated>
 	 *
 	 * @throws InvalidArgumentException Used on the definition of a post and term relationship.
 	 */
@@ -97,10 +103,12 @@ trait Has_Relationships {
 	 * Defines a relationship between two models with the reference stored on the remote
 	 * object's meta.
 	 *
-	 * @param string $related Related model name.
+	 * @template TRelated of \Mantle\Database\Model\Model
+	 *
+	 * @param class-string<TRelated>  $related Related model name.
 	 * @param string $foreign_key Foreign key.
 	 * @param string $local_key Local key.
-	 * @return Has_One_Or_Many<TModel>
+	 * @return Has_One_Or_Many<TModel, TRelated>
 	 *
 	 * @throws InvalidArgumentException Used on the definition of a post and term relationship.
 	 */

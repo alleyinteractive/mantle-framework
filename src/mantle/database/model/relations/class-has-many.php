@@ -13,26 +13,28 @@ use Mantle\Support\Collection;
  * Has Many Relationship
  *
  * @template TParent of \Mantle\Database\Model\Model
- * @extends Has_One_Or_Many<TParent>
+ * @template TModel of \Mantle\Database\Model\Model
+ *
+ * @extends Has_One_Or_Many<TParent, TModel>
  */
 class Has_Many extends Has_One_Or_Many {
 	/**
 	 * Get the results of the relationship.
 	 *
-	 * @return \Mantle\Support\Collection<int, TParent>|null
+	 * @return \Mantle\Support\Collection<int, TModel>|null
 	 */
 	public function get_results() {
 		$this->add_constraints();
 
-		return $this->query->get(); // @phpstan-ignore-line return.type
+		return $this->query->get();
 	}
 
 	/**
 	 * Match the eagerly loaded results to their parents.
 	 *
-	 * @param Collection<int, TParent> $models Parent models.
-	 * @param Collection<int, TParent> $results Eagerly loaded results to match.
-	 * @return Collection<int, TParent>
+	 * @param Collection<int, TModel> $models Parent models.
+	 * @param Collection<int, TModel> $results Eagerly loaded results to match.
+	 * @return Collection<int, TModel>
 	 */
 	public function match( Collection $models, Collection $results ): Collection {
 		$dictionary = $this->build_dictionary( $results, $models );
