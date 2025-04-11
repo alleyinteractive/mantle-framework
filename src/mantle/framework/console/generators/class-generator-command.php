@@ -59,14 +59,14 @@ abstract class Generator_Command extends Command {
 	 *
 	 * @param string $name Class name.
 	 */
-	public function complete_synopsis( string $name ) { }
+	public function complete_synopsis( string $name ): void { }
 
 	/**
 	 * Generator Command.
 	 *
 	 * @todo Replace with a filesystem abstraction.
 	 */
-	public function handle() {
+	public function handle(): int {
 		$this->replacements = new String_Replacements();
 
 		$name = $this->argument( 'name' );
@@ -111,7 +111,7 @@ abstract class Generator_Command extends Command {
 
 		$this->complete_synopsis( $name );
 
-		return null;
+		return COMMAND::SUCCESS;
 	}
 
 	/**

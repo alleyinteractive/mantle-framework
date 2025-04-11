@@ -34,8 +34,8 @@ class Belongs_To_Many extends Belongs_To {
 	/**
 	 * Match the eagerly loaded results to their parents.
 	 *
-	 * @param Collection<int, TModel> $models Parent models.
-	 * @param Collection<int, TModel> $results Eagerly loaded results to match.
+	 * @param Collection<int, TParent> $models Parent models.
+	 * @param Collection<int, TModel>  $results Eagerly loaded results to match.
 	 */
 	public function match( Collection $models, Collection $results ): Collection {
 		$dictionary = $this->build_dictionary( $results, $models );

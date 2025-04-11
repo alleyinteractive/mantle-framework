@@ -17,7 +17,7 @@ abstract class Controller {
 	 * Execute an action on the controller.
 	 *
 	 * @param string $method Method to call.
-	 * @param array  $parameters Parameters to include.
+	 * @param array<mixed>  $parameters Parameters to include.
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	public function call_action( string $method, array $parameters ) {
@@ -28,7 +28,7 @@ abstract class Controller {
 	 * Handle calls to missing methods on the controller.
 	 *
 	 * @param string $method Method name.
-	 * @param array  $parameters Method parameters.
+	 * @param array<mixed>  $parameters Method parameters.
 	 * @return mixed
 	 *
 	 * @throws BadMethodCallException Thrown on unknown exception.

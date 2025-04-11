@@ -144,7 +144,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	 * Send the request through the HTTP Router and optional send the response. Called on
 	 * the 'wp_loaded' filter.
 	 */
-	protected function handle_request() {
+	protected function handle_request(): void {
 		$response = $this->send_request_through_router( $this->request );
 
 		if ( ! $response instanceof \Symfony\Component\HttpFoundation\Response ) {
@@ -172,6 +172,8 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 
 	/**
 	 * Get the bootstrap classes for the application.
+	 *
+	 * @return array<int, class-string>
 	 */
 	protected function bootstrappers(): array {
 		return $this->bootstrappers;
@@ -179,10 +181,8 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 
 	/**
 	 * Sync the current state of the middleware to the router.
-	 *
-	 * @return void
 	 */
-	protected function sync_middleware_to_router() {
+	protected function sync_middleware_to_router(): void {
 		foreach ( $this->middleware_groups as $key => $middleware ) {
 			$this->router->middleware_group( $key, $middleware );
 		}

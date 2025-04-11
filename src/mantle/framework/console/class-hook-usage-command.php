@@ -258,7 +258,7 @@ class Hook_Usage_Command extends Command {
 	 *
 	 * @throws RuntimeException Thrown on error writing cache.
 	 */
-	protected function set_cache_for_path( string $path, Collection $files ) {
+	protected function set_cache_for_path( string $path, Collection $files ): void {
 		if ( ! $this->should_use_cache() ) {
 			return;
 		}
@@ -290,7 +290,7 @@ class Hook_Usage_Command extends Command {
 	 *
 	 * @todo Filter out inactive plugins from the path list.
 	 */
-	protected function set_paths() {
+	protected function set_paths(): void {
 		if ( ! $this->option( 'search-path' ) ) {
 			$paths = collect( [ defined( 'WP_CONTENT_DIR' ) ? WP_CONTENT_DIR : getcwd() ] );
 		} else {

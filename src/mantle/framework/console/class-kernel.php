@@ -100,7 +100,7 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	 * Run the console application by command name.
 	 *
 	 * @param string               $command Command name.
-	 * @param array                $parameters Command parameters.
+	 * @param array<mixed>         $parameters Command parameters.
 	 * @param OutputInterface|null $output_buffer Output buffer.
 	 */
 	public function call( string $command, array $parameters = [], ?OutputInterface $output_buffer = null ): int {
@@ -112,8 +112,8 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	/**
 	 * Run the console application by command name without output.
 	 *
-	 * @param string $command Command name.
-	 * @param array  $parameters Command parameters.
+	 * @param string       $command Command name.
+	 * @param array<mixed> $parameters Command parameters.
 	 */
 	public function call_silently( string $command, array $parameters = [] ): int {
 		return $this->call( $command, $parameters, new NullOutput() );
@@ -122,8 +122,8 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	/**
 	 * Test a console command by name.
 	 *
-	 * @param string $command Command name.
-	 * @param array  $parameters Command parameters.
+	 * @param string       $command Command name.
+	 * @param array<mixed> $parameters Command parameters.
 	 */
 	public function test( string $command, array $parameters = [] ): CommandTester {
 		$this->bootstrap();
@@ -252,6 +252,8 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 
 	/**
 	 * Get the bootstrap classes for the application.
+	 *
+	 * @return array<class-string>
 	 */
 	protected function bootstrappers(): array {
 		return $this->bootstrappers;
@@ -310,7 +312,7 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	/**
 	 * Ensure the WordPress environment is setup for isolation mode.
 	 */
-	protected function ensure_environment_is_set() {
+	protected function ensure_environment_is_set(): void {
 		if ( ! $this->app->is_running_in_console_isolation() ) {
 			return;
 		}

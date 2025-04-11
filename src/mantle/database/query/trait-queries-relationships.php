@@ -12,6 +12,9 @@ use Mantle\Support\Collection;
 
 /**
  * Support querying against model relationships.
+ *
+ * @template TModel of \Mantle\Database\Model\Model
+ * @mixin \Mantle\Database\Query\Post_Query_Builder<TModel>
  */
 trait Queries_Relationships {
 	/**
@@ -21,6 +24,8 @@ trait Queries_Relationships {
 	 * @param string $compare Value to compare against, optional.
 	 *
 	 * @throws Query_Exception Thrown on invalid arguments.
+	 *
+	 * @return Builder<TModel>
 	 */
 	public function has( string $relation, ?string $compare = null ): Builder {
 		$relation = $this->get_relation( $relation );
@@ -40,7 +45,7 @@ trait Queries_Relationships {
 	 *
 	 * @param string $relation Model relationship.
 	 * @param string $compare Value to compare against, optional.
-	 * @return Builder
+	 * @return Builder<TModel>
 	 *
 	 * @throws Query_Exception Thrown on invalid arguments.
 	 */
@@ -76,7 +81,8 @@ trait Queries_Relationships {
 	/**
 	 * Eager load relations for a set of models.
 	 *
-	 * @param Collection $models Models to load for.
+	 * @param Collection<int, TModel> $models Models to load for.
+	 * @return Collection<int, TModel>
 	 */
 	protected function eager_load_relations( Collection $models ): Collection {
 		foreach ( $this->eager_load as $name ) {
@@ -89,8 +95,9 @@ trait Queries_Relationships {
 	/**
 	 * Eager load a relation on a set of models.
 	 *
-	 * @param Collection $models Model instances.
-	 * @param string     $name Relation name to eager load.
+	 * @param Collection<int, TModel> $models Model instances.
+	 * @param string                  $name Relation name to eager load.
+	 * @return Collection<int, TModel>
 	 */
 	protected function eager_load_relation( Collection $models, string $name ): Collection {
 		$relation = $this->get_relation( $name );
@@ -104,6 +111,7 @@ trait Queries_Relationships {
 			}
 		);
 
+		// @phpstan-ignore return.type
 		return $relation->match( $models, $results );
 	}
 }

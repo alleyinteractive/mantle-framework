@@ -20,7 +20,8 @@ use InvalidArgumentException;
  *
  * @todo Add support for more complex date queries (mixing AND/OR, etc.).
  *
- * @mixin \Mantle\Database\Query\Post_Query_Builder
+ * @template TModel of \Mantle\Database\Model\Model
+ * @mixin \Mantle\Database\Query\Post_Query_Builder<TModel>
  */
 trait Queries_Dates {
 	/**
@@ -32,6 +33,8 @@ trait Queries_Dates {
 
 	/**
 	 * The valid comparison operators for a date query.
+	 *
+	 * @var string[]
 	 */
 	protected array $date_operators = [
 		'=',
@@ -197,6 +200,8 @@ trait Queries_Dates {
 
 	/**
 	 * Calculate the arguments for the date query to pass to either WP_Query.
+	 *
+	 * @return array<mixed>
 	 */
 	protected function get_date_query_args(): array {
 		if ( empty( $this->date_constraints ) ) {

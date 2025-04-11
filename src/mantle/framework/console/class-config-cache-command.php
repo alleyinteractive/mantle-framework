@@ -74,6 +74,8 @@ class Config_Cache_Command extends Command {
 
 	/**
 	 * Boot a fresh copy of the application configuration.
+	 *
+	 * @return array<string, mixed>
 	 */
 	protected function get_fresh_configuration(): array {
 		$bootloader = require $this->container->get_bootstrap_path( '/app.php' ); // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable

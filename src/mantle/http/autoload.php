@@ -42,7 +42,7 @@ if ( ! function_exists( 'redirect' ) ) {
 	 *
 	 * @param  string|null $to      URL to redirect to, optional.
 	 * @param  int         $status  Status code, optional.
-	 * @param  array       $headers Headers, optional.
+	 * @param  array<string, string>       $headers Headers, optional.
 	 * @param  bool|null   $secure  Whether the redirect should be secure, optional.
 	 * @return \Mantle\Http\Routing\Redirector
 	 */
@@ -59,9 +59,9 @@ if ( ! function_exists( 'request' ) ) {
 	/**
 	 * Get an instance of the current request or an input item from the request.
 	 *
-	 * @param  array|string|null $key     Request key.
+	 * @param  array<string>|string|null $key     Request key.
 	 * @param  mixed             $default Default value.
-	 * @return \Mantle\Http\Request|string|array|null
+	 * @return \Mantle\Http\Request|string|array<mixed>|null
 	 */
 	function request( $key = null, $default = null ) {
 		if ( is_null( $key ) ) {
@@ -216,7 +216,7 @@ if ( ! function_exists( 'abort' ) ) {
 	 *
 	 * @param int     $code Error code or exception.
 	 * @param  string $message Response message
-	 * @param  array  $headers HTTP Headers
+	 * @param  array<string, string>  $headers HTTP Headers
 	 */
 	function abort( $code, $message = '', array $headers = [] ): void {
 		app()->abort( $code, $message, $headers );
@@ -227,13 +227,13 @@ if ( ! function_exists( 'abort_if' ) ) {
 	/**
 	 * Throw an HttpException with the given data if the given condition is true.
 	 *
-	 * @param  bool  $boolean
+	 * @param  mixed  $condition
 	 * @param  int  $code
 	 * @param  string  $message Response message
-	 * @param  array  $headers HTTP Headers
+	 * @param  array<string, string>  $headers HTTP Headers
 	 */
-	function abort_if( $boolean, $code, $message = '', array $headers = [] ): void {
-		if ( $boolean ) {
+	function abort_if( mixed $condition, int $code, string $message = '', array $headers = [] ): void {
+		if ( $condition ) {
 			abort( $code, $message, $headers );
 		}
 	}
@@ -243,13 +243,13 @@ if ( ! function_exists( 'abort_unless' ) ) {
 	/**
 	 * Throw an HttpException with the given data unless the given condition is true.
 	 *
-	 * @param  bool  $boolean
+	 * @param  mixed  $boolean
 	 * @param  int  $code
 	 * @param  string  $message Response message
-	 * @param  array  $headers HTTP Headers
+	 * @param  array<string, string>  $headers HTTP Headers
 	 */
-	function abort_unless( $boolean, $code, $message = '', array $headers = [] ): void {
-		if ( ! $boolean ) {
+	function abort_unless( $condition, $code, $message = '', array $headers = [] ): void {
+		if ( ! $condition ) {
 			abort( $code, $message, $headers );
 		}
 	}

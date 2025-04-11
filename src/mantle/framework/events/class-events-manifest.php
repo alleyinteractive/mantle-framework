@@ -22,7 +22,7 @@ class Events_Manifest {
 	/**
 	 * Manifest from the disk.
 	 *
-	 * @var ?array
+	 * @var ?array<string,
 	 */
 	protected $manifest;
 
@@ -95,6 +95,8 @@ class Events_Manifest {
 		if ( ! $provider ) {
 			throw new Application_Exception( 'Missing provider: ' . Event_Service_Provider::class );
 		}
+
+		assert( $provider instanceof Event_Service_Provider );
 
 		$this->write_manifest( $provider->get_events() );
 	}

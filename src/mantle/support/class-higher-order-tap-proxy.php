@@ -21,8 +21,8 @@ class Higher_Order_Tap_Proxy {
 	/**
 	 * Dynamically pass method calls to the target.
 	 *
-	 * @param string $method     Method to call.
-	 * @param array  $parameters Params to provide to the method.
+	 * @param string       $method     Method to call.
+	 * @param array<mixed> $parameters Params to provide to the method.
 	 * @return mixed
 	 */
 	public function __call( string $method, array $parameters ) {

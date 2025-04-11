@@ -51,7 +51,7 @@ class Spy_REST_Server extends WP_REST_Server {
 	 *
 	 * @param int $code HTTP status.
 	 */
-	protected function set_status( $code ) {
+	protected function set_status( $code ): void {
 		$this->sent_status = $code;
 	}
 
@@ -80,7 +80,7 @@ class Spy_REST_Server extends WP_REST_Server {
 	 * @param  \WP_REST_Request $request Request to attempt dispatching.
 	 * @return \WP_REST_Response Response returned by the callback.
 	 */
-	public function dispatch( $request ) {
+	public function dispatch( $request ): mixed {
 		$this->last_request = $request;
 
 		return parent::dispatch( $request );

@@ -123,7 +123,7 @@ abstract class Relation {
 	 * Match the eagerly loaded results to their parents.
 	 *
 	 * @param Collection<int, TParent> $models Parent models.
-	 * @param Collection<int, TParent> $results Eagerly loaded results to match.
+	 * @param Collection<int, TModel>  $results Eagerly loaded results to match.
 	 * @return Collection<int, TParent>
 	 */
 	abstract public function match( Collection $models, Collection $results ): Collection;

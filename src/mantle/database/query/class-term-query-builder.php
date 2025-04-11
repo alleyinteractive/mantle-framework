@@ -13,12 +13,13 @@ namespace Mantle\Database\Query;
  * @template TModel of \Mantle\Database\Model\Model
  * @extends \Mantle\Database\Query\Builder<TModel>
  *
- * @method \Mantle\Database\Query\Term_Query_Builder whereId( int $id )
- * @method \Mantle\Database\Query\Term_Query_Builder whereName( string $name )
- * @method \Mantle\Database\Query\Term_Query_Builder whereSlug( string $slug )
- * @method \Mantle\Database\Query\Term_Query_Builder whereTaxonomy( string $taxonomy )
+ * @method \Mantle\Database\Query\Term_Query_Builder<TModel> whereId( int $id )
+ * @method \Mantle\Database\Query\Term_Query_Builder<TModel> whereName( string $name )
+ * @method \Mantle\Database\Query\Term_Query_Builder<TModel> whereSlug( string $slug )
+ * @method \Mantle\Database\Query\Term_Query_Builder<TModel> whereTaxonomy( string $taxonomy )
  */
 class Term_Query_Builder extends Builder {
+	/* @uses Queries_Relationships<TModel> */
 	use Queries_Relationships;
 
 	/**

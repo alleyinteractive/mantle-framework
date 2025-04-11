@@ -323,8 +323,8 @@ class Belongs_To extends Relation {
 	/**
 	 * Match the eagerly loaded results to their parents.
 	 *
-	 * @param Collection $models Parent models.
-	 * @param Collection $results Eagerly loaded results to match.
+	 * @param Collection<int, TParent> $models Parent models.
+	 * @param Collection<int, TModel>  $results Eagerly loaded results to match.
 	 */
 	public function match( Collection $models, Collection $results ): Collection {
 		$dictionary = $this->build_dictionary( $results, $models );

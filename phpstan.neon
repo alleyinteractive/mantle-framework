@@ -42,6 +42,10 @@ parameters:
 				- src/mantle/contracts
 				- src/mantle/testing/concerns/trait-core-shim.php
 		-
+			identifier: missingType.parameter
+			paths:
+				- **/autoload.php
+		-
 			message: "#implements generic interface ArrayAccess but does not specify its types#"
 			paths:
 				- src/mantle/testkit
@@ -54,6 +58,7 @@ parameters:
 		- "#ReflectionAttribute does not specify its types#"
 		- "#ReflectionAttribute but does not specify its types#"
 		- "#@return is not subtype of template type TKey#"
+		- "#WP_REST_Request does not specify its types#"
 
 	scanFiles:
 		- %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-stubs.php
@@ -62,8 +67,9 @@ parameters:
 		- tests/fixtures/phpstan
 
 	excludePaths:
-		- src/mantle/database/factory
 		- src/mantle/blocks
+		- src/mantle/database/factory
+		- src/mantle/framework/console/class-hook-usage-command.php
 		- src/mantle/query-monitor
 		- src/mantle/testing/class-mock-action.php
 		- src/mantle/testing/install-wordpress.php

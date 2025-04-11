@@ -346,7 +346,7 @@ class Example_Job implements Job, Can_Queue {
 
 	public function __construct( public bool $assert = true ) {}
 
-	public function handle() {
+	public function handle(): void {
 		$_SERVER['__example_job'] = true;
 
 		if ( ! $this->assert ) {
@@ -371,7 +371,7 @@ class Example_Job implements Job, Can_Queue {
 class Job_To_Fail implements Job, Can_Queue {
 	use Queueable, Dispatchable;
 
-	public function handle() {
+	public function handle(): void {
 		throw new RuntimeException( 'Something went wrong' );
 	}
 

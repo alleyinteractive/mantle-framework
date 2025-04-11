@@ -14,6 +14,7 @@ use Mantle\Contracts\Support\Arrayable;
 use Mantle\Http\Routing\Route;
 use Mantle\Support\Arr;
 use Mantle\Support\Str;
+use Symfony\Component\HttpFoundation\InputBag;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
@@ -46,7 +47,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * All of the converted files for the request.
 	 *
-	 * @var array|null
+	 * @var array<\Mantle\Http\Uploaded_File>|null
 	 */
 	protected $converted_files;
 
@@ -57,6 +58,17 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 */
 	public static function capture(): \Symfony\Component\HttpFoundation\Request {
 		return static::createFromGlobals();
+	}
+
+	public static function createFromGlobals(): static {
+		$request = new static( $_GET, $_POST, [], $_COOKIE, $_FILES, $_SERVER );
+
+		if (str_starts_with($request->headers->get('CONTENT_TYPE', ''), 'application/x-www-form-urlencoded') && \in_array(strtoupper($request->server->get('REQUEST_METHOD', 'GET')), ['PUT', 'DELETE', 'PATCH'], true) ) {
+			parse_str($request->getContent(), $data);
+			$request->request = new InputBag( $data );
+		}
+
+		return $request;
 	}
 
 	/**

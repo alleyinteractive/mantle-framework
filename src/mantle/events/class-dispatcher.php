@@ -10,7 +10,7 @@
 namespace Mantle\Events;
 
 use Closure;
-use Mantle\Container\Container;
+use Mantle\Contracts\Container;
 use Mantle\Contracts\Events\Dispatcher as Dispatcher_Contract;
 use Mantle\Support\Arr;
 use Mantle\Support\Str;

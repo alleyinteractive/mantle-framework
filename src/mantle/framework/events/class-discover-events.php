@@ -27,6 +27,7 @@ class Discover_Events {
 	 *
 	 * @param string $path Listener path.
 	 * @param string $base_path Base path of the application.
+	 * @return array<mixed>
 	 */
 	public static function within( string $path, string $base_path ): array {
 		$listeners = collect(
@@ -56,8 +57,9 @@ class Discover_Events {
 	/**
 	 * Get all of the listeners and their corresponding events.
 	 *
-	 * @param iterable $listeners Listener files.
-	 * @param string   $base_path Base path.
+	 * @param iterable<string> $listeners Listener files.
+	 * @param string           $base_path Base path.
+	 * @return array<mixed>
 	 */
 	protected static function get_listener_events( $listeners, string $base_path ): array {
 		$listener_events = [];
