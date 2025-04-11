@@ -57,7 +57,7 @@ class Dispatcher implements Dispatcher_Contract {
 	 *
 	 * @todo Add wildcard listeners.
 	 *
-	 * @param string|array $events Event(s) to listen to.
+	 * @param string|string[] $events Event(s) to listen to.
 	 * @param mixed        $listener Listener to register.
 	 * @param int          $priority Event priority.
 	 * @param  \Closure|string $listener Listener callback.

@@ -18,7 +18,7 @@ interface Kernel {
 	 *
 	 * @param Request $request Request object.
 	 */
-	public function handle( Request $request );
+	public function handle( Request $request ): void;
 
 	/**
 	 * Terminate the HTTP request.

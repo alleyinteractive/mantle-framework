@@ -423,7 +423,7 @@ class Routing_Test_Post_Model extends Post {
 }
 
 class Testable_Middleware_Router {
-	public function handle( Request $request, $next ) {
+	public function handle( Request $request, $next ): mixed {
 		$_SERVER['__middleware'] = $request->getPathInfo();
 
 		return $next( $request );

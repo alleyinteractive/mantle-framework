@@ -33,7 +33,7 @@ class Substitute_Bindings {
 	 * @param \Closure $next Callback for the middleware.
 	 * @return mixed
 	 */
-	public function handle( Request $request, Closure $next ) {
+	public function handle( Request $request, Closure $next ): mixed {
 		$this->router->substitute_bindings( $request );
 		$this->router->substitute_implicit_bindings( $request );
 

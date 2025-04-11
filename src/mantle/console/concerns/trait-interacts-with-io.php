@@ -205,7 +205,7 @@ trait Interacts_With_IO {
 	 *
 	 * @param string                               $format Format to return (json, xml, count, csv, or table).
 	 * @param array<string>                        $headers Headers for the table.
-	 * @param array<string>|Arrayable<int, string> $data    Data for the table.
+	 * @param array<string[]>|Arrayable<int, string[]> $data    Data for the table.
 	 */
 	public function format_data( string $format, array $headers, array|Arrayable $data ): mixed {
 		$data = $data instanceof Arrayable ? $data->to_array() : $data;

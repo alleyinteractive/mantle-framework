@@ -25,7 +25,7 @@ class Bound_Method {
 	 *
 	 * @param  Container       $container Container instance.
 	 * @param  callable|string $callback Callback.
-	 * @param  array           $parameters Parameters.
+	 * @param  array<mixed>    $parameters Parameters.
 	 * @param  string|null     $default_method Default method.
 	 * @return mixed
 	 *
@@ -49,7 +49,7 @@ class Bound_Method {
 	 *
 	 * @param  Container   $container Container instance.
 	 * @param  string      $target Target to call.
-	 * @param  array       $parameters Parameters for the class.
+	 * @param  array<mixed>       $parameters Parameters for the class.
 	 * @param  string|null $default_method Default method to call.
 	 * @return mixed
 	 *
@@ -61,8 +61,7 @@ class Bound_Method {
 			// We will assume an @ sign is used to delimit the class name from the method
 			// name. We will split on this @ sign and then build a callable array that
 			// we can pass right back into the "call" method for dependency binding.
-			$method = count( $segments ) === 2
-											? $segments[1] : $default_method;
+			$method = count( $segments ) === 2 ? $segments[1] : $default_method;
 
 		if ( is_null( $method ) ) {
 				throw new \InvalidArgumentException( 'Method not provided.' );
@@ -114,7 +113,8 @@ class Bound_Method {
 	 *
 	 * @param  Container       $container Container instance.
 	 * @param  callable|string $callback Callback function.
-	 * @param  array           $parameters Parameters to pass.
+	 * @param  array<mixed>           $parameters Parameters to pass.
+	 * @return array<mixed>
 	 *
 	 * @throws \ReflectionException Throw on invalid arguments.
 	 */
@@ -151,8 +151,8 @@ class Bound_Method {
 	 *
 	 * @param  Container            $container Container instance.
 	 * @param  \ReflectionParameter $parameter Reflect Parameter.
-	 * @param  array                $parameters Parameters to pass.
-	 * @param  array                $dependencies Class dependencies.
+	 * @param  array<mixed>                $parameters Parameters to pass.
+	 * @param  array<mixed>                $dependencies Class dependencies.
 	 * @return void
 	 *
 	 * @throws Binding_Resolution_Exception Thrown for invalid binding resolution.
@@ -162,7 +162,7 @@ class Bound_Method {
 		$parameter,
 		array &$parameters,
 		&$dependencies
-	) {
+	): void {
 		if ( array_key_exists( $parameter->name, $parameters ) ) {
 			$dependencies[] = $parameters[ $parameter->name ];
 

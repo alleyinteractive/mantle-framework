@@ -30,7 +30,7 @@ class Parser {
 		$name = static::name( $expression );
 
 		if ( preg_match_all( '/\{\s*(.*?)\s*\}/', $expression, $matches ) && count( $matches[1] ) ) {
-			return array_merge( [ $name ], static::parameters( $matches[1] ) );
+			return array_merge( [ $name ], static::parameters( $matches[1] ) ); // @phpstan-ignore-line argument.type
 		}
 
 		return [ $name, [], [] ];
@@ -55,6 +55,7 @@ class Parser {
 	 * Extract all of the parameters from the tokens.
 	 *
 	 * @param  array<string, string> $tokens
+	 * @return array<mixed>
 	 */
 	protected static function parameters( array $tokens ): array {
 		$arguments = [];

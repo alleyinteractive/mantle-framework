@@ -40,7 +40,7 @@ class Setup_WordPress {
 	 * @param \Closure $next Callback for the middleware.
 	 * @return mixed
 	 */
-	public function handle( Request $request, Closure $next ) {
+	public function handle( Request $request, Closure $next ): mixed {
 		global $wp;
 
 		if ( ! static::$did_setup && $wp instanceof \WP && ! \did_action( 'template_redirect' ) ) {

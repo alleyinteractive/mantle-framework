@@ -177,7 +177,7 @@ class Testable_Http_Kernel implements \Mantle\Contracts\Http\Kernel {
 	 *
 	 * @param Request $request Request object.
 	 */
-	public function handle( Request $request ) {
+	public function handle( Request $request ): void {
 		$_SERVER['__testable_http_kernel__'] = $request;
 	}
 
