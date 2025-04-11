@@ -514,9 +514,8 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 *
 	 * @param  string $abstract
 	 * @param  array  $parameters
-	 * @return mixed
 	 */
-	public function make_with( $abstract, array $parameters = [] ) {
+	public function make_with( $abstract, array $parameters = [] ): mixed {
 		return $this->make( $abstract, $parameters );
 	}
 

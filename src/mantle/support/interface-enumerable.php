@@ -345,7 +345,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  mixed  $value
 	 * @return static
 	 */
-	public function where( $key, $operator = null, $value = null );
+	public function where( string $key, $operator = null, $value = null );
 
 	/**
 	 * Filter items by the given key value pair using strict comparison.
@@ -354,63 +354,63 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  mixed  $value
 	 * @return static
 	 */
-	public function where_strict( $key, $value );
+	public function where_strict( string $key, mixed $value );
 
 	/**
 	 * Filter items by the given key value pair.
 	 *
 	 * @param  string $key
-	 * @param  \Mantle\Contracts\Support\Arrayable|iterable  $values
+	 * @param  \Mantle\Contracts\Support\Arrayable<int, string>|iterable<int, string>  $values
 	 * @param  bool   $strict
 	 * @return static
 	 */
-	public function where_in( $key, $values, $strict = false );
+	public function where_in( string $key, Arrayable|iterable $values, bool $strict = false );
 
 	/**
 	 * Filter items by the given key value pair using strict comparison.
 	 *
 	 * @param  string $key
-	 * @param  \Mantle\Contracts\Support\Arrayable|iterable  $values
+	 * @param  \Mantle\Contracts\Support\Arrayable<int, string>|iterable<int, string>  $values
 	 * @return static
 	 */
-	public function where_in_strict( $key, $values );
+	public function where_in_strict( string $key, Arrayable|iterable $values );
 
 	/**
 	 * Filter items such that the value of the given key is between the given values.
 	 *
 	 * @param  string $key
-	 * @param  \Mantle\Contracts\Support\Arrayable|iterable  $values
+	 * @param  \Mantle\Contracts\Support\Arrayable<int, string>|iterable<int, string>  $values
 	 * @return static
 	 */
-	public function where_between( $key, $values );
+	public function where_between( string $key, Arrayable|iterable $values );
 
 	/**
 	 * Filter items such that the value of the given key is not between the given values.
 	 *
 	 * @param  string $key
-	 * @param  \Mantle\Contracts\Support\Arrayable|iterable  $values
+	 * @param  \Mantle\Contracts\Support\Arrayable<int, string>|iterable<int, string>  $values
 	 * @return static
 	 */
-	public function where_not_between( $key, $values );
+	public function where_not_between( string $key, Arrayable|iterable $values );
 
 	/**
 	 * Filter items by the given key value pair.
 	 *
 	 * @param  string $key
-	 * @param  \Mantle\Contracts\Support\Arrayable|iterable  $values
+	 * @param  \Mantle\Contracts\Support\Arrayable<int, string>|iterable<int, string>  $values
 	 * @param  bool   $strict
 	 * @return static
 	 */
-	public function where_not_in( $key, $values, $strict = false );
+	public function where_not_in( string $key, Arrayable|iterable $values, bool $strict = false );
 
 	/**
 	 * Filter items by the given key value pair using strict comparison.
 	 *
 	 * @param  string $key
-	 * @param  \Mantle\Contracts\Support\Arrayable|iterable  $values
+	 * @param  \Mantle\Contracts\Support\Arrayable<int, string>|iterable<int, string>  $values
 	 * @return static
 	 */
-	public function where_not_in_strict( $key, $values );
+	public function where_not_in_strict( string $key, Arrayable|iterable $values );
 
 	/**
 	 * Filter the items, removing any items that don't match the given type.

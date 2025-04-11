@@ -44,12 +44,12 @@ interface Model_Meta {
 	 * @param string $meta_key Meta key to delete by.
 	 * @param mixed  $meta_value Previous meta value to delete.
 	 */
-	public function delete_meta( string $meta_key, mixed $meta_value = '' );
+	public function delete_meta( string $meta_key, mixed $meta_value = '' ): void;
 
 	/**
 	 * Allow setting meta through an array via an attribute mutator.
 	 *
-	 * @param array $meta_values Meta values to set.
+	 * @param array<mixed> $meta_values Meta values to set.
 	 * @throws Model_Exception Thrown on invalid value being set.
 	 */
 	public function set_meta_attribute( array $meta_values ): void;

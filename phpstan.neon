@@ -3,7 +3,7 @@ includes:
 
 parameters:
 	# Goal of max.
-	level: 6
+	level: 5
 
 	paths:
 		- src/mantle
@@ -29,6 +29,10 @@ parameters:
 			paths:
 				- src/mantle/testkit
 				- src/mantle/testing
+		-
+			identifier: missingType.return
+			paths:
+				- src/mantle/testing/concerns/trait-core-shim.php
 		-
 			message: "#implements generic interface ArrayAccess but does not specify its types#"
 			paths:

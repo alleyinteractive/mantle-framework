@@ -61,7 +61,7 @@ trait Enumerates_Values {
 	/**
 	 * The methods that can be proxied.
 	 *
-	 * @var array
+	 * @var array<string>
 	 */
 	protected static $proxies = [
 		'average',
@@ -489,12 +489,12 @@ trait Enumerates_Values {
 	/**
 	 * Filter items by the given key value pair.
 	 *
-	 * @param  string $key
-	 * @param  mixed  $operator
-	 * @param  mixed  $value
+	 * @param  string|null $key
+	 * @param  mixed       $operator
+	 * @param  mixed       $value
 	 * @return static
 	 */
-	public function where( $key, $operator = null, $value = null ) {
+	public function where( ?string $key, $operator = null, $value = null ) {
 		return $this->filter( $this->operator_for_where( ...func_get_args() ) );
 	}
 
@@ -504,7 +504,7 @@ trait Enumerates_Values {
 	 * @param  string|null $key
 	 * @return static
 	 */
-	public function where_null( $key = null ) {
+	public function where_null( ?string $key = null ) {
 		return $this->where_strict( $key, null );
 	}
 
@@ -514,30 +514,30 @@ trait Enumerates_Values {
 	 * @param  string|null $key
 	 * @return static
 	 */
-	public function where_not_null( $key = null ) {
+	public function where_not_null( ?string $key = null ) {
 		return $this->where( $key, '!==', null );
 	}
 
 	/**
 	 * Filter items by the given key value pair using strict comparison.
 	 *
-	 * @param  string $key
-	 * @param  mixed  $value
+	 * @param  string|null $key
+	 * @param  mixed       $value
 	 * @return static
 	 */
-	public function where_strict( $key, $value ) {
+	public function where_strict( ?string $key, mixed $value ) {
 		return $this->where( $key, '===', $value );
 	}
 
 	/**
 	 * Filter items by the given key value pair.
 	 *
-	 * @param  string                                       $key The key to check.
-	 * @param  \Mantle\Contracts\Support\Arrayable|iterable $values Values to search for.
-	 * @param  bool                                         $strict Whether to use strict comparison.
+	 * @param  string                                                                 $key The key to check.
+	 * @param  \Mantle\Contracts\Support\Arrayable<int, string>|iterable<int, string> $values Values to search for.
+	 * @param  bool                                                                   $strict Whether to use strict comparison.
 	 * @return static
 	 */
-	public function where_in( $key, $values, $strict = false ) {
+	public function where_in( string $key, Arrayable|iterable $values, bool $strict = false ) {
 		$values = $this->get_arrayable_items( $values );
 
 		return $this->filter(
@@ -548,33 +548,33 @@ trait Enumerates_Values {
 	/**
 	 * Filter items by the given key value pair using strict comparison.
 	 *
-	 * @param  string                                       $key The key to check.
-	 * @param  \Mantle\Contracts\Support\Arrayable|iterable $values Values to search for.
+	 * @param  string                                                                 $key The key to check.
+	 * @param  \Mantle\Contracts\Support\Arrayable<int, string>|iterable<int, string> $values Values to search for.
 	 * @return static
 	 */
-	public function where_in_strict( $key, $values ) {
+	public function where_in_strict( string $key, Arrayable|iterable $values ) {
 		return $this->where_in( $key, $values, true );
 	}
 
 	/**
 	 * Filter items such that the value of the given key is between the given values.
 	 *
-	 * @param  string                                       $key The key to check.
-	 * @param  \Mantle\Contracts\Support\Arrayable|iterable $values Values to search for.
+	 * @param  string                                                                 $key The key to check.
+	 * @param  \Mantle\Contracts\Support\Arrayable<int, string>|iterable<int, string> $values Values to search for.
 	 * @return static
 	 */
-	public function where_between( $key, $values ) {
+	public function where_between( string $key, Arrayable|iterable $values ) {
 		return $this->where( $key, '>=', reset( $values ) )->where( $key, '<=', end( $values ) );
 	}
 
 	/**
 	 * Filter items such that the value of the given key is not between the given values.
 	 *
-	 * @param  string                                       $key The key to check.
-	 * @param  \Mantle\Contracts\Support\Arrayable|iterable $values Values to search against.
+	 * @param  string                                                                 $key The key to check.
+	 * @param  \Mantle\Contracts\Support\Arrayable<int, string>|iterable<int, string> $values Values to search against.
 	 * @return static
 	 */
-	public function where_not_between( $key, $values ) {
+	public function where_not_between( string $key, Arrayable|iterable $values ) {
 		return $this->filter(
 			fn ( $item ) => data_get( $item, $key ) < reset( $values ) || data_get( $item, $key ) > end( $values )
 		);
@@ -583,12 +583,12 @@ trait Enumerates_Values {
 	/**
 	 * Filter items by the given key value pair.
 	 *
-	 * @param  string                                       $key The key to check.
-	 * @param  \Mantle\Contracts\Support\Arrayable|iterable $values Values to search against.
-	 * @param  bool                                         $strict Whether to use strict comparison.
+	 * @param  string                                                                 $key The key to check.
+	 * @param  \Mantle\Contracts\Support\Arrayable<int, string>|iterable<int, string> $values Values to search against.
+	 * @param  bool                                                                   $strict Whether to use strict comparison.
 	 * @return static
 	 */
-	public function where_not_in( $key, $values, $strict = false ) {
+	public function where_not_in( string $key, Arrayable|iterable $values, bool $strict = false ) {
 		$values = $this->get_arrayable_items( $values );
 
 		return $this->reject(
@@ -599,11 +599,11 @@ trait Enumerates_Values {
 	/**
 	 * Filter items by the given key value pair using strict comparison.
 	 *
-	 * @param  string                                       $key The key to check.
-	 * @param  \Mantle\Contracts\Support\Arrayable|iterable $values Values to search against.
+	 * @param  string                                                                 $key The key to check.
+	 * @param  \Mantle\Contracts\Support\Arrayable<int, string>|iterable<int, string> $values Values to search against.
 	 * @return static
 	 */
-	public function where_not_in_strict( $key, $values ) {
+	public function where_not_in_strict( string $key, Arrayable|iterable $values ) {
 		return $this->where_not_in( $key, $values, true );
 	}
 
@@ -824,12 +824,12 @@ trait Enumerates_Values {
 	/**
 	 * Get an operator checker callback.
 	 *
-	 * @param  string      $key
+	 * @param  string|null $key
 	 * @param  string|null $operator
 	 * @param  mixed       $value
 	 * @return \Closure
 	 */
-	protected function operator_for_where( $key, $operator = null, $value = null ) {
+	protected function operator_for_where( ?string $key, ?string $operator = null, mixed $value = null ) {
 		if ( func_num_args() === 1 ) {
 			$value = true;
 
@@ -883,7 +883,7 @@ trait Enumerates_Values {
 	 *
 	 * @param  mixed $value
 	 */
-	protected function use_as_callable( $value ): bool {
+	protected function use_as_callable( mixed $value ): bool {
 		return ! is_string( $value ) && is_callable( $value );
 	}
 
@@ -891,9 +891,8 @@ trait Enumerates_Values {
 	 * Get a value retrieving callback.
 	 *
 	 * @param  callable|string|null $value
-	 * @return callable
 	 */
-	protected function value_retriever( $value ) {
+	protected function value_retriever( callable|string|null $value ): callable {
 		if ( $this->use_as_callable( $value ) ) {
 			return $value;
 		}
@@ -905,9 +904,8 @@ trait Enumerates_Values {
 	 * Make a function to check an item's equality.
 	 *
 	 * @param  mixed $value
-	 * @return \Closure
 	 */
-	protected function equality( $value ) {
+	protected function equality( mixed $value ): Closure {
 		return fn ( $item ) => $item === $value;
 	}
 
@@ -915,9 +913,8 @@ trait Enumerates_Values {
 	 * Make a function using another function, by negating its result.
 	 *
 	 * @param  \Closure $callback
-	 * @return \Closure
 	 */
-	protected function negate( Closure $callback ) {
+	protected function negate( Closure $callback ): Closure {
 		return fn ( ...$params ) => ! $callback( ...$params );
 	}
 }

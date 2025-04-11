@@ -189,7 +189,7 @@ trait Interacts_With_IO {
 	 * @param  string          $question
 	 * @param  array<string>   $choices
 	 * @param  string|int|null $default
-	 * @param  mixed|null      $attempts
+	 * @param  int|null        $attempts
 	 * @param  bool            $multiple
 	 */
 	public function choice( string $question, array $choices, mixed $default = null, ?int $attempts = null, bool $multiple = false ): mixed {
@@ -203,9 +203,9 @@ trait Interacts_With_IO {
 	/**
 	 * Format items into multiple formats based on a flag.
 	 *
-	 * @param string          $format Format to return (json, xml, count, csv, or table).
-	 * @param array           $headers Headers for the table.
-	 * @param array|Arrayable $data    Data for the table.
+	 * @param string                               $format Format to return (json, xml, count, csv, or table).
+	 * @param array<string>                        $headers Headers for the table.
+	 * @param array<string>|Arrayable<int, string> $data    Data for the table.
 	 */
 	public function format_data( string $format, array $headers, array|Arrayable $data ): mixed {
 		$data = $data instanceof Arrayable ? $data->to_array() : $data;
@@ -223,7 +223,7 @@ trait Interacts_With_IO {
 	 * Format input to textual table.
 	 *
 	 * @param  array<string>                                       $headers
-	 * @param  Arrayable|array<string[]>                           $rows
+	 * @param  Arrayable<int, string> |array<string[]>             $rows
 	 * @param  \Symfony\Component\Console\Helper\TableStyle|string $table_style
 	 * @param  array<mixed>                                        $column_styles
 	 */
@@ -246,8 +246,11 @@ trait Interacts_With_IO {
 	/**
 	 * Execute a given callback while advancing a progress bar.
 	 *
-	 * @param  iterable<mixed>|int $total_steps
+	 * @template TData
+	 *
+	 * @param  iterable<TData>|int $total_steps
 	 * @param  \Closure            $callback
+	 * @return iterable<TData>|null
 	 */
 	public function with_progress_bar( iterable|int $total_steps, Closure $callback ): ?iterable {
 		$bar = $this->output->createProgressBar(
