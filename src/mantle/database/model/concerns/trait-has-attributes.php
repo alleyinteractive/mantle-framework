@@ -102,9 +102,8 @@ trait Has_Attributes {
 	 * Retrieve a relationship value.
 	 *
 	 * @param string $key Relation name.
-	 * @return \Mantle\Database\Model\Relations\Relation<TModel, \Mantle\Database\Model\Model>|null
 	 */
-	public function get_relation_value( string $key ): ?Relation {
+	public function get_relation_value( string $key ): mixed {
 		if ( 'ID' === $key ) {
 			return null;
 		}
@@ -123,13 +122,12 @@ trait Has_Attributes {
 	/**
 	 * Retrieve a relationship from a method.
 	 *
-	 * @param string $method
-	 * @return Relation<TModel, \Mantle\Database\Model\Model>
+	 * @param string $method Relationship method name.
 	 *
 	 * @throws LogicException Thrown if the relationship method is not an instance
 	 *                        of Relation.
 	 */
-	protected function get_relationship_from_method( string $method ): Relation {
+	protected function get_relationship_from_method( string $method ): mixed {
 		$relation = $this->$method();
 
 		if ( ! $relation instanceof Relation ) {

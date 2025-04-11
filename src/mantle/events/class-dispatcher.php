@@ -178,7 +178,7 @@ class Dispatcher implements Dispatcher_Contract {
 	 *
 	 * @param  \Closure|string $listener
 	 */
-	public function make_listener( \Closure|string $listener ): Closure {
+	public function make_listener( \Closure|callable $listener ): Closure {
 		if ( is_string( $listener ) ) {
 			return $this->create_class_listener( $listener );
 		}
