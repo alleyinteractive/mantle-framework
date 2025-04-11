@@ -19,7 +19,7 @@ class Mock_Action {
 	/**
 	 * Events log. When a callback fires, it will log an event to this array.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	public $events = [];
 

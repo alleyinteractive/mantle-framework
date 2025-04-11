@@ -21,8 +21,8 @@ class Request {
 	/**
 	 * Constructor
 	 *
-	 * @param array<string, mixed>  $args Arguments of the request.
-	 * @param string $url  URL of the request.
+	 * @param array<string, mixed> $args Arguments of the request.
+	 * @param string               $url  URL of the request.
 	 */
 	public function __construct( protected array $args, protected string $url ) {
 		// Format the headers to be lowercase.

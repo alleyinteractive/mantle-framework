@@ -18,9 +18,9 @@ interface Registrable_Meta {
 	 *
 	 * @see register_meta()
 	 *
-	 * @param string $meta_key Meta key to register.
-	 * @param array<mixed>  $args {
-	 *     Data used to describe the meta key when registered.
+	 * @param string       $meta_key Meta key to register.
+	 * @param array<mixed> $args {
+	 *    Data used to describe the meta key when registered.
 	 *
 	 *     @type string     $object_subtype    A subtype; e.g. if the object type is "post", the post type. If left empty,
 	 *                                         the meta key will be registered on the entire object type. Default empty.

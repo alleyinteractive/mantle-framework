@@ -37,7 +37,7 @@ class Registered_REST_Field {
 	/**
 	 * Attribute schema.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	public $schema;
 
@@ -58,9 +58,9 @@ class Registered_REST_Field {
 	/**
 	 * Constructor.
 	 *
-	 * @param string $object_type Object type.
-	 * @param string $attribute   Attribute name.
-	 * @param array<mixed>  $args        Additional registration arguments.
+	 * @param string       $object_type Object type.
+	 * @param string       $attribute   Attribute name.
+	 * @param array<mixed> $args        Additional registration arguments.
 	 */
 	private function __construct( string $object_type, string $attribute, array $args ) {
 		$this->object_type = $object_type;

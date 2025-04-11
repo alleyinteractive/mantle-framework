@@ -17,7 +17,7 @@ class Query_Monitor_Service_Provider extends Service_Provider {
 	/**
 	 * Callbacks to fire to dispatch Query Monitor.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	protected $query_monitor_dispatches = [];
 

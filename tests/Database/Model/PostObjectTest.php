@@ -545,7 +545,7 @@ class Test_Post_Type extends Post implements Registrable {
 	/**
 	 * Arguments to register the model with.
 	 *
-	 * @return array
+	 * @return array<mixed>
 	 */
 	public static function get_registration_args(): array {
 		return [

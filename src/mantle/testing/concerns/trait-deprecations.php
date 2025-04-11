@@ -22,7 +22,7 @@ trait Deprecations {
 	/**
 	 * Expected deprecation calls.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	private $expected_deprecated = [];
 
@@ -36,7 +36,7 @@ trait Deprecations {
 	/**
 	 * Caught deprecated calls.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	private $caught_deprecated = [];
 

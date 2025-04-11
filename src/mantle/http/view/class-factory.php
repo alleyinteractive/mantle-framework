@@ -38,14 +38,14 @@ class Factory implements ViewFactory {
 	/**
 	 * Data that should be available to all templates.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	protected $shared = [];
 
 	/**
 	 * Stack of views being rendered.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	protected $stack;
 

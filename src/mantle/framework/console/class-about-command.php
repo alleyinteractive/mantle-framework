@@ -34,7 +34,7 @@ class About_Command extends Command {
 	/**
 	 * Sections of data for the command.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	protected static $sections = [];
 

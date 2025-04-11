@@ -21,7 +21,7 @@ class Queue_Fake extends Queue_Manager {
 	/**
 	 * Pushed jobs.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	protected $jobs = [];
 

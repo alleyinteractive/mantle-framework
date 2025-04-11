@@ -137,7 +137,7 @@ trait Create_Application {
 	 * Get application providers.
 	 *
 	 * @param Application $app Application instance.
-	 * @return array
+	 * @return array<mixed>
 	 */
 	protected function get_application_providers( Application $app ) {
 		return $app['config']['app.providers'];

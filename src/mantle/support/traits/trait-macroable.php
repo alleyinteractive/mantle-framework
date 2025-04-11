@@ -19,7 +19,7 @@ trait Macroable {
 	/**
 	 * The registered string macros.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	protected static $macros = [];
 

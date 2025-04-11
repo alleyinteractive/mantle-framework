@@ -29,7 +29,7 @@ class Mock_Http_Response implements Arrayable {
 	/**
 	 * Response data.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	public $response = [];
 

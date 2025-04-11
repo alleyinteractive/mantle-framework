@@ -28,9 +28,9 @@ trait Interacts_With_Cron {
 	/**
 	 * Assert that an action is in the cron queue.
 	 *
-	 * @param string $action Action hook of the event.
-	 * @param array<mixed>  $args Arguments for the cron queue event or null to not check
-	 *                     arguments (cron only).
+	 * @param string       $action Action hook of the event.
+	 * @param array<mixed> $args Arguments for the cron queue event or null to not check
+	 *                    arguments (cron only).
 	 */
 	public function assertInCronQueue( string $action, array|null $args = [] ): void {
 		if ( $this->is_job_action( $action ) ) {
@@ -54,9 +54,9 @@ trait Interacts_With_Cron {
 	/**
 	 * Assert that an action is not in a cron queue.
 	 *
-	 * @param string $action Action hook of the event.
-	 * @param array<mixed>  $args Arguments for the cron queue event or null to not check
-	 *                     arguments (cron only).
+	 * @param string       $action Action hook of the event.
+	 * @param array<mixed> $args Arguments for the cron queue event or null to not check
+	 *                    arguments (cron only).
 	 */
 	public function assertNotInCronQueue( string $action, array|null $args = [] ): void {
 		if ( $this->is_job_action( $action ) ) {

@@ -539,7 +539,7 @@ class Arr {
 	 *
 	 * @param  array $array Array to process.
 	 * @param  int   $seed Seed to use.
-	 * @return array
+	 * @return array<mixed>
 	 */
 	public static function shuffle( $array, ?int $seed = null ) {
 		if ( is_null( $seed ) ) {
@@ -558,7 +558,7 @@ class Arr {
 	 *
 	 * @param  array                $array Array to sort.
 	 * @param  callable|string|null $callback Callback to sort by.
-	 * @return array
+	 * @return array<mixed>
 	 */
 	public static function sort( $array, $callback = null ) {
 		return Collection::make( $array )->sort_by( $callback )->all();
@@ -568,7 +568,7 @@ class Arr {
 	 * Recursively sort an array by keys and values.
 	 *
 	 * @param  array $array Array to process.
-	 * @return array
+	 * @return array<mixed>
 	 */
 	public static function sort_recursive( $array ) {
 		foreach ( $array as &$value ) {

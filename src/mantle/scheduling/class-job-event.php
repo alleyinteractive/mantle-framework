@@ -21,7 +21,7 @@ class Job_Event extends Event {
 	/**
 	 * The associated command arguments (flags).
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	public $assoc_args;
 

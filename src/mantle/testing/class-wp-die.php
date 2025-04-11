@@ -38,9 +38,9 @@ class WP_Die {
 	/**
 	 * Handles the WP die handler by outputting the given values as text.
 	 *
-	 * @param string $message The message.
-	 * @param string $title   The title.
-	 * @param array<mixed>  $args    Array with arguments.
+	 * @param string       $message The message.
+	 * @param string       $title   The title.
+	 * @param array<mixed> $args    Array with arguments.
 	 */
 	public static function toggled_handler( $message, $title = '', $args = [] ): void {
 		if ( ! $GLOBALS['_wp_die_disabled'] ) {
@@ -152,9 +152,9 @@ class WP_Die {
 	/**
 	 * Dies with an exit.
 	 *
-	 * @param string $message The message.
-	 * @param string $title   The title.
-	 * @param array<mixed>  $args    Array with arguments.
+	 * @param string       $message The message.
+	 * @param string       $title   The title.
+	 * @param array<mixed> $args    Array with arguments.
 	 */
 	public static function exit_handler( $message, $title, $args ): void {
 		// phpcs:disable WordPress.Security.EscapeOutput

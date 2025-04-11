@@ -151,7 +151,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Get all of the segments for the request path.
 	 *
-	 * @return array
+	 * @return array<mixed>
 	 */
 	public function segments() {
 		$segments = explode( '/', $this->decoded_path() );

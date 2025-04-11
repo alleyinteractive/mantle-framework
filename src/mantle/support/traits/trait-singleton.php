@@ -14,7 +14,7 @@ trait Singleton {
 	/**
 	 * Existing instances.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	protected static $instances = [];
 

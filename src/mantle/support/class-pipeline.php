@@ -30,7 +30,7 @@ class Pipeline implements PipelineContract {
 	/**
 	 * The array of class pipes.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	protected $pipes = [];
 
@@ -183,7 +183,7 @@ class Pipeline implements PipelineContract {
 	/**
 	 * Get the array of configured pipes.
 	 *
-	 * @return array
+	 * @return array<mixed>
 	 */
 	protected function pipes() {
 		return $this->pipes;

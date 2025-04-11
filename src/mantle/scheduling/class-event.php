@@ -88,7 +88,7 @@ class Event {
 	 * Create a new event instance.
 	 *
 	 * @param \Closure|string   $callback Event callback or class name.
-	 * @param array             $parameters Event parameters..
+	 * @param array<mixed>      $parameters Event parameters.
 	 * @param DateTimeZone|null $timezone Event timezone.
 	 */
 	public function __construct(

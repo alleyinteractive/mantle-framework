@@ -102,10 +102,10 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	/**
 	 * Constructor.
 	 *
-	 * @param Container $container Application instance.
-	 * @param Builder<TModel>   $builder Query builder instance.
-	 * @param int       $per_page Items per-page.
-	 * @param int       $current_page Current page to set.
+	 * @param Container       $container Application instance.
+	 * @param Builder<TModel> $builder Query builder instance.
+	 * @param int             $per_page Items per-page.
+	 * @param int             $current_page Current page to set.
 	 */
 	public function __construct( protected Container $container, protected Builder $builder, protected int $per_page = 20, ?int $current_page = null ) {
 		$this->builder->take( $this->per_page );
@@ -242,7 +242,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 * Append query string value to the paginator.
 	 *
 	 * @param string|array<string, string> $key Query string key or array of key value pairs.
-	 * @param mixed        $value Query string value.
+	 * @param mixed                        $value Query string value.
 	 */
 	public function append( $key, $value = null ): static {
 		if ( is_array( $key ) && null === $value ) {
@@ -491,8 +491,8 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	/**
 	 * Render the paginator
 	 *
-	 * @param string $view View name to load, optional.
-	 * @param array<string, mixed>  $data View data.
+	 * @param string               $view View name to load, optional.
+	 * @param array<string, mixed> $data View data.
 	 */
 	public function render( ?string $view = null, array $data = [] ): ?View {
 		try {
@@ -514,8 +514,8 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	/**
 	 * Render the links
 	 *
-	 * @param string $view View name to load, optional.
-	 * @param array<string, mixed>  $data View data.
+	 * @param string               $view View name to load, optional.
+	 * @param array<string, mixed> $data View data.
 	 */
 	public function links( ?string $view = null, array $data = [] ): string {
 		return (string) $this->render( $view, $data );
@@ -524,8 +524,8 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	/**
 	 * Convert the paginator to HTML.
 	 *
-	 * @param string $view View name to load, optional.
-	 * @param array<string, mixed>  $data View data.
+	 * @param string               $view View name to load, optional.
+	 * @param array<string, mixed> $data View data.
 	 */
 	public function to_html( ?string $view = null, array $data = [] ): string {
 		return (string) $this->render( $view, $data );

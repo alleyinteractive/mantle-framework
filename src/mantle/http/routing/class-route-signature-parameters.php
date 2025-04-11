@@ -26,7 +26,7 @@ class Route_Signature_Parameters {
 	 *
 	 * @param  array       $action Route action.
 	 * @param  string|null $sub_class Route subclass to compare against.
-	 * @return array
+	 * @return array<mixed>
 	 *
 	 * @throws HttpException Thrown on missing callback.
 	 */

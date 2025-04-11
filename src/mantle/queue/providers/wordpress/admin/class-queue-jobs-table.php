@@ -59,7 +59,7 @@ class Queue_Jobs_Table extends WP_List_Table {
 	/**
 	 * Collect the views for the table.
 	 *
-	 * @return array
+	 * @return array<mixed>
 	 */
 	protected function get_views() {
 		$current = sanitize_text_field( wp_unslash( $_GET['filter'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended

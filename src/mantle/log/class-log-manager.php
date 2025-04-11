@@ -221,8 +221,8 @@ class Log_Manager implements LoggerInterface {
 	/**
 	 * Magic method to pass to the default log instance.
 	 *
-	 * @param string $method Method called.
-	 * @param array<mixed>  $args Arguments for the method.
+	 * @param string       $method Method called.
+	 * @param array<mixed> $args Arguments for the method.
 	 * @return mixed
 	 */
 	public function __call( $method, $args ) {

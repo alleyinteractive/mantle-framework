@@ -92,8 +92,8 @@ class Schedule {
 	 * Add a new command event.
 	 *
 	 * @param class-string<\Mantle\Console\Command> $command Command class to run.
-	 * @param array                                 $arguments Arguments for the command.
-	 * @param array                                 $assoc_args Assoc. arguments for the command.
+	 * @param array<string>                         $arguments Arguments for the command.
+	 * @param array<string>                         $assoc_args Assoc. arguments for the command.
 	 *
 	 * @throws RuntimeException Thrown on missing command.
 	 * @throws RuntimeException Thrown invalid command class.
@@ -117,8 +117,8 @@ class Schedule {
 	/**
 	 * Add a new job event.
 	 *
-	 * @param class-string $job Job class to run.
-	 * @param array        $arguments Arguments for the command.
+	 * @param class-string  $job Job class to run.
+	 * @param array<string> $arguments Arguments for the command.
 	 *
 	 * @throws RuntimeException Thrown on missing command.
 	 * @throws RuntimeException Thrown invalid command class..
@@ -142,8 +142,8 @@ class Schedule {
 	/**
 	 * Add a callback event.
 	 *
-	 * @param callable $callback Callback to run.
-	 * @param array    $arguments Arguments for the callback.
+	 * @param callable      $callback Callback to run.
+	 * @param array<string> $arguments Arguments for the callback.
 	 */
 	public function call( callable $callback, array $arguments = [] ): Event {
 		$event = new Event( $callback, $arguments, $this->get_timezone() );

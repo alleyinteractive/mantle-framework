@@ -71,7 +71,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	/**
 	 * Get all items in the enumerable.
 	 *
-	 * @return array
+	 * @return array<mixed>
 	 */
 	public function all();
 

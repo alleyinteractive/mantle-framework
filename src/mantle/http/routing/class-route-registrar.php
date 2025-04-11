@@ -27,14 +27,14 @@ class Route_Registrar {
 	/**
 	 * The attributes to pass on to the router.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	protected $attributes = [];
 
 	/**
 	 * The methods to dynamically pass through to the router.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	protected $passthru = [
 		'get',
@@ -49,7 +49,7 @@ class Route_Registrar {
 	/**
 	 * The attributes that can be set through this class.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	protected $allowed_attributes = [
 		'as_prefix',
@@ -65,7 +65,7 @@ class Route_Registrar {
 	/**
 	 * The attributes that are aliased.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	protected $aliases = [
 		'as'   => 'as_prefix',
@@ -129,7 +129,7 @@ class Route_Registrar {
 	 * Compile the action into an array including the attributes.
 	 *
 	 * @param  \Closure|array|string|null $action
-	 * @return array
+	 * @return array<mixed>
 	 */
 	protected function compile_action( $action ) {
 		if ( is_null( $action ) ) {
@@ -167,8 +167,8 @@ class Route_Registrar {
 	/**
 	 * Dynamically handle calls into the route registrar.
 	 *
-	 * @param  string $method
-	 * @param  array<mixed>  $parameters
+	 * @param  string       $method
+	 * @param  array<mixed> $parameters
 	 * @return \Mantle\Http\Routing\Route|static
 	 *
 	 * @throws BadMethodCallException Thrown on missing method.

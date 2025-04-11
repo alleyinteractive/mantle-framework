@@ -33,21 +33,21 @@ class Str {
 	/**
 	 * The cache of snake-cased words.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	protected static $snake_cache = [];
 
 	/**
 	 * The cache of camel-cased words.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	protected static $camel_cache = [];
 
 	/**
 	 * The cache of studly-cased words.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	protected static $studly_cache = [];
 

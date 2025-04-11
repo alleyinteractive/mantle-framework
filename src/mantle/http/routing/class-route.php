@@ -329,7 +329,7 @@ class Route extends Symfony_Route {
 	/**
 	 * Parse the controller.
 	 *
-	 * @return array
+	 * @return array<mixed>
 	 */
 	protected function parse_controller_callback() {
 		if ( is_string( $this->action['callback'] ) ) {
@@ -424,7 +424,7 @@ class Route extends Symfony_Route {
 	 * Get the parameters that are listed in the route / controller signature.
 	 *
 	 * @param string|null $sub_class Subclass to verify the parameter is an instance of.
-	 * @return array
+	 * @return array<mixed>
 	 */
 	public function get_signature_parameters( ?string $sub_class = null ) {
 		return Route_Signature_Parameters::from_action( $this->action, $sub_class );

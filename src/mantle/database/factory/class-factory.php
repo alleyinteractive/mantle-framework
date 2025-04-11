@@ -273,8 +273,8 @@ abstract class Factory {
 	/**
 	 * Magic method to proxy calls to the fluent factory.
 	 *
-	 * @param string $method The method name.
-	 * @param array<mixed>  $args   The arguments.
+	 * @param string       $method The method name.
+	 * @param array<mixed> $args   The arguments.
 	 */
 	public function __call( string $method, array $args ): mixed {
 		if ( static::has_macro( $method ) ) {

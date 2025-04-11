@@ -42,14 +42,14 @@ trait Incorrect_Usage {
 	/**
 	 * Caught "doing it wrong" calls.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	private $caught_doing_it_wrong = [];
 
 	/**
 	 * Trace storage for "doing it wrong" calls.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	private $caught_doing_it_wrong_traces = [];
 

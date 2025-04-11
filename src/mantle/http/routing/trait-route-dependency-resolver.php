@@ -27,7 +27,7 @@ trait Route_Dependency_Resolver {
 	 * @param  array<mixed>  $parameters
 	 * @param  object $instance
 	 * @param  string $method
-	 * @return array
+	 * @return array<mixed>
 	 */
 	protected function resolve_class_method_dependencies( array $parameters, $instance, $method ) {
 		if ( ! method_exists( $instance, $method ) ) {

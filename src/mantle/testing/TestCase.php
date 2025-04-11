@@ -71,7 +71,7 @@ abstract class TestCase extends BaseTestCase {
 	/**
 	 * Array of traits that this class uses, with trait names as keys.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	protected static $test_uses;
 

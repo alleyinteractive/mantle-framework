@@ -33,8 +33,9 @@ parameters:
 			paths:
 				- src/mantle/contracts
 				- src/mantle/facade
-				- src/mantle/testkit
+				- src/mantle/filesystem/class-filesystem.php
 				- src/mantle/testing
+				- src/mantle/testkit
 		-
 			identifier: missingType.return
 			paths:

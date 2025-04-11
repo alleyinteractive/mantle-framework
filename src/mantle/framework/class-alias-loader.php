@@ -28,14 +28,14 @@ class Alias_Loader {
 	/**
 	 * Create a new Alias_Loader instance.
 	 *
-	 * @param array $aliases Aliases to set.
+	 * @param array<string, string> $aliases Aliases to set.
 	 */
 	private function __construct( protected array $aliases ) {}
 
 	/**
 	 * Get or create the singleton alias loader instance.
 	 *
-	 * @param array $aliases Alias to load.
+	 * @param array<string, string> $aliases Alias to load.
 	 */
 	public static function get_instance( array $aliases = [] ): Alias_Loader {
 		if ( is_null( static::$instance ) ) {
@@ -93,6 +93,8 @@ class Alias_Loader {
 
 	/**
 	 * Get the registered aliases.
+	 *
+	 * @return array<string, string>
 	 */
 	public function get_aliases(): array {
 		return $this->aliases;
@@ -101,7 +103,7 @@ class Alias_Loader {
 	/**
 	 * Set the registered aliases.
 	 *
-	 * @param array $aliases Alias to set.
+	 * @param array<string, string> $aliases Alias to set.
 	 */
 	public function set_aliases( array $aliases ): void {
 		$this->aliases = $aliases;

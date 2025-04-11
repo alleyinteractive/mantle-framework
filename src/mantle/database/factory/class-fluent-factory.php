@@ -108,8 +108,8 @@ class Fluent_Factory extends Factory {
 	 * exist on this class. Allows for the factory to proxy back to the base
 	 * factory for scopes and other methods.
 	 *
-	 * @param string $method The method name.
-	 * @param array<mixed>  $args   The arguments.
+	 * @param string       $method The method name.
+	 * @param array<mixed> $args   The arguments.
 	 *
 	 * @throws BadMethodCallException If the method does not exist.
 	 */

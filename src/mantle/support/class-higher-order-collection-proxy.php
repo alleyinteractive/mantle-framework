@@ -36,8 +36,8 @@ class Higher_Order_Collection_Proxy {
 	/**
 	 * Proxy a method call onto the collection items.
 	 *
-	 * @param  string $method
-	 * @param  array<mixed>  $parameters
+	 * @param  string       $method
+	 * @param  array<mixed> $parameters
 	 */
 	public function __call( string $method, array $parameters ): mixed {
 		return $this->collection->{ $this->method }(

@@ -14,7 +14,7 @@ trait Hooks {
 	/**
 	 * Saved hooks.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	protected static $hooks_saved = [];
 

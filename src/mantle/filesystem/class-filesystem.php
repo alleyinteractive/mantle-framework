@@ -423,7 +423,7 @@ class Filesystem {
 	 *
 	 * @param  string $pattern
 	 * @param  int    $flags
-	 * @return array
+	 * @return array<mixed>
 	 */
 	public function glob( $pattern, $flags = 0 ) {
 		return glob( $pattern, $flags );

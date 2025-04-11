@@ -44,14 +44,14 @@ class Handler implements Contract {
 	/**
 	 * A list of the exception types that are not reported.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	protected $dont_report = [];
 
 	/**
 	 * A list of the internal exception types that should not be reported.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	protected $internal_dont_report = [
 		\Symfony\Component\Console\Exception\CommandNotFoundException::class,

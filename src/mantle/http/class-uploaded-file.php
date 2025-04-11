@@ -167,7 +167,7 @@ class Uploaded_File extends SymfonyUploadedFile {
 	 * Parse and format the given options.
 	 *
 	 * @param  array|string $options
-	 * @return array
+	 * @return array<mixed>
 	 */
 	protected function parse_options( $options ) {
 		if ( is_string( $options ) ) {

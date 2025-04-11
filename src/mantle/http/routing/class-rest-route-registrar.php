@@ -23,7 +23,7 @@ class Rest_Route_Registrar {
 	/**
 	 * Queued routes to register.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	protected $routes;
 

@@ -17,7 +17,7 @@ trait Route_Group {
 	/**
 	 * The route group attribute stack.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	protected $group_stack = [];
 
@@ -31,7 +31,7 @@ trait Route_Group {
 	/**
 	 * Get the current group stack for the router.
 	 *
-	 * @return array
+	 * @return array<mixed>
 	 */
 	public function get_group_stack() {
 		return $this->group_stack;
@@ -188,7 +188,7 @@ trait Route_Group {
 	 *
 	 * @param  array $new
 	 * @param  array $old
-	 * @return array
+	 * @return array<mixed>
 	 */
 	protected static function format_as( $new, $old ) {
 		if ( isset( $old['as'] ) ) {

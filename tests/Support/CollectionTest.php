@@ -4636,7 +4636,7 @@ class CollectionTest extends FrameworkTestCase {
 	/**
 	 * Provides each collection class, respectively.
 	 *
-	 * @return array
+	 * @return array<mixed>
 	 */
 	public static function collectionClassProvider()
 	{

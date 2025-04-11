@@ -21,17 +21,17 @@ class Command_Event extends Event {
 	/**
 	 * The associated command arguments (flags).
 	 *
-	 * @var array
+	 * @var array<string, string>
 	 */
 	public $assoc_args;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param string            $command Command class to run.
-	 * @param array             $parameters Arguments for the command.
-	 * @param array             $assoc_args Associated arguments for the command.
-	 * @param DateTimeZone|null $timezone Timezone for the event.
+	 * @param string                $command Command class to run.
+	 * @param array<mixed>          $parameters Arguments for the command.
+	 * @param array<string, string> $assoc_args Associated arguments for the command.
+	 * @param DateTimeZone|null     $timezone Timezone for the event.
 	 */
 	public function __construct( string $command, array $parameters = [], array $assoc_args = [], ?DateTimeZone $timezone = null ) {
 		parent::__construct( $command, $parameters, $timezone );

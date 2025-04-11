@@ -29,7 +29,7 @@ class Spy_REST_Server extends WP_REST_Server {
 	/**
 	 * Gets the raw endpoints data from the server.
 	 *
-	 * @return array
+	 * @return array<mixed>
 	 */
 	public function get_raw_endpoint_data() {
 		return $this->endpoints;

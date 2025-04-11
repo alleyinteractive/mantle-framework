@@ -28,7 +28,7 @@ class Message_Logged {
 	/**
 	 * The log context.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	public $context;
 

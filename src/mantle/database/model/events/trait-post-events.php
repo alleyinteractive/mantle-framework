@@ -24,7 +24,7 @@ trait Post_Events {
 	/**
 	 * Subscribe to the core WordPress events for the model.
 	 */
-	protected static function subscribe_to_core_events() {
+	protected static function subscribe_to_core_events(): void {
 		$post_type = static::get_object_name();
 
 		add_filter_side_effect(

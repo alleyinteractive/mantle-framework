@@ -339,7 +339,7 @@ class Response implements ArrayAccess {
 	 * @param  string|null $key
 	 * @return Collection<array-key, mixed>
 	 */
-	public function collect( $key = null ) {
+	public function collect( $key = null ): \Mantle\Support\Collection {
 		return new Collection( $this->json( $key ) );
 	}
 

@@ -26,7 +26,7 @@ trait Has_Relationships {
 	/**
 	 * The loaded relationships for the model.
 	 *
-	 * @var array<string, Relation<TModel, \Mantle\Database\Model\Model<mixed>>
+	 * @var array<string, Relation<TModel, \Mantle\Database\Model\Model<mixed>>>
 	 */
 	protected $relations = [];
 

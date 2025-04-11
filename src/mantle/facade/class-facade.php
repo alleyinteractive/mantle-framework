@@ -26,7 +26,7 @@ abstract class Facade {
 	/**
 	 * The resolved object instances.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	protected static $resolved_instances;
 

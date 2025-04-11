@@ -58,7 +58,7 @@ trait With_Byline_Manager_Profiles {
 	 * Resolve the author to the underlying term ID for the Profile.
 	 *
 	 * @param string|int|Profile|WP_User $item The profile ID/object, WP_User object, or text string.
-	 * @return array
+	 * @return array<mixed>
 	 * @phpstan-return BylineManagerEntry
 	 */
 	protected function resolve_byline_manager_entry( string|int|WP_User|Profile $item ): ?array {

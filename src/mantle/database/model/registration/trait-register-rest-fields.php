@@ -28,7 +28,7 @@ trait Register_Rest_Fields {
 	/**
 	 * REST API Fields for the model.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	protected static $rest_fields = [];
 

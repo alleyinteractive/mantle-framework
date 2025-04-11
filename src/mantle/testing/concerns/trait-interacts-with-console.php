@@ -17,8 +17,8 @@ trait Interacts_With_Console {
 	/**
 	 * Create a new Test_Command instance and run it.
 	 *
-	 * @param string $command Command to run.
-	 * @param array<mixed>  $args     Arguments to pass to the command.
+	 * @param string       $command Command to run.
+	 * @param array<mixed> $args     Arguments to pass to the command.
 	 */
 	public function command( string $command, array $args = [] ): Test_Command {
 		return new Test_Command( $this, $this->app, $command, $args );

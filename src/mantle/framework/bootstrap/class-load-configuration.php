@@ -65,7 +65,7 @@ class Load_Configuration implements Bootstrapable {
 	 * @param array<string, string[]> $files Files to load.
 	 * @param Repository_Contract     $repository Repository to load to.
 	 */
-	protected function load_configuration_to_repository( array $files, Repository_Contract $repository ) {
+	protected function load_configuration_to_repository( array $files, Repository_Contract $repository ): void {
 		$filesystem = new Filesystem();
 
 		foreach ( $files as $key => $config_files ) {
@@ -248,9 +248,10 @@ class Load_Configuration implements Bootstrapable {
 	 * @throws InvalidArgumentException If the mergeable option is not an array.
 	 * @see Load_Configuration::get_mergeable_options()
 	 *
-	 * @param string $config_name Configuration name.
-	 * @param array  $config_a    First configuration.
-	 * @param array  $config_b    Second configuration.
+	 * @param string       $config_name Configuration name.
+	 * @param array<mixed> $config_a    First configuration.
+	 * @param array<mixed> $config_b    Second configuration.
+	 * @return array<mixed>
 	 */
 	protected function merge_configuration( string $config_name, array $config_a, array $config_b ): array {
 		$new_config = array_merge( $config_a, $config_b );
