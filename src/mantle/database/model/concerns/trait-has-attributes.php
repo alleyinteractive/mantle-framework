@@ -16,6 +16,8 @@ use function Mantle\Support\Helpers\tap;
 
 /**
  * Model Attributes
+ *
+ * @template TModel of \Mantle\Database\Model\Model
  */
 trait Has_Attributes {
 	use Has_Guarded_Attributes;
@@ -100,9 +102,9 @@ trait Has_Attributes {
 	 * Retrieve a relationship value.
 	 *
 	 * @param string $key Relation name.
-	 * @return \Mantle\Database\Model\Relations\Relation|null
+	 * @return \Mantle\Database\Model\Relations\Relation<TModel>|null
 	 */
-	public function get_relation_value( string $key ) {
+	public function get_relation_value( string $key ): ?Relation {
 		if ( 'ID' === $key ) {
 			return null;
 		}
@@ -122,12 +124,12 @@ trait Has_Attributes {
 	 * Retrieve a relationship from a method.
 	 *
 	 * @param string $method
-	 * @return Relation
+	 * @return Relation<TModel>
 	 *
 	 * @throws LogicException Thrown if the relationship method is not an instance
 	 *                        of Relation.
 	 */
-	protected function get_relationship_from_method( string $method ) {
+	protected function get_relationship_from_method( string $method ): Relation {
 		$relation = $this->$method();
 
 		if ( ! $relation instanceof Relation ) {
@@ -159,7 +161,7 @@ trait Has_Attributes {
 	 *
 	 * @throws Model_Exception Thrown when trying to set 'id'.
 	 */
-	public function set_attribute( string $attribute, $value ) {
+	public function set_attribute( string $attribute, mixed $value ): static {
 		if ( $this->is_guarded( $attribute ) ) {
 			throw new Model_Exception( "Unable to set '{$attribute} on model." );
 		}
@@ -186,7 +188,7 @@ trait Has_Attributes {
 	 * @param mixed  $value Value to set.
 	 * @return static
 	 */
-	public function set_raw_attribute( string $attribute, $value ) {
+	public function set_raw_attribute( string $attribute, mixed $value ): static {
 		$this->attributes[ $attribute ] = $value;
 
 		return $this;
@@ -239,6 +241,7 @@ trait Has_Attributes {
 	 * visible attributes if set.
 	 *
 	 * @param string[] $values Values to check.
+	 * @return array<string, mixed>
 	 */
 	protected function get_arrayable_items( array $values ): array {
 		$visible = $this->get_visible();
@@ -294,10 +297,9 @@ trait Has_Attributes {
 	/**
 	 * Set an array of attributes.
 	 *
-	 * @param array $attributes Attributes to set.
-	 * @return static
+	 * @param array<string, mixed> $attributes Attributes to set.
 	 */
-	public function set_attributes( array $attributes ) {
+	public function set_attributes( array $attributes ): static {
 		foreach ( $attributes as $key => $value ) {
 			$this->set( $key, $value );
 		}
@@ -456,10 +458,9 @@ trait Has_Attributes {
 	/**
 	 * Append attributes to the model arrays.
 	 *
-	 * @param string|string[] ...$attributes Attributes to append.
-	 * @return static
+	 * @param string ...$attributes Attributes to append.
 	 */
-	public function append( ...$attributes ) {
+	public function append( string ...$attributes ): static {
 		$this->appends = array_unique(
 			array_merge( $this->appends, $attributes )
 		);

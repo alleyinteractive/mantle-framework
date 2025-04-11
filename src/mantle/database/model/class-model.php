@@ -44,11 +44,13 @@ use function Mantle\Support\Helpers\tap;
 abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializable, Url_Routable {
 	use Forward_Calls;
 	use Concerns\Has_Aliases;
+	/** @use Concerns\Has_Attributes<static> */
 	use Concerns\Has_Attributes;
 	use Concerns\Has_Events;
 	/** @use Concerns\Has_Factory<TModelObject> */
 	use Concerns\Has_Factory;
 	use Concerns\Has_Global_Scopes;
+	/** @use Concerns\Has_Relationships<static> */
 	use Concerns\Has_Relationships;
 
 	/**
