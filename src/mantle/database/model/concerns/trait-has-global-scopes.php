@@ -69,7 +69,7 @@ trait Has_Global_Scopes {
 	 * @param Scope|string $scope Scope name/instance.
 	 * @return Scope|\Closure|null Scope object.
 	 */
-	public static function get_global_scope( $scope ) {
+	public static function get_global_scope( $scope ): mixed {
 		if ( is_string( $scope ) ) {
 			return Arr::get( static::$global_scopes, static::class . '.' . $scope );
 		}
