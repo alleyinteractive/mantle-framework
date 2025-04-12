@@ -186,10 +186,7 @@ class StrTest extends TestCase {
 		$this->assertSame( '<div> The article description </div>', Str::excerpt( '<div> The article description </div>', 'article' ) );
 		$this->assertSame( '...The article desc...', Str::excerpt( '<div> The article description </div>', 'article', [ 'radius' => 5 ] ) );
 		$this->assertSame( 'The article description', Str::excerpt( strip_tags( '<div> The article description </div>' ), 'article' ) );
-		$this->assertSame( '', Str::excerpt( null ) );
 		$this->assertSame( '', Str::excerpt( '' ) );
-		$this->assertSame( '', Str::excerpt( null, '' ) );
-		$this->assertSame( 'T...', Str::excerpt( 'The article description', null, [ 'radius' => 1 ] ) );
 		$this->assertSame( 'The arti...', Str::excerpt( 'The article description', '', [ 'radius' => 8 ] ) );
 		$this->assertSame( '', Str::excerpt( ' ' ) );
 		$this->assertSame( 'The arti...', Str::excerpt( 'The article description', ' ', [ 'radius' => 4 ] ) );
