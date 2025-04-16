@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Various types added to the framework to support increasing PHPStan to level 6.
+- When using the `Hookable` trait, a incorrect usage notice will be fired (or a
+  runtime exception if on a local environment) if a method is attempting to be
+  used as a hook callback that is not public.
 
 ## v1.6.0
 
