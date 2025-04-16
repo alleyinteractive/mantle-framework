@@ -327,8 +327,6 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	 * @param  int                                             $status
 	 */
 	public function terminate( $input, $status ): void {
-		if ( isset( $this->app ) ) {
-			$this->app->terminate();
-		}
+		$this->app->terminate();
 	}
 }

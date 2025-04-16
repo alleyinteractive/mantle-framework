@@ -78,10 +78,6 @@ class Pending_Dispatch {
 	 * Handle the job and send it to the queue or run it immediately.
 	 */
 	public function __destruct() {
-		if ( ! isset( $this->job ) ) {
-			return;
-		}
-
 		// Allow the queue package to be run independent of the application.
 		if ( ! class_exists( \Mantle\Application\Application::class ) ) {
 			$dispatcher = Container::get_instance()->make( Dispatcher::class );
