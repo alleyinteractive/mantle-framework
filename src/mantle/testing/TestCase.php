@@ -24,6 +24,7 @@ use Mantle\Testing\Concerns\Interacts_With_Attributes;
 use Mantle\Testing\Concerns\Interacts_With_Console;
 use Mantle\Testing\Concerns\Interacts_With_Container;
 use Mantle\Testing\Concerns\Interacts_With_Cron;
+use Mantle\Testing\Concerns\Interacts_With_Environment;
 use Mantle\Testing\Concerns\Interacts_With_Hooks;
 use Mantle\Testing\Concerns\Interacts_With_Mail;
 use Mantle\Testing\Concerns\Interacts_With_PHPUnit;
@@ -59,6 +60,7 @@ abstract class TestCase extends BaseTestCase {
 	use Interacts_With_Console;
 	use Interacts_With_Container;
 	use Interacts_With_Cron;
+	use Interacts_With_Environment;
 	use Interacts_With_Hooks;
 	use Interacts_With_Mail;
 	use Interacts_With_PHPUnit;
