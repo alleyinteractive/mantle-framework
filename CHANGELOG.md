@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Added `assertBlockExists()` and `assertBlockMissing()` to the response assertions.
+
 ### Changed
 
 - Various types added to the framework to support increasing PHPStan to level 6.

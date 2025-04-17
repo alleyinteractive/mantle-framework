@@ -6,6 +6,7 @@ use Mantle\Testing\FrameworkTestCase;
 use Mantle\Testing\Test_Response;
 use PHPUnit\Framework\Attributes\Group;
 
+use function Mantle\Testing\block_factory;
 use function Mantle\Testing\html_string;
 
 /**
@@ -91,6 +92,38 @@ class ElementAssertionsTest extends FrameworkTestCase {
 			->assertQuerySelector( 'section', fn ( DOMNode $node ) => $node->textContent === 'Example Section' )
 			->assertElement( '//li', fn ( DOMNode $node ) => $node->textContent === 'Item 2', pass_any: true )
 			->assertQuerySelector( 'li', fn ( DOMNode $node ) => $node->textContent === 'Item 2', pass_any: true );
+	}
+
+	public function test_block_exists(): void {
+		// Register the block.
+		register_block_type(
+			'testable-vendor/block-name',
+			[
+				'render_callback' => fn ( $attributes ) => '<div ' . get_block_wrapper_attributes( $attributes ) . '>Example Block</div>',
+			],
+		);
+
+		$post = static::factory()->post->create_and_get( [
+			'post_content' => block_factory()->blocks(
+				block_factory()->paragraph(),
+				block_factory()->heading( 'Example Section' ),
+				block_factory()->paragraph(),
+				block_factory()->paragraph(),
+				block_factory()->image(),
+				block_factory()->heading( 'Example Section 2' ),
+				block_factory()->paragraph(),
+				block_factory()->block( 'testable-vendor/block-name' )
+			)
+		] );
+
+		$this->get( $post )
+				->assertBlockExists( 'testable-vendor/block-name' )
+				->assertBlockExists( 'testable-vendor/block-name', 1 )
+				->assertBlockExists( 'testable-vendor/block-name', 1, 'div' )
+				->assertBlockExists( 'paragraph' )
+				->assertBlockExists( 'heading' )
+				->assertBlockExists( 'image' )
+				->assertBlockMissing( 'missing-block' );
 	}
 
 	public function test_deprecated_html_string() {
