@@ -28,6 +28,7 @@ use Mantle\Testing\Concerns\Interacts_With_Hooks;
 use Mantle\Testing\Concerns\Interacts_With_Mail;
 use Mantle\Testing\Concerns\Interacts_With_PHPUnit;
 use Mantle\Testing\Concerns\Interacts_With_Requests;
+use Mantle\Testing\Concerns\Interacts_With_User_Agent;
 use Mantle\Testing\Concerns\Makes_Http_Requests;
 use Mantle\Testing\Concerns\Network_Admin_Screen;
 use Mantle\Testing\Concerns\Refresh_Database;
@@ -63,6 +64,7 @@ abstract class TestCase extends BaseTestCase {
 	use Interacts_With_Mail;
 	use Interacts_With_PHPUnit;
 	use Interacts_With_Requests;
+	use Interacts_With_User_Agent;
 	use Makes_Http_Requests;
 	use MatchesSnapshots;
 	use WordPress_State;
@@ -297,6 +299,9 @@ abstract class TestCase extends BaseTestCase {
 			WordPress_Authentication::class,
 			Admin_Screen::class,
 			Network_Admin_Screen::class,
+			// Ensure that before_request/after_request callbacks are cleared early
+			// for use in other traits.
+			Makes_Http_Requests::class,
 		];
 	}
 

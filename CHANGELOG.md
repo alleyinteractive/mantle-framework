@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Added support for user agent setting in tests via the `#[User_Agent]` attribute.
+
 ### Changed
 
 - Various types added to the framework to support increasing PHPStan to level 6.
