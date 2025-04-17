@@ -252,6 +252,11 @@ abstract class TestCase extends BaseTestCase {
 			$GLOBALS[ $global ] = null;
 		}
 
+		// Reset the WP_ENVIRONMENT_TYPE environment variable.
+		if ( getenv( 'WP_ENVIRONMENT_TYPE' ) ) {
+			putenv( 'WP_ENVIRONMENT_TYPE=' ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_putenv
+		}
+
 		$this->unregister_all_meta_keys();
 		remove_filter( 'wp_die_handler', [ WP_Die::class, 'get_handler' ] );
 		static::restore_hooks();

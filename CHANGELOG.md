@@ -7,9 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Added `Environment` attribute to allow for environment-specific code to be run during tests.
+
 ### Changed
 
 - Various types added to the framework to support increasing PHPStan to level 6.
+- Remove the `WP_ENVIRONMENT_TYPE` environmental variable on tear down.
 
 ## v1.6.0
 
