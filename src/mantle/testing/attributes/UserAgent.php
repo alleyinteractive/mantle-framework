@@ -8,7 +8,6 @@
 namespace Mantle\Testing\Attributes;
 
 use Attribute;
-use Mantle\Support\User_Agents;
 
 /**
  * Set the user agent for a test method or class.
