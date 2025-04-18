@@ -110,7 +110,7 @@ class View_Service_Provider extends Service_Provider {
 		$this->app->singleton(
 			'view.loader',
 			fn ( $app ) => tap(
-				new View_Finder( $app->get_base_path(), new Filesystem() ),
+				new View_Finder( $app->get_base_path(), $app['files'] ),
 				function ( View_Finder $loader ): void {
 					// Register the base view folder for the project.
 					$loader->add_path( $this->app->get_base_path( 'views/' ) );
