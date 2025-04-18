@@ -30,38 +30,34 @@ class Factory implements Contract {
 
 	/**
 	 * The IoC container instance.
-	 *
-	 * @var Container
 	 */
-	protected $container;
+	protected Container $container;
 
 	/**
 	 * Data that should be available to all templates.
 	 *
 	 * @var array<mixed>
 	 */
-	protected $shared = [];
+	protected array $shared = [];
 
 	/**
 	 * Stack of views being rendered.
 	 *
 	 * @var array<mixed>
 	 */
-	protected $stack;
+	protected array $stack;
 
 	/**
 	 * Current view being rendered.
-	 *
-	 * @var View|null
 	 */
-	protected $current;
+	protected ?View $current = null;
 
 	/**
 	 * The extension to engine bindings.
 	 *
 	 * @var string[]
 	 */
-	protected $extensions = [
+	protected array $extensions = [
 		'blade.php' => 'blade',
 		'php'       => 'php',
 		'css'       => 'file',
@@ -110,12 +106,10 @@ class Factory implements Contract {
 	 * @param array<string, mixed>|string $key Key to share.
 	 * @param mixed|null                  $value Value to share.
 	 */
-	public function share( $key, $value = null ): void {
+	public function share( array|string $key, mixed $value = null ): void {
 		$keys = is_array( $key ) ? $key : [ $key => $value ];
 
-		foreach ( $keys as $key => $value ) {
-			$this->shared[ $key ] = $value;
-		}
+		$this->shared = array_merge( $this->shared, $keys );
 	}
 
 	/**
@@ -124,7 +118,7 @@ class Factory implements Contract {
 	 * @param string $key Key to get item by.
 	 * @param mixed  $default Default value.
 	 */
-	public function shared( $key, $default = null ): mixed {
+	public function shared( string $key, mixed $default = null ): mixed {
 		return Arr::get( $this->shared, $key, $default );
 	}
 
@@ -156,7 +150,7 @@ class Factory implements Contract {
 	public function pop(): static {
 		array_pop( $this->stack );
 
-		$this->current = end( $this->stack );
+		$this->current = end( $this->stack ) ?: null;
 
 		if ( ! $this->current ) {
 			$this->current = null;
@@ -210,7 +204,7 @@ class Factory implements Contract {
 	 */
 	protected function resolve_view_path( string $slug, ?string $name = null ): ?string {
 		// Prepend the current view if the requested slug is a child template.
-		if ( Str::starts_with( $slug, '_' ) && $this->current ) {
+		if ( Str::starts_with( $slug, '_' ) && $this->current instanceof \Mantle\Http\View\View ) {
 			return $this->resolve_child_view_path_from_parent( $slug );
 		}
 

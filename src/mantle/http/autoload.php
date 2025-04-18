@@ -87,7 +87,7 @@ if ( ! function_exists( 'view' ) ) {
 	 * @param array<string, mixed>        $variables Variables for the view, optional.
 	 * @phpstan-return ($slug is null ? View_Factory : View)
 	 */
-	function view( ?string $slug, array|string|null $name = null, array $variables = [] ): View|View_Factory {
+	function view( ?string $slug = null, array|string|null $name = null, array $variables = [] ): View|View_Factory {
 		$factory = app( View_Factory::class );
 
 		return $slug ? $factory->make( $slug, $name, $variables ) : $factory;
@@ -131,9 +131,9 @@ if ( ! function_exists( 'loop' ) ) {
 	 */
 	function loop( ...$args ): string {
 		return view()
-		->loop( ...$args )
-		->map( fn ( View $item ) => $item->render() )
-		->implode( '' );
+			->loop( ...$args )
+			->map( fn ( View $item ) => $item->render() )
+			->implode( '' );
 	}
 }
 

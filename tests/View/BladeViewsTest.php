@@ -2,7 +2,9 @@
 namespace Mantle\Tests\View;
 
 use Mantle\Testing\FrameworkTestCase;
+use PHPUnit\Framework\Attributes\Group;
 
+#[Group( 'views' )]
 class BladeViewsTest extends FrameworkTestCase {
 	protected function setUp(): void {
 		parent::setUp();

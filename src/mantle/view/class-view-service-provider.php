@@ -7,7 +7,7 @@
 
 namespace Mantle\View;
 
-use Illuminate\Filesystem\Filesystem;
+use Illuminate\Filesystem\Filesystem as Illuminate_Filesystem;
 use Mantle\Http\View\Factory;
 use Mantle\Http\View\View_Finder;
 use Mantle\Support\Service_Provider;
@@ -16,6 +16,7 @@ use Mantle\View\Engines\File_Engine;
 use Mantle\View\Engines\Php_Engine;
 use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\View\Engines\CompilerEngine;
+use Mantle\Filesystem\Filesystem;
 
 use function Mantle\Support\Helpers\tap;
 
@@ -40,7 +41,7 @@ class View_Service_Provider extends Service_Provider {
 	protected function register_blade_compiler(): void {
 		$this->app->singleton(
 			'blade.compiler',
-			fn ( $app ) => new BladeCompiler( new Filesystem(), $app['config']['view.compiled'] ),
+			fn ( $app ) => new BladeCompiler( new Illuminate_Filesystem(), $app['config']['view.compiled'] ),
 		);
 	}
 
@@ -105,7 +106,7 @@ class View_Service_Provider extends Service_Provider {
 		$this->app->singleton(
 			'view.loader',
 			fn ( $app ) => tap(
-				new View_Finder( $app->get_base_path() ),
+				new View_Finder( $app->get_base_path(), new Filesystem() ),
 				function ( View_Finder $loader ): void {
 					// Register the base view folder for the project.
 					$loader->add_path( $this->app->get_base_path( 'views/' ) );
