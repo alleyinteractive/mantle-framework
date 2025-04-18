@@ -302,11 +302,10 @@ class Factory implements Contract {
 	 * Resolve the engine for a given path.
 	 *
 	 * @param string $path Path to resolve.
-	 * @return Engine|\Illuminate\View\Engines\CompilerEngine
 	 *
 	 * @throws InvalidArgumentException Thrown on unknown extension from file.
 	 */
-	public function get_engine_from_path( string $path ) {
+	public function get_engine_from_path( string $path ): \Mantle\Contracts\View\Engine {
 		if ( isset( $this->path_engine_cache[ $path ] ) ) {
 			return $this->engines->resolve( $this->path_engine_cache[ $path ] );
 		}

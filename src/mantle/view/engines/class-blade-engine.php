@@ -38,7 +38,7 @@ class Blade_Engine extends Php_Engine {
 	 *
 	 * @param Filesystem    $filesystem
 	 * @param BladeCompiler $compiler
-	 * @param bool         $should_write_files
+	 * @param bool          $should_write_files
 	 */
 	public function __construct( Filesystem $filesystem, protected readonly BladeCompiler $compiler, protected readonly bool $should_write_files ) {
 		parent::__construct( $filesystem );
@@ -47,15 +47,23 @@ class Blade_Engine extends Php_Engine {
 	/**
 	 * Evaluate the contents of a view at a given path.
 	 *
+	 * @throws View_Exception Thrown on error writing compiled view.
+	 * @throws \Illuminate\View\ViewException Thrown on internal view error.
+	 *
 	 * @param string               $path View path.
 	 * @param array<string, mixed> $data View data.
 	 */
 	public function get( string $path, array $data = [] ): string {
 		$this->last_compiled[] = $path;
 
-		// If we aren't able to write the compiled files, we will just return the
+		// If we aren't able to write the compiled files, it needs to render the
+		// blade template dynamically. This could mean that the
+		// storage/framework/views directory is not writable or that the user has
+		// disabled writing files altogether.
 		if ( ! $this->should_write_files ) {
-			dd('on the fly');
+			$compiled = $this->compiler->compileString( $this->filesystem->get( $path ) );
+
+			return $this->render_string( $compiled, $data );
 		}
 
 		// If this given view has expired, which means it has simply been edited since
@@ -100,5 +108,37 @@ class Blade_Engine extends Php_Engine {
 		}
 
 		throw $e;
+	}
+
+	/**
+	 * Render a compiled Blade template dynamically.
+	 *
+	 * This does require eval() so templates must be trusted and sanitized
+	 * independently.
+	 *
+	 * @param string               $view The view path.
+	 * @param array<string, mixed> $data The data to pass to the view.
+	 */
+	protected function render_string( string $view, array $data ): string {
+		$ob_level = ob_get_level();
+
+		ob_start();
+
+		try {
+			$__view = $view;
+			$__data = $data;
+
+			( static function () use ( $__view, $__data ): void {
+				global $posts, $post, $wp_did_header, $wp_query, $wp_rewrite, $wpdb, $wp_version, $wp, $id, $comment, $user_ID;
+
+				extract( $__data, EXTR_SKIP ); // phpcs:ignore WordPress.PHP.DontExtract.extract_extract, WordPress.PHP.DiscouragedPHPFunctions.extract_extract, Squiz.PHP.Eval.Discouraged
+
+				eval( '?>' . $__view ); // phpcs:ignore WordPress.PHP.Eval.EvalFound, Squiz.PHP.Eval.Discouraged
+			} )();
+		} catch ( Throwable $e ) {
+			$this->handle_view_exception( $e, $ob_level );
+		}
+
+		return ltrim( ob_get_clean() );
 	}
 }

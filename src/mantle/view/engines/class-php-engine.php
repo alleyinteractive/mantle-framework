@@ -35,8 +35,8 @@ class Php_Engine implements Engine {
 	/**
 	 * Get the evaluated contents of the view at the given path.
 	 *
-	 * @param string $path View path.
-	 * @param array<string, mixed>  $data View data.
+	 * @param string               $path View path.
+	 * @param array<string, mixed> $data View data.
 	 */
 	protected function evaluate_path( string $path, array $data ): string {
 		$ob_level = ob_get_level();

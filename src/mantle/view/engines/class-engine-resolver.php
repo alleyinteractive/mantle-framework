@@ -34,7 +34,7 @@ class Engine_Resolver {
 	 *
 	 * The engine string typically corresponds to a file extension.
 	 *
-	 * @param  string   $engine
+	 * @param  string             $engine
 	 * @param  \Closure(): Engine $resolver
 	 */
 	public function register( string $engine, Closure $resolver ): void {

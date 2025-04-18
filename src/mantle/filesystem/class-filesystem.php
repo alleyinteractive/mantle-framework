@@ -88,8 +88,8 @@ class Filesystem {
 	/**
 	 * Get the returned value of a file.
 	 *
-	 * @param  string $path
-	 * @param  array<string, mixed>  $data
+	 * @param  string               $path
+	 * @param  array<string, mixed> $data
 	 * @return mixed
 	 *
 	 * @throws File_Not_Found_Exception Thrown on missing file.

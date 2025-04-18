@@ -43,7 +43,8 @@ class View_Finder {
 	/**
 	 * Constructor.
 	 *
-	 * @param string $base_path Base path.
+	 * @param string     $base_path Base path.
+	 * @param Filesystem $files Filesystem instance.
 	 */
 	public function __construct( protected string $base_path, protected readonly Filesystem $files ) {
 		$this->set_default_paths();

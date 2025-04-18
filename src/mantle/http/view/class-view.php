@@ -22,8 +22,6 @@ use WP_Post;
 class View implements \Stringable {
 	/**
 	 * Post object to set for the post.
-	 *
-	 * @var Post|\WP_Post|int|null
 	 */
 	protected Post|\WP_Post|int|null $post = null;
 
@@ -122,10 +120,11 @@ class View implements \Stringable {
 		$cache_ttl = match ( $cache_ttl ) {
 			false => null,
 			true => 0, // Indefinite.
-			default => (int) $cache_ttl,
+			default => $cache_ttl,
 		};
 
 		$this->cache_ttl = $cache_ttl;
+
 		$this->cache_key = $cache_key;
 
 		return $this;
@@ -222,17 +221,7 @@ class View implements \Stringable {
 		$this->factory->push( $this );
 
 		// Invoke the engine to render the view.
-		try {
-			$contents = $this->engine->get( $this->path, $this->data );
-		} catch ( \Throwable $e ) {
-			if ( $e instanceof \Illuminate\View\ViewException && str_contains( $e->getMessage(), 'File does not exist at path' ) ) {
-				// $compile_path
-				throw new View_Exception(
-					"Unable to compile view [{$this->path}]. Ensure that the compiled path is properly created and chmod with 0777.",
-					$this->path,
-				);
-			}
-		}
+		$contents = $this->engine->get( $this->path, $this->data );
 
 		$this->factory->pop();
 

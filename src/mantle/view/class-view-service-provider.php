@@ -45,34 +45,12 @@ class View_Service_Provider extends Service_Provider {
 	protected function register_blade_compiler(): void {
 		$this->app->singleton(
 			'blade.compiler',
-			function ( \Mantle\Contracts\Application $app ) {
-				$compiled_path = $app['config']['view.compiled'];
-
-				$filesystem = new Filesystem();
-
-				$filesystem->ensure_directory_exists( $compiled_path, 0777, true );
-
-				$should_cache = $this->should_cache_views();
-
-				// Trigger a notice if the compiled view path is not writeable.
-				if ( ! $filesystem->is_writable( $compiled_path ) ) {
-					_doing_it_wrong(
-						__FUNCTION__,
-						/* translators: %s: path to the compiled views directory. */
-						__( 'The compiled views directory (%s) is not writable.', 'mantle' ),
-						'1.0.0',
-					);
-
-					$should_cache = false;
-				}
-
-				return new BladeCompiler(
-					new Illuminate_Filesystem(),
-					$compiled_path,
-					$app->get_base_path(),
-					$should_cache,
-				);
-			},
+			fn ( \Mantle\Contracts\Application $app ) => new BladeCompiler(
+				new Illuminate_Filesystem(),
+				$app['config']['view.compiled'],
+				$app->get_base_path(),
+				$this->should_cache_views(),
+			),
 		);
 	}
 
@@ -180,9 +158,12 @@ class View_Service_Provider extends Service_Provider {
 			// Trigger a notice if the compiled view path is not writeable.
 			if ( ! $filesystem->is_writable( $compiled_path ) ) {
 				_doing_it_wrong(
-					__FUNCTION__,
-					/* translators: %s: path to the compiled views directory. */
-					__( 'The compiled views directory (%s) is not writable.', 'mantle' ),
+					self::class . '::' . __FUNCTION__,
+					esc_html( sprintf(
+						/* translators: %s: path to the compiled views directory. */
+						__( 'The compiled views directory (%1$s) is not writable.', 'mantle' ),
+						$compiled_path
+					) ),
 					'1.0.0',
 				);
 
