@@ -69,7 +69,7 @@ class View_Cache_Command extends Command {
 			return Command::FAILURE;
 		}
 
-		$this->blade  = $this->container['view.engine.resolver']->resolve( 'blade' )->getCompiler();
+		$this->blade  = $this->container['view.engine.resolver']->resolve( 'blade' )->get_compiler();
 		$this->finder = $finder;
 
 		// Clear the compiled views first.

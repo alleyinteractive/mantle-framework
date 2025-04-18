@@ -45,6 +45,13 @@ class Blade_Engine extends Php_Engine {
 	}
 
 	/**
+	 * Retrieve the Blade compiler instance.
+	 */
+	public function get_compiler(): BladeCompiler {
+		return $this->compiler;
+	}
+
+	/**
 	 * Evaluate the contents of a view at a given path.
 	 *
 	 * @throws View_Exception Thrown on error writing compiled view.
@@ -56,10 +63,11 @@ class Blade_Engine extends Php_Engine {
 	public function get( string $path, array $data = [] ): string {
 		$this->last_compiled[] = $path;
 
-		// If we aren't able to write the compiled files, it needs to render the
+		// If we aren't able to write the compiled files, we need to render the
 		// blade template dynamically. This could mean that the
 		// storage/framework/views directory is not writable or that the user has
-		// disabled writing files altogether.
+		// disabled writing files altogether. Either way, the view cannot be
+		// required.
 		if ( ! $this->should_write_files ) {
 			$compiled = $this->compiler->compileString( $this->filesystem->get( $path ) );
 
