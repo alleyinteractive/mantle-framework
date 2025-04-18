@@ -89,7 +89,7 @@ class Filesystem {
 	 * Get the returned value of a file.
 	 *
 	 * @param  string $path
-	 * @param  array  $data
+	 * @param  array<string, mixed>  $data
 	 * @return mixed
 	 *
 	 * @throws File_Not_Found_Exception Thrown on missing file.
@@ -100,6 +100,8 @@ class Filesystem {
 			$__data = $data;
 
 			return ( static function () use ( $__path, $__data ) {
+				global $posts, $post, $wp_did_header, $wp_query, $wp_rewrite, $wpdb, $wp_version, $wp, $id, $comment, $user_ID;
+
 				extract( $__data, EXTR_SKIP ); // phpcs:ignore WordPress.PHP.DontExtract.extract_extract, WordPress.PHP.DiscouragedPHPFunctions.extract_extract
 
 				return require $__path; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable

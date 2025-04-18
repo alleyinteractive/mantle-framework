@@ -14,6 +14,7 @@ use Mantle\Contracts\Http\View\Factory as Factory_Contract;
 use Mantle\Contracts\View\Engine;
 use Mantle\Database\Model\Post;
 use Mantle\Support\Arr;
+use WP_Post;
 
 /**
  * View Class
@@ -24,28 +25,22 @@ class View implements \Stringable {
 	 *
 	 * @var Post|\WP_Post|int|null
 	 */
-	protected $post;
+	protected Post|\WP_Post|int|null $post = null;
 
 	/**
 	 * The original post to restore after rendering the view.
-	 *
-	 * @var \WP_Post
 	 */
-	protected $original_post;
+	protected ?WP_Post $original_post = null;
 
 	/**
 	 * Cache key to use.
-	 *
-	 * @var string
 	 */
-	protected $cache_key;
+	protected ?string $cache_key = null;
 
 	/**
 	 * Cache TTL for the view.
-	 *
-	 * @var int|null
 	 */
-	protected $cache_ttl;
+	protected ?int $cache_ttl = null;
 
 	/**
 	 * Constructor.
@@ -77,7 +72,7 @@ class View implements \Stringable {
 	 *
 	 * @param Post|\WP_Post|int $post Post object.
 	 */
-	public function set_post( $post ): static {
+	public function set_post( WP_Post|Post|int $post ): static {
 		$this->post = $post;
 		return $this;
 	}
@@ -88,7 +83,7 @@ class View implements \Stringable {
 	 * @param string|array<string, mixed> $key Key to set.
 	 * @param mixed                       $value Value to set.
 	 */
-	public function with( $key, $value = null ): static {
+	public function with( string|array $key, mixed $value = null ): static {
 		if ( is_array( $key ) ) {
 			$this->data = array_merge( $this->data, $key );
 		} else {
@@ -123,21 +118,24 @@ class View implements \Stringable {
 	 * @param int|bool $cache_ttl Cache TTL or false to disable. Defaults to 15 minutes.
 	 * @param string   $cache_key Cache key to use, optional.
 	 */
-	public function cache( $cache_ttl = 900, ?string $cache_key = null ): static {
-		if ( false === $cache_ttl ) {
-			$cache_ttl = -1;
-		}
+	public function cache( int|bool $cache_ttl = 900, ?string $cache_key = null ): static {
+		$cache_ttl = match ( $cache_ttl ) {
+			false => null,
+			true => 0, // Indefinite.
+			default => (int) $cache_ttl,
+		};
 
 		$this->cache_ttl = $cache_ttl;
 		$this->cache_key = $cache_key;
+
 		return $this;
 	}
 
 	/**
 	 * Retrieve the cache key to use for the view.
 	 */
-	public function get_cache_key(): string {
-		if ( ! empty( $this->cache_key ) ) {
+	public function get_cache_key(): ?string {
+		if ( $this->cache_key ) {
 			return $this->cache_key;
 		}
 
@@ -224,7 +222,17 @@ class View implements \Stringable {
 		$this->factory->push( $this );
 
 		// Invoke the engine to render the view.
-		$contents = $this->engine->get( $this->path, $this->data );
+		try {
+			$contents = $this->engine->get( $this->path, $this->data );
+		} catch ( \Throwable $e ) {
+			if ( $e instanceof \Illuminate\View\ViewException && str_contains( $e->getMessage(), 'File does not exist at path' ) ) {
+				// $compile_path
+				throw new View_Exception(
+					"Unable to compile view [{$this->path}]. Ensure that the compiled path is properly created and chmod with 0777.",
+					$this->path,
+				);
+			}
+		}
 
 		$this->factory->pop();
 

@@ -16,8 +16,12 @@ use Mantle\View\Engines\File_Engine;
 use Mantle\View\Engines\Php_Engine;
 use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\View\Engines\CompilerEngine;
+use Mantle\Application\Application;
 use Mantle\Filesystem\Filesystem;
+use Mantle\View\Engines\Blade_Engine;
 
+use function Mantle\Support\Helpers\is_unit_testing;
+use function Mantle\Support\Helpers\mixed;
 use function Mantle\Support\Helpers\tap;
 
 /**
@@ -41,7 +45,34 @@ class View_Service_Provider extends Service_Provider {
 	protected function register_blade_compiler(): void {
 		$this->app->singleton(
 			'blade.compiler',
-			fn ( $app ) => new BladeCompiler( new Illuminate_Filesystem(), $app['config']['view.compiled'] ),
+			function ( \Mantle\Contracts\Application $app ) {
+				$compiled_path = $app['config']['view.compiled'];
+
+				$filesystem = new Filesystem();
+
+				$filesystem->ensure_directory_exists( $compiled_path, 0777, true );
+
+				$should_cache = $this->should_cache_views();
+
+				// Trigger a notice if the compiled view path is not writeable.
+				if ( ! $filesystem->is_writable( $compiled_path ) ) {
+					_doing_it_wrong(
+						__FUNCTION__,
+						/* translators: %s: path to the compiled views directory. */
+						__( 'The compiled views directory (%s) is not writable.', 'mantle' ),
+						'1.0.0',
+					);
+
+					$should_cache = false;
+				}
+
+				return new BladeCompiler(
+					new Illuminate_Filesystem(),
+					$compiled_path,
+					$app->get_base_path(),
+					$should_cache,
+				);
+			},
 		);
 	}
 
@@ -57,7 +88,7 @@ class View_Service_Provider extends Service_Provider {
 					// Register the various view engines.
 					$this->register_php_engine( $resolver );
 					$this->register_file_engine( $resolver );
-					$this->register_compiler_engine( $resolver );
+					$this->register_blade_engine( $resolver );
 				}
 			),
 		);
@@ -69,10 +100,7 @@ class View_Service_Provider extends Service_Provider {
 	 * @param Engine_Resolver $resolver Engine resolver.
 	 */
 	protected function register_php_engine( Engine_Resolver $resolver ): void {
-		$resolver->register(
-			'php',
-			fn () => new Php_Engine(),
-		);
+		$resolver->register( 'php', fn () => new Php_Engine( $this->app['files'] ) );
 	}
 
 	/**
@@ -81,10 +109,7 @@ class View_Service_Provider extends Service_Provider {
 	 * @param Engine_Resolver $resolver Engine resolver.
 	 */
 	protected function register_file_engine( Engine_Resolver $resolver ): void {
-		$resolver->register(
-			'file',
-			fn () => new File_Engine(),
-		);
+		$resolver->register( 'file', fn () => new File_Engine() );
 	}
 
 	/**
@@ -92,10 +117,14 @@ class View_Service_Provider extends Service_Provider {
 	 *
 	 * @param Engine_Resolver $resolver Engine resolver.
 	 */
-	protected function register_compiler_engine( Engine_Resolver $resolver ): void {
+	protected function register_blade_engine( Engine_Resolver $resolver ): void {
 		$resolver->register(
 			'blade',
-			fn () => new CompilerEngine( $this->app['blade.compiler'] ),
+			fn () => new Blade_Engine(
+				filesystem: $this->app['files'],
+				compiler: $this->app['blade.compiler'],
+				should_write_files: $this->should_cache_views(),
+			),
 		);
 	}
 
@@ -133,5 +162,42 @@ class View_Service_Provider extends Service_Provider {
 				return $factory;
 			}
 		);
+	}
+
+	/**
+	 * Check if views should be cached (written to the filesystem).
+	 */
+	protected function should_cache_views(): bool {
+		$compiled_path = $this->app['config']['view.compiled'];
+
+		static $is_writeable = null;
+
+		if ( is_null( $is_writeable ) ) {
+			$filesystem = new Filesystem();
+
+			$filesystem->ensure_directory_exists( $compiled_path, 0777, true );
+
+			// Trigger a notice if the compiled view path is not writeable.
+			if ( ! $filesystem->is_writable( $compiled_path ) ) {
+				_doing_it_wrong(
+					__FUNCTION__,
+					/* translators: %s: path to the compiled views directory. */
+					__( 'The compiled views directory (%s) is not writable.', 'mantle' ),
+					'1.0.0',
+				);
+
+				$is_writeable = false;
+			}
+
+			$is_writeable = $filesystem->is_directory( $compiled_path );
+		}
+
+		/**
+		 * Filter to determine if views should be cached.
+		 *
+		 * @param bool   $is_writeable Whether the compiled path is writeable.
+		 * @param string $compiled_path The path to the compiled views directory.
+		 */
+		return mixed( apply_filters( 'mantle_should_cache_views', $is_writeable, $compiled_path ) )->bool();
 	}
 }

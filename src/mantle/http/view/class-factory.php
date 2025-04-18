@@ -53,6 +53,13 @@ class Factory implements Contract {
 	protected ?View $current = null;
 
 	/**
+	 * The cached array of engines for file paths.
+	 *
+	 * @var array<string, string>
+	 */
+	protected array $path_engine_cache = [];
+
+	/**
 	 * The extension to engine bindings.
 	 *
 	 * @var string[]
@@ -188,11 +195,14 @@ class Factory implements Contract {
 			$name      = null;
 		}
 
-		$variables = array_merge( $this->get_shared(), $variables );
-		$path      = $this->resolve_view_path( $slug, $name );
-		$engine    = $this->get_engine_from_path( $path );
+		$path = $this->resolve_view_path( $slug, $name );
 
-		return new View( $this, $engine, $path, $variables );
+		return new View(
+			factory: $this,
+			engine: $this->get_engine_from_path( $path ),
+			path: $path,
+			data: array_merge( $this->get_shared(), $variables ),
+		);
 	}
 
 	/**
@@ -297,10 +307,16 @@ class Factory implements Contract {
 	 * @throws InvalidArgumentException Thrown on unknown extension from file.
 	 */
 	public function get_engine_from_path( string $path ) {
+		if ( isset( $this->path_engine_cache[ $path ] ) ) {
+			return $this->engines->resolve( $this->path_engine_cache[ $path ] );
+		}
+
 		$extension = $this->get_extension( $path );
 		if ( ! $extension ) {
 			throw new InvalidArgumentException( "Unknown extension in file: {$path}" );
 		}
+
+		$this->path_engine_cache[ $path ] = $this->extensions[ $extension ];
 
 		return $this->engines->resolve( $this->extensions[ $extension ] );
 	}
