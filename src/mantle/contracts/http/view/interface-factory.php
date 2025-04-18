@@ -70,7 +70,7 @@ interface Factory {
 	 *                           $variables is not used.
 	 * @param array        $variables Variables for the view, optional.
 	 */
-	public function make( string $slug, $name = null, array $variables = [] ): View;
+	public function make( string $slug, array|string|null $name = null, array $variables = [] ): View;
 
 	/**
 	 * Get a variable from the current view.

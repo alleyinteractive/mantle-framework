@@ -12,7 +12,7 @@ use Illuminate\View\Concerns\ManagesLoops;
 use Illuminate\View\Concerns\ManagesStacks;
 use InvalidArgumentException;
 use Mantle\Contracts\Container;
-use Mantle\Contracts\Http\View\Factory as ViewFactory;
+use Mantle\Contracts\Http\View\Factory as Contract;
 use Mantle\Contracts\View\Engine;
 use Mantle\Support\Arr;
 use Mantle\Support\Collection;
@@ -23,7 +23,7 @@ use WP_Query;
 /**
  * View Factory
  */
-class Factory implements ViewFactory {
+class Factory implements Contract {
 	use ManagesLayouts;
 	use ManagesLoops;
 	use ManagesStacks;
@@ -183,12 +183,12 @@ class Factory implements ViewFactory {
 	/**
 	 * Get the rendered contents of a view.
 	 *
-	 * @param string              $slug View slug.
-	 * @param array<mixed>|string $name View name, optional. Supports passing variables in if
+	 * @param string                           $slug View slug.
+	 * @param array<string, mixed>|string|null $name View name, optional. Supports passing variables in if
 	 *                           $variables is not used.
-	 * @param array<mixed>        $variables Variables for the view, optional.
+	 * @param array<string, mixed>             $variables Variables for the view, optional.
 	 */
-	public function make( string $slug, $name = null, array $variables = [] ): View {
+	public function make( string $slug, array|string|null $name = null, array $variables = [] ): View {
 		if ( is_array( $name ) ) {
 			$variables = array_merge( $name, $variables );
 			$name      = null;
