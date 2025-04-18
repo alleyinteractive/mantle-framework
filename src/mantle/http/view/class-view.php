@@ -9,7 +9,6 @@
 
 namespace Mantle\Http\View;
 
-use Illuminate\View\Engines\CompilerEngine;
 use Mantle\Contracts\Http\View\Factory as Factory_Contract;
 use Mantle\Contracts\View\Engine;
 use Mantle\Database\Model\Post;
@@ -43,14 +42,14 @@ class View implements \Stringable {
 	/**
 	 * Constructor.
 	 *
-	 * @param Factory_Contract                               $factory View Factory.
-	 * @param Engine|\Illuminate\View\Engines\CompilerEngine $engine View Engine.
-	 * @param string                                         $path View path.
-	 * @param array<string, mixed>                           $data Variables for the view, optional.
+	 * @param Factory_Contract     $factory View Factory.
+	 * @param Engine               $engine View Engine.
+	 * @param string               $path View path.
+	 * @param array<string, mixed> $data Variables for the view, optional.
 	 */
 	public function __construct(
 		protected Factory_Contract $factory,
-		protected Engine|CompilerEngine $engine,
+		protected Engine $engine,
 		protected string $path,
 		protected array $data = [],
 	) {

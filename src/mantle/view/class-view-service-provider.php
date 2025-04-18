@@ -15,12 +15,9 @@ use Mantle\View\Engines\Engine_Resolver;
 use Mantle\View\Engines\File_Engine;
 use Mantle\View\Engines\Php_Engine;
 use Illuminate\View\Compilers\BladeCompiler;
-use Illuminate\View\Engines\CompilerEngine;
-use Mantle\Application\Application;
 use Mantle\Filesystem\Filesystem;
 use Mantle\View\Engines\Blade_Engine;
 
-use function Mantle\Support\Helpers\is_unit_testing;
 use function Mantle\Support\Helpers\mixed;
 use function Mantle\Support\Helpers\tap;
 
