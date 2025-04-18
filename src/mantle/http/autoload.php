@@ -80,7 +80,7 @@ if ( ! function_exists( 'request' ) ) {
 
 if ( ! function_exists( 'view' ) ) {
 	/**
-	 * Return a new view.
+	 * Return a new view or the view factory.
 	 *
 	 * @param string|null                 $slug View slug.
 	 * @param array<string, mixed>|string $name View name or variables.
