@@ -51,7 +51,6 @@ class ViewFinderTest extends FrameworkTestCase {
 		$this->assertTrue( View_Loader::has_hint_information( '@example/path' ) );
 		$this->assertTrue( View_Loader::has_hint_information( '@example/path/other' ) );
 		$this->assertFalse( View_Loader::has_hint_information( 'example/path' ) );
-
 	}
 
 	/**
