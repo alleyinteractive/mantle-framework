@@ -145,7 +145,7 @@ trait Incorrect_Usage {
 	 *                               appears in the first argument of the source
 	 *                               `_doing_it_wrong()` call.
 	 */
-	public function setExpectedIncorrectUsage( $doing_it_wrong ): void {
+	public function setExpectedIncorrectUsage( string $doing_it_wrong ): void {
 		$this->expected_doing_it_wrong[] = $doing_it_wrong;
 	}
 
@@ -159,7 +159,7 @@ trait Incorrect_Usage {
 	 *                               `_doing_it_wrong()` call. Supports * as a
 	 *                               wildcard.
 	 */
-	public function ignoreIncorrectUsage( $doing_it_wrong = '*' ): void {
+	public function ignoreIncorrectUsage( string $doing_it_wrong = '*' ): void {
 		$this->ignored_doing_it_wrong[] = $doing_it_wrong;
 	}
 
@@ -168,7 +168,7 @@ trait Incorrect_Usage {
 	 *
 	 * @param string $function The function to add.
 	 */
-	public function doing_it_wrong_run( $function ): void {
+	public function doing_it_wrong_run( string $function ): void {
 		if ( ! in_array( $function, $this->caught_doing_it_wrong, true ) ) {
 			$this->caught_doing_it_wrong[] = $function;
 
