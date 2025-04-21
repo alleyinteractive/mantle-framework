@@ -1,6 +1,7 @@
 <?php
 namespace Mantle\Tests\View;
 
+use Mantle\Facade\Blade;
 use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\Group;
 
@@ -35,6 +36,31 @@ class BladeViewsTest extends FrameworkTestCase {
 		$this->assertStringContainsString(
 			'child',
 			(string) view( '@blade/parent' )
+		);
+	}
+
+	public function test_compile_from_string(): void {
+		$this->assertEquals(
+			'Hello, <?php echo e($name); ?>.',
+			Blade::compile_string( 'Hello, {{ $name }}.', [ 'name' => 'world' ] )
+		);
+	}
+
+	public function test_render_string(): void {
+		$this->assertEquals(
+			'Hello, world.',
+			Blade::render_string( 'Hello, {{ $name }}.', [ 'name' => 'world' ] )
+		);
+	}
+
+	public function test_blade_directive(): void {
+		Blade::directive( 'test', function ( $expression ) {
+			return "<?php echo 'Test: $expression'; ?>";
+		} );
+
+		$this->assertEquals(
+			'Test: test',
+			Blade::render_string( '@test(test)' )
 		);
 	}
 }

@@ -69,9 +69,7 @@ class Blade_Engine extends Php_Engine {
 		// disabled writing files altogether. Either way, the view cannot be
 		// required.
 		if ( ! $this->should_write_files ) {
-			$compiled = $this->compiler->compileString( $this->filesystem->get( $path ) );
-
-			return $this->render_string( $compiled, $data );
+			return $this->render_string( $this->filesystem->get( $path ), $data );
 		}
 
 		// If this given view has expired, which means it has simply been edited since
@@ -122,18 +120,20 @@ class Blade_Engine extends Php_Engine {
 	 * Render a compiled Blade template dynamically.
 	 *
 	 * This does require eval() so templates must be trusted and sanitized
-	 * independently.
+	 * before being passed to this method.
 	 *
-	 * @param string               $view The view path.
+	 * @param string               $template The uncompiled Blade template.
 	 * @param array<string, mixed> $data The data to pass to the view.
 	 */
-	protected function render_string( string $view, array $data ): string {
+	public function render_string( string $template, array $data ): string {
+		$template = $this->compiler->compileString( $template );
+
 		$ob_level = ob_get_level();
 
 		ob_start();
 
 		try {
-			$__view = $view;
+			$__view = $template;
 			$__data = $data;
 
 			( static function () use ( $__view, $__data ): void {
