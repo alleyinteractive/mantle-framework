@@ -51,7 +51,7 @@ namespace Mantle\Facade;
  * @method static \Mantle\Http\Routing\Route_Registrar attribute(string $key, mixed $value)
  * @method static \Mantle\Http\Routing\Route_Registrar as(string $value)
  * @method static \Mantle\Http\Routing\Route_Registrar domain(string $value)
- * @method static \Mantle\Http\Routing\Route_Registrar middleware(array|string|null $middleware)
+ * @method static \Mantle\Http\Routing\Route_Registrar middleware(array<class-string>|string|callable|null $middleware)
  * @method static \Mantle\Http\Routing\Route_Registrar name(string $value)
  * @method static \Mantle\Http\Routing\Route_Registrar namespace(string $value)
  * @method static \Mantle\Http\Routing\Route_Registrar prefix(string $value)
