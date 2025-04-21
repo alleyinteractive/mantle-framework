@@ -31,6 +31,7 @@ require_once __DIR__ . '/mail/helpers.php';
  */
 
 require_once __DIR__ . '/attributes/Environment.php';
+require_once __DIR__ . '/attributes/UserAgent.php';
 
 /**
  * Retrieve an instance of the Installation Manager
