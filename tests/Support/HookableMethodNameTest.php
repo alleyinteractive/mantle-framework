@@ -130,7 +130,6 @@ class HookableMethodNameTest extends FrameworkTestCase {
 	public function test_throws_doing_it_wrong_if_method_is_not_public(): void {
 		putenv( 'WP_ENVIRONMENT_TYPE=production' );
 
-		$this->setExpectedIncorrectUsage( Hookable::class );
 		$class = new class {
 			use Hookable;
 
@@ -138,6 +137,8 @@ class HookableMethodNameTest extends FrameworkTestCase {
 				$_SERVER['__hook_fired'] = $args;
 			}
 		};
+
+		$this->setExpectedIncorrectUsage( $class::class . '::action__example_action' );
 
 		remove_all_actions( 'example_action' );
 

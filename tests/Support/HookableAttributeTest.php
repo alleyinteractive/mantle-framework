@@ -229,7 +229,6 @@ class HookableAttributeTest extends FrameworkTestCase {
 	}
 
 	public function test_throws_doing_it_wrong_if_method_is_not_public(): void {
-		$this->setExpectedIncorrectUsage( Hookable::class );
 		$class = new class {
 			use Hookable;
 
@@ -238,6 +237,8 @@ class HookableAttributeTest extends FrameworkTestCase {
 				$_SERVER['__hook_fired'] = $args;
 			}
 		};
+
+		$this->setExpectedIncorrectUsage( $class::class . '::example_action' );
 
 		remove_all_actions( 'example_action' );
 
