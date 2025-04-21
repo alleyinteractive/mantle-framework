@@ -17,8 +17,8 @@ use Mantle\View\Engines\Php_Engine;
 use Illuminate\View\Compilers\BladeCompiler;
 use Mantle\Filesystem\Filesystem;
 use Mantle\View\Engines\Blade_Engine;
+use RuntimeException;
 
-use function Mantle\Support\Helpers\mixed;
 use function Mantle\Support\Helpers\tap;
 
 /**
@@ -141,41 +141,47 @@ class View_Service_Provider extends Service_Provider {
 
 	/**
 	 * Check if views should be cached (written to the filesystem).
+	 *
+	 * @throws RuntimeException If the compiled views directory is not writable.
 	 */
 	protected function should_cache_views(): bool {
 		$compiled_path = $this->app['config']['view.compiled'];
 
-		static $is_writeable = null;
+		static $should_cache_views = null;
 
-		if ( is_null( $is_writeable ) ) {
-			$filesystem = new Filesystem();
+		if ( is_null( $should_cache_views ) ) {
+			/**
+			 * Early return to allow for Blade views without filesystem compiling.
+			 *
+			 * @param bool|null             $is_writeable Whether the compiled path is writeable.
+			 * @param View_Service_Provider $provider The current instance.
+			 */
+			$should_cache_views = apply_filters( 'mantle_views_should_cache_blade_views', null, $this );
 
-			$filesystem->ensure_directory_exists( $compiled_path, 0777, true );
-
-			// Trigger a notice if the compiled view path is not writeable.
-			if ( ! $filesystem->is_writable( $compiled_path ) ) {
-				_doing_it_wrong(
-					self::class . '::' . __FUNCTION__,
-					esc_html( sprintf(
-						/* translators: %s: path to the compiled views directory. */
-						__( 'The compiled views directory (%1$s) is not writable.', 'mantle' ),
-						$compiled_path
-					) ),
-					'1.0.0',
-				);
-
-				$is_writeable = false;
+			if ( is_bool( $should_cache_views ) ) {
+				return $should_cache_views;
 			}
 
-			$is_writeable = $filesystem->is_directory( $compiled_path );
+			$filesystem = new Filesystem();
+
+			$exists = $filesystem->is_directory( $compiled_path );
+
+			// If the directory doesn't exist, try to create it.
+			if ( ! $exists ) {
+				$exists = $filesystem->ensure_directory_exists( $compiled_path, 0755, true );
+			}
+
+			// If the directory exists but is not writable, try to change permissions.
+			if ( $exists && ! $filesystem->is_writable( $compiled_path ) && ! $filesystem->chmod( $compiled_path, 0755 ) ) {
+				throw new RuntimeException(
+					/* translators: %s: path to the compiled views directory. */
+					esc_html( sprintf( __( 'The compiled views directory (%s) is not writable.', 'mantle' ), $compiled_path ) ),
+				);
+			}
+
+			$should_cache_views = $exists;
 		}
 
-		/**
-		 * Filter to determine if views should be cached.
-		 *
-		 * @param bool   $is_writeable Whether the compiled path is writeable.
-		 * @param string $compiled_path The path to the compiled views directory.
-		 */
-		return mixed( apply_filters( 'mantle_should_cache_views', $is_writeable, $compiled_path ) )->bool();
+		return $should_cache_views;
 	}
 }

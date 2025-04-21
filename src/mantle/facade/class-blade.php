@@ -12,7 +12,6 @@ use Mantle\View\Engines\Blade_Engine;
 /**
  * Blade Facade
  *
- * @method static void compile(string|null $path = null)
  * @method static string getPath()
  * @method static void setPath(string $path)
  * @method static string compileString(string $value)
@@ -64,7 +63,6 @@ class Blade extends Facade {
 	 * Alias for compileString().
 	 *
 	 * @param string $value The string to compile.
-	 * @return string
 	 */
 	public static function compile_string( string $value ): string {
 		return static::compileString( $value );
@@ -77,7 +75,11 @@ class Blade extends Facade {
 	 * @param array<string, mixed> $data The data to pass to the view.
 	 */
 	public static function render_string( string $template, array $data = [] ): string {
-		$blade_engine = static::$app['view.engine.resolver']->resolve( 'blade' );
+		$resolver = static::$app['view.engine.resolver'];
+
+		assert( $resolver instanceof \Mantle\View\Engines\Engine_Resolver );
+
+		$blade_engine = $resolver->resolve( 'blade' );
 
 		assert( $blade_engine instanceof Blade_Engine );
 

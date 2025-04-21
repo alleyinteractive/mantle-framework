@@ -38,7 +38,7 @@ class Blade_Engine extends Php_Engine {
 	 *
 	 * @param Filesystem    $filesystem
 	 * @param BladeCompiler $compiler
-	 * @param bool          $should_write_files
+	 * @param bool          $should_write_files Whether to write compiled files or not. This can be set to true if the compiled views directory does not exist or is not writeable.
 	 */
 	public function __construct( Filesystem $filesystem, protected readonly BladeCompiler $compiler, protected readonly bool $should_write_files ) {
 		parent::__construct( $filesystem );
@@ -119,8 +119,13 @@ class Blade_Engine extends Php_Engine {
 	/**
 	 * Render a compiled Blade template dynamically.
 	 *
-	 * This does require eval() so templates must be trusted and sanitized
-	 * before being passed to this method.
+	 * This does require eval() so templates must be trusted and sanitized before
+	 * being passed to this method.
+	 *
+	 * Templates are normally written to the filesystem and then require'd to be
+	 * rendered. The same security concerns apply to that approach as well. The
+	 * difference here is that templates are not written to the filesystem and are
+	 * instead evaluated directly.
 	 *
 	 * @param string               $template The uncompiled Blade template.
 	 * @param array<string, mixed> $data The data to pass to the view.
