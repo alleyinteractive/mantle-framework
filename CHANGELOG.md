@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Added `Blade` facade with `Blade::render_string()` method to render a string
+  using the Blade templating engine.
+
 ### Changed
 
 - Various types added to the framework to support increasing PHPStan to level 6.
