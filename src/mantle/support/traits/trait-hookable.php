@@ -245,6 +245,6 @@ trait Hookable {
 			throw new RuntimeException( $message );
 		}
 
-		_doing_it_wrong( static::class . '::' . $method->getName(), esc_html( $message ), '1.0.0' );
+		_doing_it_wrong( esc_html( static::class . '::' . $method->getName() ), esc_html( $message ), '1.0.0' );
 	}
 }
