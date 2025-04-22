@@ -27,7 +27,7 @@ class View_Cache_Command extends Command {
 	 *
 	 * @var string
 	 */
-	protected $name = 'view:cache';
+	protected $signature = 'view:cache {--wp-content} {--path=} {--skip-clear}';
 
 	/**
 	 * Command Description.
@@ -58,8 +58,9 @@ class View_Cache_Command extends Command {
 
 		$this->blade = $this->container['view.engine.resolver']->resolve( 'blade' )->get_compiler();
 
-		// Clear the compiled views first.
-		$this->call( 'mantle view:clear' );
+		if ( ! $this->option( 'skip-clear', false ) ) {
+			$this->call( 'mantle view:clear' );
+		}
 
 		$compiled_path = $this->container['config']['view.compiled'] ?? null;
 
@@ -75,6 +76,14 @@ class View_Cache_Command extends Command {
 			return Command::FAILURE;
 		}
 
+		if ( $this->option( 'wp-content', false ) ) {
+			return $this->handle_compile_wp_content();
+		}
+
+		if ( $paths = $this->option( 'path' ) ) {
+			return $this->handle_compile_path( $paths );
+		}
+
 		if ( $this->container->is_running_in_console_isolation() ) {
 			return $this->handle_console_isolation();
 		}
@@ -85,14 +94,12 @@ class View_Cache_Command extends Command {
 
 		$paths = $this->finder->get_paths();
 
-
-
 		if ( empty( $paths ) ) {
 			$this->error( 'No view paths found.' );
 			return Command::FAILURE;
 		}
 
-		$this->compile_views( $this->blade_files_in( $paths ) );
+		$this->compile_views( $this->blade_files_in( $paths )->exclude( 'vendor' ) );
 
 		$this->success( 'Blade templates cached successfully.' );
 
@@ -120,7 +127,6 @@ class View_Cache_Command extends Command {
 	protected function blade_files_in( array $paths ): Finder {
 		return Finder::create()
 			->in( $paths )
-			->exclude( 'vendor' )
 			->name( '*.blade.php' )
 			->files();
 	}
@@ -136,5 +142,51 @@ class View_Cache_Command extends Command {
 		$this->compile_views( $this->blade_files_in( [ $base ] ) );
 
 		return self::SUCCESS;
+	}
+
+	/**
+	 * Handle the --wp-content option and compile all views in wp-content.
+	 */
+	protected function handle_compile_wp_content(): int {
+		// Get the path to wp-content from the current directory (which is a child of wp-content).
+		$wp_content_dir = preg_replace( '#/wp-content/.*$#', '/wp-content', __DIR__ );
+
+		if ( ! is_dir( $wp_content_dir ) ) {
+			$this->error( 'No wp-content directory found.' );
+
+			return Command::FAILURE;
+		}
+
+		$this->info( "Compiling all Blade templates found in [{$wp_content_dir}]" );
+
+		$this->compile_views( $this->blade_files_in( [ $wp_content_dir ] ) );
+
+		return Command::SUCCESS;
+	}
+
+	/**
+	 * Handle compile path.
+	 *
+	 * @param string $path Path to compile.
+	 */
+	protected function handle_compile_path( string $path ): int {
+		$cwd = getcwd();
+
+		collect( explode( ',', $path ) )
+			->map( fn ( $item ) => $cwd . DIRECTORY_SEPARATOR . $item )
+			->each( function ( string $path ): void {
+				if ( ! is_dir( $path ) ) {
+					$this->error( "Path [{$path}] does not exist. Skipping..." );
+
+					return;
+				}
+
+				$this->info( "Compiling all Blade templates found in [{$path}]" );
+
+				$this->compile_views( $this->blade_files_in( [ $path ] ) );
+			} )
+			->all();
+
+		return Command::SUCCESS;
 	}
 }
