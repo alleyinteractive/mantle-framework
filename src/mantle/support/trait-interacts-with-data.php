@@ -118,7 +118,7 @@ trait Interacts_With_Data {
 	 * or 'a random string' will evaluate to true.
 	 */
 	public function truthy(): bool {
-		return !! $this->value;
+		return (bool) $this->value;
 	}
 
 	/**
