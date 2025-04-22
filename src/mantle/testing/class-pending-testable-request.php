@@ -9,6 +9,7 @@
 
 namespace Mantle\Testing;
 
+use InvalidArgumentException;
 use Mantle\Database\Model\Model;
 use Mantle\Framework\Http\Kernel as HttpKernel;
 use Mantle\Http\Request;
@@ -175,6 +176,8 @@ class Pending_Testable_Request {
 	/**
 	 * Infer the request URL from an object like a post or term.
 	 *
+	 * @throws InvalidArgumentException If the source is not a valid type.
+	 *
 	 * @param mixed $source Source from which to infer the URL.
 	 */
 	protected function infer_url( mixed $source ): string {
@@ -183,7 +186,9 @@ class Pending_Testable_Request {
 			$source instanceof \WP_Term => get_term_link( $source ),
 			$source instanceof \WP_User => \get_author_posts_url( $source->ID ),
 			$source instanceof Model && method_exists( $source, 'permalink' ) => $source->permalink(),
-			default => '',
+			default => throw new InvalidArgumentException(
+				'Cannot infer URL from the given source. Expected a WP_Post, WP_Term, WP_User, or a Model with a permalink() method.'
+			),
 		};
 	}
 

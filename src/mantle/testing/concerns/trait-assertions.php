@@ -317,21 +317,33 @@ trait Assertions {
 	 * Assert if a post exists given a set of arguments.
 	 *
 	 * @param array<string, mixed> $arguments Arguments to query against.
+	 * @param int|null             $count Expected number of posts.
 	 */
-	public function assertPostExists( array $arguments ): void {
+	public function assertPostExists( array $arguments, ?int $count = null ): void {
 		$arguments = $this->serialize_arguments(
 			$arguments,
 			[
 				'fields'           => 'ids',
 				'posts_per_page'   => 1,
 				'suppress_filters' => false,
+				'no_found_rows'    => true,
 			],
 		);
 
+		if ( ! is_null( $count ) ) {
+			$arguments['no_found_rows'] = false;
+		}
+
+		$query = new \WP_Query( $arguments );
+
 		PHPUnit::assertNotEmpty(
-			\get_posts( $arguments ), // @phpstan-ignore-line argument.type
+			$query->posts,
 			"Post not found with arguments: \n" . print_r( $arguments, true ),
 		);
+
+		if ( ! is_null( $count ) ) {
+			PHPUnit::assertEquals( $count, $query->found_posts, "Post count does not match expected count: {$count}" );
+		}
 	}
 
 	/**
