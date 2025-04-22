@@ -7,10 +7,13 @@
 
 namespace Mantle\Faker;
 
+use Closure;
 use Faker\Provider\Base;
 use Faker\Provider\Lorem;
+use InvalidArgumentException;
 
 use function Mantle\Support\Helpers\collect;
+use function Mantle\Support\Helpers\value;
 
 /**
  * Faker Block Provider
@@ -49,33 +52,53 @@ class Faker_Provider extends Base {
 	/**
 	 * Build a paragraph block.
 	 *
-	 * @param string|int|null $text Text for the block.
-	 * @param int             $sentences Number of sentences in the block.
+	 * @throws InvalidArgumentException Thrown on invalid sentences parameter.
+	 *
+	 * @param string|int|null                  $text Text for the block.
+	 * @param int|(\Closure(): int)|array<int> $sentences Number of sentences in the block.
+	 *                                                    Supports a integer length, array of min/max, or a closure that will return an array.
 	 */
-	public static function paragraph_block( string|null|int $text = null, int $sentences = 3 ): string {
+	public static function paragraph_block( string|null|int $text = null, int|array|Closure $sentences = 3 ): string {
 		if ( is_int( $text ) ) {
 			$sentences = $text;
 			$text      = null;
 		}
 
+		if ( is_array( $sentences ) ) {
+			if (
+				2 !== count( $sentences )
+				|| ! isset( $sentences[0], $sentences[1] )
+				|| ! is_int( $sentences[0] ) // @phpstan-ignore-line booleanNot.alwaysFalse
+				|| ! is_int( $sentences[1] ) // @phpstan-ignore-line booleanNot.alwaysFalse
+			) {
+				throw new InvalidArgumentException(
+					'When passing an array to the sentences parameter, it must be an array of two integers.',
+				);
+			}
+
+			$sentences = wp_rand( $sentences[0], $sentences[1] );
+		}
+
 		return static::block(
 			'paragraph',
-			sprintf( '<p>%s</p>', $text ?: Lorem::sentences( $sentences, true ) )
+			sprintf( '<p>%s</p>', $text ?: Lorem::sentences( (int) value( $sentences ), true ) )
 		);
 	}
 
 	/**
 	 * Generate a set of paragraph blocks.
 	 *
-	 * @param int  $count Number of paragraph blocks to generate.
-	 * @param bool $as_text Return as text or an array of blocks.
+	 * @param int                              $count Number of paragraph blocks to generate.
+	 * @param bool                             $as_text Return as text or an array of blocks.
+	 * @param int|(\Closure(): int)|array<int> $sentences Number of sentences in each block.
+	 *                                                    Supports a integer length, array of min/max, or a closure that will return an array.
 	 * @return string|string[]
 	 * @phpstan-return ($as_text is true ? string : array<string>)
 	 */
-	public static function paragraph_blocks( int $count = 3, bool $as_text = true ): string|array {
+	public static function paragraph_blocks( int $count = 3, bool $as_text = true, int|array|Closure $sentences = 3 ): string|array {
 		$paragraphs = [];
 		for ( $i = 0; $i < $count; $i++ ) {
-			$paragraphs[] = static::paragraph_block();
+			$paragraphs[] = static::paragraph_block( sentences: $sentences );
 		}
 
 		return $as_text ? implode( "\n\n", $paragraphs ) : $paragraphs;

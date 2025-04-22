@@ -23,8 +23,8 @@ use function Mantle\Support\Helpers\collect;
  * @method string image(?string $url = null, ?string $alt = null, array $attributes = [])
  * @method string list(array $items = [], bool $ordered = false, array $attributes = [])
  * @method string ordered_list(array $items = [], bool $ordered = false, array $attributes = [])
- * @method string paragraph(?string $text = null, int $sentences = 3)
- * @method string paragraphs(int $count = 3, bool $as_text = true)
+ * @method string paragraph(?string $text = null, int|array<int>|\Closure $sentences = 3)
+ * @method string paragraphs(int $count = 3, bool $as_text = true, int|array<int>|\Closure $sentences = 3)
  * @method string reusable(int $id)
  */
 class Block_Factory {
