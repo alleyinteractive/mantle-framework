@@ -15,6 +15,8 @@ use Mantle\Support\Service_Provider;
 use Mantle\Support\Str;
 use ReflectionAttribute;
 use ReflectionClass;
+use ReflectionMethod;
+use RuntimeException;
 
 use function Mantle\Support\Helpers\collect;
 
@@ -109,12 +111,20 @@ trait Hookable {
 			)
 			->map(
 				function ( string $method ) use ( $has_legacy_attribute ): ?array {
+					$reflection_method = $this->reflection->getMethod( $method );
+
+					if ( ! $reflection_method->isPublic() ) {
+						$this->fire_doing_it_wrong( $reflection_method );
+
+						return null;
+					}
+
 					// Check if the method has any Action or Filter attributes. If it does
 					// and the legacy attribute is not present on the class, ignore the
 					// method name.
 					if (
 						! $has_legacy_attribute
-						&& collect( $this->reflection->getMethod( $method )->getAttributes( Filter::class, ReflectionAttribute::IS_INSTANCEOF ) )->is_not_empty()
+						&& collect( $reflection_method->getAttributes( Filter::class, ReflectionAttribute::IS_INSTANCEOF ) )->is_not_empty()
 					) {
 						return null;
 					}
@@ -162,6 +172,11 @@ trait Hookable {
 
 		foreach ( $this->reflection->getMethods() as $method ) {
 			foreach ( $method->getAttributes( Action::class ) as $attribute ) {
+				if ( ! $method->isPublic() ) {
+					$this->fire_doing_it_wrong( $method );
+					continue;
+				}
+
 				$instance = $attribute->newInstance();
 
 				$items->push(
@@ -175,6 +190,11 @@ trait Hookable {
 			}
 
 			foreach ( $method->getAttributes( Filter::class ) as $attribute ) {
+				if ( ! $method->isPublic() ) {
+					$this->fire_doing_it_wrong( $method );
+					continue;
+				}
+
 				$instance = $attribute->newInstance();
 
 				$items->push(
@@ -201,5 +221,30 @@ trait Hookable {
 	 */
 	public function use_event_dispatcher(): bool {
 		return class_exists( Service_Provider::class ) && $this instanceof Service_Provider;
+	}
+
+	/**
+	 * Fire a _doing_it_wrong() notice when a method that is trying to be
+	 * registered as a hook callback is not public.
+	 *
+	 * For local development, throw an exception to help the developer
+	 * identify the issue.
+	 *
+	 * @throws RuntimeException Thrown only in local development.
+	 *
+	 * @param ReflectionMethod $method The hook callback method.
+	 */
+	protected function fire_doing_it_wrong( ReflectionMethod $method ): void {
+		$message = sprintf(
+			/* translators: %s: method name. */
+			__( 'The method %s must be public to be registered as a hook callback.', 'mantle' ),
+			$method->getName()
+		);
+
+		if ( 'local' === wp_get_environment_type() ) {
+			throw new RuntimeException( $message );
+		}
+
+		_doing_it_wrong( esc_html( static::class . '::' . $method->getName() ), esc_html( $message ), '1.0.0' );
 	}
 }

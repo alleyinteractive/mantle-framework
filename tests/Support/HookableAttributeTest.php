@@ -6,17 +6,24 @@ use Mantle\Support\Attributes\Action;
 use Mantle\Support\Attributes\Filter;
 use Mantle\Support\Attributes\Hookable\Allow_Legacy_Duplicate_Registration;
 use Mantle\Support\Traits\Hookable;
+use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\TestCase;
+
 
 #[Group('hookable')]
-class HookableAttributeTest extends TestCase {
-	public function setUp(): void {
+class HookableAttributeTest extends FrameworkTestCase {
+	protected function setUp(): void {
 		parent::setUp();
 
 		remove_all_actions( 'example_action' );
 
 		$_SERVER['__hook_fired'] = [];
+	}
+
+	protected function tearDown(): void {
+		parent::tearDown();
+
+		putenv( 'WP_ENVIRONMENT_TYPE=' );
 	}
 
 	public function test_action(): void {
@@ -219,5 +226,37 @@ class HookableAttributeTest extends TestCase {
 		do_action( 'example_action', 'foo' );
 
 		$this->assertEquals( [ 'foo', 'foo' ], $_SERVER['__hook_fired'] );
+	}
+
+	public function test_throws_doing_it_wrong_if_method_is_not_public(): void {
+		$class = new class {
+			use Hookable;
+
+			#[Action( 'example_action' )]
+			private function example_action( mixed $args ): void {
+				$_SERVER['__hook_fired'] = $args;
+			}
+		};
+
+		$this->setExpectedIncorrectUsage( $class::class . '::example_action' );
+
+		remove_all_actions( 'example_action' );
+
+		new $class;
+	}
+
+	public function test_throws_exception_if_method_is_not_callable(): void {
+		putenv( 'WP_ENVIRONMENT_TYPE=local' );
+
+		$this->expectException( \RuntimeException::class );
+
+		$class = new class {
+			use Hookable;
+
+			#[Action( 'example_action' )]
+			private function example_action( mixed $args ): void {
+				$_SERVER['__hook_fired'] = $args;
+			}
+		};
 	}
 }
