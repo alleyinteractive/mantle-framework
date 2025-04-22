@@ -13,7 +13,7 @@
         "php": "^8.2",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
         "alleyinteractive/wp-asset-manager": "^1.4.0",
-        "alleyinteractive/wp-caper": "^2.0.1",
+        "alleyinteractive/wp-caper": "^2.0.1 || ^3.0.0",
         "alleyinteractive/wp-concurrent-remote-requests": "^1.0.2",
         "alleyinteractive/wp-filter-side-effects": "^1.0 || ^2.0",
         "doctrine/inflector": "^2.0.8",
@@ -47,7 +47,7 @@
     },
     "require-dev": {
         "alleyinteractive/alley-coding-standards": "^2.0",
-        "alleyinteractive/wp-match-blocks": "^1.0 || ^2.0 || ^3.0",
+        "alleyinteractive/wp-match-blocks": "^1.0 || ^2.0 || ^3.0 || ^4.0",
         "guzzlehttp/guzzle": "^7.7",
         "illuminate/view": "^11.38",
         "league/flysystem-aws-s3-v3": "^3.29",

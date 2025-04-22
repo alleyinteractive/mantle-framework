@@ -135,19 +135,27 @@ trait Element_Assertions {
 	/**
 	 * Assert that an element exists by query selector.
 	 *
-	 * @param string $selector The selector to use.
+	 * @param string   $selector The selector to use.
+	 * @param int|null $count The number of times the element should exist.
 	 */
-	public function assertElementExistsByQuerySelector( string $selector ): static {
-		return $this->assertElementExists( $this->convert_query_selector( $selector ), "Element not found for selector: {$selector}" );
+	public function assertElementExistsByQuerySelector( string $selector, ?int $count = null ): static {
+		if ( null === $count ) {
+			$this->assertElementExists( $this->convert_query_selector( $selector ), "Element not found for selector: {$selector}" );
+		} else {
+			$this->assertQuerySelectorCount( $selector, $count );
+		}
+
+		return $this;
 	}
 
 	/**
 	 * Alias for assertElementExistsByQuerySelector.
 	 *
-	 * @param string $selector
+	 * @param string   $selector
+	 * @param int|null $count
 	 */
-	public function assertQuerySelectorExists( string $selector ): static {
-		return $this->assertElementExistsByQuerySelector( $selector );
+	public function assertQuerySelectorExists( string $selector, ?int $count = null ): static {
+		return $this->assertElementExistsByQuerySelector( $selector, $count );
 	}
 
 	/**
@@ -289,6 +297,52 @@ trait Element_Assertions {
 		PHPUnit::assertStringNotContainsString( $needle, $this->get_internal_content(), 'The content contains the unexpected string.' );
 
 		return $this;
+	}
+
+	/**
+	 * Assert that a block is found in the response of the page.
+	 *
+	 * This will check for the block by its default class name
+	 * in the format of "wp-block-vendor-block-name".
+	 *
+	 * It does not support blocks that do not follow that pattern.
+	 *
+	 * @param string   $name
+	 * @param int|null $count
+	 */
+	public function assertBlockExists( string $name, ?int $count = null ): static {
+		if ( 'paragraph' === $name ) {
+			return $this->assertElementExistsByQuerySelector( 'p', $count );
+		}
+
+		$classname = preg_replace(
+			'/^core-/',
+			'',
+			str_replace( '/', '-', $name )
+		);
+
+		return $this->assertElementExistsByQuerySelector( ".wp-block-{$classname}", $count );
+	}
+
+	/**
+	 * Assert that a block is not found in the response of the page.
+	 *
+	 * @see assertBlockExists()
+	 *
+	 * @param string $name
+	 */
+	public function assertBlockMissing( string $name ): static {
+		if ( 'paragraph' === $name ) {
+			return $this->assertElementMissingByQuerySelector( 'p' );
+		}
+
+		$classname = preg_replace(
+			'/^core-/',
+			'',
+			str_replace( '/', '-', $name )
+		);
+
+		return $this->assertElementMissingByQuerySelector( ".wp-block-{$classname}" );
 	}
 
 	/**

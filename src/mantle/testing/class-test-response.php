@@ -39,7 +39,7 @@ class Test_Response {
 	/**
 	 * Response content.
 	 */
-	protected string $content;
+	protected ?string $content = null;
 
 	/**
 	 * Response status code.
@@ -146,7 +146,7 @@ class Test_Response {
 	 * Gets the current response content.
 	 */
 	public function get_content(): ?string {
-		return $this->content ?? null;
+		return $this->content;
 	}
 
 	/**

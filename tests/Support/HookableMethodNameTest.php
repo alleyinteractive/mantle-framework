@@ -3,17 +3,23 @@
 namespace Mantle\Tests\Support;
 
 use Mantle\Support\Traits\Hookable;
+use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\TestCase;
 
 #[Group('hookable')]
-class HookableMethodNameTest extends TestCase {
+class HookableMethodNameTest extends FrameworkTestCase {
 	public function setUp(): void {
 		parent::setUp();
 
 		remove_all_actions( 'example_action' );
 
 		$_SERVER['__hook_fired'] = [];
+	}
+
+	protected function tearDown(): void {
+		parent::tearDown();
+
+		putenv( 'WP_ENVIRONMENT_TYPE=' );
 	}
 
 	public function test_action(): void {
@@ -119,5 +125,37 @@ class HookableMethodNameTest extends TestCase {
 
 		$this->assertSame( [ 5, 15 ], $_SERVER['__hook_fired'] );
 		$this->assertSame( 35, $value );
+	}
+
+	public function test_throws_doing_it_wrong_if_method_is_not_public(): void {
+		putenv( 'WP_ENVIRONMENT_TYPE=production' );
+
+		$class = new class {
+			use Hookable;
+
+			private function action__example_action( mixed $args ): void {
+				$_SERVER['__hook_fired'] = $args;
+			}
+		};
+
+		$this->setExpectedIncorrectUsage( $class::class . '::action__example_action' );
+
+		remove_all_actions( 'example_action' );
+
+		new $class;
+	}
+
+	public function test_throws_exception_if_method_is_not_callable(): void {
+		putenv( 'WP_ENVIRONMENT_TYPE=local' );
+
+		$this->expectException( \RuntimeException::class );
+
+		$class = new class {
+			use Hookable;
+
+			private function action__example_action( mixed $args ): void {
+				$_SERVER['__hook_fired'] = $args;
+			}
+		};
 	}
 }
