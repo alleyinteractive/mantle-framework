@@ -60,7 +60,6 @@ class View_Service_Provider extends Service_Provider {
 			fn () => tap(
 				new Engine_Resolver(),
 				function ( Engine_Resolver $resolver ): void {
-					// Register the various view engines.
 					$this->register_php_engine( $resolver );
 					$this->register_file_engine( $resolver );
 					$this->register_blade_engine( $resolver );
