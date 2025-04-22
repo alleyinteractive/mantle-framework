@@ -355,10 +355,10 @@ HTML;
 
 	public static function block_serialization_dataprovider(): array {
 		return [
-			// 'unicode' => [
-			// 	[ 'key' => '€1.00 / 3 for €2.00' ],
-			// 	'<!-- wp:namespace/blockname {"key":"€1.00 / 3 for €2.00"} /-->',
-			// ],
+			'unicode' => [
+				[ 'key' => '€1.00 / 3 for €2.00' ],
+				'<!-- wp:namespace/blockname {"key":"€1.00 / 3 for €2.00"} /-->',
+			],
 			'double dash' => [
 				[
 					'data' => [
