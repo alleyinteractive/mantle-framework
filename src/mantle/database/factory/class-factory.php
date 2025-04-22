@@ -57,6 +57,11 @@ abstract class Factory {
 	protected string $model;
 
 	/**
+	 * Flag to use slashes on the arguments.
+	 */
+	public bool $slash = false;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Generator $faker The Faker instance.
@@ -185,6 +190,18 @@ abstract class Factory {
 	}
 
 	/**
+	 * Create a new factory instance with arguments passed to `wp_slash()` before creating.
+	 *
+	 * @param bool $value Whether to use slashes or not.
+	 */
+	public function slash( bool $value = true ): static {
+		return tap(
+			clone $this,
+			fn ( Factory $factory ) => $factory->slash = $value,
+		);
+	}
+
+	/**
 	 * Add a new state transformation to the factory. Functions the same as
 	 * middleware but supports returning an array of attributes vs a closure.
 	 *
@@ -247,7 +264,13 @@ abstract class Factory {
 			->send( [] )
 			->through( $factory->middleware->all() )
 			->then(
-				fn ( array $args ) => $this->get_model()::create( $args ),
+				function ( array $args ) use ( $factory ): Model {
+					if ( $factory->slash ) {
+						$args = wp_slash( $args );
+					}
+
+					return $this->get_model()::create( $args );
+				},
 			);
 	}
 
