@@ -47,45 +47,45 @@ class View_Cache_Command extends Command {
 	protected View_Finder $finder;
 
 	/**
-	 * Constructor.
-	 */
-	public function __construct() {
-		parent::__construct();
-
-		// Hide the command in isolation mode.
-		if ( app()->is_running_in_console_isolation() ) {
-			$this->setHidden( true );
-		}
-	}
-
-	/**
 	 * Compile all blade views.
-	 *
-	 * @param View_Finder $finder Finder instance.
 	 */
-	public function handle( View_Finder $finder ): int {
+	public function handle(): int {
 		if ( ! isset( $this->container['view.engine.resolver'] ) ) {
 			$this->error( 'Missing view engine resolver from the view service provider.' );
+
 			return Command::FAILURE;
 		}
 
-		$this->blade  = $this->container['view.engine.resolver']->resolve( 'blade' )->get_compiler();
-		$this->finder = $finder;
+		$this->blade = $this->container['view.engine.resolver']->resolve( 'blade' )->get_compiler();
 
 		// Clear the compiled views first.
 		$this->call( 'mantle view:clear' );
 
-		$paths = $this->finder->get_paths();
+		$compiled_path = $this->container['config']['view.compiled'] ?? null;
 
-		$dir        = $this->container['config']['view.compiled'] ?? null;
-		$filesystem = new Filesystem();
+		if ( empty( $compiled_path ) ) {
+			$this->error( 'No compiled view path found.' );
 
-		// Ensure cache directory exists.
-		if ( $dir && ! $filesystem->is_directory( $dir ) && ! $filesystem->make_directory( $dir ) ) {
-			$this->error( 'Unable to create the compiled view directory.' );
+			return self::FAILURE;
+		}
+
+		if ( ! ( new Filesystem() )->ensure_directory_exists( $compiled_path ) ) {
+			$this->error( "Unable to create the compiled view directory [{$compiled_path}]" );
 
 			return Command::FAILURE;
 		}
+
+		if ( $this->container->is_running_in_console_isolation() ) {
+			return $this->handle_console_isolation();
+		}
+
+		// Cannot be moved to method type hint because it is not compatible with
+		// console isolation mode.
+		$this->finder = $this->container->make( View_Finder::class );
+
+		$paths = $this->finder->get_paths();
+
+
 
 		if ( empty( $paths ) ) {
 			$this->error( 'No view paths found.' );
@@ -102,12 +102,14 @@ class View_Cache_Command extends Command {
 	/**
 	 * Compile all views from a collection.
 	 *
-	 * @param Collection $views Collection of view paths.
+	 * @param Finder $finder Finder instance.
 	 */
-	protected function compile_views( Collection $views ): void {
-		$views->map(
-			fn ( SplFileInfo $file ) => $this->blade->compile( $file->getRealPath() ),
-		);
+	protected function compile_views( Finder $finder ): void {
+		foreach ( $finder as $file ) {
+			$this->info( "Compiling [{$file->getRealPath()}]", 'vvv' );
+
+			$this->blade->compile( $file->getRealPath() );
+		}
 	}
 
 	/**
@@ -115,13 +117,24 @@ class View_Cache_Command extends Command {
 	 *
 	 * @param string[] $paths File path.
 	 */
-	protected function blade_files_in( array $paths ): Collection {
-		return collect(
-			Finder::create()
-				->in( $paths )
-				->exclude( 'vendor' )
-				->name( '*.blade.php' )
-				->files()
-		);
+	protected function blade_files_in( array $paths ): Finder {
+		return Finder::create()
+			->in( $paths )
+			->exclude( 'vendor' )
+			->name( '*.blade.php' )
+			->files();
+	}
+
+	/**
+	 * Handle console isolation mode.
+	 */
+	protected function handle_console_isolation(): int {
+		$base = $this->container->get_base_path();
+
+		$this->info( "Running in console isolation mode. Compiling all Blade templates found in [{$base}]" );
+
+		$this->compile_views( $this->blade_files_in( [ $base ] ) );
+
+		return self::SUCCESS;
 	}
 }

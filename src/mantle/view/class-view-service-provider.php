@@ -150,6 +150,10 @@ class View_Service_Provider extends Service_Provider {
 		static $should_cache_views = null;
 
 		if ( is_null( $should_cache_views ) ) {
+			if ( $this->app->is_running_in_console_isolation() ) {
+				return true;
+			}
+
 			/**
 			 * Early return to allow for Blade views without filesystem compiling.
 			 *
