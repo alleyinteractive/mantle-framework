@@ -53,8 +53,22 @@ class InteractsWithDataTest extends TestCase {
 		$this->assertEquals( true, TestableInteractsWithData::create( 1 )->bool() );
 		$this->assertEquals( true, TestableInteractsWithData::create( 'true' )->bool() );
 		$this->assertEquals( false, TestableInteractsWithData::create( false )->bool() );
+		$this->assertEquals( false, TestableInteractsWithData::create( 'false' )->bool() );
+		$this->assertEquals( false, TestableInteractsWithData::create( 'random string' )->bool() );
 		$this->assertEquals( false, TestableInteractsWithData::create( '0' )->bool() );
 		$this->assertEquals( false, TestableInteractsWithData::create( null )->bool() );
+	}
+
+	public function test_truthy(): void {
+		$this->assertEquals( true, TestableInteractsWithData::create( true )->truthy() );
+		$this->assertEquals( true, TestableInteractsWithData::create( '1' )->truthy() );
+		$this->assertEquals( true, TestableInteractsWithData::create( 1 )->truthy() );
+		$this->assertEquals( true, TestableInteractsWithData::create( 'true' )->truthy() );
+		$this->assertEquals( true, TestableInteractsWithData::create( 'anything' )->truthy() );
+		$this->assertEquals( true, TestableInteractsWithData::create( 'false' )->truthy() );
+		$this->assertEquals( true, TestableInteractsWithData::create( 'random string' )->truthy() );
+		$this->assertEquals( false, TestableInteractsWithData::create( false )->truthy() );
+		$this->assertEquals( false, TestableInteractsWithData::create( '0' )->truthy() );
 	}
 
 	public function test_as_array(): void {
