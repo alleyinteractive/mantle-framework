@@ -346,9 +346,17 @@ HTML;
 
 		$this->assertEquals( $expected, $block );
 
-		$post = static::factory()->post->create_and_get( [
+		$post_id = wp_insert_post( [
+			'post_title'   => 'Test Post',
 			'post_content' => $block,
+			'post_status'  => 'publish',
 		] );
+
+		$this->assertIsInt( $post_id );
+
+		$post = get_post( $post_id );
+
+		dump( $post->post_content );
 
 		$this->assertEquals( $expected, $post->post_content );
 	}
