@@ -60,6 +60,7 @@ abstract class Factory {
 	 * Constructor.
 	 *
 	 * @param Generator $faker The Faker instance.
+	 * @phpstan-param Generator&\Mantle\Faker\Faker_Provider $faker
 	 */
 	public function __construct( protected Generator $faker ) {
 		$this->middleware = new Collection();
