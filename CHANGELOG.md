@@ -20,6 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - When using the `Hookable` trait, a incorrect usage notice will be fired (or a
   runtime exception if on a local environment) if a method is attempting to be
   used as a hook callback that is not public.
+- `Interacts_With_Data::bool()` will only return true if the underlying value is
+  `true`, `'true'`, `1`, or `'1'`. All other values will return false.
+  `Interacts_With_Data::truthy()` was added to determine if the string is
+  "truthy".
 
 ## v1.6.0
 
