@@ -426,7 +426,7 @@ class Pending_Testable_Request {
 		$this->rest_api_response = null;
 
 		// Remove all HTTP_* headers from $_SERVER.
-		foreach ( array_keys($_SERVER) as $key ) {
+		foreach ( array_keys( $_SERVER ) as $key ) {
 			if ( str_starts_with( $key, 'HTTP_' ) && 'HTTP_HOST' !== $key ) {
 				unset( $_SERVER[ $key ] );
 			}

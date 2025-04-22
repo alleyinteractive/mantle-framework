@@ -24,10 +24,12 @@ use Mantle\Testing\Concerns\Interacts_With_Attributes;
 use Mantle\Testing\Concerns\Interacts_With_Console;
 use Mantle\Testing\Concerns\Interacts_With_Container;
 use Mantle\Testing\Concerns\Interacts_With_Cron;
+use Mantle\Testing\Concerns\Interacts_With_Environment;
 use Mantle\Testing\Concerns\Interacts_With_Hooks;
 use Mantle\Testing\Concerns\Interacts_With_Mail;
 use Mantle\Testing\Concerns\Interacts_With_PHPUnit;
 use Mantle\Testing\Concerns\Interacts_With_Requests;
+use Mantle\Testing\Concerns\Interacts_With_User_Agent;
 use Mantle\Testing\Concerns\Makes_Http_Requests;
 use Mantle\Testing\Concerns\Network_Admin_Screen;
 use Mantle\Testing\Concerns\Refresh_Database;
@@ -59,10 +61,12 @@ abstract class TestCase extends BaseTestCase {
 	use Interacts_With_Console;
 	use Interacts_With_Container;
 	use Interacts_With_Cron;
+	use Interacts_With_Environment;
 	use Interacts_With_Hooks;
 	use Interacts_With_Mail;
 	use Interacts_With_PHPUnit;
 	use Interacts_With_Requests;
+	use Interacts_With_User_Agent;
 	use Makes_Http_Requests;
 	use MatchesSnapshots;
 	use WordPress_State;
@@ -250,6 +254,11 @@ abstract class TestCase extends BaseTestCase {
 			$GLOBALS[ $global ] = null;
 		}
 
+		// Reset the WP_ENVIRONMENT_TYPE environment variable.
+		if ( getenv( 'WP_ENVIRONMENT_TYPE' ) ) {
+			putenv( 'WP_ENVIRONMENT_TYPE=' ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_putenv
+		}
+
 		$this->unregister_all_meta_keys();
 		remove_filter( 'wp_die_handler', [ WP_Die::class, 'get_handler' ] );
 		static::restore_hooks();
@@ -297,6 +306,9 @@ abstract class TestCase extends BaseTestCase {
 			WordPress_Authentication::class,
 			Admin_Screen::class,
 			Network_Admin_Screen::class,
+			// Ensure that before_request/after_request callbacks are cleared early
+			// for use in other traits.
+			Makes_Http_Requests::class,
 		];
 	}
 

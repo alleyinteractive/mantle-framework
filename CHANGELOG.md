@@ -10,10 +10,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added `assertBlockExists()` and `assertBlockMissing()` to the response assertions.
+- Added `Environment` attribute to allow for environment-specific code to be run during tests.
+- Added support for user agent setting in tests via the `#[User_Agent]` attribute.
 
 ### Changed
 
 - Various types added to the framework to support increasing PHPStan to level 6.
+- Remove the `WP_ENVIRONMENT_TYPE` environmental variable on tear down.
+- When using the `Hookable` trait, a incorrect usage notice will be fired (or a
+  runtime exception if on a local environment) if a method is attempting to be
+  used as a hook callback that is not public.
 
 ## v1.6.0
 
