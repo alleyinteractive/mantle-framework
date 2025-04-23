@@ -9,7 +9,9 @@ namespace Mantle\Console;
 
 use Mantle\Contracts\Application as Application_Contract;
 use InvalidArgumentException;
+use Mantle\Console\Attributes\Hide_Console_Isolation_Mode;
 use Mantle\Support\Traits\Macroable;
+use ReflectionClass;
 use Symfony\Component\Console\Command\Command as Symfony_Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
@@ -84,6 +86,10 @@ abstract class Command extends Symfony_Command {
 
 		if ( ! empty( $this->help ) ) {
 			$this->setHelp( $this->help );
+		}
+
+		if ( ( new ReflectionClass( $this ) )->getAttributes( Hide_Console_Isolation_Mode::class ) ) {
+			$this->setHidden( true );
 		}
 	}
 
