@@ -31,6 +31,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Models' `new_factory()` method return type has changed to
   `Mantle\Database\Factory\Factory|string|null` with the ability to return a
   class string of a factory to use.
+- The Console Kernel will attempt to load the commands within `app/console`
+  directory and from `routes/console.php` if it exists without needing to define
+  a `commands()` method in your application's console kernel.
 
 ## v1.6.0
 
