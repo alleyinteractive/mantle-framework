@@ -4,7 +4,9 @@ namespace Mantle\Tests\View;
 use Mantle\Testing\FrameworkTestCase;
 use Mantle\Facade\View;
 use Mantle\Http\View\Factory;
+use PHPUnit\Framework\Attributes\Group;
 
+#[Group( 'views' )]
 class PhpViewsTest extends FrameworkTestCase {
 	protected Factory $view_factory;
 

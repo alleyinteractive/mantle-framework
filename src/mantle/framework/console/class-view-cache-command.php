@@ -27,7 +27,7 @@ class View_Cache_Command extends Command {
 	 *
 	 * @var string
 	 */
-	protected $name = 'view:cache';
+	protected $signature = 'view:cache {--wp-content} {--path=} {--skip-clear}';
 
 	/**
 	 * Command Description.
@@ -47,52 +47,59 @@ class View_Cache_Command extends Command {
 	protected View_Finder $finder;
 
 	/**
-	 * Constructor.
-	 */
-	public function __construct() {
-		parent::__construct();
-
-		// Hide the command in isolation mode.
-		if ( app()->is_running_in_console_isolation() ) {
-			$this->setHidden( true );
-		}
-	}
-
-	/**
 	 * Compile all blade views.
-	 *
-	 * @param View_Finder $finder Finder instance.
 	 */
-	public function handle( View_Finder $finder ): int {
+	public function handle(): int {
 		if ( ! isset( $this->container['view.engine.resolver'] ) ) {
 			$this->error( 'Missing view engine resolver from the view service provider.' );
+
 			return Command::FAILURE;
 		}
 
-		$this->blade  = $this->container['view.engine.resolver']->resolve( 'blade' )->getCompiler();
-		$this->finder = $finder;
+		$this->blade = $this->container['view.engine.resolver']->resolve( 'blade' )->get_compiler();
 
-		// Clear the compiled views first.
-		$this->call( 'mantle view:clear' );
+		if ( ! $this->option( 'skip-clear', false ) ) {
+			$this->call( 'mantle view:clear' );
+		}
+
+		$compiled_path = $this->container['config']['view.compiled'] ?? null;
+
+		if ( empty( $compiled_path ) ) {
+			$this->error( 'No compiled view path found.' );
+
+			return self::FAILURE;
+		}
+
+		if ( ! ( new Filesystem() )->ensure_directory_exists( $compiled_path ) ) {
+			$this->error( "Unable to create the compiled view directory [{$compiled_path}]" );
+
+			return Command::FAILURE;
+		}
+
+		if ( $this->option( 'wp-content', false ) ) {
+			return $this->handle_compile_wp_content();
+		}
+
+		if ( $paths = $this->option( 'path' ) ) {
+			return $this->handle_compile_path( $paths );
+		}
+
+		if ( $this->container->is_running_in_console_isolation() ) {
+			return $this->handle_console_isolation();
+		}
+
+		// Cannot be moved to method type hint because it is not compatible with
+		// console isolation mode.
+		$this->finder = $this->container->make( View_Finder::class );
 
 		$paths = $this->finder->get_paths();
-
-		$dir        = $this->container['config']['view.compiled'] ?? null;
-		$filesystem = new Filesystem();
-
-		// Ensure cache directory exists.
-		if ( $dir && ! $filesystem->is_directory( $dir ) && ! $filesystem->make_directory( $dir ) ) {
-			$this->error( 'Unable to create the compiled view directory.' );
-
-			return Command::FAILURE;
-		}
 
 		if ( empty( $paths ) ) {
 			$this->error( 'No view paths found.' );
 			return Command::FAILURE;
 		}
 
-		$this->compile_views( $this->blade_files_in( $paths ) );
+		$this->compile_views( $this->blade_files_in( $paths )->exclude( 'vendor' ) );
 
 		$this->success( 'Blade templates cached successfully.' );
 
@@ -102,12 +109,14 @@ class View_Cache_Command extends Command {
 	/**
 	 * Compile all views from a collection.
 	 *
-	 * @param Collection $views Collection of view paths.
+	 * @param Finder $finder Finder instance.
 	 */
-	protected function compile_views( Collection $views ): void {
-		$views->map(
-			fn ( SplFileInfo $file ) => $this->blade->compile( $file->getRealPath() ),
-		);
+	protected function compile_views( Finder $finder ): void {
+		foreach ( $finder as $file ) {
+			$this->info( "Compiling [{$file->getRealPath()}]", 'vvv' );
+
+			$this->blade->compile( $file->getRealPath() );
+		}
 	}
 
 	/**
@@ -115,13 +124,69 @@ class View_Cache_Command extends Command {
 	 *
 	 * @param string[] $paths File path.
 	 */
-	protected function blade_files_in( array $paths ): Collection {
-		return collect(
-			Finder::create()
-				->in( $paths )
-				->exclude( 'vendor' )
-				->name( '*.blade.php' )
-				->files()
-		);
+	protected function blade_files_in( array $paths ): Finder {
+		return Finder::create()
+			->in( $paths )
+			->name( '*.blade.php' )
+			->files();
+	}
+
+	/**
+	 * Handle console isolation mode.
+	 */
+	protected function handle_console_isolation(): int {
+		$base = $this->container->get_base_path();
+
+		$this->info( "Running in console isolation mode. Compiling all Blade templates found in [{$base}]" );
+
+		$this->compile_views( $this->blade_files_in( [ $base ] ) );
+
+		return self::SUCCESS;
+	}
+
+	/**
+	 * Handle the --wp-content option and compile all views in wp-content.
+	 */
+	protected function handle_compile_wp_content(): int {
+		// Get the path to wp-content from the current directory (which is a child of wp-content).
+		$wp_content_dir = preg_replace( '#/wp-content/.*$#', '/wp-content', __DIR__ );
+
+		if ( ! is_dir( $wp_content_dir ) ) {
+			$this->error( 'No wp-content directory found.' );
+
+			return Command::FAILURE;
+		}
+
+		$this->info( "Compiling all Blade templates found in [{$wp_content_dir}]" );
+
+		$this->compile_views( $this->blade_files_in( [ $wp_content_dir ] ) );
+
+		return Command::SUCCESS;
+	}
+
+	/**
+	 * Handle compile path.
+	 *
+	 * @param string $path Path to compile.
+	 */
+	protected function handle_compile_path( string $path ): int {
+		$cwd = getcwd();
+
+		collect( explode( ',', $path ) )
+			->map( fn ( $item ) => $cwd . DIRECTORY_SEPARATOR . $item )
+			->each( function ( string $path ): void {
+				if ( ! is_dir( $path ) ) {
+					$this->error( "Path [{$path}] does not exist. Skipping..." );
+
+					return;
+				}
+
+				$this->info( "Compiling all Blade templates found in [{$path}]" );
+
+				$this->compile_views( $this->blade_files_in( [ $path ] ) );
+			} )
+			->all();
+
+		return Command::SUCCESS;
 	}
 }

@@ -257,7 +257,7 @@ class Handler implements Contract {
 		try {
 			$view = $this->get_http_exception_view( $e );
 
-			return view(
+			return (string) response()->view(
 				$view[0],
 				$view[1],
 				[

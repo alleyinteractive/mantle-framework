@@ -12,14 +12,12 @@ namespace Mantle\Facade;
  *
  * @method static \Mantle\Http\View\View_Finder add_extension(string $extension)
  * @method static string[] get_extensions()
- * @method static void set_default_paths()
  * @method static \Mantle\Http\View\View_Finder add_path(string $path, string $alias = null)
  * @method static \Mantle\Http\View\View_Finder remove_path(string $path)
- * @method static array get_paths()
+ * @method static array<string> get_paths()
  * @method static \Mantle\Http\View\View_Finder clear_paths()
  * @method static string find(string $slug, string $name = null)
- * @method static string locate_template(array $templates, string $alias = null)
- * @method static string[] get_possible_view_files(string $name)
+ * @method static bool has_hint_information(string $alias)
  *
  * @see \Mantle\Http\View\View_Finder
  */

@@ -8,14 +8,20 @@
 namespace Mantle\View\Engines;
 
 use Mantle\Contracts\View\Engine;
+use Mantle\Filesystem\Filesystem;
 use Throwable;
-
-use function Mantle\Support\Helpers\validate_file;
 
 /**
  * PHP Template to load WordPress template files.
  */
 class Php_Engine implements Engine {
+	/**
+	 * Constructor.
+	 *
+	 * @param Filesystem $filesystem
+	 */
+	public function __construct( protected readonly Filesystem $filesystem ) {}
+
 	/**
 	 * Evaluate the contents of a view at a given path.
 	 *
@@ -23,14 +29,22 @@ class Php_Engine implements Engine {
 	 * @param array<string, mixed> $data View data.
 	 */
 	public function get( string $path, array $data = [] ): string {
+		return $this->evaluate_path( $path, $data );
+	}
+
+	/**
+	 * Get the evaluated contents of the view at the given path.
+	 *
+	 * @param string               $path View path.
+	 * @param array<string, mixed> $data View data.
+	 */
+	protected function evaluate_path( string $path, array $data ): string {
 		$ob_level = ob_get_level();
 
 		ob_start();
 
 		try {
-			if ( 0 === validate_file( $path ) ) {
-				load_template( $path, false );
-			}
+			$this->filesystem->get_require( $path, $data );
 		} catch ( Throwable $e ) {
 			$this->handle_view_exception( $e, $ob_level );
 		}

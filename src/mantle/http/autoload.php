@@ -80,26 +80,25 @@ if ( ! function_exists( 'request' ) ) {
 
 if ( ! function_exists( 'view' ) ) {
 	/**
-	 * Return a new view.
+	 * Return a new view or the view factory.
 	 *
-	 * @param string       $slug View slug.
-	 * @param array|string $name View name, optional. Supports passing variables in if
-	 *                           $variables is not used.
-	 * @return View|View_Factory
+	 * @param string|null                 $slug View slug.
+	 * @param array<string, mixed>|string $name View name or variables.
+	 * @param array<string, mixed>        $variables Variables for the view, optional.
+	 * @phpstan-return ($slug is null ? View_Factory : View)
 	 */
-	function view( ...$args ) {
+	function view( ?string $slug = null, array|string|null $name = null, array $variables = [] ): View|View_Factory {
 		$factory = app( View_Factory::class );
-		if ( empty( $args ) ) {
-			return $factory;
-		}
 
-		return $factory->make( ...$args );
+		return $slug ? $factory->make( $slug, $name, $variables ) : $factory;
 	}
 }
 
 if ( ! function_exists( 'render_view' ) ) {
 	/**
 	 * Render a new view.
+	 *
+	 * @deprecated Use view() instead.
 	 *
 	 * @param string       $slug View slug.
 	 * @param array|string $name View name, optional. Supports passing variables in if
@@ -132,9 +131,9 @@ if ( ! function_exists( 'loop' ) ) {
 	 */
 	function loop( ...$args ): string {
 		return view()
-		->loop( ...$args )
-		->map( fn ( View $item ) => $item->render() )
-		->implode( '' );
+			->loop( ...$args )
+			->map( fn ( View $item ) => $item->render() )
+			->implode( '' );
 	}
 }
 
