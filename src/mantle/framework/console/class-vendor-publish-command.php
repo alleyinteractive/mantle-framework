@@ -7,6 +7,7 @@
 
 namespace Mantle\Framework\Console;
 
+use Mantle\Console\Attributes\Hide_Console_Isolation_Mode;
 use Mantle\Console\Command;
 use Mantle\Filesystem\Filesystem;
 use Mantle\Support\Service_Provider;
@@ -17,6 +18,7 @@ use function Mantle\Support\Helpers\collect;
 /**
  * Vendor Publish Command
  */
+#[Hide_Console_Isolation_Mode]
 class Vendor_Publish_Command extends Command {
 	/**
 	 * The console command name.
@@ -48,18 +50,6 @@ class Vendor_Publish_Command extends Command {
 		{--tags=* : One or many tags that have assets you want to publish.}
 		{--list : List all tags that can be published.}
 		{--all : Publish assets for all tags.}';
-
-	/**
-	 * Constructor.
-	 */
-	public function __construct() {
-		parent::__construct();
-
-		// Hide the command in isolation mode.
-		if ( app()->is_running_in_console_isolation() ) {
-			$this->setHidden( true );
-		}
-	}
 
 	/**
 	 * Publish any publishable assets from vendor packages.
