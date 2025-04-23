@@ -243,7 +243,7 @@ class View_Finder {
 	 * Check if the view name has hint information.
 	 *
 	 * The hint information is used to determine if the view should be loaded from
-	 * a specific in the format of "@alias/view-name".
+	 * a specific path that is passed in the format of "@alias/view-name".
 	 *
 	 * @param string $name View name.
 	 */
