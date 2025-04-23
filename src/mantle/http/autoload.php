@@ -15,6 +15,7 @@ declare( strict_types=1 );
 use Mantle\Contracts\Http\Routing\Response_Factory;
 use Mantle\Contracts\Http\View\Factory as View_Factory;
 use Mantle\Http\View\View;
+use Mantle\Support\Mixed_Data;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
 if ( ! function_exists( 'response' ) ) {
@@ -185,14 +186,25 @@ if ( ! function_exists( 'render_iterate' ) ) {
 
 if ( ! function_exists( 'mantle_get_var' ) ) {
 	/**
-	 * Return a new view.
+	 * Retrieve a template variable.
 	 *
 	 * @param string $key Variable to get.
 	 * @param mixed  $default Default value if unset.
-	 * @return mixed
 	 */
-	function mantle_get_var( string $key, $default = null ) {
+	function mantle_get_var( string $key, mixed $default = null ): mixed {
 		return app( View_Factory::class )->get_var( $key, $default );
+	}
+}
+
+if ( ! function_exists( 'mantle_get_mixed_var' ) ) {
+	/**
+	 * Retrieve a template variable as a Mixed_Data object.
+	 *
+	 * @param string $key Variable to get.
+	 * @param mixed  $default Default value if unset.
+	 */
+	function mantle_get_mixed_var( string $key, mixed $default = null ): Mixed_Data {
+		return Mixed_Data::of( mantle_get_var( $key, $default ) );
 	}
 }
 

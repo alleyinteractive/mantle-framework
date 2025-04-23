@@ -105,7 +105,7 @@ class View implements \Stringable {
 	 * @param string $key Key to get.
 	 * @param mixed  $default Default value, optional.
 	 */
-	public function get_variable( string $key, $default = null ): mixed {
+	public function get_variable( string $key, mixed $default = null ): mixed {
 		return Arr::get( $this->data, $key, $default );
 	}
 
