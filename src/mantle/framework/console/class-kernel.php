@@ -214,7 +214,7 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 		$base_routes = $this->app->get_base_path( 'routes/console.php' );
 
 		if ( file_exists( $base_routes ) ) {
-			require $base_routes; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomFunction
+			require $base_routes; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 		}
 	}
 
