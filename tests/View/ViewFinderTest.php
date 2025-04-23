@@ -3,7 +3,9 @@ namespace Mantle\Tests\View;
 
 use Mantle\Facade\View_Loader;
 use Mantle\Testing\FrameworkTestCase;
+use PHPUnit\Framework\Attributes\Group;
 
+#[Group( 'views' )]
 class ViewFinderTest extends FrameworkTestCase {
 	protected function setUp(): void {
 		parent::setUp();
@@ -43,6 +45,12 @@ class ViewFinderTest extends FrameworkTestCase {
 
 		$this->load_view( '@view-loader-alias/alias-specific' );
 		$this->assertEquals( 'alias', $_SERVER['__view_loaded'] );
+	}
+
+	public function test_has_hint_information(): void {
+		$this->assertTrue( View_Loader::has_hint_information( '@example/path' ) );
+		$this->assertTrue( View_Loader::has_hint_information( '@example/path/other' ) );
+		$this->assertFalse( View_Loader::has_hint_information( 'example/path' ) );
 	}
 
 	/**

@@ -10,6 +10,7 @@
 namespace Mantle\Http\View;
 
 use InvalidArgumentException;
+use Mantle\Filesystem\Filesystem;
 use Mantle\Support\Str;
 
 use function Mantle\Support\Helpers\event;
@@ -25,14 +26,14 @@ class View_Finder {
 	 *
 	 * @var string[]
 	 */
-	protected $paths = [];
+	protected array $paths = [];
 
 	/**
 	 * Register a view extension with the finder.
 	 *
 	 * @var string[]
 	 */
-	protected $extensions = [
+	protected array $extensions = [
 		'blade.php',
 		'php',
 		'css',
@@ -42,9 +43,10 @@ class View_Finder {
 	/**
 	 * Constructor.
 	 *
-	 * @param string $base_path Base path.
+	 * @param string     $base_path Base path.
+	 * @param Filesystem $files Filesystem instance.
 	 */
-	public function __construct( protected string $base_path ) {
+	public function __construct( protected string $base_path, protected readonly Filesystem $files ) {
 		$this->set_default_paths();
 
 		\add_action( 'after_setup_theme', [ $this, 'set_default_paths' ] );
@@ -56,7 +58,7 @@ class View_Finder {
 	 *
 	 * @param string $extension Extension to add.
 	 */
-	public function add_extension( $extension ): static {
+	public function add_extension( string $extension ): static {
 		$index = array_search( $extension, $this->extensions, true );
 
 		if ( false !== $index ) {
@@ -170,9 +172,8 @@ class View_Finder {
 		$alias = null;
 
 		// Extract the alias if passed.
-		if ( str_starts_with( $slug, '@' ) ) {
-			$alias = substr( Str::before( $slug, '/' ), 1 );
-			$slug  = Str::after( $slug, '/' );
+		if ( $this->has_hint_information( $slug ) ) {
+			[ $alias, $slug ] = explode( '/', $slug, 2 );
 		}
 
 		$templates = [];
@@ -197,7 +198,7 @@ class View_Finder {
 	 *
 	 * @throws InvalidArgumentException Thrown on unknown view to locate.
 	 */
-	public function locate_template( array $templates, ?string $alias = null ): string {
+	protected function locate_template( array $templates, ?string $alias = null ): string {
 		$paths = $this->get_paths();
 
 		if ( $alias ) {
@@ -215,7 +216,7 @@ class View_Finder {
 				foreach ( $this->get_paths() as $path ) {
 					$path = "{$path}/{$possible_view_file}";
 
-					if ( file_exists( $path ) ) {
+					if ( $this->files->exists( $path ) ) {
 						return $path;
 					}
 				}
@@ -236,5 +237,17 @@ class View_Finder {
 			fn ( $extension ) => "{$name}.{$extension}",
 			$this->extensions
 		);
+	}
+
+	/**
+	 * Check if the view name has hint information.
+	 *
+	 * The hint information is used to determine if the view should be loaded from
+	 * a specific path that is passed in the format of "@alias/view-name".
+	 *
+	 * @param string $name View name.
+	 */
+	public function has_hint_information( string $name ): bool {
+		return str_starts_with( $name, '@' ) && false !== strpos( $name, '/' );
 	}
 }

@@ -88,8 +88,8 @@ class Filesystem {
 	/**
 	 * Get the returned value of a file.
 	 *
-	 * @param  string $path
-	 * @param  array  $data
+	 * @param  string               $path
+	 * @param  array<string, mixed> $data
 	 * @return mixed
 	 *
 	 * @throws File_Not_Found_Exception Thrown on missing file.
@@ -100,6 +100,8 @@ class Filesystem {
 			$__data = $data;
 
 			return ( static function () use ( $__path, $__data ) {
+				global $posts, $post, $wp_did_header, $wp_query, $wp_rewrite, $wpdb, $wp_version, $wp, $id, $comment, $user_ID;
+
 				extract( $__data, EXTR_SKIP ); // phpcs:ignore WordPress.PHP.DontExtract.extract_extract, WordPress.PHP.DiscouragedPHPFunctions.extract_extract
 
 				return require $__path; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
@@ -208,7 +210,7 @@ class Filesystem {
 	 * @param  string   $path
 	 * @param  int|null $mode
 	 */
-	public function chmod( $path, $mode = null ): bool|string {
+	public function chmod( string $path, ?int $mode = null ): bool|string {
 		if ( $mode ) {
 			return chmod( $path, $mode );
 		}
@@ -479,10 +481,12 @@ class Filesystem {
 	 * @param  int    $mode
 	 * @param  bool   $recursive
 	 */
-	public function ensure_directory_exists( string $path, int $mode = 0755, bool $recursive = true ): void {
+	public function ensure_directory_exists( string $path, int $mode = 0755, bool $recursive = true ): bool {
 		if ( ! $this->is_directory( $path ) ) {
-			$this->make_directory( $path, $mode, $recursive );
+			return $this->make_directory( $path, $mode, $recursive );
 		}
+
+		return true;
 	}
 
 	/**

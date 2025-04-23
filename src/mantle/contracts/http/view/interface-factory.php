@@ -17,20 +17,18 @@ interface Factory {
 	/**
 	 * Add a piece of shared data to the environment.
 	 *
-	 * @param array|string $key Key to share.
-	 * @param mixed|null   $value Value to share.
-	 * @return mixed
+	 * @param array<string, mixed>|string $key Key to share.
+	 * @param mixed|null                  $value Value to share.
 	 */
-	public function share( $key, $value = null );
+	public function share( array|string $key, mixed $value = null ): void;
 
 	/**
 	 * Get an item from the shared data.
 	 *
 	 * @param string $key Key to get item by.
 	 * @param mixed  $default Default value.
-	 * @return mixed
 	 */
-	public function shared( $key, $default = null );
+	public function shared( string $key, mixed $default = null ): mixed;
 
 	/**
 	 * Get all of the shared data for the environment.
@@ -70,7 +68,7 @@ interface Factory {
 	 *                           $variables is not used.
 	 * @param array        $variables Variables for the view, optional.
 	 */
-	public function make( string $slug, $name = null, array $variables = [] ): View;
+	public function make( string $slug, array|string|null $name = null, array $variables = [] ): View;
 
 	/**
 	 * Get a variable from the current view.

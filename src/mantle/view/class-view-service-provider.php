@@ -7,7 +7,7 @@
 
 namespace Mantle\View;
 
-use Illuminate\Filesystem\Filesystem;
+use Illuminate\Filesystem\Filesystem as Illuminate_Filesystem;
 use Mantle\Http\View\Factory;
 use Mantle\Http\View\View_Finder;
 use Mantle\Support\Service_Provider;
@@ -15,7 +15,9 @@ use Mantle\View\Engines\Engine_Resolver;
 use Mantle\View\Engines\File_Engine;
 use Mantle\View\Engines\Php_Engine;
 use Illuminate\View\Compilers\BladeCompiler;
-use Illuminate\View\Engines\CompilerEngine;
+use Mantle\Filesystem\Filesystem;
+use Mantle\View\Engines\Blade_Engine;
+use RuntimeException;
 
 use function Mantle\Support\Helpers\tap;
 
@@ -40,7 +42,12 @@ class View_Service_Provider extends Service_Provider {
 	protected function register_blade_compiler(): void {
 		$this->app->singleton(
 			'blade.compiler',
-			fn ( $app ) => new BladeCompiler( new Filesystem(), $app['config']['view.compiled'] ),
+			fn ( \Mantle\Contracts\Application $app ) => new BladeCompiler(
+				new Illuminate_Filesystem(),
+				$app['config']['view.compiled'],
+				$app->get_base_path(),
+				$this->should_cache_views(),
+			),
 		);
 	}
 
@@ -53,10 +60,9 @@ class View_Service_Provider extends Service_Provider {
 			fn () => tap(
 				new Engine_Resolver(),
 				function ( Engine_Resolver $resolver ): void {
-					// Register the various view engines.
 					$this->register_php_engine( $resolver );
 					$this->register_file_engine( $resolver );
-					$this->register_compiler_engine( $resolver );
+					$this->register_blade_engine( $resolver );
 				}
 			),
 		);
@@ -68,10 +74,7 @@ class View_Service_Provider extends Service_Provider {
 	 * @param Engine_Resolver $resolver Engine resolver.
 	 */
 	protected function register_php_engine( Engine_Resolver $resolver ): void {
-		$resolver->register(
-			'php',
-			fn () => new Php_Engine(),
-		);
+		$resolver->register( 'php', fn () => new Php_Engine( $this->app['files'] ) );
 	}
 
 	/**
@@ -80,10 +83,7 @@ class View_Service_Provider extends Service_Provider {
 	 * @param Engine_Resolver $resolver Engine resolver.
 	 */
 	protected function register_file_engine( Engine_Resolver $resolver ): void {
-		$resolver->register(
-			'file',
-			fn () => new File_Engine(),
-		);
+		$resolver->register( 'file', fn () => new File_Engine() );
 	}
 
 	/**
@@ -91,10 +91,14 @@ class View_Service_Provider extends Service_Provider {
 	 *
 	 * @param Engine_Resolver $resolver Engine resolver.
 	 */
-	protected function register_compiler_engine( Engine_Resolver $resolver ): void {
+	protected function register_blade_engine( Engine_Resolver $resolver ): void {
 		$resolver->register(
 			'blade',
-			fn () => new CompilerEngine( $this->app['blade.compiler'] ),
+			fn () => new Blade_Engine(
+				filesystem: $this->app['files'],
+				compiler: $this->app['blade.compiler'],
+				should_write_files: $this->should_cache_views(),
+			),
 		);
 	}
 
@@ -105,7 +109,7 @@ class View_Service_Provider extends Service_Provider {
 		$this->app->singleton(
 			'view.loader',
 			fn ( $app ) => tap(
-				new View_Finder( $app->get_base_path() ),
+				new View_Finder( $app->get_base_path(), $app['files'] ),
 				function ( View_Finder $loader ): void {
 					// Register the base view folder for the project.
 					$loader->add_path( $this->app->get_base_path( 'views/' ) );
@@ -132,5 +136,55 @@ class View_Service_Provider extends Service_Provider {
 				return $factory;
 			}
 		);
+	}
+
+	/**
+	 * Check if views should be cached (written to the filesystem).
+	 *
+	 * @throws RuntimeException If the compiled views directory is not writable.
+	 */
+	protected function should_cache_views(): bool {
+		$compiled_path = $this->app['config']['view.compiled'];
+
+		static $should_cache_views = null;
+
+		if ( is_null( $should_cache_views ) ) {
+			if ( $this->app->is_running_in_console_isolation() ) {
+				return true;
+			}
+
+			/**
+			 * Early return to allow for Blade views without filesystem compiling.
+			 *
+			 * @param bool|null             $is_writeable Whether the compiled path is writeable.
+			 * @param View_Service_Provider $provider The current instance.
+			 */
+			$should_cache_views = apply_filters( 'mantle_views_should_cache_blade_views', null, $this );
+
+			if ( is_bool( $should_cache_views ) ) {
+				return $should_cache_views;
+			}
+
+			$filesystem = new Filesystem();
+
+			$exists = $filesystem->is_directory( $compiled_path );
+
+			// If the directory doesn't exist, try to create it.
+			if ( ! $exists ) {
+				$exists = $filesystem->ensure_directory_exists( $compiled_path, 0755, true );
+			}
+
+			// If the directory exists but is not writable, try to change permissions.
+			if ( $exists && ! $filesystem->is_writable( $compiled_path ) && ! $filesystem->chmod( $compiled_path, 0755 ) ) {
+				throw new RuntimeException(
+					/* translators: %s: path to the compiled views directory. */
+					esc_html( sprintf( __( 'The compiled views directory (%s) is not writable.', 'mantle' ), $compiled_path ) ),
+				);
+			}
+
+			$should_cache_views = $exists;
+		}
+
+		return $should_cache_views;
 	}
 }

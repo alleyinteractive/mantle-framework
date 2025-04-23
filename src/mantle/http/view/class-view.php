@@ -9,11 +9,11 @@
 
 namespace Mantle\Http\View;
 
-use Illuminate\View\Engines\CompilerEngine;
 use Mantle\Contracts\Http\View\Factory as Factory_Contract;
 use Mantle\Contracts\View\Engine;
 use Mantle\Database\Model\Post;
 use Mantle\Support\Arr;
+use WP_Post;
 
 /**
  * View Class
@@ -21,43 +21,35 @@ use Mantle\Support\Arr;
 class View implements \Stringable {
 	/**
 	 * Post object to set for the post.
-	 *
-	 * @var Post|\WP_Post|int|null
 	 */
-	protected $post;
+	protected Post|\WP_Post|int|null $post = null;
 
 	/**
 	 * The original post to restore after rendering the view.
-	 *
-	 * @var \WP_Post
 	 */
-	protected $original_post;
+	protected ?WP_Post $original_post = null;
 
 	/**
 	 * Cache key to use.
-	 *
-	 * @var string
 	 */
-	protected $cache_key;
+	protected ?string $cache_key = null;
 
 	/**
 	 * Cache TTL for the view.
-	 *
-	 * @var int|null
 	 */
-	protected $cache_ttl;
+	protected ?int $cache_ttl = null;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param Factory_Contract                               $factory View Factory.
-	 * @param Engine|\Illuminate\View\Engines\CompilerEngine $engine View Engine.
-	 * @param string                                         $path View path.
-	 * @param array<string, mixed>                           $data Variables for the view, optional.
+	 * @param Factory_Contract     $factory View Factory.
+	 * @param Engine               $engine View Engine.
+	 * @param string               $path View path.
+	 * @param array<string, mixed> $data Variables for the view, optional.
 	 */
 	public function __construct(
 		protected Factory_Contract $factory,
-		protected Engine|CompilerEngine $engine,
+		protected Engine $engine,
 		protected string $path,
 		protected array $data = [],
 	) {
@@ -77,7 +69,7 @@ class View implements \Stringable {
 	 *
 	 * @param Post|\WP_Post|int $post Post object.
 	 */
-	public function set_post( $post ): static {
+	public function set_post( WP_Post|Post|int $post ): static {
 		$this->post = $post;
 		return $this;
 	}
@@ -88,7 +80,7 @@ class View implements \Stringable {
 	 * @param string|array<string, mixed> $key Key to set.
 	 * @param mixed                       $value Value to set.
 	 */
-	public function with( $key, $value = null ): static {
+	public function with( string|array $key, mixed $value = null ): static {
 		if ( is_array( $key ) ) {
 			$this->data = array_merge( $this->data, $key );
 		} else {
@@ -123,21 +115,25 @@ class View implements \Stringable {
 	 * @param int|bool $cache_ttl Cache TTL or false to disable. Defaults to 15 minutes.
 	 * @param string   $cache_key Cache key to use, optional.
 	 */
-	public function cache( $cache_ttl = 900, ?string $cache_key = null ): static {
-		if ( false === $cache_ttl ) {
-			$cache_ttl = -1;
-		}
+	public function cache( int|bool $cache_ttl = 900, ?string $cache_key = null ): static {
+		$cache_ttl = match ( $cache_ttl ) {
+			false => null,
+			true => 0, // Indefinite.
+			default => $cache_ttl,
+		};
 
 		$this->cache_ttl = $cache_ttl;
+
 		$this->cache_key = $cache_key;
+
 		return $this;
 	}
 
 	/**
 	 * Retrieve the cache key to use for the view.
 	 */
-	public function get_cache_key(): string {
-		if ( ! empty( $this->cache_key ) ) {
+	public function get_cache_key(): ?string {
+		if ( $this->cache_key ) {
 			return $this->cache_key;
 		}
 

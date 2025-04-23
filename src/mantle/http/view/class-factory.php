@@ -12,7 +12,7 @@ use Illuminate\View\Concerns\ManagesLoops;
 use Illuminate\View\Concerns\ManagesStacks;
 use InvalidArgumentException;
 use Mantle\Contracts\Container;
-use Mantle\Contracts\Http\View\Factory as ViewFactory;
+use Mantle\Contracts\Http\View\Factory as Contract;
 use Mantle\Contracts\View\Engine;
 use Mantle\Support\Arr;
 use Mantle\Support\Collection;
@@ -23,45 +23,48 @@ use WP_Query;
 /**
  * View Factory
  */
-class Factory implements ViewFactory {
+class Factory implements Contract {
 	use ManagesLayouts;
 	use ManagesLoops;
 	use ManagesStacks;
 
 	/**
 	 * The IoC container instance.
-	 *
-	 * @var Container
 	 */
-	protected $container;
+	protected Container $container;
 
 	/**
 	 * Data that should be available to all templates.
 	 *
 	 * @var array<mixed>
 	 */
-	protected $shared = [];
+	protected array $shared = [];
 
 	/**
 	 * Stack of views being rendered.
 	 *
 	 * @var array<mixed>
 	 */
-	protected $stack;
+	protected array $stack;
 
 	/**
 	 * Current view being rendered.
-	 *
-	 * @var View|null
 	 */
-	protected $current;
+	protected ?View $current = null;
+
+	/**
+	 * The cached array of engines for file paths.
+	 *
+	 * @var array<string, string>
+	 */
+	protected array $path_engine_cache = [];
 
 	/**
 	 * The extension to engine bindings.
 	 *
 	 * @var string[]
 	 */
-	protected $extensions = [
+	protected array $extensions = [
 		'blade.php' => 'blade',
 		'php'       => 'php',
 		'css'       => 'file',
@@ -110,12 +113,10 @@ class Factory implements ViewFactory {
 	 * @param array<string, mixed>|string $key Key to share.
 	 * @param mixed|null                  $value Value to share.
 	 */
-	public function share( $key, $value = null ): void {
+	public function share( array|string $key, mixed $value = null ): void {
 		$keys = is_array( $key ) ? $key : [ $key => $value ];
 
-		foreach ( $keys as $key => $value ) {
-			$this->shared[ $key ] = $value;
-		}
+		$this->shared = array_merge( $this->shared, $keys );
 	}
 
 	/**
@@ -124,7 +125,7 @@ class Factory implements ViewFactory {
 	 * @param string $key Key to get item by.
 	 * @param mixed  $default Default value.
 	 */
-	public function shared( $key, $default = null ): mixed {
+	public function shared( string $key, mixed $default = null ): mixed {
 		return Arr::get( $this->shared, $key, $default );
 	}
 
@@ -156,7 +157,7 @@ class Factory implements ViewFactory {
 	public function pop(): static {
 		array_pop( $this->stack );
 
-		$this->current = end( $this->stack );
+		$this->current = end( $this->stack ) ?: null;
 
 		if ( ! $this->current ) {
 			$this->current = null;
@@ -183,22 +184,25 @@ class Factory implements ViewFactory {
 	/**
 	 * Get the rendered contents of a view.
 	 *
-	 * @param string              $slug View slug.
-	 * @param array<mixed>|string $name View name, optional. Supports passing variables in if
+	 * @param string                           $slug View slug.
+	 * @param array<string, mixed>|string|null $name View name, optional. Supports passing variables in if
 	 *                           $variables is not used.
-	 * @param array<mixed>        $variables Variables for the view, optional.
+	 * @param array<string, mixed>             $variables Variables for the view, optional.
 	 */
-	public function make( string $slug, $name = null, array $variables = [] ): View {
+	public function make( string $slug, array|string|null $name = null, array $variables = [] ): View {
 		if ( is_array( $name ) ) {
 			$variables = array_merge( $name, $variables );
 			$name      = null;
 		}
 
-		$variables = array_merge( $this->get_shared(), $variables );
-		$path      = $this->resolve_view_path( $slug, $name );
-		$engine    = $this->get_engine_from_path( $path );
+		$path = $this->resolve_view_path( $slug, $name );
 
-		return new View( $this, $engine, $path, $variables );
+		return new View(
+			factory: $this,
+			engine: $this->get_engine_from_path( $path ),
+			path: $path,
+			data: array_merge( $this->get_shared(), $variables ),
+		);
 	}
 
 	/**
@@ -210,7 +214,7 @@ class Factory implements ViewFactory {
 	 */
 	protected function resolve_view_path( string $slug, ?string $name = null ): ?string {
 		// Prepend the current view if the requested slug is a child template.
-		if ( Str::starts_with( $slug, '_' ) && $this->current ) {
+		if ( Str::starts_with( $slug, '_' ) && $this->current instanceof \Mantle\Http\View\View ) {
 			return $this->resolve_child_view_path_from_parent( $slug );
 		}
 
@@ -298,15 +302,20 @@ class Factory implements ViewFactory {
 	 * Resolve the engine for a given path.
 	 *
 	 * @param string $path Path to resolve.
-	 * @return Engine|\Illuminate\View\Engines\CompilerEngine
 	 *
 	 * @throws InvalidArgumentException Thrown on unknown extension from file.
 	 */
-	public function get_engine_from_path( string $path ) {
+	public function get_engine_from_path( string $path ): \Mantle\Contracts\View\Engine {
+		if ( isset( $this->path_engine_cache[ $path ] ) ) {
+			return $this->engines->resolve( $this->path_engine_cache[ $path ] );
+		}
+
 		$extension = $this->get_extension( $path );
 		if ( ! $extension ) {
 			throw new InvalidArgumentException( "Unknown extension in file: {$path}" );
 		}
+
+		$this->path_engine_cache[ $path ] = $this->extensions[ $extension ];
 
 		return $this->engines->resolve( $this->extensions[ $extension ] );
 	}

@@ -1,13 +1,15 @@
 <?php
 namespace Mantle\Tests\Testing;
 
+use Mantle\Faker\Faker_Provider;
 use Mantle\Testing\Block_Factory;
-use PHPUnit\Framework\TestCase;
+use Mantle\Testing\FrameworkTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Spatie\Snapshots\MatchesSnapshots;
 
 use function Mantle\Testing\block_factory;
 
-class BlockFactoryTest extends TestCase {
+class BlockFactoryTest extends FrameworkTestCase {
 	use MatchesSnapshots;
 
 	public static function tearDownAfterClass(): void {
@@ -336,5 +338,37 @@ HTML;
 			'<!-- wp:namespace/multititle {"seo":"Title Here"} /-->',
 			block_factory()->title_with_arguments( 'Title Here' ),
 		);
+	}
+
+	#[DataProvider('block_serialization_dataprovider')]
+	public function test_block_serialization_unicode_characters( array $attributes, string $expected ): void {
+		$block = get_comment_delimited_block_content( 'namespace/blockname', $attributes, null );
+
+		$this->assertEquals( $expected, $block );
+
+		$post = static::factory()->post->slash()->create_and_get( [
+			'post_content' => $block,
+		] );
+
+		$this->assertEquals( $expected, $post->post_content );
+	}
+
+	public static function block_serialization_dataprovider(): array {
+		return [
+			'unicode' => [
+				[ 'key' => '€1.00 / 3 for €2.00' ],
+				'<!-- wp:namespace/blockname {"key":"€1.00 / 3 for €2.00"} /-->',
+			],
+			'double dash' => [
+				[
+					'data' => [
+						'content' => [
+							'className' => 'story story--lg story--float',
+						],
+					],
+				],
+				'<!-- wp:namespace/blockname {"data":{"content":{"className":"story story\u002d\u002dlg story\u002d\u002dfloat"}}} /-->',
+			]
+		];
 	}
 }
