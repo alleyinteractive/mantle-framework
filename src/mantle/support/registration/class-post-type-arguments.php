@@ -1,6 +1,6 @@
 <?php
 /**
- * PostTypeArguments class file
+ * Post_Type_Arguments class file
  *
  * @package Mantle
  */
