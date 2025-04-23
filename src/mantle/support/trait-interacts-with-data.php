@@ -107,7 +107,26 @@ trait Interacts_With_Data {
 			return $this->value;
 		}
 
-		return ! empty( $this->value );
+		if ( function_exists( 'wp_validate_boolean' ) ) {
+			return wp_validate_boolean( $this->value );
+		}
+
+		if ( is_string( $this->value ) && 'false' === strtolower( $this->value ) ) {
+			return false;
+		}
+
+		return (bool) $this->value;
+	}
+
+	/**
+	 * Check if the value is truthy.
+	 *
+	 * "truthy" means that the value will evaluate to be "true" when used in an if
+	 * statement. For example, 0 or '0' will evaluate to false, while '1', 'true',
+	 * or 'a random string' will evaluate to true.
+	 */
+	public function truthy(): bool {
+		return (bool) $this->value;
 	}
 
 	/**
