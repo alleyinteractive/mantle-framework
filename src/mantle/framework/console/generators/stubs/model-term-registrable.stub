@@ -10,6 +10,7 @@ namespace {{ namespace }};
 use Mantle\Contracts\Database\Registrable;
 use Mantle\Database\Model\Term;
 use Mantle\Database\Model\Registration\Register_Taxonomy;
+use Mantle\Support\Registration\Taxonomy_Arguments;
 
 /**
  * {{ class }} Model.
@@ -30,34 +31,14 @@ class {{ class }} extends Term implements Registrable {
 	 * @return array<mixed>
 	 */
 	public static function get_registration_args(): array {
-		return [
-			'hierarchical'          => true,
-			'public'                => true,
-			'rest_base'             => '{{ object_name }}',
-			'show_in_rest'          => true,
-			'labels'                => [
-				'name'                  => __( '{{ label_plural }}', '{{ domain }}' ),
-				'singular_name'         => __( '{{ label_singular }}', '{{ domain }}' ),
-				'search_items'          => __( 'Search {{ label_plural }}', '{{ domain }}' ),
-				'popular_items'         => __( 'Popular {{ label_plural }}', '{{ domain }}' ),
-				'all_items'             => __( 'All {{ label_plural }}', '{{ domain }}' ),
-				'parent_item'           => __( 'Parent {{ label_singular }}', '{{ domain }}' ),
-				'parent_item_colon'     => __( 'Parent {{ label_singular }}:', '{{ domain }}' ),
-				'edit_item'             => __( 'Edit {{ label_singular }}', '{{ domain }}' ),
-				'view_item'             => __( 'View {{ label_singular }}', '{{ domain }}' ),
-				'update_item'           => __( 'Update {{ label_singular }}', '{{ domain }}' ),
-				'add_new_item'          => __( 'Add New {{ label_singular }}', '{{ domain }}' ),
-				'new_item_name'         => __( 'New {{ label_singular }} Name', '{{ domain }}' ),
-				'add_or_remove_items'   => __( 'Add or remove {{ label_plural }}', '{{ domain }}' ),
-				'choose_from_most_used' => __( 'Choose from the most used {{ label_plural }}', '{{ domain }}' ),
-				'not_found'             => __( 'No {{ label_plural }} found', '{{ domain }}' ),
-				'no_terms'              => __( 'No {{ label_plural }}', '{{ domain }}' ),
-				'items_list_navigation' => __( '{{ label_plural }} list navigation', '{{ domain }}' ),
-				'items_list'            => __( '{{ label_plural }} list', '{{ domain }}' ),
-				'back_to_items'         => __( '&larr; Back to {{ label_plural }}', '{{ domain }}' ),
-				'menu_name'             => __( '{{ label_plural }}', '{{ domain }}' ),
-				'name_admin_bar'        => __( '{{ label_plural }}', '{{ domain }}' ),
-			],
-		];
+		return Taxonomy_Arguments::make()
+			->hierarchical()
+			->public()
+			->show_in_rest()
+			->label(
+				singular: __( '{{ label_singular }}', '{{ domain }}' ),
+				plural: __( '{{ label_plural }}', '{{ domain }}' ),
+			)
+			->all();
 	}
 }
