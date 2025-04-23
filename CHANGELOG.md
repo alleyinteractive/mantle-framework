@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - When using the `Hookable` trait, a incorrect usage notice will be fired (or a
   runtime exception if on a local environment) if a method is attempting to be
   used as a hook callback that is not public.
+- `Interacts_With_Data::bool()` was changed to use `wp_validate_boolean()` to
+  determine the boolean value of a value.
 
 ## v1.6.0
 
