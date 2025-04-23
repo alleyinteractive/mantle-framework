@@ -37,6 +37,19 @@ class FactoryTest extends FrameworkTestCase {
 		$this->assertEquals( 'Title from the custom factory', $post->post_title );
 	}
 
+	public function test_create_model_with_custom_factory_string() {
+		$factory = Testable_Post_With_Factory_String::factory();
+
+		$this->assertInstanceOf( Testable_Post_Factory::class, $factory );
+
+		$post = $factory->create_and_get();
+
+		$this->assertInstanceOf( Testable_Post_With_Factory_String::class, $post );
+
+		// Ensure that the post's definition was used.
+		$this->assertEquals( 'Title from the custom factory', $post->post_title );
+	}
+
 	public function test_create_model_with_scope() {
 		$post = Testable_Post_With_Factory::factory()->custom_state()->create_and_get();
 
@@ -182,8 +195,19 @@ class Testable_Post extends Model\Post {
 class Testable_Post_With_Factory extends Model\Post {
 	public static $object_name = 'post';
 
-	protected static function new_factory(): ?Factory\Factory {
+	protected static function new_factory(): Factory\Factory|string|null {
 		return app()->make( Testable_Post_Factory::class );
+	}
+}
+
+/**
+ * @method static Testable_Post_Factory<static, \WP_Post, static> factory()
+ */
+class Testable_Post_With_Factory_String extends Model\Post {
+	public static $object_name = 'post';
+
+	protected static function new_factory(): Factory\Factory|string|null {
+		return Testable_Post_Factory::class;
 	}
 }
 

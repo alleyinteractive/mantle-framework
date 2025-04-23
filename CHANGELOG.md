@@ -28,6 +28,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   used as a hook callback that is not public.
 - `Interacts_With_Data::bool()` was changed to use `wp_validate_boolean()` to
   determine the boolean value of a value.
+- Models' `new_factory()` method return type has changed to
+  `Mantle\Database\Factory\Factory|string|null` with the ability to return a
+  class string of a factory to use.
 
 ## v1.6.0
 
