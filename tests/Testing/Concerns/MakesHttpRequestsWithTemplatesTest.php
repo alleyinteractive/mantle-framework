@@ -4,6 +4,7 @@ namespace Mantle\Tests\Testing\Concerns;
 use Closure;
 use Mantle\Testing\Concerns\Reset_Server;
 use Mantle\Testing\FrameworkTestCase;
+use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Attributes\Group;
 
 /**
@@ -17,13 +18,17 @@ use PHPUnit\Framework\Attributes\Group;
 class MakesHttpRequestsWithTemplatesTest extends FrameworkTestCase {
 	use Reset_Server;
 
+	/**
+	 * Ensure that all HTTP requests have a header and footer. Ensures that
+	 * get_header() and get_footer() work properly.
+	 */
 	public function test_ensure_all_requests_have_header_and_footer(): void {
 		$this->iterate_test( function (): void {
 			$this->get( '/' )
 				->assertOk()
-				->assertQuerySelectorExists( 'html' )
-				->assertQuerySelectorExists( 'head' )
-				->assertQuerySelectorExists( 'body' );
+				->assertQuerySelectorExists( 'html', 1 )
+				->assertQuerySelectorExists( 'head', 1 )
+				->assertQuerySelectorExists( 'body', 1 );
 		} );
 	}
 
@@ -40,21 +45,23 @@ class MakesHttpRequestsWithTemplatesTest extends FrameworkTestCase {
 		$this->iterate_test( function (): void {
 			$this->get( '/' )
 				->assertOk()
-				->assertQuerySelectorExists( 'html' )
-				->assertQuerySelectorExists( 'body' )
+				->assertQuerySelectorExists( 'html', 1 )
+				->assertQuerySelectorExists( 'body', 1 )
 				->assertElementExistsById( 'test-script-js' )
 				->assertSee( 'console.log("inline-script-test");' );
 		} );
 	}
 
+	/**
+	 * Iterate a test a number of times, catching any assertion failures and
+	 * rethrowing them with the iteration number.
+	 */
 	protected function iterate_test( Closure $callback, int $times = 3 ): void {
 		for ( $i = 0; $i < $times; $i += 1 ) {
 			try {
 				$callback( $i );
-			} catch ( \Exception $e ) {
-				// Wrap the exception with a more descriptive message about the
-				// iteration of the test.
-				throw new \PHPUnit\Framework\AssertionFailedError(
+			} catch ( AssertionFailedError $e ) {
+				throw new AssertionFailedError(
 					'Failed on iteration ' . $i . ': ' . $e->getMessage(),
 					0,
 					$e
