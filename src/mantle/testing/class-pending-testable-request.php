@@ -21,7 +21,6 @@ use Mantle\Testing\Exceptions\WP_Redirect_Exception;
 use Mantle\Testing\TestCase;
 use Mantle\Testing\Test_Response;
 use Mantle\Testing\Utils;
-use PHPUnit\Framework\Assert;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\InputBag;
@@ -441,6 +440,15 @@ class Pending_Testable_Request {
 			if ( isset( $_SERVER[ $header ] ) ) {
 				unset( $_SERVER[ $header ] );
 			}
+		}
+
+		// Clear the "done" global scripts and styles so that scripts/styles are re-output.
+		$GLOBALS['wp_scripts']->done = [];
+		$GLOBALS['wp_styles']->done  = [];
+
+		// Reset the print hooks back to zero (never run).
+		foreach ( [ 'wp_print_scripts', 'wp_print_styles' ] as $hook ) {
+			$GLOBALS['wp_actions'][ $hook ] = 0;
 		}
 
 		// phpcs:enable

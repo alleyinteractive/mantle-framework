@@ -44,7 +44,7 @@ class MakesHttpRequestsWithTemplatesTest extends FrameworkTestCase {
 			wp_add_inline_script( 'test-script', 'console.log("inline-script-test");' );
 		} );
 
-		iterate_test( function (): void {
+		iterate_test( function ( int $i ): void {
 			$this->get( '/' )
 				->assertOk()
 				->assertQuerySelectorExists( 'html', 1 )

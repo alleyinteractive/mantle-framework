@@ -115,7 +115,7 @@ function block_factory(): Block_Factory {
 function iterate_test( \Closure $callback, int $times = 3 ): void {
 	for ( $i = 0; $i < $times; $i++ ) {
 		try {
-			$callback( $i );
+			$callback( $i + 1 );
 		} catch ( AssertionFailedError $e ) {
 			throw new AssertionFailedError(
 				'Failed on iteration ' . $i . ': ' . $e->getMessage(),
