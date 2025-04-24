@@ -16,9 +16,9 @@ use InvalidArgumentException;
  *
  * Core's get_header() and get_footer() functions are not designed to be called
  * multiple times in the same request (they pass $load_once as true). This
- * doesn't allow for a proper test of page's response. This trait listens for
- * the relevant hook for header/footer/sidebar and loads the template if it hasn't
- * been loaded yet.
+ * doesn't allow for the full response to be returned for a page in tests after
+ * the first request. This trait listens for the relevant hook for
+ * header/footer/sidebar and loads the template if it hasn't been loaded yet.
  *
  * @mixin Makes_Http_Requests
  */
@@ -28,7 +28,7 @@ trait Makes_Http_Requests_With_Templates {
 	 *
 	 * @var array<string, bool>
 	 */
-	public static array $templates_loaded = [
+	protected static array $templates_loaded = [
 		'header'  => false,
 		'footer'  => false,
 		'sidebar' => false,
@@ -38,9 +38,9 @@ trait Makes_Http_Requests_With_Templates {
 	 * Setup the trait and add the hooks to load templates.
 	 */
 	public function makes_http_requests_with_templates_set_up(): void {
-		add_action( 'get_header', $this->generate_template_callback( 'header' ), 10, 2 );
-		add_action( 'get_footer', $this->generate_template_callback( 'footer' ), 10, 2 );
-		add_action( 'get_sidebar', $this->generate_template_callback( 'sidebar' ), 10, 2 );
+		foreach ( array_keys( static::$templates_loaded ) as $hook ) {
+			add_action( "get_{$hook}", $this->generate_template_callback( $hook ), 10, 2 );
+		}
 	}
 
 	/**
