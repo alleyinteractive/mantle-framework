@@ -12,6 +12,9 @@
 	failOnWarning="true"
 	failOnDeprecation="true"
 >
+	<php>
+		<env name="LOG_CHANNEL" value="stderr" />
+	</php>
 	<testsuites>
 		<testsuite name="mantle-framework">
 			<directory suffix="Test.php">./tests/</directory>
