@@ -2,10 +2,8 @@
 namespace Mantle\Tests\Testing\Concerns;
 
 use Closure;
-use Mantle\Testing\Concerns\Makes_Http_Requests_With_Templates;
 use Mantle\Testing\Concerns\Reset_Server;
 use Mantle\Testing\FrameworkTestCase;
-use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\Attributes\Group;
 
 /**
@@ -16,7 +14,6 @@ use PHPUnit\Framework\Attributes\Group;
  * @group testing
  */
 #[Group( 'testing' )]
-#[CoversTrait( Makes_Http_Requests_With_Templates::class )]
 class MakesHttpRequestsWithTemplatesTest extends FrameworkTestCase {
 	use Reset_Server;
 
