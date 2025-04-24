@@ -58,6 +58,7 @@ trait Makes_Http_Requests_With_Templates {
 				);
 			}
 
+			// If the template was not loaded yet, mark it as loaded and bail.
 			if ( ! static::$templates_loaded[ $hook ] ) {
 				static::$templates_loaded[ $hook ] = true;
 
