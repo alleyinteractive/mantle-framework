@@ -64,7 +64,7 @@ trait Makes_Http_Requests_With_Templates {
 				return;
 			}
 
-			// From here on we mirror what get_header()/get_footer()/get_sidebar() do.
+			// From here on we mirror what get_{header,footer,sidebar}() does.
 			$templates = [];
 			$name      = (string) $name;
 
