@@ -7,6 +7,8 @@ use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Attributes\Group;
 
+use function Mantle\Testing\iterate_test;
+
 /**
  * Tests for making HTTP requests in unit tests that relate to cleaning up
  * globals (such as enqueued scripts) and ensuring that requests have a
@@ -23,7 +25,7 @@ class MakesHttpRequestsWithTemplatesTest extends FrameworkTestCase {
 	 * get_header() and get_footer() work properly.
 	 */
 	public function test_ensure_all_requests_have_header_and_footer(): void {
-		$this->iterate_test( function (): void {
+		iterate_test( function (): void {
 			$this->get( '/' )
 				->assertOk()
 				->assertQuerySelectorExists( 'html', 1 )
@@ -42,7 +44,7 @@ class MakesHttpRequestsWithTemplatesTest extends FrameworkTestCase {
 			wp_add_inline_script( 'test-script', 'console.log("inline-script-test");' );
 		} );
 
-		$this->iterate_test( function (): void {
+		iterate_test( function (): void {
 			$this->get( '/' )
 				->assertOk()
 				->assertQuerySelectorExists( 'html', 1 )
@@ -50,23 +52,5 @@ class MakesHttpRequestsWithTemplatesTest extends FrameworkTestCase {
 				->assertElementExistsById( 'test-script-js' )
 				->assertSee( 'console.log("inline-script-test");' );
 		} );
-	}
-
-	/**
-	 * Iterate a test a number of times, catching any assertion failures and
-	 * rethrowing them with the iteration number.
-	 */
-	protected function iterate_test( Closure $callback, int $times = 3 ): void {
-		for ( $i = 0; $i < $times; $i += 1 ) {
-			try {
-				$callback( $i );
-			} catch ( AssertionFailedError $e ) {
-				throw new AssertionFailedError(
-					'Failed on iteration ' . $i . ': ' . $e->getMessage(),
-					0,
-					$e
-				);
-			}
-		}
 	}
 }
