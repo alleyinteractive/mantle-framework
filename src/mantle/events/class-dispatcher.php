@@ -19,7 +19,6 @@ use Mantle\Support\Str;
  * Event Dispatcher
  *
  * @todo Add queued event listeners.
- * @todo Add wildcard listeners.
  */
 class Dispatcher implements Dispatcher_Contract {
 	use WordPress_Action;
@@ -44,6 +43,13 @@ class Dispatcher implements Dispatcher_Contract {
 	protected $queue_resolver;
 
 	/**
+	 * Wildcard listeners.
+	 *
+	 * @var array<string, array<string|callable>>
+	 */
+	protected array $wildcard_listeners = [];
+
+	/**
 	 * Create a new event dispatcher instance.
 	 *
 	 * @param Container|null $container Container instance.
@@ -64,6 +70,12 @@ class Dispatcher implements Dispatcher_Contract {
 	 */
 	public function listen( $events, $listener, int $priority = 10 ): void {
 		foreach ( (array) $events as $event ) {
+			if ( str_contains( $event, '*' ) ) {
+				$this->setup_wildcard_listener( $event, $listener );
+
+				continue;
+			}
+
 			add_action(
 				$event,
 				$this->make_listener( $listener ),
@@ -243,6 +255,49 @@ class Dispatcher implements Dispatcher_Contract {
 			remove_all_filters( $event, $priority );
 		} else {
 			remove_filter( $event, $listener, $priority );
+		}
+	}
+
+	/**
+	 * Setup a wildcard event listener.
+	 *
+	 * Registers a listener for the 'all' action which is fired for all hooks
+	 * which we can then use to find the appropriate listeners.
+	 *
+	 * @param string   $event Event name to listen to with * wildcard.
+	 * @param callable $listener Listener to register.
+	 */
+	protected function setup_wildcard_listener( string $event, callable $listener ): void {
+		if ( ! has_action( 'all', [ $this, 'wildcard_listener_callback' ] ) ) {
+			add_action( 'all', [ $this, 'wildcard_listener_callback' ] );
+		}
+
+		$this->wildcard_listeners[ $event ][] = $listener;
+	}
+
+	/**
+	 * Callback for the wildcard listener.
+	 *
+	 * Hooked to the 'all' action to catch all events.
+	 *
+	 * @param string $hook Hook being fired.
+	 * @param mixed ...$args Arguments for the hook.
+	 */
+	public function wildcard_listener_callback( string $hook, mixed ...$args ): void {
+		if ( empty( $this->wildcard_listeners ) ) {
+			return;
+		}
+
+		foreach ( $this->wildcard_listeners as $pattern => $listeners ) {
+			if ( ! Str::is( $pattern, $hook ) ) {
+				continue;
+			}
+
+			foreach ( $listeners as $listener ) {
+				$callable = $this->create_action_callback( $listener );
+
+				$callable( $hook, ...$args );
+			}
 		}
 	}
 }

@@ -188,6 +188,28 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 		$this->assertInstanceOf( Example_Typehint_Event::class, $_SERVER['__test'] );
 		$this->assertEquals( 'test', $_SERVER['__test']->example );
 	}
+
+	public function test_wildcard_listener(): void {
+		$listener = [];
+
+		$d = new Dispatcher( $this->app );
+		$d->listen( 'example:*', function ( string $event_name, ...$args ) use ( &$listener ) {
+			$listener[] = [ $event_name, ...$args ];
+		} );
+
+		do_action( 'test_wildcard_listener' );
+		do_action( 'test_wildcard_listener', 'foo' );
+		do_action( 'example:test_wildcard_listener' );
+		do_action( 'example:test_wildcard_listener', 'bar', 'baz' );
+		do_action( 'example:another_test_wildcard_listener' );
+
+		$this->assertCount( 3, $listener );
+		$this->assertEquals( [
+			[ 'example:test_wildcard_listener' ],
+			[ 'example:test_wildcard_listener', 'bar', 'baz' ],
+			[ 'example:another_test_wildcard_listener' ],
+		], $listener );
+	}
 }
 
 class Example_Typehint_Event {
