@@ -437,7 +437,7 @@ class Pending_Testable_Request {
 			}
 		}
 
-		foreach ( [ 'CONTENT_TYPE', 'QUERY_STRING', 'REMOTE_ADDR' ] as $header ) {
+		foreach ( [ 'CONTENT_TYPE', 'QUERY_STRING', 'REMOTE_ADDR', 'REQUEST_SCHEME' ] as $header ) {
 			if ( isset( $_SERVER[ $header ] ) ) {
 				unset( $_SERVER[ $header ] );
 			}
@@ -483,11 +483,18 @@ class Pending_Testable_Request {
 
 		// Set HTTPS if it is being forced or if the URL being requested is HTTPS.
 		if ( $this->forced_https || ( isset( $parts['scheme'] ) && 'https' === $parts['scheme'] ) ) {
-			$_SERVER['HTTPS'] = 'on';
+			$_SERVER['HTTPS']          = 'on';
+			$_SERVER['REQUEST_SCHEME'] = 'https';
+		} else {
+			$_SERVER['REQUEST_SCHEME'] = 'http';
 		}
 
 		$_SERVER['QUERY_STRING'] = $parts['query'] ?? '';
 		$_SERVER['REQUEST_URI']  = $req;
+
+		if ( ! isset( $_SERVER['REMOTE_ADDR'] ) ) { // phpcs:ignore WordPressVIPMinimum.Variables.ServerVariables.UserControlledHeaders
+			$_SERVER['REMOTE_ADDR'] = '127.0.0.1'; // phpcs:ignore WordPressVIPMinimum.Variables.ServerVariables.UserControlledHeaders, WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___SERVER__REMOTE_ADDR__
+		}
 
 		$_POST = $data;
 
