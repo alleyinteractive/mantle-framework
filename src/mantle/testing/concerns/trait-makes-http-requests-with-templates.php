@@ -50,7 +50,6 @@ trait Makes_Http_Requests_With_Templates {
 	 */
 	protected function generate_template_callback( string $hook ): Closure {
 		return function ( mixed $name, mixed $args ) use ( $hook ): void {
-			// If the template was not loaded yet, mark it as loaded and bail.
 			if ( ! isset( static::$templates_loaded[ $hook ] ) ) {
 				throw new InvalidArgumentException(
 					"Invalid template name: {$name}. Expected one of: " .
