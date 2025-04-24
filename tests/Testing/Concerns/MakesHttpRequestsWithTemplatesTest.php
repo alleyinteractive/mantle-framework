@@ -1,21 +1,34 @@
 <?php
 namespace Mantle\Tests\Testing\Concerns;
 
-use Mantle\Testing\Concerns\Refresh_Database;
+use Closure;
+use Mantle\Testing\Concerns\Makes_Http_Requests_With_Templates;
 use Mantle\Testing\Concerns\Reset_Server;
 use Mantle\Testing\FrameworkTestCase;
+use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Tests for making HTTP requests in unit tests that relate to cleaning up
- * globals (such as enqueued scripts).
+ * globals (such as enqueued scripts) and ensuring that requests have a
+ * header/footer.
  *
  * @group testing
  */
 #[Group( 'testing' )]
-class MakesHttpRequestsGlobalsTest extends FrameworkTestCase {
-	use Refresh_Database;
+#[CoversTrait( Makes_Http_Requests_With_Templates::class )]
+class MakesHttpRequestsWithTemplatesTest extends FrameworkTestCase {
 	use Reset_Server;
+
+	public function test_ensure_all_requests_have_header_and_footer(): void {
+		$this->iterate_test( function (): void {
+			$this->get( '/' )
+				->assertOk()
+				->assertQuerySelectorExists( 'html' )
+				->assertQuerySelectorExists( 'head' )
+				->assertQuerySelectorExists( 'body' );
+		} );
+	}
 
 	/**
 	 * Test that scripts that are registered at 'wp_enqueue_scripts' are
@@ -27,15 +40,20 @@ class MakesHttpRequestsGlobalsTest extends FrameworkTestCase {
 			wp_add_inline_script( 'test-script', 'console.log("inline-script-test");' );
 		} );
 
-		// Run the test 3 times and make sure the test always passes
-		for ( $i = 0; $i < 3; $i += 1 ) {
+		$this->iterate_test( function (): void {
+			$this->get( '/' )
+				->assertOk()
+				->assertQuerySelectorExists( 'html' )
+				->assertQuerySelectorExists( 'body' )
+				->assertElementExistsById( 'test-script-js' )
+				->assertSee( 'console.log("inline-script-test");' );
+		} );
+	}
+
+	protected function iterate_test( Closure $callback, int $times = 3 ): void {
+		for ( $i = 0; $i < $times; $i += 1 ) {
 			try {
-				$this->get( '/' )
-					->assertOk()
-					->assertQuerySelectorExists( 'html' )
-					->assertQuerySelectorExists( 'body' )
-					->assertElementExistsById( 'test-script-js' )
-					->assertSee( 'console.log("inline-script-test");' );
+				$callback( $i );
 			} catch ( \Exception $e ) {
 				// Wrap the exception with a more descriptive message about the
 				// iteration of the test.

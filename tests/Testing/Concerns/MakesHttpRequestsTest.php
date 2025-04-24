@@ -7,11 +7,13 @@ use Mantle\Http\Response;
 use Mantle\Framework\Providers\Routing_Service_Provider;
 use Mantle\Http\Request;
 use Mantle\Support\Str;
+use Mantle\Testing\Concerns\Makes_Http_Requests;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Concerns\Reset_Server;
 use Mantle\Testing\FrameworkTestCase;
 use Mantle\Testing\Test_Response;
 use PHPUnit\Framework\AssertionFailedError;
+use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\Attributes\Group;
 use WP_REST_Response;
 
@@ -22,6 +24,7 @@ use function Mantle\Support\Helpers\retry;
  * @group testing
  */
 #[Group( 'testing' )]
+#[CoversTrait( Makes_Http_Requests::class )]
 class MakesHttpRequestsTest extends FrameworkTestCase {
 	use Refresh_Database;
 	use Reset_Server;

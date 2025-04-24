@@ -307,7 +307,7 @@ class Pending_Testable_Request {
 			// Mirror the logic from Request::createFromGlobals().
 			if (
 				str_starts_with( (string) $request->headers->get( 'CONTENT_TYPE', '' ), 'application/x-www-form-urlencoded' )
-			&& \in_array( strtoupper( (string) $request->server->get( 'REQUEST_METHOD', 'GET' ) ), [ 'PUT', 'DELETE', 'PATCH' ], true )
+				&& \in_array( strtoupper( (string) $request->server->get( 'REQUEST_METHOD', 'GET' ) ), [ 'PUT', 'DELETE', 'PATCH' ], true )
 			) {
 				parse_str( $request->getContent(), $data );
 
@@ -437,14 +437,11 @@ class Pending_Testable_Request {
 			}
 		}
 
-		foreach ( [ 'CONTENT_TYPE', 'QUERY_STRING', 'REMOTE_ADDR' ] as $header ) {
+		foreach ( [ 'CONTENT_TYPE', 'QUERY_STRING', 'REMOTE_ADDR', 'HTTPS' ] as $header ) {
 			if ( isset( $_SERVER[ $header ] ) ) {
 				unset( $_SERVER[ $header ] );
 			}
 		}
-
-		// Clear the HTTPS flag which will be set as-needed by the call method.
-		unset( $_SERVER['HTTPS'] );
 
 		// phpcs:enable
 	}
