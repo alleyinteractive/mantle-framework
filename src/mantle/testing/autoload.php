@@ -107,11 +107,13 @@ function block_factory(): Block_Factory {
  * Iterate a test a number of times, catching any assertion failures and
  * re-throwing them with the iteration number in the message.
  *
+ * @throws AssertionFailedError Thrown when an assertion fails.
+ *
  * @param \Closure $callback The callback to execute for each iteration.
- * @param int $times The number of times to iterate (default: 3).
+ * @param int      $times The number of times to iterate (default: 3).
  */
 function iterate_test( \Closure $callback, int $times = 3 ): void {
-	for ( $i = 0; $i < $times; $i += 1 ) {
+	for ( $i = 0; $i < $times; $i++ ) {
 		try {
 			$callback( $i );
 		} catch ( AssertionFailedError $e ) {
