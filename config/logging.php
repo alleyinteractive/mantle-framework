@@ -5,6 +5,9 @@
  * @package Mantle
  */
 
+use Monolog\Handler\NullHandler;
+use Monolog\Handler\StreamHandler;
+
 return [
 
 	/*
@@ -29,17 +32,34 @@ return [
 	'channels' => [
 		'stack'     => [
 			'driver'   => 'stack',
-			'channels' => [ 'error_log' ],
+			'channels' => [ 'single' ],
+			'level'    => environment( 'LOG_LEVEL', 'debug' ),
 		],
 
 		'error_log' => [
 			'driver' => 'error_log',
-			'level'  => 'error',
+			'level'  => environment( 'LOG_LEVEL', 'debug' ),
+		],
+
+		'single'    => [
+			'driver'       => 'custom',
+			'level'        => environment( 'LOG_LEVEL', 'debug' ),
+			'handler'      => StreamHandler::class,
+			'handler_with' => [
+				'stream' => storage_path( 'logs/mantle.log' ),
+			],
+		],
+
+		'daily'     => [
+			'driver' => 'daily',
+			'level'  => environment( 'LOG_LEVEL', 'debug' ),
+			'days'   => environment( 'LOG_DAILY_DAYS', 14 ),
+			'path'   => storage_path( 'logs/mantle.log' ),
 		],
 
 		'new_relic' => [
 			'driver' => 'new_relic',
-			'level'  => 'error',
+			'level'  => environment( 'LOG_LEVEL', 'debug' ),
 		],
 
 		/**
@@ -59,10 +79,24 @@ return [
 		 */
 		'slack'     => [
 			'driver'   => 'slack',
+			'level'    => environment( 'LOG_LEVEL', 'debug' ),
 			'url'      => environment( 'SLACK_URL', '' ),
 			'username' => environment( 'SLACK_USERNAME', 'Mantle Log' ),
 			'emoji'    => ':boom:',
-			'level'    => 'critical',
+		],
+
+		'null'      => [
+			'driver'  => 'monolog',
+			'handler' => NullHandler::class,
+		],
+
+		'stderr'    => [
+			'driver'       => 'monolog',
+			'level'        => environment( 'LOG_LEVEL', 'debug' ),
+			'handler'      => StreamHandler::class,
+			'handler_with' => [
+				'stream' => 'php://stderr',
+			],
 		],
 
 		/*
@@ -77,6 +111,7 @@ return [
 		'custom'    => [
 			'driver'  => 'custom',
 			'handler' => 'Example\Class\Name',
+			'level'   => environment( 'LOG_LEVEL', 'debug' ),
 		],
 	],
 ];

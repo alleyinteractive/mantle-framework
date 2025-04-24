@@ -24,6 +24,7 @@ class Exception_Handler implements Exceptions_Handler {
 	 * @param Throwable $e Exception thrown.
 	 */
 	public function report( Throwable $e ): void {
+
 		dump( static::class . '::' . __FUNCTION__ . '()', $e );
 	}
 

@@ -16,7 +16,9 @@ use Monolog\Handler\ErrorLogHandler;
 use Monolog\Handler\GroupHandler;
 use Monolog\Handler\HandlerInterface;
 use Monolog\Handler\NewRelicHandler;
+use Monolog\Handler\RotatingFileHandler;
 use Monolog\Handler\SlackWebhookHandler;
+use Monolog\Handler\StreamHandler;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Throwable;
@@ -70,13 +72,18 @@ class Log_Manager implements LoggerInterface {
 			return null;
 		}
 
-		$config = $this->app['config']->get( 'logging.channels.' . $channel );
+		$config = $this->app['config']->get( "logging.channels.{$channel}" );
 
 		if ( empty( $config['driver'] ) ) {
 			throw new InvalidArgumentException( "Channel '{$channel}' missing configuration." );
 		}
 
 		$method = "create_{$config['driver']}_handler";
+
+		// Legacy name for the monolog driver.
+		if ( 'custom' === $config['driver'] ) {
+			$method = 'create_monolog_handler';
+		}
 
 		if ( ! method_exists( $this, $method ) ) {
 			throw new InvalidArgumentException( "Driver '{$config['driver']}' is not supported." );
@@ -85,12 +92,10 @@ class Log_Manager implements LoggerInterface {
 		try {
 			$handler = $this->$method( $config );
 		} catch ( Throwable $e ) {
-			// Throw the exception if there was an error getting the handler in debug mode.
 			if ( config( 'app.debug' ) ) {
 				throw $e;
 			}
 
-			// Fail silently.
 			return null;
 		}
 
@@ -108,8 +113,7 @@ class Log_Manager implements LoggerInterface {
 			throw new InvalidArgumentException( 'Stack channel called without any child channels.' );
 		}
 
-		$handlers = array_map( [ $this, 'get_channel_handler' ], $config['channels'] );
-		return new GroupHandler( $handlers );
+		return new GroupHandler( array_map( [ $this, 'get_channel_handler' ], $config['channels'] ) );
 	}
 
 	/**
@@ -159,16 +163,20 @@ class Log_Manager implements LoggerInterface {
 	 *
 	 * @param array<mixed> $config Handler configuration.
 	 */
-	protected function create_custom_handler( array $config ): AbstractHandler {
+	protected function create_monolog_handler( array $config ): HandlerInterface {
 		if ( empty( $config['handler'] ) ) {
 			throw new InvalidArgumentException( 'Custom handler missing "handler" attribute.' );
 		}
 
-		if ( $config['handler'] instanceof AbstractHandler ) {
+		if ( $config['handler'] instanceof HandlerInterface ) {
 			return $config['handler'];
 		}
 
-		return new $config['handler']( $this->level( $config ) );
+		$arguments = array_merge( $config['handler_with'] ?? [], [
+			'level' => $this->level( $config ),
+		] );
+
+		return new $config['handler']( ...$arguments );
 	}
 
 	/**
@@ -177,7 +185,23 @@ class Log_Manager implements LoggerInterface {
 	 * @param array<mixed> $config Handler configuration.
 	 */
 	protected function create_error_log_handler( array $config ): ErrorLogHandler {
-		return new ErrorLogHandler( ErrorLogHandler::OPERATING_SYSTEM, $this->level( $config ) );
+		return new ErrorLogHandler( ErrorLogHandler::OPERATING_SYSTEM, $this->level( $config ), expandNewlines: true );
+	}
+
+	/**
+	 * Create a daily rotating file handler.
+	 *
+	 * @param array<mixed> $config Handler configuration.
+	 */
+	protected function create_daily_handler( array $config ): HandlerInterface {
+		return new RotatingFileHandler(
+			$config['path'],
+			$config['days'] ?? 14,
+			$this->level( $config ),
+			$config['bubble'] ?? true,
+			$config['file_permission'] ?? null,
+			$config['use_locking'] ?? false,
+		);
 	}
 
 	/**
