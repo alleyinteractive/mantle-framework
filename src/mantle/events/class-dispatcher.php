@@ -273,10 +273,45 @@ class Dispatcher implements Dispatcher_Contract {
 			$event = $event::class;
 		}
 
+		if ( str_contains( $event, '*' ) ) {
+			$this->forget_wildcard( $event, $listener );
+
+			return;
+		}
+
 		if ( null === $listener ) {
 			remove_all_filters( $event, $priority );
 		} else {
 			remove_filter( $event, $listener, $priority );
+		}
+	}
+
+	/**
+	 * Remove a wildcard listener from the dispatcher.
+	 *
+	 * @param string $event Event to remove.
+	 * @param string|callable|null $listener Listener to remove.
+	 */
+	public function forget_wildcard( string $event, string|callable|null $listener = null ): void {
+		if ( empty( $this->wildcard_listeners[ $event ] ) ) {
+			return;
+		}
+
+		$this->wildcard_cache = [];
+
+		if ( null === $listener ) {
+			unset( $this->wildcard_listeners[ $event ] );
+
+			return;
+		}
+
+		$this->wildcard_listeners[ $event ] = array_filter(
+			$this->wildcard_listeners[ $event ],
+			fn ( $value ) => $value !== $listener,
+		);
+
+		if ( empty( $this->wildcard_listeners[ $event ] ) ) {
+			unset( $this->wildcard_listeners[ $event ] );
 		}
 	}
 

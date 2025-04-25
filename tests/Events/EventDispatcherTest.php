@@ -155,6 +155,33 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		$this->assertEquals( [ 'foo', 'bar' ], $_SERVER['__event_run'] );
 	}
+
+	public function test_it_can_forget_events(): void {
+		$dispatcher = new Dispatcher();
+
+		$dispatcher->listen( 'event_name', function () {
+			return 'event_name';
+		} );
+
+		$dispatcher->forget( 'event_name' );
+
+		$this->assertFalse( $dispatcher->has_listeners( 'event_name' ) );
+	}
+
+	public function test_it_can_forget_wildcard_events(): void {
+		$dispatcher = new Dispatcher();
+
+		$dispatcher->listen( 'event:*', function () {
+			return 'event_name';
+		} );
+
+		$this->assertTrue( $dispatcher->has_listeners( 'event:name' ) );
+		$this->assertTrue( $dispatcher->has_listeners( 'event:another' ) );
+
+		$dispatcher->forget( 'event:*' );
+
+		$this->assertFalse( $dispatcher->has_listeners( 'event:name' ) );
+	}
 }
 
 class Example_Event {

@@ -132,17 +132,7 @@ class Lightweight_Event_Dispatcher extends Dispatcher {
 		}
 
 		if ( str_contains( $event, '*' ) ) {
-			if ( empty( $this->wildcard_listeners[ $event ] ) ) {
-				return;
-			}
-
-			$this->wildcard_listeners[ $event ] = $this->remove_from_listener_stack(
-				$this->wildcard_listeners[ $event ],
-				$priority,
-				$listener
-			);
-
-			$this->wildcard_cache = [];
+			$this->forget_wildcard( $event, $listener );
 
 			return;
 		}
@@ -151,28 +141,21 @@ class Lightweight_Event_Dispatcher extends Dispatcher {
 			return;
 		}
 
-		$this->listeners[ $event ] = $this->remove_from_listener_stack(
-			$this->listeners[ $event ],
-			$priority,
-			$listener,
-		);
-	}
-
-	/**
-	 * Remove a listener from a stack of events with priorities.
-	 *
-	 * @param array<int, array<callable>> $stack
-	 * @param int                         $priority Priority of the listener.
-	 * @param callable|string|null        $listener Listener to remove.
-	 * @return array<int, array<callable>>
-	 */
-	protected function remove_from_listener_stack( array $stack, int $priority, callable|string|null $listener = null ): array {
 		if ( is_null( $listener ) ) {
-			unset( $stack[ $priority ] );
+			unset( $this->listeners[ $event ][ $priority ] );
 		} else {
-			$stack[ $priority ] = array_filter( $stack[ $priority ], fn ( $value ) => $value !== $listener );
+			$this->listeners[ $event ][ $priority ] = array_filter(
+				$this->listeners[ $event ][ $priority ],
+				fn ( $value ) => $value !== $listener,
+			);
 		}
 
-		return empty( $stack ) ? [] : $stack;
+		if ( empty( $this->listeners[ $event ][ $priority ] ) ) {
+			unset( $this->listeners[ $event ][ $priority ] );
+		}
+
+		if ( empty( $this->listeners[ $event ] ) ) {
+			unset( $this->listeners[ $event ] );
+		}
 	}
 }

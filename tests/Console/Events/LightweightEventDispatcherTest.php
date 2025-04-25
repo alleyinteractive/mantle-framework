@@ -71,6 +71,21 @@ class LightweightEventDispatcherTest extends TestCase {
 		$this->assertFalse( $dispatcher->has_listeners( 'event_name' ) );
 	}
 
+	public function test_it_can_forget_wildcard_events(): void {
+		$dispatcher = new Lightweight_Event_Dispatcher();
+
+		$dispatcher->listen( 'event:*', function() {
+			return 'event_name';
+		} );
+
+		$this->assertTrue( $dispatcher->has_listeners( 'event:name' ) );
+		$this->assertTrue( $dispatcher->has_listeners( 'event:another' ) );
+
+		$dispatcher->forget( 'event:*' );
+
+		$this->assertFalse( $dispatcher->has_listeners( 'event:name' ) );
+	}
+
 	public function test_it_can_filter_a_value(): void {
 		$dispatcher = new Lightweight_Event_Dispatcher();
 
