@@ -132,6 +132,8 @@ class Dispatcher implements Dispatcher_Contract {
 	/**
 	 * Fire an event and call the listeners.
 	 *
+	 * @throws RuntimeException Thrown if the event is an object and payload is passed.
+	 *
 	 * @param  string|object $event Event name.
 	 * @param  mixed         ...$payload Event payload.
 	 */
