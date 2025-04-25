@@ -284,10 +284,6 @@ class Dispatcher implements Dispatcher_Contract {
 	 * @param mixed ...$args Arguments for the hook.
 	 */
 	public function wildcard_listener_callback( string $hook, mixed ...$args ): void {
-		if ( empty( $this->wildcard_listeners ) ) {
-			return;
-		}
-
 		foreach ( $this->wildcard_listeners as $pattern => $listeners ) {
 			if ( ! Str::is( $pattern, $hook ) ) {
 				continue;
