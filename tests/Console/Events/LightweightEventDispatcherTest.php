@@ -110,6 +110,15 @@ class LightweightEventDispatcherTest extends TestCase {
 
 		$this->assertEquals( [ 'example', 'test' ], $listener );
 	}
+
+	public function test_it_cannot_dispatch_object_event_with_payload(): void {
+		$dispatcher = new Lightweight_Event_Dispatcher();
+
+		$this->expectException( \RuntimeException::class );
+		$this->expectExceptionMessage( 'You cannot pass payload to an object event.' );
+
+		$dispatcher->dispatch( new Example_Lightweight_Event(), 'foo' );
+	}
 }
 
 class Example_Lightweight_Event {

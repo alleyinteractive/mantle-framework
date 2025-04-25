@@ -182,6 +182,15 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		$this->assertFalse( $dispatcher->has_listeners( 'event:name' ) );
 	}
+
+	public function test_it_cannot_dispatch_object_event_with_payload(): void {
+		$dispatcher = new Dispatcher();
+
+		$this->expectException( \RuntimeException::class );
+		$this->expectExceptionMessage( 'You cannot pass payload to an object event.' );
+
+		$dispatcher->dispatch( new Example_Event(), 'foo' );
+	}
 }
 
 class Example_Event {

@@ -14,6 +14,7 @@ use Mantle\Contracts\Container;
 use Mantle\Contracts\Events\Dispatcher as Dispatcher_Contract;
 use Mantle\Support\Arr;
 use Mantle\Support\Str;
+use RuntimeException;
 
 /**
  * Event Dispatcher
@@ -135,6 +136,10 @@ class Dispatcher implements Dispatcher_Contract {
 	 * @param  mixed         ...$payload Event payload.
 	 */
 	public function dispatch( string|object $event, mixed ...$payload ): mixed {
+		if ( is_object( $event ) && ! empty( $payload ) ) {
+			throw new RuntimeException( 'You cannot pass payload to an object event.' );
+		}
+
 		[ $event, $payload ] = $this->parse_event_and_payload( $event, $payload );
 
 		if ( ! function_exists( 'apply_filters' ) ) {
