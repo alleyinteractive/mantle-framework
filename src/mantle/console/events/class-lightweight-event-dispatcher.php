@@ -51,11 +51,7 @@ class Lightweight_Event_Dispatcher extends Dispatcher {
 	 * @param  string $event_name
 	 */
 	public function has_listeners( string $event_name ): bool {
-		if ( ! empty( $this->listeners[ $event_name ] ) ) {
-			return true;
-		}
-
-		return $this->has_wildcard_listeners( $event_name );
+		return ! empty( $this->listeners[ $event_name ] ) || $this->has_wildcard_listeners( $event_name );
 	}
 
 	/**
