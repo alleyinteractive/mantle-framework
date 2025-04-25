@@ -303,7 +303,7 @@ class Handler implements Contract {
 			 * @param array{0: string, 1: string} $view Default view.
 			 * @param Throwable $e Exception thrown.
 			 */
-			$view = $this->container['events']->dispatch( 'mantle_exception_view', [ $view ], $e );
+			$view = $this->container['events']->dispatch( 'mantle_exception_view', $view, $e );
 		} catch ( Throwable ) {
 			// If there is an error dispatching the event, fall back to the default view.
 			$view = $default_view;
@@ -356,7 +356,7 @@ class Handler implements Contract {
 			 * @param array $payload Exception array.
 			 * @param Throwable $e Exception thrown.
 			 */
-			return (array) $this->container['events']->dispatch( 'mantle_exception_array', [ $payload, $e ] );
+			return (array) $this->container['events']->dispatch( 'mantle_exception_array', $payload, $e );
 		} catch ( Throwable ) {
 			return $payload;
 		}

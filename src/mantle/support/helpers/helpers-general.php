@@ -469,11 +469,10 @@ function add_filter( string $hook, callable $callable, int $priority = 10 ): voi
  * Dispatch an event and call the listeners.
  *
  * @param  string|object  $event Event object.
- * @param  mixed  $payload Event payload.
- * @param  bool  $halt Flag if the event should halt on a returned value.
+ * @param  mixed          ...$payload Event payload.
  */
-function event( string|object $event, mixed $payload = [], bool $halt = false ): mixed {
-	return Container::get_instance()->make( 'events' )->dispatch( $event, $payload, $halt );
+function event( string|object $event, mixed ...$payload ): mixed {
+	return Container::get_instance()->make( 'events' )->dispatch( $event, ...$payload );
 }
 
 /**

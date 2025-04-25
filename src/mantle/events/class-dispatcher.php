@@ -36,18 +36,18 @@ class Dispatcher implements Dispatcher_Contract {
 	protected Container $container;
 
 	/**
-	 * The queue resolver instance.
-	 *
-	 * @var callable
-	 */
-	protected $queue_resolver;
-
-	/**
 	 * Wildcard listeners.
 	 *
 	 * @var array<string, array<string|callable>>
 	 */
 	protected array $wildcard_listeners = [];
+
+	/**
+	 * Wildcard listener lookup cache.
+	 *
+	 * @var array<string, array<string|callable>>
+	 */
+	protected array $wildcard_cache = [];
 
 	/**
 	 * Create a new event dispatcher instance.
@@ -64,11 +64,11 @@ class Dispatcher implements Dispatcher_Contract {
 	 * @todo Add wildcard listeners.
 	 *
 	 * @param string|string[] $events Event(s) to listen to.
-	 * @param mixed        $listener Listener to register.
+	 * @param string|callable        $listener Listener to register.
 	 * @param int          $priority Event priority.
 	 * @param  \Closure|string $listener Listener callback.
 	 */
-	public function listen( $events, $listener, int $priority = 10 ): void {
+	public function listen( string|array $events, string|callable $listener, int $priority = 10 ): void {
 		foreach ( (array) $events as $event ) {
 			if ( str_contains( $event, '*' ) ) {
 				$this->setup_wildcard_listener( $event, $listener );
@@ -80,7 +80,7 @@ class Dispatcher implements Dispatcher_Contract {
 				$event,
 				$this->make_listener( $listener ),
 				$priority,
-				PHP_INT_MAX,
+				999,
 			);
 		}
 	}
@@ -90,8 +90,17 @@ class Dispatcher implements Dispatcher_Contract {
 	 *
 	 * @param  string $event_name Event name.
 	 */
-	public function has_listeners( $event_name ): bool {
-		return has_filter( $event_name );
+	public function has_listeners( string $event_name ): bool {
+		return has_filter( $event_name ) || $this->has_wildcard_listeners( $event_name );
+	}
+
+	/**
+	 * Determine if a given event has wildcard listeners.
+	 *
+	 * @param  string $event_name Event name.
+	 */
+	public function has_wildcard_listeners( string $event_name ): bool {
+		return ! empty( $this->get_wildcard_listeners( $event_name ) );
 	}
 
 	/**
@@ -99,7 +108,7 @@ class Dispatcher implements Dispatcher_Contract {
 	 *
 	 * @param  object|string $subscriber
 	 */
-	public function subscribe( $subscriber ): void {
+	public function subscribe( object|string $subscriber ): void {
 		$subscriber = $this->resolve_subscriber( $subscriber );
 
 		$subscriber->subscribe( $this );
@@ -111,7 +120,7 @@ class Dispatcher implements Dispatcher_Contract {
 	 * @param  object|string $subscriber
 	 * @return mixed
 	 */
-	protected function resolve_subscriber( $subscriber ) {
+	protected function resolve_subscriber( object|string $subscriber ) {
 		if ( is_string( $subscriber ) ) {
 			return $this->container->make( $subscriber );
 		}
@@ -122,19 +131,22 @@ class Dispatcher implements Dispatcher_Contract {
 	/**
 	 * Fire an event and call the listeners.
 	 *
-	 * @todo Break out support for a filter.
-	 *
 	 * @param  string|object $event Event name.
-	 * @param  mixed         $payload Event payload.
+	 * @param  mixed         ...$payload Event payload.
 	 */
-	public function dispatch( string|object $event, mixed $payload = [ null ] ): mixed {
+	public function dispatch( string|object $event, mixed ...$payload ): mixed {
 		[ $event, $payload ] = $this->parse_event_and_payload( $event, $payload );
 
-		if ( function_exists( 'apply_filters' ) ) {
-			return apply_filters( $event, ...$payload ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
+		if ( ! function_exists( 'apply_filters' ) ) {
+			return null;
 		}
 
-		return null;
+		// Ensure there is a payload that is able to be passed to the filter.
+		if ( empty( $payload ) ) {
+			$payload[] = ''; // Mirror the default behavior of do_action.
+		}
+
+		return apply_filters( $event, ...$payload ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
 	}
 
 	/**
@@ -153,17 +165,27 @@ class Dispatcher implements Dispatcher_Contract {
 	}
 
 	/**
-	 * Get all of the listeners for a given event name.
+	 * Get all of the wildcard listeners for a given event name.
 	 *
 	 * @param  string $event_name
-	 * @return array<mixed>
+	 * @return array<string|callable>
 	 */
-	public function get_listeners( string $event_name ): array {
-		$listeners = $this->listeners[ $event_name ] ?? [];
+	public function get_wildcard_listeners( string $event_name ): array {
+		if ( isset( $this->wildcard_cache[ $event_name ] ) ) {
+			return $this->wildcard_cache[ $event_name ];
+		}
 
-		return class_exists( $event_name, false )
-			? $this->add_interface_listeners( $event_name, $listeners )
-			: $listeners;
+		$listeners = [];
+
+		foreach ( $this->wildcard_listeners as $pattern => $wildcard_listeners ) {
+			if ( Str::is( $pattern, $event_name ) ) {
+				$listeners = array_merge( $listeners, $wildcard_listeners );
+			}
+		}
+
+		$this->wildcard_cache[ $event_name ] = $listeners;
+
+		return $listeners;
 	}
 
 	/**
@@ -242,11 +264,11 @@ class Dispatcher implements Dispatcher_Contract {
 	/**
 	 * Remove a set of listeners from the dispatcher.
 	 *
-	 * @param string|object $event Event to remove.
-	 * @param callable|string $listener Listener to remove.
-	 * @param int $priority Priority of the listener.
+	 * @param string|object        $event Event to remove.
+	 * @param callable|string|null $listener Listener to remove.
+	 * @param int                  $priority Priority of the listener.
 	 */
-	public function forget( $event, $listener = null, int $priority = 10 ): void {
+	public function forget( string|object $event, string|callable|null $listener = null, int $priority = 10 ): void {
 		if ( is_object( $event ) ) {
 			$event = $event::class;
 		}
@@ -262,15 +284,18 @@ class Dispatcher implements Dispatcher_Contract {
 	 * Setup a wildcard event listener.
 	 *
 	 * Registers a listener for the 'all' action which is fired for all hooks
-	 * which we can then use to find the appropriate listeners.
+	 * which we can then use to find the appropriate listeners. Wildcard events
+	 * cannot have a priority.
 	 *
 	 * @param string   $event Event name to listen to with * wildcard.
 	 * @param callable $listener Listener to register.
 	 */
 	protected function setup_wildcard_listener( string $event, callable $listener ): void {
-		if ( ! has_action( 'all', [ $this, 'wildcard_listener_callback' ] ) ) {
+		if ( function_exists( 'has_action' ) && ! has_action( 'all', [ $this, 'wildcard_listener_callback' ] ) ) {
 			add_action( 'all', [ $this, 'wildcard_listener_callback' ] );
 		}
+
+		$this->wildcard_cache = [];
 
 		$this->wildcard_listeners[ $event ][] = $listener;
 	}
