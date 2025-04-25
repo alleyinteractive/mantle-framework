@@ -18,8 +18,12 @@ use function Mantle\Support\Helpers\tap;
 /**
  * Trait for Test_Case classes which want to make http-like requests against
  * WordPress.
+ *
+ * @mixin \Mantle\Testing\TestCase
  */
 trait Makes_Http_Requests {
+	use Makes_Http_Requests_With_Templates;
+
 	/**
 	 * Additional cookies for the request.
 	 *

@@ -471,6 +471,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			->assertNodeHasClass( 'home' );
 	}
 
+	// Should always be towards the end of the class.
 	public function test_multiple_requests() {
 		$methods = collect( get_class_methods( $this ) )
 			->filter( fn ( string $method ) => ! Str::contains( $method, [ 'experimental', 'snapshot', 'test_html_response' ] ) && 0 === strpos( $method, 'test_' ) )
