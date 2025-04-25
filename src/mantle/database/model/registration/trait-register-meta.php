@@ -74,12 +74,10 @@ trait Register_Meta {
 			event(
 				'mantle_register_meta_default_args',
 				[
-					[
-						'object_subtype' => static::get_object_name(),
-						'show_in_rest'   => true,
-						'single'         => true,
-						'type'           => 'string',
-					],
+					'object_subtype' => static::get_object_name(),
+					'show_in_rest'   => true,
+					'single'         => true,
+					'type'           => 'string',
 				],
 			),
 			$args,
