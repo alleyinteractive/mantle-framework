@@ -169,14 +169,10 @@ class Lightweight_Event_Dispatcher extends Dispatcher {
 	protected function remove_from_listener_stack( array $stack, int $priority, callable|string|null $listener = null ): array {
 		if ( is_null( $listener ) ) {
 			unset( $stack[ $priority ] );
-
-			if ( empty( $stack ) ) {
-				$stack = [];
-			}
 		} else {
 			$stack[ $priority ] = array_filter( $stack[ $priority ], fn ( $value ) => $value !== $listener );
 		}
 
-		return $stack;
+		return empty( $stack ) ? [] : $stack;
 	}
 }
