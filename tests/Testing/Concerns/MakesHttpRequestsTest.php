@@ -409,6 +409,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		$this->with_https()->get( 'https://example.com' )->assertOk();
 
 		$this->assertEquals( 'on', $_SERVER['HTTPS'] );
+		$this->assertEquals( 'https', $_SERVER['REQUEST_SCHEME'] );
 	}
 
 	public function test_url_scheme_https_by_home_url() {
