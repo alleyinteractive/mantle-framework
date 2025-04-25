@@ -40,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ensure that multiple HTTP request calls properly load the
   header/footer/sidebar template. Previously only the first request would load
   the header/footer/sidebar templates and the response returned was only the
-  template content .
+  template content.
 
 ## v1.6.0
 
