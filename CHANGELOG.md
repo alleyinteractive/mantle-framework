@@ -45,6 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   header/footer/sidebar template. Previously only the first request would load
   the header/footer/sidebar templates and the response returned was only the
   template content.
+- `wp_redirect` calls during `parse_query` can now be properly tested.
 
 ## v1.6.0
 
