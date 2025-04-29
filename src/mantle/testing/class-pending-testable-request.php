@@ -240,7 +240,6 @@ class Pending_Testable_Request {
 	 * Format the header name for the server array.
 	 *
 	 * @param string $name Header name.
-	 * @return string
 	 */
 	protected function format_server_header_key( string $name ): string {
 		if ( ! Str::starts_with( $name, 'HTTP_' ) && 'CONTENT_TYPE' !== $name && 'REMOTE_ADDR' !== $name ) {
