@@ -103,7 +103,7 @@ class Pending_Testable_Request {
 	public function with_basic_auth( string $username, string $password ): static {
 		return $this->with_header(
 			'Authorization',
-			'Basic ' . base64_encode( $username . ':' . $password )
+			'Basic ' . base64_encode( "{$username}:{$password}" ),
 		);
 	}
 
@@ -114,7 +114,7 @@ class Pending_Testable_Request {
 	 * @param  string $type
 	 */
 	public function with_token( string $token, string $type = 'Bearer' ): static {
-		return $this->with_header( 'Authorization', trim( $type . ' ' . $token ) );
+		return $this->with_header( 'Authorization', trim( "{$type} {$token}" ) );
 	}
 
 	/**
