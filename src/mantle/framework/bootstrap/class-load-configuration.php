@@ -129,12 +129,10 @@ class Load_Configuration implements Bootstrapable {
 		$paths = $app['events']->dispatch(
 			'mantle_config_paths',
 			[
-				[
-					dirname( __DIR__, 4 ) . '/config',
-					$app->get_config_path(),
-				],
-				$app,
+				dirname( __DIR__, 4 ) . '/config',
+				$app->get_config_path(),
 			],
+			$app,
 		);
 
 		return collect( $paths )

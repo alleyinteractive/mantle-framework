@@ -14,6 +14,9 @@ declare( strict_types=1 );
 
 use Mantle\Application\Application;
 use Mantle\Support\Environment;
+use Mantle\Support\Mixed_Data;
+
+use function Mantle\Support\Helpers\mixed;
 
 if ( ! function_exists( 'app' ) ) {
 	/**
@@ -44,6 +47,18 @@ if ( ! function_exists( 'environment' ) ) {
 	 */
 	function environment( string $key, $default = null ): mixed {
 		return Environment::get( $key, $default );
+	}
+}
+
+if ( ! function_exists( 'environment_mixed' ) ) {
+	/**
+	 * Gets the value of an environment variable as a Mixed Data object.
+	 *
+	 * @param  string $key Environment variable key.
+	 * @param  mixed  $default Default value.
+	 */
+	function environment_mixed( string $key, $default = null ): Mixed_Data {
+		return mixed( environment( $key, $default ) );
 	}
 }
 

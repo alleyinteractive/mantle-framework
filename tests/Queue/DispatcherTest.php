@@ -18,6 +18,7 @@ use PHPUnit\Framework\Attributes\Group;
  * @group queue
  */
 #[Group( 'queue' )]
+#[Group( 'events' )]
 class DispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	/**
 	 * Provider instance.

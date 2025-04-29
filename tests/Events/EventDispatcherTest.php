@@ -7,6 +7,8 @@ use Mockery as m;
 use PHPUnit\Framework\Attributes\Group;
 
 /**
+ * TODO: get_listeners
+ *
  * @group events
  */
 #[Group( 'events' )]
@@ -26,7 +28,9 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 				$_SERVER['__event.test'] = $foo;
 			}
 		);
-		$d->dispatch( __METHOD__, [ 'bar' ] );
+
+		$this->assertTrue( $d->has_listeners( __METHOD__ ) );
+		$d->dispatch( __METHOD__, 'bar' );
 
 		$this->assertEquals( 'bar', $_SERVER['__event.test'] );
 	}
@@ -46,7 +50,10 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 			->andReturn( 'baz' );
 
 		$d->listen( __METHOD__, 'FooHandler@onFooEvent' );
-		$this->assertEquals( 'baz', $d->dispatch( __METHOD__, [ 'foo', 'bar' ] ) );
+
+		$this->assertTrue( $d->has_listeners( __METHOD__ ) );
+
+		$this->assertEquals( 'baz', $d->dispatch( __METHOD__, 'foo', 'bar' ) );
 	}
 
 	public function testContainerResolutionOfEventHandlersWithDefaultMethods() {
@@ -63,7 +70,10 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 			->with( 'foo', 'bar' );
 
 		$d->listen( __METHOD__, 'FooHandler' );
-		$d->dispatch( __METHOD__, [ 'foo', 'bar' ] );
+
+		$this->assertTrue( $d->has_listeners( __METHOD__ ) );
+
+		$d->dispatch( __METHOD__, 'foo', 'bar' );
 	}
 
 	public function test_typehinted_event_callback_isolated() {
@@ -115,7 +125,7 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 			fn ( $payload ) => $_SERVER['__event_run'] = $payload
 		);
 
-		$events->dispatch( __FUNCTION__, [ 'foo' ] );
+		$events->dispatch( __FUNCTION__, 'foo' );
 
 		$this->assertEquals( 'foo', $_SERVER['__event_run'] );
 	}
@@ -138,12 +148,48 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		$events->listen(
 			__FUNCTION__,
-			fn ( ...$args ) => $_SERVER['__event_run'] = implode( '', $args )
+			fn ( ...$args ) => $_SERVER['__event_run'] = $args,
 		);
 
-		$events->dispatch( __FUNCTION__, [ 'foo', 'bar' ] );
+		$events->dispatch( __FUNCTION__, 'foo', 'bar' );
 
-		$this->assertEquals( 'foobar', $_SERVER['__event_run'] );
+		$this->assertEquals( [ 'foo', 'bar' ], $_SERVER['__event_run'] );
+	}
+
+	public function test_it_can_forget_events(): void {
+		$dispatcher = new Dispatcher();
+
+		$dispatcher->listen( 'event_name', function () {
+			return 'event_name';
+		} );
+
+		$dispatcher->forget( 'event_name' );
+
+		$this->assertFalse( $dispatcher->has_listeners( 'event_name' ) );
+	}
+
+	public function test_it_can_forget_wildcard_events(): void {
+		$dispatcher = new Dispatcher();
+
+		$dispatcher->listen( 'event:*', function () {
+			return 'event_name';
+		} );
+
+		$this->assertTrue( $dispatcher->has_listeners( 'event:name' ) );
+		$this->assertTrue( $dispatcher->has_listeners( 'event:another' ) );
+
+		$dispatcher->forget( 'event:*' );
+
+		$this->assertFalse( $dispatcher->has_listeners( 'event:name' ) );
+	}
+
+	public function test_it_cannot_dispatch_object_event_with_payload(): void {
+		$dispatcher = new Dispatcher();
+
+		$this->expectException( \RuntimeException::class );
+		$this->expectExceptionMessage( 'You cannot pass payload to an object event.' );
+
+		$dispatcher->dispatch( new Example_Event(), 'foo' );
 	}
 }
 

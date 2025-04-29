@@ -9,6 +9,7 @@ namespace Mantle\Console\Events;
 
 use Mantle\Events\Dispatcher;
 use Mantle\Support\Arr;
+use Mantle\Support\Str;
 use RuntimeException;
 
 /**
@@ -21,7 +22,7 @@ class Lightweight_Event_Dispatcher extends Dispatcher {
 	/**
 	 * Event listeners.
 	 *
-	 * @var array<string, mixed>
+	 * @var array<string, array<int, array<callable>>>
 	 */
 	protected array $listeners = [];
 
@@ -29,11 +30,17 @@ class Lightweight_Event_Dispatcher extends Dispatcher {
 	 * Register an event listener with the dispatcher.
 	 *
 	 * @param  string|string[] $events
-	 * @param  \Closure|string $listener
+	 * @param  string|callable $listener
 	 * @param  int             $priority
 	 */
-	public function listen( $events, $listener, int $priority = 10 ): void {
+	public function listen( string|array $events, string|callable $listener, int $priority = 10 ): void {
 		foreach ( (array) $events as $event ) {
+			if ( str_contains( $event, '*' ) ) {
+				$this->setup_wildcard_listener( $event, $listener );
+
+				continue;
+			}
+
 			$this->listeners[ $event ][ $priority ][] = $this->make_listener( $listener );
 		}
 	}
@@ -43,8 +50,8 @@ class Lightweight_Event_Dispatcher extends Dispatcher {
 	 *
 	 * @param  string $event_name
 	 */
-	public function has_listeners( $event_name ): bool {
-		return isset( $this->listeners[ $event_name ] );
+	public function has_listeners( string $event_name ): bool {
+		return ! empty( $this->listeners[ $event_name ] ) || $this->has_wildcard_listeners( $event_name );
 	}
 
 	/**
@@ -54,28 +61,28 @@ class Lightweight_Event_Dispatcher extends Dispatcher {
 	 *
 	 * @throws RuntimeException Thrown if run.
 	 */
-	public function subscribe( $subscriber ): void {
+	public function subscribe( object|string $subscriber ): void {
 		throw new RuntimeException( 'Subscribers are not supported in lightweight mode.' );
 	}
 
 	/**
 	 * Dispatch an event and call the listeners.
 	 *
+	 * @throws RuntimeException Thrown if the event is an object and payload is passed.
+	 *
 	 * @param  string|object $event Event name.
-	 * @param  mixed         $payload Event payload.
+	 * @param  mixed         ...$payload Event payload.
 	 */
-	public function dispatch( string|object $event, mixed $payload = [] ): mixed {
-		$filterable_value = is_array( $payload ) ? Arr::first( $payload ) : $payload;
+	public function dispatch( string|object $event, mixed ...$payload ): mixed {
+		if ( is_object( $event ) && ! empty( $payload ) ) {
+			throw new RuntimeException( 'You cannot pass payload to an object event.' );
+		}
+
+		$filterable_value = Arr::first( $payload );
 
 		[ $event, $payload ] = $this->parse_event_and_payload( $event, $payload );
 
-		if ( empty( $this->listeners[ $event ] ) ) {
-			return $filterable_value;
-		}
-
-		ksort( $this->listeners[ $event ] );
-
-		foreach ( $this->listeners[ $event ] as $listeners ) {
+		foreach ( $this->get_listeners( $event ) as $listeners ) {
 			foreach ( $listeners as $listener ) {
 				$filterable_value = $listener( ...$payload );
 
@@ -90,13 +97,46 @@ class Lightweight_Event_Dispatcher extends Dispatcher {
 	}
 
 	/**
+	 * Retrieve all listeners for a given event.
+	 *
+	 * @param string $event Event name.
+	 * @return array<int, array<string|callable>> Arrays of listeners, indexed by priority and sorted.
+	 */
+	public function get_listeners( string $event ): array {
+		$listeners = $this->listeners[ $event ] ?? [];
+
+		$max_index = count( $listeners ) > 0 ? max( array_keys( $listeners ) ) : 0;
+
+		// Add the wildcard listeners at the end of the list. This is to ensure that
+		// they are called after the normal listeners who have priority defined.
+		$listeners[ $max_index + 1 ] = array_merge(
+			$listeners[ $max_index + 1 ] ?? [],
+			$this->get_wildcard_listeners( $event ),
+		);
+
+		ksort( $listeners );
+
+		return $listeners;
+	}
+
+	/**
 	 * Remove a set of listeners from the dispatcher.
 	 *
-	 * @param string          $event Event to remove.
-	 * @param callable|string $listener Listener to remove.
-	 * @param int             $priority Priority of the listener.
+	 * @param object|string        $event Event to remove.
+	 * @param callable|string|null $listener Listener to remove.
+	 * @param int                  $priority Priority of the listener.
 	 */
-	public function forget( $event, $listener = null, int $priority = 10 ): void {
+	public function forget( object|string $event, callable|string|null $listener = null, int $priority = 10 ): void {
+		if ( is_object( $event ) ) {
+			$event = $event::class;
+		}
+
+		if ( str_contains( $event, '*' ) ) {
+			$this->forget_wildcard( $event, $listener );
+
+			return;
+		}
+
 		if ( empty( $this->listeners[ $event ][ $priority ] ) ) {
 			return;
 		}
@@ -106,8 +146,16 @@ class Lightweight_Event_Dispatcher extends Dispatcher {
 		} else {
 			$this->listeners[ $event ][ $priority ] = array_filter(
 				$this->listeners[ $event ][ $priority ],
-				fn ( $value ) => $value !== $listener
+				fn ( $value ) => $value !== $listener,
 			);
+		}
+
+		if ( empty( $this->listeners[ $event ][ $priority ] ) ) {
+			unset( $this->listeners[ $event ][ $priority ] );
+		}
+
+		if ( empty( $this->listeners[ $event ] ) ) {
+			unset( $this->listeners[ $event ] );
 		}
 	}
 }
