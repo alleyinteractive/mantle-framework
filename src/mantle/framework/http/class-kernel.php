@@ -149,7 +149,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 
 		if ( ! $response instanceof \Symfony\Component\HttpFoundation\Response ) {
 			// Register the termination callback to be called on shutdown.
-			add_action( 'shutdown', fn () => $this->terminate( $this->request, null ), 100 );
+			add_action( 'shutdown', fn () => $this->terminate( $this->request, null ), PHP_INT_MAX );
 
 			return;
 		}

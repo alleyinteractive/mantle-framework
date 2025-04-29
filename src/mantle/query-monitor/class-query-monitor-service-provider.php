@@ -60,8 +60,16 @@ class Query_Monitor_Service_Provider extends Service_Provider {
 		ob_start();
 
 		foreach ( $this->query_monitor_dispatches as $query_monitor_dispatch ) {
-			// Remove the dispatcher from the 'shutdown' hook.
-			remove_action( 'shutdown', $query_monitor_dispatch, 0 );
+			// Remove the dispatcher from the 'shutdown' hook. The dispatcher can use
+			// different priorities depending on the QM version and/or the environment
+			// (VIP uses PHP_INT_MAX).
+			foreach ( [ 0, 9, PHP_INT_MAX - 1, PHP_INT_MAX ] as $priority ) {
+				if ( remove_action( 'shutdown', $query_monitor_dispatch, $priority ) ) {
+					// We found the dispatcher, so we can stop looking.
+					break;
+				}
+			}
+
 			$query_monitor_dispatch();
 		}
 
