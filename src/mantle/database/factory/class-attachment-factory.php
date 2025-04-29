@@ -14,6 +14,7 @@ use RuntimeException;
 use WP_Post;
 
 use function Mantle\Support\Helpers\get_post_object;
+use function Mantle\Support\Helpers\value;
 
 /**
  * Attachment Factory
@@ -50,17 +51,19 @@ class Attachment_Factory extends Post_Factory {
 	 *
 	 * @throws RuntimeException If unable to generate image.
 	 *
-	 * @param string $file   The file name to create attachment object from.
-	 * @param int    $parent The parent post ID.
-	 * @param int    $width  The width of the image.
-	 * @param int    $height The height of the image.
-	 * @param bool   $recycle Whether to recycle the image file.
+	 * @param callable|string|null $file   The file name to create attachment object from.
+	 * @phpstan-param (callable(): string)|string|null $file
+	 * @param int                  $parent The parent post ID.
+	 * @param int                  $width  The width of the image.
+	 * @param int                  $height The height of the image.
+	 * @param bool                 $recycle Whether to recycle the image file.
 	 */
-	public function with_image( ?string $file = null, int $parent = 0, int $width = 640, int $height = 480, bool $recycle = true ): static {
+	public function with_image( callable|string|null $file = null, int $parent = 0, int $width = 1200, int $height = 800, bool $recycle = true ): static {
 		if ( ! $file ) {
 			static $generated_images = [
-				// Use the already generated default 600x480 image.
-				'6421c8050053a960a55c0e70f6006ca9' => __DIR__ . '/assets/factory/600x480.jpg',
+				// Use the already generated images for the default sizes.
+				'6fa8d935db90e52880de37db184f546a' => __DIR__ . '/assets/factory/600x480.jpg',
+				'c6308bc01634f8aae351f7187e0d1a03' => __DIR__ . '/assets/factory/1200x800.jpg',
 			];
 
 			$hash = md5( $width . $height );
@@ -75,8 +78,12 @@ class Attachment_Factory extends Post_Factory {
 			if ( ! $file ) {
 				$file = $generated_images[ $hash ] = $this->generate_image( $width, $height );
 			}
-		} elseif ( ! file_exists( $file ) ) {
-			throw new RuntimeException( "File {$file} does not exist." );
+		} else {
+			$file = value( $file );
+
+			if ( ! is_string( $file ) || ! file_exists( $file ) ) {
+				throw new RuntimeException( "File {$file} does not exist." );
+			}
 		}
 
 		if ( empty( $file ) ) {

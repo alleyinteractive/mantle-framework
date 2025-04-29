@@ -208,7 +208,15 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	/**
 	 * Register the application's commands.
 	 */
-	public function commands(): void {}
+	public function commands(): void {
+		$this->load( $this->app->get_base_path( 'app/console' ) );
+
+		$base_routes = $this->app->get_base_path( 'routes/console.php' );
+
+		if ( file_exists( $base_routes ) ) {
+			require $base_routes; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
+		}
+	}
 
 	/**
 	 * Register all the commands in a set of directories.

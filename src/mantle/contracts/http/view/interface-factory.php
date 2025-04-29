@@ -75,23 +75,19 @@ interface Factory {
 	 *
 	 * @param string $key Variable to get.
 	 * @param mixed  $default Default value if unset.
-	 * @return mixed
 	 */
-	public function get_var( string $key, $default = null );
+	public function get_var( string $key, mixed $default = null ): mixed;
 
 	/**
 	 * Push a view onto the stack and set it as the current view.
 	 *
 	 * @param View $view View being loaded.
-	 * @return static
 	 */
-	public function push( View $view );
+	public function push( View $view ): static;
 
 	/**
 	 * Pop a partial off the top of the stack and set the current partial to the
 	 * next one down.
-	 *
-	 * @return static
 	 */
-	public function pop();
+	public function pop(): static;
 }

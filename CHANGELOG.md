@@ -31,12 +31,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   used as a hook callback that is not public.
 - `Interacts_With_Data::bool()` was changed to use `wp_validate_boolean()` to
   determine the boolean value of a value.
+- Models' `new_factory()` method return type has changed to
+  `Mantle\Database\Factory\Factory|string|null` with the ability to return a
+  class string of a factory to use.
+- The Console Kernel will attempt to load the commands within `app/console`
+  directory and from `routes/console.php` if it exists without needing to define
+  a `commands()` method in your application's console kernel.
+
+### Fixed
+
+- Ensure that multiple HTTP request calls properly load the
+  header/footer/sidebar template. Previously only the first request would load
+  the header/footer/sidebar templates and the response returned was only the
+  template content.
 
 ## v1.6.0
 
 ### Added
 
-- Added a `list()`, `ordered_list()`, `reusable()`, and `button()` method to the
+- Added a `list()`, `ordered_list()`, `reusable()`, and `button()` methods to the
   block factory to generate the corresponding blocks.
 - Add support for PHPUnit 12. Note: PHPUnit 12 drops all support for docblock
   annotations. To easily upgrade your project to use attributes, try

@@ -171,9 +171,8 @@ class Factory implements Contract {
 	 *
 	 * @param string $key Variable to get.
 	 * @param mixed  $default Default value if unset.
-	 * @return mixed
 	 */
-	public function get_var( string $key, $default = null ) {
+	public function get_var( string $key, mixed $default = null ): mixed {
 		if ( empty( $this->current ) ) {
 			return $default;
 		}

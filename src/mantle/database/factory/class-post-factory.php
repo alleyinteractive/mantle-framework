@@ -185,12 +185,13 @@ class Post_Factory extends Factory {
 	/**
 	 * Attach a thumbnail to the post with an underlying file attachment.
 	 *
-	 * @param string $file   The file name to create attachment object from.
-	 * @param int    $width  The width of the image.
-	 * @param int    $height The height of the image.
-	 * @param bool   $recycle Whether to recycle the image file.
+	 * @param callable|string|null $file   The file name to create attachment object from.
+	 * @phpstan-param (callable(): string)|string|null $file
+	 * @param int                  $width  The width of the image.
+	 * @param int                  $height The height of the image.
+	 * @param bool                 $recycle Whether to recycle the image file.
 	 */
-	public function with_real_thumbnail( ?string $file = null, int $width = 640, int $height = 480, bool $recycle = true ): static {
+	public function with_real_thumbnail( callable|string|null $file = null, int $width = 1200, int $height = 800, bool $recycle = true ): static {
 		return $this->with_middleware(
 			function ( array $args, Closure $next ) use ( $file, $width, $height, $recycle ) {
 				$post = $next( $args );

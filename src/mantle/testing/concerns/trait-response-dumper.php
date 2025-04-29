@@ -116,9 +116,19 @@ trait Response_Dumper {
 			if ( json_last_error() === JSON_ERROR_NONE ) {
 				$content = json_encode( $json, JSON_PRETTY_PRINT );
 			}
+		} else {
+			// Escape the HTML content so it isn't parsed by termwind.
+			$content = esc_html( $content );
 		}
 
-		dump( $content );
+		render(
+			<<<HTML
+				<div class="space-y-1 my-1">
+					<h3 class="font-bold">Response Content</h3>
+					<code>{$content}</code>
+				</div>
+			HTML,
+		);
 
 		return $this;
 	}

@@ -7,6 +7,7 @@
 
 namespace Mantle\Database\Model\Concerns;
 
+use Mantle\Container\Container;
 use Mantle\Database\Factory\Factory;
 use Mantle\Database\Factory\Post_Factory;
 use Mantle\Database\Factory\Term_Factory;
@@ -25,6 +26,10 @@ trait Has_Factory {
 	 */
 	public static function factory( array|callable|null $state = null ): Factory {
 		$factory = static::new_factory() ?: Factory::factory_for_model( static::class );
+
+		if ( is_string( $factory ) ) {
+			$factory = Container::get_instance()->make( $factory );
+		}
 
 		return $factory // @phpstan-ignore-line should return
 			->as_models()
@@ -45,9 +50,9 @@ trait Has_Factory {
 	 *
 	 * Optional: allows for the model factory to be overridden by application code.
 	 *
-	 * @return \Mantle\Database\Factory\Factory<static, TObject, static>|null
+	 * @return Factory<static, TObject, static>|class-string<Factory>|null
 	 */
-	protected static function new_factory(): ?Factory {
+	protected static function new_factory(): Factory|string|null {
 		return null;
 	}
 }

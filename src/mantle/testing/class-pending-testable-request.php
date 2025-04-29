@@ -21,7 +21,6 @@ use Mantle\Testing\Exceptions\WP_Redirect_Exception;
 use Mantle\Testing\TestCase;
 use Mantle\Testing\Test_Response;
 use Mantle\Testing\Utils;
-use PHPUnit\Framework\Assert;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\InputBag;
@@ -307,7 +306,7 @@ class Pending_Testable_Request {
 			// Mirror the logic from Request::createFromGlobals().
 			if (
 				str_starts_with( (string) $request->headers->get( 'CONTENT_TYPE', '' ), 'application/x-www-form-urlencoded' )
-			&& \in_array( strtoupper( (string) $request->server->get( 'REQUEST_METHOD', 'GET' ) ), [ 'PUT', 'DELETE', 'PATCH' ], true )
+				&& \in_array( strtoupper( (string) $request->server->get( 'REQUEST_METHOD', 'GET' ) ), [ 'PUT', 'DELETE', 'PATCH' ], true )
 			) {
 				parse_str( $request->getContent(), $data );
 
@@ -437,14 +436,20 @@ class Pending_Testable_Request {
 			}
 		}
 
-		foreach ( [ 'CONTENT_TYPE', 'QUERY_STRING', 'REMOTE_ADDR' ] as $header ) {
+		foreach ( [ 'CONTENT_TYPE', 'QUERY_STRING', 'REMOTE_ADDR', 'REQUEST_SCHEME', 'HTTPS' ] as $header ) {
 			if ( isset( $_SERVER[ $header ] ) ) {
 				unset( $_SERVER[ $header ] );
 			}
 		}
 
-		// Clear the HTTPS flag which will be set as-needed by the call method.
-		unset( $_SERVER['HTTPS'] );
+		// Clear the "done" global scripts and styles so that scripts/styles are re-output.
+		$GLOBALS['wp_scripts']->done = [];
+		$GLOBALS['wp_styles']->done  = [];
+
+		// Reset the print hooks back to zero (never run).
+		foreach ( [ 'wp_print_scripts', 'wp_print_styles' ] as $hook ) {
+			$GLOBALS['wp_actions'][ $hook ] = 0;
+		}
 
 		// phpcs:enable
 	}
@@ -483,11 +488,18 @@ class Pending_Testable_Request {
 
 		// Set HTTPS if it is being forced or if the URL being requested is HTTPS.
 		if ( $this->forced_https || ( isset( $parts['scheme'] ) && 'https' === $parts['scheme'] ) ) {
-			$_SERVER['HTTPS'] = 'on';
+			$_SERVER['HTTPS']          = 'on';
+			$_SERVER['REQUEST_SCHEME'] = 'https';
+		} else {
+			$_SERVER['REQUEST_SCHEME'] = 'http';
 		}
 
 		$_SERVER['QUERY_STRING'] = $parts['query'] ?? '';
 		$_SERVER['REQUEST_URI']  = $req;
+
+		if ( ! isset( $_SERVER['REMOTE_ADDR'] ) ) { // phpcs:ignore WordPressVIPMinimum.Variables.ServerVariables.UserControlledHeaders
+			$_SERVER['REMOTE_ADDR'] = '127.0.0.1'; // phpcs:ignore WordPressVIPMinimum.Variables.ServerVariables.UserControlledHeaders, WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___SERVER__REMOTE_ADDR__
+		}
 
 		$_POST = $data;
 

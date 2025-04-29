@@ -14,6 +14,7 @@ use Faker\Generator;
 use Mantle\Container\Container;
 use Mantle\Faker\Faker_Provider;
 use Mantle\Support\HTML;
+use PHPUnit\Framework\AssertionFailedError;
 
 use function Mantle\Support\Helpers\tap;
 
@@ -100,4 +101,27 @@ function block_factory(): Block_Factory {
 	}
 
 	return $container->make( Block_Factory::class );
+}
+
+/**
+ * Iterate a test a number of times, catching any assertion failures and
+ * re-throwing them with the iteration number in the message.
+ *
+ * @throws AssertionFailedError Thrown when an assertion fails.
+ *
+ * @param \Closure $callback The callback to execute for each iteration.
+ * @param int      $times The number of times to iterate (default: 3).
+ */
+function iterate_test( \Closure $callback, int $times = 3 ): void {
+	for ( $i = 0; $i < $times; $i++ ) {
+		try {
+			$callback( $i + 1 );
+		} catch ( AssertionFailedError $e ) {
+			throw new AssertionFailedError(
+				'Failed on iteration ' . $i . ': ' . $e->getMessage(),
+				$e->getCode(),
+				$e
+			);
+		}
+	}
 }

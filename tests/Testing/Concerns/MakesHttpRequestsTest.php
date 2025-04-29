@@ -409,6 +409,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		$this->with_https()->get( 'https://example.com' )->assertOk();
 
 		$this->assertEquals( 'on', $_SERVER['HTTPS'] );
+		$this->assertEquals( 'https', $_SERVER['REQUEST_SCHEME'] );
 	}
 
 	public function test_url_scheme_https_by_home_url() {
@@ -470,6 +471,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			->assertNodeHasClass( 'home' );
 	}
 
+	// Should always be towards the end of the class.
 	public function test_multiple_requests() {
 		$methods = collect( get_class_methods( $this ) )
 			->filter( fn ( string $method ) => ! Str::contains( $method, [ 'experimental', 'snapshot', 'test_html_response' ] ) && 0 === strpos( $method, 'test_' ) )
