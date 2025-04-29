@@ -280,7 +280,7 @@ class Pending_Testable_Request {
 		$intercept_redirect = function ( $location, $status ) use ( &$response_status, &$response_headers ): void {
 			$response_status              = $status;
 			$response_headers['Location'] = $location;
-			throw new WP_Redirect_Exception();
+			throw new WP_Redirect_Exception( $status, $location );
 		};
 
 		add_filter( 'exit_on_http_head', '__return_false', 9999 );
@@ -333,13 +333,24 @@ class Pending_Testable_Request {
 			add_filter( 'wp_headers', $intercept_headers, 9999 );
 			add_filter( 'wp_redirect', $intercept_redirect, 9999, 2 ); // @phpstan-ignore-line Filter callback
 
+			$ob_level = ob_get_level();
+
 			ob_start();
 
 			try {
 				$this->setup_wordpress_query();
+			} catch ( WP_Redirect_Exception $e ) {
+				// Handle a redirect during the early setup of WordPress (parse_query).
+				// Prevent an exception from being thrown.
+				$response_status = $e->status;
+
+				$response_headers['Location'] = $e->location;
 			} catch ( \Exception $e ) {
-				// If an exception occurs, make sure the output buffer is closed before the exception continues to the caller.
-				ob_end_clean();
+				// If an exception occurs, make sure the output buffer is closed before
+				// the exception continues to the caller.
+				while ( ob_get_level() > $ob_level ) {
+					ob_end_clean();
+				}
 
 				throw $e;
 			}
@@ -355,6 +366,10 @@ class Pending_Testable_Request {
 				try {
 					// Execute the request, inasmuch as WordPress would.
 					require ABSPATH . WPINC . '/template-loader.php';
+				} catch ( WP_Redirect_Exception $e ) {
+					$response_status = $e->status;
+
+					$response_headers['Location'] = $e->location;
 				} catch ( Exception ) { // phpcs:ignore
 					// Mantle Exceptions are thrown to prevent some code from running, e.g.
 					// the tail end of wp_redirect().

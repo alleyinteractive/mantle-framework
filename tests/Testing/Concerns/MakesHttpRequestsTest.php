@@ -12,6 +12,7 @@ use Mantle\Testing\Concerns\Reset_Server;
 use Mantle\Testing\FrameworkTestCase;
 use Mantle\Testing\Test_Response;
 use PHPUnit\Framework\AssertionFailedError;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use WP_REST_Response;
 
@@ -194,7 +195,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			->assertNotFound();
 	}
 
-	public function test_redirect_response() {
+	public function test_router_redirect_response() {
 		$this->app['router']->get(
 			'/route-to-redirect/',
 			fn () => redirect()->to( '/redirected/', 302, [ 'Other-Header' => '123' ] ),
@@ -207,17 +208,20 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			->assertHeader( 'Other-Header', '123' );
 	}
 
-	public function test_redirect_wp_redirect() {
-		add_action(
-			'template_redirect',
-			function () {
-				wp_redirect( home_url( '/redirected/' ), 302 );
-			},
-		);
+	/**
+	 * @dataProvider redirect_hook_data_provider
+	 */
+	#[DataProvider( 'redirect_hook_data_provider' )]
+	public function test_redirect_wordpress( string $hook ) {
+		add_action( $hook, fn () => wp_redirect( home_url( '/redirected/' ), 302 ) );
 
 		$this->get( '/' )->assertRedirect( home_url( '/redirected/' ) );
+	}
 
-		remove_all_actions( 'template_redirect' );
+	public static function redirect_hook_data_provider(): array {
+		return collect( [ 'template_redirect', 'parse_query' ] )
+			->map_with_keys( fn ( string $hook ): array => [ $hook => [ $hook ] ] )
+			->all();
 	}
 
 	public function test_post_json_mantle_route() {
@@ -458,8 +462,6 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	}
 
 	public function test_html_response(): void {
-		$this->markTestSkipped( 'Skipped for the time being.' );
-
 		$response = $this->get( '/' )->assertOk();
 
 		$response
@@ -474,13 +476,18 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	// Should always be towards the end of the class.
 	public function test_multiple_requests() {
 		$methods = collect( get_class_methods( $this ) )
-			->filter( fn ( string $method ) => ! Str::contains( $method, [ 'experimental', 'snapshot', 'test_html_response' ] ) && 0 === strpos( $method, 'test_' ) )
+			->filter( fn ( string $method ) => ! Str::contains( $method, [ 'experimental', 'snapshot' ] ) && 0 === strpos( $method, 'test_' ) )
 			->sort()
 			->all();
 
 		// Re-run all test methods on this class in a single pass.
 		foreach ( $methods as $method ) {
 			if ( __FUNCTION__ === $method || 'test_' !== substr( $method, 0, 5 ) ) {
+				continue;
+			}
+
+			// Ignore data provider tests.
+			if ( 'test_redirect_wordpress' === $method ) {
 				continue;
 			}
 
