@@ -83,7 +83,7 @@ class Taxonomy_Arguments implements Arrayable {
 				/* translators: %s: Singular label for the taxonomy. */
 				'new_item_name'              => sprintf( __( 'New %s Name' ), $singular ),
 				/* translators: %s: Singular label for the taxonomy. */
-				'template_name'              => sprintf( __( '%s Archives' ), $singular ),
+				'template_name'              => sprintf( __( 'Single Item: %s' ), $singular ),
 				/* translators: %s: Plural label for the taxonomy. */
 				'separate_items_with_commas' => sprintf( __( 'Separate %s with commas' ), $plural ),
 				/* translators: %s: Plural label for the taxonomy. */

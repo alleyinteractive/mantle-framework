@@ -64,62 +64,62 @@ class Post_Type_Arguments implements Arrayable {
 			[
 				'name'                     => $plural,
 				'singular_name'            => $singular,
-				/* translators: %s: Post type name. */
+				/* translators: %s: Singular post type name. */
 				'add_new'                  => sprintf( __( 'Add New %s', 'mantle' ), $singular ),
-				/* translators: %s: Post type name. */
+				/* translators: %s: Singular post type name. */
 				'add_new_item'             => sprintf( __( 'Add New %s', 'mantle' ), $singular ),
-				/* translators: %s: Post type name. */
+				/* translators: %s: Singular post type name. */
 				'edit_item'                => sprintf( __( 'Edit %s', 'mantle' ), $singular ),
-				/* translators: %s: Post type name. */
+				/* translators: %s: Singular post type name. */
 				'new_item'                 => sprintf( __( 'New %s', 'mantle' ), $singular ),
-				/* translators: %s: Post type name. */
+				/* translators: %s: Singular post type name. */
 				'view_item'                => sprintf( __( 'View %s', 'mantle' ), $singular ),
-				/* translators: %s: Post type name. */
+				/* translators: %s: Plural post type name. */
 				'view_items'               => sprintf( __( 'View %s', 'mantle' ), $plural ),
-				/* translators: %s: Post type name. */
+				/* translators: %s: Plural post type name. */
 				'search_items'             => sprintf( __( 'Search %s', 'mantle' ), $plural ),
-				/* translators: %s: Post type name. */
+				/* translators: %s: Plural post type name. */
 				'not_found'                => sprintf( __( 'No %s found.', 'mantle' ), strtolower( $plural ) ),
-				/* translators: %s: Post type name. */
+				/* translators: %s: Plural post type name. */
 				'not_found_in_trash'       => sprintf( __( 'No %s found in Trash.', 'mantle' ), strtolower( $plural ) ),
 				'parent_item_colon'        => __( 'Parent Item:', 'mantle' ),
-				/* translators: %s: Post type name. */
+				/* translators: %s: Plural post type name. */
 				'all_items'                => sprintf( __( 'All %s', 'mantle' ), $plural ),
-				/* translators: %s: Post type name. */
+				/* translators: %s: Singular post type name. */
 				'archives'                 => sprintf( __( '%s Archives', 'mantle' ), $singular ),
-				/* translators: %s: Post type name. */
+				/* translators: %s: Singular post type name. */
 				'attributes'               => sprintf( __( '%s Attributes', 'mantle' ), $singular ),
-				/* translators: %s: Post type name. */
+				/* translators: %s: Singular post type name. */
 				'insert_into_item'         => sprintf( __( 'Insert into %s', 'mantle' ), strtolower( $singular ) ),
-				/* translators: %s: Post type name. */
+				/* translators: %s: Singular post type name. */
 				'uploaded_to_this_item'    => sprintf( __( 'Uploaded to this %s', 'mantle' ), strtolower( $singular ) ),
 				'featured_image'           => __( 'Featured Image', 'mantle' ),
 				'set_featured_image'       => __( 'Set featured image', 'mantle' ),
 				'remove_featured_image'    => __( 'Remove featured image', 'mantle' ),
 				'use_featured_image'       => __( 'Use as featured image', 'mantle' ),
 				'menu_name'                => $plural,
-				/* translators: %s: Post type name. */
+				/* translators: %s: Singular Post type name. */
 				'filter_items_list'        => sprintf( __( 'Filter %s list', 'mantle' ), strtolower( $plural ) ),
 				'filter_by_date'           => __( 'Filter by date', 'mantle' ),
-				/* translators: %s: Post type name. */
+				/* translators: %s: Plural post type name. */
 				'items_list_navigation'    => sprintf( __( '%s list navigation', 'mantle' ), $plural ),
-				/* translators: %s: Post type name. */
+				/* translators: %s: Plural post type name. */
 				'items_list'               => sprintf( __( '%s list', 'mantle' ), $plural ),
-				/* translators: %s: Post type name. */
+				/* translators: %s: Singular post type name. */
 				'item_published'           => sprintf( __( '%s published.', 'mantle' ), $singular ),
-				/* translators: %s: Post type name. */
+				/* translators: %s: Singular post type name. */
 				'item_published_privately' => sprintf( __( '%s published privately.', 'mantle' ), $singular ),
-				/* translators: %s: Post type name. */
+				/* translators: %s: Singular post type name. */
 				'item_reverted_to_draft'   => sprintf( __( '%s reverted to draft.', 'mantle' ), $singular ),
-				/* translators: %s: Post type name. */
+				/* translators: %s: Singular post type name. */
 				'item_trashed'             => sprintf( __( '%s trashed.', 'mantle' ), $singular ),
-				/* translators: %s: Post type name. */
+				/* translators: %s: Singular post type name. */
 				'item_scheduled'           => sprintf( __( '%s scheduled.', 'mantle' ), $singular ),
-				/* translators: %s: Post type name. */
+				/* translators: %s: Singular post type name. */
 				'item_updated'             => sprintf( __( '%s updated.', 'mantle' ), $singular ),
-				/* translators: %s: Post type name. */
+				/* translators: %s: Singular post type name. */
 				'item_link'                => sprintf( __( '%s Link', 'mantle' ), $singular ),
-				/* translators: %s: Post type name. */
+				/* translators: %s: Singular post type name. */
 				'item_link_description'    => sprintf( __( 'A link to a %s.', 'mantle' ), strtolower( $singular ) ),
 			],
 		);

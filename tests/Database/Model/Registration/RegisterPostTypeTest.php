@@ -117,9 +117,7 @@ class Testable_Registration_Post_Type extends Post implements Registrable {
 	public static $object_name = 'test-post-type';
 
 	public static function get_registration_args(): array {
-		return array(
-			'public' => true,
-		);
+		return [ 'public' => true ];
 	}
 }
 
