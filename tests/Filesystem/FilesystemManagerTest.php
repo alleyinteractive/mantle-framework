@@ -17,7 +17,11 @@ class FilesystemManagerTest extends FrameworkTestCase {
 
 		m::close();
 
-		( new Filesystem() )->delete( wp_upload_dir()['basedir'] . '/file.txt' );
+		$filesystem = new Filesystem();
+
+		if ( $filesystem->exists( wp_upload_dir()['basedir'] . '/file.txt' ) ) {
+			$filesystem->delete( wp_upload_dir()['basedir'] . '/file.txt' );
+		}
 	}
 
 	public function test_default_disk() {
