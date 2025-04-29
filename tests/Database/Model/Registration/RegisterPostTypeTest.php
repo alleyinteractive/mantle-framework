@@ -9,6 +9,8 @@ use Mantle\Database\Model\Registration\Register_Post_Type;
 use Mantle\Database\Model\Registration\Register_Rest_Fields;
 use Mockery as m;
 use Mantle\REST_API\Registered_REST_Field;
+use Mantle\Support\Registration\Post_Type;
+use Mantle\Support\Registration\Post_Type_Arguments;
 use Mantle\Testing\FrameworkTestCase;
 
 class RegisterPostTypeTest extends FrameworkTestCase {
@@ -25,20 +27,31 @@ class RegisterPostTypeTest extends FrameworkTestCase {
 		remove_all_actions( 'rest_api_init' );
 	}
 
-	public function test_register_post_type() {
+	public function test_register_post_type_fluent(): void {
+		$this->assertFalse( post_type_exists( Testable_Registration_Post_Type_Fluent::$object_name ) );
+
+		new Testable_Registration_Post_Type_Fluent();
+
+		// Allow the post type to be registered.
+		do_action( 'init' );
+
+		$this->assertTrue( post_type_exists( Testable_Registration_Post_Type_Fluent::$object_name ) );
+
+		// Check the arguments.
+		$object = get_post_type_object( Testable_Registration_Post_Type_Fluent::$object_name );
+
+		$this->assertFalse( $object->show_in_menu );
+		$this->assertEquals( 'Testable Post Types', $object->label );
+	}
+
+	public function test_register_post_type_legacy_arguments(): void {
 		$post_type = 'test-post-type';
 
 		$this->assertFalse( post_type_exists( $post_type ) );
 
-		$mock = m::mock( Register_Post_Type::class );
-		$mock->shouldReceive( 'get_object_name' )->andReturn( $post_type );
-		$mock->shouldReceive( 'get_registration_args' )->andReturn(
-			array(
-				'public' => true,
-			)
-		);
+		$this->assertFalse( post_type_exists( Testable_Registration_Post_Type::$object_name ) );
 
-		$mock->boot_register_post_type();
+		new Testable_Registration_Post_Type();
 
 		// Allow the post type to be registered.
 		do_action( 'init' );
@@ -95,6 +108,29 @@ class RegisterPostTypeTest extends FrameworkTestCase {
 
 		// Verify the update callback.
 		$this->assertEquals( 'testable_update_callback', $field->update_callback( 'test', 'post', 'testable-field', $request, 'post' ) );
+	}
+}
+
+class Testable_Registration_Post_Type extends Post implements Registrable {
+	use Register_Post_Type;
+
+	public static $object_name = 'test-post-type';
+
+	public static function get_registration_args(): array {
+		return [ 'public' => true ];
+	}
+}
+
+class Testable_Registration_Post_Type_Fluent extends Post implements Registrable {
+	use Register_Post_Type;
+
+	public static $object_name = 'test-post-type';
+
+	public static function get_registration_args(): array {
+		return Post_Type_Arguments::make()
+			->label( 'Testable Post Type' )
+			->show_in_menu( false )
+			->all();
 	}
 }
 

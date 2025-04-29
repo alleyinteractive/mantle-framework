@@ -159,7 +159,7 @@ class Factory implements Contract {
 
 		$this->current = end( $this->stack ) ?: null;
 
-		if ( ! $this->current ) {
+		if ( ! $this->current instanceof View ) {
 			$this->current = null;
 		}
 

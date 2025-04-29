@@ -46,7 +46,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 			$this->decoded = is_array( $decoded ) ? $decoded : null;
 		}
 
-		if ( is_null( $this->decoded ) || false === $this->decoded ) {
+		if ( is_null( $this->decoded ) || false == $this->decoded ) { // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 			PHPUnit::fail( 'Invalid JSON was returned from the response.' );
 		}
 	}
