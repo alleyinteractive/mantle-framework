@@ -95,6 +95,29 @@ class Pending_Testable_Request {
 	}
 
 	/**
+	 * Specify the basic authentication username and password for the request.
+	 *
+	 * @param string $username Username.
+	 * @param string $password Password.
+	 */
+	public function with_basic_auth( string $username, string $password ): static {
+		return $this->with_header(
+			'Authorization',
+			'Basic ' . base64_encode( $username . ':' . $password )
+		);
+	}
+
+	/**
+	 * Specify an authorization token for the request.
+	 *
+	 * @param  string $token
+	 * @param  string $type
+	 */
+	public function with_token( string $token, string $type = 'Bearer' ): static {
+		return $this->with_header( 'Authorization', trim( $type . ' ' . $token ) );
+	}
+
+	/**
 	 * Define whether the request should be forced to be made over HTTPS.
 	 *
 	 * This method will override the protocol of the URL passed when creating a
@@ -201,6 +224,10 @@ class Pending_Testable_Request {
 		$formatted_headers = [];
 
 		foreach ( $headers as $name => $value ) {
+			if ( is_array( $value ) ) {
+				$value = end( $value );
+			}
+
 			$name = strtr( strtoupper( $name ), '-', '_' );
 
 			$formatted_headers[ $this->format_server_header_key( $name ) ] = $value;
@@ -215,7 +242,7 @@ class Pending_Testable_Request {
 	 * @param string $name Header name.
 	 * @return string
 	 */
-	protected function format_server_header_key( $name ) {
+	protected function format_server_header_key( string $name ): string {
 		if ( ! Str::starts_with( $name, 'HTTP_' ) && 'CONTENT_TYPE' !== $name && 'REMOTE_ADDR' !== $name ) {
 			return 'HTTP_' . $name;
 		}
@@ -463,7 +490,7 @@ class Pending_Testable_Request {
 	 * @param array  $data   POST data to set.
 	 * @param array  $cookies Cookies to be sent with the request.
 	 */
-	protected function set_server_state( $method, $url, $server, $data, array $cookies = [] ): void {
+	protected function set_server_state( string $method, string $url, array $server, array $data, array $cookies = [] ): void {
 		// phpcs:disable WordPress.Security.NonceVerification
 		$_SERVER['REQUEST_METHOD'] = strtoupper( $method );
 		$_SERVER['SERVER_PORT']    = '80';

@@ -32,6 +32,8 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		putenv( 'MANTLE_EXPERIMENTAL_TESTING_USE_HOME_URL_HOST=' );
 
 		remove_all_actions( 'template_redirect' );
+
+		$this->flush_default_headers();
 	}
 
 	public function test_get_home() {
@@ -45,6 +47,78 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			->assertQueryTrue( 'is_single', 'is_singular' )
 			->assertQueriedObjectId( $post_id )
 			->assertSee( get_the_title( $post_id ) );
+	}
+
+	public function test_with_headers(): void {
+		$capture = null;
+
+		$this->app['router']->get( '/example/', function ( Request $request ) use (&$capture) {
+			$capture = $request->headers->all();
+
+			return '1234';
+		} );
+
+		$this
+			->with_header( 'X-Test', 'test' )
+			->with_header( 'X-Another-Test', 'another-test' )
+			->get( '/example/' )
+			->assertOk()
+			->assertContent( '1234' );
+
+		$this->assertEquals( [
+			'host' => [ WP_TESTS_DOMAIN ],
+			'x-test' => [ 'test' ],
+			'x-another-test' => [ 'another-test' ],
+		], $capture );
+
+		$this->assertEquals( 'test', $_SERVER['HTTP_X_TEST'] );
+		$this->assertEquals( 'test', $_SERVER['HTTP_X_TEST'] );
+		$this->assertEquals( 'another-test', $_SERVER['HTTP_X_ANOTHER_TEST'] );
+
+		$this->assertEquals( [
+			'Host' => WP_TESTS_DOMAIN,
+			'X-Test' => 'test',
+			'X-Another-Test' => 'another-test',
+		], getallheaders() );
+	}
+
+	public function test_follow_redirects(): void {
+		$this->app['router']->get( '/redirect/', function () {
+			return redirect()->to( '/redirected/' );
+		} );
+
+		$this->app['router']->get( '/redirected/', function () {
+			return 'redirected';
+		} );
+
+		$this->following_redirects()
+			->get( '/redirect/' )
+			->assertOk()
+			->assertContent( 'redirected' );
+	}
+
+	public function test_referer(): void {
+		$this->app['router']->get( '/example/', function ( Request $request ) {
+			return $request->headers->get( 'referer' );
+		} );
+
+		$this
+			->from( 'https://example.com/test/' )
+			->get( '/example/' )
+			->assertOk()
+			->assertContent( 'https://example.com/test/' );
+	}
+
+	public function test_with_cookie(): void {
+		$this->app['router']->get( '/example/', function ( Request $request ) {
+			return $request->cookies->all();
+		} );
+
+		$this
+			->with_cookie( 'test', 'value' )
+			->get( '/example/' )
+			->assertOk()
+			->assertContent( json_encode( [ 'test' => 'value' ] ) );
 	}
 
 	public function test_fluent() {
@@ -65,10 +139,10 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 
 		// @phpstan-ignore-next-line
 		$this->assertNotEmpty( $_SERVER['__request_headers']['X-Test'] ?? null );
-		$this->assertEquals( 'test', $_SERVER['__request_headers']['X-Test'][0] );
+		$this->assertEquals( 'test', $_SERVER['__request_headers']['X-Test'] );
 
 		$this->assertNotEmpty( $_SERVER['__request_headers']['X-Default'] );
-		$this->assertEquals( 'default', $_SERVER['__request_headers']['X-Default'][0] );
+		$this->assertEquals( 'default', $_SERVER['__request_headers']['X-Default'] );
 
 		remove_all_actions( 'template_redirect' );
 	}

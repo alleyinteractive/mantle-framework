@@ -41,6 +41,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The Console Kernel will attempt to load the commands within `app/console`
   directory and from `routes/console.php` if it exists without needing to define
   a `commands()` method in your application's console kernel.
+- Changed the `$_SERVER` variables set for HTTP headers when testing to set it
+  as the string value rather than an array of strings.
 
 ### Fixed
 
