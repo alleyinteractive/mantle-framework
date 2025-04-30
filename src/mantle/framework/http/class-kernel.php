@@ -12,7 +12,6 @@ use Mantle\Contracts\Application;
 use Mantle\Contracts\Http\Kernel as Kernel_Contract;
 use Mantle\Contracts\Http\Routing\Router;
 use Mantle\Contracts\Kernel as Core_Kernel_Contract;
-use Mantle\Contracts\Providers\Route_Service_Provider as Route_Service_Provider_Contract;
 use Mantle\Facade\Facade;
 use Mantle\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -123,10 +122,9 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	/**
 	 * Terminate the kernel.
 	 *
-	 * @param Request $request Request instance.
-	 * @param mixed   $response Response instance.
+	 * @param mixed $response Response instance.
 	 */
-	public function terminate( Request $request, mixed $response ): void {
+	public function terminate( mixed $response = null ): void {
 		// Send the request early to allow for the termination callback to be fired
 		// after the response is sent.
 		if ( function_exists( 'fastcgi_finish_request' ) ) {
@@ -147,16 +145,18 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 	protected function handle_request(): void {
 		$response = $this->send_request_through_router( $this->request );
 
-		if ( ! $response instanceof \Symfony\Component\HttpFoundation\Response ) {
+		if ( ! $response instanceof Response ) {
 			// Register the termination callback to be called on shutdown.
-			add_action( 'shutdown', fn () => $this->terminate( $this->request, null ), 100 );
+			if ( ! has_action( 'shutdown', [ $this, 'terminate' ] ) ) {
+				add_action( 'shutdown', [ $this, 'terminate' ], PHP_INT_MAX );
+			}
 
 			return;
 		}
 
 		$response->send();
 
-		$this->terminate( $this->request, $response );
+		$this->terminate( $response );
 
 		exit;
 	}

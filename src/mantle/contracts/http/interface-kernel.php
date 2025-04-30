@@ -23,8 +23,7 @@ interface Kernel {
 	/**
 	 * Terminate the HTTP request.
 	 *
-	 * @param Request  $request  Request object.
 	 * @param Response $response Response object.
 	 */
-	public function terminate( Request $request, mixed $response ): void;
+	public function terminate( mixed $response = null ): void;
 }

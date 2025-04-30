@@ -184,12 +184,11 @@ class Testable_Http_Kernel implements \Mantle\Contracts\Http\Kernel {
 	/**
 	 * Terminate the HTTP request.
 	 *
-	 * @param Request  $request  Request object.
 	 * @param mixed    $response Response object.
 	 * @return void
 	 */
-	public function terminate( Request $request, mixed $response ): void {
-		$_SERVER['__testable_http_kernel_terminate__'] = $request;
+	public function terminate( mixed $response = null ): void {
+		$_SERVER['__testable_http_kernel_terminate__'] = $response;
 	}
 }
 
