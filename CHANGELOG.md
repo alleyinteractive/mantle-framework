@@ -41,6 +41,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The Console Kernel will attempt to load the commands within `app/console`
   directory and from `routes/console.php` if it exists without needing to define
   a `commands()` method in your application's console kernel.
+- Change the priority of the `terminate` callback for the application's kernel
+  to `PHP_INT_MAX` to prevent interfering with Query Monitor which outputs data
+  at `shutdown` priority 9.
 
 ### Fixed
 
