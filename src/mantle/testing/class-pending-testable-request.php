@@ -369,13 +369,12 @@ class Pending_Testable_Request {
 			} catch ( WP_Redirect_Exception $e ) {
 				// Handle a redirect during the early setup of WordPress (parse_query).
 				// Prevent an exception from being thrown.
-				$response_status = $e->status;
+				$response_status  = $e->status;
+				$redirected       = true;
+				$response_content = ob_get_clean();
 
 				$response_headers['Location'] = $e->location;
 
-				$redirected = true;
-
-				$response_content = ob_get_clean();
 			} catch ( \Exception $e ) {
 				// If an exception occurs, make sure the output buffer is closed before
 				// the exception continues to the caller.
