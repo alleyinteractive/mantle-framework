@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+
+- Ensure that an early redirect in `parse_query` prevents the template from being
+  loaded.
+
 ### Added
 
 - Added `Blade` facade with `Blade::render_string()` method to render a string

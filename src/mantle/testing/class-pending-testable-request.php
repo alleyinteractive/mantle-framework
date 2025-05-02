@@ -359,7 +359,8 @@ class Pending_Testable_Request {
 			add_filter( 'wp_headers', $intercept_headers, 9999 );
 			add_filter( 'wp_redirect', $intercept_redirect, 9999, 2 ); // @phpstan-ignore-line Filter callback
 
-			$ob_level = ob_get_level();
+			$ob_level   = ob_get_level();
+			$redirected = false;
 
 			ob_start();
 
@@ -371,6 +372,10 @@ class Pending_Testable_Request {
 				$response_status = $e->status;
 
 				$response_headers['Location'] = $e->location;
+
+				$redirected = true;
+
+				$response_content = ob_get_clean();
 			} catch ( \Exception $e ) {
 				// If an exception occurs, make sure the output buffer is closed before
 				// the exception continues to the caller.
@@ -388,7 +393,7 @@ class Pending_Testable_Request {
 				$response_content = $this->rest_api_response['body'];
 				$response_headers = array_merge( (array) $response_headers, $this->rest_api_response['headers'] );
 				$response_status  = $this->rest_api_response['status'];
-			} else {
+			} elseif ( ! $redirected ) {
 				try {
 					// Execute the request, inasmuch as WordPress would.
 					require ABSPATH . WPINC . '/template-loader.php';
