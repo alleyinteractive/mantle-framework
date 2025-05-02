@@ -46,6 +46,12 @@ class FilesystemTest extends TestCase {
 		$this->assertStringEqualsFile( static::$temp_dir . '/file.txt', 'Hello World' );
 	}
 
+	public function testPutJson() {
+		$files = new Filesystem();
+		$files->put_json( static::$temp_dir . '/file.json', [ 'foo' => 'bar' ] );
+		$this->assertStringEqualsFile( static::$temp_dir . '/file.json', '{"foo":"bar"}' );
+	}
+
 	public function testReplaceCreatesFile() {
 		$tempFile = static::$temp_dir . '/file.txt';
 

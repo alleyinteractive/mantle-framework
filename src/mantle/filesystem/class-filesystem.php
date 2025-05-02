@@ -141,7 +141,7 @@ class Filesystem {
 	 * @param  string $path
 	 * @return string
 	 */
-	public function hash( $path ) {
+	public function hash( string $path ) {
 		return md5_file( $path );
 	}
 
@@ -152,8 +152,25 @@ class Filesystem {
 	 * @param  string $contents
 	 * @param  bool   $lock
 	 */
-	public function put( $path, $contents, $lock = false ): int|false {
+	public function put( string $path, string $contents, bool $lock = false ): int|false {
 		return file_put_contents( $path, $contents, $lock ? LOCK_EX : 0 );
+	}
+
+	/**
+	 * Write the contents of a file as JSON.
+	 *
+	 * @param  string $path
+	 * @param  mixed  $data
+	 * @param  int    $options
+	 */
+	public function put_json( string $path, mixed $data, int $options = 0 ): int|false {
+		$contents = json_encode( $data, $options );
+
+		if ( false === $contents ) {
+			return false;
+		}
+
+		return $this->put( $path, $contents );
 	}
 
 	/**
@@ -162,7 +179,7 @@ class Filesystem {
 	 * @param  string $path
 	 * @param  string $content
 	 */
-	public function replace( $path, $content ): void {
+	public function replace( string $path, string $content ): void {
 		// If the path already exists and is a symlink, get the real path...
 		clearstatcache( true, $path );
 
