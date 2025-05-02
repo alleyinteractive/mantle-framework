@@ -73,7 +73,7 @@ class Router implements Router_Contract {
 	/**
 	 * Data Object Router
 	 */
-	protected Entity_Router $model_router;
+	// protected Entity_Router $model_router;
 
 	/**
 	 * Flag or callback to determine if requests should pass through to WordPress.
@@ -545,31 +545,55 @@ class Router implements Router_Contract {
 	 *                                         the register_rest_route() call. Not used if $callback
 	 *                                         is a closure.
 	 */
-	public function rest_api( string $namespace, callable|string $callback, callable|array|string $args = [] ): Rest_Route_Registrar {
-		$registrar = new Rest_Route_Registrar( $this, $namespace );
+	public function rest_api( string $namespace, callable|string $callback, callable|array|string $args = [] ): ?Route {
+		$prefix          = $this->get_last_group_prefix();
+		$rest_api_prefix = rest_get_url_prefix();
 
-		if ( is_callable( $callback ) ) {
-			$this->rest_registrar = $registrar;
-
-			$callback();
-
-			$this->rest_registrar = null;
-		} else {
-			if ( is_callable( $args ) ) {
-				$args = [
-					'callback' => $args,
-				];
-			}
-
-			// Include the group attributes.
-			if ( $this->has_group_stack() ) {
-				$args = $this->merge_with_last_group( $args );
-			}
-
-			$registrar->register_route( $this->prefix( $callback ), $args );
+		if ( ! str_starts_with( $prefix, $rest_api_prefix ) ) {
+			$prefix = rtrim( $rest_api_prefix . '/' . trim( $prefix, '/' ), '/' );
 		}
 
-		return $registrar;
+		if ( is_string( $callback ) ) {
+			return $this->get( "{$prefix}/{$callback}", $args );
+		}
+
+		$this->group( [
+			'prefix'    => $prefix,
+			'namespace' => $namespace,
+		], $callback );
+
+		return null;
+
+		dd($callback);
+		// }
+		// $group = $this->group( [
+		// 	'prefix'    => rest_get_url_prefix(),
+		// 	'namespace' => $namespace,
+		// ])
+		// $registrar = new Rest_Route_Registrar( $this, $namespace );
+
+		// if ( is_callable( $callback ) ) {
+		// 	$this->rest_registrar = $registrar;
+
+		// 	$callback();
+
+		// 	$this->rest_registrar = null;
+		// } else {
+		// 	if ( is_callable( $args ) ) {
+		// 		$args = [
+		// 			'callback' => $args,
+		// 		];
+		// 	}
+
+		// 	// Include the group attributes.
+		// 	if ( $this->has_group_stack() ) {
+		// 		$args = $this->merge_with_last_group( $args );
+		// 	}
+
+		// 	$registrar->register_route( $this->prefix( $callback ), $args );
+		// }
+
+		// return $registrar;
 	}
 
 	/**
@@ -665,5 +689,9 @@ class Router implements Router_Contract {
 		$status = $this->pass_requests_to_wordpress;
 
 		return is_callable( $status ) ? (bool) $status( $request ) : $status;
+	}
+
+	public function register_rest_routes(): void {
+		dd($this->routes);
 	}
 }

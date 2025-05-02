@@ -7,11 +7,14 @@
 
 namespace Mantle\Http\Routing\Concerns;
 
+use Closure;
 use Mantle\Http\Routing\Route;
 use Mantle\Support\Arr;
 
 /**
  * Route Group functions.
+ *
+ * @mixin \Mantle\Http\Routing\Router
  */
 trait Route_Group {
 	/**
@@ -43,7 +46,7 @@ trait Route_Group {
 	 * @param  array<mixed>    $attributes
 	 * @param  \Closure|string $routes
 	 */
-	public function group( array $attributes, $routes ): void {
+	public function group( array $attributes, Closure|string $routes ): void {
 		$this->update_group_stack( $attributes );
 
 		// Once we have updated the group stack, we'll load the provided routes and

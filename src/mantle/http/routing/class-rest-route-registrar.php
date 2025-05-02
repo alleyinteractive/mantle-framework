@@ -43,7 +43,7 @@ class Rest_Route_Registrar {
 	 * @param string                $route Route to register.
 	 * @param array<mixed>|callable $args Arguments or callback for the route.
 	 */
-	public function register_route( string $route, $args = [] ): void {
+	public function register_route( string $route, array|callable $args = [] ): void {
 		$args = $this->normalize_args( $args, $route );
 
 		if ( $this->should_register_now() ) {

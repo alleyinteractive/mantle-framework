@@ -13,12 +13,14 @@ class RestApiRoutingTest extends FrameworkTestCase {
 	use Refresh_Database;
 
 	public function test_generic_route() {
+		// Registering a route with a namespace, route, and callback. Assumed GET.
 		Route::rest_api(
 			'namespace/v1',
 			'/example-closure-third',
 			fn () => 'example-closure-third',
 		);
 
+		// Registering a route with a namespace, route, and callback in an array format.
 		Route::rest_api(
 			'namespace/v1',
 			'/example-array-third',
@@ -27,6 +29,7 @@ class RestApiRoutingTest extends FrameworkTestCase {
 			]
 		);
 
+		// Registering a group of routes with a base namespace prefix.
 		Route::rest_api(
 			'namespace/v1',
 			function() {
@@ -41,6 +44,7 @@ class RestApiRoutingTest extends FrameworkTestCase {
 			}
 		);
 
+		// Registering a group of routes from controller methods.
 		Route::rest_api(
 			'namespace/v1',
 			function () {
@@ -51,6 +55,7 @@ class RestApiRoutingTest extends FrameworkTestCase {
 			},
 		);
 
+		// Registering a route with a callable function name.
 		Route::rest_api(
 			'namespace/v1',
 			'/example-string-function',

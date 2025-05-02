@@ -15,6 +15,10 @@ use Mantle\Support\Arr;
 /**
  * Router Registrar
  *
+ * Provides a fluent interface for registering routes with the router. This
+ * class will be called to setup attributes such as middleware, prefix, etc.
+ * that should be shared across multiple routes that are registered in a group.
+ *
  * @method \Mantle\Http\Routing\Route_Registrar as(string $value)
  * @method \Mantle\Http\Routing\Route_Registrar domain(string $value)
  * @method \Mantle\Http\Routing\Route_Registrar middleware(array<string>|string|null $middleware)
@@ -51,7 +55,7 @@ class Route_Registrar {
 	 *
 	 * @var array<mixed>
 	 */
-	protected $allowed_attributes = [
+	protected array $allowed_attributes = [
 		'as_prefix',
 		'as',
 		'domain',
@@ -67,7 +71,7 @@ class Route_Registrar {
 	 *
 	 * @var array<mixed>
 	 */
-	protected $aliases = [
+	protected array $aliases = [
 		'as'   => 'as_prefix',
 		'name' => 'as_prefix',
 	];
@@ -77,8 +81,7 @@ class Route_Registrar {
 	 *
 	 * @param Router $router Router instance.
 	 */
-	public function __construct( protected ?Router $router ) {
-	}
+	public function __construct( protected ?Router $router ) {}
 
 	/**
 	 * Set the value for a given attribute.
@@ -103,7 +106,7 @@ class Route_Registrar {
 	 *
 	 * @param  \Closure|string $callback
 	 */
-	public function group( $callback ): static {
+	public function group( callable|string $callback ): static {
 		$this->router->group( $this->attributes, $callback );
 
 		return $this;
@@ -115,9 +118,8 @@ class Route_Registrar {
 	 * @param  string                            $method
 	 * @param  string                            $uri
 	 * @param  \Closure|array<mixed>|string|null $action
-	 * @return \Mantle\Http\Routing\Route
 	 */
-	protected function register_route( $method, $uri, $action = null ) {
+	protected function register_route( string $method, string $uri, Closure|array|string|null $action = null ): Route {
 		if ( ! is_array( $action ) ) {
 			$action = array_merge( $this->attributes, $action ? [ 'callback' => $action ] : [] );
 		}
@@ -131,7 +133,7 @@ class Route_Registrar {
 	 * @param  \Closure|array<mixed>|string|null $action
 	 * @return array<mixed>
 	 */
-	protected function compile_action( $action ) {
+	protected function compile_action( Closure|array|string|null $action ): array {
 		if ( is_null( $action ) ) {
 			return $this->attributes;
 		}
@@ -150,7 +152,7 @@ class Route_Registrar {
 	 * @param Closure|string       $route Route name or callback to register more routes.
 	 * @param array<mixed>|Closure $args Route arguments.
 	 */
-	public function rest_api( string $namespace, $route, $args = [] ): Rest_Route_Registrar {
+	public function rest_api( string $namespace, Closure|string $route, array|Closure $args = [] ): Rest_Route_Registrar {
 		if ( $args instanceof Closure ) {
 			$args = [
 				'callback' => $args,
@@ -173,7 +175,7 @@ class Route_Registrar {
 	 *
 	 * @throws BadMethodCallException Thrown on missing method.
 	 */
-	public function __call( $method, $parameters ) {
+	public function __call( string $method, array $parameters ) {
 		if ( in_array( $method, $this->passthru, true ) ) {
 			return $this->register_route( $method, ...$parameters );
 		}

@@ -150,4 +150,9 @@ interface Router {
 	 * @param Request $request Request object.
 	 */
 	public function should_pass_through_request( Request $request ): bool;
+
+	/**
+	 * Register the registered REST API routes with WordPress.
+	 */
+	public function register_rest_routes(): void;
 }
