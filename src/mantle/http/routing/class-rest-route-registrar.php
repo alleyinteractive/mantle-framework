@@ -39,13 +39,49 @@ class Rest_Route_Registrar extends Route_Registrar {
 	 *
 	 * @param string|string[] $method HTTP methods.
 	 * @param string $uri
-	 * @param Closure|array<mixed>|string|null $action Route action.
+	 * @param Closure|array<mixed>|string|null $action Route action or arguments.
 	 */
-	public function register_route( string|array $method, string $uri, Closure|array|string|null $action = null ): Route {
-		return $this->router->add_rest_route( Arr::wrap( $method ), $uri, $this->compile_action( $action ) );
+	public function register_route( string|array $method, string $uri, Closure|array|string $action = null ): Route {
+		$method = Arr::wrap( $method );
+
+		return $this->router->add_rest_route(
+			methods: $method,
+			uri: $uri,
+			arguments: $this->normalize_arguments( $action, $uri, $method ),
+		);
 	}
-	// 	add_action( 'rest_api_init', [ $this, 'register_routes' ], 20 );
-	// }
+
+	/**
+	 * Normalize route arguments creation of the Route object.
+	 *
+	 * @param Closure|array<mixed>|string $arguments Route arguments or callback.
+	 * @param string $uri Route URI.
+	 * @param string[] $methods HTTP methods.
+	 * @return array<mixed>
+	 */
+	protected function normalize_arguments( Closure|array|string $arguments, string $uri, array $methods ): array {
+		$arguments = parent::normalize_arguments( $arguments, $uri, $methods );
+
+		// Wrap the callback to provide a better integration with the router and the
+		// rest of the Mantle framework.
+		$arguments['callback'] = $this->wrap_callback(
+			$arguments['callback'],
+			$uri,
+		);
+
+		// Ensure the namespace is forwarded to the route.
+		$arguments['namespace'] = $this->namespace;
+
+		// The REST API expects the methods to be passed in the arguments.
+		$arguments['methods'] = $methods;
+
+		// Ensure the route has a permission callback.
+		if ( empty( $arguments['permission_callback'] ) ) {
+			$arguments['permission_callback'] = '__return_true';
+		}
+
+		return $arguments;
+	}
 
 	/**
 	 * Register a REST API Route.
@@ -90,123 +126,105 @@ class Rest_Route_Registrar extends Route_Registrar {
 	// 	return $args;
 	// }
 
-	// /**
-	//  * Wrap the route callback with a valid WordPress REST response.
-	//  *
-	//  * @param mixed  $callback Callback to invoke.
-	//  * @param string $route Route name.
-	//  */
-	// protected function wrap_callback( mixed $callback, string $route ): callable {
-	// 	$callback = $this->parse_route_action( $callback, $route );
+	/**
+	 * Wrap the route callback with a valid WordPress REST response.
+	 *
+	 * By wrapping the callback we can provide the same type of HTTP routing that
+	 * we use for web routing with the WordPress REST API. For example, we can use
+	 * a controller method that has type hints of container bindings and
+	 * automatically resolve them like we do for web routes.
+	 *
+	 * @param mixed  $callback Callback to invoke.
+	 * @param string $route Route name.
+	 */
+	protected function wrap_callback( mixed $callback, string $route ): callable {
+		$callback = $this->parse_route_action( $callback, $route );
 
-	// 	return function ( WP_REST_Request $request ) use ( $callback, $route ) {
-	// 		$middleware = $request->get_attributes()['middleware'] ?? [];
+		return function ( WP_REST_Request $request ) use ( $callback, $route ) {
+			$middleware = $request->get_attributes()['middleware'] ?? [];
 
-	// 		if ( empty( $middleware ) ) {
-	// 			return rest_ensure_response( $callback( $request ) );
-	// 		}
+			if ( empty( $middleware ) ) {
+				return rest_ensure_response( $callback( $request ) );
+			}
 
-	// 		$container = $this->router->get_container();
+			$container = $this->router->get_container();
 
-	// 		$container['events']->dispatch(
-	// 			new Route_Matched(
-	// 				[
-	// 					'namespace' => $this->namespace,
-	// 					'route'     => $route,
-	// 				],
-	// 				$request,
-	// 			)
-	// 		);
+			$container['events']->dispatch(
+				new Route_Matched(
+					[
+						'namespace' => $this->namespace,
+						'route'     => $route,
+					],
+					$request,
+				)
+			);
 
-	// 		return rest_ensure_response(
-	// 			( new Pipeline( $container ) )
-	// 				->send( $request )
-	// 				->through( $this->gather_route_middleware( $middleware ) )
-	// 				->then(
-	// 					fn ( WP_REST_Request $request ) => $callback( $request ),
-	// 				)
-	// 		);
-	// 	};
-	// }
+			return rest_ensure_response(
+				( new Pipeline( $container ) )
+					->send( $request )
+					->through( $this->gather_route_middleware( $middleware ) )
+					->then(
+						fn ( WP_REST_Request $request ) => $callback( $request ),
+					)
+			);
+		};
+	}
 
-	// /**
-	//  * Gather the middleware for the given route with resolved class names.
-	//  *
-	//  * @param string[] $middleware Middleware for the route.
-	//  * @return array<string>
-	//  */
-	// public function gather_route_middleware( array $middleware ): array {
-	// 	return collect( $middleware )
-	// 		->map(
-	// 			fn ( $name ) => (array) Middleware_Name_Resolver::resolve(
-	// 				$name,
-	// 				$this->router->get_middleware(),
-	// 				$this->router->get_middleware_groups()
-	// 			)
-	// 		)
-	// 		->flatten()
-	// 		->values()
-	// 		->to_array();
-	// }
+	/**
+	 * Gather the middleware for the given route with resolved class names.
+	 *
+	 * @param string[] $middleware Middleware for the route.
+	 * @return array<string>
+	 */
+	public function gather_route_middleware( array $middleware ): array {
+		return collect( $middleware )
+			->map(
+				fn ( $name ) => (array) Middleware_Name_Resolver::resolve(
+					$name,
+					$this->router->get_middleware(),
+					$this->router->get_middleware_groups()
+				)
+			)
+			->flatten()
+			->values()
+			->to_array();
+	}
 
-	// /**
-	//  * Register the queued routes.
-	//  */
-	// public function register_routes(): void {
-	// 	if ( empty( $this->routes ) ) {
-	// 		return;
-	// 	}
+	/**
+	 * Parse a route action and return the callback.
+	 *
+	 * Supports closures, invokable classes, and class methods.
+	 *
+	 * @throws InvalidArgumentException If the action is not supported.
+	 *
+	 * @param mixed  $action Route action.
+	 * @param string $route Route path.
+	 */
+	private function parse_route_action( mixed $action, string $route ): callable {
+		if ( is_callable( $action ) ) {
+			return $action;
+		}
 
-	// 	foreach ( $this->routes as $route ) {
-	// 		register_rest_route( $this->namespace, ...$route );
-	// 	}
+		if ( is_string( $action ) ) {
+			// Check for Controller@method callback.
+			if ( Str::contains( $action, '@' ) ) {
+				[ $controller, $method ] = explode( '@', $action );
 
-	// 	$this->routes = [];
-	// }
+				return [ $this->router->get_container()->make( $controller ), $method ];
+			}
 
-	// /**
-	//  * Determine if the routes should be registered now because `rest_api_init`
-	//  * was already fired.
-	//  */
-	// protected function should_register_now(): bool {
-	// 	return function_exists( 'did_action' ) && (bool) did_action( 'rest_api_init' );
-	// }
+			// Check for invokable classes.
+			if ( class_exists( $action ) && method_exists( $action, '__invoke' ) ) {
+				return [ $this->router->get_container()->make( $action ), '__invoke' ];
+			}
+		}
 
-	// /**
-	//  * Parse a route action and return the callback.
-	//  *
-	//  * Supports closures, invokable classes, and class methods.
-	//  *
-	//  * @throws InvalidArgumentException If the action is not supported.
-	//  *
-	//  * @param mixed  $action Route action.
-	//  * @param string $route Route path.
-	//  */
-	// protected function parse_route_action( mixed $action, string $route ): callable {
-	// 	if ( is_callable( $action ) ) {
-	// 		return $action;
-	// 	}
+		if ( is_array( $action ) ) {
+			[ $controller, $method ] = $action;
 
-	// 	if ( is_string( $action ) ) {
-	// 		// Check for Controller@method callback.
-	// 		if ( Str::contains( $action, '@' ) ) {
-	// 			[ $controller, $method ] = explode( '@', $action );
+			return [ $this->router->get_container()->make( $controller ), $method ];
+		}
 
-	// 			return [ $this->router->get_container()->make( $controller ), $method ];
-	// 		}
-
-	// 		// Check for invokable classes.
-	// 		if ( class_exists( $action ) && method_exists( $action, '__invoke' ) ) {
-	// 			return [ $this->router->get_container()->make( $action ), '__invoke' ];
-	// 		}
-	// 	}
-
-	// 	if ( is_array( $action ) ) {
-	// 		[ $controller, $method ] = $action;
-
-	// 		return [ $this->router->get_container()->make( $controller ), $method ];
-	// 	}
-
-	// 	throw new InvalidArgumentException( "Invalid REST API route action for [{$route}]: " . print_r( $action, true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
-	// }
+		throw new InvalidArgumentException( "Invalid REST API route action for [{$route}]: " . print_r( $action, true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
+	}
 }

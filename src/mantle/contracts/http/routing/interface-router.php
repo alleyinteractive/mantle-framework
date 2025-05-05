@@ -16,9 +16,9 @@ use Symfony\Component\Routing\RouteCollection;
  * Router Contract
  */
 interface Router {
-	public function add_route( array $methods, string $uri, mixed $action ): ?Route;
+	public function add_route( array $methods, string $uri, array $arguments ): Route;
 
-	public function add_rest_route( array $methods, string $uri, mixed $action ): ?Route;
+	public function add_rest_route( array $methods, string $uri, array $arguments ): Route;
 
 	/**
 	 * Register a GET route.
@@ -158,6 +158,8 @@ interface Router {
 
 	/**
 	 * Register the registered REST API routes with WordPress.
+	 *
+	 * Called on 'rest_api_init'.
 	 */
 	public function register_rest_routes(): void;
 }

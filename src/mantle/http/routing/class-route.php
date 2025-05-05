@@ -32,6 +32,7 @@ use function Mantle\Support\Helpers\get_callable_fqn;
  * Used in both HTTP routing and WordPress REST API routing.
  */
 class Route extends Symfony_Route {
+	use Concerns\Registers_Rest_Route;
 	use Route_Dependency_Resolver;
 
 	/**
