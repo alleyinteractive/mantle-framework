@@ -488,8 +488,8 @@ class Pending_Testable_Request {
 		}
 
 		// Clear the "done" global scripts and styles so that scripts/styles are re-output.
-		$GLOBALS['wp_scripts']->done = [];
-		$GLOBALS['wp_styles']->done  = [];
+		wp_scripts()->done = [];
+		wp_styles()->done  = [];
 
 		// Reset the print hooks back to zero (never run).
 		foreach ( [ 'wp_print_scripts', 'wp_print_styles' ] as $hook ) {
