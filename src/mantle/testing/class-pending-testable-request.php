@@ -488,12 +488,19 @@ class Pending_Testable_Request {
 		}
 
 		// Clear the "done" global scripts and styles so that scripts/styles are re-output.
-		wp_scripts()->done = [];
-		wp_styles()->done  = [];
+		if ( function_exists( 'wp_scripts' ) ) {
+			wp_scripts()->done = [];
+		}
+
+		if ( function_exists( 'wp_styles' ) ) {
+			wp_styles()->done  = [];
+		}
 
 		// Reset the print hooks back to zero (never run).
-		foreach ( [ 'wp_print_scripts', 'wp_print_styles' ] as $hook ) {
-			$GLOBALS['wp_actions'][ $hook ] = 0;
+		if ( isset( $GLOBALS['wp_actions'] ) && is_array( $GLOBALS['wp_actions'] ) ) {
+			foreach ( [ 'wp_print_scripts', 'wp_print_styles' ] as $hook ) {
+				$GLOBALS['wp_actions'][ $hook ] = 0;
+			}
 		}
 
 		// phpcs:enable
