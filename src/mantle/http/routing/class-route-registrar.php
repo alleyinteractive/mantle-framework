@@ -10,6 +10,7 @@ namespace Mantle\Http\Routing;
 use BadMethodCallException;
 use Closure;
 use InvalidArgumentException;
+use Mantle\Contracts\Http\Routing\Route_Registrar as Registrar_Contract;
 use Mantle\Support\Arr;
 
 /**
@@ -27,7 +28,7 @@ use Mantle\Support\Arr;
  * @method \Mantle\Http\Routing\Route_Registrar prefix(string $value)
  * @method \Mantle\Http\Routing\Route_Registrar where(array<mixed> $where)
  */
-class Route_Registrar {
+class Route_Registrar implements Registrar_Contract {
 	/**
 	 * The attributes to pass on to the router.
 	 *
@@ -115,16 +116,17 @@ class Route_Registrar {
 	/**
 	 * Register a new route with the router.
 	 *
-	 * @param  string                            $method
+	 * @param  string|string[]                            $method
 	 * @param  string                            $uri
 	 * @param  \Closure|array<mixed>|string|null $action
 	 */
-	protected function register_route( string $method, string $uri, Closure|array|string|null $action = null ): Route {
+	public function register_route( string|array $method, string $uri, Closure|array|string|null $action = null ): Route {
 		if ( ! is_array( $action ) ) {
 			$action = array_merge( $this->attributes, $action ? [ 'callback' => $action ] : [] );
 		}
 
-		return $this->router->{$method}( $uri, $this->compile_action( $action ) );
+		return $this->router->add_route( Arr::wrap( $method ), $uri, $this->compile_action( $action ) );
+		// return $this->router->{$method}( $uri, $this->compile_action( $action ) );
 	}
 
 	/**

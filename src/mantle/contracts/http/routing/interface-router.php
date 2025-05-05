@@ -8,6 +8,7 @@
 namespace Mantle\Contracts\Http\Routing;
 
 use Mantle\Http\Request;
+use Mantle\Http\Routing\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -15,6 +16,10 @@ use Symfony\Component\Routing\RouteCollection;
  * Router Contract
  */
 interface Router {
+	public function add_route( array $methods, string $uri, mixed $action ): ?Route;
+
+	public function add_rest_route( array $methods, string $uri, mixed $action ): ?Route;
+
 	/**
 	 * Register a GET route.
 	 *
