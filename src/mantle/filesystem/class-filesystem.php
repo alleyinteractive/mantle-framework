@@ -28,7 +28,7 @@ class Filesystem {
 	 *
 	 * @param  string $path
 	 */
-	public function exists( $path ): bool {
+	public function exists( string $path ): bool {
 		return file_exists( $path );
 	}
 
@@ -37,7 +37,7 @@ class Filesystem {
 	 *
 	 * @param  string $path
 	 */
-	public function missing( $path ): bool {
+	public function missing( string $path ): bool {
 		return ! $this->exists( $path );
 	}
 
@@ -63,7 +63,7 @@ class Filesystem {
 	 * @param  string $path
 	 * @return string
 	 */
-	public function shared_get( $path ): string|false {
+	public function shared_get( string $path ): string|false {
 		$contents = '';
 
 		$handle = fopen( $path, 'rb' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen
@@ -94,7 +94,7 @@ class Filesystem {
 	 *
 	 * @throws File_Not_Found_Exception Thrown on missing file.
 	 */
-	public function get_require( $path, array $data = [] ) {
+	public function get_require( string $path, array $data = [] ) {
 		if ( $this->is_file( $path ) ) {
 			$__path = $path;
 			$__data = $data;
@@ -120,7 +120,7 @@ class Filesystem {
 	 *
 	 * @throws File_Not_Found_Exception Thrown on missing file.
 	 */
-	public function require_once( $path, array $data = [] ) {
+	public function require_once( string $path, array $data = [] ) {
 		if ( $this->is_file( $path ) ) {
 			$__path = $path;
 			$__data = $data;
@@ -141,7 +141,7 @@ class Filesystem {
 	 * @param  string $path
 	 * @return string
 	 */
-	public function hash( $path ) {
+	public function hash( string $path ) {
 		return md5_file( $path );
 	}
 
@@ -152,8 +152,25 @@ class Filesystem {
 	 * @param  string $contents
 	 * @param  bool   $lock
 	 */
-	public function put( $path, $contents, $lock = false ): int|false {
+	public function put( string $path, string $contents, bool $lock = false ): int|false {
 		return file_put_contents( $path, $contents, $lock ? LOCK_EX : 0 );
+	}
+
+	/**
+	 * Write the contents of a file as JSON.
+	 *
+	 * @param  string $path
+	 * @param  mixed  $data
+	 * @param  int    $options
+	 */
+	public function put_json( string $path, mixed $data, int $options = 0 ): int|false {
+		$contents = json_encode( $data, $options ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+
+		if ( false === $contents ) {
+			return false;
+		}
+
+		return $this->put( $path, $contents );
 	}
 
 	/**
@@ -162,7 +179,7 @@ class Filesystem {
 	 * @param  string $path
 	 * @param  string $content
 	 */
-	public function replace( $path, $content ): void {
+	public function replace( string $path, string $content ): void {
 		// If the path already exists and is a symlink, get the real path...
 		clearstatcache( true, $path );
 
@@ -223,7 +240,7 @@ class Filesystem {
 	 *
 	 * @param  string ...$paths
 	 */
-	public function delete( ...$paths ): bool {
+	public function delete( string ...$paths ): bool {
 		$success = true;
 
 		foreach ( $paths as $path ) {
@@ -247,7 +264,7 @@ class Filesystem {
 	 * @param  string $path
 	 * @param  string $target
 	 */
-	public function move( $path, $target ): bool {
+	public function move( string $path, string $target ): bool {
 		return rename( $path, $target );
 	}
 
@@ -257,7 +274,7 @@ class Filesystem {
 	 * @param  string $path
 	 * @param  string $target
 	 */
-	public function copy( $path, $target ): bool {
+	public function copy( string $path, string $target ): bool {
 		return copy( $path, $target );
 	}
 
@@ -267,7 +284,7 @@ class Filesystem {
 	 * @param  string $target
 	 * @param  string $link
 	 */
-	public function link( $target, $link ): void {
+	public function link( string $target, string $link ): void {
 		$mode = $this->is_directory( $target ) ? 'J' : 'H';
 
 		exec( "mklink /{$mode} " . escapeshellarg( $link ) . ' ' . escapeshellarg( $target ) ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.system_calls_exec
@@ -278,7 +295,7 @@ class Filesystem {
 	 *
 	 * @param  string $path
 	 */
-	public function name( $path ): string {
+	public function name( string $path ): string {
 		return pathinfo( $path, PATHINFO_FILENAME );
 	}
 
@@ -287,7 +304,7 @@ class Filesystem {
 	 *
 	 * @param  string $path
 	 */
-	public function basename( $path ): string {
+	public function basename( string $path ): string {
 		return pathinfo( $path, PATHINFO_BASENAME );
 	}
 
@@ -296,7 +313,7 @@ class Filesystem {
 	 *
 	 * @param  string $path
 	 */
-	public function dirname( $path ): string {
+	public function dirname( string $path ): string {
 		return pathinfo( $path, PATHINFO_DIRNAME );
 	}
 
@@ -305,7 +322,7 @@ class Filesystem {
 	 *
 	 * @param  string $path
 	 */
-	public function extension( $path ): string {
+	public function extension( string $path ): string {
 		return pathinfo( $path, PATHINFO_EXTENSION );
 	}
 
@@ -313,11 +330,10 @@ class Filesystem {
 	 * Guess the file extension from the mime-type of a given file.
 	 *
 	 * @param  string $path
-	 * @return string|null
 	 *
 	 * @throws RuntimeException Thrown on missing extension.
 	 */
-	public function guess_extension( $path ) {
+	public function guess_extension( string $path ): ?string {
 		if ( ! class_exists( MimeTypes::class ) ) {
 			throw new RuntimeException(
 				'To enable support for guessing extensions, please install the symfony/mime package.'
@@ -348,9 +364,8 @@ class Filesystem {
 	 * Get the file type of a given file.
 	 *
 	 * @param  string $path
-	 * @return string
 	 */
-	public function type( $path ): string|false {
+	public function type( string $path ): string|false {
 		return filetype( $path );
 	}
 
@@ -358,9 +373,8 @@ class Filesystem {
 	 * Get the mime-type of a given file.
 	 *
 	 * @param  string $path
-	 * @return string|false
 	 */
-	public function mime_type( $path ): string|false {
+	public function mime_type( string $path ): string|false {
 		return finfo_file( finfo_open( FILEINFO_MIME_TYPE ), $path );
 	}
 
@@ -368,9 +382,8 @@ class Filesystem {
 	 * Get the file size of a given file.
 	 *
 	 * @param  string $path
-	 * @return int
 	 */
-	public function size( $path ): int|false {
+	public function size( string $path ): int|false {
 		return filesize( $path );
 	}
 
@@ -378,9 +391,8 @@ class Filesystem {
 	 * Get the file's last modification time.
 	 *
 	 * @param  string $path
-	 * @return int
 	 */
-	public function last_modified( $path ): int|false {
+	public function last_modified( string $path ): int|false {
 		return filemtime( $path );
 	}
 
@@ -389,7 +401,7 @@ class Filesystem {
 	 *
 	 * @param  string $directory
 	 */
-	public function is_directory( $directory ): bool {
+	public function is_directory( string $directory ): bool {
 		return is_dir( $directory );
 	}
 
@@ -398,7 +410,7 @@ class Filesystem {
 	 *
 	 * @param  string $path
 	 */
-	public function is_readable( $path ): bool {
+	public function is_readable( string $path ): bool {
 		return is_readable( $path );
 	}
 
@@ -407,7 +419,7 @@ class Filesystem {
 	 *
 	 * @param  string $path
 	 */
-	public function is_writable( $path ): bool {
+	public function is_writable( string $path ): bool {
 		return is_writable( $path );
 	}
 
@@ -416,7 +428,7 @@ class Filesystem {
 	 *
 	 * @param  string $file
 	 */
-	public function is_file( $file ): bool {
+	public function is_file( string $file ): bool {
 		return is_file( $file );
 	}
 
@@ -427,7 +439,7 @@ class Filesystem {
 	 * @param  int    $flags
 	 * @return array<mixed>
 	 */
-	public function glob( $pattern, $flags = 0 ) {
+	public function glob( string $pattern, int $flags = 0 ): array {
 		return glob( $pattern, $flags );
 	}
 
@@ -462,7 +474,8 @@ class Filesystem {
 	/**
 	 * Get all of the directories within a given directory.
 	 *
-	 * @param  string $directory
+	 * @param  string|string[] $directory
+	 * @return string[]
 	 */
 	public function directories( string|array $directory ): array {
 		$directories = [];
@@ -567,7 +580,7 @@ class Filesystem {
 	 * @param  string $directory
 	 * @param  bool   $preserve
 	 */
-	public function delete_directory( $directory, $preserve = false ): bool {
+	public function delete_directory( string $directory, bool $preserve = false ): bool {
 		if ( ! $this->is_directory( $directory ) ) {
 			return false;
 		}
@@ -600,7 +613,7 @@ class Filesystem {
 	/**
 	 * Remove all of the directories within a given directory.
 	 *
-	 * @param  string $directory
+	 * @param  string|string[] $directory
 	 */
 	public function delete_directories( string|array $directory ): bool {
 		$all_directories = $this->directories( $directory );
@@ -621,7 +634,7 @@ class Filesystem {
 	 *
 	 * @param  string $directory
 	 */
-	public function clean_directory( $directory ): bool {
+	public function clean_directory( string $directory ): bool {
 		return $this->delete_directory( $directory, true );
 	}
 }
