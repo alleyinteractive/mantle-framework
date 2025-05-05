@@ -135,7 +135,7 @@ class Installation_Manager {
 	 * @param string $theme Theme name.
 	 */
 	public function theme( string $theme ): static {
-		return $this->loaded( fn () => switch_theme( $theme ) );
+		return $this->on( 'setup_theme', fn () => switch_theme( $theme ) );
 	}
 
 	/**

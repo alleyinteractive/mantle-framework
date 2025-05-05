@@ -7,10 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+
+- Change the installation manager's `theme()` method to use the `setup_theme`
+  hook instead of waiting for `muplugins_loaded`. This will allow the proper
+  theme `functions.php` to loaded when testing.
+
 ### Fixed
 
 - Ensure that an early redirect in `parse_query` prevents the template from being
   loaded.
+
+## v1.7.0
 
 ### Added
 
