@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactored the routing registrar class to be more flexible. Ensure that REST
   API routes are treated the same as web routes.
 
+## v1.7.2
+
+### Fixed
+
+- Bumped `league/commonmark` to fix a XSS vulnerability.
+
 ## v1.7.1
 
 ### Fixed
