@@ -95,10 +95,6 @@ class RestApiRoutingTest extends FrameworkTestCase {
 			->assertContent( json_encode( 'example-post' ) );
 	}
 
-	public function test_register_rest_route_controller_method(): void {
-		$this->markTestSkipped( 'This is not working yet.' );
-	}
-
 	public function test_controller_route() {
 		// Registering a group of routes from controller methods.
 		Route::rest_api(
