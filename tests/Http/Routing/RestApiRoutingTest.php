@@ -159,6 +159,23 @@ class RestApiRoutingTest extends FrameworkTestCase {
 			->assertContent( json_encode( 'modified' ) );
 	}
 
+	public function test_middleware_added_fluently(): void {
+		Route::rest_api(
+				'namespace/v1',
+				function (): void {
+					Route::get( '/example-middleware-fluent', function() {
+						return 'base-response';
+					} )->middleware( function ( WP_REST_Request $request, Closure $next ) {
+						return 'middleware-response';
+					} );
+				},
+		);
+
+		$this->get( rest_url( '/namespace/v1/example-middleware-fluent' ) )
+			->assertOk()
+			->assertContent( json_encode( 'middleware-response' ) );
+	}
+
 	public function test_group_route() {
 		Route::middleware( Testable_Before_Middleware::class )->group(
 			function() {
