@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Changed
+
+- Refactored the routing registrar class to be more flexible. Ensure that REST
+  API routes are treated the same as web routes.
+
 ## v1.7.1
 
 ### Fixed
