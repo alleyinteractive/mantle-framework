@@ -75,7 +75,7 @@ class Route_Registrar implements Registrar_Contract {
 	/**
 	 * Constructor.
 	 *
-	 * @param Router $router Router instance.
+	 * @param Router       $router Router instance.
 	 * @param array<mixed> $attributes The attributes to pass on to the router.
 	 */
 	public function __construct( public readonly ?Router $router, protected array $attributes = [] ) {}
@@ -83,7 +83,6 @@ class Route_Registrar implements Registrar_Contract {
 	/**
 	 * Retrieve the registrar's attributes.
 	 *
-	 * @todo Convert property hooks in 8.4 when we can use it.
 	 * @return array<mixed>
 	 */
 	public function attributes(): array {
@@ -122,11 +121,11 @@ class Route_Registrar implements Registrar_Contract {
 	/**
 	 * Register a new route with the router.
 	 *
-	 * @param  string|string[]                            $method
+	 * @param  string|string[]                   $method
 	 * @param  string                            $uri
 	 * @param  \Closure|array<mixed>|string|null $action
 	 */
-	public function register_route( string|array $method, string $uri, Closure|array|string $action = null ): Route {
+	public function register_route( string|array $method, string $uri, Closure|array|string|null $action = null ): Route {
 		$method = match ( true ) {
 			is_array( $method ) => array_map( 'strtoupper', $method ),
 			'any' === $method => self::HTTP_METHODS,
@@ -140,8 +139,8 @@ class Route_Registrar implements Registrar_Contract {
 	 * Normalize the arguments that are passed to the newly created route.
 	 *
 	 * @param Closure|array<mixed>|string $arguments Route arguments or callback.
-	 * @param string $uri Route URI.
-	 * @param string[] $methods HTTP methods.
+	 * @param string                      $uri Route URI.
+	 * @param string[]                    $methods HTTP methods.
 	 * @return array<mixed>
 	 */
 	protected function normalize_arguments( Closure|array|string $arguments, string $uri, array $methods ): array {
@@ -180,7 +179,9 @@ class Route_Registrar implements Registrar_Contract {
 		$this->router->registrar = Rest_Route_Registrar::from_base( $this, $namespace );
 
 		if ( is_callable( $callback_or_uri ) ) {
-			$this->with_registrar( $callback_or_uri, clear: true );
+			$callback_or_uri();
+
+			$this->router->registrar = $previous_registrar;
 
 			return null;
 		}
@@ -199,9 +200,9 @@ class Route_Registrar implements Registrar_Contract {
 			return $route;
 		}
 
-		$args['methods'] = ! isset( $args['methods'] )
-			? [ 'GET', 'HEAD' ]
-			: Arr::wrap( $args['methods'] );
+		$args['methods'] = isset( $args['methods'] )
+			? Arr::wrap( $args['methods'] )
+			: [ 'GET', 'HEAD' ];
 
 		$route = $this->router->registrar->register_route(
 			method: $args['methods'],

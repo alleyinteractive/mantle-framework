@@ -26,7 +26,7 @@ class Rest_Route_Registrar extends Route_Registrar {
 	 * Create a new Rest_Route_Registrar instance from a base route registrar.
 	 *
 	 * @param Route_Registrar $base Base route registrar.
-	 * @param string $namespace Namespace for the REST API routes.
+	 * @param string          $namespace Namespace for the REST API routes.
 	 */
 	public static function from_base( Route_Registrar $base, string $namespace ): static {
 		return new static(
@@ -39,8 +39,8 @@ class Rest_Route_Registrar extends Route_Registrar {
 	/**
 	 * Constructor.
 	 *
-	 * @param Router $router Router instance.
-	 * @param string $namespace Route namespace.
+	 * @param Router       $router Router instance.
+	 * @param string       $namespace Route namespace.
 	 * @param array<mixed> $attributes Route attributes.
 	 */
 	public function __construct( Router $router, protected readonly string $namespace, array $attributes = [] ) {
@@ -52,11 +52,11 @@ class Rest_Route_Registrar extends Route_Registrar {
 	 *
 	 * @todo Pass along namespace.
 	 *
-	 * @param string|string[] $method HTTP methods.
-	 * @param string $uri
+	 * @param string|string[]                  $method HTTP methods.
+	 * @param string                           $uri
 	 * @param Closure|array<mixed>|string|null $action Route action or arguments.
 	 */
-	public function register_route( string|array $method, string $uri, Closure|array|string $action = null ): Route {
+	public function register_route( string|array $method, string $uri, Closure|array|string|null $action = null ): Route {
 		$method = Arr::wrap( $method );
 
 		return $this->router->add_rest_route(
@@ -70,8 +70,8 @@ class Rest_Route_Registrar extends Route_Registrar {
 	 * Normalize route arguments creation of the Route object.
 	 *
 	 * @param Closure|array<mixed>|string $arguments Route arguments or callback.
-	 * @param string $uri Route URI.
-	 * @param string[] $methods HTTP methods.
+	 * @param string                      $uri Route URI.
+	 * @param string[]                    $methods HTTP methods.
 	 * @return array<mixed>
 	 */
 	protected function normalize_arguments( Closure|array|string $arguments, string $uri, array $methods ): array {
@@ -97,49 +97,6 @@ class Rest_Route_Registrar extends Route_Registrar {
 
 		return $arguments;
 	}
-
-	/**
-	 * Register a REST API Route.
-	 *
-	 * @param string                $route Route to register.
-	 * @param array<mixed>|callable $args Arguments or callback for the route.
-	 */
-	// public function register_route( string $route, array|callable $args = [] ): void {
-	// 	$args = $this->normalize_args( $args, $route );
-
-	// 	if ( $this->should_register_now() ) {
-	// 		register_rest_route( $this->namespace, $route, $args );
-	// 	} else {
-	// 		$this->routes[] = [ $route, $args ];
-	// 	}
-	// }
-
-	// /**
-	//  * Normalize the arguments that are registered.
-	//  *
-	//  * @param array<mixed>|callable $args Arguments for the route or callback function.
-	//  * @param string                $route Route name.
-	//  * @return array<mixed>
-	//  */
-	// protected function normalize_args( $args, string $route ): array {
-	// 	if ( ! is_array( $args ) ) {
-	// 		$args = [
-	// 			'callback' => $args,
-	// 		];
-	// 	}
-
-	// 	// Fill in the required argument for permission callback.
-	// 	if ( empty( $args['permission_callback'] ) ) {
-	// 		$args['permission_callback'] = '__return_true';
-	// 	}
-
-	// 	// Ensure the callback returns a valid REST response.
-	// 	if ( isset( $args['callback'] ) ) {
-	// 		$args['callback'] = $this->wrap_callback( $args['callback'], $route );
-	// 	}
-
-	// 	return $args;
-	// }
 
 	/**
 	 * Wrap the route callback with a valid WordPress REST response.

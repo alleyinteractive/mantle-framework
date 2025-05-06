@@ -1,4 +1,10 @@
 <?php
+/**
+ * Registers_Rest_Route trait file
+ *
+ * @package Mantle
+ */
+
 namespace Mantle\Http\Routing\Concerns;
 
 use RuntimeException;
@@ -18,20 +24,13 @@ trait Registers_Rest_Route {
 
 	/**
 	 * Register the REST route for the current route.
+	 *
+	 * @throws RuntimeException If the route is not a REST API route.
 	 */
 	public function register_rest_route(): void {
 		if ( ! isset( $this->action['namespace'] ) ) {
 			throw new RuntimeException( 'Route must have a namespace in the route action.' );
 		}
-
-		// dump(
-		// 	'registering rest route',
-		// 	[
-		// 		'namespace' => $this->action['namespace'],
-		// 		'path'      => $this->getPath(),
-		// 		'args'      => $this->action,
-		// 	]
-		// );
 
 		register_rest_route(
 			$this->action['namespace'],

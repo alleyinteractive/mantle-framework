@@ -98,6 +98,9 @@ class Routing_Service_Provider extends Service_Provider {
 		);
 	}
 
+	/**
+	 * Register the REST routes on `rest_api_init`.
+	 */
 	#[Action( 'rest_api_init' )]
 	public function register_rest_routes_on_init(): void {
 		$this->app['router']->register_rest_routes();

@@ -16,8 +16,22 @@ use Symfony\Component\Routing\RouteCollection;
  * Router Contract
  */
 interface Router {
+	/**
+	 * Register a route.
+	 *
+	 * @param string[]     $methods Methods to register.
+	 * @param string       $uri URL route.
+	 * @param array<mixed> $arguments Route callback.
+	 */
 	public function add_route( array $methods, string $uri, array $arguments ): Route;
 
+	/**
+	 * Register a REST API route.
+	 *
+	 * @param string[]     $methods Methods to register.
+	 * @param string       $uri URL route.
+	 * @param array<mixed> $arguments Route arguments.
+	 */
 	public function add_rest_route( array $methods, string $uri, array $arguments ): Route;
 
 	/**
@@ -26,7 +40,7 @@ interface Router {
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
 	 */
-	public function get( string $uri, $action = '' );
+	public function get( string $uri, mixed $action = '' );
 
 	/**
 	 * Register a POST route.
@@ -34,7 +48,7 @@ interface Router {
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
 	 */
-	public function post( string $uri, $action = '' );
+	public function post( string $uri, mixed $action = '' );
 
 	/**
 	 * Register a PUT route.
@@ -42,7 +56,7 @@ interface Router {
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
 	 */
-	public function put( string $uri, $action = '' );
+	public function put( string $uri, mixed $action = '' );
 
 	/**
 	 * Register a DELETE route.
@@ -50,7 +64,7 @@ interface Router {
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
 	 */
-	public function delete( string $uri, $action = '' );
+	public function delete( string $uri, mixed $action = '' );
 
 	/**
 	 * Register a PATCH route.
@@ -58,7 +72,7 @@ interface Router {
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
 	 */
-	public function patch( string $uri, $action = '' );
+	public function patch( string $uri, mixed $action = '' );
 
 	/**
 	 * Register a OPTIONS route.
@@ -66,7 +80,7 @@ interface Router {
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
 	 */
-	public function options( string $uri, $action = '' );
+	public function options( string $uri, mixed $action = '' );
 
 	/**
 	 * Register a route for any HTTP method.
@@ -74,7 +88,7 @@ interface Router {
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
 	 */
-	public function any( string $uri, $action = '' );
+	public function any( string $uri, mixed $action = '' );
 
 	/**
 	 * Dispatch a request to the registered routes.
@@ -147,7 +161,7 @@ interface Router {
 	 *
 	 * @param (callable(Request): bool)|bool $callback Callback to determine if the request should pass through to WordPress.
 	 */
-	public function pass_requests_to_wordpress( $callback ): static;
+	public function pass_requests_to_wordpress( callable|bool $callback ): static;
 
 	/**
 	 * Determine if the request should pass through to WordPress.

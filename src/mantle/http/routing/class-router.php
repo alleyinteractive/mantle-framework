@@ -76,15 +76,6 @@ class Router implements Router_Contract {
 	 * Current route registrar.
 	 */
 	public ?Registrar_Contract $registrar = null;
-	/**
-	 * REST Route Registrar
-	 */
-	// protected ?Rest_Route_Registrar $rest_registrar = null;
-
-	/**
-	 * Data Object Router
-	 */
-	// protected Entity_Router $model_router;
 
 	/**
 	 * Flag or callback to determine if requests should pass through to WordPress.
@@ -110,7 +101,7 @@ class Router implements Router_Contract {
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
 	 */
-	public function get( string $uri, $action = '' ): Route {
+	public function get( string $uri, mixed $action = '' ): Route {
 		return $this->with_registrar(
 			fn () => $this->registrar->register_route( 'get', $uri, $action ),
 		);
@@ -122,7 +113,7 @@ class Router implements Router_Contract {
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
 	 */
-	public function post( string $uri, $action = '' ): Route {
+	public function post( string $uri, mixed $action = '' ): Route {
 		return $this->with_registrar(
 			fn () => $this->registrar->register_route( 'post', $uri, $action ),
 		);
@@ -134,7 +125,7 @@ class Router implements Router_Contract {
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
 	 */
-	public function put( string $uri, $action = '' ): Route {
+	public function put( string $uri, mixed $action = '' ): Route {
 		return $this->with_registrar(
 			fn () => $this->registrar->register_route( 'put', $uri, $action ),
 		);
@@ -146,7 +137,7 @@ class Router implements Router_Contract {
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
 	 */
-	public function delete( string $uri, $action = '' ): Route {
+	public function delete( string $uri, mixed $action = '' ): Route {
 		return $this->with_registrar(
 			fn () => $this->registrar->register_route( 'delete', $uri, $action ),
 		);
@@ -158,7 +149,7 @@ class Router implements Router_Contract {
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
 	 */
-	public function patch( string $uri, $action = '' ): Route {
+	public function patch( string $uri, mixed $action = '' ): Route {
 		return $this->with_registrar(
 			fn () => $this->registrar->register_route( 'patch', $uri, $action ),
 		);
@@ -170,7 +161,7 @@ class Router implements Router_Contract {
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
 	 */
-	public function options( string $uri, $action = '' ): Route {
+	public function options( string $uri, mixed $action = '' ): Route {
 		return $this->with_registrar(
 			fn () => $this->registrar->register_route( 'options', $uri, $action ),
 		);
@@ -182,7 +173,7 @@ class Router implements Router_Contract {
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
 	 */
-	public function any( string $uri, $action = '' ): Route {
+	public function any( string $uri, mixed $action = '' ): Route {
 		return $this->with_registrar(
 			fn () => $this->registrar->register_route( 'any', $uri, $action ),
 		);
@@ -205,9 +196,9 @@ class Router implements Router_Contract {
 	/**
 	 * Register a route.
 	 *
-	 * @param string[] $methods Methods to register.
-	 * @param string   $uri URL route.
-	 * @param array<mixed>    $arguments Route callback.
+	 * @param string[]     $methods Methods to register.
+	 * @param string       $uri URL route.
+	 * @param array<mixed> $arguments Route callback.
 	 */
 	public function add_route( array $methods, string $uri, array $arguments ): Route {
 		$route = $this->create_route( $methods, $uri, $arguments );
@@ -220,9 +211,9 @@ class Router implements Router_Contract {
 	/**
 	 * Register a REST API route.
 	 *
-	 * @param string[] $methods Methods to register.
-	 * @param string   $uri URL route.
-	 * @param array<mixed>    $arguments Route arguments.
+	 * @param string[]     $methods Methods to register.
+	 * @param string       $uri URL route.
+	 * @param array<mixed> $arguments Route arguments.
 	 */
 	public function add_rest_route( array $methods, string $uri, array $arguments ): Route {
 		$route = $this->create_route( $methods, $uri, $arguments );
@@ -259,9 +250,10 @@ class Router implements Router_Contract {
 	 *
 	 * @template TData = mixed
 	 *
-	 * @param (\Closure(\Mantle\Contracts\Http\Routing\Route_Registrar $registrar): TData) $callback Callback to invoke with the registrar.
-	 * @param bool $clear Always clear the registrar after the callback is invoked. By default, the registrar will be cleared only if it was not set before.
-	 * @return TData
+	 * @param \Closure $callback Callback to invoke with the registrar.
+	 * @param bool     $clear Always clear the registrar after the callback is invoked. By default, the registrar will be cleared only if it was not set before.
+	 * @phpstan-param (\Closure(\Mantle\Contracts\Http\Routing\Route_Registrar $registrar): TData) $callback
+	 * @phpstan-return TData
 	 */
 	protected function with_registrar( \Closure $callback, bool $clear = false ): mixed {
 		$set = ! is_null( $this->registrar );
@@ -570,9 +562,9 @@ class Router implements Router_Contract {
 	/**
 	 * Register a REST API route.
 	 *
-	 * @param string $namespace Namespace for the REST API route.
-	 * @param callable|string $callback_or_uri  Callback that will be invoked to
-	 *                                          register routes OR a string route.
+	 * @param string                       $namespace Namespace for the REST API route.
+	 * @param callable|string              $callback_or_uri  Callback that will be invoked to
+	 *                                                       register routes OR a string route.
 	 * @param callable|array<mixed>|string $args Callback for the route if
 	 *                                           $callback is a string route OR
 	 *                                           arguments to pass to the
@@ -604,9 +596,9 @@ class Router implements Router_Contract {
 			return $route;
 		}
 
-		$args['methods'] = ! isset( $args['methods'] )
-			? [ 'GET', 'HEAD' ]
-			: Arr::wrap( $args['methods'] );
+		$args['methods'] = isset( $args['methods'] )
+			? Arr::wrap( $args['methods'] )
+			: [ 'GET', 'HEAD' ];
 
 		return $this->with_registrar(
 			fn () => $this->registrar->register_route(
@@ -685,7 +677,7 @@ class Router implements Router_Contract {
 	 *
 	 * @param (callable(\Mantle\Http\Request): bool)|bool $callback Callback to determine if the request should pass through to WordPress.
 	 */
-	public function pass_requests_to_wordpress( $callback ): static {
+	public function pass_requests_to_wordpress( callable|bool $callback ): static {
 		$this->pass_requests_to_wordpress = $callback;
 
 		return $this;
@@ -720,10 +712,10 @@ class Router implements Router_Contract {
 			return;
 		}
 
-		foreach ( $this->rest_routes as $route ) {
-			assert( $route instanceof Route );
+		foreach ( $this->rest_routes as $rest_route ) {
+			assert( $rest_route instanceof Route );
 
-			$route->register_rest_route();
+			$rest_route->register_rest_route();
 		}
 	}
 }
