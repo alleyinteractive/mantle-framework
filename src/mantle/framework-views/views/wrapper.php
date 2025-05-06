@@ -1,7 +1,10 @@
 <?php
 /**
  * Blade Template Wrapper
+ *
+ * @package Mantle
  */
+
 ?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
@@ -20,10 +23,8 @@
 		 *
 		 * @param string $block Gutenberg block template.
 		 */
+		echo do_blocks( apply_filters( 'mantle_block_template_header', '<!-- wp:template-part {"slug":"header"} /-->' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-
-
-		echo do_blocks( apply_filters( 'mantle_block_template_header', '<!-- wp:template-part {"slug":"header"} /-->' ) );
 		// Assumed to be sanitized.
 		if ( isset( $response ) && $response instanceof \Symfony\Component\HttpFoundation\Response ) {
 			echo $response->getContent(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -34,7 +35,7 @@
 		 *
 		 * @param string $block Gutenberg block template.
 		 */
-		echo do_blocks( apply_filters( 'mantle_block_template_footer', '<!-- wp:template-part {"slug":"footer"} /-->' ) );
+		echo do_blocks( apply_filters( 'mantle_block_template_footer', '<!-- wp:template-part {"slug":"footer"} /-->' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		?>
 	</div>
 	<?php wp_footer(); ?>
