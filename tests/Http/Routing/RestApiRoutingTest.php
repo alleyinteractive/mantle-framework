@@ -99,54 +99,30 @@ class RestApiRoutingTest extends FrameworkTestCase {
 		$this->markTestSkipped( 'This is not working yet.' );
 	}
 
-	// public function test_generic_route() {
-	// 	// Registering a group of routes from controller methods.
-	// 	Route::rest_api(
-	// 		'namespace/v1',
-	// 		function () {
-	// 			Route::get( '/example-invoke', Testable_Invokable_Rest_Api_Controller::class );
+	public function test_controller_route() {
+		// Registering a group of routes from controller methods.
+		Route::rest_api(
+			'namespace/v1',
+			function () {
+				Route::get( '/example-invoke', Testable_Invokable_Rest_Api_Controller::class );
 
-	// 			Route::get( '/example-controller/index', [ Testable_Rest_Api_Controller::class, 'index' ] );
-	// 			Route::get( '/example-controller/show', [ Testable_Rest_Api_Controller::class, 'show' ] );
-	// 		},
-	// 	);
+				Route::get( '/example-controller/index', [ Testable_Rest_Api_Controller::class, 'index' ] );
+				Route::get( '/example-controller/show', [ Testable_Rest_Api_Controller::class, 'show' ] );
+			},
+		);
 
-	// 	$this->get( rest_url( '/namespace/v1/example-closure-third' ) )
-	// 		->assertOk()
-	// 		->assertContent( json_encode( 'example-closure-third' ) );
+		$this->get( rest_url( '/namespace/v1/example-invoke' ) )
+			->assertOk()
+			->assertContent( json_encode( 'invoke-response' ) );
 
-	// 	$this->get( rest_url( '/namespace/v1/example-array-third' ) )
-	// 		->assertOk()
-	// 		->assertContent( json_encode( 'example-array-third' ) );
+		$this->get( rest_url( '/namespace/v1/example-controller/index' ) )
+			->assertOk()
+			->assertContent( json_encode( 'index-response' ) );
 
-	// 	$this->get( rest_url( '/namespace/v1/example-group-get' ) )
-	// 		->assertOk()
-	// 		->assertContent( json_encode( 'example-group-get' ) );
-
-	// 	$this->get( rest_url( '/namespace/v1/example-with-param/the-slug' ) )
-	// 		->assertOk()
-	// 		->assertContent( json_encode( 'the-slug' ) );
-
-	// 	$this->post( rest_url( '/namespace/v1/example-post' ) )
-	// 		->assertOk()
-	// 		->assertContent( json_encode( 'example-post' ) );
-
-	// 	$this->get( rest_url( '/namespace/v1/example-invoke' ) )
-	// 		->assertOk()
-	// 		->assertContent( json_encode( 'invoke-response' ) );
-
-	// 	$this->get( rest_url( '/namespace/v1/example-controller/index' ) )
-	// 		->assertOk()
-	// 		->assertContent( json_encode( 'index-response' ) );
-
-	// 	$this->get( rest_url( '/namespace/v1/example-controller/show' ) )
-	// 		->assertOk()
-	// 		->assertContent( json_encode( 'show-response' ) );
-
-	// 	$this->get( rest_url( '/namespace/v1/example-string-function' ) )
-	// 		->assertOk()
-	// 		->assertContent( json_encode( 'function-response' ) );
-	// }
+		$this->get( rest_url( '/namespace/v1/example-controller/show' ) )
+			->assertOk()
+			->assertContent( json_encode( 'show-response' ) );
+	}
 
 	public function test_middleware_class_route() {
 		Route::middleware( Testable_Before_Middleware::class )
@@ -200,16 +176,6 @@ class RestApiRoutingTest extends FrameworkTestCase {
 			->assertOk()
 			->assertContent( json_encode( 'middleware-response' ) );
 	}
-
-	// public function test_invalid_action() {
-	// 	$this->expectException( InvalidArgumentException::class );
-
-	// 	Route::rest_api(
-	// 		'namespace/v1',
-	// 		'/example-invalid-action',
-	// 		'invalid-action',
-	// 	);
-	// }
 }
 
 class Testable_Before_Middleware {

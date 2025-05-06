@@ -144,7 +144,9 @@ class Route_Registrar implements Registrar_Contract {
 	 * @return array<mixed>
 	 */
 	protected function normalize_arguments( Closure|array|string $arguments, string $uri, array $methods ): array {
-		if ( ! is_array( $arguments ) ) {
+		// If the arguments are not an array list (array only with numeric keys) we
+		// will assume it is the callback in some form and wrap it in an array.
+		if ( ! is_array( $arguments ) || array_is_list( $arguments ) ) {
 			$arguments = [
 				'callback' => $arguments,
 			];

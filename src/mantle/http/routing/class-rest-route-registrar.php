@@ -69,6 +69,8 @@ class Rest_Route_Registrar extends Route_Registrar {
 	/**
 	 * Normalize route arguments creation of the Route object.
 	 *
+	 * @throws InvalidArgumentException If a callable action was not found.
+	 *
 	 * @param Closure|array<mixed>|string $arguments Route arguments or callback.
 	 * @param string                      $uri Route URI.
 	 * @param string[]                    $methods HTTP methods.
@@ -79,10 +81,16 @@ class Rest_Route_Registrar extends Route_Registrar {
 
 		// Wrap the callback to provide a better integration with the router and the
 		// rest of the Mantle framework.
-		$arguments['callback'] = $this->wrap_callback(
-			$arguments['callback'],
-			$uri,
-		);
+		if ( isset( $arguments['callback'] ) ) {
+			$arguments['callback'] = $this->wrap_callback(
+				$arguments['callback'],
+				$uri,
+			);
+		} else {
+			throw new InvalidArgumentException(
+				"No callback provided for REST API route [{$uri}].",
+			);
+		}
 
 		// Ensure the namespace is forwarded to the route.
 		$arguments['namespace'] = $this->namespace;
@@ -106,7 +114,9 @@ class Rest_Route_Registrar extends Route_Registrar {
 	 * a controller method that has type hints of container bindings and
 	 * automatically resolve them like we do for web routes.
 	 *
-	 * @param mixed  $callback Callback to invoke.
+	 * @param mixed  $callback Callback to invoke. Can be a callable function, an
+	 *                         array of a controller and method, or a string
+	 *                         function.
 	 * @param string $route Route name.
 	 */
 	protected function wrap_callback( mixed $callback, string $route ): callable {
@@ -191,7 +201,7 @@ class Rest_Route_Registrar extends Route_Registrar {
 			}
 		}
 
-		if ( is_array( $action ) ) {
+		if ( is_array( $action ) && count( $action ) === 2 ) {
 			[ $controller, $method ] = $action;
 
 			return [ $this->router->get_container()->make( $controller ), $method ];
