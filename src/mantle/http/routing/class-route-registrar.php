@@ -21,8 +21,6 @@ use Mantle\Support\Str;
  * class will be called to setup attributes such as middleware, prefix, etc.
  * that should be shared across multiple routes that are registered in a group.
  *
- * @todo Forward all routing through a route registrar for consistency.
- *
  * @method \Mantle\Http\Routing\Route_Registrar as(string $value)
  * @method \Mantle\Http\Routing\Route_Registrar domain(string $value)
  * @method \Mantle\Http\Routing\Route_Registrar middleware(array<string>|string|null $middleware)
