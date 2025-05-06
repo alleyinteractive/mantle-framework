@@ -562,14 +562,10 @@ class Router implements Router_Contract {
 	/**
 	 * Register a REST API route.
 	 *
-	 * @param string                       $namespace Namespace for the REST API route.
-	 * @param callable|string              $callback_or_uri  Callback that will be invoked to
-	 *                                                       register routes OR a string route.
-	 * @param callable|array<mixed>|string $args Callback for the route if
-	 *                                           $callback is a string route OR
-	 *                                           arguments to pass to the
-	 *                                           register_rest_route() call. Not
-	 *                                           used if $callback is a closure.
+	 * @param string                       $namespace        Namespace for the REST API route.
+	 * @param callable|string              $callback_or_uri  Callback that will be invoked to register
+	 *                                                       routes or a string route path.
+	 * @param callable|array<mixed>|string $args             Callback for the route if $callback or route arguments.
 	 */
 	public function rest_api( string $namespace, callable|string $callback_or_uri, callable|array|string $args = [] ): ?Route {
 		$namespace = trim( $namespace, '/' );
