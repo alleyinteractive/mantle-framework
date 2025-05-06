@@ -79,7 +79,7 @@ class Route extends Symfony_Route {
 	 * @param string                       $path The path the route responds to.
 	 * @param \Closure|array<mixed>|string $action The route callback or array of actions.
 	 */
-	public function __construct( array $methods, string $path, $action ) {
+	public function __construct( array $methods, string $path, \Closure|array|string $action ) {
 		parent::__construct( $path );
 
 		$this->setOption( 'utf8', true );
