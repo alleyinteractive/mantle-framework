@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ensure that an early redirect in `parse_query` prevents the template from being
   loaded.
 - Fixed an issue with the `wp_scripts`/`wp_styles`.
+
 ## v1.7.0
 
 ### Added
