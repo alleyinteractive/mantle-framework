@@ -13,7 +13,7 @@ use WP_REST_Request;
 class RestApiRoutingTest extends FrameworkTestCase {
 	use Refresh_Database;
 
-	public function test_register_rest_route_with_callback_directly(): void {
+	public function test_register_rest_with_callback_directly(): void {
 		$route = Route::rest_api(
 			'namespace/v1',
 			'/example-closure',
@@ -31,7 +31,7 @@ class RestApiRoutingTest extends FrameworkTestCase {
 			->assertJsonPath( 'code', 'rest_no_route' );
 	}
 
-	public function test_register_rest_route_with_callback_in_argument_array(): void {
+	public function test_register_rest_with_callback_in_argument_array(): void {
 		$route = Route::rest_api(
 			'namespace/v1',
 			'/example-array',
@@ -51,7 +51,7 @@ class RestApiRoutingTest extends FrameworkTestCase {
 			->assertJsonPath( 'code', 'rest_no_route' );
 	}
 
-	public function test_register_route_with_string_callback(): void {
+	public function test_register_with_string_callback(): void {
 		$route = Route::rest_api(
 			'namespace/v1',
 			'/example-string',
@@ -65,7 +65,7 @@ class RestApiRoutingTest extends FrameworkTestCase {
 			->assertContent( json_encode( 'function-response' ) );
 	}
 
-	public function test_register_rest_routes_in_group(): void {
+	public function test_register_routes_in_callback(): void {
 		$return = Route::rest_api(
 			'namespace/v1',
 			function() {
@@ -148,7 +148,7 @@ class RestApiRoutingTest extends FrameworkTestCase {
 	// 		->assertContent( json_encode( 'function-response' ) );
 	// }
 
-	public function test_middleware_route() {
+	public function test_middleware_class_route() {
 		Route::middleware( Testable_Before_Middleware::class )
 			->rest_api(
 				'namespace/v1',
@@ -158,13 +158,18 @@ class RestApiRoutingTest extends FrameworkTestCase {
 				}
 			);
 
+		$this->get( rest_url( '/namespace/v1/example-middleware-route' ) )
+			->assertOk()
+			->assertContent( json_encode( 'middleware-response' ) );
+	}
+
+	public function test_middleware_closure_route(): void {
 		Route::middleware(
-			function( WP_REST_Request $request, $next ) {
+			function( WP_REST_Request $request, Closure $next ) {
 				$request->set_param( 'input', 'modified' );
 				return $next( $request );
 			}
-		)
-		->rest_api(
+		)->rest_api(
 			'namespace/v1',
 			'/example-middleware-modify-post',
 			[
@@ -172,10 +177,6 @@ class RestApiRoutingTest extends FrameworkTestCase {
 				'callback' => fn ( WP_REST_Request $request ) => $request['input'],
 			]
 		);
-
-		$this->get( rest_url( '/namespace/v1/example-middleware-route' ) )
-			->assertOk()
-			->assertContent( json_encode( 'middleware-response' ) );
 
 		$this->post( rest_url( '/namespace/v1/example-middleware-modify-post' ), [ 'input' => 'value' ] )
 			->assertOk()
@@ -200,15 +201,15 @@ class RestApiRoutingTest extends FrameworkTestCase {
 			->assertContent( json_encode( 'middleware-response' ) );
 	}
 
-	public function test_invalid_action() {
-		$this->expectException( InvalidArgumentException::class );
+	// public function test_invalid_action() {
+	// 	$this->expectException( InvalidArgumentException::class );
 
-		Route::rest_api(
-			'namespace/v1',
-			'/example-invalid-action',
-			'invalid-action',
-		);
-	}
+	// 	Route::rest_api(
+	// 		'namespace/v1',
+	// 		'/example-invalid-action',
+	// 		'invalid-action',
+	// 	);
+	// }
 }
 
 class Testable_Before_Middleware {

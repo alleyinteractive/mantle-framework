@@ -23,13 +23,28 @@ use function Mantle\Support\Helpers\collect;
  */
 class Rest_Route_Registrar extends Route_Registrar {
 	/**
+	 * Create a new Rest_Route_Registrar instance from a base route registrar.
+	 *
+	 * @param Route_Registrar $base Base route registrar.
+	 * @param string $namespace Namespace for the REST API routes.
+	 */
+	public static function from_base( Route_Registrar $base, string $namespace ): static {
+		return new static(
+			router: $base->router,
+			namespace: $namespace,
+			attributes: $base->attributes(),
+		);
+	}
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Router $router Router instance.
 	 * @param string $namespace Route namespace.
+	 * @param array<mixed> $attributes Route attributes.
 	 */
-	public function __construct( Router $router, protected readonly string $namespace ) {
-		parent::__construct( $router );
+	public function __construct( Router $router, protected readonly string $namespace, array $attributes = [] ) {
+		parent::__construct( $router, $attributes );
 	}
 
 	/**

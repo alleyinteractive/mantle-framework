@@ -33,13 +33,6 @@ use Mantle\Support\Str;
  */
 class Route_Registrar implements Registrar_Contract {
 	/**
-	 * The attributes to pass on to the router.
-	 *
-	 * @var array<mixed>
-	 */
-	protected $attributes = [];
-
-	/**
 	 * The methods to dynamically pass through to the router.
 	 *
 	 * @var array<mixed>
@@ -56,9 +49,9 @@ class Route_Registrar implements Registrar_Contract {
 	/**
 	 * The attributes that can be set through this class.
 	 *
-	 * @var array<mixed>
+	 * @var string[]
 	 */
-	protected array $allowed_attributes = [
+	public const ALLOWED_ATTRIBUTES = [
 		'as_prefix',
 		'as',
 		'domain',
@@ -83,8 +76,19 @@ class Route_Registrar implements Registrar_Contract {
 	 * Constructor.
 	 *
 	 * @param Router $router Router instance.
+	 * @param array<mixed> $attributes The attributes to pass on to the router.
 	 */
-	public function __construct( protected ?Router $router ) {}
+	public function __construct( public readonly ?Router $router, protected array $attributes = [] ) {}
+
+	/**
+	 * Retrieve the registrar's attributes.
+	 *
+	 * @todo Convert property hooks in 8.4 when we can use it.
+	 * @return array<mixed>
+	 */
+	public function attributes(): array {
+		return $this->attributes;
+	}
 
 	/**
 	 * Set the value for a given attribute.
@@ -95,7 +99,7 @@ class Route_Registrar implements Registrar_Contract {
 	 * @throws InvalidArgumentException Thrown on unknown attribute.
 	 */
 	public function attribute( string $key, mixed $value ): static {
-		if ( ! in_array( $key, $this->allowed_attributes, true ) ) {
+		if ( ! in_array( $key, static::ALLOWED_ATTRIBUTES, true ) ) {
 			throw new InvalidArgumentException( "Attribute [{$key}] does not exist." );
 		}
 
@@ -126,7 +130,7 @@ class Route_Registrar implements Registrar_Contract {
 		$method = match ( true ) {
 			is_array( $method ) => array_map( 'strtoupper', $method ),
 			'any' === $method => self::HTTP_METHODS,
-			default => strtoupper( $method ),
+			default => [ strtoupper( $method ) ],
 		};
 
 		return $this->router->add_route( $method, $uri, $this->normalize_arguments( $action, $uri, $method ) );
@@ -150,7 +154,7 @@ class Route_Registrar implements Registrar_Contract {
 		$arguments = array_merge( $this->attributes, $arguments );
 
 		// Translate a class@method callback into a "callable".
-		if ( is_string( $arguments['callback'] ) && str_contains( $arguments['callback'], '@' ) ) {
+		if ( isset( $arguments['callback'] ) && is_string( $arguments['callback'] ) && str_contains( $arguments['callback'], '@' ) ) {
 			$arguments['callback'] = Str::parse_callback( $arguments['callback'] );
 		}
 
@@ -158,73 +162,93 @@ class Route_Registrar implements Registrar_Contract {
 	}
 
 	/**
-	 * Compile the action into an array including the attributes.
+	 * @todo How can we condense this back into the router?
 	 *
-	 * @param  \Closure|array<mixed>|string|null $action
-	 * @return array<mixed>
+	 * @param string                       $namespace Namespace for the REST API route.
+	 * @param callable|string              $callback_or_uri  Callback that will be invoked to register
+	 *                                                routes OR a string route.
+	 * @param callable|array<mixed>|string $args      Callback for the route if $callback is a
+	 *                                         string route OR arguments to pass to
+	 *                                         the register_rest_route() call. Not used if $callback
+	 *                                         is a closure.
 	 */
-	// protected function compile_action( Closure|array|string|null $action ): array {
-	// 	if ( is_null( $action ) ) {
-	// 		return $this->attributes;
-	// 	}
+	public function rest_api( string $namespace, callable|string $callback_or_uri, callable|array|string $args = [] ): ?Route {
+		$namespace = trim( $namespace, '/' );
 
-	// 	if ( is_string( $action ) || $action instanceof Closure ) {
-	// 		$action = [ 'callback' => $action ];
-	// 	}
+		$previous_registrar = $this->router->registrar;
 
-	// 	return array_merge( $this->attributes, $action );
-	// }
+		$this->router->registrar = Rest_Route_Registrar::from_base( $this, $namespace );
 
-	/**
-	 * Pass the REST API method back to the REST API registrar.
-	 *
-	 * @param string               $namespace Route namespace.
-	 * @param Closure|string       $route Route name or callback to register more routes.
-	 * @param array<mixed>|Closure $args Route arguments.
-	 */
-	// public function rest_api( string $namespace, Closure|string $route, array|Closure $args = [] ): Rest_Route_Registrar {
-	// 	if ( $args instanceof Closure ) {
-	// 		$args = [
-	// 			'callback' => $args,
-	// 		];
-	// 	}
+		if ( is_callable( $callback_or_uri ) ) {
+			$this->with_registrar( $callback_or_uri, clear: true );
 
-	// 	if ( is_array( $args ) ) { // @phpstan-ignore-line function.alreadyNarrowedType
-	// 		$args = array_merge( $this->attributes, $args );
-	// 	}
+			return null;
+		}
 
-	// 	return $this->router->rest_api( $namespace, $route, $args );
-	// }
+		// If a third argument is a callable we will assume it is the action and the
+		// second argument is the route.
+		if ( is_callable( $args ) ) {
+			$route = $this->router->registrar->register_route(
+				method: [ 'GET', 'HEAD' ],
+				uri: $callback_or_uri,
+				action: $args,
+			);
+
+			$this->router->registrar = $previous_registrar;
+
+			return $route;
+		}
+
+		$args['methods'] = ! isset( $args['methods'] )
+			? [ 'GET', 'HEAD' ]
+			: Arr::wrap( $args['methods'] );
+
+		$route = $this->router->registrar->register_route(
+			method: $args['methods'],
+			uri: $callback_or_uri,
+			action: $args,
+		);
+
+		$this->router->registrar = $previous_registrar;
+
+		return $route;
+	}
 
 	/**
 	 * Dynamically handle calls into the route registrar.
 	 *
 	 * @param  string       $method
 	 * @param  array<mixed> $parameters
-	 * @return \Mantle\Http\Routing\Route|static
 	 *
 	 * @throws BadMethodCallException Thrown on missing method.
 	 */
-	public function __call( string $method, array $parameters ) {
+	public function __call( string $method, array $parameters ): Route|static {
 		if ( 'any' === $method || in_array( strtoupper( $method ), self::HTTP_METHODS, true ) ) {
 			return $this->register_route( $method, ...$parameters );
 		}
 
-		if ( in_array( $method, $this->allowed_attributes, true ) ) {
-			if ( 'middleware' === $method ) {
-				// @phpstan-ignore return.type
-				return $this->attribute( $method, is_array( $parameters[0] ) ? $parameters[0] : $parameters )->attributes;
-			}
-
-			return $this->attribute( $method, $parameters[0] );
+		if ( ! in_array( $method, static::ALLOWED_ATTRIBUTES, true ) ) {
+			throw new BadMethodCallException(
+				sprintf(
+					'Method %s::%s does not exist.',
+					static::class,
+					$method
+				)
+			);
 		}
 
-		throw new BadMethodCallException(
-			sprintf(
-				'Method %s::%s does not exist.',
-				static::class,
-				$method
-			)
-		);
+		// Middleware should be merged with the existing middleware.
+		if ( 'middleware' === $method ) {
+			$middleware = $this->attributes['middleware'] ?? [];
+
+			$middleware = array_merge(
+				$middleware,
+				is_array( $parameters[0] ) ? $parameters[0] : [ $parameters[0] ]
+			);
+
+			return $this->attribute( 'middleware', $middleware );
+		}
+
+		return $this->attribute( $method, $parameters[0] );
 	}
 }

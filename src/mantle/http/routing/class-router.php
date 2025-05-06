@@ -15,6 +15,7 @@ use Mantle\Contracts\Http\Routing\Route_Registrar as Registrar_Contract;
 use Mantle\Contracts\Http\Routing\Router as Router_Contract;
 use Mantle\Http\Request;
 use Mantle\Http\Routing\Events\Route_Matched;
+use Mantle\Support\Arr;
 use Mantle\Support\Pipeline;
 use Mantle\Support\Traits\Macroable;
 use ReflectionClass;
@@ -74,7 +75,7 @@ class Router implements Router_Contract {
 	/**
 	 * Current route registrar.
 	 */
-	protected ?Registrar_Contract $registrar = null;
+	public ?Registrar_Contract $registrar = null;
 	/**
 	 * REST Route Registrar
 	 */
@@ -251,16 +252,18 @@ class Router implements Router_Contract {
 	}
 
 	/**
-	 * Call a callback with the route registrar set.
+	 * Invoke a callback with the route registrar set.
 	 *
-	 * If it is not set, it will be created and set to null after the callback is invoked.
+	 * If it is not set, the default route registrar will be created and set to
+	 * null after the callback is invoked.
 	 *
-	 * @template TData
+	 * @template TData = mixed
 	 *
-	 * @param \Closure(\Mantle\Contracts\Http\Routing\Route_Registrar $registrar): TData $callback Callback to invoke with the registrar.
+	 * @param (\Closure(\Mantle\Contracts\Http\Routing\Route_Registrar $registrar): TData) $callback Callback to invoke with the registrar.
+	 * @param bool $clear Always clear the registrar after the callback is invoked. By default, the registrar will be cleared only if it was not set before.
 	 * @return TData
 	 */
-	protected function with_registrar( \Closure $callback ): mixed {
+	protected function with_registrar( \Closure $callback, bool $clear = false ): mixed {
 		$set = ! is_null( $this->registrar );
 
 		if ( ! $set ) {
@@ -269,32 +272,12 @@ class Router implements Router_Contract {
 
 		$value = $callback( $this->registrar );
 
-		if ( ! $set ) {
+		if ( ! $set || $clear ) {
 			$this->registrar = null;
 		}
 
 		return $value;
 	}
-
-	/**
-	 * Create a REST API route.
-	 *
-	 * @param string[] $methods Methods to register.
-	 * @param string   $uri URL route.
-	 * @param mixed    $action Route callback.
-	 */
-	// protected function create_rest_api_route( array $methods, string $uri, $action ): void {
-	// 	$args = [
-	// 		'callback' => $action,
-	// 		'methods'  => $methods,
-	// 	];
-
-	// 	if ( $this->has_group_stack() ) {
-	// 		$args = $this->merge_with_last_group( $args );
-	// 	}
-
-	// 	$this->rest_registrar->register_route( $this->prefix( $uri ), $args );
-	// }
 
 	/**
 	 * Prefix the given URI with the last prefix.
@@ -392,9 +375,7 @@ class Router implements Router_Contract {
 	 * @param mixed   $response
 	 */
 	public static function to_response( Request $request, mixed $response ): \Symfony\Component\HttpFoundation\Response {
-		$response = Route::ensure_response( $response );
-
-		return $response->prepare( $request );
+		return Route::ensure_response( $response )->prepare( $request );
 	}
 
 	/**
@@ -589,25 +570,22 @@ class Router implements Router_Contract {
 	/**
 	 * Register a REST API route.
 	 *
-	 * @param string                       $namespace Namespace for the REST API route.
-	 * @param callable|string              $callback_or_uri  Callback that will be invoked to register
-	 *                                                routes OR a string route.
-	 * @param callable|array<mixed>|string $args      Callback for the route if $callback is a
-	 *                                         string route OR arguments to pass to
-	 *                                         the register_rest_route() call. Not used if $callback
-	 *                                         is a closure.
+	 * @param string $namespace Namespace for the REST API route.
+	 * @param callable|string $callback_or_uri  Callback that will be invoked to
+	 *                                          register routes OR a string route.
+	 * @param callable|array<mixed>|string $args Callback for the route if
+	 *                                           $callback is a string route OR
+	 *                                           arguments to pass to the
+	 *                                           register_rest_route() call. Not
+	 *                                           used if $callback is a closure.
 	 */
 	public function rest_api( string $namespace, callable|string $callback_or_uri, callable|array|string $args = [] ): ?Route {
-		if ( str_starts_with( $namespace, '/' ) ) {
-			$namespace = trim( $namespace, '/' );
-		}
+		$namespace = trim( $namespace, '/' );
 
-		$this->registrar = new Rest_Route_Registrar( $this, $namespace );
+		$this->registrar = new Rest_Route_Registrar( router: $this, namespace: $namespace );
 
 		if ( is_callable( $callback_or_uri ) ) {
-			$callback_or_uri();
-
-			$this->registrar = null;
+			$this->with_registrar( $callback_or_uri, clear: true );
 
 			return null;
 		}
@@ -626,78 +604,18 @@ class Router implements Router_Contract {
 			return $route;
 		}
 
-		// TODO: Validate args?
-		$args['methods'] = ! isset( $args['methods'] ) || ! is_array( $args['methods'] )
+		$args['methods'] = ! isset( $args['methods'] )
 			? [ 'GET', 'HEAD' ]
-			: $args['methods'];
+			: Arr::wrap( $args['methods'] );
 
-		$route = $this->registrar->register_route(
-			method: $args['methods'],
-			uri: $callback_or_uri,
-			action: $args,
+		return $this->with_registrar(
+			fn () => $this->registrar->register_route(
+				method: $args['methods'],
+				uri: $callback_or_uri,
+				action: $args,
+			),
+			clear: true,
 		);
-
-		$this->registrar = null;
-
-		return $route;
-
-		// if ( is_string( $callback_or_uri ) ) {
-		// }
-
-		// if ( is_array( $args ) ) {
-		// 	if ( ! is_string( $callback ) ) {
-		// 		throw new InvalidArgumentException(
-		// 			'Argument 2  to Router::rest_api() must be a string'
-		// 		)
-		// 	}
-		// }
-
-		// if ( is_callable( $callback ) ) {
-		// 	$callback();
-		// }
-
-		// 	$this->registrar = null;
-
-		// 	return $route;
-		// }
-
-		// $this->group( [
-		// 	'prefix'    => $prefix,
-		// 	'namespace' => $namespace,
-		// ], $callback );
-
-		// return null;
-
-		// dd($callback);
-		// // }
-		// // $group = $this->group( [
-		// // 	'prefix'    => rest_get_url_prefix(),
-		// // 	'namespace' => $namespace,
-		// // ])
-		// // $registrar = new Rest_Route_Registrar( $this, $namespace );
-
-		// // if ( is_callable( $callback ) ) {
-		// // 	$this->rest_registrar = $registrar;
-
-		// // 	$callback();
-
-		// // 	$this->rest_registrar = null;
-		// // } else {
-		// // 	if ( is_callable( $args ) ) {
-		// // 		$args = [
-		// // 			'callback' => $args,
-		// // 		];
-		// // 	}
-
-		// // 	// Include the group attributes.
-		// // 	if ( $this->has_group_stack() ) {
-		// // 		$args = $this->merge_with_last_group( $args );
-		// // 	}
-
-		// // 	$registrar->register_route( $this->prefix( $callback ), $args );
-		// // }
-
-		// // return $registrar;
 	}
 
 	/**
@@ -711,7 +629,8 @@ class Router implements Router_Contract {
 	}
 
 	/**
-	 * Dynamically handle calls into the router instance.
+	 * Dynamically handle calls into the router instance that should be forwarded
+	 * to the current route registrar.
 	 *
 	 * @param string       $method Method name.
 	 * @param array<mixed> $parameters Parameters for the method.
@@ -723,11 +642,7 @@ class Router implements Router_Contract {
 
 		$registrar = $this->registrar ?: new Route_Registrar( $this );
 
-		if ( 'middleware' === $method ) {
-			return $registrar->attribute( $method, is_array( $parameters[0] ) ? $parameters[0] : $parameters );
-		}
-
-		return $registrar->attribute( $method, $parameters[0] );
+		return $registrar->{$method}( ...$parameters );
 	}
 
 	/**
@@ -782,8 +697,9 @@ class Router implements Router_Contract {
 	 * @param Request $request Request object.
 	 */
 	public function should_pass_through_request( Request $request ): bool {
-		// Early checks to always allow the REST API and prevent routing when not using themes.
-		if ( str_starts_with( $request->path(), 'wp-json' ) ) {
+		// Early checks to always allow the REST API and prevent routing when not
+		// using themes.
+		if ( str_starts_with( $request->path(), rest_get_url_prefix() ) ) {
 			return true;
 		}
 
@@ -805,6 +721,8 @@ class Router implements Router_Contract {
 		}
 
 		foreach ( $this->rest_routes as $route ) {
+			assert( $route instanceof Route );
+
 			$route->register_rest_route();
 		}
 	}
