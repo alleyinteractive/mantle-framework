@@ -13,6 +13,7 @@ use InvalidArgumentException;
 use Mantle\Filesystem\Filesystem;
 use Mantle\Support\Str;
 
+use function Mantle\Framework_Views\get_framework_views_path;
 use function Mantle\Support\Helpers\event;
 
 /**
@@ -94,6 +95,8 @@ class View_Finder {
 
 		// Allow mantle-site to load views.
 		$this->add_path( $this->base_path . '/views', 'mantle-site' );
+
+		$this->add_path( get_framework_views_path(), 'framework' );
 
 		/**
 		 * Dispatched when the view finder is setting its default paths.

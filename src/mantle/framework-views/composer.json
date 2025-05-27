@@ -1,0 +1,32 @@
+{
+    "name": "mantle-framework/framework-views",
+    "description": "The Mantle Framework package for framework views.",
+    "type": "library",
+    "require": {
+        "php": "^8.2",
+        "mantle-framework/view": "^1.0"
+    },
+    "extra": {
+        "wordpress-autoloader": {
+            "autoload": {
+                "Mantle\\Framework_Views": "./"
+            }
+        }
+    },
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Alley",
+            "email": "mantle@alley.com"
+        }
+    ],
+    "autoload": {
+        "files": [
+            "autoload.php"
+        ]
+    },
+    "minimum-stability": "dev",
+    "config": {
+        "sort-packages": true
+    }
+}

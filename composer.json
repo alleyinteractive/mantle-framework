@@ -102,6 +102,7 @@
         },
         "files": [
             "src/mantle/framework/helpers.php",
+            "src/mantle/framework-views/autoload.php",
             "src/mantle/application/autoload.php",
             "src/mantle/assets/autoload.php",
             "src/mantle/cache/autoload.php",

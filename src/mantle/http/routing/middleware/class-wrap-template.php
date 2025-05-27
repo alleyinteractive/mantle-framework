@@ -10,9 +10,10 @@ namespace Mantle\Http\Routing\Middleware;
 use Closure;
 use Mantle\Contracts\Application;
 use Mantle\Http\Request;
-use Mantle\Http\Response;
 use Mantle\Http\View\Factory;
 use Symfony\Component\HttpFoundation\Response as Symfony_Response;
+
+use function Mantle\Support\Helpers\capture;
 
 /**
  * Wrap the current response with a template.
@@ -26,8 +27,7 @@ class Wrap_Template {
 	 *
 	 * @param Application $app Application instance.
 	 */
-	public function __construct( protected Application $app ) {
-	}
+	public function __construct( protected Application $app ) {}
 
 	/**
 	 * Handle an incoming request and setup the admin bar.
@@ -77,16 +77,33 @@ class Wrap_Template {
 	 * Fallback to running get_header()/get_footer() around the content if a wrapper
 	 * template is not specified.
 	 *
+	 * If the theme supports block templates, we will use the block template parts
+	 * from the theme.
+	 *
 	 * @param Symfony_Response $response Response object.
 	 */
 	protected function wrap_fallback( Symfony_Response $response ): Symfony_Response {
-		ob_start();
-		\get_header();
-		// Assumed to be sanitized.
-		echo $response->getContent(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		\get_footer();
+		// Attempt to wrap with HTML template parts from the theme.
+		if ( current_theme_supports( 'block-templates' ) ) {
+			// Add viewport meta tag.
+			add_action( 'wp_head', '_block_template_viewport_meta_tag', 0 );
 
-		$response->setContent( ob_get_clean() );
+			// Render title tag with content, regardless of whether theme has title-tag support.
+			remove_action( 'wp_head', '_wp_render_title_tag', 1 );    // Remove conditional title tag rendering...
+			add_action( 'wp_head', '_block_template_render_title_tag', 1 ); // ...and make it unconditional.
+
+			$response->setContent(
+				view( '@framework-views/wrapper', [ 'response' => $response ] ),
+			);
+		} else {
+			// Fallback to the default header and footer.
+			$response->setContent( capture( static function () use ( $response ): void {
+				\get_header();
+				// Assumed to be sanitized.
+				echo $response->getContent(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				\get_footer();
+			} ) );
+		}
 
 		return $response;
 	}
