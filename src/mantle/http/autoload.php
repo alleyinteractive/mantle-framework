@@ -10,7 +10,7 @@
  * @package Mantle
  */
 
-declare( strict_types=1 );
+declare(strict_types=1);
 
 use Mantle\Contracts\Http\Routing\Response_Factory;
 use Mantle\Contracts\Http\View\Factory as View_Factory;
