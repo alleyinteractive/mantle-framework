@@ -7,7 +7,7 @@
  * @package Mantle
  */
 
-declare( strict_types=1 );
+declare(strict_types=1);
 
 if ( ! function_exists( 'cache' ) ) {
 	/**

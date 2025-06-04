@@ -7,8 +7,10 @@
 
 namespace Mantle\Http\Routing;
 
+use Closure;
 use InvalidArgumentException;
 use Mantle\Http\Routing\Events\Route_Matched;
+use Mantle\Support\Arr;
 use Mantle\Support\Pipeline;
 use Mantle\Support\Str;
 use WP_REST_Request;
@@ -19,71 +21,102 @@ use function Mantle\Support\Helpers\collect;
 /**
  * REST API Route Registrar
  */
-class Rest_Route_Registrar {
+class Rest_Route_Registrar extends Route_Registrar {
 	/**
-	 * Queued routes to register.
+	 * Create a new Rest_Route_Registrar instance from a base route registrar.
 	 *
-	 * @var array<mixed>
+	 * @param Route_Registrar $base Base route registrar.
+	 * @param string          $namespace Namespace for the REST API routes.
 	 */
-	protected $routes;
+	public static function from_base( Route_Registrar $base, string $namespace ): static {
+		return new static(
+			router: $base->router,
+			namespace: $namespace,
+			attributes: $base->attributes(),
+		);
+	}
 
 	/**
 	 * Constructor.
 	 *
-	 * @param Router $router Router instance.
-	 * @param string $namespace Namespace to register to.
+	 * @param Router       $router Router instance.
+	 * @param string       $namespace Route namespace.
+	 * @param array<mixed> $attributes Route attributes.
 	 */
-	public function __construct( protected Router $router, protected string $namespace ) {
-		add_action( 'rest_api_init', [ $this, 'register_routes' ], 20 );
+	public function __construct( Router $router, protected readonly string $namespace, array $attributes = [] ) {
+		parent::__construct( $router, $attributes );
 	}
 
 	/**
-	 * Register a REST API Route.
+	 * Register the underlying route with the router.
 	 *
-	 * @param string                $route Route to register.
-	 * @param array<mixed>|callable $args Arguments or callback for the route.
+	 * @todo Pass along namespace.
+	 *
+	 * @param string|string[]                  $method HTTP methods.
+	 * @param string                           $uri
+	 * @param Closure|array<mixed>|string|null $action Route action or arguments.
 	 */
-	public function register_route( string $route, $args = [] ): void {
-		$args = $this->normalize_args( $args, $route );
+	public function register_route( string|array $method, string $uri, Closure|array|string|null $action = null ): Route {
+		$method = Arr::wrap( $method );
 
-		if ( $this->should_register_now() ) {
-			register_rest_route( $this->namespace, $route, $args );
-		} else {
-			$this->routes[] = [ $route, $args ];
-		}
+		return $this->router->add_rest_route(
+			methods: $method,
+			uri: $uri,
+			arguments: $this->normalize_arguments( $action, $uri, $method ),
+		);
 	}
 
 	/**
-	 * Normalize the arguments that are registered.
+	 * Normalize route arguments creation of the Route object.
 	 *
-	 * @param array<mixed>|callable $args Arguments for the route or callback function.
-	 * @param string                $route Route name.
+	 * @throws InvalidArgumentException If a callable action was not found.
+	 *
+	 * @param Closure|array<mixed>|string $arguments Route arguments or callback.
+	 * @param string                      $uri Route URI.
+	 * @param string[]                    $methods HTTP methods.
 	 * @return array<mixed>
 	 */
-	protected function normalize_args( $args, string $route ): array {
-		if ( ! is_array( $args ) ) {
-			$args = [
-				'callback' => $args,
-			];
+	protected function normalize_arguments( Closure|array|string $arguments, string $uri, array $methods ): array {
+		$arguments = parent::normalize_arguments( $arguments, $uri, $methods );
+
+		// Wrap the callback to provide a better integration with the router and the
+		// rest of the Mantle framework.
+		if ( isset( $arguments['callback'] ) ) {
+			$arguments['callback'] = $this->wrap_callback(
+				$arguments['callback'],
+				$uri,
+			);
+		} else {
+			throw new InvalidArgumentException(
+				"No callback provided for REST API route [{$uri}].",
+			);
 		}
 
-		// Fill in the required argument for permission callback.
-		if ( empty( $args['permission_callback'] ) ) {
-			$args['permission_callback'] = '__return_true';
+		// Ensure the namespace is forwarded to the route.
+		$arguments['namespace'] = $this->namespace;
+
+		// The REST API expects the methods to be passed in the arguments.
+		$arguments['methods'] = $methods;
+
+		// Ensure the route has a permission callback.
+		if ( empty( $arguments['permission_callback'] ) ) {
+			$arguments['permission_callback'] = '__return_true';
 		}
 
-		// Ensure the callback returns a valid REST response.
-		if ( isset( $args['callback'] ) ) {
-			$args['callback'] = $this->wrap_callback( $args['callback'], $route );
-		}
-
-		return $args;
+		return $arguments;
 	}
 
 	/**
 	 * Wrap the route callback with a valid WordPress REST response.
 	 *
-	 * @param mixed  $callback Callback to invoke.
+	 * By wrapping the callback we can provide the same type of HTTP routing that
+	 * we use for web routing with the WordPress REST API. For example, we can use
+	 * a controller method that has type hints of container bindings and
+	 * automatically resolve them like we do for web routes.
+	 *
+	 * @param mixed  $callback Callback to invoke. Can be a callable function, an
+	 *                         array of a controller and method, or a string
+	 *                         function.
 	 * @param string $route Route name.
 	 */
 	protected function wrap_callback( mixed $callback, string $route ): callable {
@@ -140,29 +173,6 @@ class Rest_Route_Registrar {
 	}
 
 	/**
-	 * Register the queued routes.
-	 */
-	public function register_routes(): void {
-		if ( empty( $this->routes ) ) {
-			return;
-		}
-
-		foreach ( $this->routes as $route ) {
-			register_rest_route( $this->namespace, ...$route );
-		}
-
-		$this->routes = [];
-	}
-
-	/**
-	 * Determine if the routes should be registered now because `rest_api_init`
-	 * was already fired.
-	 */
-	protected function should_register_now(): bool {
-		return function_exists( 'did_action' ) && (bool) did_action( 'rest_api_init' );
-	}
-
-	/**
 	 * Parse a route action and return the callback.
 	 *
 	 * Supports closures, invokable classes, and class methods.
@@ -172,7 +182,7 @@ class Rest_Route_Registrar {
 	 * @param mixed  $action Route action.
 	 * @param string $route Route path.
 	 */
-	protected function parse_route_action( mixed $action, string $route ): callable {
+	private function parse_route_action( mixed $action, string $route ): callable {
 		if ( is_callable( $action ) ) {
 			return $action;
 		}
@@ -191,7 +201,7 @@ class Rest_Route_Registrar {
 			}
 		}
 
-		if ( is_array( $action ) ) {
+		if ( is_array( $action ) && count( $action ) === 2 ) {
 			[ $controller, $method ] = $action;
 
 			return [ $this->router->get_container()->make( $controller ), $method ];

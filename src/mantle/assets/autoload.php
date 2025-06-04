@@ -10,7 +10,7 @@
  * @package Mantle
  */
 
-declare( strict_types=1 );
+declare(strict_types=1);
 
 use Mantle\Assets\Asset_Loader;
 use Mantle\Assets\Mix;

@@ -33,7 +33,7 @@ namespace Mantle\Facade;
  * @method static void bind_model(string $key, string $class, \Closure|null $callback = null)
  * @method static void substitute_bindings(\Mantle\Http\Request $request)
  * @method static void substitute_implicit_bindings(\Mantle\Http\Request $request)
- * @method static void rest_api(string $namespace, callable|string $callback, callable|array|string $args = [])
+ * @method static \Mantle\Http\Routing\Route|null rest_api(string $namespace, callable|string $callback_or_uri, callable|array|string $args = [])
  * @method static void model(string $model, string $controller)
  * @method static void sync_routes_to_url_generator()
  * @method static \Mantle\Http\Routing\Router rename_route(string $old_name, string $new_name)

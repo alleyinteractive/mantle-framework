@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Refactored the routing registrar class to be more flexible. Ensure that REST
+  API routes are treated the same as web routes.
 - Adjusted the template wrapper middleware to use block templates instead of
   `get_header()`/`get_footer()` calls.
 

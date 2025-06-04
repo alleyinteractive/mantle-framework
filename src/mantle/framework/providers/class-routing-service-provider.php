@@ -14,6 +14,7 @@ use Mantle\Http\Routing\Redirector;
 use Mantle\Http\Routing\Response_Factory;
 use Mantle\Http\Routing\Router;
 use Mantle\Http\Routing\Url_Generator;
+use Mantle\Support\Attributes\Action;
 use Mantle\Support\Service_Provider;
 
 /**
@@ -95,5 +96,13 @@ class Routing_Service_Provider extends Service_Provider {
 			Response_Factory_Contract::class,
 			fn ( $app ) => new Response_Factory( $app['redirect'], $app['view'] )
 		);
+	}
+
+	/**
+	 * Register the REST routes on `rest_api_init`.
+	 */
+	#[Action( 'rest_api_init' )]
+	public function register_rest_routes_on_init(): void {
+		$this->app['router']->register_rest_routes();
 	}
 }

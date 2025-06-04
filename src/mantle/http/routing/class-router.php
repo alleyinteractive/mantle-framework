@@ -11,17 +11,19 @@ use Closure;
 use InvalidArgumentException;
 use Mantle\Contracts\Container;
 use Mantle\Contracts\Events\Dispatcher;
+use Mantle\Contracts\Http\Routing\Route_Registrar as Registrar_Contract;
 use Mantle\Contracts\Http\Routing\Router as Router_Contract;
 use Mantle\Http\Request;
 use Mantle\Http\Routing\Events\Route_Matched;
+use Mantle\Support\Arr;
 use Mantle\Support\Pipeline;
 use Mantle\Support\Traits\Macroable;
 use ReflectionClass;
+use Symfony\Component\HttpFoundation\Response as Symfony_Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\HttpFoundation\Response as Symfony_Response;
 
 use function Mantle\Support\Helpers\collect;
 
@@ -45,6 +47,11 @@ class Router implements Router_Contract {
 	protected RouteCollection $routes;
 
 	/**
+	 * REST API route collection.
+	 */
+	protected RouteCollection $rest_routes;
+
+	/**
 	 * All of the short-hand keys for middlewares.
 	 *
 	 * @var array<string, class-string>
@@ -66,14 +73,9 @@ class Router implements Router_Contract {
 	protected array $binders = [];
 
 	/**
-	 * REST Route Registrar
+	 * Current route registrar.
 	 */
-	protected ?Rest_Route_Registrar $rest_registrar = null;
-
-	/**
-	 * Data Object Router
-	 */
-	protected Entity_Router $model_router;
+	public ?Registrar_Contract $registrar = null;
 
 	/**
 	 * Flag or callback to determine if requests should pass through to WordPress.
@@ -89,7 +91,8 @@ class Router implements Router_Contract {
 	 * @param Container  $container Container instance.
 	 */
 	public function __construct( protected Dispatcher $events, protected Container $container ) {
-		$this->routes = new RouteCollection();
+		$this->routes      = new RouteCollection();
+		$this->rest_routes = new RouteCollection();
 	}
 
 	/**
@@ -97,10 +100,11 @@ class Router implements Router_Contract {
 	 *
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
-	 * @return Route
 	 */
-	public function get( string $uri, $action = '' ): ?Route {
-		return $this->add_route( [ 'GET', 'HEAD' ], $uri, $action );
+	public function get( string $uri, mixed $action = '' ): Route {
+		return $this->with_registrar(
+			fn () => $this->registrar->register_route( 'get', $uri, $action ),
+		);
 	}
 
 	/**
@@ -108,10 +112,11 @@ class Router implements Router_Contract {
 	 *
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
-	 * @return Route
 	 */
-	public function post( string $uri, $action = '' ): ?Route {
-		return $this->add_route( [ 'POST' ], $uri, $action );
+	public function post( string $uri, mixed $action = '' ): Route {
+		return $this->with_registrar(
+			fn () => $this->registrar->register_route( 'post', $uri, $action ),
+		);
 	}
 
 	/**
@@ -119,10 +124,11 @@ class Router implements Router_Contract {
 	 *
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
-	 * @return Route
 	 */
-	public function put( string $uri, $action = '' ): ?Route {
-		return $this->add_route( [ 'PUT' ], $uri, $action );
+	public function put( string $uri, mixed $action = '' ): Route {
+		return $this->with_registrar(
+			fn () => $this->registrar->register_route( 'put', $uri, $action ),
+		);
 	}
 
 	/**
@@ -130,10 +136,11 @@ class Router implements Router_Contract {
 	 *
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
-	 * @return Route
 	 */
-	public function delete( string $uri, $action = '' ): ?Route {
-		return $this->add_route( [ 'DELETE' ], $uri, $action );
+	public function delete( string $uri, mixed $action = '' ): Route {
+		return $this->with_registrar(
+			fn () => $this->registrar->register_route( 'delete', $uri, $action ),
+		);
 	}
 
 	/**
@@ -141,10 +148,11 @@ class Router implements Router_Contract {
 	 *
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
-	 * @return Route
 	 */
-	public function patch( string $uri, $action = '' ): ?Route {
-		return $this->add_route( [ 'PATCH' ], $uri, $action );
+	public function patch( string $uri, mixed $action = '' ): Route {
+		return $this->with_registrar(
+			fn () => $this->registrar->register_route( 'patch', $uri, $action ),
+		);
 	}
 
 	/**
@@ -152,10 +160,11 @@ class Router implements Router_Contract {
 	 *
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
-	 * @return Route
 	 */
-	public function options( string $uri, $action = '' ): ?Route {
-		return $this->add_route( [ 'OPTIONS' ], $uri, $action );
+	public function options( string $uri, mixed $action = '' ): Route {
+		return $this->with_registrar(
+			fn () => $this->registrar->register_route( 'options', $uri, $action ),
+		);
 	}
 
 	/**
@@ -164,8 +173,10 @@ class Router implements Router_Contract {
 	 * @param string $uri URL to register for.
 	 * @param mixed  $action Callback action.
 	 */
-	public function any( string $uri, $action = '' ): ?Route {
-		return $this->add_route( [ 'GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS' ], $uri, $action );
+	public function any( string $uri, mixed $action = '' ): Route {
+		return $this->with_registrar(
+			fn () => $this->registrar->register_route( 'any', $uri, $action ),
+		);
 	}
 
 	/**
@@ -185,20 +196,12 @@ class Router implements Router_Contract {
 	/**
 	 * Register a route.
 	 *
-	 * @param string[] $methods Methods to register.
-	 * @param string   $uri URL route.
-	 * @param mixed    $action Route callback.
-	 * @return Route|null Route instance for web routes, null for REST routes.
+	 * @param string[]     $methods Methods to register.
+	 * @param string       $uri URL route.
+	 * @param array<mixed> $arguments Route callback.
 	 */
-	public function add_route( array $methods, string $uri, $action ): ?Route {
-		// Send the route to the REST Registrar if set.
-		if ( $this->rest_registrar instanceof \Mantle\Http\Routing\Rest_Route_Registrar ) {
-			$this->create_rest_api_route( $methods, $uri, $action );
-
-			return null;
-		}
-
-		$route = $this->create_route( $methods, $uri, $action );
+	public function add_route( array $methods, string $uri, array $arguments ): Route {
+		$route = $this->create_route( $methods, $uri, $arguments );
 
 		$this->routes->add( $route->get_name(), $route );
 
@@ -206,13 +209,28 @@ class Router implements Router_Contract {
 	}
 
 	/**
+	 * Register a REST API route.
+	 *
+	 * @param string[]     $methods Methods to register.
+	 * @param string       $uri URL route.
+	 * @param array<mixed> $arguments Route arguments.
+	 */
+	public function add_rest_route( array $methods, string $uri, array $arguments ): Route {
+		$route = $this->create_route( $methods, $uri, $arguments );
+
+		$this->rest_routes->add( $route->get_name(), $route );
+
+		return $route;
+	}
+
+	/**
 	 * Create a new route instance.
 	 *
-	 * @param string[] $methods Methods to register.
-	 * @param string   $uri URL route.
-	 * @param mixed    $action Route callback.
+	 * @param string[]     $methods Methods to register.
+	 * @param string       $uri URL route.
+	 * @param array<mixed> $action Route action/arguments.
 	 */
-	protected function create_route( array $methods, string $uri, $action ): Route {
+	protected function create_route( array $methods, string $uri, array $action ): Route {
 		$route = new Route( $methods, $this->prefix( $uri ), $action );
 
 		if ( $this->has_group_stack() ) {
@@ -225,23 +243,32 @@ class Router implements Router_Contract {
 	}
 
 	/**
-	 * Create a REST API route.
+	 * Invoke a callback with the route registrar set.
 	 *
-	 * @param string[] $methods Methods to register.
-	 * @param string   $uri URL route.
-	 * @param mixed    $action Route callback.
+	 * If it is not set, the default route registrar will be created and set to
+	 * null after the callback is invoked.
+	 *
+	 * @template TData = mixed
+	 *
+	 * @param \Closure $callback Callback to invoke with the registrar.
+	 * @param bool     $clear Always clear the registrar after the callback is invoked. By default, the registrar will be cleared only if it was not set before.
+	 * @phpstan-param (\Closure(\Mantle\Contracts\Http\Routing\Route_Registrar $registrar): TData) $callback
+	 * @phpstan-return TData
 	 */
-	protected function create_rest_api_route( array $methods, string $uri, $action ): void {
-		$args = [
-			'callback' => $action,
-			'methods'  => $methods,
-		];
+	protected function with_registrar( \Closure $callback, bool $clear = false ): mixed {
+		$set = ! is_null( $this->registrar );
 
-		if ( $this->has_group_stack() ) {
-			$args = $this->merge_with_last_group( $args );
+		if ( ! $set ) {
+			$this->registrar = new Route_Registrar( $this );
 		}
 
-		$this->rest_registrar->register_route( $this->prefix( $uri ), $args );
+		$value = $callback( $this->registrar );
+
+		if ( ! $set || $clear ) {
+			$this->registrar = null;
+		}
+
+		return $value;
 	}
 
 	/**
@@ -340,9 +367,7 @@ class Router implements Router_Contract {
 	 * @param mixed   $response
 	 */
 	public static function to_response( Request $request, mixed $response ): \Symfony\Component\HttpFoundation\Response {
-		$response = Route::ensure_response( $response );
-
-		return $response->prepare( $request );
+		return Route::ensure_response( $response )->prepare( $request );
 	}
 
 	/**
@@ -535,41 +560,50 @@ class Router implements Router_Contract {
 	}
 
 	/**
-	 * Register a REST API route
+	 * Register a REST API route.
 	 *
-	 * @param string                       $namespace Namespace for the REST API route.
-	 * @param callable|string              $callback  Callback that will be invoked to register
-	 *                                                routes OR a string route.
-	 * @param callable|array<mixed>|string $args      Callback for the route if $callback is a
-	 *                                         string route OR arguments to pass to
-	 *                                         the register_rest_route() call. Not used if $callback
-	 *                                         is a closure.
+	 * @param string                       $namespace        Namespace for the REST API route.
+	 * @param callable|string              $callback_or_uri  Callback that will be invoked to register
+	 *                                                       routes or a string route path.
+	 * @param callable|array<mixed>|string $args             Callback for the route if $callback or route arguments.
 	 */
-	public function rest_api( string $namespace, callable|string $callback, callable|array|string $args = [] ): Rest_Route_Registrar {
-		$registrar = new Rest_Route_Registrar( $this, $namespace );
+	public function rest_api( string $namespace, callable|string $callback_or_uri, callable|array|string $args = [] ): ?Route {
+		$namespace = trim( $namespace, '/' );
 
-		if ( is_callable( $callback ) ) {
-			$this->rest_registrar = $registrar;
+		$this->registrar = new Rest_Route_Registrar( router: $this, namespace: $namespace );
 
-			$callback();
+		if ( is_callable( $callback_or_uri ) ) {
+			$this->with_registrar( $callback_or_uri, clear: true );
 
-			$this->rest_registrar = null;
-		} else {
-			if ( is_callable( $args ) ) {
-				$args = [
-					'callback' => $args,
-				];
-			}
-
-			// Include the group attributes.
-			if ( $this->has_group_stack() ) {
-				$args = $this->merge_with_last_group( $args );
-			}
-
-			$registrar->register_route( $this->prefix( $callback ), $args );
+			return null;
 		}
 
-		return $registrar;
+		// If a third argument is a callable we will assume it is the action and the
+		// second argument is the route.
+		if ( is_callable( $args ) ) {
+			$route = $this->registrar->register_route(
+				method: [ 'GET', 'HEAD' ],
+				uri: $callback_or_uri,
+				action: $args,
+			);
+
+			$this->registrar = null;
+
+			return $route;
+		}
+
+		$args['methods'] = isset( $args['methods'] )
+			? Arr::wrap( $args['methods'] )
+			: [ 'GET', 'HEAD' ];
+
+		return $this->with_registrar(
+			fn () => $this->registrar->register_route(
+				method: $args['methods'],
+				uri: $callback_or_uri,
+				action: $args,
+			),
+			clear: true,
+		);
 	}
 
 	/**
@@ -583,7 +617,8 @@ class Router implements Router_Contract {
 	}
 
 	/**
-	 * Dynamically handle calls into the router instance.
+	 * Dynamically handle calls into the router instance that should be forwarded
+	 * to the current route registrar.
 	 *
 	 * @param string       $method Method name.
 	 * @param array<mixed> $parameters Parameters for the method.
@@ -593,12 +628,9 @@ class Router implements Router_Contract {
 			return $this->macro_call( $method, $parameters );
 		}
 
-		if ( 'middleware' === $method ) {
-			return ( new Route_Registrar( $this ) )
-				->attribute( $method, is_array( $parameters[0] ) ? $parameters[0] : $parameters );
-		}
+		$registrar = $this->registrar ?: new Route_Registrar( $this );
 
-		return ( new Route_Registrar( $this ) )->attribute( $method, $parameters[0] );
+		return $registrar->{$method}( ...$parameters );
 	}
 
 	/**
@@ -641,7 +673,7 @@ class Router implements Router_Contract {
 	 *
 	 * @param (callable(\Mantle\Http\Request): bool)|bool $callback Callback to determine if the request should pass through to WordPress.
 	 */
-	public function pass_requests_to_wordpress( $callback ): static {
+	public function pass_requests_to_wordpress( callable|bool $callback ): static {
 		$this->pass_requests_to_wordpress = $callback;
 
 		return $this;
@@ -653,8 +685,9 @@ class Router implements Router_Contract {
 	 * @param Request $request Request object.
 	 */
 	public function should_pass_through_request( Request $request ): bool {
-		// Early checks to always allow the REST API and prevent routing when not using themes.
-		if ( str_starts_with( $request->path(), 'wp-json' ) ) {
+		// Early checks to always allow the REST API and prevent routing when not
+		// using themes.
+		if ( str_starts_with( $request->path(), rest_get_url_prefix() ) ) {
 			return true;
 		}
 
@@ -665,5 +698,20 @@ class Router implements Router_Contract {
 		$status = $this->pass_requests_to_wordpress;
 
 		return is_callable( $status ) ? (bool) $status( $request ) : $status;
+	}
+
+	/**
+	 * Register the REST API routes from the router with WordPress.
+	 */
+	public function register_rest_routes(): void {
+		if ( $this->rest_routes->count() === 0 ) {
+			return;
+		}
+
+		foreach ( $this->rest_routes as $rest_route ) {
+			assert( $rest_route instanceof Route );
+
+			$rest_route->register_rest_route();
+		}
 	}
 }
