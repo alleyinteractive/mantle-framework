@@ -85,6 +85,18 @@ class Mock_Http_Response implements Arrayable {
 	}
 
 	/**
+	 * Create a JSON response.
+	 *
+	 * @param array $body   Response body.
+	 * @param array $headers Response headers.
+	 */
+	public static function json( array $body, array $headers = [] ): Mock_Http_Response {
+		return static::create()
+			->with_json( $body )
+			->with_headers( $headers );
+	}
+
+	/**
 	 * Add a header to the response.
 	 *
 	 * @param string $key   Header key.
