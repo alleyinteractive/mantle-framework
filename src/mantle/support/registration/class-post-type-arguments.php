@@ -483,7 +483,11 @@ class Post_Type_Arguments implements Arrayable {
 	/**
 	 * Set the template argument for the post type.
 	 *
-	 * @param array<string, string> $template The template for the post type.
+	 * @param array<array<mixed>> $template Array of blocks to use as the default
+	 *                                      initial state session. Each item
+	 *                                      should be an array containing block
+	 *                                      name and optional attributes. Default
+	 *                                      empty array.
 	 */
 	public function template( array $template ): static {
 		$this->arguments['template'] = $template;

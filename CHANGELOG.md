@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Adjusted the template wrapper middleware to use block templates instead of
   `get_header()`/`get_footer()` calls.
 
+### Fixed
+
+- The param for `Post_Type_Arguments::template()` has been fixed to match the argument shape from core.
+
 ## v1.7.2
 
 ### Fixed
