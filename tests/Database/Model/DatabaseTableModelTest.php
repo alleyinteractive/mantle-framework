@@ -2,13 +2,10 @@
 namespace Mantle\Tests\Database\Model;
 
 use Mantle\Database\Model\Database_Table_Model;
-use Mantle\Database\Model\Model;
-use Mantle\Database\Model\Post;
 use Mantle\Testing\FrameworkTestCase;
-use PHPUnit\Framework\TestCase;
 
 /**
- * Test non-WordPress specific logic of the model
+ * Database_Table_Model tests.
  */
 class DatabaseTableModelTest extends FrameworkTestCase {
 	public static function setUpBeforeClass(): void {
@@ -18,15 +15,15 @@ class DatabaseTableModelTest extends FrameworkTestCase {
 
 		assert( $wpdb instanceof \wpdb );
 
-		$wpdb->testable_table = 'mantle_testable_table';
+		$table_name = TestableDatabaseModel::get_table_name();
 
 		// Delete the table if it exists to ensure a clean state for tests.
 		$wpdb->query(
-			"DROP TABLE IF EXISTS {$wpdb->prefix}{$wpdb->testable_table}",
+			"DROP TABLE IF EXISTS {$wpdb->prefix}{$table_name}",
 		);
 
 		$wpdb->query(
-			"CREATE TABLE {$wpdb->prefix}{$wpdb->testable_table} (
+			"CREATE TABLE {$wpdb->prefix}{$table_name} (
 				id bigint unsigned NOT NULL AUTO_INCREMENT,
 				name VARCHAR(255) NOT NULL,
 				address VARCHAR(255) NOT NULL,
@@ -87,12 +84,4 @@ class DatabaseTableModelTest extends FrameworkTestCase {
 	}
 }
 
-class TestableDatabaseModel extends Database_Table_Model {
-	public static function get_table_name(): string {
-		global $wpdb;
-
-		assert( $wpdb instanceof \wpdb );
-
-		return $wpdb->testable_table;
-	}
-}
+class TestableDatabaseModel extends Database_Table_Model {}

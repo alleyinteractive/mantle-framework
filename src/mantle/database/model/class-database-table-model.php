@@ -9,7 +9,10 @@ namespace Mantle\Database\Model;
 
 use InvalidArgumentException;
 use Mantle\Contracts\Database\Updatable;
+use Mantle\Support\Str;
 use RuntimeException;
+
+use function Mantle\Support\Helpers\class_basename;
 
 /**
  * Database Table Model
@@ -24,7 +27,9 @@ abstract class Database_Table_Model extends Model implements Updatable {
 	/**
 	 * The table name for the model.
 	 */
-	abstract public static function get_table_name(): string;
+	public static function get_table_name(): string {
+		return Str::snake( class_basename( static::class ), '_' );
+	}
 
 	/**
 	 * Find a queue record by ID.
