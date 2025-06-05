@@ -9,6 +9,8 @@ namespace Mantle\Database\Model;
 
 use InvalidArgumentException;
 use Mantle\Contracts\Database\Updatable;
+use Mantle\Database\Query\Builder;
+use Mantle\Database\Query\Database_Query_Builder;
 use Mantle\Support\Str;
 use RuntimeException;
 
@@ -29,6 +31,13 @@ abstract class Database_Table_Model extends Model implements Updatable {
 	 */
 	public static function get_table_name(): string {
 		return Str::snake( class_basename( static::class ), '_' );
+	}
+
+	/**
+	 * Get the primary key for the model.
+	 */
+	public static function get_query_builder_class(): ?string {
+		return Database_Query_Builder::class;
 	}
 
 	/**
