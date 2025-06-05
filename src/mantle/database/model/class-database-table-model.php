@@ -9,10 +9,8 @@ namespace Mantle\Database\Model;
 
 use InvalidArgumentException;
 use Mantle\Contracts\Database\Updatable;
-use Mantle\Database\Query\Builder;
 use Mantle\Database\Query\Database_Query_Builder;
 use Mantle\Support\Str;
-use RuntimeException;
 
 use function Mantle\Support\Helpers\class_basename;
 
