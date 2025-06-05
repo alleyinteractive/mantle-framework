@@ -76,8 +76,6 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
 	/**
 	 * The primary key for the model.
-	 *
-	 * @var string
 	 */
 	protected static string $primary_key = 'id';
 
