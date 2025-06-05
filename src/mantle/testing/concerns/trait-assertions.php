@@ -3,6 +3,7 @@
  * This file contains the Assertions trait
  *
  * phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_print_r, WordPressVIPMinimum.Functions.RestrictedFunctions.get_posts_get_posts
+ * phpcs:disable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL
  *
  * @package Mantle
  */
@@ -579,5 +580,68 @@ trait Assertions {
 		}
 
 		return $arguments;
+	}
+
+	/**
+	 * Assert that a database table has a specific set of arguments.
+	 *
+	 * @param string               $table     The database table name without prefix.
+	 * @param array<string, mixed> $arguments The arguments to check against the database.
+	 * @param int|null             $count     The expected number of results.
+	 */
+	public function assertDatabaseHas( string $table, array $arguments, ?int $count = null ): void {
+		global $wpdb;
+
+		assert( $wpdb instanceof \wpdb );
+
+		$arguments = collect( $this->serialize_arguments( $arguments ) );
+
+		if ( ! str_starts_with( $table, $wpdb->prefix ) ) {
+			$table = $wpdb->prefix . $table;
+		}
+
+		$result = (int) $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM {$table} WHERE 1=1 AND " . $arguments->map(
+					fn ( $value, $key ) => "{$key} = %s",
+				)->implode( ' AND ' ),
+				...$arguments->values()->all(),
+			),
+		);
+
+		if ( $count ) {
+			PHPUnit::assertEquals( $count, $result );
+		} else {
+			PHPUnit::assertGreaterThan( 0, $result );
+		}
+	}
+
+	/**
+	 * Assert that a database table does not have a specific set of arguments.
+	 *
+	 * @param string               $table     The database table name.
+	 * @param array<string, mixed> $arguments The arguments to check against the database.
+	 */
+	public function assertDatabaseDoesNotHave( string $table, array $arguments ): void {
+		global $wpdb;
+
+		assert( $wpdb instanceof \wpdb );
+
+		$arguments = collect( $this->serialize_arguments( $arguments ) );
+
+		if ( ! str_starts_with( $table, $wpdb->prefix ) ) {
+			$table = $wpdb->prefix . $table;
+		}
+
+		$result = (int) $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM {$table} WHERE 1=1 AND " . $arguments->map(
+					fn ( $value, $key ) => "{$key} = %s",
+				)->implode( ' AND ' ),
+				...$arguments->values()->all(),
+			),
+		);
+
+		PHPUnit::assertEquals( 0, $result );
 	}
 }

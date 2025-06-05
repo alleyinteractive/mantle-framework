@@ -79,7 +79,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 *
 	 * @var string
 	 */
-	protected $primary_key = 'id';
+	protected static string $primary_key = 'id';
 
 	/**
 	 * Indicates if the model exists.
@@ -487,7 +487,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 * Get the primary key for the model.
 	 */
 	public function get_key_name(): string {
-		return $this->primary_key;
+		return static::$primary_key;
 	}
 
 	/**
@@ -544,7 +544,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 		$key = $field ?? $this->get_route_key_name();
 
 		// If the key is the same as the primary key, use the find method to help with some caching.
-		if ( $key === $this->primary_key ) {
+		if ( $key === static::$primary_key ) {
 			return static::find( $value );
 		}
 

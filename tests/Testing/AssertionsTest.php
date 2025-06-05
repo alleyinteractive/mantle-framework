@@ -3,6 +3,7 @@ namespace Mantle\Tests\Concerns;
 
 use Mantle\Testing\Attributes\Acting_As;
 use Mantle\Testing\FrameworkTestCase;
+use Mantle\Testing\Utils;
 use PHPUnit\Framework\Attributes\Group;
 
 /**
@@ -78,5 +79,25 @@ class AssertionsTest extends FrameworkTestCase {
 		$post = static::factory()->post->create_and_get();
 
 		$this->assertPostNotHasTerm( $post, $tag );
+	}
+
+	public function test_database_assertions(): void {
+		Utils::delete_all_data();
+
+		$this->assertDatabaseDoesNotHave( 'posts', [
+			'post_title' => 'example',
+		] );
+
+		static::factory()->post->create_and_get( [ 'post_title' => 'example' ] );
+
+		$this->assertDatabaseHas( 'posts', [
+			'post_title' => 'example',
+		], count: 1 );
+
+		static::factory()->tag->create_and_get( [ 'name' => 'Example Tag' ] );
+
+		$this->assertDatabaseHas( 'terms', [
+			'slug' => 'example-tag',
+		], count: 1 );
 	}
 }
