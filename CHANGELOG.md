@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Added `Database_Table_Model` class to allow for creating models that
+  represent database tables without a post type or taxonomy.
+- Added `assertDatabaseHas()` and `assertDatabaseDoesNotHave()` methods to the
+  to allow for asserting that a database table has or does not have a specific
+  row.
+
 ### Changed
 
 - Refactored the routing registrar class to be more flexible. Ensure that REST
