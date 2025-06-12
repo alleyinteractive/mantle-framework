@@ -97,6 +97,31 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		$this->assertEquals( 'John Doe', $users->json( 'items.0.name' ) );
 	}
 
+	public function test_fake_request_with_array(): void {
+		$this->fake_request(
+			'https://example.org/example-as-arguments',
+			[
+				'example' => 'value',
+			],
+		);
+
+		$this->fake_request( [
+			'https://example.org/example-as-array' => [
+				'example' => 'value-2',
+			] ],
+		);
+
+		$response = Http::get( 'https://example.org/example-as-arguments' );
+
+		$this->assertEquals( 200, $response->status() );
+		$this->assertEquals( 'value', $response->json( 'example' ) );
+
+		$response = Http::get( 'https://example.org/example-as-array' );
+
+		$this->assertEquals( 200, $response->status() );
+		$this->assertEquals( 'value-2', $response->json( 'example' ) );
+	}
+
 	public function test_fake_all_requests() {
 		$this->fake_request()
 			->with_response_code( 206 )

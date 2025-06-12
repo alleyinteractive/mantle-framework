@@ -144,12 +144,12 @@ trait Interacts_With_Requests {
 	 *
 	 * @param (callable(string, array): TCallableReturn)|Mock_Http_Response|string|array<string, Mock_Http_Response|callable> $url_or_callback URL to fake, array of URL and response pairs, or a closure
 	 *                                                                                                                                         that will return a faked response.
-	 * @param Mock_Http_Response|callable $response Optional response object, defaults to a 200 response with no body.
+	 * @param Mock_Http_Response|array<mixed>|callable $response Optional response object, defaults to a 200 response with no body.
 	 * @param string $method Optional request method to apply to, defaults to all. Does not apply to array of URL and response pairs OR callbacks.
 	 */
 	public function fake_request(
 		Mock_Http_Response|callable|string|array|null $url_or_callback = null,
-		Mock_Http_Response|callable|null $response = null,
+		Mock_Http_Response|array|callable|null $response = null,
 		?string $method = null
 	): static|Mock_Http_Response {
 		if ( is_array( $url_or_callback ) ) {
@@ -197,6 +197,10 @@ trait Interacts_With_Requests {
 		// If no arguments passed, assume that all requests should return an 200 response.
 		if ( is_null( $response ) ) {
 			$response = new Mock_Http_Response();
+		}
+
+		if ( is_array( $response ) ) {
+			$response = Mock_Http_Response::json( $response );
 		}
 
 		// Ensure that the response is an instance of Mock_Http_Response.
@@ -376,25 +380,27 @@ trait Interacts_With_Requests {
 	/**
 	 * Retrieve a callback for the stubbed response.
 	 *
-	 * @param string                      $url URL to stub.
-	 * @param callable|Mock_Http_Response $response Response to send.
-	 * @param string                      $method Request method, optional.
+	 * @param string                                   $url URL to stub.
+	 * @param callable|Mock_Http_Response|array<mixed> $response Response to send.
+	 * @param string                                   $method Request method, optional.
 	 * @phpstan-return StubCallback
 	 */
-	protected function create_stub_request_callback( string $url, Mock_Http_Response|callable $response, ?string $method = null ): Closure {
-		return function ( string $request_url, array $request_args ) use ( $url, $response, $method ) {
+	protected function create_stub_request_callback( string $url, Mock_Http_Response|callable|array $response, ?string $method = null ): Closure {
+		return function ( string $request_url, array $request_args ) use ( $url, $response, $method ): mixed {
 			if ( ! Str::is( Str::start( $url, '*' ), $request_url ) ) {
-				return;
+				return null;
 			}
 
 			// Validate the request method for the stub callback.
 			if ( $method && isset( $request_args['method'] ) && strtoupper( $method ) !== strtoupper( (string) $request_args['method'] ) ) {
-				return;
+				return null;
 			}
 
-			return is_callable( $response )
-				? $response( $request_url, $request_args )
-				: $response;
+			return match ( true ) {
+				is_callable( $response ) => $response( $request_url, $request_args ),
+				is_array( $response ) => Mock_Http_Response::json( $response ),
+				default => $response,
+			};
 		};
 	}
 
