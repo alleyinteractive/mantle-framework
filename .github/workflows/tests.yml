@@ -28,12 +28,10 @@ jobs:
           skip-wordpress-install: 'true'
           test-command: 'composer validate --strict && composer monorepo-validate'
 
-      # Collect all packages in the monorepo.
       - name: Get all packages
         id: output_data
         run: echo "matrix=$(vendor/bin/monorepo-builder packages-json | jq -c .)" >> $GITHUB_OUTPUT
 
-      # Loop through each package and run composer validate --strict.
       - name: Validate all packages
         run: |
           for package in $(echo '${{ steps.output_data.outputs.matrix }}' | jq -r '.[]'); do
