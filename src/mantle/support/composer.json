@@ -7,6 +7,7 @@
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
         "doctrine/inflector": "^2.0.8",
         "league/commonmark": "^2.7.0",
+        "league/uri": "^7.5",
         "mantle-framework/contracts": "^1.0",
         "monolog/monolog": "^2.9.1",
         "nesbot/carbon": "^3.8.4",
@@ -37,12 +38,14 @@
         }
     ],
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "alleyinteractive/composer-wordpress-autoloader": true
+        }
     },
     "suggest": {
         "mantle-framework/console": "Required to load Mantle Console Commands",
         "mantle-framework/container": "Required to use wrapped add_action/add_filter functions",
         "vlucas/phpdotenv": "Required to use Environment class (^5.3)"
-    },
-    "minimum-stability": "dev"
+    }
 }
