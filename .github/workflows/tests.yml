@@ -27,6 +27,19 @@ jobs:
           skip-services: 'true'
           skip-wordpress-install: 'true'
           test-command: 'composer validate --strict && composer monorepo-validate'
+
+      # Collect all packages in the monorepo.
+      - name: Get all packages
+        id: output_data
+        run: echo "matrix=$(vendor/bin/monorepo-builder packages-json)" >> $GITHUB_OUTPUT
+
+      # Loop through each package and run composer validate --strict.
+      - name: Validate all packages
+        run: |
+          for package in $(echo "${{ fromJson(steps.output_data.outputs.matrix) }}" | jq -r '.[]'); do
+            echo "Validating package: $package"
+            composer validate --strict --working-dir="src/mantle/$package"
+          done
   lint-tests:
     if: github.event.pull_request.draft == false
     timeout-minutes: 10
