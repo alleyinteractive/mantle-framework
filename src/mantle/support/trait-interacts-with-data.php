@@ -347,6 +347,20 @@ trait Interacts_With_Data {
 		return true;
 	}
 
+	public function missing( string|array $key ): bool {
+		if ( is_array( $key ) ) {
+			foreach ( $key as $k ) {
+				if ( ! $this->has( $k ) ) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		return ! $this->has( $key );
+	}
+
 	/**
 	 * Check if any of the properties exist in the value.
 	 *
