@@ -402,10 +402,37 @@ class Test_Response {
 	/**
 	 * Asset that the contents matches an expected value.
 	 *
-	 * @param mixed $value Contents to compare.
+	 * @param callable|mixed $value Expected value or a callback that returns true if the content matches.
+	 * @phpstan-param (callable(string): bool)|string $value
 	 */
 	public function assertContent( mixed $value ): static {
-		PHPUnit::assertEquals( $value, $this->get_content() );
+		if ( is_callable( $value ) ) {
+			PHPUnit::assertTrue(
+				$value( $this->get_content() ),
+				'Response content does not pass the given assertion callback.',
+			);
+		} else {
+			PHPUnit::assertEquals( $value, $this->get_content() );
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the contents does not match an expected value.
+	 *
+	 * @param callable|mixed $value Expected value or a callback that returns false if the content matches.
+	 * @phpstan-param (callable(string): bool)|string $value
+	 */
+	public function assertNotContent( mixed $value ): static {
+		if ( is_callable( $value ) ) {
+			PHPUnit::assertFalse(
+				$value( $this->get_content() ),
+				'Response content passes the given assertion callback.',
+			);
+		} else {
+			PHPUnit::assertNotEquals( $value, $this->get_content() );
+		}
 
 		return $this;
 	}

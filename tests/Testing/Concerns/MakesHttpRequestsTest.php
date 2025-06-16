@@ -18,6 +18,7 @@ use WP_REST_Response;
 
 use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\retry;
+use function Mantle\Support\Helpers\stringable;
 
 /**
  * @group testing
@@ -280,6 +281,14 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			->assertHeader( 'Location', home_url( '/redirected/' ) )
 			->assertRedirect( '/redirected/' )
 			->assertHeader( 'Other-Header', '123' );
+	}
+
+	public function test_assert_content_callback(): void {
+		$this
+			->get( '/' )
+			->assertContent( fn ( string $content ) => stringable( $content )->contains( 'home' ) )
+			->assertNotContent( 'this will not be found' )
+			->assertNotContent( fn ( string $content ) => stringable( $content )->contains( 'this will not be found' ) );
 	}
 
 	/**
