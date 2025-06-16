@@ -347,18 +347,13 @@ trait Interacts_With_Data {
 		return true;
 	}
 
-	public function missing( string|array $key ): bool {
-		if ( is_array( $key ) ) {
-			foreach ( $key as $k ) {
-				if ( ! $this->has( $k ) ) {
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-		return ! $this->has( $key );
+	/**
+	 * Check if a property or a set of properties is missing in the value.
+	 *
+	 * @param string ...$property Property name. Supports dot notation.
+	 */
+	public function missing( string ...$property ): bool {
+		return ! $this->has( ...$property );
 	}
 
 	/**

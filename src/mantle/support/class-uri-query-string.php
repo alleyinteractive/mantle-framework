@@ -1,131 +1,115 @@
 <?php
+/**
+ * Uri_Query_String class file
+ *
+ * @package mantle
+ */
 
 namespace Mantle\Support;
 
 use Mantle\Contracts\Support\Arrayable;
-use Mantle\Support\Traits\InteractsWithData;
 use League\Uri\QueryString;
 use Stringable;
 
-class Uri_Query_String implements Arrayable, Stringable
-{
-	use Interacts_With_Data;
+use function Mantle\Support\Helpers\data_get;
+
+/**
+ * URI Query String
+ *
+ * Manage the query string of Uri.
+ */
+class Uri_Query_String implements Arrayable, Stringable {
+
+	/**
+	 * Parsed query string.
+	 *
+	 * @var array<string, mixed>
+	 */
+	protected array $parsed_query;
 
 	/**
 	 * Create a new URI query string instance.
 	 *
-	 * @param  mixed  $value
-	 * @return static
+	 * @param Uri $uri The URI instance containing the query string.
 	 */
-	public static function create( mixed $value ): static {
-		assert( $value instanceof Uri );
-
-		return new static( QueryString::extract( $value->getUri()->getQuery() ) );
+	public function __construct( protected Uri $uri ) {
+		$this->parsed_query = QueryString::extract( $this->uri->get_uri()->getQuery() );
 	}
 
 	/**
-	 * Create a new URI query string instance.
-	 */
-	public function __construct(array $value) {
-		$this->value = $value;
-	}
-	// 	$this->value = QueryString::extract( $uri->getUri()->getQuery() );
-	// }
-
-	// public function get( string $property, mixed $default = null ): static {
-	// 	$value = data_get($this->value, $property, $default);
-	// // {
-	// // 	// dd(QueryString::extract( $uri->getUri()->getQuery() ));
-	// // 	$this->value = QueryString::extract( $uri->getUri()->getQuery() );
-	// // }
-
-	/**
-	 * Get the instance as an array.
+	 * Retrieve a value from the query string.
 	 *
-	 * @return array<TKey, TValue>
+	 * @param string $property Property name to retrieve.
+	 * @param mixed  $default  Default value to return if the property does not exist.
 	 */
-	// public function to_array() {
-	// 	return [];
-	// 	return $this->data();
-	// }
+	public function get( string $property, mixed $default = null ): mixed {
+		return data_get( $this->parsed_query, $property, $default );
+	}
 
 	/**
-	 * Retrieve all data from the instance.
+	 * Retrieved a value from the query string as Mixed_Data object.
 	 *
-	 * @param  array|mixed|null  $keys
-	 * @return array
+	 * @param string $property Property name to retrieve.
+	 * @param mixed  $default   Default value to return if the property does not exist.
 	 */
-	// // public function all($keys = null)
-	// // {
-	// // 	$query = $this->to_array();
-
-	// // 	if (! $keys) {
-	// // 		return $query;
-	// // 	}
-
-	// // 	$results = [];
-
-	// // 	foreach (is_array($keys) ? $keys : func_get_args() as $key) {
-	// // 		Arr::set($results, $key, Arr::get($query, $key));
-	// // 	}
-
-	// // 	return $results;
-	// // }
-
-	// // /**
-	// //  * Retrieve data from the instance.
-	// //  *
-	// //  * @param  string|null  $key
-	// //  * @param  mixed  $default
-	// //  * @return mixed
-	// //  */
-	// // protected function data($key = null, $default = null)
-	// // {
-	// // 	return $this->get($key, $default);
-	// // }
-
-	// // /**
-	// //  * Get a query string parameter.
-	// //  */
-	// // public function get(?string $key = null, mixed $default = null): mixed
-	// // {
-	// // 	return data_get($this->to_array(), $key, $default);
-	// // }
-
-	public function all(): array
-	{
-		return $this->value;
-	}
-
-	// /**
-	//  * Get the URL decoded version of the query string.
-	//  */
-	public function decode(): string
-	{
-		return rawurldecode((string) $this);
+	public function mixed( string $property, mixed $default = null ): Mixed_Data {
+		return Mixed_Data::of( $this->get( $property, $default ) );
 	}
 
 	/**
-	 * Get the string representation of the query string.
+	 * Retrieve all values from the query string as an array.
+	 *
+	 * @return array<string, mixed>
 	 */
-	// public function value(): string
-	// {
-	// 	return (string) $this;
-	// }
+	public function all(): array {
+		return $this->parsed_query;
+	}
 
 	/**
-	 * Convert the query string into an array.
+	 * Convert the query string to an array.
+	 *
+	 * @return array<string, mixed>
 	 */
 	public function to_array(): array {
-		return $this->value;
-		// return QueryString::extract($this->value());
+		return $this->parsed_query;
+	}
+
+	/**
+	 * Check if a property exists in the query string.
+	 *
+	 * @param string $property Property name to check for existence.
+	 */
+	public function has( string $property ): bool {
+		return array_key_exists( $property, $this->parsed_query );
+	}
+
+	/**
+	 * Check if the query string is missing a property.
+	 *
+	 * @param string $property Property name to check for absence.
+	 */
+	public function missing( string $property ): bool {
+		return ! $this->has( $property );
+	}
+
+	/**
+	 * Retrieve the query string value.
+	 */
+	public function value(): string {
+		return (string) $this;
+	}
+
+	/**
+	 * Get the URL decoded version of the query string.
+	 */
+	public function decode(): string {
+		return rawurldecode( (string) $this );
 	}
 
 	/**
 	 * Get the string representation of the query string.
 	 */
 	public function __toString(): string {
-		return QueryString::build( $this->value ) ?: '';
 		return (string) $this->uri->getUri()->getQuery();
 	}
 }
