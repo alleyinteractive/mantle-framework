@@ -15,7 +15,6 @@ use ReflectionUnionType;
  * Reflector Support
  */
 class Reflector {
-
 	/**
 	 * Get the class name of the given parameter's type, if possible.
 	 *
@@ -103,5 +102,29 @@ class Reflector {
 		$param_class_name = static::get_parameter_class_name( $parameter );
 
 		return $param_class_name && class_exists( $param_class_name ) && ( new ReflectionClass( $param_class_name ) )->isSubclassOf( $class_name );
+	}
+
+	/**
+	 * Get the attributes for a class or method.
+	 *
+	 * @see https://www.php.net/manual/en/reflectionclass.getattributes.php
+	 *
+	 * @param  object|string     $class     The class name.
+	 * @param  string            $method    The method name.
+	 * @param  class-string|null $attribute The attribute name to filter by, or null for all attributes.
+	 * @param  int               $flags     Flags to pass to getAttributes().
+	 * @return array<\ReflectionAttribute>
+	 */
+	public static function get_attributes_for_method( object|string $class, string $method, ?string $attribute = null, int $flags = 0 ): array {
+		$reflection = new ReflectionClass( $class );
+
+		if ( ! $reflection->hasMethod( $method ) ) {
+			return [];
+		}
+
+		return [
+			...$reflection->getAttributes( $attribute, $flags ),
+			...$reflection->getMethod( $method )->getAttributes( $attribute, $flags ),
+		];
 	}
 }

@@ -7,6 +7,7 @@
 
 namespace Mantle\Testing\Concerns;
 
+use Mantle\Support\Reflector;
 use PHPUnit\Metadata\Annotation\Parser\DocBlock;
 use PHPUnit\Metadata\Annotation\Parser\Registry;
 use PHPUnit\Runner\Version;
