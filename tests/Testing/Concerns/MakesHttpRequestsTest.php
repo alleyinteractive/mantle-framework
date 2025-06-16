@@ -7,6 +7,7 @@ use Mantle\Http\Response;
 use Mantle\Framework\Providers\Routing_Service_Provider;
 use Mantle\Http\Request;
 use Mantle\Support\Str;
+use Mantle\Testing\Attributes\PreserveObjectCache;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Concerns\Reset_Server;
 use Mantle\Testing\FrameworkTestCase;
@@ -547,10 +548,38 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			->assertNodeHasClass( 'home' );
 	}
 
+	/**
+	 * With Mantle 1.x, cache clearing is done on each request.
+	 *
+	 * This test can be removed with Mantle 2.x, where cache clearing is done as needed.
+	 */
+	public function test_cache_clearing_on_each_request(): void {
+		wp_cache_set( 'key', 'value' );
+
+		$this->assertEquals( 'value', wp_cache_get( 'key' ) );
+
+		$this->get( '/' );
+
+		// After the request, the cache should be cleared.
+		$this->assertFalse( wp_cache_get( 'key' ) );
+	}
+
+	#[PreserveObjectCache]
+	public function test_preserve_object_cache(): void {
+		wp_cache_set( 'key', 'value' );
+
+		$this->assertEquals( 'value', wp_cache_get( 'key' ) );
+
+		$this->get( '/' );
+
+		// After the request, the cache should still be preserved.
+		$this->assertEquals( 'value', wp_cache_get( 'key' ) );
+	}
+
 	// Should always be towards the end of the class.
 	public function test_multiple_requests() {
 		$methods = collect( get_class_methods( $this ) )
-			->filter( fn ( string $method ) => ! Str::contains( $method, [ 'experimental', 'snapshot' ] ) && 0 === strpos( $method, 'test_' ) )
+			->filter( fn ( string $method ) => ! Str::contains( $method, [ 'experimental', 'snapshot', 'test_preserve_object_cache' ] ) && 0 === strpos( $method, 'test_' ) )
 			->sort()
 			->all();
 
