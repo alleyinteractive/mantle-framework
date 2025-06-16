@@ -110,6 +110,6 @@ class Uri_Query_String implements Arrayable, Stringable {
 	 * Get the string representation of the query string.
 	 */
 	public function __toString(): string {
-		return (string) $this->uri->getUri()->getQuery();
+		return (string) $this->uri->get_uri()->getQuery();
 	}
 }

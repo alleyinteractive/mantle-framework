@@ -20,6 +20,7 @@ use Mantle\Support\Higher_Order_Tap_Proxy;
 use Mantle\Support\HTML;
 use Mantle\Support\Str;
 use Mantle\Support\Stringable;
+use Mantle\Support\Uri;
 use Throwable;
 
 /**
@@ -240,7 +241,7 @@ function retry( $times, callable $callback, $sleep = 0, $when = null ) {
 		goto beginning;
 	}
 
-				return null;
+	return null;
 }
 
 /**
@@ -259,6 +260,16 @@ function str( string $string = '' ): Stringable {
  */
 function stringable( string $string = '' ): Stringable {
 	return Str::of( $string );
+}
+
+/**
+ * Create a new Uri object from the given URI string.
+ * If no URI is provided, it will capture the current request URI.
+ *
+ * @param string|null $uri The URI to create the Uri object from.
+ */
+function uri( ?string $uri ): Uri {
+	return $uri ? Uri::of( $uri ) : Uri::current();
 }
 
 /**

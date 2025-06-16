@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `assertDatabaseHas()` and `assertDatabaseDoesNotHave()` methods to the
   to allow for asserting that a database table has or does not have a specific
   row.
+- Added `Mantle\Support\Uri` class and `Mantle\Support\Helpers\uri()` helper to
+  create and manipulate URIs. Supports manipulating the current query or
+  modifying an arbitrary URI.
 
 ### Changed
 
