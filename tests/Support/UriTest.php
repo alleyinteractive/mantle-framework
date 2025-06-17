@@ -11,12 +11,12 @@ class UriTest extends FrameworkTestCase {
 		$uri = Uri::of( 'https://example.com/path?query=string#fragment' );
 
 		$this->assertInstanceOf( Uri::class, $uri );
-		$this->assertEquals( 'https://example.com/path?query=string#fragment', (string) $uri->getUri() );
-		$this->assertEquals( 'https', $uri->getUri()->getScheme() );
-		$this->assertEquals( 'example.com', $uri->getUri()->getHost() );
-		$this->assertEquals( '/path', $uri->getUri()->getPath() );
-		$this->assertEquals( 'query=string', $uri->getUri()->getQuery() );
-		$this->assertEquals( 'fragment', $uri->getUri()->getFragment() );
+		$this->assertEquals( 'https://example.com/path?query=string#fragment', (string) $uri->get_uri() );
+		$this->assertEquals( 'https', $uri->get_uri()->getScheme() );
+		$this->assertEquals( 'example.com', $uri->get_uri()->getHost() );
+		$this->assertEquals( '/path', $uri->get_uri()->getPath() );
+		$this->assertEquals( 'query=string', $uri->get_uri()->getQuery() );
+		$this->assertEquals( 'fragment', $uri->get_uri()->getFragment() );
 		$this->assertEquals( 'example.com', $uri->host() );
 
 		// Uri_Query_String:
@@ -103,48 +103,48 @@ class UriTest extends FrameworkTestCase {
 
 		// Add a query parameter.
 		$uri = $uri->with_query( [ 'new_param' => 'new_value' ] );
-		$this->assertEquals( 'https://example.com/path?query=string&new_param=new_value#fragment', (string) $uri->getUri() );
+		$this->assertEquals( 'https://example.com/path?query=string&new_param=new_value#fragment', (string) $uri->get_uri() );
 
 		// Remove a query parameter.
 		$uri = $uri->without_query( 'query' );
-		$this->assertEquals( 'https://example.com/path?new_param=new_value#fragment', (string) $uri->getUri() );
+		$this->assertEquals( 'https://example.com/path?new_param=new_value#fragment', (string) $uri->get_uri() );
 
 		// Change the fragment.
 		$uri = $uri->with_fragment( 'new_fragment' );
-		$this->assertEquals( 'https://example.com/path?new_param=new_value#new_fragment', (string) $uri->getUri() );
+		$this->assertEquals( 'https://example.com/path?new_param=new_value#new_fragment', (string) $uri->get_uri() );
 
 		// Change the path.
 		$uri = $uri->with_path( '/new-path' );
-		$this->assertEquals( 'https://example.com/new-path?new_param=new_value#new_fragment', (string) $uri->getUri() );
+		$this->assertEquals( 'https://example.com/new-path?new_param=new_value#new_fragment', (string) $uri->get_uri() );
 
 		// Change the host.
 		$uri = $uri->with_host( 'new-example.com' );
-		$this->assertEquals( 'https://new-example.com/new-path?new_param=new_value#new_fragment', (string) $uri->getUri() );
+		$this->assertEquals( 'https://new-example.com/new-path?new_param=new_value#new_fragment', (string) $uri->get_uri() );
 
 		// Change the port.
 		$uri = $uri->with_port( 8080 );
-		$this->assertEquals( 'https://new-example.com:8080/new-path?new_param=new_value#new_fragment', (string) $uri->getUri() );
+		$this->assertEquals( 'https://new-example.com:8080/new-path?new_param=new_value#new_fragment', (string) $uri->get_uri() );
 
 		// Change the scheme.
 		$uri = $uri->with_scheme( 'http' );
-		$this->assertEquals( 'http://new-example.com:8080/new-path?new_param=new_value#new_fragment', (string) $uri->getUri() );
+		$this->assertEquals( 'http://new-example.com:8080/new-path?new_param=new_value#new_fragment', (string) $uri->get_uri() );
 
 		// Change the username and password.
 		$uri = $uri->with_user( 'user', 'pass' );
-		$this->assertEquals( 'http://user:pass@new-example.com:8080/new-path?new_param=new_value#new_fragment', (string) $uri->getUri() );
+		$this->assertEquals( 'http://user:pass@new-example.com:8080/new-path?new_param=new_value#new_fragment', (string) $uri->get_uri() );
 
 		// Test with_query_if_missing
 		$uri = Uri::of( 'https://example.com/path?query=string#fragment' );
 		$uri = $uri->with_query_if_missing( [ 'new_param' => 'new_value' ] );
-		$this->assertEquals( 'https://example.com/path?query=string&new_param=new_value#fragment', (string) $uri->getUri() );
+		$this->assertEquals( 'https://example.com/path?query=string&new_param=new_value#fragment', (string) $uri->get_uri() );
 
 		// Test with_query_if_missing when the parameter already exists
 		$uri = $uri->with_query_if_missing( [ 'query' => 'replaced' ] );
-		$this->assertEquals( 'https://example.com/path?query=string&new_param=new_value#fragment', (string) $uri->getUri() );
+		$this->assertEquals( 'https://example.com/path?query=string&new_param=new_value#fragment', (string) $uri->get_uri() );
 
 		// Test removing the query.
 		$uri = $uri->without_query();
-		$this->assertEquals( 'https://example.com/path#fragment', (string) $uri->getUri() );
+		$this->assertEquals( 'https://example.com/path#fragment', (string) $uri->get_uri() );
 	}
 
 	public function test_url_with_dot_query_string_parameter(): void {
