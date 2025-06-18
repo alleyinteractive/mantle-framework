@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Adds a `PreserveObjectCache` attribute to prevent the object cache from being
+  cleared during unit test HTTP requests.
 - Added `Database_Table_Model` class to allow for creating models that
   represent database tables without a post type or taxonomy.
 - Added `assertDatabaseHas()` and `assertDatabaseDoesNotHave()` methods to the
@@ -24,6 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   API routes are treated the same as web routes.
 - Adjusted the template wrapper middleware to use block templates instead of
   `get_header()`/`get_footer()` calls.
+- Added callback support to the `assertContent()` method to allow for
+  more complex assertions on the content of a response.
 
 ### Fixed
 

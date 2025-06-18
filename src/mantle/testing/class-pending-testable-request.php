@@ -15,6 +15,7 @@ use Mantle\Framework\Http\Kernel as HttpKernel;
 use Mantle\Http\Request;
 use Mantle\Support\Str;
 use Mantle\Support\Traits\Conditionable;
+use Mantle\Testing\Attributes\PreserveObjectCache;
 use Mantle\Testing\Doubles\Spy_REST_Server;
 use Mantle\Testing\Exceptions\Exception;
 use Mantle\Testing\Exceptions\WP_Redirect_Exception;
@@ -575,7 +576,16 @@ class Pending_Testable_Request {
 	 * - The main query.
 	 */
 	protected function setup_wordpress_query(): void {
-		TestCase::flush_cache();
+		/**
+		 * Flush the object cache if the test case does not have the
+		 * PreserveObjectCache attribute. Since Mantle 0.1, the default has been to
+		 * flush the object cache with each testing HTTP request. With Mantle 2.0,
+		 * this will flip. Requests will no longer flush the object cache by
+		 * default unless it has a FlushObjectCache attribute instead.
+		 */
+		if ( ! $this->test_case->method_has_attribute( PreserveObjectCache::class ) ) {
+			TestCase::flush_cache();
+		}
 
 		// phpcs:disable WordPress.WP.GlobalVariablesOverride
 		unset( $GLOBALS['wp_query'], $GLOBALS['wp_the_query'] );

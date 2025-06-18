@@ -29,9 +29,13 @@ require_once __DIR__ . '/mail/helpers.php';
  *
  * We cannot use Composer's PSR-4 autoloader because the folder names are lower
  * case and folder names are case sensitive on some file systems (e.g. Linux).
+ *
+ * Mantle 2.0 should be fully PSR-4 compliant, at which point these
+ * file-requires will be removed.
  */
 
 require_once __DIR__ . '/attributes/Environment.php';
+require_once __DIR__ . '/attributes/PreserveObjectCache.php';
 require_once __DIR__ . '/attributes/UserAgent.php';
 
 /**

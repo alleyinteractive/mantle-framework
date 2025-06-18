@@ -32,6 +32,7 @@ use Mantle\Testing\Concerns\Interacts_With_Requests;
 use Mantle\Testing\Concerns\Interacts_With_User_Agent;
 use Mantle\Testing\Concerns\Makes_Http_Requests;
 use Mantle\Testing\Concerns\Network_Admin_Screen;
+use Mantle\Testing\Concerns\Reads_Annotations;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Concerns\WordPress_Authentication;
 use Mantle\Testing\Concerns\WordPress_State;
@@ -69,6 +70,7 @@ abstract class TestCase extends BaseTestCase {
 	use Interacts_With_User_Agent;
 	use Makes_Http_Requests;
 	use MatchesSnapshots;
+	use Reads_Annotations;
 	use WordPress_State;
 	use WordPress_Authentication;
 

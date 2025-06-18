@@ -7,6 +7,7 @@
 
 namespace Mantle\Testing\Concerns;
 
+use Mantle\Support\Reflector;
 use PHPUnit\Metadata\Annotation\Parser\DocBlock;
 use PHPUnit\Metadata\Annotation\Parser\Registry;
 use PHPUnit\Runner\Version;
@@ -91,5 +92,14 @@ trait Reads_Annotations {
 			...$class->getAttributes( $name ),
 			...$method->getAttributes( $name ),
 		];
+	}
+
+	/**
+	 * Check if the method has an attribute of a given name.
+	 *
+	 * @param string $name The name of the method to check.
+	 */
+	public function method_has_attribute( string $name ): bool {
+		return ! empty( $this->get_attributes_for_method( $name ) );
 	}
 }
