@@ -27,13 +27,6 @@ abstract class Command extends Symfony_Command {
 	use Macroable;
 
 	/**
-	 * Prefix for the command.
-	 *
-	 * @var string
-	 */
-	public const PREFIX = 'mantle';
-
-	/**
 	 * The console command name.
 	 *
 	 * @var string

@@ -59,7 +59,7 @@ class Application extends Console_Application implements Console_Application_Con
 	public function __construct( protected Application_Contract $container ) {
 		parent::__construct(
 			$this->container['config']->get( 'app.name', 'Mantle' ),
-			$this->container['config']->get( 'app.version', '1.0.0' ),
+			$this->container['config']->get( 'app.version', 'UNKNOWN' ),
 		);
 
 		$this->setAutoExit( false );

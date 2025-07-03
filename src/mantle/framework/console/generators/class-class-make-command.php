@@ -7,6 +7,7 @@
 
 namespace Mantle\Framework\Console\Generators;
 
+use Mantle\Support\Str;
 use Nette\PhpGenerator\PhpFile;
 
 /**
@@ -48,7 +49,7 @@ class Class_Make_Command extends Generator_Command {
 	 */
 	public function get_generated_class( string $name ): string {
 		$class_name     = $this->get_class_name( $name );
-		$namespace_name = untrailingslashit( str_replace( '\\\\', '\\', $this->get_namespace( $name ) ) );
+		$namespace_name = Str::untrailing_slash( str_replace( '\\\\', '\\', $this->get_namespace( $name ) ) );
 
 		$file = new PhpFile();
 
