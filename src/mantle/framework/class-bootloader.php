@@ -353,7 +353,7 @@ class Bootloader implements Contract {
 
 				$index = $argv->search( $this->wp_cli_command_prefix );
 
-				// Remove anything before the wp-cli command prefix.
+				// Remove anything before the wp-cli command name.
 				if ( false !== $index ) {
 					$argv = $argv->slice( $index )->values();
 				}
