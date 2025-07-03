@@ -265,6 +265,13 @@ class Bootloader implements Contract {
 	}
 
 	/**
+	 * Retrieve the WP-CLI command prefix.
+	 */
+	public function get_wp_cli_command_prefix(): string {
+		return $this->wp_cli_command_prefix;
+	}
+
+	/**
 	 * Bind to the container before booting.
 	 *
 	 * @param string              $abstract Abstract to bind.

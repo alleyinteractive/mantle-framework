@@ -10,6 +10,7 @@ namespace Mantle\Console;
 use Mantle\Contracts\Application as Application_Contract;
 use InvalidArgumentException;
 use Mantle\Console\Attributes\Hide_Console_Isolation_Mode;
+use Mantle\Framework\Bootloader;
 use Mantle\Support\Traits\Macroable;
 use ReflectionClass;
 use Symfony\Component\Console\Command\Command as Symfony_Command;
@@ -161,8 +162,10 @@ abstract class Command extends Symfony_Command {
 	 * @throws InvalidArgumentException Thrown on invalid command.
 	 */
 	public function call( string $command, array $options = [], ?OutputInterface $output = null ) {
-		if ( str_starts_with( $command, static::PREFIX . ' ' ) ) {
-			$command = substr( $command, strlen( static::PREFIX ) + 1 );
+		$prefix = Bootloader::instance()->get_wp_cli_command_prefix();
+
+		if ( str_starts_with( $command, $prefix . ' ' ) ) {
+			$command = substr( $command, strlen( $prefix ) + 1 );
 
 			// Attempt to resolve the command from the container and run it.
 			$command = $this->getApplication()->find( $command );
