@@ -6,7 +6,6 @@
  */
 
 use NunoMaduro\Collision\Adapters\Phpunit\Subscribers\EnsurePrinterIsRegisteredSubscriber;
-use PHPUnit\Event\Facade as PHPUnitFacade;
 use PHPUnit\Runner\Version;
 
 /**
@@ -21,12 +20,15 @@ use PHPUnit\Runner\Version;
  * methods we need to use.
  */
 if (
-	class_exists( Version::class )
+	PHP_SAPI === 'cli'
+	&& defined( 'PHPUNIT_COMPOSER_INSTALL' )
+	&& class_exists( Version::class )
 	&& version_compare( Version::id(), '10.0.0', '>=' )
 	&& empty( getenv( 'COLLISION_DISABLE' ) ) // A kill switch for disabling the printer.
-	&& class_exists( PHPUnitFacade::class )
 	&& class_exists( EnsurePrinterIsRegisteredSubscriber::class )
-	&& method_exists( PHPUnitFacade::class, 'registerSubscriber' ) // @phpstan-ignore-line already
+	&& method_exists( EnsurePrinterIsRegisteredSubscriber::class, 'register' ) // @phpstan-ignore-line already
 ) { // phpcs:ignore WordPress.WhiteSpace.ControlStructureSpacing.NoSpaceBeforeCloseParenthesis
-	PHPUnitFacade::instance()->registerSubscriber( new EnsurePrinterIsRegisteredSubscriber() );
+	$_SERVER['COLLISION_PRINTER'] = 'DefaultPrinter';
+
+	EnsurePrinterIsRegisteredSubscriber::register();
 }
