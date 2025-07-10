@@ -11,7 +11,7 @@ use Mantle\Contracts;
 use Mantle\Support\Helpers;
 
 /**
- * Site Model
+ * Site Model (blog).
  *
  * @extends Model<\WP_Site>
  *
@@ -120,12 +120,21 @@ class Site extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 * @throws Model_Exception Thrown on error saving.
 	 */
 	public function save( array $attributes = [] ): bool {
+		global $wpdb;
+
+		assert( $wpdb instanceof \wpdb, 'Global $wpdb must be an instance of \wpdb.' );
+
 		$this->set_attributes( $attributes );
 
 		$id = $this->id();
 
 		if ( empty( $id ) ) {
+			// Temporary tables will trigger DB errors when we attempt to reference them as new temporary tables.
+			$suppress = $wpdb->suppress_errors();
+
 			$save = \wp_insert_site( $this->get_attributes() );
+
+			$wpdb->suppress_errors( $suppress );
 		} else {
 			$save = \wp_update_site(
 				$this->id(),
