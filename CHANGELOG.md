@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+
+- Changed the cache key and TTL parameter names in the View class to be more concise (`$key` and `$ttl`).
+
 ### Fixed
 
 - Suppress errors during blog/site creation to prevent errors when creating temporary tables.

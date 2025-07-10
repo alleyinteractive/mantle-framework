@@ -112,19 +112,19 @@ class View implements \Stringable {
 	/**
 	 * Set the cache TTL for the view.
 	 *
-	 * @param int|bool $cache_ttl Cache TTL or false to disable. Defaults to 15 minutes.
-	 * @param string   $cache_key Cache key to use, optional.
+	 * @param int|bool $ttl Cache TTL or false to disable. Defaults to 15 minutes.
+	 * @param string   $key Cache key to use, optional.
 	 */
-	public function cache( int|bool $cache_ttl = 900, ?string $cache_key = null ): static {
-		$cache_ttl = match ( $cache_ttl ) {
+	public function cache( int|bool $ttl = 900, ?string $key = null ): static {
+		$ttl = match ( $ttl ) {
 			false => null,
 			true => 0, // Indefinite.
-			default => $cache_ttl,
+			default => $ttl,
 		};
 
-		$this->cache_ttl = $cache_ttl;
+		$this->cache_ttl = $ttl;
 
-		$this->cache_key = $cache_key;
+		$this->cache_key = $key;
 
 		return $this;
 	}
