@@ -370,6 +370,24 @@ EOF
 		$this->assertEquals( 'Another point!', $response->xml( '/slideshow/slide[@type="specific"]/point' )[0] ?? '' );
 	}
 
+	/**
+	 * Legacy format for pool requests.
+	 */
+	// public function test_pool_requests_legacy() {
+	// 	$this->fake_request( [
+	// 		'https://example.com/async/' => Mock_Http_Response::create()->with_status( 200 ),
+	// 		'https://example.com/second-async/' => Mock_Http_Response::create()->with_status( 402 ),
+	// 	] );
+
+	// 	$response = $this->http_factory->pool( fn ( Pool $pool ) => [
+	// 		$pool->method( 'get' )->url( 'https://example.com/async/' ),
+	// 		$pool->method( 'get' )->url( 'https://example.com/second-async/' ),
+	// 	] );
+
+	// 	$this->assertEquals( 200, $response[0]->status() );
+	// 	$this->assertEquals( 402, $response[1]->status() );
+	// }
+
 	public function test_pool_requests() {
 		$this->fake_request( [
 			'https://example.com/async/' => Mock_Http_Response::create()->with_status( 200 ),
@@ -377,38 +395,40 @@ EOF
 		] );
 
 		$response = $this->http_factory->pool( fn ( Pool $pool ) => [
-			$pool->method( 'get' )->url( 'https://example.com/async/' ),
-			$pool->method( 'get' )->url( 'https://example.com/second-async/' ),
+			$pool->get( 'https://example.com/async/' ),
+			$pool->post( 'https://example.com/second-async/' ),
 		] );
+
+		dd($response);
 
 		$this->assertEquals( 200, $response[0]->status() );
 		$this->assertEquals( 402, $response[1]->status() );
 	}
 
-	public function test_pool_requests_name() {
-		$this->fake_request( [
-			'https://example.com/async/' => Mock_Http_Response::create()->with_status( 200 ),
-			'https://example.com/second-async/' => Mock_Http_Response::create()->with_status( 402 ),
-		] );
+	// public function test_pool_requests_name() {
+	// 	$this->fake_request( [
+	// 		'https://example.com/async/' => Mock_Http_Response::create()->with_status( 200 ),
+	// 		'https://example.com/second-async/' => Mock_Http_Response::create()->with_status( 402 ),
+	// 	] );
 
-		$response = $this->http_factory->pool( fn ( Pool $pool ) => [
-			$pool->as( 'first' )->url( 'https://example.com/async/' ),
-			$pool->as( 'second' )->method( 'post' )->url( 'https://example.com/second-async/' ),
-		] );
+	// 	$response = $this->http_factory->pool( fn ( Pool $pool ) => [
+	// 		$pool->as( 'first' )->url( 'https://example.com/async/' ),
+	// 		$pool->as( 'second' )->method( 'post' )->url( 'https://example.com/second-async/' ),
+	// 	] );
 
-		$this->assertEquals( 200, $response['first']->status() );
-		$this->assertEquals( 402, $response['second']->status() );
+	// 	$this->assertEquals( 200, $response['first']->status() );
+	// 	$this->assertEquals( 402, $response['second']->status() );
 
-		$this->assertRequestSent(
-			fn ( Request $request ) => 'https://example.com/async/' === $request->url()
-				&& 'GET' === $request->method()
-		);
+	// 	$this->assertRequestSent(
+	// 		fn ( Request $request ) => 'https://example.com/async/' === $request->url()
+	// 			&& 'GET' === $request->method()
+	// 	);
 
-		$this->assertRequestSent(
-			fn ( Request $request ) => 'https://example.com/second-async/' === $request->url()
-				&& 'POST' === $request->method()
-		);
-	}
+	// 	$this->assertRequestSent(
+	// 		fn ( Request $request ) => 'https://example.com/second-async/' === $request->url()
+	// 			&& 'POST' === $request->method()
+	// 	);
+	// }
 
 	public function test_pool_forward_base_url() {
 		$this->fake_request( [

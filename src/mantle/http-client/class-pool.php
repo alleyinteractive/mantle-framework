@@ -27,7 +27,79 @@ class Pool {
 	 *
 	 * @param Pending_Request $base_request
 	 */
-	public function __construct( protected Pending_Request $base_request ) {
+	public function __construct( protected Pending_Request $base_request ) {}
+
+	public function get( string $url, array|string|null $query = null ): static {
+		$this->base_request->url( $url )->method( Http_Method::GET );
+
+		if ( ! is_null( $query ) ) {
+			$this->base_request->with_options( [
+				'query' => $query,
+			] );
+		}
+
+		return $this;
+	}
+
+
+	public function head( string $url, array|string|null $query = null ): static {
+		$this->base_request->url( $url )->method( Http_Method::HEAD );
+
+		if ( ! is_null( $query ) ) {
+			$this->base_request->with_options( [
+				'query' => $query,
+			] );
+		}
+
+		return $this;
+	}
+
+
+	public function post( string $url, ?array $data = null ): static {
+		$this->base_request->url( $url )->method( Http_Method::POST );
+
+		if ( ! is_null( $data ) ) {
+			$this->base_request->with_options( [
+				$this->base_request->body_format => $data,
+			] );
+		}
+
+		return $this;
+	}
+
+	public function patch( string $url, ?array $data = null ): static {
+		$this->base_request->url( $url )->method( Http_Method::PATCH );
+
+		if ( ! is_null( $data ) ) {
+			$this->base_request->with_options( [
+				$this->base_request->body_format => $data,
+			] );
+		}
+
+		return $this;
+	}
+
+	public function put( string $url, ?array $data = null ): static {
+		$this->base_request->url( $url )->method( Http_Method::PUT );
+
+		if ( ! is_null( $data ) ) {
+			$this->base_request->with_options( [
+				$this->base_request->body_format => $data,
+			] );
+		}
+
+		return $this;
+	}
+	public function delete( string $url, ?array $data = null ): static {
+		$this->base_request->url( $url )->method( Http_Method::DELETE );
+
+		if ( ! is_null( $data ) ) {
+			$this->base_request->with_options( [
+				$this->base_request->body_format => $data,
+			] );
+		}
+
+		return $this;
 	}
 
 	/**

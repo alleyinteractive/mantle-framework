@@ -65,7 +65,7 @@ class Pending_Request {
 	/**
 	 * Body format.
 	 */
-	protected string $body_format;
+	public string $body_format;
 
 	/**
 	 * Middleware for the request.
@@ -749,7 +749,11 @@ class Pending_Request {
 	 * @return array<int|string, Response>
 	 */
 	public function pool( callable $callback ): array {
-		return tap( new Pool( $this ), $callback )->results();
+		$pool = new Pool( $this );
+
+		$callback( $pool );
+
+		return $pool->results();
 	}
 
 	/**
