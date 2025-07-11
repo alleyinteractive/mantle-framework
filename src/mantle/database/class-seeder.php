@@ -54,10 +54,12 @@ abstract class Seeder {
 
 			$seeder( $parameters );
 
-			$run_time = number_format( ( microtime( true ) - $start_time ) * 1000, 2 );
+			$elapsed = microtime( true ) - $start_time;
+
+			$run_time = $elapsed < 1 ? number_format( $elapsed * 1000, 2 ) . ' ms' : number_format( $elapsed, 2 ) . ' seconds';
 
 			if ( ! $silent && $this->command instanceof \Mantle\Console\Command ) {
-				$this->command->line( "Seeded: {$name} ({$run_time} seconds)" );
+				$this->command->line( "Seeded: {$name} ({$run_time})" );
 			}
 		}
 

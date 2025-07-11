@@ -142,9 +142,9 @@ class Faker_Provider extends Base {
 		}
 
 		return static::block(
-			attributes: $attributes,
 			name: 'list',
 			content: sprintf( "<%s class=\"wp-block-list\">\n%s\n</%s>", $list_type, $list_items, $list_type ),
+			attributes: $attributes,
 		);
 	}
 

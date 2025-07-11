@@ -201,8 +201,8 @@ class Post_Factory extends Factory {
 					'_thumbnail_id',
 					Attachment::factory()->with_image(
 						file: $file,
-						width: $width,
 						parent: $post->ID,
+						width: $width,
 						height: $height,
 						recycle: $recycle
 					)->create(),
