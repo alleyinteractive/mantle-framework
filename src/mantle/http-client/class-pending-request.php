@@ -75,11 +75,6 @@ class Pending_Request {
 	protected array $middleware = [];
 
 	/**
-	 * Flag if the request is for a pooled request.
-	 */
-	protected bool $pooled = false;
-
-	/**
 	 * Create an instance of the Http Client
 	 */
 	public static function create(): static {
@@ -544,16 +539,11 @@ class Pending_Request {
 	/**
 	 * Issue a GET request to the given URL.
 	 *
-	 * @throws InvalidArgumentException If the request is pooled.
-	 *
 	 * @param  string                           $url URL to retrieve.
 	 * @param  array<string, mixed>|string|null $query Query parameters (assumed to be urlencoded).
+	 * @return Response
 	 */
-	public function get( string $url, array|string|null $query = null ): Response {
-		if ( $this->pooled ) {
-			throw new InvalidArgumentException( 'Cannot call get() on a pooled request.' );
-		}
-
+	public function get( string $url, array|string|null $query = null ) {
 		return $this->send(
 			Http_Method::GET,
 			$url,
@@ -564,16 +554,11 @@ class Pending_Request {
 	/**
 	 * Issue a HEAD request to the given URL.
 	 *
-	 * @throws InvalidArgumentException If the request is pooled.
-	 *
 	 * @param  string                           $url URL to retrieve.
 	 * @param  array<string, mixed>|string|null $query Query parameters (assumed to be urlencoded).
+	 * @return Response
 	 */
-	public function head( string $url, array|string|null $query = null ): Response {
-		if ( $this->pooled ) {
-			throw new InvalidArgumentException( 'Cannot call head() on a pooled request.' );
-		}
-
+	public function head( string $url, array|string|null $query = null ) {
 		return $this->send(
 			Http_Method::HEAD,
 			$url,
@@ -584,16 +569,11 @@ class Pending_Request {
 	/**
 	 * Issue a POST request to the given URL.
 	 *
-	 * @throws InvalidArgumentException If the request is pooled.
-	 *
 	 * @param  string                    $url URL to post.
 	 * @param  array<string, mixed>|null $data Data to send with the request.
+	 * @return Response
 	 */
-	public function post( string $url, ?array $data = null ): Response {
-		if ( $this->pooled ) {
-			throw new InvalidArgumentException( 'Cannot call post() on a pooled request.' );
-		}
-
+	public function post( string $url, ?array $data = null ) {
 		return $this->send(
 			Http_Method::POST,
 			$url,
@@ -604,16 +584,11 @@ class Pending_Request {
 	/**
 	 * Issue a PATCH request to the given URL.
 	 *
-	 * @throws InvalidArgumentException If the request is pooled.
-	 *
 	 * @param  string                    $url URL to patch.
 	 * @param  array<string, mixed>|null $data Data to send with the request.
+	 * @return Response
 	 */
-	public function patch( string $url, ?array $data = null ): Response {
-		if ( $this->pooled ) {
-			throw new InvalidArgumentException( 'Cannot call patch() on a pooled request.' );
-		}
-
+	public function patch( string $url, ?array $data = null ) {
 		return $this->send(
 			Http_Method::PATCH,
 			$url,
@@ -624,16 +599,11 @@ class Pending_Request {
 	/**
 	 * Issue a PUT request to the given URL.
 	 *
-	 * @throws InvalidArgumentException If the request is pooled.
-	 *
 	 * @param  string                    $url URL to put.
 	 * @param  array<string, mixed>|null $data Data to send with the request.
+	 * @return Response
 	 */
-	public function put( string $url, ?array $data = null ): Response {
-		if ( $this->pooled ) {
-			throw new InvalidArgumentException( 'Cannot call put() on a pooled request.' );
-		}
-
+	public function put( string $url, ?array $data = null ) {
 		return $this->send(
 			Http_Method::PUT,
 			$url,
@@ -644,16 +614,11 @@ class Pending_Request {
 	/**
 	 * Issue a DELETE request to the given URL.
 	 *
-	 * @throws InvalidArgumentException If the request is pooled.
-	 *
 	 * @param  string                    $url URL to delete.
 	 * @param  array<string, mixed>|null $data Data to send with the request.
+	 * @return Response
 	 */
-	public function delete( string $url, ?array $data = null ): Response {
-		if ( $this->pooled ) {
-			throw new InvalidArgumentException( 'Cannot call delete() on a pooled request.' );
-		}
-
+	public function delete( string $url, ?array $data = null ) {
 		return $this->send(
 			Http_Method::DELETE,
 			$url,
@@ -664,15 +629,14 @@ class Pending_Request {
 	/**
 	 * Issue a single request to the given URL.
 	 *
-	 * @throws InvalidArgumentException If the request is pooled.
 	 * @throws InvalidArgumentException If the request does not have a URL set.
 	 *
 	 * @param  string|Http_Method|null $method HTTP Method, optional.
 	 * @param  string                  $url URL for the request, optional.
 	 * @param  array<string, mixed>    $options Options for the request.
-	 * @return Response|static
 	 */
-	public function send( string|Http_Method|null $method = null, ?string $url = null, array $options = [] ): mixed {
+	public function send( string|Http_Method|null $method = null, ?string $url = null, array $options = [] ): Response {
+		dd('send');
 		if ( $url ) {
 			$this->url( $url );
 		}
@@ -687,16 +651,7 @@ class Pending_Request {
 
 		$this->options = array_merge( $this->options, $options );
 
-		// Ensure some options are always set.
-		$this->options['throw_exception'] ??= false;
-		$this->options['retry']             = max( 1, $this->options['retry'] ?? 1 );
-
-		$this->prepare_request_url();
-
-		// If this is a pooled request, return the instance of the request.
-		if ( $this->pooled ) {
-			return $this;
-		}
+		$this->prepare_request();
 
 		return retry(
 			$this->options['retry'],
@@ -712,6 +667,8 @@ class Pending_Request {
 							),
 						),
 					);
+
+				assert( $response instanceof Response );
 
 				// Throw the exception if the request is being retried (so it can be
 				// retried) or if configured to always throw the exception.
@@ -732,20 +689,10 @@ class Pending_Request {
 	}
 
 	/**
-	 * Determine if this is a pooled request.
-	 *
-	 * @param bool $pooled Whether this is a pooled request.
-	 */
-	public function pooled( bool $pooled = true ): static {
-		$this->pooled = $pooled;
-
-		return $this;
-	}
-
-	/**
 	 * Create a pool request from the current pending request.
 	 *
 	 * @param callable $callback Callback to build the HTTP pool.
+	 * @phpstan-param (callable(Pool $pool): Pool) $callback
 	 * @return array<int|string, Response>
 	 */
 	public function pool( callable $callback ): array {
@@ -753,13 +700,18 @@ class Pending_Request {
 
 		$callback( $pool );
 
+		dump('cb', $pool);
+
 		return $pool->results();
 	}
 
 	/**
-	 * Prepare the request URL.
+	 * Prepare the request before sending it.
 	 */
-	protected function prepare_request_url(): void {
+	public function prepare_request(): void {
+		$this->options['throw_exception'] ??= false;
+		$this->options['retry']             = max( 1, $this->options['retry'] ?? 1 );
+
 		if ( isset( $this->options['query'] ) ) {
 			if ( is_array( $this->options['query'] ) ) {
 				$this->url = add_query_arg( $this->options['query'], $this->url );

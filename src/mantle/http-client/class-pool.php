@@ -8,9 +8,12 @@
 namespace Mantle\Http_Client;
 
 use function Alley\WP\Concurrent_Remote_Requests\wp_remote_request;
+use function Mantle\Support\Helpers\collect;
 
 /**
- * Http Pool for making requests concurrently.
+ * Http Pool
+ *
+ * Supports making requests concurrently using the WordPress HTTP API.
  *
  * @mixin \Mantle\Http_Client\Pending_Request
  */
@@ -29,84 +32,153 @@ class Pool {
 	 */
 	public function __construct( protected Pending_Request $base_request ) {}
 
-	public function get( string $url, array|string|null $query = null ): static {
-		$this->base_request->url( $url )->method( Http_Method::GET );
+	// /**
+	//  * Make a GET request to the given URL with optional query parameters.
+	//  *
+	//  * @param string $url The URL to send the GET request to.
+	//  * @param array<string, mixed>|string|null $query Optional query parameters to include in the request.
+	//  */
+	// public function get( string $url, array|string|null $query = null ): Pooled_Pending_Request {
+	// 	$request = $this->create_request();
 
-		if ( ! is_null( $query ) ) {
-			$this->base_request->with_options( [
-				'query' => $query,
-			] );
-		}
+	// 	$request->url( $url )->method( Http_Method::GET );
 
-		return $this;
-	}
+	// 	if ( ! is_null( $query ) ) {
+	// 		$request->with_options( [
+	// 			'query' => $query,
+	// 		] );
+	// 	}
 
+	// 	$this->pool[] = $request;
 
-	public function head( string $url, array|string|null $query = null ): static {
-		$this->base_request->url( $url )->method( Http_Method::HEAD );
+	// 	return $request;
+	// }
 
-		if ( ! is_null( $query ) ) {
-			$this->base_request->with_options( [
-				'query' => $query,
-			] );
-		}
+	// /**
+	//  * Make a HEAD request to the given URL with optional query parameters.
+	//  *
+	//  * @param string $url The URL to send the HEAD request to.
+	//  * @param array<string, mixed>|string|null $query Optional query parameters to include in the request.
+	//  */
+	// public function head( string $url, array|string|null $query = null ): Pooled_Pending_Request {
+	// 	$request = $this->create_request();
 
-		return $this;
-	}
+	// 	$request->url( $url )->method( Http_Method::HEAD );
 
+	// 	if ( ! is_null( $query ) ) {
+	// 		$request->with_options( [
+	// 			'query' => $query,
+	// 		] );
+	// 	}
 
-	public function post( string $url, ?array $data = null ): static {
-		$this->base_request->url( $url )->method( Http_Method::POST );
+	// 	$this->pool[] = $request;
 
-		if ( ! is_null( $data ) ) {
-			$this->base_request->with_options( [
-				$this->base_request->body_format => $data,
-			] );
-		}
+	// 	return $request;
+	// }
 
-		return $this;
-	}
+	// /**
+	//  * Make a POST request to the given URL with optional body data.
+	//  *
+	//  * @param string $url The URL to send the POST request to.
+	//  * @param array<string, mixed>|null $data Optional body data to include in the request.
+	//  */
+	// public function post( string $url, ?array $data = null ): Pooled_Pending_Request {
+	// 	$request = $this->create_request();
 
-	public function patch( string $url, ?array $data = null ): static {
-		$this->base_request->url( $url )->method( Http_Method::PATCH );
+	// 	$request->url( $url )->method( Http_Method::POST );
 
-		if ( ! is_null( $data ) ) {
-			$this->base_request->with_options( [
-				$this->base_request->body_format => $data,
-			] );
-		}
+	// 	if ( ! is_null( $data ) ) {
+	// 		$request->with_options( [
+	// 			$request->body_format => $data,
+	// 		] );
+	// 	}
 
-		return $this;
-	}
+	// 	$this->pool[] = $request;
 
-	public function put( string $url, ?array $data = null ): static {
-		$this->base_request->url( $url )->method( Http_Method::PUT );
+	// 	return $request;
+	// }
 
-		if ( ! is_null( $data ) ) {
-			$this->base_request->with_options( [
-				$this->base_request->body_format => $data,
-			] );
-		}
+	// /**
+	//  * Make a PATCH request to the given URL with optional body data.
+	//  *
+	//  * @param string $url The URL to send the PATCH request to.
+	//  * @param array<string, mixed>|null $data Optional body data to include in the request.
+	//  */
+	// public function patch( string $url, ?array $data = null ): Pooled_Pending_Request {
+	// 	$request = $this->create_request();
 
-		return $this;
-	}
-	public function delete( string $url, ?array $data = null ): static {
-		$this->base_request->url( $url )->method( Http_Method::DELETE );
+	// 	$request->url( $url )->method( Http_Method::PATCH );
 
-		if ( ! is_null( $data ) ) {
-			$this->base_request->with_options( [
-				$this->base_request->body_format => $data,
-			] );
-		}
+	// 	if ( ! is_null( $data ) ) {
+	// 		$request->with_options( [
+	// 			$request->body_format => $data,
+	// 		] );
+	// 	}
 
+	// 	$this->pool[] = $request;
+
+	// 	return $request;
+	// }
+
+	// /**
+	//  * Make a PUT request to the given URL with optional body data.
+	//  *
+	//  * @param string $url The URL to send the PUT request to.
+	//  * @param array<string, mixed>|null $data Optional body data to include in the request.
+	//  */
+	// public function put( string $url, ?array $data = null ): Pooled_Pending_Request {
+	// 	$request = $this->create_request();
+
+	// 	$request->url( $url )->method( Http_Method::PUT );
+
+	// 	if ( ! is_null( $data ) ) {
+	// 		$request->with_options( [
+	// 			$request->body_format => $data,
+	// 		] );
+	// 	}
+
+	// 	$this->pool[] = $request;
+
+	// 	return $request;
+	// }
+
+	// /**
+	//  * Make a DELETE request to the given URL with optional body data.
+	//  *
+	//  * @param string $url The URL to send the DELETE request to.
+	//  * @param array<string, mixed>|null $data Optional body data to include in the request.
+	//  */
+	// public function delete( string $url, ?array $data = null ): Pooled_Pending_Request {
+	// 	$request = $this->create_request();
+
+	// 	$request->url( $url )->method( Http_Method::DELETE );
+
+	// 	if ( ! is_null( $data ) ) {
+	// 		$request->with_options( [
+	// 			$request->body_format => $data,
+	// 		] );
+	// 	}
+
+	// 	$this->pool[] = $request;
+
+	// 	return $request;
+	// }
+
+	/**
+	 * Send the pooled request.
+	 *
+	 * This method is intentionally left empty as the actual sending of requests
+	 * will be handled in the results() method.
+	 */
+	public function send(): static {
 		return $this;
 	}
 
 	/**
 	 * Create a pending request for the pool
 	 */
-	protected function create_request(): Pending_Request {
-		return ( clone $this->base_request )->pooled();
+	protected function create_request(): Pooled_Pending_Request {
+		return new Pooled_Pending_Request( $this );
 	}
 
 	/**
@@ -116,16 +188,17 @@ class Pool {
 	 * @return array<int|string, Response>
 	 */
 	public function results(): array {
-		// Execute the pool of requests.
-		$results = wp_remote_request(
-			array_map(
-				fn ( Pending_Request $request ) => [
-					$request->url(),
-					$request->get_request_args(),
-				],
-				$this->pool,
-			)
-		);
+		dd('results', $this->pool);
+		$results = wp_remote_request( collect( $this->pool )->map( function ( Pooled_Pending_Request $request ): array {
+			$request->prepare_request();
+
+			return[
+				$request->url(),
+				$request->get_request_args(),
+			];
+		} )->dd() );
+
+		dd('results', $results);
 
 		if ( is_wp_error( $results ) ) {
 			throw new Http_Client_Exception( Response::create( $results ) );
@@ -153,9 +226,8 @@ class Pool {
 	 *
 	 * @param string       $method Method name.
 	 * @param array<mixed> $args   Arguments for the method.
-	 * @return Pending_Request
 	 */
-	public function __call( string $method, array $args = [] ) {
+	public function __call( string $method, array $args = [] ): Pending_Request {
 		$request = $this->create_request()->{$method}( ...$args );
 
 		$this->pool[] = $request;

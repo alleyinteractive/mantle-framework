@@ -395,8 +395,9 @@ EOF
 		] );
 
 		$response = $this->http_factory->pool( fn ( Pool $pool ) => [
+			$pool->with_header( 'X-Foo', 'Bar' )->get( 'https://example.com/async/' ),
 			$pool->get( 'https://example.com/async/' ),
-			$pool->post( 'https://example.com/second-async/' ),
+			$pool->as( 'named' )->post( 'https://example.com/second-async/' ),
 		] );
 
 		dd($response);
