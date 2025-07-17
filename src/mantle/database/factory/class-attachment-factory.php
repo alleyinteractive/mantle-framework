@@ -42,7 +42,8 @@ class Attachment_Factory extends Post_Factory {
 	 */
 	public function definition(): array {
 		return [
-			'post_type' => 'attachment',
+			'post_mime_type' => 'image/jpeg',
+			'post_type'      => 'attachment',
 		];
 	}
 

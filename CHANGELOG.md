@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Changed the cache key and TTL parameter names in the View class to be more concise (`$key` and `$ttl`).
+- Add `post_mime_type` to the attachment factory definition to ensure that
+  attachments are created with a valid MIME type.
 
 ### Fixed
 
