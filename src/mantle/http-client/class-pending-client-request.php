@@ -16,13 +16,14 @@ use Mantle\Support\Traits\Conditionable;
 use Mantle\Support\Traits\Macroable;
 
 use function Mantle\Support\Helpers\collect;
+use function Mantle\Support\Helpers\data_get;
 use function Mantle\Support\Helpers\retry;
 use function Mantle\Support\Helpers\tap;
 
 /**
  * Pending Request to be made with the Http Client.
  */
-class Pending_Request {
+class Pending_Client_Request {
 	use Conditionable;
 	use Macroable;
 
@@ -72,7 +73,7 @@ class Pending_Request {
 	 *
 	 * @var array<int, callable>
 	 */
-	protected array $middleware = [];
+	public array $middleware = [];
 
 	/**
 	 * Create an instance of the Http Client
@@ -170,6 +171,8 @@ class Pending_Request {
 	/**
 	 * Set or get the URL for the request.
 	 *
+	 * @todo Convert to property hooks with PHP 8.4.
+	 *
 	 * @param string|null $url URL for the request, optional.
 	 */
 	public function url( string|null $url = null ): static|string {
@@ -230,6 +233,12 @@ class Pending_Request {
 		return $this;
 	}
 
+	public function with_query( array|string $query = [] ): static {
+		$this->options['query'] = $query;
+
+		return $this;
+	}
+
 	/**
 	 * Retrieve the body for the request.
 	 */
@@ -239,6 +248,8 @@ class Pending_Request {
 
 	/**
 	 * Pass raw options to the request (passed to `wp_remote_request()`).
+	 *
+	 * These are not the same as the options set by the methods above.
 	 *
 	 * @param array<string, mixed> $options Options for the request.
 	 * @param bool                 $merge Merge the options with the existing options, default true.
@@ -250,6 +261,25 @@ class Pending_Request {
 		) : $options;
 
 		return $this;
+	}
+
+	/**
+	 * Retrieve the options for the request.
+	 *
+	 * @return array<string, mixed>
+	 */
+	public function options(): array {
+		return $this->options['options'] ?? [];
+	}
+
+	/**
+	 * Retrieve a specific option for the request.
+	 *
+	 * @param string $key Option key.
+	 * @param mixed  $default Default value if the option is not set.
+	 */
+	public function option( string $key, mixed $default = null ): mixed {
+		return data_get( $this->options, $key, $default );
 	}
 
 	/**
@@ -543,150 +573,150 @@ class Pending_Request {
 	 * @param  array<string, mixed>|string|null $query Query parameters (assumed to be urlencoded).
 	 * @return Response
 	 */
-	public function get( string $url, array|string|null $query = null ) {
-		return $this->send(
-			Http_Method::GET,
-			$url,
-			is_null( $query ) ? [] : [ 'query' => $query ],
-		);
-	}
+	// public function get( string $url, array|string|null $query = null ) {
+	// return $this->send(
+	// Http_Method::GET,
+	// $url,
+	// is_null( $query ) ? [] : [ 'query' => $query ],
+	// );
+	// }
 
-	/**
-	 * Issue a HEAD request to the given URL.
-	 *
-	 * @param  string                           $url URL to retrieve.
-	 * @param  array<string, mixed>|string|null $query Query parameters (assumed to be urlencoded).
-	 * @return Response
-	 */
-	public function head( string $url, array|string|null $query = null ) {
-		return $this->send(
-			Http_Method::HEAD,
-			$url,
-			is_null( $query ) ? [] : [ 'query' => $query ],
-		);
-	}
+	// /**
+	// * Issue a HEAD request to the given URL.
+	// *
+	// * @param  string                           $url URL to retrieve.
+	// * @param  array<string, mixed>|string|null $query Query parameters (assumed to be urlencoded).
+	// * @return Response
+	// */
+	// public function head( string $url, array|string|null $query = null ) {
+	// return $this->send(
+	// Http_Method::HEAD,
+	// $url,
+	// is_null( $query ) ? [] : [ 'query' => $query ],
+	// );
+	// }
 
-	/**
-	 * Issue a POST request to the given URL.
-	 *
-	 * @param  string                    $url URL to post.
-	 * @param  array<string, mixed>|null $data Data to send with the request.
-	 * @return Response
-	 */
-	public function post( string $url, ?array $data = null ) {
-		return $this->send(
-			Http_Method::POST,
-			$url,
-			is_null( $data ) ? [] : [ $this->body_format => $data ],
-		);
-	}
+	// /**
+	// * Issue a POST request to the given URL.
+	// *
+	// * @param  string                    $url URL to post.
+	// * @param  array<string, mixed>|null $data Data to send with the request.
+	// * @return Response
+	// */
+	// public function post( string $url, ?array $data = null ) {
+	// return $this->send(
+	// Http_Method::POST,
+	// $url,
+	// is_null( $data ) ? [] : [ $this->body_format => $data ],
+	// );
+	// }
 
-	/**
-	 * Issue a PATCH request to the given URL.
-	 *
-	 * @param  string                    $url URL to patch.
-	 * @param  array<string, mixed>|null $data Data to send with the request.
-	 * @return Response
-	 */
-	public function patch( string $url, ?array $data = null ) {
-		return $this->send(
-			Http_Method::PATCH,
-			$url,
-			is_null( $data ) ? [] : [ $this->body_format => $data ],
-		);
-	}
+	// /**
+	// * Issue a PATCH request to the given URL.
+	// *
+	// * @param  string                    $url URL to patch.
+	// * @param  array<string, mixed>|null $data Data to send with the request.
+	// * @return Response
+	// */
+	// public function patch( string $url, ?array $data = null ) {
+	// return $this->send(
+	// Http_Method::PATCH,
+	// $url,
+	// is_null( $data ) ? [] : [ $this->body_format => $data ],
+	// );
+	// }
 
-	/**
-	 * Issue a PUT request to the given URL.
-	 *
-	 * @param  string                    $url URL to put.
-	 * @param  array<string, mixed>|null $data Data to send with the request.
-	 * @return Response
-	 */
-	public function put( string $url, ?array $data = null ) {
-		return $this->send(
-			Http_Method::PUT,
-			$url,
-			is_null( $data ) ? [] : [ $this->body_format => $data ],
-		);
-	}
+	// /**
+	// * Issue a PUT request to the given URL.
+	// *
+	// * @param  string                    $url URL to put.
+	// * @param  array<string, mixed>|null $data Data to send with the request.
+	// * @return Response
+	// */
+	// public function put( string $url, ?array $data = null ) {
+	// return $this->send(
+	// Http_Method::PUT,
+	// $url,
+	// is_null( $data ) ? [] : [ $this->body_format => $data ],
+	// );
+	// }
 
-	/**
-	 * Issue a DELETE request to the given URL.
-	 *
-	 * @param  string                    $url URL to delete.
-	 * @param  array<string, mixed>|null $data Data to send with the request.
-	 * @return Response
-	 */
-	public function delete( string $url, ?array $data = null ) {
-		return $this->send(
-			Http_Method::DELETE,
-			$url,
-			is_null( $data ) ? [] : [ $this->body_format => $data ],
-		);
-	}
+	// /**
+	// * Issue a DELETE request to the given URL.
+	// *
+	// * @param  string                    $url URL to delete.
+	// * @param  array<string, mixed>|null $data Data to send with the request.
+	// * @return Response
+	// */
+	// public function delete( string $url, ?array $data = null ) {
+	// return $this->send(
+	// Http_Method::DELETE,
+	// $url,
+	// is_null( $data ) ? [] : [ $this->body_format => $data ],
+	// );
+	// }
 
-	/**
-	 * Issue a single request to the given URL.
-	 *
-	 * @throws InvalidArgumentException If the request does not have a URL set.
-	 *
-	 * @param  string|Http_Method|null $method HTTP Method, optional.
-	 * @param  string                  $url URL for the request, optional.
-	 * @param  array<string, mixed>    $options Options for the request.
-	 */
-	public function send( string|Http_Method|null $method = null, ?string $url = null, array $options = [] ): Response {
-		dd( 'send' );
-		if ( $url ) {
-			$this->url( $url );
-		}
+	// /**
+	// * Issue a single request to the given URL.
+	// *
+	// * @throws InvalidArgumentException If the request does not have a URL set.
+	// *
+	// * @param  string|Http_Method|null $method HTTP Method, optional.
+	// * @param  string                  $url URL for the request, optional.
+	// * @param  array<string, mixed>    $options Options for the request.
+	// */
+	// public function send( string|Http_Method|null $method = null, ?string $url = null, array $options = [] ): Response {
+	// dd('send');
+	// if ( $url ) {
+	// $this->url( $url );
+	// }
 
-		if ( empty( $this->url ) ) {
-			throw new InvalidArgumentException( 'A URL must be provided for the request.' );
-		}
+	// if ( empty( $this->url ) ) {
+	// throw new InvalidArgumentException( 'A URL must be provided for the request.' );
+	// }
 
-		if ( $method ) {
-			$this->method( $method );
-		}
+	// if ( $method ) {
+	// $this->method( $method );
+	// }
 
-		$this->options = array_merge( $this->options, $options );
+	// $this->options = array_merge( $this->options, $options );
 
-		$this->prepare_request();
+	// $this->prepare_request();
 
-		return retry(
-			$this->options['retry'],
-			function ( int $attempts ) {
-				$response = ( new Pipeline() )
-					->send( $this )
-					->through( $this->middleware )
-					->then(
-						fn () => Response::create(
-							wp_remote_request(
-								$this->url,
-								$this->get_request_args(),
-							),
-						),
-					);
+	// return retry(
+	// $this->options['retry'],
+	// function ( int $attempts ) {
+	// $response = ( new Pipeline() )
+	// ->send( $this )
+	// ->through( $this->middleware )
+	// ->then(
+	// fn () => Response::create(
+	// wp_remote_request(
+	// $this->url,
+	// $this->get_request_args(),
+	// ),
+	// ),
+	// );
 
-				assert( $response instanceof Response );
+	// assert( $response instanceof Response );
 
-				// Throw the exception if the request is being retried (so it can be
-				// retried) or if configured to always throw the exception.
-				if (
-					! $response->successful()
-					&& (
-						$this->options['throw_exception']
-						|| $attempts < $this->options['retry']
-					)
-				) {
-					throw new Http_Client_Exception( $response );
-				}
+	// Throw the exception if the request is being retried (so it can be
+	// retried) or if configured to always throw the exception.
+	// if (
+	// ! $response->successful()
+	// && (
+	// $this->options['throw_exception']
+	// || $attempts < $this->options['retry']
+	// )
+	// ) {
+	// throw new Http_Client_Exception( $response );
+	// }
 
-				return $response;
-			},
-			$this->options['retry_delay'] ?? 0,
-		);
-	}
+	// return $response;
+	// },
+	// $this->options['retry_delay'] ?? 0,
+	// );
+	// }
 
 	/**
 	 * Create a pool request from the current pending request.
@@ -695,20 +725,20 @@ class Pending_Request {
 	 * @phpstan-param (callable(Pool $pool): Pool) $callback
 	 * @return array<int|string, Response>
 	 */
-	public function pool( callable $callback ): array {
-		$pool = new Pool( $this );
+	// public function pool( callable $callback ): array {
+	// $pool = new Pool( $this );
 
-		$callback( $pool );
+	// $callback( $pool );
 
-		dump( 'cb', $pool );
+	// dump('cb', $pool);
 
-		return $pool->results();
-	}
+	// return $pool->results();
+	// }
 
 	/**
 	 * Prepare the request before sending it.
 	 */
-	public function prepare_request(): void {
+	public function prepare_request(): static {
 		$this->options['throw_exception'] ??= false;
 		$this->options['retry']             = max( 1, $this->options['retry'] ?? 1 );
 
@@ -720,6 +750,8 @@ class Pending_Request {
 				$this->url = "{$this->url}?{$this->options['query']}";
 			}
 		}
+
+		return $this;
 	}
 
 	/**

@@ -12,7 +12,7 @@ class Pooled_Pending_Request extends Pending_Request {
 	/**
 	 * Make a GET request to the given URL with optional query parameters.
 	 *
-	 * @param string $url The URL to send the GET request to.
+	 * @param string                           $url The URL to send the GET request to.
 	 * @param array<string, mixed>|string|null $query Optional query parameters to include in the request.
 	 */
 	public function get( string $url, array|string|null $query = null ): static {
@@ -32,7 +32,7 @@ class Pooled_Pending_Request extends Pending_Request {
 	/**
 	 * Make a HEAD request to the given URL with optional query parameters.
 	 *
-	 * @param string $url The URL to send the HEAD request to.
+	 * @param string                           $url The URL to send the HEAD request to.
 	 * @param array<string, mixed>|string|null $query Optional query parameters to include in the request.
 	 */
 	public function head( string $url, array|string|null $query = null ): static {
@@ -52,7 +52,7 @@ class Pooled_Pending_Request extends Pending_Request {
 	/**
 	 * Make a POST request to the given URL with optional body data.
 	 *
-	 * @param string $url The URL to send the POST request to.
+	 * @param string                    $url The URL to send the POST request to.
 	 * @param array<string, mixed>|null $data Optional body data to include in the request.
 	 */
 	public function post( string $url, ?array $data = null ): static {
@@ -72,7 +72,7 @@ class Pooled_Pending_Request extends Pending_Request {
 	/**
 	 * Make a PATCH request to the given URL with optional body data.
 	 *
-	 * @param string $url The URL to send the PATCH request to.
+	 * @param string                    $url The URL to send the PATCH request to.
 	 * @param array<string, mixed>|null $data Optional body data to include in the request.
 	 */
 	public function patch( string $url, ?array $data = null ): static {
@@ -92,7 +92,7 @@ class Pooled_Pending_Request extends Pending_Request {
 	/**
 	 * Make a PUT request to the given URL with optional body data.
 	 *
-	 * @param string $url The URL to send the PUT request to.
+	 * @param string                    $url The URL to send the PUT request to.
 	 * @param array<string, mixed>|null $data Optional body data to include in the request.
 	 */
 	public function put( string $url, ?array $data = null ): static {
@@ -112,7 +112,7 @@ class Pooled_Pending_Request extends Pending_Request {
 	/**
 	 * Make a DELETE request to the given URL with optional body data.
 	 *
-	 * @param string $url The URL to send the DELETE request to.
+	 * @param string                    $url The URL to send the DELETE request to.
 	 * @param array<string, mixed>|null $data Optional body data to include in the request.
 	 */
 	public function delete( string $url, ?array $data = null ): static {
@@ -136,7 +136,7 @@ class Pooled_Pending_Request extends Pending_Request {
 	 * as part of the pool's request handling.
 	 */
 	public function send( string|Http_Method|null $method = null, ?string $url = null, array $options = [] ): Response {
-		dd('send');
+		dd( 'send' );
 		return new Response( [] );
 	}
 }

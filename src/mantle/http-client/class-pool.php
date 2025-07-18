@@ -33,135 +33,135 @@ class Pool {
 	public function __construct( protected Pending_Request $base_request ) {}
 
 	// /**
-	//  * Make a GET request to the given URL with optional query parameters.
-	//  *
-	//  * @param string $url The URL to send the GET request to.
-	//  * @param array<string, mixed>|string|null $query Optional query parameters to include in the request.
-	//  */
+	// * Make a GET request to the given URL with optional query parameters.
+	// *
+	// * @param string $url The URL to send the GET request to.
+	// * @param array<string, mixed>|string|null $query Optional query parameters to include in the request.
+	// */
 	// public function get( string $url, array|string|null $query = null ): Pooled_Pending_Request {
-	// 	$request = $this->create_request();
+	// $request = $this->create_request();
 
-	// 	$request->url( $url )->method( Http_Method::GET );
+	// $request->url( $url )->method( Http_Method::GET );
 
-	// 	if ( ! is_null( $query ) ) {
-	// 		$request->with_options( [
-	// 			'query' => $query,
-	// 		] );
-	// 	}
+	// if ( ! is_null( $query ) ) {
+	// $request->with_options( [
+	// 'query' => $query,
+	// ] );
+	// }
 
-	// 	$this->pool[] = $request;
+	// $this->pool[] = $request;
 
-	// 	return $request;
+	// return $request;
 	// }
 
 	// /**
-	//  * Make a HEAD request to the given URL with optional query parameters.
-	//  *
-	//  * @param string $url The URL to send the HEAD request to.
-	//  * @param array<string, mixed>|string|null $query Optional query parameters to include in the request.
-	//  */
+	// * Make a HEAD request to the given URL with optional query parameters.
+	// *
+	// * @param string $url The URL to send the HEAD request to.
+	// * @param array<string, mixed>|string|null $query Optional query parameters to include in the request.
+	// */
 	// public function head( string $url, array|string|null $query = null ): Pooled_Pending_Request {
-	// 	$request = $this->create_request();
+	// $request = $this->create_request();
 
-	// 	$request->url( $url )->method( Http_Method::HEAD );
+	// $request->url( $url )->method( Http_Method::HEAD );
 
-	// 	if ( ! is_null( $query ) ) {
-	// 		$request->with_options( [
-	// 			'query' => $query,
-	// 		] );
-	// 	}
+	// if ( ! is_null( $query ) ) {
+	// $request->with_options( [
+	// 'query' => $query,
+	// ] );
+	// }
 
-	// 	$this->pool[] = $request;
+	// $this->pool[] = $request;
 
-	// 	return $request;
+	// return $request;
 	// }
 
 	// /**
-	//  * Make a POST request to the given URL with optional body data.
-	//  *
-	//  * @param string $url The URL to send the POST request to.
-	//  * @param array<string, mixed>|null $data Optional body data to include in the request.
-	//  */
+	// * Make a POST request to the given URL with optional body data.
+	// *
+	// * @param string $url The URL to send the POST request to.
+	// * @param array<string, mixed>|null $data Optional body data to include in the request.
+	// */
 	// public function post( string $url, ?array $data = null ): Pooled_Pending_Request {
-	// 	$request = $this->create_request();
+	// $request = $this->create_request();
 
-	// 	$request->url( $url )->method( Http_Method::POST );
+	// $request->url( $url )->method( Http_Method::POST );
 
-	// 	if ( ! is_null( $data ) ) {
-	// 		$request->with_options( [
-	// 			$request->body_format => $data,
-	// 		] );
-	// 	}
+	// if ( ! is_null( $data ) ) {
+	// $request->with_options( [
+	// $request->body_format => $data,
+	// ] );
+	// }
 
-	// 	$this->pool[] = $request;
+	// $this->pool[] = $request;
 
-	// 	return $request;
+	// return $request;
 	// }
 
 	// /**
-	//  * Make a PATCH request to the given URL with optional body data.
-	//  *
-	//  * @param string $url The URL to send the PATCH request to.
-	//  * @param array<string, mixed>|null $data Optional body data to include in the request.
-	//  */
+	// * Make a PATCH request to the given URL with optional body data.
+	// *
+	// * @param string $url The URL to send the PATCH request to.
+	// * @param array<string, mixed>|null $data Optional body data to include in the request.
+	// */
 	// public function patch( string $url, ?array $data = null ): Pooled_Pending_Request {
-	// 	$request = $this->create_request();
+	// $request = $this->create_request();
 
-	// 	$request->url( $url )->method( Http_Method::PATCH );
+	// $request->url( $url )->method( Http_Method::PATCH );
 
-	// 	if ( ! is_null( $data ) ) {
-	// 		$request->with_options( [
-	// 			$request->body_format => $data,
-	// 		] );
-	// 	}
+	// if ( ! is_null( $data ) ) {
+	// $request->with_options( [
+	// $request->body_format => $data,
+	// ] );
+	// }
 
-	// 	$this->pool[] = $request;
+	// $this->pool[] = $request;
 
-	// 	return $request;
+	// return $request;
 	// }
 
 	// /**
-	//  * Make a PUT request to the given URL with optional body data.
-	//  *
-	//  * @param string $url The URL to send the PUT request to.
-	//  * @param array<string, mixed>|null $data Optional body data to include in the request.
-	//  */
+	// * Make a PUT request to the given URL with optional body data.
+	// *
+	// * @param string $url The URL to send the PUT request to.
+	// * @param array<string, mixed>|null $data Optional body data to include in the request.
+	// */
 	// public function put( string $url, ?array $data = null ): Pooled_Pending_Request {
-	// 	$request = $this->create_request();
+	// $request = $this->create_request();
 
-	// 	$request->url( $url )->method( Http_Method::PUT );
+	// $request->url( $url )->method( Http_Method::PUT );
 
-	// 	if ( ! is_null( $data ) ) {
-	// 		$request->with_options( [
-	// 			$request->body_format => $data,
-	// 		] );
-	// 	}
+	// if ( ! is_null( $data ) ) {
+	// $request->with_options( [
+	// $request->body_format => $data,
+	// ] );
+	// }
 
-	// 	$this->pool[] = $request;
+	// $this->pool[] = $request;
 
-	// 	return $request;
+	// return $request;
 	// }
 
 	// /**
-	//  * Make a DELETE request to the given URL with optional body data.
-	//  *
-	//  * @param string $url The URL to send the DELETE request to.
-	//  * @param array<string, mixed>|null $data Optional body data to include in the request.
-	//  */
+	// * Make a DELETE request to the given URL with optional body data.
+	// *
+	// * @param string $url The URL to send the DELETE request to.
+	// * @param array<string, mixed>|null $data Optional body data to include in the request.
+	// */
 	// public function delete( string $url, ?array $data = null ): Pooled_Pending_Request {
-	// 	$request = $this->create_request();
+	// $request = $this->create_request();
 
-	// 	$request->url( $url )->method( Http_Method::DELETE );
+	// $request->url( $url )->method( Http_Method::DELETE );
 
-	// 	if ( ! is_null( $data ) ) {
-	// 		$request->with_options( [
-	// 			$request->body_format => $data,
-	// 		] );
-	// 	}
+	// if ( ! is_null( $data ) ) {
+	// $request->with_options( [
+	// $request->body_format => $data,
+	// ] );
+	// }
 
-	// 	$this->pool[] = $request;
+	// $this->pool[] = $request;
 
-	// 	return $request;
+	// return $request;
 	// }
 
 	/**
@@ -188,17 +188,17 @@ class Pool {
 	 * @return array<int|string, Response>
 	 */
 	public function results(): array {
-		dd('results', $this->pool);
+		dd( 'results', $this->pool );
 		$results = wp_remote_request( collect( $this->pool )->map( function ( Pooled_Pending_Request $request ): array {
 			$request->prepare_request();
 
-			return[
+			return [
 				$request->url(),
 				$request->get_request_args(),
 			];
 		} )->dd() );
 
-		dd('results', $results);
+		dd( 'results', $results );
 
 		if ( is_wp_error( $results ) ) {
 			throw new Http_Client_Exception( Response::create( $results ) );
