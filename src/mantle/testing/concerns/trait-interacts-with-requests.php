@@ -331,6 +331,7 @@ trait Interacts_With_Requests {
 			}
 		}
 
+		// Check if the request is being prevented from making external requests.
 		if ( false !== $this->preventing_stray_requests ) {
 			$prevent = value( $this->preventing_stray_requests );
 
