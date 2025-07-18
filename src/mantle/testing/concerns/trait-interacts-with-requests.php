@@ -20,6 +20,7 @@ use Mantle\Testing\Mock_Http_Response;
 use Mantle\Testing\Mock_Http_Sequence;
 use Mantle\Testing\Utils;
 use PHPUnit\Framework\Assert as PHPUnit;
+use ReflectionFunction;
 use RuntimeException;
 use WP_Error;
 
@@ -297,9 +298,16 @@ trait Interacts_With_Requests {
 	protected function get_stub_response( string $url, array $request_args ): array|WP_Error|null {
 		if ( ! $this->stub_callbacks->is_empty() ) {
 			foreach ( $this->stub_callbacks as $stub_callback ) {
-				$response = $stub_callback( $url, $request_args );
+				$reflector = $stub_callback instanceof Closure ? new ReflectionFunction( $stub_callback ) : null;
 
-				if ( $response instanceof Mock_Http_Response || $response instanceof Arrayable ) {
+				// Check if the stub callback is expecting a Request object instead of a URL and request arguments.
+				if ( $reflector instanceof \ReflectionFunction && 1 === $reflector->getNumberOfParameters() && Request::class === (string) $reflector->getParameters()[0]->getType() ) {
+					$response = $stub_callback( new Request( $request_args, $url ) );
+				} else {
+					$response = $stub_callback( $url, $request_args );
+				}
+
+				if ( $response instanceof Arrayable ) {
 					return $response->to_array();
 				}
 

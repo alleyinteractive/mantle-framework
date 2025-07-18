@@ -5,13 +5,17 @@ use DateTime;
 use InvalidArgumentException;
 use Mantle\Facade\Http;
 use Mantle\Http_Client\Factory;
+use Mantle\Http_Client\Http_Method;
 use Mantle\Http_Client\Pending_Request;
+use Mantle\Http_Client\Request;
 use Mantle\Testing\Concerns\Prevent_Remote_Requests;
 use Mantle\Testing\Mock_Http_Response;
 use Mantle\Testing\FrameworkTestCase;
 use Mantle\Testing\Mock_Http_Sequence;
 use PHPUnit\Framework\Attributes\Group;
 use RuntimeException;
+
+use function Mantle\Testing\mock_http_response;
 
 /**
  * Test for Mocking WP HTTP API Requests.
@@ -420,7 +424,29 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		);
 
 		$this->expectException( RuntimeException::class );
+		$this->expectExceptionMessage( 'Unknown response type returned for faked request to [https://example.com/]. Expected a (Mantle\Testing\Mock_Http_Response|Mantle\Contracts\Support\Arrayable|WP_Error|array), got object.' );
 
 		Http::get( 'https://example.com/' );
+	}
+
+	public function test_fake_request_passed_request_object(): void {
+		/** @var Request|null $object */
+		$object = null;
+
+		$this->fake_request( fn ( Request $request ) => null );
+
+		$this->fake_request( function ( Request $request ) use ( &$object ) {
+			$object = $request;
+
+			return mock_http_response()->with_json( [ 'status' => 'ok' ] );
+		} );
+
+		$response = Http::get( 'https://example.com/?example=here' );
+
+		$this->assertEquals( 'ok', $response->json( 'status' ) );
+		$this->assertInstanceOf( Request::class, $object );
+		$this->assertEquals( 'https://example.com/?example=here', $object->url() );
+		$this->assertEquals( Http_Method::GET->value, $object->method() );
+		$this->assertEquals( Http_Method::GET, $object->enum_method() );
 	}
 }
