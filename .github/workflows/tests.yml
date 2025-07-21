@@ -96,14 +96,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        multisite: [true, false]
         php: [8.3, 8.4]
         wordpress: ["latest"]
     runs-on: ubuntu-latest
     concurrency:
-      group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}-P${{ matrix.php }}-WP${{ matrix.wordpress }}-MS${{ matrix.multisite && '1' || '0' }}
+      group: parallel-${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}-P${{ matrix.php }}-WP${{ matrix.wordpress }}
       cancel-in-progress: true
-    name: "PR Tests PHP ${{ matrix.php }} WordPress ${{ matrix.wordpress }} ${{ matrix.multisite && 'Multisite' || '' }}"
+    name: "Parallel PR Tests PHP ${{ matrix.php }} WordPress ${{ matrix.wordpress }}"
     steps:
       - uses: actions/checkout@v4
 
@@ -115,7 +114,7 @@ jobs:
           skip-wordpress-install: 'true'
           test-command: './vendor/bin/paratest'
           wordpress-host: 'false'
-          wordpress-multisite: '${{ matrix.multisite }}'
+          wordpress-multisite: 'true'
           wordpress-version: '${{ matrix.wordpress }}'
 
   # This required job ensures that all PR checks have passed before merging.
