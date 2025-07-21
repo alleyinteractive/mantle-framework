@@ -141,6 +141,10 @@ class Attachment_Factory extends Post_Factory {
 	/**
 	 * Creates an attachment object with a real thumbnail.
 	 *
+	 * Because `with_real_thumbnail()` is included on the parent Post_Factory
+	 * class, this method needs to be overridden for attachment factories to
+	 * prevent confusion.
+	 *
 	 * @param callable|string|null|null $file
 	 * @param int                       $width
 	 * @param int                       $height
