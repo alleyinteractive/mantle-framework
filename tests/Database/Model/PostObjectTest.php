@@ -489,7 +489,7 @@ class PostObjectTest extends FrameworkTestCase {
 
 	public function test_thumbnail_relationship() {
 		$post          = static::factory()->post->as_models()->create_and_get();
-		$attachment_id = static::factory()->attachment->with_real_thumbnail()->create();
+		$attachment_id = static::factory()->attachment->with_image()->create();
 
 		$this->assertInstanceOf( Post::class, $post );
 

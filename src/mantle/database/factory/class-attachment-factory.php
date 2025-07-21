@@ -141,15 +141,13 @@ class Attachment_Factory extends Post_Factory {
 	/**
 	 * Creates an attachment object with a real thumbnail.
 	 *
-	 * @throws RuntimeException If unable to generate image.
-	 *
 	 * @param callable|string|null|null $file
 	 * @param int                       $width
 	 * @param int                       $height
 	 * @param bool                      $recycle
 	 */
 	public function with_real_thumbnail( callable|string|null $file = null, int $width = 1200, int $height = 800, bool $recycle = true ): static {
-		throw new RuntimeException( 'The `with_real_thumbnail` method is not supported in the Attachment_Factory. Use `with_image` instead or call `with_real_thumbnail` on the Post_Factory.' );
+		return $this->with_image( $file, 0, $width, $height, $recycle );
 	}
 
 	/**
