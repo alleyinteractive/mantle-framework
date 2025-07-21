@@ -151,9 +151,7 @@ class Reflector {
 			return $attributes;
 		}
 
-		while ( $reflection->getParentClass() ) {
-			$reflection = $reflection->getParentClass();
-
+		while ( $reflection = $reflection->getParentClass() ) {
 			$attributes = [
 				...$attributes,
 				...$reflection->getAttributes( $attribute, $flags ),
