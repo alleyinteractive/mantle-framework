@@ -12,6 +12,7 @@ namespace Mantle\Testing\Concerns;
 use Closure;
 use InvalidArgumentException;
 use Mantle\Contracts\Support\Arrayable;
+use Mantle\Http_Client\Http_Method;
 use Mantle\Http_Client\Request;
 use Mantle\Support\Collection;
 use Mantle\Support\Str;
@@ -146,12 +147,12 @@ trait Interacts_With_Requests {
 	 * @param (callable(string|Request, ?array): TCallableReturn)|Mock_Http_Response|string|array<string, Mock_Http_Response|callable> $url_or_callback URL to fake, array of URL and response pairs, or a closure
 	 *                                                                                                                                         that will return a faked response.
 	 * @param Mock_Http_Response|array<mixed>|callable $response Optional response object, defaults to a 200 response with no body.
-	 * @param string $method Optional request method to apply to, defaults to all. Does not apply to array of URL and response pairs OR callbacks.
+	 * @param Http_Method|string|null $method Optional request method to apply to, defaults to all. Does not apply to array of URL and response pairs OR callbacks.
 	 */
 	public function fake_request(
 		Mock_Http_Response|callable|string|array|null $url_or_callback = null,
 		Mock_Http_Response|array|callable|null $response = null,
-		?string $method = null
+		Http_Method|string|null $method = null
 	): static|Mock_Http_Response {
 		if ( is_array( $url_or_callback ) ) {
 			$this->stub_callbacks = $this->stub_callbacks->merge(
@@ -219,10 +220,10 @@ trait Interacts_With_Requests {
 	/**
 	 * Fluently build a fake request sequence.
 	 *
-	 * @param string             $url URL to fake (supports * for wildcard matching).
-	 * @param string|null        $method Request method, optional.
+	 * @param string                  $url URL to fake (supports * for wildcard matching).
+	 * @param Http_Method|string|null $method Request method, optional.
 	 */
-	public function fake_request_sequence( string $url, ?string $method = null ): Mock_Http_Sequence {
+	public function fake_request_sequence( string $url, Http_Method|string|null $method = null ): Mock_Http_Sequence {
 		$sequence = Mock_Http_Sequence::create();
 
 		$this->fake_request( [ $url => $sequence ], method: $method );
@@ -301,7 +302,11 @@ trait Interacts_With_Requests {
 				$reflector = $stub_callback instanceof Closure ? new ReflectionFunction( $stub_callback ) : null;
 
 				// Check if the stub callback is expecting a Request object instead of a URL and request arguments.
-				if ( $reflector instanceof \ReflectionFunction && 1 === $reflector->getNumberOfParameters() && Request::class === (string) $reflector->getParameters()[0]->getType() ) {
+				if (
+					$reflector instanceof \ReflectionFunction
+					&& 1 === $reflector->getNumberOfParameters()
+					&& Request::class === (string) $reflector->getParameters()[0]->getType()
+				) {
 					$response = $stub_callback( new Request( $request_args, $url ) );
 				} else {
 					$response = $stub_callback( $url, $request_args );
@@ -391,13 +396,17 @@ trait Interacts_With_Requests {
 	 *
 	 * @param string                                   $url URL to stub.
 	 * @param callable|Mock_Http_Response|array<mixed> $response Response to send.
-	 * @param string                                   $method Request method, optional.
+	 * @param string|Http_Method|null                  $method Request method, optional.
 	 * @phpstan-return StubCallback
 	 */
-	protected function create_stub_request_callback( string $url, Mock_Http_Response|callable|array $response, ?string $method = null ): Closure {
+	protected function create_stub_request_callback( string $url, Mock_Http_Response|callable|array $response, string|Http_Method|null $method = null ): Closure {
 		return function ( string $request_url, array $request_args ) use ( $url, $response, $method ): mixed {
 			if ( ! Str::is( Str::start( $url, '*' ), $request_url ) ) {
 				return null;
+			}
+
+			if ( $method instanceof Http_Method ) {
+				$method = $method->value;
 			}
 
 			// Validate the request method for the stub callback.
