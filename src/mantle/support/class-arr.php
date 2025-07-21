@@ -432,12 +432,12 @@ class Arr {
 	/**
 	 * Push an item onto the beginning of an array.
 	 *
-	 * @param  array<mixed> $array Array to process.
-	 * @param  mixed        $value Item value.
-	 * @param  mixed        $key Item key.
+	 * @param  array<mixed>    $array Array to process.
+	 * @param  mixed           $value Item value.
+	 * @param  int|string|null $key Item key to use, optional.
 	 * @return array<mixed>
 	 */
-	public static function prepend( array $array, $value, $key = null ): array {
+	public static function prepend( array $array, mixed $value, int|string|null $key = null ): array {
 		if ( is_null( $key ) ) {
 			array_unshift( $array, $value );
 		} else {
