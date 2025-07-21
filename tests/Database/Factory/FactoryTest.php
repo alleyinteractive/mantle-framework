@@ -56,6 +56,24 @@ class FactoryTest extends FrameworkTestCase {
 		$this->assertEquals( 'Title from the custom state', $post->post_title );
 	}
 
+	public function test_first_or_create(): void {
+		$post = Testable_Post::factory()->first_or_create(
+			[ 'post_title' => 'Unique Title' ],
+			[ 'post_content' => 'Content for the unique title' ]
+		);
+
+		$this->assertInstanceOf( Testable_Post::class, $post );
+		$this->assertEquals( 'Unique Title', $post->post_title );
+		$this->assertEquals( 'Content for the unique title', $post->post_content );
+
+		$post2 = Testable_Post::factory()->first_or_create(
+			[ 'post_title' => 'Unique Title' ],
+			[ 'post_content' => 'Content for the unique title' ]
+		);
+
+		$this->assertEquals( $post->ID, $post2->ID );
+	}
+
 	/**
 	 * @dataProvider factory_resolve_custom_names
 	 */

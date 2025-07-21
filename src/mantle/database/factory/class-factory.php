@@ -87,6 +87,19 @@ abstract class Factory {
 	abstract public function get_object_by_id( int $object_id );
 
 	/**
+	 * Retrieves an object by query.
+	 *
+	 * @param array<string, mixed> $query The query to use to retrieve the object.
+	 *                                    Passed to the underlying model's query builder.
+	 * @return TModel|null
+	 */
+	public function get_object_by_query( array $query ): ?Model {
+		$model = $this->get_model();
+
+		return $model::query()->where( $query )->first();
+	}
+
+	/**
 	 * Creates an object.
 	 *
 	 * @param array $args The arguments.
@@ -105,6 +118,23 @@ abstract class Factory {
 	 */
 	public function create_object( array $args ): int|null {
 		return $this->create( $args );
+	}
+
+	/**
+	 * Creates an object and returns its object.
+	 *
+	 * @param array $attributes The attributes to use when matching and creating the object.
+	 * @param array $values The values to use when creating the object.
+	 * @return TReturnValue The created object.
+	 */
+	public function first_or_create( array $attributes, array $values = [] ): Model {
+		$object = $this->get_object_by_query( $attributes );
+
+		if ( ! $object instanceof Model ) {
+			return $this->create_and_get( array_merge( $attributes, $values ) );
+		}
+
+		return $object;
 	}
 
 	/**
