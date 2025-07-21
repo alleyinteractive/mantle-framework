@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.8.5
+
+### Added
+
+- Added `Mantle\Support\Reflector::get_attributes_for_class()` method to
+  retrieve attributes for a class (with parents), with support for filtering by
+  attribute name and flags.
+
+### Changed
+
+- `Mantle\Testing\Concerns\Reads_Annotations::get_attributes_for_method()`
+  method will now return attributes for the passed class as well as any parent
+  classes. You can disable this by passing `false` for the `$inherit` parameter.
+
 ## v1.8.4
 
 ### Changed

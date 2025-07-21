@@ -68,9 +68,11 @@ trait Reads_Annotations {
 	 * Supports PHPUnit 9.5+.
 	 *
 	 * @param class-string $name Filter the results to include only ReflectionAttribute instances for attributes matching this class name.
+	 * @param int          $flags Flags to pass to getAttributes().
+	 * @param bool         $inherit Whether to include attributes from parent classes.
 	 * @return array<\ReflectionAttribute>
 	 */
-	public function get_attributes_for_method( ?string $name = null ): array {
+	public function get_attributes_for_method( ?string $name = null, int $flags = 0, bool $inherit = true ): array {
 		$class = new ReflectionClass( $this );
 
 		// Use either the PHPUnit 9.5+ method or the PHPUnit 10.x method to get the method.
@@ -89,8 +91,8 @@ trait Reads_Annotations {
 		}
 
 		return [
-			...$class->getAttributes( $name ),
-			...$method->getAttributes( $name ),
+			...Reflector::get_attributes_for_class( $this, $name, $flags, $inherit ),
+			...$method->getAttributes( $name, $flags ),
 		];
 	}
 
