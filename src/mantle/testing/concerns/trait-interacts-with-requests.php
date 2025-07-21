@@ -13,7 +13,6 @@ use Closure;
 use InvalidArgumentException;
 use Mantle\Contracts\Support\Arrayable;
 use Mantle\Http_Client\Request;
-use Mantle\Support\Arr;
 use Mantle\Support\Collection;
 use Mantle\Support\Str;
 use Mantle\Testing\Mock_Http_Response;
@@ -134,6 +133,7 @@ trait Interacts_With_Requests {
 	 *   $this->fake_request( fn () => Mock_Http_Response::create()->with_body( 'test body' ) );
 	 *   $this->fake_request( 'https://testing.com/', fn () => Mock_Http_Response::create()->with_body( 'test body' ) );
 	 *   $this->fake_request( [ 'https://example.org' => Mock_Http_Response::create()->with_body( 'test body' ) ] );
+	 *   $this->fake_request( fn ( \Mantle\Http_Client\Request $request ) => Mock_Http_Response::create()->with_json( [ 1, 2, 3 ] ) );
 	 *
 	 * @link https://mantle.alley.com/docs/testing/remote-requests#faking-requests Documentation
 	 *
