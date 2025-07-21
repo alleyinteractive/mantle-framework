@@ -162,6 +162,22 @@ abstract class Factory {
 	}
 
 	/**
+	 * Add a global middleware to the factory.
+	 *
+	 * This middleware will be applied to all factory calls. Generally you will
+	 * not need to use this unless you plan to modify all calls of a factory in a
+	 * testing suite.
+	 *
+	 * @param callable $middleware Middleware to run the factory through.
+	 * @phpstan-param (callable(array $args, \Closure $next): TModel) $middleware
+	 */
+	public function with_global_middleware( callable $middleware ): static {
+		$this->middleware->push( $middleware );
+
+		return $this;
+	}
+
+	/**
 	 * Create a new factory instance with middleware.
 	 *
 	 * @param callable $middleware Middleware to run the factory through.
