@@ -152,10 +152,7 @@ class Reflector {
 		}
 
 		while ( $reflection = $reflection->getParentClass() ) { // phpcs:ignore Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition
-			$attributes = [
-				...$attributes,
-				...$reflection->getAttributes( $attribute, $flags ),
-			];
+			$attributes = array_merge( $attributes, $reflection->getAttributes( $attribute, $flags ) );
 		}
 
 		return $attributes;
