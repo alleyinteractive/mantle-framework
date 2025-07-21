@@ -360,7 +360,7 @@ class Pending_Testable_Request {
 			add_filter( 'wp_headers', $intercept_headers, 9999 );
 			add_filter( 'wp_redirect', $intercept_redirect, 9999, 2 ); // @phpstan-ignore-line Filter callback
 
-			$ob_level   = ob_get_level();
+			$ob_level   = ob_get_level(); // @phpstan-ignore-line deadCode.unreachable
 			$redirected = false;
 
 			ob_start();
