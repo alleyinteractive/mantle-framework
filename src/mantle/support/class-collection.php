@@ -925,6 +925,8 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Push an item onto the beginning of the collection.
 	 *
+	 * To push multiple items onto the beginning of the collection, use `prepend_many()`.
+	 *
 	 * @param  TValue          $value
 	 * @param  int|string|null $key Array key to use for the value, optional.
 	 */
