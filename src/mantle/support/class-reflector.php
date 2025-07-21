@@ -116,9 +116,11 @@ class Reflector {
 	 * @param  string            $method    The method name.
 	 * @param  class-string|null $attribute The attribute name to filter by, or null for all attributes.
 	 * @param  int               $flags     Flags to pass to getAttributes().
+	 * @param  bool              $inherit   Whether to include attributes from parent classes.
+	 * @param  bool              $inherit_from_class Whether to include attributes from the class itself.
 	 * @return array<\ReflectionAttribute>
 	 */
-	public static function get_attributes_for_method( object|string $class, string $method, ?string $attribute = null, int $flags = 0 ): array {
+	public static function get_attributes_for_method( object|string $class, string $method, ?string $attribute = null, int $flags = 0, bool $inherit = true, bool $inherit_from_class = true ): array {
 		$reflection = new ReflectionClass( $class );
 
 		if ( ! $reflection->hasMethod( $method ) ) {
@@ -126,7 +128,7 @@ class Reflector {
 		}
 
 		return [
-			...static::get_attributes_for_class( $class, $attribute, $flags ),
+			...( $inherit_from_class ? static::get_attributes_for_class( $class, $attribute, $flags, $inherit ) : [] ),
 			...$reflection->getMethod( $method )->getAttributes( $attribute, $flags ),
 		];
 	}
