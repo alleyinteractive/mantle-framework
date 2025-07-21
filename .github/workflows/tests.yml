@@ -110,10 +110,9 @@ jobs:
       - name: Run PHP Tests
         uses: alleyinteractive/action-test-php@develop
         with:
-          install-command: 'composer update --prefer-dist --no-interaction --no-progress && composer require --dev brianium/paratest'
+          install-command: 'composer require --dev --no-update brianium/paratest && composer update --prefer-dist --no-interaction --no-progress'
           php-version: '${{ matrix.php }}'
           skip-wordpress-install: 'true'
-          # Only run PHPUnit for the lowest dependencies.
           test-command: './vendor/bin/paratest'
           wordpress-host: 'false'
           wordpress-multisite: '${{ matrix.multisite }}'
