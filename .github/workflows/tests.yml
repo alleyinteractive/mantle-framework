@@ -90,6 +90,35 @@ jobs:
           wordpress-multisite: '${{ matrix.multisite }}'
           wordpress-version: '${{ matrix.wordpress }}'
 
+  parallel-unit-tests:
+    if: github.event.pull_request.draft == false
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        multisite: [true, false]
+        php: [8.3, 8.4]
+        wordpress: ["latest"]
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}-P${{ matrix.php }}-WP${{ matrix.wordpress }}-MS${{ matrix.multisite && '1' || '0' }}
+      cancel-in-progress: true
+    name: "PR Tests PHP ${{ matrix.php }} WordPress ${{ matrix.wordpress }} ${{ matrix.multisite && 'Multisite' || '' }}"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run PHP Tests
+        uses: alleyinteractive/action-test-php@develop
+        with:
+          install-command: 'composer update --prefer-dist --no-interaction --no-progress && composer require --dev brianium/paratest'
+          php-version: '${{ matrix.php }}'
+          skip-wordpress-install: 'true'
+          # Only run PHPUnit for the lowest dependencies.
+          test-command: './vendor/bin/paratest'
+          wordpress-host: 'false'
+          wordpress-multisite: '${{ matrix.multisite }}'
+          wordpress-version: '${{ matrix.wordpress }}'
+
   # This required job ensures that all PR checks have passed before merging.
   all-pr-checks-passed:
     name: All PR checks passed
