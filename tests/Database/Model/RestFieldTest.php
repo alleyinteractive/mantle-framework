@@ -12,6 +12,7 @@ class RestFieldTest extends FrameworkTestCase {
 		$post_id = static::factory()->post->create();
 
 		$this->get( rest_url( "/wp/v2/posts/{$post_id}" ) )
+			->dump()
 			->assertJsonPath( 'id', $post_id )
 			->assertJsonPath( 'field-to-register', 'value to return' );
 	}
