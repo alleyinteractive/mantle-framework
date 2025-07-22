@@ -3256,6 +3256,12 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['zero' => 0, 'one' => 1, 'two' => 2], $c->prepend(0, 'zero')->all());
 	}
 
+	public function testPrependMany()
+	{
+		$c = new Collection(['one', 'two', 'three', 'four']);
+		$this->assertEquals(['zero', 'new', 'one', 'two', 'three', 'four'], $c->prepend_many('zero', 'new')->all());
+	}
+
 	public function testPushWithOneItem()
 	{
 		$expected = [

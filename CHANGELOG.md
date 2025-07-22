@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `Mantle\Support\Reflector::get_attributes_for_class()` method to
   retrieve attributes for a class (with parents), with support for filtering by
   attribute name and flags.
+- Added `first_or_create()` method to all factories to allow for creating a model if it doesn't exist.
 
 ### Changed
 

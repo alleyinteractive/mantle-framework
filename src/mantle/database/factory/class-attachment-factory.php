@@ -139,6 +139,22 @@ class Attachment_Factory extends Post_Factory {
 	}
 
 	/**
+	 * Creates an attachment object with a real thumbnail.
+	 *
+	 * Because `with_real_thumbnail()` is included on the parent Post_Factory
+	 * class, this method needs to be overridden for attachment factories to
+	 * prevent confusion.
+	 *
+	 * @param callable|string|null|null $file
+	 * @param int                       $width
+	 * @param int                       $height
+	 * @param bool                      $recycle
+	 */
+	public function with_real_thumbnail( callable|string|null $file = null, int $width = 1200, int $height = 800, bool $recycle = true ): static {
+		return $this->with_image( $file, 0, $width, $height, $recycle );
+	}
+
+	/**
 	 * Creates an object and returns its ID.
 	 *
 	 * @deprecated Use create() or create_and_get() instead.

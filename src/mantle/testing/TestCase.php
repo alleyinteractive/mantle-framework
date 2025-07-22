@@ -172,7 +172,9 @@ abstract class TestCase extends BaseTestCase {
 
 		static::clean_up_global_scope();
 
-		// Boot traits on the test case.
+		// Boot traits on the test case. We should be using the Before attribute
+		// instead of this. This is a hold over from the legacy way of doing this
+		// and won't be preserved in Mantle 2.0.
 		static::get_test_case_traits()->each(
 			function ( $trait ): void {
 				$method = strtolower( class_basename( $trait ) ) . '_set_up';

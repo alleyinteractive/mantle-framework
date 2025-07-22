@@ -167,6 +167,26 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		$this->assertEquals( '_test_meta_value', get_post_meta( $post->ID, '_test_meta_key', true ) );
 	}
 
+	public function test_global_factory_middleware(): void {
+		$this->assertEmpty( static::factory()->post->middleware->all() );
+
+		static::factory()->post->with_global_middleware( function( array $item, Closure $next ) {
+			$post = $next( $item );
+
+			update_post_meta( $post->ID, 'global_meta', 'global_value' );
+
+			return $post;
+		} );
+
+		$post = static::factory()->post->create_and_get();
+
+		$this->assertEquals( 'global_value', get_post_meta( $post->ID, 'global_meta', true ) );
+	}
+
+	public function test_global_factory_middleware_cleaned_up_after_run(): void {
+		$this->assertEmpty( static::factory()->post->middleware->all() );
+	}
+
 	#[Group( 'with_terms' )]
 	public function test_posts_with_terms() {
 		$post = static::factory()->post->with_terms(

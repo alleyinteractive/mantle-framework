@@ -925,12 +925,24 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Push an item onto the beginning of the collection.
 	 *
-	 * @param    mixed $value
-	 * @param    mixed $key
-	 * @return static
+	 * To push multiple items onto the beginning of the collection, use `prepend_many()`.
+	 *
+	 * @param  TValue          $value
+	 * @param  int|string|null $key Array key to use for the value, optional.
 	 */
-	public function prepend( $value, $key = null ) {
+	public function prepend( mixed $value, int|string|null $key = null ): static {
 		$this->items = Arr::prepend( $this->items, $value, $key );
+
+		return $this;
+	}
+
+	/**
+	 * Push one or more items onto the beginning of the collection.
+	 *
+	 * @param  TValue ...$values
+	 */
+	public function prepend_many( ...$values ): static {
+		array_unshift( $this->items, ...$values );
 
 		return $this;
 	}
@@ -939,9 +951,8 @@ class Collection implements ArrayAccess, Enumerable {
 	 * Push one or more items onto the end of the collection.
 	 *
 	 * @param  TValue ...$values
-	 * @return static
 	 */
-	public function push( ...$values ) {
+	public function push( ...$values ): static {
 		foreach ( $values as $value ) {
 			$this->items[] = $value;
 		}

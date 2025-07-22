@@ -37,8 +37,10 @@ class Request {
 	}
 
 	/**
-	 * Retrieve the method of the request.
-	 * The method is always uppercase.
+	 * Retrieve the method of the request. The method is always uppercase.
+	 *
+	 * @todo Combine method() and enum_method() into one method that returns the
+	 * enum directly for Mantle 2.0.
 	 */
 	public function method(): string {
 		return strtoupper( $this->args['method'] ?? '' );
