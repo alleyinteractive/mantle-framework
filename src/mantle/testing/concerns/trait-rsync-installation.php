@@ -10,6 +10,7 @@
 
 namespace Mantle\Testing\Concerns;
 
+use Mantle\Support\Str;
 use Mantle\Support\Traits\Conditionable;
 use Mantle\Testing\Utils;
 
@@ -519,7 +520,7 @@ trait Rsync_Installation {
 
 		if ( ! empty( getenv( 'WP_PHPUNIT_PATH' ) ) ) {
 			$executable = getenv( 'WP_PHPUNIT_PATH' );
-		} elseif ( ! empty( $args[0] ) && false !== strpos( (string) $args[0], 'phpunit' ) ) {
+		} elseif ( ! empty( $args[0] ) && Str::contains( $args[0], [ 'phpunit', 'paratest' ] ) ) {
 			// Use the first argument and translate it to the rsync-ed path.
 			$executable = $this->translate_location( $args[0] );
 
