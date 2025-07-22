@@ -112,7 +112,7 @@ jobs:
           install-command: 'composer require --dev --no-update brianium/paratest && composer update --prefer-dist --no-interaction --no-progress'
           php-version: '${{ matrix.php }}'
           skip-wordpress-install: 'true'
-          test-command: './vendor/bin/paratest'
+          test-command: 'WP_PHPUNIT_PATH=vendor/bin/paratest ./vendor/bin/paratest'
           wordpress-host: 'false'
           wordpress-multisite: 'true'
           wordpress-version: '${{ matrix.wordpress }}'

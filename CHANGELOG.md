@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added `first_or_create()` method to all factories to allow for creating a model if it doesn't exist.
 
+### Changed
+
+- Adjusted the bootstrap of parallel unit testing.
+
 ## v1.8.4
 
 ### Changed
