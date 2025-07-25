@@ -124,8 +124,6 @@ class Pending_Request {
 
 	/**
 	 * Retrieve the base URL for the pending request.
-	 *
-	 * @return string|null
 	 */
 	public function get_base_url(): ?string {
 		return $this->base_url;
@@ -550,7 +548,7 @@ class Pending_Request {
 	 * @param  array<string, mixed>|string|null $query Query parameters (assumed to be urlencoded).
 	 * @return Response
 	 */
-	public function get( string $url, array|string|null $query = null ) {
+	public function get( string $url, array|string|null $query = null ): mixed {
 		return $this->send(
 			Http_Method::GET,
 			$url,
@@ -565,7 +563,7 @@ class Pending_Request {
 	 * @param  array<string, mixed>|string|null $query Query parameters (assumed to be urlencoded).
 	 * @return Response
 	 */
-	public function head( string $url, array|string|null $query = null ) {
+	public function head( string $url, array|string|null $query = null ): mixed {
 		return $this->send(
 			Http_Method::HEAD,
 			$url,
@@ -580,7 +578,7 @@ class Pending_Request {
 	 * @param  array<string, mixed>|null $data Data to send with the request.
 	 * @return Response
 	 */
-	public function post( string $url, ?array $data = null ) {
+	public function post( string $url, ?array $data = null ): mixed {
 		return $this->send(
 			Http_Method::POST,
 			$url,
@@ -595,7 +593,7 @@ class Pending_Request {
 	 * @param  array<string, mixed>|null $data Data to send with the request.
 	 * @return Response
 	 */
-	public function patch( string $url, ?array $data = null ) {
+	public function patch( string $url, ?array $data = null ): mixed {
 		return $this->send(
 			Http_Method::PATCH,
 			$url,
@@ -610,7 +608,7 @@ class Pending_Request {
 	 * @param  array<string, mixed>|null $data Data to send with the request.
 	 * @return Response
 	 */
-	public function put( string $url, ?array $data = null ) {
+	public function put( string $url, ?array $data = null ): mixed {
 		return $this->send(
 			Http_Method::PUT,
 			$url,
@@ -625,7 +623,7 @@ class Pending_Request {
 	 * @param  array<string, mixed>|null $data Data to send with the request.
 	 * @return Response
 	 */
-	public function delete( string $url, ?array $data = null ) {
+	public function delete( string $url, ?array $data = null ): mixed {
 		return $this->send(
 			Http_Method::DELETE,
 			$url,

@@ -39,9 +39,8 @@ class Pooled_Pending_Request extends Pending_Request {
 	 *
 	 * @param  string                           $url URL to retrieve.
 	 * @param  array<string, mixed>|string|null $query Query parameters (assumed to be urlencoded).
-	 * @return static
 	 */
-	public function get( string $url, array|string|null $query = null ) {
+	public function get( string $url, array|string|null $query = null ): static {
 		$this->set_method( Http_Method::GET )->set_url( $url );
 
 		if ( $query ) {
@@ -56,9 +55,8 @@ class Pooled_Pending_Request extends Pending_Request {
 	 *
 	 * @param  string                           $url URL to retrieve.
 	 * @param  array<string, mixed>|string|null $query Query parameters (assumed to be urlencoded).
-	 * @return static
 	 */
-	public function head( string $url, array|string|null $query = null ) {
+	public function head( string $url, array|string|null $query = null ): static {
 		$this->set_method( Http_Method::HEAD )->set_url( $url );
 
 		if ( $query ) {
@@ -73,9 +71,8 @@ class Pooled_Pending_Request extends Pending_Request {
 	 *
 	 * @param  string                    $url URL to post.
 	 * @param  array<string, mixed>|null $data Data to send with the request.
-	 * @return static
 	 */
-	public function post( string $url, ?array $data = null ) {
+	public function post( string $url, ?array $data = null ): static {
 		$this->set_method( Http_Method::POST )->set_url( $url );
 
 		if ( $data ) {
@@ -90,9 +87,8 @@ class Pooled_Pending_Request extends Pending_Request {
 	 *
 	 * @param  string                    $url URL to patch.
 	 * @param  array<string, mixed>|null $data Data to send with the request.
-	 * @return static
 	 */
-	public function patch( string $url, ?array $data = null ) {
+	public function patch( string $url, ?array $data = null ): static {
 		$this->set_method( Http_Method::PATCH )->set_url( $url );
 
 		if ( $data ) {
@@ -107,9 +103,8 @@ class Pooled_Pending_Request extends Pending_Request {
 	 *
 	 * @param  string                    $url URL to put.
 	 * @param  array<string, mixed>|null $data Data to send with the request.
-	 * @return static
 	 */
-	public function put( string $url, ?array $data = null ) {
+	public function put( string $url, ?array $data = null ): static {
 		$this->set_method( Http_Method::PUT )->set_url( $url );
 
 		if ( $data ) {
@@ -124,9 +119,8 @@ class Pooled_Pending_Request extends Pending_Request {
 	 *
 	 * @param  string                    $url URL to delete.
 	 * @param  array<string, mixed>|null $data Data to send with the request.
-	 * @return static
 	 */
-	public function delete( string $url, ?array $data = null ) {
+	public function delete( string $url, ?array $data = null ): static {
 		$this->set_method( Http_Method::DELETE )->set_url( $url );
 
 		if ( $data ) {

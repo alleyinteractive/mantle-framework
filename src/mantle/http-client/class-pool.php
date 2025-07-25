@@ -38,7 +38,7 @@ class Pool {
 			return Pooled_Pending_Request::from_pending_request( $this->base_request );
 		}
 
-		return Pooled_Pending_Request::from_pending_request( $this->base_request );
+		return $this->base_request;
 	}
 
 	/**
@@ -82,7 +82,6 @@ class Pool {
 	 *
 	 * @param string       $method Method name.
 	 * @param array<mixed> $args   Arguments for the method.
-	 * @return Pooled_Pending_Request
 	 */
 	public function __call( string $method, array $args = [] ): Pooled_Pending_Request {
 		$request = $this->create_request()->{$method}( ...$args );
