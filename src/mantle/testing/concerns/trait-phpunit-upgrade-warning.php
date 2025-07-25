@@ -70,7 +70,7 @@ trait PHPUnit_Upgrade_Warning {
 		}
 
 		render(
-			<<<HTML
+			<<<'HTML'
 			<div class="space-y-1">
 				<div class="bg-red-300 text-red-700 pt-2 py-2">
 					<strong>🚨 Warning:</strong> You are running PHPUnit 10+ against a test suite that contains legacy test cases.
