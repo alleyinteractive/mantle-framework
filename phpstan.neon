@@ -58,6 +58,10 @@ parameters:
 		- "#@return is not subtype of template type TKey#"
 		- "#WP_REST_Request does not specify its types#"
 		- "#WP_REST_Request but does not specify its types#"
+		-
+			identifier: method.childReturnType
+			paths:
+				- src/mantle/http-client/class-pooled-pending-request.php
 
 	scanFiles:
 		- %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-stubs.php
