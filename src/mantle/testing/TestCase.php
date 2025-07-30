@@ -344,7 +344,7 @@ abstract class TestCase extends BaseTestCase {
 	/**
 	 * Fetches the factory object for generating WordPress fixtures.
 	 */
-	protected static function factory(): Factory_Container {
+	public static function factory(): Factory_Container {
 		if ( ! isset( static::$factory ) ) {
 			static::$factory = new Factory_Container( Container::get_instance() );
 		}
