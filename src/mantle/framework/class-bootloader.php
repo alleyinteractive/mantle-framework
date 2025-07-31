@@ -199,10 +199,12 @@ class Bootloader implements Contract {
 	/**
 	 * Merge additional service providers to the list of providers.
 	 *
-	 * @param array<class-string<\Mantle\Support\Service_Provider>> $providers List of service providers.
+	 * @todo Make this method only support class strings with spread with Mantle 2.0.
+	 *
+	 * @param array<class-string<\Mantle\Support\Service_Provider>>|class-string<\Mantle\Support\Service_Provider> ...$providers List of service providers.
 	 */
-	public function with_providers( array $providers ): static {
-		Register_Providers::merge( $providers );
+	public function with_providers( array|string ...$providers ): static {
+		Register_Providers::merge( collect( $providers )->flatten()->unique()->all() );
 
 		return $this;
 	}
