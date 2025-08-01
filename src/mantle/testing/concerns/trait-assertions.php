@@ -16,6 +16,7 @@ use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Term;
 use Mantle\Database\Model\User;
 use PHPUnit\Framework\Assert as PHPUnit;
+use UnitEnum;
 use WP_Post;
 use WP_Post_Type;
 use WP_Term;
@@ -567,6 +568,8 @@ trait Assertions {
 				// Convert an enum object to its value.
 				if ( $value instanceof BackedEnum ) {
 					$arguments[ $key ] = $value->value;
+				} elseif ( $value instanceof UnitEnum ) {
+					$arguments[ $key ] = $value->name;
 				}
 
 				// Convert an array of enum objects to an array of their values.

@@ -11,6 +11,7 @@ use LogicException;
 use Mantle\Database\Model\Model_Exception;
 use Mantle\Database\Model\Relations\Relation;
 
+use function Illuminate\Support\enum_value;
 use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\tap;
 
@@ -42,7 +43,7 @@ trait Has_Attributes {
 	 *
 	 * @var array<string, string>
 	 */
-	protected $casts = [];
+	protected array $casts = [];
 
 	/**
 	 * The accessors to append to the model's array form.
@@ -78,13 +79,11 @@ trait Has_Attributes {
 	 * @return mixed
 	 */
 	public function get_attribute( string $attribute ) {
-		// Retrieve the attribute from the object.
 		if ( isset( $this->attributes[ $attribute ] ) || $this->has_get_mutator( $attribute ) ) {
 			$value = $this->attributes[ $attribute ] ?? null;
 
-			// Check if an attribute has a cast.
 			if ( isset( $this->casts[ $attribute ] ) ) {
-				$this->cast_attribute( $value, $this->casts[ $attribute ] );
+				$value = $this->cast_attribute( $value, $this->casts[ $attribute ] );
 			}
 
 			// Pass the attribute to the mutator.
@@ -163,10 +162,12 @@ trait Has_Attributes {
 			throw new Model_Exception( "Unable to set '{$attribute} on model." );
 		}
 
-		if ( $this->has_set_mutator( $attribute ) ) {
-			$value = $this->mutate_set_attribute( $attribute, $value );
+		if ( $this->is_enum_castable( $attribute ) ) {
+			$this->set_enum_castable( $attribute, $value );
 		} else {
-			if ( $value instanceof \Stringable ) {
+			if ( $this->has_set_mutator( $attribute ) ) {
+				$value = $this->mutate_set_attribute( $attribute, $value );
+			} elseif ( $value instanceof \Stringable ) {
 				$value = (string) $value;
 			}
 
@@ -203,6 +204,15 @@ trait Has_Attributes {
 		}
 
 		return $attributes;
+	}
+
+	/**
+	 * Retrieve the attributes for insertion into the database.
+	 *
+	 * @return array<string, mixed>
+	 */
+	public function get_attributes_for_insert(): array {
+		return $this->attributes;
 	}
 
 	/**
@@ -321,6 +331,105 @@ trait Has_Attributes {
 	}
 
 	/**
+	 * Check if the attribute is castable to an enum.
+	 *
+	 * @param string $key Attribute key.
+	 */
+	protected function is_enum_castable( string $key ): bool {
+		if ( ! array_key_exists( $key, $this->casts ) ) {
+			return false;
+		}
+
+		$type = $this->casts[ $key ];
+
+		if ( in_array( $type, static::$supported_cast_types, true ) ) {
+			return false;
+		}
+
+		return enum_exists( $type );
+	}
+
+	/**
+	 * Set the value of an attribute from a castable enumeration.
+	 *
+	 * @throws Model_Exception If the enum class does not exist or the value is invalid.
+	 *
+	 * @param string $key Attribute key.
+	 * @param mixed  $value Value to set.
+	 */
+	protected function set_enum_castable( string $key, mixed $value ): void {
+		$class = $this->casts[ $key ];
+
+		if ( ! class_exists( $class ) ) {
+			throw new Model_Exception(
+				sprintf(
+					'Enum class [%s] does not exist for attribute [%s].',
+					$class,
+					$key
+				)
+			);
+		}
+
+		if ( ! isset( $value ) ) {
+			$this->attributes[ $key ] = null;
+		} elseif ( is_object( $value ) ) {
+			$this->attributes[ $key ] = $this->get_storable_enum_value( $class, $value );
+		} else {
+			$this->attributes[ $key ] = $this->get_storable_enum_value(
+				$class,
+				$this->get_enum_case_from_value( $class, $value )
+			);
+		}
+	}
+
+	/**
+	 * Retrieve the storable value for an enum attribute.
+	 *
+	 * @throws Model_Exception If the value is not of the expected enum type.
+	 *
+	 * @param string $expected Expected enum class.
+	 * @phpstan-param class-string<\UnitEnum> $expected
+	 * @param mixed  $value Value to check.
+	 */
+	protected function get_storable_enum_value( string $expected, mixed $value ): string|int {
+		if ( ! $value instanceof $expected ) {
+			throw new Model_Exception(
+				sprintf(
+					'Value [%s] is not of the expected enum type [%s]. Got %s.',
+					$value,
+					$expected,
+					get_debug_type( $value ),
+				)
+			);
+		}
+
+		return match ( true ) {
+			$value instanceof \BackedEnum => $value->value,
+			$value instanceof \UnitEnum => $value->name,
+			default => throw new Model_Exception(
+				sprintf(
+					'Value [%s] is not a valid enum type.',
+					$value,
+				)
+			),
+		};
+	}
+
+	/**
+	 * Get the enum case from a value.
+	 *
+	 * @param string $enum Enum class.
+	 * @param mixed  $value Value to check.
+	 */
+	protected function get_enum_case_from_value( string $enum, mixed $value ): \UnitEnum {
+		if ( is_subclass_of( $enum, \BackedEnum::class ) ) {
+			return $enum::from( $value );
+		}
+
+		return constant( $enum . '::' . $value );
+	}
+
+	/**
 	 * Cast an attribute to a specific value.
 	 *
 	 * @todo Add date, collection cast types.
@@ -329,15 +438,24 @@ trait Has_Attributes {
 	 * @param string $cast_type Cast type.
 	 */
 	protected function cast_attribute( mixed $value, string $cast_type ): mixed {
-		return match ( $cast_type ) {
-			'int', 'integer' => (int) $value,
-			'real', 'float', 'double' => $this->from_float( $value ),
-			'string' => (string) $value,
-			'bool', 'boolean' => (bool) $value,
-			'object' => $this->from_json( $value, true ),
-			'array', 'json' => $this->from_json( $value ),
-			default => $value,
-		};
+		if ( in_array( $cast_type, static::$supported_cast_types, true ) ) {
+			return match ( $cast_type ) {
+				'int', 'integer' => (int) $value,
+				'real', 'float', 'double' => $this->from_float( $value ),
+				'string' => (string) $value,
+				'bool', 'boolean' => (bool) $value,
+				'object' => $this->from_json( $value, true ),
+				'array', 'json' => $this->from_json( $value ),
+				default => $value,
+			};
+		}
+
+		// Support retrieving enum values.
+		if ( class_exists( $cast_type ) && is_subclass_of( $cast_type, \UnitEnum::class ) ) {
+			return $this->get_enum_case_from_value( $cast_type, $value );
+		}
+
+		return $value;
 	}
 
 	/**
