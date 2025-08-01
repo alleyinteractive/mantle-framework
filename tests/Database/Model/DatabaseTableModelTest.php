@@ -31,6 +31,9 @@ class DatabaseTableModelTest extends FrameworkTestCase {
 				address VARCHAR(255) NULL,
 				created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				example_enum VARCHAR(255) NULL,
+				boolean_value BOOLEAN NULL,
+				json_data LONGTEXT NULL,
+				float_value VARCHAR(255) NULL,
 				PRIMARY KEY (id)
 			) {$wpdb->get_charset_collate()}
 			",
@@ -87,9 +90,62 @@ class DatabaseTableModelTest extends FrameworkTestCase {
 	}
 
 	public function test_array_casting(): void {
-		$this->markTestIncomplete(
-			'Array casting is not tested implemented yet.',
-		);
+		$item = new TestableDatabaseModel( [
+			'name' => 'Test Item',
+			'json_data' => [ 'key' => 'value' ],
+		] );
+
+		$this->assertIsArray( $item->json_data );
+		$this->assertEquals( [ 'key' => 'value' ], $item->json_data );
+
+		$item->save();
+
+		$this->assertEquals( [ 'key' => 'value' ], $item->json_data );
+
+		$item->refresh();
+
+		$this->assertEquals( [ 'key' => 'value' ], $item->json_data );
+
+		$this->assertInstanceOf( TestableDatabaseModel::class, $item );
+		$this->assertDatabaseHas( TestableDatabaseModel::get_table_name(), [
+			'id' => $item->id,
+			'json_data' => json_encode( [ 'key' => 'value' ] ),
+		] );
+	}
+
+	public function test_boolean_casting(): void {
+		$item = new TestableDatabaseModel( [
+			'name' => 'Test Item',
+			'boolean_value' => true,
+		] );
+
+		$this->assertTrue( $item->boolean_value );
+
+		$item->save();
+
+		$this->assertInstanceOf( TestableDatabaseModel::class, $item );
+		$this->assertDatabaseHas( TestableDatabaseModel::get_table_name(), [
+			'id' => $item->id,
+			'boolean_value' => 1,
+		] );
+	}
+
+	public function test_float_casting(): void {
+		$item = new TestableDatabaseModel( [
+			'name' => 'Test Item',
+			'float_value' => 123.456,
+		] );
+
+		$this->assertIsFloat( $item->float_value );
+		$this->assertEquals( 123.456, $item->float_value );
+
+		$item->save();
+
+		$this->assertInstanceOf( TestableDatabaseModel::class, $item );
+		$this->assertDatabaseHas( TestableDatabaseModel::get_table_name(), [
+			'id' => $item->id,
+			'float_value' => '123.456',
+		] );
 	}
 
 	public function test_enum_attribute(): void {
@@ -150,7 +206,13 @@ class DatabaseTableModelTest extends FrameworkTestCase {
 	}
 }
 
-class TestableDatabaseModel extends Database_Table_Model {}
+class TestableDatabaseModel extends Database_Table_Model {
+	protected array $casts = [
+		'json_data' => 'array',
+		'boolean_value' => 'boolean',
+		'float_value' => 'float',
+	];
+}
 
 enum ExampleEnum: string {
 	case VALUE_ONE = 'value_one';

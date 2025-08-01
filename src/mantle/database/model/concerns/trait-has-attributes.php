@@ -83,10 +83,9 @@ trait Has_Attributes {
 			$value = $this->attributes[ $attribute ] ?? null;
 
 			if ( isset( $this->casts[ $attribute ] ) ) {
-				$value = $this->cast_attribute( $value, $this->casts[ $attribute ] );
+				$value = $this->get_casted_attribute_value( $value, $this->casts[ $attribute ] );
 			}
 
-			// Pass the attribute to the mutator.
 			if ( $this->has_get_mutator( $attribute ) ) {
 				$value = $this->mutate_attribute( $attribute, $value );
 			}
@@ -168,6 +167,10 @@ trait Has_Attributes {
 			$this->set_enum_castable( $attribute, $value );
 
 			return $this;
+		}
+
+		if ( $this->has_attribute_cast( $attribute ) ) {
+			$value = $this->get_storable_cast_value( $attribute, $value );
 		}
 
 		if ( $value instanceof \Stringable ) {
@@ -409,7 +412,7 @@ trait Has_Attributes {
 
 		return match ( true ) {
 			$value instanceof \BackedEnum => $value->value,
-			$value instanceof \UnitEnum => $value->name,
+			$value instanceof \UnitEnum => $value->name, // @phpstan-ignore-line instanceof.alwaysTrue
 			default => throw new Model_Exception(
 				sprintf(
 					'Value [%s] is not a valid enum type.',
@@ -441,7 +444,7 @@ trait Has_Attributes {
 	 * @param mixed  $value Attribute value.
 	 * @param string $cast_type Cast type.
 	 */
-	protected function cast_attribute( mixed $value, string $cast_type ): mixed {
+	protected function get_casted_attribute_value( mixed $value, string $cast_type ): mixed {
 		if ( in_array( $cast_type, static::$supported_cast_types, true ) ) {
 			return match ( $cast_type ) {
 				'int', 'integer' => (int) $value,
@@ -463,9 +466,55 @@ trait Has_Attributes {
 	}
 
 	/**
+	 * Check if the attribute has a cast.
+	 *
+	 * @param string $attribute Attribute to check.
+	 */
+	protected function has_attribute_cast( string $attribute ): bool {
+		return array_key_exists( $attribute, $this->casts );
+	}
+
+	/**
+	 * Get the storable value for an attribute based on its cast type.
+	 *
+	 * @param string $attribute Attribute name.
+	 * @param mixed  $value Value to convert.
+	 */
+	protected function get_storable_cast_value( string $attribute, mixed $value ): mixed {
+		$cast_type = $this->casts[ $attribute ];
+
+		if ( ! in_array( $cast_type, static::$supported_cast_types, true ) ) {
+			return $value;
+		}
+
+		return match ( $cast_type ) {
+			'int', 'integer' => (int) $value,
+			'real', 'float', 'double' => (float) $value,
+			'string' => (string) $value,
+			'bool', 'boolean' => (bool) $value,
+			'array', 'json' => $this->get_storable_array_cast_value( $value ),
+			default => $value,
+		};
+	}
+
+	/**
+	 * Get the storable value for an array cast.
+	 *
+	 * @param mixed $value Value to convert.
+	 */
+	protected function get_storable_array_cast_value( mixed $value ): string {
+		return match ( true ) {
+			$value instanceof \JsonSerializable => $this->as_json( $value->jsonSerialize() ),
+			$value instanceof \Stringable => (string) $value,
+			is_array( $value ) => $this->as_json( $value ),
+			default => (string) $value,
+		};
+	}
+
+	/**
 	 * Decode the given float.
 	 *
-	 * @param  mixed $value Value to decode.
+	 * @param mixed $value Value to decode.
 	 */
 	public function from_float( mixed $value ): float {
 		return match ( (string) $value ) {
@@ -482,7 +531,7 @@ trait Has_Attributes {
 	 * @param mixed $value Value to encode.
 	 */
 	protected function as_json( mixed $value ): string {
-		return \wp_json_encode( $value ) ?: '';
+		return \json_encode( $value, JSON_THROW_ON_ERROR ) ?: ''; // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
 	}
 
 	/**
@@ -492,7 +541,7 @@ trait Has_Attributes {
 	 * @param bool   $as_object Flag as an object.
 	 */
 	public function from_json( string $value, bool $as_object = false ): mixed {
-		return json_decode( $value, ! $as_object );
+		return json_decode( $value, ! $as_object, 512, JSON_THROW_ON_ERROR );
 	}
 
 	/**
