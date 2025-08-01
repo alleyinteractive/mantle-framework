@@ -287,11 +287,7 @@ class PostObjectTest extends FrameworkTestCase {
 	 * Ensure that 'set_test_key_attribute()' method is used on the model.
 	 */
 	public function test_mutated_attribute() {
-		$object = new Testable_Post(
-			[
-				'test_key' => 'non-mutated-attribute',
-			]
-		);
+		$object = new Testable_Post( [ 'test_key' => 'non-mutated-attribute' ] );
 
 		$this->assertEquals( 'mutated_value', $object->get( 'test_key' ) );
 	}

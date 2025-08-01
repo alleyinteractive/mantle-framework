@@ -150,29 +150,31 @@ trait Has_Attributes {
 	/**
 	 * Set a model attribute.
 	 *
-	 * @todo Add cast support.
-	 *
 	 * @param string $attribute Attribute name.
 	 * @param mixed  $value Value to set.
 	 *
 	 * @throws Model_Exception Thrown when trying to set 'id'.
 	 */
-	public function set_attribute( string $attribute, mixed $value ): static {
+	public function set_attribute( string $attribute, mixed $value ): mixed {
 		if ( $this->is_guarded( $attribute ) ) {
 			throw new Model_Exception( "Unable to set '{$attribute} on model." );
 		}
 
+		if ( $this->has_set_mutator( $attribute ) ) {
+			return $this->mutate_set_attribute( $attribute, $value );
+		}
+
 		if ( $this->is_enum_castable( $attribute ) ) {
 			$this->set_enum_castable( $attribute, $value );
-		} else {
-			if ( $this->has_set_mutator( $attribute ) ) {
-				$value = $this->mutate_set_attribute( $attribute, $value );
-			} elseif ( $value instanceof \Stringable ) {
-				$value = (string) $value;
-			}
 
-			$this->attributes[ $attribute ] = $value;
+			return $this;
 		}
+
+		if ( $value instanceof \Stringable ) {
+			$value = (string) $value;
+		}
+
+		$this->attributes[ $attribute ] = $value;
 
 		$this->modified_attributes[] = $attribute;
 
@@ -380,6 +382,8 @@ trait Has_Attributes {
 				$this->get_enum_case_from_value( $class, $value )
 			);
 		}
+
+		$this->modified_attributes[] = $key;
 	}
 
 	/**
@@ -532,9 +536,8 @@ trait Has_Attributes {
 	 *
 	 * @param string $attribute Attribute to check.
 	 * @param mixed  $value Attribute value.
-	 * @return mixed
 	 */
-	public function mutate_attribute( string $attribute, $value ) {
+	public function mutate_attribute( string $attribute, $value ): mixed {
 		return $this->{ $this->get_mutator_method_name( $attribute ) }( $value );
 	}
 
@@ -543,9 +546,8 @@ trait Has_Attributes {
 	 *
 	 * @param string $attribute Attribute to check.
 	 * @param mixed  $value Attribute value.
-	 * @return mixed
 	 */
-	public function mutate_set_attribute( string $attribute, $value ) {
+	public function mutate_set_attribute( string $attribute, $value ): mixed {
 		return $this->{ $this->get_set_mutator_method_name( $attribute ) }( $value );
 	}
 
