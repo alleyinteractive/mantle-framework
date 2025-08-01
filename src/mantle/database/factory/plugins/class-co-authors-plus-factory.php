@@ -48,11 +48,7 @@ class Co_Authors_Plus_Factory extends Factory {
 	 * @param int $user_id The user ID.
 	 */
 	public function with_linked_user( int $user_id ): static {
-		return $this->state(
-			[
-				'user_id' => $user_id,
-			]
-		);
+		return $this->state( [ 'user_id' => $user_id ] );
 	}
 
 	/**

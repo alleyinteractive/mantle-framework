@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Adjusted the format of pooled HTTP requests to use `Pooled_Pending_Request`
   class methods which support direct chaining of methods like `put()`, `post()`,
   etc.
+- Passing a database factory as model meta will now automatically create the
+  model instance and set the model's ID as the meta value.
 
 ## v1.8.6
 

@@ -268,6 +268,15 @@ abstract class Factory {
 	}
 
 	/**
+	 * Alias for `state()`.
+	 *
+	 * @param (callable(array<string, mixed>): array<string, mixed>|array<string, mixed>) $state The state transformation.
+	 */
+	public function with( array|callable $state ): static {
+		return $this->state( $state );
+	}
+
+	/**
 	 * Creates multiple objects.
 	 *
 	 * @param int   $count Amount of objects to create.
