@@ -541,10 +541,14 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 	public function test_pass_factory_as_meta_argument() {
 		$post = static::factory()->post->with_meta( [
 			__FUNCTION__ => static::factory()->post->with_meta( 'example', 'true' ),
+			'tag_id' => static::factory()->tag,
 		] )->create_and_get();
 
 		$meta = get_post_meta( $post->ID, __FUNCTION__, true );
 		$this->assertIsNumeric( $meta );
+
+		$term_meta = get_post_meta( $post->ID, 'tag_id', true );
+		$this->assertIsNumeric( $term_meta );
 
 		$underlying_post = get_post( $meta );
 
