@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Added support for casting database attributes as enums.
+
 ### Changed
 
 - Adjusted the format of pooled HTTP requests to use `Pooled_Pending_Request`

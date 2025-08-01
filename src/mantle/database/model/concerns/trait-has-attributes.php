@@ -11,7 +11,6 @@ use LogicException;
 use Mantle\Database\Model\Model_Exception;
 use Mantle\Database\Model\Relations\Relation;
 
-use function Illuminate\Support\enum_value;
 use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\tap;
 
@@ -457,7 +456,6 @@ trait Has_Attributes {
 			};
 		}
 
-		// Support retrieving enum values.
 		if ( class_exists( $cast_type ) && is_subclass_of( $cast_type, \UnitEnum::class ) ) {
 			return $this->get_enum_case_from_value( $cast_type, $value );
 		}
