@@ -12,6 +12,7 @@ use InvalidArgumentException;
 use Mantle\Contracts\Container;
 use Mantle\Faker\Faker_Provider;
 use Mantle\Support\Traits\Macroable;
+use RuntimeException;
 
 /**
  * Collect all the Database Factories for IDE Support
@@ -161,15 +162,15 @@ class Factory_Container {
 	/**
 	 * Magic method to retrieve a custom post type/taxonomy factory.
 	 *
-	 * @throws InvalidArgumentException If the post type or taxonomy does not exist.
+	 * @throws RuntimeException If the post type or taxonomy does not exist.
 	 * @throws InvalidArgumentException If both post type and taxonomy exist.
 	 *
 	 * @param string $name Factory name.
 	 * @return Post_Factory|Term_Factory Factory instance.
 	 */
-	public function __get( string $name ) {
+	public function __get( string $name ): Post_Factory|Term_Factory {
 		if ( post_type_exists( $name ) && taxonomy_exists( $name ) ) {
-			throw new InvalidArgumentException( "Error creating dynamic factory for {$name}. Both post type and taxonomy exist." );
+			throw new RuntimeException( "Error creating dynamic factory for {$name}. Both post type and taxonomy exist." );
 		}
 
 		if ( post_type_exists( $name ) ) {

@@ -532,7 +532,8 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		register_post_type( 'conflict' );
 		register_taxonomy( 'conflict', 'conflict' );
 
-		$this->expectException( \InvalidArgumentException::class );
+		$this->expectException( \RuntimeException::class );
+		$this->expectExceptionMessage( 'Error creating dynamic factory for conflict. Both post type and taxonomy exist.' );
 
 		static::factory()->conflict->create_and_get();
 	}
