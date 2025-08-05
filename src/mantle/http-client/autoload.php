@@ -17,7 +17,7 @@ namespace Mantle\Http_Client;
 use Mantle\Http_Client\Pending_Request;
 use Mantle\Http_Client\Response;
 
-if ( ! function_exists( 'http_client' ) ) {
+if ( ! function_exists( __NAMESPACE__ . '\\http_client' ) ) {
 	/**
 	 * Create a new pending request of the the HTTP Client.
 	 *

@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## v1.8.7
 
 ### Changed
 
@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   etc.
 - Passing a database factory as model meta will now automatically create the
   model instance and set the model's ID as the meta value.
+
+### Fixed
+
+- Fixed an issue where `Mantle\Http_Client\http_client()` would be declared twice.
 
 ## v1.8.6
 
