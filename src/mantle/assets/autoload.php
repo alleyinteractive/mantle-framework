@@ -13,7 +13,6 @@
 declare(strict_types=1);
 
 use Mantle\Assets\Asset_Loader;
-use Mantle\Assets\Mix;
 use Mantle\Assets\Asset_Manager;
 
 if ( ! function_exists( 'asset' ) ) {

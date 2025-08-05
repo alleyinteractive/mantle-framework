@@ -34,98 +34,122 @@ require_once __DIR__ . '/mail/helpers.php';
  * file-requires will be removed.
  */
 
-require_once __DIR__ . '/attributes/Environment.php';
-require_once __DIR__ . '/attributes/PreserveObjectCache.php';
-require_once __DIR__ . '/attributes/UserAgent.php';
-
-/**
- * Retrieve an instance of the Installation Manager
- *
- * The manager can install the Mantle Testing Framework but will not by default.
- * Call {@see Installation_Manager::install()} to install or use the
- * {@see install()} helper.
- */
-function manager(): Installation_Manager {
-	return Installation_Manager::instance();
+if ( ! class_exists( Attributes\Environment::class ) ) {
+	require_once __DIR__ . '/attributes/Environment.php';
 }
 
-/**
- * Install the Mantle Testing Framework
- *
- * @param callable|null $callback Callback to invoke once the installation has begun.
- */
-function install( ?callable $callback = null ): Installation_Manager {
-	return tap(
-		manager(),
-		fn ( Installation_Manager $manager ) => $manager->before( $callback ),
-	)->install();
+if ( ! class_exists( Attributes\PreserveObjectCache::class ) ) {
+	require_once __DIR__ . '/attributes/PreserveObjectCache.php';
 }
 
-/**
- * Create a new HTML_String instance.
- *
- * @param string $html The HTML string to test.
- */
-function html_string( string $html ): HTML {
-	return new HTML( $html );
+if ( ! class_exists( Attributes\UserAgent::class ) ) {
+	require_once __DIR__ . '/attributes/UserAgent.php';
 }
 
-/**
- * Create a new Mock HTTP Response
- *
- * @param string $body    Response body.
- * @param array  $headers Response headers.
- */
-function mock_http_response( string $body = '', array $headers = [] ): Mock_Http_Response {
-	return new Mock_Http_Response( $body, $headers );
-}
-
-/**
- * Create a new Mock HTTP Response Sequence
- */
-function mock_http_sequence(): Mock_Http_Sequence {
-	return new Mock_Http_Sequence();
-}
-
-/**
- * Create a new block factory instance.
- */
-function block_factory(): Block_Factory {
-	$container = Container::get_instance();
-
-	// If the Generator is not bound to the container, bind it.
-	if ( ! $container->bound( Generator::class ) ) {
-		$container->singleton(
-			Generator::class,
-			fn () => tap(
-				Factory::create(),
-				fn ( Generator $generator ) => $generator->addProvider( new Faker_Provider( $generator ) ),
-			),
-		);
+if ( ! function_exists( __NAMESPACE__ . '\\manager' ) ) {
+	/**
+	 * Retrieve an instance of the Installation Manager
+	 *
+	 * The manager can install the Mantle Testing Framework but will not by default.
+	 * Call {@see Installation_Manager::install()} to install or use the
+	 * {@see install()} helper.
+	 */
+	function manager(): Installation_Manager {
+		return Installation_Manager::instance();
 	}
-
-	return $container->make( Block_Factory::class );
 }
 
-/**
- * Iterate a test a number of times, catching any assertion failures and
- * re-throwing them with the iteration number in the message.
- *
- * @throws AssertionFailedError Thrown when an assertion fails.
- *
- * @param \Closure $callback The callback to execute for each iteration.
- * @param int      $times The number of times to iterate (default: 3).
- */
-function iterate_test( \Closure $callback, int $times = 3 ): void {
-	for ( $i = 0; $i < $times; $i++ ) {
-		try {
-			$callback( $i + 1 );
-		} catch ( AssertionFailedError $e ) {
-			throw new AssertionFailedError(
-				'Failed on iteration ' . $i . ': ' . $e->getMessage(),
-				$e->getCode(),
-				$e
+if ( ! function_exists( __NAMESPACE__ . '\\install' ) ) {
+	/**
+	 * Install the Mantle Testing Framework
+	 *
+	 * @param callable|null $callback Callback to invoke once the installation has begun.
+	 */
+	function install( ?callable $callback = null ): Installation_Manager {
+		return tap(
+			manager(),
+			fn ( Installation_Manager $manager ) => $manager->before( $callback ),
+		)->install();
+	}
+}
+
+if ( ! function_exists( __NAMESPACE__ . '\\html_string' ) ) {
+	/**
+	 * Create a new HTML_String instance.
+	 *
+	 * @param string $html The HTML string to test.
+	 */
+	function html_string( string $html ): HTML {
+		return new HTML( $html );
+	}
+}
+
+if ( ! function_exists( __NAMESPACE__ . '\\mock_http_response' ) ) {
+	/**
+	 * Create a new Mock HTTP Response
+	 *
+	 * @param string $body    Response body.
+	 * @param array  $headers Response headers.
+	 */
+	function mock_http_response( string $body = '', array $headers = [] ): Mock_Http_Response {
+		return new Mock_Http_Response( $body, $headers );
+	}
+}
+
+
+if ( ! function_exists( __NAMESPACE__ . '\\mock_http_sequence' ) ) {
+	/**
+	 * Create a new Mock HTTP Response Sequence
+	 */
+	function mock_http_sequence(): Mock_Http_Sequence {
+		return new Mock_Http_Sequence();
+	}
+}
+
+
+if ( ! function_exists( __NAMESPACE__ . '\\block_factory' ) ) {
+	/**
+	 * Create a new block factory instance.
+	 */
+	function block_factory(): Block_Factory {
+		$container = Container::get_instance();
+
+		// If the Generator is not bound to the container, bind it.
+		if ( ! $container->bound( Generator::class ) ) {
+			$container->singleton(
+				Generator::class,
+				fn () => tap(
+					Factory::create(),
+					fn ( Generator $generator ) => $generator->addProvider( new Faker_Provider( $generator ) ),
+				),
 			);
+		}
+
+		return $container->make( Block_Factory::class );
+	}
+}
+
+if ( ! function_exists( __NAMESPACE__ . '\\iterate_test' ) ) {
+	/**
+	 * Iterate a test a number of times, catching any assertion failures and
+	 * re-throwing them with the iteration number in the message.
+	 *
+	 * @throws AssertionFailedError Thrown when an assertion fails.
+	 *
+	 * @param \Closure $callback The callback to execute for each iteration.
+	 * @param int      $times The number of times to iterate (default: 3).
+	 */
+	function iterate_test( \Closure $callback, int $times = 3 ): void {
+		for ( $i = 0; $i < $times; $i++ ) {
+			try {
+				$callback( $i + 1 );
+			} catch ( AssertionFailedError $e ) {
+				throw new AssertionFailedError(
+					'Failed on iteration ' . $i . ': ' . $e->getMessage(),
+					$e->getCode(),
+					$e
+				);
+			}
 		}
 	}
 }
