@@ -4,13 +4,17 @@
  *
  * phpcs:disable WordPress.WP.AlternativeFunctions.json_encode_json_encode
  * phpcs:disable WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+ * phpcs:disable PHPCompatibility
  *
  * @package Mantle
  */
 
 namespace Mantle\Testing\Concerns;
 
+use Mantle\Support\HTML;
+
 use function Mantle\Support\Helpers\collect;
+use function Mantle\Support\Helpers\data_get;
 use function Termwind\render;
 
 /**
@@ -24,8 +28,13 @@ trait Response_Dumper {
 	 *
 	 * The debug should include the request information and the response's status
 	 * code, headers, and content.
+	 *
+	 * @param string|null $selector Selector to limit HTML content to, optional.
+	 *                              For HTML responses, the selector will be a
+	 *                              query selector. JSON responses use dot
+	 *                              notation.
 	 */
-	public function dump(): static {
+	public function dump( ?string $selector = null ): static {
 		if ( ! isset( $this->request ) ) {
 			dump( 'No request information available.' );
 
@@ -56,18 +65,6 @@ trait Response_Dumper {
 
 		// Response information.
 		$response_headers = $this->compile_data_table( $this->headers, 'Header' );
-		$response_content = $this->get_content();
-
-		if ( str_contains( $this->get_header( 'Content-Type' ), 'application/json' ) ) {
-			$json = json_decode( (string) $response_content );
-
-			if ( json_last_error() === JSON_ERROR_NONE ) {
-				$response_content = json_encode( $json, JSON_PRETTY_PRINT );
-			}
-		} else {
-			// Escape the HTML content so it isn't parsed by termwind.
-			$response_content = esc_html( $response_content );
-		}
 
 		$status_code       = $this->get_status_code();
 		$status_code_class = match ( true ) {
@@ -96,10 +93,31 @@ trait Response_Dumper {
 					<h3 class="font-bold">Response Headers</h3>
 					{$response_headers}
 					<h3 class="font-bold">Response Content</h3>
-					<code>{$response_content}</code>
 				</div>
 			HTML,
 		);
+
+		$response_content = $this->get_content();
+
+		if ( str_contains( $this->get_header( 'Content-Type' ), 'application/json' ) ) {
+			$json = json_decode( (string) $response_content );
+
+			if ( json_last_error() === JSON_ERROR_NONE ) {
+				if ( $selector ) {
+					$json = data_get( $json, $selector );
+				}
+
+				echo json_encode( $json, JSON_PRETTY_PRINT );
+
+				return $this;
+			}
+		}
+
+		if ( $selector ) {
+			HTML::create( $response_content )->filter( $selector )->dump();
+		} else {
+			dump( $response_content );
+		}
 
 		return $this;
 	}
