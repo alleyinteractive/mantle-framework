@@ -174,7 +174,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 		return array_values(
 			array_filter(
 				$segments,
-				fn ( $value ) => '' !== $value
+				fn ( string $value ) => '' !== $value
 			)
 		);
 	}

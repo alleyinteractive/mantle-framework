@@ -46,7 +46,7 @@ class Route_Signature_Parameters {
 
 		return is_null( $sub_class ) ? $parameters : array_filter(
 			$parameters,
-			fn ( $p ) => Reflector::is_parameter_subclass_of( $p, $sub_class ),
+			fn ( \ReflectionParameter $p ) => Reflector::is_parameter_subclass_of( $p, $sub_class ),
 		);
 	}
 

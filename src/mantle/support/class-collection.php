@@ -1347,7 +1347,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	public function zip( ...$items ) {
 		$arrayable_items = array_map(
-			fn ( $items ) => $this->get_arrayable_items( $items ),
+			fn ( iterable|\Mantle\Contracts\Support\Arrayable $items ) => $this->get_arrayable_items( $items ),
 			$items,
 		);
 

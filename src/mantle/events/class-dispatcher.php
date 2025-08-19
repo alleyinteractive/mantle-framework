@@ -314,7 +314,7 @@ class Dispatcher implements Dispatcher_Contract {
 
 		$this->wildcard_listeners[ $event ] = array_filter(
 			$this->wildcard_listeners[ $event ],
-			fn ( $value ) => $value !== $listener,
+			fn ( callable|string $value ) => $value !== $listener,
 		);
 
 		if ( empty( $this->wildcard_listeners[ $event ] ) ) {
