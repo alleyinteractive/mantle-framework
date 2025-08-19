@@ -4,7 +4,6 @@ namespace Mantle\Tests\Support;
 
 use Mantle\Support\Uri;
 use Mantle\Testing\FrameworkTestCase;
-use PHPUnit\Framework\TestCase;
 
 class UriTest extends FrameworkTestCase {
 	public function test_basic_uri(): void {
@@ -28,18 +27,26 @@ class UriTest extends FrameworkTestCase {
 	}
 
 	public function test_from_current(): void {
-		$this->get( $post = static::factory()->post->create_and_get() )
+		$this
+			->get( $post = static::factory()->post->create_and_get() )
 			->assertOk()
 			->assertQueryTrue( 'is_single', 'is_singular' );
 
-		$this->assertEquals(
-			get_permalink( $post ),
-			(string) Uri::current(),
-		);
+		$this->assertEquals( get_permalink( $post ), (string) Uri::current() );
 
 		$uri = Uri::current()->with_query( [ 'test' => 'value' ]);
 
 		$this->assertEquals( get_permalink( $post ) . '?test=value', $uri->value() );
+	}
+
+	public function test_http_request(): void {
+		$this
+			->with_https()
+			->get( $post = static::factory()->post->create_and_get() )
+			->assertOk()
+			->assertQueryTrue( 'is_single', 'is_singular' );
+
+		$this->assertEquals( get_permalink( $post ), (string) Uri::current() );
 	}
 
 	public function test_path_segments() {
