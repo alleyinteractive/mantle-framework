@@ -497,9 +497,9 @@ class Pending_Testable_Request {
 			wp_styles()->done  = [];
 		}
 
-		// Reset the print hooks back to zero (never run).
+		// Reset the assorted hooks back to zero (never run).
 		if ( isset( $GLOBALS['wp_actions'] ) && is_array( $GLOBALS['wp_actions'] ) ) {
-			foreach ( [ 'wp_print_scripts', 'wp_print_styles' ] as $hook ) {
+			foreach ( [ 'wp_print_scripts', 'wp_print_styles', 'the_post' ] as $hook ) {
 				$GLOBALS['wp_actions'][ $hook ] = 0;
 			}
 		}
