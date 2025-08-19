@@ -103,7 +103,7 @@ class Uri implements Htmlable, Stringable {
 	}
 
 	/**
-	 * Get the URI's path.
+	 * Get the URI's path always with a leading slash.
 	 *
 	 * Empty or missing paths are returned as a single "/".
 	 */
