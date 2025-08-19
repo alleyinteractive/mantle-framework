@@ -42,6 +42,13 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		$this->assertEquals( 'draft', get_post_status( array_shift( $post_ids ) ) );
 	}
 
+	public function test_post_create_many_and_get(): void {
+		$posts = static::factory()->post->create_many_and_get( 5 );
+
+		$this->assertCount( 5, $posts );
+		$this->assertContainsOnlyInstancesOf( \WP_Post::class, $posts );
+	}
+
 	public function test_post_create_with_thumbnail() {
 		$post_id = static::factory()->post->create_with_thumbnail();
 
