@@ -1164,7 +1164,7 @@ class Str {
 
 		$words = explode( ' ', static::replace( [ '-', '_' ], ' ', $value ) );
 
-		$study_words = array_map( fn ( $word ) => static::ucfirst( $word ), $words );
+		$study_words = array_map( fn ( string $word ) => static::ucfirst( $word ), $words );
 
 		return static::$studly_cache[ $key ] = implode( '', $study_words );
 	}
