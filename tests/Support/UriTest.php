@@ -13,17 +13,36 @@ class UriTest extends FrameworkTestCase {
 		$this->assertEquals( 'https://example.com/path?query=string#fragment', (string) $uri->get_uri() );
 		$this->assertEquals( 'https', $uri->get_uri()->getScheme() );
 		$this->assertEquals( 'example.com', $uri->get_uri()->getHost() );
+		$this->assertEquals( '/path', $uri->path() );
 		$this->assertEquals( '/path', $uri->get_uri()->getPath() );
 		$this->assertEquals( 'query=string', $uri->get_uri()->getQuery() );
 		$this->assertEquals( 'fragment', $uri->get_uri()->getFragment() );
 		$this->assertEquals( 'example.com', $uri->host() );
+		$this->assertNull( $uri->port() );
+	}
 
-		// Uri_Query_String:
+	public function test_basic_query_string(): void {
+		$uri = Uri::of( 'https://example.com/path?query=string#fragment' );
+
 		$this->assertEquals( 'string', $uri->query()->get( 'query' ) );
 		$this->assertEquals( [ 'query' => 'string' ], $uri->query()->all() );
 		$this->assertTrue( $uri->query()->has( 'query' ) );
 		$this->assertFalse( $uri->query()->has( 'nonexistent' ) );
 		$this->assertTrue( $uri->query()->missing( 'nonexistent' ) );
+	}
+
+	public function test_authentication_uri(): void {
+		$uri = Uri::of( 'https://user:pass@example.com/path?query=string#fragment' );
+
+		$this->assertEquals( 'user', $uri->user() );
+		$this->assertEquals( 'pass', $uri->password() );
+		$this->assertEquals( 'example.com', $uri->host() );
+	}
+
+	public function test_port_uri(): void {
+		$uri = Uri::of( 'https://example.com:8080/path?query=string#fragment' );
+
+		$this->assertEquals( 8080, $uri->port() );
 	}
 
 	public function test_from_current(): void {
@@ -50,24 +69,24 @@ class UriTest extends FrameworkTestCase {
 	}
 
 	public function test_path_segments() {
-		$uri = Uri::of( 'https://laravel.com' );
+		$uri = Uri::of( 'https://mantle.alley.com' );
 
 		$this->assertEquals( [], $uri->path_segments()->to_array() );
 
-		$uri = Uri::of( 'https://laravel.com/one/two/three' );
+		$uri = Uri::of( 'https://mantle.alley.com/one/two/three' );
 
 		$this->assertEquals( [ 'one', 'two', 'three' ], $uri->path_segments()->to_array() );
 		$this->assertEquals( 'one', $uri->path_segments()->first() );
 
-		$uri = Uri::of( 'https://laravel.com/one/two/three?foo=bar' );
+		$uri = Uri::of( 'https://mantle.alley.com/one/two/three?foo=bar' );
 
 		$this->assertEquals( 3, $uri->path_segments()->count() );
 
-		$uri = Uri::of( 'https://laravel.com/one/two/three/?foo=bar' );
+		$uri = Uri::of( 'https://mantle.alley.com/one/two/three/?foo=bar' );
 
 		$this->assertEquals( 3, $uri->path_segments()->count() );
 
-		$uri = Uri::of( 'https://laravel.com/one/two/three/#foo=bar' );
+		$uri = Uri::of( 'https://mantle.alley.com/one/two/three/#foo=bar' );
 
 		$this->assertEquals( 3, $uri->path_segments()->count() );
 	}
