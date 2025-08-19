@@ -543,8 +543,10 @@ class Pending_Testable_Request {
 		if ( $this->forced_https || ( isset( $parts['scheme'] ) && 'https' === $parts['scheme'] ) ) {
 			$_SERVER['HTTPS']          = 'on';
 			$_SERVER['REQUEST_SCHEME'] = 'https';
+			$_SERVER['SERVER_PORT']    = 443;
 		} else {
 			$_SERVER['REQUEST_SCHEME'] = 'http';
+			$_SERVER['SERVER_PORT']    = 80;
 		}
 
 		$_SERVER['QUERY_STRING'] = $parts['query'] ?? '';
