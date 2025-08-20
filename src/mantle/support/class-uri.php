@@ -103,14 +103,14 @@ class Uri implements Htmlable, Stringable {
 	}
 
 	/**
-	 * Get the URI's path.
+	 * Get the URI's path always with a leading slash.
 	 *
 	 * Empty or missing paths are returned as a single "/".
 	 */
 	public function path(): ?string {
-		$path = trim( $this->uri->getPath(), '/' );
+		$path = $this->uri->getPath();
 
-		return $path === '' ? '/' : $path;
+		return empty( $path ) ? '/' : $path;
 	}
 
 	/**
@@ -119,9 +119,9 @@ class Uri implements Htmlable, Stringable {
 	 * Empty or missing paths are returned as an empty collection.
 	 */
 	public function path_segments(): Collection {
-		$path = $this->path();
+		$path = trim( (string) $this->path(), '/' );
 
-		return $path === '/' ? new Collection() : new Collection( explode( '/', (string) $path ) );
+		return empty( $path ) ? new Collection() : new Collection( explode( '/', $path ) );
 	}
 
 	/**

@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added `create_many_and_get()` method to factories.
 
+### Fixed
+
+- Clear the `the_post` hook after each request to prevent side effects.
+- Fixed issue with `uri()` helper needing `null` passed to use the current URI.
+- Fixed issue with HTTPS requests appending `:80` to the host with the `Uri` class.
+
 ## v1.8.8
 
 ### Fixed

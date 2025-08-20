@@ -585,6 +585,27 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		$this->assertEquals( 'value', wp_cache_get( 'key' ) );
 	}
 
+	public function test_cleanup_globals_between_runs(): void {
+		$runs = [];
+
+		add_action(
+			'wp_footer',
+			function () use ( &$runs ) {
+				$runs[] = did_action( 'the_post' );
+			},
+		);
+
+		$post = static::factory()->post->create_and_get();
+
+		$this->get( $post )->assertOk()->assertQueriedObject( $post );
+		$this->get( $post )->assertOk()->assertQueriedObject( $post );
+
+		// Ensure that the runs are all equal. The bug being fixed here was that
+		// `the_post` hook wasn't being cleared and the hook run count kept
+		// incrementing.
+		$this->assertEquals( $runs[0], $runs[1] );
+	}
+
 	// Should always be towards the end of the class.
 	public function test_multiple_requests() {
 		$methods = collect( get_class_methods( $this ) )
