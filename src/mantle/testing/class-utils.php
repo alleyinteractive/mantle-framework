@@ -197,7 +197,7 @@ class Utils {
 	 * currently provided by WordPress. Core can always add new conditional tags
 	 * in the future and we don't want to maintain a hardcoded list.
 	 *
-	 * @return string[]
+	 * @return callable-string[]
 	 */
 	public static function get_query_conditional_tags(): array {
 		return collect( get_class_methods( \WP_Query::class ) )
