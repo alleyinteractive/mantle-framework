@@ -497,9 +497,9 @@ class Pending_Testable_Request {
 			wp_styles()->done  = [];
 		}
 
-		// Reset the print hooks back to zero (never run).
+		// Reset the assorted hooks back to zero (never run).
 		if ( isset( $GLOBALS['wp_actions'] ) && is_array( $GLOBALS['wp_actions'] ) ) {
-			foreach ( [ 'wp_print_scripts', 'wp_print_styles' ] as $hook ) {
+			foreach ( [ 'wp_print_scripts', 'wp_print_styles', 'the_post' ] as $hook ) {
 				$GLOBALS['wp_actions'][ $hook ] = 0;
 			}
 		}
@@ -543,8 +543,10 @@ class Pending_Testable_Request {
 		if ( $this->forced_https || ( isset( $parts['scheme'] ) && 'https' === $parts['scheme'] ) ) {
 			$_SERVER['HTTPS']          = 'on';
 			$_SERVER['REQUEST_SCHEME'] = 'https';
+			$_SERVER['SERVER_PORT']    = 443;
 		} else {
 			$_SERVER['REQUEST_SCHEME'] = 'http';
+			$_SERVER['SERVER_PORT']    = 80;
 		}
 
 		$_SERVER['QUERY_STRING'] = $parts['query'] ?? '';
