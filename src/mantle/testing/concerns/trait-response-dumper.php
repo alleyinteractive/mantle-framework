@@ -35,6 +35,28 @@ trait Response_Dumper {
 	 *                              notation.
 	 */
 	public function dump( ?string $selector = null ): static {
+		$this->dump_request();
+		render( '<hr />' );
+		$this->dump_headers();
+		$this->dump_content( $selector );
+
+		return $this;
+	}
+
+	/**
+	 * Dump the request and response headers without the content.
+	 */
+	public function dump_without_content(): static {
+		$this->dump_request();
+		$this->dump_headers();
+
+		return $this;
+	}
+
+	/**
+	 * Dump the request information.
+	 */
+	public function dump_request(): static {
 		if ( ! isset( $this->request ) ) {
 			dump( 'No request information available.' );
 
@@ -63,9 +85,6 @@ trait Response_Dumper {
 			HTML;
 		}
 
-		// Response information.
-		$response_headers = $this->compile_data_table( $this->headers, 'Header' );
-
 		$status_code       = $this->get_status_code();
 		$status_code_class = match ( true ) {
 			$status_code >= 200 && $status_code < 300 => 'bg-green-300 text-green-700',
@@ -89,73 +108,68 @@ trait Response_Dumper {
 					<h3 class="font-bold">Request Headers</h3>
 					{$request_headers}
 					{$request_body}
-					<hr />
-					<h3 class="font-bold">Response Headers</h3>
-					{$response_headers}
-					<h3 class="font-bold">Response Content</h3>
 				</div>
 			HTML,
 		);
 
-		$response_content = $this->get_content();
+		return $this;
+	}
 
-		if ( str_contains( $this->get_header( 'Content-Type' ), 'application/json' ) ) {
-			$json = json_decode( (string) $response_content );
+	/**
+	 * Dump the response headers in a table.
+	 */
+	public function dump_headers(): static {
+		$response_headers = $this->compile_data_table( $this->headers, 'Header' );
 
-			if ( json_last_error() === JSON_ERROR_NONE ) {
-				if ( $selector ) {
-					$json = data_get( $json, $selector );
-				}
-
-				echo json_encode( $json, JSON_PRETTY_PRINT );
-
-				return $this;
-			}
-		}
-
-		if ( $selector ) {
-			HTML::create( $response_content )->filter( $selector )->dump();
-		} else {
-			dump( $response_content );
-		}
+		render(
+			<<<HTML
+				<div class="space-y-1 my-1">
+					<h3 class="font-bold">Response Headers</h3>
+					{$response_headers}
+				</div>
+			HTML,
+		);
 
 		return $this;
 	}
 
 	/**
 	 * Dump the contents of the response to the screen.
+	 *
+	 * @param string|null $selector Query selector or JSON path to filter the content, optional.
 	 */
-	public function dump_content(): static {
+	public function dump_content( ?string $selector = null ): static {
 		$content = $this->get_content();
 
 		if ( str_contains( $this->get_header( 'Content-Type' ), 'application/json' ) ) {
 			$json = json_decode( (string) $content );
 
 			if ( json_last_error() === JSON_ERROR_NONE ) {
-				$content = json_encode( $json, JSON_PRETTY_PRINT );
+				if ( $selector ) {
+					$json = data_get( $json, $selector );
+				}
+
+				echo json_encode( $json, JSON_PRETTY_PRINT ) . "\n\n";
+
+				return $this;
 			}
-		} else {
-			// Escape the HTML content so it isn't parsed by termwind.
-			$content = esc_html( $content );
 		}
 
 		render(
-			<<<HTML
-				<div class="space-y-1 my-1">
-					<h3 class="font-bold">Response Content</h3>
-					<code>{$content}</code>
-				</div>
-			HTML,
+			$selector
+				? '<h3 class="font-bold mb-1">Response Content (selector: ' . $selector . ')</h3>'
+				: '<h3 class="font-bold mb-1">Response Content</h3>'
 		);
 
-		return $this;
-	}
+		if ( $selector ) {
+			$content = HTML::create( $content )->filter( $selector )->to_html();
+		}
 
-	/**
-	 * Dump the headers of the response to the screen.
-	 */
-	public function dump_headers(): static {
-		dump( $this->headers );
+		if ( empty( trim( (string) $content ) ) ) {
+			render( '<em>No response content.</em>' );
+		} else {
+			dump( $content );
+		}
 
 		return $this;
 	}
