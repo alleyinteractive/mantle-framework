@@ -191,6 +191,24 @@ class Utils {
 	}
 
 	/**
+	 * Retrieve all of core's conditional tags from WP_Query.
+	 *
+	 * This should return a list of all conditional tags (is_<name>) that are
+	 * currently provided by WordPress. Core can always add new conditional tags
+	 * in the future and we don't want to maintain a hardcoded list.
+	 *
+	 * @return callable-string[]
+	 */
+	public static function get_query_conditional_tags(): array {
+		return collect( get_class_methods( \WP_Query::class ) )
+			->filter( fn ( $method ) => str_starts_with( $method, 'is_' ) && function_exists( $method ) )
+			->reject( fn ( $method ) => in_array( $method, [ 'is_comments_popup', 'is_main_query' ], true ) )
+			->sort()
+			->values()
+			->all();
+	}
+
+	/**
 	 * Set a permalink structure.
 	 *
 	 * Hooked as a callback to the 'populate_options' action, we use this function to set a permalink structure during
