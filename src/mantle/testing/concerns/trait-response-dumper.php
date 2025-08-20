@@ -12,6 +12,9 @@
 namespace Mantle\Testing\Concerns;
 
 use Mantle\Support\HTML;
+use Mantle\Testing\Utils;
+use WP_Post;
+use WP_Term;
 
 use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\data_get;
@@ -39,6 +42,7 @@ trait Response_Dumper {
 		render( '<hr />' );
 		$this->dump_headers();
 		$this->dump_content( $selector );
+		$this->dump_query();
 
 		return $this;
 	}
@@ -49,6 +53,7 @@ trait Response_Dumper {
 	public function dump_without_content(): static {
 		$this->dump_request();
 		$this->dump_headers();
+		$this->dump_query();
 
 		return $this;
 	}
@@ -297,5 +302,66 @@ trait Response_Dumper {
 				</tbody>
 			</table>
 		HTML;
+	}
+
+	/**
+	 * Dump information about the current WP_Query object.
+	 */
+	public function dump_query(): static {
+		$queried_object = get_queried_object();
+
+		if ( ! $queried_object ) {
+			$queried_object = '<em>No queried object found.</em>';
+		} else {
+			$queried_object = match ( $queried_object::class ) {
+				WP_Post::class => "#{$queried_object->ID} (WP_Post): {$queried_object->post_type} — {$queried_object->post_status}",
+				WP_Term::class => "#{$queried_object->term_id} (WP_Term): {$queried_object->name} ({$queried_object->slug})",
+				default => 'unknown',
+			};
+		}
+
+		$conditionals = [
+			'true'  => [],
+			'false' => [],
+		];
+
+		foreach ( Utils::get_query_conditional_tags() as $conditional ) {
+			if ( $conditional() ) {
+				$conditionals['true'][] = '<span class="text-green-500">' . $conditional . '()</span>';
+			} else {
+				$conditionals['false'][] = '<span class="text-gray-500">' . $conditional . '()</span>';
+			}
+		}
+
+		$conditionals['true']  = implode( ' ', $conditionals['true'] );
+		$conditionals['false'] = implode( ' ', $conditionals['false'] );
+
+		render(
+			<<<HTML
+				<div class="space-y-1">
+					<div>
+						<strong>Queried Object:</strong> {$queried_object}
+					</div>
+					<div>
+						<h4>True Conditionals:</h4>
+						<p>{$conditionals['true']}</p>
+						<h4>False Conditionals:</h4>
+						<p>{$conditionals['false']}</p>
+					</div>
+				</div>
+			HTML
+		);
+
+		return $this;
+	}
+
+	/**
+	 * Dump the queried object and end the script.
+	 */
+	public function dd_query(): never {
+		$this->dump_query();
+		echo 'post';
+
+		exit( 1 );
 	}
 }

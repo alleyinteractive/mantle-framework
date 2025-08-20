@@ -15,6 +15,7 @@ use Mantle\Contracts\Support\Arrayable;
 use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Term;
 use Mantle\Database\Model\User;
+use Mantle\Testing\Utils;
 use PHPUnit\Framework\Assert as PHPUnit;
 use UnitEnum;
 use WP_Post;
@@ -176,38 +177,7 @@ trait Assertions {
 
 		assert( $wp_query instanceof \WP_Query );
 
-		$all = [
-			'is_404',
-			'is_admin',
-			'is_archive',
-			'is_attachment',
-			'is_author',
-			'is_category',
-			'is_comment_feed',
-			'is_date',
-			'is_day',
-			'is_embed',
-			'is_feed',
-			'is_front_page',
-			'is_home',
-			'is_privacy_policy',
-			'is_month',
-			'is_page',
-			'is_paged',
-			'is_post_type_archive',
-			'is_posts_page',
-			'is_preview',
-			'is_robots',
-			'is_favicon',
-			'is_search',
-			'is_single',
-			'is_singular',
-			'is_tag',
-			'is_tax',
-			'is_time',
-			'is_trackback',
-			'is_year',
-		];
+		$all = Utils::get_query_conditional_tags();
 
 		foreach ( $prop as $true_thing ) {
 			PHPUnit::assertContains( $true_thing, $all, "Unknown conditional: {$true_thing}." );
