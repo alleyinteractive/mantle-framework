@@ -14,7 +14,9 @@ namespace Mantle\Testing\Concerns;
 use Mantle\Support\HTML;
 use Mantle\Testing\Utils;
 use WP_Post;
+use WP_Post_Type;
 use WP_Term;
+use WP_User;
 
 use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\data_get;
@@ -314,9 +316,11 @@ trait Response_Dumper {
 			$queried_object = '<em>No queried object found.</em>';
 		} else {
 			$queried_object = match ( $queried_object::class ) {
+				WP_Post_Type::class => "#{$queried_object->name} (WP_Post_Type): {$queried_object->label}",
 				WP_Post::class => "#{$queried_object->ID} (WP_Post): {$queried_object->post_type} — {$queried_object->post_status}",
 				WP_Term::class => "#{$queried_object->term_id} (WP_Term): {$queried_object->name} ({$queried_object->slug})",
-				default => 'unknown',
+				WP_User::class => "#{$queried_object->ID} (WP_User): {$queried_object->display_name}",
+				default => $queried_object::class . ' object',
 			};
 		}
 
