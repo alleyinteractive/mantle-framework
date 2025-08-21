@@ -73,10 +73,12 @@ class Schedule {
 			\wp_schedule_single_event( time() + MINUTE_IN_SECONDS, static::CRON_HOOK );
 		}
 
-		\add_action(
-			static::CRON_HOOK,
-			fn () => app( static::class )->run_due_events(),
-		);
+		\add_action( static::CRON_HOOK, function () {
+			// Set a limit of 60 seconds because the event runs every minute.
+			set_time_limit( 60 );
+
+			$this->run_due_events();
+		} );
 	}
 
 	/**
