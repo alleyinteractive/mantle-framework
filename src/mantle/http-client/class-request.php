@@ -17,16 +17,25 @@ use function Mantle\Support\Helpers\data_get;
  * Used to store a request that was made via the WordPress HTTP API that can be
  * asserted against.
  */
-class Request {
+readonly class Request {
+	/**
+	 * Arguments of the request.
+	 *
+	 * @var array<string, mixed> $args Arguments of the request.
+	 */
+	public array $args;
+
 	/**
 	 * Constructor
 	 *
 	 * @param array<string, mixed> $args Arguments of the request.
 	 * @param string               $url  URL of the request.
 	 */
-	public function __construct( protected array $args, protected string $url ) {
+	public function __construct( array $args, public string $url ) {
 		// Format the headers to be lowercase.
-		$this->args['headers'] = array_change_key_case( $this->args['headers'] ?? [] );
+		$args['headers'] = array_change_key_case( $args['headers'] ?? [] );
+
+		$this->args = $args;
 	}
 
 	/**
@@ -99,7 +108,7 @@ class Request {
 	/**
 	 * Retrieve the body of the request.
 	 */
-	public function body(): ?string {
+	public function body(): mixed {
 		return $this->args['body'] ?? null;
 	}
 
