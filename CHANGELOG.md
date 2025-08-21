@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Adjusted the scheduled event system to use a recurring scheduled event instead of a single event.
+- Adjusted `Mantle\Http_Client\Request` to return `mixed` for the `body()` method.
 
 ### Fixed
 
