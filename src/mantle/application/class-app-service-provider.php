@@ -26,29 +26,35 @@ class App_Service_Provider extends Service_Provider {
 	 *
 	 * @param Application $app Application instance.
 	 */
-	public function __construct( protected Application $app ) {
-		// $this->app->booted( fn () => $this->boot_scheduler() );
+	public function __construct( protected Application $app ) {}
+
+	/**
+	 * Register the scheduler service.
+	 */
+	public function register(): void {
+		$this->app->singleton( 'scheduler', function ( Application $app ): Schedule {
+			$schedule = new Schedule( $app );
+
+			$this->schedule( $schedule );
+
+			return $schedule;
+		} );
 	}
 
 	/**
 	 * Boot the scheduler service.
 	 */
 	public function boot(): void {
-		$this->app->singleton(
-			'scheduler',
-			fn ( Application $app ) => tap(
-				new Schedule( $app ),
-				fn ( Schedule $schedule ) => $this->schedule( $schedule ),
-			),
-		);
-
-		$this->app['scheduler']->schedule_cron_event();
+		$this->app->make( 'scheduler' )->schedule_cron_event();
 	}
 
 	/**
 	 * Define the application's command schedule.
 	 *
+	 * Used for legacy command schedule registration. The preferred new way is to
+	 * the use Schedule facade.
+	 *
 	 * @param Schedule $schedule Schedule instance.
 	 */
-	protected function schedule( Schedule $schedule ): void { }
+	protected function schedule( Schedule $schedule ): void {}
 }

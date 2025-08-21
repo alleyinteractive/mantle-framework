@@ -49,9 +49,7 @@ class Schedule {
 	 * @param DateTimeZone $timezone Timezone instance, optional.
 	 */
 	public function __construct( protected Application $container, ?DateTimeZone $timezone = null ) {
-		if ( $timezone instanceof \DateTimeZone ) {
-			$this->timezone = $timezone;
-		}
+		$this->timezone = $timezone instanceof \DateTimeZone ? $timezone : \wp_timezone();
 	}
 
 	/**
@@ -73,7 +71,7 @@ class Schedule {
 			\wp_schedule_single_event( time() + MINUTE_IN_SECONDS, static::CRON_HOOK );
 		}
 
-		\add_action( static::CRON_HOOK, function () {
+		\add_action( static::CRON_HOOK, function (): void {
 			// Set a limit of 60 seconds because the event runs every minute.
 			set_time_limit( 60 );
 

@@ -3,6 +3,7 @@ namespace Mantle\Tests\Scheduling;
 
 use Mantle\Testing\FrameworkTestCase;
 use Mantle\Contracts\Container;
+use Mantle\Facade\Schedule as Facade;
 use Mantle\Scheduling\Event;
 use Mantle\Scheduling\Schedule;
 use Mantle\Testing\Mock_Http_Response;
@@ -13,6 +14,10 @@ class ScheduleTest extends FrameworkTestCase {
 		parent::tearDown();
 
 		m::close();
+	}
+
+	public function test_cron_event_is_scheduled(): void {
+		$this->assertInCronQueue( Schedule::CRON_HOOK );
 	}
 
 	public function test_running_event() {
@@ -79,6 +84,14 @@ class ScheduleTest extends FrameworkTestCase {
 	}
 
 	public function test_schedule_with_facade(): void {
+		$_SERVER['__run'] = false;
 
+		Facade::call( function () {
+			$_SERVER['__run'] = true;
+		} )->when( fn () => true );
+
+		$this->app->make(Schedule::class)->run_due_events();
+
+		$this->assertTrue( $_SERVER['__run'] );
 	}
 }

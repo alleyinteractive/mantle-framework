@@ -238,7 +238,7 @@ class Event {
 	 *
 	 * @deprecated Use ping_before_if() instead.
 	 *
-	 * @param  mixed $value Value to compare.
+	 * @param  mixed  $value Value to compare.
 	 * @param  string $url URL to ping.
 	 */
 	public function pingBeforeIf( mixed $value, string $url ): static {
