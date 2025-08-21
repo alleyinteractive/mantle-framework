@@ -170,8 +170,7 @@ class Event {
 			$date->setTimezone( $this->timezone );
 		}
 
-
-		return CronExpression::factory( $this->expression )->isDue( $date->toDateTimeString() );
+		return ( new CronExpression( $this->expression ) )->isDue( $date->toDateTimeString() );
 	}
 
 	/**
@@ -179,7 +178,7 @@ class Event {
 	 *
 	 * @param string $environment Environment to check against.
 	 */
-	public function runs_in_environment( $environment ): bool {
+	public function runs_in_environment( string $environment ): bool {
 		return empty( $this->environments ) || in_array( $environment, $this->environments, true );
 	}
 

@@ -26,18 +26,14 @@ class App_Service_Provider extends Service_Provider {
 	 *
 	 * @param Application $app Application instance.
 	 */
-	public function __construct( Application $app ) {
-		$this->app = $app;
-
-		$this->app->booted(
-			fn () => $this->boot_scheduler(),
-		);
+	public function __construct( protected Application $app ) {
+		// $this->app->booted( fn () => $this->boot_scheduler() );
 	}
 
 	/**
 	 * Boot the scheduler service.
 	 */
-	protected function boot_scheduler(): void {
+	public function boot(): void {
 		$this->app->singleton(
 			'scheduler',
 			fn ( Application $app ) => tap(
@@ -46,7 +42,7 @@ class App_Service_Provider extends Service_Provider {
 			),
 		);
 
-		Schedule::schedule_cron_event();
+		$this->app['scheduler']->schedule_cron_event();
 	}
 
 	/**
