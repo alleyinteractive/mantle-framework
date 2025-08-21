@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Added `subdomain()` method to the blog factory.
+
 ### Fixed
 
 - Clear the `the_post` hook after each request to prevent side effects.

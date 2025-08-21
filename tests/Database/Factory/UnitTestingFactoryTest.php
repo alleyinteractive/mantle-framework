@@ -5,6 +5,7 @@ use Carbon\Carbon;
 use Closure;
 use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Term;
+use Mantle\Support\Str;
 use Mantle\Testing\Concerns\With_Faker;
 use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -110,6 +111,19 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		}
 
 		$this->shim_test( \WP_Site::class, 'blog' );
+	}
+
+	public function test_blog_factory_subdomain(): void {
+		if ( ! is_multisite() ) {
+			$this->markTestSkipped( 'This test requires multisite.' );
+		}
+
+		$blog = static::factory()->blog->subdomain()->create_and_get();
+
+		$this->assertInstanceOf( \WP_Site::class, $blog );
+
+		$this->assertTrue( Str::is( '*.example.org', $blog->domain ) );
+		$this->assertEquals( '/', $blog->path );
 	}
 
 	public function test_network_factory() {

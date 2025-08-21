@@ -8,6 +8,7 @@
 namespace Mantle\Database\Factory;
 
 use Mantle\Database\Model\Site;
+use WP_Network;
 
 use function Mantle\Support\Helpers\get_site_object;
 
@@ -36,12 +37,28 @@ class Blog_Factory extends Factory {
 	public function definition(): array {
 		global $current_site, $base;
 
+		assert( $current_site instanceof WP_Network, 'Expected $current_site to be an instance of WP_Network' );
+
 		return [
 			'domain'     => $current_site->domain,
 			'path'       => $base . $this->faker->slug(),
 			'title'      => $this->faker->text(),
 			'network_id' => $current_site->id,
 		];
+	}
+
+	/**
+	 * Create a subdomain of the current site.
+	 */
+	public function subdomain(): static {
+		global $current_site;
+
+		assert( $current_site instanceof WP_Network, 'Expected $current_site to be an instance of WP_Network' );
+
+		return $this->state( [
+			'domain' => $this->faker->domainWord() . '.' . $current_site->domain,
+			'path'   => '/',
+		] );
 	}
 
 	/**
