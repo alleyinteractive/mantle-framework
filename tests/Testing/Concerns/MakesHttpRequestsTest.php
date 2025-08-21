@@ -52,6 +52,12 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			->assertSee( get_the_title( $post_id ) );
 	}
 
+	public function test_fetch_post(): void {
+		$this->fetch_post()
+			->assertOk()
+			->assertQueryTrue( 'is_single', 'is_singular' );
+	}
+
 	public function test_with_headers(): void {
 		$capture = null;
 
