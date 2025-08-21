@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added `create_many_and_get()` method to factories.
 
+### Changed
+
+- Adjusted the scheduled event system to use a recurring scheduled event instead of a single event.
+
 ### Fixed
 
 - Clear the `the_post` hook after each request to prevent side effects.

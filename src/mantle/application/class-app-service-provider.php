@@ -9,6 +9,7 @@ namespace Mantle\Application;
 
 use Mantle\Contracts\Application;
 use Mantle\Scheduling\Schedule;
+use Mantle\Support\Attributes\Filter;
 use Mantle\Support\Service_Provider;
 
 use function Mantle\Support\Helpers\tap;
@@ -29,7 +30,7 @@ class App_Service_Provider extends Service_Provider {
 	public function __construct( protected Application $app ) {}
 
 	/**
-	 * Register the scheduler service.
+	 * Register the application service provider
 	 */
 	public function register(): void {
 		$this->app->singleton( 'scheduler', function ( Application $app ): Schedule {
@@ -57,4 +58,20 @@ class App_Service_Provider extends Service_Provider {
 	 * @param Schedule $schedule Schedule instance.
 	 */
 	protected function schedule( Schedule $schedule ): void {}
+
+	/**
+	 * Add a cron schedule for the schedule class.
+	 *
+	 * @param array<string, array{interval: int, display: string}> $schedules
+	 * @return array<string, array{interval: int, display: string}> $schedules
+	 */
+	#[Filter( 'cron_schedules' )]
+	public function add_cron_schedule( array $schedules ): array {
+		$schedules['mantle_schedule_every_minute'] = [
+			'interval' => MINUTE_IN_SECONDS,
+			'display'  => 'Every Minute',
+		];
+
+		return $schedules;
+	}
 }
