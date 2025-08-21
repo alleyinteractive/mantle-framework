@@ -696,7 +696,7 @@ class Pending_Request {
 	 * Create a pool request from the current pending request.
 	 *
 	 * @param callable $callback Callback to build the HTTP pool.
-	 * @phpstan-param (callable(Pool $pool): array<int|string, Response>) $callback
+	 * @phpstan-param (callable(Pool $pool): array<int|string, Pooled_Pending_Request>) $callback
 	 * @return array<int|string, Response>
 	 */
 	public function pool( callable $callback ): array {
