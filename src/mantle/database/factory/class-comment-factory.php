@@ -51,7 +51,7 @@ class Comment_Factory extends Factory {
 	 *
 	 * @return int[] Array with the comment IDs.
 	 */
-	public function create_post_comments( int $post_id, int $count = 1, array $args = [] ) {
+	public function create_post_comments( int $post_id, int $count = 1, array $args = [] ): array {
 		$args['comment_post_ID'] = $post_id;
 		return $this->create_many( $count, $args );
 	}
