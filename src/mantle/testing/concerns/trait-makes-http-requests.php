@@ -377,7 +377,6 @@ trait Makes_Http_Requests {
 	 * Create a post and make a request to it.
 	 *
 	 * @param array<string, mixed> $args Arguments for the post.
-	 * @return Test_Response
 	 */
 	public function fetch_post( array $args = [] ): Test_Response {
 		return $this->get( static::factory()->post->create_and_get( $args ) );
