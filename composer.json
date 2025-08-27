@@ -14,7 +14,7 @@
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
         "alleyinteractive/wp-asset-manager": "^1.4.0",
         "alleyinteractive/wp-caper": "^2.0.1 || ^3.0.0",
-        "alleyinteractive/wp-concurrent-remote-requests": "^1.0.2",
+        "alleyinteractive/wp-concurrent-remote-requests": "dev-feature/update-2025",
         "alleyinteractive/wp-filter-side-effects": "^1.0 || ^2.0",
         "doctrine/inflector": "^2.0.8",
         "dragonmantank/cron-expression": "^3.3.3",
