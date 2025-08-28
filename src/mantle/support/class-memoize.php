@@ -68,16 +68,14 @@ class Memoize {
 
 		$object = $memoizable->object ?: $this;
 
-		$hash = $memoizable->hash;
-
 		if ( ! isset( $this->values[ $object ] ) ) {
-				$this->values[ $object ] = [];
+			$this->values[ $object ] = [];
 		}
 
-		if ( ! array_key_exists( $hash, $this->values[ $object ] ) ) {
-			$this->values[ $object ][ $hash ] = call_user_func( $memoizable->callable );
+		if ( ! array_key_exists( $memoizable->hash, $this->values[ $object ] ) ) {
+			$this->values[ $object ][ $memoizable->hash ] = call_user_func( $memoizable->callable );
 		}
 
-		return $this->values[ $object ][ $hash ];
+		return $this->values[ $object ][ $memoizable->hash ];
 	}
 }
