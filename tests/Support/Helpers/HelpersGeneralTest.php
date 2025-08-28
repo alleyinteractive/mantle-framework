@@ -18,6 +18,7 @@ use function Mantle\Support\Helpers\tap;
 use function Mantle\Support\Helpers\throw_if;
 use function Mantle\Support\Helpers\throw_unless;
 use function Mantle\Support\Helpers\transform;
+use function Mantle\Support\Helpers\useMemo;
 use function Mantle\Support\Helpers\with;
 
 class HelpersGeneralTest extends TestCase {
@@ -209,6 +210,133 @@ class HelpersGeneralTest extends TestCase {
 			$expectedOutput,
 			preg_replace_array( $pattern, $replacements, $subject )
 		);
+	}
+
+	public function testUseMemo() {
+		// Test basic memoization
+		$callCount = 0;
+		$callback = function() use ( &$callCount ) {
+			$callCount++;
+			return 'result' . $callCount;
+		};
+
+		// First call should execute the callback
+		$result1 = useMemo( $callback, [ 'dep1' ] );
+		$this->assertSame( 'result1', $result1 );
+		$this->assertSame( 1, $callCount );
+
+		// Second call with same dependencies should return cached result
+		$result2 = useMemo( $callback, [ 'dep1' ] );
+		$this->assertSame( 'result1', $result2 );
+		$this->assertSame( 1, $callCount ); // Should not increment
+	}
+
+	public function testUseMemoWithChangedDependencies() {
+		$callCount = 0;
+		$callback = function( $value ) use ( &$callCount ) {
+			$callCount++;
+			return 'result' . $callCount . '-' . $value;
+		};
+
+		// First call
+		$result1 = useMemo( fn() => $callback( 'a' ), [ 'a' ] );
+		$this->assertSame( 'result1-a', $result1 );
+		$this->assertSame( 1, $callCount );
+
+		// Call with different dependencies should re-execute
+		$result2 = useMemo( fn() => $callback( 'b' ), [ 'b' ] );
+		$this->assertSame( 'result2-b', $result2 );
+		$this->assertSame( 2, $callCount );
+
+		// Call with first dependencies again should return original cached result
+		$result3 = useMemo( fn() => $callback( 'a' ), [ 'a' ] );
+		$this->assertSame( 'result1-a', $result3 );
+		$this->assertSame( 2, $callCount ); // Should not increment
+	}
+
+	public function testUseMemoWithComplexDependencies() {
+		$callCount = 0;
+		$callback = function( $data ) use ( &$callCount ) {
+			$callCount++;
+			return array_sum( $data ) * $callCount;
+		};
+
+		$deps1 = [ [ 1, 2, 3 ], 'string', true ];
+		$deps2 = [ [ 1, 2, 3 ], 'string', true ];
+		$deps3 = [ [ 1, 2, 3 ], 'string', false ]; // Different
+
+		// First call
+		$result1 = useMemo( fn() => $callback( [ 1, 2, 3 ] ), $deps1 );
+		$this->assertSame( 6, $result1 );
+		$this->assertSame( 1, $callCount );
+
+		// Second call with identical complex dependencies
+		$result2 = useMemo( fn() => $callback( [ 1, 2, 3 ] ), $deps2 );
+		$this->assertSame( 6, $result2 );
+		$this->assertSame( 1, $callCount ); // Should not increment
+
+		// Third call with different dependencies
+		$result3 = useMemo( fn() => $callback( [ 1, 2, 3 ] ), $deps3 );
+		$this->assertSame( 12, $result3 ); // 6 * 2
+		$this->assertSame( 2, $callCount );
+	}
+
+	public function testUseMemoWithCustomKey() {
+		$callCount = 0;
+		$callback = function() use ( &$callCount ) {
+			$callCount++;
+			return 'result' . $callCount;
+		};
+
+		// Two different useMemo calls with same dependencies but different keys
+		$result1 = useMemo( $callback, [ 'dep1' ], 'key1' );
+		$this->assertSame( 'result1', $result1 );
+		$this->assertSame( 1, $callCount );
+
+		$result2 = useMemo( $callback, [ 'dep1' ], 'key2' );
+		$this->assertSame( 'result2', $result2 );
+		$this->assertSame( 2, $callCount ); // Should execute because different key
+
+		// Calling with same key should return cached result
+		$result3 = useMemo( $callback, [ 'dep1' ], 'key1' );
+		$this->assertSame( 'result1', $result3 );
+		$this->assertSame( 2, $callCount ); // Should not increment
+	}
+
+	public function testUseMemoWithEmptyDependencies() {
+		$callCount = 0;
+		$callback = function() use ( &$callCount ) {
+			$callCount++;
+			return 'result' . $callCount;
+		};
+
+		// First call with empty dependencies
+		$result1 = useMemo( $callback, [] );
+		$this->assertSame( 'result1', $result1 );
+		$this->assertSame( 1, $callCount );
+
+		// Second call with empty dependencies should return cached result
+		$result2 = useMemo( $callback, [] );
+		$this->assertSame( 'result1', $result2 );
+		$this->assertSame( 1, $callCount ); // Should not increment
+	}
+
+	public function testUseMemoDefaultDependencies() {
+		$callCount = 0;
+		$callback = function() use ( &$callCount ) {
+			$callCount++;
+			return 'result' . $callCount;
+		};
+
+		// First call without dependencies (default empty array)
+		$result1 = useMemo( $callback );
+		$this->assertSame( 'result1', $result1 );
+		$this->assertSame( 1, $callCount );
+
+		// Second call should return cached result
+		$result2 = useMemo( $callback );
+		$this->assertSame( 'result1', $result2 );
+		$this->assertSame( 1, $callCount ); // Should not increment
 	}
 }
 

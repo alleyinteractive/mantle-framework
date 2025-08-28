@@ -579,3 +579,43 @@ function defer( callable $callback ): void {
 
 	app()->terminating( $callback );
 }
+
+/**
+ * Memoize the result of a callback based on its dependencies, similar to React's useMemo.
+ *
+ * Returns a cached result if the dependencies haven't changed since the last call.
+ * If dependencies have changed, the callback is executed and the result is cached.
+ *
+ * @param callable $callback The function to memoize.
+ * @param array<mixed> $dependencies Array of values that the callback depends on.
+ * @param string|null $key Optional cache key. If not provided, a key will be generated.
+ * @return mixed The memoized result of the callback.
+ */
+function useMemo( callable $callback, array $dependencies = [], ?string $key = null ): mixed {
+	static $cache = [];
+	
+	// Generate a cache key based on the callback and an optional user key
+	if ( $key === null ) {
+		// Create a unique key based on the callback's location in the call stack
+		$backtrace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 2 );
+		$caller = $backtrace[1] ?? $backtrace[0];
+		$key = ( $caller['file'] ?? 'unknown' ) . ':' . ( $caller['line'] ?? 'unknown' );
+	}
+	
+	// Create a dependency hash to check if dependencies have changed
+	$depHash = md5( serialize( $dependencies ) );
+	
+	// Check if we have a cached result with the same dependencies
+	if ( isset( $cache[ $key ] ) && $cache[ $key ]['hash'] === $depHash ) {
+		return $cache[ $key ]['result'];
+	}
+	
+	// Execute the callback and cache the result
+	$result = $callback();
+	$cache[ $key ] = [
+		'hash' => $depHash,
+		'result' => $result,
+	];
+	
+	return $result;
+}
