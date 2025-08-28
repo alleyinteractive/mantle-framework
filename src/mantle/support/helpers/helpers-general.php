@@ -593,13 +593,20 @@ function defer( callable $callback ): void {
  */
 function useMemo( callable $callback, array $dependencies = [], ?string $key = null ): mixed {
 	static $cache = [];
+	static $callSiteCounter = [];
 	
 	// Generate a cache key based on the callback and an optional user key
 	if ( $key === null ) {
 		// Create a unique key based on the callback's location in the call stack
-		$backtrace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 2 );
+		$backtrace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 3 );
 		$caller = $backtrace[1] ?? $backtrace[0];
-		$key = ( $caller['file'] ?? 'unknown' ) . ':' . ( $caller['line'] ?? 'unknown' );
+		$baseKey = ( $caller['file'] ?? 'unknown' ) . ':' . ( $caller['line'] ?? 'unknown' );
+		
+		// Ensure unique keys for multiple useMemo calls on the same line (rare but possible)
+		if ( ! isset( $callSiteCounter[ $baseKey ] ) ) {
+			$callSiteCounter[ $baseKey ] = 0;
+		}
+		$key = $baseKey . ':' . $callSiteCounter[ $baseKey ]++;
 	}
 	
 	// Create a dependency hash to check if dependencies have changed
