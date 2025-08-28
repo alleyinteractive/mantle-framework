@@ -145,14 +145,18 @@ if ( ! defined( 'WP_DEFAULT_THEME' ) ) {
 	define( 'WP_DEFAULT_THEME', Utils::env( 'WP_DEFAULT_THEME', 'default' ) );
 }
 
-// Bail early if this is this is a parallel test bootstrap: installation of
-// WordPress is handled in each process.
-if ( Utils::is_parallel_bootstrap() ) {
-	return;
-}
-
 $wp_theme_directories = [];
 $installing_wp        = defined( 'WP_INSTALLING' ) && WP_INSTALLING;
+
+// Prevent installing WordPress if we're in the parallel bootstrap process.
+// WordPress will be installed in each process, so we don't need to do it here.
+if ( Utils::is_parallel_bootstrap() ) {
+	$installing_wp = false;
+
+	if ( Utils::is_debug_mode() ) {
+		Utils::info( 'Skipping WordPress installation in parallel bootstrap process.' );
+	}
+}
 
 if ( ! $installing_wp && '1' !== getenv( 'WP_TESTS_SKIP_INSTALL' ) ) {
 	$resp = Utils::command(

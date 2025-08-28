@@ -4,6 +4,7 @@ namespace Mantle\Tests\Database\Model;
 use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Registration\Register_Rest_Fields;
 use Mantle\Testing\FrameworkTestCase;
+use Mantle\Testing\Utils;
 
 class RestFieldTest extends FrameworkTestCase {
 	public function test_rest_field() {

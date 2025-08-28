@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a `memo()` helper to memoize the result of a closure based on its
   dependencies and context.
 
+### Changed
+
+- Adjusted the bootstrap of parallel unit testing.
+
 ## v1.9.0
 
 ### Added
