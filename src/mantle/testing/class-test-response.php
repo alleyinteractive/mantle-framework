@@ -13,6 +13,7 @@ use Mantle\Http\Request;
 use Mantle\Http\Response;
 use Mantle\Support\HTML;
 use Mantle\Support\Traits\Macroable;
+use Mantle\Support\Traits\Response_Assertions;
 use PHPUnit\Framework\Assert as PHPUnit;
 
 /**
@@ -23,6 +24,31 @@ class Test_Response {
 	use Concerns\Response_Dumper;
 	use Concerns\Response_Snapshot_Testing;
 	use Macroable;
+	use Response_Assertions {
+		Response_Assertions::assertSuccessful as traitAssertSuccessful;
+		Response_Assertions::assertOk as traitAssertOk;
+		Response_Assertions::assertStatus as traitAssertStatus;
+		Response_Assertions::assertCreated as traitAssertCreated;
+		Response_Assertions::assertNoContent as traitAssertNoContent;
+		Response_Assertions::assertNotFound as traitAssertNotFound;
+		Response_Assertions::assertForbidden as traitAssertForbidden;
+		Response_Assertions::assertUnauthorized as traitAssertUnauthorized;
+		Response_Assertions::assertClientError as traitAssertClientError;
+		Response_Assertions::assertServerError as traitAssertServerError;
+		Response_Assertions::assertRedirect as traitAssertRedirect;
+		Response_Assertions::assertLocation as traitAssertLocation;
+		Response_Assertions::assertHeader as traitAssertHeader;
+		Response_Assertions::assertHeaderMissing as traitAssertHeaderMissing;
+		Response_Assertions::assertContent as traitAssertContent;
+		Response_Assertions::assertNotContent as traitAssertNotContent;
+		Response_Assertions::assertSee as traitAssertSee;
+		Response_Assertions::assertContains as traitAssertContains;
+		Response_Assertions::assertDontSee as traitAssertDontSee;
+		Response_Assertions::assertIsJson as traitAssertIsJson;
+		Response_Assertions::assertIsNotJson as traitAssertIsNotJson;
+		Response_Assertions::assertIsHtml as traitAssertIsHtml;
+		Response_Assertions::assertIsNotHtml as traitAssertIsNotHtml;
+	}
 
 	/**
 	 * Application instance.
@@ -192,24 +218,55 @@ class Test_Response {
 	}
 
 	/**
+	 * Implementation for Response_Assertions trait.
+	 * Get the response status code.
+	 */
+	protected function getResponseStatusCode(): int {
+		return $this->get_status_code();
+	}
+
+	/**
+	 * Implementation for Response_Assertions trait.
+	 * Get a response header.
+	 *
+	 * @param string $header Header name.
+	 * @param mixed  $default Default value if header not found.
+	 * @return mixed
+	 */
+	protected function getResponseHeader( string $header, mixed $default = null ): mixed {
+		return $this->get_header( $header, $default );
+	}
+
+	/**
+	 * Implementation for Response_Assertions trait.
+	 * Get the response content/body.
+	 */
+	protected function getResponseContent(): ?string {
+		return $this->get_content();
+	}
+
+	/**
+	 * Implementation for Response_Assertions trait.
+	 * Get all response headers.
+	 *
+	 * @return array<string, mixed>
+	 */
+	protected function getResponseHeaders(): array {
+		return $this->get_headers();
+	}
+
+	/**
 	 * Assert that the response has a successful status code.
 	 */
 	public function assertSuccessful(): static {
-		$actual = $this->get_status_code();
-
-		PHPUnit::assertTrue(
-			$actual >= 200 && $actual < 300,
-			'Response status code [' . $actual . '] is not a successful status code.'
-		);
-
-		return $this;
+		return $this->traitAssertSuccessful();
 	}
 
 	/**
 	 * Assert that the response has a 200 status code.
 	 */
 	public function assertOk(): static {
-		return $this->assertStatus( 200 );
+		return $this->traitAssertOk();
 	}
 
 	/**
@@ -218,22 +275,14 @@ class Test_Response {
 	 * @param int $status Status code to assert.
 	 */
 	public function assertStatus( $status ): static {
-		$actual = $this->get_status_code();
-
-		PHPUnit::assertSame(
-			$actual,
-			$status,
-			"Expected status code {$status} but received {$actual}."
-		);
-
-		return $this;
+		return $this->traitAssertStatus( $status );
 	}
 
 	/**
 	 * Assert that the response has a 201 status code.
 	 */
 	public function assertCreated(): static {
-		return $this->assertStatus( 201 );
+		return $this->traitAssertCreated();
 	}
 
 	/**
@@ -253,7 +302,7 @@ class Test_Response {
 	 * Assert that the response has a not found status code.
 	 */
 	public function assertNotFound(): static {
-		return $this->assertStatus( 404 );
+		return $this->traitAssertNotFound();
 	}
 
 	/**
@@ -645,20 +694,7 @@ class Test_Response {
 	 * Assert if the response is a JSON response.
 	 */
 	public function assertIsJson(): static {
-		$content_type = $this->get_header( 'Content-Type' );
-
-		if ( empty( $content_type ) ) {
-			PHPUnit::fail( 'Response is not JSON.' );
-		}
-
-		// Check that the content-type header contains 'application/json'.
-		PHPUnit::assertStringContainsString( 'application/json', $content_type );
-
-		// Decode the content and see if it's valid JSON. If it isn't, the test will
-		// fail.
-		$this->decoded_json();
-
-		return $this;
+		return $this->traitAssertIsJson();
 	}
 
 	/**
@@ -694,9 +730,7 @@ class Test_Response {
 	 * Assert that the response is an HTML response.
 	 */
 	public function assertIsHtml(): static {
-		PHPUnit::assertStringContainsString( 'text/html', $this->get_header( 'Content-Type' ) );
-
-		return $this;
+		return $this->traitAssertIsHtml();
 	}
 
 	/**
