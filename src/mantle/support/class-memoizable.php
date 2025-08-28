@@ -11,7 +11,6 @@ namespace Mantle\Support;
 
 use Closure;
 use Laravel\SerializableClosure\Support\ReflectionClosure;
-use WeakMap;
 
 /**
  * Memoize class
