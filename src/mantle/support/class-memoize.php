@@ -62,7 +62,7 @@ class Memoize {
 	 * @param Memoizable $memoizable The memoizable instance.
 	 */
 	public function value( Memoizable $memoizable ): mixed {
-		if ( ! static::$enabled ) {
+		if ( ! static::$enabled || ! $memoizable->hash ) {
 			return call_user_func( $memoizable->callable );
 		}
 
