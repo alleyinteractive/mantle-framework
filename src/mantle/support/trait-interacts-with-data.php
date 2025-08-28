@@ -224,6 +224,13 @@ trait Interacts_With_Data {
 	}
 
 	/**
+	 * Check if the value is true.
+	 */
+	public function is_true(): bool {
+		return true === $this->value;
+	}
+
+	/**
 	 * Check if the value is a specific type.
 	 *
 	 * @param string $type Type to check.

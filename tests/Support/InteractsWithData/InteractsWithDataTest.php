@@ -82,6 +82,17 @@ class InteractsWithDataTest extends TestCase {
 		$this->assertEquals( false, TestableInteractsWithData::create( [] )->is_false() );
 	}
 
+	public function test_is_true(): void {
+		$this->assertEquals( true, TestableInteractsWithData::create( true )->is_true() );
+		$this->assertEquals( false, TestableInteractsWithData::create( false )->is_true() );
+		$this->assertEquals( false, TestableInteractsWithData::create( 1 )->is_true() );
+		$this->assertEquals( false, TestableInteractsWithData::create( '1' )->is_true() );
+		$this->assertEquals( false, TestableInteractsWithData::create( 'true' )->is_true() );
+		$this->assertEquals( false, TestableInteractsWithData::create( null )->is_true() );
+		$this->assertEquals( false, TestableInteractsWithData::create( 0 )->is_true() );
+		$this->assertEquals( false, TestableInteractsWithData::create( [] )->is_true() );
+	}
+
 	public function test_as_array(): void {
 		$this->assertEquals( [ 'test' ], TestableInteractsWithData::create( [ 'test' ] )->array() );
 		$this->assertEquals( [ 'test' ], TestableInteractsWithData::create( 'test' )->array() );
