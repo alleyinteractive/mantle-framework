@@ -733,7 +733,7 @@ trait Enumerates_Values {
 	 *
 	 * @return array<TKey, TValue>
 	 */
-	public function jsonSerialize(): mixed { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+	public function json_serialize(): mixed { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
 		return array_map(
 			fn ( $value ): mixed => match ( true ) {
 				$value instanceof JsonSerializable => $value->jsonSerialize(),
@@ -743,6 +743,15 @@ trait Enumerates_Values {
 			},
 			$this->all()
 		);
+	}
+
+	/**
+	 * Alias to json_serialize().
+	 *
+	 * @return array<TKey, TValue>
+	 */
+	public function jsonSerialize(): mixed { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+		return $this->json_serialize();
 	}
 
 	/**

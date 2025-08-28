@@ -5,6 +5,7 @@ use Carbon\Carbon;
 use Closure;
 use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Term;
+use Mantle\Support\Str;
 use Mantle\Testing\Concerns\With_Faker;
 use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -40,6 +41,13 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		}
 
 		$this->assertEquals( 'draft', get_post_status( array_shift( $post_ids ) ) );
+	}
+
+	public function test_post_create_many_and_get(): void {
+		$posts = static::factory()->post->create_many_and_get( 5 );
+
+		$this->assertCount( 5, $posts );
+		$this->assertContainsOnlyInstancesOf( \WP_Post::class, $posts );
 	}
 
 	public function test_post_create_with_thumbnail() {
@@ -110,6 +118,19 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		}
 
 		$this->shim_test( \WP_Site::class, 'blog' );
+	}
+
+	public function test_blog_factory_subdomain(): void {
+		if ( ! is_multisite() ) {
+			$this->markTestSkipped( 'This test requires multisite.' );
+		}
+
+		$blog = static::factory()->blog->subdomain()->create_and_get();
+
+		$this->assertInstanceOf( \WP_Site::class, $blog );
+
+		$this->assertTrue( Str::is( '*.example.org', $blog->domain ) );
+		$this->assertEquals( '/', $blog->path );
 	}
 
 	public function test_network_factory() {
@@ -491,7 +512,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		];
 	}
 
-	public function test_custom_post_type() {
+	public function test_custom_post_type_for() {
 		register_post_type( 'custom-post' );
 
 		$post = static::factory()->post->for( 'custom-post' )->create_and_get();
@@ -532,9 +553,28 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		register_post_type( 'conflict' );
 		register_taxonomy( 'conflict', 'conflict' );
 
-		$this->expectException( \InvalidArgumentException::class );
+		$this->expectException( \RuntimeException::class );
+		$this->expectExceptionMessage( 'Error creating dynamic factory for conflict. Both post type and taxonomy exist.' );
 
 		static::factory()->conflict->create_and_get();
+	}
+
+	public function test_pass_factory_as_meta_argument() {
+		$post = static::factory()->post->with_meta( [
+			__FUNCTION__ => static::factory()->post->with_meta( 'example', 'true' ),
+			'tag_id' => static::factory()->tag,
+		] )->create_and_get();
+
+		$meta = get_post_meta( $post->ID, __FUNCTION__, true );
+		$this->assertIsNumeric( $meta );
+
+		$term_meta = get_post_meta( $post->ID, 'tag_id', true );
+		$this->assertIsNumeric( $term_meta );
+
+		$underlying_post = get_post( $meta );
+
+		$this->assertInstanceOf( \WP_Post::class, $underlying_post );
+		$this->assertEquals( 'true', get_post_meta( $underlying_post->ID, 'example', true ) );
 	}
 
 	public static function slug_id_dataprovider(): array {

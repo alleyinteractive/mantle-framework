@@ -214,10 +214,10 @@ trait Makes_Http_Requests {
 	/**
 	 * Visit the given URI with a GET request.
 	 *
-	 * @param mixed $uri     Request URI.
+	 * @param mixed $uri     Request URI. Supports objects such as Models, WP_Post, and WP_Term.
 	 * @param array $headers Request headers.
 	 */
-	public function get( $uri, array $headers = [] ): Test_Response {
+	public function get( mixed $uri, array $headers = [] ): Test_Response {
 		return $this->create_pending_request()->get( $uri, $headers );
 	}
 
@@ -371,6 +371,15 @@ trait Makes_Http_Requests {
 	 */
 	public function options_json( $uri, array $data = [], array $headers = [], int $options = 0 ) {
 		return $this->create_pending_request()->json( 'OPTIONS', $uri, $data, $headers, $options );
+	}
+
+	/**
+	 * Create a post and make a request to it.
+	 *
+	 * @param array<string, mixed> $args Arguments for the post.
+	 */
+	public function fetch_post( array $args = [] ): Test_Response {
+		return $this->get( static::factory()->post->create_and_get( $args ) );
 	}
 
 	/**

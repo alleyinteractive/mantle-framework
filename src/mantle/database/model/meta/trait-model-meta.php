@@ -8,6 +8,7 @@
 namespace Mantle\Database\Model\Meta;
 
 use BackedEnum;
+use Mantle\Database\Factory\Factory;
 use Mantle\Database\Model\Model_Exception;
 
 /**
@@ -145,6 +146,10 @@ trait Model_Meta {
 	protected function serialize_value_for_storage( mixed $value ): mixed {
 		if ( $value instanceof BackedEnum ) {
 			return $value->value;
+		}
+
+		if ( $value instanceof Factory ) {
+			return $value->create();
 		}
 
 		return $value;

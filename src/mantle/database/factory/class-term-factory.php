@@ -50,8 +50,8 @@ class Term_Factory extends Factory {
 	 */
 	public function definition(): array {
 		return [
-			'description' => trim( $this->faker->paragraph( 2 ) ),
-			'name'        => $this->faker->words( wp_rand( 2, 4 ), true ),
+			'description' => trim( $this->faker->paragraph( 1 ) ),
+			'name'        => $this->faker->unique()->words( wp_rand( 2, 4 ), true ),
 			'taxonomy'    => $this->taxonomy,
 		];
 	}

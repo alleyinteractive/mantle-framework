@@ -377,6 +377,21 @@ EOF
 		] );
 
 		$response = $this->http_factory->pool( fn ( Pool $pool ) => [
+			$pool->get( 'https://example.com/async/' ),
+			$pool->post( 'https://example.com/second-async/' ),
+		] );
+
+		$this->assertEquals( 200, $response[0]->status() );
+		$this->assertEquals( 402, $response[1]->status() );
+	}
+
+	public function test_pool_requests_legacy() {
+		$this->fake_request( [
+			'https://example.com/async/' => Mock_Http_Response::create()->with_status( 200 ),
+			'https://example.com/second-async/' => Mock_Http_Response::create()->with_status( 402 ),
+		] );
+
+		$response = $this->http_factory->pool( fn ( Pool $pool ) => [
 			$pool->method( 'get' )->url( 'https://example.com/async/' ),
 			$pool->method( 'get' )->url( 'https://example.com/second-async/' ),
 		] );

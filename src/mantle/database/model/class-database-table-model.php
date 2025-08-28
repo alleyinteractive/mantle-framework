@@ -80,7 +80,7 @@ abstract class Database_Table_Model extends Model implements Updatable {
 		if ( $this->exists ) {
 			$result = $wpdb->update( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 				$wpdb->prefix . static::get_table_name(),
-				$this->get_attributes(),
+				$this->get_attributes_for_insert(),
 				[ static::$primary_key => $this->get_attribute( static::$primary_key ) ],
 			);
 
@@ -93,7 +93,7 @@ abstract class Database_Table_Model extends Model implements Updatable {
 				);
 			}
 		} else {
-			$result = $wpdb->insert( $wpdb->prefix . static::get_table_name(), $this->get_attributes() ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+			$result = $wpdb->insert( $wpdb->prefix . static::get_table_name(), $this->get_attributes_for_insert() ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 
 			if ( ! $result ) {
 				throw new Model_Exception(

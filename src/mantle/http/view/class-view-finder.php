@@ -237,7 +237,7 @@ class View_Finder {
 	 */
 	public function get_possible_view_files( string $name ): array {
 		return array_map(
-			fn ( $extension ) => "{$name}.{$extension}",
+			fn ( string $extension ) => "{$name}.{$extension}",
 			$this->extensions
 		);
 	}

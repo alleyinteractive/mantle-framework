@@ -7,13 +7,72 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+
+- Adjusted the bootstrap of parallel unit testing.
+
+## v1.9.0
+
 ### Added
 
+- Added support for casting database attributes as enums.
+- Added `subdomain()` method to the blog factory.
+- Added `create_many_and_get()` method to factories.
+
+### Changed
+
+- Adjusted the scheduled event system to use a recurring scheduled event instead of a single event.
+- Adjusted `Mantle\Http_Client\Request` to return `mixed` for the `body()` method.
+- Dump query conditionals with `dump()` on a HTTP test.
+
+### Fixed
+
+- Clear the `the_post` hook after each request to prevent side effects.
+- Fixed issue with `uri()` helper needing `null` passed to use the current URI.
+- Fixed issue with HTTPS requests appending `:80` to the host with the `Uri` class.
+
+## v1.8.8
+
+### Fixed
+
+- Ensure that all autoloaded PHP files are properly checked for existence before being included.
+
+## v1.8.7
+
+### Changed
+
+- Adjusted the format of pooled HTTP requests to use `Pooled_Pending_Request`
+  class methods which support direct chaining of methods like `put()`, `post()`,
+  etc.
+- Passing a database factory as model meta will now automatically create the
+  model instance and set the model's ID as the meta value.
+
+### Fixed
+
+- Fixed an issue where `Mantle\Http_Client\http_client()` would be declared twice.
+
+## v1.8.6
+
+### Fixed
+
+- Fixed the order of attributes returned by
+  `Mantle\Support\Reflector::get_attributes_for_class()` to maintain inheritance
+  order (parent -> child).
+
+## v1.8.5
+
+### Added
+
+- Added `Mantle\Support\Reflector::get_attributes_for_class()` method to
+  retrieve attributes for a class (with parents), with support for filtering by
+  attribute name and flags.
 - Added `first_or_create()` method to all factories to allow for creating a model if it doesn't exist.
 
 ### Changed
 
-- Adjusted the bootstrap of parallel unit testing.
+- `Mantle\Testing\Concerns\Reads_Annotations::get_attributes_for_method()`
+  method will now return attributes for the passed class as well as any parent
+  classes. You can disable this by passing `false` for the `$inherit` parameter.
 
 ## v1.8.4
 

@@ -5,6 +5,7 @@ namespace Mantle\Tests\Database\Factory;
 use Mantle\Database\Factory;
 use Mantle\Database\Factory\Post_Factory;
 use Mantle\Database\Model;
+use Mantle\Database\Model\Post;
 use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
@@ -15,13 +16,38 @@ use PHPUnit\Framework\Attributes\Group;
 #[Group( 'factory' )]
 class FactoryTest extends FrameworkTestCase {
 	public function test_create_basic_model() {
-		$factory = Testable_Post::factory();
+		$factory = Post::factory();
 
 		$this->assertInstanceOf( Factory\Post_Factory::class, $factory );
 
 		$post = $factory->create_and_get();
 
-		$this->assertInstanceOf( Testable_Post::class, $post );
+		$this->assertInstanceOf( Post::class, $post );
+	}
+
+	public function test_create_many(): void {
+		$factory = Post::factory();
+
+		$this->assertInstanceOf( Factory\Post_Factory::class, $factory );
+
+		$post_ids = $factory->create_many( 5 );
+
+		$this->assertCount( 5, $post_ids );
+
+		foreach ( $post_ids as $post_id ) {
+			$this->assertIsInt( $post_id );
+		}
+	}
+
+	public function test_create_many_and_get(): void {
+		$factory = Post::factory();
+
+		$this->assertInstanceOf( Factory\Post_Factory::class, $factory );
+
+		$posts = $factory->create_many_and_get( 5 );
+
+		$this->assertCount( 5, $posts );
+		$this->assertContainsOnlyInstancesOf( Post::class, $posts );
 	}
 
 	public function test_create_model_with_custom_factory() {

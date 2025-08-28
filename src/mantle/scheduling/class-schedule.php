@@ -13,6 +13,7 @@ use DateTimeZone;
 use Mantle\Console\Command;
 use Mantle\Contracts\Application;
 use Mantle\Contracts\Container;
+use Mantle\Contracts\Exceptions\Handler;
 use Mantle\Contracts\Queue\Job;
 use Mantle\Support\Collection;
 use RuntimeException;
@@ -49,9 +50,7 @@ class Schedule {
 	 * @param DateTimeZone $timezone Timezone instance, optional.
 	 */
 	public function __construct( protected Application $container, ?DateTimeZone $timezone = null ) {
-		if ( $timezone instanceof \DateTimeZone ) {
-			$this->timezone = $timezone;
-		}
+		$this->timezone = $timezone instanceof \DateTimeZone ? $timezone : \wp_timezone();
 	}
 
 	/**
@@ -64,19 +63,27 @@ class Schedule {
 	/**
 	 * Schedule the WordPress cron event for the scheduler.
 	 */
-	public static function schedule_cron_event(): void {
+	public function schedule_cron_event(): void {
 		if ( ! is_blog_installed() ) {
 			return;
 		}
 
 		if ( ! wp_next_scheduled( static::CRON_HOOK ) ) {
-			\wp_schedule_single_event( time() + MINUTE_IN_SECONDS, static::CRON_HOOK );
+			$result = wp_schedule_event( time(), 'mantle_schedule_every_minute', static::CRON_HOOK, [], true );
+
+			if ( is_wp_error( $result ) ) {
+				$this->container[ Handler::class ]->report(
+					new \RuntimeException( $result->get_error_message() ),
+				);
+			}
 		}
 
-		\add_action(
-			static::CRON_HOOK,
-			fn () => app( static::class )->run_due_events(),
-		);
+		\add_action( static::CRON_HOOK, function (): void {
+			// Set a limit of 60 seconds because the event runs every minute.
+			set_time_limit( 60 );
+
+			$this->run_due_events();
+		} );
 	}
 
 	/**

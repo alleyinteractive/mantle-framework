@@ -266,9 +266,9 @@ function stringable( string $string = '' ): Stringable {
  * Create a new Uri object from the given URI string.
  * If no URI is provided, it will capture the current request URI.
  *
- * @param string|null $uri The URI to create the Uri object from.
+ * @param string|null $uri The URI to create the Uri object from. Defaults to the current request URI.
  */
-function uri( ?string $uri ): Uri {
+function uri( ?string $uri = null ): Uri {
 	return $uri ? Uri::of( $uri ) : Uri::current();
 }
 

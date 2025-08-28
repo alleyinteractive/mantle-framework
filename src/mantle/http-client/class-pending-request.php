@@ -9,27 +9,30 @@
 
 namespace Mantle\Http_Client;
 
-use DateTimeInterface;
 use InvalidArgumentException;
 use Mantle\Support\Pipeline;
 use Mantle\Support\Traits\Conditionable;
 use Mantle\Support\Traits\Macroable;
 
-use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\retry;
 use function Mantle\Support\Helpers\tap;
 
 /**
  * Pending Request to be made with the Http Client.
+ *
+ * This class is in transition to remove the more dynamic get/set methods that
+ * exist together to two sets of methods. For example, `url()` will become
+ * `get_url()` and `set_url()` and so on.
  */
 class Pending_Request {
+	use Concerns\Caches_Requests;
 	use Conditionable;
 	use Macroable;
 
 	/**
 	 * Base URL for the request.
 	 */
-	protected string $base_url = '';
+	protected ?string $base_url = null;
 
 	/**
 	 * Method for the request.
@@ -75,11 +78,6 @@ class Pending_Request {
 	protected array $middleware = [];
 
 	/**
-	 * Flag if the request is for a pooled request.
-	 */
-	protected bool $pooled = false;
-
-	/**
 	 * Create an instance of the Http Client
 	 */
 	public static function create(): static {
@@ -112,49 +110,23 @@ class Pending_Request {
 	}
 
 	/**
-	 * Enable caching for the request.
+	 * Set the base URL for the pending request.
 	 *
-	 * @param int|DateTimeInterface|callable(Pending_Request $request): int $ttl Time to live for the cache.
+	 * @param string|null $url Base URL.
 	 */
-	public function cache( int|DateTimeInterface|callable $ttl = 3600 ): static {
-		// Check if there is a caching middleware.
-		if ( collect( $this->middleware )->contains( fn ( $middleware ) => $middleware instanceof Cache_Middleware ) ) {
-			return $this;
+	public function base_url( ?string $url = null ): static|string|null {
+		if ( is_null( $url ) ) {
+			return $this->get_base_url();
 		}
 
-		return $this->prepend_middleware( new Cache_Middleware( $ttl ) );
+		return $this->set_base_url( $url );
 	}
 
 	/**
-	 * Purge the cache for the request.
-	 *
-	 * @throws InvalidArgumentException If the request has no URL or is not cached.
-	 *
-	 * @param string|null             $url URL to purge, optional.
-	 * @param string|Http_Method|null $method Method to purge, optional.
+	 * Retrieve the base URL for the pending request.
 	 */
-	public function purge( ?string $url = null, string|Http_Method|null $method = null ): bool {
-		if ( ! is_null( $url ) ) {
-			$this->url( $url );
-		}
-
-		if ( ! is_null( $method ) ) {
-			$this->method( $method );
-		}
-
-		if ( empty( $this->url ) ) {
-			throw new InvalidArgumentException( 'Cannot purge cache for a request that has no URL. Call url() first.' );
-		}
-
-		$middleware = collect( $this->middleware )->first( fn ( $middleware ) => $middleware instanceof Cache_Middleware );
-
-		if ( ! $middleware ) {
-			throw new InvalidArgumentException( 'Cannot purge cache for a request that is not cached. Call cache() first.' );
-		}
-
-		assert( $middleware instanceof Cache_Middleware );
-
-		return $middleware->purge( $this );
+	public function get_base_url(): ?string {
+		return $this->base_url;
 	}
 
 	/**
@@ -162,11 +134,7 @@ class Pending_Request {
 	 *
 	 * @param string|null $url Base URL.
 	 */
-	public function base_url( ?string $url = null ): static|string {
-		if ( is_null( $url ) ) {
-			return $this->base_url;
-		}
-
+	public function set_base_url( ?string $url ): static {
 		$this->base_url = $url;
 
 		return $this;
@@ -177,12 +145,28 @@ class Pending_Request {
 	 *
 	 * @param string|null $url URL for the request, optional.
 	 */
-	public function url( string|null $url = null ): static|string {
+	public function url( string|null $url = null ): static|string|null {
 		if ( is_null( $url ) ) {
-			return $this->url;
+			return $this->get_url();
 		}
 
-		$this->url = ltrim( rtrim( $this->base_url, '/' ) . '/' . ltrim( $url, '/' ), '/' );
+		return $this->set_url( $url );
+	}
+
+	/**
+	 * Retrieve the URL for the request.
+	 */
+	public function get_url(): ?string {
+		return $this->url ?? null;
+	}
+
+	/**
+	 * Set the URL for the request.
+	 *
+	 * @param string $url URL for the request.
+	 */
+	public function set_url( string $url ): static {
+		$this->url = ltrim( rtrim( $this->base_url ?? '', '/' ) . '/' . ltrim( $url, '/' ), '/' );
 
 		return $this;
 	}
@@ -194,9 +178,25 @@ class Pending_Request {
 	 */
 	public function method( string|Http_Method|null $method = null ): static|Http_Method {
 		if ( is_null( $method ) ) {
-			return $this->method;
+			return $this->get_method();
 		}
 
+		return $this->set_method( $method );
+	}
+
+	/**
+	 * Retrieve the method for the request.
+	 */
+	public function get_method(): Http_Method {
+		return $this->method;
+	}
+
+	/**
+	 * Set the HTTP method for the request.
+	 *
+	 * @param Http_Method $method HTTP Method to set.
+	 */
+	public function set_method( Http_Method|string $method ): static {
 		if ( is_string( $method ) ) {
 			$method = Http_Method::from( strtoupper( $method ) );
 		}
@@ -544,16 +544,11 @@ class Pending_Request {
 	/**
 	 * Issue a GET request to the given URL.
 	 *
-	 * @throws InvalidArgumentException If the request is pooled.
-	 *
 	 * @param  string                           $url URL to retrieve.
 	 * @param  array<string, mixed>|string|null $query Query parameters (assumed to be urlencoded).
+	 * @return Response
 	 */
-	public function get( string $url, array|string|null $query = null ): Response {
-		if ( $this->pooled ) {
-			throw new InvalidArgumentException( 'Cannot call get() on a pooled request.' );
-		}
-
+	public function get( string $url, array|string|null $query = null ): mixed {
 		return $this->send(
 			Http_Method::GET,
 			$url,
@@ -564,16 +559,11 @@ class Pending_Request {
 	/**
 	 * Issue a HEAD request to the given URL.
 	 *
-	 * @throws InvalidArgumentException If the request is pooled.
-	 *
 	 * @param  string                           $url URL to retrieve.
 	 * @param  array<string, mixed>|string|null $query Query parameters (assumed to be urlencoded).
+	 * @return Response
 	 */
-	public function head( string $url, array|string|null $query = null ): Response {
-		if ( $this->pooled ) {
-			throw new InvalidArgumentException( 'Cannot call head() on a pooled request.' );
-		}
-
+	public function head( string $url, array|string|null $query = null ): mixed {
 		return $this->send(
 			Http_Method::HEAD,
 			$url,
@@ -584,16 +574,11 @@ class Pending_Request {
 	/**
 	 * Issue a POST request to the given URL.
 	 *
-	 * @throws InvalidArgumentException If the request is pooled.
-	 *
 	 * @param  string                    $url URL to post.
 	 * @param  array<string, mixed>|null $data Data to send with the request.
+	 * @return Response
 	 */
-	public function post( string $url, ?array $data = null ): Response {
-		if ( $this->pooled ) {
-			throw new InvalidArgumentException( 'Cannot call post() on a pooled request.' );
-		}
-
+	public function post( string $url, ?array $data = null ): mixed {
 		return $this->send(
 			Http_Method::POST,
 			$url,
@@ -604,16 +589,11 @@ class Pending_Request {
 	/**
 	 * Issue a PATCH request to the given URL.
 	 *
-	 * @throws InvalidArgumentException If the request is pooled.
-	 *
 	 * @param  string                    $url URL to patch.
 	 * @param  array<string, mixed>|null $data Data to send with the request.
+	 * @return Response
 	 */
-	public function patch( string $url, ?array $data = null ): Response {
-		if ( $this->pooled ) {
-			throw new InvalidArgumentException( 'Cannot call patch() on a pooled request.' );
-		}
-
+	public function patch( string $url, ?array $data = null ): mixed {
 		return $this->send(
 			Http_Method::PATCH,
 			$url,
@@ -624,16 +604,11 @@ class Pending_Request {
 	/**
 	 * Issue a PUT request to the given URL.
 	 *
-	 * @throws InvalidArgumentException If the request is pooled.
-	 *
 	 * @param  string                    $url URL to put.
 	 * @param  array<string, mixed>|null $data Data to send with the request.
+	 * @return Response
 	 */
-	public function put( string $url, ?array $data = null ): Response {
-		if ( $this->pooled ) {
-			throw new InvalidArgumentException( 'Cannot call put() on a pooled request.' );
-		}
-
+	public function put( string $url, ?array $data = null ): mixed {
 		return $this->send(
 			Http_Method::PUT,
 			$url,
@@ -644,16 +619,11 @@ class Pending_Request {
 	/**
 	 * Issue a DELETE request to the given URL.
 	 *
-	 * @throws InvalidArgumentException If the request is pooled.
-	 *
 	 * @param  string                    $url URL to delete.
 	 * @param  array<string, mixed>|null $data Data to send with the request.
+	 * @return Response
 	 */
-	public function delete( string $url, ?array $data = null ): Response {
-		if ( $this->pooled ) {
-			throw new InvalidArgumentException( 'Cannot call delete() on a pooled request.' );
-		}
-
+	public function delete( string $url, ?array $data = null ): mixed {
 		return $this->send(
 			Http_Method::DELETE,
 			$url,
@@ -674,7 +644,7 @@ class Pending_Request {
 	 */
 	public function send( string|Http_Method|null $method = null, ?string $url = null, array $options = [] ): mixed {
 		if ( $url ) {
-			$this->url( $url );
+			$this->set_url( $url );
 		}
 
 		if ( empty( $this->url ) ) {
@@ -682,21 +652,12 @@ class Pending_Request {
 		}
 
 		if ( $method ) {
-			$this->method( $method );
+			$this->set_method( $method );
 		}
 
 		$this->options = array_merge( $this->options, $options );
 
-		// Ensure some options are always set.
-		$this->options['throw_exception'] ??= false;
-		$this->options['retry']             = max( 1, $this->options['retry'] ?? 1 );
-
-		$this->prepare_request_url();
-
-		// If this is a pooled request, return the instance of the request.
-		if ( $this->pooled ) {
-			return $this;
-		}
+		$this->prepare_request();
 
 		return retry(
 			$this->options['retry'],
@@ -732,20 +693,10 @@ class Pending_Request {
 	}
 
 	/**
-	 * Determine if this is a pooled request.
-	 *
-	 * @param bool $pooled Whether this is a pooled request.
-	 */
-	public function pooled( bool $pooled = true ): static {
-		$this->pooled = $pooled;
-
-		return $this;
-	}
-
-	/**
 	 * Create a pool request from the current pending request.
 	 *
 	 * @param callable $callback Callback to build the HTTP pool.
+	 * @phpstan-param (callable(Pool $pool): array<int|string, Response>) $callback
 	 * @return array<int|string, Response>
 	 */
 	public function pool( callable $callback ): array {
@@ -753,9 +704,12 @@ class Pending_Request {
 	}
 
 	/**
-	 * Prepare the request URL.
+	 * Prepare the request before sending it.
 	 */
-	protected function prepare_request_url(): void {
+	public function prepare_request(): void {
+		$this->options['throw_exception'] ??= false;
+		$this->options['retry']             = max( 1, $this->options['retry'] ?? 1 );
+
 		if ( isset( $this->options['query'] ) ) {
 			if ( is_array( $this->options['query'] ) ) {
 				$this->url = add_query_arg( $this->options['query'], $this->url );

@@ -268,6 +268,15 @@ abstract class Factory {
 	}
 
 	/**
+	 * Alias for `state()`.
+	 *
+	 * @param (callable(array<string, mixed>): array<string, mixed>|array<string, mixed>) $state The state transformation.
+	 */
+	public function with( array|callable $state ): static {
+		return $this->state( $state );
+	}
+
+	/**
 	 * Creates multiple objects.
 	 *
 	 * @param int   $count Amount of objects to create.
@@ -275,13 +284,27 @@ abstract class Factory {
 	 *
 	 * @return array<int, int>
 	 */
-	public function create_many( int $count, array $args = [] ) {
+	public function create_many( int $count, array $args = [] ): array {
 		return collect()
 			->pad( $count, null )
-			->map(
-				fn () => $this->create( $args ),
-			)
+			->map( fn () => $this->create( $args ) )
 			->to_array();
+	}
+
+
+	/**
+	 * Creates multiple objects and returns their objects.
+	 *
+	 * @param int   $count Amount of objects to create.
+	 * @param array $args  Optional. The arguments for the object to create. Default is empty array.
+	 *
+	 * @return array<int, TReturnValue>
+	 */
+	public function create_many_and_get( int $count, array $args = [] ): array {
+		return collect()
+			->pad( $count, null )
+			->map( fn () => $this->create_and_get( $args ) )
+			->all();
 	}
 
 	/**

@@ -12,7 +12,10 @@ use ReflectionNamedType;
 use ReflectionUnionType;
 
 /**
- * Reflector Support
+ * Reflector class.
+ *
+ * Provides methods to inspect classes, methods, and parameters, including
+ * reading attributes and determining parameter types.
  */
 class Reflector {
 	/**
@@ -98,7 +101,7 @@ class Reflector {
 	 * @param  \ReflectionParameter $parameter
 	 * @param  string               $class_name
 	 */
-	public static function is_parameter_subclass_of( $parameter, $class_name ): bool {
+	public static function is_parameter_subclass_of( \ReflectionParameter $parameter, string $class_name ): bool {
 		$param_class_name = static::get_parameter_class_name( $parameter );
 
 		return $param_class_name && class_exists( $param_class_name ) && ( new ReflectionClass( $param_class_name ) )->isSubclassOf( $class_name );
@@ -113,9 +116,11 @@ class Reflector {
 	 * @param  string            $method    The method name.
 	 * @param  class-string|null $attribute The attribute name to filter by, or null for all attributes.
 	 * @param  int               $flags     Flags to pass to getAttributes().
+	 * @param  bool              $inherit   Whether to include attributes from parent classes.
+	 * @param  bool              $inherit_from_class Whether to include attributes from the class itself.
 	 * @return array<\ReflectionAttribute>
 	 */
-	public static function get_attributes_for_method( object|string $class, string $method, ?string $attribute = null, int $flags = 0 ): array {
+	public static function get_attributes_for_method( object|string $class, string $method, ?string $attribute = null, int $flags = 0, bool $inherit = true, bool $inherit_from_class = true ): array {
 		$reflection = new ReflectionClass( $class );
 
 		if ( ! $reflection->hasMethod( $method ) ) {
@@ -123,8 +128,36 @@ class Reflector {
 		}
 
 		return [
-			...$reflection->getAttributes( $attribute, $flags ),
+			...( $inherit_from_class ? static::get_attributes_for_class( $class, $attribute, $flags, $inherit ) : [] ),
 			...$reflection->getMethod( $method )->getAttributes( $attribute, $flags ),
 		];
+	}
+
+	/**
+	 * Retrieve attributes for a class.
+	 *
+	 * Supports attributes on the class and all parent classes.
+	 *
+	 * @param object|string $class The class name or object instance.
+	 * @param string|null   $attribute The attribute name to filter by, or null for all attributes.
+	 * @param int           $flags Flags to pass to getAttributes().
+	 * @param bool          $inherit Whether to include attributes from parent classes.
+	 * @return array<\ReflectionAttribute> Returned in inheritance order (parent -> child).
+	 */
+	public static function get_attributes_for_class( object|string $class, ?string $attribute = null, int $flags = 0, bool $inherit = true ): array {
+		$reflection = new ReflectionClass( $class );
+
+		$attributes = $reflection->getAttributes( $attribute, $flags );
+
+		if ( ! $inherit ) {
+			return $attributes;
+		}
+
+		while ( $reflection = $reflection->getParentClass() ) { // phpcs:ignore Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition
+			$attributes = array_merge( $attributes, $reflection->getAttributes( $attribute, $flags ) );
+		}
+
+		// Reverse the order of attributes to maintain inheritance order (parent -> child).
+		return array_reverse( $attributes );
 	}
 }

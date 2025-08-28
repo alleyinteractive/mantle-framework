@@ -12,14 +12,15 @@ namespace Mantle\Testing\Concerns;
 use Closure;
 use InvalidArgumentException;
 use Mantle\Contracts\Support\Arrayable;
+use Mantle\Http_Client\Http_Method;
 use Mantle\Http_Client\Request;
-use Mantle\Support\Arr;
 use Mantle\Support\Collection;
 use Mantle\Support\Str;
 use Mantle\Testing\Mock_Http_Response;
 use Mantle\Testing\Mock_Http_Sequence;
 use Mantle\Testing\Utils;
 use PHPUnit\Framework\Assert as PHPUnit;
+use ReflectionFunction;
 use RuntimeException;
 use WP_Error;
 
@@ -133,6 +134,7 @@ trait Interacts_With_Requests {
 	 *   $this->fake_request( fn () => Mock_Http_Response::create()->with_body( 'test body' ) );
 	 *   $this->fake_request( 'https://testing.com/', fn () => Mock_Http_Response::create()->with_body( 'test body' ) );
 	 *   $this->fake_request( [ 'https://example.org' => Mock_Http_Response::create()->with_body( 'test body' ) ] );
+	 *   $this->fake_request( fn ( \Mantle\Http_Client\Request $request ) => Mock_Http_Response::create()->with_json( [ 1, 2, 3 ] ) );
 	 *
 	 * @link https://mantle.alley.com/docs/testing/remote-requests#faking-requests Documentation
 	 *
@@ -142,15 +144,15 @@ trait Interacts_With_Requests {
 	 *
 	 * @template TCallableReturn of Mock_Http_Sequence|Mock_Http_Response|Arrayable|null
 	 *
-	 * @param (callable(string, array): TCallableReturn)|Mock_Http_Response|string|array<string, Mock_Http_Response|callable> $url_or_callback URL to fake, array of URL and response pairs, or a closure
+	 * @param (callable(string|Request, ?array): TCallableReturn)|Mock_Http_Response|string|array<string, Mock_Http_Response|callable> $url_or_callback URL to fake, array of URL and response pairs, or a closure
 	 *                                                                                                                                         that will return a faked response.
 	 * @param Mock_Http_Response|array<mixed>|callable $response Optional response object, defaults to a 200 response with no body.
-	 * @param string $method Optional request method to apply to, defaults to all. Does not apply to array of URL and response pairs OR callbacks.
+	 * @param Http_Method|string|null $method Optional request method to apply to, defaults to all. Does not apply to array of URL and response pairs OR callbacks.
 	 */
 	public function fake_request(
 		Mock_Http_Response|callable|string|array|null $url_or_callback = null,
 		Mock_Http_Response|array|callable|null $response = null,
-		?string $method = null
+		Http_Method|string|null $method = null
 	): static|Mock_Http_Response {
 		if ( is_array( $url_or_callback ) ) {
 			$this->stub_callbacks = $this->stub_callbacks->merge(
@@ -218,10 +220,10 @@ trait Interacts_With_Requests {
 	/**
 	 * Fluently build a fake request sequence.
 	 *
-	 * @param string             $url URL to fake (supports * for wildcard matching).
-	 * @param string|null        $method Request method, optional.
+	 * @param string                  $url URL to fake (supports * for wildcard matching).
+	 * @param Http_Method|string|null $method Request method, optional.
 	 */
-	public function fake_request_sequence( string $url, ?string $method = null ): Mock_Http_Sequence {
+	public function fake_request_sequence( string $url, Http_Method|string|null $method = null ): Mock_Http_Sequence {
 		$sequence = Mock_Http_Sequence::create();
 
 		$this->fake_request( [ $url => $sequence ], method: $method );
@@ -297,9 +299,20 @@ trait Interacts_With_Requests {
 	protected function get_stub_response( string $url, array $request_args ): array|WP_Error|null {
 		if ( ! $this->stub_callbacks->is_empty() ) {
 			foreach ( $this->stub_callbacks as $stub_callback ) {
-				$response = $stub_callback( $url, $request_args );
+				$reflector = $stub_callback instanceof Closure ? new ReflectionFunction( $stub_callback ) : null;
 
-				if ( $response instanceof Mock_Http_Response || $response instanceof Arrayable ) {
+				// Check if the stub callback is expecting a Request object instead of a URL and request arguments.
+				if (
+					$reflector instanceof \ReflectionFunction
+					&& 1 === $reflector->getNumberOfParameters()
+					&& Request::class === (string) $reflector->getParameters()[0]->getType()
+				) {
+					$response = $stub_callback( new Request( $request_args, $url ) );
+				} else {
+					$response = $stub_callback( $url, $request_args );
+				}
+
+				if ( $response instanceof Arrayable ) {
 					return $response->to_array();
 				}
 
@@ -323,6 +336,7 @@ trait Interacts_With_Requests {
 			}
 		}
 
+		// Check if the request is being prevented from making external requests.
 		if ( false !== $this->preventing_stray_requests ) {
 			$prevent = value( $this->preventing_stray_requests );
 
@@ -382,13 +396,17 @@ trait Interacts_With_Requests {
 	 *
 	 * @param string                                   $url URL to stub.
 	 * @param callable|Mock_Http_Response|array<mixed> $response Response to send.
-	 * @param string                                   $method Request method, optional.
+	 * @param string|Http_Method|null                  $method Request method, optional.
 	 * @phpstan-return StubCallback
 	 */
-	protected function create_stub_request_callback( string $url, Mock_Http_Response|callable|array $response, ?string $method = null ): Closure {
+	protected function create_stub_request_callback( string $url, Mock_Http_Response|callable|array $response, string|Http_Method|null $method = null ): Closure {
 		return function ( string $request_url, array $request_args ) use ( $url, $response, $method ): mixed {
 			if ( ! Str::is( Str::start( $url, '*' ), $request_url ) ) {
 				return null;
+			}
+
+			if ( $method instanceof Http_Method ) {
+				$method = $method->value;
 			}
 
 			// Validate the request method for the stub callback.

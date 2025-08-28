@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           token: ${{ secrets.ALLEY_CI_KEY }}
 
@@ -56,7 +56,12 @@ jobs:
             echo "Invalid version: $version"
             exit 1
           fi
-          gh auth status
+
+          if gh release view "$version" > /dev/null 2>&1; then
+            echo "Release $version already exists. Skipping release creation."
+            exit 0
+          fi
+
           gh release create "$version" \
             --title "$version" \
             --notes-file RELEASE_NOTES.md \

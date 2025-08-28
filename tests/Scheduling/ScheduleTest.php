@@ -3,16 +3,21 @@ namespace Mantle\Tests\Scheduling;
 
 use Mantle\Testing\FrameworkTestCase;
 use Mantle\Contracts\Container;
+use Mantle\Facade\Schedule as Facade;
 use Mantle\Scheduling\Event;
 use Mantle\Scheduling\Schedule;
 use Mantle\Testing\Mock_Http_Response;
 use Mockery as m;
 
-class EventTest extends FrameworkTestCase {
+class ScheduleTest extends FrameworkTestCase {
 	protected function tearDown(): void {
 		parent::tearDown();
 
 		m::close();
+	}
+
+	public function test_cron_event_is_scheduled(): void {
+		$this->assertInCronQueue( Schedule::CRON_HOOK );
 	}
 
 	public function test_running_event() {
@@ -20,22 +25,15 @@ class EventTest extends FrameworkTestCase {
 		$_SERVER['__event_shouldnt_run'] = false;
 
 		$schedule = $this->app->make(Schedule::class);
-		$schedule
-			->call(
-				function() {
-					$_SERVER['__event_should_run'] = true;
-				}
-			)
-			->when( function() { return true; } );
+		assert( $schedule instanceof Schedule );
+		$schedule->call( function() {
+			$_SERVER['__event_should_run'] = true;
+		} )->when( fn () => true );
 
 		// Setup an event that shouldn't be run because of a filter.
-		$schedule
-			->call(
-				function() {
-					$_SERVER['__event_shouldnt_run'] = true;
-				}
-			)
-			->skip( function() { return true; } );
+		$schedule->call( function() {
+			$_SERVER['__event_shouldnt_run'] = true;
+		} )->skip( fn () => true );
 
 		$schedule->run_due_events();
 
@@ -83,5 +81,17 @@ class EventTest extends FrameworkTestCase {
 		$this->assertTrue( $thenCalled );
 
 		$this->assertRequestSent( 'https://httpstat.us/500' );
+	}
+
+	public function test_schedule_with_facade(): void {
+		$_SERVER['__run'] = false;
+
+		Facade::call( function () {
+			$_SERVER['__run'] = true;
+		} )->when( fn () => true );
+
+		$this->app->make(Schedule::class)->run_due_events();
+
+		$this->assertTrue( $_SERVER['__run'] );
 	}
 }
