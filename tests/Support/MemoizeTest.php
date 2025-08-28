@@ -11,6 +11,7 @@ class MemoizeTest extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
+		Memoize::enable();
 		Memoize::flush();
 	}
 
