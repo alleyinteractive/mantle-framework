@@ -12,6 +12,7 @@ use InvalidArgumentException;
 use LogicException;
 use Mantle\Support\Collection;
 use Mantle\Support\Traits\Macroable;
+use Mantle\Support\Traits\Response_Assertions;
 use SimpleXMLElement;
 use WP_Error;
 use WP_Http_Cookie;
@@ -48,6 +49,7 @@ use function Mantle\Support\Helpers\data_get;
  */
 class Response implements ArrayAccess {
 	use Macroable;
+	use Response_Assertions;
 
 	/**
 	 * The decoded JSON response.
@@ -424,5 +426,43 @@ class Response implements ArrayAccess {
 	 */
 	public function offsetUnset( mixed $offset ): void {
 		throw new LogicException( 'Response values are read-only.' );
+	}
+
+	/**
+	 * Implementation for Response_Assertions trait.
+	 * Get the response status code.
+	 */
+	protected function getResponseStatusCode(): int {
+		return $this->status();
+	}
+
+	/**
+	 * Implementation for Response_Assertions trait.
+	 * Get a response header.
+	 *
+	 * @param string $header Header name.
+	 * @param mixed  $default Default value if header not found.
+	 * @return mixed
+	 */
+	protected function getResponseHeader( string $header, mixed $default = null ): mixed {
+		return $this->header( $header ) ?? $default;
+	}
+
+	/**
+	 * Implementation for Response_Assertions trait.
+	 * Get the response content/body.
+	 */
+	protected function getResponseContent(): ?string {
+		return $this->body();
+	}
+
+	/**
+	 * Implementation for Response_Assertions trait.
+	 * Get all response headers.
+	 *
+	 * @return array<string, mixed>
+	 */
+	protected function getResponseHeaders(): array {
+		return $this->headers();
 	}
 }
