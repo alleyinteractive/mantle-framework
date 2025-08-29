@@ -301,15 +301,23 @@ trait Interacts_With_Requests {
 			foreach ( $this->stub_callbacks as $stub_callback ) {
 				$reflector = $stub_callback instanceof Closure ? new ReflectionFunction( $stub_callback ) : null;
 
+				$request = new Request( $request_args, $url );
+
 				// Check if the stub callback is expecting a Request object instead of a URL and request arguments.
 				if (
 					$reflector instanceof \ReflectionFunction
 					&& 1 === $reflector->getNumberOfParameters()
 					&& Request::class === (string) $reflector->getParameters()[0]->getType()
 				) {
-					$response = $stub_callback( new Request( $request_args, $url ) );
+					$response = $stub_callback( $request );
 				} else {
 					$response = $stub_callback( $url, $request_args );
+				}
+
+				// If the response is a Mock_Http_Response that is using a snapshot,
+				// fetch the snapshot from storage or make the request.
+				if ( $response instanceof Mock_Http_Response && $response->snapshot ) {
+					$response->process_snapshot( $request );
 				}
 
 				if ( $response instanceof Arrayable ) {

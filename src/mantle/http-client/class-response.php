@@ -8,7 +8,6 @@
 namespace Mantle\Http_Client;
 
 use ArrayAccess;
-use InvalidArgumentException;
 use LogicException;
 use Mantle\Support\Collection;
 use Mantle\Support\Traits\Macroable;
@@ -34,7 +33,7 @@ use function Mantle\Support\Helpers\data_get;
  *   },
  * }
  *
- * @phpstan-type InternalResponse array{
+ * @phpstan-type WpHttpRequestResponse array{
  *   body?: string,
  *   cookies?: \WP_Http_Cookie[],
  *   filename?: string|null,
@@ -64,7 +63,7 @@ class Response implements ArrayAccess {
 	/**
 	 * Processed response from `wp_remote_request()`.
 	 *
-	 * @var InternalResponse
+	 * @var WpHttpRequestResponses
 	 */
 	protected array $response = [];
 
@@ -119,7 +118,7 @@ class Response implements ArrayAccess {
 	/**
 	 * Retrieve the raw response from `wp_remote_request()`.
 	 *
-	 * @return InternalResponse
+	 * @return WpHttpRequestResponse
 	 */
 	public function response(): array {
 		return $this->response;

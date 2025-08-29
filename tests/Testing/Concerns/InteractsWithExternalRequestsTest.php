@@ -449,4 +449,15 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		$this->assertEquals( Http_Method::GET->value, $object->method() );
 		$this->assertEquals( Http_Method::GET, $object->enum_method() );
 	}
+
+	public function test_fake_request_with_snapshot(): void {
+		$this->fake_request( 'https://httpbin.org/json' )->with_snapshot();
+
+		$response = Http::get( 'https://httpbin.org/json' );
+
+		// TODO: HTTP Client assertions.
+
+		$this->assertEquals( 200, $response->status() );
+		$this->assertNotEmpty( $response->json() );
+	}
 }

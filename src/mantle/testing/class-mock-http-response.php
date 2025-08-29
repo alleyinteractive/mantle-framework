@@ -7,7 +7,9 @@
 
 namespace Mantle\Testing;
 
+use Mantle\Container\Container;
 use Mantle\Contracts\Support\Arrayable;
+use Mantle\Http_Client\Request;
 use Mantle\Support\Traits\Conditionable;
 use Mantle\Support\Traits\Macroable;
 
@@ -21,6 +23,8 @@ use Mantle\Support\Traits\Macroable;
  *         ->with_response_code( 404 )
  *         ->with_body( '{"error":true}' )
  *         ->with_header( 'Content-Type', 'application/json' );
+ *
+ * @phpstan-import-type WpHttpRequestResponses from \Mantle\Http_Client\Response
  */
 class Mock_Http_Response implements Arrayable {
 	use Conditionable;
@@ -29,9 +33,14 @@ class Mock_Http_Response implements Arrayable {
 	/**
 	 * Response data.
 	 *
-	 * @var array<mixed>
+	 * @var WpHttpRequestResponses
 	 */
-	public $response = [];
+	public array $response = [];
+
+	/**
+	 * Flag if a snapshot should be used to mock the response.
+	 */
+	public bool $snapshot = false;
 
 	/**
 	 * Http Sequences
@@ -44,8 +53,8 @@ class Mock_Http_Response implements Arrayable {
 	/**
 	 * Mock_Http_Response constructor.
 	 *
-	 * @param string $body    Response body.
-	 * @param array  $headers Response headers.
+	 * @param string                $body    Response body.
+	 * @param array<string, string> $headers Response headers.
 	 */
 	public function __construct( string $body = '', array $headers = [] ) {
 		$this->response = [
@@ -292,6 +301,15 @@ class Mock_Http_Response implements Arrayable {
 	}
 
 	/**
+	 * Generate a response from a snapshot file.
+	 */
+	public function with_snapshot(): static {
+		$this->snapshot = true;
+
+		return $this;
+	}
+
+	/**
 	 * Returns the combined response array.
 	 *
 	 * @return array WP_Http response array, per WP_Http::request().
@@ -305,5 +323,18 @@ class Mock_Http_Response implements Arrayable {
 	 */
 	public function to_response(): \Mantle\Http_Client\Response {
 		return \Mantle\Http_Client\Response::create( $this->response );
+	}
+
+	/**
+	 * Fetch the snapshot from storage or make an actual request.
+	 *
+	 * @param Request $request
+	 */
+	public function process_snapshot( Request $request ): void {
+		if ( ! $this->snapshot ) {
+			return;
+		}
+
+		dd('perocess');
 	}
 }
