@@ -340,7 +340,7 @@ abstract class TestCase extends BaseTestCase {
 
 		Model::set_event_dispatcher( $this->app['events'] );
 
-		$this->app[ TestCase::class ] = $this;
+		$this->app[ self::class ] = $this;
 	}
 
 	/**
