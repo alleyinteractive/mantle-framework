@@ -461,5 +461,14 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		// TODO: HTTP Client assertions.
 		$this->assertEquals( 200, $response->status() );
 		$this->assertNotEmpty( $response->json() );
+
+		// Assert that the request was made but was not a "real" request.
+		$this->assertRequestSent();
+		$this->assertRequestSent( 'http://alley.com/not-found-ever' );
+		$this->assertRequestSent( 'https://alley.com/wp-json/wp/v2/posts/5038' );
+
+		$this->assertActualRequestNotSent();
+		$this->assertActualRequestNotSent( 'https://alley.com/not-found-ever' );
+		$this->assertActualRequestNotSent( 'https://alley.com/wp-json/wp/v2/posts/5038' );
 	}
 }

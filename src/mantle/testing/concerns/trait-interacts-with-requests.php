@@ -261,9 +261,10 @@ trait Interacts_With_Requests {
 			return $preempt;
 		}
 
-		$request = new Request( $request_args, $url );
+		$request    = new Request( $request_args, $url );
+		$next_index = count( $this->recorded_requests );
 
-		$this->recorded_requests[] = $request;
+		$this->recorded_requests[ $next_index ] = $request;
 
 		$stub = $this->get_stub_response( $url, $request_args );
 
@@ -285,7 +286,7 @@ trait Interacts_With_Requests {
 		// This is not output in real-time to ensure the notice is output after
 		// requests on the page are complete. Otherwise the notice could be removed
 		// by wrapping with an output buffer.
-		$this->recorded_actual_requests[] = match ( true ) {
+		$this->recorded_actual_requests[ $next_index ] = match ( true ) {
 			method_exists( $this, 'nameWithDataSet' ) => static::class . '::' . $this->nameWithDataSet(),
 			method_exists( $this, 'name' ) => static::class . '::' . $this->name(),
 			method_exists( $this, 'getName' ) => static::class . '::' . $this->getName(),
@@ -441,14 +442,42 @@ trait Interacts_With_Requests {
 	/**
 	 * Get a collection of the request pairs matching the given truth test.
 	 *
+	 * This included mocked and non-mocked HTTP requests.
+	 *
 	 * @param callable $callback Callback to invoke on each request.
 	 */
 	protected function recorded_requests( callable $callback ): Collection {
-		if ( empty( $this->recorded_requests ) ) {
+		if ( $this->recorded_requests->is_empty() ) {
 				return collect();
 		}
 
 		return collect( $this->recorded_requests )->filter( fn ( Request $response ) => $callback( $response ) );
+	}
+
+	/**
+	 * Get a collection of the actual requests matching the given truth test.
+	 *
+	 * This only includes non-mocked HTTP requests.
+	 *
+	 * @param callable $callback Callback to invoke on each request.
+	 * @phpstan-param callable(Request): bool $callback
+	 */
+	protected function recorded_actual_requests( callable $callback ): Collection {
+		if ( $this->recorded_actual_requests->is_empty() ) {
+			return collect();
+		}
+
+		return collect( $this->recorded_actual_requests )->filter(
+			function ( string $name, int $index ) use ( $callback ) {
+				$request = $this->recorded_requests[ $index ] ?? null;
+
+				if ( is_null( $request ) ) {
+					throw new RuntimeException( "Request not found for index [{$index}]." );
+				}
+
+				return $callback( $request );
+			}
+		);
 	}
 
 	/**
@@ -470,6 +499,7 @@ trait Interacts_With_Requests {
 	 *                                         check against specific request information.
 	 * @param int             $expected_times Number of times the request should have been
 	 *                                        sent, optional.
+	 * @phpstan-param (callable(Request $request): bool)|string|null $url_or_callback
 	 */
 	public function assertRequestSent( string|callable|null $url_or_callback = null, ?int $expected_times = null ): void {
 		if ( is_null( $url_or_callback ) ) {
@@ -498,10 +528,11 @@ trait Interacts_With_Requests {
 	 * Assert that a request was not sent.
 	 *
 	 * @param string|callable $url_or_callback URL to check against or callback.
+	 * @phpstan-param (callable(Request $request): bool)|string|null $url_or_callback
 	 */
 	public function assertRequestNotSent( string|callable|null $url_or_callback = null ): void {
 		if ( is_string( $url_or_callback ) ) {
-			$url_or_callback = fn ( $request ) => Str::is( $url_or_callback, $request->url() );
+			$url_or_callback = fn ( Request $request ) => Str::is( $url_or_callback, $request->url() );
 		}
 
 		PHPUnit::assertEquals(
@@ -528,5 +559,61 @@ trait Interacts_With_Requests {
 	 */
 	public function assertRequestCount( int $count ): void {
 		PHPUnit::assertCount( $count, $this->recorded_requests );
+	}
+
+	/**
+	 * Assert an actual request was sent.
+	 *
+	 * @param string|callable|null $expected URL to check against or callback.
+	 * @phpstan-param (callable(Request $request): bool)|string $expected
+	 */
+	public function assertActualRequestSent( string|callable|null $expected = null ): void {
+		if ( is_null( $expected ) ) {
+			PHPUnit::assertTrue( $this->recorded_actual_requests->is_not_empty(), 'An actual request was made.' );
+
+			return;
+		}
+
+		if ( is_string( $expected ) ) {
+			$expected = fn ( Request $request ) => Str::is( $expected, $request->url() );
+		}
+
+		PHPUnit::assertTrue(
+			$this->recorded_actual_requests( $expected )->is_not_empty(),
+			'An expected actual request was not recorded.'
+		);
+	}
+
+	/**
+	 * Assert an actual request was not sent.
+	 *
+	 * @param string|callable|null $expected URL to check against or callback.
+	 * @phpstan-param (callable(Request $request): bool)|string|null $expected
+	 */
+	public function assertActualRequestNotSent( string|callable|null $expected = null ): void {
+		if ( is_null( $expected ) ) {
+			PHPUnit::assertTrue( $this->recorded_actual_requests->is_empty(), 'An actual request was made.' );
+
+			return;
+		}
+
+		if ( is_string( $expected ) ) {
+			$expected = fn ( Request $request ) => Str::is( $expected, $request->url() );
+		}
+
+		PHPUnit::assertEquals(
+			0,
+			$this->recorded_actual_requests( $expected )->count(),
+			'An unexpected actual request was recorded.'
+		);
+	}
+
+	/**
+	 * Assert against the actual request count.
+	 *
+	 * @param int $expected Expected request count.
+	 */
+	public function assertActualRequestCount( int $expected ): void {
+		PHPUnit::assertCount( $expected, $this->recorded_actual_requests );
 	}
 }
