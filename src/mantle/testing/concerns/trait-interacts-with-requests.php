@@ -28,7 +28,7 @@ use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\value;
 
 /**
- * Allow Mock HTTP Requests
+ * Mock HTTP Requests
  *
  * @mixin \PHPUnit\Framework\TestCase
  *
@@ -281,8 +281,16 @@ trait Interacts_With_Requests {
 			return $stub;
 		}
 
-		// Store the actual request for later reporting.
-		$this->recorded_actual_requests[] = method_exists( $this, 'getName' ) ? static::class . '::' . $this->getName() : static::class;
+		// Store the actual request for later reporting after the test is complete.
+		// This is not output in real-time to ensure the notice is output after
+		// requests on the page are complete. Otherwise the notice could be removed
+		// by wrapping with an output buffer.
+		$this->recorded_actual_requests[] = match ( true ) {
+			method_exists( $this, 'nameWithDataSet' ) => static::class . '::' . $this->nameWithDataSet(),
+			method_exists( $this, 'name' ) => static::class . '::' . $this->name(),
+			method_exists( $this, 'getName' ) => static::class . '::' . $this->getName(),
+			default => static::class,
+		};
 
 		return $preempt;
 	}
@@ -317,7 +325,7 @@ trait Interacts_With_Requests {
 				// If the response is a Mock_Http_Response that is using a snapshot,
 				// fetch the snapshot from storage or make the request.
 				if ( $response instanceof Mock_Http_Response && $response->snapshot ) {
-					$response->process_snapshot( $request );
+					return $response->process_from_snapshot( $request );
 				}
 
 				if ( $response instanceof Arrayable ) {
@@ -447,10 +455,6 @@ trait Interacts_With_Requests {
 	 * Report any stray requests that were made during the unit test.
 	 */
 	protected function report_stray_requests(): void {
-		if ( ! isset( $this->recorded_actual_requests ) || $this->recorded_actual_requests->is_empty() ) {
-			return;
-		}
-
 		$this->recorded_actual_requests->map(
 			fn ( $method, $index ) => Utils::info(
 				"An HTTP request was made in <span class='font-bold'>{$method}</span> to <span class='font-bold'>{$this->recorded_requests[ $index ]->url()}</span> but no faked response was found.",

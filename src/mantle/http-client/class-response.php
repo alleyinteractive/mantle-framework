@@ -63,9 +63,9 @@ class Response implements ArrayAccess {
 	/**
 	 * Processed response from `wp_remote_request()`.
 	 *
-	 * @var WpHttpRequestResponses
+	 * @var WpHttpRequestResponse[]
 	 */
-	protected array $response = [];
+	protected array $response;
 
 	/**
 	 * Constructor.

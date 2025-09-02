@@ -24,23 +24,19 @@ use Mantle\Support\Traits\Macroable;
  *         ->with_body( '{"error":true}' )
  *         ->with_header( 'Content-Type', 'application/json' );
  *
- * @phpstan-import-type WpHttpRequestResponses from \Mantle\Http_Client\Response
+ * @phpstan-import-type WpHttpRequestResponse from \Mantle\Http_Client\Response
  */
 class Mock_Http_Response implements Arrayable {
+	use Concerns\Snapshots\Mock_Http_Response_With_Snapshots;
 	use Conditionable;
 	use Macroable;
 
 	/**
 	 * Response data.
 	 *
-	 * @var WpHttpRequestResponses
+	 * @var WpHttpRequestResponse
 	 */
-	public array $response = [];
-
-	/**
-	 * Flag if a snapshot should be used to mock the response.
-	 */
-	public bool $snapshot = false;
+	public array $response;
 
 	/**
 	 * Http Sequences
@@ -323,18 +319,5 @@ class Mock_Http_Response implements Arrayable {
 	 */
 	public function to_response(): \Mantle\Http_Client\Response {
 		return \Mantle\Http_Client\Response::create( $this->response );
-	}
-
-	/**
-	 * Fetch the snapshot from storage or make an actual request.
-	 *
-	 * @param Request $request
-	 */
-	public function process_snapshot( Request $request ): void {
-		if ( ! $this->snapshot ) {
-			return;
-		}
-
-		dd('perocess');
 	}
 }
