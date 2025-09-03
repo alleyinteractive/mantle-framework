@@ -14,6 +14,7 @@ use Mantle\Database\Model\Model;
 use Mantle\Facade\Facade;
 use Mantle\Framework\Alias_Loader;
 use Mantle\Support\Collection;
+use Mantle\Support\Memoize;
 use Mantle\Testing\Concerns\Admin_Screen;
 use Mantle\Testing\Concerns\Assertions;
 use Mantle\Testing\Concerns\Core_Shim;
@@ -106,6 +107,8 @@ abstract class TestCase extends BaseTestCase {
 		if ( class_exists( \Spatie\Once\Cache::class ) ) {
 			\Spatie\Once\Cache::getInstance()->disable();
 		}
+
+		Memoize::disable();
 
 		static::register_traits();
 

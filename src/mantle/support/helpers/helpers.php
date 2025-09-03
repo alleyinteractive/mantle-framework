@@ -19,5 +19,6 @@ require_once __DIR__ . '/helpers-environment.php';
 require_once __DIR__ . '/helpers-general.php';
 require_once __DIR__ . '/helpers-log.php';
 require_once __DIR__ . '/helpers-meta-data.php';
+require_once __DIR__ . '/helpers-memoize.php';
 require_once __DIR__ . '/helpers-rest-api.php';
 require_once __DIR__ . '/helpers-validated-hook-removal.php';
