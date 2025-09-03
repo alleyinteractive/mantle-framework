@@ -7,6 +7,8 @@
 
 namespace Mantle\Http_Client;
 
+use WP_Error;
+
 use function Alley\WP\Concurrent_Remote_Requests\wp_remote_request;
 
 /**
@@ -63,7 +65,7 @@ class Pool {
 			throw new Http_Client_Exception( Response::create( $results ) );
 		}
 
-		return array_map( fn ( array $result ) => Response::create( $result ), $results );
+		return array_map( fn ( array|WP_Error $result ) => Response::create( $result ), $results );
 	}
 
 	/**
