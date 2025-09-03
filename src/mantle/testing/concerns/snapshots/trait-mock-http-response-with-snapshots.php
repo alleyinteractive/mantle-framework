@@ -61,7 +61,6 @@ trait Mock_Http_Response_With_Snapshots {
 	 * Fetch the snapshot from storage or make an actual request.
 	 *
 	 * @throws InvalidArgumentException Thrown when called without snapshot being set to true.
-	 * @todo Add support for updating snapshots.
 	 *
 	 * @param Request $request
 	 */
@@ -73,7 +72,7 @@ trait Mock_Http_Response_With_Snapshots {
 		$this->request       = $request;
 		$this->snapshot_file = $this->get_snapshot_path( $request );
 
-		if ( ! file_exists( $this->snapshot_file ) ) {
+		if ( $this->should_update_snapshots() || ! file_exists( $this->snapshot_file ) ) {
 			if ( Utils::is_ci() ) {
 				$this->get_test_case()->fail(
 					'Snapshot does not exist for a request that is being mocked with a snapshot: ' . $request->url(),
@@ -143,6 +142,23 @@ trait Mock_Http_Response_With_Snapshots {
 			$request->enum_method()->value,
 			str_replace( [ '/', ':', DIRECTORY_SEPARATOR ], '-', $request->url() ),
 		] )->join( '-' );
+	}
+
+	/**
+	 * Determines whether or not the snapshot should be updated instead of
+	 * matched.
+	 *
+	 * Mirrors the logic from spatie/phpunit-snapshot-assertions.
+	 *
+	 * Override this method it you want to use a different flag or mechanism
+	 * than `-d --update-snapshots` or `UPDATE_SNAPSHOTS=true` env var.
+	 */
+	private function should_update_snapshots(): bool {
+		if ( in_array( '--update-snapshots', $_SERVER['argv'], true ) ) { // phpcs:ignore
+			return true;
+		}
+
+		return getenv( 'UPDATE_SNAPSHOTS' ) === 'true';
 	}
 
 	/**
