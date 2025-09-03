@@ -7,9 +7,7 @@
 
 namespace Mantle\Testing;
 
-use Mantle\Container\Container;
 use Mantle\Contracts\Support\Arrayable;
-use Mantle\Http_Client\Request;
 use Mantle\Support\Traits\Conditionable;
 use Mantle\Support\Traits\Macroable;
 

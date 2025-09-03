@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Added `with_snapshot()` to `Mantle\Testing\Mock_Http_Response` to allow for
+  mocking of a HTTP request from a stored snapshot.
+
 ### Changed
 
 - Adjusted the bootstrap of parallel unit testing.
