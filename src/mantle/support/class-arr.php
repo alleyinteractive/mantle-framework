@@ -607,11 +607,15 @@ class Arr {
 	/**
 	 * Filter the array using the given callback.
 	 *
-	 * @param  array<mixed> $array Array to process.
-	 * @param  callable     $callback Callback to filter by.
-	 * @return array<mixed>
+	 * @template TData of array
+	 *
+	 * @param  TData    $array Array to process.
+	 * @param  callable $callback Callback to filter by.
+	 * @return TData
+	 *
+	 * @phpstan-param (callable(value-of<TData>, key-of<TData>): bool) $callback
 	 */
-	public static function where( $array, callable $callback ): array {
+	public static function where( array $array, callable $callback ): array {
 		return array_filter( $array, $callback, ARRAY_FILTER_USE_BOTH );
 	}
 
