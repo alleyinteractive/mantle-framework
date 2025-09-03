@@ -11,14 +11,12 @@ namespace Mantle\Testing\Concerns\Snapshots;
 
 use InvalidArgumentException;
 use Mantle\Container\Container;
+use Mantle\Filesystem\Filesystem;
 use Mantle\Http_Client\Request;
 use Mantle\Http_Client\Response;
-use Mantle\Testing\Mock_Http_Response;
 use Mantle\Testing\TestCase;
 use Mantle\Testing\Utils;
 use ReflectionClass;
-use Spatie\Snapshots\Drivers\JsonDriver;
-use Spatie\Snapshots\Snapshot;
 
 use function Mantle\Support\Helpers\collect;
 
@@ -31,6 +29,8 @@ use function Mantle\Support\Helpers\collect;
  * test run, the test will fail.
  *
  * @mixin \Mantle\Testing\Mock_Http_Response
+ * @phpstan-import-type CoreResponse from \Mantle\Http_Client\Response
+ * @phpstan-import-type WpHttpRequestResponse from \Mantle\Http_Client\Response
  */
 trait Mock_Http_Response_With_Snapshots {
 	/**
@@ -39,9 +39,9 @@ trait Mock_Http_Response_With_Snapshots {
 	public bool $snapshot = false;
 
 	/**
-	 * Internal Snapshot instance.
+	 * Path to snapshot file.
 	 */
-	private Snapshot $snapshot_instance;
+	private string $snapshot_file;
 
 	/**
 	 * Internal Request instance.
@@ -60,6 +60,7 @@ trait Mock_Http_Response_With_Snapshots {
 	/**
 	 * Fetch the snapshot from storage or make an actual request.
 	 *
+	 * @throws InvalidArgumentException Thrown when called without snapshot being set to true.
 	 * @todo Add support for updating snapshots.
 	 *
 	 * @param Request $request
@@ -69,11 +70,10 @@ trait Mock_Http_Response_With_Snapshots {
 			throw new InvalidArgumentException( 'Snapshot not enabled for mocked request.' );
 		}
 
-		$this->request = $request;
+		$this->request       = $request;
+		$this->snapshot_file = $this->get_snapshot_path( $request );
 
-		$this->snapshot_instance = $this->get_snapshot_for_request( $request );
-
-		if ( ! $this->snapshot_instance->exists() ) {
+		if ( ! file_exists( $this->snapshot_file ) ) {
 			if ( Utils::is_ci() ) {
 				$this->get_test_case()->fail(
 					'Snapshot does not exist for a request that is being mocked with a snapshot: ' . $request->url(),
@@ -86,10 +86,10 @@ trait Mock_Http_Response_With_Snapshots {
 			return null;
 		}
 
-		$contents = wp_json_file_decode( $this->get_snapshot_path( $request ), [ 'associative' => true ] );
+		$contents = wp_json_file_decode( $this->snapshot_file, [ 'associative' => true ] );
 
 		if ( ! is_array( $contents ) ) {
-			Utils::error( 'Snapshot file is not valid JSON: ' . $this->get_snapshot_path( $request ), 'HTTP Requests' );
+			Utils::error( 'Snapshot file is not valid JSON: ' . $this->snapshot_file, 'HTTP Requests' );
 
 			return null;
 		}
@@ -105,40 +105,19 @@ trait Mock_Http_Response_With_Snapshots {
 	}
 
 	/**
-	 * Retrieve the snapshot for the request.
+	 * Retrieve the snapshot path for the request.
 	 *
-	 * @param Request $request
+	 * @param Request $request Request object.
 	 */
-	private function get_snapshot_for_request( Request $request ): Snapshot {
-		return Snapshot::forTestCase(
-			$this->get_snapshot_id( $request ),
-			$this->get_snapshot_directory(),
-			new JsonDriver(),
-		);
-	}
-
-	/*
-	 * Determines the snapshot's id. By default, the test case's class and
-	 * method names are used.
-	 */
-	private function get_snapshot_id( Request $request ): string {
-		$test_case = $this->get_test_case();
-
-		return collect( [
-			$test_case->nameWithDataSet(),
-			$request->enum_method()->value,
-			str_replace( [ '/', ':', DIRECTORY_SEPARATOR ], '-', $request->url() ),
-		] )->join( '-' );
-	}
-
 	private function get_snapshot_path( Request $request ): string {
 		return $this->get_snapshot_directory() . DIRECTORY_SEPARATOR . $this->get_snapshot_id( $request ) . '.json';
 	}
 
-	/*
-	 * Determines the directory where snapshots are stored. By default a
-	 * `__http_snapshots__` directory is created at the same level as the test
-	 * class.
+	/**
+	 * Determines the directory where snapshots are stored.
+	 *
+	 * By default a `__http_snapshots__` directory is created at the same level as
+	 * the test class.
 	 */
 	private function get_snapshot_directory(): string {
 		$reflection = new ReflectionClass( $this->get_test_case() );
@@ -151,12 +130,28 @@ trait Mock_Http_Response_With_Snapshots {
 	}
 
 	/**
+	 * Determines the snapshot's id. By default, the test case's class and
+	 * method names are used.
+	 *
+	 * @param Request $request
+	 */
+	private function get_snapshot_id( Request $request ): string {
+		$test_case = $this->get_test_case();
+
+		return collect( [
+			$test_case->nameWithDataSet(),
+			$request->enum_method()->value,
+			str_replace( [ '/', ':', DIRECTORY_SEPARATOR ], '-', $request->url() ),
+		] )->join( '-' );
+	}
+
+	/**
 	 * Store the HTTP response as a snapshot.
 	 *
-	 * @param array $response
-	 * @param array $args
-	 * @param string $url
-	 * @return array
+	 * @param CoreResponse $response Response from WordPress.
+	 * @param array<mixed> $args Arguments for the request.
+	 * @param string       $url URL for the request.
+	 * @return CoreResponse
 	 */
 	public function capture_http_response_for_snapshot( array $response, array $args, string $url ): array {
 		if ( ! isset( $this->request ) ) {
@@ -171,11 +166,12 @@ trait Mock_Http_Response_With_Snapshots {
 		// Remove the one-time filter.
 		remove_filter( 'http_response', [ $this, 'capture_http_response_for_snapshot' ], 10 );
 
-		$response = Response::create( $response )->response();
+		$filesystem = new Filesystem();
+
+		$filesystem->ensure_directory_exists( dirname( $this->snapshot_file ) );
+		$filesystem->put_json( $this->snapshot_file, Response::create( $response )->response() );
 
 		Utils::info( 'Snapshot has been created for a mocked HTTP request to: ' . $url, 'HTTP Requests' );
-
-		$this->snapshot_instance->create( $response );
 
 		return $response;
 	}

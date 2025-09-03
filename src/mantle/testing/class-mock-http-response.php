@@ -310,7 +310,7 @@ class Mock_Http_Response implements Arrayable {
 	 *
 	 * @return array WP_Http response array, per WP_Http::request().
 	 */
-	public function to_array() {
+	public function to_array(): array {
 		return $this->response;
 	}
 
