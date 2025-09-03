@@ -618,8 +618,10 @@ class Arr {
 	/**
 	 * If the given value is not an array and not null, wrap it in one.
 	 *
-	 * @param  mixed $value Value to wrap by.
-	 * @return array<mixed>
+	 * @template T
+	 *
+	 * @param  T $value Value to wrap by.
+	 * @phpstan-return (T is array ? T : array<T>)
 	 */
 	public static function wrap( mixed $value ): array {
 		if ( is_null( $value ) ) {
