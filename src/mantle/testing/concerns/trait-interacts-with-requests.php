@@ -16,6 +16,7 @@ use Mantle\Http_Client\Http_Method;
 use Mantle\Http_Client\Request;
 use Mantle\Support\Collection;
 use Mantle\Support\Str;
+use Mantle\Testing\Exceptions\Stray_Request_Exception;
 use Mantle\Testing\Mock_Http_Response;
 use Mantle\Testing\Mock_Http_Sequence;
 use Mantle\Testing\Utils;
@@ -282,10 +283,14 @@ trait Interacts_With_Requests {
 			return $stub;
 		}
 
-		// Store the actual request for later reporting after the test is complete.
-		// This is not output in real-time to ensure the notice is output after
-		// requests on the page are complete. Otherwise the notice could be removed
-		// by wrapping with an output buffer.
+		/**
+		 * At this point, we know the request will be made.
+		 *
+		 * Store the actual request for later reporting after the test is complete.
+		 * This is not output in real-time to ensure the notice is output after
+		 * requests on the page are complete. Otherwise the notice could be removed
+		 * by wrapping with an output buffer.
+		 */
 		$this->recorded_actual_requests[ $next_index ] = match ( true ) {
 			method_exists( $this, 'nameWithDataSet' ) => static::class . '::' . $this->nameWithDataSet(),
 			method_exists( $this, 'name' ) => static::class . '::' . $this->name(),
@@ -299,18 +304,19 @@ trait Interacts_With_Requests {
 	/**
 	 * Retrieve the stub response for a given request URL and arguments.
 	 *
-	 * @throws RuntimeException If the request was made without a matching
-	 *                          faked request when external requests are prevented.
+	 * @throws InvalidArgumentException If an unknown response type is returned from a stub callback.
+	 * @throws Stray_Request_Exception If the request was made without a matching
+	 *                                 faked request when external requests are prevented.
 	 *
 	 * @param string $url          Request URL.
 	 * @param array  $request_args Request arguments.
 	 */
 	protected function get_stub_response( string $url, array $request_args ): array|WP_Error|null {
+		$request = new Request( $request_args, $url );
+
 		if ( ! $this->stub_callbacks->is_empty() ) {
 			foreach ( $this->stub_callbacks as $stub_callback ) {
 				$reflector = $stub_callback instanceof Closure ? new ReflectionFunction( $stub_callback ) : null;
-
-				$request = new Request( $request_args, $url );
 
 				// Check if the stub callback is expecting a Request object instead of a URL and request arguments.
 				if (
@@ -335,7 +341,7 @@ trait Interacts_With_Requests {
 
 				// Throw an error when an unknown response type is returned from the callback.
 				if ( $response && ! is_array( $response ) && ! is_wp_error( $response ) ) {
-					throw new RuntimeException(
+					throw new InvalidArgumentException(
 						sprintf(
 							'Unknown response type returned for faked request to [%s]. Expected a (%s|%s|%s|array), got %s.',
 							$url,
@@ -366,7 +372,7 @@ trait Interacts_With_Requests {
 				return null;
 			}
 
-			throw new RuntimeException( "Attempted request to [{$url}] without a matching fake." );
+			throw new Stray_Request_Exception( "Attempted request to [{$url}] without a matching fake.", $url, $request );
 		}
 
 		return null;

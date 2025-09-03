@@ -25,7 +25,7 @@ use Mantle\Support\Traits\Macroable;
  * @phpstan-import-type WpHttpRequestResponse from \Mantle\Http_Client\Response
  */
 class Mock_Http_Response implements Arrayable {
-	use Concerns\Snapshots\Mock_Http_Response_With_Snapshots;
+	use Concerns\Snapshots\Mocks_Http_Requests;
 	use Conditionable;
 	use Macroable;
 

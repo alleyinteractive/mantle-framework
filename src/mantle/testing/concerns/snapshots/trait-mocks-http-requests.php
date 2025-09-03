@@ -1,6 +1,6 @@
 <?php
 /**
- * Mock_Http_Response_With_Snapshots trait file
+ * Mocks_Http_Requests trait file
  *
  * @package Mantle
  */
@@ -32,7 +32,7 @@ use function Mantle\Support\Helpers\collect;
  * @phpstan-import-type CoreResponse from \Mantle\Http_Client\Response
  * @phpstan-import-type WpHttpRequestResponse from \Mantle\Http_Client\Response
  */
-trait Mock_Http_Response_With_Snapshots {
+trait Mocks_Http_Requests {
 	/**
 	 * Flag if a snapshot should be used to mock the response.
 	 */
@@ -62,7 +62,7 @@ trait Mock_Http_Response_With_Snapshots {
 	 *
 	 * @throws InvalidArgumentException Thrown when called without snapshot being set to true.
 	 *
-	 * @param Request $request
+	 * @param Request $request Current request object.
 	 */
 	public function process_from_snapshot( Request $request ): ?array {
 		if ( ! $this->snapshot ) {
