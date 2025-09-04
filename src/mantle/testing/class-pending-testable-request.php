@@ -229,7 +229,7 @@ class Pending_Testable_Request {
 				$value = end( $value );
 			}
 
-			$name = strtr( strtoupper( $name ), '-', '_' );
+			$name = strtr( strtoupper( (string) $name ), '-', '_' );
 
 			$formatted_headers[ $this->format_server_header_key( $name ) ] = $value;
 		}
@@ -477,7 +477,7 @@ class Pending_Testable_Request {
 
 		// Remove all HTTP_* headers from $_SERVER.
 		foreach ( array_keys( $_SERVER ) as $key ) {
-			if ( str_starts_with( $key, 'HTTP_' ) && 'HTTP_HOST' !== $key ) {
+			if ( str_starts_with( (string) $key, 'HTTP_' ) && 'HTTP_HOST' !== $key ) {
 				unset( $_SERVER[ $key ] );
 			}
 		}
