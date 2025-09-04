@@ -137,11 +137,23 @@ trait Mocks_Http_Requests {
 	private function get_snapshot_id( Request $request ): string {
 		$test_case = $this->get_test_case();
 
-		return collect( [
+		$params = collect( [
 			$test_case->nameWithDataSet(),
 			$request->enum_method()->value,
 			str_replace( [ '/', ':', DIRECTORY_SEPARATOR ], '-', $request->url() ),
-		] )->join( '-' );
+		] );
+
+		if ( $request->body() ) {
+			$params->push( md5( wp_json_encode( $request->body() ) ) );
+		}
+
+		$headers = collect( $request->headers() )->except( 'content-type' )->all();
+
+		if ( ! empty( $headers ) ) {
+			$params->push( md5( wp_json_encode( $headers ) ) );
+		}
+
+		return $params->join( '-' );
 	}
 
 	/**
