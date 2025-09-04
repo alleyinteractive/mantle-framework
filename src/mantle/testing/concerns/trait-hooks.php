@@ -9,6 +9,9 @@
 
 namespace Mantle\Testing\Concerns;
 
+use PHPUnit\Framework\Attributes\After;
+use PHPUnit\Framework\Attributes\Before;
+
 trait Hooks {
 
 	/**
@@ -19,9 +22,13 @@ trait Hooks {
 	protected static $hooks_saved = [];
 
 	/**
-	 * Routines to run during setUp().
+	 * Routines to run before setUp().
+	 *
+	 * @before
+	 * @internal
 	 */
-	public function hooks_set_up(): void {
+	#[Before( 100 )]
+	public function hooks_before(): void {
 		if ( ! self::$hooks_saved ) {
 			self::backup_hooks();
 		}
@@ -29,8 +36,12 @@ trait Hooks {
 
 	/**
 	 * Routines to run during tearDown().
+	 *
+	 * @after
+	 * @internal
 	 */
-	public function hooks_tear_down(): void {
+	#[After( -100 )]
+	public function hooks_after(): void {
 		self::restore_hooks();
 	}
 
