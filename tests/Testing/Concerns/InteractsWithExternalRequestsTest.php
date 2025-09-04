@@ -471,4 +471,17 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		$this->assertActualRequestNotSent( 'https://alley.com/not-found-ever' );
 		$this->assertActualRequestNotSent( 'https://alley.com/wp-json/wp/v2/posts/5038' );
 	}
+
+	public function test_fake_request_with_snapshot_named(): void {
+		$this->fake_request( 'http://alley.com/not-found-with-body' )->with_snapshot( 'snapshot-id' );
+
+		$this->assertEquals( 404, Http::post( 'http://alley.com/not-found-with-body', [
+			'example' => 'here',
+		] )->status() );
+
+		// Assert that the expected snapshot file exists.
+		$this->assertFileExists(
+			__DIR__ . '/__http_snapshots__/InteractsWithExternalRequestsTest/test_fake_request_with_snapshot_named-snapshot-id.json',
+		);
+	}
 }

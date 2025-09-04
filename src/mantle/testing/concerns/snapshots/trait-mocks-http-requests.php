@@ -14,6 +14,7 @@ use Mantle\Container\Container;
 use Mantle\Filesystem\Filesystem;
 use Mantle\Http_Client\Request;
 use Mantle\Http_Client\Response;
+use Mantle\Support\Str;
 use Mantle\Testing\TestCase;
 use Mantle\Testing\Utils;
 use ReflectionClass;
@@ -35,8 +36,10 @@ use function Mantle\Support\Helpers\collect;
 trait Mocks_Http_Requests {
 	/**
 	 * Flag if a snapshot should be used to mock the response.
+	 *
+	 * @var bool|non-empty-string
 	 */
-	public bool $snapshot = false;
+	public bool|string $snapshot = false;
 
 	/**
 	 * Path to snapshot file.
@@ -50,9 +53,21 @@ trait Mocks_Http_Requests {
 
 	/**
 	 * Generate a response from a snapshot file.
+	 *
+	 * @throws InvalidArgumentException Thrown when the snapshot name is an empty string.
+	 *
+	 * @param bool|non-empty-string $snapshot If true, the snapshot name will be generated from the request. The snapshot will converted to a slug with dashes.
 	 */
-	public function with_snapshot(): static {
-		$this->snapshot = true;
+	public function with_snapshot( bool|string $snapshot = true ): static {
+		if ( is_string( $snapshot ) ) {
+			if ( empty( $snapshot ) ) {
+				throw new InvalidArgumentException( 'Snapshot name cannot be an empty string.' );
+			}
+
+			$snapshot = Str::slug( $snapshot, '-' );
+		}
+
+		$this->snapshot = $snapshot;
 
 		return $this;
 	}
@@ -139,9 +154,19 @@ trait Mocks_Http_Requests {
 
 		$params = collect( [
 			$test_case->nameWithDataSet(),
+		] );
+
+		if ( is_string( $this->snapshot ) ) {
+			$params->push( $this->snapshot );
+
+			return $params->join( '-' );
+		}
+
+		// Include the request in the snapshot ID if one wasn't provided.
+		$params->push(
 			$request->enum_method()->value,
 			str_replace( [ '/', ':', DIRECTORY_SEPARATOR ], '-', $request->url() ),
-		] );
+		);
 
 		if ( $request->body() ) {
 			$params->push( md5( wp_json_encode( $request->body() ) ) );

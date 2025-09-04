@@ -295,15 +295,6 @@ class Mock_Http_Response implements Arrayable {
 	}
 
 	/**
-	 * Generate a response from a snapshot file.
-	 */
-	public function with_snapshot(): static {
-		$this->snapshot = true;
-
-		return $this;
-	}
-
-	/**
 	 * Returns the combined response array.
 	 *
 	 * @return array WP_Http response array, per WP_Http::request().
