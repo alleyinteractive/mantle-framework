@@ -423,7 +423,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 			fn () => new DateTime(),
 		);
 
-		$this->expectException( RuntimeException::class );
+		$this->expectException( InvalidArgumentException::class );
 		$this->expectExceptionMessage( 'Unknown response type returned for faked request to [https://example.com/]. Expected a (Mantle\Testing\Mock_Http_Response|Mantle\Contracts\Support\Arrayable|WP_Error|array), got object.' );
 
 		Http::get( 'https://example.com/' );
