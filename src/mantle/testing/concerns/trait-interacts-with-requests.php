@@ -21,8 +21,6 @@ use Mantle\Testing\Mock_Http_Response;
 use Mantle\Testing\Mock_Http_Sequence;
 use Mantle\Testing\Utils;
 use PHPUnit\Framework\Assert as PHPUnit;
-use PHPUnit\Framework\Attributes\After;
-use PHPUnit\Framework\Attributes\Before;
 use ReflectionFunction;
 use RuntimeException;
 use WP_Error;
@@ -77,8 +75,7 @@ trait Interacts_With_Requests {
 	/**
 	 * Setup the trait.
 	 */
-	#[Before]
-	public function interacts_with_requests_before(): void {
+	public function interacts_with_requests_set_up(): void {
 		$this->stub_callbacks           = collect();
 		$this->recorded_requests        = collect();
 		$this->ignored_strayed_requests = collect();
@@ -90,8 +87,7 @@ trait Interacts_With_Requests {
 	/**
 	 * Remove the filter to intercept the request.
 	 */
-	#[After]
-	public function interacts_with_requests_after(): void {
+	public function interacts_with_requests_tear_down(): void {
 		\remove_filter( 'pre_http_request', [ $this, 'pre_http_request' ], PHP_INT_MAX );
 
 		$this->report_stray_requests();
