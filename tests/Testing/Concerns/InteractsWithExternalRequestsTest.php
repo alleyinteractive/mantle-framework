@@ -451,25 +451,32 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 	}
 
 	public function test_fake_request_with_snapshot(): void {
-		$this->fake_request( 'http://alley.com/not-found-ever' )->with_snapshot();
-		$this->fake_request( 'https://alley.com/wp-json/wp/v2/posts/5038' )->with_snapshot();
+		$this->fake_request( '*alley.com/*' )->with_snapshot();
+		// $this->fake_request( 'https://alley.com/wp-json/*' )->with_snapshot();
 
-		$this->assertEquals( 404, Http::get( 'http://alley.com/not-found-ever' )->status() );
+		$this->assertEquals( 404, Http::get( 'https://alley.com/not-found-ever' )->status() );
 
 		$response = Http::get( 'https://alley.com/wp-json/wp/v2/posts/5038' );
 
-		// TODO: HTTP Client assertions.
 		$this->assertEquals( 200, $response->status() );
 		$this->assertNotEmpty( $response->json() );
 
 		// Assert that the request was made but was not a "real" request.
 		$this->assertRequestSent();
-		$this->assertRequestSent( 'http://alley.com/not-found-ever' );
+		$this->assertRequestSent( 'https://alley.com/not-found-ever' );
 		$this->assertRequestSent( 'https://alley.com/wp-json/wp/v2/posts/5038' );
 
 		$this->assertActualRequestNotSent();
 		$this->assertActualRequestNotSent( 'https://alley.com/not-found-ever' );
 		$this->assertActualRequestNotSent( 'https://alley.com/wp-json/wp/v2/posts/5038' );
+
+		$this->assertFileExists(
+			__DIR__ . '/__http_snapshots__/InteractsWithExternalRequestsTest/test_fake_request_with_snapshot-get-https-alley-com-not-found-ever.json',
+		);
+
+		$this->assertFileExists(
+			__DIR__ . '/__http_snapshots__/InteractsWithExternalRequestsTest/test_fake_request_with_snapshot-get-https-alley-com-wp-json-wp-v2-posts-5038.json',
+		);
 	}
 
 	public function test_fake_request_with_snapshot_named(): void {

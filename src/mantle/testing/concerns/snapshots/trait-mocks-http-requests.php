@@ -54,17 +54,20 @@ trait Mocks_Http_Requests {
 	/**
 	 * Generate a response from a snapshot file.
 	 *
-	 * @throws InvalidArgumentException Thrown when the snapshot name is an empty string.
+	 * @throws InvalidArgumentException Thrown when the snapshot name is empty.
 	 *
-	 * @param bool|non-empty-string $snapshot If true, the snapshot name will be generated from the request. The snapshot will converted to a slug with dashes.
+	 * @param bool|string $snapshot If true, the snapshot name will be generated
+	 *                              from the request. The snapshot will converted
+	 *                              to a slug with dashes.
+	 *
+	 *                              Use caution if you use to match multiple requests with a single
+	 *                              snapshot ID.
+	 *
+	 * @phpstan-param bool|non-empty-string $snapshot
 	 */
 	public function with_snapshot( bool|string $snapshot = true ): static {
-		if ( is_string( $snapshot ) ) {
-			if ( empty( $snapshot ) ) {
-				throw new InvalidArgumentException( 'Snapshot name cannot be an empty string.' );
-			}
-
-			$snapshot = Str::slug( $snapshot, '-' );
+		if ( is_string( $snapshot ) && empty( $snapshot ) ) {
+			throw new InvalidArgumentException( 'Snapshot name cannot be an empty string.' );
 		}
 
 		$this->snapshot = $snapshot;
@@ -164,8 +167,8 @@ trait Mocks_Http_Requests {
 
 		// Include the request in the snapshot ID if one wasn't provided.
 		$params->push(
-			$request->enum_method()->value,
-			str_replace( [ '/', ':', DIRECTORY_SEPARATOR ], '-', $request->url() ),
+			strtolower( $request->enum_method()->value ),
+			Str::slug( str_replace( [ '/', ':', DIRECTORY_SEPARATOR, '.' ], '-', $request->url() ) ),
 		);
 
 		if ( $request->body() ) {
