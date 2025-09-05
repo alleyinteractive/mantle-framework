@@ -8,6 +8,7 @@
 namespace Mantle\Testing\Concerns;
 
 use Mantle\Testing\Mock_Http_Response;
+use PHPUnit\Framework\Attributes\Before;
 
 /**
  * Prevent remote requests from being made by providing a default response to
@@ -18,8 +19,12 @@ use Mantle\Testing\Mock_Http_Response;
 trait Prevent_Remote_Requests {
 	/**
 	 * Setup the trait.
+	 *
+	 * @before
+	 * @internal
 	 */
-	public function prevent_remote_requests_set_up(): void {
+	#[Before]
+	public function before_prevent_remote_requests(): void {
 		if ( ! $this->prevent_remote_requests ) {
 			$this->prevent_stray_requests( new Mock_Http_Response() );
 		}

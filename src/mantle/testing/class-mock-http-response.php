@@ -21,17 +21,20 @@ use Mantle\Support\Traits\Macroable;
  *         ->with_response_code( 404 )
  *         ->with_body( '{"error":true}' )
  *         ->with_header( 'Content-Type', 'application/json' );
+ *
+ * @phpstan-import-type WpHttpRequestResponse from \Mantle\Http_Client\Response
  */
 class Mock_Http_Response implements Arrayable {
+	use Concerns\Snapshots\Mocks_Http_Requests;
 	use Conditionable;
 	use Macroable;
 
 	/**
 	 * Response data.
 	 *
-	 * @var array<mixed>
+	 * @var WpHttpRequestResponse
 	 */
-	public $response = [];
+	public array $response;
 
 	/**
 	 * Http Sequences
@@ -44,8 +47,8 @@ class Mock_Http_Response implements Arrayable {
 	/**
 	 * Mock_Http_Response constructor.
 	 *
-	 * @param string $body    Response body.
-	 * @param array  $headers Response headers.
+	 * @param string                $body    Response body.
+	 * @param array<string, string> $headers Response headers.
 	 */
 	public function __construct( string $body = '', array $headers = [] ) {
 		$this->response = [
@@ -296,7 +299,7 @@ class Mock_Http_Response implements Arrayable {
 	 *
 	 * @return array WP_Http response array, per WP_Http::request().
 	 */
-	public function to_array() {
+	public function to_array(): array {
 		return $this->response;
 	}
 

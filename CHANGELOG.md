@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added `with_snapshot()` to `Mantle\Testing\Mock_Http_Response` to allow for
+  mocking of a HTTP request from a stored snapshot.
 - Added a `memo()` helper to memoize the result of a closure based on its
   dependencies and context.
 

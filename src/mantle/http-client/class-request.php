@@ -106,6 +106,15 @@ readonly class Request {
 	}
 
 	/**
+	 * Retrieve all headers of the request.
+	 *
+	 * @return array<string, string>
+	 */
+	public function headers(): array {
+		return $this->args['headers'];
+	}
+
+	/**
 	 * Retrieve the body of the request.
 	 */
 	public function body(): mixed {

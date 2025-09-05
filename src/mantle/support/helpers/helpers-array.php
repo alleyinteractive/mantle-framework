@@ -30,7 +30,7 @@ function data_get( mixed $target, string|array|int|null $key, mixed $default = n
 		return $target;
 	}
 
-	$key = is_array( $key ) ? $key : explode( '.', $key );
+	$key = is_array( $key ) ? $key : explode( '.', (string) $key );
 
 	foreach ( $key as $i => $segment ) {
 		unset( $key[ $i ] );

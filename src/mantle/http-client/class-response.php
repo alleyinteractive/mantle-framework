@@ -8,7 +8,6 @@
 namespace Mantle\Http_Client;
 
 use ArrayAccess;
-use InvalidArgumentException;
 use LogicException;
 use Mantle\Support\Collection;
 use Mantle\Support\Traits\Macroable;
@@ -34,7 +33,7 @@ use function Mantle\Support\Helpers\data_get;
  *   },
  * }
  *
- * @phpstan-type InternalResponse array{
+ * @phpstan-type WpHttpRequestResponse array{
  *   body?: string,
  *   cookies?: \WP_Http_Cookie[],
  *   filename?: string|null,
@@ -64,18 +63,18 @@ class Response implements ArrayAccess {
 	/**
 	 * Processed response from `wp_remote_request()`.
 	 *
-	 * @var InternalResponse
+	 * @var WpHttpRequestResponse
 	 */
-	protected array $response = [];
+	protected array $response;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param CoreResponse $response Raw response from `wp_remote_request()`.
+	 * @param CoreResponse|WpHttpRequestResponse $response Raw response from `wp_remote_request()`.
 	 */
 	public function __construct( array $response ) {
 		// Serialize the headers from a CaseInsensitiveDictionary to an array.
-		if ( isset( $response['headers'] ) && $response['headers'] instanceof CaseInsensitiveDictionary ) { // @phpstan-ignore-line instanceof.alwaysTrue
+		if ( isset( $response['headers'] ) && $response['headers'] instanceof CaseInsensitiveDictionary ) {
 			$response['headers'] = $response['headers']->getAll();
 		}
 
@@ -88,9 +87,9 @@ class Response implements ArrayAccess {
 	/**
 	 * Create a response object from a `wp_remote_request()` response.
 	 *
-	 * @param CoreResponse|WP_Error $response Raw response from `wp_remote_request()`.
+	 * @param CoreResponse|WpHttpRequestResponse|WP_Error $response Raw response from `wp_remote_request()`.
 	 */
-	public static function create( $response ): static {
+	public static function create( array|WP_Error $response ): static {
 		if ( $response instanceof WP_Error ) {
 			return static::create_from_wp_error( $response );
 		}
@@ -119,7 +118,7 @@ class Response implements ArrayAccess {
 	/**
 	 * Retrieve the raw response from `wp_remote_request()`.
 	 *
-	 * @return InternalResponse
+	 * @return WpHttpRequestResponse
 	 */
 	public function response(): array {
 		return $this->response;
