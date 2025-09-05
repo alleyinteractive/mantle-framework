@@ -6,12 +6,11 @@ parameters:
 	level: 6
 
 	paths:
-		- src/mantle
+		- src/mantle/
 		- mantle.php
+		- tests/phpstan/
 
 	ignoreErrors:
-		-
-			identifier: trait.unused
 		-
 			identifier: staticMethod.resultUnused
 		-
