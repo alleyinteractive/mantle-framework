@@ -29,7 +29,7 @@ function option( string $option, mixed $default = null ): Option {
  * @param mixed  $default  Default value. Default is null.
  */
 function post_meta( int $post_id, string $meta_key, mixed $default = null ): Object_Metadata {
-	return Object_Metadata::of( 'post', $post_id, $meta_key );
+	return Object_Metadata::of( 'post', $post_id, $meta_key, $default );
 }
 
 /**
