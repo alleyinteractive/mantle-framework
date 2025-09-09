@@ -25,9 +25,14 @@ class Object_Metadata implements ArrayAccess, Jsonable, \JsonSerializable, \Stri
 	 * @param string|null $meta_type Meta type.
 	 * @param int|null    $object_id Object ID.
 	 * @param string|null $meta_key Meta key.
+	 * @param mixed       $default Default value. Default is null.
 	 */
-	public static function of( ?string $meta_type, ?int $object_id, ?string $meta_key ): static {
+	public static function of( ?string $meta_type, ?int $object_id, ?string $meta_key, mixed $default = null ): static {
 		$value = get_metadata( $meta_type, $object_id, $meta_key, true );
+
+		if ( '' === $value ) {
+			$value = $default;
+		}
 
 		return new static( $meta_type, $object_id, $meta_key, $value );
 	}
