@@ -11,7 +11,6 @@ use Mantle\Support\Collection;
 use Mantle\Support\Str;
 use Mantle\Testing\Doubles\Spy_REST_Server;
 
-use function Mantle\Support\Helpers\capture;
 use function Mantle\Support\Helpers\collect;
 use function Termwind\render;
 
@@ -68,7 +67,9 @@ class Utils {
 	 * @return false|string Rendered output on success, false on failure.
 	 */
 	public static function get_echo( callable $callable, array $args = [] ): string|false {
-		return capture( fn () => $callable( ...$args ) );
+		ob_start();
+		$callable( ...$args );
+		return ob_get_clean();
 	}
 
 	/**
