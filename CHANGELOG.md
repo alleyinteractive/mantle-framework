@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Limit length of site title to 20 characters in blog factory.
 - When using the `Refresh_Database` trait, all blogs will be deleted in the
   `tearDownAfterClass()` route.
+- Align the `flush_cache()` method in testing to match core's behavior.
 
 ## v1.9.1
 
