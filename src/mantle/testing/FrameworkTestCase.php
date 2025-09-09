@@ -15,6 +15,6 @@ use Mantle\Testing\Concerns\Create_Application;
  *
  * @access private
  */
-abstract class FrameworkTestCase extends Test_Case {
+abstract class FrameworkTestCase extends TestCase {
 	use Create_Application;
 }

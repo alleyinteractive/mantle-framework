@@ -1,6 +1,6 @@
 <?php
 /**
- * Group class file.
+ * Validator_Group class file.
  *
  * @package Mantle
  */
@@ -25,7 +25,7 @@ use ReflectionClass;
  * Validators are defined as attributes on the feature classes that extend
  * {@see \Mantle\Types\Validator}.
  */
-class Group implements Features {
+class Validator_Group implements Features {
 	/**
 	 * Features to include.
 	 *
