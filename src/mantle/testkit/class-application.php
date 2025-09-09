@@ -296,7 +296,7 @@ class Application extends Container implements Application_Contract {
 		$this->singleton(
 			Generator::class,
 			function (): Generator {
-				$factory = Factory::create()->unique();
+				$factory = Factory::create();
 
 				$factory->addProvider( new Faker_Provider( $factory ) );
 
