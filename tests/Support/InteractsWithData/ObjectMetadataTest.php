@@ -38,13 +38,14 @@ class ObjectMetadataTest extends FrameworkTestCase {
 		update_metadata( $object_type, $object_id, 'test_meta', 'test' );
 		update_metadata( $object_type, $object_id, 'another_test_meta', 1234 );
 
-		$method   = "Mantle\\Support\\Helpers\\{$object_type}_meta";
+		$method = "Mantle\\Support\\Helpers\\{$object_type}_meta";
+
 		$metadata = $method( $object_id, 'test_meta' );
 
 		$this->assertEquals( 'test', $metadata->string() );
 		$this->assertEquals( [ 'test' ], $metadata->array() );
 
-		$metadata = Object_Metadata::of( $object_type, $object_id, 'another_test_meta' );
+		$metadata = $method( $object_id, 'another_test_meta' );
 
 		$this->assertEquals( '1234', $metadata->string() );
 		$this->assertEquals( 1234, $metadata->int() );
@@ -78,6 +79,34 @@ class ObjectMetadataTest extends FrameworkTestCase {
 		$metadata->delete();
 
 		$this->assertEmpty( get_metadata( $object_type, $object_id, 'test_meta', true ) );
+	}
+
+	#[DataProvider('objectTypeProvider')]
+	public function test_default_value( string $object_type ): void {
+		$object_id = static::factory()->{$object_type}->create();
+
+		$metadata = Object_Metadata::of( $object_type, $object_id, 'test_meta', 'default' );
+
+		$this->assertEquals( 'default', $metadata->value() );
+		$this->assertEquals( 'default', $metadata->string() );
+		$this->assertEquals( [ 'default' ], $metadata->array() );
+		$this->assertEquals( 0, $metadata->int() );
+		$this->assertEquals( 0.0, $metadata->float() );
+	}
+
+	#[DataProvider('objectTypeProvider')]
+	public function test_default_value_helper( string $object_type ): void {
+		$object_id = static::factory()->{$object_type}->create();
+
+		$method = "Mantle\\Support\\Helpers\\{$object_type}_meta";
+
+		$metadata = $method( $object_id, 'test_meta', 'default' );
+
+		$this->assertEquals( 'default', $metadata->value() );
+		$this->assertEquals( 'default', $metadata->string() );
+		$this->assertEquals( [ 'default' ], $metadata->array() );
+		$this->assertEquals( 0, $metadata->int() );
+		$this->assertEquals( 0.0, $metadata->float() );
 	}
 
 	public static function objectTypeProvider(): array {

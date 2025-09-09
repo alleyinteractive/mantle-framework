@@ -16,6 +16,7 @@
         "alleyinteractive/wp-caper": "^2.0.1 || ^3.0.0",
         "alleyinteractive/wp-concurrent-remote-requests": "^1.0.2",
         "alleyinteractive/wp-filter-side-effects": "^1.0 || ^2.0",
+        "alleyinteractive/wp-type-extensions": ">=3.0.0 <5.0.0",
         "doctrine/inflector": "^2.0.8",
         "dragonmantank/cron-expression": "^3.3.3",
         "fakerphp/faker": "^1.24",
@@ -90,6 +91,7 @@
         "mantle-framework/support": "self.version",
         "mantle-framework/testing": "self.version",
         "mantle-framework/testkit": "self.version",
+        "mantle-framework/types": "self.version",
         "mantle-framework/view": "self.version"
     },
     "conflict": {
