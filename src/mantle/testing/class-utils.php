@@ -11,6 +11,7 @@ use Mantle\Support\Collection;
 use Mantle\Support\Str;
 use Mantle\Testing\Doubles\Spy_REST_Server;
 
+use function Mantle\Support\Helpers\capture;
 use function Mantle\Support\Helpers\collect;
 use function Termwind\render;
 
@@ -66,10 +67,8 @@ class Utils {
 	 * @param array    $args     Arguments to pass to the callable.
 	 * @return false|string Rendered output on success, false on failure.
 	 */
-	public static function get_echo( $callable, $args = [] ): string|false {
-		ob_start();
-		call_user_func_array( $callable, $args );
-		return ob_get_clean();
+	public static function get_echo( callable $callable, array $args = [] ): string|false {
+		return capture( fn () => $callable( ...$args ) );
 	}
 
 	/**
@@ -77,7 +76,7 @@ class Utils {
 	 *
 	 * @param string $status Post status to unregister.
 	 */
-	public static function unregister_post_status( $status ): void {
+	public static function unregister_post_status( string $status ): void {
 		unset( $GLOBALS['wp_post_statuses'][ $status ] );
 	}
 
@@ -279,9 +278,8 @@ class Utils {
 	 *
 	 * @param string $variable Variable to get.
 	 * @param mixed  $default Default value.
-	 * @return mixed
 	 */
-	public static function env( string $variable, $default ) {
+	public static function env( string $variable, mixed $default ): mixed {
 		$value = getenv( $variable );
 
 		return false === $value ? $default : $value;
@@ -488,7 +486,7 @@ class Utils {
 	 * @param-out int         $exit_code Exit code.
 	 * @return string[]
 	 */
-	public static function command( $command, &$exit_code = null ) {
+	public static function command( string|array $command, &$exit_code = null ): array {
 		$is_debug_mode = static::is_debug_mode();
 
 		// Display the command if in debug mode.
