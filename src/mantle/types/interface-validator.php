@@ -18,8 +18,6 @@ namespace Mantle\Types;
 interface Validator {
 	/**
 	 * Method invoked to determine if the feature is valid and should be booted.
-	 *
-	 * @return bool
 	 */
 	public function validate(): bool;
 }

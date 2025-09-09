@@ -35,8 +35,6 @@ class Environment implements Validator {
 
 	/**
 	 * Check if the environment is a match for the current site.
-	 *
-	 * @return bool
 	 */
 	public function validate(): bool {
 		return in_array( wp_get_environment_type(), $this->environments, true );
