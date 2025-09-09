@@ -1,6 +1,6 @@
 <?php
 
-class With_Faker_Trait_Test
+class WithFakerTraitTest
 {
     use Mantle\Testing\Concerns\With_Faker;
 }
