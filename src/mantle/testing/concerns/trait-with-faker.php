@@ -25,8 +25,6 @@ trait With_Faker {
 	 */
 	public function with_faker_set_up(): void {
 		$this->faker = $this->make_faker();
-
-		$this->faker->unique( true );
 	}
 
 	/**
@@ -41,7 +39,7 @@ trait With_Faker {
 			return $this->app->make( Generator::class, [ 'locale' => $locale ] );
 		}
 
-		$generator = Factory::create( $locale );
+		$generator = Factory::create( $locale )->unique();
 
 		$generator->addProvider( new Faker_Provider( $generator ) );
 

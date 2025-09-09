@@ -298,8 +298,6 @@ class Application extends Container implements Application_Contract {
 			function (): Generator {
 				$factory = Factory::create();
 
-				$factory->unique( true );
-
 				$factory->addProvider( new Faker_Provider( $factory ) );
 
 				return $factory;

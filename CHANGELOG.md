@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `tearDownAfterClass()` route.
 - Align the `flush_cache()` method in testing to match core's behavior.
 
+### Fixed
+
+- Ensure that the faker instance used in factories and tests has unique enabled
+  by default to prevent duplicate values when generating data.
+
 ## v1.9.1
 
 ### Added

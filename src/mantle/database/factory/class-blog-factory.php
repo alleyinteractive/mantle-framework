@@ -41,8 +41,8 @@ class Blog_Factory extends Factory {
 
 		return [
 			'domain'     => $current_site->domain,
-			'path'       => $base . $this->faker->slug(),
-			'title'      => $this->faker->text( 20 ),
+			'path'       => $base . $this->faker->unique()->slug(),
+			'title'      => $this->faker->unique()->text( 20 ),
 			'network_id' => $current_site->id,
 		];
 	}
@@ -56,7 +56,19 @@ class Blog_Factory extends Factory {
 		assert( $current_site instanceof WP_Network, 'Expected $current_site to be an instance of WP_Network' );
 
 		return $this->state( [
-			'domain' => $this->faker->domainWord() . '.' . $current_site->domain,
+			'domain' => $this->faker->unique()->domainWord() . '.' . $current_site->domain,
+			'path'   => '/',
+		] );
+	}
+
+	/**
+	 * Create a site with the given domain.
+	 *
+	 * @param string $domain The domain to use.
+	 */
+	public function domain( string $domain ): static {
+		return $this->state( [
+			'domain' => $domain,
 			'path'   => '/',
 		] );
 	}
