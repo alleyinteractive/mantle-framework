@@ -8,7 +8,7 @@ parameters:
 	paths:
 		- src/mantle/
 		- mantle.php
-		- tests/phpstan/
+		- phpstan/
 
 	ignoreErrors:
 		-
