@@ -62,6 +62,8 @@ class Utils {
 	/**
 	 * Get the output from a given callable.
 	 *
+	 * @deprecated Use \Mantle\Support\Helpers::capture() instead.
+	 *
 	 * @param callable $callable Callable to execute.
 	 * @param array    $args     Arguments to pass to the callable.
 	 * @return false|string Rendered output on success, false on failure.
