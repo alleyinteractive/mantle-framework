@@ -42,7 +42,7 @@ class Blog_Factory extends Factory {
 		return [
 			'domain'     => $current_site->domain,
 			'path'       => $base . $this->faker->slug(),
-			'title'      => $this->faker->text(),
+			'title'      => $this->faker->text( 20 ),
 			'network_id' => $current_site->id,
 		];
 	}
