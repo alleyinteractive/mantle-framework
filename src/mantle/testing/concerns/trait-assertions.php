@@ -323,7 +323,7 @@ trait Assertions {
 	 *
 	 * @param array<string, mixed> $arguments Arguments to query against.
 	 */
-	public function assertPostDoesNotExists( array $arguments ): void {
+	public function assertPostDoesNotExist( array $arguments ): void {
 		$arguments = $this->serialize_arguments(
 			$arguments,
 			[
@@ -337,6 +337,15 @@ trait Assertions {
 			\get_posts( $arguments ), // @phpstan-ignore-line argument.type
 			"Post found with arguments: \n" . print_r( $arguments, true ),
 		);
+	}
+
+	/**
+	 * Alias of `assertPostDoesNotExist()`.
+	 *
+	 * @param array<string, mixed> $arguments Arguments to query against.
+	 */
+	public function assertPostDoesNotExists( array $arguments ): void {
+		$this->assertPostDoesNotExist( $arguments );
 	}
 
 	/**
@@ -365,7 +374,7 @@ trait Assertions {
 	 *
 	 * @param array<string, mixed> $arguments Arguments to query against.
 	 */
-	public function assertTermDoesNotExists( array $arguments ): void {
+	public function assertTermDoesNotExist( array $arguments ): void {
 		$arguments = $this->serialize_arguments(
 			$arguments,
 			[
@@ -379,6 +388,15 @@ trait Assertions {
 			\get_terms( $arguments ), // @phpstan-ignore-line argument.type
 			"Term found with arguments: \n" . print_r( $arguments, true ),
 		);
+	}
+
+	/**
+	 * Alias of `assertTermDoesNotExist()`.
+	 *
+	 * @param array<string, mixed> $arguments Arguments to query against.
+	 */
+	public function assertTermDoesNotExists( array $arguments ): void {
+		$this->assertTermDoesNotExist( $arguments );
 	}
 
 	/**
@@ -406,7 +424,7 @@ trait Assertions {
 	 *
 	 * @param array<string, mixed> $arguments Arguments to query against.
 	 */
-	public function assertUserDoesNotExists( array $arguments ): void {
+	public function assertUserDoesNotExist( array $arguments ): void {
 		$arguments = $this->serialize_arguments(
 			$arguments,
 			[
@@ -419,6 +437,15 @@ trait Assertions {
 			\get_users( $arguments ), // @phpstan-ignore-line argument.type
 			"User found with arguments: \n" . print_r( $arguments, true ),
 		);
+	}
+
+	/**
+	 * Alias of `assertUserDoesNotExist()`.
+	 *
+	 * @param array<string, mixed> $arguments Arguments to query against.
+	 */
+	public function assertUserDoesNotExists( array $arguments ): void {
+		$this->assertUserDoesNotExist( $arguments );
 	}
 
 	/**
@@ -616,5 +643,47 @@ trait Assertions {
 		);
 
 		PHPUnit::assertEquals( 0, $result );
+	}
+
+	/**
+	 * Alias of `assertDatabaseHas()`.
+	 *
+	 * @param string               $table     The database table name.
+	 * @param array<string, mixed> $arguments The arguments to check against the database.
+	 */
+	public function assertDatabaseMissing( string $table, array $arguments ): void {
+		$this->assertDatabaseDoesNotHave( $table, $arguments );
+	}
+
+	/**
+	 * Check that a blog exists given a set of arguments.
+	 *
+	 * @param array<string, mixed> $arguments Arguments to query against passed to get_sites().
+	 */
+	public function assertBlogExists( array $arguments ): void {
+		$arguments = $this->serialize_arguments( $arguments, [
+			'number' => 1,
+		] );
+
+		PHPUnit::assertNotEmpty(
+			get_sites( $arguments ), // @phpstan-ignore-line argument.type
+			"Site not found with arguments: \n" . print_r( $arguments, true ),
+		);
+	}
+
+	/**
+	 * Check that a blog does not exist given a set of arguments.
+	 *
+	 * @param array<string, mixed> $arguments Arguments to query against passed to get_sites().
+	 */
+	public function assertBlogDoesNotExist( array $arguments ): void {
+		$arguments = $this->serialize_arguments( $arguments, [
+			'number' => 1,
+		] );
+
+		PHPUnit::assertEmpty(
+			get_sites( $arguments ), // @phpstan-ignore-line argument.type
+			"Site found with arguments: \n" . print_r( $arguments, true ),
+		);
 	}
 }

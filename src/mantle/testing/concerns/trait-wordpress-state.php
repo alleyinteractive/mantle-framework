@@ -7,7 +7,6 @@
 
 namespace Mantle\Testing\Concerns;
 
-use Carbon\Carbon;
 use DateTimeInterface;
 use Mantle\Database\Model\Post;
 use Mantle\Testing\Utils;
@@ -56,40 +55,11 @@ trait WordPress_State {
 
 	/**
 	 * Flushes the WordPress object cache.
+	 *
+	 * @deprecated 1.10.0 Use Utils::flush_cache() instead.
 	 */
 	public static function flush_cache(): void {
-		global $wp_object_cache;
-		$wp_object_cache->group_ops      = [];
-		$wp_object_cache->stats          = [];
-		$wp_object_cache->memcache_debug = [];
-		$wp_object_cache->cache          = [];
-		if ( method_exists( $wp_object_cache, '__remoteset' ) ) {
-			$wp_object_cache->__remoteset();
-		}
-
-		wp_cache_flush();
-		wp_cache_add_global_groups(
-			[
-				'users',
-				'userlogins',
-				'usermeta',
-				'user_meta',
-				'useremail',
-				'userslugs',
-				'site-transient',
-				'site-options',
-				'blog-lookup',
-				'blog-details',
-				'rss',
-				'global-posts',
-				'blog-id-cache',
-				'networks',
-				'sites',
-				'site-details',
-				'blog_meta',
-			]
-		);
-		wp_cache_add_non_persistent_groups( [ 'comment', 'counts', 'plugins' ] );
+		Utils::flush_cache();
 	}
 
 	/**
