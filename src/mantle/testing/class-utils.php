@@ -125,7 +125,7 @@ class Utils {
 
 		if ( defined( 'WP_TESTS_USE_HTTPS' ) && WP_TESTS_USE_HTTPS ) {
 			$_SERVER['HTTPS']       = 'on';
-			$_SERVER['SERVER_PORT'] =  '443';
+			$_SERVER['SERVER_PORT'] = '443';
 		} else {
 			unset( $_SERVER['HTTPS'] );
 		}
