@@ -30,7 +30,7 @@ class Network_Factory extends Factory {
 	public function definition(): array {
 		return [
 			'domain' => $this->faker->domainName(),
-			'title'  => $this->faker->words(),
+			'title'  => $this->faker->words( 2 ),
 			'path'   => $this->faker->slug(),
 		];
 	}
