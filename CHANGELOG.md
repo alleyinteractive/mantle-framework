@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+
+- Limit length of site title to 20 characters in blog factory.
+
 ### Fixed
 
 - Ensure that the faker instance used in factories and tests has unique enabled
@@ -794,10 +798,6 @@ No changes, just a re-release to fix a bad tag.
 - Requiring `symfony/console`, upgrading to `psr/log` 3.0.
 - Ensure that faker can always generate Gutenberg blocks.
 
-## New Contributors
-- @nlemoine made their first contribution in https://github.com/alleyinteractive/mantle-framework/pull/409
-
-**Full Changelog**: https://github.com/alleyinteractive/mantle-framework/compare/v0.11.3...v0.12.0
 
 ## v0.11.3 - 2023-07-21
 
