@@ -62,13 +62,15 @@ class Utils {
 	/**
 	 * Get the output from a given callable.
 	 *
+	 * @deprecated Use \Mantle\Support\Helpers::capture() instead.
+	 *
 	 * @param callable $callable Callable to execute.
 	 * @param array    $args     Arguments to pass to the callable.
 	 * @return false|string Rendered output on success, false on failure.
 	 */
-	public static function get_echo( $callable, $args = [] ): string|false {
+	public static function get_echo( callable $callable, array $args = [] ): string|false {
 		ob_start();
-		call_user_func_array( $callable, $args );
+		$callable( ...$args );
 		return ob_get_clean();
 	}
 
@@ -77,7 +79,7 @@ class Utils {
 	 *
 	 * @param string $status Post status to unregister.
 	 */
-	public static function unregister_post_status( $status ): void {
+	public static function unregister_post_status( string $status ): void {
 		unset( $GLOBALS['wp_post_statuses'][ $status ] );
 	}
 
@@ -122,7 +124,8 @@ class Utils {
 		unset( $_SERVER['HTTP_REFERER'] );
 
 		if ( defined( 'WP_TESTS_USE_HTTPS' ) && WP_TESTS_USE_HTTPS ) {
-			$_SERVER['HTTPS'] = 'on';
+			$_SERVER['HTTPS']       = 'on';
+			$_SERVER['SERVER_PORT'] = '443';
 		} else {
 			unset( $_SERVER['HTTPS'] );
 		}
@@ -138,7 +141,7 @@ class Utils {
 	}
 
 	/**
-	 * Deletes all data from the database.
+	 * Deletes all data from the database and flushes the cache.
 	 */
 	public static function delete_all_data(): void {
 		// phpcs:disable WordPress.DB,WordPressVIPMinimum.Variables
@@ -167,6 +170,32 @@ class Utils {
 		$wpdb->query( "DELETE FROM {$wpdb->users} WHERE ID != 1" );
 		$wpdb->query( "DELETE FROM {$wpdb->usermeta} WHERE user_id != 1" );
 		// phpcs:enable
+
+		self::flush_cache();
+	}
+
+	/**
+	 * Delete all other blogs from the database.
+	 *
+	 * Ensures that the main blog (blog_id = 1) is not deleted.
+	 *
+	 * @throws \RuntimeException If not in multisite mode.
+	 */
+	public static function delete_all_blogs(): void {
+		if ( ! is_multisite() ) {
+			throw new \RuntimeException( 'Cannot delete all blogs when not in multisite mode.' );
+		}
+
+		// phpcs:disable WordPress.DB,WordPressVIPMinimum.Variables
+		global $wpdb;
+
+		foreach ( $wpdb->get_col( "SELECT blog_id FROM {$wpdb->blogs} WHERE blog_id != 1" ) as $blog_id ) {
+			wpmu_delete_blog( $blog_id, true );
+		}
+
+		// phpcs:enable
+
+		self::flush_cache();
 	}
 
 	/**
@@ -188,6 +217,47 @@ class Utils {
 				wp_delete_post( $all_post['ID'], true );
 			}
 		}
+	}
+
+	/**
+	 * Flushes the WordPress object cache.
+	 */
+	public static function flush_cache(): void {
+		wp_cache_flush_runtime();
+
+		global $wp_object_cache;
+
+		if ( is_object( $wp_object_cache ) && method_exists( $wp_object_cache, '__remoteset' ) ) {
+			$wp_object_cache->__remoteset();
+		}
+
+		wp_cache_flush();
+
+		wp_cache_add_global_groups(
+			[
+				'blog-details',
+				'blog-id-cache',
+				'blog-lookup',
+				'blog_meta',
+				'global-posts',
+				'networks',
+				'network-queries',
+				'sites',
+				'site-details',
+				'site-options',
+				'site-queries',
+				'site-transient',
+				'theme_files',
+				'rss',
+				'users',
+				'user-queries',
+				'user_meta',
+				'useremail',
+				'userlogins',
+				'userslugs',
+			]
+		);
+		wp_cache_add_non_persistent_groups( [ 'counts', 'plugins', 'theme_json' ] );
 	}
 
 	/**
@@ -279,9 +349,8 @@ class Utils {
 	 *
 	 * @param string $variable Variable to get.
 	 * @param mixed  $default Default value.
-	 * @return mixed
 	 */
-	public static function env( string $variable, $default ) {
+	public static function env( string $variable, mixed $default ): mixed {
 		$value = getenv( $variable );
 
 		return false === $value ? $default : $value;
@@ -488,7 +557,7 @@ class Utils {
 	 * @param-out int         $exit_code Exit code.
 	 * @return string[]
 	 */
-	public static function command( $command, &$exit_code = null ) {
+	public static function command( string|array $command, &$exit_code = null ): array {
 		$is_debug_mode = static::is_debug_mode();
 
 		// Display the command if in debug mode.

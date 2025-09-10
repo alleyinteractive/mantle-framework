@@ -438,9 +438,10 @@ function html_string( string $html ): HTML {
 /**
  * Capture the output of a callback.
  *
- * @param callable $callback
+ * @param callable $callback Callback to execute.
+ * @return false|string The captured output, or false on failure.
  */
-function capture( callable $callback ): string {
+function capture( callable $callback ): string|false {
 	ob_start();
 	$callback();
 	return ob_get_clean();
