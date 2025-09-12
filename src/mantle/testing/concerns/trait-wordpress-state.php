@@ -55,8 +55,6 @@ trait WordPress_State {
 
 	/**
 	 * Flushes the WordPress object cache.
-	 *
-	 * @deprecated 1.10.0 Use Utils::flush_cache() instead.
 	 */
 	public static function flush_cache(): void {
 		Utils::flush_cache();
