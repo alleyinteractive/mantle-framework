@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Added `Single_Site_Test` trait to skip tests if not in single site mode.
+
 ### Changed
 
 - Limit length of site title to 20 characters in blog factory.

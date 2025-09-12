@@ -615,14 +615,24 @@ trait Enumerates_Values {
 	 *
 	 * @template TWhereInstanceOf
 	 *
-	 * @param  class-string<TWhereInstanceOf>|array<class-string<TWhereInstanceOf>> $type
+	 * @param  class-string<TWhereInstanceOf>|array<array-key, class-string<TWhereInstanceOf>> $type
 	 * @return static<TKey, TWhereInstanceOf>
 	 */
 	public function where_instance_of( string|array $type ) {
-		// @phpstan-ignore return.type
-		return $this->filter(
-			fn ( $value ) => $value instanceof $type,
-		);
+		// @phpstan-ignore-next-line return.type
+		return $this->filter( function ( $value ) use ( $type ): bool {
+			if ( is_array( $type ) ) {
+				foreach ( $type as $class_type ) {
+					if ( $value instanceof $class_type ) {
+						return true;
+					}
+				}
+
+				return false;
+			}
+
+			return $value instanceof $type;
+		} );
 	}
 
 	/**
