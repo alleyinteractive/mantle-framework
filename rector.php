@@ -112,6 +112,7 @@ return RectorConfig::configure()
 		],
 		ExplicitBoolCompareRector::class => [
 			__DIR__ . '/src/mantle/database/model/class-post.php',
+			__DIR__ . '/src/mantle/testing',
 		],
 		SimplifyEmptyCheckOnEmptyArrayRector::class,
 		DisallowedEmptyRuleFixerRector::class,
