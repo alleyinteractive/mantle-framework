@@ -6,6 +6,7 @@
  */
 
 use Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector;
+use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
 use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
@@ -117,4 +118,5 @@ return RectorConfig::configure()
 		NullableCompareToNullRector::class,
 		CatchExceptionNameMatchingTypeRector::class,
 		EncapsedStringsToSprintfRector::class,
+		FlipTypeControlToUseExclusiveTypeRector::class,
 	] );
