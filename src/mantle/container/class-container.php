@@ -539,9 +539,8 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 *
 	 * @template TAbstract of object
 	 *
-	 * @param  string       $class
-	 * @phpstan-param class-string<TAbstract> $class
-	 * @param  array<mixed> $parameters
+	 * @param  class-string<TAbstract> $class
+	 * @param  array<mixed>            $parameters
 	 * @phpstan-return TAbstract
 	 *
 	 * @throws Binding_Resolution_Exception Thrown on missing resolution.
@@ -1009,8 +1008,8 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 		$results = [];
 
 		foreach ( $callbacks_per_type as $type => $callbacks ) {
-			if ( $type === $abstract || $object instanceof $type ) {
-					$results = array_merge( $results, $callbacks );
+			if ( $type === $abstract || $object instanceof $type ) { // @phpstan-ignore-line instanceof.invalidExprType
+				$results = array_merge( $results, $callbacks );
 			}
 		}
 
