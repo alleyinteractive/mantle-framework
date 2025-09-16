@@ -135,6 +135,8 @@ class Installation_Manager {
 	 * @param string $theme Theme name.
 	 */
 	public function theme( string $theme ): static {
+		putenv( 'WP_DEFAULT_THEME=' . $theme ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_putenv
+
 		return $this->loaded( fn () => switch_theme( $theme ) );
 	}
 
