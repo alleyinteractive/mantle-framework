@@ -81,6 +81,32 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	}
 
 	/**
+	 * Assert that the value at the given path in the response matches the given regular expression.
+	 *
+	 * @param string $path  Path to check.
+	 * @param string $regex Regular expression to match against.
+	 * @param string $message Optional message on failure.
+	 */
+	public function assertPathMatches( string $path, string $regex, string $message = '' ): static {
+		PHPUnit::assertMatchesRegularExpression( $regex, (string) $this->json( $path ), $message );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a specific path does not match the given regular expression pattern in the response.
+	 *
+	 * @param string $path Path to check.
+	 * @param string $pattern Regular expression pattern to match.
+	 * @param string $message Optional message on failure.
+	 */
+	public function assertPathNotMatches( string $path, string $pattern, string $message = '' ): static {
+		PHPUnit::assertDoesNotMatchRegularExpression( $pattern, (string) $this->json( $path ), $message );
+
+		return $this;
+	}
+
+	/**
 	 * Assert that a specific path exists in the response.
 	 *
 	 * @param string $path Path to check.

@@ -722,6 +722,32 @@ class Test_Response {
 	}
 
 	/**
+	 * Assert that a specific path matches the given regular expression pattern in the response.
+	 *
+	 * @param string $path Path to check.
+	 * @param string $pattern Regular expression pattern to match.
+	 * @param string $message Optional message on failure.
+	 */
+	public function assertJsonPathMatches( string $path, string $pattern, string $message = '' ): static {
+		$this->decoded_json()->assertPathMatches( $path, $pattern, $message );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a specific path does not match the given regular expression pattern in the response.
+	 *
+	 * @param string $path Path to check.
+	 * @param string $pattern Regular expression pattern to match.
+	 * @param string $message Optional message on failure.
+	 */
+	public function assertJsonPathNotMatches( string $path, string $pattern, string $message = '' ): static {
+		$this->decoded_json()->assertPathNotMatches( $path, $pattern, $message );
+
+		return $this;
+	}
+
+	/**
 	 * Assert that a specific path exists in the response.
 	 *
 	 * @param string $path Path to check.
