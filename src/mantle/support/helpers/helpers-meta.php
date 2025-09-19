@@ -20,6 +20,8 @@ namespace Mantle\Support\Helpers;
  * @param string               $meta_key     The meta key to register.
  * @param array<string, mixed> $args         Optional. Additional arguments for register_post_meta or register_term_meta. Defaults to an empty array.
  * @return bool True if the meta key was successfully registered in the global array, false if not.
+ *
+ * @phpstan-param 'post'|'term' $object_type
  */
 function register_meta_helper(
 	string $object_type,
@@ -27,8 +29,6 @@ function register_meta_helper(
 	string $meta_key,
 	array $args = []
 ): bool {
-
-	// Object type must be either post or term.
 	if ( ! in_array( $object_type, [ 'post', 'term' ], true ) ) {
 		throw new \InvalidArgumentException(
 			esc_html__(
@@ -103,7 +103,6 @@ function register_meta_helper(
 		$object_slugs = [ $object_slugs ];
 	}
 
-	// Fork for object type.
 	switch ( $object_type ) {
 		case 'post':
 			foreach ( $object_slugs as $object_slug ) {
