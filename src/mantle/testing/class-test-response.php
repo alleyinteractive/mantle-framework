@@ -822,6 +822,21 @@ class Test_Response {
 	}
 
 	/**
+	 * Assert that the value at a given JSON path passes a user-provided callback.
+	 *
+	 * @param string   $path     Path to check.
+	 * @param callable $callback Callback that receives the value at the path and returns true if assertion passes.
+	 * @param string   $message  Optional failure message.
+	 *
+	 * @phpstan-param (callable(mixed): bool) $callback
+	 */
+	public function assertJsonPathCallback( string $path, callable $callback, string $message = '' ): static {
+		$this->decoded_json()->assertPathCallback( $path, $callback, $message );
+
+		return $this;
+	}
+
+	/**
 	 * Assert that the response has the exact given JSON.
 	 *
 	 * @param array<mixed> $data

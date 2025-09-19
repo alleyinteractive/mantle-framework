@@ -189,6 +189,27 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	}
 
 	/**
+	 * Assert that the value at the given path in the response passes the given truth test.
+	 *
+	 * @param string   $path     Path to check.
+	 * @param callable $callback Callback that receives the value and returns true if it passes.
+	 * @param string   $message  Optional message on failure.
+	 *
+	 * @phpstan-param (callable(mixed): bool) $callback
+	 */
+	public function assertPathCallback( string $path, callable $callback, string $message = '' ): static {
+		$value = $this->json( $path );
+
+		if ( empty( $message ) ) {
+			$message = "The value at path [{$path}] did not pass the given truth test.";
+		}
+
+		PHPUnit::assertTrue( (bool) $callback( $value ), $message );
+
+		return $this;
+	}
+
+	/**
 	 * Assert that the response has the similar JSON as given.
 	 *
 	 * @param  array $data

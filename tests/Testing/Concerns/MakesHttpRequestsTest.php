@@ -253,7 +253,8 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			->assertJsonPathNotContains( 'title.rendered', 'Not' )
 			->assertJsonPathExists( 'guid' )
 			->assertJsonPathMissing( 'example_path' )
-			->assertJsonPathMatches( 'id', '/^\d+$/' );
+			->assertJsonPathMatches( 'id', '/^\d+$/' )
+			->assertJsonPathCallback( 'title.rendered', fn( $value ) => str_contains( $value, 'Example' ) );
 	}
 
 	public function test_rest_api_route_headers() {
