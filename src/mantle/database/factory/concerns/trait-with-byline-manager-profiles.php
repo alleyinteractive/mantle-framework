@@ -5,6 +5,8 @@
  * @package Mantle
  */
 
+declare(strict_types=1);
+
 namespace Mantle\Database\Factory\Concerns;
 
 use Byline_Manager\Models\Profile;
