@@ -3,6 +3,7 @@
  * This file contains assorted helpers
  *
  * @phpcs:disable Squiz.Commenting.FunctionComment
+ * @phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
  *
  * @package Mantle
  */
@@ -21,6 +22,8 @@ use Mantle\Support\HTML;
 use Mantle\Support\Str;
 use Mantle\Support\Stringable;
 use Mantle\Support\Uri;
+use Spatie\Backtrace\Backtrace;
+use Spatie\Backtrace\Frame;
 use Throwable;
 
 /**
@@ -570,4 +573,47 @@ function defer( callable $callback ): void {
 			$callback();
 		},
 	);
+}
+
+/**
+ * Dump the current backtrace to the screen.
+ *
+ * @param int|null $limit Limits the number of stack frames returned. By default
+ *                        all stack frames are returned.
+ * @param bool     $with_arguments Whether to include function arguments in
+ *                                the output.
+ */
+function dump_backtrace( ?int $limit = null, bool $with_arguments = false ): void {
+	$frames = Backtrace::create()->offset( 1 );
+
+	if ( null !== $limit ) {
+		$frames = $frames->limit( $limit );
+	}
+
+	if ( $with_arguments ) {
+		$frames = $frames->withArguments();
+	}
+
+	collect( $frames->frames() )->map( fn ( Frame $frame ) => [
+		'file'        => $frame->file,
+		'line number' => $frame->lineNumber,
+		'class'       => $frame->class,
+		'method'      => $frame->method,
+		'arguments'   => $frame->arguments,
+		'object'      => $frame->object,
+	] )->dump();
+}
+
+/**
+ * Dump the current backtrace to the screen and exit.
+ *
+ * @param int|null $limit Limits the number of stack frames returned. By default
+ *                        all stack frames are returned.
+ * @param bool     $with_arguments Whether to include function arguments in
+ *                                 the output.
+ */
+function dd_backtrace( ?int $limit = null, bool $with_arguments = false ): never {
+
+	dump_backtrace( $limit, $with_arguments );
+	exit( 1 );
 }
