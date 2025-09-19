@@ -12,6 +12,7 @@ use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Concerns\Reset_Server;
 use Mantle\Testing\FrameworkTestCase;
 use Mantle\Testing\Test_Response;
+use Mantle\Testing\Utils;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
@@ -255,6 +256,17 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			->assertJsonPathMissing( 'example_path' )
 			->assertJsonPathMatches( 'id', '/^\d+$/' )
 			->assertJsonPathCallback( 'title.rendered', fn( $value ) => str_contains( $value, 'Example' ) );
+	}
+
+	/**
+	 * Test for an issue with parsing an empty JSON array `[]` response.
+	 */
+	public function test_json_parsing_error_empty_array(): void {
+		Utils::delete_all_posts();
+
+		$this->get( rest_url( 'wp/v2/posts' ) )
+			->assertOk()
+			->assertJsonCount( 0 );
 	}
 
 	public function test_rest_api_route_headers() {
