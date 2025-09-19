@@ -553,30 +553,21 @@ function validate_file( $file, $allowed_files = [] ) {
 
 /**
  * Defer the execution of a function until after the response is sent to the
- * page.
- *
- * When used outside of the Mantle Framework, the callback will be added to the
- * 'shutdown' hook after sending the response to the client.
+ * page on `shutdown`.
  *
  * @param callable $callback Callback to defer.
  */
 function defer( callable $callback ): void {
-	if ( ! function_exists( 'app' ) ) {
-		\add_action(
-			'shutdown',
-			function () use ( $callback ): void {
-				if ( function_exists( 'fastcgi_finish_request' ) ) {
-					fastcgi_finish_request();
-				} elseif ( function_exists( 'litespeed_finish_request' ) ) {
-					litespeed_finish_request();
-				}
+	\add_action(
+		'shutdown',
+		function () use ( $callback ): void {
+			if ( function_exists( 'fastcgi_finish_request' ) ) {
+				fastcgi_finish_request();
+			} elseif ( function_exists( 'litespeed_finish_request' ) ) {
+				litespeed_finish_request();
+			}
 
-				$callback();
-			},
-		);
-
-		return;
-	}
-
-	app()->terminating( $callback );
+			$callback();
+		},
+	);
 }
