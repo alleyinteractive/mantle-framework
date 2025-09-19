@@ -612,12 +612,37 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		$this->assertEquals( $runs[0], $runs[1] );
 	}
 
-	// Should always be towards the end of the class.
+	#[DataProvider( 'invalid_request_provider' )]
+	public function test_throws_notice_on_invalid_requests( string $path, string $message ): void {
+		$this->expectException( \InvalidArgumentException::class );
+		$this->expectExceptionMessage( $message );
+		$this->get( $path );
+	}
+
+	public static function invalid_request_provider(): array {
+		return [
+			'wp-login.php' => [ '/wp-login.php', 'Requests to [/wp-login.php] are not supported.' ],
+			'xmlrpc.php' => [ '/xmlrpc.php', 'Requests to [/xmlrpc.php] are not supported.' ],
+			'wp-admin/' => [ '/wp-admin/', 'Requests to [/wp-admin/] are not supported.' ],
+			'wp-admin/some-page.php' => [ '/wp-admin/some-page.php', 'Requests to [/wp-admin/some-page.php] are not supported.' ],
+			'wp-cron.php' => [ '/wp-cron.php', 'Requests to [/wp-cron.php] are not supported.' ],
+			'wp-admin/admin-ajax.php' => [ '/wp-admin/admin-ajax.php', 'Requests to [/wp-admin/admin-ajax.php] are not supported.' ],
+		];
+	}
+
+	/**
+	 * Test making multiple requests in a single test method.
+	 *
+	 * To push the system to a limit, make all the above test requests in a single
+	 * test method. Should always be towards the end of the class.
+	 */
 	public function test_multiple_requests() {
 		$methods = collect( get_class_methods( $this ) )
 			->filter( fn ( string $method ) => ! Str::contains( $method, [ 'experimental', 'snapshot', 'test_preserve_object_cache' ] ) && 0 === strpos( $method, 'test_' ) )
 			->sort()
 			->all();
+
+		$class = new \ReflectionClass( $this );
 
 		// Re-run all test methods on this class in a single pass.
 		foreach ( $methods as $method ) {
@@ -625,8 +650,8 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 				continue;
 			}
 
-			// Ignore data provider tests.
-			if ( 'test_redirect_wordpress' === $method ) {
+			// Ignore tests with parameters.
+			if ( $class->getMethod( $method )->getNumberOfParameters() > 0 ) {
 				continue;
 			}
 

@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed the `theme()` method of the installation manager to set the
   `WP_DEFAULT_THEME` environment variable to ensure that the theme is properly
   set during installation.
+- Throw an exception if the user attempts to make a testing request to a path
+  that is not supported by the testing framework (e.g. `/wp-login.php`,
+  `/wp-admin/*`, etc.).
 
 ## v1.9.2
 

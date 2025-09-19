@@ -281,6 +281,14 @@ class Pending_Testable_Request {
 			$url = $uri;
 		}
 
+		$path = wp_parse_url( $url, PHP_URL_PATH );
+
+		// Check if the user is requesting a call to a path that the testing
+		// framework does not support.
+		if ( Str::is( [ '/wp-login.php', '/wp-*.php', '/wp-admin/*', '/xmlrpc.php' ], $path ) ) {
+			throw new InvalidArgumentException( "Requests to [{$path}] are not supported." );
+		}
+
 		$this->set_server_state(
 			$method,
 			$url,
