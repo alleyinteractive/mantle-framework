@@ -10,8 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added `assertJsonPathEmpty()`, `assertJsonPathNotEmpty()`,
-  `assertJsonPathContains()`, and `assertJsonPathNotContains()` methods to the
-  test response class.
+  `assertJsonPathContains()`, `assertJsonPathNotContains()`, and
+  `assertJsonPathCallback()` methods to the test response class.
 
 ### Changed
 
