@@ -72,9 +72,10 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 *
 	 * @param  string $path
 	 * @param  mixed  $expect
+	 * @param  string $message Optional message on failure.
 	 */
-	public function assertPath( string $path, mixed $expect ): static {
-		PHPUnit::assertSame( $expect, $this->json( $path ) );
+	public function assertPath( string $path, mixed $expect, string $message = '' ): static {
+		PHPUnit::assertSame( $expect, $this->json( $path ), $message );
 
 		return $this;
 	}
@@ -83,9 +84,10 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 * Assert that a specific path exists in the response.
 	 *
 	 * @param string $path Path to check.
+	 * @param string $message Optional message on failure.
 	 */
-	public function assertPathExists( string $path ): static {
-		PHPUnit::assertNotNull( $this->json( $path ) );
+	public function assertPathExists( string $path, string $message = '' ): static {
+		PHPUnit::assertNotNull( $this->json( $path ), $message );
 
 		return $this;
 	}
@@ -94,9 +96,68 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 * Assert that a specific path does not exist in the response.
 	 *
 	 * @param string $path Path to check.
+	 * @param string $message Optional message on failure.
 	 */
-	public function assertPathMissing( string $path ): static {
-		PHPUnit::assertNull( $this->json( $path ) );
+	public function assertPathMissing( string $path, string $message = '' ): static {
+		PHPUnit::assertNull( $this->json( $path ), $message );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a specific path is empty in the response.
+	 *
+	 * @param string $path  Path to check.
+	 * @param string $message Optional message on failure.
+	 */
+	public function assertPathEmpty( string $path, string $message = '' ): static {
+		PHPUnit::assertEmpty( $this->json( $path ), $message );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a specific path is not empty in the response.
+	 *
+	 * @param string $path  Path to check.
+	 * @param string $message Optional message on failure.
+	 */
+	public function assertPathNotEmpty( string $path, string $message = '' ): static {
+		PHPUnit::assertNotEmpty( $this->json( $path ), $message );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a specific path contains the given string value in the response.
+	 *
+	 * @param string $path  Path to check.
+	 * @param string $needle Value to check for.
+	 * @param string $message Optional message on failure.
+	 */
+	public function assertPathContains( string $path, string $needle, string $message = '' ): static {
+		PHPUnit::assertStringContainsString(
+			$needle,
+			(string) $this->json( $path ),
+			$message,
+		);
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a specific path does not contain the given string value in the response.
+	 *
+	 * @param string $path  Path to check.
+	 * @param string $needle Value to check for.
+	 * @param string $message Optional message on failure.
+	 */
+	public function assertPathNotContains( string $path, string $needle, string $message = '' ): static {
+		PHPUnit::assertStringNotContainsString(
+			$needle,
+			(string) $this->json( $path ),
+			$message,
+		);
 
 		return $this;
 	}

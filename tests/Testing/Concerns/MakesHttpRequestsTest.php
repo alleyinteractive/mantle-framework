@@ -241,12 +241,16 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	}
 
 	public function test_rest_api_route() {
-		$post_id = static::factory()->post->create();
+		$post_id = static::factory()->post->create( [ 'post_title' => 'Example Post Title' ] );
 
 		$this->get( rest_url( "wp/v2/posts/{$post_id}" ) )
 			->assertOk()
 			->assertJsonPath( 'id', $post_id )
 			->assertJsonPath( 'title.rendered', get_the_title( $post_id ) )
+			->assertJsonPathNotEmpty( 'title.rendered' )
+			->assertJsonPathEmpty( 'unknown' )
+			->assertJsonPathContains( 'title.rendered', 'Post Title' )
+			->assertJsonPathNotContains( 'title.rendered', 'Not' )
 			->assertJsonPathExists( 'guid' )
 			->assertJsonPathMissing( 'example_path' );
 	}
