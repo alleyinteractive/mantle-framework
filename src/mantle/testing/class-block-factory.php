@@ -5,6 +5,8 @@
  * @package Mantle
  */
 
+declare(strict_types=1);
+
 namespace Mantle\Testing;
 
 use Faker\Generator;
@@ -36,6 +38,13 @@ class Block_Factory {
 	public static array $presets = [];
 
 	/**
+	 * Aliases to presets.
+	 *
+	 * @var array<string, string>
+	 */
+	public static array $aliases = [];
+
+	/**
 	 * Register a preset of blocks.
 	 *
 	 * @param string                $name Name of the preset.
@@ -46,10 +55,31 @@ class Block_Factory {
 	}
 
 	/**
+	 * Register an alias to an existing preset.
+	 *
+	 * @throws InvalidArgumentException If the existing preset is not found.
+	 *
+	 * @param string $alias Alias name.
+	 * @param string $existing Existing preset name.
+	 */
+	public static function register_alias( string $alias, string $existing ): void {
+		if ( ! isset( static::$presets[ $existing ] ) ) {
+			throw new InvalidArgumentException( "Cannot create alias to unknown preset: {$existing}" );
+		}
+
+		if ( isset( static::$presets[ $alias ] ) ) {
+			throw new InvalidArgumentException( "Cannot create alias, preset already exists: {$alias}" );
+		}
+
+		static::$aliases[ $alias ] = $existing;
+	}
+
+	/**
 	 * Clear all presets.
 	 */
 	public static function clear_presets(): void {
 		static::$presets = [];
+		static::$aliases = [];
 	}
 
 	/**
@@ -68,6 +98,10 @@ class Block_Factory {
 	 * @param array  $arguments Arguments to pass to the preset.
 	 */
 	public function preset( string $name, array $arguments = [] ): string {
+		if ( isset( static::$aliases[ $name ] ) ) {
+			$name = static::$aliases[ $name ];
+		}
+
 		if ( ! isset( static::$presets[ $name ] ) ) {
 			throw new InvalidArgumentException( "Unknown block factory preset: {$name}" );
 		}
@@ -90,7 +124,7 @@ class Block_Factory {
 	 * @param array  $arguments Arguments to pass to the preset.
 	 */
 	public function __call( string $name, array $arguments ): string {
-		if ( isset( static::$presets[ $name ] ) ) {
+		if ( isset( static::$aliases[ $name ] ) || isset( static::$presets[ $name ] ) ) {
 			return static::preset( $name, $arguments );
 		}
 

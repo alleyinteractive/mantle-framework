@@ -1,7 +1,6 @@
 <?php
 namespace Mantle\Tests\Testing;
 
-use Mantle\Faker\Faker_Provider;
 use Mantle\Testing\Block_Factory;
 use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -337,6 +336,20 @@ HTML;
 		$this->assertEquals(
 			'<!-- wp:namespace/multititle {"seo":"Title Here"} /-->',
 			block_factory()->title_with_arguments( 'Title Here' ),
+		);
+	}
+
+	public function test_it_can_generate_from_a_block_factory_preset_alias(): void {
+		Block_Factory::register_preset(
+			'existing_preset',
+			block_factory()->paragraphs( 2 ),
+		);
+
+		Block_Factory::register_alias( 'alias_preset', 'existing_preset' );
+
+		$this->assertEquals(
+			block_factory()->existing_preset(),
+			block_factory()->alias_preset(),
 		);
 	}
 
