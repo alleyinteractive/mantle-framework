@@ -127,14 +127,14 @@ abstract class Factory {
 	 * @param array $values The values to use when creating the object.
 	 * @return TReturnValue The created object.
 	 */
-	public function first_or_create( array $attributes, array $values = [] ) {
+	public function first_or_create( array $attributes, array $values = [] ): mixed {
 		$object = $this->get_object_by_query( $attributes );
 
 		if ( ! $object instanceof Model ) {
 			return $this->create_and_get( array_merge( $attributes, $values ) );
 		}
 
-		return $object;
+		return $this->get_object_by_id( $object->id() );
 	}
 
 	/**
@@ -313,7 +313,7 @@ abstract class Factory {
 	 * @param array $args Optional. The arguments for the object to create. Default is empty array.
 	 * @return TReturnValue The created object.
 	 */
-	public function create_and_get( array $args = [] ) {
+	public function create_and_get( array $args = [] ): mixed {
 		return $this->get_object_by_id( $this->create( $args ) );
 	}
 

@@ -577,6 +577,23 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		$this->assertEquals( 'true', get_post_meta( $underlying_post->ID, 'example', true ) );
 	}
 
+	public function test_first_or_create(): void {
+		$existing = static::factory()->post->create_and_get( [
+			'post_title' => 'Original Title test_first_or_create',
+			'post_content' => 'Original content test_first_or_create',
+		] );
+
+		$post = static::factory()->post->first_or_create(
+			[ 'post_title' => 'Original Title test_first_or_create' ],
+			[ 'post_content' => 'Updated content test_first_or_create' ],
+		);
+
+		$this->assertWPPost( $existing );
+		$this->assertWPPost( $post );
+
+		$this->assertEquals( $existing->ID, $post->ID );
+	}
+
 	public static function slug_id_dataprovider(): array {
 		return [
 			'term_id' => [ 'term_id' ],
