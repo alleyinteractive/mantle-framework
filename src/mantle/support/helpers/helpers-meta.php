@@ -154,7 +154,6 @@ function register_meta_from_file( string $file, string $meta_context ): void {
 		);
 	}
 
-	// Loop through definitions and register each.
 	foreach ( $definitions as $meta_key => $definition ) {
 		if ( ! is_array( $definition ) ) {
 			_doing_it_wrong( __FUNCTION__, 'Post meta definition items must be an array.', '1.0.0' );
