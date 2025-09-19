@@ -646,12 +646,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 
 		// Re-run all test methods on this class in a single pass.
 		foreach ( $methods as $method ) {
-			if ( __FUNCTION__ === $method || 'test_' !== substr( $method, 0, 5 ) ) {
-				continue;
-			}
-
-			// Ignore tests with parameters.
-			if ( $class->getMethod( $method )->getNumberOfParameters() > 0 ) {
+			if ( __FUNCTION__ === $method || 'test_' !== substr( $method, 0, 5 ) || $class->getMethod( $method )->getNumberOfParameters() > 0 ) {
 				continue;
 			}
 
