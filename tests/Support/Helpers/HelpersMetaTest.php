@@ -5,6 +5,7 @@ namespace Mantle\Tests\Support\Helpers;
 
 use Mantle\Testing\FrameworkTestCase;
 
+use function Mantle\Support\Helpers\register_meta_from_file;
 use function Mantle\Support\Helpers\register_meta_helper;
 
 class HelpersMetaTest extends FrameworkTestCase {
@@ -69,5 +70,19 @@ class HelpersMetaTest extends FrameworkTestCase {
 		$this->assertEquals( false, $registered['test_custom_meta_key']['show_in_rest'] );
 		$this->assertEquals( false, $registered['test_custom_meta_key']['single'] );
 		$this->assertEquals( 'integer', $registered['test_custom_meta_key']['type'] );
+	}
+
+	public function test_register_meta_from_defs(): void {
+		$registered = get_registered_meta_keys( 'post', 'post' );
+
+		$this->assertFalse( isset( $registered['testable_meta_key'] ) );
+
+		register_meta_from_file( __DIR__ . '/fixtures/meta.json', 'post' );
+
+		$registered = get_registered_meta_keys( 'post', 'post' );
+		$this->assertTrue( isset( $registered['testable_meta_key'] ) );
+		$this->assertEquals( 'string', $registered['testable_meta_key']['type'] );
+		$this->assertEquals( true, $registered['testable_meta_key']['single'] );
+		$this->assertEquals( true, $registered['testable_meta_key']['show_in_rest'] );
 	}
 }

@@ -7,6 +7,8 @@
 
 namespace Mantle\Support\Helpers;
 
+use InvalidArgumentException;
+
 /**
  * Register meta for posts or terms with sensible defaults and sanitization.
  *
@@ -15,13 +17,11 @@ namespace Mantle\Support\Helpers;
  * @see \register_post_meta
  * @see \register_term_meta
  *
- * @param string               $object_type  The type of meta to register, which must be one of 'post' or 'term'.
+ * @param 'post'|'term'        $object_type  The type of meta to register, which must be one of 'post' or 'term'.
  * @param string|string[]      $object_slugs The post type or taxonomy slugs to register with.
  * @param string               $meta_key     The meta key to register.
  * @param array<string, mixed> $args         Optional. Additional arguments for register_post_meta or register_term_meta. Defaults to an empty array.
  * @return bool True if the meta key was successfully registered in the global array, false if not.
- *
- * @phpstan-param 'post'|'term' $object_type
  */
 function register_meta_helper(
 	string $object_type,
@@ -110,6 +110,7 @@ function register_meta_helper(
 					return false;
 				}
 			}
+
 			break;
 		case 'term':
 			foreach ( $object_slugs as $object_slug ) {
@@ -117,10 +118,74 @@ function register_meta_helper(
 					return false;
 				}
 			}
+
 			break;
 		default:
 			return false;
 	}
 
 	return true;
+}
+
+/**
+ * Reads the meta definitions a configuration file.
+ *
+ * @throws \InvalidArgumentException For unmet requirements.
+ *
+ * @param string        $file The name of the full file path to read definitions from.
+ * @param 'post'|'term' $meta_context The type of meta to register, which must be one of 'post' or 'term'.
+ */
+function register_meta_from_file( string $file, string $meta_context ): void {
+	if ( ! in_array( $meta_context, [ 'post', 'term' ], true ) ) {
+		throw new InvalidArgumentException( 'Meta context must be one of "post", "term".' );
+	}
+
+	if ( ! file_exists( $file ) || ! in_array( validate_file( $file ), [ 0, 2 ], true ) ) {
+		throw new InvalidArgumentException(
+			"Meta definition file [{$file}] does not exist."
+		);
+	}
+
+	$definitions = wp_json_file_decode( $file, [ 'associative' => true ] );
+
+	if ( ! is_array( $definitions ) ) {
+		throw new InvalidArgumentException(
+			"Meta definition file [{$file}] does not contain valid JSON."
+		);
+	}
+
+	// Loop through definitions and register each.
+	foreach ( $definitions as $meta_key => $definition ) {
+		if ( ! is_array( $definition ) ) {
+			_doing_it_wrong( __FUNCTION__, 'Post meta definition items must be an array.', '1.0.0' );
+
+			continue;
+		}
+
+		// Extract post types or terms.
+		$definition_key = ( 'post' === $meta_context ) ? 'post_types' : 'terms';
+		$object_types   = $definition[ $definition_key ] ?? [];
+
+		// Unset since $definition is passed as register_meta args.
+		unset( $definition[ $definition_key ] );
+
+		// Relocate schema, if specified at the top level.
+		if ( ! empty( $definition['schema'] ) ) {
+			if ( ! isset( $definition['show_in_rest'] ) || ! is_array( $definition['show_in_rest'] ) ) {
+				$definition['show_in_rest'] = [];
+			}
+
+			$definition['show_in_rest']['schema'] = $definition['schema'];
+
+			// Unset since $definition is passed as register_meta args.
+			unset( $definition['schema'] );
+		}
+
+		register_meta_helper(
+			$meta_context,
+			$object_types,
+			$meta_key,
+			$definition,
+		);
+	}
 }
