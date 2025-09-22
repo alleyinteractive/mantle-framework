@@ -254,6 +254,7 @@ class Pending_Testable_Request {
 	 * Call the given URI and return the Response.
 	 *
 	 * @throws \Exception Exceptions thrown while setting up the WordPress query are re-thrown to the caller.
+	 * @throws InvalidArgumentException If the request is to an unsupported path.
 	 *
 	 * @param string      $method     Request method.
 	 * @param mixed       $uri        Request URI.
