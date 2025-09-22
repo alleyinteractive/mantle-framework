@@ -33,6 +33,7 @@
         "psr/log": "^1.0.1 || ^2.0 || ^3.0",
         "psr/simple-cache": "^3.0",
         "ramsey/uuid": "^4.7.4",
+        "spatie/backtrace": "^1.8",
         "spatie/phpunit-snapshot-assertions": "^4.2 || ^5.1",
         "symfony/console": "^7.2",
         "symfony/css-selector": "^7.2.0",

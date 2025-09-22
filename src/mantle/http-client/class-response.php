@@ -11,6 +11,8 @@ use ArrayAccess;
 use LogicException;
 use Mantle\Support\Collection;
 use Mantle\Support\Traits\Macroable;
+use Mantle\Testing\Assertable_HTML_String;
+use Mantle\Testing\Assertable_Json_String;
 use SimpleXMLElement;
 use WP_Error;
 use WP_Http_Cookie;
@@ -286,7 +288,7 @@ class Response implements ArrayAccess {
 	 * @param  mixed       $default
 	 * @return mixed
 	 */
-	public function json( $key = null, $default = null ) {
+	public function json( ?string $key = null, mixed $default = null ) {
 		if ( $this->decoded === null ) {
 			$this->decoded = json_decode( $this->body(), true );
 		}
@@ -296,6 +298,16 @@ class Response implements ArrayAccess {
 		}
 
 		return data_get( $this->decoded, $key, $default );
+	}
+
+
+	/**
+	 * Retrieve an instance of Assertable_Json_String to perform fluent JSON assertions.
+	 *
+	 * @param string|null $key Optional key to pass to `json()` to scope the JSON data.
+	 */
+	public function assertable_json( ?string $key = null ): Assertable_Json_String {
+		return new Assertable_Json_String( $this->json( $key ) );
 	}
 
 	/**
@@ -337,7 +349,7 @@ class Response implements ArrayAccess {
 	 * @param  string|null $key
 	 * @return Collection<array-key, mixed>
 	 */
-	public function collect( $key = null ): \Mantle\Support\Collection {
+	public function collect( ?string $key = null ): \Mantle\Support\Collection {
 		return new Collection( $this->json( $key ) );
 	}
 

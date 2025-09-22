@@ -3,6 +3,7 @@
  * This file contains assorted helpers
  *
  * @phpcs:disable Squiz.Commenting.FunctionComment
+ * @phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
  *
  * @package Mantle
  */
@@ -21,6 +22,8 @@ use Mantle\Support\HTML;
 use Mantle\Support\Str;
 use Mantle\Support\Stringable;
 use Mantle\Support\Uri;
+use Spatie\Backtrace\Backtrace;
+use Spatie\Backtrace\Frame;
 use Throwable;
 
 /**
@@ -553,30 +556,64 @@ function validate_file( $file, $allowed_files = [] ) {
 
 /**
  * Defer the execution of a function until after the response is sent to the
- * page.
- *
- * When used outside of the Mantle Framework, the callback will be added to the
- * 'shutdown' hook after sending the response to the client.
+ * page on `shutdown`.
  *
  * @param callable $callback Callback to defer.
  */
 function defer( callable $callback ): void {
-	if ( ! function_exists( 'app' ) ) {
-		\add_action(
-			'shutdown',
-			function () use ( $callback ): void {
-				if ( function_exists( 'fastcgi_finish_request' ) ) {
-					fastcgi_finish_request();
-				} elseif ( function_exists( 'litespeed_finish_request' ) ) {
-					litespeed_finish_request();
-				}
+	\add_action(
+		'shutdown',
+		function () use ( $callback ): void {
+			if ( function_exists( 'fastcgi_finish_request' ) ) {
+				fastcgi_finish_request();
+			} elseif ( function_exists( 'litespeed_finish_request' ) ) {
+				litespeed_finish_request();
+			}
 
-				$callback();
-			},
-		);
+			$callback();
+		},
+	);
+}
 
-		return;
+/**
+ * Dump the current backtrace to the screen.
+ *
+ * @param int|null $limit Limits the number of stack frames returned. By default
+ *                        all stack frames are returned.
+ * @param bool     $with_arguments Whether to include function arguments in
+ *                                the output.
+ */
+function dump_backtrace( ?int $limit = null, bool $with_arguments = false ): void {
+	$frames = Backtrace::create()->offset( 1 );
+
+	if ( null !== $limit ) {
+		$frames = $frames->limit( $limit );
 	}
 
-	app()->terminating( $callback );
+	if ( $with_arguments ) {
+		$frames = $frames->withArguments();
+	}
+
+	collect( $frames->frames() )->map( fn ( Frame $frame ) => [
+		'file'        => $frame->file,
+		'line number' => $frame->lineNumber,
+		'class'       => $frame->class,
+		'method'      => $frame->method,
+		'arguments'   => $frame->arguments,
+		'object'      => $frame->object,
+	] )->dump();
+}
+
+/**
+ * Dump the current backtrace to the screen and exit.
+ *
+ * @param int|null $limit Limits the number of stack frames returned. By default
+ *                        all stack frames are returned.
+ * @param bool     $with_arguments Whether to include function arguments in
+ *                                 the output.
+ */
+function dd_backtrace( ?int $limit = null, bool $with_arguments = false ): never {
+
+	dump_backtrace( $limit, $with_arguments );
+	exit( 1 );
 }

@@ -99,4 +99,22 @@ class CoAuthorsPlusFactoryTest extends FrameworkTestCase {
 			collect( $guest_authors )->pluck( 'display_name' )->sort()->all(),
 		);
 	}
+
+	public function test_create_post_with_guest_author_as_array(): void {
+		$author = static::factory()->cap_guest_author->create_and_get( [
+			'display_name' => 'Existing Author Object',
+		] );
+
+		$post = static::factory()->post->with_cap_authors( [
+			'display_name' => 'Array Author',
+		], $author )->create_and_get();
+
+		$guest_authors = get_coauthors( $post->ID );
+
+		$this->assertCount( 2, $guest_authors );
+		$this->assertEquals(
+			[ 'Array Author', 'Existing Author Object' ],
+			collect( $guest_authors )->pluck( 'display_name' )->sort()->values()->all(),
+		);
+	}
 }

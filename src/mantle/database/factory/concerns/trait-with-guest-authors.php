@@ -5,8 +5,11 @@
  * @package Mantle
  */
 
+declare(strict_types=1);
+
 namespace Mantle\Database\Factory\Concerns;
 
+use Mantle\Testing\TestCase;
 use stdClass;
 use WP_User;
 
@@ -23,7 +26,7 @@ trait With_Guest_Authors {
 	 *
 	 * @throws \RuntimeException If Co-Authors Plus is not installed or initialized.
 	 *
-	 * @param int|stdClass|WP_User ...$authors The guest author ID or object.
+	 * @param int|stdClass|WP_User|array<string, mixed> ...$authors The guest author ID or object.
 	 */
 	public function with_cap_authors( ...$authors ): static {
 		global $coauthors_plus;
@@ -51,10 +54,21 @@ trait With_Guest_Authors {
 	/**
 	 * Resolve the guest author to the underlying term ID for the Guest Author post.
 	 *
-	 * @param int|WP_User|stdClass $author The guest author ID/object or user object.
+	 * @param int|WP_User|stdClass|array<string, mixed> $author The guest author ID/object, user object, or array to create a guest author from.
+	 * @return int|null The underlying term ID for the guest author or null.
 	 */
-	protected function resolve_guest_author( int|WP_User|stdClass $author ): ?int {
+	protected function resolve_guest_author( int|WP_User|stdClass|array $author ): ?int {
 		global $coauthors_plus;
+
+		if ( is_array( $author ) ) {
+			$author = TestCase::factory()->cap_guest_author->create_and_get( $author );
+
+			if ( is_object( $author ) && isset( $author->ID ) ) {
+				return $coauthors_plus->get_author_term( $author )?->term_id ?: null;
+			}
+
+			return null;
+		}
 
 		if ( $author instanceof WP_User ) {
 			$term = $coauthors_plus->get_author_term( $author );

@@ -5,12 +5,15 @@
  * @package Mantle
  */
 
+declare(strict_types=1);
+
 namespace Mantle\Database\Factory\Concerns;
 
 use Byline_Manager\Models\Profile;
 use Byline_Manager\Utils;
 use Closure;
 use Mantle\Database\Factory\Plugins\Byline_Manager_Factory;
+use Mantle\Testing\TestCase;
 use WP_User;
 
 use function Mantle\Support\Helpers\collect;
@@ -28,7 +31,7 @@ trait With_Byline_Manager_Profiles {
 	 *
 	 * @throws \RuntimeException If Byline Manager is not installed or initialized.
 	 *
-	 * @param string|int|Profile|WP_User ...$authors The profile ID/object, WP_User object, or text string.
+	 * @param string|int|Profile|WP_User|array<string, mixed> ...$authors The profile ID/object, WP_User object, or text string.
 	 */
 	public function with_byline_manager_authors( ...$authors ): static {
 		if ( ! class_exists( Profile::class ) ) {
@@ -57,11 +60,11 @@ trait With_Byline_Manager_Profiles {
 	/**
 	 * Resolve the author to the underlying term ID for the Profile.
 	 *
-	 * @param string|int|Profile|WP_User $item The profile ID/object, WP_User object, or text string.
+	 * @param string|int|Profile|WP_User|array<string, mixed> $item The profile ID/object, WP_User object, or text string.
 	 * @return array<mixed>
 	 * @phpstan-return BylineManagerEntry
 	 */
-	protected function resolve_byline_manager_entry( string|int|WP_User|Profile $item ): ?array {
+	protected function resolve_byline_manager_entry( string|int|WP_User|Profile|array $item ): ?array {
 		if ( is_string( $item ) ) {
 			return [
 				'type' => 'text',
@@ -71,13 +74,15 @@ trait With_Byline_Manager_Profiles {
 			];
 		}
 
-		if ( is_int( $item ) || $item instanceof Profile ) {
-			$profile = $item instanceof Profile ? $item : Profile::get_by_post( $item );
-		} elseif ( $item instanceof WP_User ) {
-			$profile = Byline_Manager_Factory::get_byline_manager_profile_by_user_id( $item->ID, create: true );
-		}
+		$profile = match ( true ) {
+			$item instanceof Profile => $item,
+			$item instanceof WP_User => Byline_Manager_Factory::get_byline_manager_profile_by_user_id( $item->ID, create: true ),
+			is_array( $item ) => TestCase::factory()->byline_manager_profile->create_and_get( $item ),
+			is_int( $item ) => Profile::get_by_post( $item ),
+			default => null,
+		};
 
-		if ( empty( $profile ) ) {
+		if ( empty( $profile ) || ! $profile instanceof Profile ) {
 			return null;
 		}
 
