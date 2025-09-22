@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `assertJsonPathEmpty()`, `assertJsonPathNotEmpty()`,
   `assertJsonPathContains()`, `assertJsonPathNotContains()`, and
   `assertJsonPathCallback()` methods to the test response class.
+- Added `dump_backtrace()`/`dd_backtrace()` methods.
 
 ### Changed
 
