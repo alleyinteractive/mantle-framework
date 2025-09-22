@@ -646,6 +646,8 @@ class Pending_Testable_Request {
 	 * If the request is being overridden to use HTTPS via {@see with_https()},
 	 * this will return 'https'. Otherwise, it will return the scheme of the home
 	 * URL of the WordPress installation.
+	 *
+	 * @return 'http'|'https'
 	 */
 	protected function get_default_url_scheme(): string {
 		if ( $this->forced_https ) {
