@@ -127,7 +127,7 @@ abstract class Factory {
 	 * @param array $values The values to use when creating the object.
 	 * @return TReturnValue The created object.
 	 */
-	public function first_or_create( array $attributes, array $values = [] ): Model {
+	public function first_or_create( array $attributes, array $values = [] ) {
 		$object = $this->get_object_by_query( $attributes );
 
 		if ( ! $object instanceof Model ) {
