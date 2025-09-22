@@ -647,7 +647,9 @@ class Pending_Testable_Request {
 			return 'http';
 		}
 
-		return wp_parse_url( home_url(), PHP_URL_SCHEME );
+		$scheme = wp_parse_url( home_url(), PHP_URL_SCHEME );
+
+		return ! empty( $scheme ) ? $scheme : 'http';
 	}
 
 	/**
