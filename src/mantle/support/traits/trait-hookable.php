@@ -273,7 +273,6 @@ trait Hookable {
 	 * Fire all validators for a method.
 	 *
 	 * @param ReflectionMethod $method The hook callback method.
-	 * @return bool
 	 */
 	protected function fire_validator( ReflectionMethod $method ): bool {
 		$attributes = $method->getAttributes();
@@ -281,10 +280,8 @@ trait Hookable {
 		// Check all validators for this method.
 		foreach ( $attributes as $attribute ) {
 			$instance = $attribute->newInstance();
-			if ( $instance instanceof \Mantle\Types\Validator ) {
-				if ( ! $instance->validate() ) {
-					return false;
-				}
+			if ( $instance instanceof \Mantle\Types\Validator && ! $instance->validate() ) {
+				return false;
 			}
 		}
 
