@@ -274,7 +274,7 @@ trait Hookable {
 	 *
 	 * @param ReflectionMethod $method The hook callback method.
 	 */
-	protected function fire_validator( ReflectionMethod $method ): bool {
+	protected function validate_method( ReflectionMethod $method ): bool {
 		$attributes = $method->getAttributes();
 
 		// Check all validators for this method.
