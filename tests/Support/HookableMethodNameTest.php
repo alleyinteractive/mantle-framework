@@ -4,6 +4,7 @@ namespace Mantle\Tests\Support;
 
 use Mantle\Support\Traits\Hookable;
 use Mantle\Testing\FrameworkTestCase;
+use Mantle\Tests\Support\Concerns\TestValidatorAttribute;
 use PHPUnit\Framework\Attributes\Group;
 
 #[Group('hookable')]
@@ -68,6 +69,48 @@ class HookableMethodNameTest extends FrameworkTestCase {
 		do_action( 'example_action', 'foo' );
 
 		$this->assertSame( [ 10, 20 ], $_SERVER['__hook_fired'] );
+	}
+
+	public function test_action_with_inactive_validator_attribute(): void {
+		$_SERVER['__hook_fired'] = false;
+
+		$class = new class {
+			use Hookable;
+
+			#[TestValidatorAttribute( false )]
+			public function action__example_action( mixed $args ): void {
+				$_SERVER['__hook_fired'] = $args;
+			}
+		};
+
+		new $class;
+
+		$this->assertFalse( $_SERVER['__hook_fired'] );
+
+		do_action( 'example_action', 'foo' );
+
+		$this->assertFalse( $_SERVER['__hook_fired'] );
+	}
+
+	public function test_action_with_active_validator_attribute(): void {
+		$_SERVER['__hook_fired'] = false;
+
+		$class = new class {
+			use Hookable;
+
+			#[TestValidatorAttribute( true )]
+			public function action__example_action( mixed $args ): void {
+				$_SERVER['__hook_fired'] = $args;
+			}
+		};
+
+		new $class;
+
+		$this->assertFalse( $_SERVER['__hook_fired'] );
+
+		do_action( 'example_action', 'foo' );
+
+		$this->assertSame( 'foo', $_SERVER['__hook_fired'] );
 	}
 
 	public function test_filter(): void {
