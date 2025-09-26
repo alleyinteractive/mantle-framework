@@ -133,7 +133,7 @@ trait Hookable {
 					}
 
 					// Check if the method passes all validators.
-					if ( false === $this->fire_validator( $reflection_method ) ) {
+					if ( false === $this->validate_method( $reflection_method ) ) {
 						return null;
 					}
 
@@ -188,7 +188,7 @@ trait Hookable {
 				}
 
 				// Check if the method passes all validators.
-				if ( false === $this->fire_validator( $method ) ) {
+				if ( false === $this->validate_method( $method ) ) {
 					continue;
 				}
 
