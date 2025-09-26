@@ -282,13 +282,6 @@ trait Hookable {
 			if ( ! $attribute->newInstance()->validate() ) {
 				return false;
 			}
-
-		// Check all validators for this method.
-		foreach ( $attributes as $attribute ) {
-			$instance = $attribute->newInstance();
-			if ( $instance instanceof \Mantle\Types\Validator && ! $instance->validate() ) {
-				return false;
-			}
 		}
 
 		return true;
