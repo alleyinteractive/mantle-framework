@@ -72,7 +72,7 @@ class HelpersMetaTest extends FrameworkTestCase {
 		$this->assertEquals( 'integer', $registered['test_custom_meta_key']['type'] );
 	}
 
-	public function test_register_meta_from_defs(): void {
+	public function test_register_meta_from_file(): void {
 		$registered = get_registered_meta_keys( 'post', 'post' );
 
 		$this->assertFalse( isset( $registered['testable_meta_key'] ) );
@@ -84,5 +84,10 @@ class HelpersMetaTest extends FrameworkTestCase {
 		$this->assertEquals( 'string', $registered['testable_meta_key']['type'] );
 		$this->assertEquals( true, $registered['testable_meta_key']['single'] );
 		$this->assertEquals( true, $registered['testable_meta_key']['show_in_rest'] );
+	}
+
+	public function test_register_meta_from_file_invalid_file(): void {
+		$this->expectException( \InvalidArgumentException::class );
+		register_meta_from_file( __DIR__ . '/fixtures/non-existent.json', 'post' );
 	}
 }
