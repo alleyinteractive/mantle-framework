@@ -158,14 +158,18 @@ function register_meta_from_file( string $file, string $meta_context, bool $thro
 	}
 
 	foreach ( $definitions as $meta_key => $definition ) {
+		if ( '$schema' === $meta_key ) {
+			continue;
+		}
+
 		if ( ! is_array( $definition ) ) {
-			_doing_it_wrong( __FUNCTION__, 'Post meta definition items must be an array.', '1.0.0' );
+			_doing_it_wrong( __FUNCTION__, 'Meta definition items must be an array.', '1.0.0' );
 
 			continue;
 		}
 
 		// Extract post types or terms.
-		$definition_key = ( 'post' === $meta_context ) ? 'post_types' : 'terms';
+		$definition_key = 'post' === $meta_context ? 'post_types' : 'terms';
 		$object_types   = $definition[ $definition_key ] ?? [];
 
 		// Unset since $definition is passed as register_meta args.

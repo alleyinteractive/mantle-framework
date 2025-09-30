@@ -86,6 +86,20 @@ class HelpersMetaTest extends FrameworkTestCase {
 		$this->assertEquals( true, $registered['testable_meta_key']['show_in_rest'] );
 	}
 
+	public function test_register_meta_from_file_with_schema(): void {
+		$registered = get_registered_meta_keys( 'post', 'post' );
+
+		$this->assertFalse( isset( $registered['testable_schema_meta_key'] ) );
+
+		register_meta_from_file( __DIR__ . '/fixtures/meta-with-schema.json', 'post' );
+
+		$registered = get_registered_meta_keys( 'post', 'post' );
+		$this->assertTrue( isset( $registered['testable_schema_meta_key'] ) );
+		$this->assertEquals( 'string', $registered['testable_schema_meta_key']['type'] );
+		$this->assertEquals( true, $registered['testable_schema_meta_key']['single'] );
+		$this->assertEquals( true, $registered['testable_schema_meta_key']['show_in_rest'] );
+	}
+
 	public function test_register_meta_from_file_invalid_file(): void {
 		$this->expectException( \InvalidArgumentException::class );
 		register_meta_from_file( __DIR__ . '/fixtures/non-existent.json', 'post' );
