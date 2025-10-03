@@ -54,6 +54,25 @@ class ObjectMetadataTest extends FrameworkTestCase {
 	}
 
 	#[DataProvider('objectTypeProvider')]
+	public function test_add_data( string $object_type ): void {
+		$object_id = static::factory()->{$object_type}->create();
+		$metadata  = Object_Metadata::of( $object_type, $object_id, 'test_meta' );
+
+		$metadata->set( 'new-test' );
+		$metadata->add();
+
+		$metadata->set( 'new-test-2' );
+		$metadata->add();
+
+		$all_values = $metadata->all()->array();
+
+		// Test all meta values from the same key are retrieved.
+		$this->assertCount( 2, $all_values );
+		$this->assertEquals( [ 'new-test', 'new-test-2' ], $metadata->all()->array() );
+		$this->assertSame( get_metadata( $object_type, $object_id, 'test_meta' ),$all_values );
+	}
+
+	#[DataProvider('objectTypeProvider')]
 	public function test_update_data( string $object_type ): void {
 		$object_id = static::factory()->{$object_type}->create();
 
@@ -79,6 +98,28 @@ class ObjectMetadataTest extends FrameworkTestCase {
 		$metadata->delete();
 
 		$this->assertEmpty( get_metadata( $object_type, $object_id, 'test_meta', true ) );
+	}
+
+	#[DataProvider('objectTypeProvider')]
+	public function test_delete_data_value( string $object_type ): void {
+		$object_id = static::factory()->{$object_type}->create();
+		$metadata = Object_Metadata::of( $object_type, $object_id, 'test_meta' );
+
+		$value1 = 'new-test';
+		$value2 = 'new-test-2';
+
+		$metadata->set( $value1 );
+		$metadata->add();
+
+		$metadata->set( $value2 );
+		$metadata->add();
+
+		$metadata->delete_value( $value1 );
+
+		$refreshed = Object_Metadata::of( $object_type, $object_id, 'test_meta' );
+
+		$this->assertSame( $value2, $refreshed->value() );
+		$this->assertNotEmpty( $refreshed->string() );
 	}
 
 	#[DataProvider('objectTypeProvider')]
