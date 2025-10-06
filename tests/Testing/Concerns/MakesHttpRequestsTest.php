@@ -242,6 +242,8 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	}
 
 	public function test_rest_api_route() {
+		$this->expectApplied( 'rest_dispatch_request' )->once()->andReturnNull();
+
 		$post_id = static::factory()->post->create( [ 'post_title' => 'Example Post Title' ] );
 
 		$this->get( rest_url( "wp/v2/posts/{$post_id}" ) )

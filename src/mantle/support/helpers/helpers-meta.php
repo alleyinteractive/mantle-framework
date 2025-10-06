@@ -134,16 +134,19 @@ function register_meta_helper(
  *
  * @param string        $file The name of the full file path to read definitions from.
  * @param 'post'|'term' $meta_context The type of meta to register, which must be one of 'post' or 'term'.
+ * @param bool          $throw Optional. Whether to throw an exception if the file cannot be found. Default true.
  */
-function register_meta_from_file( string $file, string $meta_context ): void {
+function register_meta_from_file( string $file, string $meta_context, bool $throw = true ): void {
 	if ( ! in_array( $meta_context, [ 'post', 'term' ], true ) ) {
 		throw new InvalidArgumentException( 'Meta context must be one of "post", "term".' );
 	}
 
 	if ( ! file_exists( $file ) || ! in_array( validate_file( $file ), [ 0, 2 ], true ) ) {
-		throw new InvalidArgumentException(
+		throw_if( $throw, new InvalidArgumentException(
 			"Meta definition file [{$file}] does not exist."
-		);
+		) );
+
+		return;
 	}
 
 	$definitions = wp_json_file_decode( $file, [ 'associative' => true ] );
@@ -155,14 +158,18 @@ function register_meta_from_file( string $file, string $meta_context ): void {
 	}
 
 	foreach ( $definitions as $meta_key => $definition ) {
+		if ( '$schema' === $meta_key ) {
+			continue;
+		}
+
 		if ( ! is_array( $definition ) ) {
-			_doing_it_wrong( __FUNCTION__, 'Post meta definition items must be an array.', '1.0.0' );
+			_doing_it_wrong( __FUNCTION__, 'Meta definition items must be an array.', '1.0.0' );
 
 			continue;
 		}
 
 		// Extract post types or terms.
-		$definition_key = ( 'post' === $meta_context ) ? 'post_types' : 'terms';
+		$definition_key = 'post' === $meta_context ? 'post_types' : 'terms';
 		$object_types   = $definition[ $definition_key ] ?? [];
 
 		// Unset since $definition is passed as register_meta args.
