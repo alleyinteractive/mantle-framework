@@ -97,7 +97,7 @@ class Registered_REST_Field {
 	 * @param array<mixed> $arguments Enumerated array containing the parameters passed to $name.
 	 * @return mixed
 	 */
-	public function __call( $name, $arguments ) {
+	public function __call( string $name, array $arguments ) {
 		if ( 'get_callback' === $name && \is_callable( $this->get_callback ) ) {
 			return \call_user_func_array( $this->get_callback, $arguments );
 		}

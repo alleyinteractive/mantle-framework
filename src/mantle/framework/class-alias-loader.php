@@ -55,7 +55,7 @@ class Alias_Loader {
 	 *
 	 * @param  string $alias Alias to load.
 	 */
-	public function load( $alias ): void {
+	public function load( string $alias ): void {
 		if ( isset( $this->aliases[ $alias ] ) ) {
 			class_alias( $this->aliases[ $alias ], $alias );
 		}
@@ -67,7 +67,7 @@ class Alias_Loader {
 	 * @param  string $class Alias class.
 	 * @param  string $alias Alias name.
 	 */
-	public function alias( $class, $alias ): void {
+	public function alias( string $class, $alias ): void {
 		$this->aliases[ $class ] = $alias;
 	}
 

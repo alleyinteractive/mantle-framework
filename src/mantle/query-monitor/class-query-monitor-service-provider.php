@@ -39,7 +39,7 @@ class Query_Monitor_Service_Provider extends Service_Provider {
 	 * @param \QM_Dispatcher[] $dispatchers Array of dispatchers.
 	 * @return \QM_Dispatcher[]
 	 */
-	public function fix_query_monitor_dispatcher( $dispatchers ) {
+	public function fix_query_monitor_dispatcher( array $dispatchers ): array {
 		foreach ( [ 'ajax', 'html', 'wp_die' ] as $dispatcher ) {
 			if ( isset( $dispatchers[ $dispatcher ] ) ) {
 				$this->query_monitor_dispatches[] = [ $dispatchers[ $dispatcher ], 'dispatch' ];

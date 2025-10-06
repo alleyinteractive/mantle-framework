@@ -256,7 +256,7 @@ trait Interacts_With_Requests {
 	 *
 	 * @throws RuntimeException If the request was made without a matching faked request.
 	 */
-	public function pre_http_request( $preempt, $request_args, $url ) {
+	public function pre_http_request( $preempt, array $request_args, $url ) {
 		// Bail early if the preemption is already set.
 		if ( false !== $preempt ) {
 			return $preempt;

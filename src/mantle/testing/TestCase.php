@@ -367,7 +367,7 @@ abstract class TestCase extends BaseTestCase {
 	 *
 	 * @param string $name Property name.
 	 */
-	public function __isset( $name ): bool {
+	public function __isset( string $name ): bool {
 		return 'factory' === $name || 'app' === $name;
 	}
 
@@ -375,9 +375,8 @@ abstract class TestCase extends BaseTestCase {
 	 * Retrieve the factory/app instance non-statically.
 	 *
 	 * @param string $name Property name.
-	 * @return mixed
 	 */
-	public function __get( $name ) {
+	public function __get( string $name ): mixed {
 		return match ( $name ) {
 			'factory' => self::factory(),
 			'app' => $this->app,
