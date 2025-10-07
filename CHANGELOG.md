@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added schema support to `register_meta_from_file()` to validate meta
   definitions against a JSON schema.
 
+
+### Changed
+
+- Added more strict types to the framework.
+
 ## v1.9.3
 
 ### Added
