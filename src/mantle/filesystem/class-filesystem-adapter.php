@@ -683,7 +683,7 @@ class Filesystem_Adapter implements Filesystem {
 	 * @param array  $parameters Parameters for the driver.
 	 * @return mixed
 	 */
-	public function __call( $method, array $parameters ) {
+	public function __call( string $method, array $parameters ) {
 		return $this->driver->{$method}( ...$parameters );
 	}
 }

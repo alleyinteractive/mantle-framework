@@ -168,7 +168,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 *
 	 * @return array<mixed>
 	 */
-	public function segments() {
+	public function segments(): array {
 		$segments = explode( '/', $this->decoded_path() );
 
 		return array_values(
@@ -463,7 +463,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * @param  string $key
 	 * @return bool
 	 */
-	public function __isset( $key ) {
+	public function __isset( string $key ) {
 		return ! is_null( $this->__get( $key ) );
 	}
 
@@ -471,9 +471,8 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * Get an input element from the request.
 	 *
 	 * @param  string $key
-	 * @return mixed
 	 */
-	public function __get( $key ) {
+	public function __get( string $key ): mixed {
 		return Arr::get(
 			$this->all(),
 			$key,

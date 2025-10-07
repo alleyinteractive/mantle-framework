@@ -420,7 +420,7 @@ class Router implements Router_Contract {
 	 * @param  string $group
 	 * @param  string $middleware
 	 */
-	public function prepend_middleware_to_group( $group, $middleware ): static {
+	public function prepend_middleware_to_group( string $group, string $middleware ): static {
 		if ( isset( $this->middleware_groups[ $group ] ) && ! in_array( $middleware, $this->middleware_groups[ $group ], true ) ) {
 			array_unshift( $this->middleware_groups[ $group ], $middleware );
 		}
@@ -436,7 +436,7 @@ class Router implements Router_Contract {
 	 * @param  string $group
 	 * @param  string $middleware
 	 */
-	public function push_middleware_to_group( $group, $middleware ): static {
+	public function push_middleware_to_group( string $group, string $middleware ): static {
 		if ( ! array_key_exists( $group, $this->middleware_groups ) ) {
 				$this->middleware_groups[ $group ] = [];
 		}
