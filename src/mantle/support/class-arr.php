@@ -226,7 +226,7 @@ class Arr {
 	 * @param  array<mixed>    $array Array to handle.
 	 * @param  string[]|string $keys Keys to use.
 	 */
-	public static function forget( &$array, $keys ): void {
+	public static function forget( array &$array, $keys ): void {
 		$original = &$array;
 
 		$keys = (array) $keys;

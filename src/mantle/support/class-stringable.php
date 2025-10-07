@@ -1092,9 +1092,8 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * Proxy dynamic properties onto methods.
 	 *
 	 * @param  string $key
-	 * @return mixed
 	 */
-	public function __get( $key ) {
+	public function __get( string $key ): mixed {
 		return $this->{$key}();
 	}
 

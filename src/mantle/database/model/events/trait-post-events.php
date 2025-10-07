@@ -29,20 +29,16 @@ trait Post_Events {
 
 		add_filter_side_effect(
 			'wp_insert_post_data',
-			function ( $data, $postarr ) use ( $post_type ): void {
-				// Skip if the ID isn't found or the post type is incorrect.
-				if ( empty( $postarr['ID'] ) || empty( $data['post_type'] ) || $post_type !== $data['post_type'] ) {
+			function ( array $data, array $postarr ) use ( $post_type ): void {
+				if ( empty( $data['post_type'] ) || $post_type !== $data['post_type'] ) {
 					return;
 				}
 
 				$updating = ! empty( $postarr['ID'] );
-				$model    = static::find( $postarr['ID'] );
 
-				if ( ! $model ) {
-					return;
+				if ( $model = static::find( $postarr['ID'] ) ) {
+					$model->fire_model_event( $updating ? 'updating' : 'creating' );
 				}
-
-				$model->fire_model_event( $updating ? 'updating' : 'creating' );
 			},
 			10,
 			2
@@ -88,8 +84,7 @@ trait Post_Events {
 				return;
 			}
 
-			$model = static::find( $post_id );
-			if ( $model ) {
+			if ( $model = static::find( $post_id ) ) {
 				$model->fire_model_event( $event );
 			}
 		};

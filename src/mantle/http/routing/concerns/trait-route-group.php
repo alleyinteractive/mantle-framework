@@ -116,7 +116,7 @@ trait Route_Group {
 	 * @param  array<mixed> $old
 	 * @param  bool         $prepend_existing_prefix
 	 */
-	public static function merge( $new, array $old, $prepend_existing_prefix = true ): array {
+	public static function merge( array $new, array $old, bool $prepend_existing_prefix = true ): array {
 		if ( isset( $new['domain'] ) ) {
 			unset( $old['domain'] );
 		}
@@ -146,7 +146,7 @@ trait Route_Group {
 	 * @param  array<mixed> $old
 	 * @return string|null
 	 */
-	protected static function format_namespace( $new, $old ) {
+	protected static function format_namespace( array $new, array $old ) {
 		if ( isset( $new['namespace'] ) ) {
 			return isset( $old['namespace'] ) && ! str_starts_with( (string) $new['namespace'], '\\' )
 					? trim( (string) $old['namespace'], '\\' ) . '\\' . trim( (string) $new['namespace'], '\\' )
@@ -164,7 +164,7 @@ trait Route_Group {
 	 * @param  bool         $prepend_existing_prefix
 	 * @return string|null
 	 */
-	protected static function format_prefix( $new, $old, $prepend_existing_prefix = true ) {
+	protected static function format_prefix( array $new, array $old, $prepend_existing_prefix = true ) {
 		$old = $old['prefix'] ?? null;
 
 		if ( $prepend_existing_prefix ) {
@@ -181,7 +181,7 @@ trait Route_Group {
 	 * @param  array<mixed> $old
 	 * @return array<mixed>
 	 */
-	protected static function format_where( $new, $old ): array {
+	protected static function format_where( array $new, array $old ): array {
 		return array_merge(
 			$old['where'] ?? [],
 			$new['where'] ?? []
@@ -195,7 +195,7 @@ trait Route_Group {
 	 * @param  array<mixed> $old
 	 * @return array<mixed>
 	 */
-	protected static function format_as( $new, $old ) {
+	protected static function format_as( array $new, array $old ): array {
 		if ( isset( $old['as'] ) ) {
 			$new['as'] = $old['as'] . ( $new['as'] ?? '' );
 		}

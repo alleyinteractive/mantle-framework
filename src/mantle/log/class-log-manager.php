@@ -249,7 +249,7 @@ class Log_Manager implements LoggerInterface {
 	 * @param array<mixed> $args Arguments for the method.
 	 * @return mixed
 	 */
-	public function __call( $method, $args ) {
+	public function __call( string $method, array $args ) {
 		return $this->driver()->$method( ...$args );
 	}
 

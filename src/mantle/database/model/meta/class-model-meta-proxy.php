@@ -25,9 +25,8 @@ class Model_Meta_Proxy implements ArrayAccess {
 	 * Retrieve model meta by key.
 	 *
 	 * @param string $key Meta key.
-	 * @return mixed
 	 */
-	public function __get( string $key ) {
+	public function __get( string $key ): mixed {
 		$queued_value = $this->model->get_queued_meta_attribute( $key );
 		if ( null !== $queued_value ) {
 			return $queued_value;
@@ -42,7 +41,7 @@ class Model_Meta_Proxy implements ArrayAccess {
 	 * @param string $key Meta key.
 	 * @param mixed  $value Meta value.
 	 */
-	public function __set( string $key, $value ) {
+	public function __set( string $key, mixed $value ) {
 		$this->model->queue_meta_attribute( $key, $value );
 	}
 
