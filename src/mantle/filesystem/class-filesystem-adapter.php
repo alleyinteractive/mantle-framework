@@ -403,7 +403,7 @@ class Filesystem_Adapter implements Filesystem {
 
 		is_resource( $contents )
 			? $this->driver->writeStream( $path, $contents, $options )
-			: $this->driver->write( $path, $contents, $options );
+			: $this->driver->write( $path, (string) $contents, $options );
 
 		return true;
 	}
@@ -434,6 +434,10 @@ class Filesystem_Adapter implements Filesystem {
 	public function put_file_as( string $path, $file, string $name, $options = [] ): string|bool {
 		$stream = fopen( is_string( $file ) ? $file : $file->getRealPath(), 'r' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen
 		$path   = trim( $path . '/' . $name, '/' );
+
+		if ( ! $stream ) {
+			return false;
+		}
 
 		// Next, we will format the path of the file and store the file using a stream since
 		// they provide better performance than alternatives. Once we write the file this
@@ -648,10 +652,19 @@ class Filesystem_Adapter implements Filesystem {
 	protected function replace_base_url( UriInterface $uri, string $url ): UriInterface {
 		$parsed = wp_parse_url( $url );
 
-		return $uri
-			->withScheme( $parsed['scheme'] )
-			->withHost( $parsed['host'] )
-			->withPort( $parsed['port'] ?? null );
+		if ( isset( $parsed['scheme'] ) ) {
+			$uri = $uri->withScheme( $parsed['scheme'] );
+		}
+
+		if ( isset( $parsed['host'] ) ) {
+			$uri = $uri->withHost( $parsed['host'] );
+		}
+
+		if ( isset( $parsed['port'] ) ) {
+			$uri = $uri->withPort( $parsed['port'] );
+		}
+
+		return $uri;
 	}
 
 	/**
