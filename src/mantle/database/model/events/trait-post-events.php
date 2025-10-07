@@ -31,18 +31,15 @@ trait Post_Events {
 			'wp_insert_post_data',
 			function ( array $data, array $postarr ) use ( $post_type ): void {
 				// Skip if the ID isn't found or the post type is incorrect.
-				if ( empty( $postarr['ID'] ) || empty( $data['post_type'] ) || $post_type !== $data['post_type'] ) {
+				if ( empty( $data['post_type'] ) || $post_type !== $data['post_type'] ) {
 					return;
 				}
 
 				$updating = ! empty( $postarr['ID'] );
-				$model    = static::find( $postarr['ID'] );
 
-				if ( ! $model ) {
-					return;
+				if ( $model = static::find( $postarr['ID'] ) ) {
+					$model->fire_model_event( $updating ? 'updating' : 'creating' );
 				}
-
-				$model->fire_model_event( $updating ? 'updating' : 'creating' );
 			},
 			10,
 			2
