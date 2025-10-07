@@ -65,8 +65,8 @@ function class_basename( string|object $class ): string {
 /**
  * Returns all traits used by a class, its parent classes and trait of their traits.
  *
- * @param object|string $class Class or object to analyze.
- * @return array<string>
+ * @param object|class-string $class Class or object to analyze.
+ * @return array<class-string>
  */
 function class_uses_recursive( string|object $class ): array {
 	if ( is_object( $class ) ) {
@@ -75,7 +75,7 @@ function class_uses_recursive( string|object $class ): array {
 
 	$results = [];
 
-	foreach ( array_reverse( class_parents( $class ) ) + [ $class => $class ] as $class ) {
+	foreach ( array_reverse( class_parents( $class ) ?: [] ) + [ $class => $class ] as $class ) {
 		$results += trait_uses_recursive( $class );
 	}
 

@@ -176,7 +176,11 @@ class Log_Manager implements LoggerInterface {
 			'level' => $this->level( $config ),
 		] );
 
-		return new $config['handler']( ...$arguments );
+		$instance = new $config['handler']( ...$arguments );
+
+		assert( $instance instanceof HandlerInterface );
+
+		return $instance;
 	}
 
 	/**

@@ -391,7 +391,7 @@ trait Interacts_With_Data {
 	 * @param int $options json_encode() options.
 	 */
 	public function to_json( $options = 0 ): string {
-		return json_encode( $this->value, $options ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+		return (string) json_encode( $this->value, $options ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
 	}
 
 	/**
