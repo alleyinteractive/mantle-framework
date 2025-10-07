@@ -286,7 +286,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 * @param  array $data Data to compare.
 	 */
 	public function assertFragment( array $data ): static {
-		$actual = wp_json_encode(
+		$actual = (string) wp_json_encode(
 			Arr::sort_recursive(
 				(array) $this->json()
 			)
@@ -318,7 +318,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 			return $this->assertMissingExact( $data );
 		}
 
-		$actual = wp_json_encode(
+		$actual = (string) wp_json_encode(
 			Arr::sort_recursive(
 				(array) $this->json()
 			)
@@ -345,7 +345,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 * @param  array $data
 	 */
 	public function assertMissingExact( array $data ): static {
-		$actual = wp_json_encode(
+		$actual = (string) wp_json_encode(
 			Arr::sort_recursive(
 				(array) $this->json()
 			)

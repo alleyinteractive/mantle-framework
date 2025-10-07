@@ -329,10 +329,10 @@ class Dispatcher implements Dispatcher_Contract {
 	 * which we can then use to find the appropriate listeners. Wildcard events
 	 * cannot have a priority.
 	 *
-	 * @param string   $event Event name to listen to with * wildcard.
-	 * @param callable $listener Listener to register.
+	 * @param string          $event Event name to listen to with * wildcard.
+	 * @param string|callable $listener Listener to register.
 	 */
-	protected function setup_wildcard_listener( string $event, callable $listener ): void {
+	protected function setup_wildcard_listener( string $event, string|callable $listener ): void {
 		if ( function_exists( 'has_action' ) && ! has_action( 'all', [ $this, 'wildcard_listener_callback' ] ) ) {
 			add_action( 'all', [ $this, 'wildcard_listener_callback' ] );
 		}
