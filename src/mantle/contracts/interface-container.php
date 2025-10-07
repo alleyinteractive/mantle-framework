@@ -7,13 +7,14 @@
 
 namespace Mantle\Contracts;
 
+use ArrayAccess;
 use Closure;
 use Psr\Container\ContainerInterface;
 
 /**
  * Container Contract
  */
-interface Container extends ContainerInterface {
+interface Container extends ArrayAccess, ContainerInterface {
 	/**
 	 * Determine if the given abstract type has been bound.
 	 *

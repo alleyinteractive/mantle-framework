@@ -3,7 +3,7 @@ includes:
 
 parameters:
 	# Goal of max.
-	level: 6
+	level: 7
 
 	paths:
 		- src/mantle
