@@ -269,7 +269,7 @@ class Utils {
 	 * @return callable-string[]
 	 */
 	public static function get_query_conditional_tags(): array {
-		return collect( get_class_methods( \WP_Query::class ) )
+		return collect( get_class_methods( \WP_Query::class ) ) // @phpstan-ignore-line
 			->filter( fn ( $method ) => str_starts_with( $method, 'is_' ) && function_exists( $method ) )
 			->reject( fn ( $method ) => in_array( $method, [ 'is_comments_popup', 'is_main_query' ], true ) )
 			->sort()
@@ -449,7 +449,7 @@ class Utils {
 					static::shell_safe( static::env( 'WP_VERSION', 'latest' ) ),
 					static::shell_safe( static::env( 'WP_SKIP_DB_CREATE', 'false' ) ),
 					static::shell_safe( $install_vip_mu_plugins ? 'true' : 'false' ),
-					static::shell_safe( $install_object_cache ),
+					static::shell_safe( $install_object_cache ), // @phpstan-ignore-line argument.type
 				]
 			)->implode( ' ' ),
 		);

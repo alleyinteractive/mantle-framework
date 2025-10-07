@@ -23,7 +23,7 @@ trait Asset_Assertions {
 			do_action( 'wp_enqueue_scripts' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		}
 
-		$this->assertTrue( wp_script_is( $handle, $status ), "Script {$handle} is not {$status}" );
+		$this->assertTrue( wp_script_is( $handle, $status ), "Script {$handle} is not {$status}" ); // @phpstan-ignore-line argument.type
 	}
 
 	/**
@@ -38,7 +38,7 @@ trait Asset_Assertions {
 			do_action( 'wp_enqueue_scripts' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		}
 
-		$this->assertTrue( wp_style_is( $handle, $status ), "Style {$handle} is not {$status}" );
+		$this->assertTrue( wp_style_is( $handle, $status ), "Style {$handle} is not {$status}" ); // @phpstan-ignore-line argument.type
 	}
 
 	/**
