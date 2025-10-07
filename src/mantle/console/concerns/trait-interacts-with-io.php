@@ -5,6 +5,8 @@
  * @package Mantle
  */
 
+declare(strict_types=1);
+
 namespace Mantle\Console\Concerns;
 
 use Closure;
@@ -49,7 +51,7 @@ trait Interacts_With_IO {
 	 * @param  string|int $name
 	 */
 	public function has_argument( string|int $name ): bool {
-		return $this->input->hasArgument( $name );
+		return $this->input->hasArgument( (string) $name );
 	}
 
 	/**
@@ -69,7 +71,7 @@ trait Interacts_With_IO {
 	/**
 	 * Get all of the arguments passed to the command.
 	 *
-	 * @return array<string, string>
+	 * @return array<string|bool|int|float|array<mixed>|null>
 	 */
 	public function arguments() {
 		return $this->input->getArguments();
@@ -254,7 +256,7 @@ trait Interacts_With_IO {
 	 */
 	public function with_progress_bar( iterable|int $total_steps, Closure $callback ): ?iterable {
 		$bar = $this->output->createProgressBar(
-			is_iterable( $total_steps ) ? count( $total_steps ) : $total_steps
+			is_int( $total_steps ) ? $total_steps : ( is_countable( $total_steps ) ? count( $total_steps ) : 0 ),
 		);
 
 		$bar->start();
