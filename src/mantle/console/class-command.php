@@ -5,6 +5,8 @@
  * @package Mantle
  */
 
+declare(strict_types=1);
+
 namespace Mantle\Console;
 
 use Mantle\Contracts\Application as Application_Contract;
@@ -19,6 +21,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
+
+use function Mantle\Support\Helpers\mixed;
 
 /**
  * CLI Command for Service Providers
@@ -139,6 +143,8 @@ abstract class Command extends Symfony_Command {
 	/**
 	 * Execute the console command.
 	 *
+	 * @throws InvalidArgumentException Thrown on invalid command.
+	 *
 	 * @param InputInterface  $input
 	 * @param OutputInterface $output
 	 */
@@ -148,7 +154,17 @@ abstract class Command extends Symfony_Command {
 
 		$method = method_exists( $this, 'handle' ) ? 'handle' : '__invoke';
 
-		return (int) $this->container->call( [ $this, $method ] );
+		if ( ! method_exists( $this, $method ) ) {
+			throw new InvalidArgumentException( "The command is missing a handle or __invoke method." );
+		}
+
+		$callable = [ $this, $method ];
+
+		if ( ! is_callable( $callable ) ) {
+			throw new InvalidArgumentException( "The command's {$method} method is not callable." );
+		}
+
+		return mixed( $this->container->call( $callable ) )->int();
 	}
 
 	/**

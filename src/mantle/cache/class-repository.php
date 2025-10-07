@@ -7,6 +7,8 @@
  * phpcs:disable WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
  */
 
+declare(strict_types=1);
+
 namespace Mantle\Cache;
 
 use Closure;
