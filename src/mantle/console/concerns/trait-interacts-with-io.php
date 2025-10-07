@@ -21,6 +21,8 @@ use Symfony\Component\Console\Question\Question;
 use Mantle\Console\Output_Style;
 use Symfony\Component\Console\Helper\TableStyle;
 
+use function Mantle\Support\Helpers\mixed;
+
 trait Interacts_With_IO {
 	/**
 	 * The input implementation.
@@ -94,12 +96,23 @@ trait Interacts_With_IO {
 	 * @param  mixed       $default Default value if the option does not exist.
 	 * @return string|array<mixed>|bool|null
 	 */
-	public function option( $key = null, $default = null ) {
+	public function option( ?string $key = null, mixed $default = null ) {
 		if ( is_null( $key ) ) {
 			return $this->input->getOptions();
 		}
 
 		return $this->input->getOption( $key ) ?: $default;
+	}
+
+	/**
+	 * Get the value of a command option as a mixed type.
+	 *
+	 * @param  string $key The option name.
+	 * @param  mixed  $default Default value if the option does not exist.
+	 * @return mixed
+	 */
+	public function mixed_option( string $key, mixed $default = null ): mixed {
+		return mixed( $this->option( $key, $default ) );
 	}
 
 	/**

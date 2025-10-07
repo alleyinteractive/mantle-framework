@@ -35,11 +35,11 @@ abstract class Seeder {
 	/**
 	 * Seed the given connection from the given path.
 	 *
-	 * @param array<class-string>|string $class Seed to run.
-	 * @param bool                       $silent Flag if the seed should be silent.
-	 * @param array<mixed>               $parameters Parameters to pass to the seeder.
+	 * @param array<class-string>|class-string $class Seed to run.
+	 * @param bool                             $silent Flag if the seed should be silent.
+	 * @param array<mixed>                     $parameters Parameters to pass to the seeder.
 	 */
-	public function call( $class, bool $silent = false, array $parameters = [] ): static {
+	public function call( array|string $class, bool $silent = false, array $parameters = [] ): static {
 		$classes = Arr::wrap( $class );
 
 		foreach ( $classes as $class ) {
@@ -69,10 +69,10 @@ abstract class Seeder {
 	/**
 	 * Run the given seeder class with the given arguments.
 	 *
-	 * @param array<class-string>|string $class Seed to run.
-	 * @param array<mixed>               $parameters Parameters to pass to the seeder.
+	 * @param array<class-string>|class-string $class Seed to run.
+	 * @param array<mixed>                     $parameters Parameters to pass to the seeder.
 	 */
-	public function call_with( $class, array $parameters = [] ): static {
+	public function call_with( array|string $class, array $parameters = [] ): static {
 		return $this->call( $class, false, $parameters );
 	}
 
