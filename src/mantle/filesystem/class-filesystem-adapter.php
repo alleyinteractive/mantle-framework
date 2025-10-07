@@ -9,6 +9,7 @@
 
 namespace Mantle\Filesystem;
 
+use DateTimeInterface;
 use InvalidArgumentException;
 use League\Flysystem\FilesystemAdapter;
 use League\Flysystem\FilesystemOperator;
@@ -625,7 +626,7 @@ class Filesystem_Adapter implements Filesystem {
 	 *
 	 * @throws RuntimeException Thrown on missing temporary URL.
 	 */
-	public function temporary_url( string $path, $expiration, array $options = [] ): string {
+	public function temporary_url( string $path, DateTimeInterface $expiration, array $options = [] ): string {
 		return match ( true ) {
 			method_exists( $this->adapter, 'getTemporaryUrl' ) => $this->adapter->getTemporaryUrl( $path, $expiration, $options ),
 			method_exists( $this->adapter, 'get_temporary_url' ) => $this->adapter->get_temporary_url( $path, $expiration, $options ),

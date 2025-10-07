@@ -112,12 +112,12 @@ class Reflector {
 	 *
 	 * @see https://www.php.net/manual/en/reflectionclass.getattributes.php
 	 *
-	 * @param  object|string     $class     The class name.
-	 * @param  string            $method    The method name.
-	 * @param  class-string|null $attribute The attribute name to filter by, or null for all attributes.
-	 * @param  int               $flags     Flags to pass to getAttributes().
-	 * @param  bool              $inherit   Whether to include attributes from parent classes.
-	 * @param  bool              $inherit_from_class Whether to include attributes from the class itself.
+	 * @param  object|class-string $class     The class name.
+	 * @param  string              $method    The method name.
+	 * @param  class-string|null   $attribute The attribute name to filter by, or null for all attributes.
+	 * @param  int                 $flags     Flags to pass to getAttributes().
+	 * @param  bool                $inherit   Whether to include attributes from parent classes.
+	 * @param  bool                $inherit_from_class Whether to include attributes from the class itself.
 	 * @return array<\ReflectionAttribute>
 	 */
 	public static function get_attributes_for_method( object|string $class, string $method, ?string $attribute = null, int $flags = 0, bool $inherit = true, bool $inherit_from_class = true ): array {
@@ -138,10 +138,10 @@ class Reflector {
 	 *
 	 * Supports attributes on the class and all parent classes.
 	 *
-	 * @param object|string $class The class name or object instance.
-	 * @param string|null   $attribute The attribute name to filter by, or null for all attributes.
-	 * @param int           $flags Flags to pass to getAttributes().
-	 * @param bool          $inherit Whether to include attributes from parent classes.
+	 * @param object|class-string $class The class name or object instance.
+	 * @param string|null         $attribute The attribute name to filter by, or null for all attributes.
+	 * @param int                 $flags Flags to pass to getAttributes().
+	 * @param bool                $inherit Whether to include attributes from parent classes.
 	 * @return array<\ReflectionAttribute> Returned in inheritance order (parent -> child).
 	 */
 	public static function get_attributes_for_class( object|string $class, ?string $attribute = null, int $flags = 0, bool $inherit = true ): array {
