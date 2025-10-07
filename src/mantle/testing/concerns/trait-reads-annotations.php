@@ -67,10 +67,15 @@ trait Reads_Annotations {
 	 *
 	 * Supports PHPUnit 9.5+.
 	 *
+	 * @template TAttribute of class-string<\Attribute>
+	 *
 	 * @param class-string $name Filter the results to include only ReflectionAttribute instances for attributes matching this class name.
 	 * @param int          $flags Flags to pass to getAttributes().
 	 * @param bool         $inherit Whether to include attributes from parent classes.
 	 * @return array<\ReflectionAttribute>
+	 *
+	 * @phpstan-param TAttribute $name
+	 * @phpstan-return array<TAttribute>
 	 */
 	public function get_attributes_for_method( ?string $name = null, int $flags = 0, bool $inherit = true ): array {
 		$class = new ReflectionClass( $this );
