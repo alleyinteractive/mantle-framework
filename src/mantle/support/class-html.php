@@ -69,7 +69,7 @@ class HTML extends SymfonyCrawler implements Htmlable {
 	 */
 	public function to_html(): string {
 		if ( $this->is_html_document() ) {
-			return $this->get_dom_document()->saveHTML();
+			return (string) $this->get_dom_document()->saveHTML();
 		}
 
 		$doc  = new \DOMDocument( '1.0', 'UTF-8' );
@@ -79,7 +79,7 @@ class HTML extends SymfonyCrawler implements Htmlable {
 			$root->appendChild( $doc->importNode( $node, true ) );
 		}
 
-		$html = trim( $doc->saveHTML() );
+		$html = trim( (string) $doc->saveHTML() );
 
 		return preg_replace( '@^<' . self::FRAGMENT_ROOT_TAGNAME . '[^>]*>|</' . self::FRAGMENT_ROOT_TAGNAME . '>$@', '', $html );
 	}
@@ -364,7 +364,7 @@ class HTML extends SymfonyCrawler implements Htmlable {
 			if ( $node instanceof DOMElement ) {
 				$existing = stringable( $node->getAttribute( 'class' ) )->explode( ' ' );
 
-				if ( $existing->intersect( $class )->count() === count( $class ) ) {
+				if ( $existing->intersect( $class )->count() === count( $class ) ) {  // @phpstan-ignore-line argument.type
 					return true;
 				}
 			}
@@ -386,7 +386,7 @@ class HTML extends SymfonyCrawler implements Htmlable {
 			if ( $node instanceof DOMElement ) {
 				$existing = stringable( $node->getAttribute( 'class' ) )->explode( ' ' );
 
-				if ( $existing->intersect( $class )->is_not_empty() ) {
+				if ( $existing->intersect( $class )->is_not_empty() ) { // @phpstan-ignore-line argument.type
 					return true;
 				}
 			}
