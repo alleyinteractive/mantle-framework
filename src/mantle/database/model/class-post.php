@@ -203,7 +203,11 @@ PHP
 
 		$full_class_name = "{$namespace}\\{$class_name}";
 
-		return new $full_class_name();
+		$instance = new $full_class_name();
+
+		assert( $instance instanceof Post );
+
+		return $instance;
 	}
 
 	/**
@@ -219,7 +223,7 @@ PHP
 	 * @return \Mantle\Database\Query\Post_Query_Builder<static>
 	 */
 	public static function query(): Post_Query_Builder {
-		return ( new static() )->new_query();
+		return ( new static() )->new_query(); // @phpstan-ignore-line return.type
 	}
 
 	/**

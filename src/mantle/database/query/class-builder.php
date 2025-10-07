@@ -13,6 +13,7 @@ namespace Mantle\Database\Query;
 
 use BackedEnum;
 use Closure;
+use InvalidArgumentException;
 use Mantle\Container\Container;
 use Mantle\Contracts\Database\Scope;
 use Mantle\Contracts\Paginator\Paginator as PaginatorContract;
@@ -263,12 +264,18 @@ abstract class Builder {
 	/**
 	 * Add a where clause to the query.
 	 *
+	 * @throws InvalidArgumentException Thrown when passing an array and value is not null.
+	 *
 	 * @param string|array<string, mixed> $attribute Attribute to use or array of key => value
 	 *                                attributes to set.
 	 * @param mixed        $value Value to compare against.
 	 */
-	public function where( array|string $attribute, mixed $value = '' ): static {
-		if ( is_array( $attribute ) && empty( $value ) ) {
+	public function where( array|string $attribute, mixed $value = null ): static {
+		if ( is_array( $attribute ) ) {
+			if ( ! is_null( $value ) ) {
+				throw new InvalidArgumentException( 'When passing an array of attributes to where(), the value argument must be null.' );
+			}
+
 			foreach ( $attribute as $key => $value ) {
 				$this->where( $key, $value );
 			}
