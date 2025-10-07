@@ -84,8 +84,7 @@ trait Post_Events {
 				return;
 			}
 
-			$model = static::find( $post_id );
-			if ( $model ) {
+			if ( $model = static::find( $post_id ) ) {
 				$model->fire_model_event( $event );
 			}
 		};
