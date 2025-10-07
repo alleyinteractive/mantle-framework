@@ -116,7 +116,7 @@ trait Route_Group {
 	 * @param  array<mixed> $old
 	 * @param  bool         $prepend_existing_prefix
 	 */
-	public static function merge( array $new, array $old, $prepend_existing_prefix = true ): array {
+	public static function merge( array $new, array $old, bool $prepend_existing_prefix = true ): array {
 		if ( isset( $new['domain'] ) ) {
 			unset( $old['domain'] );
 		}
