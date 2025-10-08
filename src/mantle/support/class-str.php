@@ -915,6 +915,7 @@ class Str {
 	 * @param  string|iterable<string> $subject
 	 * @param  bool                    $case_sensitive
 	 * @return string|array<string>
+	 * @phpstan-return ($subject is string ? string : array<string>)
 	 */
 	public static function replace( $search, $replace, $subject, bool $case_sensitive = true ): string|array {
 		if ( $search instanceof Traversable ) {
