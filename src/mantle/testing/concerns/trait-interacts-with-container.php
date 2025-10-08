@@ -7,6 +7,8 @@
  * @package Mantle
  */
 
+declare(strict_types=1);
+
 namespace Mantle\Testing\Concerns;
 
 use Closure;
@@ -46,10 +48,11 @@ trait Interacts_With_Container {
 	 *
 	 * @param  string        $abstract Abstract to swap.
 	 * @param  \Closure|null $mock Mock to use.
-	 * @return \Mockery\MockInterface
 	 */
-	protected function mock( $abstract, ?Closure $mock = null ) {
-		return $this->instance( $abstract, Mockery::mock( ...array_filter( func_get_args() ) ) );
+	protected function mock( $abstract, ?Closure $mock = null ): \Mockery\MockInterface {
+		$mock_instance = Mockery::mock( ...array_filter( func_get_args() ) );
+		$this->instance( $abstract, $mock_instance );
+		return $mock_instance;
 	}
 
 	/**
@@ -57,10 +60,11 @@ trait Interacts_With_Container {
 	 *
 	 * @param  string        $abstract Abstract to swap.
 	 * @param  \Closure|null $mock Mock to use.
-	 * @return \Mockery\MockInterface
 	 */
-	protected function partial_mock( $abstract, ?Closure $mock = null ) {
-		return $this->instance( $abstract, Mockery::mock( ...array_filter( func_get_args() ) )->makePartial() );
+	protected function partial_mock( $abstract, ?Closure $mock = null ): \Mockery\LegacyMockInterface {
+		$mock_instance = Mockery::mock( ...array_filter( func_get_args() ) )->makePartial();
+		$this->instance( $abstract, $mock_instance );
+		return $mock_instance;
 	}
 
 	/**
@@ -68,9 +72,10 @@ trait Interacts_With_Container {
 	 *
 	 * @param  string        $abstract Abstract to swap.
 	 * @param  \Closure|null $mock Mock to use.
-	 * @return \Mockery\MockInterface
 	 */
-	protected function spy( $abstract, ?Closure $mock = null ) {
-		return $this->instance( $abstract, Mockery::spy( ...array_filter( func_get_args() ) ) );
+	protected function spy( $abstract, ?Closure $mock = null ): \Mockery\MockInterface {
+		$mock_instance = Mockery::spy( ...array_filter( func_get_args() ) );
+		$this->instance( $abstract, $mock_instance );
+		return $mock_instance;
 	}
 }
