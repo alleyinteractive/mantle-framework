@@ -106,6 +106,7 @@ if ( ! function_exists( 'render_view' ) ) {
 	 *                           $variables is not used.
 	 */
 	function render_view( ...$args ): void {
+		// @phpstan-ignore echo.nonString
 		echo view( ...$args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 }

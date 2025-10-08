@@ -5,6 +5,8 @@
  * @package Mantle
  */
 
+declare(strict_types=1);
+
 namespace Mantle\Http_Client;
 
 use ArrayAccess;
@@ -278,7 +280,7 @@ class Response implements ArrayAccess {
 	 * Retrieve the file contents of the downloaded file.
 	 */
 	public function file_contents(): ?string {
-		return empty( $this->response['filename'] ) ? null : file_get_contents( $this->file() ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
+		return empty( $this->response['filename'] ) ? null : (string) file_get_contents( $this->file() ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
 	}
 
 	/**
@@ -313,11 +315,16 @@ class Response implements ArrayAccess {
 	/**
 	 * Get the XML body of the response.
 	 *
-	 * @param string $xpath Path to pass to `SimpleXMLElement::xpath()`, optional.
-	 * @param string $default Default value to return if the path does not exist.
+	 * @template TDefault
+	 *
+	 * @param string|null $xpath Path to pass to `SimpleXMLElement::xpath()`, optional.
+	 * @param mixed       $default Default value to return if the path does not exist.
 	 * @return SimpleXMLElement|string|null Returns a specific SimpleXMLElement if path is specified, otherwise the entire document.
+	 *
+	 * @phpstan-param TDefault $default
+	 * @phpstan-return ($xpath is null ? SimpleXMLElement : (array<SimpleXMLElement>|TDefault))
 	 */
-	public function xml( ?string $xpath = null, $default = null ) {
+	public function xml( ?string $xpath = null, mixed $default = null ) {
 		if ( ! $this->element instanceof \SimpleXMLElement ) {
 			$previous = libxml_use_internal_errors( true );
 
