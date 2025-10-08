@@ -103,7 +103,7 @@ class Register_Providers implements Bootstrapable {
 			// Map the parent classes for each provider to properly remove duplicates.
 			->map_with_keys(
 				fn ( string $provider ) => [
-					$provider => collect( class_parents( $provider ) )->filter( fn ( $parent ) => Base_Service_Provider::class !== $parent )->all(),
+					$provider => collect( class_parents( $provider ) ?: [] )->filter( fn ( $parent ) => Base_Service_Provider::class !== $parent )->all(),
 				],
 			)
 			->flatten()

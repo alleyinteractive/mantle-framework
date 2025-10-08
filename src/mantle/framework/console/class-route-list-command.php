@@ -48,7 +48,7 @@ class Route_List_Command extends Command {
 		$this->router = $router;
 
 		return $this->format_data(
-			$this->option( 'format', 'table' ),
+			$this->mixed_option( 'format', 'table' )->string(),
 			[
 				'method',
 				'url',

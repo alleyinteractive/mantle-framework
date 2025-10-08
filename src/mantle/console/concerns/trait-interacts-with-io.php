@@ -19,6 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 use Mantle\Console\Output_Style;
+use Mantle\Support\Mixed_Data;
 use Symfony\Component\Console\Helper\TableStyle;
 
 use function Mantle\Support\Helpers\mixed;
@@ -110,7 +111,7 @@ trait Interacts_With_IO {
 	 * @param  string $key The option name.
 	 * @param  mixed  $default Default value if the option does not exist.
 	 */
-	public function mixed_option( string $key, mixed $default = null ): mixed {
+	public function mixed_option( string $key, mixed $default = null ): Mixed_Data {
 		return mixed( $this->option( $key, $default ) );
 	}
 

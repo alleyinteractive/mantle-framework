@@ -74,6 +74,7 @@ parameters:
 		- src/mantle/blocks
 		- src/mantle/database/factory
 		- src/mantle/framework/console/class-hook-usage-command.php
+		- src/mantle/framework/console/generators
 		- src/mantle/query-monitor
 		- src/mantle/queue/providers/wordpress/admin/class-queue-jobs-table.php
 		- src/mantle/queue/providers/wordpress/admin/class-service-provider.php

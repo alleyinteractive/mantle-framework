@@ -82,8 +82,10 @@ trait WordPress_Action {
 					unset( $e );
 					return $callback( ...$args );
 				}
-			} else {
+			} elseif ( $callback instanceof Closure ) {
 				$parameters = ( new ReflectionFunction( $callback ) )->getParameters();
+			} else {
+				throw new RuntimeException( 'Unsupported callback type: ' . get_debug_type( $callback ) );
 			}
 
 			if ( empty( $parameters ) ) {
