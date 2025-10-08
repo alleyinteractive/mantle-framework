@@ -5,21 +5,20 @@
  * @package Mantle
  */
 
+declare(strict_types=1);
+
 namespace Mantle\Support\Helpers;
 
 /**
  * Nullable wrapper for `get_post()`.
  *
  * @param int|\WP_Post|null $post   Post ID or post object.
- * @param string            $output Provided for compatibility with the
- *                                  `get_post()` signature.
- * @param string            $filter Type of filter to apply.
  * @return null|\WP_Post Post object or null.
  */
-function get_post_object( $post = null, string $output = \OBJECT, string $filter = 'raw' ): ?\WP_Post {
-	$object = \get_post( $post, $output, $filter );
+function get_post_object( $post = null ): ?\WP_Post {
+	$object = \get_post( $post );
 
-	return ( $object instanceof \WP_Post ) ? $object : null;
+	return $object instanceof \WP_Post  ? $object : null;
 }
 
 /**
@@ -28,15 +27,12 @@ function get_post_object( $post = null, string $output = \OBJECT, string $filter
  * @param int|\WP_Term|object $term     Term ID, database object, or term
  *                                      object.
  * @param string              $taxonomy Taxonomy name that $term is part of.
- * @param string              $output   Provided for compatibility with the
- *                                      `get_term()` signature.
- * @param string              $filter   Type of filter to apply.
  * @return null|\WP_Term Term object or null.
  */
-function get_term_object( $term, string $taxonomy = '', string $output = \OBJECT, string $filter = 'raw' ): ?\WP_Term {
-	$object = \get_term( $term, $taxonomy, $output, $filter );
+function get_term_object( $term, string $taxonomy = '' ): ?\WP_Term {
+	$object = \get_term( $term, $taxonomy );
 
-	return ( $object instanceof \WP_Term ) ? $object : null;
+	return $object instanceof \WP_Term ? $object : null;
 }
 
 /**
