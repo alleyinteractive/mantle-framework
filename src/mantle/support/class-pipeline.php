@@ -178,7 +178,7 @@ class Pipeline implements PipelineContract {
 			$parameters = explode( ',', $parameters );
 		}
 
-		return [ $name, $parameters ];
+		return [ $name, $parameters ]; // @phpstan-ignore-line return.type
 	}
 
 	/**

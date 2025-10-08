@@ -9,10 +9,10 @@ namespace Mantle\Support;
 
 use Mantle\Console\Application as Console_Application;
 use Mantle\Console\Command;
-use Mantle\Container\Container;
 use Mantle\Contracts\Application;
 use Mantle\Support\Traits\Hookable;
 use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
+use Symfony\Component\Console\Command\Command as Symfony_Command;
 
 use function Mantle\Support\Helpers\collect;
 
@@ -88,9 +88,9 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	/**
 	 * Register a console command.
 	 *
-	 * @param Command[]|string[]|Command|string $command Command instance or class name to register.
+	 * @param array<class-string<Command|Symfony_Command>>|class-string<Command|Symfony_Command>|Symfony_Command|Command $command Command instance or class name to register.
 	 */
-	public function add_command( array|string|Command|\Symfony\Component\Console\Command\Command $command ): Service_Provider {
+	public function add_command( array|string|Symfony_Command|Command $command ): Service_Provider {
 		Console_Application::starting(
 			fn ( Console_Application $console ) => $console->resolve_commands( $command )
 		);
@@ -102,9 +102,9 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	 * Setup an after resolving listener, or fire immediately if already resolved.
 	 *
 	 * @param  string   $name Abstract name.
-	 * @param  callable $callback Callback.
+	 * @param  \Closure $callback Callback.
 	 */
-	protected function call_after_resolving( string $name, callable $callback ): void {
+	protected function call_after_resolving( string $name, \Closure $callback ): void {
 		$this->app->after_resolving( $name, $callback );
 
 		if ( $this->app->resolved( $name ) ) {
