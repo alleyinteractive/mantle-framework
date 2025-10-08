@@ -7,6 +7,8 @@
  * @package Mantle
  */
 
+declare(strict_types=1);
+
 namespace Mantle\Testing\Concerns;
 
 use Closure;
@@ -115,6 +117,10 @@ trait Interacts_With_Requests {
 	 * @param array<string>|string $url URL to ignore. Supports wildcard matching with *.
 	 */
 	public function ignore_stray_request( array|string $url ): void {
+		if ( is_string( $url ) ) {
+			$url = [ $url ];
+		}
+
 		$this->ignored_strayed_requests = $this->ignored_strayed_requests->merge( $url );
 	}
 
@@ -149,6 +155,7 @@ trait Interacts_With_Requests {
 	 *                                                                                                                                         that will return a faked response.
 	 * @param Mock_Http_Response|array<mixed>|callable $response Optional response object, defaults to a 200 response with no body.
 	 * @param Http_Method|string|null $method Optional request method to apply to, defaults to all. Does not apply to array of URL and response pairs OR callbacks.
+	 * @phpstan-return ($url_or_callback is string ? Mock_Http_Response : ($url_or_callback is null ? Mock_Http_Response : static))
 	 */
 	public function fake_request(
 		Mock_Http_Response|callable|string|array|null $url_or_callback = null,
@@ -167,7 +174,7 @@ trait Interacts_With_Requests {
 
 		// Allow a callback to be passed instead.
 		if ( is_callable( $url_or_callback ) ) {
-			$this->stub_callbacks->push( $url_or_callback );
+			$this->stub_callbacks->push( $url_or_callback ); // @phpstan-ignore-line argument.type
 
 			return $this;
 		}
@@ -339,21 +346,21 @@ trait Interacts_With_Requests {
 					return $response->to_array();
 				}
 
-				// Throw an error when an unknown response type is returned from the callback.
-				if ( $response && ! is_array( $response ) && ! is_wp_error( $response ) ) {
-					throw new InvalidArgumentException(
-						sprintf(
-							'Unknown response type returned for faked request to [%s]. Expected a (%s|%s|%s|array), got %s.',
-							$url,
-							Mock_Http_Response::class,
-							Arrayable::class,
-							WP_Error::class,
-							gettype( $response )
-						),
-					);
-				}
-
 				if ( ! is_null( $response ) ) {
+					// Throw an error when an unknown response type is returned from the callback.
+					if ( ! is_array( $response ) && ! is_wp_error( $response ) ) {
+						throw new InvalidArgumentException(
+							sprintf(
+								'Unknown response type returned for faked request to [%s]. Expected a (%s|%s|%s|array), got %s.',
+								$url,
+								Mock_Http_Response::class,
+								Arrayable::class,
+								WP_Error::class,
+								gettype( $response )
+							),
+						);
+					}
+
 					return $response;
 				}
 			}
