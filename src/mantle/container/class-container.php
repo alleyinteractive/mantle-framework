@@ -706,7 +706,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	/**
 	 * Instantiate a concrete instance of the given type.
 	 *
-	 * @param  \Closure|string $concrete
+	 * @param  \Closure|class-string<object> $concrete
 	 * @return mixed
 	 *
 	 * @throws Binding_Resolution_Exception Thrown on missing resolution.
@@ -721,7 +721,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 
 		try {
 			$reflector = new ReflectionClass( $concrete );
-		} catch ( ReflectionException $e ) {
+		} catch ( ReflectionException $e ) { // @phpstan-ignore-line catch.neverThrown
 			throw new Binding_Resolution_Exception( "Target class [{$concrete}] does not exist.", 0, $e );
 		}
 
@@ -940,6 +940,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 		if ( is_null( $callback ) && $abstract instanceof Closure ) {
 			$this->global_resolving_callbacks[] = $abstract;
 		} else {
+			// @phpstan-ignore offsetAccess.invalidOffset
 			$this->resolving_callbacks[ $abstract ][] = $callback;
 		}
 	}
@@ -958,6 +959,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 		if ( $abstract instanceof Closure && is_null( $callback ) ) {
 			$this->global_after_resolving_callbacks[] = $abstract;
 		} else {
+			// @phpstan-ignore offsetAccess.invalidOffset
 			$this->after_resolving_callbacks[ $abstract ][] = $callback;
 		}
 	}

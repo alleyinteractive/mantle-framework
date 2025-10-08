@@ -205,7 +205,7 @@ PHP
 
 		$instance = new $full_class_name();
 
-		assert( $instance instanceof Post );
+		assert( $instance instanceof self );
 
 		return $instance;
 	}

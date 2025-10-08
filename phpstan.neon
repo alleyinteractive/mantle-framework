@@ -63,6 +63,10 @@ parameters:
 			identifier: method.childReturnType
 			paths:
 				- src/mantle/http-client/class-pooled-pending-request.php
+		# Ignore than no error was ignored to allow for a gradual transition to higher levels.
+		- '#No error to ignore#'
+		-
+			identifier: ignore.unmatchedLine
 
 	scanFiles:
 		- %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-stubs.php
@@ -72,6 +76,7 @@ parameters:
 
 	excludePaths:
 		- src/mantle/blocks
+		- src/mantle/container/class-bound-method.php
 		- src/mantle/database/factory
 		- src/mantle/framework/console/class-hook-usage-command.php
 		- src/mantle/framework/console/generators

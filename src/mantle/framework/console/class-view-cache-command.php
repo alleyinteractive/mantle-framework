@@ -80,7 +80,9 @@ class View_Cache_Command extends Command {
 			return $this->handle_compile_wp_content();
 		}
 
-		if ( $paths = $this->mixed_option( 'path' )->string() ) {
+		$paths = $this->mixed_option( 'path' )->string();
+
+		if ( $paths !== '' && $paths !== '0' ) {
 			return $this->handle_compile_path( $paths );
 		}
 

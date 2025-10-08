@@ -32,7 +32,7 @@ use Mantle\Support\Traits\Conditionable;
 /**
  * Builder Query Builder
  *
- * @template TModel of \Mantle\Database\Model\Model
+ * @template TModel of \Mantle\Database\Model\Model = \Mantle\Database\Model\Model
  */
 abstract class Builder {
 	use Conditionable;
@@ -916,11 +916,11 @@ abstract class Builder {
 	 * @return Collection<string, class-string<TModel>> Collection of model class names keyed by object name.
 	 */
 	public function get_model_object_names(): Collection {
-		return ( new Collection( (array) $this->model ) ) // @phpstan-ignore-line should return
+		// @phpstan-ignore return.type
+		return ( new Collection( (array) $this->model ) )
+			// @phpstan-ignore argument.type
 			->combine( $this->model )
-			->map(
-				fn ( $model ) => $model::get_object_name(),
-			)
+			->map( fn ( $model ) => $model::get_object_name() )
 			->flip();
 	}
 

@@ -12,6 +12,7 @@ use Mantle\Contracts\Database\Model_Meta;
 use Mantle\Contracts\Database\Updatable;
 use Mantle\Database\Query\Term_Query_Builder;
 use Mantle\Support\Helpers;
+use WP_Term;
 
 use function Mantle\Support\Helpers\stringable;
 
@@ -97,7 +98,11 @@ class Term extends Model implements Core_Object, Model_Meta, Updatable {
 	 * @param \WP_Term|string|int $object Term to retrieve.
 	 */
 	public static function find( mixed $object ): ?static {
-		$term = Helpers\get_term_object( $object );
+		if ( ! is_numeric( $object ) && ! $object instanceof \WP_Term ) {
+			return null;
+		}
+
+		$term = Helpers\get_term_object( $object instanceof WP_Term ? $object : (int) $object );
 
 		if ( empty( $term ) ) {
 			return null;
@@ -137,7 +142,11 @@ PHP
 
 		$full_class_name = "{$namespace}\\{$class_name}";
 
-		return new $full_class_name();
+		$instance = new $full_class_name();
+
+		assert( $instance instanceof self );
+
+		return $instance;
 	}
 
 	/**
@@ -153,7 +162,11 @@ PHP
 	 * @return \Mantle\Database\Query\Term_Query_Builder<static>
 	 */
 	public static function query(): Term_Query_Builder {
-		return ( new static() )->new_query();
+		$builder = ( new static() )->new_query();
+
+		assert( $builder instanceof Term_Query_Builder );
+
+		return $builder;
 	}
 
 	/**

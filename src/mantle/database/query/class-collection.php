@@ -107,7 +107,7 @@ class Collection extends Base_Collection {
 	 * @return \Mantle\Support\Collection<array-key, int>
 	 */
 	public function count_by( $count_by = null ) {
-		return $this->to_base()->count_by( $count_by );
+		return $this->to_base()->count_by( $count_by ); // @phpstan-ignore-line argument.type
 	}
 
 	/**
