@@ -168,7 +168,7 @@ trait WordPress_State {
 		$post = match ( true ) {
 			$post instanceof WP_Post => Post::for( $post->post_type )->find_or_fail( $post->ID ),
 			$post instanceof Post    => $post,
-			default                  => Post::for( get_post_type( $post ) )->find_or_fail( $post ),
+			default                  => get_post_type( $post ) ? Post::for( get_post_type( $post ) )->find_or_fail( $post ) : throw new \InvalidArgumentException( 'Unresolvable post type.' ),
 		};
 
 		return $post->save(

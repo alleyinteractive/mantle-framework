@@ -97,9 +97,9 @@ interface Container extends ArrayAccess, ContainerInterface {
 	/**
 	 * Call the given Closure / class@method and inject its dependencies.
 	 *
-	 * @param  callable|string $callback
-	 * @param  array<mixed>    $parameters
-	 * @param  string|null     $default_method
+	 * @param  array|string  $callback
+	 * @param  array<mixed>  $parameters
+	 * @param  string|null   $default_method
 	 */
 	public function call( $callback, array $parameters = [], $default_method = null ): mixed;
 
