@@ -61,7 +61,7 @@ class Router implements Router_Contract {
 	/**
 	 * All of the middleware groups.
 	 *
-	 * @var array<string, array<string>>
+	 * @var array<string, array<class-string>>
 	 */
 	protected array $middleware_groups = [];
 
@@ -383,7 +383,7 @@ class Router implements Router_Contract {
 	 * Register a short-hand name for a middleware.
 	 *
 	 * @param  string $name
-	 * @param  string $class
+	 * @param  class-string $class
 	 */
 	public function alias_middleware( string $name, string $class ): static {
 		$this->middleware[ $name ] = $class;
@@ -418,7 +418,7 @@ class Router implements Router_Contract {
 	 * If the middleware is already in the group, it will not be added again.
 	 *
 	 * @param  string $group
-	 * @param  string $middleware
+	 * @param  class-string $middleware
 	 */
 	public function prepend_middleware_to_group( string $group, string $middleware ): static {
 		if ( isset( $this->middleware_groups[ $group ] ) && ! in_array( $middleware, $this->middleware_groups[ $group ], true ) ) {
@@ -438,11 +438,11 @@ class Router implements Router_Contract {
 	 */
 	public function push_middleware_to_group( string $group, string $middleware ): static {
 		if ( ! array_key_exists( $group, $this->middleware_groups ) ) {
-				$this->middleware_groups[ $group ] = [];
+			$this->middleware_groups[ $group ] = [];
 		}
 
 		if ( ! in_array( $middleware, $this->middleware_groups[ $group ], true ) ) {
-				$this->middleware_groups[ $group ][] = $middleware;
+			$this->middleware_groups[ $group ][] = $middleware;
 		}
 
 		return $this;
@@ -452,7 +452,7 @@ class Router implements Router_Contract {
 	 * Gather the middleware for the given route with resolved class names.
 	 *
 	 * @param Route $route Route instance.
-	 * @return array<string|class-string>
+	 * @return array<callable>
 	 */
 	public function gather_route_middleware( Route $route ): array {
 		$middleware = $route->excluded_middleware();
@@ -590,6 +590,10 @@ class Router implements Router_Contract {
 			$this->registrar = null;
 
 			return $route;
+		}
+
+		if ( ! is_array( $args ) ) {
+			$args = [ 'uses' => $args ];
 		}
 
 		$args['methods'] = isset( $args['methods'] )

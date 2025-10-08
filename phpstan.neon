@@ -54,7 +54,6 @@ parameters:
 		- "#interface ArrayAccess but does not specify#"
 		- "#ReflectionClass does not specify its types#"
 		- "#ReflectionAttribute does not specify its types#"
-		- "#ReflectionAttribute but does not specify its types#"
 		- "#@return is not subtype of template type TKey#"
 		- "#WP_REST_Request does not specify its types#"
 		- "#WP_REST_Request but does not specify its types#"
@@ -63,10 +62,6 @@ parameters:
 			identifier: method.childReturnType
 			paths:
 				- src/mantle/http-client/class-pooled-pending-request.php
-		# Ignore than no error was ignored to allow for a gradual transition to higher levels.
-		- '#No error to ignore#'
-		-
-			identifier: ignore.unmatchedLine
 
 	scanFiles:
 		- %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-stubs.php

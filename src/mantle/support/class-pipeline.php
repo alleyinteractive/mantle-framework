@@ -63,9 +63,9 @@ class Pipeline implements PipelineContract {
 	/**
 	 * Set the array of pipes.
 	 *
-	 * @param  array<callable>|null $pipes
+	 * @param  array<callable> $pipes
 	 */
-	public function through( $pipes ): static {
+	public function through( array $pipes ): static {
 		$this->pipes = is_array( $pipes ) ? $pipes : func_get_args();
 
 		return $this;
@@ -76,7 +76,7 @@ class Pipeline implements PipelineContract {
 	 *
 	 * @param  string $method
 	 */
-	public function via( $method ): static {
+	public function via( string $method ): static {
 		$this->method = $method;
 
 		return $this;
@@ -86,9 +86,8 @@ class Pipeline implements PipelineContract {
 	 * Run the pipeline with a final destination callback.
 	 *
 	 * @param  \Closure $destination
-	 * @return mixed
 	 */
-	public function then( Closure $destination ) {
+	public function then( Closure $destination ): mixed {
 		$pipeline = array_reduce(
 			array_reverse( $this->pipes() ),
 			$this->carry(),

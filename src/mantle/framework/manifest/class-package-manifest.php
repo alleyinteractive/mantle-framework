@@ -192,7 +192,7 @@ class Package_Manifest {
 		}
 
 		return json_decode(
-			file_get_contents( $this->base_path . '/composer.json' ),
+			(string) file_get_contents( $this->base_path . '/composer.json' ),
 			true
 		)['extra']['mantle']['dont-discover'] ?? [];
 	}

@@ -20,23 +20,21 @@ interface Pipeline {
 	 * @param  mixed $traveler
 	 * @return static
 	 */
-	public function send( $traveler );
+	public function send( mixed $traveler ): static;
 
 	/**
 	 * Set the stops of the pipeline.
 	 *
-	 * @param  array<callable>|null $stops
-	 * @return static
+	 * @param  array<callable> $stops
 	 */
-	public function through( $stops );
+	public function through( array $stops ): static;
 
 	/**
 	 * Set the method to call on the stops.
 	 *
 	 * @param  string $method
-	 * @return static
 	 */
-	public function via( $method );
+	public function via( string $method ): static;
 
 	/**
 	 * Run the pipeline with a final destination callback.
@@ -44,5 +42,5 @@ interface Pipeline {
 	 * @param  \Closure $destination
 	 * @return mixed
 	 */
-	public function then( Closure $destination );
+	public function then( Closure $destination ): mixed;
 }
