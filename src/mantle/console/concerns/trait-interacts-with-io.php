@@ -109,7 +109,6 @@ trait Interacts_With_IO {
 	 *
 	 * @param  string $key The option name.
 	 * @param  mixed  $default Default value if the option does not exist.
-	 * @return mixed
 	 */
 	public function mixed_option( string $key, mixed $default = null ): mixed {
 		return mixed( $this->option( $key, $default ) );

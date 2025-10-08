@@ -662,7 +662,7 @@ class Filesystem_Adapter implements Filesystem {
 		}
 
 		if ( isset( $parsed['port'] ) ) {
-			$uri = $uri->withPort( $parsed['port'] );
+			return $uri->withPort( $parsed['port'] );
 		}
 
 		return $uri;

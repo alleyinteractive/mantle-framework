@@ -60,10 +60,10 @@ class REST_Field implements REST_Field_Contract, REST_Field_Schema, REST_Field_G
 	/**
 	 * Constructor.
 	 *
-	 * @param string[]            $object_types Object types for the field.
-	 * @param string              $attribute Attribute for the field.
-	 * @param callable            $callback Get callback, required.
-	 * @param callable|null       $update_callback Update callback, optional.
+	 * @param string[]      $object_types Object types for the field.
+	 * @param string        $attribute Attribute for the field.
+	 * @param callable      $callback Get callback, required.
+	 * @param callable|null $update_callback Update callback, optional.
 	 */
 	public function __construct( array $object_types, string $attribute, callable $callback, ?callable $update_callback = null ) {
 		$this->set_object_types( $object_types );
@@ -150,8 +150,6 @@ class REST_Field implements REST_Field_Contract, REST_Field_Schema, REST_Field_G
 	 * Retrieve the get callback.
 	 *
 	 * Named 'retrieve_callback()' to avoid a collision with 'get_callback'.
-	 *
-	 * @return callable
 	 */
 	public function retrieve_callback(): callable {
 		return $this->get_callback;
@@ -169,8 +167,6 @@ class REST_Field implements REST_Field_Contract, REST_Field_Schema, REST_Field_G
 
 	/**
 	 * Retrieve the set callback.
-	 *
-	 * @return callable|null
 	 */
 	public function get_update_callback(): ?callable {
 		return $this->update_callback;

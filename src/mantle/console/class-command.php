@@ -155,7 +155,7 @@ abstract class Command extends Symfony_Command {
 		$method = method_exists( $this, 'handle' ) ? 'handle' : '__invoke';
 
 		if ( ! method_exists( $this, $method ) ) {
-			throw new InvalidArgumentException( "The command is missing a handle or __invoke method." );
+			throw new InvalidArgumentException( 'The command is missing a handle or __invoke method.' );
 		}
 
 		$callable = [ $this, $method ];

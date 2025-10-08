@@ -148,7 +148,7 @@ class Parser {
 	 * @param  string $token
 	 * @return array<string>
 	 */
-	protected static function extract_description( $token ) {
+	protected static function extract_description( $token ): array {
 		$parts = preg_split( '/\s+:\s+/', trim( $token ), 2 );
 
 		return $parts && count( $parts ) === 2 ? $parts : [ $token, '' ];
