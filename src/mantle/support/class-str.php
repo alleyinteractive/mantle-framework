@@ -644,9 +644,9 @@ class Str {
 	 *
 	 * @param  string      $callback
 	 * @param  string|null $default
-	 * @return array<int, string|null>
+	 * @return array{0: string, 1: string}
 	 */
-	public static function parse_callback( $callback, $default = null ) {
+	public static function parse_callback( string $callback, ?string $default = null ) {
 		return static::contains( $callback, '@' ) ? explode( '@', $callback, 2 ) : [ $callback, $default ];
 	}
 

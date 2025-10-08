@@ -364,7 +364,7 @@ trait Has_Attributes {
 	protected function set_enum_castable( string $key, mixed $value ): void {
 		$class = $this->casts[ $key ];
 
-		if ( ! class_exists( $class ) ) {
+		if ( ! enum_exists( $class ) ) {
 			throw new Model_Exception(
 				sprintf(
 					'Enum class [%s] does not exist for attribute [%s].',
@@ -601,10 +601,9 @@ trait Has_Attributes {
 	/**
 	 * Set the accessors to append to model arrays.
 	 *
-	 * @param string|string[] ...$appends Accessors to append.
-	 * @return static
+	 * @param string ...$appends Accessors to append.
 	 */
-	public function set_appends( ...$appends ) {
+	public function set_appends( ...$appends ): static {
 		$this->appends = $appends;
 		return $this;
 	}
