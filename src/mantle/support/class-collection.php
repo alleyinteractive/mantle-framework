@@ -24,7 +24,7 @@ use function Mantle\Support\Helpers\value;
  * Collection
  *
  * @template TKey of array-key = array-key
- * @template TValue = mixed
+ * @template TValue of mixed = mixed
  *
  * @implements \ArrayAccess<TKey, TValue>
  * @implements \Mantle\Support\Enumerable<TKey, TValue>
@@ -48,7 +48,6 @@ class Collection implements ArrayAccess, Enumerable {
 	 * Create a new collection.
 	 *
 	 * @param iterable<TKey, TValue> $items
-	 * @return void
 	 */
 	public function __construct( $items = [] ) {
 		$this->items = $this->get_arrayable_items( $items );

@@ -142,10 +142,10 @@ function get_callable_fqn( mixed $callable ): string {
 /**
  * Create a collection from the given value.
  *
- * @template TKey of array-key = string|int
+ * @template TKey of array-key = array-key
  * @template TValue of mixed = mixed
  *
- * @param  \Mantle\Contracts\Support\Arrayable<TKey, TValue>|iterable<TKey, TValue>|null $value Value to convert to a collection.
+ * @param  iterable<TKey, TValue> $value Value to convert to a collection.
  * @return \Mantle\Support\Collection<TKey, TValue>
  */
 function collect( $value = [] ): Collection {
