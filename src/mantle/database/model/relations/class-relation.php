@@ -40,14 +40,14 @@ abstract class Relation {
 	 *
 	 * @var string
 	 */
-	protected $related;
+	protected string $related;
 
 	/**
 	 * Flag if the relation uses terms.
 	 *
 	 * @var bool|null
 	 */
-	protected $uses_terms;
+	protected ?bool $uses_terms;
 
 	/**
 	 * Model's relationship name.
@@ -70,7 +70,14 @@ abstract class Relation {
 	 * @param string          $relationship Relationship name, optional.
 	 */
 	public function __construct( protected Builder $query, protected Model $parent, ?bool $uses_terms = null, ?string $relationship = null ) {
-		$this->related = $this->query->get_model();
+		$related = $this->query->get_model();
+
+		// Account for an edge condition that won't happen but PHPStan complains about.
+		if ( is_array( $related ) ) {
+			throw new \InvalidArgumentException( 'Related model must be a string, not an array.' );
+		}
+
+		$this->related = $related;
 
 		if ( ! is_null( $uses_terms ) ) {
 			$this->uses_terms( $uses_terms );
