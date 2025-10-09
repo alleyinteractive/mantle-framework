@@ -42,7 +42,7 @@ class Validator_Group implements Features {
 		foreach ( $features as $feature ) {
 			if ( is_array( $feature ) ) {
 				array_push( $this->features, ...array_map(
-					fn ( $item ) => $item instanceof Closure ? new Quick_Feature( $item ) : $item,
+					fn ( \Alley\WP\Types\Feature|\Closure $item ) => $item instanceof Closure ? new Quick_Feature( $item ) : $item,
 					$feature,
 				) );
 			} elseif ( $feature instanceof Closure ) {

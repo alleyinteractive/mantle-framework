@@ -159,6 +159,8 @@ trait WordPress_State {
 	/**
 	 * Updates the modified and modified GMT date of a post in the database.
 	 *
+	 * @throws \InvalidArgumentException If the post type cannot be resolved.
+	 *
 	 * @param WP_Post|Post|int         $post Post ID or post object.
 	 * @param DateTimeInterface|string $date Date object or string to update the
 	 *                                       post with. If a string is passed it

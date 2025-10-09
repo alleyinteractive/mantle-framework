@@ -99,10 +99,8 @@ class Pipeline implements PipelineContract {
 
 	/**
 	 * Run the pipeline and return the result.
-	 *
-	 * @return mixed
 	 */
-	public function thenReturn() {
+	public function thenReturn(): mixed {
 		return $this->then( fn ( $passable ) => $passable );
 	}
 

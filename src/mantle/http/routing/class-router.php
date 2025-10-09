@@ -382,7 +382,7 @@ class Router implements Router_Contract {
 	/**
 	 * Register a short-hand name for a middleware.
 	 *
-	 * @param  string $name
+	 * @param  string       $name
 	 * @param  class-string $class
 	 */
 	public function alias_middleware( string $name, string $class ): static {
@@ -417,7 +417,7 @@ class Router implements Router_Contract {
 	 *
 	 * If the middleware is already in the group, it will not be added again.
 	 *
-	 * @param  string $group
+	 * @param  string       $group
 	 * @param  class-string $middleware
 	 */
 	public function prepend_middleware_to_group( string $group, string $middleware ): static {

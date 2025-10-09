@@ -359,7 +359,7 @@ class Route extends Symfony_Route {
 	 * Run the route's closure callback.
 	 */
 	protected function run_callback(): mixed {
-		$callback   = $this->get_callback();
+		$callback = $this->get_callback();
 
 		if ( ! is_callable( $callback ) ) {
 			return null;
