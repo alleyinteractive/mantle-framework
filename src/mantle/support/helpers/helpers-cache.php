@@ -15,6 +15,7 @@ namespace Mantle\Support\Helpers;
  * Pass a TTL in a variety of formats and get seconds out.
  *
  * @param int|\DateTimeInterface|\DateInterval|null $ttl
+ * @phpstan-return int<0, max>
  */
 function normalize_cache_ttl( int|\DateTimeInterface|\DateInterval|null $ttl ): int {
 	if ( $ttl instanceof \DateTimeInterface ) {
@@ -25,5 +26,5 @@ function normalize_cache_ttl( int|\DateTimeInterface|\DateInterval|null $ttl ): 
 		$ttl = 0;
 	}
 
-	return $ttl;
+	return max( 0, (int) $ttl );
 }
