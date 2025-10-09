@@ -8,7 +8,7 @@
 namespace Mantle\Database\Query;
 
 use Mantle\Database\Model\Relations\Relation;
-use Mantle\Support\Collection;
+use Mantle\Database\Query\Collection;
 
 /**
  * Support querying against model relationships.

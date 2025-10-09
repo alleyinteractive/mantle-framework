@@ -106,17 +106,24 @@ class Term_Query_Builder extends Builder {
 		/**
 		 * Fetch the terms IDs for the query.
 		 *
-		 * @var int[]
+		 * @var int[] $term_ids
 		 */
 		$term_ids = $this->with_clauses(
-			fn (): array => $query->query( $this->get_query_args() ),
+			fn (): array => (array) $query->query( $this->get_query_args() ),
 		);
 
 		if ( empty( $term_ids ) ) {
 			return new Collection();
 		}
 
-		$models = array_map( [ $this->model, 'find' ], $term_ids );
+		/**
+		 * Term models.
+		 *
+		 * @var class-string<TModel> $model
+		 */
+		$model = is_array( $this->model ) ? reset( $this->model ) : $this->model;
+
+		$models = array_map( [ $model, 'find' ], $term_ids );
 
 		return $this->eager_load_relations(
 			Collection::from( $models )->filter()->values(),
