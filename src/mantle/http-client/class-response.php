@@ -50,6 +50,7 @@ use function Mantle\Support\Helpers\data_get;
  * }
  */
 class Response implements ArrayAccess {
+	use Concerns\Interacts_With_Feeds;
 	use Macroable;
 
 	/**

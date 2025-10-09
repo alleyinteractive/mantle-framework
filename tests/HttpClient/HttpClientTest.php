@@ -510,4 +510,73 @@ EOF
 		$this->assertRequestSent( 'https://example.com/' );
 		$this->assertRequestSent( 'https://example.com/direct' );
 	}
+
+	public function test_html_response(): void {
+		$this->fake_request( fn () => Mock_Http_Response::create()
+			->with_header( 'content-type', 'text/html' )
+			->with_body(
+				<<<EOF
+<!DOCTYPE html>
+<html lang="en">
+<head>
+		<meta charset="UTF-8">
+		<title>Test HTML Response</title>
+	</head>
+<body>
+	<h1>Hello, World!</h1>
+</body>
+</html>
+EOF
+			)
+		);
+
+		$response = $this->http_factory->get( 'https://example.com/html/' );
+
+		$this->assertTrue( $response->is_html() );
+		$this->assertFalse( $response->is_json() );
+		$this->assertFalse( $response->is_xml() );
+
+		$response->html()->assertQuerySelectorExists( 'h1' );
+	}
+
+	public function test_simple_pie_feed(): void {
+		$this->fake_request( 'https://alley.com/feed/' )->with_snapshot();
+
+		$request = $this->http_factory->get( 'https://alley.com/feed/' );
+
+		$this->assertTrue( $request->is_feed() );
+
+		$feed = $request->feed();
+
+		$this->assertInstanceOf( \SimplePie\SimplePie::class, $feed );
+		$this->assertEquals( 'Alley', $feed->get_title() );
+		$this->assertNotEmpty( $feed->get_items() );
+		$this->assertEquals( 'https://alley.com/', $feed->get_link() );
+
+		$this->assertCount( 10, $feed->get_items() );
+
+		$item = $feed->get_items()[0];
+
+		// First expected feed item:
+		// url: https://alley.com/news/introducing-captain-hook-for-wordpress/
+		// title: Introducing Captain Hook for WordPress
+		$this->assertEquals( 'Introducing Captain Hook for WordPress', $item->get_title() );
+		$this->assertEquals( 'https://alley.com/news/introducing-captain-hook-for-wordpress/', $item->get_link() );
+	}
+
+	public function test_simple_pie_feed_error(): void {
+		$this->fake_request( fn () => Mock_Http_Response::create()
+			->with_header( 'content-type', 'text/html' )
+			->with_body( '<html><body>Not a feed</body></html>' )
+		);
+
+		$request = $this->http_factory->get( 'https://example.com/not-a-feed/' );
+
+		$this->assertFalse( $request->is_feed() );
+
+		$feed = $request->feed();
+
+		$this->assertInstanceOf( \SimplePie\SimplePie::class, $feed );
+		$this->assertTrue( $feed->error() !== null );
+	}
 }
