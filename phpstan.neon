@@ -84,3 +84,6 @@ parameters:
 		- src/mantle/testing/install-wordpress.php
 		- src/mantle/testing/preload.php
 		- src/mantle/testing/wordpress-bootstrap.php
+
+		# Files that need to be fixed and re-added.
+		- src/mantle/queue/class-queue-fake.php
