@@ -77,10 +77,10 @@ class Collection implements ArrayAccess, Enumerable {
 				}
 			}
 
-			return new static( $items );
+			return new static( $items ); // @phpstan-ignore-line return.type
 		}
 
-		return ( new static( $value ) )->values();
+		return ( new static( $value ) )->values(); // @phpstan-ignore-line return.type
 	}
 
 	/**
@@ -97,11 +97,13 @@ class Collection implements ArrayAccess, Enumerable {
 			return new static();
 		}
 
+		$items = range( 1, $number );
+
 		if ( is_null( $callback ) ) {
-			return new static( range( 1, $number ) );
+			$callback = fn( $value ) => $value;
 		}
 
-		return ( new static( range( 1, $number ) ) )->map( $callback );
+		return ( new static( $items ) )->map( $callback );
 	}
 
 	/**
@@ -116,7 +118,7 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Get the average value of a given key.
 	 *
-	 * @param  (callable(TValue): float|int)|string|null $callback
+	 * @param  (callable(): mixed)|string|null $callback
 	 */
 	public function avg( $callback = null ): int|float|null {
 		$callback = $this->value_retriever( $callback );
@@ -1387,7 +1389,7 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Get an iterator for the items.
 	 *
-	 * @return \ArrayIterator
+	 * @return \ArrayIterator<TKey, TValue>
 	 */
 	public function getIterator(): Traversable {
 		return new ArrayIterator( $this->items );

@@ -35,7 +35,7 @@ use function Mantle\Support\Helpers\value;
  *
  * @mixin \PHPUnit\Framework\TestCase
  *
- * @phpstan-type StubCallback \Closure(string, array): (Mock_Http_Response|Arrayable|null)
+ * @phpstan-type StubCallback (\Closure(string, array): (Mock_Http_Response|Arrayable|null))|(\Closure(Request): (Mock_Http_Response|Arrayable|null))
  */
 trait Interacts_With_Requests {
 	/**
@@ -323,11 +323,11 @@ trait Interacts_With_Requests {
 
 		if ( ! $this->stub_callbacks->is_empty() ) {
 			foreach ( $this->stub_callbacks as $stub_callback ) {
-				$reflector = $stub_callback instanceof Closure ? new ReflectionFunction( $stub_callback ) : null;
+				$reflector = $stub_callback instanceof Closure ? new ReflectionFunction( $stub_callback ) : null; // @phpstan-ignore-line instanceof.alwaysTrue
 
 				// Check if the stub callback is expecting a Request object instead of a URL and request arguments.
 				if (
-					$reflector instanceof \ReflectionFunction
+					$reflector instanceof \ReflectionFunction // @phpstan-ignore-line instanceof.alwaysTrue
 					&& 1 === $reflector->getNumberOfParameters()
 					&& Request::class === (string) $reflector->getParameters()[0]->getType()
 				) {
@@ -348,6 +348,7 @@ trait Interacts_With_Requests {
 
 				if ( ! is_null( $response ) ) {
 					// Throw an error when an unknown response type is returned from the callback.
+					// @phpstan-ignore booleanAnd.alwaysFalse
 					if ( ! is_array( $response ) && ! is_wp_error( $response ) ) {
 						throw new InvalidArgumentException(
 							sprintf(
