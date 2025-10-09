@@ -47,10 +47,13 @@ trait Interacts_With_Feeds {
 
 		$feed = new SimplePie();
 
-		/*
-		* We must manually overwrite $feed->sanitize because SimplePie's constructor
-		* sets it before we have a chance to set the sanitization class.
-		*/
+		/**
+		 * Mirrors core:
+		 *
+		 * > We must manually overwrite $feed->sanitize because SimplePie's
+		 * > constructor sets it before we have a chance to set the sanitization
+		 * > class.
+		 */
 		$feed->sanitize = new \WP_SimplePie_Sanitize_KSES();
 
 		$feed->set_raw_data( $this->body() );
