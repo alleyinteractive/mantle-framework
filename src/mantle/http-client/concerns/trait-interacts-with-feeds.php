@@ -34,6 +34,7 @@ trait Interacts_With_Feeds {
 	 * Mirrors the functionality of core's fetch_feed() function.
 	 *
 	 * @see \fetch_feed()
+	 * @link https://simplepie.org/wiki/reference/simplepie/start
 	 */
 	public function feed(): SimplePie {
 		if ( ! class_exists( SimplePie::class, false ) ) {
