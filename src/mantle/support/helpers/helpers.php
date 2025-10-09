@@ -14,6 +14,7 @@ if ( function_exists( __NAMESPACE__ . '\invalid_hook_removal' ) ) {
 
 require_once __DIR__ . '/internals.php';
 require_once __DIR__ . '/helpers-array.php';
+require_once __DIR__ . '/helpers-cache.php';
 require_once __DIR__ . '/helpers-core-objects.php';
 require_once __DIR__ . '/helpers-environment.php';
 require_once __DIR__ . '/helpers-general.php';

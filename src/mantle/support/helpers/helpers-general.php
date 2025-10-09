@@ -560,19 +560,27 @@ function validate_file( $file, $allowed_files = [] ) {
  * page on `shutdown`.
  *
  * @param callable $callback Callback to defer.
+ * @param int      $priority Priority at which to execute the callback.
  */
-function defer( callable $callback ): void {
+function defer( callable $callback, int $priority = 10 ): void {
+	static $request_sent = false;
+
 	\add_action(
 		'shutdown',
-		function () use ( $callback ): void {
-			if ( function_exists( 'fastcgi_finish_request' ) ) {
-				fastcgi_finish_request();
-			} elseif ( function_exists( 'litespeed_finish_request' ) ) {
-				litespeed_finish_request();
+		function () use ( $callback, &$request_sent ): void {
+			if ( $request_sent ) {
+				if ( function_exists( 'fastcgi_finish_request' ) ) {
+					fastcgi_finish_request();
+				} elseif ( function_exists( 'litespeed_finish_request' ) ) {
+					litespeed_finish_request();
+				}
+
+				$request_sent = true;
 			}
 
 			$callback();
 		},
+		$priority,
 	);
 }
 

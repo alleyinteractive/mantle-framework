@@ -82,8 +82,9 @@ class WordPress_Cache_Repository extends Repository implements Taggable_Reposito
 			throw new \InvalidArgumentException( 'Invalid value in cache. Expected an instance of SWR_Storage.' );
 		}
 
-		// Check if the value is stale. If it is, refresh it after the response is sent but return the stale value.
-		if ( time() >= $storage->stale_time ) {
+		// Check if the value is stale. If it is, refresh it after the response is
+		// sent but return the stale value.
+		if ( $storage->is_stale() ) {
 			$this->app->terminating(
 				fn () => $this->set(
 					key: $key,

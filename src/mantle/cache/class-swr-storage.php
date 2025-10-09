@@ -7,6 +7,8 @@
 
 namespace Mantle\Cache;
 
+use function Mantle\Support\Helpers\now;
+
 /**
  * Cache SWR (stale-while-revalidate) DTO object.
  */
@@ -24,5 +26,12 @@ class SWR_Storage implements \Stringable {
 	 */
 	public function __toString(): string {
 		return (string) $this->value;
+	}
+
+	/**
+	 * Determine if the cached value is stale.
+	 */
+	public function is_stale(): bool {
+		return now()->getTimestamp() >= $this->stale_time;
 	}
 }
