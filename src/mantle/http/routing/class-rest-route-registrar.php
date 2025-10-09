@@ -156,7 +156,7 @@ class Rest_Route_Registrar extends Route_Registrar {
 	 * Gather the middleware for the given route with resolved class names.
 	 *
 	 * @param string[] $middleware Middleware for the route.
-	 * @return array<string>
+	 * @return array<callable>
 	 */
 	public function gather_route_middleware( array $middleware ): array {
 		return collect( $middleware )
@@ -192,19 +192,31 @@ class Rest_Route_Registrar extends Route_Registrar {
 			if ( Str::contains( $action, '@' ) ) {
 				[ $controller, $method ] = explode( '@', $action );
 
-				return [ $this->router->get_container()->make( $controller ), $method ];
+				$callable = [ $this->router->get_container()->make( $controller ), $method ];
+
+				if ( is_callable( $callable ) ) {
+					return $callable;
+				}
 			}
 
 			// Check for invokable classes.
 			if ( class_exists( $action ) && method_exists( $action, '__invoke' ) ) {
-				return [ $this->router->get_container()->make( $action ), '__invoke' ];
+				$callable = [ $this->router->get_container()->make( $action ), '__invoke' ];
+
+				if ( is_callable( $callable ) ) {
+					return $callable;
+				}
 			}
 		}
 
 		if ( is_array( $action ) && count( $action ) === 2 ) {
 			[ $controller, $method ] = $action;
 
-			return [ $this->router->get_container()->make( $controller ), $method ];
+			$callable = [ $this->router->get_container()->make( $controller ), $method ];
+
+			if ( is_callable( $callable ) ) {
+				return $callable;
+			}
 		}
 
 		throw new InvalidArgumentException( "Invalid REST API route action for [{$route}]: " . print_r( $action, true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r

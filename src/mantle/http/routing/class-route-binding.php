@@ -47,6 +47,8 @@ class Route_Binding {
 
 			$callable = [ $container->make( $class ), $method ];
 
+			assert( is_callable( $callable ), 'Binding method is not callable.' );
+
 			return $callable( $value, $route );
 		};
 	}
