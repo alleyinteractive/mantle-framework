@@ -475,7 +475,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  string|null $default
 	 * @return array<int, string|null>
 	 */
-	public function parse_callback( $default = null ) {
+	public function parse_callback( ?string $default = null ) {
 		return Str::parse_callback( $this->value, $default );
 	}
 

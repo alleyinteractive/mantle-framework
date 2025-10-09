@@ -90,6 +90,7 @@ trait Route_Dependency_Resolver {
 				? ( $is_enum ? $parameter->getDefaultValue() : null )
 				: $this->container->make( $class_name );
 		}
+
 		return $skippable_value;
 	}
 

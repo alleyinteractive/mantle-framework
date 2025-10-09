@@ -422,7 +422,6 @@ trait Enumerates_Values {
 		/** @var static<TKey, TValue> $failed_collection */
 		$failed_collection = new static( $failed );
 
-		/** @var static<int, static<TKey, TValue>> */
 		return new static( [
 			$passed_collection,
 			$failed_collection,
@@ -775,7 +774,6 @@ trait Enumerates_Values {
 	 * Get the collection of items as JSON.
 	 *
 	 * @param  int $options
-	 * @return string
 	 */
 	public function to_json( $options = 0 ): string {
 		return (string) json_encode( $this->jsonSerialize(), $options ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode

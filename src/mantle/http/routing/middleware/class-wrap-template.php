@@ -100,7 +100,7 @@ class Wrap_Template {
 			$response->setContent( capture( static function () use ( $response ): void {
 				\get_header();
 				// Assumed to be sanitized.
-				echo $response->getContent(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo (string) $response->getContent(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				\get_footer();
 			} ) );
 		}

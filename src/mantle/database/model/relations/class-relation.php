@@ -37,17 +37,13 @@ abstract class Relation {
 
 	/**
 	 * The related model (child).
-	 *
-	 * @var string
 	 */
 	protected string $related;
 
 	/**
 	 * Flag if the relation uses terms.
-	 *
-	 * @var bool|null
 	 */
-	protected ?bool $uses_terms;
+	protected ?bool $uses_terms = null;
 
 	/**
 	 * Model's relationship name.
