@@ -67,6 +67,13 @@ trait Makes_Http_Requests {
 	private static array $wp_dependencies_backup = [];
 
 	/**
+	 * Backup of global WordPress asset manager state.
+	 *
+	 * @var array<class-string, array<string, mixed>>
+	 */
+	private static array $wp_asset_manager_backup = [];
+
+	/**
 	 * Setup the trait in the test case.
 	 */
 	public function makes_http_requests_set_up(): void {
@@ -99,8 +106,11 @@ trait Makes_Http_Requests {
 		$this->reset_request_callbacks();
 
 		$this->restore_wp_dependencies();
+		$this->restore_wp_asset_manager();
 
+		// Add callbacks to backup/restore global WP dependencies before/after each request.
 		$this->before_request( $this->restore_wp_dependencies( ... ) );
+		$this->before_request( $this->restore_wp_asset_manager( ... ) );
 	}
 
 	/**
@@ -490,6 +500,39 @@ trait Makes_Http_Requests {
 	}
 
 	/**
+	 * Backup the state of the Alley WP Asset Manager if it's present.
+	 *
+	 * @beforeClass
+	 */
+	#[BeforeClass]
+	public static function backup_wp_asset_manager(): void {
+		if ( ! empty( self::$wp_asset_manager_backup ) ) {
+			return;
+		}
+
+		$classes = [
+			\Alley\WP\Asset_Manager\Scripts::class,
+			\Alley\WP\Asset_Manager\Styles::class,
+		];
+
+		foreach ( $classes as $class ) {
+			if ( ! class_exists( $class ) ) {
+				continue;
+			}
+
+			$instance = $class::instance();
+
+			self::$wp_asset_manager_backup[ $class ] = [];
+
+			foreach ( [ 'assets', 'asset_handles', 'assets_by_handle' ] as $property ) {
+				if ( isset( $instance->{$property} ) ) {
+					self::$wp_asset_manager_backup[ $class ][ $property ] = $instance->{$property};
+				}
+			}
+		}
+	}
+
+	/**
 	 * Restore any global WordPress dependencies that may have been modified during the request.
 	 */
 	private function restore_wp_dependencies(): void {
@@ -499,6 +542,27 @@ trait Makes_Http_Requests {
 
 		if ( isset( self::$wp_dependencies_backup['wp_styles'] ) ) {
 			$GLOBALS['wp_styles'] = clone self::$wp_dependencies_backup['wp_styles'];
+		}
+	}
+
+	/**
+	 * Restore the state of the Alley WP Asset Manager if it's present.
+	 */
+	private function restore_wp_asset_manager(): void {
+		foreach ( self::$wp_asset_manager_backup as $class => $properties ) {
+			if ( ! class_exists( $class ) ) {
+				continue;
+			}
+
+			$instance = $class::instance();
+
+			foreach ( $properties as $property => $value ) {
+				try {
+					$instance->{$property} = $value;
+				} catch ( \Error ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
+					// Property may be read-only, so we can't restore it.
+				}
+			}
 		}
 	}
 }
