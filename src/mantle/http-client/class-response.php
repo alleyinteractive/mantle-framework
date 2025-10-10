@@ -10,8 +10,8 @@ namespace Mantle\Http_Client;
 use ArrayAccess;
 use LogicException;
 use Mantle\Support\Collection;
+use Mantle\Support\HTML;
 use Mantle\Support\Traits\Macroable;
-use Mantle\Testing\Assertable_HTML_String;
 use Mantle\Testing\Assertable_Json_String;
 use SimpleXMLElement;
 use WP_Error;
@@ -23,6 +23,8 @@ use function Mantle\Support\Helpers\data_get;
 
 /**
  * Response object from WordPress HTTP API.
+ *
+ * @todo Add assertions to the responses.
  *
  * @phpstan-type CoreResponse array{
  *   body?: string,
@@ -48,6 +50,7 @@ use function Mantle\Support\Helpers\data_get;
  * }
  */
 class Response implements ArrayAccess {
+	use Concerns\Interacts_With_Feeds;
 	use Macroable;
 
 	/**
@@ -224,6 +227,13 @@ class Response implements ArrayAccess {
 	}
 
 	/**
+	 * Check if the response is HTML.
+	 */
+	public function is_html(): bool {
+		return false !== strpos( (string) $this->header( 'content-type' ), 'text/html' );
+	}
+
+	/**
 	 * Check if the response is JSON.
 	 */
 	public function is_json(): bool {
@@ -308,6 +318,13 @@ class Response implements ArrayAccess {
 	 */
 	public function assertable_json( ?string $key = null ): Assertable_Json_String {
 		return new Assertable_Json_String( $this->json( $key ) );
+	}
+
+	/**
+	 * Get the body of the response as an HTML object.
+	 */
+	public function html(): HTML {
+		return new HTML( $this->body() );
 	}
 
 	/**
