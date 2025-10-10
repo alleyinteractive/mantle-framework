@@ -74,8 +74,26 @@ trait Makes_Http_Requests {
 		// Clear out the existing REST Server to allow for REST API routes to be re-registered.
 		$wp_rest_server = null; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals
 
-		// Mark 'rest_api_init' as an un-run action.
-		unset( $wp_actions['rest_api_init'] );
+		// Mark these actions as not fired to try and make the cleanest possible
+		// state for each request. Intentionally not clearing all or some that could
+		// break underlying functionality such as 'wp_loaded'.
+		foreach ( [
+			'parse_query',
+			'parse_request',
+			'posts_selection',
+			'pre_get_posts',
+			'rest_api_init',
+			'send_headers',
+			'template_redirect',
+			'wp_enqueue_scripts',
+			'wp_footer',
+			'wp_head',
+			'wp_print_scripts',
+			'wp_print_styles',
+			'wp',
+		] as $action ) {
+			unset( $wp_actions[ $action ] );
+		}
 
 		$this->reset_request_callbacks();
 		$this->backup_wp_dependencies();

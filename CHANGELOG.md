@@ -12,6 +12,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Backup the `wp_scripts` and `wp_styles` globals before any tests are run and
   restore it before each HTTP request to prevent side effects from tests that
   modify these globals.
+- Mark more hooks as not being run before each test run to provide a cleaner
+  environment for tests. Filters and actions that are not run include:
+
+    - `parse_query`
+    - `parse_request`
+    - `posts_selection`
+    - `pre_get_posts`
+    - `rest_api_init`
+    - `send_headers`
+    - `template_redirect`
+    - `wp_enqueue_scripts`
+    - `wp_footer`
+    - `wp_head`
+    - `wp_print_scripts`
+    - `wp_print_styles`
+    - `wp`
 
 ### Fixed
 
