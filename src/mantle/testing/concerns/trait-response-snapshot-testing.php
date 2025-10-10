@@ -11,6 +11,7 @@
 namespace Mantle\Testing\Concerns;
 
 use DOMDocument;
+use DOMNode;
 use Mantle\Support\Arr;
 use Mantle\Support\Str;
 use Mantle\Testing\Snapshots\HTML_Driver;
@@ -104,7 +105,9 @@ trait Response_Snapshot_Testing {
 		$results = [];
 
 		foreach ( $nodes as $node ) {
-			$results[] = $document->saveHTML( $node );
+			if ( $node instanceof DOMNode ) {
+				$results[] = $document->saveHTML( $node );
+			}
 		}
 
 		$this->test_case->assertMatchesSnapshot( implode( "\n", $results ), new HTML_Driver() );
