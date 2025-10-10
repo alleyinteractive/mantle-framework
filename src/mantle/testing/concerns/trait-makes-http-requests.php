@@ -77,10 +77,7 @@ trait Makes_Http_Requests {
 		// Mark 'rest_api_init' as an un-run action.
 		unset( $wp_actions['rest_api_init'] );
 
-		// Clear before/after callbacks.
-		$this->before_callbacks = [];
-		$this->after_callbacks  = [];
-
+		$this->reset_request_callbacks();
 		$this->backup_wp_dependencies();
 
 		$this->before_request( fn () => $this->backup_wp_dependencies() );
@@ -399,6 +396,16 @@ trait Makes_Http_Requests {
 	 */
 	public function fetch_post( array $args = [] ): Test_Response {
 		return $this->get( static::factory()->post->create_and_get( $args ) );
+	}
+
+	/**
+	 * Clear all of the registered request callbacks.
+	 */
+	public function reset_request_callbacks(): static {
+		$this->before_callbacks = [];
+		$this->after_callbacks  = [];
+
+		return $this;
 	}
 
 	/**
