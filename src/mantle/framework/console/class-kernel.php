@@ -224,12 +224,11 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	 * Register all the commands in a set of directories.
 	 *
 	 * @param string ...$paths Paths to register.
-	 * @return void
 	 */
-	protected function load( ...$paths ) {
+	protected function load( ...$paths ): void {
 		$namespace = $this->app->get_namespace();
 
-		$this->commands = collect( $paths )
+		$this->commands = collect( $paths ) // @phpstan-ignore-line argument.type
 			->unique()
 			->filter( fn ( string $path ) => is_dir( $path ) )
 			->map( fn ( string $path ) => $this->classes_from_path( $path, $namespace . '\Console' ) )

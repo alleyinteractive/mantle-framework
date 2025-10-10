@@ -241,7 +241,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	public function contains_strict( $key, $value = null ) {
 		if ( func_num_args() === 2 ) {
-			return $this->contains( fn ( $item ) => data_get( $item, $key ) === $value );
+			return $this->contains( fn ( $item ) => data_get( $item, $key ) === $value ); // @phpstan-ignore-line argument.type
 		}
 
 		if ( $this->use_as_callable( $key ) ) {
@@ -414,7 +414,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * Run a filter over each of the items.
 	 *
 	 * @param (callable(TValue, TKey): bool)|null $callback
-	 * @return static
+	 * @return static<TKey, TValue>
 	 */
 	public function filter( ?callable $callback = null ) {
 		if ( $callback ) {
@@ -1360,7 +1360,7 @@ class Collection implements ArrayAccess, Enumerable {
 			$arrayable_items
 		);
 
-		return new static( array_map( ...$params ) );
+		return new static( array_map( ...$params ) ); // @phpstan-ignore-line return.type
 	}
 
 	/**
@@ -1370,7 +1370,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static<TKey, string>
 	 */
 	public function trim( string $char_list = "\n\r\t\v\x00" ) {
-		return new static( $this->map( fn ( $item ) => trim( (string) $item, $char_list ) ) );
+		return new static( $this->map( fn ( $item ) => trim( (string) $item, $char_list ) ) ); // @phpstan-ignore-line return.type
 	}
 
 	/**
