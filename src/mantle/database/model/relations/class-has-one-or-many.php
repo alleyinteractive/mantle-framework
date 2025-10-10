@@ -175,7 +175,7 @@ abstract class Has_One_Or_Many extends Relation {
 		}
 
 		if ( $this->relationship ) {
-			$this->parent->unset_relation( $this->relationship );
+			$this->parent->unset_relation( $this->relationship ); // @phpstan-ignore-line method.notFound
 		}
 
 		return $model;
@@ -226,7 +226,7 @@ abstract class Has_One_Or_Many extends Relation {
 		}
 
 		if ( $this->relationship ) {
-			$this->parent->unset_relation( $this->relationship );
+			$this->parent->unset_relation( $this->relationship ); // @phpstan-ignore-line method.notFound
 		}
 	}
 

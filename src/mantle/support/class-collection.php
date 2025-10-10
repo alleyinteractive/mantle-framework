@@ -160,7 +160,7 @@ class Collection implements ArrayAccess, Enumerable {
 		$middle = (int) ( $count / 2 );
 
 		if ( $count % 2 !== 0 ) {
-			return $values->get( $middle );
+			return $values->get( $middle ); // @phpstan-ignore-line return.type
 		}
 
 		return ( new static(
@@ -547,7 +547,7 @@ class Collection implements ArrayAccess, Enumerable {
 			$resolved_key = $key_by( $item, $key );
 
 			if ( is_object( $resolved_key ) ) {
-				$resolved_key = (string) $resolved_key;
+				$resolved_key = (string) $resolved_key; // @phpstan-ignore-line cast.string
 			}
 
 			$results[ $resolved_key ] = $item;
@@ -896,9 +896,9 @@ class Collection implements ArrayAccess, Enumerable {
 	 * Get the items in an collection of arrays with filtered child keys.
 	 *
 	 * @param TKey[]|TKey|static<int, TKey> $keys The keys to filter by.
-	 * @return static<TKey, array>
+	 * @return static<TKey, array<array-key, mixed>>
 	 */
-	public function only_children( $keys ) {
+	public function only_children( $keys ): static {
 		if ( empty( $keys ) ) {
 			return new static( $this->items );
 		}

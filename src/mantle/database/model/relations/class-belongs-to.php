@@ -171,7 +171,7 @@ class Belongs_To extends Relation {
 		}
 
 		if ( $this->relationship ) {
-			$this->parent->unset_relation( $this->relationship );
+			$this->parent->unset_relation( $this->relationship ); // @phpstan-ignore-line method.notFound
 		}
 
 		return $model;
@@ -216,7 +216,7 @@ class Belongs_To extends Relation {
 		}
 
 		if ( $this->relationship ) {
-			$this->parent->unset_relation( $this->relationship );
+			$this->parent->unset_relation( $this->relationship ); // @phpstan-ignore-line method.notFound
 		}
 
 		return $this;
@@ -333,7 +333,7 @@ class Belongs_To extends Relation {
 			function ( $model ) use ( $dictionary ): void {
 				$key = $model->meta->{$this->local_key}; // @phpstan-ignore-line
 
-				$model->set_relation( $this->relationship, $dictionary[ $key ][0] ?? null );
+				$model->set_relation( $this->relationship, $dictionary[ $key ][0] ?? null ); // @phpstan-ignore-line method.notFound
 			}
 		);
 	}

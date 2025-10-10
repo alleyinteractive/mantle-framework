@@ -62,6 +62,14 @@ parameters:
 			identifier: method.childReturnType
 			paths:
 				- src/mantle/http-client/class-pooled-pending-request.php
+		-
+			identifier: argument.type
+			paths:
+				- src/mantle/support/class-collection.php
+		-
+			identifier: return.type
+			paths:
+				- src/mantle/support/class-collection.php
 
 	scanFiles:
 		- %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-stubs.php

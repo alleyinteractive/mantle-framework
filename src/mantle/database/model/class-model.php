@@ -377,7 +377,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	public function offsetUnset( mixed $offset ): void {
 		$this->set( $offset, null );
 
-		if ( isset( $this->relations ) && array_key_exists( $offset, $this->relations ) ) {
+		if ( property_exists( $this, 'relations' ) && $this->relations !== null && array_key_exists( $offset, $this->relations ) ) {
 			unset( $this->relations[ $offset ] );
 		}
 	}

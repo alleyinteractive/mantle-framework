@@ -5,6 +5,7 @@ use Attribute;
 use Mantle\Types\Validator;
 use Mantle\Types\Validator_Group;
 use PHPUnit\Framework\TestCase;
+use TypeError;
 
 class ValidatorGroupTest extends TestCase {
 	protected function setUp(): void {
@@ -94,7 +95,7 @@ class ValidatorGroupTest extends TestCase {
 	}
 
 	public function test_throws_exception_for_invalid_feature_in_array(): void {
-		$this->expectException( \InvalidArgumentException::class );
+		$this->expectException( TypeError::class );
 
 		$group = new Validator_Group( [ new \stdClass() ] );
 		$group->boot();

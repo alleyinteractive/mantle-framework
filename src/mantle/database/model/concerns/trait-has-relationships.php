@@ -16,7 +16,6 @@ use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Relations\Belongs_To_Many;
 use Mantle\Database\Model\Relations\Belongs_To;
 use Mantle\Database\Model\Relations\Has_Many;
-use Mantle\Database\Model\Relations\Has_One_Or_Many;
 use Mantle\Database\Model\Relations\Has_One;
 use Mantle\Database\Model\Relations\Relation;
 use Mantle\Database\Model\Term;
@@ -49,7 +48,7 @@ trait Has_Relationships {
 		$foreign_key ??= $this->get_foreign_key();
 		$local_key   ??= $this->get_key_name();
 
-		return new Has_One( $instance->new_query(), $this, $foreign_key, $local_key );
+		return new Has_One( $instance->new_query(), $this, $foreign_key, $local_key ); // @phpstan-ignore-line return.type
 	}
 
 	/**
@@ -67,7 +66,7 @@ trait Has_Relationships {
 		$foreign_key ??= $this->get_foreign_key();
 		$local_key   ??= $this->get_key_name();
 
-		return new Has_Many( $instance->new_query(), $this, $foreign_key, $local_key );
+		return new Has_Many( $instance->new_query(), $this, $foreign_key, $local_key ); // @phpstan-ignore-line return.type
 	}
 
 	/**
@@ -98,11 +97,11 @@ trait Has_Relationships {
 		$foreign_key ??= $this->get_key_name();
 		$local_key   ??= $instance->get_foreign_key();
 
-		return new Belongs_To( $instance->new_query(), $this, $foreign_key, $local_key );
+		return new Belongs_To( $instance->new_query(), $this, $foreign_key, $local_key ); // @phpstan-ignore-line return.type
 	}
 
 	/**
-	 * Define a belongs to relationship.
+	 * Define a belongs to many relationship.
 	 *
 	 * Defines a relationship between two models with the reference stored on the remote
 	 * object's meta.
@@ -112,7 +111,7 @@ trait Has_Relationships {
 	 * @param class-string<TRelated> $related Related model name.
 	 * @param string                 $foreign_key Foreign key.
 	 * @param string                 $local_key Local key.
-	 * @return Has_One_Or_Many<TModel, TRelated>
+	 * @return Belongs_To_Many<TModel, TRelated>
 	 *
 	 * @throws InvalidArgumentException Used on the definition of a post and term relationship.
 	 */
@@ -129,7 +128,7 @@ trait Has_Relationships {
 		$foreign_key ??= $this->get_key_name();
 		$local_key   ??= $instance->get_foreign_key();
 
-		return new Belongs_To_Many( $instance->new_query(), $this, $foreign_key, $local_key );
+		return new Belongs_To_Many( $instance->new_query(), $this, $foreign_key, $local_key ); // @phpstan-ignore-line return.type
 	}
 
 	/**

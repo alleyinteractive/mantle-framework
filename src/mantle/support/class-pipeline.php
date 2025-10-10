@@ -22,8 +22,6 @@ class Pipeline implements PipelineContract {
 
 	/**
 	 * The object being passed through the pipeline.
-	 *
-	 * @var mixed
 	 */
 	protected mixed $passable;
 
@@ -36,8 +34,6 @@ class Pipeline implements PipelineContract {
 
 	/**
 	 * The method to call on each pipe.
-	 *
-	 * @var string
 	 */
 	protected string $method = 'handle';
 

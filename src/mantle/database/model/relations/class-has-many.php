@@ -46,7 +46,7 @@ class Has_Many extends Has_One_Or_Many {
 		return $models->each(
 			function ( $model ) use ( $dictionary ): void {
 				$key = $model[ $this->local_key ];
-				$model->set_relation( $this->relationship, $dictionary[ $key ] ?? null );
+				$model->set_relation( $this->relationship, $dictionary[ $key ] ?? null ); // @phpstan-ignore-line
 			}
 		);
 	}

@@ -33,7 +33,6 @@ interface Pipeline {
 	 * Set the method to call on the stops.
 	 *
 	 * @param  string $method
-	 * @return static
 	 */
 	public function via( string $method ): static;
 

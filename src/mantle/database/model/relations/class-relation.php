@@ -63,6 +63,8 @@ abstract class Relation {
 	/**
 	 * Create a new relation instance.
 	 *
+	 * @throws \InvalidArgumentException Thrown if the model on the query is an array.
+	 *
 	 * @param Builder<TModel> $query Query builder instance.
 	 * @param Model<TParent>  $parent Model instance.
 	 * @param bool|null       $uses_terms Flag if the relation uses terms.

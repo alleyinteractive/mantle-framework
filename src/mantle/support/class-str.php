@@ -687,9 +687,8 @@ class Str {
 	 * @param  bool $letters
 	 * @param  bool $numbers
 	 * @param  bool $symbols
-	 * @param  bool $spaces
 	 */
-	public static function password( $length = 32, $letters = true, $numbers = true, $symbols = true, $spaces = false ): string {
+	public static function password( $length = 32, $letters = true, $numbers = true, $symbols = true ): string {
 		return wp_generate_password( $length, $symbols, false );
 	}
 

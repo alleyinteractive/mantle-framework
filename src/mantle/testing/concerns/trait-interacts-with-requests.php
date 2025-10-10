@@ -348,8 +348,7 @@ trait Interacts_With_Requests {
 
 				if ( ! is_null( $response ) ) {
 					// Throw an error when an unknown response type is returned from the callback.
-					// @phpstan-ignore booleanAnd.alwaysFalse
-					if ( ! is_array( $response ) && ! is_wp_error( $response ) ) {
+					if ( ! is_array( $response ) && ! is_wp_error( $response ) ) { // @phpstan-ignore-line booleanAnd.alwaysFalse
 						throw new InvalidArgumentException(
 							sprintf(
 								'Unknown response type returned for faked request to [%s]. Expected a (%s|%s|%s|array), got %s.',
