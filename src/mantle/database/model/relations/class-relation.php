@@ -106,10 +106,8 @@ abstract class Relation {
 
 	/**
 	 * Set the query constraints to apply to the query.
-	 *
-	 * @return void
 	 */
-	abstract public function add_constraints();
+	abstract public function add_constraints(): void;
 
 	/**
 	 * Set the query constraints for an eager load of the relation.

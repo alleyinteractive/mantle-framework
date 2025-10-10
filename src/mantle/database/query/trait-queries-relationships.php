@@ -109,13 +109,12 @@ trait Queries_Relationships {
 		$results = Relation::no_constraints(
 			function () use ( $models, $relation ) {
 				// Add the eager constraints from the relation to the query.
-				$relation->add_eager_constraints( $models );
+				$relation->add_eager_constraints( $models ); // @phpstan-ignore-line
 
 				return $relation->get_eager();
 			}
 		);
 
-		// @phpstan-ignore return.type
-		return $relation->match( $models, $results );
+		return $relation->match( $models, $results ); // @phpstan-ignore-line
 	}
 }

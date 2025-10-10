@@ -105,7 +105,7 @@ trait Has_Attributes {
 			return null;
 		}
 
-		if ( array_key_exists( $key, $this->relations ) ) {
+		if ( isset( $this->relations ) && array_key_exists( $key, $this->relations ) ) {
 			return $this->relations[ $key ];
 		}
 
@@ -125,6 +125,16 @@ trait Has_Attributes {
 	 *                        of Relation.
 	 */
 	protected function get_relationship_from_method( string $method ): mixed {
+		if ( ! method_exists( $this, $method ) ) {
+			throw new LogicException(
+				sprintf(
+					'Call to undefined relationship method %s::%s(). Model does not use the \Mantle\Database\Model\Concerns\Has_Relationships trait.',
+					static::class,
+					$method
+				)
+			);
+		}
+
 		$relation = $this->$method();
 
 		if ( ! $relation instanceof Relation ) {
@@ -140,7 +150,7 @@ trait Has_Attributes {
 		return tap(
 			$relation->get_results(),
 			function ( $relation ) use ( $method ): void {
-				$this->set_relation( $method, $relation );
+				$this->set_relation( $method, $relation ); // @phpstan-ignore-line method.notFound
 			}
 		);
 	}

@@ -111,9 +111,11 @@ abstract class Has_One_Or_Many extends Relation {
 			 */
 
 			foreach ( $models as $model ) {
-				$terms = $terms->merge(
-					get_the_terms( $model->id(), $this->related::get_object_name() ),
-				);
+				$relation_terms = get_the_terms( $model->id(), $this->related::get_object_name() );
+
+				if ( is_array( $relation_terms ) ) {
+					$terms = $terms->merge( $relation_terms );
+				}
 			}
 
 			$terms = $terms
@@ -148,7 +150,7 @@ abstract class Has_One_Or_Many extends Relation {
 		}
 
 		// Save the model if it doesn't exist.
-		if ( $model instanceof Model && ! $model->exists && $model instanceof Updatable ) {
+		if ( $model instanceof Model && ! $model->exists ) {
 			$model->save();
 		}
 
@@ -157,7 +159,7 @@ abstract class Has_One_Or_Many extends Relation {
 			$model = $this->related::find_or_fail( $model );
 		}
 
-		$append = Has_Many::class === static::class || is_subclass_of( $this, Has_Many::class );
+		$append = Has_Many::class === static::class || is_subclass_of( $this, Has_Many::class ); // @phpstan-ignore-line
 
 		if ( $this->is_post_term_relationship() && $this->parent instanceof Post ) {
 			$this->parent->set_terms( $model, $model->first()::get_object_name(), $append );
@@ -187,7 +189,7 @@ abstract class Has_One_Or_Many extends Relation {
 	 */
 	public function save_many( array $models ): array {
 		return collect( $models )
-			->map( fn ( $item ) => $this->save( $item ) )
+			->map( fn ( $item ) => $this->save( $item ) ) // @phpstan-ignore-line
 			->all();
 	}
 
@@ -210,7 +212,7 @@ abstract class Has_One_Or_Many extends Relation {
 		} else {
 			foreach ( $models as $model ) {
 				if ( $model->exists ) {
-					if ( $this->uses_terms && $model instanceof Core_Object ) {
+					if ( $this->uses_terms ) {
 						$term = $this->get_term_for_relationship();
 
 						if ( has_term( $term, static::RELATION_TAXONOMY, $model->id() ) ) {
@@ -267,6 +269,7 @@ abstract class Has_One_Or_Many extends Relation {
 	 *
 	 * @param Collection<int, TModel>  $results Collection of results.
 	 * @param Collection<int, TParent> $models Parent models.
+	 * @return array<int, array<int, TModel>>
 	 */
 	protected function build_dictionary( Collection $results, Collection $models ): array {
 		// Post term relationships always rely on the underlying term.
@@ -324,9 +327,9 @@ abstract class Has_One_Or_Many extends Relation {
 			return $dictionary;
 		}
 
-		return $results
+		return $results // @phpstan-ignore-line return.type
 			->map_to_dictionary(
-				fn ( $result ): array => [ $result->meta->{$this->foreign_key} => $result ],
+				fn ( $result ): array => [ $result->meta->{$this->foreign_key} => $result ], // @phpstan-ignore-line property
 			)
 			->all();
 	}

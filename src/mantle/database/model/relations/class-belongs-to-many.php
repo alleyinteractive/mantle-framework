@@ -12,6 +12,7 @@ use Mantle\Contracts\Database\Model_Meta;
 use Mantle\Contracts\Database\Updatable;
 use Mantle\Database\Model\Model;
 use Mantle\Support\Collection;
+use RuntimeException;
 
 use function Mantle\Support\Helpers\collect;
 
@@ -47,6 +48,10 @@ class Belongs_To_Many extends Belongs_To {
 		return $models->each(
 			function ( $model ) use ( $dictionary ): void {
 				$key = $model->{$this->foreign_key};
+
+				if ( ! method_exists( $model, 'set_relation' ) ) {
+					throw new RuntimeException( 'Model does not implement set_relation method.' );
+				}
 
 				$model->set_relation( $this->relationship, $dictionary[ $key ] ?? null );
 			}

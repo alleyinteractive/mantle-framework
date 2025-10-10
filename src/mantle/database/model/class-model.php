@@ -50,8 +50,6 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	/** @use Concerns\Has_Factory<TModelObject> */
 	use Concerns\Has_Factory;
 	use Concerns\Has_Global_Scopes;
-	/** @use Concerns\Has_Relationships<static> */
-	use Concerns\Has_Relationships;
 
 	/**
 	 * The array of booted models.
@@ -379,7 +377,9 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	public function offsetUnset( mixed $offset ): void {
 		$this->set( $offset, null );
 
-		unset( $this->relations[ $offset ] );
+		if ( isset( $this->relations ) && array_key_exists( $offset, $this->relations ) ) {
+			unset( $this->relations[ $offset ] );
+		}
 	}
 
 	/**

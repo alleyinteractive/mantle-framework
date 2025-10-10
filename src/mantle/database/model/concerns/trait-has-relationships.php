@@ -148,7 +148,7 @@ trait Has_Relationships {
 	 * @param string $relation Relation name.
 	 * @param mixed  $value Value to set.
 	 */
-	public function set_relation( string $relation, $value ): static {
+	public function set_relation( string $relation, mixed $value ): static {
 		$this->relations[ $relation ] = $value;
 
 		return $this;
