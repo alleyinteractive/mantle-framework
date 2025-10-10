@@ -16,18 +16,16 @@ use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Term;
 use Mantle\Database\Query\Builder;
 use Mantle\Database\Query\Post_Query_Builder;
-use Mantle\Support\Arr;
 use Mantle\Support\Collection;
 use RuntimeException;
-use Throwable;
 
 use function Mantle\Support\Helpers\collect;
 
 /**
  * Has One or Many Relationship
  *
- * @template TParent of \Mantle\Database\Model\Model = \Mantle\Database\Model\Model
- * @template TModel of \Mantle\Database\Model\Model = \Mantle\Database\Model\Model
+ * @template TParent of Core_Object&Model_Meta&Updatable&Model = Core_Object&Model_Meta&Updatable&Model
+ * @template TModel of Core_Object&Model_Meta&Updatable&Model = Core_Object&Model_Meta&Updatable&Model
  *
  * @extends Relation<TParent, TModel>
  */

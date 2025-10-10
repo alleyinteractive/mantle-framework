@@ -8,6 +8,9 @@
 namespace Mantle\Database\Model\Relations;
 
 use Closure;
+use Mantle\Contracts\Database\Core_Object;
+use Mantle\Contracts\Database\Model_Meta;
+use Mantle\Contracts\Database\Updatable;
 use Mantle\Database\Model\Model;
 use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Term;
@@ -20,8 +23,8 @@ use Mantle\Support\Forward_Calls;
 /**
  * Relation base class.
  *
- * @template TParent of \Mantle\Database\Model\Model = \Mantle\Database\Model\Model
- * @template TModel of \Mantle\Database\Model\Model = \Mantle\Database\Model\Model
+ * @template TParent of Core_Object&Model_Meta&Updatable&Model = Core_Object&Model_Meta&Updatable&Model
+ * @template TModel of Core_Object&Model_Meta&Updatable&Model = Core_Object&Model_Meta&Updatable&Model
  *
  * @mixin \Mantle\Database\Query\Builder<TModel>
  */
@@ -186,7 +189,7 @@ abstract class Relation {
 		$trace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 5 ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
 
 		foreach ( $trace as $item ) {
-			if ( is_subclass_of( $item['class'], Model::class ) ) {
+			if ( isset( $item['class'] ) && is_subclass_of( $item['class'], Model::class ) ) {
 				return $item['function'];
 			}
 		}

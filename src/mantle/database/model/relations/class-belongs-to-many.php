@@ -7,6 +7,10 @@
 
 namespace Mantle\Database\Model\Relations;
 
+use Mantle\Contracts\Database\Core_Object;
+use Mantle\Contracts\Database\Model_Meta;
+use Mantle\Contracts\Database\Updatable;
+use Mantle\Database\Model\Model;
 use Mantle\Support\Collection;
 
 use function Mantle\Support\Helpers\collect;
@@ -14,8 +18,8 @@ use function Mantle\Support\Helpers\collect;
 /**
  * Creates a 'Belongs To Many' relationship.
  *
- * @template TParent of \Mantle\Database\Model\Model = \Mantle\Database\Model\Model
- * @template TModel of \Mantle\Database\Model\Model = \Mantle\Database\Model\Model
+ * @template TParent of Core_Object&Model_Meta&Updatable&Model = Core_Object&Model_Meta&Updatable&Model
+ * @template TModel of Core_Object&Model_Meta&Updatable&Model = Core_Object&Model_Meta&Updatable&Model
  *
  * @extends Belongs_To<TParent, TModel>
  */

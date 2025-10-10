@@ -30,8 +30,8 @@ use function Mantle\Support\Helpers\collect;
  * For relationships between posts and term models, the Belongs To relationship
  * is not supported for performance reasons.
  *
- * @template TParent of \Mantle\Database\Model\Model = \Mantle\Database\Model\Model
- * @template TModel of \Mantle\Database\Model\Model = \Mantle\Database\Model\Model
+ * @template TParent of Core_Object&Model_Meta&Updatable&Model = Core_Object&Model_Meta&Updatable&Model
+ * @template TModel of Core_Object&Model_Meta&Updatable&Model = Core_Object&Model_Meta&Updatable&Model
  *
  * @extends Relation<TParent, TModel>
  */
@@ -158,11 +158,11 @@ class Belongs_To extends Relation {
 		if ( $this->uses_terms ) {
 			$set = wp_set_post_terms( $this->parent->id(), [ $this->get_term_for_relationship( $model ) ], static::RELATION_TAXONOMY, $append );
 			if ( is_wp_error( $set ) ) {
-							throw new Model_Exception( "Error associating term relationship for [{$this->parent->id()}]: [{$set->get_error_message()}]" );
+				throw new Model_Exception( "Error associating term relationship for [{$this->parent->id()}]: [{$set->get_error_message()}]" );
 			}
 
 			if ( false === $set ) {
-																throw new Model_Exception( "Unknown error associating term relationship for [{$this->parent->id()}]" );
+				throw new Model_Exception( "Unknown error associating term relationship for [{$this->parent->id()}]" );
 			}
 		} elseif ( $append ) {
 			$this->parent->add_meta( $this->local_key, $model->id() );
