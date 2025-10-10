@@ -184,17 +184,42 @@ abstract class Relation {
 
 	/**
 	 * Guess the name of the relationship.
+	 *
+	 * @todo Right now we're only limited to Post and Term models. This needs to
+	 * be a check on a contract that defines the relationship methods (similar to
+	 * Model_Meta). This method should be refactored once the contract is in place.
 	 */
 	protected function guess_relationship(): ?string {
 		$trace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 5 ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
 
-		foreach ( $trace as $item ) {
-			if ( isset( $item['class'] ) && is_subclass_of( $item['class'], Model::class ) ) {
-				return $item['function'];
+		foreach ( $trace as $index => $item ) {
+			if ( ! isset( $item['class'] ) ) {
+				continue;
+			}
+
+			// If the class is Post/Term that means it is coming from the
+			// Has_Relationships trait. We want the next item in the trace (the parent
+			// calling class) to determine the relationship from.
+			if (
+				// TODO: Replace this with a contract check.
+				( Post::class === $item['class'] || Term::class === $item['class'] )
+				&& isset( $trace[ $index + 1 ] )
+				&& isset( $trace[ $index + 1 ]['class'] )
+				&& is_subclass_of( $item['class'], Model::class )
+			) {
+				return $trace[ $index + 1 ]['function'];
+			}
+
+			// If the next method in the trace isn't available/valid, keep proceeding
+			// down the trace to find the lowest class that implements a post/term
+			// model.
+			// TODO: Replace this with a contract check.
+			if ( is_subclass_of( $item['class'], Post::class ) || is_subclass_of( $item['class'], Term::class ) ) {
+				$relationship = $item['function'];
 			}
 		}
 
-		return null;
+		return $relationship ?? null;
 	}
 
 	/**
