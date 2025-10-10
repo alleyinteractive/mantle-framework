@@ -42,9 +42,13 @@ trait Interacts_With_Attributes {
 	/**
 	 * Register an attribute to interact with.
 	 *
+	 * @template T of object
+	 *
 	 * @param class-string $attribute Attribute class to interact.
 	 * @param callable     $callback  Callback to interact with the attribute.
-	 * @phpstan-param callable(\ReflectionAttribute $attribute): mixed $callback Callback to interact with the attribute
+	 *
+	 * @phpstan-param class-string<T> $attribute
+	 * @phpstan-param callable(\ReflectionAttribute<T> $attribute): mixed $callback Callback to interact with the attribute
 	 */
 	protected function register_attribute( string $attribute, callable $callback ): void {
 		$this->attribute_callbacks[ $attribute ] = $callback;

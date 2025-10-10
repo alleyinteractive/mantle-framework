@@ -189,7 +189,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  int $levels
 	 */
 	public function dirname( int $levels = 1 ): static {
-		return new static( dirname( $this->value, $levels ) );
+		return new static( dirname( $this->value, max( 1, $levels ) ) );
 	}
 
 	/**
@@ -236,8 +236,8 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	/**
 	 * Explode the string into an array.
 	 *
-	 * @param  string $delimiter
-	 * @param  int    $limit
+	 * @param  non-empty-string $delimiter
+	 * @param  int              $limit
 	 * @return Collection<int, string>
 	 */
 	public function explode( string $delimiter, int $limit = PHP_INT_MAX ): Collection {
@@ -247,17 +247,17 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	/**
 	 * Split a string using a regular expression or by length.
 	 *
-	 * @param  string|int $pattern
-	 * @param  int        $limit
-	 * @param  int        $flags
+	 * @param  string|int<1, max> $pattern
+	 * @param  int<1, max>        $limit
+	 * @param  int                $flags
 	 * @return Collection<int, mixed>
 	 */
-	public function split( string|int $pattern, int $limit = -1, int $flags = 0 ) {
+	public function split( string|int $pattern, int $limit = 1, int $flags = 0 ) {
 		if ( filter_var( $pattern, FILTER_VALIDATE_INT ) !== false ) {
-			return collect( mb_str_split( $this->value, $pattern ) );
+			return collect( mb_str_split( $this->value, max( 1, (int) $pattern ) ) );
 		}
 
-		$segments = preg_split( $pattern, $this->value, $limit, $flags );
+		$segments = preg_split( (string) $pattern, $this->value, $limit, $flags );
 
 		return empty( $segments ) ? collect() : collect( $segments );
 	}
@@ -475,7 +475,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  string|null $default
 	 * @return array<int, string|null>
 	 */
-	public function parse_callback( $default = null ) {
+	public function parse_callback( ?string $default = null ) {
 		return Str::parse_callback( $this->value, $default );
 	}
 

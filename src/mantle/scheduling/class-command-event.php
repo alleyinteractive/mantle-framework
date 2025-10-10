@@ -51,10 +51,14 @@ class Command_Event extends Event {
 
 		$this->call_before_callbacks( $container );
 
-		$instance = $container->make( $this->callback );
 
 		try {
-			$instance->handle( $this->parameters, $this->assoc_args );
+			if ( is_callable( $this->callback ) ) {
+				call_user_func( $this->callback, $this->parameters, $this->assoc_args );
+			} else {
+				$instance = $container->make( $this->callback );
+				$instance->handle( $this->parameters, $this->assoc_args );
+			}
 
 			$this->exit_code = 0;
 		} catch ( Throwable $e ) {

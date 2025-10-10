@@ -385,10 +385,9 @@ trait Makes_Http_Requests {
 	/**
 	 * Call a given Closure/method before requests and inject its dependencies.
 	 *
-	 * @param callable|string $callback Callback to invoke.
-	 * @return static
+	 * @param callable $callback Callback to invoke.
 	 */
-	public function before_request( $callback ) {
+	public function before_request( callable $callback ): static {
 		$this->before_callbacks[] = $callback;
 
 		return $this;
@@ -399,10 +398,9 @@ trait Makes_Http_Requests {
 	 *
 	 * Callback will be invoked with a 'response' argument.
 	 *
-	 * @param callable|string $callback Callback to invoke.
-	 * @return static
+	 * @param callable $callback Callback to invoke.
 	 */
-	public function after_request( $callback ) {
+	public function after_request( callable $callback ): static {
 		$this->after_callbacks[] = $callback;
 
 		return $this;

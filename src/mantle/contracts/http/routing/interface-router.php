@@ -120,11 +120,11 @@ interface Router {
 	 * Register a REST API route
 	 *
 	 * @param string                       $namespace        Namespace for the REST API route.
-	 * @param callable|string              $callback_or_uri  Callback that will be invoked to register
+	 * @param \Closure|string              $callback_or_uri  Callback that will be invoked to register
 	 *                                                       routes or a string route path.
 	 * @param callable|array<mixed>|string $args             Callback for the route if $callback or route arguments.
 	 */
-	public function rest_api( string $namespace, callable|string $callback_or_uri, callable|array|string $args = [] ): ?Route;
+	public function rest_api( string $namespace, \Closure|string $callback_or_uri, callable|array|string $args = [] ): ?Route;
 
 	/**
 	 * Rename a route.

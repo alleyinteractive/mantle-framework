@@ -263,7 +263,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * Run a filter over each of the items.
 	 *
 	 * @param  (callable(TValue): bool)|null  $callback
-	 * @return static
+	 * @return static<TKey, TValue>
 	 */
 	public function filter( ?callable $callback = null );
 

@@ -235,6 +235,10 @@ trait Element_Assertions {
 		}
 
 		foreach ( $nodes as $node ) {
+			if ( $node instanceof \DOMNameSpaceNode ) {
+				continue;
+			}
+
 			if ( $assertion( $node ) ) {
 				// If we're passing on any, we can return early.
 				if ( $pass_any ) {

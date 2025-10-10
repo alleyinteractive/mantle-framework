@@ -150,6 +150,7 @@ class Dispatcher implements Dispatcher_Contract {
 
 		// Ensure there is a payload that is able to be passed to the filter.
 		if ( empty( $payload ) ) {
+			// @phpstan-ignore offsetAccess.nonOffsetAccessible
 			$payload[] = ''; // Mirror the default behavior of do_action.
 		}
 
@@ -203,7 +204,7 @@ class Dispatcher implements Dispatcher_Contract {
 	 * @return array<mixed>
 	 */
 	protected function add_interface_listeners( string $event_name, array $listeners = [] ): array {
-		foreach ( class_implements( $event_name ) as $interface ) {
+		foreach ( class_implements( $event_name ) ?: [] as $interface ) {
 			if ( isset( $this->listeners[ $interface ] ) ) {
 				foreach ( $this->listeners[ $interface ] as $names ) {
 					$listeners = array_merge( $listeners, (array) $names );
@@ -237,6 +238,7 @@ class Dispatcher implements Dispatcher_Contract {
 	public function create_class_listener( string $listener ): Closure {
 		return function ( ...$payload ) use ( $listener ) {
 			$callable = $this->create_action_callback(
+				// @phpstan-ignore argument.type
 				$this->create_class_callable( $listener ),
 			);
 
@@ -357,6 +359,7 @@ class Dispatcher implements Dispatcher_Contract {
 			}
 
 			foreach ( $listeners as $listener ) {
+				// @phpstan-ignore argument.type
 				$callable = $this->create_action_callback( $listener );
 
 				$callable( $hook, ...$args );

@@ -61,6 +61,22 @@ class Utils {
 	public const DEFAULT_PERMALINK_STRUCTURE = '/%year%/%monthnum%/%day%/%postname%/';
 
 	/**
+	 * Get the current working directory or throw an exception.
+	 *
+	 * @throws \RuntimeException If the current working directory cannot be determined.
+	 * @return string The current working directory.
+	 */
+	public static function cwd(): string {
+		$cwd = getcwd();
+
+		if ( ! $cwd ) {
+			throw new \RuntimeException( 'Could not get current working directory.' );
+		}
+
+		return $cwd;
+	}
+
+	/**
 	 * Get the output from a given callable.
 	 *
 	 * @deprecated Use \Mantle\Support\Helpers::capture() instead.

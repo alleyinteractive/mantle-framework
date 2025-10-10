@@ -77,10 +77,10 @@ class Collection implements ArrayAccess, Enumerable {
 				}
 			}
 
-			return new static( $items );
+			return new static( $items ); // @phpstan-ignore-line return.type
 		}
 
-		return ( new static( $value ) )->values();
+		return ( new static( $value ) )->values(); // @phpstan-ignore-line return.type
 	}
 
 	/**
@@ -97,11 +97,13 @@ class Collection implements ArrayAccess, Enumerable {
 			return new static();
 		}
 
+		$items = range( 1, $number );
+
 		if ( is_null( $callback ) ) {
-			return new static( range( 1, $number ) );
+			$callback = fn( $value ) => $value;
 		}
 
-		return ( new static( range( 1, $number ) ) )->map( $callback );
+		return ( new static( $items ) )->map( $callback );
 	}
 
 	/**
@@ -116,7 +118,7 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Get the average value of a given key.
 	 *
-	 * @param  (callable(TValue): float|int)|string|null $callback
+	 * @param  (callable(): mixed)|string|null $callback
 	 */
 	public function avg( $callback = null ): int|float|null {
 		$callback = $this->value_retriever( $callback );
@@ -158,7 +160,7 @@ class Collection implements ArrayAccess, Enumerable {
 		$middle = (int) ( $count / 2 );
 
 		if ( $count % 2 !== 0 ) {
-			return $values->get( $middle );
+			return $values->get( $middle ); // @phpstan-ignore-line return.type
 		}
 
 		return ( new static(
@@ -239,7 +241,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	public function contains_strict( $key, $value = null ) {
 		if ( func_num_args() === 2 ) {
-			return $this->contains( fn ( $item ) => data_get( $item, $key ) === $value );
+			return $this->contains( fn ( $item ) => data_get( $item, $key ) === $value ); // @phpstan-ignore-line argument.type
 		}
 
 		if ( $this->use_as_callable( $key ) ) {
@@ -412,7 +414,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * Run a filter over each of the items.
 	 *
 	 * @param (callable(TValue, TKey): bool)|null $callback
-	 * @return static
+	 * @return static<TKey, TValue>
 	 */
 	public function filter( ?callable $callback = null ) {
 		if ( $callback ) {
@@ -545,7 +547,7 @@ class Collection implements ArrayAccess, Enumerable {
 			$resolved_key = $key_by( $item, $key );
 
 			if ( is_object( $resolved_key ) ) {
-				$resolved_key = (string) $resolved_key;
+				$resolved_key = (string) $resolved_key; // @phpstan-ignore-line cast.string
 			}
 
 			$results[ $resolved_key ] = $item;
@@ -894,9 +896,9 @@ class Collection implements ArrayAccess, Enumerable {
 	 * Get the items in an collection of arrays with filtered child keys.
 	 *
 	 * @param TKey[]|TKey|static<int, TKey> $keys The keys to filter by.
-	 * @return static<TKey, array>
+	 * @return static<TKey, array<array-key, mixed>>
 	 */
-	public function only_children( $keys ) {
+	public function only_children( $keys ): static {
 		if ( empty( $keys ) ) {
 			return new static( $this->items );
 		}
@@ -1358,7 +1360,7 @@ class Collection implements ArrayAccess, Enumerable {
 			$arrayable_items
 		);
 
-		return new static( array_map( ...$params ) );
+		return new static( array_map( ...$params ) ); // @phpstan-ignore-line return.type
 	}
 
 	/**
@@ -1368,7 +1370,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static<TKey, string>
 	 */
 	public function trim( string $char_list = "\n\r\t\v\x00" ) {
-		return new static( $this->map( fn ( $item ) => trim( (string) $item, $char_list ) ) );
+		return new static( $this->map( fn ( $item ) => trim( (string) $item, $char_list ) ) ); // @phpstan-ignore-line return.type
 	}
 
 	/**
@@ -1387,7 +1389,7 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Get an iterator for the items.
 	 *
-	 * @return \ArrayIterator
+	 * @return \ArrayIterator<TKey, TValue>
 	 */
 	public function getIterator(): Traversable {
 		return new ArrayIterator( $this->items );

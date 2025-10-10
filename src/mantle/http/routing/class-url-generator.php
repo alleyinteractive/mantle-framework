@@ -242,7 +242,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 
 		$this->root_url = $url;
 
-		$this->context->setHost( parse_url( $url, PHP_URL_HOST ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.parse_url_parse_url
+		$this->context->setHost( (string) parse_url( $url, PHP_URL_HOST ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.parse_url_parse_url
 
 		return $this;
 	}

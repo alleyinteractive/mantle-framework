@@ -128,7 +128,7 @@ trait Enumerates_Values {
 	 * @return array<TUnwrapKey, TUnwrapValue>
 	 */
 	public static function unwrap( $value ) {
-		return $value instanceof Enumerable ? $value->all() : $value;
+		return $value instanceof Enumerable ? $value->all() : $value; // @phpstan-ignore-line return.type
 	}
 
 	/**
@@ -212,7 +212,7 @@ trait Enumerates_Values {
 	 */
 	public function each( callable $callback ) {
 		foreach ( $this as $key => $item ) {
-			if ( $callback( $item, $key ) === false ) {
+			if ( $callback( $item, $key ) === false ) { // @phpstan-ignore-line argument.type
 				break;
 			}
 		}
@@ -416,9 +416,15 @@ trait Enumerates_Values {
 			}
 		}
 
+		/** @var static<TKey, TValue> $passed_collection */
+		$passed_collection = new static( $passed );
+
+		/** @var static<TKey, TValue> $failed_collection */
+		$failed_collection = new static( $failed );
+
 		return new static( [
-			new static( $passed ),
-			new static( $failed ),
+			$passed_collection,
+			$failed_collection,
 		] );
 	}
 
@@ -768,10 +774,9 @@ trait Enumerates_Values {
 	 * Get the collection of items as JSON.
 	 *
 	 * @param  int $options
-	 * @return string
 	 */
-	public function to_json( $options = 0 ) {
-		return json_encode( $this->jsonSerialize(), $options ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+	public function to_json( $options = 0 ): string {
+		return (string) json_encode( $this->jsonSerialize(), $options ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
 	}
 
 	/**
@@ -904,6 +909,7 @@ trait Enumerates_Values {
 	 * Determine if the given value is callable, but not a string.
 	 *
 	 * @param  mixed $value
+	 * @phpstan-return ($value is callable ? true : false)
 	 */
 	protected function use_as_callable( mixed $value ): bool {
 		return ! is_string( $value ) && is_callable( $value );
@@ -915,7 +921,7 @@ trait Enumerates_Values {
 	 * @param  callable|string|null $value
 	 */
 	protected function value_retriever( callable|string|null $value ): callable {
-		if ( $this->use_as_callable( $value ) ) {
+		if ( $this->use_as_callable( $value ) && is_callable( $value ) ) {
 			return $value;
 		}
 

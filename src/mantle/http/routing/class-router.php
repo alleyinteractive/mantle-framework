@@ -61,7 +61,7 @@ class Router implements Router_Contract {
 	/**
 	 * All of the middleware groups.
 	 *
-	 * @var array<string, array<string>>
+	 * @var array<string, array<class-string>>
 	 */
 	protected array $middleware_groups = [];
 
@@ -382,8 +382,8 @@ class Router implements Router_Contract {
 	/**
 	 * Register a short-hand name for a middleware.
 	 *
-	 * @param  string $name
-	 * @param  string $class
+	 * @param  string       $name
+	 * @param  class-string $class
 	 */
 	public function alias_middleware( string $name, string $class ): static {
 		$this->middleware[ $name ] = $class;
@@ -417,8 +417,8 @@ class Router implements Router_Contract {
 	 *
 	 * If the middleware is already in the group, it will not be added again.
 	 *
-	 * @param  string $group
-	 * @param  string $middleware
+	 * @param  string       $group
+	 * @param  class-string $middleware
 	 */
 	public function prepend_middleware_to_group( string $group, string $middleware ): static {
 		if ( isset( $this->middleware_groups[ $group ] ) && ! in_array( $middleware, $this->middleware_groups[ $group ], true ) ) {
@@ -433,16 +433,16 @@ class Router implements Router_Contract {
 	 *
 	 * If the middleware is already in the group, it will not be added again.
 	 *
-	 * @param  string $group
-	 * @param  string $middleware
+	 * @param  string       $group
+	 * @param  class-string $middleware
 	 */
 	public function push_middleware_to_group( string $group, string $middleware ): static {
 		if ( ! array_key_exists( $group, $this->middleware_groups ) ) {
-				$this->middleware_groups[ $group ] = [];
+			$this->middleware_groups[ $group ] = [];
 		}
 
 		if ( ! in_array( $middleware, $this->middleware_groups[ $group ], true ) ) {
-				$this->middleware_groups[ $group ][] = $middleware;
+			$this->middleware_groups[ $group ][] = $middleware;
 		}
 
 		return $this;
@@ -452,7 +452,7 @@ class Router implements Router_Contract {
 	 * Gather the middleware for the given route with resolved class names.
 	 *
 	 * @param Route $route Route instance.
-	 * @return array<string|class-string>
+	 * @return array<callable>
 	 */
 	public function gather_route_middleware( Route $route ): array {
 		$middleware = $route->excluded_middleware();
@@ -504,9 +504,9 @@ class Router implements Router_Contract {
 	 * Add a new route parameter binder.
 	 *
 	 * @param string          $key
-	 * @param string|callable $binder
+	 * @param string|\Closure $binder
 	 */
-	public function bind( string $key, $binder ): void {
+	public function bind( string $key, string|\Closure $binder ): void {
 		$this->binders[ str_replace( '-', '_', $key ) ] = Route_Binding::for_callback(
 			$this->container,
 			$binder
@@ -563,16 +563,16 @@ class Router implements Router_Contract {
 	 * Register a REST API route.
 	 *
 	 * @param string                       $namespace        Namespace for the REST API route.
-	 * @param callable|string              $callback_or_uri  Callback that will be invoked to register
+	 * @param \Closure|string              $callback_or_uri  Callback that will be invoked to register
 	 *                                                       routes or a string route path.
 	 * @param callable|array<mixed>|string $args             Callback for the route if $callback or route arguments.
 	 */
-	public function rest_api( string $namespace, callable|string $callback_or_uri, callable|array|string $args = [] ): ?Route {
+	public function rest_api( string $namespace, \Closure|string $callback_or_uri, callable|array|string $args = [] ): ?Route {
 		$namespace = trim( $namespace, '/' );
 
 		$this->registrar = new Rest_Route_Registrar( router: $this, namespace: $namespace );
 
-		if ( is_callable( $callback_or_uri ) ) {
+		if ( $callback_or_uri instanceof Closure ) {
 			$this->with_registrar( $callback_or_uri, clear: true );
 
 			return null;
@@ -584,12 +584,16 @@ class Router implements Router_Contract {
 			$route = $this->registrar->register_route(
 				method: [ 'GET', 'HEAD' ],
 				uri: $callback_or_uri,
-				action: $args,
+				action: $args, // @phpstan-ignore-line argument.type
 			);
 
 			$this->registrar = null;
 
 			return $route;
+		}
+
+		if ( ! is_array( $args ) ) {
+			$args = [ 'uses' => $args ];
 		}
 
 		$args['methods'] = isset( $args['methods'] )
