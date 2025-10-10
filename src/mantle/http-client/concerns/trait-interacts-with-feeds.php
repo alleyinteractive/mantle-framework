@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Mantle\Http_Client\Concerns;
 
-use SimplePie\SimplePie;
+use SimplePie;
 use WP_SimplePie_Sanitize_KSES;
 
 /**
