@@ -576,7 +576,7 @@ EOF
 
 		$feed = $request->feed();
 
-		$this->assertInstanceOf( \SimplePie\SimplePie::class, $feed );
+		$this->assertInstanceOf( \SimplePie::class, $feed );
 		$this->assertTrue( $feed->error() !== null );
 	}
 }
