@@ -12,6 +12,7 @@
 
 namespace Mantle\Support\Helpers;
 
+use Carbon\Carbon;
 use Countable;
 use Exception;
 use Mantle\Container\Container;
@@ -559,19 +560,27 @@ function validate_file( $file, $allowed_files = [] ) {
  * page on `shutdown`.
  *
  * @param callable $callback Callback to defer.
+ * @param int      $priority Priority at which to execute the callback.
  */
-function defer( callable $callback ): void {
+function defer( callable $callback, int $priority = 10 ): void {
+	static $request_sent = false;
+
 	\add_action(
 		'shutdown',
-		function () use ( $callback ): void {
-			if ( function_exists( 'fastcgi_finish_request' ) ) {
-				fastcgi_finish_request();
-			} elseif ( function_exists( 'litespeed_finish_request' ) ) {
-				litespeed_finish_request();
+		function () use ( $callback, &$request_sent ): void {
+			if ( $request_sent ) {
+				if ( function_exists( 'fastcgi_finish_request' ) ) {
+					fastcgi_finish_request();
+				} elseif ( function_exists( 'litespeed_finish_request' ) ) {
+					litespeed_finish_request();
+				}
+
+				$request_sent = true;
 			}
 
 			$callback();
 		},
+		$priority,
 	);
 }
 
@@ -616,4 +625,19 @@ function dd_backtrace( ?int $limit = null, bool $with_arguments = false ): never
 
 	dump_backtrace( $limit, $with_arguments );
 	exit( 1 );
+}
+
+/**
+ * Create a new Carbon instance for the current time.
+ *
+ * @todo Allow this to be faked and mocked during testing.
+ *
+ * @param \DateTimeZone|string|null $tz Timezone.
+ */
+function now( \DateTimeZone|string|null $tz = null ): Carbon {
+	if ( ! $tz ) {
+		$tz = function_exists( 'wp_timezone' ) ? wp_timezone() : new \DateTimeZone( 'UTC' );
+	}
+
+	return Carbon::now( $tz );
 }

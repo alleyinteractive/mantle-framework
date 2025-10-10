@@ -7,17 +7,10 @@
 
 namespace Mantle\Tests\Http_Client;
 
-use Closure;
-use Mantle\Facade\Http;
 use Mantle\Http_Client\Cache_Middleware;
 use Mantle\Http_Client\Factory;
-use Mantle\Http_Client\Http_Client_Exception;
 use Mantle\Http_Client\Pending_Request;
-use Mantle\Http_Client\Pool;
-use Mantle\Http_Client\Request;
-use Mantle\Http_Client\Response;
 use Mantle\Testing\FrameworkTestCase;
-use Mantle\Testing\Mock_Http_Response;
 
 use function Mantle\Support\Helpers\collect;
 use function Mantle\Testing\mock_http_response;
@@ -31,6 +24,8 @@ class CachedHttpClientTest extends FrameworkTestCase {
 		$this->client = Factory::create()->cache();
 
 		$this->prevent_stray_requests();
+
+		remove_all_actions( 'shutdown' );
 	}
 
 	public function test_can_create_cached_client() {
@@ -100,6 +95,61 @@ class CachedHttpClientTest extends FrameworkTestCase {
 
 		$this->client->get( 'https://example.com' );
 
+		$this->assertRequestCount( 2 );
+	}
+
+	public function test_it_can_use_flexible_cache(): void {
+		$this->client = Factory::create()->cache_flexible(
+			stale: now()->addHour(),
+			expire: now()->addDay(),
+		);
+
+		$i = 0;
+
+		$this->fake_request( function () use ( &$i ) {
+			$i++;
+
+			return mock_http_response()->with_json( [ 'request' => $i ] );
+		} );
+
+		$this->client->get( 'https://example.com' );
+
+		$second_request = $this->client->get( 'https://example.com' );
+
+		$this->assertRequestCount( 1 );
+		$this->assertEquals( 1, $second_request->json( 'request' ) );
+
+		// Fire the shutdown actions to confirm the deferred refresh does not happen.
+		do_action( 'shutdown' );
+
+		$this->assertRequestCount( 1 );
+	}
+
+	public function test_it_can_use_flexible_cache_while_stale(): void {
+		$this->client = Factory::create()->cache_flexible(
+			stale: now()->subMinute(),
+			expire: now()->addDay(),
+		);
+
+		$i = 0;
+
+		$this->fake_request( function () use ( &$i ) {
+			$i++;
+
+			return mock_http_response()->with_json( [ 'request' => $i ] );
+		} );
+
+		$this->client->get( 'https://example.com' );
+
+		$second_request = $this->client->get( 'https://example.com' );
+
+		$this->assertRequestCount( 1 );
+		$this->assertEquals( 1, $second_request->json( 'request' ) );
+
+		// Fire the shutdown actions to trigger the deferred refresh.
+		do_action( 'shutdown' );
+
+		// The deferred refresh should have happened and we're at 2 requests now.
 		$this->assertRequestCount( 2 );
 	}
 }

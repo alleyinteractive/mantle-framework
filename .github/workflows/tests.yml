@@ -70,6 +70,20 @@ jobs:
         exclude:
           - php: 8.4
             dependencies: "prefer-lowest"
+        # Test various older versions of WordPress in a limited capacity.
+        include:
+          - php: 8.3
+            wordpress: "6.5"
+            dependencies: "prefer-stable"
+            multisite: true
+          - php: 8.3
+            wordpress: "6.6"
+            dependencies: "prefer-stable"
+            multisite: true
+          - php: 8.3
+            wordpress: "6.7"
+            dependencies: "prefer-stable"
+            multisite: true
     runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}-P${{ matrix.php }}-WP${{ matrix.wordpress }}-MS${{ matrix.multisite && '1' || '0' }}-D${{ matrix.dependencies }}

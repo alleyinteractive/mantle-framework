@@ -3,6 +3,7 @@
  * This file contains the Makes_Http_Requests trait
  *
  * phpcs:disable WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE
+ * phpcs:disable WordPress.WP.GlobalVariablesOverride.Prohibited
  *
  * @package Mantle
  */
@@ -11,6 +12,7 @@ namespace Mantle\Testing\Concerns;
 
 use Mantle\Testing\Pending_Testable_Request;
 use Mantle\Testing\Test_Response;
+use PHPUnit\Framework\Attributes\BeforeClass;
 use RuntimeException;
 
 use function Mantle\Support\Helpers\tap;
@@ -58,6 +60,13 @@ trait Makes_Http_Requests {
 	protected array $after_callbacks = [];
 
 	/**
+	 * Backup of global WordPress dependencies.
+	 *
+	 * @var array<string, \WP_Dependencies>
+	 */
+	private static array $wp_dependencies_backup = [];
+
+	/**
 	 * Setup the trait in the test case.
 	 */
 	public function makes_http_requests_set_up(): void {
@@ -66,12 +75,32 @@ trait Makes_Http_Requests {
 		// Clear out the existing REST Server to allow for REST API routes to be re-registered.
 		$wp_rest_server = null; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals
 
-		// Mark 'rest_api_init' as an un-run action.
-		unset( $wp_actions['rest_api_init'] );
+		// Mark these actions as not fired to try and make the cleanest possible
+		// state for each request. Intentionally not clearing all or some that could
+		// break underlying functionality such as 'wp_loaded'.
+		foreach ( [
+			'parse_query',
+			'parse_request',
+			'posts_selection',
+			'pre_get_posts',
+			'rest_api_init',
+			'send_headers',
+			'template_redirect',
+			'wp_enqueue_scripts',
+			'wp_footer',
+			'wp_head',
+			'wp_print_scripts',
+			'wp_print_styles',
+			'wp',
+		] as $action ) {
+			unset( $wp_actions[ $action ] );
+		}
 
-		// Clear before/after callbacks.
-		$this->before_callbacks = [];
-		$this->after_callbacks  = [];
+		$this->reset_request_callbacks();
+
+		$this->restore_wp_dependencies();
+
+		$this->before_request( $this->restore_wp_dependencies( ... ) );
 	}
 
 	/**
@@ -383,6 +412,16 @@ trait Makes_Http_Requests {
 	}
 
 	/**
+	 * Clear all of the registered request callbacks.
+	 */
+	public function reset_request_callbacks(): static {
+		$this->before_callbacks = [];
+		$this->after_callbacks  = [];
+
+		return $this;
+	}
+
+	/**
 	 * Call a given Closure/method before requests and inject its dependencies.
 	 *
 	 * @param callable $callback Callback to invoke.
@@ -428,6 +467,36 @@ trait Makes_Http_Requests {
 					'response' => $response,
 				]
 			);
+		}
+	}
+
+	/**
+	 * Backup any global WordPress dependencies before any tests run that could
+	 * modify them.
+	 *
+	 * @beforeClass
+	 */
+	#[BeforeClass]
+	public static function backup_wp_dependencies(): void {
+		if ( ! isset( self::$wp_dependencies_backup['wp_scripts'] ) ) {
+			self::$wp_dependencies_backup['wp_scripts'] = clone $GLOBALS['wp_scripts'];
+		}
+
+		if ( ! isset( self::$wp_dependencies_backup['wp_styles'] ) ) {
+			self::$wp_dependencies_backup['wp_styles'] = clone $GLOBALS['wp_styles'];
+		}
+	}
+
+	/**
+	 * Restore any global WordPress dependencies that may have been modified during the request.
+	 */
+	private function restore_wp_dependencies(): void {
+		if ( isset( self::$wp_dependencies_backup['wp_scripts'] ) ) {
+			$GLOBALS['wp_scripts'] = clone self::$wp_dependencies_backup['wp_scripts'];
+		}
+
+		if ( isset( self::$wp_dependencies_backup['wp_styles'] ) ) {
+			$GLOBALS['wp_styles'] = clone self::$wp_dependencies_backup['wp_styles'];
 		}
 	}
 }

@@ -482,10 +482,28 @@ class Pending_Request {
 	}
 
 	/**
-	 * Clear all middleware for the request.
+	 * Clear middleware for the request.
+	 *
+	 * @param class-string|null $middleware Middleware class to remove, optional.
 	 */
-	public function without_middleware(): static {
+	public function without_middleware( ?string $middleware = null ): static {
+		if ( $middleware ) {
+			return $this->filter_middleware( fn ( callable $item ) => ! $item instanceof $middleware );
+		}
+
 		$this->middleware = [];
+
+		return $this;
+	}
+
+	/**
+	 * Filter the middleware for the request.
+	 *
+	 * @param callable|string $callback Callback to filter the middleware.
+	 * @phpstan-param (callable(callable): bool) $callback
+	 */
+	public function filter_middleware( callable|string $callback ): static {
+		$this->middleware = array_values( array_filter( $this->middleware, $callback ) );
 
 		return $this;
 	}

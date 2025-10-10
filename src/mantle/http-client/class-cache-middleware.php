@@ -10,6 +10,8 @@ namespace Mantle\Http_Client;
 use Closure;
 use DateTimeInterface;
 
+use function Mantle\Support\Helpers\normalize_cache_ttl;
+
 /**
  * Cache Middleware for Http Client.
  *
@@ -79,17 +81,13 @@ class Cache_Middleware {
 	 *
 	 * @param Pending_Request $request Request to calculate the TTL for.
 	 */
-	protected function calculate_ttl( Pending_Request $request ): int {
-		if ( is_int( $this->ttl ) ) {
-			return $this->ttl;
+	private function calculate_ttl( Pending_Request $request ): int {
+		if ( is_callable( $this->ttl ) ) {
+			$callback = $this->ttl;
+
+			return (int) $callback( $request );
 		}
 
-		if ( $this->ttl instanceof DateTimeInterface ) {
-			return $this->ttl->getTimestamp() - time();
-		}
-
-		$callback = $this->ttl;
-
-		return (int) $callback( $request );
+		return normalize_cache_ttl( $this->ttl );
 	}
 }

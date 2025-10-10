@@ -5,6 +5,7 @@
     "require": {
         "php": "^8.2",
         "alleyinteractive/wp-concurrent-remote-requests": "^1.0.2",
+        "mantle-framework/cache": "^1.0",
         "mantle-framework/support": "^1.0"
     },
     "extra": {

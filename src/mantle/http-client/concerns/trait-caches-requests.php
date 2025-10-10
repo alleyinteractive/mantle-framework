@@ -9,6 +9,7 @@ namespace Mantle\Http_Client\Concerns;
 
 use DateTimeInterface;
 use InvalidArgumentException;
+use Mantle\Http_Client\Cache_Flexible_Middleware;
 use Mantle\Http_Client\Cache_Middleware;
 use Mantle\Http_Client\Http_Method;
 use Mantle\Http_Client\Pending_Request;
@@ -28,12 +29,24 @@ trait Caches_Requests {
 	 * @phpstan-param int|DateTimeInterface|(callable(Pending_Request $request): int) $ttl
 	 */
 	public function cache( int|DateTimeInterface|callable $ttl = 3600 ): static {
-		// Check if there is a caching middleware.
-		if ( collect( $this->middleware )->contains( fn ( $middleware ) => $middleware instanceof Cache_Middleware ) ) {
-			return $this;
-		}
+		return $this
+			->filter_middleware( fn ( callable $middleware ) => ! $middleware instanceof Cache_Middleware )
+			->prepend_middleware( new Cache_Middleware( $ttl ) );
+	}
 
-		return $this->prepend_middleware( new Cache_Middleware( $ttl ) );
+	/**
+	 * Enable flexible caching for the request.
+	 *
+	 * This will use a stale-while-revalidate strategy to return a cached response if it exists,
+	 * even if it is stale, while refreshing the cache in the background.
+	 *
+	 * @param int|\DateInterval|\DateTimeInterface $stale Time to consider a cached response stale.
+	 * @param int|\DateInterval|\DateTimeInterface $expire Time to consider a cached response expired.
+	 */
+	public function cache_flexible( int|\DateInterval|\DateTimeInterface $stale, int|\DateInterval|\DateTimeInterface $expire ): static {
+		return $this
+			->filter_middleware( fn ( callable $middleware ) => ! $middleware instanceof Cache_Middleware )
+			->prepend_middleware( new Cache_Flexible_Middleware( $stale, $expire ) );
 	}
 
 	/**
