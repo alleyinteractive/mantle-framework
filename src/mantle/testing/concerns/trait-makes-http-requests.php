@@ -3,6 +3,7 @@
  * This file contains the Makes_Http_Requests trait
  *
  * phpcs:disable WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE
+ * phpcs:disable WordPress.WP.GlobalVariablesOverride.Prohibited
  *
  * @package Mantle
  */
@@ -58,6 +59,13 @@ trait Makes_Http_Requests {
 	protected array $after_callbacks = [];
 
 	/**
+	 * Backup of global WordPress dependencies.
+	 *
+	 * @var array<string, \WP_Dependencies>
+	 */
+	private static array $wp_dependencies_backup = [];
+
+	/**
 	 * Setup the trait in the test case.
 	 */
 	public function makes_http_requests_set_up(): void {
@@ -72,6 +80,17 @@ trait Makes_Http_Requests {
 		// Clear before/after callbacks.
 		$this->before_callbacks = [];
 		$this->after_callbacks  = [];
+
+		$this->backup_wp_dependencies();
+
+		$this->before_request( fn () => $this->backup_wp_dependencies() );
+	}
+
+	/**
+	 * Teardown the trait in the test case.
+	 */
+	public function makes_http_requests_tear_down(): void {
+		$this->restore_wp_dependencies();
 	}
 
 	/**
@@ -430,6 +449,32 @@ trait Makes_Http_Requests {
 					'response' => $response,
 				]
 			);
+		}
+	}
+
+	/**
+	 * Backup any global WordPress dependencies that may be modified during the request.
+	 */
+	private function backup_wp_dependencies(): void {
+		if ( ! isset( self::$wp_dependencies_backup['wp_scripts'] ) ) {
+			self::$wp_dependencies_backup['wp_scripts'] = clone $GLOBALS['wp_scripts'];
+		}
+
+		if ( ! isset( self::$wp_dependencies_backup['wp_styles'] ) ) {
+			self::$wp_dependencies_backup['wp_styles'] = clone $GLOBALS['wp_styles'];
+		}
+	}
+
+	/**
+	 * Restore any global WordPress dependencies that may have been modified during the request.
+	 */
+	private function restore_wp_dependencies(): void {
+		if ( isset( self::$wp_dependencies_backup['wp_scripts'] ) ) {
+			$GLOBALS['wp_scripts'] = clone self::$wp_dependencies_backup['wp_scripts'];
+		}
+
+		if ( isset( self::$wp_dependencies_backup['wp_styles'] ) ) {
+			$GLOBALS['wp_styles'] = clone self::$wp_dependencies_backup['wp_styles'];
 		}
 	}
 }
