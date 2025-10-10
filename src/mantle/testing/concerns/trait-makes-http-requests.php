@@ -80,7 +80,7 @@ trait Makes_Http_Requests {
 		$this->reset_request_callbacks();
 		$this->backup_wp_dependencies();
 
-		$this->before_request( fn () => $this->backup_wp_dependencies() );
+		$this->before_request( $this->backup_wp_dependencies( ... ) );
 	}
 
 	/**
