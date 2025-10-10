@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Mantle\Http_Client\Concerns;
 
-use SimplePie\SimplePie;
 use WP_SimplePie_Sanitize_KSES;
 
 /**
@@ -36,8 +35,8 @@ trait Interacts_With_Feeds {
 	 * @see \fetch_feed()
 	 * @link https://simplepie.org/wiki/reference/simplepie/start
 	 */
-	public function feed(): SimplePie {
-		if ( ! class_exists( SimplePie::class, false ) ) {
+	public function feed(): \SimplePie {
+		if ( ! class_exists( \SimplePie::class, false ) ) {
 			require_once ABSPATH . WPINC . '/class-simplepie.php';
 		}
 
@@ -45,7 +44,7 @@ trait Interacts_With_Feeds {
 			require_once ABSPATH . WPINC . '/class-wp-simplepie-sanitize-kses.php';
 		}
 
-		$feed = new SimplePie();
+		$feed = class_exists( \SimplePie\SimplePie::class ) ? new \SimplePie\SimplePie() : new \SimplePie();
 
 		/**
 		 * Mirrors core:

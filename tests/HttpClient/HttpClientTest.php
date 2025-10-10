@@ -548,7 +548,7 @@ EOF
 
 		$feed = $request->feed();
 
-		$this->assertInstanceOf( \SimplePie\SimplePie::class, $feed );
+		$this->assertInstanceOf( \SimplePie::class, $feed );
 		$this->assertEquals( 'Alley', $feed->get_title() );
 		$this->assertNotEmpty( $feed->get_items() );
 		$this->assertEquals( 'https://alley.com/', $feed->get_link() );
@@ -576,7 +576,7 @@ EOF
 
 		$feed = $request->feed();
 
-		$this->assertInstanceOf( \SimplePie\SimplePie::class, $feed );
+		$this->assertInstanceOf( \SimplePie::class, $feed );
 		$this->assertTrue( $feed->error() !== null );
 	}
 }

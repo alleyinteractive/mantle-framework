@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   restore it before each HTTP request to prevent side effects from tests that
   modify these globals.
 
+### Fixed
+
+- Fixed issue with `feed()` method in `Mantle\Http_Client\Response` to account for WordPress 6.5 - 6.6;
+
 ## v1.9.5
 
 ### Added
