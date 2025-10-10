@@ -12,6 +12,7 @@ namespace Mantle\Testing\Concerns;
 
 use Mantle\Testing\Pending_Testable_Request;
 use Mantle\Testing\Test_Response;
+use PHPUnit\Framework\Attributes\BeforeClass;
 use RuntimeException;
 
 use function Mantle\Support\Helpers\tap;
@@ -97,7 +98,6 @@ trait Makes_Http_Requests {
 
 		$this->reset_request_callbacks();
 
-		$this->backup_wp_dependencies();
 		$this->restore_wp_dependencies();
 
 		$this->before_request( $this->restore_wp_dependencies( ... ) );
@@ -473,9 +473,13 @@ trait Makes_Http_Requests {
 	}
 
 	/**
-	 * Backup any global WordPress dependencies that may be modified during the request.
+	 * Backup any global WordPress dependencies before any tests run that could
+	 * modify them.
+	 *
+	 * @beforeClass
 	 */
-	private function backup_wp_dependencies(): void {
+	#[BeforeClass]
+	public static function backup_wp_dependencies(): void {
 		if ( ! isset( self::$wp_dependencies_backup['wp_scripts'] ) ) {
 			self::$wp_dependencies_backup['wp_scripts'] = clone $GLOBALS['wp_scripts'];
 		}
