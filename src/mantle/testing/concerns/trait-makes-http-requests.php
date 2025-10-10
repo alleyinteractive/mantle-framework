@@ -96,16 +96,11 @@ trait Makes_Http_Requests {
 		}
 
 		$this->reset_request_callbacks();
+
 		$this->backup_wp_dependencies();
-
-		$this->before_request( $this->backup_wp_dependencies( ... ) );
-	}
-
-	/**
-	 * Teardown the trait in the test case.
-	 */
-	public function makes_http_requests_tear_down(): void {
 		$this->restore_wp_dependencies();
+
+		$this->before_request( $this->restore_wp_dependencies( ... ) );
 	}
 
 	/**
