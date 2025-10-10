@@ -25,36 +25,35 @@ class Pipeline implements PipelineContract {
 	 *
 	 * @var mixed
 	 */
-	protected $passable;
+	protected mixed $passable;
 
 	/**
 	 * The array of class pipes.
 	 *
 	 * @var array<mixed>
 	 */
-	protected $pipes = [];
+	protected array $pipes = [];
 
 	/**
 	 * The method to call on each pipe.
 	 *
 	 * @var string
 	 */
-	protected $method = 'handle';
+	protected string $method = 'handle';
 
 	/**
 	 * Create a new class instance.
 	 *
 	 * @param Container|null $container Container instance.
 	 */
-	public function __construct( protected ?Container $container = null ) {
-	}
+	public function __construct( protected ?Container $container = null ) {}
 
 	/**
 	 * Set the object being sent through the pipeline.
 	 *
 	 * @param mixed $passable Data to send through the pipeline.
 	 */
-	public function send( $passable ): static {
+	public function send( mixed $passable ): static {
 		$this->passable = $passable;
 
 		return $this;
@@ -63,9 +62,9 @@ class Pipeline implements PipelineContract {
 	/**
 	 * Set the array of pipes.
 	 *
-	 * @param  array<callable> $pipes
+	 * @param  array<callable>|callable|string|null $pipes
 	 */
-	public function through( array $pipes ): static {
+	public function through( array|callable|string|null $pipes ): static {
 		$this->pipes = is_array( $pipes ) ? $pipes : func_get_args();
 
 		return $this;
@@ -86,8 +85,9 @@ class Pipeline implements PipelineContract {
 	 * Run the pipeline with a final destination callback.
 	 *
 	 * @param  \Closure $destination
+	 * @return mixed
 	 */
-	public function then( Closure $destination ): mixed {
+	public function then( Closure $destination ) {
 		$pipeline = array_reduce(
 			array_reverse( $this->pipes() ),
 			$this->carry(),
@@ -99,8 +99,10 @@ class Pipeline implements PipelineContract {
 
 	/**
 	 * Run the pipeline and return the result.
+	 *
+	 * @return mixed
 	 */
-	public function thenReturn(): mixed {
+	public function thenReturn() {
 		return $this->then( fn ( $passable ) => $passable );
 	}
 
@@ -183,7 +185,7 @@ class Pipeline implements PipelineContract {
 	 *
 	 * @return array<mixed>
 	 */
-	protected function pipes() {
+	protected function pipes(): array {
 		return $this->pipes;
 	}
 

@@ -20,7 +20,7 @@ use function Mantle\Support\Helpers\collect;
 /**
  * Post Query Builder
  *
- * @template TModel of \Mantle\Database\Model\Model
+ * @template TModel of \Mantle\Database\Model\Post
  * @extends \Mantle\Database\Query\Builder<TModel>
  *
  * @method \Mantle\Database\Query\Post_Query_Builder<TModel> anyStatus()

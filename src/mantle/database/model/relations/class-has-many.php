@@ -41,7 +41,7 @@ class Has_Many extends Has_One_Or_Many {
 	 * @return Collection<int, TModel>
 	 */
 	public function match( Collection $models, Collection $results ): Collection {
-		$dictionary = $this->build_dictionary( $results, $models );
+		$dictionary = $this->build_dictionary( $results, $models ); // @phpstan-ignore-line argument.type
 
 		return $models->each(
 			function ( $model ) use ( $dictionary ): void {

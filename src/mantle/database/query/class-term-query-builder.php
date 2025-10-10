@@ -10,7 +10,7 @@ namespace Mantle\Database\Query;
 /**
  * Term Query Builder
  *
- * @template TModel of \Mantle\Database\Model\Model
+ * @template TModel of \Mantle\Database\Model\Term
  * @extends \Mantle\Database\Query\Builder<TModel>
  *
  * @method \Mantle\Database\Query\Term_Query_Builder<TModel> whereId( int $id )

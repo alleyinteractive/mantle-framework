@@ -111,13 +111,13 @@ class Belongs_To extends Relation {
 	/**
 	 * Retrieve the results of the query.
 	 *
-	 * @return \Mantle\Database\Model\Model|null
+	 * @return Model|null
 	 * @phpstan-return TParent|null
 	 */
 	public function get_results() {
 		$this->add_constraints();
 
-		return $this->query->first();
+		return $this->query->first(); // @phpstan-ignore-line
 	}
 
 	/**
@@ -153,7 +153,7 @@ class Belongs_To extends Relation {
 			throw new Model_Exception( 'Parent model must be an instance of Model_Meta.' );
 		}
 
-		$append = Belongs_To_Many::class === static::class || is_subclass_of( $this, Belongs_To_Many::class );
+		$append = Belongs_To_Many::class === static::class || is_subclass_of( $this, Belongs_To_Many::class ); // @phpstan-ignore-line
 
 		if ( $this->uses_terms ) {
 			$set = wp_set_post_terms( $this->parent->id(), [ $this->get_term_for_relationship( $model ) ], static::RELATION_TAXONOMY, $append );
@@ -331,7 +331,7 @@ class Belongs_To extends Relation {
 
 		return $models->each(
 			function ( $model ) use ( $dictionary ): void {
-				$key = $model->meta->{$this->local_key};
+				$key = $model->meta->{$this->local_key}; // @phpstan-ignore-line
 
 				$model->set_relation( $this->relationship, $dictionary[ $key ][0] ?? null );
 			}
@@ -343,6 +343,7 @@ class Belongs_To extends Relation {
 	 *
 	 * @param Collection $results Collection of results.
 	 * @param Collection $models Eagerly loaded results to match.
+	 * @return array<string, array<int, TModel>>
 	 */
 	protected function build_dictionary( Collection $results, Collection $models ): array {
 		return $results
@@ -356,6 +357,6 @@ class Belongs_To extends Relation {
 	 * Flag if the meta should appended.
 	 */
 	protected function should_append(): bool {
-		return Belongs_To_Many::class === static::class || is_subclass_of( $this, Belongs_To_Many::class );
+		return Belongs_To_Many::class === static::class || is_subclass_of( $this, Belongs_To_Many::class ); // @phpstan-ignore-line
 	}
 }

@@ -8,32 +8,36 @@
 namespace Mantle\Database\Model\Concerns;
 
 use InvalidArgumentException;
+use Mantle\Contracts\Database\Core_Object;
+use Mantle\Contracts\Database\Model_Meta;
+use Mantle\Contracts\Database\Updatable;
+use Mantle\Database\Model\Model;
 use Mantle\Database\Model\Post;
-use Mantle\Database\Model\Relations\Belongs_To;
 use Mantle\Database\Model\Relations\Belongs_To_Many;
+use Mantle\Database\Model\Relations\Belongs_To;
 use Mantle\Database\Model\Relations\Has_Many;
-use Mantle\Database\Model\Relations\Has_One;
 use Mantle\Database\Model\Relations\Has_One_Or_Many;
+use Mantle\Database\Model\Relations\Has_One;
 use Mantle\Database\Model\Relations\Relation;
 use Mantle\Database\Model\Term;
 
 /**
  * Model Relationships
  *
- * @template TModel of \Mantle\Database\Model\Model
+ * @template TModel of Core_Object&Model_Meta&Updatable&Model
  */
 trait Has_Relationships {
 	/**
 	 * The loaded relationships for the model.
 	 *
-	 * @var array<string, Relation<TModel, \Mantle\Database\Model\Model>>
+	 * @var array<string, Relation<TModel, Core_Object&Model_Meta&Updatable&Model>>
 	 */
 	protected $relations = [];
 
 	/**
 	 * Define a Has One Relationship
 	 *
-	 * @template TRelated of \Mantle\Database\Model\Model
+	 * @template TRelated of Core_Object&Model_Meta&Updatable&Model
 	 *
 	 * @param class-string<TRelated> $related Related model name.
 	 * @param string                 $foreign_key Foreign key.
@@ -51,7 +55,7 @@ trait Has_Relationships {
 	/**
 	 * Define a Has Many Relationship
 	 *
-	 * @template TRelated of \Mantle\Database\Model\Model
+	 * @template TRelated of Core_Object&Model_Meta&Updatable&Model
 	 *
 	 * @param class-string<TRelated> $related Related model name.
 	 * @param string                 $foreign_key Foreign key.
@@ -72,7 +76,7 @@ trait Has_Relationships {
 	 * Defines a relationship between two models with the reference stored on the remote
 	 * model's meta.
 	 *
-	 * @template TRelated of \Mantle\Database\Model\Model
+	 * @template TRelated of Core_Object&Model_Meta&Updatable&Model
 	 *
 	 * @param class-string<TRelated> $related Related model name.
 	 * @param string                 $foreign_key Foreign key.
@@ -103,7 +107,7 @@ trait Has_Relationships {
 	 * Defines a relationship between two models with the reference stored on the remote
 	 * object's meta.
 	 *
-	 * @template TRelated of \Mantle\Database\Model\Model
+	 * @template TRelated of Core_Object&Model_Meta&Updatable&Model
 	 *
 	 * @param class-string<TRelated> $related Related model name.
 	 * @param string                 $foreign_key Foreign key.
@@ -132,7 +136,7 @@ trait Has_Relationships {
 	 * Get a relationship for the model.
 	 *
 	 * @param string $relation Relation name.
-	 * @return Relation<TModel, \Mantle\Database\Model\Model>|null
+	 * @return Relation<TModel, Core_Object&Model_Meta&Updatable&Model>|null
 	 */
 	public function get_relation( string $relation ): ?Relation {
 		return $this->relations[ $relation ] ?? null;

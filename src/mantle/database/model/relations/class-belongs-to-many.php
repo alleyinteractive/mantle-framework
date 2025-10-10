@@ -42,7 +42,7 @@ class Belongs_To_Many extends Belongs_To {
 	 * @param Collection<int, TModel>  $results Eagerly loaded results to match.
 	 */
 	public function match( Collection $models, Collection $results ): Collection {
-		$dictionary = $this->build_dictionary( $results, $models );
+		$dictionary = $this->build_dictionary( $results, $models ); // @phpstan-ignore-line argument.type
 
 		return $models->each(
 			function ( $model ) use ( $dictionary ): void {
