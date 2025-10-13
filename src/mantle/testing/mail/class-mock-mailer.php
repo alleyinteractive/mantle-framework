@@ -15,8 +15,8 @@ if ( ! file_exists( ABSPATH . '/wp-includes/PHPMailer/PHPMailer.php' ) ) {
 	return;
 }
 
-require_once ABSPATH . '/wp-includes/PHPMailer/PHPMailer.php'; // @phpstan-ignore-line requireOnce.fileNotFound
-require_once ABSPATH . '/wp-includes/PHPMailer/Exception.php'; // @phpstan-ignore-line requireOnce.fileNotFound
+require_once ABSPATH . '/wp-includes/PHPMailer/PHPMailer.php';
+require_once ABSPATH . '/wp-includes/PHPMailer/Exception.php';
 
 /**
  * Mock PHPMailer class.

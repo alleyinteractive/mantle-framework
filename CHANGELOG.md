@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Backup the `wp_scripts` and `wp_styles` globals before any tests are run and
   restore it before each HTTP request to prevent side effects from tests that
   modify these globals.
+- Backup and restore the state of Alley's `wp-asset-manager` plugin if it is
+  present during testing to prevent side effects from tests that modify the
+  asset manager state.
 - Mark more hooks as not being run before each test run to provide a cleaner
   environment for tests. Filters and actions that are not run include:
 
