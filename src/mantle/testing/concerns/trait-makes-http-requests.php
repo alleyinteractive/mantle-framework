@@ -31,33 +31,33 @@ trait Makes_Http_Requests {
 	 *
 	 * @var array<string, string>
 	 */
-	protected array $default_cookies = [];
+	private array $default_cookies = [];
 
 	/**
 	 * Additional headers for the request.
 	 *
 	 * @var array<string, string>
 	 */
-	protected array $default_headers = [];
+	private array $default_headers = [];
 
 	/**
 	 * Whether to use HTTPS by default.
 	 */
-	protected bool|null $default_https = null;
+	private bool|null $default_https = null;
 
 	/**
 	 * The array of callbacks to be run before the event is started.
 	 *
 	 * @var array<callable>
 	 */
-	protected array $before_callbacks = [];
+	private array $before_callbacks = [];
 
 	/**
 	 * The array of callbacks to be run after the event is finished.
 	 *
 	 * @var array<callable>
 	 */
-	protected array $after_callbacks = [];
+	private array $after_callbacks = [];
 
 	/**
 	 * Backup of global WordPress dependencies.
