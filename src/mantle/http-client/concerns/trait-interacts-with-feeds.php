@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Mantle\Http_Client\Concerns;
 
+use Closure;
 use WP_SimplePie_Sanitize_KSES;
 
 /**
@@ -34,8 +35,11 @@ trait Interacts_With_Feeds {
 	 *
 	 * @see \fetch_feed()
 	 * @link https://simplepie.org/wiki/reference/simplepie/start
+	 *
+	 * @param Closure|null $options Optional closure to modify the SimplePie instance. Mirrors the `wp_feed_options` hook in core.
+	 * @phpstan-param (?Closure(\SimplePie): void)|null $options
 	 */
-	public function feed(): \SimplePie {
+	public function feed( ?Closure $options = null ): \SimplePie {
 		if ( ! class_exists( \SimplePie::class, false ) ) {
 			require_once ABSPATH . WPINC . '/class-simplepie.php';
 		}
@@ -56,6 +60,11 @@ trait Interacts_With_Feeds {
 		$feed->sanitize = new \WP_SimplePie_Sanitize_KSES();
 
 		$feed->set_raw_data( $this->body() );
+
+		if ( $options instanceof Closure ) {
+			$options( $feed );
+		}
+
 		$feed->init();
 		$feed->set_output_encoding( get_bloginfo( 'charset' ) );
 

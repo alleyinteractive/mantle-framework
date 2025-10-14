@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.10.1
+
+### Added
+
+- Added an `options` callback to the `feed()` method of the HTTP client response
+  to allow for customizing the SimplePie feed parser.
+
 ## v1.10.0
 
 ### Changed
