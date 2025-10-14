@@ -350,8 +350,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 	}
 
 	public function test_prevent_remote_requests_trait() {
-		// The trait sets up the default response.
-		$this->assertInstanceOf( Mock_Http_Response::class, $this->preventing_stray_requests );
+		$this->assertTrue( $this->is_preventing_stray_requests() );
 
 		wp_remote_get( 'https://example.com/' );
 	}

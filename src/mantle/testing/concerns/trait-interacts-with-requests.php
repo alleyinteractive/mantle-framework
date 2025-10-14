@@ -41,14 +41,14 @@ trait Interacts_With_Requests {
 	 *
 	 * @var Collection<int, StubCallback>
 	 */
-	protected Collection $stub_callbacks;
+	private Collection $stub_callbacks;
 
 	/**
 	 * Storage of request URLs.
 	 *
 	 * @var Collection<int, Request>
 	 */
-	protected Collection $recorded_requests;
+	private Collection $recorded_requests;
 
 	/**
 	 * Flag to prevent external requests from being made. By default, this is
@@ -56,21 +56,21 @@ trait Interacts_With_Requests {
 	 *
 	 * @var Mock_Http_Response|callable|bool
 	 */
-	protected mixed $preventing_stray_requests = false;
+	private mixed $preventing_stray_requests = false;
 
 	/**
 	 * Stray requests that should be ignored (not reported).
 	 *
 	 * @var Collection<int, string>
 	 */
-	protected Collection $ignored_strayed_requests;
+	private Collection $ignored_strayed_requests;
 
 	/**
 	 * Recorded actual HTTP requests made during the test.
 	 *
 	 * @var Collection<int, string>
 	 */
-	protected Collection $recorded_actual_requests;
+	private Collection $recorded_actual_requests;
 
 	/**
 	 * Setup the trait.
@@ -100,6 +100,13 @@ trait Interacts_With_Requests {
 	 */
 	public function prevent_stray_requests( Mock_Http_Response|Closure|bool $response = true ): void {
 		$this->preventing_stray_requests = $response;
+	}
+
+	/**
+	 * Determine if stray requests are being prevented.
+	 */
+	public function is_preventing_stray_requests(): bool {
+		return false !== $this->preventing_stray_requests;
 	}
 
 	/**
