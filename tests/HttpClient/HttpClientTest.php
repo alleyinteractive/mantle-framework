@@ -550,6 +550,8 @@ EOF
 
 		$feed = $request->feed( function ( \SimplePie $feed ) use ( & $options_callback ) {
 			$options_callback = true;
+
+			$this->assertEmpty( $feed->data );
 		} );
 
 		$this->assertInstanceOf( \SimplePie::class, $feed );
