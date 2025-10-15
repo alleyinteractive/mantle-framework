@@ -48,7 +48,7 @@ trait Interacts_With_Feeds {
 			require_once ABSPATH . WPINC . '/class-wp-simplepie-sanitize-kses.php';
 		}
 
-		$feed = class_exists( \SimplePie\SimplePie::class ) ? new \SimplePie\SimplePie() : new \SimplePie();
+		$feed = new \SimplePie();
 
 		/**
 		 * Mirrors core:
