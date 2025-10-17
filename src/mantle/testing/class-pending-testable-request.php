@@ -387,6 +387,10 @@ class Pending_Testable_Request {
 				if ( $e instanceof WP_Redirect_Exception ) {
 					$response_headers['Location'] = $e->location;
 				}
+
+				if ( ! empty( $e->headers ) ) {
+					$response_headers = array_merge( $response_headers, $e->headers );
+				}
 			} catch ( \Exception $e ) {
 				// If an exception occurs, make sure the output buffer is closed before
 				// the exception continues to the caller.
@@ -413,6 +417,10 @@ class Pending_Testable_Request {
 
 					if ( $e instanceof WP_Redirect_Exception ) {
 						$response_headers['Location'] = $e->location;
+					}
+
+					if ( ! empty( $e->headers ) ) {
+						$response_headers = array_merge( $response_headers, $e->headers );
 					}
 				} catch ( Exception ) { // phpcs:ignore
 					// Mantle Exceptions are thrown to prevent some code from running, e.g.

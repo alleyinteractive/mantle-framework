@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `Exit_Simulation_Exception` exception to simulate `exit` calls during testing.
 - Added `terminate_request()` helper to be used instead of `exit()` for safer
   termination during testing.
+- Added `send_json_response()` helper to send a JSON response and terminate the
+  request safely.
 
 ## v1.11.1
 

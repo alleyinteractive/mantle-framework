@@ -21,16 +21,21 @@ class Exit_Simulation_Exception extends Response_Exception {
 	/**
 	 * Constructor.
 	 *
-	 * @param int         $exit_status The exit status code. 0 indicates a normal exit.
-	 * @param int|null    $response_code The HTTP response code.
-	 * @param string|null $message Optional exception message.
+	 * @param int                  $exit_status The exit status code. 0 indicates a normal exit.
+	 * @param int|null             $response_code The HTTP response code.
+	 * @param array<string,string> $headers The HTTP headers.
+	 * @param string|null          $message Optional exception message.
 	 */
-	public function __construct( public readonly int $exit_status = 0, public readonly ?int $response_code = null, ?string $message = null ) {
+	public function __construct( public readonly int $exit_status = 0, public readonly ?int $response_code = null, array $headers = [], ?string $message = null ) {
 		// If no response code is provided, use the current HTTP response code.
 		if ( null === $response_code ) {
 			$response_code = http_response_code();
 		}
 
-		parent::__construct( $response_code, $message ?? "Simulated exit with status {$exit_status}" );
+		parent::__construct(
+			status: $response_code,
+			headers: $headers,
+			message: $message ?? "Simulated exit with status {$exit_status}",
+		);
 	}
 }
