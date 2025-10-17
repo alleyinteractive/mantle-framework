@@ -316,7 +316,6 @@ class Response implements ArrayAccess {
 	 *
 	 * @param  string|null $key
 	 * @param  mixed       $default
-	 * @return Mixed_Data
 	 */
 	public function mixed_json( ?string $key = null, mixed $default = null ): Mixed_Data {
 		return Mixed_Data::of( $this->json( $key, $default ) );
