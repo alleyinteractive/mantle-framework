@@ -22,5 +22,6 @@ require_once __DIR__ . '/helpers-log.php';
 require_once __DIR__ . '/helpers-memoize.php';
 require_once __DIR__ . '/helpers-meta.php';
 require_once __DIR__ . '/helpers-mixed.php';
+require_once __DIR__ . '/helpers-response.php';
 require_once __DIR__ . '/helpers-rest-api.php';
 require_once __DIR__ . '/helpers-validated-hook-removal.php';

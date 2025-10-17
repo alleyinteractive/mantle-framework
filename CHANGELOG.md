@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Added `Exit_Simulation_Exception` exception to simulate `exit` calls during testing.
+
 ### Fixed
 
 - Ensure that `wp_scripts()` and `wp_styles()` globals are properly set before cloning them.

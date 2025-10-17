@@ -22,6 +22,7 @@ use WP_REST_Response;
 use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\retry;
 use function Mantle\Support\Helpers\stringable;
+use function Mantle\Support\Helpers\terminate_request;
 
 /**
  * @group testing
@@ -344,7 +345,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		add_action( $hook, function (): void {
 			echo 'This is the response!';
 
-			throw new Exit_Simulation_Exception();
+			terminate_request();
 		} );
 
 		$this->get( '/' )
