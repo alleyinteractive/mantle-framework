@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Added
+
+- Added closure support for the cache TTL in the HTTP client.
+
+### Changed
+
+- Throws an exception in the cached HTTP client if the cache stale TTL is greater
+  than the cache expiration TTL.
+
 ## v1.11.0
 
 ### Added

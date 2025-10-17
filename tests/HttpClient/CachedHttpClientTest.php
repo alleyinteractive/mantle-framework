@@ -10,6 +10,7 @@ namespace Mantle\Tests\Http_Client;
 use Mantle\Http_Client\Cache_Middleware;
 use Mantle\Http_Client\Factory;
 use Mantle\Http_Client\Pending_Request;
+use Mantle\Http_Client\Response;
 use Mantle\Testing\FrameworkTestCase;
 
 use function Mantle\Support\Helpers\collect;
@@ -98,6 +99,31 @@ class CachedHttpClientTest extends FrameworkTestCase {
 		$this->assertRequestCount( 2 );
 	}
 
+	public function test_it_can_cache_with_a_callback_as_ttl(): void {
+		$this->client = Factory::create()->cache( function ( Pending_Request $request, Response $response ): int {
+			$this->assertEquals( 'https://example.com', $request->url() );
+
+			return HOUR_IN_SECONDS;
+		} );
+
+		$this->fake_request( mock_http_response()->with_json( [ 'example' => 'value' ] ) );
+
+		$this->client->get( 'https://example.com' );
+		$this->client->get( 'https://example.com' );
+
+		$this->assertRequestCount( 1 );
+	}
+
+	public function test_it_throws_an_exception_when_passing_an_invalid_ttl_callback(): void {
+		$this->expectException( \InvalidArgumentException::class );
+
+		$this->client = Factory::create()->cache( fn () => 'string' );
+
+		$this->fake_request( mock_http_response()->with_json( [ 'example' => 'value' ] ) );
+
+		$this->client->get( 'https://example.com' );
+	}
+
 	public function test_it_can_use_flexible_cache(): void {
 		$this->client = Factory::create()->cache_flexible(
 			stale: now()->addHour(),
@@ -151,5 +177,19 @@ class CachedHttpClientTest extends FrameworkTestCase {
 
 		// The deferred refresh should have happened and we're at 2 requests now.
 		$this->assertRequestCount( 2 );
+	}
+
+	public function test_it_throws_an_exception_when_passing_a_lower_stale_time_than_expire_time(): void {
+		$this->expectException( \InvalidArgumentException::class );
+		$this->expectExceptionMessage( 'Stale time must be less than expire time for flexible caching.' );
+
+		$this->client = Factory::create()->cache_flexible(
+			stale: now()->addDay(),
+			expire: now()->addHour(),
+		);
+
+		$this->fake_request( mock_http_response()->with_json( [ 'example' => 'value' ] ) );
+
+		$this->client->get( 'https://example.com' );
 	}
 }
