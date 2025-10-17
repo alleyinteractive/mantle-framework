@@ -5,11 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v1.11.1
+## Unreleased
 
 ### Added
 
 - Added `Exit_Simulation_Exception` exception to simulate `exit` calls during testing.
+- Added `terminate_request()` helper to be used instead of `exit()` for safer
+  termination during testing.
+
+## v1.11.1
 
 ### Fixed
 
