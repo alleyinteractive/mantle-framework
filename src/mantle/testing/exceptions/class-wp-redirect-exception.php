@@ -19,7 +19,7 @@ class WP_Redirect_Exception extends Response_Exception {
 	 * @param int    $status  The HTTP status code.
 	 * @param string $location The location to redirect to.
 	 */
-	public function __construct( public readonly int $status, public readonly string $location ) {
-		parent::__construct( "Redirect to {$location} with status {$status}" );
+	public function __construct( int $status, public readonly string $location ) {
+		parent::__construct( $status, "Redirect to {$location} with status {$status}" );
 	}
 }
