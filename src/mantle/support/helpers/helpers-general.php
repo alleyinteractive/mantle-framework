@@ -622,7 +622,6 @@ function dump_backtrace( ?int $limit = null, bool $with_arguments = false ): voi
  *                                 the output.
  */
 function dd_backtrace( ?int $limit = null, bool $with_arguments = false ): never {
-
 	dump_backtrace( $limit, $with_arguments );
 	exit( 1 );
 }
