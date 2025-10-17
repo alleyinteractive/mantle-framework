@@ -5,12 +5,14 @@
  * @package Mantle
  */
 
+declare(strict_types=1);
+
 namespace Mantle\Testing\Exceptions;
 
 /**
  * Exception thrown when a redirect is encountered.
  */
-class WP_Redirect_Exception extends Exception {
+class WP_Redirect_Exception extends Response_Exception {
 	/**
 	 * Constructor.
 	 *
@@ -18,6 +20,6 @@ class WP_Redirect_Exception extends Exception {
 	 * @param string $location The location to redirect to.
 	 */
 	public function __construct( public readonly int $status, public readonly string $location ) {
-		parent::__construct( sprintf( 'Redirect to %s with status %d', $location, $status ), $status );
+		parent::__construct( "Redirect to {$location} with status {$status}" );
 	}
 }
