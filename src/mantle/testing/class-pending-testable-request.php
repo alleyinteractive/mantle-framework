@@ -18,6 +18,7 @@ use Mantle\Support\Traits\Conditionable;
 use Mantle\Testing\Attributes\PreserveObjectCache;
 use Mantle\Testing\Doubles\Spy_REST_Server;
 use Mantle\Testing\Exceptions\Exception;
+use Mantle\Testing\Exceptions\Response_Exception;
 use Mantle\Testing\Exceptions\WP_Redirect_Exception;
 use Mantle\Testing\TestCase;
 use Mantle\Testing\Test_Response;
@@ -376,15 +377,20 @@ class Pending_Testable_Request {
 
 			try {
 				$this->setup_wordpress_query();
-			} catch ( WP_Redirect_Exception $e ) {
+			} catch ( Response_Exception $e ) {
 				// Handle a redirect during the early setup of WordPress (parse_query).
 				// Prevent an exception from being thrown.
 				$response_status  = $e->status;
 				$redirected       = true;
 				$response_content = ob_get_clean();
 
-				$response_headers['Location'] = $e->location;
+				if ( $e instanceof WP_Redirect_Exception ) {
+					$response_headers['Location'] = $e->location;
+				}
 
+				if ( ! empty( $e->headers ) ) {
+					$response_headers = array_merge( $response_headers, $e->headers );
+				}
 			} catch ( \Exception $e ) {
 				// If an exception occurs, make sure the output buffer is closed before
 				// the exception continues to the caller.
@@ -406,10 +412,16 @@ class Pending_Testable_Request {
 				try {
 					// Execute the request, inasmuch as WordPress would.
 					require ABSPATH . WPINC . '/template-loader.php';
-				} catch ( WP_Redirect_Exception $e ) {
+				} catch ( Response_Exception $e ) {
 					$response_status = $e->status;
 
-					$response_headers['Location'] = $e->location;
+					if ( $e instanceof WP_Redirect_Exception ) {
+						$response_headers['Location'] = $e->location;
+					}
+
+					if ( ! empty( $e->headers ) ) {
+						$response_headers = array_merge( $response_headers, $e->headers );
+					}
 				} catch ( Exception ) { // phpcs:ignore
 					// Mantle Exceptions are thrown to prevent some code from running, e.g.
 					// the tail end of wp_redirect().

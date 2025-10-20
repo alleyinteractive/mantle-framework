@@ -144,6 +144,23 @@ class HttpClientTest extends FrameworkTestCase {
 		);
 	}
 
+	public function test_make_request_with_mixed_json(): void {
+		$this->fake_request( fn () => Mock_Http_Response::create()
+			->with_status( 200 )
+			->with_json( [ 'example' => '123' ] )
+		);
+
+		$response = $this->http_factory->post( 'https://example.com/', [
+			'example' => 'value',
+		] );
+
+		$this->assertRequestSent( 'https://example.com/' );
+
+		$this->assertEquals( [ 'example' => '123' ], $response->mixed_json()->array() );
+		$this->assertEquals( '123', $response->mixed_json( 'example' )->string() );
+		$this->assertEquals( 123, $response->mixed_json( 'example' )->int() );
+	}
+
 	public function test_make_request_with_basic_auth() {
 		$this->fake_request();
 

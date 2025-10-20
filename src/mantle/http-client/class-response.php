@@ -11,6 +11,7 @@ use ArrayAccess;
 use LogicException;
 use Mantle\Support\Collection;
 use Mantle\Support\HTML;
+use Mantle\Support\Mixed_Data;
 use Mantle\Support\Traits\Macroable;
 use Mantle\Testing\Assertable_Json_String;
 use SimpleXMLElement;
@@ -310,6 +311,15 @@ class Response implements ArrayAccess {
 		return data_get( $this->decoded, $key, $default );
 	}
 
+	/**
+	 * Get the JSON decoded body of the response as a Mixed_Data instance.
+	 *
+	 * @param  string|null $key
+	 * @param  mixed       $default
+	 */
+	public function mixed_json( ?string $key = null, mixed $default = null ): Mixed_Data {
+		return Mixed_Data::of( $this->json( $key, $default ) );
+	}
 
 	/**
 	 * Retrieve an instance of Assertable_Json_String to perform fluent JSON assertions.

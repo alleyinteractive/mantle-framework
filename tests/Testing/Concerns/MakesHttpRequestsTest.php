@@ -10,6 +10,7 @@ use Mantle\Support\Str;
 use Mantle\Testing\Attributes\PreserveObjectCache;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Concerns\Reset_Server;
+use Mantle\Testing\Exceptions\Exit_Simulation_Exception;
 use Mantle\Testing\FrameworkTestCase;
 use Mantle\Testing\Test_Response;
 use Mantle\Testing\Utils;
@@ -21,6 +22,7 @@ use WP_REST_Response;
 use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\retry;
 use function Mantle\Support\Helpers\stringable;
+use function Mantle\Support\Helpers\terminate_request;
 
 /**
  * @group testing
@@ -319,19 +321,36 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	}
 
 	/**
-	 * @dataProvider redirect_hook_data_provider
+	 * @dataProvider core_template_hook_data_provider
 	 */
-	#[DataProvider( 'redirect_hook_data_provider' )]
+	#[DataProvider( 'core_template_hook_data_provider' )]
 	public function test_redirect_wordpress( string $hook ) {
 		add_action( $hook, fn () => wp_redirect( home_url( '/redirected/' ), 302 ) );
 
 		$this->get( '/' )->assertRedirect( home_url( '/redirected/' ) );
 	}
 
-	public static function redirect_hook_data_provider(): array {
-		return collect( [ 'template_redirect', 'parse_query' ] )
-			->map_with_keys( fn ( string $hook ): array => [ $hook => [ $hook ] ] )
-			->all();
+	public static function core_template_hook_data_provider(): array {
+		return [
+			'template_redirect' => [ 'template_redirect' ],
+			'parse_query'       => [ 'parse_query' ],
+		];
+	}
+
+	/**
+	 * @dataProvider core_template_hook_data_provider
+	 */
+	#[DataProvider( 'core_template_hook_data_provider' )]
+	public function test_exit_simulation( string $hook ): void {
+		add_action( $hook, function (): void {
+			echo 'This is the response!';
+
+			terminate_request();
+		} );
+
+		$this->get( '/' )
+			->assertOk()
+			->assertContent( 'This is the response!' );
 	}
 
 	public function test_post_json_mantle_route() {
