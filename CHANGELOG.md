@@ -16,6 +16,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Throws an exception in the cached HTTP client if the cache stale TTL is greater
   than the cache expiration TTL.
 
+## v1.11.1
+
+### Fixed
+
+- Ensure that `wp_scripts()` and `wp_styles()` globals are properly set before cloning them.
+
 ## v1.11.0
 
 ### Added
