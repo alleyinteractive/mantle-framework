@@ -13,6 +13,7 @@ use Mantle\Http_Client\Cache_Flexible_Middleware;
 use Mantle\Http_Client\Cache_Middleware;
 use Mantle\Http_Client\Http_Method;
 use Mantle\Http_Client\Pending_Request;
+use Mantle\Http_Client\Response;
 
 use function Mantle\Support\Helpers\collect;
 
@@ -26,7 +27,7 @@ trait Caches_Requests {
 	 * Enable caching for the request.
 	 *
 	 * @param int|DateTimeInterface|callable $ttl Time to live for the cache.
-	 * @phpstan-param int|DateTimeInterface|(callable(Pending_Request $request): int) $ttl
+	 * @phpstan-param int|DateTimeInterface|(callable(Pending_Request $request, Response $response): int) $ttl
 	 */
 	public function cache( int|DateTimeInterface|callable $ttl = 3600 ): static {
 		return $this
