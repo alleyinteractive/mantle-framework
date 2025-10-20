@@ -14,10 +14,18 @@ use Mantle\Support\Memoizable;
 /**
  * Memoize a callback function.
  *
+ * Caches the result of the callback based on the provided dependencies. If the
+ * dependencies change, the callback will be re-evaluated. Similar to React's
+ * useMemo hook.
+ *
+ * Useful for optimizing expensive computations that depend on specific values
+ * where once() does not suffice.
+ *
  * @template TReturnValue
  *
  * @param Closure           $callback The function to memoize.
- * @param array<mixed>|null $dependencies The dependencies that trigger a re-evaluation.
+ * @param array<mixed>|null $dependencies The dependencies that trigger a
+ * re-evaluation.
  * @return mixed The memoized result.
  *
  * @phpstan-param Closure(): TReturnValue $callback

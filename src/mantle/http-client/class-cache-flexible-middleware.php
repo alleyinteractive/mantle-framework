@@ -76,17 +76,26 @@ class Cache_Flexible_Middleware extends Cache_Middleware {
 	/**
 	 * Store a response in the cache.
 	 *
+	 * @throws \InvalidArgumentException If the stale time is not less than the expire time.
+	 *
 	 * @param Response $response Response to store.
 	 */
 	private function store_response( Response $response ): bool {
+		$stale_time  = normalize_cache_ttl( $this->stale );
+		$expire_time = normalize_cache_ttl( $this->expire );
+
+		if ( $stale_time >= $expire_time ) {
+			throw new \InvalidArgumentException( 'Stale time must be less than expire time for flexible caching.' );
+		}
+
 		return wp_cache_set(
 			$this->cache_key,
 			new SWR_Storage(
 				value: $response,
-				stale_time: time() + normalize_cache_ttl( $this->stale ),
+				stale_time: time() + $stale_time,
 			),
 			self::CACHE_GROUP,
-			normalize_cache_ttl( $this->expire ), // phpcs:ignore WordPressVIPMinimum.Performance.LowExpiryCacheTime.CacheTimeUndetermined
+			normalize_cache_ttl( $expire_time ), // phpcs:ignore WordPressVIPMinimum.Performance.LowExpiryCacheTime.CacheTimeUndetermined
 		);
 	}
 }

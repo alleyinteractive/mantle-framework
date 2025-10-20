@@ -12,6 +12,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `mixed_json()` method to `Mantle\Http_Client\Response` to parse the body
   as JSON and return a mixed data helper.
 - Added `with_base_url()` method to the HTTP client.
+- Added closure support for the cache TTL in the HTTP client.
+
+### Changed
+
+- Throws an exception in the cached HTTP client if the cache stale TTL is greater
+  than the cache expiration TTL.
+
+## v1.11.1
+
+### Fixed
+
+- Ensure that `wp_scripts()` and `wp_styles()` globals are properly set before cloning them.
 
 ## v1.11.0
 

@@ -491,10 +491,16 @@ trait Makes_Http_Requests {
 	#[BeforeClass]
 	public static function backup_wp_dependencies(): void {
 		if ( ! isset( self::$wp_dependencies_backup['wp_scripts'] ) ) {
+			// Ensure the global $wp_scripts is initialized.
+			wp_scripts();
+
 			self::$wp_dependencies_backup['wp_scripts'] = clone $GLOBALS['wp_scripts'];
 		}
 
 		if ( ! isset( self::$wp_dependencies_backup['wp_styles'] ) ) {
+			// Ensure the global $wp_styles is initialized.
+			wp_styles();
+
 			self::$wp_dependencies_backup['wp_styles'] = clone $GLOBALS['wp_styles'];
 		}
 	}
