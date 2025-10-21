@@ -113,6 +113,7 @@ class Pending_Request {
 	 * Set the base URL for the pending request.
 	 *
 	 * @param string|null $url Base URL.
+	 * @phpstan-return ($url is null ? string|null : static)
 	 */
 	public function base_url( ?string $url = null ): static|string|null {
 		if ( is_null( $url ) ) {
@@ -138,6 +139,15 @@ class Pending_Request {
 		$this->base_url = $url;
 
 		return $this;
+	}
+
+	/**
+	 * Alias for set_base_url().
+	 *
+	 * @param string|null $url Base URL.
+	 */
+	public function with_base_url( ?string $url ): static {
+		return $this->set_base_url( $url );
 	}
 
 	/**

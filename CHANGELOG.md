@@ -5,6 +5,55 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.12.1
+
+### Changed
+
+- Remove some unnecessary data from the serialized HTTP response to reduce
+  the size when caching.
+
+## v1.12.0
+
+### Added
+
+- Added `mixed_query_var()` helper to retrieve a query variable as mixed data type.
+- Added `Exit_Simulation_Exception` exception to simulate `exit` calls during testing.
+- Added `terminate_request()` helper to be used instead of `exit()` for safer
+  termination during testing.
+- Added `send_json_response()` helper to send a JSON response and terminate the
+  request safely.
+- Added `mixed_json()` method to `Mantle\Http_Client\Response` to parse the body
+  as JSON and return a mixed data helper.
+- Added `with_base_url()` method to the HTTP client.
+- Added closure support for the cache TTL in the HTTP client.
+
+### Changed
+
+- Throws an exception in the cached HTTP client if the cache stale TTL is greater
+  than the cache expiration TTL.
+
+## v1.11.1
+
+### Fixed
+
+- Ensure that `wp_scripts()` and `wp_styles()` globals are properly set before cloning them.
+
+## v1.11.0
+
+### Added
+
+- Added an `options` callback to the `feed()` method of the HTTP client response
+  to allow for customizing the SimplePie feed parser.
+
+### Changed
+
+- Multiple properties in `Makes_Http_Requests` are now private to prevent
+  unintended side effects from tests that modify these properties directly.
+
+### Fixed
+
+- Disable rewrite for internal queue post type.
+
 ## v1.10.0
 
 ### Changed

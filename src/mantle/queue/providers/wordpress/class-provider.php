@@ -44,7 +44,8 @@ class Provider implements Provider_Contract {
 		\register_post_type( // phpcs:ignore WordPress.NamingConventions.ValidPostTypeSlug.NotStringLiteral
 			static::OBJECT_NAME,
 			[
-				'public' => false,
+				'public'  => false,
+				'rewrite' => false,
 			]
 		);
 

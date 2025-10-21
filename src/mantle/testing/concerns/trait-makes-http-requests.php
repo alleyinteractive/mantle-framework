@@ -31,33 +31,33 @@ trait Makes_Http_Requests {
 	 *
 	 * @var array<string, string>
 	 */
-	protected array $default_cookies = [];
+	private array $default_cookies = [];
 
 	/**
 	 * Additional headers for the request.
 	 *
 	 * @var array<string, string>
 	 */
-	protected array $default_headers = [];
+	private array $default_headers = [];
 
 	/**
 	 * Whether to use HTTPS by default.
 	 */
-	protected bool|null $default_https = null;
+	private bool|null $default_https = null;
 
 	/**
 	 * The array of callbacks to be run before the event is started.
 	 *
 	 * @var array<callable>
 	 */
-	protected array $before_callbacks = [];
+	private array $before_callbacks = [];
 
 	/**
 	 * The array of callbacks to be run after the event is finished.
 	 *
 	 * @var array<callable>
 	 */
-	protected array $after_callbacks = [];
+	private array $after_callbacks = [];
 
 	/**
 	 * Backup of global WordPress dependencies.
@@ -488,11 +488,17 @@ trait Makes_Http_Requests {
 	 */
 	#[BeforeClass]
 	public static function backup_wp_dependencies(): void {
-		if ( ! isset( self::$wp_dependencies_backup['wp_scripts'] ) ) {
+		if ( ! isset( self::$wp_dependencies_backup['wp_scripts'] ) && function_exists( 'wp_scripts' ) ) {
+			// Ensure the global $wp_scripts is initialized.
+			wp_scripts();
+
 			self::$wp_dependencies_backup['wp_scripts'] = clone $GLOBALS['wp_scripts'];
 		}
 
-		if ( ! isset( self::$wp_dependencies_backup['wp_styles'] ) ) {
+		if ( ! isset( self::$wp_dependencies_backup['wp_styles'] ) && function_exists( 'wp_styles' ) ) {
+			// Ensure the global $wp_styles is initialized.
+			wp_styles();
+
 			self::$wp_dependencies_backup['wp_styles'] = clone $GLOBALS['wp_styles'];
 		}
 	}

@@ -590,7 +590,7 @@ function defer( callable $callback, int $priority = 10 ): void {
  * @param int|null $limit Limits the number of stack frames returned. By default
  *                        all stack frames are returned.
  * @param bool     $with_arguments Whether to include function arguments in
- *                                the output.
+ *                                 the output.
  */
 function dump_backtrace( ?int $limit = null, bool $with_arguments = false ): void {
 	$frames = Backtrace::create()->offset( 1 );
@@ -622,7 +622,6 @@ function dump_backtrace( ?int $limit = null, bool $with_arguments = false ): voi
  *                                 the output.
  */
 function dd_backtrace( ?int $limit = null, bool $with_arguments = false ): never {
-
 	dump_backtrace( $limit, $with_arguments );
 	exit( 1 );
 }

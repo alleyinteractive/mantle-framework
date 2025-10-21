@@ -13,6 +13,7 @@ use ArrayAccess;
 use LogicException;
 use Mantle\Support\Collection;
 use Mantle\Support\HTML;
+use Mantle\Support\Mixed_Data;
 use Mantle\Support\Traits\Macroable;
 use Mantle\Testing\Assertable_Json_String;
 use SimpleXMLElement;
@@ -49,6 +50,7 @@ use function Mantle\Support\Helpers\data_get;
  *     code: int,
  *     message: string,
  *   },
+ *   http_response?: \WP_HTTP_Requests_Response,
  * }
  */
 class Response implements ArrayAccess {
@@ -75,6 +77,16 @@ class Response implements ArrayAccess {
 	protected array $response;
 
 	/**
+	 * The request URL.
+	 */
+	protected readonly ?string $url;
+
+	/**
+	 * Determine if the response was created from the cache.
+	 */
+	public bool $cached = false;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param CoreResponse|WpHttpRequestResponse $response Raw response from `wp_remote_request()`.
@@ -89,6 +101,13 @@ class Response implements ArrayAccess {
 		$response['headers'] = array_change_key_case( (array) ( $response['headers'] ?? [] ) );
 
 		$this->response = $response;
+
+		// @phpstan-ignore instanceof.alwaysTrue
+		if ( isset( $response['http_response'] ) && $response['http_response'] instanceof \WP_HTTP_Requests_Response ) {
+			$this->url = $response['http_response']->get_response_object()->url;
+		} else {
+			$this->url = null;
+		}
 	}
 
 	/**
@@ -312,6 +331,15 @@ class Response implements ArrayAccess {
 		return data_get( $this->decoded, $key, $default );
 	}
 
+	/**
+	 * Get the JSON decoded body of the response as a Mixed_Data instance.
+	 *
+	 * @param  string|null $key
+	 * @param  mixed       $default
+	 */
+	public function mixed_json( ?string $key = null, mixed $default = null ): Mixed_Data {
+		return Mixed_Data::of( $this->json( $key, $default ) );
+	}
 
 	/**
 	 * Retrieve an instance of Assertable_Json_String to perform fluent JSON assertions.
@@ -459,5 +487,26 @@ class Response implements ArrayAccess {
 	 */
 	public function offsetUnset( mixed $offset ): void {
 		throw new LogicException( 'Response values are read-only.' );
+	}
+
+	/**
+	 * Prepare the object for serialization.
+	 *
+	 * @return array<string, mixed>
+	 */
+	public function __serialize(): array {
+		// Purge some data from the response for lighter serialization.
+		unset( $this->response['http_response'] );
+
+		foreach ( [ 'cookies', 'filename', 'headers' ] as $key ) {
+			if ( empty( $this->response[ $key ] ) ) {
+				unset( $this->response[ $key ] );
+			}
+		}
+
+		return [
+			'url'      => $this->url,
+			'response' => $this->response,
+		];
 	}
 }
