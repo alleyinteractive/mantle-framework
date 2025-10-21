@@ -9,6 +9,7 @@ namespace Mantle\Http_Client;
 
 use Closure;
 use DateTimeInterface;
+use LogicException;
 use Mantle\Cache\SWR_Storage;
 
 use function Mantle\Support\Helpers\defer;
@@ -46,24 +47,22 @@ class Cache_Flexible_Middleware extends Cache_Middleware {
 	public function __invoke( Pending_Request $request, Closure $next ): Response {
 		$this->cache_key = $this->get_cache_key( $request );
 
-		$cache = wp_cache_get( $this->cache_key, self::CACHE_GROUP );
+		$cache = $this->get_cached_response();
 
-		if ( $cache && $cache instanceof SWR_Storage ) {
+		if ( $cache instanceof SWR_Storage && $cache->value instanceof Response ) {
 			$response = $cache->value;
 
-			if ( $response instanceof Response ) {
-				// If the cache is stale, we can still return it, but we should refresh
-				// deferred to the end of the request.
-				if ( $cache->is_stale() ) {
-					$fresh_request = ( clone $request )->without_middleware( Cache_Middleware::class );
+			// If the cache is stale, we can still return it, but we should refresh
+			// deferred to the end of the request.
+			if ( $cache->is_stale() ) {
+				$fresh_request = ( clone $request )->without_middleware( Cache_Middleware::class );
 
-					defer( fn () => $this->store_response( $fresh_request->send() ) );
-				}
-
-				$response->cached = true;
-
-				return $response;
+				defer( fn () => $this->store_response( $fresh_request->send() ) );
 			}
+
+			$response->cached = true;
+
+			return $response;
 		}
 
 		$response = $next( $request );
@@ -73,6 +72,25 @@ class Cache_Flexible_Middleware extends Cache_Middleware {
 		$this->store_response( $response );
 
 		return $response;
+	}
+
+	/**
+	 * Retrieve a cached response if available.
+	 *
+	 * @return SWR_Storage|null Cached response or null if not found.
+	 */
+	private function get_cached_response(): ?SWR_Storage {
+		try {
+			$cache = wp_cache_get( $this->cache_key, self::CACHE_GROUP );
+
+			if ( $cache && $cache instanceof SWR_Storage ) {
+				return $cache;
+			}
+
+			return null;
+		} catch ( LogicException ) {
+			return null;
+		}
 	}
 
 	/**
