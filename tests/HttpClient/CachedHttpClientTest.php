@@ -37,10 +37,17 @@ class CachedHttpClientTest extends FrameworkTestCase {
 	}
 
 	public function test_it_can_make_http_request() {
+		// $this->allow_stray_requests();
 		$this->fake_request( mock_http_response()->with_json( [ 'example' => 'value' ] ) );
 
-		$this->client->get( 'https://example.com' );
-		$this->client->get( 'https://example.com' );
+		$response = $this->client->get( 'https://example.com' );
+
+		$this->assertEquals( 'value', $response->json( 'example' ) );
+
+		$response = $this->client->get( 'https://example.com' );
+
+		$this->assertEquals( 'value', $response->json( 'example' ) );
+		$this->assertTrue( $response->cached );
 
 		$this->assertRequestCount( 1 );
 	}

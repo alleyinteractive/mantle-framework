@@ -50,6 +50,8 @@ class Cache_Middleware {
 		$cache     = wp_cache_get( $cache_key, self::CACHE_GROUP );
 
 		if ( $cache && $cache instanceof Response ) {
+			$cache->cached = true;
+
 			return $cache;
 		}
 

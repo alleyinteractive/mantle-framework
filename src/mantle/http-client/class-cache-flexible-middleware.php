@@ -60,6 +60,8 @@ class Cache_Flexible_Middleware extends Cache_Middleware {
 					defer( fn () => $this->store_response( $fresh_request->send() ) );
 				}
 
+				$response->cached = true;
+
 				return $response;
 			}
 		}
