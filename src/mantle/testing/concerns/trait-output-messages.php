@@ -54,7 +54,7 @@ trait Output_Messages {
 	 * @param string $message Message to output.
 	 * @param string $prefix Prefix to output.
 	 */
-	public static function info( string $message, $prefix = 'Install' ): void {
+	public static function info( string $message, string $prefix = 'Install' ): void {
 		static::message( $prefix, 'yellow-600', $message );
 	}
 
@@ -64,7 +64,7 @@ trait Output_Messages {
 	 * @param string $message Message to output.
 	 * @param string $prefix Prefix to output.
 	 */
-	public static function success( string $message, $prefix = 'Install' ): void {
+	public static function success( string $message, string $prefix = 'Install' ): void {
 		static::message( $prefix, 'lime-600', $message );
 	}
 
@@ -74,7 +74,7 @@ trait Output_Messages {
 	 * @param string $message Message to output.
 	 * @param string $prefix Prefix to output.
 	 */
-	public static function error( string $message, $prefix = 'Install' ): void {
+	public static function error( string $message, string $prefix = 'Install' ): void {
 		static::message( $prefix, 'red-800', $message, 'red-100', 'pt-1' );
 	}
 

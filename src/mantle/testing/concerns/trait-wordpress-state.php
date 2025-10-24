@@ -2,6 +2,8 @@
 /**
  * This file contains the WordPress_State trait
  *
+ * phpcs:disable WordPressVIPMinimum.Variables.RestrictedVariables
+ *
  * @package Mantle
  */
 

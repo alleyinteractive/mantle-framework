@@ -16,11 +16,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `collect_many()` and `collect_many_and_get()` methods to factories to
   create multiple models and return them as a collection.
 - Added support for passing callables as model attributes in factories.
+- Added `PermalinkStructure` attribute to set the permalink structure during tests.
 
 ### Changed
 
 - Clear `$_COOKIE` and `$_SESSION` in addition to other superglobals when
   cleaning the global scope between tests.
+
 
 ## v1.12.4
 
