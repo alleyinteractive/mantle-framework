@@ -16,6 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   create multiple models and return them as a collection.
 - Added support for passing callables as model attributes in factories.
 
+### Changed
+
+- Clear `$_COOKIE` and `$_SESSION` in addition to other superglobals when
+  cleaning the global scope between tests.
+
 ## v1.12.4
 
 ### Fixed
