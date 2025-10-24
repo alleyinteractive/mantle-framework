@@ -63,13 +63,6 @@ trait WordPress_State {
 	}
 
 	/**
-	 * Boot the WordPress_State trait.
-	 */
-	public function wordpress_state_set_up(): void {
-		$this->set_show_posts_on_front();
-	}
-
-	/**
 	 * Cleans the global scope (e.g `$_GET` and `$_POST`).
 	 */
 	public static function clean_up_global_scope(): void {
