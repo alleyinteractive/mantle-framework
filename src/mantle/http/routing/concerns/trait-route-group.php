@@ -78,7 +78,7 @@ trait Route_Group {
 	 * @param bool         $prepend_existing_prefix Prepend the existing prefix.
 	 * @return array<mixed> Merged route attributes.
 	 */
-	public function merge_with_last_group( $new, $prepend_existing_prefix = true ): array {
+	public function merge_with_last_group( array $new, bool $prepend_existing_prefix = true ): array {
 		return static::merge( $new, end( $this->group_stack ), $prepend_existing_prefix );
 	}
 

@@ -49,7 +49,7 @@ class Output_Logs extends \QM_Output_Html {
 			return;
 		}
 
-		$levels = array_map( 'ucfirst', $this->collector->get_levels() );
+		$levels = array_map( ucfirst( ... ), $this->collector->get_levels() );
 
 		$this->before_tabular_output();
 
