@@ -332,6 +332,32 @@ class Post_Factory extends Factory {
 	}
 
 	/**
+	 * Create and get an ordered set of posts.
+	 *
+	 * @see Post_Factory::create_ordered_set() for details.
+	 *
+	 * @param int           $count The number of posts to create.
+	 * @param array<mixed>  $args The arguments.
+	 * @param Carbon|string $starting_date The starting date for the posts, defaults to
+	 *                                     a month ago.
+	 * @param int           $separation The number of seconds between each post.
+	 * @return array<int, TModel>
+	 * @phpstan-return array<int, TModel>
+	 */
+	public function create_ordered_set_and_get(
+		int $count = 10,
+		array $args = [],
+		Carbon|string|null $starting_date = null,
+		int $separation = 3600
+	): array {
+		return collect( $this->create_ordered_set( $count, $args, $starting_date, $separation ) )
+			->map(
+				fn ( int $post_id ) => $this->get_object_by_id( $post_id ) // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			)
+			->to_array();
+	}
+
+	/**
 	 * Retrieves an object by ID.
 	 *
 	 * @param int $object_id The object ID.
