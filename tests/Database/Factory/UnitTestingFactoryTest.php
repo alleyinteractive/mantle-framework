@@ -8,6 +8,7 @@ use Mantle\Database\Model\Term;
 use Mantle\Support\Str;
 use Mantle\Testing\Concerns\With_Faker;
 use Mantle\Testing\FrameworkTestCase;
+use Mantle\Testing\Utils;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 
@@ -23,6 +24,12 @@ use function Mantle\Support\Helpers\collect;
 #[Group( 'factory' )]
 class UnitTestingFactoryTest extends FrameworkTestCase {
 	use With_Faker;
+
+	protected function setUp(): void {
+		parent::setUp();
+
+		Utils::delete_all_posts();
+	}
 
 	public function test_post_factory() {
 		$this->assertInstanceOf( \WP_Post::class, static::factory()->post->create_and_get() );
@@ -63,11 +70,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 	}
 
 	public function test_create_ordered_set() {
-		$post_ids = static::factory()->post->create_ordered_set( 10, [
-			'meta' => [
-				'_test_date_meta_key' => '_test_meta_value',
-			],
-		] );
+		$post_ids = static::factory()->post->create_ordered_set( 10 );
 
 		$this->assertCount( 10, $post_ids );
 
@@ -85,8 +88,6 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		// Query the posts and ensure the order matches.
 		$queried_post_ids = get_posts( [
 			'fields'           => 'ids',
-			'meta_key'         => '_test_date_meta_key',
-			'meta_value'       => '_test_meta_value',
 			'order'            => 'DESC',
 			'orderby'          => 'post_date',
 			'posts_per_page'   => 50,
@@ -97,6 +98,13 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 
 		// Posts should be in the opposite order since we're sorting by descending date.
 		$this->assertEquals( array_reverse( $post_ids ), $queried_post_ids );
+	}
+
+	public function test_create_and_get_ordered_set(): void {
+		$posts = static::factory()->post->create_ordered_set_and_get( 10 );
+
+		$this->assertCount( 10, $posts );
+		$this->assertContainsOnlyInstancesOf( \WP_Post::class, $posts );
 	}
 
 	public function test_attachment_factory() {
@@ -592,6 +600,20 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		$this->assertWPPost( $post );
 
 		$this->assertEquals( $existing->ID, $post->ID );
+	}
+
+	public function test_scheduled_post(): void {
+		$post = static::factory()->post->scheduled()->create_and_get();
+
+		$this->assertEquals( 'future', get_post_status( $post ) );
+		$this->assertGreaterThan( current_time( 'timestamp' ), strtotime( $post->post_date ) );
+	}
+
+	public function test_scheduled_post_in_past(): void {
+		$this->expectException( \InvalidArgumentException::class );
+		$this->expectExceptionMessage( 'The date for a scheduled post must be in the future.' );
+
+		static::factory()->post->scheduled( Carbon::now()->subDay() )->create_and_get();
 	}
 
 	public static function slug_id_dataprovider(): array {
