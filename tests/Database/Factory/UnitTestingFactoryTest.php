@@ -601,6 +601,13 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		$this->assertGreaterThan( current_time( 'timestamp' ), strtotime( $post->post_date ) );
 	}
 
+	public function test_scheduled_post_in_past(): void {
+		$this->expectException( \InvalidArgumentException::class );
+		$this->expectExceptionMessage( 'The date for a scheduled post must be in the future.' );
+
+		static::factory()->post->scheduled( Carbon::now()->subDay() )->create_and_get();
+	}
+
 	public static function slug_id_dataprovider(): array {
 		return [
 			'term_id' => [ 'term_id' ],

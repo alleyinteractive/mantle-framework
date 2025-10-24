@@ -238,6 +238,8 @@ class Post_Factory extends Factory {
 	/**
 	 * Create a new factory instance to create scheduled posts.
 	 *
+	 * @throws \InvalidArgumentException If the date is not in the future.
+	 *
 	 * @param DateTimeInterface|string|null $date The date to schedule the post for. Defaults to 1 day in the future.
 	 */
 	public function scheduled( DateTimeInterface|string|null $date = null ): static {
@@ -247,10 +249,15 @@ class Post_Factory extends Factory {
 			default                            => Carbon::now()->addDay()->format( 'Y-m-d H:i:s' ),
 		};
 
+		// Ensure the date is in the future.
+		if ( strtotime( $date ) <= current_time( 'timestamp' ) ) { // phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested
+			throw new \InvalidArgumentException( 'The date for a scheduled post must be in the future.' );
+		}
+
 		return $this->state( [
 			'post_date'     => $date,
 			'post_date_gmt' => get_gmt_from_date( $date ),
-			'post_status'  => 'future',
+			'post_status'   => 'future',
 		] );
 	}
 
