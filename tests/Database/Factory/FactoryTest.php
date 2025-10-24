@@ -249,6 +249,14 @@ class FactoryTest extends FrameworkTestCase {
 		$this->assertEquals( 'custom_taxonomy', $post->taxonomy );
 		$this->assertNotEmpty( $post->name );
 	}
+
+	public function test_callable_as_attribute(): void {
+		$post = Testable_Post::factory()->create_and_get( [
+			'post_title' => fn () => 'Title from callable',
+		] );
+
+		$this->assertEquals( 'Title from callable', $post->post_title );
+	}
 }
 
 class Testable_Post extends Model\Post {

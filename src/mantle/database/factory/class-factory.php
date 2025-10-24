@@ -356,6 +356,12 @@ abstract class Factory {
 						$args = wp_slash( $args );
 					}
 
+					foreach ( $args as $key => $value ) {
+						if ( is_callable( $value ) ) {
+							$args[ $key ] = $value( $key, $args );
+						}
+					}
+
 					return $this->get_model()::create( $args );
 				},
 			);

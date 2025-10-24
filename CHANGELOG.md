@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   retrieve an ordered set of models.
 - Added `collect_many()` and `collect_many_and_get()` methods to factories to
   create multiple models and return them as a collection.
+- Added support for passing callables as model attributes in factories.
 
 ## v1.12.4
 
