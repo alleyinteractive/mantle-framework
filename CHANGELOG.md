@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added `scheduled()` state to post factory to create scheduled posts.
+- Added `create_ordered_set_and_get()` method to factories to create and
+  retrieve an ordered set of models.
+- Added `collect_many()` and `collect_many_and_get()` methods to factories to
+  create multiple models and return them as a collection.
 
 ## v1.12.4
 

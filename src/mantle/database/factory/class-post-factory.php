@@ -316,19 +316,9 @@ class Post_Factory extends Factory {
 		// Set the date for the first post (seconds added before each run).
 		$starting_date->subSeconds( $separation );
 
-		return collect()
-			->pad( $count, null )
-			->map(
-				fn () => $this->create(
-					array_merge(
-						$args,
-						[
-							'date' => $starting_date->addSeconds( $separation )->format( 'Y-m-d H:i:s' ),
-						]
-					)
-				)
-			)
-			->to_array();
+		return collect()->times( $count, fn () => $this->create( array_merge( $args, [
+			'date' => $starting_date->addSeconds( $separation )->format( 'Y-m-d H:i:s' ),
+		] ) ) )->all();
 	}
 
 	/**
@@ -353,8 +343,7 @@ class Post_Factory extends Factory {
 		return collect( $this->create_ordered_set( $count, $args, $starting_date, $separation ) )
 			->map(
 				fn ( int $post_id ) => $this->get_object_by_id( $post_id ) // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-			)
-			->to_array();
+			)->all();
 	}
 
 	/**
