@@ -594,6 +594,13 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		$this->assertEquals( $existing->ID, $post->ID );
 	}
 
+	public function test_scheduled_post(): void {
+		$post = static::factory()->post->scheduled()->create_and_get();
+
+		$this->assertEquals( 'future', get_post_status( $post ) );
+		$this->assertGreaterThan( current_time( 'timestamp' ), strtotime( $post->post_date ) );
+	}
+
 	public static function slug_id_dataprovider(): array {
 		return [
 			'term_id' => [ 'term_id' ],

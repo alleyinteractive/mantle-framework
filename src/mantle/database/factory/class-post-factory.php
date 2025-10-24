@@ -9,6 +9,7 @@ namespace Mantle\Database\Factory;
 
 use Carbon\Carbon;
 use Closure;
+use DateTimeInterface;
 use Faker\Generator;
 use Mantle\Database\Model\Attachment;
 use Mantle\Database\Model\Post;
@@ -232,6 +233,25 @@ class Post_Factory extends Factory {
 	 */
 	public function for( string $post_type ): static {
 		return $this->with_post_type( $post_type );
+	}
+
+	/**
+	 * Create a new factory instance to create scheduled posts.
+	 *
+	 * @param DateTimeInterface|string|null $date The date to schedule the post for. Defaults to 1 day in the future.
+	 */
+	public function scheduled( DateTimeInterface|string|null $date = null ): static {
+		$date = match ( true ) {
+			$date instanceof DateTimeInterface => $date->format( 'Y-m-d H:i:s' ),
+			is_string( $date )                 => $date,
+			default                            => Carbon::now()->addDay()->format( 'Y-m-d H:i:s' ),
+		};
+
+		return $this->state( [
+			'post_date'     => $date,
+			'post_date_gmt' => get_gmt_from_date( $date ),
+			'post_status'  => 'future',
+		] );
 	}
 
 	/**
