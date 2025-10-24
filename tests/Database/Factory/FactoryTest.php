@@ -35,7 +35,12 @@ class FactoryTest extends FrameworkTestCase {
 
 		$this->assertCount( 5, $post_ids );
 		$this->assertIsArray( $post_ids );
-		$this->assertContainsOnlyInt( $post_ids );
+
+		if ( method_exists( $this, 'assertContainsOnlyInt' ) ) {
+			$this->assertContainsOnlyInt( $post_ids );
+		} else {
+			$this->assertContainsOnly( 'int', $post_ids );
+		}
 	}
 
 	public function test_collect_many(): void {
@@ -173,6 +178,7 @@ class FactoryTest extends FrameworkTestCase {
 
 		$this->assertIsArray( $post_ids );
 		$this->assertCount( 3, $post_ids );
+
 		if ( method_exists( $this, 'assertContainsOnlyInt' ) ) {
 			$this->assertContainsOnlyInt( $post_ids );
 		} else {

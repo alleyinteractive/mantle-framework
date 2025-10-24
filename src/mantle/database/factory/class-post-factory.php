@@ -341,9 +341,8 @@ class Post_Factory extends Factory {
 		int $separation = 3600
 	): array {
 		return collect( $this->create_ordered_set( $count, $args, $starting_date, $separation ) )
-			->map(
-				fn ( int $post_id ) => $this->get_object_by_id( $post_id ) // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-			)->all();
+			->map( $this->get_object_by_id( ... ) )
+			->all();
 	}
 
 	/**
