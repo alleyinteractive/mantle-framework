@@ -313,7 +313,7 @@ class Expectation {
 	 * Specify that the filter returns an array value.
 	 */
 	public function andReturnArray(): static {
-		return $this->returnComparison( fn ( $value ) => is_array( $value ) );
+		return $this->returnComparison( is_array( ... ) );
 	}
 
 	/**
@@ -329,14 +329,14 @@ class Expectation {
 	 * Specify that the filter returns a string value.
 	 */
 	public function andReturnString(): static {
-		return $this->returnComparison( fn ( $value ) => is_string( $value ) );
+		return $this->returnComparison( is_string( ... ) );
 	}
 
 	/**
 	 * Specify that the filter returns an integer value.
 	 */
 	public function andReturnInteger(): static {
-		return $this->returnComparison( fn ( $value ) => is_int( $value ) );
+		return $this->returnComparison( is_int( ... ) );
 	}
 
 	/**
