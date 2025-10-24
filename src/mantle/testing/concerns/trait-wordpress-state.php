@@ -218,10 +218,32 @@ trait WordPress_State {
 	/**
 	 * Sets the site to show a static page on the front page.
 	 *
-	 * @param int|WP_Post|Post      $front_page Front page.
-	 * @param int|WP_Post|Post|null $post_page  Posts page.
+	 * @param int|WP_Post|Post      $front Front page.
+	 * @param int|WP_Post|Post|null $posts  Posts page.
 	 */
-	public function set_show_page_on_front( int|WP_Post|Post $front_page, int|WP_Post|Post|null $post_page ): void {
+	public function set_show_page_on_front( int|WP_Post|Post $front, int|WP_Post|Post|null $posts = null ): void {
+		update_option( 'show_on_front', 'page' );
 
+		update_option(
+			'page_on_front',
+			match ( true ) {
+				$front instanceof WP_Post => $front->ID,
+				$front instanceof Post    => $front->id(),
+				default                  => $front,
+			},
+		);
+
+		if ( null !== $posts ) {
+			update_option(
+				'page_for_posts',
+				match ( true ) {
+					$posts instanceof WP_Post => $posts->ID,
+					$posts instanceof Post    => $posts->id(),
+					default                   => $posts,
+				},
+			);
+		} else {
+			delete_option( 'page_for_posts' );
+		}
 	}
 }
