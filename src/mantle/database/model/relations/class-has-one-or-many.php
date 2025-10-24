@@ -189,7 +189,7 @@ abstract class Has_One_Or_Many extends Relation {
 	 */
 	public function save_many( array $models ): array {
 		return collect( $models )
-			->map( fn ( $item ) => $this->save( $item ) )
+			->map( $this->save( ... ) )
 			->all();
 	}
 

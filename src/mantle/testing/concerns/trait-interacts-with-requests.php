@@ -375,7 +375,7 @@ trait Interacts_With_Requests {
 			}
 
 			// Check if the stray request should be ignored.
-			if ( $this->ignored_strayed_requests->contains( fn ( $ignored_url ) => Str::is( $ignored_url, $url ) ) ) {
+			if ( $this->ignored_strayed_requests->contains( fn ( string|iterable $ignored_url ) => Str::is( $ignored_url, $url ) ) ) {
 				return null;
 			}
 
