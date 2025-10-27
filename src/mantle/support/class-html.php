@@ -21,6 +21,7 @@ use Mantle\Support\Traits\Tappable;
 use Symfony\Component\DomCrawler\Crawler as SymfonyCrawler;
 use Mantle\Support\Internal\HTML_Helpers as Helpers;
 use Mantle\Testing\Concerns\Element_Assertions;
+use Symfony\Component\CssSelector\CssSelectorConverter;
 use Override;
 
 use function Mantle\Support\Helpers\classname;
@@ -150,6 +151,30 @@ class HTML extends SymfonyCrawler implements Htmlable {
 	 */
 	public function first_by_selector( string $selector ): static {
 		return $this->filter( $selector )->first();
+	}
+
+	/**
+	 * Get the nearest previous sibling element.
+	 */
+	public function previousSibling( string $selector = null ): static {
+		if ( !$this->has_nodes() ) {
+			throw new \InvalidArgumentException('The current node list is empty.');
+		}
+
+		$previous = $this->previousAll();
+		return (boolean) $selector ? $previous->filter( $selector )->first() : $previous->first();
+	}
+
+	/**
+	 * Get the nearest next sibling element.
+	 */
+	public function nextSibling( string $selector = null ): static {
+		if ( !$this->has_nodes() ) {
+			throw new \InvalidArgumentException('The current node list is empty.');
+		}
+
+		$next = $this->nextAll();
+		return (boolean) $selector ? $next->filter( $selector )->first() : $next->first();
 	}
 
 	/**

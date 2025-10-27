@@ -569,4 +569,42 @@ class HtmlTest extends TestCase {
 			->assertElementExistsByTestId( 'test-item' )
 			->assertQuerySelectorMissing( '.non-existent-class' );
 	}
+
+	public function test_it_can_get_the_nearest_previous_sibling(): void {
+		$html = new HTML(self::TEST_CONTENT);
+		$previous = $html->filter('#test-id')->previousSibling();
+		$this->assertInstanceOf(HTML::class, $previous);
+		$this->assertEquals('div', $previous->nodeName());
+		$this->assertEquals('test-class', $previous->attr('class'));
+		$this->assertEquals('Example Div By Class', $previous->text());
+	}
+
+	public function test_it_can_get_the_nearest_next_sibling(): void {
+		$html = new HTML(self::TEST_CONTENT);
+		$next = $html->filter('#test-id')->nextSibling();
+		$this->assertInstanceOf(HTML::class, $next);
+		$this->assertEquals('ul', $next->nodeName());
+	}
+
+	public function test_it_returns_empty_crawler_for_missing_next_sibling(): void {
+		$html = new HTML(self::TEST_CONTENT);
+		$next = $html->filter('ul')->nextSibling();
+		$this->assertInstanceOf(HTML::class, $next);
+		$this->assertEquals(0, $next->count());
+	}
+
+	public function test_it_can_get_the_nearest_previous_filtered_sibling(): void {
+		$html = new HTML(self::TEST_CONTENT);
+		$previous = $html->filter('#test-id')->previousSibling('section');
+		$this->assertInstanceOf(HTML::class, $previous);
+		$this->assertEquals('section', $previous->nodeName());
+	}
+
+	public function test_it_can_get_the_nearest_next_filtered_sibling(): void {
+		$html = new HTML(self::TEST_CONTENT);
+		$next = $html->filter('section')->nextSibling('ul');
+		$this->assertInstanceOf(HTML::class, $next);
+		$this->assertEquals('ul', $next->nodeName());
+	}
+
 }
