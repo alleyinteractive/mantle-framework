@@ -9,6 +9,7 @@ namespace Mantle\Database\Factory;
 
 use Carbon\Carbon;
 use Closure;
+use DateTimeInterface;
 use Faker\Generator;
 use Mantle\Database\Model\Attachment;
 use Mantle\Database\Model\Post;
@@ -235,6 +236,32 @@ class Post_Factory extends Factory {
 	}
 
 	/**
+	 * Create a new factory instance to create scheduled posts.
+	 *
+	 * @throws \InvalidArgumentException If the date is not in the future.
+	 *
+	 * @param DateTimeInterface|string|null $date The date to schedule the post for. Defaults to 1 day in the future.
+	 */
+	public function scheduled( DateTimeInterface|string|null $date = null ): static {
+		$date = match ( true ) {
+			$date instanceof DateTimeInterface => $date->format( 'Y-m-d H:i:s' ),
+			is_string( $date )                 => $date,
+			default                            => Carbon::now()->addDay()->format( 'Y-m-d H:i:s' ),
+		};
+
+		// Ensure the date is in the future.
+		if ( strtotime( $date ) <= current_time( 'timestamp' ) ) { // phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested
+			throw new \InvalidArgumentException( 'The date for a scheduled post must be in the future.' );
+		}
+
+		return $this->state( [
+			'post_date'     => $date,
+			'post_date_gmt' => get_gmt_from_date( $date ),
+			'post_status'   => 'future',
+		] );
+	}
+
+	/**
 	 * Definition of the factory.
 	 *
 	 * @return array<string, mixed>
@@ -290,19 +317,33 @@ class Post_Factory extends Factory {
 		// Set the date for the first post (seconds added before each run).
 		$starting_date->subSeconds( $separation );
 
-		return collect()
-			->pad( $count, null )
-			->map(
-				fn () => $this->create(
-					array_merge(
-						$args,
-						[
-							'date' => $starting_date->addSeconds( $separation )->format( 'Y-m-d H:i:s' ),
-						]
-					)
-				)
-			)
-			->to_array();
+		return collect()->times( $count, fn () => $this->create( array_merge( $args, [
+			'date' => $starting_date->addSeconds( $separation )->format( 'Y-m-d H:i:s' ),
+		] ) ) )->all();
+	}
+
+	/**
+	 * Create and get an ordered set of posts.
+	 *
+	 * @see Post_Factory::create_ordered_set() for details.
+	 *
+	 * @param int           $count The number of posts to create.
+	 * @param array<mixed>  $args The arguments.
+	 * @param Carbon|string $starting_date The starting date for the posts, defaults to
+	 *                                     a month ago.
+	 * @param int           $separation The number of seconds between each post.
+	 * @return array<int, TModel>
+	 * @phpstan-return array<int, TModel>
+	 */
+	public function create_ordered_set_and_get(
+		int $count = 10,
+		array $args = [],
+		Carbon|string|null $starting_date = null,
+		int $separation = 3600
+	): array {
+		return collect( $this->create_ordered_set( $count, $args, $starting_date, $separation ) )
+			->map( $this->get_object_by_id( ... ) )
+			->all();
 	}
 
 	/**

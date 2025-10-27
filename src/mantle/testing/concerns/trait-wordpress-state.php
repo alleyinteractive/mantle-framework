@@ -2,6 +2,8 @@
 /**
  * This file contains the WordPress_State trait
  *
+ * phpcs:disable WordPressVIPMinimum.Variables.RestrictedVariables
+ *
  * @package Mantle
  */
 
@@ -64,9 +66,11 @@ trait WordPress_State {
 	 * Cleans the global scope (e.g `$_GET` and `$_POST`).
 	 */
 	public static function clean_up_global_scope(): void {
+		$_COOKIE  = [];
 		$_GET     = [];
 		$_POST    = [];
 		$_REQUEST = [];
+		$_SESSION = [];
 
 		self::flush_cache();
 	}
@@ -194,5 +198,47 @@ trait WordPress_State {
 				'post_modified' => $date instanceof DateTimeInterface ? $date->format( 'Y-m-d H:i:s' ) : $date,
 			]
 		);
+	}
+
+	/**
+	 * Sets the site to show posts on the front page.
+	 */
+	protected function set_show_posts_on_front(): void {
+		update_option( 'show_on_front', 'posts' );
+
+		delete_option( 'page_on_front' );
+		delete_option( 'page_for_posts' );
+	}
+
+	/**
+	 * Sets the site to show a static page on the front page.
+	 *
+	 * @param int|WP_Post|Post      $front Front page.
+	 * @param int|WP_Post|Post|null $posts  Posts page.
+	 */
+	public function set_show_page_on_front( int|WP_Post|Post $front, int|WP_Post|Post|null $posts = null ): void {
+		update_option( 'show_on_front', 'page' );
+
+		update_option(
+			'page_on_front',
+			match ( true ) {
+				$front instanceof WP_Post => $front->ID,
+				$front instanceof Post    => $front->id(),
+				default                  => $front,
+			},
+		);
+
+		if ( null !== $posts ) {
+			update_option(
+				'page_for_posts',
+				match ( true ) {
+					$posts instanceof WP_Post => $posts->ID,
+					$posts instanceof Post    => $posts->id(),
+					default                   => $posts,
+				},
+			);
+		} else {
+			delete_option( 'page_for_posts' );
+		}
 	}
 }
