@@ -276,7 +276,7 @@ trait Hookable {
 	 */
 	protected function validate_method( ReflectionMethod $method ): bool {
 		// If the Validator interface doesn't exist, skip validation.
-		if ( ! class_exists( \Mantle\Types\Validator::class ) ) {
+		if ( ! interface_exists( \Mantle\Types\Validator::class ) ) {
 			return true;
 		}
 
