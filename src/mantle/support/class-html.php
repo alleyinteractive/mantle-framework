@@ -154,26 +154,32 @@ class HTML extends SymfonyCrawler implements Htmlable {
 
 	/**
 	 * Get the nearest previous sibling element.
+	 *
+	 * @param string|null $selector Optional CSS selector to filter the previous siblings.
+	 * @throws \InvalidArgumentException If the current node list is empty.
 	 */
-	public function previousSibling( string $selector = null ): static {
-		if ( !$this->has_nodes() ) {
-			throw new \InvalidArgumentException('The current node list is empty.');
+	public function previousSibling( ?string $selector = null ): static {
+		if ( ! $this->has_nodes() ) {
+			throw new \InvalidArgumentException( 'The current node list is empty.' );
 		}
 
 		$previous = $this->previousAll();
-		return (boolean) $selector ? $previous->filter( $selector )->first() : $previous->first();
+		return (bool) $selector ? $previous->filter( $selector )->first() : $previous->first();
 	}
 
 	/**
 	 * Get the nearest next sibling element.
+	 *
+	 * @param string|null $selector Optional CSS selector to filter the next siblings.
+	 * @throws \InvalidArgumentException If the current node list is empty.
 	 */
-	public function nextSibling( string $selector = null ): static {
-		if ( !$this->has_nodes() ) {
-			throw new \InvalidArgumentException('The current node list is empty.');
+	public function nextSibling( ?string $selector = null ): static {
+		if ( ! $this->has_nodes() ) {
+			throw new \InvalidArgumentException( 'The current node list is empty.' );
 		}
 
 		$next = $this->nextAll();
-		return (boolean) $selector ? $next->filter( $selector )->first() : $next->first();
+		return (bool) $selector ? $next->filter( $selector )->first() : $next->first();
 	}
 
 	/**
