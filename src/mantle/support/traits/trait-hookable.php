@@ -275,6 +275,10 @@ trait Hookable {
 	 * @param ReflectionMethod $method The hook callback method.
 	 */
 	protected function validate_method( ReflectionMethod $method ): bool {
+		if ( ! interface_exists( \Mantle\Types\Validator::class ) ) {
+			return true;
+		}
+
 		$attributes = $method->getAttributes( \Mantle\Types\Validator::class, \ReflectionAttribute::IS_INSTANCEOF );
 
 		// Check all validators for this method.

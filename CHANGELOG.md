@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## v1.13.0
 
 ### Added
 
@@ -28,18 +28,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Clear `$_COOKIE` and `$_SESSION` in addition to other superglobals when
   cleaning the global scope between tests.
-
-
-### Changed
-
-- Clear `$_COOKIE` and `$_SESSION` in addition to other superglobals when
-  cleaning the global scope between tests.
-
-
-### Changed
-
 - Added `Deprecation` attribute to some already-deprecated methods in the
   framework to better indicate their deprecation status.
+
+### Fixed
+
+- Fixed issue where `Mantle\Types\Validator` is used within `mantle-framework/support` but `mantle-framework/types` is not a dependency.
 
 ## v1.12.4
 
