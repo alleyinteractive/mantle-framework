@@ -21,7 +21,6 @@ use Mantle\Support\Traits\Tappable;
 use Symfony\Component\DomCrawler\Crawler as SymfonyCrawler;
 use Mantle\Support\Internal\HTML_Helpers as Helpers;
 use Mantle\Testing\Concerns\Element_Assertions;
-use Symfony\Component\CssSelector\CssSelectorConverter;
 use Override;
 
 use function Mantle\Support\Helpers\classname;
