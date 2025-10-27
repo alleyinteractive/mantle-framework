@@ -5,23 +5,10 @@ use Mantle\Database\Model\Attachment;
 use Mantle\Testing\FrameworkTestCase;
 
 class AttachmentTest extends FrameworkTestCase {
-	/**
-	 * @var int
-	 */
-	protected $attachment_id;
-
-	protected function setUp(): void {
-		parent::setUp();
-		$this->attachment_id = $this->factory->attachment->create_upload_object( DIR_TESTDATA . '/images/test-image.png', 0 );
-	}
-
-	protected function tearDown(): void {
-		parent::tearDown();
-		wp_delete_post( $this->attachment_id );
-	}
-
 	public function test_attachment_image_urls() {
-		$attachment = Attachment::find( $this->attachment_id );
+		$attachment_id = $this->factory->attachment->with_image( DIR_TESTDATA . '/images/test-image.png', 0 )->create();
+
+		$attachment = Attachment::find( $attachment_id );
 
 		$this->assertNotEmpty( $attachment->id() );
 		$this->assertNotEmpty( $attachment->url() );

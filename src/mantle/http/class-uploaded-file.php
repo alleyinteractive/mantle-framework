@@ -116,7 +116,7 @@ class Uploaded_File extends SymfonyUploadedFile {
 		}
 
 		$disk_name = $options['disk'] ?? null;
-		$disk      = Container::getInstance()->make( Filesystem_Manager::class )->drive( $disk_name );
+		$disk      = Container::get_instance()->make( Filesystem_Manager::class )->drive( $disk_name );
 
 		// Create the attachment for the file.
 		$attachment = Attachment::create(

@@ -50,8 +50,15 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		$this->assertContainsOnlyInstancesOf( \WP_Post::class, $posts );
 	}
 
+	/**
+	 * Suppress the deprecation notice for PHPUnit >= 12.
+	 */
 	public function test_post_create_with_thumbnail() {
-		$post_id = static::factory()->post->create_with_thumbnail();
+		if ( static::phpunit_version_compare( '12.0.0', '>=' ) ) {
+			$post_id = @static::factory()->post->create_with_thumbnail();
+		} else {
+			$post_id = static::factory()->post->create_with_thumbnail();
+		}
 
 		$this->assertTrue( has_post_thumbnail( $post_id ) );
 	}
