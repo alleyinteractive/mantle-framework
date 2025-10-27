@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added `PermalinkStructure` attribute to set the permalink structure during tests.
 
+### Changed
+
+- Added `Deprecation` attribute to some already-deprecated methods in the
+  framework to better indicate their deprecation status.
+
 ## v1.12.4
 
 ### Fixed
