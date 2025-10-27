@@ -230,7 +230,7 @@ if ( ! function_exists( 'abort' ) ) {
 	 * @param  string $message Response message
 	 * @param  array<string, string>  $headers HTTP Headers
 	 */
-	function abort( $code, $message = '', array $headers = [] ): void {
+	function abort( int $code, string $message = '', array $headers = [] ): void {
 		app()->abort( $code, $message, $headers );
 	}
 }
@@ -260,7 +260,7 @@ if ( ! function_exists( 'abort_unless' ) ) {
 	 * @param  string  $message Response message
 	 * @param  array<string, string>  $headers HTTP Headers
 	 */
-	function abort_unless( $condition, $code, $message = '', array $headers = [] ): void {
+	function abort_unless( $condition, int $code, string $message = '', array $headers = [] ): void {
 		if ( ! $condition ) {
 			abort( $code, $message, $headers );
 		}

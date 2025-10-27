@@ -343,7 +343,7 @@ class Handler implements Contract {
 			'file'      => $e->getFile(),
 			'line'      => $e->getLine(),
 			'trace'     => collect( $e->getTrace() )->map(
-				fn ( $trace ) => Arr::except( $trace, [ 'args' ] )
+				fn ( array $trace ) => Arr::except( $trace, [ 'args' ] )
 			)->all(),
 		] : [
 			'message' => $e instanceof HttpException ? $e->getMessage() : __( 'Server Error', 'mantle' ),

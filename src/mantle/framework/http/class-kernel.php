@@ -115,7 +115,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 		if ( did_action( 'parse_request' ) ) {
 			$this->handle_request();
 		} else {
-			\add_action( 'parse_request', fn () => $this->handle_request() );
+			\add_action( 'parse_request', $this->handle_request( ... ) );
 		}
 	}
 

@@ -9,7 +9,10 @@ namespace Mantle\Testing\Concerns;
 
 use DateTimeInterface;
 use Mantle\Database\Model\Post;
+use Mantle\Testing\Attributes\PermalinkStructure;
 use Mantle\Testing\Utils;
+use PHPUnit\Framework\Attributes\Before;
+use ReflectionAttribute;
 use WP_Post;
 
 /**
@@ -17,6 +20,8 @@ use WP_Post;
  * testing.
  */
 trait WordPress_State {
+	use Interacts_With_Attributes;
+
 	/**
 	 * Whether the initial data structures have been created.
 	 */
@@ -40,6 +45,19 @@ trait WordPress_State {
 
 			self::$initial_data_structures_created = true;
 		}
+	}
+
+	/**
+	 * Register the PermalinkStructure attribute.
+	 *
+	 * @before
+	 */
+	#[Before]
+	public function register_permalink_structure_attribute(): void {
+		$this->register_attribute(
+			PermalinkStructure::class,
+			fn ( ReflectionAttribute $attribute ) => $this->set_permalink_structure( $attribute->newInstance()->structure ),
+		);
 	}
 
 	/**

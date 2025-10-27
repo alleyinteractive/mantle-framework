@@ -3,6 +3,7 @@
  * Autoloaded File to support Testing
  *
  * phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+ * phpcs:disable WordPress.NamingConventions.PrefixAllGlobals
  *
  * @package Mantle
  */
@@ -34,16 +35,17 @@ require_once __DIR__ . '/mail/helpers.php';
  * file-requires will be removed.
  */
 
-if ( ! class_exists( Attributes\Environment::class ) ) {
-	require_once __DIR__ . '/attributes/Environment.php';
-}
+$attribute_classes = [
+	Attributes\Environment::class         => '/attributes/Environment.php',
+	Attributes\PermalinkStructure::class  => '/attributes/PermalinkStructure.php',
+	Attributes\PreserveObjectCache::class => '/attributes/PreserveObjectCache.php',
+	Attributes\UserAgent::class           => '/attributes/UserAgent.php',
+];
 
-if ( ! class_exists( Attributes\PreserveObjectCache::class ) ) {
-	require_once __DIR__ . '/attributes/PreserveObjectCache.php';
-}
-
-if ( ! class_exists( Attributes\UserAgent::class ) ) {
-	require_once __DIR__ . '/attributes/UserAgent.php';
+foreach ( $attribute_classes as $attribute_class => $attribute_class_path ) {
+	if ( ! class_exists( $attribute_class ) ) {
+		require_once __DIR__ . $attribute_class_path;
+	}
 }
 
 if ( ! function_exists( __NAMESPACE__ . '\\manager' ) ) {
