@@ -1,0 +1,7 @@
+{
+  "$schema": "../../../../src/mantle/support/schema/meta.json",
+  "testable_schema_meta_key": {
+    "post_types": ["post"],
+    "type": "string"
+  }
+}

@@ -45,12 +45,12 @@ class Output extends QM_Output_Html {
 		$this->before_non_tabular_output();
 
 		echo '<section>';
-		echo '<h3>' . esc_html_e( 'Request', 'mantle' ) . '</h3>';
+		echo '<h3>' . esc_html__( 'Request', 'mantle' ) . '</h3>';
 		echo '<p class="qm-ltr"><code>' . $request->getRequestUri() . '</code></p>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo '</section>';
 
 		echo '<section>';
-		echo '<h3>' . esc_html_e( 'Matched Route', 'mantle' ) . '</h3>';
+		echo '<h3>' . esc_html__( 'Matched Route', 'mantle' ) . '</h3>';
 		echo '<p class="qm-ltr"><code>' . ( $route ? $route->getPath() : 'n/a' ) . '</code></p>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo '</section>';
 
@@ -60,7 +60,7 @@ class Output extends QM_Output_Html {
 
 		if ( $route ) {
 			echo '<section>';
-			echo '<h3>' . esc_html_e( 'All Route Parameters', 'mantle' ) . '</h3>';
+			echo '<h3>' . esc_html__( 'All Route Parameters', 'mantle' ) . '</h3>';
 
 			echo '<table>';
 

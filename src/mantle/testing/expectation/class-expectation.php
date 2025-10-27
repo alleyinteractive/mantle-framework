@@ -9,6 +9,7 @@
 
 namespace Mantle\Testing\Expectation;
 
+use Closure;
 use PHPUnit\Framework\Assert as PHPUnit;
 use SebastianBergmann\Exporter\Exporter;
 
@@ -238,7 +239,7 @@ class Expectation {
 		return $this->returnComparison(
 			function ( $value ) use ( $values ): bool {
 				foreach ( $values as $expected ) {
-					if ( is_callable( $expected ) ) {
+					if ( $expected instanceof Closure ) {
 						return (bool) $expected( $value );
 					}
 

@@ -10,7 +10,7 @@ namespace Mantle\Contracts\Assets;
 /**
  * Asset Load Methods
  *
- * @todo Convert to ENUM with PHP 8.1.
+ * @todo Convert to ENUM with Mantle 2.0.
  */
 class Load_Method {
 	/**

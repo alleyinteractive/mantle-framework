@@ -105,6 +105,7 @@ if ( ! function_exists( 'render_view' ) ) {
 	 * @param array|string $name View name, optional. Supports passing variables in if
 	 *                           $variables is not used.
 	 */
+	#[\Deprecated( 'Use view() instead.' )]
 	function render_view( ...$args ): void {
 		echo view( ...$args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
@@ -229,7 +230,7 @@ if ( ! function_exists( 'abort' ) ) {
 	 * @param  string $message Response message
 	 * @param  array<string, string>  $headers HTTP Headers
 	 */
-	function abort( $code, $message = '', array $headers = [] ): void {
+	function abort( int $code, string $message = '', array $headers = [] ): void {
 		app()->abort( $code, $message, $headers );
 	}
 }
@@ -259,7 +260,7 @@ if ( ! function_exists( 'abort_unless' ) ) {
 	 * @param  string  $message Response message
 	 * @param  array<string, string>  $headers HTTP Headers
 	 */
-	function abort_unless( $condition, $code, $message = '', array $headers = [] ): void {
+	function abort_unless( $condition, int $code, string $message = '', array $headers = [] ): void {
 		if ( ! $condition ) {
 			abort( $code, $message, $headers );
 		}

@@ -14,8 +14,6 @@ parameters:
 			identifier: trait.unused
 		-
 			identifier: staticMethod.resultUnused
-		-
-			identifier: requireOnce.fileNotFound
 		# Will be fixed in PHPStan soon.
 		-
 			identifier: function.alreadyNarrowedType

@@ -9,6 +9,8 @@ namespace Mantle\Contracts\Assets;
 
 /**
  * Asset Load Hooks
+ *
+ * @todo Convert to ENUM with Mantle 2.0.
  */
 class Load_Hook {
 	/**

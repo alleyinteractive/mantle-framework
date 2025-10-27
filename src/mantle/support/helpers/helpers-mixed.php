@@ -73,3 +73,13 @@ function comment_meta( int $comment_id, string $meta_key, mixed $default = null 
 function mixed( mixed $value ): Mixed_Data {
 	return Mixed_Data::of( $value );
 }
+
+/**
+ * Retrieve a query variable in a type-safe manner.
+ *
+ * @param string $key     Query variable key.
+ * @param mixed  $default Default value. Default is null.
+ */
+function mixed_query_var( string $key, mixed $default = null ): Mixed_Data {
+	return Mixed_Data::of( get_query_var( $key, $default ) );
+}

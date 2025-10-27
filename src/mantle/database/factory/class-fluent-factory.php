@@ -79,11 +79,10 @@ class Fluent_Factory extends Factory {
 			return $this->factory->create_and_get( $args );
 		}
 
-		return collect()
-			->times(
-				$this->count,
-				fn () => $this->factory->create_and_get( $args ),
-			);
+		return collect()->times(
+			$this->count,
+			fn () => $this->factory->create_and_get( $args ),
+		);
 	}
 
 	/**

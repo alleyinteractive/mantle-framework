@@ -24,13 +24,13 @@ trait Interacts_With_PHPUnit {
 	 * @param string $compare The comparison operator (default: '>=').
 	 * @param string $message The message to display when skipping the test.
 	 */
-	public function skip_for_phpunit_version( string $version, string $compare = '>=', string $message = '' ): void {
+	public static function skip_for_phpunit_version( string $version, string $compare = '>=', string $message = '' ): void {
 		if ( ! class_exists( Version::class ) || ! method_exists( Version::class, 'id' ) ) {
-			$this->markTestSkipped( 'PHPUnit version check not available.' );
+			static::markTestSkipped( 'PHPUnit version check not available.' );
 		}
 
-		if ( version_compare( \PHPUnit\Runner\Version::id(), $version, $compare ) ) {
-			$this->markTestSkipped( $message ?: "PHPUnit version {$version} not met." );
+		if ( static::phpunit_version_compare( $version, $compare ) ) {
+			static::markTestSkipped( $message ?: "PHPUnit version {$version} not met." );
 		}
 	}
 
@@ -39,7 +39,23 @@ trait Interacts_With_PHPUnit {
 	 *
 	 * @param string $message The message to display when skipping the test.
 	 */
-	public function skip_for_phpunit_12( string $message ): void {
-		$this->skip_for_phpunit_version( '12.0.0', '>=', $message );
+	public static function skip_for_phpunit_12( string $message ): void {
+		static::skip_for_phpunit_version( '12.0.0', '>=', $message );
+	}
+
+	/**
+	 * Compare the current PHPUnit version with a given version.
+	 *
+	 * @param string $version The version to compare against.
+	 * @param string $compare The comparison operator (default: '==').
+	 *
+	 * @return bool True if the comparison is true, false otherwise.
+	 */
+	public static function phpunit_version_compare( string $version, string $compare = '==' ): bool {
+		if ( ! class_exists( Version::class ) || ! method_exists( Version::class, 'id' ) ) {
+			return false;
+		}
+
+		return version_compare( \PHPUnit\Runner\Version::id(), $version, $compare );
 	}
 }

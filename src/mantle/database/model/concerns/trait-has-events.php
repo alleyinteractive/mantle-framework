@@ -73,7 +73,7 @@ trait Has_Events {
 	 *
 	 * @param  \Closure|string $callback
 	 */
-	public static function created( $callback ): void {
+	public static function created( \Closure|string $callback ): void {
 		static::register_model_event( 'created', $callback );
 	}
 
@@ -82,7 +82,7 @@ trait Has_Events {
 	 *
 	 * @param  \Closure|string $callback
 	 */
-	public static function updating( $callback ): void {
+	public static function updating( \Closure|string $callback ): void {
 		static::register_model_event( 'updating', $callback );
 	}
 
@@ -91,7 +91,7 @@ trait Has_Events {
 	 *
 	 * @param  \Closure|string $callback
 	 */
-	public static function updated( $callback ): void {
+	public static function updated( \Closure|string $callback ): void {
 		static::register_model_event( 'updated', $callback );
 	}
 
@@ -100,7 +100,7 @@ trait Has_Events {
 	 *
 	 * @param  \Closure|string $callback
 	 */
-	public static function trashing( $callback ): void {
+	public static function trashing( \Closure|string $callback ): void {
 		static::register_model_event( 'trashing', $callback );
 	}
 
@@ -109,7 +109,7 @@ trait Has_Events {
 	 *
 	 * @param  \Closure|string $callback
 	 */
-	public static function trashed( $callback ): void {
+	public static function trashed( \Closure|string $callback ): void {
 		static::register_model_event( 'trashed', $callback );
 	}
 
@@ -118,7 +118,7 @@ trait Has_Events {
 	 *
 	 * @param  \Closure|string $callback
 	 */
-	public static function deleting( $callback ): void {
+	public static function deleting( \Closure|string $callback ): void {
 		static::register_model_event( 'deleting', $callback );
 	}
 
@@ -127,7 +127,7 @@ trait Has_Events {
 	 *
 	 * @param  \Closure|string $callback
 	 */
-	public static function deleted( $callback ): void {
+	public static function deleted( \Closure|string $callback ): void {
 		static::register_model_event( 'deleted', $callback );
 	}
 

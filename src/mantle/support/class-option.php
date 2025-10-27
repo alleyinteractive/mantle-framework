@@ -23,8 +23,8 @@ class Option implements ArrayAccess, Jsonable, \JsonSerializable, \Stringable {
 	/**
 	 * Retrieve an option from the database.
 	 *
-	 * @param string $option Option name.
-	 * @param mixed  $default Default value. Default is null.
+	 * @param string|null $option Option name.
+	 * @param mixed       $default Default value. Default is null.
 	 */
 	public static function of( ?string $option, mixed $default = null ): static {
 		return new static( $option, get_option( $option, $default ) );

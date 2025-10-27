@@ -163,6 +163,7 @@ class Attachment_Factory extends Post_Factory {
 	 * @param int   $legacy_parent The parent post ID.
 	 * @param array $legacy_args The arguments.
 	 */
+	#[\Deprecated( 'Use create() or create_and_get() instead.' )]
 	public function create_object( $args, $legacy_parent = 0, $legacy_args = [] ): int|null {
 		// Backward compatibility for legacy argument format.
 		if ( is_string( $args ) ) { // @phpstan-ignore-line
@@ -185,6 +186,7 @@ class Attachment_Factory extends Post_Factory {
 	 *
 	 * @return int|\WP_Error The attachment ID on success. The value 0 or WP_Error on failure.
 	 */
+	#[\Deprecated( 'Use the `with_image()` method instead.' )]
 	public function create_upload_object( ?string $file, int $parent = 0 ): int|\WP_Error {
 		return $this->with_image( $file, $parent )->create();
 	}

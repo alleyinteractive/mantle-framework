@@ -32,7 +32,7 @@ class Model_Term_Proxy {
 	 * @param string $taxonomy Taxonomy name.
 	 * @return Term[]
 	 */
-	public function __get( string $taxonomy ) {
+	public function __get( string $taxonomy ): mixed {
 		$queued_value = $this->model->get_queued_term_attribute( $taxonomy );
 
 		if ( null !== $queued_value ) {
@@ -48,7 +48,7 @@ class Model_Term_Proxy {
 	 * @param string                  $taxonomy Taxonomy name..
 	 * @param Term[]|\WP_Term[]|int[] $values Terms.
 	 */
-	public function __set( string $taxonomy, $values ) {
+	public function __set( string $taxonomy, mixed $values ) {
 		$this->model->queue_term_attribute( $taxonomy, $values );
 	}
 

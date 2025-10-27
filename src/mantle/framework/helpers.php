@@ -5,8 +5,6 @@
  * Intentionally not Namespaced to allow for root-level access to
  * framework methods.
  *
- * @deprecated Deprecated in favor of package-specific helpers.
- *
  * @package Mantle
  *
  * @phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound, Squiz.Commenting.FunctionComment

@@ -886,7 +886,7 @@ abstract class Builder {
 	 *
 	 * @throws Query_Exception Unknown query method called.
 	 */
-	public function __call( string $method, $args ) {
+	public function __call( string $method, array $args ) {
 		if ( Str::starts_with( $method, 'where' ) ) {
 			return $this->dynamicWhere( $method, $args );
 		}

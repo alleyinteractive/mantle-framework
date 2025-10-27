@@ -113,6 +113,7 @@ class Pending_Request {
 	 * Set the base URL for the pending request.
 	 *
 	 * @param string|null $url Base URL.
+	 * @phpstan-return ($url is null ? string|null : static)
 	 */
 	public function base_url( ?string $url = null ): static|string|null {
 		if ( is_null( $url ) ) {
@@ -138,6 +139,15 @@ class Pending_Request {
 		$this->base_url = $url;
 
 		return $this;
+	}
+
+	/**
+	 * Alias for set_base_url().
+	 *
+	 * @param string|null $url Base URL.
+	 */
+	public function with_base_url( ?string $url ): static {
+		return $this->set_base_url( $url );
 	}
 
 	/**
@@ -482,10 +492,28 @@ class Pending_Request {
 	}
 
 	/**
-	 * Clear all middleware for the request.
+	 * Clear middleware for the request.
+	 *
+	 * @param class-string|null $middleware Middleware class to remove, optional.
 	 */
-	public function without_middleware(): static {
+	public function without_middleware( ?string $middleware = null ): static {
+		if ( $middleware ) {
+			return $this->filter_middleware( fn ( callable $item ) => ! $item instanceof $middleware );
+		}
+
 		$this->middleware = [];
+
+		return $this;
+	}
+
+	/**
+	 * Filter the middleware for the request.
+	 *
+	 * @param callable|string $callback Callback to filter the middleware.
+	 * @phpstan-param (callable(callable): bool) $callback
+	 */
+	public function filter_middleware( callable|string $callback ): static {
+		$this->middleware = array_values( array_filter( $this->middleware, $callback ) );
 
 		return $this;
 	}

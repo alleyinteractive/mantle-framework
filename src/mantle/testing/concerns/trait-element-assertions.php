@@ -26,7 +26,7 @@ trait Element_Assertions {
 	protected DOMDocument $document;
 
 	/**
-	 * Assert that an element exists in the response.
+	 * Assert that an element exists in the response by an XPath expression.
 	 *
 	 * @param string $expression The XPath expression to execute.
 	 * @param string $message Optional message to display on failure.

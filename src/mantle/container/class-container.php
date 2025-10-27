@@ -180,7 +180,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 *
 	 * @param string $abstract Abstract name.
 	 */
-	public function is_shared( $abstract ): bool {
+	public function is_shared( string $abstract ): bool {
 		return isset( $this->instances[ $abstract ] ) ||
 			( isset( $this->bindings[ $abstract ]['shared'] ) &&
 			true === $this->bindings[ $abstract ]['shared'] );
@@ -637,7 +637,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @param  string $abstract
 	 * @return mixed   $concrete
 	 */
-	protected function getConcrete( $abstract ) {
+	protected function getConcrete( string $abstract ) {
 		if ( ! is_null( $concrete = $this->get_contextual_concrete( $abstract ) ) ) {
 			return $concrete;
 		}
@@ -888,7 +888,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 		}
 
 		return array_map(
-			fn ( $abstract ) => $this->resolve( $abstract ),
+			fn ( string $abstract ) => $this->resolve( $abstract ),
 			$concrete
 		);
 	}
@@ -1114,6 +1114,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 *
 	 * @deprecated Use `get_instance()` instead.
 	 */
+	#[\Deprecated( 'Use get_instance() instead.' )]
 	public static function getInstance(): static {
 		return static::get_instance();
 	}
@@ -1184,10 +1185,9 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * Dynamically access container services.
 	 *
 	 * @param  string $key
-	 * @return mixed
 	 */
-	public function __get( $key ) {
-			return $this[ $key ];
+	public function __get( string $key ): mixed {
+		return $this[ $key ];
 	}
 
 	/**
@@ -1197,7 +1197,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @param  mixed  $value
 	 * @return void
 	 */
-	public function __set( $key, $value ) {
+	public function __set( string $key, mixed $value ) {
 			$this[ $key ] = $value;
 	}
 }

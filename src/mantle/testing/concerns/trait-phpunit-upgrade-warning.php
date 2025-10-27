@@ -102,6 +102,11 @@ trait PHPUnit_Upgrade_Warning {
 	 * Warn the user if they're running PHPUnit 10+ against an incompatible codebase.
 	 */
 	protected function warn_if_phpunit_10_or_higher(): void {
+		// Bail if this is running via Pest.
+		if ( isset( $_SERVER['PHP_SELF'] ) && str_contains( (string) $_SERVER['PHP_SELF'], 'pest' ) ) { // phpcs:ignore WordPress.Security
+				return;
+		}
+
 		if ( $this->silence_phpunit_warning || ! $this->is_running_phpunit_10_or_higher() ) {
 			return;
 		}

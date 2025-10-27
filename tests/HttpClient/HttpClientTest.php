@@ -144,6 +144,23 @@ class HttpClientTest extends FrameworkTestCase {
 		);
 	}
 
+	public function test_make_request_with_mixed_json(): void {
+		$this->fake_request( fn () => Mock_Http_Response::create()
+			->with_status( 200 )
+			->with_json( [ 'example' => '123' ] )
+		);
+
+		$response = $this->http_factory->post( 'https://example.com/', [
+			'example' => 'value',
+		] );
+
+		$this->assertRequestSent( 'https://example.com/' );
+
+		$this->assertEquals( [ 'example' => '123' ], $response->mixed_json()->array() );
+		$this->assertEquals( '123', $response->mixed_json( 'example' )->string() );
+		$this->assertEquals( 123, $response->mixed_json( 'example' )->int() );
+	}
+
 	public function test_make_request_with_basic_auth() {
 		$this->fake_request();
 
@@ -509,5 +526,81 @@ EOF
 
 		$this->assertRequestSent( 'https://example.com/' );
 		$this->assertRequestSent( 'https://example.com/direct' );
+	}
+
+	public function test_html_response(): void {
+		$this->fake_request( fn () => Mock_Http_Response::create()
+			->with_header( 'content-type', 'text/html' )
+			->with_body(
+				<<<EOF
+<!DOCTYPE html>
+<html lang="en">
+<head>
+		<meta charset="UTF-8">
+		<title>Test HTML Response</title>
+	</head>
+<body>
+	<h1>Hello, World!</h1>
+</body>
+</html>
+EOF
+			)
+		);
+
+		$response = $this->http_factory->get( 'https://example.com/html/' );
+
+		$this->assertTrue( $response->is_html() );
+		$this->assertFalse( $response->is_json() );
+		$this->assertFalse( $response->is_xml() );
+
+		$response->html()->assertQuerySelectorExists( 'h1' );
+	}
+
+	public function test_simple_pie_feed(): void {
+		$this->fake_request( 'https://alley.com/feed/' )->with_snapshot();
+
+		$request = $this->http_factory->get( 'https://alley.com/feed/' );
+
+		$this->assertTrue( $request->is_feed() );
+
+		$options_callback = false;
+
+		$feed = $request->feed( function ( \SimplePie $feed ) use ( & $options_callback ) {
+			$options_callback = true;
+
+			$this->assertEmpty( $feed->data );
+		} );
+
+		$this->assertInstanceOf( \SimplePie::class, $feed );
+		$this->assertTrue( $options_callback );
+		$this->assertEquals( 'Alley', $feed->get_title() );
+		$this->assertNotEmpty( $feed->get_items() );
+		$this->assertEquals( 'https://alley.com/', $feed->get_link() );
+
+		$this->assertCount( 10, $feed->get_items() );
+
+		$item = $feed->get_items()[0];
+
+		// First expected feed item:
+		// url: https://alley.com/news/introducing-captain-hook-for-wordpress/
+		// title: Introducing Captain Hook for WordPress
+		$this->assertEquals( 'Introducing Captain Hook for WordPress', $item->get_title() );
+		$this->assertEquals( 'https://alley.com/news/introducing-captain-hook-for-wordpress/', $item->get_link() );
+	}
+
+	public function test_simple_pie_feed_error(): void {
+		$this->fake_request( fn () => Mock_Http_Response::create()
+			->with_header( 'content-type', 'text/html' )
+			->with_body( '<html><body>Not a feed</body></html>' )
+		);
+
+		$request = $this->http_factory->get( 'https://example.com/not-a-feed/' );
+
+		$this->assertFalse( $request->is_feed() );
+
+		$feed = $request->feed();
+
+		$this->assertInstanceOf( \SimplePie::class, $feed );
+		$this->assertTrue( $feed->error() !== null );
 	}
 }

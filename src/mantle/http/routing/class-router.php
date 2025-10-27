@@ -420,7 +420,7 @@ class Router implements Router_Contract {
 	 * @param  string $group
 	 * @param  string $middleware
 	 */
-	public function prepend_middleware_to_group( $group, $middleware ): static {
+	public function prepend_middleware_to_group( string $group, string $middleware ): static {
 		if ( isset( $this->middleware_groups[ $group ] ) && ! in_array( $middleware, $this->middleware_groups[ $group ], true ) ) {
 			array_unshift( $this->middleware_groups[ $group ], $middleware );
 		}
@@ -436,7 +436,7 @@ class Router implements Router_Contract {
 	 * @param  string $group
 	 * @param  string $middleware
 	 */
-	public function push_middleware_to_group( $group, $middleware ): static {
+	public function push_middleware_to_group( string $group, string $middleware ): static {
 		if ( ! array_key_exists( $group, $this->middleware_groups ) ) {
 				$this->middleware_groups[ $group ] = [];
 		}
@@ -464,7 +464,7 @@ class Router implements Router_Contract {
 
 		$excluded = collect( $route->excluded_middleware() )
 			->map(
-				fn ( $name ) => Middleware_Name_Resolver::resolve( $name, $this->middleware, $this->middleware_groups ),
+				fn ( \Closure|string $name ) => Middleware_Name_Resolver::resolve( $name, $this->middleware, $this->middleware_groups ),
 			)
 			->flatten()
 			->values()
@@ -472,7 +472,7 @@ class Router implements Router_Contract {
 
 		return collect( $route->middleware() )
 			->map(
-				fn ( $name ) => (array) Middleware_Name_Resolver::resolve( $name, $this->middleware, $this->middleware_groups ),
+				fn ( \Closure|string $name ) => (array) Middleware_Name_Resolver::resolve( $name, $this->middleware, $this->middleware_groups ),
 			)
 			->flatten()
 			->reject(

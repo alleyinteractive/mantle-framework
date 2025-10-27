@@ -99,15 +99,11 @@ if ( ! function_exists( 'now' ) ) {
 	/**
 	 * Create a new Carbon instance for the current time.
 	 *
-	 * @todo Allow this to be faked and mocked during testing.
+	 * Non-namespaced alias for Mantle\Support\Helpers\now().
 	 *
 	 * @param DateTimeZone|string|null $tz Timezone.
 	 */
 	function now( \DateTimeZone|string|null $tz = null ): Carbon\Carbon {
-		if ( ! $tz ) {
-			$tz = function_exists( 'wp_timezone' ) ? wp_timezone() : new DateTimeZone( 'UTC' );
-		}
-
-		return Carbon\Carbon::now( $tz );
+		return \Mantle\Support\Helpers\now( $tz );
 	}
 }

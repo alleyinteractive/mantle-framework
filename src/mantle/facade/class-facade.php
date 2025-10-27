@@ -117,7 +117,7 @@ abstract class Facade {
 	 *
 	 * @throws \RuntimeException Throw on missing Facade root.
 	 */
-	public static function __callStatic( $method, $args ) {
+	public static function __callStatic( string $method, array $args ) {
 		$instance = static::get_facade_root();
 
 		if ( ! $instance ) {
