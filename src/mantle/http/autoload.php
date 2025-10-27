@@ -105,6 +105,7 @@ if ( ! function_exists( 'render_view' ) ) {
 	 * @param array|string $name View name, optional. Supports passing variables in if
 	 *                           $variables is not used.
 	 */
+	#[\Deprecated( 'Use view() instead.' )]
 	function render_view( ...$args ): void {
 		echo view( ...$args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}

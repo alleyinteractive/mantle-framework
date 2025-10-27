@@ -291,6 +291,7 @@ trait Interacts_With_IO {
 	 *
 	 * @param string $message Message to log.
 	 */
+	#[\Deprecated( 'Use `line()` instead.' )]
 	public function log( string $message ): void {
 		$this->line( $message );
 	}

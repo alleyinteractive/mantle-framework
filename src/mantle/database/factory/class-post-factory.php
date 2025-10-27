@@ -256,6 +256,7 @@ class Post_Factory extends Factory {
 	 *
 	 * @param array $args The arguments.
 	 */
+	#[\Deprecated( 'Use the `with_thumbnail()` method instead.' )]
 	public function create_with_thumbnail( array $args = [] ): ?int {
 		return $this->with_thumbnail()->create( $args );
 	}

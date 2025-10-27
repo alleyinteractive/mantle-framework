@@ -64,6 +64,7 @@ trait Core_Shim {
 	 *
 	 * @param array|WP_Error $response HTTP response.
 	 */
+	#[\Deprecated( 'Not encouraged for use in Mantle. Remote requests should be mocked.' )]
 	public function skipTestOnTimeout( $response ): void {
 		if ( ! is_wp_error( $response ) ) {
 			return;

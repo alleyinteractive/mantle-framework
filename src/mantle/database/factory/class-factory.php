@@ -116,6 +116,7 @@ abstract class Factory {
 	 *
 	 * @param array $args The arguments.
 	 */
+	#[\Deprecated( 'Use create() or create_and_get() instead.' )]
 	public function create_object( array $args ): int|null {
 		return $this->create( $args );
 	}

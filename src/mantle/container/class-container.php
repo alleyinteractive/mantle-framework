@@ -1114,6 +1114,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 *
 	 * @deprecated Use `get_instance()` instead.
 	 */
+	#[\Deprecated( 'Use get_instance() instead.' )]
 	public static function getInstance(): static {
 		return static::get_instance();
 	}
