@@ -158,7 +158,7 @@ class HTML extends SymfonyCrawler implements Htmlable {
 	 * @param string|null $selector Optional CSS selector to filter the previous siblings.
 	 * @throws \InvalidArgumentException If the current node list is empty.
 	 */
-	public function previousSibling( ?string $selector = null ): static {
+	public function previous_sibling( ?string $selector = null ): static {
 		if ( ! $this->has_nodes() ) {
 			throw new \InvalidArgumentException( 'The current node list is empty.' );
 		}
@@ -173,7 +173,7 @@ class HTML extends SymfonyCrawler implements Htmlable {
 	 * @param string|null $selector Optional CSS selector to filter the next siblings.
 	 * @throws \InvalidArgumentException If the current node list is empty.
 	 */
-	public function nextSibling( ?string $selector = null ): static {
+	public function next_sibling( ?string $selector = null ): static {
 		if ( ! $this->has_nodes() ) {
 			throw new \InvalidArgumentException( 'The current node list is empty.' );
 		}
