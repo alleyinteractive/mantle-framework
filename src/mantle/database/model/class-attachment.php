@@ -175,7 +175,7 @@ class Attachment extends Post {
 			\wp_update_post( $args );
 		}
 
-		return static::find( $attachment_id );
+		return static::find_or_fail( $attachment_id );
 	}
 
 	/**

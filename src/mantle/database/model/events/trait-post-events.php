@@ -27,6 +27,10 @@ trait Post_Events {
 	protected static function subscribe_to_core_events(): void {
 		$post_type = static::get_object_name();
 
+		if ( ! $post_type ) {
+			return;
+		}
+
 		add_filter_side_effect(
 			'wp_insert_post_data',
 			function ( array $data, array $postarr ) use ( $post_type ): void {

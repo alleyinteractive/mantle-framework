@@ -1,6 +1,5 @@
 parameters:
-	# Goal of max.
-	level: 7
+	level: 8
 
 	paths:
 		- src/mantle

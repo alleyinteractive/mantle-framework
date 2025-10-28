@@ -84,7 +84,8 @@ trait WordPress_Authentication {
 
 		if ( $user_id ) {
 			wp_set_current_user( $user_id );
-			return get_user_object( $user_id );
+
+			return get_user_object( $user_id ) ?: throw new Exception( 'Could not find the user' );
 		}
 
 		throw new Exception( 'Could not find or create the user' );

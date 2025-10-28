@@ -26,6 +26,10 @@ trait Term_Events {
 	protected static function subscribe_to_core_events(): void {
 		$object_name = static::get_object_name();
 
+		if ( ! $object_name ) {
+			return;
+		}
+
 		add_action( 'created_term', static::get_term_event_callback( 'created', $object_name ), 10, 3 );
 		add_action( 'edit_terms', static::get_term_event_callback( 'updating', $object_name ), 10, 3 );
 		add_action( 'edited_term', static::get_term_event_callback( 'updated', $object_name ), 10, 3 );

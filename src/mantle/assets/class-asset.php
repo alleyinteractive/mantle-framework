@@ -342,7 +342,7 @@ class Asset {
 		}
 
 		$this
-			->src( $asset_loader->url( $this->handle ) )
+			->src( $asset_loader->url( $this->handle ) ?: '' )
 			->dependencies(
 				array_merge(
 					$this->deps,
