@@ -440,7 +440,7 @@ class Test_Response {
 	 * @param int|null $count Number of times the string should appear.
 	 */
 	public function assertSee( string $needle, ?int $count = null ): static {
-		PHPUnit::assertStringContainsString( $needle, $this->get_content() );
+		PHPUnit::assertStringContainsString( $needle, (string) $this->get_content() );
 
 		if ( null !== $count ) {
 			PHPUnit::assertEquals(
@@ -510,7 +510,7 @@ class Test_Response {
 	 */
 	public function assertSeeInOrder( array $values ): static {
 		try {
-			PHPUnit::assertTrue( $this->see_in_order( $values, $this->get_content() ) );
+			PHPUnit::assertTrue( $this->see_in_order( $values, (string) $this->get_content() ) );
 		} catch ( Exception $exception ) {
 			PHPUnit::fail( $exception->getMessage() );
 		}
@@ -524,7 +524,7 @@ class Test_Response {
 	 * @param string $value Value to check.
 	 */
 	public function assertSeeText( $value ): static {
-		PHPUnit::assertStringContainsString( (string) $value, wp_strip_all_tags( $this->get_content() ) );
+		PHPUnit::assertStringContainsString( (string) $value, wp_strip_all_tags( (string) $this->get_content() ) );
 
 		return $this;
 	}
@@ -538,7 +538,7 @@ class Test_Response {
 	public function assertSeeTextInOrder( array $values ): static {
 		try {
 			PHPUnit::assertTrue(
-				$this->see_in_order( $values, wp_strip_all_tags( $this->get_content() ) )
+				$this->see_in_order( $values, wp_strip_all_tags( (string) $this->get_content() ) )
 			);
 		} catch ( Exception $exception ) {
 			PHPUnit::fail( $exception->getMessage() );
@@ -553,7 +553,7 @@ class Test_Response {
 	 * @param string $value Value to check.
 	 */
 	public function assertDontSee( $value ): static {
-		PHPUnit::assertStringNotContainsString( (string) $value, $this->get_content() );
+		PHPUnit::assertStringNotContainsString( (string) $value, (string) $this->get_content() );
 
 		return $this;
 	}
@@ -564,7 +564,7 @@ class Test_Response {
 	 * @param string $value Value to check.
 	 */
 	public function assertDontSeeText( $value ): static {
-		PHPUnit::assertStringNotContainsString( (string) $value, wp_strip_all_tags( $this->get_content() ) );
+		PHPUnit::assertStringNotContainsString( (string) $value, wp_strip_all_tags( (string) $this->get_content() ) );
 
 		return $this;
 	}
@@ -663,7 +663,7 @@ class Test_Response {
 	public function assertIsNotJson(): static {
 		$content_type = $this->get_header( 'Content-Type' );
 
-		PHPUnit::assertStringNotContainsString( 'application/json', $content_type );
+		PHPUnit::assertStringNotContainsString( 'application/json', (string) $content_type );
 
 		// Bail early if the content type is not JSON.
 		if ( empty( $content_type ) ) {
@@ -690,7 +690,7 @@ class Test_Response {
 	 * Assert that the response is an HTML response.
 	 */
 	public function assertIsHtml(): static {
-		PHPUnit::assertStringContainsString( 'text/html', $this->get_header( 'Content-Type' ) );
+		PHPUnit::assertStringContainsString( 'text/html', (string) $this->get_header( 'Content-Type' ) );
 
 		return $this;
 	}
@@ -699,7 +699,7 @@ class Test_Response {
 	 * Assert that the response is not an HTML response.
 	 */
 	public function assertIsNotHtml(): static {
-		PHPUnit::assertStringNotContainsString( 'text/html', $this->get_header( 'Content-Type' ) );
+		PHPUnit::assertStringNotContainsString( 'text/html', (string) $this->get_header( 'Content-Type' ) );
 
 		return $this;
 	}
@@ -916,7 +916,7 @@ class Test_Response {
 	 */
 	public function decoded_json(): Assertable_Json_String {
 		if ( ! isset( $this->decoded_json ) ) {
-			$this->decoded_json = new Assertable_Json_String( $this->get_content() );
+			$this->decoded_json = new Assertable_Json_String( (string) $this->get_content() );
 		}
 
 		return $this->decoded_json;

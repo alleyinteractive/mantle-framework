@@ -34,7 +34,7 @@ trait Interacts_With_User_Agent {
 		$attributes = collect( $this->get_attributes_for_method( UserAgent::class ) );
 
 		if ( ! $attributes->is_empty() ) {
-			$this->set_user_agent( $attributes->first()->newInstance()->ua );
+			$this->set_user_agent( $attributes->first()?->newInstance()->ua );
 
 			// Set the user agent for any request being made.
 			$this->before_request( function (): void {

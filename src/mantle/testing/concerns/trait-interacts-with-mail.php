@@ -114,13 +114,11 @@ trait Interacts_With_Mail {
 		}
 
 		return collect( $mailer->mock_sent )->filter(
-			function ( Mail_Message $message ) use ( $address_or_callback ) {
-				if ( is_string( $address_or_callback ) ) {
-					return $message->sent_to( $address_or_callback );
-				}
-
-				return $address_or_callback( $message );
-			}
+			fn ( Mail_Message $message ) => match ( true ) {
+				is_string( $address_or_callback ) => $message->sent_to( $address_or_callback ),
+				is_callable( $address_or_callback ) => $address_or_callback( $message ),
+				default => true,
+			},
 		);
 	}
 }

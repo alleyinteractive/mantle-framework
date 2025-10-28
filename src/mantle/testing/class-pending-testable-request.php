@@ -258,6 +258,7 @@ class Pending_Testable_Request {
 	 *
 	 * @throws \Exception Exceptions thrown while setting up the WordPress query are re-thrown to the caller.
 	 * @throws InvalidArgumentException If the request is to an unsupported path.
+	 * @throws RuntimeException If the application instance is not available on the test case.
 	 *
 	 * @param string      $method     Request method.
 	 * @param mixed       $uri        Request URI.
@@ -442,6 +443,10 @@ class Pending_Testable_Request {
 				$response_headers,
 				$this->test_case,
 			);
+		}
+
+		if ( ! $this->test_case->app ) {
+			throw new RuntimeException( 'The application instance is not available on the test case.' );
 		}
 
 		$response
@@ -731,9 +736,9 @@ class Pending_Testable_Request {
 
 			if ( $server->sent_body !== null ) {
 				$this->rest_api_response = [
-					'body'    => $server->sent_body,
-					'headers' => $server->sent_headers,
-					'status'  => $server->sent_status,
+					'body'    => $server->sent_body ?? '',
+					'headers' => $server->sent_headers ?? [],
+					'status'  => $server->sent_status ?? 200,
 				];
 			}
 		} else {
