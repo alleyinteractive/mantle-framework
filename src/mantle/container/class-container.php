@@ -888,7 +888,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 		}
 
 		return array_map(
-			fn ( $abstract ) => $this->resolve( $abstract ),
+			fn ( string $abstract ) => $this->resolve( $abstract ),
 			$concrete
 		);
 	}
@@ -1116,6 +1116,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 *
 	 * @deprecated Use `get_instance()` instead.
 	 */
+	#[\Deprecated( 'Use get_instance() instead.' )]
 	public static function getInstance(): static {
 		return static::get_instance();
 	}

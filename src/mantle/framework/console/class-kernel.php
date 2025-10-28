@@ -230,7 +230,7 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 
 		$this->commands = collect( $paths ) // @phpstan-ignore-line argument.type
 			->unique()
-			->filter( fn ( string $path ) => is_dir( $path ) )
+			->filter( is_dir( ... ) )
 			->map( fn ( string $path ) => $this->classes_from_path( $path, $namespace . '\Console' ) )
 			->flatten()
 			->filter(

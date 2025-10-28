@@ -5,6 +5,62 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.13.1
+
+### Fixed
+
+- Fixed issue with `wpmu_delete_blog()` not being loaded before use.
+
+## v1.13.0
+
+### Added
+
+- Added `scheduled()` state to post factory to create scheduled posts.
+- Added `create_ordered_set_and_get()` method to factories to create and
+  retrieve an ordered set of models.
+- Added `collect_many()` and `collect_many_and_get()` methods to factories to
+  create multiple models and return them as a collection.
+- Added support for passing callables as model attributes in factories.
+- Added `PermalinkStructure` attribute to set the permalink structure during tests.
+- Added `scheduled()` state to post factory to create scheduled posts.
+- Added `create_ordered_set_and_get()` method to factories to create and
+  retrieve an ordered set of models.
+- Added `collect_many()` and `collect_many_and_get()` methods to factories to
+  create multiple models and return them as a collection.
+- Added support for passing callables as model attributes in factories.
+- Added `PermalinkStructure` attribute to set the permalink structure during tests.
+
+### Changed
+
+- Clear `$_COOKIE` and `$_SESSION` in addition to other superglobals when
+  cleaning the global scope between tests.
+- Added `Deprecation` attribute to some already-deprecated methods in the
+  framework to better indicate their deprecation status.
+
+### Fixed
+
+- Fixed issue where `Mantle\Types\Validator` is used within `mantle-framework/support` but `mantle-framework/types` is not a dependency.
+
+## v1.12.4
+
+### Fixed
+
+- Fixed issue with unserialization of cached HTTP client requests causing errors
+  due to uninitialized properties (again).
+
+## v1.12.3
+
+### Fixed
+
+- Fixed issue with unserialization of cached HTTP client requests causing errors
+  due to uninitialized properties.
+
+## v1.12.2
+
+### Fixed
+
+- Fixed issue with the `url` property in `Mantle\Http_Client\Response` not being initialized properly.
+
 ## v1.12.1
 
 ### Changed

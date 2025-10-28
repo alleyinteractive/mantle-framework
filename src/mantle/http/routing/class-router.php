@@ -464,7 +464,7 @@ class Router implements Router_Contract {
 
 		$excluded = collect( $route->excluded_middleware() )
 			->map(
-				fn ( $name ) => Middleware_Name_Resolver::resolve( $name, $this->middleware, $this->middleware_groups ),
+				fn ( \Closure|string $name ) => Middleware_Name_Resolver::resolve( $name, $this->middleware, $this->middleware_groups ),
 			)
 			->flatten()
 			->values()
@@ -472,7 +472,7 @@ class Router implements Router_Contract {
 
 		return collect( $route->middleware() )
 			->map(
-				fn ( $name ) => (array) Middleware_Name_Resolver::resolve( $name, $this->middleware, $this->middleware_groups ),
+				fn ( \Closure|string $name ) => (array) Middleware_Name_Resolver::resolve( $name, $this->middleware, $this->middleware_groups ),
 			)
 			->flatten()
 			->reject(

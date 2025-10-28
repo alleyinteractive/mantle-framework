@@ -126,7 +126,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 		$tail = implode(
 			'/',
 			array_map(
-				'rawurlencode',
+				rawurlencode( ... ),
 				$this->format_parameters( $extra_params )
 			)
 		);

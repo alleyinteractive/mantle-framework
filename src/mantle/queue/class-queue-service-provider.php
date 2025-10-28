@@ -30,7 +30,7 @@ class Queue_Service_Provider extends Service_Provider {
 			fn ( $app ) => tap(
 				// Register the Queue Manager with the supported providers when resolved.
 				new Queue_Manager( $app ),
-				fn ( Queue_Manager $manager ) => $this->register_providers( $manager ),
+				$this->register_providers( ... ),
 			),
 		);
 

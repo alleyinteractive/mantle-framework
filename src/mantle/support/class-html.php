@@ -153,6 +153,36 @@ class HTML extends SymfonyCrawler implements Htmlable {
 	}
 
 	/**
+	 * Get the nearest previous sibling element.
+	 *
+	 * @param string|null $selector Optional CSS selector to filter the previous siblings.
+	 * @throws \InvalidArgumentException If the current node list is empty.
+	 */
+	public function previous_sibling( ?string $selector = null ): static {
+		if ( ! $this->has_nodes() ) {
+			throw new \InvalidArgumentException( 'The current node list is empty.' );
+		}
+
+		$previous = $this->previousAll();
+		return (bool) $selector ? $previous->filter( $selector )->first() : $previous->first();
+	}
+
+	/**
+	 * Get the nearest next sibling element.
+	 *
+	 * @param string|null $selector Optional CSS selector to filter the next siblings.
+	 * @throws \InvalidArgumentException If the current node list is empty.
+	 */
+	public function next_sibling( ?string $selector = null ): static {
+		if ( ! $this->has_nodes() ) {
+			throw new \InvalidArgumentException( 'The current node list is empty.' );
+		}
+
+		$next = $this->nextAll();
+		return (bool) $selector ? $next->filter( $selector )->first() : $next->first();
+	}
+
+	/**
 	 * Retrieve all elements matching an XPath expression.
 	 *
 	 * @param string $xpath XPath expression to match.

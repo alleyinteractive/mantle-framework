@@ -79,7 +79,7 @@ class Response implements ArrayAccess {
 	/**
 	 * The request URL.
 	 */
-	protected readonly ?string $url;
+	protected ?string $url = null;
 
 	/**
 	 * Determine if the response was created from the cache.
@@ -508,5 +508,25 @@ class Response implements ArrayAccess {
 			'url'      => $this->url,
 			'response' => $this->response,
 		];
+	}
+
+	/**
+	 * Restore the object from serialized data.
+	 *
+	 * @throws LogicException If the serialized data is invalid.
+	 *
+	 * @param array<string, mixed> $data Serialized data.
+	 */
+	public function __unserialize( array $data ): void {
+		if ( ! isset( $data['response'] ) || ! is_array( $data['response'] ) ) {
+			throw new LogicException( 'Invalid serialized response data.' );
+		}
+
+		if ( isset( $data['url'] ) ) {
+			$this->url = is_string( $data['url'] ) ? $data['url'] : null;
+		}
+
+		$this->response = $data['response'];
+		$this->cached   = true;
 	}
 }

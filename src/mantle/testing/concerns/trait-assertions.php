@@ -247,6 +247,7 @@ trait Assertions {
 
 		// Next, assert identifying data about the object.
 		match ( true ) {
+			$object === null => PHPUnit::assertNull( $queried_object, 'Queried object is not null.' ),
 			$object instanceof Post && $queried_object instanceof WP_Post => PHPUnit::assertSame( $object->id(), $queried_object->ID, 'Queried object ID is not the same.' ),
 			$object instanceof User && $queried_object instanceof WP_User => PHPUnit::assertSame( $object->id(), $queried_object->ID, 'Queried object ID is not the same.' ),
 			$object instanceof Term && $queried_object instanceof WP_Term => PHPUnit::assertSame( $object->id(), $queried_object->term_id, 'Queried object ID is not the same.' ),
@@ -267,6 +268,7 @@ trait Assertions {
 		$queried_object = get_queried_object();
 
 		match ( true ) {
+			$object === null => PHPUnit::assertNotNull( $queried_object, 'Queried object is null.' ),
 			$object instanceof Post && $queried_object instanceof WP_Post => PHPUnit::assertNotSame( $object->id(), $queried_object->ID, 'Queried object ID is the same.' ),
 			$object instanceof User && $queried_object instanceof WP_User => PHPUnit::assertNotSame( $object->id(), $queried_object->ID, 'Queried object ID is the same.' ),
 			$object instanceof Term && $queried_object instanceof WP_Term => PHPUnit::assertNotSame( $object->id(), $queried_object->term_id, 'Queried object ID is the same.' ),

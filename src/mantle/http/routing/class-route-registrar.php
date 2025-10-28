@@ -125,7 +125,7 @@ class Route_Registrar implements Registrar_Contract {
 	 */
 	public function register_route( string|array $method, string $uri, Closure|array|string|null $action = null ): Route {
 		$method = match ( true ) {
-			is_array( $method ) => array_map( 'strtoupper', $method ),
+			is_array( $method ) => array_map( strtoupper( ... ), $method ),
 			'any' === $method => self::HTTP_METHODS,
 			default => [ strtoupper( $method ) ],
 		};

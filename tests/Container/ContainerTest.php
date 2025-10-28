@@ -16,11 +16,11 @@ class ContainerTest extends TestCase {
 	public function test_container_singleton() {
 		$container = Container::set_instance( new Container() );
 
-		$this->assertSame( $container, Container::getInstance() );
+		$this->assertSame( $container, Container::get_instance() );
 
 		Container::set_instance( null );
 
-		$container2 = Container::getInstance();
+		$container2 = Container::get_instance();
 
 		$this->assertInstanceOf( Container::class, $container2 );
 		$this->assertNotSame( $container, $container2 );

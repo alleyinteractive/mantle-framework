@@ -219,6 +219,7 @@ class Event {
 	 *
 	 * @param  string $url URL to ping.
 	 */
+	#[\Deprecated( 'Use ping_before() instead.' )]
 	public function pingBefore( string $url ): static {
 		return $this->ping_before( $url );
 	}
@@ -241,6 +242,7 @@ class Event {
 	 * @param  mixed  $value Value to compare.
 	 * @param  string $url URL to ping.
 	 */
+	#[\Deprecated( 'Use ping_before_if() instead.' )]
 	public function pingBeforeIf( mixed $value, string $url ): static {
 		return $this->ping_before_if( $value, $url );
 	}
@@ -261,6 +263,7 @@ class Event {
 	 *
 	 * @param string $url URL to ping.
 	 */
+	#[\Deprecated( 'Use then_ping() instead.' )]
 	public function thenPing( string $url ): static {
 		return $this->then_ping( $url );
 	}
@@ -283,6 +286,7 @@ class Event {
 	 * @param  bool   $value Value to compare.
 	 * @param  string $url URL to ping.
 	 */
+	#[\Deprecated( 'Use then_ping_if() instead.' )]
 	public function thenPingIf( mixed $value, string $url ): static {
 		return $this->then_ping_if( $value, $url );
 	}
@@ -415,6 +419,7 @@ class Event {
 	 *
 	 * @param \Closure $callback Callback to be invoked.
 	 */
+	#[\Deprecated( 'Use on_success() instead.' )]
 	public function onSuccess( Closure $callback ): static {
 		return $this->on_success( $callback );
 	}
@@ -441,6 +446,7 @@ class Event {
 	 *
 	 * @param \Closure $callback Callback to be invoked.
 	 */
+	#[\Deprecated( 'Use on_failure() instead.' )]
 	public function onFailure( Closure $callback ): static {
 		return $this->on_failure( $callback );
 	}

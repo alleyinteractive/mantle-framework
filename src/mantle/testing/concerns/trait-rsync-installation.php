@@ -547,7 +547,7 @@ trait Rsync_Installation {
 		// rest will be forwarded to the command.
 		array_shift( $args );
 
-		return $executable . ' ' . implode( ' ', array_map( 'escapeshellarg', $args ) );
+		return $executable . ' ' . implode( ' ', array_map( escapeshellarg( ... ), $args ) );
 	}
 
 	/**

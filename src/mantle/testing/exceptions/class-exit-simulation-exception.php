@@ -33,7 +33,7 @@ class Exit_Simulation_Exception extends Response_Exception {
 		}
 
 		parent::__construct(
-			status: $response_code,
+			status: is_int( $response_code ) ? $response_code : 200,
 			headers: $headers,
 			message: $message ?? "Simulated exit with status {$exit_status}",
 		);

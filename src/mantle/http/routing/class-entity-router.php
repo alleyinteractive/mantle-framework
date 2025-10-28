@@ -45,12 +45,12 @@ class Entity_Router implements Entity_Router_Contract {
 
 		$this->events->listen(
 			Route_Matched::class,
-			fn ( $event ) => $this->handle_route_matched( $event ),
+			$this->handle_route_matched( ... ),
 		);
 
 		$this->events->listen(
 			Bindings_Substituted::class,
-			fn ( $event ) => $this->handle_bindings_substituted( $event ),
+			$this->handle_bindings_substituted( ... ),
 		);
 	}
 

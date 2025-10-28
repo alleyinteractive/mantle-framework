@@ -6,6 +6,7 @@ use Mantle\Database\Factory;
 use Mantle\Database\Factory\Post_Factory;
 use Mantle\Database\Model;
 use Mantle\Database\Model\Post;
+use Mantle\Support\Collection;
 use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
@@ -33,10 +34,24 @@ class FactoryTest extends FrameworkTestCase {
 		$post_ids = $factory->create_many( 5 );
 
 		$this->assertCount( 5, $post_ids );
+		$this->assertIsArray( $post_ids );
 
-		foreach ( $post_ids as $post_id ) {
-			$this->assertIsInt( $post_id );
+		if ( method_exists( $this, 'assertContainsOnlyInt' ) ) {
+			$this->assertContainsOnlyInt( $post_ids );
+		} else {
+			$this->assertContainsOnly( 'int', $post_ids );
 		}
+	}
+
+	public function test_collect_many(): void {
+		$factory = Post::factory();
+
+		$this->assertInstanceOf( Factory\Post_Factory::class, $factory );
+
+		$posts = $factory->collect_many( 5 );
+
+		$this->assertCount( 5, $posts );
+		$this->assertInstanceOf( Collection::class, $posts );
 	}
 
 	public function test_create_many_and_get(): void {
@@ -48,6 +63,18 @@ class FactoryTest extends FrameworkTestCase {
 
 		$this->assertCount( 5, $posts );
 		$this->assertContainsOnlyInstancesOf( Post::class, $posts );
+	}
+
+	public function test_collect_many_and_get(): void {
+		$factory = Post::factory();
+
+		$this->assertInstanceOf( Factory\Post_Factory::class, $factory );
+
+		$posts = $factory->collect_many_and_get( 5 );
+
+		$this->assertCount( 5, $posts );
+		$this->assertInstanceOf( Collection::class, $posts );
+		$this->assertContainsOnlyInstancesOf( Post::class, $posts->all() );
 	}
 
 	public function test_create_model_with_custom_factory() {
@@ -151,6 +178,7 @@ class FactoryTest extends FrameworkTestCase {
 
 		$this->assertIsArray( $post_ids );
 		$this->assertCount( 3, $post_ids );
+
 		if ( method_exists( $this, 'assertContainsOnlyInt' ) ) {
 			$this->assertContainsOnlyInt( $post_ids );
 		} else {
@@ -226,6 +254,14 @@ class FactoryTest extends FrameworkTestCase {
 		$this->assertInstanceOf( Testable_Custom_Taxonomy::class, $post );
 		$this->assertEquals( 'custom_taxonomy', $post->taxonomy );
 		$this->assertNotEmpty( $post->name );
+	}
+
+	public function test_callable_as_attribute(): void {
+		$post = Testable_Post::factory()->create_and_get( [
+			'post_title' => fn () => 'Title from callable',
+		] );
+
+		$this->assertEquals( 'Title from callable', $post->post_title );
 	}
 }
 
