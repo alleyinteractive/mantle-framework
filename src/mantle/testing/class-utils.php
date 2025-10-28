@@ -189,6 +189,10 @@ class Utils {
 		// phpcs:disable WordPress.DB,WordPressVIPMinimum.Variables
 		global $wpdb;
 
+		if ( ! function_exists( 'wpmu_delete_blog' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/ms.php';
+		}
+
 		foreach ( $wpdb->get_col( "SELECT blog_id FROM {$wpdb->blogs} WHERE blog_id != 1" ) as $blog_id ) {
 			wpmu_delete_blog( $blog_id, true );
 		}
