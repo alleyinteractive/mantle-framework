@@ -130,7 +130,7 @@ trait Response_Snapshot_Testing {
 					->unique()
 					->flip()
 					->map(
-						fn ( $value, $key ) => data_get( $content, $key, [] ),
+						fn ( $value, mixed $key ) => data_get( $content, $key, [] ),
 					)
 					->to_array();
 			}
