@@ -602,8 +602,8 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 *
 	 * @param  string $format
 	 */
-	public function scan( $format ): Collection {
-		return collect( sscanf( $this->value, $format ) );
+	public function scan( string $format ): Collection {
+		return collect( sscanf( $this->value, $format ) ); // @phpstan-ignore-line argument.type
 	}
 
 	/**

@@ -675,7 +675,7 @@ class Str {
 
 		$last_word = array_pop( $parts );
 
-		return implode( '', $parts ) . self::plural( $last_word, $count );
+		return implode( '', $parts ) . self::plural( (string) $last_word, $count );
 	}
 
 	/**
@@ -1011,7 +1011,7 @@ class Str {
 		if ( ! ctype_lower( $value ) ) {
 			$value = preg_replace( '/\s+/u', '', ucwords( $value ) );
 
-			$value = static::lower( preg_replace( '/(.)(?=[A-Z])/u', '$1' . $delimiter, (string) $value ) );
+			$value = static::lower( (string) preg_replace( '/(.)(?=[A-Z])/u', '$1' . $delimiter, (string) $value ) );
 		}
 
 		return static::$snake_cache[ $key ][ $delimiter ] = $value;

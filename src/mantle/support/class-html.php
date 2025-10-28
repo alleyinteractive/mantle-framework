@@ -69,7 +69,7 @@ class HTML extends SymfonyCrawler implements Htmlable {
 	 */
 	public function to_html(): string {
 		if ( $this->is_html_document() ) {
-			return (string) $this->get_dom_document()->saveHTML();
+			return (string) $this->get_dom_document()?->saveHTML();
 		}
 
 		$doc  = new \DOMDocument( '1.0', 'UTF-8' );
@@ -81,7 +81,7 @@ class HTML extends SymfonyCrawler implements Htmlable {
 
 		$html = trim( (string) $doc->saveHTML() );
 
-		return preg_replace( '@^<' . self::FRAGMENT_ROOT_TAGNAME . '[^>]*>|</' . self::FRAGMENT_ROOT_TAGNAME . '>$@', '', $html );
+		return (string) preg_replace( '@^<' . self::FRAGMENT_ROOT_TAGNAME . '[^>]*>|</' . self::FRAGMENT_ROOT_TAGNAME . '>$@', '', $html );
 	}
 
 	/**
@@ -256,7 +256,9 @@ class HTML extends SymfonyCrawler implements Htmlable {
 
 				$node = $item->getNode( 0 );
 
-				$node->parentNode->replaceChild( static::import_new_node( $result, $node ), $node );
+				if ( $node ) {
+					$node->parentNode?->replaceChild( static::import_new_node( $result, $node ), $node );
+				}
 
 				return $item;
 			}
@@ -518,9 +520,9 @@ class HTML extends SymfonyCrawler implements Htmlable {
 				$new_node = static::import_new_node( $new_node, $node );
 
 				if ( ! $ref_node instanceof \DOMNode ) {
-					$node->parentNode->appendChild( $new_node );
+					$node->parentNode?->appendChild( $new_node );
 				} else {
-					$node->parentNode->insertBefore( $new_node, $ref_node );
+					$node->parentNode?->insertBefore( $new_node, $ref_node );
 				}
 
 				$nodes[] = $new_node;
@@ -547,7 +549,7 @@ class HTML extends SymfonyCrawler implements Htmlable {
 				if ( $node !== $newnode ) {
 					$newnode = static::import_new_node( $newnode, $node );
 
-					$node->parentNode->insertBefore( $newnode, $node );
+					$node->parentNode?->insertBefore( $newnode, $node );
 
 					$nodes[] = $newnode;
 				}
@@ -646,7 +648,7 @@ class HTML extends SymfonyCrawler implements Htmlable {
 
 			$new_node = static::import_new_node( $element, $node );
 
-			$node->parentNode->insertBefore( $new_node, $node );
+			$node->parentNode?->insertBefore( $new_node, $node );
 			$new_node->appendChild( $node );
 		}
 

@@ -26,14 +26,14 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	/**
 	 * The decoded JSON contents.
 	 */
-	protected ?array $decoded = null;
+	protected array $decoded;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param string|array|Jsonable|JsonSerializable $json The original encoded JSON.
 	 */
-	public function __construct( public $json ) {
+	public function __construct( public string|array|Jsonable|JsonSerializable $json ) {
 		if ( $this->json instanceof JsonSerializable ) {
 			$this->decoded = $this->json->jsonSerialize();
 		} elseif ( $this->json instanceof Jsonable ) {
@@ -47,10 +47,12 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 				PHPUnit::fail( 'Invalid JSON was returned from the response: ' . json_last_error_msg() );
 			}
 
-			$this->decoded = is_array( $decoded ) ? $decoded : null;
+			if ( is_array( $decoded ) ) {
+				$this->decoded = $decoded;
+			}
 		}
 
-		if ( null === $this->decoded ) {
+		if ( ! isset( $this->decoded ) ) {
 			PHPUnit::fail( 'Invalid JSON was returned from the response.' );
 		}
 	}
@@ -58,7 +60,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	/**
 	 * Retrieve the decoded JSON.
 	 */
-	public function get_decoded(): array {
+	public function get_decoded(): ?array {
 		return $this->decoded;
 	}
 
@@ -246,7 +248,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 
 		foreach ( $structure as $key => $value ) {
 			if ( is_array( $value ) && '*' === $key ) {
-				PHPUnit::assertIsArray( $this->decoded );
+				PHPUnit::assertIsArray( $this->decoded ); // @phpstan-ignore-line
 
 				foreach ( $this->decoded as $item ) {
 					$this->assertStructure( $structure['*'], $item );
