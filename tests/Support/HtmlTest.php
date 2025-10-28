@@ -572,7 +572,7 @@ class HtmlTest extends TestCase {
 
 	public function test_it_can_get_the_nearest_previous_sibling(): void {
 		$html = new HTML(self::TEST_CONTENT);
-		$previous = $html->filter('#test-id')->previousSibling();
+		$previous = $html->filter('#test-id')->previous_sibling();
 		$this->assertInstanceOf(HTML::class, $previous);
 		$this->assertEquals('div', $previous->nodeName());
 		$this->assertEquals('test-class', $previous->attr('class'));
@@ -581,28 +581,28 @@ class HtmlTest extends TestCase {
 
 	public function test_it_can_get_the_nearest_next_sibling(): void {
 		$html = new HTML(self::TEST_CONTENT);
-		$next = $html->filter('#test-id')->nextSibling();
+		$next = $html->filter('#test-id')->next_sibling();
 		$this->assertInstanceOf(HTML::class, $next);
 		$this->assertEquals('ul', $next->nodeName());
 	}
 
 	public function test_it_returns_empty_crawler_for_missing_next_sibling(): void {
 		$html = new HTML(self::TEST_CONTENT);
-		$next = $html->filter('ul')->nextSibling();
+		$next = $html->filter('ul')->next_sibling();
 		$this->assertInstanceOf(HTML::class, $next);
 		$this->assertEquals(0, $next->count());
 	}
 
 	public function test_it_can_get_the_nearest_previous_filtered_sibling(): void {
 		$html = new HTML(self::TEST_CONTENT);
-		$previous = $html->filter('#test-id')->previousSibling('section');
+		$previous = $html->filter('#test-id')->previous_sibling('section');
 		$this->assertInstanceOf(HTML::class, $previous);
 		$this->assertEquals('section', $previous->nodeName());
 	}
 
 	public function test_it_can_get_the_nearest_next_filtered_sibling(): void {
 		$html = new HTML(self::TEST_CONTENT);
-		$next = $html->filter('section')->nextSibling('ul');
+		$next = $html->filter('section')->next_sibling('ul');
 		$this->assertInstanceOf(HTML::class, $next);
 		$this->assertEquals('ul', $next->nodeName());
 	}
