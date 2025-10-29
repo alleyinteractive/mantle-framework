@@ -59,10 +59,12 @@ class Rest_Route_Registrar extends Route_Registrar {
 	public function register_route( string|array $method, string $uri, Closure|array|string|null $action = null ): Route {
 		$method = Arr::wrap( $method );
 
+		assert( $this->router instanceof Router, 'Router instance is not of type Router.' );
+
 		return $this->router->add_rest_route(
 			methods: $method,
 			uri: $uri,
-			arguments: $this->normalize_arguments( $action, $uri, $method ),
+			arguments: $this->normalize_arguments( $action ?? [], $uri, $method ),
 		);
 	}
 
@@ -129,6 +131,8 @@ class Rest_Route_Registrar extends Route_Registrar {
 				return rest_ensure_response( $callback( $request ) );
 			}
 
+			assert( $this->router instanceof Router, 'Router instance is not of type Router.' );
+
 			$container = $this->router->get_container();
 
 			$container['events']->dispatch(
@@ -159,6 +163,8 @@ class Rest_Route_Registrar extends Route_Registrar {
 	 * @return array<callable>
 	 */
 	public function gather_route_middleware( array $middleware ): array {
+		assert( $this->router instanceof Router, 'Router instance is not of type Router.' );
+
 		return collect( $middleware )
 			->map(
 				fn ( \Closure|string $name ) => (array) Middleware_Name_Resolver::resolve(
@@ -183,6 +189,8 @@ class Rest_Route_Registrar extends Route_Registrar {
 	 * @param string $route Route path.
 	 */
 	private function parse_route_action( mixed $action, string $route ): callable {
+		assert( $this->router instanceof Router, 'Router instance is not of type Router.' );
+
 		if ( is_callable( $action ) ) {
 			return $action;
 		}

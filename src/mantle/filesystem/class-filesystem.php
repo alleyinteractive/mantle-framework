@@ -351,7 +351,7 @@ class Filesystem {
 		$name = $this->name( $path );
 
 		if ( Str::starts_with( $name, [ 'class-', 'trait-', 'interface-' ] ) ) {
-			$name = preg_replace( '/^(\w*-)/', '', $name, 1 );
+			$name = (string) preg_replace( '/^(\w*-)/', '', $name, 1 );
 
 			return Str::studly_underscore( $name );
 		}

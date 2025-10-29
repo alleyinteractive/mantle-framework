@@ -7,6 +7,7 @@
 
 namespace Mantle\Contracts\Http\Routing;
 
+use Mantle\Contracts\Container;
 use Mantle\Http\Request;
 use Mantle\Http\Routing\Route;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,6 +17,11 @@ use Symfony\Component\Routing\RouteCollection;
  * Router Contract
  */
 interface Router {
+	/**
+	 * Get the container instance.
+	 */
+	public function get_container(): Container;
+
 	/**
 	 * Register a route.
 	 *

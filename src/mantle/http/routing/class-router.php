@@ -302,10 +302,13 @@ class Router implements Router_Contract {
 	 * @param Request $request Request object.
 	 */
 	public function dispatch( Request $request ): ?Symfony_Response {
-		return $this->execute_route_match(
-			$this->match_route( $request ),
-			$request
-		);
+		$match = $this->match_route( $request );
+
+		if ( is_null( $match ) ) {
+			return null;
+		}
+
+		return $this->execute_route_match( $match, $request );
 	}
 
 	/**

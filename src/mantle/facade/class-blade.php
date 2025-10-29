@@ -71,10 +71,16 @@ class Blade extends Facade {
 	/**
 	 * Render a Blade template dynamically from a string.
 	 *
+	 * @throws \RuntimeException Thrown when application instance is not set.
+	 *
 	 * @param string               $template The uncompiled Blade template.
 	 * @param array<string, mixed> $data The data to pass to the view.
 	 */
 	public static function render_string( string $template, array $data = [] ): string {
+		if ( ! isset( static::$app ) ) {
+			throw new \RuntimeException( 'Application instance is not set on Facade.' );
+		}
+
 		$resolver = static::$app['view.engine.resolver'];
 
 		assert( $resolver instanceof \Mantle\View\Engines\Engine_Resolver );

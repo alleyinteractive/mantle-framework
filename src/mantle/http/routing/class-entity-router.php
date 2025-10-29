@@ -139,10 +139,10 @@ class Entity_Router implements Entity_Router_Contract {
 		global $wp_query, $post;
 
 		$route      = $event->request->get_route();
-		$parameters = collect( $event->request->get_route_parameters()->all() );
+		$parameters = collect( $event->request->get_route_parameters()?->all() ?? [] );
 
 		// Set the queried object for the entity route.
-		if ( 'single' === $route->getOption( 'entity_router' ) ) {
+		if ( $route && 'single' === $route->getOption( 'entity_router' ) ) {
 			$entity = $route->getOption( 'entity' );
 
 			$queried_object = $parameters

@@ -11,6 +11,8 @@ use Mantle\Support\Str;
 
 /**
  * File helpers.
+ *
+ * @mixin \Symfony\Component\HttpFoundation\File\File
  */
 trait File_Helpers {
 	/**
@@ -18,7 +20,7 @@ trait File_Helpers {
 	 *
 	 * @var string
 	 */
-	protected $hash_name;
+	protected string $hash_name;
 
 	/**
 	 * Get the fully qualified path to the file.
@@ -30,7 +32,7 @@ trait File_Helpers {
 	/**
 	 * Get the file's extension.
 	 */
-	public function extension(): string {
+	public function extension(): ?string {
 		return $this->guessExtension();
 	}
 

@@ -91,7 +91,10 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 			return $this->get_console_application()->run( $input, $output ?? $this->output );
 		} catch ( Throwable $e ) {
 			$this->report_exception( $e );
-			$this->render_exception( $output, $e );
+
+			if ( $output ) {
+				$this->render_exception( $output, $e );
+			}
 
 			return Command::FAILURE;
 		}
@@ -300,15 +303,15 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	 */
 	protected function render_exception( OutputInterface $output, Throwable $e ) {
 		if ( $e instanceof CommandNotFoundException ) {
-			$this->output->writeln( '<error>' . stringable( $e->getMessage() )->explode( '.' )->first() . '</error>' );
-			$this->output->writeln( '' );
+			$this->output?->writeln( '<error>' . stringable( $e->getMessage() )->explode( '.' )->first() . '</error>' );
+			$this->output?->writeln( '' );
 
 			if ( ! empty( $alternatives = $e->getAlternatives() ) ) {
-				$this->output->writeln( '<comment>Did you mean one of these?</comment>' );
-				$this->output->writeln( '' );
+				$this->output?->writeln( '<comment>Did you mean one of these?</comment>' );
+				$this->output?->writeln( '' );
 
 				foreach ( $alternatives as $alternative ) {
-					$this->output->writeln( "  - <fg=green>{$alternative}</>" );
+					$this->output?->writeln( "  - <fg=green>{$alternative}</>" );
 				}
 			}
 
