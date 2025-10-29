@@ -22,8 +22,14 @@ use Mantle\Queue\Queue_Fake;
 class Queue extends Facade {
 	/**
 	 * Replace the bound instance with a fake.
+	 *
+	 * @throws \RuntimeException If no Mantle application instance has been set.
 	 */
 	public static function fake(): \Mantle\Queue\Queue_Fake {
+		if ( ! isset( static::$app ) ) {
+			throw new \RuntimeException( 'A Mantle application instance has not been set.' );
+		}
+
 		$fake = new Queue_Fake( static::$app );
 
 		static::swap( $fake );

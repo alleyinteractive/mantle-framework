@@ -48,7 +48,7 @@ trait Response_Snapshot_Testing {
 	 */
 	public function assertMatchesSnapshotContent( ...$args ): static {
 		if ( $this->test_case ) {
-			$content_type = $this->get_header( 'content-type' );
+			$content_type = (string) $this->get_header( 'content-type' );
 
 			if ( Str::contains( $content_type, 'application/json', true ) ) {
 				return $this->assertMatchesSnapshotJson( ...$args );
@@ -94,7 +94,7 @@ trait Response_Snapshot_Testing {
 		$document->formatOutput       = true;
 
 		// To ignore HTML5 errors.
-		@$document->loadHTML( $this->get_content(), LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, Generic.PHP.NoSilencedErrors.Forbidden
+		@$document->loadHTML( (string) $this->get_content(), LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, Generic.PHP.NoSilencedErrors.Forbidden
 
 		$nodes = ( new \DOMXPath( $document ) )->query( implode( '|', $selectors ) );
 
