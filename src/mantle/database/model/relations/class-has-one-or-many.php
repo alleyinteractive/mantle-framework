@@ -68,6 +68,10 @@ abstract class Has_One_Or_Many extends Relation {
 					->pluck( 'term_id' )
 					->all();
 
+				if ( ! $this->local_key ) {
+					throw new Model_Exception( 'Local key is not defined for Post-Term relationship.' );
+				}
+
 				// If the post has no terms, 'kill' the query.
 				if ( empty( $term_ids ) ) {
 					$this->query->whereIn( $this->local_key, [ PHP_INT_MAX ] );
@@ -85,6 +89,10 @@ abstract class Has_One_Or_Many extends Relation {
 					'slug',
 				);
 			} else {
+				if ( ! $this->local_key ) {
+					throw new Model_Exception( 'Local key is not defined for Post-Term relationship.' );
+				}
+
 				$this->query->whereMeta( $this->foreign_key, $this->parent->get( $this->local_key ) );
 			}
 		}

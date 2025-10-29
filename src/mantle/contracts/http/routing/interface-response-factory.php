@@ -84,7 +84,7 @@ interface Response_Factory {
 	 * @param  \Closure    $callback
 	 * @param  string|null $name
 	 * @param  array       $headers
-	 * @param  string|null $disposition
+	 * @param  string      $disposition
 	 * @return \Symfony\Component\HttpFoundation\StreamedResponse
 	 */
 	public function stream_download( $callback, $name = null, array $headers = [], string $disposition = 'attachment' );
@@ -95,7 +95,7 @@ interface Response_Factory {
 	 * @param  \SplFileInfo|string $file
 	 * @param  string|null         $name
 	 * @param  array               $headers
-	 * @param  string|null         $disposition
+	 * @param  string              $disposition
 	 * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
 	 */
 	public function download( $file, $name = null, array $headers = [], string $disposition = 'attachment' );
