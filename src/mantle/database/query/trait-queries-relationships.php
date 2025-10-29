@@ -108,6 +108,10 @@ trait Queries_Relationships {
 
 		$results = Relation::no_constraints(
 			function () use ( $models, $relation ) {
+				if ( ! $relation ) {
+					return Collection::from( [] );
+				}
+
 				// Add the eager constraints from the relation to the query.
 				$relation->add_eager_constraints( $models ); // @phpstan-ignore-line
 

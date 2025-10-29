@@ -249,7 +249,7 @@ class Post_Query_Builder extends Builder {
 		if ( empty( $taxonomy ) && ! is_array( $term ) ) {
 			// Attempt to resolve the term from the slug.
 			if ( 'slug' === $field ) {
-				$object = get_term_by( 'slug', $term, $taxonomy );
+				$object = get_term_by( 'slug', $term, $taxonomy ?? '' );
 
 				if ( ! ( $object instanceof WP_Term ) ) {
 					throw new Query_Exception( 'Unknown term to query against with slug (must pass taxonomy): ' . $term );

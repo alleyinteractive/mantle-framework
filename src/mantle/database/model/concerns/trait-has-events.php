@@ -134,16 +134,16 @@ trait Has_Events {
 	/**
 	 * Get the event dispatcher instance.
 	 */
-	public static function get_event_dispatcher(): Dispatcher {
+	public static function get_event_dispatcher(): ?Dispatcher {
 		return static::$dispatcher;
 	}
 
 	/**
 	 * Set the event dispatcher instance.
 	 *
-	 * @param Dispatcher $dispatcher Dispatcher instance.
+	 * @param Dispatcher|null $dispatcher Dispatcher instance.
 	 */
-	public static function set_event_dispatcher( Dispatcher $dispatcher ): void {
+	public static function set_event_dispatcher( ?Dispatcher $dispatcher ): void {
 		static::$dispatcher = $dispatcher;
 	}
 

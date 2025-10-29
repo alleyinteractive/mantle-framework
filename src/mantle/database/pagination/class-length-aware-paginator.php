@@ -16,7 +16,7 @@ class Length_Aware_Paginator extends Paginator {
 	 *
 	 * @var int
 	 */
-	protected $found_rows;
+	protected ?int $found_rows;
 
 	/**
 	 * View name to load.
