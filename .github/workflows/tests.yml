@@ -66,8 +66,7 @@ jobs:
         id: wp-versions
         uses: alleyinteractive/action-get-wordpress-versions@develop
         with:
-          number: 3
-
+          number: 4
 
   unit-tests:
     if: github.event.pull_request.draft == false
@@ -83,6 +82,12 @@ jobs:
         exclude:
           - php: 8.4
             dependencies: "prefer-lowest"
+          - php: 8.4
+            wordpress: "6.6"
+          - php: 8.4
+            wordpress: "6.6"
+          - php: 8.4
+            wordpress: "6.5"
         # Test various older versions of WordPress in a limited capacity.
         # include:
         #   - php: 8.3
