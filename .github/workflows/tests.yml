@@ -64,7 +64,7 @@ jobs:
     steps:
       - name: Get WordPress Versions
         id: wp-versions
-        uses: alleyinteractive/action-get-wordpress-versions@v1
+        uses: alleyinteractive/action-get-wordpress-versions@develop
         with:
           number: 3
 
