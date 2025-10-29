@@ -121,8 +121,5 @@ return RectorConfig::configure()
 		CatchExceptionNameMatchingTypeRector::class,
 		EncapsedStringsToSprintfRector::class,
 		FlipTypeControlToUseExclusiveTypeRector::class,
-		FunctionLikeToFirstClassCallableRector::class => [
-			__DIR__ . '/src/mantle/database/query/class-database-query-builder.php',
-			__DIR__ . '/src/mantle/testing',
-		],
+		FunctionLikeToFirstClassCallableRector::class,
 	] );
