@@ -57,8 +57,18 @@ jobs:
           skip-wordpress-install: 'true'
           test-command: 'composer lint'
 
+  find-wordpress-versions:
+    runs-on: ubuntu-latest
+    outputs:
+      versions: ${{ steps.get-versions.outputs.versions }}
+    steps:
+      - name: Get WordPress Versions
+        id: get-versions
+        run: echo "versions=$(curl -s https://api.wordpress.org/core/version-check/1.7/ | jq -r '.offers[] | select(.response == "autoupdate").version' | head -n 3 | sort -u | sed 's/\.[^.]*$//' | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
+
   unit-tests:
     if: github.event.pull_request.draft == false
+    needs: find-wordpress-versions
     timeout-minutes: 10
     strategy:
       fail-fast: false
@@ -66,24 +76,24 @@ jobs:
         dependencies: ["prefer-lowest", "prefer-stable"]
         multisite: [true, false]
         php: [8.2, 8.3, 8.4]
-        wordpress: ["latest"]
+        wordpress: ${{fromJson(needs.find-wordpress-versions.outputs.versions)}}
         exclude:
           - php: 8.4
             dependencies: "prefer-lowest"
         # Test various older versions of WordPress in a limited capacity.
-        include:
-          - php: 8.3
-            wordpress: "6.5"
-            dependencies: "prefer-stable"
-            multisite: true
-          - php: 8.3
-            wordpress: "6.6"
-            dependencies: "prefer-stable"
-            multisite: true
-          - php: 8.3
-            wordpress: "6.7"
-            dependencies: "prefer-stable"
-            multisite: true
+        # include:
+        #   - php: 8.3
+        #     wordpress: "6.5"
+        #     dependencies: "prefer-stable"
+        #     multisite: true
+        #   - php: 8.3
+        #     wordpress: "6.6"
+        #     dependencies: "prefer-stable"
+        #     multisite: true
+        #   - php: 8.3
+        #     wordpress: "6.7"
+        #     dependencies: "prefer-stable"
+        #     multisite: true
     runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}-P${{ matrix.php }}-WP${{ matrix.wordpress }}-MS${{ matrix.multisite && '1' || '0' }}-D${{ matrix.dependencies }}
