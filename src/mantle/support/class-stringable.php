@@ -247,13 +247,13 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	/**
 	 * Split a string using a regular expression or by length.
 	 *
-	 * @param  string|int<1, max> $pattern
-	 * @param  int<1, max>        $limit
-	 * @param  int                $flags
+	 * @param  string|int $pattern
+	 * @param  int        $limit
+	 * @param  int        $flags
 	 * @return Collection<int, mixed>
 	 */
-	public function split( string|int $pattern, int $limit = 1, int $flags = 0 ) {
-		if ( filter_var( $pattern, FILTER_VALIDATE_INT ) !== false ) {
+	public function split( string|int $pattern, int $limit = -1, int $flags = 0 ) {
+		if ( is_int( $pattern ) || filter_var( $pattern, FILTER_VALIDATE_INT ) !== false ) {
 			return collect( mb_str_split( $this->value, max( 1, (int) $pattern ) ) );
 		}
 
