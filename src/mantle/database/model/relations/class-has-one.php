@@ -7,13 +7,17 @@
 
 namespace Mantle\Database\Model\Relations;
 
+use Mantle\Contracts\Database\Core_Object;
+use Mantle\Contracts\Database\Model_Meta;
+use Mantle\Contracts\Database\Updatable;
+use Mantle\Database\Model\Model;
 use Mantle\Support\Collection;
 
 /**
  * Has One Relationship
  *
- * @template TParent of \Mantle\Database\Model\Model = \Mantle\Database\Model\Model
- * @template TModel of \Mantle\Database\Model\Model = \Mantle\Database\Model\Model
+ * @template TParent of Core_Object&Model_Meta&Updatable&Model = Core_Object&Model_Meta&Updatable&Model
+ * @template TModel of Core_Object&Model_Meta&Updatable&Model = Core_Object&Model_Meta&Updatable&Model
  *
  * @extends Has_One_Or_Many<TParent, TModel>
  */
@@ -43,7 +47,7 @@ class Has_One extends Has_One_Or_Many {
 		return $models->each(
 			function ( $model ) use ( $dictionary ): void {
 				$key = $model[ $this->local_key ];
-				$model->set_relation( $this->relationship, $dictionary[ $key ][0] ?? null );
+				$model->set_relation( $this->relationship, $dictionary[ $key ][0] ?? null ); // @phpstan-ignore-line method.notFound
 			}
 		);
 	}

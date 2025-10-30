@@ -8,32 +8,35 @@
 namespace Mantle\Database\Model\Concerns;
 
 use InvalidArgumentException;
+use Mantle\Contracts\Database\Core_Object;
+use Mantle\Contracts\Database\Model_Meta;
+use Mantle\Contracts\Database\Updatable;
+use Mantle\Database\Model\Model;
 use Mantle\Database\Model\Post;
-use Mantle\Database\Model\Relations\Belongs_To;
 use Mantle\Database\Model\Relations\Belongs_To_Many;
+use Mantle\Database\Model\Relations\Belongs_To;
 use Mantle\Database\Model\Relations\Has_Many;
 use Mantle\Database\Model\Relations\Has_One;
-use Mantle\Database\Model\Relations\Has_One_Or_Many;
 use Mantle\Database\Model\Relations\Relation;
 use Mantle\Database\Model\Term;
 
 /**
  * Model Relationships
  *
- * @template TModel of \Mantle\Database\Model\Model
+ * @template TModel of Core_Object&Model_Meta&Updatable&Model
  */
 trait Has_Relationships {
 	/**
 	 * The loaded relationships for the model.
 	 *
-	 * @var array<string, Relation<TModel, \Mantle\Database\Model\Model>>
+	 * @var array<string, Relation<TModel, Core_Object&Model_Meta&Updatable&Model>>
 	 */
 	protected $relations = [];
 
 	/**
 	 * Define a Has One Relationship
 	 *
-	 * @template TRelated of \Mantle\Database\Model\Model
+	 * @template TRelated of Core_Object&Model_Meta&Updatable&Model
 	 *
 	 * @param class-string<TRelated> $related Related model name.
 	 * @param string                 $foreign_key Foreign key.
@@ -45,13 +48,13 @@ trait Has_Relationships {
 		$foreign_key ??= $this->get_foreign_key();
 		$local_key   ??= $this->get_key_name();
 
-		return new Has_One( $instance->new_query(), $this, $foreign_key, $local_key );
+		return new Has_One( $instance->new_query(), $this, $foreign_key, $local_key ); // @phpstan-ignore-line return.type
 	}
 
 	/**
 	 * Define a Has Many Relationship
 	 *
-	 * @template TRelated of \Mantle\Database\Model\Model
+	 * @template TRelated of Core_Object&Model_Meta&Updatable&Model
 	 *
 	 * @param class-string<TRelated> $related Related model name.
 	 * @param string                 $foreign_key Foreign key.
@@ -63,7 +66,7 @@ trait Has_Relationships {
 		$foreign_key ??= $this->get_foreign_key();
 		$local_key   ??= $this->get_key_name();
 
-		return new Has_Many( $instance->new_query(), $this, $foreign_key, $local_key );
+		return new Has_Many( $instance->new_query(), $this, $foreign_key, $local_key ); // @phpstan-ignore-line return.type
 	}
 
 	/**
@@ -72,7 +75,7 @@ trait Has_Relationships {
 	 * Defines a relationship between two models with the reference stored on the remote
 	 * model's meta.
 	 *
-	 * @template TRelated of \Mantle\Database\Model\Model
+	 * @template TRelated of Core_Object&Model_Meta&Updatable&Model
 	 *
 	 * @param class-string<TRelated> $related Related model name.
 	 * @param string                 $foreign_key Foreign key.
@@ -94,21 +97,21 @@ trait Has_Relationships {
 		$foreign_key ??= $this->get_key_name();
 		$local_key   ??= $instance->get_foreign_key();
 
-		return new Belongs_To( $instance->new_query(), $this, $foreign_key, $local_key );
+		return new Belongs_To( $instance->new_query(), $this, $foreign_key, $local_key ); // @phpstan-ignore-line return.type
 	}
 
 	/**
-	 * Define a belongs to relationship.
+	 * Define a belongs to many relationship.
 	 *
 	 * Defines a relationship between two models with the reference stored on the remote
 	 * object's meta.
 	 *
-	 * @template TRelated of \Mantle\Database\Model\Model
+	 * @template TRelated of Core_Object&Model_Meta&Updatable&Model
 	 *
 	 * @param class-string<TRelated> $related Related model name.
 	 * @param string                 $foreign_key Foreign key.
 	 * @param string                 $local_key Local key.
-	 * @return Has_One_Or_Many<TModel, TRelated>
+	 * @return Belongs_To_Many<TModel, TRelated>
 	 *
 	 * @throws InvalidArgumentException Used on the definition of a post and term relationship.
 	 */
@@ -125,14 +128,14 @@ trait Has_Relationships {
 		$foreign_key ??= $this->get_key_name();
 		$local_key   ??= $instance->get_foreign_key();
 
-		return new Belongs_To_Many( $instance->new_query(), $this, $foreign_key, $local_key );
+		return new Belongs_To_Many( $instance->new_query(), $this, $foreign_key, $local_key ); // @phpstan-ignore-line return.type
 	}
 
 	/**
 	 * Get a relationship for the model.
 	 *
 	 * @param string $relation Relation name.
-	 * @return Relation<TModel, \Mantle\Database\Model\Model>|null
+	 * @return Relation<TModel, Core_Object&Model_Meta&Updatable&Model>|null
 	 */
 	public function get_relation( string $relation ): ?Relation {
 		return $this->relations[ $relation ] ?? null;
@@ -144,7 +147,7 @@ trait Has_Relationships {
 	 * @param string $relation Relation name.
 	 * @param mixed  $value Value to set.
 	 */
-	public function set_relation( string $relation, $value ): static {
+	public function set_relation( string $relation, mixed $value ): static {
 		$this->relations[ $relation ] = $value;
 
 		return $this;

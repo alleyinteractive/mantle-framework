@@ -62,7 +62,7 @@ class AWS_S3_Adapter extends Filesystem_Adapter {
 	 * @param  \DateTimeInterface $expiration
 	 * @param  array<mixed>       $options
 	 */
-	public function temporary_url( string $path, $expiration, array $options = [] ): string {
+	public function temporary_url( string $path, DateTimeInterface $expiration, array $options = [] ): string {
 		$command = $this->client->getCommand(
 			'GetObject',
 			array_merge(

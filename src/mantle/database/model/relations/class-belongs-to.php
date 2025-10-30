@@ -30,8 +30,8 @@ use function Mantle\Support\Helpers\collect;
  * For relationships between posts and term models, the Belongs To relationship
  * is not supported for performance reasons.
  *
- * @template TParent of \Mantle\Database\Model\Model = \Mantle\Database\Model\Model
- * @template TModel of \Mantle\Database\Model\Model = \Mantle\Database\Model\Model
+ * @template TParent of Core_Object&Model_Meta&Updatable&Model = Core_Object&Model_Meta&Updatable&Model
+ * @template TModel of Core_Object&Model_Meta&Updatable&Model = Core_Object&Model_Meta&Updatable&Model
  *
  * @extends Relation<TParent, TModel>
  */
@@ -111,13 +111,13 @@ class Belongs_To extends Relation {
 	/**
 	 * Retrieve the results of the query.
 	 *
-	 * @return \Mantle\Database\Model\Model|null
+	 * @return Model|null
 	 * @phpstan-return TParent|null
 	 */
 	public function get_results() {
 		$this->add_constraints();
 
-		return $this->query->first();
+		return $this->query->first(); // @phpstan-ignore-line
 	}
 
 	/**
@@ -153,16 +153,16 @@ class Belongs_To extends Relation {
 			throw new Model_Exception( 'Parent model must be an instance of Model_Meta.' );
 		}
 
-		$append = Belongs_To_Many::class === static::class || is_subclass_of( $this, Belongs_To_Many::class );
+		$append = Belongs_To_Many::class === static::class || is_subclass_of( $this, Belongs_To_Many::class ); // @phpstan-ignore-line
 
 		if ( $this->uses_terms ) {
 			$set = wp_set_post_terms( $this->parent->id(), [ $this->get_term_for_relationship( $model ) ], static::RELATION_TAXONOMY, $append );
 			if ( is_wp_error( $set ) ) {
-							throw new Model_Exception( "Error associating term relationship for [{$this->parent->id()}]: [{$set->get_error_message()}]" );
+				throw new Model_Exception( "Error associating term relationship for [{$this->parent->id()}]: [{$set->get_error_message()}]" );
 			}
 
 			if ( false === $set ) {
-																throw new Model_Exception( "Unknown error associating term relationship for [{$this->parent->id()}]" );
+				throw new Model_Exception( "Unknown error associating term relationship for [{$this->parent->id()}]" );
 			}
 		} elseif ( $append ) {
 			$this->parent->add_meta( $this->local_key, $model->id() );
@@ -171,7 +171,7 @@ class Belongs_To extends Relation {
 		}
 
 		if ( $this->relationship ) {
-			$this->parent->unset_relation( $this->relationship );
+			$this->parent->unset_relation( $this->relationship ); // @phpstan-ignore-line method.notFound
 		}
 
 		return $model;
@@ -216,7 +216,7 @@ class Belongs_To extends Relation {
 		}
 
 		if ( $this->relationship ) {
-			$this->parent->unset_relation( $this->relationship );
+			$this->parent->unset_relation( $this->relationship ); // @phpstan-ignore-line method.notFound
 		}
 
 		return $this;
@@ -331,9 +331,9 @@ class Belongs_To extends Relation {
 
 		return $models->each(
 			function ( $model ) use ( $dictionary ): void {
-				$key = $model->meta->{$this->local_key};
+				$key = $model->meta->{$this->local_key}; // @phpstan-ignore-line
 
-				$model->set_relation( $this->relationship, $dictionary[ $key ][0] ?? null );
+				$model->set_relation( $this->relationship, $dictionary[ $key ][0] ?? null ); // @phpstan-ignore-line method.notFound
 			}
 		);
 	}
@@ -343,6 +343,7 @@ class Belongs_To extends Relation {
 	 *
 	 * @param Collection $results Collection of results.
 	 * @param Collection $models Eagerly loaded results to match.
+	 * @return array<string, array<int, TModel>>
 	 */
 	protected function build_dictionary( Collection $results, Collection $models ): array {
 		return $results
@@ -356,6 +357,6 @@ class Belongs_To extends Relation {
 	 * Flag if the meta should appended.
 	 */
 	protected function should_append(): bool {
-		return Belongs_To_Many::class === static::class || is_subclass_of( $this, Belongs_To_Many::class );
+		return Belongs_To_Many::class === static::class || is_subclass_of( $this, Belongs_To_Many::class ); // @phpstan-ignore-line
 	}
 }

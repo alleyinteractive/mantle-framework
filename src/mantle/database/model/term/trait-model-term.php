@@ -215,7 +215,7 @@ trait Model_Term {
 					throw new Model_Exception( "Error creating term: [{$term->get_error_message()}]" );
 				}
 
-				$term = get_term( $term['term_id'], $taxonomy );
+				$term = get_term_object( $term['term_id'], $taxonomy );
 			}
 
 			if ( $term ) {

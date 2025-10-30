@@ -64,11 +64,11 @@ class Collection extends Base_Collection {
 	public function map( callable $callback ) {
 		$result = parent::map( $callback );
 
-		if ( $result instanceof self ) {
+		if ( $result instanceof self ) { // @phpstan-ignore-line instanceof.alwaysTrue
 			$result->with_found_rows( $this->found_rows );
 		}
 
-		return $result->contains( fn ( $item ) => ! $item instanceof Model )
+		return $result->contains( fn ( $item ) => ! $item instanceof Model ) // @phpstan-ignore-line instanceof.alwaysTrue
 			? $result->to_base()
 			: $result;
 	}
@@ -87,11 +87,11 @@ class Collection extends Base_Collection {
 	public function map_with_keys( callable $callback ) {
 		$result = parent::map_with_keys( $callback );
 
-		if ( $result instanceof self ) {
+		if ( $result instanceof self ) { // @phpstan-ignore-line instanceof.alwaysTrue
 			$result->with_found_rows( $this->found_rows );
 		}
 
-		return $result->contains( fn ( $item ) => ! $item instanceof Model )
+		return $result->contains( fn ( $item ) => ! $item instanceof Model ) // @phpstan-ignore-line instanceof.alwaysTrue
 			? $result->to_base()
 			: $result;
 	}
@@ -107,7 +107,7 @@ class Collection extends Base_Collection {
 	 * @return \Mantle\Support\Collection<array-key, int>
 	 */
 	public function count_by( $count_by = null ) {
-		return $this->to_base()->count_by( $count_by );
+		return $this->to_base()->count_by( $count_by ); // @phpstan-ignore-line argument.type
 	}
 
 	/**
@@ -180,6 +180,6 @@ class Collection extends Base_Collection {
 	 * @return static<int, static<TKey, TModel|TZipValue>>
 	 */
 	public function zip( ...$items ) { // @phpstan-ignore-line return
-		return $this->to_base()->zip( ...$items );
+		return $this->to_base()->zip( ...$items ); // @phpstan-ignore-line return.type
 	}
 }

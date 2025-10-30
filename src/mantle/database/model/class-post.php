@@ -92,6 +92,8 @@ use function Mantle\Support\Helpers\stringable;
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> newer_than_or_equal_to( DateTimeInterface|int $date, string $column = 'post_date' )
  */
 class Post extends Model implements Contracts\Database\Core_Object, Contracts\Database\Model_Meta, Contracts\Database\Updatable {
+	/** @use Concerns\Has_Relationships<static> */
+	use Concerns\Has_Relationships;
 	use Dates\Has_Dates;
 	use Events\Post_Events;
 	use Meta\Model_Meta;
@@ -203,7 +205,11 @@ PHP
 
 		$full_class_name = "{$namespace}\\{$class_name}";
 
-		return new $full_class_name();
+		$instance = new $full_class_name();
+
+		assert( $instance instanceof self );
+
+		return $instance;
 	}
 
 	/**
@@ -219,7 +225,7 @@ PHP
 	 * @return \Mantle\Database\Query\Post_Query_Builder<static>
 	 */
 	public static function query(): Post_Query_Builder {
-		return ( new static() )->new_query();
+		return ( new static() )->new_query(); // @phpstan-ignore-line return.type
 	}
 
 	/**

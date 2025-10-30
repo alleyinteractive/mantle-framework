@@ -104,7 +104,7 @@ trait Resolves_Factories {
 	 * @return class-string<\Mantle\Database\Factory\Factory>
 	 */
 	public static function default_factory_name( string $model_name ): string {
-		$parent_classes  = collect( class_parents( $model_name ) );
+		$parent_classes  = collect( class_parents( $model_name ) ?: [] );
 		$model_namespace = 'Mantle\\Database\\Model';
 
 		// Attempt to resolve the parent class that is a model and not the base
