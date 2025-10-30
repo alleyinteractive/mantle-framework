@@ -44,13 +44,16 @@ trait File_Helpers {
 			$path = rtrim( $path, '/' ) . '/';
 		}
 
-		$hash      = $this->hash_name ?: $this->hash_name = Str::random( 40 );
+		if ( empty( $this->hash_name ) ) {
+			$this->hash_name = Str::random( 40 );
+		}
+
 		$extension = $this->guessExtension();
 
 		if ( $extension ) {
 			$extension = '.' . $extension;
 		}
 
-		return $path . $hash . $extension;
+		return $path . $this->hash_name . $extension;
 	}
 }

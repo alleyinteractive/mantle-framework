@@ -76,7 +76,7 @@ class Belongs_To_Many extends Belongs_To {
 		}
 
 		foreach ( $models as $model ) {
-			$dictionary[ $model->{$this->foreign_key} ] = (string) $model->get_meta( $this->local_key, false );
+			$dictionary[ $model->{$this->foreign_key} ] = (array) $model->get_meta( $this->local_key, false );
 		}
 
 		return $dictionary
