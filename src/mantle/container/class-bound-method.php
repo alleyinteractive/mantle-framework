@@ -34,7 +34,7 @@ class Bound_Method {
 	 */
 	public static function call( $container, $callback, array $parameters = [], $default_method = null ) {
 		if ( static::is_callable_with_at_sign( $callback ) || $default_method ) {
-			return static::call_class( $container, $callback, $parameters, $default_method );
+			return static::call_class( $container, $callback, $parameters, $default_method ); // @phpstan-ignore-line argument.type
 		}
 
 		return static::call_bound_method(

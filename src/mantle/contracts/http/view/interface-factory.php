@@ -7,8 +7,10 @@
 
 namespace Mantle\Contracts\Http\View;
 
+use ArrayAccess;
 use Mantle\Http\View\View;
 use Mantle\Support\Collection;
+use WP_Query;
 
 /**
  * View Factory Contract
@@ -40,23 +42,23 @@ interface Factory {
 	 *
 	 * While iterating over the data, the proper post data is setup for each item.
 	 *
-	 * @param array|\ArrayAccess $data Array of WordPress data to loop over.
-	 * @param string             $slug View slug.
-	 * @param array|string       $name View name, optional. Supports passing variables in if
-	 *                                 $variables is not used.
-	 * @param array              $variables Variables for the view, optional.
+	 * @param array<mixed>|WP_Query|ArrayAccess $data Array of WordPress data to loop over.
+	 * @param string                            $slug View slug.
+	 * @param array<string, mixed>|string       $name View name, optional. Supports passing variables in if
+	 *                                                $variables is not used.
+	 * @param array<string, mixed>              $variables Variables for the view, optional.
 	 */
-	public function loop( $data, string $slug, $name = null, array $variables = [] ): Collection;
+	public function loop( array|WP_Query|ArrayAccess $data, string $slug, array|string|null $name = null, array $variables = [] ): Collection;
 
 	/**
 	 * Iterate over an array, loading a given template part for each item in the
 	 * array.
 	 *
-	 * @param array|\ArrayAccess $data Array of data to iterate over over.
-	 * @param string             $slug View slug.
-	 * @param array|string       $name View name, optional. Supports passing variables in if
-	 *                                 $variables is not used.
-	 * @param array              $variables Variables for the view, optional.
+	 * @param array<mixed>|\ArrayAccess $data Array of data to iterate over over.
+	 * @param string                    $slug View slug.
+	 * @param array<mixed>|string       $name View name, optional. Supports passing variables in if
+	 *                                        $variables is not used.
+	 * @param array<string, mixed>      $variables Variables for the view, optional.
 	 */
 	public function iterate( $data, string $slug, $name = null, array $variables = [] ): Collection;
 

@@ -7,13 +7,14 @@
 
 namespace Mantle\Contracts;
 
+use ArrayAccess;
 use Closure;
 use Psr\Container\ContainerInterface;
 
 /**
  * Container Contract
  */
-interface Container extends ContainerInterface {
+interface Container extends ArrayAccess, ContainerInterface {
 	/**
 	 * Determine if the given abstract type has been bound.
 	 *
@@ -96,9 +97,9 @@ interface Container extends ContainerInterface {
 	/**
 	 * Call the given Closure / class@method and inject its dependencies.
 	 *
-	 * @param  callable|string $callback
-	 * @param  array<mixed>    $parameters
-	 * @param  string|null     $default_method
+	 * @param  array|string|callable $callback
+	 * @param  array<mixed>          $parameters
+	 * @param  string|null           $default_method
 	 */
 	public function call( $callback, array $parameters = [], $default_method = null ): mixed;
 
