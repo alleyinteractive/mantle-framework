@@ -80,6 +80,7 @@ class Vendor_Publish_Command extends Command {
 			$paths = Service_Provider::paths_to_publish();
 		} else {
 			$paths = Service_Provider::paths_to_publish(
+				// @phpstan-ignore argument.type
 				providers: $this->has_option( 'providers' )
 					? collect( (array) $this->option( 'providers' ) )->map( 'trim' )->all()
 					: null,
@@ -220,9 +221,9 @@ class Vendor_Publish_Command extends Command {
 	 * @param  string $type
 	 */
 	protected function status( string $from, string $to, string $type ): void {
-		$from = str_replace( base_path() . '/', '', realpath( $from ) );
+		$from = str_replace( base_path() . '/', '', (string) realpath( $from ) );
 
-		$to = str_replace( base_path() . '/', '', realpath( $to ) );
+		$to = str_replace( base_path() . '/', '', (string) realpath( $to ) );
 
 		$this->info(
 			sprintf(

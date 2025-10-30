@@ -116,6 +116,6 @@ class Closure_Job implements Can_Queue {
 
 		$reflection = new ReflectionFunction( $closure );
 
-		return 'Closure (' . basename( $reflection->getFileName() ) . ':' . $reflection->getStartLine() . ')';
+		return 'Closure (' . basename( (string) $reflection->getFileName() ) . ':' . $reflection->getStartLine() . ')';
 	}
 }

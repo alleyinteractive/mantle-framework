@@ -87,6 +87,8 @@ class Entity_Router implements Entity_Router_Contract {
 
 		$route = $event->route;
 
+		assert( $route instanceof Route );
+
 		// Ignore if the route isn't an entity route.
 		if ( ! $route->hasOption( 'entity_router' ) ) {
 			return;

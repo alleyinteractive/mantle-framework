@@ -106,7 +106,7 @@ class Package_Manifest {
 
 		if ( $filesystem->exists( $composer_installed ) ) {
 			$installed = json_decode(
-				file_get_contents( $composer_installed ), // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
+				(string) file_get_contents( $composer_installed ), // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
 				true,
 				512,
 				JSON_THROW_ON_ERROR
@@ -192,7 +192,7 @@ class Package_Manifest {
 		}
 
 		return json_decode(
-			file_get_contents( $this->base_path . '/composer.json' ),
+			(string) file_get_contents( $this->base_path . '/composer.json' ),
 			true
 		)['extra']['mantle']['dont-discover'] ?? [];
 	}

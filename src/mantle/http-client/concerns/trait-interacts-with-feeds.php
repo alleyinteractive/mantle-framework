@@ -68,6 +68,6 @@ trait Interacts_With_Feeds {
 		$feed->init();
 		$feed->set_output_encoding( get_bloginfo( 'charset' ) );
 
-		return $feed;
+		return $feed; // @phpstan-ignore-line return.type
 	}
 }

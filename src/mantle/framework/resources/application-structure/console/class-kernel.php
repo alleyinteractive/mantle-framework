@@ -21,7 +21,7 @@ class Kernel extends Console_Kernel {
 	/**
 	 * The commands provided by the application.
 	 *
-	 * @var array<class-string<Command>|Command>
+	 * @var array<class-string<Command|\Symfony\Component\Console\Command\Command>>
 	 */
 	protected $commands = [
 		// ...

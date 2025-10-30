@@ -290,8 +290,8 @@ class Handler implements Contract {
 	 * @return array{0: string, 1: string}
 	 */
 	protected function get_http_exception_view( Throwable $e ): array {
-		$default_view                 = [ 'error/error', '500' ];
-								$view = [ 'error/error', '500' ];
+		$default_view = [ 'error/error', '500' ];
+		$view         = [ 'error/error', '500' ];
 		if ( $e instanceof HttpExceptionInterface ) {
 			$view = [ 'error/error', (string) $e->getStatusCode() ];
 		}
@@ -308,12 +308,13 @@ class Handler implements Contract {
 			// If there is an error dispatching the event, fall back to the default view.
 			$view = $default_view;
 		} finally {
-			if ( ! is_array( $view ) ) {
+			// Ensure the view is valid before returning it.
+			if ( ! is_array( $view ) || count( $view ) !== 2 || ! is_string( $view[0] ) || ! is_string( $view[1] ) ) {
 				$view = $default_view;
 			}
 		}
 
-		return $view;
+		return $view; // @phpstan-ignore-line return.type
 	}
 
 	/**

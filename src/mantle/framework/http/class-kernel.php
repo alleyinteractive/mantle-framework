@@ -188,7 +188,9 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 		}
 
 		foreach ( $this->route_middleware as $key => $middleware ) {
-			$this->router->alias_middleware( $key, $middleware );
+			if ( is_string( $middleware ) ) {
+				$this->router->alias_middleware( $key, $middleware );
+			}
 		}
 	}
 

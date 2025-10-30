@@ -65,7 +65,7 @@ class Dispatcher {
 	/**
 	 * Dispatch a job in the current process.
 	 *
-	 * @param mixed $job Job instance.
+	 * @param object|class-string $job Job instance.
 	 */
 	public function dispatch_now( mixed $job ): void {
 		$this->container->call( [ $job, 'handle' ] );

@@ -662,15 +662,13 @@ class Pending_Request {
 	/**
 	 * Issue a single request to the given URL.
 	 *
-	 * @throws InvalidArgumentException If the request is pooled.
 	 * @throws InvalidArgumentException If the request does not have a URL set.
 	 *
 	 * @param  string|Http_Method|null $method HTTP Method, optional.
 	 * @param  string                  $url URL for the request, optional.
 	 * @param  array<string, mixed>    $options Options for the request.
-	 * @return Response|static
 	 */
-	public function send( string|Http_Method|null $method = null, ?string $url = null, array $options = [] ): mixed {
+	public function send( string|Http_Method|null $method = null, ?string $url = null, array $options = [] ): Response {
 		if ( $url ) {
 			$this->set_url( $url );
 		}

@@ -74,7 +74,7 @@ trait Route_Dependency_Resolver {
 	 * Attempt to transform the given parameter into a class instance.
 	 *
 	 * @param  \ReflectionParameter $parameter
-	 * @param  array<mixed>                $parameters
+	 * @param  array<mixed>         $parameters
 	 * @param  object               $skippable_value
 	 */
 	protected function transform_dependency( ReflectionParameter $parameter, $parameters, $skippable_value ): mixed {
@@ -83,7 +83,7 @@ trait Route_Dependency_Resolver {
 		// If the parameter has a type-hinted class, we will check to see if it is already in
 		// the list of parameters. If it is we will just skip it as it is probably a model
 		// binding and we do not want to mess with those; otherwise, we resolve it here.
-		if ( $class_name && ! $this->already_in_parameters( $class_name, $parameters ) ) {
+		if ( $class_name && class_exists( $class_name ) && ! $this->already_in_parameters( $class_name, $parameters ) ) {
 			$is_enum = ( new ReflectionClass( $class_name ) )->isEnum();
 
 			return $parameter->isDefaultValueAvailable()

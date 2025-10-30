@@ -57,7 +57,7 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 		$this->model->set_lock_until( time() + ( $job->timeout ?? 600 ) );
 
 		// Check if the job has a method called 'handle'.
-		if ( $job instanceof JobContract || method_exists( $job, 'handle' ) ) {
+		if ( $job instanceof JobContract || ( is_object( $job ) && method_exists( $job, 'handle' ) ) ) {
 			$job->handle();
 		} elseif ( is_callable( $job ) ) {
 			$job();
@@ -108,7 +108,7 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 
 		$job = $this->get_job();
 
-		if ( method_exists( $job, 'failed' ) ) {
+		if ( is_object( $job ) && method_exists( $job, 'failed' ) ) {
 			$job->failed( $e );
 		}
 	}
@@ -125,7 +125,7 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 
 		$job = $this->get_job();
 
-		if ( method_exists( $job, 'completed' ) ) {
+		if ( is_object( $job ) && method_exists( $job, 'completed' ) ) {
 			$job->completed();
 		}
 	}

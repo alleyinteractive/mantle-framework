@@ -41,6 +41,11 @@ class Clear_Cache_Command extends Command {
 	public function handle(): void {
 		$files = glob( $this->container->get_cache_path() . '/*.php' );
 
+		if ( ! $files ) {
+			$this->info( 'No cache files found.' );
+			return;
+		}
+
 		foreach ( $files as $file ) {
 			$this->line( 'Deleting: ' . $this->colorize( $file, 'yellow' ) );
 

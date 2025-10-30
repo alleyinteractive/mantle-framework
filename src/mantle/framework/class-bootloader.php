@@ -364,14 +364,14 @@ class Bootloader implements Contract {
 
 				// Remove anything before the wp-cli command name.
 				if ( false !== $index ) {
-					$argv = $argv->slice( $index )->values();
+					$argv = $argv->slice( (int) $index )->values();
 				}
 
 				// Remove the `--url=` option as it shouldn't be passed down to the console command.
 				$argv = $argv->filter( fn ( $value ) => ! Str::starts_with( $value, '--url=' ) );
 
 				$status    = $kernel->handle(
-					$input = new ArgvInput( $argv->values()->to_array() ),
+					$input = new ArgvInput( $argv->values()->to_array() ), // @phpstan-ignore-line argument.type
 					new ConsoleOutput(),
 				);
 

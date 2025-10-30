@@ -192,13 +192,15 @@ class Route_Registrar implements Registrar_Contract {
 			$route = $this->router->registrar->register_route(
 				method: [ 'GET', 'HEAD' ],
 				uri: $callback_or_uri,
-				action: $args,
+				action: $args, // @phpstan-ignore-line argument.type
 			);
 
 			$this->router->registrar = $previous_registrar;
 
 			return $route;
 		}
+
+		assert( is_array( $args ), 'Route arguments must be an array if not a callable.' );
 
 		$args['methods'] = isset( $args['methods'] )
 			? Arr::wrap( $args['methods'] )
