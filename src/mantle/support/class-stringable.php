@@ -247,9 +247,9 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	/**
 	 * Split a string using a regular expression or by length.
 	 *
-	 * @param  string|int<1, max> $pattern
-	 * @param  int<1, max>        $limit
-	 * @param  int                $flags
+	 * @param  string|int $pattern
+	 * @param  int        $limit
+	 * @param  int        $flags
 	 * @return Collection<int, mixed>
 	 */
 	public function split( string|int $pattern, int $limit = 1, int $flags = 0 ) {
