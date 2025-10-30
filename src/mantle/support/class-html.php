@@ -713,16 +713,16 @@ class HTML extends SymfonyCrawler implements Htmlable {
 		}
 
 		// Create a new wrapping element and insert it before the first node.
-		$new_node = static::import_new_node( $element, $this->getNode( 0 ) );
-		$parent->insertBefore( $new_node, $this->getNode( 0 ) );
+		$new_node = static::import_new_node( $element, $this->getNode( 0 ) ); // @phpstan-ignore-line argument.type
+		$parent->insertBefore( $new_node, $this->getNode( 0 ) ); // @phpstan-ignore-line argument.type
 
 		foreach ( $this as $node ) {
 			$new_node->appendChild( $node );
 		}
 
 		// Remove the wrapping element if it has no child nodes after wrapping.
-		if ( ! $parent->hasChildNodes() ) {
-			$parent->parentNode->removeChild( $parent );
+		if ( $parent && ! $parent->hasChildNodes() ) {
+			$parent->parentNode?->removeChild( $parent );
 		}
 
 		return $this;
@@ -863,7 +863,7 @@ class HTML extends SymfonyCrawler implements Htmlable {
 	 * @param bool    $clone Whether to clone the new node if it belongs to the same document.
 	 */
 	protected static function import_new_node( DOMNode $new_node, DOMNode $existing_node, bool $clone = false ): DOMNode {
-		if ( $new_node->ownerDocument !== $existing_node->ownerDocument ) {
+		if ( $existing_node->ownerDocument && $new_node->ownerDocument !== $existing_node->ownerDocument ) {
 			$existing_node->ownerDocument->preserveWhiteSpace = false;
 
 			$new_node = $existing_node->ownerDocument->importNode( $new_node, true );
