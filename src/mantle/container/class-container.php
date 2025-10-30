@@ -857,9 +857,17 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 */
 	protected function resolveClass( ReflectionParameter $parameter ) {
 		try {
-			return $parameter->isVariadic()
-				? $this->resolve_variadic_class( $parameter )
-				: $this->make( Reflector::get_parameter_class_name( $parameter ) );
+			if ( $parameter->isVariadic() ) {
+				return $this->resolve_variadic_class( $parameter );
+			}
+
+			$class_name = Reflector::get_parameter_class_name( $parameter );
+
+			if ( is_null( $class_name ) ) {
+				throw new Binding_Resolution_Exception( "Unable to resolve class for parameter [\${$parameter->getName()}]." );
+			}
+
+			return $this->make( $class_name );
 		} catch ( Binding_Resolution_Exception $e ) {
 			// If we can not resolve the class instance, we will check to see if the value
 			// is optional, and if it is we will return the optional parameter value as
@@ -880,6 +888,10 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 */
 	protected function resolve_variadic_class( ReflectionParameter $parameter ) {
 		$class_name = Reflector::get_parameter_class_name( $parameter );
+
+		if ( is_null( $class_name ) ) {
+			return [];
+		}
 
 		$abstract = $this->get_alias( $class_name );
 
@@ -921,7 +933,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @throws Binding_Resolution_Exception Thrown on missing resolution.
 	 */
 	protected function unresolvable_primitive( ReflectionParameter $parameter ): never {
-		$message = "Unresolvable dependency resolving [{$parameter}] in class {$parameter->getDeclaringClass()->getName()}";
+		$message = "Unresolvable dependency resolving [{$parameter}] in class {$parameter->getDeclaringClass()?->getName()}";
 
 		throw new Binding_Resolution_Exception( $message );
 	}
@@ -1180,7 +1192,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @param  mixed $key
 	 */
 	public function offsetUnset( mixed $key ): void {
-			unset( $this->bindings[ $key ], $this->instances[ $key ], $this->resolved[ $key ] );
+		unset( $this->bindings[ $key ], $this->instances[ $key ], $this->resolved[ $key ] );
 	}
 
 	/**
@@ -1197,9 +1209,8 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 *
 	 * @param  string $key
 	 * @param  mixed  $value
-	 * @return void
 	 */
-	public function __set( string $key, mixed $value ) {
-			$this[ $key ] = $value;
+	public function __set( string $key, mixed $value ): void {
+		$this[ $key ] = $value;
 	}
 }
