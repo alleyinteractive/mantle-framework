@@ -115,7 +115,7 @@ class Log_Manager implements LoggerInterface {
 		}
 
 		return new GroupHandler( collect( $config['channels'] )
-			->map( $this->get_channel_handler(...) )
+			->map( fn ( string $channel ) => $this->get_channel_handler( $channel ) )
 			->where_instance_of( HandlerInterface::class )
 			->values()
 			->all() );

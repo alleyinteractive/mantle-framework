@@ -222,7 +222,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 */
 	public function assertSimilar( array $data ): static {
 		$actual = json_encode( Arr::sort_recursive(
-			(array) $this->decoded
+			$this->decoded
 		) );
 
 		PHPUnit::assertEquals( json_encode( Arr::sort_recursive( $data ) ), $actual );

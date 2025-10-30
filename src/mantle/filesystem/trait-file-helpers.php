@@ -17,8 +17,6 @@ use Mantle\Support\Str;
 trait File_Helpers {
 	/**
 	 * The cache copy of the file's hash name.
-	 *
-	 * @var string
 	 */
 	protected string $hash_name;
 

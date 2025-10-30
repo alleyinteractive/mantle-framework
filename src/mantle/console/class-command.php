@@ -185,7 +185,7 @@ abstract class Command extends Symfony_Command {
 
 			$application = $this->getApplication();
 
-			if ( ! $application ) {
+			if ( ! $application instanceof \Symfony\Component\Console\Application ) {
 				throw new InvalidArgumentException( 'Unable to proxy to WP-CLI when application instance is missing.' );
 			}
 

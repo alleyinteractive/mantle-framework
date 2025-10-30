@@ -256,7 +256,7 @@ class HTML extends SymfonyCrawler implements Htmlable {
 
 				$node = $item->getNode( 0 );
 
-				if ( $node ) {
+				if ( $node instanceof \DOMNode ) {
 					$node->parentNode?->replaceChild( static::import_new_node( $result, $node ), $node );
 				}
 
@@ -721,7 +721,7 @@ class HTML extends SymfonyCrawler implements Htmlable {
 		}
 
 		// Remove the wrapping element if it has no child nodes after wrapping.
-		if ( $parent && ! $parent->hasChildNodes() ) {
+		if ( $parent instanceof \DOMNode && ! $parent->hasChildNodes() ) {
 			$parent->parentNode?->removeChild( $parent );
 		}
 
@@ -863,7 +863,7 @@ class HTML extends SymfonyCrawler implements Htmlable {
 	 * @param bool    $clone Whether to clone the new node if it belongs to the same document.
 	 */
 	protected static function import_new_node( DOMNode $new_node, DOMNode $existing_node, bool $clone = false ): DOMNode {
-		if ( $existing_node->ownerDocument && $new_node->ownerDocument !== $existing_node->ownerDocument ) {
+		if ( $existing_node->ownerDocument instanceof \DOMDocument && $new_node->ownerDocument !== $existing_node->ownerDocument ) {
 			$existing_node->ownerDocument->preserveWhiteSpace = false;
 
 			$new_node = $existing_node->ownerDocument->importNode( $new_node, true );

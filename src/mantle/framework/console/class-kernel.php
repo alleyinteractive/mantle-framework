@@ -92,7 +92,7 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 		} catch ( Throwable $e ) {
 			$this->report_exception( $e );
 
-			if ( $output ) {
+			if ( $output instanceof \Symfony\Component\Console\Output\OutputInterface ) {
 				$this->render_exception( $output, $e );
 			}
 

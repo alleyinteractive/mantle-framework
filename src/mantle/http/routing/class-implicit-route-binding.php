@@ -33,7 +33,7 @@ class Implicit_Route_Binding {
 		$route      = $request->get_route();
 		$parameters = $request->get_route_parameters()?->all();
 
-		if ( ! $route || ! $parameters ) {
+		if ( ! $route instanceof \Mantle\Http\Routing\Route || ! $parameters ) {
 			return;
 		}
 

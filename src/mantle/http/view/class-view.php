@@ -198,7 +198,7 @@ class View implements \Stringable {
 
 		$post = $this->original_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 
-		if ( $post ) {
+		if ( $post instanceof \WP_Post ) {
 			\setup_postdata( $post );
 		}
 	}

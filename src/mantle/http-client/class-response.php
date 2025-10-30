@@ -311,7 +311,7 @@ class Response implements ArrayAccess {
 	public function file_contents(): ?string {
 		$file = $this->file();
 
-		return ! empty( $file ) ? (string) file_get_contents( $file ) : null; // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
+		return empty( $file ) ? null : (string) file_get_contents( $file ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
 	}
 
 	/**

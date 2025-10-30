@@ -149,7 +149,7 @@ trait Response_Dumper {
 		$content = (string) $this->get_content();
 
 		if ( str_contains( (string) $this->get_header( 'Content-Type' ), 'application/json' ) ) {
-			$json = json_decode( (string) $content );
+			$json = json_decode( $content );
 
 			if ( json_last_error() === JSON_ERROR_NONE ) {
 				if ( $selector ) {
@@ -172,7 +172,7 @@ trait Response_Dumper {
 			$content = HTML::create( $content )->filter( $selector )->to_html();
 		}
 
-		if ( empty( trim( (string) $content ) ) ) {
+		if ( empty( trim( $content ) ) ) {
 			render( '<em>No response content.</em>' );
 		} else {
 			dump( $content );
