@@ -12,12 +12,17 @@
 
 namespace Mantle\Support\Helpers;
 
+use ArrayAccess;
 use Carbon\Carbon;
 use Countable;
 use Exception;
+use JsonSerializable;
+use Mantle\Contracts\Support\Arrayable;
+use Mantle\Contracts\Support\Jsonable;
 use Mantle\Container\Container;
 use Mantle\Events\Dispatcher;
 use Mantle\Support\Collection;
+use Mantle\Support\Enumerable;
 use Mantle\Support\Higher_Order_Tap_Proxy;
 use Mantle\Support\HTML;
 use Mantle\Support\Str;
@@ -146,10 +151,10 @@ function get_callable_fqn( mixed $callable ): string {
  * @template TKey of array-key = array-key
  * @template TValue of mixed = mixed
  *
- * @param  iterable<TKey, TValue> $value Value to convert to a collection.
- * @return \Mantle\Support\Collection<TKey, TValue>
+ * @param iterable<TKey, TValue>|Arrayable<TKey, TValue>|Jsonable|JsonSerializable $value The value to create the collection from.
+ * @return Collection<TKey, TValue>
  */
-function collect( $value = [] ): Collection {
+function collect( mixed $value = [] ): Collection {
 	return new Collection( $value );
 }
 

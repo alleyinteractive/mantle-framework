@@ -11,8 +11,11 @@ namespace Mantle\Support;
 
 use ArrayAccess;
 use ArrayIterator;
+use JsonSerializable;
 use Mantle\Contracts\Support\Arrayable;
+use Mantle\Contracts\Support\Jsonable;
 use Mantle\Database\Model;
+use Mantle\Support\Enumerable;
 use Mantle\Support\Traits\Enumerates_Values;
 use stdClass;
 use Traversable;
@@ -47,9 +50,9 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Create a new collection.
 	 *
-	 * @param iterable<TKey, TValue> $items
+	 * @param iterable<TKey, TValue>|Arrayable<TKey, TValue>|Jsonable|JsonSerializable $items The items to include in the collection.
 	 */
-	public function __construct( $items = [] ) {
+	public function __construct( mixed $items = [] ) {
 		$this->items = $this->get_arrayable_items( $items );
 	}
 
@@ -803,6 +806,15 @@ class Collection implements ArrayAccess, Enumerable {
 		}
 
 		return new static( $result );
+	}
+
+	/**
+	 * Map all items to integers.
+	 *
+	 * @return static<TKey, int>
+	 */
+	public function map_to_integers(): static {
+		return $this->map( fn ( $value ) => (int) $value );
 	}
 
 	/**
