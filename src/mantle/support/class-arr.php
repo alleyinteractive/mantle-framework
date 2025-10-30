@@ -282,6 +282,8 @@ class Arr {
 			return $array[ $key ];
 		}
 
+		$key = (string) $key;
+
 		if ( strpos( $key, '.' ) === false ) {
 			return $array[ $key ] ?? Helpers\value( $default );
 		}
@@ -616,7 +618,7 @@ class Arr {
 	 * @phpstan-param (callable(value-of<TData>, key-of<TData>): bool) $callback
 	 */
 	public static function where( array $array, callable $callback ): array {
-		return array_filter( $array, $callback, ARRAY_FILTER_USE_BOTH );
+		return array_filter( $array, $callback, ARRAY_FILTER_USE_BOTH ); // @phpstan-ignore-line return.type
 	}
 
 	/**
