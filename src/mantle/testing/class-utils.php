@@ -11,6 +11,7 @@ use Mantle\Support\Collection;
 use Mantle\Support\Str;
 use Mantle\Testing\Doubles\Spy_REST_Server;
 
+use function Mantle\Support\Helpers\capture;
 use function Mantle\Support\Helpers\collect;
 use function Termwind\render;
 
@@ -60,6 +61,22 @@ class Utils {
 	public const DEFAULT_PERMALINK_STRUCTURE = '/%year%/%monthnum%/%day%/%postname%/';
 
 	/**
+	 * Get the current working directory or throw an exception.
+	 *
+	 * @throws \RuntimeException If the current working directory cannot be determined.
+	 * @return string The current working directory.
+	 */
+	public static function cwd(): string {
+		$cwd = getcwd();
+
+		if ( ! $cwd ) {
+			throw new \RuntimeException( 'Could not get current working directory.' );
+		}
+
+		return $cwd;
+	}
+
+	/**
 	 * Get the output from a given callable.
 	 *
 	 * @deprecated Use \Mantle\Support\Helpers::capture() instead.
@@ -69,9 +86,7 @@ class Utils {
 	 * @return false|string Rendered output on success, false on failure.
 	 */
 	public static function get_echo( callable $callable, array $args = [] ): string|false {
-		ob_start();
-		$callable( ...$args );
-		return ob_get_clean();
+		return capture( fn () => $callable( ...$args ) );
 	}
 
 	/**
@@ -274,7 +289,7 @@ class Utils {
 	 * @return callable-string[]
 	 */
 	public static function get_query_conditional_tags(): array {
-		return collect( get_class_methods( \WP_Query::class ) )
+		return collect( get_class_methods( \WP_Query::class ) ) // @phpstan-ignore-line
 			->filter( fn ( $method ) => str_starts_with( $method, 'is_' ) && function_exists( $method ) )
 			->reject( fn ( $method ) => in_array( $method, [ 'is_comments_popup', 'is_main_query' ], true ) )
 			->sort()
@@ -454,7 +469,7 @@ class Utils {
 					static::shell_safe( static::env( 'WP_VERSION', 'latest' ) ),
 					static::shell_safe( static::env( 'WP_SKIP_DB_CREATE', 'false' ) ),
 					static::shell_safe( $install_vip_mu_plugins ? 'true' : 'false' ),
-					static::shell_safe( $install_object_cache ),
+					static::shell_safe( $install_object_cache ), // @phpstan-ignore-line argument.type
 				]
 			)->implode( ' ' ),
 		);

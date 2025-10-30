@@ -177,18 +177,14 @@ class Test_Response {
 		// Enforce a lowercase header name.
 		$key = strtolower( $key );
 
-		// If the header is set and not null, return the string value.
-		if ( isset( $this->headers[ $key ] ) ) {
-			// Account for multiple headers with the same key.
-			return is_array( $this->headers[ $key ] )
-				? (string) ( $this->headers[ $key ][0] ?? '' )
-				: (string) $this->headers[ $key ];
+		if ( ! isset( $this->headers[ $key ] ) ) {
+			return $default;
 		}
 
-		// If the header is set and null, return that. Otherwise, the default.
-		return array_key_exists( $key, $this->headers )
-			? $this->headers[ $key ]
-			: $default;
+		// Account for multiple headers with the same key.
+		return is_array( $this->headers[ $key ] )
+			? (string) ( $this->headers[ $key ][0] ?? '' )
+			: (string) $this->headers[ $key ];
 	}
 
 	/**

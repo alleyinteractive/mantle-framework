@@ -43,7 +43,7 @@ class Spy_REST_Server extends WP_REST_Server {
 	 * @return mixed
 	 */
 	public function __call( $method, $args ) {
-		return call_user_func_array( [ $this, $method ], $args );
+		return call_user_func_array( [ $this, $method ], $args ); // @phpstan-ignore-line argument.type
 	}
 
 	/**
@@ -110,7 +110,7 @@ class Spy_REST_Server extends WP_REST_Server {
 	public function serve_request( $path = null ) {
 		ob_start();
 		$result          = parent::serve_request( $path );
-		$this->sent_body = ob_get_clean();
+		$this->sent_body = (string) ob_get_clean();
 		return $result;
 	}
 

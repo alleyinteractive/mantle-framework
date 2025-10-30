@@ -185,7 +185,7 @@ trait Element_Assertions {
 	public function assertElementCount( string $expression, int $expected ): static {
 		$nodes = ( new DOMXPath( $this->get_internal_dom_document() ) )->query( $expression );
 
-		PHPUnit::assertEquals( $expected, $nodes->length, 'Unexpected number of elements found.' );
+		PHPUnit::assertEquals( $expected, $nodes ? $nodes->length : 0, 'Unexpected number of elements found.' );
 
 		return $this;
 	}
@@ -235,6 +235,10 @@ trait Element_Assertions {
 		}
 
 		foreach ( $nodes as $node ) {
+			if ( $node instanceof \DOMNameSpaceNode ) {
+				continue;
+			}
+
 			if ( $assertion( $node ) ) {
 				// If we're passing on any, we can return early.
 				if ( $pass_any ) {

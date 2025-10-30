@@ -7,6 +7,8 @@
  * @package Mantle
  */
 
+declare(strict_types=1);
+
 namespace Mantle\Testing;
 
 use InvalidArgumentException;
@@ -283,7 +285,7 @@ class Pending_Testable_Request {
 			$url = $uri;
 		}
 
-		$path = wp_parse_url( $url, PHP_URL_PATH );
+		$path = (string) wp_parse_url( $url, PHP_URL_PATH );
 
 		// Check if the user is requesting a call to a path that the testing
 		// framework does not support.
@@ -356,7 +358,7 @@ class Pending_Testable_Request {
 
 			if ( $response instanceof \Symfony\Component\HttpFoundation\Response ) {
 				$response = new Test_Response(
-					$response->getContent(),
+					$response->getContent() ?: null,
 					$response->getStatusCode(),
 					$response->headers->all(),
 					$this->test_case,
@@ -672,7 +674,11 @@ class Pending_Testable_Request {
 
 		$scheme = wp_parse_url( home_url(), PHP_URL_SCHEME );
 
-		return empty( $scheme ) ? 'http' : $scheme;
+		if ( empty( $scheme ) ) {
+			$scheme = 'http';
+		}
+
+		return in_array( $scheme, [ 'http', 'https' ], true ) ? $scheme : 'http';
 	}
 
 	/**
@@ -687,7 +693,7 @@ class Pending_Testable_Request {
 	 */
 	protected function get_default_url_host(): string {
 		return $this->is_experimental_use_home_url_host_enabled()
-			? wp_parse_url( home_url(), PHP_URL_HOST )
+			? (string) wp_parse_url( home_url(), PHP_URL_HOST )
 			: WP_TESTS_DOMAIN;
 	}
 
@@ -785,7 +791,7 @@ class Pending_Testable_Request {
 	 * @throws RuntimeException If not implemented.
 	 */
 	public function json( string $method, string $uri, array $data = [], array $headers = [], int $options = 1 ): Test_Response {
-		$content = json_encode( $data, $options ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+		$content = (string) json_encode( $data, $options ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
 
 		$headers = array_merge(
 			$headers,

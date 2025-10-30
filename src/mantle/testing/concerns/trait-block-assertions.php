@@ -63,6 +63,8 @@ trait Block_Assertions {
 	 * @param array           $attrs Optional. Attributes to check for.
 	 */
 	public function assertStringHasBlock( string $string, string|array $block_name, array $attrs = [] ): void {
+		$block_name_string = is_array( $block_name ) ? implode( ', ', $block_name ) : $block_name;
+
 		$this->assertNotEmpty(
 			match_blocks(
 				$string,
@@ -72,8 +74,8 @@ trait Block_Assertions {
 				],
 			),
 			empty( $attrs )
-				? "Failed asserting that string has block [{$block_name}]."
-				: "Failed asserting that string has block [{$block_name}] with attributes " . print_r( $attrs, true )
+				? "Failed asserting that string has block [{$block_name_string}]."
+				: "Failed asserting that string has block [{$block_name_string}] with attributes " . print_r( $attrs, true )
 		);
 	}
 
@@ -85,6 +87,8 @@ trait Block_Assertions {
 	 * @param array           $attrs Optional. Attributes to check for.
 	 */
 	public function assertStringNotHasBlock( string $string, string|array $block_name, array $attrs = [] ): void {
+		$block_name_string = is_array( $block_name ) ? implode( ', ', $block_name ) : $block_name;
+
 		$this->assertEmpty(
 			match_blocks(
 				$string,
@@ -94,8 +98,8 @@ trait Block_Assertions {
 				],
 			),
 			empty( $attrs )
-				? "Failed asserting that string does not have block [{$block_name}]"
-				: "Failed asserting that string does not have block [{$block_name}] with attributes " . print_r( $attrs, true ),
+				? "Failed asserting that string does not have block [{$block_name_string}]"
+				: "Failed asserting that string does not have block [{$block_name_string}] with attributes " . print_r( $attrs, true ),
 		);
 	}
 

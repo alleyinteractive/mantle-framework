@@ -11,6 +11,7 @@
 namespace Mantle\Testing\Concerns;
 
 use DOMDocument;
+use DOMNode;
 use Mantle\Support\Arr;
 use Mantle\Support\Str;
 use Mantle\Testing\Snapshots\HTML_Driver;
@@ -97,14 +98,16 @@ trait Response_Snapshot_Testing {
 
 		$nodes = ( new \DOMXPath( $document ) )->query( implode( '|', $selectors ) );
 
-		if ( 0 === count( $nodes ) ) {
+		if ( ! $nodes || 0 === count( $nodes ) ) {
 			$this->test_case->fail( 'No nodes found for the given XPath selector(s): ' . print_r( $selectors, true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 		}
 
 		$results = [];
 
 		foreach ( $nodes as $node ) {
-			$results[] = $document->saveHTML( $node );
+			if ( $node instanceof DOMNode ) {
+				$results[] = $document->saveHTML( $node );
+			}
 		}
 
 		$this->test_case->assertMatchesSnapshot( implode( "\n", $results ), new HTML_Driver() );
@@ -127,7 +130,7 @@ trait Response_Snapshot_Testing {
 					->unique()
 					->flip()
 					->map(
-						fn ( $value, string $key ) => data_get( $content, $key, [] ),
+						fn ( $value, mixed $key ) => data_get( $content, $key, [] ),
 					)
 					->to_array();
 			}

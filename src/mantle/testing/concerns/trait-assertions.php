@@ -604,7 +604,7 @@ trait Assertions {
 
 		$result = (int) $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT COUNT(*) FROM {$table} WHERE 1=1 AND " . $arguments->map(
+				"SELECT COUNT(*) FROM {$table} WHERE 1=1 AND " . $arguments->map( // @phpstan-ignore argument.type
 					fn ( $value, $key ) => "{$key} = %s",
 				)->implode( ' AND ' ),
 				...$arguments->values()->all(),
@@ -637,7 +637,7 @@ trait Assertions {
 
 		$result = (int) $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT COUNT(*) FROM {$table} WHERE 1=1 AND " . $arguments->map(
+				"SELECT COUNT(*) FROM {$table} WHERE 1=1 AND " . $arguments->map( // @phpstan-ignore argument.type
 					fn ( $value, $key ) => "{$key} = %s",
 				)->implode( ' AND ' ),
 				...$arguments->values()->all(),
