@@ -5,6 +5,8 @@
  * @package Mantle
  */
 
+declare(strict_types=1);
+
 namespace Mantle\Console;
 
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -27,7 +29,7 @@ class Output_Style extends SymfonyStyle {
 			->map( fn ( $row ) => array_combine( $headers, $row ) )
 			->to_array();
 
-		$this->write( json_encode( $data, JSON_PRETTY_PRINT ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+		$this->write( (string) json_encode( $data, JSON_PRETTY_PRINT ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
 	}
 
 	/**
@@ -44,6 +46,12 @@ class Output_Style extends SymfonyStyle {
 
 		// todo: update to write to output.
 		$fp = fopen( 'php://output', 'wb' );
+
+		if ( ! $fp ) {
+			$this->error( 'Failed to open output stream for writing.' );
+
+			return;
+		}
 
 		fputcsv( $fp, $headers ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_fputcsv
 
@@ -76,6 +84,6 @@ class Output_Style extends SymfonyStyle {
 			}
 		}
 
-		$this->write( $xml->asXML() );
+		$this->write( (string) $xml->asXML() );
 	}
 }

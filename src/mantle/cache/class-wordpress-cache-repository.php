@@ -5,6 +5,8 @@
  * @package Mantle
  */
 
+declare(strict_types=1);
+
 namespace Mantle\Cache;
 
 use Mantle\Contracts\Application;
@@ -46,7 +48,7 @@ class WordPress_Cache_Repository extends Repository implements Taggable_Reposito
 	 * @return iterable<string, mixed>
 	 */
 	public function get_multiple( iterable $keys, mixed $default = null ): iterable {
-		return \wp_cache_get_multiple( $keys, $this->prefix );
+		return \wp_cache_get_multiple( is_array( $keys ) ? $keys : iterator_to_array( $keys ), $this->prefix );
 	}
 
 	/**
@@ -135,7 +137,7 @@ class WordPress_Cache_Repository extends Repository implements Taggable_Reposito
 	 * @param null|int|\DateInterval|\DateTimeInterface $ttl Cache TTL.
 	 */
 	public function set_multiple( iterable $values, null|int|\DateInterval|\DateTimeInterface $ttl = null ): bool {
-		$result = \wp_cache_set_multiple( $values, $this->prefix, $this->normalize_ttl( $ttl ) ); // phpcs:ignore WordPressVIPMinimum.Performance.LowExpiryCacheTime.CacheTimeUndetermined
+		$result = \wp_cache_set_multiple( is_array( $values ) ? $values : iterator_to_array( $values ), $this->prefix, $this->normalize_ttl( $ttl ) ); // phpcs:ignore WordPressVIPMinimum.Performance.LowExpiryCacheTime.CacheTimeUndetermined
 
 		return ! in_array( false, $result, true );
 	}
@@ -175,7 +177,7 @@ class WordPress_Cache_Repository extends Repository implements Taggable_Reposito
 	 * @param iterable<string> $keys Cache keys.
 	 */
 	public function delete_multiple( iterable $keys ): bool {
-		$result = \wp_cache_delete_multiple( $keys, $this->prefix );
+		$result = \wp_cache_delete_multiple( is_array( $keys ) ? $keys : iterator_to_array( $keys ), $this->prefix );
 
 		return ! in_array( false, $result, true );
 	}
