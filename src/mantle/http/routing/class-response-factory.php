@@ -106,9 +106,9 @@ class Response_Factory implements Factory_Contract {
 	 * @param  \Closure              $callback
 	 * @param  string|null           $name
 	 * @param  array<string, string> $headers
-	 * @param  string|null           $disposition
+	 * @param  string                $disposition
 	 */
-	public function stream_download( $callback, $name = null, array $headers = [], $disposition = 'attachment' ): \Symfony\Component\HttpFoundation\StreamedResponse {
+	public function stream_download( $callback, $name = null, array $headers = [], string $disposition = 'attachment' ): \Symfony\Component\HttpFoundation\StreamedResponse {
 		$response = new StreamedResponse( $callback, 200, $headers );
 
 		if ( ! is_null( $name ) ) {
@@ -131,10 +131,10 @@ class Response_Factory implements Factory_Contract {
 	 * @param  \SplFileInfo|string   $file
 	 * @param  string|null           $name
 	 * @param  array<string, string> $headers
-	 * @param  string|null           $disposition
+	 * @param  string                $disposition
 	 * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
 	 */
-	public function download( $file, $name = null, array $headers = [], $disposition = 'attachment' ) {
+	public function download( $file, $name = null, array $headers = [], string $disposition = 'attachment' ) {
 		$response = new BinaryFileResponse( $file, 200, $headers, true, $disposition );
 
 		if ( ! is_null( $name ) ) {

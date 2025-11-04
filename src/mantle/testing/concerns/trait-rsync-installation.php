@@ -374,6 +374,10 @@ trait Rsync_Installation {
 	 * WordPress installation without needing to rsync it manually.
 	 */
 	protected function perform_rsync_testsuite(): void {
+		if ( ! $this->rsync_to || ! $this->rsync_from ) {
+			return;
+		}
+
 		require_once __DIR__ . '/../class-utils.php';
 
 		$base_install_path = $this->get_installation_path();
@@ -557,6 +561,6 @@ trait Rsync_Installation {
 	 * @param string $path Path to translate.
 	 */
 	protected function translate_location( string $path ): string {
-		return str_replace( $this->rsync_from, $this->rsync_to, $path );
+		return str_replace( $this->rsync_from ?? '', $this->rsync_to ?? '', $path );
 	}
 }

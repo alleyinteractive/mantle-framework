@@ -280,10 +280,16 @@ trait Interacts_With_Cron {
 	/**
 	 * Dispatch the WordPress cron queue.
 	 *
+	 * @throws \RuntimeException If the application container is not available.
+	 *
 	 * @param int    $size Size of the queue to run.
 	 * @param string $queue Queue to run.
 	 */
 	public function dispatch_queue( int $size = 100, ?string $queue = null ): void {
+		if ( ! $this->app ) {
+			throw new \RuntimeException( 'The application container is not available.' );
+		}
+
 		$this->app->make( Worker::class )->run( $size, $queue );
 	}
 }

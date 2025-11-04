@@ -250,7 +250,7 @@ class Dispatcher implements Dispatcher_Contract {
 	 * Create the class based event callable.
 	 *
 	 * @param  string $listener
-	 * @return array{0: object, 1: string}
+	 * @return array{0: object, 1: string|null}
 	 */
 	protected function create_class_callable( string $listener ): array {
 		[ $class, $method ] = $this->parse_class_callable( $listener );
@@ -264,7 +264,7 @@ class Dispatcher implements Dispatcher_Contract {
 	 * Parse the class listener into class and method.
 	 *
 	 * @param  string $listener
-	 * @return array{0: string, 1: string}
+	 * @return array{0: string, 1: string|null}
 	 */
 	protected function parse_class_callable( string $listener ): array {
 		return Str::parse_callback( $listener, 'handle' );

@@ -15,6 +15,7 @@ use Rector\CodingStyle\Rector\If_\NullableCompareToNullRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
+use Rector\DeadCode\Rector\MethodCall\RemoveNullArgOnNullDefaultParamRector;
 use Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchExprVariableRector;
 
 use Rector\EarlyReturn\Rector\If_\ChangeOrIfContinueToMultiContinueRector;
@@ -121,8 +122,6 @@ return RectorConfig::configure()
 		CatchExceptionNameMatchingTypeRector::class,
 		EncapsedStringsToSprintfRector::class,
 		FlipTypeControlToUseExclusiveTypeRector::class,
-		FunctionLikeToFirstClassCallableRector::class => [
-			__DIR__ . '/src/mantle/database/query/class-database-query-builder.php',
-			__DIR__ . '/src/mantle/testing',
-		],
+		FunctionLikeToFirstClassCallableRector::class,
+		RemoveNullArgOnNullDefaultParamRector::class,
 	] );

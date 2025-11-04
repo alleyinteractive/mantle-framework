@@ -32,7 +32,7 @@ readonly class HTML_Helpers {
 	public static function get_body_node_from_html_fragment( $html, string $charset = 'UTF-8' ): \DOMNode {
 		$html = '<html><body>' . $html . '</body></html>';
 
-		return self::parseXhtml( $html, $charset )->getElementsByTagName( 'body' )->item( 0 );
+		return self::parseXhtml( $html, $charset )->getElementsByTagName( 'body' )->item( 0 ); // @phpstan-ignore-line
 	}
 
 	/**

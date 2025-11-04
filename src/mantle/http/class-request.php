@@ -393,14 +393,12 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * @param mixed  $value Value to set.
 	 */
 	public function set_route_parameter( string $key, $value ): static {
-		$this->route_parameters->set( $key, $value );
+		$this->route_parameters?->set( $key, $value );
 		return $this;
 	}
 
 	/**
 	 * Get the route.
-	 *
-	 * @return Route
 	 */
 	public function get_route(): ?Route {
 		return $this->route ?? null;
@@ -424,7 +422,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 */
 	public function offsetExists( mixed $offset ): bool {
 		return Arr::has(
-			$this->all() + $this->get_route_parameters()->all(),
+			$this->all() + $this->get_route_parameters()?->all(),
 			$offset
 		);
 	}
@@ -476,7 +474,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 		return Arr::get(
 			$this->all(),
 			$key,
-			fn () => $this->get_route_parameters()->get( $key )
+			fn () => $this->get_route_parameters()?->get( $key )
 		);
 	}
 }

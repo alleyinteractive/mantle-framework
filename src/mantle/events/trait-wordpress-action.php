@@ -135,7 +135,7 @@ trait WordPress_Action {
 			$parameter_class = Reflector::get_parameter_class_name( $parameter );
 
 			if ( Reflector::is_parameter_subclass_of( $parameter, Enumerable::class ) ) {
-				return $parameter_class::make( $argument );
+				return $parameter_class::make( $argument ); // @phpstan-ignore-line
 			}
 
 			// Return the argument if the class matches the typehint.
@@ -163,7 +163,7 @@ trait WordPress_Action {
 				return $modified_argument;
 			}
 
-			return $this->container->make( $parameter_class, [ $parameter ] );
+			return $this->container->make( $parameter_class, [ $parameter ] ); // @phpstan-ignore-line type
 		}
 
 		// Ensure an 'Arrayable' interface is cast to an array properly.

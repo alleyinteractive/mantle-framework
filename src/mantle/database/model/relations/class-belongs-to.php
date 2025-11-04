@@ -50,6 +50,8 @@ class Belongs_To extends Relation {
 
 	/**
 	 * Add constraints to the query.
+	 *
+	 * @throws RuntimeException Thrown when parent is not an instance of Model_Meta.
 	 */
 	public function add_constraints(): void {
 		if ( ! static::$constraints ) {
@@ -71,6 +73,10 @@ class Belongs_To extends Relation {
 		}
 
 		if ( $this->parent instanceof Model_Meta ) {
+			if ( ! $this->local_key ) {
+				throw new RuntimeException( 'Local key must be defined for Belongs To relationships.' );
+			}
+
 			$meta_value = $this->parent->get_meta( $this->local_key );
 
 			if ( empty( $meta_value ) ) {
@@ -96,6 +102,10 @@ class Belongs_To extends Relation {
 	public function add_eager_constraints( Collection $models ): void {
 		if ( $this->uses_terms ) {
 			throw new RuntimeException( 'Eager loading relationships with terms is not supported yet.' );
+		}
+
+		if ( ! $this->local_key ) {
+			throw new RuntimeException( 'Local key must be defined for Belongs To relationships.' );
 		}
 
 		$append      = $this->should_append();
@@ -165,8 +175,16 @@ class Belongs_To extends Relation {
 				throw new Model_Exception( "Unknown error associating term relationship for [{$this->parent->id()}]" );
 			}
 		} elseif ( $append ) {
+			if ( ! $this->local_key ) {
+				throw new Model_Exception( 'Local key must be defined for Belongs To relationships.' );
+			}
+
 			$this->parent->add_meta( $this->local_key, $model->id() );
 		} else {
+			if ( ! $this->local_key ) {
+				throw new Model_Exception( 'Local key must be defined for Belongs To relationships.' );
+			}
+
 			$this->parent->set_meta( $this->local_key, $model->id() );
 		}
 
@@ -212,6 +230,10 @@ class Belongs_To extends Relation {
 				wp_remove_object_terms( $this->parent->id(), $term_ids, static::RELATION_TAXONOMY );
 			}
 		} else {
+			if ( ! $this->local_key ) {
+				throw new Model_Exception( 'Local key must be defined for Belongs To relationships.' );
+			}
+
 			$this->parent->delete_meta( $this->local_key );
 		}
 
@@ -234,6 +256,10 @@ class Belongs_To extends Relation {
 	public function get_relation_query( Builder $builder, ?string $compare_value = null, string $compare = 'EXISTS' ): Builder {
 		if ( $this->uses_terms ) {
 			throw new Model_Exception( 'Queries_Relationships does not support post <--> post relationships with terms.' );
+		}
+
+		if ( ! $this->local_key ) {
+			throw new Model_Exception( 'Local key must be defined for Belongs To relationships.' );
 		}
 
 		if ( $compare_value ) {

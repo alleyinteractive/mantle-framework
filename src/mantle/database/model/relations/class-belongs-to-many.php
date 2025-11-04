@@ -61,6 +61,8 @@ class Belongs_To_Many extends Belongs_To {
 	/**
 	 * Build a model dictionary keyed by the relation's foreign key.
 	 *
+	 * @throws RuntimeException If the local key is not defined.
+	 *
 	 * @param Collection<int, TParent> $results Collection of results.
 	 * @param Collection<int, TModel>  $models Eagerly loaded results to match.
 	 * @return array<string, array<int, TParent>>
@@ -69,8 +71,12 @@ class Belongs_To_Many extends Belongs_To {
 		$results    = $results->key_by( $this->foreign_key );
 		$dictionary = collect();
 
+		if ( ! $this->local_key ) {
+			throw new RuntimeException( 'Local key is not defined for Belongs To Many relationship.' );
+		}
+
 		foreach ( $models as $model ) {
-			$dictionary[ $model->{$this->foreign_key} ] = $model->get_meta( $this->local_key, false );
+			$dictionary[ $model->{$this->foreign_key} ] = (array) $model->get_meta( $this->local_key, false );
 		}
 
 		return $dictionary

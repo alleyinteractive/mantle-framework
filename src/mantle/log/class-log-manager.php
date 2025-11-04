@@ -54,6 +54,7 @@ class Log_Manager implements LoggerInterface {
 		$handlers = collect( (array) $channels )
 			->map( [ $this, 'get_channel_handler' ] )
 			->filter()
+			->where_instance_of( HandlerInterface::class )
 			->to_array();
 
 		return ( new Logger( 'Mantle', $handlers ) )->set_dispatcher( $this->dispatcher );
@@ -113,7 +114,11 @@ class Log_Manager implements LoggerInterface {
 			throw new InvalidArgumentException( 'Stack channel called without any child channels.' );
 		}
 
-		return new GroupHandler( array_map( [ $this, 'get_channel_handler' ], $config['channels'] ) );
+		return new GroupHandler( collect( $config['channels'] )
+			->map( fn ( string $channel ) => $this->get_channel_handler( $channel ) )
+			->where_instance_of( HandlerInterface::class )
+			->values()
+			->all() );
 	}
 
 	/**

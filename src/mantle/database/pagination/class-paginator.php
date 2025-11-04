@@ -309,7 +309,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 			return 1;
 		}
 
-		return static::get_page_from_path( $path );
+		return static::get_page_from_path( $path ) ?: 1;
 	}
 
 	/**

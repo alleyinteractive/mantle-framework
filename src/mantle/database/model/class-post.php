@@ -412,7 +412,11 @@ PHP
 	 * Get the registerable route for the model.
 	 */
 	public static function get_route(): ?string {
-		if ( 'post' === static::get_object_name() ) {
+		$object_name = static::get_object_name();
+
+		$route_structure = null;
+
+		if ( 'post' === $object_name ) {
 			$structure = get_option( 'permalink_structure' );
 
 			if ( ! empty( $structure ) ) {
@@ -429,21 +433,21 @@ PHP
 			} else {
 				$route_structure = null;
 			}
-		} else {
-			$route_structure = '/' . static::get_object_name() . '/{slug}';
+		} elseif ( $object_name ) {
+			$route_structure = "/{$object_name}/{slug}";
 		}
 
 		/**
 		 * Filter the route structure for a post handled through the entity router.
 		 *
-		 * @param string $route_structure Route structure.
-		 * @param string $object_name Post type.
-		 * @param string $object_class Model class name.
+		 * @param string|null $route_structure Route structure.
+		 * @param string|null $object_name Post type.
+		 * @param string      $object_class Model class name.
 		 */
 		return (string) apply_filters(
 			'mantle_entity_router_post_route',
 			$route_structure,
-			static::get_object_name(),
+			$object_name,
 			static::class
 		);
 	}

@@ -252,12 +252,12 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  int        $flags
 	 * @return Collection<int, mixed>
 	 */
-	public function split( string|int $pattern, int $limit = -1, int $flags = 0 ) {
-		if ( is_int( $pattern ) || filter_var( $pattern, FILTER_VALIDATE_INT ) !== false ) {
+	public function split( string|int $pattern, int $limit = 1, int $flags = 0 ) {
+		if ( is_int( $pattern ) || is_numeric( $pattern ) ) {
 			return collect( mb_str_split( $this->value, max( 1, (int) $pattern ) ) );
 		}
 
-		$segments = preg_split( (string) $pattern, $this->value, $limit, $flags );
+		$segments = preg_split( $pattern, $this->value, $limit, $flags );
 
 		return empty( $segments ) ? collect() : collect( $segments );
 	}
@@ -602,8 +602,8 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 *
 	 * @param  string $format
 	 */
-	public function scan( $format ): Collection {
-		return collect( sscanf( $this->value, $format ) );
+	public function scan( string $format ): Collection {
+		return collect( sscanf( $this->value, $format ) ); // @phpstan-ignore-line argument.type
 	}
 
 	/**

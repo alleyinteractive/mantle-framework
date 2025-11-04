@@ -199,7 +199,7 @@ abstract class Builder {
 	/**
 	 * Retrieve the found rows for a query.
 	 */
-	public function get_found_rows(): int {
+	public function get_found_rows(): ?int {
 		return $this->found_rows;
 	}
 

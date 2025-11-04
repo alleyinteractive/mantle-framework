@@ -11,14 +11,14 @@ use Mantle\Support\Str;
 
 /**
  * File helpers.
+ *
+ * @mixin \Symfony\Component\HttpFoundation\File\File
  */
 trait File_Helpers {
 	/**
 	 * The cache copy of the file's hash name.
-	 *
-	 * @var string
 	 */
-	protected $hash_name;
+	protected string $hash_name;
 
 	/**
 	 * Get the fully qualified path to the file.
@@ -30,7 +30,7 @@ trait File_Helpers {
 	/**
 	 * Get the file's extension.
 	 */
-	public function extension(): string {
+	public function extension(): ?string {
 		return $this->guessExtension();
 	}
 
@@ -44,13 +44,16 @@ trait File_Helpers {
 			$path = rtrim( $path, '/' ) . '/';
 		}
 
-		$hash      = $this->hash_name ?: $this->hash_name = Str::random( 40 );
+		if ( empty( $this->hash_name ) ) {
+			$this->hash_name = Str::random( 40 );
+		}
+
 		$extension = $this->guessExtension();
 
 		if ( $extension ) {
 			$extension = '.' . $extension;
 		}
 
-		return $path . $hash . $extension;
+		return $path . $this->hash_name . $extension;
 	}
 }

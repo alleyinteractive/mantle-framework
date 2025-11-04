@@ -297,9 +297,9 @@ PHP
 		/**
 		 * Filter the route structure for a term handled through the entity router.
 		 *
-		 * @param string $route_structure Route structure.
-		 * @param string $object_name Taxonomy name.
-		 * @param string $object_class Model class name.
+		 * @param string|null $route_structure Route structure.
+		 * @param string|null $object_name Taxonomy name.
+		 * @param string      $object_class Model class name.
 		 */
 		return (string) apply_filters(
 			'mantle_entity_router_term_route',

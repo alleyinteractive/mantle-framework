@@ -181,7 +181,11 @@ trait Model_Term {
 	 */
 	private function resolve_mixed_term( array $carry, mixed $value, ?string $taxonomy = null, bool $create = false ): array {
 		if ( $value instanceof WP_Term || $value instanceof Term ) {
-			$carry[ $value->taxonomy ][] = $value instanceof Term ? $value->core_object() : $value;
+			$object = $value instanceof Term ? $value->core_object() : $value;
+
+			if ( $object instanceof WP_Term ) {
+				$carry[ $object->taxonomy ][] = $object;
+			}
 
 			return $carry;
 		}

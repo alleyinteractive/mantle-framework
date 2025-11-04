@@ -126,7 +126,7 @@ class Term_Query_Builder extends Builder {
 		$models = array_map( [ $model, 'find' ], $term_ids );
 
 		return $this->eager_load_relations(
-			Collection::from( $models )->filter()->values(),
+			Collection::from( $models )->filter()->values(), // @phpstan-ignore-line argument.type
 		);
 	}
 

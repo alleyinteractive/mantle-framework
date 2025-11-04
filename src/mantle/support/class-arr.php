@@ -168,7 +168,7 @@ class Arr {
 		}
 
 		foreach ( $array as $key => $value ) {
-			if ( $callback( $value, $key ) ) {
+			if ( $callback && $callback( $value, $key ) ) {
 				return $value;
 			}
 		}
@@ -571,8 +571,8 @@ class Arr {
 	 * @param  callable|string|null $callback Callback to sort by.
 	 * @return array<mixed>
 	 */
-	public static function sort( $array, $callback = null ) {
-		return Collection::make( $array )->sort_by( $callback )->all();
+	public static function sort( array $array, callable|string|null $callback = null ): array {
+		return Collection::make( $array )->sort_by( $callback )->all(); // @phpstan-ignore-line argument.type
 	}
 
 	/**

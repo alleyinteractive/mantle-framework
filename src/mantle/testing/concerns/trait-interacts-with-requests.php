@@ -468,7 +468,7 @@ trait Interacts_With_Requests {
 	 */
 	protected function recorded_requests( callable $callback ): Collection {
 		if ( $this->recorded_requests->is_empty() ) {
-				return collect();
+			return collect();
 		}
 
 		return collect( $this->recorded_requests )->filter( fn ( Request $response ) => $callback( $response ) );
@@ -506,7 +506,7 @@ trait Interacts_With_Requests {
 	protected function report_stray_requests(): void {
 		$this->recorded_actual_requests->map(
 			fn ( $method, $index ) => Utils::info(
-				"An HTTP request was made in <span class='font-bold'>{$method}</span> to <span class='font-bold'>{$this->recorded_requests[ $index ]->url()}</span> but no faked response was found.",
+				"An HTTP request was made in <span class='font-bold'>{$method}</span> to <span class='font-bold'>{$this->recorded_requests[ $index ]?->url()}</span> but no faked response was found.",
 				'HTTP Requests',
 			)
 		);
@@ -551,6 +551,11 @@ trait Interacts_With_Requests {
 	 * @phpstan-param (callable(Request $request): bool)|string|null $url_or_callback
 	 */
 	public function assertRequestNotSent( string|callable|null $url_or_callback = null ): void {
+		if ( is_null( $url_or_callback ) ) {
+			$this->assertNoRequestSent();
+			return;
+		}
+
 		if ( is_string( $url_or_callback ) ) {
 			$url_or_callback = fn ( Request $request ) => Str::is( $url_or_callback, $request->url() );
 		}

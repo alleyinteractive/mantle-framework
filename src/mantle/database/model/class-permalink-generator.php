@@ -60,7 +60,7 @@ class Permalink_Generator implements \Stringable {
 			(string) $this->route
 		);
 
-		return home_url( $route );
+		return home_url( $route ?: '' );
 	}
 
 	/**
@@ -94,10 +94,10 @@ class Permalink_Generator implements \Stringable {
 	 * @param string $attribute Attribute to get.
 	 */
 	public function get_attribute( string $attribute ): string {
-		$value = $this->attributes[ $attribute ] ?? $this->model->get( $attribute );
+		$value = $this->attributes[ $attribute ] ?? ( $this->model instanceof \Mantle\Database\Model\Model ? $this->model->get( $attribute ) : null );
 
 		// Fallback to the model's slug when using the object name as an attribute.
-		if ( empty( $value ) && $attribute === $this->model::get_object_name() && $this->model instanceof Core_Object ) {
+		if ( empty( $value ) && $this->model instanceof Core_Object && $attribute === $this->model::get_object_name() ) {
 			$value = $this->model->slug();
 		}
 

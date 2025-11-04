@@ -359,6 +359,8 @@ abstract class TestCase extends BaseTestCase {
 			static::$factory = Container::get_instance()->make( Factory_Container::class );
 		}
 
+		assert( static::$factory instanceof Factory_Container );
+
 		return static::$factory;
 	}
 

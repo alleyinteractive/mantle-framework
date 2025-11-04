@@ -103,7 +103,7 @@ class Router implements Router_Contract {
 	 */
 	public function get( string $uri, mixed $action = '' ): Route {
 		return $this->with_registrar(
-			fn () => $this->registrar->register_route( 'get', $uri, $action ),
+			fn ( Registrar_Contract $registrar ) => $registrar->register_route( 'get', $uri, $action ),
 		);
 	}
 
@@ -115,7 +115,7 @@ class Router implements Router_Contract {
 	 */
 	public function post( string $uri, mixed $action = '' ): Route {
 		return $this->with_registrar(
-			fn () => $this->registrar->register_route( 'post', $uri, $action ),
+			fn ( Registrar_Contract $registrar ) => $registrar->register_route( 'post', $uri, $action ),
 		);
 	}
 
@@ -127,7 +127,7 @@ class Router implements Router_Contract {
 	 */
 	public function put( string $uri, mixed $action = '' ): Route {
 		return $this->with_registrar(
-			fn () => $this->registrar->register_route( 'put', $uri, $action ),
+			fn ( Registrar_Contract $registrar ) => $registrar->register_route( 'put', $uri, $action ),
 		);
 	}
 
@@ -139,7 +139,7 @@ class Router implements Router_Contract {
 	 */
 	public function delete( string $uri, mixed $action = '' ): Route {
 		return $this->with_registrar(
-			fn () => $this->registrar->register_route( 'delete', $uri, $action ),
+			fn ( Registrar_Contract $registrar ) => $registrar->register_route( 'delete', $uri, $action ),
 		);
 	}
 
@@ -151,7 +151,7 @@ class Router implements Router_Contract {
 	 */
 	public function patch( string $uri, mixed $action = '' ): Route {
 		return $this->with_registrar(
-			fn () => $this->registrar->register_route( 'patch', $uri, $action ),
+			fn ( Registrar_Contract $registrar ) => $registrar->register_route( 'patch', $uri, $action ),
 		);
 	}
 
@@ -163,7 +163,7 @@ class Router implements Router_Contract {
 	 */
 	public function options( string $uri, mixed $action = '' ): Route {
 		return $this->with_registrar(
-			fn () => $this->registrar->register_route( 'options', $uri, $action ),
+			fn ( Registrar_Contract $registrar ) => $registrar->register_route( 'options', $uri, $action ),
 		);
 	}
 
@@ -175,7 +175,7 @@ class Router implements Router_Contract {
 	 */
 	public function any( string $uri, mixed $action = '' ): Route {
 		return $this->with_registrar(
-			fn () => $this->registrar->register_route( 'any', $uri, $action ),
+			fn ( Registrar_Contract $registrar ) => $registrar->register_route( 'any', $uri, $action ),
 		);
 	}
 
@@ -262,6 +262,8 @@ class Router implements Router_Contract {
 			$this->registrar = new Route_Registrar( $this );
 		}
 
+		assert( $this->registrar instanceof Registrar_Contract );
+
 		$value = $callback( $this->registrar );
 
 		if ( ! $set || $clear ) {
@@ -300,10 +302,13 @@ class Router implements Router_Contract {
 	 * @param Request $request Request object.
 	 */
 	public function dispatch( Request $request ): ?Symfony_Response {
-		return $this->execute_route_match(
-			$this->match_route( $request ),
-			$request
-		);
+		$match = $this->match_route( $request );
+
+		if ( is_null( $match ) ) {
+			return null;
+		}
+
+		return $this->execute_route_match( $match, $request );
 	}
 
 	/**
@@ -530,7 +535,7 @@ class Router implements Router_Contract {
 	 * @param Request $request Request object.
 	 */
 	public function substitute_bindings( Request $request ): void {
-		foreach ( $request->get_route_parameters() as $key => $value ) {
+		foreach ( $request->get_route_parameters() ?: [] as $key => $value ) {
 			if ( ! isset( $this->binders[ $key ] ) ) {
 				continue;
 			}

@@ -309,7 +309,9 @@ class Response implements ArrayAccess {
 	 * Retrieve the file contents of the downloaded file.
 	 */
 	public function file_contents(): ?string {
-		return empty( $this->response['filename'] ) ? null : (string) file_get_contents( $this->file() ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
+		$file = $this->file();
+
+		return empty( $file ) ? null : (string) file_get_contents( $file ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
 	}
 
 	/**

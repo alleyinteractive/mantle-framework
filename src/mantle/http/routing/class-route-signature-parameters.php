@@ -64,6 +64,10 @@ class Route_Signature_Parameters {
 			$method = '__invoke';
 		}
 
+		if ( empty( $method ) ) {
+			return [];
+		}
+
 		if ( ! method_exists( $class, $method ) && is_callable( [ $class, $method ] ) ) {
 			return [];
 		}

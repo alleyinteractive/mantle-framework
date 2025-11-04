@@ -33,11 +33,17 @@ trait Interacts_With_Container {
 	/**
 	 * Register an instance of an object in the container.
 	 *
+	 * @throws \RuntimeException If the application container is not available.
+	 *
 	 * @param  string $abstract Abstract to swap.
 	 * @param  object $instance Instance to use.
 	 * @return object
 	 */
 	protected function instance( $abstract, $instance ) {
+		if ( ! $this->app ) {
+			throw new \RuntimeException( 'The application container is not available.' );
+		}
+
 		$this->app->instance( $abstract, $instance );
 
 		return $instance;

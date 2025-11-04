@@ -114,7 +114,7 @@ trait Hookable {
 			( $this->reflection )->getAttributes( Allow_Legacy_Duplicate_Registration::class ),
 		)->is_not_empty();
 
-		return collect( get_class_methods( static::class ) )
+		return collect( get_class_methods( static::class ) ) // @phpstan-ignore-line return.type
 			->filter(
 				static fn ( string $method ) => Str::starts_with( $method, [ 'on_', 'action__', 'filter__' ] )
 			)

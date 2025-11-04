@@ -183,8 +183,14 @@ abstract class Command extends Symfony_Command {
 		if ( str_starts_with( $command, $prefix . ' ' ) ) {
 			$command = substr( $command, strlen( $prefix ) + 1 );
 
+			$application = $this->getApplication();
+
+			if ( ! $application instanceof \Symfony\Component\Console\Application ) {
+				throw new InvalidArgumentException( 'Unable to proxy to WP-CLI when application instance is missing.' );
+			}
+
 			// Attempt to resolve the command from the container and run it.
-			$command = $this->getApplication()->find( $command );
+			$command = $application->find( $command );
 
 			return $command->run( new ArrayInput( $options ), $output ?: new ConsoleOutput() );
 		}

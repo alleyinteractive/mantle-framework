@@ -210,9 +210,8 @@ class Factory implements Contract {
 	 *
 	 * @param string $slug Template slug.
 	 * @param string $name Template name.
-	 * @return string|null File path, null otherwise.
 	 */
-	protected function resolve_view_path( string $slug, ?string $name = null ): ?string {
+	protected function resolve_view_path( string $slug, ?string $name = null ): string {
 		// Prepend the current view if the requested slug is a child template.
 		if ( Str::starts_with( $slug, '_' ) && $this->current instanceof \Mantle\Http\View\View ) {
 			return $this->resolve_child_view_path_from_parent( $slug );
@@ -224,12 +223,12 @@ class Factory implements Contract {
 	/**
 	 * Resolve a child view path from the current parent.
 	 *
-	 * @param string $slug Slug of the view to load.
-	 * @return string
 	 * @throws InvalidArgumentException Thrown if child view not found.
+	 *
+	 * @param string $slug Slug of the view to load.
 	 */
-	protected function resolve_child_view_path_from_parent( string $slug ) {
-		$path = Str::before( $this->current->get_path(), '.' ) . '-' . Str::substr( $slug, 1 );
+	protected function resolve_child_view_path_from_parent( string $slug ): string {
+		$path = Str::before( (string) $this->current?->get_path(), '.' ) . '-' . Str::substr( $slug, 1 );
 
 		foreach ( $this->finder->get_possible_view_files( $path ) as $file ) {
 			if ( file_exists( $file ) ) {
