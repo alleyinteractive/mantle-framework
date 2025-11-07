@@ -265,15 +265,15 @@ class Asset {
 	 */
 	public function register(): void {
 		if ( $this->frontend ) {
-			hook_callable( 'wp_enqueue_scripts', fn () => $this->register_asset() );
+			hook_callable( 'wp_enqueue_scripts', $this->register_asset( ... ) );
 		}
 
 		if ( $this->admin ) {
-			hook_callable( 'admin_enqueue_scripts', fn () => $this->register_asset() );
+			hook_callable( 'admin_enqueue_scripts', $this->register_asset( ... ) );
 		}
 
 		if ( $this->block_editor ) {
-			hook_callable( 'enqueue_block_editor_assets', fn () => $this->register_asset() );
+			hook_callable( 'enqueue_block_editor_assets', $this->register_asset( ... ) );
 		}
 	}
 
@@ -342,7 +342,7 @@ class Asset {
 		}
 
 		$this
-			->src( $asset_loader->url( $this->handle ) )
+			->src( $asset_loader->url( $this->handle ) ?: '' )
 			->dependencies(
 				array_merge(
 					$this->deps,

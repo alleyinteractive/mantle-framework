@@ -7,6 +7,8 @@
  * @package Mantle
  */
 
+declare(strict_types=1);
+
 namespace Mantle\Testing\Concerns;
 
 use Closure;
@@ -33,7 +35,7 @@ use function Mantle\Support\Helpers\value;
  *
  * @mixin \PHPUnit\Framework\TestCase
  *
- * @phpstan-type StubCallback \Closure(string, array): (Mock_Http_Response|Arrayable|null)
+ * @phpstan-type StubCallback (\Closure(string, array): (Mock_Http_Response|Arrayable|null))|(\Closure(Request): (Mock_Http_Response|Arrayable|null))
  */
 trait Interacts_With_Requests {
 	/**
@@ -41,14 +43,14 @@ trait Interacts_With_Requests {
 	 *
 	 * @var Collection<int, StubCallback>
 	 */
-	protected Collection $stub_callbacks;
+	private Collection $stub_callbacks;
 
 	/**
 	 * Storage of request URLs.
 	 *
 	 * @var Collection<int, Request>
 	 */
-	protected Collection $recorded_requests;
+	private Collection $recorded_requests;
 
 	/**
 	 * Flag to prevent external requests from being made. By default, this is
@@ -56,21 +58,21 @@ trait Interacts_With_Requests {
 	 *
 	 * @var Mock_Http_Response|callable|bool
 	 */
-	protected mixed $preventing_stray_requests = false;
+	private mixed $preventing_stray_requests = false;
 
 	/**
 	 * Stray requests that should be ignored (not reported).
 	 *
 	 * @var Collection<int, string>
 	 */
-	protected Collection $ignored_strayed_requests;
+	private Collection $ignored_strayed_requests;
 
 	/**
 	 * Recorded actual HTTP requests made during the test.
 	 *
 	 * @var Collection<int, string>
 	 */
-	protected Collection $recorded_actual_requests;
+	private Collection $recorded_actual_requests;
 
 	/**
 	 * Setup the trait.
@@ -103,6 +105,13 @@ trait Interacts_With_Requests {
 	}
 
 	/**
+	 * Determine if stray requests are being prevented.
+	 */
+	public function is_preventing_stray_requests(): bool {
+		return false !== $this->preventing_stray_requests;
+	}
+
+	/**
 	 * Allow stray external requests.
 	 */
 	public function allow_stray_requests(): void {
@@ -115,6 +124,10 @@ trait Interacts_With_Requests {
 	 * @param array<string>|string $url URL to ignore. Supports wildcard matching with *.
 	 */
 	public function ignore_stray_request( array|string $url ): void {
+		if ( is_string( $url ) ) {
+			$url = [ $url ];
+		}
+
 		$this->ignored_strayed_requests = $this->ignored_strayed_requests->merge( $url );
 	}
 
@@ -149,6 +162,7 @@ trait Interacts_With_Requests {
 	 *                                                                                                                                         that will return a faked response.
 	 * @param Mock_Http_Response|array<mixed>|callable $response Optional response object, defaults to a 200 response with no body.
 	 * @param Http_Method|string|null $method Optional request method to apply to, defaults to all. Does not apply to array of URL and response pairs OR callbacks.
+	 * @phpstan-return ($url_or_callback is string ? Mock_Http_Response : ($url_or_callback is null ? Mock_Http_Response : static))
 	 */
 	public function fake_request(
 		Mock_Http_Response|callable|string|array|null $url_or_callback = null,
@@ -167,7 +181,7 @@ trait Interacts_With_Requests {
 
 		// Allow a callback to be passed instead.
 		if ( is_callable( $url_or_callback ) ) {
-			$this->stub_callbacks->push( $url_or_callback );
+			$this->stub_callbacks->push( $url_or_callback ); // @phpstan-ignore-line argument.type
 
 			return $this;
 		}
@@ -256,7 +270,7 @@ trait Interacts_With_Requests {
 	 *
 	 * @throws RuntimeException If the request was made without a matching faked request.
 	 */
-	public function pre_http_request( $preempt, $request_args, $url ) {
+	public function pre_http_request( $preempt, array $request_args, $url ) {
 		// Bail early if the preemption is already set.
 		if ( false !== $preempt ) {
 			return $preempt;
@@ -316,11 +330,11 @@ trait Interacts_With_Requests {
 
 		if ( ! $this->stub_callbacks->is_empty() ) {
 			foreach ( $this->stub_callbacks as $stub_callback ) {
-				$reflector = $stub_callback instanceof Closure ? new ReflectionFunction( $stub_callback ) : null;
+				$reflector = $stub_callback instanceof Closure ? new ReflectionFunction( $stub_callback ) : null; // @phpstan-ignore-line instanceof.alwaysTrue
 
 				// Check if the stub callback is expecting a Request object instead of a URL and request arguments.
 				if (
-					$reflector instanceof \ReflectionFunction
+					$reflector instanceof \ReflectionFunction // @phpstan-ignore-line instanceof.alwaysTrue
 					&& 1 === $reflector->getNumberOfParameters()
 					&& Request::class === (string) $reflector->getParameters()[0]->getType()
 				) {
@@ -339,21 +353,21 @@ trait Interacts_With_Requests {
 					return $response->to_array();
 				}
 
-				// Throw an error when an unknown response type is returned from the callback.
-				if ( $response && ! is_array( $response ) && ! is_wp_error( $response ) ) {
-					throw new InvalidArgumentException(
-						sprintf(
-							'Unknown response type returned for faked request to [%s]. Expected a (%s|%s|%s|array), got %s.',
-							$url,
-							Mock_Http_Response::class,
-							Arrayable::class,
-							WP_Error::class,
-							gettype( $response )
-						),
-					);
-				}
-
 				if ( ! is_null( $response ) ) {
+					// Throw an error when an unknown response type is returned from the callback.
+					if ( ! is_array( $response ) && ! is_wp_error( $response ) ) { // @phpstan-ignore-line booleanAnd.alwaysFalse
+						throw new InvalidArgumentException(
+							sprintf(
+								'Unknown response type returned for faked request to [%s]. Expected a (%s|%s|%s|array), got %s.',
+								$url,
+								Mock_Http_Response::class,
+								Arrayable::class,
+								WP_Error::class,
+								gettype( $response )
+							),
+						);
+					}
+
 					return $response;
 				}
 			}
@@ -368,7 +382,7 @@ trait Interacts_With_Requests {
 			}
 
 			// Check if the stray request should be ignored.
-			if ( $this->ignored_strayed_requests->contains( fn ( $ignored_url ) => Str::is( $ignored_url, $url ) ) ) {
+			if ( $this->ignored_strayed_requests->contains( fn ( string|iterable $ignored_url ) => Str::is( $ignored_url, $url ) ) ) {
 				return null;
 			}
 
@@ -454,7 +468,7 @@ trait Interacts_With_Requests {
 	 */
 	protected function recorded_requests( callable $callback ): Collection {
 		if ( $this->recorded_requests->is_empty() ) {
-				return collect();
+			return collect();
 		}
 
 		return collect( $this->recorded_requests )->filter( fn ( Request $response ) => $callback( $response ) );
@@ -492,7 +506,7 @@ trait Interacts_With_Requests {
 	protected function report_stray_requests(): void {
 		$this->recorded_actual_requests->map(
 			fn ( $method, $index ) => Utils::info(
-				"An HTTP request was made in <span class='font-bold'>{$method}</span> to <span class='font-bold'>{$this->recorded_requests[ $index ]->url()}</span> but no faked response was found.",
+				"An HTTP request was made in <span class='font-bold'>{$method}</span> to <span class='font-bold'>{$this->recorded_requests[ $index ]?->url()}</span> but no faked response was found.",
 				'HTTP Requests',
 			)
 		);
@@ -537,6 +551,11 @@ trait Interacts_With_Requests {
 	 * @phpstan-param (callable(Request $request): bool)|string|null $url_or_callback
 	 */
 	public function assertRequestNotSent( string|callable|null $url_or_callback = null ): void {
+		if ( is_null( $url_or_callback ) ) {
+			$this->assertNoRequestSent();
+			return;
+		}
+
 		if ( is_string( $url_or_callback ) ) {
 			$url_or_callback = fn ( Request $request ) => Str::is( $url_or_callback, $request->url() );
 		}

@@ -132,13 +132,13 @@ class View implements \Stringable {
 	/**
 	 * Retrieve the cache key to use for the view.
 	 */
-	public function get_cache_key(): ?string {
+	public function get_cache_key(): string {
 		if ( $this->cache_key ) {
 			return $this->cache_key;
 		}
 
 		$filtered_data = array_map(
-			function ( $value, $key ) {
+			function ( $value, int|string $key ) {
 				// Internal class references do not serialize well.
 				if ( '__env' === $key ) {
 					return 'app';
@@ -171,7 +171,9 @@ class View implements \Stringable {
 
 		$post = $this->post instanceof Post ? \get_post( $this->post->id() ) : \get_post( $this->post );
 
-		\setup_postdata( $post );
+		if ( $post ) {
+			\setup_postdata( $post );
+		}
 	}
 
 	/**
@@ -195,7 +197,10 @@ class View implements \Stringable {
 		global $post;
 
 		$post = $this->original_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-		\setup_postdata( $post );
+
+		if ( $post instanceof \WP_Post ) {
+			\setup_postdata( $post );
+		}
 	}
 
 	/**

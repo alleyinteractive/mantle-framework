@@ -58,7 +58,7 @@ class Model_Date_Proxy implements ArrayAccess {
 	 * @param string $key Date attribute.
 	 * @param mixed  $value Date value.
 	 */
-	public function __set( string $key, $value ): void {
+	public function __set( string $key, mixed $value ): void {
 		$timezone = Str::ends_with( $key, [ '_gmt', '_utc' ] ) ? new DateTimeZone( 'UTC' ) : wp_timezone();
 
 		if ( is_string( $value ) ) {

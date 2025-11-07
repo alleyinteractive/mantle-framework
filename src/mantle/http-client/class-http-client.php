@@ -16,6 +16,7 @@ class Http_Client {
 	/**
 	 * Create an instance of the Http Client
 	 */
+	#[\Deprecated( 'Use ' . \Mantle\Http_Client\Factory::class . '::create() instead.' )]
 	public static function create(): \Mantle\Http_Client\Factory {
 		return new Factory();
 	}

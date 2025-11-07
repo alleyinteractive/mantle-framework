@@ -140,7 +140,7 @@ trait Mocks_Http_Requests {
 		$reflection = new ReflectionClass( $this->get_test_case() );
 
 		return collect( [
-			dirname( $reflection->getFileName() ),
+			dirname( (string) $reflection->getFileName() ),
 			'__http_snapshots__',
 			$reflection->getShortName(),
 		] )->join( DIRECTORY_SEPARATOR );
@@ -172,13 +172,13 @@ trait Mocks_Http_Requests {
 		);
 
 		if ( $request->body() ) {
-			$params->push( md5( wp_json_encode( $request->body() ) ) );
+			$params->push( md5( (string) wp_json_encode( $request->body() ) ) );
 		}
 
 		$headers = collect( $request->headers() )->except( 'content-type' )->all();
 
 		if ( ! empty( $headers ) ) {
-			$params->push( md5( wp_json_encode( $headers ) ) );
+			$params->push( md5( (string) wp_json_encode( $headers ) ) );
 		}
 
 		return $params->join( '-' );

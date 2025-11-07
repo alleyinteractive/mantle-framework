@@ -7,6 +7,7 @@
 
 namespace Mantle\Http\View;
 
+use ArrayAccess;
 use Illuminate\View\Concerns\ManagesLayouts;
 use Illuminate\View\Concerns\ManagesLoops;
 use Illuminate\View\Concerns\ManagesStacks;
@@ -209,9 +210,8 @@ class Factory implements Contract {
 	 *
 	 * @param string $slug Template slug.
 	 * @param string $name Template name.
-	 * @return string|null File path, null otherwise.
 	 */
-	protected function resolve_view_path( string $slug, ?string $name = null ): ?string {
+	protected function resolve_view_path( string $slug, ?string $name = null ): string {
 		// Prepend the current view if the requested slug is a child template.
 		if ( Str::starts_with( $slug, '_' ) && $this->current instanceof \Mantle\Http\View\View ) {
 			return $this->resolve_child_view_path_from_parent( $slug );
@@ -223,12 +223,12 @@ class Factory implements Contract {
 	/**
 	 * Resolve a child view path from the current parent.
 	 *
-	 * @param string $slug Slug of the view to load.
-	 * @return string
 	 * @throws InvalidArgumentException Thrown if child view not found.
+	 *
+	 * @param string $slug Slug of the view to load.
 	 */
-	protected function resolve_child_view_path_from_parent( string $slug ) {
-		$path = Str::before( $this->current->get_path(), '.' ) . '-' . Str::substr( $slug, 1 );
+	protected function resolve_child_view_path_from_parent( string $slug ): string {
+		$path = Str::before( (string) $this->current?->get_path(), '.' ) . '-' . Str::substr( $slug, 1 );
 
 		foreach ( $this->finder->get_possible_view_files( $path ) as $file ) {
 			if ( file_exists( $file ) ) {
@@ -244,13 +244,13 @@ class Factory implements Contract {
 	 *
 	 * While iterating over the data, the proper post data is setup for each item.
 	 *
-	 * @param array<mixed>|\ArrayAccess<array-key, mixed> $data Array of WordPress data to loop over.
-	 * @param string                                      $slug View slug.
-	 * @param array<mixed>|string                         $name View name, optional. Supports passing variables in if
-	 *                                                   $variables is not used.
-	 * @param array<mixed>                                $variables Variables for the view, optional.
+	 * @param array<mixed>|WP_Query|ArrayAccess $data Array of WordPress data to loop over.
+	 * @param string                            $slug View slug.
+	 * @param array<string, mixed>|string       $name View name, optional. Supports passing variables in if
+	 *                                                $variables is not used.
+	 * @param array<string, mixed>              $variables Variables for the view, optional.
 	 */
-	public function loop( $data, string $slug, $name = null, array $variables = [] ): Collection {
+	public function loop( array|WP_Query|ArrayAccess $data, string $slug, array|string|null $name = null, array $variables = [] ): Collection {
 		$results = new Collection();
 
 		// Extract the posts from the query.
@@ -259,7 +259,7 @@ class Factory implements Contract {
 		}
 
 		// Loop through an array of posts.
-		foreach ( $data as $i => $item ) {
+		foreach ( (array) $data as $i => $item ) {
 			// Append the current index as a dynamic variable.
 			$variables['index'] = $i;
 
@@ -276,7 +276,7 @@ class Factory implements Contract {
 	 * @param array<mixed>|\ArrayAccess $data Array of data to iterate over over.
 	 * @param string                    $slug View slug.
 	 * @param array<mixed>|string       $name View name, optional. Supports passing variables in if
-	 *                                 $variables is not used.
+	 *                                        $variables is not used.
 	 * @param array<string, mixed>      $variables Variables for the view, optional.
 	 */
 	public function iterate( $data, string $slug, $name = null, array $variables = [] ): Collection {
@@ -287,7 +287,7 @@ class Factory implements Contract {
 
 		$results = new Collection();
 
-		foreach ( $data as $index => $item ) {
+		foreach ( (array) $data as $index => $item ) {
 			$variables['item']  = $item;
 			$variables['index'] = $index;
 

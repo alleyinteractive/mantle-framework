@@ -53,8 +53,6 @@ class Factory_Service_Provider extends Service_Provider {
 					);
 				}
 
-				static::$fakers[ $locale ]->unique( true );
-
 				return static::$fakers[ $locale ];
 			}
 		);

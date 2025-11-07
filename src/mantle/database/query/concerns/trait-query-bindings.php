@@ -25,7 +25,7 @@ trait Query_Bindings {
 	/**
 	 * Raw query bindings.
 	 *
-	 * @var array<string, array<string, mixed>>
+	 * @var array<string, array<array<string, mixed>>>
 	 */
 	protected array $bindings = [
 		'where' => [],

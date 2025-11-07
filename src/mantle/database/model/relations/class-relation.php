@@ -8,6 +8,9 @@
 namespace Mantle\Database\Model\Relations;
 
 use Closure;
+use Mantle\Contracts\Database\Core_Object;
+use Mantle\Contracts\Database\Model_Meta;
+use Mantle\Contracts\Database\Updatable;
 use Mantle\Database\Model\Model;
 use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Term;
@@ -20,8 +23,8 @@ use Mantle\Support\Forward_Calls;
 /**
  * Relation base class.
  *
- * @template TParent of \Mantle\Database\Model\Model = \Mantle\Database\Model\Model
- * @template TModel of \Mantle\Database\Model\Model = \Mantle\Database\Model\Model
+ * @template TParent of Core_Object&Model_Meta&Updatable&Model = Core_Object&Model_Meta&Updatable&Model
+ * @template TModel of Core_Object&Model_Meta&Updatable&Model = Core_Object&Model_Meta&Updatable&Model
  *
  * @mixin \Mantle\Database\Query\Builder<TModel>
  */
@@ -37,17 +40,13 @@ abstract class Relation {
 
 	/**
 	 * The related model (child).
-	 *
-	 * @var string
 	 */
-	protected $related;
+	protected string $related;
 
 	/**
 	 * Flag if the relation uses terms.
-	 *
-	 * @var bool|null
 	 */
-	protected $uses_terms;
+	protected ?bool $uses_terms = null;
 
 	/**
 	 * Model's relationship name.
@@ -64,13 +63,22 @@ abstract class Relation {
 	/**
 	 * Create a new relation instance.
 	 *
+	 * @throws \InvalidArgumentException Thrown if the model on the query is an array.
+	 *
 	 * @param Builder<TModel> $query Query builder instance.
 	 * @param Model<TParent>  $parent Model instance.
 	 * @param bool|null       $uses_terms Flag if the relation uses terms.
 	 * @param string          $relationship Relationship name, optional.
 	 */
 	public function __construct( protected Builder $query, protected Model $parent, ?bool $uses_terms = null, ?string $relationship = null ) {
-		$this->related = $this->query->get_model();
+		$related = $this->query->get_model();
+
+		// Account for an edge condition that won't happen but PHPStan complains about.
+		if ( is_array( $related ) ) {
+			throw new \InvalidArgumentException( 'Related model must be a string, not an array.' );
+		}
+
+		$this->related = $related;
 
 		if ( ! is_null( $uses_terms ) ) {
 			$this->uses_terms( $uses_terms );
@@ -100,10 +108,8 @@ abstract class Relation {
 
 	/**
 	 * Set the query constraints to apply to the query.
-	 *
-	 * @return void
 	 */
-	abstract public function add_constraints();
+	abstract public function add_constraints(): void;
 
 	/**
 	 * Set the query constraints for an eager load of the relation.
@@ -178,17 +184,42 @@ abstract class Relation {
 
 	/**
 	 * Guess the name of the relationship.
+	 *
+	 * @todo Right now we're only limited to Post and Term models. This needs to
+	 * be a check on a contract that defines the relationship methods (similar to
+	 * Model_Meta). This method should be refactored once the contract is in place.
 	 */
 	protected function guess_relationship(): ?string {
 		$trace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 5 ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
 
-		foreach ( $trace as $item ) {
-			if ( is_subclass_of( $item['class'], Model::class ) ) {
-				return $item['function'];
+		foreach ( $trace as $index => $item ) {
+			if ( ! isset( $item['class'] ) ) {
+				continue;
+			}
+
+			// If the class is Post/Term that means it is coming from the
+			// Has_Relationships trait. We want the next item in the trace (the parent
+			// calling class) to determine the relationship from.
+			if (
+				// TODO: Replace this with a contract check.
+				( Post::class === $item['class'] || Term::class === $item['class'] )
+				&& isset( $trace[ $index + 1 ] )
+				&& isset( $trace[ $index + 1 ]['class'] )
+				&& is_subclass_of( $item['class'], Model::class )
+			) {
+				return $trace[ $index + 1 ]['function'];
+			}
+
+			// If the next method in the trace isn't available/valid, keep proceeding
+			// down the trace to find the lowest class that implements a post/term
+			// model.
+			// TODO: Replace this with a contract check.
+			if ( is_subclass_of( $item['class'], Post::class ) || is_subclass_of( $item['class'], Term::class ) ) {
+				$relationship = $item['function'];
 			}
 		}
 
-		return null;
+		return $relationship ?? null;
 	}
 
 	/**

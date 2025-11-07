@@ -57,7 +57,7 @@ if ( ! function_exists( 'remember' ) ) {
 	 * @param  \DateTimeInterface|\DateInterval|int|null $ttl Cache TTL.
 	 * @param  \Closure                                  $callback Closure to invoke.
 	 */
-	function remember( string $key, $ttl, Closure $closure ): mixed {
+	function remember( string $key, \DateTimeInterface|\DateInterval|int|null $ttl, Closure $closure ): mixed {
 		return cache()->remember( $key, $ttl, $closure );
 	}
 }

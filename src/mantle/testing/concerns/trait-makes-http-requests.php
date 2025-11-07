@@ -3,6 +3,7 @@
  * This file contains the Makes_Http_Requests trait
  *
  * phpcs:disable WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE
+ * phpcs:disable WordPress.WP.GlobalVariablesOverride.Prohibited
  *
  * @package Mantle
  */
@@ -11,6 +12,7 @@ namespace Mantle\Testing\Concerns;
 
 use Mantle\Testing\Pending_Testable_Request;
 use Mantle\Testing\Test_Response;
+use PHPUnit\Framework\Attributes\BeforeClass;
 use RuntimeException;
 
 use function Mantle\Support\Helpers\tap;
@@ -29,33 +31,47 @@ trait Makes_Http_Requests {
 	 *
 	 * @var array<string, string>
 	 */
-	protected array $default_cookies = [];
+	private array $default_cookies = [];
 
 	/**
 	 * Additional headers for the request.
 	 *
 	 * @var array<string, string>
 	 */
-	protected array $default_headers = [];
+	private array $default_headers = [];
 
 	/**
 	 * Whether to use HTTPS by default.
 	 */
-	protected bool|null $default_https = null;
+	private bool|null $default_https = null;
 
 	/**
 	 * The array of callbacks to be run before the event is started.
 	 *
 	 * @var array<callable>
 	 */
-	protected array $before_callbacks = [];
+	private array $before_callbacks = [];
 
 	/**
 	 * The array of callbacks to be run after the event is finished.
 	 *
 	 * @var array<callable>
 	 */
-	protected array $after_callbacks = [];
+	private array $after_callbacks = [];
+
+	/**
+	 * Backup of global WordPress dependencies.
+	 *
+	 * @var array<string, \WP_Dependencies>
+	 */
+	private static array $wp_dependencies_backup = [];
+
+	/**
+	 * Backup of global WordPress asset manager state.
+	 *
+	 * @var array<class-string, array<string, mixed>>
+	 */
+	private static array $wp_asset_manager_backup = [];
 
 	/**
 	 * Setup the trait in the test case.
@@ -66,12 +82,35 @@ trait Makes_Http_Requests {
 		// Clear out the existing REST Server to allow for REST API routes to be re-registered.
 		$wp_rest_server = null; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals
 
-		// Mark 'rest_api_init' as an un-run action.
-		unset( $wp_actions['rest_api_init'] );
+		// Mark these actions as not fired to try and make the cleanest possible
+		// state for each request. Intentionally not clearing all or some that could
+		// break underlying functionality such as 'wp_loaded'.
+		foreach ( [
+			'parse_query',
+			'parse_request',
+			'posts_selection',
+			'pre_get_posts',
+			'rest_api_init',
+			'send_headers',
+			'template_redirect',
+			'wp_enqueue_scripts',
+			'wp_footer',
+			'wp_head',
+			'wp_print_scripts',
+			'wp_print_styles',
+			'wp',
+		] as $action ) {
+			unset( $wp_actions[ $action ] );
+		}
 
-		// Clear before/after callbacks.
-		$this->before_callbacks = [];
-		$this->after_callbacks  = [];
+		$this->reset_request_callbacks();
+
+		$this->restore_wp_dependencies();
+		$this->restore_wp_asset_manager();
+
+		// Add callbacks to backup/restore global WP dependencies before/after each request.
+		$this->before_request( $this->restore_wp_dependencies( ... ) );
+		$this->before_request( $this->restore_wp_asset_manager( ... ) );
 	}
 
 	/**
@@ -97,7 +136,7 @@ trait Makes_Http_Requests {
 	public function add_default_header( array|string $headers, ?string $value = null ): void {
 		if ( is_array( $headers ) ) {
 			$this->default_headers = array_merge( $this->default_headers, $headers );
-		} else {
+		} elseif ( ! is_null( $value ) ) {
 			$this->default_headers[ $headers ] = $value;
 		}
 	}
@@ -167,7 +206,7 @@ trait Makes_Http_Requests {
 	public function add_default_cookie( array|string $cookies, ?string $value = null ): static {
 		if ( is_array( $cookies ) ) {
 			$this->default_cookies = array_merge( $this->default_cookies, $cookies );
-		} else {
+		} elseif ( ! is_null( $value ) ) {
 			$this->default_cookies[ $cookies ] = $value;
 		}
 
@@ -383,12 +422,21 @@ trait Makes_Http_Requests {
 	}
 
 	/**
+	 * Clear all of the registered request callbacks.
+	 */
+	public function reset_request_callbacks(): static {
+		$this->before_callbacks = [];
+		$this->after_callbacks  = [];
+
+		return $this;
+	}
+
+	/**
 	 * Call a given Closure/method before requests and inject its dependencies.
 	 *
-	 * @param callable|string $callback Callback to invoke.
-	 * @return static
+	 * @param callable $callback Callback to invoke.
 	 */
-	public function before_request( $callback ) {
+	public function before_request( callable $callback ): static {
 		$this->before_callbacks[] = $callback;
 
 		return $this;
@@ -399,10 +447,9 @@ trait Makes_Http_Requests {
 	 *
 	 * Callback will be invoked with a 'response' argument.
 	 *
-	 * @param callable|string $callback Callback to invoke.
-	 * @return static
+	 * @param callable $callback Callback to invoke.
 	 */
-	public function after_request( $callback ) {
+	public function after_request( callable $callback ): static {
 		$this->after_callbacks[] = $callback;
 
 		return $this;
@@ -410,8 +457,14 @@ trait Makes_Http_Requests {
 
 	/**
 	 * Call all of the "before" callbacks for the requests.
+	 *
+	 * @throws RuntimeException If the application container is not available.
 	 */
 	public function call_before_callbacks(): void {
+		if ( ! $this->app ) {
+			throw new RuntimeException( 'The application container is not available.' );
+		}
+
 		foreach ( $this->before_callbacks as $before_callback ) {
 			$this->app->call( $before_callback );
 		}
@@ -420,16 +473,107 @@ trait Makes_Http_Requests {
 	/**
 	 * Call all of the "after" callbacks for the request.
 	 *
+	 * @throws RuntimeException If the application container is not available.
+	 *
 	 * @param Test_Response $response Response object.
 	 */
 	public function call_after_callbacks( Test_Response $response ): void {
+		if ( ! $this->app ) {
+			throw new RuntimeException( 'The application container is not available.' );
+		}
+
 		foreach ( $this->after_callbacks as $after_callback ) {
-			$this->app->call(
-				$after_callback,
-				[
-					'response' => $response,
-				]
-			);
+			$this->app->call( $after_callback, [ 'response' => $response ] );
+		}
+	}
+
+	/**
+	 * Backup any global WordPress dependencies before any tests run that could
+	 * modify them.
+	 *
+	 * @beforeClass
+	 */
+	#[BeforeClass]
+	public static function backup_wp_dependencies(): void {
+		if ( ! isset( self::$wp_dependencies_backup['wp_scripts'] ) && function_exists( 'wp_scripts' ) ) {
+			// Ensure the global $wp_scripts is initialized.
+			wp_scripts();
+
+			self::$wp_dependencies_backup['wp_scripts'] = clone $GLOBALS['wp_scripts'];
+		}
+
+		if ( ! isset( self::$wp_dependencies_backup['wp_styles'] ) && function_exists( 'wp_styles' ) ) {
+			// Ensure the global $wp_styles is initialized.
+			wp_styles();
+
+			self::$wp_dependencies_backup['wp_styles'] = clone $GLOBALS['wp_styles'];
+		}
+	}
+
+	/**
+	 * Backup the state of the Alley WP Asset Manager if it's present.
+	 *
+	 * @beforeClass
+	 */
+	#[BeforeClass]
+	public static function backup_wp_asset_manager(): void {
+		if ( ! empty( self::$wp_asset_manager_backup ) ) {
+			return;
+		}
+
+		$classes = [
+			\Alley\WP\Asset_Manager\Scripts::class,
+			\Alley\WP\Asset_Manager\Styles::class,
+		];
+
+		foreach ( $classes as $class ) {
+			if ( ! class_exists( $class ) ) {
+				continue;
+			}
+
+			$instance = $class::instance();
+
+			self::$wp_asset_manager_backup[ $class ] = [];
+
+			foreach ( [ 'assets', 'asset_handles', 'assets_by_handle' ] as $property ) {
+				if ( isset( $instance->{$property} ) ) {
+					self::$wp_asset_manager_backup[ $class ][ $property ] = $instance->{$property};
+				}
+			}
+		}
+	}
+
+	/**
+	 * Restore any global WordPress dependencies that may have been modified during the request.
+	 */
+	private function restore_wp_dependencies(): void {
+		if ( isset( self::$wp_dependencies_backup['wp_scripts'] ) ) {
+			$GLOBALS['wp_scripts'] = clone self::$wp_dependencies_backup['wp_scripts'];
+		}
+
+		if ( isset( self::$wp_dependencies_backup['wp_styles'] ) ) {
+			$GLOBALS['wp_styles'] = clone self::$wp_dependencies_backup['wp_styles'];
+		}
+	}
+
+	/**
+	 * Restore the state of the Alley WP Asset Manager if it's present.
+	 */
+	private function restore_wp_asset_manager(): void {
+		foreach ( self::$wp_asset_manager_backup as $class => $properties ) {
+			if ( ! class_exists( $class ) ) {
+				continue;
+			}
+
+			$instance = $class::instance();
+
+			foreach ( $properties as $property => $value ) {
+				try {
+					$instance->{$property} = $value;
+				} catch ( \Error ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
+					// Property may be read-only, so we can't restore it.
+				}
+			}
 		}
 	}
 }

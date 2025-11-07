@@ -10,6 +10,8 @@ namespace Mantle\Http_Client;
 use Closure;
 use DateTimeInterface;
 
+use function Mantle\Support\Helpers\normalize_cache_ttl;
+
 /**
  * Cache Middleware for Http Client.
  *
@@ -24,9 +26,17 @@ class Cache_Middleware {
 	/**
 	 * Constructor.
 	 *
+	 * @throws \InvalidArgumentException If the TTL is not valid.
+	 *
 	 * @param int|DateTimeInterface|callable $ttl Time to live for the cache.
 	 */
-	public function __construct( protected mixed $ttl ) {}
+	public function __construct( protected mixed $ttl ) {
+		if ( ! is_int( $ttl ) && ! $ttl instanceof DateTimeInterface && ! is_callable( $ttl ) ) { // @phpstan-ignore-line
+			throw new \InvalidArgumentException(
+				'TTL must be an integer, DateTimeInterface, or a callable that returns an integer.'
+			);
+		}
+	}
 
 	/**
 	 * Invoke the middleware.
@@ -40,12 +50,14 @@ class Cache_Middleware {
 		$cache     = wp_cache_get( $cache_key, self::CACHE_GROUP );
 
 		if ( $cache && $cache instanceof Response ) {
+			$cache->cached = true;
+
 			return $cache;
 		}
 
 		$response = $next( $request );
 
-		wp_cache_set( $cache_key, $response, self::CACHE_GROUP, $this->calculate_ttl( $request ) ); // phpcs:ignore WordPressVIPMinimum.Performance.LowExpiryCacheTime.CacheTimeUndetermined
+		wp_cache_set( $cache_key, $response, self::CACHE_GROUP, $this->calculate_ttl( $request, $response ) ); // phpcs:ignore WordPressVIPMinimum.Performance.LowExpiryCacheTime.CacheTimeUndetermined
 
 		return $response;
 	}
@@ -65,7 +77,7 @@ class Cache_Middleware {
 	 * @param Pending_Request $request Request to retrieve the cache key for.
 	 */
 	protected function get_cache_key( Pending_Request $request ): string {
-		return md5( json_encode( [ // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+		return md5( (string) json_encode( [ // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
 			$request->base_url(),
 			$request->url(),
 			$request->method(),
@@ -77,19 +89,24 @@ class Cache_Middleware {
 	/**
 	 * Calculate the time to live for the cache in seconds.
 	 *
+	 * @throws \InvalidArgumentException If the TTL callback returns an invalid value.
+	 *
 	 * @param Pending_Request $request Request to calculate the TTL for.
+	 * @param Response        $response Response to calculate the TTL for.
 	 */
-	protected function calculate_ttl( Pending_Request $request ): int {
-		if ( is_int( $this->ttl ) ) {
-			return $this->ttl;
+	private function calculate_ttl( Pending_Request $request, Response $response ): int {
+		if ( is_callable( $this->ttl ) ) {
+			$callback = $this->ttl;
+
+			$value = $callback( $request, $response );
+
+			if ( ! is_numeric( $value ) || (int) $value < 0 ) {
+				throw new \InvalidArgumentException( 'TTL callback must return a non-negative integer.' );
+			}
+
+			return (int) $value;
 		}
 
-		if ( $this->ttl instanceof DateTimeInterface ) {
-			return $this->ttl->getTimestamp() - time();
-		}
-
-		$callback = $this->ttl;
-
-		return (int) $callback( $request );
+		return normalize_cache_ttl( $this->ttl );
 	}
 }

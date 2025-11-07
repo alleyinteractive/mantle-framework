@@ -22,39 +22,34 @@ class Pipeline implements PipelineContract {
 
 	/**
 	 * The object being passed through the pipeline.
-	 *
-	 * @var mixed
 	 */
-	protected $passable;
+	protected mixed $passable;
 
 	/**
 	 * The array of class pipes.
 	 *
 	 * @var array<mixed>
 	 */
-	protected $pipes = [];
+	protected array $pipes = [];
 
 	/**
 	 * The method to call on each pipe.
-	 *
-	 * @var string
 	 */
-	protected $method = 'handle';
+	protected string $method = 'handle';
 
 	/**
 	 * Create a new class instance.
 	 *
 	 * @param Container|null $container Container instance.
 	 */
-	public function __construct( protected ?Container $container = null ) {
-	}
+	public function __construct( protected ?Container $container = null ) {}
 
 	/**
 	 * Set the object being sent through the pipeline.
 	 *
 	 * @param mixed $passable Data to send through the pipeline.
 	 */
-	public function send( $passable ): static {
+	public function send( mixed $passable ): static {
 		$this->passable = $passable;
 
 		return $this;
@@ -63,9 +58,9 @@ class Pipeline implements PipelineContract {
 	/**
 	 * Set the array of pipes.
 	 *
-	 * @param  array<callable>|null $pipes
+	 * @param  array<callable>|callable|string|null $pipes
 	 */
-	public function through( $pipes ): static {
+	public function through( array|callable|string|null $pipes ): static {
 		$this->pipes = is_array( $pipes ) ? $pipes : func_get_args();
 
 		return $this;
@@ -76,7 +71,7 @@ class Pipeline implements PipelineContract {
 	 *
 	 * @param  string $method
 	 */
-	public function via( $method ): static {
+	public function via( string $method ): static {
 		$this->method = $method;
 
 		return $this;
@@ -178,7 +173,7 @@ class Pipeline implements PipelineContract {
 			$parameters = explode( ',', $parameters );
 		}
 
-		return [ $name, $parameters ];
+		return [ $name, $parameters ]; // @phpstan-ignore-line return.type
 	}
 
 	/**
@@ -186,7 +181,7 @@ class Pipeline implements PipelineContract {
 	 *
 	 * @return array<mixed>
 	 */
-	protected function pipes() {
+	protected function pipes(): array {
 		return $this->pipes;
 	}
 

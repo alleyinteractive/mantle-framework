@@ -180,7 +180,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 *
 	 * @param string $abstract Abstract name.
 	 */
-	public function is_shared( $abstract ): bool {
+	public function is_shared( string $abstract ): bool {
 		return isset( $this->instances[ $abstract ] ) ||
 			( isset( $this->bindings[ $abstract ]['shared'] ) &&
 			true === $this->bindings[ $abstract ]['shared'] );
@@ -539,9 +539,8 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 *
 	 * @template TAbstract of object
 	 *
-	 * @param  string       $class
-	 * @phpstan-param class-string<TAbstract> $class
-	 * @param  array<mixed> $parameters
+	 * @param  class-string<TAbstract> $class
+	 * @param  array<mixed>            $parameters
 	 * @phpstan-return TAbstract
 	 *
 	 * @throws Binding_Resolution_Exception Thrown on missing resolution.
@@ -638,7 +637,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @param  string $abstract
 	 * @return mixed   $concrete
 	 */
-	protected function getConcrete( $abstract ) {
+	protected function getConcrete( string $abstract ) {
 		if ( ! is_null( $concrete = $this->get_contextual_concrete( $abstract ) ) ) {
 			return $concrete;
 		}
@@ -707,7 +706,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	/**
 	 * Instantiate a concrete instance of the given type.
 	 *
-	 * @param  \Closure|string $concrete
+	 * @param  \Closure|class-string<object> $concrete
 	 * @return mixed
 	 *
 	 * @throws Binding_Resolution_Exception Thrown on missing resolution.
@@ -722,7 +721,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 
 		try {
 			$reflector = new ReflectionClass( $concrete );
-		} catch ( ReflectionException $e ) {
+		} catch ( ReflectionException $e ) { // @phpstan-ignore-line catch.neverThrown
 			throw new Binding_Resolution_Exception( "Target class [{$concrete}] does not exist.", 0, $e );
 		}
 
@@ -858,9 +857,17 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 */
 	protected function resolveClass( ReflectionParameter $parameter ) {
 		try {
-			return $parameter->isVariadic()
-				? $this->resolve_variadic_class( $parameter )
-				: $this->make( Reflector::get_parameter_class_name( $parameter ) );
+			if ( $parameter->isVariadic() ) {
+				return $this->resolve_variadic_class( $parameter );
+			}
+
+			$class_name = Reflector::get_parameter_class_name( $parameter );
+
+			if ( is_null( $class_name ) ) {
+				throw new Binding_Resolution_Exception( "Unable to resolve class for parameter [\${$parameter->getName()}]." );
+			}
+
+			return $this->make( $class_name );
 		} catch ( Binding_Resolution_Exception $e ) {
 			// If we can not resolve the class instance, we will check to see if the value
 			// is optional, and if it is we will return the optional parameter value as
@@ -882,6 +889,10 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	protected function resolve_variadic_class( ReflectionParameter $parameter ) {
 		$class_name = Reflector::get_parameter_class_name( $parameter );
 
+		if ( is_null( $class_name ) ) {
+			return [];
+		}
+
 		$abstract = $this->get_alias( $class_name );
 
 		if ( ! is_array( $concrete = $this->get_contextual_concrete( $abstract ) ) ) {
@@ -889,7 +900,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 		}
 
 		return array_map(
-			fn ( $abstract ) => $this->resolve( $abstract ),
+			fn ( string $abstract ) => $this->resolve( $abstract ),
 			$concrete
 		);
 	}
@@ -922,7 +933,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @throws Binding_Resolution_Exception Thrown on missing resolution.
 	 */
 	protected function unresolvable_primitive( ReflectionParameter $parameter ): never {
-		$message = "Unresolvable dependency resolving [{$parameter}] in class {$parameter->getDeclaringClass()->getName()}";
+		$message = "Unresolvable dependency resolving [{$parameter}] in class {$parameter->getDeclaringClass()?->getName()}";
 
 		throw new Binding_Resolution_Exception( $message );
 	}
@@ -941,6 +952,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 		if ( is_null( $callback ) && $abstract instanceof Closure ) {
 			$this->global_resolving_callbacks[] = $abstract;
 		} else {
+			// @phpstan-ignore offsetAccess.invalidOffset
 			$this->resolving_callbacks[ $abstract ][] = $callback;
 		}
 	}
@@ -959,6 +971,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 		if ( $abstract instanceof Closure && is_null( $callback ) ) {
 			$this->global_after_resolving_callbacks[] = $abstract;
 		} else {
+			// @phpstan-ignore offsetAccess.invalidOffset
 			$this->after_resolving_callbacks[ $abstract ][] = $callback;
 		}
 	}
@@ -1009,8 +1022,8 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 		$results = [];
 
 		foreach ( $callbacks_per_type as $type => $callbacks ) {
-			if ( $type === $abstract || $object instanceof $type ) {
-					$results = array_merge( $results, $callbacks );
+			if ( $type === $abstract || $object instanceof $type ) { // @phpstan-ignore-line instanceof.invalidExprType
+				$results = array_merge( $results, $callbacks );
 			}
 		}
 
@@ -1115,6 +1128,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 *
 	 * @deprecated Use `get_instance()` instead.
 	 */
+	#[\Deprecated( 'Use get_instance() instead.' )]
 	public static function getInstance(): static {
 		return static::get_instance();
 	}
@@ -1178,17 +1192,16 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * @param  mixed $key
 	 */
 	public function offsetUnset( mixed $key ): void {
-			unset( $this->bindings[ $key ], $this->instances[ $key ], $this->resolved[ $key ] );
+		unset( $this->bindings[ $key ], $this->instances[ $key ], $this->resolved[ $key ] );
 	}
 
 	/**
 	 * Dynamically access container services.
 	 *
 	 * @param  string $key
-	 * @return mixed
 	 */
-	public function __get( $key ) {
-			return $this[ $key ];
+	public function __get( string $key ): mixed {
+		return $this[ $key ];
 	}
 
 	/**
@@ -1196,9 +1209,8 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 *
 	 * @param  string $key
 	 * @param  mixed  $value
-	 * @return void
 	 */
-	public function __set( $key, $value ) {
-			$this[ $key ] = $value;
+	public function __set( string $key, mixed $value ): void {
+		$this[ $key ] = $value;
 	}
 }

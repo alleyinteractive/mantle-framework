@@ -1,205 +1,31 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Method Mantle\\Database\\Model\\Model\:\:belongs_to\(\) should return Mantle\\Database\\Model\\Relations\\Belongs_To\<static\(Mantle\\Database\\Model\\Model\<TModelObject of object \= object\>\), TRelated of Mantle\\Database\\Model\\Model\> but returns Mantle\\Database\\Model\\Relations\\Belongs_To\<\$this\(Mantle\\Database\\Model\\Model\<TModelObject of object \= object\>\), TRelated of Mantle\\Database\\Model\\Model\>\.$#'
+			message: '#^Method Mantle\\Database\\Model\\Relations\\Has_One_Or_Many\:\:build_dictionary\(\) should return array\<int, array\<int, TModel of Mantle\\Contracts\\Database\\Core_Object&Mantle\\Contracts\\Database\\Model_Meta&Mantle\\Contracts\\Database\\Updatable&Mantle\\Database\\Model\\Model \= Mantle\\Contracts\\Database\\Core_Object&Mantle\\Contracts\\Database\\Model_Meta&Mantle\\Contracts\\Database\\Updatable&Mantle\\Database\\Model\\Model\>\> but returns array\<int, list\<\(TModel of Mantle\\Contracts\\Database\\Core_Object&Mantle\\Contracts\\Database\\Model_Meta&Mantle\\Contracts\\Database\\Updatable&Mantle\\Database\\Model\\Model \= Mantle\\Contracts\\Database\\Core_Object&Mantle\\Contracts\\Database\\Model_Meta&Mantle\\Contracts\\Database\\Updatable&Mantle\\Database\\Model\\Model\)\|null\>\>\.$#'
 			identifier: return.type
 			count: 1
-			path: src/mantle/database/model/class-model.php
+			path: src/mantle/database/model/relations/class-has-one-or-many.php
 
 		-
-			message: '#^Method Mantle\\Database\\Model\\Model\:\:has_many\(\) should return Mantle\\Database\\Model\\Relations\\Has_Many\<static\(Mantle\\Database\\Model\\Model\<TModelObject of object \= object\>\), TRelated of Mantle\\Database\\Model\\Model\> but returns Mantle\\Database\\Model\\Relations\\Has_Many\<\$this\(Mantle\\Database\\Model\\Model\<TModelObject of object \= object\>\), TRelated of Mantle\\Database\\Model\\Model\>\.$#'
+			message: '#^Method Mantle\\Database\\Model\\Relations\\Has_One_Or_Many\:\:save\(\) should return TModel of Mantle\\Contracts\\Database\\Core_Object&Mantle\\Contracts\\Database\\Model_Meta&Mantle\\Contracts\\Database\\Updatable&Mantle\\Database\\Model\\Model \= Mantle\\Contracts\\Database\\Core_Object&Mantle\\Contracts\\Database\\Model_Meta&Mantle\\Contracts\\Database\\Updatable&Mantle\\Database\\Model\\Model but returns \(TModel of Mantle\\Contracts\\Database\\Core_Object&Mantle\\Contracts\\Database\\Model_Meta&Mantle\\Contracts\\Database\\Updatable&Mantle\\Database\\Model\\Model \= Mantle\\Contracts\\Database\\Core_Object&Mantle\\Contracts\\Database\\Model_Meta&Mantle\\Contracts\\Database\\Updatable&Mantle\\Database\\Model\\Model\)\|null\.$#'
 			identifier: return.type
 			count: 1
-			path: src/mantle/database/model/class-model.php
+			path: src/mantle/database/model/relations/class-has-one-or-many.php
 
 		-
-			message: '#^Method Mantle\\Database\\Model\\Model\:\:has_one\(\) should return Mantle\\Database\\Model\\Relations\\Has_One\<static\(Mantle\\Database\\Model\\Model\<TModelObject of object \= object\>\), TRelated of Mantle\\Database\\Model\\Model\> but returns Mantle\\Database\\Model\\Relations\\Has_One\<\$this\(Mantle\\Database\\Model\\Model\<TModelObject of object \= object\>\), TRelated of Mantle\\Database\\Model\\Model\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/mantle/database/model/class-model.php
-
-		-
-			message: '#^PHPDoc tag @return with type Mantle\\Database\\Model\\Relations\\Has_One_Or_Many\<static\(Mantle\\Database\\Model\\Model\<TModelObject of object \= object\>\), TRelated of Mantle\\Database\\Model\\Model\> is incompatible with native type Mantle\\Database\\Model\\Relations\\Belongs_To_Many\.$#'
-			identifier: return.phpDocType
-			count: 1
-			path: src/mantle/database/model/class-model.php
-
-		-
-			message: '#^Parameter \#1 \$results of method Mantle\\Database\\Model\\Relations\\Belongs_To_Many\<TParent of Mantle\\Database\\Model\\Model \= Mantle\\Database\\Model\\Model,TModel of Mantle\\Database\\Model\\Model \= Mantle\\Database\\Model\\Model\>\:\:build_dictionary\(\) expects Mantle\\Support\\Collection\<int, TParent of Mantle\\Database\\Model\\Model \= Mantle\\Database\\Model\\Model\>, Mantle\\Support\\Collection\<int, TModel of Mantle\\Database\\Model\\Model \= Mantle\\Database\\Model\\Model\> given\.$#'
+			message: '#^Parameter \#1 \$attribute of method Mantle\\Database\\Model\\Model\<TParent of Mantle\\Contracts\\Database\\Core_Object&Mantle\\Contracts\\Database\\Model_Meta&Mantle\\Contracts\\Database\\Updatable&Mantle\\Database\\Model\\Model \= Mantle\\Contracts\\Database\\Core_Object&Mantle\\Contracts\\Database\\Model_Meta&Mantle\\Contracts\\Database\\Updatable&Mantle\\Database\\Model\\Model\>\:\:get\(\) expects string, string\|null given\.$#'
 			identifier: argument.type
-			count: 1
-			path: src/mantle/database/model/relations/class-belongs-to-many.php
-
-		-
-			message: '#^Parameter \#2 \$models of method Mantle\\Database\\Model\\Relations\\Belongs_To_Many\<TParent of Mantle\\Database\\Model\\Model \= Mantle\\Database\\Model\\Model,TModel of Mantle\\Database\\Model\\Model \= Mantle\\Database\\Model\\Model\>\:\:build_dictionary\(\) expects Mantle\\Support\\Collection\<int, TModel of Mantle\\Database\\Model\\Model \= Mantle\\Database\\Model\\Model\>, Mantle\\Support\\Collection\<int, TParent of Mantle\\Database\\Model\\Model \= Mantle\\Database\\Model\\Model\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/mantle/database/model/relations/class-belongs-to-many.php
-
-		-
-			message: '#^Access to an undefined property TParent of Mantle\\Database\\Model\\Model \= Mantle\\Database\\Model\\Model\:\:\$meta\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/mantle/database/model/relations/class-belongs-to.php
-
-		-
-			message: '#^Call to an undefined method TParent of Mantle\\Database\\Model\\Model \= Mantle\\Database\\Model\\Model\:\:get_meta\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/mantle/database/model/relations/class-belongs-to.php
-
-		-
-			message: '#^Method Mantle\\Database\\Model\\Relations\\Belongs_To\:\:build_dictionary\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/mantle/database/model/relations/class-belongs-to.php
-
-		-
-			message: '#^Method Mantle\\Database\\Model\\Relations\\Belongs_To\:\:get_relation_query\(\) has parameter \$builder with generic class Mantle\\Database\\Query\\Builder but does not specify its types\: TModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/mantle/database/model/relations/class-belongs-to.php
-
-		-
-			message: '#^Method Mantle\\Database\\Model\\Relations\\Belongs_To\:\:get_relation_query\(\) return type with generic class Mantle\\Database\\Query\\Builder does not specify its types\: TModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/mantle/database/model/relations/class-belongs-to.php
-
-		-
-			message: '#^Strict comparison using \=\=\= between ''Mantle\\\\Database\\\\Model\\\\Relations\\\\Belongs_To_Many'' and class\-string\<static\(Mantle\\Database\\Model\\Relations\\Belongs_To\<TParent of Mantle\\Database\\Model\\Model \= Mantle\\Database\\Model\\Model \(class Mantle\\Database\\Model\\Relations\\Belongs_To, argument\), TModel of Mantle\\Database\\Model\\Model \= Mantle\\Database\\Model\\Model \(class Mantle\\Database\\Model\\Relations\\Belongs_To, argument\)\>\)\> will always evaluate to false\.$#'
-			identifier: identical.alwaysFalse
 			count: 2
-			path: src/mantle/database/model/relations/class-belongs-to.php
+			path: src/mantle/database/model/relations/class-has-one-or-many.php
 
 		-
-			message: '#^Unable to resolve the template type TMapValue in call to method Mantle\\Support\\Collection\<int,TParent of Mantle\\Database\\Model\\Model \= Mantle\\Database\\Model\\Model\>\:\:map\(\)$#'
-			identifier: argument.templateType
-			count: 1
-			path: src/mantle/database/model/relations/class-belongs-to.php
+			message: '#^Parameter \#1 \$attribute of method Mantle\\Database\\Query\\Builder\<TModel of Mantle\\Contracts\\Database\\Core_Object&Mantle\\Contracts\\Database\\Model_Meta&Mantle\\Contracts\\Database\\Updatable&Mantle\\Database\\Model\\Model \= Mantle\\Contracts\\Database\\Core_Object&Mantle\\Contracts\\Database\\Model_Meta&Mantle\\Contracts\\Database\\Updatable&Mantle\\Database\\Model\\Model\>\:\:whereIn\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/mantle/database/model/relations/class-has-one-or-many.php
 
 		-
-			message: '#^Parameter \#2 \$models of method Mantle\\Database\\Model\\Relations\\Has_One_Or_Many\<TParent of Mantle\\Database\\Model\\Model \= Mantle\\Database\\Model\\Model,TModel of Mantle\\Database\\Model\\Model \= Mantle\\Database\\Model\\Model\>\:\:build_dictionary\(\) expects Mantle\\Support\\Collection\<int, TParent of Mantle\\Database\\Model\\Model \= Mantle\\Database\\Model\\Model\>, Mantle\\Support\\Collection\<int, TModel of Mantle\\Database\\Model\\Model \= Mantle\\Database\\Model\\Model\> given\.$#'
+			message: '#^Parameter \#1 \$value of method Mantle\\Support\\Collection\<int,TModel of Mantle\\Contracts\\Database\\Core_Object&Mantle\\Contracts\\Database\\Model_Meta&Mantle\\Contracts\\Database\\Updatable&Mantle\\Database\\Model\\Model \= Mantle\\Contracts\\Database\\Core_Object&Mantle\\Contracts\\Database\\Model_Meta&Mantle\\Contracts\\Database\\Updatable&Mantle\\Database\\Model\\Model\>\:\:pluck\(\) expects array\<string\>\|int\|string, string\|null given\.$#'
 			identifier: argument.type
 			count: 1
-			path: src/mantle/database/model/relations/class-has-many.php
-
-		-
-			message: '#^Access to an undefined property TModel of Mantle\\Database\\Model\\Model \= Mantle\\Database\\Model\\Model\:\:\$meta\.$#'
-			identifier: property.notFound
-			count: 1
 			path: src/mantle/database/model/relations/class-has-one-or-many.php
-
-		-
-			message: '#^Method Mantle\\Database\\Model\\Relations\\Has_One_Or_Many\:\:build_dictionary\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/mantle/database/model/relations/class-has-one-or-many.php
-
-		-
-			message: '#^Strict comparison using \=\=\= between ''Mantle\\\\Database\\\\Model\\\\Relations\\\\Has_Many'' and class\-string\<static\(Mantle\\Database\\Model\\Relations\\Has_One_Or_Many\<TParent of Mantle\\Database\\Model\\Model \= Mantle\\Database\\Model\\Model \(class Mantle\\Database\\Model\\Relations\\Has_One_Or_Many, argument\), TModel of Mantle\\Database\\Model\\Model \= Mantle\\Database\\Model\\Model \(class Mantle\\Database\\Model\\Relations\\Has_One_Or_Many, argument\)\>\)\> will always evaluate to false\.$#'
-			identifier: identical.alwaysFalse
-			count: 1
-			path: src/mantle/database/model/relations/class-has-one-or-many.php
-
-		-
-			message: '#^Instanceof between TModel of Mantle\\Database\\Model\\Model and Mantle\\Database\\Model\\Model will always evaluate to true\.$#'
-			identifier: instanceof.alwaysTrue
-			count: 2
-			path: src/mantle/database/query/class-collection.php
-
-		-
-			message: '#^Instanceof between static\(Mantle\\Database\\Query\\Collection\<TKey of \(int\|string\), TMapValue\>\) and Mantle\\Database\\Query\\Collection will always evaluate to true\.$#'
-			identifier: instanceof.alwaysTrue
-			count: 1
-			path: src/mantle/database/query/class-collection.php
-
-		-
-			message: '#^Instanceof between static\(Mantle\\Database\\Query\\Collection\<TMapWithKeysKey of \(int\|string\), TMapWithKeysValue\>\) and Mantle\\Database\\Query\\Collection will always evaluate to true\.$#'
-			identifier: instanceof.alwaysTrue
-			count: 1
-			path: src/mantle/database/query/class-collection.php
-
-		-
-			message: '#^Method Mantle\\Database\\Query\\Collection\:\:zip\(\) should return static\(Mantle\\Database\\Query\\Collection\<int, static\(Mantle\\Database\\Query\\Collection\<TKey of \(int\|string\), \(TModel of Mantle\\Database\\Model\\Model\)\|TZipValue\>\)\>\) but returns Mantle\\Support\\Collection\<int, Mantle\\Support\\Collection\<\(int\|string\), mixed\>\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/mantle/database/query/class-collection.php
-
-		-
-			message: '#^Method Mantle\\Http\\Routing\\Router\:\:merge\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/mantle/http/routing/class-router.php
-
-		-
-			message: '#^Method Mantle\\Support\\Collection\:\:chunk\(\) should return static\(Mantle\\Support\\Collection\<int, static\(Mantle\\Support\\Collection\<TKey of \(int\|string\) \= \(int\|string\), TValue \= mixed\>\)\>\) but returns static\(Mantle\\Support\\Collection\<int, static\(Mantle\\Support\\Collection\<TKey of \(int\|string\) \= \(int\|string\), TValue \= mixed\>\)\>\)\.$#'
-			identifier: return.type
-			count: 1
-			path: src/mantle/support/class-collection.php
-
-		-
-			message: '#^Method Mantle\\Support\\Collection\:\:combine\(\) should return static\(Mantle\\Support\\Collection\<TValue \= mixed, TCombineValue\>\) but returns static\(Mantle\\Support\\Collection\<\(int\|string\), TValue \= mixed\>\)\.$#'
-			identifier: return.type
-			count: 1
-			path: src/mantle/support/class-collection.php
-
-		-
-			message: '#^Method Mantle\\Support\\Collection\:\:filter\(\) should return static\(Mantle\\Support\\Collection\<TKey of \(int\|string\) \= \(int\|string\), TValue \= mixed\>\) but returns static\(Mantle\\Support\\Collection\<TKey of \(int\|string\) \= \(int\|string\), TValue of mixed \= mixed\>\)\.$#'
-			identifier: return.type
-			count: 1
-			path: src/mantle/support/class-collection.php
-
-		-
-			message: '#^Method Mantle\\Support\\Collection\:\:from\(\) should return static\(Mantle\\Support\\Collection\<int, TValueFrom\>\) but returns static\(Mantle\\Support\\Collection\<int, Mantle\\Database\\Model\\Post\>\)\.$#'
-			identifier: return.type
-			count: 1
-			path: src/mantle/support/class-collection.php
-
-		-
-			message: '#^Method Mantle\\Support\\Collection\:\:from\(\) should return static\(Mantle\\Support\\Collection\<int, TValueFrom\>\) but returns static\(Mantle\\Support\\Collection\<int, TValue \= mixed\>\)\.$#'
-			identifier: return.type
-			count: 1
-			path: src/mantle/support/class-collection.php
-
-		-
-			message: '#^Method Mantle\\Support\\Collection\:\:getIterator\(\) return type with generic class ArrayIterator does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/mantle/support/class-collection.php
-
-		-
-			message: '#^Method Mantle\\Support\\Collection\:\:group_by\(\) should return static\(Mantle\\Support\\Collection\<\(int\|string\), static\(Mantle\\Support\\Collection\<\(int\|string\), TValue \= mixed\>\)\>\) but returns static\(Mantle\\Support\\Collection\<\(int\|string\), static\(Mantle\\Support\\Collection\<\*NEVER\*, \*NEVER\*\>\)\>\)\.$#'
-			identifier: return.type
-			count: 1
-			path: src/mantle/support/class-collection.php
-
-		-
-			message: '#^Method Mantle\\Support\\Collection\:\:map_to_dictionary\(\) should return static\(Mantle\\Support\\Collection\<TMapToDictionaryKey of \(int\|string\), array\<int, TMapToDictionaryValue\>\>\) but returns static\(Mantle\\Support\\Collection\<TMapToDictionaryKey of \(int\|string\), non\-empty\-list\<TMapToDictionaryValue\>\>\)\.$#'
-			identifier: return.type
-			count: 1
-			path: src/mantle/support/class-collection.php
-
-		-
-			message: '#^Method Mantle\\Support\\Collection\:\:only_children\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/mantle/support/class-collection.php
-
-		-
-			message: '#^Method Mantle\\Support\\Collection\:\:only_children\(\) should return static\(Mantle\\Support\\Collection\<TKey of \(int\|string\) \= \(int\|string\), array\>\) but returns static\(Mantle\\Support\\Collection\<TKey of \(int\|string\) \= \(int\|string\), TValue \= mixed\>\)\.$#'
-			identifier: return.type
-			count: 1
-			path: src/mantle/support/class-collection.php
-
-		-
-			message: '#^Method Mantle\\Support\\Collection\:\:partition\(\) should return static\(Mantle\\Support\\Collection\<int, static\(Mantle\\Support\\Collection\<TKey of \(int\|string\) \= \(int\|string\), TValue \= mixed\>\)\>\) but returns static\(Mantle\\Support\\Collection\<int, static\(Mantle\\Support\\Collection\<\(int\|string\), mixed\>\)\>\)\.$#'
-			identifier: return.type
-			count: 1
-			path: src/mantle/support/class-collection.php
-
-		-
-			message: '#^Method Mantle\\Support\\Collection\:\:times\(\) should return static\(Mantle\\Support\\Collection\<int, TTimesValue\>\) but returns static\(Mantle\\Support\\Collection\<int, int\<1, max\>\>\)\.$#'
-			identifier: return.type
-			count: 1
-			path: src/mantle/support/class-collection.php

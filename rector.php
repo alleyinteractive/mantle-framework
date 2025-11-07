@@ -6,13 +6,16 @@
  */
 
 use Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector;
+use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
 use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
+use Rector\CodingStyle\Rector\FunctionLike\FunctionLikeToFirstClassCallableRector;
 use Rector\CodingStyle\Rector\If_\NullableCompareToNullRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
+use Rector\DeadCode\Rector\MethodCall\RemoveNullArgOnNullDefaultParamRector;
 use Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchExprVariableRector;
 
 use Rector\EarlyReturn\Rector\If_\ChangeOrIfContinueToMultiContinueRector;
@@ -111,10 +114,14 @@ return RectorConfig::configure()
 		],
 		ExplicitBoolCompareRector::class => [
 			__DIR__ . '/src/mantle/database/model/class-post.php',
+			__DIR__ . '/src/mantle/testing',
 		],
 		SimplifyEmptyCheckOnEmptyArrayRector::class,
 		DisallowedEmptyRuleFixerRector::class,
 		NullableCompareToNullRector::class,
 		CatchExceptionNameMatchingTypeRector::class,
 		EncapsedStringsToSprintfRector::class,
+		FlipTypeControlToUseExclusiveTypeRector::class,
+		FunctionLikeToFirstClassCallableRector::class,
+		RemoveNullArgOnNullDefaultParamRector::class,
 	] );

@@ -38,7 +38,7 @@ class Route_Binding {
 	 * @param  string    $binding Binding name.
 	 * @return \Closure
 	 */
-	protected static function create_class_binding( Container $container, $binding ) {
+	protected static function create_class_binding( Container $container, string $binding ) {
 		return function ( $value, $route ) use ( $container, $binding ) {
 			// If the binding has an @ sign, we will assume it's being used to delimit
 			// the class name from the bind method name. This allows for bindings
@@ -46,6 +46,8 @@ class Route_Binding {
 			[ $class, $method ] = Str::parse_callback( $binding, 'bind' );
 
 			$callable = [ $container->make( $class ), $method ];
+
+			assert( is_callable( $callable ), 'Binding method is not callable.' );
 
 			return $callable( $value, $route );
 		};

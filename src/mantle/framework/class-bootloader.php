@@ -161,6 +161,8 @@ class Bootloader implements Contract {
 			);
 		}
 
+		assert( $this->app instanceof Contracts\Application, 'Application instance is not set on Bootloader.' );
+
 		$this->app->singleton(
 			Contracts\Console\Kernel::class,
 			$console ?? \Mantle\Framework\Console\Kernel::class,
@@ -187,6 +189,8 @@ class Bootloader implements Contract {
 				'Exception handler must implement the Contracts\Exceptions\Handler interface.',
 			);
 		}
+
+		assert( $this->app instanceof Contracts\Application, 'Application instance is not set on Bootloader.' );
 
 		$this->app->singleton(
 			Contracts\Exceptions\Handler::class,
@@ -223,6 +227,8 @@ class Bootloader implements Contract {
 		?string $rest_api = null,
 		bool|callable|null $pass_through = null,
 	): static {
+		assert( $this->app instanceof Contracts\Application, 'Application instance is not set on Bootloader.' );
+
 		$this->app->booted(
 			function ( Application $app ) use ( $callback, $web, $rest_api, $pass_through ): void {
 				$router = $app['router'];
@@ -280,6 +286,8 @@ class Bootloader implements Contract {
 	 * @param Closure|string|null $concrete Concrete to bind.
 	 */
 	public function bind( string $abstract, Closure|string|null $concrete ): static {
+		assert( $this->app instanceof Contracts\Application, 'Application instance is not set on Bootloader.' );
+
 		$this->app->bind( $abstract, $concrete );
 
 		return $this;
@@ -290,6 +298,8 @@ class Bootloader implements Contract {
 	 */
 	public function boot(): static {
 		$this->boot_application();
+
+		assert( $this->app instanceof Contracts\Application, 'Application instance is not set on Bootloader.' );
 
 		match ( true ) {
 			$this->app->is_running_in_console_isolation() => $this->boot_console(),
@@ -304,6 +314,8 @@ class Bootloader implements Contract {
 	 * Boot the application and attach the relevant container classes.
 	 */
 	protected function boot_application(): void {
+		assert( $this->app instanceof Contracts\Application, 'Application instance is not set on Bootloader.' );
+
 		if ( $this->app->is_booted() ) {
 			return;
 		}
@@ -336,6 +348,8 @@ class Bootloader implements Contract {
 	 * Boot the application in the console context.
 	 */
 	protected function boot_console(): void {
+		assert( $this->app instanceof Contracts\Application, 'Application instance is not set on Bootloader.' );
+
 		$kernel = $this->app->make( Contracts\Console\Kernel::class );
 
 		$kernel->bootstrap();
@@ -351,6 +365,8 @@ class Bootloader implements Contract {
 	 * Boot the application in the WP-CLI context.
 	 */
 	protected function boot_console_wp_cli(): void {
+		assert( $this->app instanceof Contracts\Application, 'Application instance is not set on Bootloader.' );
+
 		$kernel = $this->app->make( Contracts\Console\Kernel::class );
 
 		$kernel->bootstrap();
@@ -364,14 +380,14 @@ class Bootloader implements Contract {
 
 				// Remove anything before the wp-cli command name.
 				if ( false !== $index ) {
-					$argv = $argv->slice( $index )->values();
+					$argv = $argv->slice( (int) $index )->values();
 				}
 
 				// Remove the `--url=` option as it shouldn't be passed down to the console command.
 				$argv = $argv->filter( fn ( $value ) => ! Str::starts_with( $value, '--url=' ) );
 
 				$status    = $kernel->handle(
-					$input = new ArgvInput( $argv->values()->to_array() ),
+					$input = new ArgvInput( $argv->values()->to_array() ), // @phpstan-ignore-line argument.type
 					new ConsoleOutput(),
 				);
 
@@ -391,6 +407,8 @@ class Bootloader implements Contract {
 	 * @return void
 	 */
 	protected function boot_http() {
+		assert( $this->app instanceof Contracts\Application, 'Application instance is not set on Bootloader.' );
+
 		$kernel = $this->app->make( Contracts\Http\Kernel::class );
 
 		$kernel->handle( Request::capture() );

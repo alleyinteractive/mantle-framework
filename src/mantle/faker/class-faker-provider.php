@@ -81,7 +81,7 @@ class Faker_Provider extends Base {
 
 		return static::block(
 			'paragraph',
-			sprintf( '<p>%s</p>', $text ?: Lorem::sentences( (int) value( $sentences ), true ) )
+			sprintf( '<p>%s</p>', $text ?: Lorem::sentences( (int) value( $sentences ), true ) ) // @phpstan-ignore-line argument.type
 		);
 	}
 

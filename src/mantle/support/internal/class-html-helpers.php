@@ -32,7 +32,7 @@ readonly class HTML_Helpers {
 	public static function get_body_node_from_html_fragment( $html, string $charset = 'UTF-8' ): \DOMNode {
 		$html = '<html><body>' . $html . '</body></html>';
 
-		return self::parseXhtml( $html, $charset )->getElementsByTagName( 'body' )->item( 0 );
+		return self::parseXhtml( $html, $charset )->getElementsByTagName( 'body' )->item( 0 ); // @phpstan-ignore-line
 	}
 
 	/**
@@ -76,10 +76,10 @@ readonly class HTML_Helpers {
 		} catch ( \Exception | \ValueError ) {
 			try {
 					$htmlContent = iconv( $charset, 'UTF-8', $htmlContent );
-					$htmlContent = mb_encode_numericentity( $htmlContent, [ 0x80, 0x10FFFF, 0, 0x1FFFFF ], 'UTF-8' );
+					$htmlContent = mb_encode_numericentity( (string) $htmlContent, [ 0x80, 0x10FFFF, 0, 0x1FFFFF ], 'UTF-8' );
 			} catch ( \Exception | \ValueError ) {}
 
-			return $htmlContent;
+			return (string) $htmlContent;
 		} finally {
 			restore_error_handler();
 		}

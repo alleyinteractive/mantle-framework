@@ -92,6 +92,8 @@ use function Mantle\Support\Helpers\stringable;
  * @method static \Mantle\Database\Query\Post_Query_Builder<static> newer_than_or_equal_to( DateTimeInterface|int $date, string $column = 'post_date' )
  */
 class Post extends Model implements Contracts\Database\Core_Object, Contracts\Database\Model_Meta, Contracts\Database\Updatable {
+	/** @use Concerns\Has_Relationships<static> */
+	use Concerns\Has_Relationships;
 	use Dates\Has_Dates;
 	use Events\Post_Events;
 	use Meta\Model_Meta;
@@ -203,7 +205,11 @@ PHP
 
 		$full_class_name = "{$namespace}\\{$class_name}";
 
-		return new $full_class_name();
+		$instance = new $full_class_name();
+
+		assert( $instance instanceof self );
+
+		return $instance;
 	}
 
 	/**
@@ -219,7 +225,7 @@ PHP
 	 * @return \Mantle\Database\Query\Post_Query_Builder<static>
 	 */
 	public static function query(): Post_Query_Builder {
-		return ( new static() )->new_query();
+		return ( new static() )->new_query(); // @phpstan-ignore-line return.type
 	}
 
 	/**
@@ -406,7 +412,11 @@ PHP
 	 * Get the registerable route for the model.
 	 */
 	public static function get_route(): ?string {
-		if ( 'post' === static::get_object_name() ) {
+		$object_name = static::get_object_name();
+
+		$route_structure = null;
+
+		if ( 'post' === $object_name ) {
 			$structure = get_option( 'permalink_structure' );
 
 			if ( ! empty( $structure ) ) {
@@ -423,21 +433,21 @@ PHP
 			} else {
 				$route_structure = null;
 			}
-		} else {
-			$route_structure = '/' . static::get_object_name() . '/{slug}';
+		} elseif ( $object_name ) {
+			$route_structure = "/{$object_name}/{slug}";
 		}
 
 		/**
 		 * Filter the route structure for a post handled through the entity router.
 		 *
-		 * @param string $route_structure Route structure.
-		 * @param string $object_name Post type.
-		 * @param string $object_class Model class name.
+		 * @param string|null $route_structure Route structure.
+		 * @param string|null $object_name Post type.
+		 * @param string      $object_class Model class name.
 		 */
 		return (string) apply_filters(
 			'mantle_entity_router_post_route',
 			$route_structure,
-			static::get_object_name(),
+			$object_name,
 			static::class
 		);
 	}

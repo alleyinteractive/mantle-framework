@@ -10,7 +10,7 @@ namespace Mantle\Testing\Attributes;
 use Attribute;
 
 /**
- * Environment to set.
+ * Environment to set for the test.
  *
  * @see wp_get_environment_type()
  */

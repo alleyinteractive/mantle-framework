@@ -31,6 +31,8 @@ trait Has_Factory {
 			$factory = Container::get_instance()->make( $factory );
 		}
 
+		assert( $factory instanceof Factory );
+
 		return $factory // @phpstan-ignore-line should return
 			->as_models()
 			->with_model( static::class )
@@ -42,7 +44,7 @@ trait Has_Factory {
 				$factory instanceof Term_Factory,
 				fn ( Term_Factory $factory ) => $factory->with_taxonomy( static::get_object_name() ), // @phpstan-ignore-line expects
 			)
-			->when( is_array( $state ) || is_callable( $state ), fn ( Factory $factory ) => $factory->state( $state ) );
+			->when( is_array( $state ) || is_callable( $state ), fn ( Factory $factory ) => $factory->state( $state ) ); // @phpstan-ignore-line argument.type
 	}
 
 	/**

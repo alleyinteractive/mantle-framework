@@ -84,7 +84,24 @@ class Lightweight_Event_Dispatcher extends Dispatcher {
 
 		foreach ( $this->get_listeners( $event ) as $listeners ) {
 			foreach ( $listeners as $listener ) {
-				$filterable_value = $listener( ...$payload );
+				if ( is_callable( $listener ) ) {
+					$filterable_value = $listener( ...$payload );
+				} else {
+					// If the listener is a class name, we will instantiate it and
+					// call it as a callable. We will throw an exception if the
+					// class does not exist or is not callable.
+					if ( ! class_exists( $listener ) ) {
+						throw new RuntimeException( "Listener class {$listener} does not exist." );
+					}
+
+					$instance = new $listener();
+
+					if ( ! is_callable( $instance ) ) {
+						throw new RuntimeException( "Listener class {$listener} is not callable." );
+					}
+
+					$filterable_value = $instance( ...$payload );
+				}
 
 				// Replace the first payload value with the return value of the listener.
 				if ( is_array( $payload ) ) {

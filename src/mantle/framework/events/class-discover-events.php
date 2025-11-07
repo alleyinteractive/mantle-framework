@@ -144,6 +144,7 @@ class Discover_Events {
 	 *
 	 * @param SplFileInfo $file File.
 	 * @param string      $base_path Base path.
+	 * @return class-string<object>
 	 */
 	protected static function class_from_file( SplFileInfo $file, string $base_path ): string {
 		$class = trim(
@@ -153,7 +154,7 @@ class Discover_Events {
 			DIRECTORY_SEPARATOR,
 		);
 
-		return str_replace(
+		return str_replace( // @phpstan-ignore-line return.type
 			[
 				DIRECTORY_SEPARATOR,
 				ucfirst( basename( (string) app()->get_app_path() ) ) . '\\',

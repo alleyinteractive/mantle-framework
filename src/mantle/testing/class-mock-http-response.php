@@ -196,7 +196,7 @@ class Mock_Http_Response implements Arrayable {
 	 */
 	public function with_json( $payload ): Mock_Http_Response {
 		return $this
-			->with_body( is_string( $payload ) ? $payload : wp_json_encode( $payload ) )
+			->with_body( is_string( $payload ) ? $payload : (string) wp_json_encode( $payload ) )
 			->with_header( 'Content-Type', 'application/json' );
 	}
 
@@ -277,7 +277,7 @@ class Mock_Http_Response implements Arrayable {
 
 		return $this
 			->with_filename( $file )
-			->with_body( file_get_contents( $file ) ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
+			->with_body( (string) file_get_contents( $file ) ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
 	}
 
 	/**

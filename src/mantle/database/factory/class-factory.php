@@ -116,6 +116,7 @@ abstract class Factory {
 	 *
 	 * @param array $args The arguments.
 	 */
+	#[\Deprecated( 'Use create() or create_and_get() instead.' )]
 	public function create_object( array $args ): int|null {
 		return $this->create( $args );
 	}
@@ -127,14 +128,14 @@ abstract class Factory {
 	 * @param array $values The values to use when creating the object.
 	 * @return TReturnValue The created object.
 	 */
-	public function first_or_create( array $attributes, array $values = [] ): Model {
+	public function first_or_create( array $attributes, array $values = [] ): mixed {
 		$object = $this->get_object_by_query( $attributes );
 
 		if ( ! $object instanceof Model ) {
 			return $this->create_and_get( array_merge( $attributes, $values ) );
 		}
 
-		return $object;
+		return $this->get_object_by_id( $object->id() );
 	}
 
 	/**
@@ -277,7 +278,7 @@ abstract class Factory {
 	}
 
 	/**
-	 * Creates multiple objects.
+	 * Creates multiple objects as an array.
 	 *
 	 * @param int   $count Amount of objects to create.
 	 * @param array $args  Optional. The arguments for the object to create. Default is empty array.
@@ -285,15 +286,23 @@ abstract class Factory {
 	 * @return array<int, int>
 	 */
 	public function create_many( int $count, array $args = [] ): array {
-		return collect()
-			->pad( $count, null )
-			->map( fn () => $this->create( $args ) )
-			->to_array();
+		return $this->collect_many( $count, $args )->all();
 	}
 
+	/**
+	 * Creates multiple objects as a collection.
+	 *
+	 * @param int   $count Amount of objects to create.
+	 * @param array $args  Optional. The arguments for the object to create. Default is empty array.
+	 *
+	 * @return Collection<int, int>
+	 */
+	public function collect_many( int $count, array $args = [] ): Collection {
+		return collect()->times( $count, fn () => $this->create( $args ) );
+	}
 
 	/**
-	 * Creates multiple objects and returns their objects.
+	 * Creates multiple objects and returns their objects in an array.
 	 *
 	 * @param int   $count Amount of objects to create.
 	 * @param array $args  Optional. The arguments for the object to create. Default is empty array.
@@ -301,10 +310,19 @@ abstract class Factory {
 	 * @return array<int, TReturnValue>
 	 */
 	public function create_many_and_get( int $count, array $args = [] ): array {
-		return collect()
-			->pad( $count, null )
-			->map( fn () => $this->create_and_get( $args ) )
-			->all();
+		return $this->collect_many_and_get( $count, $args )->all();
+	}
+
+	/**
+	 * Creates multiple objects and returns their objects in a collection.
+	 *
+	 * @param int   $count Amount of objects to create.
+	 * @param array $args  Optional. The arguments for the object to create. Default is empty array.
+	 *
+	 * @return Collection<int, TReturnValue>
+	 */
+	public function collect_many_and_get( int $count, array $args = [] ): Collection {
+		return collect()->times( $count, fn () => $this->create_and_get( $args ) );
 	}
 
 	/**
@@ -313,14 +331,14 @@ abstract class Factory {
 	 * @param array $args Optional. The arguments for the object to create. Default is empty array.
 	 * @return TReturnValue The created object.
 	 */
-	public function create_and_get( array $args = [] ) {
+	public function create_and_get( array $args = [] ): mixed {
 		return $this->get_object_by_id( $this->create( $args ) );
 	}
 
 	/**
 	 * Pass arguments through the middleware and return a core object.
 	 *
-	 * @param array $args  Arguments to pass through the middleware.
+	 * @param array<mixed> $args Arguments to pass through the middleware.
 	 * @return TObject|Core_Object|null
 	 */
 	protected function make( array $args ) {
@@ -337,6 +355,12 @@ abstract class Factory {
 				function ( array $args ) use ( $factory ): Model {
 					if ( $factory->slash ) {
 						$args = wp_slash( $args );
+					}
+
+					foreach ( $args as $key => $value ) {
+						if ( is_callable( $value ) ) {
+							$args[ $key ] = $value( $key, $args );
+						}
 					}
 
 					return $this->get_model()::create( $args );

@@ -7,6 +7,8 @@
  * @phpcs:disable WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
  */
 
+declare(strict_types=1);
+
 namespace Mantle\Testing\Concerns;
 
 use InvalidArgumentException;
@@ -33,14 +35,14 @@ trait Interacts_With_Cron {
 	 *                    arguments (cron only).
 	 */
 	public function assertInCronQueue( string $action, array|null $args = [] ): void {
-		if ( $this->is_job_action( $action ) ) {
+		if ( class_exists( $action ) && $this->is_job_action( $action ) ) {
 			$this->assertJobQueued( $action, (array) $args );
 			return;
 		}
 
 		if ( ! is_null( $args ) ) {
 			PHPUnit::assertNotFalse(
-				\wp_next_scheduled( $action, $args ),
+				\wp_next_scheduled( $action, $args ), // @phpstan-ignore-line argument.type
 				"Cron action is not in cron queue: [{$action}]"
 			);
 		}
@@ -59,14 +61,14 @@ trait Interacts_With_Cron {
 	 *                    arguments (cron only).
 	 */
 	public function assertNotInCronQueue( string $action, array|null $args = [] ): void {
-		if ( $this->is_job_action( $action ) ) {
+		if ( class_exists( $action ) && $this->is_job_action( $action ) ) {
 			$this->assertJobNotQueued( $action, (array) $args );
 			return;
 		}
 
 		if ( ! is_null( $args ) ) {
 			PHPUnit::assertFalse(
-				\wp_next_scheduled( $action, $args ),
+				\wp_next_scheduled( $action, $args ), // @phpstan-ignore-line argument.type
 				"Cron action is in cron queue: [{$action}]"
 			);
 		}
@@ -278,10 +280,16 @@ trait Interacts_With_Cron {
 	/**
 	 * Dispatch the WordPress cron queue.
 	 *
+	 * @throws \RuntimeException If the application container is not available.
+	 *
 	 * @param int    $size Size of the queue to run.
 	 * @param string $queue Queue to run.
 	 */
 	public function dispatch_queue( int $size = 100, ?string $queue = null ): void {
+		if ( ! $this->app ) {
+			throw new \RuntimeException( 'The application container is not available.' );
+		}
+
 		$this->app->make( Worker::class )->run( $size, $queue );
 	}
 }

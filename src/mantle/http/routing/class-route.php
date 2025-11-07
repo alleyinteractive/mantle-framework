@@ -357,19 +357,20 @@ class Route extends Symfony_Route {
 
 	/**
 	 * Run the route's closure callback.
-	 *
-	 * @return mixed
 	 */
-	protected function run_callback() {
-		$callback   = $this->get_callback();
+	protected function run_callback(): mixed {
+		$callback = $this->get_callback();
+
+		if ( ! is_callable( $callback ) ) {
+			return null;
+		}
+
 		$parameters = $this->resolve_method_dependencies(
 			$this->get_request_parameters(),
-			new ReflectionFunction( $callback )
+			new ReflectionFunction( $callback ), // @phpstan-ignore-line argument.type
 		);
 
-		return $callback(
-			...array_values( $parameters )
-		);
+		return $callback( ...array_values( $parameters ) );
 	}
 
 	/**
@@ -390,7 +391,7 @@ class Route extends Symfony_Route {
 		);
 
 		if ( method_exists( $controller, 'call_action' ) ) {
-			return $controller->call_action( $method, $parameters );
+			return $controller->call_action( $method, $parameters ); // @phpstan-ignore-line method.nonObject
 		}
 
 		return $controller->{ $method }( ...array_values( $parameters ) );

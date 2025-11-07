@@ -63,7 +63,7 @@ trait Manages_Service_Providers {
 			$providers = $providers->filter(
 				fn ( string $provider ) => in_array(
 					Isolated_Service_Provider::class,
-					class_implements( $provider ),
+					class_implements( $provider ) ?: [],
 					true,
 				)
 			);

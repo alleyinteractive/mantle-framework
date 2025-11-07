@@ -26,14 +26,14 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	/**
 	 * The decoded JSON contents.
 	 */
-	protected ?array $decoded = null;
+	protected array $decoded;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param string|array|Jsonable|JsonSerializable $json The original encoded JSON.
 	 */
-	public function __construct( public $json ) {
+	public function __construct( public string|array|Jsonable|JsonSerializable $json ) {
 		if ( $this->json instanceof JsonSerializable ) {
 			$this->decoded = $this->json->jsonSerialize();
 		} elseif ( $this->json instanceof Jsonable ) {
@@ -43,10 +43,16 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 		} else {
 			$decoded = json_decode( $this->json, true );
 
-			$this->decoded = is_array( $decoded ) ? $decoded : null;
+			if ( JSON_ERROR_NONE !== json_last_error() ) {
+				PHPUnit::fail( 'Invalid JSON was returned from the response: ' . json_last_error_msg() );
+			}
+
+			if ( is_array( $decoded ) ) {
+				$this->decoded = $decoded;
+			}
 		}
 
-		if ( is_null( $this->decoded ) || false == $this->decoded ) { // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
+		if ( ! isset( $this->decoded ) ) {
 			PHPUnit::fail( 'Invalid JSON was returned from the response.' );
 		}
 	}
@@ -54,7 +60,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	/**
 	 * Retrieve the decoded JSON.
 	 */
-	public function get_decoded(): array {
+	public function get_decoded(): ?array {
 		return $this->decoded;
 	}
 
@@ -72,9 +78,36 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 *
 	 * @param  string $path
 	 * @param  mixed  $expect
+	 * @param  string $message Optional message on failure.
 	 */
-	public function assertPath( string $path, mixed $expect ): static {
-		PHPUnit::assertSame( $expect, $this->json( $path ) );
+	public function assertPath( string $path, mixed $expect, string $message = '' ): static {
+		PHPUnit::assertSame( $expect, $this->json( $path ), $message );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the value at the given path in the response matches the given regular expression.
+	 *
+	 * @param string $path  Path to check.
+	 * @param string $regex Regular expression to match against.
+	 * @param string $message Optional message on failure.
+	 */
+	public function assertPathMatches( string $path, string $regex, string $message = '' ): static {
+		PHPUnit::assertMatchesRegularExpression( $regex, (string) $this->json( $path ), $message );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a specific path does not match the given regular expression pattern in the response.
+	 *
+	 * @param string $path Path to check.
+	 * @param string $pattern Regular expression pattern to match.
+	 * @param string $message Optional message on failure.
+	 */
+	public function assertPathNotMatches( string $path, string $pattern, string $message = '' ): static {
+		PHPUnit::assertDoesNotMatchRegularExpression( $pattern, (string) $this->json( $path ), $message );
 
 		return $this;
 	}
@@ -83,9 +116,10 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 * Assert that a specific path exists in the response.
 	 *
 	 * @param string $path Path to check.
+	 * @param string $message Optional message on failure.
 	 */
-	public function assertPathExists( string $path ): static {
-		PHPUnit::assertNotNull( $this->json( $path ) );
+	public function assertPathExists( string $path, string $message = '' ): static {
+		PHPUnit::assertNotNull( $this->json( $path ), $message );
 
 		return $this;
 	}
@@ -94,9 +128,89 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 * Assert that a specific path does not exist in the response.
 	 *
 	 * @param string $path Path to check.
+	 * @param string $message Optional message on failure.
 	 */
-	public function assertPathMissing( string $path ): static {
-		PHPUnit::assertNull( $this->json( $path ) );
+	public function assertPathMissing( string $path, string $message = '' ): static {
+		PHPUnit::assertNull( $this->json( $path ), $message );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a specific path is empty in the response.
+	 *
+	 * @param string $path  Path to check.
+	 * @param string $message Optional message on failure.
+	 */
+	public function assertPathEmpty( string $path, string $message = '' ): static {
+		PHPUnit::assertEmpty( $this->json( $path ), $message );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a specific path is not empty in the response.
+	 *
+	 * @param string $path  Path to check.
+	 * @param string $message Optional message on failure.
+	 */
+	public function assertPathNotEmpty( string $path, string $message = '' ): static {
+		PHPUnit::assertNotEmpty( $this->json( $path ), $message );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a specific path contains the given string value in the response.
+	 *
+	 * @param string $path  Path to check.
+	 * @param string $needle Value to check for.
+	 * @param string $message Optional message on failure.
+	 */
+	public function assertPathContains( string $path, string $needle, string $message = '' ): static {
+		PHPUnit::assertStringContainsString(
+			$needle,
+			(string) $this->json( $path ),
+			$message,
+		);
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a specific path does not contain the given string value in the response.
+	 *
+	 * @param string $path  Path to check.
+	 * @param string $needle Value to check for.
+	 * @param string $message Optional message on failure.
+	 */
+	public function assertPathNotContains( string $path, string $needle, string $message = '' ): static {
+		PHPUnit::assertStringNotContainsString(
+			$needle,
+			(string) $this->json( $path ),
+			$message,
+		);
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the value at the given path in the response passes the given truth test.
+	 *
+	 * @param string   $path     Path to check.
+	 * @param callable $callback Callback that receives the value and returns true if it passes.
+	 * @param string   $message  Optional message on failure.
+	 *
+	 * @phpstan-param (callable(mixed): bool) $callback
+	 */
+	public function assertPathCallback( string $path, callable $callback, string $message = '' ): static {
+		$value = $this->json( $path );
+
+		if ( empty( $message ) ) {
+			$message = "The value at path [{$path}] did not pass the given truth test.";
+		}
+
+		PHPUnit::assertTrue( (bool) $callback( $value ), $message );
 
 		return $this;
 	}
@@ -108,7 +222,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 */
 	public function assertSimilar( array $data ): static {
 		$actual = json_encode( Arr::sort_recursive(
-			(array) $this->decoded
+			$this->decoded
 		) );
 
 		PHPUnit::assertEquals( json_encode( Arr::sort_recursive( $data ) ), $actual );
@@ -134,7 +248,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 
 		foreach ( $structure as $key => $value ) {
 			if ( is_array( $value ) && '*' === $key ) {
-				PHPUnit::assertIsArray( $this->decoded );
+				PHPUnit::assertIsArray( $this->decoded ); // @phpstan-ignore-line
 
 				foreach ( $this->decoded as $item ) {
 					$this->assertStructure( $structure['*'], $item );
@@ -174,7 +288,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 * @param  array $data Data to compare.
 	 */
 	public function assertFragment( array $data ): static {
-		$actual = wp_json_encode(
+		$actual = (string) wp_json_encode(
 			Arr::sort_recursive(
 				(array) $this->json()
 			)
@@ -206,7 +320,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 			return $this->assertMissingExact( $data );
 		}
 
-		$actual = wp_json_encode(
+		$actual = (string) wp_json_encode(
 			Arr::sort_recursive(
 				(array) $this->json()
 			)
@@ -233,7 +347,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	 * @param  array $data
 	 */
 	public function assertMissingExact( array $data ): static {
-		$actual = wp_json_encode(
+		$actual = (string) wp_json_encode(
 			Arr::sort_recursive(
 				(array) $this->json()
 			)

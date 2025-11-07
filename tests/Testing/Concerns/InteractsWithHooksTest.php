@@ -63,6 +63,14 @@ class InteractsWithHooksTest extends FrameworkTestCase {
 		$this->assertFalse( apply_filters( 'false_hook_to_add', true ) );
 	}
 
+	public function test_hook_return_callable_string(): void {
+		$this->expectApplied( 'callable_string_hook_to_add' )->once()->andReturn( '__return_false' );
+
+		add_filter( 'callable_string_hook_to_add', fn () => '__return_false' );
+
+		apply_filters( 'callable_string_hook_to_add', 'passed-value' );
+	}
+
 	public function test_hook_return_truthy_falsy() {
 		$this->expectApplied( 'truthy_hook_to_add' )->once()->andReturnTruthy();
 		$this->expectApplied( 'falsy_hook_to_add' )->once()->andReturnFalsy();

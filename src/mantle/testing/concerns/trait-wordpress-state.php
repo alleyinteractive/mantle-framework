@@ -2,15 +2,19 @@
 /**
  * This file contains the WordPress_State trait
  *
+ * phpcs:disable WordPressVIPMinimum.Variables.RestrictedVariables
+ *
  * @package Mantle
  */
 
 namespace Mantle\Testing\Concerns;
 
-use Carbon\Carbon;
 use DateTimeInterface;
 use Mantle\Database\Model\Post;
+use Mantle\Testing\Attributes\PermalinkStructure;
 use Mantle\Testing\Utils;
+use PHPUnit\Framework\Attributes\Before;
+use ReflectionAttribute;
 use WP_Post;
 
 /**
@@ -18,6 +22,8 @@ use WP_Post;
  * testing.
  */
 trait WordPress_State {
+	use Interacts_With_Attributes;
+
 	/**
 	 * Whether the initial data structures have been created.
 	 */
@@ -44,12 +50,27 @@ trait WordPress_State {
 	}
 
 	/**
+	 * Register the PermalinkStructure attribute.
+	 *
+	 * @before
+	 */
+	#[Before]
+	public function register_permalink_structure_attribute(): void {
+		$this->register_attribute(
+			PermalinkStructure::class,
+			fn ( ReflectionAttribute $attribute ) => $this->set_permalink_structure( $attribute->newInstance()->structure ),
+		);
+	}
+
+	/**
 	 * Cleans the global scope (e.g `$_GET` and `$_POST`).
 	 */
 	public static function clean_up_global_scope(): void {
+		$_COOKIE  = [];
 		$_GET     = [];
 		$_POST    = [];
 		$_REQUEST = [];
+		$_SESSION = [];
 
 		self::flush_cache();
 	}
@@ -58,38 +79,7 @@ trait WordPress_State {
 	 * Flushes the WordPress object cache.
 	 */
 	public static function flush_cache(): void {
-		global $wp_object_cache;
-		$wp_object_cache->group_ops      = [];
-		$wp_object_cache->stats          = [];
-		$wp_object_cache->memcache_debug = [];
-		$wp_object_cache->cache          = [];
-		if ( method_exists( $wp_object_cache, '__remoteset' ) ) {
-			$wp_object_cache->__remoteset();
-		}
-
-		wp_cache_flush();
-		wp_cache_add_global_groups(
-			[
-				'users',
-				'userlogins',
-				'usermeta',
-				'user_meta',
-				'useremail',
-				'userslugs',
-				'site-transient',
-				'site-options',
-				'blog-lookup',
-				'blog-details',
-				'rss',
-				'global-posts',
-				'blog-id-cache',
-				'networks',
-				'sites',
-				'site-details',
-				'blog_meta',
-			]
-		);
-		wp_cache_add_non_persistent_groups( [ 'comment', 'counts', 'plugins' ] );
+		Utils::flush_cache();
 	}
 
 	/**
@@ -191,6 +181,8 @@ trait WordPress_State {
 	/**
 	 * Updates the modified and modified GMT date of a post in the database.
 	 *
+	 * @throws \InvalidArgumentException If the post type cannot be resolved.
+	 *
 	 * @param WP_Post|Post|int         $post Post ID or post object.
 	 * @param DateTimeInterface|string $date Date object or string to update the
 	 *                                       post with. If a string is passed it
@@ -200,7 +192,7 @@ trait WordPress_State {
 		$post = match ( true ) {
 			$post instanceof WP_Post => Post::for( $post->post_type )->find_or_fail( $post->ID ),
 			$post instanceof Post    => $post,
-			default                  => Post::for( get_post_type( $post ) )->find_or_fail( $post ),
+			default                  => get_post_type( $post ) ? Post::for( get_post_type( $post ) )->find_or_fail( $post ) : throw new \InvalidArgumentException( 'Unresolvable post type.' ),
 		};
 
 		return $post->save(
@@ -208,5 +200,47 @@ trait WordPress_State {
 				'post_modified' => $date instanceof DateTimeInterface ? $date->format( 'Y-m-d H:i:s' ) : $date,
 			]
 		);
+	}
+
+	/**
+	 * Sets the site to show posts on the front page.
+	 */
+	protected function set_show_posts_on_front(): void {
+		update_option( 'show_on_front', 'posts' );
+
+		delete_option( 'page_on_front' );
+		delete_option( 'page_for_posts' );
+	}
+
+	/**
+	 * Sets the site to show a static page on the front page.
+	 *
+	 * @param int|WP_Post|Post      $front Front page.
+	 * @param int|WP_Post|Post|null $posts  Posts page.
+	 */
+	public function set_show_page_on_front( int|WP_Post|Post $front, int|WP_Post|Post|null $posts = null ): void {
+		update_option( 'show_on_front', 'page' );
+
+		update_option(
+			'page_on_front',
+			match ( true ) {
+				$front instanceof WP_Post => $front->ID,
+				$front instanceof Post    => $front->id(),
+				default                  => $front,
+			},
+		);
+
+		if ( null !== $posts ) {
+			update_option(
+				'page_for_posts',
+				match ( true ) {
+					$posts instanceof WP_Post => $posts->ID,
+					$posts instanceof Post    => $posts->id(),
+					default                   => $posts,
+				},
+			);
+		} else {
+			delete_option( 'page_for_posts' );
+		}
 	}
 }

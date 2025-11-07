@@ -10,8 +10,10 @@ use Mantle\Support\Str;
 use Mantle\Testing\Attributes\PreserveObjectCache;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Concerns\Reset_Server;
+use Mantle\Testing\Exceptions\Exit_Simulation_Exception;
 use Mantle\Testing\FrameworkTestCase;
 use Mantle\Testing\Test_Response;
+use Mantle\Testing\Utils;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
@@ -20,6 +22,7 @@ use WP_REST_Response;
 use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\retry;
 use function Mantle\Support\Helpers\stringable;
+use function Mantle\Support\Helpers\terminate_request;
 
 /**
  * @group testing
@@ -241,14 +244,33 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	}
 
 	public function test_rest_api_route() {
-		$post_id = static::factory()->post->create();
+		$this->expectApplied( 'rest_dispatch_request' )->once()->andReturnNull();
+
+		$post_id = static::factory()->post->create( [ 'post_title' => 'Example Post Title' ] );
 
 		$this->get( rest_url( "wp/v2/posts/{$post_id}" ) )
 			->assertOk()
 			->assertJsonPath( 'id', $post_id )
 			->assertJsonPath( 'title.rendered', get_the_title( $post_id ) )
+			->assertJsonPathNotEmpty( 'title.rendered' )
+			->assertJsonPathEmpty( 'unknown' )
+			->assertJsonPathContains( 'title.rendered', 'Post Title' )
+			->assertJsonPathNotContains( 'title.rendered', 'Not' )
 			->assertJsonPathExists( 'guid' )
-			->assertJsonPathMissing( 'example_path' );
+			->assertJsonPathMissing( 'example_path' )
+			->assertJsonPathMatches( 'id', '/^\d+$/' )
+			->assertJsonPathCallback( 'title.rendered', fn( $value ) => str_contains( $value, 'Example' ) );
+	}
+
+	/**
+	 * Test for an issue with parsing an empty JSON array `[]` response.
+	 */
+	public function test_json_parsing_error_empty_array(): void {
+		Utils::delete_all_posts();
+
+		$this->get( rest_url( 'wp/v2/posts' ) )
+			->assertOk()
+			->assertJsonCount( 0 );
 	}
 
 	public function test_rest_api_route_headers() {
@@ -299,19 +321,36 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	}
 
 	/**
-	 * @dataProvider redirect_hook_data_provider
+	 * @dataProvider core_template_hook_data_provider
 	 */
-	#[DataProvider( 'redirect_hook_data_provider' )]
+	#[DataProvider( 'core_template_hook_data_provider' )]
 	public function test_redirect_wordpress( string $hook ) {
 		add_action( $hook, fn () => wp_redirect( home_url( '/redirected/' ), 302 ) );
 
 		$this->get( '/' )->assertRedirect( home_url( '/redirected/' ) );
 	}
 
-	public static function redirect_hook_data_provider(): array {
-		return collect( [ 'template_redirect', 'parse_query' ] )
-			->map_with_keys( fn ( string $hook ): array => [ $hook => [ $hook ] ] )
-			->all();
+	public static function core_template_hook_data_provider(): array {
+		return [
+			'template_redirect' => [ 'template_redirect' ],
+			'parse_query'       => [ 'parse_query' ],
+		];
+	}
+
+	/**
+	 * @dataProvider core_template_hook_data_provider
+	 */
+	#[DataProvider( 'core_template_hook_data_provider' )]
+	public function test_exit_simulation( string $hook ): void {
+		add_action( $hook, function (): void {
+			echo 'This is the response!';
+
+			terminate_request();
+		} );
+
+		$this->get( '/' )
+			->assertOk()
+			->assertContent( 'This is the response!' );
 	}
 
 	public function test_post_json_mantle_route() {
@@ -612,21 +651,41 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		$this->assertEquals( $runs[0], $runs[1] );
 	}
 
-	// Should always be towards the end of the class.
+	#[DataProvider( 'invalid_request_provider' )]
+	public function test_throws_notice_on_invalid_requests( string $path, string $message ): void {
+		$this->expectException( \InvalidArgumentException::class );
+		$this->expectExceptionMessage( $message );
+		$this->get( $path );
+	}
+
+	public static function invalid_request_provider(): array {
+		return [
+			'wp-login.php' => [ '/wp-login.php', 'Requests to [/wp-login.php] are not supported.' ],
+			'xmlrpc.php' => [ '/xmlrpc.php', 'Requests to [/xmlrpc.php] are not supported.' ],
+			'wp-admin/' => [ '/wp-admin/', 'Requests to [/wp-admin/] are not supported.' ],
+			'wp-admin/some-page.php' => [ '/wp-admin/some-page.php', 'Requests to [/wp-admin/some-page.php] are not supported.' ],
+			'wp-cron.php' => [ '/wp-cron.php', 'Requests to [/wp-cron.php] are not supported.' ],
+			'wp-admin/admin-ajax.php' => [ '/wp-admin/admin-ajax.php', 'Requests to [/wp-admin/admin-ajax.php] are not supported.' ],
+		];
+	}
+
+	/**
+	 * Test making multiple requests in a single test method.
+	 *
+	 * To push the system to a limit, make all the above test requests in a single
+	 * test method. Should always be towards the end of the class.
+	 */
 	public function test_multiple_requests() {
 		$methods = collect( get_class_methods( $this ) )
 			->filter( fn ( string $method ) => ! Str::contains( $method, [ 'experimental', 'snapshot', 'test_preserve_object_cache' ] ) && 0 === strpos( $method, 'test_' ) )
 			->sort()
 			->all();
 
+		$class = new \ReflectionClass( $this );
+
 		// Re-run all test methods on this class in a single pass.
 		foreach ( $methods as $method ) {
-			if ( __FUNCTION__ === $method || 'test_' !== substr( $method, 0, 5 ) ) {
-				continue;
-			}
-
-			// Ignore data provider tests.
-			if ( 'test_redirect_wordpress' === $method ) {
+			if ( __FUNCTION__ === $method || 'test_' !== substr( $method, 0, 5 ) || $class->getMethod( $method )->getNumberOfParameters() > 0 ) {
 				continue;
 			}
 

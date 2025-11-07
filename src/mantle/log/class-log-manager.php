@@ -54,6 +54,7 @@ class Log_Manager implements LoggerInterface {
 		$handlers = collect( (array) $channels )
 			->map( [ $this, 'get_channel_handler' ] )
 			->filter()
+			->where_instance_of( HandlerInterface::class )
 			->to_array();
 
 		return ( new Logger( 'Mantle', $handlers ) )->set_dispatcher( $this->dispatcher );
@@ -113,7 +114,11 @@ class Log_Manager implements LoggerInterface {
 			throw new InvalidArgumentException( 'Stack channel called without any child channels.' );
 		}
 
-		return new GroupHandler( array_map( [ $this, 'get_channel_handler' ], $config['channels'] ) );
+		return new GroupHandler( collect( $config['channels'] )
+			->map( fn ( string $channel ) => $this->get_channel_handler( $channel ) )
+			->where_instance_of( HandlerInterface::class )
+			->values()
+			->all() );
 	}
 
 	/**
@@ -176,7 +181,11 @@ class Log_Manager implements LoggerInterface {
 			'level' => $this->level( $config ),
 		] );
 
-		return new $config['handler']( ...$arguments );
+		$instance = new $config['handler']( ...$arguments );
+
+		assert( $instance instanceof HandlerInterface );
+
+		return $instance;
 	}
 
 	/**
@@ -249,7 +258,7 @@ class Log_Manager implements LoggerInterface {
 	 * @param array<mixed> $args Arguments for the method.
 	 * @return mixed
 	 */
-	public function __call( $method, $args ) {
+	public function __call( string $method, array $args ) {
 		return $this->driver()->$method( ...$args );
 	}
 

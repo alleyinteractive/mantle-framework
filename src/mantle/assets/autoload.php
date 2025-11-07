@@ -28,7 +28,13 @@ if ( ! function_exists( 'asset_loader' ) ) {
 	/**
 	 * Retrieve an instance of the Asset Loader OR the URL for a given asset.
 	 *
+	 * @template TPath of string|null
+	 *
+	 * @param string|null $path Optional. The asset path to retrieve the URL for. If null, returns the Asset Loader instance.
 	 * @return \Mantle\Assets\Asset_Loader|string|null Returns the asset loader instance or the URL if a path is provided.
+	 *
+	 * @phpstan-param TPath $path
+	 * @phpstan-return (TPath is null ? \Mantle\Assets\Asset_Loader : string|null)
 	 */
 	function asset_loader( ?string $path = null ): Asset_Loader|string|null {
 		if ( $path ) {

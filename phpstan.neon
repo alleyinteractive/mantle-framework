@@ -2,8 +2,7 @@ includes:
 	- phpstan-baseline.neon
 
 parameters:
-	# Goal of max.
-	level: 6
+	level: 8
 
 	paths:
 		- src/mantle/
@@ -13,8 +12,6 @@ parameters:
 	ignoreErrors:
 		-
 			identifier: staticMethod.resultUnused
-		-
-			identifier: requireOnce.fileNotFound
 		# Will be fixed in PHPStan soon.
 		-
 			identifier: function.alreadyNarrowedType
@@ -53,14 +50,22 @@ parameters:
 		- "#interface ArrayAccess but does not specify#"
 		- "#ReflectionClass does not specify its types#"
 		- "#ReflectionAttribute does not specify its types#"
-		- "#ReflectionAttribute but does not specify its types#"
 		- "#@return is not subtype of template type TKey#"
 		- "#WP_REST_Request does not specify its types#"
 		- "#WP_REST_Request but does not specify its types#"
+		- "#query of method wpdb::prepare#"
 		-
 			identifier: method.childReturnType
 			paths:
 				- src/mantle/http-client/class-pooled-pending-request.php
+		-
+			identifier: argument.type
+			paths:
+				- src/mantle/support/class-collection.php
+		-
+			identifier: return.type
+			paths:
+				- src/mantle/support/class-collection.php
 
 	scanFiles:
 		- %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-stubs.php
@@ -70,14 +75,19 @@ parameters:
 
 	excludePaths:
 		- src/mantle/blocks
+		- src/mantle/container/class-bound-method.php
 		- src/mantle/database/factory
 		- src/mantle/framework/console/class-hook-usage-command.php
+		- src/mantle/framework/console/generators
 		- src/mantle/query-monitor
 		- src/mantle/queue/providers/wordpress/admin/class-queue-jobs-table.php
 		- src/mantle/queue/providers/wordpress/admin/class-service-provider.php
 		- src/mantle/support/interface-enumerable.php
+		- src/mantle/support/traits/trait-conditionable.php
 		- src/mantle/testing/class-mock-action.php
 		- src/mantle/testing/install-wordpress.php
 		- src/mantle/testing/preload.php
 		- src/mantle/testing/wordpress-bootstrap.php
-		- src/mantle/testing/wp-tests-config-sample.php
+
+		# Files that need to be fixed and re-added.
+		- src/mantle/queue/class-queue-fake.php

@@ -62,7 +62,20 @@ jobs:
             exit 0
           fi
 
-          gh release create "$version" \
-            --title "$version" \
-            --notes-file RELEASE_NOTES.md \
-            --fail-on-no-commits -d
+          RELEASE_URL=$(gh release create "$version" --title "$version" --notes-file RELEASE_NOTES.md --fail-on-no-commits -d)
+          RELEASE_URL="${RELEASE_URL//\/tag\//\/edit\/}"
+          echo "Release created: $RELEASE_URL"
+          echo "release_url=$RELEASE_URL" >> $GITHUB_ENV
+
+      - name: Send Slack notification if release created
+        if: env.release_url != ''
+        uses: slackapi/slack-github-action@v2.1.1
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "text": "A new release *${{ env.version }}* has been drafted for mantle-framework: <${{ env.release_url }}|View Release on GitHub>"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

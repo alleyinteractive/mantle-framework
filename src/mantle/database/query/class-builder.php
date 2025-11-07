@@ -13,6 +13,7 @@ namespace Mantle\Database\Query;
 
 use BackedEnum;
 use Closure;
+use InvalidArgumentException;
 use Mantle\Container\Container;
 use Mantle\Contracts\Database\Scope;
 use Mantle\Contracts\Paginator\Paginator as PaginatorContract;
@@ -31,7 +32,7 @@ use Mantle\Support\Traits\Conditionable;
 /**
  * Builder Query Builder
  *
- * @template TModel of \Mantle\Database\Model\Model
+ * @template TModel of \Mantle\Database\Model\Model = \Mantle\Database\Model\Model
  */
 abstract class Builder {
 	use Conditionable;
@@ -198,7 +199,7 @@ abstract class Builder {
 	/**
 	 * Retrieve the found rows for a query.
 	 */
-	public function get_found_rows(): int {
+	public function get_found_rows(): ?int {
 		return $this->found_rows;
 	}
 
@@ -263,12 +264,18 @@ abstract class Builder {
 	/**
 	 * Add a where clause to the query.
 	 *
+	 * @throws InvalidArgumentException Thrown when passing an array and value is not null.
+	 *
 	 * @param string|array<string, mixed> $attribute Attribute to use or array of key => value
 	 *                                attributes to set.
 	 * @param mixed        $value Value to compare against.
 	 */
-	public function where( array|string $attribute, mixed $value = '' ): static {
-		if ( is_array( $attribute ) && empty( $value ) ) {
+	public function where( array|string $attribute, mixed $value = null ): static {
+		if ( is_array( $attribute ) ) {
+			if ( ! is_null( $value ) ) {
+				throw new InvalidArgumentException( 'When passing an array of attributes to where(), the value argument must be null.' );
+			}
+
 			foreach ( $attribute as $key => $value ) {
 				$this->where( $key, $value );
 			}
@@ -886,7 +893,7 @@ abstract class Builder {
 	 *
 	 * @throws Query_Exception Unknown query method called.
 	 */
-	public function __call( string $method, $args ) {
+	public function __call( string $method, array $args ) {
 		if ( Str::starts_with( $method, 'where' ) ) {
 			return $this->dynamicWhere( $method, $args );
 		}
@@ -909,11 +916,11 @@ abstract class Builder {
 	 * @return Collection<string, class-string<TModel>> Collection of model class names keyed by object name.
 	 */
 	public function get_model_object_names(): Collection {
-		return ( new Collection( (array) $this->model ) ) // @phpstan-ignore-line should return
+		// @phpstan-ignore return.type
+		return ( new Collection( (array) $this->model ) )
+			// @phpstan-ignore argument.type
 			->combine( $this->model )
-			->map(
-				fn ( $model ) => $model::get_object_name(),
-			)
+			->map( fn ( $model ) => $model::get_object_name() )
 			->flip();
 	}
 

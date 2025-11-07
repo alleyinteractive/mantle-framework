@@ -9,6 +9,233 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added `laravel/serializable-closure` as a dependency to `mantle-framework/support` to
+  support serialization of closures.
+
+### Changed
+
+- The framework is now compatible with PHPStan level 8. Many types have been added
+  throughout the framework to support this.
+
+## v1.13.3
+
+No changes, re-released to fix a bad tag.
+
+## v1.13.2
+
+### Fixed
+
+- Fixed issue where `is_dir()` is called with multiple arguments in the console kernel.
+
+## v1.13.1
+
+### Fixed
+
+- Fixed issue with `wpmu_delete_blog()` not being loaded before use.
+
+## v1.13.0
+
+### Added
+
+- Added `scheduled()` state to post factory to create scheduled posts.
+- Added `create_ordered_set_and_get()` method to factories to create and
+  retrieve an ordered set of models.
+- Added `collect_many()` and `collect_many_and_get()` methods to factories to
+  create multiple models and return them as a collection.
+- Added support for passing callables as model attributes in factories.
+- Added `PermalinkStructure` attribute to set the permalink structure during tests.
+- Added `scheduled()` state to post factory to create scheduled posts.
+- Added `create_ordered_set_and_get()` method to factories to create and
+  retrieve an ordered set of models.
+- Added `collect_many()` and `collect_many_and_get()` methods to factories to
+  create multiple models and return them as a collection.
+- Added support for passing callables as model attributes in factories.
+- Added `PermalinkStructure` attribute to set the permalink structure during tests.
+
+### Changed
+
+- Clear `$_COOKIE` and `$_SESSION` in addition to other superglobals when
+  cleaning the global scope between tests.
+- Added `Deprecation` attribute to some already-deprecated methods in the
+  framework to better indicate their deprecation status.
+
+### Fixed
+
+- Fixed issue where `Mantle\Types\Validator` is used within `mantle-framework/support` but `mantle-framework/types` is not a dependency.
+
+## v1.12.4
+
+### Fixed
+
+- Fixed issue with unserialization of cached HTTP client requests causing errors
+  due to uninitialized properties (again).
+
+## v1.12.3
+
+### Fixed
+
+- Fixed issue with unserialization of cached HTTP client requests causing errors
+  due to uninitialized properties.
+
+## v1.12.2
+
+### Fixed
+
+- Fixed issue with the `url` property in `Mantle\Http_Client\Response` not being initialized properly.
+
+## v1.12.1
+
+### Changed
+
+- Remove some unnecessary data from the serialized HTTP response to reduce
+  the size when caching.
+
+## v1.12.0
+
+### Added
+
+- Added `mixed_query_var()` helper to retrieve a query variable as mixed data type.
+- Added `Exit_Simulation_Exception` exception to simulate `exit` calls during testing.
+- Added `terminate_request()` helper to be used instead of `exit()` for safer
+  termination during testing.
+- Added `send_json_response()` helper to send a JSON response and terminate the
+  request safely.
+- Added `mixed_json()` method to `Mantle\Http_Client\Response` to parse the body
+  as JSON and return a mixed data helper.
+- Added `with_base_url()` method to the HTTP client.
+- Added closure support for the cache TTL in the HTTP client.
+
+### Changed
+
+- Throws an exception in the cached HTTP client if the cache stale TTL is greater
+  than the cache expiration TTL.
+
+## v1.11.1
+
+### Fixed
+
+- Ensure that `wp_scripts()` and `wp_styles()` globals are properly set before cloning them.
+
+## v1.11.0
+
+### Added
+
+- Added an `options` callback to the `feed()` method of the HTTP client response
+  to allow for customizing the SimplePie feed parser.
+
+### Changed
+
+- Multiple properties in `Makes_Http_Requests` are now private to prevent
+  unintended side effects from tests that modify these properties directly.
+
+### Fixed
+
+- Disable rewrite for internal queue post type.
+
+## v1.10.0
+
+### Changed
+
+- Backup the `wp_scripts` and `wp_styles` globals before any tests are run and
+  restore it before each HTTP request to prevent side effects from tests that
+  modify these globals.
+- Backup and restore the state of Alley's `wp-asset-manager` plugin if it is
+  present during testing to prevent side effects from tests that modify the
+  asset manager state.
+- Mark more hooks as not being run before each test run to provide a cleaner
+  environment for tests. Filters and actions that are not run include:
+
+    - `parse_query`
+    - `parse_request`
+    - `posts_selection`
+    - `pre_get_posts`
+    - `rest_api_init`
+    - `send_headers`
+    - `template_redirect`
+    - `wp_enqueue_scripts`
+    - `wp_footer`
+    - `wp_head`
+    - `wp_print_scripts`
+    - `wp_print_styles`
+    - `wp`
+
+### Fixed
+
+- Fixed issue with `feed()` method in `Mantle\Http_Client\Response` to account for WordPress 6.5 - 6.6;
+
+## v1.9.5
+
+### Added
+
+- Added flexible caching to the HTTP client.
+- Added `is_html()` and `html()` to `Mantle\Http_Client\Response` to check if the
+  response is HTML and to return an `HTML` instance for making assertions
+  against the HTML content.
+- Added `feed()` method to `Mantle\Http_Client\Response` to parse the body
+  as a feed using SimplePie.
+
+## v1.9.4
+
+### Added
+
+- Added schema support to `register_meta_from_file()` to validate meta
+  definitions against a JSON schema.
+
+### Changed
+
+- Added more strict types to the framework.
+
+### Fixed
+
+- Fix issue with a callable string being passed to the expectation container not
+  being handled properly.
+
+## v1.9.3
+
+### Added
+
+- Added array support to the `with_byline_manager_authors()` and
+  `with_cap_authors()` methods on post factories.
+- Added `assertJsonPathEmpty()`, `assertJsonPathNotEmpty()`,
+  `assertJsonPathContains()`, `assertJsonPathNotContains()`, and
+  `assertJsonPathCallback()` methods to the test response class.
+- Added `dump_backtrace()`/`dd_backtrace()` methods.
+
+### Changed
+
+- Changed the `theme()` method of the installation manager to set the
+  `WP_DEFAULT_THEME` environment variable to ensure that the theme is properly
+  set during installation.
+- Throw an exception if the user attempts to make a testing request to a path
+  that is not supported by the testing framework (e.g. `/wp-login.php`,
+  `/wp-admin/*`, etc.).
+
+### Fixed
+
+- Fixed issue with empty JSON not being parsed properly with `Assertable_Json_String`.
+
+## v1.9.2
+
+### Added
+
+- Added `Single_Site_Test` trait to skip tests if not in single site mode.
+
+### Changed
+
+- Limit length of site title to 20 characters in blog factory.
+- When using the `Refresh_Database` trait, all blogs will be deleted in the
+  `tearDownAfterClass()` route.
+- Align the `flush_cache()` method in testing to match core's behavior.
+
+### Fixed
+
+- Ensure that the faker instance used in factories and tests has unique enabled
+  by default to prevent duplicate values when generating data.
+
+## v1.9.1
+
+### Added
+
 - Added `with_snapshot()` to `Mantle\Testing\Mock_Http_Response` to allow for
   mocking of a HTTP request from a stored snapshot.
 - Added a `memo()` helper to memoize the result of a closure based on its
@@ -787,10 +1014,6 @@ No changes, just a re-release to fix a bad tag.
 - Requiring `symfony/console`, upgrading to `psr/log` 3.0.
 - Ensure that faker can always generate Gutenberg blocks.
 
-## New Contributors
-- @nlemoine made their first contribution in https://github.com/alleyinteractive/mantle-framework/pull/409
-
-**Full Changelog**: https://github.com/alleyinteractive/mantle-framework/compare/v0.11.3...v0.12.0
 
 ## v0.11.3 - 2023-07-21
 

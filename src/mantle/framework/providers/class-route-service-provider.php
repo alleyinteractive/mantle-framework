@@ -22,7 +22,7 @@ class Route_Service_Provider extends Service_Provider implements Isolated_Servic
 	public function boot(): void {
 		parent::boot();
 
-		$this->app->booted( fn () => $this->load_routes() );
+		$this->app->booted( $this->load_routes( ... ) );
 	}
 
 	/**

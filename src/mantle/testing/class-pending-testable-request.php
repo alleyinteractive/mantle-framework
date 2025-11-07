@@ -7,6 +7,8 @@
  * @package Mantle
  */
 
+declare(strict_types=1);
+
 namespace Mantle\Testing;
 
 use InvalidArgumentException;
@@ -18,6 +20,7 @@ use Mantle\Support\Traits\Conditionable;
 use Mantle\Testing\Attributes\PreserveObjectCache;
 use Mantle\Testing\Doubles\Spy_REST_Server;
 use Mantle\Testing\Exceptions\Exception;
+use Mantle\Testing\Exceptions\Response_Exception;
 use Mantle\Testing\Exceptions\WP_Redirect_Exception;
 use Mantle\Testing\TestCase;
 use Mantle\Testing\Test_Response;
@@ -254,6 +257,8 @@ class Pending_Testable_Request {
 	 * Call the given URI and return the Response.
 	 *
 	 * @throws \Exception Exceptions thrown while setting up the WordPress query are re-thrown to the caller.
+	 * @throws InvalidArgumentException If the request is to an unsupported path.
+	 * @throws RuntimeException If the application instance is not available on the test case.
 	 *
 	 * @param string      $method     Request method.
 	 * @param mixed       $uri        Request URI.
@@ -279,6 +284,14 @@ class Pending_Testable_Request {
 			$url = "{$scheme}://{$host}/{$uri}";
 		} else {
 			$url = $uri;
+		}
+
+		$path = (string) wp_parse_url( $url, PHP_URL_PATH );
+
+		// Check if the user is requesting a call to a path that the testing
+		// framework does not support.
+		if ( Str::is( [ '/wp-login.php', '/wp-*.php', '/wp-admin/*', '/xmlrpc.php' ], $path ) ) {
+			throw new InvalidArgumentException( "Requests to [{$path}] are not supported." );
 		}
 
 		$this->set_server_state(
@@ -346,7 +359,7 @@ class Pending_Testable_Request {
 
 			if ( $response instanceof \Symfony\Component\HttpFoundation\Response ) {
 				$response = new Test_Response(
-					$response->getContent(),
+					$response->getContent() ?: null,
 					$response->getStatusCode(),
 					$response->headers->all(),
 					$this->test_case,
@@ -367,15 +380,20 @@ class Pending_Testable_Request {
 
 			try {
 				$this->setup_wordpress_query();
-			} catch ( WP_Redirect_Exception $e ) {
+			} catch ( Response_Exception $e ) {
 				// Handle a redirect during the early setup of WordPress (parse_query).
 				// Prevent an exception from being thrown.
 				$response_status  = $e->status;
 				$redirected       = true;
 				$response_content = ob_get_clean();
 
-				$response_headers['Location'] = $e->location;
+				if ( $e instanceof WP_Redirect_Exception ) {
+					$response_headers['Location'] = $e->location;
+				}
 
+				if ( ! empty( $e->headers ) ) {
+					$response_headers = array_merge( $response_headers, $e->headers );
+				}
 			} catch ( \Exception $e ) {
 				// If an exception occurs, make sure the output buffer is closed before
 				// the exception continues to the caller.
@@ -397,10 +415,16 @@ class Pending_Testable_Request {
 				try {
 					// Execute the request, inasmuch as WordPress would.
 					require ABSPATH . WPINC . '/template-loader.php';
-				} catch ( WP_Redirect_Exception $e ) {
+				} catch ( Response_Exception $e ) {
 					$response_status = $e->status;
 
-					$response_headers['Location'] = $e->location;
+					if ( $e instanceof WP_Redirect_Exception ) {
+						$response_headers['Location'] = $e->location;
+					}
+
+					if ( ! empty( $e->headers ) ) {
+						$response_headers = array_merge( $response_headers, $e->headers );
+					}
 				} catch ( Exception ) { // phpcs:ignore
 					// Mantle Exceptions are thrown to prevent some code from running, e.g.
 					// the tail end of wp_redirect().
@@ -419,6 +443,10 @@ class Pending_Testable_Request {
 				$response_headers,
 				$this->test_case,
 			);
+		}
+
+		if ( ! $this->test_case->app ) {
+			throw new RuntimeException( 'The application instance is not available on the test case.' );
 		}
 
 		$response
@@ -637,6 +665,8 @@ class Pending_Testable_Request {
 	 * If the request is being overridden to use HTTPS via {@see with_https()},
 	 * this will return 'https'. Otherwise, it will return the scheme of the home
 	 * URL of the WordPress installation.
+	 *
+	 * @return 'http'|'https'
 	 */
 	protected function get_default_url_scheme(): string {
 		if ( $this->forced_https ) {
@@ -647,7 +677,13 @@ class Pending_Testable_Request {
 			return 'http';
 		}
 
-		return wp_parse_url( home_url(), PHP_URL_SCHEME );
+		$scheme = wp_parse_url( home_url(), PHP_URL_SCHEME );
+
+		if ( empty( $scheme ) ) {
+			$scheme = 'http';
+		}
+
+		return in_array( $scheme, [ 'http', 'https' ], true ) ? $scheme : 'http';
 	}
 
 	/**
@@ -662,7 +698,7 @@ class Pending_Testable_Request {
 	 */
 	protected function get_default_url_host(): string {
 		return $this->is_experimental_use_home_url_host_enabled()
-			? wp_parse_url( home_url(), PHP_URL_HOST )
+			? (string) wp_parse_url( home_url(), PHP_URL_HOST )
 			: WP_TESTS_DOMAIN;
 	}
 
@@ -700,9 +736,9 @@ class Pending_Testable_Request {
 
 			if ( $server->sent_body !== null ) {
 				$this->rest_api_response = [
-					'body'    => $server->sent_body,
-					'headers' => $server->sent_headers,
-					'status'  => $server->sent_status,
+					'body'    => $server->sent_body ?? '',
+					'headers' => $server->sent_headers ?? [],
+					'status'  => $server->sent_status ?? 200,
 				];
 			}
 		} else {
@@ -760,7 +796,7 @@ class Pending_Testable_Request {
 	 * @throws RuntimeException If not implemented.
 	 */
 	public function json( string $method, string $uri, array $data = [], array $headers = [], int $options = 1 ): Test_Response {
-		$content = json_encode( $data, $options ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+		$content = (string) json_encode( $data, $options ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
 
 		$headers = array_merge(
 			$headers,

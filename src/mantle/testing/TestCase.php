@@ -114,11 +114,11 @@ abstract class TestCase extends BaseTestCase {
 
 		if ( ! empty( static::$test_uses ) ) {
 			static::get_test_case_traits()->each(
-				function ( $trait ): void {
-					$method = strtolower( class_basename( $trait ) ) . '_set_up_before_class';
+				function ( string|object $trait ): void {
+					$callback = [ static::class, strtolower( class_basename( $trait ) ) . '_set_up_before_class' ];
 
-					if ( method_exists( static::class, $method ) ) {
-						call_user_func( [ static::class, $method ] );
+					if ( is_callable( $callback ) ) {
+						call_user_func( $callback );
 					}
 				}
 			);
@@ -135,11 +135,11 @@ abstract class TestCase extends BaseTestCase {
 	public static function tearDownAfterClass(): void {
 		if ( ! empty( static::$test_uses ) ) {
 			static::get_test_case_traits()->each(
-				function ( $trait ): void {
-					$method = strtolower( class_basename( $trait ) ) . '_tear_down_after_class';
+				function ( string|object $trait ): void {
+					$callback = [ static::class, strtolower( class_basename( $trait ) ) . '_tear_down_after_class' ];
 
-					if ( method_exists( static::class, $method ) ) {
-						call_user_func( [ static::class, $method ] );
+					if ( is_callable( $callback ) ) {
+						call_user_func( $callback );
 					}
 				}
 			);
@@ -149,9 +149,14 @@ abstract class TestCase extends BaseTestCase {
 
 		if ( isset( static::$test_uses[ Refresh_Database::class ] ) ) {
 			Utils::delete_all_data();
-		}
 
-		static::flush_cache();
+			if ( is_multisite() ) {
+				Utils::delete_all_blogs();
+			}
+		} else {
+			// If Refresh_Database is not used, we should still clear out the cache.
+			Utils::flush_cache();
+		}
 
 		if ( isset( static::$test_uses[ Refresh_Database::class ] ) && method_exists( static::class, 'commit_transaction' ) ) {
 			static::commit_transaction();
@@ -179,7 +184,7 @@ abstract class TestCase extends BaseTestCase {
 		// instead of this. This is a hold over from the legacy way of doing this
 		// and won't be preserved in Mantle 2.0.
 		static::get_test_case_traits()->each(
-			function ( $trait ): void {
+			function ( string|object $trait ): void {
 				$method = strtolower( class_basename( $trait ) ) . '_set_up';
 
 				if ( method_exists( $this, $method ) ) {
@@ -213,7 +218,7 @@ abstract class TestCase extends BaseTestCase {
 			// Tearing down requires performing priority traits in opposite order.
 			->reverse()
 			->each(
-				function ( $trait ): void {
+				function ( string|object $trait ): void {
 					$method = strtolower( class_basename( $trait ) ) . '_tear_down';
 
 					if ( method_exists( $this, $method ) ) {
@@ -354,6 +359,8 @@ abstract class TestCase extends BaseTestCase {
 			static::$factory = Container::get_instance()->make( Factory_Container::class );
 		}
 
+		assert( static::$factory instanceof Factory_Container );
+
 		return static::$factory;
 	}
 
@@ -362,7 +369,7 @@ abstract class TestCase extends BaseTestCase {
 	 *
 	 * @param string $name Property name.
 	 */
-	public function __isset( $name ): bool {
+	public function __isset( string $name ): bool {
 		return 'factory' === $name || 'app' === $name;
 	}
 
@@ -370,9 +377,8 @@ abstract class TestCase extends BaseTestCase {
 	 * Retrieve the factory/app instance non-statically.
 	 *
 	 * @param string $name Property name.
-	 * @return mixed
 	 */
-	public function __get( $name ) {
+	public function __get( string $name ): mixed {
 		return match ( $name ) {
 			'factory' => self::factory(),
 			'app' => $this->app,

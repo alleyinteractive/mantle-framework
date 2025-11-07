@@ -71,7 +71,7 @@ trait Response_Dumper {
 		}
 
 		// Request information.
-		$request_headers = $this->compile_data_table( $this->request->headers->all(), 'Header' );
+		$request_headers = $this->compile_data_table( $this->request->headers->all(), 'Header' ); // @phpstan-ignore-line
 		$request_body    = '';
 
 		if ( $this->request->is_json() ) {
@@ -106,9 +106,9 @@ trait Response_Dumper {
 				<div class="space-y-1 my-1">
 					<h3>
 						<span class="mr-1">
-							<b class="mr-1">{$this->get_request()->getMethod()}</b>
+							<b class="mr-1">{$this->get_request()?->getMethod()}</b>
 
-							<i>{$this->get_request()->getUri()}</i>
+							<i>{$this->get_request()?->getUri()}</i>
 						</span>
 						<span class="{$status_code_class} px-1 py-0.5">{$status_code}</span>
 					</h3>
@@ -146,10 +146,10 @@ trait Response_Dumper {
 	 * @param string|null $selector Query selector or JSON path to filter the content, optional.
 	 */
 	public function dump_content( ?string $selector = null ): static {
-		$content = $this->get_content();
+		$content = (string) $this->get_content();
 
-		if ( str_contains( $this->get_header( 'Content-Type' ), 'application/json' ) ) {
-			$json = json_decode( (string) $content );
+		if ( str_contains( (string) $this->get_header( 'Content-Type' ), 'application/json' ) ) {
+			$json = json_decode( $content );
 
 			if ( json_last_error() === JSON_ERROR_NONE ) {
 				if ( $selector ) {
@@ -172,7 +172,7 @@ trait Response_Dumper {
 			$content = HTML::create( $content )->filter( $selector )->to_html();
 		}
 
-		if ( empty( trim( (string) $content ) ) ) {
+		if ( empty( trim( $content ) ) ) {
 			render( '<em>No response content.</em>' );
 		} else {
 			dump( $content );

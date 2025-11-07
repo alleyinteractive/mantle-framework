@@ -50,7 +50,7 @@ class Site extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	/**
 	 * Find a model by Object ID.
 	 *
-	 * @param \WP_Site|string|int $object Site to retrieve.
+	 * @param \WP_Site|int|null $object Site to retrieve.
 	 */
 	public static function find( mixed $object ): ?static {
 		$site = Helpers\get_site_object( $object );

@@ -80,7 +80,9 @@ class View_Cache_Command extends Command {
 			return $this->handle_compile_wp_content();
 		}
 
-		if ( $paths = $this->option( 'path' ) ) {
+		$paths = $this->mixed_option( 'path' )->string();
+
+		if ( $paths !== '' && $paths !== '0' ) {
 			return $this->handle_compile_path( $paths );
 		}
 
@@ -149,7 +151,7 @@ class View_Cache_Command extends Command {
 	 */
 	protected function handle_compile_wp_content(): int {
 		// Get the path to wp-content from the current directory (which is a child of wp-content).
-		$wp_content_dir = preg_replace( '#/wp-content/.*$#', '/wp-content', __DIR__ );
+		$wp_content_dir = (string) preg_replace( '#/wp-content/.*$#', '/wp-content', __DIR__ );
 
 		if ( ! is_dir( $wp_content_dir ) ) {
 			$this->error( 'No wp-content directory found.' );

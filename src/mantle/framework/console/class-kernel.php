@@ -17,6 +17,7 @@ use Mantle\Contracts\Console\Application as Console_Application_Contract;
 use Mantle\Contracts\Exceptions\Handler as Exception_Handler;
 use Mantle\Support\Traits\Loads_Classes;
 use ReflectionClass;
+use Symfony\Component\Console\Command\Command as Symfony_Command;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\NullOutput;
@@ -49,7 +50,7 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	/**
 	 * The commands provided by the application.
 	 *
-	 * @var array<class-string<\Mantle\Console\Command>|Command>
+	 * @var array<class-string<Command|Symfony_Command>>
 	 */
 	protected $commands = [];
 
@@ -90,7 +91,10 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 			return $this->get_console_application()->run( $input, $output ?? $this->output );
 		} catch ( Throwable $e ) {
 			$this->report_exception( $e );
-			$this->render_exception( $output, $e );
+
+			if ( $output instanceof \Symfony\Component\Console\Output\OutputInterface ) {
+				$this->render_exception( $output, $e );
+			}
 
 			return Command::FAILURE;
 		}
@@ -140,6 +144,7 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	 */
 	public function register( Command|string $command ): void {
 		if ( ! class_exists( $command ) || ! is_subclass_of( $command, Command::class ) ) { // @phpstan-ignore-line function.alreadyNarrowedType
+			$command = $command instanceof Command ? $command::class : $command;
 			throw new \InvalidArgumentException( "Command [{$command}] is not a valid command." );
 		}
 
@@ -222,12 +227,11 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	 * Register all the commands in a set of directories.
 	 *
 	 * @param string ...$paths Paths to register.
-	 * @return void
 	 */
-	protected function load( ...$paths ) {
+	protected function load( ...$paths ): void {
 		$namespace = $this->app->get_namespace();
 
-		$this->commands = collect( $paths )
+		$this->commands = collect( $paths ) // @phpstan-ignore-line argument.type
 			->unique()
 			->filter( fn ( string $path ) => is_dir( $path ) )
 			->map( fn ( string $path ) => $this->classes_from_path( $path, $namespace . '\Console' ) )
@@ -299,15 +303,15 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	 */
 	protected function render_exception( OutputInterface $output, Throwable $e ) {
 		if ( $e instanceof CommandNotFoundException ) {
-			$this->output->writeln( '<error>' . stringable( $e->getMessage() )->explode( '.' )->first() . '</error>' );
-			$this->output->writeln( '' );
+			$this->output?->writeln( '<error>' . stringable( $e->getMessage() )->explode( '.' )->first() . '</error>' );
+			$this->output?->writeln( '' );
 
 			if ( ! empty( $alternatives = $e->getAlternatives() ) ) {
-				$this->output->writeln( '<comment>Did you mean one of these?</comment>' );
-				$this->output->writeln( '' );
+				$this->output?->writeln( '<comment>Did you mean one of these?</comment>' );
+				$this->output?->writeln( '' );
 
 				foreach ( $alternatives as $alternative ) {
-					$this->output->writeln( "  - <fg=green>{$alternative}</>" );
+					$this->output?->writeln( "  - <fg=green>{$alternative}</>" );
 				}
 			}
 

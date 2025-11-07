@@ -45,12 +45,12 @@ class Entity_Router implements Entity_Router_Contract {
 
 		$this->events->listen(
 			Route_Matched::class,
-			fn ( $event ) => $this->handle_route_matched( $event ),
+			$this->handle_route_matched( ... ),
 		);
 
 		$this->events->listen(
 			Bindings_Substituted::class,
-			fn ( $event ) => $this->handle_bindings_substituted( $event ),
+			$this->handle_bindings_substituted( ... ),
 		);
 	}
 
@@ -86,6 +86,8 @@ class Entity_Router implements Entity_Router_Contract {
 		global $wp_query;
 
 		$route = $event->route;
+
+		assert( $route instanceof Route );
 
 		// Ignore if the route isn't an entity route.
 		if ( ! $route->hasOption( 'entity_router' ) ) {
@@ -137,10 +139,10 @@ class Entity_Router implements Entity_Router_Contract {
 		global $wp_query, $post;
 
 		$route      = $event->request->get_route();
-		$parameters = collect( $event->request->get_route_parameters()->all() );
+		$parameters = collect( $event->request->get_route_parameters()?->all() ?? [] );
 
 		// Set the queried object for the entity route.
-		if ( 'single' === $route->getOption( 'entity_router' ) ) {
+		if ( $route && 'single' === $route->getOption( 'entity_router' ) ) {
 			$entity = $route->getOption( 'entity' );
 
 			$queried_object = $parameters

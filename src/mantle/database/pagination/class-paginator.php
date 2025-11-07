@@ -22,6 +22,8 @@ use Mantle\Http\View\View;
 use Mantle\Support\Collection;
 use Mantle\Support\Str;
 
+use function Mantle\Support\Helpers\mixed;
+
 /**
  * Paginator for query results.
  *
@@ -241,11 +243,17 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	/**
 	 * Append query string value to the paginator.
 	 *
+	 * @throws InvalidArgumentException When an array is passed as the first argument and a second argument is also passed.
+	 *
 	 * @param string|array<string, string> $key Query string key or array of key value pairs.
 	 * @param mixed                        $value Query string value.
 	 */
 	public function append( $key, $value = null ): static {
-		if ( is_array( $key ) && null === $value ) {
+		if ( is_array( $key ) ) {
+			if ( null !== $value ) {
+				throw new InvalidArgumentException( 'When appending an array of values you should not pass a second argument.' );
+			}
+
 			foreach ( $key as $k => $v ) {
 				$this->append( $k, $v );
 			}
@@ -253,7 +261,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 			return $this;
 		}
 
-		$this->query[ $key ] = $value;
+		$this->query[ $key ] = mixed( $value )->string();
 		return $this;
 	}
 
@@ -301,7 +309,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 			return 1;
 		}
 
-		return static::get_page_from_path( $path );
+		return static::get_page_from_path( $path ) ?: 1;
 	}
 
 	/**
@@ -340,18 +348,18 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	/**
 	 * Set the current page resolver.
 	 *
-	 * @param callable $callback Callback for the resolver.
+	 * @param \Closure|null $callback Callback for the resolver.
 	 */
-	public static function current_page_resolver( callable $callback ): void {
+	public static function current_page_resolver( \Closure|null $callback ): void {
 		static::$current_page_resolver = $callback;
 	}
 
 	/**
 	 * Set the current path resolver.
 	 *
-	 * @param callable $callback Callback for the resolver.
+	 * @param \Closure|null $callback Callback for the resolver.
 	 */
-	public static function current_path_resolver( callable $callback ): void {
+	public static function current_path_resolver( \Closure|null $callback ): void {
 		static::$current_path_resolver = $callback;
 	}
 
@@ -434,10 +442,9 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 * Convert the object to its JSON representation.
 	 *
 	 * @param int $options Options for json_encode().
-	 * @return string
 	 */
-	public function to_json( $options = 0 ) {
-		return wp_json_encode( $this->jsonSerialize(), $options );
+	public function to_json( $options = 0 ): string {
+		return (string) wp_json_encode( $this->jsonSerialize(), $options );
 	}
 
 	/**

@@ -114,7 +114,7 @@ class FrequencyTest extends FrameworkTestCase {
 		Event::macro(
 			'everyXMinutes',
 			function ( $x ) {
-				return $this->spliceIntoPosition( 1, "*/{$x}" );
+				return $this->splice_into_position( 1, "*/{$x}" );
 			}
 		);
 

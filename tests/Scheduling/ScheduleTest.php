@@ -68,7 +68,7 @@ class ScheduleTest extends FrameworkTestCase {
 
 		$thenCalled = false;
 
-		$event->pingBefore( 'https://httpstat.us/500' )
+		$event->ping_before( 'https://httpstat.us/500' )
 			->then(
 				function () use ( &$thenCalled ) {
 					$thenCalled = true;

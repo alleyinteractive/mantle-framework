@@ -112,6 +112,10 @@ trait Interacts_With_Hooks {
 	 * @param string $hook Action to listen to.
 	 */
 	public function expectApplied( string $hook ): Expectation {
+		if ( ! $this->expectation_container ) {
+			$this->expectation_container = new Expectation_Container();
+		}
+
 		return $this->expectation_container->add_applied( $hook );
 	}
 
@@ -123,6 +127,10 @@ trait Interacts_With_Hooks {
 	 * @return Expectation
 	 */
 	public function expectAdded( string $hook, ?callable $callback = null ) {
+		if ( ! $this->expectation_container ) {
+			$this->expectation_container = new Expectation_Container();
+		}
+
 		return $this->expectation_container->add_added( $hook, $callback );
 	}
 }

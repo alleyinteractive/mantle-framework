@@ -106,7 +106,7 @@ class Str {
 	 * @param  string      $language
 	 */
 	public static function ascii( ?string $value, string $language = 'en' ): string {
-		return ASCII::to_ascii( (string) $value, $language );
+		return ASCII::to_ascii( (string) $value, $language ); // @phpstan-ignore-line argument.type
 	}
 
 	/**
@@ -248,7 +248,11 @@ class Str {
 	 * @param  iterable<string> $needles
 	 * @param  bool             $ignore_case
 	 */
-	public static function contains_all( $haystack, $needles, bool $ignore_case = false ): bool {
+	public static function contains_all( string $haystack, string|iterable $needles, bool $ignore_case = false ): bool {
+		if ( ! is_iterable( $needles ) ) {
+			$needles = [ $needles ];
+		}
+
 		foreach ( $needles as $needle ) {
 			if ( ! static::contains( $haystack, $needle, $ignore_case ) ) {
 				return false;
@@ -644,10 +648,10 @@ class Str {
 	 *
 	 * @param  string      $callback
 	 * @param  string|null $default
-	 * @return array<int, string|null>
+	 * @return array{0: string, 1: string|null}
 	 */
-	public static function parse_callback( $callback, $default = null ) {
-		return static::contains( $callback, '@' ) ? explode( '@', $callback, 2 ) : [ $callback, $default ];
+	public static function parse_callback( string $callback, ?string $default = null ) {
+		return static::contains( $callback, '@' ) ? explode( '@', $callback, 2 ) : [ $callback, $default ]; // @phpstan-ignore-line argument.type
 	}
 
 	/**
@@ -667,136 +671,25 @@ class Str {
 	 * @param  int|array<mixed>|\Countable $count
 	 */
 	public static function plural_studly( $value, int|array|\Countable $count = 2 ): string {
-		$parts = preg_split( '/(.)(?=[A-Z])/u', $value, -1, PREG_SPLIT_DELIM_CAPTURE );
+		$parts = preg_split( '/(.)(?=[A-Z])/u', $value, -1, PREG_SPLIT_DELIM_CAPTURE ) ?: [];
 
 		$last_word = array_pop( $parts );
 
-		return implode( '', $parts ) . self::plural( $last_word, $count );
+		return implode( '', $parts ) . self::plural( (string) $last_word, $count );
 	}
 
 	/**
 	 * Generate a random, secure password.
 	 *
+	 * @deprecated Use wp_generate_password() instead.
+	 *
 	 * @param  int  $length
 	 * @param  bool $letters
 	 * @param  bool $numbers
 	 * @param  bool $symbols
-	 * @param  bool $spaces
 	 */
-	public static function password( $length = 32, $letters = true, $numbers = true, $symbols = true, $spaces = false ): string {
-		return ( new Collection() )
-		->when(
-			$letters,
-			fn ( $c ) => $c->merge(
-				[
-					'a',
-					'b',
-					'c',
-					'd',
-					'e',
-					'f',
-					'g',
-					'h',
-					'i',
-					'j',
-					'k',
-					'l',
-					'm',
-					'n',
-					'o',
-					'p',
-					'q',
-					'r',
-					's',
-					't',
-					'u',
-					'v',
-					'w',
-					'x',
-					'y',
-					'z',
-					'A',
-					'B',
-					'C',
-					'D',
-					'E',
-					'F',
-					'G',
-					'H',
-					'I',
-					'J',
-					'K',
-					'L',
-					'M',
-					'N',
-					'O',
-					'P',
-					'Q',
-					'R',
-					'S',
-					'T',
-					'U',
-					'V',
-					'W',
-					'X',
-					'Y',
-					'Z',
-				]
-			)
-		)
-		->when(
-			$numbers,
-			fn ( $c ) => $c->merge(
-				[
-					'0',
-					'1',
-					'2',
-					'3',
-					'4',
-					'5',
-					'6',
-					'7',
-					'8',
-					'9',
-				]
-			)
-		)
-		->when(
-			$symbols,
-			fn ( $c ) => $c->merge(
-				[
-					'~',
-					'!',
-					'#',
-					'$',
-					'%',
-					'^',
-					'&',
-					'*',
-					'(',
-					')',
-					'-',
-					'_',
-					'.',
-					',',
-					'<',
-					'>',
-					'?',
-					'/',
-					'\\',
-					'{',
-					'}',
-					'[',
-					']',
-					'|',
-					':',
-					';',
-				]
-			)
-		)
-		->when( $spaces, fn ( $c ) => $c->merge( [ ' ' ] ) )
-		->pipe( fn ( $c ) => Collection::times( $length, fn () => $c[ random_int( 0, $c->count() - 1 ) ] ) ) // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable, Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition
-		->implode( '' );
+	public static function password( $length = 32, $letters = true, $numbers = true, $symbols = true ): string {
+		return wp_generate_password( $length, $symbols, false );
 	}
 
 	/**
@@ -814,7 +707,7 @@ class Str {
 
 				$bytes_size = (int) ceil( $size / 3 ) * 3;
 
-				$bytes = random_bytes( $bytes_size );
+				$bytes = random_bytes( max( 1, $bytes_size ) );
 
 				$string .= substr( str_replace( [ '/', '+', '=' ], '', base64_encode( $bytes ) ), 0, $size );
 			}
@@ -896,6 +789,10 @@ class Str {
 			$replace = collect( $replace )->all();
 		}
 
+		if ( $search === '' ) {
+			return $subject;
+		}
+
 		$segments = explode( $search, $subject );
 
 		$result = array_shift( $segments );
@@ -915,6 +812,7 @@ class Str {
 	 * @param  string|iterable<string> $subject
 	 * @param  bool                    $case_sensitive
 	 * @return string|array<string>
+	 * @phpstan-return ($subject is string ? string : array<string>)
 	 */
 	public static function replace( $search, $replace, $subject, bool $case_sensitive = true ): string|array {
 		if ( $search instanceof Traversable ) {
@@ -1113,7 +1011,7 @@ class Str {
 		if ( ! ctype_lower( $value ) ) {
 			$value = preg_replace( '/\s+/u', '', ucwords( $value ) );
 
-			$value = static::lower( preg_replace( '/(.)(?=[A-Z])/u', '$1' . $delimiter, (string) $value ) );
+			$value = static::lower( (string) preg_replace( '/(.)(?=[A-Z])/u', '$1' . $delimiter, (string) $value ) );
 		}
 
 		return static::$snake_cache[ $key ][ $delimiter ] = $value;
@@ -1164,7 +1062,7 @@ class Str {
 
 		$words = explode( ' ', static::replace( [ '-', '_' ], ' ', $value ) );
 
-		$study_words = array_map( fn ( string $word ) => static::ucfirst( $word ), $words );
+		$study_words = array_map( static::ucfirst( ... ), $words );
 
 		return static::$studly_cache[ $key ] = implode( '', $study_words );
 	}
@@ -1218,7 +1116,7 @@ class Str {
 	 */
 	public static function substr_replace( $string, $replace, $offset = 0, $length = null ): array|string {
 		if ( is_null( $length ) ) {
-			$length = strlen( $string );
+			$length = is_array( $string ) ? null : strlen( $string );
 		}
 
 		return substr_replace( $string, $replace, $offset, $length );
@@ -1258,8 +1156,8 @@ class Str {
 	 * @param  string $string
 	 * @return string[]
 	 */
-	public static function ucsplit( $string ) {
-		return preg_split( '/(?=\p{Lu})/u', $string, -1, PREG_SPLIT_NO_EMPTY );
+	public static function ucsplit( $string ): array {
+		return preg_split( '/(?=\p{Lu})/u', $string, -1, PREG_SPLIT_NO_EMPTY ) ?: [];
 	}
 
 	/**
@@ -1292,7 +1190,7 @@ class Str {
 	 * @param int    $char_pos Character position.
 	 */
 	public static function line_number( string $contents, int $char_pos ): int {
-		[ $before ] = str_split( $contents, $char_pos );
+		$before = $char_pos > 0 ? substr( $contents, 0, $char_pos ) : '';
 		return strlen( $before ) - strlen( str_replace( PHP_EOL, '', $before ) ) + 1;
 	}
 

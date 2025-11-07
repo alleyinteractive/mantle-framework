@@ -131,24 +131,24 @@ trait Rsync_Installation {
 	public function maybe_rsync_wp_content(): static {
 		// Attempt to locate wp-content relative to the current directory.
 		if ( false !== strpos( __DIR__, '/wp-content/' ) ) {
-						return $this->maybe_rsync( '/', preg_replace( '/\/wp-content\/.*$/', '/wp-content', __DIR__ ) );
+			return $this->maybe_rsync( '/', preg_replace( '/\/wp-content\/.*$/', '/wp-content', __DIR__ ) );
 		}
 
-											// Attempt to locate wp-content relative to the current directory.
+		// Attempt to locate wp-content relative to the current directory.
 		if ( preg_match( '/\/(?:client-mu-plugins|mu-plugins|plugins|themes)\/.*/', __DIR__ ) ) {
-															/**
-															 * Attempt to locate the wp-content directory relative to the current
-															 * directory by finding the WordPress-parent folder after wp-content. Used
-															 * when the directory structure doesn't contain wp-content but contains a
-															 * subfolder that we can use to locate the WordPress installation such as
-															 * plugins, themes, etc. This is common for wp-content-rooted projects
-															 * that have the root of their directory structure as the wp-content
-															 * folder.
-															 */
-															return $this->maybe_rsync( '/', preg_replace( '/\/(?:client-mu-plugins|mu-plugins|plugins|themes)\/.*/', '', __DIR__ ) );
+			/**
+			 * Attempt to locate the wp-content directory relative to the current
+			 * directory by finding the WordPress-parent folder after wp-content. Used
+			 * when the directory structure doesn't contain wp-content but contains a
+			 * subfolder that we can use to locate the WordPress installation such as
+			 * plugins, themes, etc. This is common for wp-content-rooted projects
+			 * that have the root of their directory structure as the wp-content
+			 * folder.
+			 */
+			return $this->maybe_rsync( '/', preg_replace( '/\/(?:client-mu-plugins|mu-plugins|plugins|themes)\/.*/', '', __DIR__ ) );
 		}
 
-		return $this->maybe_rsync( '/', dirname( getcwd(), 3 ) );
+		return $this->maybe_rsync( '/', dirname( Utils::cwd(), 3 ) );
 	}
 
 	/**
@@ -185,15 +185,15 @@ trait Rsync_Installation {
 			return $this;
 		}
 
-								// Allow object cache to be disabled.
+		// Allow object cache to be disabled.
 		if ( ! $install ) {
-						putenv( 'MANTLE_INSTALL_OBJECT_CACHE=' );
-						return $this;
+			putenv( 'MANTLE_INSTALL_OBJECT_CACHE=' );
+			return $this;
 		}
 
 		// Allow object cache to be disabled.
 		if ( true === $install ) {
-												$install = 'memcached';
+			$install = 'memcached';
 		}
 
 		if ( ! in_array( $install, [ 'redis', 'memcached' ], true ) ) {
@@ -204,8 +204,8 @@ trait Rsync_Installation {
 
 		// Check if Memcached is installed before proceeding.
 		if ( 'memcached' === $install && ( ! class_exists( \Memcached::class ) && ! Utils::env( 'MANTLE_REQUIRE_OBJECT_CACHE', false ) ) ) {
-						Utils::error( 'Memcached is not installed. Cannot install object cache. Skipping...' );
-						return $this;
+			Utils::error( 'Memcached is not installed. Cannot install object cache. Skipping...' );
+			return $this;
 		}
 
 		$this->add_exclusion( 'object-cache.php' );
@@ -290,7 +290,7 @@ trait Rsync_Installation {
 	 */
 	public function maybe_rsync_plugin( ?string $name = null, ?string $from = null ): static {
 		if ( ! $name ) {
-			$name = basename( getcwd() );
+			$name = basename( Utils::cwd() );
 		}
 
 		return $this->maybe_rsync( "plugins/{$name}", $from );
@@ -306,7 +306,7 @@ trait Rsync_Installation {
 	 */
 	public function maybe_rsync_theme( ?string $name = null, ?string $from = null ): static {
 		if ( ! $name ) {
-			$name = basename( getcwd() );
+			$name = basename( Utils::cwd() );
 		}
 
 		return $this->maybe_rsync( "themes/{$name}", $from );
@@ -374,6 +374,10 @@ trait Rsync_Installation {
 	 * WordPress installation without needing to rsync it manually.
 	 */
 	protected function perform_rsync_testsuite(): void {
+		if ( ! $this->rsync_to || ! $this->rsync_from ) {
+			return;
+		}
+
 		require_once __DIR__ . '/../class-utils.php';
 
 		$base_install_path = $this->get_installation_path();
@@ -385,7 +389,7 @@ trait Rsync_Installation {
 
 		// Store the subdirectory of the current working directory relative to the
 		// from rsync path.
-		$this->rsync_subdir = str_replace( $this->rsync_from, '', rtrim( getcwd(), '/' ) . '/' );
+		$this->rsync_subdir = str_replace( $this->rsync_from, '', rtrim( Utils::cwd(), '/' ) . '/' );
 
 		// Define the constants relative to where the codebase is being rsynced to.
 		defined( 'WP_TESTS_INSTALL_PATH' ) || define( 'WP_TESTS_INSTALL_PATH', $base_install_path );
@@ -547,7 +551,7 @@ trait Rsync_Installation {
 		// rest will be forwarded to the command.
 		array_shift( $args );
 
-		return $executable . ' ' . implode( ' ', array_map( 'escapeshellarg', $args ) );
+		return $executable . ' ' . implode( ' ', array_map( escapeshellarg( ... ), $args ) );
 	}
 
 	/**
@@ -557,6 +561,6 @@ trait Rsync_Installation {
 	 * @param string $path Path to translate.
 	 */
 	protected function translate_location( string $path ): string {
-		return str_replace( $this->rsync_from, $this->rsync_to, $path );
+		return str_replace( $this->rsync_from ?? '', $this->rsync_to ?? '', $path );
 	}
 }

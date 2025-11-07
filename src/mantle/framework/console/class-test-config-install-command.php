@@ -51,7 +51,7 @@ class Test_Config_Install_Command extends Command {
 			return Command::FAILURE;
 		}
 
-		if ( ! copy( __DIR__ . '/../../../mantle/testing/wp-tests-config-sample.php', $path ) ) {
+		if ( ! copy( 'https://raw.githubusercontent.com/alleyinteractive/mantle-ci/HEAD/wp-tests-config-sample.php', $path ) ) {
 			$this->error( 'Error copying configuration file to ' . $path );
 			return Command::FAILURE;
 		}

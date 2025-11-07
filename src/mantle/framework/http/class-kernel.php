@@ -115,7 +115,7 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 		if ( did_action( 'parse_request' ) ) {
 			$this->handle_request();
 		} else {
-			\add_action( 'parse_request', fn () => $this->handle_request() );
+			\add_action( 'parse_request', $this->handle_request( ... ) );
 		}
 	}
 
@@ -188,7 +188,9 @@ class Kernel implements Kernel_Contract, Core_Kernel_Contract {
 		}
 
 		foreach ( $this->route_middleware as $key => $middleware ) {
-			$this->router->alias_middleware( $key, $middleware );
+			if ( is_string( $middleware ) ) {
+				$this->router->alias_middleware( $key, $middleware );
+			}
 		}
 	}
 

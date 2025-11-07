@@ -46,7 +46,7 @@ class Seed_Command extends Command {
 		}
 
 		$this->container
-			->make( $this->option( 'class', \App\Database\Seeds\Database_Seeder::class ) )
+			->make( $this->mixed_option( 'class', \App\Database\Seeds\Database_Seeder::class )->string() )
 			->set_container( $this->container )
 			->set_command( $this )
 			->__invoke();

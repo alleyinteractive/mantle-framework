@@ -22,12 +22,17 @@ class Object_Metadata implements ArrayAccess, Jsonable, \JsonSerializable, \Stri
 	/**
 	 * Retrieve metadata from the database.
 	 *
-	 * @param string|null $meta_type Meta type.
-	 * @param int|null    $object_id Object ID.
-	 * @param string|null $meta_key Meta key.
+	 * @param string $meta_type Meta type.
+	 * @param int    $object_id Object ID.
+	 * @param string $meta_key Meta key.
+	 * @param mixed  $default Default value. Default is null.
 	 */
-	public static function of( ?string $meta_type, ?int $object_id, ?string $meta_key ): static {
+	public static function of( string $meta_type, int $object_id, string $meta_key, mixed $default = null ): static {
 		$value = get_metadata( $meta_type, $object_id, $meta_key, true );
+
+		if ( '' === $value ) {
+			$value = $default;
+		}
 
 		return new static( $meta_type, $object_id, $meta_key, $value );
 	}
@@ -42,7 +47,7 @@ class Object_Metadata implements ArrayAccess, Jsonable, \JsonSerializable, \Stri
 	}
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * @param string|null $meta_type Meta type.
 	 * @param int|null    $object_id Object ID.
@@ -62,7 +67,7 @@ class Object_Metadata implements ArrayAccess, Jsonable, \JsonSerializable, \Stri
 	 */
 	public function save(): static {
 		if ( ! $this->meta_type || ! $this->object_id || ! $this->meta_key ) {
-			throw new InvalidArgumentException( 'Unable to save sub-property of an metadata.' );
+			throw new InvalidArgumentException( 'Unable to save sub-property of a metadata.' );
 		}
 
 		update_metadata( $this->meta_type, $this->object_id, $this->meta_key, $this->value );
@@ -73,15 +78,62 @@ class Object_Metadata implements ArrayAccess, Jsonable, \JsonSerializable, \Stri
 	}
 
 	/**
-	 * Delete the option.
+	 * Add the meta data.
 	 *
-	 * @throws InvalidArgumentException If the option is a sub-property of an option.
+	 * @throws InvalidArgumentException If the object is retrieving sub-property of a metadata and the meta type is not passed.
+	 */
+	public function add(): static {
+		if ( ! $this->meta_type || ! $this->object_id || ! $this->meta_key ) {
+			throw new InvalidArgumentException( 'Unable to add sub-property of a metadata.' );
+		}
+
+		add_metadata( $this->meta_type, $this->object_id, $this->meta_key, $this->value );
+
+		$this->value = get_metadata( $this->meta_type, $this->object_id, $this->meta_key, true );
+
+		return $this;
+	}
+
+	/**
+	 * Delete the meta data.
+	 *
+	 * @throws InvalidArgumentException If the object is a sub-property of a metadata.
 	 */
 	public function delete(): void {
 		if ( ! $this->meta_type || ! $this->object_id || ! $this->meta_key ) {
-			throw new InvalidArgumentException( 'Unable to delete option on a sub-property of an option.' );
+			throw new InvalidArgumentException( 'Unable to delete meta on a sub-property of a metadata.' );
 		}
 
 		delete_metadata( $this->meta_type, $this->object_id, $this->meta_key );
+	}
+
+	/**
+	 * Delete a specific meta key that matches the value.
+	 *
+	 * @param mixed $value Value to delete.
+	 *
+	 * @throws InvalidArgumentException If the object is a sub-property of a metadata.
+	 */
+	public function delete_value( mixed $value ): void {
+		if ( ! $this->meta_type || ! $this->object_id || ! $this->meta_key ) {
+			throw new InvalidArgumentException( 'Unable to delete meta on a sub-property of a metadata.' );
+		}
+
+		delete_metadata( $this->meta_type, $this->object_id, $this->meta_key, $value );
+	}
+
+	/**
+	 * Fetch all meta values for the given meta.
+	 *
+	 * @throws InvalidArgumentException If the object is a sub-property of a metadata.
+	 */
+	public function all(): static {
+		if ( ! $this->meta_type || ! $this->object_id || ! $this->meta_key ) {
+			throw new InvalidArgumentException( 'Unable to fetch all meta on a sub-property of a metadata.' );
+		}
+
+		$value = get_metadata( $this->meta_type, $this->object_id, $this->meta_key );
+
+		return new static( $this->meta_type, $this->object_id, $this->meta_key, $value, $this->throw );
 	}
 }

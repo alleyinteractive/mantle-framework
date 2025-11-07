@@ -1,0 +1,6 @@
+{
+  "testable_meta_key": {
+    "post_types": ["post"],
+    "type": "string"
+  }
+}

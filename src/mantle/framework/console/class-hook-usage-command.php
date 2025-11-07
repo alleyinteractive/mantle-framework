@@ -105,7 +105,7 @@ class Hook_Usage_Command extends Command {
 		}
 
 		return $usage
-			->map( fn ( $file ) => $this->read_file( $file ) )
+			->map( $this->read_file( ... ) )
 			->flatten( 1 );
 	}
 

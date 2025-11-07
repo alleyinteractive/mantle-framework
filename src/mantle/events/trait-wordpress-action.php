@@ -82,8 +82,10 @@ trait WordPress_Action {
 					unset( $e );
 					return $callback( ...$args );
 				}
-			} else {
+			} elseif ( $callback instanceof Closure ) {
 				$parameters = ( new ReflectionFunction( $callback ) )->getParameters();
+			} else {
+				throw new RuntimeException( 'Unsupported callback type: ' . get_debug_type( $callback ) );
 			}
 
 			if ( empty( $parameters ) ) {
@@ -133,7 +135,7 @@ trait WordPress_Action {
 			$parameter_class = Reflector::get_parameter_class_name( $parameter );
 
 			if ( Reflector::is_parameter_subclass_of( $parameter, Enumerable::class ) ) {
-				return $parameter_class::make( $argument );
+				return $parameter_class::make( $argument ); // @phpstan-ignore-line
 			}
 
 			// Return the argument if the class matches the typehint.
@@ -161,7 +163,7 @@ trait WordPress_Action {
 				return $modified_argument;
 			}
 
-			return $this->container->make( $parameter_class, [ $parameter ] );
+			return $this->container->make( $parameter_class, [ $parameter ] ); // @phpstan-ignore-line type
 		}
 
 		// Ensure an 'Arrayable' interface is cast to an array properly.

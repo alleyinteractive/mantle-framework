@@ -5,12 +5,17 @@
  * @package Mantle
  */
 
+declare(strict_types=1);
+
 namespace Mantle\Http_Client;
 
 use ArrayAccess;
 use LogicException;
 use Mantle\Support\Collection;
+use Mantle\Support\HTML;
+use Mantle\Support\Mixed_Data;
 use Mantle\Support\Traits\Macroable;
+use Mantle\Testing\Assertable_Json_String;
 use SimpleXMLElement;
 use WP_Error;
 use WP_Http_Cookie;
@@ -21,6 +26,8 @@ use function Mantle\Support\Helpers\data_get;
 
 /**
  * Response object from WordPress HTTP API.
+ *
+ * @todo Add assertions to the responses.
  *
  * @phpstan-type CoreResponse array{
  *   body?: string,
@@ -43,9 +50,11 @@ use function Mantle\Support\Helpers\data_get;
  *     code: int,
  *     message: string,
  *   },
+ *   http_response?: \WP_HTTP_Requests_Response,
  * }
  */
 class Response implements ArrayAccess {
+	use Concerns\Interacts_With_Feeds;
 	use Macroable;
 
 	/**
@@ -68,6 +77,16 @@ class Response implements ArrayAccess {
 	protected array $response;
 
 	/**
+	 * The request URL.
+	 */
+	protected ?string $url = null;
+
+	/**
+	 * Determine if the response was created from the cache.
+	 */
+	public bool $cached = false;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param CoreResponse|WpHttpRequestResponse $response Raw response from `wp_remote_request()`.
@@ -82,6 +101,13 @@ class Response implements ArrayAccess {
 		$response['headers'] = array_change_key_case( (array) ( $response['headers'] ?? [] ) );
 
 		$this->response = $response;
+
+		// @phpstan-ignore instanceof.alwaysTrue
+		if ( isset( $response['http_response'] ) && $response['http_response'] instanceof \WP_HTTP_Requests_Response ) {
+			$this->url = $response['http_response']->get_response_object()->url;
+		} else {
+			$this->url = null;
+		}
 	}
 
 	/**
@@ -222,6 +248,13 @@ class Response implements ArrayAccess {
 	}
 
 	/**
+	 * Check if the response is HTML.
+	 */
+	public function is_html(): bool {
+		return false !== strpos( (string) $this->header( 'content-type' ), 'text/html' );
+	}
+
+	/**
 	 * Check if the response is JSON.
 	 */
 	public function is_json(): bool {
@@ -276,7 +309,9 @@ class Response implements ArrayAccess {
 	 * Retrieve the file contents of the downloaded file.
 	 */
 	public function file_contents(): ?string {
-		return empty( $this->response['filename'] ) ? null : file_get_contents( $this->file() ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
+		$file = $this->file();
+
+		return empty( $file ) ? null : (string) file_get_contents( $file ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
 	}
 
 	/**
@@ -286,7 +321,7 @@ class Response implements ArrayAccess {
 	 * @param  mixed       $default
 	 * @return mixed
 	 */
-	public function json( $key = null, $default = null ) {
+	public function json( ?string $key = null, mixed $default = null ) {
 		if ( $this->decoded === null ) {
 			$this->decoded = json_decode( $this->body(), true );
 		}
@@ -299,13 +334,44 @@ class Response implements ArrayAccess {
 	}
 
 	/**
+	 * Get the JSON decoded body of the response as a Mixed_Data instance.
+	 *
+	 * @param  string|null $key
+	 * @param  mixed       $default
+	 */
+	public function mixed_json( ?string $key = null, mixed $default = null ): Mixed_Data {
+		return Mixed_Data::of( $this->json( $key, $default ) );
+	}
+
+	/**
+	 * Retrieve an instance of Assertable_Json_String to perform fluent JSON assertions.
+	 *
+	 * @param string|null $key Optional key to pass to `json()` to scope the JSON data.
+	 */
+	public function assertable_json( ?string $key = null ): Assertable_Json_String {
+		return new Assertable_Json_String( $this->json( $key ) );
+	}
+
+	/**
+	 * Get the body of the response as an HTML object.
+	 */
+	public function html(): HTML {
+		return new HTML( $this->body() );
+	}
+
+	/**
 	 * Get the XML body of the response.
 	 *
-	 * @param string $xpath Path to pass to `SimpleXMLElement::xpath()`, optional.
-	 * @param string $default Default value to return if the path does not exist.
+	 * @template TDefault
+	 *
+	 * @param string|null $xpath Path to pass to `SimpleXMLElement::xpath()`, optional.
+	 * @param mixed       $default Default value to return if the path does not exist.
 	 * @return SimpleXMLElement|string|null Returns a specific SimpleXMLElement if path is specified, otherwise the entire document.
+	 *
+	 * @phpstan-param TDefault $default
+	 * @phpstan-return ($xpath is null ? SimpleXMLElement : (array<SimpleXMLElement>|TDefault))
 	 */
-	public function xml( ?string $xpath = null, $default = null ) {
+	public function xml( ?string $xpath = null, mixed $default = null ) {
 		if ( ! $this->element instanceof \SimpleXMLElement ) {
 			$previous = libxml_use_internal_errors( true );
 
@@ -337,7 +403,7 @@ class Response implements ArrayAccess {
 	 * @param  string|null $key
 	 * @return Collection<array-key, mixed>
 	 */
-	public function collect( $key = null ): \Mantle\Support\Collection {
+	public function collect( ?string $key = null ): \Mantle\Support\Collection {
 		return new Collection( $this->json( $key ) );
 	}
 
@@ -423,5 +489,46 @@ class Response implements ArrayAccess {
 	 */
 	public function offsetUnset( mixed $offset ): void {
 		throw new LogicException( 'Response values are read-only.' );
+	}
+
+	/**
+	 * Prepare the object for serialization.
+	 *
+	 * @return array<string, mixed>
+	 */
+	public function __serialize(): array {
+		// Purge some data from the response for lighter serialization.
+		unset( $this->response['http_response'] );
+
+		foreach ( [ 'cookies', 'filename', 'headers' ] as $key ) {
+			if ( empty( $this->response[ $key ] ) ) {
+				unset( $this->response[ $key ] );
+			}
+		}
+
+		return [
+			'url'      => $this->url,
+			'response' => $this->response,
+		];
+	}
+
+	/**
+	 * Restore the object from serialized data.
+	 *
+	 * @throws LogicException If the serialized data is invalid.
+	 *
+	 * @param array<string, mixed> $data Serialized data.
+	 */
+	public function __unserialize( array $data ): void {
+		if ( ! isset( $data['response'] ) || ! is_array( $data['response'] ) ) {
+			throw new LogicException( 'Invalid serialized response data.' );
+		}
+
+		if ( isset( $data['url'] ) ) {
+			$this->url = is_string( $data['url'] ) ? $data['url'] : null;
+		}
+
+		$this->response = $data['response'];
+		$this->cached   = true;
 	}
 }

@@ -23,7 +23,7 @@ class File_Engine implements Engine {
 	 */
 	public function get( string $path, array $data = [] ): string {
 		if ( 0 === validate_file( $path ) ) {
-			return file_get_contents( $path ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
+			return (string) file_get_contents( $path ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
 		}
 
 		return '';

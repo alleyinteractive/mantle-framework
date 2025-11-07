@@ -168,7 +168,7 @@ class Arr {
 		}
 
 		foreach ( $array as $key => $value ) {
-			if ( $callback( $value, $key ) ) {
+			if ( $callback && $callback( $value, $key ) ) {
 				return $value;
 			}
 		}
@@ -226,7 +226,7 @@ class Arr {
 	 * @param  array<mixed>    $array Array to handle.
 	 * @param  string[]|string $keys Keys to use.
 	 */
-	public static function forget( &$array, $keys ): void {
+	public static function forget( array &$array, $keys ): void {
 		$original = &$array;
 
 		$keys = (array) $keys;
@@ -281,6 +281,8 @@ class Arr {
 		if ( static::exists( $array, $key ) ) {
 			return $array[ $key ];
 		}
+
+		$key = (string) $key;
 
 		if ( strpos( $key, '.' ) === false ) {
 			return $array[ $key ] ?? Helpers\value( $default );
@@ -569,8 +571,8 @@ class Arr {
 	 * @param  callable|string|null $callback Callback to sort by.
 	 * @return array<mixed>
 	 */
-	public static function sort( $array, $callback = null ) {
-		return Collection::make( $array )->sort_by( $callback )->all();
+	public static function sort( array $array, callable|string|null $callback = null ): array {
+		return Collection::make( $array )->sort_by( $callback )->all(); // @phpstan-ignore-line argument.type
 	}
 
 	/**
@@ -616,7 +618,7 @@ class Arr {
 	 * @phpstan-param (callable(value-of<TData>, key-of<TData>): bool) $callback
 	 */
 	public static function where( array $array, callable $callback ): array {
-		return array_filter( $array, $callback, ARRAY_FILTER_USE_BOTH );
+		return array_filter( $array, $callback, ARRAY_FILTER_USE_BOTH ); // @phpstan-ignore-line return.type
 	}
 
 	/**

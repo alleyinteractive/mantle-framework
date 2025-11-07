@@ -23,9 +23,12 @@ use function Mantle\Support\Helpers\collect;
 /**
  * Register all hooks on a class.
  *
- * Collects all of the `Action`/`Filter` attribute methods as well as the
+ * Collects all the `Action`/`Filter` attribute methods as well as the
  * `on_{hook}` and `on_{hook}_at_{priority}` methods and registers them with the
  * respective WordPress hooks.
+ *
+ * It also supports validator attributes that can prevent the
+ * hook from being registered if the validator returns false.
  *
  * Attributes are the preferred way to register hooks but the method naming
  * convention to define the hook name is still supported for backwards
@@ -54,7 +57,7 @@ trait Hookable {
 	/**
 	 * Boot all actions and attribute methods on the service provider.
 	 *
-	 * Collects all of the `on_{hook}`, `on_{hook}_at_{priority}`,
+	 * Collects all the `on_{hook}`, `on_{hook}_at_{priority}`,
 	 * `action__{hook}`, and `filter__{hook}` methods as well as the attribute
 	 * based `#[Action]` and `#[Filter]` methods and registers them with the
 	 * respective WordPress hooks.
@@ -71,11 +74,17 @@ trait Hookable {
 			->unique()
 			->each(
 				function ( array $item ): void {
+					$callback = [ $this, $item['method'] ];
+
+					if ( ! is_callable( $callback ) ) {
+						return;
+					}
+
 					if ( $this->use_event_dispatcher() ) {
 						if ( 'action' === $item['type'] ) {
-							\Mantle\Support\Helpers\add_action( $item['hook'], [ $this, $item['method'] ], $item['priority'] );
+							\Mantle\Support\Helpers\add_action( $item['hook'], $callback, $item['priority'] );
 						} else {
-							\Mantle\Support\Helpers\add_filter( $item['hook'], [ $this, $item['method'] ], $item['priority'] );
+							\Mantle\Support\Helpers\add_filter( $item['hook'], $callback, $item['priority'] );
 						}
 
 						return;
@@ -83,9 +92,9 @@ trait Hookable {
 
 					// Use the default WordPress action/filter methods.
 					if ( 'action' === $item['type'] ) {
-						\add_action( $item['hook'], [ $this, $item['method'] ], $item['priority'], 999 );
+						\add_action( $item['hook'], $callback, $item['priority'], 999 );
 					} else {
-						\add_filter( $item['hook'], [ $this, $item['method'] ], $item['priority'], 999 );
+						\add_filter( $item['hook'], $callback, $item['priority'], 999 );
 					}
 				},
 			);
@@ -100,18 +109,18 @@ trait Hookable {
 	 */
 	private function collect_action_methods(): Collection {
 		// Determine if the legacy attribute is on the class to allow for duplicate
-		// hook registration when a action method has an attribute.
+		// hook registration when an action method has an attribute.
 		$has_legacy_attribute = collect(
 			( $this->reflection )->getAttributes( Allow_Legacy_Duplicate_Registration::class ),
 		)->is_not_empty();
 
-		return collect( get_class_methods( static::class ) )
+		return collect( get_class_methods( static::class ) ) // @phpstan-ignore-line return.type
 			->filter(
 				static fn ( string $method ) => Str::starts_with( $method, [ 'on_', 'action__', 'filter__' ] )
 			)
 			->map(
-				function ( string $method ) use ( $has_legacy_attribute ): ?array {
-					$reflection_method = $this->reflection->getMethod( $method );
+				function ( string $method_name ) use ( $has_legacy_attribute ): ?array {
+					$reflection_method = $this->reflection->getMethod( $method_name );
 
 					if ( ! $reflection_method->isPublic() ) {
 						$this->fire_doing_it_wrong( $reflection_method );
@@ -129,20 +138,25 @@ trait Hookable {
 						return null;
 					}
 
+					// Check if the method passes all validators.
+					if ( false === $this->validate_method( $reflection_method ) ) {
+						return null;
+					}
+
 					$type = match ( true ) {
-						Str::starts_with( $method, 'filter__' ) => 'filter',
+						Str::starts_with( $method_name, 'filter__' ) => 'filter',
 						default => 'action',
 					};
 
 					$hook = match ( true ) {
-						Str::starts_with( $method, 'on_' ) => Str::after( $method, 'on_' ),
-						default => Str::after( $method, $type . '__' ),
+						Str::starts_with( $method_name, 'on_' ) => Str::after( $method_name, 'on_' ),
+						default => Str::after( $method_name, $type . '__' ),
 					};
 
 					$priority = 10;
 
+					// Strip the priority from the hook name.
 					if ( Str::contains( $hook, '_at_' ) ) {
-						// Strip the priority from the hook name.
 						$priority = (int) Str::after_last( $hook, '_at_' );
 						$hook     = Str::before_last( $hook, '_at_' );
 					}
@@ -150,7 +164,7 @@ trait Hookable {
 					return [
 						'type'     => $type,
 						'hook'     => $hook,
-						'method'   => $method,
+						'method'   => $method_name,
 						'priority' => $priority,
 					];
 				}
@@ -160,10 +174,11 @@ trait Hookable {
 	}
 
 	/**
-	 * Collect all attribute actions on the service provider.
+	 * Collect all attribute actions/filters on the service provider.
 	 *
-	 * Allow methods with the `#[Action]` attribute to automatically register
-	 * WordPress hooks.
+	 * Allow methods with the `#[Action]` or `#[Filter]` attribute to automatically register
+	 * WordPress hooks. It also supports validator attributes that can prevent the
+	 * hook from being registered if the validator returns false.
 	 *
 	 * @phpstan-return Collection<int, HookItem>
 	 */
@@ -172,8 +187,14 @@ trait Hookable {
 
 		foreach ( $this->reflection->getMethods() as $method ) {
 			foreach ( $method->getAttributes( Action::class ) as $attribute ) {
+				// Skip non-public methods.
 				if ( ! $method->isPublic() ) {
 					$this->fire_doing_it_wrong( $method );
+					continue;
+				}
+
+				// Check if the method passes all validators.
+				if ( false === $this->validate_method( $method ) ) {
 					continue;
 				}
 
@@ -190,8 +211,14 @@ trait Hookable {
 			}
 
 			foreach ( $method->getAttributes( Filter::class ) as $attribute ) {
+				// Skip non-public methods.
 				if ( ! $method->isPublic() ) {
 					$this->fire_doing_it_wrong( $method );
+					continue;
+				}
+
+				// Check if the method passes all validators.
+				if ( false === $this->validate_method( $method ) ) {
 					continue;
 				}
 
@@ -246,5 +273,27 @@ trait Hookable {
 		}
 
 		_doing_it_wrong( esc_html( static::class . '::' . $method->getName() ), esc_html( $message ), '1.0.0' );
+	}
+
+	/**
+	 * Fire all validators for a method.
+	 *
+	 * @param ReflectionMethod $method The hook callback method.
+	 */
+	protected function validate_method( ReflectionMethod $method ): bool {
+		if ( ! interface_exists( \Mantle\Types\Validator::class ) ) {
+			return true;
+		}
+
+		$attributes = $method->getAttributes( \Mantle\Types\Validator::class, \ReflectionAttribute::IS_INSTANCEOF );
+
+		// Check all validators for this method.
+		foreach ( $attributes as $attribute ) {
+			if ( ! $attribute->newInstance()->validate() ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

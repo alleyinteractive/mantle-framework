@@ -20,7 +20,7 @@ use function Mantle\Support\Helpers\collect;
 /**
  * Post Query Builder
  *
- * @template TModel of \Mantle\Database\Model\Model
+ * @template TModel of \Mantle\Database\Model\Post
  * @extends \Mantle\Database\Query\Builder<TModel>
  *
  * @method \Mantle\Database\Query\Post_Query_Builder<TModel> anyStatus()
@@ -88,7 +88,7 @@ class Post_Query_Builder extends Builder {
 	/**
 	 * Tax Query
 	 *
-	 * @var array<string, string|array<mixed>>
+	 * @var array<int|'relation', string|array<mixed>>
 	 */
 	protected array $tax_query = [];
 
@@ -147,6 +147,7 @@ class Post_Query_Builder extends Builder {
 
 		$this->found_rows = empty( $query->found_posts ) && count( $query->posts ) > 0 ? null : $query->found_posts;
 
+		/** @var int[] $post_ids */
 		$post_ids = $query->posts;
 
 		if ( empty( $post_ids ) ) {
@@ -194,6 +195,7 @@ class Post_Query_Builder extends Builder {
 		if ( is_array( $this->model ) ) {
 			$model_object_types = $this->get_model_object_names();
 
+			// @phpstan-ignore return.type
 			return Collection::from( $post_ids )
 				->map(
 					function ( $post_id ) use ( $model_object_types ) {
@@ -216,6 +218,7 @@ class Post_Query_Builder extends Builder {
 				->values();
 		}
 
+		// @phpstan-ignore return.type
 		return Collection::from( $post_ids )
 			->map( [ $this->model, 'find' ] )
 			->filter();
@@ -246,7 +249,7 @@ class Post_Query_Builder extends Builder {
 		if ( empty( $taxonomy ) && ! is_array( $term ) ) {
 			// Attempt to resolve the term from the slug.
 			if ( 'slug' === $field ) {
-				$object = get_term_by( 'slug', $term, $taxonomy );
+				$object = get_term_by( 'slug', $term, $taxonomy ?? '' );
 
 				if ( ! ( $object instanceof WP_Term ) ) {
 					throw new Query_Exception( 'Unknown term to query against with slug (must pass taxonomy): ' . $term );

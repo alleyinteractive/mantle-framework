@@ -11,6 +11,7 @@ use Mantle\Support\Collection;
 use Mantle\Support\Str;
 use Mantle\Testing\Doubles\Spy_REST_Server;
 
+use function Mantle\Support\Helpers\capture;
 use function Mantle\Support\Helpers\collect;
 use function Termwind\render;
 
@@ -60,16 +61,32 @@ class Utils {
 	public const DEFAULT_PERMALINK_STRUCTURE = '/%year%/%monthnum%/%day%/%postname%/';
 
 	/**
+	 * Get the current working directory or throw an exception.
+	 *
+	 * @throws \RuntimeException If the current working directory cannot be determined.
+	 * @return string The current working directory.
+	 */
+	public static function cwd(): string {
+		$cwd = getcwd();
+
+		if ( ! $cwd ) {
+			throw new \RuntimeException( 'Could not get current working directory.' );
+		}
+
+		return $cwd;
+	}
+
+	/**
 	 * Get the output from a given callable.
+	 *
+	 * @deprecated Use \Mantle\Support\Helpers::capture() instead.
 	 *
 	 * @param callable $callable Callable to execute.
 	 * @param array    $args     Arguments to pass to the callable.
 	 * @return false|string Rendered output on success, false on failure.
 	 */
-	public static function get_echo( $callable, $args = [] ): string|false {
-		ob_start();
-		call_user_func_array( $callable, $args );
-		return ob_get_clean();
+	public static function get_echo( callable $callable, array $args = [] ): string|false {
+		return capture( fn () => $callable( ...$args ) );
 	}
 
 	/**
@@ -77,7 +94,7 @@ class Utils {
 	 *
 	 * @param string $status Post status to unregister.
 	 */
-	public static function unregister_post_status( $status ): void {
+	public static function unregister_post_status( string $status ): void {
 		unset( $GLOBALS['wp_post_statuses'][ $status ] );
 	}
 
@@ -122,7 +139,8 @@ class Utils {
 		unset( $_SERVER['HTTP_REFERER'] );
 
 		if ( defined( 'WP_TESTS_USE_HTTPS' ) && WP_TESTS_USE_HTTPS ) {
-			$_SERVER['HTTPS'] = 'on';
+			$_SERVER['HTTPS']       = 'on';
+			$_SERVER['SERVER_PORT'] = '443';
 		} else {
 			unset( $_SERVER['HTTPS'] );
 		}
@@ -138,7 +156,7 @@ class Utils {
 	}
 
 	/**
-	 * Deletes all data from the database.
+	 * Deletes all data from the database and flushes the cache.
 	 */
 	public static function delete_all_data(): void {
 		// phpcs:disable WordPress.DB,WordPressVIPMinimum.Variables
@@ -167,6 +185,36 @@ class Utils {
 		$wpdb->query( "DELETE FROM {$wpdb->users} WHERE ID != 1" );
 		$wpdb->query( "DELETE FROM {$wpdb->usermeta} WHERE user_id != 1" );
 		// phpcs:enable
+
+		self::flush_cache();
+	}
+
+	/**
+	 * Delete all other blogs from the database.
+	 *
+	 * Ensures that the main blog (blog_id = 1) is not deleted.
+	 *
+	 * @throws \RuntimeException If not in multisite mode.
+	 */
+	public static function delete_all_blogs(): void {
+		if ( ! is_multisite() ) {
+			throw new \RuntimeException( 'Cannot delete all blogs when not in multisite mode.' );
+		}
+
+		// phpcs:disable WordPress.DB,WordPressVIPMinimum.Variables
+		global $wpdb;
+
+		if ( ! function_exists( 'wpmu_delete_blog' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/ms.php';
+		}
+
+		foreach ( $wpdb->get_col( "SELECT blog_id FROM {$wpdb->blogs} WHERE blog_id != 1" ) as $blog_id ) {
+			wpmu_delete_blog( $blog_id, true );
+		}
+
+		// phpcs:enable
+
+		self::flush_cache();
 	}
 
 	/**
@@ -191,6 +239,47 @@ class Utils {
 	}
 
 	/**
+	 * Flushes the WordPress object cache.
+	 */
+	public static function flush_cache(): void {
+		wp_cache_flush_runtime();
+
+		global $wp_object_cache;
+
+		if ( is_object( $wp_object_cache ) && method_exists( $wp_object_cache, '__remoteset' ) ) {
+			$wp_object_cache->__remoteset();
+		}
+
+		wp_cache_flush();
+
+		wp_cache_add_global_groups(
+			[
+				'blog-details',
+				'blog-id-cache',
+				'blog-lookup',
+				'blog_meta',
+				'global-posts',
+				'networks',
+				'network-queries',
+				'sites',
+				'site-details',
+				'site-options',
+				'site-queries',
+				'site-transient',
+				'theme_files',
+				'rss',
+				'users',
+				'user-queries',
+				'user_meta',
+				'useremail',
+				'userlogins',
+				'userslugs',
+			]
+		);
+		wp_cache_add_non_persistent_groups( [ 'counts', 'plugins', 'theme_json' ] );
+	}
+
+	/**
 	 * Retrieve all of core's conditional tags from WP_Query.
 	 *
 	 * This should return a list of all conditional tags (is_<name>) that are
@@ -200,7 +289,7 @@ class Utils {
 	 * @return callable-string[]
 	 */
 	public static function get_query_conditional_tags(): array {
-		return collect( get_class_methods( \WP_Query::class ) )
+		return collect( get_class_methods( \WP_Query::class ) ) // @phpstan-ignore-line
 			->filter( fn ( $method ) => str_starts_with( $method, 'is_' ) && function_exists( $method ) )
 			->reject( fn ( $method ) => in_array( $method, [ 'is_comments_popup', 'is_main_query' ], true ) )
 			->sort()
@@ -234,7 +323,7 @@ class Utils {
 		$dir = defined( 'WP_TESTS_INSTALL_PATH' ) ? WP_TESTS_INSTALL_PATH : __DIR__;
 
 		// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
-		defined( 'ABSPATH' ) || define( 'ABSPATH', Str::trailing_slash( preg_replace( '#/wp-content/.*$#', '/', (string) $dir ) ) );
+		defined( 'ABSPATH' ) || define( 'ABSPATH', Str::trailing_slash( (string) preg_replace( '#/wp-content/.*$#', '/', (string) $dir ) ) );
 		defined( 'WP_DEBUG' ) || define( 'WP_DEBUG', true );
 
 		defined( 'DB_NAME' ) || define( 'DB_NAME', static::env( 'WP_DB_NAME', static::DEFAULT_DB_NAME ) );
@@ -279,9 +368,8 @@ class Utils {
 	 *
 	 * @param string $variable Variable to get.
 	 * @param mixed  $default Default value.
-	 * @return mixed
 	 */
-	public static function env( string $variable, $default ) {
+	public static function env( string $variable, mixed $default ): mixed {
 		$value = getenv( $variable );
 
 		return false === $value ? $default : $value;
@@ -381,7 +469,7 @@ class Utils {
 					static::shell_safe( static::env( 'WP_VERSION', 'latest' ) ),
 					static::shell_safe( static::env( 'WP_SKIP_DB_CREATE', 'false' ) ),
 					static::shell_safe( $install_vip_mu_plugins ? 'true' : 'false' ),
-					static::shell_safe( $install_object_cache ),
+					static::shell_safe( $install_object_cache ), // @phpstan-ignore-line argument.type
 				]
 			)->implode( ' ' ),
 		);
@@ -488,7 +576,7 @@ class Utils {
 	 * @param-out int         $exit_code Exit code.
 	 * @return string[]
 	 */
-	public static function command( $command, &$exit_code = null ) {
+	public static function command( string|array $command, &$exit_code = null ): array {
 		$is_debug_mode = static::is_debug_mode();
 
 		// Display the command if in debug mode.
@@ -536,7 +624,7 @@ class Utils {
 		];
 
 		foreach ( $paths as $path ) {
-			if ( ! is_dir( $path ) && file_exists( $path ) ) {
+			if ( $path && ! is_dir( $path ) && file_exists( $path ) ) {
 				require_once $path; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 
 				return;

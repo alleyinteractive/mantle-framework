@@ -150,6 +150,7 @@ class Dispatcher implements Dispatcher_Contract {
 
 		// Ensure there is a payload that is able to be passed to the filter.
 		if ( empty( $payload ) ) {
+			// @phpstan-ignore offsetAccess.nonOffsetAccessible
 			$payload[] = ''; // Mirror the default behavior of do_action.
 		}
 
@@ -203,7 +204,7 @@ class Dispatcher implements Dispatcher_Contract {
 	 * @return array<mixed>
 	 */
 	protected function add_interface_listeners( string $event_name, array $listeners = [] ): array {
-		foreach ( class_implements( $event_name ) as $interface ) {
+		foreach ( class_implements( $event_name ) ?: [] as $interface ) {
 			if ( isset( $this->listeners[ $interface ] ) ) {
 				foreach ( $this->listeners[ $interface ] as $names ) {
 					$listeners = array_merge( $listeners, (array) $names );
@@ -237,6 +238,7 @@ class Dispatcher implements Dispatcher_Contract {
 	public function create_class_listener( string $listener ): Closure {
 		return function ( ...$payload ) use ( $listener ) {
 			$callable = $this->create_action_callback(
+				// @phpstan-ignore argument.type
 				$this->create_class_callable( $listener ),
 			);
 
@@ -248,7 +250,7 @@ class Dispatcher implements Dispatcher_Contract {
 	 * Create the class based event callable.
 	 *
 	 * @param  string $listener
-	 * @return array{0: object, 1: string}
+	 * @return array{0: object, 1: string|null}
 	 */
 	protected function create_class_callable( string $listener ): array {
 		[ $class, $method ] = $this->parse_class_callable( $listener );
@@ -262,7 +264,7 @@ class Dispatcher implements Dispatcher_Contract {
 	 * Parse the class listener into class and method.
 	 *
 	 * @param  string $listener
-	 * @return array{0: string, 1: string}
+	 * @return array{0: string, 1: string|null}
 	 */
 	protected function parse_class_callable( string $listener ): array {
 		return Str::parse_callback( $listener, 'handle' );
@@ -329,10 +331,10 @@ class Dispatcher implements Dispatcher_Contract {
 	 * which we can then use to find the appropriate listeners. Wildcard events
 	 * cannot have a priority.
 	 *
-	 * @param string   $event Event name to listen to with * wildcard.
-	 * @param callable $listener Listener to register.
+	 * @param string          $event Event name to listen to with * wildcard.
+	 * @param string|callable $listener Listener to register.
 	 */
-	protected function setup_wildcard_listener( string $event, callable $listener ): void {
+	protected function setup_wildcard_listener( string $event, string|callable $listener ): void {
 		if ( function_exists( 'has_action' ) && ! has_action( 'all', [ $this, 'wildcard_listener_callback' ] ) ) {
 			add_action( 'all', [ $this, 'wildcard_listener_callback' ] );
 		}
@@ -357,6 +359,7 @@ class Dispatcher implements Dispatcher_Contract {
 			}
 
 			foreach ( $listeners as $listener ) {
+				// @phpstan-ignore argument.type
 				$callable = $this->create_action_callback( $listener );
 
 				$callable( $hook, ...$args );

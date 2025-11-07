@@ -103,7 +103,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 */
 	public function previous( ?string $fallback = null ): string {
 		return $this->to(
-			$this->request->headers->get( 'referer', $fallback ?? '/' )
+			(string) $this->request->headers->get( 'referer', $fallback ?? '/' )
 		);
 	}
 
@@ -126,7 +126,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 		$tail = implode(
 			'/',
 			array_map(
-				'rawurlencode',
+				rawurlencode( ... ),
 				$this->format_parameters( $extra_params )
 			)
 		);
@@ -242,7 +242,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 
 		$this->root_url = $url;
 
-		$this->context->setHost( parse_url( $url, PHP_URL_HOST ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.parse_url_parse_url
+		$this->context->setHost( (string) parse_url( $url, PHP_URL_HOST ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.parse_url_parse_url
 
 		return $this;
 	}
@@ -260,7 +260,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 
 		$start = str_starts_with( $root, 'http://' ) ? 'http://' : 'https://';
 
-		return preg_replace( '~' . $start . '~', $scheme, $root, 1 );
+		return (string) preg_replace( '~' . $start . '~', $scheme, $root, 1 );
 	}
 
 	/**

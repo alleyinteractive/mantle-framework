@@ -97,4 +97,22 @@ class BylineManagerFactoryTest extends FrameworkTestCase {
 			)->all(),
 		);
 	}
+
+	public function test_create_post_with_guest_author_as_array(): void {
+		$author   = static::factory()->byline_manager_profile->create_and_get( [ 'display_name' => 'Jane Smith' ] );
+		$post     = static::factory()->post->with_byline_manager_authors( [
+			'display_name' => 'John Doe',
+		], $author )->create_and_get();
+
+		$this->assertInstanceOf( WP_Post::class, $post );
+
+		$byline_entries = Utils::get_byline_entries_for_post( $post );
+
+
+		$this->assertCount( 2, $byline_entries );
+		$this->assertEquals(
+			[ 'John Doe', 'Jane Smith' ],
+			collect( $byline_entries )->pluck( 'post.post_title' )->all(),
+		);
+	}
 }

@@ -189,7 +189,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  int $levels
 	 */
 	public function dirname( int $levels = 1 ): static {
-		return new static( dirname( $this->value, $levels ) );
+		return new static( dirname( $this->value, max( 1, $levels ) ) );
 	}
 
 	/**
@@ -236,8 +236,8 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	/**
 	 * Explode the string into an array.
 	 *
-	 * @param  string $delimiter
-	 * @param  int    $limit
+	 * @param  non-empty-string $delimiter
+	 * @param  int              $limit
 	 * @return Collection<int, string>
 	 */
 	public function explode( string $delimiter, int $limit = PHP_INT_MAX ): Collection {
@@ -252,9 +252,9 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  int        $flags
 	 * @return Collection<int, mixed>
 	 */
-	public function split( string|int $pattern, int $limit = -1, int $flags = 0 ) {
-		if ( filter_var( $pattern, FILTER_VALIDATE_INT ) !== false ) {
-			return collect( mb_str_split( $this->value, $pattern ) );
+	public function split( string|int $pattern, int $limit = 1, int $flags = 0 ) {
+		if ( is_int( $pattern ) || is_numeric( $pattern ) ) {
+			return collect( mb_str_split( $this->value, max( 1, (int) $pattern ) ) );
 		}
 
 		$segments = preg_split( $pattern, $this->value, $limit, $flags );
@@ -475,7 +475,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  string|null $default
 	 * @return array<int, string|null>
 	 */
-	public function parse_callback( $default = null ) {
+	public function parse_callback( ?string $default = null ) {
 		return Str::parse_callback( $this->value, $default );
 	}
 
@@ -602,8 +602,8 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 *
 	 * @param  string $format
 	 */
-	public function scan( $format ): Collection {
-		return collect( sscanf( $this->value, $format ) );
+	public function scan( string $format ): Collection {
+		return collect( sscanf( $this->value, $format ) ); // @phpstan-ignore-line argument.type
 	}
 
 	/**
@@ -1092,9 +1092,8 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * Proxy dynamic properties onto methods.
 	 *
 	 * @param  string $key
-	 * @return mixed
 	 */
-	public function __get( $key ) {
+	public function __get( string $key ): mixed {
 		return $this->{$key}();
 	}
 

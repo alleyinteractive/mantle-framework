@@ -1,6 +1,7 @@
 <?php
 namespace Mantle\Tests\Testing;
 
+use Mantle\Testing\Attributes\PermalinkStructure;
 use Mantle\Testing\FrameworkTestCase;
 use Mantle\Testing\Utils;
 
@@ -73,6 +74,28 @@ class PermalinkStructureTest extends FrameworkTestCase {
 		$this->get( $permalink )
 			->assertOk()
 			->assertQueriedObjectId( $post_id )
+			->assertQueryTrue( 'is_single', 'is_singular' );
+	}
+
+	#[PermalinkStructure( '/articles/%postname%/' )]
+	public function test_permalink_structure_attribute(): void {
+		$this->assertEquals(
+			'/articles/%postname%/',
+			get_option( 'permalink_structure' ),
+		);
+
+		$post = static::factory()->post->create_and_get( [
+			'post_name' => 'attribute-post',
+		] );
+
+		$permalink = get_permalink( $post );
+
+		$this->assertEquals( home_url( '/articles/attribute-post/' ), $permalink );
+
+		// Ensure the permalink can be reached by the testing framework.
+		$this->get( $permalink )
+			->assertOk()
+			->assertQueriedObject( $post )
 			->assertQueryTrue( 'is_single', 'is_singular' );
 	}
 }

@@ -25,8 +25,6 @@ trait With_Faker {
 	 */
 	public function with_faker_set_up(): void {
 		$this->faker = $this->make_faker();
-
-		$this->faker->unique( true );
 	}
 
 	/**
