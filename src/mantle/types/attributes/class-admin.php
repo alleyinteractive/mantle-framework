@@ -11,7 +11,7 @@ use Attribute;
 use Mantle\Types\Validator;
 
 /**
- * Is_Admin Attribute
+ * Admin Attribute
  *
  * Validates that the current request is in the WordPress admin area.
  */
