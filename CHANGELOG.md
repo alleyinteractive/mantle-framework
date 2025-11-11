@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added `laravel/serializable-closure` as a dependency to `mantle-framework/support` to
   support serialization of closures.
+- Added support for `Mantle\Types\Validator` attributes on service providers to
+  conditionally boot them based on custom logic.
 
 ### Changed
 

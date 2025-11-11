@@ -11,6 +11,7 @@ use Mantle\Console\Application as Console_Application;
 use Mantle\Console\Command;
 use Mantle\Contracts\Application;
 use Mantle\Support\Traits\Hookable;
+use Mantle\Types\Validator;
 use Psr\Log\{LoggerAwareInterface, LoggerAwareTrait};
 use Symfony\Component\Console\Command\Command as Symfony_Command;
 
@@ -81,8 +82,10 @@ abstract class Service_Provider implements LoggerAwareInterface {
 			$this->setLogger( $this->app['log']->driver() );
 		}
 
-		$this->register_hooks();
-		$this->boot();
+		if ( $this->should_boot_provider() ) {
+			$this->register_hooks();
+			$this->boot();
+		}
 	}
 
 	/**
@@ -215,5 +218,28 @@ abstract class Service_Provider implements LoggerAwareInterface {
 			! empty( $tags ) => $tag_paths->all(),
 			default => [],
 		};
+	}
+
+	/**
+	 * Determine if the provider should be booted.
+	 *
+	 * Checks for any Validator attributes on the class and runs them.
+	 */
+	protected function should_boot_provider(): bool {
+		$validator = Reflector::get_attributes_for_class( $this, Validator::class, \ReflectionAttribute::IS_INSTANCEOF );
+
+		if ( empty( $validator ) ) {
+			return true;
+		}
+
+		foreach ( $validator as $attribute ) {
+			$instance = $attribute->newInstance();
+
+			if ( ! $instance->validate() ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }
