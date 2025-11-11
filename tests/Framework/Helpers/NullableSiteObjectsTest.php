@@ -13,7 +13,7 @@ use function Mantle\Support\Helpers\get_site_object;
 /**
  * Unit tests for nullable site object functions.
  */
-class NullableSiteObjectsTestCaseTest extends FrameworkTestCase {
+class NullableSiteObjectsTest extends FrameworkTestCase {
 	public function setUp(): void {
 		parent::setUp();
 

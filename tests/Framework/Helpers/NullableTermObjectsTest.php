@@ -14,7 +14,7 @@ use function Mantle\Support\Helpers\get_term_object_by;
 /**
  * Unit tests for nullable term object functions.
  */
-class NullableTermObjectsTestCaseTest extends FrameworkTestCase {
+class NullableTermObjectsTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_term_object()` returns a term object.
 	 */
