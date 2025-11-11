@@ -9,6 +9,19 @@ use PHPUnit\Framework\Attributes\After;
  * Tests for the core TestCase.
  */
 class TestCaseTest extends FrameworkTestCase {
+	/**
+	 * Setup before the test class runs.
+	 */
+	public static function setUpBeforeClass(): void {
+		parent::setUpBeforeClass();
+
+		register_meta( 'post', 'testable_meta_key', [
+			'single'       => true,
+			'show_in_rest' => true,
+			'type'         => 'string',
+		] );
+	}
+
 	public function test_memoize_is_disabled(): void {
 		$reflection = new \ReflectionClass( Memoize::class );
 		$property   = $reflection->getProperty( 'enabled' );
@@ -73,5 +86,7 @@ class TestCaseTest extends FrameworkTestCase {
 
 		$this->assertEmpty( $GLOBALS['wp_query']->get_queried_object() );
 		$this->assertEmpty( $GLOBALS['wp_query']->query );
+
+		$this->assertTrue( registered_meta_key_exists( 'post', 'testable_meta_key' ) );
 	}
 }

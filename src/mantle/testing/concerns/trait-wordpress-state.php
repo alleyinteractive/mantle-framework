@@ -126,11 +126,9 @@ trait WordPress_State {
 	/**
 	 * Clean up any registered meta keys.
 	 *
-	 * @since 5.1.0
-	 *
 	 * @global array $wp_meta_keys
 	 */
-	public function unregister_all_meta_keys(): void {
+	public static function unregister_all_meta_keys(): void {
 		global $wp_meta_keys;
 		if ( ! is_array( $wp_meta_keys ) ) {
 			return;
