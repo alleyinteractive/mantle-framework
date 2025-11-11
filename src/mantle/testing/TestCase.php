@@ -78,9 +78,9 @@ abstract class TestCase extends BaseTestCase {
 	/**
 	 * Array of traits that this class uses, with trait names as keys.
 	 *
-	 * @var array<mixed>
+	 * @var class-string<object>[]
 	 */
-	protected static $test_uses;
+	protected static array $test_uses;
 
 	/**
 	 * Application instance.
@@ -124,7 +124,7 @@ abstract class TestCase extends BaseTestCase {
 			);
 		}
 
-		if ( isset( static::$test_uses[ Refresh_Database::class ] ) && method_exists( static::class, 'commit_transaction' ) ) {
+		if ( self::usesTrait( Refresh_Database::class ) && method_exists( static::class, 'commit_transaction' ) ) {
 			static::commit_transaction();
 		}
 	}
@@ -147,7 +147,7 @@ abstract class TestCase extends BaseTestCase {
 
 		parent::tearDownAfterClass();
 
-		if ( isset( static::$test_uses[ Refresh_Database::class ] ) ) {
+		if ( self::usesTrait( Refresh_Database::class ) ) {
 			Utils::delete_all_data();
 
 			if ( is_multisite() ) {
@@ -158,7 +158,8 @@ abstract class TestCase extends BaseTestCase {
 			Utils::flush_cache();
 		}
 
-		if ( isset( static::$test_uses[ Refresh_Database::class ] ) && method_exists( static::class, 'commit_transaction' ) ) {
+
+		if ( self::usesTrait( Refresh_Database::class ) && method_exists( static::class, 'commit_transaction' ) ) {
 			static::commit_transaction();
 		}
 	}
@@ -383,5 +384,15 @@ abstract class TestCase extends BaseTestCase {
 			'app' => $this->app,
 			default => null,
 		};
+	}
+
+	/**
+	 * Determine if the test case uses a given trait.
+	 *
+	 * @param string $trait Trait class name.
+	 * @param class-string $trait
+	 */
+	protected static function usesTrait( string $trait ): bool {
+		return isset( static::$test_uses[ $trait ] );
 	}
 }
