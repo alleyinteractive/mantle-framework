@@ -8,7 +8,7 @@
         "mantle-framework/filesystem": "^1.0",
         "mantle-framework/framework-views": "^1.0",
         "mantle-framework/support": "^1.0",
-        "symfony/http-foundation": "^7.2.0",
+        "symfony/http-foundation": "^7.3.7",
         "symfony/http-kernel": "^7.2.0",
         "symfony/mime": "^7.2.0",
         "symfony/routing": "^7.2.0",
