@@ -24,6 +24,8 @@ use PHPUnit\Framework\Attributes\BeforeClass;
  * can safely modify these globals without affecting other tests. Individual tests
  * can disable global preservation by using the DisableGlobalPreservation attribute.
  *
+ * Requires PHPUnit 11 or greater.
+ *
  * @mixin \Mantle\Testing\TestCase
  */
 trait Preserves_Globals {
@@ -153,10 +155,10 @@ trait Preserves_Globals {
 	/**
 	 * Determine if global preservation is supported in the current PHPUnit version.
 	 *
-	 * Requires PHPUnit 10.0.0 or greater.
+	 * Requires PHPUnit 11+.
 	 */
 	private static function is_global_preservation_supported(): bool {
-		return static::phpunit_version_compare( '10.0.0', '>=' );
+		return static::phpunit_version_compare( '11.0.0', '>=' );
 	}
 
 	/**

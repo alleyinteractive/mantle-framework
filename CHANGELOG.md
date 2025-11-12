@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Bumped minimum PHPUnit version to `10.0.7`. New projects should use PHPUnit
+  12 if possible.
 - **📌 Potentially breaking change: 📌** Backup and restore WordPress globals
   (`wp_post_statuses`, `wp_post_types`, and `wp_taxonomies`) before any test
   runs and then restore it before each test to prevent side effects from tests

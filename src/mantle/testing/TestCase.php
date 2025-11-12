@@ -48,13 +48,15 @@ use function Mantle\Support\Helpers\class_uses_recursive;
 use function Mantle\Support\Helpers\collect;
 
 /**
- * Root Test Case for Mantle sites.
+ * Base Test Case for Mantle sites.
  *
- * Not designed for external use. Use {@see Mantle\Testkit\TestCase} instead.
+ * Not designed for external use. Use TestKit instead.
+ *
+ * @see \Mantle\Testkit\TestCase
  *
  * @property-read Application|null $app
  */
-abstract class TestCase extends BaseTestCase {
+abstract class TestingTestCase extends BaseTestCase {
 	use Assertions;
 	use Core_Shim;
 	use Deprecations;
@@ -72,7 +74,6 @@ abstract class TestCase extends BaseTestCase {
 	use Interacts_With_User_Agent;
 	use Makes_Http_Requests;
 	use MatchesSnapshots;
-	use Preserves_Globals;
 	use Reads_Annotations;
 	use WordPress_State;
 	use WordPress_Authentication;
@@ -398,3 +399,27 @@ abstract class TestCase extends BaseTestCase {
 		return isset( static::$test_uses[ $trait ] );
 	}
 }
+
+/* phpcs:disable */
+
+/**
+ * Construct a base TestCase class depending on the PHPUnit version.
+ *
+ * Conditionally export a version of the base TestCase that uses PHPUnit 11+
+ * specific traits. For example, BeforeClass cannot have a priority set until PHPUnit 11.
+ */
+if ( TestingTestCase::phpunit_version_compare( '11.0.0', '>=' ) ) {
+	/**
+	 * @inheritDoc
+	 */
+	abstract class TestCase extends TestingTestCase {
+		use Preserves_Globals;
+	}
+} else {
+	/**
+	 * @inheritDoc
+	 */
+	abstract class TestCase extends TestingTestCase {}
+}
+
+/* phpcs:enable */
