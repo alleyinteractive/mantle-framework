@@ -62,6 +62,11 @@ trait Preserves_Globals {
 	#[Before( 9999 )]
 	public function restore_globals_before_each_test(): void {
 		foreach ( self::GLOBALS_TO_BACKUP as $global ) {
+			// Skip restoring wp_meta_keys if the test uses the Unregister_All_Meta_Keys trait.
+			if ( 'wp_meta_keys' === $global && self::usesTrait( Unregister_All_Meta_Keys::class ) ) {
+				continue;
+			}
+
 			$GLOBALS[ $global ] = self::$globals_backup[ $global ]; // phpcs:ignore
 		}
 	}
