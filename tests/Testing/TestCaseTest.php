@@ -10,6 +10,15 @@ use PHPUnit\Framework\Attributes\After;
  */
 class TestCaseTest extends FrameworkTestCase {
 	/**
+	 * Run before each test.
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+
+		$this->skip_for_phpunit_version( '10.0.0', '<', 'These tests are for PHPUnit 10 and above.' );
+	}
+
+	/**
 	 * Setup before the test class runs.
 	 */
 	public static function setUpBeforeClass(): void {
@@ -74,7 +83,7 @@ class TestCaseTest extends FrameworkTestCase {
 	 *
 	 * A priority of -10 is used to ensure this runs after the tearDown methods.
 	 *
-	 * @after -10
+	 * @after
 	 */
 	#[After( -10 )]
 	public function assertions_on_teardown(): void {

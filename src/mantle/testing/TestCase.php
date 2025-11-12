@@ -394,7 +394,7 @@ abstract class TestCase extends BaseTestCase {
 	 * @param string $trait Trait class name.
 	 * @phpstan-param class-string<object> $trait
 	 */
-	protected static function usesTrait( string $trait ): bool {
+	public static function usesTrait( string $trait ): bool {
 		return isset( static::$test_uses[ $trait ] );
 	}
 }

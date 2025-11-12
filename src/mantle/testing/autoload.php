@@ -36,10 +36,11 @@ require_once __DIR__ . '/mail/helpers.php';
  */
 
 $attribute_classes = [
-	Attributes\Environment::class         => '/attributes/Environment.php',
-	Attributes\PermalinkStructure::class  => '/attributes/PermalinkStructure.php',
-	Attributes\PreserveObjectCache::class => '/attributes/PreserveObjectCache.php',
-	Attributes\UserAgent::class           => '/attributes/UserAgent.php',
+	Attributes\DisableGlobalPreservation::class => '/attributes/DisableGlobalPreservation.php',
+	Attributes\Environment::class               => '/attributes/Environment.php',
+	Attributes\PermalinkStructure::class        => '/attributes/PermalinkStructure.php',
+	Attributes\PreserveObjectCache::class       => '/attributes/PreserveObjectCache.php',
+	Attributes\UserAgent::class                 => '/attributes/UserAgent.php',
 ];
 
 foreach ( $attribute_classes as $attribute_class => $attribute_class_path ) {

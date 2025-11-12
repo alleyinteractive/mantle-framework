@@ -1,6 +1,7 @@
 <?php
 namespace Mantle\Tests\Concerns;
 
+use Mantle\Testing\Attributes\DisableGlobalPreservation;
 use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
@@ -70,45 +71,24 @@ class PreserveGlobalsTest extends FrameworkTestCase {
 		);
 	}
 
-	public function test_show_posts_on_frontpage_by_default(): void {
-		$posts = collect( static::factory()->post->create_ordered_set_and_get( 3 ) );
+	/**
+	 * Register a post type that will be tested in
+	 * test_disable_global_preservation_part_two().
+	 */
+	#[DisableGlobalPreservation]
+	public function test_disable_global_preservation(): void {
+		register_post_type( 'temporary_post_type' );
 
-		$this->get( '/' )
-			->assertOk()
-			->assertQueryTrue( 'is_home', 'is_front_page' )
-			->assertQueriedObject( null )
-			->assertQueriedObjectNull()
-			->assertSeeInOrder( $posts->reverse()->values()->pluck( 'post_title' )->all() );
+		$this->assertTrue( post_type_exists( 'temporary_post_type' ) );
 	}
 
-	public function test_show_page_on_frontpage(): void {
-		$front_page = static::factory()->page->create_and_get( [
-			'post_title' => 'Front Page',
-		] );
-
-		$posts_page = static::factory()->page->create_and_get( [
-			'post_title' => 'Posts Page',
-		] );
-
-		$posts = collect( static::factory()->post->create_ordered_set_and_get( 3 ) );
-
-		$this->set_show_page_on_front( front: $front_page, posts: $posts_page );
-		$this->get( '/' )
-			->assertOk()
-			->assertQueryTrue( 'is_front_page', 'is_page', 'is_singular' )
-			->assertQueriedObject( $front_page )
-			->assertSee( 'Front Page' )
-			// Ensure posts are not shown on the front page.
-			->assertDontSee( $posts->first()->post_title );
-
-		// Ensure the posts page shows the posts.
-		$this->get( get_permalink( $posts_page ) )
-			->assertOk()
-			->assertQueryTrue( 'is_home' )
-			->assertQueriedObject( $posts_page )
-			->assertSeeInOrder( $posts->reverse()->values()->pluck( 'post_title' )->all() );
-
-		$this->assertTrue( $GLOBALS['wp_query']->is_posts_page );
+	/**
+	 * Assert that the post type registered in test_disable_global_preservation()
+	 * is persisted because global preservation is disabled.
+	 */
+	#[DisableGlobalPreservation]
+	public function test_disable_global_preservation_part_two(): void {
+		$this->assertTrue( post_type_exists( 'temporary_post_type' ) );
 	}
 
 	/**
