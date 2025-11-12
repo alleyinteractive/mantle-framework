@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The framework is now compatible with PHPStan level 8. Many types have been added
   throughout the framework to support this.
 
+## v1.13.4
+
+- Bump `symfony/http-foundation` to `^7.3.7` to address security issue.
+
 ## v1.13.3
 
 No changes, re-released to fix a bad tag.
