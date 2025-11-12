@@ -40,7 +40,7 @@ jobs:
             echo "Validating package: $package"
             cd "$original_dir/src/mantle/$package" || exit 1
 
-            composer install --no-interaction --no-progress
+            composer install --no-interaction --no-progress --no-plugins --prefer-dist
 
             composer validate --strict
             composer audit --no-dev --locked --ansi --no-interaction
