@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   WordPress is booted) are preserved between tests. Previously, meta keys were
   always unregistered between tests and any post types or taxonomies registered
   during a test would persist to the next test.
+
+  Note: This is not supported in PHPUnit versions prior to 10.
 - Post meta is no longer unregistered on tearDown. You can now opt into
   unregistering all meta using the `Unregister_All_Meta_Keys` trait.
 - The framework is now compatible with PHPStan level 8. Many types have been added
