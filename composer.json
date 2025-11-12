@@ -163,7 +163,7 @@
         "phpcbf": "phpcbf --standard=./phpcs.xml .",
         "phpcs-modified": "./bin/phpcs-modified-files.sh",
         "phpcs": "phpcs --standard=./phpcs.xml .",
-        "phpstan": "phpstan --memory-limit=2G",
+        "phpstan": "phpstan --memory-limit=3G",
         "phpstan:pro": [
             "Composer\\Config::disableProcessTimeout",
             "@phpstan --pro"

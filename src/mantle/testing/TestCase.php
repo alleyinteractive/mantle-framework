@@ -56,7 +56,7 @@ use function Mantle\Support\Helpers\collect;
  *
  * @property-read Application|null $app
  */
-abstract class TestingTestCase extends BaseTestCase {
+abstract class TestCase extends BaseTestCase {
 	use Assertions;
 	use Core_Shim;
 	use Deprecations;
@@ -74,6 +74,7 @@ abstract class TestingTestCase extends BaseTestCase {
 	use Interacts_With_User_Agent;
 	use Makes_Http_Requests;
 	use MatchesSnapshots;
+	use Preserves_Globals;
 	use Reads_Annotations;
 	use WordPress_State;
 	use WordPress_Authentication;
@@ -110,6 +111,8 @@ abstract class TestingTestCase extends BaseTestCase {
 		if ( class_exists( \Spatie\Once\Cache::class ) ) {
 			\Spatie\Once\Cache::getInstance()->disable();
 		}
+
+		static::backup_original_wordpress_globals();
 
 		Memoize::disable();
 
@@ -165,6 +168,8 @@ abstract class TestingTestCase extends BaseTestCase {
 		if ( self::usesTrait( Refresh_Database::class ) && method_exists( static::class, 'commit_transaction' ) ) {
 			static::commit_transaction();
 		}
+
+		self::restore_globals_after_all_tests();
 	}
 
 	/**
@@ -174,6 +179,12 @@ abstract class TestingTestCase extends BaseTestCase {
 		set_time_limit( 0 );
 
 		parent::setUp();
+
+		if ( ! isset( self::$current_class_globals ) ) {
+			self::backup_current_class_wordpress_globals();
+		} else {
+			self::restore_globals_before_each_test();
+		}
 
 		if ( $this->app === null ) {
 			$this->refresh_application();
@@ -311,6 +322,10 @@ abstract class TestingTestCase extends BaseTestCase {
 	/**
 	 * Get an array of priority traits.
 	 *
+	 * When the project fully upgrades to PHPUnit 11, these can be converted to
+	 * use BeforeClass, Before, and AfterClass attributes with priorities instead
+	 * of this method.
+	 *
 	 * @return array<class-string>
 	 */
 	protected static function get_priority_traits(): array {
@@ -399,27 +414,3 @@ abstract class TestingTestCase extends BaseTestCase {
 		return isset( static::$test_uses[ $trait ] );
 	}
 }
-
-/* phpcs:disable */
-
-/**
- * Construct a base TestCase class depending on the PHPUnit version.
- *
- * Conditionally export a version of the base TestCase that uses PHPUnit 11+
- * specific traits. For example, BeforeClass cannot have a priority set until PHPUnit 11.
- */
-if ( TestingTestCase::phpunit_version_compare( '11.0.0', '>=' ) ) {
-	/**
-	 * @inheritDoc
-	 */
-	abstract class TestCase extends TestingTestCase {
-		use Preserves_Globals;
-	}
-} else {
-	/**
-	 * @inheritDoc
-	 */
-	abstract class TestCase extends TestingTestCase {}
-}
-
-/* phpcs:enable */

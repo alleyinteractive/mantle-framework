@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Mantle\Testing\Concerns;
 
 use Mantle\Testing\Attributes\DisableGlobalPreservation;
-use Mantle\Testing\Utils;
 use PHPUnit\Framework\Attributes\AfterClass;
 use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\Attributes\BeforeClass;
@@ -21,10 +20,14 @@ use PHPUnit\Framework\Attributes\BeforeClass;
  * Ensures that object meta, post types, taxonomies, and post statuses remain
  * consistent across test runs. A backup is made before all tests run and is
  * restored before each test. A test's setUpBeforeClass() and setUp() methods
- * can safely modify these globals without affecting other tests. Individual tests
- * can disable global preservation by using the DisableGlobalPreservation attribute.
+ * can safely modify these globals without affecting other tests. Individual
+ * tests can disable global preservation by using the DisableGlobalPreservation
+ * attribute.
  *
- * Requires PHPUnit 11 or greater.
+ * Previously, this was written using PHPUnit hooks, but has been updated to be
+ * called directly from the TestCase class to improve compatibility with
+ * PHPUnit 10. Once PHPUnit 11+ is the minimum supported version, the methods below
+ * can be updated to use BeforeClass, Before, and AfterClass attributes.
  *
  * @mixin \Mantle\Testing\TestCase
  */
@@ -36,7 +39,7 @@ trait Preserves_Globals {
 	 *
 	 * @var string[]
 	 */
-	private const GLOBALS_TO_BACKUP = [
+	protected const GLOBALS_TO_BACKUP = [
 		'wp_meta_keys',
 		'wp_post_statuses',
 		'wp_post_types',
@@ -48,41 +51,29 @@ trait Preserves_Globals {
 	 *
 	 * @var array<string, mixed>|null
 	 */
-	private static ?array $original_globals = null;
+	protected static ?array $original_globals = null;
 
 	/**
 	 * Backup of the current class's global variables.
 	 *
 	 * @var array<string, mixed>|null
 	 */
-	private static ?array $current_class_globals = null;
+	protected static ?array $current_class_globals = null;
 
 	/**
-	 * Backup the original globals.
-	 * This will create a backup of the original global variables before any tests run.
+	 * Backup the original globals. This will create a backup of the original
+	 * global variables before any tests run.
 	 *
-	 * Intentionally using a high priority to ensure this runs before other setUpBeforeClass() methods.
+	 * In the future, this can be converted to use the BeforeClass attribute with
+	 * a high priority.
 	 */
-	#[BeforeClass( 99999 )]
 	public static function backup_original_wordpress_globals(): void {
-		$backed_up_globals = false;
-
-		// Always attempt to back up the original globals, regardless if
-		// preservation is supported.
+		// Backup the original globals only once and reuse it for all test classes.
 		if ( ! isset( self::$original_globals ) ) {
 			foreach ( self::GLOBALS_TO_BACKUP as $global ) {
 				self::$original_globals[ $global ] = $GLOBALS[ $global ];
 			}
-
-			$backed_up_globals = true;
-		}
-
-		if ( ! self::is_global_preservation_supported() ) {
-			Utils::info( 'Global preservation is not supported in this PHPUnit version.', 'Preserves_Globals' );
-			return;
-		}
-
-		if ( ! $backed_up_globals ) {
+		} else {
 			foreach ( self::GLOBALS_TO_BACKUP as $global ) {
 				$GLOBALS[ $global ] = self::$original_globals[ $global ]; // phpcs:ignore
 			}
@@ -97,13 +88,11 @@ trait Preserves_Globals {
 	 * This will take a snapshot of the global variables after the test class's
 	 * setUpBeforeClass() method has run. This will be used to restore the globals
 	 * before each test.
+	 *
+	 * In the future, this can be converted to use the BeforeClass attribute with
+	 * a low priority so it runs after other BeforeClass methods.
 	 */
-	#[BeforeClass( -99999 )]
 	public static function backup_current_class_wordpress_globals(): void {
-		if ( ! self::is_global_preservation_supported() ) {
-			return;
-		}
-
 		self::$current_class_globals = [];
 
 		foreach ( self::GLOBALS_TO_BACKUP as $global ) {
@@ -114,13 +103,11 @@ trait Preserves_Globals {
 	/**
 	 * Restore the globals before each test.
 	 *
-	 * Intentionally using a high priority to ensure this runs before other Before
-	 * methods. An individual test method can disable global preservation by
-	 * using the DisableGlobalPreservation attribute.
+	 * In the future, this can be converted to use the Before attribute with a
+	 * high priority so it runs before other Before methods.
 	 */
-	#[Before( 99999 )]
 	public function restore_globals_before_each_test(): void {
-		if ( ! self::is_global_preservation_supported() || ! $this->is_global_preservation_supported_for_test() ) {
+		if ( ! $this->is_global_preservation_supported_for_test() ) {
 			return;
 		}
 
@@ -140,10 +127,12 @@ trait Preserves_Globals {
 
 	/**
 	 * Restore the original globals after all tests have run in the class.
+	 *
+	 * In the future, this can be converted to use the AfterClass attribute with a
+	 * low priority so it runs after other AfterClass methods.
 	 */
-	#[AfterClass( -99999 )]
 	public static function restore_globals_after_all_tests(): void {
-		if ( ! self::is_global_preservation_supported() || ! isset( self::$original_globals ) ) {
+		if ( ! isset( self::$original_globals ) ) {
 			return;
 		}
 
@@ -153,22 +142,9 @@ trait Preserves_Globals {
 	}
 
 	/**
-	 * Determine if global preservation is supported in the current PHPUnit version.
-	 *
-	 * Requires PHPUnit 11+.
-	 */
-	private static function is_global_preservation_supported(): bool {
-		return static::phpunit_version_compare( '11.0.0', '>=' );
-	}
-
-	/**
 	 * Determine if global preservation is enabled for the current test.
 	 */
 	private function is_global_preservation_supported_for_test(): bool {
-		if ( ! self::is_global_preservation_supported() ) {
-			return false;
-		}
-
 		return empty( $this->get_attributes_for_method( DisableGlobalPreservation::class ) );
 	}
 }
