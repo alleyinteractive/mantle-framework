@@ -33,6 +33,7 @@ use Mantle\Testing\Concerns\Interacts_With_Requests;
 use Mantle\Testing\Concerns\Interacts_With_User_Agent;
 use Mantle\Testing\Concerns\Makes_Http_Requests;
 use Mantle\Testing\Concerns\Network_Admin_Screen;
+use Mantle\Testing\Concerns\Preserves_Globals;
 use Mantle\Testing\Concerns\Reads_Annotations;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Concerns\WordPress_Authentication;
@@ -71,6 +72,7 @@ abstract class TestCase extends BaseTestCase {
 	use Interacts_With_User_Agent;
 	use Makes_Http_Requests;
 	use MatchesSnapshots;
+	use Preserves_Globals;
 	use Reads_Annotations;
 	use WordPress_State;
 	use WordPress_Authentication;
@@ -78,7 +80,7 @@ abstract class TestCase extends BaseTestCase {
 	/**
 	 * Array of traits that this class uses, with trait names as keys.
 	 *
-	 * @var class-string<object>[]
+	 * @var array<class-string, class-string>
 	 */
 	protected static array $test_uses;
 
@@ -328,7 +330,7 @@ abstract class TestCase extends BaseTestCase {
 	 * Register the traits that this test case uses.
 	 */
 	public static function register_traits(): void {
-		static::$test_uses = array_flip( class_uses_recursive( static::class ) );
+		static::$test_uses = array_flip( class_uses_recursive( static::class ) ); // @phpstan-ignore-line assign.propertyType
 	}
 
 	/**
@@ -390,7 +392,7 @@ abstract class TestCase extends BaseTestCase {
 	 * Determine if the test case uses a given trait.
 	 *
 	 * @param string $trait Trait class name.
-	 * @param class-string $trait
+	 * @phpstan-param class-string<object> $trait
 	 */
 	protected static function usesTrait( string $trait ): bool {
 		return isset( static::$test_uses[ $trait ] );

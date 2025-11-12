@@ -491,6 +491,8 @@ trait Makes_Http_Requests {
 	 * Backup any global WordPress dependencies before any tests run that could
 	 * modify them.
 	 *
+	 * @todo Consider condensing this into WordPress_State trait.
+	 *
 	 * @beforeClass
 	 */
 	#[BeforeClass]
