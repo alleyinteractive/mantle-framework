@@ -11,6 +11,7 @@
         "league/uri-interfaces": "^7.5",
         "league/uri": "^7.5",
         "mantle-framework/contracts": "^1.0",
+        "masterminds/html5": "^2.10",
         "monolog/monolog": "^2.9.1",
         "nesbot/carbon": "^3.8.4",
         "ramsey/uuid": "^4.7.4",
