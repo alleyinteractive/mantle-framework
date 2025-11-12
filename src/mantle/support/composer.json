@@ -47,7 +47,7 @@
         }
     },
     "conflict": {
-        "masterminds/html5": "<2.9",
+        "masterminds/html5": "<2.9"
     },
     "suggest": {
         "mantle-framework/console": "Required to load Mantle Console Commands",
