@@ -34,9 +34,16 @@ jobs:
 
       - name: Validate all packages
         run: |
+          original_dir=$(pwd)
+
           for package in $(echo '${{ steps.output_data.outputs.matrix }}' | jq -r '.[]'); do
             echo "Validating package: $package"
-            composer validate --strict --working-dir="src/mantle/$package"
+            cd "$original_dir/src/mantle/$package" || exit 1
+
+            composer install --no-interaction --no-progress --no-plugins --prefer-dist
+
+            composer validate --strict
+            composer audit --no-dev --locked --ansi --no-interaction
           done
   lint-tests:
     if: github.event.pull_request.draft == false

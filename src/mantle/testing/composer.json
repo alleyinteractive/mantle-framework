@@ -38,6 +38,9 @@
         "phpunit/phpunit": "Required to use assertions and run tests."
     },
     "config": {
+        "allow-plugins": {
+            "alleyinteractive/composer-wordpress-autoloader": true
+        },
         "sort-packages": true
     },
     "autoload": {
