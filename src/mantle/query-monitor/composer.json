@@ -28,6 +28,9 @@
         }
     ],
     "config": {
+        "allow-plugins": {
+            "alleyinteractive/composer-wordpress-autoloader": true
+        },
         "sort-packages": true
     }
 }
