@@ -25,7 +25,6 @@
         "league/flysystem": "^3.29",
         "league/uri": "^7.5",
         "league/uri-interfaces": "^7.5",
-        "masterminds/html5": "^2.10",
         "monolog/monolog": "^2.9.1",
         "nesbot/carbon": "^3.8.4",
         "nette/php-generator": "^4.1",
@@ -97,7 +96,12 @@
         "mantle-framework/view": "self.version"
     },
     "conflict": {
+        "masterminds/html5": "<2.9",
         "phpunit/phpunit": ">=13.0.0"
+    },
+    "suggest": {
+        "brianium/paratest": "Run PHPUnit tests in parallel",
+        "illuminate/view": "For Blade templating"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -128,8 +132,8 @@
     },
     "config": {
         "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": true,
             "alleyinteractive/composer-wordpress-autoloader": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true,
             "phpstan/extension-installer": true
         },
         "sort-packages": true
@@ -145,6 +149,11 @@
         }
     },
     "scripts": {
+        "fix-and-test": [
+            "@rector:fix",
+            "composer run phpcbf || true",
+            "@test"
+        ],
         "lint": [
             "@phpcs",
             "@phpstan",
@@ -154,34 +163,25 @@
             "@rector:fix",
             "@phpcbf"
         ],
-        "fix-and-test": [
-            "@rector:fix",
-            "composer run phpcbf || true",
-            "@test"
-        ],
         "merge": "monorepo-builder merge",
         "monorepo-validate": "monorepo-builder validate",
         "phpcbf": "phpcbf --standard=./phpcs.xml .",
-        "phpcs-modified": "./bin/phpcs-modified-files.sh",
         "phpcs": "phpcs --standard=./phpcs.xml .",
+        "phpcs-modified": "./bin/phpcs-modified-files.sh",
         "phpstan": "phpstan --memory-limit=3G",
         "phpstan:pro": [
             "Composer\\Config::disableProcessTimeout",
             "@phpstan --pro"
         ],
-        "phpunit:multisite": "WP_MULTISITE=1 phpunit",
         "phpunit": "phpunit",
-        "rector:fix": "rector process",
+        "phpunit:multisite": "WP_MULTISITE=1 phpunit",
         "rector": "rector process --dry-run",
-        "release:patch": "monorepo-builder release patch --ansi",
+        "rector:fix": "rector process",
         "release": "monorepo-builder release --ansi",
+        "release:patch": "monorepo-builder release patch --ansi",
         "test": [
             "@lint",
             "@phpunit"
         ]
-    },
-    "suggest": {
-        "brianium/paratest": "Run PHPUnit tests in parallel",
-        "illuminate/view": "For Blade templating"
     }
 }
