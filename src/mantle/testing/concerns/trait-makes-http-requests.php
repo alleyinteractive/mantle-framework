@@ -491,6 +491,8 @@ trait Makes_Http_Requests {
 	 * Backup any global WordPress dependencies before any tests run that could
 	 * modify them.
 	 *
+	 * @todo Consider condensing this into WordPress_State trait.
+	 *
 	 * @beforeClass
 	 */
 	#[BeforeClass]
@@ -499,14 +501,14 @@ trait Makes_Http_Requests {
 			// Ensure the global $wp_scripts is initialized.
 			wp_scripts();
 
-			self::$wp_dependencies_backup['wp_scripts'] = clone $GLOBALS['wp_scripts']; // @phpstan-ignore-line
+			self::$wp_dependencies_backup['wp_scripts'] = clone $GLOBALS['wp_scripts']; // @phpstan-ignore-line assign.propertyType
 		}
 
 		if ( ! isset( self::$wp_dependencies_backup['wp_styles'] ) && function_exists( 'wp_styles' ) ) {
 			// Ensure the global $wp_styles is initialized.
 			wp_styles();
 
-			self::$wp_dependencies_backup['wp_styles'] = clone $GLOBALS['wp_styles']; // @phpstan-ignore-line
+			self::$wp_dependencies_backup['wp_styles'] = clone $GLOBALS['wp_styles']; // @phpstan-ignore-line assign.propertyType
 		}
 	}
 

@@ -13,7 +13,7 @@ use function Mantle\Support\Helpers\get_post_object;
 /**
  * Unit tests for nullable post object functions.
  */
-class NullablePostObjectsTestCaseTest extends FrameworkTestCase {
+class NullablePostObjectsTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_post_object()` returns a post object.
 	 */

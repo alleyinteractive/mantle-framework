@@ -33,6 +33,7 @@ use Mantle\Testing\Concerns\Interacts_With_Requests;
 use Mantle\Testing\Concerns\Interacts_With_User_Agent;
 use Mantle\Testing\Concerns\Makes_Http_Requests;
 use Mantle\Testing\Concerns\Network_Admin_Screen;
+use Mantle\Testing\Concerns\Preserves_Globals;
 use Mantle\Testing\Concerns\Reads_Annotations;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Concerns\WordPress_Authentication;
@@ -47,9 +48,11 @@ use function Mantle\Support\Helpers\class_uses_recursive;
 use function Mantle\Support\Helpers\collect;
 
 /**
- * Root Test Case for Mantle sites.
+ * Base Test Case for Mantle sites.
  *
- * Not designed for external use. Use {@see Mantle\Testkit\TestCase} instead.
+ * Not designed for external use. Use TestKit instead.
+ *
+ * @see \Mantle\Testkit\TestCase
  *
  * @property-read Application|null $app
  */
@@ -71,6 +74,7 @@ abstract class TestCase extends BaseTestCase {
 	use Interacts_With_User_Agent;
 	use Makes_Http_Requests;
 	use MatchesSnapshots;
+	use Preserves_Globals;
 	use Reads_Annotations;
 	use WordPress_State;
 	use WordPress_Authentication;
@@ -78,9 +82,9 @@ abstract class TestCase extends BaseTestCase {
 	/**
 	 * Array of traits that this class uses, with trait names as keys.
 	 *
-	 * @var array<mixed>
+	 * @var array<class-string, class-string>
 	 */
-	protected static $test_uses;
+	protected static array $test_uses;
 
 	/**
 	 * Application instance.
@@ -108,6 +112,8 @@ abstract class TestCase extends BaseTestCase {
 			\Spatie\Once\Cache::getInstance()->disable();
 		}
 
+		static::backup_original_wordpress_globals();
+
 		Memoize::disable();
 
 		static::register_traits();
@@ -124,7 +130,7 @@ abstract class TestCase extends BaseTestCase {
 			);
 		}
 
-		if ( isset( static::$test_uses[ Refresh_Database::class ] ) && method_exists( static::class, 'commit_transaction' ) ) {
+		if ( self::usesTrait( Refresh_Database::class ) && method_exists( static::class, 'commit_transaction' ) ) {
 			static::commit_transaction();
 		}
 	}
@@ -147,7 +153,7 @@ abstract class TestCase extends BaseTestCase {
 
 		parent::tearDownAfterClass();
 
-		if ( isset( static::$test_uses[ Refresh_Database::class ] ) ) {
+		if ( self::usesTrait( Refresh_Database::class ) ) {
 			Utils::delete_all_data();
 
 			if ( is_multisite() ) {
@@ -158,9 +164,12 @@ abstract class TestCase extends BaseTestCase {
 			Utils::flush_cache();
 		}
 
-		if ( isset( static::$test_uses[ Refresh_Database::class ] ) && method_exists( static::class, 'commit_transaction' ) ) {
+
+		if ( self::usesTrait( Refresh_Database::class ) && method_exists( static::class, 'commit_transaction' ) ) {
 			static::commit_transaction();
 		}
+
+		self::restore_globals_after_all_tests();
 	}
 
 	/**
@@ -170,6 +179,12 @@ abstract class TestCase extends BaseTestCase {
 		set_time_limit( 0 );
 
 		parent::setUp();
+
+		if ( ! isset( self::$current_class_globals ) ) {
+			self::backup_current_class_wordpress_globals();
+		} else {
+			self::restore_globals_before_each_test();
+		}
 
 		if ( $this->app === null ) {
 			$this->refresh_application();
@@ -271,7 +286,6 @@ abstract class TestCase extends BaseTestCase {
 			putenv( 'WP_ENVIRONMENT_TYPE=' ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_putenv
 		}
 
-		$this->unregister_all_meta_keys();
 		remove_filter( 'wp_die_handler', [ WP_Die::class, 'get_handler' ] );
 		static::restore_hooks();
 		wp_set_current_user( 0 );
@@ -308,6 +322,10 @@ abstract class TestCase extends BaseTestCase {
 	/**
 	 * Get an array of priority traits.
 	 *
+	 * When the project fully upgrades to PHPUnit 11, these can be converted to
+	 * use BeforeClass, Before, and AfterClass attributes with priorities instead
+	 * of this method.
+	 *
 	 * @return array<class-string>
 	 */
 	protected static function get_priority_traits(): array {
@@ -328,7 +346,7 @@ abstract class TestCase extends BaseTestCase {
 	 * Register the traits that this test case uses.
 	 */
 	public static function register_traits(): void {
-		static::$test_uses = array_flip( class_uses_recursive( static::class ) );
+		static::$test_uses = array_flip( class_uses_recursive( static::class ) ); // @phpstan-ignore-line assign.propertyType
 	}
 
 	/**
@@ -384,5 +402,15 @@ abstract class TestCase extends BaseTestCase {
 			'app' => $this->app,
 			default => null,
 		};
+	}
+
+	/**
+	 * Determine if the test case uses a given trait.
+	 *
+	 * @param string $trait Trait class name.
+	 * @phpstan-param class-string<object> $trait
+	 */
+	public static function usesTrait( string $trait ): bool {
+		return isset( static::$test_uses[ $trait ] );
 	}
 }

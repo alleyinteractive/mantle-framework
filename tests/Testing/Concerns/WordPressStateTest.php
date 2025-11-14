@@ -2,6 +2,7 @@
 namespace Mantle\Tests\Concerns;
 
 use Mantle\Testing\FrameworkTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 
 use function Mantle\Support\Helpers\collect;

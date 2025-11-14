@@ -37,9 +37,9 @@
         "spatie/phpunit-snapshot-assertions": "^4.2 || ^5.1",
         "symfony/console": "^7.2",
         "symfony/css-selector": "^7.2.0",
-        "symfony/dom-crawler": "^7.2.0",
+        "symfony/dom-crawler": "^7.3.3",
         "symfony/finder": "^7.2.0",
-        "symfony/http-foundation": "^7.2.0",
+        "symfony/http-foundation": "^7.3.7",
         "symfony/http-kernel": "^7.2.0",
         "symfony/mime": "^7.2.0",
         "symfony/routing": "^7.2.0",
@@ -60,7 +60,7 @@
         "nunomaduro/collision": "^6.0 || ^7.0 || ^8.0",
         "php-stubs/wp-cli-stubs": "^2.11",
         "phpstan/extension-installer": "^1.4",
-        "phpunit/phpunit": "^9.6.22 || ^10.0.7 || ^11.0 || ^12.0",
+        "phpunit/phpunit": "^10.0.7 || ^11.0 || ^12.0",
         "rector/rector": "^2.0",
         "spatie/once": "^3.1.1",
         "spatie/ray": "^1.41.4",
@@ -96,7 +96,12 @@
         "mantle-framework/view": "self.version"
     },
     "conflict": {
+        "masterminds/html5": "<2.9",
         "phpunit/phpunit": ">=13.0.0"
+    },
+    "suggest": {
+        "brianium/paratest": "Run PHPUnit tests in parallel",
+        "illuminate/view": "For Blade templating"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -127,8 +132,8 @@
     },
     "config": {
         "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": true,
             "alleyinteractive/composer-wordpress-autoloader": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true,
             "phpstan/extension-installer": true
         },
         "sort-packages": true
@@ -144,6 +149,11 @@
         }
     },
     "scripts": {
+        "fix-and-test": [
+            "@rector:fix",
+            "composer run phpcbf || true",
+            "@test"
+        ],
         "lint": [
             "@phpcs",
             "@phpstan",
@@ -153,35 +163,25 @@
             "@rector:fix",
             "@phpcbf"
         ],
-        "fix-and-test": [
-            "@rector:fix",
-            "composer run phpcbf || true",
-            "@test"
-        ],
         "merge": "monorepo-builder merge",
         "monorepo-validate": "monorepo-builder validate",
         "phpcbf": "phpcbf --standard=./phpcs.xml .",
-        "phpcs-modified": "./bin/phpcs-modified-files.sh",
         "phpcs": "phpcs --standard=./phpcs.xml .",
-        "phpstan": "phpstan --memory-limit=1536M",
+        "phpcs-modified": "./bin/phpcs-modified-files.sh",
+        "phpstan": "phpstan --memory-limit=3G",
         "phpstan:pro": [
             "Composer\\Config::disableProcessTimeout",
             "@phpstan --pro"
         ],
-        "phpunit:multisite": "WP_MULTISITE=1 phpunit",
-        "phpunit-9": "phpunit --configuration=phpunit-9.xml",
         "phpunit": "phpunit",
-        "rector:fix": "rector process",
+        "phpunit:multisite": "WP_MULTISITE=1 phpunit",
         "rector": "rector process --dry-run",
-        "release:patch": "monorepo-builder release patch --ansi",
+        "rector:fix": "rector process",
         "release": "monorepo-builder release --ansi",
+        "release:patch": "monorepo-builder release patch --ansi",
         "test": [
             "@lint",
             "@phpunit"
         ]
-    },
-    "suggest": {
-        "brianium/paratest": "Run PHPUnit tests in parallel",
-        "illuminate/view": "For Blade templating"
     }
 }

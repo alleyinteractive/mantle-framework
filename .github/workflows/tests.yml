@@ -34,9 +34,16 @@ jobs:
 
       - name: Validate all packages
         run: |
+          original_dir=$(pwd)
+
           for package in $(echo '${{ steps.output_data.outputs.matrix }}' | jq -r '.[]'); do
             echo "Validating package: $package"
-            composer validate --strict --working-dir="src/mantle/$package"
+            cd "$original_dir/src/mantle/$package" || exit 1
+
+            composer install --no-interaction --no-progress --no-plugins --prefer-dist
+
+            composer validate --strict
+            composer audit --no-dev --locked --ansi --no-interaction
           done
   lint-tests:
     if: github.event.pull_request.draft == false
@@ -116,8 +123,7 @@ jobs:
           install-command: composer update --${{ matrix.dependencies }} --prefer-dist --no-interaction --no-progress
           php-version: '${{ matrix.php }}'
           skip-wordpress-install: 'true'
-          # Only run PHPUnit for the lowest dependencies.
-          test-command: ${{ matrix.dependencies == 'prefer-lowest' && 'composer phpunit-9' || 'composer phpunit' }}
+          test-command: 'composer phpunit'
           wordpress-host: 'false'
           wordpress-multisite: '${{ matrix.multisite }}'
           wordpress-version: '${{ matrix.wordpress }}'

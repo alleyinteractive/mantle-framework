@@ -13,11 +13,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   support serialization of closures.
 - Added support for `Mantle\Types\Validator` attributes on service providers to
   conditionally boot them based on custom logic.
+- Added `Mantle\Types\Attributes\Admin` and `Mantle\Types\Attributes\Request`
+  validator attributes.
 
 ### Changed
 
+- **Bumped minimum PHPUnit version to `10.0.7`.**
+
+  New projects should not pin a version and inherit the latest from the
+  framework or `mantle-framework/testing`.
+- **📌 Potentially breaking change: 📌** Backup and restore WordPress globals
+  (`wp_post_statuses`, `wp_post_types`, and `wp_taxonomies`) before any test
+  runs and then restore it before each test to prevent side effects from tests
+  that modify these globals. It will also ensure that meta, post types, and
+  taxonomies that are registered on `init` (before any test has run when
+  WordPress is booted) are preserved between tests. Previously, meta keys were
+  always unregistered between tests and any post types or taxonomies registered
+  during a test would persist to the next test.
+
+  Note: This is not supported in PHPUnit versions prior to 10.
+- Post meta is no longer unregistered on tearDown. You can now opt into
+  unregistering all meta using the `Unregister_All_Meta_Keys` trait.
 - The framework is now compatible with PHPStan level 8. Many types have been added
   throughout the framework to support this.
+
+## v1.13.4
+
+- Bump `symfony/http-foundation` to `^7.3.7` to address security issue.
 
 ## v1.13.3
 
