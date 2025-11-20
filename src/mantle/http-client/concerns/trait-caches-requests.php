@@ -28,12 +28,13 @@ trait Caches_Requests {
 	 * Enable caching for the request.
 	 *
 	 * @param int|DateTimeInterface|Closure $ttl Time to live for the cache.
+	 * @param string|null                   $key Cache key to use.
 	 * @phpstan-param int|DateTimeInterface|(Closure(Pending_Request $request, Response $response): int|DateTimeInterface) $ttl
 	 */
-	public function cache( int|DateTimeInterface|Closure $ttl = 3600 ): static {
+	public function cache( int|DateTimeInterface|Closure $ttl = 3600, ?string $key = null ): static {
 		return $this
 			->filter_middleware( fn ( callable $middleware ) => ! $middleware instanceof Cache_Middleware )
-			->prepend_middleware( new Cache_Middleware( $ttl ) );
+			->prepend_middleware( new Cache_Middleware( $ttl, $key ) );
 	}
 
 	/**
@@ -44,14 +45,15 @@ trait Caches_Requests {
 	 *
 	 * @param int|\DateInterval|\DateTimeInterface|Closure $stale Time to consider a cached response stale.
 	 * @param int|\DateInterval|\DateTimeInterface|Closure $expire Time to consider a cached response expired.
+	 * @param string|null                                  $key Cache key to use.
 	 *
 	 * @phpstan-param int|DateTimeInterface|(Closure(Pending_Request $request, Response $response): int|DateTimeInterface) $stale
 	 * @phpstan-param int|DateTimeInterface|(Closure(Pending_Request $request, Response $response): int|DateTimeInterface) $expire
 	 */
-	public function cache_flexible( int|\DateInterval|\DateTimeInterface|Closure $stale, int|\DateInterval|\DateTimeInterface|Closure $expire ): static {
+	public function cache_flexible( int|\DateInterval|\DateTimeInterface|Closure $stale, int|\DateInterval|\DateTimeInterface|Closure $expire, ?string $key = null ): static {
 		return $this
 			->filter_middleware( fn ( callable $middleware ) => ! $middleware instanceof Cache_Middleware )
-			->prepend_middleware( new Cache_Flexible_Middleware( $stale, $expire ) );
+			->prepend_middleware( new Cache_Flexible_Middleware( $stale, $expire, $key ) );
 	}
 
 	/**

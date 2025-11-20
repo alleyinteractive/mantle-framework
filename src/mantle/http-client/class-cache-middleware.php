@@ -27,8 +27,9 @@ class Cache_Middleware {
 	 * Constructor.
 	 *
 	 * @param int|DateTimeInterface|Closure $ttl Time to live for the cache.
+	 * @param string|null                   $key Cache key to use.
 	 */
-	public function __construct( protected int|DateTimeInterface|Closure $ttl ) {}
+	public function __construct( protected int|DateTimeInterface|Closure $ttl, public readonly ?string $key = null ) {}
 
 	/**
 	 * Invoke the middleware.
@@ -69,7 +70,7 @@ class Cache_Middleware {
 	 * @param Pending_Request $request Request to retrieve the cache key for.
 	 */
 	protected function get_cache_key( Pending_Request $request ): string {
-		return md5( (string) json_encode( [ // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+		return $this->key ?? md5( (string) json_encode( [ // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
 			$request->base_url(),
 			$request->url(),
 			$request->method(),

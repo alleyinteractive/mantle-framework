@@ -236,4 +236,36 @@ class CachedHttpClientTest extends FrameworkTestCase {
 		$this->assertTrue( $stale_called );
 		$this->assertTrue( $expire_called );
 	}
+
+	public function test_it_can_use_a_custom_cache_key(): void {
+		$this->client = Factory::create()->cache( key: 'custom-cache-key' );
+
+		$this->fake_request( mock_http_response()->with_json( [ 'example' => 'value' ] ) );
+
+		$this->assertEmpty( wp_cache_get( 'custom-cache-key', Cache_Middleware::CACHE_GROUP ) );
+
+		$this->client->get( 'https://example.com' );
+		$this->client->get( 'https://example.com' );
+
+		$this->assertRequestCount( 1 );
+		$this->assertNotEmpty( wp_cache_get( 'custom-cache-key', Cache_Middleware::CACHE_GROUP ) );
+	}
+
+	public function test_it_can_use_a_custom_cache_key_with_flexible_caching(): void {
+		$this->client = Factory::create()->cache_flexible(
+			stale: now()->addHour(),
+			expire: now()->addDay(),
+			key: 'custom-flexible-cache-key',
+		);
+
+		$this->fake_request( mock_http_response()->with_json( [ 'example' => 'value' ] ) );
+
+		$this->assertEmpty( wp_cache_get( 'custom-flexible-cache-key', Cache_Middleware::CACHE_GROUP ) );
+
+		$this->client->get( 'https://example.com' );
+		$this->client->get( 'https://example.com' );
+
+		$this->assertRequestCount( 1 );
+		$this->assertNotEmpty( wp_cache_get( 'custom-flexible-cache-key', Cache_Middleware::CACHE_GROUP ) );
+	}
 }

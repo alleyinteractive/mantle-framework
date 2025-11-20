@@ -34,8 +34,9 @@ class Cache_Flexible_Middleware extends Cache_Middleware {
 	 *
 	 * @param int|\DateInterval|\DateTimeInterface|\Closure $stale Time to consider a cached response stale.
 	 * @param int|\DateInterval|\DateTimeInterface|\Closure $expire Time to consider a cached response expired.
+	 * @param string|null                                   $key Cache key to use.
 	 */
-	public function __construct( protected int|\DateInterval|\DateTimeInterface|\Closure $stale, protected int|\DateInterval|\DateTimeInterface|\Closure $expire ) {}
+	public function __construct( protected int|\DateInterval|\DateTimeInterface|\Closure $stale, protected int|\DateInterval|\DateTimeInterface|\Closure $expire, public readonly ?string $key = null ) {}
 
 	/**
 	 * Invoke the middleware.
