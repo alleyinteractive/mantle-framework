@@ -102,7 +102,6 @@ class Cache_Middleware {
 	 * @param Closure         $callback Callback to invoke.
 	 * @param Pending_Request $request Request to pass to the callback.
 	 * @param Response        $response Response to pass to the callback.
-	 * @return int|DateTimeInterface
 	 */
 	protected function invoke_expiration_callback( Closure $callback, Pending_Request $request, Response $response ): int|DateTimeInterface {
 		$value = $callback( $request, $response );
