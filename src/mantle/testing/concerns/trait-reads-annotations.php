@@ -26,19 +26,6 @@ trait Reads_Annotations {
 	 * Read docblock annotations for the current test case and method.
 	 */
 	public function get_annotations_for_method(): array {
-		// PHPUnit 9.4 and below method.
-		if ( method_exists( $this, 'getAnnotations' ) ) {
-			return $this->getAnnotations();
-		}
-
-		// Use the PHPUnit ^9.5 method if available.
-		if ( method_exists( Test::class, 'parseTestMethodAnnotations' ) ) { // @phpstan-ignore-line
-			return Test::parseTestMethodAnnotations(
-				static::class,
-				$this->getName(), // @phpstan-ignore-line
-			);
-		}
-
 		// Use the PHPUnit 10.x method if available.
 		if ( class_exists( Registry::class ) && class_exists( DocBlock::class ) ) {
 			$registry = Registry::getInstance();
@@ -51,25 +38,11 @@ trait Reads_Annotations {
 
 		// If we are using PHPUnit 12.0.0 or greater, we can bail because
 		// annotations are no longer supported. Attributes must be used instead.
-		if ( class_exists( Version::class ) && version_compare( Version::id(), '12.0.0', '>=' ) ) {
-			return [];
-		}
-
-		// Throw a warning if we can't read annotations.
-		trigger_error( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
-			'Unable to read annotations for test method. Please file an issue with https://github.com/alleyinteractive/mantle-framework',
-			E_USER_WARNING
-		);
-
 		return [];
 	}
 
 	/**
 	 * Read the attributes for the current test case and method.
-	 *
-	 * Supports PHPUnit 9.5+.
-	 *
-	 * @todo Remove the PHPUnit 9.5+ support in a future major release and require PHPUnit 11+.
 	 *
 	 * @template T of object
 	 *
@@ -84,10 +57,7 @@ trait Reads_Annotations {
 	public function get_attributes_for_method( ?string $name = null, int $flags = 0, bool $inherit = true ): array {
 		$class = new ReflectionClass( $this );
 
-		// Use either the PHPUnit 9.5+ method or the PHPUnit 10.x method to get the method.
-		if ( method_exists( $this, 'getName' ) ) {
-			$method = $class->getMethod( $this->getName( false ) );
-		} elseif ( method_exists( $this, 'name' ) ) { // @phpstan-ignore-line function.alreadyNarrowedType
+		if ( method_exists( $this, 'name' ) ) { // @phpstan-ignore-line function.alreadyNarrowedType
 			$method = $class->getMethod( $this->name() );
 		} elseif ( isset( $this->name ) ) {
 			$method = $class->getMethod( $this->name );
