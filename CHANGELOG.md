@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added closure support for the stale and expire TTLs in the flexible cache
   middleware.
+- Added custom cache key support to the HTTP Client cache middleware and flexible cache
+  middleware.
 
 ## v1.14.0
 
