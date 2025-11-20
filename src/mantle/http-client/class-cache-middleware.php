@@ -26,17 +26,9 @@ class Cache_Middleware {
 	/**
 	 * Constructor.
 	 *
-	 * @throws \InvalidArgumentException If the TTL is not valid.
-	 *
-	 * @param int|DateTimeInterface|callable $ttl Time to live for the cache.
+	 * @param int|DateTimeInterface|Closure $ttl Time to live for the cache.
 	 */
-	public function __construct( protected mixed $ttl ) {
-		if ( ! is_int( $ttl ) && ! $ttl instanceof DateTimeInterface && ! is_callable( $ttl ) ) { // @phpstan-ignore-line
-			throw new \InvalidArgumentException(
-				'TTL must be an integer, DateTimeInterface, or a callable that returns an integer.'
-			);
-		}
-	}
+	public function __construct( protected int|DateTimeInterface|Closure $ttl ) {}
 
 	/**
 	 * Invoke the middleware.
@@ -89,24 +81,36 @@ class Cache_Middleware {
 	/**
 	 * Calculate the time to live for the cache in seconds.
 	 *
-	 * @throws \InvalidArgumentException If the TTL callback returns an invalid value.
-	 *
 	 * @param Pending_Request $request Request to calculate the TTL for.
 	 * @param Response        $response Response to calculate the TTL for.
 	 */
 	private function calculate_ttl( Pending_Request $request, Response $response ): int {
-		if ( is_callable( $this->ttl ) ) {
-			$callback = $this->ttl;
+		$ttl = $this->ttl;
 
-			$value = $callback( $request, $response );
-
-			if ( ! is_numeric( $value ) || (int) $value < 0 ) {
-				throw new \InvalidArgumentException( 'TTL callback must return a non-negative integer.' );
-			}
-
-			return (int) $value;
+		if ( $ttl instanceof Closure ) {
+			$ttl = $this->invoke_expiration_callback( $ttl, $request, $response );
 		}
 
-		return normalize_cache_ttl( $this->ttl );
+		return normalize_cache_ttl( $ttl );
+	}
+
+	/**
+	 * Invoke the callback with the request and response and validate the return type.
+	 *
+	 * @throws \InvalidArgumentException If the callback does not return an integer or DateTimeInterface.
+	 *
+	 * @param Closure         $callback Callback to invoke.
+	 * @param Pending_Request $request Request to pass to the callback.
+	 * @param Response        $response Response to pass to the callback.
+	 * @return int|DateTimeInterface
+	 */
+	protected function invoke_expiration_callback( Closure $callback, Pending_Request $request, Response $response ): int|DateTimeInterface {
+		$value = $callback( $request, $response );
+
+		if ( ! is_int( $value ) && ! $value instanceof DateTimeInterface ) {
+			throw new \InvalidArgumentException( 'Callback must return an integer or DateTimeInterface.' );
+		}
+
+		return $value;
 	}
 }

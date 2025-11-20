@@ -199,4 +199,41 @@ class CachedHttpClientTest extends FrameworkTestCase {
 
 		$this->client->get( 'https://example.com' );
 	}
+
+	public function test_it_can_cache_flexible_with_a_callback(): void {
+		$stale_called  = false;
+		$expire_called = false;
+
+		$this->client = Factory::create()->cache_flexible(
+			stale: function ( Pending_Request $request, Response $response ) use ( &$stale_called ): \DateTimeInterface {
+				$stale_called = true;
+
+				$this->assertEquals( 'https://example.com', $request->url() );
+
+				return now()->addHour();
+			},
+			expire: function ( Pending_Request $request, Response $response ) use ( &$expire_called ): \DateTimeInterface {
+				$expire_called = true;
+
+				$this->assertEquals( 'https://example.com', $request->url() );
+
+				return now()->addDay();
+			},
+		);
+
+		$i = 0;
+
+		$this->fake_request( function () use ( &$i ) {
+			$i++;
+
+			return mock_http_response()->with_json( [ 'request' => $i ] );
+		} );
+
+		$this->client->get( 'https://example.com' );
+		$this->client->get( 'https://example.com' );
+
+		$this->assertRequestCount( 1 );
+		$this->assertTrue( $stale_called );
+		$this->assertTrue( $expire_called );
+	}
 }

@@ -7,6 +7,7 @@
 
 namespace Mantle\Http_Client\Concerns;
 
+use Closure;
 use DateTimeInterface;
 use InvalidArgumentException;
 use Mantle\Http_Client\Cache_Flexible_Middleware;
@@ -26,10 +27,10 @@ trait Caches_Requests {
 	/**
 	 * Enable caching for the request.
 	 *
-	 * @param int|DateTimeInterface|callable $ttl Time to live for the cache.
-	 * @phpstan-param int|DateTimeInterface|(callable(Pending_Request $request, Response $response): int) $ttl
+	 * @param int|DateTimeInterface|Closure $ttl Time to live for the cache.
+	 * @phpstan-param int|DateTimeInterface|(Closure(Pending_Request $request, Response $response): int|DateTimeInterface) $ttl
 	 */
-	public function cache( int|DateTimeInterface|callable $ttl = 3600 ): static {
+	public function cache( int|DateTimeInterface|Closure $ttl = 3600 ): static {
 		return $this
 			->filter_middleware( fn ( callable $middleware ) => ! $middleware instanceof Cache_Middleware )
 			->prepend_middleware( new Cache_Middleware( $ttl ) );
@@ -41,10 +42,13 @@ trait Caches_Requests {
 	 * This will use a stale-while-revalidate strategy to return a cached response if it exists,
 	 * even if it is stale, while refreshing the cache in the background.
 	 *
-	 * @param int|\DateInterval|\DateTimeInterface $stale Time to consider a cached response stale.
-	 * @param int|\DateInterval|\DateTimeInterface $expire Time to consider a cached response expired.
+	 * @param int|\DateInterval|\DateTimeInterface|Closure $stale Time to consider a cached response stale.
+	 * @param int|\DateInterval|\DateTimeInterface|Closure $expire Time to consider a cached response expired.
+	 *
+	 * @phpstan-param int|DateTimeInterface|(Closure(Pending_Request $request, Response $response): int|DateTimeInterface) $stale
+	 * @phpstan-param int|DateTimeInterface|(Closure(Pending_Request $request, Response $response): int|DateTimeInterface) $expire
 	 */
-	public function cache_flexible( int|\DateInterval|\DateTimeInterface $stale, int|\DateInterval|\DateTimeInterface $expire ): static {
+	public function cache_flexible( int|\DateInterval|\DateTimeInterface|Closure $stale, int|\DateInterval|\DateTimeInterface|Closure $expire ): static {
 		return $this
 			->filter_middleware( fn ( callable $middleware ) => ! $middleware instanceof Cache_Middleware )
 			->prepend_middleware( new Cache_Flexible_Middleware( $stale, $expire ) );
