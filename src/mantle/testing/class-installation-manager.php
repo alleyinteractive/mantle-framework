@@ -294,8 +294,6 @@ class Installation_Manager {
 	 * Install the Mantle Testing Framework.
 	 */
 	public function install(): static {
-		$this->warn_if_phpunit_10_or_higher();
-
 		require_once __DIR__ . '/core-polyfill.php';
 
 		if ( Utils::is_debug_mode() ) {
