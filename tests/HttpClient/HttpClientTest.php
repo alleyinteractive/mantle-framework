@@ -321,6 +321,8 @@ class HttpClientTest extends FrameworkTestCase {
 
 		$this->assertTrue( $response->is_wp_error() );
 		$this->assertTrue( $response->failed() );
+		$this->assertFalse( $response->successful() );
+		$this->assertFalse( $response->ok() );
 
 		$this->assertEquals( 'An error occurred.', $response->body() );
 	}
