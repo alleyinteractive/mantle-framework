@@ -32,10 +32,11 @@ class Cache_Flexible_Middleware extends Cache_Middleware {
 	/**
 	 * Constructor.
 	 *
-	 * @param int|\DateInterval|\DateTimeInterface $stale Time to consider a cached response stale.
-	 * @param int|\DateInterval|\DateTimeInterface $expire Time to consider a cached response expired.
+	 * @param int|\DateInterval|\DateTimeInterface|\Closure $stale Time to consider a cached response stale.
+	 * @param int|\DateInterval|\DateTimeInterface|\Closure $expire Time to consider a cached response expired.
+	 * @param string|null                                   $key Cache key to use.
 	 */
-	public function __construct( protected int|\DateInterval|\DateTimeInterface $stale, protected int|\DateInterval|\DateTimeInterface $expire ) {}
+	public function __construct( protected int|\DateInterval|\DateTimeInterface|\Closure $stale, protected int|\DateInterval|\DateTimeInterface|\Closure $expire, public readonly ?string $key = null ) {}
 
 	/**
 	 * Invoke the middleware.
@@ -57,7 +58,9 @@ class Cache_Flexible_Middleware extends Cache_Middleware {
 			if ( $cache->is_stale() ) {
 				$fresh_request = ( clone $request )->without_middleware( Cache_Middleware::class );
 
-				defer( fn () => $this->store_response( $fresh_request->send() ) );
+				defer(
+					fn () => $this->store_response( $fresh_request, $fresh_request->send() ),
+				);
 			}
 
 			$response->cached = true;
@@ -69,15 +72,13 @@ class Cache_Flexible_Middleware extends Cache_Middleware {
 
 		assert( $response instanceof Response );
 
-		$this->store_response( $response );
+		$this->store_response( request: $request, response: $response );
 
 		return $response;
 	}
 
 	/**
 	 * Retrieve a cached response if available.
-	 *
-	 * @return SWR_Storage|null Cached response or null if not found.
 	 */
 	private function get_cached_response(): ?SWR_Storage {
 		try {
@@ -98,9 +99,18 @@ class Cache_Flexible_Middleware extends Cache_Middleware {
 	 *
 	 * @throws \InvalidArgumentException If the stale time is not less than the expire time.
 	 *
-	 * @param Response $response Response to store.
+	 * @param Pending_Request $request Request associated with the response.
+	 * @param Response        $response Response to store.
 	 */
-	private function store_response( Response $response ): bool {
+	private function store_response( Pending_Request $request, Response $response ): bool {
+		if ( $this->stale instanceof Closure ) {
+			$this->stale = $this->invoke_expiration_callback( $this->stale, $request, $response );
+		}
+
+		if ( $this->expire instanceof Closure ) {
+			$this->expire = $this->invoke_expiration_callback( $this->expire, $request, $response );
+		}
+
 		$stale_time  = normalize_cache_ttl( $this->stale );
 		$expire_time = normalize_cache_ttl( $this->expire );
 

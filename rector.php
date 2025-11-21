@@ -20,6 +20,7 @@ use Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchExprVariableR
 
 use Rector\EarlyReturn\Rector\If_\ChangeOrIfContinueToMultiContinueRector;
 use Rector\EarlyReturn\Rector\Return_\ReturnBinaryOrToEarlyReturnRector;
+use Rector\Php70\Rector\StmtsAwareInterface\IfIssetToCoalescingRector;
 use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\Php80\Rector\NotIdentical\StrContainsRector;
@@ -124,4 +125,5 @@ return RectorConfig::configure()
 		FlipTypeControlToUseExclusiveTypeRector::class,
 		FunctionLikeToFirstClassCallableRector::class,
 		RemoveNullArgOnNullDefaultParamRector::class,
+		IfIssetToCoalescingRector::class,
 	] );

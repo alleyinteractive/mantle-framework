@@ -199,4 +199,73 @@ class CachedHttpClientTest extends FrameworkTestCase {
 
 		$this->client->get( 'https://example.com' );
 	}
+
+	public function test_it_can_cache_flexible_with_a_callback(): void {
+		$stale_called  = false;
+		$expire_called = false;
+
+		$this->client = Factory::create()->cache_flexible(
+			stale: function ( Pending_Request $request, Response $response ) use ( &$stale_called ): \DateTimeInterface {
+				$stale_called = true;
+
+				$this->assertEquals( 'https://example.com', $request->url() );
+
+				return now()->addHour();
+			},
+			expire: function ( Pending_Request $request, Response $response ) use ( &$expire_called ): \DateTimeInterface {
+				$expire_called = true;
+
+				$this->assertEquals( 'https://example.com', $request->url() );
+
+				return now()->addDay();
+			},
+		);
+
+		$i = 0;
+
+		$this->fake_request( function () use ( &$i ) {
+			$i++;
+
+			return mock_http_response()->with_json( [ 'request' => $i ] );
+		} );
+
+		$this->client->get( 'https://example.com' );
+		$this->client->get( 'https://example.com' );
+
+		$this->assertRequestCount( 1 );
+		$this->assertTrue( $stale_called );
+		$this->assertTrue( $expire_called );
+	}
+
+	public function test_it_can_use_a_custom_cache_key(): void {
+		$this->client = Factory::create()->cache( key: 'custom-cache-key' );
+
+		$this->fake_request( mock_http_response()->with_json( [ 'example' => 'value' ] ) );
+
+		$this->assertEmpty( wp_cache_get( 'custom-cache-key', Cache_Middleware::CACHE_GROUP ) );
+
+		$this->client->get( 'https://example.com' );
+		$this->client->get( 'https://example.com' );
+
+		$this->assertRequestCount( 1 );
+		$this->assertNotEmpty( wp_cache_get( 'custom-cache-key', Cache_Middleware::CACHE_GROUP ) );
+	}
+
+	public function test_it_can_use_a_custom_cache_key_with_flexible_caching(): void {
+		$this->client = Factory::create()->cache_flexible(
+			stale: now()->addHour(),
+			expire: now()->addDay(),
+			key: 'custom-flexible-cache-key',
+		);
+
+		$this->fake_request( mock_http_response()->with_json( [ 'example' => 'value' ] ) );
+
+		$this->assertEmpty( wp_cache_get( 'custom-flexible-cache-key', Cache_Middleware::CACHE_GROUP ) );
+
+		$this->client->get( 'https://example.com' );
+		$this->client->get( 'https://example.com' );
+
+		$this->assertRequestCount( 1 );
+		$this->assertNotEmpty( wp_cache_get( 'custom-flexible-cache-key', Cache_Middleware::CACHE_GROUP ) );
+	}
 }
