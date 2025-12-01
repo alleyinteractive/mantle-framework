@@ -13,6 +13,10 @@ use Mantle\Support\Str;
 use Mantle\Testing\Attributes\Expected_Incorrect_Usage;
 use Mantle\Testing\Attributes\Ignore_Incorrect_Usage;
 use Mantle\Testing\EarlyIncorrectUsageHandler;
+use Mantle\Testing\TraceWriter;
+use PHPUnit\Framework\TestCase;
+use Spatie\Backtrace\Backtrace;
+use Spatie\Backtrace\Frame;
 
 use function Mantle\Support\Helpers\collect;
 
@@ -50,7 +54,7 @@ trait Incorrect_Usage {
 	/**
 	 * Trace storage for "doing it wrong" calls.
 	 *
-	 * @var array<mixed>
+	 * @var array<Frame>
 	 */
 	private $caught_doing_it_wrong_traces = [];
 
@@ -117,10 +121,21 @@ trait Incorrect_Usage {
 			$errors[] = $unexpected;
 
 			if ( ! empty( $this->caught_doing_it_wrong_traces[ $index ] ) ) {
-				static::trace(
+				$writer = new TraceWriter(
 					message: "Unexpected incorrect usage notice for {$unexpected}",
-					trace: $this->caught_doing_it_wrong_traces[ $index ],
+					frames: $this->caught_doing_it_wrong_traces[ $index ],
+					prefix: 'Incorrect Usage',
 				);
+
+				$writer->write();
+
+				TestCase::fail(
+					"Unexpected incorrect usage notice for {$unexpected}"
+				);
+				// static::trace(
+				// 	message: "Unexpected incorrect usage notice for {$unexpected}",
+				// 	trace: $this->caught_doing_it_wrong_traces[ $index ],
+				// );
 			}
 		}
 
@@ -175,7 +190,12 @@ trait Incorrect_Usage {
 		if ( ! in_array( $function, $this->caught_doing_it_wrong, true ) ) {
 			$this->caught_doing_it_wrong[] = $function;
 
-			$this->caught_doing_it_wrong_traces[] = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 10 ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
+			$frames = collect( Backtrace::create()->startingFromFrame(
+				fn ( Frame $frame ) => $frame->method === '_doing_it_wrong',
+			)->frames() );
+
+			$this->caught_doing_it_wrong_traces[] = $frames->slice( 1 )->values()->all();
+			//  debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 10 ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
 		}
 	}
 }
