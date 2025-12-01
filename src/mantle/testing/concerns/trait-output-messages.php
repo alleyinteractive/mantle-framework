@@ -8,6 +8,14 @@
 namespace Mantle\Testing\Concerns;
 
 use ErrorException;
+use Mantle\Testing\Utils;
+use NunoMaduro\Collision\Adapters\Phpunit\Printers\DefaultPrinter as Printer;
+use NunoMaduro\Collision\Adapters\Phpunit\Style;
+use NunoMaduro\Collision\Highlighter;
+use PHPUnit\Event\Code\Throwable;
+use Spatie\Backtrace\Frame;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 
 use function Mantle\Support\Helpers\collect;
 use function Termwind\render;
@@ -134,5 +142,69 @@ trait Output_Messages {
 			$frame['file'],
 			$frame['line'],
 		);
+	}
+
+	/**
+	 * Dump a frame's trace to the console.
+	 *
+	 * @todo Condense with the trace method above.
+	 *
+	 * @param string       $message
+	 * @param array<Frame> $frames
+	 * @param string|null  $prefix
+	 */
+	public static function dump_trace( string $message, array $frames, ?string $prefix = null ): void {
+		$lines = Utils::env( 'MANTLE_TESTING_TRACE_SNIPPET_LINES', 10 );
+		$frame = reset( $frames );
+
+		assert( $frame instanceof Frame );
+
+		if ( ! is_numeric( $lines ) || $lines < 1 ) {
+			$lines = 10;
+		} else {
+			$lines = (int) $lines;
+		}
+
+		$starting_line = max( $frame->lineNumber - floor( $lines / 2 ), 1 );
+
+		$snippet = collect( $frame->getSnippet( $lines ) )->values()->implode( PHP_EOL );
+
+		$message = strip_tags( $message );
+
+		if ( $prefix ) {
+			$prefix = strtoupper( $prefix );
+			$prefix = "<span class=\"bg-red-400 text-black font-bold px-1\">{$prefix}</span> ";
+		} else {
+			$prefix = '';
+		}
+
+		render( "<div class=\"mx-1 mt-1\">{$prefix}{$message}</div>" );
+
+		if ( class_exists( Highlighter::class ) ) {
+			$highlighter = new Highlighter();
+
+			echo $highlighter->getCodeSnippet(
+				source: (string) file_get_contents( $frame->file ),
+				lineNumber: $frame->lineNumber,
+				linesBefore: (int) floor( $lines / 2 ),
+				linesAfter: (int) ceil( $lines / 2 ) - 1,
+			);
+		} else {
+			render( "<code start-line=\"{$starting_line}\" line=\"{$frame->lineNumber}\">{$snippet}</code>" );
+		}
+
+		// $exception = new Throwable(
+		// 	className: ErrorException::class,
+		// 	message: $message,
+		// 	description: $message,
+		// 	se
+		// 	code
+
+		// 	E_USER_ERROR,
+		// 	E_USER_ERROR,
+		// 	$frame->file,
+		// 	$frame->lineNumber,
+		// );
+		// dd('DUMP FRAME', $message, $frame);
 	}
 }

@@ -1,27 +1,40 @@
 <?php
+/**
+ * EarlyIncorrectUsageHandler class file
+ *
+ * @package Mantle
+ */
+
 declare(strict_types=1);
 
 namespace Mantle\Testing;
 
+use Spatie\Backtrace\Backtrace;
+use Spatie\Backtrace\Frame;
+
+use function Mantle\Support\Helpers\collect;
+
 /**
- * Handler for early _doing_it_wrong() calls in the framework.
+ * Handler for early _doing_it_wrong() calls early in the testing lifecycle
+ * (during the bootstrap process).
  *
- * Within tests, \Mantle\Testing\Concerns\Incorrect_Usage handles _doing_it_wrong()
- * calls made during the test execution. However, if _doing_it_wrong() is called
- * before the test begins (for example, during the bootstrap process), those calls
- * need to be handled differently.
+ * Within tests, \Mantle\Testing\Concerns\Incorrect_Usage handles
+ * _doing_it_wrong() calls made during the test execution. However, if
+ * _doing_it_wrong() is called before the test begins (for example, during the
+ * bootstrap process), those calls need to be handled differently.
+ *
+ * @see \Mantle\Testing\Concerns\Incorrect_Usage
  */
 class EarlyIncorrectUsageHandler {
 	/**
 	 * Register the hooks for the class.
 	 */
 	public static function register(): void {
-		// Capture incorrect usage errors during tests.
 		tests_add_filter( 'doing_it_wrong_run', [ __CLASS__, 'handle_doing_it_wrong_run' ], 10, 2 );
 
-		// Prevent incorrect usage errors from throwing errors during tests. Errors will
-		// be handled manually in tests.
-		tests_add_filter( 'doing_it_wrong_trigger_error', '__return_false' );
+		// Prevent incorrect usage errors from throwing errors during tests. Errors
+		// will be handled manually in tests.
+		tests_add_filter( 'doing_it_wrong_trigger_error', '__return_false', 9 );
 	}
 
 	/**
@@ -29,7 +42,7 @@ class EarlyIncorrectUsageHandler {
 	 */
 	public static function unregister(): void {
 		remove_action( 'doing_it_wrong_run', [ __CLASS__, 'handle_doing_it_wrong_run' ] );
-		remove_filter( 'doing_it_wrong_trigger_error', '__return_false' );
+		remove_filter( 'doing_it_wrong_trigger_error', '__return_false', 9 );
 	}
 
 	/**
@@ -39,10 +52,18 @@ class EarlyIncorrectUsageHandler {
 	 * @param string $message  The message for the incorrect usage.
 	 */
 	public static function handle_doing_it_wrong_run( string $function, string $message ): void {
-		$exception = new \ErrorException( "Incorrect usage notice for {$function}: {$message}" );
+		$frames = collect( Backtrace::create()->startingFromFrame(
+			fn ( Frame $frame ) => $frame->method === '_doing_it_wrong',
+		)->frames() );
 
-		$printer = new \NunoMaduro\Collision\Adapters\Phpunit\Printers\DefaultPrinter( true );
+		$writer = new TraceWriter(
+			message: $message,
+			// Skip to the first frame after the _doing_it_wrong() call.
+			frames: $frames->slice( 1 )->values()->all(),
+			prefix: 'Incorrect Usage',
+		);
 
-		$printer->report( $exception );
+		$writer->write();
+
 	}
 }
