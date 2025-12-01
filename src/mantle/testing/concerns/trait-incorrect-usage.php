@@ -12,6 +12,7 @@ namespace Mantle\Testing\Concerns;
 use Mantle\Support\Str;
 use Mantle\Testing\Attributes\Expected_Incorrect_Usage;
 use Mantle\Testing\Attributes\Ignore_Incorrect_Usage;
+use Mantle\Testing\EarlyIncorrectUsageHandler;
 
 use function Mantle\Support\Helpers\collect;
 
@@ -57,6 +58,8 @@ trait Incorrect_Usage {
 	 * Sets up the expectations for testing a deprecated call.
 	 */
 	public function incorrect_usage_set_up(): void {
+		EarlyIncorrectUsageHandler::unregister();
+
 		$annotations = $this->get_annotations_for_method();
 
 		foreach ( [ 'class', 'method' ] as $depth ) {

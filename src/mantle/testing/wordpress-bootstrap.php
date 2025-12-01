@@ -5,6 +5,8 @@
  * @package Mantle
  */
 
+use Mantle\Testing\EarlyIncorrectUsageHandler;
+use Mantle\Testing\TestCase;
 use Mantle\Testing\Utils;
 use Mantle\Testing\WP_Die;
 
@@ -234,6 +236,8 @@ tests_add_filter( 'enable_loading_object_cache_dropin', function ( $enable_objec
 
 	return $enable_object_cache;
 } );
+
+EarlyIncorrectUsageHandler::register();
 
 // Load WordPress.
 require_once ABSPATH . '/wp-settings.php';
