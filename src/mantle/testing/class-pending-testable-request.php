@@ -57,6 +57,8 @@ class Pending_Testable_Request {
 
 	/**
 	 * The cookies for the request.
+	 *
+	 * @var InputBag<string|int|float|bool|null>
 	 */
 	public InputBag $cookies;
 
