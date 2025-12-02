@@ -12,7 +12,10 @@ namespace Mantle\Queue\Providers\WordPress;
  */
 enum Event: string {
 	case STARTING = 'starting';
+
 	case FINISHED = 'finished';
-	case FAILED   = 'failed';
+
+	case FAILED = 'failed';
+
 	case RETRYING = 'retrying';
 }

@@ -31,7 +31,7 @@ use function Mantle\Support\Helpers\data_get;
  * Enumerate_Values trait.
  *
  * @template TKey of array-key
- * @template TValue
+ * @template TValue of mixed = mixed
  *
  * @property-read Higher_Order_Collection_Proxy $average
  * @property-read Higher_Order_Collection_Proxy $avg

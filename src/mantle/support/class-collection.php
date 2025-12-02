@@ -1085,7 +1085,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 *
 	 * @param  TValue|(callable(TValue,TKey): bool) $value
 	 * @param  bool                                 $strict
-	 * @return TKey|bool
+	 * @return TKey|false
 	 */
 	public function search( $value, $strict = false ) {
 		if ( ! $this->use_as_callable( $value ) ) {
@@ -1099,6 +1099,54 @@ class Collection implements ArrayAccess, Enumerable {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Get the item before the given item.
+	 *
+	 * @param  TValue|(callable(TValue,TKey): bool) $value
+	 * @param  bool                                 $strict
+	 * @return TValue|null
+	 */
+	public function before( mixed $value, bool $strict = false ): mixed {
+		$key = $this->search( $value, $strict );
+
+		if ( $key === false ) {
+			return null;
+		}
+
+		$keys     = $this->keys();
+		$position = $keys->search( $key );
+
+		if ( $position === 0 || $position === false ) {
+			return null;
+		}
+
+		return $this->get( $keys->get( $position - 1 ) ); // @phpstan-ignore-line
+	}
+
+	/**
+	 * Get the item after the given item.
+	 *
+	 * @param  TValue|(callable(TValue,TKey): bool) $value
+	 * @param  bool                                 $strict
+	 * @return TValue|null
+	 */
+	public function after( mixed $value, bool $strict = false ): mixed {
+		$key = $this->search( $value, $strict );
+
+		if ( $key === false ) {
+			return null;
+		}
+
+		$keys     = $this->keys();
+		$position = $keys->search( $key );
+
+		if ( $position === $keys->count() - 1 || $position === false ) {
+			return null;
+		}
+
+		return $this->get( $keys->get( $position + 1 ) ); // @phpstan-ignore-line
 	}
 
 	/**
