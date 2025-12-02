@@ -18,14 +18,15 @@ use function Mantle\Support\Helpers\collect;
  * Handler for early _doing_it_wrong() calls early in the testing lifecycle
  * (during the bootstrap process).
  *
- * Within tests, \Mantle\Testing\Concerns\Incorrect_Usage handles
- * _doing_it_wrong() calls made during the test execution. However, if
+ * Within the context of a test, the \Mantle\Testing\Concerns\Incorrect_Usage
+ * trait handles _doing_it_wrong() calls appropriately. However, if
  * _doing_it_wrong() is called before the test begins (for example, during the
- * bootstrap process), those calls need to be handled differently.
+ * bootstrap process), those calls are routed to this handler instead.
  *
  * @see \Mantle\Testing\Concerns\Incorrect_Usage
+ * @internal
  */
-class EarlyIncorrectUsageHandler {
+final class EarlyIncorrectUsageHandler {
 	/**
 	 * Register the hooks for the class.
 	 */
@@ -52,14 +53,14 @@ class EarlyIncorrectUsageHandler {
 	 * @param string $message  The message for the incorrect usage.
 	 */
 	public static function handle_doing_it_wrong_run( string $function, string $message ): void {
-		$frames = collect( Backtrace::create()->startingFromFrame(
+		$frames = Backtrace::create()->startingFromFrame(
 			fn ( Frame $frame ) => $frame->method === '_doing_it_wrong',
-		)->frames() );
+		)->frames();
 
 		$writer = new TraceWriter(
 			message: $message,
 			// Skip to the first frame after the _doing_it_wrong() call.
-			frames: $frames->slice( 1 )->values()->all(),
+			frames: collect( $frames )->slice( 1 )->values()->all(),
 			prefix: 'Incorrect Usage',
 		);
 
