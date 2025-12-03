@@ -466,7 +466,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @throws Item_Not_Found_Exception Thrown if no items are found.
 	 * @throws Multiple_Items_Found_Exception Thrown if multiple items are found.
 	 */
-	public function sole( callable|string|null $key = null, mixed $operator = null, mixed $value = null ) {
+	public function sole( callable|string|null $key = null, mixed $operator = null, mixed $value = null ): mixed {
 		$filter = func_num_args() > 1
 			? $this->operator_for_where( ...func_get_args() )
 			: $key;
@@ -496,7 +496,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 *
 	 * @throws Item_Not_Found_Exception Thrown if no items are found.
 	 */
-	public function first_or_fail( callable|string|null $key = null, mixed $operator = null, mixed $value = null ) {
+	public function first_or_fail( callable|string|null $key = null, mixed $operator = null, mixed $value = null ): mixed {
 		$filter = func_num_args() > 1
 			? $this->operator_for_where( ...func_get_args() )
 			: $key;
@@ -563,9 +563,11 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Group an associative array by a field or using a callback.
 	 *
-	 * @param  (callable(TValue, TKey): array-key)|array<mixed>|string $group_by The field or callback to group by.
+	 * @template TGroupKey of array-key
+	 *
+	 * @param  (callable(TValue, TKey): TGroupKey)|array<mixed>|string $group_by The field or callback to group by.
 	 * @param  bool                                                    $preserve_keys Whether to preserve the keys of the original array.
-	 * @return static<array-key, static<array-key, TValue>>
+	 * @return static<($group_by is string ? array-key : ($group_by is array ? array-key : TGroupKey)), static<($preserve_keys is true ? TKey : int), ($group_by is array ? mixed : TValue)>>
 	 */
 	public function group_by( $group_by, $preserve_keys = false ) {
 		if ( ! $this->use_as_callable( $group_by ) && is_array( $group_by ) ) {
@@ -1279,7 +1281,6 @@ class Collection implements ArrayAccess, Enumerable {
 	 * Skip items in the collection until the given condition is met.
 	 *
 	 * @param  TValue|callable(TValue,TKey): bool $value
-	 * @return static
 	 */
 	public function skip_until( mixed $value ): static {
 		$callback = $this->use_as_callable( $value ) ? $value : fn( $item ) => $item === $value;
@@ -1291,7 +1292,6 @@ class Collection implements ArrayAccess, Enumerable {
 	 * Skip items in the collection while the given condition is met.
 	 *
 	 * @param  TValue|callable(TValue,TKey): bool $value
-	 * @return static
 	 */
 	public function skip_while( mixed $value ): static {
 		$callback = $this->use_as_callable( $value ) ? $value : fn( $item ) => $item === $value;
@@ -1392,8 +1392,8 @@ class Collection implements ArrayAccess, Enumerable {
 	/**
 	 * Chunk the collection into chunks with a callback.
 	 *
-	 * @param  callable(TValue, TKey, static<TKey, TValue>): bool $callback
-	 * @return static<int, static<TKey, TValue>>
+	 * @param  callable(TValue, TKey, static<int, TValue>): bool $callback
+	 * @return static<int, static<int, TValue>>
 	 */
 	public function chunk_while( callable $callback ): static {
 		$chunks = [];
@@ -1427,7 +1427,9 @@ class Collection implements ArrayAccess, Enumerable {
 		$keys   = array_keys( $this->items );
 		$values = array_values( $this->items );
 
-		for ( $i = 0; $i < count( $this->items ); $i += $step ) { // phpcs:ignore
+		$counter = count( $this->items );
+
+		for ( $i = 0; $i < $counter; $i += $step ) {
 			$chunk_keys   = array_slice( $keys, $i, $size );
 			$chunk_values = array_slice( $values, $i, $size );
 
@@ -1542,7 +1544,6 @@ class Collection implements ArrayAccess, Enumerable {
 	 * Sort the collection keys using a callback.
 	 *
 	 * @param  callable(TKey, TKey): int $callback
-	 * @return static
 	 */
 	public function sort_keys_using( callable $callback ): static {
 		$items = $this->items;
@@ -1661,7 +1662,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @template TZipValue
 	 *
 	 * @param  \Mantle\Contracts\Support\Arrayable<array-key, TZipValue>|iterable<array-key, TZipValue> ...$items
-	 * @return static<int, static<TKey, TValue|TZipValue>>
+	 * @return static<int, static<int, TValue|TZipValue>>
 	 */
 	public function zip( ...$items ) {
 		$arrayable_items = array_map(

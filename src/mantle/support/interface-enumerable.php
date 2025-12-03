@@ -554,7 +554,6 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * Determine if any of the keys exist in the collection.
 	 *
 	 * @param  mixed $key
-	 * @return bool
 	 */
 	public function has_any( mixed $key ): bool;
 

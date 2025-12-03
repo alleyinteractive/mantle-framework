@@ -396,7 +396,7 @@ trait Enumerates_Values {
 	 * @param  (callable(TValue, TKey): bool)|TValue|string $key
 	 * @param  TValue|string|null                           $operator
 	 * @param  TValue|null                                  $value
-	 * @return static<int, static<TKey, TValue>>
+	 * @return static<int<0, 1>, static<TKey, TValue>>
 	 */
 	public function partition( $key, $operator = null, $value = null ) {
 		$passed = [];
@@ -789,7 +789,7 @@ trait Enumerates_Values {
 		}
 
 		return new static(
-			$this->group_by( $callback )->map(
+			$this->group_by( $callback )->map( // @phpstan-ignore-line argument.templateType
 				fn ( $value ) => $value->count()
 			)
 		);
@@ -955,8 +955,6 @@ trait Enumerates_Values {
 
 	/**
 	 * Create a new instance with no items.
-	 *
-	 * @return static
 	 */
 	public static function empty(): static {
 		return new static( [] );
@@ -985,9 +983,8 @@ trait Enumerates_Values {
 	 * Get the average value of a given key.
 	 *
 	 * @param  (callable(TValue): float|int)|string|null $callback
-	 * @return float|int|null
 	 */
-	public function avg( $callback = null ) {
+	public function avg( $callback = null ): int|float|null {
 		$callback = $this->value_retriever( $callback );
 
 		$reduced = $this->reduce(
@@ -1032,7 +1029,7 @@ trait Enumerates_Values {
 	 *
 	 * @param  callable $callback
 	 * @param  mixed    ...$initial
-	 * @return array
+	 * @return array<array-key, mixed>
 	 *
 	 * @throws \UnexpectedValueException Throw when the reducer does not return an array.
 	 */
@@ -1045,7 +1042,7 @@ trait Enumerates_Values {
 			if ( ! is_array( $result ) ) {
 				throw new \UnexpectedValueException(
 					sprintf(
-						'%s::reduce_spread expects reducer to return an array, but got a \'%s\' instead.',
+						"%s::reduce_spread expects reducer to return an array, but got a '%s' instead.",
 						class_basename( static::class ),
 						gettype( $result )
 					)
@@ -1085,7 +1082,6 @@ trait Enumerates_Values {
 	 * Get the collection of items as pretty print formatted JSON.
 	 *
 	 * @param  int $options
-	 * @return string
 	 */
 	public function to_pretty_json( int $options = 0 ): string {
 		return $this->to_json( JSON_PRETTY_PRINT | $options );
@@ -1095,9 +1091,9 @@ trait Enumerates_Values {
 	 * Get a CachingIterator instance.
 	 *
 	 * @param  int $flags
-	 * @return \CachingIterator
+	 * @return \CachingIterator<TKey, TValue, \Iterator<TKey, TValue>>
 	 */
 	public function get_caching_iterator( int $flags = \CachingIterator::CALL_TOSTRING ): \CachingIterator {
-		return new \CachingIterator( $this->get_iterator(), $flags );
+		return new \CachingIterator( $this->getIterator(), $flags );
 	}
 }
