@@ -193,7 +193,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 *
 	 * @param  mixed ...$args
 	 */
-	public function dump( ...$args ): static;
+	public function dump( ...$args );
 
 	/**
 	 * Get the items that are not present in the given items.
@@ -381,7 +381,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  mixed  $value
 	 * @return static
 	 */
-	public function where( $key, $operator = null, $value = null );
+	public function where( ?string $key, mixed $operator = null, mixed $value = null );
 
 	/**
 	 * Filter items where the value for the given key is null.
@@ -389,7 +389,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  string|null $key
 	 * @return static
 	 */
-	public function where_null( $key = null );
+	public function where_null( ?string $key = null );
 
 	/**
 	 * Filter items where the value for the given key is not null.
@@ -397,16 +397,16 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  string|null $key
 	 * @return static
 	 */
-	public function where_not_null( $key = null );
+	public function where_not_null( ?string $key = null );
 
 	/**
 	 * Filter items by the given key value pair using strict comparison.
 	 *
-	 * @param  string $key
+	 * @param  string|null $key
 	 * @param  mixed  $value
 	 * @return static
 	 */
-	public function where_strict( $key, $value );
+	public function where_strict( ?string $key, mixed $value );
 
 	/**
 	 * Filter items by the given key value pair.
@@ -416,7 +416,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  bool   $strict
 	 * @return static
 	 */
-	public function where_in( $key, $values, $strict = false );
+	public function where_in( string $key, mixed $values, bool $strict = false );
 
 	/**
 	 * Filter items by the given key value pair using strict comparison.
@@ -425,7 +425,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  \Mantle\Contracts\Support\Arrayable|iterable  $values
 	 * @return static
 	 */
-	public function where_in_strict( $key, $values );
+	public function where_in_strict( string $key, mixed $values );
 
 	/**
 	 * Filter items such that the value of the given key is between the given values.
@@ -434,7 +434,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  \Mantle\Contracts\Support\Arrayable|iterable  $values
 	 * @return static
 	 */
-	public function where_between( $key, $values );
+	public function where_between( string $key, mixed $values );
 
 	/**
 	 * Filter items such that the value of the given key is not between the given values.
@@ -443,7 +443,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  \Mantle\Contracts\Support\Arrayable|iterable  $values
 	 * @return static
 	 */
-	public function where_not_between( $key, $values );
+	public function where_not_between( string $key, mixed $values );
 
 	/**
 	 * Filter items by the given key value pair.
@@ -453,7 +453,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  bool   $strict
 	 * @return static
 	 */
-	public function where_not_in( $key, $values, $strict = false );
+	public function where_not_in( string $key, mixed $values, bool $strict = false );
 
 	/**
 	 * Filter items by the given key value pair using strict comparison.
@@ -462,7 +462,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  \Mantle\Contracts\Support\Arrayable|iterable  $values
 	 * @return static
 	 */
-	public function where_not_in_strict( $key, $values );
+	public function where_not_in_strict( string $key, mixed $values );
 
 	/**
 	 * Filter the items, removing any items that don't match the given type(s).
@@ -472,7 +472,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  class-string<TWhereInstanceOf>|array<array-key, class-string<TWhereInstanceOf>>  $type
 	 * @return static<TKey, TWhereInstanceOf>
 	 */
-	public function where_instance_of( $type );
+	public function where_instance_of( string|array $type );
 
 	/**
 	 * Get the first item from the enumerable passing the given truth test.
@@ -501,7 +501,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  int $depth
 	 * @return static
 	 */
-	public function flatten( $depth = INF );
+	public function flatten( int|float $depth = INF );
 
 	/**
 	 * Flip the values with their keys.
@@ -1279,14 +1279,6 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * Convert the collection to its string representation.
 	 */
 	public function __toString(): string;
-
-	/**
-	 * Indicate that the model's string representation should be escaped when __toString is invoked.
-	 *
-	 * @param  bool $escape
-	 * @return static
-	 */
-	public function escape_when_casting_to_string( bool $escape = true );
 
 	/**
 	 * Add a method to the list of proxied methods.

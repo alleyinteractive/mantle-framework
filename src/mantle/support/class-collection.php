@@ -110,6 +110,18 @@ class Collection implements ArrayAccess, Enumerable {
 	}
 
 	/**
+	 * Create a collection with the given range.
+	 *
+	 * @param  int $from
+	 * @param  int $to
+	 * @param  int $step
+	 * @return static<int, int>
+	 */
+	public static function range( int $from, int $to, int $step = 1 ): static {
+		return new static( range( $from, $to, $step ) );
+	}
+
+	/**
 	 * Get all of the items in the collection.
 	 *
 	 * @return array<TKey, TValue>
@@ -441,6 +453,61 @@ class Collection implements ArrayAccess, Enumerable {
 	}
 
 	/**
+	 * Get the first item in the collection, but only if exactly one item exists. Otherwise, throw an exception.
+	 *
+	 * @param  (callable(TValue, TKey): bool)|string|null $key
+	 * @param  mixed                                      $operator
+	 * @param  mixed                                      $value
+	 * @return TValue
+	 *
+	 * @throws \Mantle\Support\ItemNotFoundException
+	 * @throws \Mantle\Support\MultipleItemsFoundException
+	 */
+	public function sole( $key = null, $operator = null, $value = null ) {
+		$filter = func_num_args() > 1
+			? $this->operator_for_where( ...func_get_args() )
+			: $key;
+
+		$items = $filter === null ? $this : $this->filter( $filter );
+
+		$count = $items->count();
+
+		if ( $count === 0 ) {
+			throw new \RuntimeException( 'Item not found.' );
+		}
+
+		if ( $count > 1 ) {
+			throw new \RuntimeException( sprintf( 'Multiple items found (%d items).', $count ) );
+		}
+
+		return $items->first();
+	}
+
+	/**
+	 * Get the first item in the collection but throw an exception if no matching items exist.
+	 *
+	 * @param  (callable(TValue, TKey): bool)|string|null $key
+	 * @param  mixed                                      $operator
+	 * @param  mixed                                      $value
+	 * @return TValue
+	 *
+	 * @throws \Mantle\Support\ItemNotFoundException
+	 */
+	public function first_or_fail( $key = null, $operator = null, $value = null ) {
+		$filter = func_num_args() > 1
+			? $this->operator_for_where( ...func_get_args() )
+			: $key;
+
+		$items = $filter === null ? $this : $this->filter( $filter );
+
+		if ( $items->is_empty() ) {
+			throw new \RuntimeException( 'Item not found.' );
+		}
+
+		return $items->first();
+	}
+
+	/**
 	 * Get a flattened array of the items in the collection.
 	 *
 	 * @param  int|float $depth
@@ -577,6 +644,23 @@ class Collection implements ArrayAccess, Enumerable {
 	}
 
 	/**
+	 * Determine if any of the keys exist in the collection.
+	 *
+	 * @param  mixed $key
+	 */
+	public function has_any( $key ): bool {
+		$keys = is_array( $key ) ? $key : func_get_args();
+
+		foreach ( $keys as $key ) {
+			if ( $this->offsetExists( $key ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Concatenate values of a given key as a string.
 	 *
 	 * @param callable|string|null $value
@@ -614,6 +698,17 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	public function intersect( $items ) {
 		return new static( array_intersect( $this->items, $this->get_arrayable_items( $items ) ) );
+	}
+
+	/**
+	 * Intersect the collection with the given items, using the callback.
+	 *
+	 * @param  \Mantle\Contracts\Support\Arrayable<array-key, TValue>|iterable<array-key, TValue> $items
+	 * @param  callable(TValue, TValue): int                                                      $callback
+	 * @return static
+	 */
+	public function intersect_using( $items, callable $callback ) {
+		return new static( array_uintersect( $this->items, $this->get_arrayable_items( $items ), $callback ) );
 	}
 
 	/**
@@ -1178,6 +1273,43 @@ class Collection implements ArrayAccess, Enumerable {
 	}
 
 	/**
+	 * Skip items in the collection until the given condition is met.
+	 *
+	 * @param  TValue|callable(TValue,TKey): bool $value
+	 * @return static
+	 */
+	public function skip_until( $value ): static {
+		$callback = $this->use_as_callable( $value ) ? $value : fn( $item ) => $item === $value;
+
+		return $this->skip_while( fn( $item, $key ) => ! $callback( $item, $key ) );
+	}
+
+	/**
+	 * Skip items in the collection while the given condition is met.
+	 *
+	 * @param  TValue|callable(TValue,TKey): bool $value
+	 * @return static
+	 */
+	public function skip_while( $value ): static {
+		$callback = $this->use_as_callable( $value ) ? $value : fn( $item ) => $item === $value;
+
+		$items = [];
+		$skip  = true;
+
+		foreach ( $this->items as $key => $item ) {
+			if ( $skip && ! $callback( $item, $key ) ) {
+				$skip = false;
+			}
+
+			if ( ! $skip ) {
+				$items[ $key ] = $item;
+			}
+		}
+
+		return new static( $items );
+	}
+
+	/**
 	 * Slice the underlying collection array.
 	 *
 	 * @param    int      $offset
@@ -1239,6 +1371,66 @@ class Collection implements ArrayAccess, Enumerable {
 
 		foreach ( array_chunk( $this->items, $size, true ) as $chunk ) {
 			$chunks[] = new static( $chunk );
+		}
+
+		return new static( $chunks );
+	}
+
+	/**
+	 * Split a collection into a certain number of groups, and fill the first groups completely.
+	 *
+	 * @param  int $number_of_groups
+	 * @return static<int, static>
+	 */
+	public function split_in( int $number_of_groups ) {
+		return $this->chunk( (int) ceil( $this->count() / $number_of_groups ) );
+	}
+
+	/**
+	 * Chunk the collection into chunks with a callback.
+	 *
+	 * @param  callable(TValue, TKey, static<TKey, TValue>): bool $callback
+	 * @return static<int, static<TKey, TValue>>
+	 */
+	public function chunk_while( callable $callback ): static {
+		$chunks = [];
+		$chunk  = new static();
+
+		foreach ( $this->items as $key => $value ) {
+			if ( $chunk->is_not_empty() && ! $callback( $value, $key, $chunk ) ) {
+				$chunks[] = $chunk;
+				$chunk    = new static();
+			}
+
+			$chunk->put( $key, $value );
+		}
+
+		if ( $chunk->is_not_empty() ) {
+			$chunks[] = $chunk;
+		}
+
+		return new static( $chunks );
+	}
+
+	/**
+	 * Create chunks representing a "sliding window" view of the items in the collection.
+	 *
+	 * @param  int $size
+	 * @param  int $step
+	 * @return static<int, static>
+	 */
+	public function sliding( int $size = 2, int $step = 1 ): static {
+		$chunks = [];
+		$keys   = array_keys( $this->items );
+		$values = array_values( $this->items );
+
+		for ( $i = 0; $i < count( $this->items ); $i += $step ) {
+			$chunk_keys   = array_slice( $keys, $i, $size );
+			$chunk_values = array_slice( $values, $i, $size );
+
+			if ( count( $chunk_keys ) === $size ) {
+				$chunks[] = new static( array_combine( $chunk_keys, $chunk_values ) );
+			}
 		}
 
 		return new static( $chunks );
@@ -1344,6 +1536,20 @@ class Collection implements ArrayAccess, Enumerable {
 	}
 
 	/**
+	 * Sort the collection keys using a callback.
+	 *
+	 * @param  callable(TKey, TKey): int $callback
+	 * @return static
+	 */
+	public function sort_keys_using( callable $callback ): static {
+		$items = $this->items;
+
+		uksort( $items, $callback );
+
+		return new static( $items );
+	}
+
+	/**
 	 * Splice a portion of the underlying collection array.
 	 *
 	 * @param    int                      $offset
@@ -1374,6 +1580,40 @@ class Collection implements ArrayAccess, Enumerable {
 	}
 
 	/**
+	 * Take items in the collection until the given condition is met.
+	 *
+	 * @param  TValue|callable(TValue,TKey): bool $value
+	 * @return static<TKey, TValue>
+	 */
+	public function take_until( $value ): static {
+		$callback = $this->use_as_callable( $value ) ? $value : fn( $item ) => $item === $value;
+
+		$items = [];
+
+		foreach ( $this->items as $key => $item ) {
+			if ( $callback( $item, $key ) ) {
+				break;
+			}
+
+			$items[ $key ] = $item;
+		}
+
+		return new static( $items );
+	}
+
+	/**
+	 * Take items in the collection while the given condition is met.
+	 *
+	 * @param  TValue|callable(TValue,TKey): bool $value
+	 * @return static<TKey, TValue>
+	 */
+	public function take_while( $value ): static {
+		$callback = $this->use_as_callable( $value ) ? $value : fn( $item ) => $item === $value;
+
+		return $this->take_until( fn( $item, $key ) => ! $callback( $item, $key ) );
+	}
+
+	/**
 	 * Transform each item in the collection using a callback.
 	 *
 	 * @param  callable(TValue, TKey): TValue $callback
@@ -1392,6 +1632,21 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	public function values() {
 		return new static( array_values( $this->items ) );
+	}
+
+	/**
+	 * Convert a flatten "dot" notation array into an expanded array.
+	 *
+	 * @return static
+	 */
+	public function undot() {
+		$results = [];
+
+		foreach ( $this->items as $key => $value ) {
+			Arr::set( $results, $key, $value );
+		}
+
+		return new static( $results );
 	}
 
 	/**

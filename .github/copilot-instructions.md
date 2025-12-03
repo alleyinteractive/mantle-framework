@@ -5,6 +5,20 @@ Mantle is a Laravel-inspired framework for WordPress, providing a modern applica
 
 Many features are ported directly from Laravel (Collections, Support classes, Container, etc.) but are translated to snake_case naming and adapted as needed for WordPress. While the ports generally maintain feature parity with Laravel, they are not strictly 1-to-1 implementations—methods and behavior are modified when necessary for WordPress integration or framework conventions.
 
+## Project Goals
+
+### Strong IDE Support
+- **Prefer strongly typed returns over magic**: Use explicit return types and typed properties
+- **Avoid magic methods when possible**: Prefer concrete, type-hinted methods for better IDE autocomplete
+- **Type everything**: Parameters, returns, properties should all have explicit types for optimal IDE support
+- **Generic annotations**: Extensive use of PHPStan templates helps IDEs understand collection types
+
+### Delightful Testing Experience for WordPress
+- **Seamless WordPress environment**: Full WordPress stack available in tests without manual setup
+- **Familiar testing patterns**: Fluent assertions and Laravel-style testing helpers
+- **Fast and reliable**: Clean database state between tests with `Refresh_Database` trait
+- **WordPress-specific assertions**: Test WordPress queries, templates, and core functionality with specialized assertions
+
 ### PSR-4 Migration
 The testing package is transitioning to PSR-4 standards with CamelCase file and class names (e.g., `FrameworkTestCase.php` instead of `class-framework-test-case.php`). **Mantle 2.0 will complete this migration**, with the entire framework adopting PSR-4 file naming conventions while maintaining snake_case method names for WordPress compatibility.
 
@@ -105,12 +119,15 @@ class MyTest extends FrameworkTestCase {
 - Variables and properties: snake_case: `$foreign_key`, `$this->local_key`
 - Constants: SCREAMING_SNAKE_CASE: `RELATION_TAXONOMY`
 
-### PHPDoc Type Annotations
-- **NEVER use `$this` in PHPDoc `@param` or `@return` annotations**
-- Always use `static` for return type annotations when returning the same class instance
+### Type Hints & Static Analysis
+- **Maximize type coverage**: Use PHP type hints (union types, generics) wherever possible
+- **PHPStan is heavily used**: All code should pass PHPStan level 8 analysis
+- **Generic annotations**: Use PHPStan generics extensively in PHPDoc (`@template`, `@param`, `@return`)
+- **NEVER use `$this` in PHPDoc**: Always use `static` for return type annotations when returning the same class instance
 - Example: `@return static` NOT `@return $this`
-- This ensures proper type inference and IDE support across inheritance chains
-- use phpstan generics where possible.
+- **Prefer typed parameters**: Use `int|float`, `string|null`, etc. over untyped parameters
+- **Document templates**: Use `@template TKey of array-key`, `@template TValue` for generic collections
+- This ensures proper type inference, IDE support, and catches errors during static analysis
 
 ## Configuration
 
@@ -181,6 +198,7 @@ class MyTest extends FrameworkTestCase {
 4. **No Eloquent ORM**: Custom query builder wrapping WP_Query/WP_Term_Query
 5. **WordPress Lifecycle**: Hooks into WordPress init, not standalone
 6. **Relationship Storage**: Uses taxonomy terms for post-to-post relationships
+7. **Strong Type Coverage**: Extensive use of union types, generics in PHPDoc, and PHP type hints for PHPStan analysis
 
 ## Performance Considerations
 
