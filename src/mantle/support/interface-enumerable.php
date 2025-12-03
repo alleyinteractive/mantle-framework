@@ -2,12 +2,12 @@
 /**
  * Enumerable interface file.
  *
+ * phpcs:disable Generic.Commenting.DocComment.LongNotCapital
+ * phpcs:disable Squiz.Commenting.FunctionComment
+ * phpcs:disable Squiz.Commenting.ClassComment.Missing
+ *
  * @package Mantle
  */
-
-// phpcs:disable Squiz.Commenting.FunctionComment
-
-// phpcs:disable Squiz.Commenting.ClassComment.Missing
 
 namespace Mantle\Support;
 

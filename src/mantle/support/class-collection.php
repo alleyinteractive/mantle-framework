@@ -4,6 +4,9 @@
  *
  * phpcs:disable Squiz.Commenting.FunctionComment.MissingParamComment, Squiz.Commenting.FunctionComment.MissingParamTag
  *
+ * @todo Incorporate Lazy Collections and adjust the methods in this file to use
+ * lazy evaluation where appropriate.
+ *
  * @package Mantle
  */
 
@@ -460,8 +463,8 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param  mixed                                      $value
 	 * @return TValue
 	 *
-	 * @throws \Mantle\Support\ItemNotFoundException
-	 * @throws \Mantle\Support\MultipleItemsFoundException
+	 * @throws Item_Not_Found_Exception Thrown if no items are found.
+	 * @throws Multiple_Items_Found_Exception Thrown if multiple items are found.
 	 */
 	public function sole( callable|string|null $key = null, mixed $operator = null, mixed $value = null ) {
 		$filter = func_num_args() > 1
@@ -473,11 +476,11 @@ class Collection implements ArrayAccess, Enumerable {
 		$count = $items->count();
 
 		if ( $count === 0 ) {
-			throw new \RuntimeException( 'Item not found.' );
+			throw new Item_Not_Found_Exception( 'Item not found.' );
 		}
 
 		if ( $count > 1 ) {
-			throw new \RuntimeException( sprintf( 'Multiple items found (%d items).', $count ) );
+			throw new Multiple_Items_Found_Exception( sprintf( 'Multiple items found (%d items).', $count ) );
 		}
 
 		return $items->first();
@@ -491,7 +494,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param  mixed                                      $value
 	 * @return TValue
 	 *
-	 * @throws \Mantle\Support\ItemNotFoundException
+	 * @throws Item_Not_Found_Exception Thrown if no items are found.
 	 */
 	public function first_or_fail( callable|string|null $key = null, mixed $operator = null, mixed $value = null ) {
 		$filter = func_num_args() > 1
@@ -501,7 +504,7 @@ class Collection implements ArrayAccess, Enumerable {
 		$items = $filter === null ? $this : $this->filter( $filter );
 
 		if ( $items->is_empty() ) {
-			throw new \RuntimeException( 'Item not found.' );
+			throw new Item_Not_Found_Exception( 'Item not found.' );
 		}
 
 		return $items->first();
@@ -1424,7 +1427,7 @@ class Collection implements ArrayAccess, Enumerable {
 		$keys   = array_keys( $this->items );
 		$values = array_values( $this->items );
 
-		for ( $i = 0; $i < count( $this->items ); $i += $step ) {
+		for ( $i = 0; $i < count( $this->items ); $i += $step ) { // phpcs:ignore
 			$chunk_keys   = array_slice( $keys, $i, $size );
 			$chunk_values = array_slice( $values, $i, $size );
 

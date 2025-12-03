@@ -197,7 +197,7 @@ trait Enumerates_Values {
 	 * @param  mixed ...$args
 	 */
 	public function dump( ...$args ): static {
-		dump($this->all(), ...$args);
+		dump( $this->all(), ...$args );
 
 		return $this;
 	}
@@ -967,7 +967,7 @@ trait Enumerates_Values {
 	 *
 	 * @template TTimesValue
 	 *
-	 * @param  int                                  $number
+	 * @param  int                               $number
 	 * @param  (callable(int): TTimesValue)|null $callback
 	 * @return static<int, TTimesValue>
 	 */
@@ -1034,7 +1034,7 @@ trait Enumerates_Values {
 	 * @param  mixed    ...$initial
 	 * @return array
 	 *
-	 * @throws \UnexpectedValueException
+	 * @throws \UnexpectedValueException Throw when the reducer does not return an array.
 	 */
 	public function reduce_spread( callable $callback, ...$initial ): array {
 		$result = $initial;
@@ -1100,5 +1100,4 @@ trait Enumerates_Values {
 	public function get_caching_iterator( int $flags = \CachingIterator::CALL_TOSTRING ): \CachingIterator {
 		return new \CachingIterator( $this->get_iterator(), $flags );
 	}
-
 }
