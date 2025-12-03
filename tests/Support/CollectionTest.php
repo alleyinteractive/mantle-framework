@@ -233,39 +233,39 @@ class CollectionTest extends FrameworkTestCase {
 	 * @dataProvider collectionClassProvider
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
-//	public function testSkipUntil($collection)
-//	{
-//		$data = new $collection([1, 1, 2, 2, 3, 3, 4, 4]);
-//
-//		$data = $data->skipUntil(3)->values();
-//
-//		$this->assertSame([3, 3, 4, 4], $data->all());
-//
-//		$data = $data->skipUntil(function ($value, $key) {
-//			return $value > 3;
-//		})->values();
-//
-//		$this->assertSame([4, 4], $data->all());
-//	}
+	public function testSkipUntil($collection)
+	{
+		$data = new $collection([1, 1, 2, 2, 3, 3, 4, 4]);
+
+		$data = $data->skip_until(3)->values();
+
+		$this->assertSame([3, 3, 4, 4], $data->all());
+
+		$data = $data->skip_until(function ($value, $key) {
+			return $value > 3;
+		})->values();
+
+		$this->assertSame([4, 4], $data->all());
+	}
 
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
-//	public function testSkipWhile($collection)
-//	{
-//		$data = new $collection([1, 1, 2, 2, 3, 3, 4, 4]);
-//
-//		$data = $data->skipWhile(1)->values();
-//
-//		$this->assertSame([2, 2, 3, 3, 4, 4], $data->all());
-//
-//		$data = $data->skipWhile(function ($value, $key) {
-//			return $value < 3;
-//		})->values();
-//
-//		$this->assertSame([3, 3, 4, 4], $data->all());
-//	}
+	public function testSkipWhile($collection)
+	{
+		$data = new $collection([1, 1, 2, 2, 3, 3, 4, 4]);
+
+		$data = $data->skip_while(1)->values();
+
+		$this->assertSame([2, 2, 3, 3, 4, 4], $data->all());
+
+		$data = $data->skip_while(function ($value, $key) {
+			return $value < 3;
+		})->values();
+
+		$this->assertSame([3, 3, 4, 4], $data->all());
+	}
 
 	/**
 	 * @dataProvider collectionClassProvider
@@ -1885,134 +1885,134 @@ class CollectionTest extends FrameworkTestCase {
 	 * @dataProvider collectionClassProvider
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
-//	public function testTakeUntilUsingValue($collection)
-//	{
-//		$data = new $collection([1, 2, 3, 4]);
-//
-//		$data = $data->takeUntil(3);
-//
-//		$this->assertSame([1, 2], $data->to_array());
-//	}
+	public function testTakeUntilUsingValue($collection)
+	{
+		$data = new $collection([1, 2, 3, 4]);
+
+		$data = $data->take_until(3);
+
+		$this->assertSame([1, 2], $data->to_array());
+	}
 
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
-//	public function testTakeUntilUsingCallback($collection)
-//	{
-//		$data = new $collection([1, 2, 3, 4]);
-//
-//		$data = $data->takeUntil(function ($item) {
-//			return $item >= 3;
-//		});
-//
-//		$this->assertSame([1, 2], $data->to_array());
-//	}
+	public function testTakeUntilUsingCallback($collection)
+	{
+		$data = new $collection([1, 2, 3, 4]);
+
+		$data = $data->take_until(function ($item) {
+			return $item >= 3;
+		});
+
+		$this->assertSame([1, 2], $data->to_array());
+	}
 
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
-//	public function testTakeUntilReturnsAllItemsForUnmetValue($collection)
-//	{
-//		$data = new $collection([1, 2, 3, 4]);
-//
-//		$actual = $data->takeUntil(99);
-//
-//		$this->assertSame($data->to_array(), $actual->to_array());
-//
-//		$actual = $data->takeUntil(function ($item) {
-//			return $item >= 99;
-//		});
-//
-//		$this->assertSame($data->to_array(), $actual->to_array());
-//	}
+	public function testTakeUntilReturnsAllItemsForUnmetValue($collection)
+	{
+		$data = new $collection([1, 2, 3, 4]);
+
+		$actual = $data->take_until(99);
+
+		$this->assertSame($data->to_array(), $actual->to_array());
+
+		$actual = $data->take_until(function ($item) {
+			return $item >= 99;
+		});
+
+		$this->assertSame($data->to_array(), $actual->to_array());
+	}
 
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
-//	public function testTakeUntilCanBeProxied($collection)
-//	{
-//		$data = new $collection([
-//			new TestSupportCollectionHigherOrderItem('Adam'),
-//			new TestSupportCollectionHigherOrderItem('Taylor'),
-//			new TestSupportCollectionHigherOrderItem('Jason'),
-//		]);
-//
-//		$actual = $data->takeUntil->is('Jason');
-//
-//		$this->assertCount(2, $actual);
-//		$this->assertSame('Adam', $actual->get(0)->name);
-//		$this->assertSame('Taylor', $actual->get(1)->name);
-//	}
+	public function testTakeUntilCanBeProxied($collection)
+	{
+		$data = new $collection([
+			new TestSupportCollectionHigherOrderItem('Adam'),
+			new TestSupportCollectionHigherOrderItem('Taylor'),
+			new TestSupportCollectionHigherOrderItem('Jason'),
+		]);
+
+		$actual = $data->take_until->is('Jason');
+
+		$this->assertCount(2, $actual);
+		$this->assertSame('Adam', $actual->get(0)->name);
+		$this->assertSame('Taylor', $actual->get(1)->name);
+	}
 
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
-//	public function testTakeWhileUsingValue($collection)
-//	{
-//		$data = new $collection([1, 1, 2, 2, 3, 3]);
-//
-//		$data = $data->takeWhile(1);
-//
-//		$this->assertSame([1, 1], $data->to_array());
-//	}
+	public function testTakeWhileUsingValue($collection)
+	{
+		$data = new $collection([1, 1, 2, 2, 3, 3]);
+
+		$data = $data->take_while(1);
+
+		$this->assertSame([1, 1], $data->to_array());
+	}
 
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
-//	public function testTakeWhileUsingCallback($collection)
-//	{
-//		$data = new $collection([1, 2, 3, 4]);
-//
-//		$data = $data->takeWhile(function ($item) {
-//			return $item < 3;
-//		});
-//
-//		$this->assertSame([1, 2], $data->to_array());
-//	}
+	public function testTakeWhileUsingCallback($collection)
+	{
+		$data = new $collection([1, 2, 3, 4]);
+
+		$data = $data->take_while(function ($item) {
+			return $item < 3;
+		});
+
+		$this->assertSame([1, 2], $data->to_array());
+	}
 
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
-//	public function testTakeWhileReturnsNoItemsForUnmetValue($collection)
-//	{
-//		$data = new $collection([1, 2, 3, 4]);
-//
-//		$actual = $data->takeWhile(2);
-//
-//		$this->assertSame([], $actual->to_array());
-//
-//		$actual = $data->takeWhile(function ($item) {
-//			return $item == 99;
-//		});
-//
-//		$this->assertSame([], $actual->to_array());
-//	}
+	public function testTakeWhileReturnsNoItemsForUnmetValue($collection)
+	{
+		$data = new $collection([1, 2, 3, 4]);
+
+		$actual = $data->take_while(2);
+
+		$this->assertSame([], $actual->to_array());
+
+		$actual = $data->take_while(function ($item) {
+			return $item == 99;
+		});
+
+		$this->assertSame([], $actual->to_array());
+	}
 
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
-//	public function testTakeWhileCanBeProxied($collection)
-//	{
-//		$data = new $collection([
-//			new TestSupportCollectionHigherOrderItem('Adam'),
-//			new TestSupportCollectionHigherOrderItem('Adam'),
-//			new TestSupportCollectionHigherOrderItem('Taylor'),
-//			new TestSupportCollectionHigherOrderItem('Taylor'),
-//		]);
-//
-//		$actual = $data->takeWhile->is('Adam');
-//
-//		$this->assertCount(2, $actual);
-//		$this->assertSame('Adam', $actual->get(0)->name);
-//		$this->assertSame('Adam', $actual->get(1)->name);
-//	}
+	public function testTakeWhileCanBeProxied($collection)
+	{
+		$data = new $collection([
+			new TestSupportCollectionHigherOrderItem('Adam'),
+			new TestSupportCollectionHigherOrderItem('Adam'),
+			new TestSupportCollectionHigherOrderItem('Taylor'),
+			new TestSupportCollectionHigherOrderItem('Taylor'),
+		]);
+
+		$actual = $data->take_while->is('Adam');
+
+		$this->assertCount(2, $actual);
+		$this->assertSame('Adam', $actual->get(0)->name);
+		$this->assertSame('Adam', $actual->get(1)->name);
+	}
 
 	/**
 	 * @dataProvider collectionClassProvider

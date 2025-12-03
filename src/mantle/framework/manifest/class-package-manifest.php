@@ -45,7 +45,7 @@ class Package_Manifest {
 	 *
 	 * @return array<string, string>
 	 */
-	public function providers() {
+	public function providers(): array {
 		return $this->config( 'providers' );
 	}
 
@@ -54,7 +54,7 @@ class Package_Manifest {
 	 *
 	 * @return array<string, string>
 	 */
-	public function aliases() {
+	public function aliases(): array {
 		return $this->config( 'aliases' );
 	}
 
@@ -64,7 +64,7 @@ class Package_Manifest {
 	 * @param string $key Key to retrieve.
 	 * @return array<string, string>
 	 */
-	public function config( string $key ) {
+	public function config( string $key ): array {
 		return collect( $this->get_manifest() )
 			->flat_map(
 				fn ( $configuration ) => (array) ( $configuration[ $key ] ?? [] )
