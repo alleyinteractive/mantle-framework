@@ -556,7 +556,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  mixed $key
 	 * @return bool
 	 */
-	public function has_any( $key );
+	public function has_any( mixed $key ): bool;
 
 	/**
 	 * Concatenate values of a given key as a string.
@@ -581,7 +581,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  callable(TValue, TValue): int  $callback
 	 * @return static
 	 */
-	public function intersect_using( $items, callable $callback );
+	public function intersect_using( mixed $items, callable $callback );
 
 	/**
 	 * Intersect the collection with the given items with additional index check.
@@ -909,24 +909,6 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	public function after( mixed $value, bool $strict = false );
 
 	/**
-	 * Get the item before the given item.
-	 *
-	 * @param  TValue|(callable(TValue,TKey): bool)  $value
-	 * @param  bool  $strict
-	 * @return TValue|null
-	 */
-	public function before( mixed $value, bool $strict = false );
-
-	/**
-	 * Get the item after the given item.
-	 *
-	 * @param  TValue|(callable(TValue,TKey): bool)  $value
-	 * @param  bool  $strict
-	 * @return TValue|null
-	 */
-	public function after( mixed $value, bool $strict = false );
-
-	/**
 	 * Shuffle the items in the collection.
 	 *
 	 * @return static
@@ -956,7 +938,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  TValue|callable(TValue,TKey): bool  $value
 	 * @return static
 	 */
-	public function skip_until( $value );
+	public function skip_until( mixed $value );
 
 	/**
 	 * Skip items in the collection while the given condition is met.
@@ -964,7 +946,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @param  TValue|callable(TValue,TKey): bool  $value
 	 * @return static
 	 */
-	public function skip_while( $value );
+	public function skip_while( mixed $value );
 
 	/**
 	 * Get a slice of items from the enumerable.
@@ -986,7 +968,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	/**
 	 * Get the first item in the collection, but only if exactly one item exists. Otherwise, throw an exception.
 	 *
-	 * @param  (callable(TValue, TKey): bool)|string  $key
+	 * @param  (callable(TValue, TKey): bool)|string|null  $key
 	 * @param  mixed $operator
 	 * @param  mixed $value
 	 * @return TValue
@@ -994,7 +976,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 * @throws \Illuminate\Support\ItemNotFoundException
 	 * @throws \Illuminate\Support\MultipleItemsFoundException
 	 */
-	public function sole( $key = null, $operator = null, $value = null );
+	public function sole( callable|string|null $key = null, mixed $operator = null, mixed $value = null );
 
 	/**
 	 * Get the first item in the collection but throw an exception if no matching items exist.
@@ -1006,7 +988,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
 	 *
 	 * @throws \Illuminate\Support\ItemNotFoundException
 	 */
-	public function first_or_fail( $key = null, $operator = null, $value = null );
+	public function first_or_fail( callable|string|null $key = null, mixed $operator = null, mixed $value = null );
 
 	/**
 	 * Chunk the collection into chunks of the given size.

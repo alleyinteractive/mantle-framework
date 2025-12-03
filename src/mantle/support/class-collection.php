@@ -463,7 +463,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @throws \Mantle\Support\ItemNotFoundException
 	 * @throws \Mantle\Support\MultipleItemsFoundException
 	 */
-	public function sole( $key = null, $operator = null, $value = null ) {
+	public function sole( callable|string|null $key = null, mixed $operator = null, mixed $value = null ) {
 		$filter = func_num_args() > 1
 			? $this->operator_for_where( ...func_get_args() )
 			: $key;
@@ -493,7 +493,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 *
 	 * @throws \Mantle\Support\ItemNotFoundException
 	 */
-	public function first_or_fail( $key = null, $operator = null, $value = null ) {
+	public function first_or_fail( callable|string|null $key = null, mixed $operator = null, mixed $value = null ) {
 		$filter = func_num_args() > 1
 			? $this->operator_for_where( ...func_get_args() )
 			: $key;
@@ -648,7 +648,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 *
 	 * @param  mixed $key
 	 */
-	public function has_any( $key ): bool {
+	public function has_any( mixed $key ): bool {
 		$keys = is_array( $key ) ? $key : func_get_args();
 
 		foreach ( $keys as $key ) {
@@ -707,7 +707,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param  callable(TValue, TValue): int                                                      $callback
 	 * @return static
 	 */
-	public function intersect_using( $items, callable $callback ) {
+	public function intersect_using( mixed $items, callable $callback ) {
 		return new static( array_uintersect( $this->items, $this->get_arrayable_items( $items ), $callback ) );
 	}
 
@@ -767,7 +767,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param    string $glue
 	 * @param    string $final_glue
 	 */
-	public function join( $glue, $final_glue = '' ): string {
+	public function join( string $glue, string $final_glue = '' ): string {
 		if ( '' === $final_glue ) {
 			return $this->implode( $glue );
 		}
@@ -1278,7 +1278,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param  TValue|callable(TValue,TKey): bool $value
 	 * @return static
 	 */
-	public function skip_until( $value ): static {
+	public function skip_until( mixed $value ): static {
 		$callback = $this->use_as_callable( $value ) ? $value : fn( $item ) => $item === $value;
 
 		return $this->skip_while( fn( $item, $key ) => ! $callback( $item, $key ) );
@@ -1290,7 +1290,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param  TValue|callable(TValue,TKey): bool $value
 	 * @return static
 	 */
-	public function skip_while( $value ): static {
+	public function skip_while( mixed $value ): static {
 		$callback = $this->use_as_callable( $value ) ? $value : fn( $item ) => $item === $value;
 
 		$items = [];
