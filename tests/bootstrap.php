@@ -24,7 +24,6 @@ define( 'MANTLE_PHPUNIT_TEMPLATE_PATH', __DIR__ . '/template-parts' );
 	->plugins( [
 		'byline-manager/byline-manager.php',
 		'co-authors-plus/co-authors-plus.php',
-		'example-plugin/plugin.php',
 	] )
 	->without_local_object_cache()
 	->install();
