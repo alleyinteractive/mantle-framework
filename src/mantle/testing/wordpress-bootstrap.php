@@ -239,7 +239,7 @@ tests_add_filter( 'enable_loading_object_cache_dropin', function ( $enable_objec
 require_once ABSPATH . '/wp-settings.php';
 
 if ( isset( $GLOBALS['wp_version'] ) ) {
-	Utils::info( 'WordPress version ' . $GLOBALS['wp_version'] . ' loaded.' );
+	Utils::info( 'Running WordPress version ' . $GLOBALS['wp_version'] );
 } else {
 	Utils::error( '🚨 WordPress version not detected!' );
 }
