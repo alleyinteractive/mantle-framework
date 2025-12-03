@@ -5,6 +5,7 @@
  * @package Mantle
  */
 
+use Mantle\Testing\EarlyDeprecationsHandler;
 use Mantle\Testing\EarlyIncorrectUsageHandler;
 use Mantle\Testing\TestCase;
 use Mantle\Testing\Utils;
@@ -237,6 +238,7 @@ tests_add_filter( 'enable_loading_object_cache_dropin', function ( $enable_objec
 	return $enable_object_cache;
 } );
 
+EarlyDeprecationsHandler::register();
 EarlyIncorrectUsageHandler::register();
 
 // Load WordPress.

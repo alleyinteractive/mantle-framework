@@ -24,6 +24,8 @@ use ReflectionClass;
 trait Reads_Annotations {
 	/**
 	 * Read docblock annotations for the current test case and method.
+	 *
+	 * Remove this method and all usage when PHPUnit 11.x support is dropped.
 	 */
 	public function get_annotations_for_method(): array {
 		// Use the PHPUnit 10.x method if available.

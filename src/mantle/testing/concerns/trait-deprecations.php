@@ -12,6 +12,7 @@ namespace Mantle\Testing\Concerns;
 use Mantle\Support\Str;
 use Mantle\Testing\Attributes\Expected_Deprecation;
 use Mantle\Testing\Attributes\Ignore_Deprecation;
+use Mantle\Testing\EarlyDeprecationsHandler;
 use Mantle\Testing\Exceptions\UnexpectedDeprecatedNoticeException;
 use Spatie\Backtrace\Backtrace;
 use Spatie\Backtrace\Frame;
@@ -23,20 +24,23 @@ trait Deprecations {
 	use Reads_Annotations;
 
 	/**
-	 * WordPress methods that trigger deprecations.
+	 * WordPress deprecation types.
 	 *
 	 * @var string[]
 	 */
-	public const DEPRECATED_FUNCTION_METHODS = [
-		'_deprecated_function',
-		'_deprecated_argument',
-		'_deprecated_hook',
+	public const DEPRECATION_TYPES = [
+		'argument',
+		'class',
+		'constructor',
+		'file',
+		'function',
+		'hook',
 	];
 
 	/**
 	 * Expected deprecation calls.
 	 *
-	 * @var array<mixed>
+	 * @var array<string>
 	 */
 	private $expected_deprecated = [];
 
@@ -50,7 +54,7 @@ trait Deprecations {
 	/**
 	 * Caught deprecated calls.
 	 *
-	 * @var array<mixed>
+	 * @var array<string>
 	 */
 	private $caught_deprecated = [];
 
@@ -65,6 +69,8 @@ trait Deprecations {
 	 * Sets up the expectations for testing a deprecated call.
 	 */
 	public function deprecations_set_up(): void {
+		$this->register_listeners_for_deprecations();
+
 		$annotations = $this->get_annotations_for_method();
 
 		foreach ( [ 'class', 'method' ] as $depth ) {
@@ -72,13 +78,6 @@ trait Deprecations {
 				$this->expected_deprecated = array_merge( $this->expected_deprecated, $annotations[ $depth ]['expectedDeprecated'] );
 			}
 		}
-
-		add_action( 'deprecated_function_run', [ $this, 'deprecated_function_run' ] );
-		add_action( 'deprecated_argument_run', [ $this, 'deprecated_function_run' ] );
-		add_action( 'deprecated_hook_run', [ $this, 'deprecated_function_run' ] );
-		add_action( 'deprecated_function_trigger_error', '__return_false' ); // @phpstan-ignore-line Action callback returns false
-		add_action( 'deprecated_argument_trigger_error', '__return_false' ); // @phpstan-ignore-line Action callback returns false
-		add_action( 'deprecated_hook_trigger_error', '__return_false' ); // @phpstan-ignore-line Action callback returns false
 
 		// Allow attributes to define the expected and ignored deprecations.
 		foreach ( $this->get_attributes_for_method( Expected_Deprecation::class ) as $attribute ) {
@@ -88,6 +87,21 @@ trait Deprecations {
 		foreach ( $this->get_attributes_for_method( Ignore_Deprecation::class ) as $attribute ) {
 			$this->ignoreDeprecated( $attribute->newInstance()->deprecation );
 		}
+	}
+
+	/**
+	 * Register the listeners for deprecated calls.
+	 */
+	private function register_listeners_for_deprecations(): void {
+		EarlyDeprecationsHandler::unregister();
+
+		foreach ( self::DEPRECATION_TYPES as $type ) {
+			add_action( "deprecated_{$type}_run", [ $this, 'deprecated_run' ] );
+			add_filter( "deprecated_{$type}_trigger_error", '__return_false', 9 );
+		}
+
+		// Filter for _deprecated_file() which doesn't follow the same pattern.
+		add_action( 'deprecated_file_included', [ $this, 'deprecated_run' ] );
 	}
 
 	/**
@@ -139,7 +153,7 @@ trait Deprecations {
 				frame: collect( $this->caught_deprecated_traces[ $index ] )
 					->skip_until( fn ( Frame $frame ): bool => in_array(
 						$frame->method,
-						self::DEPRECATED_FUNCTION_METHODS,
+						self::get_deprecation_methods(),
 						true,
 					) )
 					->slice( 1 )
@@ -187,15 +201,26 @@ trait Deprecations {
 	}
 
 	/**
-	 * Adds a deprecated function to the list of caught deprecated calls.
+	 * Adds a deprecated call to the list of caught deprecated calls.
 	 *
-	 * @param string $function The deprecated function.
+	 * @param string $name The name of the deprecated argument/function/hook/etc.
 	 */
-	public function deprecated_function_run( string $function ): void {
-		if ( ! in_array( $function, $this->caught_deprecated, true ) ) {
-			$this->caught_deprecated[] = $function;
+	public function deprecated_run( string $name ): void {
+		if ( ! in_array( $name, $this->caught_deprecated, true ) ) {
+			$this->caught_deprecated[] = $name;
 
 			$this->caught_deprecated_traces[] = Backtrace::create()->frames();
 		}
+	}
+
+	/**
+	 * Get the deprecation method names.
+	 *
+	 * @return string[]
+	 */
+	public static function get_deprecation_methods(): array {
+		return collect( self::DEPRECATION_TYPES )->map(
+			fn ( string $type ): string => "_deprecated_{$type}"
+		)->all();
 	}
 }
