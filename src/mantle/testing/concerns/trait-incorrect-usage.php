@@ -146,14 +146,10 @@ trait Incorrect_Usage {
 			);
 		}
 
-		// Perform an assertion, but only if there are expected or unexpected
-		// deprecated calls or wrongdoings.
 		if ( ! empty( $errors ) ) {
 			$this->fail( 'Unexpected incorrect usage notice(s) triggered: ' . implode( ', ', $errors ) );
 		}
 
-		// If we're here, all expected incorrect usages were caught. We can assert
-		// that these happened and pass the test.
 		if ( ! empty( $this->expected_doing_it_wrong ) ) {
 			$this->addToAssertionCount( count( $this->expected_doing_it_wrong ) );
 		}
