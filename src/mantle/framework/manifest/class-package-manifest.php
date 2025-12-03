@@ -64,7 +64,7 @@ class Package_Manifest {
 	 * @param string $key Key to retrieve.
 	 * @return array<string, string>
 	 */
-	public function config( string $key ) {
+	public function config( string $key ): array {
 		return collect( $this->get_manifest() )
 			->flat_map(
 				fn ( $configuration ) => (array) ( $configuration[ $key ] ?? [] )
