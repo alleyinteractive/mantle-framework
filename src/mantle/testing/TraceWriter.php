@@ -153,6 +153,8 @@ class TraceWriter {
 
 	/**
 	 * Returns the relative path of the given file path.
+	 *
+	 * @param string $filePath Absolute file path.
 	 */
 	private function getFileRelativePath( string $filePath ): string {
 		$cwd = (string) getcwd();

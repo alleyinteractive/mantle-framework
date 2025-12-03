@@ -94,6 +94,9 @@ trait Deprecations {
 	 * Handles a deprecated expectation.
 	 *
 	 * The DocBlock should contain `@expectedDeprecated` to trigger this.
+	 *
+	 * @throws \RuntimeException If the trace for a caught deprecated call is missing.
+	 * @throws UnexpectedDeprecatedNoticeException If an unexpected deprecation is caught.
 	 */
 	public function deprecations_tear_down(): void {
 		if ( empty( $this->expected_deprecated ) && empty( $this->caught_deprecated ) ) {

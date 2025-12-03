@@ -32,6 +32,8 @@
 		<exclude name="WordPress.PHP.YodaConditions.NotYoda" />
 		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
 		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
+		<exclude name="WordPressVIPMinimum.Functions.StripTags.StripTagsOneParameter" />
+		<exclude name="WordPressVIPMinimum.Performance.FetchingRemoteData" />
 	</rule>
 
 	<rule ref="Generic.Arrays.DisallowLongArraySyntax" />
@@ -74,5 +76,10 @@
 
 	<rule ref="Generic.CodeAnalysis.UselessOverridingMethod.Found">
 		<exclude-pattern>src/mantle/framework/resources/</exclude-pattern>
+	</rule>
+
+	<!-- Ignore all WordPres naming conventions for PSR-4 code. -->
+	<rule ref="WordPress.NamingConventions">
+		<exclude-pattern>src/mantle/testing/*</exclude-pattern>
 	</rule>
 </ruleset>

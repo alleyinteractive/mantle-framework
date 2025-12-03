@@ -393,7 +393,7 @@ trait Interacts_With_IO {
 	 * @param  int|string|null $verbosity
 	 */
 	public function alert( string $string, $verbosity = null ): void {
-		$length = Str::length( strip_tags( $string ) ) + 12; // phpcs:ignore WordPressVIPMinimum.Functions.StripTags.StripTagsOneParameter
+		$length = Str::length( strip_tags( $string ) ) + 12;
 
 		$this->comment( str_repeat( '*', $length ), $verbosity );
 		$this->comment( '*     ' . $string . '     *', $verbosity );
