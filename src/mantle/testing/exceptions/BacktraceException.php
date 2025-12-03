@@ -13,7 +13,7 @@ use ErrorException;
 use Spatie\Backtrace\Frame;
 
 /**
- * Exception for unexpected _doing_it_wrong() calls.
+ * Exception for backtrace-based errors.
  */
 abstract class BacktraceException extends ErrorException {
 	/**
