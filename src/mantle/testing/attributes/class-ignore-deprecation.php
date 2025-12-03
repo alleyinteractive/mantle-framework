@@ -13,6 +13,9 @@ use Attribute;
  * Ignore Deprecation
  *
  * Used to mark a test as ignoring a specific deprecation notice. Supports * as a wildcard.
+ *
+ * Using this attribute will not pass or fail a test by itself. It only prevents failures
+ * from unexpected deprecation notices.
  */
 #[Attribute( Attribute::TARGET_CLASS | Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE )]
 class Ignore_Deprecation {
