@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Added
+
+- Added better messaging for early `_doing_it_wrong()` calls during testing
+  bootstrap.
+
+### Changed
+
+- Tests that call `$this->ignoreIncorrectUsage()` or use
+  `Ignore_Incorrect_Usage` will no longer make any assertions. Only using the
+  `$this->setExpectedIncorrectUsage()` method or the `Expected_Incorrect_Usage`
+  attribute will make assertions and pass the test.
+
 ## v1.14.1
 
 ### Added
