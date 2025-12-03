@@ -114,7 +114,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 *
 	 * @return array<TKey, TValue>
 	 */
-	public function all() {
+	public function all(): array {
 		return $this->items;
 	}
 
@@ -671,9 +671,8 @@ class Collection implements ArrayAccess, Enumerable {
 	 *
 	 * @param    string $glue
 	 * @param    string $final_glue
-	 * @return string
 	 */
-	public function join( $glue, $final_glue = '' ) {
+	public function join( $glue, $final_glue = '' ): string {
 		if ( '' === $final_glue ) {
 			return $this->implode( $glue );
 		}
