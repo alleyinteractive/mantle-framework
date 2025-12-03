@@ -24,6 +24,7 @@ use function Mantle\Support\Helpers\collect;
  * bootstrap process), those calls are routed to this handler instead.
  *
  * @see \Mantle\Testing\Concerns\Incorrect_Usage
+ *
  * @internal
  */
 final class EarlyIncorrectUsageHandler {
@@ -31,10 +32,7 @@ final class EarlyIncorrectUsageHandler {
 	 * Register the hooks for the class.
 	 */
 	public static function register(): void {
-		tests_add_filter( 'doing_it_wrong_run', [ __CLASS__, 'handle_doing_it_wrong_run' ], 10, 2 );
-
-		// Prevent incorrect usage errors from throwing errors during tests. Errors
-		// will be handled manually in tests.
+		tests_add_filter( 'doing_it_wrong_run', [ self::class, 'handle_doing_it_wrong_run' ], 10, 2 );
 		tests_add_filter( 'doing_it_wrong_trigger_error', '__return_false', 9 );
 	}
 
@@ -42,7 +40,7 @@ final class EarlyIncorrectUsageHandler {
 	 * Deregister the hooks for the class.
 	 */
 	public static function unregister(): void {
-		remove_action( 'doing_it_wrong_run', [ __CLASS__, 'handle_doing_it_wrong_run' ] );
+		remove_action( 'doing_it_wrong_run', [ self::class, 'handle_doing_it_wrong_run' ] );
 		remove_filter( 'doing_it_wrong_trigger_error', '__return_false', 9 );
 	}
 
@@ -53,18 +51,17 @@ final class EarlyIncorrectUsageHandler {
 	 * @param string $message  The message for the incorrect usage.
 	 */
 	public static function handle_doing_it_wrong_run( string $function, string $message ): void {
-		$frames = Backtrace::create()->startingFromFrame(
-			fn ( Frame $frame ) => $frame->method === '_doing_it_wrong',
-		)->frames();
-
 		$writer = new TraceWriter(
-			message: $message,
-			// Skip to the first frame after the _doing_it_wrong() call.
-			frames: collect( $frames )->slice( 1 )->values()->all(),
-			prefix: 'Incorrect Usage',
+			title: 'Unexpected incorrect usage call in test bootstrap',
+			description: $message,
+			frames: collect( Backtrace::create()->frames() )
+				->skip_until( fn ( Frame $frame ) => $frame->method === '_doing_it_wrong' )
+				->slice( 1 )
+				->values()
+				->all(),
+			prefix: 'Early Incorrect Usage',
 		);
 
 		$writer->write();
-
 	}
 }

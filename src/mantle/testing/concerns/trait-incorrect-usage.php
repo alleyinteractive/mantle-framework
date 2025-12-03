@@ -122,9 +122,9 @@ trait Incorrect_Usage {
 
 			if ( ! empty( $this->caught_doing_it_wrong_traces[ $index ] ) ) {
 				$writer = new TraceWriter(
-					message: "Unexpected incorrect usage notice for {$unexpected}",
 					frames: $this->caught_doing_it_wrong_traces[ $index ],
 					prefix: 'Incorrect Usage',
+					message: "Unexpected incorrect usage notice for {$unexpected}",
 				);
 
 				$writer->write();
@@ -133,8 +133,8 @@ trait Incorrect_Usage {
 					"Unexpected incorrect usage notice for {$unexpected}"
 				);
 				// static::trace(
-				// 	message: "Unexpected incorrect usage notice for {$unexpected}",
-				// 	trace: $this->caught_doing_it_wrong_traces[ $index ],
+				// message: "Unexpected incorrect usage notice for {$unexpected}",
+				// trace: $this->caught_doing_it_wrong_traces[ $index ],
 				// );
 			}
 		}
@@ -195,7 +195,7 @@ trait Incorrect_Usage {
 			)->frames() );
 
 			$this->caught_doing_it_wrong_traces[] = $frames->slice( 1 )->values()->all();
-			//  debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 10 ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
+			// debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 10 ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
 		}
 	}
 }

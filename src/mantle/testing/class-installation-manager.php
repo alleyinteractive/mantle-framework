@@ -314,7 +314,7 @@ class Installation_Manager {
 		} catch ( \Throwable $throwable ) {
 			// Rethrow incorrect usage errors to be handled by the testing framework.
 			// if ( $throwable instanceof \ErrorException && str_starts_with( $throwable->getMessage(), 'Incorrect usage notice' ) ) {
-			// 	throw $throwable;
+			// throw $throwable;
 			// }
 
 			Utils::error( '🚨 Failed to load the WordPress installation. Exception thrown:' );

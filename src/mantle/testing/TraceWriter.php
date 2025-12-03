@@ -20,33 +20,31 @@ use function Termwind\renderUsing;
 
 /**
  * Output traces in console and unit testing environments.
+ *
+ * @internal
  */
 class TraceWriter {
-	private OutputInterface $output;
-
 	/**
 	 * Number of lines to show in code snippets.
 	 */
-	private int $lines;
+	private readonly int $lines;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param string $message
-	 * @param array $frames
-	 * @param string|null $prefix
+	 * @param string          $title
+	 * @param string          $description
+	 * @param Frame[]         $frames
+	 * @param string|null     $prefix
+	 * @param OutputInterface $output
 	 */
 	public function __construct(
-		public readonly string $message,
+		public readonly string $title,
+		public readonly string $description,
 		public readonly array $frames,
 		public readonly ?string $prefix = null,
-		OutputInterface $output = null,
+		private readonly OutputInterface $output = new ConsoleOutput( verbosity: OutputInterface::VERBOSITY_NORMAL, decorated: true ),
 	) {
-		$this->output = $output ?? new ConsoleOutput(
-			verbosity: OutputInterface::VERBOSITY_NORMAL,
-			decorated: true,
-		);
-
 		$this->lines = Utils::env( 'MANTLE_TESTING_TRACE_SNIPPET_LINES', 10 );
 	}
 
@@ -56,7 +54,7 @@ class TraceWriter {
 	public function write(): void {
 		renderUsing( $this->output );
 
-		$this->renderTitle();
+		$this->renderTitleAndDescription();
 		$this->renderSnippet();
 		$this->renderTrace();
 
@@ -66,9 +64,7 @@ class TraceWriter {
 	/**
 	 * Render the title of the trace.
 	 */
-	private function renderTitle(): void {
-		$message = strip_tags( $this->message );
-
+	private function renderTitleAndDescription(): void {
 		if ( $this->prefix ) {
 			$prefix = strtoupper( $this->prefix );
 			$prefix = "<span class=\"bg-red-400 text-black font-bold px-1\">{$prefix}</span> ";
@@ -76,7 +72,16 @@ class TraceWriter {
 			$prefix = '';
 		}
 
-		render( "<div class=\"mx-1 mt-1\">{$prefix}{$message}</div>" );
+		$description = strip_tags( $this->description );
+
+		render(
+			<<<HTML
+			<div class="mx-1 mt-1">
+				{$prefix}<span class="font-bold">{$this->title}</span>
+				<div class="my-1">{$description}</div>
+			</div>
+			HTML
+		);
 	}
 
 	/**
@@ -111,18 +116,16 @@ class TraceWriter {
 	 */
 	private function renderTrace(): void {
 		foreach ( $this->frames as $i => $frame ) {
-			assert( $frame instanceof Frame );
-
 			// Skip vendor frames unless in verbose mode.
-			if ( $this->output->getVerbosity() < OutputInterface::VERBOSITY_VERBOSE && strpos($frame->file, '/vendor/') !== false ) {
+			if ( $this->output->getVerbosity() < OutputInterface::VERBOSITY_VERBOSE && strpos( $frame->file, '/vendor/' ) !== false ) {
 				continue;
 			}
 
-			$pos = str_pad((string) ((int) $i + 1), 4, ' ');
-			$file = $this->getFileRelativePath($frame->file);
+			$pos  = str_pad( (string) ( (int) $i + 1 ), 4, ' ' );
+			$file = $this->getFileRelativePath( $frame->file );
 
 			$this->output->writeln(
-				"<fg=yellow>$pos</><fg=default;options=bold>{$file}</>:<fg=default;options=bold>{$frame->lineNumber}</>",
+				"<fg=yellow>{$pos}</><fg=default;options=bold>{$file}</>:<fg=default;options=bold>{$frame->lineNumber}</>",
 			);
 		}
 
@@ -138,18 +141,14 @@ class TraceWriter {
 	private function getStartingLine( Frame $frame, int $lines ): int {
 		$starting_line = $frame->lineNumber - (int) floor( $lines / 2 );
 
-		if ( $starting_line < 1 ) {
-			$starting_line = 1;
-		}
-
-		return $starting_line;
+		return max( 1, $starting_line );
 	}
 
 	/**
 	 * Get the first frame from the trace.
 	 */
 	private function getFirstFrame(): ?Frame {
-		return collect($this->frames)->first();
+		return collect( $this->frames )->first();
 	}
 
 	/**
@@ -158,7 +157,7 @@ class TraceWriter {
 	private function getFileRelativePath( string $filePath ): string {
 		$cwd = (string) getcwd();
 
-		if ( ! empty($cwd)) {
+		if ( ! empty( $cwd ) ) {
 			return str_replace( $cwd . DIRECTORY_SEPARATOR, '', $filePath );
 		}
 
