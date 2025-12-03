@@ -14,4 +14,4 @@ use ErrorException;
 /**
  * Exception for unexpected _doing_it_wrong() calls.
  */
-class UnexpectedIncorrectUsageException extends ErrorException {}
+class UnexpectedIncorrectUsageException extends BacktraceException {}

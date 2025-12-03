@@ -2,22 +2,36 @@
 /**
  * This file contains the Deprecations Trait
  *
+ * phpcs:disable WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+ *
  * @package Mantle
  */
-
-// phpcs:disable WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
 
 namespace Mantle\Testing\Concerns;
 
 use Mantle\Support\Str;
 use Mantle\Testing\Attributes\Expected_Deprecation;
 use Mantle\Testing\Attributes\Ignore_Deprecation;
+use Mantle\Testing\Exceptions\UnexpectedDeprecatedNoticeException;
+use Spatie\Backtrace\Backtrace;
+use Spatie\Backtrace\Frame;
 
 use function Mantle\Support\Helpers\collect;
 
 trait Deprecations {
 	use Output_Messages;
 	use Reads_Annotations;
+
+	/**
+	 * WordPress methods that trigger deprecations.
+	 *
+	 * @var string[]
+	 */
+	public const DEPRECATED_FUNCTION_METHODS = [
+		'_deprecated_function',
+		'_deprecated_argument',
+		'_deprecated_hook',
+	];
 
 	/**
 	 * Expected deprecation calls.
@@ -42,6 +56,8 @@ trait Deprecations {
 
 	/**
 	 * Trace storage for deprecated calls.
+	 *
+	 * @var array<array<Frame>>
 	 */
 	private array $caught_deprecated_traces = [];
 
@@ -80,6 +96,10 @@ trait Deprecations {
 	 * The DocBlock should contain `@expectedDeprecated` to trigger this.
 	 */
 	public function deprecations_tear_down(): void {
+		if ( empty( $this->expected_deprecated ) && empty( $this->caught_deprecated ) ) {
+			return;
+		}
+
 		$errors = [];
 
 		$not_caught_deprecated = array_diff( $this->expected_deprecated, $this->caught_deprecated );
@@ -87,48 +107,49 @@ trait Deprecations {
 			$errors[] = "Failed to assert that {$not_caught} triggered a deprecated notice";
 		}
 
-		$unexpected_deprecated = collect( $this->caught_deprecated )
-			->filter(
-				function ( string $caught ): bool {
-					$ignored_and_expected = array_merge( $this->expected_deprecated, $this->ignored_deprecated );
+		$unexpected_deprecated = collect( $this->caught_deprecated )->filter(
+			function ( string $caught ): bool {
+				$ignored_and_expected = array_merge( $this->expected_deprecated, $this->ignored_deprecated );
 
-					if ( in_array( $caught, $ignored_and_expected, true ) ) {
+				if ( in_array( $caught, $ignored_and_expected, true ) ) {
+					return false;
+				}
+
+				// Allow partial matches when ignoring a deprecation call.
+				foreach ( $this->ignored_deprecated as $ignored ) {
+					if ( Str::is( $ignored, $caught ) ) {
 						return false;
 					}
-
-					// Allow partial matches when ignoring a deprecation call.
-					foreach ( $this->ignored_deprecated as $ignored ) {
-						if ( Str::is( $ignored, $caught ) ) {
-							return false;
-						}
-					}
-
-					return true;
 				}
-			)
-			->all();
+
+				return true;
+			}
+		)->all();
 
 		foreach ( $unexpected_deprecated as $index => $unexpected ) {
-			if ( ! empty( $this->caught_deprecated_traces[ $index ] ) ) {
-				static::trace(
-					"Unexpected deprecated notice for {$unexpected}",
-					$this->caught_deprecated_traces[ $index ],
-				);
+			if ( ! isset( $this->caught_deprecated_traces[ $index ] ) ) {
+				throw new \RuntimeException( 'Trace for caught deprecated call is missing.' );
 			}
 
-			$errors[] = $unexpected;
+			throw UnexpectedDeprecatedNoticeException::create(
+				message: "Unexpected deprecated notice for {$unexpected}",
+				frame: collect( $this->caught_deprecated_traces[ $index ] )
+					->skip_until( fn ( Frame $frame ): bool => in_array(
+						$frame->method,
+						self::DEPRECATED_FUNCTION_METHODS,
+						true,
+					) )
+					->slice( 1 )
+					->first_or_fail(),
+			);
 		}
 
-		// Perform an assertion, but only if there are expected or unexpected deprecated calls or wrongdoings.
-		if (
-			! empty( $this->expected_deprecated )
-			|| ! empty( $this->caught_deprecated )
-		) {
-			if ( ! empty( $errors ) ) {
-				$this->fail( 'Unexpected deprecated notices: ' . implode( ', ', $errors ) );
-			} else {
-				$this->assertTrue( true ); // @phpstan-ignore-line alreadyNarrowedType
-			}
+		if ( ! empty( $errors ) ) {
+			$this->fail( 'Unexpected deprecated notices: ' . implode( ', ', $errors ) );
+		}
+
+		if ( ! empty( $this->expected_deprecated ) ) {
+			$this->addToAssertionCount( count( $this->expected_deprecated ) );
 		}
 	}
 
@@ -158,7 +179,7 @@ trait Deprecations {
 	 *                           parameter of the `_deprecated_function()` or
 	 *                           `_deprecated_argument()` call.
 	 */
-	public function ignoreDeprecated( $deprecated = '*' ): void {
+	public function ignoreDeprecated( string $deprecated = '*' ): void {
 		$this->ignored_deprecated[] = $deprecated;
 	}
 
@@ -167,11 +188,11 @@ trait Deprecations {
 	 *
 	 * @param string $function The deprecated function.
 	 */
-	public function deprecated_function_run( $function ): void {
+	public function deprecated_function_run( string $function ): void {
 		if ( ! in_array( $function, $this->caught_deprecated, true ) ) {
 			$this->caught_deprecated[] = $function;
 
-			$this->caught_deprecated_traces[] = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 10 ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
+			$this->caught_deprecated_traces[] = Backtrace::create()->frames();
 		}
 	}
 }

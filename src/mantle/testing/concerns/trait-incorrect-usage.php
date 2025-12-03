@@ -124,25 +124,16 @@ trait Incorrect_Usage {
 		)->all();
 
 		foreach ( $unexpected_doing_it_wrong as $index => $unexpected ) {
-			$errors[] = $unexpected;
-
 			if ( ! isset( $this->caught_doing_it_wrong_traces[ $index ] ) ) {
 				throw new \RuntimeException( 'Trace for caught _doing_it_wrong() call is missing.' );
 			}
 
-			$frame = collect( $this->caught_doing_it_wrong_traces[ $index ] )
-				->skip_until( fn ( Frame $frame ): bool => $frame->method === '_doing_it_wrong' )
-				->slice( 1 )
-				->first();
-
-			assert( $frame instanceof Frame );
-
-			throw new UnexpectedIncorrectUsageException(
-				"Unexpected incorrect usage notice for {$unexpected}",
-				E_USER_ERROR,
-				E_USER_ERROR,
-				$frame->file,
-				$frame->lineNumber,
+			throw UnexpectedIncorrectUsageException::create(
+				message: "Unexpected incorrect usage notice for {$unexpected}",
+				frame: collect( $this->caught_doing_it_wrong_traces[ $index ] )
+					->skip_until( fn ( Frame $frame ): bool => $frame->method === '_doing_it_wrong' )
+					->slice( 1 )
+					->first_or_fail(),
 			);
 		}
 
