@@ -42,7 +42,6 @@ if ( FrameworkTestCase::phpunit_version_compare( '11.0.0', '<' ) ) {
 		public function test_memoize_is_disabled(): void {
 			$reflection = new \ReflectionClass( Memoize::class );
 			$property   = $reflection->getProperty( 'enabled' );
-			$property->setAccessible( true );
 			$this->assertFalse( $property->getValue() );
 		}
 

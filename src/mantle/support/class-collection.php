@@ -1489,7 +1489,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param mixed $key
 	 */
 	public function offsetExists( mixed $key ): bool {
-		return array_key_exists( $key, $this->items );
+		return ! is_null( $key ) && array_key_exists( $key, $this->items );
 	}
 
 	/**

@@ -143,7 +143,7 @@ class Application extends Console_Application implements Console_Application_Con
 			$command->set_container( $this->container );
 		}
 
-		parent::add( $command );
+		parent::addCommand( $command );
 
 		return $this;
 	}

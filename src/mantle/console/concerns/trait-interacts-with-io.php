@@ -455,8 +455,8 @@ trait Interacts_With_IO {
 	 *
 	 * @param  string|int|null $level
 	 */
-	protected function parse_verbosity( $level = null ): int {
-		if ( isset( $this->verbosity_map[ $level ] ) ) {
+	protected function parse_verbosity( string|int|null $level = null ): int {
+		if ( $level && isset( $this->verbosity_map[ $level ] ) ) {
 			$level = $this->verbosity_map[ $level ];
 		} elseif ( ! is_int( $level ) ) {
 			$level = OutputInterface::VERBOSITY_NORMAL;

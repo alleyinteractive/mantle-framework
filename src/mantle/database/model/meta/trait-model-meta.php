@@ -22,7 +22,7 @@ trait Model_Meta {
 	 *
 	 * @var array<string, mixed>
 	 */
-	protected $queued_meta = [];
+	private array $queued_meta = [];
 
 	/**
 	 * Retrieve meta data for the object.
@@ -94,7 +94,7 @@ trait Model_Meta {
 		}
 
 		foreach ( $meta_values as $key => $value ) {
-			$this->queued_meta[ $key ] = $value;
+			$this->queued_meta[ $key ] = [ $value, true ];
 			$this->set_meta( $key, $value );
 		}
 	}

@@ -277,7 +277,6 @@ class CollectionTest extends FrameworkTestCase {
 
 		$class = new ReflectionClass($collection);
 		$method = $class->getMethod('get_arrayable_items');
-		$method->setAccessible(true);
 
 		$items = new TestArrayableObject;
 		$array = $method->invokeArgs($data, [$items]);
