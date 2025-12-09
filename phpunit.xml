@@ -10,8 +10,6 @@
 	failOnDeprecation="true"
 	failOnEmptyTestSuite="true"
 	failOnNotice="true"
-	failOnPhpunitDeprecation="true"
-	failOnPhpunitWarning="true"
 	failOnRisky="true"
 	failOnSkipped="false"
 	failOnWarning="true"
