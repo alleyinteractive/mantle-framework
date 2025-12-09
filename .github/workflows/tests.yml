@@ -71,7 +71,7 @@ jobs:
     steps:
       - name: Get WordPress Versions
         id: wp-versions
-        uses: alleyinteractive/action-get-wordpress-versions@copilot/add-minimum-version-support
+        uses: alleyinteractive/action-get-wordpress-versions@develop
         with:
           minimum-version: "6.5"
 
