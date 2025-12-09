@@ -73,21 +73,20 @@ class AssetManagerTest extends TestCase {
 		global $wp_scripts;
 
 		// Prevent a failing test if this is removed in the future.
-		if ( ! isset( $wp_scripts->registered["swfobject"] ) ) {
-			$this->markTestSkipped( "swfobject is not registered in core, should change the dependency tested against" );
+		if ( ! isset( $wp_scripts->registered["masonry"] ) ) {
+			$this->markTestSkipped( "masonry is not registered in core, should change the dependency tested against" );
 			return;
 		}
 
-		$version = $wp_scripts->registered["swfobject"]->ver;
+		$version = $wp_scripts->registered["masonry"]->ver;
 
-		// Get the core version of the asset.
 		( new Asset_Manager() )
-			->script( "swfobject" )
+			->script( "masonry" )
 			->version( null )
 			->async();
 
 		$this->assertStringContainsString(
-			"<script src=\"http://example.org/wp-includes/js/swfobject.js?ver={$version}\" id=\"swfobject-js\" async",
+			"<script src=\"http://example.org/wp-includes/js/masonry.min.js?ver={$version}\" id=\"masonry-js\" async",
 			$this->get_wp_head(),
 		);
 	}

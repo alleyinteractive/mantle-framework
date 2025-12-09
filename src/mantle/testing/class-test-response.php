@@ -150,6 +150,13 @@ class Test_Response {
 	}
 
 	/**
+	 * Alias for get_content().
+	 */
+	public function body(): ?string {
+		return $this->content;
+	}
+
+	/**
 	 * Sets the response headers.
 	 *
 	 * @param array $headers Headers to set, as key => value pairs.
