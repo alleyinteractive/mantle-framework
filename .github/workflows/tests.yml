@@ -71,9 +71,9 @@ jobs:
     steps:
       - name: Get WordPress Versions
         id: wp-versions
-        uses: alleyinteractive/action-get-wordpress-versions@develop
+        uses: alleyinteractive/action-get-wordpress-versions@copilot/add-minimum-version-support
         with:
-          number: 4
+          minimum-version: "6.5"
 
   unit-tests:
     if: github.event.pull_request.draft == false
