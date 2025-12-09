@@ -143,7 +143,7 @@ class Application extends Console_Application implements Console_Application_Con
 			$command->set_container( $this->container );
 		}
 
-		if ( method_exists( parent::class, 'addCommand' ) ) {
+		if ( method_exists( parent::class, 'addCommand' ) ) { // @phpstan-ignore-line function.alreadyNarrowedType
 			parent::addCommand( $command );
 		} else {
 			parent::add( $command );

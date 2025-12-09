@@ -40,6 +40,10 @@ trait Interacts_With_Hooks {
 			function ( $value ) {
 				$filter = current_filter();
 
+				if ( ! $filter ) {
+					return $value;
+				}
+
 				if ( ! isset( $this->hooks_fired[ $filter ] ) ) {
 					$this->hooks_fired[ $filter ] = 0;
 				}

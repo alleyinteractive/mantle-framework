@@ -88,7 +88,7 @@ class Middleware_Name_Resolver {
 			// If this middleware is actually a route middleware, we will extract the full
 			// class name out of the middleware list now. Then we'll add the parameters
 			// back onto this class' name so the pipeline will properly extract them.
-			if ( isset( $map[ $middleware ] ) ) {
+			if ( $middleware && isset( $map[ $middleware ] ) ) {
 				$middleware = $map[ $middleware ];
 			}
 

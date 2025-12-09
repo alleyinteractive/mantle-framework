@@ -49,8 +49,6 @@ trait Generates_Images {
 
 		imagepng( $image, "{$directory}/{$filename}" );
 
-		imagedestroy( $image );
-
 		return "{$directory}/{$filename}";
 	}
 

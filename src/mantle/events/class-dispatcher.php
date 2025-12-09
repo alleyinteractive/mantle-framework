@@ -154,6 +154,7 @@ class Dispatcher implements Dispatcher_Contract {
 			$payload[] = ''; // Mirror the default behavior of do_action.
 		}
 
+		// @phpstan-ignore-next-line argument.type
 		return apply_filters( $event, ...$payload ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
 	}
 
