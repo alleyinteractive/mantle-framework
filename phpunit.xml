@@ -7,6 +7,7 @@
 	xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
 	displayDetailsOnTestsThatTriggerDeprecations="true"
 	displayDetailsOnTestsThatTriggerWarnings="true"
+	failOnAllIssues="true"
 	failOnNotice="true"
 	failOnWarning="true"
 	failOnDeprecation="true"

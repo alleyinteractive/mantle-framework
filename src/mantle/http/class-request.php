@@ -368,7 +368,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 			$parameters = new ParameterBag(
 				array_filter(
 					$parameters,
-					fn ( $parameter ) => ! str_starts_with( $parameter, '_' ),
+					fn ( $parameter ) => ! str_starts_with( (string) $parameter, '_' ),
 					ARRAY_FILTER_USE_KEY
 				)
 			);

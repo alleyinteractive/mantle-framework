@@ -59,7 +59,7 @@ jobs:
       - name: Run Linter
         uses: alleyinteractive/action-test-php@develop
         with:
-          php-version: '8.4'
+          php-version: '8.5'
           skip-services: 'true'
           skip-wordpress-install: 'true'
           test-command: 'composer lint'
@@ -84,7 +84,7 @@ jobs:
       matrix:
         dependencies: ["prefer-lowest", "prefer-stable"]
         multisite: [true, false]
-        php: [8.2, 8.3, 8.4]
+        php: [8.2, 8.3, 8.4, 8.5]
         wordpress: ${{fromJson(needs.get-versions.outputs.versions)}}
         exclude:
           - php: 8.4

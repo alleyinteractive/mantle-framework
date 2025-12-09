@@ -8,7 +8,9 @@
 use Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector;
+use Rector\CodingStyle\Rector\ArrowFunction\ArrowFunctionDelegatingCallToFirstClassCallableRector;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
+use Rector\CodingStyle\Rector\Closure\ClosureDelegatingCallToFirstClassCallableRector;
 use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
 use Rector\CodingStyle\Rector\FunctionLike\FunctionLikeToFirstClassCallableRector;
 use Rector\CodingStyle\Rector\If_\NullableCompareToNullRector;
@@ -24,6 +26,7 @@ use Rector\Php70\Rector\StmtsAwareInterface\IfIssetToCoalescingRector;
 use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\Php80\Rector\NotIdentical\StrContainsRector;
+use Rector\Php81\Rector\Array_\ArrayToFirstClassCallableRector;
 use Rector\Php81\Rector\Array_\FirstClassCallableRector;
 use Rector\Php84\Rector\Param\ExplicitNullableParamTypeRector;
 use Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector;
@@ -51,7 +54,7 @@ use Rector\ValueObject\PhpVersion;
  * - ChangeOrIfContinueToMultiContinueRector: doesn't make sense.
  */
 return RectorConfig::configure()
-	->withPhpVersion( PhpVersion::PHP_84 )
+	->withPhpVersion( PhpVersion::PHP_85 )
 	->withPhpSets()
 	->withIndent( "\t" )
 	->withPaths( [ __DIR__ . '/src' ] )
@@ -89,7 +92,7 @@ return RectorConfig::configure()
 		ReturnTypeFromStrictTypedCallRector::class => [
 			__DIR__ . '/src/mantle/database/model/relations',
 		],
-		FirstClassCallableRector::class,
+		ArrayToFirstClassCallableRector::class,
 		RemoveUselessParamTagRector::class,
 		StrContainsRector::class,
 		AddArrowFunctionReturnTypeRector::class,
@@ -123,7 +126,8 @@ return RectorConfig::configure()
 		CatchExceptionNameMatchingTypeRector::class,
 		EncapsedStringsToSprintfRector::class,
 		FlipTypeControlToUseExclusiveTypeRector::class,
-		FunctionLikeToFirstClassCallableRector::class,
+		ClosureDelegatingCallToFirstClassCallableRector::class,
+		ArrowFunctionDelegatingCallToFirstClassCallableRector::class,
 		RemoveNullArgOnNullDefaultParamRector::class,
 		IfIssetToCoalescingRector::class,
 	] );
