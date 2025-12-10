@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Composer and Monorepo Validate"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Run General Tests
         uses: alleyinteractive/action-test-general@develop
@@ -51,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Lint Tests"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Run General Tests
         uses: alleyinteractive/action-test-general@develop
@@ -115,7 +115,7 @@ jobs:
       cancel-in-progress: true
     name: "PR Tests PHP ${{ matrix.php }} WordPress ${{ matrix.wordpress }} ${{ matrix.multisite && 'Multisite' || '' }} Dependencies ${{ matrix.dependencies }}"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Run PHP Tests
         uses: alleyinteractive/action-test-php@develop
@@ -142,7 +142,7 @@ jobs:
       cancel-in-progress: true
     name: "Parallel PR Tests PHP ${{ matrix.php }} WordPress ${{ matrix.wordpress }}"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Run PHP Tests
         uses: alleyinteractive/action-test-php@develop

@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       # required for matrix of packages set
       - uses: shivammathur/setup-php@v2
@@ -43,7 +43,7 @@ jobs:
         package: ${{fromJson(needs.provide_packages_json.outputs.matrix)}}
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       # no tag
       -

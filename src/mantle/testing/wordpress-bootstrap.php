@@ -200,7 +200,7 @@ if ( $multisite && ! $installing_wp ) {
 	defined( 'SUBDOMAIN_INSTALL' ) || define( 'SUBDOMAIN_INSTALL', false );
 	$GLOBALS['base'] = '/';
 } elseif ( ! $installing_wp ) {
-	Utils::info( "Running as single site...\n<br>ℹ️ To run multisite, pass <span class=\"text-orange-500\">WP_MULTISITE=1</span> or set the <span class=\"text-orange-500\">WP_TESTS_MULTISITE=1</span> constant." );
+	Utils::info( "Running as single site...\n<br>ℹ️ To run multisite, call <span class=\"text-orange-500\">with_multisite()</span> on the installation manager." );
 }
 
 unset( $multisite );
@@ -243,6 +243,12 @@ EarlyIncorrectUsageHandler::register();
 
 // Load WordPress.
 require_once ABSPATH . '/wp-settings.php';
+
+if ( isset( $GLOBALS['wp_version'] ) ) {
+	Utils::info( 'Running WordPress version ' . $GLOBALS['wp_version'] . ( is_multisite() ? ' multisite' : ' single site' ) );
+} else {
+	Utils::error( '🚨 WordPress version not detected!' );
+}
 
 /*
  * See https://core.trac.wordpress.org/ticket/48605.
