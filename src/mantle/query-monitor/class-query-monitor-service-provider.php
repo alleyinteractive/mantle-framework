@@ -82,9 +82,11 @@ class Query_Monitor_Service_Provider extends Service_Provider {
 	 * @param array $collectors Collectors.
 	 */
 	public function register_collector( array $collectors ): array {
-		$collectors['mantle']         = new Collector\Collector( $this->app );
-		$collectors['mantle-headers'] = new Collector\Header_Collector( $this->app );
-		$collectors['mantle-logs']    = new Collector\Log_Collector( $this->app );
+		$collectors['mantle']                = new Collector\Collector( $this->app );
+		$collectors['mantle-headers']        = new Collector\Header_Collector( $this->app );
+		$collectors['mantle-logs']           = new Collector\Log_Collector( $this->app );
+		$collectors['mantle-remote-request'] = new Collector\Remote_Request_Collector( $this->app );
+
 		return $collectors;
 	}
 
@@ -108,6 +110,11 @@ class Query_Monitor_Service_Provider extends Service_Provider {
 		$collector = QM_Collectors::get( 'mantle-logs' );
 		if ( $collector ) {
 			$output['mantle-logs'] = new Output\Output_Logs( $collector );
+		}
+
+		$collector = QM_Collectors::get( 'mantle-remote-request' );
+		if ( $collector ) {
+			$output['mantle-remote-request'] = new Output\Output_Remote_Request( $collector );
 		}
 
 		return $output;

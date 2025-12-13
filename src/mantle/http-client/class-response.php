@@ -462,6 +462,10 @@ class Response implements ArrayAccess {
 	 * @param mixed $offset Offset to get.
 	 */
 	public function offsetGet( mixed $offset ): mixed {
+		if ( is_null( $offset ) ){
+			return null;
+		}
+
 		if ( $this->is_xml() ) {
 			return $this->xml()->{ $offset };
 		}
