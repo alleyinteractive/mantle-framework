@@ -53,9 +53,11 @@ class Cache_Flexible_Middleware extends Cache_Middleware {
 		if ( $cache instanceof SWR_Storage && $cache->value instanceof Response ) {
 			$response = $cache->value;
 
+			$is_stale = $cache->is_stale();
+
 			// If the cache is stale, we can still return it, but we should refresh
 			// deferred to the end of the request.
-			if ( $cache->is_stale() ) {
+			if ( $is_stale ) {
 				$fresh_request = ( clone $request )->without_middleware( Cache_Middleware::class );
 
 				defer(
@@ -63,12 +65,30 @@ class Cache_Flexible_Middleware extends Cache_Middleware {
 				);
 			}
 
-			$response->cached = true;
+			$response->cached = $is_stale ? Cache_Status::STALE : Cache_Status::FRESH;
+
+			/**
+			 * Fires when a cached HTTP response is retrieved.
+			 *
+			 * @param Pending_Request $request The HTTP request.
+			 * @param Response        $cache   The cached response.
+			 */
+			do_action( 'mantle_http_client_cache_hit', $request, $response );
 
 			return $response;
 		}
 
 		$response = $next( $request );
+
+		$response->cached = Cache_Status::CACHED;
+
+		/**
+		 * Fires when a HTTP response is cached.
+		 *
+		 * @param Pending_Request $request The HTTP request.
+		 * @param Response        $response   The cached response.
+		 */
+		do_action( 'mantle_http_client_cached', $request, $response );
 
 		assert( $response instanceof Response );
 

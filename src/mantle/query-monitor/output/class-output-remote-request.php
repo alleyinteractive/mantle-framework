@@ -15,6 +15,9 @@ use function Mantle\Support\Helpers\collect;
 
 /**
  * Query Monitor output for logs
+ *
+ * @todo add shortcircuited.
+ * @todo Add error coloring.
  */
 class Output_Remote_Request extends \QM_Output_Html {
 	/**
@@ -82,7 +85,11 @@ class Output_Remote_Request extends \QM_Output_Html {
 				'qm-num' => $key === 'time',
 			] );
 
-			echo "<th scope=\"col\" class=\"{$class}\">" . esc_html( $header ) . '</th>';
+			printf(
+				'<th scope="col" class="%s">%s</th>',
+				esc_attr( $class ),
+				esc_html( $header ),
+			);
 		}
 
 		echo '</tr>';
@@ -94,28 +101,41 @@ class Output_Remote_Request extends \QM_Output_Html {
 			echo '<tr>';
 			echo '<td>' . esc_html( strtoupper( $request['args']['method'] ?? 'GET' ) ) . '</td>';
 			echo '<td class="qm-ltr"><code>';
-			echo esc_html( $request['response']->status() );
+
+			if ( isset( $request['args']['blocking'] ) && false === $request['args']['blocking'] ) {
+				esc_html_e( 'Non-blocking', 'mantle' );
+			} else {
+				echo esc_html( $request['response']->status() );
+			}
+
 			echo '</code></td>';
 			echo '<td class="qm-ltr"><code>' . esc_html( $request['url'] ) . '</code></td>';
-			// echo '<td>' . ( $request['response']->is_from_cache() ? esc_html__( 'Yes', 'mantle' ) : esc_html__( 'No', 'mantle' ) ) . '</td>';
-			echo '<td></td>'; // Caching placeholder.
+			echo '<td>';
+
+			if ( $request['response']->cached ) {
+				echo esc_html( ucfirst( (string) $request['response']->cached->value ) );
+			} else {
+				echo esc_html__( 'Uncached', 'mantle' );
+			}
+
+			echo '</td>';
 
 			$caller = array_shift( $request['trace'] );
 
 			echo '<td class="qm-has-toggle qm-nowrap qm-ltr">';
 
 			if ( ! empty( $request['trace'] ) ) {
-				echo self::build_toggler();
+				echo self::build_toggler(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			}
 
 			echo '<ol>';
 
-			echo '<li>' . $this->compile_trace_frame( $caller ) . '</li>';
+			echo '<li>' . $this->compile_trace_frame( $caller ) . '</li>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 			if ( ! empty( $request['trace'] ) ) {
 				echo '<div class="qm-toggled"><li>';
 
-				echo collect( $request['trace'] )
+				echo collect( $request['trace'] ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					->map( $this->compile_trace_frame( ... ) )
 					->implode( '</li><li>' );
 
@@ -146,7 +166,7 @@ class Output_Remote_Request extends \QM_Output_Html {
 		$count = count( $data->requests );
 
 		$menu['qm-mantle']['children'][] = $this->menu( [
-			'title' => esc_html( $count
+			'title' => esc_html( $count !== 0
 				? sprintf( /* translators: %s: Number of remote requests. */
 					__( 'Remote Requests (%s)', 'mantle' ),
 					number_format_i18n( $count )
@@ -167,7 +187,7 @@ class Output_Remote_Request extends \QM_Output_Html {
 			'<code>%s</code><br /><span class="qm-info qm-supplemental">%s:%s</span>',
 			$frame->method,
 			$frame->file,
-			$frame->lineNumber,
+			$frame->lineNumber, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		);
 	}
 }

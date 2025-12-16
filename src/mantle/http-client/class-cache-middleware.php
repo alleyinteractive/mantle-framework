@@ -43,12 +43,30 @@ class Cache_Middleware {
 		$cache     = wp_cache_get( $cache_key, self::CACHE_GROUP );
 
 		if ( $cache && $cache instanceof Response ) {
-			$cache->cached = true;
+			$cache->cached = Cache_Status::CACHED;
+
+			/**
+			 * Fires when a cached HTTP response is retrieved.
+			 *
+			 * @param Pending_Request $request The HTTP request.
+			 * @param Response        $cache   The cached response.
+			 */
+			do_action( 'mantle_http_client_cache_hit', $request, $cache );
 
 			return $cache;
 		}
 
 		$response = $next( $request );
+
+		$response->cached = Cache_Status::MISSED;
+
+		/**
+		 * Fires when a HTTP response is cached.
+		 *
+		 * @param Pending_Request $request The HTTP request.
+		 * @param Response        $response The cached response.
+		 */
+		do_action( 'mantle_http_client_cached', $request, $response );
 
 		wp_cache_set( $cache_key, $response, self::CACHE_GROUP, $this->calculate_ttl( $request, $response ) ); // phpcs:ignore WordPressVIPMinimum.Performance.LowExpiryCacheTime.CacheTimeUndetermined
 

@@ -30,6 +30,13 @@ class Pending_Request {
 	use Macroable;
 
 	/**
+	 * Key used to identify the request.
+	 *
+	 * Used as a request argument to track requests/responses.
+	 */
+	public const REQUEST_ID_KEY = '_mantle_http_request_id';
+
+	/**
 	 * Base URL for the request.
 	 */
 	protected ?string $base_url = null;
@@ -744,6 +751,9 @@ class Pending_Request {
 				$this->url = "{$this->url}?{$this->options['query']}";
 			}
 		}
+
+		// Assign a unique request ID for internal tracking.
+		$this->options[ self::REQUEST_ID_KEY ] = microtime( true ) . ':' . $this->url . ':' . uniqid();
 	}
 
 	/**
@@ -797,6 +807,9 @@ class Pending_Request {
 
 				break;
 		}
+
+		// Ensure the request ID is always included.
+		$args[ self::REQUEST_ID_KEY ] = $this->options[ self::REQUEST_ID_KEY ];
 
 		return array_merge( $args, $this->options['options'] ?? [] );
 	}

@@ -83,8 +83,14 @@ class Response implements ArrayAccess {
 
 	/**
 	 * Determine if the response was created from the cache.
+	 *
+	 * This property uses a 'mixed' status to prevent a fatal error when upgrading
+	 * projects. In the future, this should be changed to use the Cache_Status
+	 * enum or false.
+	 *
+	 * @param Cache_Status|false $cached Cache status of the response.
 	 */
-	public bool $cached = false;
+	public mixed $cached = false;
 
 	/**
 	 * Constructor.
@@ -462,7 +468,7 @@ class Response implements ArrayAccess {
 	 * @param mixed $offset Offset to get.
 	 */
 	public function offsetGet( mixed $offset ): mixed {
-		if ( is_null( $offset ) ){
+		if ( is_null( $offset ) ) {
 			return null;
 		}
 

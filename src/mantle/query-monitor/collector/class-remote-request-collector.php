@@ -9,21 +9,16 @@ declare(strict_types=1);
 
 namespace Mantle\Query_Monitor\Collector;
 
-use Mantle\Contracts\Application;
-use Mantle\Http\Request;
+use InvalidArgumentException;
 use Mantle\Http_Client\Pending_Request;
 use Mantle\Http_Client\Response;
-use Mantle\Log\Events\Message_Logged;
 use Mantle\Support\Attributes\Action;
 use Mantle\Support\Attributes\Filter;
-use Mantle\Support\Collection;
 use Mantle\Support\Traits\Hookable;
-use Monolog\Logger;
 use Spatie\Backtrace\Backtrace;
 use Spatie\Backtrace\Frame;
 use WP_Error;
 
-use function Mantle\Http_Client\http_client;
 use function Mantle\Support\Helpers\collect;
 
 /**
@@ -40,7 +35,7 @@ use function Mantle\Support\Helpers\collect;
  *
  * @phpstan-type CollectedHttpResponse array{
  *   args: array<mixed>,
- *   response: CoreResponse|WP_Error,
+ *   response: CoreResponse|Response|WP_Error,
  *   stop: float,
  *   url: string,
  * }
@@ -58,8 +53,6 @@ use function Mantle\Support\Helpers\collect;
  */
 class Remote_Request_Collector extends \QM_Collector {
 	use Hookable;
-
-	private const COLLECTOR_KEY = '_mantle_collector';
 
 	private const SHORTCIRCUIT_KEY = '_short_circuited';
 
@@ -103,8 +96,6 @@ class Remote_Request_Collector extends \QM_Collector {
 
 	/**
 	 * Constructor.
-	 *
-	 * @param Application $app Application instance.
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -121,8 +112,6 @@ class Remote_Request_Collector extends \QM_Collector {
 
 	/**
 	 * Get the collector data.
-	 *
-	 * @return Remote_Request_Data_Collector
 	 */
 	public function get_data(): Remote_Request_Data_Collector {
 		/** @var Remote_Request_Data_Collector $data */
@@ -142,14 +131,18 @@ class Remote_Request_Collector extends \QM_Collector {
 	public function inject_collector_key_to_args( array $args, string $url ): array {
 		$start = microtime( true );
 
-		if ( ! isset( $args[self::COLLECTOR_KEY] ) ) {
-			$args[self::COLLECTOR_KEY] = "{$start}{$url}";
+		// Inject the request ID for tracking. This applies to non-Mantle HTTP
+		// client requests as Pending_Request will inject it for its requests.
+		if ( ! isset( $args[ Pending_Request::REQUEST_ID_KEY ] ) ) {
+			$args[ Pending_Request::REQUEST_ID_KEY ] = $this->generate_request_id( $url, $start );
 		}
 
-		$this->requests[ $args[self::COLLECTOR_KEY] ] = [
+		$request_id = $args[ Pending_Request::REQUEST_ID_KEY ];
+
+		$this->requests[ $request_id ] = [
 			'start' => $start,
-			'url'  => $url,
-			'args' => $args,
+			'url'   => $url,
+			'args'  => $args,
 			'trace' => $this->get_trace(),
 		];
 
@@ -181,32 +174,75 @@ class Remote_Request_Collector extends \QM_Collector {
 	/**
 	 * Listen for the http_api_debug action to collect HTTP responses.
 	 *
-	 * @param mixed  $argument The value passed to the filter.
-	 * @param string $context The context of the filter.
-	 * @param string $class The class name.
-	 * @param array<mixed>  $parsed_args The parsed arguments.
-	 * @param string $url The request URL.
+	 * @param mixed        $argument The value passed to the filter.
+	 * @param string       $context The context of the filter.
+	 * @param string       $class The class name.
+	 * @param array<mixed> $parsed_args The parsed arguments.
+	 * @param string       $url The request URL.
 	 */
 	#[Action( 'http_api_debug' )]
 	public function listen_for_http_api_debug( mixed $argument, string $context, string $class, array $parsed_args, string $url ): void {
-		if ( 'response' == $context && is_array( $argument ) ) {
+		if ( 'response' === $context && is_array( $argument ) ) {
 			$this->store_http_response( $argument, $parsed_args, $url );
 		}
 	}
 
 	/**
+	 * Collect cached HTTP responses.
+	 *
+	 * @throws InvalidArgumentException If the Pending_Request is missing the required request ID argument for tracking.
+	 *
+	 * @param Pending_Request $request The HTTP request.
+	 * @param Response        $response The HTTP response.
+	 */
+	#[Action( 'mantle_http_client_cache_hit' )]
+	public function collect_cached_http_response( Pending_Request $request, Response $response ): void {
+		$arguments = $request->get_request_args();
+
+		if ( ! isset( $arguments[ Pending_Request::REQUEST_ID_KEY ] ) ) {
+			throw new InvalidArgumentException(
+				'The Pending_Request is missing the required request ID argument for tracking.',
+			);
+		}
+
+		$request_id = $arguments[ Pending_Request::REQUEST_ID_KEY ];
+
+		$this->requests[ $request_id ] = [
+			'start' => microtime( true ),
+			'url'   => $request->url(),
+			'args'  => $arguments,
+			'trace' => $this->get_trace(),
+		];
+
+		$this->store_http_response( $response, $arguments, $request->url() );
+	}
+
+	/**
+	 * Record newly cached HTTP responses.
+	 *
+	 * @param Pending_Request $request
+	 * @param Response        $response
+	 */
+	#[Action( 'mantle_http_client_cached' )]
+	public function collect_newly_cached_http_response( Pending_Request $request, Response $response ): void {
+		$this->store_http_response( $response, $request->get_request_args(), $request->url() );
+	}
+
+	/**
 	 * Store the HTTP response data.
 	 *
-	 * @param CoreResponse|WP_Error|false $response HTTP response.
-	 * @param array<mixed>                $args HTTP request arguments.
-	 * @param string                      $url Request URL.
+	 * @param array|Response|WP_Error|false $response HTTP response.
+	 * @param array<mixed>                  $args HTTP request arguments.
+	 * @param string                        $url Request URL.
 	 */
-	protected function store_http_response( mixed $response, array $args, string $url ): void {
-		if ( ! isset( $args[self::COLLECTOR_KEY] ) ) {
+	protected function store_http_response( array|Response|WP_Error|false $response, array $args, string $url ): void {
+		if ( ! isset( $args[ Pending_Request::REQUEST_ID_KEY ] ) ) {
 			return;
 		}
 
-		$this->responses[$args[self::COLLECTOR_KEY]] = [
+		$request_id = $args[ Pending_Request::REQUEST_ID_KEY ];
+
+		$this->responses[ $request_id ] = [
 			'args'     => $args,
 			'response' => $response,
 			'stop'     => microtime( true ),
@@ -237,13 +273,15 @@ class Remote_Request_Collector extends \QM_Collector {
 			}
 
 			// Convert the response to a Http Client Response instance.
-			$response = Response::create( $this->responses[ $key ]['response'] );
+			$response = $this->responses[ $key ]['response'] instanceof Response
+				? $this->responses[ $key ]['response']
+				: Response::create( $this->responses[ $key ]['response'] );
 
 			$this->data->requests[ $key ] = [
-				'args'	          => $request['args'],
+				'args'           => $request['args'],
 				'error'          => $response->is_wp_error() || $response->status() >= 400,
 				'response'       => $response,
-				'shortcircuited' => ! empty( $request['args'][self::SHORTCIRCUIT_KEY] ),
+				'shortcircuited' => ! empty( $request['args'][ self::SHORTCIRCUIT_KEY ] ),
 				'start'          => $request['start'],
 				'stop'           => $this->responses[ $key ]['stop'],
 				'trace'          => $request['trace'],
@@ -259,18 +297,19 @@ class Remote_Request_Collector extends \QM_Collector {
 	 */
 	protected function get_trace(): array {
 		$trace = Backtrace::create()->startingFromFrame(
-	function ( Frame $frame ): bool {
-			if ( $frame->class !== Pending_Request::class ) {
-				return false;
-			}
+			function ( Frame $frame ): bool {
+				if ( $frame->class !== Pending_Request::class ) {
+					return false;
+				}
 
-			return in_array( $frame->method, [ 'get', 'post', 'delete', 'put', 'patch', 'head' ], true );
-		} )->frames();
+				return in_array( $frame->method, [ 'get', 'post', 'delete', 'put', 'patch', 'head' ], true );
+			}
+		)->frames();
 
 		// If no frames found, get the full trace from wp_remote_*().
 		if ( empty( $trace ) ) {
 			$trace = Backtrace::create()->startingFromFrame(
-				fn ( Frame $frame ): bool => str_starts_with( $frame->method, 'wp_remote_' ),
+				fn ( Frame $frame ): bool => str_starts_with( (string) $frame->method, 'wp_remote_' ),
 			)->frames();
 		}
 
@@ -280,13 +319,25 @@ class Remote_Request_Collector extends \QM_Collector {
 		if ( $trace->contains(
 			'method',
 			'=',
-			'Mantle\Http_Client\http_client',
+			\Mantle\Http_Client\http_client::class,
 		) ) {
 			$trace = $trace->skip_until(
-				fn ( Frame $frame ): bool => $frame->method === 'Mantle\Http_Client\http_client',
+				fn ( Frame $frame ): bool => $frame->method === \Mantle\Http_Client\http_client::class,
 			);
 		}
 
 		return $trace->slice( 1 )->values()->all();
+	}
+
+	/**
+	 * Generate a unique request ID.
+	 *
+	 * @param string     $url Request URL.
+	 * @param float|null $start Start time.
+	 */
+	private function generate_request_id( string $url, ?float $start = null ): string {
+		$start ??= microtime( true );
+
+		return "{$start}:{$url}:" . uniqid();
 	}
 }

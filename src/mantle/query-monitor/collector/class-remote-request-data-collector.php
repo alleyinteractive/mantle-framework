@@ -1,4 +1,10 @@
 <?php
+/**
+ * Remote_Request_Data_Collector class file
+ *
+ * @package Mantle
+ */
+
 namespace Mantle\Query_Monitor\Collector;
 
 use QM_Data;
