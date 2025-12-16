@@ -54,6 +54,9 @@ use function Mantle\Support\Helpers\collect;
 class Remote_Request_Collector extends \QM_Collector {
 	use Hookable;
 
+	/**
+	 * Key to mark short circuited requests.
+	 */
 	private const SHORTCIRCUIT_KEY = '_short_circuited';
 
 	/**
@@ -129,12 +132,19 @@ class Remote_Request_Collector extends \QM_Collector {
 	 */
 	#[Filter( 'http_request_args', 999999999 )]
 	public function inject_collector_key_to_args( array $args, string $url ): array {
-		$start = microtime( true );
-
 		// Inject the request ID for tracking. This applies to non-Mantle HTTP
 		// client requests as Pending_Request will inject it for its requests.
 		if ( ! isset( $args[ Pending_Request::REQUEST_ID_KEY ] ) ) {
+			$start = microtime( true );
+
 			$args[ Pending_Request::REQUEST_ID_KEY ] = $this->generate_request_id( $url, $start );
+		} else {
+			$parts = is_string( $args[ Pending_Request::REQUEST_ID_KEY ] )
+				? explode( ':', $args[ Pending_Request::REQUEST_ID_KEY ], 2 )
+				: [];
+
+			// Retrieve the start time from the request ID.
+			$start = isset( $parts[0] ) && is_numeric( $parts[0] ) ? (float) $parts[0] : microtime( true );
 		}
 
 		$request_id = $args[ Pending_Request::REQUEST_ID_KEY ];
