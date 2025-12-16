@@ -72,8 +72,9 @@ class Cache_Flexible_Middleware extends Cache_Middleware {
 			 *
 			 * @param Pending_Request $request The HTTP request.
 			 * @param Response        $cache   The cached response.
+			 * @param string          $cache_key The cache key used.
 			 */
-			do_action( 'mantle_http_client_cache_hit', $request, $response );
+			do_action( 'mantle_http_client_cache_hit', $request, $response, $this->cache_key );
 
 			return $response;
 		}

@@ -7,6 +7,8 @@
 
 namespace Mantle\Query_Monitor\Output;
 
+use Mantle\Http_Client\Cache_Middleware;
+use Mantle\Http_Client\Cache_Status;
 use Mantle\Query_Monitor\Collector\Remote_Request_Collector;
 use Spatie\Backtrace\Frame;
 
@@ -98,18 +100,52 @@ class Output_Remote_Request extends \QM_Output_Html {
 		echo '<tbody>';
 
 		foreach ( $requests as $request ) {
+			$non_blocking = isset( $request['args']['blocking'] ) && false === $request['args']['blocking'];
+
 			echo '<tr>';
 			echo '<td>' . esc_html( strtoupper( $request['args']['method'] ?? 'GET' ) ) . '</td>';
 			echo '<td class="qm-ltr"><code>';
 
-			if ( isset( $request['args']['blocking'] ) && false === $request['args']['blocking'] ) {
+			if ( $non_blocking ) {
 				esc_html_e( 'Non-blocking', 'mantle' );
 			} else {
 				echo esc_html( $request['response']->status() );
 			}
 
 			echo '</code></td>';
-			echo '<td class="qm-ltr"><code>' . esc_html( $request['url'] ) . '</code></td>';
+
+			// Output URL and cache information if applicable.
+			if (
+				$request['response']->cached
+				&& Cache_Status::UNCACHED !== $request['response']->cached
+				&& isset( $request['key'] )
+			) {
+				echo '<td class="qm-has-toggle qm-nowrap qm-ltr">';
+
+				echo self::build_toggler(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+				echo '<ol>';
+				echo '<li><strong><code>' . esc_html( $request['url'] ) . '</code></li>';
+				echo '<div class="qm-toggled" style="margin-top: 5px;">';
+				printf(
+					'<li><span class="qm-info qm-supplemental"><strong>%s</strong> <code>%s</code></span></li>',
+					esc_html__( 'Cache Key:', 'mantle' ),
+					esc_html( $request['key'] ),
+				);
+				printf(
+					'<li><span class="qm-info qm-supplemental"><strong>%s</strong> <code>%s</code></span></li>',
+					esc_html__( 'Cache Group:', 'mantle' ),
+					esc_html( Cache_Middleware::CACHE_GROUP ),
+				);
+				echo '</div>';
+				echo '</ol>';
+				echo '</td>';
+			} else {
+				echo '<td class="qm-has-toggle qm-nowrap qm-ltr">';
+				echo '<code>' . esc_html( $request['url'] ) . '</code>';
+				echo '</td>';
+			}
+
 			echo '<td>';
 
 			if ( $request['response']->cached ) {
@@ -144,7 +180,19 @@ class Output_Remote_Request extends \QM_Output_Html {
 
 			echo '</ol></td>';
 
-			echo '<td class="qm-num">' . esc_html( number_format_i18n( ( $request['stop'] - $request['start'] ) * 1000, 2 ) ) . ' ms</td>';
+			// Skip time for non-blocking or cached requests.
+			if (
+				$non_blocking
+				|| (
+					$request['response']->cached
+					&& in_array( $request['response']->cached, [ Cache_Status::CACHED, Cache_Status::FRESH, Cache_Status::STALE ], true )
+				)
+			) {
+				echo '<td class="qm-num qm-cached">n/a</td>';
+			} else {
+				echo '<td class="qm-num">' . esc_html( number_format_i18n( ( $request['stop'] - $request['start'] ) * 1000, 2 ) ) . ' ms</td>';
+			}
+
 			echo '</tr>';
 		}
 

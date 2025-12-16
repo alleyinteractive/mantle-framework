@@ -27,10 +27,11 @@ use function Mantle\Support\Helpers\collect;
  * @phpstan-import-type CoreResponse from \Mantle\Http_Client\Response
  *
  * @phpstan-type CollectedHttpRequest array{
- *   start: float,
- *   url: string,
  *   args: array<mixed>,
+ *   key?: string,
+ *   start: float,
  *   trace: array<int, Frame>,
+ *   url: string,
  * }
  *
  * @phpstan-type CollectedHttpResponse array{
@@ -43,6 +44,7 @@ use function Mantle\Support\Helpers\collect;
  * @phpstan-type CollectedHttpEntry array{
  *   args: array<mixed>,
  *   error: bool,
+ *   key?: string,
  *   response: \Mantle\Http_Client\Response,
  *   shortcircuited: bool,
  *   start: float,
@@ -204,9 +206,10 @@ class Remote_Request_Collector extends \QM_Collector {
 	 *
 	 * @param Pending_Request $request The HTTP request.
 	 * @param Response        $response The HTTP response.
+	 * @param string          $cache_key The cache key used.
 	 */
 	#[Action( 'mantle_http_client_cache_hit' )]
-	public function collect_cached_http_response( Pending_Request $request, Response $response ): void {
+	public function collect_cached_http_response( Pending_Request $request, Response $response, string $cache_key ): void {
 		$arguments = $request->get_request_args();
 
 		if ( ! isset( $arguments[ Pending_Request::REQUEST_ID_KEY ] ) ) {
@@ -218,10 +221,11 @@ class Remote_Request_Collector extends \QM_Collector {
 		$request_id = $arguments[ Pending_Request::REQUEST_ID_KEY ];
 
 		$this->requests[ $request_id ] = [
-			'start' => microtime( true ),
-			'url'   => $request->url(),
 			'args'  => $arguments,
+			'key'   => $cache_key,
+			'start' => microtime( true ),
 			'trace' => $this->get_trace(),
+			'url'   => $request->url(),
 		];
 
 		$this->store_http_response( $response, $arguments, $request->url() );
@@ -290,6 +294,7 @@ class Remote_Request_Collector extends \QM_Collector {
 			$this->data->requests[ $key ] = [
 				'args'           => $request['args'],
 				'error'          => $response->is_wp_error() || $response->status() >= 400,
+				'key'            => $request['key'] ?? null,
 				'response'       => $response,
 				'shortcircuited' => ! empty( $request['args'][ self::SHORTCIRCUIT_KEY ] ),
 				'start'          => $request['start'],

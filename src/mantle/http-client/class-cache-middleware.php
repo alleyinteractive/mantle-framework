@@ -50,8 +50,9 @@ class Cache_Middleware {
 			 *
 			 * @param Pending_Request $request The HTTP request.
 			 * @param Response        $cache   The cached response.
+			 * @param string          $cache_key The cache key used.
 			 */
-			do_action( 'mantle_http_client_cache_hit', $request, $cache );
+			do_action( 'mantle_http_client_cache_hit', $request, $cache, $cache_key );
 
 			return $cache;
 		}
