@@ -8,6 +8,7 @@
 namespace Mantle\Tests\Http_Client;
 
 use Mantle\Http_Client\Cache_Middleware;
+use Mantle\Http_Client\Cache_Status;
 use Mantle\Http_Client\Factory;
 use Mantle\Http_Client\Pending_Request;
 use Mantle\Http_Client\Response;
@@ -47,7 +48,7 @@ class CachedHttpClientTest extends FrameworkTestCase {
 		$response = $this->client->get( 'https://example.com' );
 
 		$this->assertEquals( 'value', $response->json( 'example' ) );
-		$this->assertTrue( $response->cached );
+		$this->assertEquals( Cache_Status::CACHED, $response->cached );
 
 		$this->assertRequestCount( 1 );
 	}
