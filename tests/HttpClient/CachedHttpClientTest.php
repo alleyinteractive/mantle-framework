@@ -14,6 +14,7 @@ use Mantle\Http_Client\Pending_Request;
 use Mantle\Http_Client\Response;
 use Mantle\Testing\FrameworkTestCase;
 
+use function Mantle\Http_Client\http_client;
 use function Mantle\Support\Helpers\collect;
 use function Mantle\Testing\mock_http_response;
 
@@ -268,5 +269,24 @@ class CachedHttpClientTest extends FrameworkTestCase {
 
 		$this->assertRequestCount( 1 );
 		$this->assertNotEmpty( wp_cache_get( 'custom-flexible-cache-key', Cache_Middleware::CACHE_GROUP ) );
+	}
+
+	/**
+	 * Test that a request that was previously stored as a flexible (SWR) cache
+	 * can be handled in a non-flexible cached client.
+	 */
+	public function test_flexible_cache_can_be_handled_in_non_flexible_client(): void {
+		$this->client = Factory::create()->cache();
+
+		$this->fake_request( mock_http_response()->with_json( [ 'example' => 'value' ] ) );
+
+		http_client()->cache_flexible(
+			stale: now()->addHour(),
+			expire: now()->addDay(),
+		)->get( 'https://example.com' );
+
+		http_client()->cache()->get( 'https://example.com' );
+
+		$this->assertRequestCount( 1 );
 	}
 }

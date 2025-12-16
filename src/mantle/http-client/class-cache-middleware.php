@@ -9,6 +9,7 @@ namespace Mantle\Http_Client;
 
 use Closure;
 use DateTimeInterface;
+use Mantle\Cache\SWR_Storage;
 
 use function Mantle\Support\Helpers\normalize_cache_ttl;
 
@@ -41,6 +42,11 @@ class Cache_Middleware {
 	public function __invoke( Pending_Request $request, Closure $next ): Response {
 		$cache_key = $this->get_cache_key( $request );
 		$cache     = wp_cache_get( $cache_key, self::CACHE_GROUP );
+
+		// If the cache is a SWR_Storage instance, get the response value.
+		if ( $cache && $cache instanceof SWR_Storage && $cache->value instanceof Response ) {
+			$cache = $cache->value;
+		}
 
 		if ( $cache && $cache instanceof Response ) {
 			$cache->cached = Cache_Status::CACHED;
