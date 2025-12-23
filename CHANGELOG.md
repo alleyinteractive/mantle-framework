@@ -15,6 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `install_plugins()` helper to the testing installation manager to install
   plugins during testing.
 
+### Changed
+
+- Added `pest` command support to the installation manager's
+  `get_phpunit_command()` method to properly detect a Pest testing environment.
+
 ## v1.15.0
 
 ### Added

@@ -548,7 +548,7 @@ trait Rsync_Installation {
 
 		if ( ! empty( getenv( 'WP_PHPUNIT_PATH' ) ) ) {
 			$executable = getenv( 'WP_PHPUNIT_PATH' );
-		} elseif ( ! empty( $args[0] ) && Str::contains( $args[0], [ 'phpunit', 'paratest' ] ) ) {
+		} elseif ( ! empty( $args[0] ) && Str::contains( $args[0], [ 'phpunit', 'paratest', 'pest' ] ) ) {
 			// Use the first argument and translate it to the rsync-ed path.
 			$executable = $this->translate_location( $args[0] );
 
