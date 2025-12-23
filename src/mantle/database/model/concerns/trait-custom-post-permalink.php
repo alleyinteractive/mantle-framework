@@ -13,6 +13,8 @@ use function Mantle\Support\Helpers\add_filter;
 
 /**
  * Define custom permalink structure for post models.
+ *
+ * @mixin \Mantle\Database\Model\Post
  */
 trait Custom_Post_Permalink {
 	/**
@@ -52,7 +54,7 @@ trait Custom_Post_Permalink {
 			return $post_link;
 		}
 
-		return Permalink_Generator::create( static::get_route(), static::find_or_fail( $post->ID ) );
+		return Permalink_Generator::create( (string) static::get_route(), static::find_or_fail( $post->ID ) );
 	}
 
 	/**
@@ -66,6 +68,6 @@ trait Custom_Post_Permalink {
 			return $link;
 		}
 
-		return Permalink_Generator::create( static::get_archive_route() );
+		return Permalink_Generator::create( (string) static::get_archive_route() );
 	}
 }

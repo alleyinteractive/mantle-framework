@@ -11,6 +11,8 @@ use PHPUnit\Framework\Attributes\Before;
 
 /**
  * Trait to ensure the request is made in single site mode and skipped otherwise.
+ *
+ * @mixin \PHPUnit\Framework\Assert
  */
 trait Single_Site_Test {
 	/**

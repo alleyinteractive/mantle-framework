@@ -15,13 +15,15 @@ use function Mantle\Support\Helpers\event;
 
 /**
  * Model Trait to register meta for a model.
+ *
+ * @mixin \Mantle\Database\Model\Model
  */
 trait Register_Meta {
 	/**
 	 * Register the object's meta.
 	 */
 	public static function boot_register_meta(): void {
-		\add_action( 'init', [ self::class, 'register_meta' ], 11 );
+		\add_action( 'init', [ self::class, 'register_meta' ], 11 ); // @phpstan-ignore-line return.void
 	}
 
 	/**
@@ -53,16 +55,16 @@ trait Register_Meta {
 	 *                                         array with 'schema' or 'prepare_callback' keys instead of a boolean.
 	 * }
 	 * @phpstan-param array{
-	 *   object_subtype: string,
-	 *   type: string,
-	 *   description: string,
-	 *   single: bool,
-	 *   default: mixed,
-	 *   sanitize_callback: callable,
-	 *   auth_callback: callable,
-	 *   show_in_rest: bool|array{
-	 *      schema: array<mixed>,
-	 *      prepare_callback: callable,
+	 *   object_subtype?: string,
+	 *   type?: string,
+	 *   description?: string,
+	 *   single?: bool,
+	 *   default?: mixed,
+	 *   sanitize_callback?: callable,
+	 *   auth_callback?: callable,
+	 *   show_in_rest?: bool|array{
+	 *      schema?: array<mixed>,
+	 *      prepare_callback?: callable,
 	 *   }
 	 * } $args
 	 * @return bool True if the meta key was successfully registered in the global array, false if not.
@@ -83,7 +85,9 @@ trait Register_Meta {
 			$args,
 		);
 
-		return register_meta( static::get_object_type(), $meta_key, $args );
+		$object_type = static::get_object_type();
+
+		return $object_type ? register_meta( $object_type, $meta_key, $args ) : false;
 	}
 
 	/**
