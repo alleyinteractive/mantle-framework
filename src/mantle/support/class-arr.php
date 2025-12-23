@@ -223,10 +223,11 @@ class Arr {
 	/**
 	 * Remove one or many array items from a given array using "dot" notation.
 	 *
-	 * @param  array<mixed>    $array Array to handle.
-	 * @param  string[]|string $keys Keys to use.
+	 * @param  array<mixed>                        $array Array to handle.
+	 * @param  string[]|string|int                 $keys Keys to use.
+	 * @phpstan-param array<int|string>|int|string $keys
 	 */
-	public static function forget( array &$array, $keys ): void {
+	public static function forget( array &$array, array|string|int $keys ): void {
 		$original = &$array;
 
 		$keys = (array) $keys;
@@ -258,7 +259,10 @@ class Arr {
 				}
 			}
 
-			unset( $array[ array_shift( $parts ) ] );
+			$part = array_shift( $parts );
+			if ( null !== $part ) {
+				unset( $array[ $part ] );
+			}
 		}
 	}
 
@@ -540,7 +544,7 @@ class Arr {
 			$array = &$array[ $key ];
 		}
 
-		$array[ array_shift( $keys ) ] = $value;
+		$array[ array_shift( $keys ) ?? '' ] = $value;
 
 		return $array;
 	}
