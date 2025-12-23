@@ -16,6 +16,8 @@ use Mantle\REST_API\REST_Field_Registrar;
 
 /**
  * Model Trait to REST Fields to be registered for a model.
+ *
+ * @mixin \Mantle\Database\Model\Post|\Mantle\Database\Model\Term
  */
 trait Register_Rest_Fields {
 	/**
@@ -47,7 +49,7 @@ trait Register_Rest_Fields {
 	 * @throws Model_Exception Thrown when registering a post type that is already registered.
 	 */
 	public static function register_fields(): void {
-		if ( ! isset( static::$rest_registrar ) ) {
+		if ( ! isset( static::$rest_registrar ) ) { // @phpstan-ignore-line isset.property
 			$class = static::class;
 			throw new Model_Exception( "REST field registrar is not defined for [{$class}]" );
 		}
@@ -59,15 +61,15 @@ trait Register_Rest_Fields {
 	 * Register a REST API field.
 	 *
 	 * @param REST_Field|string $attribute Field instance/field attribute to register.
-	 * @param Closure|string    $get_callback Callback for the field if $field isn't a field.
+	 * @param ?callable         $get_callback Callback for the field if $field isn't a field.
 	 * @return Rest_Field
 	 *
 	 * @throws Model_Exception Thrown on missing REST Registrar.
 	 *
 	 * @todo Allow for creation of a a REST Field from a SML REST Field.
 	 */
-	public static function register_field( $attribute, $get_callback = null ): Rest_Field {
-		if ( ! isset( static::$rest_registrar ) ) {
+	public static function register_field( $attribute, ?callable $get_callback = null ): Rest_Field {
+		if ( ! isset( static::$rest_registrar ) ) { // @phpstan-ignore-line isset.property
 			$class = static::class;
 			throw new Model_Exception( "REST field registrar is not defined for [{$class}]" );
 		}
@@ -82,9 +84,16 @@ trait Register_Rest_Fields {
 			throw new Model_Exception( "Missing callback for REST field [{$attribute}]" );
 		}
 
-		$field = new Rest_Field( [ static::get_object_name() ], $attribute, $get_callback );
+		$object_name = static::get_object_name();
+
+		if ( ! $object_name ) {
+			throw new Model_Exception( "Cannot register REST field [{$attribute}] on model with no object name." );
+		}
+
+		$field = new Rest_Field( [ $object_name ], $attribute, $get_callback );
 
 		static::$rest_fields[ $attribute ] = $field;
+
 		return $field;
 	}
 }

@@ -12,11 +12,13 @@ use Mantle\Database\Model\Permalink_Generator;
 use function Mantle\Support\Helpers\add_filter;
 
 /**
- * Define custom permalink structure for post models.
+ * Define custom permalink structure for term models.
+ *
+ * @mixin \Mantle\Database\Model\Term
  */
 trait Custom_Term_Link {
 	/**
-	 * Boot the trait and add filters for the post type link single and archive link.
+	 * Boot the trait and add filters for the term link.
 	 */
 	public static function boot_custom_term_link(): void {
 		if ( static::get_route() ) {
@@ -36,6 +38,6 @@ trait Custom_Term_Link {
 			return $term_link;
 		}
 
-		return Permalink_Generator::create( static::get_route(), static::find_or_fail( $term->term_id ) );
+		return Permalink_Generator::create( (string) static::get_route(), static::find_or_fail( $term->term_id ) );
 	}
 }

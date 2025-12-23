@@ -12,6 +12,9 @@ use Mantle\Database\Model\Model_Exception;
 
 /**
  * Model Trait to allow a post type to be registered for a model.
+ *
+ * @mixin \Mantle\Database\Model\Post
+ * @mixin \Mantle\Contracts\Database\Registrable
  */
 trait Register_Post_Type {
 	use Custom_Post_Permalink;
@@ -31,10 +34,15 @@ trait Register_Post_Type {
 	public static function register_object(): void {
 		$post_type = static::get_object_name();
 
+		if ( ! $post_type ) {
+			throw new Model_Exception( 'Unable to register post type (no post type name provided).' );
+		}
+
 		if ( \post_type_exists( $post_type ) ) {
 			throw new Model_Exception( 'Unable to register post type (post type already exists): ' . $post_type );
 		}
 
+		// @phpstan-ignore argument.type
 		$register = \register_post_type( $post_type, static::get_registration_args() ); // phpcs:ignore WordPress.NamingConventions.ValidPostTypeSlug.NotStringLiteral
 
 		if ( is_wp_error( $register ) ) {
