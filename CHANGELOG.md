@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a Query Monitor panel for HTTP client requests made during the request.
   Includes both Mantle and non-Mantle HTTP requests that use `wp_remote_*()`
   functions.
+- Added `install_plugins()` helper to the testing installation manager to install
+  plugins during testing.
 
 ## v1.15.0
 

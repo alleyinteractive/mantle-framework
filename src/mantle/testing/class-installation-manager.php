@@ -9,6 +9,7 @@ namespace Mantle\Testing;
 
 use Mantle\Support\Traits\Conditionable;
 use Mantle\Support\Traits\Singleton;
+use Mantle\Support\Traits\Tappable;
 
 /**
  * Installation Manager
@@ -18,6 +19,7 @@ class Installation_Manager {
 	use Concerns\PHPUnit_Upgrade_Warning;
 	use Concerns\Rsync_Installation;
 	use Singleton;
+	use Tappable;
 
 	/**
 	 * Callbacks for before installation.
@@ -46,7 +48,7 @@ class Installation_Manager {
 	 * Ensure that any environment variables also call the subsequent methods to
 	 * configure the installation.
 	 */
-	public function __construct() {
+	protected function __construct() {
 		$this->with_default_exclusions();
 
 		if ( Utils::env_bool( 'MANTLE_INSTALL_VIP_MU_PLUGINS', false ) ) {
