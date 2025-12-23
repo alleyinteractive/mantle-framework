@@ -20,12 +20,11 @@ trait Prevent_Remote_Requests {
 	/**
 	 * Setup the trait.
 	 *
-	 * @before
 	 * @internal
 	 */
 	#[Before]
 	public function before_prevent_remote_requests(): void {
-		if ( ! $this->prevent_remote_requests ) {
+		if ( ! $this->is_preventing_stray_requests() ) {
 			$this->prevent_stray_requests( new Mock_Http_Response() );
 		}
 	}

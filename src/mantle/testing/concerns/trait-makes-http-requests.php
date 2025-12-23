@@ -492,8 +492,6 @@ trait Makes_Http_Requests {
 	 * modify them.
 	 *
 	 * @todo Consider condensing this into WordPress_State trait.
-	 *
-	 * @beforeClass
 	 */
 	#[BeforeClass]
 	public static function backup_wp_dependencies(): void {
@@ -514,8 +512,6 @@ trait Makes_Http_Requests {
 
 	/**
 	 * Backup the state of the Alley WP Asset Manager if it's present.
-	 *
-	 * @beforeClass
 	 */
 	#[BeforeClass]
 	public static function backup_wp_asset_manager(): void {

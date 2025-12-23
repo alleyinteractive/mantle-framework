@@ -32,7 +32,6 @@ trait Dependency_Assertions {
 
 			if ( ! is_string( $dependency ) ) {
 				PHPUnit::fail( 'Dependency type not string.' );
-				continue;
 			}
 
 			self::assertDependencyLoaded( $dependency );
@@ -45,14 +44,7 @@ trait Dependency_Assertions {
 	 * @param string $dependency The dependency file name.
 	 */
 	public static function assertDependencyLoaded( string $dependency ): void {
-		static $includes;
-
-		if (
-			! is_array( $includes ) ||
-			empty( $includes )
-		) {
-			$includes = new Collection( get_included_files() );
-		}
+		$includes = new Collection( get_included_files() );
 
 		PHPUnit::assertTrue(
 			$includes

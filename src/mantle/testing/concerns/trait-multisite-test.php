@@ -11,12 +11,12 @@ use PHPUnit\Framework\Attributes\Before;
 
 /**
  * Trait to ensure the request is made in multisite mode and skipped otherwise.
+ *
+ * @mixin \PHPUnit\Framework\Assert
  */
 trait Multisite_Test {
 	/**
 	 * Setup the trait.
-	 *
-	 * @before
 	 */
 	#[Before]
 	public function multisite_test_set_up(): void {

@@ -51,8 +51,6 @@ trait WordPress_State {
 
 	/**
 	 * Register the PermalinkStructure attribute.
-	 *
-	 * @before
 	 */
 	#[Before]
 	public function register_permalink_structure_attribute(): void {

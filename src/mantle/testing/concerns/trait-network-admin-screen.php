@@ -50,7 +50,9 @@ trait Network_Admin_Screen {
 	 */
 	public function network_admin_screen_tear_down(): void {
 		// Restore screen to state at setUp.
-		set_current_screen( $this->backup_screen );
+		if ( isset( $this->backup_screen ) ) {
+			set_current_screen( $this->backup_screen );
+		}
 
 		unset(
 			$GLOBALS['pagenow'],

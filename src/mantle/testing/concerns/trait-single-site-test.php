@@ -15,8 +15,6 @@ use PHPUnit\Framework\Attributes\Before;
 trait Single_Site_Test {
 	/**
 	 * Setup the trait.
-	 *
-	 * @before
 	 */
 	#[Before]
 	public function single_site_test_set_up(): void {
