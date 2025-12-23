@@ -18,9 +18,11 @@ define( 'MANTLE_PHPUNIT_TEMPLATE_PATH', __DIR__ . '/template-parts' );
 	->maybe_rsync_plugin()
 	->with_vip_mu_plugins()
 	->install_plugin( 'logger', 'https://github.com/alleyinteractive/logger/archive/refs/heads/develop.zip' )
-	->install_plugin( 'byline-manager', 'https://github.com/alleyinteractive/byline-manager/archive/refs/heads/production.zip' )
-	->install_plugin( 'jetpack', '12.4' )
-	->install_plugin( 'co-authors-plus' )
+	->install_plugins(
+		[ 'byline-manager', 'https://github.com/alleyinteractive/byline-manager/archive/refs/heads/production.zip' ],
+		[ 'jetpack', '12.4' ],
+		'co-authors-plus',
+	)
 	->plugins( [
 		'byline-manager/byline-manager.php',
 		'co-authors-plus/co-authors-plus.php',

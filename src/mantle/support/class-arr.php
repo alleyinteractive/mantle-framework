@@ -258,7 +258,7 @@ class Arr {
 				}
 			}
 
-			unset( $array[ array_shift( $parts ) ] ); // @phpstan-ignore-line
+			unset( $array[ array_shift( $parts ) ] );
 		}
 	}
 
@@ -540,7 +540,7 @@ class Arr {
 			$array = &$array[ $key ];
 		}
 
-		$array[ array_shift( $keys ) ] = $value; // @phpstan-ignore-line
+		$array[ array_shift( $keys ) ] = $value;
 
 		return $array;
 	}

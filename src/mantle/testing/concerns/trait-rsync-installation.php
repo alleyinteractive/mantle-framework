@@ -261,10 +261,10 @@ trait Rsync_Installation {
 	 * Used to install a plugin from WordPress.org or a ZIP file to the codebase
 	 * after rsyncing.
 	 *
-	 * @param string $plugin Plugin slug to install. Will be installed at /wp-content/plugins/{plugin}.
-	 * @param string $version_or_url Plugin version to install OR a URL to a ZIP file to install.
+	 * @param string      $plugin Plugin slug to install. Will be installed at /wp-content/plugins/{plugin}.
+	 * @param string|null $version_or_url Plugin version to install OR a URL to a ZIP file to install. Defaults to 'latest'.
 	 */
-	public function install_plugin( string $plugin, string $version_or_url = 'latest' ): static {
+	public function install_plugin( string $plugin, ?string $version_or_url = 'latest' ): static {
 		// Ensure that the plugin slug is not a URL.
 		if ( false !== strpos( $plugin, '://' ) ) {
 			Utils::error(
@@ -275,7 +275,31 @@ trait Rsync_Installation {
 			exit( 1 );
 		}
 
+		if ( is_null( $version_or_url ) ) {
+			$version_or_url = 'latest';
+		}
+
 		$this->plugins[] = [ $plugin, $version_or_url ];
+
+		return $this;
+	}
+
+	/**
+	 * Install multiple plugins into the rsync-ed codebase.
+	 *
+	 * Used to install plugins from WordPress.org or ZIP files to the codebase
+	 * after rsyncing.
+	 *
+	 * @param array{0: string, 1: string|null}|string ...$plugins Plugins to install. Each plugin can be specified as a string (plugin slug) or an array with the plugin slug and version/URL.
+	 */
+	public function install_plugins( array|string ...$plugins ): static {
+		foreach ( $plugins as $plugin ) {
+			if ( is_string( $plugin ) ) {
+				$plugin = [ $plugin, null ];
+			}
+
+			$this->install_plugin( ...$plugin );
+		}
 
 		return $this;
 	}
@@ -472,7 +496,7 @@ trait Rsync_Installation {
 		$cwd = getcwd();
 
 		if ( ! empty( $this->plugins ) ) {
-			$this->install_plugins( $base_install_path );
+			$this->perform_plugin_installation( $base_install_path );
 		}
 
 		Utils::success(
@@ -494,11 +518,11 @@ trait Rsync_Installation {
 	}
 
 	/**
-	 * Install the plugins after rsyncing the codebase.
+	 * Perform the plugin installation after rsyncing the codebase.
 	 *
 	 * @param string $dir Directory to the WordPress installation.
 	 */
-	protected function install_plugins( string $dir ): void {
+	protected function perform_plugin_installation( string $dir ): void {
 		foreach ( $this->plugins as $item ) {
 			[ $plugin, $version_or_url ] = $item;
 
