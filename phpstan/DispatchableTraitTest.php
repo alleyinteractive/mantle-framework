@@ -2,5 +2,5 @@
 
 class DispatchableTraitTest
 {
-    use Mantle\Queue\Dispatchable;
+	use Mantle\Queue\Dispatchable;
 }
