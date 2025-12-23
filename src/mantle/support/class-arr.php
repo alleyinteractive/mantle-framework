@@ -129,7 +129,7 @@ class Arr {
 	 * @param  string[]|string $keys Keys to filter by.
 	 * @return array<mixed>
 	 */
-	public static function except( array $array, $keys ): array {
+	public static function except( array $array, array|string|int|null $keys ): array {
 		static::forget( $array, $keys );
 
 		return $array;
@@ -223,12 +223,16 @@ class Arr {
 	/**
 	 * Remove one or many array items from a given array using "dot" notation.
 	 *
-	 * @param  array<mixed>                        $array Array to handle.
-	 * @param  string[]|string|int                 $keys Keys to use.
-	 * @phpstan-param array<int|string>|int|string $keys
+	 * @param  array<mixed>        $array Array to handle.
+	 * @param  string[]|string|int $keys Keys to use.
+	 * @phpstan-param array<int|string>|int|string|null $keys
 	 */
-	public static function forget( array &$array, array|string|int $keys ): void {
+	public static function forget( array &$array, array|string|int|null $keys ): void {
 		$original = &$array;
+
+		if ( is_null( $keys ) ) {
+			return;
+		}
 
 		$keys = (array) $keys;
 
