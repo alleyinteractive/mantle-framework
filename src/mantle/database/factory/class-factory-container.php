@@ -118,18 +118,15 @@ class Factory_Container {
 		$this->setup_faker( $container );
 
 		$this->attachment = $container->make( Attachment_Factory::class );
+		$this->blog       = $container->make( Blog_Factory::class );
 		$this->category   = $container->make( Term_Factory::class, [ 'taxonomy' => 'category' ] );
 		$this->comment    = $container->make( Comment_Factory::class );
+		$this->network    = $container->make( Network_Factory::class );
 		$this->page       = $container->make( Post_Factory::class, [ 'post_type' => 'page' ] );
 		$this->post       = $container->make( Post_Factory::class );
 		$this->tag        = $container->make( Term_Factory::class, [ 'taxonomy' => 'post_tag' ] );
 		$this->term       = $container->make( Term_Factory::class, [ 'taxonomy' => 'post_tag' ] );
 		$this->user       = $container->make( User_Factory::class );
-
-		if ( is_multisite() ) {
-			$this->blog    = $container->make( Blog_Factory::class );
-			$this->network = $container->make( Network_Factory::class );
-		}
 
 		// Plugin-specific factories.
 		$this->byline_manager_profile = $container->make( Plugins\Byline_Manager_Factory::class );
