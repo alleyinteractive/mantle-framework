@@ -5,12 +5,11 @@ parameters:
 	level: 8
 
 	paths:
-		- src/mantle
+		- src/mantle/
 		- mantle.php
+		- phpstan/
 
 	ignoreErrors:
-		-
-			identifier: trait.unused
 		-
 			identifier: staticMethod.resultUnused
 		# Will be fixed in PHPStan soon.

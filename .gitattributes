@@ -8,6 +8,7 @@
 /phpcs.xml export-ignore
 /phpstan-baseline.neon export-ignore
 /phpstan.neon export-ignore
+/phpstan/ export-ignore
 /phpunit.xml export-ignore
 /rector.php export-ignore
 /tests export-ignore
