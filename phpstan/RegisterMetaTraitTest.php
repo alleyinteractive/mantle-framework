@@ -2,5 +2,5 @@
 
 class RegisterMetaTraitTest
 {
-    use Mantle\Database\Model\Registration\Register_Meta;
+	use Mantle\Database\Model\Registration\Register_Meta;
 }

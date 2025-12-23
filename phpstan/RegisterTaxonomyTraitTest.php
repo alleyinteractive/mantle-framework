@@ -2,5 +2,5 @@
 
 class RegisterTaxonomyTraitTest
 {
-    use Mantle\Database\Model\Registration\Register_Taxonomy;
+	use Mantle\Database\Model\Registration\Register_Taxonomy;
 }

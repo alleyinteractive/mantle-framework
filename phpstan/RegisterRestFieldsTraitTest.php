@@ -2,5 +2,5 @@
 
 class RegisterRestFieldsTraitTest
 {
-    use Mantle\Database\Model\Registration\Register_Rest_Fields;
+	use Mantle\Database\Model\Registration\Register_Rest_Fields;
 }

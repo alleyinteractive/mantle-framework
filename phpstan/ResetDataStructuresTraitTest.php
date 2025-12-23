@@ -2,5 +2,5 @@
 
 class ResetDataStructuresTraitTest
 {
-    use Mantle\Testing\Concerns\Reset_Data_Structures;
+	use Mantle\Testing\Concerns\Reset_Data_Structures;
 }

@@ -2,5 +2,5 @@
 
 class WithFakerTraitTest
 {
-    use Mantle\Testing\Concerns\With_Faker;
+	use Mantle\Testing\Concerns\With_Faker;
 }

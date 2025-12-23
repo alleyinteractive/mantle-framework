@@ -2,5 +2,5 @@
 
 class QueueableTraitTest
 {
-    use Mantle\Queue\Queueable;
+	use Mantle\Queue\Queueable;
 }

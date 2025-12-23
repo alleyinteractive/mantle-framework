@@ -2,5 +2,5 @@
 
 class MultisiteTestTraitTest
 {
-    use Mantle\Testing\Concerns\Multisite_Test;
+	use Mantle\Testing\Concerns\Multisite_Test;
 }

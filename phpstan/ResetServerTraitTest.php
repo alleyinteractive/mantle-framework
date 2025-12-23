@@ -2,5 +2,5 @@
 
 class ResetServerTraitTest
 {
-    use Mantle\Testing\Concerns\Reset_Server;
+	use Mantle\Testing\Concerns\Reset_Server;
 }

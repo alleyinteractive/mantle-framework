@@ -2,5 +2,5 @@
 
 class RegisterPostTypeTraitTest
 {
-    use Mantle\Database\Model\Registration\Register_Post_Type;
+	use Mantle\Database\Model\Registration\Register_Post_Type;
 }
