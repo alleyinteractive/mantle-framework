@@ -8,6 +8,7 @@
 namespace Mantle\Database\Factory;
 
 use Mantle\Database\Model\Site;
+use RuntimeException;
 use WP_Network;
 
 use function Mantle\Support\Helpers\get_site_object;
@@ -32,9 +33,15 @@ class Blog_Factory extends Factory {
 	/**
 	 * Definition of the factory.
 	 *
+	 * @throws RuntimeException If not in a multisite installation.
+	 *
 	 * @return array<string, mixed>
 	 */
 	public function definition(): array {
+		if ( ! is_multisite() ) {
+			throw new RuntimeException( 'Blog_Factory can only be used in a multisite installation.' );
+		}
+
 		global $current_site, $base;
 
 		assert( $current_site instanceof WP_Network, 'Expected $current_site to be an instance of WP_Network' );

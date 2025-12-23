@@ -7,6 +7,8 @@
 
 namespace Mantle\Database\Factory;
 
+use RuntimeException;
+
 /**
  * Network Factory
  *
@@ -25,12 +27,18 @@ class Network_Factory extends Factory {
 	/**
 	 * Definition of the factory.
 	 *
+	 * @throws RuntimeException If not in a multisite installation.
+	 *
 	 * @return array<string, mixed>
 	 */
 	public function definition(): array {
+		if ( ! is_multisite() ) {
+			throw new RuntimeException( 'Network_Factory can only be used in a multisite installation.' );
+		}
+
 		return [
 			'domain' => $this->faker->domainName(),
-			'title'  => $this->faker->words( 2 ),
+			'title'  => $this->faker->words( 2, true ),
 			'path'   => $this->faker->slug(),
 		];
 	}
@@ -48,7 +56,7 @@ class Network_Factory extends Factory {
 		$args = array_merge(
 			[
 				'domain' => $this->faker->domainName(),
-				'title'  => $this->faker->words(),
+				'title'  => $this->faker->words( 2, true ),
 				'path'   => $this->faker->slug(),
 			],
 			$args
