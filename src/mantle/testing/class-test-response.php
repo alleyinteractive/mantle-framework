@@ -9,7 +9,7 @@ namespace Mantle\Testing;
 
 use Exception;
 use Mantle\Contracts\Application;
-use Mantle\Contracts\Http\Mutable_Response as ResponseContract;
+use Mantle\Contracts\Http\Response as ResponseContract;
 use Mantle\Http\Request;
 use Mantle\Http\Response;
 use Mantle\Http_Client\Concerns\Interacts_With_Feeds;
@@ -194,29 +194,6 @@ class Test_Response implements ResponseContract {
 		$value = Arr::wrap( $this->headers[ $name ] );
 
 		return $as_array ? $value : Arr::first( $value );
-	}
-
-	/**
-	 * Set a response header.
-	 *
-	 * @param string          $name The header name.
-	 * @param string|string[] $value The header value.
-	 */
-	public function set_header( string $name, string|array $value ): void {
-		if ( is_array( $value ) ) {
-			$value = array_map( strval( ... ), $value );
-		}
-
-		$this->headers[ strtolower( $name ) ] = $value;
-	}
-
-	/**
-	 * Delete a response header.
-	 *
-	 * @param string $name The header name to delete.
-	 */
-	public function delete_header( string $name ): void {
-		unset( $this->headers[ strtolower( $name ) ] );
 	}
 
 	/**
