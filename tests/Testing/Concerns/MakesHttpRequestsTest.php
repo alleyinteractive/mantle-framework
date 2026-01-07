@@ -25,6 +25,9 @@ use function Mantle\Support\Helpers\stringable;
 use function Mantle\Support\Helpers\terminate_request;
 
 /**
+ * Tests for making internal HTTP requests in tests.
+ *
+ * @see \Mantle\Testing\Concerns\Makes_Http_Requests
  * @group testing
  */
 #[Group( 'testing' )]
@@ -173,6 +176,21 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			->get( '/not-found/should-404/' )
 			->assertNotFound();
 	}
+
+	// public function test_rss_feed(): void {
+	// 	$posts = static::factory()->post->create_many( 3, [
+	// 		'post_content' => 'Example content for RSS feed.',
+	// 	] );
+
+	// 	$feed_url = get_feed_link( 'rss2' );
+
+	// 	$this->assertEquals( home_url( '/feed/' ), $feed_url );
+
+	// 	$this->get( $feed_url )
+	// 		->assertOk()
+	// 		->assertIsFeed()
+	// 		->dd();
+	// }
 
 	/**
 	 * Test checking against a Mantle route.
