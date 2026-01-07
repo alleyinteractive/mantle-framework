@@ -1,4 +1,10 @@
 <?php
+/**
+ * Spy_Sitemaps_Renderer class file
+ *
+ * @package Mantle
+ */
+
 namespace Mantle\Testing\Doubles\Sitemaps;
 
 use function Mantle\Support\Helpers\terminate_request;
