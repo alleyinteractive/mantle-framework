@@ -177,20 +177,22 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			->assertNotFound();
 	}
 
-	// public function test_rss_feed(): void {
-	// 	$posts = static::factory()->post->create_many( 3, [
-	// 		'post_content' => 'Example content for RSS feed.',
-	// 	] );
+	public function test_rss_feed(): void {
+		$posts = static::factory()->post->create_many( 3, [
+			'post_content' => 'Example content for RSS feed.',
+		] );
 
-	// 	$feed_url = get_feed_link( 'rss2' );
+		$feed_url = get_feed_link( 'rss2' );
 
-	// 	$this->assertEquals( home_url( '/feed/' ), $feed_url );
+		$this->assertEquals( home_url( '/feed/' ), $feed_url );
 
-	// 	$this->get( $feed_url )
-	// 		->assertOk()
-	// 		->assertIsFeed()
-	// 		->dd();
-	// }
+		$request = $this->get( $feed_url )
+			->assertOk()
+			->assertIsXml()
+			->assertIsFeed();
+
+		$this->assertCount( 3, $request->feed()->get_items() );
+	}
 
 	/**
 	 * Test checking against a Mantle route.

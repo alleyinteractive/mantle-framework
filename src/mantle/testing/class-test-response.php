@@ -199,12 +199,12 @@ class Test_Response implements ResponseContract {
 	/**
 	 * Set a response header.
 	 *
-	 * @param string $name The header name.
+	 * @param string          $name The header name.
 	 * @param string|string[] $value The header value.
 	 */
 	public function set_header( string $name, string|array $value ): void {
 		if ( is_array( $value ) ) {
-			$value = array_map( 'strval', $value );
+			$value = array_map( strval( ... ), $value );
 		}
 
 		$this->headers[ strtolower( $name ) ] = $value;
@@ -988,5 +988,27 @@ class Test_Response implements ResponseContract {
 		$this->assertIsHtml();
 
 		return new HTML( $this->get_content() );
+	}
+
+	/**
+	 * Assert if the response is an XML response.
+	 */
+	public function assertIsXml(): static {
+		if ( $this->is_feed() ) {
+			return $this->assertIsFeed();
+		}
+
+		PHPUnit::assertStringContainsString( 'application/xml', (string) $this->get_header( 'Content-Type' ) );
+
+		return $this;
+	}
+
+	/**
+	 * Assert if the response is not an XML response.
+	 */
+	public function assertIsNotXml(): static {
+		PHPUnit::assertStringNotContainsString( 'application/xml', (string) $this->get_header( 'Content-Type' ) );
+
+		return $this->assertIsNotFeed();
 	}
 }

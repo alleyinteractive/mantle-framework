@@ -198,7 +198,7 @@ class Response implements ArrayAccess, ResponseContract {
 	 * @return ($as_array is true ? array<string> : string|null) The header value(s), or null if not found.
 	 */
 	public function get_header( string $name, bool $as_array = false ): string|array|null {
-		$header = strtolower( $name );
+		$header  = strtolower( $name );
 		$headers = $this->headers();
 
 		if ( ! array_key_exists( $header, $headers ) ) {
@@ -208,10 +208,10 @@ class Response implements ArrayAccess, ResponseContract {
 		$value = $headers[ $header ];
 
 		if ( is_array( $value ) ) {
-			return $as_array ? $value : (string) ( $value[0] ?? '' );
+			return $as_array ? $value : $value[0] ?? '';
 		}
 
-		return $as_array ? [ (string) $value ] : (string) $value;
+		return $as_array ? [ $value ] : $value;
 	}
 
 	/**

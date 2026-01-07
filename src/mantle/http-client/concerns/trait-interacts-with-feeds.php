@@ -2,6 +2,8 @@
 /**
  * Interacts_With_Feeds trait file
  *
+ * phpcs:disable WordPress.NamingConventions.ValidFunctionName
+ *
  * @package Mantle
  */
 

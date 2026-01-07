@@ -33,7 +33,7 @@ interface Mutable_Response extends Response {
 	/**
 	 * Set a response header.
 	 *
-	 * @param string $name The header name.
+	 * @param string          $name The header name.
 	 * @param string|string[] $value The header value.
 	 */
 	public function set_header( string $name, string|array $value ): void;
