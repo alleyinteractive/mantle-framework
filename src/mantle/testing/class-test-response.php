@@ -732,6 +732,24 @@ class Test_Response implements ResponseContract {
 	}
 
 	/**
+	 * Assert that the response is a text response.
+	 */
+	public function assertIsText(): static {
+		PHPUnit::assertStringContainsString( 'text/plain', (string) $this->get_header( 'Content-Type' ) );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response is not a text response.
+	 */
+	public function assertIsNotText(): static {
+		PHPUnit::assertStringNotContainsString( 'text/plain', (string) $this->get_header( 'Content-Type' ) );
+
+		return $this;
+	}
+
+	/**
 	 * Assert that the expected value and type exists at the given path in the response.
 	 *
 	 * @param  string $path

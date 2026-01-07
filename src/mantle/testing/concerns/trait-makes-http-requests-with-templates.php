@@ -36,6 +36,8 @@ trait Makes_Http_Requests_With_Templates {
 
 	/**
 	 * Setup the trait and add the hooks to load templates.
+	 *
+	 * @todo Convert to Before attribute when PHPUnit 12 is minimum..
 	 */
 	public function makes_http_requests_with_templates_set_up(): void {
 		foreach ( array_keys( static::$templates_loaded ) as $hook ) {

@@ -270,9 +270,6 @@ abstract class TestCase extends BaseTestCase {
 			'comment_depth',
 			'comment_thread_alt',
 
-			// Sitemap globals.
-			'wp_sitemaps',
-
 			// Template globals.
 			'wp_stylesheet_path',
 			'wp_template_path',
