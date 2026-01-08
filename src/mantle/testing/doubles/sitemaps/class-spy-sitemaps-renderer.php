@@ -27,7 +27,9 @@ class Spy_Sitemaps_Renderer extends \WP_Sitemaps_Renderer {
 	 *
 	 * @param \WP_Sitemaps_Renderer $original_renderer The original renderer to spy on.
 	 */
-	public function __construct( public readonly \WP_Sitemaps_Renderer $original_renderer ) {}
+	public function __construct( public readonly \WP_Sitemaps_Renderer $original_renderer ) {
+		parent::__construct();
+	}
 
 	/**
 	 * Renders a sitemap index.
