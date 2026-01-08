@@ -1,11 +1,11 @@
 <?php
-declare(strict_types=1);
-
 /**
  * Makes_Http_Requests_With_Sitemaps trait file
  *
  * @package Mantle
  */
+
+declare(strict_types=1);
 
 namespace Mantle\Testing\Concerns;
 
