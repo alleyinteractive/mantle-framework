@@ -43,7 +43,6 @@ trait Preserves_Globals {
 		'wp_meta_keys',
 		'wp_post_statuses',
 		'wp_post_types',
-		'wp_sitemaps',
 		'wp_taxonomies',
 	];
 

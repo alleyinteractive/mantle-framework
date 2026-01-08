@@ -23,7 +23,9 @@ trait Makes_Http_Requests_With_Sitemaps {
 	 * @todo Convert to Before attribute when PHPUnit 12 is minimum..
 	 */
 	public function makes_http_requests_with_sitemaps_set_up(): void {
+		$server = wp_sitemaps_get_server();
+
 		// Replace the server's renderer with a spy.
-		wp_sitemaps_get_server()->renderer = new Spy_Sitemaps_Renderer();
+		$server->renderer = new Spy_Sitemaps_Renderer( $server->renderer );
 	}
 }

@@ -46,7 +46,7 @@ class MakesHttpRequestsWithSitemapTest extends FrameworkTestCase {
 	 * @dataProvider dataprovider_run_test_multiple_times
 	 */
 	#[DataProvider( 'dataprovider_run_test_multiple_times' )]
-	public function test_sitemap( $run ): void {
+	public function test_sitemap( $run = 0 ): void {
 		$post = static::factory()->post->create_and_get( [
 			'post_title' => 'Example Post for Sitemap',
 			'post_name'  => 'example-post-for-sitemap',
