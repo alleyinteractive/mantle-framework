@@ -45,11 +45,13 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		$this->flush_default_headers();
 	}
 
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_get_home() {
 		$this->get( home_url( '/' ) );
 		$this->assertQueryTrue( 'is_home', 'is_front_page' );
 	}
 
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_get_singular() {
 		$post_id = static::factory()->post->create();
 		$this->get( get_permalink( $post_id ) . '?test=asda' )
@@ -58,12 +60,14 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			->assertSee( get_the_title( $post_id ) );
 	}
 
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_fetch_post(): void {
 		$this->fetch_post()
 			->assertOk()
 			->assertQueryTrue( 'is_single', 'is_singular' );
 	}
 
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_with_headers(): void {
 		$capture = null;
 
@@ -97,6 +101,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		], getallheaders() );
 	}
 
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_follow_redirects(): void {
 		$this->app['router']->get( '/redirect/', function () {
 			return redirect()->to( '/redirected/' );
@@ -124,6 +129,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			->assertContent( 'https://example.com/test/' );
 	}
 
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_with_cookie(): void {
 		$this->app['router']->get( '/example/', function ( Request $request ) {
 			return $request->cookies->all();
@@ -162,6 +168,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		remove_all_actions( 'template_redirect' );
 	}
 
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_get_term() {
 		$category_id = static::factory()->category->create();
 
@@ -171,14 +178,16 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			->assertQueriedObjectId( $category_id );
 	}
 
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_wordpress_404() {
 		$this
 			->get( '/not-found/should-404/' )
 			->assertNotFound();
 	}
 
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_rss_feed(): void {
-		$posts = static::factory()->post->create_many( 3, [
+		static::factory()->post->create_many( 3, [
 			'post_content' => 'Example content for RSS feed.',
 		] );
 
@@ -186,10 +195,16 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 
 		$this->assertEquals( home_url( '/feed/' ), $feed_url );
 
-		$request = $this->get( $feed_url )
-			->assertOk()
-			->assertIsXml()
-			->assertIsFeed();
+//		try {
+			$request = $this->get( $feed_url )
+        ->assertOk()
+        ->assertIsXml()
+        ->assertIsFeed()
+        ->assertSee( '<channel>' );
+//			dump('passing', $GLOBALS['wp_rewrite'] );
+//		} catch ( \Throwable $e ) {
+//			dd('failing', $GLOBALS['wp_rewrite'], $GLOBALS['wp_query'] );
+//		}
 
 		$this->assertCount( 3, $request->feed()->get_items() );
 	}
@@ -197,6 +212,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	/**
 	 * Test checking against a Mantle route.
 	 */
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_get_mantle_route() {
 		$_SERVER['__route_run'] = false;
 
@@ -219,6 +235,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		$this->assertTrue( $_SERVER['__route_run'] );
 	}
 
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_get_mantle_route_404() {
 		// Ensure routing is enabled.
 		$this->assertNotNull( $this->app->get_provider( Routing_Service_Provider::class ) );
@@ -236,6 +253,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			->assertContent( 'not-found' );
 	}
 
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_post_mantle_route() {
 		// Ensure routing is enabled.
 		$this->assertNotNull( $this->app->get_provider( Routing_Service_Provider::class ) );
@@ -263,6 +281,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		$this->get( '/404' )->assertNotFound();
 	}
 
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_rest_api_route() {
 		$this->expectApplied( 'rest_dispatch_request' )->once()->andReturnNull();
 
@@ -285,6 +304,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	/**
 	 * Test for an issue with parsing an empty JSON array `[]` response.
 	 */
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_json_parsing_error_empty_array(): void {
 		Utils::delete_all_posts();
 
@@ -293,6 +313,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			->assertJsonCount( 0 );
 	}
 
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_rest_api_route_headers() {
 		$this->ignoreIncorrectUsage();
 
@@ -313,12 +334,14 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			->assertJsonPath( 'key', 'value here' );
 	}
 
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_rest_api_route_error() {
 		$this->get( rest_url( '/an/unknown/route' ) )
 			->assertStatus( 404 )
 			->assertNotFound();
 	}
 
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_router_redirect_response() {
 		$this->app['router']->get(
 			'/route-to-redirect/',
@@ -332,6 +355,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			->assertHeader( 'Other-Header', '123' );
 	}
 
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_assert_content_callback(): void {
 		$this
 			->get( '/' )
@@ -348,13 +372,6 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		add_action( $hook, fn () => wp_redirect( home_url( '/redirected/' ), 302 ) );
 
 		$this->get( '/' )->assertRedirect( home_url( '/redirected/' ) );
-	}
-
-	public static function core_template_hook_data_provider(): array {
-		return [
-			'template_redirect' => [ 'template_redirect' ],
-			'parse_query'       => [ 'parse_query' ],
-		];
 	}
 
 	/**
@@ -385,6 +402,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			->assertContent( 'bar' );
 	}
 
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_post_json_wordpress_route() {
 		$this->ignoreIncorrectUsage();
 
@@ -402,6 +420,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			->assertContent( '"bar"' );
 	}
 
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_assert_json_structure() {
 		$response = Test_Response::from_base_response(
 			new Response( new JsonSerializableMixedResourcesStub() )
@@ -426,6 +445,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		$response->assertJsonStructure( [ 'baz' => [ '*' => [ 'foo', 'bar' => [ 'foo', 'bar' ] ] ] ] );
 	}
 
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_callbacks() {
 		$_SERVER['__callback_before'] = false;
 		$_SERVER['__callback_after']  = false;
@@ -491,6 +511,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		] );
 	}
 
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_wp_is_rest_endpoint() {
 		$this->ignoreIncorrectUsage();
 
@@ -548,12 +569,14 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			] );
 	}
 
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_url_scheme_http_by_default() {
 		$this->get( '/' )->assertOk();
 
 		$this->assertEmpty( $_SERVER['HTTPS'] ?? '' );
 	}
 
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_url_scheme_https_opt_in() {
 		$this->get( '/' )->assertOk();
 
@@ -565,6 +588,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		$this->assertEquals( 'https', $_SERVER['REQUEST_SCHEME'] );
 	}
 
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_url_scheme_https_by_home_url() {
 		putenv( 'MANTLE_EXPERIMENTAL_TESTING_USE_HOME_URL_HOST=1' );
 
@@ -599,6 +623,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 
 	#[Group( 'experimental' )]
 	#[Group( 'experiment-testing-url-host' )]
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_experimental_redirect_to() {
 		$this->setup_experiment_testing_url_host();
 
@@ -610,6 +635,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		$this->get( '/route-to-redirect/' )->assertRedirect( '/redirected/' );
 	}
 
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_html_response(): void {
 		$response = $this->get( '/' )->assertOk();
 
@@ -627,6 +653,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	 *
 	 * This test can be removed with Mantle 2.x, where cache clearing is done as needed.
 	 */
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_cache_clearing_on_each_request(): void {
 		wp_cache_set( 'key', 'value' );
 
@@ -639,6 +666,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	}
 
 	#[PreserveObjectCache]
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_preserve_object_cache(): void {
 		wp_cache_set( 'key', 'value' );
 
@@ -650,6 +678,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		$this->assertEquals( 'value', wp_cache_get( 'key' ) );
 	}
 
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_cleanup_globals_between_runs(): void {
 		$runs = [];
 
@@ -695,35 +724,62 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	 * To push the system to a limit, make all the above test requests in a single
 	 * test method. Should always be towards the end of the class.
 	 */
-	public function test_multiple_requests() {
-		$methods = collect( get_class_methods( $this ) )
-			->filter( fn ( string $method ) => ! Str::contains( $method, [ 'experimental', 'snapshot', 'test_preserve_object_cache' ] ) && 0 === strpos( $method, 'test_' ) )
-			->sort()
-			->all();
+	// public function test_multiple_requests() {
+	// 	$methods = collect( get_class_methods( $this ) )
+	// 		->filter( fn ( string $method ) => ! Str::contains( $method, [ 'experimental', 'snapshot', 'test_preserve_object_cache' ] ) && 0 === strpos( $method, 'test_' ) )
+	// 		->sort()
+	// 		->all();
 
-		$class = new \ReflectionClass( $this );
+	// 	$class = new \ReflectionClass( $this );
 
-		// Re-run all test methods on this class in a single pass.
-		foreach ( $methods as $method ) {
-			if ( __FUNCTION__ === $method || 'test_' !== substr( $method, 0, 5 ) || $class->getMethod( $method )->getNumberOfParameters() > 0 ) {
-				continue;
-			}
+	// 	// Re-run all test methods on this class in a single pass.
+	// 	foreach ( $methods as $method ) {
+	// 		if (
+	// 			__FUNCTION__ === $method
+	// 			|| ! str_starts_with( $method, 'test_' )
+	// 			|| $class->getMethod( $method )->getNumberOfParameters() > 0
+	// 		) {
+	// 			continue;
+	// 		}
 
-			retry( 3, function () use ( $method ) {
-				$this->setUp();
+	// 		retry( 3, function ( $attempt ) use ( $method ) {
+	// 			$this->setUp();
 
-				$this->$method();
+	// 			try {
+	// 				$this->$method();
+	// 			} catch ( \Throwable $e ) {
+	// 				if ( 3 === $attempt ) {
+	// 					Utils::info( "Final attempt {$attempt} for {$method} failed, re-throwing exception." );
+	// 				}
 
-				$this->tearDown();
-			} );
-		}
-	}
+	// 				$this->tearDown();
+
+	// 				throw $e;
+	// 			}
+	// 		} );
+	// 	}
+	// }
 
 	protected function setup_experiment_testing_url_host() {
 		putenv( 'MANTLE_EXPERIMENTAL_TESTING_USE_HOME_URL_HOST=1' );
 
 		update_option( 'home', 'https://subdomain.' . WP_TESTS_DOMAIN );
 		$this->assertEquals( 'https://subdomain.' . WP_TESTS_DOMAIN, home_url() );
+	}
+
+	public static function core_template_hook_data_provider(): array {
+		return [
+			'template_redirect' => [ 'template_redirect' ],
+			'parse_query'       => [ 'parse_query' ],
+		];
+	}
+
+	public static function dataprovider_run_multiple_requests(): array {
+		return [
+			'first'  => [],
+			'second' => [],
+			'third'  => [],
+		];
 	}
 }
 

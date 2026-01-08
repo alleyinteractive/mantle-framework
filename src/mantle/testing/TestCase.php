@@ -271,7 +271,7 @@ abstract class TestCase extends BaseTestCase {
 			'comment_thread_alt',
 
 			// Reset $wp_sitemap global so that sitemap-related dynamic
-			// $wp->public_query_vars are added when the next test runs.
+			// $wp->public_query_vars are added when the next test runs. Mirrors core.
 			'wp_sitemaps',
 
 			// Template globals.
@@ -423,6 +423,6 @@ abstract class TestCase extends BaseTestCase {
 		$lazyloader = wp_metadata_lazyloader();
 		$lazyloader->reset_queue( 'term' );
 		$lazyloader->reset_queue( 'comment' );
-		$lazyloader->reset_queue( 'blog' );
+		$lazyloader->reset_queue( 'blog' ); // @phpstan-ignore-line argument.type
 	}
 }

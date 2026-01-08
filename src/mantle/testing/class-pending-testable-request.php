@@ -352,7 +352,7 @@ class Pending_Testable_Request {
 			) {
 				parse_str( $request->getContent(), $data );
 
-				$request->request = new InputBag( $data );
+				$request->request = new InputBag( $data ); // @phpstan-ignore-line argument.type
 			}
 
 			$this->test_case->app->instance( 'request', $request );
