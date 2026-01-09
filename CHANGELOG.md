@@ -11,10 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added proper support for testing `robots.txt`, feeds, and sitemaps via the testing
   framework's HTTP request methods.
+- Added a `Spy_Sitemaps_Renderer` class to replace the sitemap renderer during testing
+  to allow for spying on sitemap render calls.
 
 ### Changed
 
 - Adds PHPStan testing to more traits.
+- Clear object metadata lazy load queue when tearing down a test.
 
 ## v1.16.0
 
