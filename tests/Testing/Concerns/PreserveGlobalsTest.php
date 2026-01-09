@@ -6,9 +6,15 @@ use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 
+use WP_Rewrite;
 use function Mantle\Support\Helpers\collect;
 
 /**
+ * Tests for preserving global state between tests.
+ *
+ * Ensure that tests cannot cross contaminate each other by modifying global
+ * state, unless explicitly allowed.
+ *
  * @group testing
  */
 #[Group( 'testing' )]
@@ -25,6 +31,12 @@ class PreserveGlobalsTest extends FrameworkTestCase {
 			'single'       => true,
 			'type'         => 'string',
 		] );
+
+		register_post_type( 'persistent_post_type' );
+
+		add_rewrite_rule( '^persistent-rule/?$', 'index.php?persistent=1', 'top' );
+		add_rewrite_tag( '%persistent-tag%', '([0-9]+)' );
+		flush_rewrite_rules();
 	}
 
 	/**
@@ -89,6 +101,75 @@ class PreserveGlobalsTest extends FrameworkTestCase {
 	#[DisableGlobalPreservation]
 	public function test_disable_global_preservation_part_two(): void {
 		$this->assertTrue( post_type_exists( 'temporary_post_type' ) );
+	}
+
+	/**
+	 * Ensure that post types registered in one test are NOT preserved in
+	 * another.
+	 */
+	#[DataProvider( 'dataprovider_twice' )]
+	public function test_post_types_are_isolated_between_tests(): void {
+		// Post type registered in the test itself should not exist at the start of the test.
+		$this->assertFalse( post_type_exists( 'isolated_post_type' ) );
+
+		register_post_type( 'isolated_post_type' );
+
+		$this->assertTrue( post_type_exists( 'isolated_post_type' ) );
+
+		// Post type registered in setUpBeforeClass() should persist.
+		$this->assertTrue( post_type_exists( 'persistent_post_type' ) );
+	}
+
+	/**
+	 * Ensure that rewrite rules added in one test are NOT preserved in
+	 * another.
+	 */
+	#[DataProvider( 'dataprovider_twice' )]
+	public function test_rewrite_rules_are_isolated_between_tests(): void {
+		$rules = get_option( 'rewrite_rules' );
+		$this->assertIsArray( $rules );
+		$this->assertArrayNotHasKey( '^temporary-rule/?$', $rules );
+
+		add_rewrite_rule( '^temporary-rule/?$', 'index.php?temporary=1', 'top' );
+		flush_rewrite_rules();
+
+		$rules = get_option( 'rewrite_rules' );
+		$this->assertIsArray( $rules );
+		$this->assertArrayHasKey( '^temporary-rule/?$', $rules );
+
+		// Persistent rule added in setUpBeforeClass() should persist.
+		$this->assertArrayHasKey( '^persistent-rule/?$', $rules );
+	}
+
+	/**
+	 * Ensure that rewrite tags added in one test are NOT preserved in
+	 * another.
+	 */
+	#[DataProvider( 'dataprovider_twice' )]
+	public function test_rewrite_tags_are_isolated_between_tests(): void {
+		global $wp_rewrite, $wp;
+
+		$this->assertInstanceOf( WP_Rewrite::class, $wp_rewrite );
+
+		// Ensure the persistent tag exists.
+		$this->assertContains( 'persistent-tag=', $wp_rewrite->queryreplace );
+		$this->assertContains( '%persistent-tag%', $wp_rewrite->rewritecode );
+
+		// Ensure that the query variable is added to $wp->public_query_vars.
+		$this->assertContains( 'persistent-tag', $wp->public_query_vars );
+
+		// Ensure the temporary tag does not exist.
+		$this->assertNotContains( 'temporary-tag=', $wp_rewrite->queryreplace );
+		$this->assertNotContains( '%temporary-tag%', $wp_rewrite->rewritecode );
+
+		add_rewrite_tag( '%temporary-tag%', '([^/]+)' );
+
+		// Ensure the temporary tag now exists.
+		$this->assertContains( 'temporary-tag=', $wp_rewrite->queryreplace );
+		$this->assertContains( '%temporary-tag%', $wp_rewrite->rewritecode );
+
+		// Ensure that the query variable is added to $wp->public_query_vars.
+		$this->assertContains( 'temporary-tag', $wp->public_query_vars );
 	}
 
 	/**

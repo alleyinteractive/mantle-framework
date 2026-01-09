@@ -54,11 +54,25 @@ trait Preserves_Globals {
 	protected static ?array $original_globals = null;
 
 	/**
-	 * Backup of the current class's global variables.
+	 * Backup of the original public query variables.
+	 *
+	 * @var array<string>|null
+	 */
+	protected static ?array $original_wp_query_vars = null;
+
+	/**
+	 * Backup of the current test class' global variables.
 	 *
 	 * @var array<string, mixed>|null
 	 */
 	protected static ?array $current_class_globals = null;
+
+	/**
+	 * Backup of the current test class' public query variables.
+	 *
+	 * @var array<string>|null
+	 */
+	protected static ?array $current_class_wp_query_vars = null;
 
 	/**
 	 * Backup the original globals. This will create a backup of the original
@@ -68,6 +82,8 @@ trait Preserves_Globals {
 	 * a high priority.
 	 */
 	public static function backup_original_wordpress_globals(): void {
+		global $wp;
+
 		// Backup the original globals only once and reuse it for all test classes.
 		if ( ! isset( self::$original_globals ) ) {
 			foreach ( self::GLOBALS_TO_BACKUP as $global ) {
@@ -78,6 +94,9 @@ trait Preserves_Globals {
 				$GLOBALS[ $global ] = self::$original_globals[ $global ]; // phpcs:ignore
 			}
 		}
+
+		// Backup the WordPress public query variables.
+		self::$original_wp_query_vars = $wp->public_query_vars;
 
 		self::$current_class_globals = null;
 	}
@@ -93,11 +112,16 @@ trait Preserves_Globals {
 	 * a low priority so it runs after other BeforeClass methods.
 	 */
 	public static function backup_current_class_wordpress_globals(): void {
+		global $wp;
+
 		self::$current_class_globals = [];
 
 		foreach ( self::GLOBALS_TO_BACKUP as $global ) {
 			self::$current_class_globals[ $global ] = $GLOBALS[ $global ];
 		}
+
+		// Backup the WordPress public query variables.
+		self::$current_class_wp_query_vars = $wp->public_query_vars;
 	}
 
 	/**
@@ -107,6 +131,8 @@ trait Preserves_Globals {
 	 * high priority so it runs before other Before methods.
 	 */
 	public function restore_globals_before_each_test(): void {
+		global $wp;
+
 		if ( ! $this->is_global_preservation_supported_for_test() ) {
 			return;
 		}
@@ -123,6 +149,12 @@ trait Preserves_Globals {
 
 			$GLOBALS[ $global ] = self::$current_class_globals[ $global ]; // phpcs:ignore
 		}
+
+		// Restore the WordPress public query variables.
+		if ( self::$current_class_wp_query_vars ) {
+			$wp->public_query_vars = self::$current_class_wp_query_vars;
+
+		}
 	}
 
 	/**
@@ -132,12 +164,19 @@ trait Preserves_Globals {
 	 * low priority so it runs after other AfterClass methods.
 	 */
 	public static function restore_globals_after_all_tests(): void {
+		global $wp;
+
 		if ( ! isset( self::$original_globals ) ) {
 			return;
 		}
 
 		foreach ( self::GLOBALS_TO_BACKUP as $global ) {
 			$GLOBALS[ $global ] = self::$original_globals[ $global ]; // phpcs:ignore
+		}
+
+		// Restore the WordPress public query variables.
+		if ( self::$original_wp_query_vars ) {
+			$wp->public_query_vars = self::$original_wp_query_vars;
 		}
 	}
 
