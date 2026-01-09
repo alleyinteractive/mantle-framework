@@ -195,16 +195,11 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 
 		$this->assertEquals( home_url( '/feed/' ), $feed_url );
 
-//		try {
-			$request = $this->get( $feed_url )
-        ->assertOk()
-        ->assertIsXml()
-        ->assertIsFeed()
-        ->assertSee( '<channel>' );
-//			dump('passing', $GLOBALS['wp_rewrite'] );
-//		} catch ( \Throwable $e ) {
-//			dd('failing', $GLOBALS['wp_rewrite'], $GLOBALS['wp_query'] );
-//		}
+		$request = $this->get( $feed_url )
+      ->assertOk()
+      ->assertIsXml()
+      ->assertIsFeed()
+      ->assertSee( '<channel>' );
 
 		$this->assertCount( 3, $request->feed()->get_items() );
 	}
@@ -717,48 +712,6 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			'wp-admin/admin-ajax.php' => [ '/wp-admin/admin-ajax.php', 'Requests to [/wp-admin/admin-ajax.php] are not supported.' ],
 		];
 	}
-
-	/**
-	 * Test making multiple requests in a single test method.
-	 *
-	 * To push the system to a limit, make all the above test requests in a single
-	 * test method. Should always be towards the end of the class.
-	 */
-	// public function test_multiple_requests() {
-	// 	$methods = collect( get_class_methods( $this ) )
-	// 		->filter( fn ( string $method ) => ! Str::contains( $method, [ 'experimental', 'snapshot', 'test_preserve_object_cache' ] ) && 0 === strpos( $method, 'test_' ) )
-	// 		->sort()
-	// 		->all();
-
-	// 	$class = new \ReflectionClass( $this );
-
-	// 	// Re-run all test methods on this class in a single pass.
-	// 	foreach ( $methods as $method ) {
-	// 		if (
-	// 			__FUNCTION__ === $method
-	// 			|| ! str_starts_with( $method, 'test_' )
-	// 			|| $class->getMethod( $method )->getNumberOfParameters() > 0
-	// 		) {
-	// 			continue;
-	// 		}
-
-	// 		retry( 3, function ( $attempt ) use ( $method ) {
-	// 			$this->setUp();
-
-	// 			try {
-	// 				$this->$method();
-	// 			} catch ( \Throwable $e ) {
-	// 				if ( 3 === $attempt ) {
-	// 					Utils::info( "Final attempt {$attempt} for {$method} failed, re-throwing exception." );
-	// 				}
-
-	// 				$this->tearDown();
-
-	// 				throw $e;
-	// 			}
-	// 		} );
-	// 	}
-	// }
 
 	protected function setup_experiment_testing_url_host() {
 		putenv( 'MANTLE_EXPERIMENTAL_TESTING_USE_HOME_URL_HOST=1' );
