@@ -13,6 +13,7 @@ use Mantle\Testing\Attributes\DisableGlobalPreservation;
 use PHPUnit\Framework\Attributes\AfterClass;
 use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\Attributes\BeforeClass;
+use function DeepCopy\deep_copy;
 
 /**
  * Trait to preserve certain WordPress global variables between tests.
@@ -29,7 +30,7 @@ use PHPUnit\Framework\Attributes\BeforeClass;
  * PHPUnit 10. Once PHPUnit 11+ is the minimum supported version, the methods below
  * can be updated to use BeforeClass, Before, and AfterClass attributes.
  *
- * For globals that are objects, clones are made to avoid reference issues. In addition
+ * For globals that are objects, deep copies are made to avoid reference issues. In addition
  * to the globals listed below, the WordPress public query variables are also preserved.
  *
  * @mixin \Mantle\Testing\TestCase
@@ -47,6 +48,7 @@ trait Preserves_Globals {
 		'wp_post_statuses',
 		'wp_post_types',
 		'wp_rewrite',
+		'wp_sitemaps',
 		'wp_taxonomies',
 	];
 
@@ -99,15 +101,11 @@ trait Preserves_Globals {
 		// Backup the original globals only once and reuse it for all test classes.
 		if ( ! isset( self::$original_globals ) ) {
 			foreach ( self::GLOBALS_TO_BACKUP as $global ) {
-				self::$original_globals[ $global ] = isset( $GLOBALS[ $global ] ) && is_object( $GLOBALS[ $global ] )
-					? clone $GLOBALS[ $global ]
-					: $GLOBALS[ $global ];
+				self::$original_globals[ $global ] = self::value_retriever( $GLOBALS[ $global ] ?? null );
 			}
 		} else {
 			foreach ( self::GLOBALS_TO_BACKUP as $global ) {
-				$GLOBALS[ $global ] = is_object( self::$original_globals[ $global ] )
-					? clone self::$original_globals[ $global ]
-					: self::$original_globals[ $global ]; // phpcs:ignore
+				$GLOBALS[ $global ] = self::value_retriever( self::$original_globals[ $global ] ?? null );
 			}
 		}
 
@@ -134,9 +132,7 @@ trait Preserves_Globals {
 		self::$current_class_globals = [];
 
 		foreach ( self::GLOBALS_TO_BACKUP as $global ) {
-			self::$current_class_globals[ $global ] = isset( $GLOBALS[ $global ] ) && is_object( $GLOBALS[ $global ] )
-				? clone $GLOBALS[ $global ]
-				: $GLOBALS[ $global ];
+			self::$current_class_globals[ $global ] = self::value_retriever( $GLOBALS[ $global ] ?? null );
 		}
 
 		// Backup the WordPress public query variables.
@@ -166,9 +162,7 @@ trait Preserves_Globals {
 				continue;
 			}
 
-			$GLOBALS[ $global ] = isset( self::$current_class_globals[ $global ] ) && is_object( self::$current_class_globals[ $global ] )
-				? clone self::$current_class_globals[ $global ]
-				: self::$current_class_globals[ $global ];
+			$GLOBALS[ $global ] = self::value_retriever( self::$current_class_globals[ $global ] );
 		}
 
 		// Restore the WordPress public query variables.
@@ -191,9 +185,7 @@ trait Preserves_Globals {
 		}
 
 		foreach ( self::GLOBALS_TO_BACKUP as $global ) {
-			$GLOBALS[ $global ] = is_object( self::$original_globals[ $global ] )
-				? clone self::$original_globals[ $global ]
-				: self::$original_globals[ $global ];
+			$GLOBALS[ $global ] = self::value_retriever( self::$original_globals[ $global ] );
 		}
 
 		// Restore the WordPress public query variables.
@@ -207,5 +199,15 @@ trait Preserves_Globals {
 	 */
 	private function is_global_preservation_supported_for_test(): bool {
 		return empty( $this->get_attributes_for_method( DisableGlobalPreservation::class ) );
+	}
+
+	/**
+	 * Retrieve a value, making a deep copy if it's an object.
+	 *
+	 * @param mixed $value The value to retrieve.
+	 * @return mixed The retrieved value or a deep copy if it's an object.
+	 */
+	private static function value_retriever( mixed $value ): mixed {
+		return is_object( $value ) ? deep_copy( $value ) : $value;
 	}
 }

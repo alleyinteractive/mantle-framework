@@ -27,6 +27,7 @@
         "league/uri": "^7.5",
         "league/uri-interfaces": "^7.5",
         "monolog/monolog": "^2.9.1",
+        "myclabs/deep-copy": "^1.13",
         "nesbot/carbon": "^3.8.4",
         "nette/php-generator": "^4.1",
         "nunomaduro/termwind": "^1.15.1 || ^2.0",

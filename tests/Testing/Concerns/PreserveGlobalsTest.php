@@ -177,6 +177,69 @@ class PreserveGlobalsTest extends FrameworkTestCase {
 	}
 
 	/**
+	 * Ensure that sitemap providers registered in one test are NOT preserved in
+	 * another.
+	 *
+	 * @dataProvider dataprovider_twice
+	 */
+	#[DataProvider( 'dataprovider_twice' )]
+	public function test_sitemap_providers_preserved_between_tests(): void {
+		$server = wp_sitemaps_get_server();
+
+		$providers = $server->registry->get_providers();
+
+		$this->assertArrayNotHasKey( 'test-provider', $providers );
+
+		$provider = new class extends \WP_Sitemaps_Posts {};
+
+		// Register a new sitemap provider for this test.
+		wp_register_sitemap_provider( 'test-provider', new $provider );
+
+		$providers = $server->registry->get_providers();
+
+		$this->assertArrayHasKey( 'test-provider', $providers );
+	}
+
+	/**
+	 * Test that a single template_redirect hook is registered for sitemaps. Previously, this was hooked more than
+	 * once when testing.
+	 *
+	 * @dataProvider dataprovider_twice
+	 */
+	#[DataProvider( 'dataprovider_twice' )]
+	public function test_sitemap_hooked_once_to_template_redirect(): void {
+		$this->assertNotEmpty( $GLOBALS['wp_sitemaps'] ?? null, 'Expected $wp_sitemaps global to be set on load and backed up by PreserveGlobals.' );
+
+		$server = wp_sitemaps_get_server();
+
+		if ( ! isset( $GLOBALS['wp_filter']['template_redirect'] ) ) {
+			$this->fail( 'No template_redirect hooks found.' );
+		}
+
+		$hooked = $GLOBALS['wp_filter']['template_redirect']->callbacks[10] ?? [];
+
+		if ( empty( $hooked ) ) {
+			$this->fail( 'No template_redirect hooks found at priority 10.' );
+		}
+
+		$sitemap_provider_hooks = collect( $hooked )
+			->filter( fn ( $hook ) => is_array( $hook['function'] ) && isset( $hook['function'][0] ) && \WP_Sitemaps::class === $hook['function'][0]::class )
+			->all();
+
+		$this->assertCount(
+			1,
+			$sitemap_provider_hooks,
+			'Expected exactly one template_redirect hook for WP_Sitemaps.',
+		);
+
+		$this->assertEquals(
+			$server,
+			collect( $sitemap_provider_hooks )->first()['function'][0],
+			'Expected the hooked WP_Sitemaps instance to match the server instance.',
+		);
+	}
+
+	/**
 	 * Data provider that can be used to test that a data provider can be called
 	 * multiple times without issue.
 	 */
