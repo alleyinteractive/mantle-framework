@@ -18,6 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Adds PHPStan testing to more traits.
 - Clear object metadata lazy load queue when tearing down a test.
+- The `$wp_rewrite` global and public query variables in `WP` are now backed up
+  before any tests are run and restored before each test to prevent side effects
+  from tests that modify these globals.
 
 ## v1.16.0
 

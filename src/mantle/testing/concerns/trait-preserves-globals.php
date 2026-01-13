@@ -29,6 +29,9 @@ use PHPUnit\Framework\Attributes\BeforeClass;
  * PHPUnit 10. Once PHPUnit 11+ is the minimum supported version, the methods below
  * can be updated to use BeforeClass, Before, and AfterClass attributes.
  *
+ * For globals that are objects, clones are made to avoid reference issues. In addition
+ * to the globals listed below, the WordPress public query variables are also preserved.
+ *
  * @mixin \Mantle\Testing\TestCase
  */
 trait Preserves_Globals {
@@ -43,11 +46,14 @@ trait Preserves_Globals {
 		'wp_meta_keys',
 		'wp_post_statuses',
 		'wp_post_types',
+		'wp_rewrite',
 		'wp_taxonomies',
 	];
 
 	/**
 	 * Backup of the original global variables.
+	 *
+	 * These are captured once before any test runs.
 	 *
 	 * @var array<string, mixed>|null
 	 */
@@ -56,12 +62,16 @@ trait Preserves_Globals {
 	/**
 	 * Backup of the original public query variables.
 	 *
+	 * These are captured once before any test runs.
+	 *
 	 * @var array<string>|null
 	 */
 	protected static ?array $original_wp_query_vars = null;
 
 	/**
-	 * Backup of the current test class' global variables.
+	 * Backup of the current test class global variables.
+	 *
+	 * These are captured after the test class's setUpBeforeClass() method runs.
 	 *
 	 * @var array<string, mixed>|null
 	 */
@@ -69,6 +79,8 @@ trait Preserves_Globals {
 
 	/**
 	 * Backup of the current test class' public query variables.
+	 *
+	 * These are captured after the test class's setUpBeforeClass() method runs.
 	 *
 	 * @var array<string>|null
 	 */
@@ -87,17 +99,22 @@ trait Preserves_Globals {
 		// Backup the original globals only once and reuse it for all test classes.
 		if ( ! isset( self::$original_globals ) ) {
 			foreach ( self::GLOBALS_TO_BACKUP as $global ) {
-				self::$original_globals[ $global ] = $GLOBALS[ $global ];
+				self::$original_globals[ $global ] = isset( $GLOBALS[ $global ] ) && is_object( $GLOBALS[ $global ] )
+					? clone $GLOBALS[ $global ]
+					: $GLOBALS[ $global ];
 			}
 		} else {
 			foreach ( self::GLOBALS_TO_BACKUP as $global ) {
-				$GLOBALS[ $global ] = self::$original_globals[ $global ]; // phpcs:ignore
+				$GLOBALS[ $global ] = is_object( self::$original_globals[ $global ] )
+					? clone self::$original_globals[ $global ]
+					: self::$original_globals[ $global ]; // phpcs:ignore
 			}
 		}
 
 		// Backup the WordPress public query variables.
 		self::$original_wp_query_vars = $wp->public_query_vars;
 
+		// Clear the current class globals.
 		self::$current_class_globals = null;
 	}
 
@@ -117,7 +134,9 @@ trait Preserves_Globals {
 		self::$current_class_globals = [];
 
 		foreach ( self::GLOBALS_TO_BACKUP as $global ) {
-			self::$current_class_globals[ $global ] = $GLOBALS[ $global ];
+			self::$current_class_globals[ $global ] = isset( $GLOBALS[ $global ] ) && is_object( $GLOBALS[ $global ] )
+				? clone $GLOBALS[ $global ]
+				: $GLOBALS[ $global ];
 		}
 
 		// Backup the WordPress public query variables.
@@ -147,13 +166,14 @@ trait Preserves_Globals {
 				continue;
 			}
 
-			$GLOBALS[ $global ] = self::$current_class_globals[ $global ]; // phpcs:ignore
+			$GLOBALS[ $global ] = isset( self::$current_class_globals[ $global ] ) && is_object( self::$current_class_globals[ $global ] )
+				? clone self::$current_class_globals[ $global ]
+				: self::$current_class_globals[ $global ];
 		}
 
 		// Restore the WordPress public query variables.
 		if ( self::$current_class_wp_query_vars ) {
 			$wp->public_query_vars = self::$current_class_wp_query_vars;
-
 		}
 	}
 
@@ -171,7 +191,9 @@ trait Preserves_Globals {
 		}
 
 		foreach ( self::GLOBALS_TO_BACKUP as $global ) {
-			$GLOBALS[ $global ] = self::$original_globals[ $global ]; // phpcs:ignore
+			$GLOBALS[ $global ] = is_object( self::$original_globals[ $global ] )
+				? clone self::$original_globals[ $global ]
+				: self::$original_globals[ $global ];
 		}
 
 		// Restore the WordPress public query variables.

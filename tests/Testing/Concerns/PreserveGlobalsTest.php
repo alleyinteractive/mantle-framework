@@ -147,6 +147,10 @@ class PreserveGlobalsTest extends FrameworkTestCase {
 	 */
 	#[DataProvider( 'dataprovider_twice' )]
 	public function test_rewrite_tags_are_isolated_between_tests(): void {
+		// Test against the raw backed up globals to ensure that the test is valid early on.
+		$this->assertArrayHasKey( 'wp_rewrite', static::$current_class_globals ?: [] );
+		$this->assertNotContains( 'temporary-tag=', static::$current_class_globals['wp_rewrite']->queryreplace );
+
 		global $wp_rewrite, $wp;
 
 		$this->assertInstanceOf( WP_Rewrite::class, $wp_rewrite );
