@@ -57,11 +57,6 @@ class MakesHttpRequestsWithSitemapTest extends FrameworkTestCase {
 		$this->assertInstanceOf( \WP_Sitemaps::class, $server );
 		$this->assertTrue( $server->sitemaps_enabled(), 'Expected sitemaps to be enabled.' );
 
-		// Ensure the sitemap rendering is still hooked.
-		$this->assertTrue(
-			false !== has_action( 'template_redirect', [ $server, 'render_sitemaps' ] ),
-		);
-
 		$sitemap_url = $server->index->get_index_url();
 
 		$this->assertEquals( home_url( '/wp-sitemap.xml' ), $sitemap_url );

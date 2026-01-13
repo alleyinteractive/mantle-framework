@@ -96,10 +96,15 @@ trait Preserves_Globals {
 	 * a high priority.
 	 */
 	public static function backup_original_wordpress_globals(): void {
+		self::wordpress_state_set_up_before_class();
+
 		global $wp;
 
 		// Backup the original globals only once and reuse it for all test classes.
 		if ( ! isset( self::$original_globals ) ) {
+			// Call the WordPress_State trait's setUpBeforeClass to ensure WordPress is initialized.
+			self::wordpress_state_set_up_before_class();
+
 			foreach ( self::GLOBALS_TO_BACKUP as $global ) {
 				self::$original_globals[ $global ] = self::value_retriever( $GLOBALS[ $global ] ?? null );
 			}

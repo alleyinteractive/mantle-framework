@@ -27,10 +27,10 @@ trait WordPress_State {
 	/**
 	 * Whether the initial data structures have been created.
 	 */
-	protected static bool $initial_data_structures_created = false;
+	private static bool $initial_data_structures_created = false;
 
 	/**
-	 * Setup the WordPress State before the class is set up.
+	 * Set up the WordPress State before the class is set up.
 	 */
 	public static function wordpress_state_set_up_before_class(): void {
 		// Set the default permalink structure on each test before setUp() to allow

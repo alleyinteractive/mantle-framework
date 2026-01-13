@@ -121,6 +121,20 @@ class PreserveGlobalsTest extends FrameworkTestCase {
 	}
 
 	/**
+	 * Ensure that rewrite extra permastructs are preserved and originally stored correctly.
+	 *
+	 * @dataProvider dataprovider_twice
+	 */
+	#[DataProvider( 'dataprovider_twice' )]
+	public function test_rewrite_extra_permastructs_are_preserved(): void {
+		global $wp_rewrite;
+
+		$this->assertNotEmpty( $wp_rewrite->extra_permastructs, 'Expected current globals to have extra_permastructs.' );
+		$this->assertNotEmpty( self::$current_class_globals['wp_rewrite']->extra_permastructs, 'Expected current class globals to have extra_permastructs.' );
+		$this->assertNotEmpty( self::$original_globals['wp_rewrite']->extra_permastructs, 'Expected original globals to have extra_permastructs.' );
+	}
+
+	/**
 	 * Ensure that rewrite rules added in one test are NOT preserved in
 	 * another.
 	 */
