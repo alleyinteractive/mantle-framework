@@ -560,6 +560,18 @@ class Utils {
 	}
 
 	/**
+	 * Output a debug message if in debug mode.
+	 *
+	 * @param string $message Message to output.
+	 * @param string $prefix  Optional prefix for the message.
+	 */
+	public static function debug( string $message, string $prefix = 'Install' ): void {
+		if ( static::is_debug_mode() ) {
+			static::info( $message, $prefix );
+		}
+	}
+
+	/**
 	 * Check if we're running in a CI (Continuous Integration) environment.
 	 */
 	public static function is_ci(): bool {

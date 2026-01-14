@@ -12,6 +12,7 @@ namespace Mantle\Testing\Concerns;
 
 use Mantle\Support\Str;
 use Mantle\Support\Traits\Conditionable;
+use Mantle\Testing\Installation_Manager;
 use Mantle\Testing\Utils;
 
 use function Mantle\Support\Helpers\collect;
