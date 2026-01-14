@@ -80,6 +80,8 @@ trait Rsync_Installation {
 	/**
 	 * Add a callback to be run before rsync-ing the codebase.
 	 *
+	 * This is fired after WordPress has been installed but before the code base is rsync-d over
+	 *
 	 * @param callable $callback Callback to invoke before rsync.
 	 * @phpstan-param (callable(Installation_Manager $manager, string $base_install_path): void) $callback
 	 */
@@ -90,7 +92,7 @@ trait Rsync_Installation {
 	}
 
 	/**
-	 * Add a callback to be run after rsync-ing the codebase.
+	 * Add a callback to be run after rsync-ing the codebase..
 	 *
 	 * @param callable $callback Callback to invoke after rsync.
 	 * @phpstan-param (callable(Installation_Manager $manager, string $base_install_path): void) $callback
@@ -102,7 +104,7 @@ trait Rsync_Installation {
 	}
 
 	/**
-	 * Add the default set of exclusions to the list of exclusions to be used when rsyncing the codebase.
+	 * Add the default set of exclusions to the list of exclusions to be used when rsync-ing the codebase.
 	 */
 	public function with_default_exclusions(): static {
 		return $this->exclusions(
