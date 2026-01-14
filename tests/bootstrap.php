@@ -27,19 +27,27 @@ if ( Utils::env_bool( 'MANTLE_INSTALL_VIP_MU_PLUGINS', false ) )  {
 	->maybe_rsync_plugin()
 	->when(
 		Utils::env_bool( 'MANTLE_INSTALL_VIP_MU_PLUGINS', false ),
-		fn ( Installation_Manager $manager ) => $manager
-				->with_vip_mu_plugins()
-				->before( function (): void {
-					// Copy plugins/jetpack to client-mu-plugins/jetpack to allow it to be pinned to a specific version.
-					// VIP requires it to be placed in client-mu-plugins/jetpack.
-					$retcode = 0;
-					$output = Utils::command( 'WP_CORE_DIR && mkdir $WP_CORE_DIR/wp-content/client-mu-plugins && cp -r $WP_CORE_DIR/wp-content/plugins/jetpack $WP_CORE_DIR/wp-content/client-mu-plugins/jetpack', $retcode );
+		fn ( Installation_Manager $manager ) => $manager->with_vip_mu_plugins()->before( function () use ( $manager ): void {
+			if ( $manager->is_within_wordpress_install() ) {
+				return;
+			}
 
-					if ( 0 !== $retcode ) {
-						Utils::error( "Failed to copy Jetpack to client-mu-plugins: \n" . implode( "\n", $output ) );
-						exit( $retcode );
-					}
-				} ),
+			// Copy plugins/jetpack to client-mu-plugins/jetpack to allow it to be pinned to a specific version.
+			// VIP requires it to be placed in client-mu-plugins/jetpack.
+			$retcode = 0;
+			$output  = Utils::command(
+				sprintf(
+					'WP_CORE_DIR=%s mkdir $WP_CORE_DIR/wp-content/client-mu-plugins && cp -r $WP_CORE_DIR/wp-content/plugins/jetpack $WP_CORE_DIR/wp-content/client-mu-plugins/jetpack',
+					Utils::shell_safe( $manager->get_installation_path() ),
+				),
+				$retcode,
+			);
+
+			if ( 0 !== $retcode ) {
+				Utils::error( "Failed to copy Jetpack to client-mu-plugins: \n" . implode( "\n", $output ) );
+				exit( $retcode );
+			}
+		} ),
 	)
 	->install_plugin( 'logger', 'https://github.com/alleyinteractive/logger/archive/refs/heads/develop.zip' )
 	->install_plugins(

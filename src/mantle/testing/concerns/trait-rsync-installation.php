@@ -380,7 +380,7 @@ trait Rsync_Installation {
 	/**
 	 * Retrieve the default installation path to rsync to.
 	 */
-	protected function get_installation_path(): string {
+	public function get_installation_path(): string {
 		return getenv( 'WP_CORE_DIR' ) ?: sys_get_temp_dir() . '/wordpress';
 	}
 
@@ -388,7 +388,7 @@ trait Rsync_Installation {
 	 * Check if the current installation is underneath an existing WordPress
 	 * installation.
 	 */
-	protected function is_within_wordpress_install(): bool {
+	public function is_within_wordpress_install(): bool {
 		return false !== strpos( __DIR__, '/wp-content/' );
 	}
 
