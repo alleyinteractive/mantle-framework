@@ -15,7 +15,7 @@ define( 'MANTLE_PHPUNIT_FIXTURES_PATH', __DIR__ . '/fixtures' );
 define( 'MANTLE_PHPUNIT_TEMPLATE_PATH', __DIR__ . '/template-parts' );
 
 // Enable debugging flag for local development on the testing framework.
-// define( 'MANTLE_TESTING_DEBUG', true );
+ define( 'MANTLE_TESTING_DEBUG', true );
 
 // For WordPress VIP testing, pin Jetpack to a specific version.
 if ( Utils::env_bool( 'MANTLE_INSTALL_VIP_MU_PLUGINS', false ) )  {
