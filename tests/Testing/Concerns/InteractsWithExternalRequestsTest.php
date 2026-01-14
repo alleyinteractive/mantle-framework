@@ -339,7 +339,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 
 		// Retry to prevent failures with networking.
 		retry( 3, function (): void {
-			$request = Http::get( 'https://alley.com/' );
+			$request = Http::create()->throw_exception()->get( 'https://alley.com/' );
 
 			$this->assertEquals( 200, $request->status() );
 			$this->assertStringContainsString( 'Alley', $request->body() );
