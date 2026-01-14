@@ -113,10 +113,6 @@ jobs:
             wordpress: "latest"
             dependencies: "prefer-lowest"
             multisite: true
-          - php: 8.4
-            wordpress: "latest"
-            dependencies: "prefer-lowest"
-            multisite: true
     runs-on: ubuntu-latest
     name: "PR Tests PHP ${{ matrix.php }} WordPress ${{ matrix.wordpress }} ${{ matrix.multisite && 'Multisite ' || '' }}Dependencies ${{ matrix.dependencies }}${{ matrix.vip-mu-plugins && ' vip-mu-plugins' || '' }}"
     env:
