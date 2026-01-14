@@ -30,7 +30,8 @@ if ( Utils::env_bool( 'MANTLE_INSTALL_VIP_MU_PLUGINS', false ) )  {
 		fn ( Installation_Manager $manager ) => $manager
 				->with_vip_mu_plugins()
 				->before( function (): void {
-					// Copy plugins/jetpack to client-mu-plugins/jetpack to allow it to be pinned.
+					// Copy plugins/jetpack to client-mu-plugins/jetpack to allow it to be pinned to a specific version.
+					// VIP requires it to be placed in client-mu-plugins/jetpack.
 					$retcode = 0;
 					$output = Utils::command( 'WP_CORE_DIR && mkdir $WP_CORE_DIR/wp-content/client-mu-plugins && cp -r $WP_CORE_DIR/wp-content/plugins/jetpack $WP_CORE_DIR/wp-content/client-mu-plugins/jetpack', $retcode );
 

@@ -432,7 +432,9 @@ class Utils {
 
 		$branch = static::env( 'MANTLE_CI_BRANCH', 'HEAD' );
 
-		putenv( 'WP_CORE_DIR=' . $directory );
+		if ( ! self::env( 'WP_CORE_DIR', false ) ) {
+			putenv( "WP_CORE_DIR={$directory}" ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions
+		}
 
 		// Compile the variables to pass to the shell script.
 		$variables = collect(
