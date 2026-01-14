@@ -64,6 +64,44 @@ trait Rsync_Installation {
 	protected array $rsync_exclusions = [];
 
 	/**
+	 * Callbacks for before rsync-ing the codebase.
+	 *
+	 * @var (callable(Installation_Manager $manager, string $base_install_path): void)[]
+	 */
+	protected array $before_rsync_callbacks = [];
+
+	/**
+	 * Callbacks for after rsync-ing the codebase.
+	 *
+	 * @var (callable(Installation_Manager $manager, string $base_install_path): void)[]
+	 */
+	protected array $after_rsync_callbacks = [];
+
+	/**
+	 * Add a callback to be run before rsync-ing the codebase.
+	 *
+	 * @param callable $callback Callback to invoke before rsync.
+	 * @phpstan-param (callable(Installation_Manager $manager, string $base_install_path): void) $callback
+	 */
+	public function before_rsync( callable $callback ): static {
+		$this->before_rsync_callbacks[] = $callback;
+
+		return $this;
+	}
+
+	/**
+	 * Add a callback to be run after rsync-ing the codebase.
+	 *
+	 * @param callable $callback Callback to invoke after rsync.
+	 * @phpstan-param (callable(Installation_Manager $manager, string $base_install_path): void) $callback
+	 */
+	public function after_rsync( callable $callback ): static {
+		$this->after_rsync_callbacks[] = $callback;
+
+		return $this;
+	}
+
+	/**
 	 * Add the default set of exclusions to the list of exclusions to be used when rsyncing the codebase.
 	 */
 	public function with_default_exclusions(): static {
@@ -463,6 +501,10 @@ trait Rsync_Installation {
 			exit( 1 );
 		}
 
+		foreach ( $this->before_rsync_callbacks as $callback ) {
+			$callback( $this, $base_install_path );
+		}
+
 		$retval = -1;
 
 		// Rsync the from folder to the destination.
@@ -498,6 +540,10 @@ trait Rsync_Installation {
 
 		if ( ! empty( $this->plugins ) ) {
 			$this->perform_plugin_installation( $base_install_path );
+		}
+
+		foreach ( $this->after_rsync_callbacks as $after_rsync_callback ) {
+			$after_rsync_callback( $this, $base_install_path );
 		}
 
 		Utils::success(
