@@ -179,6 +179,7 @@ trait Rsync_Installation {
 	 *
 	 * @param bool|string $install The object cache provider to install (redis/memcached)
 	 *                             or true to install the default Memcached object cache (legacy).
+	 * @phpstan-param 'redis'|'memcached'|bool $install
 	 */
 	public function with_object_cache( bool|string $install = true ): static {
 		if ( $this->is_within_wordpress_install() ) {
@@ -518,7 +519,7 @@ trait Rsync_Installation {
 	}
 
 	/**
-	 * Perform the plugin installation after rsyncing the codebase.
+	 * Perform the plugin installation after rsync-ing the codebase.
 	 *
 	 * @param string $dir Directory to the WordPress installation.
 	 */

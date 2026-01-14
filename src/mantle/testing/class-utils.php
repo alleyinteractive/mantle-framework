@@ -432,6 +432,8 @@ class Utils {
 
 		$branch = static::env( 'MANTLE_CI_BRANCH', 'HEAD' );
 
+		putenv( 'WP_CORE_DIR=' . $directory );
+
 		// Compile the variables to pass to the shell script.
 		$variables = collect(
 			[
