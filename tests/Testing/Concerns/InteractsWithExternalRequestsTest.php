@@ -15,6 +15,8 @@ use Mantle\Testing\Mock_Http_Sequence;
 use PHPUnit\Framework\Attributes\Group;
 use RuntimeException;
 
+use function Mantle\Support\Helpers\retry;
+
 use function Mantle\Testing\mock_http_response;
 
 /**
