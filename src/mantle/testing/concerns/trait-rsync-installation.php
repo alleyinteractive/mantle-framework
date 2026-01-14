@@ -504,8 +504,8 @@ trait Rsync_Installation {
 			exit( 1 );
 		}
 
-		foreach ( $this->before_rsync_callbacks as $callback ) {
-			$callback( $this, $base_install_path );
+		foreach ( $this->before_rsync_callbacks as $before_rsync_callback ) {
+			$before_rsync_callback( $this, $base_install_path );
 		}
 
 		$retval = -1;

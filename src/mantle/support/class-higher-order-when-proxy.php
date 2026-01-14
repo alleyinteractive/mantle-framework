@@ -19,7 +19,6 @@ class Higher_Order_When_Proxy {
 	 *
 	 * @param  mixed $target The target being conditionally operated on.
 	 * @param  bool  $condition The condition for proxying.
-	 * @return void
 	 */
 	public function __construct( protected mixed $target, protected bool $condition ) {}
 

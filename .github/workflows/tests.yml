@@ -118,9 +118,6 @@ jobs:
             dependencies: "prefer-lowest"
             multisite: true
     runs-on: ubuntu-latest
-#    concurrency:
-#      group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}-P${{ matrix.php }}-WP${{ matrix.wordpress }}-MS${{ matrix.multisite && '1' || '0' }}-D${{ matrix.dependencies }}-VIP${{ matrix.vip-mu-plugins && '1' || '0' }}
-#      cancel-in-progress: true
     name: "PR Tests PHP ${{ matrix.php }} WordPress ${{ matrix.wordpress }} ${{ matrix.multisite && 'Multisite ' || '' }}Dependencies ${{ matrix.dependencies }}${{ matrix.vip-mu-plugins && ' vip-mu-plugins' || '' }}"
     env:
       MANTLE_INSTALL_VIP_MU_PLUGINS: ${{ matrix.vip-mu-plugins && '1' || '0' }}
@@ -148,9 +145,6 @@ jobs:
         wordpress: ["latest"]
         vip-mu-plugins: [true, false]
     runs-on: ubuntu-latest
-#    concurrency:
-#      group: parallel-${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}-P${{ matrix.php }}-WP${{ matrix.wordpress }}
-#      cancel-in-progress: true
     name: "Parallel PR Tests PHP ${{ matrix.php }} WordPress ${{ matrix.wordpress }}"
     env:
       MANTLE_INSTALL_VIP_MU_PLUGINS: ${{ matrix.vip-mu-plugins && '1' || '0' }}
