@@ -88,7 +88,7 @@ jobs:
         # https://make.wordpress.org/core/handbook/references/php-compatibility-and-wordpress-versions/
         php: [8.2, 8.3, 8.4, 8.5]
         wordpress: ${{fromJson(needs.get-versions.outputs.versions)}}
-        vip-mu-plugins: ["true", "false"]
+        vip-mu-plugins: [true, false]
         exclude:
           # WordPress 6.7 added support for PHP 8.4.
           - php: 8.4
@@ -121,9 +121,9 @@ jobs:
 #    concurrency:
 #      group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}-P${{ matrix.php }}-WP${{ matrix.wordpress }}-MS${{ matrix.multisite && '1' || '0' }}-D${{ matrix.dependencies }}-VIP${{ matrix.vip-mu-plugins && '1' || '0' }}
 #      cancel-in-progress: true
-    name: "PR Tests PHP ${{ matrix.php }} WordPress ${{ matrix.wordpress }} ${{ matrix.multisite && 'Multisite ' || '' }}Dependencies ${{ matrix.dependencies }}${{ matrix.vip-mu-plugins == "true" && ' vip-mu-plugins' || '' }}"
+    name: "PR Tests PHP ${{ matrix.php }} WordPress ${{ matrix.wordpress }} ${{ matrix.multisite && 'Multisite ' || '' }}Dependencies ${{ matrix.dependencies }}${{ matrix.vip-mu-plugins && ' vip-mu-plugins' || '' }}"
     env:
-      MANTLE_INSTALL_VIP_MU_PLUGINS: ${{ matrix.vip-mu-plugins == 'true' && '1' || '0' }}
+      MANTLE_INSTALL_VIP_MU_PLUGINS: ${{ matrix.vip-mu-plugins && '1' || '0' }}
     steps:
       - uses: actions/checkout@v6
 
@@ -146,14 +146,14 @@ jobs:
       matrix:
         php: [8.3, 8.4]
         wordpress: ["latest"]
-        vip-mu-plugins: ["true", "false"]
+        vip-mu-plugins: [true, false]
     runs-on: ubuntu-latest
 #    concurrency:
 #      group: parallel-${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}-P${{ matrix.php }}-WP${{ matrix.wordpress }}
 #      cancel-in-progress: true
-    name: "Parallel PR Tests PHP ${{ matrix.php }} WordPress ${{ matrix.wordpress }}${{ matrix.vip-mu-plugins == "true" && ' vip-mu-plugins' || '' }}"
+    name: "Parallel PR Tests PHP ${{ matrix.php }} WordPress ${{ matrix.wordpress }}"
     env:
-      MANTLE_INSTALL_VIP_MU_PLUGINS: ${{ matrix.vip-mu-plugins == 'true' && '1' || '0' }}
+      MANTLE_INSTALL_VIP_MU_PLUGINS: ${{ matrix.vip-mu-plugins && '1' || '0' }}
     steps:
       - uses: actions/checkout@v6
 
@@ -161,7 +161,7 @@ jobs:
         uses: alleyinteractive/action-test-php@develop
         with:
           install-command: 'composer require --dev --no-update brianium/paratest && composer update --prefer-dist --no-interaction --no-progress'
-          php-version: '${{ matrix.php }}'s
+          php-version: '${{ matrix.php }}'
           skip-wordpress-install: 'true'
           test-command: 'WP_PHPUNIT_PATH=vendor/bin/paratest ./vendor/bin/paratest'
           wordpress-host: 'false'
