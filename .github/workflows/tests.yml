@@ -82,18 +82,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        dependencies: ["prefer-lowest", "prefer-stable"]
+        dependencies: ["prefer-stable"]
         multisite: [true, false]
         # See core's PHP Compatibility chart:
         # https://make.wordpress.org/core/handbook/references/php-compatibility-and-wordpress-versions/
         php: [8.2, 8.3, 8.4, 8.5]
         wordpress: ${{fromJson(needs.get-versions.outputs.versions)}}
+        vip-mu-plugins: [true, false]
         exclude:
-          # Skip testing with prefer-lowest on more recent PHP versions at this time.
-          - php: 8.4
-            dependencies: "prefer-lowest"
-          - php: 8.5
-            dependencies: "prefer-lowest"
           # WordPress 6.7 added support for PHP 8.4.
           - php: 8.4
             wordpress: "6.6"
@@ -111,25 +107,16 @@ jobs:
             wordpress: "6.6"
           - php: 8.5
             wordpress: "6.5"
-        # Test various older versions of WordPress in a limited capacity.
-        # include:
-        #   - php: 8.3
-        #     wordpress: "6.5"
-        #     dependencies: "prefer-stable"
-        #     multisite: true
-        #   - php: 8.3
-        #     wordpress: "6.6"
-        #     dependencies: "prefer-stable"
-        #     multisite: true
-        #   - php: 8.3
-        #     wordpress: "6.7"
-        #     dependencies: "prefer-stable"
-        #     multisite: true
+        include:
+          # Test with prefer-lowest selectively to check for compatibility issues with older dependencies.
+          - php: 8.3
+            wordpress: "latest"
+            dependencies: "prefer-lowest"
+            multisite: true
     runs-on: ubuntu-latest
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}-P${{ matrix.php }}-WP${{ matrix.wordpress }}-MS${{ matrix.multisite && '1' || '0' }}-D${{ matrix.dependencies }}
-      cancel-in-progress: true
-    name: "PR Tests PHP ${{ matrix.php }} WordPress ${{ matrix.wordpress }} ${{ matrix.multisite && 'Multisite' || '' }} Dependencies ${{ matrix.dependencies }}"
+    name: "PR Tests PHP ${{ matrix.php }} WordPress ${{ matrix.wordpress }} ${{ matrix.multisite && 'Multisite ' || '' }}Dependencies ${{ matrix.dependencies }}${{ matrix.vip-mu-plugins && ' vip-mu-plugins' || '' }}"
+    env:
+      MANTLE_INSTALL_VIP_MU_PLUGINS: ${{ matrix.vip-mu-plugins && '1' || '0' }}
     steps:
       - uses: actions/checkout@v6
 
@@ -152,11 +139,11 @@ jobs:
       matrix:
         php: [8.3, 8.4]
         wordpress: ["latest"]
+        vip-mu-plugins: [true, false]
     runs-on: ubuntu-latest
-    concurrency:
-      group: parallel-${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}-P${{ matrix.php }}-WP${{ matrix.wordpress }}
-      cancel-in-progress: true
     name: "Parallel PR Tests PHP ${{ matrix.php }} WordPress ${{ matrix.wordpress }}"
+    env:
+      MANTLE_INSTALL_VIP_MU_PLUGINS: ${{ matrix.vip-mu-plugins && '1' || '0' }}
     steps:
       - uses: actions/checkout@v6
 

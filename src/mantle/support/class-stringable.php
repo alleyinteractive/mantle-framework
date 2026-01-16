@@ -41,7 +41,6 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * Create a new instance of the class.
 	 *
 	 * @param  string $value
-	 * @return void
 	 */
 	public function __construct( $value = '' ) {
 		$this->value = (string) $value;

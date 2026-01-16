@@ -18,7 +18,6 @@ class Higher_Order_Collection_Proxy {
 	 *
 	 * @param  Enumerable $collection The collection being operated on.
 	 * @param  string     $method     The method being proxied.
-	 * @return void
 	 */
 	public function __construct( protected Enumerable $collection, protected string $method ) {}
 

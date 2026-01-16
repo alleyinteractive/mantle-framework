@@ -432,6 +432,10 @@ class Utils {
 
 		$branch = static::env( 'MANTLE_CI_BRANCH', 'HEAD' );
 
+		if ( ! self::env( 'WP_CORE_DIR', false ) ) {
+			putenv( "WP_CORE_DIR={$directory}" ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions
+		}
+
 		// Compile the variables to pass to the shell script.
 		$variables = collect(
 			[
@@ -553,6 +557,18 @@ class Utils {
 				],
 			)
 		);
+	}
+
+	/**
+	 * Output a debug message if in debug mode.
+	 *
+	 * @param string $message Message to output.
+	 * @param string $prefix  Optional prefix for the message.
+	 */
+	public static function debug( string $message, string $prefix = 'Install' ): void {
+		if ( static::is_debug_mode() ) {
+			static::info( $message, $prefix );
+		}
 	}
 
 	/**
