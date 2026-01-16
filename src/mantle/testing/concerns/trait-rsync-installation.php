@@ -12,6 +12,7 @@ namespace Mantle\Testing\Concerns;
 
 use Mantle\Support\Str;
 use Mantle\Support\Traits\Conditionable;
+use Mantle\Testing\Installation_Manager;
 use Mantle\Testing\Utils;
 
 use function Mantle\Support\Helpers\collect;
@@ -64,7 +65,47 @@ trait Rsync_Installation {
 	protected array $rsync_exclusions = [];
 
 	/**
-	 * Add the default set of exclusions to the list of exclusions to be used when rsyncing the codebase.
+	 * Callbacks for before rsync-ing the codebase.
+	 *
+	 * @var (callable(Installation_Manager $manager, string $base_install_path): void)[]
+	 */
+	protected array $before_rsync_callbacks = [];
+
+	/**
+	 * Callbacks for after rsync-ing the codebase.
+	 *
+	 * @var (callable(Installation_Manager $manager, string $base_install_path): void)[]
+	 */
+	protected array $after_rsync_callbacks = [];
+
+	/**
+	 * Add a callback to be run before rsync-ing the codebase.
+	 *
+	 * This is fired after WordPress has been installed but before the code base is rsync-d over
+	 *
+	 * @param callable $callback Callback to invoke before rsync.
+	 * @phpstan-param (callable(Installation_Manager $manager, string $base_install_path): void) $callback
+	 */
+	public function before_rsync( callable $callback ): static {
+		$this->before_rsync_callbacks[] = $callback;
+
+		return $this;
+	}
+
+	/**
+	 * Add a callback to be run after rsync-ing the codebase..
+	 *
+	 * @param callable $callback Callback to invoke after rsync.
+	 * @phpstan-param (callable(Installation_Manager $manager, string $base_install_path): void) $callback
+	 */
+	public function after_rsync( callable $callback ): static {
+		$this->after_rsync_callbacks[] = $callback;
+
+		return $this;
+	}
+
+	/**
+	 * Add the default set of exclusions to the list of exclusions to be used when rsync-ing the codebase.
 	 */
 	public function with_default_exclusions(): static {
 		return $this->exclusions(
@@ -179,6 +220,7 @@ trait Rsync_Installation {
 	 *
 	 * @param bool|string $install The object cache provider to install (redis/memcached)
 	 *                             or true to install the default Memcached object cache (legacy).
+	 * @phpstan-param 'redis'|'memcached'|bool $install
 	 */
 	public function with_object_cache( bool|string $install = true ): static {
 		if ( $this->is_within_wordpress_install() ) {
@@ -379,7 +421,7 @@ trait Rsync_Installation {
 	/**
 	 * Retrieve the default installation path to rsync to.
 	 */
-	protected function get_installation_path(): string {
+	public function get_installation_path(): string {
 		return getenv( 'WP_CORE_DIR' ) ?: sys_get_temp_dir() . '/wordpress';
 	}
 
@@ -387,7 +429,7 @@ trait Rsync_Installation {
 	 * Check if the current installation is underneath an existing WordPress
 	 * installation.
 	 */
-	protected function is_within_wordpress_install(): bool {
+	public function is_within_wordpress_install(): bool {
 		return false !== strpos( __DIR__, '/wp-content/' );
 	}
 
@@ -462,6 +504,10 @@ trait Rsync_Installation {
 			exit( 1 );
 		}
 
+		foreach ( $this->before_rsync_callbacks as $before_rsync_callback ) {
+			$before_rsync_callback( $this, $base_install_path );
+		}
+
 		$retval = -1;
 
 		// Rsync the from folder to the destination.
@@ -499,6 +545,10 @@ trait Rsync_Installation {
 			$this->perform_plugin_installation( $base_install_path );
 		}
 
+		foreach ( $this->after_rsync_callbacks as $after_rsync_callback ) {
+			$after_rsync_callback( $this, $base_install_path );
+		}
+
 		Utils::success(
 			"Finished rsyncing to <em>{$this->rsync_to}</em> and working directory is now <em>{$cwd}</em>",
 			'Install Rsync'
@@ -518,7 +568,7 @@ trait Rsync_Installation {
 	}
 
 	/**
-	 * Perform the plugin installation after rsyncing the codebase.
+	 * Perform the plugin installation after rsync-ing the codebase.
 	 *
 	 * @param string $dir Directory to the WordPress installation.
 	 */
