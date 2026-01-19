@@ -9,8 +9,11 @@ namespace Mantle\Testing;
 
 use Exception;
 use Mantle\Contracts\Application;
+use Mantle\Contracts\Http\Response as ResponseContract;
 use Mantle\Http\Request;
 use Mantle\Http\Response;
+use Mantle\Http_Client\Concerns\Interacts_With_Feeds;
+use Mantle\Support\Arr;
 use Mantle\Support\HTML;
 use Mantle\Support\Traits\Macroable;
 use PHPUnit\Framework\Assert as PHPUnit;
@@ -18,10 +21,11 @@ use PHPUnit\Framework\Assert as PHPUnit;
 /**
  * Faux "Response" class for unit testing.
  */
-class Test_Response {
+class Test_Response implements ResponseContract {
 	use Concerns\Element_Assertions;
 	use Concerns\Response_Dumper;
 	use Concerns\Response_Snapshot_Testing;
+	use Interacts_With_Feeds;
 	use Macroable;
 
 	/**
@@ -70,9 +74,9 @@ class Test_Response {
 		array $headers = [],
 		public ?TestCase $test_case = null,
 	) {
-		$this->set_content( $content )
-			->set_status_code( $status )
-			->set_headers( $headers );
+		$this->set_content( $content );
+		$this->set_status_code( $status );
+		$this->set_headers( $headers );
 	}
 
 	/**
@@ -118,10 +122,8 @@ class Test_Response {
 	 *
 	 * @param int $code Status code.
 	 */
-	public function set_status_code( int $code ): static {
+	public function set_status_code( int $code ): void {
 		$this->status_code = $code;
-
-		return $this;
 	}
 
 	/**
@@ -161,14 +163,14 @@ class Test_Response {
 	 *
 	 * @param array $headers Headers to set, as key => value pairs.
 	 */
-	public function set_headers( array $headers ): static {
+	public function set_headers( array $headers ): void {
 		$this->headers = array_change_key_case( $headers, CASE_LOWER );
-
-		return $this;
 	}
 
 	/**
 	 * Gets the current response headers.
+	 *
+	 * @return array<string, string|array<string>> Response headers.
 	 */
 	public function get_headers(): array {
 		return $this->headers;
@@ -177,21 +179,39 @@ class Test_Response {
 	/**
 	 * Gets the current response headers.
 	 *
-	 * @param string      $key     Header to return.
-	 * @param string|null $default If the header is not set, default to return.
+	 * @param string $name Header to return.
+	 * @param bool   $as_array Whether to return the header as an array.
+	 * @return ($as_array is true ? array<string> : string|null) The header value(s), or null if not found.
 	 */
-	public function get_header( string $key, ?string $default = null ): ?string {
+	public function get_header( string $name, bool $as_array = false ): string|array|null {
 		// Enforce a lowercase header name.
-		$key = strtolower( $key );
+		$name = strtolower( $name );
 
-		if ( ! isset( $this->headers[ $key ] ) ) {
-			return $default;
+		if ( ! isset( $this->headers[ $name ] ) ) {
+			return null;
 		}
 
-		// Account for multiple headers with the same key.
-		return is_array( $this->headers[ $key ] )
-			? (string) ( $this->headers[ $key ][0] ?? '' )
-			: (string) $this->headers[ $key ];
+		$value = Arr::wrap( $this->headers[ $name ] );
+
+		return $as_array ? $value : Arr::first( $value );
+	}
+
+	/**
+	 * Retrieve the response body.
+	 *
+	 * @return string|null The response body.
+	 */
+	public function get_body(): ?string {
+		return $this->content;
+	}
+
+	/**
+	 * Set the response body.
+	 *
+	 * @param string|null $body The response body to set.
+	 */
+	public function set_body( ?string $body ): void {
+		$this->content = $body ?? '';
 	}
 
 	/**
@@ -337,7 +357,7 @@ class Test_Response {
 	public function assertLocation( $uri ): static {
 		PHPUnit::assertEquals(
 			$this->app['url']->to( $uri ),
-			$this->app['url']->to( $this->get_header( 'location', '' ) ),
+			$this->app['url']->to( $this->get_header( 'location' ) ?: '' ),
 		);
 
 		return $this;
@@ -350,7 +370,7 @@ class Test_Response {
 	 * @param string $header_name Header name (key) to assert.
 	 * @param mixed  $value       Header value to assert.
 	 */
-	public function assertHeader( $header_name, $value = null ): static {
+	public function assertHeader( string $header_name, mixed $value = null ): static {
 		// Enforce a lowercase header name.
 		$header_name = strtolower( $header_name );
 
@@ -712,6 +732,24 @@ class Test_Response {
 	}
 
 	/**
+	 * Assert that the response is a text response.
+	 */
+	public function assertIsText(): static {
+		PHPUnit::assertStringContainsString( 'text/plain', (string) $this->get_header( 'Content-Type' ) );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response is not a text response.
+	 */
+	public function assertIsNotText(): static {
+		PHPUnit::assertStringNotContainsString( 'text/plain', (string) $this->get_header( 'Content-Type' ) );
+
+		return $this;
+	}
+
+	/**
 	 * Assert that the expected value and type exists at the given path in the response.
 	 *
 	 * @param  string $path
@@ -945,5 +983,27 @@ class Test_Response {
 		$this->assertIsHtml();
 
 		return new HTML( $this->get_content() );
+	}
+
+	/**
+	 * Assert if the response is an XML response.
+	 */
+	public function assertIsXml(): static {
+		if ( $this->is_feed() ) {
+			return $this->assertIsFeed();
+		}
+
+		PHPUnit::assertStringContainsString( 'application/xml', (string) $this->get_header( 'Content-Type' ) );
+
+		return $this;
+	}
+
+	/**
+	 * Assert if the response is not an XML response.
+	 */
+	public function assertIsNotXml(): static {
+		PHPUnit::assertStringNotContainsString( 'application/xml', (string) $this->get_header( 'Content-Type' ) );
+
+		return $this->assertIsNotFeed();
 	}
 }

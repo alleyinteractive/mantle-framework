@@ -6,6 +6,7 @@
     "require": {
         "php": "^8.2",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
+        "myclabs/deep-copy": "^1.13",
         "filp/whoops": "^2.18.1",
         "mantle-framework/contracts": "^1.0",
         "mantle-framework/database": "^1.0",

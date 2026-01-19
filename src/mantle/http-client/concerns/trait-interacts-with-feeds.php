@@ -2,6 +2,8 @@
 /**
  * Interacts_With_Feeds trait file
  *
+ * phpcs:disable WordPress.NamingConventions.ValidFunctionName
+ *
  * @package Mantle
  */
 
@@ -10,22 +12,23 @@ declare(strict_types=1);
 namespace Mantle\Http_Client\Concerns;
 
 use Closure;
+use PHPUnit\Framework\Assert;
 use WP_SimplePie_Sanitize_KSES;
 
 /**
  * Integrations with feed responses.
  *
- * @mixin \Mantle\Http_Client\Response
+ * @mixin \Mantle\Contracts\Http\Response
  */
 trait Interacts_With_Feeds {
 	/**
 	 * Check if the response is a feed.
 	 */
 	public function is_feed(): bool {
-		return false !== strpos( (string) $this->header( 'content-type' ), 'application/rss+xml' ) ||
-			false !== strpos( (string) $this->header( 'content-type' ), 'application/atom+xml' ) ||
-			false !== strpos( (string) $this->header( 'content-type' ), 'application/xml' ) ||
-			false !== strpos( (string) $this->header( 'content-type' ), 'text/xml' );
+		return false !== strpos( (string) $this->get_header( 'content-type' ), 'application/rss+xml' ) ||
+			false !== strpos( (string) $this->get_header( 'content-type' ), 'application/atom+xml' ) ||
+			false !== strpos( (string) $this->get_header( 'content-type' ), 'application/xml' ) ||
+			false !== strpos( (string) $this->get_header( 'content-type' ), 'text/xml' );
 	}
 
 	/**
@@ -59,7 +62,7 @@ trait Interacts_With_Feeds {
 		 */
 		$feed->sanitize = new \WP_SimplePie_Sanitize_KSES();
 
-		$feed->set_raw_data( $this->body() );
+		$feed->set_raw_data( (string) $this->get_body() );
 
 		if ( $options instanceof Closure ) {
 			$options( $feed );
@@ -69,5 +72,29 @@ trait Interacts_With_Feeds {
 		$feed->set_output_encoding( get_bloginfo( 'charset' ) );
 
 		return $feed; // @phpstan-ignore-line return.type
+	}
+
+	/**
+	 * Assert that the response is a feed.
+	 */
+	public function assertIsFeed(): static {
+		Assert::assertTrue(
+			$this->is_feed(),
+			'Failed asserting that the response is a feed.',
+		);
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response is not a feed.
+	 */
+	public function assertIsNotFeed(): static {
+		Assert::assertFalse(
+			$this->is_feed(),
+			'Failed asserting that the response is not a feed.',
+		);
+
+		return $this;
 	}
 }

@@ -11,6 +11,7 @@ namespace Mantle\Http_Client;
 
 use ArrayAccess;
 use LogicException;
+use Mantle\Contracts\Http\Response as ResponseContract;
 use Mantle\Support\Collection;
 use Mantle\Support\HTML;
 use Mantle\Support\Mixed_Data;
@@ -53,7 +54,7 @@ use function Mantle\Support\Helpers\data_get;
  *   http_response?: \WP_HTTP_Requests_Response,
  * }
  */
-class Response implements ArrayAccess {
+class Response implements ArrayAccess, ResponseContract {
 	use Concerns\Interacts_With_Feeds;
 	use Macroable;
 
@@ -159,21 +160,58 @@ class Response implements ArrayAccess {
 	/**
 	 * Retrieve all the headers from a response.
 	 *
-	 * @return array<string, string> Headers from the response.
+	 * @return array<string, string|string[]> Headers from the response.
 	 */
 	public function headers(): array {
 		return (array) ( $this->response['headers'] ?? [] );
 	}
 
 	/**
+	 * Alias for headers().
+	 *
+	 * @return array<string, string|string[]> Headers from the response.
+	 */
+	public function get_headers(): array {
+		return $this->headers();
+	}
+
+	/**
 	 * Retrieve a specific header (headers are case-insensitive).
 	 *
+	 * Similar to get_header().
+	 *
+	 * In the event of multiple headers with the same name, the first header will
+	 * be returned. If you need all headers, use `get_headers()`.
+	 *
 	 * @param string $header Header to retrieve.
-	 * @return mixed
+	 * @return string|null Header value(s), or null if not found.
 	 */
-	public function header( string $header ) {
-		$header = strtolower( $header );
-		return $this->headers()[ $header ] ?? null;
+	public function header( string $header ): ?string {
+		return $this->get_header( $header );
+	}
+
+	/**
+	 * Retrieve a specific response header.
+	 *
+	 * @param string $name The header name to retrieve.
+	 * @param bool   $as_array Whether to return the header as an array.
+	 * @return ($as_array is true ? array<string> : string|null) The header value(s), or null if not found.
+	 */
+	public function get_header( string $name, bool $as_array = false ): string|array|null {
+		$header  = strtolower( $name );
+		$headers = $this->headers();
+
+		if ( ! array_key_exists( $header, $headers ) ) {
+			return null;
+		}
+
+		$value = $headers[ $header ];
+
+		if ( is_array( $value ) ) {
+			return $as_array ? $value : $value[0] ?? '';
+		}
+
+		return $as_array ? [ $value ] : $value;
 	}
 
 	/**
@@ -181,6 +219,13 @@ class Response implements ArrayAccess {
 	 */
 	public function status(): int {
 		return (int) ( $this->response['response']['code'] ?? 0 );
+	}
+
+	/**
+	 * Retrieve the response status code.
+	 */
+	public function get_status_code(): int {
+		return $this->status();
 	}
 
 	/**
@@ -302,6 +347,15 @@ class Response implements ArrayAccess {
 	 */
 	public function body(): string {
 		return (string) ( $this->response['body'] ?? '' );
+	}
+
+	/**
+	 * Alias for body().
+	 *
+	 * @return string|null The response body.
+	 */
+	public function get_body(): ?string {
+		return $this->body();
 	}
 
 	/**

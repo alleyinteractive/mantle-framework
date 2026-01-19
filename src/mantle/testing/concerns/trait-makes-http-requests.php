@@ -24,6 +24,8 @@ use function Mantle\Support\Helpers\tap;
  * @mixin \Mantle\Testing\TestCase
  */
 trait Makes_Http_Requests {
+	use Makes_Http_Requests_With_Feeds;
+	use Makes_Http_Requests_With_Sitemaps;
 	use Makes_Http_Requests_With_Templates;
 
 	/**

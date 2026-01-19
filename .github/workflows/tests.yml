@@ -88,7 +88,7 @@ jobs:
         # https://make.wordpress.org/core/handbook/references/php-compatibility-and-wordpress-versions/
         php: [8.2, 8.3, 8.4, 8.5]
         wordpress: ${{fromJson(needs.get-versions.outputs.versions)}}
-        vip-mu-plugins: [true, false]
+        vip-mu-plugins: [false]
         exclude:
           # WordPress 6.7 added support for PHP 8.4.
           - php: 8.4
@@ -108,6 +108,17 @@ jobs:
           - php: 8.5
             wordpress: "6.5"
         include:
+          # Test with VIP MU Plugins enabled (using latest version of WordPress to prevent Jetpack compatibility issues).
+          - php: 8.4
+            wordpress: "latest"
+            dependencies: "prefer-stable"
+            multisite: true
+            vip-mu-plugins: true
+          - php: 8.4
+            wordpress: "latest"
+            dependencies: "prefer-stable"
+            multisite: false
+            vip-mu-plugins: true
           # Test with prefer-lowest selectively to check for compatibility issues with older dependencies.
           - php: 8.3
             wordpress: "latest"
