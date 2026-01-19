@@ -23,7 +23,7 @@ define( 'MANTLE_PHPUNIT_TEMPLATE_PATH', __DIR__ . '/template-parts' );
 
 // For WordPress VIP testing, pin Jetpack to a specific version.
 if ( Utils::env_bool( 'MANTLE_INSTALL_VIP_MU_PLUGINS', false ) )  {
-	define( 'VIP_JETPACK_PINNED_VERSION', '13.9' );
+	define( 'VIP_JETPACK_PINNED_VERSION', '14.1' );
 	define( 'WPCOM_VIP_JETPACK_LOCAL', true );
 }
 
@@ -57,7 +57,7 @@ if ( Utils::env_bool( 'MANTLE_INSTALL_VIP_MU_PLUGINS', false ) )  {
 	->install_plugin( 'logger', 'https://github.com/alleyinteractive/logger/archive/refs/heads/develop.zip' )
 	->install_plugins(
 		[ 'byline-manager', 'https://github.com/alleyinteractive/byline-manager/archive/refs/heads/production.zip' ],
-		[ 'jetpack', '13.9' ],
+		[ 'jetpack', '14.1' ],
 		'co-authors-plus',
 	)
 	->plugins( [
