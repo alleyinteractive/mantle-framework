@@ -270,10 +270,6 @@ abstract class TestCase extends BaseTestCase {
 			'comment_depth',
 			'comment_thread_alt',
 
-			// Reset $wp_sitemap global so that sitemap-related dynamic
-			// $wp->public_query_vars are added when the next test runs. Mirrors core.
-			'wp_sitemaps',
-
 			// Template globals.
 			'wp_stylesheet_path',
 			'wp_template_path',
