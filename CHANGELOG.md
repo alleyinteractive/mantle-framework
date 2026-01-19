@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Added a `Carbon` class and `travel()` helper in tests to make time mocking easier during testing.
+
 ### Changed
 
 - Adds PHPStan testing to more traits.

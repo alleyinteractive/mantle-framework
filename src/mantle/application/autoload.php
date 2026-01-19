@@ -103,7 +103,7 @@ if ( ! function_exists( 'now' ) ) {
 	 *
 	 * @param DateTimeZone|string|null $tz Timezone.
 	 */
-	function now( \DateTimeZone|string|null $tz = null ): Carbon\Carbon {
+	function now( \DateTimeZone|string|null $tz = null ): \Mantle\Support\Carbon {
 		return \Mantle\Support\Helpers\now( $tz );
 	}
 }

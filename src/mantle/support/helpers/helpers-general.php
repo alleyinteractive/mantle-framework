@@ -13,7 +13,7 @@
 namespace Mantle\Support\Helpers;
 
 use ArrayAccess;
-use Carbon\Carbon;
+use Carbon\Carbon as BaseCarbon;
 use Countable;
 use Exception;
 use JsonSerializable;
@@ -634,14 +634,14 @@ function dd_backtrace( ?int $limit = null, bool $with_arguments = false ): never
 /**
  * Create a new Carbon instance for the current time.
  *
- * @todo Allow this to be faked and mocked during testing.
+ * Supports time mocking during testing via Carbon::set_test_now().
  *
  * @param \DateTimeZone|string|null $tz Timezone.
  */
-function now( \DateTimeZone|string|null $tz = null ): Carbon {
+function now( \DateTimeZone|string|null $tz = null ): \Mantle\Support\Carbon {
 	if ( ! $tz ) {
 		$tz = function_exists( 'wp_timezone' ) ? wp_timezone() : new \DateTimeZone( 'UTC' );
 	}
 
-	return Carbon::now( $tz );
+	return \Mantle\Support\Carbon::now( $tz );
 }
