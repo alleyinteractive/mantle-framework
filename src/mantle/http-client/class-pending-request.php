@@ -180,10 +180,14 @@ class Pending_Request {
 	/**
 	 * Set the URL for the request.
 	 *
-	 * @param string $url URL for the request.
+	 * @param string|null $url URL for the request.
 	 */
-	public function set_url( string $url ): static {
-		$this->url = ltrim( rtrim( $this->base_url ?? '', '/' ) . '/' . ltrim( $url, '/' ), '/' );
+	public function set_url( ?string $url = null ): static {
+		if ( is_null( $url ) ) {
+			$url = '';
+		}
+
+		$this->url = $this->base_url ? "{$this->base_url}{$url}" : $url;
 
 		return $this;
 	}
@@ -579,11 +583,11 @@ class Pending_Request {
 	/**
 	 * Issue a GET request to the given URL.
 	 *
-	 * @param  string                           $url URL to retrieve.
+	 * @param  string|null                      $url URL to retrieve.
 	 * @param  array<string, mixed>|string|null $query Query parameters (assumed to be urlencoded).
 	 * @return Response
 	 */
-	public function get( string $url, array|string|null $query = null ): mixed {
+	public function get( ?string $url = null, array|string|null $query = null ): mixed {
 		return $this->send(
 			Http_Method::GET,
 			$url,
@@ -594,11 +598,11 @@ class Pending_Request {
 	/**
 	 * Issue a HEAD request to the given URL.
 	 *
-	 * @param  string                           $url URL to retrieve.
+	 * @param  string|null                      $url URL to retrieve.
 	 * @param  array<string, mixed>|string|null $query Query parameters (assumed to be urlencoded).
 	 * @return Response
 	 */
-	public function head( string $url, array|string|null $query = null ): mixed {
+	public function head( ?string $url = null, array|string|null $query = null ): mixed {
 		return $this->send(
 			Http_Method::HEAD,
 			$url,
@@ -609,11 +613,11 @@ class Pending_Request {
 	/**
 	 * Issue a POST request to the given URL.
 	 *
-	 * @param  string                    $url URL to post.
+	 * @param  string|null               $url URL to post.
 	 * @param  array<string, mixed>|null $data Data to send with the request.
 	 * @return Response
 	 */
-	public function post( string $url, ?array $data = null ): mixed {
+	public function post( ?string $url = null, ?array $data = null ): mixed {
 		return $this->send(
 			Http_Method::POST,
 			$url,
@@ -624,11 +628,11 @@ class Pending_Request {
 	/**
 	 * Issue a PATCH request to the given URL.
 	 *
-	 * @param  string                    $url URL to patch.
+	 * @param  string|null               $url URL to patch.
 	 * @param  array<string, mixed>|null $data Data to send with the request.
 	 * @return Response
 	 */
-	public function patch( string $url, ?array $data = null ): mixed {
+	public function patch( ?string $url = null, ?array $data = null ): mixed {
 		return $this->send(
 			Http_Method::PATCH,
 			$url,
@@ -639,11 +643,11 @@ class Pending_Request {
 	/**
 	 * Issue a PUT request to the given URL.
 	 *
-	 * @param  string                    $url URL to put.
+	 * @param  string|null               $url URL to put.
 	 * @param  array<string, mixed>|null $data Data to send with the request.
 	 * @return Response
 	 */
-	public function put( string $url, ?array $data = null ): mixed {
+	public function put( ?string $url = null, ?array $data = null ): mixed {
 		return $this->send(
 			Http_Method::PUT,
 			$url,
@@ -654,11 +658,11 @@ class Pending_Request {
 	/**
 	 * Issue a DELETE request to the given URL.
 	 *
-	 * @param  string                    $url URL to delete.
+	 * @param  string|null               $url URL to delete.
 	 * @param  array<string, mixed>|null $data Data to send with the request.
 	 * @return Response
 	 */
-	public function delete( string $url, ?array $data = null ): mixed {
+	public function delete( ?string $url = null, ?array $data = null ): mixed {
 		return $this->send(
 			Http_Method::DELETE,
 			$url,
@@ -676,7 +680,7 @@ class Pending_Request {
 	 * @param  array<string, mixed>    $options Options for the request.
 	 */
 	public function send( string|Http_Method|null $method = null, ?string $url = null, array $options = [] ): Response {
-		if ( $url ) {
+		if ( ! is_null( $url ) || ! empty( $this->base_url ) ) {
 			$this->set_url( $url );
 		}
 
