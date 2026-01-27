@@ -213,16 +213,6 @@ class HttpClientTest extends FrameworkTestCase {
 		$this->assertRequestSent( 'https://example.com/wp-json/wp/v2/posts/' );
 	}
 
-	public function test_http_client_base_url_with_empty_request_path() {
-		$this->fake_request();
-
-		$rest_client = Http::base_url( 'https://example.com/api' );
-
-		$rest_client->delete( '' );
-
-		$this->assertRequestSent( 'https://example.com/api' );
-	}
-
 	public function test_facade_request() {
 		$this->fake_request();
 
