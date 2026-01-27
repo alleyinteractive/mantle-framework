@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Allow a request without a duplicate `/` to the HTTP Client when using a base URL.
-c
+
 ## v1.17.0
 
 ### Added
