@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added a `Delayed_Feature` class to `mantle-framework/types`.
 
+### Fixed
+
+- Allow a request without a duplicate `/` to the HTTP Client when using a base URL.
+
 ## v1.17.0
 
 ### Added
