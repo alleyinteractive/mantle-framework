@@ -583,7 +583,7 @@ class Pending_Request {
 	/**
 	 * Issue a GET request to the given URL.
 	 *
-	 * @param  string                           $url URL to retrieve.
+	 * @param  string|null                      $url URL to retrieve.
 	 * @param  array<string, mixed>|string|null $query Query parameters (assumed to be urlencoded).
 	 * @return Response
 	 */
@@ -598,7 +598,7 @@ class Pending_Request {
 	/**
 	 * Issue a HEAD request to the given URL.
 	 *
-	 * @param  string                           $url URL to retrieve.
+	 * @param  string|null                      $url URL to retrieve.
 	 * @param  array<string, mixed>|string|null $query Query parameters (assumed to be urlencoded).
 	 * @return Response
 	 */
@@ -613,7 +613,7 @@ class Pending_Request {
 	/**
 	 * Issue a POST request to the given URL.
 	 *
-	 * @param  string                    $url URL to post.
+	 * @param  string|null               $url URL to post.
 	 * @param  array<string, mixed>|null $data Data to send with the request.
 	 * @return Response
 	 */
@@ -628,7 +628,7 @@ class Pending_Request {
 	/**
 	 * Issue a PATCH request to the given URL.
 	 *
-	 * @param  string                    $url URL to patch.
+	 * @param  string|null               $url URL to patch.
 	 * @param  array<string, mixed>|null $data Data to send with the request.
 	 * @return Response
 	 */
@@ -643,7 +643,7 @@ class Pending_Request {
 	/**
 	 * Issue a PUT request to the given URL.
 	 *
-	 * @param  string                    $url URL to put.
+	 * @param  string|null               $url URL to put.
 	 * @param  array<string, mixed>|null $data Data to send with the request.
 	 * @return Response
 	 */
@@ -658,7 +658,7 @@ class Pending_Request {
 	/**
 	 * Issue a DELETE request to the given URL.
 	 *
-	 * @param  string                    $url URL to delete.
+	 * @param  string|null               $url URL to delete.
 	 * @param  array<string, mixed>|null $data Data to send with the request.
 	 * @return Response
 	 */
