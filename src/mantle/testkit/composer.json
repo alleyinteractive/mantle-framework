@@ -14,7 +14,7 @@
         "mantle-framework/support": "^1.0",
         "mantle-framework/testing": "^1.0",
         "nunomaduro/collision": "^6.0 || ^7.0 || ^8.0",
-        "phpunit/phpunit": "^10.0.7 || ^11.0 || ^12.0",
+        "phpunit/phpunit": "^10.5.62 || ^11.5.50 || ^12.5.8",
         "symfony/http-foundation": "^7.3.7"
     },
     "extra": {
