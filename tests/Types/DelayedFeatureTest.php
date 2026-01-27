@@ -108,8 +108,8 @@ class DelayedFeatureTest extends TestCase {
 			15
 		);
 
-		$delayed_high->boot();
 		$delayed_low->boot();
+		$delayed_high->boot();
 
 		do_action( 'init' );
 
