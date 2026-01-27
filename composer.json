@@ -62,7 +62,7 @@
         "nunomaduro/collision": "^6.0 || ^7.0 || ^8.0",
         "php-stubs/wp-cli-stubs": "^2.11",
         "phpstan/extension-installer": "^1.4",
-        "phpunit/phpunit": "^10.0.7 || ^11.0 || ^12.0",
+        "phpunit/phpunit": "^10.5.62 || ^11.5.50 || ^12.5.8",
         "rector/rector": "^2.0",
         "spatie/once": "^3.1.1",
         "spatie/ray": "^1.41.4",
