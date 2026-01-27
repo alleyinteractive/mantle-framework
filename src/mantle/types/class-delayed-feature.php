@@ -9,6 +9,7 @@ namespace Mantle\Types;
 
 use Alley\WP\Features\Quick_Feature;
 use Alley\WP\Types\Feature;
+use Closure;
 
 /**
  * Feature that will boot on a delayed hook.
@@ -17,15 +18,15 @@ class Delayed_Feature extends Validator_Group {
 	/**
 	 * Constructor.
 	 *
-	 * @param string                          $hook Hook to delay the feature on.
-	 * @param array<Feature>|Feature|callable $features Features to boot.
-	 * @param int                             $priority Priority of the hook.
+	 * @param string                         $hook Hook to delay the feature on.
+	 * @param array<Feature>|Feature|Closure $features Features to boot.
+	 * @param int                            $priority Priority of the hook.
 	 */
-	public function __construct( private readonly string $hook, array|Feature|callable $features, private readonly int $priority = 10 ) {
+	public function __construct( private readonly string $hook, array|Feature|Closure $features, private readonly int $priority = 10 ) {
 		$this->features = match ( true ) {
 			is_array( $features ) => $features,
 			$features instanceof Feature => [ $features ],
-			is_callable( $features ) => [ new Quick_Feature( $features ) ],
+			$features instanceof Closure => [ new Quick_Feature( $features ) ],
 		};
 	}
 
