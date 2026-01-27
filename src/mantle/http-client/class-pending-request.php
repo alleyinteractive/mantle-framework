@@ -680,7 +680,7 @@ class Pending_Request {
 	 * @param  array<string, mixed>    $options Options for the request.
 	 */
 	public function send( string|Http_Method|null $method = null, ?string $url = null, array $options = [] ): Response {
-		if ( ! is_null( $url ) ) {
+		if ( ! is_null( $url ) || ! empty( $this->base_url ) ) {
 			$this->set_url( $url );
 		}
 

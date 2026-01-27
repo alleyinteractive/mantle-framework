@@ -218,7 +218,7 @@ class HttpClientTest extends FrameworkTestCase {
 
 		$rest_client = Http::base_url( 'https://example.com/api' );
 
-		$rest_client->delete( '' );
+		$rest_client->delete();
 
 		$this->assertRequestSent( 'https://example.com/api' );
 	}
