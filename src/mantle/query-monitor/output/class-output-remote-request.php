@@ -158,27 +158,31 @@ class Output_Remote_Request extends \QM_Output_Html {
 
 			$caller = array_shift( $request['trace'] );
 
-			echo '<td class="qm-has-toggle qm-nowrap qm-ltr">';
+			if ( $caller instanceof Frame ) {
+				echo '<td class="qm-has-toggle qm-nowrap qm-ltr">';
 
-			if ( ! empty( $request['trace'] ) ) {
-				echo self::build_toggler(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			}
+				if ( ! empty( $request['trace'] ) ) {
+					echo self::build_toggler(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				}
 
-			echo '<ol>';
+				echo '<ol>';
 
-			echo '<li>' . $this->compile_trace_frame( $caller ) . '</li>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo '<li>' . $this->compile_trace_frame( $caller ) . '</li>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-			if ( ! empty( $request['trace'] ) ) {
-				echo '<div class="qm-toggled"><li>';
+				if ( ! empty( $request['trace'] ) ) {
+					echo '<div class="qm-toggled"><li>';
 
-				echo collect( $request['trace'] ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo collect( $request['trace'] ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					->map( $this->compile_trace_frame( ... ) )
 					->implode( '</li><li>' );
 
-				echo '</li></div>';
-			}
+					echo '</li></div>';
+				}
 
-			echo '</ol></td>';
+				echo '</ol></td>';
+			} else {
+				echo '<td>' . esc_html__( 'N/A', 'mantle' ) . '</td>';
+			}
 
 			// Skip time for non-blocking or cached requests.
 			if (
