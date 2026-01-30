@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   composer require alleyinteractive/mantle-framework/testing-dependencies --dev
   ```
 
+  Projects that depend only on Mantle Testkit (`mantle-framework/testkit`) are not affected.
+
 ## v1.18.2
 
 ### Fixed
