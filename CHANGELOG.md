@@ -10,8 +10,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix issue introduced in v1.18.1 with packages being moved to `require-dev`.
 
   New projects that depend on `alleyinteractive/mantle-framework` should
-  depend on the newly created `mantle-framework/testing-dependencies` package. Projects
-  that depend on `mantle-framework/testkit` are not affected.
+  require on the newly created `mantle-framework/testing-dependencies` package. Projects
+  that depend on `mantle-framework/testkit` are not affected. Because
+  `mantle-framework/testing-dependencies` also requires PHPUnit, you can also drop
+  that as a dependency if you were requiring it directly.
+
+  ``bash
+  # If you were requiring PHPUnit directly.
+  composer remove phpunit/phpunit --dev
+
+  composer require alleyinteractive/mantle-framework/testing-dependencies --dev
+  ``
 
 ## v1.18.2
 
