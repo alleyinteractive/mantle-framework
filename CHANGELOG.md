@@ -15,10 +15,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `mantle-framework/testing-dependencies` also requires PHPUnit, you can also drop
   that as a dependency if you were requiring it directly.
 
+  To upgrade your project, run the following commands:
+
   ```bash
   # If you were requiring PHPUnit directly.
   composer remove phpunit/phpunit --dev
 
+  # Require the new testing dependencies package.
   composer require alleyinteractive/mantle-framework/testing-dependencies --dev
   ```
 
