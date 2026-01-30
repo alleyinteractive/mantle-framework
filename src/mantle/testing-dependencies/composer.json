@@ -16,6 +16,7 @@
     "require": {
         "php": "^8.2",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
+        "fakerphp/faker": "^1.24",
         "filp/whoops": "^2.18.1",
         "myclabs/deep-copy": "^1.13",
         "nunomaduro/collision": "^6.0 || ^7.0 || ^8.0",
