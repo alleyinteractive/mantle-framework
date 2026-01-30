@@ -1,6 +1,6 @@
 {
-    "name": "mantle-framework/testing",
-    "description": "The Mantle Framework Testing Package",
+    "name": "mantle-framework/testing-dependencies",
+    "description": "The Mantle Framework Testing Dependencies Package",
     "license": "GPL-2.0-or-later",
     "type": "library",
     "keywords": [
@@ -16,28 +16,19 @@
     "require": {
         "php": "^8.2",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
-        "mantle-framework/contracts": "^1.0",
-        "mantle-framework/database": "^1.0",
-        "mantle-framework/faker": "^1.0",
-        "mantle-framework/http": "^1.0",
-        "mantle-framework/http-client": "^1.0",
-        "mantle-framework/support": "^1.0",
-        "mantle-framework/testing-dependencies": "^1.0"
+        "filp/whoops": "^2.18.1",
+        "myclabs/deep-copy": "^1.13",
+        "nunomaduro/collision": "^6.0 || ^7.0 || ^8.0",
+        "nunomaduro/termwind": "^1.15.1 || ^2.0",
+        "phpunit/phpunit": "^10.5.62 || ^11.5.50 || ^12.5.8",
+        "spatie/phpunit-snapshot-assertions": "^4.2 || ^5.1",
+        "symfony/css-selector": "^7.2.0",
+        "symfony/http-foundation": "^7.3.7"
     },
     "suggest": {
         "brianium/paratest": "For running tests in parallel.",
-        "mantle-framework/console": "Required to assert console commands.",
         "mantle-framework/testkit": "For running tests against a WordPress install without Mantle",
-        "nunomaduro/collision": "For better PHPUnit printing.",
-        "phpunit/phpunit": "Required to use assertions and run tests."
-    },
-    "autoload": {
-        "psr-4": {
-            "Mantle\\Testing\\": "./"
-        },
-        "files": [
-            "autoload.php"
-        ]
+        "nunomaduro/collision": "For better PHPUnit printing."
     },
     "config": {
         "allow-plugins": {

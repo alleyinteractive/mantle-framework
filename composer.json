@@ -102,8 +102,7 @@
         "phpunit/phpunit": ">=13.0.0"
     },
     "suggest": {
-        "brianium/paratest": "Run PHPUnit tests in parallel",
-        "illuminate/view": "For Blade templating"
+        "mantle-framework/testing-dependencies": "For additional packages used with the Mantle testing framework."
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
