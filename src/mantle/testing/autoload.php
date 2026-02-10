@@ -35,17 +35,22 @@ require_once __DIR__ . '/mail/helpers.php';
  * file-requires will be removed.
  */
 
-$attribute_classes = [
-	Attributes\DisableGlobalPreservation::class => '/attributes/DisableGlobalPreservation.php',
-	Attributes\Environment::class               => '/attributes/Environment.php',
-	Attributes\PermalinkStructure::class        => '/attributes/PermalinkStructure.php',
-	Attributes\PreserveObjectCache::class       => '/attributes/PreserveObjectCache.php',
-	Attributes\UserAgent::class                 => '/attributes/UserAgent.php',
+$autoloaded_classes = [
+	Attributes\DisableGlobalPreservation::class           => '/attributes/DisableGlobalPreservation.php',
+	Attributes\Environment::class                         => '/attributes/Environment.php',
+	Attributes\PermalinkStructure::class                  => '/attributes/PermalinkStructure.php',
+	Attributes\PreserveObjectCache::class                 => '/attributes/PreserveObjectCache.php',
+	Attributes\UserAgent::class                           => '/attributes/UserAgent.php',
+	Exceptions\BacktraceException::class                  => '/exceptions/BacktraceException.php',
+	Exceptions\UnexpectedDeprecatedNoticeException::class => '/exceptions/UnexpectedDeprecatedNoticeException.php',
+	Exceptions\UnexpectedIncorrectUsageException::class   => '/exceptions/UnexpectedIncorrectUsageException.php',
+	EarlyDeprecationsHandler::class                       => '/EarlyDeprecationsHandler.php',
+	EarlyIncorrectUsageHandler::class                     => '/EarlyIncorrectUsageHandler.php',
 ];
 
-foreach ( $attribute_classes as $attribute_class => $attribute_class_path ) {
-	if ( ! class_exists( $attribute_class ) ) {
-		require_once __DIR__ . $attribute_class_path;
+foreach ( $autoloaded_classes as $class_name => $class_path ) {
+	if ( ! class_exists( $class_name ) ) {
+		require_once __DIR__ . $class_path;
 	}
 }
 
