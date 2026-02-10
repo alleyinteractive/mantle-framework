@@ -42,8 +42,8 @@ $autoloaded_classes = [
 	Attributes\PreserveObjectCache::class                 => '/attributes/PreserveObjectCache.php',
 	Attributes\UserAgent::class                           => '/attributes/UserAgent.php',
 	Exceptions\BacktraceException::class                  => '/exceptions/BacktraceException.php',
-	Exceptions\UnexpectedDeprecatedNoticeException::class => '/exceptions/UnexpectedDeprecatedNoticeException.php',
-	Exceptions\UnexpectedIncorrectUsageException::class   => '/exceptions/UnexpectedIncorrectUsageException.php',
+//	Exceptions\UnexpectedDeprecatedNoticeException::class => '/exceptions/UnexpectedDeprecatedNoticeException.php',
+//	Exceptions\UnexpectedIncorrectUsageException::class   => '/exceptions/UnexpectedIncorrectUsageException.php',
 	EarlyDeprecationsHandler::class                       => '/EarlyDeprecationsHandler.php',
 	EarlyIncorrectUsageHandler::class                     => '/EarlyIncorrectUsageHandler.php',
 ];
