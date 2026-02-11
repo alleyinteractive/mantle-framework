@@ -23,16 +23,11 @@ require_once __DIR__ . '/preload.php';
 require_once __DIR__ . '/mail/helpers.php';
 
 /**
- * While we are in a transition state with using PSR-4 coding style in tests,
- * the actual mantle-framework/testing package is still written in
- * WordPress-style code. This doesn't sit well when using select class names in
- * PSR-4 code. For the time being, we will manually require the files.
+ * Manual class loading for select classes.
  *
- * We cannot use Composer's PSR-4 autoloader because the folder names are lower
- * case and folder names are case sensitive on some file systems (e.g. Linux).
- *
- * Mantle 2.0 should be fully PSR-4 compliant, at which point these
- * file-requires will be removed.
+ * These classes are manually required to ensure they are loaded before they are
+ * needed. This is primarily for classes that need to be available early in the
+ * bootstrap process before the Composer autoloader can handle them.
  */
 
 $autoloaded_classes = [

@@ -15,8 +15,8 @@ use function Mantle\Testing\tests_add_filter;
 
 defined( 'MANTLE_IS_TESTING' ) || define( 'MANTLE_IS_TESTING', true );
 
-require_once __DIR__ . '/class-utils.php';
-require_once __DIR__ . '/class-wp-die.php';
+require_once __DIR__ . '/Utils.php';
+require_once __DIR__ . '/WP_Die.php';
 
 // Ensure that Composer is loaded properly in the sub-process.
 Utils::ensure_composer_loaded();
@@ -141,7 +141,7 @@ reset_phpmailer_instance();
 // Include a WP_UnitTestCase class to allow for easier transition to the testing
 // framework.
 if ( ! Utils::env( 'DISABLE_WP_UNIT_TEST_CASE_SHIM', false ) ) {
-	require_once __DIR__ . '/class-wp-unittestcase.php';
+	require_once __DIR__ . '/WP_UnitTestCase.php';
 }
 
 if ( ! defined( 'WP_DEFAULT_THEME' ) ) {
