@@ -20,7 +20,7 @@ use PHPUnit\Framework\AssertionFailedError;
 use function Mantle\Support\Helpers\tap;
 
 require_once __DIR__ . '/preload.php';
-require_once __DIR__ . '/mail/helpers.php';
+require_once __DIR__ . '/Mail/helpers.php';
 
 /**
  * Manual class loading for select classes.
@@ -31,14 +31,14 @@ require_once __DIR__ . '/mail/helpers.php';
  */
 
 $autoloaded_classes = [
-	Attributes\DisableGlobalPreservation::class           => '/attributes/DisableGlobalPreservation.php',
-	Attributes\Environment::class                         => '/attributes/Environment.php',
-	Attributes\PermalinkStructure::class                  => '/attributes/PermalinkStructure.php',
-	Attributes\PreserveObjectCache::class                 => '/attributes/PreserveObjectCache.php',
-	Attributes\UserAgent::class                           => '/attributes/UserAgent.php',
-	Exceptions\BacktraceException::class                  => '/exceptions/BacktraceException.php',
-	Exceptions\UnexpectedDeprecatedNoticeException::class => '/exceptions/UnexpectedDeprecatedNoticeException.php',
-	Exceptions\UnexpectedIncorrectUsageException::class   => '/exceptions/UnexpectedIncorrectUsageException.php',
+	Attributes\DisableGlobalPreservation::class           => '/Attributes/DisableGlobalPreservation.php',
+	Attributes\Environment::class                         => '/Attributes/Environment.php',
+	Attributes\PermalinkStructure::class                  => '/Attributes/PermalinkStructure.php',
+	Attributes\PreserveObjectCache::class                 => '/Attributes/PreserveObjectCache.php',
+	Attributes\UserAgent::class                           => '/Attributes/UserAgent.php',
+	Exceptions\BacktraceException::class                  => '/Exceptions/BacktraceException.php',
+	Exceptions\UnexpectedDeprecatedNoticeException::class => '/Exceptions/UnexpectedDeprecatedNoticeException.php',
+	Exceptions\UnexpectedIncorrectUsageException::class   => '/Exceptions/UnexpectedIncorrectUsageException.php',
 	EarlyDeprecationsHandler::class                       => '/EarlyDeprecationsHandler.php',
 	EarlyIncorrectUsageHandler::class                     => '/EarlyIncorrectUsageHandler.php',
 ];

@@ -15,8 +15,6 @@ use function Mantle\Support\Helpers\capture;
 use function Mantle\Support\Helpers\collect;
 use function Termwind\render;
 
-require_once __DIR__ . '/concerns/trait-output-messages.php';
-
 /**
  * Assorted testing utilities.
  *
