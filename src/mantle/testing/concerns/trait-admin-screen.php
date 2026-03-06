@@ -48,10 +48,6 @@ trait Admin_Screen {
 	 * Restore the backed up screen.
 	 */
 	public function admin_screen_tear_down(): void {
-		if ( isset( $this->backup_screen ) ) {
-			set_current_screen( $this->backup_screen );
-		}
-
 		unset(
 			$GLOBALS['pagenow'],
 			$GLOBALS['wp_importers'],
@@ -60,5 +56,11 @@ trait Admin_Screen {
 			$GLOBALS['typenow'],
 			$GLOBALS['taxnow']
 		);
+		
+		if ( isset( $this->backup_screen ) ) {
+			set_current_screen( $this->backup_screen );
+		} else {
+			set_current_screen();
+		}
 	}
 }
