@@ -54,13 +54,12 @@ trait Admin_Screen {
 			$GLOBALS['hook_suffix'],
 			$GLOBALS['plugin_page'],
 			$GLOBALS['typenow'],
-			$GLOBALS['taxnow']
+			$GLOBALS['taxnow'],
+			$GLOBALS['current_screen'],
 		);
 		
 		if ( isset( $this->backup_screen ) ) {
 			set_current_screen( $this->backup_screen );
-		} else {
-			set_current_screen();
 		}
 	}
 }
