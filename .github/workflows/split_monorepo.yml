@@ -22,7 +22,7 @@ jobs:
           php-version: 8.2
           coverage: none
 
-      - uses: "ramsey/composer-install@v3"
+      - uses: "ramsey/composer-install@v4"
 
       # get package json list
       -
