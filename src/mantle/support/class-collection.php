@@ -178,7 +178,7 @@ class Collection implements ArrayAccess, Enumerable {
 		$middle = (int) ( $count / 2 );
 
 		if ( $count % 2 !== 0 ) {
-			return $values->get( $middle ); // @phpstan-ignore-line return.type
+			return $values->get( $middle );
 		}
 
 		return ( new static(

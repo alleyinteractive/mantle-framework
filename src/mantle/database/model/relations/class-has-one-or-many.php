@@ -335,7 +335,7 @@ abstract class Has_One_Or_Many extends Relation {
 			return $dictionary;
 		}
 
-		return $results // @phpstan-ignore-line return.type
+		return $results
 			->map_to_dictionary(
 				fn ( $result ): array => [ $result->meta->{$this->foreign_key} => $result ], // @phpstan-ignore-line property
 			)

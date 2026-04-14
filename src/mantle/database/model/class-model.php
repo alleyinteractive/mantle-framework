@@ -148,7 +148,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	 * Apply the given named scope if possible.
 	 *
 	 * @param string               $scope Scope name.
-	 * @param array<string, mixed> $parameters Scope parameters.
+	 * @param array<int|string, mixed> $parameters Scope parameters.
 	 */
 	public function call_named_scope( string $scope, array $parameters = [] ): mixed {
 		return $this->{ 'scope' . ucfirst( $scope ) }( ...$parameters );

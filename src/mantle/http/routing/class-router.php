@@ -258,11 +258,9 @@ class Router implements Router_Contract {
 	protected function with_registrar( \Closure $callback, bool $clear = false ): mixed {
 		$set = ! is_null( $this->registrar );
 
-		if ( ! $set ) {
+		if ( is_null( $this->registrar ) ) {
 			$this->registrar = new Route_Registrar( $this );
 		}
-
-		assert( $this->registrar instanceof Registrar_Contract );
 
 		$value = $callback( $this->registrar );
 
