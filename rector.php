@@ -22,6 +22,7 @@ use Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchExprVariableR
 
 use Rector\EarlyReturn\Rector\If_\ChangeOrIfContinueToMultiContinueRector;
 use Rector\EarlyReturn\Rector\Return_\ReturnBinaryOrToEarlyReturnRector;
+use Rector\TypeDeclaration\Rector\StmtsAwareInterface\SafeDeclareStrictTypesRector;
 use Rector\Php70\Rector\StmtsAwareInterface\IfIssetToCoalescingRector;
 use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
@@ -130,4 +131,5 @@ return RectorConfig::configure()
 		ArrowFunctionDelegatingCallToFirstClassCallableRector::class,
 		RemoveNullArgOnNullDefaultParamRector::class,
 		IfIssetToCoalescingRector::class,
+		SafeDeclareStrictTypesRector::class,
 	] );

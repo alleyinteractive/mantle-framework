@@ -62,7 +62,6 @@ trait Register_Rest_Fields {
 	 *
 	 * @param REST_Field|string $attribute Field instance/field attribute to register.
 	 * @param ?callable         $get_callback Callback for the field if $field isn't a field.
-	 * @return REST_Field
 	 *
 	 * @throws Model_Exception Thrown on missing REST Registrar.
 	 *
