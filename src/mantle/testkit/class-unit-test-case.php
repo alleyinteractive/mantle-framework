@@ -10,7 +10,7 @@
 namespace Mantle\Testkit;
 
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
-use PHPUnit\Framework\Attributes\RunClassInSeparateProcess;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\TestCase as Testing_Test_Case;
 
 /**
@@ -21,5 +21,5 @@ use PHPUnit\Framework\TestCase as Testing_Test_Case;
  * have global state mixed with Integration test global state.
  */
 #[PreserveGlobalState( false )]
-#[RunClassInSeparateProcess]
+#[RunTestsInSeparateProcesses]
 abstract class Unit_Test_Case extends Testing_Test_Case {}
