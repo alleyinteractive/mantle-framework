@@ -62,20 +62,19 @@ trait Register_Rest_Fields {
 	 *
 	 * @param REST_Field|string $attribute Field instance/field attribute to register.
 	 * @param ?callable         $get_callback Callback for the field if $field isn't a field.
-	 * @return Rest_Field
 	 *
 	 * @throws Model_Exception Thrown on missing REST Registrar.
 	 *
 	 * @todo Allow for creation of a a REST Field from a SML REST Field.
 	 */
-	public static function register_field( $attribute, ?callable $get_callback = null ): Rest_Field {
+	public static function register_field( $attribute, ?callable $get_callback = null ): REST_Field {
 		if ( ! isset( static::$rest_registrar ) ) { // @phpstan-ignore-line isset.property
 			$class = static::class;
 			throw new Model_Exception( "REST field registrar is not defined for [{$class}]" );
 		}
 
 		// Bail early if the field is a valid REST Field.
-		if ( $attribute instanceof Rest_Field ) {
+		if ( $attribute instanceof REST_Field ) {
 			static::$rest_fields[] = $attribute;
 			return $attribute;
 		}
@@ -90,7 +89,7 @@ trait Register_Rest_Fields {
 			throw new Model_Exception( "Cannot register REST field [{$attribute}] on model with no object name." );
 		}
 
-		$field = new Rest_Field( [ $object_name ], $attribute, $get_callback );
+		$field = new REST_Field( [ $object_name ], $attribute, $get_callback );
 
 		static::$rest_fields[ $attribute ] = $field;
 

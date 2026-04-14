@@ -373,7 +373,7 @@ class Log_Manager implements LoggerInterface {
 	 * @throws RuntimeException Thrown on missing dispatcher.
 	 */
 	public function listen( Closure $callback ): void {
-		if ( ! isset( $this->dispatcher ) ) {
+		if ( $this->dispatcher === null ) {
 			throw new RuntimeException( 'Event dispatcher not set.' );
 		}
 

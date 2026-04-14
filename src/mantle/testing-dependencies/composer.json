@@ -20,7 +20,7 @@
         "filp/whoops": "^2.18.1",
         "myclabs/deep-copy": "^1.13",
         "nunomaduro/termwind": "^1.15.1 || ^2.0",
-        "phpunit/phpunit": "^10.5.62 || ^11.5.50 || ^12.5.8",
+        "phpunit/phpunit": "^10.5.62 || ^11.5.50 || ^12.5.8 || ^13.1",
         "spatie/phpunit-snapshot-assertions": "^4.2 || ^5.1",
         "symfony/css-selector": "^7.2.0",
         "symfony/http-foundation": "^7.3.7"

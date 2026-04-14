@@ -110,7 +110,7 @@ class Schedule {
 			throw new RuntimeException( "Command class not found: [{$command}]" );
 		}
 
-		if ( ! is_subclass_of( $command, Command::class ) ) { // @phpstan-ignore-line function.alreadyNarrowedType
+		if ( ! is_subclass_of( $command, Command::class ) ) {
 			throw new RuntimeException( "Invalid command class passed: [{$command}]" );
 		}
 

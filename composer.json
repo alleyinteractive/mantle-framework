@@ -61,7 +61,7 @@
         "nunomaduro/collision": "^6.0 || ^7.0 || ^8.0",
         "php-stubs/wp-cli-stubs": "^2.11",
         "phpstan/extension-installer": "^1.4",
-        "phpunit/phpunit": "^10.5.62 || ^11.5.50 || ^12.5.8",
+        "phpunit/phpunit": "^10.5.62 || ^11.5.50 || ^12.5.8 || ^13.1",
         "rector/rector": "^2.0",
         "spatie/once": "^3.1.1",
         "spatie/phpunit-snapshot-assertions": "^4.2 || ^5.1",
@@ -98,8 +98,7 @@
         "mantle-framework/view": "self.version"
     },
     "conflict": {
-        "masterminds/html5": "<2.9",
-        "phpunit/phpunit": ">=13.0.0"
+        "masterminds/html5": "<2.9"
     },
     "suggest": {
         "mantle-framework/testing-dependencies": "For additional packages used with the Mantle testing framework."
