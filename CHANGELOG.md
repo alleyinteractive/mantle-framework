@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Added
+
+- Added support for a configurable `wp-content` directory name via the `WP_CONTENT_DIR_NAME` environment variable.
+
+  Mantle previously hard-coded `wp-content` when detecting whether the codebase already lives inside a WordPress installation and when resolving the installation root. This broke custom layouts such as Bedrock (which uses `app`). The directory name now defaults to `wp-content` and can be overridden with `WP_CONTENT_DIR_NAME`. Setting it to a value that does not appear in the project path also lets a plugin/theme that lives inside a WordPress install opt into an isolated test installation.
+
 ## v1.19.4
 
 ### Fixed

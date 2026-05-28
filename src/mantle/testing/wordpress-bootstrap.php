@@ -38,7 +38,7 @@ global $wpdb,
 // Load the configuration.
 if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) && ! empty( WP_TESTS_CONFIG_FILE_PATH ) && is_readable( WP_TESTS_CONFIG_FILE_PATH ) ) {
 	$config_file_path = WP_TESTS_CONFIG_FILE_PATH;
-} elseif ( false === strpos( __DIR__, '/wp-content/' ) ) {
+} elseif ( false === strpos( __DIR__, '/' . Utils::content_directory_name() . '/' ) ) {
 	// Check if WP_CORE_DIR is defined and points to a valid installation.
 	if ( getenv( 'WP_CORE_DIR' ) && ! defined( 'WP_TESTS_INSTALL_PATH' ) && is_readable( getenv( 'WP_CORE_DIR' ) . '/wp-load.php' ) ) {
 		define( 'WP_TESTS_INSTALL_PATH', getenv( 'WP_CORE_DIR' ) );
@@ -73,11 +73,11 @@ if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) && ! empty( WP_TESTS_CONFIG_FILE_PAT
 } else {
 	// The project is being loaded from inside a WordPress installation.
 	if ( defined( 'WP_TESTS_INSTALL_PATH' ) ) {
-		$config_file_path = preg_replace( '#/wp-content/.*$#', '/wp-tests-config.php', (string) WP_TESTS_INSTALL_PATH );
+		$config_file_path = preg_replace( '#/' . preg_quote( Utils::content_directory_name(), '#' ) . '/.*$#', '/wp-tests-config.php', (string) WP_TESTS_INSTALL_PATH );
 	}
 
 	if ( empty( $config_file_path ) ) {
-		$config_file_path = preg_replace( '#/wp-content/.*$#', '/wp-tests-config.php', __DIR__ );
+		$config_file_path = preg_replace( '#/' . preg_quote( Utils::content_directory_name(), '#' ) . '/.*$#', '/wp-tests-config.php', __DIR__ );
 	}
 }
 
