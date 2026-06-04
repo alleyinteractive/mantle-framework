@@ -25,13 +25,13 @@ class AssetManagerTest extends TestCase {
 
 		$head = $this->get_wp_head();
 
-		$this->assertStringContainsString(
-			"id=\"script-handle-js\"",
+		$this->assertMatchesRegularExpression(
+			'/\bid=("|\')script-handle-js\\1/',
 			$head,
 		);
 
-		$this->assertStringContainsString(
-			"src=\"https://example.org/script.js\"",
+		$this->assertMatchesRegularExpression(
+			'/\bsrc=("|\')https:\/\/example\.org\/script\.js\\1/',
 			$head,
 		);
 	}
@@ -60,18 +60,18 @@ class AssetManagerTest extends TestCase {
 
 		$head = $this->get_wp_head();
 
-		$this->assertStringContainsString(
-			"id=\"example-fluent-js\"",
+		$this->assertMatchesRegularExpression(
+			'/\bid=("|\')example-fluent-js\\1/',
 			$head,
 		);
 
-		$this->assertStringContainsString(
-			"src=\"https://example.org/example-fluent.js\"",
+		$this->assertMatchesRegularExpression(
+			'/\bsrc=("|\')https:\/\/example\.org\/example-fluent\.js\\1/',
 			$head,
 		);
 
-		$this->assertStringContainsString(
-			"async",
+		$this->assertMatchesRegularExpression(
+			'/<script\b(?=[^>]*\bid=("|\')example-fluent-js\\1)(?=[^>]*\b(?:async(?:=(?:"async"|\'async\'))?|data-wp-strategy=(?:"async"|\'async\')))[^>]*>/i',
 			$head,
 		);
 	}
@@ -84,18 +84,18 @@ class AssetManagerTest extends TestCase {
 
 		$head = $this->get_wp_head();
 
-		$this->assertStringContainsString(
-			"id=\"example-helper-js\"",
+		$this->assertMatchesRegularExpression(
+			'/\bid=("|\')example-helper-js\\1/',
 			$head,
 		);
 
-		$this->assertStringContainsString(
-			"src=\"https://example.org/example-helper.js\"",
+		$this->assertMatchesRegularExpression(
+			'/\bsrc=("|\')https:\/\/example\.org\/example-helper\.js\\1/',
 			$head,
 		);
 
-		$this->assertStringContainsString(
-			"async",
+		$this->assertMatchesRegularExpression(
+			'/<script\b(?=[^>]*\bid=("|\')example-helper-js\\1)(?=[^>]*\b(?:async(?:=(?:"async"|\'async\'))?|data-wp-strategy=(?:"async"|\'async\')))[^>]*>/i',
 			$head,
 		);
 	}
@@ -118,18 +118,18 @@ class AssetManagerTest extends TestCase {
 
 		$head = $this->get_wp_head();
 
-		$this->assertStringContainsString(
-			"id=\"masonry-js\"",
+		$this->assertMatchesRegularExpression(
+			'/\bid=("|\')masonry-js\\1/',
 			$head,
 		);
 
-		$this->assertStringContainsString(
-			"src=\"http://example.org/wp-includes/js/masonry.min.js?ver={$version}\"",
+		$this->assertMatchesRegularExpression(
+			'/\bsrc=("|\')http:\/\/example\.org\/wp-includes\/js\/masonry\.min\.js\?ver=' . preg_quote( $version, '/' ) . '\\1/',
 			$head,
 		);
 
-		$this->assertStringContainsString(
-			"async",
+		$this->assertMatchesRegularExpression(
+			'/<script\b(?=[^>]*\bid=("|\')masonry-js\\1)(?=[^>]*\b(?:async(?:=(?:"async"|\'async\'))?|data-wp-strategy=(?:"async"|\'async\')))[^>]*>/i',
 			$head,
 		);
 	}

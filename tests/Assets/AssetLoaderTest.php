@@ -83,18 +83,18 @@ class AssetLoaderTest extends TestCase {
 
 		$head = $this->get_wp_head();
 
-		$this->assertStringContainsString(
-			'id="app-js-js"',
+		$this->assertMatchesRegularExpression(
+			'/\bid=("|\')app-js-js\\1/',
 			$head,
 		);
 
-		$this->assertStringContainsString(
-			'src="https://example.org/base/app.js?id=8c5b220bf6f482881a90"',
+		$this->assertMatchesRegularExpression(
+			'/\bsrc=("|\')https:\/\/example\.org\/base\/app\.js\?id=8c5b220bf6f482881a90\\1/',
 			$head,
 		);
 
-		$this->assertStringContainsString(
-			'async',
+		$this->assertMatchesRegularExpression(
+			'/<script\b(?=[^>]*\bid=("|\')app-js-js\\1)(?=[^>]*\b(?:async(?:=(?:"async"|\'async\'))?|data-wp-strategy=(?:"async"|\'async\')))[^>]*>/i',
 			$head,
 		);
 
