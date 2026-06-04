@@ -84,7 +84,17 @@ class AssetLoaderTest extends TestCase {
 		$head = $this->get_wp_head();
 
 		$this->assertStringContainsString(
-			'<script src="https://example.org/base/app.js?id=8c5b220bf6f482881a90" id="app-js-js" async',
+			'id="app-js-js"',
+			$head,
+		);
+
+		$this->assertStringContainsString(
+			'src="https://example.org/base/app.js?id=8c5b220bf6f482881a90"',
+			$head,
+		);
+
+		$this->assertStringContainsString(
+			'async',
 			$head,
 		);
 

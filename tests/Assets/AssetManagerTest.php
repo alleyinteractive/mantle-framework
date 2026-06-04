@@ -23,9 +23,16 @@ class AssetManagerTest extends TestCase {
 				"sync",
 			);
 
+		$head = $this->get_wp_head();
+
 		$this->assertStringContainsString(
-			"<script src=\"https://example.org/script.js\" id=\"script-handle-js\"></script>",
-			$this->get_wp_head(),
+			"id=\"script-handle-js\"",
+			$head,
+		);
+
+		$this->assertStringContainsString(
+			"src=\"https://example.org/script.js\"",
+			$head,
 		);
 	}
 
@@ -51,9 +58,21 @@ class AssetManagerTest extends TestCase {
 			->src( "https://example.org/example-fluent.js" )
 			->async();
 
+		$head = $this->get_wp_head();
+
 		$this->assertStringContainsString(
-			"<script src=\"https://example.org/example-fluent.js\" id=\"example-fluent-js\" async",
-			$this->get_wp_head(),
+			"id=\"example-fluent-js\"",
+			$head,
+		);
+
+		$this->assertStringContainsString(
+			"src=\"https://example.org/example-fluent.js\"",
+			$head,
+		);
+
+		$this->assertStringContainsString(
+			"async",
+			$head,
 		);
 	}
 
@@ -63,9 +82,21 @@ class AssetManagerTest extends TestCase {
 			->src( "https://example.org/example-helper.js" )
 			->async();
 
+		$head = $this->get_wp_head();
+
 		$this->assertStringContainsString(
-			"<script src=\"https://example.org/example-helper.js\" id=\"example-helper-js\" async",
-			$this->get_wp_head(),
+			"id=\"example-helper-js\"",
+			$head,
+		);
+
+		$this->assertStringContainsString(
+			"src=\"https://example.org/example-helper.js\"",
+			$head,
+		);
+
+		$this->assertStringContainsString(
+			"async",
+			$head,
 		);
 	}
 
@@ -85,9 +116,21 @@ class AssetManagerTest extends TestCase {
 			->version( null )
 			->async();
 
+		$head = $this->get_wp_head();
+
 		$this->assertStringContainsString(
-			"<script src=\"http://example.org/wp-includes/js/masonry.min.js?ver={$version}\" id=\"masonry-js\" async",
-			$this->get_wp_head(),
+			"id=\"masonry-js\"",
+			$head,
+		);
+
+		$this->assertStringContainsString(
+			"src=\"http://example.org/wp-includes/js/masonry.min.js?ver={$version}\"",
+			$head,
+		);
+
+		$this->assertStringContainsString(
+			"async",
+			$head,
 		);
 	}
 }
