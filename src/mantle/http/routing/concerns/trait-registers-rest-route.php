@@ -32,9 +32,15 @@ trait Registers_Rest_Route {
 			throw new RuntimeException( 'Route must have a namespace in the route action.' );
 		}
 
+		$route_path = $this->getPath();
+
+		if ( '' === $route_path || '0' === $route_path ) {
+			throw new RuntimeException( 'Route path cannot be empty for REST route registration.' );
+		}
+
 		register_rest_route(
 			$this->action['namespace'],
-			$this->getPath(),
+			$route_path,
 			$this->action,
 			! empty( $this->action['override'] ),
 		);

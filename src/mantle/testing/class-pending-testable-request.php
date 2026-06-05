@@ -375,7 +375,7 @@ class Pending_Testable_Request {
 			add_filter( 'wp_headers', $intercept_headers, 9999 );
 			add_filter( 'wp_redirect', $intercept_redirect, 9999, 2 ); // @phpstan-ignore-line Filter callback
 
-			$ob_level   = ob_get_level(); // @phpstan-ignore-line deadCode.unreachable
+			$ob_level   = ob_get_level();
 			$redirected = false;
 
 			ob_start();
@@ -438,6 +438,8 @@ class Pending_Testable_Request {
 			remove_filter( 'status_header', $intercept_status, 9999 );
 			remove_filter( 'wp_headers', $intercept_headers, 9999 );
 			remove_filter( 'wp_redirect', $intercept_redirect, 9999 );
+
+			$response_content = false === $response_content ? null : $response_content;
 
 			$response = new Test_Response(
 				$response_content,

@@ -170,11 +170,19 @@ trait Interacts_With_Requests {
 		Http_Method|string|null $method = null
 	): static|Mock_Http_Response {
 		if ( is_array( $url_or_callback ) ) {
-			$this->stub_callbacks = $this->stub_callbacks->merge(
-				collect( $url_or_callback )->map(
-					fn ( $response, $url_or_callback ) => $this->create_stub_request_callback( $url_or_callback, $response, $method ),
-				)
-			);
+			foreach ( $url_or_callback as $url => $url_response ) {
+				if ( ! is_string( $url ) ) {
+					throw new InvalidArgumentException( 'Expected URL key to be a string in fake request array.' );
+				}
+
+				if ( ! $url_response instanceof Mock_Http_Response && ! is_callable( $url_response ) ) {
+					throw new InvalidArgumentException( 'Response must be an instance of Mock_Http_Response or callable, ' . gettype( $url_response ) . ' given.' );
+				}
+
+				$this->stub_callbacks->push(
+					$this->create_stub_request_callback( $url, $url_response, $method ),
+				);
+			}
 
 			return $this;
 		}
