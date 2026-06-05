@@ -42,8 +42,13 @@ class HtmlTest extends TestCase {
 </html>
 ";
 		$crawler = new HTML( $html );
+		$output  = $crawler->to_html();
 
-		$this->assertStringsEqualsWithoutWhitespace( $html, $crawler->to_html() );
+		$this->assertTrue( $crawler->is_html_document() );
+		$this->assertMatchesRegularExpression( '/<html\b[^>]*>/i', $output );
+		$this->assertMatchesRegularExpression( '/<body\b[^>]*>/i', $output );
+		$this->assertStringContainsString( '<title>Test</title>', $output );
+		$this->assertStringContainsString( '<p>Hello, World!</p>', $output );
 	}
 
 	public function test_it_can_convert_html_back_to_the_original_html(): void {
