@@ -484,7 +484,7 @@ class Arr {
 	 *                                   than the length of the array.
 	 */
 	public static function random( array $array, ?int $number = null ) {
-		$requested = is_null( $number ) ? 1 : $number;
+		$requested = $number ?? 1;
 
 		$count = count( $array );
 

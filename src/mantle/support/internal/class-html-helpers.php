@@ -54,7 +54,8 @@ readonly class HTML_Helpers {
 			// PHP DOMDocument->loadHTML method tends to "eat" closing tags in html strings within script elements
 			// Option LIBXML_SCHEMA_CREATE seems to prevent this
 			// see https://stackoverflow.com/questions/24575136/domdocument-removes-html-tags-in-javascript-string.
-			@$dom->loadHTML( $htmlContent, \LIBXML_SCHEMA_CREATE );
+			$options = defined( 'LIBXML_SCHEMA_CREATE' ) ? \LIBXML_SCHEMA_CREATE : 0;
+			@$dom->loadHTML( $htmlContent, $options );
 		}
 
 		libxml_use_internal_errors( $internalErrors );
