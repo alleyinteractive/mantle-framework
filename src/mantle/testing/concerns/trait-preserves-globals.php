@@ -44,6 +44,7 @@ trait Preserves_Globals {
 	 * @var string[]
 	 */
 	protected const GLOBALS_TO_BACKUP = [
+		'_wp_post_type_features',
 		'wp_meta_keys',
 		'wp_post_statuses',
 		'wp_post_types',

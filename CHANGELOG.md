@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+
+- Preserve `$_wp_post_type_features` between tests in `Preserves_Globals`.
+
+  When a test called `unregister_post_type()`, the post type itself was restored from the snapshot on the next test, but its features (title, editor, etc.) were not. `post_type_supports()` then returned false for the supposedly-restored post type.
+
+## Changed
+
 - Pin `symfony/dom-crawler` to `^7.4.12`.
 
 ## v1.19.3
