@@ -215,8 +215,7 @@ abstract class Service_Provider implements LoggerAwareInterface {
 		return match ( true ) {
 			! empty( $providers ) && ! empty( $tags ) => $provider_paths->intersect_by_keys( $tag_paths )->all(),
 			! empty( $providers ) => $provider_paths->all(),
-			! empty( $tags ) => $tag_paths->all(),
-			default => [],
+			default => $tag_paths->all(),
 		};
 	}
 

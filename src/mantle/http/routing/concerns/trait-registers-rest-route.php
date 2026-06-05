@@ -32,9 +32,11 @@ trait Registers_Rest_Route {
 			throw new RuntimeException( 'Route must have a namespace in the route action.' );
 		}
 
+		$route_path = '/' . ltrim( $this->getPath(), '/' );
+
 		register_rest_route(
 			$this->action['namespace'],
-			$this->getPath(),
+			$route_path,
 			$this->action,
 			! empty( $this->action['override'] ),
 		);

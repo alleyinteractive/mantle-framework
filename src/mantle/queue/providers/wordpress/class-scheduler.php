@@ -182,7 +182,7 @@ class Scheduler {
 
 		return collect( _get_cron_array() )
 			->reduce(
-				function ( Collection $carry, array $items, $timestamp ) use ( $queue ) {
+				function ( Collection $carry, array $items, $timestamp ) use ( $queue ): Collection {
 					if ( empty( $items[ static::EVENT ] ) ) {
 						return $carry;
 					}

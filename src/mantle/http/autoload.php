@@ -75,7 +75,7 @@ if ( ! function_exists( 'request' ) ) {
 
 		$value = app( 'request' )->__get( $key );
 
-		return is_null( $value ) ? value( $default ) : $value;
+		return $value ?? value( $default );
 	}
 }
 
