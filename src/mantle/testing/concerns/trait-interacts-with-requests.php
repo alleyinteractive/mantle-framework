@@ -158,7 +158,7 @@ trait Interacts_With_Requests {
 	 *
 	 * @template TCallableReturn of Mock_Http_Sequence|Mock_Http_Response|Arrayable|null
 	 *
-	 * @param (callable(string|Request, ?array): TCallableReturn)|Mock_Http_Response|string|array<string, Mock_Http_Response|callable> $url_or_callback URL to fake, array of URL and response pairs, or a closure
+	 * @param (callable(string|Request, ?array): TCallableReturn)|Mock_Http_Response|string|array<string, Mock_Http_Response|callable|array<mixed>> $url_or_callback URL to fake, array of URL and response pairs, or a closure
 	 *                                                                                                                                         that will return a faked response.
 	 * @param Mock_Http_Response|array<mixed>|callable $response Optional response object, defaults to a 200 response with no body.
 	 * @param Http_Method|string|null $method Optional request method to apply to, defaults to all. Does not apply to array of URL and response pairs OR callbacks.
@@ -175,8 +175,8 @@ trait Interacts_With_Requests {
 					throw new InvalidArgumentException( 'Expected URL key to be a string in fake request array.' );
 				}
 
-				if ( ! $url_response instanceof Mock_Http_Response && ! is_callable( $url_response ) ) {
-					throw new InvalidArgumentException( 'Response must be an instance of Mock_Http_Response or callable, ' . gettype( $url_response ) . ' given.' );
+				if ( ! $url_response instanceof Mock_Http_Response && ! is_callable( $url_response ) && ! is_array( $url_response ) ) {
+					throw new InvalidArgumentException( 'Response must be an instance of Mock_Http_Response, callable, or array. Received: ' . get_debug_type( $url_response ) );
 				}
 
 				$this->stub_callbacks->push(
