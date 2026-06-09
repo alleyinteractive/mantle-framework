@@ -64,7 +64,7 @@ trait Interacts_With_Input {
 			return Str::substr( $header, 7 );
 		}
 
-		return $header;
+		return null;
 	}
 
 	/**

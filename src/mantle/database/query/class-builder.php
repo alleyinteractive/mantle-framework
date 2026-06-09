@@ -949,7 +949,7 @@ abstract class Builder {
 	 * @return static
 	 */
 	public function without( ...$relations ) {
-		$this->eager_load = array_diff_key( $this->eager_load, array_flip( $relations ) );
+		$this->eager_load = array_values( array_diff( $this->eager_load, $relations ) );
 		return $this;
 	}
 

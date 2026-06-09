@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Fixed
+
+- **Cache:** `Repository::remember()` and `remember_forever()` now return the computed value on a cache miss instead of the boolean result of storing it.
+- **Cache:** `Repository::pull()` now returns the cached value (or the default when absent) instead of always returning the default.
+- **HTTP Client:** `Pending_Request::retry()` now applies the configured delay between retries (the value was stored under a key that `send()` never read, so retries always ran with no delay).
+- **HTTP:** `Response` now serializes `Jsonable` and `Arrayable` payloads via `to_json()`/`to_array()` instead of `json_encode()`-ing the raw object.
+- **HTTP:** `Request::offsetExists()` no longer throws a `TypeError` when the request has no route parameters set.
+- **HTTP:** `Route::get_request_parameters()` no longer fatals when route parameters are unset; it returns an empty array.
+- **HTTP:** `bearer_token()` now returns `null` for non-Bearer `Authorization` headers instead of the raw header value.
+- **Database:** `Builder::without()` now removes eager-loaded relations correctly (it compared array keys instead of values and removed nothing).
+- **Database:** Reading a queued term attribute now returns all queued terms instead of only the first.
+- **Database:** `Has_One_Or_Many::save()` no longer issues a spurious query (and possible fatal) via `$model->first()` when resolving the object name.
+- **Queue:** The WordPress provider now sets job locks to an absolute expiry timestamp, so locked jobs are no longer treated as immediately unlocked.
+- **Queue:** The scheduler now caps the number of scheduled batches at `max_concurrent_batches` instead of over-scheduling.
+- **Console:** `Application::test()` now passes the command name (not the command instance) to the tester.
+- **Console:** `option()` no longer discards falsy option values (e.g. `0`, `''`, `false`) in favour of the default.
+- **Support:** `defer()` now finishes the request before running the deferred callback.
+- **Support:** `Stringable::split()` defaults to an unlimited split (`-1`) so it actually splits on a regex pattern.
+- **Support:** `Str::mask()` now respects the supplied encoding when building the trailing segment.
+
 ## v1.19.4
 
 ### Fixed

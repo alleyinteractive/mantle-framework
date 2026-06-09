@@ -151,7 +151,7 @@ class Scheduler {
 			return false;
 		}
 
-		$to_schedule = max( $max_concurrent_batches, ceil( $pending_count / $batch_size ) ) - $already_scheduled_count;
+		$to_schedule = min( $max_concurrent_batches, (int) ceil( $pending_count / $batch_size ) ) - $already_scheduled_count;
 
 		if ( $to_schedule > 0 ) {
 			$delay = static::get_configuration_value( 'delay', $queue, 0 );

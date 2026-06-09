@@ -170,7 +170,7 @@ abstract class Has_One_Or_Many extends Relation {
 		$append = Has_Many::class === static::class || is_subclass_of( $this, Has_Many::class ); // @phpstan-ignore-line
 
 		if ( $this->is_post_term_relationship() && $this->parent instanceof Post ) {
-			$this->parent->set_terms( $model, $model->first()::get_object_name(), $append );
+			$this->parent->set_terms( $model, $model::get_object_name(), $append );
 		} elseif ( $this->is_term_post_relationship() ) {
 			if ( $model instanceof Post ) {
 				$model->set_terms( $this->parent, $this->parent::get_object_name(), $append );

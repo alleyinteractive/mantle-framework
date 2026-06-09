@@ -98,6 +98,8 @@ class Response extends HttpFoundationResponse {
 		return match ( true ) {
 			$content instanceof JsonSerializable => json_encode( $content->jsonSerialize() ), // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
 			$content instanceof ArrayObject => json_encode( $content->getArrayCopy() ), // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+			$content instanceof Jsonable => $content->to_json(),
+			$content instanceof Arrayable => json_encode( $content->to_array() ), // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
 			default => json_encode( $content ), // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
 		};
 	}

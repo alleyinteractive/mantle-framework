@@ -429,7 +429,7 @@ class Route extends Symfony_Route {
 	 * @return array<string, mixed>
 	 */
 	public function get_request_parameters(): array {
-		return $this->container['request']->get_route_parameters()->all();
+		return $this->container['request']->get_route_parameters()?->all() ?? [];
 	}
 
 	/**

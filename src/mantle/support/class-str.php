@@ -539,7 +539,7 @@ class Str {
 
 		$start       = mb_substr( $string, 0, $start_index, $encoding );
 		$segment_len = mb_strlen( $segment, $encoding );
-		$end         = mb_substr( $string, $start_index + $segment_len );
+		$end         = mb_substr( $string, $start_index + $segment_len, null, $encoding );
 
 		return $start . str_repeat( mb_substr( $character, 0, 1, $encoding ), $segment_len ) . $end;
 	}

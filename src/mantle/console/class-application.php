@@ -120,9 +120,9 @@ class Application extends Console_Application implements Console_Application_Con
 	 * @param array<string, string> $parameters Command parameters.
 	 */
 	public function test( string $command, array $parameters = [] ): CommandTester {
-		$command = $this->find( $command );
+		$command_instance = $this->find( $command );
 
-		$tester = new CommandTester( $command );
+		$tester = new CommandTester( $command_instance );
 
 		$tester->execute( array_merge( [ 'command' => $command ], $parameters ) );
 
