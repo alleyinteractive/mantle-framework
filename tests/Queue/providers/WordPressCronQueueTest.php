@@ -223,6 +223,19 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		$this->assertEquals( 0, Scheduler::get_scheduled_count() );
 	}
 
+	public function test_schedule_does_not_overschedule_when_underutilized() {
+		// With a large batch size and concurrency ceiling but only a single pending
+		// job, the scheduler should schedule a single batch and not fill the ceiling.
+		$this->app['config']->set( 'queue.max_concurrent_batches', 5 );
+		$this->app['config']->set( 'queue.batch_size', 100 );
+
+		Example_Job::dispatch();
+
+		Scheduler::schedule_on_shutdown();
+
+		$this->assertEquals( 1, Scheduler::get_scheduled_count() );
+	}
+
 	public function test_failed_job() {
 		$_SERVER['__failed_run'] = 0;
 
