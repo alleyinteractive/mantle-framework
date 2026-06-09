@@ -20,39 +20,7 @@ use PHPUnit\Framework\AssertionFailedError;
 use function Mantle\Support\Helpers\tap;
 
 require_once __DIR__ . '/preload.php';
-require_once __DIR__ . '/mail/helpers.php';
-
-/**
- * While we are in a transition state with using PSR-4 coding style in tests,
- * the actual mantle-framework/testing package is still written in
- * WordPress-style code. This doesn't sit well when using select class names in
- * PSR-4 code. For the time being, we will manually require the files.
- *
- * We cannot use Composer's PSR-4 autoloader because the folder names are lower
- * case and folder names are case sensitive on some file systems (e.g. Linux).
- *
- * Mantle 2.0 should be fully PSR-4 compliant, at which point these
- * file-requires will be removed.
- */
-
-$autoloaded_classes = [
-	Attributes\DisableGlobalPreservation::class           => '/attributes/DisableGlobalPreservation.php',
-	Attributes\Environment::class                         => '/attributes/Environment.php',
-	Attributes\PermalinkStructure::class                  => '/attributes/PermalinkStructure.php',
-	Attributes\PreserveObjectCache::class                 => '/attributes/PreserveObjectCache.php',
-	Attributes\UserAgent::class                           => '/attributes/UserAgent.php',
-	Exceptions\BacktraceException::class                  => '/exceptions/BacktraceException.php',
-	Exceptions\UnexpectedDeprecatedNoticeException::class => '/exceptions/UnexpectedDeprecatedNoticeException.php',
-	Exceptions\UnexpectedIncorrectUsageException::class   => '/exceptions/UnexpectedIncorrectUsageException.php',
-	EarlyDeprecationsHandler::class                       => '/EarlyDeprecationsHandler.php',
-	EarlyIncorrectUsageHandler::class                     => '/EarlyIncorrectUsageHandler.php',
-];
-
-foreach ( $autoloaded_classes as $class_name => $class_path ) {
-	if ( ! class_exists( $class_name ) ) {
-		require_once __DIR__ . $class_path;
-	}
-}
+require_once __DIR__ . '/Mail/helpers.php';
 
 if ( ! function_exists( __NAMESPACE__ . '\\manager' ) ) {
 	/**

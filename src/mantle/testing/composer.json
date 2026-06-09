@@ -44,12 +44,5 @@
             "alleyinteractive/composer-wordpress-autoloader": true
         },
         "sort-packages": true
-    },
-    "extra": {
-        "wordpress-autoloader": {
-            "autoload": {
-                "Mantle\\Testing": "./"
-            }
-        }
     }
 }
