@@ -647,7 +647,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 	 */
 	#[DataProvider( 'date_comparison_provider' )]
 	public function test_date_comparisons( int $expected, string $method, array $args ) {
-		$start = Carbon::now( wp_timezone() )->subMonth()->startOfDay();
+		$start = static::date_comparison_start();
 
 		static::factory()->post->create_ordered_set( 20, [], $start->clone() );
 
@@ -657,8 +657,23 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		);
 	}
 
+	/**
+	 * A fixed starting date for the ordered set of posts used by the date
+	 * comparison tests.
+	 *
+	 * Using a fixed, absolute date (rather than one relative to `now()`) ensures
+	 * the data provider and the test body resolve to the exact same start. When
+	 * the start was computed with `Carbon::now()->subMonth()->startOfDay()` in
+	 * both places, a CI run that crossed midnight would evaluate the provider on
+	 * one day and the test body on the next, shifting the post dates relative to
+	 * the query boundaries and producing intermittent failures.
+	 */
+	protected static function date_comparison_start(): Carbon {
+		return Carbon::create( 2020, 1, 1, 0, 0, 0, wp_timezone() );
+	}
+
 	public static function date_comparison_provider(): array {
-		$start = Carbon::now( wp_timezone() )->subMonth()->startOfDay();
+		$start = static::date_comparison_start();
 
 		return [
 			// Older than now should return all posts.
