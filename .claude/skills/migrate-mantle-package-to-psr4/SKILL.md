@@ -72,9 +72,22 @@ by name, not path).
 ```bash
 git ls-files src/mantle/<pkg>            # confirm PascalCase dirs + no class-*.php left
 composer dump-autoload --optimize --strict-psr
-composer phpcs -- src/mantle/<pkg>       # expect clean
-composer phpstan                         # expect ONLY the pre-existing baseline errors
+composer lint                            # phpcs + phpstan + rector; must exit 0
 ```
+`composer lint` is the CI lint gate (phpcs + phpstan + rector). Run it whole, not
+just phpcs.
+
+**CRITICAL — match CI's tool versions before trusting phpstan; do NOT regenerate
+the baseline.** The lint CI job installs deps with `composer update`, so it runs
+the **latest stable** phpstan/rector (e.g. phpstan 2.2.x), *not* whatever your
+`composer.lock` pins (the root lock is gitignored and often stale). A rename is
+logic-free, so it cannot add or remove phpstan errors — `phpstan-baseline.neon`
+should need **no change**. If `composer phpstan` shows errors locally, your local
+phpstan is older than CI's and is producing phantom errors. **Fix your
+environment, not the baseline:** run `composer update` first so local phpstan
+matches CI, then re-run. Regenerating the baseline against a stale local phpstan
+adds ignore-patterns CI's newer phpstan never emits, and CI fails them via
+`reportUnmatchedIgnoredErrors` ("Ignored error pattern … was not matched").
 Then prove runtime resolution loads from the **new** path:
 ```bash
 php -r 'require "vendor/autoload.php"; $r=new ReflectionClass("Mantle\\Pkg\\Class_Name"); echo $r->getFileName(),"\n";'
@@ -86,6 +99,28 @@ fixtures under `Mantle\Tests\`, and the intentional global shim
 `src/mantle/testing/wp-unittestcase.php`. Your migrated package must produce **zero**
 new violations. PHPUnit needs Vagrant/WordPress — defer the full matrix to CI; this is
 a rename-only change.
+
+## Finishing up (only after verification passes)
+
+Each batch is a PR **stacked on the previous batch's branch** (not `1.x`), so the
+diff stays scoped to this batch. Create the PR and update the issue only once all
+checks above are green:
+
+1. **Open the PR against the previous batch's branch** as base (e.g. batch-2's base
+   is `feature/psr-packages-batch-1`; the first batch bases off `1.x`):
+   ```bash
+   git push -u origin <this-branch>
+   gh pr create --base <previous-batch-branch> --head <this-branch> \
+     --title "Convert <pkgs> to PSR-4" --body "<summary + verification + Part of #812>"
+   ```
+   The PR body should list the packages, note class/trait names are unchanged (not a
+   breaking change), and summarize the verification run.
+2. **Update issue #812** — comment on the issue noting which packages this PR
+   migrated and link the PR, so the running checklist stays current:
+   `gh issue comment 812 --body "..."`. Check/tick the package list in the issue body
+   if it has one (`gh issue edit 812`).
+3. When the base PR later merges, retarget this PR's base to `1.x` (or let GitHub do
+   it automatically) — don't merge out of order.
 
 ## Common mistakes
 
