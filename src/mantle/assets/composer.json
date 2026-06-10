@@ -9,13 +9,6 @@
         "mantle-framework/contracts": "^1.0",
         "mantle-framework/support": "^1.0"
     },
-    "extra": {
-        "wordpress-autoloader": {
-            "autoload": {
-                "Mantle\\Assets": "./"
-            }
-        }
-    },
     "license": "GPL-2.0-or-later",
     "authors": [
         {
@@ -24,6 +17,9 @@
         }
     ],
     "autoload": {
+        "psr-4": {
+            "Mantle\\Assets\\": "./"
+        },
         "files": [
             "autoload.php"
         ]
