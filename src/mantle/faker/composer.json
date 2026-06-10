@@ -7,11 +7,9 @@
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
         "fakerphp/faker": "^1.24"
     },
-    "extra": {
-        "wordpress-autoloader": {
-            "autoload": {
-                "Mantle\\Faker": "./"
-            }
+    "autoload": {
+        "psr-4": {
+            "Mantle\\Faker\\": "./"
         }
     },
     "license": "GPL-2.0-or-later",

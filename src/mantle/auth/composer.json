@@ -8,11 +8,9 @@
         "mantle-framework/http": "^1.0",
         "symfony/http-kernel": "^7.2.0"
     },
-    "extra": {
-        "wordpress-autoloader": {
-            "autoload": {
-                "Mantle\\Auth": "./"
-            }
+    "autoload": {
+        "psr-4": {
+            "Mantle\\Auth\\": "./"
         }
     },
     "license": "GPL-2.0-or-later",

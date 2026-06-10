@@ -107,6 +107,13 @@
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
+            "Mantle\\Auth\\": "src/mantle/auth/",
+            "Mantle\\Blocks\\": "src/mantle/blocks/",
+            "Mantle\\Config\\": "src/mantle/config/",
+            "Mantle\\Events\\": "src/mantle/events/",
+            "Mantle\\Faker\\": "src/mantle/faker/",
+            "Mantle\\New_Relic\\": "src/mantle/new-relic/",
+            "Mantle\\REST_API\\": "src/mantle/rest-api/",
             "Mantle\\Testing\\": "src/mantle/testing/",
             "Mantle\\Testkit\\": "src/mantle/testkit/"
         },
