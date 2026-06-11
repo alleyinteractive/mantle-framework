@@ -35,7 +35,7 @@ parameters:
 			identifier: missingType.return
 			paths:
 				- src/mantle/contracts
-				- src/mantle/testing/concerns/trait-core-shim.php
+				- src/mantle/testing/Concerns/Core_Shim.php
 		-
 			identifier: missingType.parameter
 			paths:
@@ -82,7 +82,7 @@ parameters:
 		- src/mantle/queue/providers/wordpress/admin/class-service-provider.php
 		- src/mantle/support/interface-enumerable.php
 		- src/mantle/support/traits/trait-conditionable.php
-		- src/mantle/testing/class-mock-action.php
+		- src/mantle/testing/Mock_Action.php
 		- src/mantle/testing/install-wordpress.php
 		- src/mantle/testing/preload.php
 		- src/mantle/testing/wordpress-bootstrap.php
