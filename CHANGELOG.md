@@ -9,9 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- The `mantle-framework/testing` package is now fully PSR-4 compliant: files and
-  directories were renamed to match their class/trait names. Class and trait
-  names are unchanged, so this is not a breaking change.
 - The `auth`, `blocks`, `config`, `events`, `faker`, `new-relic`, and `rest-api`
   packages are now fully PSR-4 compliant: files and directories were renamed to
   match their class/trait names, and classes now resolve via Composer's PSR-4
@@ -22,6 +19,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   match their class/trait names, and classes now resolve via Composer's PSR-4
   autoloader. Class and trait names are unchanged, so this is not a breaking
   change.
+
+## v1.20.0
+
+### Added
+
+- Added support for a configurable `wp-content` directory name via the `WP_CONTENT_DIR_NAME` environment variable.
+
+  Mantle previously hard-coded `wp-content` when detecting whether the codebase already lives inside a WordPress installation and when resolving the installation root. This broke custom layouts such as Bedrock (which uses `app`). The directory name now defaults to `wp-content` and can be overridden with `WP_CONTENT_DIR_NAME`. Setting it to a value that does not appear in the project path also lets a plugin/theme that lives inside a WordPress install opt into an isolated test installation.
+
+### Changed
+
+- The `mantle-framework/testing` package is now fully PSR-4 compliant: files and
+  directories were renamed to match their class/trait names. Class and trait
+  names are unchanged, so this is not a breaking change.
 
 ## v1.19.4
 
