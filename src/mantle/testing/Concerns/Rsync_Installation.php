@@ -170,9 +170,11 @@ trait Rsync_Installation {
 	 * `maybe_rsync()` yourself with the proper paths.
 	 */
 	public function maybe_rsync_wp_content(): static {
-		// Attempt to locate wp-content relative to the current directory.
-		if ( false !== strpos( __DIR__, '/wp-content/' ) ) {
-			return $this->maybe_rsync( '/', preg_replace( '/\/wp-content\/.*$/', '/wp-content', __DIR__ ) );
+		$content_directory_name = Utils::content_directory_name();
+
+		// Attempt to locate the content directory relative to the current directory.
+		if ( false !== strpos( __DIR__, '/' . $content_directory_name . '/' ) ) {
+			return $this->maybe_rsync( '/', preg_replace( '#/' . preg_quote( $content_directory_name, '#' ) . '/.*$#', '/' . $content_directory_name, __DIR__ ) );
 		}
 
 		// Attempt to locate wp-content relative to the current directory.
@@ -428,9 +430,15 @@ trait Rsync_Installation {
 	/**
 	 * Check if the current installation is underneath an existing WordPress
 	 * installation.
+	 *
+	 * Detection is based on the content directory name, which defaults to
+	 * `wp-content` and can be overridden with the `WP_CONTENT_DIR_NAME`
+	 * environment variable to support custom layouts such as Bedrock (`app`).
+	 *
+	 * @see \Mantle\Testing\Utils::content_directory_name()
 	 */
 	public function is_within_wordpress_install(): bool {
-		return false !== strpos( __DIR__, '/wp-content/' );
+		return false !== strpos( __DIR__, '/' . Utils::content_directory_name() . '/' );
 	}
 
 	/**

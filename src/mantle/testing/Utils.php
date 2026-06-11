@@ -323,7 +323,7 @@ class Utils {
 		$dir = defined( 'WP_TESTS_INSTALL_PATH' ) ? WP_TESTS_INSTALL_PATH : __DIR__;
 
 		// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
-		defined( 'ABSPATH' ) || define( 'ABSPATH', Str::trailing_slash( (string) preg_replace( '#/wp-content/.*$#', '/', (string) $dir ) ) );
+		defined( 'ABSPATH' ) || define( 'ABSPATH', Str::trailing_slash( (string) preg_replace( '#/' . preg_quote( static::content_directory_name(), '#' ) . '/.*$#', '/', (string) $dir ) ) );
 		defined( 'WP_DEBUG' ) || define( 'WP_DEBUG', true );
 
 		defined( 'DB_NAME' ) || define( 'DB_NAME', static::env( 'WP_DB_NAME', static::DEFAULT_DB_NAME ) );
@@ -373,6 +373,21 @@ class Utils {
 		$value = getenv( $variable );
 
 		return false === $value ? $default : $value;
+	}
+
+	/**
+	 * Retrieve the name of the wp-content directory.
+	 *
+	 * Defaults to `wp-content` but can be overridden via the `WP_CONTENT_DIR_NAME`
+	 * environment variable to support alternative layouts such as Bedrock (`app`)
+	 * or any other custom `WP_CONTENT_DIR`. Mantle uses this name to detect whether
+	 * the codebase already lives inside a WordPress installation and to resolve the
+	 * installation root. Setting it to a value that does not appear in the project
+	 * path forces Mantle to treat the codebase as standalone and install an
+	 * isolated WordPress.
+	 */
+	public static function content_directory_name(): string {
+		return trim( (string) static::env( 'WP_CONTENT_DIR_NAME', 'wp-content' ), '/' );
 	}
 
 	/**
