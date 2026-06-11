@@ -452,7 +452,7 @@ trait Rsync_Installation {
 			return;
 		}
 
-		require_once __DIR__ . '/../class-utils.php';
+		require_once __DIR__ . '/../Utils.php';
 
 		$base_install_path = $this->get_installation_path();
 
