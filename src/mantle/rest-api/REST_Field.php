@@ -9,7 +9,7 @@ namespace Mantle\REST_API;
 
 use Closure;
 use Mantle\Contracts\REST_API\REST_Field as REST_Field_Contract;
-use Mantle\Contracts\Rest_Api\REST_Field_Get_Callback;
+use Mantle\Contracts\REST_API\REST_Field_Get_Callback;
 use Mantle\Contracts\REST_API\REST_Field_Schema;
 use Mantle\Contracts\REST_API\REST_Field_Update_Callback;
 

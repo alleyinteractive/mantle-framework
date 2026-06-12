@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Contracts\Rest_Api;
+namespace Mantle\Contracts\REST_API;
 
 /**
  * Specifies a REST API field that implements a `get_callback()`.
