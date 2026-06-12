@@ -100,7 +100,7 @@ return RectorConfig::configure()
 		ChangeOrIfContinueToMultiContinueRector::class,
 		EmptyOnNullableObjectToInstanceOfRector::class,
 		ReturnBinaryOrToEarlyReturnRector::class => [
-			__DIR__ . '/src/mantle/http-client/class-response.php',
+			__DIR__ . '/src/mantle/http-client/Response.php',
 		],
 		RemoveExtraParametersRector::class => [
 			__DIR__ . '/src/mantle/support/helpers/helpers-general.php',

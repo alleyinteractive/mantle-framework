@@ -8,14 +8,10 @@
         "mantle-framework/cache": "^1.0",
         "mantle-framework/support": "^1.0"
     },
-    "extra": {
-        "wordpress-autoloader": {
-            "autoload": {
-                "Mantle\\Http_Client": "./"
-            }
-        }
-    },
     "autoload": {
+        "psr-4": {
+            "Mantle\\Http_Client\\": "./"
+        },
         "files": [
             "autoload.php"
         ]

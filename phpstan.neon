@@ -27,8 +27,8 @@ parameters:
 			paths:
 				- src/mantle/contracts
 				- src/mantle/facade
-				- src/mantle/filesystem/class-filesystem.php
-				- src/mantle/filesystem/class-filesystem-adapter.php
+				- src/mantle/filesystem/Filesystem.php
+				- src/mantle/filesystem/Filesystem_Adapter.php
 				- src/mantle/testing
 				- src/mantle/testkit
 		-
@@ -40,7 +40,7 @@ parameters:
 			identifier: missingType.parameter
 			paths:
 				- **/autoload.php
-				- src/mantle/filesystem/class-filesystem-adapter.php
+				- src/mantle/filesystem/Filesystem_Adapter.php
 		-
 			message: "#implements generic interface ArrayAccess but does not specify its types#"
 			paths:
@@ -55,7 +55,7 @@ parameters:
 		-
 			identifier: method.childReturnType
 			paths:
-				- src/mantle/http-client/class-pooled-pending-request.php
+				- src/mantle/http-client/Pooled_Pending_Request.php
 		-
 			identifier: argument.type
 			paths:

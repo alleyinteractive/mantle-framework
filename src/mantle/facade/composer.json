@@ -7,11 +7,9 @@
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
         "mantle-framework/contracts": "^1.0"
     },
-    "extra": {
-        "wordpress-autoloader": {
-            "autoload": {
-                "Mantle\\Facade": "./"
-            }
+    "autoload": {
+        "psr-4": {
+            "Mantle\\Facade\\": "./"
         }
     },
     "license": "GPL-2.0-or-later",
