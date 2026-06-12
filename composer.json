@@ -123,6 +123,7 @@
             "Mantle\\Log\\": "src/mantle/log/",
             "Mantle\\New_Relic\\": "src/mantle/new-relic/",
             "Mantle\\Query_Monitor\\": "src/mantle/query-monitor/",
+            "Mantle\\Queue\\": "src/mantle/queue/",
             "Mantle\\REST_API\\": "src/mantle/rest-api/",
             "Mantle\\Scheduling\\": "src/mantle/scheduling/",
             "Mantle\\Testing\\": "src/mantle/testing/",
