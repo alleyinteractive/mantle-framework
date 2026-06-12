@@ -21,14 +21,10 @@
         "vlucas/phpdotenv": "^5.6.1",
         "voku/portable-ascii": "^2.0.1"
     },
-    "extra": {
-        "wordpress-autoloader": {
-            "autoload": {
-                "Mantle\\Support": "./"
-            }
-        }
-    },
     "autoload": {
+        "psr-4": {
+            "Mantle\\Support\\": "./"
+        },
         "files": [
             "autoload.php"
         ]

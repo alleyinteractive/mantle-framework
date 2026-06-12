@@ -33,6 +33,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   its `Middleware`, `Events`, and `Concerns` sub-namespaces), and classes now
   resolve via Composer's PSR-4 autoloader. Class and trait names are unchanged, so
   this is not a breaking change.
+- The `support` package is now fully PSR-4 compliant: class, trait, and interface
+  files and their namespace directories (`Attributes`, `HTML`, `Internal`,
+  `Registration`, `Traits`) were renamed to match their symbol names and now
+  resolve via Composer's PSR-4 autoloader. The function-only `helpers/` files are
+  unchanged (they are loaded via Composer's `files` autoload, not PSR-4). Class,
+  trait, and interface names are unchanged, so this is not a breaking change.
 
 ## v1.20.0
 

@@ -59,11 +59,11 @@ parameters:
 		-
 			identifier: argument.type
 			paths:
-				- src/mantle/support/class-collection.php
+				- src/mantle/support/Collection.php
 		-
 			identifier: return.type
 			paths:
-				- src/mantle/support/class-collection.php
+				- src/mantle/support/Collection.php
 
 	scanFiles:
 		- %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-stubs.php
@@ -80,8 +80,8 @@ parameters:
 		- src/mantle/query-monitor
 		- src/mantle/queue/Providers/WordPress/Admin/Queue_Jobs_Table.php
 		- src/mantle/queue/Providers/WordPress/Admin/Service_Provider.php
-		- src/mantle/support/interface-enumerable.php
-		- src/mantle/support/traits/trait-conditionable.php
+		- src/mantle/support/Enumerable.php
+		- src/mantle/support/Traits/Conditionable.php
 		- src/mantle/testing/Mock_Action.php
 		- src/mantle/testing/install-wordpress.php
 		- src/mantle/testing/preload.php
