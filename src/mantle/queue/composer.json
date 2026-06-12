@@ -12,16 +12,12 @@
         "mantle-framework/support": "^1.0"
     },
     "autoload": {
+        "psr-4": {
+            "Mantle\\Queue\\": "./"
+        },
         "files": [
             "autoload.php"
         ]
-    },
-    "extra": {
-        "wordpress-autoloader": {
-            "autoload": {
-                "Mantle\\Queue": "./"
-            }
-        }
     },
     "license": "GPL-2.0-or-later",
     "authors": [

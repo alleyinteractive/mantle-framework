@@ -78,8 +78,8 @@ parameters:
 		- src/mantle/framework/console/class-hook-usage-command.php
 		- src/mantle/framework/console/generators
 		- src/mantle/query-monitor
-		- src/mantle/queue/providers/wordpress/admin/class-queue-jobs-table.php
-		- src/mantle/queue/providers/wordpress/admin/class-service-provider.php
+		- src/mantle/queue/Providers/WordPress/Admin/Queue_Jobs_Table.php
+		- src/mantle/queue/Providers/WordPress/Admin/Service_Provider.php
 		- src/mantle/support/interface-enumerable.php
 		- src/mantle/support/traits/trait-conditionable.php
 		- src/mantle/testing/Mock_Action.php
@@ -89,4 +89,4 @@ parameters:
 		- src/mantle/**/vendor/**
 
 		# Files that need to be fixed and re-added.
-		- src/mantle/queue/class-queue-fake.php
+		- src/mantle/queue/Queue_Fake.php
