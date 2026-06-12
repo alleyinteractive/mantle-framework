@@ -9,11 +9,9 @@
         "mantle-framework/http": "^1.0",
         "mantle-framework/support": "^1.0"
     },
-    "extra": {
-        "wordpress-autoloader": {
-            "autoload": {
-                "Mantle\\New_Relic": "./"
-            }
+    "autoload": {
+        "psr-4": {
+            "Mantle\\New_Relic\\": "./"
         }
     },
     "license": "GPL-2.0-or-later",
