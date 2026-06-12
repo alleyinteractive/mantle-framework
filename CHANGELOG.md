@@ -39,6 +39,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   resolve via Composer's PSR-4 autoloader. The function-only `helpers/` files are
   unchanged (they are loaded via Composer's `files` autoload, not PSR-4). Class,
   trait, and interface names are unchanged, so this is not a breaking change.
+- The `contracts` package is now fully PSR-4 compliant: interface/class files and
+  their namespace directories were renamed to match their symbol names and now
+  resolve via Composer's PSR-4 autoloader. The `Mantle\Contracts\REST_API`
+  sub-namespace casing was unified (one interface previously declared
+  `Mantle\Contracts\Rest_Api`); PHP resolves namespaces case-insensitively so this
+  is not a breaking change. Interface and class names are unchanged.
 
 ## v1.20.0
 
