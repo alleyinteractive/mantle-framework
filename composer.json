@@ -120,6 +120,7 @@
             "Mantle\\Facade\\": "src/mantle/facade/",
             "Mantle\\Faker\\": "src/mantle/faker/",
             "Mantle\\Filesystem\\": "src/mantle/filesystem/",
+            "Mantle\\Framework\\": "src/mantle/framework/",
             "Mantle\\Http\\": "src/mantle/http/",
             "Mantle\\Http_Client\\": "src/mantle/http-client/",
             "Mantle\\Log\\": "src/mantle/log/",
@@ -147,6 +148,9 @@
             "src/mantle/support/autoload.php",
             "src/mantle/testing/autoload.php",
             "src/mantle/testkit/autoload.php"
+        ],
+        "exclude-from-classmap": [
+            "src/mantle/framework/resources/"
         ]
     },
     "autoload-dev": {

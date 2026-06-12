@@ -45,6 +45,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   sub-namespace casing was unified (one interface previously declared
   `Mantle\Contracts\Rest_Api`); PHP resolves namespaces case-insensitively so this
   is not a breaking change. Interface and class names are unchanged.
+- The `framework` package's `Mantle\Framework` classes are now fully PSR-4
+  compliant: files and namespace directories (`Bootstrap`, `Console`,
+  `Console/Generators`, `Events`, `Exceptions`, `Http`, `Manifest`, `Providers`)
+  were renamed to match their class/trait names and now resolve via Composer's
+  PSR-4 autoloader. The `App\`-namespaced scaffolding stubs under
+  `resources/application-structure/` are intentionally left as-is (they are
+  templates published into new applications, not autoloaded framework code) and
+  excluded from the classmap. Class and trait names are unchanged, so this is not
+  a breaking change.
 
 ## v1.20.0
 

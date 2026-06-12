@@ -110,7 +110,7 @@ return RectorConfig::configure()
 			__DIR__ . '/src/mantle/support/Traits/Enumerates_Values.php',
 		],
 		ReturnUnionTypeRector::class => [
-			__DIR__ . '/src/mantle/framework/exceptions/class-handler.php',
+			__DIR__ . '/src/mantle/framework/Exceptions/Handler.php',
 		],
 		ReturnTypeFromStrictFluentReturnRector::class => [
 			__DIR__ . '/src/mantle/database/query/class-collection.php',
