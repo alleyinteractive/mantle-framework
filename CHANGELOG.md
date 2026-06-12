@@ -54,6 +54,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   templates published into new applications, not autoloaded framework code) and
   excluded from the classmap. Class and trait names are unchanged, so this is not
   a breaking change.
+- The `database` package is now fully PSR-4 compliant: files and namespace
+  directories (`Console`, `Factory` and its `Concerns`/`Plugins`, `Model` and its
+  `Concerns`/`Dates`/`Events`/`Meta`/`Registration`/`Relations`/`Term`, `Pagination`,
+  `Query` and its `Concerns`) were renamed to match their class/trait names and now
+  resolve via Composer's PSR-4 autoloader. The `Pagination/resources` Blade view
+  templates are unchanged. Class and trait names are unchanged, so this is not a
+  breaking change.
+
+  With this, every `src/mantle/*` package now uses PSR-4 file naming; only the
+  capstone root restructure (`src/mantle/` → `src/Mantle/`) remains under #812.
 
 ## v1.20.0
 
