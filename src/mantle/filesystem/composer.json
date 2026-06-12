@@ -12,11 +12,9 @@
         "symfony/finder": "^7.2.0",
         "symfony/http-foundation": "^7.3.7"
     },
-    "extra": {
-        "wordpress-autoloader": {
-            "autoload": {
-                "Mantle\\Filesystem": "./"
-            }
+    "autoload": {
+        "psr-4": {
+            "Mantle\\Filesystem\\": "./"
         }
     },
     "license": "GPL-2.0-or-later",
