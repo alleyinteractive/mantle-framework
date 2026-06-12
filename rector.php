@@ -82,7 +82,7 @@ return RectorConfig::configure()
 			__DIR__ . '/tests/testing/CoreTestShimTest.php',
 		],
 		ClassPropertyAssignToConstructorPromotionRector::class => [
-			__DIR__ . '/src/mantle/support/class-service-provider.php',
+			__DIR__ . '/src/mantle/support/Service_Provider.php',
 		],
 		RemoveUselessReturnTagRector::class => [
 			__DIR__ . '/src/mantle/database/model/relations',
@@ -106,16 +106,16 @@ return RectorConfig::configure()
 			__DIR__ . '/src/mantle/support/helpers/helpers-general.php',
 		],
 		ReturnTypeFromReturnNewRector::class => [
-			__DIR__ . '/src/mantle/support/class-collection.php',
-			__DIR__ . '/src/mantle/support/traits/trait-enumerates-values.php',
+			__DIR__ . '/src/mantle/support/Collection.php',
+			__DIR__ . '/src/mantle/support/Traits/Enumerates_Values.php',
 		],
 		ReturnUnionTypeRector::class => [
 			__DIR__ . '/src/mantle/framework/exceptions/class-handler.php',
 		],
 		ReturnTypeFromStrictFluentReturnRector::class => [
 			__DIR__ . '/src/mantle/database/query/class-collection.php',
-			__DIR__ . '/src/mantle/support/class-collection.php',
-			__DIR__ . '/src/mantle/support/traits/trait-enumerates-values.php',
+			__DIR__ . '/src/mantle/support/Collection.php',
+			__DIR__ . '/src/mantle/support/Traits/Enumerates_Values.php',
 		],
 		ExplicitBoolCompareRector::class => [
 			__DIR__ . '/src/mantle/database/model/class-post.php',
