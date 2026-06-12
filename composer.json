@@ -107,15 +107,22 @@
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
+            "Mantle\\Assets\\": "src/mantle/assets/",
             "Mantle\\Auth\\": "src/mantle/auth/",
             "Mantle\\Blocks\\": "src/mantle/blocks/",
+            "Mantle\\Cache\\": "src/mantle/cache/",
             "Mantle\\Config\\": "src/mantle/config/",
+            "Mantle\\Container\\": "src/mantle/container/",
             "Mantle\\Events\\": "src/mantle/events/",
             "Mantle\\Faker\\": "src/mantle/faker/",
+            "Mantle\\Log\\": "src/mantle/log/",
             "Mantle\\New_Relic\\": "src/mantle/new-relic/",
             "Mantle\\REST_API\\": "src/mantle/rest-api/",
+            "Mantle\\Scheduling\\": "src/mantle/scheduling/",
             "Mantle\\Testing\\": "src/mantle/testing/",
-            "Mantle\\Testkit\\": "src/mantle/testkit/"
+            "Mantle\\Testkit\\": "src/mantle/testkit/",
+            "Mantle\\Types\\": "src/mantle/types/",
+            "Mantle\\View\\": "src/mantle/view/"
         },
         "files": [
             "src/mantle/framework/helpers.php",

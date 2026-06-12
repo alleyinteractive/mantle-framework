@@ -10,11 +10,9 @@
         "mantle-framework/contracts": "^1.0",
         "nesbot/carbon": "^3.8.4"
     },
-    "extra": {
-        "wordpress-autoloader": {
-            "autoload": {
-                "Mantle\\Scheduling": "./"
-            }
+    "autoload": {
+        "psr-4": {
+            "Mantle\\Scheduling\\": "./"
         }
     },
     "license": "GPL-2.0-or-later",

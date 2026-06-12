@@ -73,7 +73,7 @@ parameters:
 
 	excludePaths:
 		- src/mantle/blocks
-		- src/mantle/container/class-bound-method.php
+		- src/mantle/container/Bound_Method.php
 		- src/mantle/database/factory
 		- src/mantle/framework/console/class-hook-usage-command.php
 		- src/mantle/framework/console/generators
