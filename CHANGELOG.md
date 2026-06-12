@@ -28,6 +28,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   renamed to match their class/trait/enum names (including `Providers/WordPress`),
   and classes now resolve via Composer's PSR-4 autoloader. Class, trait, and enum
   names are unchanged, so this is not a breaking change.
+- The `http` package is now fully PSR-4 compliant: files and directories were
+  renamed to match their class/trait names (including the `Routing` namespace and
+  its `Middleware`, `Events`, and `Concerns` sub-namespaces), and classes now
+  resolve via Composer's PSR-4 autoloader. Class and trait names are unchanged, so
+  this is not a breaking change.
 
 ## v1.20.0
 

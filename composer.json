@@ -119,6 +119,7 @@
             "Mantle\\Facade\\": "src/mantle/facade/",
             "Mantle\\Faker\\": "src/mantle/faker/",
             "Mantle\\Filesystem\\": "src/mantle/filesystem/",
+            "Mantle\\Http\\": "src/mantle/http/",
             "Mantle\\Http_Client\\": "src/mantle/http-client/",
             "Mantle\\Log\\": "src/mantle/log/",
             "Mantle\\New_Relic\\": "src/mantle/new-relic/",
