@@ -116,6 +116,7 @@
             "Mantle\\Console\\": "src/mantle/console/",
             "Mantle\\Container\\": "src/mantle/container/",
             "Mantle\\Contracts\\": "src/mantle/contracts/",
+            "Mantle\\Database\\": "src/mantle/database/",
             "Mantle\\Events\\": "src/mantle/events/",
             "Mantle\\Facade\\": "src/mantle/facade/",
             "Mantle\\Faker\\": "src/mantle/faker/",
