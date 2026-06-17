@@ -9,13 +9,6 @@
         "mantle-framework/support": "^1.0",
         "nesbot/carbon": "^3.8.4"
     },
-    "extra": {
-        "wordpress-autoloader": {
-            "autoload": {
-                "Mantle\\Cache": "./"
-            }
-        }
-    },
     "license": "GPL-2.0-or-later",
     "authors": [
         {
@@ -24,6 +17,9 @@
         }
     ],
     "autoload": {
+        "psr-4": {
+            "Mantle\\Cache\\": "./"
+        },
         "files": [
             "autoload.php"
         ]

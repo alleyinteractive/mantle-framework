@@ -14,13 +14,6 @@
         "symfony/routing": "^7.2.0",
         "symfony/var-dumper": "^7.2.0"
     },
-    "extra": {
-        "wordpress-autoloader": {
-            "autoload": {
-                "Mantle\\Http": "./"
-            }
-        }
-    },
     "license": "GPL-2.0-or-later",
     "authors": [
         {
@@ -29,6 +22,9 @@
         }
     ],
     "autoload": {
+        "psr-4": {
+            "Mantle\\Http\\": "./"
+        },
         "files": [
             "autoload.php"
         ]

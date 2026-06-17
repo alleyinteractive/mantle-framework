@@ -14,11 +14,9 @@
         "monolog/monolog": "^2.9.1",
         "psr/log": "^1.0.1 || ^2.0 || ^3.0"
     },
-    "extra": {
-        "wordpress-autoloader": {
-            "autoload": {
-                "Mantle\\Query_Monitor": "./"
-            }
+    "autoload": {
+        "psr-4": {
+            "Mantle\\Query_Monitor\\": "./"
         }
     },
     "license": "GPL-2.0-or-later",

@@ -10,11 +10,9 @@
         "monolog/monolog": "^2.9.1",
         "psr/log": "^1.0.1 || ^2.0 || ^3.0"
     },
-    "extra": {
-        "wordpress-autoloader": {
-            "autoload": {
-                "Mantle\\Log": "./"
-            }
+    "autoload": {
+        "psr-4": {
+            "Mantle\\Log\\": "./"
         }
     },
     "license": "GPL-2.0-or-later",

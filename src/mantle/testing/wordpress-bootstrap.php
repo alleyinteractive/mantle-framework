@@ -15,8 +15,8 @@ use function Mantle\Testing\tests_add_filter;
 
 defined( 'MANTLE_IS_TESTING' ) || define( 'MANTLE_IS_TESTING', true );
 
-require_once __DIR__ . '/class-utils.php';
-require_once __DIR__ . '/class-wp-die.php';
+require_once __DIR__ . '/Utils.php';
+require_once __DIR__ . '/WP_Die.php';
 
 // Ensure that Composer is loaded properly in the sub-process.
 Utils::ensure_composer_loaded();
@@ -38,7 +38,7 @@ global $wpdb,
 // Load the configuration.
 if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) && ! empty( WP_TESTS_CONFIG_FILE_PATH ) && is_readable( WP_TESTS_CONFIG_FILE_PATH ) ) {
 	$config_file_path = WP_TESTS_CONFIG_FILE_PATH;
-} elseif ( false === strpos( __DIR__, '/wp-content/' ) ) {
+} elseif ( false === strpos( __DIR__, '/' . Utils::content_directory_name() . '/' ) ) {
 	// Check if WP_CORE_DIR is defined and points to a valid installation.
 	if ( getenv( 'WP_CORE_DIR' ) && ! defined( 'WP_TESTS_INSTALL_PATH' ) && is_readable( getenv( 'WP_CORE_DIR' ) . '/wp-load.php' ) ) {
 		define( 'WP_TESTS_INSTALL_PATH', getenv( 'WP_CORE_DIR' ) );
@@ -73,11 +73,11 @@ if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) && ! empty( WP_TESTS_CONFIG_FILE_PAT
 } else {
 	// The project is being loaded from inside a WordPress installation.
 	if ( defined( 'WP_TESTS_INSTALL_PATH' ) ) {
-		$config_file_path = preg_replace( '#/wp-content/.*$#', '/wp-tests-config.php', (string) WP_TESTS_INSTALL_PATH );
+		$config_file_path = preg_replace( '#/' . preg_quote( Utils::content_directory_name(), '#' ) . '/.*$#', '/wp-tests-config.php', (string) WP_TESTS_INSTALL_PATH );
 	}
 
 	if ( empty( $config_file_path ) ) {
-		$config_file_path = preg_replace( '#/wp-content/.*$#', '/wp-tests-config.php', __DIR__ );
+		$config_file_path = preg_replace( '#/' . preg_quote( Utils::content_directory_name(), '#' ) . '/.*$#', '/wp-tests-config.php', __DIR__ );
 	}
 }
 
@@ -141,7 +141,7 @@ reset_phpmailer_instance();
 // Include a WP_UnitTestCase class to allow for easier transition to the testing
 // framework.
 if ( ! Utils::env( 'DISABLE_WP_UNIT_TEST_CASE_SHIM', false ) ) {
-	require_once __DIR__ . '/class-wp-unittestcase.php';
+	require_once __DIR__ . '/wp-unittestcase.php';
 }
 
 if ( ! defined( 'WP_DEFAULT_THEME' ) ) {

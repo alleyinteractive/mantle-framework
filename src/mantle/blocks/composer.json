@@ -10,13 +10,6 @@
         "mantle-framework/http": "^1.0",
         "mantle-framework/support": "^1.0"
     },
-    "extra": {
-        "wordpress-autoloader": {
-            "autoload": {
-                "Mantle\\Blocks": "./"
-            }
-        }
-    },
     "license": "GPL-2.0-or-later",
     "authors": [
         {
@@ -25,6 +18,9 @@
         }
     ],
     "autoload": {
+        "psr-4": {
+            "Mantle\\Blocks\\": "./"
+        },
         "files": [
             "autoload.php"
         ]

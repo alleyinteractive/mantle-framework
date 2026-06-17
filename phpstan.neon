@@ -27,20 +27,20 @@ parameters:
 			paths:
 				- src/mantle/contracts
 				- src/mantle/facade
-				- src/mantle/filesystem/class-filesystem.php
-				- src/mantle/filesystem/class-filesystem-adapter.php
+				- src/mantle/filesystem/Filesystem.php
+				- src/mantle/filesystem/Filesystem_Adapter.php
 				- src/mantle/testing
 				- src/mantle/testkit
 		-
 			identifier: missingType.return
 			paths:
 				- src/mantle/contracts
-				- src/mantle/testing/concerns/trait-core-shim.php
+				- src/mantle/testing/Concerns/Core_Shim.php
 		-
 			identifier: missingType.parameter
 			paths:
 				- **/autoload.php
-				- src/mantle/filesystem/class-filesystem-adapter.php
+				- src/mantle/filesystem/Filesystem_Adapter.php
 		-
 			message: "#implements generic interface ArrayAccess but does not specify its types#"
 			paths:
@@ -55,15 +55,15 @@ parameters:
 		-
 			identifier: method.childReturnType
 			paths:
-				- src/mantle/http-client/class-pooled-pending-request.php
+				- src/mantle/http-client/Pooled_Pending_Request.php
 		-
 			identifier: argument.type
 			paths:
-				- src/mantle/support/class-collection.php
+				- src/mantle/support/Collection.php
 		-
 			identifier: return.type
 			paths:
-				- src/mantle/support/class-collection.php
+				- src/mantle/support/Collection.php
 
 	scanFiles:
 		- %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-stubs.php
@@ -73,20 +73,20 @@ parameters:
 
 	excludePaths:
 		- src/mantle/blocks
-		- src/mantle/container/class-bound-method.php
-		- src/mantle/database/factory
-		- src/mantle/framework/console/class-hook-usage-command.php
-		- src/mantle/framework/console/generators
+		- src/mantle/container/Bound_Method.php
+		- src/mantle/database/Factory
+		- src/mantle/framework/Console/Hook_Usage_Command.php
+		- src/mantle/framework/Console/Generators
 		- src/mantle/query-monitor
-		- src/mantle/queue/providers/wordpress/admin/class-queue-jobs-table.php
-		- src/mantle/queue/providers/wordpress/admin/class-service-provider.php
-		- src/mantle/support/interface-enumerable.php
-		- src/mantle/support/traits/trait-conditionable.php
-		- src/mantle/testing/class-mock-action.php
+		- src/mantle/queue/Providers/WordPress/Admin/Queue_Jobs_Table.php
+		- src/mantle/queue/Providers/WordPress/Admin/Service_Provider.php
+		- src/mantle/support/Enumerable.php
+		- src/mantle/support/Traits/Conditionable.php
+		- src/mantle/testing/Mock_Action.php
 		- src/mantle/testing/install-wordpress.php
 		- src/mantle/testing/preload.php
 		- src/mantle/testing/wordpress-bootstrap.php
 		- src/mantle/**/vendor/**
 
 		# Files that need to be fixed and re-added.
-		- src/mantle/queue/class-queue-fake.php
+		- src/mantle/queue/Queue_Fake.php

@@ -107,8 +107,34 @@
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
+            "Mantle\\Application\\": "src/mantle/application/",
+            "Mantle\\Assets\\": "src/mantle/assets/",
+            "Mantle\\Auth\\": "src/mantle/auth/",
+            "Mantle\\Blocks\\": "src/mantle/blocks/",
+            "Mantle\\Cache\\": "src/mantle/cache/",
+            "Mantle\\Config\\": "src/mantle/config/",
+            "Mantle\\Console\\": "src/mantle/console/",
+            "Mantle\\Container\\": "src/mantle/container/",
+            "Mantle\\Contracts\\": "src/mantle/contracts/",
+            "Mantle\\Database\\": "src/mantle/database/",
+            "Mantle\\Events\\": "src/mantle/events/",
+            "Mantle\\Facade\\": "src/mantle/facade/",
+            "Mantle\\Faker\\": "src/mantle/faker/",
+            "Mantle\\Filesystem\\": "src/mantle/filesystem/",
+            "Mantle\\Framework\\": "src/mantle/framework/",
+            "Mantle\\Http\\": "src/mantle/http/",
+            "Mantle\\Http_Client\\": "src/mantle/http-client/",
+            "Mantle\\Log\\": "src/mantle/log/",
+            "Mantle\\New_Relic\\": "src/mantle/new-relic/",
+            "Mantle\\Query_Monitor\\": "src/mantle/query-monitor/",
+            "Mantle\\Queue\\": "src/mantle/queue/",
+            "Mantle\\REST_API\\": "src/mantle/rest-api/",
+            "Mantle\\Scheduling\\": "src/mantle/scheduling/",
+            "Mantle\\Support\\": "src/mantle/support/",
             "Mantle\\Testing\\": "src/mantle/testing/",
-            "Mantle\\Testkit\\": "src/mantle/testkit/"
+            "Mantle\\Testkit\\": "src/mantle/testkit/",
+            "Mantle\\Types\\": "src/mantle/types/",
+            "Mantle\\View\\": "src/mantle/view/"
         },
         "files": [
             "src/mantle/framework/helpers.php",
@@ -123,6 +149,9 @@
             "src/mantle/support/autoload.php",
             "src/mantle/testing/autoload.php",
             "src/mantle/testkit/autoload.php"
+        ],
+        "exclude-from-classmap": [
+            "src/mantle/framework/resources/"
         ]
     },
     "autoload-dev": {

@@ -10,11 +10,9 @@
     "provide": {
         "psr/container-implementation": "1.1|2.0"
     },
-    "extra": {
-        "wordpress-autoloader": {
-            "autoload": {
-                "Mantle\\Contracts": "./"
-            }
+    "autoload": {
+        "psr-4": {
+            "Mantle\\Contracts\\": "./"
         }
     },
     "license": "GPL-2.0-or-later",
