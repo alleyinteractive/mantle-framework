@@ -580,6 +580,45 @@ class HtmlTest extends TestCase {
 			->assertQuerySelectorMissing( '.non-existent-class' );
 	}
 
+	public function test_assert_has_class(): void {
+		$html = new HTML( self::TEST_CONTENT );
+
+		$html->first_by_selector( '.test-class' )
+			->assertHasClass( 'test-class' )
+			->assertNotHasClass( 'non-existent-class' )
+			->assertNotHasClass( 'test-class', 'non-existent-class' );
+	}
+
+	public function test_assert_has_any_class(): void {
+		$html = new HTML( self::TEST_CONTENT );
+
+		$html->first_by_selector( '.test-class' )
+			->assertHasAnyClass( 'test-class', 'other-class' )
+			->assertNotHasAnyClass( 'non-existent-class', 'another-missing' );
+	}
+
+	public function test_assert_has_class_fails_when_class_missing(): void {
+		$this->expectException( \PHPUnit\Framework\AssertionFailedError::class );
+
+		( new HTML( self::TEST_CONTENT ) )
+			->first_by_selector( '.test-class' )
+			->assertHasClass( 'non-existent-class' );
+	}
+
+	public function test_assert_not_has_class_fails_when_class_present(): void {
+		$this->expectException( \PHPUnit\Framework\AssertionFailedError::class );
+
+		( new HTML( self::TEST_CONTENT ) )
+			->first_by_selector( '.test-class' )
+			->assertNotHasClass( 'test-class' );
+	}
+
+	public function test_deprecated_assert_node_has_class_still_works(): void {
+		( new HTML( self::TEST_CONTENT ) )
+			->first_by_selector( '.test-class' )
+			->assertNodeHasClass( 'test-class' );
+	}
+
 	public function test_it_can_get_the_nearest_previous_sibling(): void {
 		$html = new HTML(self::TEST_CONTENT);
 		$previous = $html->filter('#test-id')->previous_sibling();
