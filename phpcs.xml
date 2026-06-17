@@ -35,6 +35,7 @@
 		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
 		<exclude name="WordPressVIPMinimum.Functions.StripTags.StripTagsOneParameter" />
 		<exclude name="WordPressVIPMinimum.Performance.FetchingRemoteData" />
+		<exclude name="Alley.PHP.FilterCallbackTypehint.ParameterTypehint" />
 	</rule>
 
 	<rule ref="Generic.Arrays.DisallowLongArraySyntax" />
