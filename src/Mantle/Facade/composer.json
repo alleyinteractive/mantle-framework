@@ -20,6 +20,9 @@
     ],
     "minimum-stability": "dev",
     "config": {
+        "allow-plugins": {
+            "alleyinteractive/composer-wordpress-autoloader": false
+        },
         "sort-packages": true
     }
 }

@@ -30,6 +30,9 @@
         "nunomaduro/collision": "For better PHPUnit printing."
     },
     "config": {
+        "allow-plugins": {
+            "alleyinteractive/composer-wordpress-autoloader": false
+        },
         "sort-packages": true
     }
 }
