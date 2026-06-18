@@ -1,0 +1,44 @@
+{
+    "name": "mantle-framework/testing",
+    "description": "The Mantle Framework Testing Package",
+    "license": "GPL-2.0-or-later",
+    "type": "library",
+    "keywords": [
+        "testing",
+        "mantle"
+    ],
+    "authors": [
+        {
+            "name": "Alley",
+            "email": "mantle@alley.com"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "mantle-framework/contracts": "^1.0",
+        "mantle-framework/database": "^1.0",
+        "mantle-framework/faker": "^1.0",
+        "mantle-framework/http": "^1.0",
+        "mantle-framework/http-client": "^1.0",
+        "mantle-framework/support": "^1.0",
+        "mantle-framework/testing-dependencies": "^1.0"
+    },
+    "suggest": {
+        "brianium/paratest": "For running tests in parallel.",
+        "mantle-framework/console": "Required to assert console commands.",
+        "mantle-framework/testkit": "For running tests against a WordPress install without Mantle",
+        "nunomaduro/collision": "For better PHPUnit printing.",
+        "phpunit/phpunit": "Required to use assertions and run tests."
+    },
+    "autoload": {
+        "psr-4": {
+            "Mantle\\Testing\\": "./"
+        },
+        "files": [
+            "autoload.php"
+        ]
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

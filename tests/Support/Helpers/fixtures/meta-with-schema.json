@@ -1,5 +1,5 @@
 {
-  "$schema": "../../../../src/mantle/support/schema/meta.json",
+  "$schema": "../../../../src/Mantle/Support/schema/meta.json",
   "testable_schema_meta_key": {
     "post_types": ["post"],
     "type": "string"

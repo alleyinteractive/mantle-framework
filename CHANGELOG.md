@@ -9,61 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- The `auth`, `blocks`, `config`, `events`, `faker`, `new-relic`, and `rest-api`
-  packages are now fully PSR-4 compliant: files and directories were renamed to
-  match their class/trait names, and classes now resolve via Composer's PSR-4
-  autoloader. Class and trait names are unchanged, so this is not a breaking
-  change.
-- The `assets`, `cache`, `container`, `log`, `scheduling`, `types`, and `view`
-  packages are now fully PSR-4 compliant: files and directories were renamed to
-  match their class/trait names, and classes now resolve via Composer's PSR-4
-  autoloader. Class and trait names are unchanged, so this is not a breaking
-  change.
-- The `application`, `console`, `facade`, `filesystem`, `http-client`,
-  `query-monitor`, and `testkit` packages are now fully PSR-4 compliant: files
-  and directories were renamed to match their class/trait names, and classes now
-  resolve via Composer's PSR-4 autoloader. Class and trait names are unchanged,
-  so this is not a breaking change.
-- The `queue` package is now fully PSR-4 compliant: files and directories were
-  renamed to match their class/trait/enum names (including `Providers/WordPress`),
-  and classes now resolve via Composer's PSR-4 autoloader. Class, trait, and enum
-  names are unchanged, so this is not a breaking change.
-- The `http` package is now fully PSR-4 compliant: files and directories were
-  renamed to match their class/trait names (including the `Routing` namespace and
-  its `Middleware`, `Events`, and `Concerns` sub-namespaces), and classes now
-  resolve via Composer's PSR-4 autoloader. Class and trait names are unchanged, so
-  this is not a breaking change.
-- The `support` package is now fully PSR-4 compliant: class, trait, and interface
-  files and their namespace directories (`Attributes`, `HTML`, `Internal`,
-  `Registration`, `Traits`) were renamed to match their symbol names and now
-  resolve via Composer's PSR-4 autoloader. The function-only `helpers/` files are
-  unchanged (they are loaded via Composer's `files` autoload, not PSR-4). Class,
-  trait, and interface names are unchanged, so this is not a breaking change.
-- The `contracts` package is now fully PSR-4 compliant: interface/class files and
-  their namespace directories were renamed to match their symbol names and now
-  resolve via Composer's PSR-4 autoloader. The `Mantle\Contracts\REST_API`
-  sub-namespace casing was unified (one interface previously declared
-  `Mantle\Contracts\Rest_Api`); PHP resolves namespaces case-insensitively so this
-  is not a breaking change. Interface and class names are unchanged.
-- The `framework` package's `Mantle\Framework` classes are now fully PSR-4
-  compliant: files and namespace directories (`Bootstrap`, `Console`,
-  `Console/Generators`, `Events`, `Exceptions`, `Http`, `Manifest`, `Providers`)
-  were renamed to match their class/trait names and now resolve via Composer's
-  PSR-4 autoloader. The `App\`-namespaced scaffolding stubs under
-  `resources/application-structure/` are intentionally left as-is (they are
-  templates published into new applications, not autoloaded framework code) and
-  excluded from the classmap. Class and trait names are unchanged, so this is not
-  a breaking change.
-- The `database` package is now fully PSR-4 compliant: files and namespace
-  directories (`Console`, `Factory` and its `Concerns`/`Plugins`, `Model` and its
-  `Concerns`/`Dates`/`Events`/`Meta`/`Registration`/`Relations`/`Term`, `Pagination`,
-  `Query` and its `Concerns`) were renamed to match their class/trait names and now
-  resolve via Composer's PSR-4 autoloader. The `Pagination/resources` Blade view
-  templates are unchanged. Class and trait names are unchanged, so this is not a
-  breaking change.
-
-  With this, every `src/mantle/*` package now uses PSR-4 file naming; only the
-  capstone root restructure (`src/mantle/` → `src/Mantle/`) remains under #812.
+- The framework is now fully PSR-4 compliant (#812). Every package's files and
+  namespace directories were renamed to match their class/trait/interface/enum
+  names, the source tree was restructured from `src/mantle/` to `src/Mantle/` with
+  each package directory PascalCased to match its namespace (e.g. `http-client` →
+  `Http_Client`, `rest-api` → `REST_API`), and the root autoload was collapsed to a
+  single `"Mantle\\": "src/Mantle/"` PSR-4 mapping. The
+  `alleyinteractive/composer-wordpress-autoloader` dependency has been removed
+  entirely; classes now resolve through Composer's native PSR-4 autoloader. Class,
+  trait, interface, and enum names — and the published package names (which remain
+  lowercase-hyphenated, e.g. `mantle-framework/http-client`) — are unchanged, so
+  this is not a breaking change. The `App\`-namespaced scaffolding stubs under
+  `framework/resources/application-structure/` are intentionally left as-is (they
+  are templates published into new applications, not autoloaded framework code) and
+  remain excluded from the classmap.
 
 ## v1.20.0
 
