@@ -1,0 +1,51 @@
+{
+    "name": "mantle-framework/testkit",
+    "description": "The Mantle Framework Testkit Package",
+    "license": "GPL-2.0-or-later",
+    "type": "library",
+    "keywords": [
+        "testing",
+        "mantle"
+    ],
+    "authors": [
+        {
+            "name": "Alley",
+            "email": "mantle@alley.com"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "mantle-framework/config": "^1.0",
+        "mantle-framework/container": "^1.0",
+        "mantle-framework/contracts": "^1.0",
+        "mantle-framework/events": "^1.0",
+        "mantle-framework/faker": "^1.0",
+        "mantle-framework/support": "^1.0",
+        "mantle-framework/testing": "^1.0",
+        "mantle-framework/testing-dependencies": "^1.0",
+        "nunomaduro/collision": "^6.0 || ^7.0 || ^8.0",
+        "phpunit/phpunit": "^10.5.62 || ^11.5.50 || ^12.5.8 || ^13.1",
+        "symfony/http-foundation": "^7.3.7"
+    },
+    "conflict": {
+        "alleyinteractive/mantle-framework": "*"
+    },
+    "suggest": {
+        "alleyinteractive/mantle-framework": "For the full Mantle Framework, require the base package instead."
+    },
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Mantle\\Testkit\\": "./"
+        },
+        "files": [
+            "autoload.php"
+        ]
+    },
+    "config": {
+        "allow-plugins": {
+            "alleyinteractive/composer-wordpress-autoloader": true
+        },
+        "sort-packages": true
+    }
+}

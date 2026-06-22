@@ -77,21 +77,21 @@ return RectorConfig::configure()
 	)
 	->withSkip( [
 		AddVoidReturnTypeWhereNoReturnRector::class => [
-			__DIR__ . '/src/mantle/testing/Concerns/Core_Shim.php',
+			__DIR__ . '/src/Mantle/Testing/Concerns/Core_Shim.php',
 			__DIR__ . '/tests/Testing/CoreTestShimTest.php',
 			__DIR__ . '/tests/testing/CoreTestShimTest.php',
 		],
 		ClassPropertyAssignToConstructorPromotionRector::class => [
-			__DIR__ . '/src/mantle/support/Service_Provider.php',
+			__DIR__ . '/src/Mantle/Support/Service_Provider.php',
 		],
 		RemoveUselessReturnTagRector::class => [
-			__DIR__ . '/src/mantle/database/Model/Relations',
+			__DIR__ . '/src/Mantle/Database/Model/Relations',
 		],
 		ReturnNullableTypeRector::class => [
-			__DIR__ . '/src/mantle/database/Model/Relations',
+			__DIR__ . '/src/Mantle/Database/Model/Relations',
 		],
 		ReturnTypeFromStrictTypedCallRector::class => [
-			__DIR__ . '/src/mantle/database/Model/Relations',
+			__DIR__ . '/src/Mantle/Database/Model/Relations',
 		],
 		ArrayToFirstClassCallableRector::class,
 		RemoveUselessParamTagRector::class,
@@ -100,26 +100,26 @@ return RectorConfig::configure()
 		ChangeOrIfContinueToMultiContinueRector::class,
 		EmptyOnNullableObjectToInstanceOfRector::class,
 		ReturnBinaryOrToEarlyReturnRector::class => [
-			__DIR__ . '/src/mantle/http-client/Response.php',
+			__DIR__ . '/src/Mantle/Http_Client/Response.php',
 		],
 		RemoveExtraParametersRector::class => [
-			__DIR__ . '/src/mantle/support/helpers/helpers-general.php',
+			__DIR__ . '/src/Mantle/Support/helpers/helpers-general.php',
 		],
 		ReturnTypeFromReturnNewRector::class => [
-			__DIR__ . '/src/mantle/support/Collection.php',
-			__DIR__ . '/src/mantle/support/Traits/Enumerates_Values.php',
+			__DIR__ . '/src/Mantle/Support/Collection.php',
+			__DIR__ . '/src/Mantle/Support/Traits/Enumerates_Values.php',
 		],
 		ReturnUnionTypeRector::class => [
-			__DIR__ . '/src/mantle/framework/Exceptions/Handler.php',
+			__DIR__ . '/src/Mantle/Framework/Exceptions/Handler.php',
 		],
 		ReturnTypeFromStrictFluentReturnRector::class => [
-			__DIR__ . '/src/mantle/database/Query/Collection.php',
-			__DIR__ . '/src/mantle/support/Collection.php',
-			__DIR__ . '/src/mantle/support/Traits/Enumerates_Values.php',
+			__DIR__ . '/src/Mantle/Database/Query/Collection.php',
+			__DIR__ . '/src/Mantle/Support/Collection.php',
+			__DIR__ . '/src/Mantle/Support/Traits/Enumerates_Values.php',
 		],
 		ExplicitBoolCompareRector::class => [
-			__DIR__ . '/src/mantle/database/Model/Post.php',
-			__DIR__ . '/src/mantle/testing',
+			__DIR__ . '/src/Mantle/Database/Model/Post.php',
+			__DIR__ . '/src/Mantle/Testing',
 		],
 		SimplifyEmptyCheckOnEmptyArrayRector::class,
 		DisallowedEmptyRuleFixerRector::class,

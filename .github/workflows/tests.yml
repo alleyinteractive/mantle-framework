@@ -30,7 +30,7 @@ jobs:
 
       - name: Get all packages
         id: output_data
-        run: echo "matrix=$(vendor/bin/monorepo-builder packages-json | jq -c .)" >> $GITHUB_OUTPUT
+        run: echo "matrix=$(for d in src/Mantle/*/composer.json; do basename "$(dirname "$d")"; done | jq -R . | jq -sc .)" >> $GITHUB_OUTPUT
 
       - name: Validate all packages
         run: |
@@ -38,7 +38,7 @@ jobs:
 
           for package in $(echo '${{ steps.output_data.outputs.matrix }}' | jq -r '.[]'); do
             echo "Validating package: $package"
-            cd "$original_dir/src/mantle/$package" || exit 1
+            cd "$original_dir/src/Mantle/$package" || exit 1
 
             composer install --no-interaction --no-progress --no-plugins --prefer-dist
 
