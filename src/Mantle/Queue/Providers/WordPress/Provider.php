@@ -179,7 +179,7 @@ class Provider implements Provider_Contract {
 					new Queue_Worker_Job( $record ),
 					// Lock the job until the configured timeout or 10 minutes.
 					fn ( Queue_Worker_Job $job ) => $record->set_lock_until( // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable
-						$job->get_job()->timeout ?? 600
+						time() + ( $job->get_job()->timeout ?? 600 )
 					),
 				),
 			)

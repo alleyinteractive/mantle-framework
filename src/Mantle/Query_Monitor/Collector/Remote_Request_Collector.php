@@ -59,7 +59,7 @@ class Remote_Request_Collector extends \QM_Collector {
 	/**
 	 * Key to mark short circuited requests.
 	 */
-	private const SHORTCIRCUIT_KEY = '_short_circuited';
+	private const string SHORTCIRCUIT_KEY = '_short_circuited';
 
 	/**
 	 * Collector ID

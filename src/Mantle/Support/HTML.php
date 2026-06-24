@@ -49,7 +49,7 @@ class HTML extends SymfonyCrawler implements Htmlable {
 	/**
 	 * The internal root element name used when importing html fragments.
 	 * */
-	private const FRAGMENT_ROOT_TAGNAME = '_root';
+	private const string FRAGMENT_ROOT_TAGNAME = '_root';
 
 	/**
 	 * Get an HTML object from a variety of types.

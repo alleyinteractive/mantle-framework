@@ -45,6 +45,7 @@ class Cache_Flexible_Middleware extends Cache_Middleware {
 	 * @param Closure         $next Next middleware in the stack.
 	 * @return Response Response from the request.
 	 */
+	#[\Override]
 	public function __invoke( Pending_Request $request, Closure $next ): Response {
 		$this->cache_key = $this->get_cache_key( $request );
 

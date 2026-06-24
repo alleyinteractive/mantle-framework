@@ -5,24 +5,52 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## v1.21.0
 
 ### Changed
 
-- The framework is now fully PSR-4 compliant (#812). Every package's files and
-  namespace directories were renamed to match their class/trait/interface/enum
-  names, the source tree was restructured from `src/mantle/` to `src/Mantle/` with
-  each package directory PascalCased to match its namespace (e.g. `http-client` →
-  `Http_Client`, `rest-api` → `REST_API`), and the root autoload was collapsed to a
-  single `"Mantle\\": "src/Mantle/"` PSR-4 mapping. The
-  `alleyinteractive/composer-wordpress-autoloader` dependency has been removed
-  entirely; classes now resolve through Composer's native PSR-4 autoloader. Class,
-  trait, interface, and enum names — and the published package names (which remain
-  lowercase-hyphenated, e.g. `mantle-framework/http-client`) — are unchanged, so
-  this is not a breaking change. The `App\`-namespaced scaffolding stubs under
-  `framework/resources/application-structure/` are intentionally left as-is (they
-  are templates published into new applications, not autoloaded framework code) and
-  remain excluded from the classmap.
+- **The minimum supported PHP version is now 8.3.** The framework and every package
+  now require `php: ^8.3`; PHP 8.2 is no longer supported. The CI test matrix and the
+  Rector target version were updated to match. This is a backwards-incompatible change
+  for projects still running PHP 8.2.
+
+- **The framework is now fully PSR-4 compliant (#812).** Class, trait, interface, and
+  enum names — and the published package names (which remain lowercase-hyphenated, e.g.
+  `mantle-framework/http-client`) — are unchanged, so this is not a breaking change.
+
+  - Every package's files and namespace directories were renamed to match their
+    class/trait/interface/enum names.
+  - The source tree was restructured from `src/mantle/` to `src/Mantle/`, with each
+    package directory PascalCased to match its namespace (e.g. `http-client` →
+    `Http_Client`, `rest-api` → `REST_API`).
+  - The root autoload was collapsed to a single `"Mantle\\": "src/Mantle/"` PSR-4
+    mapping.
+  - The `alleyinteractive/composer-wordpress-autoloader` dependency was removed
+    entirely; classes now resolve through Composer's native PSR-4 autoloader.
+  - The `App\`-namespaced scaffolding stubs under
+    `framework/resources/application-structure/` are intentionally left as-is (they are
+    templates published into new applications, not autoloaded framework code) and remain
+    excluded from the classmap.
+
+### Fixed
+
+- **Cache:** `Repository::remember()` and `remember_forever()` now return the computed value on a cache miss instead of the boolean result of storing it.
+- **Cache:** `Repository::pull()` now returns the cached value (or the default when absent) instead of always returning the default.
+- **HTTP Client:** `Pending_Request::retry()` now applies the configured delay between retries (the value was stored under a key that `send()` never read, so retries always ran with no delay).
+- **HTTP:** `Response` now serializes `Jsonable` and `Arrayable` payloads via `to_json()`/`to_array()` instead of `json_encode()`-ing the raw object.
+- **HTTP:** `Request::offsetExists()` no longer throws a `TypeError` when the request has no route parameters set.
+- **HTTP:** `Route::get_request_parameters()` no longer fatals when route parameters are unset; it returns an empty array.
+- **HTTP:** `bearer_token()` now returns `null` for non-Bearer `Authorization` headers instead of the raw header value.
+- **Database:** `Builder::without()` now removes eager-loaded relations correctly (it compared array keys instead of values and removed nothing).
+- **Database:** Reading a queued term attribute now returns all queued terms instead of only the first.
+- **Database:** `Has_One_Or_Many::save()` no longer issues a spurious query (and possible fatal) via `$model->first()` when resolving the object name.
+- **Queue:** The WordPress provider now sets job locks to an absolute expiry timestamp, so locked jobs are no longer treated as immediately unlocked.
+- **Queue:** The scheduler now caps the number of scheduled batches at `max_concurrent_batches` instead of over-scheduling.
+- **Console:** `Application::test()` now passes the command name (not the command instance) to the tester.
+- **Console:** `option()` no longer discards falsy option values (e.g. `0`, `''`, `false`) in favour of the default.
+- **Support:** `defer()` now finishes the request before running the deferred callback.
+- **Support:** `Stringable::split()` defaults to an unlimited split (`-1`) so it actually splits on a regex pattern.
+- **Support:** `Str::mask()` now respects the supplied encoding when building the trailing segment.
 
 ## v1.20.0
 

@@ -49,7 +49,7 @@ return static function ( ContainerConfigurator $container_config ): void {
 		Option::DATA_TO_APPEND,
 		[
 			ComposerJsonSection::REQUIRE     => [
-				'php' => '^8.2',
+				'php' => '^8.3',
 			],
 			ComposerJsonSection::REQUIRE_DEV => [
 				'alleyinteractive/alley-coding-standards' => '^2.0',

@@ -106,13 +106,9 @@ abstract class Repository implements CacheInterface {
 	 * @param  mixed  $default
 	 */
 	public function pull( string $key, mixed $default = null ): mixed {
-		$value = $this->get( $key );
+		$value = $this->get( $key, $default );
 
-		if ( ! is_null( $value ) ) {
-			$value = $default;
-
-			$this->forget( $key );
-		}
+		$this->forget( $key );
 
 		return $value;
 	}
@@ -215,7 +211,11 @@ abstract class Repository implements CacheInterface {
 			return $value;
 		}
 
-		return $this->put( $key, $callback(), $ttl );
+		$value = $callback();
+
+		$this->put( $key, $value, $ttl );
+
+		return $value;
 	}
 
 	/**
@@ -231,7 +231,11 @@ abstract class Repository implements CacheInterface {
 			return $value;
 		}
 
-		return $this->put( $key, $callback(), null );
+		$value = $callback();
+
+		$this->put( $key, $value, null );
+
+		return $value;
 	}
 
 	/**

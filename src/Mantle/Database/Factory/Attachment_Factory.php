@@ -40,6 +40,7 @@ class Attachment_Factory extends Post_Factory {
 	 *
 	 * @return array<string, mixed>
 	 */
+	#[\Override]
 	public function definition(): array {
 		return [
 			'post_mime_type' => 'image/jpeg',
@@ -150,6 +151,7 @@ class Attachment_Factory extends Post_Factory {
 	 * @param int                       $height
 	 * @param bool                      $recycle
 	 */
+	#[\Override]
 	public function with_real_thumbnail( callable|string|null $file = null, int $width = 1200, int $height = 800, bool $recycle = true ): static {
 		return $this->with_image( $file, 0, $width, $height, $recycle );
 	}
@@ -164,6 +166,7 @@ class Attachment_Factory extends Post_Factory {
 	 * @param array $legacy_args The arguments.
 	 */
 	#[\Deprecated( 'Use create() or create_and_get() instead.' )]
+				#[\Override]
 	public function create_object( $args, $legacy_parent = 0, $legacy_args = [] ): int|null {
 		// Backward compatibility for legacy argument format.
 		if ( is_string( $args ) ) { // @phpstan-ignore-line
@@ -196,9 +199,10 @@ class Attachment_Factory extends Post_Factory {
 	 *
 	 * @param int $object_id The object ID.
 	 */
+	#[\Override]
 	public function get_object_by_id( int $object_id ): Attachment|WP_Post|int|null {
 		return $this->as_models
-			? Attachment::find( $object_id )
-			: get_post_object( $object_id );
+		? Attachment::find( $object_id )
+		: get_post_object( $object_id );
 	}
 }

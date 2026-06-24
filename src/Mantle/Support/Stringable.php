@@ -251,7 +251,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @param  int        $flags
 	 * @return Collection<int, mixed>
 	 */
-	public function split( string|int $pattern, int $limit = 1, int $flags = 0 ) {
+	public function split( string|int $pattern, int $limit = -1, int $flags = 0 ) {
 		if ( is_int( $pattern ) || is_numeric( $pattern ) ) {
 			return collect( mb_str_split( $this->value, max( 1, (int) $pattern ) ) );
 		}

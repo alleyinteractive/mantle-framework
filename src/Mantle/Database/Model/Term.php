@@ -163,6 +163,7 @@ PHP
 	 *
 	 * @return \Mantle\Database\Query\Term_Query_Builder<static>
 	 */
+	#[\Override]
 	public static function query(): Term_Query_Builder {
 		$builder = ( new static() )->new_query();
 
@@ -291,6 +292,7 @@ PHP
 	 *
 	 *     /object_name/object_slug/
 	 */
+	#[\Override]
 	public static function get_route(): ?string {
 		$route_structure = static::get_archive_route() . '/{' . static::get_object_name() . '}/';
 

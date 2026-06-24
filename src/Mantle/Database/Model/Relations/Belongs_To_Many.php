@@ -30,6 +30,7 @@ class Belongs_To_Many extends Belongs_To {
 	 *
 	 * @return Collection<int, TModel>|null
 	 */
+	#[\Override]
 	public function get_results() {
 		$this->add_constraints();
 
@@ -42,18 +43,19 @@ class Belongs_To_Many extends Belongs_To {
 	 * @param Collection<int, TParent> $models Parent models.
 	 * @param Collection<int, TModel>  $results Eagerly loaded results to match.
 	 */
+	#[\Override]
 	public function match( Collection $models, Collection $results ): Collection {
 		$dictionary = $this->build_dictionary( $results, $models ); // @phpstan-ignore-line argument.type
 
 		return $models->each(
 			function ( $model ) use ( $dictionary ): void {
-				$key = $model->{$this->foreign_key};
+							$key = $model->{$this->foreign_key};
 
 				if ( ! method_exists( $model, 'set_relation' ) ) {
 					throw new RuntimeException( 'Model does not implement set_relation method.' );
 				}
 
-				$model->set_relation( $this->relationship, $dictionary[ $key ] ?? null );
+							$model->set_relation( $this->relationship, $dictionary[ $key ] ?? null );
 			}
 		);
 	}
@@ -67,6 +69,7 @@ class Belongs_To_Many extends Belongs_To {
 	 * @param Collection<int, TModel>  $models Eagerly loaded results to match.
 	 * @return array<string, array<int, TParent>>
 	 */
+	#[\Override]
 	protected function build_dictionary( Collection $results, Collection $models ): array {
 		$results    = $results->key_by( $this->foreign_key );
 		$dictionary = collect();
@@ -80,10 +83,10 @@ class Belongs_To_Many extends Belongs_To {
 		}
 
 		return $dictionary
-			->map(
-				fn ( $child_ids ) => $results->only( $child_ids )->values()->all()
-			)
-			->filter()
-			->all();
+		->map(
+			fn ( $child_ids ) => $results->only( $child_ids )->values()->all()
+		)
+		->filter()
+		->all();
 	}
 }

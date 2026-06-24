@@ -557,8 +557,8 @@ class Pending_Request {
 	 * @param int $delay Number of milliseconds to delay between retries, defaults to none.
 	 */
 	public function retry( int $retry, int $delay = 0 ): static {
-		$this->options['retry'] = $retry;
-		$this->options['delay'] = $delay;
+		$this->options['retry']       = $retry;
+		$this->options['retry_delay'] = $delay;
 
 		return $this;
 	}

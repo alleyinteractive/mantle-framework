@@ -60,6 +60,7 @@ class Fluent_Factory extends Factory {
 	 * @param array $args Arguments to pass to the factory.
 	 * @return \Mantle\Support\Collection<int, TReturnValue>|mixed
 	 */
+	#[\Override]
 	public function create( array $args = [] ): mixed {
 		if ( 1 === $this->count ) {
 			return $this->factory->create( $args );
@@ -74,6 +75,7 @@ class Fluent_Factory extends Factory {
 	 * @param array $args Arguments to pass to the factory.
 	 * @return \Mantle\Support\Collection<int, TReturnValue>|TReturnValue
 	 */
+	#[\Override]
 	public function create_and_get( array $args = [] ): mixed {
 		if ( 1 === $this->count ) {
 			return $this->factory->create_and_get( $args );
@@ -112,6 +114,7 @@ class Fluent_Factory extends Factory {
 	 *
 	 * @throws BadMethodCallException If the method does not exist.
 	 */
+	#[\Override]
 	public function __call( string $method, array $args ): mixed {
 		if ( method_exists( $this->factory, $method ) ) {
 			$value = $this->factory->$method( ...$args );

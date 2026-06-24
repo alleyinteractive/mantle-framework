@@ -401,6 +401,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 	/**
 	 * Flush the container of all bindings and resolved instances.
 	 */
+	#[\Override]
 	public function flush(): void {
 		parent::flush();
 

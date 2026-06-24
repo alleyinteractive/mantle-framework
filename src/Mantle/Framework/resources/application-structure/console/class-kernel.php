@@ -30,6 +30,7 @@ class Kernel extends Console_Kernel {
 	/**
 	 * Register the commands for the application.
 	 */
+	#[\Override]
 	public function commands(): void {
 		$this->load( __DIR__ );
 

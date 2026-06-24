@@ -40,6 +40,7 @@ class Pooled_Pending_Request extends Pending_Request {
 	 * @param  string|null                      $url URL to retrieve.
 	 * @param  array<string, mixed>|string|null $query Query parameters (assumed to be urlencoded).
 	 */
+	#[\Override]
 	public function get( ?string $url = null, array|string|null $query = null ): static {
 		$this->set_method( Http_Method::GET )->set_url( $url );
 
@@ -56,6 +57,7 @@ class Pooled_Pending_Request extends Pending_Request {
 	 * @param  string|null                      $url URL to retrieve.
 	 * @param  array<string, mixed>|string|null $query Query parameters (assumed to be urlencoded).
 	 */
+	#[\Override]
 	public function head( ?string $url = null, array|string|null $query = null ): static {
 		$this->set_method( Http_Method::HEAD )->set_url( $url );
 
@@ -72,6 +74,7 @@ class Pooled_Pending_Request extends Pending_Request {
 	 * @param  string|null               $url URL to post.
 	 * @param  array<string, mixed>|null $data Data to send with the request.
 	 */
+	#[\Override]
 	public function post( ?string $url = null, ?array $data = null ): static {
 		$this->set_method( Http_Method::POST )->set_url( $url );
 
@@ -88,6 +91,7 @@ class Pooled_Pending_Request extends Pending_Request {
 	 * @param  string|null               $url URL to patch.
 	 * @param  array<string, mixed>|null $data Data to send with the request.
 	 */
+	#[\Override]
 	public function patch( ?string $url = null, ?array $data = null ): static {
 		$this->set_method( Http_Method::PATCH )->set_url( $url );
 
@@ -104,6 +108,7 @@ class Pooled_Pending_Request extends Pending_Request {
 	 * @param  string|null               $url URL to put.
 	 * @param  array<string, mixed>|null $data Data to send with the request.
 	 */
+	#[\Override]
 	public function put( ?string $url = null, ?array $data = null ): static {
 		$this->set_method( Http_Method::PUT )->set_url( $url );
 
@@ -120,6 +125,7 @@ class Pooled_Pending_Request extends Pending_Request {
 	 * @param  string|null               $url URL to delete.
 	 * @param  array<string, mixed>|null $data Data to send with the request.
 	 */
+	#[\Override]
 	public function delete( ?string $url = null, ?array $data = null ): static {
 		$this->set_method( Http_Method::DELETE )->set_url( $url );
 

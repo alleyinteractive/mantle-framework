@@ -102,7 +102,7 @@ trait Interacts_With_IO {
 			return $this->input->getOptions();
 		}
 
-		return $this->input->getOption( $key ) ?: $default;
+		return $this->input->getOption( $key ) ?? $default;
 	}
 
 	/**

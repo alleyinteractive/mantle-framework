@@ -69,10 +69,8 @@ class Term_Query_Builder extends Builder {
 			$taxonomies = $this->model::get_object_name();
 		}
 
-		// Limit is handled differently for term queries.
-		if ( -1 === $this->limit ) {
-			$this->limit = null;
-		}
+		// Limit is handled differently for term queries: -1 (no limit) maps to null.
+		$number = -1 === $this->limit ? null : $this->limit;
 
 		[ $order, $order_by ] = $this->get_builder_order( 'ASC', 'name' );
 
@@ -80,7 +78,7 @@ class Term_Query_Builder extends Builder {
 			[
 				'hide_empty'      => false,
 				'meta_query'      => $this->meta_query, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
-				'number'          => $this->limit,
+				'number'          => $number,
 				'order'           => $order,
 				'orderby'         => $order_by,
 				'suppress_filter' => false,

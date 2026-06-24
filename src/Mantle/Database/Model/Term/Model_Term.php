@@ -53,7 +53,7 @@ trait Model_Term {
 	 * @return mixed|null Terms or null.
 	 */
 	public function get_queued_term_attribute( string $key ) {
-		return ( $this->queued_terms[ $key ] ?? [] )[0] ?? null;
+		return $this->queued_terms[ $key ] ?? null;
 	}
 
 	/**

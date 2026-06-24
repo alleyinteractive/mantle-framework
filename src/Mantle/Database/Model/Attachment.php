@@ -185,6 +185,7 @@ class Attachment extends Post {
 	 *
 	 * @throws Model_Exception Thrown on error saving.
 	 */
+	#[\Override]
 	public function save( array $attributes = [] ): bool {
 		$this->set_attributes( $attributes );
 
@@ -221,6 +222,7 @@ class Attachment extends Post {
 	 *
 	 * @param bool $force Force delete the model.
 	 */
+	#[\Override]
 	public function delete( bool $force = false ): mixed {
 		return \wp_delete_attachment( $this->id(), $force );
 	}

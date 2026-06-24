@@ -180,6 +180,7 @@ class Database_Query_Builder extends Builder {
 	 * @param array<string, mixed>|string $attribute Attribute to use or array of key => value attributes to set.
 	 * @param mixed                       $value Value to set for the attribute if a single attribute is provided.
 	 */
+	#[\Override]
 	public function where( array|string $attribute, mixed $value = '' ): static {
 		if ( is_array( $attribute ) && empty( $value ) ) {
 			foreach ( $attribute as $key => $value ) {
@@ -200,6 +201,7 @@ class Database_Query_Builder extends Builder {
 	 * @param mixed                       $value The value.
 	 * @param string                      $boolean The boolean operator (AND/OR) used to concatenate the clause.
 	 */
+	#[\Override]
 	public function where_raw( array|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' ): static {
 		$this->bindings['where'][] = [
 			'boolean'  => $boolean,

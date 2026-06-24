@@ -34,6 +34,7 @@ class Closure_Command extends Command {
 	 * @param InputInterface  $input
 	 * @param OutputInterface $output
 	 */
+	#[\Override]
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 		$this->set_input( $input );
 		$this->set_output( $output );

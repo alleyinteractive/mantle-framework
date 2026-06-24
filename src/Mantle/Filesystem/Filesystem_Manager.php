@@ -41,7 +41,7 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	 *
 	 * @var Closure[]
 	 */
-	protected $custom_drivers;
+	protected $custom_drivers = [];
 
 	/**
 	 * Constructor.

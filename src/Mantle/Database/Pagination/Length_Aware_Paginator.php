@@ -26,6 +26,7 @@ class Length_Aware_Paginator extends Paginator {
 	/**
 	 * Set the items for the paginator.
 	 */
+	#[\Override]
 	protected function set_items(): static {
 		$builder = $this->builder;
 
@@ -70,6 +71,7 @@ class Length_Aware_Paginator extends Paginator {
 	 *
 	 * @param bool $has_more Flag if it has more, unused.
 	 */
+	#[\Override]
 	public function has_more( ?bool $has_more = null ): bool {
 		if ( empty( $this->found_rows ) ) {
 			return false;

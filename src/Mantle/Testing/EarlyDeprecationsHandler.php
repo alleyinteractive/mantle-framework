@@ -28,10 +28,8 @@ final class EarlyDeprecationsHandler {
 	 *
 	 * This priority is cleared fully when unregistering the hooks. The priority
 	 * is assumed to not be commonly used by other handlers.
-	 *
-	 * @var int
 	 */
-	public const HOOK_PRIORITY = 57;
+	public const int HOOK_PRIORITY = 57;
 
 	/**
 	 * Register the hooks for the class.

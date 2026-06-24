@@ -47,6 +47,7 @@ class Logger extends MonologLogger {
 	 *
 	 * @phpstan-param Level $level
 	 */
+	#[\Override]
 	public function addRecord( int $level, string $message, array $context = [], ?DateTimeImmutable $datetime = null ): bool {
 		$this->fire_log_event( $this->getLevelName( $level ), $message, $context );
 

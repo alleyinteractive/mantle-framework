@@ -224,6 +224,7 @@ PHP
 	 *
 	 * @return \Mantle\Database\Query\Post_Query_Builder<static>
 	 */
+	#[\Override]
 	public static function query(): Post_Query_Builder {
 		return ( new static() )->new_query(); // @phpstan-ignore-line return.type
 	}
@@ -411,6 +412,7 @@ PHP
 	/**
 	 * Get the registerable route for the model.
 	 */
+	#[\Override]
 	public static function get_route(): ?string {
 		$object_name = static::get_object_name();
 
