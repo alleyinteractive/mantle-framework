@@ -44,6 +44,7 @@ class Event_Service_Provider extends Service_Provider {
 	 * Flag if Mantle should discover events automatically.
 	 * If removed, event discovery will be disabled.
 	 */
+	#[\Override]
 	public function should_discover_events(): bool {
 		return true;
 	}

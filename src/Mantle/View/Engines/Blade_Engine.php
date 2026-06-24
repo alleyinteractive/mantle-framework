@@ -60,6 +60,7 @@ class Blade_Engine extends Php_Engine {
 	 * @param string               $path View path.
 	 * @param array<string, mixed> $data View data.
 	 */
+	#[\Override]
 	public function get( string $path, array $data = [] ): string {
 		$this->last_compiled[] = $path;
 
@@ -108,6 +109,7 @@ class Blade_Engine extends Php_Engine {
 	 *
 	 * @throws \Throwable Rethrows the exception thrown.
 	 */
+	#[\Override]
 	protected function handle_view_exception( Throwable $e, $ob_level ) {
 		while ( ob_get_level() > $ob_level ) {
 			ob_end_clean();

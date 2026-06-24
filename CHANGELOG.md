@@ -5,24 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## v1.21.0
 
 ### Changed
 
-- The framework is now fully PSR-4 compliant (#812). Every package's files and
-  namespace directories were renamed to match their class/trait/interface/enum
-  names, the source tree was restructured from `src/mantle/` to `src/Mantle/` with
-  each package directory PascalCased to match its namespace (e.g. `http-client` →
-  `Http_Client`, `rest-api` → `REST_API`), and the root autoload was collapsed to a
-  single `"Mantle\\": "src/Mantle/"` PSR-4 mapping. The
-  `alleyinteractive/composer-wordpress-autoloader` dependency has been removed
-  entirely; classes now resolve through Composer's native PSR-4 autoloader. Class,
-  trait, interface, and enum names — and the published package names (which remain
-  lowercase-hyphenated, e.g. `mantle-framework/http-client`) — are unchanged, so
-  this is not a breaking change. The `App\`-namespaced scaffolding stubs under
-  `framework/resources/application-structure/` are intentionally left as-is (they
-  are templates published into new applications, not autoloaded framework code) and
-  remain excluded from the classmap.
+- **The minimum supported PHP version is now 8.3.** The framework and every package
+  now require `php: ^8.3`; PHP 8.2 is no longer supported. The CI test matrix and the
+  Rector target version were updated to match. This is a backwards-incompatible change
+  for projects still running PHP 8.2.
+
+- **The framework is now fully PSR-4 compliant (#812).** Class, trait, interface, and
+  enum names — and the published package names (which remain lowercase-hyphenated, e.g.
+  `mantle-framework/http-client`) — are unchanged, so this is not a breaking change.
+
+  - Every package's files and namespace directories were renamed to match their
+    class/trait/interface/enum names.
+  - The source tree was restructured from `src/mantle/` to `src/Mantle/`, with each
+    package directory PascalCased to match its namespace (e.g. `http-client` →
+    `Http_Client`, `rest-api` → `REST_API`).
+  - The root autoload was collapsed to a single `"Mantle\\": "src/Mantle/"` PSR-4
+    mapping.
+  - The `alleyinteractive/composer-wordpress-autoloader` dependency was removed
+    entirely; classes now resolve through Composer's native PSR-4 autoloader.
+  - The `App\`-namespaced scaffolding stubs under
+    `framework/resources/application-structure/` are intentionally left as-is (they are
+    templates published into new applications, not autoloaded framework code) and remain
+    excluded from the classmap.
 
 ### Fixed
 

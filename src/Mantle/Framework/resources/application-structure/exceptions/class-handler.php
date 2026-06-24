@@ -30,6 +30,7 @@ class Handler extends Base_Handler {
 	 *
 	 * @param Throwable $exception Exception thrown.
 	 */
+	#[\Override]
 	public function report( Throwable $exception ): void {
 		parent::report( $exception );
 	}
@@ -41,6 +42,7 @@ class Handler extends Base_Handler {
 	 * @param  Throwable $exception Exception thrown.
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
+	#[\Override]
 	public function render( $request, Throwable $exception ) {
 		return parent::render( $request, $exception );
 	}

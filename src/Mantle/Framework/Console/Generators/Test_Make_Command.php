@@ -58,6 +58,7 @@ class Test_Make_Command extends Stub_Generator_Command {
 	/**
 	 * Get the base path for the generated folder.
 	 */
+	#[\Override]
 	protected function get_base_path(): string {
 		return base_path( '/' );
 	}

@@ -3,7 +3,7 @@
     "description": "The Mantle Framework Support Package",
     "type": "library",
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "alleyinteractive/wp-type-extensions": ">=3.0.0 <5.0.0"
     },
     "autoload": {

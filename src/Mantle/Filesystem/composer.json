@@ -3,7 +3,7 @@
     "description": "The Mantle Framework Filesystem Package",
     "type": "library",
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "league/flysystem": "^3.29",
         "mantle-framework/contracts": "^1.0",
         "mantle-framework/support": "^1.0",

@@ -128,6 +128,7 @@ abstract class Command extends Symfony_Command {
 	 * @param InputInterface  $input
 	 * @param OutputInterface $output
 	 */
+	#[\Override]
 	public function run( InputInterface $input, OutputInterface $output ): int {
 		$this->output = $this->container->make(
 			Output_Style::class,

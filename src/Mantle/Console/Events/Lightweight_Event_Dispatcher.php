@@ -33,6 +33,7 @@ class Lightweight_Event_Dispatcher extends Dispatcher {
 	 * @param  string|callable $listener
 	 * @param  int             $priority
 	 */
+	#[\Override]
 	public function listen( string|array $events, string|callable $listener, int $priority = 10 ): void {
 		foreach ( (array) $events as $event ) {
 			if ( str_contains( $event, '*' ) ) {
@@ -50,6 +51,7 @@ class Lightweight_Event_Dispatcher extends Dispatcher {
 	 *
 	 * @param  string $event_name
 	 */
+	#[\Override]
 	public function has_listeners( string $event_name ): bool {
 		return ! empty( $this->listeners[ $event_name ] ) || $this->has_wildcard_listeners( $event_name );
 	}
@@ -61,6 +63,7 @@ class Lightweight_Event_Dispatcher extends Dispatcher {
 	 *
 	 * @throws RuntimeException Thrown if run.
 	 */
+	#[\Override]
 	public function subscribe( object|string $subscriber ): void {
 		throw new RuntimeException( 'Subscribers are not supported in lightweight mode.' );
 	}
@@ -73,6 +76,7 @@ class Lightweight_Event_Dispatcher extends Dispatcher {
 	 * @param  string|object $event Event name.
 	 * @param  mixed         ...$payload Event payload.
 	 */
+	#[\Override]
 	public function dispatch( string|object $event, mixed ...$payload ): mixed {
 		if ( is_object( $event ) && ! empty( $payload ) ) {
 			throw new RuntimeException( 'You cannot pass payload to an object event.' );
@@ -143,6 +147,7 @@ class Lightweight_Event_Dispatcher extends Dispatcher {
 	 * @param callable|string|null $listener Listener to remove.
 	 * @param int                  $priority Priority of the listener.
 	 */
+	#[\Override]
 	public function forget( object|string $event, callable|string|null $listener = null, int $priority = 10 ): void {
 		if ( is_object( $event ) ) {
 			$event = $event::class;

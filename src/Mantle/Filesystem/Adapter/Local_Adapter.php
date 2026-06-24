@@ -18,6 +18,7 @@ class Local_Adapter extends Filesystem_Adapter {
 	 *
 	 * @param  string $path
 	 */
+	#[\Override]
 	public function url( string $path ): string {
 		// If an explicit base URL has been set on the disk configuration then we
 		// will use it as the base URL instead of the default path. This allows the

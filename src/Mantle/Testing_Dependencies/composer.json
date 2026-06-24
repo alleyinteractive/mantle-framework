@@ -14,7 +14,7 @@
         }
     ],
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "fakerphp/faker": "^1.24",
         "filp/whoops": "^2.18.1",
         "myclabs/deep-copy": "^1.13",

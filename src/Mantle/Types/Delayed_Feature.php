@@ -33,6 +33,7 @@ class Delayed_Feature extends Validator_Group {
 	/**
 	 * Boot the feature.
 	 */
+	#[\Override]
 	public function boot(): void {
 		add_action( $this->hook, parent::boot( ... ), $this->priority );
 	}

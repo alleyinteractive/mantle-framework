@@ -30,6 +30,7 @@ class Printer extends \Nette\PhpGenerator\Printer {
 	 *
 	 * @inheritDoc
 	 */
+	#[\Override]
 	public function printFile( PhpFile $file ): string {
 		return str(
 			str_replace(
@@ -53,6 +54,7 @@ class Printer extends \Nette\PhpGenerator\Printer {
 	 *
 	 * @inheritDoc
 	 */
+	#[\Override]
 	public function printClass( ClassType|InterfaceType|TraitType|EnumType $class, ?PhpNamespace $namespace = null ): string {
 		return trim(
 			str_replace(
@@ -68,6 +70,7 @@ class Printer extends \Nette\PhpGenerator\Printer {
 	 *
 	 * @inheritDoc
 	 */
+	#[\Override]
 	public function printMethod( Method $method, ?PhpNamespace $namespace = null, bool $isInterface = false ): string {
 		$abstract = $method->isAbstract();
 		$method   = parent::printMethod( $method, $namespace, $isInterface );
@@ -100,6 +103,7 @@ class Printer extends \Nette\PhpGenerator\Printer {
 	 *
 	 * @inheritDoc
 	 */
+	#[\Override]
 	public function printFunction( GlobalFunction $function, ?PhpNamespace $namespace = null ): string {
 		$function = parent::printFunction( $function, $namespace );
 		$lines    = explode( "\n", $function );

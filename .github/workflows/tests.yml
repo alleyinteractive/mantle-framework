@@ -86,7 +86,7 @@ jobs:
         multisite: [true, false]
         # See core's PHP Compatibility chart:
         # https://make.wordpress.org/core/handbook/references/php-compatibility-and-wordpress-versions/
-        php: [8.2, 8.3, 8.4, 8.5]
+        php: [8.3, 8.4, 8.5]
         wordpress: ${{fromJson(needs.get-versions.outputs.versions)}}
         vip-mu-plugins: [false]
         exclude:

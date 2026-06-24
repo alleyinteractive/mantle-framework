@@ -53,6 +53,7 @@ class Response extends HttpFoundationResponse {
 	 *
 	 * @throws InvalidArgumentException When the HTTP status code is not valid.
 	 */
+	#[\Override]
 	public function setContent( mixed $content ): static {
 		$this->original = $content;
 

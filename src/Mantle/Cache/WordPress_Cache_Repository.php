@@ -109,6 +109,7 @@ class WordPress_Cache_Repository extends Repository implements Taggable_Reposito
 	 * @param  string $key
 	 * @param  mixed  $default
 	 */
+	#[\Override]
 	public function pull( string $key, mixed $default = null ): mixed {
 		$value = \wp_cache_get( $key, $this->prefix );
 

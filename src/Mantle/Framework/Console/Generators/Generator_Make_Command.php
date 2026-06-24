@@ -46,6 +46,7 @@ class Generator_Make_Command extends Stub_Generator_Command {
 	 *
 	 * @todo Replace with a filesystem abstraction.
 	 */
+	#[\Override]
 	public function handle(): int {
 		// Prevent command being run in non-local environments.
 		if ( 'local' !== $this->container->environment() ) {

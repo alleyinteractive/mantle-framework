@@ -23,6 +23,7 @@ class HTML_Driver extends HtmlDriver {
 	 * @param mixed $data Data to serialize.
 	 * @throws CantBeSerialized If data cannot be serialized.
 	 */
+	#[\Override]
 	public function serialize( mixed $data ): string {
 		if ( ! is_string( $data ) ) {
 			throw new CantBeSerialized( 'Only strings can be serialized to html' );

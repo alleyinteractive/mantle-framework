@@ -17,6 +17,7 @@ class App_Service_Provider extends Service_Provider {
 	/**
 	 * Register any application services.
 	 */
+	#[\Override]
 	public function register(): void {
 		// Add application registration here.
 	}
@@ -24,6 +25,7 @@ class App_Service_Provider extends Service_Provider {
 	/**
 	 * Bootstrap any application services.
 	 */
+	#[\Override]
 	public function boot(): void {
 		// Boot the application here.
 	}

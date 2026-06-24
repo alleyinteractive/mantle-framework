@@ -56,6 +56,7 @@ class Rest_Route_Registrar extends Route_Registrar {
 	 * @param string                           $uri
 	 * @param Closure|array<mixed>|string|null $action Route action or arguments.
 	 */
+	#[\Override]
 	public function register_route( string|array $method, string $uri, Closure|array|string|null $action = null ): Route {
 		$method = Arr::wrap( $method );
 
@@ -78,6 +79,7 @@ class Rest_Route_Registrar extends Route_Registrar {
 	 * @param string[]                    $methods HTTP methods.
 	 * @return array<mixed>
 	 */
+	#[\Override]
 	protected function normalize_arguments( Closure|array|string $arguments, string $uri, array $methods ): array {
 		$arguments = parent::normalize_arguments( $arguments, $uri, $methods );
 

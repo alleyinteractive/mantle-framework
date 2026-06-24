@@ -63,6 +63,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 *
 	 * Mirrors Symfony's version but will create a static instance of the class.
 	 */
+	#[\Override]
 	public static function createFromGlobals(): static {
 		$request = new static( $_GET, $_POST, [], $_COOKIE, $_FILES, $_SERVER ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPressVIPMinimum.Variables.RestrictedVariables, WordPress.Security.NonceVerification.Missing
 
@@ -295,6 +296,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 * @param  string $key
 	 * @param  mixed  $default
 	 */
+	#[\Override]
 	public function get( string $key, mixed $default = null ): mixed { // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod.Found
 		return parent::get( $key, $default );
 	}

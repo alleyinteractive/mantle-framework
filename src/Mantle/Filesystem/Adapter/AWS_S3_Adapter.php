@@ -34,6 +34,7 @@ class AWS_S3_Adapter extends Filesystem_Adapter {
 	 *
 	 * @param  string $path
 	 */
+	#[\Override]
 	public function url( string $path ): string {
 		// If an explicit base URL has been set on the disk configuration then we will use
 		// it as the base URL instead of the default path. This allows the developer to
@@ -51,6 +52,7 @@ class AWS_S3_Adapter extends Filesystem_Adapter {
 	/**
 	 * Determine if temporary URLs can be generated.
 	 */
+	#[\Override]
 	public function provides_temporary_urls(): bool {
 		return true;
 	}
@@ -62,6 +64,7 @@ class AWS_S3_Adapter extends Filesystem_Adapter {
 	 * @param  \DateTimeInterface $expiration
 	 * @param  array<mixed>       $options
 	 */
+	#[\Override]
 	public function temporary_url( string $path, DateTimeInterface $expiration, array $options = [] ): string {
 		$command = $this->client->getCommand(
 			'GetObject',

@@ -99,6 +99,7 @@ class Factory_Make_Command extends Stub_Generator_Command {
 	 *
 	 * @param string $name Name to use.
 	 */
+	#[\Override]
 	protected function get_folder_path( string $name ): string {
 		return $this->container->get_base_path() . '/database/factory';
 	}
@@ -108,6 +109,7 @@ class Factory_Make_Command extends Stub_Generator_Command {
 	 *
 	 * @param string $name Name to use.
 	 */
+	#[\Override]
 	protected function get_file_path( string $name ): string {
 		$parts    = explode( '\\', $name );
 		$filename = array_pop( $parts );
