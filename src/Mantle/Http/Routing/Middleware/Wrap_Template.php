@@ -97,7 +97,7 @@ class Wrap_Template {
 			);
 		} else {
 			// Fallback to the default header and footer.
-			$response->setContent( (string) capture( static function () use ( $response ): void {
+			$response->setContent( capture( static function () use ( $response ): void {
 				\get_header();
 				// Assumed to be sanitized.
 				echo (string) $response->getContent(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped

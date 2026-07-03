@@ -110,7 +110,7 @@ class Spy_REST_Server extends WP_REST_Server {
 	public function serve_request( $path = null ) {
 		ob_start();
 		$result          = parent::serve_request( $path );
-		$this->sent_body = (string) ob_get_clean();
+		$this->sent_body = ob_get_clean();
 		return $result;
 	}
 

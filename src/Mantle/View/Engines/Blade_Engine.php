@@ -154,6 +154,6 @@ class Blade_Engine extends Php_Engine {
 			$this->handle_view_exception( $e, $ob_level );
 		}
 
-		return ltrim( (string) ob_get_clean() );
+		return ltrim( ob_get_clean() );
 	}
 }
