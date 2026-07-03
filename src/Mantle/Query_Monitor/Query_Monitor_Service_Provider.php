@@ -73,7 +73,7 @@ class Query_Monitor_Service_Provider extends Service_Provider {
 			$query_monitor_dispatch();
 		}
 
-		return (string) ob_get_clean();
+		return ob_get_clean();
 	}
 
 	/**

@@ -83,9 +83,9 @@ class Utils {
 	 *
 	 * @param callable $callable Callable to execute.
 	 * @param array    $args     Arguments to pass to the callable.
-	 * @return false|string Rendered output on success, false on failure.
+	 * @return string Rendered output.
 	 */
-	public static function get_echo( callable $callable, array $args = [] ): string|false {
+	public static function get_echo( callable $callable, array $args = [] ): string {
 		return capture( fn () => $callable( ...$args ) );
 	}
 

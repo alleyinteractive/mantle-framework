@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Updated the `alleyinteractive/wp-type-extensions` requirement to allow `>=3.0.0 <6.0.0`.
+
 - **The minimum supported PHP version is now 8.3.** The framework and every package
   now require `php: ^8.3`; PHP 8.2 is no longer supported. The CI test matrix and the
   Rector target version were updated to match. This is a backwards-incompatible change
