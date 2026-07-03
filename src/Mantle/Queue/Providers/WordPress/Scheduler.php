@@ -180,7 +180,8 @@ class Scheduler {
 			$queue = 'default';
 		}
 
-		return collect( _get_cron_array() )
+		/** @var Collection<int, array<mixed>> $jobs */
+		$jobs = collect( _get_cron_array() )
 			->reduce(
 				function ( Collection $carry, array $items, $timestamp ) use ( $queue ): Collection {
 					if ( empty( $items[ static::EVENT ] ) ) {
@@ -201,6 +202,8 @@ class Scheduler {
 				},
 				collect(),
 			);
+
+		return $jobs;
 	}
 
 	/**

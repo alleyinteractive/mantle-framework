@@ -31,7 +31,7 @@ class Parser {
 	public static function parse( $expression ): array {
 		$name = static::name( $expression );
 
-		if ( preg_match_all( '/\{\s*(.*?)\s*\}/', $expression, $matches ) && count( $matches[1] ) ) {
+		if ( preg_match_all( '/\{\s*(.*?)\s*\}/', $expression, $matches ) ) {
 			return array_merge( [ $name ], static::parameters( $matches[1] ) ); // @phpstan-ignore-line argument.type
 		}
 

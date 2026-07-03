@@ -439,7 +439,7 @@ class Pending_Testable_Request {
 			remove_filter( 'wp_headers', $intercept_headers, 9999 );
 			remove_filter( 'wp_redirect', $intercept_redirect, 9999 );
 
-			$response_content = false === $response_content ? null : $response_content;
+			$response_content = false === $response_content ? null : $response_content; // @phpstan-ignore-line identical.alwaysFalse
 
 			$response = new Test_Response(
 				$response_content,
