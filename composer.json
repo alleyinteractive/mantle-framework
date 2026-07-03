@@ -10,8 +10,7 @@
         }
     ],
     "require": {
-        "php": "^8.2",
-        "alleyinteractive/composer-wordpress-autoloader": "^1.0",
+        "php": "^8.3",
         "alleyinteractive/wp-asset-manager": "^1.4.0",
         "alleyinteractive/wp-caper": "^2.0.1 || ^3.0.0",
         "alleyinteractive/wp-concurrent-remote-requests": "^1.0.2",
@@ -38,7 +37,7 @@
         "spatie/backtrace": "^1.8",
         "symfony/console": "^7.2",
         "symfony/css-selector": "^7.2.0",
-        "symfony/dom-crawler": "^7.3 <7.4",
+        "symfony/dom-crawler": "^7.4.12",
         "symfony/finder": "^7.2.0",
         "symfony/http-foundation": "^7.3.7",
         "symfony/http-kernel": "^7.2.0",
@@ -107,22 +106,25 @@
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
-            "Mantle\\Testing\\": "src/mantle/testing/",
-            "Mantle\\Testkit\\": "src/mantle/testkit/"
+            "Mantle\\": "src/Mantle/"
         },
         "files": [
-            "src/mantle/framework/helpers.php",
-            "src/mantle/framework-views/autoload.php",
-            "src/mantle/application/autoload.php",
-            "src/mantle/assets/autoload.php",
-            "src/mantle/cache/autoload.php",
-            "src/mantle/config/autoload.php",
-            "src/mantle/http/autoload.php",
-            "src/mantle/http-client/autoload.php",
-            "src/mantle/queue/autoload.php",
-            "src/mantle/support/autoload.php",
-            "src/mantle/testing/autoload.php",
-            "src/mantle/testkit/autoload.php"
+            "src/Mantle/Framework/helpers.php",
+            "src/Mantle/Framework_Views/autoload.php",
+            "src/Mantle/Application/autoload.php",
+            "src/Mantle/Assets/autoload.php",
+            "src/Mantle/Cache/autoload.php",
+            "src/Mantle/Config/autoload.php",
+            "src/Mantle/Http/autoload.php",
+            "src/Mantle/Http_Client/autoload.php",
+            "src/Mantle/Queue/autoload.php",
+            "src/Mantle/Support/autoload.php",
+            "src/Mantle/Testing/autoload.php",
+            "src/Mantle/Testkit/autoload.php"
+        ],
+        "exclude-from-classmap": [
+            "src/Mantle/Framework/resources/",
+            "src/Mantle/Testing/wp-unittestcase.php"
         ]
     },
     "autoload-dev": {
@@ -137,16 +139,6 @@
             "phpstan/extension-installer": true
         },
         "sort-packages": true
-    },
-    "extra": {
-        "wordpress-autoloader": {
-            "autoload": {
-                "Mantle\\": "src/mantle/"
-            },
-            "autoload-dev": {
-                "Mantle\\Tests\\": "tests/"
-            }
-        }
     },
     "scripts": {
         "fix-and-test": [

@@ -121,6 +121,29 @@ class PreserveGlobalsTest extends FrameworkTestCase {
 	}
 
 	/**
+	 * Ensure that post type features (title, editor, etc.) are restored
+	 * alongside the post type itself when a test unregisters it.
+	 *
+	 * Previously, $wp_post_types was preserved between tests but
+	 * $_wp_post_type_features was not. A test that called
+	 * unregister_post_type() would leave the features global empty for the
+	 * next test, causing post_type_supports() to return false even though
+	 * the post type itself was restored.
+	 *
+	 * @dataProvider dataprovider_twice
+	 */
+	#[DataProvider( 'dataprovider_twice' )]
+	public function test_post_type_features_preserved_between_tests(): void {
+		$this->assertTrue( post_type_exists( 'persistent_post_type' ) );
+		$this->assertTrue( post_type_supports( 'persistent_post_type', 'title' ) );
+		$this->assertTrue( post_type_supports( 'persistent_post_type', 'editor' ) );
+
+		// Unregister the post type. The next iteration of this test must
+		// still see it with its features intact, restored from the snapshot.
+		unregister_post_type( 'persistent_post_type' );
+	}
+
+	/**
 	 * Ensure that rewrite extra permastructs are preserved and originally stored correctly.
 	 *
 	 * @dataProvider dataprovider_twice

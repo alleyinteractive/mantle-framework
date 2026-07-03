@@ -387,7 +387,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 	}
 
 	public function test_fake_request_with_file() {
-		$file = __DIR__ . '/../../../src/mantle/testing/data/images/wordpress-gsoc-flyer.pdf';
+		$file = __DIR__ . '/../../../src/Mantle/Testing/data/images/wordpress-gsoc-flyer.pdf';
 
 		$this->fake_request( 'https://example.org/images/file.pdf' )->with_file( $file );
 

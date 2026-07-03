@@ -1,0 +1,49 @@
+<?php
+/**
+ * Handler class file.
+ *
+ * @package Mantle
+ */
+
+namespace App\Exceptions;
+
+use Mantle\Framework\Exceptions\Handler as Base_Handler;
+use Mantle\Http\Request;
+use Throwable;
+
+/**
+ * Application Error Handler
+ */
+class Handler extends Base_Handler {
+
+	/**
+	 * A list of the exception types that are not reported.
+	 *
+	 * @var string[]
+	 */
+	protected $dont_report = [
+		// ...
+	];
+
+	/**
+	 * Report or log an exception.
+	 *
+	 * @param Throwable $exception Exception thrown.
+	 */
+	#[\Override]
+	public function report( Throwable $exception ): void {
+		parent::report( $exception );
+	}
+
+	/**
+	 * Render an exception into an HTTP response.
+	 *
+	 * @param  Request   $request Request object.
+	 * @param  Throwable $exception Exception thrown.
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	#[\Override]
+	public function render( $request, Throwable $exception ) {
+		return parent::render( $request, $exception );
+	}
+}

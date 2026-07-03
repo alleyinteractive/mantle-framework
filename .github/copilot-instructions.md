@@ -1,5 +1,7 @@
 # Mantle Framework AI Coding Guidelines
 
+> **Read [`CLAUDE.md`](../CLAUDE.md) first.** It is the source of truth for commands, architecture, and conventions, and it corrects stale details in this file (PSR-4 paths, the container, minimum PHP). Use this document for deeper API reference (models, relationships, query builder, testing) only.
+
 ## Overview
 Mantle is a Laravel-inspired framework for WordPress, providing a modern application architecture while maintaining WordPress ecosystem compatibility. It uses PHP 8.2+ with snake_case naming conventions throughout.
 

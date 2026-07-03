@@ -1,0 +1,27 @@
+{
+    "name": "mantle-framework/types",
+    "description": "The Mantle Framework Support Package",
+    "type": "library",
+    "require": {
+        "php": "^8.3",
+        "alleyinteractive/wp-type-extensions": ">=3.0.0 <5.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mantle\\Types\\": "./"
+        }
+    },
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Alley",
+            "email": "mantle@alley.com"
+        }
+    ],
+    "config": {
+        "allow-plugins": {
+            "alleyinteractive/composer-wordpress-autoloader": true
+        },
+        "sort-packages": true
+    }
+}

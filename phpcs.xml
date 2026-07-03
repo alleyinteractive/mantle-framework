@@ -35,6 +35,7 @@
 		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
 		<exclude name="WordPressVIPMinimum.Functions.StripTags.StripTagsOneParameter" />
 		<exclude name="WordPressVIPMinimum.Performance.FetchingRemoteData" />
+		<exclude name="Alley.PHP.FilterCallbackTypehint.ParameterTypehint" />
 	</rule>
 
 	<rule ref="Generic.Arrays.DisallowLongArraySyntax" />
@@ -52,7 +53,7 @@
 	</rule>
 
 	<rule ref="Squiz.Commenting.FunctionCommentThrowTag.Missing">
-		<exclude-pattern>src/mantle/framework/console/generators/</exclude-pattern>
+		<exclude-pattern>src/Mantle/Framework/console/generators/</exclude-pattern>
 	</rule>
 
 	<rule ref="Internal.NoCodeFound">
@@ -72,15 +73,15 @@
 	</rule>
 
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedNamespaceFound">
-		<exclude-pattern>src/mantle/framework/resources/</exclude-pattern>
+		<exclude-pattern>src/Mantle/Framework/resources/</exclude-pattern>
 	</rule>
 
 	<rule ref="Generic.CodeAnalysis.UselessOverridingMethod.Found">
-		<exclude-pattern>src/mantle/framework/resources/</exclude-pattern>
+		<exclude-pattern>src/Mantle/Framework/resources/</exclude-pattern>
 	</rule>
 
 	<!-- Ignore all WordPres naming conventions for PSR-4 code. -->
 	<rule ref="WordPress.NamingConventions">
-		<exclude-pattern>src/mantle/testing/*</exclude-pattern>
+		<exclude-pattern>src/Mantle/Testing/*</exclude-pattern>
 	</rule>
 </ruleset>
