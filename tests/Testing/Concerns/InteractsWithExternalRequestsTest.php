@@ -15,6 +15,8 @@ use Mantle\Testing\Mock_Http_Sequence;
 use PHPUnit\Framework\Attributes\Group;
 use RuntimeException;
 
+use function Mantle\Support\Helpers\retry;
+
 use function Mantle\Testing\mock_http_response;
 
 /**
@@ -337,10 +339,13 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 
 		$this->ignore_stray_request( 'https://alley.com/*' );
 
-		$request = Http::get( 'https://alley.com/' );
+		// Retry to prevent failures with networking.
+		retry( 3, function (): void {
+			$request = Http::create()->throw_exception()->get( 'https://alley.com/' );
 
-		$this->assertEquals( 200, $request->status() );
-		$this->assertStringContainsString( 'Alley', $request->body() );
+			$this->assertEquals( 200, $request->status() );
+			$this->assertStringContainsString( 'Alley', $request->body() );
+		}, 1000 );
 
 		$this->assertRequestSent( 'https://alley.com/' );
 
@@ -382,7 +387,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 	}
 
 	public function test_fake_request_with_file() {
-		$file = __DIR__ . '/../../../src/mantle/testing/data/images/wordpress-gsoc-flyer.pdf';
+		$file = __DIR__ . '/../../../src/Mantle/Testing/data/images/wordpress-gsoc-flyer.pdf';
 
 		$this->fake_request( 'https://example.org/images/file.pdf' )->with_file( $file );
 

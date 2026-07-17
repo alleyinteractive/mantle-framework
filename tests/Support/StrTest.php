@@ -341,7 +341,6 @@ class StrTest extends TestCase {
 	public function testFlushCache() {
 		$reflection = new ReflectionClass( Str::class );
 		$property   = $reflection->getProperty( 'snake_cache' );
-		$property->setAccessible( true );
 
 		Str::flush_cache();
 		$this->assertEmpty( $property->getValue() );

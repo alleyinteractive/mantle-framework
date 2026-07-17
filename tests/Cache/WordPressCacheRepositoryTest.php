@@ -17,13 +17,22 @@ class WordPressCacheRepositoryTest extends FrameworkTestCase {
 		$this->assertEquals( 'sear-value', Cache::get( 'sear-key' ) );
 
 		$this->assertNull( Cache::get( 'remember-key' ) );
-		Cache::remember( 'remember-key', 3600, fn () => 'remember-value' );
+		// remember() must return the computed value on a cache miss, then the cached value thereafter.
+		$this->assertEquals( 'remember-value', Cache::remember( 'remember-key', 3600, fn () => 'remember-value' ) );
 		$this->assertEquals( 'remember-value', Cache::get( 'remember-key' ) );
+		$this->assertEquals( 'remember-value', Cache::remember( 'remember-key', 3600, fn () => 'different-value' ) );
+
+		$this->assertNull( Cache::get( 'remember-forever-key' ) );
+		$this->assertEquals( 'forever-value', Cache::remember_forever( 'remember-forever-key', fn () => 'forever-value' ) );
+		$this->assertEquals( 'forever-value', Cache::get( 'remember-forever-key' ) );
+		$this->assertEquals( 'forever-value', Cache::remember_forever( 'remember-forever-key', fn () => 'different-value' ) );
 
 		$this->assertEmpty( Cache::get( 'pull-key' ) );
 		Cache::put( 'pull-key', 'pull-value' );
 		$this->assertEquals( 'pull-value', Cache::pull( 'pull-key' ) );
 		$this->assertEmpty( Cache::get( 'pull-key' ) );
+		// pull() returns the default when the key is absent.
+		$this->assertEquals( 'pull-default', Cache::pull( 'pull-missing-key', 'pull-default' ) );
 	}
 
 	public function test_multiple() {

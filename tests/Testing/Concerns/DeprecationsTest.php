@@ -45,13 +45,17 @@ class DeprecationsTest extends FrameworkTestCase {
 	}
 
 	#[Ignore_Deprecation]
-	public function test_ignore_al_deprecation_attribute() {
+	public function test_ignore_all_deprecation_attribute() {
 		_deprecated_function( 'ignored_deprecation', '1.0.0', 'test_ignore_specific_deprecation_attribute' );
+
+		$this->assertTrue( true );
 	}
 
 	#[Ignore_Deprecation( 'ignored_deprecation' )]
 	public function test_ignore_specific_deprecation_attribute() {
 		_deprecated_function( 'ignored_deprecation', '1.0.0', 'test_ignore_specific_deprecation_attribute' );
+
+		$this->assertTrue( true );
 	}
 
 	public function test_ignore_by_prefix() {
@@ -67,5 +71,7 @@ class DeprecationsTest extends FrameworkTestCase {
 
 		_deprecated_function( 'ignored_deprecation', '1.0.0', 'test_ignore_any_deprecation' );
 		_deprecated_function( 'expected_deprecation', '1.0.0', 'test_ignore_any_deprecation' );
+
+		$this->assertTrue( true );
 	}
 }

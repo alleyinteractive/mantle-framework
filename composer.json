@@ -10,22 +10,23 @@
         }
     ],
     "require": {
-        "php": "^8.2",
-        "alleyinteractive/composer-wordpress-autoloader": "^1.0",
+        "php": "^8.3",
         "alleyinteractive/wp-asset-manager": "^1.4.0",
         "alleyinteractive/wp-caper": "^2.0.1 || ^3.0.0",
         "alleyinteractive/wp-concurrent-remote-requests": "^1.0.2",
         "alleyinteractive/wp-filter-side-effects": "^1.0 || ^2.0",
-        "alleyinteractive/wp-type-extensions": ">=3.0.0 <5.0.0",
+        "alleyinteractive/wp-type-extensions": ">=3.0.0 <6.0.0",
         "doctrine/inflector": "^2.0.8",
         "dragonmantank/cron-expression": "^3.3.3",
         "fakerphp/faker": "^1.24",
+        "filp/whoops": "^2.18.1",
         "laravel/serializable-closure": "^1.3.1 || ^2.0",
-        "league/commonmark": "^2.7.0",
+        "league/commonmark": "^2.8.2",
         "league/flysystem": "^3.29",
         "league/uri": "^7.5",
         "league/uri-interfaces": "^7.5",
         "monolog/monolog": "^2.9.1",
+        "myclabs/deep-copy": "^1.13",
         "nesbot/carbon": "^3.8.4",
         "nette/php-generator": "^4.1",
         "nunomaduro/termwind": "^1.15.1 || ^2.0",
@@ -34,12 +35,11 @@
         "psr/simple-cache": "^3.0",
         "ramsey/uuid": "^4.7.4",
         "spatie/backtrace": "^1.8",
-        "spatie/phpunit-snapshot-assertions": "^4.2 || ^5.1",
         "symfony/console": "^7.2",
         "symfony/css-selector": "^7.2.0",
-        "symfony/dom-crawler": "^7.2.0",
+        "symfony/dom-crawler": "^7.4.12",
         "symfony/finder": "^7.2.0",
-        "symfony/http-foundation": "^7.2.0",
+        "symfony/http-foundation": "^7.3.7",
         "symfony/http-kernel": "^7.2.0",
         "symfony/mime": "^7.2.0",
         "symfony/routing": "^7.2.0",
@@ -60,9 +60,10 @@
         "nunomaduro/collision": "^6.0 || ^7.0 || ^8.0",
         "php-stubs/wp-cli-stubs": "^2.11",
         "phpstan/extension-installer": "^1.4",
-        "phpunit/phpunit": "^9.6.22 || ^10.0.7 || ^11.0 || ^12.0",
+        "phpunit/phpunit": "^10.5.62 || ^11.5.50 || ^12.5.8 || ^13.1",
         "rector/rector": "^2.0",
         "spatie/once": "^3.1.1",
+        "spatie/phpunit-snapshot-assertions": "^4.2 || ^5.1",
         "spatie/ray": "^1.41.4",
         "squizlabs/php_codesniffer": "^3.7",
         "symplify/monorepo-builder": "^10.3.3",
@@ -96,28 +97,34 @@
         "mantle-framework/view": "self.version"
     },
     "conflict": {
-        "phpunit/phpunit": ">=13.0.0"
+        "masterminds/html5": "<2.9"
+    },
+    "suggest": {
+        "mantle-framework/testing-dependencies": "For additional packages used with the Mantle testing framework."
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
-            "Mantle\\Testing\\": "src/mantle/testing/",
-            "Mantle\\Testkit\\": "src/mantle/testkit/"
+            "Mantle\\": "src/Mantle/"
         },
         "files": [
-            "src/mantle/framework/helpers.php",
-            "src/mantle/framework-views/autoload.php",
-            "src/mantle/application/autoload.php",
-            "src/mantle/assets/autoload.php",
-            "src/mantle/cache/autoload.php",
-            "src/mantle/config/autoload.php",
-            "src/mantle/http/autoload.php",
-            "src/mantle/http-client/autoload.php",
-            "src/mantle/queue/autoload.php",
-            "src/mantle/support/autoload.php",
-            "src/mantle/testing/autoload.php",
-            "src/mantle/testkit/autoload.php"
+            "src/Mantle/Framework/helpers.php",
+            "src/Mantle/Framework_Views/autoload.php",
+            "src/Mantle/Application/autoload.php",
+            "src/Mantle/Assets/autoload.php",
+            "src/Mantle/Cache/autoload.php",
+            "src/Mantle/Config/autoload.php",
+            "src/Mantle/Http/autoload.php",
+            "src/Mantle/Http_Client/autoload.php",
+            "src/Mantle/Queue/autoload.php",
+            "src/Mantle/Support/autoload.php",
+            "src/Mantle/Testing/autoload.php",
+            "src/Mantle/Testkit/autoload.php"
+        ],
+        "exclude-from-classmap": [
+            "src/Mantle/Framework/resources/",
+            "src/Mantle/Testing/wp-unittestcase.php"
         ]
     },
     "autoload-dev": {
@@ -127,23 +134,18 @@
     },
     "config": {
         "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": true,
             "alleyinteractive/composer-wordpress-autoloader": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true,
             "phpstan/extension-installer": true
         },
         "sort-packages": true
     },
-    "extra": {
-        "wordpress-autoloader": {
-            "autoload": {
-                "Mantle\\": "src/mantle/"
-            },
-            "autoload-dev": {
-                "Mantle\\Tests\\": "tests/"
-            }
-        }
-    },
     "scripts": {
+        "fix-and-test": [
+            "@rector:fix",
+            "composer run phpcbf || true",
+            "@test"
+        ],
         "lint": [
             "@phpcs",
             "@phpstan",
@@ -153,35 +155,25 @@
             "@rector:fix",
             "@phpcbf"
         ],
-        "fix-and-test": [
-            "@rector:fix",
-            "composer run phpcbf || true",
-            "@test"
-        ],
         "merge": "monorepo-builder merge",
         "monorepo-validate": "monorepo-builder validate",
         "phpcbf": "phpcbf --standard=./phpcs.xml .",
-        "phpcs-modified": "./bin/phpcs-modified-files.sh",
         "phpcs": "phpcs --standard=./phpcs.xml .",
-        "phpstan": "phpstan --memory-limit=1536M",
+        "phpcs-modified": "./bin/phpcs-modified-files.sh",
+        "phpstan": "phpstan --memory-limit=3G",
         "phpstan:pro": [
             "Composer\\Config::disableProcessTimeout",
             "@phpstan --pro"
         ],
-        "phpunit:multisite": "WP_MULTISITE=1 phpunit",
-        "phpunit-9": "phpunit --configuration=phpunit-9.xml",
         "phpunit": "phpunit",
-        "rector:fix": "rector process",
+        "phpunit:multisite": "WP_MULTISITE=1 phpunit",
         "rector": "rector process --dry-run",
-        "release:patch": "monorepo-builder release patch --ansi",
+        "rector:fix": "rector process",
         "release": "monorepo-builder release --ansi",
+        "release:patch": "monorepo-builder release patch --ansi",
         "test": [
             "@lint",
             "@phpunit"
         ]
-    },
-    "suggest": {
-        "brianium/paratest": "Run PHPUnit tests in parallel",
-        "illuminate/view": "For Blade templating"
     }
 }

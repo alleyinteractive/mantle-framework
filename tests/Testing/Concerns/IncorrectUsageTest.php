@@ -51,6 +51,8 @@ class IncorrectUsageTest extends FrameworkTestCase {
 
 		_doing_it_wrong( 'ignored_incorrect_usage', 'This is a test', '1.0.0' );
 		_doing_it_wrong( 'expected_incorrect_usage', 'This is a test', '1.0.0' );
+
+		$this->assertTrue( true );
 	}
 
 	#[Expected_Incorrect_Usage( 'expected_incorrect_usage' )]
@@ -61,10 +63,14 @@ class IncorrectUsageTest extends FrameworkTestCase {
 	#[Ignore_Incorrect_Usage]
 	public function test_ignore_by_attribute() {
 		_doing_it_wrong( 'ignored_incorrect_usage', 'This is a test', '1.0.0' );
+
+		$this->assertTrue( true );
 	}
 
 	#[Ignore_Incorrect_Usage( 'ignored_incorrect_usage' )]
 	public function test_ignore_specific_by_attribute() {
 		_doing_it_wrong( 'ignored_incorrect_usage', 'This is a test', '1.0.0' );
+
+		$this->assertTrue( true );
 	}
 }

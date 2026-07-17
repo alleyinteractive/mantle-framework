@@ -7,6 +7,7 @@
 
 namespace Mantle\Tests\Console;
 
+use Mantle\Filesystem\Filesystem;
 use Mantle\Http\Request;
 
 class ResponseFactoryTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
@@ -15,6 +16,10 @@ class ResponseFactoryTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		parent::setUp();
 
 		app()->instance( 'request', new Request() );
+
+		if ( ! app()->bound( 'files' ) ) {
+			app()->instance( 'files', new Filesystem() );
+		}
 	}
 
 	public function tearDown(): void {

@@ -8,7 +8,9 @@
 use Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector;
+use Rector\CodingStyle\Rector\ArrowFunction\ArrowFunctionDelegatingCallToFirstClassCallableRector;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
+use Rector\CodingStyle\Rector\Closure\ClosureDelegatingCallToFirstClassCallableRector;
 use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
 use Rector\CodingStyle\Rector\FunctionLike\FunctionLikeToFirstClassCallableRector;
 use Rector\CodingStyle\Rector\If_\NullableCompareToNullRector;
@@ -20,10 +22,14 @@ use Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchExprVariableR
 
 use Rector\EarlyReturn\Rector\If_\ChangeOrIfContinueToMultiContinueRector;
 use Rector\EarlyReturn\Rector\Return_\ReturnBinaryOrToEarlyReturnRector;
+use Rector\TypeDeclaration\Rector\StmtsAwareInterface\SafeDeclareStrictTypesRector;
+use Rector\Php70\Rector\StmtsAwareInterface\IfIssetToCoalescingRector;
 use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\Php80\Rector\NotIdentical\StrContainsRector;
+use Rector\Php81\Rector\Array_\ArrayToFirstClassCallableRector;
 use Rector\Php81\Rector\Array_\FirstClassCallableRector;
+use Rector\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector;
 use Rector\Php84\Rector\Param\ExplicitNullableParamTypeRector;
 use Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector;
 use Rector\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector;
@@ -50,7 +56,7 @@ use Rector\ValueObject\PhpVersion;
  * - ChangeOrIfContinueToMultiContinueRector: doesn't make sense.
  */
 return RectorConfig::configure()
-	->withPhpVersion( PhpVersion::PHP_84 )
+	->withPhpVersion( PhpVersion::PHP_83 )
 	->withPhpSets()
 	->withIndent( "\t" )
 	->withPaths( [ __DIR__ . '/src' ] )
@@ -71,50 +77,56 @@ return RectorConfig::configure()
 		]
 	)
 	->withSkip( [
+		// Adding #[\Override] shifts PHPStan's reported line for this file's
+		// intentionally-suppressed generics false-positives, breaking the inline
+		// @phpstan-ignore-line directives on the overridden methods.
+		AddOverrideAttributeToOverriddenMethodsRector::class => [
+			__DIR__ . '/src/Mantle/Database/Query/Collection.php',
+		],
 		AddVoidReturnTypeWhereNoReturnRector::class => [
-			__DIR__ . '/src/mantle/testing/concerns/trait-core-shim.php',
+			__DIR__ . '/src/Mantle/Testing/Concerns/Core_Shim.php',
 			__DIR__ . '/tests/Testing/CoreTestShimTest.php',
 			__DIR__ . '/tests/testing/CoreTestShimTest.php',
 		],
 		ClassPropertyAssignToConstructorPromotionRector::class => [
-			__DIR__ . '/src/mantle/support/class-service-provider.php',
+			__DIR__ . '/src/Mantle/Support/Service_Provider.php',
 		],
 		RemoveUselessReturnTagRector::class => [
-			__DIR__ . '/src/mantle/database/model/relations',
+			__DIR__ . '/src/Mantle/Database/Model/Relations',
 		],
 		ReturnNullableTypeRector::class => [
-			__DIR__ . '/src/mantle/database/model/relations',
+			__DIR__ . '/src/Mantle/Database/Model/Relations',
 		],
 		ReturnTypeFromStrictTypedCallRector::class => [
-			__DIR__ . '/src/mantle/database/model/relations',
+			__DIR__ . '/src/Mantle/Database/Model/Relations',
 		],
-		FirstClassCallableRector::class,
+		ArrayToFirstClassCallableRector::class,
 		RemoveUselessParamTagRector::class,
 		StrContainsRector::class,
 		AddArrowFunctionReturnTypeRector::class,
 		ChangeOrIfContinueToMultiContinueRector::class,
 		EmptyOnNullableObjectToInstanceOfRector::class,
 		ReturnBinaryOrToEarlyReturnRector::class => [
-			__DIR__ . '/src/mantle/http-client/class-response.php',
+			__DIR__ . '/src/Mantle/Http_Client/Response.php',
 		],
 		RemoveExtraParametersRector::class => [
-			__DIR__ . '/src/mantle/support/helpers/helpers-general.php',
+			__DIR__ . '/src/Mantle/Support/helpers/helpers-general.php',
 		],
 		ReturnTypeFromReturnNewRector::class => [
-			__DIR__ . '/src/mantle/support/class-collection.php',
-			__DIR__ . '/src/mantle/support/traits/trait-enumerates-values.php',
+			__DIR__ . '/src/Mantle/Support/Collection.php',
+			__DIR__ . '/src/Mantle/Support/Traits/Enumerates_Values.php',
 		],
 		ReturnUnionTypeRector::class => [
-			__DIR__ . '/src/mantle/framework/exceptions/class-handler.php',
+			__DIR__ . '/src/Mantle/Framework/Exceptions/Handler.php',
 		],
 		ReturnTypeFromStrictFluentReturnRector::class => [
-			__DIR__ . '/src/mantle/database/query/class-collection.php',
-			__DIR__ . '/src/mantle/support/class-collection.php',
-			__DIR__ . '/src/mantle/support/traits/trait-enumerates-values.php',
+			__DIR__ . '/src/Mantle/Database/Query/Collection.php',
+			__DIR__ . '/src/Mantle/Support/Collection.php',
+			__DIR__ . '/src/Mantle/Support/Traits/Enumerates_Values.php',
 		],
 		ExplicitBoolCompareRector::class => [
-			__DIR__ . '/src/mantle/database/model/class-post.php',
-			__DIR__ . '/src/mantle/testing',
+			__DIR__ . '/src/Mantle/Database/Model/Post.php',
+			__DIR__ . '/src/Mantle/Testing',
 		],
 		SimplifyEmptyCheckOnEmptyArrayRector::class,
 		DisallowedEmptyRuleFixerRector::class,
@@ -123,5 +135,9 @@ return RectorConfig::configure()
 		EncapsedStringsToSprintfRector::class,
 		FlipTypeControlToUseExclusiveTypeRector::class,
 		FunctionLikeToFirstClassCallableRector::class,
+		ClosureDelegatingCallToFirstClassCallableRector::class,
+		ArrowFunctionDelegatingCallToFirstClassCallableRector::class,
 		RemoveNullArgOnNullDefaultParamRector::class,
+		IfIssetToCoalescingRector::class,
+		SafeDeclareStrictTypesRector::class,
 	] );

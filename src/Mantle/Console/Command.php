@@ -1,0 +1,240 @@
+<?php
+/**
+ * Command class file.
+ *
+ * @package Mantle
+ */
+
+declare(strict_types=1);
+
+namespace Mantle\Console;
+
+use Mantle\Contracts\Application as Application_Contract;
+use InvalidArgumentException;
+use Mantle\Console\Attributes\Hide_Console_Isolation_Mode;
+use Mantle\Framework\Bootloader;
+use Mantle\Support\Traits\Macroable;
+use ReflectionClass;
+use Symfony\Component\Console\Command\Command as Symfony_Command;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\OutputInterface;
+use Throwable;
+
+use function Mantle\Support\Helpers\mixed;
+
+/**
+ * CLI Command for Service Providers
+ */
+abstract class Command extends Symfony_Command {
+	use Concerns\Interacts_With_IO;
+	use Macroable;
+
+	/**
+	 * The console command name.
+	 *
+	 * @var string
+	 */
+	protected $name;
+
+	/**
+	 * Command Short Description.
+	 *
+	 * @var string
+	 */
+	protected $short_description = '';
+
+	/**
+	 * Command Description.
+	 *
+	 * @var string
+	 */
+	protected $description = '';
+
+	/**
+	 * The console command signature.
+	 *
+	 * @var string
+	 */
+	protected $signature;
+
+	/**
+	 * The command's help text.
+	 */
+	protected string $help;
+
+	/**
+	 * Container instance.
+	 */
+	protected Application_Contract $container;
+
+	/**
+	 * Constructor.
+	 */
+	public function __construct() {
+		// Infer the name from the signature.
+		if ( ! empty( $this->signature ) ) {
+			$this->set_definition_from_signature();
+		} else {
+			parent::__construct( $this->name );
+		}
+
+		$this->setDescription( $this->short_description ?: $this->description );
+
+		if ( ! empty( $this->help ) ) {
+			$this->setHelp( $this->help );
+		}
+
+		if ( ( new ReflectionClass( $this ) )->getAttributes( Hide_Console_Isolation_Mode::class ) ) {
+			$this->setHidden( true );
+		}
+	}
+
+	/**
+	 * Setup the definition from the signature.
+	 */
+	protected function set_definition_from_signature(): void {
+		// Prefix the signature with the name if defined separately.
+		if ( ! empty( $this->name ) && ! str_starts_with( $this->signature, $this->name ) ) {
+			$this->signature = $this->name . ' ' . $this->signature;
+		}
+
+		[ $this->name, $arguments, $options ] = Parser::parse( $this->signature );
+
+		parent::__construct( $this->name );
+
+		// After parsing the signature we will spin through the arguments and options
+		// and set them on this command. These will already be changed into proper
+		// instances of these "InputArgument" and "InputOption" Symfony classes.
+		$this->getDefinition()->addArguments( $arguments );
+		$this->getDefinition()->addOptions( $options );
+	}
+
+	/**
+	 * Getter for the command name.
+	 */
+	public function get_name(): string {
+		return $this->name;
+	}
+
+	/**
+	 * Runs the command.
+	 *
+	 * {@inheritDoc}
+	 *
+	 * @see \Symfony\Component\Console\Command\Command::run()
+	 *
+	 * @param InputInterface  $input
+	 * @param OutputInterface $output
+	 */
+	#[\Override]
+	public function run( InputInterface $input, OutputInterface $output ): int {
+		$this->output = $this->container->make(
+			Output_Style::class,
+			[
+				'input'  => $input,
+				'output' => $output,
+			]
+		);
+
+		return parent::run( $this->input = $input, $this->output );
+	}
+
+	/**
+	 * Execute the console command.
+	 *
+	 * @throws InvalidArgumentException Thrown on invalid command.
+	 *
+	 * @param InputInterface  $input
+	 * @param OutputInterface $output
+	 */
+	protected function execute( InputInterface $input, OutputInterface $output ): int {
+		$this->set_input( $input );
+		$this->set_output( $output );
+
+		$method = method_exists( $this, 'handle' ) ? 'handle' : '__invoke';
+
+		if ( ! method_exists( $this, $method ) ) {
+			throw new InvalidArgumentException( 'The command is missing a handle or __invoke method.' );
+		}
+
+		$callable = [ $this, $method ];
+
+		if ( ! is_callable( $callable ) ) {
+			throw new InvalidArgumentException( "The command's {$method} method is not callable." );
+		}
+
+		return mixed( $this->container->call( $callable ) )->int();
+	}
+
+	/**
+	 * Run another command.
+	 *
+	 * @param string          $command Command to run.
+	 * @param array<string>   $options Options for the command.
+	 * @param OutputInterface $output Output interface.
+	 * @return int|mixed
+	 *
+	 * @throws InvalidArgumentException Thrown on invalid command.
+	 */
+	public function call( string $command, array $options = [], ?OutputInterface $output = null ) {
+		$prefix = Bootloader::instance()->get_wp_cli_command_prefix();
+
+		if ( str_starts_with( $command, $prefix . ' ' ) ) {
+			$command = substr( $command, strlen( $prefix ) + 1 );
+
+			$application = $this->getApplication();
+
+			if ( ! $application instanceof \Symfony\Component\Console\Application ) {
+				throw new InvalidArgumentException( 'Unable to proxy to WP-CLI when application instance is missing.' );
+			}
+
+			// Attempt to resolve the command from the container and run it.
+			$command = $application->find( $command );
+
+			return $command->run( new ArrayInput( $options ), $output ?: new ConsoleOutput() );
+		}
+
+		if ( ! defined( 'WP_CLI' ) || ! WP_CLI ) {
+			throw new InvalidArgumentException( 'Unable to proxy to WP-CLI when not running in WP-CLI mode.' );
+		}
+
+		return \WP_CLI::runcommand( $command, $options );
+	}
+
+	/**
+	 * Set the application container.
+	 *
+	 * @param Application_Contract $container Application container.
+	 */
+	public function set_container( Application_Contract $container ): void {
+		$this->container = $container;
+	}
+
+	/**
+	 * Retrieve the application container.
+	 */
+	public function get_container(): Application_Contract {
+		return $this->container;
+	}
+
+	/**
+	 * Fail the command.
+	 *
+	 * @param Throwable|string|null $exception Exception to throw.
+	 *
+	 * @throws Manually_Failed_Exception|Throwable Thrown exception.
+	 */
+	public function fail( Throwable|string|null $exception = null ): void {
+		if ( is_null( $exception ) ) {
+			$exception = 'Command manually failed.';
+		}
+
+		if ( is_string( $exception ) ) {
+			$exception = new Manually_Failed_Exception( $exception );
+		}
+
+		throw $exception;
+	}
+}

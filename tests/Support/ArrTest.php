@@ -1185,7 +1185,7 @@ class ArrTest extends TestCase {
 		$array = [
 			'products' => [
 				'desk' => [ 'price' => 50 ],
-				null   => 'something',
+				''     => 'something',
 			],
 		];
 		Arr::forget( $array, [ 'products.amount.all', 'products.desk.price' ] );
@@ -1193,7 +1193,7 @@ class ArrTest extends TestCase {
 			[
 				'products' => [
 					'desk' => [],
-					null   => 'something',
+					''     => 'something',
 				],
 			],
 			$array

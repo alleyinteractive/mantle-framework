@@ -5,47 +5,46 @@ parameters:
 	level: 8
 
 	paths:
-		- src/mantle
+		- src/Mantle/
 		- mantle.php
+		- phpstan/
 
 	ignoreErrors:
-		-
-			identifier: trait.unused
 		-
 			identifier: staticMethod.resultUnused
 		# Will be fixed in PHPStan soon.
 		-
 			identifier: function.alreadyNarrowedType
 			paths:
-				- src/mantle/support
-				- src/mantle/testing
+				- src/Mantle/Support
+				- src/Mantle/Testing
 		-
 			identifier: missingType.generics
 			paths:
-				- src/mantle/contracts
+				- src/Mantle/Contracts
 		-
 			identifier: missingType.iterableValue
 			paths:
-				- src/mantle/contracts
-				- src/mantle/facade
-				- src/mantle/filesystem/class-filesystem.php
-				- src/mantle/filesystem/class-filesystem-adapter.php
-				- src/mantle/testing
-				- src/mantle/testkit
+				- src/Mantle/Contracts
+				- src/Mantle/Facade
+				- src/Mantle/Filesystem/Filesystem.php
+				- src/Mantle/Filesystem/Filesystem_Adapter.php
+				- src/Mantle/Testing
+				- src/Mantle/Testkit
 		-
 			identifier: missingType.return
 			paths:
-				- src/mantle/contracts
-				- src/mantle/testing/concerns/trait-core-shim.php
+				- src/Mantle/Contracts
+				- src/Mantle/Testing/Concerns/Core_Shim.php
 		-
 			identifier: missingType.parameter
 			paths:
 				- **/autoload.php
-				- src/mantle/filesystem/class-filesystem-adapter.php
+				- src/Mantle/Filesystem/Filesystem_Adapter.php
 		-
 			message: "#implements generic interface ArrayAccess but does not specify its types#"
 			paths:
-				- src/mantle/testing
+				- src/Mantle/Testing
 		- "#Unsafe usage of new static#"
 		- "#PHPDoc tag @param references unknown parameter#"
 		- "#interface ArrayAccess but does not specify#"
@@ -58,15 +57,15 @@ parameters:
 		-
 			identifier: method.childReturnType
 			paths:
-				- src/mantle/http-client/class-pooled-pending-request.php
+				- src/Mantle/Http_Client/Pooled_Pending_Request.php
 		-
 			identifier: argument.type
 			paths:
-				- src/mantle/support/class-collection.php
+				- src/Mantle/Support/Collection.php
 		-
 			identifier: return.type
 			paths:
-				- src/mantle/support/class-collection.php
+				- src/Mantle/Support/Collection.php
 
 	scanFiles:
 		- %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-stubs.php
@@ -75,20 +74,21 @@ parameters:
 		- tests/fixtures/phpstan
 
 	excludePaths:
-		- src/mantle/blocks
-		- src/mantle/container/class-bound-method.php
-		- src/mantle/database/factory
-		- src/mantle/framework/console/class-hook-usage-command.php
-		- src/mantle/framework/console/generators
-		- src/mantle/query-monitor
-		- src/mantle/queue/providers/wordpress/admin/class-queue-jobs-table.php
-		- src/mantle/queue/providers/wordpress/admin/class-service-provider.php
-		- src/mantle/support/interface-enumerable.php
-		- src/mantle/support/traits/trait-conditionable.php
-		- src/mantle/testing/class-mock-action.php
-		- src/mantle/testing/install-wordpress.php
-		- src/mantle/testing/preload.php
-		- src/mantle/testing/wordpress-bootstrap.php
+		- src/Mantle/Blocks
+		- src/Mantle/Container/Bound_Method.php
+		- src/Mantle/Database/Factory
+		- src/Mantle/Framework/Console/Hook_Usage_Command.php
+		- src/Mantle/Framework/Console/Generators
+		- src/Mantle/Query_Monitor
+		- src/Mantle/Queue/Providers/WordPress/Admin/Queue_Jobs_Table.php
+		- src/Mantle/Queue/Providers/WordPress/Admin/Service_Provider.php
+		- src/Mantle/Support/Enumerable.php
+		- src/Mantle/Support/Traits/Conditionable.php
+		- src/Mantle/Testing/Mock_Action.php
+		- src/Mantle/Testing/install-wordpress.php
+		- src/Mantle/Testing/preload.php
+		- src/Mantle/Testing/wordpress-bootstrap.php
+		- src/Mantle/**/vendor/**
 
 		# Files that need to be fixed and re-added.
-		- src/mantle/queue/class-queue-fake.php
+		- src/Mantle/Queue/Queue_Fake.php
