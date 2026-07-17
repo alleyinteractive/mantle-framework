@@ -12,7 +12,6 @@ use Rector\CodingStyle\Rector\ArrowFunction\ArrowFunctionDelegatingCallToFirstCl
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
 use Rector\CodingStyle\Rector\Closure\ClosureDelegatingCallToFirstClassCallableRector;
 use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
-use Rector\CodingStyle\Rector\FunctionLike\FunctionLikeToFirstClassCallableRector;
 use Rector\CodingStyle\Rector\If_\NullableCompareToNullRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
@@ -134,7 +133,6 @@ return RectorConfig::configure()
 		CatchExceptionNameMatchingTypeRector::class,
 		EncapsedStringsToSprintfRector::class,
 		FlipTypeControlToUseExclusiveTypeRector::class,
-		FunctionLikeToFirstClassCallableRector::class,
 		ClosureDelegatingCallToFirstClassCallableRector::class,
 		ArrowFunctionDelegatingCallToFirstClassCallableRector::class,
 		RemoveNullArgOnNullDefaultParamRector::class,

@@ -451,7 +451,10 @@ function html_string( string $html ): HTML {
 function capture( callable $callback ): string {
 	ob_start();
 	$callback();
-	return ob_get_clean();
+
+	$output = ob_get_clean();
+
+	return false === $output ? '' : $output;
 }
 
 /**
