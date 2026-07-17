@@ -51,8 +51,6 @@ parameters:
 		- "#ReflectionClass does not specify its types#"
 		- "#ReflectionAttribute does not specify its types#"
 		- "#@return is not subtype of template type TKey#"
-		- "#WP_REST_Request does not specify its types#"
-		- "#WP_REST_Request but does not specify its types#"
 		- "#query of method wpdb::prepare#"
 		-
 			identifier: method.childReturnType

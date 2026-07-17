@@ -116,16 +116,6 @@ trait Interacts_With_IO {
 	}
 
 	/**
-	 * Get the value of a command option as a mixed type.
-	 *
-	 * @param  string $key The option name.
-	 * @param  mixed  $default Default value if the option does not exist.
-	 */
-	public function mixed_option( string $key, mixed $default = null ): Mixed_Data {
-		return mixed( $this->option( $key, $default ) );
-	}
-
-	/**
 	 * Get all of the options passed to the command.
 	 *
 	 * @return array<mixed>

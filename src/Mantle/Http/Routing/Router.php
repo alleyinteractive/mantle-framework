@@ -262,8 +262,6 @@ class Router implements Router_Contract {
 			$this->registrar = new Route_Registrar( $this );
 		}
 
-		assert( $this->registrar instanceof Registrar_Contract );
-
 		$value = $callback( $this->registrar );
 
 		if ( ! $set || $clear ) {
