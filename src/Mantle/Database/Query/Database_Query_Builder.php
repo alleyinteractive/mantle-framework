@@ -111,14 +111,7 @@ class Database_Query_Builder extends Builder {
 		$select = $this->select ? implode( ', ', $this->select ) : '*';
 
 		$wheres = collect( $this->bindings['where'] )
-			->map(
-				fn ( mixed $binding, string $index ) => (string) $wpdb->prepare( // phpcs:ignore WordPress.DB
-					0 === (int) $index // phpcs:ignore WordPress.DB
-						? "{$binding['column']} {$binding['operator']} %s" // phpcs:ignore WordPress.DB
-						: "{$binding['boolean']} {$binding['column']} {$binding['operator']} %s", // phpcs:ignore WordPress.DB
-					$binding['value']
-				),
-			)
+			->map( $this->compile_where_binding( ... ) )
 			->filter()
 			->values()
 			->to_array();
@@ -147,12 +140,53 @@ class Database_Query_Builder extends Builder {
 			$table = $wpdb->prefix . $table;
 		}
 
+		$order = [];
+
+		foreach ( $this->order_by as $index => $column ) {
+			$direction = $this->order[ $index ] ?? 'ASC';
+
+			$order[] = sprintf( '%s %s', $column, strtoupper( $direction ) );
+		}
+
 		return sprintf(
-			'SELECT %s FROM %s %s %s',
+			'SELECT %s FROM %s %s %s %s',
 			$select,
 			$table,
 			count( $wheres ) > 0 ? 'WHERE ' . implode( ' ', $wheres ) : '',
+			$order !== [] ? 'ORDER BY ' . implode( ', ', $order ) : '',
 			$limit
+		);
+	}
+
+	/**
+	 * Compile a where binding into a SQL string.
+	 *
+	 * @param array<string, mixed> $binding Binding to compile.
+	 * @param int|string           $index   Index of the binding in the where clause.
+	 */
+	protected function compile_where_binding( array $binding, int|string $index ): string {
+		global $wpdb;
+
+		assert( $wpdb instanceof \wpdb );
+
+		if ( $binding['operator'] === 'IN' && is_array( $binding['value'] ) ) {
+			$placeholders = implode( ', ', array_fill( 0, count( $binding['value'] ), '%s' ) );
+
+			$query = (string) $wpdb->prepare(
+				"{$binding['column']} {$binding['operator']} ({$placeholders})", // phpcs:ignore WordPress.DB
+				...$binding['value'],
+			);
+
+			return 0 === (int) $index // phpcs:ignore WordPress.DB
+				? $query // phpcs:ignore WordPress.DB
+				: "{$binding['boolean']} {$query}"; // phpcs:ignore WordPress.DB
+		}
+
+		return (string) $wpdb->prepare( // phpcs:ignore WordPress.DB
+			0 === (int) $index // phpcs:ignore WordPress.DB
+			? "{$binding['column']} {$binding['operator']} %s" // phpcs:ignore WordPress.DB
+			: "{$binding['boolean']} {$binding['column']} {$binding['operator']} %s", // phpcs:ignore WordPress.DB
+			$binding['value']
 		);
 	}
 
@@ -203,11 +237,37 @@ class Database_Query_Builder extends Builder {
 	 */
 	#[\Override]
 	public function where_raw( array|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' ): static {
+		if ( is_array( $column ) ) {
+			foreach ( $column as $value ) {
+				$this->where_raw( ...array_values( $value ) );
+			}
+
+			return $this;
+		}
+
 		$this->bindings['where'][] = [
 			'boolean'  => $boolean,
 			'column'   => $column,
 			'operator' => $operator ?? '=',
 			'value'    => $value,
+		];
+
+		return $this;
+	}
+
+	/**
+	 * Query an attribute against a list.
+	 *
+	 * @param string $attribute Attribute to query against.
+	 * @param array<mixed>  $values List of values.
+	 */
+	#[\Override]
+	public function whereIn( string $attribute, array $values, string $boolean = 'AND' ): static {
+		$this->bindings['where'][] = [
+			'boolean'  => $boolean,
+			'column'   => $attribute,
+			'operator' => 'IN',
+			'value'    => $values,
 		];
 
 		return $this;

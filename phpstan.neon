@@ -78,8 +78,7 @@ parameters:
 		- src/Mantle/Framework/Console/Hook_Usage_Command.php
 		- src/Mantle/Framework/Console/Generators
 		- src/Mantle/Query_Monitor
-		- src/Mantle/Queue/Providers/WordPress/Admin/Queue_Jobs_Table.php
-		- src/Mantle/Queue/Providers/WordPress/Admin/Service_Provider.php
+		- src/Mantle/Queue/Admin/Queue_Jobs_Table.php
 		- src/Mantle/Support/Enumerable.php
 		- src/Mantle/Support/Traits/Conditionable.php
 		- src/Mantle/Testing/Mock_Action.php

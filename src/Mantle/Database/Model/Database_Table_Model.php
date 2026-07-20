@@ -52,9 +52,15 @@ abstract class Database_Table_Model extends Model implements Updatable {
 
 		$primary_key = static::$primary_key;
 
+		$table = static::get_table_name();
+
+		if ( ! str_starts_with( $table, $wpdb->prefix ) ) {
+			$table = $wpdb->prefix . $table;
+		}
+
 		$result = $wpdb->get_row( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 			$wpdb->prepare(
-				"SELECT * FROM {$wpdb->prefix}" . static::get_table_name() . " WHERE {$primary_key} = %s LIMIT 1", // phpcs:ignore WordPress.DB.PreparedSQL
+				"SELECT * FROM {$table} WHERE {$primary_key} = %s LIMIT 1", // phpcs:ignore WordPress.DB.PreparedSQL
 				$object,
 			),
 			ARRAY_A,
@@ -77,9 +83,15 @@ abstract class Database_Table_Model extends Model implements Updatable {
 
 		assert( $wpdb instanceof \wpdb );
 
+		$table = static::get_table_name();
+
+		if ( ! str_starts_with( $table, $wpdb->prefix ) ) {
+			$table = $wpdb->prefix . $table;
+		}
+
 		if ( $this->exists ) {
 			$result = $wpdb->update( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
-				$wpdb->prefix . static::get_table_name(),
+				$table,
 				$this->get_attributes_for_insert(),
 				[ static::$primary_key => $this->get_attribute( static::$primary_key ) ],
 			);
@@ -88,18 +100,18 @@ abstract class Database_Table_Model extends Model implements Updatable {
 				throw new Model_Exception(
 					sprintf(
 						'Failed to update %s table. Please check your database connection and permissions.',
-						static::get_table_name(),
+						$table,
 					),
 				);
 			}
 		} else {
-			$result = $wpdb->insert( $wpdb->prefix . static::get_table_name(), $this->get_attributes_for_insert() ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+			$result = $wpdb->insert( $table, $this->get_attributes_for_insert() ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 
 			if ( ! $result ) {
 				throw new Model_Exception(
 					sprintf(
 						'Failed to insert into %s table. Please check your database connection and permissions.',
-						static::get_table_name(),
+						$table,
 					),
 				);
 			}
@@ -128,8 +140,14 @@ abstract class Database_Table_Model extends Model implements Updatable {
 			throw new Model_Exception( 'Cannot delete a model that does not exist.' );
 		}
 
+		$table = static::get_table_name();
+
+		if ( ! str_starts_with( $table, $wpdb->prefix ) ) {
+			$table = $wpdb->prefix . $table;
+		}
+
 		$result = $wpdb->delete( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
-			$wpdb->prefix . static::get_table_name(),
+			$table,
 			[ static::$primary_key => $this->get_attribute( static::$primary_key ) ],
 		);
 

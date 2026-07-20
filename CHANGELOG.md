@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Changed
+
+- **The queue system now stores jobs in a dedicated database table instead of the
+  `wp_posts` table (#660).** Jobs are backed by a new `{prefix}mantle_queue` table for
+  better performance and isolation. The post-based WordPress provider
+  (`Mantle\Queue\Providers\WordPress\Provider` and its `Meta_Key`, `Queue_Record`,
+  `Post_Status`, `Scheduler`, and `Queue_Worker_Job` companions) has been removed and
+  replaced by `Mantle\Queue\Database_Queue_Provider`, `Database_Scheduler`, and the
+  `Mantle\Queue\Jobs\*` classes (`Job`, `Database_Job`, `Database_Job_Record`,
+  `Status`). This is a backwards-incompatible change for code that referenced those
+  classes directly. Use `wp mantle queue:cleanup --legacy` to remove jobs left in the
+  old post type.
+- The `Mantle\Contracts\Queue\Provider` contract's `push()` method now accepts an
+  optional `?string $queue` argument, and `pending_count()` was renamed to
+  `pending_size()` with a new `size()` method added.
+- The `assertInCronQueue()` / `assertNotInCronQueue()` assertions now default to not
+  checking arguments unless `$args` is passed, and gained `assertCronScheduled()` /
+  `assertCronNotScheduled()` aliases.
+
 ## v1.22.0
 
 ### Changed

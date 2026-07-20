@@ -162,6 +162,8 @@ class Utils {
 		// phpcs:disable WordPress.DB,WordPressVIPMinimum.Variables
 		global $wpdb;
 
+		assert( $wpdb instanceof \wpdb );
+
 		foreach ( [
 			$wpdb->posts,
 			$wpdb->postmeta,
@@ -171,6 +173,11 @@ class Utils {
 			$wpdb->termmeta,
 		] as $table ) {
 			$wpdb->query( "DELETE FROM {$table}" );
+		}
+
+		// Handle the Mantle queue if set.
+		if ( isset( $wpdb->mantle_queue ) ) {
+			$wpdb->query( "DELETE FROM {$wpdb->mantle_queue}" );
 		}
 
 		foreach ( [

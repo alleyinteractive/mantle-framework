@@ -5,19 +5,24 @@
  * phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
  *
  * @package Mantle
- * @var \Mantle\Queue\Providers\WordPress\Queue_Record $job The queue job.
+ * @var \Mantle\Queue\Jobs\Database_Job_Record $record
  */
 
 use Carbon\Carbon;
-use Mantle\Queue\Providers\WordPress\Meta_Key;
-use Mantle\Queue\Providers\WordPress\Post_Status;
-use Mantle\Queue\Providers\WordPress\Queue_Worker_Job;
+use Mantle\Queue\Jobs\Database_Job_Record;
+use Mantle\Queue\Jobs\Status;
 
-$worker_job = new Queue_Worker_Job( $job );
+if ( ! isset( $record ) || ! $record instanceof Database_Job_Record ) { // @phpstan-ignore-line instanceof.alwaysTrue
+	esc_html_e( 'Invalid job record.', 'mantle' );
+	return;
+}
 
-$log = $job->get_meta( Meta_Key::LOG->value, true );
-$log = is_array( $log ) ? $log : [];
+$log = is_array( $record->log ) ? $record->log : json_decode( $record->log, true ); // @phpstan-ignore-line
+$job = $record->job();
 
+if ( ! is_array( $log ) ) {
+	$log = [];
+}
 ?>
 <div class="wrap">
 	<h1>
@@ -25,12 +30,12 @@ $log = is_array( $log ) ? $log : [];
 		printf(
 			/* translators: %s: The job ID. */
 			esc_html__( 'Mantle Queue: Job #%1$s — %2$s', 'mantle' ),
-			(int) $job->id,
+			(int) $record->id,
 			/* phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped */
-			match ( $job->status ) {
-				Post_Status::PENDING->value => esc_html__( 'Pending', 'mantle' ),
-				Post_Status::FAILED->value => esc_html__( 'Failed', 'mantle' ),
-				Post_Status::RUNNING->value => esc_html__( 'Running', 'mantle' ),
+			match ( Status::from( $record->status ) ) {
+				Status::PENDING => esc_html__( 'Pending', 'mantle' ),
+				Status::FAILED => esc_html__( 'Failed', 'mantle' ),
+				Status::RUNNING => esc_html__( 'Running', 'mantle' ),
 				default => esc_html__( 'Unknown', 'mantle' ),
 			},
 			/* phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped */
@@ -48,16 +53,38 @@ $log = is_array( $log ) ? $log : [];
 	<section class="queue-job-container">
 		<aside>
 			<div>
-				<?php if ( Post_Status::FAILED->value === $job->status ) : ?>
+				<?php if ( Status::PENDING->value === $record->status ) : ?>
 					<a
 						href="
 						<?php
 						echo esc_url(
 							add_query_arg(
 								[
-									'_wpnonce' => wp_create_nonce( 'queue-job-action-' . $job->id ),
+									'_wpnonce' => wp_create_nonce( 'queue-job-action-' . $record->id ),
 									'filter'   => false,
-									'job'      => (int) $job->id,
+									'job'      => (int) $record->id,
+									'action'   => 'run',
+								]
+							)
+						);
+						?>
+					"
+						aria-label="<?php esc_attr_e( 'Run this job', 'mantle' ); ?>"
+						class="button button-primary"
+					>
+						<?php esc_html_e( 'Run', 'mantle' ); ?>
+					</a>
+				<?php endif; ?>
+				<?php if ( Status::FAILED->value === $record->status ) : ?>
+					<a
+						href="
+						<?php
+						echo esc_url(
+							add_query_arg(
+								[
+									'_wpnonce' => wp_create_nonce( 'queue-job-action-' . $record->id ),
+									'filter'   => false,
+									'job'      => (int) $record->id,
 									'action'   => 'retry',
 								]
 							)
@@ -70,16 +97,16 @@ $log = is_array( $log ) ? $log : [];
 						<?php esc_html_e( 'Retry', 'mantle' ); ?>
 					</a>
 				<?php endif; ?>
-				<?php if ( Post_Status::RUNNING->value !== $job->status && ! $job->is_locked() ) : ?>
+				<?php if ( Status::RUNNING->value !== $record->status && ! $record->is_locked() ) : ?>
 					<a
 						href="
 						<?php
 						echo esc_url(
 							add_query_arg(
 								[
-									'_wpnonce' => wp_create_nonce( 'queue-job-action-' . $job->id ),
+									'_wpnonce' => wp_create_nonce( 'queue-job-action-' . $record->id ),
 									'filter'   => false,
-									'job'      => (int) $job->id,
+									'job'      => (int) $record->id,
 									'action'   => 'delete',
 								]
 							)
@@ -96,34 +123,39 @@ $log = is_array( $log ) ? $log : [];
 			</div>
 			<h3><?php esc_html_e( 'Job', 'mantle' ); ?></h3>
 			<p>
-				<code><?php echo esc_html( $worker_job->get_id() ); ?></code>
+				<code><?php echo esc_html( $job->get_id() ); ?></code>
 			</p>
 			<h3><?php esc_html_e( 'Arguments', 'mantle' ); ?></h3>
 			<code>
-				<?php echo wp_json_encode( is_object( $worker_job->get_job() ) ? get_object_vars( $worker_job->get_job() ) : '' ); ?>
+				<?php echo wp_json_encode( is_object( $job->get_job() ) ? get_object_vars( $job->get_job() ) : '' ); ?>
 			</code>
 			<h3><?php esc_html_e( 'Queue', 'mantle' ); ?></h3>
 			<p>
-				<code><?php echo esc_html( $job->get_queue() ); ?></code>
+				<code><?php echo esc_html( $record->queue ); ?></code>
 			</p>
-			<h3><?php esc_html_e( 'Lock Status', 'mantle' ); ?></h3>
-			<p>
-				<?php if ( $job->is_locked() ) : ?>
-					<?php
-					printf(
-						/* translators: %s: The time the job is locked until. */
-						esc_html__( 'Locked until %s', 'mantle' ),
-						esc_html( Carbon::createFromTimestampUTC( $job->get_lock_until() )->format( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) ) ),
-					);
-					?>
-				<?php else : ?>
-					<?php esc_html_e( 'Unlocked', 'mantle' ); ?>
-				<?php endif; ?>
-			</p>
+			<?php if ( Status::COMPLETED->value !== $record->status ) : ?>
+				<h3><?php esc_html_e( 'Lock Status', 'mantle' ); ?></h3>
+				<p>
+					<?php if ( $record->is_locked() ) : ?>
+						<?php
+						printf(
+							/* translators: %s: The time the job is locked until. */
+							esc_html__( 'Locked until %s', 'mantle' ),
+							esc_html( $record->get_lock_until()->format( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) ) ),
+						);
+						?>
+					<?php else : ?>
+						<?php esc_html_e( 'Unlocked', 'mantle' ); ?>
+					<?php endif; ?>
+				</p>
+			<?php endif; ?>
 		</aside>
 
 		<section>
 			<h3><?php esc_html_e( 'Job Log', 'mantle' ); ?></h3>
+			<?php if ( empty( $log ) ) : ?>
+				<p><?php esc_html_e( 'No log entries found for this job.', 'mantle' ); ?></p>
+			<?php endif; ?>
 			<ol>
 				<?php foreach ( $log as $entry ) : ?>
 					<li>

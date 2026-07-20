@@ -72,6 +72,15 @@ trait Has_Attributes {
 	];
 
 	/**
+	 * Check if the model has an attribute.
+	 *
+	 * @param string $attribute Attribute name.
+	 */
+	public function has_attribute( string $attribute ): bool {
+		return array_key_exists( $attribute, $this->attributes ) || $this->has_get_mutator( $attribute );
+	}
+
+	/**
 	 * Get an attribute from the model.
 	 *
 	 * @param string $attribute Attribute name.
@@ -545,11 +554,15 @@ trait Has_Attributes {
 	/**
 	 * Decode the given JSON back into an array or object.
 	 *
-	 * @param string $value Value to convert.
-	 * @param bool   $as_object Flag as an object.
+	 * @param string|null $value Value to convert.
+	 * @param bool        $as_object Flag as an object.
 	 */
-	public function from_json( string $value, bool $as_object = false ): mixed {
-		return json_decode( $value, ! $as_object, 512, JSON_THROW_ON_ERROR );
+	public function from_json( string|null $value, bool $as_object = false ): mixed {
+		if ( null === $value ) {
+			return $as_object ? new \stdClass() : [];
+		}
+
+		return json_decode( $value, ! $as_object );
 	}
 
 	/**

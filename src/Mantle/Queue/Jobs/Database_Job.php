@@ -1,18 +1,18 @@
 <?php
 /**
- * Queue_Worker_Job class file.
+ * Queue_Job class file.
  *
  * @package Mantle
  */
 
-namespace Mantle\Queue\Providers\WordPress;
+namespace Mantle\Queue\Jobs;
 
 use Mantle\Application\Application;
-use Mantle\Contracts\Events\Dispatcher;
 use Mantle\Contracts\Queue\Job as JobContract;
 use Mantle\Contracts\Queue\Queue_Manager;
 use Mantle\Queue\Closure_Job;
 use Mantle\Queue\Events\Job_Queued;
+use Mantle\Queue\Database_Event;
 use Throwable;
 
 /**
@@ -21,7 +21,7 @@ use Throwable;
  * Class to perform the actual queue job from the data stored in the queue
  * record from the database.
  */
-class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
+class Database_Job extends Job {
 
 	/**
 	 * Flag if the job failed.
@@ -31,30 +31,17 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 	/**
 	 * Constructor.
 	 *
-	 * @param Queue_Record $model The queue record.
+	 * @param Database_Job_Record $model The queue record.
 	 */
-	public function __construct( protected Queue_Record $model ) {}
+	public function __construct( protected Database_Job_Record $model ) {}
 
 	/**
 	 * Fire the job.
 	 */
 	public function fire(): void {
-		// Refresh the model once more to ensure we have the latest data.
-		$this->model->refresh();
-
-		$this->model->log( Event::STARTING );
-
-		// Mark the job as "running".
-		$this->model->save(
-			[
-				'post_status' => Post_Status::RUNNING->value,
-			]
-		);
+		$this->model->log_event( Database_Event::STARTING );
 
 		$job = $this->get_job();
-
-		// Set the lock end time.
-		$this->model->set_lock_until( time() + ( $job->timeout ?? 600 ) );
 
 		// Check if the job has a method called 'handle'.
 		if ( $job instanceof JobContract || ( is_object( $job ) && method_exists( $job, 'handle' ) ) ) {
@@ -63,19 +50,19 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 			$job();
 		}
 
-		$this->model->log( Event::FINISHED );
+		$this->model->log_event( Database_Event::FINISHED );
 	}
 
 	/**
 	 * Get the queue job ID.
 	 */
-	public function get_id(): mixed {
+	public function get_id(): string {
 		$job = $this->get_job();
 
-		return match ( true ) {
+		return (string) match ( true ) {
 			$job instanceof Closure_Job => $job->get_id(),
 			is_object( $job ) => $job::class,
-			default => $this->model->id(),
+			default => $this->model->id,
 		};
 	}
 
@@ -87,24 +74,27 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 	public function failed( Throwable $e ): void {
 		$this->failed = true;
 
-		$this->model->log(
-			Event::FAILED,
-			[
-				'exception' => $e::class,
-				'message'   => $e->getMessage(),
-				'trace'     => explode( "\n", $e->getTraceAsString() ),
-			],
-		);
+		$job = $this->get_job();
 
-		$this->model->save(
-			[
-				'meta'        => [
-					Meta_Key::FAILURE->value    => $e->getMessage(),
-					Meta_Key::LOCK_UNTIL->value => '',
-				],
-				'post_status' => Post_Status::FAILED->value,
-			]
-		);
+		$max_attempts = $job->tries ?? 1;
+
+		$this->model->attempts += 1;
+
+		$this->model->last_attempt_gmt = now()->toDateTimeString();
+
+		// If the job has exceeded the maximum number of attempts, set the status to
+		// failed. Otherwise, it will be retried.
+		if ( $this->model->attempts >= $max_attempts ) {
+			$this->model->status = Status::FAILED->value;
+		}
+
+		$this->model->save();
+
+		$this->model->log_event( Database_Event::FAILED, [
+			'exception' => $e::class,
+			'message'   => $e->getMessage(),
+			'trace'     => explode( "\n", $e->getTraceAsString() ),
+		] );
 
 		$job = $this->get_job();
 
@@ -117,11 +107,9 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 	 * Handle a completed job.
 	 */
 	public function completed(): void {
-		$this->model->save(
-			[
-				'post_status' => Post_Status::COMPLETED->value,
-			]
-		);
+		$this->model->save( [
+			'status' => Status::COMPLETED->value,
+		] );
 
 		$job = $this->get_job();
 
@@ -138,19 +126,26 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 	}
 
 	/**
+	 * Check if the job can be retried.
+	 */
+	public function can_retry(): bool {
+		$max_attempts = $this->get_job()->tries ?? 1;
+
+		return $this->has_failed() && $max_attempts && $this->model->attempts < $max_attempts;
+	}
+
+	/**
 	 * Retry a job with a specified delay.
 	 *
 	 * @param int $delay Delay in seconds.
 	 */
 	public function retry( int $delay = 0 ): void {
-		$this->model->log( Event::RETRYING, [ 'delay' => $delay ] );
+		$this->model->log_event( Database_Event::RETRYING, [ 'delay' => $delay ] );
 
-		$this->model->save(
-			[
-				'post_date'   => now()->addSeconds( $delay )->toDateTimeString(),
-				'post_status' => Post_Status::PENDING->value,
-			]
-		);
+		$this->model->save( [
+			'status'           => Status::PENDING->value,
+			'available_at_gmt' => now()->addSeconds( $delay )->toDateTimeString(),
+		] );
 
 		$app = Application::get_instance();
 
@@ -167,6 +162,6 @@ class Queue_Worker_Job extends \Mantle\Queue\Queue_Worker_Job {
 	 * Retrieve the stored job.
 	 */
 	public function get_job(): mixed {
-		return $this->model->get_meta( Meta_Key::JOB->value, true );
+		return maybe_unserialize( $this->model->action );
 	}
 }

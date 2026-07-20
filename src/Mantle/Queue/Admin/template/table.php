@@ -3,7 +3,7 @@
  * Render the admin template to display the queue.
  *
  * @package Mantle
- * @var \Mantle\Queue\Providers\WordPress\Admin\Queue_Jobs_Table $table The queue jobs table.
+ * @var \Mantle\Queue\Admin\Queue_Jobs_Table $table The queue jobs table.
  */
 
 ?>
@@ -17,15 +17,19 @@
 </div>
 
 <style type="text/css">
-	table.wp-list-table tr.queue-item__queue_running {
+	table.jobs tr.queue-item__running {
 		background: #FEF3C7;
 	}
 
-	table.wp-list-table tr.queue-item__queue_failed {
+	table.jobs tr.queue-item__failed {
 		background: #FED7D7;
 	}
 
 	tr.queue-item td {
 		background: transparent
+	}
+	.column-available span[title] {
+		text-decoration: underline;
+		text-decoration-style: dotted;
 	}
 </style>
