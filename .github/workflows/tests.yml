@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Composer and Monorepo Validate"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Run General Tests
         uses: alleyinteractive/action-test-general@develop
@@ -30,13 +30,20 @@ jobs:
 
       - name: Get all packages
         id: output_data
-        run: echo "matrix=$(vendor/bin/monorepo-builder packages-json | jq -c .)" >> $GITHUB_OUTPUT
+        run: echo "matrix=$(for d in src/Mantle/*/composer.json; do basename "$(dirname "$d")"; done | jq -R . | jq -sc .)" >> $GITHUB_OUTPUT
 
       - name: Validate all packages
         run: |
+          original_dir=$(pwd)
+
           for package in $(echo '${{ steps.output_data.outputs.matrix }}' | jq -r '.[]'); do
             echo "Validating package: $package"
-            composer validate --strict --working-dir="src/mantle/$package"
+            cd "$original_dir/src/Mantle/$package" || exit 1
+
+            composer install --no-interaction --no-progress --no-plugins --prefer-dist
+
+            composer validate --strict
+            composer audit --no-dev --locked --ansi --no-interaction
           done
   lint-tests:
     if: github.event.pull_request.draft == false
@@ -44,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Lint Tests"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Run General Tests
         uses: alleyinteractive/action-test-general@develop
@@ -52,45 +59,77 @@ jobs:
       - name: Run Linter
         uses: alleyinteractive/action-test-php@develop
         with:
-          php-version: '8.4'
+          php-version: '8.5'
           skip-services: 'true'
           skip-wordpress-install: 'true'
           test-command: 'composer lint'
 
+  get-versions:
+    runs-on: ubuntu-latest
+    outputs:
+      versions: ${{ steps.wp-versions.outputs.versions }}
+    steps:
+      - name: Get WordPress Versions
+        id: wp-versions
+        uses: alleyinteractive/action-get-wordpress-versions@develop
+        with:
+          minimum-version: "6.5"
+
   unit-tests:
     if: github.event.pull_request.draft == false
+    needs: get-versions
     timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
-        dependencies: ["prefer-lowest", "prefer-stable"]
+        dependencies: ["prefer-stable"]
         multisite: [true, false]
-        php: [8.2, 8.3, 8.4]
-        wordpress: ["latest"]
+        # See core's PHP Compatibility chart:
+        # https://make.wordpress.org/core/handbook/references/php-compatibility-and-wordpress-versions/
+        php: [8.3, 8.4, 8.5]
+        wordpress: ${{fromJson(needs.get-versions.outputs.versions)}}
+        vip-mu-plugins: [false]
         exclude:
+          # WordPress 6.7 added support for PHP 8.4.
           - php: 8.4
-            dependencies: "prefer-lowest"
-        # Test various older versions of WordPress in a limited capacity.
-        include:
-          - php: 8.3
-            wordpress: "6.5"
-            dependencies: "prefer-stable"
-            multisite: true
-          - php: 8.3
             wordpress: "6.6"
+          - php: 8.4
+            wordpress: "6.5"
+
+          # WordPress 6.9 added support for PHP 8.5.
+          - php: 8.5
+            wordpress: "6.8"
+          - php: 8.5
+            wordpress: "6.7"
+          - php: 8.5
+            wordpress: "6.6"
+          - php: 8.5
+            wordpress: "6.6"
+          - php: 8.5
+            wordpress: "6.5"
+        include:
+          # Test with VIP MU Plugins enabled (using latest version of WordPress to prevent Jetpack compatibility issues).
+          - php: 8.4
+            wordpress: "latest"
             dependencies: "prefer-stable"
             multisite: true
-          - php: 8.3
-            wordpress: "6.7"
+            vip-mu-plugins: true
+          - php: 8.4
+            wordpress: "latest"
             dependencies: "prefer-stable"
+            multisite: false
+            vip-mu-plugins: true
+          # Test with prefer-lowest selectively to check for compatibility issues with older dependencies.
+          - php: 8.3
+            wordpress: "latest"
+            dependencies: "prefer-lowest"
             multisite: true
     runs-on: ubuntu-latest
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}-P${{ matrix.php }}-WP${{ matrix.wordpress }}-MS${{ matrix.multisite && '1' || '0' }}-D${{ matrix.dependencies }}
-      cancel-in-progress: true
-    name: "PR Tests PHP ${{ matrix.php }} WordPress ${{ matrix.wordpress }} ${{ matrix.multisite && 'Multisite' || '' }} Dependencies ${{ matrix.dependencies }}"
+    name: "PR Tests PHP ${{ matrix.php }} WordPress ${{ matrix.wordpress }} ${{ matrix.multisite && 'Multisite ' || '' }}Dependencies ${{ matrix.dependencies }}${{ matrix.vip-mu-plugins && ' vip-mu-plugins' || '' }}"
+    env:
+      MANTLE_INSTALL_VIP_MU_PLUGINS: ${{ matrix.vip-mu-plugins && '1' || '0' }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Run PHP Tests
         uses: alleyinteractive/action-test-php@develop
@@ -98,8 +137,7 @@ jobs:
           install-command: composer update --${{ matrix.dependencies }} --prefer-dist --no-interaction --no-progress
           php-version: '${{ matrix.php }}'
           skip-wordpress-install: 'true'
-          # Only run PHPUnit for the lowest dependencies.
-          test-command: ${{ matrix.dependencies == 'prefer-lowest' && 'composer phpunit-9' || 'composer phpunit' }}
+          test-command: 'composer phpunit'
           wordpress-host: 'false'
           wordpress-multisite: '${{ matrix.multisite }}'
           wordpress-version: '${{ matrix.wordpress }}'
@@ -112,13 +150,13 @@ jobs:
       matrix:
         php: [8.3, 8.4]
         wordpress: ["latest"]
+        vip-mu-plugins: [true, false]
     runs-on: ubuntu-latest
-    concurrency:
-      group: parallel-${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}-P${{ matrix.php }}-WP${{ matrix.wordpress }}
-      cancel-in-progress: true
     name: "Parallel PR Tests PHP ${{ matrix.php }} WordPress ${{ matrix.wordpress }}"
+    env:
+      MANTLE_INSTALL_VIP_MU_PLUGINS: ${{ matrix.vip-mu-plugins && '1' || '0' }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Run PHP Tests
         uses: alleyinteractive/action-test-php@develop

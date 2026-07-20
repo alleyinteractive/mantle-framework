@@ -1,0 +1,1009 @@
+<?php // phpcs:disable WordPress.NamingConventions.ValidFunctionName
+/**
+ * This file contains the Test_Response class
+ *
+ * @package Mantle
+ */
+
+namespace Mantle\Testing;
+
+use Exception;
+use Mantle\Contracts\Application;
+use Mantle\Contracts\Http\Response as ResponseContract;
+use Mantle\Http\Request;
+use Mantle\Http\Response;
+use Mantle\Http_Client\Concerns\Interacts_With_Feeds;
+use Mantle\Support\Arr;
+use Mantle\Support\HTML;
+use Mantle\Support\Traits\Macroable;
+use PHPUnit\Framework\Assert as PHPUnit;
+
+/**
+ * Faux "Response" class for unit testing.
+ */
+class Test_Response implements ResponseContract {
+	use Concerns\Element_Assertions;
+	use Concerns\Response_Dumper;
+	use Concerns\Response_Snapshot_Testing;
+	use Interacts_With_Feeds;
+	use Macroable;
+
+	/**
+	 * Application instance.
+	 */
+	protected Application $app;
+
+	/**
+	 * Response headers.
+	 *
+	 * @var array<string, string|array<string>>
+	 */
+	public array $headers;
+
+	/**
+	 * Response content.
+	 */
+	protected ?string $content = null;
+
+	/**
+	 * Response status code.
+	 */
+	protected int $status_code;
+
+	/**
+	 * Assertable JSON string.
+	 */
+	protected Assertable_Json_String $decoded_json;
+
+	/**
+	 * Request that generated the response.
+	 */
+	protected Request $request;
+
+	/**
+	 * Create a new test response instance.
+	 *
+	 * @param string|null $content HTTP response body.
+	 * @param int         $status  HTTP response status code.
+	 * @param array       $headers HTTP response headers.
+	 * @param TestCase    $test_case Test case instance.
+	 */
+	public function __construct(
+		?string $content = '',
+		int $status = 200,
+		array $headers = [],
+		public ?TestCase $test_case = null,
+	) {
+		$this->set_content( $content );
+		$this->set_status_code( $status );
+		$this->set_headers( $headers );
+	}
+
+	/**
+	 * Set the container instance.
+	 *
+	 * @param Application $app Application instance.
+	 */
+	public function set_app( Application $app ): static {
+		$this->app = $app;
+
+		return $this;
+	}
+
+	/**
+	 * Set the request that generated the response.
+	 *
+	 * @param Request $request Request instance.
+	 */
+	public function set_request( Request $request ): static {
+		$this->request = $request;
+
+		return $this;
+	}
+
+	/**
+	 * Get the request that generated the response.
+	 */
+	public function get_request(): ?Request {
+		return $this->request ?? null;
+	}
+
+	/**
+	 * Create a response from a base response instance.
+	 *
+	 * @param Response $response Base response instance.
+	 */
+	public static function from_base_response( Response $response ): static {
+		return new static( $response->getContent(), $response->getStatusCode(), $response->headers->all() );
+	}
+
+	/**
+	 * Sets the response status code.
+	 *
+	 * @param int $code Status code.
+	 */
+	public function set_status_code( int $code ): void {
+		$this->status_code = $code;
+	}
+
+	/**
+	 * Retrieves the status code for the current web response.
+	 */
+	public function get_status_code(): int {
+		return $this->status_code;
+	}
+
+	/**
+	 * Sets the response content.
+	 *
+	 * @param string|null $content Response content.
+	 */
+	public function set_content( ?string $content ): static {
+		$this->content = $content ?? '';
+
+		return $this;
+	}
+
+	/**
+	 * Gets the current response content.
+	 */
+	public function get_content(): ?string {
+		return $this->content;
+	}
+
+	/**
+	 * Alias for get_content().
+	 */
+	public function body(): ?string {
+		return $this->content;
+	}
+
+	/**
+	 * Sets the response headers.
+	 *
+	 * @param array $headers Headers to set, as key => value pairs.
+	 */
+	public function set_headers( array $headers ): void {
+		$this->headers = array_change_key_case( $headers, CASE_LOWER );
+	}
+
+	/**
+	 * Gets the current response headers.
+	 *
+	 * @return array<string, string|array<string>> Response headers.
+	 */
+	public function get_headers(): array {
+		return $this->headers;
+	}
+
+	/**
+	 * Gets the current response headers.
+	 *
+	 * @param string $name Header to return.
+	 * @param bool   $as_array Whether to return the header as an array.
+	 * @return ($as_array is true ? array<string> : string|null) The header value(s), or null if not found.
+	 */
+	public function get_header( string $name, bool $as_array = false ): string|array|null {
+		// Enforce a lowercase header name.
+		$name = strtolower( $name );
+
+		if ( ! isset( $this->headers[ $name ] ) ) {
+			return null;
+		}
+
+		$value = Arr::wrap( $this->headers[ $name ] );
+
+		return $as_array ? $value : Arr::first( $value );
+	}
+
+	/**
+	 * Retrieve the response body.
+	 *
+	 * @return string|null The response body.
+	 */
+	public function get_body(): ?string {
+		return $this->content;
+	}
+
+	/**
+	 * Set the response body.
+	 *
+	 * @param string|null $body The response body to set.
+	 */
+	public function set_body( ?string $body ): void {
+		$this->content = $body ?? '';
+	}
+
+	/**
+	 * Assert that the response has a successful status code.
+	 */
+	public function assertSuccessful(): static {
+		$actual = $this->get_status_code();
+
+		PHPUnit::assertTrue(
+			$actual >= 200 && $actual < 300,
+			'Response status code [' . $actual . '] is not a successful status code.'
+		);
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response has a 200 status code.
+	 */
+	public function assertOk(): static {
+		return $this->assertStatus( 200 );
+	}
+
+	/**
+	 * Assert that the response has the given status code.
+	 *
+	 * @param int $status Status code to assert.
+	 */
+	public function assertStatus( $status ): static {
+		$actual = $this->get_status_code();
+
+		PHPUnit::assertSame(
+			$actual,
+			$status,
+			"Expected status code {$status} but received {$actual}."
+		);
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response has a 201 status code.
+	 */
+	public function assertCreated(): static {
+		return $this->assertStatus( 201 );
+	}
+
+	/**
+	 * Assert that the response has the given status code and no content.
+	 *
+	 * @param int $status Status code to assert. Defaults to 204.
+	 */
+	public function assertNoContent( $status = 204 ): static {
+		$this->assertStatus( $status );
+
+		PHPUnit::assertEmpty( $this->get_content(), 'Response content is not empty.' );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response has a not found status code.
+	 */
+	public function assertNotFound(): static {
+		return $this->assertStatus( 404 );
+	}
+
+	/**
+	 * Assert that the response has a forbidden status code.
+	 */
+	public function assertForbidden(): static {
+		return $this->assertStatus( 403 );
+	}
+
+	/**
+	 * Assert that the response has an unauthorized status code.
+	 */
+	public function assertUnauthorized(): static {
+		return $this->assertStatus( 401 );
+	}
+
+	/**
+	 * Assert that the response has a client error status code.
+	 */
+	public function assertClientError(): static {
+		$status = $this->get_status_code();
+
+		PHPUnit::assertTrue(
+			$status >= 400 && $status < 500,
+			"Response status code [{$status}] is not a client error status code.",
+		);
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response has a server error status code.
+	 */
+	public function assertServerError(): static {
+		$status = $this->get_status_code();
+
+		PHPUnit::assertTrue(
+			$status >= 500 && $status < 600,
+			"Response status code [{$status}] is not a server error status code.",
+		);
+
+		return $this;
+	}
+
+	/**
+	 * Assert whether the response is redirecting to a given URI.
+	 *
+	 * @param string|null $uri URI to assert redirection to.
+	 */
+	public function assertRedirect( ?string $uri = null ): static {
+		PHPUnit::assertTrue(
+			$this->is_redirect(),
+			'Response status code [' . $this->get_status_code() . '] is not a redirect status code.'
+		);
+
+		if ( $uri ) {
+			$this->assertLocation( $uri );
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Is the response a redirect of some form?
+	 *
+	 * @param string|null $location Location to check with the redirect.
+	 */
+	public function is_redirect( ?string $location = null ): bool {
+		return in_array( $this->get_status_code(), [ 201, 301, 302, 303, 307, 308 ], true )
+			&& ( null === $location ?: $location === $this->get_header( 'Location' ) ); // phpcs:ignore WordPress.PHP.DisallowShortTernary.Found
+	}
+
+	/**
+	 * Assert that the current location header matches the given URI.
+	 *
+	 * @param string $uri URI to assert that the location header is set to.
+	 */
+	public function assertLocation( $uri ): static {
+		PHPUnit::assertEquals(
+			$this->app['url']->to( $uri ),
+			$this->app['url']->to( $this->get_header( 'location' ) ?: '' ),
+		);
+
+		return $this;
+	}
+
+	/**
+	 * Asserts that the response contains the given header and equals the
+	 * optional value.
+	 *
+	 * @param string $header_name Header name (key) to assert.
+	 * @param mixed  $value       Header value to assert.
+	 */
+	public function assertHeader( string $header_name, mixed $value = null ): static {
+		// Enforce a lowercase header name.
+		$header_name = strtolower( $header_name );
+
+		PHPUnit::assertArrayHasKey(
+			$header_name,
+			$this->headers,
+			"Header [{$header_name}] not present on response."
+		);
+
+		$actual = $this->get_header( $header_name );
+
+		if ( ! is_null( $value ) ) {
+			PHPUnit::assertEquals(
+				$value,
+				$this->get_header( $header_name ),
+				"Header [{$header_name}] was found, but value [{$actual}] does not match [{$value}]."
+			);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Asserts that the response does not contains the given header and optional
+	 * value.
+	 *
+	 * @param string $header_name Header name (key) to check.
+	 * @param mixed  $value       Header value to check, optional.
+	 */
+	public function assertHeaderMissing( string $header_name, mixed $value = null ): static {
+		// Enforce a lowercase header name.
+		$header_name = strtolower( $header_name );
+
+		// Compare the header value if one was provided.
+		if ( ! is_null( $value ) ) {
+			PHPUnit::assertNotEquals(
+				$value,
+				$this->get_header( $header_name ),
+				"Unexpected header [{$header_name}] was found with value [{$value}]."
+			);
+		} else {
+			PHPUnit::assertArrayNotHasKey(
+				$header_name,
+				$this->headers,
+				"Unexpected header [{$header_name}] is present on response."
+			);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Asset that the contents matches an expected value.
+	 *
+	 * @param callable|mixed $value Expected value or a callback that returns true if the content matches.
+	 * @phpstan-param (callable(string): bool)|string $value
+	 */
+	public function assertContent( mixed $value ): static {
+		if ( is_callable( $value ) ) {
+			PHPUnit::assertTrue(
+				$value( $this->get_content() ),
+				'Response content does not pass the given assertion callback.',
+			);
+		} else {
+			PHPUnit::assertEquals( $value, $this->get_content() );
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the contents does not match an expected value.
+	 *
+	 * @param callable|mixed $value Expected value or a callback that returns false if the content matches.
+	 * @phpstan-param (callable(string): bool)|string $value
+	 */
+	public function assertNotContent( mixed $value ): static {
+		if ( is_callable( $value ) ) {
+			PHPUnit::assertFalse(
+				$value( $this->get_content() ),
+				'Response content passes the given assertion callback.',
+			);
+		} else {
+			PHPUnit::assertNotEquals( $value, $this->get_content() );
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the given string is contained within the response.
+	 *
+	 * @param string   $needle String to search for.
+	 * @param int|null $count Number of times the string should appear.
+	 */
+	public function assertSee( string $needle, ?int $count = null ): static {
+		PHPUnit::assertStringContainsString( $needle, (string) $this->get_content() );
+
+		if ( null !== $count ) {
+			PHPUnit::assertEquals(
+				$count,
+				substr_count( (string) $this->get_content(), $needle ),
+				sprintf(
+					'The content does not contain the the expected string (%s) %d %s.',
+					$needle,
+					$count,
+					1 === $count ? 'time' : 'times',
+				),
+			);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Alias for assertSee().
+	 *
+	 * @param string   $needle String to search for.
+	 * @param int|null $count Number of times the string should appear.
+	 */
+	public function assertContains( string $needle, ?int $count = null ): static {
+		return $this->assertSee( $needle, $count );
+	}
+
+	/**
+	 * Look for $values in $content in the specified order.
+	 *
+	 * @throws \Exception On failure.
+	 *
+	 * @param array  $values  Strings in which to look for in order.
+	 * @param string $content Content in which to look.
+	 * @return bool True on success.
+	 */
+	public function see_in_order( array $values, string $content ): bool {
+		$position = 0;
+
+		foreach ( $values as $value ) {
+			if ( empty( $value ) ) {
+				continue;
+			}
+
+			$value_position = mb_strpos( $content, (string) $value, $position );
+
+			if ( false === $value_position || $value_position < $position ) {
+				throw new Exception(
+					sprintf(
+						'Failed asserting that \'%s\' contains "%s" in specified order.',
+						$content,
+						$value
+					)
+				);
+			}
+
+			$position = $value_position + mb_strlen( (string) $value );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Assert that the given strings are contained in order within the response.
+	 *
+	 * @param array $values Values to check.
+	 */
+	public function assertSeeInOrder( array $values ): static {
+		try {
+			PHPUnit::assertTrue( $this->see_in_order( $values, (string) $this->get_content() ) );
+		} catch ( Exception $exception ) {
+			PHPUnit::fail( $exception->getMessage() );
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the given string is contained within the response text.
+	 *
+	 * @param string $value Value to check.
+	 */
+	public function assertSeeText( $value ): static {
+		PHPUnit::assertStringContainsString( (string) $value, wp_strip_all_tags( (string) $this->get_content() ) );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the given strings are contained in order within the response
+	 * text.
+	 *
+	 * @param array $values Values to check.
+	 */
+	public function assertSeeTextInOrder( array $values ): static {
+		try {
+			PHPUnit::assertTrue(
+				$this->see_in_order( $values, wp_strip_all_tags( (string) $this->get_content() ) )
+			);
+		} catch ( Exception $exception ) {
+			PHPUnit::fail( $exception->getMessage() );
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the given string is not contained within the response.
+	 *
+	 * @param string $value Value to check.
+	 */
+	public function assertDontSee( $value ): static {
+		PHPUnit::assertStringNotContainsString( (string) $value, (string) $this->get_content() );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the given string is not contained within the response text.
+	 *
+	 * @param string $value Value to check.
+	 */
+	public function assertDontSeeText( $value ): static {
+		PHPUnit::assertStringNotContainsString( (string) $value, wp_strip_all_tags( (string) $this->get_content() ) );
+
+		return $this;
+	}
+
+	/**
+	 * Checks each of the WP_Query is_* functions/properties against expected
+	 * boolean value.
+	 *
+	 * @see TestCase::assertQueryTrue()
+	 *
+	 * @param string ...$prop Any number of WP_Query properties that are expected
+	 *                        to be true for the current request.
+	 */
+	public function assertQueryTrue( ...$prop ): static {
+		TestCase::assertQueryTrue( ...$prop );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a given ID matches the global queried object ID.
+	 *
+	 * @param int $id Expected ID.
+	 */
+	public function assertQueriedObjectId( int $id ): static {
+		TestCase::assertQueriedObjectId( $id );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a given ID does not the global queried object ID.
+	 *
+	 * @param int $id Expected ID.
+	 */
+	public function assertNotQueriedObjectId( int $id ): static {
+		TestCase::assertNotQueriedObjectId( $id );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a given object is equivalent to the global queried object.
+	 *
+	 * @param object $object Expected object.
+	 */
+	public function assertQueriedObject( mixed $object ): static {
+		TestCase::assertQueriedObject( $object );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a given object is not equivalent to the global queried object.
+	 *
+	 * @param object $object Expected object.
+	 */
+	public function assertNotQueriedObject( mixed $object ): static {
+		TestCase::assertNotQueriedObject( $object );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the queried object is null.
+	 */
+	public function assertQueriedObjectNull(): static {
+		TestCase::assertQueriedObjectNull();
+
+		return $this;
+	}
+
+	/**
+	 * Assert if the response is a JSON response.
+	 */
+	public function assertIsJson(): static {
+		$content_type = $this->get_header( 'Content-Type' );
+
+		if ( empty( $content_type ) ) {
+			PHPUnit::fail( 'Response is not JSON.' );
+		}
+
+		// Check that the content-type header contains 'application/json'.
+		PHPUnit::assertStringContainsString( 'application/json', $content_type );
+
+		// Decode the content and see if it's valid JSON. If it isn't, the test will
+		// fail.
+		$this->decoded_json();
+
+		return $this;
+	}
+
+	/**
+	 * Assert if the response is not a JSON response.
+	 */
+	public function assertIsNotJson(): static {
+		$content_type = $this->get_header( 'Content-Type' );
+
+		PHPUnit::assertStringNotContainsString( 'application/json', (string) $content_type );
+
+		// Bail early if the content type is not JSON.
+		if ( empty( $content_type ) ) {
+			return $this;
+		}
+
+		if ( isset( $this->decoded_json ) ) {
+			PHPUnit::fail( 'Response is JSON.' );
+		}
+
+		if ( ! empty( $this->content ) ) {
+			// Attempt to parse the content and see if it's valid JSON.
+			$decoded = json_decode( $this->content, true );
+
+			if ( null !== $decoded ) {
+				PHPUnit::fail( 'Response is JSON.' );
+			}
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response is an HTML response.
+	 */
+	public function assertIsHtml(): static {
+		PHPUnit::assertStringContainsString( 'text/html', (string) $this->get_header( 'Content-Type' ) );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response is not an HTML response.
+	 */
+	public function assertIsNotHtml(): static {
+		PHPUnit::assertStringNotContainsString( 'text/html', (string) $this->get_header( 'Content-Type' ) );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response is a text response.
+	 */
+	public function assertIsText(): static {
+		PHPUnit::assertStringContainsString( 'text/plain', (string) $this->get_header( 'Content-Type' ) );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response is not a text response.
+	 */
+	public function assertIsNotText(): static {
+		PHPUnit::assertStringNotContainsString( 'text/plain', (string) $this->get_header( 'Content-Type' ) );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the expected value and type exists at the given path in the response.
+	 *
+	 * @param  string $path
+	 * @param  mixed  $expect
+	 * @param  string $message Optional message on failure.
+	 */
+	public function assertJsonPath( string $path, mixed $expect, string $message = '' ): static {
+		$this->decoded_json()->assertPath( $path, $expect, $message );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a specific path matches the given regular expression pattern in the response.
+	 *
+	 * @param string $path Path to check.
+	 * @param string $pattern Regular expression pattern to match.
+	 * @param string $message Optional message on failure.
+	 */
+	public function assertJsonPathMatches( string $path, string $pattern, string $message = '' ): static {
+		$this->decoded_json()->assertPathMatches( $path, $pattern, $message );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a specific path does not match the given regular expression pattern in the response.
+	 *
+	 * @param string $path Path to check.
+	 * @param string $pattern Regular expression pattern to match.
+	 * @param string $message Optional message on failure.
+	 */
+	public function assertJsonPathNotMatches( string $path, string $pattern, string $message = '' ): static {
+		$this->decoded_json()->assertPathNotMatches( $path, $pattern, $message );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a specific path exists in the response.
+	 *
+	 * @param string $path Path to check.
+	 * @param string $message Optional message on failure.
+	 */
+	public function assertJsonPathExists( string $path, string $message = '' ): static {
+		$this->decoded_json()->assertPathExists( $path, $message );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a specific path does not exist in the response.
+	 *
+	 * @param string $path Path to check.
+	 * @param string $message Optional message on failure.
+	 */
+	public function assertJsonPathMissing( string $path, string $message = '' ): static {
+		$this->decoded_json()->assertPathMissing( $path, $message );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a specific path is empty in the response.
+	 *
+	 * @param string $path Path to check.
+	 * @param string $message Optional message on failure.
+	 */
+	public function assertJsonPathEmpty( string $path, string $message = '' ): static {
+		$this->decoded_json()->assertPathEmpty( $path, $message );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a specific path is not empty in the response.
+	 *
+	 * @param string $path Path to check.
+	 * @param string $message Optional message on failure.
+	 */
+	public function assertJsonPathNotEmpty( string $path, string $message = '' ): static {
+		$this->decoded_json()->assertPathNotEmpty( $path, $message );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a specific path contains the given string value in the response.
+	 *
+	 * @param string $path  Path to check.
+	 * @param string $value Value to check for.
+	 * @param string $message Optional message on failure.
+	 */
+	public function assertJsonPathContains( string $path, string $value, string $message = '' ): static {
+		$this->decoded_json()->assertPathContains( $path, $value, $message );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that a specific path does not contain the given string value in the response.
+	 *
+	 * @param string $path  Path to check.
+	 * @param string $value Value to check for.
+	 * @param string $message Optional message on failure.
+	 */
+	public function assertJsonPathNotContains( string $path, string $value, string $message = '' ): static {
+		$this->decoded_json()->assertPathNotContains( $path, $value, $message );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the value at a given JSON path passes a user-provided callback.
+	 *
+	 * @param string   $path     Path to check.
+	 * @param callable $callback Callback that receives the value at the path and returns true if assertion passes.
+	 * @param string   $message  Optional failure message.
+	 *
+	 * @phpstan-param (callable(mixed): bool) $callback
+	 */
+	public function assertJsonPathCallback( string $path, callable $callback, string $message = '' ): static {
+		$this->decoded_json()->assertPathCallback( $path, $callback, $message );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response has the exact given JSON.
+	 *
+	 * @param array<mixed> $data
+	 */
+	public function assertExactJson( array $data ): static {
+		$this->decoded_json()->assertExact( $data );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response contains the given JSON fragment.
+	 *
+	 * @param  array<mixed> $data Data to compare.
+	 */
+	public function assertJsonFragment( array $data ): static {
+		$this->decoded_json()->assertFragment( $data );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response does not contain the given JSON fragment.
+	 *
+	 * @param  array<mixed> $data Data to compare.
+	 * @param  bool         $exact Flag for exact match, defaults to false.
+	 */
+	public function assertJsonMissing( array $data, $exact = false ): static {
+		$this->decoded_json()->assertMissing( $data, $exact );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response does not contain the exact JSON fragment.
+	 *
+	 * @param  array<mixed> $data
+	 */
+	public function assertJsonMissingExact( array $data ): static {
+		$this->decoded_json()->assertMissingExact( $data );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response JSON has the expected count of items at the given key.
+	 *
+	 * @param  int         $count
+	 * @param  string|null $key
+	 */
+	public function assertJsonCount( int $count, ?string $key = null ): static {
+		$this->decoded_json()->assertCount( $count, $key );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response has the similar JSON as given.
+	 *
+	 * @param  array $data
+	 */
+	public function assertJsonSimilar( array $data ): static {
+		$this->decoded_json()->assertSimilar( $data );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the response has a given JSON structure.
+	 *
+	 * @param  array|null $structure Structure to check.
+	 */
+	public function assertJsonStructure( ?array $structure = null ): static {
+		$this->decoded_json()->assertStructure( $structure );
+
+		return $this;
+	}
+
+	/**
+	 * Validate and assert against the decoded JSON content.
+	 */
+	public function decoded_json(): Assertable_Json_String {
+		if ( ! isset( $this->decoded_json ) ) {
+			$this->decoded_json = new Assertable_Json_String( (string) $this->get_content() );
+		}
+
+		return $this->decoded_json;
+	}
+
+	/**
+	 * Return the decoded response JSON.
+	 *
+	 * @param string|null $key Key to retrieve, optional.
+	 */
+	public function json( ?string $key = null ): mixed {
+		return $this->decoded_json()->json( $key );
+	}
+
+	/**
+	 * Return the response content as an HTML object.
+	 */
+	public function html(): HTML {
+		$this->assertIsHtml();
+
+		return new HTML( $this->get_content() );
+	}
+
+	/**
+	 * Assert if the response is an XML response.
+	 */
+	public function assertIsXml(): static {
+		if ( $this->is_feed() ) {
+			return $this->assertIsFeed();
+		}
+
+		PHPUnit::assertStringContainsString( 'application/xml', (string) $this->get_header( 'Content-Type' ) );
+
+		return $this;
+	}
+
+	/**
+	 * Assert if the response is not an XML response.
+	 */
+	public function assertIsNotXml(): static {
+		PHPUnit::assertStringNotContainsString( 'application/xml', (string) $this->get_header( 'Content-Type' ) );
+
+		return $this->assertIsNotFeed();
+	}
+}

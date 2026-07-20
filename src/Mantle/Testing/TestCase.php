@@ -1,0 +1,426 @@
+<?php
+/**
+ * This file contains the TestCase class.
+ *
+ * @package Mantle
+ */
+
+namespace Mantle\Testing;
+
+use Mantle\Container\Container;
+use Mantle\Contracts\Application;
+use Mantle\Database\Factory\Factory_Container;
+use Mantle\Database\Model\Model;
+use Mantle\Facade\Facade;
+use Mantle\Framework\Alias_Loader;
+use Mantle\Support\Collection;
+use Mantle\Support\Memoize;
+use Mantle\Testing\Concerns\Admin_Screen;
+use Mantle\Testing\Concerns\Assertions;
+use Mantle\Testing\Concerns\Core_Shim;
+use Mantle\Testing\Concerns\Deprecations;
+use Mantle\Testing\Concerns\Hooks;
+use Mantle\Testing\Concerns\Incorrect_Usage;
+use Mantle\Testing\Concerns\Interacts_With_Attributes;
+use Mantle\Testing\Concerns\Interacts_With_Console;
+use Mantle\Testing\Concerns\Interacts_With_Container;
+use Mantle\Testing\Concerns\Interacts_With_Cron;
+use Mantle\Testing\Concerns\Interacts_With_Environment;
+use Mantle\Testing\Concerns\Interacts_With_Hooks;
+use Mantle\Testing\Concerns\Interacts_With_Mail;
+use Mantle\Testing\Concerns\Interacts_With_PHPUnit;
+use Mantle\Testing\Concerns\Interacts_With_Requests;
+use Mantle\Testing\Concerns\Interacts_With_Time;
+use Mantle\Testing\Concerns\Interacts_With_User_Agent;
+use Mantle\Testing\Concerns\Makes_Http_Requests;
+use Mantle\Testing\Concerns\Network_Admin_Screen;
+use Mantle\Testing\Concerns\Preserves_Globals;
+use Mantle\Testing\Concerns\Reads_Annotations;
+use Mantle\Testing\Concerns\Refresh_Database;
+use Mantle\Testing\Concerns\WordPress_Authentication;
+use Mantle\Testing\Concerns\WordPress_State;
+use PHPUnit\Framework\TestCase as BaseTestCase;
+use Spatie\Snapshots\MatchesSnapshots;
+use WP;
+use WP_Query;
+
+use function Mantle\Support\Helpers\class_basename;
+use function Mantle\Support\Helpers\class_uses_recursive;
+use function Mantle\Support\Helpers\collect;
+
+/**
+ * Base Test Case for Mantle sites.
+ *
+ * Not designed for external use. Use TestKit instead.
+ *
+ * @see \Mantle\Testkit\TestCase
+ *
+ * @property-read Application|null $app
+ */
+abstract class TestCase extends BaseTestCase {
+	use Assertions;
+	use Core_Shim;
+	use Deprecations;
+	use Hooks;
+	use Incorrect_Usage;
+	use Interacts_With_Attributes;
+	use Interacts_With_Console;
+	use Interacts_With_Container;
+	use Interacts_With_Cron;
+	use Interacts_With_Environment;
+	use Interacts_With_Hooks;
+	use Interacts_With_Mail;
+	use Interacts_With_PHPUnit;
+	use Interacts_With_Requests;
+	use Interacts_With_Time;
+	use Interacts_With_User_Agent;
+	use Makes_Http_Requests;
+	use MatchesSnapshots;
+	use Preserves_Globals;
+	use Reads_Annotations;
+	use WordPress_State;
+	use WordPress_Authentication;
+
+	/**
+	 * Array of traits that this class uses, with trait names as keys.
+	 *
+	 * @var array<class-string, class-string>
+	 */
+	protected static array $test_uses;
+
+	/**
+	 * Application instance.
+	 */
+	protected ?Application $app = null;
+
+	/**
+	 * Factory Instance.
+	 */
+	protected static ?Factory_Container $factory;
+
+	/**
+	 * Creates the application.
+	 */
+	abstract public function create_application(): Application;
+
+	/**
+	 * Runs the routine before setting up all tests.
+	 */
+	public static function setUpBeforeClass(): void {
+		parent::setUpBeforeClass();
+
+		// Disable the Spatie once cache for tests.
+		if ( class_exists( \Spatie\Once\Cache::class ) ) {
+			\Spatie\Once\Cache::getInstance()->disable();
+		}
+
+		static::backup_original_wordpress_globals();
+
+		Memoize::disable();
+
+		static::register_traits();
+
+		if ( ! empty( static::$test_uses ) ) {
+			static::get_test_case_traits()->each(
+				function ( string|object $trait ): void {
+					$callback = [ static::class, strtolower( class_basename( $trait ) ) . '_set_up_before_class' ];
+
+					if ( is_callable( $callback ) ) {
+						call_user_func( $callback );
+					}
+				}
+			);
+		}
+
+		if ( self::usesTrait( Refresh_Database::class ) && method_exists( static::class, 'commit_transaction' ) ) {
+			static::commit_transaction();
+		}
+	}
+
+	/**
+	 * Runs the routine after all tests have been run.
+	 */
+	public static function tearDownAfterClass(): void {
+		if ( ! empty( static::$test_uses ) ) {
+			static::get_test_case_traits()->each(
+				function ( string|object $trait ): void {
+					$callback = [ static::class, strtolower( class_basename( $trait ) ) . '_tear_down_after_class' ];
+
+					if ( is_callable( $callback ) ) {
+						call_user_func( $callback );
+					}
+				}
+			);
+		}
+
+		parent::tearDownAfterClass();
+
+		if ( self::usesTrait( Refresh_Database::class ) ) {
+			Utils::delete_all_data();
+
+			if ( is_multisite() ) {
+				Utils::delete_all_blogs();
+			}
+		} else {
+			// If Refresh_Database is not used, we should still clear out the cache.
+			Utils::flush_cache();
+		}
+
+
+		if ( self::usesTrait( Refresh_Database::class ) && method_exists( static::class, 'commit_transaction' ) ) {
+			static::commit_transaction();
+		}
+
+		self::restore_globals_after_all_tests();
+	}
+
+	/**
+	 * Runs the routine before each test is executed.
+	 */
+	protected function setUp(): void {
+		set_time_limit( 0 );
+
+		parent::setUp();
+
+		if ( ! isset( self::$current_class_globals ) ) {
+			self::backup_current_class_wordpress_globals();
+		} else {
+			self::restore_globals_before_each_test();
+		}
+
+		if ( $this->app === null ) {
+			$this->refresh_application();
+		}
+
+		// Clear the test factory.
+		static::$factory = null;
+
+		static::clean_up_global_scope();
+
+		// Boot traits on the test case. We should be using the Before attribute
+		// instead of this. This is a hold over from the legacy way of doing this
+		// and won't be preserved in Mantle 2.0.
+		static::get_test_case_traits()->each(
+			function ( string|object $trait ): void {
+				$method = strtolower( class_basename( $trait ) ) . '_set_up';
+
+				if ( method_exists( $this, $method ) ) {
+					$this->{$method}();
+				}
+			}
+		);
+
+		remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+		add_filter( 'wp_die_handler', [ WP_Die::class, 'get_handler' ] );
+
+		// Call the PHPUnit 8 'set_up' method if it exists.
+		if ( method_exists( $this, 'set_up' ) ) {
+			$this->set_up();
+		}
+	}
+
+	/**
+	 * After a test method runs, reset any state in WordPress the test method might have changed.
+	 */
+	protected function tearDown(): void {
+		// phpcs:disable WordPress.WP.GlobalVariablesOverride,WordPress.NamingConventions.PrefixAllGlobals
+		global $wp_query, $wp_the_query, $wp;
+
+		// Call the test case's "tear_down" method if it exists.
+		if ( method_exists( $this, 'tear_down' ) ) {
+			$this->tear_down();
+		}
+
+		static::get_test_case_traits()
+			// Tearing down requires performing priority traits in opposite order.
+			->reverse()
+			->each(
+				function ( string|object $trait ): void {
+					$method = strtolower( class_basename( $trait ) ) . '_tear_down';
+
+					if ( method_exists( $this, $method ) ) {
+						$this->{$method}();
+					}
+				}
+			);
+
+		if ( is_multisite() ) {
+			while ( ms_is_switched() ) {
+				restore_current_blog();
+			}
+		}
+
+		$wp_query     = new WP_Query();
+		$wp_the_query = $wp_query;
+		$wp           = new WP();
+
+		$globals = [
+			// Reset globals related to the post loop and `setup_postdata()`.
+			'post',
+			'id',
+			'authordata',
+			'currentday',
+			'currentmonth',
+			'page',
+			'pages',
+			'multipage',
+			'more',
+			'numpages',
+
+			// Comment globals.
+			'comment_alt',
+			'comment_depth',
+			'comment_thread_alt',
+
+			// Template globals.
+			'wp_stylesheet_path',
+			'wp_template_path',
+		];
+		foreach ( $globals as $global ) {
+			$GLOBALS[ $global ] = null;
+		}
+
+		// Reset the WP_ENVIRONMENT_TYPE environment variable.
+		if ( getenv( 'WP_ENVIRONMENT_TYPE' ) ) {
+			putenv( 'WP_ENVIRONMENT_TYPE=' ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_putenv
+		}
+
+		remove_filter( 'wp_die_handler', [ WP_Die::class, 'get_handler' ] );
+		static::restore_hooks();
+		wp_set_current_user( 0 );
+		$this->reset_lazyload_queue();
+		// phpcs:enable
+
+		parent::tearDown();
+
+		// Reset the application instance after everything else.
+		if ( $this->app ) {
+			$this->app = null;
+
+			if ( class_exists( Facade::class ) ) {
+				Facade::set_facade_application( null );
+			}
+		}
+	}
+
+	/**
+	 * Get the test case traits.
+	 */
+	protected static function get_test_case_traits(): Collection {
+		// Boot traits on the test case.
+		$traits = array_values( class_uses_recursive( static::class ) );
+
+		$priority_traits = static::get_priority_traits();
+
+		// Combine the priority and non-priority traits.
+		return collect()
+			->merge( array_intersect( $priority_traits, $traits ) )
+			->merge( array_diff( $traits, $priority_traits ) )
+			->unique();
+	}
+
+	/**
+	 * Get an array of priority traits.
+	 *
+	 * When the project fully upgrades to PHPUnit 11, these can be converted to
+	 * use BeforeClass, Before, and AfterClass attributes with priorities instead
+	 * of this method.
+	 *
+	 * @return array<class-string>
+	 */
+	protected static function get_priority_traits(): array {
+		return [
+			// This order is deliberate.
+			Hooks::class,
+			Refresh_Database::class,
+			WordPress_Authentication::class,
+			Admin_Screen::class,
+			Network_Admin_Screen::class,
+			// Ensure that before_request/after_request callbacks are cleared early
+			// for use in other traits.
+			Makes_Http_Requests::class,
+		];
+	}
+
+	/**
+	 * Register the traits that this test case uses.
+	 */
+	public static function register_traits(): void {
+		static::$test_uses = array_flip( class_uses_recursive( static::class ) ); // @phpstan-ignore-line assign.propertyType
+	}
+
+	/**
+	 * Refresh the application instance.
+	 */
+	protected function refresh_application(): void {
+		$this->app = $this->create_application();
+
+		if ( class_exists( Facade::class ) ) {
+			Facade::set_facade_application( $this->app );
+			Facade::clear_resolved_instances();
+		}
+
+		if ( class_exists( Alias_Loader::class ) ) {
+			Alias_Loader::set_instance( null );
+		}
+
+		Model::set_event_dispatcher( $this->app['events'] );
+
+		$this->app[ self::class ] = $this;
+	}
+
+	/**
+	 * Fetches the factory object for generating WordPress fixtures.
+	 */
+	public static function factory(): Factory_Container {
+		if ( ! isset( static::$factory ) ) {
+			static::$factory = Container::get_instance()->make( Factory_Container::class );
+		}
+
+		assert( static::$factory instanceof Factory_Container );
+
+		return static::$factory;
+	}
+
+	/**
+	 * Allow the factory/app to be checked against.
+	 *
+	 * @param string $name Property name.
+	 */
+	public function __isset( string $name ): bool {
+		return 'factory' === $name || 'app' === $name;
+	}
+
+	/**
+	 * Retrieve the factory/app instance non-statically.
+	 *
+	 * @param string $name Property name.
+	 */
+	public function __get( string $name ): mixed {
+		return match ( $name ) {
+			'factory' => self::factory(),
+			'app' => $this->app,
+			default => null,
+		};
+	}
+
+	/**
+	 * Determine if the test case uses a given trait.
+	 *
+	 * @param string $trait Trait class name.
+	 * @phpstan-param class-string<object> $trait
+	 */
+	public static function usesTrait( string $trait ): bool {
+		return isset( static::$test_uses[ $trait ] );
+	}
+
+	/**
+	 * Reset the lazy load meta queue.
+	 */
+	protected function reset_lazyload_queue(): void {
+		$lazyloader = wp_metadata_lazyloader();
+		$lazyloader->reset_queue( 'term' );
+		$lazyloader->reset_queue( 'comment' );
+		$lazyloader->reset_queue( 'blog' ); // @phpstan-ignore-line argument.type
+	}
+}

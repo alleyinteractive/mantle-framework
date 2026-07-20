@@ -7,10 +7,12 @@
 	xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
 	displayDetailsOnTestsThatTriggerDeprecations="true"
 	displayDetailsOnTestsThatTriggerWarnings="true"
-	failOnNotice="true"
-	failOnPhpunitDeprecation="true"
-	failOnWarning="true"
 	failOnDeprecation="true"
+	failOnEmptyTestSuite="true"
+	failOnNotice="true"
+	failOnRisky="true"
+	failOnSkipped="false"
+	failOnWarning="true"
 >
 	<php>
 		<env name="LOG_CHANNEL" value="stderr" />

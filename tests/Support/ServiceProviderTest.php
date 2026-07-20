@@ -1,6 +1,7 @@
 <?php
 namespace Mantle\Tests\Support;
 
+use Attribute;
 use Mantle\Application\Application;
 use Mantle\Console\Command;
 use Mantle\Contracts\Providers as ProviderContracts;
@@ -8,6 +9,7 @@ use Mantle\Events\Dispatcher;
 use Mantle\Support\Service_Provider;
 use Mantle\Support\Attributes\Action;
 use Mantle\Support\Attributes\Filter;
+use Mantle\Types\Validator;
 use Mockery as m;
 
 class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
@@ -276,6 +278,30 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		$this->assertEquals( 'one', $_SERVER['__after_resolving'] );
 	}
+
+	public function test_service_provider_with_passing_validator(): void {
+		$_SERVER['__service_provider_booted'] = false;
+
+		$app = m::mock( Application::class )->makePartial();
+
+		$app->register( PassingValidatorServiceProvider::class );
+
+		$this->assertFalse( $_SERVER['__service_provider_booted'] );
+		$app->boot();
+		$this->assertTrue( $_SERVER['__service_provider_booted'] );
+	}
+
+	public function test_service_provider_with_failing_validator(): void {
+		$_SERVER['__service_provider_booted'] = false;
+
+		$app = m::mock( Application::class )->makePartial();
+
+		$app->register( FailingValidatorServiceProvider::class );
+
+		$this->assertFalse( $_SERVER['__service_provider_booted'] );
+		$app->boot();
+		$this->assertFalse( $_SERVER['__service_provider_booted'] );
+	}
 }
 
 class Provider_Test_Hook extends Service_Provider {
@@ -331,6 +357,40 @@ class ServiceProviderForTestingTwo extends Service_Provider {
 	}
 }
 
-class Example_Service_Provider_Event {
+class Example_Service_Provider_Event {}
 
+#[Attribute]
+class PassingValidator implements Validator {
+	public function validate(): bool {
+		return true;
+	}
+}
+
+#[PassingValidator]
+class PassingValidatorServiceProvider extends Service_Provider {
+	public function register() {
+		$_SERVER['__service_provider_registered'] = true;
+	}
+
+	public function boot() {
+		$_SERVER['__service_provider_booted'] = true;
+	}
+}
+
+#[Attribute]
+class FailingValidator implements Validator {
+	public function validate(): bool {
+		return false;
+	}
+}
+
+#[FailingValidator]
+class FailingValidatorServiceProvider extends Service_Provider {
+	public function register() {
+		$_SERVER['__service_provider_registered'] = true;
+	}
+
+	public function boot() {
+		$_SERVER['__service_provider_booted'] = true;
+	}
 }

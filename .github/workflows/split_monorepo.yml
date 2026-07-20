@@ -14,20 +14,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       # required for matrix of packages set
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.2
+          php-version: 8.3
           coverage: none
 
       - uses: "ramsey/composer-install@v3"
 
-      # get package json list
+      # Build the matrix from the PSR-4 package directory names (e.g. Http_Client).
+      # The directory name is the namespace segment; the published repository name is
+      # derived from it later (lowercased + underscores to hyphens). Directories without
+      # a composer.json (e.g. Framework) are intentionally excluded from the split.
       -
         id: output_data
-        run: echo "matrix=$(vendor/bin/monorepo-builder packages-json)" >> $GITHUB_OUTPUT
+        run: echo "matrix=$(for d in src/Mantle/*/composer.json; do basename "$(dirname "$d")"; done | jq -R . | jq -sc .)" >> "$GITHUB_OUTPUT"
 
     # this step is needed, so the output gets to the next defined job
     outputs:
@@ -43,20 +46,27 @@ jobs:
         package: ${{fromJson(needs.provide_packages_json.outputs.matrix)}}
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
+
+      # The package directories are PSR-4 PascalCase (e.g. Http_Client), but the
+      # published repositories are lowercase-hyphenated (e.g. http-client).
+      -
+        name: Derive repository name
+        id: repo
+        run: echo "name=$(echo '${{ matrix.package }}' | tr '[:upper:]' '[:lower:]' | tr '_' '-')" >> "$GITHUB_OUTPUT"
 
       # no tag
       -
         if: "!startsWith(github.ref, 'refs/tags/')"
         # Uses an action in the root directory
         name: Monorepo Split of ${{ matrix.package }}
-        uses: symplify/monorepo-split-github-action@v2.4.0
+        uses: symplify/monorepo-split-github-action@v2.4.2
         env:
           GITHUB_TOKEN: ${{ secrets.ALLEY_CI_KEY }}
         with:
-          package_directory: 'src/mantle/${{ matrix.package }}'
+          package_directory: 'src/Mantle/${{ matrix.package }}'
           repository_organization: 'mantle-framework'
-          repository_name: '${{ matrix.package }}'
+          repository_name: '${{ steps.repo.outputs.name }}'
           repository_host: github.com
           user_name: "mantle-ci"
           user_email: "mantle@alley.com"
@@ -73,15 +83,15 @@ jobs:
         if: "startsWith(github.ref, 'refs/tags/')"
         # Uses an action in the root directory
         name: Monorepo Tagged Split of ${{ matrix.package }}
-        uses: symplify/monorepo-split-github-action@v2.4.0
+        uses: symplify/monorepo-split-github-action@v2.4.2
         env:
           GITHUB_TOKEN: ${{ secrets.ALLEY_CI_KEY }}
         with:
           tag: ${GITHUB_REF#refs/tags/}
 
-          package_directory: 'src/mantle/${{ matrix.package }}'
+          package_directory: 'src/Mantle/${{ matrix.package }}'
           repository_organization: 'mantle-framework'
-          repository_name: '${{ matrix.package }}'
+          repository_name: '${{ steps.repo.outputs.name }}'
           repository_host: "github.com"
           user_name: "mantle-ci"
           user_email: "mantle@alley.com"

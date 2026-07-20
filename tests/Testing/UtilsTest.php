@@ -50,4 +50,28 @@ class UtilsTest extends FrameworkTestCase {
 		$this->assertDatabaseMissing( 'blogs', [ 'blog_id' => $blog->blog_id ] );
 		$this->assertBlogDoesNotExist( [ 'ID' => $blog->blog_id ] );
 	}
+
+	public function test_content_directory_name_defaults_to_wp_content(): void {
+		$this->assertSame( 'wp-content', Utils::content_directory_name() );
+	}
+
+	public function test_content_directory_name_honors_environment_variable(): void {
+		putenv( 'WP_CONTENT_DIR_NAME=app' );
+
+		try {
+			$this->assertSame( 'app', Utils::content_directory_name() );
+		} finally {
+			putenv( 'WP_CONTENT_DIR_NAME' );
+		}
+	}
+
+	public function test_content_directory_name_is_normalized(): void {
+		putenv( 'WP_CONTENT_DIR_NAME=/app/' );
+
+		try {
+			$this->assertSame( 'app', Utils::content_directory_name() );
+		} finally {
+			putenv( 'WP_CONTENT_DIR_NAME' );
+		}
+	}
 }

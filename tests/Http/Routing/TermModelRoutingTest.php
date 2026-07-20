@@ -12,6 +12,7 @@ use Mantle\Facade\Route;
 use Mantle\Http\Controller;
 use Mantle\Http\Routing\Middleware\Substitute_Bindings;
 use Mantle\Http\Routing\Middleware\Wrap_Template;
+use Mantle\Testing\Attributes\PermalinkStructure;
 use Mantle\Testing\FrameworkTestCase;
 
 class TermModelRoutingTest extends FrameworkTestCase {
@@ -40,6 +41,12 @@ class TermModelRoutingTest extends FrameworkTestCase {
 	}
 
 	public function test_tag_url() {
+		$this->assertTrue( taxonomy_exists( 'post_tag' ) );
+
+		// Account for an edge case where this was accidentally cleared during development of
+		// another testing framework feature.
+		$this->assertNotEmpty( $GLOBALS['wp_rewrite']->extra_permastructs['post_tag'] ?? [], 'The post_tag permastruct should be set up by default.' );
+
 		$tag = static::factory()->tag->create( [ 'name' => 'Example Tag' ] );
 
 		$this->assertEquals( home_url( '/tag/example-tag/' ), get_term_link( $tag ) );

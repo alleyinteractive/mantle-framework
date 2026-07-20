@@ -1,0 +1,32 @@
+{
+    "name": "mantle-framework/assets",
+    "description": "The Mantle Framework Asset Package",
+    "type": "library",
+    "require": {
+        "php": "^8.3",
+        "alleyinteractive/wp-asset-manager": "^1.4.0",
+        "mantle-framework/contracts": "^1.0",
+        "mantle-framework/support": "^1.0"
+    },
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Alley",
+            "email": "mantle@alley.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Mantle\\Assets\\": "./"
+        },
+        "files": [
+            "autoload.php"
+        ]
+    },
+    "config": {
+        "allow-plugins": {
+            "alleyinteractive/composer-wordpress-autoloader": true
+        },
+        "sort-packages": true
+    }
+}

@@ -206,11 +206,21 @@ class HttpClientTest extends FrameworkTestCase {
 	public function test_http_client_with_base_url() {
 		$this->fake_request();
 
-		$rest_client = Http::base_url( 'https://example.com/' );
+		$rest_client = Http::base_url( 'https://example.com' );
 
 		$rest_client->get( '/wp-json/wp/v2/posts/' );
 
 		$this->assertRequestSent( 'https://example.com/wp-json/wp/v2/posts/' );
+	}
+
+	public function test_http_client_base_url_with_empty_request_path() {
+		$this->fake_request();
+
+		$rest_client = Http::base_url( 'https://example.com/api' );
+
+		$rest_client->delete();
+
+		$this->assertRequestSent( 'https://example.com/api' );
 	}
 
 	public function test_facade_request() {
@@ -321,6 +331,8 @@ class HttpClientTest extends FrameworkTestCase {
 
 		$this->assertTrue( $response->is_wp_error() );
 		$this->assertTrue( $response->failed() );
+		$this->assertFalse( $response->successful() );
+		$this->assertFalse( $response->ok() );
 
 		$this->assertEquals( 'An error occurred.', $response->body() );
 	}
