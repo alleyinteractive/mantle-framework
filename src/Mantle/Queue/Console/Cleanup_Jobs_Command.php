@@ -21,14 +21,14 @@ class Cleanup_Jobs_Command extends Command {
 	 *
 	 * @var string
 	 */
-	protected $name = 'queue:cleanup {--legacy}';
+	protected $name = 'queue:cleanup';
 
 	/**
 	 * Command signature.
 	 *
 	 * @var string
 	 */
-	protected $signature = '{--skip-legacy}';
+	protected $signature = '{--legacy : Also delete legacy jobs stored in the mantle_queue post type.}';
 
 	/**
 	 * Command Description.

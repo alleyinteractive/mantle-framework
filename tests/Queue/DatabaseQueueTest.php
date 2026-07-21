@@ -56,6 +56,54 @@ class DatabaseQueueTest extends FrameworkTestCase {
 		$this->assertDatabaseHas( 'mantle_queue', [ 'queue' => 'default', 'status' => Status::COMPLETED->value ] );
 	}
 
+	public function test_reclaims_expired_running_job() {
+		$_SERVER['__example_job'] = false;
+
+		Example_Job::dispatch();
+
+		// Simulate a worker that claimed the job and then crashed: mark it running
+		// with a lock timestamp in the past.
+		$record = Database_Job_Record::query()
+			->where( 'status', Status::PENDING->value )
+			->first();
+
+		$this->assertNotNull( $record );
+
+		$record->save( [
+			'status'           => Status::RUNNING->value,
+			'available_at_gmt' => now()->subMinutes( 15 )->toDateTimeString(),
+		] );
+
+		// The expired lock should allow the job to be reclaimed and run.
+		$this->dispatch_queue();
+
+		$this->assertTrue( $_SERVER['__example_job'] );
+		$this->assertDatabaseHas( 'mantle_queue', [ 'queue' => 'default', 'status' => Status::COMPLETED->value ] );
+	}
+
+	public function test_does_not_reclaim_locked_running_job() {
+		$_SERVER['__example_job'] = false;
+
+		Example_Job::dispatch();
+
+		// A running job whose lock is still in the future must not be picked up.
+		$record = Database_Job_Record::query()
+			->where( 'status', Status::PENDING->value )
+			->first();
+
+		$this->assertNotNull( $record );
+
+		$record->save( [
+			'status'           => Status::RUNNING->value,
+			'available_at_gmt' => now()->addMinutes( 15 )->toDateTimeString(),
+		] );
+
+		$this->dispatch_queue();
+
+		$this->assertFalse( $_SERVER['__example_job'] );
+		$this->assertDatabaseHas( 'mantle_queue', [ 'queue' => 'default', 'status' => Status::RUNNING->value ] );
+	}
+
 	public function test_job_dispatch_now() {
 		$this->assertNotInCronQueue( Example_Job::class );
 

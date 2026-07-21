@@ -99,6 +99,58 @@ class Database_Job_Record extends Database_Table_Model {
 	}
 
 	/**
+	 * Atomically claim the job for processing.
+	 *
+	 * Moves the job into the running state if it is either pending or a running
+	 * job whose lock has already expired (left behind by a crashed worker). The
+	 * `available_at_gmt <= now` guard combined with pushing the lock into the
+	 * future ensures only one worker can claim a given job, even when multiple
+	 * workers run concurrently.
+	 *
+	 * Note: reclaiming an expired running job does not increment `attempts`, so a
+	 * job that hard-crashes the process (rather than throwing) is retried on an
+	 * at-least-once basis until it either completes or throws.
+	 *
+	 * @param Carbon $lock_until The time until which the job should be locked.
+	 * @return bool True if this process claimed the job, false if another won it.
+	 */
+	public function claim( Carbon $lock_until ): bool {
+		global $wpdb;
+
+		assert( $wpdb instanceof \wpdb );
+
+		$table = static::get_table_name();
+
+		if ( ! str_starts_with( $table, $wpdb->prefix ) ) {
+			$table = $wpdb->prefix . $table;
+		}
+
+		$lock = $lock_until->toDateTimeString();
+
+		$claimed = $wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+			$wpdb->prepare(
+				"UPDATE {$table} SET status = %s, available_at_gmt = %s WHERE " . static::$primary_key . ' = %d AND status IN ( %s, %s ) AND available_at_gmt <= %s', // phpcs:ignore WordPress.DB.PreparedSQL
+				Status::RUNNING->value,
+				$lock,
+				$this->id,
+				Status::PENDING->value,
+				Status::RUNNING->value,
+				now()->toDateTimeString(),
+			),
+		);
+
+		if ( ! $claimed ) {
+			return false;
+		}
+
+		// Keep the in-memory model in sync with the row we just claimed.
+		$this->status           = Status::RUNNING->value;
+		$this->available_at_gmt = $lock;
+
+		return true;
+	}
+
+	/**
 	 * Log an event for the job.
 	 *
 	 * @param Database_Event $event The event to log.

@@ -8,7 +8,6 @@
 namespace Mantle\Queue;
 
 use Carbon\Carbon;
-use Closure;
 use DateTimeInterface;
 use Laravel\SerializableClosure\SerializableClosure;
 use Mantle\Contracts\Application;
@@ -17,7 +16,6 @@ use Mantle\Contracts\Queue\Queue_Manager;
 use Mantle\Database\Query\Builder;
 use Mantle\Queue\Jobs\Status;
 use Mantle\Support\Collection;
-use Mantle\Support\Str;
 use RuntimeException;
 
 /**
@@ -82,10 +80,8 @@ class Database_Queue_Provider implements Contract {
 			return true;
 		}
 
-		if ( $job instanceof SerializableClosure ) {
-			$job = serialize( $job ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
-		}
-
+		// Resolve the queue and scheduled date from the job before it is
+		// serialized, otherwise the property reads would be against a string.
 		$queue ??= $job->queue ?? 'default';
 		$now     = now()->toDateTimeString();
 		$date    = match ( true ) {
@@ -93,6 +89,10 @@ class Database_Queue_Provider implements Contract {
 			isset( $job->delay ) && is_int( $job->delay ) => now()->addSeconds( $job->delay )->toDateTimeString(),
 			default => now()->toDateTimeString(),
 		};
+
+		if ( $job instanceof SerializableClosure ) {
+			$job = serialize( $job ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
+		}
 
 		$object = new Jobs\Database_Job_Record( [
 			'action'             => maybe_serialize( $job ),
@@ -109,7 +109,11 @@ class Database_Queue_Provider implements Contract {
 	/**
 	 * Get the next set of job(s) in the queue.
 	 *
-	 * @todo Lock the jobs after popping them off the queue.
+	 * Candidate jobs are over-fetched and then claimed one at a time with an
+	 * atomic, status-guarded UPDATE so that concurrent workers can never pop the
+	 * same job twice. Jobs left in the running state by a crashed worker are
+	 * reclaimed once their lock has expired.
+	 *
 	 * @todo Review the return types and consider adding a generic.
 	 *
 	 * @param string $queue Queue name.
@@ -120,32 +124,39 @@ class Database_Queue_Provider implements Contract {
 	public function pop( ?string $queue = null, int $count = 1 ): Collection {
 		$max_concurrent_batches = max( 1, $this->app['config']->get( 'queue.max_concurrent_batches', 1 ) );
 
-		return $this->query( $queue )
-			// Only get jobs that have not failed.
-			->where( 'status', Status::PENDING->value )
-			// Filter out jobs that are not scheduled to run yet.
+		$candidates = $this->query( $queue )
+			// Consider pending jobs as well as running jobs whose lock has expired
+			// (i.e. left behind by a crashed worker). Currently-locked running jobs
+			// keep their lock time in the future and are excluded below.
+			->whereIn( 'status', [ Status::PENDING->value, Status::RUNNING->value ] )
+			// Filter out jobs that are not scheduled to run yet or are still locked.
 			->where_raw( 'available_at_gmt', '<=', now()->toDateTimeString() )
-			// Multiply the count times the number of concurrent batches to get the
-			// number of jobs to fetch. This accounts for job locks without needing a
-			// meta query.
+			// Over-fetch relative to the batch size so that we still have enough
+			// candidates left after any are claimed by a concurrent worker.
 			->take( $count * $max_concurrent_batches )
-			->get()
-			// Filter out any jobs that are locked.
-			->filter( fn ( Jobs\Database_Job_Record $record ) => ! $record->is_locked() )
-			// Take only what we can process in this batch.
-			->values()
-			->take( $count )
-			// Lock the jobs until the configured timeout.
-			->map(
-				fn ( Jobs\Database_Job_Record $record ) => tap(
-					new Jobs\Database_Job( $record ),
-					// Lock the job until the configured timeout. This also marks the job as running.
-					fn ( Jobs\Database_Job $job ) => $record->set_lock_until( // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable
-						now()->addSeconds( $job->get_job()->timeout ?? 600 ),
-					),
-				),
-			)
-			->values();
+			->get();
+
+		$claimed = new Collection();
+
+		foreach ( $candidates as $record ) {
+			if ( $claimed->count() >= $count ) {
+				break;
+			}
+
+			$job   = new Jobs\Database_Job( $record );
+			$inner = $job->get_job();
+
+			// Lock the job until the configured timeout while it is processed. A
+			// positive timeout is required so the new lock is always in the future.
+			$timeout = is_object( $inner ) && isset( $inner->timeout ) ? max( 1, (int) $inner->timeout ) : 600;
+
+			// Atomically claim the job, skipping it if another worker won the race.
+			if ( $record->claim( now()->addSeconds( $timeout ) ) ) {
+				$claimed->push( $job );
+			}
+		}
+
+		return $claimed;
 	}
 
 	/**

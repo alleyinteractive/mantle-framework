@@ -231,7 +231,7 @@ class Queue_Jobs_Table extends WP_List_Table {
 						)
 					),
 					esc_attr__( 'Delete this job', 'mantle' ),
-					"return confirm('" . esc_attr__( 'Are you sure you want to retry this job?', 'mantle' ) . "');",
+					"return confirm('" . esc_attr__( 'Are you sure you want to delete this job?', 'mantle' ) . "');",
 					esc_html__( 'Delete', 'mantle' ),
 				)
 				: null,

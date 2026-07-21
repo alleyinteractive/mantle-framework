@@ -52,7 +52,7 @@ class Worker {
 	 *
 	 * @param Job $job Job to run.
 	 */
-	protected function run_single( Job $job ): void {
+	public function run_single( Job $job ): void {
 		$provider = $this->manager->get_provider();
 
 		$this->events->dispatch( new Job_Processing( $provider, $job ) );

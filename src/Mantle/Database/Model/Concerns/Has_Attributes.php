@@ -562,7 +562,7 @@ trait Has_Attributes {
 			return $as_object ? new \stdClass() : [];
 		}
 
-		return json_decode( $value, ! $as_object );
+		return json_decode( $value, ! $as_object, 512, JSON_THROW_ON_ERROR );
 	}
 
 	/**
