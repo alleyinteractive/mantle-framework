@@ -44,9 +44,7 @@ trait Interacts_With_Hooks {
 					return $value;
 				}
 
-				if ( ! isset( $this->hooks_fired[ $filter ] ) ) {
-					$this->hooks_fired[ $filter ] = 0;
-				}
+				$this->hooks_fired[ $filter ] ??= 0;
 
 				$this->hooks_fired[ $filter ]++;
 

@@ -43,9 +43,7 @@ class Discover_Events {
 			[ $events, $priority ] = $events;
 
 			foreach ( $events as $event ) {
-				if ( ! isset( $discovered_events[ $event ] ) ) {
-					$discovered_events[ $event ] = [];
-				}
+				$discovered_events[ $event ] ??= [];
 
 				$discovered_events[ $event ][] = [ $listener, $priority ];
 			}

@@ -83,23 +83,23 @@ class Parser {
 	protected static function parse_argument( $token ): \Symfony\Component\Console\Input\InputArgument {
 		[ $token, $description ] = static::extract_description( $token );
 
-		if ( str_ends_with( (string) $token, '?*' ) ) {
-			return new InputArgument( trim( (string) $token, '?*' ), InputArgument::IS_ARRAY, $description );
+		if ( str_ends_with( $token, '?*' ) ) {
+			return new InputArgument( trim( $token, '?*' ), InputArgument::IS_ARRAY, $description );
 		}
 
-		if ( str_ends_with( (string) $token, '*' ) ) {
-			return new InputArgument( trim( (string) $token, '*' ), InputArgument::IS_ARRAY | InputArgument::REQUIRED, $description );
+		if ( str_ends_with( $token, '*' ) ) {
+			return new InputArgument( trim( $token, '*' ), InputArgument::IS_ARRAY | InputArgument::REQUIRED, $description );
 		}
 
-		if ( str_ends_with( (string) $token, '?' ) ) {
-			return new InputArgument( trim( (string) $token, '?' ), InputArgument::OPTIONAL, $description );
+		if ( str_ends_with( $token, '?' ) ) {
+			return new InputArgument( trim( $token, '?' ), InputArgument::OPTIONAL, $description );
 		}
 
-		if ( preg_match( '/(.+)\=\*(.+)/', (string) $token, $matches ) ) {
+		if ( preg_match( '/(.+)\=\*(.+)/', $token, $matches ) ) {
 			return new InputArgument( $matches[1], InputArgument::IS_ARRAY, $description, preg_split( '/,\s?/', $matches[2] ) );
 		}
 
-		if ( preg_match( '/(.+)\=(.+)/', (string) $token, $matches ) ) {
+		if ( preg_match( '/(.+)\=(.+)/', $token, $matches ) ) {
 			return new InputArgument( $matches[1], InputArgument::OPTIONAL, $description, $matches[2] );
 		}
 
@@ -114,7 +114,7 @@ class Parser {
 	protected static function parse_option( $token ): \Symfony\Component\Console\Input\InputOption {
 		[$token, $description] = static::extract_description( $token );
 
-		$matches = preg_split( '/\s*\|\s*/', (string) $token, 2 );
+		$matches = preg_split( '/\s*\|\s*/', $token, 2 );
 
 		if ( isset( $matches[1] ) ) {
 			$shortcut = $matches[0];

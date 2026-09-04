@@ -274,17 +274,15 @@ class Remote_Request_Collector extends \QM_Collector {
 
 		foreach ( $this->requests as $key => $request ) {
 			// Provide a timeout response if none exists).
-			if ( ! isset( $this->responses[ $key ] ) ) {
-				$this->responses[ $key ] = [
-					'args'     => $request['args'],
-					'response' => new WP_Error(
-						'http_request_timed_out',
-						__( 'The HTTP request did not receive a response before the timeout period expired.', 'mantle' ),
-					),
-					'stop'     => floatval( $request['start'] + ( $request['args']['timeout'] ?? 0 ) ),
-					'url'      => $request['url'],
-				];
-			}
+			$this->responses[ $key ] ??= [
+				'args'     => $request['args'],
+				'response' => new WP_Error(
+					'http_request_timed_out',
+					__( 'The HTTP request did not receive a response before the timeout period expired.', 'mantle' ),
+				),
+				'stop'     => floatval( $request['start'] + ( $request['args']['timeout'] ?? 0 ) ),
+				'url'      => $request['url'],
+			];
 
 			// Convert the response to a Http Client Response instance.
 			$response = match ( true ) {

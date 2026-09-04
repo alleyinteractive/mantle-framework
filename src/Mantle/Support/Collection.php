@@ -105,9 +105,7 @@ class Collection implements ArrayAccess, Enumerable {
 
 		$items = range( 1, $number );
 
-		if ( is_null( $callback ) ) {
-			$callback = fn( $value ) => $value;
-		}
+		$callback ??= fn( $value ) => $value;
 
 		return ( new static( $items ) )->map( $callback );
 	}
@@ -202,15 +200,7 @@ class Collection implements ArrayAccess, Enumerable {
 
 		$collection = isset( $key ) ? $this->pluck( $key ) : $this;
 
-		$counts = new self();
-
-		$collection->each(
-			function ( $value ) use ( $counts ): void {
-				$counts[ $value ] = isset( $counts[ $value ] ) ? $counts[ $value ] + 1 : 1;
-			}
-		);
-
-		$sorted = $counts->sort();
+		$sorted = $collection->count_by()->sort();
 
 		$highest_value = $sorted->last();
 
@@ -868,9 +858,7 @@ class Collection implements ArrayAccess, Enumerable {
 
 			$value = reset( $pair );
 
-			if ( ! isset( $dictionary[ $key ] ) ) {
-				$dictionary[ $key ] = [];
-			}
+			$dictionary[ $key ] ??= [];
 
 			$dictionary[ $key ][] = $value;
 		}
