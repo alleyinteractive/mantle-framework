@@ -45,11 +45,18 @@ class Queue_Service_Provider extends Service_Provider {
 		);
 
 		// Register queue console commands.
-		$this->add_command( Cleanup_Jobs_Command::class );
-		$this->add_command( Run_Command::class );
+		$this->add_command( [
+			Cleanup_Jobs_Command::class,
+			Run_Command::class,
+		] );
+
+		// Register the admin service provider if configured.
+		if ( $this->app['config']->get( 'queue.enable_admin', true ) ) {
+			$this->app->register( Admin\Service_Provider::class );
+		}
 
 		// Register the queue service providers.
-		$this->app->register( Providers\WordPress\Service_Provider::class );
+		$this->app->register( Database_Service_Provider::class );
 	}
 
 	/**
@@ -62,7 +69,7 @@ class Queue_Service_Provider extends Service_Provider {
 	/**
 	 * Register Queue Providers
 	 *
-	 * Fire an event to allow other plugins to register queue providers.
+	 * Fire an event to allow other services to register queue providers.
 	 *
 	 * @param Queue_Manager_Contract $manager Queue Manager.
 	 */

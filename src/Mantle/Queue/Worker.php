@@ -14,6 +14,7 @@ use Mantle\Queue\Events\Job_Processed;
 use Mantle\Queue\Events\Job_Processing;
 use Mantle\Queue\Events\Run_Complete;
 use Mantle\Queue\Events\Run_Start;
+use Mantle\Queue\Jobs\Job;
 use Throwable;
 
 /**
@@ -26,11 +27,7 @@ class Worker {
 	 * @param Queue_Manager $manager Manager instance.
 	 * @param Dispatcher    $events Events dispatcher.
 	 */
-	public function __construct(
-		protected Queue_Manager $manager,
-		protected Dispatcher $events,
-	) {
-	}
+	public function __construct( protected Queue_Manager $manager, protected Dispatcher $events ) {}
 
 	/**
 	 * Run a batch of queue items.
@@ -45,7 +42,7 @@ class Worker {
 
 		$this->events->dispatch( new Run_Start( $provider, $queue, $jobs ) );
 
-		$jobs->each( [ $this, 'run_single' ] );
+		$jobs->each( $this->run_single( ... ) );
 
 		$this->events->dispatch( new Run_Complete( $provider, $queue, $jobs ) );
 	}
@@ -53,9 +50,9 @@ class Worker {
 	/**
 	 * Run a single queue job.
 	 *
-	 * @param Queue_Worker_Job $job Job to run.
+	 * @param Job $job Job to run.
 	 */
-	public function run_single( Queue_Worker_Job $job ): void {
+	public function run_single( Job $job ): void {
 		$provider = $this->manager->get_provider();
 
 		$this->events->dispatch( new Job_Processing( $provider, $job ) );

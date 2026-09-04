@@ -7,26 +7,34 @@
  * @package Mantle
  */
 
-namespace Mantle\Queue\Providers\WordPress;
+namespace Mantle\Queue;
 
 use Mantle\Queue\Console\Cleanup_Jobs_Command;
 use Mantle\Queue\Events;
+use Mantle\Scheduling\Schedule;
 use Mantle\Support\Attributes\Action;
 use Mantle\Support\Service_Provider as Base_Service_Provider;
-use Mantle\Scheduling\Schedule;
 
 /**
  * WordPress Queue Service Provider Scheduler
  */
-class Service_Provider extends Base_Service_Provider {
+class Database_Service_Provider extends Base_Service_Provider {
+	use Concerns\Database_Queue_Schema;
+
+	/**
+	 * The queue scheduler instance.
+	 */
+	protected Database_Scheduler $scheduler;
+
 	/**
 	 * Register the service provider.
 	 */
 	public function register(): void {
-		// Register the queue admin service provider.
-		if ( $this->app['config']->get( 'queue.enable_admin', true ) ) {
-			$this->app->register( Admin\Service_Provider::class );
-		}
+		$this->app->singleton( Database_Scheduler::class, fn ( $app ) => new Database_Scheduler(
+			$app->make( 'queue' ),
+			$app->make( 'queue.worker' ),
+			$app->make( 'config' ),
+		) );
 	}
 
 	/**
@@ -36,9 +44,9 @@ class Service_Provider extends Base_Service_Provider {
 	 * daily (by default) to remove old queue jobs from the database.
 	 */
 	public function boot(): void {
-		if ( did_action( 'init' ) ) {
-			$this->register_data_types();
-		}
+		$this->scheduler = $this->app->make( Database_Scheduler::class );
+
+		$this->create_tables();
 
 		$this->app->resolving(
 			'scheduler',
@@ -54,11 +62,11 @@ class Service_Provider extends Base_Service_Provider {
 	}
 
 	/**
-	 * Register the WordPress queue provider's post type and taxonomies.
+	 * Process the pending queue items that were added before `init`.
 	 */
 	#[Action( 'init' )]
-	public function register_data_types(): void {
-		Provider::register_data_types();
+	public function process_pending_queue(): void {
+		Database_Queue_Provider::process_pending_queue();
 	}
 
 	/**
@@ -69,7 +77,7 @@ class Service_Provider extends Base_Service_Provider {
 	 */
 	#[Action( Events\Providers_Registered::class )]
 	public function register_queue_provider( Events\Providers_Registered $event ): Events\Providers_Registered {
-		$event->manager->add_provider( 'wordpress', Provider::class );
+		$event->manager->add_provider( Database_Queue_Provider::NAME, Database_Queue_Provider::class );
 
 		return $event;
 	}
@@ -82,9 +90,9 @@ class Service_Provider extends Base_Service_Provider {
 	 *
 	 * @param string|null $queue Queue name.
 	 */
-	#[Action( Scheduler::EVENT )]
-	public function handle_scheduled_run( $queue = null ): void {
-		Scheduler::run( $queue ?? 'default' );
+	#[Action( Database_Scheduler::EVENT )]
+	public function handle_scheduled_run( ?string $queue = null ): void {
+		$this->scheduler->run( $queue ?? 'default' );
 	}
 
 	/**
@@ -94,8 +102,8 @@ class Service_Provider extends Base_Service_Provider {
 	 */
 	#[Action( Events\Job_Queued::class )]
 	public function handle_job_queued_event( Events\Job_Queued $event ): Events\Job_Queued {
-		if ( $event->provider instanceof Provider ) {
-			Scheduler::on_job_queued( $event->queue ?? 'default' );
+		if ( $event->provider instanceof Database_Queue_Provider ) {
+			$this->scheduler->handle_job_queued( $event->queue ?? 'default' );
 		}
 
 		return $event;
@@ -108,8 +116,8 @@ class Service_Provider extends Base_Service_Provider {
 	 */
 	#[Action( Events\Run_Complete::class )]
 	public function handle_run_complete( Events\Run_Complete $event ): Events\Run_Complete {
-		if ( $event->provider instanceof Provider ) {
-			Scheduler::schedule_next_run( $event->queue ?? 'default' );
+		if ( $event->provider instanceof Database_Queue_Provider ) {
+			$this->scheduler->schedule_next_run( $event->queue ?? 'default' );
 		}
 
 		return $event;
@@ -125,7 +133,7 @@ class Service_Provider extends Base_Service_Provider {
 	 */
 	#[Action( 'a8c_cron_control_concurrent_event_whitelist' )]
 	public function increase_vip_concurrency( array $list ): array {
-		$list[ Scheduler::EVENT ] = 100;
+		$list[ Database_Scheduler::EVENT ] = 100;
 
 		return $list;
 	}

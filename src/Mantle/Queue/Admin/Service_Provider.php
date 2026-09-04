@@ -1,11 +1,11 @@
 <?php
 /**
- * Admin_Service_Provider class file.
+ * Service_Provider class file.
  *
  * @package Mantle
  */
 
-namespace Mantle\Queue\Providers\WordPress\Admin;
+namespace Mantle\Queue\Admin;
 
 use Mantle\Support\Attributes\Action;
 use Mantle\Support\Service_Provider as Base_Service_Provider;
@@ -13,15 +13,9 @@ use Mantle\Support\Service_Provider as Base_Service_Provider;
 /**
  * Queue Admin Service Provider
  *
- * Provides a UI for displaying the WordPress queue.
+ * Provides a UI for displaying the queue.
  */
 class Service_Provider extends Base_Service_Provider {
-	/**
-	 * Register the service provider.
-	 */
-	public function register() {
-	}
-
 	/**
 	 * Register the admin submenu page.
 	 */
@@ -29,8 +23,8 @@ class Service_Provider extends Base_Service_Provider {
 	public function register_admin_page(): void {
 		add_submenu_page(
 			'tools.php',
-			__( 'Queue', 'mantle' ),
-			__( 'Queue', 'mantle' ),
+			__( 'Mantle Queue', 'mantle' ),
+			__( 'Mantle Queue', 'mantle' ),
 			/**
 			 * Filter the capability required to view the queue admin page.
 			 *
