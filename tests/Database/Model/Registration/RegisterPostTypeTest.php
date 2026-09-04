@@ -14,9 +14,21 @@ use Mantle\Support\Registration\Post_Type_Arguments;
 use Mantle\Testing\FrameworkTestCase;
 
 class RegisterPostTypeTest extends FrameworkTestCase {
+	protected ?\WP_Hook $rest_api_init = null;
+
 	protected function setUp(): void {
 		parent::setUp();
+
+		$this->rest_api_init = isset( $GLOBALS['wp_filter']['rest_api_init'] )
+			? clone $GLOBALS['wp_filter']['rest_api_init']
+			: null;
+
 		remove_all_actions( 'init' );
+
+		// The test fires rest_api_init by hand and needs only its own callbacks on it:
+		// core's callbacks call register_rest_route(), which re-enters rest_get_server()
+		// and fires rest_api_init a second time, double-registering the test's fields.
+		remove_all_actions( 'rest_api_init' );
 	}
 
 	protected function tearDown(): void {
@@ -24,7 +36,14 @@ class RegisterPostTypeTest extends FrameworkTestCase {
 		m::close();
 
 		unregister_post_type( 'test-post-type' );
-		remove_all_actions( 'rest_api_init' );
+
+		// Restore what setUp() cleared; leaving it empty would strip core's
+		// create_initial_rest_routes() for every later test in the process.
+		if ( $this->rest_api_init ) {
+			$GLOBALS['wp_filter']['rest_api_init'] = $this->rest_api_init;
+		} else {
+			unset( $GLOBALS['wp_filter']['rest_api_init'] );
+		}
 	}
 
 	public function test_register_post_type_fluent(): void {

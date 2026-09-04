@@ -35,14 +35,32 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	use Refresh_Database;
 	use Reset_Server;
 
+	protected ?\WP_Hook $template_redirect = null;
+
 	protected function setUp(): void {
 		parent::setUp();
 
 		putenv( 'MANTLE_EXPERIMENTAL_TESTING_USE_HOME_URL_HOST=' );
 
+		$this->template_redirect = isset( $GLOBALS['wp_filter']['template_redirect'] )
+			? clone $GLOBALS['wp_filter']['template_redirect']
+			: null;
+
 		remove_all_actions( 'template_redirect' );
 
 		$this->flush_default_headers();
+	}
+
+	protected function tearDown(): void {
+		// Without this, the hooks cleared above stay cleared for every later test in
+		// the process, e.g. WP_Sitemaps' template_redirect callback.
+		if ( $this->template_redirect ) {
+			$GLOBALS['wp_filter']['template_redirect'] = $this->template_redirect;
+		} else {
+			unset( $GLOBALS['wp_filter']['template_redirect'] );
+		}
+
+		parent::tearDown();
 	}
 
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
