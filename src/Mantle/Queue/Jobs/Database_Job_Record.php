@@ -127,17 +127,21 @@ class Database_Job_Record extends Database_Table_Model {
 
 		$lock = $lock_until->toDateTimeString();
 
-		$claimed = $wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
-			$wpdb->prepare(
-				"UPDATE {$table} SET status = %s, available_at_gmt = %s WHERE " . static::$primary_key . ' = %d AND status IN ( %s, %s ) AND available_at_gmt <= %s', // phpcs:ignore WordPress.DB.PreparedSQL
-				Status::RUNNING->value,
-				$lock,
-				$this->id,
-				Status::PENDING->value,
-				Status::RUNNING->value,
-				now()->toDateTimeString(),
-			),
+		$query = $wpdb->prepare(
+			"UPDATE {$table} SET status = %s, available_at_gmt = %s WHERE " . static::$primary_key . ' = %d AND status IN ( %s, %s ) AND available_at_gmt <= %s', // phpcs:ignore WordPress.DB.PreparedSQL
+			Status::RUNNING->value,
+			$lock,
+			$this->id,
+			Status::PENDING->value,
+			Status::RUNNING->value,
+			now()->toDateTimeString(),
 		);
+
+		if ( null === $query ) {
+			return false;
+		}
+
+		$claimed = $wpdb->query( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared
 
 		if ( ! $claimed ) {
 			return false;

@@ -138,12 +138,12 @@ class Database_Queue_Provider implements Contract {
 
 		$claimed = new Collection();
 
-		foreach ( $candidates as $record ) {
+		foreach ( $candidates as $candidate ) {
 			if ( $claimed->count() >= $count ) {
 				break;
 			}
 
-			$job   = new Jobs\Database_Job( $record );
+			$job   = new Jobs\Database_Job( $candidate );
 			$inner = $job->get_job();
 
 			// Lock the job until the configured timeout while it is processed. A
@@ -151,7 +151,7 @@ class Database_Queue_Provider implements Contract {
 			$timeout = is_object( $inner ) && isset( $inner->timeout ) ? max( 1, (int) $inner->timeout ) : 600;
 
 			// Atomically claim the job, skipping it if another worker won the race.
-			if ( $record->claim( now()->addSeconds( $timeout ) ) ) {
+			if ( $candidate->claim( now()->addSeconds( $timeout ) ) ) {
 				$claimed->push( $job );
 			}
 		}
