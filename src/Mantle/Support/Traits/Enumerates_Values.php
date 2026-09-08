@@ -784,9 +784,7 @@ trait Enumerates_Values {
 	 * @return static
 	 */
 	public function count_by( $callback = null ) {
-		if ( is_null( $callback ) ) {
-			$callback = fn ( $value ) => $value;
-		}
+		$callback ??= fn ( $value ) => $value;
 
 		return new static(
 			$this->group_by( $callback )->map( // @phpstan-ignore-line argument.templateType

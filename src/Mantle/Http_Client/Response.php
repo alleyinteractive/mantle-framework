@@ -382,9 +382,7 @@ class Response implements ArrayAccess, ResponseContract {
 	 * @return mixed
 	 */
 	public function json( ?string $key = null, mixed $default = null ) {
-		if ( $this->decoded === null ) {
-			$this->decoded = json_decode( $this->body(), true );
-		}
+		$this->decoded ??= json_decode( $this->body(), true );
 
 		if ( is_null( $key ) ) {
 			return $this->decoded;

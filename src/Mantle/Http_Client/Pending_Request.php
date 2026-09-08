@@ -183,9 +183,7 @@ class Pending_Request {
 	 * @param string|null $url URL for the request.
 	 */
 	public function set_url( ?string $url = null ): static {
-		if ( is_null( $url ) ) {
-			$url = '';
-		}
+		$url ??= '';
 
 		$this->url = $this->base_url ? "{$this->base_url}{$url}" : $url;
 

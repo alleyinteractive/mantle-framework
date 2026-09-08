@@ -26,9 +26,7 @@ trait Singleton {
 	public static function instance() {
 		$class = static::class;
 
-		if ( ! isset( static::$instances[ $class ] ) ) {
-			static::$instances[ $class ] = new static();
-		}
+		static::$instances[ $class ] ??= new static();
 
 		return self::$instances[ $class ];
 	}
