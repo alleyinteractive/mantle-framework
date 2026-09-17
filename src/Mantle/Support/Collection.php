@@ -1042,7 +1042,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param  TValue ...$values
 	 */
 	public function prepend_many( ...$values ): static {
-		array_unshift( $this->items, ...$values );
+		array_unshift( $this->items, ...$values ); // @phpstan-ignore-line assign.propertyType
 
 		return $this;
 	}
@@ -1054,7 +1054,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	public function push( ...$values ): static {
 		foreach ( $values as $value ) {
-			$this->items[] = $value;
+			$this->items[] = $value; // @phpstan-ignore-line assign.propertyType
 		}
 
 		return $this;
@@ -1715,7 +1715,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static
 	 */
 	public function add( $item ) {
-		$this->items[] = $item;
+		$this->items[] = $item; // @phpstan-ignore-line assign.propertyType
 
 		return $this;
 	}
@@ -1755,9 +1755,9 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	public function offsetSet( mixed $key, mixed $value ): void {
 		if ( is_null( $key ) ) {
-			$this->items[] = $value;
+			$this->items[] = $value; // @phpstan-ignore-line assign.propertyType
 		} else {
-			$this->items[ $key ] = $value;
+			$this->items[ $key ] = $value; // @phpstan-ignore-line assign.propertyType
 		}
 	}
 
