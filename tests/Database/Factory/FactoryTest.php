@@ -263,6 +263,14 @@ class FactoryTest extends FrameworkTestCase {
 
 		$this->assertEquals( 'Title from callable', $post->post_title );
 	}
+
+	public function test_string_matching_global_function_name_as_attribute(): void {
+		$post = Testable_Post::factory()->create_and_get( [
+			'post_title' => 'Count',
+		] );
+
+		$this->assertSame( 'Count', $post->post_title );
+	}
 }
 
 class Testable_Post extends Model\Post {
