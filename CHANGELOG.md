@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Changed
+
+- Updated the `alleyinteractive/wp-asset-manager` requirement to allow `^1.4.0 || ^2.0` (#919).
+  Projects that require the plugin only through Mantle will upgrade to 2.x on `composer update`.
+  Review the [wp-asset-manager 2.0 changes](https://github.com/alleyinteractive/wp-asset-manager/releases/tag/v2.0.0)
+  first: for example, a stylesheet with the `defer` load method now loads as `async` and raises
+  a `_doing_it_wrong()` notice.
+
+### Deprecated
+
+- `Mantle\Contracts\Assets\Load_Method::ASYNC_DEFER`. wp-asset-manager 2.0 removed the `async-defer`
+  load method. Mantle passes it through on wp-asset-manager 1.x and loads it as `async` on 2.x.
+  This also applies to a script asset that calls both `async()` and `defer()`. It will be removed
+  in Mantle 2.0.
+
 ## v1.22.1
 
 ### Fixed

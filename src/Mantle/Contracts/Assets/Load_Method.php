@@ -37,6 +37,8 @@ class Load_Method {
 	/**
 	 * Asynchronous and Defer load method.
 	 *
+	 * @deprecated Removed in wp-asset-manager 2.0, where it behaves as {@see Load_Method::ASYNC}. Will be removed in Mantle 2.0.
+	 *
 	 * @var string
 	 */
 	public const ASYNC_DEFER = 'async-defer';
