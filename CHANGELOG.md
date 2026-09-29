@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## v1.22.2
 
 ### Changed
 
@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   load method. Mantle passes it through on wp-asset-manager 1.x and loads it as `async` on 2.x.
   This also applies to a script asset that calls both `async()` and `defer()`. It will be removed
   in Mantle 2.0.
+
+### Fixed
+
+- Fixed a PHPStan `catch.neverThrown` error in `HTML_Helpers::convertToHtmlEntities()`.
 
 ## v1.22.1
 
