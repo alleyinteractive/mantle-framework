@@ -588,6 +588,124 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		$this->assertEquals( 'true', get_post_meta( $underlying_post->ID, 'example', true ) );
 	}
 
+	public function test_with_meta_array_value_is_one_serialized_entry(): void {
+		$post_id = static::factory()->post->with_meta( [ 'tags' => [ 'a', 'b' ] ] )->create();
+
+		$this->assertSame( [ 'a', 'b' ], get_post_meta( $post_id, 'tags', true ) );
+		$this->assertCount( 1, get_post_meta( $post_id, 'tags', false ) );
+	}
+
+	public function test_with_meta_chained_same_key_merges_into_one_entry(): void {
+		$post_id = static::factory()->post
+			->with_meta( [ 'k' => 'a' ] )
+			->with_meta( [ 'k' => 'b' ] )
+			->create();
+
+		$this->assertSame( [ 'a', 'b' ], get_post_meta( $post_id, 'k', true ) );
+		$this->assertCount( 1, get_post_meta( $post_id, 'k', false ) );
+	}
+
+	public function test_with_meta_named_arguments(): void {
+		$post_id = static::factory()->post->with_meta( meta: 'k', value: 'v' )->create();
+
+		$this->assertSame( 'v', get_post_meta( $post_id, 'k', true ) );
+	}
+
+	public function test_with_meta_array_meta_ignores_scalar_value(): void {
+		$post_id = static::factory()->post->with_meta( [ 'k' => 'a' ], 'ignored' )->create();
+
+		$this->assertSame( 'a', get_post_meta( $post_id, 'k', true ) );
+		$this->assertCount( 1, get_post_meta( $post_id, 'k', false ) );
+	}
+
+	public function test_with_meta_repeated_keys_on_term(): void {
+		register_taxonomy( 'custom-show-taxonomy', 'post' );
+
+		$term = static::factory()->term
+			->with_meta(
+				[ 'custom_featured_show' => '1' ],
+				[ 'hero_description' => 'Line 1' ],
+				[ 'hero_description' => 'Line 2' ],
+			)
+			->create_and_get(
+				[
+					'taxonomy' => 'custom-show-taxonomy',
+					'name'     => 'Test Show',
+					'slug'     => 'test-show',
+				]
+			);
+
+		$this->assertInstanceOf( \WP_Term::class, $term );
+		$this->assertSame( '1', get_term_meta( $term->term_id, 'custom_featured_show', true ) );
+		$this->assertSame( [ 'Line 1', 'Line 2' ], get_term_meta( $term->term_id, 'hero_description', false ) );
+	}
+
+	public function test_with_meta_repeated_keys_on_post(): void {
+		$post_id = static::factory()->post
+			->with_meta(
+				[ 'single' => 'one' ],
+				[ 'multi' => 'a' ],
+				[ 'multi' => 'b' ],
+				[ 'multi' => 'c' ],
+			)
+			->create();
+
+		$this->assertSame( 'one', get_post_meta( $post_id, 'single', true ) );
+		$this->assertSame( [ 'a', 'b', 'c' ], get_post_meta( $post_id, 'multi', false ) );
+	}
+
+	public function test_with_meta_repeated_keys_on_user(): void {
+		$user_id = static::factory()->user
+			->with_meta(
+				[ 'multi' => 'a' ],
+				[ 'multi' => 'b' ],
+			)
+			->create();
+
+		$this->assertSame( [ 'a', 'b' ], get_user_meta( $user_id, 'multi', false ) );
+	}
+
+	public function test_with_meta_repeated_keys_create_many(): void {
+		$post_ids = static::factory()->post
+			->with_meta(
+				[ 'multi' => 'a' ],
+				[ 'multi' => 'b' ],
+			)
+			->create_many( 3 );
+
+		$this->assertCount( 3, $post_ids );
+
+		foreach ( $post_ids as $post_id ) {
+			$this->assertSame( [ 'a', 'b' ], get_post_meta( $post_id, 'multi', false ) );
+		}
+	}
+
+	public function test_with_meta_repeated_keys_convert_values(): void {
+		$post_id = static::factory()->post
+			->with_meta(
+				[ 'enum' => Testable_Factory_Meta::Value_A, 'related' => static::factory()->post ],
+				[ 'enum' => Testable_Factory_Meta::Value_B, 'related' => static::factory()->post ],
+			)
+			->create();
+
+		$this->assertSame( [ 'value-a', 'value-b' ], get_post_meta( $post_id, 'enum', false ) );
+
+		$related = get_post_meta( $post_id, 'related', false );
+
+		$this->assertCount( 2, $related );
+		$this->assertNotEquals( $related[0], $related[1] );
+
+		foreach ( $related as $related_id ) {
+			$this->assertInstanceOf( \WP_Post::class, get_post( (int) $related_id ) );
+		}
+	}
+
+	public function test_with_meta_string_form_rejects_extra_sets(): void {
+		$this->expectException( \InvalidArgumentException::class );
+
+		static::factory()->post->with_meta( 'k', 'v', [ 'k' => 'other' ] );
+	}
+
 	public function test_first_or_create(): void {
 		$existing = static::factory()->post->create_and_get( [
 			'post_title' => 'Original Title test_first_or_create',
@@ -629,4 +747,9 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 
 class Testable_Post_Tag extends Term {
 	public static $object_name = 'post_tag';
+}
+
+enum Testable_Factory_Meta: string {
+	case Value_A = 'value-a';
+	case Value_B = 'value-b';
 }
