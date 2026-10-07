@@ -189,6 +189,22 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 		$this->assertEquals( 'test', $_SERVER['__test']->example );
 	}
 
+	public function test_mixed_typehint_action_argument(): void {
+		$_SERVER['__test'] = null;
+
+		$d = new Dispatcher( $this->app );
+		$d->action(
+			'test_mixed_typehint_action_argument',
+			function ( mixed $value ): void {
+				$_SERVER['__test'] = $value;
+			}
+		);
+
+		do_action( 'test_mixed_typehint_action_argument', [ 'a' => 1 ] );
+
+		$this->assertSame( [ 'a' => 1 ], $_SERVER['__test'] );
+	}
+
 	public function test_wildcard_listener(): void {
 		$listener = [];
 
