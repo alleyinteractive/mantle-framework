@@ -57,7 +57,7 @@ trait Interacts_With_Cron {
 		} else {
 			PHPUnit::assertNotEmpty(
 				static::get_cron_events()->where( 'hook', $action )->all(),
-				"Cron action not scheduled: [{$action}] (ignoring checked)",
+				"Cron action not scheduled: [{$action}] (ignoring arguments)",
 			);
 		}
 	}
@@ -77,9 +77,9 @@ trait Interacts_With_Cron {
 	/**
 	 * Assert that an action is not in a cron queue.
 	 *
-	 * With Mantle 1.9, the default of $args was changed to `null`. This function
-	 * would now return true if no argument was passed to `$args` and the cron
-	 * hook was scheduled with any argument.
+	 * When `$args` is `null` (the default) the assertion fails if the hook is
+	 * scheduled with any arguments. When `$args` is passed, only an event with
+	 * exactly those arguments fails it.
 	 *
 	 * @param string       $action Action hook of the event.
 	 * @param array<mixed> $args Arguments for the cron queue event or null to not check
@@ -99,7 +99,7 @@ trait Interacts_With_Cron {
 		} else {
 			PHPUnit::assertEmpty(
 				static::get_cron_events()->where( 'hook', $action )->all(),
-				"Cron action scheduled: [{$action}] (ignoring checked)",
+				"Cron action scheduled: [{$action}] (ignoring arguments)",
 			);
 		}
 	}
@@ -166,7 +166,9 @@ trait Interacts_With_Cron {
 		} else {
 			PHPUnit::assertEquals(
 				$count,
-				$provider->pending_size( $queue ),
+				$provider instanceof \Mantle\Queue\Database_Queue_Provider
+					? $provider->pending_size( $queue, $job_name )
+					: $provider->pending_size( $queue ),
 				"Job [{$job_name}] count in the queue [{$queue}] is not as expected for " . $provider::class,
 			);
 		}

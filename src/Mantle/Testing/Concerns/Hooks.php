@@ -9,8 +9,6 @@
 
 namespace Mantle\Testing\Concerns;
 
-use Mantle\Queue\Database_Scheduler;
-
 /**
  * Hooks back up and restore routines.
  *
@@ -64,8 +62,9 @@ trait Hooks {
 
 		self::$hooks_saved['wp_filter'] = [];
 		foreach ( $GLOBALS['wp_filter'] as $hook_name => $hook_object ) {
-			// Prevent the Mantle queue callback from being saved.
-			if ( Database_Scheduler::EVENT === $hook_name ) {
+			// Prevent the Mantle queue callback from being saved. The testing package
+			// does not depend on the queue package, so its event name is not referenced.
+			if ( 'mantle_queue' === $hook_name ) {
 				continue;
 			}
 

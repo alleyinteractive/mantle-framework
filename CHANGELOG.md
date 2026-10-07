@@ -24,7 +24,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `pending_size()` with a new `size()` method added.
 - The `assertInCronQueue()` / `assertNotInCronQueue()` assertions now default to not
   checking arguments unless `$args` is passed, and gained `assertCronScheduled()` /
-  `assertCronNotScheduled()` aliases.
+  `assertCronNotScheduled()` aliases. When `$args` is passed, only an event with exactly
+  those arguments is matched: `assertInCronQueue( 'hook' )` now passes for an event
+  scheduled with any arguments, and `assertNotInCronQueue( 'hook', $args )` no longer
+  also fails for an event scheduled with no arguments.
+- Queue job attempts are now counted when a worker claims the job, so a job that
+  crashes its worker is marked failed once it runs out of tries instead of being
+  retried indefinitely. Retrying a failed job from the admin resets its attempts.
+- `Database_Table_Model::get_table_name()` returns the table name without the site's
+  table prefix, which is always prepended.
+- `Database_Query_Builder::where()` with an array value now queries with `IN`, and a
+  where clause that cannot be prepared throws instead of being dropped from the query.
 
 ## v1.22.2
 
