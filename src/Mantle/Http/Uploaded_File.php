@@ -125,7 +125,7 @@ class Uploaded_File extends SymfonyUploadedFile {
 				'post_title'     => preg_replace( '/\.[^.]+$/', '', basename( $uploaded_file ) ),
 				'post_content'   => '',
 				'meta'           => [
-					'_wp_attached_file'                => Str::unpreceding_slash( trailingslashit( $path ) . $uploaded_file ),
+					'_wp_attached_file'                => Str::unpreceding_slash( $uploaded_file ),
 					Attachment::META_KEY_CLOUD_STORAGE => [
 						'disk'       => $disk_name,
 						'name'       => $uploaded_file,

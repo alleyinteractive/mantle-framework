@@ -15,7 +15,7 @@ use Mantle\Types\Validator;
  *
  * Validates that the current request is in the WordPress admin area.
  */
-#[Attribute( Attribute::TARGET_PROPERTY | Attribute::TARGET_PARAMETER )]
+#[Attribute( Attribute::TARGET_CLASS | Attribute::TARGET_PROPERTY | Attribute::TARGET_PARAMETER )]
 class Admin implements Validator {
 	/**
 	 * Validate the attribute.

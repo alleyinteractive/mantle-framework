@@ -39,6 +39,12 @@ class FilesystemManagerTest extends FrameworkTestCase {
 		// Attempt to read the URL/path for the file.
 		$this->assertEquals( home_url( '/wp-content/uploads/file.txt' ), $drive->url( 'file.txt' ) );
 		$this->assertEquals( wp_upload_dir()['basedir'] . '/file.txt', $drive->path( 'file.txt' ) );
+
+		$directory = 'sub-' . wp_rand() . '/dir';
+
+		$drive->put( "{$directory}/file.txt", 'contents' );
+
+		$this->assertSame( '0755', substr( sprintf( '%o', fileperms( wp_upload_dir()['basedir'] . "/{$directory}" ) ), -4 ) );
 		$this->assertTrue( file_exists( $drive->path( 'file.txt' ) ) );
 
 		$drive->delete( 'file.txt' );

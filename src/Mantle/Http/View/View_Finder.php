@@ -97,6 +97,7 @@ class View_Finder {
 		$this->add_path( $this->base_path . '/views', 'mantle-site' );
 
 		$this->add_path( get_framework_views_path(), 'framework' );
+		$this->add_path( get_framework_views_path(), 'framework-views' );
 
 		/**
 		 * Dispatched when the view finder is setting its default paths.
@@ -177,6 +178,8 @@ class View_Finder {
 		// Extract the alias if passed.
 		if ( $this->has_hint_information( $slug ) ) {
 			[ $alias, $slug ] = explode( '/', $slug, 2 );
+
+			$alias = ltrim( $alias, '@' );
 		}
 
 		$templates = [];
@@ -216,7 +219,7 @@ class View_Finder {
 			$possible_view_files = $this->get_possible_view_files( $template );
 
 			foreach ( $possible_view_files as $possible_view_file ) {
-				foreach ( $this->get_paths() as $path ) {
+				foreach ( $paths as $path ) {
 					$path = "{$path}/{$possible_view_file}";
 
 					if ( $this->files->exists( $path ) ) {
