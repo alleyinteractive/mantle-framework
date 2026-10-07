@@ -8,9 +8,6 @@ use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use WP_Post;
 
-/**
- * @group factory
- */
 #[Group( 'factory' )]
 class BylineManagerFactoryTest extends FrameworkTestCase {
 	protected function setUp(): void {

@@ -5,9 +5,6 @@ use Mantle\Testing\Attributes\UserAgent;
 use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\Group;
 
-/**
- * @group testing
- */
 #[Group( 'testing' )]
 class InteractsWithUserAgentTest extends FrameworkTestCase {
 	public function test_normal_user_agent(): void {

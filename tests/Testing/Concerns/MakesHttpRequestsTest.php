@@ -28,7 +28,6 @@ use function Mantle\Support\Helpers\terminate_request;
  * Tests for making internal HTTP requests in tests.
  *
  * @see \Mantle\Testing\Concerns\Makes_Http_Requests
- * @group testing
  */
 #[Group( 'testing' )]
 class MakesHttpRequestsTest extends FrameworkTestCase {
@@ -377,9 +376,6 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			->assertNotContent( fn ( string $content ) => stringable( $content )->contains( 'this will not be found' ) );
 	}
 
-	/**
-	 * @dataProvider core_template_hook_data_provider
-	 */
 	#[DataProvider( 'core_template_hook_data_provider' )]
 	public function test_redirect_wordpress( string $hook ) {
 		add_action( $hook, fn () => wp_redirect( home_url( '/redirected/' ), 302 ) );
@@ -387,9 +383,6 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		$this->get( '/' )->assertRedirect( home_url( '/redirected/' ) );
 	}
 
-	/**
-	 * @dataProvider core_template_hook_data_provider
-	 */
 	#[DataProvider( 'core_template_hook_data_provider' )]
 	public function test_exit_simulation( string $hook ): void {
 		add_action( $hook, function (): void {

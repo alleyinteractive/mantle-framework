@@ -6,9 +6,6 @@ use Mantle\Testing\FrameworkTestCase;
 use Mantle\Testing\Utils;
 use PHPUnit\Framework\Attributes\Group;
 
-/**
- * @group testing
- */
 #[Group( 'testing' )]
 class ResetServerTest extends FrameworkTestCase {
 	use Reset_Server;

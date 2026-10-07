@@ -4,9 +4,6 @@ namespace Mantle\Tests\Testing\Concerns;
 use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\Group;
 
-/**
- * @group testing
- */
 #[Group( 'testing' )]
 class InteractsWithHooksTest extends FrameworkTestCase {
 	public function test_hook_applied() {

@@ -12,8 +12,6 @@ namespace Mantle\Testing\Concerns;
 use Mantle\Support\Reflector;
 use PHPUnit\Metadata\Annotation\Parser\DocBlock;
 use PHPUnit\Metadata\Annotation\Parser\Registry;
-use PHPUnit\Runner\Version;
-use PHPUnit\Util\Test;
 use ReflectionClass;
 
 /**
@@ -28,7 +26,7 @@ trait Reads_Annotations {
 	 * Remove this method and all usage when PHPUnit 11.x support is dropped.
 	 */
 	public function get_annotations_for_method(): array {
-		// Use the PHPUnit 10.x method if available.
+		// The annotation parser only exists in PHPUnit 11.
 		if ( class_exists( Registry::class ) && class_exists( DocBlock::class ) ) {
 			$registry = Registry::getInstance();
 
@@ -38,8 +36,6 @@ trait Reads_Annotations {
 			];
 		}
 
-		// If we are using PHPUnit 12.0.0 or greater, we can bail because
-		// annotations are no longer supported. Attributes must be used instead.
 		return [];
 	}
 

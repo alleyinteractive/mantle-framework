@@ -39,7 +39,9 @@ use Mantle\Testing\Concerns\Reads_Annotations;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\Concerns\WordPress_Authentication;
 use Mantle\Testing\Concerns\WordPress_State;
+use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\TestCase as BaseTestCase;
+use ReflectionMethod;
 use Spatie\Snapshots\MatchesSnapshots;
 use WP;
 use WP_Query;
@@ -204,7 +206,8 @@ abstract class TestCase extends BaseTestCase {
 			function ( string|object $trait ): void {
 				$method = strtolower( class_basename( $trait ) ) . '_set_up';
 
-				if ( method_exists( $this, $method ) ) {
+				// PHPUnit already runs methods marked with the Before attribute.
+				if ( method_exists( $this, $method ) && ! ( new ReflectionMethod( $this, $method ) )->getAttributes( Before::class ) ) {
 					$this->{$method}();
 				}
 			}

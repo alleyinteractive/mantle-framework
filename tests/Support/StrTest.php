@@ -291,17 +291,11 @@ class StrTest extends TestCase {
 		$this->assertSame( 'foo', Str::after_last( '----foo', '---' ) );
 	}
 
-	/**
-	 * @dataProvider strContainsProvider
-	 */
 	#[DataProvider( 'strContainsProvider' )]
 	public function testStrContains( $haystack, $needles, $expected, $ignoreCase = false ) {
 		$this->assertEquals( $expected, Str::contains( $haystack, $needles, $ignoreCase ) );
 	}
 
-	/**
-	 * @dataProvider strContainsAllProvider
-	 */
 	#[DataProvider( 'strContainsAllProvider' )]
 	public function testStrContainsAll( $haystack, $needles, $expected, $ignoreCase = false ) {
 		$this->assertEquals( $expected, Str::contains_all( $haystack, $needles, $ignoreCase ) );
@@ -403,17 +397,11 @@ class StrTest extends TestCase {
 		$this->assertTrue( Str::is( [ null ], null ) );
 	}
 
-	/**
-	 * @dataProvider validUuidList
-	 */
 	#[DataProvider( 'validUuidList' )]
 	public function testIsUuidWithValidUuid( $uuid ) {
 		$this->assertTrue( Str::is_uuid( $uuid ) );
 	}
 
-	/**
-	 * @dataProvider invalidUuidList
-	 */
 	#[DataProvider( 'invalidUuidList' )]
 	public function testIsUuidWithInvalidUuid( $uuid ) {
 		$this->assertFalse( Str::is_uuid( $uuid ) );
@@ -493,7 +481,6 @@ class StrTest extends TestCase {
 		$this->assertIsString( Str::random() );
 	}
 
-	/** @test */
 	#[Test]
 	public function TestWhetherTheNumberOfGeneratedCharactersIsEquallyDistributed() {
 		$results = [];
@@ -963,9 +950,6 @@ class StrTest extends TestCase {
 		$this->assertSame( '', Str::repeat( '', 5 ) );
 	}
 
-	/**
-	 * @dataProvider specialCharacterProvider
-	 */
 	#[DataProvider( 'specialCharacterProvider' )]
 	public function testTransliterate( string $value, string $expected ): void {
 		$this->assertSame( $expected, Str::transliterate( $value ) );
@@ -989,9 +973,6 @@ class StrTest extends TestCase {
 		$this->assertSame( 'Hello', Str::transliterate( '🎂', 'Hello' ) );
 	}
 
-	/**
-	 * @dataProvider specialCharacterProvider
-	 */
 	#[DataProvider( 'specialCharacterProvider' )]
 	public function testTransliterateStrict( string $value, string $expected ): void {
 		$this->assertSame( $expected, Str::transliterate( $value, '?', true ) );

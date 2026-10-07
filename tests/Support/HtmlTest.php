@@ -276,9 +276,6 @@ class HtmlTest extends TestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider wrap_data_provider
-	 */
 	#[DataProvider( 'wrap_data_provider' )]
 	public function test_it_can_wrap_elements( string|HTML|DOMNode $wrapping_element ): void {
 		$crawler = new HTML( self::TEST_CONTENT );
@@ -355,9 +352,6 @@ class HtmlTest extends TestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider inner_wrap_data_provider
-	 */
 	#[DataProvider( 'inner_wrap_data_provider' )]
 	public function test_it_can_inner_wrap_elements( string|HTML|DOMNode $wrapping_element ): void {
 		$crawler = new HTML( self::TEST_CONTENT );
@@ -451,9 +445,6 @@ class HtmlTest extends TestCase {
 		$this->assertEquals( 'Item 2', $elements->last()->text() );
 	}
 
-	/**
-	 * @dataProvider append_dataprovider
-	 */
 	#[DataProvider( 'append_dataprovider' )]
 	public function test_it_can_append_elements( string $base, string|HTML|DOMNode $element, string $expected ): void {
 		$crawler = new HTML( $base );
@@ -501,9 +492,6 @@ class HtmlTest extends TestCase {
 		];
 	}
 
-	/**
-	 * @dataProvider prepend_dataprovider
-	 */
 	#[DataProvider( 'prepend_dataprovider' )]
 	public function test_it_can_prepend_elements( string $base, string|HTML|DOMNode $element, string $expected ): void {
 		$crawler = new HTML( $base );

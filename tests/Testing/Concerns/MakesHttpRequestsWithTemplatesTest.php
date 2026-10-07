@@ -11,8 +11,6 @@ use function Mantle\Testing\iterate_test;
  * Tests for making HTTP requests in unit tests that relate to cleaning up
  * globals (such as enqueued scripts) and ensuring that requests have a
  * header/footer.
- *
- * @group testing
  */
 #[Group( 'testing' )]
 class MakesHttpRequestsWithTemplatesTest extends FrameworkTestCase {

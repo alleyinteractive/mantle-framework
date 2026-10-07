@@ -8,9 +8,6 @@ use Mantle\Queue\Queue_Manager;
 use Mockery as m;
 use PHPUnit\Framework\Attributes\Group;
 
-/**
- * @group queue
- */
 #[Group( 'queue' )]
 class QueueManagerTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	public function test_default_connection() {

@@ -22,9 +22,6 @@ use function Mantle\Queue\dispatch;
 
 /**
  * WordPress Cron Queue Provider Test
- *
- * @group queue
- * @group wordpress-queue
  */
 #[Group( 'queue' )]
 #[Group( 'wordpress-queue' )]

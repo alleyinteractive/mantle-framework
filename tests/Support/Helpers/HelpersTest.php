@@ -82,9 +82,6 @@ class HelpersTest extends TestCase {
 		$this->assertTrue( $this->handler->hasRecord( 'This is a warning.', 'warning' ) );
 	}
 
-	/**
-	 * @dataProvider classname_provider
-	 */
 	#[DataProvider('classname_provider')]
 	public function test_classname( $input, string $expected ) {
 		$this->assertEquals( $expected, classname( $input ) );
