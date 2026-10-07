@@ -125,6 +125,33 @@ class Utils {
 	}
 
 	/**
+	 * Determine if a directory sits inside a real WordPress installation.
+	 *
+	 * A path merely containing the content directory name is not enough: a
+	 * wp-content-rooted repository has no WordPress above it.
+	 *
+	 * @param string $directory Directory to check.
+	 */
+	public static function is_within_wordpress_install( string $directory ): bool {
+		$content  = '/' . static::content_directory_name() . '/';
+		$position = strpos( $directory, $content );
+
+		if ( false === $position ) {
+			return false;
+		}
+
+		$root = substr( $directory, 0, $position + 1 );
+
+		foreach ( [ 'wp-load.php', 'wp-settings.php', 'wp-config.php', 'wp-tests-config.php' ] as $marker ) {
+			if ( is_file( $root . $marker ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Reset `$_SERVER` variables
 	 */
 	public static function reset_server(): void {
