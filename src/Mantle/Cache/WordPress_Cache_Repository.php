@@ -31,13 +31,17 @@ class WordPress_Cache_Repository extends Repository implements Taggable_Reposito
 	 * @param mixed  $default Default value.
 	 */
 	public function get( string $key, mixed $default = null ): mixed {
-		$value = \wp_cache_get( $key, $this->prefix );
+		$value = \wp_cache_get( $key, $this->prefix, false, $found ); // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable
+
+		if ( ! $found ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable
+			return $default;
+		}
 
 		if ( $value instanceof SWR_Storage ) {
 			return $value->value;
 		}
 
-		return false === $value ? $default : $value;
+		return $value;
 	}
 
 	/**
@@ -48,7 +52,16 @@ class WordPress_Cache_Repository extends Repository implements Taggable_Reposito
 	 * @return iterable<string, mixed>
 	 */
 	public function get_multiple( iterable $keys, mixed $default = null ): iterable {
-		return \wp_cache_get_multiple( is_array( $keys ) ? $keys : iterator_to_array( $keys ), $this->prefix );
+		$values = \wp_cache_get_multiple( is_array( $keys ) ? $keys : iterator_to_array( $keys ), $this->prefix );
+
+		// A false result is either a miss or a stored false, so resolve it per key.
+		foreach ( $values as $key => $value ) {
+			if ( false === $value ) {
+				$values[ $key ] = $this->get( (string) $key, $default );
+			}
+		}
+
+		return $values;
 	}
 
 	/**
@@ -111,13 +124,15 @@ class WordPress_Cache_Repository extends Repository implements Taggable_Reposito
 	 */
 	#[\Override]
 	public function pull( string $key, mixed $default = null ): mixed {
-		$value = \wp_cache_get( $key, $this->prefix );
+		$value = \wp_cache_get( $key, $this->prefix, false, $found ); // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable
 
-		if ( false !== $value ) {
-			\wp_cache_delete( $key, $this->prefix );
+		if ( ! $found ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable
+			return $default;
 		}
 
-		return false === $value ? $default : $value;
+		\wp_cache_delete( $key, $this->prefix );
+
+		return $value instanceof SWR_Storage ? $value->value : $value;
 	}
 
 	/**
@@ -187,6 +202,11 @@ class WordPress_Cache_Repository extends Repository implements Taggable_Reposito
 	 * Clear the cache.
 	 */
 	public function clear(): bool {
+		// A prefixed/tagged repository only owns its own cache group, never the whole cache.
+		if ( '' !== $this->prefix ) {
+			return function_exists( 'wp_cache_supports' ) && \wp_cache_supports( 'flush_group' ) && (bool) \wp_cache_flush_group( $this->prefix );
+		}
+
 		return \wp_cache_flush();
 	}
 
@@ -198,10 +218,10 @@ class WordPress_Cache_Repository extends Repository implements Taggable_Reposito
 	public function tags( array|string $names ): static {
 		if ( is_array( $names ) ) {
 			sort( $names );
-			$names = implode( '', $names );
+			$names = implode( ':', $names );
 		}
 
-		return new static( $this->app, $this->prefix . $names );
+		return new static( $this->app, '' === $this->prefix ? $names : "{$this->prefix}:{$names}" );
 	}
 
 	/**

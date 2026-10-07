@@ -41,6 +41,53 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		$this->assertTrue( has_action( Scheduler::EVENT ) );
 	}
 
+	public function test_run_command_count_option() {
+		$command = new \Mantle\Queue\Console\Run_Command();
+
+		$this->assertTrue( $command->getDefinition()->getOption( 'count' )->acceptValue() );
+
+		Example_Job::dispatch( false );
+		Example_Job::dispatch( false );
+		Example_Job::dispatch( false );
+
+		$command->set_container( $this->app );
+		$command->run(
+			new \Symfony\Component\Console\Input\ArrayInput( [ '--count' => '3' ], $command->getDefinition() ),
+			new \Symfony\Component\Console\Output\NullOutput(),
+		);
+
+		$this->assertCount(
+			3,
+			get_posts(
+				[
+					'post_type'      => Provider::OBJECT_NAME,
+					'post_status'    => Post_Status::COMPLETED->value,
+					'posts_per_page' => -1,
+					'fields'         => 'ids',
+				]
+			)
+		);
+	}
+
+	public function test_queue_delay_configuration() {
+		$this->app['config']->set( 'queue.wordpress.delay', 120 );
+
+		Example_Job::dispatch( false );
+
+		Scheduler::schedule_on_shutdown();
+
+		$timestamps = [];
+
+		foreach ( (array) _get_cron_array() as $timestamp => $hooks ) {
+			if ( isset( $hooks[ Scheduler::EVENT ] ) ) {
+				$timestamps[] = $timestamp;
+			}
+		}
+
+		$this->assertNotEmpty( $timestamps );
+		$this->assertGreaterThanOrEqual( time() + 110, min( $timestamps ) );
+	}
+
 	public function test_job_dispatch() {
 		$_SERVER['__example_job'] = false;
 
