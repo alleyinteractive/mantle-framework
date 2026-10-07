@@ -9,6 +9,7 @@ use Mantle\Http\Request;
 use Mantle\Http\Routing\Middleware\Substitute_Bindings;
 use Mantle\Http\Routing\Router;
 use Mantle\Testing\FrameworkTestCase;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
 class RouterTest extends FrameworkTestCase {
 	public function test_basic_dispatching() {
@@ -362,6 +363,95 @@ class RouterTest extends FrameworkTestCase {
 		$this->get( '/example-route-prefix' )->assertContent( 'The response' );
 
 		$this->assertStringEndsWith( '/example-route-prefix', route( 'example-prefix.example-route' ) );
+	}
+
+	public function test_registrar_prefix_applies_without_group() {
+		$router = $this->get_router();
+
+		$route = $router->prefix( 'direct-prefix' )->get( '/example', fn () => 'prefixed' );
+
+		$this->assertSame( '/direct-prefix/example', $route->getPath() );
+		$this->assertSame( 'prefixed', $router->dispatch( Request::create( 'direct-prefix/example', 'GET' ) )->getContent() );
+	}
+
+	public function test_registrar_where_applies_without_group() {
+		$router = $this->get_router();
+
+		$router->where( [ 'id' => '\d+' ] )->get( '/where-direct/{id}', fn ( $id ) => "id-{$id}" );
+
+		$this->assertSame( 'id-123', $router->dispatch( Request::create( 'where-direct/123', 'GET' ) )->getContent() );
+
+		$this->expectException( ResourceNotFoundException::class );
+
+		$router->dispatch( Request::create( 'where-direct/abc', 'GET' ) );
+	}
+
+	public function test_registrar_where_applies_in_group() {
+		$router = $this->get_router();
+
+		$router->where( [ 'id' => '\d+' ] )->group(
+			fn () => $router->get( '/where-group/{id}', fn ( $id ) => "id-{$id}" ),
+		);
+
+		$this->assertSame( 'id-123', $router->dispatch( Request::create( 'where-group/123', 'GET' ) )->getContent() );
+
+		$this->expectException( ResourceNotFoundException::class );
+
+		$router->dispatch( Request::create( 'where-group/abc', 'GET' ) );
+	}
+
+	public function test_registrar_domain_applies_without_group() {
+		$router = $this->get_router();
+
+		$router->domain( 'api.example.org' )->get( '/domain-direct', fn () => 'domain' );
+
+		$this->assertSame( 'domain', $router->dispatch( Request::create( 'http://api.example.org/domain-direct', 'GET' ) )->getContent() );
+
+		$this->expectException( ResourceNotFoundException::class );
+
+		$router->dispatch( Request::create( 'http://other.example.org/domain-direct', 'GET' ) );
+	}
+
+	public function test_registrar_name_applies_without_group() {
+		$router = $this->get_router();
+
+		$router->name( 'direct-name' )->get( '/direct-named-route', fn () => 'named' );
+		$router->as( 'direct-as' )->get( '/direct-as-route', fn () => 'as' );
+
+		$router->sync_routes_to_url_generator();
+
+		$this->assertStringEndsWith( '/direct-named-route', route( 'direct-name' ) );
+		$this->assertStringEndsWith( '/direct-as-route', route( 'direct-as' ) );
+	}
+
+	public function test_registrar_name_is_prefixed_by_group_name() {
+		$router = $this->get_router();
+
+		$router->name( 'admin.' )->group(
+			fn () => $router->name( 'dashboard' )->get( '/admin-dashboard', fn () => 'dashboard' ),
+		);
+
+		$router->sync_routes_to_url_generator();
+
+		$this->assertStringEndsWith( '/admin-dashboard', route( 'admin.dashboard' ) );
+	}
+
+	public function test_registrar_name_prefix_combines_with_route_name() {
+		$router = $this->get_router();
+
+		$router->name( 'posts.' )->get( '/posts-index', fn () => 'index' )->name( 'index' );
+
+		$router->sync_routes_to_url_generator();
+
+		$this->assertStringEndsWith( '/posts-index', route( 'posts.index' ) );
+	}
+
+	public function test_registrar_middleware_applies_once_without_group() {
+		$router = $this->get_router();
+
+		$route = $router->middleware( Testable_Middleware_Router::class )->get( '/direct-middleware', fn () => 'middleware' );
+
+		$this->assertSame( [ Testable_Middleware_Router::class ], $route->middleware() );
 	}
 
 	public function test_can_middleware_checks_every_ability() {

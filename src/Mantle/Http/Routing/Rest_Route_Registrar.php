@@ -50,8 +50,6 @@ class Rest_Route_Registrar extends Route_Registrar {
 	/**
 	 * Register the underlying route with the router.
 	 *
-	 * @todo Pass along namespace.
-	 *
 	 * @param string|string[]                  $method HTTP methods.
 	 * @param string                           $uri
 	 * @param Closure|array<mixed>|string|null $action Route action or arguments.
@@ -62,10 +60,14 @@ class Rest_Route_Registrar extends Route_Registrar {
 
 		assert( $this->router instanceof Router, 'Router instance is not of type Router.' );
 
-		return $this->router->add_rest_route(
-			methods: $method,
-			uri: $uri,
-			arguments: $this->normalize_arguments( $action ?? [], $uri, $method ),
+		// The "namespace" route action is reserved for the REST API namespace.
+		return $this->register_with_attributes(
+			Arr::except( $this->attributes, 'namespace' ),
+			fn () => $this->router->add_rest_route(
+				methods: $method,
+				uri: $uri,
+				arguments: $this->normalize_arguments( $action ?? [], $uri, $method ),
+			),
 		);
 	}
 
