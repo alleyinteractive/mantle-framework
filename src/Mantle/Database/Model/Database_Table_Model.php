@@ -25,7 +25,7 @@ use function Mantle\Support\Helpers\class_basename;
  */
 abstract class Database_Table_Model extends Model implements Updatable {
 	/**
-	 * The table name for the model.
+	 * The table name for the model, without the site's table prefix.
 	 */
 	public static function get_table_name(): string {
 		return Str::snake( class_basename( static::class ), '_' );
@@ -52,11 +52,7 @@ abstract class Database_Table_Model extends Model implements Updatable {
 
 		$primary_key = static::$primary_key;
 
-		$table = static::get_table_name();
-
-		if ( ! str_starts_with( $table, $wpdb->prefix ) ) {
-			$table = $wpdb->prefix . $table;
-		}
+		$table = $wpdb->prefix . static::get_table_name();
 
 		$result = $wpdb->get_row( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 			$wpdb->prepare(
@@ -83,11 +79,7 @@ abstract class Database_Table_Model extends Model implements Updatable {
 
 		assert( $wpdb instanceof \wpdb );
 
-		$table = static::get_table_name();
-
-		if ( ! str_starts_with( $table, $wpdb->prefix ) ) {
-			$table = $wpdb->prefix . $table;
-		}
+		$table = $wpdb->prefix . static::get_table_name();
 
 		if ( $this->exists ) {
 			$result = $wpdb->update( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
@@ -96,7 +88,8 @@ abstract class Database_Table_Model extends Model implements Updatable {
 				[ static::$primary_key => $this->get_attribute( static::$primary_key ) ],
 			);
 
-			if ( ! $result ) {
+			// An update that changes nothing affects zero rows, which is not a failure.
+			if ( false === $result ) {
 				throw new Model_Exception(
 					sprintf(
 						'Failed to update %s table. Please check your database connection and permissions.',
@@ -140,11 +133,7 @@ abstract class Database_Table_Model extends Model implements Updatable {
 			throw new Model_Exception( 'Cannot delete a model that does not exist.' );
 		}
 
-		$table = static::get_table_name();
-
-		if ( ! str_starts_with( $table, $wpdb->prefix ) ) {
-			$table = $wpdb->prefix . $table;
-		}
+		$table = $wpdb->prefix . static::get_table_name();
 
 		$result = $wpdb->delete( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 			$table,

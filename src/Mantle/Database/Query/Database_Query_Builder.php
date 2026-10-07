@@ -134,18 +134,18 @@ class Database_Query_Builder extends Builder {
 			);
 		}
 
-		$table = $model::get_table_name();
-
-		if ( ! str_starts_with( $table, $wpdb->prefix ) ) {
-			$table = $wpdb->prefix . $table;
-		}
+		$table = $wpdb->prefix . $model::get_table_name();
 
 		$order = [];
 
 		foreach ( $this->order_by as $index => $column ) {
-			$direction = $this->order[ $index ] ?? 'ASC';
+			if ( ! preg_match( '/^[A-Za-z0-9_.]+$/', $column ) ) {
+				throw new RuntimeException( 'Invalid column passed to order by.' );
+			}
 
-			$order[] = sprintf( '%s %s', $column, strtoupper( $direction ) );
+			$direction = 'DESC' === strtoupper( (string) ( $this->order[ $index ] ?? 'ASC' ) ) ? 'DESC' : 'ASC';
+
+			$order[] = "{$column} {$direction}";
 		}
 
 		return sprintf(
@@ -163,31 +163,31 @@ class Database_Query_Builder extends Builder {
 	 *
 	 * @param array<string, mixed> $binding Binding to compile.
 	 * @param int|string           $index   Index of the binding in the where clause.
+	 *
+	 * @throws RuntimeException If the binding cannot be prepared.
 	 */
 	protected function compile_where_binding( array $binding, int|string $index ): string {
 		global $wpdb;
 
 		assert( $wpdb instanceof \wpdb );
 
-		if ( $binding['operator'] === 'IN' && is_array( $binding['value'] ) ) {
-			$placeholders = implode( ', ', array_fill( 0, count( $binding['value'] ), '%s' ) );
-
-			$query = (string) $wpdb->prepare(
-				"{$binding['column']} {$binding['operator']} ({$placeholders})", // phpcs:ignore WordPress.DB
-				...$binding['value'],
-			);
-
-			return 0 === (int) $index // phpcs:ignore WordPress.DB
-				? $query // phpcs:ignore WordPress.DB
-				: "{$binding['boolean']} {$query}"; // phpcs:ignore WordPress.DB
+		if ( 'IN' === $binding['operator'] && is_array( $binding['value'] ) ) {
+			$query = [] === $binding['value']
+				? '1 = 0'
+				: $wpdb->prepare(
+					"{$binding['column']} IN (" . implode( ', ', array_fill( 0, count( $binding['value'] ), '%s' ) ) . ')', // phpcs:ignore WordPress.DB
+					...array_values( $binding['value'] ),
+				);
+		} else {
+			$query = $wpdb->prepare( "{$binding['column']} {$binding['operator']} %s", $binding['value'] ); // phpcs:ignore WordPress.DB
 		}
 
-		return (string) $wpdb->prepare( // phpcs:ignore WordPress.DB
-			0 === (int) $index // phpcs:ignore WordPress.DB
-			? "{$binding['column']} {$binding['operator']} %s" // phpcs:ignore WordPress.DB
-			: "{$binding['boolean']} {$binding['column']} {$binding['operator']} %s", // phpcs:ignore WordPress.DB
-			$binding['value']
-		);
+		// Dropping a clause that failed to prepare would silently widen the query.
+		if ( ! is_string( $query ) || '' === $query ) {
+			throw new RuntimeException( sprintf( 'Unable to prepare the where clause for the "%s" column.', $binding['column'] ) );
+		}
+
+		return 0 === (int) $index ? $query : "{$binding['boolean']} {$query}";
 	}
 
 	/**
@@ -216,9 +216,13 @@ class Database_Query_Builder extends Builder {
 	 */
 	#[\Override]
 	public function where( array|string $attribute, mixed $value = '' ): static {
+		if ( is_string( $attribute ) && is_array( $value ) ) {
+			return $this->whereIn( $attribute, $value );
+		}
+
 		if ( is_array( $attribute ) && empty( $value ) ) {
 			foreach ( $attribute as $key => $value ) {
-				$this->where_raw( $key, '=', $value );
+				$this->where( $key, $value );
 			}
 
 			return $this;
