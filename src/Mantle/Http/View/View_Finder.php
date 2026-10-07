@@ -205,15 +205,10 @@ class View_Finder {
 	 * @throws InvalidArgumentException Thrown on unknown view to locate.
 	 */
 	protected function locate_template( array $templates, ?string $alias = null ): string {
-		$paths = $this->get_paths();
-
-		if ( $alias ) {
-			$paths = array_filter(
-				$paths,
-				fn ( $path_alias ) => $alias === $path_alias,
-				ARRAY_FILTER_USE_KEY
-			);
-		}
+		// Filter on the raw paths: get_paths() dedupes, dropping aliases that share a path.
+		$paths = $alias
+			? array_filter( $this->paths, fn ( $path_alias ) => $alias === $path_alias, ARRAY_FILTER_USE_KEY )
+			: $this->get_paths();
 
 		foreach ( $templates as $template ) {
 			$possible_view_files = $this->get_possible_view_files( $template );

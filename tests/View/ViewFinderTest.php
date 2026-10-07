@@ -56,6 +56,15 @@ class ViewFinderTest extends FrameworkTestCase {
 		$this->assertStringStartsWith( MANTLE_PHPUNIT_TEMPLATE_PATH . '/view-loader/view-loader', View_Loader::find( '@view-loader-plain/view-loader' ) );
 	}
 
+	public function test_aliases_sharing_a_path_both_resolve(): void {
+		View_Loader::clear_paths();
+		View_Loader::add_path( MANTLE_PHPUNIT_TEMPLATE_PATH . '/view-loader', 'first-alias' );
+		View_Loader::add_path( MANTLE_PHPUNIT_TEMPLATE_PATH . '/view-loader', 'second-alias' );
+
+		$this->assertStringStartsWith( MANTLE_PHPUNIT_TEMPLATE_PATH . '/view-loader/view-loader', View_Loader::find( '@first-alias/view-loader' ) );
+		$this->assertStringStartsWith( MANTLE_PHPUNIT_TEMPLATE_PATH . '/view-loader/view-loader', View_Loader::find( '@second-alias/view-loader' ) );
+	}
+
 	public function test_has_hint_information(): void {
 		$this->assertTrue( View_Loader::has_hint_information( '@example/path' ) );
 		$this->assertTrue( View_Loader::has_hint_information( '@example/path/other' ) );
