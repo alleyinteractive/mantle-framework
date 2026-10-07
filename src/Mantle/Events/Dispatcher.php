@@ -51,6 +51,13 @@ class Dispatcher implements Dispatcher_Contract {
 	protected array $wildcard_cache = [];
 
 	/**
+	 * Registered listener wrappers keyed by event, priority, and listener.
+	 *
+	 * @var array<string, array<int, array<string, Closure>>>
+	 */
+	protected array $listener_map = [];
+
+	/**
 	 * Create a new event dispatcher instance.
 	 *
 	 * @param Container|null $container Container instance.
@@ -77,13 +84,35 @@ class Dispatcher implements Dispatcher_Contract {
 				continue;
 			}
 
-			add_action(
-				$event,
-				$this->make_listener( $listener ),
-				$priority,
-				999,
-			);
+			$wrapper = $this->make_listener( $listener );
+
+			$this->listener_map[ $event ][ $priority ][ $this->listener_key( $listener ) ] = $wrapper;
+
+			add_action( $event, $wrapper, $priority, 999 );
 		}
+	}
+
+	/**
+	 * Build a stable key for a listener so its wrapper can be found again.
+	 *
+	 * @param string|callable $listener Listener.
+	 */
+	protected function listener_key( string|callable $listener ): string {
+		if ( is_string( $listener ) ) {
+			return $listener;
+		}
+
+		if ( is_object( $listener ) ) {
+			return 'object:' . spl_object_id( $listener );
+		}
+
+		if ( is_array( $listener ) ) {
+			$target = is_object( $listener[0] ) ? 'object:' . spl_object_id( $listener[0] ) : (string) $listener[0];
+
+			return "{$target}::{$listener[1]}";
+		}
+
+		return (string) $listener; // @phpstan-ignore-line cast.string
 	}
 
 	/**
@@ -291,6 +320,19 @@ class Dispatcher implements Dispatcher_Contract {
 
 		if ( null === $listener ) {
 			remove_all_filters( $event, $priority );
+
+			unset( $this->listener_map[ $event ][ $priority ] );
+
+			return;
+		}
+
+		$key     = $this->listener_key( $listener );
+		$wrapper = $this->listener_map[ $event ][ $priority ][ $key ] ?? null;
+
+		if ( $wrapper ) {
+			remove_filter( $event, $wrapper, $priority );
+
+			unset( $this->listener_map[ $event ][ $priority ][ $key ] );
 		} else {
 			remove_filter( $event, $listener, $priority );
 		}

@@ -64,11 +64,11 @@ class Alias_Loader {
 	/**
 	 * Add an alias to the loader.
 	 *
-	 * @param  string $class Alias class.
+	 * @param  string $class Fully qualified class the alias points to.
 	 * @param  string $alias Alias name.
 	 */
-	public function alias( string $class, $alias ): void {
-		$this->aliases[ $class ] = $alias;
+	public function alias( string $class, string $alias ): void {
+		$this->aliases[ $alias ] = $class;
 	}
 
 	/**

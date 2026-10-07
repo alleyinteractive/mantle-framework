@@ -20,6 +20,12 @@ class ContainerCallTest extends TestCase {
 		$container->call( 'ContainerTestCallStub' );
 	}
 
+	public function testCallClosureWithUnresolvableScalarThrowsBindingException() {
+		$this->expectException( Binding_Resolution_Exception::class );
+
+		( new Container() )->call( fn ( int $a ) => $a );
+	}
+
 	public function testCallWithAtSignBasedClassReferences() {
 		$container = new Container();
 		$result    = $container->call( ContainerTestCallStub::class . '@work', array( 'foo', 'bar' ) );

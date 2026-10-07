@@ -11,6 +11,25 @@ use Symfony\Component\Console\Output\NullOutput;
 
 class CommandTest extends TestCase {
 
+	public function test_kernel_register_accepts_command_instance() {
+		\Mantle\Console\Application::forget_bootstrappers();
+
+		$app    = new Application();
+		$kernel = new \Mantle\Framework\Console\Kernel( $app );
+
+		$kernel->register(
+			new class extends Command {
+				protected $name = 'foo:instance';
+			}
+		);
+
+		$console = new \Mantle\Console\Application( $app );
+
+		$this->assertTrue( $console->has( 'foo:instance' ) );
+
+		\Mantle\Console\Application::forget_bootstrappers();
+	}
+
 	public function test_registering_command_with_just_name() {
 		$command = new class extends Command {
 			protected $name = 'foo:bar';

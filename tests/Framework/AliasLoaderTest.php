@@ -62,6 +62,17 @@ class AliasLoaderTest extends TestCase {
 		$this->assertNull( $result2 );
 	}
 
+	public function testAliasMethodRegistersLoadableAlias() {
+		$loader = Alias_Loader::get_instance();
+		$loader->alias( FoundationAlias_LoaderStub::class, 'some_alias_from_alias_method' );
+
+		$this->assertSame( FoundationAlias_LoaderStub::class, $loader->get_aliases()['some_alias_from_alias_method'] ?? null );
+
+		$loader->load( 'some_alias_from_alias_method' );
+
+		$this->assertInstanceOf( FoundationAlias_LoaderStub::class, new \some_alias_from_alias_method() );
+	}
+
 	public function testSetAlias() {
 		$loader = Alias_Loader::get_instance();
 		$loader->set_aliases( [ 'some_alias_foo' => FoundationAlias_LoaderStub::class ] );
