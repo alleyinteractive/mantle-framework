@@ -51,6 +51,19 @@ class UtilsTest extends FrameworkTestCase {
 		$this->assertBlogDoesNotExist( [ 'ID' => $blog->blog_id ] );
 	}
 
+	public function test_is_within_wordpress_install(): void {
+		$root = get_temp_dir() . 'mantle-wp-root-' . wp_rand();
+
+		mkdir( "{$root}/wp-content/plugins/example", 0777, true );
+
+		$this->assertFalse( Utils::is_within_wordpress_install( "{$root}/wp-content/plugins/example" ) );
+		$this->assertFalse( Utils::is_within_wordpress_install( '/some/random/path' ) );
+
+		touch( "{$root}/wp-load.php" );
+
+		$this->assertTrue( Utils::is_within_wordpress_install( "{$root}/wp-content/plugins/example" ) );
+	}
+
 	public function test_content_directory_name_defaults_to_wp_content(): void {
 		$this->assertSame( 'wp-content', Utils::content_directory_name() );
 	}

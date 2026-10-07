@@ -15,6 +15,7 @@ use Mantle\Testing\Test_Response;
 use PHPUnit\Framework\Attributes\BeforeClass;
 use RuntimeException;
 
+use function DeepCopy\deep_copy;
 use function Mantle\Support\Helpers\tap;
 
 /**
@@ -501,14 +502,14 @@ trait Makes_Http_Requests {
 			// Ensure the global $wp_scripts is initialized.
 			wp_scripts();
 
-			self::$wp_dependencies_backup['wp_scripts'] = clone $GLOBALS['wp_scripts']; // @phpstan-ignore-line assign.propertyType
+			self::$wp_dependencies_backup['wp_scripts'] = deep_copy( $GLOBALS['wp_scripts'] ); // @phpstan-ignore-line assign.propertyType
 		}
 
 		if ( ! isset( self::$wp_dependencies_backup['wp_styles'] ) && function_exists( 'wp_styles' ) ) {
 			// Ensure the global $wp_styles is initialized.
 			wp_styles();
 
-			self::$wp_dependencies_backup['wp_styles'] = clone $GLOBALS['wp_styles']; // @phpstan-ignore-line assign.propertyType
+			self::$wp_dependencies_backup['wp_styles'] = deep_copy( $GLOBALS['wp_styles'] ); // @phpstan-ignore-line assign.propertyType
 		}
 	}
 
@@ -547,12 +548,13 @@ trait Makes_Http_Requests {
 	 * Restore any global WordPress dependencies that may have been modified during the request.
 	 */
 	private function restore_wp_dependencies(): void {
+		// A shallow clone shares the registered dependency objects, so localized/inline data would leak.
 		if ( isset( self::$wp_dependencies_backup['wp_scripts'] ) ) {
-			$GLOBALS['wp_scripts'] = clone self::$wp_dependencies_backup['wp_scripts'];
+			$GLOBALS['wp_scripts'] = deep_copy( self::$wp_dependencies_backup['wp_scripts'] );
 		}
 
 		if ( isset( self::$wp_dependencies_backup['wp_styles'] ) ) {
-			$GLOBALS['wp_styles'] = clone self::$wp_dependencies_backup['wp_styles'];
+			$GLOBALS['wp_styles'] = deep_copy( self::$wp_dependencies_backup['wp_styles'] );
 		}
 	}
 

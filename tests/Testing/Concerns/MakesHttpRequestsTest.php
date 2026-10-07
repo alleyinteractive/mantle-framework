@@ -64,6 +64,31 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	}
 
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
+	public function test_rest_api_request_is_served_once_per_request(): void {
+		$this->get( '/' );
+
+		$this->expectApplied( 'rest_dispatch_request' )->once();
+
+		$this->get( rest_url( 'wp/v2/posts' ) )->assertOk();
+	}
+
+	public function test_wp_scripts_data_is_not_leaked_first_run(): void {
+		wp_localize_script( 'jquery-core', 'leakedData', [ 'a' => 1 ] );
+
+		$this->assertNotEmpty( wp_scripts()->get_data( 'jquery-core', 'data' ) );
+	}
+
+	public function test_wp_scripts_data_is_not_leaked_second_run(): void {
+		$this->assertEmpty( wp_scripts()->get_data( 'jquery-core', 'data' ) );
+	}
+
+	public function test_method_not_allowed() {
+		Route::get( '/only-get', fn () => 'only get' );
+
+		$this->get( '/only-get' )->assertOk();
+		$this->post( '/only-get' )->assertStatus( 405 )->assertHeader( 'Allow', 'GET' );
+	}
+
 	public function test_get_home() {
 		$this->get( home_url( '/' ) );
 		$this->assertQueryTrue( 'is_home', 'is_front_page' );
