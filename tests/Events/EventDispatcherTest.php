@@ -8,8 +8,6 @@ use PHPUnit\Framework\Attributes\Group;
 
 /**
  * TODO: get_listeners
- *
- * @group events
  */
 #[Group( 'events' )]
 class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {

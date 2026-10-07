@@ -352,9 +352,6 @@ class FilesystemTest extends TestCase {
 		$this->assertEquals( $size, $files->size( static::$temp_dir . '/foo.txt' ) );
 	}
 
-	/**
-	 * @requires extension fileinfo
-	 */
 	#[RequiresPhpExtension( 'fileinfo' )]
 	public function testMimeTypeOutputsMimeType() {
 		file_put_contents( static::$temp_dir . '/foo.txt', 'foo' );

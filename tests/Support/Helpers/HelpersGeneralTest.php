@@ -202,7 +202,6 @@ class HelpersGeneralTest extends TestCase {
 		];
 	}
 
-	/** @dataProvider providesPregReplaceArrayData */
 	#[DataProvider( 'providesPregReplaceArrayData' )]
 	public function testPregReplaceArray( $pattern, $replacements, $subject, $expectedOutput ) {
 		$this->assertSame(

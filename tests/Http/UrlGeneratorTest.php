@@ -37,9 +37,6 @@ class UrlGeneratorTest extends FrameworkTestCase {
 		$this->assertStringEndsWith( '/', home_url( '/no/trailing/slash/' ) );
 	}
 
-	/**
-	 * @dataProvider urlGenerationProvider
-	 */
 	#[DataProvider( 'urlGenerationProvider' )]
 	public function test_basic_generation( $expected, $args ) {
 		$this->assertEquals( home_url( $expected ), $this->url->to( ...$args ) );

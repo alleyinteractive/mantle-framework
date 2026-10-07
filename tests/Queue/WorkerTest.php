@@ -15,9 +15,6 @@ use PHPUnit\Framework\Attributes\Group;
 
 use function Mantle\Support\Helpers\collect;
 
-/**
- * @group queue
- */
 #[Group( 'queue' )]
 class WorkerTest extends MockeryTestCase {
 

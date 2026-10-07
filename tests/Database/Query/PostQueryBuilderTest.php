@@ -642,9 +642,6 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider date_comparison_provider
-	 */
 	#[DataProvider( 'date_comparison_provider' )]
 	public function test_date_comparisons( int $expected, string $method, array $args ) {
 		$start = static::date_comparison_start();

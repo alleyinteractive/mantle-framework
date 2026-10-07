@@ -18,8 +18,6 @@ use function Mantle\Support\Helpers\collect;
  * Test case with the focus of testing the unit testing factory that mirrors
  * WordPress core's factories. The factories here should be drop-in replacements
  * for core's factories with some sugar on top.
- *
- * @group factory
  */
 #[Group( 'factory' )]
 class UnitTestingFactoryTest extends FrameworkTestCase {
@@ -327,9 +325,6 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider slug_id_dataprovider
-	 */
 	#[DataProvider( 'slug_id_dataprovider' )]
 	#[Group( 'with_terms' )]
 	public function test_posts_with_multiple_terms_single_array( string $field ) {
@@ -503,9 +498,6 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		$this->assertCount( 10, $object_ids );
 	}
 
-	/**
-	 * @dataProvider dataprovider_factory
-	 */
 	#[DataProvider( 'dataprovider_factory' )]
 	public function test_dataprovider_factory( callable $fn ) {
 		$post = $fn();

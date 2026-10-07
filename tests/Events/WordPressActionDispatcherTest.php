@@ -10,9 +10,6 @@ use function Mantle\Support\Helpers\add_action;
 use function Mantle\Support\Helpers\add_filter;
 use function Mantle\Support\Helpers\collect;
 
-/**
- * @group events
- */
 #[Group( 'events' )]
 class WordPressActionDispatcherTest extends FrameworkTestCase {
 	public function test_action_handler() {

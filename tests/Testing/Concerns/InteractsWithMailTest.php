@@ -5,9 +5,6 @@ use Mantle\Testing\FrameworkTestCase;
 use Mantle\Testing\Mail\Mail_Message;
 use PHPUnit\Framework\Attributes\Group;
 
-/**
- * @group testing
- */
 #[Group( 'testing' )]
 class InteractsWithMailTest extends FrameworkTestCase {
 	protected function setUp(): void {

@@ -11,9 +11,6 @@ use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 
-/**
- * @group factory
- */
 #[Group( 'factory' )]
 class FactoryTest extends FrameworkTestCase {
 	public function test_create_basic_model() {
@@ -127,9 +124,6 @@ class FactoryTest extends FrameworkTestCase {
 		$this->assertEquals( $post->ID, $post2->ID );
 	}
 
-	/**
-	 * @dataProvider factory_resolve_custom_names
-	 */
 	#[DataProvider( 'factory_resolve_custom_names' )]
 	public function test_resolve_custom_names( string $model, string $expected ) {
 		$this->assertEquals( $expected, Factory\Factory::resolve_custom_factory_name( $model ) );
@@ -144,9 +138,6 @@ class FactoryTest extends FrameworkTestCase {
 		];
 	}
 
-	/**
-	 * @dataProvider factory_resolve_default
-	 */
 	#[DataProvider( 'factory_resolve_default' )]
 	public function test_resolve_default( string $model, string $expected ) {
 		$this->assertEquals( $expected, Factory\Factory::default_factory_name( $model ) );
