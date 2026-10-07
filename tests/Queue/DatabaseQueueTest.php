@@ -350,6 +350,23 @@ class DatabaseQueueTest extends FrameworkTestCase {
 		$this->assertSame( Status::FAILED->value, Database_Job_Record::find( $record->id )->status );
 	}
 
+	public function test_claimed_job_that_never_started_is_not_failed_on_reclaim(): void {
+		$_SERVER['__example_job'] = false;
+
+		Example_Job::dispatch();
+
+		// A worker claimed the job in a batch, then crashed before reaching it.
+		$this->app['queue']->get_provider()->pop( 'default', 1 );
+
+		Database_Job_Record::query()->first()->save( [
+			'available_at_gmt' => now( 'UTC' )->subMinutes( 15 )->toDateTimeString(),
+		] );
+
+		$this->dispatch_queue();
+
+		$this->assertTrue( $_SERVER['__example_job'] );
+	}
+
 	public function test_job_reclaimed_by_another_worker_is_skipped(): void {
 		$_SERVER['__example_job'] = false;
 

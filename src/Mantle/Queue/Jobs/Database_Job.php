@@ -63,7 +63,7 @@ class Database_Job extends Job {
 		$job     = $this->get_job();
 		$timeout = is_object( $job ) && isset( $job->timeout ) ? max( 1, (int) $job->timeout ) : 600;
 
-		return $this->model->extend_lock( now( 'UTC' )->addSeconds( $timeout ) );
+		return $this->model->start_attempt( now( 'UTC' )->addSeconds( $timeout ) );
 	}
 
 	/**

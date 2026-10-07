@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   also fails for an event scheduled with no arguments.
 - `Interacts_With_Cron::dispatch_cron()` now returns the number of events dispatched, and
   `run_cron_event()` throws a `RuntimeException` if an event cannot be unscheduled.
-- Queue job attempts are now counted when a worker claims the job, so a job that
+- Queue job attempts are now counted when a worker starts the job, so a job that
   crashes its worker is marked failed once it runs out of tries instead of being
   retried indefinitely. Retrying a failed job from the admin resets its attempts.
 - `Database_Table_Model::get_table_name()` returns the table name without the site's

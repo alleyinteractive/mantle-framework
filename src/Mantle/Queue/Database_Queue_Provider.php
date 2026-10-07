@@ -159,7 +159,7 @@ class Database_Queue_Provider implements Contract {
 			// recording a failure, so fail it once it runs out of tries.
 			$max_attempts = max( 1, (int) ( is_object( $inner ) ? $inner->tries ?? 1 : 1 ) );
 
-			if ( $candidate->attempts > $max_attempts ) {
+			if ( $candidate->attempts >= $max_attempts ) {
 				$candidate->log_event( Database_Event::FAILED, [ 'message' => 'Job exceeded its maximum attempts without completing.' ] );
 				$candidate->save( [ 'status' => Status::FAILED->value ] );
 
