@@ -148,6 +148,9 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		$this->assertTrue( $events->has_listeners( __FUNCTION__ ) );
 
+		// Registering the same listener twice must still be fully removed.
+		$events->listen( __FUNCTION__, $listener );
+
 		$events->forget( __FUNCTION__, $listener );
 		$events->forget( __FUNCTION__, Example_Void_Listener::class );
 

@@ -53,7 +53,9 @@ class Dispatcher implements Dispatcher_Contract {
 	/**
 	 * Registered listener wrappers keyed by event, priority, and listener.
 	 *
-	 * @var array<string, array<int, array<string, Closure>>>
+	 * The same listener can be registered more than once, so each key holds a list.
+	 *
+	 * @var array<string, array<int, array<string, array<int, Closure>>>>
 	 */
 	protected array $listener_map = [];
 
@@ -86,7 +88,7 @@ class Dispatcher implements Dispatcher_Contract {
 
 			$wrapper = $this->make_listener( $listener, $this->is_object_event( $event ) );
 
-			$this->listener_map[ $event ][ $priority ][ $this->listener_key( $listener ) ] = $wrapper;
+			$this->listener_map[ $event ][ $priority ][ $this->listener_key( $listener ) ][] = $wrapper;
 
 			add_action( $event, $wrapper, $priority, 999 );
 		}
@@ -339,16 +341,20 @@ class Dispatcher implements Dispatcher_Contract {
 			return;
 		}
 
-		$key     = $this->listener_key( $listener );
-		$wrapper = $this->listener_map[ $event ][ $priority ][ $key ] ?? null;
+		$key      = $this->listener_key( $listener );
+		$wrappers = $this->listener_map[ $event ][ $priority ][ $key ] ?? [];
 
-		if ( $wrapper ) {
-			remove_filter( $event, $wrapper, $priority );
-
-			unset( $this->listener_map[ $event ][ $priority ][ $key ] );
-		} else {
+		if ( empty( $wrappers ) ) {
 			remove_filter( $event, $listener, $priority );
+
+			return;
 		}
+
+		foreach ( $wrappers as $wrapper ) {
+			remove_filter( $event, $wrapper, $priority );
+		}
+
+		unset( $this->listener_map[ $event ][ $priority ][ $key ] );
 	}
 
 	/**
