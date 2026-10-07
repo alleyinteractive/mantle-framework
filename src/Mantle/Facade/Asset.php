@@ -15,7 +15,7 @@ namespace Mantle\Facade;
  * @method static void preload(string $handle, string $src, string $condition = 'global', string|null $as = null, string|null $mime_type = null, string $media = 'all', bool $crossorigin = false, string|null $version = null)
  * @method static void async(string $handle)
  * @method static void defer(string $handle)
- * @method static void load_method(string $handle, string $load_method = 'sync')
+ * @method static void load_method(string $handle, \Mantle\Contracts\Assets\Load_Method $load_method = \Mantle\Contracts\Assets\Load_Method::SYNC)
  *
  * @see \Mantle\Assets\Asset_Manager
  */

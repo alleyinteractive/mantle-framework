@@ -1,29 +1,19 @@
 <?php
 /**
- * Load_Hook class file.
+ * Load_Hook enum file.
  *
  * @package Mantle
  */
+
+declare(strict_types=1);
 
 namespace Mantle\Contracts\Assets;
 
 /**
  * Asset Load Hooks
- *
- * @todo Convert to ENUM with Mantle 2.0.
  */
-class Load_Hook {
-	/**
-	 * Header load method.
-	 *
-	 * @var string
-	 */
-	public const HEADER = 'wp_head';
+enum Load_Hook: string {
+	case HEADER = 'wp_head';
 
-	/**
-	 * Footer load method.
-	 *
-	 * @var string
-	 */
-	public const FOOTER = 'wp_footer';
+	case FOOTER = 'wp_footer';
 }

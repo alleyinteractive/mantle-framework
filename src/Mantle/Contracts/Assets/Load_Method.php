@@ -1,45 +1,26 @@
 <?php
 /**
- * Load_Method class file.
+ * Load_Method enum file.
  *
  * @package Mantle
  */
+
+declare(strict_types=1);
 
 namespace Mantle\Contracts\Assets;
 
 /**
  * Asset Load Methods
- *
- * @todo Convert to ENUM with Mantle 2.0.
  */
-class Load_Method {
-	/**
-	 * Synchronous load method.
-	 *
-	 * @var string
-	 */
-	public const SYNC = 'sync';
+enum Load_Method: string {
+	case SYNC = 'sync';
+
+	case ASYNC = 'async';
+
+	case DEFER = 'defer';
 
 	/**
-	 * Asynchronous load method.
-	 *
-	 * @var string
+	 * @deprecated Removed in wp-asset-manager 2.0, where it behaves as {@see Load_Method::ASYNC}.
 	 */
-	public const ASYNC = 'async';
-
-	/**
-	 * Defer load method.
-	 *
-	 * @var string
-	 */
-	public const DEFER = 'defer';
-
-	/**
-	 * Asynchronous and Defer load method.
-	 *
-	 * @deprecated Removed in wp-asset-manager 2.0, where it behaves as {@see Load_Method::ASYNC}. Will be removed in Mantle 2.0.
-	 *
-	 * @var string
-	 */
-	public const ASYNC_DEFER = 'async-defer';
+	case ASYNC_DEFER = 'async-defer';
 }

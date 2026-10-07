@@ -148,7 +148,7 @@ class BootloaderTest extends TestCase {
 		$_SERVER['__test_service_provider_boot__']    = false;
 
 		$manager = new Bootloader();
-		$manager->with_providers( [ Test_Service_Provider::class ] );
+		$manager->with_providers( Test_Service_Provider::class );
 
 		$manager->boot();
 
