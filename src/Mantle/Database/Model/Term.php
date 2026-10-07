@@ -256,7 +256,7 @@ PHP
 			$save = \wp_insert_term(
 				$this->name(),
 				$this->taxonomy(),
-				$this->get_attributes()
+				$this->get_attributes_for_insert()
 			);
 		} else {
 			$save = \wp_update_term(
