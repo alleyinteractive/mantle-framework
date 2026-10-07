@@ -102,6 +102,17 @@ class HasOneOrManyTest extends FrameworkTestCase {
 		$this->assertNull( $sponsor->posts()->first() );
 	}
 
+	public function test_has_many_post_to_post_is_not_limited() {
+		$post = Testable_Post::create( [ 'title' => 'Parent with many pages', 'status' => 'publish' ] );
+
+		for ( $i = 0; $i < 105; $i++ ) {
+			$post->pages()->save( new Testable_Page( [ 'status' => 'publish', 'title' => "Page {$i}" ] ) );
+		}
+
+		$this->assertCount( 105, $post->pages );
+		$this->assertCount( 105, $post->pages()->get() );
+	}
+
 	public function test_has_many_post_to_post_modifier() {
 		$posts = array_map(
 			[ Testable_Post::class, 'find' ],

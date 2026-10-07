@@ -92,7 +92,22 @@ class PaginatorTest extends FrameworkTestCase {
 		}
 	}
 
+	public function test_simple_paginate_has_more() {
+		$this->assertFalse( Post::simple_paginate( 20 )->has_more() );
+		$this->assertNull( Post::simple_paginate( 20 )->next_url() );
+
+		static::factory()->post->create_many( 25 );
+
+		$this->assertTrue( Post::simple_paginate( 20 )->has_more() );
+		$this->assertCount( 20, Post::simple_paginate( 20 )->items() );
+		$this->assertFalse( Post::simple_paginate( 20, 2 )->has_more() );
+		$this->assertCount( 5, Post::simple_paginate( 20, 2 )->items() );
+		$this->assertFalse( Post::simple_paginate( 25 )->has_more() );
+	}
+
 	public function test_paginate_render() {
+		static::factory()->post->create_many( 50 );
+
 		for ( $i = 1; $i <= 3; $i++ ) {
 			if ( isset( $paginator) ) {
 				$this->get( $paginator->next_url() );
@@ -107,14 +122,19 @@ class PaginatorTest extends FrameworkTestCase {
 				$this->assertStringContainsString( '<li><a href="/?page=' . ( $i - 1 ) . '" rel="prev">Previous</a></li>', $render );
 			}
 
-			$this->assertStringContainsString( '<li><a href="/?page=' . ( $i + 1 ) .'" rel="next">Next</a></li>', $render );
+			if ( $i < 3 ) {
+				$this->assertStringContainsString( '<li><a href="/?page=' . ( $i + 1 ) .'" rel="next">Next</a></li>', $render );
+			} else {
+				$this->assertStringNotContainsString( 'rel="next"', $render );
+				$this->assertNull( $paginator->next_url() );
+			}
 		}
 	}
 
 	public function test_paginate_render_length() {
 		static::factory()->post->create_many( 100 );
 
-		$max_pages = 5;
+		$max_pages = 4;
 
 		for ( $i = 1; $i <= $max_pages; $i++ ) {
 			if ( isset( $paginator) ) {
@@ -128,10 +148,14 @@ class PaginatorTest extends FrameworkTestCase {
 			$render    = (string) $paginator->render();
 
 			$this->assertEquals( $i, $paginator->current_page() );
+			$this->assertEquals( $max_pages, $paginator->max_pages() );
+			$this->assertEquals( $i > 1, $paginator->has_previous() );
+			$this->assertContains( $max_pages, array_map( 'key', $paginator->elements() ) );
 
 			// On the last page there should be no valid next link.
 			if ( $i >= $max_pages ) {
 				$this->assertFalse( $paginator->has_more() );
+				$this->assertNull( $paginator->next_url() );
 				$this->assertStringContainsString( '<li class="disabled" aria-disabled="true"><span>&rsaquo;</span></li>', $render );
 			} else {
 				$this->assertTrue( $paginator->has_more() );

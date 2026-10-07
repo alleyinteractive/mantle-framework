@@ -318,10 +318,8 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 
 	/**
 	 * Determine if a given string is a valid UUID.
-	 *
-	 * @return bool
 	 */
-	public function is_uuid() {
+	public function is_uuid(): bool {
 		return Str::is_uuid( $this->value );
 	}
 
