@@ -185,7 +185,13 @@ class Pending_Request {
 	public function set_url( ?string $url = null ): static {
 		$url ??= '';
 
-		$this->url = $this->base_url ? "{$this->base_url}{$url}" : $url;
+		if ( ! $this->base_url || preg_match( '#^https?://#i', $url ) ) {
+			$this->url = $url;
+		} elseif ( '' === $url ) {
+			$this->url = $this->base_url;
+		} else {
+			$this->url = rtrim( $this->base_url, '/' ) . '/' . ltrim( $url, '/' );
+		}
 
 		return $this;
 	}
@@ -317,12 +323,8 @@ class Pending_Request {
 	 * @param  array<string, mixed> $headers Headers to add.
 	 */
 	public function with_headers( array $headers ): static {
-		$this->options = array_merge_recursive(
-			$this->options,
-			[
-				'headers' => $headers,
-			]
-		);
+		// WordPress sends a repeated header as the literal string "Array", so the last value wins.
+		$this->options['headers'] = array_merge( $this->options['headers'] ?? [], $headers );
 
 		return $this;
 	}
@@ -678,8 +680,10 @@ class Pending_Request {
 	 * @param  array<string, mixed>    $options Options for the request.
 	 */
 	public function send( string|Http_Method|null $method = null, ?string $url = null, array $options = [] ): Response {
-		if ( ! is_null( $url ) || ! empty( $this->base_url ) ) {
+		if ( ! is_null( $url ) ) {
 			$this->set_url( $url );
+		} elseif ( empty( $this->url ) && ! empty( $this->base_url ) ) {
+			$this->set_url();
 		}
 
 		if ( empty( $this->url ) ) {
@@ -808,6 +812,10 @@ class Pending_Request {
 				}
 
 				break;
+		}
+
+		if ( ! empty( $this->options['user-agent'] ) ) {
+			$args['user-agent'] = $this->options['user-agent'];
 		}
 
 		// Ensure the request ID is always included.

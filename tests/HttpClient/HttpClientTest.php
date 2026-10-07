@@ -223,6 +223,47 @@ class HttpClientTest extends FrameworkTestCase {
 		$this->assertRequestSent( 'https://example.com/api' );
 	}
 
+	public function test_json_scalar_body() {
+		$this->fake_request( fn () => Mock_Http_Response::create()->with_body( '123' )->with_header( 'Content-Type', 'application/json' ) );
+
+		$response = Http::get( 'https://example.com/scalar' );
+
+		$this->assertTrue( $response->is_json() );
+		$this->assertSame( 123, $response->json() );
+	}
+
+	public function test_with_user_agent() {
+		$this->fake_request();
+
+		Http::with_user_agent( 'MantleBot/1.0' )->get( 'https://example.com/user-agent/' );
+
+		$this->assertRequestSent( fn ( Request $request ) => 'MantleBot/1.0' === $request->get( 'user-agent' ) );
+	}
+
+	public function test_send_keeps_url_set_before_base_url_send() {
+		$this->fake_request();
+
+		Http::base_url( 'https://example.com' )->url( '/keep-me/' )->send();
+
+		$this->assertRequestSent( 'https://example.com/keep-me/' );
+	}
+
+	public function test_repeated_header_replaces_previous_value() {
+		$this->fake_request();
+
+		Http::with_token( 'first' )->with_token( 'second' )->get( 'https://example.com/token/' );
+
+		$this->assertRequestSent( fn ( Request $request ) => 'Bearer second' === $request->header( 'Authorization' ) );
+	}
+
+	public function test_base_url_slash_normalization() {
+		$this->fake_request();
+
+		Http::base_url( 'https://example.com/api/' )->get( '/users' );
+
+		$this->assertRequestSent( 'https://example.com/api/users' );
+	}
+
 	public function test_facade_request() {
 		$this->fake_request();
 
