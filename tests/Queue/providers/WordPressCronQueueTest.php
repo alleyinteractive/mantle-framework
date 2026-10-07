@@ -114,6 +114,21 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		] );
 	}
 
+	public function test_job_string_properties_keep_their_backslashes() {
+		$_SERVER['__slashed_job'] = null;
+
+		$job = new Slashed_Job( 'Mantle\\Tests\\Example' );
+
+		Slashed_Job::dispatch( 'Mantle\\Tests\\Example' );
+
+		$this->assertSame( 'Mantle\\Tests\\Example', $job->value );
+		$this->assertJobQueued( $job );
+
+		$this->dispatch_queue();
+
+		$this->assertSame( 'Mantle\\Tests\\Example', $_SERVER['__slashed_job'] );
+	}
+
 	public function test_job_dispatch_now() {
 		$this->assertNotInCronQueue( Example_Job::class );
 
@@ -444,4 +459,14 @@ class Job_To_Fail_Retry extends Job_To_Fail {
 	public bool $retry = true;
 
 	public int $retry_backoff = 30;
+}
+
+class Slashed_Job implements Job, Can_Queue {
+	use Queueable, Dispatchable;
+
+	public function __construct( public string $value ) {}
+
+	public function handle(): void {
+		$_SERVER['__slashed_job'] = $this->value;
+	}
 }
