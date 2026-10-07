@@ -44,12 +44,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Routes returning `[]`, `''`, `'0'`, `0`, or `false` send that value instead of an empty `text/html` body.
 - Interface-typed route and controller parameters are resolved from the container.
 - Nested named route groups combine their name prefixes instead of naming the route "Arrayindex".
+- `prefix()`, `name()`, `where()`, and `domain()` apply to a route registered directly (e.g. `Route::prefix( 'api' )->get( ... )`, including REST routes) instead of being silently ignored outside of `group()`. `where()` and `domain()` now apply to grouped routes as well.
 - HTTP client: `json()` no longer fatals on scalar JSON bodies, `with_user_agent()` is sent, a repeated header replaces the previous value instead of sending "Array", `send()` keeps a URL set before it when a base URL is configured, and base URLs join paths with exactly one slash.
+- HTTP client: the URL, method, query, and body passed to `get()`, `post()`, `send()`, and the other verb methods apply only to that request instead of leaking into later requests made with the same client; options set with the fluent builder still persist.
 
 #### Core
 
 - Event listeners that return nothing, or declare `void`, no longer replace the payload passed to later listeners, and an object event is never replaced by a listener's return value.
 - `Dispatcher::forget( $event, $listener )` removes the given listener instead of being a no-op.
+- Listeners with a `mixed` parameter no longer throw a `ValueError` when the event is dispatched.
 - `Collection::sole()` throws `Multiple_Items_Found_Exception` instead of a `TypeError`, `duplicates_strict()` compares strictly, `nth()` honors an offset larger than the step, and `where()`/`contains()` treat `!=` and `<>` loosely as Laravel does.
 - The console signature parser no longer treats `--` inside an argument description as an option.
 - `Console\Kernel::register()` accepts a command instance.
@@ -65,6 +68,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Cache::tags()->clear()` flushes only the tagged group instead of the entire object cache when the object cache supports group flushing (WordPress 6.1+ core, or a drop-in that declares `flush_group`); otherwise it still flushes everything. Tag names are joined with `:` to avoid collisions.
 - A cached `false` is a hit for `get()`, `has()`, `add()`, `remember()`, and `pull()`, and `get_multiple()` honors its default.
 - The queue admin "Run" action locks the job for the timeout from now instead of a timestamp in 1970.
+- The WordPress queue provider keeps backslashes in a job's string properties (such as namespaced class names) instead of stripping them when the job is stored, and no longer strips them from the in-memory job.
 - Blocks without an explicit editor script no longer fatal on an undefined `mix()`, the editor script version is read from `.asset.php` or `.asset.json`, and a missing asset file no longer breaks registration.
 - View data named `post`, `posts`, `id`, `comment`, or `wp` is no longer silently dropped in PHP and Blade views.
 - Local disk sub-directories are created with public (0755) visibility by default.
