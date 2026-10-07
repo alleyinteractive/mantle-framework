@@ -13,6 +13,88 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   several meta arrays in one call. A key repeated across the arrays is stored once per array,
   which creates multiple meta entries for the same key (#925).
 
+### Fixed
+
+#### Database
+
+- Term queries honor the current page: `chunk()`, `each()`, `map()`, `paginate()`, and `for_page()` no longer return the first page forever.
+- `Comment::save()` no longer overwrites the comment ID with `1` after an update and no longer throws when nothing changed.
+- Multiple `orderBy()` calls produce a valid `orderby` map for post queries; term queries throw a `Query_Exception` instead of fataling.
+- Relationship results are no longer silently capped at 100 items for lazy or eager loading.
+- `Length_Aware_Paginator`: the last page no longer reports more results, `elements()` includes the last page, and `has_previous()` is correct.
+- `Paginator::has_more()` for simple pagination no longer always returns true; one extra row is fetched to detect the next page.
+- Factory definitions ran N times on the Nth `create()` because the middleware stack was mutated on every call; `create_many()` is now linear.
+- `where( 'post_title', ... )`, including `first_or_create()` and `update_or_create()`, queries the title instead of silently matching the newest post.
+- `Post::schedule()` and date-only saves sync `post_date_gmt`, so a scheduled post is no longer flipped back to published by WordPress.
+- `count()` and `exists()` no longer mutate the query builder they are called on.
+- `isset( $model->meta['key'] )` and `$model->meta->key` report missing meta as absent/null instead of `''`.
+- Reading `$term->parent` on an unsaved term no longer recurses infinitely; `Term::save()` hydrates the slug and `term_taxonomy_id` and marks the model as existing.
+- `Database_Table_Model::save()` no longer throws on a no-op update, and the table query builder honors `orderBy()`.
+- Models insert raw attribute values so accessors and casts are not baked into the stored row on create.
+- `Post::find()` and `Comment::find()` return null for an empty value instead of the global post or comment.
+
+#### HTTP
+
+- Route model binding no longer resolves draft, pending, private, future, or trashed posts for users who cannot read them (#165).
+- `Request::file()`, `all_files()`, and `has_file()` no longer throw a `TypeError` on a real upload.
+- Fluent route attributes such as `middleware()` and `name()` no longer leak to sibling routes registered inside a `rest_api()` closure.
+- REST routes sharing a path across different namespaces no longer overwrite each other.
+- `Route::rest_api( $namespace, $uri, 'Controller@method' )` is accepted.
+- A request with an unsupported method on a Mantle route returns a 405 with an `Allow` header instead of a 500.
+- Routes returning `[]`, `''`, `'0'`, `0`, or `false` send that value instead of an empty `text/html` body.
+- Interface-typed route and controller parameters are resolved from the container.
+- Nested named route groups combine their name prefixes instead of naming the route "Arrayindex".
+- HTTP client: `json()` no longer fatals on scalar JSON bodies, `with_user_agent()` is sent, a repeated header replaces the previous value instead of sending "Array", `send()` keeps a URL set before it when a base URL is configured, and base URLs join paths with exactly one slash.
+
+#### Core
+
+- Event listeners that return nothing, or declare `void`, no longer replace the payload passed to later listeners, and an object event is never replaced by a listener's return value.
+- `Dispatcher::forget( $event, $listener )` removes the given listener instead of being a no-op.
+- `Collection::sole()` throws `Multiple_Items_Found_Exception` instead of a `TypeError`, `duplicates_strict()` compares strictly, `nth()` honors an offset larger than the step, and `where()`/`contains()` treat `!=` and `<>` loosely as Laravel does.
+- The console signature parser no longer treats `--` inside an argument description as an option.
+- `Console\Kernel::register()` accepts a command instance.
+- `Alias_Loader::alias()` registers the alias in the right direction.
+- The container builds classes with variadic scalar constructors and spreads variadic class dependencies.
+- `Stringable::to_date()` no longer requires WordPress to be loaded.
+
+#### Cache, queue, scheduling, filesystem, views, and blocks
+
+- Scheduled commands registered with `Schedule::command()`, including the framework's nightly `queue:cleanup`, run instead of failing on an uninitialized command container.
+- `queue:run` processes `queue.batch_size` jobs by default and accepts `--count=N`.
+- The `can:ability_a,ability_b` middleware checks every ability instead of only the first.
+- Queue delay and per-queue configuration under `queue.wordpress.*` is read; the scheduler looked for `queue.WordPress.*`.
+- `Cache::tags()->clear()` flushes only the tagged group instead of the entire object cache, and tag names are joined with `:` to avoid collisions.
+- A cached `false` is a hit for `get()`, `has()`, `add()`, `remember()`, and `pull()`, and `get_multiple()` honors its default.
+- The queue admin "Run" action locks the job for the timeout from now instead of a timestamp in 1970.
+- Blocks without an explicit editor script no longer fatal on an undefined `mix()`, the editor script version is read from `.asset.php` or `.asset.json`, and a missing asset file no longer breaks registration.
+- View data named `post`, `posts`, `id`, `comment`, or `wp` is no longer silently dropped in PHP and Blade views.
+- Local disk sub-directories are created with public (0755) visibility by default.
+- `Filesystem_Adapter::put()` returns false on a write failure unless the disk is configured to throw.
+- `Log::log()` accepts integer Monolog levels.
+- `@alias/view` hints resolve only against the aliased path, and the `@framework-views` alias used by `Wrap_Template` is registered.
+- `loop()` and `iterate()` accept collections and other iterables.
+- `Filesystem::link()` creates a symlink on macOS and Linux.
+- `Uploaded_File::store_as_attachment()` with a sub-path no longer doubles the path in `_wp_attached_file` and attachment URLs.
+- The asset loader reads `assets.path` (it read `asset.path`), and `#[Admin]` can be applied to classes.
+
+#### Testing
+
+- A throwing trait teardown (an unexpected incorrect usage, deprecation, or hook expectation) no longer skips the database rollback, hook restore, and current user reset for that test.
+- `$_SERVER` and `current_screen` are reset after every test.
+- REST requests made with the test client are served once instead of once per request made so far in the test.
+- `wp_scripts` and `wp_styles` are deep-copied so localized and inline data on core handles no longer leaks between tests.
+- User roles and capabilities are restored between tests (#828).
+- A checkout whose path contains the content directory but has no WordPress installation above it is rsynced instead of silently skipping `maybe_rsync()`, `with_sqlite()`, and related calls (#906).
+- `assertDatabaseHas()` and `assertHookApplied()` honor an explicit count of 0.
+- A failed `chdir()` fallback during rsync no longer exits silently, and the composer executable detection works.
+- The user factory generates unique logins and emails.
+
+### Changed
+
+- Relationship queries default to no limit; chain `take()` on the relationship to limit results.
+- Added `offset()` and `skip()` to the query builder.
+- The `Authorize` middleware's insufficient-permissions message is filtered via `mantle_auth_insufficient_permissions_error`; it reused the not-logged-in filter name before.
+
 ## v1.22.2
 
 ### Changed
