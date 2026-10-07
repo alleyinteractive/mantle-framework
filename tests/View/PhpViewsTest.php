@@ -104,6 +104,27 @@ class PhpViewsTest extends FrameworkTestCase {
 		}
 	}
 
+	public function test_variables_colliding_with_globals() {
+		$post = static::factory()->post->create_and_get( [ 'post_title' => 'Passed post' ] );
+
+		$contents = (string) view( 'var-id', [ 'id' => 42, 'post' => $post ] );
+
+		$this->assertStringContainsString( 'id=42;post=Passed post', $contents );
+	}
+
+	public function test_loop_collection() {
+		$post_ids = [
+			static::factory()->post->create(),
+			static::factory()->post->create(),
+		];
+
+		$contents = loop( \Mantle\Support\Helpers\collect( $post_ids ), 'loop-post' );
+
+		foreach ( $post_ids as $key => $post_id ) {
+			$this->assertStringContainsString( "Post {$key}: {$post_id}", $contents );
+		}
+	}
+
 	public function test_loop_array() {
 		$post_ids = [
 			static::factory()->post->create(),

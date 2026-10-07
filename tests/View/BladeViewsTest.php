@@ -46,6 +46,10 @@ class BladeViewsTest extends FrameworkTestCase {
 		);
 	}
 
+	public function test_render_string_with_global_variable_names(): void {
+		$this->assertSame( 'id=42', Blade::render_string( 'id={{ $id }}', [ 'id' => 42 ] ) );
+	}
+
 	public function test_render_string(): void {
 		$this->assertEquals(
 			'Hello, world.',

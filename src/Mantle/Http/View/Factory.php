@@ -256,6 +256,8 @@ class Factory implements Contract {
 		// Extract the posts from the query.
 		if ( $data instanceof WP_Query ) {
 			$data = $data->posts;
+		} elseif ( is_iterable( $data ) ) {
+			$data = iterator_to_array( $data );
 		}
 
 		// Loop through an array of posts.
@@ -286,6 +288,10 @@ class Factory implements Contract {
 		}
 
 		$results = new Collection();
+
+		if ( is_iterable( $data ) ) {
+			$data = iterator_to_array( $data );
+		}
 
 		foreach ( (array) $data as $index => $item ) {
 			$variables['item']  = $item;

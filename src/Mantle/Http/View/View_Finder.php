@@ -97,6 +97,7 @@ class View_Finder {
 		$this->add_path( $this->base_path . '/views', 'mantle-site' );
 
 		$this->add_path( get_framework_views_path(), 'framework' );
+		$this->add_path( get_framework_views_path(), 'framework-views' );
 
 		/**
 		 * Dispatched when the view finder is setting its default paths.
@@ -177,6 +178,8 @@ class View_Finder {
 		// Extract the alias if passed.
 		if ( $this->has_hint_information( $slug ) ) {
 			[ $alias, $slug ] = explode( '/', $slug, 2 );
+
+			$alias = ltrim( $alias, '@' );
 		}
 
 		$templates = [];
@@ -202,21 +205,16 @@ class View_Finder {
 	 * @throws InvalidArgumentException Thrown on unknown view to locate.
 	 */
 	protected function locate_template( array $templates, ?string $alias = null ): string {
-		$paths = $this->get_paths();
-
-		if ( $alias ) {
-			$paths = array_filter(
-				$paths,
-				fn ( $path_alias ) => $alias === $path_alias,
-				ARRAY_FILTER_USE_KEY
-			);
-		}
+		// Filter on the raw paths: get_paths() dedupes, dropping aliases that share a path.
+		$paths = $alias
+			? array_filter( $this->paths, fn ( $path_alias ) => $alias === $path_alias, ARRAY_FILTER_USE_KEY )
+			: $this->get_paths();
 
 		foreach ( $templates as $template ) {
 			$possible_view_files = $this->get_possible_view_files( $template );
 
 			foreach ( $possible_view_files as $possible_view_file ) {
-				foreach ( $this->get_paths() as $path ) {
+				foreach ( $paths as $path ) {
 					$path = "{$path}/{$possible_view_file}";
 
 					if ( $this->files->exists( $path ) ) {
