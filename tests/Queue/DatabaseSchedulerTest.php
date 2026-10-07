@@ -160,6 +160,32 @@ class DatabaseSchedulerTest extends FrameworkTestCase {
 		$this->assertCronCount( Database_Scheduler::EVENT, 9 );
 	}
 
+	public function test_schedule_does_not_overschedule_when_underutilized(): void {
+		$this->app['config']->set( 'queue.max_concurrent_batches', 5 );
+		$this->app['config']->set( 'queue.batch_size', 100 );
+
+		Example_Job::dispatch();
+
+		$this->scheduler->schedule_on_shutdown();
+
+		$this->assertSame( 1, Database_Scheduler::get_scheduled_count() );
+	}
+
+	public function test_retried_job_does_not_run_during_backoff(): void {
+		$_SERVER['__failed_run'] = 0;
+
+		Job_To_Fail_Retry::dispatch();
+
+		$this->dispatch_queue();
+
+		$this->assertEquals( 1, $_SERVER['__failed_run'] );
+
+		$this->dispatch_queue();
+
+		$this->assertEquals( 1, $_SERVER['__failed_run'] );
+		$this->assertJobQueued( Job_To_Fail_Retry::class );
+	}
+
 	public function test_cleanup_completed_jobs() {
 		$this->app['config']->set( 'queue.delete_after', 60 * 60 * 24 );
 

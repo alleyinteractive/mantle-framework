@@ -367,6 +367,23 @@ class DatabaseQueueTest extends FrameworkTestCase {
 		$this->assertFalse( $job->reserve() );
 	}
 
+	public function test_job_with_a_long_class_name_can_be_dispatched(): void {
+		$_SERVER['__example_job'] = false;
+
+		Job_With_An_Exceptionally_Long_Class_Name_For_Testing_The_Type_Column::dispatch();
+
+		$this->dispatch_queue();
+
+		$this->assertTrue( $_SERVER['__example_job'] );
+	}
+
+	public function test_job_count_assertion_only_counts_that_job(): void {
+		Example_Job::dispatch();
+		Job_To_Fail::dispatch();
+
+		$this->assertJobQueued( Example_Job::class, count: 1 );
+	}
+
 	public function test_saving_a_record_without_changes_does_not_throw(): void {
 		Example_Job::dispatch();
 
@@ -446,3 +463,5 @@ class Job_To_Fail_Retry extends Job_To_Fail {
 
 	public int $tries = 3;
 }
+
+class Job_With_An_Exceptionally_Long_Class_Name_For_Testing_The_Type_Column extends Example_Job {}

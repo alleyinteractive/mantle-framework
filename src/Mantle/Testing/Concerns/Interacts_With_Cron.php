@@ -314,7 +314,7 @@ trait Interacts_With_Cron {
 	 * @param object $event Cron event object.
 	 * @phpstan-param CronEvent $event
 	 */
-	private static function run_cron_event( object $event ): void {
+	protected static function run_cron_event( object $event ): void {
 		if ( ! defined( 'DOING_CRON' ) ) {
 			// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- Using native WordPress constant.
 			define( 'DOING_CRON', true );
