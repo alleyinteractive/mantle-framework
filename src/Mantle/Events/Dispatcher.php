@@ -10,16 +10,18 @@
 namespace Mantle\Events;
 
 use Closure;
+use DateTimeInterface;
 use Mantle\Contracts\Container;
 use Mantle\Contracts\Events\Dispatcher as Dispatcher_Contract;
+use Mantle\Contracts\Queue\Can_Queue;
+use Mantle\Contracts\Queue\Dispatcher as Queue_Dispatcher;
 use Mantle\Support\Arr;
 use Mantle\Support\Str;
 use RuntimeException;
+use Throwable;
 
 /**
  * Event Dispatcher
- *
- * @todo Add queued event listeners.
  */
 class Dispatcher implements Dispatcher_Contract {
 	use WordPress_Action;
@@ -281,6 +283,14 @@ class Dispatcher implements Dispatcher_Contract {
 	 */
 	public function create_class_listener( string $listener, bool $object_event = false ): Closure {
 		return function ( ...$payload ) use ( $listener, $object_event ) {
+			[ $class, $method ] = $this->parse_class_callable( $listener );
+
+			if ( $this->handler_should_be_queued( $class ) ) {
+				$this->queue_handler( $class, $method ?? 'handle', array_values( $payload ) );
+
+				return $payload[0] ?? null;
+			}
+
 			$callable = $this->create_action_callback(
 				// @phpstan-ignore argument.type
 				$this->create_class_callable( $listener ),
@@ -300,9 +310,56 @@ class Dispatcher implements Dispatcher_Contract {
 	protected function create_class_callable( string $listener ): array {
 		[ $class, $method ] = $this->parse_class_callable( $listener );
 
-		// todo: add queued callback support.
-
 		return [ $this->container->make( $class ), $method ];
+	}
+
+	/**
+	 * Determine if the listener class should be pushed to the queue.
+	 *
+	 * @phpstan-assert-if-true class-string<Can_Queue> $class
+	 *
+	 * @param string $class Listener class name.
+	 */
+	protected function handler_should_be_queued( string $class ): bool {
+		return class_exists( $class ) && is_subclass_of( $class, Can_Queue::class );
+	}
+
+	/**
+	 * Push a queued listener onto the queue.
+	 *
+	 * A listener can opt out per event with a `should_queue()` method and set the
+	 * job's `$queue` and `$delay` with properties of the same name.
+	 *
+	 * @throws RuntimeException If no queue dispatcher is bound to the container.
+	 *
+	 * @param class-string<Can_Queue> $class Listener class name.
+	 * @param string                  $method Listener method.
+	 * @param array<mixed>            $payload Event payload.
+	 */
+	protected function queue_handler( string $class, string $method, array $payload ): void {
+		$listener = $this->container->make( $class );
+
+		if ( is_object( $listener ) && method_exists( $listener, 'should_queue' ) && ! $listener->should_queue( ...$payload ) ) {
+			return;
+		}
+
+		$job = new Call_Queued_Listener( $class, $method, $payload );
+
+		if ( isset( $listener->queue ) && is_string( $listener->queue ) ) {
+			$job->queue = $listener->queue;
+		}
+
+		if ( isset( $listener->delay ) && ( is_int( $listener->delay ) || $listener->delay instanceof DateTimeInterface ) ) {
+			$job->delay = $listener->delay;
+		}
+
+		try {
+			$dispatcher = $this->container->make( Queue_Dispatcher::class );
+		} catch ( Throwable $e ) {
+			throw new RuntimeException( "Unable to queue the [{$class}] event listener: no queue dispatcher is available.", 0, $e );
+		}
+
+		$dispatcher->dispatch( $job );
 	}
 
 	/**
