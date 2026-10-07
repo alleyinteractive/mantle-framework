@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Changed
+
+- **The minimum supported PHPUnit version is now 11.5.50.** The framework, `mantle-framework/testkit`, and `mantle-framework/testing-dependencies` now require `phpunit/phpunit: ^11.5.50 || ^12.5.8 || ^13.1`. PHPUnit 10 is no longer supported.
+- `spatie/phpunit-snapshot-assertions` now requires `^5.1` and `nunomaduro/collision` now requires `^8.0`; the older majors only supported PHPUnit 9 and 10.
+- The Mantle test suite now uses PHPUnit attributes exclusively. PHPUnit 11 deprecates docblock annotations such as `@test`, `@dataProvider`, and `@group`, and PHPUnit 12 removes them, so convert your own tests to attributes (Rector's `PHPUnitSetList::ANNOTATIONS_TO_ATTRIBUTES` set does this automatically).
+- The `Makes_Http_Requests_With_Feeds`, `Makes_Http_Requests_With_Sitemaps`, and `Makes_Http_Requests_With_Templates` set-up methods now run through a `#[Before]` attribute after `setUp()` finishes, rather than from inside `TestCase::setUp()`.
+- A trait's `{trait}_set_up()` method that has a `#[Before]` attribute is no longer also called by `TestCase::setUp()`, so it runs once per test instead of twice.
+
+### Removed
+
+- Removed the deprecated `Mantle\Testing\Concerns\PHPUnit_Upgrade_Warning` trait and `Installation_Manager::silence_phpunit_warning()`. Remove any `silence_phpunit_warning()` calls from your test bootstrap.
+
 ## v1.22.2
 
 ### Changed
