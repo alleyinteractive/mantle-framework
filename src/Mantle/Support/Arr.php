@@ -263,10 +263,7 @@ class Arr {
 				}
 			}
 
-			$part = array_shift( $parts );
-			if ( null !== $part ) {
-				unset( $array[ $part ] );
-			}
+			unset( $array[ array_shift( $parts ) ] );
 		}
 	}
 

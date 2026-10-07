@@ -204,10 +204,8 @@ function object_get( $object, $key, $default = null ) {
 function preg_replace_array( $pattern, array $replacements, $subject ): ?string {
 	return preg_replace_callback(
 		$pattern,
-		function () use ( &$replacements ) {
-			foreach ( $replacements as $replacement ) {
-				return array_shift( $replacements );
-			}
+		function () use ( &$replacements ): string {
+			return array_shift( $replacements ) ?? '';
 		},
 		$subject
 	);

@@ -254,9 +254,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 * @param  string|null $root
 	 */
 	public function format_root( string $scheme, ?string $root = null ): string {
-		if ( is_null( $root ) ) {
-			$root = $this->root_url;
-		}
+		$root ??= $this->root_url;
 
 		$start = str_starts_with( $root, 'http://' ) ? 'http://' : 'https://';
 

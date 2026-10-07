@@ -358,7 +358,7 @@ abstract class Factory {
 					}
 
 					foreach ( $args as $key => $value ) {
-						if ( is_callable( $value ) ) {
+						if ( $value instanceof Closure ) {
 							$args[ $key ] = $value( $key, $args );
 						}
 					}

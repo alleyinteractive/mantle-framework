@@ -81,9 +81,7 @@ class Attachment extends Post {
 
 		$disk = $settings['disk'];
 
-		if ( is_null( $expiration ) ) {
-			$expiration = Carbon::now()->addSeconds( max( 1, (int) config( "filesystem.disks.{$disk}.temporary_url_expiration" ) ) );
-		}
+		$expiration ??= Carbon::now()->addSeconds( max( 1, (int) config( "filesystem.disks.{$disk}.temporary_url_expiration" ) ) );
 
 		return Storage::drive( $disk )->temporary_url( untrailingslashit( $settings['path'] ) . $settings['name'], $expiration );
 	}
