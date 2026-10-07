@@ -204,7 +204,12 @@ class WordPress_Cache_Repository extends Repository implements Taggable_Reposito
 	public function clear(): bool {
 		// A prefixed/tagged repository only owns its own cache group, never the whole cache.
 		if ( '' !== $this->prefix ) {
-			return function_exists( 'wp_cache_supports' ) && \wp_cache_supports( 'flush_group' ) && (bool) \wp_cache_flush_group( $this->prefix );
+			if ( function_exists( 'wp_cache_supports' ) && \wp_cache_supports( 'flush_group' ) ) {
+				return (bool) \wp_cache_flush_group( $this->prefix );
+			}
+
+			// Without group flushing, the only way to invalidate the tag is to flush everything.
+			return \wp_cache_flush();
 		}
 
 		return \wp_cache_flush();
