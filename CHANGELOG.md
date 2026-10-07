@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A trait's `{trait}_set_up()` method that has a `#[Before]` attribute is no longer also called by `TestCase::setUp()`, so it runs once per test instead of twice.
 - **Breaking:** `Mantle\Contracts\Assets\Load_Method` is now a string-backed enum. `Asset_Manager::load_method()`, `Asset_Manager::resolve_load_method()`, and the `$load_method` argument of `Asset`/`asset()->script()`/`asset()->style()` accept a `Load_Method` case instead of a string. Upgrade: keep passing `Load_Method::ASYNC` (now an enum case), replace raw strings such as `'async'` with `Load_Method::from( 'async' )`, and use `Load_Method::ASYNC->value` wherever you need the string.
 - **Breaking:** `Mantle\Contracts\Assets\Load_Hook` is now a string-backed enum. The `$load_hook` argument of `Asset` accepts a `Load_Hook` case or a custom action name. Upgrade: use `Load_Hook::FOOTER->value` wherever you compared against or passed the old constant as a string.
+- **Breaking:** `Mantle\Framework\Bootloader::with_providers()` accepts only service provider class names as variadic arguments and no longer accepts arrays. Upgrade: replace `->with_providers( [ A::class, B::class ] )` with `->with_providers( A::class, B::class )`, or spread an existing array with `->with_providers( ...$providers )`.
 
 ### Removed
 
