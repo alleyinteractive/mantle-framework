@@ -72,6 +72,22 @@ class DatabaseTableModelTest extends FrameworkTestCase {
 				'name' => 'Jane Doe',
 			],
 		);
+
+		// Saving again without changes is a no-op, not a failure.
+		$this->assertTrue( $item->save() );
+	}
+
+	public function test_order_by(): void {
+		$first  = TestableDatabaseModel::create( [ 'name' => 'Order A' ] );
+		$second = TestableDatabaseModel::create( [ 'name' => 'Order B' ] );
+		$third  = TestableDatabaseModel::create( [ 'name' => 'Order C' ] );
+
+		$this->assertEquals( $third->id, TestableDatabaseModel::query()->orderBy( 'id', 'desc' )->first()->id );
+		$this->assertEquals( $first->id, TestableDatabaseModel::query()->orderBy( 'id', 'asc' )->first()->id );
+		$this->assertEquals(
+			[ $third->id, $second->id, $first->id ],
+			TestableDatabaseModel::query()->orderBy( 'name', 'desc' )->take( 3 )->get()->pluck( 'id' )->all()
+		);
 	}
 
 	public function test_delete_item(): void {

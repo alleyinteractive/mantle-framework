@@ -256,7 +256,7 @@ PHP
 			$save = \wp_insert_term(
 				$this->name(),
 				$this->taxonomy(),
-				$this->get_attributes()
+				$this->get_attributes_for_insert()
 			);
 		} else {
 			$save = \wp_update_term(
@@ -272,6 +272,15 @@ PHP
 
 		$this->set_raw_attribute( 'term_id', $save['term_id'] );
 		$this->store_queued_meta();
+
+		// Hydrate the generated columns (slug, term_taxonomy_id) and mark the model as persisted.
+		$term = \get_term( (int) $save['term_id'], $this->taxonomy() );
+
+		if ( $term instanceof \WP_Term ) {
+			$this->set_raw_attributes( (array) $term );
+		}
+
+		$this->exists = true;
 		$this->reset_modified_attributes();
 
 		return true;

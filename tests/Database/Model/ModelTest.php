@@ -138,6 +138,23 @@ class ModelTest extends FrameworkTestCase {
 		$this->assertEquals( 'New title test_first_or_create', $post_to_create->title );
 	}
 
+	public function test_update_or_create_by_post_title() {
+		$existing = static::factory()->post->create( [ 'title' => 'Original title' ] );
+
+		$post = Testable_Post_For_Appending::update_or_create(
+			[ 'post_title' => 'A title that does not exist' ],
+			[ 'content' => 'Created content', 'status' => 'publish' ],
+		);
+
+		$this->assertNotEquals( $existing, $post->id );
+		$this->assertEquals( 'A title that does not exist', $post->title );
+		$this->assertEquals( 'Original title', get_post( $existing )->post_title );
+
+		$found = Testable_Post_For_Appending::first_or_create( [ 'post_title' => 'A title that does not exist' ] );
+
+		$this->assertEquals( $post->id, $found->id );
+	}
+
 	public function test_update_or_create() {
 		$existing = static::factory()->post->create( [
 			'title' => 'Original Title test_update_or_create',
