@@ -104,6 +104,60 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertTrue( $_SERVER['__event_run'] );
 	}
 
+	public function test_multiple_void_listeners_receive_same_event_object() {
+		$events = app( 'events' );
+		$seen   = [];
+
+		$events->listen( Example_Event::class, function ( Example_Event $e ) use ( &$seen ): void { $seen[] = spl_object_id( $e ); } );
+		$events->listen( Example_Event::class, function ( Example_Event $e ) use ( &$seen ) { $seen[] = spl_object_id( $e ); } );
+		$events->listen( Example_Event::class, Example_Void_Listener::class );
+
+		$event = new Example_Event();
+
+		$events->dispatch( $event );
+
+		$this->assertSame( [ spl_object_id( $event ), spl_object_id( $event ) ], $seen );
+		$this->assertSame( spl_object_id( $event ), Example_Void_Listener::$seen );
+	}
+
+	public function test_void_listener_does_not_clobber_payload_for_later_listeners() {
+		$events = app( 'events' );
+		$seen   = [];
+
+		$events->listen( __FUNCTION__, function ( $value ) use ( &$seen ): void { $seen[] = $value; } );
+		$events->listen( __FUNCTION__, function ( $value ) use ( &$seen ) { $seen[] = $value; return $value; } );
+
+		$this->assertSame( 'hello', $events->dispatch( __FUNCTION__, 'hello' ) );
+		$this->assertSame( [ 'hello', 'hello' ], $seen );
+	}
+
+	public function test_filter_listener_can_replace_an_object_value() {
+		$events = app( 'events' );
+
+		$events->listen( __FUNCTION__, fn ( $value ) => [ 'replaced' ] );
+
+		$this->assertSame( [ 'replaced' ], $events->dispatch( __FUNCTION__, new \WP_Error( 'code' ) ) );
+	}
+
+	public function test_it_can_forget_a_specific_listener() {
+		$events   = app( 'events' );
+		$listener = fn ( $value ) => 'modified';
+
+		$events->listen( __FUNCTION__, $listener );
+		$events->listen( __FUNCTION__, Example_Void_Listener::class );
+
+		$this->assertTrue( $events->has_listeners( __FUNCTION__ ) );
+
+		// Registering the same listener twice must still be fully removed.
+		$events->listen( __FUNCTION__, $listener );
+
+		$events->forget( __FUNCTION__, $listener );
+		$events->forget( __FUNCTION__, Example_Void_Listener::class );
+
+		$this->assertFalse( $events->has_listeners( __FUNCTION__ ) );
+		$this->assertSame( 'original', $events->dispatch( __FUNCTION__, 'original' ) );
+	}
+
 	public function test_dispatch_string_event_name() {
 		$events = app( 'events' );
 
@@ -195,4 +249,12 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 class Example_Event {
 
+}
+
+class Example_Void_Listener {
+	public static ?int $seen = null;
+
+	public function handle( $event ): void {
+		static::$seen = is_object( $event ) ? spl_object_id( $event ) : null;
+	}
 }

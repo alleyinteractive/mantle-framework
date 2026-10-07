@@ -14,6 +14,7 @@ use Mantle\Support\Reflector;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionFunction;
+use ReflectionFunctionAbstract;
 use ReflectionNamedType;
 use ReflectionParameter;
 use ReflectionUnionType;
@@ -70,30 +71,60 @@ trait WordPress_Action {
 	 * Wrap the callback for an action with callback that will preserve type hints.
 	 *
 	 * @param callable $callback
+	 * @param bool     $object_event Whether the listener is for an object (class name) event.
 	 */
-	protected function create_action_callback( callable $callback ): Closure {
-		return function ( ...$args ) use ( $callback ) {
+	protected function create_action_callback( callable $callback, bool $object_event = false ): Closure {
+		return function ( ...$args ) use ( $callback, $object_event ) {
 			if ( is_array( $callback ) ) {
 				try {
-					$class      = new ReflectionClass( $callback[0] );
-					$parameters = $class->getMethod( $callback[1] )->getParameters();
+					$reflection = ( new ReflectionClass( $callback[0] ) )->getMethod( $callback[1] );
 				} catch ( ReflectionException $e ) {
 					// Pass through if Reflection is unable to find the class and/or methods.
 					unset( $e );
 					return $callback( ...$args );
 				}
 			} elseif ( $callback instanceof Closure ) {
-				$parameters = ( new ReflectionFunction( $callback ) )->getParameters();
+				$reflection = new ReflectionFunction( $callback );
 			} else {
 				throw new RuntimeException( 'Unsupported callback type: ' . get_debug_type( $callback ) );
 			}
 
-			if ( empty( $parameters ) ) {
-				return $callback( ...$args );
-			}
+			$parameters = $reflection->getParameters();
 
-			return $callback( ...$this->validate_arguments( $args, $parameters ) );
+			$result = empty( $parameters )
+				? $callback( ...$args )
+				: $callback( ...$this->validate_arguments( $args, $parameters ) );
+
+			return $this->preserve_filtered_value( $reflection, $result, $args, $object_event );
 		};
+	}
+
+	/**
+	 * Keep the filtered value intact when a listener does not return one.
+	 *
+	 * Events are dispatched as WordPress filters, so a listener's return value
+	 * becomes the next listener's first argument. A `void` listener must not
+	 * replace that value with null, and a listener for an object event must not
+	 * replace the event with whatever its last expression happened to evaluate to.
+	 *
+	 * @param ReflectionFunctionAbstract $reflection Listener reflection.
+	 * @param mixed                      $result Listener return value.
+	 * @param array<mixed>               $args Arguments the listener was called with.
+	 * @param bool                       $object_event Whether the listener is for an object (class name) event.
+	 */
+	protected function preserve_filtered_value( ReflectionFunctionAbstract $reflection, mixed $result, array $args, bool $object_event = false ): mixed {
+		$return_type  = $reflection->getReturnType();
+		$returns_void = $return_type instanceof ReflectionNamedType && in_array( $return_type->getName(), [ 'void', 'never' ], true );
+
+		if ( $returns_void ) {
+			return $args[0] ?? null;
+		}
+
+		if ( $object_event && isset( $args[0] ) && is_object( $args[0] ) && ! is_object( $result ) ) {
+			return $args[0];
+		}
+
+		return $result;
 	}
 
 	/**

@@ -143,8 +143,7 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	 * @param Command|class-string<Command> $command Command instance or class name.
 	 */
 	public function register( Command|string $command ): void {
-		if ( ! class_exists( $command ) || ! is_subclass_of( $command, Command::class ) ) { // @phpstan-ignore-line function.alreadyNarrowedType
-			$command = $command instanceof Command ? $command::class : $command;
+		if ( is_string( $command ) && ( ! class_exists( $command ) || ! is_subclass_of( $command, Command::class ) ) ) {
 			throw new \InvalidArgumentException( "Command [{$command}] is not a valid command." );
 		}
 
