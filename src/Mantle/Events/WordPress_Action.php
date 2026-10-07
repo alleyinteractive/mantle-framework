@@ -178,7 +178,7 @@ trait WordPress_Action {
 			throw new RuntimeException( $type::class . ' is not a supported type-hint.' );
 		}
 
-		if ( $argument_type === $type->getName() ) {
+		if ( $argument_type === $type->getName() || 'mixed' === $type->getName() ) {
 			return $argument;
 		}
 
