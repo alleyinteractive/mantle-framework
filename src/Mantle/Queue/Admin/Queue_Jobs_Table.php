@@ -382,8 +382,6 @@ class Queue_Jobs_Table extends WP_List_Table {
 	 * @param Database_Job_Record $item The current item.
 	 */
 	public function single_row( $item ): void {
-		assert( $item instanceof Database_Job_Record );
-
 		printf( '<tr class="%s">', esc_attr( 'queue-item queue-item__' . $item->status ) );
 		$this->single_row_columns( $item );
 		echo '</tr>';
