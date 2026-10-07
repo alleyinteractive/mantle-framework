@@ -264,6 +264,104 @@ class HttpClientTest extends FrameworkTestCase {
 		$this->assertRequestSent( 'https://example.com/api/users' );
 	}
 
+	public function test_query_does_not_persist_between_requests(): void {
+		$this->fake_request();
+
+		$client = Http::base_url( 'https://example.com' );
+
+		$client->get( '/a', [ 'x' => 1 ] );
+		$client->get( '/b' );
+
+		$this->assertRequestSent( 'https://example.com/a?x=1' );
+		$this->assertRequestSent( 'https://example.com/b' );
+		$this->assertRequestNotSent( 'https://example.com/b?x=1' );
+	}
+
+	public function test_body_does_not_persist_between_requests(): void {
+		$this->fake_request();
+
+		$client = Http::base_url( 'https://example.com' );
+
+		$client->post( '/a', [ 'foo' => 'bar' ] );
+		$client->get( '/b' );
+
+		$this->assertRequestSent(
+			fn ( Request $request ) => 'https://example.com/a' === $request->url()
+				&& 'POST' === $request->method()
+				&& [ 'foo' => 'bar' ] === $request->json()
+		);
+		$this->assertRequestSent(
+			fn ( Request $request ) => 'https://example.com/b' === $request->url()
+				&& 'GET' === $request->method()
+				&& is_null( $request->body() )
+		);
+	}
+
+	public function test_url_and_method_do_not_persist_between_requests(): void {
+		$this->fake_request();
+
+		$client = Http::base_url( 'https://example.com/api' );
+
+		$client->put( '/a', [ 'foo' => 'bar' ] );
+		$client->send();
+
+		$this->assertRequestSent(
+			fn ( Request $request ) => 'https://example.com/api' === $request->url()
+				&& 'GET' === $request->method()
+				&& is_null( $request->body() )
+		);
+	}
+
+	public function test_builder_options_persist_between_requests(): void {
+		$this->fake_request();
+
+		$client = Http::base_url( 'https://example.com' )
+			->with_header( 'X-Foo', 'Bar' )
+			->with_json( [ 'shared' => true ] );
+
+		$client->post( '/a' );
+		$client->post( '/b' );
+
+		foreach ( [ 'https://example.com/a', 'https://example.com/b' ] as $url ) {
+			$this->assertRequestSent(
+				fn ( Request $request ) => $url === $request->url()
+					&& 'Bar' === $request->header( 'X-Foo' )
+					&& [ 'shared' => true ] === $request->json()
+			);
+		}
+	}
+
+	public function test_retry_resends_per_call_query(): void {
+		$this->fake_request( fn () => Mock_Http_Response::create()->with_status( 500 ) );
+
+		$this->http_factory
+			->retry( 3 )
+			->get( 'https://example.com/retry/', [ 'x' => 1 ] );
+
+		$this->assertRequestSent( 'https://example.com/retry/?x=1', 3 );
+	}
+
+	public function test_pool_does_not_inherit_previous_per_call_state(): void {
+		$this->fake_request();
+
+		$client = Http::base_url( 'https://example.com' );
+
+		$client->post( '/a', [ 'foo' => 'bar' ] );
+		$client->get( '/b', [ 'x' => 1 ] );
+
+		$client->pool( fn ( Pool $pool ) => [
+			$pool->get( '/c', [ 'y' => 2 ] ),
+			$pool->post( '/d', [ 'baz' => 'qux' ] ),
+		] );
+
+		$this->assertRequestSent( 'https://example.com/c?y=2' );
+		$this->assertRequestSent(
+			fn ( Request $request ) => 'https://example.com/d' === $request->url()
+				&& 'POST' === $request->method()
+				&& [ 'baz' => 'qux' ] === $request->json()
+		);
+	}
+
 	public function test_facade_request() {
 		$this->fake_request();
 
