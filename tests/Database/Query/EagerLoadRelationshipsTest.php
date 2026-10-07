@@ -79,6 +79,35 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 		}
 	}
 
+	public function test_eager_loading_relationships_has_many_is_not_limited() {
+		Utils::delete_all_posts();
+
+		$expected = [];
+
+		for ( $i = 0; $i < 35; $i++ ) {
+			$post = Testable_Post_Eager::find( static::factory()->post->create() );
+
+			for ( $j = 0; $j < 3; $j++ ) {
+				$related = $post->posts_relationship()->save(
+					new Another_Testable_Post_Eager( [ 'post_status' => 'publish', 'post_title' => "{$post->title} relation {$j}" ] )
+				);
+
+				$expected[ $post->id ][] = $related->id;
+			}
+		}
+
+		$posts = Testable_Post_Eager::with( 'posts_relationship' )->take( -1 )->get();
+
+		$this->assertCount( 35, $posts );
+
+		foreach ( $posts as $post ) {
+			$this->assertEqualsCanonicalizing(
+				$expected[ $post->id ],
+				collect( $post->posts_relationship )->pluck( 'id' )->all(),
+			);
+		}
+	}
+
 	public function test_eager_loading_relationships_has_many() {
 		Utils::delete_all_posts();
 

@@ -530,6 +530,41 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertEquals( $result->id(), $post_id );
 	}
 
+	public function test_multiple_order_by_query_args() {
+		$args = Testable_Post::query()
+			->orderBy( 'post_title', 'asc' )
+			->orderBy( 'post_date', 'desc' )
+			->get_query_args();
+
+		$this->assertEquals( [ 'post_title' => 'ASC', 'post_date' => 'DESC' ], $args['orderby'] );
+	}
+
+	public function test_multiple_order_by() {
+		$b     = static::factory()->post->create( [ 'post_title' => 'B', 'post_date' => '2020-01-05 00:00:00' ] );
+		$a_old = static::factory()->post->create( [ 'post_title' => 'A', 'post_date' => '2020-01-01 00:00:00' ] );
+		$a_new = static::factory()->post->create( [ 'post_title' => 'A', 'post_date' => '2020-01-03 00:00:00' ] );
+
+		$ids = Testable_Post::query()
+			->orderBy( 'post_title', 'asc' )
+			->orderBy( 'post_date', 'desc' )
+			->get()
+			->pluck( 'id' )
+			->all();
+
+		$this->assertEquals( [ $a_new, $a_old, $b ], $ids );
+	}
+
+	public function test_count_does_not_modify_query() {
+		static::factory()->post->create_many( 15 );
+
+		$query = Testable_Post::query()->take( 10 );
+
+		$this->assertEquals( 15, $query->count() );
+		$this->assertCount( 10, $query->get() );
+		$this->assertTrue( $query->exists() );
+		$this->assertCount( 10, $query->get() );
+	}
+
 	public function test_count() {
 		static::factory()->post->create_many( 14, [ 'post_status' => 'draft' ] );
 		static::factory()->post->create_many( 17, [ 'post_status' => 'publish' ] );
