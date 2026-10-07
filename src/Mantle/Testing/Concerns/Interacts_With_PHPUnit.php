@@ -25,10 +25,6 @@ trait Interacts_With_PHPUnit {
 	 * @param string $message The message to display when skipping the test.
 	 */
 	public static function skip_for_phpunit_version( string $version, string $compare = '>=', string $message = '' ): void {
-		if ( ! class_exists( Version::class ) || ! method_exists( Version::class, 'id' ) ) {
-			static::markTestSkipped( 'PHPUnit version check not available.' );
-		}
-
 		if ( static::phpunit_version_compare( $version, $compare ) ) {
 			static::markTestSkipped( $message ?: "PHPUnit version {$version} not met." );
 		}
@@ -52,10 +48,6 @@ trait Interacts_With_PHPUnit {
 	 * @return bool True if the comparison is true, false otherwise.
 	 */
 	public static function phpunit_version_compare( string $version, string $compare = '==' ): bool {
-		if ( ! class_exists( Version::class ) || ! method_exists( Version::class, 'id' ) ) {
-			return false;
-		}
-
-		return version_compare( \PHPUnit\Runner\Version::id(), $version, $compare );
+		return version_compare( Version::id(), $version, $compare );
 	}
 }
