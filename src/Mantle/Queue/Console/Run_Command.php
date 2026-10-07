@@ -37,7 +37,7 @@ class Run_Command extends Command {
 	 *
 	 * @var string
 	 */
-	protected $signature = '{queue=default} {--count}';
+	protected $signature = '{queue=default} {--count=}';
 
 	/**
 	 * Queue Run Command.
@@ -49,33 +49,33 @@ class Run_Command extends Command {
 		$this->container['events']->listen(
 			Run_Start::class,
 			function ( Run_Start $event ): void {
-				$this->log( 'Run started: ' . $event->queue );
+				$this->line( 'Run started: ' . $event->queue );
 			}
 		);
 
 		$this->container['events']->listen(
 			Job_Processing::class,
 			function ( Job_Processing $job ): void {
-				$this->log( 'Queue item started: ' . $job->get_id() );
+				$this->line( 'Queue item started: ' . $job->get_id() );
 			}
 		);
 
 		$this->container['events']->listen(
 			Job_Processed::class,
 			function ( Job_Processed $job ): void {
-				$this->log( 'Queue item complete: ' . $job->get_id() );
+				$this->line( 'Queue item complete: ' . $job->get_id() );
 			}
 		);
 
 		$this->container['events']->listen(
 			Run_Complete::class,
 			function ( Run_Complete $event ): void {
-				$this->log( 'Run complete: ' . $event->queue );
+				$this->line( 'Run complete: ' . $event->queue );
 			}
 		);
 
 		$this->container['queue.worker']->run(
-			(int) $this->option( 'count', (int) ( $this->container['config']['queue.batch_size'] ?? 1 ) ),
+			(int) ( $this->option( 'count' ) ?: ( $this->container['config']['queue.batch_size'] ?? 1 ) ),
 			$queue
 		);
 	}

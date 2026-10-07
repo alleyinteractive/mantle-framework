@@ -174,6 +174,41 @@ class WordPressCacheRepositoryTest extends FrameworkTestCase {
 		$this->assertEquals( 'value1', wp_cache_get( 'key1', 'prefix' ) );
 	}
 
+	public function test_tags_clear_does_not_flush_everything() {
+		Cache::put( 'untagged-key', 'untagged' );
+		Cache::tags( 'tag-a' )->put( 'tagged-key', 'tagged' );
+
+		$this->assertEquals( 'tagged', Cache::tags( 'tag-a' )->get( 'tagged-key' ) );
+
+		Cache::tags( 'tag-a' )->clear();
+
+		$this->assertEquals( 'untagged', Cache::get( 'untagged-key' ) );
+		$this->assertNull( Cache::tags( 'tag-a' )->get( 'tagged-key' ) );
+	}
+
+	public function test_cached_false_is_a_hit() {
+		Cache::put( 'false-key', false );
+
+		$this->assertTrue( Cache::has( 'false-key' ) );
+		$this->assertFalse( Cache::get( 'false-key', 'default' ) );
+
+		$calls = 0;
+
+		$this->assertFalse(
+			Cache::remember(
+				'false-key',
+				60,
+				function () use ( &$calls ) {
+					$calls++;
+					return true;
+				}
+			)
+		);
+		$this->assertSame( 0, $calls );
+		$this->assertFalse( Cache::add( 'false-key', 'other' ) );
+		$this->assertEquals( [ 'missing-key' => 'd', 'false-key' => false ], (array) Cache::get_multiple( [ 'missing-key', 'false-key' ], 'd' ) );
+	}
+
 	public function test_cache_helper() {
 		$key = 'cache-helper-' . wp_rand();
 		$this->assertNull( cache( $key ) );
