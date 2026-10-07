@@ -237,6 +237,14 @@ class Router implements Router_Contract {
 			$this->merge_group_attributes_into_route( $route );
 		}
 
+		if ( ! empty( $route->get_action( 'where' ) ) ) {
+			$route->addRequirements( (array) $route->get_action( 'where' ) );
+		}
+
+		if ( ! empty( $route->get_action( 'domain' ) ) ) {
+			$route->setHost( (string) $route->get_action( 'domain' ) );
+		}
+
 		$route->set_router( $this );
 
 		return $route;
