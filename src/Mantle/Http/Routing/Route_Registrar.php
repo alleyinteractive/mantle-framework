@@ -136,7 +136,41 @@ class Route_Registrar implements Registrar_Contract {
 			default => [ strtoupper( $method ) ],
 		};
 
-		return $this->router->add_route( $method, $uri, $this->normalize_arguments( $action ?? [], $uri, $method ) );
+		return $this->register_with_attributes(
+			$this->attributes,
+			fn () => $this->router->add_route( $method, $uri, $this->normalize_arguments( $action ?? [], $uri, $method ) ),
+		);
+	}
+
+	/**
+	 * Register a single route inside a route group built from the given attributes.
+	 *
+	 * @param array<mixed>     $attributes Attributes to apply to the route.
+	 * @param Closure(): Route $callback Callback that registers the route.
+	 */
+	protected function register_with_attributes( array $attributes, Closure $callback ): Route {
+		if ( empty( $attributes ) ) {
+			return $callback();
+		}
+
+		assert( $this->router instanceof Router, 'Router instance is required to register routes.' );
+
+		$route = null;
+
+		$this->router->group(
+			$attributes,
+			function () use ( $callback, &$route ): void {
+				$route = $callback();
+			},
+		);
+
+		assert( $route instanceof Route );
+
+		if ( isset( $attributes['as_prefix'] ) && empty( $route->get_action( 'as' ) ) && empty( $route->get_action( 'name' ) ) ) {
+			$route->name( '' );
+		}
+
+		return $route;
 	}
 
 	/**
@@ -155,8 +189,6 @@ class Route_Registrar implements Registrar_Contract {
 				'callback' => $arguments,
 			];
 		}
-
-		$arguments = array_merge( $this->attributes, $arguments );
 
 		// Translate a class@method callback into a "callable".
 		if ( isset( $arguments['callback'] ) && is_string( $arguments['callback'] ) && str_contains( $arguments['callback'], '@' ) ) {
