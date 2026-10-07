@@ -7,6 +7,7 @@
 
 namespace Mantle\Queue;
 
+use Carbon\Carbon;
 use Mantle\Config\Repository;
 use Mantle\Support\Collection;
 
@@ -85,18 +86,37 @@ class Database_Scheduler {
 			$queue = 'default';
 		}
 
-		$pending_size = $this->manager->get_provider( 'wordpress' )->pending_size( $queue );
+		$provider = $this->manager->get_provider( Database_Queue_Provider::NAME );
 
-		// Ensure the queue job isn't scheduled if there are no items in the queue.
-		if ( 0 === $pending_size ) {
-			$this->unschedule( $queue );
-
+		if ( ! $provider instanceof Database_Queue_Provider ) {
 			return false;
 		}
 
-		$max_concurrent_batches  = max( 1, $this->get_configuration_value( 'max_concurrent_batches', $queue, 1 ) );
-		$batch_size              = $this->get_configuration_value( 'batch_size', $queue, 100 );
-		$already_scheduled_count = static::get_scheduled_count( $queue );
+		$pending_size = $provider->available_size( $queue );
+
+		// Nothing can run yet, so schedule a single run for when the next job becomes available.
+		if ( 0 === $pending_size ) {
+			$next = $provider->next_available_at( $queue );
+
+			if ( ! $next instanceof Carbon ) {
+				$this->unschedule( $queue );
+
+				return false;
+			}
+
+			if ( static::get_scheduled_count( $queue, $next->getTimestamp() ) > 0 ) {
+				return false;
+			}
+
+			return $this->schedule( $queue, max( 0, $next->getTimestamp() - time() ) );
+		}
+
+		$max_concurrent_batches = max( 1, $this->get_configuration_value( 'max_concurrent_batches', $queue, 1 ) );
+		$batch_size             = $this->get_configuration_value( 'batch_size', $queue, 100 );
+		$delay                  = $this->get_configuration_value( 'delay', $queue, 0 );
+
+		// Runs held back for delayed jobs don't count, otherwise they would block jobs available now.
+		$already_scheduled_count = static::get_scheduled_count( $queue, time() + $delay + ( 5 * $max_concurrent_batches ) );
 
 		// If there are already enough batches scheduled, don't schedule another.
 		if ( $already_scheduled_count >= $max_concurrent_batches ) {
@@ -111,8 +131,6 @@ class Database_Scheduler {
 		}
 
 		if ( $runs_needed > 0 ) {
-			$delay = $this->get_configuration_value( 'delay', $queue, 0 );
-
 			for ( $i = 0; $i < $runs_needed; $i++ ) {
 				$this->schedule( $queue, $delay );
 
@@ -206,10 +224,13 @@ class Database_Scheduler {
 	/**
 	 * Retrieve the number of already-scheduled queue jobs for a queue.
 	 *
-	 * @param string $queue Queue name.
+	 * @param string   $queue  Queue name.
+	 * @param int|null $before Only count runs scheduled at or before this timestamp.
 	 */
-	public static function get_scheduled_count( ?string $queue = null ): int {
-		return static::get_scheduled_cron_jobs( $queue )->count();
+	public static function get_scheduled_count( ?string $queue = null, ?int $before = null ): int {
+		return static::get_scheduled_cron_jobs( $queue )
+			->filter( fn ( array $job ) => null === $before || $job['timestamp'] <= $before )
+			->count();
 	}
 
 	/**
@@ -219,7 +240,7 @@ class Database_Scheduler {
 	 * @param string $queue Queue name.
 	 * @param mixed  $default Default value.
 	 */
-	protected function get_configuration_value( string $key, ?string $queue = null, mixed $default = null ): mixed {
+	public function get_configuration_value( string $key, ?string $queue = null, mixed $default = null ): mixed {
 		// Check for a queue-specific configuration value.
 		if ( $queue && $this->config->has( "queue.wordpress.queues.{$queue}.{$key}" ) ) {
 			return $this->config->get( "queue.wordpress.queues.{$queue}.{$key}" );

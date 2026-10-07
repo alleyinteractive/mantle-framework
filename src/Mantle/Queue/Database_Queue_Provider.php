@@ -83,11 +83,11 @@ class Database_Queue_Provider implements Contract {
 		// Resolve the queue and scheduled date from the job before it is
 		// serialized, otherwise the property reads would be against a string.
 		$queue ??= $job->queue ?? 'default';
-		$now     = now()->toDateTimeString();
+		$now     = now( 'UTC' )->toDateTimeString();
 		$date    = match ( true ) {
-			isset( $job->delay ) && $job->delay instanceof DateTimeInterface => Carbon::instance( $job->delay )->toDateTimeString(),
-			isset( $job->delay ) && is_int( $job->delay ) => now()->addSeconds( $job->delay )->toDateTimeString(),
-			default => now()->toDateTimeString(),
+			isset( $job->delay ) && $job->delay instanceof DateTimeInterface => Carbon::instance( $job->delay )->setTimezone( 'UTC' )->toDateTimeString(),
+			isset( $job->delay ) && is_int( $job->delay ) => now( 'UTC' )->addSeconds( $job->delay )->toDateTimeString(),
+			default => $now,
 		};
 
 		if ( $job instanceof SerializableClosure ) {
@@ -122,7 +122,7 @@ class Database_Queue_Provider implements Contract {
 	 * @phpstan-ignore method.childReturnType
 	 */
 	public function pop( ?string $queue = null, int $count = 1 ): Collection {
-		$max_concurrent_batches = max( 1, $this->app['config']->get( 'queue.max_concurrent_batches', 1 ) );
+		$max_concurrent_batches = max( 1, (int) $this->app->make( Database_Scheduler::class )->get_configuration_value( 'max_concurrent_batches', $queue, 1 ) );
 
 		$candidates = $this->query( $queue )
 			// Consider pending jobs as well as running jobs whose lock has expired
@@ -130,7 +130,7 @@ class Database_Queue_Provider implements Contract {
 			// keep their lock time in the future and are excluded below.
 			->whereIn( 'status', [ Status::PENDING->value, Status::RUNNING->value ] )
 			// Filter out jobs that are not scheduled to run yet or are still locked.
-			->where_raw( 'available_at_gmt', '<=', now()->toDateTimeString() )
+			->where_raw( 'available_at_gmt', '<=', now( 'UTC' )->toDateTimeString() )
 			// Over-fetch relative to the batch size so that we still have enough
 			// candidates left after any are claimed by a concurrent worker.
 			->take( $count * $max_concurrent_batches )
@@ -151,31 +151,77 @@ class Database_Queue_Provider implements Contract {
 			$timeout = is_object( $inner ) && isset( $inner->timeout ) ? max( 1, (int) $inner->timeout ) : 600;
 
 			// Atomically claim the job, skipping it if another worker won the race.
-			if ( $candidate->claim( now()->addSeconds( $timeout ) ) ) {
-				$claimed->push( $job );
+			if ( ! $candidate->claim( now( 'UTC' )->addSeconds( $timeout ) ) ) {
+				continue;
 			}
+
+			// A job reclaimed after crashing its worker has used up an attempt without
+			// recording a failure, so fail it once it runs out of tries.
+			$max_attempts = max( 1, (int) ( is_object( $inner ) ? $inner->tries ?? 1 : 1 ) );
+
+			if ( $candidate->attempts > $max_attempts ) {
+				$candidate->log_event( Database_Event::FAILED, [ 'message' => 'Job exceeded its maximum attempts without completing.' ] );
+				$candidate->save( [ 'status' => Status::FAILED->value ] );
+
+				continue;
+			}
+
+			$claimed->push( $job );
 		}
 
 		return $claimed;
 	}
 
 	/**
-	 * Retrieve the number of pending jobs in the queue.
+	 * Retrieve the number of pending and running jobs in the queue.
 	 *
 	 * @param string|null $queue Queue name, optional.
 	 */
 	public function size( ?string $queue = null ): int {
-		return $this->query( $queue )->count();
+		return $this->query( $queue )
+			->whereIn( 'status', [ Status::PENDING->value, Status::RUNNING->value ] )
+			->count();
+	}
+
+	/**
+	 * Retrieve the number of jobs that a worker could claim right now.
+	 *
+	 * Includes running jobs whose lock has expired after their worker crashed.
+	 *
+	 * @param string|null $queue Queue name, optional.
+	 */
+	public function available_size( ?string $queue = null ): int {
+		return $this->query( $queue )
+			->whereIn( 'status', [ Status::PENDING->value, Status::RUNNING->value ] )
+			->where_raw( 'available_at_gmt', '<=', now( 'UTC' )->toDateTimeString() )
+			->count();
+	}
+
+	/**
+	 * Retrieve the time the next job in the queue becomes available, if any.
+	 *
+	 * @param string|null $queue Queue name, optional.
+	 */
+	public function next_available_at( ?string $queue = null ): ?Carbon {
+		$record = Jobs\Database_Job_Record::query()
+			->where( 'queue', $queue ?? 'default' )
+			->whereIn( 'status', [ Status::PENDING->value, Status::RUNNING->value ] )
+			->order_by( 'available_at_gmt', 'asc' )
+			->first();
+
+		return $record ? Carbon::parse( $record->available_at_gmt, 'UTC' ) : null;
 	}
 
 	/**
 	 * Retrieve the number of pending jobs in the queue.
 	 *
 	 * @param string|null $queue Queue name, optional.
+	 * @param string|null $type  Only count jobs of this type (class name), optional.
 	 */
-	public function pending_size( ?string $queue = null ): int {
+	public function pending_size( ?string $queue = null, ?string $type = null ): int {
 		return $this->query( $queue )
 			->where( 'status', Status::PENDING->value )
+			->when( $type, fn ( $query ) => $query->where( 'type', $type ) )
 			->count();
 	}
 

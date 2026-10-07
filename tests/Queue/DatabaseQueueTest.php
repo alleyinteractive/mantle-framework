@@ -296,6 +296,127 @@ class DatabaseQueueTest extends FrameworkTestCase {
 			],
 		);
 	}
+
+	public function test_dispatch_to_named_queue_schedules_that_queue(): void {
+		Example_Job::dispatch()->on_queue( 'emails' );
+
+		$this->app->make( Database_Scheduler::class )->schedule_on_shutdown();
+
+		$this->assertTrue( Database_Scheduler::get_scheduled_count( 'emails' ) > 0 );
+		$this->assertSame( 0, Database_Scheduler::get_scheduled_count( 'default' ) );
+	}
+
+	public function test_dispatch_with_future_delay_schedules_run_for_when_it_is_available(): void {
+		Example_Job::dispatch()->delay( 3600 );
+
+		$this->app->make( Database_Scheduler::class )->schedule_on_shutdown();
+
+		$this->assertCronCount( Database_Scheduler::EVENT, 1 );
+		$this->assertSame( 0, Database_Scheduler::get_scheduled_count( 'default', time() + 60 ) );
+	}
+
+	public function test_lock_times_are_stored_in_utc_on_non_utc_sites(): void {
+		update_option( 'timezone_string', 'America/New_York' );
+
+		Example_Job::dispatch();
+
+		$record = Database_Job_Record::query()->where( 'status', Status::PENDING->value )->first();
+
+		$this->assertNotNull( $record );
+		$this->assertEqualsWithDelta( time(), Carbon::parse( $record->created_date_gmt, 'UTC' )->getTimestamp(), 5 );
+
+		$this->assertTrue( $record->claim( now()->addMinutes( 10 ) ) );
+		$this->assertTrue( $record->is_locked() );
+		$this->assertTrue( Database_Job_Record::find( $record->id )->is_locked() );
+	}
+
+	public function test_job_that_keeps_crashing_its_worker_is_failed(): void {
+		$_SERVER['__example_job'] = false;
+
+		Example_Job::dispatch();
+
+		$record = Database_Job_Record::query()->where( 'status', Status::PENDING->value )->first();
+
+		// Simulate a worker that claimed the job and then crashed without recording a failure.
+		$record->save( [
+			'status'           => Status::RUNNING->value,
+			'attempts'         => 1,
+			'available_at_gmt' => now( 'UTC' )->subMinutes( 15 )->toDateTimeString(),
+		] );
+
+		$this->dispatch_queue();
+
+		$this->assertFalse( $_SERVER['__example_job'] );
+		$this->assertSame( Status::FAILED->value, Database_Job_Record::find( $record->id )->status );
+	}
+
+	public function test_job_reclaimed_by_another_worker_is_skipped(): void {
+		$_SERVER['__example_job'] = false;
+
+		Example_Job::dispatch();
+
+		$job = $this->app['queue']->get_provider()->pop( 'default', 1 )->first();
+
+		$this->assertNotNull( $job );
+
+		// Another worker reclaims the job after this worker's lock expired.
+		Database_Job_Record::query()->first()->save( [
+			'available_at_gmt' => now( 'UTC' )->addHour()->toDateTimeString(),
+		] );
+
+		$this->assertFalse( $job->reserve() );
+	}
+
+	public function test_saving_a_record_without_changes_does_not_throw(): void {
+		Example_Job::dispatch();
+
+		$record = Database_Job_Record::query()->first();
+
+		$this->assertTrue( $record->save() );
+		$this->assertTrue( $record->save( [ 'status' => $record->status ] ) );
+	}
+
+	public function test_where_with_an_array_value_queries_with_in(): void {
+		Example_Job::dispatch();
+
+		$this->assertSame( 1, Database_Job_Record::query()->where( 'status', [ Status::PENDING->value, Status::FAILED->value ] )->count() );
+		$this->assertSame( 0, Database_Job_Record::query()->where( 'status', [ Status::FAILED->value ] )->count() );
+		$this->assertSame( 0, Database_Job_Record::query()->whereIn( 'status', [] )->count() );
+	}
+
+	public function test_dispatch_inside_switch_to_blog_uses_that_sites_table(): void {
+		if ( ! is_multisite() ) {
+			$this->markTestSkipped( 'Requires multisite.' );
+		}
+
+		global $wpdb;
+
+		$blog_id = static::factory()->blog->create();
+
+		switch_to_blog( $blog_id );
+
+		Example_Job::dispatch();
+
+		$this->assertSame( $wpdb->prefix . 'mantle_queue', $wpdb->mantle_queue );
+		$this->assertSame( 1, Database_Job_Record::query()->count() );
+
+		restore_current_blog();
+
+		$this->assertSame( 0, Database_Job_Record::query()->count() );
+	}
+
+	public function test_cleanup_deletes_legacy_post_jobs(): void {
+		$post_id = static::factory()->post->create( [
+			'post_type'   => 'mantle_queue',
+			'post_status' => 'queue_pending',
+		] );
+
+		$this->command( 'mantle queue:cleanup', [ '--legacy' => true ] )
+			->assertOk()
+			->assertOutputContains( 'Deleted 1 job.' );
+
+		$this->assertNull( get_post( $post_id ) );
+	}
 }
 
 class Example_Job implements Job, Can_Queue {

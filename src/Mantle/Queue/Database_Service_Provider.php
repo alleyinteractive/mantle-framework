@@ -62,6 +62,20 @@ class Database_Service_Provider extends Base_Service_Provider {
 	}
 
 	/**
+	 * Create the queue table for a newly created site on a multisite network.
+	 *
+	 * @param \WP_Site $site New site.
+	 */
+	#[Action( 'wp_initialize_site', 100 )]
+	public function create_tables_for_new_site( \WP_Site $site ): void {
+		switch_to_blog( (int) $site->blog_id ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.switch_to_blog_switch_to_blog
+
+		$this->create_tables();
+
+		restore_current_blog();
+	}
+
+	/**
 	 * Process the pending queue items that were added before `init`.
 	 */
 	#[Action( 'init' )]
@@ -103,7 +117,7 @@ class Database_Service_Provider extends Base_Service_Provider {
 	#[Action( Events\Job_Queued::class )]
 	public function handle_job_queued_event( Events\Job_Queued $event ): Events\Job_Queued {
 		if ( $event->provider instanceof Database_Queue_Provider ) {
-			$this->scheduler->handle_job_queued( $event->queue ?? 'default' );
+			$this->scheduler->handle_job_queued( is_object( $event->job ) ? $event->job->queue ?? 'default' : 'default' );
 		}
 
 		return $event;

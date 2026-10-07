@@ -97,6 +97,7 @@ class WorkerTest extends MockeryTestCase {
 		$mock_job = m::mock( Database_Job::class );
 
 		if ( $should_run ) {
+			$mock_job->shouldReceive( 'reserve' )->once()->andReturn( true );
 			$mock_job->shouldReceive( 'fire' )->once()->andReturn( true );
 			$mock_job->shouldReceive( 'completed' )->once();
 			$mock_job->shouldReceive( 'has_failed' )->once()->andReturn( false );

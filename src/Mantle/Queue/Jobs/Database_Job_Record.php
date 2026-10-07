@@ -1,6 +1,6 @@
 <?php
 /**
- * Queue_ class file
+ * Database_Job_Record class file
  *
  * @package Mantle
  */
@@ -10,14 +10,12 @@ namespace Mantle\Queue\Jobs;
 use Carbon\Carbon;
 use Mantle\Database\Model\Database_Table_Model;
 use Mantle\Queue\Database_Event;
-use RuntimeException;
 
 /**
  * Queue Job Record
  *
- * Used to store the queued jobs as posts in the database. Post statuses are
- * used to track the job state and the post meta is used to store the job
- * details/lock.
+ * A queued job stored in the `{prefix}mantle_queue` table. All `*_gmt` columns
+ * are stored in UTC.
  *
  * @property int $id The unique identifier for the job.
  * @property string $queue The name of the queue the job belongs to.
@@ -42,23 +40,11 @@ class Database_Job_Record extends Database_Table_Model {
 	];
 
 	/**
-	 * Retrieve the table name for the model.
-	 *
-	 * @throws RuntimeException If the table name is not set.
+	 * Retrieve the table name for the model, without the site's table prefix.
 	 */
 	#[\Override]
 	public static function get_table_name(): string {
-		global $wpdb;
-
-		assert( $wpdb instanceof \wpdb );
-
-		if ( ! isset( $wpdb->mantle_queue ) ) {
-			throw new RuntimeException(
-				'Queue_Record::get_table_name() requires the database tables to be created.',
-			);
-		}
-
-		return $wpdb->mantle_queue;
+		return 'mantle_queue';
 	}
 
 	/**
@@ -72,30 +58,14 @@ class Database_Job_Record extends Database_Table_Model {
 	 * Check if the queue job is locked.
 	 */
 	public function is_locked(): bool {
-		return Status::RUNNING->value === $this->status && now()->isBefore( $this->get_lock_until() );
+		return Status::RUNNING->value === $this->status && now( 'UTC' )->isBefore( $this->get_lock_until() );
 	}
 
 	/**
 	 * Get the lock end time.
 	 */
 	public function get_lock_until(): Carbon {
-		return Carbon::parse( $this->available_at_gmt );
-	}
-
-	/**
-	 * Set the lock end time and update the job status to running.
-	 *
-	 * @param Carbon $lock_until The time until which the job should be locked.
-	 */
-	public function set_lock_until( Carbon|int $lock_until ): void {
-		if ( is_int( $lock_until ) ) {
-			$lock_until = Carbon::now()->addSeconds( $lock_until );
-		}
-
-		$this->save( [
-			'available_at_gmt' => $lock_until->toDateTimeString(),
-			'status'           => Status::RUNNING->value,
-		] );
+		return Carbon::parse( $this->available_at_gmt, 'UTC' );
 	}
 
 	/**
@@ -105,50 +75,101 @@ class Database_Job_Record extends Database_Table_Model {
 	 * job whose lock has already expired (left behind by a crashed worker). The
 	 * `available_at_gmt <= now` guard combined with pushing the lock into the
 	 * future ensures only one worker can claim a given job, even when multiple
-	 * workers run concurrently.
-	 *
-	 * Note: reclaiming an expired running job does not increment `attempts`, so a
-	 * job that hard-crashes the process (rather than throwing) is retried on an
-	 * at-least-once basis until it either completes or throws.
+	 * workers run concurrently. Each claim counts as an attempt so a job that
+	 * keeps crashing the process eventually runs out of tries.
 	 *
 	 * @param Carbon $lock_until The time until which the job should be locked.
+	 * @param bool   $force      Claim a pending job even if it is not available yet.
 	 * @return bool True if this process claimed the job, false if another won it.
 	 */
-	public function claim( Carbon $lock_until ): bool {
+	public function claim( Carbon $lock_until, bool $force = false ): bool {
 		global $wpdb;
 
 		assert( $wpdb instanceof \wpdb );
 
-		$table = static::get_table_name();
+		$table = $wpdb->prefix . static::get_table_name();
+		$lock  = $lock_until->copy()->setTimezone( 'UTC' )->toDateTimeString();
+		$now   = now( 'UTC' )->toDateTimeString();
 
-		if ( ! str_starts_with( $table, $wpdb->prefix ) ) {
-			$table = $wpdb->prefix . $table;
-		}
+		$query = $force
+			? $wpdb->prepare(
+				"UPDATE {$table} SET status = %s, available_at_gmt = %s, last_attempt_gmt = %s, attempts = attempts + 1 WHERE " . static::$primary_key . ' = %d AND status = %s', // phpcs:ignore WordPress.DB.PreparedSQL
+				Status::RUNNING->value,
+				$lock,
+				$now,
+				$this->id,
+				Status::PENDING->value,
+			)
+			: $wpdb->prepare(
+				"UPDATE {$table} SET status = %s, available_at_gmt = %s, last_attempt_gmt = %s, attempts = attempts + 1 WHERE " . static::$primary_key . ' = %d AND status IN ( %s, %s ) AND available_at_gmt <= %s', // phpcs:ignore WordPress.DB.PreparedSQL
+				Status::RUNNING->value,
+				$lock,
+				$now,
+				$this->id,
+				Status::PENDING->value,
+				Status::RUNNING->value,
+				$now,
+			);
 
-		$lock = $lock_until->toDateTimeString();
-
-		$query = $wpdb->prepare(
-			"UPDATE {$table} SET status = %s, available_at_gmt = %s WHERE " . static::$primary_key . ' = %d AND status IN ( %s, %s ) AND available_at_gmt <= %s', // phpcs:ignore WordPress.DB.PreparedSQL
-			Status::RUNNING->value,
-			$lock,
-			$this->id,
-			Status::PENDING->value,
-			Status::RUNNING->value,
-			now()->toDateTimeString(),
-		);
-
-		if ( null === $query ) {
-			return false;
-		}
-
-		$claimed = $wpdb->query( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared
-
-		if ( ! $claimed ) {
+		if ( null === $query || ! $wpdb->query( $query ) ) { // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared
 			return false;
 		}
 
 		// Keep the in-memory model in sync with the row we just claimed.
 		$this->status           = Status::RUNNING->value;
+		$this->available_at_gmt = $lock;
+		$this->last_attempt_gmt = $now;
+		$this->attempts         = (int) $this->attempts + 1;
+
+		return true;
+	}
+
+	/**
+	 * Extend the lock on a job this process has already claimed.
+	 *
+	 * The current lock time doubles as an ownership token: if the lock expired and
+	 * another worker reclaimed the job, the guarded update matches no rows.
+	 *
+	 * @param Carbon $lock_until The new time until which the job should be locked.
+	 * @return bool True if the lock was extended, false if the job is no longer owned.
+	 */
+	public function extend_lock( Carbon $lock_until ): bool {
+		global $wpdb;
+
+		assert( $wpdb instanceof \wpdb );
+
+		$table = $wpdb->prefix . static::get_table_name();
+		$lock  = $lock_until->copy()->setTimezone( 'UTC' )->toDateTimeString();
+
+		$query = $wpdb->prepare(
+			"UPDATE {$table} SET available_at_gmt = %s WHERE " . static::$primary_key . ' = %d AND status = %s AND available_at_gmt = %s', // phpcs:ignore WordPress.DB.PreparedSQL
+			$lock,
+			$this->id,
+			Status::RUNNING->value,
+			$this->available_at_gmt,
+		);
+
+		$updated = null === $query ? false : $wpdb->query( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared
+
+		if ( false === $updated ) {
+			return false;
+		}
+
+		// MySQL reports zero affected rows when the new lock equals the old one, so confirm the row still holds it.
+		if ( 0 === $updated ) {
+			$current = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+				$wpdb->prepare(
+					"SELECT available_at_gmt FROM {$table} WHERE " . static::$primary_key . ' = %d AND status = %s', // phpcs:ignore WordPress.DB.PreparedSQL
+					$this->id,
+					Status::RUNNING->value,
+				)
+			);
+
+			if ( $current !== $lock || $lock !== $this->available_at_gmt ) {
+				return false;
+			}
+		}
+
 		$this->available_at_gmt = $lock;
 
 		return true;

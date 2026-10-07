@@ -54,6 +54,19 @@ class Database_Job extends Job {
 	}
 
 	/**
+	 * Confirm this worker still owns the job and extend its lock before it runs.
+	 *
+	 * Jobs are claimed in batches, so a job late in a long batch may have had its
+	 * lock expire and been picked up by another worker.
+	 */
+	public function reserve(): bool {
+		$job     = $this->get_job();
+		$timeout = is_object( $job ) && isset( $job->timeout ) ? max( 1, (int) $job->timeout ) : 600;
+
+		return $this->model->extend_lock( now( 'UTC' )->addSeconds( $timeout ) );
+	}
+
+	/**
 	 * Get the queue job ID.
 	 */
 	public function get_id(): string {
@@ -78,11 +91,7 @@ class Database_Job extends Job {
 
 		$max_attempts = $job->tries ?? 1;
 
-		$this->model->attempts += 1;
-
-		$this->model->last_attempt_gmt = now()->toDateTimeString();
-
-		// If the job has exceeded the maximum number of attempts, set the status to
+		// Attempts are counted when the job is claimed. If the job has exceeded the maximum number of attempts, set the status to
 		// failed. Otherwise, it will be retried.
 		if ( $this->model->attempts >= $max_attempts ) {
 			$this->model->status = Status::FAILED->value;
@@ -144,7 +153,7 @@ class Database_Job extends Job {
 
 		$this->model->save( [
 			'status'           => Status::PENDING->value,
-			'available_at_gmt' => now()->addSeconds( $delay )->toDateTimeString(),
+			'available_at_gmt' => now( 'UTC' )->addSeconds( $delay )->toDateTimeString(),
 		] );
 
 		$app = Application::get_instance();

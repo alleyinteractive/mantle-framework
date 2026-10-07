@@ -9,8 +9,6 @@
 
 namespace Mantle\Queue\Concerns;
 
-use RuntimeException;
-
 use function Mantle\Support\Helpers\option;
 
 /**
@@ -23,65 +21,92 @@ trait Database_Queue_Schema {
 	public const DATABASE_VERSION = 1;
 
 	/**
-	 * Create database tables for the queue.
+	 * Register the queue table with `$wpdb`.
 	 *
-	 * @throws RuntimeException If the table creation fails.
+	 * Listing it in `$wpdb->tables` keeps `$wpdb->mantle_queue` pointed at the
+	 * current site's table across `switch_to_blog()`, and lets WordPress drop it
+	 * when a site is deleted.
+	 */
+	protected function register_table(): void {
+		global $wpdb;
+
+		assert( $wpdb instanceof \wpdb );
+
+		if ( ! in_array( 'mantle_queue', $wpdb->tables, true ) ) {
+			$wpdb->tables[] = 'mantle_queue';
+		}
+
+		$wpdb->mantle_queue = $wpdb->prefix . 'mantle_queue'; // @phpstan-ignore-line property.notFound
+	}
+
+	/**
+	 * Create the queue table for the current site if it is not installed.
 	 */
 	protected function create_tables(): void {
 		global $wpdb;
 
 		assert( $wpdb instanceof \wpdb );
 
-		if ( ! isset( $wpdb->mantle_queue ) ) {
-			$wpdb->mantle_queue = $wpdb->prefix . 'mantle_queue'; // @phpstan-ignore-line property.notFound
-		}
+		$this->register_table();
 
-		$installed_version = option( 'mantle_queue_db_version', 0 )->int();
+		if ( option( 'mantle_queue_db_version', 0 )->int() >= self::DATABASE_VERSION ) {
+			return;
+		}
 
 		if ( ! function_exists( 'dbDelta' ) ) {
 			require_once ABSPATH . '/wp-admin/includes/upgrade.php';
 		}
 
-		if ( $installed_version < 1 ) {
-			if ( ! empty( $wpdb->get_var( "SHOW TABLES LIKE '{$wpdb->mantle_queue}'" ) ) ) {
-				update_option( 'mantle_queue_db_version', self::DATABASE_VERSION );
-				return;
-			}
+		$table = $wpdb->prefix . 'mantle_queue';
 
-			$delta = dbDelta(
-				<<<SQL
-CREATE TABLE $wpdb->mantle_queue (
+		// Indexed VARCHAR columns are kept short enough for the 767 byte index limit on older MySQL.
+		dbDelta(
+			<<<SQL
+CREATE TABLE $table (
 	id bigint unsigned NOT NULL AUTO_INCREMENT,
-	queue VARCHAR(255) NOT NULL,
+	queue VARCHAR(100) NOT NULL,
 	created_date_gmt DATETIME NOT NULL,
 	scheduled_date_gmt DATETIME NOT NULL,
-	type VARCHAR(50) NOT NULL,
+	type VARCHAR(255) NOT NULL,
 	action LONGTEXT NOT NULL,
 	log LONGTEXT NULL,
-	unique_id VARCHAR(255) NULL,
+	unique_id VARCHAR(191) NULL,
 	attempts INT NOT NULL DEFAULT 0,
 	status VARCHAR(20) NOT NULL DEFAULT 'pending',
 	last_attempt_gmt DATETIME NULL,
 	available_at_gmt DATETIME NOT NULL,
 	PRIMARY KEY  (id),
-	KEY queue (queue),
-	KEY status (status),
-	KEY available_at_gmt (available_at_gmt)
+	KEY queue_status_available (queue,status,available_at_gmt),
+	KEY status_scheduled (status,scheduled_date_gmt)
 ) {$wpdb->get_charset_collate()};
 SQL
-			);
+		);
 
-			if ( ! isset( $delta[ $wpdb->mantle_queue ] ) ) {
-				throw new RuntimeException(
-					sprintf(
-						'Failed to create the %s table. Please check your database connection and permissions.',
-						$wpdb->mantle_queue,
-					),
-				);
-			}
+		// dbDelta() reports a table as created before running the query, so check that it exists.
+		if ( ! $this->table_exists() ) {
+			_doing_it_wrong( __METHOD__, esc_html( "Failed to create the {$table} table." ), '2.0.0' );
 
-			update_option( 'mantle_queue_db_version', self::DATABASE_VERSION );
+			return;
 		}
+
+		update_option( 'mantle_queue_db_version', self::DATABASE_VERSION );
+	}
+
+	/**
+	 * Check if the queue table exists for the current site.
+	 */
+	protected function table_exists(): bool {
+		global $wpdb;
+
+		assert( $wpdb instanceof \wpdb );
+
+		// Query the table directly since SHOW TABLES does not list temporary tables used in tests.
+		$suppress = $wpdb->suppress_errors();
+		$exists   = false !== $wpdb->query( "SELECT 1 FROM {$wpdb->prefix}mantle_queue LIMIT 0" );
+
+		$wpdb->suppress_errors( $suppress );
+
+		return $exists;
 	}
 
 	/**
@@ -92,9 +117,7 @@ SQL
 
 		assert( $wpdb instanceof \wpdb );
 
-		if ( isset( $wpdb->mantle_queue ) ) {
-			$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->mantle_queue}" );
-		}
+		$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}mantle_queue" );
 
 		delete_option( 'mantle_queue_db_version' );
 	}

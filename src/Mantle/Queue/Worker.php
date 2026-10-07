@@ -42,7 +42,13 @@ class Worker {
 
 		$this->events->dispatch( new Run_Start( $provider, $queue, $jobs ) );
 
-		$jobs->each( $this->run_single( ... ) );
+		$jobs->each(
+			function ( Job $job ): void {
+				if ( $job->reserve() ) {
+					$this->run_single( $job );
+				}
+			}
+		);
 
 		$this->events->dispatch( new Run_Complete( $provider, $queue, $jobs ) );
 	}

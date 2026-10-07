@@ -21,6 +21,15 @@ abstract class Job {
 	public bool $failed = false;
 
 	/**
+	 * Reserve the job for this worker immediately before it runs.
+	 *
+	 * @return bool False if the job should be skipped.
+	 */
+	public function reserve(): bool {
+		return true;
+	}
+
+	/**
 	 * Fire the queue job.
 	 */
 	abstract public function fire(): void;
