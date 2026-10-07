@@ -62,8 +62,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Scheduled commands registered with `Schedule::command()`, including the framework's nightly `queue:cleanup`, run instead of failing on an uninitialized command container.
 - `queue:run` processes `queue.batch_size` jobs by default and accepts `--count=N`.
 - The `can:ability_a,ability_b` middleware checks every ability instead of only the first.
-- Queue delay and per-queue configuration under `queue.wordpress.*` is read; the scheduler looked for `queue.WordPress.*`.
-- `Cache::tags()->clear()` flushes only the tagged group instead of the entire object cache, and tag names are joined with `:` to avoid collisions.
+- `Cache::tags()->clear()` flushes only the tagged group instead of the entire object cache when the object cache supports group flushing (WordPress 6.1+ core, or a drop-in that declares `flush_group`); otherwise it still flushes everything. Tag names are joined with `:` to avoid collisions.
 - A cached `false` is a hit for `get()`, `has()`, `add()`, `remember()`, and `pull()`, and `get_multiple()` honors its default.
 - The queue admin "Run" action locks the job for the timeout from now instead of a timestamp in 1970.
 - Blocks without an explicit editor script no longer fatal on an undefined `mix()`, the editor script version is read from `.asset.php` or `.asset.json`, and a missing asset file no longer breaks registration.
@@ -93,7 +92,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Relationship queries default to no limit; chain `take()` on the relationship to limit results.
 - Added `offset()` and `skip()` to the query builder.
+- `Collection::duplicates()` compares loosely (`==`) like Laravel; `duplicates_strict()` compares strictly. Previously the two were inverted.
+- `Authorize::handle()` accepts a variadic list of abilities (`string ...$abilities`). A subclass overriding `handle()` with the old `string $ability = ''` signature must update it.
 - The `Authorize` middleware's insufficient-permissions message is filtered via `mantle_auth_insufficient_permissions_error`; it reused the not-logged-in filter name before.
+- The WordPress queue scheduler reads its configuration from `queue.wordpress.*` (lowercase, matching the shipped `config/queue.php`). A project that keyed the array as `queue.WordPress` to match the old lookup must rename it.
+- The test case resets `$_SERVER` (`HTTP_HOST`, `REQUEST_URI`, `REQUEST_METHOD`, `HTTPS`, ...) and `current_screen` after every test. Values set once in a bootstrap file no longer survive past the first test; set them in `setUp()` or via `with_https()`/`with_header()` on the request instead.
 
 ## v1.22.2
 
