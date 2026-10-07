@@ -8,12 +8,10 @@
 namespace Mantle\Http\Routing;
 
 use ArrayAccess;
-use ArrayObject;
 use JsonSerializable;
 use Mantle\Contracts\Container;
 use Mantle\Contracts\Http\Routing\Router;
 use Mantle\Contracts\Support\Arrayable;
-use Mantle\Database\Model\Model;
 use Mantle\Http\Controller;
 use Mantle\Support\Arr;
 use Mantle\Support\Str;
@@ -414,8 +412,6 @@ class Route extends Symfony_Route {
 			|| $response instanceof Arrayable
 			|| $response instanceof ArrayAccess
 			|| $response instanceof JsonSerializable
-			|| $response instanceof ArrayObject
-			|| $response instanceof Model
 		) {
 			return new JsonResponse( $response );
 		}

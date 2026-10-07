@@ -290,7 +290,7 @@ class Asset {
 					'src'         => $this->src,
 					'deps'        => $this->deps,
 					'condition'   => $this->condition,
-					'load_method' => $this->load_method,
+					'load_method' => Asset_Manager::resolve_load_method( $this->load_method ),
 					'version'     => $this->version,
 					'load_hook'   => $this->load_hook,
 				]
@@ -302,7 +302,7 @@ class Asset {
 					'src'         => $this->src,
 					'deps'        => $this->deps,
 					'condition'   => $this->condition,
-					'load_method' => $this->load_method,
+					'load_method' => Asset_Manager::resolve_load_method( $this->load_method ),
 					'version'     => $this->version,
 					'load_hook'   => $this->load_hook,
 					'media'       => $this->media,

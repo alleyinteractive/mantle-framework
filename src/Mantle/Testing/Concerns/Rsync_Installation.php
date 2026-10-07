@@ -319,9 +319,7 @@ trait Rsync_Installation {
 			exit( 1 );
 		}
 
-		if ( is_null( $version_or_url ) ) {
-			$version_or_url = 'latest';
-		}
+		$version_or_url ??= 'latest';
 
 		$this->plugins[] = [ $plugin, $version_or_url ];
 

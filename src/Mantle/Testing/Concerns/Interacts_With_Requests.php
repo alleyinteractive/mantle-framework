@@ -220,9 +220,7 @@ trait Interacts_With_Requests {
 		$url = $url_or_callback ?? '*';
 
 		// If no arguments passed, assume that all requests should return an 200 response.
-		if ( is_null( $response ) ) {
-			$response = new Mock_Http_Response();
-		}
+		$response ??= new Mock_Http_Response();
 
 		if ( is_array( $response ) ) {
 			$response = Mock_Http_Response::json( $response );

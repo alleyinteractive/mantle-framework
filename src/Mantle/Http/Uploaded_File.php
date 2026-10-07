@@ -105,9 +105,7 @@ class Uploaded_File extends SymfonyUploadedFile {
 		$options = $this->parse_options( $options );
 
 		// Set the default visibility for attachments to public.
-		if ( ! isset( $options['visibility'] ) ) {
-			$options['visibility'] = 'public';
-		}
+		$options['visibility'] ??= 'public';
 
 		$uploaded_file = $name ? $this->store_as( $path, $name, $options ) : $this->store( $path, $options );
 

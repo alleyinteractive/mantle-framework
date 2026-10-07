@@ -55,8 +55,6 @@ class Output_Remote_Request extends \QM_Output_Html {
 	public function output(): void {
 		$collector = $this->collector;
 
-		assert( $collector instanceof Remote_Request_Collector );
-
 		$requests = $collector->get_data()->requests;
 
 		if ( empty( $requests ) ) {

@@ -2,7 +2,11 @@
 
 namespace Mantle\Tests\Assets;
 
+use Alley\WP\Asset_Manager\Scripts as Asset_Manager_Scripts;
+use Mantle\Assets\Asset;
 use Mantle\Assets\Asset_Manager;
+use Mantle\Contracts\Assets\Load_Method;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 
 /**
@@ -132,5 +136,89 @@ class AssetManagerTest extends TestCase {
 			'/<script\b(?=[^>]*\bid=("|\')masonry-js\\1)(?=[^>]*\b(?:async(?:=(?:"async"|\'async\'))?|data-wp-strategy=(?:"async"|\'async\')))[^>]*>/i',
 			$head,
 		);
+	}
+
+	/**
+	 * @param callable(Asset): Asset $apply
+	 */
+	#[DataProvider( 'provide_async_and_defer' )]
+	public function test_async_and_defer_load_as_async( callable $apply ) {
+		$apply(
+			asset()
+				->script( 'example-async-defer' )
+				->src( 'https://example.org/example-async-defer.js' )
+		);
+
+		$this->assertScriptLoadsAsync( 'example-async-defer' );
+	}
+
+	public static function provide_async_and_defer(): array {
+		return [
+			'async then defer' => [ fn ( Asset $asset ) => $asset->async()->defer() ],
+			'defer then async' => [ fn ( Asset $asset ) => $asset->defer()->async() ],
+		];
+	}
+
+	public function test_async_and_defer_keeps_async_with_blocking_dependent_on_asset_manager_1x() {
+		if ( ! in_array( Load_Method::ASYNC_DEFER, Asset_Manager_Scripts::instance()->load_methods, true ) ) {
+			$this->markTestSkipped( 'The async-defer load method requires wp-asset-manager 1.x.' );
+		}
+
+		asset()
+			->script( 'example-async-defer' )
+			->src( 'https://example.org/example-async-defer.js' )
+			->async()
+			->defer();
+
+		asset()
+			->script( 'example-dependent' )
+			->src( 'https://example.org/example-dependent.js' )
+			->dependencies( [ 'example-async-defer' ] );
+
+		$this->assertMatchesRegularExpression(
+			'/\sasync defer\s/',
+			$this->get_script_tag( 'example-async-defer' ),
+		);
+	}
+
+	public function test_deprecated_async_defer_load_method_loads_as_async() {
+		new Asset(
+			type: 'script',
+			handle: 'example-constructor',
+			src: 'https://example.org/example-constructor.js',
+			load_method: Load_Method::ASYNC_DEFER,
+		);
+
+		$this->assertScriptLoadsAsync( 'example-constructor' );
+	}
+
+	public function test_deprecated_async_defer_modified_load_method_loads_as_async() {
+		asset()
+			->script( 'example-modified' )
+			->src( 'https://example.org/example-modified.js' );
+
+		asset()->load_method( 'example-modified', Load_Method::ASYNC_DEFER );
+
+		$this->assertScriptLoadsAsync( 'example-modified' );
+	}
+
+	/**
+	 * Get the script tag for a handle.
+	 */
+	protected function get_script_tag( string $handle ): string {
+		$this->assertSame(
+			1,
+			preg_match( '/<script\b[^>]*\bid=("|\')' . preg_quote( $handle, '/' ) . '-js\1[^>]*>/i', $this->get_wp_head(), $matches ),
+			"Script tag for {$handle} not found.",
+		);
+
+		return $matches[0];
+	}
+
+	/**
+	 * Assert that a script tag loads with async.
+	 */
+	protected function assertScriptLoadsAsync( string $handle ): void {
+		$this->assertMatchesRegularExpression( '/\sasync[\s>=]/', $this->get_script_tag( $handle ) );
 	}
 }

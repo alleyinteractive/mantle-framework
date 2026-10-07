@@ -24,9 +24,7 @@ class WP_Redirect_Exception extends Response_Exception {
 		// Ensure headers are all keyed by lowercase.
 		$headers = array_change_key_case( $headers, CASE_LOWER );
 
-		if ( ! isset( $headers['location'] ) ) {
-			$headers['location'] = $location;
-		}
+		$headers['location'] ??= $location;
 
 		parent::__construct( $status, $headers, "Redirect to {$location} with status {$status}" );
 	}

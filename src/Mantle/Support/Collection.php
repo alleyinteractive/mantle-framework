@@ -105,9 +105,7 @@ class Collection implements ArrayAccess, Enumerable {
 
 		$items = range( 1, $number );
 
-		if ( is_null( $callback ) ) {
-			$callback = fn( $value ) => $value;
-		}
+		$callback ??= fn( $value ) => $value;
 
 		return ( new static( $items ) )->map( $callback );
 	}
@@ -202,15 +200,7 @@ class Collection implements ArrayAccess, Enumerable {
 
 		$collection = isset( $key ) ? $this->pluck( $key ) : $this;
 
-		$counts = new self();
-
-		$collection->each(
-			function ( $value ) use ( $counts ): void {
-				$counts[ $value ] = isset( $counts[ $value ] ) ? $counts[ $value ] + 1 : 1;
-			}
-		);
-
-		$sorted = $counts->sort();
+		$sorted = $collection->count_by()->sort();
 
 		$highest_value = $sorted->last();
 
@@ -868,9 +858,7 @@ class Collection implements ArrayAccess, Enumerable {
 
 			$value = reset( $pair );
 
-			if ( ! isset( $dictionary[ $key ] ) ) {
-				$dictionary[ $key ] = [];
-			}
+			$dictionary[ $key ] ??= [];
 
 			$dictionary[ $key ][] = $value;
 		}
@@ -1054,7 +1042,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param  TValue ...$values
 	 */
 	public function prepend_many( ...$values ): static {
-		array_unshift( $this->items, ...$values );
+		array_unshift( $this->items, ...$values ); // @phpstan-ignore-line assign.propertyType
 
 		return $this;
 	}
@@ -1066,7 +1054,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	public function push( ...$values ): static {
 		foreach ( $values as $value ) {
-			$this->items[] = $value;
+			$this->items[] = $value; // @phpstan-ignore-line assign.propertyType
 		}
 
 		return $this;
@@ -1727,7 +1715,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static
 	 */
 	public function add( $item ) {
-		$this->items[] = $item;
+		$this->items[] = $item; // @phpstan-ignore-line assign.propertyType
 
 		return $this;
 	}
@@ -1767,9 +1755,9 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	public function offsetSet( mixed $key, mixed $value ): void {
 		if ( is_null( $key ) ) {
-			$this->items[] = $value;
+			$this->items[] = $value; // @phpstan-ignore-line assign.propertyType
 		} else {
-			$this->items[ $key ] = $value;
+			$this->items[ $key ] = $value; // @phpstan-ignore-line assign.propertyType
 		}
 	}
 
