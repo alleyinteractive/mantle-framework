@@ -48,24 +48,27 @@ class Cleanup_Jobs_Command extends Command {
 		if ( $this->option( 'legacy', false ) ) {
 			$this->info( 'Deleting legacy queue jobs...' );
 
-			Post::for( 'mantle_queue' )->chunk_by_id( 100, function ( Post $post ) use ( &$count ): void {
-				$post->delete( true );
+			// The legacy queue_* post statuses are no longer registered, so only "any" matches them.
+			Post::for( 'mantle_queue' )
+				->where( 'post_status', 'any' )
+				->each_by_id(
+					function ( Post $post ) use ( &$count ): void {
+						$post->delete( true );
 
-				$count++;
-			} );
+						$count++;
+					},
+					100,
+				);
 		}
 
 		Database_Job_Record::query()
-			->whereIn( 'status', [ Status::RUNNING->value, Status::FAILED->value, Status::COMPLETED->value ] )
-			->where_raw( 'scheduled_date_gmt', '<', now()->subSeconds( (int) $this->container['config']->get( 'queue.delete_after', 60 ) )->toDateTimeString() )
-			->take( 1000 )
+			->whereIn( 'status', [ Status::FAILED->value, Status::COMPLETED->value ] )
+			->where_raw( 'scheduled_date_gmt', '<', now( 'UTC' )->subSeconds( (int) $this->container['config']->get( 'queue.delete_after', 60 ) )->toDateTimeString() )
 			->each_by_id(
 				function ( Database_Job_Record $record ) use ( &$count ): void {
-					if ( ! $record->is_locked() ) {
-						$record->delete( true );
+					$record->delete( true );
 
-						$count++;
-					}
+					$count++;
 				},
 				100,
 			);

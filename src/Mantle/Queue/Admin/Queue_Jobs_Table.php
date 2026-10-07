@@ -9,7 +9,6 @@ namespace Mantle\Queue\Admin;
 
 use Carbon\Carbon;
 use Mantle\Database\Query\Collection;
-use Mantle\Database\Query\Post_Query_Builder;
 use Mantle\Queue\Jobs\Database_Job_Record;
 use Mantle\Queue\Jobs\Status;
 use WP_List_Table;
@@ -127,17 +126,14 @@ class Queue_Jobs_Table extends WP_List_Table {
 	public function prepare_items(): void {
 		$this->_column_headers = [ $this->get_columns(), [], [] ];
 
-		$statuses = array_column( Status::cases(), 'value' );
-
 		$active_status_filter = sanitize_text_field( wp_unslash( $_GET['filter'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 		// Validate that the status filter is valid.
-		if ( ! empty( $active_status_filter ) && ! in_array( $active_status_filter, $statuses, true ) ) {
+		if ( ! empty( $active_status_filter ) && ! in_array( $active_status_filter, array_column( Status::cases(), 'value' ), true ) ) {
 			$active_status_filter = '';
 		}
 
 		$active_queue_filter = sanitize_text_field( wp_unslash( $_GET['queue'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$page                = (int) ( $_GET['paged'] ?? 1 ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
 		$query = Database_Job_Record::query()
 			->orderBy( 'created_date_gmt', 'asc' )
@@ -145,20 +141,20 @@ class Queue_Jobs_Table extends WP_List_Table {
 			->when(
 				! empty( $active_status_filter ),
 				fn ( $query ) => $query->where( 'status', $active_status_filter ),
-				fn ( $query ) => $query->where( 'status', $statuses ),
 			)
 			// Allow the query to be filtered by queue.
 			->when(
 				! empty( $active_queue_filter ),
-				fn ( Post_Query_Builder $query ) => $query->where( 'queue', $active_queue_filter ),
-			)
-			->for_page( $page, $this->per_page );
+				fn ( $query ) => $query->where( 'queue', $active_queue_filter ),
+			);
 
-		$this->items = $query->get();
+		$total_items = ( clone $query )->count();
+
+		$this->items = $query->for_page( $this->get_pagenum(), $this->per_page )->get();
 
 		$this->set_pagination_args(
 			[
-				'total_items' => $query->get_found_rows(),
+				'total_items' => $total_items,
 				'per_page'    => $this->per_page,
 			]
 		);
@@ -251,7 +247,7 @@ class Queue_Jobs_Table extends WP_List_Table {
 	 */
 	public function column_arguments( Database_Job_Record $item ): void {
 		$job = $item->job()->get_job();
-		echo '<code>' . wp_json_encode( is_object( $job ) ? get_object_vars( $job ) : '' ) . '</code>';
+		echo '<code>' . esc_html( (string) wp_json_encode( is_object( $job ) ? get_object_vars( $job ) : '' ) ) . '</code>';
 	}
 
 	/**
@@ -262,7 +258,16 @@ class Queue_Jobs_Table extends WP_List_Table {
 	public function column_queue( Database_Job_Record $item ): void {
 		printf(
 			'<a href="%s">%s</a>',
-			esc_url( add_query_arg( 'queue', $item->queue ) ),
+			esc_url(
+				add_query_arg(
+					[
+						'_wpnonce' => false,
+						'action'   => false,
+						'job'      => false,
+						'queue'    => $item->queue,
+					]
+				)
+			),
 			esc_html( $item->queue ),
 		);
 	}

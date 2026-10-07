@@ -21,7 +21,7 @@ class Service_Provider extends Base_Service_Provider {
 	 */
 	#[Action( 'admin_menu' )]
 	public function register_admin_page(): void {
-		add_submenu_page(
+		$hook = add_submenu_page(
 			'tools.php',
 			__( 'Mantle Queue', 'mantle' ),
 			__( 'Mantle Queue', 'mantle' ),
@@ -34,6 +34,10 @@ class Service_Provider extends Base_Service_Provider {
 			'mantle-queue',
 			[ $this, 'render_admin_page' ],
 		);
+
+		if ( $hook ) {
+			add_action( "load-{$hook}", fn () => ( new Queue_Job_Admin_Page() )->handle_action() );
+		}
 	}
 
 	/**

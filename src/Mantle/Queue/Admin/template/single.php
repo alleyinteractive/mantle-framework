@@ -36,7 +36,7 @@ if ( ! is_array( $log ) ) {
 				Status::PENDING => esc_html__( 'Pending', 'mantle' ),
 				Status::FAILED => esc_html__( 'Failed', 'mantle' ),
 				Status::RUNNING => esc_html__( 'Running', 'mantle' ),
-				default => esc_html__( 'Unknown', 'mantle' ),
+				Status::COMPLETED => esc_html__( 'Completed', 'mantle' ),
 			},
 			/* phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped */
 		);
@@ -127,7 +127,7 @@ if ( ! is_array( $log ) ) {
 			</p>
 			<h3><?php esc_html_e( 'Arguments', 'mantle' ); ?></h3>
 			<code>
-				<?php echo wp_json_encode( is_object( $job->get_job() ) ? get_object_vars( $job->get_job() ) : '' ); ?>
+				<?php echo esc_html( (string) wp_json_encode( is_object( $job->get_job() ) ? get_object_vars( $job->get_job() ) : '' ) ); ?>
 			</code>
 			<h3><?php esc_html_e( 'Queue', 'mantle' ); ?></h3>
 			<p>
@@ -173,7 +173,7 @@ if ( ! is_array( $log ) ) {
 						</p>
 
 						<?php if ( ! empty( $entry['payload'] ) ) : ?>
-							<pre><?php echo wp_json_encode( $entry['payload'], JSON_PRETTY_PRINT ); ?></pre>
+							<pre><?php echo esc_html( (string) wp_json_encode( $entry['payload'], JSON_PRETTY_PRINT ) ); ?></pre>
 						<?php endif; ?>
 					</li>
 				<?php endforeach; ?>
