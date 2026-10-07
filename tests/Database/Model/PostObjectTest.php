@@ -81,6 +81,41 @@ class PostObjectTest extends FrameworkTestCase {
 		$this->assertEmpty( $object->get_meta( 'meta_key_to_set' ) );
 	}
 
+	public function test_post_meta_isset_and_missing() {
+		$post   = $this->factory->post->create_and_get();
+		$object = Testable_Post::find( $post );
+
+		$this->assertFalse( isset( $object->meta['unknown_meta_key'] ) );
+		$this->assertNull( $object->meta->unknown_meta_key );
+		$this->assertSame( 'fallback', $object->meta->unknown_meta_key ?? 'fallback' );
+
+		update_post_meta( $post->ID, 'empty_meta_key', '' );
+
+		$this->assertTrue( isset( $object->meta['empty_meta_key'] ) );
+		$this->assertSame( '', $object->meta->empty_meta_key );
+	}
+
+	public function test_find_with_empty_value_does_not_return_global_post() {
+		$post = $this->factory->post->create_and_get();
+
+		$GLOBALS['post'] = $post;
+
+		$this->assertNull( Testable_Post::find( 0 ) );
+		$this->assertNull( Testable_Post::find( null ) );
+		$this->assertNull( Testable_Post::find( '' ) );
+
+		$this->expectException( \Mantle\Database\Model\Model_Not_Found_Exception::class );
+
+		Testable_Post::find_or_fail( 0 );
+	}
+
+	public function test_create_with_accessor_stores_raw_value() {
+		$model = Testable_Post_With_Accessor::create( [ 'title' => 'Raw Title', 'status' => 'publish' ] );
+
+		$this->assertSame( 'Prefixed Raw Title', $model->title );
+		$this->assertSame( 'Raw Title', get_post( $model->id() )->post_title );
+	}
+
 	public function test_post_meta_attributes() {
 		$post   = $this->factory->post->create_and_get();
 		$object = Testable_Post::find( $post );
@@ -118,6 +153,27 @@ class PostObjectTest extends FrameworkTestCase {
 				'meta' => 'as-a-string'
 			]
 		);
+	}
+
+	public function test_schedule_published_post() {
+		$post = Post::find(
+			static::factory()->post->create(
+				[
+					'post_date'   => Carbon::now()->subWeek()->toDateTimeString(),
+					'post_status' => 'publish',
+				]
+			)
+		);
+
+		$date = Carbon::now()->addDay()->startOfMinute();
+
+		$this->assertTrue( $post->schedule( $date ) );
+
+		$core = get_post( $post->id() );
+
+		$this->assertEquals( 'future', $core->post_status );
+		$this->assertEquals( $date->toDateTimeString(), $core->post_date );
+		$this->assertEquals( get_gmt_from_date( $core->post_date ), $core->post_date_gmt );
 	}
 
 	public function test_updating_post() {
@@ -547,5 +603,13 @@ class Test_Post_Type extends Post implements Registrable {
 		return [
 			'public' => true,
 		];
+	}
+}
+
+class Testable_Post_With_Accessor extends Post {
+	public static $object_name = 'post';
+
+	public function get_post_title_attribute( $value ) {
+		return 'Prefixed ' . $value;
 	}
 }

@@ -39,14 +39,20 @@ class User_Factory extends Factory {
 	public function definition(): array {
 		$first_name = $this->faker->firstName();
 		$last_name  = $this->faker->lastName();
+		$user_login = stringable( "{$first_name} {$last_name}" )->slugify();
+
+		// Faker names collide often enough that large suites would hit duplicate logins.
+		while ( \username_exists( (string) $user_login ) ) {
+			$user_login = $user_login->append( (string) \wp_rand( 1, 9 ) );
+		}
 
 		return [
 			'description' => $this->faker->sentence(),
 			'first_name'  => $first_name,
 			'last_name'   => $last_name,
 			'role'        => 'subscriber',
-			'user_email'  => $this->faker->email(),
-			'user_login'  => stringable( "{$first_name} {$last_name}" )->slugify(),
+			'user_email'  => $this->faker->unique()->safeEmail(),
+			'user_login'  => (string) $user_login,
 			'user_pass'   => 'password',
 			'user_url'    => substr( $this->faker->url(), 0, 100 ),
 		];

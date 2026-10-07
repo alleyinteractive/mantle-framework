@@ -99,6 +99,16 @@ class TermObjectTest extends FrameworkTestCase {
 		$term->save();
 
 		$this->assertNotEmpty( $term->id() );
+		$this->assertTrue( $term->exists );
+		$this->assertSame( 'test-term', $term->slug() );
+		$this->assertNotEmpty( $term->get( 'term_taxonomy_id' ) );
+	}
+
+	public function test_unsaved_term_parent_attribute() {
+		$term = new Testable_Tag( [ 'name' => 'Unsaved' ] );
+
+		$this->assertNull( $term->parent );
+		$this->assertNull( $term->parent() );
 	}
 
 	public function test_model_incorrect_taxonomy() {

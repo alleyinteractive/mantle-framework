@@ -36,6 +36,20 @@ class CommentObjectTest extends FrameworkTestCase {
 		$this->assertEquals( $parent_object->id(), $parent_id );
 	}
 
+	public function test_comment_save_update() {
+		$comment = $this->factory->comment->create_and_get();
+		$object  = Comment::find( $comment );
+
+		$this->assertTrue( $object->save( [ 'comment_content' => 'Updated content' ] ) );
+
+		$this->assertEquals( $comment->comment_ID, $object->id() );
+		$this->assertEquals( 'Updated content', \get_comment( $comment->comment_ID )->comment_content );
+
+		// Saving again without any changes should not throw.
+		$this->assertTrue( $object->save() );
+		$this->assertEquals( $comment->comment_ID, $object->id() );
+	}
+
 	public function test_comment_meta() {
 		$comment   = $this->factory->comment->create_and_get( [ 'taxonomy' => 'category' ] );
 		$object = Comment::find( $comment );

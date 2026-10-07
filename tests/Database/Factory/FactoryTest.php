@@ -26,6 +26,20 @@ class FactoryTest extends FrameworkTestCase {
 		$this->assertInstanceOf( Post::class, $post );
 	}
 
+	public function test_definition_runs_once_per_create(): void {
+		$factory = new Counting_Post_Factory( $this->app->make( \Faker\Generator::class ) );
+
+		$post_ids = $factory->create_many( 5 );
+
+		$this->assertCount( 5, $post_ids );
+		$this->assertEquals( 5, $factory->definition_calls );
+		$this->assertEquals( 0, $factory->middleware->count() );
+
+		$factory->create();
+
+		$this->assertEquals( 6, $factory->definition_calls );
+	}
+
 	public function test_create_many(): void {
 		$factory = Post::factory();
 
@@ -326,4 +340,14 @@ class Testable_Custom_Post_Type extends Model\Post {
 
 class Testable_Custom_Taxonomy extends Model\Term {
 	public static $object_name = 'custom_taxonomy';
+}
+
+class Counting_Post_Factory extends Post_Factory {
+	public int $definition_calls = 0;
+
+	public function definition(): array {
+		$this->definition_calls++;
+
+		return parent::definition();
+	}
 }

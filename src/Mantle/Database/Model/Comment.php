@@ -57,6 +57,10 @@ class Comment extends Model implements Contracts\Database\Core_Object, Contracts
 	 * @param \WP_Comment|string|int $object Comment to retrieve.
 	 */
 	public static function find( mixed $object ): ?static {
+		if ( empty( $object ) ) {
+			return null;
+		}
+
 		$post = Helpers\get_comment_object( $object );
 		return $post instanceof \WP_Comment ? new static( $post ) : null;
 	}
@@ -141,23 +145,30 @@ class Comment extends Model implements Contracts\Database\Core_Object, Contracts
 		$id = $this->id();
 
 		if ( empty( $id ) ) {
-			$save = \wp_insert_comment( $this->get_attributes() );
+			$save = \wp_insert_comment( $this->get_attributes_for_insert() );
+
+			if ( ! $save ) {
+				throw new Model_Exception( 'Error saving model' );
+			}
+
+			$this->set_raw_attribute( 'comment_ID', $save );
 		} else {
+			// Returns 1 when updated, 0 when nothing changed, false/WP_Error on failure.
 			$save = \wp_update_comment(
 				array_merge(
 					$this->get_modified_attributes(),
 					[
 						'comment_ID' => $id,
 					]
-				)
+				),
+				true,
 			);
+
+			if ( \is_wp_error( $save ) ) {
+				throw new Model_Exception( 'Error saving model: ' . $save->get_error_message() );
+			}
 		}
 
-		if ( ! $save ) {
-			throw new Model_Exception( 'Error saving model' );
-		}
-
-		$this->set_raw_attribute( 'comment_ID', $save );
 		$this->store_queued_meta();
 		$this->reset_modified_attributes();
 

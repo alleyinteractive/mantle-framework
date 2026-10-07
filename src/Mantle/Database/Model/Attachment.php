@@ -64,7 +64,7 @@ class Attachment extends Post {
 			return $this->get_temporary_url();
 		}
 
-		return Storage::drive( $settings['disk'] )->url( untrailingslashit( $settings['path'] ) . $settings['name'] );
+		return Storage::drive( $settings['disk'] )->url( $settings['name'] );
 	}
 
 	/**
@@ -83,7 +83,7 @@ class Attachment extends Post {
 
 		$expiration ??= Carbon::now()->addSeconds( max( 1, (int) config( "filesystem.disks.{$disk}.temporary_url_expiration" ) ) );
 
-		return Storage::drive( $disk )->temporary_url( untrailingslashit( $settings['path'] ) . $settings['name'], $expiration );
+		return Storage::drive( $disk )->temporary_url( $settings['name'], $expiration );
 	}
 
 	/**
@@ -190,7 +190,7 @@ class Attachment extends Post {
 		$id = $this->id();
 
 		if ( empty( $id ) ) {
-			$save = \wp_insert_attachment( $this->get_attributes(), false, 0, true );
+			$save = \wp_insert_attachment( $this->get_attributes_for_insert(), false, 0, true );
 		} else {
 			$save = \wp_update_post(
 				array_merge(
