@@ -62,6 +62,14 @@ class UtilsTest extends FrameworkTestCase {
 		touch( "{$root}/wp-load.php" );
 
 		$this->assertTrue( Utils::is_within_wordpress_install( "{$root}/wp-content/plugins/example" ) );
+
+		// A Bedrock-style root keeps core in a subdirectory but still has a config file at the root.
+		$bedrock = get_temp_dir() . 'mantle-bedrock-root-' . wp_rand();
+
+		mkdir( "{$bedrock}/wp-content/themes/example", 0777, true );
+		touch( "{$bedrock}/wp-tests-config.php" );
+
+		$this->assertTrue( Utils::is_within_wordpress_install( "{$bedrock}/wp-content/themes/example" ) );
 	}
 
 	public function test_content_directory_name_defaults_to_wp_content(): void {

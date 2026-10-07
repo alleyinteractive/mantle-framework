@@ -142,7 +142,13 @@ class Utils {
 
 		$root = substr( $directory, 0, $position + 1 );
 
-		return is_file( $root . 'wp-load.php' ) || is_file( $root . 'wp-settings.php' );
+		foreach ( [ 'wp-load.php', 'wp-settings.php', 'wp-config.php', 'wp-tests-config.php' ] as $marker ) {
+			if ( is_file( $root . $marker ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
