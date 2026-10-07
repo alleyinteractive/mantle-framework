@@ -92,7 +92,10 @@ class Scheduler {
 		$schedule = \wp_schedule_single_event( time() + $delay, static::EVENT, [ $queue, time() + $delay ], true );
 
 		if ( is_wp_error( $schedule ) ) {
-			report( new \RuntimeException( 'Unable to schedule queue run: ' . $schedule->get_error_message() ) );
+			// report() is a framework helper; the queue package may be installed without it.
+			if ( function_exists( 'report' ) ) {
+				report( new \RuntimeException( 'Unable to schedule queue run: ' . $schedule->get_error_message() ) );
+			}
 
 			return false;
 		}
