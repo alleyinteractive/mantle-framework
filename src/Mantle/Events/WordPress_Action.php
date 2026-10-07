@@ -71,9 +71,10 @@ trait WordPress_Action {
 	 * Wrap the callback for an action with callback that will preserve type hints.
 	 *
 	 * @param callable $callback
+	 * @param bool     $object_event Whether the listener is for an object (class name) event.
 	 */
-	protected function create_action_callback( callable $callback ): Closure {
-		return function ( ...$args ) use ( $callback ) {
+	protected function create_action_callback( callable $callback, bool $object_event = false ): Closure {
+		return function ( ...$args ) use ( $callback, $object_event ) {
 			if ( is_array( $callback ) ) {
 				try {
 					$reflection = ( new ReflectionClass( $callback[0] ) )->getMethod( $callback[1] );
@@ -94,7 +95,7 @@ trait WordPress_Action {
 				? $callback( ...$args )
 				: $callback( ...$this->validate_arguments( $args, $parameters ) );
 
-			return $this->preserve_filtered_value( $reflection, $result, $args );
+			return $this->preserve_filtered_value( $reflection, $result, $args, $object_event );
 		};
 	}
 
@@ -109,8 +110,9 @@ trait WordPress_Action {
 	 * @param ReflectionFunctionAbstract $reflection Listener reflection.
 	 * @param mixed                      $result Listener return value.
 	 * @param array<mixed>               $args Arguments the listener was called with.
+	 * @param bool                       $object_event Whether the listener is for an object (class name) event.
 	 */
-	protected function preserve_filtered_value( ReflectionFunctionAbstract $reflection, mixed $result, array $args ): mixed {
+	protected function preserve_filtered_value( ReflectionFunctionAbstract $reflection, mixed $result, array $args, bool $object_event = false ): mixed {
 		$return_type  = $reflection->getReturnType();
 		$returns_void = $return_type instanceof ReflectionNamedType && in_array( $return_type->getName(), [ 'void', 'never' ], true );
 
@@ -118,7 +120,7 @@ trait WordPress_Action {
 			return $args[0] ?? null;
 		}
 
-		if ( isset( $args[0] ) && is_object( $args[0] ) && ! is_object( $result ) ) {
+		if ( $object_event && isset( $args[0] ) && is_object( $args[0] ) && ! is_object( $result ) ) {
 			return $args[0];
 		}
 

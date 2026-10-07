@@ -42,7 +42,7 @@ class Lightweight_Event_Dispatcher extends Dispatcher {
 				continue;
 			}
 
-			$this->listeners[ $event ][ $priority ][ $this->listener_key( $listener ) ] = $this->make_listener( $listener );
+			$this->listeners[ $event ][ $priority ][ $this->listener_key( $listener ) ] = $this->make_listener( $listener, $this->is_object_event( $event ) );
 		}
 	}
 

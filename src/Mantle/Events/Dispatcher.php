@@ -84,7 +84,7 @@ class Dispatcher implements Dispatcher_Contract {
 				continue;
 			}
 
-			$wrapper = $this->make_listener( $listener );
+			$wrapper = $this->make_listener( $listener, $this->is_object_event( $event ) );
 
 			$this->listener_map[ $event ][ $priority ][ $this->listener_key( $listener ) ] = $wrapper;
 
@@ -246,17 +246,28 @@ class Dispatcher implements Dispatcher_Contract {
 	}
 
 	/**
+	 * Determine if an event name refers to an object event (a class or interface).
+	 *
+	 * @param string $event Event name.
+	 */
+	protected function is_object_event( string $event ): bool {
+		return class_exists( $event ) || interface_exists( $event );
+	}
+
+	/**
 	 * Register an event listener with the dispatcher.
 	 *
 	 * @param  callable|string $listener
+	 * @param  bool            $object_event Whether the listener is for an object (class name) event.
 	 */
-	public function make_listener( callable|string $listener ): Closure {
+	public function make_listener( callable|string $listener, bool $object_event = false ): Closure {
 		if ( is_string( $listener ) ) {
-			return $this->create_class_listener( $listener );
+			return $this->create_class_listener( $listener, $object_event );
 		}
 
 		return fn ( ...$payload ) => $this->create_action_callback(
 			$listener,
+			$object_event,
 		)( ...array_values( $payload ) );
 	}
 
@@ -264,12 +275,14 @@ class Dispatcher implements Dispatcher_Contract {
 	 * Create a class based listener using the IoC container.
 	 *
 	 * @param  string $listener
+	 * @param  bool   $object_event Whether the listener is for an object (class name) event.
 	 */
-	public function create_class_listener( string $listener ): Closure {
-		return function ( ...$payload ) use ( $listener ) {
+	public function create_class_listener( string $listener, bool $object_event = false ): Closure {
+		return function ( ...$payload ) use ( $listener, $object_event ) {
 			$callable = $this->create_action_callback(
 				// @phpstan-ignore argument.type
 				$this->create_class_callable( $listener ),
+				$object_event,
 			);
 
 			return $callable( ...array_values( $payload ) );
