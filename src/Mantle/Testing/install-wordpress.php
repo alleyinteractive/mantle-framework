@@ -65,6 +65,9 @@ foreach ( $wpdb->tables() as $table => $prefixed_table ) {
 	$wpdb->query( "DROP TABLE IF EXISTS {$prefixed_table}" );
 }
 
+// Mantle's queue table isn't registered with wpdb until the framework boots.
+$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}mantle_queue" );
+
 foreach ( $wpdb->tables( 'ms_global' ) as $table => $prefixed_table ) {
 	//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	$wpdb->query( "DROP TABLE IF EXISTS {$prefixed_table}" );

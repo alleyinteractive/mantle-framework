@@ -9,6 +9,17 @@
 
 namespace Mantle\Testing\Concerns;
 
+/**
+ * Hooks back up and restore routines.
+ *
+ * This trait will back up and restore the WordPress hooks before and after each
+ * test. This is useful to ensure that tests do not interfere with each other by
+ * adding or removing hooks that could affect the outcome of other tests. Each
+ * test should have the hooks restored to the original state before each run.
+ *
+ * There may be some cases here hooks are duplicated when the application is
+ * recreated. This is something we can improve on in the future.
+ */
 trait Hooks {
 
 	/**
@@ -51,6 +62,12 @@ trait Hooks {
 
 		self::$hooks_saved['wp_filter'] = [];
 		foreach ( $GLOBALS['wp_filter'] as $hook_name => $hook_object ) {
+			// Prevent the Mantle queue callback from being saved. The testing package
+			// does not depend on the queue package, so its event name is not referenced.
+			if ( 'mantle_queue' === $hook_name ) {
+				continue;
+			}
+
 			self::$hooks_saved['wp_filter'][ $hook_name ] = clone $hook_object;
 		}
 	}

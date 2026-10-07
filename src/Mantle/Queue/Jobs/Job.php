@@ -5,7 +5,7 @@
  * @package Mantle
  */
 
-namespace Mantle\Queue;
+namespace Mantle\Queue\Jobs;
 
 use Throwable;
 
@@ -14,11 +14,20 @@ use Throwable;
  *
  * Base class for provider-specific queue worker job classes.
  */
-abstract class Queue_Worker_Job {
+abstract class Job {
 	/**
 	 * Flag if the job failed.
 	 */
 	public bool $failed = false;
+
+	/**
+	 * Reserve the job for this worker immediately before it runs.
+	 *
+	 * @return bool False if the job should be skipped.
+	 */
+	public function reserve(): bool {
+		return true;
+	}
 
 	/**
 	 * Fire the queue job.
@@ -60,17 +69,15 @@ abstract class Queue_Worker_Job {
 	abstract public function delete(): void;
 
 	/**
+	 * Check if the job can be retried.
+	 */
+	abstract public function can_retry(): bool;
+
+	/**
 	 * Check if the job has failed.
 	 */
 	public function has_failed(): bool {
 		return $this->failed;
-	}
-
-	/**
-	 * Check if the job can be retried.
-	 */
-	public function can_retry(): bool {
-		return $this->has_failed() && ( $this->get_job()->retry ?? false );
 	}
 
 	/**

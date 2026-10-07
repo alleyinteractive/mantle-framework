@@ -6,8 +6,7 @@ use Mantle\Config\Repository;
 use Mantle\Contracts\Queue\Provider;
 use Mantle\Queue\Queue_Service_Provider;
 use Mantle\Queue\Events;
-use Mantle\Queue\Job;
-use Mantle\Queue\Queue_Worker_Job;
+use Mantle\Queue\Jobs\Database_Job;
 use Mantle\Support\Collection;
 use Mockery as m;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
@@ -95,9 +94,10 @@ class WorkerTest extends MockeryTestCase {
 	}
 
 	protected function get_mock_job( $id, $should_run = true ) {
-		$mock_job = m::mock( Queue_Worker_Job::class );
+		$mock_job = m::mock( Database_Job::class );
 
 		if ( $should_run ) {
+			$mock_job->shouldReceive( 'reserve' )->once()->andReturn( true );
 			$mock_job->shouldReceive( 'fire' )->once()->andReturn( true );
 			$mock_job->shouldReceive( 'completed' )->once();
 			$mock_job->shouldReceive( 'has_failed' )->once()->andReturn( false );
@@ -119,7 +119,7 @@ class Testable_Provider implements Provider {
 	 * @param mixed $job Job instance.
 	 * @return bool
 	 */
-	public function push( mixed $job ): bool {
+	public function push( mixed $job, ?string $queue = null ): bool {
 		$this->jobs[] = $job;
 		return true;
 	}
@@ -137,13 +137,18 @@ class Testable_Provider implements Provider {
 		);
 	}
 
+	public function size( ?string $queue = null ): int {
+		return count( $this->jobs );
+	}
+
 	/**
 	 * Retrieve the number of pending jobs in the queue.
 	 *
-	 * @param string $queue Queue name, optional.
+	 * @param string|null $queue Queue name, optional.
 	 * @return int
 	 */
-	public function pending_count( ?string $queue = null ): int {
+	public function pending_size( ?string $queue = null ): int {
+		// In this mock, pending size is the same as total size.
 		return count( $this->jobs );
 	}
 
