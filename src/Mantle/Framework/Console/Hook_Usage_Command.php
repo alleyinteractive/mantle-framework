@@ -5,26 +5,28 @@
  * @package Mantle
  */
 
+declare(strict_types=1);
+
 namespace Mantle\Framework\Console;
 
-use InvalidArgumentException;
 use Mantle\Console\Command;
-use Mantle\Contracts\Application;
 use Mantle\Support\Collection;
 use Mantle\Support\Str;
+use PhpToken;
 use RecursiveCallbackFilterIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use RuntimeException;
+use SplFileInfo;
 
 use function Mantle\Support\Helpers\collect;
 
 /**
- * Hook Usage Command Command
+ * Hook Usage Command
  *
- * Search across a set of files for a reference to a specific hook.
+ * Search a set of PHP files for every place a hook is registered, removed, or
+ * fired, including Mantle's Hookable method names and attributes.
  *
- * @todo Reflect on the current implementation and see if it can be improved.
+ * @phpstan-type HookUsage array{file: string, line: int, method: string}
  */
 class Hook_Usage_Command extends Command {
 	/**
@@ -39,17 +41,10 @@ class Hook_Usage_Command extends Command {
 	 *
 	 * @var string
 	 */
-	protected $signature = 'hook-usage {hook} {--search-path=} {--format=}';
+	protected $signature = 'hook-usage {hook} {--search-path=} {--format=table}';
 
 	/**
-	 * Paths to search.
-	 *
-	 * @var Collection
-	 */
-	protected $paths;
-
-	/**
-	 * Core hook methods to search for.
+	 * Functions that reference a hook by name as their first argument.
 	 *
 	 * @var string[]
 	 */
@@ -58,21 +53,67 @@ class Hook_Usage_Command extends Command {
 		'add_action_side_effect',
 		'add_filter',
 		'add_filter_side_effect',
+		'remove_action',
+		'remove_filter',
+		'remove_all_actions',
+		'remove_all_filters',
+		'has_action',
+		'has_filter',
+		'did_action',
+		'did_filter',
+		'doing_action',
+		'doing_filter',
+		'do_action',
+		'do_action_ref_array',
+		'do_action_deprecated',
+		'apply_filters',
+		'apply_filters_ref_array',
+		'apply_filters_deprecated',
+	];
+
+	/**
+	 * Hookable attributes that register a method against a hook.
+	 *
+	 * @var string[]
+	 */
+	public const HOOK_ATTRIBUTES = [
+		'Action',
+		'Filter',
+	];
+
+	/**
+	 * Directory names that are skipped when searching a directory.
+	 *
+	 * @var string[]
+	 */
+	public const IGNORED_DIRECTORIES = [
+		'node_modules',
+		'tests',
+		'vendor',
 	];
 
 	/**
 	 * Callback for the command.
 	 */
 	public function handle(): int {
-		$usage = $this->get_usage();
+		$paths = $this->get_paths();
+
+		if ( $paths->is_empty() ) {
+			$this->error( 'No valid search paths found.' );
+
+			return Command::FAILURE;
+		}
+
+		$usage = $this->get_usage( (string) $this->argument( 'hook' ), $paths );
 
 		if ( $usage->is_empty() ) {
 			$this->error( 'No usage found.' );
+
 			return Command::FAILURE;
 		}
 
 		$this->format_data(
-			$this->option( 'format', 'table' ),
+			(string) $this->option( 'format', 'table' ),
 			[
 				'file',
 				'line',
@@ -85,224 +126,194 @@ class Hook_Usage_Command extends Command {
 	}
 
 	/**
-	 * Retrieve the usage of a hook.
+	 * Retrieve the usage of a hook across a set of paths.
 	 *
-	 * @todo Account for service providers!
-	 *
-	 * @throws InvalidArgumentException Thrown on invalid search path.
+	 * @param string                 $hook  Hook name.
+	 * @param Collection<int,string> $paths Files or directories to search.
+	 * @return Collection<int,HookUsage>
 	 */
-	public function get_usage(): Collection {
-		$this->set_paths();
-
-		if ( $this->paths->is_empty() ) {
-			throw new InvalidArgumentException( 'No paths specified.' );
-		}
-
-		// Collect all the files.
-		$usage = collect();
-		foreach ( $this->paths as $path ) {
-			$usage = $usage->merge( $this->read_path( $path ) );
-		}
-
-		return $usage
-			->map( $this->read_file( ... ) )
-			->flatten( 1 );
+	public function get_usage( string $hook, Collection $paths ): Collection {
+		return $paths
+			->flat_map( $this->get_files( ... ) )
+			->unique()
+			->flat_map( fn ( string $file ): array => $this->read_file( $file, $hook ) )
+			->sort( fn ( array $a, array $b ): int => [ $a['file'], $a['line'] ] <=> [ $b['file'], $b['line'] ] )
+			->values();
 	}
 
 	/**
-	 * Read a specific path for files.
+	 * Get the paths to search from the --search-path option.
 	 *
-	 * @param string $path
+	 * @return Collection<int,string>
 	 */
-	protected function read_path( string $path ): Collection {
+	protected function get_paths(): Collection {
+		$search_path = (string) $this->option( 'search-path' );
+
+		$paths = '' === $search_path
+			? [ defined( 'WP_CONTENT_DIR' ) ? WP_CONTENT_DIR : (string) getcwd() ]
+			: explode( ',', $search_path );
+
+		return collect( $paths )
+			->map( fn ( string $path ): string => trim( $path ) )
+			->filter( fn ( string $path ): bool => is_file( $path ) || is_dir( $path ) )
+			->unique()
+			->values();
+	}
+
+	/**
+	 * Get the PHP files within a path.
+	 *
+	 * @param string $path File or directory.
+	 * @return string[]
+	 */
+	protected function get_files( string $path ): array {
 		if ( is_file( $path ) ) {
-			// Only permit PHP files through.
-			if ( 'php' !== pathinfo( $path, PATHINFO_EXTENSION ) ) {
-				return collect();
-			}
-
-			return collect( [ $path ] );
+			return 'php' === pathinfo( $path, PATHINFO_EXTENSION ) ? [ (string) realpath( $path ) ] : [];
 		}
 
-		$cache = $this->get_cache_for_path( $path );
-		if ( $cache instanceof \Mantle\Support\Collection ) {
-			return $cache;
-		}
+		$files = new RecursiveIteratorIterator(
+			new RecursiveCallbackFilterIterator(
+				new RecursiveDirectoryIterator( $path, RecursiveDirectoryIterator::SKIP_DOTS ),
+				function ( SplFileInfo $current ): bool {
+					if ( $current->isDir() ) {
+						return ! str_starts_with( $current->getFilename(), '.' )
+							&& ! in_array( $current->getFilename(), static::IGNORED_DIRECTORIES, true );
+					}
 
-		$paths_to_ignore = [
-			'*/tests',
-			'*/tests/*',
-			'*/vendor',
-			'*/vendor/*',
-		];
-
-		// Disable ignoring paths for unit testing.
-		if ( defined( 'MANTLE_PHPUNIT_INCLUDES_PATH' ) ) {
-			$paths_to_ignore = [];
-		}
-
-		$dir   = new RecursiveDirectoryIterator( $path );
-		$files = new RecursiveCallbackFilterIterator(
-			$dir,
-			function ( \SplFileInfo $current, $key, RecursiveDirectoryIterator $iterator ) use ( $paths_to_ignore ): bool {
-				if ( Str::is( $paths_to_ignore, $current->getRealPath() ) ) {
-					return false;
+					return 'php' === $current->getExtension();
 				}
-
-				if ( $iterator->hasChildren() ) {
-					return true;
-				}
-
-				if ( ! $current->isFile() || 'php' !== $current->getExtension() ) {
-					return false;
-				}
-
-				return true;
-			}
+			)
 		);
 
-		$list     = collect();
-		$iterator = new RecursiveIteratorIterator( $files );
+		$list = [];
 
-		foreach ( $iterator as $file ) {
-			$list->add( $file->getRealPath() );
+		foreach ( $files as $file ) {
+			/** @var SplFileInfo $file */
+			$list[] = (string) $file->getRealPath();
 		}
-
-		$this->set_cache_for_path( $path, $list );
 
 		return $list;
 	}
 
 	/**
-	 * Read a file and extract the references inside.
+	 * Read a file and extract the references to a hook inside of it.
 	 *
 	 * @param string $file File to parse.
+	 * @param string $hook Hook name.
+	 * @return array<int,HookUsage>
 	 */
-	protected function read_file( string $file ): Collection {
-		$references = collect();
-		$contents   = file_get_contents( $file ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
+	protected function read_file( string $file, string $hook ): array {
+		$contents = file_get_contents( $file ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
 
-		foreach ( static::HOOK_METHODS as $method ) {
-			preg_match_all(
-				'/[^A-Za-z_](' . preg_quote( $method, '#' ) . ')\(\s*?[\'"]' . preg_quote( (string) $this->argument( 'hook' ), '#' ) . '[\'"]\s*?/m',
-				$contents,
-				$matches,
-				PREG_OFFSET_CAPTURE
-			);
-
-			if ( empty( $matches[1] ) ) {
-				continue;
-			}
-
-			foreach ( $matches[1] as $match ) {
-				[ $method, $char_pos ] = $match;
-
-				$line = Str::line_number( $contents, $char_pos );
-
-				$references->add( [
-					'file'   => $file,
-					'line'   => $line,
-					'method' => $method,
-				] );
-			}
+		if ( false === $contents || ! str_contains( $contents, $hook ) ) {
+			return [];
 		}
 
-		unset( $contents );
+		$tokens = array_values(
+			array_filter(
+				PhpToken::tokenize( $contents ),
+				fn ( PhpToken $token ): bool => ! $token->isIgnorable(),
+			)
+		);
+
+		$references = [];
+
+		foreach ( $tokens as $index => $token ) {
+			$method = match ( true ) {
+				$token->is( T_FUNCTION ) => $this->match_hookable_method( $tokens, $index, $hook ),
+				$token->is( [ T_STRING, T_NAME_QUALIFIED, T_NAME_FULLY_QUALIFIED ] ) => $this->match_hook_call( $tokens, $index, $hook ),
+				default => null,
+			};
+
+			if ( null !== $method ) {
+				$references[] = [
+					'file'   => $file,
+					'line'   => $token->line,
+					'method' => $method,
+				];
+			}
+		}
 
 		return $references;
 	}
 
 	/**
-	 * Determine if the cache should be used.
-	 */
-	protected function should_use_cache(): bool {
-		if ( ! app()->is_environment( 'local' ) ) {
-			return false;
-		}
-
-		return ! defined( 'MANTLE_PHPUNIT_INCLUDES_PATH' );
-	}
-
-	/**
-	 * Get the cached files for a path.
+	 * Match a hook function call or Hookable attribute that passes the hook as
+	 * its first argument.
 	 *
-	 * @param string $path Path to retrieve the cache for.
+	 * @param PhpToken[] $tokens Significant tokens of the file.
+	 * @param int        $index  Index of the name token.
+	 * @param string     $hook   Hook name.
 	 */
-	protected function get_cache_for_path( string $path ): ?Collection {
-		if ( ! $this->should_use_cache() ) {
+	protected function match_hook_call( array $tokens, int $index, string $hook ): ?string {
+		$argument = $tokens[ $index + 2 ] ?? null;
+
+		if (
+			! ( $tokens[ $index + 1 ] ?? null )?->is( '(' )
+			|| ! $argument?->is( T_CONSTANT_ENCAPSED_STRING )
+			|| substr( $argument->text, 1, -1 ) !== $hook
+			|| ! ( $tokens[ $index + 3 ] ?? null )?->is( [ ',', ')' ] )
+		) {
 			return null;
 		}
 
-		$file = $this->get_cache_file_for_path( $path );
-		if ( ! file_exists( $file ) ) {
+		$name     = Str::after_last( $tokens[ $index ]->text, '\\' );
+		$previous = $tokens[ $index - 1 ] ?? null;
+
+		if ( in_array( $name, static::HOOK_ATTRIBUTES, true ) && $previous?->is( [ T_ATTRIBUTE, ',' ] ) ) {
+			return "#[{$name}]";
+		}
+
+		// Skip method calls and declarations that share a hook function's name.
+		if (
+			in_array( $name, static::HOOK_METHODS, true )
+			&& ! $previous?->is( [ T_OBJECT_OPERATOR, T_NULLSAFE_OBJECT_OPERATOR, T_DOUBLE_COLON, T_FUNCTION, T_NEW ] )
+		) {
+			return $name;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Match a public method declaration that Hookable registers against the hook.
+	 *
+	 * Mirrors the `on_{hook}`, `on_{hook}_at_{priority}`, `action__{hook}`,
+	 * and `filter__{hook}` naming in {@see \Mantle\Support\Traits\Hookable}.
+	 *
+	 * @param PhpToken[] $tokens Significant tokens of the file.
+	 * @param int        $index  Index of the function token.
+	 * @param string     $hook   Hook name.
+	 */
+	protected function match_hookable_method( array $tokens, int $index, string $hook ): ?string {
+		$name = $tokens[ $index + 1 ] ?? null;
+
+		if ( ! $name?->is( T_STRING ) ) {
 			return null;
 		}
 
-		// Check if the file is stale (older than today).
-		if ( filemtime( $file ) < ( time() - DAY_IN_SECONDS ) ) {
-			// Delete the cached file if it is stale.
-			@unlink( $file ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_unlink, Generic.PHP.NoSilencedErrors.Forbidden
+		$is_public = false;
+		$i         = $index - 1;
+
+		while ( isset( $tokens[ $i ] ) && $tokens[ $i ]->is( [ T_PUBLIC, T_STATIC, T_FINAL, T_ABSTRACT ] ) ) {
+			$is_public = $is_public || $tokens[ $i ]->is( T_PUBLIC );
+			--$i;
+		}
+
+		if ( ! $is_public ) {
 			return null;
 		}
 
-		$files = require_once $file; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
+		$method_hook = match ( true ) {
+			str_starts_with( $name->text, 'on_' ) => substr( $name->text, 3 ),
+			str_starts_with( $name->text, 'action__' ), str_starts_with( $name->text, 'filter__' ) => substr( $name->text, 8 ),
+			default => null,
+		};
 
-		return collect( $files );
-	}
-
-	/**
-	 * Set the cache for a specific path.
-	 *
-	 * @param string     $path Path to cache for.
-	 * @param Collection $files Collection of files.
-	 *
-	 * @throws RuntimeException Thrown on error writing cache.
-	 */
-	protected function set_cache_for_path( string $path, Collection $files ): void {
-		if ( ! $this->should_use_cache() ) {
-			return;
+		if ( null !== $method_hook && str_contains( $method_hook, '_at_' ) ) {
+			$method_hook = Str::before_last( $method_hook, '_at_' );
 		}
 
-		$file = $this->get_cache_file_for_path( $path );
-
-		if ( ! file_put_contents( // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents
-			$file,
-			'<?php return ' . var_export( $files->all(), true ) . ';' // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_var_export
-		) ) {
-			throw new RuntimeException( 'Error writing cache file: ' . $file );
-		}
-	}
-
-	/**
-	 * Get the file path for a cached file for a specific path.
-	 *
-	 * @todo Move to uploads folder for non-writeable environments.
-	 *
-	 * @param string $path Path to cache against.
-	 */
-	protected function get_cache_file_for_path( string $path ): string {
-		$path = md5( $path );
-		return app()->get_cache_path() . "/hook-usage-{$path}.php";
-	}
-
-	/**
-	 * Get the paths for the hook search.
-	 *
-	 * @todo Filter out inactive plugins from the path list.
-	 */
-	protected function set_paths(): void {
-		if ( ! $this->option( 'search-path' ) ) {
-			$paths = collect( [ defined( 'WP_CONTENT_DIR' ) ? WP_CONTENT_DIR : getcwd() ] );
-		} else {
-			$paths = collect( explode( ',', $this->option( 'search-path' ) ) );
-		}
-
-		$this->paths = $paths
-			->trim()
-			->unique()
-			->filter(
-				fn( $path ): bool => is_file( $path ) || is_dir( $path )
-			)
-			->values();
+		return $method_hook === $hook ? $name->text : null;
 	}
 }
