@@ -123,7 +123,7 @@ class ArrTest extends TestCase {
 		$this->assertEquals( [ 'foo.bar' => 'baz' ], $array );
 
 		$array = Arr::dot( [] );
-		$this->assertEquals( [], $array );
+		$this->assertSame( [], $array );
 
 		$array = Arr::dot( [ 'foo' => [] ] );
 		$this->assertEquals( [ 'foo' => [] ], $array );
@@ -1226,7 +1226,7 @@ class ArrTest extends TestCase {
 		$this->assertEquals( [ 'a' ], Arr::wrap( $string ) );
 		$this->assertEquals( $array, Arr::wrap( $array ) );
 		$this->assertEquals( [ $object ], Arr::wrap( $object ) );
-		$this->assertEquals( [], Arr::wrap( null ) );
+		$this->assertSame( [], Arr::wrap( null ) );
 		$this->assertEquals( [ null ], Arr::wrap( [ null ] ) );
 		$this->assertEquals( [ null, null ], Arr::wrap( [ null, null ] ) );
 		$this->assertEquals( [ '' ], Arr::wrap( '' ) );
