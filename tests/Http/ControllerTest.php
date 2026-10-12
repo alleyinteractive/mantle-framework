@@ -51,6 +51,7 @@ class ControllerTest extends FrameworkTestCase {
 		$this->get( '/example-controller-with-request/name' )
 			->assertOk()
 			->assertContent( 'namename' );
+
 		$this->get( '/flipped-example-controller-with-request/name' )
 			->assertOk()
 			->assertContent( 'namename' );
