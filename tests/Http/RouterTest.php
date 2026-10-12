@@ -287,7 +287,9 @@ class RouterTest extends FrameworkTestCase {
 			fn () => $router->get( '/example-route-with-middleware', fn () => 'The response' )->name( 'example-route' ),
 		);
 
-		$this->get( '/example-route-with-middleware' )->assertContent( 'The response' );
+		$this->get( '/example-route-with-middleware' )
+			->assertOk()
+			->assertContent( 'The response' );
 
 		$this->assertEquals( '/example-route-with-middleware', $_SERVER['__middleware'] );
 	}
@@ -308,7 +310,9 @@ class RouterTest extends FrameworkTestCase {
 				->without_middleware( Testable_Middleware_Router::class )
 		);
 
-		$this->get( '/example-route-with-middleware-without' )->assertContent( 'The response' );
+		$this->get( '/example-route-with-middleware-without' )
+			->assertOk()
+			->assertContent( 'The response' );
 
 		$this->assertEmpty( $_SERVER['__middleware'] );
 		$this->assertTrue( $_SERVER['closure_middleware'] );
@@ -330,7 +334,9 @@ class RouterTest extends FrameworkTestCase {
 				->without_middleware()
 		);
 
-		$this->get( '/example-route-with-middleware-without' )->assertContent( 'The response' );
+		$this->get( '/example-route-with-middleware-without' )
+			->assertOk()
+			->assertContent( 'The response' );
 
 		$this->assertEmpty( $_SERVER['__middleware'] );
 		$this->assertEmpty( $_SERVER['closure_middleware'] );
@@ -345,7 +351,9 @@ class RouterTest extends FrameworkTestCase {
 
 		$router->sync_routes_to_url_generator();
 
-		$this->get( '/example-prefix/example-route-prefix' )->assertContent( 'The response' );
+		$this->get( '/example-prefix/example-route-prefix' )
+			->assertOk()
+			->assertContent( 'The response' );
 
 		$this->assertStringEndsWith( '/example-prefix/example-route-prefix', route( 'example-route' ) );
 	}
@@ -359,7 +367,9 @@ class RouterTest extends FrameworkTestCase {
 
 		$router->sync_routes_to_url_generator();
 
-		$this->get( '/example-route-prefix' )->assertContent( 'The response' );
+		$this->get( '/example-route-prefix' )
+			->assertOk()
+			->assertContent( 'The response' );
 
 		$this->assertStringEndsWith( '/example-route-prefix', route( 'example-prefix.example-route' ) );
 	}

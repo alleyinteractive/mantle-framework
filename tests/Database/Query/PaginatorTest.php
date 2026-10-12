@@ -43,9 +43,11 @@ class PaginatorTest extends FrameworkTestCase {
 
 		for ( $i = 1; $i <= 3; $i++ ) {
 			if ( isset( $paginator) ) {
-				$this->get( $paginator->next_url() );
+				$this->get( $paginator->next_url() )
+					->assertOk();
 			} else {
-				$this->get( '/' );
+				$this->get( '/' )
+					->assertOk();
 			}
 
 			$paginator = Post::simple_paginate( 20 );
@@ -71,9 +73,11 @@ class PaginatorTest extends FrameworkTestCase {
 
 		for ( $i = 1; $i <= 3; $i++ ) {
 			if ( isset( $paginator) ) {
-				$this->get( $paginator->next_url() );
+				$this->get( $paginator->next_url() )
+					->assertOk();
 			} else {
-				$this->get( '/' );
+				$this->get( '/' )
+					->assertOk();
 			}
 
 			$paginator = Post::simple_paginate( 20 )->use_path();
@@ -95,9 +99,11 @@ class PaginatorTest extends FrameworkTestCase {
 	public function test_paginate_render() {
 		for ( $i = 1; $i <= 3; $i++ ) {
 			if ( isset( $paginator) ) {
-				$this->get( $paginator->next_url() );
+				$this->get( $paginator->next_url() )
+					->assertOk();
 			} else {
-				$this->get( '/' );
+				$this->get( '/' )
+					->assertOk();
 			}
 
 			$paginator = Post::simple_paginate( 20 );
@@ -119,9 +125,11 @@ class PaginatorTest extends FrameworkTestCase {
 		for ( $i = 1; $i <= $max_pages; $i++ ) {
 			if ( isset( $paginator) ) {
 				$this->assertNotNull( $paginator->next_url() );
-				$this->get( $paginator->next_url() );
+				$this->get( $paginator->next_url() )
+					->assertOk();
 			} else {
-				$this->get( '/' );
+				$this->get( '/' )
+					->assertOk();
 			}
 
 			$paginator = Post::paginate( 30 );
