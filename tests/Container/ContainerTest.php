@@ -516,7 +516,7 @@ class ContainerTest extends TestCase {
 			}
 		);
 
-		$this->assertEquals( [], $container->make( 'foo', [ 'something' ] ) );
+		$this->assertSame( [], $container->make( 'foo', [ 'something' ] ) );
 	}
 
 	public function testSingletonBindingsNotRespectedWithMakeParameters() {

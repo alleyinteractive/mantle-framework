@@ -58,7 +58,7 @@ class CommandTest extends TestCase {
 
 		$this->assertEquals( 'value1', $command->argument( 'arg1' ) );
 		$this->assertEquals( 'value2', $command->argument( 'arg2' ) );
-		$this->assertEquals( true, $command->option( 'opt1' ) );
+		$this->assertTrue( $command->option( 'opt1' ) );
 		$this->assertEquals( 'value3', $command->option( 'opt2' ) );
 		$this->assertEquals( [ 'value4', 'value5' ], $command->option( 'opt3' ) );
 	}

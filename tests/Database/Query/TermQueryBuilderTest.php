@@ -61,7 +61,7 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 			->get()
 			->pluck( 'id' );
 
-		$this->assertFalse( in_array( $tag_id, $get->to_array(), true ) );
+		$this->assertNotContains( $tag_id, $get->to_array() );
 	}
 
 	public function test_term_orderby_asc() {

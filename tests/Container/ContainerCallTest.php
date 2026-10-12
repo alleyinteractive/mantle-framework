@@ -130,7 +130,7 @@ class ContainerCallTest extends TestCase {
 		);
 
 		$this->assertInstanceOf( stdClass::class, $result[0] );
-		$this->assertEquals( [], $result[1] );
+		$this->assertSame( [], $result[1] );
 
 		$result = $container->call(
 			function ( stdClass $foo, $bar = [] ) {
