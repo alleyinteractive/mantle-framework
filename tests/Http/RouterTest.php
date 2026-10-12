@@ -257,7 +257,7 @@ class RouterTest extends FrameworkTestCase {
 
 		$router->sync_routes_to_url_generator();
 
-		$this->assertEquals( home_url( '/example-route-url' ), route( 'test_route_name_url' ) );
+		$this->assertSame( home_url( '/example-route-url' ), route( 'test_route_name_url' ) );
 	}
 
 	public function test_fluent_routing() {
@@ -273,8 +273,8 @@ class RouterTest extends FrameworkTestCase {
 
 		$router->sync_routes_to_url_generator();
 
-		$this->assertEquals( home_url( '/test_fluent_routing' ), route( 'route-name' ) );
-		$this->assertEquals(
+		$this->assertSame( home_url( '/test_fluent_routing' ), route( 'route-name' ) );
+		$this->assertSame(
 			home_url( '/test_fluent_routing_with_var/var_to_compare' ),
 			route( 'route-name-with-var', [ 'var' => 'var_to_compare' ] )
 		);
@@ -289,7 +289,7 @@ class RouterTest extends FrameworkTestCase {
 
 		$this->get( '/example-route-with-middleware' )->assertContent( 'The response' );
 
-		$this->assertEquals( '/example-route-with-middleware', $_SERVER['__middleware'] );
+		$this->assertSame( '/example-route-with-middleware', $_SERVER['__middleware'] );
 	}
 
 	public function test_without_middleware_registration() {
