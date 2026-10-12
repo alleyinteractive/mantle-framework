@@ -47,11 +47,11 @@ class HasOneOrManyTest extends FrameworkTestCase {
 		static::factory()->post->create_many( 10 );
 		static::factory()->page->create_many( 10 );
 
-		$this->assertEquals( $page->id, $post->page->id );
-		$this->assertEquals( $page->id, $post->page()->first()->id );
+		$this->assertSame( $page->id, $post->page->id );
+		$this->assertSame( $page->id, $post->page()->first()->id );
 
 		// Check the inverse of the relationship (belongs to).
-		$this->assertEquals( $post->id, $page->post->id );
+		$this->assertSame( $post->id, $page->post->id );
 	}
 
 	public function test_has_many_post_to_post() {
@@ -78,10 +78,10 @@ class HasOneOrManyTest extends FrameworkTestCase {
 
 		// Assert that all pages exist and in the expected order.
 		foreach ( $pages as $i => $page ) {
-			$this->assertEquals( $page->id, $post->pages[ $i ]->id );
+			$this->assertSame( $page->id, $post->pages[ $i ]->id );
 
 			// Check the inverse of the relationship (belongs to).
-			$this->assertEquals( $post->id, $page->post->id );
+			$this->assertSame( $post->id, $page->post->id );
 		}
 	}
 
@@ -93,7 +93,7 @@ class HasOneOrManyTest extends FrameworkTestCase {
 		$sponsor->posts()->save( $post );
 
 		// Query the sponsor's post.
-		$this->assertEquals( $post->id(), $sponsor->posts()->first()->id() );
+		$this->assertSame( $post->id(), $sponsor->posts()->first()->id() );
 
 		// Remove the sponsor from the post.
 		$sponsor->posts()->remove( $post );
@@ -151,10 +151,10 @@ class HasOneOrManyTest extends FrameworkTestCase {
 		$terms = get_the_tags( $post->id() );
 
 		$this->assertNotEmpty( $terms );
-		$this->assertEquals( $tag->id(), array_shift( $terms )->term_id );
+		$this->assertSame( $tag->id(), array_shift( $terms )->term_id );
 
 		// Check the relationship.
-		$this->assertEquals( $tag->id, $post->tag->id );
+		$this->assertSame( $tag->id, $post->tag->id );
 
 		$tag->posts()->remove( $post );
 		$this->assertEmpty( get_the_terms( $post->id(), 'test_taxonomy' ) );
@@ -172,12 +172,12 @@ class HasOneOrManyTest extends FrameworkTestCase {
 
 		static::factory()->tag->create_many( 10 );
 
-		$this->assertEquals( count( $tags ), count( get_the_tags( $post->id ) ) );
-		$this->assertEquals( count( $tags ), count( $post->tags ) );
+		$this->assertSame( count( $tags ), count( get_the_tags( $post->id ) ) );
+		$this->assertSame( count( $tags ), count( $post->tags ) );
 
 		// Check they match the expected tags.
 		foreach ( $tags as $i => $tag ) {
-			$this->assertEquals( $tag->id, $post->tags[ $i ]->id );
+			$this->assertSame( $tag->id, $post->tags[ $i ]->id );
 		}
 	}
 
@@ -190,8 +190,8 @@ class HasOneOrManyTest extends FrameworkTestCase {
 			'status' => 'publish',
 		] ) );
 
-		$this->assertEquals( $post->id, $tag->post->id );
-		$this->assertEquals( $tag->id, get_the_tags( $post->id )[0]->term_id );
+		$this->assertSame( $post->id, $tag->post->id );
+		$this->assertSame( $tag->id, get_the_tags( $post->id )[0]->term_id );
 
 		$tag->post()->remove( $post );
 
@@ -213,11 +213,11 @@ class HasOneOrManyTest extends FrameworkTestCase {
 			] ) );
 		}
 
-		$this->assertEquals( count( $posts ), count( $tag->posts ) );
+		$this->assertSame( count( $posts ), count( $tag->posts ) );
 
 		foreach ( $posts as $i => $post ) {
 			$this->assertTrue( has_tag( $tag->id, $post->id ) );
-			$this->assertEquals( $post->id, $tag->posts[ $i ]->id );
+			$this->assertSame( $post->id, $tag->posts[ $i ]->id );
 		}
 	}
 
@@ -246,7 +246,7 @@ class HasOneOrManyTest extends FrameworkTestCase {
 		$sponsors_post = $sponsor->post()->first();
 
 		$this->assertInstanceOf( Testable_Post_Using_Term::class, $sponsors_post );
-		$this->assertEquals( $post->id, $sponsors_post->id );
+		$this->assertSame( $post->id, $sponsors_post->id );
 
 		// Delete the relationship and ensure the internal term is removed.
 		$sponsor->post()->remove( $post );
