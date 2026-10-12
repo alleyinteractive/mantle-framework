@@ -80,7 +80,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		$value = apply_filters( 'custom_filter', 5 );
 
-		$this->assertEquals( 15, $value );
+		$this->assertSame( 15, $value );
 	}
 
 	public function test_hook_attribute() {
@@ -100,7 +100,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		$value = apply_filters( 'custom_filter_from_attribute', 5 );
 
-		$this->assertEquals( 50, $value );
+		$this->assertSame( 50, $value );
 	}
 
 	public function test_hook_attribute_deduplicate() {
@@ -110,7 +110,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		$value = apply_filters( 'custom_filter_dedupe', 0 );
 
-		$this->assertEquals( 10, $value );
+		$this->assertSame( 10, $value );
 	}
 
 	public function test_typehint_event() {
@@ -138,9 +138,9 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 			ServiceProviderForTestingTwo::class,
 		];
 
-		$this->assertEquals( $expected, Service_Provider::publishable_providers() );
+		$this->assertSame( $expected, Service_Provider::publishable_providers() );
 
-		$this->assertEquals(
+		$this->assertSame(
 			[
 				'source/unmarked/one' => 'destination/unmarked/one',
 				'source/tagged/one' => 'destination/tagged/one',
@@ -164,7 +164,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 			),
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			[
 				'source/tagged/one' => 'destination/tagged/one',
 				'source/tagged/two/a' => 'destination/tagged/two/a',
@@ -175,7 +175,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 			),
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			[
 				'source/tagged/multiple' => 'destination/tagged/multiple',
 			],
@@ -184,7 +184,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 			),
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			[
 				'source/tagged/one' => 'destination/tagged/one'
 			],
@@ -206,7 +206,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 			),
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			[
 				'source/tagged/two/a' => 'destination/tagged/two/a',
 				'source/tagged/two/b' => 'destination/tagged/two/b',
@@ -224,7 +224,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$app->register( ServiceProviderForTestingTwo::class );
 		$app->boot();
 
-		$this->assertEquals( [ 'some_tag', 'tag_one', 'tag_two' ], Service_Provider::publishable_tags() );
+		$this->assertSame( [ 'some_tag', 'tag_one', 'tag_two' ], Service_Provider::publishable_tags() );
 	}
 
 	public function test_call_after_resolving() {
@@ -250,9 +250,9 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		$app->bind( 'foo',  fn () => 'bar' );
 
-		$this->assertEquals( 'bar', $app->make( 'foo' ) );
+		$this->assertSame( 'bar', $app->make( 'foo' ) );
 
-		$this->assertEquals( 'one', $_SERVER['__after_resolving'] );
+		$this->assertSame( 'one', $_SERVER['__after_resolving'] );
 	}
 
 	public function test_call_after_resolving_already_resolved() {
@@ -274,9 +274,9 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		$app->bind( 'foo',  fn () => 'bar' );
 
-		$this->assertEquals( 'bar', $app->make( 'foo' ) );
+		$this->assertSame( 'bar', $app->make( 'foo' ) );
 
-		$this->assertEquals( 'one', $_SERVER['__after_resolving'] );
+		$this->assertSame( 'one', $_SERVER['__after_resolving'] );
 	}
 
 	public function test_service_provider_with_passing_validator(): void {

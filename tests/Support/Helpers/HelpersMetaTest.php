@@ -35,7 +35,7 @@ class HelpersMetaTest extends FrameworkTestCase {
 		// Ensure defaults were applied properly.
 		$this->assertTrue( $registered['test_post_meta_key']['show_in_rest'] );
 		$this->assertTrue( $registered['test_post_meta_key']['single'] );
-		$this->assertEquals( 'string', $registered['test_post_meta_key']['type'] );
+		$this->assertSame( 'string', $registered['test_post_meta_key']['type'] );
 
 		// Ensure meta is not registered for a different post type.
 		$registered = get_registered_meta_keys( 'post', 'page' );
@@ -47,7 +47,7 @@ class HelpersMetaTest extends FrameworkTestCase {
 		// Ensure defaults were applied properly.
 		$this->assertTrue( $registered['test_term_meta_key']['show_in_rest'] );
 		$this->assertTrue( $registered['test_term_meta_key']['single'] );
-		$this->assertEquals( 'string', $registered['test_term_meta_key']['type'] );
+		$this->assertSame( 'string', $registered['test_term_meta_key']['type'] );
 
 		// Ensure meta is not registered for a different term type.
 		$registered = get_registered_meta_keys( 'term', 'post_tag' );
@@ -66,10 +66,10 @@ class HelpersMetaTest extends FrameworkTestCase {
 			]
 		);
 		$registered = get_registered_meta_keys( 'post', 'post' );
-		$this->assertEquals( 'absint', $registered['test_custom_meta_key']['sanitize_callback'] );
+		$this->assertSame( 'absint', $registered['test_custom_meta_key']['sanitize_callback'] );
 		$this->assertFalse( $registered['test_custom_meta_key']['show_in_rest'] );
 		$this->assertFalse( $registered['test_custom_meta_key']['single'] );
-		$this->assertEquals( 'integer', $registered['test_custom_meta_key']['type'] );
+		$this->assertSame( 'integer', $registered['test_custom_meta_key']['type'] );
 	}
 
 	public function test_register_meta_from_file(): void {
@@ -81,7 +81,7 @@ class HelpersMetaTest extends FrameworkTestCase {
 
 		$registered = get_registered_meta_keys( 'post', 'post' );
 		$this->assertArrayHasKey( 'testable_meta_key', $registered );
-		$this->assertEquals( 'string', $registered['testable_meta_key']['type'] );
+		$this->assertSame( 'string', $registered['testable_meta_key']['type'] );
 		$this->assertTrue( $registered['testable_meta_key']['single'] );
 		$this->assertTrue( $registered['testable_meta_key']['show_in_rest'] );
 	}
@@ -95,7 +95,7 @@ class HelpersMetaTest extends FrameworkTestCase {
 
 		$registered = get_registered_meta_keys( 'post', 'post' );
 		$this->assertArrayHasKey( 'testable_schema_meta_key', $registered );
-		$this->assertEquals( 'string', $registered['testable_schema_meta_key']['type'] );
+		$this->assertSame( 'string', $registered['testable_schema_meta_key']['type'] );
 		$this->assertTrue( $registered['testable_schema_meta_key']['single'] );
 		$this->assertTrue( $registered['testable_schema_meta_key']['show_in_rest'] );
 	}
