@@ -27,7 +27,7 @@ class CommandTest extends TestCase {
 		$this->assertSame( 'foo:bar', $command->getName() );
 		$this->assertSame( [ 'arg1', 'arg2' ], array_keys( $command->getDefinition()->getArguments() ) );
 		$this->assertSame( [ 'opt1', 'opt2', 'opt3' ], array_keys( $command->getDefinition()->getOptions() ) );
-		$this->assertEquals( 1, $command->getDefinition()->getArgumentRequiredCount() );
+		$this->assertSame( 1, $command->getDefinition()->getArgumentRequiredCount() );
 	}
 
 	public function test_command_argument_and_option_reading() {
@@ -48,7 +48,7 @@ class CommandTest extends TestCase {
 		] ), new NullOutput() );
 
 		$this->assertTrue( $command->has_argument( 'arg1' ) );
-		$this->assertEquals(
+		$this->assertSame(
 			[
 				'arg1' => 'value1',
 				'arg2' => 'value2',
@@ -56,11 +56,11 @@ class CommandTest extends TestCase {
 			$command->arguments(),
 		);
 
-		$this->assertEquals( 'value1', $command->argument( 'arg1' ) );
-		$this->assertEquals( 'value2', $command->argument( 'arg2' ) );
+		$this->assertSame( 'value1', $command->argument( 'arg1' ) );
+		$this->assertSame( 'value2', $command->argument( 'arg2' ) );
 		$this->assertTrue( $command->option( 'opt1' ) );
-		$this->assertEquals( 'value3', $command->option( 'opt2' ) );
-		$this->assertEquals( [ 'value4', 'value5' ], $command->option( 'opt3' ) );
+		$this->assertSame( 'value3', $command->option( 'opt2' ) );
+		$this->assertSame( [ 'value4', 'value5' ], $command->option( 'opt3' ) );
 	}
 
 	public function test_command_invalid_arguments() {
