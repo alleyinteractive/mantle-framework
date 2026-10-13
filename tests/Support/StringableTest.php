@@ -94,11 +94,11 @@ class StringableTest extends TestCase {
 		$this->assertSame( 'bar', (string) $stringable->match( '/foo (.*)/' ) );
 		$this->assertTrue( $stringable->match( '/nothing/' )->is_empty() );
 
-		$this->assertEquals( [ 'bar', 'bar' ], $this->stringable( 'bar foo bar' )->match_all( '/bar/' )->all() );
+		$this->assertSame( [ 'bar', 'bar' ], $this->stringable( 'bar foo bar' )->match_all( '/bar/' )->all() );
 
 		$stringable = $this->stringable( 'bar fun bar fly' );
 
-		$this->assertEquals( [ 'un', 'ly' ], $stringable->match_all( '/f(\w*)/' )->all() );
+		$this->assertSame( [ 'un', 'ly' ], $stringable->match_all( '/f(\w*)/' )->all() );
 		$this->assertTrue( $stringable->match_all( '/nothing/' )->is_empty() );
 	}
 
@@ -746,7 +746,7 @@ class StringableTest extends TestCase {
 	public function testWithoutWordsDoesntProduceError() {
 		$nbsp = chr( 0xC2 ) . chr( 0xA0 );
 		$this->assertSame( ' ', (string) $this->stringable( ' ' )->words() );
-		$this->assertEquals( $nbsp, (string) $this->stringable( $nbsp )->words() );
+		$this->assertSame( $nbsp, (string) $this->stringable( $nbsp )->words() );
 	}
 
 	public function testAscii() {
@@ -920,9 +920,9 @@ class StringableTest extends TestCase {
 	}
 
 	public function testParseCallback() {
-		$this->assertEquals( [ 'Class', 'method' ], $this->stringable( 'Class@method' )->parse_callback( 'foo' ) );
-		$this->assertEquals( [ 'Class', 'foo' ], $this->stringable( 'Class' )->parse_callback( 'foo' ) );
-		$this->assertEquals( [ 'Class', null ], $this->stringable( 'Class' )->parse_callback() );
+		$this->assertSame( [ 'Class', 'method' ], $this->stringable( 'Class@method' )->parse_callback( 'foo' ) );
+		$this->assertSame( [ 'Class', 'foo' ], $this->stringable( 'Class' )->parse_callback( 'foo' ) );
+		$this->assertSame( [ 'Class', null ], $this->stringable( 'Class' )->parse_callback() );
 	}
 
 	public function testSlug() {
@@ -1180,10 +1180,10 @@ class StringableTest extends TestCase {
 	}
 
 	public function testCharAt() {
-		$this->assertEquals( 'р', $this->stringable( 'Привет, мир!' )->char_at( 1 ) );
-		$this->assertEquals( 'ち', $this->stringable( '「こんにちは世界」' )->char_at( 4 ) );
-		$this->assertEquals( 'w', $this->stringable( 'Привет, world!' )->char_at( 8 ) );
-		$this->assertEquals( '界', $this->stringable( '「こんにちは世界」' )->char_at( -2 ) );
+		$this->assertSame( 'р', $this->stringable( 'Привет, мир!' )->char_at( 1 ) );
+		$this->assertSame( 'ち', $this->stringable( '「こんにちは世界」' )->char_at( 4 ) );
+		$this->assertSame( 'w', $this->stringable( 'Привет, world!' )->char_at( 8 ) );
+		$this->assertSame( '界', $this->stringable( '「こんにちは世界」' )->char_at( -2 ) );
 		$this->assertFalse( $this->stringable( '「こんにちは世界」' )->char_at( -200 ) );
 	}
 
@@ -1334,8 +1334,8 @@ class StringableTest extends TestCase {
 	}
 
 	public function testWordCount() {
-		$this->assertEquals( 2, $this->stringable( 'Hello, world!' )->word_count() );
-		$this->assertEquals( 10, $this->stringable( 'Hi, this is my first contribution to the Laravel framework.' )->word_count() );
+		$this->assertSame( 2, $this->stringable( 'Hello, world!' )->word_count() );
+		$this->assertSame( 10, $this->stringable( 'Hi, this is my first contribution to the Laravel framework.' )->word_count() );
 	}
 
 	public function testWrap() {
