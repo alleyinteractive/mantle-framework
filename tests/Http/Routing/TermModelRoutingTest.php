@@ -34,6 +34,7 @@ class TermModelRoutingTest extends FrameworkTestCase {
 
 		$this
 			->get( $term_link )
+			->assertOk()
 			->assertSee( $category->slug() )
 			->assertQueriedObject( get_term( $category->id() ) )
 			->assertQueriedObjectId( $category->id() )
@@ -76,6 +77,7 @@ class TermModelRoutingTest extends FrameworkTestCase {
 
 		$this
 			->get( $term_link )
+			->assertOk()
 			->assertContent( $term->slug() )
 			->assertQueriedObject( get_term( $term->id() ) )
 			->assertQueriedObjectId( $term->id() )
