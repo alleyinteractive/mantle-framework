@@ -8,6 +8,16 @@ use PHPUnit\Framework\TestCase;
 
 class ParserTest extends TestCase {
 
+	public function testArgumentDescriptionContainingDashes() {
+		$results = Parser::parse( 'make:thing {name : The name (use --force to overwrite)} {--dry-run : Do not --write}' );
+
+		$this->assertSame( 'make:thing', $results[0] );
+		$this->assertCount( 1, $results[1] );
+		$this->assertSame( 'name', $results[1][0]->getName() );
+		$this->assertCount( 1, $results[2] );
+		$this->assertSame( 'dry-run', $results[2][0]->getName() );
+	}
+
 	public function testBasicParameterParsing() {
 		$results = Parser::parse( 'command:name' );
 

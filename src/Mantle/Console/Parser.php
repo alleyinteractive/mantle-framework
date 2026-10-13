@@ -65,7 +65,7 @@ class Parser {
 		$options = [];
 
 		foreach ( $tokens as $token ) {
-			if ( preg_match( '/-{2,}(.*)/', (string) $token, $matches ) ) {
+			if ( preg_match( '/^-{2,}(.*)/', (string) $token, $matches ) ) {
 				$options[] = static::parse_option( $matches[1] );
 			} else {
 				$arguments[] = static::parse_argument( $token );
