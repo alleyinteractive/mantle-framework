@@ -71,13 +71,13 @@ class HelpersGeneralTest extends TestCase {
 
 	public function testTap() {
 		$object = (object) [ 'id' => 1 ];
-		$this->assertEquals( 2, tap( $object, function ( $object ) {
+		$this->assertSame( 2, tap( $object, function ( $object ) {
 			$object->id = 2;
 		} )->id );
 
 		$mock = m::mock();
 		$mock->shouldReceive( 'foo' )->once()->andReturn( 'bar' );
-		$this->assertEquals( $mock, tap( $mock )->foo() );
+		$this->assertSame( $mock, tap( $mock )->foo() );
 	}
 
 	public function testThrow() {
@@ -109,7 +109,7 @@ class HelpersGeneralTest extends TestCase {
 		}, 100 );
 
 		// Make sure we made two attempts
-		$this->assertEquals( 2, $attempts );
+		$this->assertSame( 2, $attempts );
 
 		// Make sure we waited 100ms for the first attempt
 		$this->assertTrue( microtime( true ) - $startTime >= 0.1 );
@@ -129,7 +129,7 @@ class HelpersGeneralTest extends TestCase {
 		} );
 
 		// Make sure we made two attempts
-		$this->assertEquals( 2, $attempts );
+		$this->assertSame( 2, $attempts );
 
 		// Make sure we waited 100ms for the first attempt
 		$this->assertTrue( microtime( true ) - $startTime >= 0.1 );
@@ -150,7 +150,7 @@ class HelpersGeneralTest extends TestCase {
 	}
 
 	public function testTransform() {
-		$this->assertEquals( 10, transform( 5, function ( $value ) {
+		$this->assertSame( 10, transform( 5, function ( $value ) {
 			return $value * 2;
 		} ) );
 
@@ -172,9 +172,9 @@ class HelpersGeneralTest extends TestCase {
 	}
 
 	public function testWith() {
-		$this->assertEquals( 10, with( 10 ) );
+		$this->assertSame( 10, with( 10 ) );
 
-		$this->assertEquals( 10, with( 5, function ( $five ) {
+		$this->assertSame( 10, with( 5, function ( $five ) {
 			return $five + 5;
 		} ) );
 	}

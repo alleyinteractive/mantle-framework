@@ -101,7 +101,7 @@ class FactoryTest extends FrameworkTestCase {
 		$this->assertInstanceOf( Testable_Post_With_Factory::class, $post );
 
 		// Ensure that the post's definition was used.
-		$this->assertEquals( 'Title from the custom factory', $post->post_title );
+		$this->assertSame( 'Title from the custom factory', $post->post_title );
 	}
 
 	public function test_create_model_with_custom_factory_string() {
@@ -114,13 +114,13 @@ class FactoryTest extends FrameworkTestCase {
 		$this->assertInstanceOf( Testable_Post_With_Factory_String::class, $post );
 
 		// Ensure that the post's definition was used.
-		$this->assertEquals( 'Title from the custom factory', $post->post_title );
+		$this->assertSame( 'Title from the custom factory', $post->post_title );
 	}
 
 	public function test_create_model_with_scope() {
 		$post = Testable_Post_With_Factory::factory()->custom_state()->create_and_get();
 
-		$this->assertEquals( 'Title from the custom state', $post->post_title );
+		$this->assertSame( 'Title from the custom state', $post->post_title );
 	}
 
 	public function test_first_or_create(): void {
@@ -130,15 +130,15 @@ class FactoryTest extends FrameworkTestCase {
 		);
 
 		$this->assertInstanceOf( Testable_Post::class, $post );
-		$this->assertEquals( 'Unique Title', $post->post_title );
-		$this->assertEquals( 'Content for the unique title', $post->post_content );
+		$this->assertSame( 'Unique Title', $post->post_title );
+		$this->assertSame( 'Content for the unique title', $post->post_content );
 
 		$post2 = Testable_Post::factory()->first_or_create(
 			[ 'post_title' => 'Unique Title' ],
 			[ 'post_content' => 'Content for the unique title' ]
 		);
 
-		$this->assertEquals( $post->ID, $post2->ID );
+		$this->assertSame( $post->ID, $post2->ID );
 	}
 
 	/**
@@ -146,7 +146,7 @@ class FactoryTest extends FrameworkTestCase {
 	 */
 	#[DataProvider( 'factory_resolve_custom_names' )]
 	public function test_resolve_custom_names( string $model, string $expected ) {
-		$this->assertEquals( $expected, Factory\Factory::resolve_custom_factory_name( $model ) );
+		$this->assertSame( $expected, Factory\Factory::resolve_custom_factory_name( $model ) );
 	}
 
 	public static function factory_resolve_custom_names(): array {
@@ -163,7 +163,7 @@ class FactoryTest extends FrameworkTestCase {
 	 */
 	#[DataProvider( 'factory_resolve_default' )]
 	public function test_resolve_default( string $model, string $expected ) {
-		$this->assertEquals( $expected, Factory\Factory::default_factory_name( $model ) );
+		$this->assertSame( $expected, Factory\Factory::default_factory_name( $model ) );
 	}
 
 	public static function factory_resolve_default(): array {
@@ -221,7 +221,7 @@ class FactoryTest extends FrameworkTestCase {
 
 		$this->assertIsArray( $posts );
 		$this->assertCount( 3, $posts );
-		$this->assertEquals(
+		$this->assertSame(
 			'Title from the custom state',
 			$posts[0]->title,
 		);
@@ -235,7 +235,7 @@ class FactoryTest extends FrameworkTestCase {
 
 		$post_id = Testable_Post::factory()->with_custom_meta()->create();
 
-		$this->assertEquals( 'custom_meta_value', get_post_meta( $post_id, 'custom_meta_key', true ) );
+		$this->assertSame( 'custom_meta_value', get_post_meta( $post_id, 'custom_meta_key', true ) );
 	}
 
 	public function test_create_custom_post_type_model() {
@@ -249,7 +249,7 @@ class FactoryTest extends FrameworkTestCase {
 		$post = Testable_Custom_Post_Type::factory()->create_and_get();
 
 		$this->assertInstanceOf( Testable_Custom_Post_Type::class, $post );
-		$this->assertEquals( 'custom_post_type', $post->post_type );
+		$this->assertSame( 'custom_post_type', $post->post_type );
 		$this->assertNotEmpty( $post->title );
 		$this->assertNotEmpty( $post->content );
 	}
@@ -266,7 +266,7 @@ class FactoryTest extends FrameworkTestCase {
 		$post = Testable_Custom_Taxonomy::factory()->create_and_get();
 
 		$this->assertInstanceOf( Testable_Custom_Taxonomy::class, $post );
-		$this->assertEquals( 'custom_taxonomy', $post->taxonomy );
+		$this->assertSame( 'custom_taxonomy', $post->taxonomy );
 		$this->assertNotEmpty( $post->name );
 	}
 
@@ -275,7 +275,7 @@ class FactoryTest extends FrameworkTestCase {
 			'post_title' => fn () => 'Title from callable',
 		] );
 
-		$this->assertEquals( 'Title from callable', $post->post_title );
+		$this->assertSame( 'Title from callable', $post->post_title );
 	}
 
 	public function test_string_matching_global_function_name_as_attribute(): void {

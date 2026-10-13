@@ -37,8 +37,8 @@ class CoAuthorsPlusFactoryTest extends FrameworkTestCase {
 		$this->assertInstanceOf( stdClass::class, $author );
 		$this->assertSame( 'John Doe', $author->display_name );
 		$this->assertSame( 'cap-john-doe', $author->user_login );
-		$this->assertEquals( 'John', get_post_meta( $author->ID, 'cap-first_name', true ) );
-		$this->assertEquals( 'Doe', get_post_meta( $author->ID, 'cap-last_name', true ) );
+		$this->assertSame( 'John', get_post_meta( $author->ID, 'cap-first_name', true ) );
+		$this->assertSame( 'Doe', get_post_meta( $author->ID, 'cap-last_name', true ) );
 	}
 
 	public function test_create_guest_author_linked(): void {
@@ -46,24 +46,24 @@ class CoAuthorsPlusFactoryTest extends FrameworkTestCase {
 		$author = static::factory()->cap_guest_author->with_linked_user( $user->ID )->create_and_get();
 
 		$this->assertInstanceOf( stdClass::class, $author );
-		$this->assertEquals( $user->user_login, get_post_meta( $author->ID, 'cap-user_login', true ) );
+		$this->assertSame( $user->user_login, get_post_meta( $author->ID, 'cap-user_login', true ) );
 
-		$this->assertEquals(
+		$this->assertSame(
 			get_post_meta( $author->ID, 'cap-first_name', true ),
 			get_user_meta( $user->ID, 'first_name', true )
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			get_post_meta( $author->ID, 'cap-last_name', true ),
 			get_user_meta( $user->ID, 'last_name', true )
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			get_post_meta( $author->ID, 'cap-display_name', true ),
 			$user->display_name,
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			get_post_meta( $author->ID, 'cap-user_email', true ),
 			$user->user_email,
 		);
@@ -79,7 +79,7 @@ class CoAuthorsPlusFactoryTest extends FrameworkTestCase {
 		$guest_authors = get_coauthors( $post->ID );
 
 		$this->assertCount( 2, $guest_authors );
-		$this->assertEquals(
+		$this->assertSame(
 			collect( [ $author, $author_2 ] )->pluck( 'display_name' )->sort()->all(),
 			collect( $guest_authors )->pluck( 'display_name' )->sort()->all(),
 		);
@@ -94,7 +94,7 @@ class CoAuthorsPlusFactoryTest extends FrameworkTestCase {
 		$guest_authors = get_coauthors( $post->ID );
 
 		$this->assertCount( 2, $guest_authors );
-		$this->assertEquals(
+		$this->assertSame(
 			collect( [ $author->display_name, $user->display_name ] )->sort()->all(),
 			collect( $guest_authors )->pluck( 'display_name' )->sort()->all(),
 		);
@@ -112,7 +112,7 @@ class CoAuthorsPlusFactoryTest extends FrameworkTestCase {
 		$guest_authors = get_coauthors( $post->ID );
 
 		$this->assertCount( 2, $guest_authors );
-		$this->assertEquals(
+		$this->assertSame(
 			[ 'Array Author', 'Existing Author Object' ],
 			collect( $guest_authors )->pluck( 'display_name' )->sort()->values()->all(),
 		);

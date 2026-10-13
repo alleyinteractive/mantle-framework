@@ -59,7 +59,7 @@ class MakesHttpRequestsWithSitemapTest extends FrameworkTestCase {
 
 		$sitemap_url = $server->index->get_index_url();
 
-		$this->assertEquals( home_url( '/wp-sitemap.xml' ), $sitemap_url );
+		$this->assertSame( home_url( '/wp-sitemap.xml' ), $sitemap_url );
 
 		$response = $this->get( $sitemap_url )
 			->assertOk()

@@ -32,7 +32,7 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertTrue( $d->has_listeners( __METHOD__ ) );
 		$d->dispatch( __METHOD__, 'bar' );
 
-		$this->assertEquals( 'bar', $_SERVER['__event.test'] );
+		$this->assertSame( 'bar', $_SERVER['__event.test'] );
 	}
 
 	public function testContainerResolutionOfEventHandlers() {
@@ -53,7 +53,7 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		$this->assertTrue( $d->has_listeners( __METHOD__ ) );
 
-		$this->assertEquals( 'baz', $d->dispatch( __METHOD__, 'foo', 'bar' ) );
+		$this->assertSame( 'baz', $d->dispatch( __METHOD__, 'foo', 'bar' ) );
 	}
 
 	public function testContainerResolutionOfEventHandlersWithDefaultMethods() {
@@ -195,7 +195,7 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		$events->dispatch( __FUNCTION__, 'foo' );
 
-		$this->assertEquals( 'foo', $_SERVER['__event_run'] );
+		$this->assertSame( 'foo', $_SERVER['__event_run'] );
 	}
 
 	public function test_dispatch_string_event_name_with_single_non_array_payload() {
@@ -208,7 +208,7 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		$events->dispatch( __FUNCTION__, 'foo' );
 
-		$this->assertEquals( 'foo', $_SERVER['__event_run'] );
+		$this->assertSame( 'foo', $_SERVER['__event_run'] );
 	}
 
 	public function test_dispatch_string_event_name_with_multiple_payloads() {
@@ -221,7 +221,7 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		$events->dispatch( __FUNCTION__, 'foo', 'bar' );
 
-		$this->assertEquals( [ 'foo', 'bar' ], $_SERVER['__event_run'] );
+		$this->assertSame( [ 'foo', 'bar' ], $_SERVER['__event_run'] );
 	}
 
 	public function test_it_can_forget_events(): void {
