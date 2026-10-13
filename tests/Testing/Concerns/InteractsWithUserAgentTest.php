@@ -12,7 +12,8 @@ use PHPUnit\Framework\Attributes\Group;
 class InteractsWithUserAgentTest extends FrameworkTestCase {
 	public function test_normal_user_agent(): void {
 		$this->assertEmpty( $_SERVER['HTTP_USER_AGENT'] ?? '' );
-		$this->get( '/' );
+		$this->get( '/' )
+			->assertOk();
 		$this->assertEmpty( $_SERVER['HTTP_USER_AGENT'] ?? '' );
 
 		$this->assertFalse( wp_is_mobile() );
@@ -30,7 +31,8 @@ class InteractsWithUserAgentTest extends FrameworkTestCase {
 			$captured_user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
 		} );
 
-		$this->get( '/' );
+		$this->get( '/' )
+			->assertOk();
 
 		$this->assertSame( UserAgent::MOBILE, $captured_user_agent );
 	}
