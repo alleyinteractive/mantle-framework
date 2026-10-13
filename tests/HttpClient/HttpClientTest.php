@@ -47,11 +47,11 @@ class HttpClientTest extends FrameworkTestCase {
 		$this->assertTrue( $response->is_json() );
 		$this->assertFalse( $response->is_xml() );
 
-		$this->assertEquals( 'Example-Value', $response->headers()['example-header'] );
-		$this->assertEquals( 'Example-Value', $response->header('example-header') );
-		$this->assertEquals( [ 'example' => 'value' ], $response->json() );
-		$this->assertEquals( 'value', $response->json( 'example' ) );
-		$this->assertEquals( 'value', $response['example'] );
+		$this->assertSame( 'Example-Value', $response->headers()['example-header'] );
+		$this->assertSame( 'Example-Value', $response->header('example-header') );
+		$this->assertSame( [ 'example' => 'value' ], $response->json() );
+		$this->assertSame( 'value', $response->json( 'example' ) );
+		$this->assertSame( 'value', $response['example'] );
 	}
 
 	public function test_make_get_request() {
@@ -113,7 +113,7 @@ class HttpClientTest extends FrameworkTestCase {
 		$response = $this->http_factory->get( 'https://example.com/' );
 
 		$this->assertNotEmpty( $response->cookie( 'example' ) );
-		$this->assertEquals( 'value', $response->cookie( 'example' )->value );
+		$this->assertSame( 'value', $response->cookie( 'example' )->value );
 	}
 
 	public function test_make_request_with_json() {
@@ -156,9 +156,9 @@ class HttpClientTest extends FrameworkTestCase {
 
 		$this->assertRequestSent( 'https://example.com/' );
 
-		$this->assertEquals( [ 'example' => '123' ], $response->mixed_json()->array() );
-		$this->assertEquals( '123', $response->mixed_json( 'example' )->string() );
-		$this->assertEquals( 123, $response->mixed_json( 'example' )->int() );
+		$this->assertSame( [ 'example' => '123' ], $response->mixed_json()->array() );
+		$this->assertSame( '123', $response->mixed_json( 'example' )->string() );
+		$this->assertSame( 123, $response->mixed_json( 'example' )->int() );
 	}
 
 	public function test_make_request_with_basic_auth() {
@@ -359,8 +359,8 @@ class HttpClientTest extends FrameworkTestCase {
 			->get( 'https://example.com/middleware/' );
 
 		$this->assertRequestSent( 'https://example.com/middleware/' );
-		$this->assertEquals( 'modified-value', $response->header( 'test-header' ) );
-		$this->assertEquals( 'example-body', $response->body() );
+		$this->assertSame( 'modified-value', $response->header( 'test-header' ) );
+		$this->assertSame( 'example-body', $response->body() );
 	}
 
 	public function test_wp_error_response() {
@@ -375,7 +375,7 @@ class HttpClientTest extends FrameworkTestCase {
 		$this->assertFalse( $response->successful() );
 		$this->assertFalse( $response->ok() );
 
-		$this->assertEquals( 'An error occurred.', $response->body() );
+		$this->assertSame( 'An error occurred.', $response->body() );
 	}
 
 	public function test_invalid_json() {
@@ -386,7 +386,7 @@ class HttpClientTest extends FrameworkTestCase {
 
 		$response = $this->http_factory->get( 'https://example.com/wp-error/' );
 
-		$this->assertEquals( 'text-body', $response->body() );
+		$this->assertSame( 'text-body', $response->body() );
 		$this->assertNull( $response->json() );
 	}
 
@@ -433,11 +433,11 @@ EOF
 		$this->assertTrue( $response->is_xml() );
 		$this->assertFalse( $response->is_json() );
 
-		$this->assertEquals( 'First Slide Title', $response->xml()->slide[0]->title );
-		$this->assertEquals( 'First Slide Title', $response['slide']->title );
-		$this->assertEquals( 'Second Slide Title', $response->xml()->slide[1]->title );
+		$this->assertSame( 'First Slide Title', (string) $response->xml()->slide[0]->title );
+		$this->assertSame( 'First Slide Title', (string) $response['slide']->title );
+		$this->assertSame( 'Second Slide Title', (string) $response->xml()->slide[1]->title );
 
-		$this->assertEquals( 'Another point!', $response->xml( '/slideshow/slide[@type="specific"]/point' )[0] ?? '' );
+		$this->assertSame( 'Another point!', (string) ( $response->xml( '/slideshow/slide[@type="specific"]/point' )[0] ?? '' ) );
 	}
 
 	public function test_pool_requests() {
@@ -451,8 +451,8 @@ EOF
 			$pool->post( 'https://example.com/second-async/' ),
 		] );
 
-		$this->assertEquals( 200, $response[0]->status() );
-		$this->assertEquals( 402, $response[1]->status() );
+		$this->assertSame( 200, $response[0]->status() );
+		$this->assertSame( 402, $response[1]->status() );
 	}
 
 	public function test_pool_requests_legacy() {
@@ -466,8 +466,8 @@ EOF
 			$pool->method( 'get' )->url( 'https://example.com/second-async/' ),
 		] );
 
-		$this->assertEquals( 200, $response[0]->status() );
-		$this->assertEquals( 402, $response[1]->status() );
+		$this->assertSame( 200, $response[0]->status() );
+		$this->assertSame( 402, $response[1]->status() );
 	}
 
 	public function test_pool_requests_name() {
@@ -481,8 +481,8 @@ EOF
 			$pool->as( 'second' )->method( 'post' )->url( 'https://example.com/second-async/' ),
 		] );
 
-		$this->assertEquals( 200, $response['first']->status() );
-		$this->assertEquals( 402, $response['second']->status() );
+		$this->assertSame( 200, $response['first']->status() );
+		$this->assertSame( 402, $response['second']->status() );
 
 		$this->assertRequestSent(
 			fn ( Request $request ) => 'https://example.com/async/' === $request->url()
@@ -509,8 +509,8 @@ EOF
 			$githubPool->url( '/endpoint-b/' )->method( 'post' ),
 		] );
 
-		$this->assertEquals( 200, $response[0]->status() );
-		$this->assertEquals( 404, $response[1]->status() );
+		$this->assertSame( 200, $response[0]->status() );
+		$this->assertSame( 404, $response[1]->status() );
 
 		$this->assertRequestSent(
 			fn ( Request $request ) => 'https://github.com/endpoint-a/' === $request->url()
@@ -529,19 +529,19 @@ EOF
 			->with_header( 'X-Foo', 'Bar' )
 			->when( true, fn ( Pending_Request $request ) => $request->with_header( 'X-Foo', 'Baz', true ) );
 
-		$this->assertEquals( 'Baz', $request->header( 'X-Foo' ) );
+		$this->assertSame( 'Baz', $request->header( 'X-Foo' ) );
 
 		$request = $this->http_factory
 			->with_header( 'X-Foo', 'Bar' )
 			->when( true )->with_header( 'X-Foo', 'Baz', true );
 
-		$this->assertEquals( 'Baz', $request->header( 'X-Foo' ) );
+		$this->assertSame( 'Baz', $request->header( 'X-Foo' ) );
 
 		$request = $this->http_factory
 			->with_header( 'X-Foo', 'Bar' )
 			->when( false, fn ( Pending_Request $request ) => $request->with_header( 'X-Foo', 'Baz', true ) );
 
-		$this->assertEquals( 'Bar', $request->header( 'X-Foo' ) );
+		$this->assertSame( 'Bar', $request->header( 'X-Foo' ) );
 	}
 
 	public function test_conditionable_unless_request() {
@@ -549,26 +549,26 @@ EOF
 			->with_header( 'X-Foo', 'Bar' )
 			->unless( false, fn ( Pending_Request $request ) => $request->with_header( 'X-Foo', 'Baz', true ) );
 
-		$this->assertEquals( 'Baz', $request->header( 'X-Foo' ) );
+		$this->assertSame( 'Baz', $request->header( 'X-Foo' ) );
 
 		$request = $this->http_factory
 			->with_header( 'X-Foo', 'Bar' )
 			->unless( false )->with_header( 'X-Foo', 'Baz', true );
 
-		$this->assertEquals( 'Baz', $request->header( 'X-Foo' ) );
+		$this->assertSame( 'Baz', $request->header( 'X-Foo' ) );
 
 		$request = $this->http_factory
 			->with_header( 'X-Foo', 'Bar' )
 			->unless( true, fn ( Pending_Request $request ) => $request->with_header( 'X-Foo', 'Baz', true ) );
 
-		$this->assertEquals( 'Bar', $request->header( 'X-Foo' ) );
+		$this->assertSame( 'Bar', $request->header( 'X-Foo' ) );
 	}
 
 	public function test_headers_as_form() {
 		$request = $this->http_factory
 			->as_form();
 
-		$this->assertEquals( 'application/x-www-form-urlencoded', $request->header( 'Content-Type' ) );
+		$this->assertSame( 'application/x-www-form-urlencoded', $request->header( 'Content-Type' ) );
 	}
 
 	public function test_helper_function() {
@@ -626,9 +626,9 @@ EOF
 
 		$this->assertInstanceOf( \SimplePie::class, $feed );
 		$this->assertTrue( $options_callback );
-		$this->assertEquals( 'Alley', $feed->get_title() );
+		$this->assertSame( 'Alley', $feed->get_title() );
 		$this->assertNotEmpty( $feed->get_items() );
-		$this->assertEquals( 'https://alley.com/', $feed->get_link() );
+		$this->assertSame( 'https://alley.com/', $feed->get_link() );
 
 		$this->assertCount( 10, $feed->get_items() );
 
@@ -637,8 +637,8 @@ EOF
 		// First expected feed item:
 		// url: https://alley.com/news/introducing-captain-hook-for-wordpress/
 		// title: Introducing Captain Hook for WordPress
-		$this->assertEquals( 'Introducing Captain Hook for WordPress', $item->get_title() );
-		$this->assertEquals( 'https://alley.com/news/introducing-captain-hook-for-wordpress/', $item->get_link() );
+		$this->assertSame( 'Introducing Captain Hook for WordPress', $item->get_title() );
+		$this->assertSame( 'https://alley.com/news/introducing-captain-hook-for-wordpress/', $item->get_link() );
 	}
 
 	public function test_simple_pie_feed_error(): void {

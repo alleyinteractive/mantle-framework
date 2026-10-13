@@ -122,7 +122,7 @@ class FilesystemAdapterTest extends TestCase {
 				'root' => $this->temp_dir . DIRECTORY_SEPARATOR,
 			]
 		);
-		$this->assertEquals( $this->temp_dir . DIRECTORY_SEPARATOR . 'file.txt', $filesystem_adapter->path( 'file.txt' ) );
+		$this->assertSame( $this->temp_dir . DIRECTORY_SEPARATOR . 'file.txt', $filesystem_adapter->path( 'file.txt' ) );
 	}
 
 	public function testGet() {
@@ -172,10 +172,10 @@ class FilesystemAdapterTest extends TestCase {
 		$filesystem_adapter->copy( '/foo/foo.txt', '/foo/foo2.txt' );
 
 		$this->assertFileExists( $this->temp_dir . '/foo/foo.txt' );
-		$this->assertEquals( $data, file_get_contents( $this->temp_dir . '/foo/foo.txt' ) );
+		$this->assertSame( $data, file_get_contents( $this->temp_dir . '/foo/foo.txt' ) );
 
 		$this->assertFileExists( $this->temp_dir . '/foo/foo2.txt' );
-		$this->assertEquals( $data, file_get_contents( $this->temp_dir . '/foo/foo2.txt' ) );
+		$this->assertSame( $data, file_get_contents( $this->temp_dir . '/foo/foo2.txt' ) );
 	}
 
 	public function testMove() {
@@ -189,7 +189,7 @@ class FilesystemAdapterTest extends TestCase {
 		$this->assertFileDoesNotExist( $this->temp_dir . '/foo/foo.txt' );
 
 		$this->assertFileExists( $this->temp_dir . '/foo/foo2.txt' );
-		$this->assertEquals( $data, file_get_contents( $this->temp_dir . '/foo/foo2.txt' ) );
+		$this->assertSame( $data, file_get_contents( $this->temp_dir . '/foo/foo2.txt' ) );
 	}
 
 	public function testStream() {
@@ -197,7 +197,7 @@ class FilesystemAdapterTest extends TestCase {
 		$filesystem_adapter = new Filesystem_Adapter( $this->filesystem, $this->adapter );;
 		$readStream         = $filesystem_adapter->readStream( 'file.txt' );
 		$filesystem_adapter->writeStream( 'copy.txt', $readStream );
-		$this->assertEquals( $original_content, $filesystem_adapter->get( 'copy.txt' ) );
+		$this->assertSame( $original_content, $filesystem_adapter->get( 'copy.txt' ) );
 	}
 
 	public function testStreamBetweenFilesystems() {
@@ -207,7 +207,7 @@ class FilesystemAdapterTest extends TestCase {
 		$secondFilesystem_Adapter = new Filesystem_Adapter( $secondFilesystem, $adapter );
 		$readStream               = $filesystem_adapter->readStream( 'file.txt' );
 		$secondFilesystem_Adapter->writeStream( 'copy.txt', $readStream );
-		$this->assertEquals( $original_content, $secondFilesystem_Adapter->get( 'copy.txt' ) );
+		$this->assertSame( $original_content, $secondFilesystem_Adapter->get( 'copy.txt' ) );
 	}
 
 	public function testStreamToExistingFileOverwrites() {
