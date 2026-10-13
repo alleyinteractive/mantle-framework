@@ -60,7 +60,7 @@ if ( FrameworkTestCase::phpunit_version_compare( '11.0.0', '<' ) ) {
 		public function test_cleanup_globals_between_runs_first_run(): void {
 			$GLOBALS['page'] = 2;
 
-			$this->assertEquals( 2, $GLOBALS['page'] );
+			$this->assertSame( 2, $GLOBALS['page'] );
 
 			putenv( 'WP_ENVIRONMENT_TYPE=testing' );
 		}
@@ -77,7 +77,7 @@ if ( FrameworkTestCase::phpunit_version_compare( '11.0.0', '<' ) ) {
 
 			switch_to_blog( $blog_id );
 
-			$this->assertEquals( $blog_id, get_current_blog_id() );
+			$this->assertSame( $blog_id, get_current_blog_id() );
 		}
 
 		public function test_user_reset_after_test(): void {
@@ -107,7 +107,7 @@ if ( FrameworkTestCase::phpunit_version_compare( '11.0.0', '<' ) ) {
 		#[After( -10 )]
 		public function assertions_on_teardown(): void {
 			if ( is_multisite() ) {
-				$this->assertEquals( 1, get_current_blog_id() );
+				$this->assertSame( 1, get_current_blog_id() );
 			}
 
 			$this->assertGuest();
