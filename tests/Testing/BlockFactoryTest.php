@@ -29,14 +29,14 @@ class BlockFactoryTest extends FrameworkTestCase {
 			block_factory()->heading( 'Heading Here', 3 ),
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			"<!-- wp:heading {\"level\":2} -->
 <h2>Heading Here</h2>
 <!-- /wp:heading -->",
 			block_factory()->heading( 'Heading Here', 2 ),
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			"<!-- wp:heading {\"level\":2} -->\n<h2>Heading Here</h2>\n<!-- /wp:heading -->",
 			block_factory()->heading(
 				text: 'Heading Here',
@@ -51,12 +51,12 @@ class BlockFactoryTest extends FrameworkTestCase {
 			block_factory()->paragraph(),
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			"<!-- wp:paragraph -->\n<p>Paragraph here.</p>\n<!-- /wp:paragraph -->",
 			block_factory()->paragraph( 'Paragraph here.' ),
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			"<!-- wp:paragraph -->\n<p>Paragraph here.</p>\n<!-- /wp:paragraph -->",
 			block_factory()->paragraph(
 				text: 'Paragraph here.',
@@ -65,9 +65,9 @@ class BlockFactoryTest extends FrameworkTestCase {
 	}
 
 	public function test_it_can_generate_paragraphs(): void {
-		$this->assertEquals( 3, substr_count( block_factory()->paragraphs(), '<!-- wp:paragraph -->' ) );
-		$this->assertEquals( 5, substr_count( block_factory()->paragraphs( 5 ), '<!-- wp:paragraph -->' ) );
-		$this->assertEquals( 6, substr_count( block_factory()->paragraphs( count: 6 ), '<!-- wp:paragraph -->' ) );
+		$this->assertSame( 3, substr_count( block_factory()->paragraphs(), '<!-- wp:paragraph -->' ) );
+		$this->assertSame( 5, substr_count( block_factory()->paragraphs( 5 ), '<!-- wp:paragraph -->' ) );
+		$this->assertSame( 6, substr_count( block_factory()->paragraphs( count: 6 ), '<!-- wp:paragraph -->' ) );
 	}
 
 	public function test_it_can_generate_an_image(): void {
@@ -76,41 +76,41 @@ class BlockFactoryTest extends FrameworkTestCase {
 			block_factory()->image(),
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			"<!-- wp:image -->\n<figure class=\"wp-block-image\"><img src=\"https://picsum.photos/353/580\"/></figure>\n<!-- /wp:image -->",
 			block_factory()->image( 'https://picsum.photos/353/580' ),
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			"<!-- wp:image -->\n<figure class=\"wp-block-image\"><img src=\"https://picsum.photos/353/580\" alt=\"Image alt text\"/></figure>\n<!-- /wp:image -->",
 			block_factory()->image( 'https://picsum.photos/353/580', 'Image alt text' ),
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			"<!-- wp:image -->\n<figure class=\"wp-block-image\"><img src=\"https://picsum.photos/353/580\" alt=\"Image alt text\"/></figure>\n<!-- /wp:image -->",
 			block_factory()->image( url: 'https://picsum.photos/353/580', alt: 'Image alt text' ),
 		);
 	}
 
 	public function test_it_can_generate_blocks_by_name(): void {
-		$this->assertEquals(
+		$this->assertSame(
 			'<!-- wp:namespace/blockname /-->',
 			block_factory()->block( 'namespace/blockname' ),
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			'<!-- wp:namespace/blockname /-->',
 			block_factory()->block( name: 'namespace/blockname' ),
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			'<!-- wp:namespace/blockname {"id":"block-id"} /-->',
 			block_factory()->block( 'namespace/blockname', null, [
 				'id' => 'block-id',
 			] ),
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			'<!-- wp:namespace/blockname {"id":"block-id"} /-->',
 			block_factory()->block(
 				name: 'namespace/blockname',
@@ -120,24 +120,24 @@ class BlockFactoryTest extends FrameworkTestCase {
 			),
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			"<!-- wp:namespace/blockname -->\nExample content\n<!-- /wp:namespace/blockname -->",
 			block_factory()->block( 'namespace/blockname', 'Example content' ),
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			"<!-- wp:namespace/blockname -->\nExample content\n<!-- /wp:namespace/blockname -->",
 			block_factory()->block( name: 'namespace/blockname', content: 'Example content' ),
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			"<!-- wp:namespace/blockname {\"id\":\"block-id\"} -->\nExample content\n<!-- /wp:namespace/blockname -->",
 			block_factory()->block( 'namespace/blockname', 'Example content', [
 				'id' => 'block-id',
 			] ),
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			"<!-- wp:namespace/blockname {\"id\":\"block-id\"} -->\nExample content\n<!-- /wp:namespace/blockname -->",
 			block_factory()->block(
 				name: 'namespace/blockname',
@@ -150,7 +150,7 @@ class BlockFactoryTest extends FrameworkTestCase {
 	}
 
 	public function test_it_can_generate_a_list_block(): void {
-		$this->assertEquals(
+		$this->assertSame(
 			<<<"HTML"
 <!-- wp:list -->
 <ul class="wp-block-list">
@@ -182,7 +182,7 @@ HTML,
 <!-- /wp:list -->
 HTML;
 
-		$this->assertEquals(
+		$this->assertSame(
 			$expected,
 			block_factory()->list( [
 				'example',
@@ -190,7 +190,7 @@ HTML;
 			], true ),
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			$expected,
 			block_factory()->list( [
 				'example',
@@ -198,7 +198,7 @@ HTML;
 			], ordered: true ),
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			$expected,
 			block_factory()->ordered_list( [
 				'example',
@@ -208,12 +208,12 @@ HTML;
 	}
 
 	public function test_it_can_generate_a_reusable_block(): void {
-		$this->assertEquals(
+		$this->assertSame(
 			'<!-- wp:block {"ref":123} /-->',
 			block_factory()->reusable( 123 ),
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			'<!-- wp:block {"ref":123} /-->',
 			block_factory()->reusable( id: 123 ),
 		);
@@ -226,7 +226,7 @@ HTML;
 	}
 
 	public function test_it_can_create_multiple_blocks(): void {
-		$this->assertEquals(
+		$this->assertSame(
 			'<!-- wp:heading {"level":2} -->
 <h2>Heading Here</h2>
 <!-- /wp:heading -->
@@ -240,7 +240,7 @@ HTML;
 			] ),
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			'<!-- wp:heading {"level":2} -->
 <h2>Heading Here</h2>
 <!-- /wp:heading -->',
@@ -249,7 +249,7 @@ HTML;
 			),
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			'<!-- wp:heading {"level":2} -->
 <h2>Heading Here</h2>
 <!-- /wp:heading -->
@@ -322,19 +322,19 @@ HTML;
 			$preset_test2,
 		);
 
-		$this->assertEquals( 5, substr_count( $preset_test2, '<!-- wp:paragraph -->' ) );
+		$this->assertSame( 5, substr_count( $preset_test2, '<!-- wp:paragraph -->' ) );
 
-		$this->assertEquals(
+		$this->assertSame(
 			'<!-- wp:namespace/multititle {"seo":"Attribute on the block"} /-->',
 			block_factory()->title_block(),
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			'<!-- wp:namespace/multititle {"seo":"Attribute on the block"} /-->',
 			block_factory()->preset( 'title_block' ),
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			'<!-- wp:namespace/multititle {"seo":"Title Here"} /-->',
 			block_factory()->title_with_arguments( 'Title Here' ),
 		);
@@ -344,13 +344,13 @@ HTML;
 	public function test_block_serialization_unicode_characters( array $attributes, string $expected ): void {
 		$block = get_comment_delimited_block_content( 'namespace/blockname', $attributes, null );
 
-		$this->assertEquals( $expected, $block );
+		$this->assertSame( $expected, $block );
 
 		$post = static::factory()->post->slash()->create_and_get( [
 			'post_content' => $block,
 		] );
 
-		$this->assertEquals( $expected, $post->post_content );
+		$this->assertSame( $expected, $post->post_content );
 	}
 
 	public static function block_serialization_dataprovider(): array {
