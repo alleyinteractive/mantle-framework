@@ -38,8 +38,8 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 		static::factory()->post->create_many( 10 );
 		static::factory()->post->create_many( 10, [ 'post_type' => 'example-post-eager' ] );
 
-		$this->assertEquals( $another_post->id, $post->post_relationship->id );
-		$this->assertEquals( $post->id, $another_post->post->id );
+		$this->assertSame( $another_post->id, $post->post_relationship->id );
+		$this->assertSame( $post->id, $another_post->post->id );
 	}
 
 	public function test_eager_loading_relationships_has_one() {
@@ -62,7 +62,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 					// Store the ID for testing later.
 					$related_post_ids[ $post->id ] = $related_post->id;
 
-					$this->assertEquals( $related_post->id, $post->post_relationship->id );
+					$this->assertSame( $related_post->id, $post->post_relationship->id );
 
 					return $post;
 				}
@@ -75,7 +75,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 		foreach ( $posts as $post ) {
 			$this->assertTrue( $post->relation_loaded( 'post_relationship' ) );
 			$this->assertNotNull( $post->post_relationship, 'Expecting that the "post_relationship" has an actual model' );
-			$this->assertEquals( $related_post_ids[ $post->id ] ?? null, $post->post_relationship->id );
+			$this->assertSame( $related_post_ids[ $post->id ] ?? null, $post->post_relationship->id );
 		}
 	}
 
@@ -150,7 +150,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 
 		foreach ( $posts as $post ) {
 			$this->assertTrue( $post->relation_loaded( 'post' ) );
-			$this->assertEquals( $related_post_ids[ $post->id ], $post->post->id );
+			$this->assertSame( $related_post_ids[ $post->id ], $post->post->id );
 		}
 	}
 
@@ -169,11 +169,11 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 		$posts = Testable_Post_Eager::with( 'term_relationship' )->get();
 
 		foreach ( $posts as $i => $post ) {
-			$this->assertEquals( $posts[ $i ]->id, $post->id );
+			$this->assertSame( $posts[ $i ]->id, $post->id );
 
 			$this->assertTrue( $post->relation_loaded( 'term_relationship' ) );
 			$this->assertNotNull( $post->term_relationship );
-			$this->assertEquals( $post->term_relationship[0]->id, $tags[ $post->id ]->id );
+			$this->assertSame( $post->term_relationship[0]->id, $tags[ $post->id ]->id );
 		}
 	}
 
@@ -198,7 +198,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 
 		$tags = Testable_Tag_Eager::with( 'posts' )->all();
 
-		$this->assertEquals( count( $tags ), count( $tags ) );
+		$this->assertSame( count( $tags ), count( $tags ) );
 
 		foreach ( $tags as $i => $tag ) {
 			$this->assertTrue( $tag->relation_loaded( 'posts' ) );
@@ -206,7 +206,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 
 			$tag_post_ids = collect( $tag->posts )->pluck( 'id' );
 
-			$this->assertEquals( count( $tag_post_ids ), count( $tag->posts ) );
+			$this->assertSame( count( $tag_post_ids ), count( $tag->posts ) );
 
 			foreach ( $posts[ $tag->id ] as $post ) {
 				$this->assertNotFalse( $tag_post_ids->search( $post->id, true ) );
@@ -230,7 +230,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 
 		$results = Testable_Tag_Eager::with( 'category' )->all();
 
-		$this->assertEquals( count( $tags ), count( $results ) );
+		$this->assertSame( count( $tags ), count( $results ) );
 
 		foreach ( $results as $result ) {
 			$this->assertTrue( $result->relation_loaded( 'category' ) );
@@ -270,7 +270,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 
 			$this->assertTrue( $result->relation_loaded( 'tag' ) );
 			$this->assertNotNull( $result->tag );
-			$this->assertEquals( $tags[ $result->id ]->id, $result->tag->id );
+			$this->assertSame( $tags[ $result->id ]->id, $result->tag->id );
 		}
 	}
 
@@ -306,7 +306,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 			$this->assertTrue( $result->relation_loaded( 'tags' ) );
 			$this->assertNotNull( $result->tags );
 
-			$this->assertEquals( count( $tags[ $result->id ] ), count( $result->tags ) );
+			$this->assertSame( count( $tags[ $result->id ] ), count( $result->tags ) );
 
 			// Assert that the eager loaded terms match the expected.
 			$term_ids = wp_list_pluck( $tags[ $result->id ], 'id' );
