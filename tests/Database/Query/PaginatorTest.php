@@ -97,20 +97,20 @@ class PaginatorTest extends FrameworkTestCase {
 	}
 
 	public function test_simple_paginate_has_more() {
-		$this->assertFalse( Post::simple_paginate( 20 )->has_more() );
-		$this->assertNull( Post::simple_paginate( 20 )->next_url() );
+		$this->assertFalse( Post::simple_paginate( 2 )->has_more() );
+		$this->assertNull( Post::simple_paginate( 2 )->next_url() );
 
-		static::factory()->post->create_many( 25 );
+		static::factory()->post->create_many( 3 );
 
-		$this->assertTrue( Post::simple_paginate( 20 )->has_more() );
-		$this->assertCount( 20, Post::simple_paginate( 20 )->items() );
-		$this->assertFalse( Post::simple_paginate( 20, 2 )->has_more() );
-		$this->assertCount( 5, Post::simple_paginate( 20, 2 )->items() );
-		$this->assertFalse( Post::simple_paginate( 25 )->has_more() );
+		$this->assertTrue( Post::simple_paginate( 2 )->has_more() );
+		$this->assertCount( 2, Post::simple_paginate( 2 )->items() );
+		$this->assertFalse( Post::simple_paginate( 2, 2 )->has_more() );
+		$this->assertCount( 1, Post::simple_paginate( 2, 2 )->items() );
+		$this->assertFalse( Post::simple_paginate( 3 )->has_more() );
 	}
 
 	public function test_paginate_render() {
-		static::factory()->post->create_many( 50 );
+		static::factory()->post->create_many( 5 );
 
 		for ( $i = 1; $i <= 3; $i++ ) {
 			if ( isset( $paginator) ) {
@@ -121,7 +121,7 @@ class PaginatorTest extends FrameworkTestCase {
 					->assertOk();
 			}
 
-			$paginator = Post::simple_paginate( 20 );
+			$paginator = Post::simple_paginate( 2 );
 			$render    = (string) $paginator->render();
 
 			if ( $i > 2 ) {
@@ -138,7 +138,7 @@ class PaginatorTest extends FrameworkTestCase {
 	}
 
 	public function test_paginate_render_length() {
-		static::factory()->post->create_many( 100 );
+		static::factory()->post->create_many( 7 );
 
 		$max_pages = 4;
 
@@ -152,7 +152,7 @@ class PaginatorTest extends FrameworkTestCase {
 					->assertOk();
 			}
 
-			$paginator = Post::paginate( 30 );
+			$paginator = Post::paginate( 2 );
 			$render    = (string) $paginator->render();
 
 			$this->assertSame( $i, $paginator->current_page() );
