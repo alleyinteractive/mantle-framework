@@ -624,7 +624,7 @@ class ContainerImplementationStubTwo implements IContainerContractStub {
 
 class ContainerDependentStub {
 
-	public $impl;
+	public IContainerContractStub $impl;
 
 	public function __construct( IContainerContractStub $impl ) {
 		$this->impl = $impl;
@@ -633,7 +633,7 @@ class ContainerDependentStub {
 
 class ContainerNestedDependentStub {
 
-	public $inner;
+	public ContainerDependentStub $inner;
 
 	public function __construct( ContainerDependentStub $inner ) {
 		$this->inner = $inner;
@@ -642,8 +642,8 @@ class ContainerNestedDependentStub {
 
 class ContainerDefaultValueStub {
 
-	public $stub;
-	public $default;
+	public ContainerConcreteStub $stub;
+	public mixed $default;
 
 	public function __construct( ContainerConcreteStub $stub, $default = 'taylor' ) {
 		$this->stub    = $stub;
@@ -653,9 +653,9 @@ class ContainerDefaultValueStub {
 
 class ContainerMixedPrimitiveStub {
 
-	public $first;
-	public $last;
-	public $stub;
+	public mixed $first;
+	public mixed $last;
+	public ContainerConcreteStub $stub;
 
 	public function __construct( $first, ContainerConcreteStub $stub, $last ) {
 		$this->stub  = $stub;
@@ -666,7 +666,7 @@ class ContainerMixedPrimitiveStub {
 
 class ContainerInjectVariableStub {
 
-	public $something;
+	public mixed $something;
 
 	public function __construct( ContainerConcreteStub $concrete, $something ) {
 		$this->something = $something;
@@ -675,7 +675,7 @@ class ContainerInjectVariableStub {
 
 class ContainerInjectVariableStubWithInterfaceImplementation implements IContainerContractStub {
 
-	public $something;
+	public mixed $something;
 
 	public function __construct( ContainerConcreteStub $concrete, $something ) {
 		$this->something = $something;
