@@ -15,7 +15,7 @@ class AliasLoaderTest extends TestCase {
 	public function testLoaderCanBeCreatedAndRegisteredOnce() {
 		$loader = Alias_Loader::get_instance( [ 'foo' => 'bar' ] );
 
-		$this->assertEquals( [ 'foo' => 'bar' ], $loader->get_aliases() );
+		$this->assertSame( [ 'foo' => 'bar' ], $loader->get_aliases() );
 		$this->assertFalse( $loader->is_registered() );
 		$loader->register();
 
@@ -29,7 +29,7 @@ class AliasLoaderTest extends TestCase {
 
 	public function testLoaderCanBeCreatedAndRegisteredMergingAliases() {
 		$loader = Alias_Loader::get_instance( [ 'foo' => 'bar' ] );
-		$this->assertEquals( [ 'foo' => 'bar' ], $loader->get_aliases() );
+		$this->assertSame( [ 'foo' => 'bar' ], $loader->get_aliases() );
 
 		$loader = Alias_Loader::get_instance( [ 'foo2' => 'bar2' ] );
 		$this->assertEquals(

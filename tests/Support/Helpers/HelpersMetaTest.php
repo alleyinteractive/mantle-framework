@@ -33,25 +33,25 @@ class HelpersMetaTest extends FrameworkTestCase {
 		$registered = get_registered_meta_keys( 'post', 'post' );
 
 		// Ensure defaults were applied properly.
-		$this->assertEquals( true, $registered['test_post_meta_key']['show_in_rest'] );
-		$this->assertEquals( true, $registered['test_post_meta_key']['single'] );
-		$this->assertEquals( 'string', $registered['test_post_meta_key']['type'] );
+		$this->assertTrue( $registered['test_post_meta_key']['show_in_rest'] );
+		$this->assertTrue( $registered['test_post_meta_key']['single'] );
+		$this->assertSame( 'string', $registered['test_post_meta_key']['type'] );
 
 		// Ensure meta is not registered for a different post type.
 		$registered = get_registered_meta_keys( 'post', 'page' );
-		$this->assertFalse( isset( $registered['test_post_meta_key'] ) );
+		$this->assertArrayNotHasKey( 'test_post_meta_key', $registered );
 
 		// Ensure meta is registered for the term type specified.
 		$registered = get_registered_meta_keys( 'term', 'category' );
 
 		// Ensure defaults were applied properly.
-		$this->assertEquals( true, $registered['test_term_meta_key']['show_in_rest'] );
-		$this->assertEquals( true, $registered['test_term_meta_key']['single'] );
-		$this->assertEquals( 'string', $registered['test_term_meta_key']['type'] );
+		$this->assertTrue( $registered['test_term_meta_key']['show_in_rest'] );
+		$this->assertTrue( $registered['test_term_meta_key']['single'] );
+		$this->assertSame( 'string', $registered['test_term_meta_key']['type'] );
 
 		// Ensure meta is not registered for a different term type.
 		$registered = get_registered_meta_keys( 'term', 'post_tag' );
-		$this->assertFalse( isset( $registered['test_term_meta_key'] ) );
+		$this->assertArrayNotHasKey( 'test_term_meta_key', $registered );
 
 		// Ensure custom options are supported.
 		register_meta_helper(
@@ -66,38 +66,38 @@ class HelpersMetaTest extends FrameworkTestCase {
 			]
 		);
 		$registered = get_registered_meta_keys( 'post', 'post' );
-		$this->assertEquals( 'absint', $registered['test_custom_meta_key']['sanitize_callback'] );
-		$this->assertEquals( false, $registered['test_custom_meta_key']['show_in_rest'] );
-		$this->assertEquals( false, $registered['test_custom_meta_key']['single'] );
-		$this->assertEquals( 'integer', $registered['test_custom_meta_key']['type'] );
+		$this->assertSame( 'absint', $registered['test_custom_meta_key']['sanitize_callback'] );
+		$this->assertFalse( $registered['test_custom_meta_key']['show_in_rest'] );
+		$this->assertFalse( $registered['test_custom_meta_key']['single'] );
+		$this->assertSame( 'integer', $registered['test_custom_meta_key']['type'] );
 	}
 
 	public function test_register_meta_from_file(): void {
 		$registered = get_registered_meta_keys( 'post', 'post' );
 
-		$this->assertFalse( isset( $registered['testable_meta_key'] ) );
+		$this->assertArrayNotHasKey( 'testable_meta_key', $registered );
 
 		register_meta_from_file( __DIR__ . '/fixtures/meta.json', 'post' );
 
 		$registered = get_registered_meta_keys( 'post', 'post' );
-		$this->assertTrue( isset( $registered['testable_meta_key'] ) );
-		$this->assertEquals( 'string', $registered['testable_meta_key']['type'] );
-		$this->assertEquals( true, $registered['testable_meta_key']['single'] );
-		$this->assertEquals( true, $registered['testable_meta_key']['show_in_rest'] );
+		$this->assertArrayHasKey( 'testable_meta_key', $registered );
+		$this->assertSame( 'string', $registered['testable_meta_key']['type'] );
+		$this->assertTrue( $registered['testable_meta_key']['single'] );
+		$this->assertTrue( $registered['testable_meta_key']['show_in_rest'] );
 	}
 
 	public function test_register_meta_from_file_with_schema(): void {
 		$registered = get_registered_meta_keys( 'post', 'post' );
 
-		$this->assertFalse( isset( $registered['testable_schema_meta_key'] ) );
+		$this->assertArrayNotHasKey( 'testable_schema_meta_key', $registered );
 
 		register_meta_from_file( __DIR__ . '/fixtures/meta-with-schema.json', 'post' );
 
 		$registered = get_registered_meta_keys( 'post', 'post' );
-		$this->assertTrue( isset( $registered['testable_schema_meta_key'] ) );
-		$this->assertEquals( 'string', $registered['testable_schema_meta_key']['type'] );
-		$this->assertEquals( true, $registered['testable_schema_meta_key']['single'] );
-		$this->assertEquals( true, $registered['testable_schema_meta_key']['show_in_rest'] );
+		$this->assertArrayHasKey( 'testable_schema_meta_key', $registered );
+		$this->assertSame( 'string', $registered['testable_schema_meta_key']['type'] );
+		$this->assertTrue( $registered['testable_schema_meta_key']['single'] );
+		$this->assertTrue( $registered['testable_schema_meta_key']['show_in_rest'] );
 	}
 
 	public function test_register_meta_from_file_invalid_file(): void {

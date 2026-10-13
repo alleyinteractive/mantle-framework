@@ -30,7 +30,7 @@ class MemoizeTest extends TestCase {
 		};
 
 		$this->assertCount( 1, collect( $values_2 )->unique()->all() );
-		$this->assertNotEquals( $values[0], $values_2[0] );
+		$this->assertNotSame( $values[0], $values_2[0] );
 	}
 
 	public function test_it_can_memoize_with_dependencies(): void {
@@ -46,7 +46,7 @@ class MemoizeTest extends TestCase {
 		$values = collect( $values )->unique()->values()->all();
 
 		$this->assertCount( 2, $values );
-		$this->assertNotEquals( $values[0], $values[1] );
+		$this->assertNotSame( $values[0], $values[1] );
 	}
 
 	public function test_it_can_disable_memoization(): void {
@@ -88,6 +88,6 @@ class MemoizeTest extends TestCase {
 		$values_2 = $callable();
 
 		$this->assertCount( 1, collect( $values_2 )->unique()->all() );
-		$this->assertNotEquals( $values[0], $values_2[0] );
+		$this->assertNotSame( $values[0], $values_2[0] );
 	}
 }

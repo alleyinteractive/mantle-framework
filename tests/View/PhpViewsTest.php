@@ -19,20 +19,20 @@ class PhpViewsTest extends FrameworkTestCase {
 	}
 
 	public function test_get_container() {
-		$this->assertEquals( $this->app, $this->app['view']->get_container() );
+		$this->assertSame( $this->app, $this->app['view']->get_container() );
 	}
 
 	public function test_share_service_provider() {
 
 		$this->view_factory = $this->app['view'];
 
-		$this->assertEquals( 'default-value', $this->view_factory->shared( 'test-to-share', 'default-value' ) );
+		$this->assertSame( 'default-value', $this->view_factory->shared( 'test-to-share', 'default-value' ) );
 
 		// Share data as if it was from a service provider.
 		View::share( 'test-to-share', 'the-value-to-compare' );
 
-		$this->assertEquals( 'the-value-to-compare', $this->view_factory->shared( 'test-to-share', 'default-value' ) );
-		$this->assertEquals( 'the-value-to-compare', $this->view_factory->get_shared()['test-to-share'] ?? '' );
+		$this->assertSame( 'the-value-to-compare', $this->view_factory->shared( 'test-to-share', 'default-value' ) );
+		$this->assertSame( 'the-value-to-compare', $this->view_factory->get_shared()['test-to-share'] ?? '' );
 
 		// Ensure you can get nested data.
 		View::share(
@@ -46,11 +46,11 @@ class PhpViewsTest extends FrameworkTestCase {
 			]
 		);
 
-		$this->assertEquals( 'nested-value', $this->view_factory->shared( 'nested-data.level0.level1.level2' ) );
+		$this->assertSame( 'nested-value', $this->view_factory->shared( 'nested-data.level0.level1.level2' ) );
 	}
 
 	public function test_get_factory() {
-		$this->assertEquals( $this->app['view'], $this->app['view']->shared( '__env' ) );
+		$this->assertSame( $this->app['view'], $this->app['view']->shared( '__env' ) );
 	}
 
 	public function test_basic_load() {

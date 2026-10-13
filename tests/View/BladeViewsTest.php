@@ -40,7 +40,7 @@ class BladeViewsTest extends FrameworkTestCase {
 	}
 
 	public function test_compile_from_string(): void {
-		$this->assertEquals(
+		$this->assertSame(
 			'Hello, <?php echo e($name); ?>.',
 			Blade::compile_string( 'Hello, {{ $name }}.', [ 'name' => 'world' ] )
 		);
@@ -51,7 +51,7 @@ class BladeViewsTest extends FrameworkTestCase {
 	}
 
 	public function test_render_string(): void {
-		$this->assertEquals(
+		$this->assertSame(
 			'Hello, world.',
 			Blade::render_string( 'Hello, {{ $name }}.', [ 'name' => 'world' ] )
 		);
@@ -62,7 +62,7 @@ class BladeViewsTest extends FrameworkTestCase {
 			return "<?php echo 'Test: $expression'; ?>";
 		} );
 
-		$this->assertEquals(
+		$this->assertSame(
 			'Test: test',
 			Blade::render_string( '@test(test)' )
 		);
