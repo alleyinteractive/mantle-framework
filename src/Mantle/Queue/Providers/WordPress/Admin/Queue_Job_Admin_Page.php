@@ -96,7 +96,7 @@ class Queue_Job_Admin_Page {
 			$job = new Queue_Worker_Job( $record );
 
 			// Lock the job before it is run.
-			$record->set_lock_until( $job->get_job()->timeout ?? 600 );
+			$record->set_lock_until( time() + ( $job->get_job()->timeout ?? 600 ) );
 
 			// Run the queue job through the queue worker and refresh the record.
 			app( Worker::class )->run_single( $job );

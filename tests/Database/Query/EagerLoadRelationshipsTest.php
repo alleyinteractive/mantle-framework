@@ -79,6 +79,12 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 		}
 	}
 
+	public function test_relationship_query_is_not_limited() {
+		$post = Testable_Post_Eager::find( static::factory()->post->create() );
+
+		$this->assertSame( -1, $post->posts_relationship()->get_query()->get_query_args()['posts_per_page'] );
+	}
+
 	public function test_eager_loading_relationships_has_many() {
 		Utils::delete_all_posts();
 

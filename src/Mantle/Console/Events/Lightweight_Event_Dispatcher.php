@@ -42,7 +42,10 @@ class Lightweight_Event_Dispatcher extends Dispatcher {
 				continue;
 			}
 
-			$this->listeners[ $event ][ $priority ][] = $this->make_listener( $listener );
+			$wrapper = $this->make_listener( $listener, $this->is_object_event( $event ) );
+
+			$this->listeners[ $event ][ $priority ][]                                        = $wrapper;
+			$this->listener_map[ $event ][ $priority ][ $this->listener_key( $listener ) ][] = $wrapper;
 		}
 	}
 
@@ -164,12 +167,17 @@ class Lightweight_Event_Dispatcher extends Dispatcher {
 		}
 
 		if ( is_null( $listener ) ) {
-			unset( $this->listeners[ $event ][ $priority ] );
+			unset( $this->listeners[ $event ][ $priority ], $this->listener_map[ $event ][ $priority ] );
 		} else {
+			$key      = $this->listener_key( $listener );
+			$wrappers = $this->listener_map[ $event ][ $priority ][ $key ] ?? [];
+
 			$this->listeners[ $event ][ $priority ] = array_filter(
 				$this->listeners[ $event ][ $priority ],
-				fn ( callable $value ) => $value !== $listener,
+				fn ( callable $value ) => ! in_array( $value, $wrappers, true ),
 			);
+
+			unset( $this->listener_map[ $event ][ $priority ][ $key ] );
 		}
 
 		if ( empty( $this->listeners[ $event ][ $priority ] ) ) {

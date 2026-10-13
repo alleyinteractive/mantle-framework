@@ -42,6 +42,20 @@ class FilesystemAdapterTest extends TestCase {
 		parent::tearDown();
 	}
 
+	public function testPutReturnsFalseWhenWriteFails() {
+		mkdir( $this->temp_dir . '/ro', 0500 );
+
+		$files = new Filesystem_Adapter( $this->filesystem, $this->adapter );
+
+		$this->assertFalse( $files->put( 'ro/sub/file.txt', 'contents' ) );
+
+		$throwing = new Filesystem_Adapter( $this->filesystem, $this->adapter, [ 'throw' => true ] );
+
+		$this->expectException( \League\Flysystem\FilesystemException::class );
+
+		$throwing->put( 'ro/sub/file.txt', 'contents' );
+	}
+
 	public function testResponse() {
 		$this->filesystem->write( 'file.txt', 'Hello World' );
 		$files    = new Filesystem_Adapter( $this->filesystem, $this->adapter );;

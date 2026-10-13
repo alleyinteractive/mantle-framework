@@ -260,7 +260,7 @@ class Route extends Symfony_Route {
 			return null;
 		}
 
-		return $response ? static::ensure_response( $response ) : null;
+		return static::ensure_response( $response );
 	}
 
 
