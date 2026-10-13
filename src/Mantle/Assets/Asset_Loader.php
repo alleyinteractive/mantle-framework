@@ -31,7 +31,7 @@ class Asset_Loader {
 		protected ?string $build_directory = null,
 		protected ?string $base_url = null,
 	) {
-		$this->build_directory ??= base_path( config_mixed( 'asset.path', 'build' )->string() );
+		$this->build_directory ??= base_path( config_mixed( 'assets.path', 'build' )->string() );
 
 		$this->base_url ??= config_mixed( 'assets.url', '/' )->string();
 	}
