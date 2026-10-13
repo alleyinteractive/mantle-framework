@@ -221,6 +221,8 @@ abstract class TestCase extends BaseTestCase {
 
 	/**
 	 * After a test method runs, reset any state in WordPress the test method might have changed.
+	 *
+	 * @throws \Throwable Re-throws the first exception raised by a trait teardown once cleanup completes.
 	 */
 	protected function tearDown(): void {
 		// phpcs:disable WordPress.WP.GlobalVariablesOverride,WordPress.NamingConventions.PrefixAllGlobals
@@ -231,15 +233,24 @@ abstract class TestCase extends BaseTestCase {
 			$this->tear_down();
 		}
 
+		$teardown_exception = null;
+
 		static::get_test_case_traits()
 			// Tearing down requires performing priority traits in opposite order.
 			->reverse()
 			->each(
-				function ( string|object $trait ): void {
+				function ( string|object $trait ) use ( &$teardown_exception ): void {
 					$method = strtolower( class_basename( $trait ) ) . '_tear_down';
 
-					if ( method_exists( $this, $method ) ) {
+					if ( ! method_exists( $this, $method ) ) {
+						return;
+					}
+
+					// A failed expectation must not skip the remaining cleanup (rollback, hooks, user).
+					try {
 						$this->{$method}();
+					} catch ( \Throwable $e ) {
+						$teardown_exception ??= $e;
 					}
 				}
 			);
@@ -290,6 +301,8 @@ abstract class TestCase extends BaseTestCase {
 		wp_set_current_user( 0 );
 		$this->reset_lazyload_queue();
 
+		unset( $GLOBALS['current_screen'] );
+
 		Utils::reset_server();
 		// phpcs:enable
 
@@ -302,6 +315,10 @@ abstract class TestCase extends BaseTestCase {
 			if ( class_exists( Facade::class ) ) {
 				Facade::set_facade_application( null );
 			}
+		}
+
+		if ( $teardown_exception ) {
+			throw $teardown_exception;
 		}
 	}
 

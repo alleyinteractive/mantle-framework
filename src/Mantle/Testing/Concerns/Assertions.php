@@ -611,7 +611,7 @@ trait Assertions {
 			),
 		);
 
-		if ( $count ) {
+		if ( null !== $count ) {
 			PHPUnit::assertEquals( $count, $result );
 		} else {
 			PHPUnit::assertGreaterThan( 0, $result );
