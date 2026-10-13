@@ -71,7 +71,7 @@ class UriTest extends FrameworkTestCase {
 	public function test_path_segments() {
 		$uri = Uri::of( 'https://mantle.alley.com' );
 
-		$this->assertEquals( [], $uri->path_segments()->to_array() );
+		$this->assertSame( [], $uri->path_segments()->to_array() );
 
 		$uri = Uri::of( 'https://mantle.alley.com/one/two/three' );
 
