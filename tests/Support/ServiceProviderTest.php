@@ -246,7 +246,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		$app->boot();
 
-		$this->assertEquals( false, $_SERVER['__after_resolving'] );
+		$this->assertFalse( $_SERVER['__after_resolving'] );
 
 		$app->bind( 'foo',  fn () => 'bar' );
 

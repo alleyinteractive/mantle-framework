@@ -1184,7 +1184,7 @@ class StringableTest extends TestCase {
 		$this->assertEquals( 'ち', $this->stringable( '「こんにちは世界」' )->char_at( 4 ) );
 		$this->assertEquals( 'w', $this->stringable( 'Привет, world!' )->char_at( 8 ) );
 		$this->assertEquals( '界', $this->stringable( '「こんにちは世界」' )->char_at( -2 ) );
-		$this->assertEquals( null, $this->stringable( '「こんにちは世界」' )->char_at( -200 ) );
+		$this->assertFalse( $this->stringable( '「こんにちは世界」' )->char_at( -200 ) );
 	}
 
 	public function testSubstr() {

@@ -128,8 +128,8 @@ class HelpersArrayTest extends TestCase {
 			[ 4, 3, 2, null, null, 1 ],
 			data_get( $array, 'posts.*.comments.*.likes' )
 		);
-		$this->assertEquals( [], data_get( $array, 'posts.*.users.*.name', 'irrelevant' ) );
-		$this->assertEquals( [], data_get( $array, 'posts.*.users.*.name' ) );
+		$this->assertSame( [], data_get( $array, 'posts.*.users.*.name', 'irrelevant' ) );
+		$this->assertSame( [], data_get( $array, 'posts.*.users.*.name' ) );
 	}
 
 	public function testDataFill() {
