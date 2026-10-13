@@ -120,6 +120,44 @@ class RestApiRoutingTest extends FrameworkTestCase {
 			->assertContent( json_encode( 'show-response' ) );
 	}
 
+	public function test_register_with_controller_at_method_string(): void {
+		Route::rest_api(
+			'namespace/v1',
+			'/example-at-method',
+			Testable_Rest_Api_Controller::class . '@index',
+		);
+
+		$this->get( rest_url( '/namespace/v1/example-at-method' ) )
+			->assertOk()
+			->assertContent( json_encode( 'index-response' ) );
+	}
+
+	public function test_fluent_attributes_do_not_leak_to_sibling_routes(): void {
+		Route::rest_api(
+			'namespace/v1',
+			function (): void {
+				Route::middleware( Testable_Before_Middleware::class )->get( '/sibling-admin', fn () => 'admin' );
+				Route::get( '/sibling-public', fn () => 'public' );
+			},
+		);
+
+		$this->get( rest_url( '/namespace/v1/sibling-admin' ) )
+			->assertOk()
+			->assertContent( json_encode( 'middleware-response' ) );
+
+		$this->get( rest_url( '/namespace/v1/sibling-public' ) )
+			->assertOk()
+			->assertContent( json_encode( 'public' ) );
+	}
+
+	public function test_same_path_in_different_namespaces(): void {
+		Route::rest_api( 'namespace-a/v1', '/same-path', fn () => 'a' );
+		Route::rest_api( 'namespace-b/v1', '/same-path', fn () => 'b' );
+
+		$this->get( rest_url( '/namespace-a/v1/same-path' ) )->assertOk()->assertContent( json_encode( 'a' ) );
+		$this->get( rest_url( '/namespace-b/v1/same-path' ) )->assertOk()->assertContent( json_encode( 'b' ) );
+	}
+
 	public function test_middleware_class_route() {
 		Route::middleware( Testable_Before_Middleware::class )
 			->rest_api(

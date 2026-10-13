@@ -224,13 +224,15 @@ class View implements \Stringable {
 
 		$this->factory->push( $this );
 
-		// Invoke the engine to render the view.
-		$contents = $this->engine->get( $this->path, $this->data );
+		try {
+			// Invoke the engine to render the view.
+			$contents = $this->engine->get( $this->path, $this->data );
+		} finally {
+			$this->factory->pop();
 
-		$this->factory->pop();
-
-		if ( $this->post !== null ) {
-			$this->restore_post();
+			if ( $this->post !== null ) {
+				$this->restore_post();
+			}
 		}
 
 		if ( $this->cache_ttl !== null && isset( $cache_key ) ) {

@@ -45,6 +45,18 @@ if ( FrameworkTestCase::phpunit_version_compare( '11.0.0', '<' ) ) {
 			$this->assertFalse( $property->getValue() );
 		}
 
+		public function test_server_state_reset_between_runs_first_run(): void {
+			$this->with_https()->get( '/' );
+
+			$this->assertTrue( is_ssl() );
+		}
+
+		public function test_server_state_reset_between_runs_second_run(): void {
+			$this->assertFalse( is_ssl() );
+			$this->assertStringStartsWith( 'http://', home_url() );
+			$this->assertSame( 'GET', $_SERVER['REQUEST_METHOD'] );
+		}
+
 		public function test_cleanup_globals_between_runs_first_run(): void {
 			$GLOBALS['page'] = 2;
 

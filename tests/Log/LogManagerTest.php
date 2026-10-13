@@ -66,6 +66,14 @@ class LogManagerTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		Facade::clear_resolved_instances();
 	}
 
+	public function test_log_with_integer_level() {
+		$this->instance->log( \Monolog\Logger::WARNING, 'Integer level' );
+		$this->instance->log( 'warning', 'String level' );
+
+		$this->assertTrue( $this->handler->hasRecord( 'Integer level', 'warning' ) );
+		$this->assertTrue( $this->handler->hasRecord( 'String level', 'warning' ) );
+	}
+
 	public function test_normal_logging() {
 		$this->instance->info( 'Test Message' );
 		$this->instance->error( 'Error Message' );

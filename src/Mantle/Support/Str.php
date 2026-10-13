@@ -407,9 +407,8 @@ class Str {
 	 * Determine if a given string is a valid UUID.
 	 *
 	 * @param  string $value
-	 * @return bool
 	 */
-	public static function is_uuid( $value ) {
+	public static function is_uuid( $value ): bool {
 		if ( ! is_string( $value ) ) {
 			return false;
 		}

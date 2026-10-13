@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Added
+
+- Factory `with_meta()` (post, term, user, Co-Authors Plus, and Byline Manager factories) accepts
+  several meta arrays in one call. A key repeated across the arrays is stored once per array,
+  which creates multiple meta entries for the same key (#925).
+
 ## v1.22.2
 
 ### Changed

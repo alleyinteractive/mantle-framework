@@ -13,9 +13,9 @@ class PaginatorTest extends FrameworkTestCase {
 	public function test_simple_paginate_url_query_string() {
 		$paginator = Post::simple_paginate( 20 )->path( '/test-path/' );
 
-		$this->assertEquals( '/test-path/', $paginator->url( 1 ) );
-		$this->assertEquals( '/test-path/?page=10', $paginator->url( 10 ) );
-		$this->assertEquals( '/test-path/', $paginator->url( -1 ) );
+		$this->assertSame( '/test-path/', $paginator->url( 1 ) );
+		$this->assertSame( '/test-path/?page=10', $paginator->url( 10 ) );
+		$this->assertSame( '/test-path/', $paginator->url( -1 ) );
 	}
 
 	public function test_simple_paginate_url_path() {
@@ -23,19 +23,19 @@ class PaginatorTest extends FrameworkTestCase {
 			->path( '/test-path/' )
 			->use_path();
 
-		$this->assertEquals( '/test-path/page/1/', $paginator->url( 1 ) );
-		$this->assertEquals( '/test-path/page/10/', $paginator->url( 10 ) );
-		$this->assertEquals( '/test-path/', $paginator->url( -1 ) );
+		$this->assertSame( '/test-path/page/1/', $paginator->url( 1 ) );
+		$this->assertSame( '/test-path/page/10/', $paginator->url( 10 ) );
+		$this->assertSame( '/test-path/', $paginator->url( -1 ) );
 	}
 
 	public function test_simple_paginate_url_append() {
 		$paginator = Post::simple_paginate()->append( 'key', 'value' );
-		$this->assertEquals( '/?page=2&key=value', $paginator->url( 2 ) );
+		$this->assertSame( '/?page=2&key=value', $paginator->url( 2 ) );
 	}
 
 	public function test_simple_paginate_url_append_path() {
 		$paginator = Post::simple_paginate()->append( 'key', 'value' )->use_path();
-		$this->assertEquals( '/page/2/?key=value', $paginator->url( 2 ) );
+		$this->assertSame( '/page/2/?key=value', $paginator->url( 2 ) );
 	}
 
 	public function test_paginate_query_string() {
@@ -43,26 +43,28 @@ class PaginatorTest extends FrameworkTestCase {
 
 		for ( $i = 1; $i <= 3; $i++ ) {
 			if ( isset( $paginator) ) {
-				$this->get( $paginator->next_url() );
+				$this->get( $paginator->next_url() )
+					->assertOk();
 			} else {
-				$this->get( '/' );
+				$this->get( '/' )
+					->assertOk();
 			}
 
 			$paginator = Post::simple_paginate( 20 );
 			$expected = array_slice( $post_ids, ( $i -1 ) * 20, 20 );
 
-			$this->assertEquals( $i, $paginator->current_page() );
-			$this->assertEquals( $expected, $paginator->items()->pluck( 'ID' )->all(), 'Expected results for ' . $i );
+			$this->assertSame( $i, $paginator->current_page() );
+			$this->assertSame( $expected, $paginator->items()->pluck( 'ID' )->all(), 'Expected results for ' . $i );
 
 			if ( $i > 2 ) {
-				$this->assertEquals( '/?page=' . ( $i - 1 ), $paginator->previous_url() );
+				$this->assertSame( '/?page=' . ( $i - 1 ), $paginator->previous_url() );
 			} elseif ( $i > 1 ) {
-				$this->assertEquals( '/', $paginator->previous_url() );
+				$this->assertSame( '/', $paginator->previous_url() );
 			} else {
 				$this->assertNull( $paginator->previous_url() );
 			}
 
-			$this->assertEquals( '/?page=' . ( $i + 1 ), $paginator->next_url() );
+			$this->assertSame( '/?page=' . ( $i + 1 ), $paginator->next_url() );
 		}
 	}
 
@@ -71,67 +73,97 @@ class PaginatorTest extends FrameworkTestCase {
 
 		for ( $i = 1; $i <= 3; $i++ ) {
 			if ( isset( $paginator) ) {
-				$this->get( $paginator->next_url() );
+				$this->get( $paginator->next_url() )
+					->assertOk();
 			} else {
-				$this->get( '/' );
+				$this->get( '/' )
+					->assertOk();
 			}
 
 			$paginator = Post::simple_paginate( 20 )->use_path();
 			$expected = array_slice( $post_ids, ( $i -1 ) * 20, 20 );
 
-			$this->assertEquals( $i, $paginator->current_page() );
-			$this->assertEquals( $expected, $paginator->items()->pluck( 'ID' )->all(), 'Expected results for ' . $i );
+			$this->assertSame( $i, $paginator->current_page() );
+			$this->assertSame( $expected, $paginator->items()->pluck( 'ID' )->all(), 'Expected results for ' . $i );
 
 			if ( $i > 1 ) {
-				$this->assertEquals( '/page/' . ( $i - 1 ) . '/', $paginator->previous_url() );
+				$this->assertSame( '/page/' . ( $i - 1 ) . '/', $paginator->previous_url() );
 			} else {
 				$this->assertNull( $paginator->previous_url() );
 			}
 
-			$this->assertEquals( '/page/' . ( $i + 1 ) . '/', $paginator->next_url() );
+			$this->assertSame( '/page/' . ( $i + 1 ) . '/', $paginator->next_url() );
 		}
 	}
 
+	public function test_simple_paginate_has_more() {
+		$this->assertFalse( Post::simple_paginate( 2 )->has_more() );
+		$this->assertNull( Post::simple_paginate( 2 )->next_url() );
+
+		static::factory()->post->create_many( 3 );
+
+		$this->assertTrue( Post::simple_paginate( 2 )->has_more() );
+		$this->assertCount( 2, Post::simple_paginate( 2 )->items() );
+		$this->assertFalse( Post::simple_paginate( 2, 2 )->has_more() );
+		$this->assertCount( 1, Post::simple_paginate( 2, 2 )->items() );
+		$this->assertFalse( Post::simple_paginate( 3 )->has_more() );
+	}
+
 	public function test_paginate_render() {
+		static::factory()->post->create_many( 5 );
+
 		for ( $i = 1; $i <= 3; $i++ ) {
 			if ( isset( $paginator) ) {
-				$this->get( $paginator->next_url() );
+				$this->get( $paginator->next_url() )
+					->assertOk();
 			} else {
-				$this->get( '/' );
+				$this->get( '/' )
+					->assertOk();
 			}
 
-			$paginator = Post::simple_paginate( 20 );
+			$paginator = Post::simple_paginate( 2 );
 			$render    = (string) $paginator->render();
 
 			if ( $i > 2 ) {
 				$this->assertStringContainsString( '<li><a href="/?page=' . ( $i - 1 ) . '" rel="prev">Previous</a></li>', $render );
 			}
 
-			$this->assertStringContainsString( '<li><a href="/?page=' . ( $i + 1 ) .'" rel="next">Next</a></li>', $render );
+			if ( $i < 3 ) {
+				$this->assertStringContainsString( '<li><a href="/?page=' . ( $i + 1 ) .'" rel="next">Next</a></li>', $render );
+			} else {
+				$this->assertStringNotContainsString( 'rel="next"', $render );
+				$this->assertNull( $paginator->next_url() );
+			}
 		}
 	}
 
 	public function test_paginate_render_length() {
-		static::factory()->post->create_many( 100 );
+		static::factory()->post->create_many( 7 );
 
-		$max_pages = 5;
+		$max_pages = 4;
 
 		for ( $i = 1; $i <= $max_pages; $i++ ) {
 			if ( isset( $paginator) ) {
 				$this->assertNotNull( $paginator->next_url() );
-				$this->get( $paginator->next_url() );
+				$this->get( $paginator->next_url() )
+					->assertOk();
 			} else {
-				$this->get( '/' );
+				$this->get( '/' )
+					->assertOk();
 			}
 
-			$paginator = Post::paginate( 30 );
+			$paginator = Post::paginate( 2 );
 			$render    = (string) $paginator->render();
 
-			$this->assertEquals( $i, $paginator->current_page() );
+			$this->assertSame( $i, $paginator->current_page() );
+			$this->assertSame( $max_pages, $paginator->max_pages() );
+			$this->assertSame( $i > 1, $paginator->has_previous() );
+			$this->assertContains( $max_pages, array_map( 'key', $paginator->elements() ) );
 
 			// On the last page there should be no valid next link.
 			if ( $i >= $max_pages ) {
 				$this->assertFalse( $paginator->has_more() );
+				$this->assertNull( $paginator->next_url() );
 				$this->assertStringContainsString( '<li class="disabled" aria-disabled="true"><span>&rsaquo;</span></li>', $render );
 			} else {
 				$this->assertTrue( $paginator->has_more() );

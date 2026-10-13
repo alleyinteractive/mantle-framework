@@ -13,6 +13,23 @@ class ContainerTest extends TestCase {
 		Container::set_instance( null );
 	}
 
+	public function test_variadic_primitive_constructor() {
+		$container = new Container();
+
+		$instance = $container->make( ContainerVariadicPrimitiveStub::class );
+
+		$this->assertSame( [], $instance->names );
+	}
+
+	public function test_variadic_class_constructor() {
+		$container = new Container();
+
+		$instance = $container->make( ContainerVariadicClassStub::class );
+
+		$this->assertCount( 1, $instance->stubs );
+		$this->assertInstanceOf( ContainerConcreteStub::class, $instance->stubs[0] );
+	}
+
 	public function test_container_singleton() {
 		$container = Container::set_instance( new Container() );
 
@@ -196,7 +213,7 @@ class ContainerTest extends TestCase {
 			}
 		);
 		$container->alias( 'foo', 'baz' );
-		$this->assertEquals( [ 1, 2, 3 ], $container->make( 'baz', [ 1, 2, 3 ] ) );
+		$this->assertSame( [ 1, 2, 3 ], $container->make( 'baz', [ 1, 2, 3 ] ) );
 	}
 
 	public function testBindingsCanBeOverridden() {
@@ -417,7 +434,7 @@ class ContainerTest extends TestCase {
 	public function testGetAlias() {
 		$container = new Container();
 		$container->alias( 'ConcreteStub', 'foo' );
-		$this->assertEquals( $container->get_alias( 'foo' ), 'ConcreteStub' );
+		$this->assertSame( $container->get_alias( 'foo' ), 'ConcreteStub' );
 	}
 
 	public function testItThrowsExceptionWhenAbstractIsSameAsAlias() {
@@ -438,7 +455,7 @@ class ContainerTest extends TestCase {
 		);
 
 		$factory = $container->factory( 'name' );
-		$this->assertEquals( $container->make( 'name' ), $factory() );
+		$this->assertSame( $container->make( 'name' ), $factory() );
 	}
 
 	public function testMakeWithMethodIsAnAliasForMakeMethod() {
@@ -471,7 +488,7 @@ class ContainerTest extends TestCase {
 			}
 		);
 
-		$this->assertEquals( [ 1, 2, 3 ], $container->make( 'foo', [ 1, 2, 3 ] ) );
+		$this->assertSame( [ 1, 2, 3 ], $container->make( 'foo', [ 1, 2, 3 ] ) );
 	}
 
 	public function testResolvingWithUsingAnInterface() {
@@ -496,7 +513,7 @@ class ContainerTest extends TestCase {
 			}
 		);
 
-		$this->assertEquals( [ 'name' => 'Taylor' ], $container->make( 'foo', [ 'something' ] ) );
+		$this->assertSame( [ 'name' => 'Taylor' ], $container->make( 'foo', [ 'something' ] ) );
 	}
 
 	public function testNestedParametersAreResetForFreshMake() {
@@ -516,7 +533,7 @@ class ContainerTest extends TestCase {
 			}
 		);
 
-		$this->assertEquals( [], $container->make( 'foo', [ 'something' ] ) );
+		$this->assertSame( [], $container->make( 'foo', [ 'something' ] ) );
 	}
 
 	public function testSingletonBindingsNotRespectedWithMakeParameters() {
@@ -529,8 +546,8 @@ class ContainerTest extends TestCase {
 			}
 		);
 
-		$this->assertEquals( [ 'name' => 'taylor' ], $container->make( 'foo', [ 'name' => 'taylor' ] ) );
-		$this->assertEquals( [ 'name' => 'abigail' ], $container->make( 'foo', [ 'name' => 'abigail' ] ) );
+		$this->assertSame( [ 'name' => 'taylor' ], $container->make( 'foo', [ 'name' => 'taylor' ] ) );
+		$this->assertSame( [ 'name' => 'abigail' ], $container->make( 'foo', [ 'name' => 'abigail' ] ) );
 	}
 
 	public function testCanBuildWithoutParameterStackWithNoConstructors() {
@@ -662,5 +679,21 @@ class ContainerInjectVariableStubWithInterfaceImplementation implements IContain
 
 	public function __construct( ContainerConcreteStub $concrete, $something ) {
 		$this->something = $something;
+	}
+}
+
+class ContainerVariadicPrimitiveStub {
+	public array $names;
+
+	public function __construct( string ...$names ) {
+		$this->names = $names;
+	}
+}
+
+class ContainerVariadicClassStub {
+	public array $stubs;
+
+	public function __construct( ContainerConcreteStub ...$stubs ) {
+		$this->stubs = $stubs;
 	}
 }
