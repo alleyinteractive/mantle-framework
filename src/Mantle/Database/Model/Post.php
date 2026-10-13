@@ -165,6 +165,11 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 * @param \WP_Post|int $object Post to retrieve for.
 	 */
 	public static function find( mixed $object ): ?static {
+		// get_post() falls back to the global post for empty input, which is never the caller's intent here.
+		if ( empty( $object ) ) {
+			return null;
+		}
+
 		$post = Helpers\get_post_object( $object );
 
 		if ( empty( $post ) ) {
@@ -351,15 +356,25 @@ PHP
 		}
 
 		if ( empty( $id ) ) {
-			$save = \wp_insert_post( $this->get_attributes(), true );
+			$save = \wp_insert_post( $this->get_attributes_for_insert(), true );
 
 			if ( \is_wp_error( $save ) ) {
 				throw new Model_Exception( 'Error saving model: ' . $save->get_error_message() );
 			}
 		} else {
+			$modified = $this->get_modified_attributes();
+
+			// wp_update_post() keeps the stored GMT date when only the local date changes,
+			// and a stale GMT date makes WordPress flip a "future" post back to "publish".
+			if ( isset( $modified['post_date'] ) && ! isset( $modified['post_date_gmt'] ) ) {
+				$modified['post_date_gmt'] = get_gmt_from_date( (string) $modified['post_date'] );
+			} elseif ( isset( $modified['post_date_gmt'] ) && ! isset( $modified['post_date'] ) ) {
+				$modified['post_date'] = get_date_from_gmt( (string) $modified['post_date_gmt'] );
+			}
+
 			$save = \wp_update_post(
 				array_merge(
-					$this->get_modified_attributes(),
+					$modified,
 					[
 						'ID' => $id,
 					]
@@ -391,6 +406,34 @@ PHP
 	 */
 	public function delete( bool $force = false ): mixed {
 		return \wp_delete_post( $this->id(), $force );
+	}
+
+	/**
+	 * Retrieve the model for a bound route value.
+	 *
+	 * Mirrors WordPress's singular visibility rules: posts in a non-viewable
+	 * status (draft, pending, private, future, trash) only resolve for users who
+	 * can read them.
+	 *
+	 * @param mixed       $value Value to compare against.
+	 * @param string|null $field Field to compare against.
+	 * @return static|null
+	 */
+	#[\Override]
+	public function resolve_route_binding( $value, $field = null ) {
+		$model = parent::resolve_route_binding( $value, $field );
+
+		if ( ! $model ) {
+			return null;
+		}
+
+		$status = (string) get_post_status( $model->id() );
+
+		if ( ! is_post_status_viewable( $status ) && ! current_user_can( 'read_post', $model->id() ) ) {
+			return null;
+		}
+
+		return $model;
 	}
 
 	/**

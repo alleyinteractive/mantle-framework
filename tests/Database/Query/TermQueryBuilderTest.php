@@ -132,6 +132,38 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( 1, $applied_count ); // The clauses should only be applied once.
 	}
 
+	public function test_for_page() {
+		static::factory()->tag->create_many( 5 );
+
+		$page_one   = Testable_Tag::query()->for_page( 1, 2 )->get()->pluck( 'id' );
+		$page_two   = Testable_Tag::query()->for_page( 2, 2 )->get()->pluck( 'id' );
+		$page_three = Testable_Tag::query()->for_page( 3, 2 )->get()->pluck( 'id' );
+
+		$this->assertCount( 2, $page_one );
+		$this->assertCount( 2, $page_two );
+		$this->assertCount( 1, $page_three );
+		$this->assertEmpty( $page_one->intersect( $page_two )->all() );
+		$this->assertEmpty( $page_two->intersect( $page_three )->all() );
+	}
+
+	public function test_chunk() {
+		static::factory()->tag->create_many( 5 );
+
+		$chunks = [];
+		$ids    = [];
+
+		Testable_Tag::query()->chunk(
+			2,
+			function ( $terms ) use ( &$chunks, &$ids ): void {
+				$chunks[] = $terms->count();
+				$ids      = array_merge( $ids, $terms->pluck( 'id' )->all() );
+			},
+		);
+
+		$this->assertEquals( [ 2, 2, 1 ], $chunks );
+		$this->assertCount( 5, array_unique( $ids ) );
+	}
+
 	public function test_count() {
 		static::factory()->tag->create_many( 14 );
 

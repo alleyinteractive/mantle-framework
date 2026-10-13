@@ -13,6 +13,23 @@ class ContainerTest extends TestCase {
 		Container::set_instance( null );
 	}
 
+	public function test_variadic_primitive_constructor() {
+		$container = new Container();
+
+		$instance = $container->make( ContainerVariadicPrimitiveStub::class );
+
+		$this->assertSame( [], $instance->names );
+	}
+
+	public function test_variadic_class_constructor() {
+		$container = new Container();
+
+		$instance = $container->make( ContainerVariadicClassStub::class );
+
+		$this->assertCount( 1, $instance->stubs );
+		$this->assertInstanceOf( ContainerConcreteStub::class, $instance->stubs[0] );
+	}
+
 	public function test_container_singleton() {
 		$container = Container::set_instance( new Container() );
 
@@ -662,5 +679,21 @@ class ContainerInjectVariableStubWithInterfaceImplementation implements IContain
 
 	public function __construct( ContainerConcreteStub $concrete, $something ) {
 		$this->something = $something;
+	}
+}
+
+class ContainerVariadicPrimitiveStub {
+	public array $names;
+
+	public function __construct( string ...$names ) {
+		$this->names = $names;
+	}
+}
+
+class ContainerVariadicClassStub {
+	public array $stubs;
+
+	public function __construct( ContainerConcreteStub ...$stubs ) {
+		$this->stubs = $stubs;
 	}
 }

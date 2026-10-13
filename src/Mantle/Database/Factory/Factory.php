@@ -342,15 +342,15 @@ abstract class Factory {
 	 * @return TObject|Core_Object|null
 	 */
 	protected function make( array $args ) {
-		// Apply the factory definition to top of the middleware stack.
-		$this->middleware->prepend( $this->apply_definition() );
-
 		// Append the arguments passed to make() as the last state values to apply.
 		$factory = $this->state( $args );
 
+		// The definition runs first, ahead of any configured middleware.
+		$pipes = [ $this->apply_definition(), ...$factory->middleware->all() ];
+
 		return Pipeline::make()
 			->send( [] )
-			->through( $factory->middleware->all() )
+			->through( $pipes )
 			->then(
 				function ( array $args ) use ( $factory ): Model {
 					if ( $factory->slash ) {

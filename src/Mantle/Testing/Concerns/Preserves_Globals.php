@@ -49,6 +49,7 @@ trait Preserves_Globals {
 		'wp_post_statuses',
 		'wp_post_types',
 		'wp_rewrite',
+		'wp_roles',
 		'wp_sitemaps',
 		'wp_taxonomies',
 	];

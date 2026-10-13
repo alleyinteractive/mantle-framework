@@ -151,7 +151,7 @@ abstract class Repository implements CacheInterface {
 	 * @param  \DateTimeInterface|\DateInterval|int|null $ttl
 	 */
 	public function add( string $key, mixed $value, \DateTimeInterface|\DateInterval|int|null $ttl = null ): bool {
-		if ( is_null( $this->get( $key ) ) ) {
+		if ( ! $this->has( $key ) ) {
 			return $this->put( $key, $value, $ttl );
 		}
 

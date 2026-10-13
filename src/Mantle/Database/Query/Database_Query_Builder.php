@@ -90,10 +90,9 @@ class Database_Query_Builder extends Builder {
 
 		assert( $wpdb instanceof \wpdb );
 
-		$this->select( [ 'COUNT(*) AS count' ] );
-		$this->take( -1 );
+		$builder = ( clone $this )->select( [ 'COUNT(*) AS count' ] )->take( -1 );
 
-		return (int) $wpdb->get_var( $this->get_query_sql() ); // phpcs:ignore WordPress.DB.PreparedSQL
+		return (int) $wpdb->get_var( $builder->get_query_sql() ); // phpcs:ignore WordPress.DB.PreparedSQL
 	}
 
 	/**
@@ -128,9 +127,23 @@ class Database_Query_Builder extends Builder {
 		if ( -1 !== $this->limit ) {
 			$limit = sprintf(
 				'LIMIT %d, %d',
-				$this->page !== 0 ? ( $this->page - 1 ) * $this->limit : 0,
+				$this->get_result_offset(),
 				(int) $this->limit
 			);
+		}
+
+		$order_by = '';
+
+		if ( ! empty( $this->order_by ) ) {
+			$clauses = [];
+
+			foreach ( array_values( $this->order_by ) as $index => $column ) {
+				$direction = strtoupper( (string) ( array_values( $this->order )[ $index ] ?? 'ASC' ) );
+
+				$clauses[] = preg_replace( '/[^a-zA-Z0-9_.]/', '', (string) $column ) . ( 'DESC' === $direction ? ' DESC' : ' ASC' );
+			}
+
+			$order_by = 'ORDER BY ' . implode( ', ', $clauses );
 		}
 
 		$model = $this->model;
@@ -148,10 +161,11 @@ class Database_Query_Builder extends Builder {
 		}
 
 		return sprintf(
-			'SELECT %s FROM %s %s %s',
+			'SELECT %s FROM %s %s %s %s',
 			$select,
 			$table,
 			count( $wheres ) > 0 ? 'WHERE ' . implode( ' ', $wheres ) : '',
+			$order_by,
 			$limit
 		);
 	}
