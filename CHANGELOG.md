@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   several meta arrays in one call. A key repeated across the arrays is stored once per array,
   which creates multiple meta entries for the same key (#925).
 
+### Fixed
+
+- `WordPress_Cache_Repository::get_multiple()` (and `getMultiple()`) now returns the `$default`
+  argument for missing keys instead of `false`, and unwraps values stored by `flexible()`, matching
+  `get()` (#971).
+
 ## v1.22.2
 
 ### Changed

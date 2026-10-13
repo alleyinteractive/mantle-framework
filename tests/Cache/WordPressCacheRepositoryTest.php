@@ -37,13 +37,47 @@ class WordPressCacheRepositoryTest extends FrameworkTestCase {
 
 	public function test_multiple() {
 		$keys = [ 'key1', 'key2' ];
-		$this->assertEquals( [ 'key1' => null, 'key2' => null ], Cache::get_multiple( $keys ) );
+		$this->assertSame( [ 'key1' => null, 'key2' => null ], Cache::get_multiple( $keys ) );
 
 		$this->assertTrue( Cache::set_multiple( [ 'key1' => 'value1', 'key2' => 'value2' ] ) );
 		$this->assertSame( [ 'key1' => 'value1', 'key2' => 'value2' ], Cache::get_multiple( $keys ) );
 
 		$this->assertTrue( Cache::delete_multiple( $keys ) );
-		$this->assertEquals( [ 'key1' => null, 'key2' => null ], Cache::get_multiple( $keys ) );
+		$this->assertSame( [ 'key1' => null, 'key2' => null ], Cache::get_multiple( $keys ) );
+	}
+
+	public function test_multiple_default() {
+		$keys = [ 'key1', 'key2' ];
+
+		$this->assertSame( [ 'key1' => 'default', 'key2' => 'default' ], Cache::get_multiple( $keys, 'default' ) );
+
+		Cache::set( 'key1', 'value1' );
+
+		$this->assertSame( [ 'key1' => 'value1', 'key2' => 'default' ], Cache::get_multiple( $keys, 'default' ) );
+	}
+
+	public function test_multiple_psr_alias_default() {
+		Cache::set( 'key1', 'value1' );
+
+		$this->assertSame(
+			[ 'key1' => 'value1', 'key2' => 'default' ],
+			Cache::getMultiple( [ 'key1', 'key2' ], 'default' ),
+		);
+	}
+
+	public function test_multiple_unwraps_flexible_value() {
+		Cache::flexible(
+			key: 'flexible-key',
+			stale: now()->addHour(),
+			expire: now()->addHours( 2 ),
+			callback: fn () => 'flexible-value',
+		);
+
+		$this->assertInstanceOf( SWR_Storage::class, wp_cache_get( 'flexible-key', '' ) );
+		$this->assertSame(
+			[ 'flexible-key' => 'flexible-value', 'missing-key' => 'default' ],
+			Cache::get_multiple( [ 'flexible-key', 'missing-key' ], 'default' ),
+		);
 	}
 
 	public function test_increment_decrement() {
