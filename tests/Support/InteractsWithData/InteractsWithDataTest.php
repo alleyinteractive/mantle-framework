@@ -48,49 +48,49 @@ class InteractsWithDataTest extends TestCase {
 	}
 
 	public function test_as_bool(): void {
-		$this->assertEquals( true, TestableInteractsWithData::create( true )->bool() );
-		$this->assertEquals( true, TestableInteractsWithData::create( '1' )->bool() );
-		$this->assertEquals( true, TestableInteractsWithData::create( 1 )->bool() );
-		$this->assertEquals( true, TestableInteractsWithData::create( 'true' )->bool() );
-		$this->assertEquals( false, TestableInteractsWithData::create( false )->bool() );
-		$this->assertEquals( false, TestableInteractsWithData::create( 'false' )->bool() );
-		$this->assertEquals( true, TestableInteractsWithData::create( 'random string' )->bool() );
-		$this->assertEquals( false, TestableInteractsWithData::create( '0' )->bool() );
-		$this->assertEquals( false, TestableInteractsWithData::create( null )->bool() );
+		$this->assertTrue( TestableInteractsWithData::create( true )->bool() );
+		$this->assertTrue( TestableInteractsWithData::create( '1' )->bool() );
+		$this->assertTrue( TestableInteractsWithData::create( 1 )->bool() );
+		$this->assertTrue( TestableInteractsWithData::create( 'true' )->bool() );
+		$this->assertFalse( TestableInteractsWithData::create( false )->bool() );
+		$this->assertFalse( TestableInteractsWithData::create( 'false' )->bool() );
+		$this->assertTrue( TestableInteractsWithData::create( 'random string' )->bool() );
+		$this->assertFalse( TestableInteractsWithData::create( '0' )->bool() );
+		$this->assertFalse( TestableInteractsWithData::create( null )->bool() );
 	}
 
 	public function test_truthy(): void {
-		$this->assertEquals( true, TestableInteractsWithData::create( true )->truthy() );
-		$this->assertEquals( true, TestableInteractsWithData::create( '1' )->truthy() );
-		$this->assertEquals( true, TestableInteractsWithData::create( 1 )->truthy() );
-		$this->assertEquals( true, TestableInteractsWithData::create( 'true' )->truthy() );
-		$this->assertEquals( true, TestableInteractsWithData::create( 'anything' )->truthy() );
-		$this->assertEquals( true, TestableInteractsWithData::create( 'false' )->truthy() );
-		$this->assertEquals( true, TestableInteractsWithData::create( 'random string' )->truthy() );
-		$this->assertEquals( false, TestableInteractsWithData::create( false )->truthy() );
-		$this->assertEquals( false, TestableInteractsWithData::create( '0' )->truthy() );
+		$this->assertTrue( TestableInteractsWithData::create( true )->truthy() );
+		$this->assertTrue( TestableInteractsWithData::create( '1' )->truthy() );
+		$this->assertTrue( TestableInteractsWithData::create( 1 )->truthy() );
+		$this->assertTrue( TestableInteractsWithData::create( 'true' )->truthy() );
+		$this->assertTrue( TestableInteractsWithData::create( 'anything' )->truthy() );
+		$this->assertTrue( TestableInteractsWithData::create( 'false' )->truthy() );
+		$this->assertTrue( TestableInteractsWithData::create( 'random string' )->truthy() );
+		$this->assertFalse( TestableInteractsWithData::create( false )->truthy() );
+		$this->assertFalse( TestableInteractsWithData::create( '0' )->truthy() );
 	}
 
 	public function test_is_false(): void {
-		$this->assertEquals( true, TestableInteractsWithData::create( false )->is_false() );
-		$this->assertEquals( false, TestableInteractsWithData::create( true )->is_false() );
-		$this->assertEquals( false, TestableInteractsWithData::create( 0 )->is_false() );
-		$this->assertEquals( false, TestableInteractsWithData::create( '0' )->is_false() );
-		$this->assertEquals( false, TestableInteractsWithData::create( '' )->is_false() );
-		$this->assertEquals( false, TestableInteractsWithData::create( null )->is_false() );
-		$this->assertEquals( false, TestableInteractsWithData::create( 'false' )->is_false() );
-		$this->assertEquals( false, TestableInteractsWithData::create( [] )->is_false() );
+		$this->assertTrue( TestableInteractsWithData::create( false )->is_false() );
+		$this->assertFalse( TestableInteractsWithData::create( true )->is_false() );
+		$this->assertFalse( TestableInteractsWithData::create( 0 )->is_false() );
+		$this->assertFalse( TestableInteractsWithData::create( '0' )->is_false() );
+		$this->assertFalse( TestableInteractsWithData::create( '' )->is_false() );
+		$this->assertFalse( TestableInteractsWithData::create( null )->is_false() );
+		$this->assertFalse( TestableInteractsWithData::create( 'false' )->is_false() );
+		$this->assertFalse( TestableInteractsWithData::create( [] )->is_false() );
 	}
 
 	public function test_is_true(): void {
-		$this->assertEquals( true, TestableInteractsWithData::create( true )->is_true() );
-		$this->assertEquals( false, TestableInteractsWithData::create( false )->is_true() );
-		$this->assertEquals( false, TestableInteractsWithData::create( 1 )->is_true() );
-		$this->assertEquals( false, TestableInteractsWithData::create( '1' )->is_true() );
-		$this->assertEquals( false, TestableInteractsWithData::create( 'true' )->is_true() );
-		$this->assertEquals( false, TestableInteractsWithData::create( null )->is_true() );
-		$this->assertEquals( false, TestableInteractsWithData::create( 0 )->is_true() );
-		$this->assertEquals( false, TestableInteractsWithData::create( [] )->is_true() );
+		$this->assertTrue( TestableInteractsWithData::create( true )->is_true() );
+		$this->assertFalse( TestableInteractsWithData::create( false )->is_true() );
+		$this->assertFalse( TestableInteractsWithData::create( 1 )->is_true() );
+		$this->assertFalse( TestableInteractsWithData::create( '1' )->is_true() );
+		$this->assertFalse( TestableInteractsWithData::create( 'true' )->is_true() );
+		$this->assertFalse( TestableInteractsWithData::create( null )->is_true() );
+		$this->assertFalse( TestableInteractsWithData::create( 0 )->is_true() );
+		$this->assertFalse( TestableInteractsWithData::create( [] )->is_true() );
 	}
 
 	public function test_as_array(): void {
