@@ -35,24 +35,24 @@ class PostObjectTest extends FrameworkTestCase {
 
 		$this->assertInstanceOf( Testable_Post::class, $object );
 
-		$this->assertEquals( $post->ID, $object->id() );
-		$this->assertEquals( $post->post_title, $object->name() );
-		$this->assertEquals( $post->post_name, $object->slug() );
-		$this->assertEquals( $post->post_excerpt, $object->description() );
-		$this->assertEquals( $post->post_content, $object->get( 'content' ) );
+		$this->assertSame( $post->ID, $object->id() );
+		$this->assertSame( $post->post_title, $object->name() );
+		$this->assertSame( $post->post_name, $object->slug() );
+		$this->assertSame( $post->post_excerpt, $object->description() );
+		$this->assertSame( $post->post_content, $object->get( 'content' ) );
 
 		// Retrieve an attribute straight from the object itself.
-		$this->assertEquals( $post->post_modified, $object->get( 'post_modified' ) );
-		$this->assertEquals( $post->post_content, $object->get( 'post_content' ) );
+		$this->assertSame( $post->post_modified, $object->get( 'post_modified' ) );
+		$this->assertSame( $post->post_content, $object->get( 'post_content' ) );
 
 		// Test magic methods work.
-		$this->assertEquals( $post->post_content, $object->post_content );
-		$this->assertEquals( $post->post_title, $object->name );
+		$this->assertSame( $post->post_content, $object->post_content );
+		$this->assertSame( $post->post_title, $object->name );
 
 		// Test that you can get the WordPress object.
 		$core_object = $object->core_object();
 		$this->assertInstanceOf( \WP_Post::class, $core_object );
-		$this->assertEquals( $object->id(), $core_object->ID );
+		$this->assertSame( $object->id(), $core_object->ID );
 	}
 
 	public function test_post_object_parent() {
@@ -64,7 +64,7 @@ class PostObjectTest extends FrameworkTestCase {
 		$parent_object = $object->parent();
 
 		$this->assertInstanceOf( Testable_Post::class, $parent_object );
-		$this->assertEquals( $parent_object->id(), $parent_id );
+		$this->assertSame( $parent_object->id(), $parent_id );
 	}
 
 	public function test_post_meta() {
@@ -74,8 +74,8 @@ class PostObjectTest extends FrameworkTestCase {
 		$this->assertEmpty( \get_post_meta( $post->ID, 'meta_value_to_set', true ) );
 
 		$object->set_meta( 'meta_key_to_set', 'meta_value_to_set' );
-		$this->assertEquals( 'meta_value_to_set', $object->get_meta( 'meta_key_to_set' ) );
-		$this->assertEquals( 'meta_value_to_set', \get_post_meta( $post->ID, 'meta_key_to_set', true ) );
+		$this->assertSame( 'meta_value_to_set', $object->get_meta( 'meta_key_to_set' ) );
+		$this->assertSame( 'meta_value_to_set', \get_post_meta( $post->ID, 'meta_key_to_set', true ) );
 
 		$object->delete_meta( 'meta_key_to_set' );
 		$this->assertEmpty( $object->get_meta( 'meta_key_to_set' ) );
@@ -131,8 +131,8 @@ class PostObjectTest extends FrameworkTestCase {
 		);
 
 		$object->set_meta( 'meta_key_to_set', 'meta_value_to_set' );
-		$this->assertEquals( 'attr_meta_value_to_set', $object->get_meta( 'attr_meta_key_to_set' ) );
-		$this->assertEquals( 'attr_meta_value_to_set', \get_post_meta( $post->ID, 'attr_meta_key_to_set', true ) );
+		$this->assertSame( 'attr_meta_value_to_set', $object->get_meta( 'attr_meta_key_to_set' ) );
+		$this->assertSame( 'attr_meta_value_to_set', \get_post_meta( $post->ID, 'attr_meta_key_to_set', true ) );
 
 		$object->save(
 			[
@@ -183,10 +183,10 @@ class PostObjectTest extends FrameworkTestCase {
 		$object->post_content = 'Updated Content';
 		$object->save();
 
-		$this->assertEquals( 'Updated Content', $object->post_content );
+		$this->assertSame( 'Updated Content', $object->post_content );
 
 		$post = \get_post( $post->ID );
-		$this->assertEquals( 'Updated Content', $post->post_content );
+		$this->assertSame( 'Updated Content', $post->post_content );
 	}
 
 	public function test_updating_with_alias() {
@@ -196,10 +196,10 @@ class PostObjectTest extends FrameworkTestCase {
 		$object->name = 'Updated Title';
 		$object->save();
 
-		$this->assertEquals( 'Updated Title', $object->name );
+		$this->assertSame( 'Updated Title', $object->name );
 
 		$post = \get_post( $post->ID );
-		$this->assertEquals( 'Updated Title', $post->post_title );
+		$this->assertSame( 'Updated Title', $post->post_title );
 	}
 
 	public function test_updating_only_save_method() {
@@ -212,10 +212,10 @@ class PostObjectTest extends FrameworkTestCase {
 			]
 		);
 
-		$this->assertEquals( 'Saved Through Attribute', $object->name );
+		$this->assertSame( 'Saved Through Attribute', $object->name );
 
 		$post = \get_post( $post->ID );
-		$this->assertEquals( 'Saved Through Attribute', $post->post_title );
+		$this->assertSame( 'Saved Through Attribute', $post->post_title );
 	}
 
 	public function test_delete_post() {
@@ -229,7 +229,7 @@ class PostObjectTest extends FrameworkTestCase {
 
 		$post = \get_post( $post->ID );
 		$this->assertInstanceOf( Testable_Post::class, $object );
-		$this->assertEquals( 'trash', $post->post_status );
+		$this->assertSame( 'trash', $post->post_status );
 
 		// Delete the post for good.
 		$object->delete( true );
@@ -288,7 +288,7 @@ class PostObjectTest extends FrameworkTestCase {
 		$object = new Test_Post_Type( [ 'name' => 'post-type-test' ] );
 		$object->save();
 		$this->assertNotEmpty( $object->id() );
-		$this->assertEquals( 'example-post-type', $object->get( 'post_type' ) );
+		$this->assertSame( 'example-post-type', $object->get( 'post_type' ) );
 
 	}
 
@@ -307,14 +307,14 @@ class PostObjectTest extends FrameworkTestCase {
 			'post_title' => 'Post Two',
 		] );
 
-		$this->assertEquals( 'foo_post_type', get_post_type( $post_id ) );
+		$this->assertSame( 'foo_post_type', get_post_type( $post_id ) );
 
 		$dynamic_model = Post::for( 'foo_post_type' );
 
 		$this->assertEmpty( Post::find( $post_id ) );
 		$this->assertInstanceOf( Post::class, $dynamic_model );
-		$this->assertEquals( $post_id, $dynamic_model->find( $post_id )->id() );
-		$this->assertEquals(
+		$this->assertSame( $post_id, $dynamic_model->find( $post_id )->id() );
+		$this->assertSame(
 			$post_two,
 			$dynamic_model->where( 'title', 'Post Two' )->first()->id(),
 		);
@@ -328,15 +328,15 @@ class PostObjectTest extends FrameworkTestCase {
 
 		$post = get_post( $new_post->id() );
 
-		$this->assertEquals( 'foo_post_type', $post->post_type );
-		$this->assertEquals( 'New Post', $post->post_title );
+		$this->assertSame( 'foo_post_type', $post->post_type );
+		$this->assertSame( 'New Post', $post->post_title );
 	}
 
 	public function test_query_builder() {
 		$post_id = $this->get_random_post_id();
 		$first = Testable_Post::where( 'id', $post_id )->first();
 
-		$this->assertEquals( $post_id, $first->id() );
+		$this->assertSame( $post_id, $first->id() );
 	}
 
 	/**
@@ -345,7 +345,7 @@ class PostObjectTest extends FrameworkTestCase {
 	public function test_mutated_attribute() {
 		$object = new Testable_Post( [ 'test_key' => 'non-mutated-attribute' ] );
 
-		$this->assertEquals( 'mutated_value', $object->get( 'test_key' ) );
+		$this->assertSame( 'mutated_value', $object->get( 'test_key' ) );
 	}
 
 	public function test_setting_meta_before_saving() {
@@ -360,17 +360,17 @@ class PostObjectTest extends FrameworkTestCase {
 
 		$object->save();
 		$this->assertNotEmpty( $object->id() );
-		$this->assertEquals( 'meta_value_to_check', $object->get_meta( 'meta_key' ) );
+		$this->assertSame( 'meta_value_to_check', $object->get_meta( 'meta_key' ) );
 
 		$object->meta->meta_key = 'Updated meta value';
-		$this->assertEquals( 'meta_value_to_check', $object->get_meta( 'meta_key' ) );
+		$this->assertSame( 'meta_value_to_check', $object->get_meta( 'meta_key' ) );
 
 		// Retrieving by attribute should give the queued value.
-		$this->assertEquals( 'Updated meta value', $object->meta->meta_key );
+		$this->assertSame( 'Updated meta value', $object->meta->meta_key );
 
 		$object->save();
-		$this->assertEquals( 'Updated meta value', $object->get_meta( 'meta_key' ) );
-		$this->assertEquals( 'Updated meta value', $object->meta->meta_key );
+		$this->assertSame( 'Updated meta value', $object->get_meta( 'meta_key' ) );
+		$this->assertSame( 'Updated meta value', $object->meta->meta_key );
 	}
 
 	public function test_meta_as_array() {
@@ -385,14 +385,14 @@ class PostObjectTest extends FrameworkTestCase {
 		$object->save();
 
 		$this->assertNotEmpty( $object->id() );
-		$this->assertEquals( 'meta_value_to_check', $object->get_meta( 'meta_key' ) );
-		$this->assertEquals( 'meta_value_to_check', $object->meta['meta_key'] );
+		$this->assertSame( 'meta_value_to_check', $object->get_meta( 'meta_key' ) );
+		$this->assertSame( 'meta_value_to_check', $object->meta['meta_key'] );
 
 		$object->meta['meta_key'] = 'Updated meta value';
 
 		$object->save();
 
-		$this->assertEquals( 'Updated meta value', $object->get_meta( 'meta_key' ) );
+		$this->assertSame( 'Updated meta value', $object->get_meta( 'meta_key' ) );
 	}
 
 	public function test_terms_attribute() {
@@ -406,7 +406,7 @@ class PostObjectTest extends FrameworkTestCase {
 		$this->assertPostHasTerm( $post, $category );
 		$this->assertInstanceOf( Term::class, $post->terms->category[0] );
 
-		$this->assertEquals(
+		$this->assertSame(
 			$category->term_id,
 			$post->terms->category[0]->id(),
 		);
@@ -493,14 +493,14 @@ class PostObjectTest extends FrameworkTestCase {
 			'modified' => $original,
 		] );
 
-		$this->assertEquals( $original, $post->modified );
+		$this->assertSame( $original, $post->modified );
 
 		$date = now()->subWeek()->toDateTimeString();
 
 		$post->modified = $date;
 		$post->save();
 
-		$this->assertEquals( $date, $post->modified );
+		$this->assertSame( $date, $post->modified );
 
 		// Test that an update to the post object will update the modified date.
 		$post->save( [ 'content' => 'Updated Title' ] );
@@ -519,10 +519,10 @@ class PostObjectTest extends FrameworkTestCase {
 		$this->assertInstanceOf( Carbon::class, $post->dates->modified_utc );
 
 		// Test that the dates are the same as the post object.
-		$this->assertEquals( $post->post_date, $post->dates->created->toDateTimeString() );
-		$this->assertEquals( $post->post_date_gmt, $post->dates->created_utc->toDateTimeString() );
-		$this->assertEquals( $post->post_modified, $post->dates->modified->toDateTimeString() );
-		$this->assertEquals( $post->post_modified_gmt, $post->dates->modified_utc->toDateTimeString() );
+		$this->assertSame( $post->post_date, $post->dates->created->toDateTimeString() );
+		$this->assertSame( $post->post_date_gmt, $post->dates->created_utc->toDateTimeString() );
+		$this->assertSame( $post->post_modified, $post->dates->modified->toDateTimeString() );
+		$this->assertSame( $post->post_modified_gmt, $post->dates->modified_utc->toDateTimeString() );
 
 		$newDate = now()->subWeek();
 
@@ -530,13 +530,13 @@ class PostObjectTest extends FrameworkTestCase {
 		$post->dates->created = $newDate;
 		$post->save();
 
-		$this->assertEquals( $newDate->toDateTimeString(), $post->dates->created->toDateTimeString() );
+		$this->assertSame( $newDate->toDateTimeString(), $post->dates->created->toDateTimeString() );
 
 		// Test updating the date with as an array.
 		$post->dates['modified'] = $newDate;
 		$post->save();
 
-		$this->assertEquals( $newDate->toDateTimeString(), $post->dates->modified->toDateTimeString() );
+		$this->assertSame( $newDate->toDateTimeString(), $post->dates->modified->toDateTimeString() );
 	}
 
 	public function test_thumbnail_relationship() {
@@ -548,8 +548,8 @@ class PostObjectTest extends FrameworkTestCase {
 		$post->thumbnail()->save( $attachment_id );
 
 		$this->assertInstanceOf( Attachment::class, $post->thumbnail );
-		$this->assertEquals( $attachment_id, $post->thumbnail->id );
-		$this->assertEquals( $attachment_id, get_post_thumbnail_id( $post->id() ) );
+		$this->assertSame( $attachment_id, $post->thumbnail->id );
+		$this->assertSame( $attachment_id, get_post_thumbnail_id( $post->id() ) );
 
 		$post->thumbnail()->dissociate();
 
