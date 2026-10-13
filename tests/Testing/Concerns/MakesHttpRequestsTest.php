@@ -90,7 +90,8 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_get_home() {
-		$this->get( home_url( '/' ) );
+		$this->get( home_url( '/' ) )
+			->assertOk();
 		$this->assertQueryTrue( 'is_home', 'is_front_page' );
 	}
 
@@ -98,6 +99,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	public function test_get_singular() {
 		$post_id = static::factory()->post->create();
 		$this->get( get_permalink( $post_id ) . '?test=asda' )
+			->assertOk()
 			->assertQueryTrue( 'is_single', 'is_singular' )
 			->assertQueriedObjectId( $post_id )
 			->assertSee( get_the_title( $post_id ) );
@@ -217,6 +219,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 
 		$this
 			->get( get_term_link( $category_id, 'category' ) )
+			->assertOk()
 			->assertQueryTrue( 'is_archive', 'is_category' )
 			->assertQueriedObjectId( $category_id );
 	}
@@ -397,6 +400,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	public function test_assert_content_callback(): void {
 		$this
 			->get( '/' )
+			->assertOk()
 			->assertContent( fn ( string $content ) => stringable( $content )->contains( 'home' ) )
 			->assertNotContent( 'this will not be found' )
 			->assertNotContent( fn ( string $content ) => stringable( $content )->contains( 'this will not be found' ) );
@@ -504,7 +508,9 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	public function test_match_snapshot_http() {
 		Route::get( '/example/', fn () => 'example' );
 
-		$this->get( '/example' )->assertMatchesSnapshotContent();
+		$this->get( '/example' )
+			->assertOk()
+			->assertMatchesSnapshotContent();
 	}
 
 	public function test_match_snapshot_http_partial() {
@@ -533,10 +539,12 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			HTML
 		);
 
-		$this->get( '/example' )->assertMatchesSnapshotHtml( [
-			'/html/body/div[@class="example"]',
-			'/html/body/div[@class="example-two"]',
-		] );
+		$this->get( '/example' )
+			->assertOk()
+			->assertMatchesSnapshotHtml( [
+				'/html/body/div[@class="example"]',
+				'/html/body/div[@class="example-two"]',
+			] );
 	}
 
 	public function test_match_snapshot_no_selectors_matched() {
@@ -544,9 +552,11 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 
 		Route::get( '/example/', fn () => 'example' );
 
-		$this->get( '/example' )->assertMatchesSnapshotHtml( [
-			'/html/body/div[@class="example"]',
-		] );
+		$this->get( '/example' )
+			->assertOk()
+			->assertMatchesSnapshotHtml( [
+				'/html/body/div[@class="example"]',
+			] );
 	}
 
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
@@ -575,6 +585,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 
 		$this
 			->get( rest_url( '/mantle/v1/' . __FUNCTION__ ) )
+			->assertOk()
 			->assertJsonPath( 'key', 'value here' );
 
 		$this->assertFalse( wp_is_rest_endpoint() );
@@ -593,14 +604,19 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			]
 		);
 
-		$this->get( rest_url( '/mantle/v1/' . __FUNCTION__ ) )->assertMatchesSnapshotContent();
+		$this->get( rest_url( '/mantle/v1/' . __FUNCTION__ ) )
+			->assertCreated()
+			->assertMatchesSnapshotContent();
 
-		$this->get( rest_url( '/wp/v2/posts/' . static::factory()->post->create() ) )->assertMatchesSnapshotJson( 'type' );
+		$this->get( rest_url( '/wp/v2/posts/' . static::factory()->post->create() ) )
+			->assertOk()
+			->assertMatchesSnapshotJson( 'type' );
 
 		static::factory()->post->create_many( 10 );
 
 		$this
 			->get( rest_url( '/wp/v2/posts' ) )
+			->assertOk()
 			->assertMatchesSnapshotJson( [
 				'*.type',
 				'*.status',
@@ -697,7 +713,8 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 
 		$this->assertSame( 'value', wp_cache_get( 'key' ) );
 
-		$this->get( '/' );
+		$this->get( '/' )
+			->assertOk();
 
 		// After the request, the cache should be cleared.
 		$this->assertFalse( wp_cache_get( 'key' ) );
@@ -710,7 +727,8 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 
 		$this->assertSame( 'value', wp_cache_get( 'key' ) );
 
-		$this->get( '/' );
+		$this->get( '/' )
+			->assertOk();
 
 		// After the request, the cache should still be preserved.
 		$this->assertSame( 'value', wp_cache_get( 'key' ) );
