@@ -12,39 +12,39 @@ use PHPUnit\Framework\TestCase;
 #[Group('interactsWithData')]
 class InteractsWithDataTest extends TestCase {
 	public function test_as_string(): void {
-		$this->assertEquals( 'test', TestableInteractsWithData::create( 'test' )->string() );
-		$this->assertEquals( '1234', TestableInteractsWithData::create( 1234 )->string() );
-		$this->assertEquals( '1.1', TestableInteractsWithData::create( 1.1 )->string() );
-		$this->assertEquals( '1', TestableInteractsWithData::create( true )->string() );
-		$this->assertEquals( '', TestableInteractsWithData::create( false )->string() );
-		$this->assertEquals( [ 'test' ], TestableInteractsWithData::create( 'test' )->array() );
+		$this->assertSame( 'test', TestableInteractsWithData::create( 'test' )->string() );
+		$this->assertSame( '1234', TestableInteractsWithData::create( 1234 )->string() );
+		$this->assertSame( '1.1', TestableInteractsWithData::create( 1.1 )->string() );
+		$this->assertSame( '1', TestableInteractsWithData::create( true )->string() );
+		$this->assertSame( '', TestableInteractsWithData::create( false )->string() );
+		$this->assertSame( [ 'test' ], TestableInteractsWithData::create( 'test' )->array() );
 	}
 
 	public function test_as_stringable(): void {
 		$option = TestableInteractsWithData::create( 'test' );
 
 		$this->assertInstanceOf( \Mantle\Support\Stringable::class, $option->stringable() );
-		$this->assertEquals(
+		$this->assertSame(
 			'test',
 			$option->stringable()->value(),
 		);
 	}
 
 	public function test_as_int(): void {
-		$this->assertEquals( 1, TestableInteractsWithData::create( 1 )->int() );
-		$this->assertEquals( 1, TestableInteractsWithData::create( '1' )->int() );
-		$this->assertEquals( 1, TestableInteractsWithData::create( 1.1 )->int() );
-		$this->assertEquals( 1, TestableInteractsWithData::create( true )->int() );
-		$this->assertEquals( 0, TestableInteractsWithData::create( false )->int() );
-		$this->assertEquals( [ 1 ], TestableInteractsWithData::create( 1 )->array() );
+		$this->assertSame( 1, TestableInteractsWithData::create( 1 )->int() );
+		$this->assertSame( 1, TestableInteractsWithData::create( '1' )->int() );
+		$this->assertSame( 1, TestableInteractsWithData::create( 1.1 )->int() );
+		$this->assertSame( 1, TestableInteractsWithData::create( true )->int() );
+		$this->assertSame( 0, TestableInteractsWithData::create( false )->int() );
+		$this->assertSame( [ 1 ], TestableInteractsWithData::create( 1 )->array() );
 	}
 
 	public function test_as_float(): void {
-		$this->assertEquals( 1.1, TestableInteractsWithData::create( 1.1 )->float() );
-		$this->assertEquals( 1.1, TestableInteractsWithData::create( '1.1' )->float() );
-		$this->assertEquals( 1.0, TestableInteractsWithData::create( 1 )->float() );
-		$this->assertEquals( 1.0, TestableInteractsWithData::create( true )->float() );
-		$this->assertEquals( 0.0, TestableInteractsWithData::create( false )->float() );
+		$this->assertSame( 1.1, TestableInteractsWithData::create( 1.1 )->float() );
+		$this->assertSame( 1.1, TestableInteractsWithData::create( '1.1' )->float() );
+		$this->assertSame( 1.0, TestableInteractsWithData::create( 1 )->float() );
+		$this->assertSame( 1.0, TestableInteractsWithData::create( true )->float() );
+		$this->assertSame( 0.0, TestableInteractsWithData::create( false )->float() );
 	}
 
 	public function test_as_bool(): void {
@@ -94,19 +94,19 @@ class InteractsWithDataTest extends TestCase {
 	}
 
 	public function test_as_array(): void {
-		$this->assertEquals( [ 'test' ], TestableInteractsWithData::create( [ 'test' ] )->array() );
-		$this->assertEquals( [ 'test' ], TestableInteractsWithData::create( 'test' )->array() );
+		$this->assertSame( [ 'test' ], TestableInteractsWithData::create( [ 'test' ] )->array() );
+		$this->assertSame( [ 'test' ], TestableInteractsWithData::create( 'test' )->array() );
 	}
 
 	public function test_as_collection(): void {
-		$this->assertEquals( [ 'test' ], TestableInteractsWithData::create( [ 'test' ] )->collection()->toArray() );
-		$this->assertEquals( [ 'test' ], TestableInteractsWithData::create( 'test' )->collection()->toArray() );
+		$this->assertSame( [ 'test' ], TestableInteractsWithData::create( [ 'test' ] )->collection()->toArray() );
+		$this->assertSame( [ 'test' ], TestableInteractsWithData::create( 'test' )->collection()->toArray() );
 	}
 
 	public function test_as_date(): void {
 		$this->assertNull( TestableInteractsWithData::create( '' )->date() );
 
-		$this->assertEquals( '2020-01-01', TestableInteractsWithData::create( '2020-01-01' )->date()->format( 'Y-m-d' ) );
+		$this->assertSame( '2020-01-01', TestableInteractsWithData::create( '2020-01-01' )->date()->format( 'Y-m-d' ) );
 	}
 
 	public function test_as_object(): void {
@@ -115,43 +115,43 @@ class InteractsWithDataTest extends TestCase {
 	}
 
 	public function test_array_property(): void {
-		$this->assertEquals( 'test', TestableInteractsWithData::create( [ 'key' => 'test' ] )->get( 'key' )->string() );
-		$this->assertEquals( 'value', TestableInteractsWithData::create( [ 'sub' => [ 'value' ] ] )->get( 'sub.0' )->string() );
+		$this->assertSame( 'test', TestableInteractsWithData::create( [ 'key' => 'test' ] )->get( 'key' )->string() );
+		$this->assertSame( 'value', TestableInteractsWithData::create( [ 'sub' => [ 'value' ] ] )->get( 'sub.0' )->string() );
 	}
 
 	public function test_object_property(): void {
-		$this->assertEquals( 'test', TestableInteractsWithData::create( (object) [ 'key' => 'test' ] )->get( 'key' )->string() );
-		$this->assertEquals( 'value', TestableInteractsWithData::create( (object) [ 'sub' => [ 'value' ] ] )->get( 'sub.0' )->string() );
+		$this->assertSame( 'test', TestableInteractsWithData::create( (object) [ 'key' => 'test' ] )->get( 'key' )->string() );
+		$this->assertSame( 'value', TestableInteractsWithData::create( (object) [ 'sub' => [ 'value' ] ] )->get( 'sub.0' )->string() );
 	}
 
 	public function test_json_serializable(): void {
-		$this->assertEquals( json_encode( 'test' ), json_encode( TestableInteractsWithData::create( 'test' ) ) );
-		$this->assertEquals( json_encode( [ 'test' ] ), json_encode( TestableInteractsWithData::create( [ 'test' ] ) ) );
+		$this->assertSame( json_encode( 'test' ), json_encode( TestableInteractsWithData::create( 'test' ) ) );
+		$this->assertSame( json_encode( [ 'test' ] ), json_encode( TestableInteractsWithData::create( [ 'test' ] ) ) );
 	}
 
 	public function test_arrayaccess_get(): void {
-		$this->assertEquals( 'test', TestableInteractsWithData::create( [ 'test' ] )[0] );
-		$this->assertEquals( 'test', TestableInteractsWithData::create( [ 'key' => 'test' ] )['key'] );
+		$this->assertSame( 'test', TestableInteractsWithData::create( [ 'test' ] )[0] );
+		$this->assertSame( 'test', TestableInteractsWithData::create( [ 'key' => 'test' ] )['key'] );
 	}
 
 	public function test_arrayaccess_set(): void {
 		$option = TestableInteractsWithData::create( [ 'test', 'test2' ] );
 
-		$this->assertEquals( [ 'test', 'test2' ], $option->array() );
+		$this->assertSame( [ 'test', 'test2' ], $option->array() );
 
 		$option[0] = 'new-test';
 
-		$this->assertEquals( [ 'new-test', 'test2' ], $option->array() );
+		$this->assertSame( [ 'new-test', 'test2' ], $option->array() );
 	}
 
 	public function test_arrayaccess_unset(): void {
 		$option = TestableInteractsWithData::create( [ 'test', 'test2' ] );
 
-		$this->assertEquals( [ 'test', 'test2' ], $option->array() );
+		$this->assertSame( [ 'test', 'test2' ], $option->array() );
 
 		unset( $option[0] );
 
-		$this->assertEquals( [ 1 => 'test2' ], $option->array() );
+		$this->assertSame( [ 1 => 'test2' ], $option->array() );
 	}
 
 	public function test_arrayaccess_isset(): void {
@@ -188,11 +188,11 @@ class InteractsWithDataTest extends TestCase {
 	}
 
 	public function test_mixed_helper(): void {
-		$this->assertEquals( 'test', \Mantle\Support\Helpers\mixed( 'test' )->string() );
-		$this->assertEquals( [ 'test' ], \Mantle\Support\Helpers\mixed( 'test' )->array() );
-		$this->assertEquals( '1234', \Mantle\Support\Helpers\mixed( 1234 )->string() );
-		$this->assertEquals( 1234, \Mantle\Support\Helpers\mixed( '1234' )->string() );
-		$this->assertEquals( '1.1', \Mantle\Support\Helpers\mixed( 1.1 )->string() );
+		$this->assertSame( 'test', \Mantle\Support\Helpers\mixed( 'test' )->string() );
+		$this->assertSame( [ 'test' ], \Mantle\Support\Helpers\mixed( 'test' )->array() );
+		$this->assertSame( '1234', \Mantle\Support\Helpers\mixed( 1234 )->string() );
+		$this->assertSame( '1234', \Mantle\Support\Helpers\mixed( '1234' )->string() );
+		$this->assertSame( '1.1', \Mantle\Support\Helpers\mixed( 1.1 )->string() );
 	}
 }
 

@@ -19,8 +19,8 @@ class TestkitTestCaseTest extends TestCase {
 
 	public function test_url_generator() {
 		$this->assertNotEmpty( $this->app['url'] );
-		$this->assertEquals( home_url( '/example/' ), $this->app['url']->to( home_url( '/example/' ) ) );
-		$this->assertEquals( home_url( '/example/' ), $this->app['url']->to( '/example/' ) );
+		$this->assertSame( home_url( '/example/' ), $this->app['url']->to( home_url( '/example/' ) ) );
+		$this->assertSame( home_url( '/example/' ), $this->app['url']->to( '/example/' ) );
 	}
 
 	/**
