@@ -109,11 +109,30 @@ trait Has_Attributes {
 			return $this->relations[ $key ];
 		}
 
-		if ( method_exists( $this, $key ) ) {
+		if ( method_exists( $this, $key ) && ! $this->is_core_object_method( $key ) ) {
 			return $this->get_relationship_from_method( $key );
 		}
 
 		return null;
+	}
+
+	/**
+	 * Determine if a method belongs to the Core_Object contract (id(), parent(), slug(), etc).
+	 *
+	 * Those getters read attributes themselves, so treating them as relationships
+	 * would recurse when the attribute is not set.
+	 *
+	 * @param string $method Method name.
+	 */
+	protected function is_core_object_method( string $method ): bool {
+		static $methods = null;
+
+		$methods ??= array_map(
+			fn ( \ReflectionMethod $reflection ) => $reflection->getName(),
+			( new \ReflectionClass( \Mantle\Contracts\Database\Core_Object::class ) )->getMethods(),
+		);
+
+		return in_array( $method, $methods, true );
 	}
 
 	/**
