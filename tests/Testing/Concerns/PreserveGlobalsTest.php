@@ -48,6 +48,16 @@ class PreserveGlobalsTest extends FrameworkTestCase {
 		$this->skip_for_phpunit_version( '10.0.0', '<', 'Global preservation is not supported in this PHPUnit version.' );
 	}
 
+	public function test_roles_restored_between_tests_first_run(): void {
+		add_role( 'qa_role', 'QA', [ 'read' => true ] );
+
+		$this->assertNotNull( get_role( 'qa_role' ) );
+	}
+
+	public function test_roles_restored_between_tests_second_run(): void {
+		$this->assertNull( get_role( 'qa_role' ) );
+	}
+
 	/**
 	 * Ensure that meta keys registered in one test are still registered in
 	 * another.
@@ -62,16 +72,6 @@ class PreserveGlobalsTest extends FrameworkTestCase {
 	 * @dataProvider dataprovider_twice
 	 */
 	#[DataProvider( 'dataprovider_twice' )]
-	public function test_roles_restored_between_tests_first_run(): void {
-		add_role( 'qa_role', 'QA', [ 'read' => true ] );
-
-		$this->assertNotNull( get_role( 'qa_role' ) );
-	}
-
-	public function test_roles_restored_between_tests_second_run(): void {
-		$this->assertNull( get_role( 'qa_role' ) );
-	}
-
 	public function test_meta_keys_preserved_between_tests(): void {
 		$this->assertTrue( registered_meta_key_exists( 'post', 'example_meta_key' ) );
 

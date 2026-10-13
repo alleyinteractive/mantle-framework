@@ -63,7 +63,6 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		parent::tearDown();
 	}
 
-	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_rest_api_request_is_served_once_per_request(): void {
 		$this->get( '/' );
 
@@ -89,6 +88,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		$this->post( '/only-get' )->assertStatus( 405 )->assertHeader( 'Allow', 'GET' );
 	}
 
+	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_get_home() {
 		$this->get( home_url( '/' ) );
 		$this->assertQueryTrue( 'is_home', 'is_front_page' );
