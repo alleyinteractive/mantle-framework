@@ -289,6 +289,8 @@ abstract class TestCase extends BaseTestCase {
 		static::restore_hooks();
 		wp_set_current_user( 0 );
 		$this->reset_lazyload_queue();
+
+		Utils::reset_server();
 		// phpcs:enable
 
 		parent::tearDown();
