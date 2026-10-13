@@ -11,7 +11,7 @@ use SplFileInfo;
 
 class FilesystemTest extends TestCase {
 
-	private static $temp_dir;
+	private static ?string $temp_dir = null;
 
 	protected function setUp(): void {
 		parent::setUp();

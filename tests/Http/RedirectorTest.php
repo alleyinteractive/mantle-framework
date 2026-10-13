@@ -16,22 +16,13 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class RedirectorTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
-	/**
-	 * @var Request
-	 */
-	protected $request;
+	protected Request $request;
 
-	/**
-	 * @var Url_Generator
-	 */
-	protected $url;
+	protected Url_Generator $url;
 
-	/**
-	 * @var Redirector
-	 */
-	protected $redirect;
+	protected Redirector $redirect;
 
-	protected $headers;
+	protected HeaderBag $headers;
 
 	public function setUp(): void {
 		parent::setUp();

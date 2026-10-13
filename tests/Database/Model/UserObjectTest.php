@@ -7,10 +7,7 @@ use Mantle\Database\Model\User;
 use Mantle\Testing\FrameworkTestCase;
 
 class UserObjectTest extends FrameworkTestCase {
-	/**
-	 * @var Factory
-	 */
-	protected static $faker;
+	protected static \Faker\Generator $faker;
 
 	public static function setUpBeforeClass(): void {
 		parent::setUpBeforeClass();

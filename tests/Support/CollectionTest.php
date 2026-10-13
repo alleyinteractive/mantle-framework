@@ -4773,7 +4773,7 @@ class CollectionTest extends FrameworkTestCase {
 }
 
 class TestSupportCollectionHigherOrderItem {
-	public $name;
+	public string $name;
 
 	public function __construct($name = 'taylor')
 	{
@@ -4792,7 +4792,7 @@ class TestSupportCollectionHigherOrderItem {
 }
 
 class TestAccessorEloquentTestStub {
-	protected $attributes = [];
+	protected array $attributes = [];
 
 	public function __construct($attributes)
 	{
@@ -4827,7 +4827,7 @@ class TestAccessorEloquentTestStub {
 }
 
 class TestArrayAccessImplementation implements ArrayAccess {
-	private $arr;
+	private array $arr;
 
 	public function __construct($arr)
 	{
@@ -4884,7 +4884,7 @@ class TestJsonSerializeWithScalarValueObject implements JsonSerializable {
 }
 
 class TestCollectionMapIntoObject {
-	public $value;
+	public mixed $value;
 
 	public function __construct($value)
 	{
