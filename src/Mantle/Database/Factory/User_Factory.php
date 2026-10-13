@@ -42,8 +42,18 @@ class User_Factory extends Factory {
 		$user_login = stringable( "{$first_name} {$last_name}" )->slugify();
 
 		// Faker names collide often enough that large suites would hit duplicate logins.
-		while ( \username_exists( (string) $user_login ) ) {
-			$user_login = $user_login->append( (string) \wp_rand( 1, 9 ) );
+		if ( \username_exists( (string) $user_login ) ) {
+			$max_id = \get_users(
+				[
+					'blog_id' => 0,
+					'fields'  => 'ID',
+					'number'  => 1,
+					'order'   => 'DESC',
+					'orderby' => 'ID',
+				]
+			);
+
+			$user_login = $user_login->append( '-' . ( (int) ( $max_id[0] ?? 0 ) + 1 ) );
 		}
 
 		return [
