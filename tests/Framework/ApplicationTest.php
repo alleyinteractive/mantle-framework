@@ -19,11 +19,11 @@ class ApplicationTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		$app = new Application();
 
-		$this->assertEquals( 'test-env', $app->environment() );
+		$this->assertSame( 'test-env', $app->environment() );
 
 		$_ENV['APP_ENV'] = 'another-test-env';
 
-		$this->assertEquals( 'another-test-env', $app->environment() );
+		$this->assertSame( 'another-test-env', $app->environment() );
 	}
 
 	public function test_is_environment() {
@@ -127,9 +127,9 @@ class ApplicationTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$app->environment_file( 'env-file' );
 		$app->load_environment_variables();
 
-		$this->assertEquals( 'bar', environment( 'ENV_VAR_FOO' ) );
-		$this->assertEquals( 'bar', $_ENV['ENV_VAR_FOO'] );
-		$this->assertEquals( 'bar', $_SERVER['ENV_VAR_FOO'] );
+		$this->assertSame( 'bar', environment( 'ENV_VAR_FOO' ) );
+		$this->assertSame( 'bar', $_ENV['ENV_VAR_FOO'] );
+		$this->assertSame( 'bar', $_SERVER['ENV_VAR_FOO'] );
 	}
 
 	public function test_can_fail_loading_config_silently() {

@@ -112,15 +112,15 @@ class DatabaseTableModelTest extends FrameworkTestCase {
 		] );
 
 		$this->assertIsArray( $item->json_data );
-		$this->assertEquals( [ 'key' => 'value' ], $item->json_data );
+		$this->assertSame( [ 'key' => 'value' ], $item->json_data );
 
 		$item->save();
 
-		$this->assertEquals( [ 'key' => 'value' ], $item->json_data );
+		$this->assertSame( [ 'key' => 'value' ], $item->json_data );
 
 		$item->refresh();
 
-		$this->assertEquals( [ 'key' => 'value' ], $item->json_data );
+		$this->assertSame( [ 'key' => 'value' ], $item->json_data );
 
 		$this->assertInstanceOf( TestableDatabaseModel::class, $item );
 		$this->assertDatabaseHas( TestableDatabaseModel::get_table_name(), [
@@ -153,7 +153,7 @@ class DatabaseTableModelTest extends FrameworkTestCase {
 		] );
 
 		$this->assertIsFloat( $item->float_value );
-		$this->assertEquals( 123.456, $item->float_value );
+		$this->assertSame( 123.456, $item->float_value );
 
 		$item->save();
 
@@ -170,7 +170,7 @@ class DatabaseTableModelTest extends FrameworkTestCase {
 			'example_enum' => ExampleEnum::VALUE_TWO,
 		] );
 
-		$this->assertEquals( ExampleEnum::VALUE_TWO, $item->example_enum );
+		$this->assertSame( ExampleEnum::VALUE_TWO, $item->example_enum );
 
 		$item->save();
 
@@ -183,7 +183,7 @@ class DatabaseTableModelTest extends FrameworkTestCase {
 			'id' => $item->id,
 			'example_enum' => ExampleEnum::VALUE_TWO,
 		] );
-		$this->assertEquals( ExampleEnum::VALUE_TWO, $item->example_enum );
+		$this->assertSame( ExampleEnum::VALUE_TWO, $item->example_enum );
 
 		$item->example_enum = ExampleEnum::VALUE_THREE;
 		$item->save();
@@ -192,7 +192,7 @@ class DatabaseTableModelTest extends FrameworkTestCase {
 			'id' => $item->id,
 			'example_enum' => ExampleEnum::VALUE_THREE->value,
 		] );
-		$this->assertEquals( ExampleEnum::VALUE_THREE, $item->example_enum );
+		$this->assertSame( ExampleEnum::VALUE_THREE, $item->example_enum );
 	}
 
 	public function test_enum_attribute_as_string(): void {
@@ -201,7 +201,7 @@ class DatabaseTableModelTest extends FrameworkTestCase {
 			'example_enum' => 'value_one',
 		] );
 
-		$this->assertEquals( ExampleEnum::VALUE_ONE, $item->example_enum );
+		$this->assertSame( ExampleEnum::VALUE_ONE, $item->example_enum );
 
 		$item->save();
 

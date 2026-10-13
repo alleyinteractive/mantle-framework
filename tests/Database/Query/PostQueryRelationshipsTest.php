@@ -33,7 +33,7 @@ class PostQueryRelationshipsTest extends FrameworkTestCase {
 		update_post_meta( $post_a, 'testable_sponsor_id', $sponsor_id );
 
 		$first = Testable_Post::has( 'sponsor' )->first();
-		$this->assertEquals( $post_a, $first->id() );
+		$this->assertSame( $post_a, $first->id() );
 	}
 
 	public function test_relationship_has_compare() {
@@ -47,7 +47,7 @@ class PostQueryRelationshipsTest extends FrameworkTestCase {
 		$this->assertEmpty( $missing );
 
 		$expected = Testable_Post::has( 'sponsor', $sponsor_id )->first();
-		$this->assertEquals( $post_a, $expected->id() );
+		$this->assertSame( $post_a, $expected->id() );
 	}
 
 	public function test_relationship_doesnt_have() {
@@ -58,7 +58,7 @@ class PostQueryRelationshipsTest extends FrameworkTestCase {
 		update_post_meta( $post_a, 'testable_sponsor_id', $sponsor_id );
 
 		$first = Testable_Post::doesnt_have( 'sponsor' )->first();
-		$this->assertNotEquals( $post_a, $first->id() );
+		$this->assertNotSame( $post_a, $first->id() );
 	}
 
 	/**
