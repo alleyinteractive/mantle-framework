@@ -37,17 +37,17 @@ class IsolatedFrameworkTest extends TestCase {
 	public function test_can_read_the_environment() {
 		putenv( 'WP_ENVIRONMENT_TYPE=staging' );
 
-		$this->assertEquals( 'staging', $this->app->environment() );
+		$this->assertSame( 'staging', $this->app->environment() );
 	}
 
 	public function test_can_read_the_namespace() {
-		$this->assertEquals( 'App', app()->get_namespace() );
+		$this->assertSame( 'App', app()->get_namespace() );
 
 		config()->set( 'app.namespace', 'MyApp' );
-		$this->assertEquals( 'MyApp', app()->get_namespace() );
+		$this->assertSame( 'MyApp', app()->get_namespace() );
 	}
 
 	public function test_sets_up_facade() {
-		$this->assertEquals( $this->app, Facade::get_facade_application() );
+		$this->assertSame( $this->app, Facade::get_facade_application() );
 	}
 }

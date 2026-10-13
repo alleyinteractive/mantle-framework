@@ -34,12 +34,12 @@ class FilesystemManagerTest extends FrameworkTestCase {
 		$drive->put( 'file.txt', 'contents' );
 
 		$this->assertTrue( $drive->exists( 'file.txt' ) );
-		$this->assertEquals( 'contents', $drive->read( 'file.txt' ) );
+		$this->assertSame( 'contents', $drive->read( 'file.txt' ) );
 
 		// Attempt to read the URL/path for the file.
-		$this->assertEquals( home_url( '/wp-content/uploads/file.txt' ), $drive->url( 'file.txt' ) );
-		$this->assertEquals( wp_upload_dir()['basedir'] . '/file.txt', $drive->path( 'file.txt' ) );
-		$this->assertTrue( file_exists( $drive->path( 'file.txt' ) ) );
+		$this->assertSame( home_url( '/wp-content/uploads/file.txt' ), $drive->url( 'file.txt' ) );
+		$this->assertSame( wp_upload_dir()['basedir'] . '/file.txt', $drive->path( 'file.txt' ) );
+		$this->assertFileExists( $drive->path( 'file.txt' ) );
 
 		$drive->delete( 'file.txt' );
 
@@ -113,7 +113,7 @@ class FilesystemManagerTest extends FrameworkTestCase {
 			'custom-driver',
 			function ( $app, array $config ) use ( $adapter ) {
 				$this->assertInstanceof( \Mantle\Contracts\Application::class, $app );
-				$this->assertEquals( [ 'driver' => 'custom-driver', 'extra_config' => 'value', 'root' => '/path' ], $config );
+				$this->assertSame( [ 'driver' => 'custom-driver', 'extra_config' => 'value', 'root' => '/path' ], $config );
 
 				$_SERVER['__custom_driver_called']++;
 
@@ -125,6 +125,6 @@ class FilesystemManagerTest extends FrameworkTestCase {
 		$this->assertTrue( $filesystem->drive( 'custom-driver' )->exists( '/path' ) );
 
 		// Ensure that the custom driver was instantiated once.
-		$this->assertEquals( 1, $_SERVER['__custom_driver_called'] );
+		$this->assertSame( 1, $_SERVER['__custom_driver_called'] );
 	}
 }

@@ -17,9 +17,7 @@ class NullableSiteObjectsTest extends FrameworkTestCase {
 	public function setUp(): void {
 		parent::setUp();
 
-		if ( ! \is_multisite() ) {
-			$this->markTestSkipped( 'Multisite is not enabled.' );
-		}
+		$this->skipWithoutMultisite();
 	}
 
 	/**

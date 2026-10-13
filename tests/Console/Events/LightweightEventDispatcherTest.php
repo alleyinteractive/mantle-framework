@@ -27,7 +27,7 @@ class LightweightEventDispatcherTest extends TestCase {
 		$dispatcher->dispatch( 'event_name' );
 		$dispatcher->dispatch( 'event_name', 'arg1', 'arg2' );
 
-		$this->assertEquals(
+		$this->assertSame(
 			[
 				[ 'event_name' ],
 				[ 'event_name', 'arg1', 'arg2' ],
@@ -81,7 +81,7 @@ class LightweightEventDispatcherTest extends TestCase {
 		$dispatcher->dispatch( 'event:name' );
 		$dispatcher->dispatch( 'event:name', 'arg1', 'arg2' );
 
-		$this->assertEquals(
+		$this->assertSame(
 			[
 				[ 'wildcard_listener' ],
 				[ 'wildcard_listener', 'arg1', 'arg2' ],
@@ -124,7 +124,7 @@ class LightweightEventDispatcherTest extends TestCase {
 			return $value + 1;
 		} );
 
-		$this->assertEquals( '2', $dispatcher->dispatch( 'event_name', 1 ) );
+		$this->assertSame( 2, $dispatcher->dispatch( 'event_name', 1 ) );
 	}
 
 	public function test_it_can_listen_and_dispatch_class_events(): void {
@@ -139,7 +139,7 @@ class LightweightEventDispatcherTest extends TestCase {
 		$dispatcher->dispatch( new Example_Lightweight_Event() );
 		$dispatcher->dispatch( new Example_Lightweight_Event( 'test' ) );
 
-		$this->assertEquals( [ 'example', 'test' ], $listener );
+		$this->assertSame( [ 'example', 'test' ], $listener );
 	}
 
 	public function test_it_cannot_dispatch_object_event_with_payload(): void {

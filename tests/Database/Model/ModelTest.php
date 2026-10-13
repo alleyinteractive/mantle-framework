@@ -19,21 +19,21 @@ class ModelTest extends FrameworkTestCase {
 	}
 	public function test_boot_methods() {
 
-		$this->assertEquals( 0, $_SERVER['__testable_model_boot'] );
-		$this->assertEquals( 0, $_SERVER['__initialize_model_trait_to_test'] );
-		$this->assertEquals( 0, $_SERVER['__boot_model_trait_to_test'] );
+		$this->assertSame( 0, $_SERVER['__testable_model_boot'] );
+		$this->assertSame( 0, $_SERVER['__initialize_model_trait_to_test'] );
+		$this->assertSame( 0, $_SERVER['__boot_model_trait_to_test'] );
 
 		// Test the boot method.
 		new Testable_Model();
-		$this->assertEquals( 1, $_SERVER['__testable_model_boot'] );
-		$this->assertEquals( 1, $_SERVER['__boot_model_trait_to_test'] );
-		$this->assertEquals( 1, $_SERVER['__initialize_model_trait_to_test'] );
+		$this->assertSame( 1, $_SERVER['__testable_model_boot'] );
+		$this->assertSame( 1, $_SERVER['__boot_model_trait_to_test'] );
+		$this->assertSame( 1, $_SERVER['__initialize_model_trait_to_test'] );
 
 		// Test the initialize method. Should be 2 for the initialize method only.
 		new Testable_Model();
-		$this->assertEquals( 1, $_SERVER['__testable_model_boot'] );
-		$this->assertEquals( 1, $_SERVER['__boot_model_trait_to_test'] );
-		$this->assertEquals( 2, $_SERVER['__initialize_model_trait_to_test'] );
+		$this->assertSame( 1, $_SERVER['__testable_model_boot'] );
+		$this->assertSame( 1, $_SERVER['__boot_model_trait_to_test'] );
+		$this->assertSame( 2, $_SERVER['__initialize_model_trait_to_test'] );
 	}
 
 	public function test_attributes_append() {
@@ -45,8 +45,8 @@ class ModelTest extends FrameworkTestCase {
 
 		$this->assertArrayHasKey( 'abstract', $array );
 		$this->assertArrayHasKey( 'included_append', $array );
-		$this->assertEquals( 'value-to-compare', $array['abstract'] );
-		$this->assertEquals( 'included_append', $array['included_append'] );
+		$this->assertSame( 'value-to-compare', $array['abstract'] );
+		$this->assertSame( 'included_append', $array['included_append'] );
 
 		$post->set_appends( 'abstract' );
 		$array = $post->to_array();
@@ -71,7 +71,7 @@ class ModelTest extends FrameworkTestCase {
 		$this->assertArrayNotHasKey( 'post_title', $array );
 		$this->assertArrayNotHasKey( 'included_append', $array );
 		$this->assertArrayHasKey( 'post_password', $array );
-		$this->assertEquals(
+		$this->assertSame(
 			[
 				'post_password' => 'password',
 			],
@@ -81,7 +81,7 @@ class ModelTest extends FrameworkTestCase {
 		$post->make_visible_if( function() { return true; }, 'post_title' );
 		$array = $post->to_array();
 
-		$this->assertEquals(
+		$this->assertSame(
 			[
 				'post_title' => $post->title,
 				'post_password' => 'password',
@@ -100,8 +100,8 @@ class ModelTest extends FrameworkTestCase {
 			[ 'title' => 'Updated title' ],
 		);
 
-		$this->assertEquals( $existing, $post->id );
-		$this->assertEquals( 'Original Title', $post->title );
+		$this->assertSame( $existing, $post->id );
+		$this->assertSame( 'Original Title', $post->title );
 
 		$post_to_create = Testable_Post_For_Appending::first_or_new(
 			[ 'title' => 'A title that does not exist' ],
@@ -111,7 +111,7 @@ class ModelTest extends FrameworkTestCase {
 		$this->assertInstanceOf( Testable_Post_For_Appending::class, $post_to_create );
 		$this->assertNull( $post_to_create->id );
 		$this->assertFalse( $post_to_create->exists );
-		$this->assertEquals( 'New title', $post_to_create->title );
+		$this->assertSame( 'New title', $post_to_create->title );
 	}
 
 	public function test_first_or_create() {
@@ -124,8 +124,8 @@ class ModelTest extends FrameworkTestCase {
 			[ 'title' => 'Updated title test_first_or_create' ],
 		);
 
-		$this->assertEquals( $existing, $post->id );
-		$this->assertEquals( 'Original Title test_first_or_create', $post->title );
+		$this->assertSame( $existing, $post->id );
+		$this->assertSame( 'Original Title test_first_or_create', $post->title );
 
 		$post_to_create = Testable_Post_For_Appending::first_or_create(
 			[ 'title' => 'A title that does not exist' ],
@@ -135,7 +135,7 @@ class ModelTest extends FrameworkTestCase {
 		$this->assertInstanceOf( Testable_Post_For_Appending::class, $post_to_create );
 		$this->assertNotNull( $post_to_create->id );
 		$this->assertTrue( $post_to_create->exists );
-		$this->assertEquals( 'New title test_first_or_create', $post_to_create->title );
+		$this->assertSame( 'New title test_first_or_create', $post_to_create->title );
 	}
 
 	public function test_update_or_create_by_post_title() {
@@ -165,8 +165,8 @@ class ModelTest extends FrameworkTestCase {
 			[ 'title' => 'Updated title test_update_or_create' ],
 		);
 
-		$this->assertEquals( $existing, $post->id );
-		$this->assertEquals( 'Updated title test_update_or_create', $post->title );
+		$this->assertSame( $existing, $post->id );
+		$this->assertSame( 'Updated title test_update_or_create', $post->title );
 
 		$post_to_create = Testable_Post_For_Appending::update_or_create(
 			[ 'title' => 'A title that does not exist' ],
@@ -176,7 +176,7 @@ class ModelTest extends FrameworkTestCase {
 		$this->assertInstanceOf( Testable_Post_For_Appending::class, $post_to_create );
 		$this->assertNotNull( $post_to_create->id );
 		$this->assertTrue( $post_to_create->exists );
-		$this->assertEquals( 'New title test_update_or_create', $post_to_create->title );
+		$this->assertSame( 'New title test_update_or_create', $post_to_create->title );
 	}
 }
 
