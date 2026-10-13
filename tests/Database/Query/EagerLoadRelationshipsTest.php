@@ -116,7 +116,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 			$ids = collect( $post->posts_relationship )->pluck( 'id' )->all();
 
 			foreach ( $related_post_ids[ $post->id ] as $related_id ) {
-				$this->assertTrue( in_array( $related_id, $ids, true ) );
+				$this->assertContains( $related_id, $ids );
 			}
 		}
 	}
@@ -312,7 +312,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 			$term_ids = wp_list_pluck( $tags[ $result->id ], 'id' );
 
 			foreach ( $result->tags as $tag ) {
-				$this->assertTrue( in_array( $tag->id, $term_ids, false ) );
+				$this->assertContainsEquals( $tag->id, $term_ids );
 			}
 		}
 	}
