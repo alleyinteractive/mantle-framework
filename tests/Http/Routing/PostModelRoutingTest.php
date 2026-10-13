@@ -58,13 +58,13 @@ class PostModelRoutingTest extends FrameworkTestCase {
 
 		$permalink = get_permalink( $post->ID );
 
-		$this->assertEquals( home_url( '/test_cpt_routing/' . $post->slug ), $permalink );
+		$this->assertSame( home_url( '/test_cpt_routing/' . $post->slug ), $permalink );
 		$this->get( $permalink )
 			->assertOk()
 			->assertContent( $post->slug() );
 
 		$archive_link = get_post_type_archive_link( Testable_Custom_Post_Model::get_object_name() );
-		$this->assertEquals( home_url( '/test_cpt_routing' ), $archive_link );
+		$this->assertSame( home_url( '/test_cpt_routing' ), $archive_link );
 
 		$this
 			->get( $archive_link )
