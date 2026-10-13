@@ -139,6 +139,20 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertSame( [ 'replaced' ], $events->dispatch( __FUNCTION__, new \WP_Error( 'code' ) ) );
 	}
 
+	public function test_object_event_listener_returning_another_object_keeps_the_event() {
+		$events = app( 'events' );
+		$seen   = [];
+
+		$events->listen( Example_Event::class, fn ( Example_Event $e ) => new \stdClass() );
+		$events->listen( Example_Event::class, function ( Example_Event $e ) use ( &$seen ) { $seen[] = spl_object_id( $e ); } );
+
+		$event = new Example_Event();
+
+		$events->dispatch( $event );
+
+		$this->assertSame( [ spl_object_id( $event ) ], $seen );
+	}
+
 	public function test_it_can_forget_a_specific_listener() {
 		$events   = app( 'events' );
 		$listener = fn ( $value ) => 'modified';

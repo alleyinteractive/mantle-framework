@@ -67,6 +67,20 @@ class LightweightEventDispatcherTest extends TestCase {
 		$this->assertSame( 'original', $dispatcher->dispatch( 'event_name', 'original' ) );
 	}
 
+	public function test_listener_registered_twice_runs_twice(): void {
+		$dispatcher = new Lightweight_Event_Dispatcher();
+		$listener   = fn ( int $value ) => $value + 1;
+
+		$dispatcher->listen( 'event_name', $listener );
+		$dispatcher->listen( 'event_name', $listener );
+
+		$this->assertSame( 3, $dispatcher->dispatch( 'event_name', 1 ) );
+
+		$dispatcher->forget( 'event_name', $listener );
+
+		$this->assertFalse( $dispatcher->has_listeners( 'event_name' ) );
+	}
+
 	public function test_it_can_listen_for_wildcard_events(): void {
 		$dispatcher = new Lightweight_Event_Dispatcher();
 
