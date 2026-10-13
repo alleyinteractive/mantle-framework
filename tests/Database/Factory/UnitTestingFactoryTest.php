@@ -173,6 +173,18 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		$this->assertSame( $user_login, $user->user_login );
 	}
 
+	public function test_user_factory_suffixes_duplicate_logins() {
+		$this->faker->seed( 42 );
+		$first = static::factory()->user->create_and_get();
+
+		$this->faker->seed( 42 );
+		$second = static::factory()->user->create_and_get();
+
+		$this->faker->seed();
+
+		$this->assertSame( "{$first->user_login}-" . ( $first->ID + 1 ), $second->user_login );
+	}
+
 	public function test_comment_factory() {
 		$this->shim_test( \WP_Comment::class, 'comment' );
 	}

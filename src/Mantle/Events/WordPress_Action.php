@@ -107,6 +107,9 @@ trait WordPress_Action {
 	 * replace that value with null, and a listener for an object event must not
 	 * replace the event with whatever its last expression happened to evaluate to.
 	 *
+	 * PHP can't tell "returned null" from "returned nothing", so a listener for a
+	 * string event only keeps the value when it declares a `void` return type.
+	 *
 	 * @param ReflectionFunctionAbstract $reflection Listener reflection.
 	 * @param mixed                      $result Listener return value.
 	 * @param array<mixed>               $args Arguments the listener was called with.
@@ -120,7 +123,7 @@ trait WordPress_Action {
 			return $args[0] ?? null;
 		}
 
-		if ( $object_event && isset( $args[0] ) && is_object( $args[0] ) && ! is_object( $result ) ) {
+		if ( $object_event && isset( $args[0] ) && is_object( $args[0] ) && ! $result instanceof $args[0] ) {
 			return $args[0];
 		}
 
