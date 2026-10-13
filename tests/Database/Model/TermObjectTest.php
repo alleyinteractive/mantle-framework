@@ -23,19 +23,19 @@ class TermObjectTest extends FrameworkTestCase {
 		$term   = $this->factory->term->create_and_get();
 		$object = Testable_Tag::find( $term );
 
-		$this->assertEquals( $object->id(), $term->term_id );
-		$this->assertEquals( $object->name(), $term->name );
-		$this->assertEquals( $object->slug(), $term->slug );
-		$this->assertEquals( $object->description(), $term->description );
+		$this->assertSame( $object->id(), $term->term_id );
+		$this->assertSame( $object->name(), $term->name );
+		$this->assertSame( $object->slug(), $term->slug );
+		$this->assertSame( $object->description(), $term->description );
 		$this->assertNull( $object->status );
 
 		// Retrieve an attribute straight from the object itself.
-		$this->assertEquals( $term->taxonomy, $object->get( 'taxonomy' ) );
+		$this->assertSame( $term->taxonomy, $object->get( 'taxonomy' ) );
 
 		// Test that you can get the WordPress object.
 		$core_object = $object->core_object();
 		$this->assertInstanceOf( \WP_Term::class, $core_object );
-		$this->assertEquals( $object->id(), $core_object->term_id );
+		$this->assertSame( $object->id(), $core_object->term_id );
 	}
 
 	public function test_term_object_parent() {
@@ -47,7 +47,7 @@ class TermObjectTest extends FrameworkTestCase {
 		$parent_object = $object->parent();
 
 		$this->assertInstanceOf( Testable_Category::class, $parent_object );
-		$this->assertEquals( $parent_object->id(), $parent_id );
+		$this->assertSame( $parent_object->id(), $parent_id );
 	}
 
 	public function test_term_meta() {
@@ -57,8 +57,8 @@ class TermObjectTest extends FrameworkTestCase {
 		$this->assertEmpty( \get_term_meta( $term->term_id, 'meta_value_to_set', true ) );
 
 		$object->set_meta( 'meta_key_to_set', 'meta_value_to_set' );
-		$this->assertEquals( 'meta_value_to_set', $object->get_meta( 'meta_key_to_set' ) );
-		$this->assertEquals( 'meta_value_to_set', \get_term_meta( $term->term_id, 'meta_key_to_set', true ) );
+		$this->assertSame( 'meta_value_to_set', $object->get_meta( 'meta_key_to_set' ) );
+		$this->assertSame( 'meta_value_to_set', \get_term_meta( $term->term_id, 'meta_key_to_set', true ) );
 	}
 
 	public function test_updating_term() {
@@ -68,10 +68,10 @@ class TermObjectTest extends FrameworkTestCase {
 		$object->name = 'Updated Content';
 		$object->save();
 
-		$this->assertEquals( 'Updated Content', $object->name );
+		$this->assertSame( 'Updated Content', $object->name );
 
 		$term = \get_term( $term->term_id, $term->taxonomy );
-		$this->assertEquals( 'Updated Content', $term->name );
+		$this->assertSame( 'Updated Content', $term->name );
 	}
 
 	public function test_setting_id() {
@@ -118,7 +118,7 @@ class TermObjectTest extends FrameworkTestCase {
 		$object = new Example_Taxonomy( [ 'name' => 'assumed term' ] );
 		$object->save();
 		$this->assertNotEmpty( $object->id() );
-		$this->assertEquals( Example_Taxonomy::get_object_name(), $object->get( 'taxonomy' ) );
+		$this->assertSame( Example_Taxonomy::get_object_name(), $object->get( 'taxonomy' ) );
 	}
 }
 

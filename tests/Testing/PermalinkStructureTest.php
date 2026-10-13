@@ -14,7 +14,7 @@ class PermalinkStructureTest extends FrameworkTestCase {
 	}
 
 	public function test_default_permalink_structure() {
-		$this->assertEquals(
+		$this->assertSame(
 			Utils::DEFAULT_PERMALINK_STRUCTURE,
 			get_option( 'permalink_structure' ),
 		);
@@ -26,7 +26,7 @@ class PermalinkStructureTest extends FrameworkTestCase {
 
 		$permalink = get_permalink( $post );
 
-		$this->assertEquals( home_url( '/2018/01/01/test-post/' ), $permalink );
+		$this->assertSame( home_url( '/2018/01/01/test-post/' ), $permalink );
 
 		// Ensure the permalink can be reached by the testing framework.
 		$this->get( $permalink )
@@ -38,7 +38,7 @@ class PermalinkStructureTest extends FrameworkTestCase {
 	public function test_custom_permalink_structure() {
 		$this->set_permalink_structure( '/blog/%year%/%postname%/' );
 
-		$this->assertEquals(
+		$this->assertSame(
 			'/blog/%year%/%postname%/',
 			get_option( 'permalink_structure' ),
 		);
@@ -50,7 +50,7 @@ class PermalinkStructureTest extends FrameworkTestCase {
 
 		$permalink = get_permalink( $post );
 
-		$this->assertEquals( home_url( '/blog/2018/test-post-custom/' ), $permalink );
+		$this->assertSame( home_url( '/blog/2018/test-post-custom/' ), $permalink );
 
 		// Ensure the permalink can be reached by the testing framework.
 		$this->get( $permalink )
@@ -68,7 +68,7 @@ class PermalinkStructureTest extends FrameworkTestCase {
 
 		$permalink = get_permalink( $post_id );
 
-		$this->assertEquals( home_url( '?p=' . $post_id ), $permalink );
+		$this->assertSame( home_url( '?p=' . $post_id ), $permalink );
 
 		// Ensure the permalink can be reached by the testing framework.
 		$this->get( $permalink )
@@ -79,7 +79,7 @@ class PermalinkStructureTest extends FrameworkTestCase {
 
 	#[PermalinkStructure( '/articles/%postname%/' )]
 	public function test_permalink_structure_attribute(): void {
-		$this->assertEquals(
+		$this->assertSame(
 			'/articles/%postname%/',
 			get_option( 'permalink_structure' ),
 		);
@@ -90,7 +90,7 @@ class PermalinkStructureTest extends FrameworkTestCase {
 
 		$permalink = get_permalink( $post );
 
-		$this->assertEquals( home_url( '/articles/attribute-post/' ), $permalink );
+		$this->assertSame( home_url( '/articles/attribute-post/' ), $permalink );
 
 		// Ensure the permalink can be reached by the testing framework.
 		$this->get( $permalink )

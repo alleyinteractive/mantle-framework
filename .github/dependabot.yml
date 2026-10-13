@@ -15,3 +15,9 @@ updates:
       interval: "weekly"
     ignore:
       - dependency-name: "phpunit/*"
+    groups:
+      static-analysis:
+        patterns:
+          - "rector/rector"
+          - "phpstan/phpstan"
+          - "php-stubs/wordpress-stubs"

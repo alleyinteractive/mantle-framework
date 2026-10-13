@@ -196,7 +196,7 @@ class ContainerTest extends TestCase {
 			}
 		);
 		$container->alias( 'foo', 'baz' );
-		$this->assertEquals( [ 1, 2, 3 ], $container->make( 'baz', [ 1, 2, 3 ] ) );
+		$this->assertSame( [ 1, 2, 3 ], $container->make( 'baz', [ 1, 2, 3 ] ) );
 	}
 
 	public function testBindingsCanBeOverridden() {
@@ -417,7 +417,7 @@ class ContainerTest extends TestCase {
 	public function testGetAlias() {
 		$container = new Container();
 		$container->alias( 'ConcreteStub', 'foo' );
-		$this->assertEquals( $container->get_alias( 'foo' ), 'ConcreteStub' );
+		$this->assertSame( $container->get_alias( 'foo' ), 'ConcreteStub' );
 	}
 
 	public function testItThrowsExceptionWhenAbstractIsSameAsAlias() {
@@ -438,7 +438,7 @@ class ContainerTest extends TestCase {
 		);
 
 		$factory = $container->factory( 'name' );
-		$this->assertEquals( $container->make( 'name' ), $factory() );
+		$this->assertSame( $container->make( 'name' ), $factory() );
 	}
 
 	public function testMakeWithMethodIsAnAliasForMakeMethod() {
@@ -471,7 +471,7 @@ class ContainerTest extends TestCase {
 			}
 		);
 
-		$this->assertEquals( [ 1, 2, 3 ], $container->make( 'foo', [ 1, 2, 3 ] ) );
+		$this->assertSame( [ 1, 2, 3 ], $container->make( 'foo', [ 1, 2, 3 ] ) );
 	}
 
 	public function testResolvingWithUsingAnInterface() {
@@ -496,7 +496,7 @@ class ContainerTest extends TestCase {
 			}
 		);
 
-		$this->assertEquals( [ 'name' => 'Taylor' ], $container->make( 'foo', [ 'something' ] ) );
+		$this->assertSame( [ 'name' => 'Taylor' ], $container->make( 'foo', [ 'something' ] ) );
 	}
 
 	public function testNestedParametersAreResetForFreshMake() {
@@ -516,7 +516,7 @@ class ContainerTest extends TestCase {
 			}
 		);
 
-		$this->assertEquals( [], $container->make( 'foo', [ 'something' ] ) );
+		$this->assertSame( [], $container->make( 'foo', [ 'something' ] ) );
 	}
 
 	public function testSingletonBindingsNotRespectedWithMakeParameters() {
@@ -529,8 +529,8 @@ class ContainerTest extends TestCase {
 			}
 		);
 
-		$this->assertEquals( [ 'name' => 'taylor' ], $container->make( 'foo', [ 'name' => 'taylor' ] ) );
-		$this->assertEquals( [ 'name' => 'abigail' ], $container->make( 'foo', [ 'name' => 'abigail' ] ) );
+		$this->assertSame( [ 'name' => 'taylor' ], $container->make( 'foo', [ 'name' => 'taylor' ] ) );
+		$this->assertSame( [ 'name' => 'abigail' ], $container->make( 'foo', [ 'name' => 'abigail' ] ) );
 	}
 
 	public function testCanBuildWithoutParameterStackWithNoConstructors() {

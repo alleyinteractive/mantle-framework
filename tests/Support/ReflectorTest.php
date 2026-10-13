@@ -13,7 +13,7 @@ class ReflectorTest extends TestCase {
 		);
 
 		$this->assertCount( 1, $attributes );
-		$this->assertEquals( ExampleAttribute::class, $attributes[0]->getName() );
+		$this->assertSame( ExampleAttribute::class, $attributes[0]->getName() );
 	}
 
 	public function test_it_can_read_a_child_class_attribute(): void {
@@ -23,7 +23,7 @@ class ReflectorTest extends TestCase {
 		);
 
 		$this->assertCount( 1, $attributes );
-		$this->assertEquals( ExampleAttribute::class, $attributes[0]->getName() );
+		$this->assertSame( ExampleAttribute::class, $attributes[0]->getName() );
 	}
 }
 
