@@ -30,7 +30,7 @@ class ViewFinderTest extends FrameworkTestCase {
 	public function test_loading_view_alias() {
 		$this->load_view( '@view-loader-alias/view-loader' );
 
-		$this->assertEquals( 'alias', $_SERVER['__view_loaded'] );
+		$this->assertSame( 'alias', $_SERVER['__view_loaded'] );
 	}
 
 	/**
@@ -44,7 +44,7 @@ class ViewFinderTest extends FrameworkTestCase {
 		$this->assertTrue( $_SERVER['__view_loaded'] );
 
 		$this->load_view( '@view-loader-alias/alias-specific' );
-		$this->assertEquals( 'alias', $_SERVER['__view_loaded'] );
+		$this->assertSame( 'alias', $_SERVER['__view_loaded'] );
 	}
 
 	public function test_has_hint_information(): void {
