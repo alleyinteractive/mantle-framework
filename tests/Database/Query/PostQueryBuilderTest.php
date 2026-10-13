@@ -555,14 +555,14 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 	}
 
 	public function test_count_does_not_modify_query() {
-		static::factory()->post->create_many( 15 );
+		static::factory()->post->create_many( 3 );
 
-		$query = Testable_Post::query()->take( 10 );
+		$query = Testable_Post::query()->take( 2 );
 
-		$this->assertEquals( 15, $query->count() );
-		$this->assertCount( 10, $query->get() );
+		$this->assertEquals( 3, $query->count() );
+		$this->assertCount( 2, $query->get() );
 		$this->assertTrue( $query->exists() );
-		$this->assertCount( 10, $query->get() );
+		$this->assertCount( 2, $query->get() );
 	}
 
 	public function test_count() {
