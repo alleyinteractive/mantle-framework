@@ -474,6 +474,9 @@ class Pending_Request {
 	/**
 	 * Add middleware for the request to the end of the stack.
 	 *
+	 * Middleware receives a copy of the request, so changes it makes apply to
+	 * that request only and don't carry over to later requests.
+	 *
 	 * @param callable $middleware Middleware to call.
 	 */
 	public function middleware( callable $middleware ): static {
@@ -484,6 +487,9 @@ class Pending_Request {
 
 	/**
 	 * Prepend middleware for the request to the beginning of the stack.
+	 *
+	 * Middleware receives a copy of the request, so changes it makes apply to
+	 * that request only and don't carry over to later requests.
 	 *
 	 * @param callable $middleware Middleware to call.
 	 */
