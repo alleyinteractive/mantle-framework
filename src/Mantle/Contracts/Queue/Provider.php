@@ -49,6 +49,7 @@ interface Provider {
 	 * Retrieve the number of pending jobs in the queue.
 	 *
 	 * @param string|null $queue Queue name, optional.
+	 * @param string|null $type  Only count jobs of this type (class name), optional.
 	 */
-	public function pending_size( ?string $queue = null ): int;
+	public function pending_size( ?string $queue = null, ?string $type = null ): int;
 }

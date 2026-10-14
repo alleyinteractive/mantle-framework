@@ -166,9 +166,7 @@ trait Interacts_With_Cron {
 		} else {
 			PHPUnit::assertEquals(
 				$count,
-				$provider instanceof \Mantle\Queue\Database_Queue_Provider
-					? $provider->pending_size( $queue, $job_name )
-					: $provider->pending_size( $queue ),
+				$provider->pending_size( $queue, $job_name ),
 				"Job [{$job_name}] count in the queue [{$queue}] is not as expected for " . $provider::class,
 			);
 		}

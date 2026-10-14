@@ -145,11 +145,12 @@ class Testable_Provider implements Provider {
 	 * Retrieve the number of pending jobs in the queue.
 	 *
 	 * @param string|null $queue Queue name, optional.
+	 * @param string|null $type  Only count jobs of this type (class name), optional.
 	 * @return int
 	 */
-	public function pending_size( ?string $queue = null ): int {
+	public function pending_size( ?string $queue = null, ?string $type = null ): int {
 		// In this mock, pending size is the same as total size.
-		return count( $this->jobs );
+		return count( $type ? array_filter( $this->jobs, fn ( $job ) => get_debug_type( $job ) === $type ) : $this->jobs );
 	}
 
 	/**
