@@ -120,7 +120,7 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 
 		$job = new Slashed_Job( 'Mantle\\Tests\\Example' );
 
-		Slashed_Job::dispatch( 'Mantle\\Tests\\Example' );
+		dispatch( $job );
 
 		$this->assertSame( 'Mantle\\Tests\\Example', $job->value );
 		$this->assertJobQueued( $job );
