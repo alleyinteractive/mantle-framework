@@ -44,7 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Routes returning `[]`, `''`, `'0'`, `0`, or `false` send that value instead of an empty `text/html` body.
 - Interface-typed route and controller parameters are resolved from the container.
 - Nested named route groups combine their name prefixes instead of naming the route "Arrayindex".
-- `prefix()`, `name()`, `where()`, and `domain()` apply to a route registered directly (e.g. `Route::prefix( 'api' )->get( ... )`, including REST routes) instead of being silently ignored outside of `group()`. `where()` and `domain()` now apply to grouped routes as well.
+- `prefix()`, `name()`, `where()`, and `domain()` apply to a route registered directly (e.g. `Route::prefix( 'api' )->get( ... )`) instead of being silently ignored outside of `group()`. `where()` and `domain()` now apply to grouped routes as well. REST routes pick up `prefix()` and `name()` but not `where()` or `domain()`, since WordPress matches them by their path pattern.
 - HTTP client: `json()` no longer fatals on scalar JSON bodies, `with_user_agent()` is sent, a repeated header replaces the previous value instead of sending "Array", `send()` keeps a URL set before it when a base URL is configured, and base URLs join paths with exactly one slash.
 - HTTP client: the URL, method, query, and body passed to `get()`, `post()`, `send()`, and the other verb methods apply only to that request instead of leaking into later requests made with the same client; options set with the fluent builder still persist.
 
@@ -101,6 +101,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `Authorize` middleware's insufficient-permissions message is filtered via `mantle_auth_insufficient_permissions_error`; it reused the not-logged-in filter name before.
 - The WordPress queue scheduler reads its configuration from `queue.wordpress.*` (lowercase, matching the shipped `config/queue.php`). A project that keyed the array as `queue.WordPress` to match the old lookup must rename it.
 - The test case resets `$_SERVER` (`HTTP_HOST`, `REQUEST_URI`, `REQUEST_METHOD`, `HTTPS`, ...) and `current_screen` after every test. Values set once in a bootstrap file no longer survive past the first test; set them in `setUp()` or via `with_https()`/`with_header()` on the request instead.
+- Web routes enforce `where()` patterns and `domain()` hosts. A request that fails a pattern or comes from another host now gets a 404 where it used to match the route.
+- After a verb call such as `get()` or `post()`, the HTTP client's `url()` and `method()` no longer return that request's values, and `purge()` with no URL throws instead of purging the previous request. Pass the URL to `purge()`.
+- HTTP client middleware receives a per-request copy of the pending request, so changes it makes (such as a refreshed auth header) no longer carry over to later requests made with the same client.
 
 ## v1.22.2
 
