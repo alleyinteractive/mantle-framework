@@ -474,6 +474,9 @@ class Pending_Request {
 	/**
 	 * Add middleware for the request to the end of the stack.
 	 *
+	 * Middleware receives a copy of the request, so changes it makes apply to
+	 * that request only and don't carry over to later requests.
+	 *
 	 * @param callable $middleware Middleware to call.
 	 */
 	public function middleware( callable $middleware ): static {
@@ -484,6 +487,9 @@ class Pending_Request {
 
 	/**
 	 * Prepend middleware for the request to the beginning of the stack.
+	 *
+	 * Middleware receives a copy of the request, so changes it makes apply to
+	 * that request only and don't carry over to later requests.
 	 *
 	 * @param callable $middleware Middleware to call.
 	 */
@@ -680,35 +686,39 @@ class Pending_Request {
 	 * @param  array<string, mixed>    $options Options for the request.
 	 */
 	public function send( string|Http_Method|null $method = null, ?string $url = null, array $options = [] ): Response {
+		// Per-call state (URL, method, query, body) is applied to a copy so it
+		// doesn't leak into later requests made with the same client.
+		$request = clone $this;
+
 		if ( ! is_null( $url ) ) {
-			$this->set_url( $url );
-		} elseif ( empty( $this->url ) && ! empty( $this->base_url ) ) {
-			$this->set_url();
+			$request->set_url( $url );
+		} elseif ( empty( $request->url ) && ! empty( $request->base_url ) ) {
+			$request->set_url();
 		}
 
-		if ( empty( $this->url ) ) {
+		if ( empty( $request->url ) ) {
 			throw new InvalidArgumentException( 'A URL must be provided for the request.' );
 		}
 
 		if ( $method ) {
-			$this->set_method( $method );
+			$request->set_method( $method );
 		}
 
-		$this->options = array_merge( $this->options, $options );
+		$request->options = array_merge( $request->options, $options );
 
-		$this->prepare_request();
+		$request->prepare_request();
 
 		return retry(
-			$this->options['retry'],
-			function ( int $attempts ) {
+			$request->options['retry'],
+			function ( int $attempts ) use ( $request ) {
 				$response = ( new Pipeline() )
-					->send( $this )
-					->through( $this->middleware )
+					->send( $request )
+					->through( $request->middleware )
 					->then(
 						fn () => Response::create(
 							wp_remote_request(
-								$this->url,
-								$this->get_request_args(),
+								$request->url,
+								$request->get_request_args(),
 							),
 						),
 					);
@@ -718,8 +728,8 @@ class Pending_Request {
 				if (
 					! $response->successful()
 					&& (
-						$this->options['throw_exception']
-						|| $attempts < $this->options['retry']
+						$request->options['throw_exception']
+						|| $attempts < $request->options['retry']
 					)
 				) {
 					throw new Http_Client_Exception( $response );
@@ -727,7 +737,7 @@ class Pending_Request {
 
 				return $response;
 			},
-			$this->options['retry_delay'] ?? 0,
+			$request->options['retry_delay'] ?? 0,
 		);
 	}
 
