@@ -456,6 +456,16 @@ class RouterTest extends FrameworkTestCase {
 		$this->assertStringEndsWith( '/posts-index', route( 'posts.index' ) );
 	}
 
+	public function test_registrar_name_prefix_allows_multiple_unnamed_routes() {
+		$router = $this->get_router();
+
+		$router->name( 'posts.' )->get( '/posts-a', fn () => 'a' );
+		$router->name( 'posts.' )->get( '/posts-b', fn () => 'b' );
+
+		$this->assertSame( 'a', $router->dispatch( Request::create( 'posts-a', 'GET' ) )->getContent() );
+		$this->assertSame( 'b', $router->dispatch( Request::create( 'posts-b', 'GET' ) )->getContent() );
+	}
+
 	public function test_registrar_middleware_applies_once_without_group() {
 		$router = $this->get_router();
 

@@ -166,7 +166,13 @@ class Route_Registrar implements Registrar_Contract {
 
 		assert( $route instanceof Route );
 
-		if ( isset( $attributes['as_prefix'] ) && empty( $route->get_action( 'as' ) ) && empty( $route->get_action( 'name' ) ) ) {
+		// Renaming to a taken name throws, so a shared prefix like "posts." only names the first unnamed route.
+		if (
+			isset( $attributes['as_prefix'] )
+			&& empty( $route->get_action( 'as' ) )
+			&& empty( $route->get_action( 'name' ) )
+			&& ! $this->router->get_routes()->get( (string) $route->get_action( 'as_prefix' ) )
+		) {
 			$route->name( '' );
 		}
 
