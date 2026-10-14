@@ -111,14 +111,7 @@ class Database_Query_Builder extends Builder {
 		$select = $this->select ? implode( ', ', $this->select ) : '*';
 
 		$wheres = collect( $this->bindings['where'] )
-			->map(
-				fn ( mixed $binding, string $index ) => (string) $wpdb->prepare( // phpcs:ignore WordPress.DB
-					0 === (int) $index // phpcs:ignore WordPress.DB
-						? "{$binding['column']} {$binding['operator']} %s" // phpcs:ignore WordPress.DB
-						: "{$binding['boolean']} {$binding['column']} {$binding['operator']} %s", // phpcs:ignore WordPress.DB
-					$binding['value']
-				),
-			)
+			->map( $this->compile_where_binding( ... ) )
 			->filter()
 			->values()
 			->to_array();
@@ -141,19 +134,60 @@ class Database_Query_Builder extends Builder {
 			);
 		}
 
-		$table = $model::get_table_name();
+		$table = $wpdb->prefix . $model::get_table_name();
 
-		if ( ! str_starts_with( $table, $wpdb->prefix ) ) {
-			$table = $wpdb->prefix . $table;
+		$order = [];
+
+		foreach ( $this->order_by as $index => $column ) {
+			if ( ! preg_match( '/^[A-Za-z0-9_.]+$/', $column ) ) {
+				throw new RuntimeException( 'Invalid column passed to order by.' );
+			}
+
+			$direction = 'DESC' === strtoupper( (string) ( $this->order[ $index ] ?? 'ASC' ) ) ? 'DESC' : 'ASC';
+
+			$order[] = "{$column} {$direction}";
 		}
 
 		return sprintf(
-			'SELECT %s FROM %s %s %s',
+			'SELECT %s FROM %s %s %s %s',
 			$select,
 			$table,
 			count( $wheres ) > 0 ? 'WHERE ' . implode( ' ', $wheres ) : '',
+			$order !== [] ? 'ORDER BY ' . implode( ', ', $order ) : '',
 			$limit
 		);
+	}
+
+	/**
+	 * Compile a where binding into a SQL string.
+	 *
+	 * @param array<string, mixed> $binding Binding to compile.
+	 * @param int|string           $index   Index of the binding in the where clause.
+	 *
+	 * @throws RuntimeException If the binding cannot be prepared.
+	 */
+	protected function compile_where_binding( array $binding, int|string $index ): string {
+		global $wpdb;
+
+		assert( $wpdb instanceof \wpdb );
+
+		if ( 'IN' === $binding['operator'] && is_array( $binding['value'] ) ) {
+			$query = [] === $binding['value']
+				? '1 = 0'
+				: $wpdb->prepare(
+					"{$binding['column']} IN (" . implode( ', ', array_fill( 0, count( $binding['value'] ), '%s' ) ) . ')', // phpcs:ignore WordPress.DB
+					...array_values( $binding['value'] ),
+				);
+		} else {
+			$query = $wpdb->prepare( "{$binding['column']} {$binding['operator']} %s", $binding['value'] ); // phpcs:ignore WordPress.DB
+		}
+
+		// Dropping a clause that failed to prepare would silently widen the query.
+		if ( ! is_string( $query ) || '' === $query ) {
+			throw new RuntimeException( sprintf( 'Unable to prepare the where clause for the "%s" column.', $binding['column'] ) );
+		}
+
+		return 0 === (int) $index ? $query : "{$binding['boolean']} {$query}";
 	}
 
 	/**
@@ -182,9 +216,13 @@ class Database_Query_Builder extends Builder {
 	 */
 	#[\Override]
 	public function where( array|string $attribute, mixed $value = '' ): static {
+		if ( is_string( $attribute ) && is_array( $value ) ) {
+			return $this->whereIn( $attribute, $value );
+		}
+
 		if ( is_array( $attribute ) && empty( $value ) ) {
 			foreach ( $attribute as $key => $value ) {
-				$this->where_raw( $key, '=', $value );
+				$this->where( $key, $value );
 			}
 
 			return $this;
@@ -203,11 +241,37 @@ class Database_Query_Builder extends Builder {
 	 */
 	#[\Override]
 	public function where_raw( array|string $column, ?string $operator = null, mixed $value = null, string $boolean = 'AND' ): static {
+		if ( is_array( $column ) ) {
+			foreach ( $column as $value ) {
+				$this->where_raw( ...array_values( $value ) );
+			}
+
+			return $this;
+		}
+
 		$this->bindings['where'][] = [
 			'boolean'  => $boolean,
 			'column'   => $column,
 			'operator' => $operator ?? '=',
 			'value'    => $value,
+		];
+
+		return $this;
+	}
+
+	/**
+	 * Query an attribute against a list.
+	 *
+	 * @param string $attribute Attribute to query against.
+	 * @param array<mixed>  $values List of values.
+	 */
+	#[\Override]
+	public function whereIn( string $attribute, array $values, string $boolean = 'AND' ): static {
+		$this->bindings['where'][] = [
+			'boolean'  => $boolean,
+			'column'   => $attribute,
+			'operator' => 'IN',
+			'value'    => $values,
 		];
 
 		return $this;

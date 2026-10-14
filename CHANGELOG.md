@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Changed
+
+- **The queue system now stores jobs in a dedicated database table instead of the
+  `wp_posts` table (#660).** Jobs are backed by a new `{prefix}mantle_queue` table for
+  better performance and isolation. The post-based WordPress provider
+  (`Mantle\Queue\Providers\WordPress\Provider` and its `Meta_Key`, `Queue_Record`,
+  `Post_Status`, `Scheduler`, and `Queue_Worker_Job` companions) has been removed and
+  replaced by `Mantle\Queue\Database_Queue_Provider`, `Database_Scheduler`, and the
+  `Mantle\Queue\Jobs\*` classes (`Job`, `Database_Job`, `Database_Job_Record`,
+  `Status`). This is a backwards-incompatible change for code that referenced those
+  classes directly. Use `wp mantle queue:cleanup --legacy` to remove jobs left in the
+  old post type.
+- The `Mantle\Contracts\Queue\Provider` contract's `push()` method now accepts an
+  optional `?string $queue` argument, and `pending_count()` was renamed to
+  `pending_size()` with a new `size()` method added.
+- The `assertInCronQueue()` / `assertNotInCronQueue()` assertions now default to not
+  checking arguments unless `$args` is passed, and gained `assertCronScheduled()` /
+  `assertCronNotScheduled()` aliases. When `$args` is passed, only an event with exactly
+  those arguments is matched: `assertInCronQueue( 'hook' )` now passes for an event
+  scheduled with any arguments, and `assertNotInCronQueue( 'hook', $args )` no longer
+  also fails for an event scheduled with no arguments.
+- `Interacts_With_Cron::dispatch_cron()` now returns the number of events dispatched, and
+  `run_cron_event()` throws a `RuntimeException` if an event cannot be unscheduled.
+- Queue job attempts are now counted when a worker starts the job, so a job that
+  crashes its worker is marked failed once it runs out of tries instead of being
+  retried indefinitely. Retrying a failed job from the admin resets its attempts.
+- `Database_Query_Builder::where()` with an array value now queries with `IN`, and a
+  where clause that cannot be prepared throws instead of being dropped from the query.
+
 ## v1.22.2
 
 ### Changed

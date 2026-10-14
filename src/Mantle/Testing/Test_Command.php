@@ -141,16 +141,27 @@ class Test_Command {
 	/**
 	 * Dump the output of the command.
 	 */
-	public function dd(): never {
+	public function dump(): static {
 		if ( ! $this->has_executed ) {
 			$this->run();
 		}
 
 		if ( isset( $this->exception ) ) {
-			dd( $this->exception );
+			dump( $this->exception );
+		} else {
+			dump( $this->tester->getDisplay() );
 		}
 
-		dd( $this->tester->getDisplay() );
+		return $this;
+	}
+
+	/**
+	 * Dump the output of the command.
+	 */
+	public function dd(): never {
+		$this->dump();
+
+		exit( 1 );
 	}
 
 	/**
