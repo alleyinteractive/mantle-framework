@@ -198,6 +198,21 @@ class Database_Queue_Provider implements Contract {
 	}
 
 	/**
+	 * Retrieve the time the earliest lock on a running job in the queue expires, if any.
+	 *
+	 * @param string|null $queue Queue name, optional.
+	 */
+	public function next_lock_expiry( ?string $queue = null ): ?Carbon {
+		$record = Jobs\Database_Job_Record::query()
+			->where( 'queue', $queue ?? 'default' )
+			->where( 'status', Status::RUNNING->value )
+			->order_by( 'available_at_gmt', 'asc' )
+			->first();
+
+		return $record instanceof Jobs\Database_Job_Record ? Carbon::parse( $record->available_at_gmt, 'UTC' ) : null;
+	}
+
+	/**
 	 * Retrieve the time the next job in the queue becomes available, if any.
 	 *
 	 * @param string|null $queue Queue name, optional.

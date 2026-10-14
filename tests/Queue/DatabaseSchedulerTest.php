@@ -3,6 +3,7 @@ namespace Mantle\Tests\Queue;
 
 use Mantle\Queue\Concerns\Database_Queue_Schema;
 use Mantle\Queue\Database_Scheduler;
+use Mantle\Queue\Events\Run_Start;
 use Mantle\Queue\Jobs\Database_Job_Record;
 use Mantle\Queue\Jobs\Status;
 use Mantle\Testing\Concerns\Refresh_Database;
@@ -169,6 +170,31 @@ class DatabaseSchedulerTest extends FrameworkTestCase {
 		$this->scheduler->schedule_on_shutdown();
 
 		$this->assertSame( 1, Database_Scheduler::get_scheduled_count() );
+	}
+
+	public function test_run_start_schedules_a_wake_up_for_when_claimed_jobs_unlock(): void {
+		Example_Job::dispatch();
+
+		$provider = $this->app['queue']->get_provider();
+		$jobs     = $provider->pop( 'default', 1 );
+
+		// A worker killed after this point never fires Run_Complete.
+		$this->app['events']->dispatch( new Run_Start( $provider, 'default', $jobs ) );
+
+		$lock_until = Database_Job_Record::query()->first()->get_lock_until()->getTimestamp();
+
+		$this->assertSame( 1, Database_Scheduler::get_scheduled_count() );
+		$this->assertSame( 0, Database_Scheduler::get_scheduled_count( before: $lock_until - 1 ) );
+		$this->assertSame( 1, Database_Scheduler::get_scheduled_count( before: $lock_until ) );
+	}
+
+	public function test_completed_run_clears_the_lock_recovery_wake_up(): void {
+		Example_Job::dispatch();
+
+		$this->dispatch_queue();
+
+		$this->assertTrue( $_SERVER['__example_job'] );
+		$this->assertSame( 0, Database_Scheduler::get_scheduled_count() );
 	}
 
 	public function test_retried_job_does_not_run_during_backoff(): void {

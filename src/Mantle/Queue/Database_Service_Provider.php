@@ -124,6 +124,20 @@ class Database_Service_Provider extends Base_Service_Provider {
 	}
 
 	/**
+	 * Handle the Run Start event to schedule recovery of the claimed jobs.
+	 *
+	 * @param Events\Run_Start $event Run start event.
+	 */
+	#[Action( Events\Run_Start::class )]
+	public function handle_run_start( Events\Run_Start $event ): Events\Run_Start {
+		if ( $event->provider instanceof Database_Queue_Provider ) {
+			$this->scheduler->schedule_lock_recovery( $event->queue ?? 'default' );
+		}
+
+		return $event;
+	}
+
+	/**
 	 * Handle the Run Complete event to schedule the next cron run.
 	 *
 	 * @param Events\Run_Complete $event Run complete event.

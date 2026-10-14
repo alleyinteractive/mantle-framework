@@ -145,6 +145,36 @@ class Database_Scheduler {
 	}
 
 	/**
+	 * Schedule a run for when the locks on a queue's running jobs expire.
+	 *
+	 * WordPress removes a single cron event before running it, so if the worker
+	 * is killed mid-batch nothing else would wake the queue to reclaim its jobs.
+	 *
+	 * @param string $queue Queue name.
+	 * @return bool Flag if a run was scheduled.
+	 */
+	public function schedule_lock_recovery( ?string $queue = null ): bool {
+		if ( ! $queue ) {
+			$queue = 'default';
+		}
+
+		$provider = $this->manager->get_provider( Database_Queue_Provider::NAME );
+
+		if ( ! $provider instanceof Database_Queue_Provider ) {
+			return false;
+		}
+
+		$expiry = $provider->next_lock_expiry( $queue );
+
+		// Any run at or before the expiry reschedules on its own, so it covers recovery too.
+		if ( ! $expiry instanceof Carbon || static::get_scheduled_count( $queue, $expiry->getTimestamp() ) > 0 ) {
+			return false;
+		}
+
+		return $this->schedule( $queue, max( 0, $expiry->getTimestamp() - time() ) );
+	}
+
+	/**
 	 * Callback for the cron event.
 	 *
 	 * @param string $queue Queue name, optional.
