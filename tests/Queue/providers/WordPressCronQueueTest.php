@@ -3,6 +3,7 @@ namespace Mantle\Tests\Queue\Providers;
 
 use Mantle\Contracts\Queue\Can_Queue;
 use Mantle\Contracts\Queue\Job;
+use Mantle\Database\Model\Model_Exception;
 use Mantle\Queue\Dispatchable;
 use Mantle\Queue\Events\Job_Failed;
 use Mantle\Queue\Providers\WordPress\Meta_Key;
@@ -127,6 +128,21 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		$this->dispatch_queue();
 
 		$this->assertSame( 'Mantle\\Tests\\Example', $_SERVER['__slashed_job'] );
+	}
+
+	public function test_job_is_not_slashed_when_storing_it_fails() {
+		$job = new Slashed_Job( 'Mantle\\Tests\\Example' );
+
+		add_filter( 'wp_insert_post_empty_content', '__return_true' );
+
+		try {
+			( new Provider( $this->app ) )->push( $job );
+			$this->fail( 'Expected the job insert to fail.' );
+		} catch ( Model_Exception ) {
+			// Expected.
+		}
+
+		$this->assertSame( 'Mantle\\Tests\\Example', $job->value );
 	}
 
 	public function test_job_dispatch_now() {
