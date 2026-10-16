@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Class-based event listeners that implement `Can_Queue` are now pushed to the queue instead of running inline. The listener's `$queue`, `$delay`, `$tries`, `$retry_backoff`, and `$timeout` properties are applied to the job, and an optional `should_queue()` method can skip queueing per event.
+
 ### Changed
 
 - **The queue system now stores jobs in a dedicated database table instead of the
@@ -35,6 +39,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   retried indefinitely. Retrying a failed job from the admin resets its attempts.
 - `Database_Query_Builder::where()` with an array value now queries with `IN`, and a
   where clause that cannot be prepared throws instead of being dropped from the query.
+
+### Fixed
+
+- Event listeners with a `mixed` parameter no longer throw a `ValueError` when called.
 
 ## v1.22.2
 
