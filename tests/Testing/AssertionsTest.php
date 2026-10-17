@@ -11,6 +11,10 @@ use PHPUnit\Framework\Attributes\Group;
  */
 #[Group( 'testing' )]
 class AssertionsTest extends FrameworkTestCase {
+	public function test_assert_database_has_with_zero_count(): void {
+		$this->assertDatabaseHas( 'options', [ 'option_name' => 'option-that-does-not-exist-' . wp_rand() ], 0 );
+	}
+
 	public function test_assert_wp_error(): void {
 		$this->assertWpError( new \WP_Error( 'error_code', 'Error message' ) );
 		$this->assertNotWpError( 'not an error' );

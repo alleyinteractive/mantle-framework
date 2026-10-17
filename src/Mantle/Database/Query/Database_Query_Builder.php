@@ -90,10 +90,9 @@ class Database_Query_Builder extends Builder {
 
 		assert( $wpdb instanceof \wpdb );
 
-		$this->select( [ 'COUNT(*) AS count' ] );
-		$this->take( -1 );
+		$builder = ( clone $this )->select( [ 'COUNT(*) AS count' ] )->take( -1 );
 
-		return (int) $wpdb->get_var( $this->get_query_sql() ); // phpcs:ignore WordPress.DB.PreparedSQL
+		return (int) $wpdb->get_var( $builder->get_query_sql() ); // phpcs:ignore WordPress.DB.PreparedSQL
 	}
 
 	/**
@@ -121,7 +120,7 @@ class Database_Query_Builder extends Builder {
 		if ( -1 !== $this->limit ) {
 			$limit = sprintf(
 				'LIMIT %d, %d',
-				$this->page !== 0 ? ( $this->page - 1 ) * $this->limit : 0,
+				$this->get_result_offset(),
 				(int) $this->limit
 			);
 		}

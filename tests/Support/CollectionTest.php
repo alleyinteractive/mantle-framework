@@ -2565,6 +2565,40 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame('second', $data->get(1)->value);
 	}
 
+	public function testNthWithOffsetBeyondStep() {
+		$this->assertEquals( [ 6, 9 ], ( new Collection( range( 1, 10 ) ) )->nth( 3, 5 )->all() );
+		$this->assertEquals( [ 3, 6, 9 ], ( new Collection( range( 1, 10 ) ) )->nth( 3, 2 )->all() );
+	}
+
+	public function testSoleThrowsMultipleItemsFoundException() {
+		try {
+			( new Collection( [ 1, 2 ] ) )->sole();
+			$this->fail( 'Expected Multiple_Items_Found_Exception' );
+		} catch ( \Mantle\Support\Multiple_Items_Found_Exception $e ) {
+			$this->assertSame( 2, $e->get_count() );
+		}
+	}
+
+	public function testDuplicatesStrictUsesStrictComparison() {
+		$this->assertSame(
+			[ 1 => 1, 8 => null ],
+			( new Collection( [ 1, 1, '1', 2, 2.0, 'a', 'A', null, null ] ) )->duplicates_strict()->all()
+		);
+		$this->assertSame(
+			[ 1 => 1, 2 => '1', 4 => 2.0, 8 => null ],
+			( new Collection( [ 1, 1, '1', 2, 2.0, 'a', 'A', null, null ] ) )->duplicates()->all()
+		);
+	}
+
+	public function testWhereLooseNotEqual() {
+		$c = new Collection( [ [ 'id' => 1 ], [ 'id' => 2 ], [ 'id' => 3 ] ] );
+
+		$this->assertEquals( [ 1, 3 ], $c->where( 'id', '!=', '2' )->pluck( 'id' )->values()->all() );
+		$this->assertEquals( [ 1, 3 ], $c->where( 'id', '<>', '2' )->pluck( 'id' )->values()->all() );
+		$this->assertEquals( [ 1, 2, 3 ], $c->where( 'id', '!==', '2' )->pluck( 'id' )->values()->all() );
+		$this->assertFalse( ( new Collection( [ [ 'id' => 1 ] ] ) )->contains( 'id', '!=', '1' ) );
+	}
+
 	/**
 	 * @dataProvider collectionClassProvider
 	 */
@@ -4773,7 +4807,7 @@ class CollectionTest extends FrameworkTestCase {
 }
 
 class TestSupportCollectionHigherOrderItem {
-	public $name;
+	public string $name;
 
 	public function __construct($name = 'taylor')
 	{
@@ -4792,7 +4826,7 @@ class TestSupportCollectionHigherOrderItem {
 }
 
 class TestAccessorEloquentTestStub {
-	protected $attributes = [];
+	protected array $attributes = [];
 
 	public function __construct($attributes)
 	{
@@ -4827,7 +4861,7 @@ class TestAccessorEloquentTestStub {
 }
 
 class TestArrayAccessImplementation implements ArrayAccess {
-	private $arr;
+	private array $arr;
 
 	public function __construct($arr)
 	{
@@ -4884,7 +4918,7 @@ class TestJsonSerializeWithScalarValueObject implements JsonSerializable {
 }
 
 class TestCollectionMapIntoObject {
-	public $value;
+	public mixed $value;
 
 	public function __construct($value)
 	{

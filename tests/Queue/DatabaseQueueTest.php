@@ -451,6 +451,59 @@ class DatabaseQueueTest extends FrameworkTestCase {
 
 		$this->assertNull( get_post( $post_id ) );
 	}
+
+	public function test_run_command_count_option(): void {
+		Example_Job::dispatch();
+		Example_Job::dispatch();
+		Example_Job::dispatch();
+
+		$this->command( 'mantle queue:run', [ '--count' => 3 ] )->assertOk();
+
+		$this->assertDatabaseHas( 'mantle_queue', [ 'queue' => 'default', 'status' => Status::COMPLETED->value ], 3 );
+	}
+
+	public function test_queue_delay_configuration(): void {
+		$this->app['config']->set( 'queue.wordpress.delay', 120 );
+
+		Example_Job::dispatch();
+
+		$this->app->make( Database_Scheduler::class )->schedule_on_shutdown();
+
+		$timestamps = [];
+
+		foreach ( (array) _get_cron_array() as $timestamp => $hooks ) {
+			if ( isset( $hooks[ Database_Scheduler::EVENT ] ) ) {
+				$timestamps[] = $timestamp;
+			}
+		}
+
+		$this->assertNotEmpty( $timestamps );
+		$this->assertGreaterThanOrEqual( time() + 110, min( $timestamps ) );
+	}
+
+	public function test_job_string_properties_keep_their_backslashes(): void {
+		$_SERVER['__slashed_job'] = null;
+
+		$job = new Slashed_Job( 'Mantle\\Tests\\Example' );
+
+		dispatch( $job );
+
+		$this->assertSame( 'Mantle\\Tests\\Example', $job->value );
+
+		$this->dispatch_queue();
+
+		$this->assertSame( 'Mantle\\Tests\\Example', $_SERVER['__slashed_job'] );
+	}
+}
+
+class Slashed_Job implements Job, Can_Queue {
+	use Queueable, Dispatchable;
+
+	public function __construct( public string $value ) {}
+
+	public function handle(): void {
+		$_SERVER['__slashed_job'] = $this->value;
+	}
 }
 
 class Example_Job implements Job, Can_Queue {

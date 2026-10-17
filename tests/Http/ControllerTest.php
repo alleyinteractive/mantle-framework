@@ -17,31 +17,44 @@ class ControllerTest extends FrameworkTestCase {
 	public function test_controller_at_method() {
 		Route::get( '/example-controller-at-route', Example_Controller::class . '@example_method' );
 
-		$this->get( '/example-controller-at-route' )->assertContent( 'controller-response' );
+		$this->get( '/example-controller-at-route' )
+			->assertOk()
+			->assertContent( 'controller-response' );
 	}
 
 	public function test_controller_callable_method() {
 		Route::get( '/example-controller-route', [ Example_Controller::class, 'example_method' ] );
-		$this->get( '/example-controller-route' )->assertContent( 'controller-response' );
+		$this->get( '/example-controller-route' )
+			->assertOk()
+			->assertContent( 'controller-response' );
 	}
 
 	public function test_controller_callable_method_param() {
 		Route::get( '/hello/{who}', [ Example_Controller::class, 'example_method_with_params' ] );
-		$this->get( '/hello/sean' )->assertContent( 'Welcome sean!' );
+		$this->get( '/hello/sean' )
+			->assertOk()
+			->assertContent( 'Welcome sean!' );
 	}
 
 	public function test_invokable_controller() {
 		Route::get( '/example-invokable-controller', Invokable_Controller::class );
 
-		$this->get( '/example-invokable-controller' )->assertContent( 'invoke-response' );
+		$this->get( '/example-invokable-controller' )
+			->assertOk()
+			->assertContent( 'invoke-response' );
 	}
 
 	public function test_request_with_parameters() {
 		Route::get( '/example-controller-with-request/{who}', Example_Controller::class . '@example_method_with_request' );
 		Route::get( '/flipped-example-controller-with-request/{who}', Example_Controller::class . '@example_method_with_request' );
 
-		$this->get( '/example-controller-with-request/name' )->assertContent( 'namename' );
-		$this->get( '/flipped-example-controller-with-request/name' )->assertContent( 'namename' );
+		$this->get( '/example-controller-with-request/name' )
+			->assertOk()
+			->assertContent( 'namename' );
+
+		$this->get( '/flipped-example-controller-with-request/name' )
+			->assertOk()
+			->assertContent( 'namename' );
 	}
 }
 

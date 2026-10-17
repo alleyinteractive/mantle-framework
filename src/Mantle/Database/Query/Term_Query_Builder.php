@@ -57,6 +57,8 @@ class Term_Query_Builder extends Builder {
 
 	/**
 	 * Get the query arguments.
+	 *
+	 * @throws Query_Exception Thrown when more than one orderBy() clause is set.
 	 */
 	public function get_query_args(): array {
 		if ( is_array( $this->model ) ) {
@@ -74,11 +76,16 @@ class Term_Query_Builder extends Builder {
 
 		[ $order, $order_by ] = $this->get_builder_order( 'ASC', 'name' );
 
+		if ( is_array( $order_by ) ) {
+			throw new Query_Exception( 'Term queries only support a single orderBy() clause.' );
+		}
+
 		return array_merge(
 			[
 				'hide_empty'      => false,
 				'meta_query'      => $this->meta_query, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				'number'          => $number,
+				'offset'          => $this->get_result_offset(),
 				'order'           => $order,
 				'orderby'         => $order_by,
 				'suppress_filter' => false,
@@ -132,16 +139,16 @@ class Term_Query_Builder extends Builder {
 	 * Get the count of the query results.
 	 */
 	public function count(): int {
-		$this->take( -1 );
+		$builder = ( clone $this )->take( -1 );
 
 		$query = new \WP_Term_Query();
 
-		$this->query_hash = spl_object_hash( $query );
+		$builder->query_hash = spl_object_hash( $query );
 
-		return $this->with_clauses(
+		return $builder->with_clauses(
 			fn (): int => (int) $query->query(
 				array_merge(
-					$this->get_query_args(),
+					$builder->get_query_args(),
 					[
 						'fields' => 'count',
 					],
