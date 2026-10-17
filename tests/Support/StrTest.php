@@ -67,7 +67,7 @@ class StrTest extends TestCase {
 	public function testStringWithoutWordsDoesntProduceError() {
 		$nbsp = chr( 0xC2 ) . chr( 0xA0 );
 		$this->assertSame( ' ', Str::words( ' ' ) );
-		$this->assertEquals( $nbsp, Str::words( $nbsp ) );
+		$this->assertSame( $nbsp, Str::words( $nbsp ) );
 	}
 
 	public function testStringAscii() {
@@ -296,7 +296,7 @@ class StrTest extends TestCase {
 	 */
 	#[DataProvider( 'strContainsProvider' )]
 	public function testStrContains( $haystack, $needles, $expected, $ignoreCase = false ) {
-		$this->assertEquals( $expected, Str::contains( $haystack, $needles, $ignoreCase ) );
+		$this->assertSame( $expected, Str::contains( $haystack, $needles, $ignoreCase ) );
 	}
 
 	/**
@@ -304,13 +304,13 @@ class StrTest extends TestCase {
 	 */
 	#[DataProvider( 'strContainsAllProvider' )]
 	public function testStrContainsAll( $haystack, $needles, $expected, $ignoreCase = false ) {
-		$this->assertEquals( $expected, Str::contains_all( $haystack, $needles, $ignoreCase ) );
+		$this->assertSame( $expected, Str::contains_all( $haystack, $needles, $ignoreCase ) );
 	}
 
 	public function testParseCallback() {
-		$this->assertEquals( [ 'Class', 'method' ], Str::parse_callback( 'Class@method', 'foo' ) );
-		$this->assertEquals( [ 'Class', 'foo' ], Str::parse_callback( 'Class', 'foo' ) );
-		$this->assertEquals( [ 'Class', null ], Str::parse_callback( 'Class' ) );
+		$this->assertSame( [ 'Class', 'method' ], Str::parse_callback( 'Class@method', 'foo' ) );
+		$this->assertSame( [ 'Class', 'foo' ], Str::parse_callback( 'Class', 'foo' ) );
+		$this->assertSame( [ 'Class', null ], Str::parse_callback( 'Class' ) );
 	}
 
 	public function testSlug() {
@@ -359,8 +359,8 @@ class StrTest extends TestCase {
 	}
 
 	public function testWrap() {
-		$this->assertEquals( '"value"', Str::wrap( 'value', '"' ) );
-		$this->assertEquals( 'foo-bar-baz', Str::wrap( '-bar-', 'foo', 'baz' ) );
+		$this->assertSame( '"value"', Str::wrap( 'value', '"' ) );
+		$this->assertSame( 'foo-bar-baz', Str::wrap( '-bar-', 'foo', 'baz' ) );
 	}
 
 	public function testIs() {
@@ -482,14 +482,14 @@ class StrTest extends TestCase {
 	}
 
 	public function testLength() {
-		$this->assertEquals( 11, Str::length( 'foo bar baz' ) );
-		$this->assertEquals( 11, Str::length( 'foo bar baz', 'UTF-8' ) );
+		$this->assertSame( 11, Str::length( 'foo bar baz' ) );
+		$this->assertSame( 11, Str::length( 'foo bar baz', 'UTF-8' ) );
 	}
 
 	public function testRandom() {
-		$this->assertEquals( 16, strlen( Str::random() ) );
+		$this->assertSame( 16, strlen( Str::random() ) );
 		$randomInteger = random_int( 1, 100 );
-		$this->assertEquals( $randomInteger, strlen( Str::random( $randomInteger ) ) );
+		$this->assertSame( $randomInteger, strlen( Str::random( $randomInteger ) ) );
 		$this->assertIsString( Str::random() );
 	}
 
@@ -734,9 +734,9 @@ class StrTest extends TestCase {
 		$this->assertSame( 'bar', Str::match( '/foo (.*)/', 'foo bar' ) );
 		$this->assertEmpty( Str::match( '/nothing/', 'foo bar' ) );
 
-		$this->assertEquals( [ 'bar', 'bar' ], Str::match_all( '/bar/', 'bar foo bar' )->all() );
+		$this->assertSame( [ 'bar', 'bar' ], Str::match_all( '/bar/', 'bar foo bar' )->all() );
 
-		$this->assertEquals( [ 'un', 'ly' ], Str::match_all( '/f(\w*)/', 'bar fun bar fly' )->all() );
+		$this->assertSame( [ 'un', 'ly' ], Str::match_all( '/f(\w*)/', 'bar fun bar fly' )->all() );
 		$this->assertEmpty( Str::match_all( '/nothing/', 'bar fun bar fly' ) );
 	}
 
@@ -754,10 +754,10 @@ class StrTest extends TestCase {
 	}
 
 	public function testCharAt() {
-		$this->assertEquals( 'р', Str::char_at( 'Привет, мир!', 1 ) );
-		$this->assertEquals( 'ち', Str::char_at( '「こんにちは世界」', 4 ) );
-		$this->assertEquals( 'w', Str::char_at( 'Привет, world!', 8 ) );
-		$this->assertEquals( '界', Str::char_at( '「こんにちは世界」', -2 ) );
+		$this->assertSame( 'р', Str::char_at( 'Привет, мир!', 1 ) );
+		$this->assertSame( 'ち', Str::char_at( '「こんにちは世界」', 4 ) );
+		$this->assertSame( 'w', Str::char_at( 'Привет, world!', 8 ) );
+		$this->assertSame( '界', Str::char_at( '「こんにちは世界」', -2 ) );
 		$this->assertFalse( Str::char_at( '「こんにちは世界」', -200 ) );
 		$this->assertFalse( Str::char_at( 'Привет, мир!', 100 ) );
 	}
@@ -876,17 +876,17 @@ class StrTest extends TestCase {
 	}
 
 	public function testWordCount() {
-		$this->assertEquals( 2, Str::word_count( 'Hello, world!' ) );
-		$this->assertEquals( 10, Str::word_count( 'Hi, this is my first contribution to the Laravel framework.' ) );
+		$this->assertSame( 2, Str::word_count( 'Hello, world!' ) );
+		$this->assertSame( 10, Str::word_count( 'Hi, this is my first contribution to the Laravel framework.' ) );
 
-		// $this->assertEquals( 0, Str::word_count( 'мама' ) );
-		// $this->assertEquals( 0, Str::word_count( 'мама мыла раму' ) );
+		// $this->assertSame( 0, Str::word_count( 'мама' ) );
+		// $this->assertSame( 0, Str::word_count( 'мама мыла раму' ) );
 
-		// $this->assertEquals( 1, Str::word_count( 'мама', 'абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ' ) );
-		// $this->assertEquals( 3, Str::word_count( 'мама мыла раму', 'абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ' ) );
+		// $this->assertSame( 1, Str::word_count( 'мама', 'абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ' ) );
+		// $this->assertSame( 3, Str::word_count( 'мама мыла раму', 'абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ' ) );
 
-		// $this->assertEquals( 1, Str::word_count( 'МАМА', 'абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ' ) );
-		// $this->assertEquals( 3, Str::word_count( 'МАМА МЫЛА РАМУ', 'абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ' ) );
+		// $this->assertSame( 1, Str::word_count( 'МАМА', 'абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ' ) );
+		// $this->assertSame( 3, Str::word_count( 'МАМА МЫЛА РАМУ', 'абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ' ) );
 	}
 
 	public static function validUuidList() {
