@@ -758,8 +758,8 @@ class StrTest extends TestCase {
 		$this->assertEquals( 'ち', Str::char_at( '「こんにちは世界」', 4 ) );
 		$this->assertEquals( 'w', Str::char_at( 'Привет, world!', 8 ) );
 		$this->assertEquals( '界', Str::char_at( '「こんにちは世界」', -2 ) );
-		$this->assertEquals( null, Str::char_at( '「こんにちは世界」', -200 ) );
-		$this->assertEquals( null, Str::char_at( 'Привет, мир!', 100 ) );
+		$this->assertFalse( Str::char_at( '「こんにちは世界」', -200 ) );
+		$this->assertFalse( Str::char_at( 'Привет, мир!', 100 ) );
 	}
 
 	public function testSubstr() {
