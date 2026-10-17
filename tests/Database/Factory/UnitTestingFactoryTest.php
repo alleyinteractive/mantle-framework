@@ -124,17 +124,13 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 	}
 
 	public function test_blog_factory() {
-		if ( ! is_multisite() ) {
-			$this->markTestSkipped( 'This test requires multisite.' );
-		}
+		$this->skipWithoutMultisite();
 
 		$this->shim_test( \WP_Site::class, 'blog' );
 	}
 
 	public function test_blog_factory_subdomain(): void {
-		if ( ! is_multisite() ) {
-			$this->markTestSkipped( 'This test requires multisite.' );
-		}
+		$this->skipWithoutMultisite();
 
 		$blog = static::factory()->blog->subdomain()->create_and_get();
 
@@ -145,9 +141,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 	}
 
 	public function test_network_factory() {
-		if ( ! is_multisite() ) {
-			$this->markTestSkipped( 'This test requires multisite.' );
-		}
+		$this->skipWithoutMultisite();
 
 		$this->shim_test( \WP_Network::class, 'network' );
 	}
