@@ -3,6 +3,7 @@ namespace Mantle\Tests\Queue\Providers;
 
 use Mantle\Contracts\Queue\Can_Queue;
 use Mantle\Contracts\Queue\Job;
+use Mantle\Database\Model\Model_Exception;
 use Mantle\Queue\Dispatchable;
 use Mantle\Queue\Events\Job_Failed;
 use Mantle\Queue\Providers\WordPress\Meta_Key;
@@ -41,6 +42,53 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		$this->assertTrue( has_action( Scheduler::EVENT ) );
 	}
 
+	public function test_run_command_count_option() {
+		$command = new \Mantle\Queue\Console\Run_Command();
+
+		$this->assertTrue( $command->getDefinition()->getOption( 'count' )->acceptValue() );
+
+		Example_Job::dispatch( false );
+		Example_Job::dispatch( false );
+		Example_Job::dispatch( false );
+
+		$command->set_container( $this->app );
+		$command->run(
+			new \Symfony\Component\Console\Input\ArrayInput( [ '--count' => '3' ], $command->getDefinition() ),
+			new \Symfony\Component\Console\Output\NullOutput(),
+		);
+
+		$this->assertCount(
+			3,
+			get_posts(
+				[
+					'post_type'      => Provider::OBJECT_NAME,
+					'post_status'    => Post_Status::COMPLETED->value,
+					'posts_per_page' => -1,
+					'fields'         => 'ids',
+				]
+			)
+		);
+	}
+
+	public function test_queue_delay_configuration() {
+		$this->app['config']->set( 'queue.wordpress.delay', 120 );
+
+		Example_Job::dispatch( false );
+
+		Scheduler::schedule_on_shutdown();
+
+		$timestamps = [];
+
+		foreach ( (array) _get_cron_array() as $timestamp => $hooks ) {
+			if ( isset( $hooks[ Scheduler::EVENT ] ) ) {
+				$timestamps[] = $timestamp;
+			}
+		}
+
+		$this->assertNotEmpty( $timestamps );
+		$this->assertGreaterThanOrEqual( time() + 110, min( $timestamps ) );
+	}
+
 	public function test_job_dispatch() {
 		$_SERVER['__example_job'] = false;
 
@@ -65,6 +113,36 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 			'post_type'   => Provider::OBJECT_NAME,
 			'post_status' => Post_Status::COMPLETED,
 		] );
+	}
+
+	public function test_job_string_properties_keep_their_backslashes() {
+		$_SERVER['__slashed_job'] = null;
+
+		$job = new Slashed_Job( 'Mantle\\Tests\\Example' );
+
+		dispatch( $job );
+
+		$this->assertSame( 'Mantle\\Tests\\Example', $job->value );
+		$this->assertJobQueued( $job );
+
+		$this->dispatch_queue();
+
+		$this->assertSame( 'Mantle\\Tests\\Example', $_SERVER['__slashed_job'] );
+	}
+
+	public function test_job_is_not_slashed_when_storing_it_fails() {
+		$job = new Slashed_Job( 'Mantle\\Tests\\Example' );
+
+		add_filter( 'wp_insert_post_empty_content', '__return_true' );
+
+		try {
+			( new Provider( $this->app ) )->push( $job );
+			$this->fail( 'Expected the job insert to fail.' );
+		} catch ( Model_Exception ) {
+			// Expected.
+		}
+
+		$this->assertSame( 'Mantle\\Tests\\Example', $job->value );
 	}
 
 	public function test_job_dispatch_now() {
@@ -397,4 +475,14 @@ class Job_To_Fail_Retry extends Job_To_Fail {
 	public bool $retry = true;
 
 	public int $retry_backoff = 30;
+}
+
+class Slashed_Job implements Job, Can_Queue {
+	use Queueable, Dispatchable;
+
+	public function __construct( public string $value ) {}
+
+	public function handle(): void {
+		$_SERVER['__slashed_job'] = $this->value;
+	}
 }

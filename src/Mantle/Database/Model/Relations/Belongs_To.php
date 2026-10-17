@@ -357,7 +357,7 @@ class Belongs_To extends Relation {
 
 		return $models->each(
 			function ( $model ) use ( $dictionary ): void {
-				$key = $model->meta->{$this->local_key}; // @phpstan-ignore-line
+				$key = (string) $model->meta->{$this->local_key}; // @phpstan-ignore-line
 
 				$model->set_relation( $this->relationship, $dictionary[ $key ][0] ?? null ); // @phpstan-ignore-line method.notFound
 			}

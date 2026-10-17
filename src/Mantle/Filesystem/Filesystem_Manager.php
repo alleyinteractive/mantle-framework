@@ -155,9 +155,11 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 			throw new InvalidArgumentException( 'The local filesystem cannot be used outside of a WordPress environment.' );
 		}
 
+		$config['visibility'] ??= Visibility::PUBLIC;
+
 		$visibility = PortableVisibilityConverter::fromArray(
 			$config['permissions'] ?? [],
-			$config['directory_visibility'] ?? $config['visibility'] ?? Visibility::PRIVATE
+			$config['directory_visibility'] ?? $config['visibility']
 		);
 
 		$links = ( $config['links'] ?? null ) === 'skip'
@@ -178,9 +180,8 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 		$root = (string) apply_filters( 'mantle_filesystem_local_root', $root, $config );
 
 		// Ensure the root configuration has a base URL.
-		$config['root']         = $root;
-		$config['url']        ??= $upload_dir['baseurl'];
-		$config['visibility'] ??= Visibility::PUBLIC;
+		$config['root']  = $root;
+		$config['url'] ??= $upload_dir['baseurl'];
 
 		/**
 		 * Filter the local filesystem configuration.

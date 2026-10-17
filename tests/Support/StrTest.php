@@ -1004,7 +1004,7 @@ class StrTest extends TestCase {
 
 class StringableObjectStub {
 
-	private $value;
+	private string $value;
 
 	public function __construct( $value ) {
 		$this->value = $value;

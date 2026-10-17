@@ -20,10 +20,16 @@ class ContainerCallTest extends TestCase {
 		$container->call( 'ContainerTestCallStub' );
 	}
 
+	public function testCallClosureWithUnresolvableScalarThrowsBindingException() {
+		$this->expectException( Binding_Resolution_Exception::class );
+
+		( new Container() )->call( fn ( int $a ) => $a );
+	}
+
 	public function testCallWithAtSignBasedClassReferences() {
 		$container = new Container();
 		$result    = $container->call( ContainerTestCallStub::class . '@work', array( 'foo', 'bar' ) );
-		$this->assertEquals( [ 'foo', 'bar' ], $result );
+		$this->assertSame( [ 'foo', 'bar' ], $result );
 
 		$container = new Container();
 		$result    = $container->call( ContainerTestCallStub::class . '@inject' );
@@ -37,14 +43,14 @@ class ContainerCallTest extends TestCase {
 
 		$container = new Container();
 		$result    = $container->call( ContainerTestCallStub::class, [ 'foo', 'bar' ], 'work' );
-		$this->assertEquals( [ 'foo', 'bar' ], $result );
+		$this->assertSame( [ 'foo', 'bar' ], $result );
 	}
 
 	public function testCallWithCallableArray() {
 		$container = new Container();
 		$stub      = new ContainerTestCallStub();
 		$result    = $container->call( array( $stub, 'work' ), [ 'foo', 'bar' ] );
-		$this->assertEquals( [ 'foo', 'bar' ], $result );
+		$this->assertSame( [ 'foo', 'bar' ], $result );
 	}
 
 	public function testCallWithStaticMethodNameString() {
@@ -70,7 +76,7 @@ class ContainerCallTest extends TestCase {
 			}
 		);
 		$result = $container->call( ContainerTestCallStub::class . '@unresolvable' );
-		$this->assertEquals( [ 'foo', 'bar' ], $result );
+		$this->assertSame( [ 'foo', 'bar' ], $result );
 
 		$container = new Container();
 		$container->bind_method(
@@ -80,7 +86,7 @@ class ContainerCallTest extends TestCase {
 			}
 		);
 		$result = $container->call( array( new ContainerTestCallStub(), 'unresolvable' ) );
-		$this->assertEquals( array( 'foo', 'bar' ), $result );
+		$this->assertSame( array( 'foo', 'bar' ), $result );
 
 		$container = new Container();
 		$result    = $container->call(
@@ -108,7 +114,7 @@ class ContainerCallTest extends TestCase {
 			}
 		);
 		$result = $container->call( ContainerTestCallStub::class . '@unresolvable' );
-		$this->assertEquals( [ 'foo', 'bar' ], $result );
+		$this->assertSame( [ 'foo', 'bar' ], $result );
 
 		$container = new Container();
 		$container->bind_method(
@@ -118,7 +124,7 @@ class ContainerCallTest extends TestCase {
 			}
 		);
 		$result = $container->call( array( new ContainerTestCallStub(), 'unresolvable' ) );
-		$this->assertEquals( [ 'foo', 'bar' ], $result );
+		$this->assertSame( [ 'foo', 'bar' ], $result );
 	}
 
 	public function testCallWithDependencies() {
@@ -130,7 +136,7 @@ class ContainerCallTest extends TestCase {
 		);
 
 		$this->assertInstanceOf( stdClass::class, $result[0] );
-		$this->assertEquals( [], $result[1] );
+		$this->assertSame( [], $result[1] );
 
 		$result = $container->call(
 			function ( stdClass $foo, $bar = [] ) {

@@ -78,7 +78,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 *
 	 * @var bool
 	 */
-	protected $has_more = true;
+	protected $has_more = false;
 
 	/**
 	 * The current path resolver callback.
@@ -196,7 +196,17 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 	 * Set the items for the paginator.
 	 */
 	protected function set_items(): static {
-		$this->items = $this->builder->where( 'no_found_rows', true )->get();
+		// Fetch one extra row to detect whether a next page exists without counting.
+		$items = $this->builder
+			->where( 'no_found_rows', true )
+			->page( 1 )
+			->offset( ( $this->current_page() - 1 ) * $this->per_page )
+			->take( $this->per_page + 1 )
+			->get();
+
+		$this->has_more = $items->count() > $this->per_page;
+		$this->items    = $items->slice( 0, $this->per_page )->values();
+
 		return $this;
 	}
 
@@ -219,7 +229,7 @@ class Paginator implements Arrayable, ArrayAccess, Countable, Jsonable, JsonSeri
 			$this->has_more = $has_more;
 		}
 
-		return true;
+		return $this->has_more;
 	}
 
 	/**

@@ -59,7 +59,7 @@ class Length_Aware_Paginator extends Paginator {
 		$elements[][ $current_page ] = $this->url( $current_page );
 
 		// Previous next pages.
-		for ( $i = $current_page + 1; $i < $max_pages; $i++ ) {
+		for ( $i = $current_page + 1; $i <= $max_pages; $i++ ) {
 			$elements[][ $i ] = $this->url( $i );
 		}
 
@@ -77,7 +77,7 @@ class Length_Aware_Paginator extends Paginator {
 			return false;
 		}
 
-		return ( ( $this->current_page() - 1 ) * $this->per_page ) < $this->found_rows;
+		return ( $this->current_page() * $this->per_page ) < $this->found_rows;
 	}
 
 	/**
@@ -95,6 +95,6 @@ class Length_Aware_Paginator extends Paginator {
 	 * Determine if the paginator has a previous page.
 	 */
 	public function has_previous(): bool {
-		return $this->current_page() > $this->max_pages();
+		return $this->current_page() > 1;
 	}
 }

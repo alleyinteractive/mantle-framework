@@ -126,7 +126,7 @@ class PipelineTest extends TestCase {
 			);
 
 		$this->assertSame( 'foo', $result );
-		$this->assertEquals( $parameters, $_SERVER['__test.pipe.parameters'] );
+		$this->assertSame( $parameters, $_SERVER['__test.pipe.parameters'] );
 
 		unset( $_SERVER['__test.pipe.parameters'] );
 	}

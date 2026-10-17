@@ -148,7 +148,7 @@ class User extends Model implements Contracts\Database\Core_Object, Contracts\Da
 		$id = $this->id();
 
 		if ( empty( $id ) ) {
-			$save = \wp_insert_user( $this->get_attributes() );
+			$save = \wp_insert_user( $this->get_attributes_for_insert() );
 		} else {
 			$save = \wp_update_user(
 				array_merge(
