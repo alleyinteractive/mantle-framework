@@ -8,8 +8,9 @@
 namespace Mantle\Queue\Console;
 
 use Mantle\Console\Command;
-use Mantle\Queue\Providers\WordPress\Post_Status;
-use Mantle\Queue\Providers\WordPress\Queue_Record;
+use Mantle\Database\Model\Post;
+use Mantle\Queue\Jobs\Database_Job_Record;
+use Mantle\Queue\Jobs\Status;
 
 /**
  * Queue Cleanup Command
@@ -23,6 +24,13 @@ class Cleanup_Jobs_Command extends Command {
 	protected $name = 'queue:cleanup';
 
 	/**
+	 * Command signature.
+	 *
+	 * @var string
+	 */
+	protected $signature = '{--legacy : Also delete legacy jobs stored in the mantle_queue post type.}';
+
+	/**
 	 * Command Description.
 	 *
 	 * @var string
@@ -32,23 +40,47 @@ class Cleanup_Jobs_Command extends Command {
 	/**
 	 * Command action.
 	 */
-	public function handle(): void {
+	public function handle(): int {
 		$count = 0;
 
-		Queue_Record::query()
-			->whereStatus( [ Post_Status::RUNNING->value, Post_Status::FAILED->value, Post_Status::COMPLETED->value ] )
-			->olderThan( now()->subSeconds( (int) $this->container['config']->get( 'queue.delete_after', 60 ) ) )
-			->each_by_id(
-				function ( Queue_Record $record ) use ( &$count ): void {
-					if ( ! $record->is_locked() ) {
-						$record->delete( true );
+		// Delete all the legacy queue jobs that were previously stored in a
+		// 'mantle_queue' post type if requested.
+		if ( $this->option( 'legacy', false ) ) {
+			$this->info( 'Deleting legacy queue jobs...' );
+
+			// The legacy queue_* post statuses are no longer registered, so only "any" matches them.
+			Post::for( 'mantle_queue' )
+				->where( 'post_status', 'any' )
+				->each_by_id(
+					function ( Post $post ) use ( &$count ): void {
+						$post->delete( true );
 
 						$count++;
-					}
+					},
+					100,
+				);
+		}
+
+		Database_Job_Record::query()
+			->whereIn( 'status', [ Status::FAILED->value, Status::COMPLETED->value ] )
+			->where_raw( 'scheduled_date_gmt', '<', now( 'UTC' )->subSeconds( (int) $this->container['config']->get( 'queue.delete_after', 60 ) )->toDateTimeString() )
+			->each_by_id(
+				function ( Database_Job_Record $record ) use ( &$count ): void {
+					$record->delete( true );
+
+					$count++;
 				},
 				100,
 			);
 
-		$this->info( sprintf( 'Deleted %d jobs.', $count ) );
+		$this->info(
+			sprintf(
+				'Deleted %d %s.',
+				$count,
+				1 === $count ? 'job' : 'jobs',
+			),
+		);
+
+		return self::SUCCESS;
 	}
 }

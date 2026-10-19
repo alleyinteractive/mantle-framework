@@ -16,8 +16,9 @@ class Job_Queued {
 	/**
 	 * Constructor.
 	 *
-	 * @param Provider $provider Queue provider.
-	 * @param mixed    $job      Job object.
+	 * @param Provider    $provider Queue provider.
+	 * @param mixed       $job      Job object.
+	 * @param string|null $queue    Queue the job was stored in, when known.
 	 */
-	public function __construct( public Provider $provider, public $job ) {}
+	public function __construct( public Provider $provider, public $job, public ?string $queue = null ) {}
 }
