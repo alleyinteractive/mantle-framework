@@ -16,8 +16,7 @@ class DelayedFeatureTest extends TestCase {
 	protected function tearDown(): void {
 		parent::tearDown();
 
-		remove_all_actions( 'init' );
-		remove_all_actions( 'wp_loaded' );
+		remove_all_actions( 'delayed_feature_test_hook' );
 		remove_all_actions( 'example_hook' );
 	}
 
@@ -28,7 +27,7 @@ class DelayedFeatureTest extends TestCase {
 			}
 		};
 
-		$delayed = new Delayed_Feature( 'init', $feature );
+		$delayed = new Delayed_Feature( 'delayed_feature_test_hook', $feature );
 
 		$this->assertFalse( $_SERVER['feature_booted'] );
 
@@ -36,7 +35,7 @@ class DelayedFeatureTest extends TestCase {
 
 		$this->assertFalse( $_SERVER['feature_booted'], 'Feature should not boot immediately' );
 
-		do_action( 'init' );
+		do_action( 'delayed_feature_test_hook' );
 
 		$this->assertTrue( $_SERVER['feature_booted'], 'Feature should boot after hook fires' );
 	}
@@ -57,14 +56,14 @@ class DelayedFeatureTest extends TestCase {
 		$_SERVER['feature1_booted'] = false;
 		$_SERVER['feature2_booted'] = false;
 
-		$delayed = new Delayed_Feature( 'init', [ $feature1, $feature2 ] );
+		$delayed = new Delayed_Feature( 'delayed_feature_test_hook', [ $feature1, $feature2 ] );
 
 		$delayed->boot();
 
 		$this->assertFalse( $_SERVER['feature1_booted'] );
 		$this->assertFalse( $_SERVER['feature2_booted'] );
 
-		do_action( 'init' );
+		do_action( 'delayed_feature_test_hook' );
 
 		$this->assertTrue( $_SERVER['feature1_booted'] );
 		$this->assertTrue( $_SERVER['feature2_booted'] );
@@ -72,7 +71,7 @@ class DelayedFeatureTest extends TestCase {
 
 	public function test_delayed_feature_boots_with_callable(): void {
 		$delayed = new Delayed_Feature(
-			'init',
+			'delayed_feature_test_hook',
 			function() {
 				$_SERVER['feature_booted'] = true;
 			}
@@ -84,7 +83,7 @@ class DelayedFeatureTest extends TestCase {
 
 		$this->assertFalse( $_SERVER['feature_booted'] );
 
-		do_action( 'init' );
+		do_action( 'delayed_feature_test_hook' );
 
 		$this->assertTrue( $_SERVER['feature_booted'] );
 	}
@@ -93,7 +92,7 @@ class DelayedFeatureTest extends TestCase {
 		$_SERVER['execution_order'] = [];
 
 		$delayed_high = new Delayed_Feature(
-			'init',
+			'delayed_feature_test_hook',
 			function() {
 				$_SERVER['execution_order'][] = 'high';
 			},
@@ -101,7 +100,7 @@ class DelayedFeatureTest extends TestCase {
 		);
 
 		$delayed_low = new Delayed_Feature(
-			'init',
+			'delayed_feature_test_hook',
 			function() {
 				$_SERVER['execution_order'][] = 'low';
 			},
@@ -111,7 +110,7 @@ class DelayedFeatureTest extends TestCase {
 		$delayed_low->boot();
 		$delayed_high->boot();
 
-		do_action( 'init' );
+		do_action( 'delayed_feature_test_hook' );
 
 		$this->assertSame( [ 'high', 'low' ], $_SERVER['execution_order'] );
 	}
@@ -120,19 +119,19 @@ class DelayedFeatureTest extends TestCase {
 		$_SERVER['execution_order'] = [];
 
 		$delayed = new Delayed_Feature(
-			'init',
+			'delayed_feature_test_hook',
 			function() {
 				$_SERVER['execution_order'][] = 'default';
 			}
 		);
 
-		add_action( 'init', function() {
+		add_action( 'delayed_feature_test_hook', function() {
 			$_SERVER['execution_order'][] = 'manual';
 		}, 10 );
 
 		$delayed->boot();
 
-		do_action( 'init' );
+		do_action( 'delayed_feature_test_hook' );
 
 		$this->assertContains( 'default', $_SERVER['execution_order'] );
 		$this->assertContains( 'manual', $_SERVER['execution_order'] );
@@ -185,14 +184,14 @@ class DelayedFeatureTest extends TestCase {
 			}
 		};
 
-		$delayed = new Delayed_Feature( 'init', $feature );
+		$delayed = new Delayed_Feature( 'delayed_feature_test_hook', $feature );
 
 		$delayed->boot();
 
 		do_action( 'example_action', 'before_init' );
 		$this->assertFalse( $_SERVER['hook_fired'], 'Hook should not fire before init' );
 
-		do_action( 'init' );
+		do_action( 'delayed_feature_test_hook' );
 
 		do_action( 'example_action', 'after_init' );
 		$this->assertSame( 'after_init', $_SERVER['hook_fired'] );
@@ -210,13 +209,13 @@ class DelayedFeatureTest extends TestCase {
 
 		$_SERVER['nested_feature_booted'] = false;
 
-		$delayed = new Delayed_Feature( 'init', $feature );
+		$delayed = new Delayed_Feature( 'delayed_feature_test_hook', $feature );
 
 		$delayed->boot();
 
 		$this->assertFalse( $_SERVER['nested_feature_booted'] );
 
-		do_action( 'init' );
+		do_action( 'delayed_feature_test_hook' );
 
 		$this->assertTrue( $_SERVER['nested_feature_booted'] );
 	}
