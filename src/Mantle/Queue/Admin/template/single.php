@@ -141,7 +141,7 @@ if ( ! is_array( $log ) ) {
 						printf(
 							/* translators: %s: The time the job is locked until. */
 							esc_html__( 'Locked until %s', 'mantle' ),
-							esc_html( $record->get_lock_until()->format( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) ) ),
+							esc_html( $record->get_lock_until()->setTimezone( wp_timezone() )->format( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) ) ),
 						);
 						?>
 					<?php else : ?>
@@ -164,7 +164,7 @@ if ( ! is_array( $log ) ) {
 								<?php echo esc_html( ucwords( $entry['event'] ?? '' ) ); ?>
 							</strong>
 							&mdash;
-							<?php $time = Carbon::createFromTimestampUTC( $entry['time'] ?? 0 ); ?>
+							<?php $time = Carbon::createFromTimestampUTC( $entry['time'] ?? 0 )->setTimezone( wp_timezone() ); ?>
 							<?php echo esc_html( $time->format( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) ) ); ?>
 							<span title="<?php echo esc_attr( $time->format( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) ) ); ?>">
 								&mdash;

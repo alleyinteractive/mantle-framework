@@ -156,14 +156,14 @@ trait Interacts_With_Cron {
 
 		$job_name = get_debug_type( $job );
 
-		$queue ??= 'default';
-
 		if ( is_null( $count ) ) {
 			PHPUnit::assertTrue(
 				$provider->in_queue( $job, $queue ),
-				"Job [{$job_name}] is not in the queue [{$queue}] for " . $provider::class,
+				"Job [{$job_name}] is not in the queue [" . ( $queue ?? 'any' ) . '] for ' . $provider::class,
 			);
 		} else {
+			$queue ??= 'default';
+
 			PHPUnit::assertEquals(
 				$count,
 				$provider->pending_size( $queue, $job_name ),
@@ -265,9 +265,7 @@ trait Interacts_With_Cron {
 			return 0;
 		}
 
-		$events->each( fn ( object $event ) => self::run_cron_event( $event ) );
-
-		return $events->count();
+		return $events->filter( fn ( object $event ) => self::run_cron_event( $event ) )->count();
 	}
 
 	/**
@@ -311,8 +309,13 @@ trait Interacts_With_Cron {
 	 *
 	 * @param object $event Cron event object.
 	 * @phpstan-param CronEvent $event
+	 * @return bool False if the event was unscheduled by an earlier event before it could run.
 	 */
-	protected static function run_cron_event( object $event ): void {
+	protected static function run_cron_event( object $event ): bool {
+		if ( ! isset( _get_cron_array()[ $event->time ][ $event->hook ][ $event->sig ] ) ) {
+			return false;
+		}
+
 		if ( ! defined( 'DOING_CRON' ) ) {
 			// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- Using native WordPress constant.
 			define( 'DOING_CRON', true );
@@ -334,6 +337,8 @@ trait Interacts_With_Cron {
 
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- Can't prefix dynamic hooks here, calling registered hooks.
 		\do_action_ref_array( $event->hook, $event->args );
+
+		return true;
 	}
 
 	/**

@@ -9,7 +9,6 @@ namespace Mantle\Queue;
 
 use Carbon\Carbon;
 use DateTimeInterface;
-use Laravel\SerializableClosure\SerializableClosure;
 use Mantle\Contracts\Application;
 use Mantle\Contracts\Queue\Provider as Contract;
 use Mantle\Contracts\Queue\Queue_Manager;
@@ -44,12 +43,15 @@ class Database_Queue_Provider implements Contract {
 			return;
 		}
 
+		$pending               = static::$pending_queue;
+		static::$pending_queue = [];
+
 		$manager = app( Queue_Manager::class );
 
 		if ( $manager instanceof Queue_Manager ) {
 			$provider = $manager->get_provider();
 
-			foreach ( static::$pending_queue as $args ) {
+			foreach ( $pending as $args ) {
 				$provider->push( ...$args );
 			}
 		}
@@ -89,10 +91,6 @@ class Database_Queue_Provider implements Contract {
 			isset( $job->delay ) && is_int( $job->delay ) => now( 'UTC' )->addSeconds( $job->delay )->toDateTimeString(),
 			default => $now,
 		};
-
-		if ( $job instanceof SerializableClosure ) {
-			$job = serialize( $job ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
-		}
 
 		$object = new Jobs\Database_Job_Record( [
 			'action'             => maybe_serialize( $job ),
@@ -143,15 +141,11 @@ class Database_Queue_Provider implements Contract {
 				break;
 			}
 
-			$job   = new Jobs\Database_Job( $candidate );
+			$job   = $candidate->job();
 			$inner = $job->get_job();
 
-			// Lock the job until the configured timeout while it is processed. A
-			// positive timeout is required so the new lock is always in the future.
-			$timeout = is_object( $inner ) && isset( $inner->timeout ) ? max( 1, (int) $inner->timeout ) : 600;
-
 			// Atomically claim the job, skipping it if another worker won the race.
-			if ( ! $candidate->claim( now( 'UTC' )->addSeconds( $timeout ) ) ) {
+			if ( ! $candidate->claim( now( 'UTC' )->addSeconds( $job->get_timeout() ) ) ) {
 				continue;
 			}
 

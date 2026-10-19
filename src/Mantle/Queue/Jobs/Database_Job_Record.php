@@ -149,10 +149,6 @@ class Database_Job_Record extends Database_Table_Model {
 
 		$updated = null === $query ? false : $wpdb->query( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared
 
-		if ( false === $updated ) {
-			return false;
-		}
-
 		if ( ! $updated ) {
 			return false;
 		}

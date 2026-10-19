@@ -67,7 +67,7 @@ class Queue_Job_Admin_Page {
 
 		$job = $record->job();
 
-		if ( ! $record->claim( now()->addSeconds( $job->get_job()->timeout ?? 600 ), force: true ) || ! $job->reserve() ) {
+		if ( ! $record->claim( now()->addSeconds( $job->get_timeout() ), force: true ) || ! $job->reserve() ) {
 			wp_die( esc_html__( 'Job is currently being processed by another worker.', 'mantle' ), '', [ 'back_link' => true ] );
 		}
 

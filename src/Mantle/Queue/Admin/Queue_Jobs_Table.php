@@ -299,9 +299,9 @@ class Queue_Jobs_Table extends WP_List_Table {
 		$format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
 
 		$last_attempt_gmt = $item->last_attempt_gmt
-			? Carbon::parse( $item->last_attempt_gmt )->setTimezone( wp_timezone() )
+			? Carbon::parse( $item->last_attempt_gmt, 'UTC' )->setTimezone( wp_timezone() )
 			: null;
-		$available_at_gmt = Carbon::parse( $item->available_at_gmt )->setTimezone( wp_timezone() );
+		$available_at_gmt = Carbon::parse( $item->available_at_gmt, 'UTC' )->setTimezone( wp_timezone() );
 
 		if ( Status::COMPLETED->value === $item->status ) {
 			if ( ! $last_attempt_gmt instanceof \Carbon\Carbon ) {

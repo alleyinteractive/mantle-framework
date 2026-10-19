@@ -29,6 +29,16 @@ class Database_Job extends Job {
 	public bool $failed = false;
 
 	/**
+	 * The unserialized job, resolved on first use.
+	 */
+	protected mixed $job = null;
+
+	/**
+	 * Flag if the job has been unserialized.
+	 */
+	protected bool $job_resolved = false;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Database_Job_Record $model The queue record.
@@ -60,10 +70,16 @@ class Database_Job extends Job {
 	 * lock expire and been picked up by another worker.
 	 */
 	public function reserve(): bool {
-		$job     = $this->get_job();
-		$timeout = is_object( $job ) && isset( $job->timeout ) ? max( 1, (int) $job->timeout ) : 600;
+		return $this->model->start_attempt( now( 'UTC' )->addSeconds( $this->get_timeout() ) );
+	}
 
-		return $this->model->start_attempt( now( 'UTC' )->addSeconds( $timeout ) );
+	/**
+	 * Retrieve how long the job is locked for while it runs, in seconds.
+	 */
+	public function get_timeout(): int {
+		$job = $this->get_job();
+
+		return is_object( $job ) && isset( $job->timeout ) ? max( 1, (int) $job->timeout ) : 600;
 	}
 
 	/**
@@ -104,8 +120,6 @@ class Database_Job extends Job {
 			'message'   => $e->getMessage(),
 			'trace'     => explode( "\n", $e->getTraceAsString() ),
 		] );
-
-		$job = $this->get_job();
 
 		if ( is_object( $job ) && method_exists( $job, 'failed' ) ) {
 			$job->failed( $e );
@@ -171,6 +185,11 @@ class Database_Job extends Job {
 	 * Retrieve the stored job.
 	 */
 	public function get_job(): mixed {
-		return maybe_unserialize( $this->model->action );
+		if ( ! $this->job_resolved ) {
+			$this->job          = maybe_unserialize( $this->model->action );
+			$this->job_resolved = true;
+		}
+
+		return $this->job;
 	}
 }
