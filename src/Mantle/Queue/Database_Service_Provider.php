@@ -117,7 +117,7 @@ class Database_Service_Provider extends Base_Service_Provider {
 	#[Action( Events\Job_Queued::class )]
 	public function handle_job_queued_event( Events\Job_Queued $event ): Events\Job_Queued {
 		if ( $event->provider instanceof Database_Queue_Provider ) {
-			$this->scheduler->handle_job_queued( is_object( $event->job ) ? $event->job->queue ?? 'default' : 'default' );
+			$this->scheduler->handle_job_queued( $event->queue ?? ( is_object( $event->job ) ? $event->job->queue ?? 'default' : 'default' ) );
 		}
 
 		return $event;

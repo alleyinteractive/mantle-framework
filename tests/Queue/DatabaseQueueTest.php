@@ -4,9 +4,11 @@ namespace Mantle\Tests\Queue;
 use Carbon\Carbon;
 use Mantle\Contracts\Queue\Can_Queue;
 use Mantle\Contracts\Queue\Job;
+use Mantle\Queue\Database_Queue_Provider;
 use Mantle\Queue\Database_Scheduler;
 use Mantle\Queue\Dispatchable;
 use Mantle\Queue\Events\Job_Failed;
+use Mantle\Queue\Jobs\Database_Job;
 use Mantle\Queue\Jobs\Database_Job_Record;
 use Mantle\Queue\Jobs\Status;
 use Mantle\Queue\Queueable;
@@ -303,6 +305,17 @@ class DatabaseQueueTest extends FrameworkTestCase {
 		$this->app->make( Database_Scheduler::class )->schedule_on_shutdown();
 
 		$this->assertTrue( Database_Scheduler::get_scheduled_count( 'emails' ) > 0 );
+		$this->assertSame( 0, Database_Scheduler::get_scheduled_count( 'default' ) );
+	}
+
+	public function test_retry_schedules_the_queue_the_job_is_stored_in(): void {
+		$this->app->make( Database_Queue_Provider::class )->push( new Example_Job(), 'high' );
+
+		( new Database_Job( Database_Job_Record::query()->first() ) )->retry();
+
+		$this->app->make( Database_Scheduler::class )->schedule_on_shutdown();
+
+		$this->assertTrue( Database_Scheduler::get_scheduled_count( 'high' ) > 0 );
 		$this->assertSame( 0, Database_Scheduler::get_scheduled_count( 'default' ) );
 	}
 

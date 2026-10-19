@@ -9,8 +9,8 @@ namespace Mantle\Queue\Jobs;
 
 use Mantle\Application\Application;
 use Mantle\Contracts\Queue\Job as JobContract;
-use Mantle\Contracts\Queue\Queue_Manager;
 use Mantle\Queue\Closure_Job;
+use Mantle\Queue\Database_Queue_Provider;
 use Mantle\Queue\Events\Job_Queued;
 use Mantle\Queue\Database_Event;
 use Throwable;
@@ -175,8 +175,9 @@ class Database_Job extends Job {
 		// Dispatch the job queued event.
 		$app['events']->dispatch(
 			new Job_Queued(
-				$app->make( Queue_Manager::class )->get_provider(),
+				$app->make( Database_Queue_Provider::class ),
 				$this->get_job(),
+				$this->model->queue,
 			),
 		);
 	}
