@@ -154,7 +154,7 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame('Taylor', $data->shift());
 		$this->assertSame('Otwell', $data->first());
 		$this->assertSame('Otwell', $data->shift());
-		$this->assertEquals(null, $data->first());
+		$this->assertNull($data->first());
 	}
 
 	/**
@@ -1242,7 +1242,7 @@ class CollectionTest extends FrameworkTestCase {
 	public function testIntersectNull($collection)
 	{
 		$c = new $collection(['id' => 1, 'first_word' => 'Hello']);
-		$this->assertEquals([], $c->intersect(null)->all());
+		$this->assertSame([], $c->intersect(null)->all());
 	}
 
 	/**
@@ -1262,7 +1262,7 @@ class CollectionTest extends FrameworkTestCase {
 	public function testIntersectByKeysNull($collection)
 	{
 		$c = new $collection(['name' => 'Mateus', 'age' => 18]);
-		$this->assertEquals([], $c->intersect_by_keys(null)->all());
+		$this->assertSame([], $c->intersect_by_keys(null)->all());
 	}
 
 	/**
@@ -2069,10 +2069,10 @@ class CollectionTest extends FrameworkTestCase {
 	public function testMakeMethodFromNull($collection)
 	{
 		$data = $collection::make(null);
-		$this->assertEquals([], $data->all());
+		$this->assertSame([], $data->all());
 
 		$data = $collection::make();
-		$this->assertEquals([], $data->all());
+		$this->assertSame([], $data->all());
 	}
 
 	/**
@@ -2250,10 +2250,10 @@ class CollectionTest extends FrameworkTestCase {
 	public function testConstructMethodFromNull($collection)
 	{
 		$data = new $collection(null);
-		$this->assertEquals([], $data->all());
+		$this->assertSame([], $data->all());
 
 		$data = new $collection;
-		$this->assertEquals([], $data->all());
+		$this->assertSame([], $data->all());
 	}
 
 	/**
@@ -3281,10 +3281,10 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertNull($c->before('false', true));
 		$this->assertNull($c->before('1', true));
 		$this->assertNull($c->before(false, true));
-		$this->assertEquals(false, $c->before(0, true));
+		$this->assertFalse($c->before(0, true));
 		$this->assertEquals(0, $c->before(1, true));
 		$this->assertEquals(1, $c->before([], true));
-		$this->assertEquals([], $c->before('', true));
+		$this->assertSame([], $c->before('', true));
 	}
 
 	#[DataProvider('collectionClassProvider')]
@@ -3345,7 +3345,7 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertNull($c->after('1', true));
 		$this->assertNull($c->after('', true));
 		$this->assertEquals(0, $c->after(false, true));
-		$this->assertEquals([], $c->after(1, true));
+		$this->assertSame([], $c->after(1, true));
 		$this->assertEquals('', $c->after([], true));
 	}
 
@@ -3398,7 +3398,7 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['one', 'two'], $c->for_page(0, 2)->all());
 		$this->assertEquals(['one', 'two'], $c->for_page(1, 2)->all());
 		$this->assertEquals([2 => 'three', 3 => 'four'], $c->for_page(2, 2)->all());
-		$this->assertEquals([], $c->for_page(3, 2)->all());
+		$this->assertSame([], $c->for_page(3, 2)->all());
 	}
 
 	public function testPrepend()
