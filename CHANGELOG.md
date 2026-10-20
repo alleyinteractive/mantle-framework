@@ -15,9 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- `WordPress_Cache_Repository::get_multiple()` (and `getMultiple()`) now returns the `$default`
-  argument for missing keys instead of `false`, and unwraps values stored by `flexible()`, matching
-  `get()` (#971).
+- `WordPress_Cache_Repository::get_multiple()` (and `getMultiple()`) unwraps values stored by `flexible()`, matching `get()` (#971).
 
 #### Database
 

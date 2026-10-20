@@ -59,7 +59,8 @@ class WordPress_Cache_Repository extends Repository implements Taggable_Reposito
 			if ( $value instanceof SWR_Storage ) {
 				$values[ $key ] = $value->value;
 			} elseif ( false === $value ) {
-				$values[ $key ] = $default;
+				// A false result is either a miss or a stored false, so resolve it per key.
+				$values[ $key ] = $this->get( (string) $key, $default );
 			}
 		}
 
