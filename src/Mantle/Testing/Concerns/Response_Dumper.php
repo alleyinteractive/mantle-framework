@@ -71,8 +71,10 @@ trait Response_Dumper {
 		}
 
 		// Request information.
-		$request_headers = $this->compile_data_table( $this->request->headers->all(), 'Header' ); // @phpstan-ignore-line
-		$request_body    = '';
+		$request_headers = $this->compile_data_table(
+			array_map( fn ( array $values ): array => array_map( strval( ... ), $values ), $this->request->headers->all() ),
+			'Header'
+		);
 
 		if ( $this->request->is_json() ) {
 			$request_body = json_encode( $this->request->all(), JSON_PRETTY_PRINT );

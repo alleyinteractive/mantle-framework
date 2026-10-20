@@ -74,7 +74,7 @@ readonly class HTML_Helpers {
 
 		try {
 			return mb_encode_numericentity( $htmlContent, [ 0x80, 0x10FFFF, 0, 0x1FFFFF ], $charset );
-		} catch ( \Exception | \ValueError ) {
+		} catch ( \Throwable ) {
 			try {
 					$htmlContent = iconv( $charset, 'UTF-8', $htmlContent );
 					$htmlContent = mb_encode_numericentity( (string) $htmlContent, [ 0x80, 0x10FFFF, 0, 0x1FFFFF ], 'UTF-8' );

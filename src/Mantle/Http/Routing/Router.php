@@ -218,7 +218,7 @@ class Router implements Router_Contract {
 	public function add_rest_route( array $methods, string $uri, array $arguments ): Route {
 		$route = $this->create_route( $methods, $uri, $arguments );
 
-		$this->rest_routes->add( $route->get_name(), $route );
+		$this->rest_routes->add( "{$arguments['namespace']}.{$route->get_name()}", $route );
 
 		return $route;
 	}
@@ -235,6 +235,14 @@ class Router implements Router_Contract {
 
 		if ( $this->has_group_stack() ) {
 			$this->merge_group_attributes_into_route( $route );
+		}
+
+		if ( ! empty( $route->get_action( 'where' ) ) ) {
+			$route->addRequirements( (array) $route->get_action( 'where' ) );
+		}
+
+		if ( ! empty( $route->get_action( 'domain' ) ) ) {
+			$route->setHost( (string) $route->get_action( 'domain' ) );
 		}
 
 		$route->set_router( $this );
@@ -258,9 +266,7 @@ class Router implements Router_Contract {
 	protected function with_registrar( \Closure $callback, bool $clear = false ): mixed {
 		$set = ! is_null( $this->registrar );
 
-		if ( is_null( $this->registrar ) ) {
-			$this->registrar = new Route_Registrar( $this );
-		}
+		$this->registrar ??= new Route_Registrar( $this );
 
 		$value = $callback( $this->registrar );
 
@@ -596,7 +602,7 @@ class Router implements Router_Contract {
 		}
 
 		if ( ! is_array( $args ) ) {
-			$args = [ 'uses' => $args ];
+			$args = [ 'callback' => $args ];
 		}
 
 		$args['methods'] = isset( $args['methods'] )
@@ -635,7 +641,8 @@ class Router implements Router_Contract {
 			return $this->macro_call( $method, $parameters );
 		}
 
-		$registrar = $this->registrar ?: new Route_Registrar( $this );
+		// Clone the active registrar so fluent attributes stay scoped to one route chain.
+		$registrar = $this->registrar instanceof \Mantle\Contracts\Http\Routing\Route_Registrar ? clone $this->registrar : new Route_Registrar( $this );
 
 		return $registrar->{$method}( ...$parameters );
 	}

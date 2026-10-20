@@ -9,7 +9,7 @@ use Mantle\Testing\FrameworkTestCase;
 #[Environment( Environment::STAGING )]
 class EnvironmentTest extends FrameworkTestCase {
 	public function test_boots_when_environment_matches(): void {
-		$this->assertEquals( 'staging', wp_get_environment_type() );
+		$this->assertSame( 'staging', wp_get_environment_type() );
 
 		$feature = new #[\Mantle\Types\Attributes\Environment( Environment::STAGING )] class implements Feature {
 			public function boot(): void {
@@ -25,7 +25,7 @@ class EnvironmentTest extends FrameworkTestCase {
 	}
 
 	public function test_does_not_boot_with_invalid_environment(): void {
-		$this->assertEquals( 'staging', wp_get_environment_type() );
+		$this->assertSame( 'staging', wp_get_environment_type() );
 
 		$feature = new #[\Mantle\Types\Attributes\Environment( Environment::PRODUCTION )] class implements Feature {
 			public function boot(): void {

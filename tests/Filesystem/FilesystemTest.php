@@ -11,7 +11,7 @@ use SplFileInfo;
 
 class FilesystemTest extends TestCase {
 
-	private static $temp_dir;
+	private static ?string $temp_dir = null;
 
 	protected function setUp(): void {
 		parent::setUp();
@@ -21,6 +21,15 @@ class FilesystemTest extends TestCase {
 		$files = new Filesystem();
 		$files->ensure_directory_exists( static::$temp_dir );
 		$files->clean_directory( static::$temp_dir );
+	}
+
+	public function testLinkCreatesSymlink() {
+		file_put_contents( static::$temp_dir . '/link-target.txt', 'target' );
+
+		( new Filesystem() )->link( static::$temp_dir . '/link-target.txt', static::$temp_dir . '/link.txt' );
+
+		$this->assertTrue( is_link( static::$temp_dir . '/link.txt' ) );
+		$this->assertSame( 'target', file_get_contents( static::$temp_dir . '/link.txt' ) );
 	}
 
 	protected function tearDown(): void {
@@ -84,17 +93,17 @@ class FilesystemTest extends TestCase {
 		// Test replacing non-existent file.
 		$filesystem->replace( $tempFile, 'Hello World' );
 		$this->assertStringEqualsFile( $tempFile, 'Hello World' );
-		$this->assertEquals( $umask, 0777 - $this->get_file_permissions( $tempFile ) );
+		$this->assertSame( $umask, 0777 - $this->get_file_permissions( $tempFile ) );
 
 		// Test replacing existing file.
 		$filesystem->replace( $tempFile, 'Something Else' );
 		$this->assertStringEqualsFile( $tempFile, 'Something Else' );
-		$this->assertEquals( $umask, 0777 - $this->get_file_permissions( $tempFile ) );
+		$this->assertSame( $umask, 0777 - $this->get_file_permissions( $tempFile ) );
 
 		// Test replacing symlinked file.
 		$filesystem->replace( $symlink, 'Yet Something Else Again' );
 		$this->assertStringEqualsFile( $tempFile, 'Yet Something Else Again' );
-		$this->assertEquals( $umask, 0777 - $this->get_file_permissions( $tempFile ) );
+		$this->assertSame( $umask, 0777 - $this->get_file_permissions( $tempFile ) );
 
 		umask( $originalUmask );
 
@@ -108,7 +117,7 @@ class FilesystemTest extends TestCase {
 		$files->chmod( static::$temp_dir . '/file.txt', 0755 );
 		$filePermission      = substr( sprintf( '%o', fileperms( static::$temp_dir . '/file.txt' ) ), -4 );
 		$expectedPermissions = DIRECTORY_SEPARATOR == '\\' ? '0666' : '0755';
-		$this->assertEquals( $expectedPermissions, $filePermission );
+		$this->assertSame( $expectedPermissions, $filePermission );
 	}
 
 	public function testGetChmod() {
@@ -118,7 +127,7 @@ class FilesystemTest extends TestCase {
 		$files               = new Filesystem();
 		$filePermission      = $files->chmod( static::$temp_dir . '/file.txt' );
 		$expectedPermissions = DIRECTORY_SEPARATOR == '\\' ? '0666' : '0755';
-		$this->assertEquals( $expectedPermissions, $filePermission );
+		$this->assertSame( $expectedPermissions, $filePermission );
 	}
 
 	public function testDeleteRemovesFiles() {
@@ -297,7 +306,7 @@ class FilesystemTest extends TestCase {
 		file_put_contents( static::$temp_dir . '/file.txt', 'foo' );
 		$files        = new Filesystem();
 		$bytesWritten = $files->append( static::$temp_dir . '/file.txt', 'bar' );
-		$this->assertEquals( mb_strlen( 'bar', '8bit' ), $bytesWritten );
+		$this->assertSame( mb_strlen( 'bar', '8bit' ), $bytesWritten );
 		$this->assertFileExists( static::$temp_dir . '/file.txt' );
 		$this->assertStringEqualsFile( static::$temp_dir . '/file.txt', 'foobar' );
 	}
@@ -331,7 +340,7 @@ class FilesystemTest extends TestCase {
 	public function testDirnameReturnsDirectory() {
 		file_put_contents( static::$temp_dir . '/foo.txt', 'foo' );
 		$files = new Filesystem();
-		$this->assertEquals( static::$temp_dir, $files->dirname( static::$temp_dir . '/foo.txt' ) );
+		$this->assertSame( static::$temp_dir, $files->dirname( static::$temp_dir . '/foo.txt' ) );
 	}
 
 	public function testTypeIdentifiesFile() {
@@ -349,7 +358,7 @@ class FilesystemTest extends TestCase {
 	public function testSizeOutputsSize() {
 		$size  = file_put_contents( static::$temp_dir . '/foo.txt', 'foo' );
 		$files = new Filesystem();
-		$this->assertEquals( $size, $files->size( static::$temp_dir . '/foo.txt' ) );
+		$this->assertSame( $size, $files->size( static::$temp_dir . '/foo.txt' ) );
 	}
 
 	/**
@@ -440,7 +449,7 @@ class FilesystemTest extends TestCase {
 		file_put_contents( static::$temp_dir . '/text/foo.txt', $data );
 		$filesystem->copy( static::$temp_dir . '/text/foo.txt', static::$temp_dir . '/text/foo2.txt' );
 		$this->assertFileExists( static::$temp_dir . '/text/foo2.txt' );
-		$this->assertEquals( $data, file_get_contents( static::$temp_dir . '/text/foo2.txt' ) );
+		$this->assertSame( $data, file_get_contents( static::$temp_dir . '/text/foo2.txt' ) );
 	}
 
 	public function testIsFileChecksFilesProperly() {
@@ -477,8 +486,8 @@ class FilesystemTest extends TestCase {
 	public function test_guess_class_name() {
 		$filesystem = new Filesystem();
 
-		$this->assertEquals( 'Example_Class', $filesystem->guess_class_name( __DIR__ . '/data/class-example-class.php' ) );
-		$this->assertEquals( 'PsrStyleClass', $filesystem->guess_class_name( __DIR__ . '/data/PsrStyleClass.php' ) );
+		$this->assertSame( 'Example_Class', $filesystem->guess_class_name( __DIR__ . '/data/class-example-class.php' ) );
+		$this->assertSame( 'PsrStyleClass', $filesystem->guess_class_name( __DIR__ . '/data/PsrStyleClass.php' ) );
 	}
 
 	/**

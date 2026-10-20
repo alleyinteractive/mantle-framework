@@ -208,9 +208,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 		// If no concrete type was given, we will simply set the concrete type to the
 		// abstract type. After that, the concrete type to be registered as shared
 		// without being forced to state their classes in both of the parameters.
-		if ( is_null( $concrete ) ) {
-			$concrete = $abstract;
-		}
+		$concrete ??= $abstract;
 
 		// If the factory is not a Closure, it means it is just a class name which is
 		// bound into this container to the abstract type and we will just wrap it
@@ -788,9 +786,15 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 			// If the class is null, it means the dependency is a string or some other
 			// primitive type which we can not resolve since it is not a class and
 			// we will just bomb out with an error since we have no-where to go.
-			$results[] = is_null( Reflector::get_parameter_class_name( $dependency ) )
+			$result = is_null( Reflector::get_parameter_class_name( $dependency ) )
 				? $this->resolve_primitive( $dependency )
 				: $this->resolveClass( $dependency );
+
+			if ( $dependency->isVariadic() ) {
+				$results = [ ...$results, ...( is_array( $result ) ? $result : [ $result ] ) ];
+			} else {
+				$results[] = $result;
+			}
 		}
 
 		return $results;
@@ -842,6 +846,10 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 
 		if ( $parameter->isDefaultValueAvailable() ) {
 			return $parameter->getDefaultValue();
+		}
+
+		if ( $parameter->isVariadic() ) {
+			return [];
 		}
 
 		$this->unresolvable_primitive( $parameter );
@@ -1137,9 +1145,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * Get the globally available instance of the container.
 	 */
 	public static function get_instance(): static {
-		if ( ! isset( static::$instance ) ) {
-			static::$instance = new static();
-		}
+		static::$instance ??= new static();
 
 		return static::$instance;
 	}

@@ -35,9 +35,7 @@ class Routing_Service_Provider extends Service_Provider {
 		$this->register_response_factory();
 
 		// Setup the default request object.
-		if ( ! isset( $this->app['request'] ) ) {
-			$this->app['request'] = new Request();
-		}
+		$this->app['request'] ??= new Request();
 	}
 
 	/**

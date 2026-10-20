@@ -11,6 +11,10 @@ use PHPUnit\Framework\Attributes\Group;
  */
 #[Group( 'testing' )]
 class AssertionsTest extends FrameworkTestCase {
+	public function test_assert_database_has_with_zero_count(): void {
+		$this->assertDatabaseHas( 'options', [ 'option_name' => 'option-that-does-not-exist-' . wp_rand() ], 0 );
+	}
+
 	public function test_assert_wp_error(): void {
 		$this->assertWpError( new \WP_Error( 'error_code', 'Error message' ) );
 		$this->assertNotWpError( 'not an error' );
@@ -29,16 +33,24 @@ class AssertionsTest extends FrameworkTestCase {
 	}
 
 	public function test_query_true(): void {
-		$this->get( '/' )->assertQueryTrue( 'is_home', 'is_front_page' );
-		$this->get( static::factory()->post->create_and_get() )->assertQueryTrue( 'is_single', 'is_singular' );
+		$this->get( '/' )
+			->assertOk()
+			->assertQueryTrue( 'is_home', 'is_front_page' );
+		$this->get( static::factory()->post->create_and_get() )
+			->assertOk()
+			->assertQueryTrue( 'is_single', 'is_singular' );
 	}
 
 	public function test_queried_object(): void {
 		$post = static::factory()->post->create_and_get();
 
-		$this->get( $post )->assertQueriedObject( $post )->assertQueriedObjectId( $post->ID );
+		$this->get( $post )
+			->assertOk()
+			->assertQueriedObject( $post )->assertQueriedObjectId( $post->ID );
 
-		$this->get( '/' )->assertQueriedObjectNull();
+		$this->get( '/' )
+			->assertOk()
+			->assertQueriedObjectNull();
 	}
 
 	public function test_assert_post_exists(): void {

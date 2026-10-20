@@ -31,7 +31,7 @@ class DiscoverEventsTest extends FrameworkTestCase {
 	}
 
 	public function test_events_can_be_discovered() {
-		$this->assertEquals( 'Mantle\\Tests', $this->app->get_namespace() );
+		$this->assertSame( 'Mantle\\Tests', $this->app->get_namespace() );
 
 		$this->assertTrue( class_exists( Example_Listener::class ) );
 		$this->assertTrue( class_exists( Event_One::class ) );
@@ -67,6 +67,6 @@ class DiscoverEventsTest extends FrameworkTestCase {
 			],
 		];
 
-		$this->assertEquals( $expected, $events );
+		$this->assertSame( $expected, $events );
 	}
 }

@@ -45,10 +45,22 @@ if ( FrameworkTestCase::phpunit_version_compare( '11.0.0', '<' ) ) {
 			$this->assertFalse( $property->getValue() );
 		}
 
+		public function test_server_state_reset_between_runs_first_run(): void {
+			$this->with_https()->get( '/' );
+
+			$this->assertTrue( is_ssl() );
+		}
+
+		public function test_server_state_reset_between_runs_second_run(): void {
+			$this->assertFalse( is_ssl() );
+			$this->assertStringStartsWith( 'http://', home_url() );
+			$this->assertSame( 'GET', $_SERVER['REQUEST_METHOD'] );
+		}
+
 		public function test_cleanup_globals_between_runs_first_run(): void {
 			$GLOBALS['page'] = 2;
 
-			$this->assertEquals( 2, $GLOBALS['page'] );
+			$this->assertSame( 2, $GLOBALS['page'] );
 
 			putenv( 'WP_ENVIRONMENT_TYPE=testing' );
 		}
@@ -65,7 +77,7 @@ if ( FrameworkTestCase::phpunit_version_compare( '11.0.0', '<' ) ) {
 
 			switch_to_blog( $blog_id );
 
-			$this->assertEquals( $blog_id, get_current_blog_id() );
+			$this->assertSame( $blog_id, get_current_blog_id() );
 		}
 
 		public function test_user_reset_after_test(): void {
@@ -76,7 +88,9 @@ if ( FrameworkTestCase::phpunit_version_compare( '11.0.0', '<' ) ) {
 
 		public function test_query_reset_after_test(): void {
 			$post = static::factory()->post->create_and_get();
-			$this->get( $post )->assertQueryTrue( 'is_single', 'is_singular' );
+			$this->get( $post )
+				->assertOk()
+				->assertQueryTrue( 'is_single', 'is_singular' );
 
 			$this->assertNotEmpty( $GLOBALS['wp_query']->get_queried_object() );
 			$this->assertNotEmpty( $GLOBALS['wp_query']->query );
@@ -95,7 +109,7 @@ if ( FrameworkTestCase::phpunit_version_compare( '11.0.0', '<' ) ) {
 		#[After( -10 )]
 		public function assertions_on_teardown(): void {
 			if ( is_multisite() ) {
-				$this->assertEquals( 1, get_current_blog_id() );
+				$this->assertSame( 1, get_current_blog_id() );
 			}
 
 			$this->assertGuest();

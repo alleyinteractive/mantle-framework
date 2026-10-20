@@ -44,9 +44,7 @@ trait Interacts_With_Hooks {
 					return $value;
 				}
 
-				if ( ! isset( $this->hooks_fired[ $filter ] ) ) {
-					$this->hooks_fired[ $filter ] = 0;
-				}
+				$this->hooks_fired[ $filter ] ??= 0;
 
 				$this->hooks_fired[ $filter ]++;
 
@@ -79,7 +77,7 @@ trait Interacts_With_Hooks {
 			"Asserted that [{$hook}] was not fired."
 		);
 
-		if ( $count ) {
+		if ( null !== $count ) {
 			$times_fired = $this->hooks_fired[ $hook ] ?? 0;
 
 			PHPUnit::assertEquals(

@@ -42,7 +42,7 @@ class UrlGeneratorTest extends FrameworkTestCase {
 	 */
 	#[DataProvider( 'urlGenerationProvider' )]
 	public function test_basic_generation( $expected, $args ) {
-		$this->assertEquals( home_url( $expected ), $this->url->to( ...$args ) );
+		$this->assertSame( home_url( $expected ), $this->url->to( ...$args ) );
 	}
 
 	public static function urlGenerationProvider() {
@@ -73,18 +73,18 @@ class UrlGeneratorTest extends FrameworkTestCase {
 
 		$router->sync_routes_to_url_generator();
 
-		$this->assertEquals( '/foo/bar', $this->url->route( 'get', [], false ) );
-		$this->assertEquals( home_url( '/foo/bar' ), $this->url->route( 'get', [], true ) );
-		$this->assertEquals( '/foo/bar?query=string', $this->url->route( 'get', [ 'query' => 'string' ], false ) );
+		$this->assertSame( '/foo/bar', $this->url->route( 'get', [], false ) );
+		$this->assertSame( home_url( '/foo/bar' ), $this->url->route( 'get', [], true ) );
+		$this->assertSame( '/foo/bar?query=string', $this->url->route( 'get', [ 'query' => 'string' ], false ) );
 
 		// TODO: Reinforce trailing slash.
-		// $this->assertEquals( '/trailing/slash/', $this->url->route( 'trailing-slash', [], false ) );
-		// $this->assertEquals( home_url( '/trailing/slash/' ), $this->url->route( 'trailing-slash', [], true ) );
+		// $this->assertSame( '/trailing/slash/', $this->url->route( 'trailing-slash', [], false ) );
+		// $this->assertSame( home_url( '/trailing/slash/' ), $this->url->route( 'trailing-slash', [], true ) );
 
-		$this->assertEquals( '/baz/post', $this->url->route( 'post', [], false ) );
-		$this->assertEquals( home_url( '/baz/post' ), $this->url->route( 'post', [], true ) );
+		$this->assertSame( '/baz/post', $this->url->route( 'post', [], false ) );
+		$this->assertSame( home_url( '/baz/post' ), $this->url->route( 'post', [], true ) );
 
-		$this->assertEquals( '/foo/bar/biz', $this->url->route( 'get-with-param', [ 'biz' => 'biz' ], false ) );
-		$this->assertEquals( home_url( '/foo/bar/biz' ), $this->url->route( 'get-with-param', [ 'biz' => 'biz' ], true ) );
+		$this->assertSame( '/foo/bar/biz', $this->url->route( 'get-with-param', [ 'biz' => 'biz' ], false ) );
+		$this->assertSame( home_url( '/foo/bar/biz' ), $this->url->route( 'get-with-param', [ 'biz' => 'biz' ], true ) );
 	}
 }

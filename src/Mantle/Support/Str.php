@@ -407,9 +407,8 @@ class Str {
 	 * Determine if a given string is a valid UUID.
 	 *
 	 * @param  string $value
-	 * @return bool
 	 */
-	public static function is_uuid( $value ) {
+	public static function is_uuid( $value ): bool {
 		if ( ! is_string( $value ) ) {
 			return false;
 		}
@@ -1115,9 +1114,7 @@ class Str {
 	 * @return string|string[]
 	 */
 	public static function substr_replace( $string, $replace, $offset = 0, $length = null ): array|string {
-		if ( is_null( $length ) ) {
-			$length = is_array( $string ) ? null : strlen( $string );
-		}
+		$length ??= is_array( $string ) ? null : strlen( $string );
 
 		return substr_replace( $string, $replace, $offset, $length );
 	}

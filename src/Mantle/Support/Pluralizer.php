@@ -101,9 +101,7 @@ class Pluralizer {
 	 * Get the inflector instance.
 	 */
 	public static function inflector(): Inflector {
-		if ( ! isset( static::$inflector ) ) {
-			static::$inflector = InflectorFactory::createForLanguage( static::$language )->build();
-		}
+		static::$inflector ??= InflectorFactory::createForLanguage( static::$language )->build();
 
 		return static::$inflector;
 	}

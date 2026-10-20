@@ -10,20 +10,11 @@ use Monolog\Handler\TestHandler;
 
 class LogManagerTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
-	/**
-	 * @var Application
-	 */
-	protected $app;
+	protected Application $app;
 
-	/**
-	 * @var Log_Manager
-	 */
-	protected $instance;
+	protected Log_Manager $instance;
 
-	/**
-	 * @var TestHandler
-	 */
-	protected $handler;
+	protected TestHandler $handler;
 
 	protected function setUp(): void {
 		parent::setUp();
@@ -64,6 +55,14 @@ class LogManagerTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	protected function tearDown(): void {
 		parent::tearDown();
 		Facade::clear_resolved_instances();
+	}
+
+	public function test_log_with_integer_level() {
+		$this->instance->log( \Monolog\Logger::WARNING, 'Integer level' );
+		$this->instance->log( 'warning', 'String level' );
+
+		$this->assertTrue( $this->handler->hasRecord( 'Integer level', 'warning' ) );
+		$this->assertTrue( $this->handler->hasRecord( 'String level', 'warning' ) );
 	}
 
 	public function test_normal_logging() {

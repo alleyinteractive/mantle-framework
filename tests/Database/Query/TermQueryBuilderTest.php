@@ -16,7 +16,7 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 			->whereName( $tag->name )
 			->first();
 
-		$this->assertEquals( $tag_id, $first->id() );
+		$this->assertSame( $tag_id, $first->id() );
 	}
 
 	public function test_term_by_slug() {
@@ -27,7 +27,7 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 			->whereSlug( $tag->slug )
 			->first();
 
-		$this->assertEquals( $tag_id, $first->id() );
+		$this->assertSame( $tag_id, $first->id() );
 	}
 
 	public function test_term_by_id() {
@@ -38,7 +38,7 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 			->whereId( $tag->term_id )
 			->first();
 
-		$this->assertEquals( $tag_id, $first->id() );
+		$this->assertSame( $tag_id, $first->id() );
 	}
 
 	public function test_term_by_meta() {
@@ -50,7 +50,7 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 			->whereMeta( 'term-key', 'term-value' )
 			->first();
 
-		$this->assertEquals( $tag_id, $first->id() );
+		$this->assertSame( $tag_id, $first->id() );
 	}
 
 	public function test_term_exclude() {
@@ -61,7 +61,7 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 			->get()
 			->pluck( 'id' );
 
-		$this->assertFalse( in_array( $tag_id, $get->to_array(), true ) );
+		$this->assertNotContains( $tag_id, $get->to_array() );
 	}
 
 	public function test_term_orderby_asc() {
@@ -73,7 +73,7 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 			->get()
 			->pluck( 'id' );
 
-		$this->assertEquals( $term_ids->sort()->values()->to_array(), $get->to_array() );
+		$this->assertSame( $term_ids->sort()->values()->to_array(), $get->to_array() );
 	}
 
 	public function test_term_orderby_desc() {
@@ -85,7 +85,7 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 			->get()
 			->pluck( 'id' );
 
-		$this->assertEquals( $term_ids->sort_desc()->values()->to_array(), $get->to_array() );
+		$this->assertSame( $term_ids->sort_desc()->values()->to_array(), $get->to_array() );
 	}
 
 	public function test_term_orderby_include() {
@@ -100,7 +100,7 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 			->get()
 			->pluck( 'id' );
 
-		$this->assertEquals( $term_ids, $get->to_array() );
+		$this->assertSame( $term_ids, $get->to_array() );
 	}
 
 	public function test_query_clauses() {
@@ -122,26 +122,58 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 			)
 			->firstOrFail();
 
-		$this->assertEquals( $term_id, $first->id() );
+		$this->assertSame( $term_id, $first->id() );
 
 		$next = Testable_Tag::query()
 			->order_by( 'id', 'asc' )
 			->first();
 
-		$this->assertNotEquals( $term_id, $next->id() );
-		$this->assertEquals( 1, $applied_count ); // The clauses should only be applied once.
+		$this->assertNotSame( $term_id, $next->id() );
+		$this->assertSame( 1, $applied_count ); // The clauses should only be applied once.
+	}
+
+	public function test_for_page() {
+		static::factory()->tag->create_many( 5 );
+
+		$page_one   = Testable_Tag::query()->for_page( 1, 2 )->get()->pluck( 'id' );
+		$page_two   = Testable_Tag::query()->for_page( 2, 2 )->get()->pluck( 'id' );
+		$page_three = Testable_Tag::query()->for_page( 3, 2 )->get()->pluck( 'id' );
+
+		$this->assertCount( 2, $page_one );
+		$this->assertCount( 2, $page_two );
+		$this->assertCount( 1, $page_three );
+		$this->assertEmpty( $page_one->intersect( $page_two )->all() );
+		$this->assertEmpty( $page_two->intersect( $page_three )->all() );
+	}
+
+	public function test_chunk() {
+		static::factory()->tag->create_many( 5 );
+
+		$chunks = [];
+		$ids    = [];
+
+		Testable_Tag::query()->chunk(
+			2,
+			function ( $terms ) use ( &$chunks, &$ids ): void {
+				$chunks[] = $terms->count();
+				$ids      = array_merge( $ids, $terms->pluck( 'id' )->all() );
+			},
+		);
+
+		$this->assertEquals( [ 2, 2, 1 ], $chunks );
+		$this->assertCount( 5, array_unique( $ids ) );
 	}
 
 	public function test_count() {
 		static::factory()->tag->create_many( 14 );
 
-		$this->assertEquals( 14, Testable_Tag::count() );
-		$this->assertEquals( 14, Testable_Tag::query()->count() );
+		$this->assertSame( 14, Testable_Tag::count() );
+		$this->assertSame( 14, Testable_Tag::query()->count() );
 
 		$tag_id = $this->get_random_term_id();
 
 		// Ensure that query clauses are applied.
-		$this->assertEquals(
+		$this->assertSame(
 			1,
 			Testable_Tag::whereIn( 'id', [ $tag_id ] )->count(),
 		);

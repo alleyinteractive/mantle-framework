@@ -45,9 +45,7 @@ class Queue_Manager implements Queue_Manager_Contract {
 	public function get_provider( ?string $name = null ): Provider {
 		$name = $name ?: $this->get_default_driver();
 
-		if ( ! isset( $this->connections[ $name ] ) ) {
-			$this->connections[ $name ] = $this->resolve( $name );
-		}
+		$this->connections[ $name ] ??= $this->resolve( $name );
 
 		return $this->connections[ $name ];
 	}

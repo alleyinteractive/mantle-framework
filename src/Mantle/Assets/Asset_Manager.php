@@ -126,8 +126,27 @@ class Asset_Manager implements Asset_Manager_Contract {
 	public function load_method( string $handle, string $load_method = Load_Method::SYNC ): void {
 		hook_callable(
 			'wp_enqueue_scripts',
-			fn () => Asset_Manager_Scripts::instance()->modify_load_method( $handle, $load_method ),
+			fn () => Asset_Manager_Scripts::instance()->modify_load_method( $handle, static::resolve_load_method( $load_method ) ),
 			20, // Ensures the asset is registered.
 		);
+	}
+
+	/**
+	 * Resolve a load method to one the installed wp-asset-manager supports.
+	 *
+	 * The deprecated async-defer load method is passed through when supported
+	 * (wp-asset-manager 1.x) and falls back to async otherwise (2.x).
+	 *
+	 * @param string $load_method Load method to resolve.
+	 */
+	public static function resolve_load_method( string $load_method ): string {
+		if (
+			Load_Method::ASYNC_DEFER === $load_method
+			&& ! in_array( Load_Method::ASYNC_DEFER, Asset_Manager_Scripts::instance()->load_methods, true )
+		) {
+			return Load_Method::ASYNC;
+		}
+
+		return $load_method;
 	}
 }

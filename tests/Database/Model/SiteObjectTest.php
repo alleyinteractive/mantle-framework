@@ -14,20 +14,20 @@ class SiteObjectTest extends FrameworkTestCase {
 		$site    = Site::find( $site_id );
 
 		$this->assertInstanceOf( Site::class, $site );
-		$this->assertEquals( $site_id, $site->id() );
+		$this->assertSame( $site_id, $site->id() );
 
 		$blogname = \get_blog_option( $site_id, 'blogname' );
 
 		$object = get_site( $site->id() );
 
-		$this->assertEquals( $blogname, $site->name() );
-		$this->assertEquals( $object->path, $site->slug() );
-		$this->assertEquals( get_home_url( $site_id ), $site->permalink() );
-		$this->assertEquals( $object->public, $site->public );
+		$this->assertSame( $blogname, $site->name() );
+		$this->assertSame( $object->path, $site->slug() );
+		$this->assertSame( get_home_url( $site_id ), $site->permalink() );
+		$this->assertSame( $object->public, $site->public );
 
 		// Test that you can get the WordPress object.
 		$core_object = $site->core_object();
 		$this->assertInstanceOf( \WP_Site::class, $core_object );
-		$this->assertEquals( $site->id(), $core_object->blog_id );
+		$this->assertSame( $site->id(), (int) $core_object->blog_id );
 	}
 }

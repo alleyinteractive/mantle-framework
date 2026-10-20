@@ -9,14 +9,19 @@ use Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector;
 use Rector\CodingStyle\Rector\ArrowFunction\ArrowFunctionDelegatingCallToFirstClassCallableRector;
+use Rector\CodeQuality\Rector\If_\ObjectExplicitBoolCompareRector;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
 use Rector\CodingStyle\Rector\Closure\ClosureDelegatingCallToFirstClassCallableRector;
 use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
 use Rector\CodingStyle\Rector\FunctionLike\FunctionLikeToFirstClassCallableRector;
+use Rector\CodingStyle\Rector\If_\AlternativeIfToBracketRector;
 use Rector\CodingStyle\Rector\If_\NullableCompareToNullRector;
 use Rector\Config\RectorConfig;
+use Rector\DeadCode\Rector\ClassMethod\RemoveDuplicatedReturnSelfDocblockRector;
+use Rector\DeadCode\Rector\ClassMethod\RemoveMixedDocblockOverruledByNativeTypeRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
+use Rector\DeadCode\Rector\ClassMethod\RemoveUselessUnionReturnDocblockRector;
 use Rector\DeadCode\Rector\MethodCall\RemoveNullArgOnNullDefaultParamRector;
 use Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchExprVariableRector;
 
@@ -101,6 +106,12 @@ return RectorConfig::configure()
 			__DIR__ . '/src/Mantle/Database/Model/Relations',
 		],
 		ArrayToFirstClassCallableRector::class,
+		// Rector re-prints the nodes it edits with four tabs per indent level instead of
+		// one, so any rule that rewrites a docblock or an if-block mangles the file.
+		RemoveDuplicatedReturnSelfDocblockRector::class,
+		RemoveMixedDocblockOverruledByNativeTypeRector::class,
+		RemoveUselessUnionReturnDocblockRector::class,
+		AlternativeIfToBracketRector::class,
 		RemoveUselessParamTagRector::class,
 		StrContainsRector::class,
 		AddArrowFunctionReturnTypeRector::class,
@@ -118,6 +129,7 @@ return RectorConfig::configure()
 		],
 		ReturnUnionTypeRector::class => [
 			__DIR__ . '/src/Mantle/Framework/Exceptions/Handler.php',
+			__DIR__ . '/src/Mantle/Support/Traits/Enumerates_Values.php',
 		],
 		ReturnTypeFromStrictFluentReturnRector::class => [
 			__DIR__ . '/src/Mantle/Database/Query/Collection.php',
@@ -125,6 +137,10 @@ return RectorConfig::configure()
 			__DIR__ . '/src/Mantle/Support/Traits/Enumerates_Values.php',
 		],
 		ExplicitBoolCompareRector::class => [
+			__DIR__ . '/src/Mantle/Database/Model/Post.php',
+			__DIR__ . '/src/Mantle/Testing',
+		],
+		ObjectExplicitBoolCompareRector::class => [
 			__DIR__ . '/src/Mantle/Database/Model/Post.php',
 			__DIR__ . '/src/Mantle/Testing',
 		],
