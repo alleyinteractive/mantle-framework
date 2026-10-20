@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `WordPress_Cache_Repository::get_multiple()` (and `getMultiple()`) unwraps values stored by `flexible()`, matching `get()` (#971).
+
 #### Database
 
 - Term queries honor the current page: `chunk()`, `each()`, `map()`, `paginate()`, and `for_page()` no longer return the first page forever.

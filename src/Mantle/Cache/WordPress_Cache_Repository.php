@@ -52,11 +52,14 @@ class WordPress_Cache_Repository extends Repository implements Taggable_Reposito
 	 * @return iterable<string, mixed>
 	 */
 	public function get_multiple( iterable $keys, mixed $default = null ): iterable {
-		$values = \wp_cache_get_multiple( is_array( $keys ) ? $keys : iterator_to_array( $keys ), $this->prefix );
+		$keys   = is_array( $keys ) ? $keys : iterator_to_array( $keys );
+		$values = \wp_cache_get_multiple( $keys, $this->prefix );
 
-		// A false result is either a miss or a stored false, so resolve it per key.
 		foreach ( $values as $key => $value ) {
-			if ( false === $value ) {
+			if ( $value instanceof SWR_Storage ) {
+				$values[ $key ] = $value->value;
+			} elseif ( false === $value ) {
+				// A false result is either a miss or a stored false, so resolve it per key.
 				$values[ $key ] = $this->get( (string) $key, $default );
 			}
 		}
