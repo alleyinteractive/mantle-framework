@@ -87,8 +87,8 @@ class HelpersTest extends TestCase {
 	 */
 	#[DataProvider('classname_provider')]
 	public function test_classname( $input, string $expected ) {
-		$this->assertEquals( $expected, classname( $input ) );
-		$this->assertEquals( $expected, classname( ...$input ) );
+		$this->assertSame( $expected, classname( $input ) );
+		$this->assertSame( $expected, classname( ...$input ) );
 	}
 
 	public static function classname_provider() {

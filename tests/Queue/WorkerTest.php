@@ -79,7 +79,7 @@ class WorkerTest extends MockeryTestCase {
 		$this->app['queue.worker']->run( 2 );
 
 		$this->assertCount( 6, $events_fired );
-		$this->assertEquals(
+		$this->assertSame(
 			[
 				Events\Run_Start::class,
 				Events\Job_Processing::class,

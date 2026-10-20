@@ -94,6 +94,14 @@ abstract class TestCase extends BaseTestCase {
 	protected ?Application $app = null;
 
 	/**
+	 * Whether setUp() started for this test.
+	 *
+	 * PHPUnit 12.5.40 and later skip setUp() when a #[Before] hook skips the
+	 * test, but still call tearDown().
+	 */
+	private bool $set_up_started = false;
+
+	/**
 	 * Factory Instance.
 	 */
 	protected static ?Factory_Container $factory;
@@ -178,6 +186,8 @@ abstract class TestCase extends BaseTestCase {
 	 * Runs the routine before each test is executed.
 	 */
 	protected function setUp(): void {
+		$this->set_up_started = true;
+
 		set_time_limit( 0 );
 
 		parent::setUp();
@@ -225,6 +235,13 @@ abstract class TestCase extends BaseTestCase {
 	 * @throws \Throwable Re-throws the first exception raised by a trait teardown once cleanup completes.
 	 */
 	protected function tearDown(): void {
+		// Nothing was set up (a #[Before] hook skipped the test), so there is nothing to clean up.
+		if ( ! $this->set_up_started ) {
+			parent::tearDown();
+
+			return;
+		}
+
 		// phpcs:disable WordPress.WP.GlobalVariablesOverride,WordPress.NamingConventions.PrefixAllGlobals
 		global $wp_query, $wp_the_query, $wp;
 

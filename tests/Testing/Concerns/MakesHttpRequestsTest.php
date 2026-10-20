@@ -90,7 +90,8 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_get_home() {
-		$this->get( home_url( '/' ) );
+		$this->get( home_url( '/' ) )
+			->assertOk();
 		$this->assertQueryTrue( 'is_home', 'is_front_page' );
 	}
 
@@ -98,6 +99,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	public function test_get_singular() {
 		$post_id = static::factory()->post->create();
 		$this->get( get_permalink( $post_id ) . '?test=asda' )
+			->assertOk()
 			->assertQueryTrue( 'is_single', 'is_singular' )
 			->assertQueriedObjectId( $post_id )
 			->assertSee( get_the_title( $post_id ) );
@@ -127,17 +129,17 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			->assertOk()
 			->assertContent( '1234' );
 
-		$this->assertEquals( [
+		$this->assertSame( [
 			'host' => [ WP_TESTS_DOMAIN ],
 			'x-test' => [ 'test' ],
 			'x-another-test' => [ 'another-test' ],
 		], $capture );
 
-		$this->assertEquals( 'test', $_SERVER['HTTP_X_TEST'] );
-		$this->assertEquals( 'test', $_SERVER['HTTP_X_TEST'] );
-		$this->assertEquals( 'another-test', $_SERVER['HTTP_X_ANOTHER_TEST'] );
+		$this->assertSame( 'test', $_SERVER['HTTP_X_TEST'] );
+		$this->assertSame( 'test', $_SERVER['HTTP_X_TEST'] );
+		$this->assertSame( 'another-test', $_SERVER['HTTP_X_ANOTHER_TEST'] );
 
-		$this->assertEquals( [
+		$this->assertSame( [
 			'Host' => WP_TESTS_DOMAIN,
 			'X-Test' => 'test',
 			'X-Another-Test' => 'another-test',
@@ -203,10 +205,10 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 
 		// @phpstan-ignore-next-line
 		$this->assertNotEmpty( $_SERVER['__request_headers']['X-Test'] ?? null );
-		$this->assertEquals( 'test', $_SERVER['__request_headers']['X-Test'] );
+		$this->assertSame( 'test', $_SERVER['__request_headers']['X-Test'] );
 
 		$this->assertNotEmpty( $_SERVER['__request_headers']['X-Default'] );
-		$this->assertEquals( 'default', $_SERVER['__request_headers']['X-Default'] );
+		$this->assertSame( 'default', $_SERVER['__request_headers']['X-Default'] );
 
 		remove_all_actions( 'template_redirect' );
 	}
@@ -217,6 +219,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 
 		$this
 			->get( get_term_link( $category_id, 'category' ) )
+			->assertOk()
 			->assertQueryTrue( 'is_archive', 'is_category' )
 			->assertQueriedObjectId( $category_id );
 	}
@@ -236,7 +239,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 
 		$feed_url = get_feed_link( 'rss2' );
 
-		$this->assertEquals( home_url( '/feed/' ), $feed_url );
+		$this->assertSame( home_url( '/feed/' ), $feed_url );
 
 		$request = $this->get( $feed_url )
       ->assertOk()
@@ -397,6 +400,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	public function test_assert_content_callback(): void {
 		$this
 			->get( '/' )
+			->assertOk()
 			->assertContent( fn ( string $content ) => stringable( $content )->contains( 'home' ) )
 			->assertNotContent( 'this will not be found' )
 			->assertNotContent( fn ( string $content ) => stringable( $content )->contains( 'this will not be found' ) );
@@ -504,7 +508,9 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	public function test_match_snapshot_http() {
 		Route::get( '/example/', fn () => 'example' );
 
-		$this->get( '/example' )->assertMatchesSnapshotContent();
+		$this->get( '/example' )
+			->assertOk()
+			->assertMatchesSnapshotContent();
 	}
 
 	public function test_match_snapshot_http_partial() {
@@ -533,10 +539,12 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			HTML
 		);
 
-		$this->get( '/example' )->assertMatchesSnapshotHtml( [
-			'/html/body/div[@class="example"]',
-			'/html/body/div[@class="example-two"]',
-		] );
+		$this->get( '/example' )
+			->assertOk()
+			->assertMatchesSnapshotHtml( [
+				'/html/body/div[@class="example"]',
+				'/html/body/div[@class="example-two"]',
+			] );
 	}
 
 	public function test_match_snapshot_no_selectors_matched() {
@@ -544,9 +552,11 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 
 		Route::get( '/example/', fn () => 'example' );
 
-		$this->get( '/example' )->assertMatchesSnapshotHtml( [
-			'/html/body/div[@class="example"]',
-		] );
+		$this->get( '/example' )
+			->assertOk()
+			->assertMatchesSnapshotHtml( [
+				'/html/body/div[@class="example"]',
+			] );
 	}
 
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
@@ -575,6 +585,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 
 		$this
 			->get( rest_url( '/mantle/v1/' . __FUNCTION__ ) )
+			->assertOk()
 			->assertJsonPath( 'key', 'value here' );
 
 		$this->assertFalse( wp_is_rest_endpoint() );
@@ -593,14 +604,19 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			]
 		);
 
-		$this->get( rest_url( '/mantle/v1/' . __FUNCTION__ ) )->assertMatchesSnapshotContent();
+		$this->get( rest_url( '/mantle/v1/' . __FUNCTION__ ) )
+			->assertCreated()
+			->assertMatchesSnapshotContent();
 
-		$this->get( rest_url( '/wp/v2/posts/' . static::factory()->post->create() ) )->assertMatchesSnapshotJson( 'type' );
+		$this->get( rest_url( '/wp/v2/posts/' . static::factory()->post->create() ) )
+			->assertOk()
+			->assertMatchesSnapshotJson( 'type' );
 
 		static::factory()->post->create_many( 10 );
 
 		$this
 			->get( rest_url( '/wp/v2/posts' ) )
+			->assertOk()
 			->assertMatchesSnapshotJson( [
 				'*.type',
 				'*.status',
@@ -622,8 +638,8 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 
 		$this->with_https()->get( 'https://example.com' )->assertOk();
 
-		$this->assertEquals( 'on', $_SERVER['HTTPS'] );
-		$this->assertEquals( 'https', $_SERVER['REQUEST_SCHEME'] );
+		$this->assertSame( 'on', $_SERVER['HTTPS'] );
+		$this->assertSame( 'https', $_SERVER['REQUEST_SCHEME'] );
 	}
 
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
@@ -632,16 +648,16 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 
 		$home_url = get_option( 'home' );
 
-		$this->assertEquals( 'http://' . WP_TESTS_DOMAIN, $home_url );
-		$this->assertEquals( 'http://' . WP_TESTS_DOMAIN, home_url() );
+		$this->assertSame( 'http://' . WP_TESTS_DOMAIN, $home_url );
+		$this->assertSame( 'http://' . WP_TESTS_DOMAIN, home_url() );
 
 		update_option( 'home', 'https://' . WP_TESTS_DOMAIN );
 
-		$this->assertEquals( 'https://' . WP_TESTS_DOMAIN, home_url() );
+		$this->assertSame( 'https://' . WP_TESTS_DOMAIN, home_url() );
 
 		$this->get( '/' )->assertOk();
 
-		$this->assertEquals( 'on', $_SERVER['HTTPS'] ?? '' );
+		$this->assertSame( 'on', $_SERVER['HTTPS'] ?? '' );
 	}
 
 	#[Group( 'experimental' )]
@@ -649,14 +665,14 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	public function test_experimental_default_url_host() {
 		$this->get( '/' )->assertOk();
 
-		$this->assertEquals( 'http://' . WP_TESTS_DOMAIN, home_url() );
-		$this->assertEquals( WP_TESTS_DOMAIN, $_SERVER['HTTP_HOST'] );
+		$this->assertSame( 'http://' . WP_TESTS_DOMAIN, home_url() );
+		$this->assertSame( WP_TESTS_DOMAIN, $_SERVER['HTTP_HOST'] );
 
 		$this->setup_experiment_testing_url_host();
 
 		$this->get( '/' )->assertOk();
 
-		$this->assertEquals( 'subdomain.' . WP_TESTS_DOMAIN, $_SERVER['HTTP_HOST'] );
+		$this->assertSame( 'subdomain.' . WP_TESTS_DOMAIN, $_SERVER['HTTP_HOST'] );
 	}
 
 	#[Group( 'experimental' )]
@@ -695,9 +711,10 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	public function test_cache_clearing_on_each_request(): void {
 		wp_cache_set( 'key', 'value' );
 
-		$this->assertEquals( 'value', wp_cache_get( 'key' ) );
+		$this->assertSame( 'value', wp_cache_get( 'key' ) );
 
-		$this->get( '/' );
+		$this->get( '/' )
+			->assertOk();
 
 		// After the request, the cache should be cleared.
 		$this->assertFalse( wp_cache_get( 'key' ) );
@@ -708,12 +725,13 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	public function test_preserve_object_cache(): void {
 		wp_cache_set( 'key', 'value' );
 
-		$this->assertEquals( 'value', wp_cache_get( 'key' ) );
+		$this->assertSame( 'value', wp_cache_get( 'key' ) );
 
-		$this->get( '/' );
+		$this->get( '/' )
+			->assertOk();
 
 		// After the request, the cache should still be preserved.
-		$this->assertEquals( 'value', wp_cache_get( 'key' ) );
+		$this->assertSame( 'value', wp_cache_get( 'key' ) );
 	}
 
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
@@ -735,7 +753,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		// Ensure that the runs are all equal. The bug being fixed here was that
 		// `the_post` hook wasn't being cleared and the hook run count kept
 		// incrementing.
-		$this->assertEquals( $runs[0], $runs[1] );
+		$this->assertSame( $runs[0], $runs[1] );
 	}
 
 	#[DataProvider( 'invalid_request_provider' )]
@@ -760,7 +778,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		putenv( 'MANTLE_EXPERIMENTAL_TESTING_USE_HOME_URL_HOST=1' );
 
 		update_option( 'home', 'https://subdomain.' . WP_TESTS_DOMAIN );
-		$this->assertEquals( 'https://subdomain.' . WP_TESTS_DOMAIN, home_url() );
+		$this->assertSame( 'https://subdomain.' . WP_TESTS_DOMAIN, home_url() );
 	}
 
 	public static function core_template_hook_data_provider(): array {
