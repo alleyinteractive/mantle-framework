@@ -4767,7 +4767,7 @@ class CollectionTest extends FrameworkTestCase {
 		);
 		$c = $collection::from( $query );
 
-		$this->assertSame( 5, count( $c->all() ) );
+		$this->assertCount( 5, $c->all() );
 		$this->assertTrue( $c->every( function ( $val, $key ) {
 			return $val instanceof Model\Post;
 		} ) );
@@ -4789,7 +4789,7 @@ class CollectionTest extends FrameworkTestCase {
 	#[DataProvider( 'collectionClassProvider' )]
 	public function test_from_fallback( $collection ) {
 		$c = $collection::from( ['a', 'b'] );
-		$this->assertSame( 2, count( $c->all() ) );
+		$this->assertCount( 2, $c->all() );
 		$this->assertEquals( ['a', 'b'], $c->intersect( ['a', 'b'] )->all() );
 	}
 

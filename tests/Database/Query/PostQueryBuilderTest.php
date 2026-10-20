@@ -270,7 +270,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 			->orderBy( 'post_date', 'ASC' )
 			->get();
 
-		$this->assertEquals( 2, count( $get ) );
+		$this->assertCount( 2, $get );
 		$this->assertEquals( $post_a, $get[0]->id() );
 		$this->assertEquals( $post_b, $get[1]->id() );
 
@@ -279,7 +279,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 			->whereMeta( 'meta-b', 'meta-value-b' )
 			->get();
 
-		$this->assertEquals( 1, count( $get ) );
+		$this->assertCount( 1, $get );
 		$this->assertEquals( $post_b, $get[0]->id() );
 	}
 
