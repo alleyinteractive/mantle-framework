@@ -75,7 +75,7 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 		$this->assertIsArray( $_SERVER['__action_value'] );
 
 		// Assert that it converted it to an array of values.
-		$this->assertEquals( [ 1, 2, 3 ], $_SERVER['__action_value'] );
+		$this->assertSame( [ 1, 2, 3 ], $_SERVER['__action_value'] );
 	}
 
 	public function test_action_if_should_run() {
@@ -120,7 +120,7 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 			fn( string $string ) => strtoupper( $string ),
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			'TOUPPERCASE',
 			apply_filters( 'test_filter_handler', 'touppercase' )
 		);
@@ -132,7 +132,7 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 			fn ( array $string ) => $string,
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			[ 'string-in-array' ],
 			apply_filters( 'test_filter_handler_typehint', 'string-in-array' )
 		);
@@ -144,7 +144,7 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 			fn ( Collection $col ): array => $col->to_array(),
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			[ 'array-not-collection' ],
 			apply_filters( 'test_filter_handler_typehint_collection_returns_array', [ 'array-not-collection' ] )
 		);
@@ -156,7 +156,7 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 			fn ( array $value ) => $value,
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			[ 'string-in-array' ],
 			apply_filters( 'test_filter_handler_typehint', 'string-in-array' )
 		);
@@ -186,7 +186,7 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 		$this->app['events']->dispatch( new Example_Typehint_Event( 'test' ) );
 
 		$this->assertInstanceOf( Example_Typehint_Event::class, $_SERVER['__test'] );
-		$this->assertEquals( 'test', $_SERVER['__test']->example );
+		$this->assertSame( 'test', $_SERVER['__test']->example );
 	}
 
 	public function test_mixed_typehint_action_argument(): void {
@@ -220,7 +220,7 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 		do_action( 'example:another_test_wildcard_listener' );
 
 		$this->assertCount( 3, $listener );
-		$this->assertEquals( [
+		$this->assertSame( [
 			[ 'example:test_wildcard_listener' ],
 			[ 'example:test_wildcard_listener', 'bar', 'baz' ],
 			[ 'example:another_test_wildcard_listener' ],

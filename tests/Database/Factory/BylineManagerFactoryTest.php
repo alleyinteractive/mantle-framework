@@ -45,8 +45,8 @@ class BylineManagerFactoryTest extends FrameworkTestCase {
 
 		$this->assertInstanceOf( Profile::class, $author );
 
-		$this->assertEquals( $user->user_login, $author->post->post_name );
-		$this->assertEquals( $user->ID, get_post_meta( $author->post->ID, 'user_id', true ) );
+		$this->assertSame( $user->user_login, $author->post->post_name );
+		$this->assertSame( (string) $user->ID, get_post_meta( $author->post->ID, 'user_id', true ) );
 	}
 
 	public function test_create_post_with_guest_author(): void {
@@ -59,7 +59,7 @@ class BylineManagerFactoryTest extends FrameworkTestCase {
 		$byline_entries = Utils::get_byline_entries_for_post( $post );
 
 		$this->assertCount( 2, $byline_entries );
-		$this->assertEquals(
+		$this->assertSame(
 			collect( [ $author, $author_2 ] )->pluck( 'post.post_title' )->all(),
 			collect( $byline_entries )->pluck( 'post.post_title' )->all(),
 		);
@@ -75,7 +75,7 @@ class BylineManagerFactoryTest extends FrameworkTestCase {
 		$byline_entries = Utils::get_byline_entries_for_post( $post );
 
 		$this->assertCount( 2, $byline_entries );
-		$this->assertEquals(
+		$this->assertSame(
 			[ $author->post->post_title, $user->display_name ],
 			collect( $byline_entries )->pluck( 'post.post_title' )->all(),
 		);
@@ -90,7 +90,7 @@ class BylineManagerFactoryTest extends FrameworkTestCase {
 		$byline_entries = Utils::get_byline_entries_for_post( $post );
 
 		$this->assertCount( 2, $byline_entries );
-		$this->assertEquals(
+		$this->assertSame(
 			[ $author->post->post_title, 'John Doe' ],
 			collect( $byline_entries )->map(
 				fn ( $entry ) => $entry instanceof Profile ? $entry->post->post_title : $entry->atts['text']
@@ -110,7 +110,7 @@ class BylineManagerFactoryTest extends FrameworkTestCase {
 
 
 		$this->assertCount( 2, $byline_entries );
-		$this->assertEquals(
+		$this->assertSame(
 			[ 'John Doe', 'Jane Smith' ],
 			collect( $byline_entries )->pluck( 'post.post_title' )->all(),
 		);

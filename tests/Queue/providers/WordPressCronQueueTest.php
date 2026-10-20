@@ -175,7 +175,7 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		$this->dispatch_queue();
 
 		$this->assertNotInCronQueue( Job_To_Fail::class );
-		$this->assertEquals( 2, $_SERVER['__failed_run'] );
+		$this->assertSame( 2, $_SERVER['__failed_run'] );
 
 		// Ensure that the post does not exist.
 		$this->assertPostExists( [
@@ -291,14 +291,14 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 
 		// With max_concurrent_batches set to 10 and 100 jobs dispatched, we should
 		// have 10 queue jobs scheduled to run.
-		$this->assertEquals( 10, Scheduler::get_scheduled_count() );
+		$this->assertSame( 10, Scheduler::get_scheduled_count() );
 
 		$this->dispatch_queue( 100 );
 
 		Scheduler::schedule_on_shutdown();
 
 		// Ensure the scheduled jobs are cleaned up.
-		$this->assertEquals( 0, Scheduler::get_scheduled_count() );
+		$this->assertSame( 0, Scheduler::get_scheduled_count() );
 	}
 
 	public function test_schedule_does_not_overschedule_when_underutilized() {
@@ -311,7 +311,7 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 
 		Scheduler::schedule_on_shutdown();
 
-		$this->assertEquals( 1, Scheduler::get_scheduled_count() );
+		$this->assertSame( 1, Scheduler::get_scheduled_count() );
 	}
 
 	public function test_failed_job() {
@@ -324,7 +324,7 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		$this->dispatch_queue();
 
 		$this->assertNotInCronQueue( Job_To_Fail::class );
-		$this->assertEquals( 1, $_SERVER['__failed_run'] );
+		$this->assertSame( 1, $_SERVER['__failed_run'] );
 
 		$this->assertPostExists( [
 			'post_type'    => Provider::OBJECT_NAME,
@@ -344,13 +344,13 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		$this->dispatch_queue();
 
 		// First failure.
-		$this->assertEquals( 1, $_SERVER['__failed_run'] );
+		$this->assertSame( 1, $_SERVER['__failed_run'] );
 		$this->assertInCronQueue( Job_To_Fail_Retry::class );
 
 		$this->dispatch_queue();
 
 		// Ensure it didn't run (it should be delayed 30 seconds).
-		$this->assertEquals( 1, $_SERVER['__failed_run'] );
+		$this->assertSame( 1, $_SERVER['__failed_run'] );
 		$this->assertInCronQueue( Job_To_Fail_Retry::class );
 	}
 

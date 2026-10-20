@@ -32,7 +32,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		$this->fake_request();
 
 		$response = wp_remote_get( 'https://example.com/' );
-		$this->assertEquals( 200, wp_remote_retrieve_response_code( $response ) );
+		$this->assertSame( 200, wp_remote_retrieve_response_code( $response ) );
 		$this->assertEmpty( wp_remote_retrieve_body( $response ) );
 	}
 
@@ -41,8 +41,8 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 
 		$response = wp_remote_get( 'https://example.com/' );
 
-		$this->assertEquals( 201, wp_remote_retrieve_response_code( $response ) );
-		$this->assertEquals( 'John Doe', json_decode( wp_remote_retrieve_body( $response ) )->name );
+		$this->assertSame( 201, wp_remote_retrieve_response_code( $response ) );
+		$this->assertSame( 'John Doe', json_decode( wp_remote_retrieve_body( $response ) )->name );
 	}
 
 	public function test_fake_request() {
@@ -57,15 +57,15 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		$this->fake_request( 'https://example.com/', Mock_Http_Response::create()->with_body( 'example body' ) );
 
 		$response = wp_remote_get( 'https://testing.com/' );
-		$this->assertEquals( 'test body', wp_remote_retrieve_body( $response ) );
-		$this->assertEquals( 404, wp_remote_retrieve_response_code( $response ) );
+		$this->assertSame( 'test body', wp_remote_retrieve_body( $response ) );
+		$this->assertSame( 404, wp_remote_retrieve_response_code( $response ) );
 
 		$response = wp_remote_get( 'https://github.com/' );
-		$this->assertEquals( 'fake body', wp_remote_retrieve_body( $response ) );
-		$this->assertEquals( 500, wp_remote_retrieve_response_code( $response ) );
+		$this->assertSame( 'fake body', wp_remote_retrieve_body( $response ) );
+		$this->assertSame( 500, wp_remote_retrieve_response_code( $response ) );
 
 		$response = wp_remote_get( 'https://example.com/' );
-		$this->assertEquals( 'example body', wp_remote_retrieve_body( $response ) );
+		$this->assertSame( 'example body', wp_remote_retrieve_body( $response ) );
 	}
 
 	public function test_fake_request_with_method() {
@@ -87,20 +87,20 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 
 		$users = Http::get( 'https://example.org/api/v1/users' );
 
-		$this->assertEquals( 200, $users->status() );
+		$this->assertSame( 200, $users->status() );
 		$this->assertEmpty( $users->json( 'items' ) );
 
 		// Create the user.
 		$user = Http::post( 'https://example.org/api/v1/users', [ 'name' => 'John Doe' ] );
 
-		$this->assertEquals( 201, $user->status() );
-		$this->assertEquals( 'John Doe', $user->json( 'name' ) );
+		$this->assertSame( 201, $user->status() );
+		$this->assertSame( 'John Doe', $user->json( 'name' ) );
 
 		// Get the users.
 		$users = Http::get( 'https://example.org/api/v1/users' );
 
-		$this->assertEquals( 200, $users->status() );
-		$this->assertEquals( 'John Doe', $users->json( 'items.0.name' ) );
+		$this->assertSame( 200, $users->status() );
+		$this->assertSame( 'John Doe', $users->json( 'items.0.name' ) );
 	}
 
 	public function test_fake_request_with_array(): void {
@@ -119,13 +119,13 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 
 		$response = Http::get( 'https://example.org/example-as-arguments' );
 
-		$this->assertEquals( 200, $response->status() );
-		$this->assertEquals( 'value', $response->json( 'example' ) );
+		$this->assertSame( 200, $response->status() );
+		$this->assertSame( 'value', $response->json( 'example' ) );
 
 		$response = Http::get( 'https://example.org/example-as-array' );
 
-		$this->assertEquals( 200, $response->status() );
-		$this->assertEquals( 'value-2', $response->json( 'example' ) );
+		$this->assertSame( 200, $response->status() );
+		$this->assertSame( 'value-2', $response->json( 'example' ) );
 	}
 
 	public function test_fake_all_requests() {
@@ -134,8 +134,8 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 			->with_body( 'another fake body' );
 
 		$response = wp_remote_get( 'https://github.com/' );
-		$this->assertEquals( 'another fake body', wp_remote_retrieve_body( $response ) );
-		$this->assertEquals( 206, wp_remote_retrieve_response_code( $response ) );
+		$this->assertSame( 'another fake body', wp_remote_retrieve_body( $response ) );
+		$this->assertSame( 206, wp_remote_retrieve_response_code( $response ) );
 	}
 
 	public function test_fake_request_double_response_invalid_argument() {
@@ -158,8 +158,8 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		);
 
 		$response = wp_remote_get( 'https://alley.co/' );
-		$this->assertEquals( 'apples', wp_remote_retrieve_body( $response ) );
-		$this->assertEquals( 123, wp_remote_retrieve_response_code( $response ) );
+		$this->assertSame( 'apples', wp_remote_retrieve_body( $response ) );
+		$this->assertSame( 123, wp_remote_retrieve_response_code( $response ) );
 	}
 
 	public function test_fake_array_of_urls() {
@@ -171,53 +171,53 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		);
 
 		$response = wp_remote_get( 'https://github.com/' );
-		$this->assertEquals( 'github', wp_remote_retrieve_body( $response ) );
+		$this->assertSame( 'github', wp_remote_retrieve_body( $response ) );
 
 		$response = wp_remote_get( 'https://twitter.com/' );
-		$this->assertEquals( 'twitter', wp_remote_retrieve_body( $response ) );
+		$this->assertSame( 'twitter', wp_remote_retrieve_body( $response ) );
 	}
 
 	public function test_fake_json_response() {
 		$this->fake_request()->with_json( [ 1, 2, 3 ] );
 
 		$response = wp_remote_get( 'https://github.com/' );
-		$this->assertEquals( [ 1, 2, 3 ], json_decode( wp_remote_retrieve_body( $response ) ) );
+		$this->assertSame( [ 1, 2, 3 ], json_decode( wp_remote_retrieve_body( $response ) ) );
 	}
 
 	public function test_permanent_redirect_response() {
 		$this->fake_request()->with_redirect( 'https://wordpress.org/', 308 );
 
 		$response = wp_remote_get( 'https://drupal.org/' );
-		$this->assertEquals(
+		$this->assertSame(
 			'https://wordpress.org/',
 			wp_remote_retrieve_header( $response, 'Location' )
 		);
 
-		$this->assertEquals( 308, wp_remote_retrieve_response_code( $response ) );
+		$this->assertSame( 308, wp_remote_retrieve_response_code( $response ) );
 	}
 
 	public function test_redirect_response() {
 		$this->fake_request()->with_redirect( 'https://wordpress.org/' );
 
 		$response = wp_remote_get( 'https://drupal.org/' );
-		$this->assertEquals(
+		$this->assertSame(
 			'https://wordpress.org/',
 			wp_remote_retrieve_header( $response, 'Location' )
 		);
 
-		$this->assertEquals( 301, wp_remote_retrieve_response_code( $response ) );
+		$this->assertSame( 301, wp_remote_retrieve_response_code( $response ) );
 	}
 
 	public function test_redirect_response_temporary() {
 		$this->fake_request()->with_temporary_redirect( 'https://wordpress.org/' );
 
 		$response = wp_remote_get( 'https://drupal.org/' );
-		$this->assertEquals(
+		$this->assertSame(
 			'https://wordpress.org/',
 			wp_remote_retrieve_header( $response, 'Location' )
 		);
 
-		$this->assertEquals( 302, wp_remote_retrieve_response_code( $response ) );
+		$this->assertSame( 302, wp_remote_retrieve_response_code( $response ) );
 	}
 
 	public function test_error_response() {
@@ -244,9 +244,9 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 
 		$http = new Factory();
 
-		$this->assertEquals( 200, $http->get( 'https://example.com/sequence/' )->status() );
-		$this->assertEquals( 400, $http->get( 'https://example.com/sequence/' )->status() );
-		$this->assertEquals( 500, $http->get( 'https://example.com/sequence/' )->status() );
+		$this->assertSame( 200, $http->get( 'https://example.com/sequence/' )->status() );
+		$this->assertSame( 400, $http->get( 'https://example.com/sequence/' )->status() );
+		$this->assertSame( 500, $http->get( 'https://example.com/sequence/' )->status() );
 	}
 
 	public function test_sequence_array() {
@@ -264,11 +264,11 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 
 		$http = new Pending_Request();
 
-		$this->assertEquals( 200, $http->get( 'https://github.com/request/' )->status() );
-		$this->assertEquals( 400, $http->get( 'https://github.com/request/' )->status() );
+		$this->assertSame( 200, $http->get( 'https://github.com/request/' )->status() );
+		$this->assertSame( 400, $http->get( 'https://github.com/request/' )->status() );
 
-		$this->assertEquals( 200, $http->get( 'https://alley.co/test/' )->status() );
-		$this->assertEquals( 403, $http->get( 'https://alley.co/test/' )->status() );
+		$this->assertSame( 200, $http->get( 'https://alley.co/test/' )->status() );
+		$this->assertSame( 403, $http->get( 'https://alley.co/test/' )->status() );
 	}
 
 	public function test_sequence_exception_empty() {
@@ -283,9 +283,9 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 
 		$http = new Factory();
 
-		$this->assertEquals( 200, $http->get( 'https://example.com/sequence/' )->status() );
-		$this->assertEquals( 400, $http->get( 'https://example.com/sequence/' )->status() );
-		$this->assertEquals( 500, $http->get( 'https://example.com/sequence/' )->status() );
+		$this->assertSame( 200, $http->get( 'https://example.com/sequence/' )->status() );
+		$this->assertSame( 400, $http->get( 'https://example.com/sequence/' )->status() );
+		$this->assertSame( 500, $http->get( 'https://example.com/sequence/' )->status() );
 	}
 
 	public function test_sequence_fallback_empty() {
@@ -298,12 +298,12 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 
 		$http = new Factory();
 
-		$this->assertEquals( 200, $http->get( 'https://example.com/sequence/' )->status() );
-		$this->assertEquals( 400, $http->get( 'https://example.com/sequence/' )->status() );
+		$this->assertSame( 200, $http->get( 'https://example.com/sequence/' )->status() );
+		$this->assertSame( 400, $http->get( 'https://example.com/sequence/' )->status() );
 
 		// These two should use the fallback response.
-		$this->assertEquals( 202, $http->get( 'https://example.com/sequence/' )->status() );
-		$this->assertEquals( 202, $http->get( 'https://example.com/sequence/' )->status() );
+		$this->assertSame( 202, $http->get( 'https://example.com/sequence/' )->status() );
+		$this->assertSame( 202, $http->get( 'https://example.com/sequence/' )->status() );
 	}
 
 	public function test_prevent_stray_requests() {
@@ -311,7 +311,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 			Mock_Http_Response::create()->with_status( 201 ),
 		);
 
-		$this->assertEquals( 201, Http::get( 'https://example.com/' )->status() );
+		$this->assertSame( 201, Http::get( 'https://example.com/' )->status() );
 		$this->assertRequestSent();
 	}
 
@@ -320,7 +320,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 			fn () => Mock_Http_Response::create()->with_status( 400 ),
 		);
 
-		$this->assertEquals( 400, Http::get( 'https://example.com/' )->status() );
+		$this->assertSame( 400, Http::get( 'https://example.com/' )->status() );
 		$this->assertRequestSent();
 	}
 
@@ -343,7 +343,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		retry( 3, function (): void {
 			$request = Http::create()->throw_exception()->get( 'https://alley.com/' );
 
-			$this->assertEquals( 200, $request->status() );
+			$this->assertSame( 200, $request->status() );
 			$this->assertStringContainsString( 'Alley', $request->body() );
 		}, 1000 );
 
@@ -369,9 +369,9 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 
 		$response = Http::stream( $filename )->get( 'https://alley.com/wp-content/uploads/2021/12/NSF_Cover.png?w=960' );
 
-		$this->assertEquals( 200, $response->status() );
+		$this->assertSame( 200, $response->status() );
 		$this->assertNotEmpty( file_get_contents( $filename ) );
-		$this->assertEquals( 'image/jpeg', $response->header( 'Content-Type' ) );
+		$this->assertSame( 'image/jpeg', $response->header( 'Content-Type' ) );
 	}
 
 	public function test_streamed_response() {
@@ -381,9 +381,9 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 
 		$response = Http::stream()->get( 'https://alley.com/wp-content/uploads/2021/12/NSF_Cover.png?w=960' );
 
-		$this->assertEquals( 200, $response->status() );
+		$this->assertSame( 200, $response->status() );
 		$this->assertNotEmpty( $response->file_contents() );
-		$this->assertEquals( 'image/jpeg', $response->header( 'Content-Type' ) );
+		$this->assertSame( 'image/jpeg', $response->header( 'Content-Type' ) );
 	}
 
 	public function test_fake_request_with_file() {
@@ -394,12 +394,12 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		$response = Http::get( 'https://example.org/images/file.pdf' );
 
 		$this->assertTrue( $response->ok() );
-		$this->assertEquals( 'application/pdf', $response->header( 'Content-Type' ) );
-		$this->assertEquals(
+		$this->assertSame( 'application/pdf', $response->header( 'Content-Type' ) );
+		$this->assertSame(
 			'attachment; filename="wordpress-gsoc-flyer.pdf"',
 			$response->header( 'Content-Disposition' )
 		);
-		$this->assertEquals( file_get_contents( $file ), $response->body() );
+		$this->assertSame( file_get_contents( $file ), $response->body() );
 	}
 
 	public function test_fake_request_with_image() {
@@ -408,7 +408,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		$response = Http::get( 'https://example.org/images/alley.jpg' );
 
 		$this->assertTrue( $response->ok() );
-		$this->assertEquals( 'image/jpeg', $response->header( 'Content-Type' ) );
+		$this->assertSame( 'image/jpeg', $response->header( 'Content-Type' ) );
 		$this->assertNotEmpty( $response->body() );
 		$this->assertTrue( $response->is_blob() );
 		$this->assertTrue( $response->is_file() );
@@ -447,22 +447,22 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 
 		$response = Http::get( 'https://example.com/?example=here' );
 
-		$this->assertEquals( 'ok', $response->json( 'status' ) );
+		$this->assertSame( 'ok', $response->json( 'status' ) );
 		$this->assertInstanceOf( Request::class, $object );
-		$this->assertEquals( 'https://example.com/?example=here', $object->url() );
-		$this->assertEquals( Http_Method::GET->value, $object->method() );
-		$this->assertEquals( Http_Method::GET, $object->enum_method() );
+		$this->assertSame( 'https://example.com/?example=here', $object->url() );
+		$this->assertSame( Http_Method::GET->value, $object->method() );
+		$this->assertSame( Http_Method::GET, $object->enum_method() );
 	}
 
 	public function test_fake_request_with_snapshot(): void {
 		$this->fake_request( '*alley.com/*' )->with_snapshot();
 		// $this->fake_request( 'https://alley.com/wp-json/*' )->with_snapshot();
 
-		$this->assertEquals( 404, Http::get( 'https://alley.com/not-found-ever' )->status() );
+		$this->assertSame( 404, Http::get( 'https://alley.com/not-found-ever' )->status() );
 
 		$response = Http::get( 'https://alley.com/wp-json/wp/v2/posts/5038' );
 
-		$this->assertEquals( 200, $response->status() );
+		$this->assertSame( 200, $response->status() );
 		$this->assertNotEmpty( $response->json() );
 
 		// Assert that the request was made but was not a "real" request.
@@ -486,7 +486,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 	public function test_fake_request_with_snapshot_named(): void {
 		$this->fake_request( 'http://alley.com/not-found-with-body' )->with_snapshot( 'snapshot-id' );
 
-		$this->assertEquals( 404, Http::post( 'http://alley.com/not-found-with-body', [
+		$this->assertSame( 404, Http::post( 'http://alley.com/not-found-with-body', [
 			'example' => 'here',
 		] )->status() );
 
