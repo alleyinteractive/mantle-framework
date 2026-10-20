@@ -32,7 +32,12 @@ abstract class TestCase extends FrameworkTestCase {
 		$this->reset_assets();
 
 		Asset_Manager_Scripts::instance()->add_hooks();
-		Asset_Manager_Scripts::instance()->manage_async();
+
+		// Removed in wp-asset-manager 2.0.
+		if ( method_exists( Asset_Manager_Scripts::instance(), 'manage_async' ) ) {
+			Asset_Manager_Scripts::instance()->manage_async();
+		}
+
 		Asset_Manager_Styles::instance()->add_hooks();
 
 		// Register with the container.
@@ -60,9 +65,13 @@ abstract class TestCase extends FrameworkTestCase {
 		Asset_Manager_Styles::instance()->assets            = [];
 		Asset_Manager_Styles::instance()->assets_by_handle  = [];
 		Asset_Manager_Styles::instance()->asset_handles     = [];
-		Asset_Manager_Styles::instance()->loadcss_added     = false;
 		Asset_Manager_Preload::instance()->assets           = [];
 		Asset_Manager_Preload::instance()->assets_by_handle = [];
 		Asset_Manager_Preload::instance()->asset_handles    = [];
+
+		// Removed in wp-asset-manager 2.0.
+		if ( property_exists( Asset_Manager_Styles::instance(), 'loadcss_added' ) ) {
+			Asset_Manager_Styles::instance()->loadcss_added = false;
+		}
 	}
 }

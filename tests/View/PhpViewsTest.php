@@ -19,20 +19,20 @@ class PhpViewsTest extends FrameworkTestCase {
 	}
 
 	public function test_get_container() {
-		$this->assertEquals( $this->app, $this->app['view']->get_container() );
+		$this->assertSame( $this->app, $this->app['view']->get_container() );
 	}
 
 	public function test_share_service_provider() {
 
 		$this->view_factory = $this->app['view'];
 
-		$this->assertEquals( 'default-value', $this->view_factory->shared( 'test-to-share', 'default-value' ) );
+		$this->assertSame( 'default-value', $this->view_factory->shared( 'test-to-share', 'default-value' ) );
 
 		// Share data as if it was from a service provider.
 		View::share( 'test-to-share', 'the-value-to-compare' );
 
-		$this->assertEquals( 'the-value-to-compare', $this->view_factory->shared( 'test-to-share', 'default-value' ) );
-		$this->assertEquals( 'the-value-to-compare', $this->view_factory->get_shared()['test-to-share'] ?? '' );
+		$this->assertSame( 'the-value-to-compare', $this->view_factory->shared( 'test-to-share', 'default-value' ) );
+		$this->assertSame( 'the-value-to-compare', $this->view_factory->get_shared()['test-to-share'] ?? '' );
 
 		// Ensure you can get nested data.
 		View::share(
@@ -46,11 +46,11 @@ class PhpViewsTest extends FrameworkTestCase {
 			]
 		);
 
-		$this->assertEquals( 'nested-value', $this->view_factory->shared( 'nested-data.level0.level1.level2' ) );
+		$this->assertSame( 'nested-value', $this->view_factory->shared( 'nested-data.level0.level1.level2' ) );
 	}
 
 	public function test_get_factory() {
-		$this->assertEquals( $this->app['view'], $this->app['view']->shared( '__env' ) );
+		$this->assertSame( $this->app['view'], $this->app['view']->shared( '__env' ) );
 	}
 
 	public function test_basic_load() {
@@ -101,6 +101,27 @@ class PhpViewsTest extends FrameworkTestCase {
 		$contents = iterate( $items, 'iterate-item' );
 		foreach ( $items as $key => $value ) {
 			$this->assertStringContainsString( "Item {$key}: {$value}", $contents );
+		}
+	}
+
+	public function test_variables_colliding_with_globals() {
+		$post = static::factory()->post->create_and_get( [ 'post_title' => 'Passed post' ] );
+
+		$contents = (string) view( 'var-id', [ 'id' => 42, 'post' => $post ] );
+
+		$this->assertStringContainsString( 'id=42;post=Passed post', $contents );
+	}
+
+	public function test_loop_collection() {
+		$post_ids = [
+			static::factory()->post->create(),
+			static::factory()->post->create(),
+		];
+
+		$contents = loop( \Mantle\Support\Helpers\collect( $post_ids ), 'loop-post' );
+
+		foreach ( $post_ids as $key => $post_id ) {
+			$this->assertStringContainsString( "Post {$key}: {$post_id}", $contents );
 		}
 	}
 

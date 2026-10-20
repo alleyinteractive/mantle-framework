@@ -301,7 +301,7 @@ class Hook_Usage_Command extends Command {
 			->trim()
 			->unique()
 			->filter(
-				fn( $path ): bool => ! ( ! is_file( $path ) && ! is_dir( $path ) )
+				fn( $path ): bool => is_file( $path ) || is_dir( $path )
 			)
 			->values();
 	}

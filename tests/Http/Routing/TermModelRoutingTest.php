@@ -30,10 +30,11 @@ class TermModelRoutingTest extends FrameworkTestCase {
 
 		$term_link = get_term_link( $category->id(), 'category' );
 
-		$this->assertEquals( home_url( '/custom-category-rewrite/' . $category->slug() ), $term_link );
+		$this->assertSame( home_url( '/custom-category-rewrite/' . $category->slug() ), $term_link );
 
 		$this
 			->get( $term_link )
+			->assertOk()
 			->assertSee( $category->slug() )
 			->assertQueriedObject( get_term( $category->id() ) )
 			->assertQueriedObjectId( $category->id() )
@@ -49,7 +50,7 @@ class TermModelRoutingTest extends FrameworkTestCase {
 
 		$tag = static::factory()->tag->create( [ 'name' => 'Example Tag' ] );
 
-		$this->assertEquals( home_url( '/tag/example-tag/' ), get_term_link( $tag ) );
+		$this->assertSame( home_url( '/tag/example-tag/' ), get_term_link( $tag ) );
 	}
 
 	public function test_custom_taxonomy() {
@@ -72,10 +73,11 @@ class TermModelRoutingTest extends FrameworkTestCase {
 
 		$term_link = $term->permalink();
 
-		$this->assertEquals( home_url( '/test_tax_test/' . $term->slug() . '/' ), $term_link );
+		$this->assertSame( home_url( '/test_tax_test/' . $term->slug() . '/' ), $term_link );
 
 		$this
 			->get( $term_link )
+			->assertOk()
 			->assertContent( $term->slug() )
 			->assertQueriedObject( get_term( $term->id() ) )
 			->assertQueriedObjectId( $term->id() )

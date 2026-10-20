@@ -558,9 +558,7 @@ class Application extends Container implements \Mantle\Contracts\Application {
 			return true;
 		}
 
-		if ( null === $this->is_running_in_console ) {
-			$this->is_running_in_console = Environment::get( 'APP_RUNNING_IN_CONSOLE' ) || ( defined( 'WP_CLI' ) && WP_CLI && ! wp_doing_cron() );
-		}
+		$this->is_running_in_console ??= Environment::get( 'APP_RUNNING_IN_CONSOLE' ) || ( defined( 'WP_CLI' ) && WP_CLI && ! wp_doing_cron() );
 
 		return $this->is_running_in_console;
 	}

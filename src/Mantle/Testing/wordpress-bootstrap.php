@@ -38,7 +38,7 @@ global $wpdb,
 // Load the configuration.
 if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) && ! empty( WP_TESTS_CONFIG_FILE_PATH ) && is_readable( WP_TESTS_CONFIG_FILE_PATH ) ) {
 	$config_file_path = WP_TESTS_CONFIG_FILE_PATH;
-} elseif ( false === strpos( __DIR__, '/' . Utils::content_directory_name() . '/' ) ) {
+} elseif ( ! Utils::is_within_wordpress_install( __DIR__ ) ) {
 	// Check if WP_CORE_DIR is defined and points to a valid installation.
 	if ( getenv( 'WP_CORE_DIR' ) && ! defined( 'WP_TESTS_INSTALL_PATH' ) && is_readable( getenv( 'WP_CORE_DIR' ) . '/wp-load.php' ) ) {
 		define( 'WP_TESTS_INSTALL_PATH', getenv( 'WP_CORE_DIR' ) );

@@ -323,9 +323,7 @@ trait Interacts_With_Input {
 	public function all_files() {
 		$files = $this->files->all();
 
-		if ( ! isset( $this->converted_files ) ) {
-			$this->converted_files = $this->convert_uploaded_files( $files );
-		}
+		$this->converted_files ??= $this->convert_uploaded_files( $files );
 
 		return $this->converted_files;
 	}
@@ -334,12 +332,12 @@ trait Interacts_With_Input {
 	 * Convert the given array of Symfony Uploaded_Files to custom Mantle Uploaded_Files.
 	 *
 	 * @param  array<mixed> $files
-	 * @return array<\Mantle\Http\Uploaded_File>
+	 * @return array<mixed>
 	 */
 	protected function convert_uploaded_files( array $files ): array {
 		return array_map(
 			function ( $file ) {
-				if ( is_null( $file ) || ( array_filter( $file ) === [] ) ) {
+				if ( is_null( $file ) || ( is_array( $file ) && array_filter( $file ) === [] ) ) {
 					return $file;
 				}
 

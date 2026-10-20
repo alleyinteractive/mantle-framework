@@ -105,9 +105,7 @@ class Collection implements ArrayAccess, Enumerable {
 
 		$items = range( 1, $number );
 
-		if ( is_null( $callback ) ) {
-			$callback = fn( $value ) => $value;
-		}
+		$callback ??= fn( $value ) => $value;
 
 		return ( new static( $items ) )->map( $callback );
 	}
@@ -202,15 +200,7 @@ class Collection implements ArrayAccess, Enumerable {
 
 		$collection = isset( $key ) ? $this->pluck( $key ) : $this;
 
-		$counts = new self();
-
-		$collection->each(
-			function ( $value ) use ( $counts ): void {
-				$counts[ $value ] = isset( $counts[ $value ] ) ? $counts[ $value ] + 1 : 1;
-			}
-		);
-
-		$sorted = $counts->sort();
+		$sorted = $collection->count_by()->sort();
 
 		$highest_value = $sorted->last();
 
@@ -406,10 +396,10 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	protected function duplicate_comparator( $strict ) {
 		if ( $strict ) {
-			return fn ( $a, $b ) => $a == $b; // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison, Universal.Operators.StrictComparisons.LooseEqual
+			return fn ( $a, $b ) => $a === $b;
 		}
 
-		return fn ( $a, $b ) => $a === $b;
+		return fn ( $a, $b ) => $a == $b; // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison, Universal.Operators.StrictComparisons.LooseEqual
 	}
 
 	/**
@@ -480,7 +470,7 @@ class Collection implements ArrayAccess, Enumerable {
 		}
 
 		if ( $count > 1 ) {
-			throw new Multiple_Items_Found_Exception( sprintf( 'Multiple items found (%d items).', $count ) );
+			throw new Multiple_Items_Found_Exception( $count );
 		}
 
 		return $items->first();
@@ -868,9 +858,7 @@ class Collection implements ArrayAccess, Enumerable {
 
 			$value = reset( $pair );
 
-			if ( ! isset( $dictionary[ $key ] ) ) {
-				$dictionary[ $key ] = [];
-			}
+			$dictionary[ $key ] ??= [];
 
 			$dictionary[ $key ][] = $value;
 		}
@@ -972,8 +960,8 @@ class Collection implements ArrayAccess, Enumerable {
 
 		$position = 0;
 
-		foreach ( $this->items as $item ) {
-			if ( $position % $step === $offset ) {
+		foreach ( $this->slice( $offset )->items as $item ) {
+			if ( $position % $step === 0 ) {
 				$new[] = $item;
 			}
 
@@ -1054,7 +1042,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param  TValue ...$values
 	 */
 	public function prepend_many( ...$values ): static {
-		array_unshift( $this->items, ...$values );
+		array_unshift( $this->items, ...$values ); // @phpstan-ignore-line assign.propertyType
 
 		return $this;
 	}
@@ -1066,7 +1054,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	public function push( ...$values ): static {
 		foreach ( $values as $value ) {
-			$this->items[] = $value;
+			$this->items[] = $value; // @phpstan-ignore-line assign.propertyType
 		}
 
 		return $this;
@@ -1727,7 +1715,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static
 	 */
 	public function add( $item ) {
-		$this->items[] = $item;
+		$this->items[] = $item; // @phpstan-ignore-line assign.propertyType
 
 		return $this;
 	}
@@ -1767,9 +1755,9 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	public function offsetSet( mixed $key, mixed $value ): void {
 		if ( is_null( $key ) ) {
-			$this->items[] = $value;
+			$this->items[] = $value; // @phpstan-ignore-line assign.propertyType
 		} else {
-			$this->items[ $key ] = $value;
+			$this->items[ $key ] = $value; // @phpstan-ignore-line assign.propertyType
 		}
 	}
 

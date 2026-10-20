@@ -177,7 +177,7 @@ class Bound_Method {
 		} elseif ( $parameter->isDefaultValueAvailable() ) {
 			$dependencies[] = $parameter->getDefaultValue();
 		} elseif ( ! $parameter->isOptional() && ! array_key_exists( $parameter->name, $parameters ) ) {
-			$message = "Unable to resolve dependency [{$parameter}] in class {$parameter->getDeclaringClass()->getName()}";
+			$message = "Unable to resolve dependency [{$parameter}] in class " . ( $parameter->getDeclaringClass()?->getName() ?? 'Closure' );
 
 			throw new Binding_Resolution_Exception( $message );
 		}

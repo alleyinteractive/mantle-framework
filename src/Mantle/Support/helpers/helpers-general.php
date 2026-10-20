@@ -204,10 +204,8 @@ function object_get( $object, $key, $default = null ) {
 function preg_replace_array( $pattern, array $replacements, $subject ): ?string {
 	return preg_replace_callback(
 		$pattern,
-		function () use ( &$replacements ) {
-			foreach ( $replacements as $replacement ) {
-				return array_shift( $replacements );
-			}
+		function () use ( &$replacements ): string {
+			return array_shift( $replacements ) ?? '';
 		},
 		$subject
 	);
@@ -451,7 +449,10 @@ function html_string( string $html ): HTML {
 function capture( callable $callback ): string {
 	ob_start();
 	$callback();
-	return ob_get_clean();
+
+	$output = ob_get_clean();
+
+	return false === $output ? '' : $output;
 }
 
 /**

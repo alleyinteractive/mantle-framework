@@ -25,7 +25,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Throwable;
 
@@ -58,6 +60,7 @@ class Handler implements Contract {
 		\Symfony\Component\Console\Exception\RuntimeException::class,
 		Authentication_Error::class,
 		HttpException::class,
+		MethodNotAllowedException::class,
 		Model_Not_Found_Exception::class,
 		ResourceNotFoundException::class,
 	];
@@ -213,6 +216,7 @@ class Handler implements Contract {
 		return match ( true ) {
 			$e instanceof Model_Not_Found_Exception => new NotFoundHttpException( $e->getMessage(), $e, 404 ),
 			$e instanceof ResourceNotFoundException => new NotFoundHttpException( $e->getMessage(), $e, 404 ),
+			$e instanceof MethodNotAllowedException => new MethodNotAllowedHttpException( $e->getAllowedMethods(), $e->getMessage(), $e ),
 			default => $e,
 		};
 	}

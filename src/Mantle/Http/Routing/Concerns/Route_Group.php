@@ -134,7 +134,7 @@ trait Route_Group {
 		return array_merge_recursive(
 			Arr::except(
 				$old,
-				[ 'namespace', 'prefix', 'where', 'as' ]
+				[ 'namespace', 'prefix', 'where', 'as', 'as_prefix' ]
 			),
 			$new
 		);
@@ -199,6 +199,10 @@ trait Route_Group {
 	protected static function format_as( array $new, array $old ): array {
 		if ( isset( $old['as'] ) ) {
 			$new['as'] = $old['as'] . ( $new['as'] ?? '' );
+		}
+
+		if ( isset( $old['as_prefix'] ) ) {
+			$new['as_prefix'] = $old['as_prefix'] . ( $new['as_prefix'] ?? '' );
 		}
 
 		return $new;

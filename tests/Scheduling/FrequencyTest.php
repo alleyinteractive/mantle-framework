@@ -11,7 +11,7 @@ class FrequencyTest extends FrameworkTestCase {
 	/*
 	 * @var Event
 	 */
-	protected $event;
+	protected Event $event;
 
 	protected function setUp(): void {
 		parent::setUp();

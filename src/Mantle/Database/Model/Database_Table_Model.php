@@ -84,7 +84,8 @@ abstract class Database_Table_Model extends Model implements Updatable {
 				[ static::$primary_key => $this->get_attribute( static::$primary_key ) ],
 			);
 
-			if ( ! $result ) {
+			// Zero affected rows is a successful no-op update, not a failure.
+			if ( false === $result ) {
 				throw new Model_Exception(
 					sprintf(
 						'Failed to update %s table. Please check your database connection and permissions.',

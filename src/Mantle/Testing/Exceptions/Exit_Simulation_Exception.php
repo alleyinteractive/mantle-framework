@@ -28,9 +28,7 @@ class Exit_Simulation_Exception extends Response_Exception {
 	 */
 	public function __construct( public readonly int $exit_status = 0, public readonly ?int $response_code = null, array $headers = [], ?string $message = null ) {
 		// If no response code is provided, use the current HTTP response code.
-		if ( null === $response_code ) {
-			$response_code = http_response_code();
-		}
+		$response_code ??= http_response_code();
 
 		parent::__construct(
 			status: is_int( $response_code ) ? $response_code : 200,

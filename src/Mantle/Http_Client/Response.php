@@ -61,9 +61,9 @@ class Response implements ArrayAccess, ResponseContract {
 	/**
 	 * The decoded JSON response.
 	 *
-	 * @var array<string, mixed>|null
+	 * @var array<string, mixed>|scalar|null
 	 */
-	protected ?array $decoded = null;
+	protected mixed $decoded = null;
 
 	/**
 	 * The decoded XML Element response.
@@ -382,9 +382,7 @@ class Response implements ArrayAccess, ResponseContract {
 	 * @return mixed
 	 */
 	public function json( ?string $key = null, mixed $default = null ) {
-		if ( $this->decoded === null ) {
-			$this->decoded = json_decode( $this->body(), true );
-		}
+		$this->decoded ??= json_decode( $this->body(), true );
 
 		if ( is_null( $key ) ) {
 			return $this->decoded;

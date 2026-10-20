@@ -94,6 +94,14 @@ abstract class TestCase extends BaseTestCase {
 	protected ?Application $app = null;
 
 	/**
+	 * Whether setUp() started for this test.
+	 *
+	 * PHPUnit 12.5.40 and later skip setUp() when a #[Before] hook skips the
+	 * test, but still call tearDown().
+	 */
+	private bool $set_up_started = false;
+
+	/**
 	 * Factory Instance.
 	 */
 	protected static ?Factory_Container $factory;
@@ -178,6 +186,8 @@ abstract class TestCase extends BaseTestCase {
 	 * Runs the routine before each test is executed.
 	 */
 	protected function setUp(): void {
+		$this->set_up_started = true;
+
 		set_time_limit( 0 );
 
 		parent::setUp();
@@ -221,8 +231,17 @@ abstract class TestCase extends BaseTestCase {
 
 	/**
 	 * After a test method runs, reset any state in WordPress the test method might have changed.
+	 *
+	 * @throws \Throwable Re-throws the first exception raised by a trait teardown once cleanup completes.
 	 */
 	protected function tearDown(): void {
+		// Nothing was set up (a #[Before] hook skipped the test), so there is nothing to clean up.
+		if ( ! $this->set_up_started ) {
+			parent::tearDown();
+
+			return;
+		}
+
 		// phpcs:disable WordPress.WP.GlobalVariablesOverride,WordPress.NamingConventions.PrefixAllGlobals
 		global $wp_query, $wp_the_query, $wp;
 
@@ -231,15 +250,24 @@ abstract class TestCase extends BaseTestCase {
 			$this->tear_down();
 		}
 
+		$teardown_exception = null;
+
 		static::get_test_case_traits()
 			// Tearing down requires performing priority traits in opposite order.
 			->reverse()
 			->each(
-				function ( string|object $trait ): void {
+				function ( string|object $trait ) use ( &$teardown_exception ): void {
 					$method = strtolower( class_basename( $trait ) ) . '_tear_down';
 
-					if ( method_exists( $this, $method ) ) {
+					if ( ! method_exists( $this, $method ) ) {
+						return;
+					}
+
+					// A failed expectation must not skip the remaining cleanup (rollback, hooks, user).
+					try {
 						$this->{$method}();
+					} catch ( \Throwable $e ) {
+						$teardown_exception ??= $e;
 					}
 				}
 			);
@@ -289,6 +317,10 @@ abstract class TestCase extends BaseTestCase {
 		static::restore_hooks();
 		wp_set_current_user( 0 );
 		$this->reset_lazyload_queue();
+
+		unset( $GLOBALS['current_screen'] );
+
+		Utils::reset_server();
 		// phpcs:enable
 
 		parent::tearDown();
@@ -300,6 +332,10 @@ abstract class TestCase extends BaseTestCase {
 			if ( class_exists( Facade::class ) ) {
 				Facade::set_facade_application( null );
 			}
+		}
+
+		if ( $teardown_exception ) {
+			throw $teardown_exception;
 		}
 	}
 
@@ -373,9 +409,7 @@ abstract class TestCase extends BaseTestCase {
 	 * Fetches the factory object for generating WordPress fixtures.
 	 */
 	public static function factory(): Factory_Container {
-		if ( ! isset( static::$factory ) ) {
-			static::$factory = Container::get_instance()->make( Factory_Container::class );
-		}
+		static::$factory ??= Container::get_instance()->make( Factory_Container::class );
 
 		assert( static::$factory instanceof Factory_Container );
 

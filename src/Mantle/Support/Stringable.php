@@ -318,10 +318,8 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 
 	/**
 	 * Determine if a given string is a valid UUID.
-	 *
-	 * @return bool
 	 */
-	public function is_uuid() {
+	public function is_uuid(): bool {
 		return Str::is_uuid( $this->value );
 	}
 
@@ -1036,11 +1034,13 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * @return \Carbon\Carbon
 	 */
 	public function to_date( $format = null, $tz = null ): ?\Carbon\Carbon {
+		$tz = $tz ?: ( function_exists( 'wp_timezone' ) ? wp_timezone() : new \DateTimeZone( 'UTC' ) );
+
 		if ( is_null( $format ) ) {
-			return Date::parse( $this->value, $tz ?: wp_timezone() );
+			return Date::parse( $this->value, $tz );
 		}
 
-		return Date::createFromFormat( $format, $this->value, $tz ?: wp_timezone() );
+		return Date::createFromFormat( $format, $this->value, $tz );
 	}
 
 	/**
