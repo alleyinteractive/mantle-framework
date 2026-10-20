@@ -14,15 +14,9 @@ use Mantle\Framework\Console\Generators\Stub_Generator_Command;
 use Mockery as m;
 
 class GeneratorCommandTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
-	/**
-	 * @var Application
-	 */
-	protected $app;
+	protected Application $app;
 
-	/**
-	 * @var Test_Generator_Public
-	 */
-	protected $command;
+	protected Test_Generator_Public $command;
 
 	public function setUp(): void {
 		parent::setUp();

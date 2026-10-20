@@ -33,16 +33,24 @@ class AssertionsTest extends FrameworkTestCase {
 	}
 
 	public function test_query_true(): void {
-		$this->get( '/' )->assertQueryTrue( 'is_home', 'is_front_page' );
-		$this->get( static::factory()->post->create_and_get() )->assertQueryTrue( 'is_single', 'is_singular' );
+		$this->get( '/' )
+			->assertOk()
+			->assertQueryTrue( 'is_home', 'is_front_page' );
+		$this->get( static::factory()->post->create_and_get() )
+			->assertOk()
+			->assertQueryTrue( 'is_single', 'is_singular' );
 	}
 
 	public function test_queried_object(): void {
 		$post = static::factory()->post->create_and_get();
 
-		$this->get( $post )->assertQueriedObject( $post )->assertQueriedObjectId( $post->ID );
+		$this->get( $post )
+			->assertOk()
+			->assertQueriedObject( $post )->assertQueriedObjectId( $post->ID );
 
-		$this->get( '/' )->assertQueriedObjectNull();
+		$this->get( '/' )
+			->assertOk()
+			->assertQueriedObjectNull();
 	}
 
 	public function test_assert_post_exists(): void {

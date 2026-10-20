@@ -3,6 +3,7 @@ namespace Mantle\Tests\Queue\Providers;
 
 use Mantle\Contracts\Queue\Can_Queue;
 use Mantle\Contracts\Queue\Job;
+use Mantle\Database\Model\Model_Exception;
 use Mantle\Queue\Dispatchable;
 use Mantle\Queue\Events\Job_Failed;
 use Mantle\Queue\Providers\WordPress\Meta_Key;
@@ -114,6 +115,36 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		] );
 	}
 
+	public function test_job_string_properties_keep_their_backslashes() {
+		$_SERVER['__slashed_job'] = null;
+
+		$job = new Slashed_Job( 'Mantle\\Tests\\Example' );
+
+		dispatch( $job );
+
+		$this->assertSame( 'Mantle\\Tests\\Example', $job->value );
+		$this->assertJobQueued( $job );
+
+		$this->dispatch_queue();
+
+		$this->assertSame( 'Mantle\\Tests\\Example', $_SERVER['__slashed_job'] );
+	}
+
+	public function test_job_is_not_slashed_when_storing_it_fails() {
+		$job = new Slashed_Job( 'Mantle\\Tests\\Example' );
+
+		add_filter( 'wp_insert_post_empty_content', '__return_true' );
+
+		try {
+			( new Provider( $this->app ) )->push( $job );
+			$this->fail( 'Expected the job insert to fail.' );
+		} catch ( Model_Exception ) {
+			// Expected.
+		}
+
+		$this->assertSame( 'Mantle\\Tests\\Example', $job->value );
+	}
+
 	public function test_job_dispatch_now() {
 		$this->assertNotInCronQueue( Example_Job::class );
 
@@ -144,7 +175,7 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		$this->dispatch_queue();
 
 		$this->assertNotInCronQueue( Job_To_Fail::class );
-		$this->assertEquals( 2, $_SERVER['__failed_run'] );
+		$this->assertSame( 2, $_SERVER['__failed_run'] );
 
 		// Ensure that the post does not exist.
 		$this->assertPostExists( [
@@ -260,14 +291,14 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 
 		// With max_concurrent_batches set to 10 and 100 jobs dispatched, we should
 		// have 10 queue jobs scheduled to run.
-		$this->assertEquals( 10, Scheduler::get_scheduled_count() );
+		$this->assertSame( 10, Scheduler::get_scheduled_count() );
 
 		$this->dispatch_queue( 100 );
 
 		Scheduler::schedule_on_shutdown();
 
 		// Ensure the scheduled jobs are cleaned up.
-		$this->assertEquals( 0, Scheduler::get_scheduled_count() );
+		$this->assertSame( 0, Scheduler::get_scheduled_count() );
 	}
 
 	public function test_schedule_does_not_overschedule_when_underutilized() {
@@ -280,7 +311,7 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 
 		Scheduler::schedule_on_shutdown();
 
-		$this->assertEquals( 1, Scheduler::get_scheduled_count() );
+		$this->assertSame( 1, Scheduler::get_scheduled_count() );
 	}
 
 	public function test_failed_job() {
@@ -293,7 +324,7 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		$this->dispatch_queue();
 
 		$this->assertNotInCronQueue( Job_To_Fail::class );
-		$this->assertEquals( 1, $_SERVER['__failed_run'] );
+		$this->assertSame( 1, $_SERVER['__failed_run'] );
 
 		$this->assertPostExists( [
 			'post_type'    => Provider::OBJECT_NAME,
@@ -313,13 +344,13 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		$this->dispatch_queue();
 
 		// First failure.
-		$this->assertEquals( 1, $_SERVER['__failed_run'] );
+		$this->assertSame( 1, $_SERVER['__failed_run'] );
 		$this->assertInCronQueue( Job_To_Fail_Retry::class );
 
 		$this->dispatch_queue();
 
 		// Ensure it didn't run (it should be delayed 30 seconds).
-		$this->assertEquals( 1, $_SERVER['__failed_run'] );
+		$this->assertSame( 1, $_SERVER['__failed_run'] );
 		$this->assertInCronQueue( Job_To_Fail_Retry::class );
 	}
 
@@ -444,4 +475,14 @@ class Job_To_Fail_Retry extends Job_To_Fail {
 	public bool $retry = true;
 
 	public int $retry_backoff = 30;
+}
+
+class Slashed_Job implements Job, Can_Queue {
+	use Queueable, Dispatchable;
+
+	public function __construct( public string $value ) {}
+
+	public function handle(): void {
+		$_SERVER['__slashed_job'] = $this->value;
+	}
 }

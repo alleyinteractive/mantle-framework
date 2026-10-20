@@ -5,10 +5,7 @@ use Mantle\Config\Repository;
 use PHPUnit\Framework\TestCase;
 
 class RepositoryTest extends TestCase {
-	/**
-	 * @var Repository
-	 */
-	protected $repository;
+	protected Repository $repository;
 
 	/**
 	 * Setup the unit test.

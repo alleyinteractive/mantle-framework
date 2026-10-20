@@ -16,7 +16,7 @@ use Mockery as m;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FilesystemAdapterTest extends TestCase {
-	private $temp_dir;
+	private string $temp_dir;
 
 	private Flysystem $filesystem;
 

@@ -117,6 +117,7 @@ class ElementAssertionsTest extends FrameworkTestCase {
 		] );
 
 		$this->get( $post )
+				->assertOk()
 				->assertBlockExists( 'testable-vendor/block-name' )
 				->assertBlockExists( 'testable-vendor/block-name', 1 )
 				->assertBlockExists( 'testable-vendor/block-name', 1, 'div' )

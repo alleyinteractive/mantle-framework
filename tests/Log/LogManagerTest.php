@@ -10,20 +10,11 @@ use Monolog\Handler\TestHandler;
 
 class LogManagerTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
-	/**
-	 * @var Application
-	 */
-	protected $app;
+	protected Application $app;
 
-	/**
-	 * @var Log_Manager
-	 */
-	protected $instance;
+	protected Log_Manager $instance;
 
-	/**
-	 * @var TestHandler
-	 */
-	protected $handler;
+	protected TestHandler $handler;
 
 	protected function setUp(): void {
 		parent::setUp();

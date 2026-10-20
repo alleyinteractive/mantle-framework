@@ -22,19 +22,15 @@ use PHPUnit\Framework\Attributes\Group;
 class DispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	/**
 	 * Provider instance.
-	 *
-	 * @var Provider
 	 */
-	protected $provider;
+	protected Provider $provider;
 
 	/**
 	 * Queue Manager instance.
-	 *
-	 * @var Queue_Manager
 	 */
-	protected $queue;
+	protected Queue_Manager $queue;
 
-	protected $app;
+	protected Application $app;
 
 	protected function setUp(): void {
 		parent::setUp();

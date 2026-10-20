@@ -5,10 +5,7 @@ use Faker\Factory;
 use Mantle\Faker\Faker_Provider;
 
 class FakerTest extends \PHPUnit\Framework\TestCase {
-	/**
-	 * @var Factory&Faker_Provider
-	 */
-	protected $faker;
+	protected \Faker\Generator $faker;
 
 	protected function setUp(): void {
 		parent::setUp();

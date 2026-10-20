@@ -150,6 +150,32 @@ class RestApiRoutingTest extends FrameworkTestCase {
 			->assertContent( json_encode( 'public' ) );
 	}
 
+	public function test_registrar_prefix_applies_to_rest_route(): void {
+		Route::prefix( 'prefixed' )->rest_api( 'namespace/v1', '/rest-prefix', fn () => 'rest-prefix' );
+
+		$this->get( rest_url( '/namespace/v1/prefixed/rest-prefix' ) )
+			->assertOk()
+			->assertContent( json_encode( 'rest-prefix' ) );
+	}
+
+	public function test_registrar_prefix_applies_to_rest_route_in_callback(): void {
+		Route::rest_api(
+			'namespace/v1',
+			function (): void {
+				Route::prefix( 'inner' )->get( '/rest-inner-prefix', fn () => 'inner-prefix' );
+				Route::get( '/rest-no-prefix', fn () => 'no-prefix' );
+			},
+		);
+
+		$this->get( rest_url( '/namespace/v1/inner/rest-inner-prefix' ) )
+			->assertOk()
+			->assertContent( json_encode( 'inner-prefix' ) );
+
+		$this->get( rest_url( '/namespace/v1/rest-no-prefix' ) )
+			->assertOk()
+			->assertContent( json_encode( 'no-prefix' ) );
+	}
+
 	public function test_same_path_in_different_namespaces(): void {
 		Route::rest_api( 'namespace-a/v1', '/same-path', fn () => 'a' );
 		Route::rest_api( 'namespace-b/v1', '/same-path', fn () => 'b' );
