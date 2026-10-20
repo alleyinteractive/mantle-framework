@@ -84,6 +84,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - A throwing trait teardown (an unexpected incorrect usage, deprecation, or hook expectation) no longer skips the database rollback, hook restore, and current user reset for that test.
 - `$_SERVER` and `current_screen` are reset after every test.
+- A test skipped by a `#[Before]` hook (such as `Multisite_Test` and `Single_Site_Test`) is no longer reported as an error on PHPUnit 12.5.40 and later, which does not run `setUp()` for it but still runs `tearDown()`.
 - REST requests made with the test client are served once instead of once per request made so far in the test.
 - `wp_scripts` and `wp_styles` are deep-copied so localized and inline data on core handles no longer leaks between tests.
 - User roles and capabilities are restored between tests (#828).
