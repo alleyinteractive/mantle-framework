@@ -591,7 +591,7 @@ class Collection implements ArrayAccess, Enumerable {
 		$result = new static( $results );
 
 		if ( ! empty( $next_groups ) ) {
-			return $result->map->group_by( $next_groups, $preserve_keys ); // @phpstan-ignore-line undefined method
+			return $result->map->group_by( $next_groups, $preserve_keys );
 		}
 
 		return $result;
