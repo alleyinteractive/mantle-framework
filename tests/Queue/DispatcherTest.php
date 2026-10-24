@@ -12,6 +12,7 @@ use Mantle\Queue\Dispatchable;
 use Mantle\Queue\Dispatcher;
 use Mantle\Queue\Queue_Manager;
 use Mockery as m;
+use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\Group;
 
 /**
@@ -23,7 +24,7 @@ class DispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	/**
 	 * Provider instance.
 	 */
-	protected Provider $provider;
+	protected Provider&MockInterface $provider;
 
 	/**
 	 * Queue Manager instance.
@@ -60,7 +61,7 @@ class DispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		Facade::set_facade_application( $this->app );
 	}
 
-	public function test_dispatch_to_provider() {
+	public function test_dispatch_to_provider(): void {
 		$job = m::mock( Job::class, Can_Queue::class );
 		$this->provider
 			->shouldReceive( 'push' )
@@ -72,7 +73,7 @@ class DispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$dispatcher->dispatch( $job );
 	}
 
-	public function test_dispatch_non_queueable() {
+	public function test_dispatch_non_queueable(): void {
 		$job = m::mock( Job::class );
 		$job->shouldReceive( 'handle' )->once();
 
@@ -80,7 +81,7 @@ class DispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$dispatcher->dispatch( $job );
 	}
 
-	public function test_pending_dispatch() {
+	public function test_pending_dispatch(): void {
 		$job = m::mock( Job::class, Dispatchable::class, Can_Queue::class );
 		$this->provider
 			->shouldReceive( 'push' )
@@ -90,7 +91,7 @@ class DispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		get_class( $job )::dispatch( [] );
 	}
 
-	public function test_pending_dispatch_if() {
+	public function test_pending_dispatch_if(): void {
 		$job = m::mock( Job::class, Dispatchable::class, Can_Queue::class );
 		$this->provider
 			->shouldReceive( 'push' )
@@ -102,7 +103,7 @@ class DispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		get_class( $job )::dispatch_if( false, [] );
 	}
 
-	public function test_dispatch_after_response() {
+	public function test_dispatch_after_response(): void {
 		$job = m::mock( Job::class, Dispatchable::class, Can_Queue::class, [ 'handle' => null ] );
 		$job->shouldReceive( 'handle' )->once();
 

@@ -9,7 +9,7 @@ use RuntimeException;
 
 class PipelineTest extends TestCase {
 
-	public function testPipelineBasicUsage() {
+	public function testPipelineBasicUsage(): void {
 		$pipeTwo = function ( $piped, $next ) {
 			$_SERVER['__test.pipe.two'] = $piped;
 
@@ -33,7 +33,7 @@ class PipelineTest extends TestCase {
 		unset( $_SERVER['__test.pipe.two'] );
 	}
 
-	public function testPipelineUsageWithObjects() {
+	public function testPipelineUsageWithObjects(): void {
 		$result = ( new Pipeline( new Container() ) )
 			->send( 'foo' )
 			->through( array( new PipelineTestPipeOne() ) )
@@ -49,7 +49,7 @@ class PipelineTest extends TestCase {
 		unset( $_SERVER['__test.pipe.one'] );
 	}
 
-	public function testPipelineUsageWithInvokableObjects() {
+	public function testPipelineUsageWithInvokableObjects(): void {
 		$result = ( new Pipeline( new Container() ) )
 			->send( 'foo' )
 			->through( array( new PipelineTestPipeTwo() ) )
@@ -65,7 +65,7 @@ class PipelineTest extends TestCase {
 		unset( $_SERVER['__test.pipe.one'] );
 	}
 
-	public function testPipelineUsageWithCallable() {
+	public function testPipelineUsageWithCallable(): void {
 		$function = function ( $piped, $next ) {
 			$_SERVER['__test.pipe.one'] = 'foo';
 
@@ -97,7 +97,7 @@ class PipelineTest extends TestCase {
 		unset( $_SERVER['__test.pipe.one'] );
 	}
 
-	public function testPipelineUsageWithInvokableClass() {
+	public function testPipelineUsageWithInvokableClass(): void {
 		$result = ( new Pipeline( new Container() ) )
 			->send( 'foo' )
 			->through( array( PipelineTestPipeTwo::class ) )
@@ -113,7 +113,7 @@ class PipelineTest extends TestCase {
 		unset( $_SERVER['__test.pipe.one'] );
 	}
 
-	public function testPipelineUsageWithParameters() {
+	public function testPipelineUsageWithParameters(): void {
 		$parameters = array( 'one', 'two' );
 
 		$result = ( new Pipeline( new Container() ) )
@@ -131,7 +131,7 @@ class PipelineTest extends TestCase {
 		unset( $_SERVER['__test.pipe.parameters'] );
 	}
 
-	public function testPipelineViaChangesTheMethodBeingCalledOnThePipes() {
+	public function testPipelineViaChangesTheMethodBeingCalledOnThePipes(): void {
 		$pipelineInstance = new Pipeline( new Container() );
 		$result           = $pipelineInstance->send( 'data' )
 			->through( PipelineTestPipeOne::class )
@@ -144,7 +144,7 @@ class PipelineTest extends TestCase {
 		$this->assertSame( 'data', $result );
 	}
 
-	public function testPipelineThrowsExceptionOnResolveWithoutContainer() {
+	public function testPipelineThrowsExceptionOnResolveWithoutContainer(): void {
 		$this->expectException( RuntimeException::class );
 		$this->expectExceptionMessage( 'A container instance has not been passed to the Pipeline.' );
 
@@ -157,7 +157,7 @@ class PipelineTest extends TestCase {
 			);
 	}
 
-	public function testPipelineThenReturnMethodRunsPipelineThenReturnsPassable() {
+	public function testPipelineThenReturnMethodRunsPipelineThenReturnsPassable(): void {
 		$result = ( new Pipeline( new Container() ) )
 					->send( 'foo' )
 					->through( array( PipelineTestPipeOne::class ) )
@@ -172,20 +172,20 @@ class PipelineTest extends TestCase {
 
 class PipelineTestPipeOne {
 
-	public function handle( $piped, $next ) {
+	public function handle( mixed $piped, callable $next ): mixed {
 		$_SERVER['__test.pipe.one'] = $piped;
 
 		return $next( $piped );
 	}
 
-	public function differentMethod( $piped, $next ) {
+	public function differentMethod( mixed $piped, callable $next ): mixed {
 		return $next( $piped );
 	}
 }
 
 class PipelineTestPipeTwo {
 
-	public function __invoke( $piped, $next ) {
+	public function __invoke( mixed $piped, callable $next ): mixed {
 		$_SERVER['__test.pipe.one'] = $piped;
 
 		return $next( $piped );
@@ -194,7 +194,7 @@ class PipelineTestPipeTwo {
 
 class PipelineTestParameterPipe {
 
-	public function handle( $piped, $next, $parameter1 = null, $parameter2 = null ) {
+	public function handle( mixed $piped, callable $next, mixed $parameter1 = null, mixed $parameter2 = null ): mixed {
 		$_SERVER['__test.pipe.parameters'] = array( $parameter1, $parameter2 );
 
 		return $next( $piped );

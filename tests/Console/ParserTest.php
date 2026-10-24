@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class ParserTest extends TestCase {
 
-	public function testArgumentDescriptionContainingDashes() {
+	public function testArgumentDescriptionContainingDashes(): void {
 		$results = Parser::parse( 'make:thing {name : The name (use --force to overwrite)} {--dry-run : Do not --write}' );
 
 		$this->assertSame( 'make:thing', $results[0] );
@@ -18,7 +18,7 @@ class ParserTest extends TestCase {
 		$this->assertSame( 'dry-run', $results[2][0]->getName() );
 	}
 
-	public function testBasicParameterParsing() {
+	public function testBasicParameterParsing(): void {
 		$results = Parser::parse( 'command:name' );
 
 		$this->assertSame( 'command:name', $results[0] );
@@ -78,7 +78,7 @@ class ParserTest extends TestCase {
 		$this->assertTrue( $results[2][0]->isArray() );
 	}
 
-	public function testShortcutNameParsing() {
+	public function testShortcutNameParsing(): void {
 		$results = Parser::parse( 'command:name {--o|option}' );
 
 		$this->assertSame( 'o', $results[2][0]->getShortcut() );
@@ -121,7 +121,7 @@ class ParserTest extends TestCase {
 		$this->assertTrue( $results[2][0]->isArray() );
 	}
 
-	public function testDefaultValueParsing() {
+	public function testDefaultValueParsing(): void {
 		$results = Parser::parse( 'command:name {argument=defaultArgumentValue} {--option=defaultOptionValue}' );
 
 		$this->assertFalse( $results[1][0]->isRequired() );
@@ -139,7 +139,7 @@ class ParserTest extends TestCase {
 		$this->assertSame( [ 'defaultOptionValue1', 'defaultOptionValue2' ], $results[2][0]->getDefault() );
 	}
 
-	public function testArgumentDefaultValue() {
+	public function testArgumentDefaultValue(): void {
 		$results = Parser::parse( 'command:name {argument= : The argument description.}' );
 		$this->assertNull( $results[1][0]->getDefault() );
 
@@ -147,7 +147,7 @@ class ParserTest extends TestCase {
 		$this->assertSame( 'default', $results[1][0]->getDefault() );
 	}
 
-	public function testOptionDefaultValue() {
+	public function testOptionDefaultValue(): void {
 		$results = Parser::parse( 'command:name {--option= : The option description.}' );
 		$this->assertNull( $results[2][0]->getDefault() );
 
@@ -155,14 +155,14 @@ class ParserTest extends TestCase {
 		$this->assertSame( 'default', $results[2][0]->getDefault() );
 	}
 
-	public function testNameIsSpacesException() {
+	public function testNameIsSpacesException(): void {
 		$this->expectException( InvalidArgumentException::class );
 		$this->expectExceptionMessage( 'Unable to determine command name from signature.' );
 
 		Parser::parse( " \t\n\r\x0B\f" );
 	}
 
-	public function testNameInEmptyException() {
+	public function testNameInEmptyException(): void {
 		$this->expectException( InvalidArgumentException::class );
 		$this->expectExceptionMessage( 'Unable to determine command name from signature.' );
 

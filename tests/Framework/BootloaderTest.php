@@ -33,28 +33,34 @@ class BootloaderTest extends TestCase {
 		parent::tearDown();
 	}
 
-	public function test_it_can_create_an_instance() {
-		$this->assertInstanceOf( Bootloader::class, Bootloader::get_instance() );
-		$this->assertNotNull( Bootloader::get_instance()->get_base_path() );
+	public function test_it_can_create_an_instance(): void {
+		$instance = $this->opaque( Bootloader::get_instance() );
+
+		$this->assertInstanceOf( Bootloader::class, $instance );
+
+		$proxy = $this->opaque( Bootloader::get_instance() );
+
+		$this->assertNotNull( $proxy->get_base_path() );
 	}
 
-	public function test_it_set_basepath_from_env() {
+	public function test_it_set_basepath_from_env(): void {
 		$_ENV['MANTLE_BASE_PATH'] = '/foo/bar';
 
-		$this->assertSame( '/foo/bar', Bootloader::get_instance()->get_base_path() );
+		$this->assertSame( '/foo/bar', $this->opaque( Bootloader::get_instance() )->get_base_path() );
 	}
 
-	public function test_it_can_be_used_by_helper() {
-		$this->assertInstanceOf( Bootloader::class, bootloader() );
+	public function test_it_can_be_used_by_helper(): void {
+		$this->assertSame( Bootloader::get_instance(), bootloader() );
+		$this->assertInstanceOf( Bootloader::class, $this->opaque( bootloader() ) );
 	}
 
-	public function test_it_will_set_instance_on_construct() {
+	public function test_it_will_set_instance_on_construct(): void {
 		$manager = new Bootloader();
 
 		$this->assertSame( $manager, Bootloader::get_instance() );
 	}
 
-	public function test_it_can_bind_custom_kernel() {
+	public function test_it_can_bind_custom_kernel(): void {
 		bootloader()
 			->with_kernels( http: Testable_Http_Kernel::class )
 			->boot();
@@ -72,7 +78,7 @@ class BootloaderTest extends TestCase {
 		);
 	}
 
-	public function test_it_can_boot_application() {
+	public function test_it_can_boot_application(): void {
 		$this->expectApplied( 'mantle_bootloader_before_boot' )->once();
 		$this->expectApplied( 'mantle_bootloader_booted' )->once();
 
@@ -98,7 +104,7 @@ class BootloaderTest extends TestCase {
 		$this->assertTrue( app()->has_been_bootstrapped() );
 	}
 
-	public function test_it_can_setup_routing() {
+	public function test_it_can_setup_routing(): void {
 		add_filter( 'wp_using_themes', fn () => true, 99 );
 
 		bootloader()
@@ -123,9 +129,13 @@ class BootloaderTest extends TestCase {
 		$this->assertSame( 'Hello World', $response->getContent() );
 	}
 
-	public function test_it_can_setup_routing_closure() {
+	public function test_it_can_setup_routing_closure(): void {
 		bootloader()
-			->with_routing( fn () => Route::get( '/example-closure', fn () => 'Hello Closure' ) )
+			->with_routing(
+				function (): void {
+					Route::get( '/example-closure', fn () => 'Hello Closure' );
+				}
+			)
 			->boot();
 
 		$app = app();
@@ -143,7 +153,7 @@ class BootloaderTest extends TestCase {
 		$this->assertSame( 'Hello Closure', $response->getContent() );
 	}
 
-	public function test_it_can_setup_providers() {
+	public function test_it_can_setup_providers(): void {
 		$_SERVER['__test_service_provider_register__'] = false;
 		$_SERVER['__test_service_provider_boot__']    = false;
 
@@ -156,7 +166,7 @@ class BootloaderTest extends TestCase {
 		$this->assertTrue( $_SERVER['__test_service_provider_boot__'] );
 	}
 
-	public function test_it_can_setup_config() {
+	public function test_it_can_setup_config(): void {
 		( new Bootloader() )
 			->with_config( [
 				'app' => [
@@ -168,6 +178,13 @@ class BootloaderTest extends TestCase {
 
 		$this->assertSame( 'value', config( 'app.merged' ) );
 		$this->assertFalse( config( 'app.debug' ) );
+	}
+
+	/**
+	 * Return the value unchanged, typed as mixed so PHPStan cannot narrow it.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
 	}
 }
 
@@ -193,11 +210,11 @@ class Testable_Http_Kernel implements \Mantle\Contracts\Http\Kernel {
 }
 
 class Test_Service_Provider extends Service_Provider {
-	public function register() {
+	public function register(): void {
 		$_SERVER['__test_service_provider_register__'] = true;
 	}
 
-	public function boot() {
+	public function boot(): void {
 		$_SERVER['__test_service_provider_boot__'] = true;
 	}
 }

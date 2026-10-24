@@ -9,6 +9,9 @@ use PHPUnit\Framework\TestCase;
 
 class PrinterTest extends TestCase {
 	protected static string $temp_dir;
+	/**
+	 * @var array<int, string>
+	 */
 	protected static array $argv;
 
 	protected static Filesystem $filesystem;
@@ -19,7 +22,11 @@ class PrinterTest extends TestCase {
 
 		// Ensure PHPCS is loaded.
 		$reflection = new \ReflectionClass(\Composer\Autoload\ClassLoader::class);
-		$vendor_dir = dirname(dirname($reflection->getFileName()));
+		$loader_file = $reflection->getFileName();
+
+		self::assertIsString( $loader_file );
+
+		$vendor_dir = dirname( dirname( $loader_file ) );
 
 		require_once $vendor_dir . '/squizlabs/php_codesniffer/autoload.php';
 
@@ -35,7 +42,7 @@ class PrinterTest extends TestCase {
 		$_SERVER['argv'] = static::$argv;
 	}
 
-	public function test_make_class() {
+	public function test_make_class(): void {
 		$file = new PhpFile();
 
 		$file
@@ -61,7 +68,7 @@ class PrinterTest extends TestCase {
 		$this->lint_code( $file, 'class-example-class' );
 	}
 
-	public function test_make_function() {
+	public function test_make_function(): void {
 		$file = new PhpFile();
 
 		$file
@@ -86,7 +93,7 @@ class PrinterTest extends TestCase {
 		$this->lint_code( $file, 'functions-example' );
 	}
 
-	protected function lint_code( PhpFile $file, string $file_name ) {
+	protected function lint_code( PhpFile $file, string $file_name ): void {
 		$code = ( new Printer() )->printFile( $file );
 		$path = static::$temp_dir .  $file_name . '.php';
 

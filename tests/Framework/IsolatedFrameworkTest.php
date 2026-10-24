@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
  * Designed to test the application in complete isolation for use outside of a
  * mantle-based application.
  */
-class IsolatedFrameworkTest extends TestCase {
+final class IsolatedFrameworkTest extends TestCase {
 	public Application $app;
 
 	protected function setUp(): void {
@@ -34,20 +34,20 @@ class IsolatedFrameworkTest extends TestCase {
 		unset( $this->app );
 	}
 
-	public function test_can_read_the_environment() {
+	public function test_can_read_the_environment(): void {
 		putenv( 'WP_ENVIRONMENT_TYPE=staging' );
 
 		$this->assertSame( 'staging', $this->app->environment() );
 	}
 
-	public function test_can_read_the_namespace() {
+	public function test_can_read_the_namespace(): void {
 		$this->assertSame( 'App', app()->get_namespace() );
 
 		config()->set( 'app.namespace', 'MyApp' );
 		$this->assertSame( 'MyApp', app()->get_namespace() );
 	}
 
-	public function test_sets_up_facade() {
+	public function test_sets_up_facade(): void {
 		$this->assertSame( $this->app, Facade::get_facade_application() );
 	}
 }

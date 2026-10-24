@@ -107,24 +107,6 @@ parameters:
 			- tests/template-parts
 			- tests/Console/hook-usage
 
-			# Tests that still need to be fixed. Removed one group at a time.
-
-
-
-			- tests/Framework
-			- tests/Queue
-			- tests/View
-			- tests/Console
-			- tests/Events
-			- tests/Scheduling
-			- tests/Assets
-			- tests/Cache
-			- tests/Testkit
-			- tests/Config
-			- tests/Log
-			- tests/Blocks
-			- tests/Types
-			- tests/FakerTest.php
 
 services:
 	-

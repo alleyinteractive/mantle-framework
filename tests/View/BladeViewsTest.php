@@ -10,17 +10,17 @@ class BladeViewsTest extends FrameworkTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->app['view.loader']
+		app()['view.loader']
 			->clear_paths()
 			->add_path( MANTLE_PHPUNIT_TEMPLATE_PATH . '/blade', 'blade' );
 	}
 
-	public function test_basic() {
+	public function test_basic(): void {
 		$contents = (string) view( '@blade/basic', [ 'name' => 'world' ] );
 		$this->assertSame( 'Hello, world.', trim( $contents ) );
 	}
 
-	public function test_if_else() {
+	public function test_if_else(): void {
 		$this->assertStringContainsString(
 			'True!',
 			(string) view( '@blade/if-else', [ 'should_if' => true ] ),
@@ -32,7 +32,7 @@ class BladeViewsTest extends FrameworkTestCase {
 		);
 	}
 
-	public function test_include() {
+	public function test_include(): void {
 		$this->assertStringContainsString(
 			'child',
 			(string) view( '@blade/parent' )
@@ -42,7 +42,7 @@ class BladeViewsTest extends FrameworkTestCase {
 	public function test_compile_from_string(): void {
 		$this->assertSame(
 			'Hello, <?php echo e($name); ?>.',
-			Blade::compile_string( 'Hello, {{ $name }}.', [ 'name' => 'world' ] )
+			Blade::compile_string( 'Hello, {{ $name }}.' )
 		);
 	}
 
