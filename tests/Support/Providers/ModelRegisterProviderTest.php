@@ -17,7 +17,7 @@ class ModelRegisterProviderTest extends MockeryTestCase {
 		remove_all_actions( 'init' );
 	}
 
-	public function test_register_model() {
+	public function test_register_model(): void {
 		$app    = new Application();
 		$config = new Repository();
 

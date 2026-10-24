@@ -9,40 +9,40 @@ use PHPUnit\Framework\TestCase;
 
 class ForwardCallsTest extends TestCase {
 
-	public function testForward_Calls() {
+	public function testForward_Calls(): void {
 		$results = ( new Forward_CallsOne() )->forwardedTwo( 'foo', 'bar' );
 
 		$this->assertSame( array( 'foo', 'bar' ), $results );
 	}
 
-	public function testNestedForwardCalls() {
+	public function testNestedForwardCalls(): void {
 		$results = ( new Forward_CallsOne() )->forwardedBase( 'foo', 'bar' );
 
 		$this->assertSame( array( 'foo', 'bar' ), $results );
 	}
 
-	public function testMissingForwardedCallThrowsCorrectError() {
+	public function testMissingForwardedCallThrowsCorrectError(): void {
 		$this->expectException( BadMethodCallException::class );
 		$this->expectExceptionMessage( 'Call to undefined method Mantle\Tests\Support\Forward_CallsOne::missingMethod()' );
 
 		( new Forward_CallsOne() )->missingMethod( 'foo', 'bar' );
 	}
 
-	public function testMissingAlphanumericForwardedCallThrowsCorrectError() {
+	public function testMissingAlphanumericForwardedCallThrowsCorrectError(): void {
 		$this->expectException( BadMethodCallException::class );
 		$this->expectExceptionMessage( 'Call to undefined method Mantle\Tests\Support\Forward_CallsOne::this1_shouldWork_too()' );
 
 		( new Forward_CallsOne() )->this1_shouldWork_too( 'foo', 'bar' );
 	}
 
-	public function testNonForwardedErrorIsNotTamperedWith() {
+	public function testNonForwardedErrorIsNotTamperedWith(): void {
 		$this->expectException( Error::class );
 		$this->expectExceptionMessage( 'Call to undefined method Mantle\Tests\Support\Forward_CallsBase::missingMethod()' );
 
 		( new Forward_CallsOne() )->baseError( 'foo', 'bar' );
 	}
 
-	public function testthrow_bad_method_call_exception() {
+	public function testthrow_bad_method_call_exception(): void {
 		$this->expectException( BadMethodCallException::class );
 		$this->expectExceptionMessage( 'Call to undefined method Mantle\Tests\Support\Forward_CallsOne::test()' );
 
@@ -58,7 +58,7 @@ class Forward_CallsOne {
 		return $this->forward_call_to( new Forward_CallsTwo(), $method, $parameters );
 	}
 
-	public function throwTestException( $method ) {
+	public function throwTestException( $method ): void {
 		static::throw_bad_method_call_exception( $method );
 	}
 }

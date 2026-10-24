@@ -25,7 +25,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		Service_Provider::$publish_tags = [];
 	}
 
-	public function test_service_provider_registered() {
+	public function test_service_provider_registered(): void {
 		$service_provider = m::mock( Service_Provider::class )->makePartial();
 		$service_provider->shouldReceive( 'register' )->once();
 		$service_provider->shouldNotReceive( 'boot' );
@@ -36,7 +36,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertFalse( $app->is_booted() );
 	}
 
-	public function test_service_provider_booted() {
+	public function test_service_provider_booted(): void {
 		$service_provider = m::mock( Service_Provider::class )->makePartial();
 		$service_provider->shouldReceive( 'register' )->once();
 		$service_provider->shouldReceive( 'boot' )->once();
@@ -49,7 +49,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertTrue( $app->is_booted() );
 	}
 
-	public function test_hook_method_action() {
+	public function test_hook_method_action(): void {
 		$_SERVER['__hook_fired'] = false;
 
 		$app = m::mock( Application::class )->makePartial();
@@ -61,7 +61,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertTrue( $_SERVER['__hook_fired'] );
 	}
 
-	public function test_hook_method_action_alternative_name() {
+	public function test_hook_method_action_alternative_name(): void {
 		$_SERVER['__hook_fired'] = false;
 
 		$app = m::mock( Application::class )->makePartial();
@@ -73,7 +73,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertTrue( $_SERVER['__hook_fired'] );
 	}
 
-	public function test_hook_method_filter() {
+	public function test_hook_method_filter(): void {
 		$app = m::mock( Application::class )->makePartial();
 		$app->register( Provider_Test_Hook::class );
 		$app->boot();
@@ -83,7 +83,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertSame( 15, $value );
 	}
 
-	public function test_hook_attribute() {
+	public function test_hook_attribute(): void {
 		$app = m::mock( Application::class )->makePartial();
 		$app->register( Provider_Test_Hook::class );
 		$app->boot();
@@ -93,7 +93,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertTrue( $_SERVER['__custom_hook_fired'] ?? false );
 	}
 
-	public function test_filter_attribute() {
+	public function test_filter_attribute(): void {
 		$app = m::mock( Application::class )->makePartial();
 		$app->register( Provider_Test_Hook::class );
 		$app->boot();
@@ -103,7 +103,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertSame( 50, $value );
 	}
 
-	public function test_hook_attribute_deduplicate() {
+	public function test_hook_attribute_deduplicate(): void {
 		$app = m::mock( Application::class )->makePartial();
 		$app->register( Provider_Test_Hook::class );
 		$app->boot();
@@ -113,7 +113,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertSame( 10, $value );
 	}
 
-	public function test_typehint_event() {
+	public function test_typehint_event(): void {
 		$_SERVER['__custom_event_fired'] = false;
 
 		$app = m::mock( Application::class )->makePartial();
@@ -127,7 +127,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertInstanceOf( Example_Service_Provider_Event::class, $_SERVER['__custom_event_fired'] );
 	}
 
-	public function test_publishable_service_providers() {
+	public function test_publishable_service_providers(): void {
 		$app = m::mock( Application::class )->makePartial();
 		$app->register( ServiceProviderForTestingOne::class );
 		$app->register( ServiceProviderForTestingTwo::class );
@@ -218,7 +218,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		);
 	}
 
-	public function test_publishable_tags() {
+	public function test_publishable_tags(): void {
 		$app = m::mock( Application::class )->makePartial();
 		$app->register( ServiceProviderForTestingOne::class );
 		$app->register( ServiceProviderForTestingTwo::class );
@@ -227,13 +227,13 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertSame( [ 'some_tag', 'tag_one', 'tag_two' ], Service_Provider::publishable_tags() );
 	}
 
-	public function test_call_after_resolving() {
+	public function test_call_after_resolving(): void {
 		$_SERVER['__after_resolving'] = false;
 
 		$app = m::mock( Application::class )->makePartial();
 		$app->register(
 			new class ( $app ) extends Service_Provider {
-				public function register() {
+				public function register(): void {
 					$this->call_after_resolving(
 						'foo',
 						function ( $resolved ) {
@@ -255,13 +255,13 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertSame( 'one', $_SERVER['__after_resolving'] );
 	}
 
-	public function test_call_after_resolving_already_resolved() {
+	public function test_call_after_resolving_already_resolved(): void {
 		$_SERVER['__after_resolving'] = false;
 
 		$app = m::mock( Application::class )->makePartial();
 		$app->register(
 			new class ( $app ) extends Service_Provider {
-				public function register() {
+				public function register(): void {
 					$this->call_after_resolving(
 						'foo',
 						function ( $resolved ) {
@@ -305,11 +305,11 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 }
 
 class Provider_Test_Hook extends Service_Provider {
-	public function on_custom_hook() {
+	public function on_custom_hook(): void {
 		$_SERVER['__hook_fired'] = true;
 	}
 
-	public function action__my_custom_hook() {
+	public function action__my_custom_hook(): void {
 		$_SERVER['__hook_fired'] = true;
 	}
 
@@ -318,7 +318,7 @@ class Provider_Test_Hook extends Service_Provider {
 	}
 
 	#[Action('testable-attribute-hook', 20)]
-	public function handle_custom_hook() {
+	public function handle_custom_hook(): void {
 		$_SERVER['__custom_hook_fired'] = true;
 	}
 
@@ -329,7 +329,7 @@ class Provider_Test_Hook extends Service_Provider {
 	}
 
 	#[Action(Example_Service_Provider_Event::class)]
-	public function handle_custom_event( Example_Service_Provider_Event $event ) {
+	public function handle_custom_event( Example_Service_Provider_Event $event ): void {
 		$_SERVER['__custom_event_fired'] = $event;
 	}
 
@@ -340,7 +340,7 @@ class Provider_Test_Hook extends Service_Provider {
 }
 
 class ServiceProviderForTestingOne extends Service_Provider {
-	public function boot() {
+	public function boot(): void {
 		$this->publishes( [ 'source/unmarked/one' => 'destination/unmarked/one' ] );
 		$this->publishes( [ 'source/tagged/one' => 'destination/tagged/one' ], 'some_tag' );
 		$this->publishes( [ 'source/tagged/multiple' => 'destination/tagged/multiple' ], [ 'tag_one', 'tag_two' ] );
@@ -348,7 +348,7 @@ class ServiceProviderForTestingOne extends Service_Provider {
 }
 
 class ServiceProviderForTestingTwo extends Service_Provider {
-	public function boot() {
+	public function boot(): void {
 		$this->publishes( [ 'source/unmarked/two/a' => 'destination/unmarked/two/a' ] );
 		$this->publishes( [ 'source/unmarked/two/b' => 'destination/unmarked/two/b' ] );
 		$this->publishes( [ 'source/unmarked/two/c' => 'destination/tagged/two/a' ] );
@@ -368,11 +368,11 @@ class PassingValidator implements Validator {
 
 #[PassingValidator]
 class PassingValidatorServiceProvider extends Service_Provider {
-	public function register() {
+	public function register(): void {
 		$_SERVER['__service_provider_registered'] = true;
 	}
 
-	public function boot() {
+	public function boot(): void {
 		$_SERVER['__service_provider_booted'] = true;
 	}
 }
@@ -386,11 +386,11 @@ class FailingValidator implements Validator {
 
 #[FailingValidator]
 class FailingValidatorServiceProvider extends Service_Provider {
-	public function register() {
+	public function register(): void {
 		$_SERVER['__service_provider_registered'] = true;
 	}
 
-	public function boot() {
+	public function boot(): void {
 		$_SERVER['__service_provider_booted'] = true;
 	}
 }
