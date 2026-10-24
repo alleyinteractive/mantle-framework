@@ -511,7 +511,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$post_id = static::get_random_post_id();
 
 		$result = Testable_Post::query()
-			->where_raw( 'ID', $post_id )
+			->where_raw( 'ID', $this->opaque( $post_id ) )
 			->first();
 
 		$this->assertInstanceOf( Testable_Post::class, $result );
@@ -570,7 +570,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$post_id = static::get_random_post_id();
 
 		$result = Testable_Post::whereRaw( 'ID', 'unknown' )
-			->orWhereRaw( 'ID', $post_id )
+			->orWhereRaw( 'ID', $this->opaque( $post_id ) )
 			->first();
 
 		$this->assertInstanceOf( Testable_Post::class, $result );
@@ -830,6 +830,15 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 			$post->id(),
 			Testable_Post::whereMeta( Testable_Meta_Values::Meta_Key_A, Testable_Meta_Values::Meta_Value_A )->first()?->id(),
 		);
+	}
+
+	/**
+	 * Return the value unchanged, typed as mixed so PHPStan cannot narrow it.
+	 *
+	 * Used to pass an int to a parameter that is natively typed as a string.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
 	}
 }
 

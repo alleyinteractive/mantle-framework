@@ -51,7 +51,7 @@ class PostQueryRelationshipsTest extends FrameworkTestCase {
 		$missing = Testable_Post::query()->has( 'sponsor', 'non-exist' )->first();
 		$this->assertEmpty( $missing );
 
-		$expected = Testable_Post::query()->has( 'sponsor', $sponsor_id )->first();
+		$expected = Testable_Post::query()->has( 'sponsor', $this->opaque( $sponsor_id ) )->first();
 
 		$this->assertInstanceOf( Testable_Post::class, $expected );
 		$this->assertSame( $post_a, $expected->id() );
@@ -80,6 +80,15 @@ class PostQueryRelationshipsTest extends FrameworkTestCase {
 		$post_ids = static::factory()->post->create_many( 11, $args );
 		array_pop( $post_ids );
 		return $post_ids[ array_rand( $post_ids ) ];
+	}
+
+	/**
+	 * Return the value unchanged, typed as mixed so PHPStan cannot narrow it.
+	 *
+	 * Used to pass an int to a parameter that is natively typed as a string.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
 	}
 }
 

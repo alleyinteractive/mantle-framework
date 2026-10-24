@@ -196,11 +196,14 @@ class FactoryTest extends FrameworkTestCase {
 			->create_and_get()
 			->all();
 
-		$this->assertIsArray( $posts );
 		$this->assertCount( 3, $posts );
+
+		$first = $posts[0] ?? null;
+
+		$this->assertInstanceOf( Testable_Post_With_Factory::class, $first );
 		$this->assertSame(
 			'Title from the custom state',
-			$posts[0]->title,
+			$first->title,
 		);
 	}
 
@@ -210,7 +213,7 @@ class FactoryTest extends FrameworkTestCase {
 			fn () => $this->with_meta( [ 'custom_meta_key' => 'custom_meta_value' ] ),
 		);
 
-		$post_id = Testable_Post::factory()->with_custom_meta()->create();
+		$post_id = Testable_Post::factory()->__call( 'with_custom_meta', [] )->create();
 
 		$this->assertSame( 'custom_meta_value', get_post_meta( $post_id, 'custom_meta_key', true ) );
 	}

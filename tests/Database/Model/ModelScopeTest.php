@@ -27,17 +27,17 @@ class ModelScopeTest extends FrameworkTestCase {
 	public function test_multiple_local_scopes(): void {
 		$post_id = $this->get_random_post_id();
 
-		$this->assertEmpty( Testable_Post_For_Scope::active()->ofType( 'type-to-check' )->get()->to_array() );
+		$this->assertEmpty( Testable_Post_For_Scope::active()->__call( 'ofType', [ 'type-to-check' ] )->get()->to_array() );
 
 		// Now set the post as the active one.
 		update_post_meta( $post_id, 'active', '1' );
 
 		// Should still be inactive.
-		$this->assertEmpty( Testable_Post_For_Scope::active()->ofType( 'type-to-check' )->get() );
+		$this->assertEmpty( Testable_Post_For_Scope::active()->__call( 'ofType', [ 'type-to-check' ] )->get() );
 
 		update_post_meta( $post_id, 'type', 'type-to-check' );
 
-		$this->assertSame( $post_id, Testable_Post_For_Scope::active()->ofType( 'type-to-check' )->first()->id() );
+		$this->assertSame( $post_id, Testable_Post_For_Scope::active()->__call( 'ofType', [ 'type-to-check' ] )->first()->id() );
 	}
 
 	public function test_global_scope(): void {
