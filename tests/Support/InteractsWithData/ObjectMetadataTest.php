@@ -1,6 +1,7 @@
 <?php
 namespace Mantle\Tests\Support\InteractsWithDataTest;
 
+use Closure;
 use Mantle\Support\Object_Metadata;
 use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -31,14 +32,12 @@ class ObjectMetadataTest extends FrameworkTestCase {
 		$this->assertSame( 1234.0, $metadata->float() );
 	}
 
-	#[DataProvider('objectTypeProvider')]
-	public function test_get_data_helper( string $object_type ): void {
+	#[DataProvider('objectMetaHelperProvider')]
+	public function test_get_data_helper( string $object_type, Closure $method ): void {
 		$object_id = static::factory()->{$object_type}->create();
 
 		update_metadata( $object_type, $object_id, 'test_meta', 'test' );
 		update_metadata( $object_type, $object_id, 'another_test_meta', 1234 );
-
-		$method = "Mantle\\Support\\Helpers\\{$object_type}_meta";
 
 		$metadata = $method( $object_id, 'test_meta' );
 
@@ -135,11 +134,9 @@ class ObjectMetadataTest extends FrameworkTestCase {
 		$this->assertSame( 0.0, $metadata->float() );
 	}
 
-	#[DataProvider('objectTypeProvider')]
-	public function test_default_value_helper( string $object_type ): void {
+	#[DataProvider('objectMetaHelperProvider')]
+	public function test_default_value_helper( string $object_type, Closure $method ): void {
 		$object_id = static::factory()->{$object_type}->create();
-
-		$method = "Mantle\\Support\\Helpers\\{$object_type}_meta";
 
 		$metadata = $method( $object_id, 'test_meta', 'default' );
 
@@ -159,6 +156,18 @@ class ObjectMetadataTest extends FrameworkTestCase {
 			'term' => [ 'term' ],
 			'user' => [ 'user' ],
 			'comment' => [ 'comment' ],
+		];
+	}
+
+	/**
+	 * @return array<string, array{0: string, 1: Closure}>
+	 */
+	public static function objectMetaHelperProvider(): array {
+		return [
+			'post'    => [ 'post', \Mantle\Support\Helpers\post_meta( ... ) ],
+			'term'    => [ 'term', \Mantle\Support\Helpers\term_meta( ... ) ],
+			'user'    => [ 'user', \Mantle\Support\Helpers\user_meta( ... ) ],
+			'comment' => [ 'comment', \Mantle\Support\Helpers\comment_meta( ... ) ],
 		];
 	}
 }

@@ -88,7 +88,9 @@ class ApplicationTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		$app->flush();
 		$app->terminating(
-			fn() => $_SERVER['__terminating_callback'] = microtime( true ),
+			function (): void {
+				$_SERVER['__terminating_callback'] = microtime( true );
+			},
 		);
 
 		$app->terminate();
@@ -105,7 +107,7 @@ class ApplicationTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		// Ensure it is a global instance.
 		$this->assertSame( $provider, $app->get_provider( Test_App_Service_Provider::class ) );
-		$this->assertNull( $app->get_provider( \Invalid_Class::class ) );
+		$this->assertNull( $app->get_provider( Unregistered_App_Service_Provider::class ) );
 	}
 
 	public function test_is_running_in_console(): void {
@@ -144,3 +146,5 @@ class ApplicationTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 
 class Test_App_Service_Provider extends Service_Provider { }
+
+class Unregistered_App_Service_Provider extends Service_Provider { }

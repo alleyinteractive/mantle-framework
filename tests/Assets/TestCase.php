@@ -51,7 +51,7 @@ abstract class TestCase extends FrameworkTestCase {
 	}
 
 	protected function get_wp_head(): string {
-		return $this->get( '/' )->body();
+		return $this->get( '/' )->body() ?? '';
 	}
 
 	protected function reset_assets(): void {

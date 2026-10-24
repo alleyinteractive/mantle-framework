@@ -110,7 +110,6 @@ class AssetManagerTest extends TestCase {
 		// Prevent a failing test if this is removed in the future.
 		if ( ! isset( $wp_scripts->registered["masonry"] ) ) {
 			$this->markTestSkipped( "masonry is not registered in core, should change the dependency tested against" );
-			return;
 		}
 
 		$version = $wp_scripts->registered["masonry"]->ver;

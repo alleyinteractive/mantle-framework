@@ -2,6 +2,7 @@
 
 namespace Mantle\Tests\Support;
 
+use Countable;
 use Mantle\Support\Str;
 use PHPUnit\Framework\TestCase;
 
@@ -99,7 +100,10 @@ class PluralizerTest extends TestCase {
 		$this->assertPluralStudly( 'SomeUsers', 'SomeUser', collect( [ 'one', 'two' ] ) );
 	}
 
-	private function assertPluralStudly( $expected, $value, $count = 2 ) {
+	/**
+	 * @param int|array<mixed>|Countable $count Count to pluralize by.
+	 */
+	private function assertPluralStudly( string $expected, string $value, int|array|Countable $count = 2 ): void {
 		$this->assertSame( $expected, Str::plural_studly( $value, $count ) );
 	}
 }

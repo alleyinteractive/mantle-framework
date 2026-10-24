@@ -16,6 +16,11 @@ use function Mantle\Support\Helpers\get_term_object_by;
  */
 class NullableTermObjectsTest extends FrameworkTestCase {
 	/**
+	 * An ID that can never belong to a real object.
+	 */
+	private const IMPOSSIBLE_ID = PHP_INT_MAX;
+
+	/**
 	 * Test that `get_term_object()` returns a term object.
 	 */
 	public function test_term_object_returns_term(): void {
@@ -55,18 +60,26 @@ class NullableTermObjectsTest extends FrameworkTestCase {
 			]
 		);
 
-		$this->assertSame( $slug, get_term_object( $known_id, '', \OBJECT, 'edit' )->slug );
+		$this->assertIsInt( $known_id );
+
+		$found_object = get_term_object( $known_id, '', \OBJECT, 'edit' );
+
+		$this->assertInstanceOf( \WP_Term::class, $found_object );
+		$this->assertSame( $slug, $found_object->slug );
 
 		\add_filter( 'edit_term_slug', '__return_empty_string' );
 
-		$this->assertEmpty( get_term_object( $known_id, '', \OBJECT, 'edit' )->slug );
+		$found_object = get_term_object( $known_id, '', \OBJECT, 'edit' );
+
+		$this->assertInstanceOf( \WP_Term::class, $found_object );
+		$this->assertEmpty( $found_object->slug );
 	}
 
 	/**
 	 * Test that `get_term_object()` returns null when there is no term.
 	 */
-	public function test_term_object_returns_null() {
-		$found_object = get_term_object( $this->impossible_id );
+	public function test_term_object_returns_null(): void {
+		$found_object = get_term_object( self::IMPOSSIBLE_ID );
 
 		$this->assertNull( $found_object );
 	}

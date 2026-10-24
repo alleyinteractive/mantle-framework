@@ -93,7 +93,10 @@ class HelpersTest extends TestCase {
 		$this->assertSame( $expected, classname( ...$input ) );
 	}
 
-	public static function classname_provider() {
+	/**
+	 * @return array<string, array{0: array<mixed>, 1: string}>
+	 */
+	public static function classname_provider(): array {
 		return [
 			'single' => [
 				[

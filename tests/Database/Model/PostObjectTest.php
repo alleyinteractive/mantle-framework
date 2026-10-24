@@ -13,6 +13,8 @@ use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\FrameworkTestCase;
 use Mantle\Testing\Utils;
 
+use function Mantle\Support\Helpers\with;
+
 class PostObjectTest extends FrameworkTestCase {
 	use Refresh_Database;
 
@@ -26,7 +28,7 @@ class PostObjectTest extends FrameworkTestCase {
 
 	protected function tearDown(): void {
 		parent::tearDown();
-		unregister_post_type( Test_Post_Type::get_object_name() );
+		unregister_post_type( Test_Post_Type::get_registration_name() );
 	}
 
 	public function test_post_object(): void {
@@ -59,7 +61,7 @@ class PostObjectTest extends FrameworkTestCase {
 
 		$this->assertIsInt( $post_id );
 
-		$object = Testable_Post::find( $post_id );
+		$object = Testable_Post::find_or_fail( $post_id );
 
 		$parent_object = $object->parent();
 
@@ -113,7 +115,7 @@ class PostObjectTest extends FrameworkTestCase {
 		$model = Testable_Post_With_Accessor::create( [ 'title' => 'Raw Title', 'status' => 'publish' ] );
 
 		$this->assertSame( 'Prefixed Raw Title', $model->title );
-		$this->assertSame( 'Raw Title', get_post( $model->id() )->post_title );
+		$this->assertSame( 'Raw Title', get_post_field( 'post_title', $model->id() ) );
 	}
 
 	public function test_post_meta_attributes(): void {
@@ -131,7 +133,8 @@ class PostObjectTest extends FrameworkTestCase {
 		);
 
 		$object->set_meta( 'meta_key_to_set', 'meta_value_to_set' );
-		$this->assertSame( 'attr_meta_value_to_set', $object->get_meta( 'attr_meta_key_to_set' ) );
+		$meta_value = $object->get_meta( 'attr_meta_key_to_set' );
+		$this->assertSame( 'attr_meta_value_to_set', $meta_value );
 		$this->assertSame( 'attr_meta_value_to_set', \get_post_meta( $post->ID, 'attr_meta_key_to_set', true ) );
 
 		$object->save(
@@ -155,9 +158,9 @@ class PostObjectTest extends FrameworkTestCase {
 		);
 	}
 
-	public function test_schedule_published_post() {
-		$post = Post::find(
-			static::factory()->post->create(
+	public function test_schedule_published_post(): void {
+		$post = Post::find_or_fail(
+			static::factory()->post->create_and_get(
 				[
 					'post_date'   => Carbon::now()->subWeek()->toDateTimeString(),
 					'post_status' => 'publish',
@@ -186,8 +189,7 @@ class PostObjectTest extends FrameworkTestCase {
 
 		$this->assertSame( 'Updated Content', $object->post_content );
 
-		$post = \get_post( $post->ID );
-		$this->assertSame( 'Updated Content', $post->post_content );
+		$this->assertSame( 'Updated Content', get_post_field( 'post_content', $post->ID ) );
 	}
 
 	public function test_updating_with_alias(): void {
@@ -199,8 +201,7 @@ class PostObjectTest extends FrameworkTestCase {
 
 		$this->assertSame( 'Updated Title', $object->name );
 
-		$post = \get_post( $post->ID );
-		$this->assertSame( 'Updated Title', $post->post_title );
+		$this->assertSame( 'Updated Title', get_post_field( 'post_title', $post->ID ) );
 	}
 
 	public function test_updating_only_save_method(): void {
@@ -215,8 +216,7 @@ class PostObjectTest extends FrameworkTestCase {
 
 		$this->assertSame( 'Saved Through Attribute', $object->name );
 
-		$post = \get_post( $post->ID );
-		$this->assertSame( 'Saved Through Attribute', $post->post_title );
+		$this->assertSame( 'Saved Through Attribute', get_post_field( 'post_title', $post->ID ) );
 	}
 
 	public function test_delete_post(): void {
@@ -226,16 +226,12 @@ class PostObjectTest extends FrameworkTestCase {
 		// Test trashing a post.
 		$object->delete( false );
 
-		$post = \get_post( $post->ID );
-		$this->assertInstanceOf( Testable_Post::class, $object );
-		$this->assertSame( 'trash', $post->post_status );
+		$this->assertSame( 'trash', get_post_status( $post->ID ) );
 
 		// Delete the post for good.
 		$object->delete( true );
 
-		$post = \get_post( $post->ID );
-
-		$this->assertEmpty( $post );
+		$this->assertEmpty( \get_post( $post->ID ) );
 	}
 
 	public function test_creating_post_through_model(): void {
@@ -319,12 +315,16 @@ class PostObjectTest extends FrameworkTestCase {
 		$dynamic_model = Post::for( 'foo_post_type' );
 
 		$this->assertEmpty( Post::find( $post_id ) );
-		$this->assertInstanceOf( Post::class, $dynamic_model );
-		$this->assertSame( $post_id, $dynamic_model->find( $post_id )->id() );
-		$this->assertSame(
-			$post_two,
-			$dynamic_model->where( 'title', 'Post Two' )->first()->id(),
-		);
+
+		$found = $dynamic_model->find( $post_id );
+
+		$this->assertInstanceOf( Post::class, $found );
+		$this->assertSame( $post_id, $found->id() );
+
+		$found_by_title = $dynamic_model->where( 'title', 'Post Two' )->first();
+
+		$this->assertInstanceOf( Post::class, $found_by_title );
+		$this->assertSame( $post_two, $found_by_title->id() );
 
 		// Test creating a post via the dynamic model.
 		$new_post = $dynamic_model->create(
@@ -333,10 +333,8 @@ class PostObjectTest extends FrameworkTestCase {
 			]
 		);
 
-		$post = get_post( $new_post->id() );
-
-		$this->assertSame( 'foo_post_type', $post->post_type );
-		$this->assertSame( 'New Post', $post->post_title );
+		$this->assertSame( 'foo_post_type', get_post_field( 'post_type', $new_post->id() ) );
+		$this->assertSame( 'New Post', get_post_field( 'post_title', $new_post->id() ) );
 	}
 
 	public function test_query_builder(): void {
@@ -413,7 +411,7 @@ class PostObjectTest extends FrameworkTestCase {
 		$post->save();
 
 		$this->assertPostHasTerm( $post, $category );
-		$this->assertInstanceOf( Term::class, $post->terms->category[0] );
+		$this->assertInstanceOf( Term::class, with( $post->terms->category[0] ) );
 
 		$this->assertSame(
 			$category->term_id,
@@ -467,8 +465,8 @@ class PostObjectTest extends FrameworkTestCase {
 		$this->assertPostHasTerm( $new_post, $tag );
 	}
 
-	public function test_get_all() {
-		Post::all()->each->delete( true );
+	public function test_get_all(): void {
+		Post::all()->each( fn ( Post $post ) => $post->delete( true ) );
 
 		$published_post_ids = static::factory()->post->create_many( 5, [ 'post_status' => 'publish' ] );
 		$draft_post_ids     = static::factory()->post->create_many( 5, [ 'post_status' => 'draft' ] );
@@ -520,12 +518,7 @@ class PostObjectTest extends FrameworkTestCase {
 	public function test_dates_attribute(): void {
 		$post = static::factory()->post->as_models()->create_and_get();
 
-		$this->assertInstanceOf( Model_Date_Proxy::class, $post->dates );
-
-		$this->assertInstanceOf( Carbon::class, $post->dates->created );
-		$this->assertInstanceOf( Carbon::class, $post->dates->created_utc );
-		$this->assertInstanceOf( Carbon::class, $post->dates->modified );
-		$this->assertInstanceOf( Carbon::class, $post->dates->modified_utc );
+		$this->assertInstanceOf( Model_Date_Proxy::class, with( $post->dates ) );
 
 		// Test that the dates are the same as the post object.
 		$this->assertSame( $post->post_date, $post->dates->created->toDateTimeString() );
@@ -550,14 +543,16 @@ class PostObjectTest extends FrameworkTestCase {
 
 	public function test_thumbnail_relationship(): void {
 		$post          = static::factory()->post->as_models()->create_and_get();
+
 		$attachment_id = static::factory()->attachment->with_image()->create();
 
-		$this->assertInstanceOf( Post::class, $post );
+		$this->assertIsInt( $attachment_id );
+		$this->assertInstanceOf( Post::class, with( $post ) );
 
 		$post->thumbnail()->save( $attachment_id );
 
 		$this->assertInstanceOf( Attachment::class, $post->thumbnail );
-		$this->assertSame( $attachment_id, $post->thumbnail->id );
+		$this->assertSame( $attachment_id, $post->thumbnail->id() );
 		$this->assertSame( $attachment_id, get_post_thumbnail_id( $post->id() ) );
 
 		$post->thumbnail()->dissociate();

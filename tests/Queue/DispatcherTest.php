@@ -12,6 +12,7 @@ use Mantle\Queue\Dispatchable;
 use Mantle\Queue\Dispatcher;
 use Mantle\Queue\Queue_Manager;
 use Mockery as m;
+use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\Group;
 
 /**
@@ -23,7 +24,7 @@ class DispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	/**
 	 * Provider instance.
 	 */
-	protected Provider $provider;
+	protected Provider&MockInterface $provider;
 
 	/**
 	 * Queue Manager instance.

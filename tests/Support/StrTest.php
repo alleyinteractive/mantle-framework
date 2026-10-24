@@ -7,12 +7,12 @@ use Mantle\Support\Str;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Ramsey\Uuid\UuidInterface;
 use ReflectionClass;
 
-class StrTest extends TestCase {
+use function Mantle\Support\Helpers\with;
 
-	public function testStringCanBeLimitedByWords() {
+class StrTest extends TestCase {
+	public function testStringCanBeLimitedByWords(): void {
 		$this->assertSame( 'Taylor...', Str::words( 'Taylor Otwell', 1 ) );
 		$this->assertSame( 'Taylor___', Str::words( 'Taylor Otwell', 1, '___' ) );
 		$this->assertSame( 'Taylor Otwell', Str::words( 'Taylor Otwell', 3 ) );
@@ -502,11 +502,17 @@ class StrTest extends TestCase {
 			]
 		);
 
-		$this->assertSame( 'x', Str::random() );
-		$this->assertSame( 16, mb_strlen( Str::random() ) );
-		$this->assertSame( 'y', Str::random() );
-		$this->assertSame( 'z', Str::random() );
-		$this->assertSame( 16, mb_strlen( Str::random() ) );
+		$first  = Str::random();
+		$second = Str::random();
+		$third  = Str::random();
+		$fourth = Str::random();
+		$fifth  = Str::random();
+
+		$this->assertSame( 'x', $first );
+		$this->assertSame( 16, mb_strlen( $second ) );
+		$this->assertSame( 'y', $third );
+		$this->assertSame( 'z', $fourth );
+		$this->assertSame( 16, mb_strlen( $fifth ) );
 		$this->assertSame( 16, mb_strlen( Str::random() ) );
 
 		Str::create_random_strings_normally();
@@ -790,9 +796,8 @@ class StrTest extends TestCase {
 		$this->assertSame( [ 'Öffentliche', 'Überraschungen' ], Str::ucsplit( 'ÖffentlicheÜberraschungen' ) );
 	}
 
-	public function testUuid() {
-		$this->assertInstanceOf( UuidInterface::class, Str::uuid() );
-		$this->assertIsString( (string) Str::uuid() );
+	public function testUuid(): void {
+		$this->assertTrue( Str::is_uuid( (string) Str::uuid() ) );
 	}
 
 	public function testAsciiNull(): void {
@@ -858,7 +863,10 @@ class StrTest extends TestCase {
 		// $this->assertSame( 3, Str::word_count( 'МАМА МЫЛА РАМУ', 'абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ' ) );
 	}
 
-	public static function validUuidList() {
+	/**
+	 * @return array<int, array{0: string}>
+	 */
+	public static function validUuidList(): array {
 		return [
 			[ 'a0a2a2d2-0b87-4a18-83f2-2529882be2de' ],
 			[ '145a1e72-d11d-11e8-a8d5-f2801f1b9fd1' ],
@@ -873,7 +881,10 @@ class StrTest extends TestCase {
 		];
 	}
 
-	public static function invalidUuidList() {
+	/**
+	 * @return array<int, array{0: string}>
+	 */
+	public static function invalidUuidList(): array {
 		return [
 			[ 'not a valid uuid so we can test this' ],
 			[ 'zf6f8cb0-c57d-11e1-9b21-0800200c9a66' ],
@@ -888,7 +899,10 @@ class StrTest extends TestCase {
 		];
 	}
 
-	public static function strContainsProvider() {
+	/**
+	 * @return array<int, array{0: string, 1: string|iterable<string>, 2: bool, 3?: bool}>
+	 */
+	public static function strContainsProvider(): array {
 		return [
 			[ 'Taylor', 'ylo', true, true ],
 			[ 'Taylor', 'ylo', true, false ],
@@ -906,7 +920,10 @@ class StrTest extends TestCase {
 		];
 	}
 
-	public static function strContainsAllProvider() {
+	/**
+	 * @return array<int, array{0: string, 1: array<string>, 2: bool, 3: bool}>
+	 */
+	public static function strContainsAllProvider(): array {
 		return [
 			[ 'Taylor Otwell', [ 'taylor', 'otwell' ], false, false ],
 			[ 'Taylor Otwell', [ 'taylor', 'otwell' ], true, true ],
@@ -971,6 +988,201 @@ class StrTest extends TestCase {
 
 	public function testPasswordCreation(): void {
 		$this->assertTrue( strlen( Str::password() ) === 32 );
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'starts_with_loose_arguments_provider' )]
+	public function testStartsWithLooseArguments( bool $expected, array $arguments ): void {
+		$this->assertSame( $expected, Str::starts_with( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: bool, 1: array<int, mixed>}>
+	 */
+	public static function starts_with_loose_arguments_provider(): array {
+		return [
+			[ false, [ 'jason', null ] ],
+			[ false, [ 'jason', [ null ] ] ],
+			[ false, [ '0123', [ null ] ] ],
+			[ true, [ '0123', 0 ] ],
+			[ true, [ '7a', 7 ] ],
+			[ true, [ '7.12a', 7.12 ] ],
+			[ false, [ '7.12a', 7.13 ] ],
+			[ true, [ 7.123, '7' ] ],
+			[ true, [ 7.123, '7.12' ] ],
+			[ false, [ 7.123, '7.13' ] ],
+		];
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'ends_with_loose_arguments_provider' )]
+	public function testEndsWithLooseArguments( bool $expected, array $arguments ): void {
+		$this->assertSame( $expected, Str::ends_with( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: bool, 1: array<int, mixed>}>
+	 */
+	public static function ends_with_loose_arguments_provider(): array {
+		return [
+			[ false, [ 'jason', [ null ] ] ],
+			[ false, [ 'jason', null ] ],
+			[ true, [ 'a7', 7 ] ],
+			[ true, [ 'a7.12', 7.12 ] ],
+			[ false, [ 'a7.12', 7.13 ] ],
+			[ true, [ 0.27, '7' ] ],
+			[ true, [ 0.27, '0.27' ] ],
+			[ false, [ 0.27, '8' ] ],
+		];
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'before_loose_arguments_provider' )]
+	public function testBeforeLooseArguments( mixed $expected, array $arguments ): void {
+		$this->assertSame( $expected, Str::before( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: mixed, 1: array<int, mixed>}>
+	 */
+	public static function before_loose_arguments_provider(): array {
+		return [
+			[ 'han', [ 'han0nah', 0 ] ],
+			[ 'han', [ 'han2nah', 2 ] ],
+		];
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'before_last_loose_arguments_provider' )]
+	public function testBeforeLastLooseArguments( mixed $expected, array $arguments ): void {
+		$this->assertSame( $expected, Str::before_last( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: mixed, 1: array<int, mixed>}>
+	 */
+	public static function before_last_loose_arguments_provider(): array {
+		return [
+			[ 'yv0et', [ 'yv0et0te', 0 ] ],
+			[ 'yv2et', [ 'yv2et2te', 2 ] ],
+		];
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'after_loose_arguments_provider' )]
+	public function testAfterLooseArguments( mixed $expected, array $arguments ): void {
+		$this->assertSame( $expected, Str::after( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: mixed, 1: array<int, mixed>}>
+	 */
+	public static function after_loose_arguments_provider(): array {
+		return [
+			[ 'nah', [ 'han0nah', 0 ] ],
+			[ 'nah', [ 'han2nah', 2 ] ],
+		];
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'after_last_loose_arguments_provider' )]
+	public function testAfterLastLooseArguments( mixed $expected, array $arguments ): void {
+		$this->assertSame( $expected, Str::after_last( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: mixed, 1: array<int, mixed>}>
+	 */
+	public static function after_last_loose_arguments_provider(): array {
+		return [
+			[ 'te', [ 'yv0et0te', 0 ] ],
+			[ 'te', [ 'yv2et2te', 2 ] ],
+		];
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'is_loose_arguments_provider' )]
+	public function testIsLooseArguments( bool $expected, array $arguments ): void {
+		$this->assertSame( $expected, Str::is( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: bool, 1: array<int, mixed>}>
+	 */
+	public static function is_loose_arguments_provider(): array {
+		return [
+			[ false, [ [ 'a*', 'b*' ], 123 ] ],
+			[ true, [ [ '*2*', 'b*' ], 11211 ] ],
+			[ false, [ '', 0 ] ],
+			[ false, [ [ null ], 0 ] ],
+			[ true, [ [ null ], null ] ],
+		];
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'is_json_loose_arguments_provider' )]
+	public function testIsJsonLooseArguments( bool $expected, array $arguments ): void {
+		$this->assertSame( $expected, Str::is_json( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: bool, 1: array<int, mixed>}>
+	 */
+	public static function is_json_loose_arguments_provider(): array {
+		return [
+			[ false, [ null ] ],
+			[ false, [ [] ] ],
+		];
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'replace_first_loose_arguments_provider' )]
+	public function testReplaceFirstLooseArguments( mixed $expected, array $arguments ): void {
+		$this->assertSame( $expected, Str::replace_first( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: mixed, 1: array<int, mixed>}>
+	 */
+	public static function replace_first_loose_arguments_provider(): array {
+		return [
+			[ '1', [ 0, '1', '0' ] ],
+		];
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'is_ascii_loose_arguments_provider' )]
+	public function testIsAsciiLooseArguments( bool $expected, array $arguments ): void {
+		$this->assertSame( $expected, Str::is_ascii( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: bool, 1: array<int, mixed>}>
+	 */
+	public static function is_ascii_loose_arguments_provider(): array {
+		return [
+			[ true, [ null ] ],
+		];
 	}
 }
 

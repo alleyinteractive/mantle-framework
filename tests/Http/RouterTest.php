@@ -71,9 +71,10 @@ class RouterTest extends FrameworkTestCase {
 		$router = $this->get_router();
 		$router->get( 'head/request', fn () => 'hello' );
 
-		$this->assertEmpty(
-			$router->dispatch( Request::create('head/request', 'HEAD' ) )->getContent()
-		);
+		$response = $router->dispatch( Request::create( 'head/request', 'HEAD' ) );
+
+		$this->assertNotNull( $response );
+		$this->assertEmpty( $response->getContent() );
 
 		$router = $this->get_router();
 		$router->any( 'any/request', fn () => 'hello' );
@@ -165,8 +166,8 @@ class RouterTest extends FrameworkTestCase {
 			'foo/{bar}',
 			array(
 				'middleware' => Substitute_Bindings::class,
-				'callback'   => function ( $name ) {
-					return $name;
+				'callback'   => function ( RouteModelBindingStub $name ) {
+					return $name->get( 'route_key' );
 				},
 			)
 		);
@@ -485,7 +486,7 @@ class RouterTest extends FrameworkTestCase {
 
 		$router->get(
 			'iface',
-			fn ( \Mantle\Contracts\Container $container ) => $container instanceof \Mantle\Contracts\Container ? 'ok' : 'no',
+			fn ( \Mantle\Contracts\Container $container ) => 'ok',
 		);
 
 		$this->assertSame( 'ok', $router->dispatch( Request::create( 'iface', 'GET' ) )?->getContent() );
@@ -559,10 +560,10 @@ class RouterTest extends FrameworkTestCase {
 		$app    = app();
 		$router = new Router( $app['events'], $app );
 
-		$this->app['router'] = $router;
+		$app['router'] = $router;
 
-		$this->app->instance( \Mantle\Contracts\Http\Routing\Router::class, $router );
-		$this->app->instance( 'request', new Request() );
+		$app->instance( \Mantle\Contracts\Http\Routing\Router::class, $router );
+		$app->instance( 'request', new Request() );
 
 		return $router;
 	}
@@ -575,12 +576,8 @@ class RouteModelBindingStub extends Post {
 	}
 
 	public function resolve_route_binding( $value, $field = null ) {
-		$this->set_attribute( $field ?? $this->get_route_key_name(), $value );
-		return $this->first();
-	}
-
-	public function first() {
-		return strtoupper( $this->route_key );
+		$this->set_attribute( $field ?? $this->get_route_key_name(), strtoupper( (string) $value ) );
+		return $this;
 	}
 }
 
@@ -590,8 +587,8 @@ class Routing_Test_User_Model extends Post {
 		return 'route_key';
 	}
 
-	public function where( $key, $value ) {
-		$this->value = $value;
+	public function where( string $key, mixed $value ): static {
+		$this->set( 'value', $value );
 
 		return $this;
 	}

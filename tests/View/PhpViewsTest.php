@@ -278,7 +278,7 @@ class PhpViewsTest extends FrameworkTestCase {
 		);
 
 		$this->assertSame( "[Parent loop post 0: {$parent_post}]\n[Post 0: {$child_post}]\n", $contents );
-		$this->assertSame( null, $GLOBALS['post'] );
+		$this->assertNull( $GLOBALS['post'] );
 	}
 
 	public function test_basic_cache_load(): void {

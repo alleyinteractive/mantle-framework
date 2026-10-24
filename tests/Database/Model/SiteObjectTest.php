@@ -10,9 +10,11 @@ class SiteObjectTest extends FrameworkTestCase {
 
 	public function test_site_attributes(): void {
 		$site_id = static::factory()->blog->create();
-		$site    = Site::find( $site_id );
 
-		$this->assertInstanceOf( Site::class, $site );
+		$this->assertIsInt( $site_id );
+
+		$site    = Site::find_or_fail( $site_id );
+
 		$this->assertSame( $site_id, $site->id() );
 
 		$blogname = \get_blog_option( $site_id, 'blogname' );
@@ -24,7 +26,7 @@ class SiteObjectTest extends FrameworkTestCase {
 		$this->assertSame( $blogname, $site->name() );
 		$this->assertSame( $object->path, $site->slug() );
 		$this->assertSame( get_home_url( $site_id ), $site->permalink() );
-		$this->assertSame( $object->public, $site->public );
+		$this->assertSame( $object->public, $site->get( 'public' ) );
 
 		// Test that you can get the WordPress object.
 		$core_object = $site->core_object();

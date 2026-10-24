@@ -17,7 +17,7 @@ if ( FrameworkTestCase::phpunit_version_compare( '11.0.0', '<' ) ) {
 		}
 
 		public function test_placeholder(): void {
-			$this->assertTrue( true );
+			$this->expectNotToPerformAssertions();
 		}
 	}
 } else {

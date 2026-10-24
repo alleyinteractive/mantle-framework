@@ -32,7 +32,7 @@ class DatabaseQueryBuilderTest extends FrameworkTestCase {
 	}
 
 	public function test_retrieve_models(): void {
-		$this->assertNull( TestableDatabaseModel::first() );
+		$this->assertNull( TestableDatabaseModel::query()->first() );
 
 		TestableDatabaseModel::create( [
 			'name' => 'John Doe',
@@ -40,7 +40,7 @@ class DatabaseQueryBuilderTest extends FrameworkTestCase {
 
 		$this->assertSame(
 			'John Doe',
-			TestableDatabaseModel::first()->name,
+			TestableDatabaseModel::query()->first_or_fail()->name,
 		);
 
 		$first = TestableDatabaseModel::query()->where( 'name', 'John Doe' )->first();

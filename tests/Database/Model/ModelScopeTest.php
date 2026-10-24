@@ -18,7 +18,10 @@ class ModelScopeTest extends FrameworkTestCase {
 		// Now set the post as the active one.
 		update_post_meta( $post_id, 'active', '1' );
 
-		$this->assertSame( $post_id, Testable_Post_For_Scope::active()->first()->id() );
+		$first = Testable_Post_For_Scope::active()->first();
+
+		$this->assertInstanceOf( Testable_Post_For_Scope::class, $first );
+		$this->assertSame( $post_id, $first->id() );
 	}
 
 	public function test_multiple_local_scopes(): void {
@@ -86,11 +89,19 @@ class ModelScopeTest extends FrameworkTestCase {
 class Testable_Post_For_Scope extends Post {
 	public static $object_name = 'post';
 
-	public function scopeActive( Post_Query_Builder $query ) {
+	/**
+	 * @param Post_Query_Builder<static> $query
+	 * @return Post_Query_Builder<static>
+	 */
+	public function scopeActive( Post_Query_Builder $query ): Post_Query_Builder {
 		return $query->whereMeta( 'active', '1' );
 	}
 
-	public function scopeOfType( Post_Query_Builder $query, string $type ) {
+	/**
+	 * @param Post_Query_Builder<static> $query
+	 * @return Post_Query_Builder<static>
+	 */
+	public function scopeOfType( Post_Query_Builder $query, string $type ): Post_Query_Builder {
 		return $query->whereMeta( 'type', $type );
 	}
 }

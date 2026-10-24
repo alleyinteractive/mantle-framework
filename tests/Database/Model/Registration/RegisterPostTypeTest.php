@@ -19,9 +19,9 @@ class RegisterPostTypeTest extends FrameworkTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->rest_api_init = isset( $GLOBALS['wp_filter']['rest_api_init'] )
-			? clone $GLOBALS['wp_filter']['rest_api_init']
-			: null;
+		$rest_api_init = $GLOBALS['wp_filter']['rest_api_init'] ?? null;
+
+		$this->rest_api_init = $rest_api_init instanceof \WP_Hook ? clone $rest_api_init : null;
 
 		remove_all_actions( 'init' );
 
@@ -102,8 +102,9 @@ class RegisterPostTypeTest extends FrameworkTestCase {
 		$this->assertTrue( post_type_exists( $post_type ) );
 	}
 
-	public function test_field_registration() {
-		$this->assertNull( Registered_REST_Field::get_instance( 'post', 'testable-field' ) );
+	public function test_field_registration(): void {
+		$field = Registered_REST_Field::get_instance( 'post', 'testable-field' );
+		$this->assertNull( $field );
 
 		// Invoke a new instance of the model which will allow it to boot.
 		new Testable_Post_Type_With_Fields();

@@ -11,6 +11,8 @@ use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 
+use function Mantle\Support\Helpers\with;
+
 /**
  * @group factory
  */
@@ -19,11 +21,10 @@ class FactoryTest extends FrameworkTestCase {
 	public function test_create_basic_model(): void {
 		$factory = Post::factory();
 
-		$this->assertInstanceOf( Factory\Post_Factory::class, $factory );
-
+		$this->assertInstanceOf( Factory\Post_Factory::class, with( $factory ) );
 		$post = $factory->create_and_get();
 
-		$this->assertInstanceOf( Post::class, $post );
+		$this->assertInstanceOf( Post::class, with( $post ) );
 	}
 
 	public function test_definition_runs_once_per_create(): void {
@@ -43,8 +44,7 @@ class FactoryTest extends FrameworkTestCase {
 	public function test_create_many(): void {
 		$factory = Post::factory();
 
-		$this->assertInstanceOf( Factory\Post_Factory::class, $factory );
-
+		$this->assertInstanceOf( Factory\Post_Factory::class, with( $factory ) );
 		$post_ids = $factory->create_many( 5 );
 
 		$this->assertCount( 5, $post_ids );
@@ -59,8 +59,7 @@ class FactoryTest extends FrameworkTestCase {
 	public function test_collect_many(): void {
 		$factory = Post::factory();
 
-		$this->assertInstanceOf( Factory\Post_Factory::class, $factory );
-
+		$this->assertInstanceOf( Factory\Post_Factory::class, with( $factory ) );
 		$posts = $factory->collect_many( 5 );
 
 		$this->assertCount( 5, $posts );
@@ -69,8 +68,7 @@ class FactoryTest extends FrameworkTestCase {
 	public function test_create_many_and_get(): void {
 		$factory = Post::factory();
 
-		$this->assertInstanceOf( Factory\Post_Factory::class, $factory );
-
+		$this->assertInstanceOf( Factory\Post_Factory::class, with( $factory ) );
 		$posts = $factory->create_many_and_get( 5 );
 
 		$this->assertCount( 5, $posts );
@@ -80,8 +78,7 @@ class FactoryTest extends FrameworkTestCase {
 	public function test_collect_many_and_get(): void {
 		$factory = Post::factory();
 
-		$this->assertInstanceOf( Factory\Post_Factory::class, $factory );
-
+		$this->assertInstanceOf( Factory\Post_Factory::class, with( $factory ) );
 		$posts = $factory->collect_many_and_get( 5 );
 
 		$this->assertCount( 5, $posts );
@@ -91,12 +88,10 @@ class FactoryTest extends FrameworkTestCase {
 	public function test_create_model_with_custom_factory(): void {
 		$factory = Testable_Post_With_Factory::factory();
 
-		$this->assertInstanceOf( Testable_Post_Factory::class, $factory );
-
+		$this->assertInstanceOf( Testable_Post_Factory::class, with( $factory ) );
 		$post = $factory->create_and_get();
 
-		$this->assertInstanceOf( Testable_Post_With_Factory::class, $post );
-
+		$this->assertInstanceOf( Testable_Post_With_Factory::class, with( $post ) );
 		// Ensure that the post's definition was used.
 		$this->assertSame( 'Title from the custom factory', $post->post_title );
 	}
@@ -104,12 +99,10 @@ class FactoryTest extends FrameworkTestCase {
 	public function test_create_model_with_custom_factory_string(): void {
 		$factory = Testable_Post_With_Factory_String::factory();
 
-		$this->assertInstanceOf( Testable_Post_Factory::class, $factory );
-
+		$this->assertInstanceOf( Testable_Post_Factory::class, with( $factory ) );
 		$post = $factory->create_and_get();
 
-		$this->assertInstanceOf( Testable_Post_With_Factory_String::class, $post );
-
+		$this->assertInstanceOf( Testable_Post_With_Factory_String::class, with( $post ) );
 		// Ensure that the post's definition was used.
 		$this->assertSame( 'Title from the custom factory', $post->post_title );
 	}
@@ -126,7 +119,7 @@ class FactoryTest extends FrameworkTestCase {
 			[ 'post_content' => 'Content for the unique title' ]
 		);
 
-		$this->assertInstanceOf( Testable_Post::class, $post );
+		$this->assertInstanceOf( Testable_Post::class, with( $post ) );
 		$this->assertSame( 'Unique Title', $post->post_title );
 		$this->assertSame( 'Content for the unique title', $post->post_content );
 
@@ -225,11 +218,15 @@ class FactoryTest extends FrameworkTestCase {
 			->create_and_get()
 			->all();
 
-		$this->assertIsArray( $posts );
+		$this->assertIsArray( with( $posts ) );
 		$this->assertCount( 3, $posts );
+
+		$first = $posts[0] ?? null;
+
+		$this->assertInstanceOf( Testable_Post_With_Factory::class, $first );
 		$this->assertSame(
 			'Title from the custom state',
-			$posts[0]->title,
+			$first->title,
 		);
 	}
 
@@ -254,7 +251,7 @@ class FactoryTest extends FrameworkTestCase {
 
 		$post = Testable_Custom_Post_Type::factory()->create_and_get();
 
-		$this->assertInstanceOf( Testable_Custom_Post_Type::class, $post );
+		$this->assertInstanceOf( Testable_Custom_Post_Type::class, with( $post ) );
 		$this->assertSame( 'custom_post_type', $post->post_type );
 		$this->assertNotEmpty( $post->title );
 		$this->assertNotEmpty( $post->content );
@@ -271,7 +268,7 @@ class FactoryTest extends FrameworkTestCase {
 
 		$post = Testable_Custom_Taxonomy::factory()->create_and_get();
 
-		$this->assertInstanceOf( Testable_Custom_Taxonomy::class, $post );
+		$this->assertInstanceOf( Testable_Custom_Taxonomy::class, with( $post ) );
 		$this->assertSame( 'custom_taxonomy', $post->taxonomy );
 		$this->assertNotEmpty( $post->name );
 	}

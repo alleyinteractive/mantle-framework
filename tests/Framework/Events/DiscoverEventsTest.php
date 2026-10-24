@@ -36,9 +36,13 @@ class DiscoverEventsTest extends FrameworkTestCase {
 		$this->assertTrue( class_exists( Example_Listener::class ) );
 		$this->assertTrue( class_exists( Event_One::class ) );
 
+		$cwd = getcwd();
+
+		$this->assertIsString( $cwd );
+
 		$events = Discover_Events::within(
 			__DIR__ . '/fixtures/listeners',
-			getcwd(),
+			$cwd,
 		);
 
 		$is_php_8 = version_compare( PHP_VERSION, '8.0.0', '>=' );

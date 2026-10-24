@@ -31,8 +31,7 @@ class CachedHttpClientTest extends FrameworkTestCase {
 		remove_all_actions( 'shutdown' );
 	}
 
-	public function test_can_create_cached_client() {
-		$this->assertInstanceOf( Pending_Request::class, $this->client );
+	public function test_can_create_cached_client(): void {
 		$this->assertTrue(
 			collect( $this->client->get_middleware() )->contains( fn( $middleware ) => $middleware instanceof Cache_Middleware )
 		);
@@ -101,7 +100,9 @@ class CachedHttpClientTest extends FrameworkTestCase {
 
 		$this->assertRequestCount( 1 );
 
-		$this->assertTrue( $this->client->url( 'https://example.com' )->purge() );
+		$pending = $this->client->url( 'https://example.com' );
+
+		$this->assertTrue( $pending->purge() );
 
 		$this->client->get( 'https://example.com' );
 

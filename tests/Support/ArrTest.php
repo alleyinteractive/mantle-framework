@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use InvalidArgumentException;
 use Mantle\Support\Arr;
 use Mantle\Support\Collection;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -490,8 +491,7 @@ class ArrTest extends TestCase {
 			'name'  => 'Taylor',
 			'email' => 'foo',
 		];
-		$this->assertTrue( Arr::has_any( $array, 'name', 'email' ) );
-		$this->assertFalse( Arr::has_any( $array, 'surname', 'password' ) );
+		$this->assertTrue( Arr::has_any( $array, [ 'name', 'email' ] ) );
 		$this->assertFalse( Arr::has_any( $array, [ 'surname', 'password' ] ) );
 
 		$array = [
@@ -868,21 +868,32 @@ class ArrTest extends TestCase {
 		$this->assertCount( 2, $random );
 		$this->assertContains( $random[0], [ 'foo', 'bar', 'baz' ] );
 		$this->assertContains( $random[1], [ 'foo', 'bar', 'baz' ] );
+	}
 
-		$random = Arr::random( [ 'foo', 'bar', 'baz' ], '0' );
+	/**
+	 * @param array<mixed> $array Array to pick from.
+	 */
+	#[DataProvider( 'random_numeric_string_provider' )]
+	public function testRandomWithNumericStringNumber( array $array, mixed $number, int $count ): void {
+		$random = Arr::random( $array, $number );
 		$this->assertIsArray( $random );
-		$this->assertCount( 0, $random );
+		$this->assertCount( $count, $random );
 
-		$random = Arr::random( [ 'foo', 'bar', 'baz' ], '1' );
-		$this->assertIsArray( $random );
-		$this->assertCount( 1, $random );
-		$this->assertContains( $random[0], [ 'foo', 'bar', 'baz' ] );
+		foreach ( $random as $value ) {
+			$this->assertContains( $value, $array );
+		}
+	}
 
-		$random = Arr::random( [ 'foo', 'bar', 'baz' ], '2' );
-		$this->assertIsArray( $random );
-		$this->assertCount( 2, $random );
-		$this->assertContains( $random[0], [ 'foo', 'bar', 'baz' ] );
-		$this->assertContains( $random[1], [ 'foo', 'bar', 'baz' ] );
+	/**
+	 * @return array<string, array{0: array<mixed>, 1: string, 2: int}>
+	 */
+	public static function random_numeric_string_provider(): array {
+		return [
+			'zero items'  => [ [ 'foo', 'bar', 'baz' ], '0', 0 ],
+			'one item'    => [ [ 'foo', 'bar', 'baz' ], '1', 1 ],
+			'two items'   => [ [ 'foo', 'bar', 'baz' ], '2', 2 ],
+			'empty array' => [ [], '0', 0 ],
+		];
 	}
 
 	public function testRandomOnEmptyArray(): void {
@@ -1201,7 +1212,6 @@ class ArrTest extends TestCase {
 
 	public function testWrap(): void {
 		$string        = 'a';
-		$array         = [ 'a' ];
 		$object        = new stdClass();
 		$object->value = 'a';
 		$this->assertSame( [ 'a' ], Arr::wrap( $string ) );
@@ -1216,5 +1226,68 @@ class ArrTest extends TestCase {
 		$obj        = unserialize( serialize( $obj ) );
 		$this->assertSame( [ $obj ], Arr::wrap( $obj ) );
 		$this->assertSame( $obj, Arr::wrap( $obj )[0] );
+	}
+
+	/**
+	 * @param array<mixed> $value Array to wrap.
+	 */
+	#[DataProvider( 'wrap_array_provider' )]
+	public function testWrapReturnsArraysUnchanged( array $value ): void {
+		$this->assertSame( $value, Arr::wrap( $value ) );
+	}
+
+	/**
+	 * @return array<string, array<int, array<mixed>>>
+	 */
+	public static function wrap_array_provider(): array {
+		return [
+			'string'     => [ [ 'a' ] ],
+			'null'       => [ [ null ] ],
+			'two nulls'  => [ [ null, null ] ],
+			'empty text' => [ [ '' ] ],
+			'false'      => [ [ false ] ],
+		];
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'get_loose_arguments_provider' )]
+	public function testGetLooseArguments( mixed $expected, array $arguments ): void {
+		$this->assertSame( $expected, Arr::get( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: mixed, 1: array<int, mixed>}>
+	 */
+	public static function get_loose_arguments_provider(): array {
+		return [
+			[ 'default', [ null, 'foo', 'default' ] ],
+			[ 'default', [ false, 'foo', 'default' ] ],
+			[ 'default', [ null, null, 'default' ] ],
+		];
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'has_loose_arguments_provider' )]
+	public function testHasLooseArguments( bool $expected, array $arguments ): void {
+		$this->assertSame( $expected, Arr::has( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: bool, 1: array<int, mixed>}>
+	 */
+	public static function has_loose_arguments_provider(): array {
+		return [
+			[ false, [ [ 'foo', 'bar' ], null ] ],
+			[ false, [ null, 'foo' ] ],
+			[ false, [ false, 'foo' ] ],
+			[ false, [ null, null ] ],
+			[ false, [ [], null ] ],
+			[ false, [ [], [ null ] ] ],
+			[ false, [ null, [ null ] ] ],
+		];
 	}
 }

@@ -42,7 +42,7 @@ class BladeViewsTest extends FrameworkTestCase {
 	public function test_compile_from_string(): void {
 		$this->assertSame(
 			'Hello, <?php echo e($name); ?>.',
-			Blade::compile_string( 'Hello, {{ $name }}.', [ 'name' => 'world' ] )
+			Blade::compile_string( 'Hello, {{ $name }}.' )
 		);
 	}
 

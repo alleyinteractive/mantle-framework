@@ -179,7 +179,10 @@ class HelpersGeneralTest extends TestCase {
 		} ) );
 	}
 
-	public static function providesPregReplaceArrayData() {
+	/**
+	 * @return array<int, array{0: string, 1: array<string>, 2: string, 3: string}>
+	 */
+	public static function providesPregReplaceArrayData(): array {
 		$pointerArray = [ 'Taylor', 'Otwell' ];
 
 		next( $pointerArray );

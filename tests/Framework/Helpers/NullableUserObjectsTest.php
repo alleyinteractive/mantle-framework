@@ -16,6 +16,11 @@ use function Mantle\Support\Helpers\get_user_object_by;
  */
 class NullableUserObjectsTest extends FrameworkTestCase {
 	/**
+	 * An ID that can never belong to a real object.
+	 */
+	private const IMPOSSIBLE_ID = PHP_INT_MAX;
+
+	/**
 	 * Test that `get_user_object()` returns a user object.
 	 */
 	public function test_user_object_returns_user(): void {
@@ -33,8 +38,8 @@ class NullableUserObjectsTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_user_object()` returns null when there is no user.
 	 */
-	public function test_user_object_returns_null() {
-		$found = get_user_object( $this->impossible_id );
+	public function test_user_object_returns_null(): void {
+		$found = get_user_object( self::IMPOSSIBLE_ID );
 
 		$this->assertNull( $found );
 	}

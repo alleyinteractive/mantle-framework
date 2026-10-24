@@ -41,7 +41,7 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 			->shouldReceive( 'make' )
 			->once()
 			->with( 'FooHandler' )
-			->andReturn( $handler = m::mock( stdClass::class ) );
+			->andReturn( $handler = m::mock( \stdClass::class ) );
 
 		$handler
 			->shouldReceive( 'onFooEvent' )
@@ -62,7 +62,7 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 			->shouldReceive( 'make' )
 			->once()
 			->with( 'FooHandler' )
-			->andReturn( $handler = m::mock( stdClass::class ) );
+			->andReturn( $handler = m::mock( \stdClass::class ) );
 
 		$handler
 			->shouldReceive( 'handle' )

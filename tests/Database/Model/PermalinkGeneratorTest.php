@@ -8,7 +8,7 @@ use Mantle\Testing\FrameworkTestCase;
 class PermalinkGeneratorTest extends FrameworkTestCase {
 	public function test_generate_permalink(): void {
 		$post  = static::factory()->post->create_and_get();
-		$model = Testable_Post_Generator::find( $post->ID );
+		$model = Testable_Post_Generator::find_or_fail( $post->ID );
 
 		$this->assertSame(
 			home_url( '/base/' . $post->post_name ),
@@ -18,7 +18,7 @@ class PermalinkGeneratorTest extends FrameworkTestCase {
 
 	public function test_generate_permalink_alias(): void {
 		$post  = static::factory()->post->create_and_get();
-		$model = Testable_Post_Alias::find( $post->ID );
+		$model = Testable_Post_Alias::find_or_fail( $post->ID );
 
 		$this->assertSame(
 			home_url( '/url-base/' . $post->post_name ),
