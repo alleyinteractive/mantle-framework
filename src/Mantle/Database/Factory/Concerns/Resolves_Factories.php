@@ -76,8 +76,7 @@ trait Resolves_Factories {
 	 * Attempts to resolve a factory name for the given model with an option to
 	 * override the resolver using a callback.
 	 *
-	 * @param class-string<\Mantle\Database\Model\Model> $model_name Model class
-	 * name.
+	 * @param string $model_name Model class name.
 	 * @return class-string<\Mantle\Database\Factory\Factory>
 	 */
 	public static function resolve_custom_factory_name( string $model_name ): string {

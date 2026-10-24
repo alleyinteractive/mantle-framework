@@ -9,6 +9,10 @@ namespace Mantle\Database\Pagination;
 
 /**
  * Length Aware Paginator
+ *
+ * @template TModel of \Mantle\Database\Model\Model = object
+ *
+ * @extends Paginator<TModel>
  */
 class Length_Aware_Paginator extends Paginator {
 	/**

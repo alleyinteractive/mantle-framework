@@ -21,8 +21,10 @@ use function Mantle\Support\Helpers\collect;
  * @template TModel of \Mantle\Database\Model\Model
  * @template TObject
  * @template TReturnValue
+ * @template TFactory of Factory = Factory
  *
  * @extends Factory<TModel, TObject, TReturnValue>
+ * @mixin TFactory
  */
 class Fluent_Factory extends Factory {
 	/**

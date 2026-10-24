@@ -735,7 +735,7 @@ abstract class Builder {
 	 * @param bool $force Flag to force delete.
 	 */
 	public function delete( bool $force = false ): void {
-		$this->all()->each->delete( $force ); // @phpstan-ignore-line undefined method
+		$this->all()->each->delete( $force );
 	}
 
 	/**
@@ -743,7 +743,7 @@ abstract class Builder {
 	 *
 	 * @param int $per_page Items per page.
 	 * @param int $current_page Current page number.
-	 * @return PaginatorContract<TModel>
+	 * @return Paginator<TModel>
 	 */
 	public function simple_paginate( int $per_page = 20, ?int $current_page = null ): PaginatorContract {
 		return Container::get_instance()->make(
@@ -761,7 +761,7 @@ abstract class Builder {
 	 *
 	 * @param int $per_page Items per page.
 	 * @param int $current_page Current page number.
-	 * @return PaginatorContract<TModel>
+	 * @return Length_Aware_Paginator<TModel>
 	 */
 	public function paginate( int $per_page = 20, ?int $current_page = null ): PaginatorContract {
 		return Container::get_instance()->make(

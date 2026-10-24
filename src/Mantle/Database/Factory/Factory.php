@@ -28,7 +28,7 @@ use function Mantle\Support\Helpers\tap;
  * @template TObject = object
  * @template TReturnValue = mixed
  *
- * @method \Mantle\Database\Factory\Fluent_Factory<TModel, TObject, TReturnValue> count(int $count)
+ * @method \Mantle\Database\Factory\Fluent_Factory<TModel, TObject, TReturnValue, static> count(int $count)
  */
 abstract class Factory {
 	use Concerns\Resolves_Factories;
