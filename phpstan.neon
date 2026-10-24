@@ -109,7 +109,6 @@ parameters:
 
 			# Tests that still need to be fixed. Removed one group at a time.
 
-			- tests/Database
 
 			- tests/Filesystem
 			- tests/Http

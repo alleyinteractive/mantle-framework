@@ -24,7 +24,7 @@ class BylineManagerFactoryTest extends FrameworkTestCase {
 	public function test_create_profile(): void {
 		$profile = static::factory()->byline_manager_profile->create_and_get();
 
-		$this->assertInstanceOf( Profile::class, $profile );
+		$this->assertInstanceOf( Profile::class, $this->opaque( $profile ) );
 		$this->assertNotEmpty( $profile->post->post_title );
 		$this->assertNotEmpty( get_post_meta( $profile->post->ID, 'first_name', true ) );
 		$this->assertNotEmpty( get_post_meta( $profile->post->ID, 'last_name', true ) );
@@ -35,7 +35,7 @@ class BylineManagerFactoryTest extends FrameworkTestCase {
 			'display_name' => 'John Doe',
 		] );
 
-		$this->assertInstanceOf( Profile::class, $author );
+		$this->assertInstanceOf( Profile::class, $this->opaque( $author ) );
 		$this->assertSame( 'John Doe', $author->post->post_title );
 	}
 
@@ -43,8 +43,7 @@ class BylineManagerFactoryTest extends FrameworkTestCase {
 		$user   = static::factory()->user->create_and_get();
 		$author = static::factory()->byline_manager_profile->with_linked_user( $user->ID )->create_and_get();
 
-		$this->assertInstanceOf( Profile::class, $author );
-
+		$this->assertInstanceOf( Profile::class, $this->opaque( $author ) );
 		$this->assertSame( $user->user_login, $author->post->post_name );
 		$this->assertSame( (string) $user->ID, get_post_meta( $author->post->ID, 'user_id', true ) );
 	}
@@ -54,8 +53,7 @@ class BylineManagerFactoryTest extends FrameworkTestCase {
 		$author_2 = static::factory()->byline_manager_profile->create_and_get();
 		$post     = static::factory()->post->with_byline_manager_authors( $author->post->ID, $author_2 )->create_and_get();
 
-		$this->assertInstanceOf( WP_Post::class, $post );
-
+		$this->assertInstanceOf( WP_Post::class, $this->opaque( $post ) );
 		$byline_entries = Utils::get_byline_entries_for_post( $post );
 
 		$this->assertCount( 2, $byline_entries );
@@ -70,8 +68,7 @@ class BylineManagerFactoryTest extends FrameworkTestCase {
 		$user     = static::factory()->user->create_and_get();
 		$post     = static::factory()->post->with_byline_manager_authors( $author, $user )->create_and_get();
 
-		$this->assertInstanceOf( WP_Post::class, $post );
-
+		$this->assertInstanceOf( WP_Post::class, $this->opaque( $post ) );
 		$byline_entries = Utils::get_byline_entries_for_post( $post );
 
 		$this->assertCount( 2, $byline_entries );
@@ -85,8 +82,7 @@ class BylineManagerFactoryTest extends FrameworkTestCase {
 		$author   = static::factory()->byline_manager_profile->create_and_get();
 		$post     = static::factory()->post->with_byline_manager_authors( $author, 'John Doe' )->create_and_get();
 
-		$this->assertInstanceOf( WP_Post::class, $post );
-
+		$this->assertInstanceOf( WP_Post::class, $this->opaque( $post ) );
 		$byline_entries = Utils::get_byline_entries_for_post( $post );
 
 		$this->assertCount( 2, $byline_entries );
@@ -104,15 +100,20 @@ class BylineManagerFactoryTest extends FrameworkTestCase {
 			'display_name' => 'John Doe',
 		], $author )->create_and_get();
 
-		$this->assertInstanceOf( WP_Post::class, $post );
-
+		$this->assertInstanceOf( WP_Post::class, $this->opaque( $post ) );
 		$byline_entries = Utils::get_byline_entries_for_post( $post );
-
 
 		$this->assertCount( 2, $byline_entries );
 		$this->assertSame(
 			[ 'John Doe', 'Jane Smith' ],
 			collect( $byline_entries )->pluck( 'post.post_title' )->all(),
 		);
+	}
+
+	/**
+	 * Hide a value's static type so assertions on it are not flagged as always true.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
 	}
 }

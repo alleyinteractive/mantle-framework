@@ -17,7 +17,7 @@ class ModelTest extends FrameworkTestCase {
 		$_SERVER['__boot_model_trait_to_test'] = 0;
 		$_SERVER['__initialize_model_trait_to_test'] = 0;
 	}
-	public function test_boot_methods() {
+	public function test_boot_methods(): void {
 
 		$this->assertSame( 0, $_SERVER['__testable_model_boot'] );
 		$this->assertSame( 0, $_SERVER['__initialize_model_trait_to_test'] );
@@ -36,8 +36,8 @@ class ModelTest extends FrameworkTestCase {
 		$this->assertSame( 2, $_SERVER['__initialize_model_trait_to_test'] );
 	}
 
-	public function test_attributes_append() {
-		$post = Testable_Post_For_Appending::find( static::factory()->post->create() );
+	public function test_attributes_append(): void {
+		$post = Testable_Post_For_Appending::find_or_fail( static::factory()->post->create_and_get() );
 
 		$post->append( 'abstract' );
 
@@ -55,9 +55,9 @@ class ModelTest extends FrameworkTestCase {
 		$this->assertArrayNotHasKey( 'included_append', $array );
 	}
 
-	public function test_hidden_attribute() {
-		$post = Testable_Post_For_Appending::find(
-			static::factory()->post->create( [ 'post_password' => 'password' ] )
+	public function test_hidden_attribute(): void {
+		$post = Testable_Post_For_Appending::find_or_fail(
+			static::factory()->post->create_and_get( [ 'post_password' => 'password' ] )
 		);
 
 		$array = $post->to_array();
@@ -90,7 +90,7 @@ class ModelTest extends FrameworkTestCase {
 		);
 	}
 
-	public function test_first_or_new() {
+	public function test_first_or_new(): void {
 		$existing = static::factory()->post->create( [
 			'title' => 'Original Title',
 		] );
@@ -100,6 +100,7 @@ class ModelTest extends FrameworkTestCase {
 			[ 'title' => 'Updated title' ],
 		);
 
+		$this->assertSame( $existing, $post->id() );
 		$this->assertSame( $existing, $post->id );
 		$this->assertSame( 'Original Title', $post->title );
 
@@ -108,13 +109,14 @@ class ModelTest extends FrameworkTestCase {
 			[ 'title' => 'New title' ],
 		);
 
-		$this->assertInstanceOf( Testable_Post_For_Appending::class, $post_to_create );
-		$this->assertNull( $post_to_create->id );
+		$this->assertInstanceOf( Testable_Post_For_Appending::class, $this->opaque( $post_to_create ) );
+		$this->assertNull( $post_to_create->get( 'id' ) );
+		$this->assertNull( $this->opaque( $post_to_create->id ) );
 		$this->assertFalse( $post_to_create->exists );
 		$this->assertSame( 'New title', $post_to_create->title );
 	}
 
-	public function test_first_or_create() {
+	public function test_first_or_create(): void {
 		$existing = static::factory()->post->create( [
 			'title' => 'Original Title test_first_or_create',
 		] );
@@ -124,6 +126,7 @@ class ModelTest extends FrameworkTestCase {
 			[ 'title' => 'Updated title test_first_or_create' ],
 		);
 
+		$this->assertSame( $existing, $post->id() );
 		$this->assertSame( $existing, $post->id );
 		$this->assertSame( 'Original Title test_first_or_create', $post->title );
 
@@ -132,13 +135,13 @@ class ModelTest extends FrameworkTestCase {
 			[ 'title' => 'New title test_first_or_create' ],
 		);
 
-		$this->assertInstanceOf( Testable_Post_For_Appending::class, $post_to_create );
-		$this->assertNotNull( $post_to_create->id );
+		$this->assertInstanceOf( Testable_Post_For_Appending::class, $this->opaque( $post_to_create ) );
+		$this->assertNotNull( $this->opaque( $post_to_create->id ) );
 		$this->assertTrue( $post_to_create->exists );
 		$this->assertSame( 'New title test_first_or_create', $post_to_create->title );
 	}
 
-	public function test_update_or_create_by_post_title() {
+	public function test_update_or_create_by_post_title(): void {
 		$existing = static::factory()->post->create( [ 'title' => 'Original title' ] );
 
 		$post = Testable_Post_For_Appending::update_or_create(
@@ -148,14 +151,14 @@ class ModelTest extends FrameworkTestCase {
 
 		$this->assertNotEquals( $existing, $post->id );
 		$this->assertEquals( 'A title that does not exist', $post->title );
-		$this->assertEquals( 'Original title', get_post( $existing )->post_title );
+		$this->assertEquals( 'Original title', get_post_field( 'post_title', $existing ) );
 
 		$found = Testable_Post_For_Appending::first_or_create( [ 'post_title' => 'A title that does not exist' ] );
 
 		$this->assertEquals( $post->id, $found->id );
 	}
 
-	public function test_update_or_create() {
+	public function test_update_or_create(): void {
 		$existing = static::factory()->post->create( [
 			'title' => 'Original Title test_update_or_create',
 		] );
@@ -165,6 +168,7 @@ class ModelTest extends FrameworkTestCase {
 			[ 'title' => 'Updated title test_update_or_create' ],
 		);
 
+		$this->assertSame( $existing, $post->id() );
 		$this->assertSame( $existing, $post->id );
 		$this->assertSame( 'Updated title test_update_or_create', $post->title );
 
@@ -173,19 +177,28 @@ class ModelTest extends FrameworkTestCase {
 			[ 'title' => 'New title test_update_or_create' ],
 		);
 
-		$this->assertInstanceOf( Testable_Post_For_Appending::class, $post_to_create );
-		$this->assertNotNull( $post_to_create->id );
+		$this->assertInstanceOf( Testable_Post_For_Appending::class, $this->opaque( $post_to_create ) );
+		$this->assertNotNull( $this->opaque( $post_to_create->id ) );
 		$this->assertTrue( $post_to_create->exists );
 		$this->assertSame( 'New title test_update_or_create', $post_to_create->title );
+	}
+
+	/**
+	 * Hide a value's static type so assertions on it are not flagged as always true.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
 	}
 }
 
 class Testable_Model extends Model {
 	use Model_Trait_To_Test;
 
-	public static function find( mixed $object ): ?static { }
+	public static function find( mixed $object ): ?static {
+		return null;
+	}
 
-	public static function boot() {
+	public static function boot(): void {
 		$_SERVER['__testable_model_boot']++;
 	}
 }
@@ -204,11 +217,11 @@ class Testable_Post_For_Appending extends Post {
 	}
 }
 trait Model_Trait_To_Test {
-	public static function boot_model_trait_to_test() {
+	public static function boot_model_trait_to_test(): void {
 		$_SERVER['__boot_model_trait_to_test']++;
 	}
 
-	public static function initialize_model_trait_to_test() {
+	public static function initialize_model_trait_to_test(): void {
 		$_SERVER['__initialize_model_trait_to_test']++;
 	}
 }

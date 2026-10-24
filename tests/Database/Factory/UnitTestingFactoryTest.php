@@ -31,8 +31,8 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		Utils::delete_all_posts();
 	}
 
-	public function test_post_factory() {
-		$this->assertInstanceOf( \WP_Post::class, static::factory()->post->create_and_get() );
+	public function test_post_factory(): void {
+		$this->assertInstanceOf( \WP_Post::class, $this->opaque( static::factory()->post->create_and_get() ) );
 
 		$post_ids = static::factory()->post->create_many(
 			10,
@@ -44,7 +44,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 
 		$this->assertCount( 10, $post_ids );
 		foreach ( $post_ids as $post_id ) {
-			$this->assertIsInt( $post_id );
+			$this->assertIsInt( $this->opaque( $post_id ) );
 		}
 
 		$this->assertSame( 'draft', get_post_status( array_shift( $post_ids ) ) );
@@ -60,25 +60,33 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 	/**
 	 * Suppress the deprecation notice but keep testing it.
 	 */
-	public function test_post_create_with_thumbnail() {
+	public function test_post_create_with_thumbnail(): void {
 		$post_id = @static::factory()->post->create_with_thumbnail();
 
 		$this->assertTrue( has_post_thumbnail( $post_id ) );
 	}
 
-	public function test_post_with_thumbnail_middleware() {
+	public function test_post_with_thumbnail_middleware(): void {
 		$post_id = static::factory()->post->with_thumbnail()->create();
 
 		$this->assertTrue( has_post_thumbnail( $post_id ) );
 	}
 
-	public function test_create_ordered_set() {
+	public function test_create_ordered_set(): void {
 		$post_ids = static::factory()->post->create_ordered_set( 10 );
 
 		$this->assertCount( 10, $post_ids );
 
 		$dates = collect( $post_ids )
-			->map( fn ( $post_id ) => Carbon::parse( get_post( $post_id )->post_date ) )
+			->map(
+				function ( $post_id ) {
+					$post = get_post( $post_id );
+
+					$this->assertInstanceOf( \WP_Post::class, $post );
+
+					return Carbon::parse( $post->post_date );
+				}
+			)
 			->to_array();
 
 		foreach ( $dates as $i => $date ) {
@@ -110,7 +118,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		$this->assertContainsOnlyInstancesOf( \WP_Post::class, $posts );
 	}
 
-	public function test_attachment_factory() {
+	public function test_attachment_factory(): void {
 		$this->shim_test( \WP_Post::class, 'attachment' );
 
 		$attachment = static::factory()->attachment->create_and_get();
@@ -118,12 +126,12 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		$this->assertSame( 'attachment', get_post_type( $attachment ) );
 	}
 
-	public function test_term_factory() {
+	public function test_term_factory(): void {
 		$this->shim_test( \WP_Term::class, 'category' );
 		$this->shim_test( \WP_Term::class, 'tag' );
 	}
 
-	public function test_blog_factory() {
+	public function test_blog_factory(): void {
 		$this->skipWithoutMultisite();
 
 		$this->shim_test( \WP_Site::class, 'blog' );
@@ -134,40 +142,41 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 
 		$blog = static::factory()->blog->subdomain()->create_and_get();
 
-		$this->assertInstanceOf( \WP_Site::class, $blog );
-
+		$this->assertInstanceOf( \WP_Site::class, $this->opaque( $blog ) );
 		$this->assertTrue( Str::is( '*.example.org', $blog->domain ) );
 		$this->assertSame( '/', $blog->path );
 	}
 
-	public function test_network_factory() {
+	public function test_network_factory(): void {
 		$this->skipWithoutMultisite();
 
 		$this->shim_test( \WP_Network::class, 'network' );
 	}
 
-	public function test_user_factory() {
+	public function test_user_factory(): void {
 		$this->shim_test( \WP_User::class, 'user' );
 	}
 
-	public function test_user_meta_factory() {
+	public function test_user_meta_factory(): void {
 		$user_id = static::factory()->user->with_meta(
 			[
 				'_test_meta_key' => '_test_meta_value',
 			]
 		)->create();
 
+		$this->assertIsInt( $user_id );
+
 		$this->assertSame( '_test_meta_value', get_user_meta( $user_id, '_test_meta_key', true ) );
 	}
 
-	public function test_user_login_factory() {
+	public function test_user_login_factory(): void {
 		$user_login = $this->faker->userName();
 		$user       = static::factory()->user->create_and_get( [ 'user_login' => $user_login ] );
 
 		$this->assertSame( $user_login, $user->user_login );
 	}
 
-	public function test_user_factory_suffixes_duplicate_logins() {
+	public function test_user_factory_suffixes_duplicate_logins(): void {
 		$this->faker->seed( 42 );
 		$first = static::factory()->user->create_and_get();
 
@@ -179,19 +188,19 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		$this->assertSame( "{$first->user_login}-" . ( $first->ID + 1 ), $second->user_login );
 	}
 
-	public function test_comment_factory() {
+	public function test_comment_factory(): void {
 		$this->shim_test( \WP_Comment::class, 'comment' );
 	}
 
-	public function test_as_models() {
+	public function test_as_models(): void {
 		$post = static::factory()->post->as_models()->create_and_get();
 		$term = static::factory()->term->with_model( Testable_Post_Tag::class )->as_models()->create_and_get();
 
-		$this->assertInstanceOf( Post::class, $post );
-		$this->assertInstanceOf( Testable_Post_Tag::class, $term );
+		$this->assertInstanceOf( Post::class, $this->opaque( $post ) );
+		$this->assertInstanceOf( Testable_Post_Tag::class, $this->opaque( $term ) );
 	}
 
-	public function test_factory_middleware() {
+	public function test_factory_middleware(): void {
 		$middleware = function ( $item, Closure $next ) {
 			$post = $next( $item );
 
@@ -226,7 +235,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 	}
 
 	#[Group( 'with_terms' )]
-	public function test_posts_with_terms() {
+	public function test_posts_with_terms(): void {
 		$post = static::factory()->post->with_terms(
 			[
 				$category = static::factory()->category->create_and_get(),
@@ -238,11 +247,16 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 	}
 
 	#[Group( 'with_terms' )]
-	public function test_posts_with_term_ids() {
+	public function test_posts_with_term_ids(): void {
+		$category_id = static::factory()->category->create();
+		$category    = static::factory()->category->create_and_get();
+
+		$this->assertIsInt( $category_id );
+
 		$post = static::factory()->post->with_terms(
 			[
-				$category_id = static::factory()->category->create(),
-				$category    = static::factory()->category->create_and_get(),
+				$category_id,
+				$category,
 			],
 			static::factory()->category->create_and_get(),
 		)->create_and_get();
@@ -252,7 +266,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 	}
 
 	#[Group( 'with_terms' )]
-	public function test_posts_with_terms_multiple_taxonomies() {
+	public function test_posts_with_terms_multiple_taxonomies(): void {
 		$post = static::factory()->post->with_terms(
 			$category = static::factory()->category->create_and_get(),
 			$tag = static::factory()->tag->create_and_get(),
@@ -271,7 +285,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 	}
 
 	#[Group( 'with_terms' )]
-	public function test_posts_with_multiple_taxonomies_with_mixed_objects() {
+	public function test_posts_with_multiple_taxonomies_with_mixed_objects(): void {
 		$tag = static::factory()->tag->create_and_get();
 
 		// Test with the arguments passed as individual parameters.
@@ -298,16 +312,14 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 	}
 
 	#[Group( 'with_terms' )]
-	public function test_posts_with_multiple_terms_single_array_argument() {
-		$tags = collect( static::factory()->tag->create_many( 5 ) )
-			->map( fn ( $term_id ) => get_term( $term_id ) )
-			->pluck( 'term_id' )
-			->all();
+	public function test_posts_with_multiple_terms_single_array_argument(): void {
+		$tags = static::factory()->tag->create_many( 5 );
 
 		$post = static::factory()->post->with_terms( $tags )->create_and_get();
 
 		$post_tags = get_the_terms( $post, 'post_tag' );
 
+		$this->assertIsArray( $post_tags );
 		$this->assertCount( 5, $post_tags );
 		$this->assertSame(
 			collect( $tags )->sort()->values()->all(),
@@ -316,16 +328,14 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 	}
 
 	#[Group( 'with_terms' )]
-	public function test_posts_with_multiple_terms_spread_array_argument() {
-		$tags = collect( static::factory()->tag->create_many( 5 ) )
-			->map( fn ( $term_id ) => get_term( $term_id ) )
-			->pluck( 'term_id' )
-			->all();
+	public function test_posts_with_multiple_terms_spread_array_argument(): void {
+		$tags = static::factory()->tag->create_many( 5 );
 
 		$post = static::factory()->post->with_terms( ...$tags )->create_and_get();
 
 		$post_tags = get_the_terms( $post, 'post_tag' );
 
+		$this->assertIsArray( $post_tags );
 		$this->assertCount( 5, $post_tags );
 		$this->assertSame(
 			collect( $tags )->sort()->values()->all(),
@@ -338,7 +348,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 	 */
 	#[DataProvider( 'slug_id_dataprovider' )]
 	#[Group( 'with_terms' )]
-	public function test_posts_with_multiple_terms_single_array( string $field ) {
+	public function test_posts_with_multiple_terms_single_array( string $field ): void {
 		$tags = collect( static::factory()->tag->create_many( 5 ) )
 			->map( fn ( $term_id ) => get_term( $term_id ) )
 			->pluck( $field )
@@ -356,7 +366,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 	}
 
 	#[Group( 'with_terms' )]
-	public function test_posts_with_terms_create_unknown_term() {
+	public function test_posts_with_terms_create_unknown_term(): void {
 		$post = static::factory()->post->with_terms( [
 			'post_tag' => [ 'unknown-term' ],
 		] )->create_and_get();
@@ -369,7 +379,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 	}
 
 	#[Group( 'with_terms' )]
-	public function test_posts_with_terms_array_of_slugs() {
+	public function test_posts_with_terms_array_of_slugs(): void {
 		$post = static::factory()->post->with_terms(
 			[
 				'post_tag' => [
@@ -390,10 +400,14 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 	}
 
 	#[Group( 'with_terms' )]
-	public function test_posts_with_terms_array_of_slugs_and_mixed() {
+	public function test_posts_with_terms_array_of_slugs_and_mixed(): void {
+		$existing_tag_id = static::factory()->tag->create( [ 'name' => 'Existing' ] );
+
+		$this->assertIsInt( $existing_tag_id );
+
 		$post = static::factory()->post->with_terms(
 			static::factory()->category->create_and_get(),
-			static::factory()->tag->create( [ 'name' => 'Existing' ] ),
+			$existing_tag_id,
 			[
 				'post_tag' => [
 					'another-term',
@@ -410,6 +424,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 
 		$post_tags = get_the_terms( $post, 'post_tag' );
 
+		$this->assertIsArray( $post_tags );
 		$this->assertCount( 4, $post_tags );
 		$this->assertSame(
 			[ 'another-new-tag', 'another-term', 'existing', 'unknown-term' ],
@@ -456,7 +471,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		$this->assertSame( $default_category_id, $categories[0]->term_id );
 	}
 
-	public function test_terms_with_posts() {
+	public function test_terms_with_posts(): void {
 		$post_ids = static::factory()->post->create_many( 2 );
 
 		$category = static::factory()->category->with_posts( $post_ids )->create_and_get();
@@ -465,7 +480,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		$this->assertTrue( has_term( $category->term_id, 'category', $post_ids[1] ) );
 	}
 
-	public function test_post_with_meta() {
+	public function test_post_with_meta(): void {
 		$post = static::factory()->post->with_meta(
 			[
 				'_test_meta_key' => '_test_meta_value',
@@ -486,19 +501,30 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		}
 	}
 
-	public function test_attachment_with_image() {
+	public function test_attachment_with_image(): void {
 		$attachment = static::factory()->attachment->with_image()->create();
+
+		$this->assertIsInt( $attachment );
 
 		$this->assertNotEmpty( wp_get_attachment_image_url( $attachment ) );
 	}
 
-	public function test_post_with_real_image() {
+	public function test_post_with_real_image(): void {
 		$post = static::factory()->post->with_real_thumbnail()->create();
 
-		$this->assertNotEmpty( wp_get_attachment_image_url( get_post_thumbnail_id( $post ) ) );
+		$this->assertIsInt( $post );
+
+		$thumbnail_id = get_post_thumbnail_id( $post );
+
+		$this->assertIsInt( $thumbnail_id );
+		$this->assertNotEmpty( wp_get_attachment_image_url( $thumbnail_id ) );
 	}
 
-	protected function shim_test( string $class_name, string $property ) {
+	/**
+	 * @param class-string $class_name Expected class name of the created object.
+	 * @param string       $property Factory property to use.
+	 */
+	protected function shim_test( string $class_name, string $property ): void {
 		$this->assertInstanceOf( $class_name, static::factory()->$property->create_and_get() );
 
 		$object_ids = static::factory()->$property->create_many( 10 );
@@ -513,7 +539,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 	 * @dataProvider dataprovider_factory
 	 */
 	#[DataProvider( 'dataprovider_factory' )]
-	public function test_dataprovider_factory( callable $fn ) {
+	public function test_dataprovider_factory( callable $fn ): void {
 		$post = $fn();
 
 		$this->assertInstanceOf( \WP_Post::class, $post );
@@ -523,13 +549,16 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		);
 	}
 
+	/**
+	 * @return array<string, array{callable}>
+	 */
 	public static function dataprovider_factory(): array {
 		return [
 			'example' => [ fn () => static::factory()->post->create_and_get() ],
 		];
 	}
 
-	public function test_custom_post_type_for() {
+	public function test_custom_post_type_for(): void {
 		register_post_type( 'custom-post' );
 
 		$post = static::factory()->post->for( 'custom-post' )->create_and_get();
@@ -537,46 +566,52 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		$this->assertSame( 'custom-post', get_post_type( $post ) );
 	}
 
-	public function test_custom_taxonomy() {
+	public function test_custom_taxonomy(): void {
 		register_taxonomy( 'custom-taxonomy', 'post' );
 
 		$term = static::factory()->term->for( 'custom-taxonomy' )->create_and_get();
 
-		$this->assertSame( 'custom-taxonomy', get_taxonomy( $term->taxonomy )->name );
+		$taxonomy = get_taxonomy( $term->taxonomy );
+
+		$this->assertInstanceOf( \WP_Taxonomy::class, $taxonomy );
+		$this->assertSame( 'custom-taxonomy', $taxonomy->name );
 	}
 
-	public function test_dynamic_factory() {
+	public function test_dynamic_factory(): void {
 		register_post_type( 'events' );
 		register_taxonomy( 'event-category', 'events' );
 
-		$event = static::factory()->events->create_and_get();
+		$event = static::factory()->events->create_and_get(); // @phpstan-ignore property.notFound (dynamic factory via __get)
 
 		$this->assertInstanceOf( \WP_Post::class, $event );
 		$this->assertSame( 'events', get_post_type( $event ) );
 
-		$term = static::factory()->{'event-category'}->create_and_get();
+		$term = static::factory()->{'event-category'}->create_and_get(); // @phpstan-ignore property.notFound (dynamic factory via __get)
 
 		$this->assertInstanceOf( \WP_Term::class, $term );
-		$this->assertSame( 'event-category', get_taxonomy( $term->taxonomy )->name );
+		$taxonomy = get_taxonomy( $term->taxonomy );
+
+		$this->assertInstanceOf( \WP_Taxonomy::class, $taxonomy );
+		$this->assertSame( 'event-category', $taxonomy->name );
 	}
 
-	public function test_dynamic_factory_unknown() {
+	public function test_dynamic_factory_unknown(): void {
 		$this->expectException( \InvalidArgumentException::class );
 
-		static::factory()->unknown->create_and_get();
+		static::factory()->unknown->create_and_get(); // @phpstan-ignore property.notFound (dynamic factory via __get)
 	}
 
-	public function test_dynamic_factory_conflict() {
+	public function test_dynamic_factory_conflict(): void {
 		register_post_type( 'conflict' );
 		register_taxonomy( 'conflict', 'conflict' );
 
 		$this->expectException( \RuntimeException::class );
 		$this->expectExceptionMessage( 'Error creating dynamic factory for conflict. Both post type and taxonomy exist.' );
 
-		static::factory()->conflict->create_and_get();
+		static::factory()->conflict->create_and_get(); // @phpstan-ignore property.notFound (dynamic factory via __get)
 	}
 
-	public function test_pass_factory_as_meta_argument() {
+	public function test_pass_factory_as_meta_argument(): void {
 		$post = static::factory()->post->with_meta( [
 			__FUNCTION__ => static::factory()->post->with_meta( 'example', 'true' ),
 			'tag_id' => static::factory()->tag,
@@ -588,7 +623,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		$term_meta = get_post_meta( $post->ID, 'tag_id', true );
 		$this->assertIsNumeric( $term_meta );
 
-		$underlying_post = get_post( $meta );
+		$underlying_post = get_post( (int) $meta );
 
 		$this->assertInstanceOf( \WP_Post::class, $underlying_post );
 		$this->assertSame( 'true', get_post_meta( $underlying_post->ID, 'example', true ) );
@@ -596,6 +631,8 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 
 	public function test_with_meta_array_value_is_one_serialized_entry(): void {
 		$post_id = static::factory()->post->with_meta( [ 'tags' => [ 'a', 'b' ] ] )->create();
+
+		$this->assertIsInt( $post_id );
 
 		$this->assertSame( [ 'a', 'b' ], get_post_meta( $post_id, 'tags', true ) );
 		$this->assertCount( 1, get_post_meta( $post_id, 'tags', false ) );
@@ -607,6 +644,8 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 			->with_meta( [ 'k' => 'b' ] )
 			->create();
 
+		$this->assertIsInt( $post_id );
+
 		$this->assertSame( [ 'a', 'b' ], get_post_meta( $post_id, 'k', true ) );
 		$this->assertCount( 1, get_post_meta( $post_id, 'k', false ) );
 	}
@@ -614,11 +653,15 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 	public function test_with_meta_named_arguments(): void {
 		$post_id = static::factory()->post->with_meta( meta: 'k', value: 'v' )->create();
 
+		$this->assertIsInt( $post_id );
+
 		$this->assertSame( 'v', get_post_meta( $post_id, 'k', true ) );
 	}
 
 	public function test_with_meta_array_meta_ignores_scalar_value(): void {
 		$post_id = static::factory()->post->with_meta( [ 'k' => 'a' ], 'ignored' )->create();
+
+		$this->assertIsInt( $post_id );
 
 		$this->assertSame( 'a', get_post_meta( $post_id, 'k', true ) );
 		$this->assertCount( 1, get_post_meta( $post_id, 'k', false ) );
@@ -641,7 +684,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 				]
 			);
 
-		$this->assertInstanceOf( \WP_Term::class, $term );
+		$this->assertInstanceOf( \WP_Term::class, $this->opaque( $term ) );
 		$this->assertSame( '1', get_term_meta( $term->term_id, 'custom_featured_show', true ) );
 		$this->assertSame( [ 'Line 1', 'Line 2' ], get_term_meta( $term->term_id, 'hero_description', false ) );
 	}
@@ -656,6 +699,8 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 			)
 			->create();
 
+		$this->assertIsInt( $post_id );
+
 		$this->assertSame( 'one', get_post_meta( $post_id, 'single', true ) );
 		$this->assertSame( [ 'a', 'b', 'c' ], get_post_meta( $post_id, 'multi', false ) );
 	}
@@ -667,6 +712,8 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 				[ 'multi' => 'b' ],
 			)
 			->create();
+
+		$this->assertIsInt( $user_id );
 
 		$this->assertSame( [ 'a', 'b' ], get_user_meta( $user_id, 'multi', false ) );
 	}
@@ -693,6 +740,8 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 				[ 'enum' => Testable_Factory_Meta::Value_B, 'related' => static::factory()->post ],
 			)
 			->create();
+
+		$this->assertIsInt( $post_id );
 
 		$this->assertSame( [ 'value-a', 'value-b' ], get_post_meta( $post_id, 'enum', false ) );
 
@@ -743,11 +792,21 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		static::factory()->post->scheduled( Carbon::now()->subDay() )->create_and_get();
 	}
 
+	/**
+	 * @return array<string, array{string}>
+	 */
 	public static function slug_id_dataprovider(): array {
 		return [
 			'term_id' => [ 'term_id' ],
 			'slug'    => [ 'slug' ],
 		];
+	}
+
+	/**
+	 * Hide a value's static type so assertions on it are not flagged as always true.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
 	}
 }
 

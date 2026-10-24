@@ -45,7 +45,7 @@ class DatabaseTableModelTest extends FrameworkTestCase {
 			'name' => 'John Doe',
 		] );
 
-		$this->assertInstanceOf( TestableDatabaseModel::class, $item );
+		$this->assertInstanceOf( TestableDatabaseModel::class, $this->opaque( $item ) );
 		$this->assertNotNull( $item->id );
 		$this->assertGreaterThan( 0, $item->id );
 
@@ -82,8 +82,8 @@ class DatabaseTableModelTest extends FrameworkTestCase {
 		$second = TestableDatabaseModel::create( [ 'name' => 'Order B' ] );
 		$third  = TestableDatabaseModel::create( [ 'name' => 'Order C' ] );
 
-		$this->assertEquals( $third->id, TestableDatabaseModel::query()->orderBy( 'id', 'desc' )->first()->id );
-		$this->assertEquals( $first->id, TestableDatabaseModel::query()->orderBy( 'id', 'asc' )->first()->id );
+		$this->assertEquals( $third->id, TestableDatabaseModel::query()->orderBy( 'id', 'desc' )->first_or_fail()->id );
+		$this->assertEquals( $first->id, TestableDatabaseModel::query()->orderBy( 'id', 'asc' )->first_or_fail()->id );
 		$this->assertEquals(
 			[ $third->id, $second->id, $first->id ],
 			TestableDatabaseModel::query()->orderBy( 'name', 'desc' )->take( 3 )->get()->pluck( 'id' )->all()
@@ -122,7 +122,7 @@ class DatabaseTableModelTest extends FrameworkTestCase {
 
 		$this->assertSame( [ 'key' => 'value' ], $item->json_data );
 
-		$this->assertInstanceOf( TestableDatabaseModel::class, $item );
+		$this->assertInstanceOf( TestableDatabaseModel::class, $this->opaque( $item ) );
 		$this->assertDatabaseHas( TestableDatabaseModel::get_table_name(), [
 			'id' => $item->id,
 			'json_data' => json_encode( [ 'key' => 'value' ] ),
@@ -139,7 +139,7 @@ class DatabaseTableModelTest extends FrameworkTestCase {
 
 		$item->save();
 
-		$this->assertInstanceOf( TestableDatabaseModel::class, $item );
+		$this->assertInstanceOf( TestableDatabaseModel::class, $this->opaque( $item ) );
 		$this->assertDatabaseHas( TestableDatabaseModel::get_table_name(), [
 			'id' => $item->id,
 			'boolean_value' => 1,
@@ -157,7 +157,7 @@ class DatabaseTableModelTest extends FrameworkTestCase {
 
 		$item->save();
 
-		$this->assertInstanceOf( TestableDatabaseModel::class, $item );
+		$this->assertInstanceOf( TestableDatabaseModel::class, $this->opaque( $item ) );
 		$this->assertDatabaseHas( TestableDatabaseModel::get_table_name(), [
 			'id' => $item->id,
 			'float_value' => '123.456',
@@ -174,7 +174,7 @@ class DatabaseTableModelTest extends FrameworkTestCase {
 
 		$item->save();
 
-		$this->assertInstanceOf( TestableDatabaseModelWithEnum::class, $item );
+		$this->assertInstanceOf( TestableDatabaseModelWithEnum::class, $this->opaque( $item ) );
 		$this->assertDatabaseHas( TestableDatabaseModelWithEnum::get_table_name(), [
 			'id' => $item->id,
 			'example_enum' => ExampleEnum::VALUE_TWO->value,
@@ -205,7 +205,7 @@ class DatabaseTableModelTest extends FrameworkTestCase {
 
 		$item->save();
 
-		$this->assertInstanceOf( TestableDatabaseModelWithEnum::class, $item );
+		$this->assertInstanceOf( TestableDatabaseModelWithEnum::class, $this->opaque( $item ) );
 		$this->assertDatabaseHas( TestableDatabaseModelWithEnum::get_table_name(), [
 			'id' => $item->id,
 			'example_enum' => ExampleEnum::VALUE_ONE->value,
@@ -220,8 +220,22 @@ class DatabaseTableModelTest extends FrameworkTestCase {
 			'example_enum' => 'invalid_value',
 		] );
 	}
+
+	/**
+	 * Hide a value's static type so assertions on it are not flagged as always true.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
+	}
 }
 
+/**
+ * @property int|null $id
+ * @property string $name
+ * @property array<string, mixed>|null $json_data
+ * @property bool|null $boolean_value
+ * @property float|null $float_value
+ */
 class TestableDatabaseModel extends Database_Table_Model {
 	protected array $casts = [
 		'json_data' => 'array',
@@ -236,11 +250,18 @@ enum ExampleEnum: string {
 	case VALUE_THREE = 'value_three';
 }
 
+/**
+ * @property int|null $id
+ * @property ExampleEnum|null $example_enum
+ */
 class TestableDatabaseModelWithEnum extends Database_Table_Model {
 	protected array $casts = [
 		'example_enum' => ExampleEnum::class,
 	];
 
+	/**
+	 * @return array<string, class-string<ExampleEnum>>
+	 */
 	protected function get_enum_attributes(): array {
 		return [
 			'example_enum' => ExampleEnum::class,

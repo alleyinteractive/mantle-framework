@@ -21,7 +21,7 @@ class TermModelEventsTest extends FrameworkTestCase {
 		unregister_taxonomy( 'test-taxonomy' );
 	}
 
-	public function test_closure_event() {
+	public function test_closure_event(): void {
 		$_SERVER['__test_creating_event_fired'] = false;
 		$_SERVER['__test_created_event_fired'] = false;
 
@@ -71,7 +71,7 @@ class TermModelEventsTest extends FrameworkTestCase {
 	/**
 	 * Ensure that the model events are fired even if not interfacing with a model directly.
 	 */
-	public function test_non_model_event() {
+	public function test_non_model_event(): void {
 		$_SERVER['__test_non_model_created_event_fired'] = false;
 		$_SERVER['__test_non_model_updated_event_fired'] = false;
 		$_SERVER['__test_non_model_deleted_event_fired'] = false;
@@ -81,6 +81,8 @@ class TermModelEventsTest extends FrameworkTestCase {
 		Testable_Term_Model_Event::deleted( function() { $_SERVER['__test_non_model_deleted_event_fired'] = microtime( true ); } );
 
 		$insert  = \wp_insert_term( 'Inserted Term', 'category' );
+
+		$this->assertIsArray( $insert );
 		$term_id = $insert['term_id'];
 
 		\wp_update_term(
@@ -101,7 +103,7 @@ class TermModelEventsTest extends FrameworkTestCase {
 		$this->assertTrue( $_SERVER['__test_non_model_updated_event_fired'] < $_SERVER['__test_non_model_deleted_event_fired'] );
 	}
 
-	public function test_model_event_via_for() {
+	public function test_model_event_via_for(): void {
 		$_SERVER['__test_model_event_via_for_created_event_fired'] = false;
 		$_SERVER['__test_model_event_via_for_updated_event_fired'] = false;
 		$_SERVER['__test_model_event_via_for_deleted_event_fired'] = false;
@@ -115,6 +117,8 @@ class TermModelEventsTest extends FrameworkTestCase {
 		$model->deleted( fn () => $_SERVER['__test_model_event_via_for_deleted_event_fired'] = microtime( true ) );
 
 		$insert  = \wp_insert_term( 'Inserted Term', 'test-taxonomy' );
+
+		$this->assertIsArray( $insert );
 		$term_id = $insert['term_id'];
 
 		\wp_update_term(
