@@ -359,7 +359,12 @@ class ContainerTest extends TestCase {
 		$this->expectExceptionMessage( 'Target class [Foo\Bar\Baz\DummyClass] does not exist.' );
 
 		$container = new Container();
-		$container->build( 'Foo\Bar\Baz\DummyClass' );
+		// The class is intentionally nonexistent; pass it as an untyped value.
+		$this->build_with( $container, 'Foo\Bar\Baz\DummyClass' );
+	}
+
+	private function build_with( Container $container, mixed $concrete ): mixed {
+		return $container->build( $concrete );
 	}
 
 	public function testforget_instanceForgetsInstance(): void {
