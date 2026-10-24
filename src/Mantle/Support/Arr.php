@@ -68,7 +68,7 @@ class Arr {
 	/**
 	 * Cross join the given arrays, returning all possible permutations.
 	 *
-	 * @param  iterable<array<mixed>> ...$arrays Arrays to join.
+	 * @param  iterable<mixed> ...$arrays Arrays to join.
 	 * @return array<mixed>
 	 */
 	public static function cross_join( ...$arrays ): array {
@@ -390,7 +390,7 @@ class Arr {
 	 * Pluck an array of values from an array.
 	 *
 	 * @param iterable<mixed>          $array Array to process.
-	 * @param  string|array<mixed>      $value Values to pluck.
+	 * @param  string|array<mixed>|null $value Values to pluck.
 	 * @param  string|array<mixed>|null $key Key to use.
 	 * @return array<mixed>
 	 */
@@ -424,8 +424,8 @@ class Arr {
 	/**
 	 * Explode the "value" and "key" arguments passed to "pluck".
 	 *
-	 * @param  string|array<mixed>  $value Value to pluck.
-	 * @param  string|string[]|null $key Key to use.
+	 * @param  string|array<mixed>|null $value Value to pluck.
+	 * @param  string|string[]|null     $key Key to use.
 	 * @return array<mixed>
 	 */
 	protected static function explode_pluck_parameters( $value, $key ): array {
@@ -618,12 +618,12 @@ class Arr {
 	 *
 	 * @param  TData    $array Array to process.
 	 * @param  callable $callback Callback to filter by.
-	 * @return TData
+	 * @return array<key-of<TData>, value-of<TData>>
 	 *
 	 * @phpstan-param (callable(value-of<TData>, key-of<TData>): bool) $callback
 	 */
 	public static function where( array $array, callable $callback ): array {
-		return array_filter( $array, $callback, ARRAY_FILTER_USE_BOTH ); // @phpstan-ignore-line return.type
+		return array_filter( $array, $callback, ARRAY_FILTER_USE_BOTH );
 	}
 
 	/**

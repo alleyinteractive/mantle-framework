@@ -67,7 +67,7 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	/**
 	 * Append the given values to the string.
 	 *
-	 * @param  array<string>|string ...$values
+	 * @param  array<string>|string|int|float|bool ...$values
 	 */
 	public function append( ...$values ): static {
 		return new static( $this->value . implode( '', $values ) ); // @phpstan-ignore-line implode expects array<string>

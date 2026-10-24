@@ -51,7 +51,11 @@ use function Mantle\Support\Helpers\data_get;
  * @property-read Higher_Order_Collection_Proxy $some
  * @property-read Higher_Order_Collection_Proxy $sort_by
  * @property-read Higher_Order_Collection_Proxy $sort_by_desc
+ * @property-read Higher_Order_Collection_Proxy $skip_until
+ * @property-read Higher_Order_Collection_Proxy $skip_while
  * @property-read Higher_Order_Collection_Proxy $sum
+ * @property-read Higher_Order_Collection_Proxy $take_until
+ * @property-read Higher_Order_Collection_Proxy $take_while
  * @property-read Higher_Order_Collection_Proxy $unique
  * @property-read Higher_Order_Collection_Proxy $until
  */
@@ -94,10 +98,10 @@ trait Enumerates_Values {
 	/**
 	 * Create a new collection instance if the value isn't one already.
 	 *
-	 * @template TMakeKey of array-key
-	 * @template TMakeValue
+	 * @template TMakeKey of array-key = array-key
+	 * @template TMakeValue = mixed
 	 *
-	 * @param  \Mantle\Contracts\Support\Arrayable<TMakeKey, TMakeValue>|iterable<TMakeKey, TMakeValue>|null $items
+	 * @param  \Mantle\Contracts\Support\Arrayable<TMakeKey, TMakeValue>|iterable<TMakeKey, TMakeValue>|scalar|object|null $items
 	 * @return static<TMakeKey, TMakeValue>
 	 */
 	public static function make( $items = [] ) {
@@ -121,11 +125,11 @@ trait Enumerates_Values {
 	/**
 	 * Get the underlying items from the given collection if applicable.
 	 *
-	 * @template TUnwrapKey of array-key
-	 * @template TUnwrapValue
+	 * @template TUnwrapKey of array-key = array-key
+	 * @template TUnwrapValue = mixed
 	 *
-	 * @param  array<TUnwrapKey, TUnwrapValue>|static<TUnwrapKey, TUnwrapValue> $value
-	 * @return array<TUnwrapKey, TUnwrapValue>
+	 * @param  array<TUnwrapKey, TUnwrapValue>|static<TUnwrapKey, TUnwrapValue>|scalar|null $value
+	 * @return array<TUnwrapKey, TUnwrapValue>|scalar|null
 	 */
 	public static function unwrap( $value ) {
 		return $value instanceof Enumerable ? $value->all() : $value; // @phpstan-ignore-line return.type
@@ -221,7 +225,7 @@ trait Enumerates_Values {
 	/**
 	 * Execute a callback over each nested chunk of items.
 	 *
-	 * @param  callable(array<TKey, TValue>): mixed $callback
+	 * @param  callable $callback
 	 * @return static
 	 */
 	public function each_spread( callable $callback ) {
@@ -280,10 +284,8 @@ trait Enumerates_Values {
 	/**
 	 * Run a map over each nested chunk of items.
 	 *
-	 * @template TMapSpreadValue
-	 *
-	 * @param  callable(mixed): TMapSpreadValue $callback
-	 * @return static<TKey, TMapSpreadValue>
+	 * @param  callable $callback
+	 * @return static<TKey, mixed>
 	 */
 	public function map_spread( callable $callback ) {
 		return $this->map(
@@ -315,8 +317,8 @@ trait Enumerates_Values {
 	/**
 	 * Map a collection and flatten the result by a single level.
 	 *
-	 * @template TFlatMapKey of array-key
-	 * @template TFlatMapValue
+	 * @template TFlatMapKey of array-key = array-key
+	 * @template TFlatMapValue = mixed
 	 *
 	 * @param  callable(TValue, TKey): (\Illuminate\Support\Collection<TFlatMapKey, TFlatMapValue>|array<TFlatMapKey, TFlatMapValue>) $callback
 	 * @return static<TFlatMapKey, TFlatMapValue>
@@ -539,9 +541,9 @@ trait Enumerates_Values {
 	/**
 	 * Filter items by the given key value pair.
 	 *
-	 * @param  string                                                                 $key The key to check.
-	 * @param  \Mantle\Contracts\Support\Arrayable<int, string>|iterable<int, string> $values Values to search for.
-	 * @param  bool                                                                   $strict Whether to use strict comparison.
+	 * @param  string                                                                           $key The key to check.
+	 * @param  \Mantle\Contracts\Support\Arrayable<array-key, mixed>|iterable<array-key, mixed> $values Values to search for.
+	 * @param  bool                                                                             $strict Whether to use strict comparison.
 	 * @return static
 	 */
 	public function where_in( string $key, mixed $values, bool $strict = false ) {
@@ -555,8 +557,8 @@ trait Enumerates_Values {
 	/**
 	 * Filter items by the given key value pair using strict comparison.
 	 *
-	 * @param  string                                                                 $key The key to check.
-	 * @param  \Mantle\Contracts\Support\Arrayable<int, string>|iterable<int, string> $values Values to search for.
+	 * @param  string                                                                           $key The key to check.
+	 * @param  \Mantle\Contracts\Support\Arrayable<array-key, mixed>|iterable<array-key, mixed> $values Values to search for.
 	 * @return static
 	 */
 	public function where_in_strict( string $key, mixed $values ) {
@@ -566,8 +568,8 @@ trait Enumerates_Values {
 	/**
 	 * Filter items such that the value of the given key is between the given values.
 	 *
-	 * @param  string                                                                 $key The key to check.
-	 * @param  \Mantle\Contracts\Support\Arrayable<int, string>|iterable<int, string> $values Values to search for.
+	 * @param  string                                                                           $key The key to check.
+	 * @param  \Mantle\Contracts\Support\Arrayable<array-key, mixed>|iterable<array-key, mixed> $values Values to search for.
 	 * @return static
 	 */
 	public function where_between( string $key, mixed $values ) {
@@ -577,8 +579,8 @@ trait Enumerates_Values {
 	/**
 	 * Filter items such that the value of the given key is not between the given values.
 	 *
-	 * @param  string                                                                 $key The key to check.
-	 * @param  \Mantle\Contracts\Support\Arrayable<int, string>|iterable<int, string> $values Values to search against.
+	 * @param  string                                                                           $key The key to check.
+	 * @param  \Mantle\Contracts\Support\Arrayable<array-key, mixed>|iterable<array-key, mixed> $values Values to search against.
 	 * @return static
 	 */
 	public function where_not_between( string $key, mixed $values ) {
@@ -590,9 +592,9 @@ trait Enumerates_Values {
 	/**
 	 * Filter items by the given key value pair.
 	 *
-	 * @param  string                                                                 $key The key to check.
-	 * @param  \Mantle\Contracts\Support\Arrayable<int, string>|iterable<int, string> $values Values to search against.
-	 * @param  bool                                                                   $strict Whether to use strict comparison.
+	 * @param  string                                                                           $key The key to check.
+	 * @param  \Mantle\Contracts\Support\Arrayable<array-key, mixed>|iterable<array-key, mixed> $values Values to search against.
+	 * @param  bool                                                                             $strict Whether to use strict comparison.
 	 * @return static
 	 */
 	public function where_not_in( string $key, mixed $values, bool $strict = false ) {
@@ -606,8 +608,8 @@ trait Enumerates_Values {
 	/**
 	 * Filter items by the given key value pair using strict comparison.
 	 *
-	 * @param  string                                                                 $key The key to check.
-	 * @param  \Mantle\Contracts\Support\Arrayable<int, string>|iterable<int, string> $values Values to search against.
+	 * @param  string                                                                           $key The key to check.
+	 * @param  \Mantle\Contracts\Support\Arrayable<array-key, mixed>|iterable<array-key, mixed> $values Values to search against.
 	 * @return static
 	 */
 	public function where_not_in_strict( string $key, mixed $values ) {
@@ -725,7 +727,7 @@ trait Enumerates_Values {
 	/**
 	 * Get the collection of items as a plain array.
 	 *
-	 * @return array<TKey, TValue>
+	 * @return array<TKey, mixed>
 	 */
 	public function to_array() {
 		return $this->map(
