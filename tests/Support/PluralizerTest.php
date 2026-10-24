@@ -2,36 +2,37 @@
 
 namespace Mantle\Tests\Support;
 
+use Countable;
 use Mantle\Support\Str;
 use PHPUnit\Framework\TestCase;
 
 class PluralizerTest extends TestCase {
 
-	public function testBasicSingular() {
+	public function testBasicSingular(): void {
 		$this->assertSame( 'child', Str::singular( 'children' ) );
 	}
 
-	public function testBasicPlural() {
+	public function testBasicPlural(): void {
 		$this->assertSame( 'children', Str::plural( 'child' ) );
 		$this->assertSame( 'cod', Str::plural( 'cod' ) );
 		$this->assertSame( 'The words', Str::plural( 'The word' ) );
 		$this->assertSame( 'Bouquetés', Str::plural( 'Bouqueté' ) );
 	}
 
-	public function testCaseSensitiveSingularUsage() {
+	public function testCaseSensitiveSingularUsage(): void {
 		$this->assertSame( 'Child', Str::singular( 'Children' ) );
 		$this->assertSame( 'CHILD', Str::singular( 'CHILDREN' ) );
 		$this->assertSame( 'Test', Str::singular( 'Tests' ) );
 	}
 
-	public function testCaseSensitiveSingularPlural() {
+	public function testCaseSensitiveSingularPlural(): void {
 		$this->assertSame( 'Children', Str::plural( 'Child' ) );
 		$this->assertSame( 'CHILDREN', Str::plural( 'CHILD' ) );
 		$this->assertSame( 'Tests', Str::plural( 'Test' ) );
 		$this->assertSame( 'children', Str::plural( 'cHiLd' ) );
 	}
 
-	public function testIfEndOfWordPlural() {
+	public function testIfEndOfWordPlural(): void {
 		$this->assertSame( 'VortexFields', Str::plural( 'VortexField' ) );
 		$this->assertSame( 'MatrixFields', Str::plural( 'MatrixField' ) );
 		$this->assertSame( 'IndexFields', Str::plural( 'IndexField' ) );
@@ -41,65 +42,68 @@ class PluralizerTest extends TestCase {
 		$this->assertSame( 'RealHumen', Str::plural( 'RealHuman' ) );
 	}
 
-	public function testPluralWithNegativeCount() {
+	public function testPluralWithNegativeCount(): void {
 		$this->assertSame( 'test', Str::plural( 'test', 1 ) );
 		$this->assertSame( 'tests', Str::plural( 'test', 2 ) );
 		$this->assertSame( 'test', Str::plural( 'test', -1 ) );
 		$this->assertSame( 'tests', Str::plural( 'test', -2 ) );
 	}
 
-	public function testPluralStudly() {
+	public function testPluralStudly(): void {
 		$this->assertPluralStudly( 'RealHumans', 'RealHuman' );
 		$this->assertPluralStudly( 'Models', 'Model' );
 		$this->assertPluralStudly( 'VortexFields', 'VortexField' );
 		$this->assertPluralStudly( 'MultipleWordsInOneStrings', 'MultipleWordsInOneString' );
 	}
 
-	public function testPluralStudlyWithCount() {
+	public function testPluralStudlyWithCount(): void {
 		$this->assertPluralStudly( 'RealHuman', 'RealHuman', 1 );
 		$this->assertPluralStudly( 'RealHumans', 'RealHuman', 2 );
 		$this->assertPluralStudly( 'RealHuman', 'RealHuman', -1 );
 		$this->assertPluralStudly( 'RealHumans', 'RealHuman', -2 );
 	}
 
-	public function testPluralNotAppliedForStringEndingWithNonAlphanumericCharacter() {
+	public function testPluralNotAppliedForStringEndingWithNonAlphanumericCharacter(): void {
 		$this->assertSame( 'Alien.', Str::plural( 'Alien.' ) );
 		$this->assertSame( 'Alien!', Str::plural( 'Alien!' ) );
 		$this->assertSame( 'Alien ', Str::plural( 'Alien ' ) );
 		$this->assertSame( '50%', Str::plural( '50%' ) );
 	}
 
-	public function testPluralAppliedForStringEndingWithNumericCharacter() {
+	public function testPluralAppliedForStringEndingWithNumericCharacter(): void {
 		$this->assertSame( 'User1s', Str::plural( 'User1' ) );
 		$this->assertSame( 'User2s', Str::plural( 'User2' ) );
 		$this->assertSame( 'User3s', Str::plural( 'User3' ) );
 	}
 
-	public function testPluralSupportsArrays() {
+	public function testPluralSupportsArrays(): void {
 		$this->assertSame( 'users', Str::plural( 'user', [] ) );
 		$this->assertSame( 'user', Str::plural( 'user', [ 'one' ] ) );
 		$this->assertSame( 'users', Str::plural( 'user', [ 'one', 'two' ] ) );
 	}
 
-	public function testPluralSupportsCollections() {
+	public function testPluralSupportsCollections(): void {
 		$this->assertSame( 'users', Str::plural( 'user', collect() ) );
 		$this->assertSame( 'user', Str::plural( 'user', collect( [ 'one' ] ) ) );
 		$this->assertSame( 'users', Str::plural( 'user', collect( [ 'one', 'two' ] ) ) );
 	}
 
-	public function testPluralStudlySupportsArrays() {
+	public function testPluralStudlySupportsArrays(): void {
 		$this->assertPluralStudly( 'SomeUsers', 'SomeUser', [] );
 		$this->assertPluralStudly( 'SomeUser', 'SomeUser', [ 'one' ] );
 		$this->assertPluralStudly( 'SomeUsers', 'SomeUser', [ 'one', 'two' ] );
 	}
 
-	public function testPluralStudlySupportsCollections() {
+	public function testPluralStudlySupportsCollections(): void {
 		$this->assertPluralStudly( 'SomeUsers', 'SomeUser', collect() );
 		$this->assertPluralStudly( 'SomeUser', 'SomeUser', collect( [ 'one' ] ) );
 		$this->assertPluralStudly( 'SomeUsers', 'SomeUser', collect( [ 'one', 'two' ] ) );
 	}
 
-	private function assertPluralStudly( $expected, $value, $count = 2 ) {
+	/**
+	 * @param int|array<mixed>|Countable $count Count to pluralize by.
+	 */
+	private function assertPluralStudly( string $expected, string $value, int|array|Countable $count = 2 ): void {
 		$this->assertSame( $expected, Str::plural_studly( $value, $count ) );
 	}
 }

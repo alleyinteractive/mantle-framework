@@ -11,8 +11,15 @@ use ReflectionException;
 use stdClass;
 
 class ContainerCallTest extends TestCase {
+	/**
+	 * Return a value untouched so PHPStan cannot narrow its type.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
+	}
 
-	public function testCallWithAtSignBasedClassReferencesWithoutMethodThrowsException() {
+
+	public function testCallWithAtSignBasedClassReferencesWithoutMethodThrowsException(): void {
 		$this->expectException( Error::class );
 		$this->expectExceptionMessage( 'Call to undefined function ContainerTestCallStub()' );
 
@@ -20,13 +27,13 @@ class ContainerCallTest extends TestCase {
 		$container->call( 'ContainerTestCallStub' );
 	}
 
-	public function testCallClosureWithUnresolvableScalarThrowsBindingException() {
+	public function testCallClosureWithUnresolvableScalarThrowsBindingException(): void {
 		$this->expectException( Binding_Resolution_Exception::class );
 
 		( new Container() )->call( fn ( int $a ) => $a );
 	}
 
-	public function testCallWithAtSignBasedClassReferences() {
+	public function testCallWithAtSignBasedClassReferences(): void {
 		$container = new Container();
 		$result    = $container->call( ContainerTestCallStub::class . '@work', array( 'foo', 'bar' ) );
 		$this->assertSame( [ 'foo', 'bar' ], $result );
@@ -46,28 +53,28 @@ class ContainerCallTest extends TestCase {
 		$this->assertSame( [ 'foo', 'bar' ], $result );
 	}
 
-	public function testCallWithCallableArray() {
+	public function testCallWithCallableArray(): void {
 		$container = new Container();
 		$stub      = new ContainerTestCallStub();
 		$result    = $container->call( array( $stub, 'work' ), [ 'foo', 'bar' ] );
 		$this->assertSame( [ 'foo', 'bar' ], $result );
 	}
 
-	public function testCallWithStaticMethodNameString() {
+	public function testCallWithStaticMethodNameString(): void {
 		$container = new Container();
 		$result    = $container->call( 'Mantle\Tests\Container\ContainerStaticMethodStub::inject' );
 		$this->assertInstanceOf( ContainerCallConcreteStub::class, $result[0] );
 		$this->assertSame( 'taylor', $result[1] );
 	}
 
-	public function testCallWithGlobalMethodName() {
+	public function testCallWithGlobalMethodName(): void {
 		$container = new Container();
 		$result    = $container->call( 'Mantle\Tests\Container\containerTestInject' );
 		$this->assertInstanceOf( ContainerCallConcreteStub::class, $result[0] );
 		$this->assertSame( 'taylor', $result[1] );
 	}
 
-	public function testCallWithBound_Method() {
+	public function testCallWithBound_Method(): void {
 		$container = new Container();
 		$container->bind_method(
 			ContainerTestCallStub::class . '@unresolvable',
@@ -105,7 +112,7 @@ class ContainerCallTest extends TestCase {
 		$this->assertSame( 'taylor', $result[1] );
 	}
 
-	public function testBindMethodAcceptsAnArray() {
+	public function testBindMethodAcceptsAnArray(): void {
 		$container = new Container();
 		$container->bind_method(
 			[ ContainerTestCallStub::class, 'unresolvable' ],
@@ -127,7 +134,7 @@ class ContainerCallTest extends TestCase {
 		$this->assertSame( [ 'foo', 'bar' ], $result );
 	}
 
-	public function testCallWithDependencies() {
+	public function testCallWithDependencies(): void {
 		$container = new Container();
 		$result    = $container->call(
 			function ( stdClass $foo, $bar = [] ) {
@@ -169,14 +176,14 @@ class ContainerCallTest extends TestCase {
 			[ 'bar' => 'taylor' ]
 		);
 
-		$this->assertInstanceOf( Closure::class, $result );
+		$this->assertInstanceOf( Closure::class, $this->opaque( $result ) );
 		$result = $result();
 
 		$this->assertInstanceOf( stdClass::class, $result[0] );
 		$this->assertSame( 'taylor', $result[1] );
 	}
 
-	public function testCallWithCallableObject() {
+	public function testCallWithCallableObject(): void {
 		$container = new Container();
 		$callable  = new ContainerCallCallableStub();
 		$result    = $container->call( $callable );
@@ -184,7 +191,7 @@ class ContainerCallTest extends TestCase {
 		$this->assertSame( 'jeffrey', $result[1] );
 	}
 
-	public function testCallWithoutRequiredParamsThrowsException() {
+	public function testCallWithoutRequiredParamsThrowsException(): void {
 		$this->expectException( Binding_Resolution_Exception::class );
 		$this->expectExceptionMessage( 'Unable to resolve dependency [Parameter #0 [ <required> $foo ]] in class Mantle\Tests\Container\ContainerTestCallStub' );
 
@@ -192,7 +199,7 @@ class ContainerCallTest extends TestCase {
 		$container->call( ContainerTestCallStub::class . '@unresolvable' );
 	}
 
-	public function testCallWithoutRequiredParamsOnClosureThrowsException() {
+	public function testCallWithoutRequiredParamsOnClosureThrowsException(): void {
 		$this->expectException( Binding_Resolution_Exception::class );
 		$this->expectExceptionMessage( 'Unable to resolve dependency [Parameter #0 [ <required> $foo ]] in class Mantle\Tests\Container\ContainerCallTest' );
 
@@ -207,15 +214,26 @@ class ContainerCallTest extends TestCase {
 
 class ContainerTestCallStub {
 
-	public function work() {
+	/**
+	 * @return array<int, mixed>
+	 */
+	public function work(): array {
 		return func_get_args();
 	}
 
-	public function inject( ContainerCallConcreteStub $stub, $default = 'taylor' ) {
+	/**
+	 * @return array<int, mixed>
+	 */
+	public function inject( ContainerCallConcreteStub $stub, string $default = 'taylor' ): array {
 		return func_get_args();
 	}
 
-	public function unresolvable( $foo, $bar ) {
+	/**
+	 * @param  mixed $foo Unresolvable parameter.
+	 * @param  mixed $bar Unresolvable parameter.
+	 * @return array<int, mixed>
+	 */
+	public function unresolvable( $foo, $bar ): array {
 		return func_get_args();
 	}
 }
@@ -224,20 +242,29 @@ class ContainerCallConcreteStub {
 
 }
 
-function containerTestInject( ContainerCallConcreteStub $stub, $default = 'taylor' ) {
+/**
+ * @return array<int, mixed>
+ */
+function containerTestInject( ContainerCallConcreteStub $stub, string $default = 'taylor' ): array {
 	return func_get_args();
 }
 
 class ContainerStaticMethodStub {
 
-	public static function inject( ContainerCallConcreteStub $stub, $default = 'taylor' ) {
+	/**
+	 * @return array<int, mixed>
+	 */
+	public static function inject( ContainerCallConcreteStub $stub, string $default = 'taylor' ): array {
 		return func_get_args();
 	}
 }
 
 class ContainerCallCallableStub {
 
-	public function __invoke( ContainerCallConcreteStub $stub, $default = 'jeffrey' ) {
+	/**
+	 * @return array<int, mixed>
+	 */
+	public function __invoke( ContainerCallConcreteStub $stub, string $default = 'jeffrey' ): array {
 		return func_get_args();
 	}
 }

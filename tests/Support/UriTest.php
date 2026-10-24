@@ -7,7 +7,7 @@ use Mantle\Testing\FrameworkTestCase;
 
 class UriTest extends FrameworkTestCase {
 	public function test_basic_uri(): void {
-		$uri = Uri::of( 'https://example.com/path?query=string#fragment' );
+		$uri = $this->opaque( Uri::of( 'https://example.com/path?query=string#fragment' ) );
 
 		$this->assertInstanceOf( Uri::class, $uri );
 		$this->assertSame( 'https://example.com/path?query=string#fragment', (string) $uri->get_uri() );
@@ -68,7 +68,7 @@ class UriTest extends FrameworkTestCase {
 		$this->assertSame( get_permalink( $post ), (string) Uri::current() );
 	}
 
-	public function test_path_segments() {
+	public function test_path_segments(): void {
 		$uri = Uri::of( 'https://mantle.alley.com' );
 
 		$this->assertSame( [], $uri->path_segments()->to_array() );
@@ -80,15 +80,15 @@ class UriTest extends FrameworkTestCase {
 
 		$uri = Uri::of( 'https://mantle.alley.com/one/two/three?foo=bar' );
 
-		$this->assertSame( 3, $uri->path_segments()->count() );
+		$this->assertCount( 3, $uri->path_segments() );
 
 		$uri = Uri::of( 'https://mantle.alley.com/one/two/three/?foo=bar' );
 
-		$this->assertSame( 3, $uri->path_segments()->count() );
+		$this->assertCount( 3, $uri->path_segments() );
 
 		$uri = Uri::of( 'https://mantle.alley.com/one/two/three/#foo=bar' );
 
-		$this->assertSame( 3, $uri->path_segments()->count() );
+		$this->assertCount( 3, $uri->path_segments() );
 	}
 
 	public function test_complex_query_string(): void {
@@ -185,5 +185,12 @@ class UriTest extends FrameworkTestCase {
 			'foo[bar]=zab',
 			$uri->replace_query( [ 'foo.bar' => 'zab' ] )->query()->decode(),
 		);
+	}
+
+	/**
+	 * Return a value untouched so PHPStan cannot narrow its type.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
 	}
 }

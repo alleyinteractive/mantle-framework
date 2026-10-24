@@ -176,7 +176,7 @@ class HookableMethodNameTest extends FrameworkTestCase {
 		$class = new class {
 			use Hookable;
 
-			private function action__example_action( mixed $args ): void {
+			protected function action__example_action( mixed $args ): void {
 				$_SERVER['__hook_fired'] = $args;
 			}
 		};
@@ -196,7 +196,7 @@ class HookableMethodNameTest extends FrameworkTestCase {
 		$class = new class {
 			use Hookable;
 
-			private function action__example_action( mixed $args ): void {
+			protected function action__example_action( mixed $args ): void {
 				$_SERVER['__hook_fired'] = $args;
 			}
 		};

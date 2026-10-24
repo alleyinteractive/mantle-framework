@@ -21,12 +21,12 @@ use function Mantle\Support\Helpers\transform;
 use function Mantle\Support\Helpers\with;
 
 class HelpersGeneralTest extends TestCase {
-	public function testClassBasename() {
+	public function testClassBasename(): void {
 		$this->assertSame( 'Baz', class_basename( 'Foo\Bar\Baz' ) );
 		$this->assertSame( 'Baz', class_basename( 'Baz' ) );
 	}
 
-	public function testObjectGet() {
+	public function testObjectGet(): void {
 		$class              = new stdClass;
 		$class->name        = new stdClass;
 		$class->name->first = 'Taylor';
@@ -34,17 +34,17 @@ class HelpersGeneralTest extends TestCase {
 		$this->assertSame( 'Taylor', object_get( $class, 'name.first' ) );
 	}
 
-	public function testHead() {
+	public function testHead(): void {
 		$array = [ 'a', 'b', 'c' ];
 		$this->assertSame( 'a', head( $array ) );
 	}
 
-	public function testLast() {
+	public function testLast(): void {
 		$array = [ 'a', 'b', 'c' ];
 		$this->assertSame( 'c', last( $array ) );
 	}
 
-	public function testClassUsesRecursiveShouldReturnTraitsOnParentClasses() {
+	public function testClassUsesRecursiveShouldReturnTraitsOnParentClasses(): void {
 		$this->assertSame( [
 			SupportTestTraitTwo::class => SupportTestTraitTwo::class,
 			SupportTestTraitOne::class => SupportTestTraitOne::class,
@@ -52,7 +52,7 @@ class HelpersGeneralTest extends TestCase {
 			class_uses_recursive( SupportTestClassTwo::class ) );
 	}
 
-	public function testClassUsesRecursiveAcceptsObject() {
+	public function testClassUsesRecursiveAcceptsObject(): void {
 		$this->assertSame( [
 			SupportTestTraitTwo::class => SupportTestTraitTwo::class,
 			SupportTestTraitOne::class => SupportTestTraitOne::class,
@@ -60,7 +60,7 @@ class HelpersGeneralTest extends TestCase {
 			class_uses_recursive( new SupportTestClassTwo ) );
 	}
 
-	public function testClassUsesRecursiveReturnParentTraitsFirst() {
+	public function testClassUsesRecursiveReturnParentTraitsFirst(): void {
 		$this->assertSame( [
 			SupportTestTraitTwo::class   => SupportTestTraitTwo::class,
 			SupportTestTraitOne::class   => SupportTestTraitOne::class,
@@ -69,7 +69,7 @@ class HelpersGeneralTest extends TestCase {
 			class_uses_recursive( SupportTestClassThree::class ) );
 	}
 
-	public function testTap() {
+	public function testTap(): void {
 		$object = (object) [ 'id' => 1 ];
 		$this->assertSame( 2, tap( $object, function ( $object ) {
 			$object->id = 2;
@@ -80,24 +80,24 @@ class HelpersGeneralTest extends TestCase {
 		$this->assertSame( $mock, tap( $mock )->foo() );
 	}
 
-	public function testThrow() {
+	public function testThrow(): void {
 		$this->expectException( RuntimeException::class );
 
 		throw_if( true, new RuntimeException );
 	}
 
-	public function testThrowReturnIfNotThrown() {
+	public function testThrowReturnIfNotThrown(): void {
 		$this->assertSame( 'foo', throw_unless( 'foo', new RuntimeException ) );
 	}
 
-	public function testThrowWithString() {
+	public function testThrowWithString(): void {
 		$this->expectException( RuntimeException::class );
 		$this->expectExceptionMessage( 'Test Message' );
 
 		throw_if( true, RuntimeException::class, 'Test Message' );
 	}
 
-	public function testRetry() {
+	public function testRetry(): void {
 		$startTime = microtime( true );
 
 		$attempts = retry( 2, function ( $attempts ) {
@@ -115,7 +115,7 @@ class HelpersGeneralTest extends TestCase {
 		$this->assertTrue( microtime( true ) - $startTime >= 0.1 );
 	}
 
-	public function testRetryWithPassingWhenCallback() {
+	public function testRetryWithPassingWhenCallback(): void {
 		$startTime = microtime( true );
 
 		$attempts = retry( 2, function ( $attempts ) {
@@ -135,7 +135,7 @@ class HelpersGeneralTest extends TestCase {
 		$this->assertTrue( microtime( true ) - $startTime >= 0.1 );
 	}
 
-	public function testRetryWithFailingWhenCallback() {
+	public function testRetryWithFailingWhenCallback(): void {
 		$this->expectException( RuntimeException::class );
 
 		retry( 2, function ( $attempts ) {
@@ -149,7 +149,7 @@ class HelpersGeneralTest extends TestCase {
 		} );
 	}
 
-	public function testTransform() {
+	public function testTransform(): void {
 		$this->assertSame( 10, transform( 5, function ( $value ) {
 			return $value * 2;
 		} ) );
@@ -159,7 +159,7 @@ class HelpersGeneralTest extends TestCase {
 		} ) );
 	}
 
-	public function testTransformDefaultWhenBlank() {
+	public function testTransformDefaultWhenBlank(): void {
 		$this->assertSame( 'baz', transform( null, function () {
 			return 'bar';
 		}, 'baz' ) );
@@ -171,7 +171,7 @@ class HelpersGeneralTest extends TestCase {
 		} ) );
 	}
 
-	public function testWith() {
+	public function testWith(): void {
 		$this->assertSame( 10, with( 10 ) );
 
 		$this->assertSame( 10, with( 5, function ( $five ) {
@@ -179,7 +179,10 @@ class HelpersGeneralTest extends TestCase {
 		} ) );
 	}
 
-	public static function providesPregReplaceArrayData() {
+	/**
+	 * @return array<int, array{0: string, 1: array<string>, 2: string, 3: string}>
+	 */
+	public static function providesPregReplaceArrayData(): array {
 		$pointerArray = [ 'Taylor', 'Otwell' ];
 
 		next( $pointerArray );
@@ -202,9 +205,13 @@ class HelpersGeneralTest extends TestCase {
 		];
 	}
 
-	/** @dataProvider providesPregReplaceArrayData */
+	/**
+	 * @dataProvider providesPregReplaceArrayData
+	 *
+	 * @param array<string> $replacements Replacements.
+	 */
 	#[DataProvider( 'providesPregReplaceArrayData' )]
-	public function testPregReplaceArray( $pattern, $replacements, $subject, $expectedOutput ) {
+	public function testPregReplaceArray( string $pattern, array $replacements, string $subject, string $expectedOutput ): void {
 		$this->assertSame(
 			$expectedOutput,
 			preg_replace_array( $pattern, $replacements, $subject )
